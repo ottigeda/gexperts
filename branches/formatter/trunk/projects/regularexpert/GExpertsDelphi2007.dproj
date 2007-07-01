@@ -1,0 +1,376 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{4f1288a1-b13b-41ea-9c9b-de874d79eba0}</ProjectGuid>
+    <MainSource>GExpertsDelphi2007.dpr</MainSource>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>..\..\GExpertsDelphi2007.dll</DCC_DependencyCheckOutputName>
+    <DCC_EnabledPackages>true</DCC_EnabledPackages>
+    <DCC_UsePackage>rtl;vcl;vclx;vclactnband;dbrtl;vcldb;vcldbx;bdertl;dsnap;dbxcds;DbxCommonDriver;dbexpress;dsnapcon;teeUI;teedb;tee;adortl;vclib;ibxpress;IndyCore;IndySystem;IndyProtocols;xmlrtl;inet;IntrawebDB_90_100;Intraweb_90_100;VclSmp;vclie;websnap;webdsnap;inetdbbde;inetdbxpress;soaprtl;PieLib;rxctl;rxdb;rxbde;dummzeuchchart;SynEdit_R2007;dws2VCLRuntime;dws2ClassesLibrary;dws2Runtime;dzBdsIdeScriptInterfaces</DCC_UsePackage>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_ExeOutput>..\..</DCC_ExeOutput>
+    <DCC_DcuOutput>..\..\dcu\delphi2007</DCC_DcuOutput>
+    <DCC_ObjOutput>..\..\dcu\delphi2007</DCC_ObjOutput>
+    <DCC_HppOutput>..\..\dcu\delphi2007</DCC_HppOutput>
+    <DCC_UnitSearchPath>..\..\gxsource\framework;..\..\externalsource;..\..\externalsource\abbrevia</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\..\gxsource\framework;..\..\externalsource;..\..\externalsource\abbrevia</DCC_ResourcePath>
+    <DCC_ObjPath>..\..\gxsource\framework;..\..\externalsource;..\..\externalsource\abbrevia</DCC_ObjPath>
+    <DCC_IncludePath>..\..\gxsource\framework;..\..\externalsource;..\..\externalsource\abbrevia</DCC_IncludePath>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">2057</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">GExpertsDelphi2007.dpr</Source></Source><Excluded_Packages>
+      
+      
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+    </Excluded_Packages></Delphi.Personality></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup>
+    <DelphiCompile Include="GExpertsDelphi2007.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <RcCompile Include="..\..\gximages\GXIcons.rc">
+      <Form>..\..\gximages\GXIcons.res</Form>
+    </RcCompile>
+    <DCCReference Include="..\..\gxsource\BackupProject\GX_Backup.pas">
+      <Form>fmBackup</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\BackupProject\GX_BackupConfig.pas">
+      <Form>fmBackupConfig</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\BackupProject\GX_BackupOptions.pas">
+      <Form>fmBackupOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\BackupProject\GX_Zipper.pas" />
+    <DCCReference Include="..\..\gxsource\ClassBrowser\GX_ClassBrowser.pas">
+      <Form>fmClassBrowser</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ClassBrowser\GX_ClassIdentify.pas">
+      <Form>fmClassIdentify</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ClassBrowser\GX_ClassOptions.pas">
+      <Form>fmClassOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ClassBrowser\GX_ClassParsing.pas">
+      <Form>fmClassParsing</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ClassBrowser\GX_ClassProp.pas">
+      <Form>fmClassProp</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ClassBrowser\GX_ClassReport.pas">
+      <Form>fmClassReport</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ClipboardHistory\GX_ClipboardHistory.pas">
+      <Form>fmClipboardHistory</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ClipboardHistory\GX_ClipboardOptions.pas">
+      <Form>fmClipboardOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\CodeLibrarian\GX_CodeLib.pas">
+      <Form>fmCodeLib</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\CodeLibrarian\GX_CodeOpt.pas">
+      <Form>fmCodeOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\CodeLibrarian\GX_CodeSrch.pas">
+      <Form>fmCodeSearch</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\CodeProofreader\GX_ProofreaderAutoCorrectEntry.pas">
+      <Form>fmProofreaderAutoCorrectEntry</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\CodeProofreader\GX_ProofreaderConfig.pas">
+      <Form>fmProofreaderConfig</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\CodeProofreader\GX_ProofreaderCorrection.pas" />
+    <DCCReference Include="..\..\gxsource\CodeProofreader\GX_ProofreaderData.pas" />
+    <DCCReference Include="..\..\gxsource\CodeProofreader\GX_ProofreaderDefaults.pas" />
+    <DCCReference Include="..\..\gxsource\CodeProofreader\GX_ProofreaderExpert.pas" />
+    <DCCReference Include="..\..\gxsource\CodeProofreader\GX_ProofreaderKeyboard.pas" />
+    <DCCReference Include="..\..\gxsource\CodeProofreader\GX_ProofreaderUtils.pas" />
+    <DCCReference Include="..\..\gxsource\EditorToolbar\GX_Toolbar.pas" />
+    <DCCReference Include="..\..\gxsource\EditorToolbar\GX_ToolbarConfig.pas">
+      <Form>fmToolbarConfig</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\EditorToolbar\GX_ToolBarDropDown.pas" />
+    <DCCReference Include="..\..\gxsource\Editor\GX_eAlign.pas">
+      <Form>fmAlign</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Editor\GX_eAlignOptions.pas">
+      <Form>fmAlignOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Editor\GX_eChangeCase.pas">
+      <Form>fmChangeCase</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Editor\GX_eComment.pas">
+      <Form>fmCommentConfig</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Editor\GX_eDate.pas">
+      <Form>fmDateFormat</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Editor\GX_EditorExpert.pas" />
+    <DCCReference Include="..\..\gxsource\Editor\GX_EditorExpertManager.pas" />
+    <DCCReference Include="..\..\gxsource\Editor\GX_eFindDelimiter.pas" />
+    <DCCReference Include="..\..\gxsource\Editor\GX_ePrevNextIdentifier.pas" />
+    <DCCReference Include="..\..\gxsource\Editor\GX_eReverseStatement.pas" />
+    <DCCReference Include="..\..\gxsource\Editor\GX_eSelectIdentifier.pas" />
+    <DCCReference Include="..\..\gxsource\Editor\GX_eSelectionEditorExpert.pas" />
+    <DCCReference Include="..\..\gxsource\Editor\GX_eUsesManager.pas">
+      <Form>fmUsesManager</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Editor\GX_MenusForEditorExpert.pas" />
+    <DCCReference Include="..\..\gxsource\Experts\GX_AsciiChart.pas">
+      <Form>fmAsciiChart</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Experts\GX_CleanDirectories.pas">
+      <Form>fmCleanDirectories</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Experts\GX_ComponentGrid.pas">
+      <Form>fmComponentGrid</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Experts\GX_CompsToCode.pas">
+      <Form>fmCompsToCode</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Experts\GX_CopyComponentNames.pas" />
+    <DCCReference Include="..\..\gxsource\Experts\GX_ExpertManager.pas">
+      <Form>fmExpertManager</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Experts\GX_FindComponentRef.pas" />
+    <DCCReference Include="..\..\gxsource\Experts\GX_IdeShortCuts.pas">
+      <Form>fmIdeShortCuts</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Experts\GX_MacroLibrary.pas">
+      <Form>fmMacroLibrary</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Experts\GX_PeInfo.pas" />
+    <DCCReference Include="..\..\gxsource\Experts\GX_PeInformation.pas">
+      <Form>fmPeInformation</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Experts\GX_PerfectLayout.pas">
+      <Form>fmPerfectLayout</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Experts\GX_TabOrder.pas">
+      <Form>fmTabOrder</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\FavoriteFiles\GX_FavFileProp.pas">
+      <Form>fmFavFileProp</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\FavoriteFiles\GX_FavFiles.pas">
+      <Form>fmFavFiles</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\FavoriteFiles\GX_FavFolderProp.pas" />
+    <DCCReference Include="..\..\gxsource\FavoriteFiles\GX_FavNewFolder.pas">
+      <Form>fmFavNewFolder</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\FavoriteFiles\GX_FavOptions.pas">
+      <Form>fmFavOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\FavoriteFiles\GX_FavUtil.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_About.pas">
+      <Form>fmAbout</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Framework\GX_ActionBroker.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_Actions.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_ClassHacks.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_ClassMgr.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_ConfigurationInfo.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_Configure.pas">
+      <Form>fmConfiguration</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Framework\GX_Consts.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_DbugIntf.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_DesignerMenu.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_EditorChangeServices.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_EditorEnhancements.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_EditorFormServices.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_EditorShortcut.pas">
+      <Form>fmEditorShortcut</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Framework\GX_EditReader.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_Experts.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_FeedbackWizard.pas">
+      <Form>fmFeedbackWizard</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Framework\GX_FileScanner.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_GetIdeVersion.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_GExperts.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_IconMessageBox.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_KbdShortCutBroker.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_KibitzComp.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_LibrarySource.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_MacroParser.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_MenuActions.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_MessageBox.pas">
+      <Form>fmGxMessageBox</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Framework\GX_Progress.pas">
+      <Form>fmProgress</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Framework\GX_SharedImages.pas">
+      <Form>dmSharedImages</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Framework\GX_SynMemoUtils.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_UnitPositions.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_UsesManager.pas" />
+    <DCCReference Include="..\..\gxsource\Framework\GX_VerDepConst.pas" />
+    <DCCReference Include="..\..\gxsource\Grep\GX_GrepBackend.pas" />
+    <DCCReference Include="..\..\gxsource\Grep\GX_GrepExpert.pas" />
+    <DCCReference Include="..\..\gxsource\Grep\GX_GrepOptions.pas">
+      <Form>fmGrepOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Grep\GX_GrepPrinting.pas" />
+    <DCCReference Include="..\..\gxsource\Grep\GX_GrepReplace.pas">
+      <Form>fmGrepReplace</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Grep\GX_GrepResults.pas">
+      <Form>fmGrepResults</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Grep\GX_GrepResultsOptions.pas">
+      <Form>fmGrepResultsOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Grep\GX_GrepSearch.pas">
+      <Form>fmGrepSearch</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Grep\GX_Replace.pas" />
+    <DCCReference Include="..\..\gxsource\Grep\GX_Search.pas" />
+    <DCCReference Include="..\..\gxsource\IDEDocking\GX_IdeDock.pas">
+      <Form>fmIdeDockForm</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\IDE\GX_IdeEnhance.pas" />
+    <DCCReference Include="..\..\gxsource\IDE\GX_IdeFormEnhancer.pas" />
+    <DCCReference Include="..\..\gxsource\IDE\GX_MultilineHost.pas" />
+    <DCCReference Include="..\..\gxsource\IDE\GX_MultiLinePalette.pas" />
+    <DCCReference Include="..\..\gxsource\MacroTemplates\GX_MacroExpandNotifier.pas" />
+    <DCCReference Include="..\..\gxsource\MacroTemplates\GX_MacroFile.pas" />
+    <DCCReference Include="..\..\gxsource\MacroTemplates\GX_MacroSelect.pas">
+      <Form>fmMacroSelect</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\MacroTemplates\GX_MacroTemplateEdit.pas">
+      <Form>fmMacroTemplateEdit</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\MacroTemplates\GX_MacroTemplates.pas">
+      <Form>fmMacroTemplates</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\MacroTemplates\GX_MacroTemplatesExpert.pas" />
+    <DCCReference Include="..\..\gxsource\MessageDialog\GX_MessageDialog.pas">
+      <Form>fmMessageDialog</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\MessageDialog\GX_MessageOptions.pas">
+      <Form>fmMessageOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\OpenFile\GX_OpenFile.pas">
+      <Form>fmOpenFile</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\OpenFile\GX_OpenFileConfig.pas">
+      <Form>fmOpenFileConfig</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ProcedureList\GX_ProcedureList.pas">
+      <Form>fmProcedureList</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ProcedureList\GX_ProcedureListOptions.pas">
+      <Form>fmProcedureListOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ProjectDependencies\GX_ProjDepend.pas">
+      <Form>fmProjDepend</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ProjectDependencies\GX_ProjDependFilter.pas">
+      <Form>fmProjDependFilter</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ProjectDependencies\GX_ProjDependProp.pas">
+      <Form>fmProjDependProp</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ProjectOptionSets\GX_ProjOptionSets.pas">
+      <Form>fmProjOptionSets</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ProjectOptionSets\GX_ProjOptMap.pas" />
+    <DCCReference Include="..\..\gxsource\RenameComponents\GX_CompRename.pas">
+      <Form>fmCompRename</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\RenameComponents\GX_CompRenameAdvanced.pas">
+      <Form>fmCompRenameAdvanced</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\RenameComponents\GX_CompRenameConfig.pas">
+      <Form>fmCompRenameConfig</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ReplaceComponents\GX_ReplaceComp.pas">
+      <Form>fmReplaceComp</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ReplaceComponents\GX_ReplaceCompData.pas" />
+    <DCCReference Include="..\..\gxsource\ReplaceComponents\GX_ReplaceCompLog.pas">
+      <Form>fmReplaceCompLog</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ReplaceComponents\GX_ReplaceCompMapDets.pas">
+      <Form>fmReplaceCompMapDets</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ReplaceComponents\GX_ReplaceCompMapGrpList.pas">
+      <Form>fmReplaceCompMapGrpList</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ReplaceComponents\GX_ReplaceCompMapList.pas">
+      <Form>fmReplaceCompMapList</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ReplaceComponents\GX_ReplaceCompUtils.pas" />
+    <DCCReference Include="..\..\gxsource\SetComponentProperties\GX_SetComponentProps.pas" />
+    <DCCReference Include="..\..\gxsource\SetComponentProperties\GX_SetComponentPropsConfig.pas">
+      <Form>fmSetComponentPropsConfig</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\SetComponentProperties\GX_SetComponentPropsStatus.pas">
+      <Form>fmSetComponentPropsStatus</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\SourceExport\GX_SourceExport.pas">
+      <Form>fmSourceExport</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\SourceExport\GX_SourceExportOptions.pas">
+      <Form>fmSourceExportOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ToDoList\GX_ToDo.pas">
+      <Form>fmToDo</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\ToDoList\GX_ToDoOptions.pas">
+      <Form>fmToDoOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\gxsource\Utils\GX_GenericClasses.pas" />
+    <DCCReference Include="..\..\gxsource\Utils\GX_GenericUtils.pas" />
+    <DCCReference Include="..\..\gxsource\Utils\GX_GxUtils.pas" />
+    <DCCReference Include="..\..\gxsource\Utils\GX_IdeUtils.pas" />
+    <DCCReference Include="..\..\gxsource\Utils\GX_OtaUtils.pas" />
+    <DCCReference Include="..\..\gxsource\Utils\GX_XmlUtils.pas" />
+    <DCCReference Include="..\..\source\common\GX_CodeFormatterTypes.pas" />
+    <DCCReference Include="..\..\source\common\GX_CollectionLikeLists.pas" />
+    <DCCReference Include="..\..\source\engine\GX_CodeFormatterEngine.pas" />
+    <DCCReference Include="..\..\source\engine\GX_CodeFormatterFormatter.pas" />
+    <DCCReference Include="..\..\source\engine\GX_CodeFormatterParser.pas" />
+    <DCCReference Include="..\..\source\engine\GX_CodeFormatterSettings.pas" />
+    <DCCReference Include="..\..\source\engine\GX_CodeFormatterStack.pas" />
+    <DCCReference Include="..\..\source\engine\GX_CodeFormatterTokens.pas" />
+    <DCCReference Include="..\..\source\GX_CodeFormatterBookmarks.pas" />
+    <DCCReference Include="..\..\source\GX_CodeFormatterBreakpoints.pas" />
+    <DCCReference Include="..\..\source\GX_CodeFormatterConfig.pas">
+      <Form>fmCodeFormatterConfig</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\source\GX_CodeFormatterConfigHandler.pas" />
+    <DCCReference Include="..\..\source\GX_CodeFormatterDefaultSettings.pas" />
+    <DCCReference Include="..\..\source\GX_CodeFormatterDone.pas">
+      <Form>fmCodeFormatterDone</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\source\GX_CodeFormatterEditCapitalization.pas">
+      <Form>fmCodeFormatterEditCapitalization</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\source\GX_CodeFormatterExpert.pas" />
+    <DCCReference Include="..\..\source\GX_CodeFormatterGXConfigWrapper.pas" />
+    <DCCReference Include="..\..\source\GX_eCodeFormatter.pas" />
+    <DCCReference Include="..\..\source\GX_Formatter.pas" />
+  </ItemGroup>
+</Project>
