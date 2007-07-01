@@ -131,8 +131,8 @@ var
   st: TStringList;
 begin
   Filename := 'testfile_' + _Filename + '.pas';
-  InFile := 'unittests\testcases\input\' + Filename;
-  ExpectedFile := 'unittests\testcases\expected-' + GetResultDir + '\' + Filename;
+  InFile := 'formattersrc\unittests\testcases\input\' + Filename;
+  ExpectedFile := 'formattersrc\unittests\testcases\expected-' + GetResultDir + '\' + Filename;
   ExpectedText := nil;
   st := TStringList.Create;
   try
@@ -143,7 +143,7 @@ begin
     try
       CheckEquals(ExpectedText.Text, st.Text, 'error in output');
     except
-      st.SaveToFile('unittests\testcases\output-' + GetResultDir + '\' + Filename);
+      st.SaveToFile('formattersrc\unittests\testcases\output-' + GetResultDir + '\' + Filename);
       if not _AllowFaiure then
         raise;
     end;
