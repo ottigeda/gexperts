@@ -151,7 +151,26 @@ uses
   GX_UsesManager in '..\source\Framework\GX_UsesManager.pas',
   GX_VerDepConst in '..\source\Framework\GX_VerDepConst.pas',
   GX_XmlUtils in '..\source\Utils\GX_XmlUtils.pas',
-  GX_Zipper in '..\source\BackupProject\GX_Zipper.pas';
+  GX_Zipper in '..\source\BackupProject\GX_Zipper.pas',
+  GX_Formatter in '..\formattersrc\GX_Formatter.pas',
+  GX_CodeFormatterBookmarks in '..\formattersrc\GX_CodeFormatterBookmarks.pas',
+  GX_CodeFormatterBreakpoints in '..\formattersrc\GX_CodeFormatterBreakpoints.pas',
+  GX_CodeFormatterConfig in '..\formattersrc\GX_CodeFormatterConfig.pas' {fmCodeFormatterConfig},
+  GX_CodeFormatterConfigHandler in '..\formattersrc\GX_CodeFormatterConfigHandler.pas',
+  GX_CodeFormatterDefaultSettings in '..\formattersrc\GX_CodeFormatterDefaultSettings.pas',
+  GX_CodeFormatterDone in '..\formattersrc\GX_CodeFormatterDone.pas' {fmCodeFormatterDone},
+  GX_CodeFormatterEditCapitalization in '..\formattersrc\GX_CodeFormatterEditCapitalization.pas' {fmCodeFormatterEditCapitalization},
+  GX_CodeFormatterExpert in '..\formattersrc\GX_CodeFormatterExpert.pas',
+  GX_CodeFormatterGXConfigWrapper in '..\formattersrc\GX_CodeFormatterGXConfigWrapper.pas',
+  GX_eCodeFormatter in '..\formattersrc\GX_eCodeFormatter.pas',
+  GX_CollectionLikeLists in '..\formattersrc\common\GX_CollectionLikeLists.pas',
+  GX_CodeFormatterTypes in '..\formattersrc\common\GX_CodeFormatterTypes.pas',
+  GX_CodeFormatterTokens in '..\formattersrc\engine\GX_CodeFormatterTokens.pas',
+  GX_CodeFormatterEngine in '..\formattersrc\engine\GX_CodeFormatterEngine.pas',
+  GX_CodeFormatterFormatter in '..\formattersrc\engine\GX_CodeFormatterFormatter.pas',
+  GX_CodeFormatterParser in '..\formattersrc\engine\GX_CodeFormatterParser.pas',
+  GX_CodeFormatterSettings in '..\formattersrc\engine\GX_CodeFormatterSettings.pas',
+  GX_CodeFormatterStack in '..\formattersrc\engine\GX_CodeFormatterStack.pas';
 
 begin
 end.

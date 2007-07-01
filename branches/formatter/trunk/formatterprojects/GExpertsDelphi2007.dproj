@@ -55,40 +55,6 @@
       
       
       
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
       <Excluded_Packages Name="$(BDS)\bin\dclmid100.bpl">CodeGear MyBase DataAccess Components</Excluded_Packages>
       <Excluded_Packages Name="$(BDS)\bin\dcldb100.bpl">CodeGear Database Components</Excluded_Packages>
       <Excluded_Packages Name="$(BDS)\bin\applet100.bpl">CodeGear Control Panel Applet Package</Excluded_Packages>
@@ -116,6 +82,31 @@
     <RcCompile Include="..\Images\GXIcons.rc">
       <Form>..\Images\GXIcons.res</Form>
     </RcCompile>
+    <DCCReference Include="..\formattersrc\common\GX_CodeFormatterTypes.pas" />
+    <DCCReference Include="..\formattersrc\common\GX_CollectionLikeLists.pas" />
+    <DCCReference Include="..\formattersrc\engine\GX_CodeFormatterEngine.pas" />
+    <DCCReference Include="..\formattersrc\engine\GX_CodeFormatterFormatter.pas" />
+    <DCCReference Include="..\formattersrc\engine\GX_CodeFormatterParser.pas" />
+    <DCCReference Include="..\formattersrc\engine\GX_CodeFormatterSettings.pas" />
+    <DCCReference Include="..\formattersrc\engine\GX_CodeFormatterStack.pas" />
+    <DCCReference Include="..\formattersrc\engine\GX_CodeFormatterTokens.pas" />
+    <DCCReference Include="..\formattersrc\GX_CodeFormatterBookmarks.pas" />
+    <DCCReference Include="..\formattersrc\GX_CodeFormatterBreakpoints.pas" />
+    <DCCReference Include="..\formattersrc\GX_CodeFormatterConfig.pas">
+      <Form>fmCodeFormatterConfig</Form>
+    </DCCReference>
+    <DCCReference Include="..\formattersrc\GX_CodeFormatterConfigHandler.pas" />
+    <DCCReference Include="..\formattersrc\GX_CodeFormatterDefaultSettings.pas" />
+    <DCCReference Include="..\formattersrc\GX_CodeFormatterDone.pas">
+      <Form>fmCodeFormatterDone</Form>
+    </DCCReference>
+    <DCCReference Include="..\formattersrc\GX_CodeFormatterEditCapitalization.pas">
+      <Form>fmCodeFormatterEditCapitalization</Form>
+    </DCCReference>
+    <DCCReference Include="..\formattersrc\GX_CodeFormatterExpert.pas" />
+    <DCCReference Include="..\formattersrc\GX_CodeFormatterGXConfigWrapper.pas" />
+    <DCCReference Include="..\formattersrc\GX_eCodeFormatter.pas" />
+    <DCCReference Include="..\formattersrc\GX_Formatter.pas" />
     <DCCReference Include="..\source\BackupProject\GX_Backup.pas">
       <Form>fmBackup</Form>
     </DCCReference>
