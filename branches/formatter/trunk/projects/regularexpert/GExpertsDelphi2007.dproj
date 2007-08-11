@@ -28,6 +28,7 @@
     <DCC_IncludePath>..\..\gxsource\framework;..\..\externalsource;..\..\externalsource\abbrevia</DCC_IncludePath>
     <DCC_DebugInformation>False</DCC_DebugInformation>
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_Define>synedit</DCC_Define>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>

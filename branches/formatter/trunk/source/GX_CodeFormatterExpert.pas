@@ -1,5 +1,7 @@
 // the actual code formatter expert, called either from GX_Formatter or GX_eCodeFormatter
 // Original Author:     Thomas Mueller (http://www.dummzeuch.de)
+// Contributors:
+// * Ulrich Gerhardt - 2007-08-11: added determining the settings via an external .ini file
 unit GX_CodeFormatterExpert;
 
 {$I GX_CondDefine.inc}
@@ -7,6 +9,7 @@ unit GX_CodeFormatterExpert;
 interface
 
 uses
+  Classes,
   SysUtils,
   GX_ConfigurationInfo,
   GX_CodeFormatterEngine;
@@ -16,6 +19,7 @@ type
   private
     FEngine: TCodeFormatterEngine;
     function ShowDoneDialog(ShowDone: Boolean): boolean;
+    function GetSettingsName(FileName: string; FullText: TStringList): string;
   protected
   public
     constructor Create;
@@ -29,10 +33,11 @@ type
 implementation
 
 uses
-  Classes,
+  IniFiles,
   ToolsApi,
   GX_OtaUtils,
   GX_GenericUtils,
+  GX_DbugIntf,
   GX_CodeFormatterGXConfigWrapper,
   GX_CodeFormatterTypes,
   GX_CodeFormatterConfig,
@@ -42,6 +47,11 @@ uses
   GX_CodeFormatterConfigHandler,
   GX_CodeFormatterDone,
   GX_CodeFormatterSettings;
+
+procedure XSendDebug(const Msg: string); inline;
+begin
+  SendDebug('GXFormatter: ' + Msg);
+end;
 
 { TCodeFormatterExpert }
 
@@ -67,6 +77,81 @@ begin
   inherited;
 end;
 
+function FileNameMatches(const FileName, Pattern: string): Boolean;
+var
+  sr: TSearchRec;
+begin
+  Result := False;
+  if FindFirst(Pattern, 0, sr) = 0 then begin
+    repeat
+      if SameText(FileName, sr.Name) then begin
+        Result := True;
+        Break;
+      end;
+    until FindNext(sr) <> 0;
+    FindClose(sr);
+  end;
+end;
+
+function TCodeFormatterExpert.GetSettingsName(FileName: string; FullText: TStringList): string;
+
+  function GetFromConfigFile: string;
+  var
+    ConfigFileName, ConfiguredFileName, Path: string;
+    IniFile: TIniFile;
+    ConfiguredFileNames: TStringList;
+    i: Integer;
+  begin
+    Result := '';
+    Path := AddSlash(ExtractFilePath(ExpandFileName(FileName)));
+    ConfigFileName := Path + 'GXFormatter.ini'; // Do not localize.
+    IniFile := TIniFile.Create(ConfigFileName);
+    try
+      ConfiguredFileNames := TStringList.Create;
+      try
+        // Read section manually to conserve ordering:
+        IniFile.ReadSection('FileSettings', ConfiguredFileNames);
+        for i := 0 to Pred(ConfiguredFileNames.Count) do begin
+          ConfiguredFileName := ConfiguredFileNames[i];
+          if FileNameMatches(ExtractFileName(FileName), Path + ConfiguredFileName) then begin
+            Result := IniFile.ReadString('FileSettings', ConfiguredFileName, '');
+            {$IFOPT D+}XSendDebug(Format('Settings "%s" from rule %s in %s', [Result, ConfiguredFileName, ConfigFileName])); {$ENDIF}
+            Break;
+          end;
+        end;
+      finally
+        FreeAndNil(ConfiguredFileNames);
+      end;
+    finally
+      FreeAndNil(IniFile);
+    end;
+  end;
+
+  function GetFromSource: string;
+  const
+    cConfigDirective = '{GXFormatter.config='; // Do not localize.
+  var
+    FirstLine: string;
+  begin
+    FirstLine := Trim(FullText[0]);
+    if SameText(Copy(FirstLine, 1, Length(cConfigDirective)), cConfigDirective) and
+      (FirstLine[Length(FirstLine)] = '}') then begin
+      Result := Trim(Copy(FirstLine, Length(cConfigDirective) + 1, Length(FirstLine) - Length(cConfigDirective) - 1));
+      {$IFOPT D+}XSendDebug(Format('Settings "%s" from in-source directive', [Result])); {$ENDIF}
+    end else
+      Result := '';
+  end;
+
+begin
+  // First check for config directives in the source itself:
+  Result := GetFromSource;
+  if Result <> '' then
+    Exit;
+
+  // Then check external definition
+  Result := GetFromConfigFile;
+end;
+
 procedure TCodeFormatterExpert.Execute;
 resourcestring
   str_NoEditor = 'No source editor';
@@ -82,7 +167,7 @@ var
   i: integer;
   TempSettings: TCodeFormatterSettings;
   OrigSettings: TCodeFormatterEngineSettings;
-  FirstLine: string;
+  SettingsName: string;
 begin
   SourceEditor := GxOtaGetCurrentSourceEditor;
   if not Assigned(SourceEditor) then
@@ -91,6 +176,7 @@ begin
   if not (IsPascalSourceFile(FileName) or IsDelphiPackage(FileName) or FileMatchesExtension(FileName, '.tpl')) then
     raise ECodeFormatter.CreateFmt(str_UnsupportedFileTypeS, [ExtractFileName(FileName)]);
 
+  {$IFOPT D+}XSendDebug(Format('Formatting requested for "%s"', [FileName])); {$ENDIF}
   TempSettings := nil;
   FullText := TStringList.Create;
   try
@@ -105,25 +191,29 @@ begin
       Breakpoints := TBreakpointHandler.Create;
       Breakpoints.SaveItems;
       Bookmarks.SaveItems;
-      FirstLine := FullText[0];
-      if SameText(Copy(FirstLine, 1, 20), '{GXFormatter.config=') then begin
-        FirstLine := Trim(Copy(FirstLine, 21, Length(FirstLine) - 21));
-        TempSettings := TCodeFormatterSettings.Create;
-        if TCodeFormatterConfigHandler.GetDefaultConfig(FirstLine, TempSettings) then begin
-          OrigSettings := FEngine.Settings.Settings;
-          FEngine.Settings.Settings := TempSettings.Settings;
+      SettingsName := Trim(GetSettingsName(FileName, FullText));
+      if SettingsName <> '-' then begin
+        if SettingsName <> '' then begin
+          {$IFOPT D+}XSendDebug(Format('Use settings "%s"', [SettingsName])); {$ENDIF}
+          TempSettings := TCodeFormatterSettings.Create;
+          if TCodeFormatterConfigHandler.GetDefaultConfig(SettingsName, TempSettings) then begin
+            OrigSettings := FEngine.Settings.Settings;
+            FEngine.Settings.Settings := TempSettings.Settings;
+          end else
+            FreeAndNil(TempSettings);
         end else
-          FreeAndNil(TempSettings);
-      end;
+          {$IFOPT D+}XSendDebug('Use default settings'); {$ENDIF}
 
-      if FEngine.Execute(FullText) then begin
-        GxOtaReplaceEditorText(SourceEditor, FullText.Text);
-        Breakpoints.RestoreItems;
-        Bookmarks.RestoreItems;
-        for i := 0 to SourceEditor.EditViewCount - 1 do
-          SourceEditor.EditViews[i].Paint;
-        FEngine.Settings.ShowDoneDialog := ShowDoneDialog(FEngine.Settings.ShowDoneDialog);
-      end;
+        if FEngine.Execute(FullText) then begin
+          GxOtaReplaceEditorText(SourceEditor, FullText.Text);
+          Breakpoints.RestoreItems;
+          Bookmarks.RestoreItems;
+          for i := 0 to SourceEditor.EditViewCount - 1 do
+            SourceEditor.EditViews[i].Paint;
+          FEngine.Settings.ShowDoneDialog := ShowDoneDialog(FEngine.Settings.ShowDoneDialog);
+        end;
+      end else
+        {$IFOPT D+}XSendDebug('Ignore request'); {$ENDIF}
     finally
       FreeAndNil(Breakpoints);
       FreeAndNil(Bookmarks);

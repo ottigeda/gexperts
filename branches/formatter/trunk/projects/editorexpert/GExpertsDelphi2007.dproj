@@ -27,7 +27,7 @@
     <DCC_ResourcePath>..\..\gxsource\framework;..\..\externalsource;..\..\externalsource\abbrevia</DCC_ResourcePath>
     <DCC_ObjPath>..\..\gxsource\framework;..\..\externalsource;..\..\externalsource\abbrevia</DCC_ObjPath>
     <DCC_IncludePath>..\..\gxsource\framework;..\..\externalsource;..\..\externalsource\abbrevia</DCC_IncludePath>
-    <DCC_Define>GX_FORMATTER_IS_EDITOR_EXPERT</DCC_Define>
+    <DCC_Define>GX_FORMATTER_IS_EDITOR_EXPERT;SYNEDIT</DCC_Define>
     <DCC_DebugInformation>False</DCC_DebugInformation>
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
   </PropertyGroup>
@@ -333,9 +333,7 @@
     <DCCReference Include="..\..\gxsource\SetComponentProperties\GX_SetComponentPropsStatus.pas">
       <Form>fmSetComponentPropsStatus</Form>
     </DCCReference>
-    <DCCReference Include="..\..\gxsource\SourceExport\GX_SourceExport.pas">
-      <Form>fmSourceExport</Form>
-    </DCCReference>
+    <DCCReference Include="..\..\gxsource\SourceExport\GX_SourceExport.pas" />
     <DCCReference Include="..\..\gxsource\SourceExport\GX_SourceExportOptions.pas">
       <Form>fmSourceExportOptions</Form>
     </DCCReference>
