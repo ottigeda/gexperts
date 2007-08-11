@@ -142,14 +142,33 @@ function TCodeFormatterExpert.GetSettingsName(FileName: string; FullText: TStrin
       Result := '';
   end;
 
-begin
-  // First check for config directives in the source itself:
-  Result := GetFromSource;
-  if Result <> '' then
-    Exit;
+  function GetSettingNameFor(_Precedence: TConfigPrecedenceEnum; out _Name: string): boolean;
+  begin
+    case _Precedence of
+      cpDirective: begin
+        _Name := GetFromSource;
+        Result := _Name <> '';
+      end;
+      cpIniFile: begin
+        _Name := GetFromConfigFile;
+        Result := _Name <> '';
+      end;
+      cpMyConfig: begin
+        _Name := '';
+        Result := true;
+      end
+    else
+      Result := False;
+    end;
+  end;
 
-  // Then check external definition
-  Result := GetFromConfigFile;
+var
+  i: Integer;
+begin
+  for i := Low(TOneToThree) to High(TOneToThree) do
+    if GetSettingNameFor(FEngine.Settings.ConfigPrecedence[i], Result) then
+      exit;
+  Result := '';
 end;
 
 procedure TCodeFormatterExpert.Execute;

@@ -139,6 +139,8 @@ class procedure TCodeFormatterConfigHandler.ReadSettings(AReader: IConfigReader;
 
 var
   ES: TCodeFormatterEngineSettings;
+  cps: set of TConfigPrecedenceEnum;
+  cp: TConfigPrecedenceEnum;
 begin
   ASettings.ShowDoneDialog := AReader.ReadBool('ShowDoneDialog', True);
   ASettings.UseCapitalizationFile := AReader.ReadBool('UseCapitalizationFile', False);
@@ -148,6 +150,34 @@ begin
     ASettings.CapNames.LoadFromFile(ASettings.CapitalizationFile)
   else
     AReader.ReadStrings('Capitalization', ASettings.CapNames);
+
+  ASettings.ConfigPrecedence[1] := IntToConfigPrecedence(AReader.ReadInteger('Precedence1', Ord(cpDirective)));
+  ASettings.ConfigPrecedence[2] := IntToConfigPrecedence(AReader.ReadInteger('Precedence2', Ord(cpIniFile)));
+  ASettings.ConfigPrecedence[3] := IntToConfigPrecedence(AReader.ReadInteger('Precedence3', Ord(cpMyConfig)));
+
+  // make sure the setting is valid
+  cps := [cpDirective, cpIniFile, cpMyConfig];
+  Exclude(cps, ASettings.ConfigPrecedence[1]);
+  if not (ASettings.ConfigPrecedence[2] in cps) then begin
+    ASettings.ConfigPrecedence[2] := ASettings.ConfigPrecedence[3];
+    if not (ASettings.ConfigPrecedence[2] in cps) then begin
+      for cp := Low(TConfigPrecedenceEnum) to High(TConfigPrecedenceEnum) do begin
+        if cp in cps then begin
+          ASettings.ConfigPrecedence[2] := cp;
+          break;
+        end;
+      end;
+    end;
+  end;
+  Exclude(cps, ASettings.ConfigPrecedence[2]);
+  if not (ASettings.ConfigPrecedence[3] in cps) then begin
+    for cp := Low(TConfigPrecedenceEnum) to High(TConfigPrecedenceEnum) do begin
+      if cp in cps then begin
+        ASettings.ConfigPrecedence[3] := cp;
+        break;
+      end;
+    end;
+  end;
 
   ES := ASettings.Settings;
   ES.SpaceOperators := ReadSpaceSet('SpaceOperators', ES.SpaceOperators);
@@ -253,6 +283,10 @@ begin
   AWriter.WriteBool('AlignComments', ASettings.AlignComments); //: Boolean;
   AWriter.WriteInteger('AlignVarPos', ASettings.AlignVarPos); //: Byte;
   AWriter.WriteBool('AlignVar', ASettings.AlignVar); //: Boolean;
+
+  AWriter.WriteInteger('Precedence1', Ord(ASettings.ConfigPrecedence[1]));
+  AWriter.WriteInteger('Precedence2', Ord(ASettings.ConfigPrecedence[2]));
+  AWriter.WriteInteger('Precedence3', Ord(ASettings.ConfigPrecedence[3]));
 
   AWriter.WriteBool('ShowDoneDialog', ASettings.ShowDoneDialog);
   AWriter.WriteBool('UseCapitalizationFile', ASettings.UseCapitalizationFile);

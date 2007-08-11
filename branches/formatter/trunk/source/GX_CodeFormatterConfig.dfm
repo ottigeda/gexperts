@@ -547,57 +547,89 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     end
     object ts_Misc: TTabSheet
       Caption = 'Misc.'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
-      object l_DirectivesPreventFormatting: TLabel
-        Left = 8
-        Top = 8
-        Width = 204
-        Height = 13
-        Margins.Bottom = 0
-        Caption = 'Directives in source to prevent formatting:'
-      end
-      object l_MiscStart: TLabel
-        Left = 8
-        Top = 40
-        Width = 24
-        Height = 13
-        Margins.Bottom = 0
-        Caption = 'Start'
-      end
-      object l_MiscEnd: TLabel
-        Left = 8
-        Top = 64
-        Width = 18
-        Height = 13
-        Margins.Bottom = 0
-        Caption = 'End'
-      end
-      object StartCommentOutEdit: TEdit
-        Left = 44
-        Top = 36
-        Width = 123
-        Height = 21
-        MaxLength = 20
-        TabOrder = 0
-      end
-      object EndCommentOutEdit: TEdit
-        Left = 44
-        Top = 60
-        Width = 123
-        Height = 21
-        MaxLength = 20
-        TabOrder = 1
-      end
       object chk_ShowDone: TCheckBox
-        Left = 8
-        Top = 96
+        Left = 16
+        Top = 200
         Width = 377
         Height = 17
         Caption = 'Show confirmation dialog when complete'
         TabOrder = 2
+      end
+      object grp_ConfigPrecedence: TGroupBox
+        Left = 8
+        Top = 88
+        Width = 281
+        Height = 97
+        Caption = 'Configuration Precedence'
+        TabOrder = 1
+        object lb_Precedence: TListBox
+          Left = 8
+          Top = 24
+          Width = 193
+          Height = 65
+          ItemHeight = 13
+          TabOrder = 0
+          OnClick = lb_PrecedenceClick
+        end
+        object b_PrecedenceUp: TButton
+          Left = 208
+          Top = 24
+          Width = 65
+          Height = 25
+          Caption = 'Move Up'
+          TabOrder = 1
+          OnClick = b_PrecedenceUpClick
+        end
+        object b_PrecedenceDown: TButton
+          Left = 208
+          Top = 56
+          Width = 67
+          Height = 25
+          Caption = 'Move Down'
+          TabOrder = 2
+          OnClick = b_PrecedenceDownClick
+        end
+      end
+      object grp_DirectivesPreventFormatting: TGroupBox
+        Left = 8
+        Top = 8
+        Width = 281
+        Height = 73
+        Margins.Bottom = 0
+        Caption = 'Directives in source to prevent formatting:'
+        TabOrder = 0
+        object l_MiscStart: TLabel
+          Left = 8
+          Top = 24
+          Width = 24
+          Height = 13
+          Margins.Bottom = 0
+          Caption = 'Start'
+        end
+        object l_MiscEnd: TLabel
+          Left = 144
+          Top = 24
+          Width = 18
+          Height = 13
+          Margins.Bottom = 0
+          Caption = 'End'
+        end
+        object StartCommentOutEdit: TEdit
+          Left = 8
+          Top = 40
+          Width = 129
+          Height = 21
+          MaxLength = 20
+          TabOrder = 0
+        end
+        object EndCommentOutEdit: TEdit
+          Left = 144
+          Top = 40
+          Width = 129
+          Height = 21
+          MaxLength = 20
+          TabOrder = 1
+        end
       end
     end
     object ts_Preview: TTabSheet

@@ -83,6 +83,14 @@ type
   end;
 
 type
+  TConfigPrecedenceEnum = (cpDirective, cpIniFile, cpMyConfig);
+type
+  TConfigPrecedenceArr = array[1..3] of TConfigPrecedenceEnum;
+  TOneToThree = 1..3;
+
+function IntToConfigPrecedence(_Value: integer): TConfigPrecedenceEnum;
+
+type
   TCodeFormatterSettings = class
   private
     FSettings: TCodeFormatterEngineSettings;
@@ -90,6 +98,9 @@ type
     FCapFile: string;
     FUseCapFile: Boolean;
     FShowDoneDialog: Boolean;
+    FConfigPrecedence: TConfigPrecedenceArr;
+    function GetConfigPrecedence(_Idx: TOneToThree): TConfigPrecedenceEnum;
+    procedure SetConfigPrecedence(_Idx: TOneToThree; const _Value: TConfigPrecedenceEnum);
   public
     constructor Create;
     destructor Destroy; override;
@@ -101,6 +112,7 @@ type
 
     property Settings: TCodeFormatterEngineSettings read FSettings write FSettings;
     property CapNames: TStringList read FCapNames;
+    property ConfigPrecedence[_Idx: TOneToThree]: TConfigPrecedenceEnum read GetConfigPrecedence write SetConfigPrecedence;
 
     property SpaceOperators: TSpaceSet read FSettings.SpaceOperators;
     property SpaceColon: TSpaceSet read FSettings.SpaceColon;
@@ -174,12 +186,20 @@ begin
 
   FShowDoneDialog := True;
   FSettings := BorlandDefaults;
+  FConfigPrecedence[1] := cpDirective;
+  FConfigPrecedence[2] := cpIniFile;
+  FConfigPrecedence[3] := cpMyConfig;
 end;
 
 destructor TCodeFormatterSettings.Destroy;
 begin
   FCapNames.Free;
   inherited;
+end;
+
+function TCodeFormatterSettings.GetConfigPrecedence(_Idx: TOneToThree): TConfigPrecedenceEnum;
+begin
+  Result := FConfigPrecedence[_Idx];
 end;
 
 procedure TCodeFormatterSettings.HandleCapitalization(AWord: TPascalToken);
@@ -217,6 +237,12 @@ begin
   end;
 end;
 
+procedure TCodeFormatterSettings.SetConfigPrecedence(_Idx: TOneToThree;
+  const _Value: TConfigPrecedenceEnum);
+begin
+  FConfigPrecedence[_Idx] := _Value;
+end;
+
 function IntToCapfileMode(AValue: Integer): TCapfileModeSet;
 begin
   case AValue of
@@ -244,6 +270,14 @@ begin
     Result := 5
   else
     Result := 0;
+end;
+
+function IntToConfigPrecedence(_Value: integer): TConfigPrecedenceEnum;
+begin
+  if (_Value < Ord(Low(TConfigPrecedenceEnum))) or (_Value > Ord(High(TConfigPrecedenceEnum))) then
+    Result := cpDirective
+  else
+    Result := TConfigPrecedenceEnum(_Value);
 end;
 
 end.

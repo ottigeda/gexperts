@@ -64,11 +64,6 @@ type
     chk_IndentTryElse: TCheckBox;
     l_Capitalize: TLabel;
     ts_Align: TTabSheet;
-    l_DirectivesPreventFormatting: TLabel;
-    l_MiscStart: TLabel;
-    l_MiscEnd: TLabel;
-    StartCommentOutEdit: TEdit;
-    EndCommentOutEdit: TEdit;
     OpenDialog: TOpenDialog;
     WrapLinesCheck: TCheckBox;
     l_WrapAtPosition: TLabel;
@@ -128,6 +123,15 @@ type
     b_CapitalizationSelect: TButton;
     rg_Capitalization: TRadioGroup;
     od_CapitalizationFile: TOpenDialog;
+    grp_ConfigPrecedence: TGroupBox;
+    grp_DirectivesPreventFormatting: TGroupBox;
+    l_MiscStart: TLabel;
+    l_MiscEnd: TLabel;
+    StartCommentOutEdit: TEdit;
+    EndCommentOutEdit: TEdit;
+    lb_Precedence: TListBox;
+    b_PrecedenceUp: TButton;
+    b_PrecedenceDown: TButton;
     procedure b_HelpClick(Sender: TObject);
     procedure EditButtonClick(Sender: TObject);
     procedure ts_PreviewShow(Sender: TObject);
@@ -147,6 +151,9 @@ type
     procedure rb_CapitalizationInRegistryClick(Sender: TObject);
     procedure rb_CapitalizationInFileClick(Sender: TObject);
     procedure b_CapitalizationSelectClick(Sender: TObject);
+    procedure lb_PrecedenceClick(Sender: TObject);
+    procedure b_PrecedenceUpClick(Sender: TObject);
+    procedure b_PrecedenceDownClick(Sender: TObject);
   private
     FCapitalization: TStringList;
     procedure EngineSettingsToForm(const AEngineSettings: TCodeFormatterEngineSettings);
@@ -180,6 +187,9 @@ resourcestring
   str_after = 'After only';
   str_BeforeAfter = 'Before and after';
   str_DefaultSettings = '<default>';
+  str_PrecedenceDirective = 'GXFormatter.config directive';
+  str_PrecedenceIniFile = 'GXFormatter.ini file';
+  str_PrecedenceMySettings = 'my settings as configured here';
 
 constructor TfmCodeFormatterConfig.Create(AOwner: TComponent);
 var
@@ -203,6 +213,10 @@ begin
   end;
 
   grid_Spacing.DefaultRowHeight := grid_Spacing.Canvas.TextHeight('Mg') + 4;
+
+  lb_Precedence.Items.AddObject(str_PrecedenceDirective, pointer(cpDirective));
+  lb_Precedence.Items.AddObject(str_PrecedenceIniFile, pointer(cpIniFile));
+  lb_Precedence.Items.AddObject(str_PrecedenceMySettings, pointer(cpMyConfig));
 end;
 
 destructor TfmCodeFormatterConfig.Destroy;
@@ -223,6 +237,37 @@ begin
     Result := [spAfter]
   else if s = str_BeforeAfter then
     Result := spBoth;
+end;
+
+procedure TfmCodeFormatterConfig.lb_PrecedenceClick(Sender: TObject);
+var
+  Idx: integer;
+begin
+  Idx := lb_Precedence.ItemIndex;
+  b_PrecedenceUp.Enabled := (Idx <> 0);
+  b_PrecedenceDown.Enabled := (Idx <> 2);
+end;
+
+procedure TfmCodeFormatterConfig.b_PrecedenceUpClick(Sender: TObject);
+var
+  Idx: integer;
+begin
+  Idx := lb_Precedence.ItemIndex;
+  if Idx = 0 then
+    Exit;
+  lb_Precedence.Items.Exchange(Idx, Idx - 1);
+  lb_PrecedenceClick(lb_Precedence);
+end;
+
+procedure TfmCodeFormatterConfig.b_PrecedenceDownClick(Sender: TObject);
+var
+  Idx: integer;
+begin
+  Idx := lb_Precedence.ItemIndex;
+  if Idx = 2 then
+    Exit;
+  lb_Precedence.Items.Exchange(Idx, Idx + 1);
+  lb_PrecedenceClick(lb_Precedence);
 end;
 
 procedure TfmCodeFormatterConfig.AddSpaceRow(RowNo: Integer; StrCol1, StrCol2: string;
@@ -320,11 +365,18 @@ end;
 procedure TfmCodeFormatterConfig.FormToSettings(ASettings: TCodeFormatterSettings);
 var
   Settings: TCodeFormatterEngineSettings;
+  i: Integer;
+  Idx: integer;
 begin
   ASettings.CapNames.Assign(FCapitalization);
   ASettings.ShowDoneDialog := chk_ShowDone.Checked;
   ASettings.UseCapitalizationFile := rb_CapitalizationInFile.Checked;
   ASettings.CapitalizationFile := ed_CapitalizationFile.Text;
+
+  for i := Low(TOneToThree) to High(TOneToThree) do begin
+    Idx := i - Low(TOneToThree);
+    ASettings.ConfigPrecedence[i] := TConfigPrecedenceEnum(lb_Precedence.Items.Objects[Idx])
+  end;
 
   FormToEngineSettings(Settings);
   ASettings.Settings := Settings;
@@ -404,11 +456,39 @@ begin
 end;
 
 procedure TfmCodeFormatterConfig.SettingsToForm(const ASettings: TCodeFormatterSettings);
+
+  procedure AddPrecedenceSetting(_cp: TConfigPrecedenceEnum);
+  begin
+    case _cp of
+      cpDirective: lb_Precedence.Items.AddObject(str_PrecedenceDirective, pointer(cpDirective));
+      cpIniFile: lb_Precedence.Items.AddObject(str_PrecedenceIniFile, pointer(cpIniFile));
+      cpMyConfig: lb_Precedence.Items.AddObject(str_PrecedenceMySettings, pointer(cpMyConfig));
+    end;
+  end;
+
+var
+  i: integer;
+  cp: TConfigPrecedenceEnum;
+  PrecedenceSet: set of TConfigPrecedenceEnum;
 begin
   chk_ShowDone.Checked := ASettings.ShowDoneDialog;
   rb_CapitalizationInFile.Checked := ASettings.UseCapitalizationFile;
   ed_CapitalizationFile.Text := ASettings.CapitalizationFile;
   FCapitalization.Assign(ASettings.CapNames);
+
+  lb_Precedence.Items.Clear;
+  // the set is used to prevent manipulated settings from crashing the program
+  PrecedenceSet := [cpDirective, cpIniFile, cpMyConfig];
+  for i := Low(TOneToThree) to High(TOneToThree) do begin
+    if ASettings.ConfigPrecedence[i] in PrecedenceSet then begin
+      AddPrecedenceSetting(ASettings.ConfigPrecedence[i]);
+      Exclude(PrecedenceSet, ASettings.ConfigPrecedence[i]);
+    end;
+  end;
+  for cp := Low(TConfigPrecedenceEnum) to High(TConfigPrecedenceEnum) do begin
+    if cp in PrecedenceSet then
+      AddPrecedenceSetting(cp);
+  end;
 
   EngineSettingsToForm(ASettings.Settings);
 end;
