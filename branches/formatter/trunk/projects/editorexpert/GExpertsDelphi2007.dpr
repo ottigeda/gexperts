@@ -5,7 +5,6 @@ library GExpertsDelphi2007;
 {$E dll}
 
 uses
-  GX_About in '..\..\gxsource\Framework\GX_About.pas' {fmAbout},
   GX_ActionBroker in '..\..\gxsource\Framework\GX_ActionBroker.pas',
   GX_Actions in '..\..\gxsource\Framework\GX_Actions.pas',
   GX_AsciiChart in '..\..\gxsource\Experts\GX_AsciiChart.pas' {fmAsciiChart},
@@ -170,7 +169,9 @@ uses
   GX_CodeFormatterFormatter in '..\..\source\engine\GX_CodeFormatterFormatter.pas',
   GX_CodeFormatterParser in '..\..\source\engine\GX_CodeFormatterParser.pas',
   GX_CodeFormatterSettings in '..\..\source\engine\GX_CodeFormatterSettings.pas',
-  GX_CodeFormatterStack in '..\..\source\engine\GX_CodeFormatterStack.pas';
+  GX_CodeFormatterStack in '..\..\source\engine\GX_CodeFormatterStack.pas',
+  GX_About in '..\..\gxsource\Framework\GX_About.pas' {fmAbout},
+  GX_AboutExperimental in '..\..\source\GX_AboutExperimental.pas' {fmAboutExperimental};
 
 begin
 end.
