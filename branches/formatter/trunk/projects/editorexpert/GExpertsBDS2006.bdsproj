@@ -124,7 +124,7 @@
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
 			<Directories Name="SearchPath">..\..\gxsource\framework;..\..\externalsource;..\..\externalsource\abbrevia</Directories>
-			<Directories Name="Packages">rtl;vcl;vclx;dbrtl;vcldb;dbxcds;dbexpress;xmlrtl;vclie;inet;inetdbbde;inetdbxpress;IndyCore;IndySystem;dclOfficeXP;vclactnband;VclSmp;dsnap;bdertl;vcldbx;MyPackage;rxctl;rxdb;rxbde;rbCIDE1010;rbIDE1010;rbRCL1010;rbBDE1010;rbDB1010;dclRBADO1010;rbADO1010;adortl;rbDAD1010;rbTCUI1010;rbTC1010;dclRBDBE1010;rbDBE1010;headwork;HkRBuilder;HkAdoDb;HkDialogs;dxgettext;HkFormEdit;HkImportExport;HkRxlib;vclib;ibxpress;IntrawebDB_80_100;Intraweb_80_100;soaprtl;IndyProtocols;teeui;teedb;tee</Directories>
+			<Directories Name="Packages">rtl;vcl;vclx;vclactnband;dbrtl;vcldb;vcldbx;bdertl;dsnap;dbxcds;dbexpress;dsnapcon;teeUI;teedb;tee;adortl;vclib;ibxpress;IndyCore;IndySystem;IndyProtocols;xmlrtl;inet;VclSmp;vclie;inetdbbde;inetdbxpress;soaprtl;DesignIDE</Directories>
 			<Directories Name="Conditionals">GX_FORMATTER_IS_EDITOR_EXPERT</Directories>
 			<Directories Name="DebugSourceDirs"></Directories>
 			<Directories Name="UsePackages">True</Directories>
