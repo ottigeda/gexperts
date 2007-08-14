@@ -10,7 +10,7 @@
 	</PersonalityInfo>
 	<Delphi.Personality>
 		<Source>
-			<Source Name="MainSource" Type="String">GExpertsDelphi2005.dpr</Source>
+			<Source Name="MainSource" Type="String">GExpertsD9.dpr</Source>
 		</Source>
 		<FileVersion>
 			<FileVersion Name="Version" Type="String">7.0</FileVersion>
@@ -106,7 +106,7 @@
 			<Linker Name="MapFile" Type="Integer">0</Linker>
 			<Linker Name="OutputObjs" Type="Integer">0</Linker>
 			<Linker Name="ConsoleApp" Type="Integer">1</Linker>
-			<Linker Name="DebugInfo" Type="Boolean">True</Linker>
+			<Linker Name="DebugInfo" Type="Boolean">False</Linker>
 			<Linker Name="RemoteSymbols" Type="Boolean">False</Linker>
 			<Linker Name="GenerateDRC" Type="Boolean">False</Linker>
 			<Linker Name="MinStackSize" Type="Integer">16384</Linker>

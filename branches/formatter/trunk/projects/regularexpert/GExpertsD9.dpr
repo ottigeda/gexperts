@@ -1,4 +1,4 @@
-library GExpertsDelphi2005;
+library GExpertsD9;
 
 {$R '..\..\gxImages\GXIcons.res' '..\..\gxImages\GXIcons.rc'}
 {$R *.res}
