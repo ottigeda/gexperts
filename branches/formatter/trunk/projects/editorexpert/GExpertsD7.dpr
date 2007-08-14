@@ -170,7 +170,8 @@ uses
   GX_CodeFormatterParser in '..\..\source\engine\GX_CodeFormatterParser.pas',
   GX_CodeFormatterSettings in '..\..\source\engine\GX_CodeFormatterSettings.pas',
   GX_CodeFormatterStack in '..\..\source\engine\GX_CodeFormatterStack.pas',
-  GX_CodeFormatterEngine in '..\..\source\engine\GX_CodeFormatterEngine.pas';
+  GX_CodeFormatterEngine in '..\..\source\engine\GX_CodeFormatterEngine.pas',
+  GX_AboutExperimental in '..\..\source\GX_AboutExperimental.pas' {fmAboutExperimental};
 
 end.
 

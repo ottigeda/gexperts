@@ -48,7 +48,7 @@ uses
   GX_CodeFormatterDone,
   GX_CodeFormatterSettings;
 
-procedure XSendDebug(const Msg: string); inline;
+procedure XSendDebug(const Msg: string);
 begin
   SendDebug('GXFormatter: ' + Msg);
 end;
