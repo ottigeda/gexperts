@@ -42,6 +42,7 @@ begin
 end;
 
 initialization
-  gblAboutForm := TfmAboutExperimental;
+//  TfmAbout.SetCustomBuildDetails('Experimental version by http://www.dummzeuch.de send bug reports to gexperts@dummzeuch.de');
+  gblAboutFormClass := TfmAboutExperimental;
 end.
 

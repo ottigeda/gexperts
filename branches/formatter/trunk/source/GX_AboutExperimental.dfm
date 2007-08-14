@@ -1,7 +1,6 @@
 inherited fmAboutExperimental: TfmAboutExperimental
   Caption = 'About GExperts - Experimental'
   ClientHeight = 305
-  ExplicitWidth = 572
   ExplicitHeight = 330
   PixelsPerInch = 96
   TextHeight = 13
@@ -62,9 +61,6 @@ inherited fmAboutExperimental: TfmAboutExperimental
   inherited pnlContributors: TPanel
     Top = 153
     ExplicitTop = 153
-    inherited lbxContributors: TListBox
-      ExplicitTop = -8
-    end
   end
   inherited btnClose: TButton
     Top = 270
@@ -82,6 +78,7 @@ inherited fmAboutExperimental: TfmAboutExperimental
   end
   inherited btnEmail: TButton
     Top = 270
+    Visible = False
     ExplicitTop = 270
   end
 end
