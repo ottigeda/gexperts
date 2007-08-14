@@ -1,4 +1,5 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectGuid>{4f1288a1-b13b-41ea-9c9b-de874d79eba0}</ProjectGuid>
     <MainSource>GExpertsDelphi2007.dpr</MainSource>
