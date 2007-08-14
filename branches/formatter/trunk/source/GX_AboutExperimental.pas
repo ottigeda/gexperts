@@ -10,7 +10,7 @@ uses
   Classes,
   Graphics,
   Controls,
-  Forms,
+  Forms,                  
   Dialogs,
   GX_About,
   ExtCtrls,

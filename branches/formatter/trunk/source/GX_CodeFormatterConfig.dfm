@@ -1,10 +1,10 @@
 object fmCodeFormatterConfig: TfmCodeFormatterConfig
   Left = 339
   Top = 175
+  Width = 486
+  Height = 452
   HelpContext = 100
   Caption = 'Delphi Code Formatter Configuration'
-  ClientHeight = 428
-  ClientWidth = 478
   Color = clBtnFace
   Constraints.MinHeight = 375
   Constraints.MinWidth = 478
@@ -20,21 +20,16 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     Top = 0
     Width = 478
     Height = 387
-    ActivePage = ts_Capitalization
+    ActivePage = ts_Indent
     Align = alClient
     TabOrder = 0
     object ts_Indent: TTabSheet
       Caption = 'Indent'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object l_SpacesPerIndent: TLabel
         Left = 8
         Top = 22
         Width = 88
         Height = 13
-        Margins.Bottom = 0
         Caption = 'Spaces per Indent'
       end
       object SpacePerIndentEdit: TEdit
@@ -121,10 +116,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     end
     object ts_Spacing: TTabSheet
       Caption = 'Spacing'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         470
         359)
@@ -149,16 +140,11 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     end
     object ts_LineBreaks: TTabSheet
       Caption = 'Line Breaks'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object l_BeginStyle: TLabel
         Left = 240
         Top = 104
         Width = 52
         Height = 13
-        Margins.Bottom = 0
         Caption = 'Begin style'
       end
       object l_WrapAtPosition: TLabel
@@ -166,7 +152,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Top = 200
         Width = 51
         Height = 13
-        Margins.Bottom = 0
         Caption = 'At position'
       end
       object l_TryStyle: TLabel
@@ -174,7 +159,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Top = 136
         Width = 42
         Height = 13
-        Margins.Bottom = 0
         Caption = 'Try style'
       end
       object FeedRoundBeginCombo: TComboBox
@@ -183,7 +167,7 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Width = 163
         Height = 21
         Style = csDropDownList
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 2
         Items.Strings = (
           'Unchanged'
@@ -326,7 +310,7 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Width = 163
         Height = 21
         Style = csDropDownList
-        ItemHeight = 0
+        ItemHeight = 13
         TabOrder = 3
         Items.Strings = (
           'Unchanged'
@@ -344,7 +328,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Top = 74
         Width = 46
         Height = 13
-        Margins.Bottom = 0
         Caption = 'Capitalize'
       end
       object l_ReservedWords: TLabel
@@ -352,7 +335,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Top = 18
         Width = 78
         Height = 13
-        Margins.Bottom = 0
         Caption = 'Reserved words'
       end
       object l_StandardDirectives: TLabel
@@ -360,7 +342,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Top = 42
         Width = 93
         Height = 13
-        Margins.Bottom = 0
         Caption = 'Standard directives'
       end
       object UpperCompDirectivesCheck: TCheckBox
@@ -476,16 +457,11 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     end
     object ts_Align: TTabSheet
       Caption = 'Align'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object l_AlignComentsAtPosition: TLabel
         Left = 12
         Top = 35
         Width = 51
         Height = 13
-        Margins.Bottom = 0
         Caption = 'At position'
       end
       object l_AlignVarAtPosition: TLabel
@@ -493,7 +469,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Top = 115
         Width = 51
         Height = 13
-        Margins.Bottom = 0
         Caption = 'At position'
       end
       object AlignCommentsCheck: TCheckBox
@@ -595,7 +570,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Top = 8
         Width = 281
         Height = 73
-        Margins.Bottom = 0
         Caption = 'Directives in source to prevent formatting:'
         TabOrder = 0
         object l_MiscStart: TLabel
@@ -603,7 +577,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           Top = 24
           Width = 24
           Height = 13
-          Margins.Bottom = 0
           Caption = 'Start'
         end
         object l_MiscEnd: TLabel
@@ -611,7 +584,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           Top = 24
           Width = 18
           Height = 13
-          Margins.Bottom = 0
           Caption = 'End'
         end
         object StartCommentOutEdit: TEdit
@@ -637,10 +609,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
       ImageIndex = 6
       OnResize = ts_PreviewResize
       OnShow = ts_PreviewShow
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         470
         359)
@@ -649,7 +617,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Top = 0
         Width = 32
         Height = 13
-        Margins.Bottom = 0
         Caption = 'Before'
       end
       object l_After: TLabel
@@ -657,7 +624,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Top = 0
         Width = 22
         Height = 13
-        Margins.Bottom = 0
         Caption = 'After'
         Color = clBtnFace
         Font.Charset = DEFAULT_CHARSET
