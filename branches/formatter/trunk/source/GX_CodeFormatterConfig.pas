@@ -586,12 +586,11 @@ begin
     st := TStringList.Create;
     st.Assign(m_PreviewBefore.Lines);
     FormToSettings(Formatter.Settings);
-    if Formatter.Execute(st) then begin
-      m_PreviewAfter.Lines.BeginUpdate;
-      m_PreviewAfter.Lines.Assign(st);
-      m_PreviewAfter.Lines.EndUpdate;
-      m_PreviewBeforeClick(nil);
-    end;
+    Formatter.Execute(st);
+    m_PreviewAfter.Lines.BeginUpdate;
+    m_PreviewAfter.Lines.Assign(st);
+    m_PreviewAfter.Lines.EndUpdate;
+    m_PreviewBeforeClick(nil);
   finally
     Formatter.Free;
     st.Free;
