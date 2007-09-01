@@ -9,8 +9,6 @@ interface
 
 implementation
 
-{$IFNDEF GX_FORMATTER_IS_EDITOR_EXPERT}
-
 uses
 {$IFOPT D+}GX_DbugIntf,
 {$ENDIF}
@@ -102,7 +100,5 @@ end;
 
 initialization
   RegisterGX_Expert(TGxCodeFormatterExpert);
-{$ENDIF GX_FORMATTER_IS_EDITOR_EXPERT}
-
 end.
 
