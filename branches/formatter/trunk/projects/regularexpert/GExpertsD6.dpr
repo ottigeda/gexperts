@@ -161,7 +161,6 @@ uses
   GX_CodeFormatterEditCapitalization in '..\..\source\GX_CodeFormatterEditCapitalization.pas' {fmCodeFormatterEditCapitalization},
   GX_CodeFormatterExpert in '..\..\source\GX_CodeFormatterExpert.pas',
   GX_CodeFormatterGXConfigWrapper in '..\..\source\GX_CodeFormatterGXConfigWrapper.pas',
-  GX_eCodeFormatter in '..\..\source\GX_eCodeFormatter.pas',
   GX_CodeFormatterBookmarks in '..\..\source\GX_CodeFormatterBookmarks.pas',
   GX_CollectionLikeLists in '..\..\source\common\GX_CollectionLikeLists.pas',
   GX_CodeFormatterTypes in '..\..\source\common\GX_CodeFormatterTypes.pas',
