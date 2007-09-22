@@ -119,9 +119,9 @@
 			<Directories Name="UnitOutputDir" Type="String">..\..\dcu\delphi2005</Directories>
 			<Directories Name="PackageDLLOutputDir" Type="String"></Directories>
 			<Directories Name="PackageDCPOutputDir" Type="String"></Directories>
-			<Directories Name="SearchPath" Type="String">..\..\gx\source\Framework;..\..\gx\ExternalSource;..\..\gx\ExternalSource\Abbrevia</Directories>
+			<Directories Name="SearchPath" Type="String">..\..\gx\source\Framework;..\..\gx\ExternalSource;..\..\gx\ExternalSource\Abbrevia;..\..\..\synedit\source</Directories>
 			<Directories Name="Packages" Type="String">vcl;rtl;vclx;designide</Directories>
-			<Directories Name="Conditionals" Type="String"></Directories>
+			<Directories Name="Conditionals" Type="String">synedit</Directories>
 			<Directories Name="DebugSourceDirs" Type="String"></Directories>
 			<Directories Name="UsePackages" Type="Boolean">True</Directories>
 		</Directories>
