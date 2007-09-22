@@ -30,17 +30,17 @@
 			<Compiler Name="L" Type="Integer">0</Compiler>
 			<Compiler Name="M" Type="Integer">0</Compiler>
 			<Compiler Name="N" Type="Integer">1</Compiler>
-			<Compiler Name="O" Type="Integer">0</Compiler>
+			<Compiler Name="O" Type="Integer">1</Compiler>
 			<Compiler Name="P" Type="Integer">1</Compiler>
-			<Compiler Name="Q" Type="Integer">1</Compiler>
-			<Compiler Name="R" Type="Integer">1</Compiler>
+			<Compiler Name="Q" Type="Integer">0</Compiler>
+			<Compiler Name="R" Type="Integer">0</Compiler>
 			<Compiler Name="S" Type="Integer">0</Compiler>
 			<Compiler Name="T" Type="Integer">0</Compiler>
 			<Compiler Name="U" Type="Integer">0</Compiler>
 			<Compiler Name="V" Type="Integer">1</Compiler>
-			<Compiler Name="W" Type="Integer">1</Compiler>
+			<Compiler Name="W" Type="Integer">0</Compiler>
 			<Compiler Name="X" Type="Integer">1</Compiler>
-			<Compiler Name="Y" Type="Integer">2</Compiler>
+			<Compiler Name="Y" Type="Integer">1</Compiler>
 			<Compiler Name="Z" Type="Integer">1</Compiler>
 			<Compiler Name="ShowHints" Type="Boolean">True</Compiler>
 			<Compiler Name="ShowWarnings" Type="Boolean">True</Compiler>
