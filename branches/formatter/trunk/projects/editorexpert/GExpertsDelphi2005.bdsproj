@@ -10,7 +10,7 @@
 	</PersonalityInfo>
 	<Delphi.Personality>
 		<Source>
-			<Source Name="MainSource" Type="String">GExpertsD9.dpr</Source>
+			<Source Name="MainSource" Type="String">GExpertsDelphi2005.dpr</Source>
 		</Source>
 		<FileVersion>
 			<FileVersion Name="Version" Type="String">7.0</FileVersion>
@@ -119,9 +119,9 @@
 			<Directories Name="UnitOutputDir" Type="String">..\..\dcu\delphi2005</Directories>
 			<Directories Name="PackageDLLOutputDir" Type="String"></Directories>
 			<Directories Name="PackageDCPOutputDir" Type="String"></Directories>
-			<Directories Name="SearchPath" Type="String">..\..\gxsource\Framework;..\..\ExternalSource;..\..\ExternalSource\Abbrevia</Directories>
+			<Directories Name="SearchPath" Type="String">..\..\gx\source\Framework;..\..\gx\ExternalSource;..\..\gx\ExternalSource\Abbrevia</Directories>
 			<Directories Name="Packages" Type="String">vcl;rtl;vclx;designide</Directories>
-			<Directories Name="Conditionals" Type="String">GX_FORMATTER_IS_EDITOR_EXPERT</Directories>
+			<Directories Name="Conditionals" Type="String"></Directories>
 			<Directories Name="DebugSourceDirs" Type="String"></Directories>
 			<Directories Name="UsePackages" Type="Boolean">True</Directories>
 		</Directories>
