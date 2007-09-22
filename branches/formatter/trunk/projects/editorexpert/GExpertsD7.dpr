@@ -92,6 +92,7 @@ uses
   GX_MacroFile in '..\..\gxsource\MacroTemplates\GX_MacroFile.pas',
   GX_MacroLibrary in '..\..\gxsource\MacroLibrary\GX_MacroLibrary.pas' {fmMacroLibrary},
   GX_MacroLibraryNamePrompt in '..\..\gxsource\MacroLibrary\GX_MacroLibraryNamePrompt.pas' {fmMacroLibraryNamePrompt},
+  GX_MacroLibraryConfig in '..\..\gxsource\MacroLibrary\GX_MacroLibraryConfig.pas' {fmGxMacroLibraryConfig};
   GX_MacroParser in '..\..\gxsource\Framework\GX_MacroParser.pas',
   GX_MacroSelect in '..\..\gxsource\MacroTemplates\GX_MacroSelect.pas' {fmMacroSelect},
   GX_MacroTemplateEdit in '..\..\gxsource\MacroTemplates\GX_MacroTemplateEdit.pas' {fmMacroTemplateEdit},
@@ -171,7 +172,7 @@ uses
   GX_CodeFormatterSettings in '..\..\source\engine\GX_CodeFormatterSettings.pas',
   GX_CodeFormatterStack in '..\..\source\engine\GX_CodeFormatterStack.pas',
   GX_CodeFormatterEngine in '..\..\source\engine\GX_CodeFormatterEngine.pas',
-  GX_AboutExperimental in '..\..\source\GX_AboutExperimental.pas' {fmAboutExperimental};
+  GX_AboutExperimental in '..\..\source\GX_AboutExperimental.pas' {fmAboutExperimental},
 
 end.
 
