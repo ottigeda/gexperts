@@ -24,21 +24,21 @@ type
     procedure SetReservedType(AReservedType: TReservedType); virtual;
     procedure SetSpace(ASpace: TSpaceSet; AState: Boolean); virtual;
     {: @returns the object's content }
-    function GetString: string; virtual; abstract;
+    function GetString: AnsiString; virtual; abstract;
     (*: changes "// <comment>" to "{//<comment>}" used for preventing a
         begin moved from the next line to become commented out
         @param ACommChar is one of '{', '(' or '/' specifying the new comment type
         @returs true if token is a comment, false otherwise *)
-    function ChangeComment(ACommChar: char): Boolean;
-    function GetExpression(out AExpression: string): Boolean; virtual;
-    procedure SetExpression(const AExpression: string); virtual;
+    function ChangeComment(ACommChar: AnsiChar): Boolean;
+    function GetExpression(out AExpression: AnsiString): Boolean; virtual;
+    procedure SetExpression(const AExpression: AnsiString); virtual;
     procedure SetCase(ACase: TCase); virtual;
     function GetCase: TCase; virtual;
 
     property ExpressionCase: TCase read GetCase write SetCase;
     property ReservedType: TReservedType read GetReservedType write SetReservedType;
     property WordType: TWordType read GetWordType;
-    property Content: string read GetString;
+    property Content: AnsiString read GetString;
   end;
 
   TLineFeed = class(TPascalToken)
@@ -55,29 +55,29 @@ type
     procedure GetLength(var ALength: Integer); override;
     function GetReservedType: TReservedType; override;
     {: @returns a string with FNoOfSpaces spaces }
-    function GetString: string; override;
+    function GetString: AnsiString; override;
   end;
 
   TExpression = class(TPascalToken)
   private
   public
-    FExpression: string;
+    FExpression: AnsiString;
     FWordType: TWordType;
     FSpaceType: TSpaceSet;
     FCaseType: TCase;
     FReservedType: TReservedType;
-    constructor Create(AType: TWordType; const AExpression: string);
+    constructor Create(AType: TWordType; const AExpression: AnsiString);
     procedure CheckReserved;
     procedure SetSpace(ASpace: TSpaceSet; AState: Boolean); override;
     procedure SetReservedType(AReservedType: TReservedType); override;
     function Space(ASpace: TSpace): Boolean; override;
     {: @returns <spaces><the expression><spaces> }
-    function GetString: string; override;
+    function GetString: AnsiString; override;
     procedure GetLength(var ALength: Integer); override;
     function GetWordType: TWordType; override;
     function GetReservedType: TReservedType; override;
-    function GetExpression(out AExpression: string): Boolean; override;
-    procedure SetExpression(const AExpression: string); override;
+    function GetExpression(out AExpression: AnsiString): Boolean; override;
+    procedure SetExpression(const AExpression: AnsiString); override;
     procedure SetCase(ACase: TCase); override;
     function GetCase: TCase; override;
   end;
@@ -90,10 +90,16 @@ type
     // Note: As a side effect, this adjusts FNoOfspaces
     procedure GetLength(var ALength: Integer); override;
     {: @returns <spaces><the expression><spaces> }
-    function GetString: string; override;
+    function GetString: AnsiString; override;
   end;
 
 implementation
+
+{$ifdef GX_VER200_up} // delphi 2009
+uses
+//  GX_FastcodeAnsiString,
+  AnsiStrings;
+{$endif}
 
 { TPascalToken }
 
@@ -102,7 +108,7 @@ begin
   inherited Create;
 end;
 
-function TPascalToken.GetExpression(out AExpression: string): Boolean;
+function TPascalToken.GetExpression(out AExpression: AnsiString): Boolean;
 begin
   Result := False;
 end;
@@ -112,7 +118,7 @@ begin
   Result := False;
 end;
 
-procedure TPascalToken.SetExpression(const AExpression: string);
+procedure TPascalToken.SetExpression(const AExpression: AnsiString);
 begin
 end;
 
@@ -129,9 +135,9 @@ procedure TPascalToken.SetReservedType(AReservedType: TReservedType);
 begin
 end;
 
-function TPascalToken.ChangeComment(ACommChar: char): Boolean;
+function TPascalToken.ChangeComment(ACommChar: AnsiChar): Boolean;
 var
-  s: string;
+  s: AnsiString;
 begin
   Result := (Reservedtype = rtComment);
   if not Result then
@@ -141,15 +147,15 @@ begin
   if Pos(ACommChar, s) = 0 then begin
     case ACommChar of
       '{':
-        if Pos('}', s) = 0 then begin
+        if Pos(AnsiString('}'), s) = 0 then begin
           s := '{' + s + '}';
         end;
       '(':
-        if Pos('*)', s) = 0 then begin
+        if Pos(AnsiString('*)'), s) = 0 then begin
           s := '(*' + s + '*)';
         end;
       '/':
-        if Pos('//', s) <> 1 then begin
+        if Pos(AnsiString('//'), s) <> 1 then begin
           s := '//' + s;
         end;
     end;
@@ -164,7 +170,7 @@ end;
 
 { TExpression }
 
-constructor TExpression.Create(AType: TWordType; const AExpression: string);
+constructor TExpression.Create(AType: TWordType; const AExpression: AnsiString);
 begin
   inherited Create;
   FWordType := AType;
@@ -178,8 +184,8 @@ end;
 procedure TExpression.CheckReserved;
 var
   L, H, C, I: Integer;
-  Expr: string;
-  Directive: string;
+  Expr: AnsiString;
+  Directive: AnsiString;
 begin
   SetReservedType(rtNothing);
   case WordType of
@@ -191,17 +197,17 @@ begin
           Directive := Copy(Expr, 4, 999999);
         Directive := LowerCase(Directive);
 
-        if AnsiStartsStr('endif', Directive) then
+        if AnsiStartsStr(AnsiString('endif'), Directive) then
           SetReservedType(rtCompEndif)
-        else if AnsiStartsStr('else', Directive) then
+        else if AnsiStartsStr(AnsiString('else'), Directive) then
           SetReservedType(rtCompElse)
-        else if AnsiStartsStr('ifdef', Directive) then
+        else if AnsiStartsStr(AnsiString('ifdef'), Directive) then
           SetReservedType(rtCompIf)
-        else if AnsiStartsStr('ifopt', Directive) then
+        else if AnsiStartsStr(AnsiString('ifopt'), Directive) then
           SetReservedType(rtCompIf)
-        else if AnsiStartsStr('if ', Directive) then
+        else if AnsiStartsStr(AnsiString('if '), Directive) then
           SetReservedType(rtCompIf)
-        else if AnsiStartsStr('ifndef', Directive) then
+        else if AnsiStartsStr(AnsiString('ifndef'), Directive) then
           SetReservedType(rtCompIf);
       end;
     wtFullComment, wtFullOutComment, wtHalfStarComment,
@@ -264,7 +270,7 @@ begin
   end;
 end;
 
-procedure TExpression.SetExpression(const AExpression: string);
+procedure TExpression.SetExpression(const AExpression: AnsiString);
 begin
   FExpression := AExpression
 end;
@@ -274,7 +280,7 @@ begin
   Result := FWordType;
 end;
 
-function TExpression.GetExpression(out AExpression: string): Boolean;
+function TExpression.GetExpression(out AExpression: AnsiString): Boolean;
 begin
   AExpression := FExpression;
   Result := True;
@@ -313,7 +319,7 @@ begin
   FReservedType := AReservedType;
 end;
 
-function TExpression.GetString: string;
+function TExpression.GetString: AnsiString;
 begin
   if Space(spBefore) then
     Result := ' '
@@ -334,7 +340,7 @@ begin
     inc(ALength);
 end;
 
-function strSpaceE(Dest: PChar; n: Integer): PChar;
+function strSpaceE(Dest: PAnsiChar; n: Integer): PAnsiChar;
 var
   I: Integer;
 begin
@@ -348,7 +354,7 @@ end;
 
 { TLineFeed }
 
-function TLineFeed.GetString: string;
+function TLineFeed.GetString: AnsiString;
 var
   Len: Integer;
 begin
@@ -357,7 +363,7 @@ begin
   else
     Len := FNoOfSpaces;
   if (Len > 0) then
-    Result := StringOfChar(' ', Len)
+    Result := StringOfChar(AnsiChar(' '), Len)
   else
     Result := '';
 end;
@@ -403,10 +409,10 @@ end;
 
 constructor TAlignExpression.Create(ALike: TExpression; APos: Byte);
 var
-  s: string;
+  s: AnsiString;
 begin
   ALike.GetExpression(s);
-  inherited Create(ALike.FWordType, PChar(s));
+  inherited Create(ALike.FWordType, PAnsiChar(s));
   FAlignPos := APos;
   FNoOfSpaces := 0;
   FSpaceType := ALike.FSpaceType;
@@ -425,10 +431,10 @@ begin
   inherited GetLength(ALength);
 end;
 
-function TAlignExpression.GetString: string;
+function TAlignExpression.GetString: AnsiString;
 begin
   if (FNoOfSpaces > 0) then
-    Result := StringOfChar(' ', FNoOfSpaces)
+    Result := StringOfChar(AnsiChar(' '), FNoOfSpaces)
   else
     Result := '';
   Result := Result + inherited GetString;

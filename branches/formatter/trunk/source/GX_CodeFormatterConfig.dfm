@@ -1,10 +1,10 @@
 object fmCodeFormatterConfig: TfmCodeFormatterConfig
   Left = 339
   Top = 175
-  Width = 486
-  Height = 452
   HelpContext = 100
   Caption = 'Delphi Code Formatter Configuration'
+  ClientHeight = 425
+  ClientWidth = 478
   Color = clBtnFace
   Constraints.MinHeight = 375
   Constraints.MinWidth = 478
@@ -19,12 +19,17 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     Left = 0
     Top = 0
     Width = 478
-    Height = 387
+    Height = 384
     ActivePage = ts_Indent
     Align = alClient
     TabOrder = 0
+    ExplicitHeight = 387
     object ts_Indent: TTabSheet
       Caption = 'Indent'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object l_SpacesPerIndent: TLabel
         Left = 8
         Top = 22
@@ -116,9 +121,13 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     end
     object ts_Spacing: TTabSheet
       Caption = 'Spacing'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         470
-        359)
+        356)
       object grid_Spacing: TStringGrid
         Left = 8
         Top = 8
@@ -140,6 +149,10 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     end
     object ts_LineBreaks: TTabSheet
       Caption = 'Line Breaks'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object l_BeginStyle: TLabel
         Left = 240
         Top = 104
@@ -320,9 +333,13 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     end
     object ts_Capitalization: TTabSheet
       Caption = 'Capitalization'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         470
-        359)
+        356)
       object l_Capitalize: TLabel
         Left = 8
         Top = 74
@@ -457,6 +474,10 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     end
     object ts_Align: TTabSheet
       Caption = 'Align'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object l_AlignComentsAtPosition: TLabel
         Left = 12
         Top = 35
@@ -609,9 +630,13 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
       ImageIndex = 6
       OnResize = ts_PreviewResize
       OnShow = ts_PreviewShow
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         470
-        359)
+        356)
       object l_Before: TLabel
         Left = 6
         Top = 0
@@ -675,7 +700,7 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
   end
   object p_Botton: TPanel
     Left = 0
-    Top = 387
+    Top = 384
     Width = 478
     Height = 41
     Align = alBottom

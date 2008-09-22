@@ -176,6 +176,9 @@ implementation
 {$R *.DFM}
 
 uses
+{$ifdef GX_VER200_up} // delphi 2009
+  AnsiStrings,
+{$endif}
   Messages,
   GX_CodeFormatterConfigHandler,
   GX_CodeFormatterEditCapitalization,
@@ -356,8 +359,8 @@ begin
   ASettings.FeedBeforeEnd := FeedBeforeEndCheck.Checked;
   ASettings.FeedAfterSemiColon := FeedAfterSemiColonCheck.Checked;
   ASettings.FillNewWords := IntToCapfileMode(rg_Capitalization.ItemIndex);
-  ASettings.StartCommentOut := Trim(StartCommentOutEdit.Text);
-  ASettings.EndCommentOut := Trim(EndCommentOutEdit.Text);
+  ASettings.StartCommentOut := Trim(AnsiString(StartCommentOutEdit.Text));
+  ASettings.EndCommentOut := Trim(AnsiString(EndCommentOutEdit.Text));
   ASettings.FeedRoundBegin := TFeedBegin(FeedRoundBeginCombo.ItemIndex);
   ASettings.FeedRoundTry := TFeedBegin(FeedRoundTryCombo.ItemIndex);
 end;
@@ -371,7 +374,7 @@ begin
   ASettings.CapNames.Assign(FCapitalization);
   ASettings.ShowDoneDialog := chk_ShowDone.Checked;
   ASettings.UseCapitalizationFile := rb_CapitalizationInFile.Checked;
-  ASettings.CapitalizationFile := ed_CapitalizationFile.Text;
+  ASettings.CapitalizationFile := AnsiString(ed_CapitalizationFile.Text);
 
   for i := Low(TOneToThree) to High(TOneToThree) do begin
     Idx := i - Low(TOneToThree);
@@ -473,7 +476,7 @@ var
 begin
   chk_ShowDone.Checked := ASettings.ShowDoneDialog;
   rb_CapitalizationInFile.Checked := ASettings.UseCapitalizationFile;
-  ed_CapitalizationFile.Text := ASettings.CapitalizationFile;
+  ed_CapitalizationFile.Text := String(ASettings.CapitalizationFile);
   FCapitalization.Assign(ASettings.CapNames);
 
   lb_Precedence.Items.Clear;

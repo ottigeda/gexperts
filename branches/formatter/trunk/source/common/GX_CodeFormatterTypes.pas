@@ -74,7 +74,7 @@ type
   {: stores a single reserved word with its associated type }
   TReservedRec = record
     ReservedType: TReservedType;
-    Words: PChar;
+    Words: PAnsiChar;
   end;
 
   TReservedArray = array[0..NReservedWords - 1] of TReservedRec;
@@ -211,11 +211,16 @@ const
    @param aStr is the input string
    @param aCase is a TCase specifying the desired case
    @returns the modified string }
-function AdjustCase(aStr: string; aCase: TCase): string;
+function AdjustCase(aStr: AnsiString; aCase: TCase): AnsiString;
 
 implementation
 
-function AdjustCase(aStr: string; aCase: TCase): string;
+{$ifdef GX_VER200_up} // delphi 2009
+uses
+  AnsiStrings;
+{$endif}
+
+function AdjustCase(aStr: AnsiString; aCase: TCase): AnsiString;
 var
   i: Integer;
 begin

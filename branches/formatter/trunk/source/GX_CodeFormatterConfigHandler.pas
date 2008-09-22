@@ -144,10 +144,10 @@ var
 begin
   ASettings.ShowDoneDialog := AReader.ReadBool('ShowDoneDialog', True);
   ASettings.UseCapitalizationFile := AReader.ReadBool('UseCapitalizationFile', False);
-  ASettings.CapitalizationFile := AReader.ReadString('CapitalizationFile', '');
+  ASettings.CapitalizationFile := AnsiString(AReader.ReadString('CapitalizationFile', ''));
   ASettings.CapNames.Clear;
-  if ASettings.UseCapitalizationFile and (ASettings.CapitalizationFile <> '') and FileExists(ASettings.CapitalizationFile) then
-    ASettings.CapNames.LoadFromFile(ASettings.CapitalizationFile)
+  if ASettings.UseCapitalizationFile and (ASettings.CapitalizationFile <> '') and FileExists(String(ASettings.CapitalizationFile)) then
+    ASettings.CapNames.LoadFromFile(String(ASettings.CapitalizationFile))
   else
     AReader.ReadStrings('Capitalization', ASettings.CapNames);
 
@@ -216,8 +216,8 @@ begin
   ES.FeedElseIf := AReader.ReadBool('FeedElseIf', ES.FeedElseIf); //: Boolean;
   ES.FillNewWords := IntToCapfileMode(AReader.ReadInteger('FillNewWords', CapfileModeToInt(ES.FillNewWords)));
   ES.FeedAfterSemiColon := AReader.ReadBool('FeedAfterSemiColon', ES.FeedAfterSemiColon); //: Boolean;
-  ES.StartCommentOut := AReader.ReadString('StartCommentOut', ES.StartCommentOut);
-  ES.EndCommentOut := AReader.ReadString('EndCommentOut', ES.EndCommentOut);
+  ES.StartCommentOut := AnsiString(AReader.ReadString('StartCommentOut', String(ES.StartCommentOut)));
+  ES.EndCommentOut := AnsiString(AReader.ReadString('EndCommentOut', String(ES.EndCommentOut)));
   ES.CommentFunction := AReader.ReadBool('CommentFunction', ES.CommentFunction); //: Boolean;
   ES.CommentUnit := AReader.ReadBool('CommentUnit', ES.CommentUnit); //: Boolean;
   ES.WrapLines := AReader.ReadBool('WrapLines', ES.WrapLines); //: Boolean;
@@ -273,8 +273,8 @@ begin
   AWriter.WriteBool('FeedElseIf', ASettings.FeedElseIf); //: Boolean;
   AWriter.WriteInteger('FillNewWords', CapfileModeToInt(ASettings.FillNewWords));
   AWriter.WriteBool('FeedAfterSemiColon', ASettings.FeedAfterSemiColon); //: Boolean;
-  AWriter.WriteString('StartCommentOut', ASettings.StartCommentOut); //: TCommentArray;
-  AWriter.WriteString('EndCommentOut', ASettings.EndCommentOut); //: TCommentArray;
+  AWriter.WriteString('StartCommentOut', String(ASettings.StartCommentOut)); //: TCommentArray;
+  AWriter.WriteString('EndCommentOut', String(ASettings.EndCommentOut)); //: TCommentArray;
   AWriter.WriteBool('CommentFunction', ASettings.CommentFunction); //: Boolean;
   AWriter.WriteBool('CommentUnit', ASettings.CommentUnit); //: Boolean;
   AWriter.WriteBool('WrapLines', ASettings.WrapLines); //: Boolean;
@@ -290,11 +290,11 @@ begin
 
   AWriter.WriteBool('ShowDoneDialog', ASettings.ShowDoneDialog);
   AWriter.WriteBool('UseCapitalizationFile', ASettings.UseCapitalizationFile);
-  AWriter.WriteString('CapitalizationFile', ASettings.CapitalizationFile);
+  AWriter.WriteString('CapitalizationFile', String(ASettings.CapitalizationFile));
 
   if ASettings.UseCapitalizationFile and (ASettings.CapitalizationFile <> '') then begin
     try
-      ASettings.CapNames.SaveToFile(ASettings.CapitalizationFile);
+      ASettings.CapNames.SaveToFile(String(ASettings.CapitalizationFile));
     except
         // ignore, file might be readonly
     end;

@@ -21,8 +21,8 @@ type
   TCodeFormatterParser = class(TObject)
   private
     FSpacePerIndent: integer;
-    FStartCommentOut: string;
-    FEndCommentOut: string;
+    FStartCommentOut: AnsiString;
+    FEndCommentOut: AnsiString;
   private
     FTokens: TOCollection;
     FReadingAsm: Boolean;
@@ -33,11 +33,11 @@ type
     {: ReadAsm does very simple parsing only to find comments because this
        influences finding the matching "end". No formatting is done
        later to asm code }
-    procedure ReadAsm(var ABuff: PChar);
-    function ReadHalfComment(out ADest: string; var ASource: PChar): TWordType;
-    function ReadWord(out ADest: string; var ASource: PChar): TWordType;
+    procedure ReadAsm(var ABuff: PAnsiChar);
+    function ReadHalfComment(out ADest: AnsiString; var ASource: PAnsiChar): TWordType;
+    function ReadWord(out ADest: AnsiString; var ASource: PAnsiChar): TWordType;
     {: Adds a single line of text to the parse tree }
-    procedure AddLine(ABuff: PChar);
+    procedure AddLine(ABuff: PAnsiChar);
     procedure DoExecute(AText: TStrings);
   public
     constructor Create(ASettings: TCodeFormatterSettings);
@@ -47,6 +47,11 @@ type
   end;
 
 implementation
+
+{$ifdef GX_VER200_up} // delphi 2009
+uses
+  AnsiStrings;
+{$endif}
 
 constructor TCodeFormatterParser.Create(ASettings: TCodeFormatterSettings);
 begin
@@ -84,12 +89,12 @@ var
   i: Integer;
 begin
   for i := 0 to AText.Count - 1 do
-    AddLine(PChar(AText[i]));
+    AddLine(PAnsiChar(AnsiString(AText[i])));
 end;
 
-procedure TCodeFormatterParser.AddLine(ABuff: PChar);
+procedure TCodeFormatterParser.AddLine(ABuff: PAnsiChar);
 var
-  s: string;
+  s: AnsiString;
 begin
   FPrevLine := TLineFeed.Create(0, FSpacePerIndent);
   FTokens.Add(FPrevLine);
@@ -115,11 +120,11 @@ begin
     raise ECodeFormatter.Create('File to large to reformat')
 end;
 
-procedure TCodeFormatterParser.ReadAsm(var ABuff: PChar);
+procedure TCodeFormatterParser.ReadAsm(var ABuff: PAnsiChar);
 var
-  P: PChar;
-  FirstNonWhitespace: PChar;
-  s: string;
+  P: PAnsiChar;
+  FirstNonWhitespace: PAnsiChar;
+  s: AnsiString;
 begin
   P := ABuff;
   FirstNonWhitespace := ABuff;
@@ -179,7 +184,7 @@ begin
   ABuff := P;
 end;
 
-function TCodeFormatterParser.ReadWord(out ADest: string; var ASource: PChar): TWordType;
+function TCodeFormatterParser.ReadWord(out ADest: AnsiString; var ASource: PAnsiChar): TWordType;
 const
   IdentifierTerminators = [
     '+', '-', '*', '/', '=',
@@ -191,7 +196,7 @@ const
   StringControlChars = ['0'..'9', 'a'..'z', 'A'..'Z', '#', '^', '$'];
 
 var
-  P: PChar;
+  P: PAnsiChar;
 
   {: Reads a string literal, on exit p points behind the last character of the string
      @returns either wtString or wtErrorString }
@@ -257,13 +262,13 @@ var
       Exit;
 
     Len := Length(FStartCommentOut);
-    Result := (StrLIComp(P, PChar(FStartCommentOut), Len) = 0);
+    Result := (StrLIComp(P, PAnsiChar(FStartCommentOut), Len) = 0);
     if Result then begin
       AResult := wtHalfOutComment;
       Inc(P, Len);
       Len := Length(FEndCommentOut);
       while P^ <> #0 do begin
-        if (StrLIComp(P, PChar(FEndCommentOut), Len) = 0) then begin
+        if (StrLIComp(P, PAnsiChar(FEndCommentOut), Len) = 0) then begin
           Inc(P, Len - 1);
           AResult := wtFullOutComment;
           break;
@@ -405,7 +410,7 @@ begin
     end;
   SetString(ADest, ASource, P - ASource);
 
-  if SameText(ADest, 'asm') then begin
+  if SameText(ADest, AnsiString('asm')) then begin
     FReadingAsm := True;
     FAsmComment := wtWord;
   end;
@@ -419,12 +424,12 @@ begin
   end;
 end;
 
-function TCodeFormatterParser.ReadHalfComment(out ADest: string; var ASource: PChar): TWordType;
+function TCodeFormatterParser.ReadHalfComment(out ADest: AnsiString; var ASource: PAnsiChar): TWordType;
 var
   Len: Integer;
-  P: PChar;
-  FirstNonSpace: PChar;
-  EndComment: string;
+  P: PAnsiChar;
+  FirstNonSpace: PAnsiChar;
+  EndComment: AnsiString;
   EndCommentType: TWordType;
 begin
   P := ASource;
@@ -457,7 +462,7 @@ begin
 
   Len := Length(EndComment);
   while (P^ <> #0) do begin
-    if StrLIComp(P, PChar(EndComment), Len) = 0 then begin
+    if StrLIComp(P, PAnsiChar(EndComment), Len) = 0 then begin
       Result := EndCommentType;
       Inc(P, Len);
       break;

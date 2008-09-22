@@ -38,7 +38,7 @@ type
     procedure CheckWrapping;
     function PrevTokenIsRType(_rtype: TReservedType): boolean;
     procedure CheckBlankLinesAroundProc;
-    procedure PutCommentBefore(aComment: PChar);
+    procedure PutCommentBefore(aComment: PAnsiChar);
     procedure FormatAsm(NTmp: integer);
     procedure AdjustSpacing(_CurrentToken, _PrevToken: TPascalToken; _TokenIdx: Integer);
 
@@ -306,7 +306,7 @@ end;
 procedure TCodeFormatterFormatter.UppercaseCompilerDirective(_Token: TPascalToken);
 var
   Idx: integer;
-  s: string;
+  s: AnsiString;
 begin
   _Token.GetExpression(s);
   Idx := 2;
@@ -353,7 +353,7 @@ begin
   end;
 end;
 
-procedure TCodeFormatterFormatter.PutCommentBefore(aComment: PChar);
+procedure TCodeFormatterFormatter.PutCommentBefore(aComment: PAnsiChar);
 var
   J: Integer;
   P: TPascalToken;
@@ -425,8 +425,8 @@ var
     var
       Token: TPascalToken;
       PrevPasWord: TPascalToken;
-      Expression: string;
-      PrevExpression: string;
+      Expression: AnsiString;
+      PrevExpression: AnsiString;
       i: Integer;
     begin
       if GetToken(FTokenIdx - 1, FPrevToken) and (FPrevToken.ReservedType = rtComment)
@@ -917,7 +917,7 @@ var
           if FStack.nIndent < 1 then
             FStack.nIndent := 1;
           {in classes.pas I found
-          t =  type string}
+          t =  type AnsiString}
           if (FStack.GetTopType in [rtVar, rtType]) then
             FStack.Pop;
           FStack.Push(FCurrentRType, 0);

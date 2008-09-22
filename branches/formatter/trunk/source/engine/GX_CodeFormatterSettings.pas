@@ -70,8 +70,8 @@ type
     FeedElseIf: Boolean; {: line feed between else and if }
     FillNewWords: TCapfileModeSet; {: how to use the capitalization file }
     FeedAfterSemiColon: Boolean;
-    StartCommentOut: string; {: special comment to start unformatted section }
-    EndCommentOut: string; {: special comment to end unformatted section }
+    StartCommentOut: AnsiString; {: special comment to start unformatted section }
+    EndCommentOut: AnsiString; {: special comment to end unformatted section }
     CommentFunction: Boolean; {: add a function comment }
     CommentUnit: Boolean; {: add a unit comment }
     WrapLines: Boolean; {: wrap long lines }
@@ -95,7 +95,7 @@ type
   private
     FSettings: TCodeFormatterEngineSettings;
     FCapNames: TStringList;
-    FCapFile: string;
+    FCapFile: AnsiString;
     FUseCapFile: Boolean;
     FShowDoneDialog: Boolean;
     FConfigPrecedence: TConfigPrecedenceArr;
@@ -105,8 +105,8 @@ type
     constructor Create;
     destructor Destroy; override;
 
-//    procedure LoadCapFile(const ACapFile: string);
-//    procedure SaveCapFile(const ACapFile: string);
+//    procedure LoadCapFile(const ACapFile: AnsiString);
+//    procedure SaveCapFile(const ACapFile: AnsiString);
 
     procedure HandleCapitalization(AWord: TPascalToken);
 
@@ -150,8 +150,8 @@ type
     property FeedElseIf: Boolean read FSettings.FeedElseIf;
     property FillNewWords: TCapfileModeSet read FSettings.FillNewWords;
     property FeedAfterSemiColon: Boolean read FSettings.FeedAfterSemiColon;
-    property StartCommentOut: string read FSettings.StartCommentOut;
-    property EndCommentOut: string read FSettings.EndCommentOut;
+    property StartCommentOut: AnsiString read FSettings.StartCommentOut;
+    property EndCommentOut: AnsiString read FSettings.EndCommentOut;
     property CommentFunction: Boolean read FSettings.CommentFunction;
     property CommentUnit: Boolean read FSettings.CommentUnit;
     property WrapLines: Boolean read FSettings.WrapLines;
@@ -162,7 +162,7 @@ type
     property AlignVar: Boolean read FSettings.AlignVar;
     // settings for the wizard
     property ShowDoneDialog: Boolean read FShowDoneDialog write FShowDoneDialog;
-    property CapitalizationFile: string read FCapFile write FCapFile;
+    property CapitalizationFile: AnsiString read FCapFile write FCapFile;
     property UseCapitalizationFile: Boolean read FUseCapFile write FUseCapFile;
   end;
 
@@ -204,7 +204,7 @@ end;
 
 procedure TCodeFormatterSettings.HandleCapitalization(AWord: TPascalToken);
 var
-  Expression: string;
+  Expression: AnsiString;
   Found: Boolean;
   Idx: Integer;
   CommentedIdx: Integer;
@@ -216,10 +216,10 @@ begin
   if (cmAddNew in Settings.FillNewWords)
     and (AWord.ReservedType in (NoReservedTypes - StandardDirectives)) then begin
     // Add new words to CapNames if configured and they aren't there yet
-    Found := CapNames.Find(Expression, Idx);
+    Found := CapNames.Find(String(Expression), Idx);
     if not Found then begin
-      if not CapNames.Find('*' + Expression, CommentedIdx) then
-        CapNames.Add(Expression);
+      if not CapNames.Find('*' + String(Expression), CommentedIdx) then
+        CapNames.Add(String(Expression));
     end;
   end;
 
@@ -229,9 +229,9 @@ begin
     (cmExceptDirectives in Settings.FillNewWords)
     and not (AWord.ReservedType in StandardDirectives)) then begin
     if not Found then
-      Found := CapNames.Find(Expression, Idx);
+      Found := CapNames.Find(String(Expression), Idx);
     if Found then begin
-      AWord.SetExpression(CapNames[Idx]);
+      AWord.SetExpression(AnsiString(CapNames[Idx]));
       AWord.ExpressionCase := rfUnchanged;
     end;
   end;
