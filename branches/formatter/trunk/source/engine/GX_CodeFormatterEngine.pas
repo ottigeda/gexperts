@@ -40,7 +40,7 @@ type
   TCodeFormatterEngine = class(TObject)
   private
     FSettings: TCodeFormatterSettings;
-    function GetLine(Tokens: TOCollection; var TokenNo: Integer): AnsiString;
+    function GetLine(Tokens: TOCollection; var TokenNo: Integer): string;
   public
     constructor Create;
     destructor Destroy; override;
@@ -70,17 +70,17 @@ end;
 
 function TCodeFormatterEngine.Execute(SourceCode: TStrings): Boolean;
 var
-  Line: AnsiString;
+  Line: string;
   TokenNo: Integer;
-  LB: AnsiString;
-  OrigSource: AnsiString;
+  LB: string;
+  OrigSource: string;
   Tokens: TOCollection;
-  s: AnsiString;
+  s: string;
   OrigLen: integer;
   NewLen: integer;
 begin
   try
-    OrigSource := AnsiString(SourceCode.Text);
+    OrigSource := SourceCode.Text;
 
     Tokens := TCodeFormatterParser.Execute(SourceCode, FSettings);
     try
@@ -92,7 +92,7 @@ begin
         TokenNo := 0;
         while TokenNo < Tokens.Count do begin
           Line := GetLine(Tokens, TokenNo);
-          SourceCode.Add(String(Line));
+          SourceCode.Add(Line);
         end;
       end;
     finally
@@ -103,7 +103,7 @@ begin
     // removed or added a CRLF at the end of the file
     // checking the length first prevents costly multiple
     // comparisons of potentially large strings
-    s := AnsiString(SourceCode.Text);
+    s := SourceCode.Text;
     OrigLen := Length(OrigSource);
     NewLen := Length(s);
     if OrigLen = NewLen then
@@ -122,7 +122,7 @@ begin
   end;
 end;
 
-function TCodeFormatterEngine.GetLine(Tokens: TOCollection; var TokenNo: Integer): AnsiString;
+function TCodeFormatterEngine.GetLine(Tokens: TOCollection; var TokenNo: Integer): string;
 var
   Token: TPascalToken;
   i: Integer;
@@ -144,7 +144,7 @@ begin
 
   // remove spaces and tabs at the end
   i := Length(Result);
-  while (i > 0) and (Result[i] in [' ', Tab]) do begin
+  while (i > 0) and ((Result[i] = ' ') or (Result[i] = Tab)) do begin
     Dec(i);
   end;
   SetLength(Result, i);

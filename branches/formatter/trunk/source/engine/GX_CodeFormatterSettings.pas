@@ -204,7 +204,7 @@ end;
 
 procedure TCodeFormatterSettings.HandleCapitalization(AWord: TPascalToken);
 var
-  Expression: AnsiString;
+  Expression: string;
   Found: Boolean;
   Idx: Integer;
   CommentedIdx: Integer;
@@ -231,7 +231,7 @@ begin
     if not Found then
       Found := CapNames.Find(String(Expression), Idx);
     if Found then begin
-      AWord.SetExpression(AnsiString(CapNames[Idx]));
+      AWord.SetExpression(CapNames[Idx]);
       AWord.ExpressionCase := rfUnchanged;
     end;
   end;

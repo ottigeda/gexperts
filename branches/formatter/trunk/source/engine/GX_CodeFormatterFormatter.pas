@@ -306,11 +306,11 @@ end;
 procedure TCodeFormatterFormatter.UppercaseCompilerDirective(_Token: TPascalToken);
 var
   Idx: integer;
-  s: AnsiString;
+  s: string;
 begin
   _Token.GetExpression(s);
   Idx := 2;
-  while (Idx < Length(s)) and not (s[Idx] in [' ', Tab]) do begin
+  while (Idx < Length(s)) and (s[Idx] <> ' ') and (s[Idx] <> Tab) do begin
     s[Idx] := UpCase(s[Idx]);
     Inc(Idx);
   end;
@@ -357,13 +357,16 @@ procedure TCodeFormatterFormatter.PutCommentBefore(aComment: PAnsiChar);
 var
   J: Integer;
   P: TPascalToken;
+  s: string;
 begin
   J := FTokenIdx - 2;
   P := GetToken(J);
+  { TODO -otwm : Does this work correctly in Delphi 2009? }
+  SetString(s, aComment, StrLen(aComment));
   if P.ReservedType = rtComment then
-    P.SetExpression(aComment)
+    P.SetExpression(s)
   else begin
-    P := TExpression.Create(wtWord, aComment);
+    P := TExpression.Create(wtWord, s);
     P.SetReservedType(rtComment);
     FTokens.Insert(FTokenIdx, P);
     Inc(FTokenIdx);
@@ -425,8 +428,8 @@ var
     var
       Token: TPascalToken;
       PrevPasWord: TPascalToken;
-      Expression: AnsiString;
-      PrevExpression: AnsiString;
+      Expression: string;
+      PrevExpression: string;
       i: Integer;
     begin
       if GetToken(FTokenIdx - 1, FPrevToken) and (FPrevToken.ReservedType = rtComment)

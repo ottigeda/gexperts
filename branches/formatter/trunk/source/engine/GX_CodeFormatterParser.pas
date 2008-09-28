@@ -34,8 +34,8 @@ type
        influences finding the matching "end". No formatting is done
        later to asm code }
     procedure ReadAsm(var ABuff: PAnsiChar);
-    function ReadHalfComment(out ADest: AnsiString; var ASource: PAnsiChar): TWordType;
-    function ReadWord(out ADest: AnsiString; var ASource: PAnsiChar): TWordType;
+    function ReadHalfComment(out ADest: string; var ASource: PAnsiChar): TWordType;
+    function ReadWord(out ADest: string; var ASource: PAnsiChar): TWordType;
     {: Adds a single line of text to the parse tree }
     procedure AddLine(ABuff: PAnsiChar);
     procedure DoExecute(AText: TStrings);
@@ -94,7 +94,7 @@ end;
 
 procedure TCodeFormatterParser.AddLine(ABuff: PAnsiChar);
 var
-  s: AnsiString;
+  s: string;
 begin
   FPrevLine := TLineFeed.Create(0, FSpacePerIndent);
   FTokens.Add(FPrevLine);
@@ -124,7 +124,7 @@ procedure TCodeFormatterParser.ReadAsm(var ABuff: PAnsiChar);
 var
   P: PAnsiChar;
   FirstNonWhitespace: PAnsiChar;
-  s: AnsiString;
+  s: string;
 begin
   P := ABuff;
   FirstNonWhitespace := ABuff;
@@ -180,11 +180,13 @@ begin
         Inc(P);
     end; // case
   end; // while
-  FTokens.Add(TExpression.Create(wtAsm, ABuff));
+  { TODO -otwm : Does this work correctly in Delphi 2009? }
+  SetString(s, ABuff, StrLen(ABuff));
+  FTokens.Add(TExpression.Create(wtAsm, s));
   ABuff := P;
 end;
 
-function TCodeFormatterParser.ReadWord(out ADest: AnsiString; var ASource: PAnsiChar): TWordType;
+function TCodeFormatterParser.ReadWord(out ADest: string; var ASource: PAnsiChar): TWordType;
 const
   IdentifierTerminators = [
     '+', '-', '*', '/', '=',
@@ -424,7 +426,7 @@ begin
   end;
 end;
 
-function TCodeFormatterParser.ReadHalfComment(out ADest: AnsiString; var ASource: PAnsiChar): TWordType;
+function TCodeFormatterParser.ReadHalfComment(out ADest: string; var ASource: PAnsiChar): TWordType;
 var
   Len: Integer;
   P: PAnsiChar;

@@ -74,7 +74,7 @@ type
   {: stores a single reserved word with its associated type }
   TReservedRec = record
     ReservedType: TReservedType;
-    Words: PAnsiChar;
+    Words: string;
   end;
 
   TReservedArray = array[0..NReservedWords - 1] of TReservedRec;
@@ -211,7 +211,7 @@ const
    @param aStr is the input string
    @param aCase is a TCase specifying the desired case
    @returns the modified string }
-function AdjustCase(aStr: AnsiString; aCase: TCase): AnsiString;
+function AdjustCase(aStr: string; aCase: TCase): string;
 
 implementation
 
@@ -220,7 +220,7 @@ uses
   AnsiStrings;
 {$endif}
 
-function AdjustCase(aStr: AnsiString; aCase: TCase): AnsiString;
+function AdjustCase(aStr: string; aCase: TCase): string;
 var
   i: Integer;
 begin
@@ -230,7 +230,7 @@ begin
     rfFirstUp: begin
         Result := LowerCase(aStr);
         i := 1;
-        while Result[i] in [' ', Tab] do
+        while (Result[i] = ' ') or (Result[i] = Tab) do
           Inc(i);
         Result[i] := UpCase(Result[i]);
       end;
