@@ -183,7 +183,6 @@ var
   FullText: TStringList;
   Bookmarks: TBookmarkHandler;
   Breakpoints: TBreakpointHandler;
-  WasBinary: Boolean;
   i: integer;
   TempSettings: TCodeFormatterSettings;
   OrigSettings: TCodeFormatterEngineSettings;

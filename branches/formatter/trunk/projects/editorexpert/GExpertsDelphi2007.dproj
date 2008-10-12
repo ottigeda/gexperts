@@ -245,6 +245,7 @@
       <Form>fmGrepOptions</Form>
     </DCCReference>
     <DCCReference Include="..\..\gx\source\Grep\GX_GrepPrinting.pas" />
+    <DCCReference Include="..\..\gx\source\Grep\GX_GrepRegExSearch.pas" />
     <DCCReference Include="..\..\gx\source\Grep\GX_GrepReplace.pas">
       <Form>fmGrepReplace</Form>
     </DCCReference>
@@ -258,7 +259,6 @@
       <Form>fmGrepSearch</Form>
     </DCCReference>
     <DCCReference Include="..\..\gx\source\Grep\GX_Replace.pas" />
-    <DCCReference Include="..\..\gx\source\Grep\GX_Search.pas" />
     <DCCReference Include="..\..\gx\source\IDEDocking\GX_IdeDock.pas">
       <Form>fmIdeDockForm</Form>
     </DCCReference>
