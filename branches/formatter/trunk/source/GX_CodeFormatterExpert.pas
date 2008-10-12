@@ -179,6 +179,7 @@ resourcestring
 var
   SourceEditor: IOTASourceEditor;
   FileName: string;
+  FullTextStr: string;
   FullText: TStringList;
   Bookmarks: TBookmarkHandler;
   Breakpoints: TBreakpointHandler;
@@ -199,10 +200,12 @@ begin
   TempSettings := nil;
   FullText := TStringList.Create;
   try
-    if not GxOtaGetFileAsText(Filename, FullText, WasBinary) then
+    if not GxOtaGetActiveEditorTextAsString(FullTextStr, False) then
       raise ECodeFormatter.CreateFmt(str_UnableToGetContentsS, [FileName]);
-    if FullText.Count = 0 then
+    if FullTextStr = '' then
       exit;
+    FullText.Text := FullTextStr;
+    FullTextStr := ''; // might save some memory
 
     Breakpoints := nil;
     Bookmarks := TBookmarkHandler.Create;
