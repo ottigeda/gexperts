@@ -21,6 +21,7 @@ type
   protected
     function GetFormatSettings: TCodeFormatterEngineSettings; virtual; abstract;
     function GetResultDir: string; virtual; abstract;
+    function GetConfigDirBS: string;
     procedure SetUp; override;
     procedure TearDown; override;
   published
@@ -105,6 +106,11 @@ uses
   GX_CodeFormatterConfigHandler;
 
 { TTestTestfiles }
+
+function TTestTestfiles.GetConfigDirBS: string;
+begin
+  Result := 'source\packagewiz\';
+end;
 
 procedure TTestTestfiles.SetUp;
 var
@@ -379,7 +385,7 @@ var
 begin
   Settings := TCodeFormatterSettings.Create;
   try
-    TCodeFormatterConfigHandler.ImportFromFile('packagewiz\DelForExOptions-headwork.ini', Settings);
+    TCodeFormatterConfigHandler.ImportFromFile(GetConfigDirBS + 'DelForExOptions-headwork.ini', Settings);
     Result := Settings.Settings;
   finally
     Settings.Free;
@@ -411,7 +417,7 @@ var
 begin
   Settings := TCodeFormatterSettings.Create;
   try
-    TCodeFormatterConfigHandler.ImportFromFile('packagewiz\DelForExOptions-Default.ini', Settings);
+    TCodeFormatterConfigHandler.ImportFromFile(GetConfigDirBS + 'DelForExOptions-Default.ini', Settings);
     Result := Settings.Settings;
   finally
     Settings.Free;
@@ -431,7 +437,7 @@ var
 begin
   Settings := TCodeFormatterSettings.Create;
   try
-    TCodeFormatterConfigHandler.ImportFromFile('packagewiz\DelForExOptions-twm.ini', Settings);
+    TCodeFormatterConfigHandler.ImportFromFile(GetConfigDirBS + 'DelForExOptions-twm.ini', Settings);
     Result := Settings.Settings;
   finally
     Settings.Free;
