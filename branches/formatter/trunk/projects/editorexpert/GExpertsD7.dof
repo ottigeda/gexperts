@@ -114,7 +114,7 @@ IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
 MinorVer=3
-Release=2
+Release=3
 Build=0
 Debug=0
 PreRelease=0
@@ -126,39 +126,17 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=GExperts, Inc. and Erik Berry
 FileDescription=GExperts for Delphi 7
-FileVersion=1.3.2.0
+FileVersion=1.3.3.0
 InternalName=GExperts for Delphi 7
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=GExpertsD7.dll
 ProductName=GExperts for Delphi 7
-ProductVersion=1.0.0.0
+ProductVersion=1.33 beta experimental
 Comments=Open Source
 [Excluded Packages]
-D:\out\bpl\HkIdeExpert7.bpl=iCD. IDE Expert
-D:\out\bpl\dcldummzeuchchart70.bpl=dummzeuch.de Charts - designtime package
-D:\out\bpl\dzAutoSave70.bpl=dummzeuch.de Auto Save Wizard
-q:\bpl\UnicodeConvDelphi7.bpl=Unicode Converter Library (UCL)
-Q:\bpl\Xdom_3_1Delphi7.bpl=Extended Document Object Model (XDOM 3.1)
-Q:\bpl\CompBAR7.bpl=Component Bar Expert 1.0.4
-Q:\bpl\dclusr70.bpl=Borland User Components
 [HistoryLists\hlConditionals]
-Count=2
-Item0=synedit
-Item1=GX_FORMATTER_IS_EDITOR_EXPERT
 [HistoryLists\hlUnitAliases]
-Count=1
-Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=5
-Item0=..\..\gx\source\Framework;..\..\gx\ExternalSource;..\..\gx\ExternalSource\Abbrevia;..\..\gx\ExternalSource\UniSynEdit
-Item1=..\..\gxsource\Framework;..\..\ExternalSource;..\..\ExternalSource\Abbrevia;..\..\..\synedit\source
-Item2=..\..\gxsource\Framework;..\..\ExternalSource;..\..\ExternalSource\Abbrevia
-Item3=Framework;..\ExternalSource;..\ExternalSource\Abbrevia
-Item4=Src;Comps;Comps\Abbrevia
 [HistoryLists\hlUnitOutputDirectory]
-Count=1
-Item0=..\..\dcu\delphi7
 [HistoryLists\hlOutputDirectorry]
-Count=1
-Item0=..\..\editorexpert
