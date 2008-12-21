@@ -135,7 +135,7 @@ uses
   GX_ReplaceCompMapGrpList in '..\..\gx\source\ReplaceComponents\GX_ReplaceCompMapGrpList.pas' {fmReplaceCompMapGrpList},
   GX_ReplaceCompMapList in '..\..\gx\source\ReplaceComponents\GX_ReplaceCompMapList.pas' {fmReplaceCompMapList},
   GX_ReplaceCompUtils in '..\..\gx\source\ReplaceComponents\GX_ReplaceCompUtils.pas',
-  GX_Search in '..\..\gx\source\Grep\GX_Search.pas',
+  GX_GrepRegExSearch in '..\..\gx\source\Grep\GX_GrepRegExSearch.pas',
   GX_SetComponentProps in '..\..\gx\source\SetComponentProperties\GX_SetComponentProps.pas',
   GX_SetComponentPropsConfig in '..\..\gx\source\SetComponentProperties\GX_SetComponentPropsConfig.pas' {fmSetComponentPropsConfig},
   GX_SetComponentPropsStatus in '..\..\gx\source\SetComponentProperties\GX_SetComponentPropsStatus.pas' {fmSetComponentPropsStatus},
