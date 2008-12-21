@@ -23,13 +23,8 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     ActivePage = ts_Indent
     Align = alClient
     TabOrder = 0
-    ExplicitHeight = 387
     object ts_Indent: TTabSheet
       Caption = 'Indent'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object l_SpacesPerIndent: TLabel
         Left = 8
         Top = 22
@@ -121,10 +116,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     end
     object ts_Spacing: TTabSheet
       Caption = 'Spacing'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         470
         356)
@@ -149,10 +140,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     end
     object ts_LineBreaks: TTabSheet
       Caption = 'Line Breaks'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object l_BeginStyle: TLabel
         Left = 240
         Top = 104
@@ -333,10 +320,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     end
     object ts_Capitalization: TTabSheet
       Caption = 'Capitalization'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         470
         356)
@@ -474,10 +457,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     end
     object ts_Align: TTabSheet
       Caption = 'Align'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object l_AlignComentsAtPosition: TLabel
         Left = 12
         Top = 35
@@ -630,10 +609,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
       ImageIndex = 6
       OnResize = ts_PreviewResize
       OnShow = ts_PreviewShow
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         470
         356)
