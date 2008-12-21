@@ -1,7 +1,7 @@
 ﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{4f1288a1-b13b-41ea-9c9b-de874d79eba0}</ProjectGuid>
-			<MainSource>GExpertsDelphi2009.dpr</MainSource>
+			<MainSource>GExpertsRS2009.dpr</MainSource>
 			<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
 			<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
@@ -27,7 +27,7 @@
 			<DCC_UnitSearchPath>..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\gx\externalsource\UniSynEdit;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<DCC_Define>synedit;$(DCC_Define)</DCC_Define>
 			<DCC_DcuOutput>..\..\dcu\delphi2009</DCC_DcuOutput>
-			<DCC_DependencyCheckOutputName>..\..\editorexpert\GExpertsDelphi2009.dll</DCC_DependencyCheckOutputName>
+			<DCC_DependencyCheckOutputName>..\..\editorexpert\GExpertsRS2009.dll</DCC_DependencyCheckOutputName>
 			<UsePackages>true</UsePackages>
 			<GenDll>true</GenDll>
 			<DCC_UsePackage>rtl;vcl;vclx;vclactnband;dbrtl;vcldb;vcldbx;bdertl;dsnap;dbxcds;DbxCommonDriver;dbexpress;dsnapcon;adortl;vclib;ibxpress;IndyCore;IndySystem;IndyProtocols;xmlrtl;inet;VclSmp;vclie;websnap;webdsnap;inetdbbde;inetdbxpress;soaprtl;designide</DCC_UsePackage>
@@ -57,11 +57,11 @@
 			<DCC_Optimize>False</DCC_Optimize>
 		</PropertyGroup>
 		<ItemGroup>
-			<DelphiCompile Include="GExpertsDelphi2009.dpr">
+			<DelphiCompile Include="GExpertsRS2009.dpr">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
 			<RcCompile Include="..\..\gx\images\GXIcons.rc">
-				<Form>&apos;GXIcons.res&apos;</Form>
+				<Form>GXIcons.res</Form>
 			</RcCompile>
 			<DCCReference Include="..\..\gx\source\Framework\GX_About.pas">
 				<Form>fmAbout</Form>
@@ -450,7 +450,7 @@
 						<VersionInfoKeys Name="CompileDate">Saturday, April 21, 2007 5:42 AM</VersionInfoKeys>
 					</VersionInfoKeys>
 					<Source>
-						<Source Name="MainSource">GExpertsDelphi2009.dpr</Source>
+						<Source Name="MainSource">GExpertsRS2009.dpr</Source>
 					</Source>
 					<Excluded_Packages/>
 				</Delphi.Personality>
