@@ -454,7 +454,6 @@
 					<Source>
 						<Source Name="MainSource">GExpertsRS2009.dpr</Source>
 					</Source>
-					</Excluded_Packages>
 				</Delphi.Personality>
 			</BorlandProject>
 			<ProjectFileVersion>12</ProjectFileVersion>
