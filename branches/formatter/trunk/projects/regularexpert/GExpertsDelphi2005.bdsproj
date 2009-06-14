@@ -161,10 +161,10 @@
 			<VersionInfoKeys Name="LegalTrademarks" Type="String"></VersionInfoKeys>
 			<VersionInfoKeys Name="OriginalFilename" Type="String">GExpertsDelphi2005.dll</VersionInfoKeys>
 			<VersionInfoKeys Name="ProductName" Type="String">GExperts for Delphi 2005</VersionInfoKeys>
-			<VersionInfoKeys Name="ProductVersion" Type="String">1.33 beta experimental</VersionInfoKeys>
+			<VersionInfoKeys Name="ProductVersion" Type="String">1.33 beta experimental 2009-06-14</VersionInfoKeys>
 			<VersionInfoKeys Name="Comments">Open Source</VersionInfoKeys>
 			<VersionInfoKeys Name="Compile Date">Saturday, October 06, 2001 3:07 PM</VersionInfoKeys>
-			<VersionInfoKeys Name="CompileDate">Monday, April 09, 2007 1:11 AM</VersionInfoKeys>
+			<VersionInfoKeys Name="CompileDate">2009-06-14 16:00</VersionInfoKeys>
 		</VersionInfoKeys>
 		<Language>
 			<Language Name="ActiveLang" Type="String"></Language>

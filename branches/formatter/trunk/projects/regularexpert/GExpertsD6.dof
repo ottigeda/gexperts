@@ -56,10 +56,6 @@ HostApplication=D:\Borland\Delphi6\Bin\delphi32.exe
 Launcher=
 UseLauncher=0
 DebugCWD=
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=D:\source\sf.gexperts.formatter\gxsource\
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
@@ -83,10 +79,6 @@ LegalCopyright=
 LegalTrademarks=
 OriginalFilename=GExpertsD6.dll
 ProductName=GExperts for Delphi 6
-ProductVersion=1.33 beta experimental
+ProductVersion=1.33 beta experimental 2009-06-14
 Comments=Open Source
-[HistoryLists\hlConditionals]
-[HistoryLists\hlUnitAliases]
-[HistoryLists\hlSearchPath]
-[HistoryLists\hlUnitOutputDirectory]
-[HistoryLists\hlOutputDirectorry]
+CompileDate=2009-06-14 16:00
