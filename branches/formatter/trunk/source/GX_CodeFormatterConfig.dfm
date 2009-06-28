@@ -22,60 +22,64 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     Height = 384
     ActivePage = ts_Indent
     Align = alClient
+    TabIndex = 0
     TabOrder = 0
     object ts_Indent: TTabSheet
       Caption = 'Indent'
       object l_SpacesPerIndent: TLabel
-        Left = 8
-        Top = 22
-        Width = 88
+        Left = 24
+        Top = 8
+        Width = 87
         Height = 13
         Caption = 'Spaces per Indent'
       end
-      object SpacePerIndentEdit: TEdit
-        Left = 104
-        Top = 19
-        Width = 59
+      object ed_SpacePerIndent: TEdit
+        Left = 24
+        Top = 24
+        Width = 65
         Height = 21
         TabOrder = 0
         Text = '0'
       end
-      object SpacePerIndentUpDown: TUpDown
-        Left = 163
-        Top = 19
-        Width = 11
+      object ud_SpacePerIndent: TUpDown
+        Left = 89
+        Top = 24
+        Width = 16
         Height = 21
-        Associate = SpacePerIndentEdit
+        Associate = ed_SpacePerIndent
+        Min = 0
         Max = 10
+        Position = 0
         TabOrder = 1
+        Wrap = False
       end
-      object IndentCommentsCheck: TCheckBox
+      object chk_IndentComments: TCheckBox
         Left = 240
-        Top = 42
+        Top = 104
         Width = 170
-        Height = 19
+        Height = 17
         Caption = 'Indent comments'
         TabOrder = 4
       end
-      object IndentCompDirectivesCheck: TCheckBox
+      object chk_IndentCompDirectives: TCheckBox
         Left = 240
-        Top = 64
+        Top = 128
         Width = 170
-        Height = 20
+        Height = 17
         Caption = 'Indent compiler directives'
         TabOrder = 5
       end
-      object NoIndentElseIfCheck: TCheckBox
+      object chk_NoIndentElseIf: TCheckBox
         Left = 240
-        Top = 16
+        Top = 80
         Width = 170
-        Height = 27
+        Height = 17
         Caption = 'Never indent else if'
         TabOrder = 3
       end
       object grp_ExtraIndentBefore: TGroupBox
         Left = 8
-        Top = 53
+        Top = 56
         Width = 193
         Height = 129
         Caption = 'Extra Indent Before'
@@ -84,7 +88,7 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 16
           Top = 96
           Width = 172
-          Height = 20
+          Height = 17
           Caption = 'else in a case block'
           TabOrder = 3
         end
@@ -92,7 +96,7 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 16
           Top = 72
           Width = 172
-          Height = 21
+          Height = 17
           Caption = 'else in a try block'
           TabOrder = 2
         end
@@ -100,7 +104,7 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 16
           Top = 48
           Width = 172
-          Height = 20
+          Height = 17
           Caption = 'try'
           TabOrder = 1
         end
@@ -108,7 +112,7 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 16
           Top = 24
           Width = 172
-          Height = 20
+          Height = 17
           Caption = 'begin'
           TabOrder = 0
         end
@@ -141,30 +145,30 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     object ts_LineBreaks: TTabSheet
       Caption = 'Line Breaks'
       object l_BeginStyle: TLabel
-        Left = 240
+        Left = 248
         Top = 104
-        Width = 52
+        Width = 51
         Height = 13
         Caption = 'Begin style'
       end
       object l_WrapAtPosition: TLabel
-        Left = 248
-        Top = 200
-        Width = 51
+        Left = 272
+        Top = 224
+        Width = 49
         Height = 13
         Caption = 'At position'
       end
       object l_TryStyle: TLabel
-        Left = 240
-        Top = 136
-        Width = 42
+        Left = 248
+        Top = 152
+        Width = 39
         Height = 13
         Caption = 'Try style'
       end
-      object FeedRoundBeginCombo: TComboBox
-        Left = 299
-        Top = 100
-        Width = 163
+      object cmb_FeedRoundBegin: TComboBox
+        Left = 248
+        Top = 120
+        Width = 209
         Height = 21
         Style = csDropDownList
         ItemHeight = 13
@@ -174,108 +178,111 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           'Hanging begin'
           'Break before and after begin')
       end
-      object WrapLinesCheck: TCheckBox
-        Left = 240
-        Top = 176
+      object chk_WrapLines: TCheckBox
+        Left = 248
+        Top = 200
         Width = 143
         Height = 23
         Caption = 'Wrap long lines'
         TabOrder = 4
       end
-      object WrapPositionEdit: TEdit
-        Left = 312
-        Top = 196
+      object ed_WrapPosition: TEdit
+        Left = 272
+        Top = 240
         Width = 41
         Height = 21
         TabOrder = 5
         Text = '0'
       end
-      object WrapPositionUpDown: TUpDown
-        Left = 353
-        Top = 196
-        Width = 12
+      object ud_WrapPosition: TUpDown
+        Left = 313
+        Top = 240
+        Width = 16
         Height = 21
-        Associate = WrapPositionEdit
+        Associate = ed_WrapPosition
+        Min = 0
         Max = 254
+        Position = 0
         TabOrder = 6
+        Wrap = False
       end
       object grp_AlwaysBreakLine: TGroupBox
         Left = 8
-        Top = 7
+        Top = 8
         Width = 217
         Height = 249
         Caption = 'Always Break Line'
         TabOrder = 0
-        object FeedAfterVarCheck: TCheckBox
+        object chk_FeedAfterVar: TCheckBox
           Left = 16
-          Top = 22
+          Top = 24
           Width = 190
-          Height = 24
+          Height = 17
           Caption = 'After "var", "type" etc.'
           TabOrder = 0
         end
-        object FeedBeforeEndCheck: TCheckBox
+        object chk_FeedBeforeEnd: TCheckBox
           Left = 16
-          Top = 46
+          Top = 48
           Width = 190
-          Height = 23
+          Height = 17
           Caption = 'Before "end"'
           TabOrder = 1
         end
-        object FeedAfterSemiColonCheck: TCheckBox
+        object chk_FeedAfterSemiColon: TCheckBox
           Left = 16
-          Top = 70
+          Top = 72
           Width = 190
-          Height = 23
+          Height = 17
           Caption = 'After semicolon (except directives)'
           TabOrder = 2
         end
-        object FeedElseIfCheck: TCheckBox
+        object chk_FeedElseIf: TCheckBox
           Left = 16
-          Top = 94
+          Top = 96
           Width = 190
-          Height = 23
+          Height = 17
           Caption = 'Between else and if'
           TabOrder = 3
         end
-        object FeedAfterThenCheck: TCheckBox
+        object chk_FeedAfterThen: TCheckBox
           Left = 16
-          Top = 118
+          Top = 120
           Width = 190
-          Height = 24
+          Height = 17
           Caption = 'After "then","else","do",":"'
           TabOrder = 4
-          OnClick = FeedAfterThenCheckClick
+          OnClick = chk_FeedAfterThenClick
         end
-        object ExceptSingleCheck: TCheckBox
+        object chk_ExceptSingle: TCheckBox
           Left = 32
-          Top = 142
+          Top = 144
           Width = 180
-          Height = 20
+          Height = 17
           Caption = 'Except single lines'
           TabOrder = 5
         end
-        object NoFeedBeforeThenCheck: TCheckBox
+        object chk_NoFeedBeforeThen: TCheckBox
           Left = 16
-          Top = 166
+          Top = 168
           Width = 190
-          Height = 24
+          Height = 17
           Caption = 'Never before "then", "do"'
           TabOrder = 6
         end
-        object FeedEachUnitCheck: TCheckBox
+        object chk_FeedEachUnit: TCheckBox
           Left = 16
-          Top = 190
+          Top = 192
           Width = 190
-          Height = 25
+          Height = 17
           Caption = 'Between every unit in "uses"'
           TabOrder = 7
         end
-        object RemoveDoubleBlankCheck: TCheckBox
+        object chk_RemoveDoubleBlank: TCheckBox
           Left = 16
-          Top = 214
+          Top = 216
           Width = 190
-          Height = 23
+          Height = 17
           Caption = 'Remove double blank lines'
           TabOrder = 8
         end
@@ -284,30 +291,30 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Left = 240
         Top = 8
         Width = 221
-        Height = 77
+        Height = 81
         Caption = 'Force a Blank Line Between'
         TabOrder = 1
-        object BlankProcCheck: TCheckBox
-          Left = 12
-          Top = 20
-          Width = 185
-          Height = 23
+        object chk_BlankProc: TCheckBox
+          Left = 8
+          Top = 24
+          Width = 201
+          Height = 17
           Caption = 'Main procedures/functions'
           TabOrder = 0
         end
-        object BlankSubProcCheck: TCheckBox
-          Left = 12
-          Top = 44
-          Width = 185
-          Height = 24
+        object chk_BlankSubProc: TCheckBox
+          Left = 8
+          Top = 48
+          Width = 201
+          Height = 17
           Caption = 'Local procedures/functions'
           TabOrder = 1
         end
       end
-      object FeedRoundTryCombo: TComboBox
-        Left = 299
-        Top = 132
-        Width = 163
+      object cmb_FeedRoundTry: TComboBox
+        Left = 248
+        Top = 168
+        Width = 209
         Height = 21
         Style = csDropDownList
         ItemHeight = 13
@@ -325,44 +332,44 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         356)
       object l_Capitalize: TLabel
         Left = 8
-        Top = 74
-        Width = 46
+        Top = 128
+        Width = 45
         Height = 13
         Caption = 'Capitalize'
       end
       object l_ReservedWords: TLabel
         Left = 8
-        Top = 18
-        Width = 78
+        Top = 16
+        Width = 77
         Height = 13
         Caption = 'Reserved words'
       end
       object l_StandardDirectives: TLabel
         Left = 8
-        Top = 42
-        Width = 93
+        Top = 72
+        Width = 91
         Height = 13
         Caption = 'Standard directives'
       end
-      object UpperCompDirectivesCheck: TCheckBox
-        Left = 136
-        Top = 68
+      object chk_UpperCompDirectives: TCheckBox
+        Left = 8
+        Top = 144
         Width = 200
         Height = 25
         Caption = 'Compiler directives'
         TabOrder = 2
       end
-      object UpperNumbersCheck: TCheckBox
-        Left = 136
-        Top = 90
+      object chk_UpperNumbers: TCheckBox
+        Left = 8
+        Top = 168
         Width = 200
         Height = 25
         Caption = 'Hex numbers'
         TabOrder = 3
       end
-      object ReservedCaseCombo: TComboBox
-        Left = 136
-        Top = 14
+      object cmb_ReservedCase: TComboBox
+        Left = 8
+        Top = 32
         Width = 118
         Height = 21
         Style = csDropDownList
@@ -374,9 +381,9 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           'Only first up'
           'Unchanged')
       end
-      object StandDirectivesCombo: TComboBox
-        Left = 136
-        Top = 38
+      object cmb_StandDirectives: TComboBox
+        Left = 8
+        Top = 88
         Width = 118
         Height = 21
         Style = csDropDownList
@@ -388,7 +395,7 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           'Only first up'
           'Unchanged')
       end
-      object EditButton: TButton
+      object b_EditCapitalization: TButton
         Left = 392
         Top = 276
         Width = 75
@@ -396,7 +403,7 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Anchors = [akTop, akRight]
         Caption = 'Edit ...'
         TabOrder = 7
-        OnClick = EditButtonClick
+        OnClick = b_EditCapitalizationClick
       end
       object rb_CapitalizationInRegistry: TRadioButton
         Left = 16
@@ -439,8 +446,8 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         OnClick = b_CapitalizationSelectClick
       end
       object rg_Capitalization: TRadioGroup
-        Left = 8
-        Top = 121
+        Left = 216
+        Top = 9
         Width = 246
         Height = 134
         Caption = 'User defined capitalization'
@@ -458,65 +465,65 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
     object ts_Align: TTabSheet
       Caption = 'Align'
       object l_AlignComentsAtPosition: TLabel
-        Left = 12
-        Top = 35
-        Width = 51
+        Left = 48
+        Top = 40
+        Width = 49
         Height = 13
         Caption = 'At position'
       end
       object l_AlignVarAtPosition: TLabel
-        Left = 12
-        Top = 115
-        Width = 51
+        Left = 48
+        Top = 120
+        Width = 49
         Height = 13
         Caption = 'At position'
       end
-      object AlignCommentsCheck: TCheckBox
-        Left = 12
-        Top = 11
+      object chk_AlignComments: TCheckBox
+        Left = 16
+        Top = 16
         Width = 339
-        Height = 20
+        Height = 17
         Caption = 'Align simple comments after code'
         TabOrder = 0
       end
-      object AlignCommentPosEdit: TEdit
-        Left = 140
-        Top = 31
+      object ed_AlignCommentPos: TEdit
+        Left = 48
+        Top = 56
         Width = 63
         Height = 21
         TabOrder = 1
         Text = '0'
       end
-      object AlignCommentPosUpDown: TUpDown
-        Left = 203
-        Top = 31
-        Width = 10
+      object ud_AlignCommentPos: TUpDown
+        Left = 111
+        Top = 56
+        Width = 16
         Height = 21
-        Associate = AlignCommentPosEdit
+        Associate = ed_AlignCommentPos
         TabOrder = 2
       end
-      object AlignVarCheck: TCheckBox
-        Left = 12
-        Top = 91
+      object chk_AlignVar: TCheckBox
+        Left = 16
+        Top = 96
         Width = 339
-        Height = 20
+        Height = 17
         Caption = 'Align var/const statements'
         TabOrder = 3
       end
-      object AlignVarPosEdit: TEdit
-        Left = 140
-        Top = 111
+      object ed_AlignVarPos: TEdit
+        Left = 48
+        Top = 136
         Width = 63
         Height = 21
         TabOrder = 4
         Text = '0'
       end
-      object AlignVarPosUpDown: TUpDown
-        Left = 203
-        Top = 111
-        Width = 10
+      object ud_AlignVarPos: TUpDown
+        Left = 111
+        Top = 136
+        Width = 16
         Height = 21
-        Associate = AlignVarPosEdit
+        Associate = ed_AlignVarPos
         TabOrder = 5
       end
     end
@@ -575,18 +582,18 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         object l_MiscStart: TLabel
           Left = 8
           Top = 24
-          Width = 24
+          Width = 22
           Height = 13
           Caption = 'Start'
         end
         object l_MiscEnd: TLabel
           Left = 144
           Top = 24
-          Width = 18
+          Width = 19
           Height = 13
           Caption = 'End'
         end
-        object StartCommentOutEdit: TEdit
+        object ed_StartComment: TEdit
           Left = 8
           Top = 40
           Width = 129
@@ -594,7 +601,7 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           MaxLength = 20
           TabOrder = 0
         end
-        object EndCommentOutEdit: TEdit
+        object ed_EndCommentOut: TEdit
           Left = 144
           Top = 40
           Width = 129
@@ -613,14 +620,14 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         470
         356)
       object l_Before: TLabel
-        Left = 6
+        Left = 0
         Top = 0
-        Width = 32
+        Width = 31
         Height = 13
         Caption = 'Before'
       end
       object l_After: TLabel
-        Left = 252
+        Left = 248
         Top = 0
         Width = 22
         Height = 13
@@ -635,10 +642,10 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         ParentFont = False
       end
       object m_PreviewBefore: TMemo
-        Left = 6
+        Left = 0
         Top = 16
-        Width = 233
-        Height = 305
+        Width = 241
+        Height = 337
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -12
@@ -656,10 +663,10 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         OnMouseDown = m_PreviewBeforeMouseDown
       end
       object m_PreviewAfter: TMemo
-        Left = 249
+        Left = 248
         Top = 16
         Width = 214
-        Height = 305
+        Height = 337
         Anchors = [akLeft, akTop, akRight]
         Color = clAqua
         Font.Charset = ANSI_CHARSET
@@ -756,21 +763,21 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
   object od_Import: TOpenDialog
     Filter = 'INI-Files (*.ini)|*.ini|all files (*.*)|*.*'
     Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing, ofDontAddToRecent]
-    Left = 400
-    Top = 176
+    Left = 352
+    Top = 264
   end
   object sd_Export: TSaveDialog
     Filter = 'INI-Files (*.ini)|*.ini|all files (*.*)|*.*'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist, ofNoReadOnlyReturn, ofEnableSizing, ofDontAddToRecent]
-    Left = 400
-    Top = 120
+    Left = 408
+    Top = 264
   end
   object od_CapitalizationFile: TOpenDialog
     DefaultExt = 'txt'
     Filter = 'text files (*.txt)|*.txt|all files (*.*)|*.*'
     FilterIndex = 0
     Options = [ofHideReadOnly, ofPathMustExist, ofEnableSizing]
-    Left = 288
-    Top = 344
+    Left = 352
+    Top = 320
   end
 end

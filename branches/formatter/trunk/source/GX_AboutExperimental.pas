@@ -10,7 +10,7 @@ uses
   Classes,
   Graphics,
   Controls,
-  Forms,                  
+  Forms,
   Dialogs,
   GX_About,
   ExtCtrls,
@@ -42,7 +42,7 @@ begin
 end;
 
 initialization
-//  TfmAbout.SetCustomBuildDetails('Experimental version by http://www.dummzeuch.de send bug reports to gexperts@dummzeuch.de');
+  //  TfmAbout.SetCustomBuildDetails('Experimental version by http://www.dummzeuch.de send bug reports to gexperts@dummzeuch.de');
   gblAboutFormClass := TfmAboutExperimental;
 end.
 
