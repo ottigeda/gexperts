@@ -301,7 +301,7 @@ begin
   if not (IsPascalSourceFile(_FileName) or IsDelphiPackage(_FileName) or FileMatchesExtension(_FileName, '.tpl')) then
     raise ECodeFormatter.CreateFmt(str_UnsupportedFileTypeS, [ExtractFileName(_FileName)]);
 
-{$IFOPT D+}XSendDebug(Format('Formatting requested for "%s"', [AFileName]));
+{$IFOPT D+}XSendDebug(Format('Formatting requested for "%s"', [_FileName]));
 {$ENDIF}
   TempSettings := nil;
   FullText := TStringList.Create;
