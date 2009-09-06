@@ -2,6 +2,7 @@
 // Original Author:     Thomas Mueller (http://www.dummzeuch.de)
 // Contributors:
 // * Ulrich Gerhardt - 2007-08-11: added determining the settings via an external .ini file
+// * Ulrich Gerhardt - 2009-09-06: support for stand alone formatter
 unit GX_CodeFormatterExpert;
 
 {$I GX_CondDefine.inc}
@@ -28,6 +29,7 @@ type
     procedure Execute;
     procedure InternalLoadSettings(const ConfigurationKey: string; Settings: TGExpertsSettings);
     procedure InternalSaveSettings(const ConfigurationKey: string; Settings: TGExpertsSettings);
+    function FormatFile(const _FileName: string): Boolean;
   end;
 
 implementation
@@ -115,7 +117,8 @@ function TCodeFormatterExpert.GetSettingsName(FileName: string; FullText: TStrin
           ConfiguredFileName := ConfiguredFileNames[i];
           if FileNameMatches(ExtractFileName(FileName), Path + ConfiguredFileName) then begin
             Result := IniFile.ReadString('FileSettings', ConfiguredFileName, '');
-            {$IFOPT D+}XSendDebug(Format('Settings "%s" from rule %s in %s', [Result, ConfiguredFileName, ConfigFileName])); {$ENDIF}
+{$IFOPT D+}XSendDebug(Format('Settings "%s" from rule %s in %s', [Result, ConfiguredFileName, ConfigFileName]));
+{$ENDIF}
             Break;
           end;
         end;
@@ -137,7 +140,8 @@ function TCodeFormatterExpert.GetSettingsName(FileName: string; FullText: TStrin
     if SameText(Copy(FirstLine, 1, Length(cConfigDirective)), cConfigDirective) and
       (FirstLine[Length(FirstLine)] = '}') then begin
       Result := Trim(Copy(FirstLine, Length(cConfigDirective) + 1, Length(FirstLine) - Length(cConfigDirective) - 1));
-      {$IFOPT D+}XSendDebug(Format('Settings "%s" from in-source directive', [Result])); {$ENDIF}
+{$IFOPT D+}XSendDebug(Format('Settings "%s" from in-source directive', [Result]));
+{$ENDIF}
     end else
       Result := '';
   end;
@@ -146,18 +150,17 @@ function TCodeFormatterExpert.GetSettingsName(FileName: string; FullText: TStrin
   begin
     case _Precedence of
       cpDirective: begin
-        _Name := GetFromSource;
-        Result := _Name <> '';
-      end;
+          _Name := GetFromSource;
+          Result := _Name <> '';
+        end;
       cpIniFile: begin
-        _Name := GetFromConfigFile;
-        Result := _Name <> '';
-      end;
+          _Name := GetFromConfigFile;
+          Result := _Name <> '';
+        end;
       cpMyConfig: begin
-        _Name := '';
-        Result := true;
-      end
-    else
+          _Name := '';
+          Result := true;
+        end else
       Result := False;
     end;
   end;
@@ -195,7 +198,8 @@ begin
   if not (IsPascalSourceFile(FileName) or IsDelphiPackage(FileName) or FileMatchesExtension(FileName, '.tpl')) then
     raise ECodeFormatter.CreateFmt(str_UnsupportedFileTypeS, [ExtractFileName(FileName)]);
 
-  {$IFOPT D+}XSendDebug(Format('Formatting requested for "%s"', [FileName])); {$ENDIF}
+{$IFOPT D+}XSendDebug(Format('Formatting requested for "%s"', [FileName]));
+{$ENDIF}
   TempSettings := nil;
   FullText := TStringList.Create;
   try
@@ -215,7 +219,8 @@ begin
       SettingsName := Trim(GetSettingsName(FileName, FullText));
       if SettingsName <> '-' then begin
         if SettingsName <> '' then begin
-          {$IFOPT D+}XSendDebug(Format('Use settings "%s"', [SettingsName])); {$ENDIF}
+{$IFOPT D+}XSendDebug(Format('Use settings "%s"', [SettingsName]));
+{$ENDIF}
           TempSettings := TCodeFormatterSettings.Create;
           if TCodeFormatterConfigHandler.GetDefaultConfig(SettingsName, TempSettings) then begin
             OrigSettings := FEngine.Settings.Settings;
@@ -223,7 +228,8 @@ begin
           end else
             FreeAndNil(TempSettings);
         end else
-          {$IFOPT D+}XSendDebug('Use default settings'); {$ENDIF}
+{$IFOPT D+}XSendDebug('Use default settings');
+{$ENDIF}
 
         if FEngine.Execute(FullText) then begin
           GxOtaReplaceEditorText(SourceEditor, FullText.Text);
@@ -234,7 +240,8 @@ begin
           FEngine.Settings.ShowDoneDialog := ShowDoneDialog(FEngine.Settings.ShowDoneDialog);
         end;
       end else
-        {$IFOPT D+}XSendDebug('Ignore request'); {$ENDIF}
+{$IFOPT D+}XSendDebug('Ignore request');
+{$ENDIF}
     finally
       FreeAndNil(Breakpoints);
       FreeAndNil(Bookmarks);
@@ -278,6 +285,59 @@ begin
     Result := not DoneForm.chk_DontShowAgain.Checked;
   finally
     DoneForm.Free;
+  end;
+end;
+
+function TCodeFormatterExpert.FormatFile(const _FileName: string): Boolean;
+resourcestring
+  str_UnsupportedFileTypeS = 'Unsupported file type: %s';
+var
+  FullText: TStringList;
+  TempSettings: TCodeFormatterSettings;
+  OrigSettings: TCodeFormatterEngineSettings;
+  SettingsName: string;
+begin
+  Result := False;
+  if not (IsPascalSourceFile(_FileName) or IsDelphiPackage(_FileName) or FileMatchesExtension(_FileName, '.tpl')) then
+    raise ECodeFormatter.CreateFmt(str_UnsupportedFileTypeS, [ExtractFileName(_FileName)]);
+
+{$IFOPT D+}XSendDebug(Format('Formatting requested for "%s"', [AFileName]));
+{$ENDIF}
+  TempSettings := nil;
+  FullText := TStringList.Create;
+  try
+    FullText.LoadFromFile(_FileName);
+
+    SettingsName := Trim(GetSettingsName(_FileName, FullText));
+    if SettingsName <> '-' then begin
+      if SettingsName <> '' then begin
+{$IFOPT D+}XSendDebug(Format('Use settings "%s"', [SettingsName]));
+{$ENDIF}
+        TempSettings := TCodeFormatterSettings.Create;
+        if TCodeFormatterConfigHandler.GetDefaultConfig(SettingsName, TempSettings) then begin
+          OrigSettings := FEngine.Settings.Settings;
+          FEngine.Settings.Settings := TempSettings.Settings;
+        end else
+          FreeAndNil(TempSettings);
+      end else
+{$IFOPT D+}XSendDebug('Use default settings');
+{$ENDIF}
+
+      Result := FEngine.Execute(FullText);
+      if Result then begin
+        FullText.SaveToFile(_FileName);
+        FEngine.Settings.ShowDoneDialog := ShowDoneDialog(FEngine.Settings.ShowDoneDialog);
+      end;
+    end else
+{$IFOPT D+}XSendDebug('Ignore request');
+{$ENDIF}
+
+  finally
+    FreeAndNil(FullText);
+    if Assigned(TempSettings) then begin
+      FreeAndNil(TempSettings);
+      FEngine.Settings.Settings := OrigSettings;
+    end;
   end;
 end;
 

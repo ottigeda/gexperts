@@ -1,5 +1,4 @@
 // the code formatter expert as a regular expert
-// (Used if you don't define GX_FORMATTER_IS_EDITOR_EXPERT.)
 // Original Author:     Thomas Mueller (http://www.dummzeuch.de)
 unit GX_Formatter;
 
@@ -7,17 +6,12 @@ unit GX_Formatter;
 
 interface
 
-implementation
-
 uses
-{$IFOPT D+}GX_DbugIntf,
-{$ENDIF}
   SysUtils,
   Classes,
-  Menus,
   GX_Experts,
-  GX_ConfigurationInfo,
-  GX_CodeFormatterExpert;
+  GX_CodeFormatterExpert,
+  GX_ConfigurationInfo;
 
 type
   TGxCodeFormatterExpert = class(TGX_Expert)
@@ -37,7 +31,15 @@ type
     function HasMenuItem: Boolean; override;
   end;
 
-{ TCodeFormatterExpert }
+implementation
+
+uses
+{$IFOPT D+}GX_DbugIntf,
+{$ENDIF}
+  Menus,
+  GX_GExperts;
+
+  { TCodeFormatterExpert }
 
 procedure TGxCodeFormatterExpert.Click(Sender: TObject);
 begin
@@ -86,19 +88,43 @@ begin
   Result := True;
 end;
 
-procedure TGxCodeFormatterExpert.InternalLoadSettings(Settings: TGExpertsSettings);
+procedure TGxCodeFormatterExpert.InternalLoadSettings(Settings:
+  TGExpertsSettings);
 begin
   inherited;
   FExpert.InternalLoadSettings(ConfigurationKey, Settings);
 end;
 
-procedure TGxCodeFormatterExpert.InternalSaveSettings(Settings: TGExpertsSettings);
+procedure TGxCodeFormatterExpert.InternalSaveSettings(Settings:
+  TGExpertsSettings);
 begin
   inherited;
   FExpert.InternalSaveSettings(ConfigurationKey, Settings);
 end;
 
-initialization
-  RegisterGX_Expert(TGxCodeFormatterExpert);
+function FormatFile(_FileName: PChar): Boolean;
+{$IFNDEF GX_BCB} export;
+{$ENDIF GX_BCB}
+var
+  FormatterStandAlone: TGxCodeFormatterExpert;
+begin
+  InitSharedResources;
+  try
+    FormatterStandAlone := TGxCodeFormatterExpert.Create;
+    try
+      FormatterStandAlone.LoadSettings;
+      Result := FormatterStandAlone.FExpert.FormatFile(_FileName);
+      FormatterStandAlone.SaveSettings;
+    finally
+      FormatterStandAlone.Free;
+    end;
+  finally
+    FreeSharedResources;
+  end;
+end;
+
+exports
+  FormatFile;
+
 end.
 

@@ -397,6 +397,8 @@
 			</DCCReference>
 			<DCCReference Include="..\..\source\GX_CodeFormatterExpert.pas"/>
 			<DCCReference Include="..\..\source\GX_Formatter.pas"/>
+			<DCCReference Include="..\..\source\GX_CodeFormatterRegisterRegularExpert.pas"/>
+			<DCCReference Include="..\..\source\GX_eCodeFormatter.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

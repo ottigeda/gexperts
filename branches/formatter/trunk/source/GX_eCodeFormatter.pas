@@ -1,5 +1,4 @@
 // the code formatter expert as an editor expert
-// (Used if you define GX_FORMATTER_IS_EDITOR_EXPERT.)
 // Original Author:     Thomas Mueller (http://www.dummzeuch.de)
 unit GX_eCodeFormatter;
 
@@ -7,17 +6,12 @@ unit GX_eCodeFormatter;
 
 interface
 
-implementation
-
 uses
-{$IFOPT D+}GX_DbugIntf,
-{$ENDIF}
   SysUtils,
   Classes,
-  Menus,
   GX_EditorExpert,
-  GX_ConfigurationInfo,
-  GX_CodeFormatterExpert;
+  GX_CodeFormatterExpert,
+  GX_ConfigurationInfo;
 
 type
   TeCodeFormatterExpert = class(TEditorExpert)
@@ -27,7 +21,6 @@ type
     function GetDisplayName: string; override;
     class function GetName: string; override;
     function GetBitmapFileName: string; override;
-    procedure GetHelpString(List: TStrings); override;
     procedure InternalLoadSettings(Settings: TGExpertsSettings); override;
     procedure InternalSaveSettings(Settings: TGExpertsSettings); override;
   public
@@ -35,8 +28,16 @@ type
     destructor Destroy; override;
     procedure Configure; override;
     procedure Execute(Sender: TObject); override;
+    procedure GetHelpString(List: TStrings); override;
     function HasConfigOptions: Boolean; override;
   end;
+
+implementation
+
+uses
+{$IFOPT D+}GX_DbugIntf,
+{$ENDIF}
+  Menus;
 
 { TeCodeFormatterExpert }
 
