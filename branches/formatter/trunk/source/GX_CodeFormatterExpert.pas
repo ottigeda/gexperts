@@ -325,8 +325,15 @@ begin
 
       Result := FEngine.Execute(FullText);
       if Result then begin
+{$IFOPT D+}XSendDebug('Saving changed file');
+{$ENDIF}
+        // add an empty line to be compatible with running in the IDE
+        FullText.Add('');
         FullText.SaveToFile(_FileName);
         FEngine.Settings.ShowDoneDialog := ShowDoneDialog(FEngine.Settings.ShowDoneDialog);
+      end else begin
+{$IFOPT D+}XSendDebug('Nothing changed');
+{$ENDIF}
       end;
     end else
 {$IFOPT D+}XSendDebug('Ignore request');

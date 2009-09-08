@@ -195,7 +195,7 @@ begin
   ES.StandDirectivesCase := TCase(AReader.ReadInteger('StandDirectivesCase', Ord(ES.StandDirectivesCase))); //: TCase;
   ES.ChangeIndent := AReader.ReadBool('ChangeIndent', ES.ChangeIndent); //: Boolean;
   ES.NoIndentElseIf := AReader.ReadBool('NoIndentElseIf', ES.NoIndentElseIf); //: Boolean;
-  ES.IndentBegin := AReader.ReadBool('indentBegin', ES.IndentBegin); //: Boolean;
+  ES.IndentBegin := AReader.ReadBool('IndentBegin', ES.IndentBegin); //: Boolean;
   ES.IndentTry := AReader.ReadBool('IndentTry', ES.IndentTry); //: Boolean;
   ES.IndentTryElse := AReader.ReadBool('IndentTryElse', ES.IndentTryElse); //: Boolean;
   ES.IndentCaseElse := AReader.ReadBool('IndentCaseElse', ES.IndentCaseElse); //: Boolean;
@@ -252,7 +252,7 @@ begin
   AWriter.WriteInteger('StandDirectivesCase', Ord(ASettings.StandDirectivesCase)); //: TCase;
   AWriter.WriteBool('ChangeIndent', ASettings.ChangeIndent); //: Boolean;
   AWriter.WriteBool('NoIndentElseIf', ASettings.NoIndentElseIf); //: Boolean;
-  AWriter.WriteBool('indentBegin', ASettings.IndentBegin); //: Boolean;
+  AWriter.WriteBool('IndentBegin', ASettings.IndentBegin); //: Boolean;
   AWriter.WriteBool('IndentTry', ASettings.IndentTry); //: Boolean;
   AWriter.WriteBool('IndentTryElse', ASettings.IndentTryElse); //: Boolean;
   AWriter.WriteBool('IndentCaseElse', ASettings.IndentCaseElse); //: Boolean;
