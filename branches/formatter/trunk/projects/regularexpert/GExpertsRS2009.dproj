@@ -382,7 +382,9 @@
 			<DCCReference Include="..\..\source\GX_CodeFormatterEditCapitalization.pas">
 				<Form>fmCodeFormatterEditCapitalization</Form>
 			</DCCReference>
+			<DCCReference Include="..\..\source\GX_CodeFormatterExpert.pas"/>
 			<DCCReference Include="..\..\source\GX_CodeFormatterGXConfigWrapper.pas"/>
+			<DCCReference Include="..\..\source\GX_eCodeFormatter.pas"/>
 			<DCCReference Include="..\..\source\GX_CodeFormatterBookmarks.pas"/>
 			<DCCReference Include="..\..\source\common\GX_CollectionLikeLists.pas"/>
 			<DCCReference Include="..\..\source\common\GX_CodeFormatterTypes.pas"/>
@@ -395,8 +397,8 @@
 			<DCCReference Include="..\..\source\GX_AboutExperimental.pas">
 				<Form>fmAboutExperimental</Form>
 			</DCCReference>
-			<DCCReference Include="..\..\source\GX_CodeFormatterExpert.pas"/>
 			<DCCReference Include="..\..\source\GX_Formatter.pas"/>
+			<DCCReference Include="..\..\source\GX_CodeFormatterRegisterRegularExpert.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

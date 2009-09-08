@@ -398,6 +398,8 @@
 			<DCCReference Include="..\..\source\GX_AboutExperimental.pas">
 				<Form>fmAboutExperimental</Form>
 			</DCCReference>
+			<DCCReference Include="..\..\source\GX_Formatter.pas"/>
+			<DCCReference Include="..\..\source\GX_CodeFormatterRegisterEditorExpert.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
