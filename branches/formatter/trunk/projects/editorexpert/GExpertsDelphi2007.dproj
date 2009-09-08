@@ -386,8 +386,8 @@
     </DCCReference>
     <DCCReference Include="..\..\source\GX_CodeFormatterExpert.pas" />
     <DCCReference Include="..\..\source\GX_CodeFormatterGXConfigWrapper.pas" />
-    <DCCReference Include="..\..\source\GX_CodeFormatterRegisterEditorExpert.pas" />
     <DCCReference Include="..\..\source\GX_eCodeFormatter.pas" />
     <DCCReference Include="..\..\source\GX_Formatter.pas" />
+    <DCCReference Include="GX_CodeFormatterRegisterExpert.pas" />
   </ItemGroup>
 </Project>
