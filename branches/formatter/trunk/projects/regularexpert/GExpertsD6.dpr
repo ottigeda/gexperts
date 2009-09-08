@@ -1,6 +1,6 @@
 library GExpertsD6;
 
-{$R '..\..\gx\Images\GXIcons.res' '..\..\gx\Images\GXIcons.rc'}
+{$R '..\..\gx\images\GXIcons.res' '..\..\gx\images\GXIcons.rc'}
 {$R *.res}
 {$E dll}
 
@@ -176,5 +176,6 @@ uses
   GX_AboutExperimental in '..\..\source\GX_AboutExperimental.pas' {fmAboutExperimental},
   GX_CodeFormatterRegisterExpert in 'GX_CodeFormatterRegisterExpert.pas';
 
+begin
 end.
 

@@ -1,6 +1,6 @@
 library GExpertsBDS2006;
 
-{$R '..\..\gx\Images\GXIcons.res' '..\..\gx\Images\GXIcons.rc'}
+{$R '..\..\gx\images\GXIcons.res' '..\..\gx\images\GXIcons.rc'}
 {$R *.res}
 {$E dll}
 

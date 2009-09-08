@@ -33,6 +33,7 @@
 			<DCC_UsePackage>rtl;vcl;vclx;vclactnband;dbrtl;vcldb;vcldbx;bdertl;dsnap;dbxcds;DbxCommonDriver;dbexpress;dsnapcon;adortl;IndyCore;IndySystem;IndyProtocols;xmlrtl;inet;VclSmp;vclie;websnap;webdsnap;inetdbbde;inetdbxpress;soaprtl;designide</DCC_UsePackage>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
+			<DCC_DependencyCheckOutputName>..\..\editorexpert\GExpertsRS2010.dll</DCC_DependencyCheckOutputName>
 			<Version>7.0</Version>
 			<DCC_DebugInformation>False</DCC_DebugInformation>
 			<DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
@@ -48,7 +49,7 @@
 		<PropertyGroup Condition="'$(Cfg_2)'!=''">
 			<Version>7.0</Version>
 			<DCC_ExeOutput>C:\Program Files\GExperts for RAD Studio 2010\</DCC_ExeOutput>
-			<DCC_DependencyCheckOutputName>C:\Program Files\GExperts for RAD Studio 2009\GExpertsRS2010.dll</DCC_DependencyCheckOutputName>
+			<DCC_DependencyCheckOutputName>C:\Program Files\GExperts for RAD Studio 2010\GExpertsRS2010.dll</DCC_DependencyCheckOutputName>
 			<DCC_ObjOutput>..\..\dcu\delphi2007</DCC_ObjOutput>
 			<DCC_HppOutput>..\..\dcu\delphi2007</DCC_HppOutput>
 			<DCC_UnitSearchPath>$(BDS)\lib\Debug;$(BDS)\Lib\Debug\Indy10;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
@@ -62,7 +63,7 @@
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
 			<RcCompile Include="..\..\gx\images\GXIcons.rc">
-				<Form>GXIcons.res</Form>
+				<Form>..\..\gx\images\GXIcons.res</Form>
 			</RcCompile>
 			<DCCReference Include="..\..\gx\source\Framework\GX_About.pas">
 				<Form>fmAbout</Form>
@@ -244,6 +245,7 @@
 			<DCCReference Include="..\..\gx\source\MacroLibrary\GX_MacroLibraryConfig.pas">
 				<Form>fmGxMacroLibraryConfig</Form>
 			</DCCReference>
+			<DCCReference Include="..\..\gx\source\Framework\GX_MacroParser.pas"/>
 			<DCCReference Include="..\..\gx\source\MacroTemplates\GX_MacroSelect.pas">
 				<Form>fmMacroSelect</Form>
 			</DCCReference>
@@ -371,6 +373,7 @@
 			<DCCReference Include="..\..\gx\source\Framework\GX_VerDepConst.pas"/>
 			<DCCReference Include="..\..\gx\source\Utils\GX_XmlUtils.pas"/>
 			<DCCReference Include="..\..\gx\source\BackupProject\GX_Zipper.pas"/>
+			<DCCReference Include="..\..\source\GX_Formatter.pas"/>
 			<DCCReference Include="..\..\source\GX_CodeFormatterBreakpoints.pas"/>
 			<DCCReference Include="..\..\source\GX_CodeFormatterConfig.pas">
 				<Form>fmCodeFormatterConfig</Form>
@@ -398,7 +401,6 @@
 			<DCCReference Include="..\..\source\GX_AboutExperimental.pas">
 				<Form>fmAboutExperimental</Form>
 			</DCCReference>
-			<DCCReference Include="..\..\source\GX_Formatter.pas"/>
 			<DCCReference Include="GX_CodeFormatterRegisterExpert.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>

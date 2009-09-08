@@ -1,6 +1,6 @@
 library GExpertsRS2010;
 
-{$R 'GXIcons.res' '..\..\gx\images\GXIcons.rc'}
+{$R '..\..\gx\images\GXIcons.res' '..\..\gx\images\GXIcons.rc'}
 {$R *.res}
 {$E dll}
 
@@ -93,6 +93,7 @@ uses
   GX_MacroLibrary in '..\..\gx\source\MacroLibrary\GX_MacroLibrary.pas' {fmMacroLibrary},
   GX_MacroLibraryNamePrompt in '..\..\gx\source\MacroLibrary\GX_MacroLibraryNamePrompt.pas' {fmMacroLibraryNamePrompt},
   GX_MacroLibraryConfig in '..\..\gx\source\MacroLibrary\GX_MacroLibraryConfig.pas' {fmGxMacroLibraryConfig},
+  GX_MacroParser in '..\..\gx\source\Framework\GX_MacroParser.pas',
   GX_MacroSelect in '..\..\gx\source\MacroTemplates\GX_MacroSelect.pas' {fmMacroSelect},
   GX_MacroTemplateEdit in '..\..\gx\source\MacroTemplates\GX_MacroTemplateEdit.pas' {fmMacroTemplateEdit},
   GX_MacroTemplates in '..\..\gx\source\MacroTemplates\GX_MacroTemplates.pas' {fmMacroTemplates},
@@ -153,6 +154,7 @@ uses
   GX_VerDepConst in '..\..\gx\source\Framework\GX_VerDepConst.pas',
   GX_XmlUtils in '..\..\gx\source\Utils\GX_XmlUtils.pas',
   GX_Zipper in '..\..\gx\source\BackupProject\GX_Zipper.pas',
+  GX_Formatter in '..\..\source\GX_Formatter.pas',
   GX_CodeFormatterBreakpoints in '..\..\source\GX_CodeFormatterBreakpoints.pas',
   GX_CodeFormatterConfig in '..\..\source\GX_CodeFormatterConfig.pas' {fmCodeFormatterConfig},
   GX_CodeFormatterConfigHandler in '..\..\source\GX_CodeFormatterConfigHandler.pas',
@@ -172,7 +174,6 @@ uses
   GX_CodeFormatterStack in '..\..\source\engine\GX_CodeFormatterStack.pas',
   GX_CodeFormatterEngine in '..\..\source\engine\GX_CodeFormatterEngine.pas',
   GX_AboutExperimental in '..\..\source\GX_AboutExperimental.pas' {fmAboutExperimental},
-  GX_Formatter in '..\..\source\GX_Formatter.pas',
   GX_CodeFormatterRegisterExpert in 'GX_CodeFormatterRegisterExpert.pas';
 
 begin
