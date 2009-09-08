@@ -163,7 +163,7 @@
 			<VersionInfoKeys Name="LegalTrademarks" Type="String"></VersionInfoKeys>
 			<VersionInfoKeys Name="OriginalFilename" Type="String">GExpertsBDS2006.dll</VersionInfoKeys>
 			<VersionInfoKeys Name="ProductName" Type="String">GExperts for BDS 2006</VersionInfoKeys>
-			<VersionInfoKeys Name="ProductVersion" Type="String">1.33 Beta 2 experimental 2009-06-14</VersionInfoKeys>
+			<VersionInfoKeys Name="ProductVersion" Type="String">1.33 Beta 2 Experimental 2009-06-14</VersionInfoKeys>
 			<VersionInfoKeys Name="Comments">Open Source</VersionInfoKeys>
 			<VersionInfoKeys Name="Compile Date">Saturday, October 06, 2001 3:07 PM</VersionInfoKeys>
 			<VersionInfoKeys Name="CompileDate">2009-06-14 16:00</VersionInfoKeys>

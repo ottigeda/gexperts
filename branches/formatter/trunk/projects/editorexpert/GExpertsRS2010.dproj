@@ -23,11 +23,11 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
-			<DCC_ExeOutput>..\..\editorexpert</DCC_ExeOutput>
+			<DCC_ExeOutput>..\..\standalone\</DCC_ExeOutput>
 			<DCC_UnitSearchPath>..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\gx\externalsource\UniSynEdit;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<DCC_Define>synedit;$(DCC_Define)</DCC_Define>
 			<DCC_DcuOutput>..\..\dcu\delphi2009</DCC_DcuOutput>
-			<DCC_DependencyCheckOutputName>..\..\editorexpert\GExpertsRS2010.dll</DCC_DependencyCheckOutputName>
+			<DCC_DependencyCheckOutputName>..\..\standalone\GExpertsRS2010.dll</DCC_DependencyCheckOutputName>
 			<UsePackages>true</UsePackages>
 			<GenDll>true</GenDll>
 			<DCC_UsePackage>rtl;vcl;vclx;vclactnband;dbrtl;vcldb;vcldbx;bdertl;dsnap;dbxcds;DbxCommonDriver;dbexpress;dsnapcon;adortl;IndyCore;IndySystem;IndyProtocols;xmlrtl;inet;VclSmp;vclie;websnap;webdsnap;inetdbbde;inetdbxpress;soaprtl;designide</DCC_UsePackage>
@@ -46,9 +46,9 @@
 			<DCC_IncludePath>..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\..\synedit\source;$(DCC_IncludePath)</DCC_IncludePath>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2)'!=''">
-			<DCC_DependencyCheckOutputName>C:\Program Files\GExperts for RAD Studio 2009\GExpertsRS2010.dll</DCC_DependencyCheckOutputName>
 			<Version>7.0</Version>
-			<DCC_ExeOutput>C:\Program Files\GExperts for RAD Studio 2009\</DCC_ExeOutput>
+			<DCC_ExeOutput>C:\Program Files\GExperts for RAD Studio 2010\</DCC_ExeOutput>
+			<DCC_DependencyCheckOutputName>C:\Program Files\GExperts for RAD Studio 2009\GExpertsRS2010.dll</DCC_DependencyCheckOutputName>
 			<DCC_ObjOutput>..\..\dcu\delphi2007</DCC_ObjOutput>
 			<DCC_HppOutput>..\..\dcu\delphi2007</DCC_HppOutput>
 			<DCC_UnitSearchPath>$(BDS)\lib\Debug;$(BDS)\Lib\Debug\Indy10;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
@@ -422,7 +422,7 @@
 						<Parameters Name="UseLauncher">False</Parameters>
 						<Parameters Name="LoadAllSymbols">True</Parameters>
 						<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
-						<Parameters Name="HostApplication">C:\Program Files\CodeGear\RAD Studio\6.0\bin\bds.exe</Parameters>
+						<Parameters Name="HostApplication">C:\Program Files\Embarcadero\RAD Studio\7.0\bin\bds.exe</Parameters>
 					</Parameters>
 					<VersionInfo>
 						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
@@ -456,10 +456,6 @@
 					<Source>
 						<Source Name="MainSource">GExpertsRS2010.dpr</Source>
 					</Source>
-					<Excluded_Packages>
-						<Excluded_Packages Name="$(BDS)\bin\dcloffice2k140.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-						<Excluded_Packages Name="$(BDS)\bin\dclofficexp140.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
-					</Excluded_Packages>
 				</Delphi.Personality>
 			</BorlandProject>
 			<ProjectFileVersion>12</ProjectFileVersion>
