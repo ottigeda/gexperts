@@ -172,8 +172,8 @@ uses
   GX_CodeFormatterStack in '..\..\source\engine\GX_CodeFormatterStack.pas',
   GX_CodeFormatterEngine in '..\..\source\engine\GX_CodeFormatterEngine.pas',
   GX_AboutExperimental in '..\..\source\GX_AboutExperimental.pas' {fmAboutExperimental},
-  GX_CodeFormatterRegisterEditorExpert in '..\..\source\GX_CodeFormatterRegisterEditorExpert.pas',
-  GX_Formatter in '..\..\source\GX_Formatter.pas';
+  GX_Formatter in '..\..\source\GX_Formatter.pas',
+  GX_CodeFormatterRegisterEditorExpert in '..\..\source\GX_CodeFormatterRegisterEditorExpert.pas';
 
 begin
 end.

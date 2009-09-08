@@ -159,7 +159,9 @@ uses
   GX_CodeFormatterDefaultSettings in '..\..\source\GX_CodeFormatterDefaultSettings.pas',
   GX_CodeFormatterDone in '..\..\source\GX_CodeFormatterDone.pas' {fmCodeFormatterDone},
   GX_CodeFormatterEditCapitalization in '..\..\source\GX_CodeFormatterEditCapitalization.pas' {fmCodeFormatterEditCapitalization},
+  GX_CodeFormatterExpert in '..\..\source\GX_CodeFormatterExpert.pas',
   GX_CodeFormatterGXConfigWrapper in '..\..\source\GX_CodeFormatterGXConfigWrapper.pas',
+  GX_eCodeFormatter in '..\..\source\GX_eCodeFormatter.pas',
   GX_CodeFormatterBookmarks in '..\..\source\GX_CodeFormatterBookmarks.pas',
   GX_CollectionLikeLists in '..\..\source\common\GX_CollectionLikeLists.pas',
   GX_CodeFormatterTypes in '..\..\source\common\GX_CodeFormatterTypes.pas',
@@ -170,10 +172,8 @@ uses
   GX_CodeFormatterStack in '..\..\source\engine\GX_CodeFormatterStack.pas',
   GX_CodeFormatterEngine in '..\..\source\engine\GX_CodeFormatterEngine.pas',
   GX_AboutExperimental in '..\..\source\GX_AboutExperimental.pas' {fmAboutExperimental},
-  GX_CodeFormatterExpert in '..\..\source\GX_CodeFormatterExpert.pas',
   GX_Formatter in '..\..\source\GX_Formatter.pas',
-  GX_CodeFormatterRegisterRegularExpert in '..\..\source\GX_CodeFormatterRegisterRegularExpert.pas',
-  GX_eCodeFormatter in '..\..\source\GX_eCodeFormatter.pas';
+  GX_CodeFormatterRegisterRegularExpert in '..\..\source\GX_CodeFormatterRegisterRegularExpert.pas';
 
 begin
 end.
