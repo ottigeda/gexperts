@@ -1,4 +1,4 @@
-unit GX_CodeFormatterRegisterEditorExpert;
+unit GX_CodeFormatterRegisterExpert;
 
 interface
 
