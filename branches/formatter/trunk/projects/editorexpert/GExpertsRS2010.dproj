@@ -23,17 +23,16 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
-			<DCC_ExeOutput>..\..\standalone\</DCC_ExeOutput>
+			<DCC_ExeOutput>..\..\editorexpert\</DCC_ExeOutput>
 			<DCC_UnitSearchPath>..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\gx\externalsource\UniSynEdit;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<DCC_Define>synedit;$(DCC_Define)</DCC_Define>
 			<DCC_DcuOutput>..\..\dcu\delphi2010</DCC_DcuOutput>
-			<DCC_DependencyCheckOutputName>..\..\standalone\GExpertsRS2010.dll</DCC_DependencyCheckOutputName>
+			<DCC_DependencyCheckOutputName>..\..\editorexpert\GExpertsRS2010.dll</DCC_DependencyCheckOutputName>
 			<UsePackages>true</UsePackages>
 			<GenDll>true</GenDll>
 			<DCC_UsePackage>rtl;vcl;vclx;vclactnband;dbrtl;vcldb;vcldbx;bdertl;dsnap;dbxcds;DbxCommonDriver;dbexpress;dsnapcon;adortl;IndyCore;IndySystem;IndyProtocols;xmlrtl;inet;VclSmp;vclie;websnap;webdsnap;inetdbbde;inetdbxpress;soaprtl;designide</DCC_UsePackage>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
-			<DCC_DependencyCheckOutputName>..\..\editorexpert\GExpertsRS2010.dll</DCC_DependencyCheckOutputName>
 			<Version>7.0</Version>
 			<DCC_DebugInformation>False</DCC_DebugInformation>
 			<DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
