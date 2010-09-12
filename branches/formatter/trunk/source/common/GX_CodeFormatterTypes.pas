@@ -67,7 +67,7 @@ const
     rtAbsolute, rtForward];
 
 const
-  NReservedWords = 109;
+  NReservedWords = 111;
   {IndentProcedure = True;}
 
 type
@@ -126,6 +126,7 @@ const
     (ReservedType: rtForward; Words: 'forward'),
     (ReservedType: rtProcedure; Words: 'function'),
     (ReservedType: rtReserved; Words: 'goto'),
+    (ReservedType: rtReserved; Words: 'helper'),
     (ReservedType: rtIf; Words: 'if'),
     (ReservedType: rtImplementation; Words: 'implementation'),
     (ReservedType: rtFuncDirective; Words: 'implements'),
@@ -167,6 +168,7 @@ const
     (ReservedType: rtFuncDirective; Words: 'read'),
     (ReservedType: rtFuncDirective; Words: 'readonly'),
     (ReservedType: rtRecord; Words: 'record'),
+    (ReservedType: rtReserved; Words: 'reference'),
     (ReservedType: rtFuncDirective; Words: 'register'),
     (ReservedType: rtFuncDirective; Words: 'reintroduce'),
     (ReservedType: rtRepeat; Words: 'repeat'),
@@ -199,13 +201,18 @@ const
     (ReservedType: rtOper; Words: 'xor')
     );
 
-//type
-//  {: a TStrCollection that compares case insensitively }
-//  TKeywordColl = class(TStrCollection)
-//  public
-//    {: compares Key1 and Key2 as strings, case insensitively }
-//    function Compare(Key1, Key2: Pointer): Integer; override;
-//  end;
+Type
+  {: Holds a special "option" for a tpascal token, some of then is just override a setting or behavior }
+  TTokenOption = (toFeedNewLine);
+  TTokenOptions = Set Of TTokenOption;
+
+  //type
+  //  {: a TStrCollection that compares case insensitively }
+  //  TKeywordColl = class(TStrCollection)
+  //  public
+  //    {: compares Key1 and Key2 as strings, case insensitively }
+  //    function Compare(Key1, Key2: Pointer): Integer; override;
+  //  end;
 
 {: changes the string case as specified in aCase
    @param aStr is the input string

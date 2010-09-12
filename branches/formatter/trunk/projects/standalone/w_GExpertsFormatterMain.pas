@@ -1,5 +1,8 @@
 unit w_GExpertsFormatterMain;
 
+// Calls GExperts dll for formatting
+// stand alone version by Ulrich Gerhardt
+
 interface
 
 uses
@@ -41,13 +44,17 @@ uses
 
 type
   TFormatFileFunc = function(_FileName: PChar): Boolean;
+  TFormatFilesFunc = function(_FileNames: PChar): Boolean;
+
 var
   FormatFile: TFormatFileFunc = nil;
+  FormatFiles: TFormatFilesFunc = nil;
   HModule: THandle;
 
 function LoadGExperts: boolean;
 const
-  EntryPoint = 'FormatFile';
+  EntryPoint_FormatFile = 'FormatFile';
+  EntryPoint_FormatFiles = 'FormatFiles';
 var
   p: Pointer;
 begin
@@ -57,15 +64,20 @@ begin
     ShowMessageFmt('Could not load %s', [GExpertsDll]);
     exit;
   end;
-
-  p := GetProcAddress(HModule, EntryPoint);
+  p := GetProcAddress(HModule, EntryPoint_FormatFile);
   if p = nil then begin
     ShowMessageFmt('%s does not export entry point %s', [GExpertsDll,
-      EntryPoint]);
+      EntryPoint_FormatFile]);
     exit;
   end;
   FormatFile := p;
-
+  p := GetProcAddress(HModule, EntryPoint_FormatFiles);
+  if p = nil then begin
+    ShowMessageFmt('%s does not export entry point %s', [GExpertsDll,
+      EntryPoint_FormatFiles]);
+    exit;
+  end;
+  FormatFiles := p;
   Result := true;
 end;
 
@@ -86,8 +98,24 @@ begin
 end;
 
 procedure Batch;
+var
+  FileName: string;
+  FileList: TStringList;
+  i: Integer;
 begin
-  doFormatFile(ParamStr(1));
+  FileList := TStringList.Create;
+  try
+    for i := 1 to ParamCount do begin
+      FileName := ParamStr(i);
+      FileName := ExpandFileName(FileName);
+      FileList.Add(FileName);
+    end;
+    FileList.StrictDelimiter := True;
+    FileList.Delimiter := ';';
+    FormatFiles(PChar(FileList.DelimitedText));
+  finally
+    FileList.Free;
+  end;
 end;
 
 procedure Main;

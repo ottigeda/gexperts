@@ -123,8 +123,41 @@ begin
   end;
 end;
 
+procedure FormatFiles(AFileNames: PChar);
+{$IFNDEF GX_BCB} export;
+{$ENDIF GX_BCB}
+var
+  FormatterStandAlone: TGxCodeFormatterExpert;
+  FileList: TStringList;
+  i: Integer;
+begin
+  InitSharedResources;
+  try
+    FormatterStandAlone := TGxCodeFormatterExpert.Create;
+    try
+      FormatterStandAlone.LoadSettings;
+      FileList := TStringList.Create;
+      try
+        FileList.StrictDelimiter := True;
+        FileList.Delimiter := ';';
+        FileList.DelimitedText := AFileNames;
+        for i := 0 to Pred(FileList.Count) do
+          FormatterStandAlone.FExpert.FormatFile(FileList[i]);
+      finally
+        FileList.Free;
+      end;
+      FormatterStandAlone.SaveSettings;
+    finally
+      FormatterStandAlone.Free;
+    end;
+  finally
+    FreeSharedResources;
+  end;
+end;
+
 exports
-  FormatFile;
+  FormatFile,
+  FormatFiles;
 
 end.
 

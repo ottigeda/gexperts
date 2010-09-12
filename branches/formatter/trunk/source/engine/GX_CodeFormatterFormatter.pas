@@ -114,6 +114,39 @@ var
   rtype: TReservedType;
   wType: TWordType;
   Idx: Integer;
+
+  function DetectGeneric: Boolean;
+  var
+    Next: TPascalToken;
+    Idx, OffSet: Integer;
+  begin
+    Result := False;
+    if FStack.GetTopType in [rtType, rtProcedure] then
+      Result := True
+    else if GetNextNoComment(_TokenIdx, Next, OffSet) then
+      if Next.ReservedType in [rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then
+        Result := True
+      else begin
+        Idx := _TokenIdx + OffSet;
+        while GetNextNoComment(Idx, Next, OffSet) do begin
+          case Next.ReservedType of
+            rtLogOper:
+              if GetNextNoComment(Idx + OffSet, Next) then begin
+                if Next.ReservedType in [rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then begin
+                  Result := true;
+                  Exit;
+                end else
+                  Inc(Idx, OffSet + 1);
+              end else
+                Exit;
+            rtComma: Inc(Idx, OffSet + 1);
+          else
+            Exit;
+          end;
+        end;
+      end;
+  end;
+
 begin
   if _CurrentToken = nil then
     Exit;
@@ -138,7 +171,12 @@ begin
       _CurrentToken.SetSpace([spBefore], True);
     rtIf, rtUntil, rtWhile, rtCase, rtRecord:
       _CurrentToken.SetSpace([spAfter], True);
-    rtOper, rtMathOper, rtPlus, rtMinus, rtLogOper, rtEquals:
+    rtLogOper:
+      if DetectGeneric then
+        _CurrentToken.SetSpace([], True)
+      else
+        _CurrentToken.SetSpace(Settings.SpaceOperators, True);
+    rtOper, rtMathOper, rtPlus, rtMinus, rtEquals:
       _CurrentToken.SetSpace(Settings.SpaceOperators, True);
     rtEqualOper:
       _CurrentToken.SetSpace(Settings.SpaceEqualOper, True);
@@ -504,7 +542,7 @@ var
     next: TPascalToken;
     TempWordIdx: Integer;
     Prev1: TPascalToken;
-    functdeclare, NoBlankLine: Boolean;
+    FunctDeclare, IsDelegate, NoBlankLine: Boolean;
     FeedRound: TFeedBegin;
     WType: TWordType;
 
@@ -674,7 +712,10 @@ var
           end;
           WrapIndent := False;
         end;
-      rtLeftHook, rtWhile, rtOn: // left hook = '['
+      rtWhile: // Helper For
+        if not PrevTokenIsRType(rtReserved) then
+          FStack.Push(FCurrentRType, 0);
+      rtLeftHook, rtOn: // left hook = '['
         FStack.Push(FCurrentRType, 0);
       rtRightBr: begin
           repeat
@@ -805,6 +846,7 @@ var
           end else
             functdeclare := False;
           NoBlankLine := False;
+          IsDelegate := False;
           if not functdeclare then begin
             RemoveMe := 0;
             repeat
@@ -813,7 +855,12 @@ var
                 repeat
                   Inc(RemoveMe);
                 until not GetToken(FTokenIdx + RemoveMe, next) or (next.ReservedType = rtRightBr);
-            until (next = nil) or (next.ReservedType = rtSemiColon);
+            until (Next = nil) or (Next.ReservedType in [rtSemiColon, rtBegin]);
+            // Begin before a SemiColon, presume that is a anonymous delegate...
+            if Next.ReservedType = rtBegin then begin
+              IsDelegate := True;
+              Next.AddOption(toFeedNewLine); // Force NewLine Feed!
+            end;
             if next <> nil then begin
               repeat
                 Inc(RemoveMe);
@@ -824,15 +871,18 @@ var
           end;
           if not (functdeclare or InInterfacePart or (FStack.GetTopType = rtClass)) then begin
             if not FStack.HasType(rtProcedure) then begin
-              if (FStack.nIndent > 0) then begin
-                FStack.nIndent := 0;
-                SetPrevLineIndent(NTmp);
+              if IsDelegate then
+              else begin
+                if (FStack.nIndent > 0) then begin
+                  FStack.nIndent := 0;
+                  SetPrevLineIndent(NTmp);
+                end;
+                FStack.ProcLevel := 0;
+                if Settings.BlankProc and not NoBlankLine then
+                  CheckBlankLinesAroundProc;
+                if Settings.CommentFunction then
+                  PutCommentBefore('{ procedure }');
               end;
-              FStack.ProcLevel := 0;
-              if Settings.BlankProc and not NoBlankLine then
-                CheckBlankLinesAroundProc;
-              if Settings.CommentFunction then
-                PutCommentBefore('{ procedure }');
             end else begin
               if Settings.BlankSubProc and not NoBlankLine then
                 CheckBlankLinesAroundProc;
@@ -844,11 +894,15 @@ var
             end;
             FStack.Push(rtProcedure, 0);
           end else begin
-            if (not functdeclare) and (not (FStack.GetTopType = rtClass)) then begin
-              FStack.nIndent := 0;
-              SetPrevLineIndent(NTmp);
+            if (FStack.GetTopType = rtType) and Assigned(Prev1) and (Prev1.ReservedType in [rtOf, rtOper]) then
+              // Array of Procedure, Reference To Function...
+            else begin
+              if (not functdeclare) and (not (FStack.GetTopType = rtClass)) then begin
+                FStack.nIndent := 0;
+                SetPrevLineIndent(NTmp);
+              end;
+              FStack.Push(rtProcDeclare, 0);
             end;
-            FStack.Push(rtProcDeclare, 0);
           end;
         end;
       rtInterface: begin
@@ -880,7 +934,10 @@ var
             FStack.NIndent := FStack.NIndent - 1;
           case FCurrentRType of
             rtBegin:
-              FeedRound := Settings.FeedRoundBegin;
+              if FCurrentToken.HasOption(toFeedNewLine) then
+                FeedRound := NewLine
+              else
+                FeedRound := Settings.FeedRoundBegin;
             rtTry:
               FeedRound := Settings.FeedRoundTry;
           else
@@ -921,7 +978,7 @@ var
             FStack.nIndent := 1;
           {in classes.pas I found
           t =  type AnsiString}
-          if (FStack.GetTopType in [rtVar, rtType]) then
+          if FStack.GetTopType in [rtVar, rtType] then
             FStack.Pop;
           FStack.Push(FCurrentRType, 0);
           if not PrevTokenIsRType(rtEquals) then begin

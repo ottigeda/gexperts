@@ -34,11 +34,16 @@ type
     procedure SetExpression(const AExpression: string); virtual;
     procedure SetCase(ACase: TCase); virtual;
     function GetCase: TCase; virtual;
+    Procedure SetOptions(AOptions: TTokenOptions); Virtual;
+    Function GetOptions: TTokenOptions; Virtual;
+    Procedure AddOption(AOption: TTokenOption);
+    Function HasOption(AOption: TTokenOption): Boolean;
 
     property ExpressionCase: TCase read GetCase write SetCase;
     property ReservedType: TReservedType read GetReservedType write SetReservedType;
     property WordType: TWordType read GetWordType;
     property Content: string read GetString;
+    Property Options: TTokenOptions Read GetOptions Write SetOptions;
   end;
 
   TLineFeed = class(TPascalToken)
@@ -66,6 +71,7 @@ type
     FSpaceType: TSpaceSet;
     FCaseType: TCase;
     FReservedType: TReservedType;
+    FOptions: TTokenOptions;
     constructor Create(AType: TWordType; const AExpression: string);
     procedure CheckReserved;
     procedure SetSpace(ASpace: TSpaceSet; AState: Boolean); override;
@@ -80,6 +86,8 @@ type
     procedure SetExpression(const AExpression: string); override;
     procedure SetCase(ACase: TCase); override;
     function GetCase: TCase; override;
+    Procedure SetOptions(AOptions: TTokenOptions); Override;
+    Function GetOptions: TTokenOptions; Override;
   end;
 
   TAlignExpression = class(TExpression)
@@ -111,6 +119,16 @@ end;
 function TPascalToken.GetExpression(out AExpression: string): Boolean;
 begin
   Result := False;
+End;
+
+Function TPascalToken.GetOptions: TTokenOptions;
+Begin
+  Result := [];
+End;
+
+Function TPascalToken.HasOption(AOption: TTokenOption): Boolean;
+Begin
+  Result := AOption In Options;
 end;
 
 function TPascalToken.Space(ASpace: TSpace): Boolean;
@@ -119,6 +137,10 @@ begin
 end;
 
 procedure TPascalToken.SetExpression(const AExpression: string);
+Begin
+End;
+
+Procedure TPascalToken.SetOptions(AOptions: TTokenOptions);
 begin
 end;
 
@@ -133,6 +155,11 @@ end;
 
 procedure TPascalToken.SetReservedType(AReservedType: TReservedType);
 begin
+End;
+
+Procedure TPascalToken.AddOption(AOption: TTokenOption);
+Begin
+  Options := Options + [AOption];
 end;
 
 function TPascalToken.ChangeComment(ACommChar: char): Boolean;
@@ -251,8 +278,7 @@ begin
               '/', '*': SetReservedType(rtMathOper);
               '<', '>': SetReservedType(rtLogOper);
             end;
-          end
-          else if Length(Expr) = 2 then begin
+          End Else If Length(Expr) = 2 Then Begin
             if Expr = '.)' then
               SetReservedType(rtRightHook)
             else if Expr = '(.' then
@@ -273,6 +299,11 @@ end;
 procedure TExpression.SetExpression(const AExpression: string);
 begin
   FExpression := AExpression
+End;
+
+Procedure TExpression.SetOptions(AOptions: TTokenOptions);
+Begin
+  FOptions := AOptions;
 end;
 
 function TExpression.GetWordType: TWordType;
@@ -340,8 +371,13 @@ begin
     inc(ALength);
 end;
 
-function strSpaceE(Dest: PAnsiChar; n: Integer): PAnsiChar;
-var
+Function TExpression.GetOptions: TTokenOptions;
+Begin
+  Result := FOptions;
+End;
+
+Function strSpaceE(Dest: PAnsiChar; n: Integer): PAnsiChar;
+Var
   I: Integer;
 begin
   Result := Dest;
