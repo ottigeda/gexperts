@@ -37,7 +37,8 @@ uses
 {$IFOPT D+}GX_DbugIntf,
 {$ENDIF}
   Menus,
-  GX_GExperts;
+  GX_GExperts,
+  GX_About;
 
   { TCodeFormatterExpert }
 
@@ -155,9 +156,51 @@ begin
   end;
 end;
 
+procedure ConfigureFormatter();
+{$IFNDEF GX_BCB} export;
+{$ENDIF GX_BCB}
+var
+  FormatterStandAlone: TGxCodeFormatterExpert;
+begin
+  InitSharedResources;
+  try
+    FormatterStandAlone := TGxCodeFormatterExpert.Create;
+    try
+      FormatterStandAlone.LoadSettings;
+      FormatterStandAlone.Configure;
+      FormatterStandAlone.SaveSettings;
+    finally
+      FormatterStandAlone.Free;
+    end;
+  finally
+    FreeSharedResources;
+  end;
+end;
+
+procedure AboutFormatter();
+{$IFNDEF GX_BCB} export;
+var
+  frm: TfmAbout;
+{$ENDIF GX_BCB}
+begin
+  InitSharedResources;
+  try
+    frm := gblAboutFormClass.Create(nil);
+    try
+      frm.ShowModal;
+    finally
+      frm.Free;
+    end;
+  finally
+    FreeSharedResources;
+  end;
+end;
+
 exports
   FormatFile,
-  FormatFiles;
+  FormatFiles,
+  ConfigureFormatter,
+  AboutFormatter;
 
 end.
 

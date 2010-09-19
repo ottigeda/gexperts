@@ -49,6 +49,9 @@
 				<Form>f_GExpertsFormatterMain</Form>
 			</DCCReference>
 			<DCCReference Include="..\..\..\gx\source\Framework\GX_VerDepConst.pas"/>
+			<DCCReference Include="..\w_GExpertsFormatterAbout.pas">
+				<Form>f_GExpertsFormatterAbout</Form>
+			</DCCReference>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>

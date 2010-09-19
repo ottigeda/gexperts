@@ -67,6 +67,24 @@ object f_GExpertsFormatterMain: Tf_GExpertsFormatterMain
     TabOrder = 3
     OnClick = b_ExitClick
   end
+  object b_Settings: TButton
+    Left = 88
+    Top = 64
+    Width = 75
+    Height = 25
+    Caption = 'Settings ...'
+    TabOrder = 4
+    OnClick = b_SettingsClick
+  end
+  object b_About: TButton
+    Left = 8
+    Top = 64
+    Width = 75
+    Height = 25
+    Caption = 'About ...'
+    TabOrder = 5
+    OnClick = b_AboutClick
+  end
   object od_File: TOpenDialog
     DefaultExt = '.pas'
     Filter = 'Delphi Sourcecode (*.pas)|*.pas|All Files (*.*)|*.*'

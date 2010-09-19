@@ -15,7 +15,8 @@ uses
   Controls,
   Forms,
   Dialogs,
-  StdCtrls;
+  StdCtrls,
+  w_GExpertsFormatterAbout;
 
 type
   Tf_GExpertsFormatterMain = class(TForm)
@@ -25,12 +26,17 @@ type
     b_SelectFile: TButton;
     b_Format: TButton;
     b_Exit: TButton;
+    b_Settings: TButton;
+    b_About: TButton;
     procedure b_ExitClick(Sender: TObject);
     procedure ed_FileToFormatChange(Sender: TObject);
     procedure b_SelectFileClick(Sender: TObject);
     procedure b_FormatClick(Sender: TObject);
+    procedure b_SettingsClick(Sender: TObject);
+    procedure b_AboutClick(Sender: TObject);
   private
   public
+    constructor Create(_Onwer: TComponent); override;
   end;
 
 procedure Main;
@@ -45,40 +51,35 @@ uses
 type
   TFormatFileFunc = function(_FileName: PChar): Boolean;
   TFormatFilesFunc = function(_FileNames: PChar): Boolean;
+  TConfigureFormatterProc = procedure;
+
+const
+  EntryPoint_FormatFile = 'FormatFile';
+  EntryPoint_FormatFiles = 'FormatFiles';
+  EntryPoint_ConfigureFormatter = 'ConfigureFormatter';
+  EntryPoint_AboutFormatter = 'AboutFormatter';
 
 var
   FormatFile: TFormatFileFunc = nil;
   FormatFiles: TFormatFilesFunc = nil;
+  ConfigureFormatter: TConfigureFormatterProc = nil;
+  AboutFormatter: TAboutFormatterProc = nil;
   HModule: THandle;
 
 function LoadGExperts: boolean;
-const
-  EntryPoint_FormatFile = 'FormatFile';
-  EntryPoint_FormatFiles = 'FormatFiles';
-var
-  p: Pointer;
 begin
-  Result := false;
   HModule := SafeLoadLibrary(GExpertsDll);
   if HModule = 0 then begin
     ShowMessageFmt('Could not load %s', [GExpertsDll]);
+    Result := false;
     exit;
   end;
-  p := GetProcAddress(HModule, EntryPoint_FormatFile);
-  if p = nil then begin
-    ShowMessageFmt('%s does not export entry point %s', [GExpertsDll,
-      EntryPoint_FormatFile]);
-    exit;
-  end;
-  FormatFile := p;
-  p := GetProcAddress(HModule, EntryPoint_FormatFiles);
-  if p = nil then begin
-    ShowMessageFmt('%s does not export entry point %s', [GExpertsDll,
-      EntryPoint_FormatFiles]);
-    exit;
-  end;
-  FormatFiles := p;
   Result := true;
+
+  FormatFile := GetProcAddress(HModule, EntryPoint_FormatFile);
+  FormatFiles := GetProcAddress(HModule, EntryPoint_FormatFiles);
+  ConfigureFormatter := GetProcAddress(HModule, EntryPoint_ConfigureFormatter);
+  AboutFormatter := GetProcAddress(HModule, EntryPoint_AboutFormatter);
 end;
 
 procedure Interactive;
@@ -122,20 +123,46 @@ procedure Main;
 begin
   if LoadGExperts then begin
     try
-      if ParamCount = 0 then
-        Interactive
-      else
+      if ParamCount = 0 then begin
+        if not Assigned(@FormatFile) then begin
+          ShowMessage(Format('%s does not export entry point %s.', [GExpertsDll, EntryPoint_FormatFile]));
+          exit;
+        end;
+        Interactive;
+      end else begin
+        if not Assigned(@FormatFiles) then begin
+          ShowMessage(Format('%s does not export entry point %s.', [GExpertsDll, EntryPoint_FormatFiles]));
+          exit;
+        end;
         Batch;
+      end;
     finally
       FreeLibrary(HModule);
     end;
   end;
 end;
 
+constructor Tf_GExpertsFormatterMain.Create(_Onwer: TComponent);
+begin
+  inherited;
+  b_Settings.Visible := Assigned(@ConfigureFormatter);
+  b_About.Visible := Assigned(@AboutFormatter);
+end;
+
 procedure Tf_GExpertsFormatterMain.b_SelectFileClick(Sender: TObject);
 begin
   if od_File.Execute then
     ed_FileToFormat.Text := od_File.FileName;
+end;
+
+procedure Tf_GExpertsFormatterMain.b_SettingsClick(Sender: TObject);
+begin
+  ConfigureFormatter;
+end;
+
+procedure Tf_GExpertsFormatterMain.b_AboutClick(Sender: TObject);
+begin
+  Tf_GExpertsFormatterAbout.Execute(Self, @AboutFormatter);
 end;
 
 procedure Tf_GExpertsFormatterMain.b_ExitClick(Sender: TObject);
