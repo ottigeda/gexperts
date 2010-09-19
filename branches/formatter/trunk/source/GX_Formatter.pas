@@ -9,6 +9,7 @@ interface
 uses
   SysUtils,
   Classes,
+  GX_GenericUtils,
   GX_Experts,
   GX_CodeFormatterExpert,
   GX_ConfigurationInfo;
@@ -89,8 +90,7 @@ begin
   Result := True;
 end;
 
-procedure TGxCodeFormatterExpert.InternalLoadSettings(Settings:
-  TGExpertsSettings);
+procedure TGxCodeFormatterExpert.InternalLoadSettings(Settings: TGExpertsSettings);
 begin
   inherited;
   FExpert.InternalLoadSettings(ConfigurationKey, Settings);
@@ -111,13 +111,19 @@ var
 begin
   InitSharedResources;
   try
-    FormatterStandAlone := TGxCodeFormatterExpert.Create;
     try
-      FormatterStandAlone.LoadSettings;
-      Result := FormatterStandAlone.FExpert.FormatFile(_FileName);
-      FormatterStandAlone.SaveSettings;
-    finally
-      FormatterStandAlone.Free;
+      FormatterStandAlone := TGxCodeFormatterExpert.Create;
+      try
+        FormatterStandAlone.LoadSettings;
+        Result := FormatterStandAlone.FExpert.FormatFile(_FileName);
+        FormatterStandAlone.SaveSettings;
+      finally
+        FormatterStandAlone.Free;
+      end;
+    except
+      on E: Exception do begin
+        GxLogAndShowException(E, e.Message);
+      end;
     end;
   finally
     FreeSharedResources;
@@ -134,22 +140,28 @@ var
 begin
   InitSharedResources;
   try
-    FormatterStandAlone := TGxCodeFormatterExpert.Create;
     try
-      FormatterStandAlone.LoadSettings;
-      FileList := TStringList.Create;
+      FormatterStandAlone := TGxCodeFormatterExpert.Create;
       try
-        FileList.StrictDelimiter := True;
-        FileList.Delimiter := ';';
-        FileList.DelimitedText := AFileNames;
-        for i := 0 to Pred(FileList.Count) do
-          FormatterStandAlone.FExpert.FormatFile(FileList[i]);
+        FormatterStandAlone.LoadSettings;
+        FileList := TStringList.Create;
+        try
+          FileList.StrictDelimiter := True;
+          FileList.Delimiter := ';';
+          FileList.DelimitedText := AFileNames;
+          for i := 0 to Pred(FileList.Count) do
+            FormatterStandAlone.FExpert.FormatFile(FileList[i]);
+        finally
+          FileList.Free;
+        end;
+        FormatterStandAlone.SaveSettings;
       finally
-        FileList.Free;
+        FormatterStandAlone.Free;
       end;
-      FormatterStandAlone.SaveSettings;
-    finally
-      FormatterStandAlone.Free;
+    except
+      on E: Exception do begin
+        GxLogAndShowException(E, e.Message);
+      end;
     end;
   finally
     FreeSharedResources;
@@ -164,13 +176,19 @@ var
 begin
   InitSharedResources;
   try
-    FormatterStandAlone := TGxCodeFormatterExpert.Create;
     try
-      FormatterStandAlone.LoadSettings;
-      FormatterStandAlone.Configure;
-      FormatterStandAlone.SaveSettings;
-    finally
-      FormatterStandAlone.Free;
+      FormatterStandAlone := TGxCodeFormatterExpert.Create;
+      try
+        FormatterStandAlone.LoadSettings;
+        FormatterStandAlone.Configure;
+        FormatterStandAlone.SaveSettings;
+      finally
+        FormatterStandAlone.Free;
+      end;
+    except
+      on E: Exception do begin
+        GxLogAndShowException(E, e.Message);
+      end;
     end;
   finally
     FreeSharedResources;
@@ -185,11 +203,17 @@ var
 begin
   InitSharedResources;
   try
-    frm := gblAboutFormClass.Create(nil);
     try
-      frm.ShowModal;
-    finally
-      frm.Free;
+      frm := gblAboutFormClass.Create(nil);
+      try
+        frm.ShowModal;
+      finally
+        frm.Free;
+      end;
+    except
+      on E: Exception do begin
+        GxLogAndShowException(E, e.Message);
+      end;
     end;
   finally
     FreeSharedResources;
