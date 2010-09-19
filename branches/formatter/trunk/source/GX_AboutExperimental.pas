@@ -20,6 +20,7 @@ type
   TfmAboutExperimental = class(TfmAbout)
     l_CreatedBy: TLabel;
     l_DummzeuchDe: TLabel;
+    l_Formatter: TLabel;
   private
   public
     constructor Create(_Owner: TComponent); override;
@@ -37,12 +38,15 @@ uses
 constructor TfmAboutExperimental.Create(_Owner: TComponent);
 begin
   inherited;
+
   SetFontUnderline(l_DummzeuchDe);
   SetFontColor(l_DummzeuchDe, clBlue);
+  SetFontUnderline(l_Formatter);
+  SetFontColor(l_Formatter, clBlue);
 end;
 
 initialization
-  //  TfmAbout.SetCustomBuildDetails('Experimental version by http://www.dummzeuch.de send bug reports to gexperts@dummzeuch.de');
+  TfmAboutExperimental.SetCustomBuildEmails('gexperts@dummzeuch.de', 'gexperts@dummzeuch.de');
   gblAboutFormClass := TfmAboutExperimental;
 end.
 
