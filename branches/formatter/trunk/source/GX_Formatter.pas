@@ -109,6 +109,7 @@ function FormatFile(_FileName: PChar): Boolean;
 var
   FormatterStandAlone: TGxCodeFormatterExpert;
 begin
+  Result := false;
   InitSharedResources;
   try
     try
