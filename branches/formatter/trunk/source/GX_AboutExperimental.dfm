@@ -72,10 +72,6 @@ inherited fmAboutExperimental: TfmAboutExperimental
     Height = 16
     Lines.Strings = (
       'invisible')
-    ExplicitLeft = 240
-    ExplicitTop = 224
-    ExplicitWidth = 89
-    ExplicitHeight = 16
   end
   inherited btnClose: TButton
     Top = 270
