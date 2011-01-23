@@ -62,6 +62,7 @@
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
 			<RcCompile Include="..\..\gx\images\GXIcons.rc">
+				<ContainerId>RC</ContainerId>
 				<Form>..\..\gx\images\GXIcons.res</Form>
 			</RcCompile>
 			<DCCReference Include="..\..\gx\source\Framework\GX_About.pas">
