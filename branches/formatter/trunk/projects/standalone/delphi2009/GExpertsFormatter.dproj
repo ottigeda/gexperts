@@ -49,9 +49,6 @@
 				<Form>f_GExpertsFormatterMain</Form>
 			</DCCReference>
 			<DCCReference Include="..\..\..\gx\source\Framework\GX_VerDepConst.pas"/>
-			<DCCReference Include="..\w_GExpertsFormatterAbout.pas">
-				<Form>f_GExpertsFormatterAbout</Form>
-			</DCCReference>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
@@ -79,7 +76,7 @@
 						<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
 					</Parameters>
 					<VersionInfo>
-						<VersionInfo Name="IncludeVerInfo">False</VersionInfo>
+						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 						<VersionInfo Name="AutoIncBuild">False</VersionInfo>
 						<VersionInfo Name="MajorVer">1</VersionInfo>
 						<VersionInfo Name="MinorVer">0</VersionInfo>
