@@ -131,6 +131,27 @@ begin
   end;
 end;
 
+{ This is a simple implementation. It originally TStrings.StrictDelimiter
+  was used but that only exists in Delphi 2006 and up. }
+
+procedure SplitStr(_InStr: string; _Delimiter: char; _sl: TStrings);
+var
+  Start: integer;
+  i: Integer;
+begin
+  Assert(Assigned(_sl));
+
+  _InStr := _InStr + ';';
+  _sl.Clear;
+  Start := 1;
+  for i := 1 to Length(_InStr) do begin
+    if _InStr[i] = _Delimiter then begin
+      _sl.Add(Copy(_InStr, Start, i - Start));
+      Start := i + 1;
+    end;
+  end;
+end;
+
 procedure FormatFiles(AFileNames: PChar);
 {$IFNDEF GX_BCB} export;
 {$ENDIF GX_BCB}
@@ -147,9 +168,7 @@ begin
         FormatterStandAlone.LoadSettings;
         FileList := TStringList.Create;
         try
-          FileList.StrictDelimiter := True;
-          FileList.Delimiter := ';';
-          FileList.DelimitedText := AFileNames;
+          SplitStr(AFileNames, ';', FileList);
           for i := 0 to Pred(FileList.Count) do
             FormatterStandAlone.FExpert.FormatFile(FileList[i]);
         finally
