@@ -25,7 +25,7 @@
 			<DCC_ExeOutput>..\..\..\standalone\</DCC_ExeOutput>
 			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
 			<DCC_Platform>x86</DCC_Platform>
-			<DCC_DcuOutput>..\..\..\dcu\delphi2010\</DCC_DcuOutput>
+			<DCC_DcuOutput>..\..\..\dcu\delphi2009\</DCC_DcuOutput>
 			<DCC_N>false</DCC_N>
 			<DCC_S>false</DCC_S>
 			<DCC_K>false</DCC_K>
@@ -49,6 +49,9 @@
 				<Form>f_GExpertsFormatterMain</Form>
 			</DCCReference>
 			<DCCReference Include="..\..\..\gx\source\Framework\GX_VerDepConst.pas"/>
+			<DCCReference Include="..\w_GExpertsFormatterAbout.pas">
+				<Form>f_GExpertsFormatterAbout</Form>
+			</DCCReference>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
