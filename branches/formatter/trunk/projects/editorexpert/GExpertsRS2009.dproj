@@ -5,7 +5,6 @@
 			<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
 			<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-			<DCC_DependencyCheckOutputName>..\..\editorexpert\GExpertsDelphi2009.dll</DCC_DependencyCheckOutputName>
 			<ProjectVersion>12.0</ProjectVersion>
 			<Config Condition="'$(Config)'==''">Release</Config>
 		</PropertyGroup>
@@ -81,6 +80,9 @@
 			</DCCReference>
 			<DCCReference Include="..\..\gx\source\BackupProject\GX_BackupOptions.pas">
 				<Form>fmBackupOptions</Form>
+			</DCCReference>
+			<DCCReference Include="..\..\gx\source\Framework\GX_BaseForm.pas">
+				<Form>fmBaseForm</Form>
 			</DCCReference>
 			<DCCReference Include="..\..\gx\source\ClassBrowser\GX_ClassBrowser.pas">
 				<Form>fmClassBrowser</Form>
@@ -208,6 +210,7 @@
 				<Form>fmGrepOptions</Form>
 			</DCCReference>
 			<DCCReference Include="..\..\gx\source\Grep\GX_GrepPrinting.pas"/>
+			<DCCReference Include="..\..\gx\source\Grep\GX_GrepRegExSearch.pas"/>
 			<DCCReference Include="..\..\gx\source\Grep\GX_GrepReplace.pas">
 				<Form>fmGrepReplace</Form>
 			</DCCReference>
@@ -221,6 +224,7 @@
 				<Form>fmGrepSearch</Form>
 			</DCCReference>
 			<DCCReference Include="..\..\gx\source\Utils\GX_GxUtils.pas"/>
+			<DCCReference Include="..\..\gx\source\Experts\GX_HideNonVisualComps.pas"/>
 			<DCCReference Include="..\..\gx\source\Framework\GX_IconMessageBox.pas"/>
 			<DCCReference Include="..\..\gx\source\IDEDocking\GX_IdeDock.pas">
 				<Form>fmIdeDockForm</Form>
@@ -335,7 +339,6 @@
 				<Form>fmReplaceCompMapList</Form>
 			</DCCReference>
 			<DCCReference Include="..\..\gx\source\ReplaceComponents\GX_ReplaceCompUtils.pas"/>
-			<DCCReference Include="..\..\gx\source\Grep\GX_GrepRegExSearch.pas"/>
 			<DCCReference Include="..\..\gx\source\SetComponentProperties\GX_SetComponentProps.pas"/>
 			<DCCReference Include="..\..\gx\source\SetComponentProperties\GX_SetComponentPropsConfig.pas">
 				<Form>fmSetComponentPropsConfig</Form>
@@ -343,6 +346,7 @@
 			<DCCReference Include="..\..\gx\source\SetComponentProperties\GX_SetComponentPropsStatus.pas">
 				<Form>fmSetComponentPropsStatus</Form>
 			</DCCReference>
+			<DCCReference Include="..\..\gx\source\Experts\GX_SetFocusControl.pas"/>
 			<DCCReference Include="..\..\gx\source\Framework\GX_SharedImages.pas">
 				<Form>dmSharedImages</Form>
 				<DesignClass>TDataModule</DesignClass>

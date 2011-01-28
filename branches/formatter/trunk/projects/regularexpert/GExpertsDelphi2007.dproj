@@ -155,6 +155,7 @@
       <Form>fmExpertManager</Form>
     </DCCReference>
     <DCCReference Include="..\..\gx\source\Experts\GX_FindComponentRef.pas" />
+    <DCCReference Include="..\..\gx\source\Experts\GX_HideNonVisualComps.pas" />
     <DCCReference Include="..\..\gx\source\Experts\GX_IdeShortCuts.pas">
       <Form>fmIdeShortCuts</Form>
     </DCCReference>
@@ -168,6 +169,7 @@
     <DCCReference Include="..\..\gx\source\Experts\GX_PerfectLayout.pas">
       <Form>fmPerfectLayout</Form>
     </DCCReference>
+    <DCCReference Include="..\..\gx\source\Experts\GX_SetFocusControl.pas" />
     <DCCReference Include="..\..\gx\source\Experts\GX_TabOrder.pas">
       <Form>fmTabOrder</Form>
     </DCCReference>
@@ -190,6 +192,9 @@
     </DCCReference>
     <DCCReference Include="..\..\gx\source\Framework\GX_ActionBroker.pas" />
     <DCCReference Include="..\..\gx\source\Framework\GX_Actions.pas" />
+    <DCCReference Include="..\..\gx\source\Framework\GX_BaseForm.pas">
+      <Form>fmBaseForm</Form>
+    </DCCReference>
     <DCCReference Include="..\..\gx\source\Framework\GX_ClassHacks.pas" />
     <DCCReference Include="..\..\gx\source\Framework\GX_ClassMgr.pas" />
     <DCCReference Include="..\..\gx\source\Framework\GX_ConfigurationInfo.pas" />

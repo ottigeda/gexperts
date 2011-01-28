@@ -1,6 +1,6 @@
 library GExpertsDelphi2005;
 
-{$R '..\..\gx\Images\GXIcons.res' '..\..\gx\Images\GXIcons.rc'}
+{$R '..\..\gx\images\GXIcons.res' '..\..\gx\images\GXIcons.rc'}
 {$R *.res}
 {$E dll}
 
@@ -12,6 +12,7 @@ uses
   GX_Backup in '..\..\gx\source\BackupProject\GX_Backup.pas' {fmBackup},
   GX_BackupConfig in '..\..\gx\source\BackupProject\GX_BackupConfig.pas' {fmBackupConfig},
   GX_BackupOptions in '..\..\gx\source\BackupProject\GX_BackupOptions.pas' {fmBackupOptions},
+  GX_BaseForm in '..\..\gx\source\Framework\GX_BaseForm.pas' {fmBaseForm},
   GX_ClassBrowser in '..\..\gx\source\ClassBrowser\GX_ClassBrowser.pas' {fmClassBrowser},
   GX_ClassHacks in '..\..\gx\source\Framework\GX_ClassHacks.pas',
   GX_ClassIdentify in '..\..\gx\source\ClassBrowser\GX_ClassIdentify.pas' {fmClassIdentify},
@@ -74,11 +75,13 @@ uses
   GX_GrepExpert in '..\..\gx\source\Grep\GX_GrepExpert.pas',
   GX_GrepOptions in '..\..\gx\source\Grep\GX_GrepOptions.pas' {fmGrepOptions},
   GX_GrepPrinting in '..\..\gx\source\Grep\GX_GrepPrinting.pas',
+  GX_GrepRegExSearch in '..\..\gx\source\Grep\GX_GrepRegExSearch.pas',
   GX_GrepReplace in '..\..\gx\source\Grep\GX_GrepReplace.pas' {fmGrepReplace},
   GX_GrepResults in '..\..\gx\source\Grep\GX_GrepResults.pas' {fmGrepResults},
   GX_GrepResultsOptions in '..\..\gx\source\Grep\GX_GrepResultsOptions.pas' {fmGrepResultsOptions},
   GX_GrepSearch in '..\..\gx\source\Grep\GX_GrepSearch.pas' {fmGrepSearch},
   GX_GxUtils in '..\..\gx\source\Utils\GX_GxUtils.pas',
+  GX_HideNonVisualComps in '..\..\gx\source\Experts\GX_HideNonVisualComps.pas',
   GX_IconMessageBox in '..\..\gx\source\Framework\GX_IconMessageBox.pas',
   GX_IdeDock in '..\..\gx\source\IDEDocking\GX_IdeDock.pas' {fmIdeDockForm},
   GX_IdeEnhance in '..\..\gx\source\IDE\GX_IdeEnhance.pas',
@@ -135,10 +138,10 @@ uses
   GX_ReplaceCompMapGrpList in '..\..\gx\source\ReplaceComponents\GX_ReplaceCompMapGrpList.pas' {fmReplaceCompMapGrpList},
   GX_ReplaceCompMapList in '..\..\gx\source\ReplaceComponents\GX_ReplaceCompMapList.pas' {fmReplaceCompMapList},
   GX_ReplaceCompUtils in '..\..\gx\source\ReplaceComponents\GX_ReplaceCompUtils.pas',
-  GX_GrepRegExSearch in '..\..\gx\source\Grep\GX_GrepRegExSearch.pas',
   GX_SetComponentProps in '..\..\gx\source\SetComponentProperties\GX_SetComponentProps.pas',
   GX_SetComponentPropsConfig in '..\..\gx\source\SetComponentProperties\GX_SetComponentPropsConfig.pas' {fmSetComponentPropsConfig},
   GX_SetComponentPropsStatus in '..\..\gx\source\SetComponentProperties\GX_SetComponentPropsStatus.pas' {fmSetComponentPropsStatus},
+  GX_SetFocusControl in '..\..\gx\source\Experts\GX_SetFocusControl.pas',
   GX_SharedImages in '..\..\gx\source\Framework\GX_SharedImages.pas' {dmSharedImages: TDataModule},
   GX_SourceExport in '..\..\gx\source\SourceExport\GX_SourceExport.pas' {fmSourceExport},
   GX_SourceExportOptions in '..\..\gx\source\SourceExport\GX_SourceExportOptions.pas' {fmSourceExportOptions},
