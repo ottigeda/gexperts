@@ -454,10 +454,10 @@
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">GExpertsRS2010.dll</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductName">GExperts for Delphi 2010</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductVersion">1.34 experimental 2011-01-23</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">1.34 experimental 2011-02-05</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments">Open Source</VersionInfoKeys>
 						<VersionInfoKeys Name="Compile Date">Saturday, October 06, 2001 3:07 PM</VersionInfoKeys>
-						<VersionInfoKeys Name="CompileDate">2011-01-23</VersionInfoKeys>
+						<VersionInfoKeys Name="CompileDate">2011-02-05</VersionInfoKeys>
 					</VersionInfoKeys>
 					<Source>
 						<Source Name="MainSource">GExpertsRS2010.dpr</Source>
