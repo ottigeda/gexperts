@@ -1,6 +1,11 @@
+call :cleandir 6
+call :cleandir 7
+call :cleandir 2005
+call :cleandir 2006
 call :cleandir 2007
-call :doclean
-del GXIcons.res
+call :cleandir 2009
+call :cleandir 2010
+call :cleandir 2011
 pause
 goto :eof
 
@@ -21,4 +26,5 @@ del /s /q __history\*
 rd __history
 del /s /q ModelSupport\*
 rd ModelSupport
+del GXIcons.res
 goto :eof
