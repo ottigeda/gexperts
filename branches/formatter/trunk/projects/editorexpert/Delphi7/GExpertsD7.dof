@@ -90,11 +90,11 @@ MaxStackSize=1048576
 ImageBase=5242880
 ExeDescription=
 [Directories]
-OutputDir=..\..\editorexpert
-UnitOutputDir=..\..\dcu\delphi7
+OutputDir=..\..\..\editorexpert
+UnitOutputDir=..\..\..\dcu\delphi7
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=..\..\gx\source\Framework;..\..\gx\ExternalSource;..\..\gx\ExternalSource\Abbrevia;..\..\gx\ExternalSource\UniSynEdit
+SearchPath=..\..\..\gx\source\Framework;..\..\..\gx\ExternalSource;..\..\..\gx\ExternalSource\Abbrevia;..\..\..\gx\ExternalSource\UniSynEdit
 Packages=rtl;vcl;vclx;vclsmp;designide
 Conditionals=synedit
 DebugSourceDirs=
