@@ -140,7 +140,7 @@
 			<Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
 		</Parameters>
 		<VersionInfo>
-			<VersionInfo Name="IncludeVerInfo" Type="Boolean">True</VersionInfo>
+			<VersionInfo Name="IncludeVerInfo" Type="Boolean">False</VersionInfo>
 			<VersionInfo Name="AutoIncBuild" Type="Boolean">False</VersionInfo>
 			<VersionInfo Name="MajorVer" Type="Integer">1</VersionInfo>
 			<VersionInfo Name="MinorVer" Type="Integer">3</VersionInfo>
@@ -173,6 +173,7 @@
 			<Language Name="ProjectLang" Type="String">$00000000</Language>
 			<Language Name="RootDir" Type="String"></Language>
 		</Language>
-	</Delphi.Personality>  <StarTeamAssociation></StarTeamAssociation>
-  <StarTeamNonRelativeFiles></StarTeamNonRelativeFiles>
+	</Delphi.Personality>
+	<StarTeamAssociation></StarTeamAssociation>
+	<StarTeamNonRelativeFiles></StarTeamNonRelativeFiles>
 </BorlandProject>
