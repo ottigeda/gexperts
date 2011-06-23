@@ -1,6 +1,12 @@
+call :cleandir 6
+call :cleandir 7
+call :cleandir 2005
+call :cleandir 2006
 call :cleandir 2007
+call :cleandir 2009
+call :cleandir 2010
+call :cleandir 2011
 call :doclean
-del GXIcons.res
 pause
 goto :eof
 
@@ -11,6 +17,7 @@ cd ..
 goto :eof
 
 :doclean
+del GXIcons.res
 del GExperts*.~*
 del GExperts*.bdsproj.local
 del GExperts*.dproj.local
