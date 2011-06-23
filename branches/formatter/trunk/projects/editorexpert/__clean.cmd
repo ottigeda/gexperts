@@ -6,8 +6,6 @@ call :cleandir 2007
 call :cleandir 2009
 call :cleandir 2010
 call :cleandir 2011
-call :doclean
-pause
 goto :eof
 
 :cleandir
