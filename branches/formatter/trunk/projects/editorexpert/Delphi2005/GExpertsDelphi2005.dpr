@@ -1,7 +1,7 @@
 library GExpertsDelphi2005;
 
 {$R '..\..\..\gx\images\GXIcons.res' '..\..\..\gx\images\GXIcons.rc'}
-{$R *.res}
+{$R *_version.res} // if you get an error here, run the __build_project.cmd script first
 {$E dll}
 
 uses
