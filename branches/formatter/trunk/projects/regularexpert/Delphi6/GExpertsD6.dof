@@ -42,7 +42,7 @@ ImageBase=5242880
 ExeDescription=
 [Directories]
 OutputDir=..\..\..\regularexpert
-UnitOutputDir=..\..\..\dcu\delphi6
+UnitOutputDir=..\..\..\dcu\delphi6\regularexpert
 PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=..\..\..\gx\source\Framework;..\..\..\gx\ExternalSource;..\..\..\gx\ExternalSource\Abbrevia;..\..\..\gx\ExternalSource\UniSynEdit

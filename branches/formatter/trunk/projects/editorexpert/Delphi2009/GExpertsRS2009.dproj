@@ -27,7 +27,7 @@
 			<DCC_ExeOutput>..\..\..\editorexpert</DCC_ExeOutput>
 			<DCC_UnitSearchPath>..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\UniSynEdit;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<DCC_Define>synedit;$(DCC_Define)</DCC_Define>
-			<DCC_DcuOutput>..\..\..\dcu\delphi2009</DCC_DcuOutput>
+			<DCC_DcuOutput>..\..\..\dcu\delphi2009\editorexpert</DCC_DcuOutput>
 			<DCC_DependencyCheckOutputName>..\..\..\editorexpert\GExpertsRS2009.dll</DCC_DependencyCheckOutputName>
 			<UsePackages>true</UsePackages>
 			<GenDll>true</GenDll>

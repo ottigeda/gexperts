@@ -91,7 +91,7 @@ ImageBase=5242880
 ExeDescription=
 [Directories]
 OutputDir=..\..\..\editorexpert
-UnitOutputDir=..\..\..\dcu\delphi7
+UnitOutputDir=..\..\..\dcu\delphi7\editorexpert
 PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=..\..\..\gx\source\Framework;..\..\..\gx\ExternalSource;..\..\..\gx\ExternalSource\Abbrevia;..\..\..\gx\ExternalSource\UniSynEdit

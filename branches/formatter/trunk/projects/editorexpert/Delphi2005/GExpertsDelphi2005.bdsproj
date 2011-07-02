@@ -116,7 +116,7 @@
 		</Linker>
 		<Directories>
 			<Directories Name="OutputDir" Type="String">..\..\..\editorexpert</Directories>
-			<Directories Name="UnitOutputDir" Type="String">..\..\..\dcu\delphi2005</Directories>
+			<Directories Name="UnitOutputDir" Type="String">..\..\..\dcu\delphi2005\editorexpert</Directories>
 			<Directories Name="PackageDLLOutputDir" Type="String"></Directories>
 			<Directories Name="PackageDCPOutputDir" Type="String"></Directories>
 			<Directories Name="SearchPath" Type="String">..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\UniSynEdit</Directories>

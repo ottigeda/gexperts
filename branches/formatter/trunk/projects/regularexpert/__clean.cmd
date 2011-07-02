@@ -12,6 +12,7 @@ goto :eof
 cd delphi%1
 call :doclean
 cd ..
+del ..\..\dcu\Delphi%1\regularexpert\*.dcu
 goto :eof
 
 :doclean

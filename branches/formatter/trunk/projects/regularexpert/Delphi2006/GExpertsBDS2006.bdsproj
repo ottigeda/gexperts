@@ -120,7 +120,7 @@
 		</Linker>
 		<Directories>
 			<Directories Name="OutputDir">..\..\..\regularexpert</Directories>
-			<Directories Name="UnitOutputDir">..\..\..\dcu\bds2006</Directories>
+			<Directories Name="UnitOutputDir">..\..\..\dcu\bds2006\regularexpert</Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
 			<Directories Name="SearchPath">..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\unisynedit</Directories>
