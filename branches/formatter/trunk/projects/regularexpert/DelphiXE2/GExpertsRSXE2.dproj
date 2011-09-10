@@ -1,17 +1,28 @@
 ﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 		<PropertyGroup>
 			<ProjectGuid>{4f1288a1-b13b-41ea-9c9b-de874d79eba0}</ProjectGuid>
-			<MainSource>GExpertsRSXE1.dpr</MainSource>
+			<MainSource>GExpertsRSXE2.dpr</MainSource>
 			<Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-			<ProjectVersion>12.3</ProjectVersion>
+			<ProjectVersion>13.4</ProjectVersion>
 			<Config Condition="'$(Config)'==''">Release</Config>
 			<Base>True</Base>
-			<Platform>Win32</Platform>
 			<AppType>Library</AppType>
 			<FrameworkType>None</FrameworkType>
+			<Platform Condition="'$(Platform)'==''">Win32</Platform>
+			<TargetedPlatforms>1</TargetedPlatforms>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Base)'=='true') or '$(Base_Win64)'!=''">
+			<Base_Win64>true</Base_Win64>
+			<CfgParent>Base</CfgParent>
+			<Base>true</Base>
+		</PropertyGroup>
+		<PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
+			<Base_Win32>true</Base_Win32>
+			<CfgParent>Base</CfgParent>
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
@@ -19,22 +30,51 @@
 			<CfgParent>Base</CfgParent>
 			<Base>true</Base>
 		</PropertyGroup>
+		<PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
+			<Cfg_1_Win32>true</Cfg_1_Win32>
+			<CfgParent>Cfg_1</CfgParent>
+			<Cfg_1>true</Cfg_1>
+			<Base>true</Base>
+		</PropertyGroup>
 		<PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
 			<Cfg_2>true</Cfg_2>
 			<CfgParent>Base</CfgParent>
 			<Base>true</Base>
 		</PropertyGroup>
+		<PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
+			<Cfg_2_Win32>true</Cfg_2_Win32>
+			<CfgParent>Cfg_2</CfgParent>
+			<Cfg_2>true</Cfg_2>
+			<Base>true</Base>
+		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<VerInfo_Keys>CompanyName=Erik Berry and the GExperts Development Team;FileDescription=GExperts for Delphi XE 1;FileVersion=1.3.4.0;InternalName=GExperts for Delphi XE 1;LegalCopyright=;LegalTrademarks=;OriginalFilename=GExpertsRSXE1.dll;ProductName=GExperts for Delphi XE 1;ProductVersion=1.34 experimental 2011-02-05;Comments=Open Source;Compile Date=Saturday, October 06, 2001 3:07 PM;CompileDate=2011-02-05</VerInfo_Keys>
+			<Manifest_File>None</Manifest_File>
+			<DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Winapi;System.Win;$(DCC_Namespace)</DCC_Namespace>
+			<VerInfo_MinorVer>3</VerInfo_MinorVer>
+			<VerInfo_DLL>true</VerInfo_DLL>
+			<OutputExt>dll</OutputExt>
+			<VerInfo_Locale>1033</VerInfo_Locale>
+			<VerInfo_Release>4</VerInfo_Release>
 			<DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
 			<DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
-			<DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;$(DCC_UnitAlias)</DCC_UnitAlias>
 			<DCC_ExeOutput>..\..\..\regularexpert\</DCC_ExeOutput>
 			<DCC_UnitSearchPath>..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\UniSynEdit;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<DCC_Define>synedit;$(DCC_Define)</DCC_Define>
-			<DCC_DcuOutput>..\..\..\dcu\delphi2011\regularexpert</DCC_DcuOutput>
+			<DCC_DcuOutput>..\..\..\dcu\delphixe2\regularexpert</DCC_DcuOutput>
 			<UsePackages>true</UsePackages>
 			<GenDll>true</GenDll>
-			<DCC_UsePackage>rtl;vcl;vclx;vclactnband;dbrtl;vcldb;vcldbx;bdertl;dsnap;dbxcds;DbxCommonDriver;dbexpress;dsnapcon;adortl;IndyCore;IndySystem;IndyProtocols;xmlrtl;inet;VclSmp;vclie;websnap;webdsnap;inetdbbde;inetdbxpress;soaprtl;designide</DCC_UsePackage>
+			<DCC_UsePackage>rtl;vcl;vclx;vclactnband;dbrtl;vcldb;vcldbx;bdertl;dsnap;dbxcds;DbxCommonDriver;dbexpress;dsnapcon;adortl;IndyCore;IndySystem;IndyProtocols;xmlrtl;inet;VclSmp;vclie;websnap;webdsnap;inetdbbde;inetdbxpress;soaprtl;designide;$(DCC_UsePackage)</DCC_UsePackage>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Base_Win64)'!=''">
+			<Icon_MainIcon>GExpertsRSXE1_Icon.ico</Icon_MainIcon>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Base_Win32)'!=''">
+			<PreBuildEvent><![CDATA[..\..\..\buildtools\prebuild.cmd $(PROJECTPATH)
+$(PreBuildEvent)]]></PreBuildEvent>
+			<DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+			<Debugger_HostApplication>C:\Program Files\Embarcadero\RAD Studio\7.0\bin\bds.exe</Debugger_HostApplication>
+			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
 			<Version>7.0</Version>
@@ -46,6 +86,9 @@
 			<DCC_ResourcePath>..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\..\synedit\source;$(DCC_ResourcePath)</DCC_ResourcePath>
 			<DCC_ObjPath>..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\..\synedit\source;$(DCC_ObjPath)</DCC_ObjPath>
 			<DCC_IncludePath>..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\..\synedit\source;$(DCC_IncludePath)</DCC_IncludePath>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2)'!=''">
 			<Version>7.0</Version>
@@ -60,8 +103,11 @@
 			<DCC_IncludePath>$(BDS)\lib\Debug;$(BDS)\Lib\Debug\Indy10;..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\..\synedit\source;$(DCC_IncludePath)</DCC_IncludePath>
 			<DCC_Optimize>False</DCC_Optimize>
 		</PropertyGroup>
+		<PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.3.4.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+		</PropertyGroup>
 		<ItemGroup>
-			<DelphiCompile Include="GExpertsRSXE1.dpr">
+			<DelphiCompile Include="$(MainSource)">
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
 			<RcCompile Include="..\..\..\gx\images\GXIcons.rc">
@@ -423,9 +469,6 @@
 		</ItemGroup>
 		<Import Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')" Project="$(BDS)\Bin\CodeGear.Delphi.Targets"/>
 		<Import Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')" Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj"/>
-		<PropertyGroup>
-			<PreBuildEvent><![CDATA[..\..\..\buildtools\prebuild.cmd $(PROJECTPATH)]]></PreBuildEvent>
-		</PropertyGroup>
 		<ProjectExtensions>
 			<Borland.Personality>Delphi.Personality.12</Borland.Personality>
 			<Borland.ProjectType>VCLApplication</Borland.ProjectType>
@@ -464,13 +507,31 @@
 						<VersionInfoKeys Name="CompileDate">2011-02-05</VersionInfoKeys>
 					</VersionInfoKeys>
 					<Source>
-						<Source Name="MainSource">GExpertsRSXE1.dpr</Source>
+						<Source Name="MainSource">GExpertsRSXE2.dpr</Source>
 					</Source>
 				</Delphi.Personality>
 				<Platforms>
+					<Platform value="Win64">False</Platform>
+					<Platform value="OSX32">False</Platform>
 					<Platform value="Win32">True</Platform>
 				</Platforms>
 			</BorlandProject>
 			<ProjectFileVersion>12</ProjectFileVersion>
 		</ProjectExtensions>
+		<PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win32'">
+			<PreBuildEvent>..\..\..\buildtools\prebuild.cmd $(PROJECTPATH)</PreBuildEvent>
+			<PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
+			<PreLinkEvent/>
+			<PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+			<PostBuildEvent/>
+			<PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win32'">
+			<PreBuildEvent>..\..\..\buildtools\prebuild.cmd $(PROJECTPATH)</PreBuildEvent>
+			<PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
+			<PreLinkEvent/>
+			<PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+			<PostBuildEvent/>
+			<PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
+		</PropertyGroup>
 	</Project>
