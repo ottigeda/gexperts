@@ -72,7 +72,7 @@
 		<PropertyGroup Condition="'$(Base_Win32)'!=''">
 			<PreBuildEvent><![CDATA[..\..\..\buildtools\prebuild.cmd $(PROJECTPATH)
 $(PreBuildEvent)]]></PreBuildEvent>
-			<DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+			<DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
 			<Debugger_HostApplication>C:\Program Files\Embarcadero\RAD Studio\7.0\bin\bds.exe</Debugger_HostApplication>
 			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
 		</PropertyGroup>
