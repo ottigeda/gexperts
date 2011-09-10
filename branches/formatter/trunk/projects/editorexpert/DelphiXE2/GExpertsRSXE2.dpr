@@ -1,4 +1,4 @@
-library GExpertsRSXE1;
+library GExpertsRSXE2;
 
 {$R 'GXIcons.res' '..\..\..\gx\images\GXIcons.rc'}
 {$R *_version.res}
