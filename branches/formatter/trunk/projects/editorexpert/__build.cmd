@@ -29,3 +29,7 @@ popd
 pushd Delphi2011
 call __Build_Project.cmd
 popd
+
+pushd DelphiXE2
+call __Build_Project.cmd
+popd

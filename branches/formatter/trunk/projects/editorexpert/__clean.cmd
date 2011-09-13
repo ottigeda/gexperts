@@ -6,6 +6,7 @@ call :cleandir 2007
 call :cleandir 2009
 call :cleandir 2010
 call :cleandir 2011
+call :cleandir XE2
 goto :eof
 
 :cleandir
