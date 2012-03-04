@@ -1,7 +1,11 @@
-cd editorexpert
+pushd editorexpert
 call __clean.cmd
-cd ..\regularexpert
+popd
+
+pushd regularexpert
 call __clean.cmd
-cd ..\standalone
+popd
+
+pushd standalone
 call __clean.cmd
-cd ..
+popd

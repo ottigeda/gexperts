@@ -1,35 +1,17 @@
-pushd Delphi6
-call __Build_Project.cmd
-popd
+call :dobuild 6
+call :dobuild 7
+call :dobuild 2005
+call :dobuild 2006
+call :dobuild 2007
+call :dobuild 2009
+call :dobuild 2010
+call :dobuild 2011
+call :dobuild XE2
 
-pushd Delphi7
-call __Build_Project.cmd
-popd
+goto :eof
 
-pushd Delphi2005
+:dobuild
+pushd Delphi%1
 call __Build_Project.cmd
 popd
-
-pushd Delphi2006
-call __Build_Project.cmd
-popd
-
-pushd Delphi2007
-call __Build_Project.cmd
-popd
-
-pushd Delphi2009
-call __Build_Project.cmd
-popd
-
-pushd Delphi2010
-call __Build_Project.cmd
-popd
-
-pushd Delphi2011
-call __Build_Project.cmd
-popd
-
-pushd DelphiXE2
-call __Build_Project.cmd
-popd
+goto :eof

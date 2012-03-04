@@ -1,6 +1,7 @@
-cd dcu
+pushd dcu
 call __clean.cmd
-cd ..\projects
+popd
+pushd projects
 call __clean.cmd
-cd ..
+popd
 pause

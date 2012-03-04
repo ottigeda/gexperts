@@ -10,22 +10,30 @@ call :cleandir XE2
 goto :eof
 
 :cleandir
-cd delphi%1
+pushd delphi%1
 call :doclean
-cd ..
+popd
+if not exist ..\..\dcu\Delphi%1\regularexpert\*.dcu goto :eof
 del ..\..\dcu\Delphi%1\regularexpert\*.dcu
 goto :eof
 
 :doclean
-del GExperts*.~*
-del GExperts*.bdsproj.local
-del GExperts*.dproj.local
-del GExperts*.cfg
-del GExperts*.identcache
-del GExperts*.dsk
-del /s /q __history\*
-rd __history
-del /s /q ModelSupport\*
-rd ModelSupport
-del GXIcons.res
+call :delfile GXIcons.res
+call :delfile *.~*
+call :delfile *.local
+call :delfile *.cfg
+call :delfile *.identcache
+call :delfile *.dsk
+call :deltree __history
+call :deltree ModelSupport
+goto :eof
+
+:delfile
+if exist %1 del %1
+goto :eof
+
+:deltree
+if not exist %1\* goto :eof
+del /s /q %1\*
+rd %1
 goto :eof

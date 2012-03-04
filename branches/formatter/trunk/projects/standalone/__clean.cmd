@@ -1,24 +1,34 @@
-del /s /q __history\*
-rd __history
-del /s /q ModelSupport\*
-rd ModelSupport
-del delphi2009\GExperts*.~*
-del delphi2009\GExperts*.bdsproj.local
-del delphi2009\GExperts*.dproj.local
-del delphi2009\GExperts*.cfg
-del delphi2009\GExperts*.identcache
-del delphi2009\GExperts*.dsk
+call :cleandir 2009
+call :cleandir 2010
+call :cleandir 2011
+call :deltree __history
+call :deltree ModelSupport
+goto :eof
 
-del delphi2010\GExperts*.~*
-del delphi2010\GExperts*.bdsproj.local
-del delphi2010\GExperts*.dproj.local
-del delphi2010\GExperts*.cfg
-del delphi2010\GExperts*.identcache
-del delphi2010\GExperts*.dsk
+:cleandir
+pushd delphi%1
+call :doclean
+popd
+if not exist ..\..\dcu\Delphi%1\standalone\*.dcu goto :eof
+del ..\..\dcu\Delphi%1\standalone\*.dcu
+goto :eof
 
-del delphi2011\GExperts*.~*
-del delphi2011\GExperts*.bdsproj.local
-del delphi2011\GExperts*.dproj.local
-del delphi2011\GExperts*.cfg
-del delphi2011\GExperts*.identcache
-del delphi2011\GExperts*.dsk
+:doclean
+call :delfile *.~*
+call :delfile *.local
+call :delfile *.identcache
+call :delfile *.cfg
+call :delfile *.dsk
+call :deltree __history
+call :deltree ModelSupport
+goto :eof
+
+:delfile
+if exist %1 del %1
+goto :eof
+
+:deltree
+if not exist %1\* goto :eof
+del /s /q %1\*
+rd %1
+goto :eof
