@@ -1,0 +1,17 @@
+del bds2006\editorexpert\*.dcu
+del bds2006\regularexpert\*.dcu
+del delphi6\editorexpert\*.dcu
+del delphi6\regularexpert\*.dcu
+del delphi7\editorexpert\*.dcu
+del delphi7\regularexpert\*.dcu
+del delphi2005\editorexpert\*.dcu
+del delphi2005\regularexpert\*.dcu
+del delphi2007\editorexpert\*.dcu
+del delphi2007\regularexpert\*.dcu
+del delphi2009\editorexpert\*.dcu
+del delphi2009\regularexpert\*.dcu
+del delphi2010\editorexpert\*.dcu
+del delphi2010\regularexpert\*.dcu
+del delphi2011\editorexpert\*.dcu
+del delphi2011\regularexpert\*.dcu
+del unittests\*.dcu
