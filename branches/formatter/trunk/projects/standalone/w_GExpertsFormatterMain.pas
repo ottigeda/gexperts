@@ -14,6 +14,7 @@ uses
   Graphics,
   Controls,
   Forms,
+  ShellApi,
   Dialogs,
   StdCtrls,
   w_GExpertsFormatterAbout;
@@ -35,8 +36,14 @@ type
     procedure b_SettingsClick(Sender: TObject);
     procedure b_AboutClick(Sender: TObject);
   private
+    FOldLBWindowProc: TWndMethod;
+    procedure NewWindowProc(var Message: TMessage);
+    procedure InstallWindowProc;
+    procedure UninstallWindowProc;
+    procedure WMDROPFILES(var Msg: TMessage);
   public
     constructor Create(_Onwer: TComponent); override;
+    destructor Destroy; override;
   end;
 
 procedure Main;
@@ -145,8 +152,15 @@ end;
 constructor Tf_GExpertsFormatterMain.Create(_Onwer: TComponent);
 begin
   inherited;
+  InstallWindowProc;
   b_Settings.Visible := Assigned(@ConfigureFormatter);
   b_About.Visible := Assigned(@AboutFormatter);
+end;
+
+destructor Tf_GExpertsFormatterMain.Destroy;
+begin
+  UninstallWindowProc;
+  inherited;
 end;
 
 procedure Tf_GExpertsFormatterMain.b_SelectFileClick(Sender: TObject);
@@ -181,6 +195,50 @@ var
 begin
   fn := ed_FileToFormat.Text;
   b_Format.Enabled := FileExists(fn);
+end;
+
+procedure Tf_GExpertsFormatterMain.InstallWindowProc;
+var
+  frm: TForm;
+begin
+  frm := self as TForm;
+  FOldLBWindowProc := frm.WindowProc;
+  frm.WindowProc := NewWindowProc;
+  DragAcceptFiles(frm.Handle, True);
+end;
+
+procedure Tf_GExpertsFormatterMain.UninstallWindowProc;
+var
+  frm: TForm;
+begin
+  frm := self as TForm;
+  DragAcceptFiles(frm.Handle, False);
+  frm.WindowProc := FOldLBWindowProc;
+end;
+
+procedure Tf_GExpertsFormatterMain.NewWindowProc(var Message: TMessage);
+begin
+  if Message.Msg = WM_DROPFILES then
+    WMDROPFILES(Message);
+  FOldLBWindowProc(Message);
+end;
+
+procedure Tf_GExpertsFormatterMain.WMDROPFILES(var Msg: TMessage);
+var
+  pcFileName: array[0..255] of char;
+  fn: string;
+  i, iSize, iFileCount: Integer;
+begin
+  iFileCount := DragQueryFile(Msg.wParam, $FFFFFFFF, nil, 255);
+  for i := 0 to iFileCount - 1 do begin
+    iSize := DragQueryFile(Msg.wParam, i, nil, 0) + 1;
+    DragQueryFile(Msg.wParam, i, pcFileName, iSize);
+    fn := pcFileName;
+    fn := PChar(fn);
+    if FileExists(fn) then
+      ed_FileToFormat.Text := fn;
+  end;
+  DragFinish(Msg.wParam);
 end;
 
 end.
