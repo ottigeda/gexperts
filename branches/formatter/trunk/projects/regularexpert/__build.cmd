@@ -5,7 +5,7 @@ call :dobuild 2006
 call :dobuild 2007
 call :dobuild 2009
 call :dobuild 2010
-call :dobuild 2011
+call :dobuild XE1
 call :dobuild XE2
 
 goto :eof
