@@ -219,22 +219,28 @@ end;
 procedure TfmCodeFormatterEditCapitalization.ed_SearchChange(Sender: TObject);
 var
   SearchEditText: string;
-  i, J, Lasti: Integer;
+  i, j, Lasti: Integer;
 begin
   SearchEditText := ed_Search.Text;
-  J := 1;
+  j := 1;
   Lasti := 0;
   for i := 0 to lb_Items.Count - 1 do begin
-    if (StrLIComp(PChar(SearchEditText), PChar(lb_Items.Items[i]), J) = 0) then begin
-      Inc(J);
+    if (StrLIComp(PChar(SearchEditText), PChar(lb_Items.Items[i]), j) = 0) then begin
+      Inc(j);
       Lasti := i;
     end;
     lb_Items.Selected[i] := False;
   end;
-  lb_Items.OnClick := nil;
-  lb_Items.Selected[Lasti] := True;
-  lb_Items.TopIndex := Lasti - 1;
-  lb_Items.OnClick := lb_ItemsClick;
+  if Lasti < lb_items.Count then begin
+    lb_Items.OnClick := nil;
+    try
+      lb_Items.Selected[Lasti] := True;
+      if Lasti > 0 then
+        lb_Items.TopIndex := Lasti - 1;
+    finally
+      lb_Items.OnClick := lb_ItemsClick;
+    end;
+  end;
 end;
 
 procedure TfmCodeFormatterEditCapitalization.FormClose(Sender: TObject;

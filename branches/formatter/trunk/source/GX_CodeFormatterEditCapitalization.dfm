@@ -95,7 +95,7 @@ object fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
     end
     object l_ChangeInto: TLabel
       Left = 240
-      Top = 8
+      Top = 48
       Width = 60
       Height = 13
       Caption = 'Change into:'
@@ -122,7 +122,7 @@ object fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
     end
     object ed_Change: TEdit
       Left = 240
-      Top = 24
+      Top = 64
       Width = 204
       Height = 21
       TabOrder = 2
@@ -130,7 +130,7 @@ object fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
     end
     object b_UpperCase: TButton
       Left = 252
-      Top = 64
+      Top = 88
       Width = 89
       Height = 25
       Caption = 'UpperCase'
@@ -139,7 +139,7 @@ object fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
     end
     object b_LowerCase: TButton
       Left = 347
-      Top = 64
+      Top = 88
       Width = 89
       Height = 25
       Caption = 'LowerCase'
@@ -148,7 +148,7 @@ object fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
     end
     object b_FirstCharUp: TButton
       Left = 252
-      Top = 96
+      Top = 120
       Width = 89
       Height = 25
       Caption = 'First Char Up'
@@ -157,7 +157,7 @@ object fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
     end
     object b_FirstCharLow: TButton
       Left = 347
-      Top = 95
+      Top = 119
       Width = 89
       Height = 25
       Caption = 'First Char Low'
@@ -166,7 +166,7 @@ object fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
     end
     object b_AddIdentifier: TButton
       Left = 252
-      Top = 144
+      Top = 168
       Width = 89
       Height = 26
       Caption = 'Add Identifier'
@@ -175,7 +175,7 @@ object fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
     end
     object b_Delete: TButton
       Left = 252
-      Top = 176
+      Top = 200
       Width = 89
       Height = 25
       Caption = 'Delete'
@@ -184,7 +184,7 @@ object fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
     end
     object b_ToggleComment: TButton
       Left = 252
-      Top = 208
+      Top = 232
       Width = 89
       Height = 25
       Caption = 'Toggle comment'

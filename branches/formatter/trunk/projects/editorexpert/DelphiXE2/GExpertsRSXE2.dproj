@@ -104,6 +104,8 @@ $(PreBuildEvent)]]></PreBuildEvent>
 			<DCC_Optimize>False</DCC_Optimize>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+			<DCC_SymbolReferenceInfo>1</DCC_SymbolReferenceInfo>
+			<Debugger_HostApplication>C:\Program Files\Embarcadero\RAD Studio\9.0\bin\bds.exe</Debugger_HostApplication>
 			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
 		</PropertyGroup>
 		<ItemGroup>
