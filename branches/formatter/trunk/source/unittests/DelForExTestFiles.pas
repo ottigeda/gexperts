@@ -235,7 +235,7 @@ end;
 
 procedure TTestTestfiles.testNestedClassCurrentlyFails;
 begin
-  Testfile('NestedClass', False);
+  Testfile('NestedClass', True);
 end;
 
 procedure TTestTestfiles.testOperatorOverloading;
@@ -358,7 +358,7 @@ end;
 
 procedure TTestTestfiles.testGenericClassCurrentlyFails;
 begin
-  TestFile('GenericClass');
+  TestFile('GenericClass', True);
 end;
 
 procedure TTestTestfiles.testAbstractSealedClass;

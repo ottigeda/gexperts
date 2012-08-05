@@ -34,47 +34,62 @@ type
     procedure SetPrevLineIndent(_Additional: Integer);
     procedure DecPrevLineIndent;
     {: replaces a TExpression with a TAlignExpression }
-    function AlignExpression(Idx: Integer; aPos: Integer): TPascalToken;
+    function AlignExpression(_Idx: Integer; _Pos: Integer): TPascalToken;
     procedure CheckWrapping;
     function PrevTokenIsRType(_rtype: TReservedType): Boolean;
     procedure CheckBlankLinesAroundProc;
-    procedure PutCommentBefore(aComment: PAnsiChar);
-    procedure FormatAsm(NTmp: Integer);
+    procedure PutCommentBefore(_Comment: PAnsiChar);
+    procedure FormatAsm(_NTmp: Integer);
     procedure AdjustSpacing(_CurrentToken, _PrevToken: TPascalToken; _TokenIdx: Integer);
 
     {: return token with index Idx or nil if out of bounds }
-    function GetToken(Idx: Integer): TPascalToken; overload;
+    function GetToken(_Idx: Integer): TPascalToken; overload;
     {: get token with index Idx, returns False if index is out of bounds }
-    function GetToken(Idx: Integer; out Token: TPascalToken): Boolean; overload;
-    {: Check whether the token at index AIdx has the reserved type ARType
-       @param AIdx is the index of the token to check
-       @param ARType is the queried reserverd type
+    function GetToken(_Idx: Integer; out Token: TPascalToken): Boolean; overload;
+    {: Check whether the token at index Idx has the reserved type RType
+       @param Idx is the index of the token to check
+       @param RType is the queried reserverd type
        @returns true, if the token has the queried type, false otherwise }
-    function TokenAtIs(AIdx: Integer; ARType: TReservedType): Boolean;
+    function TokenAtIs(_Idx: Integer; _RType: TReservedType): Boolean;
 
-    function GetNextNoComment(StartPos: Integer; out Offset: Integer): TPascalToken; overload;
-    function GetNextNoComment(StartPos: Integer; out Token: TPascalToken; out Offset: Integer): Boolean; overload;
-    function GetNextNoComment(StartPos: Integer; out Token: TPascalToken): Boolean; overload;
+    function GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken; overload;
+    function GetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean; overload;
+    function GetNextNoComment(_StartPos: Integer; out _Token: TPascalToken): Boolean; overload;
 
-    function InsertBlankLines(atIndex, NLines: Integer): TLineFeed;
-    function AssertLineFeedAfter(StartPos: Integer): TLineFeed;
+    function InsertBlankLines(_AtIndex, _NLines: Integer): TLineFeed;
+    function AssertLineFeedAfter(_StartPos: Integer): TLineFeed;
+    procedure CheckSlashComment(_PrevPrevLine: TLineFeed);
+    procedure ComplexIfElse(var _NTmp: Integer);
+    procedure CheckShortLine;
+
     {: This function does the actual formatting }
     procedure doExecute(ATokens: TOCollection);
-    procedure CheckSlashComment(_PrevPrevLine: TLineFeed);
 
     property Settings: TCodeFormatterSettings read FSettings write FSettings;
   public
-    constructor Create(ASettings: TCodeFormatterSettings);
+    class procedure Execute(_Tokens: TOCollection; _Settings: TCodeFormatterSettings);
+    constructor Create(_Settings: TCodeFormatterSettings);
     destructor Destroy; override;
-    class procedure Execute(ATokens: TOCollection; ASettings: TCodeFormatterSettings);
   end;
 
 implementation
 
-constructor TCodeFormatterFormatter.Create(ASettings: TCodeFormatterSettings);
+class procedure TCodeFormatterFormatter.Execute(_Tokens: TOCollection; _Settings: TCodeFormatterSettings);
+var
+  Formatter: TCodeFormatterFormatter;
+begin
+  Formatter := TCodeFormatterFormatter.Create(_Settings);
+  try
+    Formatter.doExecute(_Tokens);
+  finally
+    Formatter.Free;
+  end;
+end;
+
+constructor TCodeFormatterFormatter.Create(_Settings: TCodeFormatterSettings);
 begin
   inherited Create;
-  FSettings := ASettings;
+  FSettings := _Settings;
   FHasAligned := False;
   FPrevLine := nil;
   FStack := TCodeFormatterStack.Create;
@@ -86,26 +101,14 @@ begin
   inherited;
 end;
 
-class procedure TCodeFormatterFormatter.Execute(ATokens: TOCollection; ASettings: TCodeFormatterSettings);
-var
-  Formatter: TCodeFormatterFormatter;
-begin
-  Formatter := TCodeFormatterFormatter.Create(ASettings);
-  try
-    Formatter.doExecute(ATokens);
-  finally
-    Formatter.Free;
-  end;
-end;
-
-function TCodeFormatterFormatter.AlignExpression(Idx: Integer; aPos: Integer): TPascalToken;
+function TCodeFormatterFormatter.AlignExpression(_Idx: Integer; _Pos: Integer): TPascalToken;
 var
   OldExpr: TExpression;
 begin
   FHasAligned := True;
-  OldExpr := TExpression(FTokens.Items[Idx]);
-  Result := TAlignExpression.Create(OldExpr, aPos);
-  FTokens.Items[Idx] := Result;
+  OldExpr := TExpression(FTokens.Items[_Idx]);
+  Result := TAlignExpression.Create(OldExpr, _Pos);
+  FTokens.Items[_Idx] := Result;
   OldExpr.Free;
 end;
 
@@ -256,78 +259,78 @@ begin
   end;
 end;
 
-function TCodeFormatterFormatter.TokenAtIs(AIdx: Integer; ARType: TReservedType): Boolean;
+function TCodeFormatterFormatter.TokenAtIs(_Idx: Integer; _RType: TReservedType): Boolean;
 var
   Token: TPascalToken;
 begin
-  Result := GetToken(AIdx, Token);
+  Result := GetToken(_Idx, Token);
   if Result then
-    Result := (Token.ReservedType = ARType);
+    Result := (Token.ReservedType = _RType);
 end;
 
-function TCodeFormatterFormatter.GetToken(Idx: Integer): TPascalToken;
+function TCodeFormatterFormatter.GetToken(_Idx: Integer): TPascalToken;
 begin
-  GetToken(Idx, Result);
+  GetToken(_Idx, Result);
 end;
 
-function TCodeFormatterFormatter.GetToken(Idx: Integer; out Token: TPascalToken): Boolean;
+function TCodeFormatterFormatter.GetToken(_Idx: Integer; out Token: TPascalToken): Boolean;
 begin
-  Result := (Idx >= 0) and (Idx < FTokens.Count);
+  Result := (_Idx >= 0) and (_Idx < FTokens.Count);
   if Result then
-    Token := TPascalToken(FTokens[Idx])
+    Token := TPascalToken(FTokens[_Idx])
   else
     Token := nil;
 end;
 
-function TCodeFormatterFormatter.GetNextNoComment(StartPos: Integer; out Offset: Integer): TPascalToken;
+function TCodeFormatterFormatter.GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken;
 begin
-  if not GetNextNoComment(StartPos, Result, Offset) then
+  if not GetNextNoComment(_StartPos, Result, _Offset) then
     Result := nil;
 end;
 
-function TCodeFormatterFormatter.GetNextNoComment(StartPos: Integer; out Token: TPascalToken; out Offset: Integer): Boolean;
+function TCodeFormatterFormatter.GetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean;
 begin
-  Offset := 0;
+  _Offset := 0;
   repeat
-    Inc(Offset);
-    Result := GetToken(StartPos + Offset, Token);
-  until not Result or (Token.ReservedType <> rtComment);
+    Inc(_Offset);
+    Result := GetToken(_StartPos + _Offset, _Token);
+  until not Result or (_Token.ReservedType <> rtComment);
 end;
 
-function TCodeFormatterFormatter.GetNextNoComment(StartPos: Integer; out Token: TPascalToken): Boolean;
+function TCodeFormatterFormatter.GetNextNoComment(_StartPos: Integer; out _Token: TPascalToken): Boolean;
 var
   Offset: Integer;
 begin
-  Result := GetNextNoComment(StartPos, Token, Offset);
+  Result := GetNextNoComment(_StartPos, _Token, Offset);
 end;
 
-function TCodeFormatterFormatter.InsertBlankLines(atIndex, NLines: Integer): TLineFeed;
+function TCodeFormatterFormatter.InsertBlankLines(_AtIndex, _NLines: Integer): TLineFeed;
 var
   LineIdx: Integer;
   NextToken: TPascalToken;
 begin
   Result := FPrevLine;
-  for LineIdx := 0 to NLines - 1 do begin
+  for LineIdx := 0 to _NLines - 1 do begin
     Result := TLineFeed.Create(0, Settings.SpacePerIndent);
     Result.SetIndent(FStack.nIndent);
-    NextToken := GetToken(atIndex);
+    NextToken := GetToken(_AtIndex);
     { TODO -otwm -ccheck : is the if statement necessary? }
     if NextToken.Space(spBefore) then
       NextToken.SetSpace([spBefore], False);
-    FTokens.Insert(atIndex, Result);
-    AdjustSpacing(NextToken, Result, atIndex);
+    FTokens.Insert(_AtIndex, Result);
+    AdjustSpacing(NextToken, Result, _AtIndex);
   end;
-  if atIndex <= FTokenIdx then
-    Inc(FTokenIdx, NLines);
+  if _AtIndex <= FTokenIdx then
+    Inc(FTokenIdx, _NLines);
 end;
 
-function TCodeFormatterFormatter.AssertLineFeedAfter(StartPos: Integer): TLineFeed;
+function TCodeFormatterFormatter.AssertLineFeedAfter(_StartPos: Integer): TLineFeed;
 var
   next: TPascalToken;
   Offset: Integer;
 begin
-  if GetNextNoComment(StartPos, next, Offset) and (next.ReservedType <> rtLineFeed) then
-    Result := InsertBlankLines(StartPos + Offset, 1)
+  if GetNextNoComment(_StartPos, next, Offset) and (next.ReservedType <> rtLineFeed) then
+    Result := InsertBlankLines(_StartPos + Offset, 1)
   else
     Result := FPrevLine;
 end;
@@ -401,7 +404,7 @@ begin
   end;
 end;
 
-procedure TCodeFormatterFormatter.PutCommentBefore(aComment: PAnsiChar);
+procedure TCodeFormatterFormatter.PutCommentBefore(_Comment: PAnsiChar);
 var
   J: Integer;
   P: TPascalToken;
@@ -410,7 +413,7 @@ begin
   J := FTokenIdx - 2;
   P := GetToken(J);
   { TODO -otwm : Does this work correctly in Delphi 2009? }
-  SetString(s, aComment, StrLen(aComment));
+  SetString(s, _Comment, StrLen(_Comment));
   if P.ReservedType = rtComment then
     P.SetExpression(s)
   else begin
@@ -427,7 +430,7 @@ end;
 
 // When we enter this method FCurrentToken is 'asm' and FCurrentRType os rtAsm
 
-procedure TCodeFormatterFormatter.FormatAsm(NTmp: Integer);
+procedure TCodeFormatterFormatter.FormatAsm(_NTmp: Integer);
 begin
   // remove var / type stuff
   while FStack.GetTopType in [rtVar, rtType] do
@@ -456,7 +459,7 @@ begin
     FCurrentToken := GetToken(FTokenIdx);
   end;
   if FTokenIdx < FTokens.Count then
-    SetPrevLineIndent(NTmp);
+    SetPrevLineIndent(_NTmp);
   Dec(FTokenIdx);
 end;
 
@@ -496,6 +499,45 @@ begin
   FPrevLine := _PrevPrevLine;
 end;
 
+procedure TCodeFormatterFormatter.ComplexIfElse(var _NTmp: Integer);
+begin
+  while not FStack.IsEmpty and (FLastPopResType <> rtThen) do begin
+    FLastPopResType := FStack.Pop;
+    if FLastPopResType = rtIfElse then
+      ComplexIfElse(_NTmp);
+  end;
+  SetPrevLineIndent(_NTmp);
+end;
+
+procedure TCodeFormatterFormatter.CheckShortLine;
+var
+  Token: TPascalToken;
+
+  function TokenRType: TReservedType;
+  begin
+    if Token = nil then
+      Result := rtNothing
+    else
+      Result := Token.ReservedType;
+  end;
+
+var
+  Offset: Integer;
+begin { CheckShortLine }
+  Offset := 1;
+  Token := GetToken(FTokenIdx + Offset);
+  if TokenRType = rtLineFeed then begin
+    while not ((TokenRType in [rtSemiColon, rtBegin, rtElse, rtDo, rtWhile, rtOn, rtThen, rtCase])
+      or ((Offset > 1) and (Token.ReservedType = rtLineFeed))) do begin
+      Inc(Offset);
+      Token := GetToken(FTokenIdx + Offset);
+    end;
+    if TokenRType = rtSemiColon then begin
+      FTokens.AtFree(FTokenIdx + 1);
+    end;
+  end;
+end;
+
 procedure TCodeFormatterFormatter.doExecute(ATokens: TOCollection);
 var
   OldWrapIndent: Boolean; // stores WrapIndent from before an opening bracket until the closing one
@@ -507,56 +549,15 @@ var
   PrevOldNspaces: Integer;
 
   procedure CheckIndent;
-
-    procedure CheckShortLine;
-    var
-      Token: TPascalToken;
-
-      function TokenRType: TReservedType;
-      begin
-        if Token = nil then
-          Result := rtNothing
-        else
-          Result := Token.ReservedType;
-      end;
-
-    var
-      Offset: Integer;
-    begin { CheckShortLine }
-      Offset := 1;
-      Token := GetToken(FTokenIdx + Offset);
-      if TokenRType = rtLineFeed then begin
-        while not ((TokenRType in [rtSemiColon, rtBegin, rtElse, rtDo, rtWhile, rtOn, rtThen, rtCase])
-          or ((Offset > 1) and (Token.ReservedType = rtLineFeed))) do begin
-          Inc(Offset);
-          Token := GetToken(FTokenIdx + Offset);
-        end;
-        if TokenRType = rtSemiColon then begin
-          FTokens.AtFree(FTokenIdx + 1);
-        end;
-      end;
-    end;
-
-    procedure ComplexIfElse;
-    begin
-      while not FStack.IsEmpty and (FLastPopResType <> rtThen) do begin
-        FLastPopResType := FStack.Pop;
-        if FLastPopResType = rtIfElse then
-          ComplexIfElse;
-      end;
-      SetPrevLineIndent(NTmp);
-    end;
-
   var
-    RemoveMe: Integer; // twm: k is used in several sub procedures but it should be possible to declare local variables in all of them
+    RemoveMe: Integer;
     next: TPascalToken;
     TempWordIdx: Integer;
     Prev1: TPascalToken;
     FunctDeclare, IsDelegate, NoBlankLine: Boolean;
     FeedRound: TFeedBegin;
     WType: TWordType;
-
-  begin { procedure CheckIndent; }
+  begin
     if FCurrentToken = nil then
       Exit;
 
@@ -643,7 +644,7 @@ var
           while not FStack.IsEmpty and not (FStack.GetTopType in [rtThen, rtOf, rtTry]) do
             FLastPopResType := FStack.Pop;
           if FLastPopResType = rtIfElse then
-            ComplexIfElse;
+            ComplexIfElse(NTmp);
           if (Settings.FeedRoundBegin = Hanging)
             and (FPrevToken <> nil)
             and TokenAtIs(FTokenIdx - 1, rtLineFeed)
