@@ -222,9 +222,9 @@ end;
 
 procedure TExpression.CheckReserved;
 var
-  L, H, C, I: Integer;
   Expr: string;
   Directive: string;
+  ResvdType: TReservedType;
 begin
   SetReservedType(rtNothing);
   case WordType of
@@ -255,21 +255,9 @@ begin
     wtWord: begin
         GetExpression(Expr);
         Expr := LowerCase(Expr);
-        L := 0;
-        H := NReservedWords - 1; {binary search}
-        while L <= H do begin
-          I := (L + H) shr 1;
-          C := CompareStr(ReservedArray[I].Words, Expr);
-          if C < 0 then
-            L := I + 1
-          else begin
-            H := I - 1;
-            if C = 0 then
-              with ReservedArray[I] do begin
-                SetReservedType(ReservedType);
-                Exit;
-              end;
-          end;
+        if ReservedWordList.FindWord(Expr, ResvdType) then begin
+          SetReservedType(ResvdType);
+          Exit;
         end;
       end;
     wtOperator: begin

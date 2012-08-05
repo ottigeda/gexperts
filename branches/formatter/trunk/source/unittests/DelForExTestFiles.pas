@@ -60,6 +60,7 @@ type
     procedure testIfThenElse;
     procedure testStarCommentAtEol;
     procedure testClassPropertiesCurrentlyFails;
+    procedure testClassVar;
     procedure testNestedClassCurrentlyFails;
     procedure testRecordMethod;
     procedure testAbstractSealedClass;
@@ -377,6 +378,11 @@ end;
 procedure TTestTestfiles.testClassPropertiesCurrentlyFails;
 begin
   TestFile('ClassProperties', True);
+end;
+
+procedure TTestTestfiles.testClassVar;
+begin
+  TestFile('ClassVar');
 end;
 
 procedure TTestTestfiles.testCommentEnd;
