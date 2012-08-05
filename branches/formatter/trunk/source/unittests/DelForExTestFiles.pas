@@ -17,7 +17,7 @@ type
   TTestTestfiles = class(TTestCase)
   private
     FFormatter: TCodeFormatterEngine;
-    procedure TestFile(const _Filename: string; _AllowFaiure: boolean = false);
+    procedure TestFile(const _Filename: string; _AllowFaiure: Boolean = False);
   protected
     function GetFormatSettings: TCodeFormatterEngineSettings; virtual; abstract;
     function GetResultDir: string; virtual; abstract;
@@ -68,6 +68,7 @@ type
     procedure testConstSet;
     procedure testConstSetWithComment;
     procedure testConstSetWithCommentAtEnd;
+    procedure testAngledBrackets;
   end;
 
 type
@@ -128,7 +129,7 @@ begin
   FFormatter.Free;
 end;
 
-procedure TTestTestfiles.TestFile(const _Filename: string; _AllowFaiure: boolean);
+procedure TTestTestfiles.TestFile(const _Filename: string; _AllowFaiure: Boolean);
 var
   Filename: string;
   InFile: string;
@@ -226,7 +227,7 @@ end;
 
 procedure TTestTestfiles.testNestedClassCurrentlyFails;
 begin
-  Testfile('NestedClass', true);
+  Testfile('NestedClass', True);
 end;
 
 procedure TTestTestfiles.testOperatorOverloading;
@@ -352,6 +353,11 @@ begin
   TestFile('AbstractSealedClass');
 end;
 
+procedure TTestTestfiles.testAngledBrackets;
+begin
+  TestFile('AngledBrackets');
+end;
+
 procedure TTestTestfiles.testAsm;
 begin
   TestFile('asm');
@@ -364,7 +370,7 @@ end;
 
 procedure TTestTestfiles.testClassPropertiesCurrentlyFails;
 begin
-  TestFile('ClassProperties', true);
+  TestFile('ClassProperties', True);
 end;
 
 procedure TTestTestfiles.testCommentEnd;
@@ -374,7 +380,7 @@ end;
 
 procedure TTestTestfiles.testCurlyHalfCommentEndCurrentlyFails;
 begin
-  TestFile('CurlyHalfCommentEnd', true);
+  TestFile('CurlyHalfCommentEnd', True);
 end;
 
 { TTestFilesHeadworkFormatting }
