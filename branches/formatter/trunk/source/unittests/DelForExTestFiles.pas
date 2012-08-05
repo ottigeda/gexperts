@@ -69,6 +69,7 @@ type
     procedure testConstSetWithComment;
     procedure testConstSetWithCommentAtEnd;
     procedure testAngledBrackets;
+    procedure testGenericClass;
   end;
 
 type
@@ -346,6 +347,11 @@ end;
 procedure TTestTestfiles.testFormula;
 begin
   TestFile('Formula');
+end;
+
+procedure TTestTestfiles.testGenericClass;
+begin
+  TestFile('GenericClass');
 end;
 
 procedure TTestTestfiles.testAbstractSealedClass;

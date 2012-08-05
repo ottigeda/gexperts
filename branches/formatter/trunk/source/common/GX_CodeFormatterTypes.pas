@@ -51,7 +51,7 @@ type
     rtEnd, rtBegin, rtCase, rtOf, rtLineFeed, rtColon, rtSemiColon,
     rtThen, rtClass, rtClassDecl, rtProgram, rtRepeat, rtUntil, rtRecord,
     rtVisibility, rtElse, rtIfElse, rtInterface, rtImplementation,
-    rtLeftBr, rtRightBr, rtLeftHook, rtRightHook, rtMathOper, rtEqualOper,
+    rtLeftBr, rtRightBr, rtLeftHook, rtRightHook, rtMathOper, rtAssignOper,
     rtMinus, rtPlus,
     rtLogOper, rtEquals, rtForward, rtDefault, rtInitialization, rtComma,
     rtUses, rtProcDeclare, rtFuncDirective, rtAbsolute, rtComment, rtRecCase, rtDot,

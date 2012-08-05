@@ -122,33 +122,37 @@ var
     exp: string;
   begin
     Result := False;
-    if FStack.GetTopType in [rtType, rtProcedure] then
-      Result := True
-    else if (FCurrentRType = rtLogOper) and FCurrentToken.GetExpression(exp) and ((exp = '<=') or (exp = '>=')) then
-      Result := False
-    else begin
-      if GetNextNoComment(_TokenIdx, Next, OffSet) then
-        if Next.ReservedType in [rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then
-          Result := True
-        else begin
-          Idx := _TokenIdx + OffSet;
-          while GetNextNoComment(Idx, Next, OffSet) do begin
-            case Next.ReservedType of
-              rtLogOper:
-                if GetNextNoComment(Idx + OffSet, Next) then begin
-                  if Next.ReservedType in [rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then begin
-                    Result := True;
-                    Exit;
-                  end else
-                    Inc(Idx, OffSet + 1);
-                end else
-                  Exit;
-              rtComma: Inc(Idx, OffSet + 1);
-            else
-              Exit;
-            end;
-          end;
-        end;
+    if (FCurrentRType <> rtLogOper) then
+      Exit; //=>
+    if not FCurrentToken.GetExpression(exp) or (exp = '<=') or (exp = '>=') then
+      Exit; //=>
+    if FStack.GetTopType in [rtType, rtProcedure] then begin
+      Result := True;
+      Exit; //=>
+    end;
+    if not GetNextNoComment(_TokenIdx, Next, OffSet) then
+      Exit;
+    if Next.ReservedType in [rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then begin
+      Result := False;
+      Exit; //=>
+    end;
+
+    Idx := _TokenIdx + OffSet;
+    while GetNextNoComment(Idx, Next, OffSet) do begin
+      case Next.ReservedType of
+        rtLogOper:
+          if GetNextNoComment(Idx + OffSet, Next) then begin
+            if Next.ReservedType in [rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then begin
+              Result := True;
+              Exit; //=>
+            end else
+              Inc(Idx, OffSet + 1);
+          end else
+            Exit; //=>
+        rtComma: Inc(Idx, OffSet + 1);
+      else
+        Exit; //=>
+      end;
     end;
   end;
 
@@ -183,7 +187,7 @@ begin
         _CurrentToken.SetSpace(Settings.SpaceOperators, True);
     rtOper, rtMathOper, rtPlus, rtMinus, rtEquals:
       _CurrentToken.SetSpace(Settings.SpaceOperators, True);
-    rtEqualOper:
+    rtAssignOper:
       _CurrentToken.SetSpace(Settings.SpaceEqualOper, True);
     rtColon:
       _CurrentToken.SetSpace(Settings.SpaceColon, True);
@@ -227,7 +231,7 @@ begin
       end;
       if (Prev2 <> nil) and (Prev2.ReservedType in [rtOper,
         rtMathOper, rtPlus, rtMinus, rtSemiColon, rtOf,
-          rtMinus, rtLogOper, rtEquals, rtEqualOper, rtLeftBr,
+          rtMinus, rtLogOper, rtEquals, rtAssignOper, rtLeftBr,
           rtLeftHook, rtComma, rtDefault]) then
         _CurrentToken.SetSpace([spAfter], False); {sign operator}
     end;

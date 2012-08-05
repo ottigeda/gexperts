@@ -298,7 +298,7 @@ begin
             else if Expr = '..' then
               SetReservedType(rtDotDot)
             else if Expr = ':=' then
-              SetReservedType(rtEqualOper)
+              SetReservedType(rtAssignOper)
             else if (Expr[1] = '<') or (Expr[1] = '>') then
             {if p in > < <> >=  <= =}
               SetReservedType(rtLogOper);
