@@ -31,15 +31,15 @@ type
     FLastPopResType: TReservedType;
     procedure UppercaseCompilerDirective(_Token: TPascalToken);
     function NoBeginTryIndent(_rtype: TReservedType): Boolean;
-    procedure SetPrevLineIndent(_Additional: integer);
+    procedure SetPrevLineIndent(_Additional: Integer);
     procedure DecPrevLineIndent;
     {: replaces a TExpression with a TAlignExpression }
     function AlignExpression(Idx: Integer; aPos: Integer): TPascalToken;
     procedure CheckWrapping;
-    function PrevTokenIsRType(_rtype: TReservedType): boolean;
+    function PrevTokenIsRType(_rtype: TReservedType): Boolean;
     procedure CheckBlankLinesAroundProc;
     procedure PutCommentBefore(aComment: PAnsiChar);
-    procedure FormatAsm(NTmp: integer);
+    procedure FormatAsm(NTmp: Integer);
     procedure AdjustSpacing(_CurrentToken, _PrevToken: TPascalToken; _TokenIdx: Integer);
 
     {: return token with index Idx or nil if out of bounds }
@@ -50,7 +50,7 @@ type
        @param AIdx is the index of the token to check
        @param ARType is the queried reserverd type
        @returns true, if the token has the queried type, false otherwise }
-    function TokenAtIs(AIdx: integer; ARType: TReservedType): boolean;
+    function TokenAtIs(AIdx: Integer; ARType: TReservedType): Boolean;
 
     function GetNextNoComment(StartPos: Integer; out Offset: Integer): TPascalToken; overload;
     function GetNextNoComment(StartPos: Integer; out Token: TPascalToken; out Offset: Integer): Boolean; overload;
@@ -119,32 +119,37 @@ var
   var
     Next: TPascalToken;
     Idx, OffSet: Integer;
+    exp: string;
   begin
     Result := False;
     if FStack.GetTopType in [rtType, rtProcedure] then
       Result := True
-    else if GetNextNoComment(_TokenIdx, Next, OffSet) then
-      if Next.ReservedType in [rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then
-        Result := True
-      else begin
-        Idx := _TokenIdx + OffSet;
-        while GetNextNoComment(Idx, Next, OffSet) do begin
-          case Next.ReservedType of
-            rtLogOper:
-              if GetNextNoComment(Idx + OffSet, Next) then begin
-                if Next.ReservedType in [rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then begin
-                  Result := true;
-                  Exit;
+    else if (FCurrentRType = rtLogOper) and FCurrentToken.GetExpression(exp) and ((exp = '<=') or (exp = '>=')) then
+      Result := False
+    else begin
+      if GetNextNoComment(_TokenIdx, Next, OffSet) then
+        if Next.ReservedType in [rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then
+          Result := True
+        else begin
+          Idx := _TokenIdx + OffSet;
+          while GetNextNoComment(Idx, Next, OffSet) do begin
+            case Next.ReservedType of
+              rtLogOper:
+                if GetNextNoComment(Idx + OffSet, Next) then begin
+                  if Next.ReservedType in [rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then begin
+                    Result := True;
+                    Exit;
+                  end else
+                    Inc(Idx, OffSet + 1);
                 end else
-                  Inc(Idx, OffSet + 1);
-              end else
-                Exit;
-            rtComma: Inc(Idx, OffSet + 1);
-          else
-            Exit;
+                  Exit;
+              rtComma: Inc(Idx, OffSet + 1);
+            else
+              Exit;
+            end;
           end;
         end;
-      end;
+    end;
   end;
 
 begin
@@ -246,7 +251,7 @@ begin
   end;
 end;
 
-function TCodeFormatterFormatter.TokenAtIs(AIdx: integer; ARType: TReservedType): boolean;
+function TCodeFormatterFormatter.TokenAtIs(AIdx: Integer; ARType: TReservedType): Boolean;
 var
   Token: TPascalToken;
 begin
@@ -328,7 +333,7 @@ begin
     FPrevLine.IncIndent(-1);
 end;
 
-procedure TCodeFormatterFormatter.SetPrevLineIndent(_Additional: integer);
+procedure TCodeFormatterFormatter.SetPrevLineIndent(_Additional: Integer);
 begin
   if FPrevLine <> nil then
     FPrevLine.SetIndent(FStack.nIndent + _Additional + FStack.ProcLevel);
@@ -343,7 +348,7 @@ end;
 
 procedure TCodeFormatterFormatter.UppercaseCompilerDirective(_Token: TPascalToken);
 var
-  Idx: integer;
+  Idx: Integer;
   s: string;
 begin
   _Token.GetExpression(s);
@@ -355,7 +360,7 @@ begin
   _Token.SetExpression(s);
 end;
 
-function TCodeFormatterFormatter.PrevTokenIsRType(_rtype: TReservedType): boolean;
+function TCodeFormatterFormatter.PrevTokenIsRType(_rtype: TReservedType): Boolean;
 begin
   Result := Assigned(FPrevToken) and (FPrevToken.ReservedType = _rtype);
 end;
@@ -417,7 +422,7 @@ end;
 
 // When we enter this method FCurrentToken is 'asm' and FCurrentRType os rtAsm
 
-procedure TCodeFormatterFormatter.FormatAsm(NTmp: integer);
+procedure TCodeFormatterFormatter.FormatAsm(NTmp: Integer);
 begin
   // remove var / type stuff
   while FStack.GetTopType in [rtVar, rtType] do
@@ -511,7 +516,7 @@ var
       end;
 
     var
-      Offset: integer;
+      Offset: Integer;
     begin { CheckShortLine }
       Offset := 1;
       Token := GetToken(FTokenIdx + Offset);
@@ -548,7 +553,7 @@ var
 
   begin { procedure CheckIndent; }
     if FCurrentToken = nil then
-      exit;
+      Exit;
 
     FCurrentRType := FCurrentToken.ReservedType;
     WType := FCurrentToken.WordType;

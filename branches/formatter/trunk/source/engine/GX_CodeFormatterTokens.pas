@@ -10,6 +10,7 @@ interface
 uses
   SysUtils,
   StrUtils,
+  TypInfo,
   GX_CodeFormatterTypes;
 
 type
@@ -34,16 +35,18 @@ type
     procedure SetExpression(const AExpression: string); virtual;
     procedure SetCase(ACase: TCase); virtual;
     function GetCase: TCase; virtual;
-    Procedure SetOptions(AOptions: TTokenOptions); Virtual;
-    Function GetOptions: TTokenOptions; Virtual;
-    Procedure AddOption(AOption: TTokenOption);
-    Function HasOption(AOption: TTokenOption): Boolean;
+    procedure SetOptions(AOptions: TTokenOptions); virtual;
+    function GetOptions: TTokenOptions; virtual;
+    procedure AddOption(AOption: TTokenOption);
+    function HasOption(AOption: TTokenOption): Boolean;
+
+    function GetForDebug: string; virtual;
 
     property ExpressionCase: TCase read GetCase write SetCase;
     property ReservedType: TReservedType read GetReservedType write SetReservedType;
     property WordType: TWordType read GetWordType;
     property Content: string read GetString;
-    Property Options: TTokenOptions Read GetOptions Write SetOptions;
+    property Options: TTokenOptions read GetOptions write SetOptions;
   end;
 
   TLineFeed = class(TPascalToken)
@@ -59,6 +62,9 @@ type
     procedure IncIndent(Value: Integer);
     procedure GetLength(var ALength: Integer); override;
     function GetReservedType: TReservedType; override;
+
+    function GetForDebug: string; override;
+
     {: @returns a string with FNoOfSpaces spaces }
     function GetString: string; override;
   end;
@@ -86,8 +92,9 @@ type
     procedure SetExpression(const AExpression: string); override;
     procedure SetCase(ACase: TCase); override;
     function GetCase: TCase; override;
-    Procedure SetOptions(AOptions: TTokenOptions); Override;
-    Function GetOptions: TTokenOptions; Override;
+    procedure SetOptions(AOptions: TTokenOptions); override;
+    function GetOptions: TTokenOptions; override;
+    function GetForDebug: string; override;
   end;
 
   TAlignExpression = class(TExpression)
@@ -103,11 +110,11 @@ type
 
 implementation
 
-{$ifdef GX_VER200_up} // delphi 2009
+{$IFDEF GX_VER200_up} // delphi 2009
 uses
 //  GX_FastcodeAnsiString,
   AnsiStrings;
-{$endif}
+{$ENDIF}
 
 { TPascalToken }
 
@@ -119,16 +126,21 @@ end;
 function TPascalToken.GetExpression(out AExpression: string): Boolean;
 begin
   Result := False;
-End;
+end;
 
-Function TPascalToken.GetOptions: TTokenOptions;
-Begin
+function TPascalToken.GetForDebug: string;
+begin
+  Result := ClassName;
+end;
+
+function TPascalToken.GetOptions: TTokenOptions;
+begin
   Result := [];
-End;
+end;
 
-Function TPascalToken.HasOption(AOption: TTokenOption): Boolean;
-Begin
-  Result := AOption In Options;
+function TPascalToken.HasOption(AOption: TTokenOption): Boolean;
+begin
+  Result := AOption in Options;
 end;
 
 function TPascalToken.Space(ASpace: TSpace): Boolean;
@@ -137,10 +149,10 @@ begin
 end;
 
 procedure TPascalToken.SetExpression(const AExpression: string);
-Begin
-End;
+begin
+end;
 
-Procedure TPascalToken.SetOptions(AOptions: TTokenOptions);
+procedure TPascalToken.SetOptions(AOptions: TTokenOptions);
 begin
 end;
 
@@ -155,10 +167,10 @@ end;
 
 procedure TPascalToken.SetReservedType(AReservedType: TReservedType);
 begin
-End;
+end;
 
-Procedure TPascalToken.AddOption(AOption: TTokenOption);
-Begin
+procedure TPascalToken.AddOption(AOption: TTokenOption);
+begin
   Options := Options + [AOption];
 end;
 
@@ -278,7 +290,7 @@ begin
               '/', '*': SetReservedType(rtMathOper);
               '<', '>': SetReservedType(rtLogOper);
             end;
-          End Else If Length(Expr) = 2 Then Begin
+          end else if Length(Expr) = 2 then begin
             if Expr = '.)' then
               SetReservedType(rtRightHook)
             else if Expr = '(.' then
@@ -299,10 +311,10 @@ end;
 procedure TExpression.SetExpression(const AExpression: string);
 begin
   FExpression := AExpression
-End;
+end;
 
-Procedure TExpression.SetOptions(AOptions: TTokenOptions);
-Begin
+procedure TExpression.SetOptions(AOptions: TTokenOptions);
+begin
   FOptions := AOptions;
 end;
 
@@ -315,6 +327,33 @@ function TExpression.GetExpression(out AExpression: string): Boolean;
 begin
   AExpression := FExpression;
   Result := True;
+end;
+
+function TExpression.GetForDebug: string;
+
+  function SpaceTypeToStr(_SpaceType: TSpaceSet): string;
+  begin
+    if (spBefore in _SpaceType) then
+      Result := 'spBefore'
+    else
+      Result := '';
+    if spAfter in _SpaceType then begin
+      if Result <> '' then
+        Result := Result + ',';
+      Result := Result + 'spAfter';
+    end;
+  end;
+
+var
+  s: string;
+begin
+  s := 'Expression: ''' + FExpression + '''';
+  s := s + ', WordType: ' + GetEnumName(TypeInfo(TWordType), Integer(FWordType));
+  s := s + ', SpaceType: [' + SpaceTypeToStr(FSpaceType) + ']';
+  s := s + ', CaseType: ' + GetEnumName(TypeInfo(TCase), Integer(FCaseType));
+  s := s + ', ReservedType: ' + GetEnumName(TypeInfo(TReservedType), Integer(FReservedType));
+  s := s + ', Options: [' + IfThen(FOptions = [], '', 'toFeedNewLine') + ']';
+  Result := inherited GetForDebug + '(' + s + ')';
 end;
 
 function TExpression.Space(ASpace: TSpace): Boolean;
@@ -371,13 +410,13 @@ begin
     inc(ALength);
 end;
 
-Function TExpression.GetOptions: TTokenOptions;
-Begin
+function TExpression.GetOptions: TTokenOptions;
+begin
   Result := FOptions;
-End;
+end;
 
-Function strSpaceE(Dest: PAnsiChar; n: Integer): PAnsiChar;
-Var
+function strSpaceE(Dest: PAnsiChar; n: Integer): PAnsiChar;
+var
   I: Integer;
 begin
   Result := Dest;
@@ -402,6 +441,18 @@ begin
     Result := StringOfChar(' ', Len)
   else
     Result := '';
+end;
+
+function TLineFeed.GetForDebug: string;
+var
+  s: string;
+begin
+  s := 'SpacePerIndent: ' + IntTostr(FSpacePerIndent);
+  s := s + ', NoOfSpaces: ' + IntToStr(FNoOfSpaces);
+  s := s + ', OldNoOfSpaces: ' + IntToStr(FOldNoOfSpaces);
+  s := s + ', Wrapped: ' + IfThen(FWrapped, 'true', 'false');
+
+  Result := inherited GetForDebug + '(' + s + ')';
 end;
 
 procedure TLineFeed.GetLength(var ALength: Integer);
