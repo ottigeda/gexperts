@@ -387,8 +387,8 @@ begin
         end;
       '#': begin
           { TODO -otwm -cfixme :
-            This is so upppercasing hex numbers works, but it is rather ugly
-            and also misses those embedded in strings and will change #10^j to #10^J }
+            Ttis is for upper casing hex numbers, but it is rather ugly.
+            It also misses those embedded in strings 'bla'#1d'blub' and will change #10^j to #10^J }
           Result := wtHexNumber;
           while P^ in StringControlChars do
             Inc(P);
