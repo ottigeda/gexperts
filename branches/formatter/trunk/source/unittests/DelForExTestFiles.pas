@@ -25,52 +25,53 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
-    procedure testStrictVisibility;
-    procedure testCompilerDirectives;
+    procedure testAbstractSealedClass;
+    procedure testAngledBrackets;
+    procedure testAsm;
+    procedure testAsmProblem1;
     procedure testAssemblerNewlines;
-    procedure testIfdefs;
-    procedure testUnmatchedIfdef;
-    procedure testUnmatchedElse;
-    procedure testUnmatchedEndif;
-    procedure testIfElseendif;
+    procedure testClassVar;
+    procedure testCommentEnd;
+    procedure testCompilerDirectives;
+    procedure testConstSet;
+    procedure testConstSetWithComment;
+    procedure testConstSetWithCommentAtEnd;
+    procedure testControlChars;
     procedure testDisableFormatComment;
-    procedure testLargeFile;
-    procedure testTripleQuotes;
-    procedure testSingleElse;
-    procedure testQuotesError;
-    procedure testTabBeforeEndInAsm;
+    procedure testDotFloat;
     procedure testElseAtEnd;
     procedure testEmptyProgram;
     procedure testEmptyStringAssignment;
     procedure testEmptyUnit;
+    procedure testFormula;
     procedure testHashCharStrings;
+    procedure testHexNumbers;
+    procedure testIfdefs;
+    procedure testIfElseendif;
+    procedure testIfThenElse;
+    procedure testIfThenTry;
     procedure testIndentComment;
     procedure testJustOpeningComment;
     procedure testJustOpeningStarCommentInAsm;
-    procedure testStringWithSingleQuotes;
-    procedure testUnterminatedString;
-    procedure testDotFloat;
-    procedure testHexNumbers;
-    procedure testControlChars;
-    procedure testFormula;
-    procedure testAsmProblem1;
-    procedure testCommentEnd;
-    procedure testCurlyHalfCommentEndCurrentlyFails;
-    procedure testIfThenTry;
-    procedure testIfThenElse;
-    procedure testStarCommentAtEol;
-    procedure testClassPropertiesCurrentlyFails;
-    procedure testClassVar;
-    procedure testNestedClassCurrentlyFails;
-    procedure testRecordMethod;
-    procedure testAbstractSealedClass;
+    procedure testLargeFile;
     procedure testOperatorOverloading;
-    procedure testAsm;
-    procedure testConstSet;
-    procedure testConstSetWithComment;
-    procedure testConstSetWithCommentAtEnd;
-    procedure testAngledBrackets;
-    procedure testGenericClass;
+    procedure testQuotesError;
+    procedure testRecordMethod;
+    procedure testSingleElse;
+    procedure testSlashCommentToCurly;
+    procedure testStarCommentAtEol;
+    procedure testStrictVisibility;
+    procedure testStringWithSingleQuotes;
+    procedure testTabBeforeEndInAsm;
+    procedure testTripleQuotes;
+    procedure testUnmatchedElse;
+    procedure testUnmatchedEndif;
+    procedure testUnmatchedIfdef;
+    procedure testUnterminatedString;
+    procedure testClassPropertiesCurrentlyFails;
+    procedure testCurlyHalfCommentEndCurrentlyFails;
+    procedure testGenericClassCurrentlyFails;
+    procedure testNestedClassCurrentlyFails;
   end;
 
 type
@@ -167,6 +168,11 @@ begin
   TestFile('StarCommentAtEol');
 end;
 
+procedure TTestTestfiles.testSlashCommentToCurly;
+begin
+  TestFile('SlashCommentToCurly');
+end;
+
 procedure TTestTestfiles.testStrictVisibility;
 begin
   TestFile('strictvisibility');
@@ -229,7 +235,7 @@ end;
 
 procedure TTestTestfiles.testNestedClassCurrentlyFails;
 begin
-  Testfile('NestedClass', True);
+  Testfile('NestedClass', False);
 end;
 
 procedure TTestTestfiles.testOperatorOverloading;
@@ -350,7 +356,7 @@ begin
   TestFile('Formula');
 end;
 
-procedure TTestTestfiles.testGenericClass;
+procedure TTestTestfiles.testGenericClassCurrentlyFails;
 begin
   TestFile('GenericClass');
 end;

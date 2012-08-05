@@ -4,23 +4,31 @@ interface
 
 type
   TOuterClass = class
-  strict private
-    myField: Integer;
-  public
-  type
-    TInnerClass = class
-    public
-      myInnerField: Integer;
-      procedure innerProc;
-    end;
-    procedure outerProc;
+    procedure outerproc0;
+    type
+      TInnerClass = class
+        myInnerField: Integer;
+        procedure innerProc;
+      end;
+    procedure outerProc1;
+    procedure outerProc2;
   end;
 
 implementation
 
 { TOuterClass }
 
-procedure TOuterClass.outerProc;
+procedure TOuterClass.outerProc0;
+begin
+
+end;
+
+procedure TOuterClass.outerProc1;
+begin
+
+end;
+
+procedure TOuterClass.outerProc2;
 begin
 
 end;

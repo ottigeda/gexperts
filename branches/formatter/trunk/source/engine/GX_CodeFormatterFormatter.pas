@@ -60,6 +60,7 @@ type
     function AssertLineFeedAfter(StartPos: Integer): TLineFeed;
     {: This function does the actual formatting }
     procedure doExecute(ATokens: TOCollection);
+    procedure CheckSlashComment(_PrevPrevLine: TLineFeed);
 
     property Settings: TCodeFormatterSettings read FSettings write FSettings;
   public
@@ -459,6 +460,42 @@ begin
   Dec(FTokenIdx);
 end;
 
+procedure TCodeFormatterFormatter.CheckSlashComment(_PrevPrevLine: TLineFeed);
+var
+  Token: TPascalToken;
+  PrevPasWord: TPascalToken;
+  Expression: string;
+  PrevExpression: string;
+  i: Integer;
+begin
+  if GetToken(FTokenIdx - 1, FPrevToken) and (FPrevToken.ReservedType = rtComment)
+    and FPrevToken.GetExpression(PrevExpression) and (PrevExpression[1] = '/') then begin
+        // fix for situation with a // comment on prev line: begin becomes part of the comment
+    if not FPrevToken.ChangeComment('{') then begin
+      i := 0;
+      Token := nil;
+      repeat
+        PrevPasWord := Token;
+        Token := GetToken(FTokenIdx + i);
+        Inc(i);
+      until (Token = nil) or (Token.ReservedType = rtLineFeed);
+      Dec(i);
+      if (PrevPasWord.ReservedType = rtComment)
+        and PrevPasWord.GetExpression(Expression)
+        and (Expression[1] = '/') then begin
+        FPrevToken.SetExpression('{' + Copy(PrevExpression, 2, 999999) + '}');
+        Exit;
+      end else
+        FTokens.Delete(FTokenIdx - 1);
+      FTokens.Insert(FTokenIdx + i, FPrevToken);
+      FPrevToken := GetToken(FTokenIdx - 1);
+      AdjustSpacing(FPrevToken, GetToken(FTokenIdx - 2), FTokenIdx - 1);
+      FCurrentToken := GetToken(FTokenIdx);
+    end;
+  end;
+  FPrevLine := _PrevPrevLine;
+end;
+
 procedure TCodeFormatterFormatter.doExecute(ATokens: TOCollection);
 var
   OldWrapIndent: Boolean; // stores WrapIndent from before an opening bracket until the closing one
@@ -470,42 +507,6 @@ var
   PrevOldNspaces: Integer;
 
   procedure CheckIndent;
-
-    procedure CheckSlashComment;
-    var
-      Token: TPascalToken;
-      PrevPasWord: TPascalToken;
-      Expression: string;
-      PrevExpression: string;
-      i: Integer;
-    begin
-      if GetToken(FTokenIdx - 1, FPrevToken) and (FPrevToken.ReservedType = rtComment)
-        and FPrevToken.GetExpression(PrevExpression)
-        and (PrevExpression[1] = '/') then {fix for situation with a // comment
-        on prev line: begin becomes part of the comment}
-        if not FPrevToken.ChangeComment('{') then begin
-          i := 0;
-          Token := nil;
-          repeat
-            PrevPasWord := Token;
-            Token := GetToken(FTokenIdx + i);
-            Inc(i);
-          until (Token = nil) or (Token.ReservedType = rtLineFeed);
-          Dec(i);
-          if (PrevPasWord.ReservedType = rtComment)
-            and PrevPasWord.GetExpression(Expression)
-            and (Expression[1] = '/') then begin
-            FPrevToken.SetExpression('{' + Copy(PrevExpression, 2, 999999) + '}');
-            Exit;
-          end else
-            FTokens.Delete(FTokenIdx - 1);
-          FTokens.Insert(FTokenIdx + i, FPrevToken);
-          FPrevToken := GetToken(FTokenIdx - 1);
-          AdjustSpacing(FPrevToken, GetToken(FTokenIdx - 2), FTokenIdx - 1);
-          FCurrentToken := GetToken(FTokenIdx);
-        end;
-      FPrevLine := PrevPrevLine;
-    end;
 
     procedure CheckShortLine;
     var
@@ -577,7 +578,7 @@ var
             and (FStack.GetTopType = rtIfElse) and (FPrevToken = FPrevLine) then begin
             FTokens.AtFree(FTokenIdx - 1);
             Dec(FTokenIdx);
-            CheckSlashComment;
+            CheckSlashComment(PrevPrevLine);
           end else begin
             if Settings.FeedElseIf and (FPrevToken <> FPrevLine) then begin
               FPrevLine := AssertLineFeedAfter(FTokenIdx - 1);
@@ -602,7 +603,7 @@ var
             and (GetToken(FTokenIdx - 1).ReservedType <> rtComment) then begin
             FTokens.AtFree(FTokenIdx - 1);
             Dec(FTokenIdx);
-            CheckSlashComment;
+            CheckSlashComment(PrevPrevLine);
           end;
           if Settings.FeedAfterThen then begin
             if AssertLineFeedAfter(FTokenIdx) <> FPrevLine then begin
@@ -840,10 +841,17 @@ var
             FCurrentToken.SetReservedType(rtNothing);
         end;
       rtProcedure: begin
+//          if (FStack.HasType(rtClassDecl) or FStack.HasType(rtRecord)) and (FStack.GetTopType in [rtVar, rtType]) then begin
+//            // We are in a class or record declaration and the previous item was variable, const
+//            // or type declaration which has been ended by this procedure declaration
+//            FStack.Pop;
+//
+//          end else begin
           if FStack.GetTopType in [rtClassDecl, rtRecord] then begin
             FStack.Pop;
             FStack.Push(rtClass, 1);
           end;
+//          end;
           Prev1 := FPrevToken;
           TempWordIdx := FTokenIdx;
           if Prev1 <> nil then begin
@@ -958,7 +966,7 @@ var
                   and (FPrevToken <> nil) and (GetToken(FTokenIdx - 1) = FPrevLine) then begin
                   FTokens.AtFree(FTokenIdx - 1);
                   Dec(FTokenIdx);
-                  CheckSlashComment;
+                  CheckSlashComment(PrevPrevLine);
                 end;
                 AssertLineFeedAfter(FTokenIdx);
               end;
@@ -989,9 +997,12 @@ var
           t =  type AnsiString}
           if FStack.GetTopType in [rtVar, rtType] then
             FStack.Pop;
-          FStack.Push(FCurrentRType, 0);
-          if not PrevTokenIsRType(rtEquals) then begin
-            DecPrevLineIndent;
+          if FStack.GetTopType in [rtClass, rtRecord] then
+            FStack.Push(FCurrentRType, 1)
+          else begin
+            FStack.Push(FCurrentRType, 0);
+            if not PrevTokenIsRType(rtEquals) then
+              DecPrevLineIndent;
             if Settings.FeedAfterVar then
               AssertLineFeedAfter(FTokenIdx);
           end;
@@ -1011,7 +1022,7 @@ var
           if Settings.NoFeedBeforeThen and (FPrevToken = FPrevLine) then begin
             FTokens.AtFree(FTokenIdx - 1);
             Dec(FTokenIdx);
-            CheckSlashComment;
+            CheckSlashComment(PrevPrevLine);
           end;
           if Settings.FeedAfterThen then begin
             if AssertLineFeedAfter(FTokenIdx) <> FPrevLine then begin

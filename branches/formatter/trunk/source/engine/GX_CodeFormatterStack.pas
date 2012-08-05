@@ -36,10 +36,10 @@ type
     {: returns the topmost item from the stack without removing it }
     function GetTopType: TReservedType;
     function GetTopIndent: Integer;
-    {: Check whether AType is somewhere on the stack }
-    function HasType(AType: TReservedType): Boolean;
+    {: Check whether _Type is somewhere on the stack }
+    function HasType(_Type: TReservedType): Boolean;
     function Pop: TReservedType;
-    procedure Push(RType: TReservedType; IncIndent: Integer);
+    procedure Push(_RType: TReservedType; _IncIndent: Integer);
     {: returns True if the stack is empty }
     function IsEmpty: Boolean;
     {: clears the stack and returns the number of items that were left }
@@ -86,24 +86,24 @@ begin
     Result := rtNothing;
 end;
 
-procedure TCodeFormatterStack.Push(RType: TReservedType; IncIndent: Integer);
+procedure TCodeFormatterStack.Push(_RType: TReservedType; _IncIndent: Integer);
 begin
   Inc(FStackPtr);
   if FStackPtr > MaxStack then
     raise EFormatException.Create('Stack overflow');
 
-  TopRec.RT := RType;
+  TopRec.RT := _RType;
   TopRec.nInd := FNIndent;
-  FNIndent := FNIndent + IncIndent;
+  FNIndent := FNIndent + _IncIndent;
 end;
 
-function TCodeFormatterStack.HasType(AType: TReservedType): Boolean;
+function TCodeFormatterStack.HasType(_Type: TReservedType): Boolean;
 var
   I: Integer;
 begin
   Result := False;
   for I := 0 to FStackPtr do
-    if FStack[I].RT = AType then begin
+    if FStack[I].RT = _Type then begin
       Result := True;
       Exit;
     end;
