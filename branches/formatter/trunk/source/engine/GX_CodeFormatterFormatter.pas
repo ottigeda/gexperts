@@ -685,7 +685,7 @@ var
         end;
       rtClass: begin
           if not (GetNextNoComment(FTokenIdx, next)
-            and (next.ReservedType in [rtProcedure, rtProcDeclare, rtOf])) then begin
+            and (next.ReservedType in [rtProcedure, rtProcDeclare, rtOf, rtVar])) then begin
             { not a "class function" or "class of" declaration }
             WrapIndent := False;
             FStack.Push(rtClassDecl, 1);
