@@ -51,8 +51,6 @@ uses
   GX_CodeFormatterParser in '..\engine\GX_CodeFormatterParser.pas',
   GX_CodeFormatterConfigHandler in '..\GX_CodeFormatterConfigHandler.pas';
 
-{$R *.res}
-
 begin
   TGUITestRunner.runRegisteredTests;
 end.
