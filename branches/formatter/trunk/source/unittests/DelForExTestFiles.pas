@@ -69,6 +69,8 @@ type
     procedure testUnmatchedIfdef;
     procedure testUnterminatedString;
     procedure testClassProperties;
+    procedure testClassProperties2;
+    procedure testClassProperties3;
     procedure testCurlyHalfCommentEndCurrentlyFails;
     procedure testGenericClassCurrentlyFails;
     procedure testNestedClassCurrentlyFails;
@@ -384,6 +386,16 @@ end;
 procedure TTestTestfiles.testClassProperties;
 begin
   TestFile('ClassProperties');
+end;
+
+procedure TTestTestfiles.testClassProperties2;
+begin
+  TestFile('ClassProperties2');
+end;
+
+procedure TTestTestfiles.testClassProperties3;
+begin
+  TestFile('ClassProperties3');
 end;
 
 procedure TTestTestfiles.testClassVar;
