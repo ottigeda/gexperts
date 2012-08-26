@@ -873,17 +873,16 @@ var
             FCurrentToken.SetReservedType(rtNothing);
         end;
       rtProcedure: begin
-//          if (FStack.HasType(rtClassDecl) or FStack.HasType(rtRecord)) and (FStack.GetTopType in [rtVar, rtType]) then begin
-//            // We are in a class or record declaration and the previous item was variable, const
-//            // or type declaration which has been ended by this procedure declaration
-//            FStack.Pop;
-//
-//          end else begin
           if FStack.GetTopType in [rtClassDecl, rtRecord] then begin
             FStack.Pop;
             FStack.Push(rtClass, 1);
+          end else if (FStack.GetTopType in [rtVar, rtType]) and (FStack.GetType(1) in [rtClass, rtRecord]) then begin
+            // There was a nested class/record declaration that ended
+            FStack.Pop;
+            FStack.Pop;
+            FStack.Push(rtClass, 1);
+            DecPrevLineIndent;
           end;
-//          end;
           Prev1 := FPrevToken;
           TempWordIdx := FTokenIdx;
           if Prev1 <> nil then begin

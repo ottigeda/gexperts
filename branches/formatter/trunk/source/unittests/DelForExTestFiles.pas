@@ -237,7 +237,7 @@ end;
 
 procedure TTestTestfiles.testNestedClassCurrentlyFails;
 begin
-  Testfile('NestedClass', True);
+  Testfile('NestedClass');
 end;
 
 procedure TTestTestfiles.testOperatorOverloading;
