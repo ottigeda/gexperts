@@ -71,9 +71,12 @@ type
     procedure testClassProperties;
     procedure testClassProperties2;
     procedure testClassProperties3;
+    procedure testNestedClass;
+    procedure testNestedClass2;
+    procedure testNestedClass3;
+    procedure testNestedClass4;
     procedure testCurlyHalfCommentEndCurrentlyFails;
     procedure testGenericClassCurrentlyFails;
-    procedure testNestedClassCurrentlyFails;
   end;
 
 type
@@ -235,9 +238,24 @@ begin
   Testfile('xdom_3_1');
 end;
 
-procedure TTestTestfiles.testNestedClassCurrentlyFails;
+procedure TTestTestfiles.testNestedClass;
 begin
   Testfile('NestedClass');
+end;
+
+procedure TTestTestfiles.testNestedClass2;
+begin
+  Testfile('NestedClass2');
+end;
+
+procedure TTestTestfiles.testNestedClass3;
+begin
+  Testfile('NestedClass3');
+end;
+
+procedure TTestTestfiles.testNestedClass4;
+begin
+  Testfile('NestedClass4');
 end;
 
 procedure TTestTestfiles.testOperatorOverloading;

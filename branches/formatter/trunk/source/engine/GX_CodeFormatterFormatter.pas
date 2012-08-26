@@ -782,7 +782,7 @@ var
             DecPrevLineIndent;
             FWrapIndent := False;
           end;
-        end else if (FStack.GetTopType = rtvar) and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
+        end else if (FStack.GetTopType in [rtvar, rtType]) and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
           FStack.Pop;
           DecPrevLineIndent;
           FWrapIndent := False;
@@ -876,7 +876,7 @@ var
           if FStack.GetTopType in [rtClassDecl, rtRecord] then begin
             FStack.Pop;
             FStack.Push(rtClass, 1);
-          end else if (FStack.GetTopType in [rtVar, rtType]) and (FStack.GetType(1) in [rtClass, rtRecord]) then begin
+          end else if (FStack.GetTopType in [rtVar, rtType]) and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
             // There was a nested class/record declaration that ended
             FStack.Pop;
             FStack.Pop;
