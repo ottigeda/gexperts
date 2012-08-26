@@ -777,12 +777,17 @@ var
           FWrapIndent := False;
         end;
       rtVisibility:
-        if not (FStack.GetTopType in [rtClass, rtClassDecl, rtRecord]) then
-          FCurrentToken.SetReservedType(rtNothing)
-        else if PrevTokenIsRType(rtLineFeed) then begin
+        if FStack.GetTopType in [rtClass, rtClassDecl, rtRecord] then begin
+          if PrevTokenIsRType(rtLineFeed) then begin
+            DecPrevLineIndent;
+            FWrapIndent := False;
+          end;
+        end else if (FStack.GetTopType = rtvar) and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
+          FStack.Pop;
           DecPrevLineIndent;
           FWrapIndent := False;
-        end;
+        end else
+          FCurrentToken.SetReservedType(rtNothing);
       rtOf: begin
           case FStack.GetTopType of
             rtCase: begin

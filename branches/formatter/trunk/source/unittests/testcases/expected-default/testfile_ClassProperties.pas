@@ -18,4 +18,3 @@ type
 implementation
 
 end.
-

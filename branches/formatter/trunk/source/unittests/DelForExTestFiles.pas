@@ -68,7 +68,7 @@ type
     procedure testUnmatchedEndif;
     procedure testUnmatchedIfdef;
     procedure testUnterminatedString;
-    procedure testClassPropertiesCurrentlyFails;
+    procedure testClassProperties;
     procedure testCurlyHalfCommentEndCurrentlyFails;
     procedure testGenericClassCurrentlyFails;
     procedure testNestedClassCurrentlyFails;
@@ -381,9 +381,9 @@ begin
   TestFile('AsmProblem1');
 end;
 
-procedure TTestTestfiles.testClassPropertiesCurrentlyFails;
+procedure TTestTestfiles.testClassProperties;
 begin
-  TestFile('ClassProperties', True);
+  TestFile('ClassProperties');
 end;
 
 procedure TTestTestfiles.testClassVar;

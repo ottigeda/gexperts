@@ -36,6 +36,9 @@ type
     {: returns the topmost item from the stack without removing it }
     function GetTopType: TReservedType;
     function GetTopIndent: Integer;
+    {: like GetTopType, but takes an index, Idx = 0 is equivalent to GetTopType,
+       Idx=1 returns the next etc. }
+    function GetType(_Idx: Integer): TReservedType;
     {: Check whether _Type is somewhere on the stack }
     function HasType(_Type: TReservedType): Boolean;
     function Pop: TReservedType;
@@ -50,12 +53,12 @@ type
     property ProcLevel: Integer read FProcLevel write FProcLevel;
   end;
 
-{$define STACK_TEMPLATE}
+{$DEFINE STACK_TEMPLATE}
 type
   _STACK_ITEM_ = TCodeFormatterStack;
 const
   _MAX_DEPTH_ = 150;
-{$include DelforStackTemplate.tpl}
+{$INCLUDE DelforStackTemplate.tpl}
 
 type
   TCodeFormatterStackStack = class(_STACK_)
@@ -82,6 +85,14 @@ function TCodeFormatterStack.GetTopType: TReservedType;
 begin
   if FStackPtr >= 0 then
     Result := TopRec.RT
+  else
+    Result := rtNothing;
+end;
+
+function TCodeFormatterStack.GetType(_Idx: Integer): TReservedType;
+begin
+  if FStackPtr >= _Idx then
+    Result := FStack[FStackPtr - _Idx].RT
   else
     Result := rtNothing;
 end;
@@ -168,7 +179,7 @@ end;
 
 { TDelForStackStack }
 
-{$include DelforStackTemplate.tpl}
+{$INCLUDE DelforStackTemplate.tpl}
 
 end.
 
