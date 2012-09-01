@@ -378,7 +378,7 @@ end;
 
 procedure TTestTestfiles.testGenericClassCurrentlyFails;
 begin
-  TestFile('GenericClass', True);
+  TestFile('GenericClass');
 end;
 
 procedure TTestTestfiles.testAbstractSealedClass;

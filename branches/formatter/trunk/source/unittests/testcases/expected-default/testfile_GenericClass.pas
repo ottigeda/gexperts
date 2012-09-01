@@ -19,7 +19,7 @@ implementation
 function TMyData<T>.Add(const aExistingSet: TGenericArray<T>;
   const aNewValue: T): TGenericArray<T>;
 begin
-  { You could append the new 
+  { You could append the new
   value to the existing set and return it here. }
 end;
 

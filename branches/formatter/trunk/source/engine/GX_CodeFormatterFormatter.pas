@@ -148,6 +148,10 @@ var
     end;
     if not GetNextNoComment(_TokenIdx, Next, OffSet) then
       Exit;
+    if (exp = '>') and (Next.ReservedType = rtSemiColon) then begin
+      Result := True;
+      exit;
+    end;
     if Next.ReservedType in [rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then begin
       Result := False;
       Exit; //=>
