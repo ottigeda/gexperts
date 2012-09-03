@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{4f1288a1-b13b-41ea-9c9b-de874d79eba0}</ProjectGuid>
-        <MainSource>GExpertsRSXE2.dpr</MainSource>
+        <MainSource>GExpertsRSXE3.dpr</MainSource>
         <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <ProjectVersion>14.3</ProjectVersion>
@@ -507,7 +507,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
                     <VersionInfoKeys Name="CompileDate">2011-02-05</VersionInfoKeys>
                 </VersionInfoKeys>
                 <Source>
-                    <Source Name="MainSource">GExpertsRSXE2.dpr</Source>
+                    <Source Name="MainSource">GExpertsRSXE3.dpr</Source>
                 </Source>
             </Delphi.Personality>
             <Platforms>
