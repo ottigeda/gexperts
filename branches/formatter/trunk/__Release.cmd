@@ -23,4 +23,5 @@ zip -9 %ZIPFile% %1\GExpertsRS2009.dll
 zip -9 %ZIPFile% %1\GExpertsRS2010.dll
 zip -9 %ZIPFile% %1\GExpertsRSXE1.dll
 zip -9 %ZIPFile% %1\GExpertsRSXE2.dll
+zip -9 %ZIPFile% %1\GExpertsRSXE3.dll
 goto :eof
