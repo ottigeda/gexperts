@@ -12,6 +12,6 @@ del delphi2009\editorexpert\*.dcu
 del delphi2009\regularexpert\*.dcu
 del delphi2010\editorexpert\*.dcu
 del delphi2010\regularexpert\*.dcu
-del delphi2011\editorexpert\*.dcu
-del delphi2011\regularexpert\*.dcu
+del delphiXE1\editorexpert\*.dcu
+del delphiXE1\regularexpert\*.dcu
 del unittests\*.dcu
