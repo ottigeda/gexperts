@@ -37,7 +37,7 @@
 			<DCC_UsePackage>rtl;vcl;vclx;vclactnband;dbrtl;vcldb;vcldbx;bdertl;dsnap;dbxcds;DbxCommonDriver;dbexpress;dsnapcon;adortl;IndyCore;IndySystem;IndyProtocols;xmlrtl;inet;VclSmp;vclie;websnap;webdsnap;inetdbbde;inetdbxpress;soaprtl;designide</DCC_UsePackage>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
-			<DCC_DcuOutput>..\..\..\dcu\delphi2011\editorexpert</DCC_DcuOutput>
+			<DCC_DcuOutput>..\..\..\dcu\delphiXE1\editorexpert</DCC_DcuOutput>
 			<Version>7.0</Version>
 			<DCC_DebugInformation>False</DCC_DebugInformation>
 			<DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
