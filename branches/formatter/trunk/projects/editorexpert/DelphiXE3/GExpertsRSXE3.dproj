@@ -61,12 +61,13 @@
         <DCC_ExeOutput>..\..\..\editorexpert\</DCC_ExeOutput>
         <DCC_UnitSearchPath>..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\UniSynEdit;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_Define>synedit;$(DCC_Define)</DCC_Define>
-        <DCC_DcuOutput>..\..\..\dcu\delphiXE2</DCC_DcuOutput>
+        <DCC_DcuOutput>..\..\..\dcu\delphiXE3</DCC_DcuOutput>
         <UsePackages>true</UsePackages>
         <GenDll>true</GenDll>
         <DCC_UsePackage>rtl;vcl;vclx;vclactnband;dbrtl;vcldb;vcldbx;bdertl;dsnap;dbxcds;DbxCommonDriver;dbexpress;dsnapcon;adortl;IndyCore;IndySystem;IndyProtocols;xmlrtl;inet;VclSmp;vclie;websnap;webdsnap;inetdbbde;inetdbxpress;soaprtl;designide;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <DCC_DcuOutput>..\..\..\dcu\delphiXE3</DCC_DcuOutput>
         <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <PreBuildEvent><![CDATA[..\..\..\buildtools\prebuild.cmd $(PROJECTPATH)
 $(PreBuildEvent)]]></PreBuildEvent>
@@ -511,6 +512,10 @@ $(PreBuildEvent)]]></PreBuildEvent>
                 <Source>
                     <Source Name="MainSource">GExpertsRSXE3.dpr</Source>
                 </Source>
+                <Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k170.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp170.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                </Excluded_Packages>
             </Delphi.Personality>
             <Platforms>
                 <Platform value="OSX32">False</Platform>
