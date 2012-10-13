@@ -76,6 +76,7 @@ type
     procedure testNestedClass3;
     procedure testNestedClass4;
     procedure testNestedClass5;
+    procedure testNestedClass6;
     procedure testCurlyHalfCommentEndCurrentlyFails;
     procedure testGenericClassCurrentlyFails;
   end;
@@ -262,6 +263,11 @@ end;
 procedure TTestTestfiles.testNestedClass5;
 begin
   Testfile('NestedClass5');
+end;
+
+procedure TTestTestfiles.testNestedClass6;
+begin
+  Testfile('NestedClass6');
 end;
 
 procedure TTestTestfiles.testOperatorOverloading;
