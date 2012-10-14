@@ -8,11 +8,11 @@ type
     type
       TInnerClass = class
       private
-      type
-        TInnerClass2 = class
-          myInnerField2: Integer;
-          procedure innerProc2;
-        end;
+        type
+          TInnerClass2 = class
+            myInnerField2: Integer;
+            procedure innerProc2;
+          end;
       public
         myInnerField: Integer;
         procedure innerProc;

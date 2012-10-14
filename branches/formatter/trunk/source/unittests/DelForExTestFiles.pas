@@ -53,6 +53,7 @@ type
     procedure testIndentComment;
     procedure testJustOpeningComment;
     procedure testJustOpeningStarCommentInAsm;
+    procedure testConstVar;
     procedure testLargeFile;
     procedure testOperatorOverloading;
     procedure testQuotesError;
@@ -381,6 +382,11 @@ end;
 procedure TTestTestfiles.testControlChars;
 begin
   TestFile('ControlChars');
+end;
+
+procedure TTestTestfiles.testConstVar;
+begin
+  TestFile('ConstVar');
 end;
 
 procedure TTestTestfiles.testFormula;

@@ -9,7 +9,7 @@ type
     const
       cAnswer = 42;
   public
-  procedure Dummy;
+    procedure Dummy;
   end;
 
 implementation

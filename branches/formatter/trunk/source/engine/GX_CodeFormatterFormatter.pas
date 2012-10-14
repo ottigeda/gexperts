@@ -150,7 +150,7 @@ var
       Exit;
     if (exp = '>') and (Next.ReservedType = rtSemiColon) then begin
       Result := True;
-      exit;
+      Exit;
     end;
     if Next.ReservedType in [rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then begin
       Result := False;
@@ -789,6 +789,7 @@ var
         end else if (FStack.GetTopType in [rtvar, rtType]) and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
           FStack.Pop;
           DecPrevLineIndent;
+          DecPrevLineIndent;
           FWrapIndent := False;
         end else
           FCurrentToken.SetReservedType(rtNothing);
@@ -976,7 +977,7 @@ var
           SetPrevLineIndent(NTmp);
         end;
       rtBegin, rtTry: begin
-          if FStack.GetTopType in [rtVar, rtType] then
+          while FStack.GetTopType in [rtVar, rtType] do
             FStack.Pop;
           if FStack.GetTopType in [rtProcedure, rtProgram] then
             FStack.Pop;
@@ -1030,9 +1031,15 @@ var
             FStack.nIndent := 1;
           {in classes.pas I found
           t =  type AnsiString}
-          if FStack.GetTopType in [rtVar, rtType] then
-            FStack.Pop;
-          if FStack.GetTopType in [rtClass, rtRecord] then
+          if (FStack.GetTopType in [rtVar, rtType]) then begin
+            if (FCurrentRType = rtType) and (FPrevToken.Content = '=') then begin
+              FStack.Pop
+            end else if FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord] then begin
+              FStack.Pop;
+              FStack.Push(rtVar, 1);
+            end;
+          end;
+          if FStack.GetTopType in [rtClass, rtClassDecl, rtRecord] then
             FStack.Push(FCurrentRType, 1)
           else begin
             FStack.Push(FCurrentRType, 0);

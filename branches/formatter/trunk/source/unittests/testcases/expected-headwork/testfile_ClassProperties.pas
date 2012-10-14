@@ -5,10 +5,10 @@ interface
 type
   TMyClass = class
   strict private
-  class var
-    FRed: Integer;
-    FGreen: Integer;
-    FBlue: Integer;
+    class var
+      FRed: Integer;
+      FGreen: Integer;
+      FBlue: Integer;
   public
     class property Red: Integer read FRed write FRed;
     class property Green: Integer read FGreen write FGreen;
