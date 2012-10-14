@@ -1029,19 +1029,19 @@ var
           FWrapIndent := False;
           if FStack.nIndent < 1 then
             FStack.nIndent := 1;
-          {in classes.pas I found
-          t =  type AnsiString}
           if (FStack.GetTopType in [rtVar, rtType]) then begin
             if (FCurrentRType = rtType) and (FPrevToken.Content = '=') then begin
+              // in classes.pas I found
+              // t =  type AnsiString
               FStack.Pop
             end else if FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord] then begin
               FStack.Pop;
-              FStack.Push(rtVar, 1);
+              DecPrevLineIndent;
             end;
           end;
-          if FStack.GetTopType in [rtClass, rtClassDecl, rtRecord] then
-            FStack.Push(FCurrentRType, 1)
-          else begin
+          if (FStack.GetTopType in [rtClass, rtClassDecl, rtRecord]) then begin
+            FStack.Push(FCurrentRType, 1);
+          end else begin
             FStack.Push(FCurrentRType, 0);
             if not PrevTokenIsRType(rtEquals) then
               DecPrevLineIndent;

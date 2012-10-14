@@ -7,14 +7,14 @@ type
     procedure outerproc0;
     type
       TInnerClass = class
-      type
-        TInnerClass2 = class
-          myInnerField2: Integer;
-          procedure innerProc2;
-        end;
-      var
-        myInnerField: Integer;
-      procedure innerProc;
+        type
+          TInnerClass2 = class
+            myInnerField2: Integer;
+            procedure innerProc2;
+          end;
+        var
+          myInnerField: Integer;
+        procedure innerProc;
       end;
     procedure outerProc1;
     procedure outerProc2;
