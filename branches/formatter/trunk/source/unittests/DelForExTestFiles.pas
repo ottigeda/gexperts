@@ -80,6 +80,7 @@ type
     procedure testNestedClass6;
     procedure testCurlyHalfCommentEndCurrentlyFails;
     procedure testGenericClassCurrentlyFails;
+    procedure testIfThenElse2CurrentlyFails;
   end;
 
 type
@@ -224,6 +225,11 @@ end;
 procedure TTestTestfiles.testIfThenElse;
 begin
   TestFile('ifthenelse');
+end;
+
+procedure TTestTestfiles.testIfThenElse2CurrentlyFails;
+begin
+  TestFile('ifthenelse2', true);
 end;
 
 procedure TTestTestfiles.testIfThenTry;
