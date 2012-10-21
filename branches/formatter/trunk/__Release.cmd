@@ -2,6 +2,7 @@ set ZIPFile=GExperts-experimental-twm.zip
 
 del %ZIPFile%
 cd release
+echo adding common files
 zip -9 ..\%ZIPFile% *
 cd ..
 
@@ -13,7 +14,8 @@ pause
 goto :eof
 
 :dozip
-
+echo adding %1
+pause
 zip -9 %ZIPFile% %1\GExpertsD6.dll
 zip -9 %ZIPFile% %1\GExpertsD7.dll
 zip -9 %ZIPFile% %1\GExpertsDelphi2005.dll
