@@ -1,6 +1,8 @@
 // Simple types used in the code formatter
+
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
 // Contributors:        Thomas Mueller (http://www.dummzeuch.de)
+
 unit GX_CodeFormatterTypes;
 
 {$I GX_CondDefine.inc}
@@ -19,6 +21,7 @@ type
   TWordType = (wtLineFeed, wtSpaces, wtHalfComment, wtHalfStarComment,
     wtHalfOutComment, wtFullComment, wtFullOutComment, wtString, wtErrorString,
     wtOperator, wtWord, wtNumber, wtHexNumber, wtNothing, wtAsm, wtCompDirective);
+
   EFormatException = class(Exception);
 
 const
@@ -135,11 +138,6 @@ end;
 
 { TKeywordColl }
 
-//function TKeywordColl.Compare(Key1, Key2: Pointer): Integer;
-//begin
-//  Result := StrIComp(Key1, Key2);
-//end;
-
 function SpaceSetToInt(ASpaceSet: TSpaceSet): Integer;
 begin
   Result := 0;
@@ -160,6 +158,118 @@ begin
   FWords := TStringList.Create;
   FWords.Sorted := True;
   FWords.Duplicates := dupError;
+
+  AddWord('absolute', rtAbsolute);
+  AddWord('abstract', rtFuncDirective);
+  AddWord('and', rtOper);
+  AddWord('array', rtReserved);
+  AddWord('as', rtOper);
+  AddWord('asm', rtAsm);
+  AddWord('assembler', rtFuncDirective);
+  AddWord('automated', rtVisibility);
+  AddWord('begin', rtBegin);
+  AddWord('case', rtCase);
+  AddWord('cdecl', rtFuncDirective);
+  AddWord('class', rtClass);
+  AddWord('const', rtVar);
+  AddWord('constructor', rtProcedure);
+  AddWord('contains', rtUses);
+  AddWord('default', rtDefault);
+  AddWord('deprecated', rtFuncDirective);
+  AddWord('destructor', rtProcedure);
+  AddWord('dispid', rtFuncDirective);
+  AddWord('dispinterface', rtInterface);
+  AddWord('div', rtOper);
+  AddWord('do', rtDo);
+  AddWord('downto', rtOper);
+  AddWord('dynamic', rtFuncDirective);
+  AddWord('else', rtElse);
+  AddWord('end', rtEnd);
+  AddWord('except', rtExcept);
+  AddWord('export', rtFuncDirective);
+  AddWord('exports', rtUses);
+  AddWord('external', rtForward);
+  AddWord('far', rtFuncDirective);
+  AddWord('file', rtReserved);
+  AddWord('finalization', rtInitialization);
+  AddWord('finally', rtExcept);
+  AddWord('for', rtWhile);
+  AddWord('forward', rtForward);
+  AddWord('function', rtProcedure);
+  AddWord('goto', rtReserved);
+  AddWord('helper', rtReserved);
+  AddWord('if', rtIf);
+  AddWord('implementation', rtImplementation);
+  AddWord('implements', rtFuncDirective);
+  AddWord('in', rtOper);
+  AddWord('index', rtFuncDirective);
+  AddWord('inherited', rtReserved);
+  AddWord('initialization', rtInitialization);
+  AddWord('inline', rtFuncDirective);
+  AddWord('interface', rtInterface);
+  AddWord('is', rtOper);
+  AddWord('label', rtVar);
+  AddWord('library', rtFuncDirective);
+  AddWord('message', rtFuncDirective);
+  AddWord('mod', rtOper);
+  AddWord('name', rtFuncDirective);
+  AddWord('near', rtFuncDirective);
+  AddWord('nil', rtReserved);
+  AddWord('nodefault', rtFuncDirective);
+  AddWord('not', rtOper);
+  AddWord('object', rtClass);
+  AddWord('of', rtOf);
+  AddWord('on', rtOn);
+  AddWord('operator', rtProcedure);
+  AddWord('or', rtOper);
+  AddWord('out', rtReserved);
+  AddWord('overload', rtFuncDirective);
+  AddWord('override', rtFuncDirective);
+  AddWord('packed', rtReserved);
+  AddWord('pascal', rtFuncDirective);
+  AddWord('platform', rtFuncDirective);
+  AddWord('private', rtVisibility);
+  AddWord('procedure', rtProcedure);
+  AddWord('program', rtProgram);
+  AddWord('property', rtProcedure);
+  AddWord('protected', rtVisibility);
+  AddWord('public', rtVisibility);
+  AddWord('published', rtVisibility);
+  AddWord('raise', rtReserved);
+  AddWord('read', rtFuncDirective);
+  AddWord('readonly', rtFuncDirective);
+  AddWord('record', rtRecord);
+  AddWord('reference', rtReserved);
+  AddWord('register', rtFuncDirective);
+  AddWord('reintroduce', rtFuncDirective);
+  AddWord('repeat', rtRepeat);
+  AddWord('requires', rtUses);
+  AddWord('resident', rtFuncDirective);
+  AddWord('resourcestring', rtVar);
+  AddWord('safecall', rtFuncDirective);
+  AddWord('set', rtReserved);
+  AddWord('shl', rtOper);
+  AddWord('shr', rtOper);
+  AddWord('static', rtFuncDirective);
+  AddWord('stdcall', rtFuncDirective);
+  AddWord('stored', rtFuncDirective);
+  AddWord('strict', rtVisibility);
+  AddWord('string', rtReserved);
+  AddWord('then', rtThen);
+  AddWord('threadvar', rtVar);
+  AddWord('to', rtOper);
+  AddWord('try', rtTry);
+  AddWord('type', rtType);
+  AddWord('unit', rtProgram);
+  AddWord('until', rtUntil);
+  AddWord('uses', rtUses);
+  AddWord('var', rtVar);
+  AddWord('virtual', rtFuncDirective);
+  AddWord('while', rtWhile);
+  AddWord('with', rtWhile);
+  AddWord('write', rtFuncDirective);
+  AddWord('writeonly', rtFuncDirective);
+  AddWord('xor', rtOper);
 end;
 
 destructor TReservedWordList.Destroy;
@@ -182,124 +292,8 @@ begin
     _ReservedType := TReservedType(Integer(FWords.Objects[Idx]));
 end;
 
-procedure InitReservedWords;
-begin
-  ReservedWordList := TReservedWordList.Create;
-  ReservedWordList.AddWord('absolute', rtAbsolute);
-  ReservedWordList.AddWord('abstract', rtFuncDirective);
-  ReservedWordList.AddWord('and', rtOper);
-  ReservedWordList.AddWord('array', rtReserved);
-  ReservedWordList.AddWord('as', rtOper);
-  ReservedWordList.AddWord('asm', rtAsm);
-  ReservedWordList.AddWord('assembler', rtFuncDirective);
-  ReservedWordList.AddWord('automated', rtVisibility);
-  ReservedWordList.AddWord('begin', rtBegin);
-  ReservedWordList.AddWord('case', rtCase);
-  ReservedWordList.AddWord('cdecl', rtFuncDirective);
-  ReservedWordList.AddWord('class', rtClass);
-  ReservedWordList.AddWord('const', rtVar);
-  ReservedWordList.AddWord('constructor', rtProcedure);
-  ReservedWordList.AddWord('contains', rtUses);
-  ReservedWordList.AddWord('default', rtDefault);
-  ReservedWordList.AddWord('deprecated', rtFuncDirective);
-  ReservedWordList.AddWord('destructor', rtProcedure);
-  ReservedWordList.AddWord('dispid', rtFuncDirective);
-  ReservedWordList.AddWord('dispinterface', rtInterface);
-  ReservedWordList.AddWord('div', rtOper);
-  ReservedWordList.AddWord('do', rtDo);
-  ReservedWordList.AddWord('downto', rtOper);
-  ReservedWordList.AddWord('dynamic', rtFuncDirective);
-  ReservedWordList.AddWord('else', rtElse);
-  ReservedWordList.AddWord('end', rtEnd);
-  ReservedWordList.AddWord('except', rtExcept);
-  ReservedWordList.AddWord('export', rtFuncDirective);
-  ReservedWordList.AddWord('exports', rtUses);
-  ReservedWordList.AddWord('external', rtForward);
-  ReservedWordList.AddWord('far', rtFuncDirective);
-  ReservedWordList.AddWord('file', rtReserved);
-  ReservedWordList.AddWord('finalization', rtInitialization);
-  ReservedWordList.AddWord('finally', rtExcept);
-  ReservedWordList.AddWord('for', rtWhile);
-  ReservedWordList.AddWord('forward', rtForward);
-  ReservedWordList.AddWord('function', rtProcedure);
-  ReservedWordList.AddWord('goto', rtReserved);
-  ReservedWordList.AddWord('helper', rtReserved);
-  ReservedWordList.AddWord('if', rtIf);
-  ReservedWordList.AddWord('implementation', rtImplementation);
-  ReservedWordList.AddWord('implements', rtFuncDirective);
-  ReservedWordList.AddWord('in', rtOper);
-  ReservedWordList.AddWord('index', rtFuncDirective);
-  ReservedWordList.AddWord('inherited', rtReserved);
-  ReservedWordList.AddWord('initialization', rtInitialization);
-  ReservedWordList.AddWord('inline', rtFuncDirective);
-  ReservedWordList.AddWord('interface', rtInterface);
-  ReservedWordList.AddWord('is', rtOper);
-  ReservedWordList.AddWord('label', rtVar);
-  ReservedWordList.AddWord('library', rtFuncDirective);
-  ReservedWordList.AddWord('message', rtFuncDirective);
-  ReservedWordList.AddWord('mod', rtOper);
-  ReservedWordList.AddWord('name', rtFuncDirective);
-  ReservedWordList.AddWord('near', rtFuncDirective);
-  ReservedWordList.AddWord('nil', rtReserved);
-  ReservedWordList.AddWord('nodefault', rtFuncDirective);
-  ReservedWordList.AddWord('not', rtOper);
-  ReservedWordList.AddWord('object', rtClass);
-  ReservedWordList.AddWord('of', rtOf);
-  ReservedWordList.AddWord('on', rtOn);
-  ReservedWordList.AddWord('operator', rtProcedure);
-  ReservedWordList.AddWord('or', rtOper);
-  ReservedWordList.AddWord('out', rtReserved);
-  ReservedWordList.AddWord('overload', rtFuncDirective);
-  ReservedWordList.AddWord('override', rtFuncDirective);
-  ReservedWordList.AddWord('packed', rtReserved);
-  ReservedWordList.AddWord('pascal', rtFuncDirective);
-  ReservedWordList.AddWord('platform', rtFuncDirective);
-  ReservedWordList.AddWord('private', rtVisibility);
-  ReservedWordList.AddWord('procedure', rtProcedure);
-  ReservedWordList.AddWord('program', rtProgram);
-  ReservedWordList.AddWord('property', rtProcedure);
-  ReservedWordList.AddWord('protected', rtVisibility);
-  ReservedWordList.AddWord('public', rtVisibility);
-  ReservedWordList.AddWord('published', rtVisibility);
-  ReservedWordList.AddWord('raise', rtReserved);
-  ReservedWordList.AddWord('read', rtFuncDirective);
-  ReservedWordList.AddWord('readonly', rtFuncDirective);
-  ReservedWordList.AddWord('record', rtRecord);
-  ReservedWordList.AddWord('reference', rtReserved);
-  ReservedWordList.AddWord('register', rtFuncDirective);
-  ReservedWordList.AddWord('reintroduce', rtFuncDirective);
-  ReservedWordList.AddWord('repeat', rtRepeat);
-  ReservedWordList.AddWord('requires', rtUses);
-  ReservedWordList.AddWord('resident', rtFuncDirective);
-  ReservedWordList.AddWord('resourcestring', rtVar);
-  ReservedWordList.AddWord('safecall', rtFuncDirective);
-  ReservedWordList.AddWord('set', rtReserved);
-  ReservedWordList.AddWord('shl', rtOper);
-  ReservedWordList.AddWord('shr', rtOper);
-  ReservedWordList.AddWord('static', rtFuncDirective);
-  ReservedWordList.AddWord('stdcall', rtFuncDirective);
-  ReservedWordList.AddWord('stored', rtFuncDirective);
-  ReservedWordList.AddWord('strict', rtVisibility);
-  ReservedWordList.AddWord('string', rtReserved);
-  ReservedWordList.AddWord('then', rtThen);
-  ReservedWordList.AddWord('threadvar', rtVar);
-  ReservedWordList.AddWord('to', rtOper);
-  ReservedWordList.AddWord('try', rtTry);
-  ReservedWordList.AddWord('type', rtType);
-  ReservedWordList.AddWord('unit', rtProgram);
-  ReservedWordList.AddWord('until', rtUntil);
-  ReservedWordList.AddWord('uses', rtUses);
-  ReservedWordList.AddWord('var', rtVar);
-  ReservedWordList.AddWord('virtual', rtFuncDirective);
-  ReservedWordList.AddWord('while', rtWhile);
-  ReservedWordList.AddWord('with', rtWhile);
-  ReservedWordList.AddWord('write', rtFuncDirective);
-  ReservedWordList.AddWord('writeonly', rtFuncDirective);
-  ReservedWordList.AddWord('xor', rtOper);
-end;
-
 initialization
-  InitReservedWords;
+  ReservedWordList := TReservedWordList.Create;
 finalization
   FreeAndNil(ReservedWordList);
 end.
