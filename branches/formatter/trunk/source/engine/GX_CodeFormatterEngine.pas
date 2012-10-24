@@ -14,7 +14,7 @@ uses
 {$ENDIF}
   SysUtils,
   Classes,
-  GX_CollectionLikeLists,
+  GX_PascalTokenList,
   GX_CodeFormatterTypes,
   GX_CodeFormatterTokens,
   GX_CodeFormatterSettings;
@@ -40,7 +40,7 @@ type
   TCodeFormatterEngine = class(TObject)
   private
     FSettings: TCodeFormatterSettings;
-    function GetLine(Tokens: TOCollection; var TokenNo: Integer): string;
+    function GetLine(Tokens: TPascalTokenList; var TokenNo: Integer): string;
   public
     constructor Create;
     destructor Destroy; override;
@@ -74,7 +74,7 @@ var
   TokenNo: Integer;
   LB: string;
   OrigSource: string;
-  Tokens: TOCollection;
+  Tokens: TPascalTokenList;
   s: string;
   OrigLen: integer;
   NewLen: integer;
@@ -122,7 +122,7 @@ begin
   end;
 end;
 
-function TCodeFormatterEngine.GetLine(Tokens: TOCollection; var TokenNo: Integer): string;
+function TCodeFormatterEngine.GetLine(Tokens: TPascalTokenList; var TokenNo: Integer): string;
 var
   Token: TPascalToken;
   i: Integer;

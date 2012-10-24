@@ -1,7 +1,7 @@
 // Some changed TLists (more compatible with Borland Pascal 7)
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
 // Contributors:        Thomas Mueller (http://www.dummzeuch.de)
-unit GX_CollectionLikeLists;
+unit GX_PascalTokenList;
 
 {$I GX_CondDefine.inc}
 
@@ -14,7 +14,7 @@ const
   MaxCollectionSize = Maxint div (SizeOf(Integer) * 2);
 
 type
-  TOCollection = class(TList)
+  TPascalTokenList = class(TList)
   public
     constructor Create(ACapacity: Integer);
     procedure AtFree(Index: Integer);
@@ -53,20 +53,20 @@ implementation
 uses
   SysUtils;
 
-constructor TOCollection.Create(ACapacity: Integer);
+constructor TPascalTokenList.Create(ACapacity: Integer);
 begin
   inherited Create;
   SetCapacity(ACapacity);
   {Delta is automatic in TList}
 end;
 
-destructor TOCollection.Destroy;
+destructor TPascalTokenList.Destroy;
 begin
   FreeAll;
   inherited Destroy;
 end;
 
-procedure TOCollection.AtFree(Index: Integer);
+procedure TPascalTokenList.AtFree(Index: Integer);
 var
   Item: Pointer;
 begin
@@ -75,7 +75,7 @@ begin
   FreeItem(Item);
 end;
 
-procedure TOCollection.FreeAll;
+procedure TPascalTokenList.FreeAll;
 var
   I: Integer;
 begin
@@ -87,12 +87,12 @@ begin
   end;
 end;
 
-procedure TOCollection.DoFree(Item: Pointer);
+procedure TPascalTokenList.DoFree(Item: Pointer);
 begin
   AtFree(IndexOf(Item));
 end;
 
-procedure TOCollection.FreeItem(Item: Pointer);
+procedure TPascalTokenList.FreeItem(Item: Pointer);
 begin
   if (Item <> nil) then
     with TObject(Item) as TObject do

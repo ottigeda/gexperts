@@ -183,23 +183,24 @@ begin
     Exit;
 
   GetExpression(s);
-  if Pos(ACommChar, s) = 0 then begin
-    case ACommChar of
-      '{':
-        if Pos('}', s) = 0 then begin
-          s := '{' + s + '}';
-        end;
-      '(':
-        if Pos('*)', s) = 0 then begin
-          s := '(*' + s + '*)';
-        end;
-      '/':
-        if Pos('//', s) <> 1 then begin
-          s := '//' + s;
-        end;
-    end;
-    SetExpression(s);
+  if Pos(ACommChar, s) <> 0 then
+    Exit;
+
+  case ACommChar of
+    '{':
+      if Pos('}', s) = 0 then begin
+        s := '{' + s + '}';
+      end;
+    '(':
+      if Pos('*)', s) = 0 then begin
+        s := '(*' + s + '*)';
+      end;
+    '/':
+      if Pos('//', s) <> 1 then begin
+        s := '//' + s;
+      end;
   end;
+  SetExpression(s);
 end;
 
 procedure TPascalToken.SetSpace(ASpace: TSpaceSet; AState: Boolean);
@@ -230,10 +231,12 @@ begin
   case WordType of
     wtCompDirective: begin
         GetExpression(Expr);
+
         if Copy(Expr, 1, 1) = '{' then
           Directive := Copy(Expr, 3, 999999)
         else if Copy(Expr, 1, 2) = '(*' then
           Directive := Copy(Expr, 4, 999999);
+
         Directive := LowerCase(Directive);
 
         if AnsiStartsStr('endif', Directive) then
@@ -252,6 +255,7 @@ begin
     wtFullComment, wtFullOutComment, wtHalfStarComment,
       wtHalfOutComment, wtHalfComment:
       SetReservedType(rtComment);
+
     wtWord: begin
         GetExpression(Expr);
         Expr := LowerCase(Expr);
@@ -260,6 +264,7 @@ begin
           Exit;
         end;
       end;
+
     wtOperator: begin
         if GetExpression(Expr) then begin
           if Length(Expr) = 1 then begin
@@ -383,8 +388,10 @@ begin
     Result := ' '
   else
     Result := '';
+
   Result := Result + FExpression;
   Result := AdjustCase(Result, ExpressionCase);
+
   if Space(spAfter) then
     Result := Result + ' ';
 end;

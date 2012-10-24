@@ -41,7 +41,7 @@ uses
   DelForExTestOldNew in 'DelForExTestOldNew.pas',
   DelForExTestFiles in 'DelForExTestFiles.pas',
   GX_CodeFormatterDefaultSettings in '..\GX_CodeFormatterDefaultSettings.pas',
-  GX_CollectionLikeLists in '..\common\GX_CollectionLikeLists.pas',
+  GX_PascalTokenList in '..\common\GX_PascalTokenList.pas',
   GX_CodeFormatterTypes in '..\common\GX_CodeFormatterTypes.pas',
   GX_CodeFormatterEngine in '..\engine\GX_CodeFormatterEngine.pas',
   GX_CodeFormatterTokens in '..\engine\GX_CodeFormatterTokens.pas',

@@ -1,6 +1,7 @@
 // Handles the settings of the Code Formatter
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
 // Contributors:        Thomas Mueller (http://www.dummzeuch.de)
+
 unit GX_CodeFormatterSettings;
 
 {$I GX_CondDefine.inc}
@@ -55,6 +56,7 @@ type
     IndentCaseElse: Boolean;
     IndentComments: Boolean;
     IndentCompDirectives: Boolean;
+
     BlankProc: Boolean; {: blank line between main procedures }
     BlankSubProc: Boolean; {: blank line between sub procedures }
     RemoveDoubleBlank: Boolean; {: remove double blank lines }
@@ -84,6 +86,7 @@ type
 
 type
   TConfigPrecedenceEnum = (cpDirective, cpIniFile, cpMyConfig);
+
 type
   TConfigPrecedenceArr = array[1..3] of TConfigPrecedenceEnum;
   TOneToThree = 1..3;

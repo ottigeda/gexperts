@@ -1,6 +1,7 @@
 // generates formatted Pascal code from a token collection
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
 // Contributors:        Thomas Mueller (http://www.dummzeuch.de)
+
 unit GX_CodeFormatterFormatter;
 
 {$I GX_CondDefine.inc}
@@ -10,7 +11,7 @@ interface
 uses
   SysUtils,
   Classes,
-  GX_CollectionLikeLists,
+  GX_PascalTokenList,
   GX_CodeFormatterTypes,
   GX_CodeFormatterStack,
   GX_CodeFormatterTokens,
@@ -20,7 +21,7 @@ type
   TCodeFormatterFormatter = class
   private
     FSettings: TCodeFormatterSettings;
-    FTokens: TOCollection;
+    FTokens: TPascalTokenList;
     FTokenIdx: Integer;
     FPrevToken: TPascalToken;
     FCurrentToken: TPascalToken;
@@ -29,8 +30,8 @@ type
     FPrevPrevLine: TLineFeed;
     FHasAligned: Boolean;
     // the StackStack is used to preserve indenting over IFDEF/ELSE/ENDIF statments
-    FStackStack: TCodeFormatterStackStack;
-    FStack: TCodeFormatterStack;
+    FStackStack: TCodeFormatterStack;
+    FStack: TCodeFormatterSegment;
     FLastPopResType: TReservedType;
     // True between 'interface' and 'implementation'
     FIsInInterfacePart: Boolean;
@@ -41,6 +42,7 @@ type
     function NoBeginTryIndent(_rtype: TReservedType): Boolean;
     procedure SetPrevLineIndent(_Additional: Integer);
     procedure DecPrevLineIndent;
+
     {: replaces a TExpression with a TAlignExpression }
     function AlignExpression(_Idx: Integer; _Pos: Integer): TPascalToken;
     procedure CheckWrapping;
@@ -54,6 +56,7 @@ type
     function GetToken(_Idx: Integer): TPascalToken; overload;
     {: get token with index Idx, returns False if index is out of bounds }
     function GetToken(_Idx: Integer; out Token: TPascalToken): Boolean; overload;
+
     {: Check whether the token at index Idx has the reserved type RType
        @param Idx is the index of the token to check
        @param RType is the queried reserverd type
@@ -71,7 +74,7 @@ type
     procedure CheckShortLine;
 
     {: This function does the actual formatting }
-    procedure doExecute(ATokens: TOCollection);
+    procedure doExecute(ATokens: TPascalTokenList);
     procedure HandleIf;
     procedure HandleThen;
     procedure HandleColon(_RemoveMe: Integer);
@@ -79,14 +82,14 @@ type
 
     property Settings: TCodeFormatterSettings read FSettings write FSettings;
   public
-    class procedure Execute(_Tokens: TOCollection; _Settings: TCodeFormatterSettings);
+    class procedure Execute(_Tokens: TPascalTokenList; _Settings: TCodeFormatterSettings);
     constructor Create(_Settings: TCodeFormatterSettings);
     destructor Destroy; override;
   end;
 
 implementation
 
-class procedure TCodeFormatterFormatter.Execute(_Tokens: TOCollection; _Settings: TCodeFormatterSettings);
+class procedure TCodeFormatterFormatter.Execute(_Tokens: TPascalTokenList; _Settings: TCodeFormatterSettings);
 var
   Formatter: TCodeFormatterFormatter;
 begin
@@ -104,7 +107,7 @@ begin
   FSettings := _Settings;
   FHasAligned := False;
   FPrevLine := nil;
-  FStack := TCodeFormatterStack.Create;
+  FStack := TCodeFormatterSegment.Create;
 end;
 
 destructor TCodeFormatterFormatter.Destroy;
@@ -672,7 +675,7 @@ begin
   FWrapIndent := False;
 end;
 
-procedure TCodeFormatterFormatter.doExecute(ATokens: TOCollection);
+procedure TCodeFormatterFormatter.doExecute(ATokens: TPascalTokenList);
 var
   NTmp: Integer;
   PrevOldNspaces: Integer;
@@ -1184,7 +1187,7 @@ begin {procedure TCodeFormatterFormatter.doExecute;}
     PrevOldNspaces := -1;
     try
       // the StackStack is used to preserve indenting over IFDEF/ELSE/ENDIF statments
-      FStackStack := TCodeFormatterStackStack.Create;
+      FStackStack := TCodeFormatterStack.Create;
       FTokenIdx := 0;
       while GetToken(FTokenIdx, FCurrentToken) do begin
         CheckIndent;

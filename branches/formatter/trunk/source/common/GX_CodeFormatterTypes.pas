@@ -12,7 +12,7 @@ interface
 uses
   SysUtils,
   Classes,
-  GX_CollectionLikeLists;
+  GX_PascalTokenList;
 
 type
   ECodeFormatter = class(Exception);
