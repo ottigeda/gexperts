@@ -19,7 +19,7 @@ uses
 type
   {: usage:
      Tokens := TCodeFormatterParser.Execute(Text, Settings); }
-  TCodeFormatterParser = class(TObject)
+  TCodeFormatterParser = class
   private
     FSpacePerIndent: integer;
     FStartCommentOut: AnsiString;
@@ -135,7 +135,7 @@ begin
   P := ABuff;
   FirstNonWhitespace := ABuff;
 
-  while FirstNonWhitespace^ in [Tab, ' '] do
+  while FirstNonWhitespace^ in [Tab, Space] do
     Inc(FirstNonWhitespace);
 
   while p^ <> #0 do begin
@@ -194,7 +194,7 @@ begin
         Inc(P);
     end; // case
   end; // while
-  { TODO -otwm : Does this work correctly in Delphi 2009? }
+
   SetString(s, ABuff, StrLen(ABuff));
   FTokens.Add(TExpression.Create(wtAsm, s));
   ABuff := P;
@@ -207,7 +207,7 @@ const
     '(', ')', '[', ']', '{', '}',
     ',', ';', ':', '.',
     '<', '>', '@', '^',
-    ' ', '''', Tab, #0];
+    Space, '''', Tab, #0];
   { TODO -otwm -cfixme : This allows strings like #a which is wrong, but there is no easy way to fix it. }
   StringControlChars = ['0'..'9', 'a'..'z', 'A'..'Z', '#', '^', '$'];
 var
@@ -237,7 +237,7 @@ var
                 end;
 
               '#', '^': begin
-                  // this is not really correct code:
+                  // todo: this is not really correct code:
                   // 'hello'#^523 is not a valid string literal
                   while P^ in StringControlChars do
                     Inc(P);
@@ -282,7 +282,7 @@ var
       Exit;
 
     Len := Length(FStartCommentOut);
-    Result := (StrLIComp(P, PAnsiChar(FStartCommentOut), Len) = 0);
+    Result := StrLIComp(P, PAnsiChar(FStartCommentOut), Len) = 0;
 
     if not Result then
       Exit;
@@ -292,7 +292,7 @@ var
     Len := Length(FEndCommentOut);
 
     while P^ <> #0 do begin
-      if (StrLIComp(P, PAnsiChar(FEndCommentOut), Len) = 0) then begin
+      if StrLIComp(P, PAnsiChar(FEndCommentOut), Len) = 0 then begin
         Inc(P, Len - 1);
         AResult := wtFullOutComment;
         break;
@@ -305,9 +305,9 @@ var
 begin
   P := ASource;
 
-  if P^ in [Tab, ' '] then begin
+  if P^ in [Tab, Space] then begin
     Result := wtSpaces;
-    while (P^ in [Tab, ' ']) do
+    while (P^ in [Tab, Space]) do
       Inc(P);
   end else if CheckDisableComments(Result) then begin
   end else
@@ -327,13 +327,14 @@ begin
           end;
         end;
 
-      #39: begin // single quote '
+      #39: begin
+          // single quote '
           Result := ReadString;
         end;
 
       '^': begin // string starting with ^A or so or the ^ operator
           Inc(p);
-          if (P^ in ['a'..'z', 'A'..'Z']) and ((P + 1)^ in ['''', '^', '#']) then begin
+          if (P^ in ['a'..'z', 'A'..'Z']) and ((P + 1)^ in [#39, '^', '#']) then begin
             Result := wtString;
 
             while P^ in StringControlChars do
@@ -406,7 +407,7 @@ begin
                   Inc(p);
                 end;
               end;
-          end;
+          end; // case
         end;
 
       '/': begin // / or //
@@ -436,8 +437,10 @@ begin
           while P^ in StringControlChars do
             Inc(P);
 
-          if P^ = '''' then
+          if P^ = #39 then begin
+            // single quote
             Result := ReadString;
+          end;
         end;
 
       '0'..'9': begin
@@ -467,7 +470,7 @@ begin
   if (P^ = #0) then
     ASource := P
   else begin
-    if (P^ in [Tab, ' ']) then
+    if (P^ in [Tab, Space]) then
       Inc(P);
 
     ASource := P;
@@ -485,7 +488,7 @@ begin
   P := ASource;
   FirstNonSpace := ASource;
 
-  while P^ in [Tab, ' '] do
+  while P^ in [Tab, Space] do
     Inc(P);
 
   if (FPrevLine <> nil) and (FPrevLine.FNoOfSpaces = 0) then begin
@@ -522,15 +525,16 @@ begin
       Inc(P, Len);
       break;
     end;
+
     Inc(P);
   end;
 
   SetString(ADest, FirstNonSpace, P - FirstNonSpace);
+
   if P^ = #0 then
     ASource := P
-  else begin
+  else
     ASource := P;
-  end;
 end;
 
 end.

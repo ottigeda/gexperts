@@ -1,5 +1,6 @@
 // Defines several default settings
 // Original Author:     Thomas Mueller (http://www.dummzeuch.de)
+
 unit GX_CodeFormatterDefaultSettings;
 
 {$I GX_CondDefine.inc}
@@ -13,6 +14,7 @@ uses
   GX_CodeFormatterSettings;
 
 function BorlandDefaults: TCodeFormatterEngineSettings;
+function DelForExDefaults: TCodeFormatterEngineSettings;
 
 implementation
 

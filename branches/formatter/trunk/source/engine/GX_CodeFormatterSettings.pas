@@ -17,13 +17,13 @@ type
   TFeedBegin = (Unchanged, Hanging, NewLine);
 
   {: how to use the captialization file }
-//  TFillMode = (
-//    fmUnchanged, {: do not use the capitalization file }
-//    fmAddNewWord, {: add new words, but do not use for capitalization }
-//    fmUse, {: use for capitalization, but do not add words }
-//    fmExceptDirect, {: exclude directives }
-//    fmAddUse, {: add new words, and use for capitalization }
-//    fmAddUseExcept); {: add new words, but do not use for capitalization, exclude directivs }
+  // TFillMode = (
+  // fmUnchanged, {: do not use the capitalization file }
+  // fmAddNewWord, {: add new words, but do not use for capitalization }
+  // fmUse, {: use for capitalization, but do not add words }
+  // fmExceptDirect, {: exclude directives }
+  // fmAddUse, {: add new words, and use for capitalization }
+  // fmAddUseExcept); {: add new words, but do not use for capitalization, exclude directivs }
   // this could probably be replaced by:
   // TFillModeOptions = (fmAddNew, fmUse, fmExceptDirectives }
   // TFillMode = set of TFillMode
@@ -98,12 +98,13 @@ type
   private
     FSettings: TCodeFormatterEngineSettings;
     FCapNames: TStringList;
-    FCapFile: AnsiString;
+    FCapFile: string;
     FUseCapFile: Boolean;
     FShowDoneDialog: Boolean;
     FConfigPrecedence: TConfigPrecedenceArr;
     function GetConfigPrecedence(_Idx: TOneToThree): TConfigPrecedenceEnum;
     procedure SetConfigPrecedence(_Idx: TOneToThree; const _Value: TConfigPrecedenceEnum);
+    procedure SetSettings(const _Value: TCodeFormatterEngineSettings);
   public
     constructor Create;
     destructor Destroy; override;
@@ -113,7 +114,7 @@ type
 
     procedure HandleCapitalization(AWord: TPascalToken);
 
-    property Settings: TCodeFormatterEngineSettings read FSettings write FSettings;
+    property Settings: TCodeFormatterEngineSettings read FSettings write SetSettings;
     property CapNames: TStringList read FCapNames;
     property ConfigPrecedence[_Idx: TOneToThree]: TConfigPrecedenceEnum read GetConfigPrecedence write SetConfigPrecedence;
 
@@ -165,7 +166,7 @@ type
     property AlignVar: Boolean read FSettings.AlignVar;
     // settings for the wizard
     property ShowDoneDialog: Boolean read FShowDoneDialog write FShowDoneDialog;
-    property CapitalizationFile: AnsiString read FCapFile write FCapFile;
+    property CapitalizationFile: String read FCapFile write FCapFile;
     property UseCapitalizationFile: Boolean read FUseCapFile write FUseCapFile;
   end;
 
@@ -189,6 +190,7 @@ begin
 
   FShowDoneDialog := True;
   FSettings := BorlandDefaults;
+
   FConfigPrecedence[1] := cpDirective;
   FConfigPrecedence[2] := cpIniFile;
   FConfigPrecedence[3] := cpMyConfig;
@@ -246,14 +248,24 @@ begin
   FConfigPrecedence[_Idx] := _Value;
 end;
 
+procedure TCodeFormatterSettings.SetSettings(const _Value: TCodeFormatterEngineSettings);
+begin
+  FSettings := _Value;
+end;
+
 function IntToCapfileMode(AValue: Integer): TCapfileModeSet;
 begin
   case AValue of
-    1: Result := [cmAddNew];
-    2: Result := [cmUse];
-    3: Result := [cmUse, cmExceptDirectives];
-    4: Result := [cmAddNew, cmUse];
-    5: Result := [cmAddNew, cmUse, cmExceptDirectives];
+    1:
+      Result := [cmAddNew];
+    2:
+      Result := [cmUse];
+    3:
+      Result := [cmUse, cmExceptDirectives];
+    4:
+      Result := [cmAddNew, cmUse];
+    5:
+      Result := [cmAddNew, cmUse, cmExceptDirectives];
   else
     Result := []; // invalid
   end;
@@ -275,7 +287,7 @@ begin
     Result := 0;
 end;
 
-function IntToConfigPrecedence(_Value: integer): TConfigPrecedenceEnum;
+function IntToConfigPrecedence(_Value: Integer): TConfigPrecedenceEnum;
 begin
   if (_Value < Ord(Low(TConfigPrecedenceEnum))) or (_Value > Ord(High(TConfigPrecedenceEnum))) then
     Result := cpDirective

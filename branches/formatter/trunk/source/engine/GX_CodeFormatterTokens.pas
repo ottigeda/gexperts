@@ -1,6 +1,7 @@
 // defines TPascalToken and descendants which are the intermediate format after parsing
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
 // Contributors:        Thomas Mueller (http://www.dummzeuch.de)
+
 unit GX_CodeFormatterTokens;
 
 {$I GX_CondDefine.inc}
@@ -17,28 +18,28 @@ type
   {: TPascalToken is never instantiated }
   TPascalToken = class
   public
-    constructor Create;
     function GetWordType: TWordType; virtual; abstract;
-    procedure GetLength(var ALength: Integer); virtual; abstract;
-    function Space(ASpace: TSpace): Boolean; virtual;
+    procedure GetLength(var _Length: Integer); virtual; abstract;
+    function Space(_Space: TSpace): Boolean; virtual;
     function GetReservedType: TReservedType; virtual; abstract;
-    procedure SetReservedType(AReservedType: TReservedType); virtual;
-    procedure SetSpace(ASpace: TSpaceSet; AState: Boolean); virtual;
+    procedure SetReservedType(_rType: TReservedType); virtual;
+    procedure SetSpace(_Space: TSpaceSet; _State: Boolean); virtual;
     {: @returns the object's content }
     function GetString: string; virtual; abstract;
-    (*: changes "// <comment>" to "{//<comment>}" used for preventing a
-        begin moved from the next line to become commented out
+    (*: changes " // <comment>" to "{//<comment>}" used for preventing a
+      begin
+        moved from the next line to become commented out
         @param ACommChar is one of '{', '(' or '/' specifying the new comment type
-        @returs true if token is a comment, false otherwise *)
-    function ChangeComment(ACommChar: char): Boolean;
-    function GetExpression(out AExpression: string): Boolean; virtual;
-    procedure SetExpression(const AExpression: string); virtual;
-    procedure SetCase(ACase: TCase); virtual;
+        @returs True if token is a comment, False otherwise *)
+    function ChangeComment(_CommChar: char): Boolean;
+    function GetExpression(out _Expression: string): Boolean; virtual;
+    procedure SetExpression(const _Expression: string); virtual;
+    procedure SetCase(_Case: TCase); virtual;
     function GetCase: TCase; virtual;
-    procedure SetOptions(AOptions: TTokenOptions); virtual;
+    procedure SetOptions(_Options: TTokenOptions); virtual;
     function GetOptions: TTokenOptions; virtual;
-    procedure AddOption(AOption: TTokenOption);
-    function HasOption(AOption: TTokenOption): Boolean;
+    procedure AddOption(_Option: TTokenOption);
+    function HasOption(_Option: TTokenOption): Boolean;
 
     function GetForDebug: string; virtual;
 
@@ -110,20 +111,9 @@ type
 
 implementation
 
-{$IFDEF GX_VER200_up} // delphi 2009
-uses
-//  GX_FastcodeAnsiString,
-  AnsiStrings;
-{$ENDIF}
-
 { TPascalToken }
 
-constructor TPascalToken.Create;
-begin
-  inherited Create;
-end;
-
-function TPascalToken.GetExpression(out AExpression: string): Boolean;
+function TPascalToken.GetExpression(out _Expression: string): Boolean;
 begin
   Result := False;
 end;
@@ -138,25 +128,25 @@ begin
   Result := [];
 end;
 
-function TPascalToken.HasOption(AOption: TTokenOption): Boolean;
+function TPascalToken.HasOption(_Option: TTokenOption): Boolean;
 begin
-  Result := AOption in Options;
+  Result := _Option in Options;
 end;
 
-function TPascalToken.Space(ASpace: TSpace): Boolean;
+function TPascalToken.Space(_Space: TSpace): Boolean;
 begin
   Result := False;
 end;
 
-procedure TPascalToken.SetExpression(const AExpression: string);
+procedure TPascalToken.SetExpression(const _Expression: string);
 begin
 end;
 
-procedure TPascalToken.SetOptions(AOptions: TTokenOptions);
+procedure TPascalToken.SetOptions(_Options: TTokenOptions);
 begin
 end;
 
-procedure TPascalToken.SetCase(ACase: TCase);
+procedure TPascalToken.SetCase(_Case: TCase);
 begin
 end;
 
@@ -165,16 +155,16 @@ begin
   Result := rfUnchanged;
 end;
 
-procedure TPascalToken.SetReservedType(AReservedType: TReservedType);
+procedure TPascalToken.SetReservedType(_rType: TReservedType);
 begin
 end;
 
-procedure TPascalToken.AddOption(AOption: TTokenOption);
+procedure TPascalToken.AddOption(_Option: TTokenOption);
 begin
-  Options := Options + [AOption];
+  Options := Options + [_Option];
 end;
 
-function TPascalToken.ChangeComment(ACommChar: char): Boolean;
+function TPascalToken.ChangeComment(_CommChar: char): Boolean;
 var
   s: string;
 begin
@@ -183,27 +173,27 @@ begin
     Exit;
 
   GetExpression(s);
-  if Pos(ACommChar, s) <> 0 then
+  if Pos(_CommChar, s) <> 0 then
     Exit;
 
-  case ACommChar of
+  case _CommChar of
     '{':
-      if Pos('}', s) = 0 then begin
+      if Pos('}', s) = 0 then
         s := '{' + s + '}';
-      end;
+
     '(':
-      if Pos('*)', s) = 0 then begin
+      if Pos('*)', s) = 0 then
         s := '(*' + s + '*)';
-      end;
+
     '/':
-      if Pos('//', s) <> 1 then begin
+      if Pos('//', s) <> 1 then
         s := '//' + s;
-      end;
-  end;
+  end; // case
+
   SetExpression(s);
 end;
 
-procedure TPascalToken.SetSpace(ASpace: TSpaceSet; AState: Boolean);
+procedure TPascalToken.SetSpace(_Space: TSpaceSet; _State: Boolean);
 begin
   // do nothing
 end;
@@ -252,6 +242,7 @@ begin
         else if AnsiStartsStr('ifndef', Directive) then
           SetReservedType(rtCompIf);
       end;
+
     wtFullComment, wtFullOutComment, wtHalfStarComment,
       wtHalfOutComment, wtHalfComment:
       SetReservedType(rtComment);
@@ -269,19 +260,32 @@ begin
         if GetExpression(Expr) then begin
           if Length(Expr) = 1 then begin
             case Expr[1] of
-              ':': SetReservedType(rtColon);
-              '.': SetReservedType(rtDot);
-              ';': SetReservedType(rtSemiColon);
-              ',': SetReservedType(rtComma);
-              ')': SetReservedType(rtRightBr);
-              '(': SetReservedType(rtLeftBr);
-              ']': SetReservedType(rtRightHook);
-              '[': SetReservedType(rtLeftHook);
-              '-': SetReservedType(rtMinus);
-              '+': SetReservedType(rtPlus);
-              '=': SetReservedType(rtEquals);
-              '/', '*': SetReservedType(rtMathOper);
-              '<', '>': SetReservedType(rtLogOper);
+              ':':
+                SetReservedType(rtColon);
+              '.':
+                SetReservedType(rtDot);
+              ';':
+                SetReservedType(rtSemiColon);
+              ',':
+                SetReservedType(rtComma);
+              ')':
+                SetReservedType(rtRightBr);
+              '(':
+                SetReservedType(rtLeftBr);
+              ']':
+                SetReservedType(rtRightHook);
+              '[':
+                SetReservedType(rtLeftHook);
+              '-':
+                SetReservedType(rtMinus);
+              '+':
+                SetReservedType(rtPlus);
+              '=':
+                SetReservedType(rtEquals);
+              '/', '*':
+                SetReservedType(rtMathOper);
+              '<', '>':
+                SetReservedType(rtLogOper);
             end;
           end else if Length(Expr) = 2 then begin
             if Expr = '.)' then
@@ -293,7 +297,7 @@ begin
             else if Expr = ':=' then
               SetReservedType(rtAssignOper)
             else if (Expr[1] = '<') or (Expr[1] = '>') then
-            {if p in > < <> >=  <= =}
+              { if p in > < <> >=  <= = }
               SetReservedType(rtLogOper);
           end;
         end;
@@ -385,7 +389,7 @@ end;
 function TExpression.GetString: string;
 begin
   if Space(spBefore) then
-    Result := ' '
+    Result := GX_CodeFormatterTypes.Space
   else
     Result := '';
 
@@ -393,7 +397,7 @@ begin
   Result := AdjustCase(Result, ExpressionCase);
 
   if Space(spAfter) then
-    Result := Result + ' ';
+    Result := Result + GX_CodeFormatterTypes.Space;
 end;
 
 procedure TExpression.GetLength(var ALength: Integer);
@@ -432,8 +436,9 @@ begin
     Len := FNoOfSpaces + FSpacePerIndent
   else
     Len := FNoOfSpaces;
+
   if (Len > 0) then
-    Result := StringOfChar(' ', Len)
+    Result := StringOfChar(GX_CodeFormatterTypes.Space, Len)
   else
     Result := '';
 end;
@@ -474,7 +479,7 @@ begin
   FOldNoOfSpaces := AOldnSpaces;
   FSpacePerIndent := ASpacePerIndent;
   FWrapped := False;
-  FNoOfSpaces := AOldnSpaces; {default not changed indent}
+  FNoOfSpaces := AOldnSpaces; { default not changed indent }
 end;
 
 procedure TLineFeed.IncIndent(Value: Integer);
@@ -516,9 +521,10 @@ end;
 function TAlignExpression.GetString: string;
 begin
   if (FNoOfSpaces > 0) then
-    Result := StringOfChar(' ', FNoOfSpaces)
+    Result := StringOfChar(GX_CodeFormatterTypes.Space, FNoOfSpaces)
   else
     Result := '';
+
   Result := Result + inherited GetString;
 end;
 

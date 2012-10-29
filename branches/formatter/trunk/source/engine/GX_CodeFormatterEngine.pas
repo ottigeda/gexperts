@@ -72,14 +72,14 @@ function TCodeFormatterEngine.Execute(SourceCode: TStrings): Boolean;
 var
   Line: string;
   TokenNo: Integer;
-  LB: string;
   OrigSource: string;
   Tokens: TPascalTokenList;
   s: string;
-  OrigLen: integer;
-  NewLen: integer;
+  OrigLen: Integer;
+  NewLen: Integer;
 begin
   try
+    SourceCode.BeginUpdate;
     OrigSource := SourceCode.Text;
 
     Tokens := TCodeFormatterParser.Execute(SourceCode, FSettings);
@@ -87,7 +87,6 @@ begin
       TCodeFormatterFormatter.Execute(Tokens, FSettings);
 
       SourceCode.Clear;
-      LB := sLineBreak;
       if Assigned(Tokens) then begin
         TokenNo := 0;
         while TokenNo < Tokens.Count do begin
@@ -106,20 +105,23 @@ begin
     s := SourceCode.Text;
     OrigLen := Length(OrigSource);
     NewLen := Length(s);
+
     if OrigLen = NewLen then
       Result := (OrigSource <> s)
     else if OrigLen = NewLen + 2 then
-      Result := (OrigSource <> s + #13#10)
+      Result := (OrigSource <> s + LineBreak)
     else if OrigLen + 2 = NewLen then
-      Result := (OrigSource + #13#10 <> s)
+      Result := (OrigSource + LineBreak <> s)
     else
-      Result := true;
+      Result := True;
   except
     on E: Exception do begin
       Result := False;
-      {ShowMessage('Error occurred, cannot format');}
+      { ShowMessage('Error occurred, cannot format'); }
     end;
   end;
+
+  SourceCode.EndUpdate;
 end;
 
 function TCodeFormatterEngine.GetLine(Tokens: TPascalTokenList; var TokenNo: Integer): string;
@@ -128,25 +130,30 @@ var
   i: Integer;
 begin
   Result := '';
+
   if not Assigned(Tokens) then
     Exit;
 
-  if (TokenNo >= 0) and (TokenNo < Tokens.Count) then begin
-    Token := Tokens.Items[TokenNo];
-    repeat
-      Result := Result + Token.GetString;
-      Inc(TokenNo);
-      if TokenNo >= Tokens.Count then
-        break;
-      Token := TPascalToken(Tokens.Items[TokenNo]);
-    until Token.ReservedType = rtLineFeed;
-  end;
+  if (TokenNo < 0) or (TokenNo >= Tokens.Count) then
+    Exit;
+
+  Token := Tokens[TokenNo];
+
+  repeat
+    Result := Result + Token.GetString;
+    Inc(TokenNo);
+
+    if TokenNo >= Tokens.Count then
+      break;
+
+    Token := Tokens[TokenNo];
+  until Token.ReservedType = rtLineFeed;
 
   // remove spaces and tabs at the end
   i := Length(Result);
-  while (i > 0) and ((Result[i] = ' ') or (Result[i] = Tab)) do begin
+
+  while (i > 0) and ((Result[i] = Space) or (Result[i] = Tab)) do
     Dec(i);
-  end;
   SetLength(Result, i);
 end;
 

@@ -43,7 +43,7 @@ type
     {: Check whether _Type is somewhere on the stack }
     function HasType(_Type: TReservedType): Boolean;
     function Pop: TReservedType;
-    procedure Push(_RType: TReservedType; _IncIndent: Integer);
+    procedure Push(_Type: TReservedType; _IncIndent: Integer);
     {: returns True if the stack is empty }
     function IsEmpty: Boolean;
     {: clears the stack and returns the number of items that were left }
@@ -67,7 +67,7 @@ type
 
 implementation
 
-{ TDelForStack }
+{ TCodeFormatterSegment }
 
 constructor TCodeFormatterSegment.Create;
 begin
@@ -98,13 +98,13 @@ begin
     Result := rtNothing;
 end;
 
-procedure TCodeFormatterSegment.Push(_RType: TReservedType; _IncIndent: Integer);
+procedure TCodeFormatterSegment.Push(_Type: TReservedType; _IncIndent: Integer);
 begin
   Inc(FStackPtr);
   if FStackPtr > MaxStack then
     raise EFormatException.Create('Stack overflow');
 
-  TopRec.RT := _RType;
+  TopRec.RT := _Type;
   TopRec.nInd := FNIndent;
   FNIndent := FNIndent + _IncIndent;
 end;
@@ -127,6 +127,7 @@ begin
     FNIndent := TopRec.nInd;
     if (TopRec.RT = rtProcedure) and (FProcLevel > 0) then
       Dec(FProcLevel);
+
     Result := TopRec^.RT;
     Dec(FStackPtr);
   end else begin
@@ -160,7 +161,6 @@ begin
   Result := Depth;
   FStackPtr := -1;
   FNIndent := 0;
-  { TODO -otwm -ccheck : Is this correct? }
   FProcLevel := 0;
 end;
 

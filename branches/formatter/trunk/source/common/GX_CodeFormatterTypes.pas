@@ -1,5 +1,4 @@
 // Simple types used in the code formatter
-
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
 // Contributors:        Thomas Mueller (http://www.dummzeuch.de)
 
@@ -26,9 +25,11 @@ type
 
 const
   Maxline = 1024; // the maximum line length of the Delphi editor
-//  CRLF = #13#10#0;
-  NotPrintable = [#1..#8, #10..#14, #16..#19, #22..#31]; {not printable chars}
+  NotPrintable = [#1..#8, #10..#14, #16..#19, #22..#31]; { not printable chars }
   Tab = #9;
+  LineBreak = #13#10;
+  Space = ' ';
+  MaxCollectionSize = Maxint div (SizeOf(Integer) * 2);
 
 type
   {: determines a word's casing:
@@ -96,19 +97,11 @@ type
   TTokenOption = (toFeedNewLine);
   TTokenOptions = set of TTokenOption;
 
-  //type
-  //  {: a TStrCollection that compares case insensitively }
-  //  TKeywordColl = class(TStrCollection)
-  //  public
-  //    {: compares Key1 and Key2 as strings, case insensitively }
-  //    function Compare(Key1, Key2: Pointer): Integer; override;
-  //  end;
-
 {: changes the string case as specified in aCase
    @param aStr is the input string
    @param aCase is a TCase specifying the desired case
    @returns the modified string }
-function AdjustCase(aStr: string; aCase: TCase): string;
+function AdjustCase(const aStr: string; aCase: TCase): string;
 
 implementation
 
@@ -117,17 +110,19 @@ uses
   AnsiStrings;
 {$ENDIF}
 
-function AdjustCase(aStr: string; aCase: TCase): string;
+function AdjustCase(const aStr: string; aCase: TCase): string;
 var
   i: Integer;
 begin
   case aCase of
-    rfUpperCase: Result := UpperCase(aStr);
-    rfLowerCase: Result := LowerCase(aStr);
+    rfUpperCase:
+      Result := UpperCase(aStr);
+    rfLowerCase:
+      Result := LowerCase(aStr);
     rfFirstUp: begin
         Result := LowerCase(aStr);
         i := 1;
-        while (Result[i] = ' ') or (Result[i] = Tab) do
+        while (Result[i] = Space) or (Result[i] = Tab) do
           Inc(i);
         Result[i] := UpCase(Result[i]);
       end;
@@ -191,6 +186,7 @@ begin
   AddWord('external', rtForward);
   AddWord('far', rtFuncDirective);
   AddWord('file', rtReserved);
+  AddWord('final', rtDirective);
   AddWord('finalization', rtInitialization);
   AddWord('finally', rtExcept);
   AddWord('for', rtWhile);
@@ -251,6 +247,7 @@ begin
   AddWord('shl', rtOper);
   AddWord('shr', rtOper);
   AddWord('static', rtFuncDirective);
+  AddWord('sealed', rtDirective);
   AddWord('stdcall', rtFuncDirective);
   AddWord('stored', rtFuncDirective);
   AddWord('strict', rtVisibility);
