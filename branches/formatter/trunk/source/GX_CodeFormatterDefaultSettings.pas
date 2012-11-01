@@ -40,7 +40,7 @@ begin
   Result.FeedRoundBegin := Unchanged;
   Result.FeedRoundTry := Unchanged;
   Result.FillNewWords := [];
-  Result.Identifiers := rfUnchanged;
+  Result.IdentifiersCase := rfUnchanged;
   Result.IndentBegin := False;
   Result.IndentCaseElse := False;
   Result.IndentComments := False;
@@ -91,7 +91,7 @@ begin
   Result.FeedRoundBegin := NewLine;
   Result.FeedRoundTry := NewLine;
   Result.FillNewWords := [];
-  Result.Identifiers := rfUnchanged;
+  Result.IdentifiersCase := rfUnchanged;
   Result.IndentBegin := False;
   Result.IndentCaseElse := False;
   Result.IndentComments := True;

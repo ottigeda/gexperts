@@ -124,6 +124,7 @@ begin
         Result[i] := UpCase(Result[i]);
       end;
   else
+    // rfUnchanged and rfFirstOccurrence
     Result := _str;
   end;
 end;

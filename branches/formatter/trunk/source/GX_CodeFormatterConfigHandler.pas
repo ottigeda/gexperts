@@ -193,6 +193,7 @@ begin
   ES.UpperNumbers := _Reader.ReadBool('UpperNumbers', ES.UpperNumbers); //: Boolean;
   ES.ReservedCase := TCase(_Reader.ReadInteger('ReservedCase', Ord(ES.ReservedCase))); //: TCase;
   ES.StandDirectivesCase := TCase(_Reader.ReadInteger('StandDirectivesCase', Ord(ES.StandDirectivesCase))); //: TCase;
+  ES.IdentifiersCase := TCase(_Reader.ReadInteger('IdentifiersCase', Ord(ES.IdentifiersCase))); // TCase
   ES.ChangeIndent := _Reader.ReadBool('ChangeIndent', ES.ChangeIndent); //: Boolean;
   ES.NoIndentElseIf := _Reader.ReadBool('NoIndentElseIf', ES.NoIndentElseIf); //: Boolean;
   ES.IndentBegin := _Reader.ReadBool('IndentBegin', ES.IndentBegin); //: Boolean;
@@ -250,6 +251,7 @@ begin
   _Writer.WriteBool('UpperNumbers', _Settings.UpperNumbers); //: Boolean;
   _Writer.WriteInteger('ReservedCase', Ord(_Settings.ReservedCase)); //: TCase;
   _Writer.WriteInteger('StandDirectivesCase', Ord(_Settings.StandDirectivesCase)); //: TCase;
+  _Writer.WriteInteger('IdentifiersCase', Ord(_Settings.IdentifiersCase));
   _Writer.WriteBool('ChangeIndent', _Settings.ChangeIndent); //: Boolean;
   _Writer.WriteBool('NoIndentElseIf', _Settings.NoIndentElseIf); //: Boolean;
   _Writer.WriteBool('IndentBegin', _Settings.IndentBegin); //: Boolean;

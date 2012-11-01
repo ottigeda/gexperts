@@ -1,7 +1,7 @@
 // parses Delphi code into a token collection
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
 // Contributors:        Thomas Mueller (http://www.dummzeuch.de)
-// Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of seval language features
+//                      Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of seval language features
 
 unit GX_CodeFormatterParser;
 
@@ -45,47 +45,47 @@ type
     {: ReadAsm does very simple parsing only to find comments because this
        influences finding the matching "end". No formatting is done
        later to asm code }
-    procedure ReadAsm(var ABuff: PAnsiChar);
-    function ReadHalfComment(out ADest: string; var ASource: PAnsiChar): TWordType;
-    function ReadWord(out ADest: string; var ASource: PAnsiChar): TWordType;
+    procedure ReadAsm(var _Buff: PAnsiChar);
+    function ReadHalfComment(out _Dest: string; var _Source: PAnsiChar): TWordType;
+    function ReadWord(out _Dest: string; var _Source: PAnsiChar): TWordType;
     {: Adds a single line of text to the parse tree }
-    procedure AddLine(ABuff: PAnsiChar);
-    procedure DoExecute(AText: TStrings);
+    procedure AddLine(_Buff: PAnsiChar);
+    procedure DoExecute(_Text: TStrings);
   public
-    constructor Create(ASettings: TCodeFormatterSettings);
+    constructor Create(_Settings: TCodeFormatterSettings);
     destructor Destroy; override;
     function DetachTokens: TPascalTokenList;
     {: parses the text and returns a parse tree }
-    class function Execute(AText: TStrings; ASettings: TCodeFormatterSettings): TPascalTokenList;
+    class function Execute(_Text: TStrings; _Settings: TCodeFormatterSettings): TPascalTokenList;
   end;
 
 implementation
 
-class function TCodeFormatterParser.Execute(AText: TStrings; ASettings: TCodeFormatterSettings): TPascalTokenList;
+class function TCodeFormatterParser.Execute(_Text: TStrings; _Settings: TCodeFormatterSettings): TPascalTokenList;
 var
   Parser: TCodeFormatterParser;
 begin
-  Parser := TCodeFormatterParser.Create(ASettings);
+  Parser := TCodeFormatterParser.Create(_Settings);
   try
-    Parser.DoExecute(AText);
+    Parser.DoExecute(_Text);
     Result := Parser.DetachTokens;
   finally
     Parser.Free;
   end;
 end;
 
-constructor TCodeFormatterParser.Create(ASettings: TCodeFormatterSettings);
+constructor TCodeFormatterParser.Create(_Settings: TCodeFormatterSettings);
 begin
   inherited Create;
-  FSpacePerIndent := ASettings.SpacePerIndent;
-  FStartCommentOut := ASettings.StartCommentOut;
-  FEndCommentOut := ASettings.EndCommentOut;
+  FSpacePerIndent := _Settings.SpacePerIndent;
+  FStartCommentOut := _Settings.StartCommentOut;
+  FEndCommentOut := _Settings.EndCommentOut;
   FLeftPointBracket := 0;
   FReadingAsm := False;
   FPrevLine := nil;
   FPrevType := wtNothing;
   FTokens := TPascalTokenList.Create;
-  FIdentifiers := TIdentifiersList.Create(ASettings.Identifiers);
+  FIdentifiers := TIdentifiersList.Create(_Settings.IdentifiersCase);
 end;
 
 destructor TCodeFormatterParser.Destroy;
@@ -101,15 +101,15 @@ begin
   FTokens := nil;
 end;
 
-procedure TCodeFormatterParser.DoExecute(AText: TStrings);
+procedure TCodeFormatterParser.DoExecute(_Text: TStrings);
 var
   i: Integer;
 begin
-  for i := 0 to AText.Count - 1 do
-    AddLine(PAnsiChar(AnsiString(AText[i])));
+  for i := 0 to _Text.Count - 1 do
+    AddLine(PAnsiChar(AnsiString(_Text[i])));
 end;
 
-procedure TCodeFormatterParser.AddLine(ABuff: PAnsiChar);
+procedure TCodeFormatterParser.AddLine(_Buff: PAnsiChar);
 var
   s: string;
 begin
@@ -117,13 +117,13 @@ begin
   FTokens.Add(FPrevLine);
 
   if FReadingAsm then
-    ReadAsm(ABuff);
+    ReadAsm(_Buff);
 
-  while (ABuff^ <> #0) do begin
+  while (_Buff^ <> #0) do begin
     if FPrevType in [wtHalfComment, wtHalfStarComment, wtHalfOutComment] then
-      FPrevType := ReadHalfComment(s, ABuff)
+      FPrevType := ReadHalfComment(s, _Buff)
     else
-      FPrevType := ReadWord(s, ABuff);
+      FPrevType := ReadWord(s, _Buff);
 
     if FPrevType = wtSpaces then begin
       if (FPrevLine <> nil) and (FPrevLine.NoOfSpaces = 0) then begin
@@ -133,8 +133,8 @@ begin
     end else begin
       FTokens.Add(TExpression.Create(FPrevType, s));
 
-      if FReadingAsm and (ABuff^ <> #0) then
-        ReadAsm(ABuff);
+      if FReadingAsm and (_Buff^ <> #0) then
+        ReadAsm(_Buff);
     end;
   end;
 
@@ -142,14 +142,14 @@ begin
     raise ECodeFormatter.Create('File to large to reformat')
 end;
 
-procedure TCodeFormatterParser.ReadAsm(var ABuff: PAnsiChar);
+procedure TCodeFormatterParser.ReadAsm(var _Buff: PAnsiChar);
 var
   P: PAnsiChar;
   FirstNonWhitespace: PAnsiChar;
   s: string;
 begin
-  P := ABuff;
-  FirstNonWhitespace := ABuff;
+  P := _Buff;
+  FirstNonWhitespace := _Buff;
 
   while FirstNonWhitespace^ in [Tab, Space] do
     Inc(FirstNonWhitespace);
@@ -171,7 +171,7 @@ begin
           Inc(P);
         end;
     else // case
-      if ((P = ABuff) or ((P - 1)^ in [' ', Tab]))
+      if ((P = _Buff) or ((P - 1)^ in [' ', Tab]))
         and (StrLIComp(P, 'end', 3) = 0)
         and ((P + 3)^ in [#0, ';', ' ', Tab]) then begin // 'end' of assembler
         FReadingAsm := False;
@@ -181,7 +181,7 @@ begin
           FTokens.Add(TExpression.Create(wtAsm, s));
         end;
 
-        ABuff := P;
+        _Buff := P;
         Exit;
       end else if P^ = '{' then begin // '{' comment
         Inc(P);
@@ -211,12 +211,12 @@ begin
     end; // case
   end; // while
 
-  SetString(s, ABuff, StrLen(ABuff));
+  SetString(s, _Buff, StrLen(_Buff));
   FTokens.Add(TExpression.Create(wtAsm, s));
-  ABuff := P;
+  _Buff := P;
 end;
 
-function TCodeFormatterParser.ReadWord(out ADest: string; var ASource: PAnsiChar): TWordType;
+function TCodeFormatterParser.ReadWord(out _Dest: string; var _Source: PAnsiChar): TWordType;
 const
   IdentifierTerminators = [
     '+', '-', '*', '/', '=',
@@ -319,7 +319,7 @@ var
   end;
 
 begin
-  P := ASource;
+  P := _Source;
 
   if P^ in [Tab, Space] then begin
     Result := wtSpaces;
@@ -336,7 +336,7 @@ begin
 
           if (P^ = '}') then begin
             Result := wtFullComment;
-            if (ASource + 1)^ = '$' then
+            if (_Source + 1)^ = '$' then
               Result := wtCompDirective;
 
             Inc(p);
@@ -417,7 +417,7 @@ begin
                 if p^ <> #0 then begin
                   Inc(P);
                   Result := wtFullComment;
-                  if (ASource + 2)^ = '$' then
+                  if (_Source + 2)^ = '$' then
                     Result := wtCompDirective;
 
                   Inc(p);
@@ -476,28 +476,28 @@ begin
       ReadIdentifier;
     end;
 
-  SetString(ADest, ASource, P - ASource);
+  SetString(_Dest, _Source, P - _Source);
 
   // This is for changing the casing of identifiers without adding them to
   // the global list.
-  ADest := FIdentifiers.AddIdentifier(ADest);
+  _Dest := FIdentifiers.AddIdentifier(_Dest);
 
-  if SameText(ADest, AnsiString('asm')) then begin
+  if SameText(_Dest, AnsiString('asm')) then begin
     FReadingAsm := True;
     FAsmComment := wtWord;
   end;
 
   if (P^ = #0) then
-    ASource := P
+    _Source := P
   else begin
     if (P^ in [Tab, Space]) then
       Inc(P);
 
-    ASource := P;
+    _Source := P;
   end;
 end;
 
-function TCodeFormatterParser.ReadHalfComment(out ADest: string; var ASource: PAnsiChar): TWordType;
+function TCodeFormatterParser.ReadHalfComment(out _Dest: string; var _Source: PAnsiChar): TWordType;
 var
   Len: Integer;
   P: PAnsiChar;
@@ -505,15 +505,15 @@ var
   EndComment: AnsiString;
   EndCommentType: TWordType;
 begin
-  P := ASource;
-  FirstNonSpace := ASource;
+  P := _Source;
+  FirstNonSpace := _Source;
 
   while P^ in [Tab, Space] do
     Inc(P);
 
   if (FPrevLine <> nil) and (FPrevLine.NoOfSpaces = 0) then begin
-    FPrevLine.NoOfSpaces := P - ASource;
-    FPrevLine.OldNoOfSpaces := P - ASource;
+    FPrevLine.NoOfSpaces := P - _Source;
+    FPrevLine.OldNoOfSpaces := P - _Source;
     FirstNonSpace := p;
   end;
 
@@ -549,12 +549,12 @@ begin
     Inc(P);
   end;
 
-  SetString(ADest, FirstNonSpace, P - FirstNonSpace);
+  SetString(_Dest, FirstNonSpace, P - FirstNonSpace);
 
   if P^ = #0 then
-    ASource := P
+    _Source := P
   else
-    ASource := P;
+    _Source := P;
 end;
 
 { TIdentifiersList }

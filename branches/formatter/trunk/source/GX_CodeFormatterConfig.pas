@@ -30,13 +30,13 @@ type
   private
     FSpacingOptions: TStringList;
   protected
-    function GetEditStyle(ACol: Integer; ARow: Integer): TEditStyle; override;
+    function GetEditStyle(_Col: Integer; _Row: Integer): TEditStyle; override;
     function CreateEditor: TInplaceEdit; override;
     function CanEditModify: Boolean; override;
     function CanEditShow: Boolean; override;
-    procedure OnGetSpacingOptions(ACol, ARow: Integer; Items: TStrings);
+    procedure OnGetSpacingOptions(_Col, _Row: Integer; _Items: TStrings);
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
   end;
 
@@ -74,6 +74,8 @@ type
     cmb_ReservedCase: TComboBox;
     l_StandardDirectives: TLabel;
     cmb_StandDirectives: TComboBox;
+    l_Identifiers: TLabel;
+    cmb_IdentifiersCase: TComboBox;
     chk_IndentComments: TCheckBox;
     chk_IndentCompDirectives: TCheckBox;
     ts_Misc: TTabSheet;
@@ -156,19 +158,19 @@ type
     procedure b_PrecedenceDownClick(Sender: TObject);
   private
     FCapitalization: TStringList;
-    procedure EngineSettingsToForm(const AEngineSettings: TCodeFormatterEngineSettings);
-    procedure SettingsToForm(const ASettings: TCodeFormatterSettings);
-    procedure FormToEngineSettings(var ASettings: TCodeFormatterEngineSettings);
-    procedure FormToSettings(ASettings: TCodeFormatterSettings);
+    procedure EngineSettingsToForm(const _EngineSettings: TCodeFormatterEngineSettings);
+    procedure SettingsToForm(const _Settings: TCodeFormatterSettings);
+    procedure FormToEngineSettings(var _Settings: TCodeFormatterEngineSettings);
+    procedure FormToSettings(_Settings: TCodeFormatterSettings);
     procedure FillPreview;
-    procedure AddSpaceRow(RowNo: Integer; StrCol1, StrCol2: string;
-      Space: TSpaceSet);
-    function GetSpaceItem(i: Integer): TSpaceSet;
-    procedure SetDefault(AWhich: string);
+    procedure AddSpaceRow(_RowNo: Integer; _StrCol1, _StrCol2: string;
+      _Space: TSpaceSet);
+    function GetSpaceItem(_Idx: Integer): TSpaceSet;
+    procedure SetDefault(_Which: string);
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
-    class function Execute(ASettings: TCodeFormatterSettings): TModalResult;
+    class function Execute(_Settings: TCodeFormatterSettings): TModalResult;
   end;
 
 implementation
@@ -176,9 +178,9 @@ implementation
 {$R *.DFM}
 
 uses
-{$ifdef GX_VER200_up} // delphi 2009
+{$IFDEF GX_VER200_up} // delphi 2009
   AnsiStrings,
-{$endif}
+{$ENDIF}
   Messages,
   GX_CodeFormatterConfigHandler,
   GX_CodeFormatterEditCapitalization,
@@ -194,7 +196,7 @@ resourcestring
   str_PrecedenceIniFile = 'GXFormatter.ini file';
   str_PrecedenceMySettings = 'my settings as configured here';
 
-constructor TfmCodeFormatterConfig.Create(AOwner: TComponent);
+constructor TfmCodeFormatterConfig.Create(_Owner: TComponent);
 var
   st: TStringList;
   i: Integer;
@@ -228,11 +230,11 @@ begin
   inherited;
 end;
 
-function TfmCodeFormatterConfig.GetSpaceItem(i: Integer): TSpaceSet;
+function TfmCodeFormatterConfig.GetSpaceItem(_Idx: Integer): TSpaceSet;
 var
   s: string;
 begin
-  s := grid_Spacing.Cells[2, i];
+  s := grid_Spacing.Cells[2, _Idx];
   Result := spNone;
   if s = str_Before then
     Result := [spBefore]
@@ -244,7 +246,7 @@ end;
 
 procedure TfmCodeFormatterConfig.lb_PrecedenceClick(Sender: TObject);
 var
-  Idx: integer;
+  Idx: Integer;
 begin
   Idx := lb_Precedence.ItemIndex;
   b_PrecedenceUp.Enabled := (Idx <> 0);
@@ -253,7 +255,7 @@ end;
 
 procedure TfmCodeFormatterConfig.b_PrecedenceUpClick(Sender: TObject);
 var
-  Idx: integer;
+  Idx: Integer;
 begin
   Idx := lb_Precedence.ItemIndex;
   if Idx = 0 then
@@ -264,7 +266,7 @@ end;
 
 procedure TfmCodeFormatterConfig.b_PrecedenceDownClick(Sender: TObject);
 var
-  Idx: integer;
+  Idx: Integer;
 begin
   Idx := lb_Precedence.ItemIndex;
   if Idx = 2 then
@@ -273,28 +275,28 @@ begin
   lb_PrecedenceClick(lb_Precedence);
 end;
 
-procedure TfmCodeFormatterConfig.AddSpaceRow(RowNo: Integer; StrCol1, StrCol2: string;
-  Space: TSpaceSet);
+procedure TfmCodeFormatterConfig.AddSpaceRow(_RowNo: Integer; _StrCol1, _StrCol2: string;
+  _Space: TSpaceSet);
 
   procedure SetColText(_Col: Integer; const _s: string; _Offset: Integer = 4);
   var
     w: Integer;
   begin
-    grid_Spacing.Cells[_Col, RowNo] := _s;
+    grid_Spacing.Cells[_Col, _RowNo] := _s;
     w := grid_Spacing.Canvas.TextWidth(_s) + _Offset;
     if grid_Spacing.ColWidths[_Col] < w then
       grid_Spacing.ColWidths[_Col] := w;
   end;
 
 begin
-  SetColText(0, StrCol1);
-  SetColText(1, StrCol2);
+  SetColText(0, _StrCol1);
+  SetColText(1, _StrCol2);
 
-  if Space = spNone then
+  if _Space = spNone then
     SetColText(2, str_None, 40)
-  else if Space = spBoth then
+  else if _Space = spBoth then
     SetColText(2, str_BeforeAfter, 40)
-  else if spBefore in Space then
+  else if spBefore in _Space then
     SetColText(2, str_Before, 40)
   else
     SetColText(2, str_after, 40);
@@ -316,76 +318,77 @@ begin
   end
 end;
 
-procedure TfmCodeFormatterConfig.FormToEngineSettings(var ASettings: TCodeFormatterEngineSettings);
+procedure TfmCodeFormatterConfig.FormToEngineSettings(var _Settings: TCodeFormatterEngineSettings);
 begin
-  ASettings := BorlandDefaults;
+  _Settings := BorlandDefaults;
 
-  ASettings.SpacePerIndent := ud_SpacePerIndent.Position;
-  ASettings.IndentBegin := chk_IndentBegin.Checked;
-  ASettings.IndentComments := chk_IndentComments.Checked;
-  ASettings.IndentCompDirectives := chk_IndentCompDirectives.Checked;
-  ASettings.IndentTry := chk_IndentTry.Checked;
-  ASettings.IndentTryElse := chk_IndentTryElse.Checked;
-  ASettings.IndentCaseElse := chk_IndentCaseElse.Checked;
-  ASettings.UpperCompDirectives := chk_UpperCompDirectives.Checked;
-  ASettings.UpperNumbers := chk_UpperNumbers.Checked;
-  ASettings.ReservedCase := TCase(cmb_ReservedCase.ItemIndex);
-  ASettings.StandDirectivesCase := TCase(cmb_StandDirectives.ItemIndex);
-  ASettings.BlankProc := chk_BlankProc.Checked;
-  ASettings.BlankSubProc := chk_BlankSubProc.Checked;
-  ASettings.RemoveDoubleBlank := chk_RemoveDoubleBlank.Checked;
-  ASettings.WrapLines := chk_WrapLines.Checked;
-  ASettings.WrapPosition := ud_WrapPosition.Position;
-  ASettings.AlignComments := chk_AlignComments.Checked;
-  ASettings.AlignCommentPos := ud_AlignCommentPos.Position;
-  ASettings.AlignVar := chk_AlignVar.Checked;
-  ASettings.AlignVarPos := ud_AlignVarPos.Position;
-  ASettings.SpaceEqualOper := GetSpaceItem(1);
-  ASettings.SpaceOperators := GetSpaceItem(2);
-  ASettings.SpaceColon := GetSpaceItem(3);
-  ASettings.SpaceSemiColon := GetSpaceItem(4);
-  ASettings.SpaceComma := GetSpaceItem(5);
-  ASettings.SpaceLeftBr := GetSpaceItem(6);
-  ASettings.SpaceRightBr := GetSpaceItem(7);
-  ASettings.SpaceLeftHook := GetSpaceItem(8);
-  ASettings.SpaceRightHook := GetSpaceItem(9);
-  ASettings.FeedAfterThen := chk_FeedAfterThen.Checked;
-  ASettings.ExceptSingle := chk_ExceptSingle.Checked;
-  ASettings.FeedEachUnit := chk_FeedEachUnit.Checked;
-  ASettings.NoFeedBeforeThen := chk_NoFeedBeforeThen.Checked;
-  ASettings.FeedAfterVar := chk_FeedAfterVar.Checked;
-  ASettings.FeedElseIf := chk_FeedElseIf.Checked;
-  ASettings.NoIndentElseIf := chk_NoIndentElseIf.Checked;
-  ASettings.FeedBeforeEnd := chk_FeedBeforeEnd.Checked;
-  ASettings.FeedAfterSemiColon := chk_FeedAfterSemiColon.Checked;
-  ASettings.FillNewWords := IntToCapfileMode(rg_Capitalization.ItemIndex);
-  ASettings.StartCommentOut := Trim(AnsiString(ed_StartComment.Text));
-  ASettings.EndCommentOut := Trim(AnsiString(ed_EndCommentOut.Text));
-  ASettings.FeedRoundBegin := TFeedBegin(cmb_FeedRoundBegin.ItemIndex);
-  ASettings.FeedRoundTry := TFeedBegin(cmb_FeedRoundTry.ItemIndex);
+  _Settings.SpacePerIndent := ud_SpacePerIndent.Position;
+  _Settings.IndentBegin := chk_IndentBegin.Checked;
+  _Settings.IndentComments := chk_IndentComments.Checked;
+  _Settings.IndentCompDirectives := chk_IndentCompDirectives.Checked;
+  _Settings.IndentTry := chk_IndentTry.Checked;
+  _Settings.IndentTryElse := chk_IndentTryElse.Checked;
+  _Settings.IndentCaseElse := chk_IndentCaseElse.Checked;
+  _Settings.UpperCompDirectives := chk_UpperCompDirectives.Checked;
+  _Settings.UpperNumbers := chk_UpperNumbers.Checked;
+  _Settings.ReservedCase := TCase(cmb_ReservedCase.ItemIndex);
+  _Settings.StandDirectivesCase := TCase(cmb_StandDirectives.ItemIndex);
+  _Settings.IdentifiersCase := TCase(cmb_IdentifiersCase.ItemIndex);
+  _Settings.BlankProc := chk_BlankProc.Checked;
+  _Settings.BlankSubProc := chk_BlankSubProc.Checked;
+  _Settings.RemoveDoubleBlank := chk_RemoveDoubleBlank.Checked;
+  _Settings.WrapLines := chk_WrapLines.Checked;
+  _Settings.WrapPosition := ud_WrapPosition.Position;
+  _Settings.AlignComments := chk_AlignComments.Checked;
+  _Settings.AlignCommentPos := ud_AlignCommentPos.Position;
+  _Settings.AlignVar := chk_AlignVar.Checked;
+  _Settings.AlignVarPos := ud_AlignVarPos.Position;
+  _Settings.SpaceEqualOper := GetSpaceItem(1);
+  _Settings.SpaceOperators := GetSpaceItem(2);
+  _Settings.SpaceColon := GetSpaceItem(3);
+  _Settings.SpaceSemiColon := GetSpaceItem(4);
+  _Settings.SpaceComma := GetSpaceItem(5);
+  _Settings.SpaceLeftBr := GetSpaceItem(6);
+  _Settings.SpaceRightBr := GetSpaceItem(7);
+  _Settings.SpaceLeftHook := GetSpaceItem(8);
+  _Settings.SpaceRightHook := GetSpaceItem(9);
+  _Settings.FeedAfterThen := chk_FeedAfterThen.Checked;
+  _Settings.ExceptSingle := chk_ExceptSingle.Checked;
+  _Settings.FeedEachUnit := chk_FeedEachUnit.Checked;
+  _Settings.NoFeedBeforeThen := chk_NoFeedBeforeThen.Checked;
+  _Settings.FeedAfterVar := chk_FeedAfterVar.Checked;
+  _Settings.FeedElseIf := chk_FeedElseIf.Checked;
+  _Settings.NoIndentElseIf := chk_NoIndentElseIf.Checked;
+  _Settings.FeedBeforeEnd := chk_FeedBeforeEnd.Checked;
+  _Settings.FeedAfterSemiColon := chk_FeedAfterSemiColon.Checked;
+  _Settings.FillNewWords := IntToCapfileMode(rg_Capitalization.ItemIndex);
+  _Settings.StartCommentOut := Trim(AnsiString(ed_StartComment.Text));
+  _Settings.EndCommentOut := Trim(AnsiString(ed_EndCommentOut.Text));
+  _Settings.FeedRoundBegin := TFeedBegin(cmb_FeedRoundBegin.ItemIndex);
+  _Settings.FeedRoundTry := TFeedBegin(cmb_FeedRoundTry.ItemIndex);
 end;
 
-procedure TfmCodeFormatterConfig.FormToSettings(ASettings: TCodeFormatterSettings);
+procedure TfmCodeFormatterConfig.FormToSettings(_Settings: TCodeFormatterSettings);
 var
   Settings: TCodeFormatterEngineSettings;
   i: Integer;
-  Idx: integer;
+  Idx: Integer;
 begin
-  ASettings.CapNames.Assign(FCapitalization);
-  ASettings.ShowDoneDialog := chk_ShowDone.Checked;
-  ASettings.UseCapitalizationFile := rb_CapitalizationInFile.Checked;
-  ASettings.CapitalizationFile := AnsiString(ed_CapitalizationFile.Text);
+  _Settings.CapNames.Assign(FCapitalization);
+  _Settings.ShowDoneDialog := chk_ShowDone.Checked;
+  _Settings.UseCapitalizationFile := rb_CapitalizationInFile.Checked;
+  _Settings.CapitalizationFile := ed_CapitalizationFile.Text;
 
   for i := Low(TOneToThree) to High(TOneToThree) do begin
     Idx := i - Low(TOneToThree);
-    ASettings.ConfigPrecedence[i] := TConfigPrecedenceEnum(lb_Precedence.Items.Objects[Idx])
+    _Settings.ConfigPrecedence[i] := TConfigPrecedenceEnum(lb_Precedence.Items.Objects[Idx])
   end;
 
   FormToEngineSettings(Settings);
-  ASettings.Settings := Settings;
+  _Settings.Settings := Settings;
 end;
 
-procedure TfmCodeFormatterConfig.EngineSettingsToForm(const AEngineSettings: TCodeFormatterEngineSettings);
+procedure TfmCodeFormatterConfig.EngineSettingsToForm(const _EngineSettings: TCodeFormatterEngineSettings);
 resourcestring
   str_Description = 'Description';
   str_Operators = 'Operators';
@@ -401,56 +404,57 @@ resourcestring
   str_LeftBracket = 'Left bracket';
   str_RightBracket = 'Right bracket';
 begin
-  ud_SpacePerIndent.Position := AEngineSettings.SpacePerIndent;
-  chk_IndentBegin.Checked := AEngineSettings.IndentBegin;
-  chk_IndentComments.Checked := AEngineSettings.IndentComments;
-  chk_IndentCompDirectives.Checked := AEngineSettings.IndentCompDirectives;
-  chk_IndentTry.Checked := AEngineSettings.IndentTry;
-  chk_IndentTryElse.Checked := AEngineSettings.IndentTryElse;
-  chk_IndentCaseElse.Checked := AEngineSettings.IndentCaseElse;
-  chk_UpperCompDirectives.Checked := AEngineSettings.UpperCompDirectives;
-  chk_UpperNumbers.Checked := AEngineSettings.UpperNumbers;
-  cmb_ReservedCase.ItemIndex := Byte(AEngineSettings.ReservedCase);
-  cmb_StandDirectives.ItemIndex := Byte(AEngineSettings.StandDirectivesCase);
-  chk_BlankProc.Checked := AEngineSettings.BlankProc;
-  chk_BlankSubProc.Checked := AEngineSettings.BlankSubProc;
-  chk_RemoveDoubleBlank.Checked := AEngineSettings.RemoveDoubleBlank;
+  ud_SpacePerIndent.Position := _EngineSettings.SpacePerIndent;
+  chk_IndentBegin.Checked := _EngineSettings.IndentBegin;
+  chk_IndentComments.Checked := _EngineSettings.IndentComments;
+  chk_IndentCompDirectives.Checked := _EngineSettings.IndentCompDirectives;
+  chk_IndentTry.Checked := _EngineSettings.IndentTry;
+  chk_IndentTryElse.Checked := _EngineSettings.IndentTryElse;
+  chk_IndentCaseElse.Checked := _EngineSettings.IndentCaseElse;
+  chk_UpperCompDirectives.Checked := _EngineSettings.UpperCompDirectives;
+  chk_UpperNumbers.Checked := _EngineSettings.UpperNumbers;
+  cmb_ReservedCase.ItemIndex := Ord(_EngineSettings.ReservedCase);
+  cmb_StandDirectives.ItemIndex := Ord(_EngineSettings.StandDirectivesCase);
+  cmb_IdentifiersCase.ItemIndex := Ord(_EngineSettings.IdentifiersCase);
+  chk_BlankProc.Checked := _EngineSettings.BlankProc;
+  chk_BlankSubProc.Checked := _EngineSettings.BlankSubProc;
+  chk_RemoveDoubleBlank.Checked := _EngineSettings.RemoveDoubleBlank;
   with grid_Spacing do begin
     RowCount := 10;
     Cells[0, 0] := str_Description;
     Cells[1, 0] := str_Operators;
     Cells[2, 0] := str_Spacing;
-    AddSpaceRow(1, str_Equals, ':=', AEngineSettings.SpaceEqualOper);
+    AddSpaceRow(1, str_Equals, ':=', _EngineSettings.SpaceEqualOper);
     AddSpaceRow(2, str_MathOperators, str_MathOperatorsExample,
-      AEngineSettings.SpaceOperators);
-    AddSpaceRow(3, str_Colon, ':', AEngineSettings.SpaceColon);
-    AddSpaceRow(4, str_SemiColon, ';', AEngineSettings.SpaceSemiColon);
-    AddSpaceRow(5, str_Comma, ',', AEngineSettings.SpaceComma);
-    AddSpaceRow(6, str_LeftParenthesis, '(', AEngineSettings.SpaceLeftBr);
-    AddSpaceRow(7, str_RightParenthesis, ')', AEngineSettings.SpaceRightBr);
-    AddSpaceRow(8, str_LeftBracket, '[', AEngineSettings.SpaceLeftHook);
-    AddSpaceRow(9, str_RightBracket, ']', AEngineSettings.SpaceRightHook);
+      _EngineSettings.SpaceOperators);
+    AddSpaceRow(3, str_Colon, ':', _EngineSettings.SpaceColon);
+    AddSpaceRow(4, str_SemiColon, ';', _EngineSettings.SpaceSemiColon);
+    AddSpaceRow(5, str_Comma, ',', _EngineSettings.SpaceComma);
+    AddSpaceRow(6, str_LeftParenthesis, '(', _EngineSettings.SpaceLeftBr);
+    AddSpaceRow(7, str_RightParenthesis, ')', _EngineSettings.SpaceRightBr);
+    AddSpaceRow(8, str_LeftBracket, '[', _EngineSettings.SpaceLeftHook);
+    AddSpaceRow(9, str_RightBracket, ']', _EngineSettings.SpaceRightHook);
   end;
-  chk_FeedAfterSemiColon.Checked := AEngineSettings.FeedAfterSemiColon;
-  chk_FeedEachUnit.Checked := AEngineSettings.FeedEachUnit;
-  chk_FeedAfterThen.Checked := AEngineSettings.FeedAfterThen;
-  chk_ExceptSingle.Checked := AEngineSettings.ExceptSingle;
-  chk_NoFeedBeforeThen.Checked := AEngineSettings.NoFeedBeforeThen;
-  chk_FeedAfterVar.Checked := AEngineSettings.FeedAfterVar;
-  chk_FeedElseIf.Checked := AEngineSettings.FeedElseIf;
-  chk_NoIndentElseIf.Checked := AEngineSettings.NoIndentElseIf;
-  chk_FeedBeforeEnd.Checked := AEngineSettings.FeedBeforeEnd;
-  chk_WrapLines.Checked := AEngineSettings.WrapLines;
-  ud_WrapPosition.Position := AEngineSettings.WrapPosition;
-  chk_AlignComments.Checked := AEngineSettings.AlignComments;
-  ud_AlignCommentPos.Position := AEngineSettings.AlignCommentPos;
-  chk_AlignVar.Checked := AEngineSettings.AlignVar;
-  ud_AlignVarPos.Position := AEngineSettings.AlignVarPos;
-  rg_Capitalization.ItemIndex := CapfileModeToInt(AEngineSettings.FillNewWords);
-  ed_StartComment.Text := string(AEngineSettings.StartCommentOut);
-  ed_EndCommentOut.Text := string(AEngineSettings.EndCommentOut);
-  cmb_FeedRoundBegin.ItemIndex := Integer(AEngineSettings.FeedRoundBegin);
-  cmb_FeedRoundTry.ItemIndex := Integer(AEngineSettings.FeedRoundTry);
+  chk_FeedAfterSemiColon.Checked := _EngineSettings.FeedAfterSemiColon;
+  chk_FeedEachUnit.Checked := _EngineSettings.FeedEachUnit;
+  chk_FeedAfterThen.Checked := _EngineSettings.FeedAfterThen;
+  chk_ExceptSingle.Checked := _EngineSettings.ExceptSingle;
+  chk_NoFeedBeforeThen.Checked := _EngineSettings.NoFeedBeforeThen;
+  chk_FeedAfterVar.Checked := _EngineSettings.FeedAfterVar;
+  chk_FeedElseIf.Checked := _EngineSettings.FeedElseIf;
+  chk_NoIndentElseIf.Checked := _EngineSettings.NoIndentElseIf;
+  chk_FeedBeforeEnd.Checked := _EngineSettings.FeedBeforeEnd;
+  chk_WrapLines.Checked := _EngineSettings.WrapLines;
+  ud_WrapPosition.Position := _EngineSettings.WrapPosition;
+  chk_AlignComments.Checked := _EngineSettings.AlignComments;
+  ud_AlignCommentPos.Position := _EngineSettings.AlignCommentPos;
+  chk_AlignVar.Checked := _EngineSettings.AlignVar;
+  ud_AlignVarPos.Position := _EngineSettings.AlignVarPos;
+  rg_Capitalization.ItemIndex := CapfileModeToInt(_EngineSettings.FillNewWords);
+  ed_StartComment.Text := string(_EngineSettings.StartCommentOut);
+  ed_EndCommentOut.Text := string(_EngineSettings.EndCommentOut);
+  cmb_FeedRoundBegin.ItemIndex := Integer(_EngineSettings.FeedRoundBegin);
+  cmb_FeedRoundTry.ItemIndex := Integer(_EngineSettings.FeedRoundTry);
   ud_SpacePerIndent.Associate := ed_SpacePerIndent;
   ud_WrapPosition.Associate := ed_WrapPosition;
   ud_AlignCommentPos.Associate := ed_AlignCommentPos;
@@ -458,7 +462,7 @@ begin
   chk_FeedAfterThenClick(nil)
 end;
 
-procedure TfmCodeFormatterConfig.SettingsToForm(const ASettings: TCodeFormatterSettings);
+procedure TfmCodeFormatterConfig.SettingsToForm(const _Settings: TCodeFormatterSettings);
 
   procedure AddPrecedenceSetting(_cp: TConfigPrecedenceEnum);
   begin
@@ -470,22 +474,22 @@ procedure TfmCodeFormatterConfig.SettingsToForm(const ASettings: TCodeFormatterS
   end;
 
 var
-  i: integer;
+  i: Integer;
   cp: TConfigPrecedenceEnum;
   PrecedenceSet: set of TConfigPrecedenceEnum;
 begin
-  chk_ShowDone.Checked := ASettings.ShowDoneDialog;
-  rb_CapitalizationInFile.Checked := ASettings.UseCapitalizationFile;
-  ed_CapitalizationFile.Text := String(ASettings.CapitalizationFile);
-  FCapitalization.Assign(ASettings.CapNames);
+  chk_ShowDone.Checked := _Settings.ShowDoneDialog;
+  rb_CapitalizationInFile.Checked := _Settings.UseCapitalizationFile;
+  ed_CapitalizationFile.Text := string(_Settings.CapitalizationFile);
+  FCapitalization.Assign(_Settings.CapNames);
 
   lb_Precedence.Items.Clear;
   // the set is used to prevent manipulated settings from crashing the program
   PrecedenceSet := [cpDirective, cpIniFile, cpMyConfig];
   for i := Low(TOneToThree) to High(TOneToThree) do begin
-    if ASettings.ConfigPrecedence[i] in PrecedenceSet then begin
-      AddPrecedenceSetting(ASettings.ConfigPrecedence[i]);
-      Exclude(PrecedenceSet, ASettings.ConfigPrecedence[i]);
+    if _Settings.ConfigPrecedence[i] in PrecedenceSet then begin
+      AddPrecedenceSetting(_Settings.ConfigPrecedence[i]);
+      Exclude(PrecedenceSet, _Settings.ConfigPrecedence[i]);
     end;
   end;
   for cp := Low(TConfigPrecedenceEnum) to High(TConfigPrecedenceEnum) do begin
@@ -493,22 +497,22 @@ begin
       AddPrecedenceSetting(cp);
   end;
 
-  EngineSettingsToForm(ASettings.Settings);
+  EngineSettingsToForm(_Settings.Settings);
 end;
 
-procedure TfmCodeFormatterConfig.SetDefault(AWhich: string);
+procedure TfmCodeFormatterConfig.SetDefault(_Which: string);
 resourcestring
   str_CouldNotReadS = 'Could not read default configuration %s.';
 var
   Defaults: TCodeFormatterSettings;
 begin
-  AWhich := StringReplace(AWhich, '&', '', [rfReplaceAll]);
+  _Which := StringReplace(_Which, '&', '', [rfReplaceAll]);
   grid_Spacing.EditorMode := False;
   Defaults := TCodeFormatterSettings.Create;
   try
-    if AWhich <> str_DefaultSettings then begin
-      if not TCodeFormatterConfigHandler.GetDefaultConfig(AWhich, Defaults) then begin
-        MessageDlg(Format(str_CouldNotReadS, [AWhich]), mtError, [mbOK], 0);
+    if _Which <> str_DefaultSettings then begin
+      if not TCodeFormatterConfigHandler.GetDefaultConfig(_Which, Defaults) then begin
+        MessageDlg(Format(str_CouldNotReadS, [_Which]), mtError, [mbOK], 0);
         Exit;
       end;
     end;
@@ -719,17 +723,17 @@ begin
   end;
 end;
 
-class function TfmCodeFormatterConfig.Execute(ASettings: TCodeFormatterSettings): TModalResult;
+class function TfmCodeFormatterConfig.Execute(_Settings: TCodeFormatterSettings): TModalResult;
 var
   frm: TfmCodeFormatterConfig;
 begin
   frm := TfmCodeFormatterConfig.Create(nil);
   try
     frm.HelpFile := 'delfor.hlp';
-    frm.SettingsToForm(ASettings);
+    frm.SettingsToForm(_Settings);
     Result := frm.ShowModal;
     if Result = mrOk then
-      frm.FormToSettings(ASettings);
+      frm.FormToSettings(_Settings);
   finally
     frm.Free;
   end;
@@ -737,7 +741,7 @@ end;
 
 { TStringGrid }
 
-constructor TStringGrid.Create(AOwner: TComponent);
+constructor TStringGrid.Create(_Owner: TComponent);
 begin
   inherited;
   FSpacingOptions := TStringList.Create;
@@ -747,7 +751,7 @@ begin
   FSpacingOptions.Add(str_BeforeAfter);
 end;
 
-function TStringGrid.GetEditStyle(ACol, ARow: Integer): TEditStyle;
+function TStringGrid.GetEditStyle(_Col, _Row: Integer): TEditStyle;
 begin
   if Col = 2 then
     Result := esPickList
@@ -762,9 +766,9 @@ begin
   (Result as TInplaceEditList).DropDownRows := 15;
 end;
 
-procedure TStringGrid.OnGetSpacingOptions(ACol, ARow: Integer; Items: TStrings);
+procedure TStringGrid.OnGetSpacingOptions(_Col, _Row: Integer; _Items: TStrings);
 begin
-  Items.Assign(FSpacingOptions);
+  _Items.Assign(FSpacingOptions);
 end;
 
 destructor TStringGrid.Destroy;

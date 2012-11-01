@@ -286,7 +286,7 @@ begin
       if Idx > _TokenIdx then
         Prev2 := nil
       else
-        Prev2 := FTokens.Items[_TokenIdx - Idx];
+        Prev2 := FTokens[_TokenIdx - Idx];
     end;
 
     if (Prev2 <> nil) and (Prev2.ReservedType in [rtOper,
@@ -902,7 +902,7 @@ var
             FWrapIndent := False;
 
           if Settings.RemoveDoubleBlank and (FTokenIdx >= 2) and (FPrevToken <> nil)
-            and (FPrevToken = FPrevLine) and (FTokens.Items[FTokenIdx - 2] = FPrevPrevLine) then begin
+            and (FPrevToken = FPrevLine) and (FTokens[FTokenIdx - 2] = FPrevPrevLine) then begin
             FTokens.Extract(FTokenIdx - 2).Free;
             Dec(FTokenIdx);
           end;
@@ -1000,7 +1000,7 @@ var
           if Prev1 <> nil then begin
             while (TempWordIdx > 0) and (Prev1.ReservedType in [rtComment, rtLineFeed]) do begin
               Dec(TempWordIdx);
-              Prev1 := FTokens.Items[TempWordIdx];
+              Prev1 := FTokens[TempWordIdx];
             end;
 
             FunctDeclare := (Prev1 <> nil) and (Prev1.ReservedType in [rtEquals, rtColon, rtComma]);

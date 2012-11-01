@@ -49,9 +49,9 @@ type
     UpperNumbers: Boolean; {: uppercase (hex) numbers }
     ReservedCase: TCase; {: case for reserved words }
     StandDirectivesCase: TCase; {: case for standard directives }
+    IdentifiersCase: TCase; {: case for identifiers }
     ChangeIndent: Boolean;
     NoIndentElseIf: Boolean;
-    Identifiers: TCase;
     IndentBegin: Boolean;
     IndentTry: Boolean;
     IndentTryElse: Boolean;
@@ -131,9 +131,9 @@ type
     property UpperNumbers: Boolean read FSettings.UpperNumbers;
     property ReservedCase: TCase read FSettings.ReservedCase;
     property StandDirectivesCase: TCase read FSettings.StandDirectivesCase;
+    property IdentifiersCase: TCase read FSettings.IdentifiersCase;
     property ChangeIndent: Boolean read FSettings.ChangeIndent;
     property NoIndentElseIf: Boolean read FSettings.NoIndentElseIf;
-    property Identifiers: TCase read FSettings.Identifiers;
     property IndentBegin: Boolean read FSettings.IndentBegin;
     property IndentTry: Boolean read FSettings.IndentTry;
     property IndentTryElse: Boolean read FSettings.IndentTryElse;

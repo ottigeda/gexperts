@@ -55,15 +55,15 @@ type
   TBreakpoints = class
   private
     FList: TList;
-    function GetItems(Idx: Integer): TSourceBreakpoint;
+    function GetItems(_Idx: Integer): TSourceBreakpoint;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Add(Item: TSourceBreakpoint);
     function Count: Integer;
     procedure Clear;
-    function Find(const AFilename: string; ALineNumber: Integer; out Idx: Integer): Boolean;
-    property Items[Idx: Integer]: TSourceBreakpoint read GetItems; default;
+    function Find(const _Filename: string; _LineNumber: Integer; out _Idx: Integer): Boolean;
+    property Items[_Idx: Integer]: TSourceBreakpoint read GetItems; default;
   end;
 
 type
@@ -98,14 +98,14 @@ begin
   inherited;
 end;
 
-function TBreakpoints.Find(const AFilename: string; ALineNumber: Integer;
-  out Idx: Integer): Boolean;
+function TBreakpoints.Find(const _Filename: string; _LineNumber: Integer;
+  out _Idx: Integer): Boolean;
 var
   i: Integer;
 begin
   for i := 0 to FList.Count - 1 do begin
-    if SameText(Items[i].FileName, AFilename) and (Items[i].LineNumber = ALineNumber) then begin
-      Idx := i;
+    if SameText(Items[i].FileName, _Filename) and (Items[i].LineNumber = _LineNumber) then begin
+      _Idx := i;
       Result := True;
       Exit;
     end;
@@ -113,10 +113,10 @@ begin
   Result := False;
 end;
 
-function TBreakpoints.GetItems(Idx: Integer): TSourceBreakpoint;
+function TBreakpoints.GetItems(_Idx: Integer): TSourceBreakpoint;
 begin
-  Assert((Idx > -1) and (Idx < FList.Count));
-  Result := FList[Idx];
+  Assert((_Idx > -1) and (_Idx < FList.Count));
+  Result := FList[_Idx];
 end;
 
 procedure TBreakpoints.Add(Item: TSourceBreakpoint);

@@ -25,21 +25,6 @@ type
 
 type
   _DZ_LIST_TEMPLATE_ = class(_LIST_ANCESTOR_)
-  {(*}
-  private
-    type
-      /// This enumerator allows for..in style loops
-      TEnumerator = record
-      private
-        FIdx: integer;
-        FList: _DZ_LIST_TEMPLATE_;
-        function GetCurrent: _ITEM_TYPE_; inline;
-      public
-        constructor Create(_List: _DZ_LIST_TEMPLATE_);
-        function MoveNext: boolean; inline;
-        property Current: _ITEM_TYPE_ read GetCurrent;
-      end;
-  {*)}
   private
     /// This actually stores the items
     FItems: _LIST_CONTAINER_;
@@ -73,8 +58,6 @@ type
     function Insert(_Item: _ITEM_TYPE_): integer; deprecated; // use Add instead
     /// adds an item into the list and returns its index
     function Add(_Item: _ITEM_TYPE_): integer; virtual;
-    /// allows for..in style loops
-    function GetEnumerator: TEnumerator;
     /// short for Items[0]
     function GetFirstItem: _ITEM_TYPE_;
     /// short for Items[Count-1];
@@ -189,29 +172,6 @@ end;
 function _DZ_LIST_TEMPLATE_.IndexOf(_Item: _ITEM_TYPE_): integer;
 begin
   Result := FItems.IndexOf(_LIST_CONTAINER_ITEM_TYPE_(_Item));
-end;
-
-function _DZ_LIST_TEMPLATE_.GetEnumerator: TEnumerator;
-begin
-  Result := TEnumerator.Create(Self);
-end;
-
-constructor _DZ_LIST_TEMPLATE_.TEnumerator.Create(_List: _DZ_LIST_TEMPLATE_);
-begin
-  FList := _List;
-  FIdx := -1;
-end;
-
-function _DZ_LIST_TEMPLATE_.TEnumerator.GetCurrent: _ITEM_TYPE_;
-begin
-  Result := FList[FIdx];
-end;
-
-function _DZ_LIST_TEMPLATE_.TEnumerator.MoveNext: boolean;
-begin
-  Result := (FIdx < FList.Count - 1);
-  if Result then
-    Inc(FIdx);
 end;
 
 {$ENDIF __DZ_LIST_TEMPLATE_SECOND_PASS__}

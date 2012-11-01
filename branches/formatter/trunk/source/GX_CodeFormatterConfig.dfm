@@ -331,50 +331,57 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         470
         356)
       object l_Capitalize: TLabel
-        Left = 8
-        Top = 128
+        Left = 16
+        Top = 8
         Width = 45
         Height = 13
         Caption = 'Capitalize'
       end
       object l_ReservedWords: TLabel
-        Left = 8
-        Top = 16
+        Left = 16
+        Top = 64
         Width = 77
         Height = 13
         Caption = 'Reserved words'
       end
       object l_StandardDirectives: TLabel
-        Left = 8
-        Top = 72
+        Left = 168
+        Top = 64
         Width = 91
         Height = 13
         Caption = 'Standard directives'
       end
+      object l_Identifiers: TLabel
+        Left = 320
+        Top = 64
+        Width = 45
+        Height = 13
+        Caption = 'Identifiers'
+      end
       object chk_UpperCompDirectives: TCheckBox
-        Left = 8
-        Top = 144
-        Width = 200
+        Left = 16
+        Top = 24
+        Width = 145
         Height = 25
         Caption = 'Compiler directives'
-        TabOrder = 2
+        TabOrder = 0
       end
       object chk_UpperNumbers: TCheckBox
-        Left = 8
-        Top = 168
-        Width = 200
+        Left = 168
+        Top = 24
+        Width = 145
         Height = 25
         Caption = 'Hex numbers'
-        TabOrder = 3
+        TabOrder = 1
       end
       object cmb_ReservedCase: TComboBox
-        Left = 8
-        Top = 32
-        Width = 118
+        Left = 16
+        Top = 80
+        Width = 145
         Height = 21
         Style = csDropDownList
         ItemHeight = 13
-        TabOrder = 0
+        TabOrder = 2
         Items.Strings = (
           'Lower case'
           'Upper case'
@@ -382,13 +389,13 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           'Unchanged')
       end
       object cmb_StandDirectives: TComboBox
-        Left = 8
-        Top = 88
-        Width = 118
+        Left = 168
+        Top = 80
+        Width = 145
         Height = 21
         Style = csDropDownList
         ItemHeight = 13
-        TabOrder = 1
+        TabOrder = 3
         Items.Strings = (
           'Lower case'
           'Upper case'
@@ -402,7 +409,7 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Height = 25
         Anchors = [akTop, akRight]
         Caption = 'Edit ...'
-        TabOrder = 7
+        TabOrder = 8
         OnClick = b_EditCapitalizationClick
       end
       object rb_CapitalizationInRegistry: TRadioButton
@@ -410,9 +417,9 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Top = 280
         Width = 238
         Height = 17
-        Caption = 'Stored in Registry'
+        Caption = 'Stored in Registry (slow for large lists)'
         Checked = True
-        TabOrder = 5
+        TabOrder = 6
         TabStop = True
         OnClick = rb_CapitalizationInRegistryClick
       end
@@ -422,7 +429,7 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Width = 238
         Height = 17
         Caption = 'Stored in File'
-        TabOrder = 6
+        TabOrder = 7
         OnClick = rb_CapitalizationInFileClick
       end
       object ed_CapitalizationFile: TEdit
@@ -432,7 +439,7 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         Enabled = False
-        TabOrder = 8
+        TabOrder = 9
       end
       object b_CapitalizationSelect: TButton
         Left = 392
@@ -442,13 +449,13 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
         Anchors = [akTop, akRight]
         Caption = 'Select ...'
         Enabled = False
-        TabOrder = 9
+        TabOrder = 10
         OnClick = b_CapitalizationSelectClick
       end
       object rg_Capitalization: TRadioGroup
-        Left = 216
-        Top = 9
-        Width = 246
+        Left = 8
+        Top = 129
+        Width = 457
         Height = 134
         Caption = 'User defined capitalization'
         Items.Strings = (
@@ -458,8 +465,22 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           'Use list (except standard directives)'
           'Add and use'
           'Add and use (except standard directives)')
+        TabOrder = 5
+      end
+      object cmb_IdentifiersCase: TComboBox
+        Left = 320
+        Top = 80
+        Width = 145
+        Height = 21
+        Style = csDropDownList
+        ItemHeight = 13
         TabOrder = 4
-        TabStop = True
+        Items.Strings = (
+          'Lower case'
+          'Upper case'
+          'Only first up'
+          'Unchanged'
+          'Use first occurence')
       end
     end
     object ts_Align: TTabSheet
@@ -763,14 +784,14 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
   object od_Import: TOpenDialog
     Filter = 'INI-Files (*.ini)|*.ini|all files (*.*)|*.*'
     Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing, ofDontAddToRecent]
-    Left = 352
-    Top = 264
+    Left = 176
+    Top = 376
   end
   object sd_Export: TSaveDialog
     Filter = 'INI-Files (*.ini)|*.ini|all files (*.*)|*.*'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist, ofNoReadOnlyReturn, ofEnableSizing, ofDontAddToRecent]
-    Left = 408
-    Top = 264
+    Left = 256
+    Top = 376
   end
   object od_CapitalizationFile: TOpenDialog
     DefaultExt = 'txt'
