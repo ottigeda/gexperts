@@ -12,7 +12,7 @@ interface
 uses
   SysUtils,
   Classes,
-  GX_PascalTokenList,
+  GX_CodeFormatterTokenList,
   GX_CodeFormatterTypes,
   GX_CodeFormatterSettings,
   GX_CodeFormatterTokens;
@@ -54,11 +54,25 @@ type
   public
     constructor Create(ASettings: TCodeFormatterSettings);
     destructor Destroy; override;
+    function DetachTokens: TPascalTokenList;
     {: parses the text and returns a parse tree }
     class function Execute(AText: TStrings; ASettings: TCodeFormatterSettings): TPascalTokenList;
   end;
 
 implementation
+
+class function TCodeFormatterParser.Execute(AText: TStrings; ASettings: TCodeFormatterSettings): TPascalTokenList;
+var
+  Parser: TCodeFormatterParser;
+begin
+  Parser := TCodeFormatterParser.Create(ASettings);
+  try
+    Parser.DoExecute(AText);
+    Result := Parser.DetachTokens;
+  finally
+    Parser.Free;
+  end;
+end;
 
 constructor TCodeFormatterParser.Create(ASettings: TCodeFormatterSettings);
 begin
@@ -70,27 +84,21 @@ begin
   FReadingAsm := False;
   FPrevLine := nil;
   FPrevType := wtNothing;
-  FTokens := TPascalTokenList.Create(500);
+  FTokens := TPascalTokenList.Create;
   FIdentifiers := TIdentifiersList.Create(ASettings.Identifiers);
 end;
 
 destructor TCodeFormatterParser.Destroy;
 begin
+  FreeAndNil(FTokens);
   FreeAndNil(FIdentifiers);
   inherited;
 end;
 
-class function TCodeFormatterParser.Execute(AText: TStrings; ASettings: TCodeFormatterSettings): TPascalTokenList;
-var
-  Parser: TCodeFormatterParser;
+function TCodeFormatterParser.DetachTokens: TPascalTokenList;
 begin
-  Parser := TCodeFormatterParser.Create(ASettings);
-  try
-    Parser.DoExecute(AText);
-    Result := Parser.FTokens;
-  finally
-    Parser.Free;
-  end;
+  Result := FTokens;
+  FTokens := nil;
 end;
 
 procedure TCodeFormatterParser.DoExecute(AText: TStrings);
@@ -118,9 +126,9 @@ begin
       FPrevType := ReadWord(s, ABuff);
 
     if FPrevType = wtSpaces then begin
-      if (FPrevLine <> nil) and (FPrevLine.FNoOfSpaces = 0) then begin
-        FPrevLine.FNoOfSpaces := Length(s);
-        FPrevLine.FOldNoOfSpaces := FPrevLine.FNoOfSpaces;
+      if (FPrevLine <> nil) and (FPrevLine.NoOfSpaces = 0) then begin
+        FPrevLine.NoOfSpaces := Length(s);
+        FPrevLine.OldNoOfSpaces := FPrevLine.NoOfSpaces;
       end;
     end else begin
       FTokens.Add(TExpression.Create(FPrevType, s));
@@ -503,9 +511,9 @@ begin
   while P^ in [Tab, Space] do
     Inc(P);
 
-  if (FPrevLine <> nil) and (FPrevLine.FNoOfSpaces = 0) then begin
-    FPrevLine.FNoOfSpaces := P - ASource;
-    FPrevLine.FOldNoOfSpaces := P - ASource;
+  if (FPrevLine <> nil) and (FPrevLine.NoOfSpaces = 0) then begin
+    FPrevLine.NoOfSpaces := P - ASource;
+    FPrevLine.OldNoOfSpaces := P - ASource;
     FirstNonSpace := p;
   end;
 

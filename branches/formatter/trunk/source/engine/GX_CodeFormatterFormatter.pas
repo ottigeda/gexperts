@@ -12,10 +12,10 @@ interface
 uses
   SysUtils,
   Classes,
-  GX_PascalTokenList,
   GX_CodeFormatterTypes,
   GX_CodeFormatterStack,
   GX_CodeFormatterTokens,
+  GX_CodeFormatterTokenList,
   GX_CodeFormatterSettings;
 
 type
@@ -122,9 +122,9 @@ var
   OldExpr: TExpression;
 begin
   FHasAligned := True;
-  OldExpr := TExpression(FTokens.Items[_Idx]);
+  OldExpr := TExpression(FTokens.Extract(_Idx));
   Result := TAlignExpression.Create(OldExpr, _Pos);
-  FTokens.Items[_Idx] := Result;
+  FTokens.AtInsert(_Idx, Result);
   OldExpr.Free;
 end;
 
@@ -378,7 +378,7 @@ begin
     if NextToken.Space(spBefore) then
       NextToken.SetSpace([spBefore], False);
 
-    FTokens.Insert(_AtIndex, Result);
+    FTokens.AtInsert(_AtIndex, Result);
     AdjustSpacing(NextToken, Result, _AtIndex);
   end;
 
@@ -485,11 +485,11 @@ begin
   else begin
     P := TExpression.Create(wtWord, s);
     P.SetReservedType(rtComment);
-    FTokens.Insert(FTokenIdx, P);
+    FTokens.AtInsert(FTokenIdx, P);
     Inc(FTokenIdx);
     P := TLineFeed.Create(0, Settings.SpacePerIndent);
     TLineFeed(P).SetIndent(FStack.nIndent);
-    FTokens.Insert(FTokenIdx, P);
+    FTokens.AtInsert(FTokenIdx, P);
     Inc(FTokenIdx);
   end;
 end;
@@ -519,8 +519,7 @@ begin
   while (FTokenIdx < FTokens.Count - 1) and (FCurrentToken.ReservedType <> rtEnd) do begin
     if FCurrentToken.ReservedType = rtLineFeed then begin
       FPrevLine := TLineFeed(FCurrentToken);
-      with FPrevLine do
-        FNoOfSpaces := FOldNoOfSpaces;
+      FPrevLine.NoOfSpaces := FPrevLine.OldNoOfSpaces;
     end;
 
     AdjustSpacing(FCurrentToken, FPrevToken, FTokenIdx);
@@ -563,9 +562,9 @@ begin
         FPrevToken.SetExpression('{' + Copy(PrevExpression, 2, 999999) + '}');
         Exit;
       end else
-        FTokens.Delete(FTokenIdx - 1);
+        FTokens.Extract(FTokenIdx - 1);
 
-      FTokens.Insert(FTokenIdx + i, FPrevToken);
+      FTokens.AtInsert(FTokenIdx + i, FPrevToken);
       FPrevToken := GetToken(FTokenIdx - 1);
       AdjustSpacing(FPrevToken, GetToken(FTokenIdx - 2), FTokenIdx - 1);
       FCurrentToken := GetToken(FTokenIdx);
@@ -613,14 +612,14 @@ begin { CheckShortLine }
   end;
 
   if TokenRType = rtSemiColon then
-    FTokens.AtFree(FTokenIdx + 1);
+    FTokens.Extract(FTokenIdx + 1).Free;
 end;
 
 procedure TCodeFormatterFormatter.HandleIf;
 begin
   if Settings.FeedAfterThen and not Settings.FeedElseIf
     and (FStack.GetTopType = rtIfElse) and (FPrevToken = FPrevLine) then begin
-    FTokens.AtFree(FTokenIdx - 1);
+    FTokens.Extract(FTokenIdx - 1).Free;
     Dec(FTokenIdx);
     CheckSlashComment;
   end else begin
@@ -648,7 +647,7 @@ begin
     FLastPopResType := FStack.Pop;
     if Settings.NoFeedBeforeThen and (FPrevToken = FPrevLine)
       and (GetToken(FTokenIdx - 1).ReservedType <> rtComment) then begin
-      FTokens.AtFree(FTokenIdx - 1);
+      FTokens.Extract(FTokenIdx - 1).Free;
       Dec(FTokenIdx);
       CheckSlashComment;
     end;
@@ -708,7 +707,7 @@ begin
     and (FPrevToken <> nil)
     and TokenAtIs(FTokenIdx - 1, rtLineFeed)
     and TokenAtIs(FTokenIdx - 2, rtEnd) then begin
-    FTokens.AtFree(FTokenIdx - 1);
+    FTokens.Extract(FTokenIdx - 1).Free;
     Dec(FTokenIdx);
     FPrevLine := nil;
     FPrevToken := FPrevLine;
@@ -904,7 +903,7 @@ var
 
           if Settings.RemoveDoubleBlank and (FTokenIdx >= 2) and (FPrevToken <> nil)
             and (FPrevToken = FPrevLine) and (FTokens.Items[FTokenIdx - 2] = FPrevPrevLine) then begin
-            FTokens.AtFree(FTokenIdx - 2);
+            FTokens.Extract(FTokenIdx - 2).Free;
             Dec(FTokenIdx);
           end;
 
@@ -1075,8 +1074,7 @@ var
               // FStack.ProcLevel := FStack.ProcLevel + 1;
               /// /              FStack.Push(FCurrentRType  , 1);
               //
-            end
-            else begin
+            end else begin
               if (not FunctDeclare) and (not (FStack.GetTopType = rtClass)) then begin
                 FStack.nIndent := 0;
                 SetPrevLineIndent(NTmp);
@@ -1137,7 +1135,7 @@ var
             Hanging: begin
                 if (FStack.GetTopType in [rtDo, rtThen, rtIfElse, rtElse, rtColon])
                   and (FPrevToken <> nil) and (GetToken(FTokenIdx - 1) = FPrevLine) then begin
-                  FTokens.AtFree(FTokenIdx - 1);
+                  FTokens.Extract(FTokenIdx - 1).Free;
                   Dec(FTokenIdx);
                   CheckSlashComment;
                 end;
@@ -1210,7 +1208,7 @@ var
           FWrapIndent := False;
 
           if Settings.NoFeedBeforeThen and (FPrevToken = FPrevLine) then begin
-            FTokens.AtFree(FTokenIdx - 1);
+            FTokens.Extract(FTokenIdx - 1).Free;
             Dec(FTokenIdx);
             CheckSlashComment;
           end;
@@ -1259,13 +1257,13 @@ var
           if (FPrevLine <> nil) and (FPrevLine = FPrevToken) then begin
             if not Settings.IndentComments
               or (FCurrentToken.WordType in [wtFullOutComment, wtHalfOutComment]) then
-              FPrevLine.FNoOfSpaces := FPrevLine.FOldNoOfSpaces
+              FPrevLine.NoOfSpaces := FPrevLine.OldNoOfSpaces
             else begin
               if PrevOldNspaces >= 0 then
-                FPrevLine.FNoOfSpaces := FPrevLine.FNoOfSpaces +
-                  (FPrevLine.FOldNoOfSpaces - PrevOldNspaces)
+                FPrevLine.NoOfSpaces := FPrevLine.NoOfSpaces +
+                  (FPrevLine.OldNoOfSpaces - PrevOldNspaces)
               else
-                PrevOldNspaces := FPrevLine.FOldNoOfSpaces;
+                PrevOldNspaces := FPrevLine.OldNoOfSpaces;
             end;
           end else if Settings.AlignComments and (FCurrentToken.WordType = wtFullComment) then begin
             if GetToken(FTokenIdx + 1, Next) and (Next.ReservedType = rtLineFeed) then
@@ -1365,7 +1363,7 @@ begin { procedure TCodeFormatterFormatter.doExecute; }
   // remove empty lines from the end
   FTokenIdx := FTokens.Count - 1;
   while (FTokenIdx > 0) and TokenAtIs(FTokenIdx, rtLineFeed) do begin
-    FTokens.AtFree(FTokenIdx);
+    FTokens.Extract(FTokenIdx).Free;
     Dec(FTokenIdx);
   end;
 
@@ -1382,11 +1380,11 @@ var
     PrevPrevLine: TLineFeed;
   begin
     PrevPrevLine := FPrevLine;
-    FPrevLine := TLineFeed.Create(PrevPrevLine.FOldNoOfSpaces, Settings.SpacePerIndent);
-    FPrevLine.FNoOfSpaces := PrevPrevLine.FNoOfSpaces;
-    FPrevLine.FWrapped := True;
+    FPrevLine := TLineFeed.Create(PrevPrevLine.OldNoOfSpaces, Settings.SpacePerIndent);
+    FPrevLine.NoOfSpaces := PrevPrevLine.NoOfSpaces;
+    FPrevLine.Wrapped := True;
     GetToken(ATokenIdx).SetSpace([spBefore], False);
-    FTokens.Insert(ATokenIdx, FPrevLine);
+    FTokens.AtInsert(ATokenIdx, FPrevLine);
     HasInserted := True;
   end;
 
@@ -1408,12 +1406,12 @@ begin
     if Settings.WrapLines and (Token is TAlignExpression)
       and (LineLen > Settings.WrapPosition) then begin
       Expression := Token as TAlignExpression;
-      k := Expression.FNoOfSpaces - LineLen - Settings.WrapPosition;
+      k := Expression.NoOfSpaces - LineLen - Settings.WrapPosition;
 
       if k < 1 then
-        Expression.FNoOfSpaces := 1
+        Expression.NoOfSpaces := 1
       else
-        Expression.FNoOfSpaces := k;
+        Expression.NoOfSpaces := k;
 
       LineLen := Settings.WrapPosition;
     end;

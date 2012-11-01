@@ -1,7 +1,7 @@
 // Simple types used in the code formatter
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
 // Contributors:        Thomas Mueller (http://www.dummzeuch.de)
-// Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of seval language features
+//                      Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of several language features
 
 unit GX_CodeFormatterTypes;
 
@@ -11,8 +11,7 @@ interface
 
 uses
   SysUtils,
-  Classes,
-  GX_PascalTokenList;
+  Classes;
 
 type
   ECodeFormatter = class(Exception);
@@ -45,8 +44,8 @@ type
   TSpace = (spBefore, spAfter);
   TSpaceSet = set of TSpace;
 
-function SpaceSetToInt(ASpaceSet: TSpaceSet): Integer;
-function IntToSpaceSet(AValue: Integer): TSpaceSet;
+function SpaceSetToInt(_SpaceSet: TSpaceSet): Integer;
+function IntToSpaceSet(_Value: Integer): TSpaceSet;
 
 const
   spBoth = [spBefore, spAfter];
@@ -89,7 +88,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function FindWord(const _s: string; out _ReservedType: TReservedType): Boolean;
-    procedure AddWord(const _s: string; _ReservedType: TReservedType);
+    procedure Add(const _s: string; _ReservedType: TReservedType);
   end;
 
 var
@@ -104,43 +103,43 @@ type
    @param aStr is the input string
    @param aCase is a TCase specifying the desired case
    @returns the modified string }
-function AdjustCase(const aStr: string; aCase: TCase): string;
+function AdjustCase(const _str: string; _Case: TCase): string;
 
 implementation
 
-function AdjustCase(const aStr: string; aCase: TCase): string;
+function AdjustCase(const _str: string; _Case: TCase): string;
 var
   i: Integer;
 begin
-  case aCase of
+  case _Case of
     rfUpperCase:
-      Result := UpperCase(aStr);
+      Result := UpperCase(_str);
     rfLowerCase:
-      Result := LowerCase(aStr);
+      Result := LowerCase(_str);
     rfFirstUp: begin
-        Result := LowerCase(aStr);
+        Result := LowerCase(_str);
         i := 1;
         while (Result[i] = Space) or (Result[i] = Tab) do
           Inc(i);
         Result[i] := UpCase(Result[i]);
       end;
   else
-    Result := aStr;
+    Result := _str;
   end;
 end;
 
 { TKeywordColl }
 
-function SpaceSetToInt(ASpaceSet: TSpaceSet): Integer;
+function SpaceSetToInt(_SpaceSet: TSpaceSet): Integer;
 begin
   Result := 0;
-  Move(ASpaceSet, Result, SizeOf(ASpaceSet));
+  Move(_SpaceSet, Result, SizeOf(_SpaceSet));
 end;
 
-function IntToSpaceSet(AValue: Integer): TSpaceSet;
+function IntToSpaceSet(_Value: Integer): TSpaceSet;
 begin
   Result := [];
-  Move(AValue, Result, SizeOf(Result));
+  Move(_Value, Result, SizeOf(Result));
 end;
 
 { TReservedWordList }
@@ -152,119 +151,119 @@ begin
   FWords.Sorted := True;
   FWords.Duplicates := dupError;
 
-  AddWord('absolute', rtAbsolute);
-  AddWord('abstract', rtFuncDirective);
-  AddWord('and', rtOper);
-  AddWord('array', rtReserved);
-  AddWord('as', rtOper);
-  AddWord('asm', rtAsm);
-  AddWord('assembler', rtFuncDirective);
-  AddWord('automated', rtVisibility);
-  AddWord('begin', rtBegin);
-  AddWord('case', rtCase);
-  AddWord('cdecl', rtFuncDirective);
-  AddWord('class', rtClass);
-  AddWord('const', rtVar);
-  AddWord('constructor', rtProcedure);
-  AddWord('contains', rtUses);
-  AddWord('default', rtDefault);
-  AddWord('deprecated', rtFuncDirective);
-  AddWord('destructor', rtProcedure);
-  AddWord('dispid', rtFuncDirective);
-  AddWord('dispinterface', rtInterface);
-  AddWord('div', rtOper);
-  AddWord('do', rtDo);
-  AddWord('downto', rtOper);
-  AddWord('dynamic', rtFuncDirective);
-  AddWord('else', rtElse);
-  AddWord('end', rtEnd);
-  AddWord('except', rtExcept);
-  AddWord('export', rtFuncDirective);
-  AddWord('exports', rtUses);
-  AddWord('external', rtForward);
-  AddWord('far', rtFuncDirective);
-  AddWord('file', rtReserved);
-  AddWord('final', rtDirective);
-  AddWord('finalization', rtInitialization);
-  AddWord('finally', rtExcept);
-  AddWord('for', rtWhile);
-  AddWord('forward', rtForward);
-  AddWord('function', rtProcedure);
-  AddWord('goto', rtReserved);
-  AddWord('helper', rtReserved);
-  AddWord('if', rtIf);
-  AddWord('implementation', rtImplementation);
-  AddWord('implements', rtFuncDirective);
-  AddWord('in', rtOper);
-  AddWord('index', rtFuncDirective);
-  AddWord('inherited', rtReserved);
-  AddWord('initialization', rtInitialization);
-  AddWord('inline', rtFuncDirective);
-  AddWord('interface', rtInterface);
-  AddWord('is', rtOper);
-  AddWord('label', rtVar);
-  AddWord('library', rtFuncDirective);
-  AddWord('message', rtFuncDirective);
-  AddWord('mod', rtOper);
-  AddWord('name', rtFuncDirective);
-  AddWord('near', rtFuncDirective);
-  AddWord('nil', rtReserved);
-  AddWord('nodefault', rtFuncDirective);
-  AddWord('not', rtOper);
-  AddWord('object', rtClass);
-  AddWord('of', rtOf);
-  AddWord('on', rtOn);
-  AddWord('operator', rtProcedure);
-  AddWord('or', rtOper);
-  AddWord('out', rtReserved);
-  AddWord('overload', rtFuncDirective);
-  AddWord('override', rtFuncDirective);
-  AddWord('packed', rtReserved);
-  AddWord('pascal', rtFuncDirective);
-  AddWord('platform', rtFuncDirective);
-  AddWord('private', rtVisibility);
-  AddWord('procedure', rtProcedure);
-  AddWord('program', rtProgram);
-  AddWord('property', rtProcedure);
-  AddWord('protected', rtVisibility);
-  AddWord('public', rtVisibility);
-  AddWord('published', rtVisibility);
-  AddWord('raise', rtReserved);
-  AddWord('read', rtFuncDirective);
-  AddWord('readonly', rtFuncDirective);
-  AddWord('record', rtRecord);
-  AddWord('reference', rtReserved);
-  AddWord('register', rtFuncDirective);
-  AddWord('reintroduce', rtFuncDirective);
-  AddWord('repeat', rtRepeat);
-  AddWord('requires', rtUses);
-  AddWord('resident', rtFuncDirective);
-  AddWord('resourcestring', rtVar);
-  AddWord('safecall', rtFuncDirective);
-  AddWord('set', rtReserved);
-  AddWord('shl', rtOper);
-  AddWord('shr', rtOper);
-  AddWord('static', rtFuncDirective);
-  AddWord('sealed', rtDirective);
-  AddWord('stdcall', rtFuncDirective);
-  AddWord('stored', rtFuncDirective);
-  AddWord('strict', rtVisibility);
-  AddWord('string', rtReserved);
-  AddWord('then', rtThen);
-  AddWord('threadvar', rtVar);
-  AddWord('to', rtOper);
-  AddWord('try', rtTry);
-  AddWord('type', rtType);
-  AddWord('unit', rtProgram);
-  AddWord('until', rtUntil);
-  AddWord('uses', rtUses);
-  AddWord('var', rtVar);
-  AddWord('virtual', rtFuncDirective);
-  AddWord('while', rtWhile);
-  AddWord('with', rtWhile);
-  AddWord('write', rtFuncDirective);
-  AddWord('writeonly', rtFuncDirective);
-  AddWord('xor', rtOper);
+  Add('absolute', rtAbsolute);
+  Add('abstract', rtFuncDirective);
+  Add('and', rtOper);
+  Add('array', rtReserved);
+  Add('as', rtOper);
+  Add('asm', rtAsm);
+  Add('assembler', rtFuncDirective);
+  Add('automated', rtVisibility);
+  Add('begin', rtBegin);
+  Add('case', rtCase);
+  Add('cdecl', rtFuncDirective);
+  Add('class', rtClass);
+  Add('const', rtVar);
+  Add('constructor', rtProcedure);
+  Add('contains', rtUses);
+  Add('default', rtDefault);
+  Add('deprecated', rtFuncDirective);
+  Add('destructor', rtProcedure);
+  Add('dispid', rtFuncDirective);
+  Add('dispinterface', rtInterface);
+  Add('div', rtOper);
+  Add('do', rtDo);
+  Add('downto', rtOper);
+  Add('dynamic', rtFuncDirective);
+  Add('else', rtElse);
+  Add('end', rtEnd);
+  Add('except', rtExcept);
+  Add('export', rtFuncDirective);
+  Add('exports', rtUses);
+  Add('external', rtForward);
+  Add('far', rtFuncDirective);
+  Add('file', rtReserved);
+  Add('final', rtDirective);
+  Add('finalization', rtInitialization);
+  Add('finally', rtExcept);
+  Add('for', rtWhile);
+  Add('forward', rtForward);
+  Add('function', rtProcedure);
+  Add('goto', rtReserved);
+  Add('helper', rtReserved);
+  Add('if', rtIf);
+  Add('implementation', rtImplementation);
+  Add('implements', rtFuncDirective);
+  Add('in', rtOper);
+  Add('index', rtFuncDirective);
+  Add('inherited', rtReserved);
+  Add('initialization', rtInitialization);
+  Add('inline', rtFuncDirective);
+  Add('interface', rtInterface);
+  Add('is', rtOper);
+  Add('label', rtVar);
+  Add('library', rtFuncDirective);
+  Add('message', rtFuncDirective);
+  Add('mod', rtOper);
+  Add('name', rtFuncDirective);
+  Add('near', rtFuncDirective);
+  Add('nil', rtReserved);
+  Add('nodefault', rtFuncDirective);
+  Add('not', rtOper);
+  Add('object', rtClass);
+  Add('of', rtOf);
+  Add('on', rtOn);
+  Add('operator', rtProcedure);
+  Add('or', rtOper);
+  Add('out', rtReserved);
+  Add('overload', rtFuncDirective);
+  Add('override', rtFuncDirective);
+  Add('packed', rtReserved);
+  Add('pascal', rtFuncDirective);
+  Add('platform', rtFuncDirective);
+  Add('private', rtVisibility);
+  Add('procedure', rtProcedure);
+  Add('program', rtProgram);
+  Add('property', rtProcedure);
+  Add('protected', rtVisibility);
+  Add('public', rtVisibility);
+  Add('published', rtVisibility);
+  Add('raise', rtReserved);
+  Add('read', rtFuncDirective);
+  Add('readonly', rtFuncDirective);
+  Add('record', rtRecord);
+  Add('reference', rtReserved);
+  Add('register', rtFuncDirective);
+  Add('reintroduce', rtFuncDirective);
+  Add('repeat', rtRepeat);
+  Add('requires', rtUses);
+  Add('resident', rtFuncDirective);
+  Add('resourcestring', rtVar);
+  Add('safecall', rtFuncDirective);
+  Add('set', rtReserved);
+  Add('shl', rtOper);
+  Add('shr', rtOper);
+  Add('static', rtFuncDirective);
+  Add('sealed', rtDirective);
+  Add('stdcall', rtFuncDirective);
+  Add('stored', rtFuncDirective);
+  Add('strict', rtVisibility);
+  Add('string', rtReserved);
+  Add('then', rtThen);
+  Add('threadvar', rtVar);
+  Add('to', rtOper);
+  Add('try', rtTry);
+  Add('type', rtType);
+  Add('unit', rtProgram);
+  Add('until', rtUntil);
+  Add('uses', rtUses);
+  Add('var', rtVar);
+  Add('virtual', rtFuncDirective);
+  Add('while', rtWhile);
+  Add('with', rtWhile);
+  Add('write', rtFuncDirective);
+  Add('writeonly', rtFuncDirective);
+  Add('xor', rtOper);
 end;
 
 destructor TReservedWordList.Destroy;
@@ -273,7 +272,7 @@ begin
   inherited;
 end;
 
-procedure TReservedWordList.AddWord(const _s: string; _ReservedType: TReservedType);
+procedure TReservedWordList.Add(const _s: string; _ReservedType: TReservedType);
 begin
   FWords.AddObject(LowerCase(_s), Pointer(Ord(_ReservedType)));
 end;

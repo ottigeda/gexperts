@@ -1,7 +1,7 @@
 // defines TPascalToken and descendants which are the intermediate format after parsing
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
 // Contributors:        Thomas Mueller (http://www.dummzeuch.de)
-// Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of seval language features
+//                      Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of several language features
 
 unit GX_CodeFormatterTokens;
 
@@ -54,60 +54,65 @@ type
   TLineFeed = class(TPascalToken)
   private
     FSpacePerIndent: Integer;
-  public
     FNoOfSpaces: Integer;
     FOldNoOfSpaces: Integer;
     FWrapped: Boolean;
-    constructor Create(AOldnSpaces: Integer; ASpacePerIndent: Integer);
+  public
+    constructor Create(_OldnSpaces: Integer; _SpacePerIndent: Integer);
     function GetWordType: TWordType; override;
-    procedure SetIndent(Value: Integer);
-    procedure IncIndent(Value: Integer);
-    procedure GetLength(var ALength: Integer); override;
+    procedure SetIndent(_Value: Integer);
+    procedure IncIndent(_Value: Integer);
+    procedure GetLength(var _Length: Integer); override;
     function GetReservedType: TReservedType; override;
 
     function GetForDebug: string; override;
 
     {: @returns a string with FNoOfSpaces spaces }
     function GetString: string; override;
+    property NoOfSpaces: Integer read FNoOfSpaces write FNoOfSpaces;
+    property OldNoOfSpaces: Integer read FOldNoOfSpaces write FOldNoOfSpaces;
+    property Wrapped: Boolean read FWrapped write FWrapped;
   end;
 
   TExpression = class(TPascalToken)
   private
-  public
     FExpression: string;
     FWordType: TWordType;
     FSpaceType: TSpaceSet;
     FCaseType: TCase;
     FReservedType: TReservedType;
     FOptions: TTokenOptions;
-    constructor Create(AType: TWordType; const AExpression: string);
+  public
+    constructor Create(_Type: TWordType; const _Expression: string);
     procedure CheckReserved;
-    procedure SetSpace(ASpace: TSpaceSet; AState: Boolean); override;
-    procedure SetReservedType(AReservedType: TReservedType); override;
-    function Space(ASpace: TSpace): Boolean; override;
+    procedure SetSpace(_Space: TSpaceSet; _State: Boolean); override;
+    procedure SetReservedType(_ReservedType: TReservedType); override;
+    function Space(_Space: TSpace): Boolean; override;
     {: @returns <spaces><the expression><spaces> }
     function GetString: string; override;
-    procedure GetLength(var ALength: Integer); override;
+    procedure GetLength(var _Length: Integer); override;
     function GetWordType: TWordType; override;
     function GetReservedType: TReservedType; override;
-    function GetExpression(out AExpression: string): Boolean; override;
-    procedure SetExpression(const AExpression: string); override;
-    procedure SetCase(ACase: TCase); override;
+    function GetExpression(out _Expression: string): Boolean; override;
+    procedure SetExpression(const _Value: string); override;
+    procedure SetCase(_Value: TCase); override;
     function GetCase: TCase; override;
-    procedure SetOptions(AOptions: TTokenOptions); override;
+    procedure SetOptions(_Value: TTokenOptions); override;
     function GetOptions: TTokenOptions; override;
     function GetForDebug: string; override;
   end;
 
   TAlignExpression = class(TExpression)
-  public
+  private
     FAlignPos: Byte;
     FNoOfSpaces: Byte;
-    constructor Create(ALike: TExpression; APos: Byte);
+  public
+    constructor Create(_Like: TExpression; _AlignPos: Byte);
     // Note: As a side effect, this adjusts FNoOfspaces
-    procedure GetLength(var ALength: Integer); override;
+    procedure GetLength(var _Length: Integer); override;
     {: @returns <spaces><the expression><spaces> }
     function GetString: string; override;
+    property NoOfSpaces: byte read FNoOfSpaces write FNoOfSpaces;
   end;
 
 implementation
@@ -201,14 +206,14 @@ end;
 
 { TExpression }
 
-constructor TExpression.Create(AType: TWordType; const AExpression: string);
+constructor TExpression.Create(_Type: TWordType; const _Expression: string);
 begin
   inherited Create;
-  FWordType := AType;
+  FWordType := _Type;
   FSpaceType := [];
   FCaseType := rfUnchanged;
   FReservedType := rtNothing;
-  FExpression := AExpression;
+  FExpression := _Expression;
   CheckReserved;
 end;
 
@@ -306,14 +311,14 @@ begin
   end;
 end;
 
-procedure TExpression.SetExpression(const AExpression: string);
+procedure TExpression.SetExpression(const _Value: string);
 begin
-  FExpression := AExpression
+  FExpression := _Value
 end;
 
-procedure TExpression.SetOptions(AOptions: TTokenOptions);
+procedure TExpression.SetOptions(_Value: TTokenOptions);
 begin
-  FOptions := AOptions;
+  FOptions := _Value;
 end;
 
 function TExpression.GetWordType: TWordType;
@@ -321,9 +326,9 @@ begin
   Result := FWordType;
 end;
 
-function TExpression.GetExpression(out AExpression: string): Boolean;
+function TExpression.GetExpression(out _Expression: string): Boolean;
 begin
-  AExpression := FExpression;
+  _Expression := FExpression;
   Result := True;
 end;
 
@@ -354,9 +359,9 @@ begin
   Result := inherited GetForDebug + '(' + s + ')';
 end;
 
-function TExpression.Space(ASpace: TSpace): Boolean;
+function TExpression.Space(_Space: TSpace): Boolean;
 begin
-  Result := (ASpace in FSpaceType);
+  Result := (_Space in FSpaceType);
 end;
 
 function TExpression.GetReservedType: TReservedType;
@@ -364,17 +369,17 @@ begin
   Result := FReservedType;
 end;
 
-procedure TExpression.SetSpace(ASpace: TSpaceSet; AState: Boolean);
+procedure TExpression.SetSpace(_Space: TSpaceSet; _State: Boolean);
 begin
-  if AState then
-    FSpaceType := FSpaceType + ASpace
+  if _State then
+    FSpaceType := FSpaceType + _Space
   else
-    FSpaceType := FSpaceType - ASpace
+    FSpaceType := FSpaceType - _Space
 end;
 
-procedure TExpression.SetCase(ACase: TCase);
+procedure TExpression.SetCase(_Value: TCase);
 begin
-  FCaseType := ACase;
+  FCaseType := _Value;
 end;
 
 function TExpression.GetCase: TCase;
@@ -382,9 +387,9 @@ begin
   Result := FCaseType;
 end;
 
-procedure TExpression.SetReservedType(AReservedType: TReservedType);
+procedure TExpression.SetReservedType(_ReservedType: TReservedType);
 begin
-  FReservedType := AReservedType;
+  FReservedType := _ReservedType;
 end;
 
 function TExpression.GetString: string;
@@ -401,13 +406,13 @@ begin
     Result := Result + GX_CodeFormatterTypes.Space;
 end;
 
-procedure TExpression.GetLength(var ALength: Integer);
+procedure TExpression.GetLength(var _Length: Integer);
 begin
-  ALength := ALength + Length(FExpression);
+  _Length := _Length + Length(FExpression);
   if Space(spBefore) then
-    inc(ALength);
+    inc(_Length);
   if Space(spAfter) then
-    inc(ALength);
+    inc(_Length);
 end;
 
 function TExpression.GetOptions: TTokenOptions;
@@ -444,12 +449,12 @@ begin
   Result := inherited GetForDebug + '(' + s + ')';
 end;
 
-procedure TLineFeed.GetLength(var ALength: Integer);
+procedure TLineFeed.GetLength(var _Length: Integer);
 begin
   if FNoOfSpaces > 0 then
-    ALength := FNoOfSpaces
+    _Length := FNoOfSpaces
   else
-    ALength := 0;
+    _Length := 0;
 end;
 
 function TLineFeed.GetWordType: TWordType;
@@ -462,49 +467,49 @@ begin
   Result := rtLineFeed;
 end;
 
-constructor TLineFeed.Create(AOldnSpaces: Integer; ASpacePerIndent: Integer);
+constructor TLineFeed.Create(_OldnSpaces: Integer; _SpacePerIndent: Integer);
 begin
   inherited Create;
-  FOldNoOfSpaces := AOldnSpaces;
-  FSpacePerIndent := ASpacePerIndent;
+  FOldNoOfSpaces := _OldnSpaces;
+  FSpacePerIndent := _SpacePerIndent;
   FWrapped := False;
-  FNoOfSpaces := AOldnSpaces; { default not changed indent }
+  FNoOfSpaces := _OldnSpaces; { default not changed indent }
 end;
 
-procedure TLineFeed.IncIndent(Value: Integer);
+procedure TLineFeed.IncIndent(_Value: Integer);
 begin
-  inc(FNoOfSpaces, Value * FSpacePerIndent);
+  inc(FNoOfSpaces, _Value * FSpacePerIndent);
 end;
 
-procedure TLineFeed.SetIndent(Value: Integer);
+procedure TLineFeed.SetIndent(_Value: Integer);
 begin
-  FNoOfSpaces := Value * FSpacePerIndent;
+  FNoOfSpaces := _Value * FSpacePerIndent;
 end;
 
 { TAlignExpression }
 
-constructor TAlignExpression.Create(ALike: TExpression; APos: Byte);
+constructor TAlignExpression.Create(_Like: TExpression; _AlignPos: Byte);
 var
   s: string;
 begin
-  ALike.GetExpression(s);
-  inherited Create(ALike.FWordType, s);
-  FAlignPos := APos;
+  _Like.GetExpression(s);
+  inherited Create(_Like.FWordType, s);
+  FAlignPos := _AlignPos;
   FNoOfSpaces := 0;
-  FSpaceType := ALike.FSpaceType;
-  FCaseType := ALike.FCaseType;
-  FReservedType := ALike.FReservedType;
+  FSpaceType := _Like.FSpaceType;
+  FCaseType := _Like.FCaseType;
+  FReservedType := _Like.FReservedType;
 end;
 
-procedure TAlignExpression.GetLength(var ALength: Integer);
+procedure TAlignExpression.GetLength(var _Length: Integer);
 begin
-  if ALength < FAlignPos then begin
-    FNoOfSpaces := FAlignPos - ALength;
-    ALength := FAlignPos;
+  if _Length < FAlignPos then begin
+    FNoOfSpaces := FAlignPos - _Length;
+    _Length := FAlignPos;
     SetSpace([spBefore], False);
   end else
     FNoOfSpaces := 0;
-  inherited GetLength(ALength);
+  inherited GetLength(_Length);
 end;
 
 function TAlignExpression.GetString: string;

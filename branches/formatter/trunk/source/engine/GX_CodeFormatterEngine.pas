@@ -16,7 +16,7 @@ uses
 {$ENDIF}
   SysUtils,
   Classes,
-  GX_PascalTokenList,
+  GX_CodeFormatterTokenList,
   GX_CodeFormatterTypes,
   GX_CodeFormatterTokens,
   GX_CodeFormatterSettings;
@@ -42,12 +42,12 @@ type
   TCodeFormatterEngine = class(TObject)
   private
     FSettings: TCodeFormatterSettings;
-    function GetLine(Tokens: TPascalTokenList; var TokenNo: Integer): string;
+    function GetLine(_Tokens: TPascalTokenList; var _TokenNo: Integer): string;
   public
     constructor Create;
     destructor Destroy; override;
     {: @returns true if the formatting succeeded and the source code has changed }
-    function Execute(SourceCode: TStrings): Boolean;
+    function Execute(_SourceCode: TStrings): Boolean;
     property Settings: TCodeFormatterSettings read FSettings write FSettings;
   end;
 
@@ -70,7 +70,7 @@ begin
   inherited;
 end;
 
-function TCodeFormatterEngine.Execute(SourceCode: TStrings): Boolean;
+function TCodeFormatterEngine.Execute(_SourceCode: TStrings): Boolean;
 var
   Line: string;
   TokenNo: Integer;
@@ -81,19 +81,19 @@ var
   NewLen: Integer;
 begin
   try
-    SourceCode.BeginUpdate;
-    OrigSource := SourceCode.Text;
+    _SourceCode.BeginUpdate;
+    OrigSource := _SourceCode.Text;
 
-    Tokens := TCodeFormatterParser.Execute(SourceCode, FSettings);
+    Tokens := TCodeFormatterParser.Execute(_SourceCode, FSettings);
     try
       TCodeFormatterFormatter.Execute(Tokens, FSettings);
 
-      SourceCode.Clear;
+      _SourceCode.Clear;
       if Assigned(Tokens) then begin
         TokenNo := 0;
         while TokenNo < Tokens.Count do begin
           Line := GetLine(Tokens, TokenNo);
-          SourceCode.Add(Line);
+          _SourceCode.Add(Line);
         end;
       end;
     finally
@@ -104,7 +104,7 @@ begin
     // removed or added a CRLF at the end of the file
     // checking the length first prevents costly multiple
     // comparisons of potentially large strings
-    s := SourceCode.Text;
+    s := _SourceCode.Text;
     OrigLen := Length(OrigSource);
     NewLen := Length(s);
 
@@ -123,32 +123,32 @@ begin
     end;
   end;
 
-  SourceCode.EndUpdate;
+  _SourceCode.EndUpdate;
 end;
 
-function TCodeFormatterEngine.GetLine(Tokens: TPascalTokenList; var TokenNo: Integer): string;
+function TCodeFormatterEngine.GetLine(_Tokens: TPascalTokenList; var _TokenNo: Integer): string;
 var
   Token: TPascalToken;
   i: Integer;
 begin
   Result := '';
 
-  if not Assigned(Tokens) then
+  if not Assigned(_Tokens) then
     Exit;
 
-  if (TokenNo < 0) or (TokenNo >= Tokens.Count) then
+  if (_TokenNo < 0) or (_TokenNo >= _Tokens.Count) then
     Exit;
 
-  Token := Tokens[TokenNo];
+  Token := _Tokens[_TokenNo];
 
   repeat
     Result := Result + Token.GetString;
-    Inc(TokenNo);
+    Inc(_TokenNo);
 
-    if TokenNo >= Tokens.Count then
+    if _TokenNo >= _Tokens.Count then
       break;
 
-    Token := Tokens[TokenNo];
+    Token := _Tokens[_TokenNo];
   until Token.ReservedType = rtLineFeed;
 
   // remove spaces and tabs at the end

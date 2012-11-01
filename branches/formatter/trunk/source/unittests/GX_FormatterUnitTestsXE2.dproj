@@ -38,13 +38,14 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<Manifest_File>None</Manifest_File>
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
 			<DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Winapi;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
 			<VerInfo_Build>1</VerInfo_Build>
 			<VerInfo_Locale>1033</VerInfo_Locale>
 			<VerInfo_Keys>FileVersion=1.0.0.1;ProductVersion=1.0.0.0;CompanyName=;FileDescription=;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=</VerInfo_Keys>
 			<DCC_ExeOutput>..\..\</DCC_ExeOutput>
-			<DCC_UnitSearchPath>..\..\gx\source\framework;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+			<DCC_UnitSearchPath>..\..\gx\source\framework;..\..\source\common;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<DCC_DcuOutput>..\..\dcu\unittests</DCC_DcuOutput>
 			<DCC_DependencyCheckOutputName>..\..\GX_FormatterUnitTests.exe</DCC_DependencyCheckOutputName>
 		</PropertyGroup>
@@ -95,7 +96,7 @@
 			<DCCReference Include="DelForExTestOldNew.pas"/>
 			<DCCReference Include="DelForExTestFiles.pas"/>
 			<DCCReference Include="..\GX_CodeFormatterDefaultSettings.pas"/>
-			<DCCReference Include="..\common\GX_PascalTokenList.pas"/>
+			<DCCReference Include="..\engine\GX_CodeFormatterTokenList.pas"/>
 			<DCCReference Include="..\common\GX_CodeFormatterTypes.pas"/>
 			<DCCReference Include="..\engine\GX_CodeFormatterEngine.pas"/>
 			<DCCReference Include="..\engine\GX_CodeFormatterTokens.pas"/>
