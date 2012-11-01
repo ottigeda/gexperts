@@ -1,7 +1,7 @@
 // Handles the settings of the Code Formatter
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
 // Contributors:        Thomas Mueller (http://www.dummzeuch.de)
-//                      Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of seval language features
+//                      Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of several language features
 
 unit GX_CodeFormatterSettings;
 
@@ -74,8 +74,8 @@ type
     FeedElseIf: Boolean; {: line feed between else and if }
     FillNewWords: TCapfileModeSet; {: how to use the capitalization file }
     FeedAfterSemiColon: Boolean;
-    StartCommentOut: AnsiString; {: special comment to start unformatted section }
-    EndCommentOut: AnsiString; {: special comment to end unformatted section }
+    StartCommentOut: String; {: special comment to start unformatted section }
+    EndCommentOut: String; {: special comment to end unformatted section }
     CommentFunction: Boolean; {: add a function comment }
     CommentUnit: Boolean; {: add a unit comment }
     WrapLines: Boolean; {: wrap long lines }
@@ -155,8 +155,8 @@ type
     property FeedElseIf: Boolean read FSettings.FeedElseIf;
     property FillNewWords: TCapfileModeSet read FSettings.FillNewWords;
     property FeedAfterSemiColon: Boolean read FSettings.FeedAfterSemiColon;
-    property StartCommentOut: AnsiString read FSettings.StartCommentOut;
-    property EndCommentOut: AnsiString read FSettings.EndCommentOut;
+    property StartCommentOut: String read FSettings.StartCommentOut;
+    property EndCommentOut: String read FSettings.EndCommentOut;
     property CommentFunction: Boolean read FSettings.CommentFunction;
     property CommentUnit: Boolean read FSettings.CommentUnit;
     property WrapLines: Boolean read FSettings.WrapLines;

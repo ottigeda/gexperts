@@ -217,8 +217,8 @@ begin
   ES.FeedElseIf := _Reader.ReadBool('FeedElseIf', ES.FeedElseIf); //: Boolean;
   ES.FillNewWords := IntToCapfileMode(_Reader.ReadInteger('FillNewWords', CapfileModeToInt(ES.FillNewWords)));
   ES.FeedAfterSemiColon := _Reader.ReadBool('FeedAfterSemiColon', ES.FeedAfterSemiColon); //: Boolean;
-  ES.StartCommentOut := AnsiString(_Reader.ReadString('StartCommentOut', string(ES.StartCommentOut)));
-  ES.EndCommentOut := AnsiString(_Reader.ReadString('EndCommentOut', string(ES.EndCommentOut)));
+  ES.StartCommentOut := _Reader.ReadString('StartCommentOut', ES.StartCommentOut);
+  ES.EndCommentOut := _Reader.ReadString('EndCommentOut', ES.EndCommentOut);
   ES.CommentFunction := _Reader.ReadBool('CommentFunction', ES.CommentFunction); //: Boolean;
   ES.CommentUnit := _Reader.ReadBool('CommentUnit', ES.CommentUnit); //: Boolean;
   ES.WrapLines := _Reader.ReadBool('WrapLines', ES.WrapLines); //: Boolean;

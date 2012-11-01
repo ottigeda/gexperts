@@ -178,9 +178,6 @@ implementation
 {$R *.DFM}
 
 uses
-{$IFDEF GX_VER200_up} // delphi 2009
-  AnsiStrings,
-{$ENDIF}
   Messages,
   GX_CodeFormatterConfigHandler,
   GX_CodeFormatterEditCapitalization,
@@ -362,8 +359,8 @@ begin
   _Settings.FeedBeforeEnd := chk_FeedBeforeEnd.Checked;
   _Settings.FeedAfterSemiColon := chk_FeedAfterSemiColon.Checked;
   _Settings.FillNewWords := IntToCapfileMode(rg_Capitalization.ItemIndex);
-  _Settings.StartCommentOut := Trim(AnsiString(ed_StartComment.Text));
-  _Settings.EndCommentOut := Trim(AnsiString(ed_EndCommentOut.Text));
+  _Settings.StartCommentOut := Trim(ed_StartComment.Text);
+  _Settings.EndCommentOut := Trim(ed_EndCommentOut.Text);
   _Settings.FeedRoundBegin := TFeedBegin(cmb_FeedRoundBegin.ItemIndex);
   _Settings.FeedRoundTry := TFeedBegin(cmb_FeedRoundTry.ItemIndex);
 end;
