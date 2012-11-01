@@ -394,7 +394,6 @@
 			<DCCReference Include="..\..\..\source\GX_CodeFormatterGXConfigWrapper.pas"/>
 			<DCCReference Include="..\..\..\source\GX_eCodeFormatter.pas"/>
 			<DCCReference Include="..\..\..\source\GX_CodeFormatterBookmarks.pas"/>
-			<DCCReference Include="..\..\..\source\common\GX_CollectionLikeLists.pas"/>
 			<DCCReference Include="..\..\..\source\common\GX_CodeFormatterTypes.pas"/>
 			<DCCReference Include="..\..\..\source\engine\GX_CodeFormatterTokens.pas"/>
 			<DCCReference Include="..\..\..\source\engine\GX_CodeFormatterFormatter.pas"/>
@@ -406,6 +405,7 @@
 				<Form>fmAboutExperimental</Form>
 			</DCCReference>
 			<DCCReference Include="..\GX_CodeFormatterRegisterExpert.pas"/>
+			<DCCReference Include="..\..\..\source\common\GX_PascalTokenList.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
