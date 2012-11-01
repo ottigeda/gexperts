@@ -169,7 +169,7 @@ uses
   GX_eCodeFormatter in '..\..\..\source\GX_eCodeFormatter.pas',
   GX_CodeFormatterBookmarks in '..\..\..\source\GX_CodeFormatterBookmarks.pas',
   GX_CodeFormatterTokenList in '..\..\..\source\engine\GX_CodeFormatterTokenList.pas',
-  GX_CodeFormatterTypes in '..\..\..\source\common\GX_CodeFormatterTypes.pas',
+  GX_CodeFormatterTypes in '..\..\..\source\engine\GX_CodeFormatterTypes.pas',
   GX_CodeFormatterTokens in '..\..\..\source\engine\GX_CodeFormatterTokens.pas',
   GX_CodeFormatterFormatter in '..\..\..\source\engine\GX_CodeFormatterFormatter.pas',
   GX_CodeFormatterParser in '..\..\..\source\engine\GX_CodeFormatterParser.pas',
