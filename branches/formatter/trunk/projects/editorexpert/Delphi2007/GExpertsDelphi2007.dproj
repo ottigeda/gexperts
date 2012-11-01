@@ -373,14 +373,14 @@
     <DCCReference Include="..\..\..\gx\source\Utils\GX_IdeUtils.pas" />
     <DCCReference Include="..\..\..\gx\source\Utils\GX_OtaUtils.pas" />
     <DCCReference Include="..\..\..\gx\source\Utils\GX_XmlUtils.pas" />
-    <DCCReference Include="..\..\..\source\common\GX_CodeFormatterTypes.pas" />
-    <DCCReference Include="..\..\..\source\common\GX_PascalTokenList.pas" />
     <DCCReference Include="..\..\..\source\engine\GX_CodeFormatterEngine.pas" />
     <DCCReference Include="..\..\..\source\engine\GX_CodeFormatterFormatter.pas" />
     <DCCReference Include="..\..\..\source\engine\GX_CodeFormatterParser.pas" />
     <DCCReference Include="..\..\..\source\engine\GX_CodeFormatterSettings.pas" />
     <DCCReference Include="..\..\..\source\engine\GX_CodeFormatterStack.pas" />
+    <DCCReference Include="..\..\..\source\engine\GX_CodeFormatterTokenList.pas" />
     <DCCReference Include="..\..\..\source\engine\GX_CodeFormatterTokens.pas" />
+    <DCCReference Include="..\..\..\source\engine\GX_CodeFormatterTypes.pas" />
     <DCCReference Include="..\..\..\source\GX_AboutExperimental.pas">
       <Form>fmAboutExperimental</Form>
     </DCCReference>
