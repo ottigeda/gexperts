@@ -1,6 +1,7 @@
 // parses Delphi code into a token collection
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
 // Contributors:        Thomas Mueller (http://www.dummzeuch.de)
+// Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of seval language features
 
 unit GX_CodeFormatterParser;
 
@@ -17,11 +18,20 @@ uses
   GX_CodeFormatterTokens;
 
 type
+  TIdentifiersList = class(TStringList)
+  private
+    FIdentifiersCase: TCase;
+  public
+    constructor Create(const _IdentifiersCase: TCase); reintroduce;
+    function AddIdentifier(const _s: string): string;
+  end;
+
+type
   {: usage:
      Tokens := TCodeFormatterParser.Execute(Text, Settings); }
   TCodeFormatterParser = class
   private
-    FSpacePerIndent: integer;
+    FSpacePerIndent: Integer;
     FStartCommentOut: AnsiString;
     FEndCommentOut: AnsiString;
   private
@@ -31,6 +41,7 @@ type
     FPrevLine: TLineFeed;
     FPrevType: TWordType;
     FLeftPointBracket: Integer;
+    FIdentifiers: TIdentifiersList;
     {: ReadAsm does very simple parsing only to find comments because this
        influences finding the matching "end". No formatting is done
        later to asm code }
@@ -49,11 +60,6 @@ type
 
 implementation
 
-{$ifdef GX_VER200_up} // delphi 2009
-uses
-  AnsiStrings;
-{$endif}
-
 constructor TCodeFormatterParser.Create(ASettings: TCodeFormatterSettings);
 begin
   inherited Create;
@@ -65,10 +71,12 @@ begin
   FPrevLine := nil;
   FPrevType := wtNothing;
   FTokens := TPascalTokenList.Create(500);
+  FIdentifiers := TIdentifiersList.Create(ASettings.Identifiers);
 end;
 
 destructor TCodeFormatterParser.Destroy;
 begin
+  FreeAndNil(FIdentifiers);
   inherited;
 end;
 
@@ -295,7 +303,7 @@ var
       if StrLIComp(P, PAnsiChar(FEndCommentOut), Len) = 0 then begin
         Inc(P, Len - 1);
         AResult := wtFullOutComment;
-        break;
+        Break;
       end;
 
       Inc(P);
@@ -462,6 +470,10 @@ begin
 
   SetString(ADest, ASource, P - ASource);
 
+  // This is for changing the casing of identifiers without adding them to
+  // the global list.
+  ADest := FIdentifiers.AddIdentifier(ADest);
+
   if SameText(ADest, AnsiString('asm')) then begin
     FReadingAsm := True;
     FAsmComment := wtWord;
@@ -523,7 +535,7 @@ begin
     if StrLIComp(P, PAnsiChar(EndComment), Len) = 0 then begin
       Result := EndCommentType;
       Inc(P, Len);
-      break;
+      Break;
     end;
 
     Inc(P);
@@ -535,6 +547,35 @@ begin
     ASource := P
   else
     ASource := P;
+end;
+
+{ TIdentifiersList }
+
+function TIdentifiersList.AddIdentifier(const _s: string): string;
+begin
+  case FIdentifiersCase of
+    rfLowerCase:
+      Result := LowerCase(_s);
+    rfUpperCase:
+      Result := UpperCase(_s);
+    rfFirstUp: begin
+        Result := AnsiLowerCase(_s);
+        Result[1] := AnsiUpperCase(_s)[1];
+      end;
+    rfUnchanged:
+      Result := _s;
+    rfFirstOccurrence:
+      Result := Strings[Add(_s)];
+  end;
+end;
+
+constructor TIdentifiersList.Create(const _IdentifiersCase: TCase);
+begin
+  inherited Create;
+  FIdentifiersCase := _IdentifiersCase;
+  CaseSensitive := False;
+  Sorted := True;
+  Duplicates := dupIgnore;
 end;
 
 end.

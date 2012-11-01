@@ -188,6 +188,7 @@ var
         end;
       end;
     finally
+      FStack.GenericsElement := Result;
     end;
   end;
 
@@ -238,6 +239,9 @@ begin
       _CurrentToken.SetSpace(Settings.SpaceSemiColon, True);
 
     rtComma:
+      if DetectGeneric then
+        _CurrentToken.SetSpace([], True)
+      else
         _CurrentToken.SetSpace(Settings.SpaceComma, True);
 
     rtLeftBr: begin
@@ -987,6 +991,9 @@ var
             FStack.Pop;
             FStack.Push(rtClass, 1);
             DecPrevLineIndent;
+          end else if (FStack.GetTopType = rtType) and (SameText('constructor', FCurrentToken.Content)) then begin
+            // Generics
+            Exit; // Do nothing
           end;
           Prev1 := FPrevToken;
           TempWordIdx := FTokenIdx;
@@ -997,7 +1004,7 @@ var
               Prev1 := FTokens.Items[TempWordIdx];
             end;
 
-            FunctDeclare := (Prev1 <> nil) and (Prev1.ReservedType in [rtEquals, rtColon]);
+            FunctDeclare := (Prev1 <> nil) and (Prev1.ReservedType in [rtEquals, rtColon, rtComma]);
           end else
             FunctDeclare := False;
 
@@ -1061,8 +1068,14 @@ var
 
             FStack.Push(rtProcedure, 0);
           end else begin
-            if (FStack.GetTopType = rtType) and Assigned(Prev1) and (Prev1.ReservedType in [rtOf, rtOper]) then
-              // Array of Procedure, Reference To Function...
+            // Array of Procedure, Reference To Function...
+            if (FStack.GetTopType = rtType) and Assigned(Prev1) and (Prev1.ReservedType in [rtOf, rtOper, rtComma]) then begin
+              // SetPrevLineIndent(NTmp);
+              //
+              // FStack.ProcLevel := FStack.ProcLevel + 1;
+              /// /              FStack.Push(FCurrentRType  , 1);
+              //
+            end
             else begin
               if (not FunctDeclare) and (not (FStack.GetTopType = rtClass)) then begin
                 FStack.nIndent := 0;
@@ -1215,7 +1228,7 @@ var
 
           repeat
             FLastPopResType := FStack.Pop;
-          until FStack.IsEmpty or (FLastPopResType in [rtClass, rtClassDecl, rtRecord, rtTry, rtCase, rtBegin, rtAsm]);
+          until FStack.IsEmpty or (FLastPopResType in [rtClass, rtClassDecl, rtRecord, rtTry, rtCase, rtBegin, rtAsm (* , rtVisibility *)]);
 
           if FStack.IsEmpty then
             FStack.nIndent := 0;
@@ -1236,8 +1249,8 @@ var
       rtComment: begin
           if Settings.IndentComments and (FStack.GetTopType <> rtLeftHook) then
             FWrapIndent := False;
-          { TODO -otwm -ccheck : Why check for nIndent > 0? }
-          if FStack.IsEmpty and (FStack.nIndent > 0) then begin
+
+          if FStack.IsEmpty then begin
             FStack.nIndent := 0;
             SetPrevLineIndent(NTmp);
           end;

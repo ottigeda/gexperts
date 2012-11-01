@@ -1,6 +1,7 @@
 // defines a stack and a stackstack for the code formatter based on a pseudo template
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
 // Contributors:        Thomas Mueller (http://www.dummzeuch.de)
+// Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of seval language features
 
 unit GX_CodeFormatterStack;
 
@@ -30,7 +31,9 @@ type
     FStackPtr: Integer;
     FNIndent: Integer;
     FProcLevel: Integer;
+    FGenericsElement: Boolean;
     function TopRec: PStackRec;
+    procedure SetGenericsElement(_Value: Boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -52,6 +55,7 @@ type
     function Clone: TCodeFormatterSegment;
     property NIndent: Integer read FNIndent write FNIndent;
     property ProcLevel: Integer read FProcLevel write FProcLevel;
+    property GenericsElement: Boolean read FGenericsElement write SetGenericsElement;
   end;
 
 {$DEFINE STACK_TEMPLATE}
@@ -75,6 +79,7 @@ begin
   FStackPtr := -1;
   FNIndent := 0;
   FProcLevel := 0;
+  FGenericsElement := False;
 end;
 
 destructor TCodeFormatterSegment.Destroy;
@@ -107,6 +112,11 @@ begin
   TopRec.RT := _Type;
   TopRec.nInd := FNIndent;
   FNIndent := FNIndent + _IncIndent;
+end;
+
+procedure TCodeFormatterSegment.SetGenericsElement(_Value: Boolean);
+begin
+  FGenericsElement := _Value;
 end;
 
 function TCodeFormatterSegment.HasType(_Type: TReservedType): Boolean;

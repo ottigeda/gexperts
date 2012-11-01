@@ -1,6 +1,7 @@
 // Simple types used in the code formatter
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
 // Contributors:        Thomas Mueller (http://www.dummzeuch.de)
+// Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of seval language features
 
 unit GX_CodeFormatterTypes;
 
@@ -36,8 +37,10 @@ type
      * rfLowerCase = all lowercase
      * rfUpperCase = all uppercase
      * rfFirstUp = first character upper case, all other lowercase
-     * rfUnchanged = do not change anything }
-  TCase = (rfLowerCase, rfUpperCase, rfFirstUp, rfUnchanged);
+     * rfUnchanged = do not change anything
+     * rfFirstOccurrence = the first occurrence of the word
+  }
+  TCase = (rfLowerCase, rfUpperCase, rfFirstUp, rfUnchanged, rfFirstOccurrence);
 
   TSpace = (spBefore, spAfter);
   TSpaceSet = set of TSpace;
@@ -93,7 +96,7 @@ var
   ReservedWordList: TReservedWordList = nil;
 
 type
-  {: Holds a special "option" for a tpascal token, some of then is just override a setting or behavior }
+  {: Holds a special "option" for a tpascal token, some of them is just override a setting or behavior }
   TTokenOption = (toFeedNewLine);
   TTokenOptions = set of TTokenOption;
 
@@ -104,11 +107,6 @@ type
 function AdjustCase(const aStr: string; aCase: TCase): string;
 
 implementation
-
-{$IFDEF GX_VER200_up} // delphi 2009
-uses
-  AnsiStrings;
-{$ENDIF}
 
 function AdjustCase(const aStr: string; aCase: TCase): string;
 var

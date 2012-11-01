@@ -20,18 +20,18 @@ const
 
 type
   IConfigReader = interface
-    function ReadBool(const AName: string; ADefault: Boolean): Boolean;
-    function ReadInteger(const AName: string; ADefault: Integer): Integer;
-    function ReadString(const AName, ADefault: string): string;
-    procedure ReadStrings(const ASection: string; const AList: TStrings);
+    function ReadBool(const _Name: string; _Default: Boolean): Boolean;
+    function ReadInteger(const _Name: string; _Default: Integer): Integer;
+    function ReadString(const _Name, _Default: string): string;
+    procedure ReadStrings(const _Section: string; const _List: TStrings);
   end;
 
 type
   IConfigWriter = interface
-    procedure WriteBool(const AName: string; AValue: Boolean);
-    procedure WriteInteger(const AName: string; AValue: Integer);
-    procedure WriteString(const AName: string; const AValue: string);
-    procedure WriteStrings(const ASection: string; const AList: TStrings);
+    procedure WriteBool(const _Name: string; _Value: Boolean);
+    procedure WriteInteger(const _Name: string; _Value: Integer);
+    procedure WriteString(const _Name: string; const _Value: string);
+    procedure WriteStrings(const _Section: string; const _List: TStrings);
   end;
 
 type
@@ -39,102 +39,102 @@ type
   protected
     FIni: TCustomIniFile;
   protected // implementation of IConfigReader
-    function ReadBool(const AName: string; ADefault: Boolean): Boolean;
-    function ReadInteger(const AName: string; ADefault: Integer): Integer;
-    function ReadString(const AName, ADefault: string): string;
-    procedure ReadStrings(const ASection: string; const AList: TStrings);
+    function ReadBool(const _Name: string; _Default: Boolean): Boolean;
+    function ReadInteger(const _Name: string; _Default: Integer): Integer;
+    function ReadString(const _Name, _Default: string): string;
+    procedure ReadStrings(const _Section: string; const _List: TStrings);
   protected // implementatio of IConfigWriter
-    procedure WriteBool(const AName: string; AValue: Boolean);
-    procedure WriteInteger(const AName: string; AValue: Integer);
-    procedure WriteString(const AName: string; const AValue: string);
-    procedure WriteStrings(const ASection: string; const AList: TStrings);
+    procedure WriteBool(const _Name: string; _Value: Boolean);
+    procedure WriteInteger(const _Name: string; _Value: Integer);
+    procedure WriteString(const _Name: string; const _Value: string);
+    procedure WriteStrings(const _Section: string; const _List: TStrings);
   public
-    constructor Create(AIniFile: TCustomIniFile);
+    constructor Create(_IniFile: TCustomIniFile);
   end;
 
 type
   TCodeFormatterConfigHandler = class
   public
-    class procedure WriteSettings(AWriter: IConfigWriter; ASettings: TCodeFormatterSettings);
-    class procedure ReadSettings(AReader: IConfigReader; ASettings: TCodeFormatterSettings);
-    class procedure ExportToFile(const AFilename: string; ASettings: TCodeFormatterSettings);
-    class procedure ImportFromFile(const AFilename: string; ASettings: TCodeFormatterSettings);
-    class procedure GetDefaultsList(ADefaults: TStrings);
-    class function GetDefaultConfig(const AName: string; ASettings: TCodeFormatterSettings): Boolean;
+    class procedure WriteSettings(_Writer: IConfigWriter; _Settings: TCodeFormatterSettings);
+    class procedure ReadSettings(_Reader: IConfigReader; _Settings: TCodeFormatterSettings);
+    class procedure ExportToFile(const _Filename: string; _Settings: TCodeFormatterSettings);
+    class procedure ImportFromFile(const _Filename: string; _Settings: TCodeFormatterSettings);
+    class procedure GetDefaultsList(_Defaults: TStrings);
+    class function GetDefaultConfig(const _Name: string; _Settings: TCodeFormatterSettings): Boolean;
   end;
 
 implementation
 
 { TIniFileWrapper }
 
-constructor TIniFileWrapper.Create(AIniFile: TCustomIniFile);
+constructor TIniFileWrapper.Create(_IniFile: TCustomIniFile);
 begin
   inherited Create;
-  FIni := AIniFile;
+  FIni := _IniFile;
 end;
 
-function TIniFileWrapper.ReadBool(const AName: string; ADefault: Boolean): Boolean;
+function TIniFileWrapper.ReadBool(const _Name: string; _Default: Boolean): Boolean;
 begin
-  Result := FIni.ReadBool('settings', AName, ADefault)
+  Result := FIni.ReadBool('settings', _Name, _Default)
 end;
 
-function TIniFileWrapper.ReadInteger(const AName: string; ADefault: Integer): Integer;
+function TIniFileWrapper.ReadInteger(const _Name: string; _Default: Integer): Integer;
 begin
-  Result := FIni.ReadInteger('settings', AName, ADefault)
+  Result := FIni.ReadInteger('settings', _Name, _Default)
 end;
 
-function TIniFileWrapper.ReadString(const AName, ADefault: string): string;
+function TIniFileWrapper.ReadString(const _Name, _Default: string): string;
 begin
-  Result := FIni.ReadString('settings', AName, ADefault)
+  Result := FIni.ReadString('settings', _Name, _Default)
 end;
 
-procedure TIniFileWrapper.ReadStrings(const ASection: string; const AList: TStrings);
+procedure TIniFileWrapper.ReadStrings(const _Section: string; const _List: TStrings);
 var
   Cnt: Integer;
   i: Integer;
   s: string;
 begin
-  AList.Clear;
-  Cnt := FIni.ReadInteger(ASection, 'Count', 0);
+  _List.Clear;
+  Cnt := FIni.ReadInteger(_Section, 'Count', 0);
   for i := 0 to Cnt - 1 do begin
-    s := FIni.ReadString(ASection, Format('Item%.4d', [i]), '');
+    s := FIni.ReadString(_Section, Format('Item%.4d', [i]), '');
     if s <> '' then
-      AList.Add(s);
+      _List.Add(s);
   end;
 end;
 
-procedure TIniFileWrapper.WriteBool(const AName: string; AValue: Boolean);
+procedure TIniFileWrapper.WriteBool(const _Name: string; _Value: Boolean);
 begin
-  FIni.WriteInteger('settings', AName, Ord(AValue));
+  FIni.WriteInteger('settings', _Name, Ord(_Value));
 end;
 
-procedure TIniFileWrapper.WriteInteger(const AName: string; AValue: Integer);
+procedure TIniFileWrapper.WriteInteger(const _Name: string; _Value: Integer);
 begin
-  FIni.WriteInteger('settings', AName, AValue);
+  FIni.WriteInteger('settings', _Name, _Value);
 end;
 
-procedure TIniFileWrapper.WriteString(const AName, AValue: string);
+procedure TIniFileWrapper.WriteString(const _Name, _Value: string);
 begin
-  FIni.WriteString('settings', AName, AValue);
+  FIni.WriteString('settings', _Name, _Value);
 end;
 
-procedure TIniFileWrapper.WriteStrings(const ASection: string; const AList: TStrings);
+procedure TIniFileWrapper.WriteStrings(const _Section: string; const _List: TStrings);
 var
   i: Integer;
 begin
-  FIni.WriteInteger(ASection, 'Count', AList.Count);
-  for i := 0 to AList.Count - 1 do begin
-    FIni.WriteString(ASection, Format('Items%.4d', [i]), AList[i]);
+  FIni.WriteInteger(_Section, 'Count', _List.Count);
+  for i := 0 to _List.Count - 1 do begin
+    FIni.WriteString(_Section, Format('Items%.4d', [i]), _List[i]);
   end;
 end;
 
 { TCodeFormatterConfigHandler }
 
-class procedure TCodeFormatterConfigHandler.ReadSettings(AReader: IConfigReader; ASettings: TCodeFormatterSettings);
+class procedure TCodeFormatterConfigHandler.ReadSettings(_Reader: IConfigReader; _Settings: TCodeFormatterSettings);
 
-  function ReadSpaceSet(const AName: string; _Default: TSpaceSet): TSpaceSet;
+  function ReadSpaceSet(const _Name: string; _Default: TSpaceSet): TSpaceSet;
   begin
-    Result := IntToSpaceSet(AReader.ReadInteger(AName, SpaceSetToInt(_Default)));
+    Result := IntToSpaceSet(_Reader.ReadInteger(_Name, SpaceSetToInt(_Default)));
   end;
 
 var
@@ -142,44 +142,44 @@ var
   cps: set of TConfigPrecedenceEnum;
   cp: TConfigPrecedenceEnum;
 begin
-  ASettings.ShowDoneDialog := AReader.ReadBool('ShowDoneDialog', True);
-  ASettings.UseCapitalizationFile := AReader.ReadBool('UseCapitalizationFile', False);
-  ASettings.CapitalizationFile := AnsiString(AReader.ReadString('CapitalizationFile', ''));
-  ASettings.CapNames.Clear;
-  if ASettings.UseCapitalizationFile and (ASettings.CapitalizationFile <> '') and FileExists(String(ASettings.CapitalizationFile)) then
-    ASettings.CapNames.LoadFromFile(String(ASettings.CapitalizationFile))
+  _Settings.ShowDoneDialog := _Reader.ReadBool('ShowDoneDialog', True);
+  _Settings.UseCapitalizationFile := _Reader.ReadBool('UseCapitalizationFile', False);
+  _Settings.CapitalizationFile := _Reader.ReadString('CapitalizationFile', '');
+  _Settings.CapNames.Clear;
+  if _Settings.UseCapitalizationFile and (_Settings.CapitalizationFile <> '') and FileExists(_Settings.CapitalizationFile) then
+    _Settings.CapNames.LoadFromFile(_Settings.CapitalizationFile)
   else
-    AReader.ReadStrings('Capitalization', ASettings.CapNames);
+    _Reader.ReadStrings('Capitalization', _Settings.CapNames);
 
-  ASettings.ConfigPrecedence[1] := IntToConfigPrecedence(AReader.ReadInteger('Precedence1', Ord(cpDirective)));
-  ASettings.ConfigPrecedence[2] := IntToConfigPrecedence(AReader.ReadInteger('Precedence2', Ord(cpIniFile)));
-  ASettings.ConfigPrecedence[3] := IntToConfigPrecedence(AReader.ReadInteger('Precedence3', Ord(cpMyConfig)));
+  _Settings.ConfigPrecedence[1] := IntToConfigPrecedence(_Reader.ReadInteger('Precedence1', Ord(cpDirective)));
+  _Settings.ConfigPrecedence[2] := IntToConfigPrecedence(_Reader.ReadInteger('Precedence2', Ord(cpIniFile)));
+  _Settings.ConfigPrecedence[3] := IntToConfigPrecedence(_Reader.ReadInteger('Precedence3', Ord(cpMyConfig)));
 
   // make sure the setting is valid
   cps := [cpDirective, cpIniFile, cpMyConfig];
-  Exclude(cps, ASettings.ConfigPrecedence[1]);
-  if not (ASettings.ConfigPrecedence[2] in cps) then begin
-    ASettings.ConfigPrecedence[2] := ASettings.ConfigPrecedence[3];
-    if not (ASettings.ConfigPrecedence[2] in cps) then begin
+  Exclude(cps, _Settings.ConfigPrecedence[1]);
+  if not (_Settings.ConfigPrecedence[2] in cps) then begin
+    _Settings.ConfigPrecedence[2] := _Settings.ConfigPrecedence[3];
+    if not (_Settings.ConfigPrecedence[2] in cps) then begin
       for cp := Low(TConfigPrecedenceEnum) to High(TConfigPrecedenceEnum) do begin
         if cp in cps then begin
-          ASettings.ConfigPrecedence[2] := cp;
-          break;
+          _Settings.ConfigPrecedence[2] := cp;
+          Break;
         end;
       end;
     end;
   end;
-  Exclude(cps, ASettings.ConfigPrecedence[2]);
-  if not (ASettings.ConfigPrecedence[3] in cps) then begin
+  Exclude(cps, _Settings.ConfigPrecedence[2]);
+  if not (_Settings.ConfigPrecedence[3] in cps) then begin
     for cp := Low(TConfigPrecedenceEnum) to High(TConfigPrecedenceEnum) do begin
       if cp in cps then begin
-        ASettings.ConfigPrecedence[3] := cp;
-        break;
+        _Settings.ConfigPrecedence[3] := cp;
+        Break;
       end;
     end;
   end;
 
-  ES := ASettings.Settings;
+  ES := _Settings.Settings;
   ES.SpaceOperators := ReadSpaceSet('SpaceOperators', ES.SpaceOperators);
   ES.SpaceColon := ReadSpaceSet('SpaceColon', ES.SpaceColon);
   ES.SpaceSemiColon := ReadSpaceSet('SpaceSemiColon', ES.SpaceSemiColon);
@@ -189,128 +189,128 @@ begin
   ES.SpaceLeftHook := ReadSpaceSet('SpaceLeftHook', ES.SpaceLeftHook);
   ES.SpaceRightHook := ReadSpaceSet('SpaceRightHook', ES.SpaceRightHook);
   ES.SpaceEqualOper := ReadSpaceSet('SpaceEqualOper', ES.SpaceEqualOper);
-  ES.UpperCompDirectives := AReader.ReadBool('UpperCompDirectives', ES.UpperCompDirectives); //: Boolean;
-  ES.UpperNumbers := AReader.ReadBool('UpperNumbers', ES.UpperNumbers); //: Boolean;
-  ES.ReservedCase := TCase(AReader.ReadInteger('ReservedCase', Ord(ES.ReservedCase))); //: TCase;
-  ES.StandDirectivesCase := TCase(AReader.ReadInteger('StandDirectivesCase', Ord(ES.StandDirectivesCase))); //: TCase;
-  ES.ChangeIndent := AReader.ReadBool('ChangeIndent', ES.ChangeIndent); //: Boolean;
-  ES.NoIndentElseIf := AReader.ReadBool('NoIndentElseIf', ES.NoIndentElseIf); //: Boolean;
-  ES.IndentBegin := AReader.ReadBool('IndentBegin', ES.IndentBegin); //: Boolean;
-  ES.IndentTry := AReader.ReadBool('IndentTry', ES.IndentTry); //: Boolean;
-  ES.IndentTryElse := AReader.ReadBool('IndentTryElse', ES.IndentTryElse); //: Boolean;
-  ES.IndentCaseElse := AReader.ReadBool('IndentCaseElse', ES.IndentCaseElse); //: Boolean;
-  ES.IndentComments := AReader.ReadBool('IndentComments', ES.IndentComments); //: Boolean;
-  ES.IndentCompDirectives := AReader.ReadBool('IndentCompDirectives', ES.IndentCompDirectives); //: Boolean;
-  ES.BlankProc := AReader.ReadBool('BlankProc', ES.BlankProc); //: Boolean;
-  ES.BlankSubProc := AReader.ReadBool('BlankSubProc', ES.BlankSubProc); //: Boolean;
-  ES.RemoveDoubleBlank := AReader.ReadBool('RemoveDoubleBlank', ES.RemoveDoubleBlank); //: Boolean;
-  ES.SpacePerIndent := AReader.ReadInteger('SpacePerIndent', ES.SpacePerIndent); //: Integer;
-  ES.FeedRoundBegin := TFeedBegin(AReader.ReadInteger('FeedRoundBegin', Ord(ES.FeedRoundBegin)));
-  ES.FeedRoundTry := TFeedBegin(AReader.ReadInteger('FeedRoundTry', Ord(ES.FeedRoundTry)));
-  ES.FeedBeforeEnd := AReader.ReadBool('FeedBeforeEnd', ES.FeedBeforeEnd); //: Boolean;
-  ES.FeedAfterThen := AReader.ReadBool('FeedAfterThen', ES.FeedAfterThen); //: Boolean;
-  ES.ExceptSingle := AReader.ReadBool('ExceptSingle', ES.ExceptSingle); //: Boolean;
-  ES.FeedAfterVar := AReader.ReadBool('FeedAfterVar', ES.FeedAfterVar); //: Boolean;
-  ES.FeedEachUnit := AReader.ReadBool('FeedEachUnit', ES.FeedEachUnit); //: Boolean;
-  ES.NoFeedBeforeThen := AReader.ReadBool('NoFeedBeforeThen', ES.NoFeedBeforeThen); //: Boolean;
-  ES.FeedElseIf := AReader.ReadBool('FeedElseIf', ES.FeedElseIf); //: Boolean;
-  ES.FillNewWords := IntToCapfileMode(AReader.ReadInteger('FillNewWords', CapfileModeToInt(ES.FillNewWords)));
-  ES.FeedAfterSemiColon := AReader.ReadBool('FeedAfterSemiColon', ES.FeedAfterSemiColon); //: Boolean;
-  ES.StartCommentOut := AnsiString(AReader.ReadString('StartCommentOut', String(ES.StartCommentOut)));
-  ES.EndCommentOut := AnsiString(AReader.ReadString('EndCommentOut', String(ES.EndCommentOut)));
-  ES.CommentFunction := AReader.ReadBool('CommentFunction', ES.CommentFunction); //: Boolean;
-  ES.CommentUnit := AReader.ReadBool('CommentUnit', ES.CommentUnit); //: Boolean;
-  ES.WrapLines := AReader.ReadBool('WrapLines', ES.WrapLines); //: Boolean;
-  ES.WrapPosition := AReader.ReadInteger('WrapPosition', ES.WrapPosition); //: Byte;
-  ES.AlignCommentPos := AReader.ReadInteger('AlignCommentPos', ES.AlignCommentPos); //: Byte;
-  ES.AlignComments := AReader.ReadBool('AlignComments', ES.AlignComments); //: Boolean;
-  ES.AlignVarPos := AReader.ReadInteger('AlignVarPos', ES.AlignVarPos); //: Byte;
-  ES.AlignVar := AReader.ReadBool('AlignVar', ES.AlignVar); //: Boolean;
-  ASettings.Settings := ES;
+  ES.UpperCompDirectives := _Reader.ReadBool('UpperCompDirectives', ES.UpperCompDirectives); //: Boolean;
+  ES.UpperNumbers := _Reader.ReadBool('UpperNumbers', ES.UpperNumbers); //: Boolean;
+  ES.ReservedCase := TCase(_Reader.ReadInteger('ReservedCase', Ord(ES.ReservedCase))); //: TCase;
+  ES.StandDirectivesCase := TCase(_Reader.ReadInteger('StandDirectivesCase', Ord(ES.StandDirectivesCase))); //: TCase;
+  ES.ChangeIndent := _Reader.ReadBool('ChangeIndent', ES.ChangeIndent); //: Boolean;
+  ES.NoIndentElseIf := _Reader.ReadBool('NoIndentElseIf', ES.NoIndentElseIf); //: Boolean;
+  ES.IndentBegin := _Reader.ReadBool('IndentBegin', ES.IndentBegin); //: Boolean;
+  ES.IndentTry := _Reader.ReadBool('IndentTry', ES.IndentTry); //: Boolean;
+  ES.IndentTryElse := _Reader.ReadBool('IndentTryElse', ES.IndentTryElse); //: Boolean;
+  ES.IndentCaseElse := _Reader.ReadBool('IndentCaseElse', ES.IndentCaseElse); //: Boolean;
+  ES.IndentComments := _Reader.ReadBool('IndentComments', ES.IndentComments); //: Boolean;
+  ES.IndentCompDirectives := _Reader.ReadBool('IndentCompDirectives', ES.IndentCompDirectives); //: Boolean;
+  ES.BlankProc := _Reader.ReadBool('BlankProc', ES.BlankProc); //: Boolean;
+  ES.BlankSubProc := _Reader.ReadBool('BlankSubProc', ES.BlankSubProc); //: Boolean;
+  ES.RemoveDoubleBlank := _Reader.ReadBool('RemoveDoubleBlank', ES.RemoveDoubleBlank); //: Boolean;
+  ES.SpacePerIndent := _Reader.ReadInteger('SpacePerIndent', ES.SpacePerIndent); //: Integer;
+  ES.FeedRoundBegin := TFeedBegin(_Reader.ReadInteger('FeedRoundBegin', Ord(ES.FeedRoundBegin)));
+  ES.FeedRoundTry := TFeedBegin(_Reader.ReadInteger('FeedRoundTry', Ord(ES.FeedRoundTry)));
+  ES.FeedBeforeEnd := _Reader.ReadBool('FeedBeforeEnd', ES.FeedBeforeEnd); //: Boolean;
+  ES.FeedAfterThen := _Reader.ReadBool('FeedAfterThen', ES.FeedAfterThen); //: Boolean;
+  ES.ExceptSingle := _Reader.ReadBool('ExceptSingle', ES.ExceptSingle); //: Boolean;
+  ES.FeedAfterVar := _Reader.ReadBool('FeedAfterVar', ES.FeedAfterVar); //: Boolean;
+  ES.FeedEachUnit := _Reader.ReadBool('FeedEachUnit', ES.FeedEachUnit); //: Boolean;
+  ES.NoFeedBeforeThen := _Reader.ReadBool('NoFeedBeforeThen', ES.NoFeedBeforeThen); //: Boolean;
+  ES.FeedElseIf := _Reader.ReadBool('FeedElseIf', ES.FeedElseIf); //: Boolean;
+  ES.FillNewWords := IntToCapfileMode(_Reader.ReadInteger('FillNewWords', CapfileModeToInt(ES.FillNewWords)));
+  ES.FeedAfterSemiColon := _Reader.ReadBool('FeedAfterSemiColon', ES.FeedAfterSemiColon); //: Boolean;
+  ES.StartCommentOut := AnsiString(_Reader.ReadString('StartCommentOut', string(ES.StartCommentOut)));
+  ES.EndCommentOut := AnsiString(_Reader.ReadString('EndCommentOut', string(ES.EndCommentOut)));
+  ES.CommentFunction := _Reader.ReadBool('CommentFunction', ES.CommentFunction); //: Boolean;
+  ES.CommentUnit := _Reader.ReadBool('CommentUnit', ES.CommentUnit); //: Boolean;
+  ES.WrapLines := _Reader.ReadBool('WrapLines', ES.WrapLines); //: Boolean;
+  ES.WrapPosition := _Reader.ReadInteger('WrapPosition', ES.WrapPosition); //: Byte;
+  ES.AlignCommentPos := _Reader.ReadInteger('AlignCommentPos', ES.AlignCommentPos); //: Byte;
+  ES.AlignComments := _Reader.ReadBool('AlignComments', ES.AlignComments); //: Boolean;
+  ES.AlignVarPos := _Reader.ReadInteger('AlignVarPos', ES.AlignVarPos); //: Byte;
+  ES.AlignVar := _Reader.ReadBool('AlignVar', ES.AlignVar); //: Boolean;
+  _Settings.Settings := ES;
 end;
 
-class procedure TCodeFormatterConfigHandler.WriteSettings(AWriter: IConfigWriter; ASettings: TCodeFormatterSettings);
+class procedure TCodeFormatterConfigHandler.WriteSettings(_Writer: IConfigWriter; _Settings: TCodeFormatterSettings);
 
-  procedure WriteSpaceSet(const AName: string; AValue: TSpaceSet);
+  procedure WriteSpaceSet(const _Name: string; _Value: TSpaceSet);
   begin
-    AWriter.WriteInteger(AName, SpaceSetToInt(AValue));
+    _Writer.WriteInteger(_Name, SpaceSetToInt(_Value));
   end;
 
 begin
-  WriteSpaceSet('SpaceOperators', ASettings.SpaceOperators);
-  WriteSpaceSet('SpaceColon', ASettings.SpaceColon);
-  WriteSpaceSet('SpaceSemiColon', ASettings.SpaceSemiColon);
-  WriteSpaceSet('SpaceComma', ASettings.SpaceComma);
-  WriteSpaceSet('SpaceLeftBr', ASettings.SpaceLeftBr);
-  WriteSpaceSet('SpaceRightBr', ASettings.SpaceRightBr);
-  WriteSpaceSet('SpaceLeftHook', ASettings.SpaceLeftHook);
-  WriteSpaceSet('SpaceRightHook', ASettings.SpaceRightHook);
-  WriteSpaceSet('SpaceEqualOper', ASettings.SpaceEqualOper);
-  AWriter.WriteBool('UpperCompDirectives', ASettings.UpperCompDirectives); //: Boolean;
-  AWriter.WriteBool('UpperNumbers', ASettings.UpperNumbers); //: Boolean;
-  AWriter.WriteInteger('ReservedCase', Ord(ASettings.ReservedCase)); //: TCase;
-  AWriter.WriteInteger('StandDirectivesCase', Ord(ASettings.StandDirectivesCase)); //: TCase;
-  AWriter.WriteBool('ChangeIndent', ASettings.ChangeIndent); //: Boolean;
-  AWriter.WriteBool('NoIndentElseIf', ASettings.NoIndentElseIf); //: Boolean;
-  AWriter.WriteBool('IndentBegin', ASettings.IndentBegin); //: Boolean;
-  AWriter.WriteBool('IndentTry', ASettings.IndentTry); //: Boolean;
-  AWriter.WriteBool('IndentTryElse', ASettings.IndentTryElse); //: Boolean;
-  AWriter.WriteBool('IndentCaseElse', ASettings.IndentCaseElse); //: Boolean;
-  AWriter.WriteBool('IndentComments', ASettings.IndentComments); //: Boolean;
-  AWriter.WriteBool('IndentCompDirectives', ASettings.IndentCompDirectives); //: Boolean;
-  AWriter.WriteBool('BlankProc', ASettings.BlankProc); //: Boolean;
-  AWriter.WriteBool('BlankSubProc', ASettings.BlankSubProc); //: Boolean;
-  AWriter.WriteBool('RemoveDoubleBlank', ASettings.RemoveDoubleBlank); //: Boolean;
-  AWriter.WriteInteger('SpacePerIndent', ASettings.SpacePerIndent); //: Integer;
-  AWriter.WriteInteger('FeedRoundBegin', Ord(ASettings.FeedRoundBegin)); //: TFeedBegin;
-  AWriter.WriteInteger('FeedRoundTry', Ord(ASettings.FeedRoundTry)); //: TFeedBegin;
-  AWriter.WriteBool('FeedBeforeEnd', ASettings.FeedBeforeEnd); //: Boolean;
-  AWriter.WriteBool('FeedAfterThen', ASettings.FeedAfterThen); //: Boolean;
-  AWriter.WriteBool('ExceptSingle', ASettings.ExceptSingle); //: Boolean;
-  AWriter.WriteBool('FeedAfterVar', ASettings.FeedAfterVar); //: Boolean;
-  AWriter.WriteBool('FeedEachUnit', ASettings.FeedEachUnit); //: Boolean;
-  AWriter.WriteBool('NoFeedBeforeThen', ASettings.NoFeedBeforeThen); //: Boolean;
-  AWriter.WriteBool('FeedElseIf', ASettings.FeedElseIf); //: Boolean;
-  AWriter.WriteInteger('FillNewWords', CapfileModeToInt(ASettings.FillNewWords));
-  AWriter.WriteBool('FeedAfterSemiColon', ASettings.FeedAfterSemiColon); //: Boolean;
-  AWriter.WriteString('StartCommentOut', String(ASettings.StartCommentOut)); //: TCommentArray;
-  AWriter.WriteString('EndCommentOut', String(ASettings.EndCommentOut)); //: TCommentArray;
-  AWriter.WriteBool('CommentFunction', ASettings.CommentFunction); //: Boolean;
-  AWriter.WriteBool('CommentUnit', ASettings.CommentUnit); //: Boolean;
-  AWriter.WriteBool('WrapLines', ASettings.WrapLines); //: Boolean;
-  AWriter.WriteInteger('WrapPosition', ASettings.WrapPosition); //: Byte;
-  AWriter.WriteInteger('AlignCommentPos', ASettings.AlignCommentPos); //: Byte;
-  AWriter.WriteBool('AlignComments', ASettings.AlignComments); //: Boolean;
-  AWriter.WriteInteger('AlignVarPos', ASettings.AlignVarPos); //: Byte;
-  AWriter.WriteBool('AlignVar', ASettings.AlignVar); //: Boolean;
+  WriteSpaceSet('SpaceOperators', _Settings.SpaceOperators);
+  WriteSpaceSet('SpaceColon', _Settings.SpaceColon);
+  WriteSpaceSet('SpaceSemiColon', _Settings.SpaceSemiColon);
+  WriteSpaceSet('SpaceComma', _Settings.SpaceComma);
+  WriteSpaceSet('SpaceLeftBr', _Settings.SpaceLeftBr);
+  WriteSpaceSet('SpaceRightBr', _Settings.SpaceRightBr);
+  WriteSpaceSet('SpaceLeftHook', _Settings.SpaceLeftHook);
+  WriteSpaceSet('SpaceRightHook', _Settings.SpaceRightHook);
+  WriteSpaceSet('SpaceEqualOper', _Settings.SpaceEqualOper);
+  _Writer.WriteBool('UpperCompDirectives', _Settings.UpperCompDirectives); //: Boolean;
+  _Writer.WriteBool('UpperNumbers', _Settings.UpperNumbers); //: Boolean;
+  _Writer.WriteInteger('ReservedCase', Ord(_Settings.ReservedCase)); //: TCase;
+  _Writer.WriteInteger('StandDirectivesCase', Ord(_Settings.StandDirectivesCase)); //: TCase;
+  _Writer.WriteBool('ChangeIndent', _Settings.ChangeIndent); //: Boolean;
+  _Writer.WriteBool('NoIndentElseIf', _Settings.NoIndentElseIf); //: Boolean;
+  _Writer.WriteBool('IndentBegin', _Settings.IndentBegin); //: Boolean;
+  _Writer.WriteBool('IndentTry', _Settings.IndentTry); //: Boolean;
+  _Writer.WriteBool('IndentTryElse', _Settings.IndentTryElse); //: Boolean;
+  _Writer.WriteBool('IndentCaseElse', _Settings.IndentCaseElse); //: Boolean;
+  _Writer.WriteBool('IndentComments', _Settings.IndentComments); //: Boolean;
+  _Writer.WriteBool('IndentCompDirectives', _Settings.IndentCompDirectives); //: Boolean;
+  _Writer.WriteBool('BlankProc', _Settings.BlankProc); //: Boolean;
+  _Writer.WriteBool('BlankSubProc', _Settings.BlankSubProc); //: Boolean;
+  _Writer.WriteBool('RemoveDoubleBlank', _Settings.RemoveDoubleBlank); //: Boolean;
+  _Writer.WriteInteger('SpacePerIndent', _Settings.SpacePerIndent); //: Integer;
+  _Writer.WriteInteger('FeedRoundBegin', Ord(_Settings.FeedRoundBegin)); //: TFeedBegin;
+  _Writer.WriteInteger('FeedRoundTry', Ord(_Settings.FeedRoundTry)); //: TFeedBegin;
+  _Writer.WriteBool('FeedBeforeEnd', _Settings.FeedBeforeEnd); //: Boolean;
+  _Writer.WriteBool('FeedAfterThen', _Settings.FeedAfterThen); //: Boolean;
+  _Writer.WriteBool('ExceptSingle', _Settings.ExceptSingle); //: Boolean;
+  _Writer.WriteBool('FeedAfterVar', _Settings.FeedAfterVar); //: Boolean;
+  _Writer.WriteBool('FeedEachUnit', _Settings.FeedEachUnit); //: Boolean;
+  _Writer.WriteBool('NoFeedBeforeThen', _Settings.NoFeedBeforeThen); //: Boolean;
+  _Writer.WriteBool('FeedElseIf', _Settings.FeedElseIf); //: Boolean;
+  _Writer.WriteInteger('FillNewWords', CapfileModeToInt(_Settings.FillNewWords));
+  _Writer.WriteBool('FeedAfterSemiColon', _Settings.FeedAfterSemiColon); //: Boolean;
+  _Writer.WriteString('StartCommentOut', string(_Settings.StartCommentOut)); //: TCommentArray;
+  _Writer.WriteString('EndCommentOut', string(_Settings.EndCommentOut)); //: TCommentArray;
+  _Writer.WriteBool('CommentFunction', _Settings.CommentFunction); //: Boolean;
+  _Writer.WriteBool('CommentUnit', _Settings.CommentUnit); //: Boolean;
+  _Writer.WriteBool('WrapLines', _Settings.WrapLines); //: Boolean;
+  _Writer.WriteInteger('WrapPosition', _Settings.WrapPosition); //: Byte;
+  _Writer.WriteInteger('AlignCommentPos', _Settings.AlignCommentPos); //: Byte;
+  _Writer.WriteBool('AlignComments', _Settings.AlignComments); //: Boolean;
+  _Writer.WriteInteger('AlignVarPos', _Settings.AlignVarPos); //: Byte;
+  _Writer.WriteBool('AlignVar', _Settings.AlignVar); //: Boolean;
 
-  AWriter.WriteInteger('Precedence1', Ord(ASettings.ConfigPrecedence[1]));
-  AWriter.WriteInteger('Precedence2', Ord(ASettings.ConfigPrecedence[2]));
-  AWriter.WriteInteger('Precedence3', Ord(ASettings.ConfigPrecedence[3]));
+  _Writer.WriteInteger('Precedence1', Ord(_Settings.ConfigPrecedence[1]));
+  _Writer.WriteInteger('Precedence2', Ord(_Settings.ConfigPrecedence[2]));
+  _Writer.WriteInteger('Precedence3', Ord(_Settings.ConfigPrecedence[3]));
 
-  AWriter.WriteBool('ShowDoneDialog', ASettings.ShowDoneDialog);
-  AWriter.WriteBool('UseCapitalizationFile', ASettings.UseCapitalizationFile);
-  AWriter.WriteString('CapitalizationFile', String(ASettings.CapitalizationFile));
+  _Writer.WriteBool('ShowDoneDialog', _Settings.ShowDoneDialog);
+  _Writer.WriteBool('UseCapitalizationFile', _Settings.UseCapitalizationFile);
+  _Writer.WriteString('CapitalizationFile', string(_Settings.CapitalizationFile));
 
-  if ASettings.UseCapitalizationFile and (ASettings.CapitalizationFile <> '') then begin
+  if _Settings.UseCapitalizationFile and (_Settings.CapitalizationFile <> '') then begin
     try
-      ASettings.CapNames.SaveToFile(String(ASettings.CapitalizationFile));
+      _Settings.CapNames.SaveToFile(string(_Settings.CapitalizationFile));
     except
         // ignore, file might be readonly
     end;
   end else
-    AWriter.WriteStrings('Capitalization', ASettings.CapNames);
+    _Writer.WriteStrings('Capitalization', _Settings.CapNames);
 end;
 
-class procedure TCodeFormatterConfigHandler.ExportToFile(const AFilename: string; ASettings: TCodeFormatterSettings);
+class procedure TCodeFormatterConfigHandler.ExportToFile(const _Filename: string; _Settings: TCodeFormatterSettings);
 var
   Writer: IConfigWriter;
   Ini: TMemIniFile;
 begin
-  Ini := TMemIniFile.Create(AFilename);
+  Ini := TMemIniFile.Create(_Filename);
   try
     Writer := TIniFileWrapper.Create(Ini);
-    WriteSettings(Writer, ASettings);
+    WriteSettings(Writer, _Settings);
     Ini.UpdateFile;
   finally
     Ini.Free;
@@ -322,17 +322,17 @@ begin
   Result := ExtractFilePath(GetModuleName(HInstance));
 end;
 
-class function TCodeFormatterConfigHandler.GetDefaultConfig(const AName: string; ASettings: TCodeFormatterSettings): Boolean;
+class function TCodeFormatterConfigHandler.GetDefaultConfig(const _Name: string; _Settings: TCodeFormatterSettings): Boolean;
 var
   Filename: string;
 begin
-  Filename := GetModulePath + FORMATTER_CONFIG_PREFIX + AName + '.ini';
+  Filename := GetModulePath + FORMATTER_CONFIG_PREFIX + _Name + '.ini';
   Result := FileExists(Filename);
   if Result then
-    ImportFromFile(Filename, ASettings);
+    ImportFromFile(Filename, _Settings);
 end;
 
-class procedure TCodeFormatterConfigHandler.GetDefaultsList(ADefaults: TStrings);
+class procedure TCodeFormatterConfigHandler.GetDefaultsList(_Defaults: TStrings);
 var
   Path: string;
   sr: TSearchRec;
@@ -344,7 +344,7 @@ begin
       repeat
         s := ChangeFileExt(sr.Name, '');
         Delete(s, 1, Length(FORMATTER_CONFIG_PREFIX));
-        ADefaults.Add(s);
+        _Defaults.Add(s);
       until 0 <> FindNext(sr);
     finally
       FindClose(sr);
@@ -352,15 +352,15 @@ begin
   end;
 end;
 
-class procedure TCodeFormatterConfigHandler.ImportFromFile(const AFilename: string; ASettings: TCodeFormatterSettings);
+class procedure TCodeFormatterConfigHandler.ImportFromFile(const _Filename: string; _Settings: TCodeFormatterSettings);
 var
   Reader: IConfigReader;
   Ini: TMemIniFile;
 begin
-  Ini := TMemIniFile.Create(AFilename);
+  Ini := TMemIniFile.Create(_Filename);
   try
     Reader := TIniFileWrapper.Create(Ini);
-    ReadSettings(Reader, ASettings);
+    ReadSettings(Reader, _Settings);
   finally
     Ini.Free;
   end;

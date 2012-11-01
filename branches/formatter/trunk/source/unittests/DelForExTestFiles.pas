@@ -17,7 +17,7 @@ type
   TTestTestfiles = class(TTestCase)
   private
     FFormatter: TCodeFormatterEngine;
-    procedure TestFile(const _Filename: string; _AllowFaiure: Boolean = False);
+    procedure TestFile(const _Filename: string; _AllowFailure: Boolean = False);
   protected
     function GetFormatSettings: TCodeFormatterEngineSettings; virtual; abstract;
     function GetResultDir: string; virtual; abstract;
@@ -79,7 +79,7 @@ type
     procedure testNestedClass5;
     procedure testNestedClass6;
     procedure testCurlyHalfCommentEndCurrentlyFails;
-    procedure testGenericClassCurrentlyFails;
+    procedure testGenericClass;
     procedure testIfThenElse2CurrentlyFails;
   end;
 
@@ -141,7 +141,7 @@ begin
   FFormatter.Free;
 end;
 
-procedure TTestTestfiles.TestFile(const _Filename: string; _AllowFaiure: Boolean);
+procedure TTestTestfiles.TestFile(const _Filename: string; _AllowFailure: Boolean);
 var
   Filename: string;
   InFile: string;
@@ -163,7 +163,7 @@ begin
       CheckEquals(ExpectedText.Text, st.Text, 'error in output');
     except
       st.SaveToFile('source\unittests\testcases\output-' + GetResultDir + '\' + Filename);
-      if not _AllowFaiure then
+      if not _AllowFailure then
         raise;
     end;
   finally
@@ -229,7 +229,7 @@ end;
 
 procedure TTestTestfiles.testIfThenElse2CurrentlyFails;
 begin
-  TestFile('ifthenelse2', true);
+  TestFile('ifthenelse2', True);
 end;
 
 procedure TTestTestfiles.testIfThenTry;
@@ -400,7 +400,7 @@ begin
   TestFile('Formula');
 end;
 
-procedure TTestTestfiles.testGenericClassCurrentlyFails;
+procedure TTestTestfiles.testGenericClass;
 begin
   TestFile('GenericClass');
 end;

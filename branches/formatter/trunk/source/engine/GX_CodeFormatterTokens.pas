@@ -1,6 +1,7 @@
 // defines TPascalToken and descendants which are the intermediate format after parsing
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
 // Contributors:        Thomas Mueller (http://www.dummzeuch.de)
+// Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of seval language features
 
 unit GX_CodeFormatterTokens;
 
@@ -412,18 +413,6 @@ end;
 function TExpression.GetOptions: TTokenOptions;
 begin
   Result := FOptions;
-end;
-
-function strSpaceE(Dest: PAnsiChar; n: Integer): PAnsiChar;
-var
-  I: Integer;
-begin
-  Result := Dest;
-  for I := 0 to n - 1 do begin
-    Result^ := ' ';
-    inc(Result);
-  end;
-  Result^ := #0;
 end;
 
 { TLineFeed }

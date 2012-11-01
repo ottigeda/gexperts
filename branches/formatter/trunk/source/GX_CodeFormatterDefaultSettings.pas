@@ -1,5 +1,6 @@
 // Defines several default settings
 // Original Author:     Thomas Mueller (http://www.dummzeuch.de)
+// Contributors:        Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code.
 
 unit GX_CodeFormatterDefaultSettings;
 
@@ -39,6 +40,7 @@ begin
   Result.FeedRoundBegin := Unchanged;
   Result.FeedRoundTry := Unchanged;
   Result.FillNewWords := [];
+  Result.Identifiers := rfUnchanged;
   Result.IndentBegin := False;
   Result.IndentCaseElse := False;
   Result.IndentComments := False;
@@ -89,6 +91,7 @@ begin
   Result.FeedRoundBegin := NewLine;
   Result.FeedRoundTry := NewLine;
   Result.FillNewWords := [];
+  Result.Identifiers := rfUnchanged;
   Result.IndentBegin := False;
   Result.IndentCaseElse := False;
   Result.IndentComments := True;

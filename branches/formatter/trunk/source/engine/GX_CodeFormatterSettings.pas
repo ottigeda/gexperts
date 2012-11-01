@@ -1,6 +1,7 @@
 // Handles the settings of the Code Formatter
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
 // Contributors:        Thomas Mueller (http://www.dummzeuch.de)
+//                      Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of seval language features
 
 unit GX_CodeFormatterSettings;
 
@@ -50,6 +51,7 @@ type
     StandDirectivesCase: TCase; {: case for standard directives }
     ChangeIndent: Boolean;
     NoIndentElseIf: Boolean;
+    Identifiers: TCase;
     IndentBegin: Boolean;
     IndentTry: Boolean;
     IndentTryElse: Boolean;
@@ -91,7 +93,7 @@ type
   TConfigPrecedenceArr = array[1..3] of TConfigPrecedenceEnum;
   TOneToThree = 1..3;
 
-function IntToConfigPrecedence(_Value: integer): TConfigPrecedenceEnum;
+function IntToConfigPrecedence(_Value: Integer): TConfigPrecedenceEnum;
 
 type
   TCodeFormatterSettings = class
@@ -105,14 +107,12 @@ type
     function GetConfigPrecedence(_Idx: TOneToThree): TConfigPrecedenceEnum;
     procedure SetConfigPrecedence(_Idx: TOneToThree; const _Value: TConfigPrecedenceEnum);
     procedure SetSettings(const _Value: TCodeFormatterEngineSettings);
+    procedure SetCapFile(const _Value: string);
   public
     constructor Create;
     destructor Destroy; override;
 
-//    procedure LoadCapFile(const ACapFile: AnsiString);
-//    procedure SaveCapFile(const ACapFile: AnsiString);
-
-    procedure HandleCapitalization(AWord: TPascalToken);
+    procedure HandleCapitalization(_Word: TPascalToken);
 
     property Settings: TCodeFormatterEngineSettings read FSettings write SetSettings;
     property CapNames: TStringList read FCapNames;
@@ -133,6 +133,7 @@ type
     property StandDirectivesCase: TCase read FSettings.StandDirectivesCase;
     property ChangeIndent: Boolean read FSettings.ChangeIndent;
     property NoIndentElseIf: Boolean read FSettings.NoIndentElseIf;
+    property Identifiers: TCase read FSettings.Identifiers;
     property IndentBegin: Boolean read FSettings.IndentBegin;
     property IndentTry: Boolean read FSettings.IndentTry;
     property IndentTryElse: Boolean read FSettings.IndentTryElse;
@@ -166,12 +167,12 @@ type
     property AlignVar: Boolean read FSettings.AlignVar;
     // settings for the wizard
     property ShowDoneDialog: Boolean read FShowDoneDialog write FShowDoneDialog;
-    property CapitalizationFile: String read FCapFile write FCapFile;
+    property CapitalizationFile: string read FCapFile write SetCapFile;
     property UseCapitalizationFile: Boolean read FUseCapFile write FUseCapFile;
   end;
 
-function IntToCapfileMode(AValue: Integer): TCapfileModeSet;
-function CapfileModeToInt(AMode: TCapfileModeSet): Integer;
+function IntToCapfileMode(_Value: Integer): TCapfileModeSet;
+function CapfileModeToInt(_Mode: TCapfileModeSet): Integer;
 
 implementation
 
@@ -207,19 +208,19 @@ begin
   Result := FConfigPrecedence[_Idx];
 end;
 
-procedure TCodeFormatterSettings.HandleCapitalization(AWord: TPascalToken);
+procedure TCodeFormatterSettings.HandleCapitalization(_Word: TPascalToken);
 var
   Expression: string;
   Found: Boolean;
   Idx: Integer;
   CommentedIdx: Integer;
 begin
-  if not (AWord.GetExpression(Expression)) then
+  if not (_Word.GetExpression(Expression)) then
     Exit;
 
   Found := False;
   if (cmAddNew in Settings.FillNewWords)
-    and (AWord.ReservedType in (NoReservedTypes - StandardDirectives)) then begin
+    and (_Word.ReservedType in (NoReservedTypes - StandardDirectives)) then begin
     // Add new words to CapNames if configured and they aren't there yet
     Found := CapNames.Find(String(Expression), Idx);
     if not Found then begin
@@ -232,14 +233,21 @@ begin
   if (cmUse in Settings.FillNewWords)
     or (
     (cmExceptDirectives in Settings.FillNewWords)
-    and not (AWord.ReservedType in StandardDirectives)) then begin
+    and not (_Word.ReservedType in StandardDirectives)) then begin
     if not Found then
       Found := CapNames.Find(String(Expression), Idx);
     if Found then begin
-      AWord.SetExpression(CapNames[Idx]);
-      AWord.ExpressionCase := rfUnchanged;
+      _Word.SetExpression(CapNames[Idx]);
+      _Word.ExpressionCase := rfUnchanged;
     end;
   end;
+end;
+
+procedure TCodeFormatterSettings.SetCapFile(const _Value: string);
+begin
+  FCapFile := ExpandFileName(_Value);
+  if FileExists(FCapFile) then
+    FCapNames.LoadFromFile(FCapFile);
 end;
 
 procedure TCodeFormatterSettings.SetConfigPrecedence(_Idx: TOneToThree;
@@ -253,9 +261,9 @@ begin
   FSettings := _Value;
 end;
 
-function IntToCapfileMode(AValue: Integer): TCapfileModeSet;
+function IntToCapfileMode(_Value: Integer): TCapfileModeSet;
 begin
-  case AValue of
+  case _Value of
     1:
       Result := [cmAddNew];
     2:
@@ -271,17 +279,17 @@ begin
   end;
 end;
 
-function CapfileModeToInt(AMode: TCapfileModeSet): Integer;
+function CapfileModeToInt(_Mode: TCapfileModeSet): Integer;
 begin
-  if AMode = [cmAddNew] then
+  if _Mode = [cmAddNew] then
     Result := 1
-  else if AMode = [cmUse] then
+  else if _Mode = [cmUse] then
     Result := 2
-  else if AMode = [cmUse, cmExceptDirectives] then
+  else if _Mode = [cmUse, cmExceptDirectives] then
     Result := 3
-  else if AMode = [cmAddNew, cmUse] then
+  else if _Mode = [cmAddNew, cmUse] then
     Result := 4
-  else if AMode = [cmAddNew, cmUse, cmExceptDirectives] then
+  else if _Mode = [cmAddNew, cmUse, cmExceptDirectives] then
     Result := 5
   else
     Result := 0;

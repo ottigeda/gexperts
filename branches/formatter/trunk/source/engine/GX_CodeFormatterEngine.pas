@@ -1,6 +1,8 @@
 // the main code formatter engine, combines the parser and formatter do do the work
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
 // Contributors:        Thomas Mueller (http://www.dummzeuch.de)
+// Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of seval language features
+
 unit GX_CodeFormatterEngine;
 
 {$I GX_CondDefine.inc}
