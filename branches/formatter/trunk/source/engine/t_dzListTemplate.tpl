@@ -48,14 +48,10 @@ type
     procedure Exchange(_Idx1, _Idx2: integer);
     /// removes the item with index Idx from the list and returns it
     function Extract(_Idx: integer): _ITEM_TYPE_;
-    /// calls Clear
-    procedure FreeAll; deprecated; // use Clear instead
     /// Calls FreeItem for all items and removes them from the list
     procedure Clear;
     /// returns the index of the given item or -1 if it is not in the list
     function IndexOf(_Item: _ITEM_TYPE_): integer;
-    /// inserts an item into the list and returns its index
-    function Insert(_Item: _ITEM_TYPE_): integer; deprecated; // use Add instead
     /// adds an item into the list and returns its index
     function Add(_Item: _ITEM_TYPE_): integer; virtual;
     /// short for Items[0]
@@ -119,11 +115,6 @@ begin
   Fitems.Delete(_Idx);
 end;
 
-procedure _DZ_LIST_TEMPLATE_.FreeAll;
-begin
-  Clear;
-end;
-
 procedure _DZ_LIST_TEMPLATE_.Clear;
 var
   i: integer;
@@ -152,11 +143,6 @@ end;
 function _DZ_LIST_TEMPLATE_.GetLastItem: _ITEM_TYPE_;
 begin
   Result := Items[Count - 1];
-end;
-
-function _DZ_LIST_TEMPLATE_.Insert(_Item: _ITEM_TYPE_): integer;
-begin
-  Result := Add(_Item);
 end;
 
 function _DZ_LIST_TEMPLATE_.Add(_Item: _ITEM_TYPE_): integer;
