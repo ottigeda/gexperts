@@ -81,6 +81,7 @@ type
     procedure testCurlyHalfCommentEndCurrentlyFails;
     procedure testGenericClass;
     procedure testIfThenElse2CurrentlyFails;
+    procedure testClassInImplementation;
   end;
 
 type
@@ -423,6 +424,11 @@ end;
 procedure TTestTestfiles.testAsmProblem1;
 begin
   TestFile('AsmProblem1');
+end;
+
+procedure TTestTestfiles.testClassInImplementation;
+begin
+  TestFile('ClassInImplementation');
 end;
 
 procedure TTestTestfiles.testClassProperties;
