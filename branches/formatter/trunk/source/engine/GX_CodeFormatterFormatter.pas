@@ -992,7 +992,7 @@ var
             DecPrevLineIndent;
           end else if (FStack.GetTopType = rtType) and (SameText('constructor', FCurrentToken.Content)) then begin
             // Generics
-            Exit; // Do nothing
+            // Exit; // Do nothing
           end;
           Prev1 := FPrevToken;
           TempWordIdx := FTokenIdx;
