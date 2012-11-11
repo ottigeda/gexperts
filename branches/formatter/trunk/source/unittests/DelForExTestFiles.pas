@@ -81,6 +81,7 @@ type
     procedure testNestedClass6;
     procedure testCurlyHalfCommentEndCurrentlyFails;
     procedure testGenericClass;
+    procedure testGenericClass2;
     procedure testIfThenElse2CurrentlyFails;
     procedure testClassInImplementation;
   end;
@@ -420,6 +421,11 @@ end;
 procedure TTestTestfiles.testGenericClass;
 begin
   TestFile('GenericClass');
+end;
+
+procedure TTestTestfiles.testGenericClass2;
+begin
+  TestFile('GenericClass2');
 end;
 
 procedure TTestTestfiles.testAbstractSealedClass;

@@ -157,7 +157,7 @@ var
       if not GetNextNoComment(_TokenIdx, Next, Offset) then
         Exit;
 
-      if (exp = '>') and (Next.ReservedType = rtSemiColon) then begin
+      if (exp = '>') and ((Next.ReservedType = rtSemiColon) or (Next.ReservedType = rtRightBr)) then begin
         Result := True;
         Exit;
       end;
@@ -990,9 +990,6 @@ var
             FStack.Pop;
             FStack.Push(rtClass, 1);
             DecPrevLineIndent;
-          end else if (FStack.GetTopType = rtType) and (SameText('constructor', FCurrentToken.Content)) then begin
-            // Generics
-            // Exit; // Do nothing
           end;
           Prev1 := FPrevToken;
           TempWordIdx := FTokenIdx;
