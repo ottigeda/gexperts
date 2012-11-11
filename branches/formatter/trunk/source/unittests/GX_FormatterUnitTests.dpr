@@ -42,7 +42,7 @@ uses
   DelForExTestFiles in 'DelForExTestFiles.pas',
   GX_CodeFormatterDefaultSettings in '..\GX_CodeFormatterDefaultSettings.pas',
   GX_CodeFormatterTokenList in '..\engine\GX_CodeFormatterTokenList.pas',
-  GX_CodeFormatterTypes in '..\common\GX_CodeFormatterTypes.pas',
+  GX_CodeFormatterTypes in '..\engine\GX_CodeFormatterTypes.pas',
   GX_CodeFormatterEngine in '..\engine\GX_CodeFormatterEngine.pas',
   GX_CodeFormatterTokens in '..\engine\GX_CodeFormatterTokens.pas',
   GX_CodeFormatterSettings in '..\engine\GX_CodeFormatterSettings.pas',

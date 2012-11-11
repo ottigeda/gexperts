@@ -17,6 +17,7 @@ type
   TTestTestfiles = class(TTestCase)
   private
     FFormatter: TCodeFormatterEngine;
+    procedure TrimTrailingCrLf(_sl: TStrings);
     procedure TestFile(const _Filename: string; _AllowFailure: Boolean = False);
   protected
     function GetFormatSettings: TCodeFormatterEngineSettings; virtual; abstract;
@@ -142,6 +143,19 @@ begin
   FFormatter.Free;
 end;
 
+procedure TTestTestfiles.TrimTrailingCrLf(_sl: TStrings);
+var
+  cnt: integer;
+begin
+  cnt := _sl.Count;
+  while cnt > 0 do begin
+    if _sl[cnt - 1] <> '' then
+      exit;
+    Dec(cnt);
+    _sl.Delete(cnt);
+  end;
+end;
+
 procedure TTestTestfiles.TestFile(const _Filename: string; _AllowFailure: Boolean);
 var
   Filename: string;
@@ -161,6 +175,8 @@ begin
     ExpectedText.LoadFromFile(ExpectedFile);
     FFormatter.Execute(st);
     try
+      TrimTrailingCrLf(ExpectedText);
+      TrimTrailingCrLf(st);
       CheckEquals(ExpectedText.Text, st.Text, 'error in output');
     except
       st.SaveToFile('source\unittests\testcases\output-' + GetResultDir + '\' + Filename);

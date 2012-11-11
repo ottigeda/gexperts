@@ -10,7 +10,7 @@ type
     constructor Create;
   end;
 
-{ TDummy }
+  { TDummy }
 
 constructor TDummy.Create;
 begin
