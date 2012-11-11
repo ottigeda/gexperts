@@ -79,11 +79,13 @@ type
     procedure testNestedClass4;
     procedure testNestedClass5;
     procedure testNestedClass6;
-    procedure testCurlyHalfCommentEndCurrentlyFails;
+    procedure testClassInImplementation;
     procedure testGenericClass;
     procedure testGenericClass2;
+    procedure testAnonymousCurrentlyFails;
+    procedure testCurlyHalfCommentEndCurrentlyFails;
     procedure testIfThenElse2CurrentlyFails;
-    procedure testClassInImplementation;
+    procedure testComplexCurrentlyFails;
   end;
 
 type
@@ -208,6 +210,11 @@ end;
 procedure TTestTestfiles.testCompilerDirectives;
 begin
   TestFile('compilerdirectives');
+end;
+
+procedure TTestTestfiles.testComplexCurrentlyFails;
+begin
+  TestFile('complex', true);
 end;
 
 procedure TTestTestfiles.testAssemblerNewlines;
@@ -436,6 +443,11 @@ end;
 procedure TTestTestfiles.testAngledBrackets;
 begin
   TestFile('AngledBrackets');
+end;
+
+procedure TTestTestfiles.testAnonymousCurrentlyFails;
+begin
+  TestFile('Anonymous', true);
 end;
 
 procedure TTestTestfiles.testAsm;
