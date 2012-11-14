@@ -5,7 +5,7 @@ interface
 uses
   Sysutils,
   Classes; // comment 2
-  
+
 implementation
 
 uses

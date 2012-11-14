@@ -1245,7 +1245,7 @@ var
           if Settings.IndentComments and (FStack.GetTopType <> rtLeftHook) then
             FWrapIndent := False;
 
-          if FStack.IsEmpty then begin
+          if FStack.IsEmpty and (FStack.nIndent > 0) then begin
             FStack.nIndent := 0;
             SetPrevLineIndent(NTmp);
           end;
