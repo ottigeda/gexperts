@@ -984,7 +984,9 @@ var
           if FStack.GetTopType in [rtClassDecl, rtRecord] then begin
             FStack.Pop;
             FStack.Push(rtClass, 1);
-          end else if (FStack.GetTopType in [rtVar, rtType]) and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
+          end else if (FStack.GetTopType in [rtVar, rtType])
+            and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord])
+            and (FPrevToken.ReservedType <> rtEquals) then begin
             // There was a nested class/record declaration that ended
             FStack.Pop;
             FStack.Pop;
@@ -1176,7 +1178,8 @@ var
             end else if FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord] then begin
               FStack.Pop;
               DecPrevLineIndent;
-            end;
+            end else
+              FStack.Pop;
           end;
           if (FStack.GetTopType in [rtClass, rtClassDecl, rtRecord]) then begin
             FStack.Push(FCurrentRType, 1);

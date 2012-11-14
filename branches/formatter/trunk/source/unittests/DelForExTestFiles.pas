@@ -84,6 +84,7 @@ type
     procedure testGenericClass2;
     procedure testUsesWithComment;
     procedure testTypeOf;
+    procedure testNestedEventType;
     procedure testAnonymousCurrentlyFails;
     procedure testCurlyHalfCommentEndCurrentlyFails;
     procedure testIfThenElse2CurrentlyFails;
@@ -302,6 +303,11 @@ end;
 procedure TTestTestfiles.testNestedClass6;
 begin
   Testfile('NestedClass6');
+end;
+
+procedure TTestTestfiles.testNestedEventType;
+begin
+  TestFile('NestedEventType');
 end;
 
 procedure TTestTestfiles.testOperatorOverloading;
