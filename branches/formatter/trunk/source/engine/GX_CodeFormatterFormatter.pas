@@ -1169,7 +1169,7 @@ var
           if FStack.nIndent < 1 then
             FStack.nIndent := 1;
           if (FStack.GetTopType in [rtVar, rtType]) then begin
-            if (FCurrentRType = rtType) and (FPrevToken.Content = '=') then begin
+            if (FCurrentRType = rtType) and PrevTokenIsRType(rtEquals) then begin
               // in classes.pas I found
               // t =  type AnsiString
               FStack.Pop
@@ -1182,11 +1182,11 @@ var
             FStack.Push(FCurrentRType, 1);
           end else begin
             FStack.Push(FCurrentRType, 0);
-            if not PrevTokenIsRType(rtEquals) then
+            if not PrevTokenIsRType(rtEquals) then begin
               DecPrevLineIndent;
-
-            if Settings.FeedAfterVar then
-              AssertLineFeedAfter(FTokenIdx);
+              if Settings.FeedAfterVar then
+                AssertLineFeedAfter(FTokenIdx);
+            end;
           end;
         end;
 

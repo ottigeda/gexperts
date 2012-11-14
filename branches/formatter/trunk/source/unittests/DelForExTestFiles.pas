@@ -82,6 +82,8 @@ type
     procedure testClassInImplementation;
     procedure testGenericClass;
     procedure testGenericClass2;
+    procedure testUsesWithComment;
+    procedure testTypeOf;
     procedure testAnonymousCurrentlyFails;
     procedure testCurlyHalfCommentEndCurrentlyFails;
     procedure testIfThenElse2CurrentlyFails;
@@ -312,6 +314,11 @@ begin
   Testfile('triplequotes');
 end;
 
+procedure TTestTestfiles.testTypeOf;
+begin
+  TestFile('TypeOf');
+end;
+
 procedure TTestTestfiles.testSingleElse;
 begin
   TestFile('singleelse');
@@ -366,6 +373,11 @@ end;
 procedure TTestTestfiles.testUnterminatedString;
 begin
   TestFile('UnterminatedString');
+end;
+
+procedure TTestTestfiles.testUsesWithComment;
+begin
+  TestFile('UsesWithComment');
 end;
 
 procedure TTestTestfiles.testStringWithSingleQuotes;
