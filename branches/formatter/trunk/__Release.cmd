@@ -9,13 +9,11 @@ cd ..
 call :dozip editorexpert
 call :dozip regularexpert
 
-
 pause
 goto :eof
 
 :dozip
 echo adding %1
-pause
 zip -9 %ZIPFile% %1\GExpertsD6.dll
 zip -9 %ZIPFile% %1\GExpertsD7.dll
 zip -9 %ZIPFile% %1\GExpertsDelphi2005.dll
