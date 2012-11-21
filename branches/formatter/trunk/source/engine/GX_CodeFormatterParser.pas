@@ -20,9 +20,9 @@ uses
 type
   TIdentifiersList = class(TStringList)
   private
-    FIdentifiersCase: TCase;
+    FSettings: TCodeFormatterSettings;
   public
-    constructor Create(const _IdentifiersCase: TCase); reintroduce;
+    constructor Create(const _Settings: TCodeFormatterSettings); reintroduce;
     function AddIdentifier(const _s: string): string;
   end;
 
@@ -85,7 +85,7 @@ begin
   FPrevLine := nil;
   FPrevType := wtNothing;
   FTokens := TPascalTokenList.Create;
-  FIdentifiers := TIdentifiersList.Create(_Settings.IdentifiersCase);
+  FIdentifiers := TIdentifiersList.Create(_Settings);
 end;
 
 destructor TCodeFormatterParser.Destroy;
@@ -560,8 +560,10 @@ end;
 { TIdentifiersList }
 
 function TIdentifiersList.AddIdentifier(const _s: string): string;
+var
+  WordIndex : Integer;
 begin
-  case FIdentifiersCase of
+  case FSettings.IdentifiersCase of
     rfLowerCase:
       Result := LowerCase(_s);
     rfUpperCase:
@@ -573,14 +575,17 @@ begin
     rfUnchanged:
       Result := _s;
     rfFirstOccurrence:
-      Result := Strings[Add(_s)];
+       if not FSettings.CapNames.Find(_s, WordIndex) then
+         Result := Strings[Add(_s)]
+       else
+         Result := FSettings.CapNames[WordIndex];
   end;
 end;
 
-constructor TIdentifiersList.Create(const _IdentifiersCase: TCase);
+constructor TIdentifiersList.Create(const _Settings: TCodeFormatterSettings);
 begin
   inherited Create;
-  FIdentifiersCase := _IdentifiersCase;
+  FSettings := _Settings;
   CaseSensitive := False;
   Sorted := True;
   Duplicates := dupIgnore;
