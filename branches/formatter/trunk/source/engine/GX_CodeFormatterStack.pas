@@ -188,7 +188,7 @@ begin
   Result.FProcLevel := FProcLevel;
 end;
 
-{ TDelForStackStack }
+{ TCodeFormatterStack }
 
 {$INCLUDE DelforStackTemplate.tpl}
 
