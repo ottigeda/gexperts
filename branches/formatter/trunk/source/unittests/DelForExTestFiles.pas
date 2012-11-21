@@ -257,7 +257,7 @@ end;
 
 procedure TTestTestfiles.testIfThenElse2CurrentlyFails;
 begin
-  TestFile('ifthenelse2', True);
+  TestFile('ifthenelse2');
 end;
 
 procedure TTestTestfiles.testIfThenTry;

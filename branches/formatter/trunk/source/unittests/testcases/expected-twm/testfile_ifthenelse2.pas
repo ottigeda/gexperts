@@ -6,9 +6,10 @@ implementation
 
 procedure test;
 begin
-  if True
-    then Hallo
-    else Welt;
+  if True then
+    Hallo
+  else
+    Welt;
 end;
 
 end.
