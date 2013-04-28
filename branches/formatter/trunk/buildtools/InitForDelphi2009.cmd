@@ -1,2 +1,5 @@
 @rem Init for Delphi 2009 batch compile
-call "%ProgramFiles%\CodeGear\RAD Studio\6.0\bin\rsvars.bat"
+echo Initializing for Delphi 2009
+call %~p0%delphiversions.cmd
+set DelphiExe=%Delphi2009Dir%\bin\bds.exe
+call "%Delphi2009Dir%\bin\rsvars.bat"
