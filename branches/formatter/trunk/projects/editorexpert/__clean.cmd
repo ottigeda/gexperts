@@ -8,6 +8,7 @@ call :cleandir 2010
 call :cleandir XE1
 call :cleandir XE2
 call :cleandir XE3
+call :cleandir XE4
 goto :eof
 
 :cleandir

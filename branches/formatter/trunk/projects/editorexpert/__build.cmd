@@ -8,6 +8,7 @@ call :dobuild 2010
 call :dobuild XE1
 call :dobuild XE2
 call :dobuild XE3
+call :dobuild XE4
 
 goto :eof
 
