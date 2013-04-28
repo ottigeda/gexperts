@@ -61,12 +61,13 @@
         <DCC_ExeOutput>..\..\..\regularexpert\</DCC_ExeOutput>
         <DCC_UnitSearchPath>..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\UniSynEdit;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_Define>synedit;$(DCC_Define)</DCC_Define>
-        <DCC_DcuOutput>..\..\..\dcu\delphixe3\regularexpert</DCC_DcuOutput>
+        <DCC_DcuOutput>..\..\..\dcu\delphixe4\regularexpert</DCC_DcuOutput>
         <UsePackages>true</UsePackages>
         <GenDll>true</GenDll>
         <DCC_UsePackage>rtl;vcl;vclx;vclactnband;dbrtl;vcldb;vcldbx;bdertl;dsnap;dbxcds;DbxCommonDriver;dbexpress;dsnapcon;adortl;IndyCore;IndySystem;IndyProtocols;xmlrtl;inet;VclSmp;vclie;websnap;webdsnap;inetdbbde;inetdbxpress;soaprtl;designide;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <DCC_DcuOutput>..\..\..\dcu\delphixe4\regularexpert</DCC_DcuOutput>
         <PreBuildEvent><![CDATA[..\..\..\buildtools\prebuild.cmd $(PROJECTPATH)
 $(PreBuildEvent)]]></PreBuildEvent>
         <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
@@ -77,6 +78,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <Icon_MainIcon>GExpertsRSXE1_Icon.ico</Icon_MainIcon>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
+        <DCC_DcuOutput>..\..\..\dcu\delphixe4\regularexpert</DCC_DcuOutput>
         <Version>7.0</Version>
         <DCC_DebugInformation>False</DCC_DebugInformation>
         <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
@@ -88,6 +90,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCC_IncludePath>..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\..\synedit\source;$(DCC_IncludePath)</DCC_IncludePath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <DCC_DcuOutput>..\..\..\dcu\delphixe4\regularexpert</DCC_DcuOutput>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -520,6 +523,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
                 <Platform value="Win32">True</Platform>
                 <Platform value="Win64">False</Platform>
             </Platforms>
+            <ModelSupport>False</ModelSupport>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>
     </ProjectExtensions>
