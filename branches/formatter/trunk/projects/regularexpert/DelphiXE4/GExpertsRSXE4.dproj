@@ -91,8 +91,9 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
+        <DCC_DcuOutput>..\..\..\dcu\delphixe4\regularexpert</DCC_DcuOutput>
         <Version>7.0</Version>
-        <DCC_ExeOutput>C:\Program Files\GExperts for RAD Studio 2010\</DCC_ExeOutput>
+        <DCC_ExeOutput>C:\Program Files (x86)\GExperts for RAD Studio XE4\</DCC_ExeOutput>
         <DCC_DependencyCheckOutputName>C:\Program Files\GExperts for RAD Studio 2010\GExpertsRS2010.dll</DCC_DependencyCheckOutputName>
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
         <DCC_ObjOutput>..\..\..\dcu\delphi2007</DCC_ObjOutput>
@@ -509,6 +510,10 @@ $(PreBuildEvent)]]></PreBuildEvent>
                 <Source>
                     <Source Name="MainSource">GExpertsRSXE4.dpr</Source>
                 </Source>
+                <Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k180.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp180.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                </Excluded_Packages>
             </Delphi.Personality>
             <Platforms>
                 <Platform value="OSX32">False</Platform>

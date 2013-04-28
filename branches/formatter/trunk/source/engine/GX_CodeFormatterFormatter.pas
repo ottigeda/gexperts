@@ -90,6 +90,11 @@ type
 
 implementation
 
+{$IFDEF GX_VER250_up}
+uses
+  AnsiStrings;
+{$ENDIF}
+
 class procedure TCodeFormatterFormatter.Execute(_Tokens: TPascalTokenList; _Settings: TCodeFormatterSettings);
 var
   Formatter: TCodeFormatterFormatter;
@@ -478,7 +483,7 @@ begin
   J := FTokenIdx - 2;
   P := GetToken(J);
 
-  SetString(s, _Comment, StrLen(_Comment));
+  SetString(s, _Comment, {$IFDEF GX_VER250_up}AnsiStrings.{$ENDIF}StrLen(_Comment));
 
   if P.ReservedType = rtComment then
     P.SetExpression(s)

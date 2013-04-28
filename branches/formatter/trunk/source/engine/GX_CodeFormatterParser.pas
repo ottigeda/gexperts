@@ -61,6 +61,27 @@ type
 
 implementation
 
+{$IFDEF GX_VER250_up}
+uses
+  AnsiStrings;
+{$ENDIF}
+
+{$IFDEF GX_VER250_up}
+function StrLIComp(const Str1, Str2: PAnsiChar; MaxLen: Cardinal): Integer; inline;
+begin
+  Result := AnsiStrings.StrLIComp(Str1, Str2, MaxLen);
+end;
+
+function StrLen(const Str: PAnsiChar): Cardinal; inline;
+begin
+  Result := AnsiStrings.StrLen(Str);
+end;
+function StrLComp(const Str1, Str2: PAnsiChar; MaxLen: Cardinal): Integer; inline;
+begin
+  Result := AnsiStrings.StrLComp(Str1, Str2, MaxLen);
+end;
+{$ENDIF}
+
 class function TCodeFormatterParser.Execute(_Text: TStrings; _Settings: TCodeFormatterSettings): TPascalTokenList;
 var
   Parser: TCodeFormatterParser;
