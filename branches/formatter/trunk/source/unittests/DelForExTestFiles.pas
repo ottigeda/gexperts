@@ -85,6 +85,8 @@ type
     procedure testUsesWithComment;
     procedure testTypeOf;
     procedure testNestedEventType;
+    procedure TestNoFeedAfterThen;
+    procedure TestNoFeedAfterDo;
     procedure testAnonymousCurrentlyFails;
     procedure testCurlyHalfCommentEndCurrentlyFails;
     procedure testIfThenElse2CurrentlyFails;
@@ -115,6 +117,13 @@ type
 
 type
   TTestFilesTwmFormatting = class(TTestTestfiles)
+  protected
+    function GetFormatSettings: TCodeFormatterEngineSettings; override;
+    function GetResultDir: string; override;
+  end;
+
+type
+  TTestFilesSpecial = class(TTestFilesTwmFormatting)
   protected
     function GetFormatSettings: TCodeFormatterEngineSettings; override;
     function GetResultDir: string; override;
@@ -162,6 +171,11 @@ begin
   end;
 end;
 
+type
+  EFileDoesNotExist = class(EAbort)
+
+  end;
+
 procedure TTestTestfiles.TestFile(const _Filename: string; _AllowFailure: Boolean);
 var
   Filename: string;
@@ -173,6 +187,15 @@ begin
   Filename := 'testfile_' + _Filename + '.pas';
   InFile := 'source\unittests\testcases\input\' + Filename;
   ExpectedFile := 'source\unittests\testcases\expected-' + GetResultDir + '\' + Filename;
+  if not FileExists(InFile) then begin
+    ExpectedException := EFileDoesNotExist;
+    raise EFileDoesNotExist.Create('Input file does not exist');
+  end;
+  if not FileExists(ExpectedFile) then begin
+    ExpectedException := EFileDoesNotExist;
+    raise EFileDoesNotExist.Create('Expected file does not exist');
+  end;
+
   ExpectedText := nil;
   st := TStringList.Create;
   try
@@ -308,6 +331,16 @@ end;
 procedure TTestTestfiles.testNestedEventType;
 begin
   TestFile('NestedEventType');
+end;
+
+procedure TTestTestfiles.TestNoFeedAfterDo;
+begin
+  TestFile('NoFeedAfterDo');
+end;
+
+procedure TTestTestfiles.TestNoFeedAfterThen;
+begin
+  TestFile('NoFeedAfterThen');
 end;
 
 procedure TTestTestfiles.testOperatorOverloading;
@@ -585,10 +618,24 @@ begin
   Result := 'twm';
 end;
 
+{ TTestFilesSpecial }
+
+function TTestFilesSpecial.GetFormatSettings: TCodeFormatterEngineSettings;
+begin
+  Result := inherited GetFormatSettings;
+  Result.ExceptSingle := true;
+end;
+
+function TTestFilesSpecial.GetResultDir: string;
+begin
+  Result := 'special';
+end;
+
 initialization
   RegisterTest(TTestFilesHeadworkFormatting.Suite);
   RegisterTest(TTestFilesBorlandFormatting.Suite);
   RegisterTest(TTestFilesDelforFormatting.Suite);
   RegisterTest(TTestFilesTwmFormatting.Suite);
+  RegisterTest(TTestFilesSpecial.Suite);
 end.
 

@@ -1215,7 +1215,7 @@ var
 
           if Settings.FeedAfterThen then begin
             if AssertLineFeedAfter(FTokenIdx) <> FPrevLine then begin
-              if (FLastPopResType = rtOn) and Settings.ExceptSingle then
+              if (FLastPopResType in [rtOn, rtWhile]) and Settings.ExceptSingle then
                 CheckShortLine;
             end;
           end;

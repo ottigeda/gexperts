@@ -36,8 +36,8 @@
 program GX_FormatterUnitTests;
 
 uses
-  TestFramework,
-  GUITestRunner,
+  TestFramework, // in 'C:\Program Files\Embarcadero\RAD Studio\9.0\source\DUnit\src\TestFramework.pas',
+  GUITestRunner, // in 'C:\Program Files\Embarcadero\RAD Studio\9.0\source\DUnit\src\GUITestRunner.pas' {GUITestRunner},
   DelForExTestOldNew in 'DelForExTestOldNew.pas',
   DelForExTestFiles in 'DelForExTestFiles.pas',
   GX_CodeFormatterDefaultSettings in '..\GX_CodeFormatterDefaultSettings.pas',
