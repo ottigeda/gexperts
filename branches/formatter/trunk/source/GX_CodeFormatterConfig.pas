@@ -371,10 +371,10 @@ var
   i: Integer;
   Idx: Integer;
 begin
-  _Settings.CapNames.Assign(FCapitalization);
   _Settings.ShowDoneDialog := chk_ShowDone.Checked;
   _Settings.UseCapitalizationFile := rb_CapitalizationInFile.Checked;
   _Settings.CapitalizationFile := ed_CapitalizationFile.Text;
+  _Settings.CapNames.Assign(FCapitalization);
 
   for i := Low(TOneToThree) to High(TOneToThree) do begin
     Idx := i - Low(TOneToThree);
@@ -534,8 +534,8 @@ begin
     if FCapitalization.Count > 0 then begin
       if mrYes <> MessageDlg(
         'Your current capitalization list is not empty and the file already exists.'#13#10
-        + 'If you continue, your list will be discarded and the selected file loaded instead.'#13#10
-        + 'Continue?', mtWarning, [mbYes, mbNo], 0) then
+        + 'Do you want to discard your list and load the selected file instead?',
+        mtWarning, [mbYes, mbCancel], 0) then
         Exit;
     end;
     FCapitalization.LoadFromFile(s);

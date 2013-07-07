@@ -107,7 +107,6 @@ type
     function GetConfigPrecedence(_Idx: TOneToThree): TConfigPrecedenceEnum;
     procedure SetConfigPrecedence(_Idx: TOneToThree; const _Value: TConfigPrecedenceEnum);
     procedure SetSettings(const _Value: TCodeFormatterEngineSettings);
-    procedure SetCapFile(const _Value: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -167,7 +166,7 @@ type
     property AlignVar: Boolean read FSettings.AlignVar;
     // settings for the wizard
     property ShowDoneDialog: Boolean read FShowDoneDialog write FShowDoneDialog;
-    property CapitalizationFile: string read FCapFile write SetCapFile;
+    property CapitalizationFile: string read FCapFile write FCapFile;
     property UseCapitalizationFile: Boolean read FUseCapFile write FUseCapFile;
   end;
 
@@ -241,13 +240,6 @@ begin
       _Word.ExpressionCase := rfUnchanged;
     end;
   end;
-end;
-
-procedure TCodeFormatterSettings.SetCapFile(const _Value: string);
-begin
-  FCapFile := ExpandFileName(_Value);
-  if FileExists(FCapFile) then
-    FCapNames.LoadFromFile(FCapFile);
 end;
 
 procedure TCodeFormatterSettings.SetConfigPrecedence(_Idx: TOneToThree;

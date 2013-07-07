@@ -231,7 +231,7 @@ begin
     end;
     lb_Items.Selected[i] := False;
   end;
-  if Lasti < lb_items.Count then begin
+  if Lasti < lb_Items.Count then begin
     lb_Items.OnClick := nil;
     try
       lb_Items.Selected[Lasti] := True;

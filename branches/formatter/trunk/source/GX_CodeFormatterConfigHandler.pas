@@ -143,6 +143,7 @@ var
   cp: TConfigPrecedenceEnum;
 begin
   _Settings.ShowDoneDialog := _Reader.ReadBool('ShowDoneDialog', True);
+
   _Settings.UseCapitalizationFile := _Reader.ReadBool('UseCapitalizationFile', False);
   _Settings.CapitalizationFile := _Reader.ReadString('CapitalizationFile', '');
   _Settings.CapNames.Clear;
@@ -326,12 +327,12 @@ end;
 
 class function TCodeFormatterConfigHandler.GetDefaultConfig(const _Name: string; _Settings: TCodeFormatterSettings): Boolean;
 var
-  Filename: string;
+  FileName: string;
 begin
-  Filename := GetModulePath + FORMATTER_CONFIG_PREFIX + _Name + '.ini';
-  Result := FileExists(Filename);
+  FileName := GetModulePath + FORMATTER_CONFIG_PREFIX + _Name + '.ini';
+  Result := FileExists(FileName);
   if Result then
-    ImportFromFile(Filename, _Settings);
+    ImportFromFile(FileName, _Settings);
 end;
 
 class procedure TCodeFormatterConfigHandler.GetDefaultsList(_Defaults: TStrings);

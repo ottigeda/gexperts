@@ -52,7 +52,8 @@ uses
 
 procedure XSendDebug(const Msg: string);
 begin
-  SendDebug('GXFormatter: ' + Msg);
+{$IFOPT D+}SendDebug('GXFormatter: ' + Msg);
+{$ENDIF}
 end;
 
 { TCodeFormatterExpert }
@@ -117,8 +118,7 @@ function TCodeFormatterExpert.GetSettingsName(FileName: string; FullText: TStrin
           ConfiguredFileName := ConfiguredFileNames[i];
           if FileNameMatches(ExtractFileName(FileName), Path + ConfiguredFileName) then begin
             Result := IniFile.ReadString('FileSettings', ConfiguredFileName, '');
-{$IFOPT D+}XSendDebug(Format('Settings "%s" from rule %s in %s', [Result, ConfiguredFileName, ConfigFileName]));
-{$ENDIF}
+            XSendDebug(Format('Settings "%s" from rule %s in %s', [Result, ConfiguredFileName, ConfigFileName]));
             Break;
           end;
         end;
@@ -140,8 +140,7 @@ function TCodeFormatterExpert.GetSettingsName(FileName: string; FullText: TStrin
     if SameText(Copy(FirstLine, 1, Length(cConfigDirective)), cConfigDirective) and
       (FirstLine[Length(FirstLine)] = '}') then begin
       Result := Trim(Copy(FirstLine, Length(cConfigDirective) + 1, Length(FirstLine) - Length(cConfigDirective) - 1));
-{$IFOPT D+}XSendDebug(Format('Settings "%s" from in-source directive', [Result]));
-{$ENDIF}
+      XSendDebug(Format('Settings "%s" from in-source directive', [Result]));
     end else
       Result := '';
   end;
@@ -198,8 +197,7 @@ begin
   if not (IsPascalSourceFile(FileName) or IsDelphiPackage(FileName) or FileMatchesExtension(FileName, '.tpl')) then
     raise ECodeFormatter.CreateFmt(str_UnsupportedFileTypeS, [ExtractFileName(FileName)]);
 
-{$IFOPT D+}XSendDebug(Format('Formatting requested for "%s"', [FileName]));
-{$ENDIF}
+  XSendDebug(Format('Formatting requested for "%s"', [FileName]));
   TempSettings := nil;
   FullText := TStringList.Create;
   try
@@ -219,8 +217,7 @@ begin
       SettingsName := Trim(GetSettingsName(FileName, FullText));
       if SettingsName <> '-' then begin
         if SettingsName <> '' then begin
-{$IFOPT D+}XSendDebug(Format('Use settings "%s"', [SettingsName]));
-{$ENDIF}
+          XSendDebug(Format('Use settings "%s"', [SettingsName]));
           TempSettings := TCodeFormatterSettings.Create;
           if TCodeFormatterConfigHandler.GetDefaultConfig(SettingsName, TempSettings) then begin
             OrigSettings := FEngine.Settings.Settings;
@@ -228,8 +225,7 @@ begin
           end else
             FreeAndNil(TempSettings);
         end else
-{$IFOPT D+}XSendDebug('Use default settings');
-{$ENDIF}
+          XSendDebug('Use default settings');
 
         if FEngine.Execute(FullText) then begin
           GxOtaReplaceEditorText(SourceEditor, FullText.Text);
@@ -240,8 +236,7 @@ begin
           FEngine.Settings.ShowDoneDialog := ShowDoneDialog(FEngine.Settings.ShowDoneDialog);
         end;
       end else
-{$IFOPT D+}XSendDebug('Ignore request');
-{$ENDIF}
+        XSendDebug('Ignoring request, no settings name available');
     finally
       FreeAndNil(Breakpoints);
       FreeAndNil(Bookmarks);
@@ -301,8 +296,7 @@ begin
   if not (IsPascalSourceFile(_FileName) or IsDelphiPackage(_FileName) or FileMatchesExtension(_FileName, '.tpl')) then
     raise ECodeFormatter.CreateFmt(str_UnsupportedFileTypeS, [ExtractFileName(_FileName)]);
 
-{$IFOPT D+}XSendDebug(Format('Formatting requested for "%s"', [_FileName]));
-{$ENDIF}
+  XSendDebug(Format('Formatting requested for "%s"', [_FileName]));
   TempSettings := nil;
   FullText := TStringList.Create;
   try
@@ -311,8 +305,7 @@ begin
     SettingsName := Trim(GetSettingsName(_FileName, FullText));
     if SettingsName <> '-' then begin
       if SettingsName <> '' then begin
-{$IFOPT D+}XSendDebug(Format('Use settings "%s"', [SettingsName]));
-{$ENDIF}
+        XSendDebug(Format('Use settings "%s"', [SettingsName]));
         TempSettings := TCodeFormatterSettings.Create;
         if TCodeFormatterConfigHandler.GetDefaultConfig(SettingsName, TempSettings) then begin
           OrigSettings := FEngine.Settings.Settings;
@@ -320,25 +313,20 @@ begin
         end else
           FreeAndNil(TempSettings);
       end else
-{$IFOPT D+}XSendDebug('Use default settings');
-{$ENDIF}
+        XSendDebug('Use default settings');
 
       Result := FEngine.Execute(FullText);
       if Result then begin
-{$IFOPT D+}XSendDebug('Saving changed file');
-{$ENDIF}
+        XSendDebug('Saving changed file');
         // add an empty line to be compatible with running in the IDE
         FullText.Add('');
         FullText.SaveToFile(_FileName);
         FEngine.Settings.ShowDoneDialog := ShowDoneDialog(FEngine.Settings.ShowDoneDialog);
       end else begin
-{$IFOPT D+}XSendDebug('Nothing changed');
-{$ENDIF}
+        XSendDebug('Nothing changed');
       end;
     end else
-{$IFOPT D+}XSendDebug('Ignore request');
-{$ENDIF}
-
+      XSendDebug('Ignoring request, no settings name available');
   finally
     FreeAndNil(FullText);
     if Assigned(TempSettings) then begin
