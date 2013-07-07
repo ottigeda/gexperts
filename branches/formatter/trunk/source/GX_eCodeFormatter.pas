@@ -79,12 +79,24 @@ end;
 procedure TeCodeFormatterExpert.GetHelpString(List: TStrings);
 resourcestring
   SFormatterHelp =
-    '  This expert is the source code formatter formerly known as' +
-    ' DelForEx. It can handle different configuration sets between which' +
-    ' you can switch using the tools button.' + sLineBreak +
-    '  To force a configuration set for a particular unit, add' + sLineBreak + sLineBreak +
-    ' {GXFormatter.config=<name>}' + sLineBreak + sLineBreak +
-    ' as the first line to the unit.';
+    'This expert is the source code formatter formerly known as ' +
+    'DelForEx. To switch between different configuration sets, ' +
+    'use the tools button.' + sLineBreak +
+    'To force a configuration set for a particular unit, add' + sLineBreak +
+    '    {GXFormatter.config=<configname>}' + sLineBreak +
+    'as the first line to the unit.' + sLineBreak +
+    'You can also use a GXFormatter.ini per directory with content ' +
+    'like:' + sLineBreak +
+    '    [FileSettings]' + sLineBreak +
+    '    <mask>=<configname>' + sLineBreak +
+    'The formatter will use the first match for the file name. ' +
+    'An empty <configname> means that it should use the ' +
+    'as configured in this dialog.' + sLineBreak +
+    'You can also export your own configuration as' + sLineBreak +
+    '    FormatterSettings-<YourName>.ini' + sLineBreak +
+    'and put it into the GExperts installation directory.' + sLineBreak +
+    'After doing this <YourName> can be used as <configname> as ' +
+    'described above.';
 begin
   List.Text := SFormatterHelp;
 end;

@@ -112,7 +112,7 @@ function TCodeFormatterExpert.GetSettingsName(FileName: string; FullText: TStrin
     try
       ConfiguredFileNames := TStringList.Create;
       try
-        // Read section manually to conserve ordering:
+        // Read section manually to preserve order:
         IniFile.ReadSection('FileSettings', ConfiguredFileNames);
         for i := 0 to Pred(ConfiguredFileNames.Count) do begin
           ConfiguredFileName := ConfiguredFileNames[i];
