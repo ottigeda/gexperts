@@ -31,6 +31,7 @@ type
     procedure testAsm;
     procedure testAsmProblem1;
     procedure testAssemblerNewlines;
+    procedure testCharList;
     procedure testClassVar;
     procedure testCommentEnd;
     procedure testCompilerDirectives;
@@ -509,6 +510,11 @@ end;
 procedure TTestTestfiles.testAsmProblem1;
 begin
   TestFile('AsmProblem1');
+end;
+
+procedure TTestTestfiles.testCharList;
+begin
+  TestFile('CharList');
 end;
 
 procedure TTestTestfiles.testClassInImplementation;

@@ -501,7 +501,8 @@ begin
 
   // This is for changing the casing of identifiers without adding them to
   // the global list.
-  _Dest := FIdentifiers.AddIdentifier(_Dest);
+  if (Result <> wtString) and (not FReadingAsm) then
+    _Dest := FIdentifiers.AddIdentifier(_Dest);
 
   if SameText(_Dest, AnsiString('asm')) then begin
     FReadingAsm := True;
