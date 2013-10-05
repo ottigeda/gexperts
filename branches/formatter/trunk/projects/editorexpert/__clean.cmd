@@ -1,17 +1,24 @@
-call :cleandir 6
-call :cleandir 7
-call :cleandir 2005
-call :cleandir 2006
-call :cleandir 2007
-call :cleandir 2009
-call :cleandir 2010
-call :cleandir XE1
-call :cleandir XE2
-call :cleandir XE3
-call :cleandir XE4
+if "%1"=="" goto :list
+call :doItem %1
+goto :eof
+:list
+
+call :doItem 6
+call :doItem 7
+call :doItem 2005
+call :doItem 2006
+call :doItem 2007
+call :doItem 2009
+call :doItem 2010
+call :doItem XE1
+call :doItem XE2
+call :doItem XE3
+call :doItem XE4
+call :doItem XE5
+
 goto :eof
 
-:cleandir
+:doItem
 pushd delphi%1
 call :doclean
 popd

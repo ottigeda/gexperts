@@ -56,7 +56,8 @@ implementation
 uses
   StrUtils,
   GX_CodeFormatterFormatter,
-  GX_CodeFormatterParser;
+  GX_CodeFormatterParser,
+  GX_GenericUtils;
 
 constructor TCodeFormatterEngine.Create;
 begin
@@ -76,9 +77,7 @@ var
   TokenNo: Integer;
   OrigSource: string;
   Tokens: TPascalTokenList;
-  s: string;
-  OrigLen: Integer;
-  NewLen: Integer;
+  NewSource: string;
 begin
   try
     _SourceCode.BeginUpdate;
@@ -100,22 +99,8 @@ begin
       Tokens.Free;
     end;
 
-    // this checks for the case that either the formatter or the IDE
-    // removed or added a CRLF at the end of the file
-    // checking the length first prevents costly multiple
-    // comparisons of potentially large strings
-    s := _SourceCode.Text;
-    OrigLen := Length(OrigSource);
-    NewLen := Length(s);
-
-    if OrigLen = NewLen then
-      Result := (OrigSource <> s)
-    else if OrigLen = NewLen + 2 then
-      Result := (OrigSource <> s + LineBreak)
-    else if OrigLen + 2 = NewLen then
-      Result := (OrigSource + LineBreak <> s)
-    else
-      Result := True;
+    NewSource := _SourceCode.Text;
+    Result := SourceDifferentApartFromTrailingLineBreak(OrigSource, NewSource);
   except
     on E: Exception do begin
       Result := False;
@@ -160,4 +145,5 @@ begin
 end;
 
 end.
+
 

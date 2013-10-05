@@ -1,3 +1,8 @@
+if "%1"=="" goto :list
+call :dobuild %1
+goto :eof
+:list
+
 call :dobuild 6
 call :dobuild 7
 call :dobuild 2005
@@ -9,6 +14,7 @@ call :dobuild XE1
 call :dobuild XE2
 call :dobuild XE3
 call :dobuild XE4
+call :dobuild XE5
 
 goto :eof
 

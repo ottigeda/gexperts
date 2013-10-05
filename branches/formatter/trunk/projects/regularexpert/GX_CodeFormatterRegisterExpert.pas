@@ -1,5 +1,7 @@
 unit GX_CodeFormatterRegisterExpert;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 implementation

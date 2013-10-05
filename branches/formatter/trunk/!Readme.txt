@@ -15,8 +15,24 @@ If I haven't made a mistake, this script should then compile a GExpertsXxx.dll
 to the folder regularexpert or editorexpert respectively.
 (Of course you need Delphi to be installed for this to work.)
 
-To build all possible GExpert versions, you can just call __build.cmd in the
-root of the source tree.
+To build the two GExpert versions for a specific Delphi version, you can just 
+call __build.cmd in the root of the source tree followed by a Delphi version:
+
+    6
+    7
+    2005
+    2006
+    2007
+    2009
+    2010
+    XE1
+    XE2
+    XE3
+    XE4
+    XE5
+
+To build the two GExpert versions for all possible Delphi versions, you can 
+just call __build.cmd in the root of the source tree.
 (Of course you need all necessary Delphi versions to be installed for this.)
 
 To change the version information prior to building edit the files
@@ -24,3 +40,15 @@ To change the version information prior to building edit the files
 * GExperts_ExpertType_version.ini in the projects\editorexpert or
   projects\regularexpert respectively
 These files are used by all projects so you only need to edit them.
+
+Like __build.cmd, call __Release.cmd with or without a version parameter to 
+create a GExperts-experimental-twm.zip file that contains all the files 
+needed to install the experimental GExperts.
+
+
+**Dependenties**
+
+__Release.cmd depends on zip.exe in your path which you can download from http://www.info-zip.org/Zip.html
+
+__build.cmd needs the Delphi versions you want to compile for.
+

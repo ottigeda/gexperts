@@ -1,11 +1,28 @@
-call :cleandir 2009
-call :cleandir 2010
-call :cleandir 2011
 call :deltree __history
 call :deltree ModelSupport
+
+if "%1"=="" goto :list
+call :doItem %1
+goto :eof
+:list
+
+call :doItem 6
+call :doItem 7
+call :doItem 2005
+call :doItem 2006
+call :doItem 2007
+call :doItem 2009
+call :doItem 2010
+call :doItem 2011
+call :doItem XE1
+call :doItem XE2
+call :doItem XE3
+call :doItem XE4
+call :doItem XE5
+
 goto :eof
 
-:cleandir
+:doItem
 pushd delphi%1
 call :doclean
 popd

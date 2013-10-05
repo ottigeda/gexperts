@@ -27,7 +27,6 @@ const
   Maxline = 1024; // the maximum line length of the Delphi editor
   NotPrintable = [#1..#8, #10..#14, #16..#19, #22..#31]; { not printable chars }
   Tab = #9;
-  LineBreak = #13#10;
   Space = ' ';
   MaxCollectionSize = Maxint div (SizeOf(Integer) * 2);
 

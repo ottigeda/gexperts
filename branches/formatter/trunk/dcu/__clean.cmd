@@ -1,17 +1,30 @@
 del bds2006\editorexpert\*.dcu
 del bds2006\regularexpert\*.dcu
-del delphi6\editorexpert\*.dcu
-del delphi6\regularexpert\*.dcu
-del delphi7\editorexpert\*.dcu
-del delphi7\regularexpert\*.dcu
-del delphi2005\editorexpert\*.dcu
-del delphi2005\regularexpert\*.dcu
-del delphi2007\editorexpert\*.dcu
-del delphi2007\regularexpert\*.dcu
-del delphi2009\editorexpert\*.dcu
-del delphi2009\regularexpert\*.dcu
-del delphi2010\editorexpert\*.dcu
-del delphi2010\regularexpert\*.dcu
-del delphiXE1\editorexpert\*.dcu
-del delphiXE1\regularexpert\*.dcu
 del unittests\*.dcu
+
+if "%1"=="" goto :list
+call :doItem %1
+goto :eof
+:list
+
+call :doItem 6
+call :doItem 7
+call :doItem 2005
+call :doItem 2006
+call :doItem 2007
+call :doItem 2009
+call :doItem 2010
+call :doItem XE1
+call :doItem XE2
+call :doItem XE3
+call :doItem XE4
+call :doItem XE5
+
+goto :eof
+
+:doItem
+del delphi%1\editorexpert\*.dcu
+del delphi%1\regularexpert\*.dcu
+
+goto :eof
+
