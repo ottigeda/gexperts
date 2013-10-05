@@ -16,6 +16,7 @@ set DelphiXEDir=%ProgFiles%\Embarcadero\RAD Studio\8.0
 set DelphiXE2Dir=%ProgFiles%\Embarcadero\RAD Studio\9.0
 set DelphiXE3Dir=%ProgFiles%\Embarcadero\RAD Studio\10.0
 set DelphiXE4Dir=%ProgFiles%\Embarcadero\RAD Studio\11.0
+set DelphiXE5Dir=%ProgFiles%\Embarcadero\RAD Studio\12.0
 goto :eof
 
 :custom
@@ -27,4 +28,5 @@ set DelphiXE2Dir=%DelphiProgDir%\DelphiXE2
 set DelphiXE3Dir=%DelphiProgDir%\DelphiXE3
 rem Stupid me forgot to install XE4 to c:\delphi - sorry if anybody relied on this being consistent
 set DelphiXE4Dir=%ProgFiles%\Embarcadero\RAD Studio\11.0
+set DelphiXE5Dir=%DelphiProgDir%\DelphiXE5
 goto :eof
