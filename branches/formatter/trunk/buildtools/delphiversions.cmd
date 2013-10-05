@@ -23,7 +23,7 @@ goto :eof
 set Delphi2007Dir=%DelphiProgDir%\Delphi2007
 set Delphi2009Dir=%DelphiProgDir%\Delphi2009
 set Delphi2010Dir=%DelphiProgDir%\Delphi2010
-set DelphiXEDir=%DelphiProgDir%\DelphiXE1
+set DelphiXEDir=%DelphiProgDir%\DelphiXE
 set DelphiXE2Dir=%DelphiProgDir%\DelphiXE2
 set DelphiXE3Dir=%DelphiProgDir%\DelphiXE3
 rem Stupid me forgot to install XE4 to c:\delphi - sorry if anybody relied on this being consistent
