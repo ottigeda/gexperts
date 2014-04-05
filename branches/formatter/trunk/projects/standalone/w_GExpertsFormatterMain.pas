@@ -13,6 +13,7 @@ uses
   Classes,
   Graphics,
   Controls,
+  ComCtrls,
   Forms,
   ShellApi,
   Dialogs,
@@ -29,6 +30,7 @@ type
     b_Exit: TButton;
     b_Settings: TButton;
     b_About: TButton;
+    TheStatusBar: TStatusBar;
     procedure b_ExitClick(Sender: TObject);
     procedure ed_FileToFormatChange(Sender: TObject);
     procedure b_SelectFileClick(Sender: TObject);
@@ -52,9 +54,6 @@ implementation
 
 {$R *.dfm}
 
-uses
-  GX_VerDepConst;
-
 type
   TFormatFileFunc = function(_FileName: PChar): Boolean;
   TFormatFilesFunc = function(_FileNames: PChar): Boolean;
@@ -73,15 +72,28 @@ var
   AboutFormatter: TAboutFormatterProc = nil;
   HModule: THandle;
 
-function LoadGExperts: boolean;
+function LoadGExperts(out _DllName: string): Boolean;
+var
+  Path: string;
+  sr: TSearchRec;
 begin
-  HModule := SafeLoadLibrary(GExpertsDll);
-  if HModule = 0 then begin
-    ShowMessageFmt('Could not load %s', [GExpertsDll]);
-    Result := false;
-    exit;
+  Result := False;
+  Path := ExtractFilePath(Application.ExeName);
+  Path := IncludeTrailingPathDelimiter(Path);
+  if FindFirst(Path + 'GExperts*.dll', faNormal, sr) = 0 then begin
+    try
+      _DllName := sr.Name;
+      HModule := SafeLoadLibrary(_DllName);
+      if HModule = 0 then begin
+        ShowMessage('Could not load GExperts*.dll');
+        Exit;
+      end;
+    finally
+      FindClose(sr);
+    end;
   end;
-  Result := true;
+
+  Result := True;
 
   FormatFile := GetProcAddress(HModule, EntryPoint_FormatFile);
   FormatFiles := GetProcAddress(HModule, EntryPoint_FormatFiles);
@@ -89,13 +101,14 @@ begin
   AboutFormatter := GetProcAddress(HModule, EntryPoint_AboutFormatter);
 end;
 
-procedure Interactive;
+procedure Interactive(const _DllName: string);
 var
   frm: Tf_GExpertsFormatterMain;
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(Tf_GExpertsFormatterMain, frm);
+  frm.TheStatusBar.SimpleText := _DllName + ' loaded.';
   Application.Run;
 end;
 
@@ -127,19 +140,21 @@ begin
 end;
 
 procedure Main;
+var
+  DLLName: string;
 begin
-  if LoadGExperts then begin
+  if LoadGExperts(DLLName) then begin
     try
       if ParamCount = 0 then begin
         if not Assigned(@FormatFile) then begin
-          ShowMessage(Format('%s does not export entry point %s.', [GExpertsDll, EntryPoint_FormatFile]));
-          exit;
+          ShowMessage(Format('%s does not export entry point %s.', [DLLName, EntryPoint_FormatFile]));
+          Exit;
         end;
-        Interactive;
+        Interactive(DLLName);
       end else begin
         if not Assigned(@FormatFiles) then begin
-          ShowMessage(Format('%s does not export entry point %s.', [GExpertsDll, EntryPoint_FormatFiles]));
-          exit;
+          ShowMessage(Format('%s does not export entry point %s.', [DLLName, EntryPoint_FormatFiles]));
+          Exit;
         end;
         Batch;
       end;
@@ -201,7 +216,7 @@ procedure Tf_GExpertsFormatterMain.InstallWindowProc;
 var
   frm: TForm;
 begin
-  frm := self as TForm;
+  frm := Self as TForm;
   FOldLBWindowProc := frm.WindowProc;
   frm.WindowProc := NewWindowProc;
   DragAcceptFiles(frm.Handle, True);
@@ -211,7 +226,7 @@ procedure Tf_GExpertsFormatterMain.UninstallWindowProc;
 var
   frm: TForm;
 begin
-  frm := self as TForm;
+  frm := Self as TForm;
   DragAcceptFiles(frm.Handle, False);
   frm.WindowProc := FOldLBWindowProc;
 end;
@@ -225,7 +240,7 @@ end;
 
 procedure Tf_GExpertsFormatterMain.WMDROPFILES(var Msg: TMessage);
 var
-  pcFileName: array[0..255] of char;
+  pcFileName: array[0..255] of Char;
   fn: string;
   i, iSize, iFileCount: Integer;
 begin

@@ -3,7 +3,7 @@ object f_GExpertsFormatterMain: Tf_GExpertsFormatterMain
   Top = 0
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'GExperts Source Code Formatter'
-  ClientHeight = 97
+  ClientHeight = 113
   ClientWidth = 345
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,7 +15,7 @@ object f_GExpertsFormatterMain: Tf_GExpertsFormatterMain
   Position = poScreenCenter
   DesignSize = (
     345
-    97)
+    113)
   PixelsPerInch = 96
   TextHeight = 13
   object l_: TLabel
@@ -49,7 +49,7 @@ object f_GExpertsFormatterMain: Tf_GExpertsFormatterMain
     Top = 64
     Width = 75
     Height = 25
-    Anchors = [akRight, akBottom]
+    Anchors = [akTop, akRight]
     Caption = 'Format'
     Default = True
     Enabled = False
@@ -61,7 +61,7 @@ object f_GExpertsFormatterMain: Tf_GExpertsFormatterMain
     Top = 64
     Width = 75
     Height = 25
-    Anchors = [akRight, akBottom]
+    Anchors = [akTop, akRight]
     Cancel = True
     Caption = 'Exit'
     TabOrder = 3
@@ -84,6 +84,14 @@ object f_GExpertsFormatterMain: Tf_GExpertsFormatterMain
     Caption = 'About ...'
     TabOrder = 5
     OnClick = b_AboutClick
+  end
+  object TheStatusBar: TStatusBar
+    Left = 0
+    Top = 94
+    Width = 345
+    Height = 19
+    Panels = <>
+    SimplePanel = True
   end
   object od_File: TOpenDialog
     DefaultExt = '.pas'
