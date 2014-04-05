@@ -9,6 +9,10 @@ set ProgFiles=%ProgramFiles%
 
 if not "%DelphiProgDir%"=="" goto custom
 
+set Delphi6Dir=%ProgFiles%\Borland\Delphi6
+set Delphi7Dir=%ProgFiles%\Borland\Delphi7
+set Delphi2005Dir="%ProgFiles%\Borland\BDS\3.0
+set Delphi2006Dir="%ProgFiles%\Borland\BDS\4.0
 set Delphi2007Dir=%ProgFiles%\CodeGear\RAD Studio\5.0
 set Delphi2009Dir=%ProgFiles%\CodeGear\RAD Studio\6.0
 set Delphi2010Dir=%ProgFiles%\Embarcadero\RAD Studio\7.0
@@ -20,6 +24,10 @@ set DelphiXE5Dir=%ProgFiles%\Embarcadero\RAD Studio\12.0
 goto :eof
 
 :custom
+set Delphi6Dir=%DelphiProgDir%\Delphi6
+set Delphi7Dir=%DelphiProgDir%\Delphi7
+set Delphi2005Dir=%DelphiProgDir%\Delphi2005
+set Delphi2006Dir=%DelphiProgDir%\Delphi2006
 set Delphi2007Dir=%DelphiProgDir%\Delphi2007
 set Delphi2009Dir=%DelphiProgDir%\Delphi2009
 set Delphi2010Dir=%DelphiProgDir%\Delphi2010
