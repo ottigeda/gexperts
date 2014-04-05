@@ -1,6 +1,8 @@
 object f_GExpertsFormatterAbout: Tf_GExpertsFormatterAbout
   Left = 0
   Top = 0
+  BorderIcons = []
+  BorderStyle = bsDialog
   Caption = 'About GExperts Source Code Formatter'
   ClientHeight = 113
   ClientWidth = 401
