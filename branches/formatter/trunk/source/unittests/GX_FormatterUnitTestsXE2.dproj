@@ -45,7 +45,7 @@
 			<VerInfo_Locale>1033</VerInfo_Locale>
 			<VerInfo_Keys>FileVersion=1.0.0.1;ProductVersion=1.0.0.0;CompanyName=;FileDescription=;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=</VerInfo_Keys>
 			<DCC_ExeOutput>..\..\</DCC_ExeOutput>
-			<DCC_UnitSearchPath>..\..\gx\source\framework;..\..\source\common;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+			<DCC_UnitSearchPath>..\..\gx\source\framework;..\..\gx\source\utils;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
 			<DCC_DcuOutput>..\..\dcu\unittests</DCC_DcuOutput>
 			<DCC_DependencyCheckOutputName>..\..\GX_FormatterUnitTests.exe</DCC_DependencyCheckOutputName>
 		</PropertyGroup>
@@ -85,7 +85,6 @@
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
 			<DCC_MapFile>3</DCC_MapFile>
-			<Manifest_File>None</Manifest_File>
 			<VerInfo_IncludeVerInfo>false</VerInfo_IncludeVerInfo>
 			<VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.1;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
 		</PropertyGroup>
