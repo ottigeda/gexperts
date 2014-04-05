@@ -33,25 +33,8 @@ goto :x86
   set FilesToCopy=ExpertManager.exe GExperts.chm regularexpert\GExpertsRSXE4.dll preview.pas *.ini
 
   for %%f in (%FilesToCopy%) do copy /y %%f "%TargetDirectory%\"
-  set RegFile="%TargetDirectory%\ExpertsXE4.reg" 
-::  explorer /select,"%TargetDirectory%\GExpertsRSXE4.dll"
 
-:: expand backslash into double backslash for .REG file
-  set ExpertTarget="%TargetDirectory%\GExpertsRSXE4.dll"
-  set ExpertTarget=%ExpertTarget:\=\\%
-
-::Windows Registry Editor Version 5.00
-::
-::[HKEY_CURRENT_USER\Software\Embarcadero\BDS\11.0\Experts]
-::"GExperts"="C:\\Program Files (x86)\\GExperts for RAD Studio XE4\\GExpertsRSXE4.dll"
-::
-  echo Windows Registry Editor Version 5.00 >%RegFile%
-  echo. >>%RegFile%
-  echo [HKEY_CURRENT_USER\Software\Embarcadero\BDS\11.0\Experts] >>%RegFile%
-  echo "GExperts"=%ExpertTarget% >>%RegFile%
-  echo. >>%RegFile%
-::  explorer /select,%RegFile%
-  regedit /S %RegFile%
+  rundll32 "%TargetDirectory%\GExpertsRSXE5.dll,InstallGExperts
 
   endlocal
 
