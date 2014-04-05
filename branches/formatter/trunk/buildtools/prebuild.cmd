@@ -1,8 +1,8 @@
+@echo off
 @rem prebuild.cmd should be called as pre-build event like this:
 @rem ..\buildtools\prebuild.cmd $(OUTPUTDIR)$(OUTPUTNAME)
-@echo on
-@echo %0 running in
-cd
+@echo %0
+@echo running in %CD%
 
 set PROJECTPATH=%1
 if "%PROJECTPATH%"=="" goto NeedPara
