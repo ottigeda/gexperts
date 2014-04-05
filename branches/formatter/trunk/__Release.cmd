@@ -1,10 +1,12 @@
+@echo off
 set ZIPFile=GExperts-experimental-twm.zip
+set ZIPEXE=buildtools\7z a -tzip
 
-del %ZIPFile%
-cd release
+if exist %ZIPFile% del %ZIPFile%
+pushd release
 echo adding common files
-zip -9 ..\%ZIPFile% *
-cd ..
+..\%ZIPEXE% ..\%ZIPFile% *
+popd
 
 if "%1"=="" goto :list
 call :doItem %1
@@ -36,20 +38,20 @@ goto :eof
 :dozip
 echo adding %1 %2
 
-if %2==6     zip -9 %ZIPFile% %1\GExpertsD6.dll
-if %2==7     zip -9 %ZIPFile% %1\GExpertsD7.dll
-if %2==2005  zip -9 %ZIPFile% %1\GExpertsDelphi2005.dll
-if %2==2006  zip -9 %ZIPFile% %1\GExpertsBDS2006.dll
-if %2==2007  zip -9 %ZIPFile% %1\GExpertsDelphi2007.dll
-if %2==2009  zip -9 %ZIPFile% %1\GExpertsRS2009.dll
-if %2==2010  zip -9 %ZIPFile% %1\GExpertsRS2010.dll
-if %2==XE1   zip -9 %ZIPFile% %1\GExpertsRSXE1.dll
-if %2==XE2   zip -9 %ZIPFile% %1\GExpertsRSXE2.dll
-if %2==XE3   zip -9 %ZIPFile% %1\GExpertsRSXE3.dll
-if %2==XE4   zip -9 %ZIPFile% %1\GExpertsRSXE4.dll
-if %2==XE5   zip -9 %ZIPFile% %1\GExpertsRSXE5.dll
+if %2==6     %ZIPEXE% %ZIPFile% %1\GExpertsD6.dll
+if %2==7     %ZIPEXE% %ZIPFile% %1\GExpertsD7.dll
+if %2==2005  %ZIPEXE% %ZIPFile% %1\GExpertsDelphi2005.dll
+if %2==2006  %ZIPEXE% %ZIPFile% %1\GExpertsBDS2006.dll
+if %2==2007  %ZIPEXE% %ZIPFile% %1\GExpertsDelphi2007.dll
+if %2==2009  %ZIPEXE% %ZIPFile% %1\GExpertsRS2009.dll
+if %2==2010  %ZIPEXE% %ZIPFile% %1\GExpertsRS2010.dll
+if %2==XE1   %ZIPEXE% %ZIPFile% %1\GExpertsRSXE1.dll
+if %2==XE2   %ZIPEXE% %ZIPFile% %1\GExpertsRSXE2.dll
+if %2==XE3   %ZIPEXE% %ZIPFile% %1\GExpertsRSXE3.dll
+if %2==XE4   %ZIPEXE% %ZIPFile% %1\GExpertsRSXE4.dll
+if %2==XE5   %ZIPEXE% %ZIPFile% %1\GExpertsRSXE5.dll
 pushd install
-zip -9 ..\%ZIPFile% *-%2*.*
+..\%ZIPEXE% ..\%ZIPFile% *-%2*.*
 popd
 
 goto :eof
