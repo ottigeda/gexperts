@@ -1,6 +1,6 @@
 :: check if user is administrator
 
-  "C:\Windows\system32\cacls.exe" "C:\Windows\system32\config\system" 1>nul 2>&1  && (goto :isAdmin)
+  "%SystemRoot%\system32\cacls.exe" "%SystemRoot%\system32\config\system" 1>nul 2>&1  && (goto :isAdmin)
 :isNoAdmin
   echo you need to be Administrator, and (when under Vista or higher) run this using using UAC
   goto :exit
