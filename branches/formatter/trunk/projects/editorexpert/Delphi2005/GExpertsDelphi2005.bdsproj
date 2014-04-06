@@ -40,7 +40,7 @@
 			<Compiler Name="V" Type="Integer">1</Compiler>
 			<Compiler Name="W" Type="Integer">0</Compiler>
 			<Compiler Name="X" Type="Integer">1</Compiler>
-			<Compiler Name="Y" Type="Integer">0</Compiler>
+			<Compiler Name="Y" Type="Integer">1</Compiler>
 			<Compiler Name="Z" Type="Integer">1</Compiler>
 			<Compiler Name="ShowHints" Type="Boolean">True</Compiler>
 			<Compiler Name="ShowWarnings" Type="Boolean">True</Compiler>
