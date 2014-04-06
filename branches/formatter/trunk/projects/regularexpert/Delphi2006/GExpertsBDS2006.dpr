@@ -1,6 +1,7 @@
 library GExpertsBDS2006;
 
 {$R '..\..\..\gx\images\GXIcons.res' '..\..\..\gx\images\GXIcons.rc'}
+{%File '_prebuild.cmd'}
 {$R *_version.res}
 {$E dll}
 
