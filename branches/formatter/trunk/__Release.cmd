@@ -3,6 +3,8 @@ set ZIPFile=GExperts-experimental-twm.zip
 set ZIPEXE=buildtools\7z a -tzip
 
 if exist %ZIPFile% del %ZIPFile%
+
+rem * Add all files that don't change
 pushd release
 echo adding common files
 ..\%ZIPEXE% ..\%ZIPFile% *
@@ -26,32 +28,40 @@ call :doItem XE3
 call :doItem XE4
 call :doItem XE5
 
+%ZIPEXE% ..\%ZIPFile% install\Register-GExperts-*.cmd
+
+pause
+
 goto :eof
 
 :doItem
-call :dozip editorexpert %1
-call :dozip regularexpert %1
 
-pause
+setlocal
+
+if %1==6     set GExpertsDLL=GExpertsD6
+if %1==7     set GExpertsDLL=GExpertsD7
+if %1==2005  set GExpertsDLL=GExpertsDelphi2005
+if %1==2006  set GExpertsDLL=GExpertsBDS2006
+if %1==2007  set GExpertsDLL=GExpertsDelphi2007
+if %1==2009  set GExpertsDLL=GExpertsRS2009
+if %1==2010  set GExpertsDLL=GExpertsRS2010
+if %1==XE1   set GExpertsDLL=GExpertsRSXE1
+if %1==XE2   set GExpertsDLL=GExpertsRSXE2
+if %1==XE3   set GExpertsDLL=GExpertsRSXE3
+if %1==XE4   set GExpertsDLL=GExpertsRSXE4
+if %1==XE5   set GExpertsDLL=GExpertsRSXE5
+
+if "%GExpertsDLL%" == "" goto nodll
+
+%ZIPEXE% %ZIPFile% regularexpert\%GExpertsDLL%.dll editorexpert\%GExpertsDLL%.dll
+
+endlocal
 goto :eof
 
-:dozip
-echo adding %1 %2
-
-if %2==6     %ZIPEXE% %ZIPFile% %1\GExpertsD6.dll
-if %2==7     %ZIPEXE% %ZIPFile% %1\GExpertsD7.dll
-if %2==2005  %ZIPEXE% %ZIPFile% %1\GExpertsDelphi2005.dll
-if %2==2006  %ZIPEXE% %ZIPFile% %1\GExpertsBDS2006.dll
-if %2==2007  %ZIPEXE% %ZIPFile% %1\GExpertsDelphi2007.dll
-if %2==2009  %ZIPEXE% %ZIPFile% %1\GExpertsRS2009.dll
-if %2==2010  %ZIPEXE% %ZIPFile% %1\GExpertsRS2010.dll
-if %2==XE1   %ZIPEXE% %ZIPFile% %1\GExpertsRSXE1.dll
-if %2==XE2   %ZIPEXE% %ZIPFile% %1\GExpertsRSXE2.dll
-if %2==XE3   %ZIPEXE% %ZIPFile% %1\GExpertsRSXE3.dll
-if %2==XE4   %ZIPEXE% %ZIPFile% %1\GExpertsRSXE4.dll
-if %2==XE5   %ZIPEXE% %ZIPFile% %1\GExpertsRSXE5.dll
-pushd install
-..\%ZIPEXE% ..\%ZIPFile% *-%2*.*
-popd
+:nodll
+echo "%2" is not a valid Delphi version
+pause
+endlocal
+goto :eof
 
 goto :eof
