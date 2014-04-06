@@ -21,11 +21,15 @@ goto :eof
 
 :doItem
 pushd projects\editorexpert
+setlocal
 call __build.cmd %1
+endlocal
 popd
 
 pushd projects\regularexpert
+setlocal
 call __build.cmd %1
+endlocal
 popd
 
 goto :eof

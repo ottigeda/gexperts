@@ -20,6 +20,8 @@ goto :eof
 
 :dobuild
 pushd Delphi%1
+setlocal
 call __Build_Project.cmd
+endlocal
 popd
 goto :eof
