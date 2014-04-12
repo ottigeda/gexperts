@@ -19,6 +19,7 @@ call :doItem XE5
 goto :eof
 
 :doItem
+if not exist delphi%1 goto :eof
 pushd delphi%1
 call :doclean
 popd

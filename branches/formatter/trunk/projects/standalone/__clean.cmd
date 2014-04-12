@@ -1,6 +1,3 @@
-call :deltree __history
-call :deltree ModelSupport
-
 if "%1"=="" goto :list
 call :doItem %1
 goto :eof
@@ -13,7 +10,6 @@ call :doItem 2006
 call :doItem 2007
 call :doItem 2009
 call :doItem 2010
-call :doItem 2011
 call :doItem XE1
 call :doItem XE2
 call :doItem XE3
@@ -23,6 +19,7 @@ call :doItem XE5
 goto :eof
 
 :doItem
+if not exist delphi%1 goto :eof
 pushd delphi%1
 call :doclean
 popd
@@ -31,10 +28,11 @@ del ..\..\dcu\Delphi%1\standalone\*.dcu
 goto :eof
 
 :doclean
+call :delfile GXIcons.res
 call :delfile *.~*
 call :delfile *.local
-call :delfile *.identcache
 call :delfile *.cfg
+call :delfile *.identcache
 call :delfile *.dsk
 call :deltree __history
 call :deltree ModelSupport
