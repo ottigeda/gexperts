@@ -1,8 +1,8 @@
 if "%1"=="" goto :list
 call :doItem %1
 goto :eof
-:list
 
+:list
 call :doItem 6
 call :doItem 7
 call :doItem 2005
@@ -19,16 +19,16 @@ call :doItem XE5
 goto :eof
 
 :doItem
-pushd editorexpert
-call __clean.cmd %1
-popd
+call :doDir editorexpert %1
+call :doDir regularexpert %1
+call :doDir standalone %1
 
-pushd regularexpert
-call __clean.cmd %1
-popd
+goto :eof
 
-pushd standalone
-call __clean.cmd %1
+:doDir
+if not exist %1 goto :eof
+pushd %1
+call __clean.cmd %2
 popd
 
 goto :eof
