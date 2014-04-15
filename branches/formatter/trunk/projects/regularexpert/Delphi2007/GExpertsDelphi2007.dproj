@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ProjectGuid>{4f1288a1-b13b-41ea-9c9b-de874d79eba0}</ProjectGuid>
     <MainSource>GExpertsDelphi2007.dpr</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
     <DCC_DependencyCheckOutputName>..\..\..\regularexpert\GExpertsDelphi2007.dll</DCC_DependencyCheckOutputName>
@@ -15,7 +15,6 @@
     <DCC_DebugInformation>False</DCC_DebugInformation>
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
-    <DCC_Define>synedit</DCC_Define>
     <DCC_ExeOutput>..\..\..\regularexpert</DCC_ExeOutput>
     <DCC_DcuOutput>..\..\..\dcu\delphi2007\regularexpert</DCC_DcuOutput>
     <DCC_ObjOutput>..\..\..\dcu\delphi2007\regularexpert</DCC_ObjOutput>
@@ -37,7 +36,6 @@
     <DCC_ResourcePath>..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\UniSynEdit</DCC_ResourcePath>
     <DCC_ObjPath>..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\UniSynEdit</DCC_ObjPath>
     <DCC_IncludePath>..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\UniSynEdit</DCC_IncludePath>
-    <DCC_Define>synedit</DCC_Define>
     <DCC_Optimize>False</DCC_Optimize>
   </PropertyGroup>
   <ProjectExtensions>

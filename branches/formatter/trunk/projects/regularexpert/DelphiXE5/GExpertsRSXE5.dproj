@@ -60,7 +60,6 @@
         <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
         <DCC_ExeOutput>..\..\..\regularexpert\</DCC_ExeOutput>
         <DCC_UnitSearchPath>..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\UniSynEdit;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <DCC_Define>synedit;$(DCC_Define)</DCC_Define>
         <DCC_DcuOutput>..\..\..\dcu\delphiXE5\regularexpert</DCC_DcuOutput>
         <UsePackages>true</UsePackages>
         <GenDll>true</GenDll>
@@ -90,7 +89,6 @@ $(PreBuildEvent)]]></PreBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <Debugger_RunParams>-pDelphi</Debugger_RunParams>
-        <Debugger_HostApplication></Debugger_HostApplication>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.3.7.8;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -515,14 +513,11 @@ $(PreBuildEvent)]]></PreBuildEvent>
                     <Source Name="MainSource">GExpertsRSXE5.dpr</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k190.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp190.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k190.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp190.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Platforms>
-                <Platform value="OSX32">False</Platform>
                 <Platform value="Win32">True</Platform>
                 <Platform value="Win64">False</Platform>
             </Platforms>

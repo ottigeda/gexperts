@@ -15,7 +15,6 @@
     <DCC_DebugInformation>False</DCC_DebugInformation>
     <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
-    <DCC_Define>synedit</DCC_Define>
     <DCC_ExeOutput>..\..\..\editorexpert</DCC_ExeOutput>
     <DCC_DcuOutput>..\..\..\dcu\delphi2007\editorexpert</DCC_DcuOutput>
     <DCC_ObjOutput>..\..\..\dcu\delphi2007\editorexpert</DCC_ObjOutput>
@@ -37,7 +36,6 @@
     <DCC_ResourcePath>..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\UniSynEdit</DCC_ResourcePath>
     <DCC_ObjPath>..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\UniSynEdit</DCC_ObjPath>
     <DCC_IncludePath>..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\UniSynEdit</DCC_IncludePath>
-    <DCC_Define>synedit</DCC_Define>
     <DCC_Optimize>False</DCC_Optimize>
   </PropertyGroup>
   <ProjectExtensions>
