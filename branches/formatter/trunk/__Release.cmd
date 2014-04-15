@@ -27,6 +27,7 @@ call :doItem XE2
 call :doItem XE3
 call :doItem XE4
 call :doItem XE5
+call :doItem XE6
 
 %ZIPEXE% %ZIPFile% install\Register-GExperts-*.cmd
 
@@ -50,6 +51,7 @@ if %1==XE2   set GExpertsDLL=GExpertsRSXE2
 if %1==XE3   set GExpertsDLL=GExpertsRSXE3
 if %1==XE4   set GExpertsDLL=GExpertsRSXE4
 if %1==XE5   set GExpertsDLL=GExpertsRSXE5
+if %1==XE6   set GExpertsDLL=GExpertsRSXE6
 
 if "%GExpertsDLL%" == "" goto nodll
 

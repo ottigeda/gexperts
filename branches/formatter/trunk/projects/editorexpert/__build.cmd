@@ -15,6 +15,7 @@ call :dobuild XE2
 call :dobuild XE3
 call :dobuild XE4
 call :dobuild XE5
+call :dobuild XE6
 
 goto :eof
 

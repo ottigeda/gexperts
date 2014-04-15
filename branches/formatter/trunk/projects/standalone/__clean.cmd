@@ -15,6 +15,7 @@ call :doItem XE2
 call :doItem XE3
 call :doItem XE4
 call :doItem XE5
+call :doItem XE6
 
 goto :eof
 
