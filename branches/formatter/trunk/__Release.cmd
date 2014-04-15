@@ -28,7 +28,7 @@ call :doItem XE3
 call :doItem XE4
 call :doItem XE5
 
-%ZIPEXE% ..\%ZIPFile% install\Register-GExperts-*.cmd
+%ZIPEXE% %ZIPFile% install\Register-GExperts-*.cmd
 
 pause
 
