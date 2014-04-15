@@ -1,5 +1,6 @@
-@rem init for Delphi 2011 (XE) batch compile
-echo Initializing for Delphi XE
-call %~dp0\delphiversions.cmd
-set DelphiExe=%DelphiXEDir%\bin\bds.exe
-call "%DelphiXEDir%\bin\rsvars.bat"
+@rem this sets the environment variables DelphiVersion, DelphiPath and DelphiExe
+setlocal
+call %~dp0\doInitForDelphi.cmd %0
+endlocal set DelphiVersion=%DelphiVersion% & set DelphiPath=%DelphiPath%
+set DelphiExe=%DelphiPath%\bin\bds.exe
+call "%DelphiPath%\bin\rsvars.bat"

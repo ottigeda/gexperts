@@ -1,5 +1,6 @@
-@rem init for Delphi 2010 batch compile
-echo Initializing for Delphi 2010
-call %~dp0\delphiversions.cmd
-set DelphiExe=%Delphi2010Dir%\bin\bds.exe
-call "%Delphi2010Dir%\bin\rsvars.bat"
+@rem this sets the environment variables DelphiVersion, DelphiPath and DelphiExe
+setlocal
+call %~dp0\doInitForDelphi.cmd %0
+endlocal set DelphiVersion=%DelphiVersion% & set DelphiPath=%DelphiPath%
+set DelphiExe=%DelphiPath%\bin\bds.exe
+call "%DelphiPath%\bin\rsvars.bat"
