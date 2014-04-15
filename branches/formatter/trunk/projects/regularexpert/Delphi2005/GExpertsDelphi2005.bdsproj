@@ -121,7 +121,7 @@
 			<Directories Name="PackageDCPOutputDir" Type="String"></Directories>
 			<Directories Name="SearchPath" Type="String">..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\UniSynEdit</Directories>
 			<Directories Name="Packages" Type="String">vcl;rtl;vclx;designide</Directories>
-			<Directories Name="Conditionals" Type="String">synedit</Directories>
+			<Directories Name="Conditionals" Type="String"></Directories>
 			<Directories Name="DebugSourceDirs" Type="String"></Directories>
 			<Directories Name="UsePackages" Type="Boolean">True</Directories>
 		</Directories>

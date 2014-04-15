@@ -96,7 +96,7 @@ PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=..\..\..\gx\source\Framework;..\..\..\gx\ExternalSource;..\..\..\gx\ExternalSource\Abbrevia;..\..\..\gx\ExternalSource\UniSynEdit
 Packages=rtl;vcl;vclx;vclsmp;designide
-Conditionals=synedit
+Conditionals=
 DebugSourceDirs=
 UsePackages=1
 [Parameters]
