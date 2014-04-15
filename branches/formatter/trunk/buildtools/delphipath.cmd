@@ -53,7 +53,7 @@ goto DelphiEndCase
   call :ReadReg Embarcadero\BDS\12.0
   goto :eof
 :DelphiXE6
-  call :ReadReg Embarcadero\BDS\13.0
+  call :ReadReg Embarcadero\BDS\14.0
   goto :eof
 :DelphiEndCase
 
