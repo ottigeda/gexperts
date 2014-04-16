@@ -65,7 +65,7 @@ goto :eof
 
 :allok
 endlocal & set DelphiPath=%DelphiPath%
-echo DelphiPath: "%DelphiPath%"
+rem echo DelphiPath: "%DelphiPath%"
 goto :eof
 
 :ReadReg
@@ -75,5 +75,12 @@ FOR /F "usebackq skip=2 tokens=3,*" %%A IN (`REG QUERY HKCU\Software\%1 /v RootD
   set DelphiPath=%%A %%B
 )
 rem remove one trailing space which might have been added because %%B was empty
-set DelphiPath=%DelphiPath:\ =\%
+rem remove any quotes
+set DelphiPath=%DelphiPath:"=%
+rem add quotes
+set DelphiPath="%DelphiPath%"
+rem remove space before the closing quote
+set DelphiPath=%DelphiPath: "="%
+rem remove any quotes
+set DelphiPath=%DelphiPath:"=%
 goto :eof
