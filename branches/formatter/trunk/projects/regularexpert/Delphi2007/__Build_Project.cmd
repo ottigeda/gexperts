@@ -3,7 +3,7 @@
 @rem change the projectname below
 setlocal
 call ..\..\..\buildtools\InitForDelphi2007.cmd"
-msbuild GExpertsDelphi2007.dproj
+msbuild /target:Build /p:config=Release GExpertsDelphi2007.dproj
 echo done building GExpertsDelphi2007
 endlocal
 pause

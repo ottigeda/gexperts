@@ -3,7 +3,7 @@
 @rem change the projectname below
 setlocal
 call ..\..\..\buildtools\InitForDelphiXE4.cmd"
-msbuild GExpertsRSXE4.dproj
+msbuild /target:Build /p:config=Release GExpertsRSXE4.dproj
 echo done building GExpertsRSXE4
 endlocal
 pause
