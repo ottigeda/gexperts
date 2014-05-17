@@ -29,8 +29,11 @@ type
     FLineNumber: Integer;
     FExpression: string;
     FPassCount: Integer;
+    FThreadCondition: string;
   public
-    // IOTABreakpoint (Delphi 2005)
+    // IOTABreakpoint (Delphi XE6 ?)
+    property ThreadCondition: string read FThreadCondition write FThreadCondition;
+    // IOTABreakpoint120 (Delphi 2005)
     property StackFramesToLog: Integer read FStackFramesToLog write FStackFramesToLog;
     // IOTABreakpoint80
     property DoHandleExceptions: Boolean read FDoHandleExceptions write FDoHandleExceptions;
@@ -76,9 +79,13 @@ type
     destructor Destroy; override;
     procedure RestoreItems;
     procedure SaveItems;
+    procedure Dump(const _Filename: string);
   end;
 
 implementation
+
+uses
+  IniFiles, Math;
 
 { TBreakpoints }
 
@@ -179,6 +186,9 @@ begin
     except
       Break; // FIXME: Delphi 6/7 do not support recreation of source breakpoints at designtime (EListError: List index out of bounds (-1))
     end;
+{$IFDEF GX_VER270_up}
+    SrcBrkPtInt.ThreadCondition := SrcBreakpoint.ThreadCondition;
+{$ENDIF}
 {$IFDEF GX_VER170_up}
     SrcBrkPtInt.StackFramesToLog := SrcBreakpoint.StackFramesToLog;
 {$ENDIF}
@@ -215,6 +225,9 @@ begin
     SrcBrkPtInt := DebuggerServices.SourceBkpts[i];
     SrcBreakpoint := TSourceBreakpoint.Create;
 
+{$IFDEF GX_VER270_up}
+    SrcBreakpoint.ThreadCondition := SrcBrkPtInt.ThreadCondition;
+{$ENDIF}
 {$IFDEF GX_VER170_up}
     SrcBreakpoint.StackFramesToLog := SrcBrkPtInt.StackFramesToLog;
 {$ENDIF}
@@ -235,6 +248,41 @@ begin
     SrcBreakpoint.LineNumber := SrcBrkPtInt.LineNumber;
     SrcBreakpoint.PassCount := SrcBrkPtInt.PassCount;
     FBreakpoints.Add(SrcBreakpoint);
+  end;
+//  Dump('d:\breakpoints.ini');
+end;
+
+procedure TBreakpointHandler.Dump(const _Filename: string);
+var
+  INI: TIniFile;
+  i: Integer;
+  SrcBreakpoint: TSourceBreakpoint;
+begin
+  INI := TIniFile.Create(_Filename);
+  try
+    for i := 0 to FBreakpoints.Count - 1 do begin
+      SrcBreakpoint := FBreakPoints[i];
+      INI.WriteString('Breakpoints', 'Breakpoint' + IntToStr(i),
+        '''' + SrcBreakpoint.FFileName + '''' + ','
+        + IntToStr(SrcBreakpoint.LineNumber) + ','
+        + '''' + SrcBreakpoint.Expression + '''' + ','
+        + IntToStr(SrcBreakpoint.PassCount) + ','
+        + IntToStr(IfThen(SrcBreakpoint.Enabled, 1)) + ','
+        + '''' + SrcBreakpoint.GroupName + '''' + ','
+        + IntToStr(IfThen(SrcBreakpoint.DoBreak, 1)) + ','
+        + IntToStr(IfThen(SrcBreakpoint.DoIgnoreExceptions, 1)) + ','
+        + IntToStr(IfThen(SrcBreakpoint.DoHandleExceptions, 1)) + ','
+        + '''' + SrcBreakpoint.LogMessage + '''' + ','
+        + IntToStr(IfThen(SrcBreakpoint.LogResult, 1)) + ','
+        + '''' + SrcBreakpoint.EvalExpression + '''' + ','
+        + '''' + SrcBreakpoint.EnableGroup + '''' + ','
+        + '''' + SrcBreakpoint.DisableGroup + '''' + ','
+        + IntToStr(SrcBreakpoint.StackFramesToLog) + ','
+        + '''' + SrcBreakpoint.ThreadCondition + ''''
+        );
+    end;
+  finally
+    FreeAndNil(INI);
   end;
 end;
 
