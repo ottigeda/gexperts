@@ -31,7 +31,7 @@ type
     FPassCount: Integer;
     FThreadCondition: string;
   public
-    // IOTABreakpoint (Delphi XE6 ?)
+    // IOTABreakpoint (Delphi >=2010)
     property ThreadCondition: string read FThreadCondition write FThreadCondition;
     // IOTABreakpoint120 (Delphi 2005)
     property StackFramesToLog: Integer read FStackFramesToLog write FStackFramesToLog;
@@ -186,7 +186,7 @@ begin
     except
       Break; // FIXME: Delphi 6/7 do not support recreation of source breakpoints at designtime (EListError: List index out of bounds (-1))
     end;
-{$IFDEF GX_VER270_up}
+{$IFDEF GX_VER210_up}
     SrcBrkPtInt.ThreadCondition := SrcBreakpoint.ThreadCondition;
 {$ENDIF}
 {$IFDEF GX_VER170_up}
@@ -225,7 +225,7 @@ begin
     SrcBrkPtInt := DebuggerServices.SourceBkpts[i];
     SrcBreakpoint := TSourceBreakpoint.Create;
 
-{$IFDEF GX_VER270_up}
+{$IFDEF GX_VER210_up}
     SrcBreakpoint.ThreadCondition := SrcBrkPtInt.ThreadCondition;
 {$ENDIF}
 {$IFDEF GX_VER170_up}
