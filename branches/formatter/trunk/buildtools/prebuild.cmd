@@ -22,4 +22,4 @@ echo %0 exiting
 goto :EOF
 
 :NeedPara
-echo needs the base filename of the executable as parameter
+echo Error: Needs the base filename of the executable as parameter
