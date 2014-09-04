@@ -55,6 +55,9 @@ goto DelphiEndCase
 :DelphiXE6
   call :ReadReg Embarcadero\BDS\14.0
   goto :eof
+:DelphiXE7
+  call :ReadReg Embarcadero\BDS\15.0
+  goto :eof
 :DelphiEndCase
 
 echo DelphiPath: "%DelphiPath%"
