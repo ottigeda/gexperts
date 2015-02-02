@@ -29,6 +29,8 @@ call __build.cmd in the root of the source tree followed by a Delphi version:
     XE3
     XE4
     XE5
+    XE6
+    XE7
 
 To build both GExperts versions for all possible Delphi versions, call
 __build.cmd in the root of the source tree.
