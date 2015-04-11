@@ -16,6 +16,8 @@ call :doItem XE3
 call :doItem XE4
 call :doItem XE5
 call :doItem XE6
+call :doItem XE7
+call :doItem XE8
 
 goto :eof
 
@@ -24,8 +26,8 @@ if not exist delphi%1 goto :eof
 pushd delphi%1
 call :doclean
 popd
-if not exist ..\..\dcu\Delphi%1\regularexpert\*.dcu goto :eof
-del ..\..\dcu\Delphi%1\regularexpert\*.dcu
+if not exist ..\..\dcu\Delphi%1\editorexpert\*.dcu goto :eof
+del ..\..\dcu\Delphi%1\editorexpert\*.dcu
 goto :eof
 
 :doclean
