@@ -56,8 +56,8 @@
         <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
         <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
         <VerInfo_Keys>CompanyName=Erik Berry and the GExperts Development Team;FileDescription=GExperts for RAD Studio XE7;FileVersion=1.3.7.0;InternalName=GExperts for RAD Studio XE8;LegalCopyright=;LegalTrademarks=;OriginalFilename=GExpertsRSXE7.dll;ProductName=GExperts for RAD Studio XE7;ProductVersion=1.37;Comments=Open Source;CFBundleName=</VerInfo_Keys>
-        <DCC_ExeOutput>..\..\..\editorexpert\</DCC_ExeOutput>
-        <DCC_DcuOutput>..\..\..\dcu\delphiXE7\editorexpert</DCC_DcuOutput>
+        <DCC_ExeOutput>..\..\..\regularexpert\</DCC_ExeOutput>
+        <DCC_DcuOutput>..\..\..\dcu\delphiXE7\regularexpert</DCC_DcuOutput>
         <GenDll>true</GenDll>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
