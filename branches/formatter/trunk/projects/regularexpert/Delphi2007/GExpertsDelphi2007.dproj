@@ -163,9 +163,6 @@
     <DCCReference Include="..\..\..\gx\source\Experts\GX_IdeShortCuts.pas">
       <Form>fmIdeShortCuts</Form>
     </DCCReference>
-    <DCCReference Include="..\..\..\gx\source\Experts\GX_MacroLibrary.pas">
-      <Form>fmMacroLibrary</Form>
-    </DCCReference>
     <DCCReference Include="..\..\..\gx\source\Experts\GX_PeInfo.pas" />
     <DCCReference Include="..\..\..\gx\source\Experts\GX_PeInformation.pas">
       <Form>fmPeInformation</Form>
