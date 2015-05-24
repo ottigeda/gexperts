@@ -88,6 +88,7 @@ type
     procedure testNestedEventType;
     procedure TestNoFeedAfterThen;
     procedure TestNoFeedAfterDo;
+    procedure TestUnicode;
     procedure testAnonymousCurrentlyFails;
     procedure testCurlyHalfCommentEndCurrentlyFails;
     procedure testIfThenElse2CurrentlyFails;
@@ -357,6 +358,11 @@ end;
 procedure TTestTestfiles.testTypeOf;
 begin
   TestFile('TypeOf');
+end;
+
+procedure TTestTestfiles.TestUnicode;
+begin
+  TestFile('unicode');
 end;
 
 procedure TTestTestfiles.testSingleElse;
