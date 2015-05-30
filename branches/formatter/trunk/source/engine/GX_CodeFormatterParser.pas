@@ -32,8 +32,8 @@ type
   TCodeFormatterParser = class
   private
     FSpacePerIndent: Integer;
-    FStartCommentOut: AnsiString;
-    FEndCommentOut: AnsiString;
+    FStartCommentOut: String;
+    FEndCommentOut: String;
   private
     FTokens: TPascalTokenList;
     FReadingAsm: Boolean;
@@ -45,11 +45,11 @@ type
     {: ReadAsm does very simple parsing only to find comments because this
        influences finding the matching "end". No formatting is done
        later to asm code }
-    procedure ReadAsm(var _Buff: PAnsiChar);
-    function ReadHalfComment(out _Dest: string; var _Source: PAnsiChar): TWordType;
-    function ReadWord(out _Dest: string; var _Source: PAnsiChar): TWordType;
+    procedure ReadAsm(var _Buff: PChar);
+    function ReadHalfComment(out _Dest: string; var _Source: PChar): TWordType;
+    function ReadWord(out _Dest: string; var _Source: PChar): TWordType;
     {: Adds a single line of text to the parse tree }
-    procedure AddLine(_Buff: PAnsiChar);
+    procedure AddLine(_Buff: PChar);
     procedure DoExecute(_Text: TStrings);
   public
     constructor Create(_Settings: TCodeFormatterSettings);
@@ -61,26 +61,12 @@ type
 
 implementation
 
-{$IFDEF GX_VER250_up}
-uses
-  AnsiStrings;
-{$ENDIF}
-
-{$IFDEF GX_VER250_up}
-function StrLIComp(const Str1, Str2: PAnsiChar; MaxLen: Cardinal): Integer; inline;
+{$IFNDEF GX_VER250_up}
+function CharInSet(c: char; _Set: TSysCharSet): boolean;
 begin
-  Result := AnsiStrings.StrLIComp(Str1, Str2, MaxLen);
+  Result := c in _Set;
 end;
-
-function StrLen(const Str: PAnsiChar): Cardinal; inline;
-begin
-  Result := AnsiStrings.StrLen(Str);
-end;
-function StrLComp(const Str1, Str2: PAnsiChar; MaxLen: Cardinal): Integer; inline;
-begin
-  Result := AnsiStrings.StrLComp(Str1, Str2, MaxLen);
-end;
-{$ENDIF}
+{$ENDIF GX_VER250_up}
 
 class function TCodeFormatterParser.Execute(_Text: TStrings; _Settings: TCodeFormatterSettings): TPascalTokenList;
 var
@@ -99,8 +85,8 @@ constructor TCodeFormatterParser.Create(_Settings: TCodeFormatterSettings);
 begin
   inherited Create;
   FSpacePerIndent := _Settings.SpacePerIndent;
-  FStartCommentOut := AnsiString(_Settings.StartCommentOut);
-  FEndCommentOut := AnsiString(_Settings.EndCommentOut);
+  FStartCommentOut := _Settings.StartCommentOut;
+  FEndCommentOut := _Settings.EndCommentOut;
   FLeftPointBracket := 0;
   FReadingAsm := False;
   FPrevLine := nil;
@@ -127,10 +113,10 @@ var
   i: Integer;
 begin
   for i := 0 to _Text.Count - 1 do
-    AddLine(PAnsiChar(AnsiString(_Text[i])));
+    AddLine(PChar(_Text[i]));
 end;
 
-procedure TCodeFormatterParser.AddLine(_Buff: PAnsiChar);
+procedure TCodeFormatterParser.AddLine(_Buff: PChar);
 var
   s: string;
 begin
@@ -163,16 +149,16 @@ begin
     raise ECodeFormatter.Create('File to large to reformat')
 end;
 
-procedure TCodeFormatterParser.ReadAsm(var _Buff: PAnsiChar);
+procedure TCodeFormatterParser.ReadAsm(var _Buff: PChar);
 var
-  P: PAnsiChar;
-  FirstNonWhitespace: PAnsiChar;
+  P: PChar;
+  FirstNonWhitespace: PChar;
   s: string;
 begin
   P := _Buff;
   FirstNonWhitespace := _Buff;
 
-  while FirstNonWhitespace^ in [Tab, Space] do
+  while CharInSet(FirstNonWhitespace^, [Tab, Space]) do
     Inc(FirstNonWhitespace);
 
   while p^ <> #0 do begin
@@ -192,9 +178,9 @@ begin
           Inc(P);
         end;
     else // case
-      if ((P = _Buff) or ((P - 1)^ in [' ', Tab]))
+      if ((P = _Buff) or CharInSet((P - 1)^, [' ', Tab]))
         and (StrLIComp(P, 'end', 3) = 0)
-        and ((P + 3)^ in [#0, ';', ' ', Tab]) then begin // 'end' of assembler
+        and CharInSet((P + 3)^, [#0, ';', ' ', Tab]) then begin // 'end' of assembler
         FReadingAsm := False;
 
         if FirstNonWhitespace <> P then begin
@@ -237,7 +223,7 @@ begin
   _Buff := P;
 end;
 
-function TCodeFormatterParser.ReadWord(out _Dest: string; var _Source: PAnsiChar): TWordType;
+function TCodeFormatterParser.ReadWord(out _Dest: string; var _Source: PChar): TWordType;
 const
   IdentifierTerminators = [
     '+', '-', '*', '/', '=',
@@ -248,7 +234,7 @@ const
   { TODO -otwm -cfixme : This allows strings like #a which is wrong, but there is no easy way to fix it. }
   StringControlChars = ['0'..'9', 'a'..'z', 'A'..'Z', '#', '^', '$'];
 var
-  P: PAnsiChar;
+  P: PChar;
 
   {: Reads a string literal, on exit p points behind the last character of the string
      @returns either wtString or wtErrorString }
@@ -276,7 +262,7 @@ var
               '#', '^': begin
                   // todo: this is not really correct code:
                   // 'hello'#^523 is not a valid string literal
-                  while P^ in StringControlChars do
+                  while CharInSet(P^, StringControlChars) do
                     Inc(P);
 
                   if P^ <> #39 then begin
@@ -303,7 +289,7 @@ var
     { TODO -otwm -ccheck : Shouldn't that rather check for valid identifiers?
       Note that Delphi 2005 allows non ascii characters for identifiers, e.g. "Müller" is a valid
       identifier! }
-    while not (p^ in IdentifierTerminators) do
+    while not CharInSet(p^, IdentifierTerminators) do
       Inc(P);
   end;
 
@@ -319,7 +305,7 @@ var
       Exit;
 
     Len := Length(FStartCommentOut);
-    Result := StrLIComp(P, PAnsiChar(FStartCommentOut), Len) = 0;
+    Result := StrLIComp(P, PChar(FStartCommentOut), Len) = 0;
 
     if not Result then
       Exit;
@@ -329,7 +315,7 @@ var
     Len := Length(FEndCommentOut);
 
     while P^ <> #0 do begin
-      if StrLIComp(P, PAnsiChar(FEndCommentOut), Len) = 0 then begin
+      if StrLIComp(P, PChar(FEndCommentOut), Len) = 0 then begin
         Inc(P, Len - 1);
         AResult := wtFullOutComment;
         Break;
@@ -342,9 +328,9 @@ var
 begin
   P := _Source;
 
-  if P^ in [Tab, Space] then begin
+  if CharInSet(P^, [Tab, Space]) then begin
     Result := wtSpaces;
-    while (P^ in [Tab, Space]) do
+    while CharInSet(P^, [Tab, Space]) do
       Inc(P);
   end else if CheckDisableComments(Result) then begin
   end else
@@ -352,7 +338,7 @@ begin
       '{': begin
           Result := wtHalfComment;
 
-          while not (P^ in ['}', #0]) do
+          while not CharInSet(P^, ['}', #0]) do
             Inc(P);
 
           if (P^ = '}') then begin
@@ -371,10 +357,10 @@ begin
 
       '^': begin // string starting with ^A or so or the ^ operator
           Inc(p);
-          if (P^ in ['a'..'z', 'A'..'Z']) and ((P + 1)^ in [#39, '^', '#']) then begin
+          if CharInSet(P^, ['a'..'z', 'A'..'Z']) and CharInSet((P + 1)^, [#39, '^', '#']) then begin
             Result := wtString;
 
-            while P^ in StringControlChars do
+            while CharInSet(P^, StringControlChars) do
               Inc(P);
 
             if P^ = #39 then
@@ -394,7 +380,7 @@ begin
       '<': begin
           Result := wtOperator;
           Inc(p);
-          if p^ in ['=', '>'] then // <= or <>
+          if CharInSet(p^, ['=', '>']) then // <= or <>
             Inc(p);
         end;
 
@@ -462,16 +448,16 @@ begin
           Result := wtHexNumber;
           Inc(P);
 
-          while UpCase(P^) in ['0'..'9', 'A'..'F'] do
+          while CharInSet(P^, ['0'..'9', 'A'..'F', 'a'..'f']) do
             Inc(P);
         end;
       '#': begin
           { TODO -otwm -cfixme :
-            Ttis is for upper casing hex numbers, but it is rather ugly.
+            This is for upper casing hex numbers, but it is rather ugly.
             It also misses those embedded in strings 'bla'#1d'blub' and will change #10^j to #10^J }
           Result := wtHexNumber;
 
-          while P^ in StringControlChars do
+          while CharInSet(P^, StringControlChars) do
             Inc(P);
 
           if P^ = #39 then begin
@@ -482,14 +468,14 @@ begin
 
       '0'..'9': begin
           Result := wtNumber;
-          while (P^ in ['0'..'9', '.']) and not (strLComp(P, '..', 2) = 0)
+          while CharInSet(P^, ['0'..'9', '.']) and not (strLComp(P, '..', 2) = 0)
             and not ((FLeftPointBracket > 0) and (strLComp(P, '.)', 2) = 0)) do
             Inc(P);
 
           if UpCase(P^) = 'E' then
-            if (P + 1)^ in ['0'..'9', '-', '+'] then begin
+            if CharInSet((P + 1)^, ['0'..'9', '-', '+']) then begin
               Inc(P, 2);
-              while (P^ in ['0'..'9']) do
+              while CharInSet(P^, ['0'..'9']) do
                 Inc(P);
             end;
         end;
@@ -512,25 +498,25 @@ begin
   if (P^ = #0) then
     _Source := P
   else begin
-    if (P^ in [Tab, Space]) then
+    if CharInSet(P^, [Tab, Space]) then
       Inc(P);
 
     _Source := P;
   end;
 end;
 
-function TCodeFormatterParser.ReadHalfComment(out _Dest: string; var _Source: PAnsiChar): TWordType;
+function TCodeFormatterParser.ReadHalfComment(out _Dest: string; var _Source: PChar): TWordType;
 var
   Len: Integer;
-  P: PAnsiChar;
-  FirstNonSpace: PAnsiChar;
-  EndComment: AnsiString;
+  P: PChar;
+  FirstNonSpace: PChar;
+  EndComment: String;
   EndCommentType: TWordType;
 begin
   P := _Source;
   FirstNonSpace := _Source;
 
-  while P^ in [Tab, Space] do
+  while CharInSet(P^, [Tab, Space]) do
     Inc(P);
 
   if (FPrevLine <> nil) and (FPrevLine.NoOfSpaces = 0) then begin
@@ -562,7 +548,7 @@ begin
 
   Len := Length(EndComment);
   while (P^ <> #0) do begin
-    if StrLIComp(P, PAnsiChar(EndComment), Len) = 0 then begin
+    if StrLIComp(P, PChar(EndComment), Len) = 0 then begin
       Result := EndCommentType;
       Inc(P, Len);
       Break;
