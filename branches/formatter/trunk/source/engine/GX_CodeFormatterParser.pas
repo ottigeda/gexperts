@@ -61,12 +61,12 @@ type
 
 implementation
 
-{$IFNDEF GX_VER250_up}
+{$IFNDEF GX_VER200_up}
 function CharInSet(c: char; _Set: TSysCharSet): boolean;
 begin
   Result := c in _Set;
 end;
-{$ENDIF GX_VER250_up}
+{$ENDIF GX_VER200_up}
 
 class function TCodeFormatterParser.Execute(_Text: TStrings; _Settings: TCodeFormatterSettings): TPascalTokenList;
 var
