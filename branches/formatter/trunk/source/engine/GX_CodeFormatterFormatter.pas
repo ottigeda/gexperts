@@ -49,7 +49,7 @@ type
     procedure CheckWrapping;
     function PrevTokenIsRType(_rType: TReservedType): Boolean;
     procedure CheckBlankLinesAroundProc;
-    procedure PutCommentBefore(_Comment: PAnsiChar);
+    procedure PutCommentBefore(const _Comment: string);
     procedure FormatAsm(_NTmp: Integer);
     procedure AdjustSpacing(_CurrentToken, _PrevToken: TPascalToken; _TokenIdx: Integer);
 
@@ -474,7 +474,7 @@ begin
   end;
 end;
 
-procedure TCodeFormatterFormatter.PutCommentBefore(_Comment: PAnsiChar);
+procedure TCodeFormatterFormatter.PutCommentBefore(const _Comment: string);
 var
   J: Integer;
   P: TPascalToken;
@@ -483,7 +483,7 @@ begin
   J := FTokenIdx - 2;
   P := GetToken(J);
 
-  SetString(s, _Comment, {$IFDEF GX_VER250_up}AnsiStrings.{$ENDIF}StrLen(_Comment));
+  s := _Comment;
 
   if P.ReservedType = rtComment then
     P.SetExpression(s)
