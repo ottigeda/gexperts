@@ -13,6 +13,7 @@ uses
   SysUtils,
   StrUtils,
   TypInfo,
+  GX_GenericUtils,
   GX_CodeFormatterTypes;
 
 type
@@ -26,15 +27,15 @@ type
     procedure SetReservedType(_rType: TReservedType); virtual;
     procedure SetSpace(_Space: TSpaceSet; _State: Boolean); virtual;
     {: @returns the object's content }
-    function GetString: string; virtual; abstract;
+    function GetString: TGXUnicodeString; virtual; abstract;
     (*: changes " // <comment>" to "{//<comment>}" used for preventing a
       begin
         moved from the next line to become commented out
         @param ACommChar is one of '{', '(' or '/' specifying the new comment type
         @returs True if token is a comment, False otherwise *)
     function ChangeComment(_CommChar: char): Boolean;
-    function GetExpression(out _Expression: string): Boolean; virtual;
-    procedure SetExpression(const _Expression: string); virtual;
+    function GetExpression(out _Expression: TGXUnicodeString): Boolean; virtual;
+    procedure SetExpression(const _Expression: TGXUnicodeString); virtual;
     procedure SetCase(_Case: TCase); virtual;
     function GetCase: TCase; virtual;
     procedure SetOptions(_Options: TTokenOptions); virtual;
@@ -42,12 +43,12 @@ type
     procedure AddOption(_Option: TTokenOption);
     function HasOption(_Option: TTokenOption): Boolean;
 
-    function GetForDebug: string; virtual;
+    function GetForDebug: TGXUnicodeString; virtual;
 
     property ExpressionCase: TCase read GetCase write SetCase;
     property ReservedType: TReservedType read GetReservedType write SetReservedType;
     property WordType: TWordType read GetWordType;
-    property Content: string read GetString;
+    property Content: TGXUnicodeString read GetString;
     property Options: TTokenOptions read GetOptions write SetOptions;
   end;
 
@@ -65,10 +66,10 @@ type
     procedure GetLength(var _Length: Integer); override;
     function GetReservedType: TReservedType; override;
 
-    function GetForDebug: string; override;
+    function GetForDebug: TGXUnicodeString; override;
 
-    {: @returns a string with FNoOfSpaces spaces }
-    function GetString: string; override;
+    {: @returns a TGXUnicodeString with FNoOfSpaces spaces }
+    function GetString: TGXUnicodeString; override;
     property NoOfSpaces: Integer read FNoOfSpaces write FNoOfSpaces;
     property OldNoOfSpaces: Integer read FOldNoOfSpaces write FOldNoOfSpaces;
     property Wrapped: Boolean read FWrapped write FWrapped;
@@ -76,30 +77,30 @@ type
 
   TExpression = class(TPascalToken)
   private
-    FExpression: string;
+    FExpression: TGXUnicodeString;
     FWordType: TWordType;
     FSpaceType: TSpaceSet;
     FCaseType: TCase;
     FReservedType: TReservedType;
     FOptions: TTokenOptions;
   public
-    constructor Create(_Type: TWordType; const _Expression: string);
+    constructor Create(_Type: TWordType; const _Expression: TGXUnicodeString);
     procedure CheckReserved;
     procedure SetSpace(_Space: TSpaceSet; _State: Boolean); override;
     procedure SetReservedType(_ReservedType: TReservedType); override;
     function Space(_Space: TSpace): Boolean; override;
     {: @returns <spaces><the expression><spaces> }
-    function GetString: string; override;
+    function GetString: TGXUnicodeString; override;
     procedure GetLength(var _Length: Integer); override;
     function GetWordType: TWordType; override;
     function GetReservedType: TReservedType; override;
-    function GetExpression(out _Expression: string): Boolean; override;
-    procedure SetExpression(const _Value: string); override;
+    function GetExpression(out _Expression: TGXUnicodeString): Boolean; override;
+    procedure SetExpression(const _Value: TGXUnicodeString); override;
     procedure SetCase(_Value: TCase); override;
     function GetCase: TCase; override;
     procedure SetOptions(_Value: TTokenOptions); override;
     function GetOptions: TTokenOptions; override;
-    function GetForDebug: string; override;
+    function GetForDebug: TGXUnicodeString; override;
   end;
 
   TAlignExpression = class(TExpression)
@@ -111,7 +112,7 @@ type
     // Note: As a side effect, this adjusts FNoOfspaces
     procedure GetLength(var _Length: Integer); override;
     {: @returns <spaces><the expression><spaces> }
-    function GetString: string; override;
+    function GetString: TGXUnicodeString; override;
     property NoOfSpaces: byte read FNoOfSpaces write FNoOfSpaces;
   end;
 
@@ -119,12 +120,12 @@ implementation
 
 { TPascalToken }
 
-function TPascalToken.GetExpression(out _Expression: string): Boolean;
+function TPascalToken.GetExpression(out _Expression: TGXUnicodeString): Boolean;
 begin
   Result := False;
 end;
 
-function TPascalToken.GetForDebug: string;
+function TPascalToken.GetForDebug: TGXUnicodeString;
 begin
   Result := ClassName;
 end;
@@ -144,7 +145,7 @@ begin
   Result := False;
 end;
 
-procedure TPascalToken.SetExpression(const _Expression: string);
+procedure TPascalToken.SetExpression(const _Expression: TGXUnicodeString);
 begin
 end;
 
@@ -172,7 +173,7 @@ end;
 
 function TPascalToken.ChangeComment(_CommChar: char): Boolean;
 var
-  s: string;
+  s: TGXUnicodeString;
 begin
   Result := (Reservedtype = rtComment);
   if not Result then
@@ -206,7 +207,7 @@ end;
 
 { TExpression }
 
-constructor TExpression.Create(_Type: TWordType; const _Expression: string);
+constructor TExpression.Create(_Type: TWordType; const _Expression: TGXUnicodeString);
 begin
   inherited Create;
   FWordType := _Type;
@@ -219,8 +220,8 @@ end;
 
 procedure TExpression.CheckReserved;
 var
-  Expr: string;
-  Directive: string;
+  Expr: TGXUnicodeString;
+  Directive: TGXUnicodeString;
   ResvdType: TReservedType;
 begin
   SetReservedType(rtNothing);
@@ -311,7 +312,7 @@ begin
   end;
 end;
 
-procedure TExpression.SetExpression(const _Value: string);
+procedure TExpression.SetExpression(const _Value: TGXUnicodeString);
 begin
   FExpression := _Value
 end;
@@ -326,15 +327,15 @@ begin
   Result := FWordType;
 end;
 
-function TExpression.GetExpression(out _Expression: string): Boolean;
+function TExpression.GetExpression(out _Expression: TGXUnicodeString): Boolean;
 begin
   _Expression := FExpression;
   Result := True;
 end;
 
-function TExpression.GetForDebug: string;
+function TExpression.GetForDebug: TGXUnicodeString;
 
-  function SpaceTypeToStr(_SpaceType: TSpaceSet): string;
+  function SpaceTypeToStr(_SpaceType: TSpaceSet): TGXUnicodeString;
   begin
     if (spBefore in _SpaceType) then
       Result := 'spBefore'
@@ -348,7 +349,7 @@ function TExpression.GetForDebug: string;
   end;
 
 var
-  s: string;
+  s: TGXUnicodeString;
 begin
   s := 'Expression: ''' + FExpression + '''';
   s := s + ', WordType: ' + GetEnumName(TypeInfo(TWordType), Integer(FWordType));
@@ -392,7 +393,7 @@ begin
   FReservedType := _ReservedType;
 end;
 
-function TExpression.GetString: string;
+function TExpression.GetString: TGXUnicodeString;
 begin
   if Space(spBefore) then
     Result := GX_CodeFormatterTypes.Space
@@ -422,7 +423,7 @@ end;
 
 { TLineFeed }
 
-function TLineFeed.GetString: string;
+function TLineFeed.GetString: TGXUnicodeString;
 var
   Len: Integer;
 begin
@@ -437,9 +438,9 @@ begin
     Result := '';
 end;
 
-function TLineFeed.GetForDebug: string;
+function TLineFeed.GetForDebug: TGXUnicodeString;
 var
-  s: string;
+  s: TGXUnicodeString;
 begin
   s := 'SpacePerIndent: ' + IntTostr(FSpacePerIndent);
   s := s + ', NoOfSpaces: ' + IntToStr(FNoOfSpaces);
@@ -490,7 +491,7 @@ end;
 
 constructor TAlignExpression.Create(_Like: TExpression; _AlignPos: Byte);
 var
-  s: string;
+  s: TGXUnicodeString;
 begin
   _Like.GetExpression(s);
   inherited Create(_Like.FWordType, s);
@@ -512,7 +513,7 @@ begin
   inherited GetLength(_Length);
 end;
 
-function TAlignExpression.GetString: string;
+function TAlignExpression.GetString: TGXUnicodeString;
 begin
   if (FNoOfSpaces > 0) then
     Result := StringOfChar(GX_CodeFormatterTypes.Space, FNoOfSpaces)

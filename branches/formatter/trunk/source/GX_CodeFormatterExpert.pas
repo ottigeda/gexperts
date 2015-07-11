@@ -12,6 +12,7 @@ interface
 uses
   Classes,
   SysUtils,
+  GX_GenericUtils,
   GX_ConfigurationInfo,
   GX_CodeFormatterEngine;
 
@@ -20,7 +21,7 @@ type
   private
     FEngine: TCodeFormatterEngine;
     function ShowDoneDialog(ShowDone: Boolean): boolean;
-    function GetSettingsName(FileName: string; FullText: TStringList): string;
+    function GetSettingsName(FileName: string; FullText: TGXUnicodeStringList): string;
   protected
   public
     constructor Create;
@@ -38,7 +39,6 @@ uses
   IniFiles,
   ToolsApi,
   GX_OtaUtils,
-  GX_GenericUtils,
   GX_DbugIntf,
   GX_CodeFormatterGXConfigWrapper,
   GX_CodeFormatterTypes,
@@ -96,7 +96,7 @@ begin
   end;
 end;
 
-function TCodeFormatterExpert.GetSettingsName(FileName: string; FullText: TStringList): string;
+function TCodeFormatterExpert.GetSettingsName(FileName: string; FullText: TGXUnicodeStringList): string;
 
   function GetFromConfigFile: string;
   var
@@ -181,8 +181,8 @@ resourcestring
 var
   SourceEditor: IOTASourceEditor;
   FileName: string;
-  FullTextStr: string;
-  FullText: TStringList;
+  FullTextStr: TGXUnicodeString;
+  FullText: TGXUnicodeStringList;
   Bookmarks: TBookmarkHandler;
   Breakpoints: TBreakpointHandler;
   i: integer;
@@ -199,9 +199,9 @@ begin
 
   XSendDebug(Format('Formatting requested for "%s"', [FileName]));
   TempSettings := nil;
-  FullText := TStringList.Create;
+  FullText := TGXUnicodeStringList.Create;
   try
-    if not GxOtaGetActiveEditorTextAsString(FullTextStr, False) then
+    if not GxOtaGetActiveEditorTextAsUnicodeString(FullTextStr, False) then
       raise ECodeFormatter.CreateFmt(str_UnableToGetContentsS, [FileName]);
     if FullTextStr = '' then
       exit;
@@ -228,7 +228,7 @@ begin
           XSendDebug('Use default settings');
 
         if FEngine.Execute(FullText) then begin
-          GxOtaReplaceEditorText(SourceEditor, FullText.Text);
+          GxOtaReplaceEditorTextWithUnicodeString(SourceEditor, FullText.Text);
           Breakpoints.RestoreItems;
           Bookmarks.RestoreItems;
           for i := 0 to SourceEditor.EditViewCount - 1 do
@@ -287,7 +287,7 @@ function TCodeFormatterExpert.FormatFile(const _FileName: string): Boolean;
 resourcestring
   str_UnsupportedFileTypeS = 'Unsupported file type: %s';
 var
-  FullText: TStringList;
+  FullText: TGXUnicodeStringList;
   TempSettings: TCodeFormatterSettings;
   OrigSettings: TCodeFormatterEngineSettings;
   SettingsName: string;
@@ -298,7 +298,7 @@ begin
 
   XSendDebug(Format('Formatting requested for "%s"', [_FileName]));
   TempSettings := nil;
-  FullText := TStringList.Create;
+  FullText := TGXUnicodeStringList.Create;
   try
     FullText.LoadFromFile(_FileName);
 

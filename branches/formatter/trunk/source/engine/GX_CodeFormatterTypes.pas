@@ -11,7 +11,8 @@ interface
 
 uses
   SysUtils,
-  Classes;
+  Classes,
+  GX_GenericUtils;
 
 type
   ECodeFormatter = class(Exception);
@@ -102,11 +103,14 @@ type
    @param aStr is the input string
    @param aCase is a TCase specifying the desired case
    @returns the modified string }
-function AdjustCase(const _str: string; _Case: TCase): string;
+function AdjustCase(const _str: TGXUnicodeString; _Case: TCase): TGXUnicodeString;
 
 implementation
 
-function AdjustCase(const _str: string; _Case: TCase): string;
+uses
+  GX_CodeFormatterUnicode;
+
+function AdjustCase(const _str: TGXUnicodeString; _Case: TCase): TGXUnicodeString;
 var
   i: Integer;
 begin

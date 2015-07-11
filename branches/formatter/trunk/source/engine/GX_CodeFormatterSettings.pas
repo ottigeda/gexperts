@@ -177,6 +177,7 @@ implementation
 
 uses
   SysUtils,
+  GX_GenericUtils,
   GX_CodeFormatterDefaultSettings;
 
 { TCodeFormatterSettings }
@@ -209,7 +210,7 @@ end;
 
 procedure TCodeFormatterSettings.HandleCapitalization(_Word: TPascalToken);
 var
-  Expression: string;
+  Expression: TGXUnicodeString;
   Found: Boolean;
   Idx: Integer;
   CommentedIdx: Integer;

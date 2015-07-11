@@ -12,6 +12,7 @@ interface
 uses
   SysUtils,
   Classes,
+  GX_GenericUtils,
   GX_CodeFormatterTypes,
   GX_CodeFormatterStack,
   GX_CodeFormatterTokens,
@@ -49,7 +50,7 @@ type
     procedure CheckWrapping;
     function PrevTokenIsRType(_rType: TReservedType): Boolean;
     procedure CheckBlankLinesAroundProc;
-    procedure PutCommentBefore(const _Comment: string);
+    procedure PutCommentBefore(const _Comment: TGXUnicodeString);
     procedure FormatAsm(_NTmp: Integer);
     procedure AdjustSpacing(_CurrentToken, _PrevToken: TPascalToken; _TokenIdx: Integer);
 
@@ -90,10 +91,11 @@ type
 
 implementation
 
-{$IFDEF GX_VER250_up}
 uses
-  AnsiStrings;
+{$IFDEF GX_VER250_up}
+  AnsiStrings,
 {$ENDIF}
+  GX_CodeFormatterUnicode;
 
 class procedure TCodeFormatterFormatter.Execute(_Tokens: TPascalTokenList; _Settings: TCodeFormatterSettings);
 var
@@ -144,7 +146,7 @@ var
   var
     Next: TPascalToken;
     Idx, Offset: Integer;
-    exp: string;
+    exp: TGXUnicodeString;
   begin
     Result := False;
     try
@@ -426,7 +428,7 @@ end;
 procedure TCodeFormatterFormatter.UppercaseCompilerDirective(_Token: TPascalToken);
 var
   Idx: Integer;
-  s: string;
+  s: TGXUnicodeString;
 begin
   _Token.GetExpression(s);
   Idx := 2;
@@ -474,11 +476,11 @@ begin
   end;
 end;
 
-procedure TCodeFormatterFormatter.PutCommentBefore(const _Comment: string);
+procedure TCodeFormatterFormatter.PutCommentBefore(const _Comment: TGXUnicodeString);
 var
   J: Integer;
   P: TPascalToken;
-  s: string;
+  s: TGXUnicodeString;
 begin
   J := FTokenIdx - 2;
   P := GetToken(J);
@@ -543,8 +545,8 @@ procedure TCodeFormatterFormatter.CheckSlashComment;
 var
   Token: TPascalToken;
   PrevPasWord: TPascalToken;
-  Expression: string;
-  PrevExpression: string;
+  Expression: TGXUnicodeString;
+  PrevExpression: TGXUnicodeString;
   i: Integer;
 begin
   if GetToken(FTokenIdx - 1, FPrevToken) and (FPrevToken.ReservedType = rtComment)

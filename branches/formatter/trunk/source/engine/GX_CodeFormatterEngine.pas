@@ -16,6 +16,7 @@ uses
 {$ENDIF}
   SysUtils,
   Classes,
+  GX_GenericUtils,
   GX_CodeFormatterTokenList,
   GX_CodeFormatterTypes,
   GX_CodeFormatterTokens,
@@ -42,12 +43,12 @@ type
   TCodeFormatterEngine = class(TObject)
   private
     FSettings: TCodeFormatterSettings;
-    function GetLine(_Tokens: TPascalTokenList; var _TokenNo: Integer): string;
+    function GetLine(_Tokens: TPascalTokenList; var _TokenNo: Integer): TGXUnicodeString;
   public
     constructor Create;
     destructor Destroy; override;
     {: @returns true if the formatting succeeded and the source code has changed }
-    function Execute(_SourceCode: TStrings): Boolean;
+    function Execute(_SourceCode: TGXUnicodeStringList): Boolean;
     property Settings: TCodeFormatterSettings read FSettings write FSettings;
   end;
 
@@ -56,8 +57,7 @@ implementation
 uses
   StrUtils,
   GX_CodeFormatterFormatter,
-  GX_CodeFormatterParser,
-  GX_GenericUtils;
+  GX_CodeFormatterParser;
 
 constructor TCodeFormatterEngine.Create;
 begin
@@ -71,13 +71,13 @@ begin
   inherited;
 end;
 
-function TCodeFormatterEngine.Execute(_SourceCode: TStrings): Boolean;
+function TCodeFormatterEngine.Execute(_SourceCode: TGXUnicodeStringList): Boolean;
 var
-  Line: string;
+  Line: TGXUnicodeString;
   TokenNo: Integer;
-  OrigSource: string;
+  OrigSource: TGXUnicodeString;
   Tokens: TPascalTokenList;
-  NewSource: string;
+  NewSource: TGXUnicodeString;
 begin
   try
     _SourceCode.BeginUpdate;
@@ -111,7 +111,7 @@ begin
   _SourceCode.EndUpdate;
 end;
 
-function TCodeFormatterEngine.GetLine(_Tokens: TPascalTokenList; var _TokenNo: Integer): string;
+function TCodeFormatterEngine.GetLine(_Tokens: TPascalTokenList; var _TokenNo: Integer): TGXUnicodeString;
 var
   Token: TPascalToken;
   i: Integer;

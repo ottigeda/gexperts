@@ -12,6 +12,7 @@ interface
 uses
   SysUtils,
   Classes,
+  GX_GenericUtils,
   GX_CodeFormatterTokenList,
   GX_CodeFormatterTypes,
   GX_CodeFormatterSettings,
@@ -23,7 +24,7 @@ type
     FSettings: TCodeFormatterSettings;
   public
     constructor Create(const _Settings: TCodeFormatterSettings); reintroduce;
-    function AddIdentifier(const _s: string): string;
+    function AddIdentifier(const _s: TGXUnicodeString): TGXUnicodeString;
   end;
 
 type
@@ -32,8 +33,8 @@ type
   TCodeFormatterParser = class
   private
     FSpacePerIndent: Integer;
-    FStartCommentOut: String;
-    FEndCommentOut: String;
+    FStartCommentOut: TGXUnicodeString;
+    FEndCommentOut: TGXUnicodeString;
   private
     FTokens: TPascalTokenList;
     FReadingAsm: Boolean;
@@ -45,30 +46,26 @@ type
     {: ReadAsm does very simple parsing only to find comments because this
        influences finding the matching "end". No formatting is done
        later to asm code }
-    procedure ReadAsm(var _Buff: PChar);
-    function ReadHalfComment(out _Dest: string; var _Source: PChar): TWordType;
-    function ReadWord(out _Dest: string; var _Source: PChar): TWordType;
+    procedure ReadAsm(var _Buff: PGXUnicodeChar);
+    function ReadHalfComment(out _Dest: TGXUnicodeString; var _Source: PGXUnicodeChar): TWordType;
+    function ReadWord(out _Dest: TGXUnicodeString; var _Source: PGXUnicodeChar): TWordType;
     {: Adds a single line of text to the parse tree }
-    procedure AddLine(_Buff: PChar);
-    procedure DoExecute(_Text: TStrings);
+    procedure AddLine(_Buff: PGXUnicodeChar);
+    procedure DoExecute(_Text: TGXUnicodeStringList);
   public
     constructor Create(_Settings: TCodeFormatterSettings);
     destructor Destroy; override;
     function DetachTokens: TPascalTokenList;
     {: parses the text and returns a parse tree }
-    class function Execute(_Text: TStrings; _Settings: TCodeFormatterSettings): TPascalTokenList;
+    class function Execute(_Text: TGXUnicodeStringList; _Settings: TCodeFormatterSettings): TPascalTokenList;
   end;
 
 implementation
 
-{$IFNDEF GX_VER200_up}
-function CharInSet(c: char; _Set: TSysCharSet): boolean;
-begin
-  Result := c in _Set;
-end;
-{$ENDIF GX_VER200_up}
+uses
+  GX_CodeFormatterUnicode;
 
-class function TCodeFormatterParser.Execute(_Text: TStrings; _Settings: TCodeFormatterSettings): TPascalTokenList;
+class function TCodeFormatterParser.Execute(_Text: TGXUnicodeStringList; _Settings: TCodeFormatterSettings): TPascalTokenList;
 var
   Parser: TCodeFormatterParser;
 begin
@@ -108,20 +105,28 @@ begin
   FTokens := nil;
 end;
 
-procedure TCodeFormatterParser.DoExecute(_Text: TStrings);
+procedure TCodeFormatterParser.DoExecute(_Text: TGXUnicodeStringList);
 var
   i: Integer;
+  s: TGXUnicodeString;
+  Buff: PGXUnicodeChar;
 begin
-  for i := 0 to _Text.Count - 1 do
-    AddLine(PChar(_Text[i]));
+  for i := 0 to _Text.Count - 1 do begin
+    s := _Text[i];
+    Buff := PGXUnicodeChar(s);
+    AddLine(Buff);
+  end;
 end;
 
-procedure TCodeFormatterParser.AddLine(_Buff: PChar);
+procedure TCodeFormatterParser.AddLine(_Buff: PGXUnicodeChar);
 var
-  s: string;
+  s: TGXUnicodeString;
 begin
   FPrevLine := TLineFeed.Create(0, FSpacePerIndent);
   FTokens.Add(FPrevLine);
+
+  if not Assigned(_Buff) or (_Buff^ = #0) then
+    Exit;
 
   if FReadingAsm then
     ReadAsm(_Buff);
@@ -149,11 +154,29 @@ begin
     raise ECodeFormatter.Create('File to large to reformat')
 end;
 
-procedure TCodeFormatterParser.ReadAsm(var _Buff: PChar);
+function PCharPlus(_p: PGXUnicodeChar; _Offset: integer): PGXUnicodeChar;
+begin
+  Result := _p;
+  while _Offset > 0 do begin
+    Inc(Result);
+    Dec(_Offset);
+  end;
+  while _Offset < 0 do begin
+    Dec(Result);
+    Inc(_Offset);
+  end;
+end;
+
+function PCharDiff(_p, _q: PGXUnicodeChar): integer;
+begin
+  Result := (Integer(_p) - Integer(_q)) div SizeOf(_p^);
+end;
+
+procedure TCodeFormatterParser.ReadAsm(var _Buff: PGXUnicodeChar);
 var
-  P: PChar;
-  FirstNonWhitespace: PChar;
-  s: string;
+  P: PGXUnicodeChar;
+  FirstNonWhitespace: PGXUnicodeChar;
+  s: TGXUnicodeString;
 begin
   P := _Buff;
   FirstNonWhitespace := _Buff;
@@ -170,7 +193,7 @@ begin
         end;
 
       wtHalfStarComment: begin
-          if (P^ = '*') and ((P + 1)^ = ')') then begin
+          if (P^ = '*') and (PCharPlus(P, 1)^ = ')') then begin
             FAsmComment := wtWord;
             Inc(P);
           end;
@@ -178,13 +201,13 @@ begin
           Inc(P);
         end;
     else // case
-      if ((P = _Buff) or CharInSet((P - 1)^, [' ', Tab]))
+      if ((P = _Buff) or CharInSet(PCharPlus(p, -1)^, [' ', Tab]))
         and (StrLIComp(P, 'end', 3) = 0)
-        and CharInSet((P + 3)^, [#0, ';', ' ', Tab]) then begin // 'end' of assembler
+        and CharInSet(PCharPlus(P, 3)^, [#0, ';', ' ', Tab]) then begin // 'end' of assembler
         FReadingAsm := False;
 
         if FirstNonWhitespace <> P then begin
-          SetString(s, FirstNonWhitespace, p - FirstNonWhitespace - 1);
+          SetString(s, FirstNonWhitespace, PCharDiff(p, FirstNonWhitespace) - 1);
           FTokens.Add(TExpression.Create(wtAsm, s));
         end;
 
@@ -200,15 +223,15 @@ begin
           FAsmComment := wtHalfComment
         else
           Inc(P);
-      end else if (P^ = '(') and ((P + 1)^ = '*') then begin // '(*' comment
+      end else if (P^ = '(') and (PCharPlus(P, 1)^ = '*') then begin // '(*' comment
         Inc(p, 2);
-        while (P^ <> #0) and ((P^ <> '*') or ((P + 1)^ <> ')')) do
+        while (P^ <> #0) and ((P^ <> '*') or (PCharPlus(P, 1)^ <> ')')) do
           Inc(P);
         if p^ = #0 then
           FAsmComment := wtHalfStarComment
         else
           Inc(P, 2);
-      end else if (P^ = '/') and ((P + 1)^ = '/') then begin // '//' comment
+      end else if (P^ = '/') and (PCharPlus(P, 1)^ = '/') then begin // '//' comment
         Inc(p, 2);
         while P^ <> #0 do begin
           Inc(P);
@@ -223,7 +246,7 @@ begin
   _Buff := P;
 end;
 
-function TCodeFormatterParser.ReadWord(out _Dest: string; var _Source: PChar): TWordType;
+function TCodeFormatterParser.ReadWord(out _Dest: TGXUnicodeString; var _Source: PGXUnicodeChar): TWordType;
 const
   IdentifierTerminators = [
     '+', '-', '*', '/', '=',
@@ -234,7 +257,7 @@ const
   { TODO -otwm -cfixme : This allows strings like #a which is wrong, but there is no easy way to fix it. }
   StringControlChars = ['0'..'9', 'a'..'z', 'A'..'Z', '#', '^', '$'];
 var
-  P: PChar;
+  P: PGXUnicodeChar;
 
   {: Reads a string literal, on exit p points behind the last character of the string
      @returns either wtString or wtErrorString }
@@ -305,7 +328,7 @@ var
       Exit;
 
     Len := Length(FStartCommentOut);
-    Result := StrLIComp(P, PChar(FStartCommentOut), Len) = 0;
+    Result := StrLIComp(P, FStartCommentOut, Len) = 0;
 
     if not Result then
       Exit;
@@ -315,7 +338,7 @@ var
     Len := Length(FEndCommentOut);
 
     while P^ <> #0 do begin
-      if StrLIComp(P, PChar(FEndCommentOut), Len) = 0 then begin
+      if StrLIComp(P, FEndCommentOut, Len) = 0 then begin
         Inc(P, Len - 1);
         AResult := wtFullOutComment;
         Break;
@@ -343,7 +366,7 @@ begin
 
           if (P^ = '}') then begin
             Result := wtFullComment;
-            if (_Source + 1)^ = '$' then
+            if PCharPlus(_Source, 1)^ = '$' then
               Result := wtCompDirective;
 
             Inc(p);
@@ -357,7 +380,7 @@ begin
 
       '^': begin // string starting with ^A or so or the ^ operator
           Inc(p);
-          if CharInSet(P^, ['a'..'z', 'A'..'Z']) and CharInSet((P + 1)^, [#39, '^', '#']) then begin
+          if CharInSet(P^, ['a'..'z', 'A'..'Z']) and CharInSet(PCharPlus(P, 1)^, [#39, '^', '#']) then begin
             Result := wtString;
 
             while CharInSet(P^, StringControlChars) do
@@ -418,13 +441,13 @@ begin
                 Inc(p);
                 Result := wtHalfStarComment;
 
-                while (P^ <> #0) and ((P^ <> '*') or ((P + 1)^ <> ')')) do
+                while (P^ <> #0) and ((P^ <> '*') or (PCharPlus(P, 1)^ <> ')')) do
                   Inc(P);
 
                 if p^ <> #0 then begin
                   Inc(P);
                   Result := wtFullComment;
-                  if (_Source + 2)^ = '$' then
+                  if PCharPlus(_Source, 2)^ = '$' then
                     Result := wtCompDirective;
 
                   Inc(p);
@@ -434,7 +457,7 @@ begin
         end;
 
       '/': begin // / or //
-          if ((P + 1)^ = '/') then begin
+          if (PCharPlus(P, 1)^ = '/') then begin
             Result := wtFullComment;
             while P^ <> #0 do
               Inc(P);
@@ -468,12 +491,12 @@ begin
 
       '0'..'9': begin
           Result := wtNumber;
-          while CharInSet(P^, ['0'..'9', '.']) and not (strLComp(P, '..', 2) = 0)
-            and not ((FLeftPointBracket > 0) and (strLComp(P, '.)', 2) = 0)) do
+          while CharInSet(P^, ['0'..'9', '.']) and not (StrLComp(P, '..', 2) = 0)
+            and not ((FLeftPointBracket > 0) and (StrLComp(P, '.)', 2) = 0)) do
             Inc(P);
 
-          if UpCase(P^) = 'E' then
-            if CharInSet((P + 1)^, ['0'..'9', '-', '+']) then begin
+          if StrLIComp(P, 'E', 1) = 0 then
+            if CharInSet(PCharPlus(P, 1)^, ['0'..'9', '-', '+']) then begin
               Inc(P, 2);
               while CharInSet(P^, ['0'..'9']) do
                 Inc(P);
@@ -483,7 +506,7 @@ begin
       ReadIdentifier;
     end;
 
-  SetString(_Dest, _Source, P - _Source);
+  SetString(_Dest, _Source, PCharDiff(P, _Source));
 
   // This is for changing the casing of identifiers without adding them to
   // the global list.
@@ -505,12 +528,12 @@ begin
   end;
 end;
 
-function TCodeFormatterParser.ReadHalfComment(out _Dest: string; var _Source: PChar): TWordType;
+function TCodeFormatterParser.ReadHalfComment(out _Dest: TGXUnicodeString; var _Source: PGXUnicodeChar): TWordType;
 var
   Len: Integer;
-  P: PChar;
-  FirstNonSpace: PChar;
-  EndComment: String;
+  P: PGXUnicodeChar;
+  FirstNonSpace: PGXUnicodeChar;
+  EndComment: TGXUnicodeString;
   EndCommentType: TWordType;
 begin
   P := _Source;
@@ -520,8 +543,8 @@ begin
     Inc(P);
 
   if (FPrevLine <> nil) and (FPrevLine.NoOfSpaces = 0) then begin
-    FPrevLine.NoOfSpaces := P - _Source;
-    FPrevLine.OldNoOfSpaces := P - _Source;
+    FPrevLine.NoOfSpaces := PCharDiff(P, _Source);
+    FPrevLine.OldNoOfSpaces := PCharDiff(P, _Source);
     FirstNonSpace := p;
   end;
 
@@ -548,7 +571,7 @@ begin
 
   Len := Length(EndComment);
   while (P^ <> #0) do begin
-    if StrLIComp(P, PChar(EndComment), Len) = 0 then begin
+    if StrLIComp(P, EndComment, Len) = 0 then begin
       Result := EndCommentType;
       Inc(P, Len);
       Break;
@@ -557,7 +580,7 @@ begin
     Inc(P);
   end;
 
-  SetString(_Dest, FirstNonSpace, P - FirstNonSpace);
+  SetString(_Dest, FirstNonSpace, PCharDiff(P, FirstNonSpace));
 
   if P^ = #0 then
     _Source := P
@@ -567,7 +590,7 @@ end;
 
 { TIdentifiersList }
 
-function TIdentifiersList.AddIdentifier(const _s: string): string;
+function TIdentifiersList.AddIdentifier(const _s: TGXUnicodeString): TGXUnicodeString;
 var
   WordIndex : Integer;
 begin
@@ -577,8 +600,8 @@ begin
     rfUpperCase:
       Result := UpperCase(_s);
     rfFirstUp: begin
-        Result := AnsiLowerCase(_s);
-        Result[1] := AnsiUpperCase(_s)[1];
+        Result := UpperCase(Copy(_s, 1, 1));
+        Result := Result + LowerCase(Copy(_s, 2, Length(_s) - 1));
       end;
     rfUnchanged:
       Result := _s;

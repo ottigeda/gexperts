@@ -179,6 +179,7 @@ implementation
 
 uses
   Messages,
+  GX_GenericUtils,
   GX_CodeFormatterConfigHandler,
   GX_CodeFormatterEditCapitalization,
   GX_CodeFormatterDefaultSettings;
@@ -581,13 +582,13 @@ end;
 procedure TfmCodeFormatterConfig.ts_PreviewShow(Sender: TObject);
 var
   Formatter: TCodeFormatterEngine;
-  st: TStringList;
+  st: TGXUnicodeStringList;
 begin
   st := nil;
   Formatter := TCodeFormatterEngine.Create;
   try
     // this temporary string list is necessary to prevent an infinite loop (whose reason I don't really understand :-( )
-    st := TStringList.Create;
+    st := TGXUnicodeStringList.Create;
     st.Assign(m_PreviewBefore.Lines);
     FormToSettings(Formatter.Settings);
     Formatter.Execute(st);
