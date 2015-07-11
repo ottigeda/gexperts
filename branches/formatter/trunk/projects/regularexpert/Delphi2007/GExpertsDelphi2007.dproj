@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ProjectGuid>{4f1288a1-b13b-41ea-9c9b-de874d79eba0}</ProjectGuid>
     <MainSource>GExpertsDelphi2007.dpr</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
     <DCC_DependencyCheckOutputName>..\..\..\regularexpert\GExpertsDelphi2007.dll</DCC_DependencyCheckOutputName>
@@ -54,7 +54,7 @@
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
     <RcCompile Include="..\..\..\gx\images\GXIcons.rc">
-      <Form>..\..\..\gx\images\GXIcons.res</Form>
+      <Form>'..\..\..\gx\images\GXIcons.res'</Form>
     </RcCompile>
     <DCCReference Include="..\..\..\gx\source\BackupProject\GX_Backup.pas">
       <Form>fmBackup</Form>
@@ -377,6 +377,7 @@
     <DCCReference Include="..\..\..\source\engine\GX_CodeFormatterTokenList.pas" />
     <DCCReference Include="..\..\..\source\engine\GX_CodeFormatterTokens.pas" />
     <DCCReference Include="..\..\..\source\engine\GX_CodeFormatterTypes.pas" />
+    <DCCReference Include="..\..\..\source\engine\GX_CodeFormatterUnicode.pas" />
     <DCCReference Include="..\..\..\source\GX_AboutExperimental.pas">
       <Form>fmAboutExperimental</Form>
     </DCCReference>

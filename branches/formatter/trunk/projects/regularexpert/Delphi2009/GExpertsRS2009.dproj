@@ -391,18 +391,19 @@
 			<DCCReference Include="..\..\..\source\GX_CodeFormatterGXConfigWrapper.pas"/>
 			<DCCReference Include="..\..\..\source\GX_eCodeFormatter.pas"/>
 			<DCCReference Include="..\..\..\source\GX_CodeFormatterBookmarks.pas"/>
+			<DCCReference Include="..\..\..\source\engine\GX_CodeFormatterTokenList.pas"/>
+			<DCCReference Include="..\..\..\source\engine\GX_CodeFormatterTypes.pas"/>
 			<DCCReference Include="..\..\..\source\engine\GX_CodeFormatterTokens.pas"/>
 			<DCCReference Include="..\..\..\source\engine\GX_CodeFormatterFormatter.pas"/>
 			<DCCReference Include="..\..\..\source\engine\GX_CodeFormatterParser.pas"/>
 			<DCCReference Include="..\..\..\source\engine\GX_CodeFormatterSettings.pas"/>
 			<DCCReference Include="..\..\..\source\engine\GX_CodeFormatterStack.pas"/>
 			<DCCReference Include="..\..\..\source\engine\GX_CodeFormatterEngine.pas"/>
+			<DCCReference Include="..\..\..\source\engine\GX_CodeFormatterUnicode.pas"/>
 			<DCCReference Include="..\..\..\source\GX_AboutExperimental.pas">
 				<Form>fmAboutExperimental</Form>
 			</DCCReference>
 			<DCCReference Include="..\GX_CodeFormatterRegisterExpert.pas"/>
-			<DCCReference Include="..\..\..\source\engine\GX_CodeFormatterTypes.pas"/>
-			<DCCReference Include="..\..\..\source\engine\GX_CodeFormatterTokenList.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
