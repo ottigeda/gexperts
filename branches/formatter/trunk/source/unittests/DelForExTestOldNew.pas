@@ -12,7 +12,8 @@ uses
   GX_CodeFormatterTypes,
   GX_CodeFormatterSettings,
   GX_CodeFormatterDefaultSettings,
-  GX_CodeFormatterEngine;
+  GX_CodeFormatterEngine,
+  GX_GenericUtils;
 
 type
   {Tests that compare the output of the original dll with the output of the current compile.}
@@ -21,7 +22,7 @@ type
     FLastActual: string;
     FSettings: TCodeFormatterEngineSettings;
     FNewFormatter: TCodeFormatterEngine;
-    procedure CompareOldNew(const _Input, _Expected, _Description: string); virtual;
+    procedure CompareOldNew(const _Input, _Expected: TGxUnicodeString; const _Description: string); virtual;
     procedure TestFile(const _Filename: string);
   protected
     function GetFormatSettings: TCodeFormatterEngineSettings; virtual; abstract;
@@ -131,11 +132,11 @@ begin
   FNewFormatter.Free;
 end;
 
-procedure TTestCompareOldNew.CompareOldNew(const _Input, _Expected, _Description: string);
+procedure TTestCompareOldNew.CompareOldNew(const _Input, _Expected: TGxUnicodeString; const _Description: string);
 var
-  st: TStringList;
+  st: TGxUnicodeStringList;
 begin
-  st := TStringList.Create;
+  st := TGxUnicodeStringList.Create;
   try
     st.Text := _Input;
     Check(FNewFormatter.Execute(st), 'Error in formatter engine');
@@ -485,4 +486,3 @@ initialization
 //  RegisterTest('timing', TTestTimingBorlandFormatting.Suite);
 //  RegisterTest('timing', TTestTimingDelforFormatting.Suite);
 end.
-

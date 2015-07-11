@@ -11,13 +11,14 @@ uses
   GX_CodeFormatterTypes,
   GX_CodeFormatterSettings,
   GX_CodeFormatterDefaultSettings,
-  GX_CodeFormatterEngine;
+  GX_CodeFormatterEngine,
+  GX_GenericUtils;
 
 type
   TTestTestfiles = class(TTestCase)
   private
     FFormatter: TCodeFormatterEngine;
-    procedure TrimTrailingCrLf(_sl: TStrings);
+    procedure TrimTrailingCrLf(_sl: TGxUnicodeStringList);
     procedure TestFile(const _Filename: string; _AllowFailure: Boolean = False);
   protected
     function GetFormatSettings: TCodeFormatterEngineSettings; virtual; abstract;
@@ -160,14 +161,14 @@ begin
   FFormatter.Free;
 end;
 
-procedure TTestTestfiles.TrimTrailingCrLf(_sl: TStrings);
+procedure TTestTestfiles.TrimTrailingCrLf(_sl: TGxUnicodeStringList);
 var
-  cnt: integer;
+  cnt: Integer;
 begin
   cnt := _sl.Count;
   while cnt > 0 do begin
     if _sl[cnt - 1] <> '' then
-      exit;
+      Exit;
     Dec(cnt);
     _sl.Delete(cnt);
   end;
@@ -183,8 +184,8 @@ var
   Filename: string;
   InFile: string;
   ExpectedFile: string;
-  ExpectedText: TStringList;
-  st: TStringList;
+  ExpectedText: TGxUnicodeStringList;
+  st: TGxUnicodeStringList;
 begin
   Filename := 'testfile_' + _Filename + '.pas';
   InFile := 'source\unittests\testcases\input\' + Filename;
@@ -199,10 +200,10 @@ begin
   end;
 
   ExpectedText := nil;
-  st := TStringList.Create;
+  st := TGxUnicodeStringList.Create;
   try
     st.LoadFromFile(InFile);
-    ExpectedText := TStringList.Create;
+    ExpectedText := TGxUnicodeStringList.Create;
     ExpectedText.LoadFromFile(ExpectedFile);
     FFormatter.Execute(st);
     try
@@ -242,7 +243,7 @@ end;
 
 procedure TTestTestfiles.testComplexCurrentlyFails;
 begin
-  TestFile('complex', true);
+  TestFile('complex', True);
 end;
 
 procedure TTestTestfiles.testAssemblerNewlines;
@@ -505,7 +506,7 @@ end;
 
 procedure TTestTestfiles.testAnonymousCurrentlyFails;
 begin
-  TestFile('Anonymous', true);
+  TestFile('Anonymous', True);
 end;
 
 procedure TTestTestfiles.testAsm;
@@ -635,7 +636,7 @@ end;
 function TTestFilesSpecial.GetFormatSettings: TCodeFormatterEngineSettings;
 begin
   Result := inherited GetFormatSettings;
-  Result.ExceptSingle := true;
+  Result.ExceptSingle := True;
 end;
 
 function TTestFilesSpecial.GetResultDir: string;
@@ -650,4 +651,3 @@ initialization
   RegisterTest(TTestFilesTwmFormatting.Suite);
   RegisterTest(TTestFilesSpecial.Suite);
 end.
-

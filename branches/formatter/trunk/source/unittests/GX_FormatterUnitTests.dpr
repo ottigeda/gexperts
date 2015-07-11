@@ -36,8 +36,8 @@
 program GX_FormatterUnitTests;
 
 uses
-  TestFramework, // in 'C:\Program Files\Embarcadero\RAD Studio\9.0\source\DUnit\src\TestFramework.pas',
-  GUITestRunner, // in 'C:\Program Files\Embarcadero\RAD Studio\9.0\source\DUnit\src\GUITestRunner.pas' {GUITestRunner},
+  TestFramework,
+  GUITestRunner,
   DelForExTestOldNew in 'DelForExTestOldNew.pas',
   DelForExTestFiles in 'DelForExTestFiles.pas',
   GX_CodeFormatterDefaultSettings in '..\GX_CodeFormatterDefaultSettings.pas',
@@ -49,7 +49,9 @@ uses
   GX_CodeFormatterFormatter in '..\engine\GX_CodeFormatterFormatter.pas',
   GX_CodeFormatterStack in '..\engine\GX_CodeFormatterStack.pas',
   GX_CodeFormatterParser in '..\engine\GX_CodeFormatterParser.pas',
-  GX_CodeFormatterConfigHandler in '..\GX_CodeFormatterConfigHandler.pas';
+  GX_CodeFormatterConfigHandler in '..\GX_CodeFormatterConfigHandler.pas',
+  GX_CodeFormatterUnicode in '..\engine\GX_CodeFormatterUnicode.pas',
+  GX_GenericUtils in '..\..\gx\source\Utils\GX_GenericUtils.pas';
 
 begin
   ReportMemoryLeaksOnShutdown := True;
