@@ -29,6 +29,7 @@ type
   published
     procedure testAbstractSealedClass;
     procedure testAngledBrackets;
+    procedure testArabic;
     procedure testAsm;
     procedure testAsmProblem1;
     procedure testAssemblerNewlines;
@@ -507,6 +508,11 @@ end;
 procedure TTestTestfiles.testAnonymousCurrentlyFails;
 begin
   TestFile('Anonymous', True);
+end;
+
+procedure TTestTestfiles.testArabic;
+begin
+  TestFile('Arabic');
 end;
 
 procedure TTestTestfiles.testAsm;
