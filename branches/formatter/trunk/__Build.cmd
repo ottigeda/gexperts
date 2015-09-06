@@ -2,8 +2,8 @@
 if "%1"=="" goto :list
 call :doItem %1
 goto :eof
-:list
 
+:list
 call :doItem 6
 call :doItem 7
 call :doItem 2005
@@ -19,16 +19,23 @@ call :doItem XE5
 call :doItem XE6
 call :doItem XE7
 call :doItem XE8
+call :doEdtr Xx10Seattle
 
 goto :eof
 
 :doItem
+call :doEdtr %1
+call :doRglr %1
+got :eof
+
+:doEdtr
 pushd projects\editorexpert
 setlocal
 call __build.cmd %1
 endlocal
 popd
 
+:doRglr
 pushd projects\regularexpert
 setlocal
 call __build.cmd %1

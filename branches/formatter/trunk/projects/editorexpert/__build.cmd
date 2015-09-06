@@ -18,6 +18,7 @@ call :dobuild XE5
 call :dobuild XE6
 call :dobuild XE7
 call :dobuild XE8
+call :dobuild Xx10Seattle
 
 goto :eof
 
