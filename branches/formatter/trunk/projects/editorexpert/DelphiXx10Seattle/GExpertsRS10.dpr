@@ -178,7 +178,8 @@ uses
   GX_CodeFormatterEngine in '..\..\..\source\engine\GX_CodeFormatterEngine.pas',
   GX_AboutExperimental in '..\..\..\source\GX_AboutExperimental.pas' {fmAboutExperimental},
   GX_CodeFormatterRegisterExpert in '..\GX_CodeFormatterRegisterExpert.pas',
-  GX_CodeFormatterUnicode in '..\..\..\source\engine\GX_CodeFormatterUnicode.pas';
+  GX_CodeFormatterUnicode in '..\..\..\source\engine\GX_CodeFormatterUnicode.pas',
+  GX_HideNavbar in '..\..\..\gx\source\Experts\GX_HideNavbar.pas';
 
 begin
 end.

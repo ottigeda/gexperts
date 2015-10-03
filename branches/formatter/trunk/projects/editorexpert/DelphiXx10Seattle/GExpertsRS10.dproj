@@ -451,6 +451,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         </DCCReference>
         <DCCReference Include="..\GX_CodeFormatterRegisterExpert.pas"/>
         <DCCReference Include="..\..\..\source\engine\GX_CodeFormatterUnicode.pas"/>
+        <DCCReference Include="..\..\..\gx\source\Experts\GX_HideNavbar.pas"/>
         <None Include="..\..\..\gx\source\framework\GX_CondDefine.inc"/>
         <BuildConfiguration Include="Debug">
             <Key>Cfg_2</Key>
