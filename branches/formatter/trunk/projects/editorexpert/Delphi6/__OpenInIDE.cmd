@@ -1,23 +1,23 @@
 @rem Searches the parent dirctories for the buildtools and calls the doOpenInIde.cmd there
 @echo off
 setlocal
-call :GetBuildTools %0%
+call :FindInParents %0% buildtools
 call %result%\doOpenInIde.cmd
 goto :eof
 
-:GetBuildTools
-@rem search all parent directories for a subdir "buildtools" and return
-@rem the full path to the buildtools directory in %result%
+:FindInParents
+@rem search all parent directories for a subdir and return
+@rem the full path to that directory in %result%
 setlocal
 set parentdir=%1%
+set subdir=%2%
 :loop
 call :GetDir %parentdir%
 set parentdir=%result%
-if exist %parentdir%\buildtools goto found
+if exist %parentdir%\%subdir% goto found
 goto loop
 :found
-set result=%parentdir%\buildtools
-endlocal & set result=%result%
+endlocal & set result=%parentdir%\%subdir%
 goto :eof
 
 :GetDir

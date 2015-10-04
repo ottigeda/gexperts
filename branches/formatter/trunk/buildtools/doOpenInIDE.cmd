@@ -3,7 +3,6 @@
 setlocal
 set buildtools=%~dp0%
 call %buildtools%doGetDelphiVer.cmd
-call _prebuild.cmd
 call %buildtools%\doGetDelphiPath.cmd %delphiver%
 if %delphiver% LSS 8 goto delphi32
 set delphiexe=bds.exe
