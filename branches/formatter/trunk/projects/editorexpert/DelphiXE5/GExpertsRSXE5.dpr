@@ -178,7 +178,10 @@ uses
   GX_CodeFormatterEngine in '..\..\..\source\engine\GX_CodeFormatterEngine.pas',
   GX_AboutExperimental in '..\..\..\source\GX_AboutExperimental.pas' {fmAboutExperimental},
   GX_CodeFormatterRegisterExpert in '..\GX_CodeFormatterRegisterExpert.pas',
-  GX_CodeFormatterUnicode in '..\..\..\source\engine\GX_CodeFormatterUnicode.pas';
+  GX_CodeFormatterUnicode in '..\..\..\source\engine\GX_CodeFormatterUnicode.pas',
+  GX_HideNavbar in '..\..\..\gx\source\Experts\GX_HideNavbar.pas',
+  GX_IdeSearchPathEnhancer in '..\..\..\gx\source\IDE\GX_IdeSearchPathEnhancer.pas',
+  GX_dzVclUtils in '..\..\..\gx\source\Utils\GX_dzVclUtils.pas';
 
 begin
 end.

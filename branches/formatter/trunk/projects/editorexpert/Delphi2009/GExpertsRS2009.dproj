@@ -404,6 +404,9 @@
 				<Form>fmAboutExperimental</Form>
 			</DCCReference>
 			<DCCReference Include="..\GX_CodeFormatterRegisterExpert.pas"/>
+			<DCCReference Include="..\..\..\gx\source\Experts\GX_HideNavbar.pas"/>
+			<DCCReference Include="..\..\..\gx\source\IDE\GX_IdeSearchPathEnhancer.pas"/>
+			<DCCReference Include="..\..\..\gx\source\Utils\GX_dzVclUtils.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
