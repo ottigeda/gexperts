@@ -38,6 +38,7 @@ goto DelphiEndCase
   call :ReadReg CodeGear\BDS\7.0
   goto :eof
 :DelphiXE
+:DelphiXE1
   call :ReadReg Embarcadero\BDS\8.0
   goto :eof
 :DelphiXE2
@@ -61,6 +62,8 @@ goto DelphiEndCase
 :DelphiXE8
   call :ReadReg Embarcadero\BDS\16.0
   goto :eof
+:Delphi10
+:DelphiXX10Seattle
 :Delphi10Seattle
   call :ReadReg Embarcadero\BDS\17.0
 :DelphiEndCase
