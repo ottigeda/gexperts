@@ -1,4 +1,5 @@
 @echo off
+buildtools\prepbuild.exe --incbuild --readini=projects\GExperts --updateini=projects\GExperts
 if "%1"=="" goto :list
 call :doItem %1
 goto :eof
@@ -26,7 +27,7 @@ goto :eof
 :doItem
 call :doEdtr %1
 call :doRglr %1
-got :eof
+goto :eof
 
 :doEdtr
 pushd projects\editorexpert
@@ -34,6 +35,7 @@ setlocal
 call __build.cmd %1
 endlocal
 popd
+goto :eof
 
 :doRglr
 pushd projects\regularexpert
@@ -41,5 +43,4 @@ setlocal
 call __build.cmd %1
 endlocal
 popd
-
 goto :eof
