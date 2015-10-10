@@ -23,8 +23,6 @@
     <DCC_ResourcePath>..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\UniSynEdit</DCC_ResourcePath>
     <DCC_ObjPath>..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\UniSynEdit</DCC_ObjPath>
     <DCC_IncludePath>..\..\..\gx\source\framework;..\..\..\gx\externalsource;..\..\..\gx\externalsource\abbrevia;..\..\..\gx\externalsource\UniSynEdit</DCC_IncludePath>
-    <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
-    <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <Version>7.0</Version>
@@ -159,6 +157,7 @@
       <Form>fmExpertManager</Form>
     </DCCReference>
     <DCCReference Include="..\..\..\gx\source\Experts\GX_FindComponentRef.pas" />
+    <DCCReference Include="..\..\..\gx\source\Experts\GX_HideNavbar.pas" />
     <DCCReference Include="..\..\..\gx\source\Experts\GX_HideNonVisualComps.pas" />
     <DCCReference Include="..\..\..\gx\source\Experts\GX_IdeShortCuts.pas">
       <Form>fmIdeShortCuts</Form>
@@ -264,6 +263,7 @@
     </DCCReference>
     <DCCReference Include="..\..\..\gx\source\IDE\GX_IdeEnhance.pas" />
     <DCCReference Include="..\..\..\gx\source\IDE\GX_IdeFormEnhancer.pas" />
+    <DCCReference Include="..\..\..\gx\source\IDE\GX_IdeSearchPathEnhancer.pas" />
     <DCCReference Include="..\..\..\gx\source\IDE\GX_MultilineHost.pas" />
     <DCCReference Include="..\..\..\gx\source\IDE\GX_MultiLinePalette.pas" />
     <DCCReference Include="..\..\..\gx\source\MacroLibrary\GX_MacroLibrary.pas">
@@ -363,6 +363,7 @@
     <DCCReference Include="..\..\..\gx\source\ToDoList\GX_ToDoOptions.pas">
       <Form>fmToDoOptions</Form>
     </DCCReference>
+    <DCCReference Include="..\..\..\gx\source\Utils\GX_dzVclUtils.pas" />
     <DCCReference Include="..\..\..\gx\source\Utils\GX_GenericClasses.pas" />
     <DCCReference Include="..\..\..\gx\source\Utils\GX_GenericUtils.pas" />
     <DCCReference Include="..\..\..\gx\source\Utils\GX_GxUtils.pas" />
