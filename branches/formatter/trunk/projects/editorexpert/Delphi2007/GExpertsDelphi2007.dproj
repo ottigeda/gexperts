@@ -263,6 +263,7 @@
     </DCCReference>
     <DCCReference Include="..\..\..\gx\source\IDE\GX_IdeEnhance.pas" />
     <DCCReference Include="..\..\..\gx\source\IDE\GX_IdeFormEnhancer.pas" />
+    <DCCReference Include="..\..\..\gx\source\IDE\GX_IdeProjectOptionsEnhancer.pas" />
     <DCCReference Include="..\..\..\gx\source\IDE\GX_IdeSearchPathEnhancer.pas" />
     <DCCReference Include="..\..\..\gx\source\IDE\GX_MultilineHost.pas" />
     <DCCReference Include="..\..\..\gx\source\IDE\GX_MultiLinePalette.pas" />

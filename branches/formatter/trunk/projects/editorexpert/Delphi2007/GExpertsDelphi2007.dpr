@@ -181,7 +181,8 @@ uses
   GX_CodeFormatterUnicode in '..\..\..\source\engine\GX_CodeFormatterUnicode.pas',
   GX_HideNavbar in '..\..\..\gx\source\Experts\GX_HideNavbar.pas',
   GX_IdeSearchPathEnhancer in '..\..\..\gx\source\IDE\GX_IdeSearchPathEnhancer.pas',
-  GX_dzVclUtils in '..\..\..\gx\source\Utils\GX_dzVclUtils.pas';
+  GX_dzVclUtils in '..\..\..\gx\source\Utils\GX_dzVclUtils.pas',
+  GX_IdeProjectOptionsEnhancer in '..\..\..\gx\source\IDE\GX_IdeProjectOptionsEnhancer.pas';
 
 begin
 end.
