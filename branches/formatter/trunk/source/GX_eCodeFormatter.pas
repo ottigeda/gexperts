@@ -68,7 +68,7 @@ end;
 
 function TeCodeFormatterExpert.GetBitmapFileName: string;
 begin
-  Result := '';
+  Result := 'TCodeFormatterExpert';
 end;
 
 function TeCodeFormatterExpert.GetDisplayName: string;
