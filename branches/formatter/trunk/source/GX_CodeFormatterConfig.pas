@@ -167,6 +167,7 @@ type
       _Space: TSpaceSet);
     function GetSpaceItem(_Idx: Integer): TSpaceSet;
     procedure SetDefault(_Which: string);
+    procedure HandleCaptitalizationFileDropped(_Sender: TObject; _Files: TStrings);
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
@@ -179,6 +180,7 @@ implementation
 
 uses
   Messages,
+  GX_dzVclUtils,
   GX_GenericUtils,
   GX_CodeFormatterConfigHandler,
   GX_CodeFormatterEditCapitalization,
@@ -215,6 +217,9 @@ begin
     st.Free;
   end;
 
+  TWinControl_ActivateDropFiles(ed_CapitalizationFile, HandleCaptitalizationFileDropped);
+  TEdit_Autocomplete(ed_CapitalizationFile, [acsFileSystem], [actSuggest]);
+
   grid_Spacing.DefaultRowHeight := grid_Spacing.Canvas.TextHeight('Mg') + 4;
 
   lb_Precedence.Items.AddObject(str_PrecedenceDirective, pointer(cpDirective));
@@ -226,6 +231,11 @@ destructor TfmCodeFormatterConfig.Destroy;
 begin
   FCapitalization.Free;
   inherited;
+end;
+
+procedure TfmCodeFormatterConfig.HandleCaptitalizationFileDropped(_Sender: TObject; _Files: TStrings);
+begin
+  ed_CapitalizationFile.Text := _Files[0];
 end;
 
 function TfmCodeFormatterConfig.GetSpaceItem(_Idx: Integer): TSpaceSet;
