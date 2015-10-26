@@ -218,7 +218,7 @@ begin
   end;
 
   TWinControl_ActivateDropFiles(ed_CapitalizationFile, HandleCaptitalizationFileDropped);
-  TEdit_Autocomplete(ed_CapitalizationFile, [acsFileSystem], [actSuggest]);
+  TEdit_ActivateAutoComplete(ed_CapitalizationFile, [acsFileSystem], [actSuggest]);
 
   grid_Spacing.DefaultRowHeight := grid_Spacing.Canvas.TextHeight('Mg') + 4;
 
