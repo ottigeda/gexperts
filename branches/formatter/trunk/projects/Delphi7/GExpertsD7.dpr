@@ -1,6 +1,6 @@
 library GExpertsD7;
 
-{$R '..\..\gx\images\GXIcons.res' '..\..\gx\images\GXIcons.rc'}
+{$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R *_version.res}
 {$E dll}
 

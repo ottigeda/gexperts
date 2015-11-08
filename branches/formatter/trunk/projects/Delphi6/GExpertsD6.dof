@@ -45,7 +45,7 @@ OutputDir=..\..\out
 UnitOutputDir=..\..\dcu\delphi6
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=..\..\source\Framework;..\..\gx\ExternalSource;..\..\gx\ExternalSource\Abbrevia;..\..\gx\ExternalSource\UniSynEdit
+SearchPath=..\..\source\Framework;..\..\ExternalSource;..\..\ExternalSource\Abbrevia;..\..\ExternalSource\UniSynEdit
 Packages=rtl;vcl;vclx;vclsmp;designide
 Conditionals=
 DebugSourceDirs=
@@ -86,8 +86,9 @@ CompileDate=2011-02-05
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=1
-Item0=..\..\source\Framework;..\..\gx\ExternalSource;..\..\gx\ExternalSource\Abbrevia;..\..\gx\ExternalSource\UniSynEdit
+Count=2
+Item0=..\..\source\Framework;..\..\ExternalSource;..\..\ExternalSource\Abbrevia;..\..\ExternalSource\UniSynEdit
+Item1=..\..\source\Framework;..\..\gx\ExternalSource;..\..\gx\ExternalSource\Abbrevia;..\..\gx\ExternalSource\UniSynEdit
 [HistoryLists\hlUnitOutputDirectory]
 Count=1
 Item0=..\..\dcu\delphi6
