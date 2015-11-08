@@ -6,16 +6,14 @@ INFORMATION FIRST! (see below) **
 Once you have checked out all the source files, building your own version of
 GExperts is quite simple:
 
-1. switch to the projects folder
-2. switch to the editorexperts or regularexperts folder, whichever you prefer
+1. switch to the "projects" folder
 3. switch to the delphi version you are using
-4. call __build_project.cmd
+4. call "__build_project.cmd"
 
 If I haven't made a mistake, this script should then compile a GExpertsXxx.dll
-to the folder regularexpert or editorexpert respectively.
+to the folder "out" respectively.
 
-To build both GExperts versions for a specific Delphi version, you can just 
-call __build.cmd in the root of the source tree followed by a Delphi version:
+Alternatively you can call "__build.cmd" in the root of the source tree followed by a Delphi version:
 
     6
     7
@@ -31,22 +29,21 @@ call __build.cmd in the root of the source tree followed by a Delphi version:
     XE5
     XE6
     XE7
-	XE8
+    XE8
+    Xx10Seattle
 
-To build both GExperts versions for all possible Delphi versions, call
-__build.cmd in the root of the source tree.
+To build both GExperts for all supported Delphi versions, call
+"__build.cmd" in the root of the source tree.
 
-To change the version information prior to building, edit the files
-* GExperts_version.ini in the projects directory
-* GExperts_ExpertType_version.ini in the projects\editorexpert or
-  projects\regularexpert respectively
-These files are used by all projects so you only need to edit them.
+To change the version information prior to building, edit the file
+"GExperts_version.ini" in the "projects" directory
+This file is used by all projects so you only need to edit them.
 
-Like __build.cmd, call __Release.cmd with or without a version parameter to 
-create a GExperts-experimental-twm.zip file that contains all the files 
-needed to install the experimental GExperts.
+Like "__build.cmd", call "__Release.cmd" with or without a version parameter to 
+create a "GExperts-experimental-twm.zip" file that contains all the files 
+necessary to install the experimental GExperts.
 
 
 **Dependencies**
 
-__build.cmd and _build_project.cmd need the Delphi versions you want to compile for.
+"__build.cmd" and "__build_project.cmd" require the Delphi versions you want to compile for.
