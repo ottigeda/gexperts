@@ -25,20 +25,7 @@ call :doEdtr Xx10Seattle
 goto :eof
 
 :doItem
-call :doEdtr %1
-call :doRglr %1
-goto :eof
-
-:doEdtr
-pushd projects\editorexpert
-setlocal
-call __build.cmd %1
-endlocal
-popd
-goto :eof
-
-:doRglr
-pushd projects\regularexpert
+pushd projects
 setlocal
 call __build.cmd %1
 endlocal
