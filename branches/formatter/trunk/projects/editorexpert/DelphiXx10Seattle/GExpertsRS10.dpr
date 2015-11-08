@@ -181,7 +181,12 @@ uses
   GX_CodeFormatterUnicode in '..\..\..\source\engine\GX_CodeFormatterUnicode.pas',
   GX_HideNavbar in '..\..\..\gx\source\Experts\GX_HideNavbar.pas',
   GX_IdeSearchPathEnhancer in '..\..\..\gx\source\IDE\GX_IdeSearchPathEnhancer.pas',
-  GX_dzVclUtils in '..\..\..\gx\source\Utils\GX_dzVclUtils.pas';
+  GX_dzVclUtils in '..\..\..\gx\source\Utils\GX_dzVclUtils.pas',
+  GX_IdeProjectOptionsEnhancer in '..\..\..\gx\source\IDE\GX_IdeProjectOptionsEnhancer.pas',
+  GX_EventHook in '..\..\..\gx\source\Framework\GX_EventHook.pas',
+  GX_ePasteAs in '..\..\..\gx\source\Editor\GX_ePasteAs.pas' {fmPasteAsConfig},
+  GX_PasteAs in '..\..\..\gx\source\framework\GX_PasteAs.pas',
+  GX_IdeToolPropertiesEnhancer in '..\..\..\gx\source\IDE\GX_IdeToolPropertiesEnhancer.pas';
 
 begin
 end.
