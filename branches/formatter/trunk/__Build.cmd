@@ -20,7 +20,7 @@ call :doItem XE5
 call :doItem XE6
 call :doItem XE7
 call :doItem XE8
-call :doEdtr Xx10Seattle
+call :doItem Xx10Seattle
 
 goto :eof
 
