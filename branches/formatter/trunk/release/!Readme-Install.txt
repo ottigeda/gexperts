@@ -8,8 +8,8 @@
 4. Extract this ZIP file somewhere.
 5. Copy all files from the extracted directory to the GExperts directory.
    (Do *NOT* copy the subdirectories!)
-6. Copy the appropriate GExperts DLL from one of the subdirectories
-   EditorExpert or RegularExpert to the GExperts directory.
+6. Copy the appropriate GExperts DLL from the subdirectory DLLs
+   to the GExperts directory.
 7. Start Delphi and check that the new GExperts DLL has been loaded by
    opening the GExperts About dialog.
 
@@ -26,8 +26,8 @@ experimental version by hand:
 2. Extract all files from the ZIP somewhere
 3. Copy all files from the extracted directory to the GExperts directory.
    (Do *NOT* copy the subdirectories!)
-4. Copy the appropriate GExperts DLL from one of the subdirectories
-   EditorExpert or RegularExpert to the GExperts directory.
+4. Copy the appropriate GExperts DLL from the subdirectory DLLs
+   to the GExperts directory.
 5. Copy the files from the subdirectory FromRegularRelease to the
    GExperts directory.
 6. Copy the appropriate cmd from the install subdirectory. To the GExperts
