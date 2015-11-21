@@ -115,7 +115,7 @@
 			<Linker Name="ExeDescription" Type="String"></Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir" Type="String">..\..\out</Directories>
+			<Directories Name="OutputDir" Type="String">..\..\DLLs</Directories>
 			<Directories Name="UnitOutputDir" Type="String">..\..\dcu\delphi2005</Directories>
 			<Directories Name="PackageDLLOutputDir" Type="String"></Directories>
 			<Directories Name="PackageDCPOutputDir" Type="String"></Directories>

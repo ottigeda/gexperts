@@ -90,7 +90,7 @@ MaxStackSize=1048576
 ImageBase=5242880
 ExeDescription=
 [Directories]
-OutputDir=..\..\out
+OutputDir=..\..\DLLs
 UnitOutputDir=..\..\dcu\delphi7
 PackageDLLOutputDir=
 PackageDCPOutputDir=

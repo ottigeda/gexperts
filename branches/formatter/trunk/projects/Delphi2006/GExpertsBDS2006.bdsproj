@@ -119,7 +119,7 @@
 			<Linker Name="ExeDescription"></Linker>
 		</Linker>
 		<Directories>
-			<Directories Name="OutputDir">..\..\out</Directories>
+			<Directories Name="OutputDir">..\..\DLLs</Directories>
 			<Directories Name="UnitOutputDir">..\..\dcu\bds2006</Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>

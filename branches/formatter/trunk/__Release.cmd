@@ -61,9 +61,7 @@ if %1==XX10 set GExpertsDLL=GExpertsRS10
 
 if "%GExpertsDLL%" == "" goto nodll
 
-pushd out
-..\%ZIPEXE% ..\%ZIPFile% %GExpertsDLL%.dll
-popd
+%ZIPEXE% %ZIPFile% DLLs\%GExpertsDLL%.dll
 
 endlocal
 goto :eof

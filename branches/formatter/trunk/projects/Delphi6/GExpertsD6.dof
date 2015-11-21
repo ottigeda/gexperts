@@ -41,7 +41,7 @@ MaxStackSize=1048576
 ImageBase=5242880
 ExeDescription=
 [Directories]
-OutputDir=..\..\out
+OutputDir=..\..\DLLs
 UnitOutputDir=..\..\dcu\delphi6
 PackageDLLOutputDir=
 PackageDCPOutputDir=
@@ -93,6 +93,5 @@ Item1=..\..\source\Framework;..\..\gx\ExternalSource;..\..\gx\ExternalSource\Abb
 Count=1
 Item0=..\..\dcu\delphi6
 [HistoryLists\hlOutputDirectorry]
-Count=2
-Item0=..\..\out
-Item1=..\..\editorexpert
+Count=1
+Item0=..\..\DLLs
