@@ -32,12 +32,12 @@ Alternatively you can call "__build.cmd" in the root of the source tree followed
     XE8
     Xx10Seattle
 
-To build both GExperts for all supported Delphi versions, call
+To build GExperts for all supported Delphi versions, call
 "__build.cmd" in the root of the source tree.
 
 To change the version information prior to building, edit the file
 "GExperts_version.ini" in the "projects" directory
-This file is used by all projects so you only need to edit them.
+This file is used by all projects so you only need to edit this.
 
 Like "__build.cmd", call "__Release.cmd" with or without a version parameter to 
 create a "GExperts-experimental-twm.zip" file that contains all the files 
