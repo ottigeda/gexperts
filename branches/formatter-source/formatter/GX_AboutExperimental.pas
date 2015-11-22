@@ -1,5 +1,7 @@
 unit GX_AboutExperimental;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -48,11 +50,15 @@ begin
 end;
 
 class function TfmAboutExperimental.doAddToAboutDialog: integer;
+{$IFDEF GX_VER170_up}
+// Only Delphi 2005 and up support the about box services
 var
   bmSplashScreen: HBITMAP;
   AboutBoxServices: IOTAAboutBoxServices;
+{$ENDIF GX_VER170_up}
 begin
   Result := -1;
+{$IFDEF GX_VER170_up}
   if Supports(BorlandIDEServices, IOTAAboutBoxServices, AboutBoxServices) then begin
     bmSplashScreen := LoadBitmap(HInstance, 'SplashScreenBitMap');
     Result := AboutBoxServices.AddPluginInfo(
@@ -66,6 +72,7 @@ begin
       False,
       GetVersionStr + ' experimental', 'Open Source');
   end;
+{$ENDIF GX_VER170_up}
 end;
 
 initialization
