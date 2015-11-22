@@ -70,7 +70,8 @@ begin
       + 'http://blog.dummzeuch.de',
       bmSplashScreen,
       False,
-      GetVersionStr + ' experimental', 'Open Source');
+      '', // leave this empty!
+      GetVersionStr + ' experimental');
   end;
 {$ENDIF GX_VER170_up}
 end;
