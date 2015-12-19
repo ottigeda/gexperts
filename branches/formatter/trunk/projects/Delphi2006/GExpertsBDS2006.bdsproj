@@ -120,7 +120,7 @@
 		</Linker>
 		<Directories>
 			<Directories Name="OutputDir">..\..\DLLs</Directories>
-			<Directories Name="UnitOutputDir">..\..\dcu\bds2006</Directories>
+			<Directories Name="UnitOutputDir">..\..\dcu\Delphi2006</Directories>
 			<Directories Name="PackageDLLOutputDir"></Directories>
 			<Directories Name="PackageDCPOutputDir"></Directories>
 			<Directories Name="SearchPath">..\..\source\framework;..\..\externalsource;..\..\externalsource\abbrevia;..\..\externalsource\unisynedit</Directories>

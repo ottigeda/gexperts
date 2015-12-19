@@ -60,6 +60,7 @@
         <GenDll>true</GenDll>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <DCC_DcuOutput>..\..\dcu\delphiXx10Seattle</DCC_DcuOutput>
         <Debugger_RunParams>-pDelphi</Debugger_RunParams>
         <Debugger_HostApplication>C:\Program Files (x86)\Embarcadero\RAD Studio\12.0\bin\bds.exe</Debugger_HostApplication>
         <PreBuildEvent><![CDATA[..\..\buildtools\prebuild.cmd $(PROJECTPATH)

@@ -1,8 +1,9 @@
+@echo off
 if "%1"=="" goto :list
 call :doItem %1
 goto :eof
-:list
 
+:list
 call :doItem 6
 call :doItem 7
 call :doItem 2005
@@ -18,7 +19,7 @@ call :doItem XE5
 call :doItem XE6
 call :doItem XE7
 call :doItem XE8
-
+call :doItem Xx10Seattle
 goto :eof
 
 :doItem
