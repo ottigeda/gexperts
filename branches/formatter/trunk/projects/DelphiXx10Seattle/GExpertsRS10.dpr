@@ -185,7 +185,10 @@ uses
   GX_IdeProjectOptionsEnhancer in '..\..\source\IDE\GX_IdeProjectOptionsEnhancer.pas',
   GX_PasteAs in '..\..\source\Framework\GX_PasteAs.pas',
   GX_ePasteAs in '..\..\source\Editor\GX_ePasteAs.pas' {fmPasteAsConfig},
-  GX_IdeToolPropertiesEnhancer in '..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas';
+  GX_IdeToolPropertiesEnhancer in '..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas',
+  GX_Bookmarks in '..\..\source\Bookmarks\GX_Bookmarks.pas' {fmGxBookmarksForm},
+  GX_OTAEditorNotifier in '..\..\source\Framework\GX_OTAEditorNotifier.pas',
+  GX_OTANotifier in '..\..\source\Framework\GX_OTANotifier.pas';
 
 begin
 end.
