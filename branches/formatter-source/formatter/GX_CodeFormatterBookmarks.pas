@@ -17,7 +17,7 @@ type
   private
     FBookmarks: TBookmarkList;
   protected
-    function GetEditView(var _SourceEditor: IOTASourceEditor; var _EditView: IOTAEditView): boolean;
+    function GetEditView(var _SourceEditor: IOTASourceEditor; var _EditView: IOTAEditView): Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -44,7 +44,7 @@ begin
   inherited;
 end;
 
-function TBookmarkHandler.GetEditView(var _SourceEditor: IOTASourceEditor; var _EditView: IOTAEditView): boolean;
+function TBookmarkHandler.GetEditView(var _SourceEditor: IOTASourceEditor; var _EditView: IOTAEditView): Boolean;
 begin
   Result := False;
   _SourceEditor := GxOtaGetCurrentSourceEditor;
@@ -98,4 +98,3 @@ begin
 end;
 
 end.
-
