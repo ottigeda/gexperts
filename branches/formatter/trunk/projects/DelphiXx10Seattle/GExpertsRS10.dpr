@@ -187,8 +187,8 @@ uses
   GX_ePasteAs in '..\..\source\Editor\GX_ePasteAs.pas' {fmPasteAsConfig},
   GX_IdeToolPropertiesEnhancer in '..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas',
   GX_Bookmarks in '..\..\source\Bookmarks\GX_Bookmarks.pas' {fmGxBookmarksForm},
-  GX_OTAEditorNotifier in '..\..\source\Framework\GX_OTAEditorNotifier.pas',
-  GX_OTANotifier in '..\..\source\Framework\GX_OTANotifier.pas';
+  GX_OTAEditorNotifier in '..\..\source\utils\GX_OTAEditorNotifier.pas',
+  GX_NTAEditServiceNotifier in '..\..\source\Utils\GX_NTAEditServiceNotifier.pas';
 
 begin
 end.

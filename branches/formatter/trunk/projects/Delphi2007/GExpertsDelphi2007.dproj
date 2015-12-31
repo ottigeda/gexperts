@@ -63,6 +63,12 @@
       <Form>fmBackupOptions</Form>
     </DCCReference>
     <DCCReference Include="..\..\source\BackupProject\GX_Zipper.pas" />
+    <DCCReference Include="..\..\source\Bookmarks\GX_Bookmarks.pas">
+      <Form>fmGxBookmarksForm</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\source\Bookmarks\GX_EditBookmark.pas">
+      <Form>fmEditBookmarks</Form>
+    </DCCReference>
     <DCCReference Include="..\..\source\ClassBrowser\GX_ClassBrowser.pas">
       <Form>fmClassBrowser</Form>
     </DCCReference>
@@ -398,11 +404,14 @@
     <DCCReference Include="..\..\source\ToDoList\GX_ToDoOptions.pas">
       <Form>fmToDoOptions</Form>
     </DCCReference>
+    <DCCReference Include="..\..\source\Utils\GX_BookmarkList.pas" />
+    <DCCReference Include="..\..\source\Utils\GX_dzQuicksort.pas" />
     <DCCReference Include="..\..\source\Utils\GX_dzVclUtils.pas" />
     <DCCReference Include="..\..\source\Utils\GX_GenericClasses.pas" />
     <DCCReference Include="..\..\source\Utils\GX_GenericUtils.pas" />
     <DCCReference Include="..\..\source\Utils\GX_GxUtils.pas" />
     <DCCReference Include="..\..\source\Utils\GX_IdeUtils.pas" />
+    <DCCReference Include="..\..\source\Utils\GX_NTAEditServiceNotifier.pas" />
     <DCCReference Include="..\..\source\Utils\GX_OtaUtils.pas" />
     <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas" />
   </ItemGroup>
