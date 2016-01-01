@@ -1,6 +1,6 @@
 library GExpertsRS10;
 
-{$R 'GXIcons.res' '..\..\images\GXIcons.rc'}
+{$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R *_version.res}
 {$E dll}
 
@@ -186,9 +186,11 @@ uses
   GX_PasteAs in '..\..\source\Framework\GX_PasteAs.pas',
   GX_ePasteAs in '..\..\source\Editor\GX_ePasteAs.pas' {fmPasteAsConfig},
   GX_IdeToolPropertiesEnhancer in '..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas',
+  GX_NTAEditServiceNotifier in '..\..\source\Utils\GX_NTAEditServiceNotifier.pas',
   GX_Bookmarks in '..\..\source\Bookmarks\GX_Bookmarks.pas' {fmGxBookmarksForm},
-  GX_OTAEditorNotifier in '..\..\source\utils\GX_OTAEditorNotifier.pas',
-  GX_NTAEditServiceNotifier in '..\..\source\Utils\GX_NTAEditServiceNotifier.pas';
+  GX_EditBookmark in '..\..\source\Bookmarks\GX_EditBookmark.pas' {fmEditBookmarks},
+  GX_BookmarkList in '..\..\source\Utils\GX_BookmarkList.pas',
+  GX_dzQuicksort in '..\..\source\Utils\GX_dzQuicksort.pas';
 
 begin
 end.
