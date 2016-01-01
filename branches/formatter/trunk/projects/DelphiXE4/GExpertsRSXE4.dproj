@@ -450,7 +450,6 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\source\formatter\GX_AboutExperimental.pas">
             <Form>fmAboutExperimental</Form>
         </DCCReference>
-        <DCCReference Include="..\..\source\formatter\GX_CodeFormatterRegisterExpert.pas"/>
         <DCCReference Include="..\..\source\formatter\engine\GX_CodeFormatterUnicode.pas"/>
         <DCCReference Include="..\..\source\IDE\GX_IdeSearchPathEnhancer.pas"/>
         <DCCReference Include="..\..\source\Experts\GX_HideNavbar.pas"/>
