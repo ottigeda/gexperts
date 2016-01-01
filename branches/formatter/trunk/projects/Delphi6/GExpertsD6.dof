@@ -82,6 +82,8 @@ ProductName=GExperts for Delphi 6
 ProductVersion=1.34 Experimental 2011-02-05
 Comments=Open Source
 CompileDate=2011-02-05
+[Excluded Packages]
+c:\delphi\delphi6\Bin\dclib60.bpl=InterBase Data Access Components
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
