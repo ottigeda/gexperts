@@ -412,6 +412,15 @@
 				<Form>fmPasteAsConfig</Form>
 			</DCCReference>
 			<DCCReference Include="..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas"/>
+			<DCCReference Include="..\..\source\Utils\GX_NTAEditServiceNotifier.pas"/>
+			<DCCReference Include="..\..\source\Bookmarks\GX_Bookmarks.pas">
+				<Form>fmGxBookmarksForm</Form>
+			</DCCReference>
+			<DCCReference Include="..\..\source\Bookmarks\GX_EditBookmark.pas">
+				<Form>fmEditBookmarks</Form>
+			</DCCReference>
+			<DCCReference Include="..\..\source\Utils\GX_BookmarkList.pas"/>
+			<DCCReference Include="..\..\source\Utils\GX_dzQuicksort.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
