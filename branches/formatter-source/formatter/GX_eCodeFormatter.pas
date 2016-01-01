@@ -123,5 +123,7 @@ begin
   FExpert.InternalSaveSettings(ConfigurationKey, Settings);
 end;
 
+initialization
+  RegisterEditorExpert(TeCodeFormatterExpert);
 end.
 
