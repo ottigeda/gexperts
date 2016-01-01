@@ -13,6 +13,7 @@ uses
   GX_BackupConfig in '..\..\source\BackupProject\GX_BackupConfig.pas' {fmBackupConfig},
   GX_BackupOptions in '..\..\source\BackupProject\GX_BackupOptions.pas' {fmBackupOptions},
   GX_BaseForm in '..\..\source\Framework\GX_BaseForm.pas' {fmBaseForm},
+  GX_Bookmarks in '..\..\source\Bookmarks\GX_Bookmarks.pas' {fmGxBookmarksForm},
   GX_ClassBrowser in '..\..\source\ClassBrowser\GX_ClassBrowser.pas' {fmClassBrowser},
   GX_ClassHacks in '..\..\source\Framework\GX_ClassHacks.pas',
   GX_ClassIdentify in '..\..\source\ClassBrowser\GX_ClassIdentify.pas' {fmClassIdentify},
@@ -186,7 +187,10 @@ uses
   GX_PasteAs in '..\..\source\Framework\GX_PasteAs.pas',
   GX_ePasteAs in '..\..\source\Editor\GX_ePasteAs.pas' {fmPasteAsConfig},
   GX_IdeToolPropertiesEnhancer in '..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas',
-  GX_NTAEditServiceNotifier in '..\..\source\Utils\GX_NTAEditServiceNotifier.pas';
+  GX_NTAEditServiceNotifier in '..\..\source\Utils\GX_NTAEditServiceNotifier.pas',
+  GX_EditBookmark in '..\..\source\Bookmarks\GX_EditBookmark.pas' {fmEditBookmarks},
+  GX_BookmarkList in '..\..\source\Utils\GX_BookmarkList.pas',
+  GX_dzQuicksort in '..\..\source\Utils\GX_dzQuicksort.pas';
 
 begin
 end.
