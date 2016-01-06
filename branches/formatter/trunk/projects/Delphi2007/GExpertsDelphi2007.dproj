@@ -51,7 +51,7 @@
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
     <RcCompile Include="..\..\images\GXIcons.rc">
-      <Form>..\..\images\GXIcons.res</Form>
+      <Form>'..\..\images\GXIcons.res'</Form>
     </RcCompile>
     <DCCReference Include="..\..\source\BackupProject\GX_Backup.pas">
       <Form>fmBackup</Form>
@@ -301,6 +301,10 @@
     </DCCReference>
     <DCCReference Include="..\..\source\IDE\GX_IdeEnhance.pas" />
     <DCCReference Include="..\..\source\IDE\GX_IdeFormEnhancer.pas" />
+    <DCCReference Include="..\..\source\IDE\GX_IdeInstallPackagesEnhancer.pas" />
+    <DCCReference Include="..\..\source\IDE\GX_IdePackageRenameDlg.pas">
+      <Form>fmIdxPackageRenameDlg</Form>
+    </DCCReference>
     <DCCReference Include="..\..\source\IDE\GX_IdeProjectOptionsEnhancer.pas" />
     <DCCReference Include="..\..\source\IDE\GX_IdeSearchPathEnhancer.pas" />
     <DCCReference Include="..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas" />
