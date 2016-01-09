@@ -129,6 +129,9 @@ $(PreBuildEvent)]]></PreBuildEvent>
 			<DCCReference Include="..\..\source\Framework\GX_BaseForm.pas">
 				<Form>fmBaseForm</Form>
 			</DCCReference>
+			<DCCReference Include="..\..\source\Bookmarks\GX_Bookmarks.pas">
+				<Form>fmGxBookmarksForm</Form>
+			</DCCReference>
 			<DCCReference Include="..\..\source\ClassBrowser\GX_ClassBrowser.pas">
 				<Form>fmClassBrowser</Form>
 			</DCCReference>
@@ -199,11 +202,23 @@ $(PreBuildEvent)]]></PreBuildEvent>
 			<DCCReference Include="..\..\source\Editor\GX_eChangeCase.pas">
 				<Form>fmChangeCase</Form>
 			</DCCReference>
+			<DCCReference Include="..\..\source\formatter\GX_eCodeFormatter.pas"/>
 			<DCCReference Include="..\..\source\Editor\GX_eComment.pas">
 				<Form>fmCommentConfig</Form>
 			</DCCReference>
 			<DCCReference Include="..\..\source\Editor\GX_eDate.pas">
 				<Form>fmDateFormat</Form>
+			</DCCReference>
+			<DCCReference Include="..\..\source\Editor\GX_eFindDelimiter.pas"/>
+			<DCCReference Include="..\..\source\Editor\GX_ePasteAs.pas">
+				<Form>fmPasteAsConfig</Form>
+			</DCCReference>
+			<DCCReference Include="..\..\source\Editor\GX_ePrevNextIdentifier.pas"/>
+			<DCCReference Include="..\..\source\Editor\GX_eReverseStatement.pas"/>
+			<DCCReference Include="..\..\source\Editor\GX_eSelectIdentifier.pas"/>
+			<DCCReference Include="..\..\source\Editor\GX_eSelectionEditorExpert.pas"/>
+			<DCCReference Include="..\..\source\Editor\GX_eUsesManager.pas">
+				<Form>fmUsesManager</Form>
 			</DCCReference>
 			<DCCReference Include="..\..\source\Framework\GX_EditorChangeServices.pas"/>
 			<DCCReference Include="..\..\source\Framework\GX_EditorEnhancements.pas"/>
@@ -214,14 +229,6 @@ $(PreBuildEvent)]]></PreBuildEvent>
 				<Form>fmEditorShortcut</Form>
 			</DCCReference>
 			<DCCReference Include="..\..\source\Framework\GX_EditReader.pas"/>
-			<DCCReference Include="..\..\source\Editor\GX_eFindDelimiter.pas"/>
-			<DCCReference Include="..\..\source\Editor\GX_ePrevNextIdentifier.pas"/>
-			<DCCReference Include="..\..\source\Editor\GX_eReverseStatement.pas"/>
-			<DCCReference Include="..\..\source\Editor\GX_eSelectIdentifier.pas"/>
-			<DCCReference Include="..\..\source\Editor\GX_eSelectionEditorExpert.pas"/>
-			<DCCReference Include="..\..\source\Editor\GX_eUsesManager.pas">
-				<Form>fmUsesManager</Form>
-			</DCCReference>
 			<DCCReference Include="..\..\source\Experts\GX_ExpertManager.pas">
 				<Form>fmExpertManager</Form>
 			</DCCReference>
@@ -437,7 +444,6 @@ $(PreBuildEvent)]]></PreBuildEvent>
 			</DCCReference>
 			<DCCReference Include="..\..\source\formatter\GX_CodeFormatterExpert.pas"/>
 			<DCCReference Include="..\..\source\formatter\GX_CodeFormatterGXConfigWrapper.pas"/>
-			<DCCReference Include="..\..\source\formatter\GX_eCodeFormatter.pas"/>
 			<DCCReference Include="..\..\source\formatter\GX_CodeFormatterBookmarks.pas"/>
 			<DCCReference Include="..\..\source\formatter\engine\GX_CodeFormatterTokenList.pas"/>
 			<DCCReference Include="..\..\source\formatter\engine\GX_CodeFormatterTypes.pas"/>
@@ -456,14 +462,8 @@ $(PreBuildEvent)]]></PreBuildEvent>
 			<DCCReference Include="..\..\source\Utils\GX_dzVclUtils.pas"/>
 			<DCCReference Include="..\..\source\IDE\GX_IdeProjectOptionsEnhancer.pas"/>
 			<DCCReference Include="..\..\source\Framework\GX_PasteAs.pas"/>
-			<DCCReference Include="..\..\source\Editor\GX_ePasteAs.pas">
-				<Form>fmPasteAsConfig</Form>
-			</DCCReference>
 			<DCCReference Include="..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas"/>
 			<DCCReference Include="..\..\source\Utils\GX_NTAEditServiceNotifier.pas"/>
-			<DCCReference Include="..\..\source\Bookmarks\GX_Bookmarks.pas">
-				<Form>fmGxBookmarksForm</Form>
-			</DCCReference>
 			<DCCReference Include="..\..\source\Bookmarks\GX_EditBookmark.pas">
 				<Form>fmEditBookmarks</Form>
 			</DCCReference>

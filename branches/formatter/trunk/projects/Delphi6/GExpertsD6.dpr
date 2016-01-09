@@ -189,7 +189,9 @@ uses
   GX_NTAEditServiceNotifier in '..\..\source\Utils\GX_NTAEditServiceNotifier.pas',
   GX_EditBookmark in '..\..\source\Bookmarks\GX_EditBookmark.pas' {fmEditBookmarks},
   GX_BookmarkList in '..\..\source\Utils\GX_BookmarkList.pas',
-  GX_dzQuicksort in '..\..\source\Utils\GX_dzQuicksort.pas';
+  GX_dzQuicksort in '..\..\source\Utils\GX_dzQuicksort.pas',
+  GX_IdeInstallPackagesEnhancer in '..\..\source\IDE\GX_IdeInstallPackagesEnhancer.pas',
+  GX_IdePackageRenameDlg in '..\..\source\IDE\GX_IdePackageRenameDlg.pas' {fmIdxPackageRenameDlg};
 
 begin
 end.
