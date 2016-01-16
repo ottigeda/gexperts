@@ -193,6 +193,5 @@ uses
   GX_IdeInstallPackagesEnhancer in '..\..\source\IDE\GX_IdeInstallPackagesEnhancer.pas',
   GX_IdePackageRenameDlg in '..\..\source\IDE\GX_IdePackageRenameDlg.pas' {fmIdxPackageRenameDlg};
 
-begin
 end.
 
