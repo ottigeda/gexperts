@@ -20,6 +20,7 @@
 			<Base>true</Base>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
+			<DCC_UnitAlias>Actions=Actnlist;$(DCC_UnitAlias)</DCC_UnitAlias>
 			<DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
 			<DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
 			<DCC_ExeOutput>..\..\DLLs</DCC_ExeOutput>
@@ -427,6 +428,7 @@
 			<DCCReference Include="..\..\source\IDE\GX_IdePackageRenameDlg.pas">
 				<Form>fmIdxPackageRenameDlg</Form>
 			</DCCReference>
+			<DCCReference Include="..\..\Source\Utils\GX_dzClassUtils.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
@@ -481,7 +483,7 @@
 						<VersionInfoKeys Name="LegalCopyright"/>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename">GExpertsRS2010.dll</VersionInfoKeys>
-						<VersionInfoKeys Name="ProductName">GExperts for RAD Studio 2010</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductName">GExperts for RAD Studio</VersionInfoKeys>
 						<VersionInfoKeys Name="ProductVersion">1.38</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments">Open Source</VersionInfoKeys>
 					</VersionInfoKeys>
