@@ -46,6 +46,7 @@
     <DCC_MapFile>3</DCC_MapFile>
     <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
     <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
+    <DCC_UnitAlias>WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;Actions=ActnList</DCC_UnitAlias>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>
@@ -320,6 +321,7 @@
       <Form>fmEditorShortcut</Form>
     </DCCReference>
     <DCCReference Include="..\..\source\Framework\GX_EditReader.pas" />
+    <DCCReference Include="..\..\source\framework\GX_EventHook.pas" />
     <DCCReference Include="..\..\source\Framework\GX_Experts.pas" />
     <DCCReference Include="..\..\source\Framework\GX_FeedbackWizard.pas">
       <Form>fmFeedbackWizard</Form>
