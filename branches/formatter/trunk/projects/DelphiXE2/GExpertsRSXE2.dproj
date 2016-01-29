@@ -50,7 +50,6 @@
 			<VerInfo_IncludeVerInfo>false</VerInfo_IncludeVerInfo>
 			<VerInfo_MinorVer>3</VerInfo_MinorVer>
 			<VerInfo_DLL>true</VerInfo_DLL>
-			<OutputExt>dll</OutputExt>
 			<VerInfo_Release>8</VerInfo_Release>
 			<DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
 			<DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
@@ -71,7 +70,8 @@
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base_Win32)'!=''">
 			<DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
-			<PreBuildEvent><![CDATA[..\..\buildtools\prebuild.cmd $(PROJECTPATH)
+			<PreBuildEvent><![CDATA[call ..\..\buildtools\prebuild.cmd $(PROJECTPATH)
+call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)
 $(PreBuildEvent)]]></PreBuildEvent>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Cfg_1)'!=''">
@@ -476,7 +476,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
 			<DCCReference Include="..\..\source\IDE\GX_IdePackageRenameDlg.pas">
 				<Form>fmIdxPackageRenameDlg</Form>
 			</DCCReference>
-			<DCCReference Include="..\..\..\gexperts\Source\Utils\GX_dzClassUtils.pas"/>
+			<DCCReference Include="..\..\Source\Utils\GX_dzClassUtils.pas"/>
 			<BuildConfiguration Include="Debug">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>
@@ -549,7 +549,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
 			<ProjectFileVersion>12</ProjectFileVersion>
 		</ProjectExtensions>
 		<PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win32'">
-			<PreBuildEvent>..\..\buildtools\prebuild.cmd $(PROJECTPATH)</PreBuildEvent>
+			<PreBuildEvent>call ..\..\buildtools\prebuild.cmd $(PROJECTPATH)&amp;&amp;call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
 			<PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
 			<PreLinkEvent/>
 			<PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
@@ -557,7 +557,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
 			<PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win32'">
-			<PreBuildEvent>..\..\buildtools\prebuild.cmd $(PROJECTPATH)</PreBuildEvent>
+			<PreBuildEvent>call ..\..\buildtools\prebuild.cmd $(PROJECTPATH)&amp;&amp;call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
 			<PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
 			<PreLinkEvent/>
 			<PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>

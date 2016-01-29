@@ -62,7 +62,6 @@
         <DCC_E>false</DCC_E>
         <DCC_K>false</DCC_K>
         <VerInfo_MinorVer>3</VerInfo_MinorVer>
-        <OutputExt>dll</OutputExt>
         <Manifest_File>None</Manifest_File>
         <GenDll>true</GenDll>
         <DCC_ExeOutput>..\..\DLLs</DCC_ExeOutput>
@@ -82,7 +81,8 @@
         <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
         <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
         <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
-        <PreBuildEvent><![CDATA[..\..\buildtools\prebuild.cmd $(PROJECTPATH)
+        <PreBuildEvent><![CDATA[call ..\..\buildtools\prebuild.cmd $(PROJECTPATH)
+call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)
 $(PreBuildEvent)]]></PreBuildEvent>
         <VerInfo_Keys>CompanyName=Erik Berry and the GExperts Development Team;FileDescription=GExperts for RAD Studio XE3;FileVersion=1.3.8.0;InternalName=GExperts for RAD Studio XE3;LegalCopyright=;LegalTrademarks=;OriginalFilename=GExpertsRSXE3.dll;ProductName=GExperts for RAD Studio;ProductVersion=1.38;Comments=Open Source</VerInfo_Keys>
     </PropertyGroup>
@@ -551,7 +551,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
     <Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
     <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
     <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win32'">
-        <PreBuildEvent>..\..\buildtools\prebuild.cmd $(PROJECTPATH)</PreBuildEvent>
+        <PreBuildEvent>call ..\..\buildtools\prebuild.cmd $(PROJECTPATH)&amp;&amp;call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
@@ -559,7 +559,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win32'">
-        <PreBuildEvent>..\..\buildtools\prebuild.cmd $(PROJECTPATH)</PreBuildEvent>
+        <PreBuildEvent>call ..\..\buildtools\prebuild.cmd $(PROJECTPATH)&amp;&amp;call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
