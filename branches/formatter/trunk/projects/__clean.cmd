@@ -27,8 +27,8 @@ if not exist delphi%1 goto :eof
 pushd delphi%1
 call :doclean
 popd
-if not exist dcu\*.dcu goto :eof
-del ..\dcu\*.dcu
+if not exist delphi%1\dcu\*.dcu goto :eof
+del delphi%1\dcu\*.dcu
 goto :eof
 
 :doclean
