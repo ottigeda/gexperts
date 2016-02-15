@@ -52,6 +52,7 @@ uses
   GX_eSelectIdentifier in '..\..\source\Editor\GX_eSelectIdentifier.pas',
   GX_eSelectionEditorExpert in '..\..\source\Editor\GX_eSelectionEditorExpert.pas',
   GX_eUsesManager in '..\..\source\Editor\GX_eUsesManager.pas' {fmUsesManager},
+  GX_ePopupMenu in '..\..\Source\Editor\GX_ePopupMenu.pas' {fmEditorPopupMenuExpertConfig},
   GX_EditorChangeServices in '..\..\source\Framework\GX_EditorChangeServices.pas',
   GX_EditorEnhancements in '..\..\source\Framework\GX_EditorEnhancements.pas',
   GX_EditorExpert in '..\..\source\Editor\GX_EditorExpert.pas',
@@ -193,7 +194,7 @@ uses
   GX_IdeInstallPackagesEnhancer in '..\..\source\IDE\GX_IdeInstallPackagesEnhancer.pas',
   GX_IdePackageRenameDlg in '..\..\source\IDE\GX_IdePackageRenameDlg.pas' {fmIdxPackageRenameDlg},
   GX_dzClassUtils in '..\..\Source\Utils\GX_dzClassUtils.pas',
-  GX_ePopupMenu in '..\..\Source\Editor\GX_ePopupMenu.pas' {fmEditorPopupMenuExpertConfig},
+  GX_EventHook in '..\..\source\framework\GX_EventHook.pas',
   GX_BaseExpert in '..\..\Source\Framework\GX_BaseExpert.pas';
 
 begin
