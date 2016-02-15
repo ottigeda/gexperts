@@ -214,6 +214,9 @@ call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
     <DCCReference Include="..\..\source\Editor\GX_ePasteAs.pas">
       <Form>fmPasteAsConfig</Form>
     </DCCReference>
+    <DCCReference Include="..\..\Source\Editor\GX_ePopupMenu.pas">
+      <Form>fmEditorPopupMenuExpertConfig</Form>
+    </DCCReference>
     <DCCReference Include="..\..\source\Editor\GX_ePrevNextIdentifier.pas" />
     <DCCReference Include="..\..\source\Editor\GX_eReverseStatement.pas" />
     <DCCReference Include="..\..\source\Editor\GX_eSelectIdentifier.pas" />
@@ -303,6 +306,7 @@ call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
     </DCCReference>
     <DCCReference Include="..\..\source\Framework\GX_ActionBroker.pas" />
     <DCCReference Include="..\..\source\Framework\GX_Actions.pas" />
+    <DCCReference Include="..\..\Source\Framework\GX_BaseExpert.pas" />
     <DCCReference Include="..\..\source\Framework\GX_BaseForm.pas">
       <Form>fmBaseForm</Form>
     </DCCReference>
