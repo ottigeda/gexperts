@@ -365,6 +365,9 @@ call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
       <Form>fmGrepOptions</Form>
     </DCCReference>
     <DCCReference Include="..\..\source\Grep\GX_GrepPrinting.pas" />
+    <DCCReference Include="..\..\Source\Grep\GX_GrepProgress.pas">
+      <Form>fmGrepProgress</Form>
+    </DCCReference>
     <DCCReference Include="..\..\source\Grep\GX_GrepRegExSearch.pas" />
     <DCCReference Include="..\..\source\Grep\GX_GrepReplace.pas">
       <Form>fmGrepReplace</Form>
@@ -377,6 +380,9 @@ call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
     </DCCReference>
     <DCCReference Include="..\..\source\Grep\GX_GrepSearch.pas">
       <Form>fmGrepSearch</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Source\Grep\GX_GrepSelect.pas">
+      <Form>fmGrepSelect</Form>
     </DCCReference>
     <DCCReference Include="..\..\source\Grep\GX_Replace.pas" />
     <DCCReference Include="..\..\source\IDEDocking\GX_IdeDock.pas">

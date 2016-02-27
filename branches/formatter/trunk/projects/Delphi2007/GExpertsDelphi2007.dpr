@@ -197,7 +197,9 @@ uses
   GX_dzClassUtils in '..\..\Source\Utils\GX_dzClassUtils.pas',
   GX_EventHook in '..\..\source\framework\GX_EventHook.pas',
   GX_BaseExpert in '..\..\Source\Framework\GX_BaseExpert.pas',
-  GX_uAutoTodoHandler in '..\..\Source\AutoTodo\GX_uAutoTodoHandler.pas';
+  GX_uAutoTodoHandler in '..\..\Source\AutoTodo\GX_uAutoTodoHandler.pas',
+  GX_GrepProgress in '..\..\Source\Grep\GX_GrepProgress.pas' {fmGrepProgress},
+  GX_GrepSelect in '..\..\Source\Grep\GX_GrepSelect.pas' {fmGrepSelect};
 
 begin
 end.
