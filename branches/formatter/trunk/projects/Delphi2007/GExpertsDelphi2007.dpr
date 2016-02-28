@@ -199,7 +199,8 @@ uses
   GX_BaseExpert in '..\..\Source\Framework\GX_BaseExpert.pas',
   GX_uAutoTodoHandler in '..\..\Source\AutoTodo\GX_uAutoTodoHandler.pas',
   GX_GrepProgress in '..\..\Source\Grep\GX_GrepProgress.pas' {fmGrepProgress},
-  GX_GrepSelect in '..\..\Source\Grep\GX_GrepSelect.pas' {fmGrepSelect};
+  GX_GrepSelect in '..\..\Source\Grep\GX_GrepSelect.pas' {fmGrepSelect},
+  GX_AutoTodoDone in '..\..\Source\AutoTodo\GX_AutoTodoDone.pas' {fmAutoTodoDone};
 
 begin
 end.

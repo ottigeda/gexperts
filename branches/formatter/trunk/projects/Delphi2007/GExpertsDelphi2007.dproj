@@ -127,6 +127,9 @@ call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
     <RcCompile Include="..\..\images\GXIcons.rc">
       <Form>'..\..\images\GXIcons.res'</Form>
     </RcCompile>
+    <DCCReference Include="..\..\Source\AutoTodo\GX_AutoTodoDone.pas">
+      <Form>fmAutoTodoDone</Form>
+    </DCCReference>
     <DCCReference Include="..\..\Source\AutoTodo\GX_InsertAutoTodo.pas">
       <Form>fmInsertAutoTodoForm</Form>
     </DCCReference>
