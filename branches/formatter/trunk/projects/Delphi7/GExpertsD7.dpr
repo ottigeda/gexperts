@@ -92,6 +92,7 @@ uses
   GX_IdeFormEnhancer in '..\..\source\IDE\GX_IdeFormEnhancer.pas',
   GX_IdeShortCuts in '..\..\source\Experts\GX_IdeShortCuts.pas' {fmIdeShortCuts},
   GX_IdeUtils in '..\..\source\Utils\GX_IdeUtils.pas',
+  GX_InsertAutoTodo in '..\..\Source\AutoTodo\GX_InsertAutoTodo.pas' {fmInsertAutoTodoForm},
   GX_KbdShortCutBroker in '..\..\source\Framework\GX_KbdShortCutBroker.pas',
   GX_KibitzComp in '..\..\source\Framework\GX_KibitzComp.pas',
   GX_LibrarySource in '..\..\source\Framework\GX_LibrarySource.pas',
@@ -195,7 +196,11 @@ uses
   GX_IdePackageRenameDlg in '..\..\source\IDE\GX_IdePackageRenameDlg.pas' {fmIdxPackageRenameDlg},
   GX_dzClassUtils in '..\..\Source\Utils\GX_dzClassUtils.pas',
   GX_EventHook in '..\..\source\framework\GX_EventHook.pas',
-  GX_BaseExpert in '..\..\Source\Framework\GX_BaseExpert.pas';
+  GX_BaseExpert in '..\..\Source\Framework\GX_BaseExpert.pas',
+  GX_uAutoTodoHandler in '..\..\Source\AutoTodo\GX_uAutoTodoHandler.pas',
+  GX_GrepProgress in '..\..\Source\Grep\GX_GrepProgress.pas' {fmGrepProgress},
+  GX_GrepSelect in '..\..\Source\Grep\GX_GrepSelect.pas' {fmGrepSelect},
+  GX_AutoTodoDone in '..\..\Source\AutoTodo\GX_AutoTodoDone.pas' {fmAutoTodoDone};
 
 end.
 
