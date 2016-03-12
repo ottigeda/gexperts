@@ -131,7 +131,7 @@
 		</Directories>
 		<Parameters>
 			<Parameters Name="RunParams" Type="String">-np -ns</Parameters>
-			<Parameters Name="HostApplication" Type="String">D:\Borland\BDS2006\Bin\bds.exe</Parameters>
+			<Parameters Name="HostApplication" Type="String">c:\Delphi\Delphi2006\Bin\bds.exe</Parameters>
 			<Parameters Name="Launcher" Type="String"></Parameters>
 			<Parameters Name="UseLauncher" Type="Boolean">False</Parameters>
 			<Parameters Name="DebugCWD" Type="String"></Parameters>
