@@ -447,6 +447,7 @@
 			<DCCReference Include="..\..\Source\AutoTodo\GX_AutoTodoDone.pas">
 				<Form>fmAutoTodoDone</Form>
 			</DCCReference>
+			<DCCReference Include="..\..\Source\Utils\GX_dzFileUtils.pas"/>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
 			</BuildConfiguration>
