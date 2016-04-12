@@ -1,6 +1,6 @@
 library GExpertsRSXE8;
 
-{$R 'GXIcons.res' '..\..\images\GXIcons.rc'}
+{$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R *_version.res}
 {$E dll}
 
@@ -51,7 +51,7 @@ uses
   GX_eReverseStatement in '..\..\source\Editor\GX_eReverseStatement.pas',
   GX_eSelectIdentifier in '..\..\source\Editor\GX_eSelectIdentifier.pas',
   GX_eSelectionEditorExpert in '..\..\source\Editor\GX_eSelectionEditorExpert.pas',
-  GX_UsesExpert in '..\..\Source\UsesExpert\GX_UsesExpert.pas' {fmUsesManager},
+  GX_UsesExpert in '..\..\source\UsesExpert\GX_UsesExpert.pas' {fmUsesManager},
   GX_UsesExpertOptions in '..\..\Source\UsesExpert\GX_UsesExpertOptions.pas' {fmUsesExpertOptions},
   GX_ePopupMenu in '..\..\Source\Editor\GX_ePopupMenu.pas' {fmEditorPopupMenuExpertConfig},
   GX_EditorChangeServices in '..\..\source\Framework\GX_EditorChangeServices.pas',
