@@ -170,7 +170,6 @@ uses
   GX_CodeFormatterConfig in '..\..\source\formatter\GX_CodeFormatterConfig.pas' {fmCodeFormatterConfig},
   GX_CodeFormatterConfigHandler in '..\..\source\formatter\GX_CodeFormatterConfigHandler.pas',
   GX_CodeFormatterDefaultSettings in '..\..\source\formatter\GX_CodeFormatterDefaultSettings.pas',
-  GX_CodeFormatterDone in '..\..\source\formatter\GX_CodeFormatterDone.pas' {fmCodeFormatterDone},
   GX_CodeFormatterEditCapitalization in '..\..\source\formatter\GX_CodeFormatterEditCapitalization.pas' {fmCodeFormatterEditCapitalization},
   GX_CodeFormatterExpert in '..\..\source\formatter\GX_CodeFormatterExpert.pas',
   GX_CodeFormatterGXConfigWrapper in '..\..\source\formatter\GX_CodeFormatterGXConfigWrapper.pas',
