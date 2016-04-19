@@ -1,6 +1,7 @@
 library GExpertsRS101;
 
-{$R 'GXIcons.res' '..\..\images\GXIcons.rc'}
+{$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
+{$R *_version.res}
 {$E dll}
 
 uses
