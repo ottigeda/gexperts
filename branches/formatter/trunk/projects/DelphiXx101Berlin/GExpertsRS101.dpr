@@ -35,6 +35,7 @@ uses
   GX_CompsToCode in '..\..\source\Experts\GX_CompsToCode.pas' {fmCompsToCode},
   GX_ConfigurationInfo in '..\..\source\Framework\GX_ConfigurationInfo.pas',
   GX_Configure in '..\..\source\Framework\GX_Configure.pas' {fmConfiguration},
+  GX_ConfigureExperts in '..\..\Source\Framework\GX_ConfigureExperts.pas' {frConfigureExperts: TFrame},
   GX_Consts in '..\..\source\Framework\GX_Consts.pas',
   GX_CopyComponentNames in '..\..\source\Experts\GX_CopyComponentNames.pas',
   GX_DbugIntf in '..\..\source\Framework\GX_DbugIntf.pas',
