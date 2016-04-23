@@ -228,6 +228,9 @@ call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
     <DCCReference Include="..\..\source\Editor\GX_eReverseStatement.pas" />
     <DCCReference Include="..\..\source\Editor\GX_eSelectIdentifier.pas" />
     <DCCReference Include="..\..\source\Editor\GX_eSelectionEditorExpert.pas" />
+    <DCCReference Include="..\..\Source\Editor\GX_eSort.pas">
+      <Form>fmeSortConfig</Form>
+    </DCCReference>
     <DCCReference Include="..\..\source\Editor\GX_MenusForEditorExpert.pas" />
     <DCCReference Include="..\..\source\Experts\GX_AsciiChart.pas">
       <Form>fmAsciiChart</Form>
