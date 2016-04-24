@@ -178,6 +178,10 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\source\Framework\GX_Configure.pas">
             <Form>fmConfiguration</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Framework\GX_ConfigureExperts.pas">
+            <Form>frConfigureExperts</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_Consts.pas"/>
         <DCCReference Include="..\..\source\Experts\GX_CopyComponentNames.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_DbugIntf.pas"/>
