@@ -120,6 +120,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         </DCCReference>
         <DCCReference Include="..\..\source\Bookmarks\GX_Bookmarks.pas">
             <Form>fmGxBookmarksForm</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\ClassBrowser\GX_ClassBrowser.pas">
             <Form>fmClassBrowser</Form>
@@ -214,6 +215,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         </DCCReference>
         <DCCReference Include="..\..\Source\UsesExpert\GX_UsesExpertOptions.pas">
             <Form>fmUsesExpertOptions</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\Editor\GX_ePopupMenu.pas">
             <Form>fmEditorPopupMenuExpertConfig</Form>
@@ -470,6 +472,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\source\Utils\GX_NTAEditServiceNotifier.pas"/>
         <DCCReference Include="..\..\source\Bookmarks\GX_EditBookmark.pas">
             <Form>fmEditBookmarks</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_BookmarkList.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_dzQuicksort.pas"/>
@@ -485,6 +488,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <Form>fmAutoTodoDone</Form>
         </DCCReference>
         <DCCReference Include="..\..\Source\Utils\GX_dzFileUtils.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_dzSelectDirectoryFix.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_ConfigureExperts.pas">
             <Form>frConfigureExperts</Form>
             <FormType>dfm</FormType>
