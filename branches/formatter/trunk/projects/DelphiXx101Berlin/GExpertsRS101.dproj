@@ -3,7 +3,7 @@
         <ProjectGuid>{BB29661E-3FA2-4EA6-96EB-0768940BAAB6}</ProjectGuid>
         <MainSource>GExpertsRS101.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Library</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -87,7 +87,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCC_Optimize>False</DCC_Optimize>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
-        <Debugger_HostApplication>C:\WINDOWS\system32\rundll32.exe</Debugger_HostApplication>
+        <Debugger_HostApplication>C:\Delphi\Delphi_10_1\bin\bds.exe</Debugger_HostApplication>
         <Debugger_RunParams>-ns</Debugger_RunParams>
     </PropertyGroup>
     <ItemGroup>
