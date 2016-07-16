@@ -1,7 +1,6 @@
 library GExpertsD6;
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
-{$R *_version.res}
 {$E dll}
 
 uses
@@ -209,7 +208,8 @@ uses
   GX_VCLFixPack in '..\..\Source\Utils\GX_VCLFixPack.pas',
   GX_dzVersionInfo in '..\..\Source\Utils\GX_dzVersionInfo.pas',
   GX_dzOsUtils in '..\..\Source\Utils\GX_dzOsUtils.pas',
-  GX_dzPackageInfo in '..\..\Source\Utils\GX_dzPackageInfo.pas';
+  GX_dzPackageInfo in '..\..\Source\Utils\GX_dzPackageInfo.pas',
+  GX_PeInfoPrint in '..\..\Source\PeInfo\GX_PeInfoPrint.pas' {f_PeInfoPrint};
 
 end.
 

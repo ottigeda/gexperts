@@ -434,6 +434,9 @@ call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
       <Form>fmOpenFileConfig</Form>
     </DCCReference>
     <DCCReference Include="..\..\source\PeInfo\GX_PeInfo.pas" />
+    <DCCReference Include="..\..\Source\PeInfo\GX_PeInfoPrint.pas">
+      <Form>f_PeInfoPrint</Form>
+    </DCCReference>
     <DCCReference Include="..\..\source\PeInfo\GX_PeInformation.pas">
       <Form>fmPeInformation</Form>
     </DCCReference>

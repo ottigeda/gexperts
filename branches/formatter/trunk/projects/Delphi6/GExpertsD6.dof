@@ -87,10 +87,3 @@ c:\delphi\delphi6\Bin\dclib60.bpl=InterBase Data Access Components
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
-[Warnings]
-SymbolDeprecated=1
-SymbolLibrary=1
-SymbolPlatform=1
-UnitLibrary=1
-UnitPlatform=1
-UnitDeprecated=1
