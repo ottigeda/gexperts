@@ -254,6 +254,7 @@ call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
     <DCCReference Include="..\..\source\Experts\GX_IdeShortCuts.pas">
       <Form>fmIdeShortCuts</Form>
     </DCCReference>
+    <DCCReference Include="..\..\Source\Experts\GX_ReselectDesktop.pas" />
     <DCCReference Include="..\..\source\Experts\GX_SetFocusControl.pas" />
     <DCCReference Include="..\..\source\Experts\GX_TabOrder.pas">
       <Form>fmTabOrder</Form>
