@@ -1,6 +1,7 @@
 library GExpertsDelphi2007;
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
+{$R *_version.res}
 {$E dll}
 
 uses
