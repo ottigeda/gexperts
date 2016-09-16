@@ -218,6 +218,9 @@ call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
     <DCCReference Include="..\..\source\Editor\GX_EditorExpert.pas" />
     <DCCReference Include="..\..\source\Editor\GX_EditorExpertManager.pas" />
     <DCCReference Include="..\..\source\Editor\GX_eFindDelimiter.pas" />
+    <DCCReference Include="..\..\Source\Editor\GX_eIfDef.pas">
+      <Form>fmConfigureIfDef</Form>
+    </DCCReference>
     <DCCReference Include="..\..\source\Editor\GX_ePasteAs.pas">
       <Form>fmPasteAsConfig</Form>
     </DCCReference>

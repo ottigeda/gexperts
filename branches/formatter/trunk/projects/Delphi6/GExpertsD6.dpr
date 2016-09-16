@@ -212,7 +212,8 @@ uses
   GX_IdeSearchPathFavorites in '..\..\Source\IDE\GX_IdeSearchPathFavorites.pas' {f_SarchPathFavorites},
   GX_IdeSearchPathFavoriteEdit in '..\..\Source\IDE\GX_IdeSearchPathFavoriteEdit.pas' {f_IdeSearchPathFavoriteEdit},
   GX_ReselectDesktop in '..\..\Source\Experts\GX_ReselectDesktop.pas',
-  GX_eWarn in '..\..\Source\Editor\GX_eWarn.pas' {fmConfigureWarning};
+  GX_eWarn in '..\..\Source\Editor\GX_eWarn.pas' {fmConfigureWarning},
+  GX_eIfDef in '..\..\Source\Editor\GX_eIfDef.pas' {fmConfigureIfDef};
 
 end.
 
