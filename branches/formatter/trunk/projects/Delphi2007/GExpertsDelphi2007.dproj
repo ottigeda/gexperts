@@ -124,9 +124,6 @@ call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
     <DelphiCompile Include="GExpertsDelphi2007.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <RcCompile Include="..\..\images\GXIcons.rc">
-      <Form>'..\..\images\GXIcons.res'</Form>
-    </RcCompile>
     <DCCReference Include="..\..\Source\AutoTodo\GX_AutoTodoDone.pas">
       <Form>fmAutoTodoDone</Form>
     </DCCReference>
@@ -211,6 +208,9 @@ call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
     </DCCReference>
     <DCCReference Include="..\..\source\Editor\GX_eComment.pas">
       <Form>fmCommentConfig</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Source\Editor\GX_eConvertStrings.pas">
+      <Form>fmEConvertStrings</Form>
     </DCCReference>
     <DCCReference Include="..\..\source\Editor\GX_eDate.pas">
       <Form>fmDateFormat</Form>
@@ -537,5 +537,8 @@ call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
     <DCCReference Include="..\..\source\Utils\GX_OtaUtils.pas" />
     <DCCReference Include="..\..\Source\Utils\GX_VCLFixPack.pas" />
     <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas" />
+    <RcCompile Include="..\..\images\GXIcons.rc">
+      <Form>..\..\images\GXIcons.res</Form>
+    </RcCompile>
   </ItemGroup>
 </Project>
