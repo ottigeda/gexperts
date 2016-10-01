@@ -1,7 +1,5 @@
 library GExpertsRSXE3;
 
-{$R 'GXIcons.res' '..\..\images\GXIcons.rc'}
-{$R *_version.res}
 {$E dll}
 
 uses
@@ -214,7 +212,11 @@ uses
   GX_IdeSearchPathFavoriteEdit in '..\..\Source\IDE\GX_IdeSearchPathFavoriteEdit.pas' {f_IdeSearchPathFavoriteEdit},
   GX_ReselectDesktop in '..\..\Source\Experts\GX_ReselectDesktop.pas',
   GX_eWarn in '..\..\Source\Editor\GX_eWarn.pas' {fmConfigureWarning},
-  GX_eIfDef in '..\..\Source\Editor\GX_eIfDef.pas' {fmConfigureIfDef};
+  GX_eIfDef in '..\..\Source\Editor\GX_eIfDef.pas' {fmConfigureIfDef},
+  GX_eConvertStrings in '..\..\Source\Editor\GX_eConvertStrings.pas' {fmEConvertStrings};
+
+{$R 'GXIcons.res' '..\..\images\GXIcons.rc'}
+{$R *_version.res}
 
 begin
 end.

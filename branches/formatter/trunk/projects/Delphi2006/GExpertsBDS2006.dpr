@@ -1,9 +1,8 @@
 library GExpertsBDS2006;
 
-{$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
-{%File '_prebuild.cmd'}
-{$R *_version.res}
 {$E dll}
+
+{%File '_prebuild.cmd'}
 
 uses
   GX_About in '..\..\source\Framework\GX_About.pas' {fmAbout},
@@ -215,7 +214,11 @@ uses
   GX_IdeSearchPathFavoriteEdit in '..\..\Source\IDE\GX_IdeSearchPathFavoriteEdit.pas' {f_IdeSearchPathFavoriteEdit},
   GX_eWarn in '..\..\Source\Editor\GX_eWarn.pas' {fmConfigureWarning},
   GX_ReselectDesktop in '..\..\Source\Experts\GX_ReselectDesktop.pas',
-  GX_eIfDef in '..\..\Source\Editor\GX_eIfDef.pas' {fmConfigureIfDef};
+  GX_eIfDef in '..\..\Source\Editor\GX_eIfDef.pas' {fmConfigureIfDef},
+  GX_eConvertStrings in '..\..\Source\Editor\GX_eConvertStrings.pas' {fmEConvertStrings};
+
+{$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
+{$R *_version.res}
 
 begin
 end.

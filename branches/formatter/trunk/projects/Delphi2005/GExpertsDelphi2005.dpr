@@ -1,7 +1,5 @@
 library GExpertsDelphi2005;
 
-{$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'} // if you get an error here, run the __build_project.cmd script first
-{$R *_version.res} // if you get an error here, run the __build_project.cmd script first
 {$E dll}
 
 uses
@@ -214,7 +212,11 @@ uses
   GX_IdeSearchPathFavoriteEdit in '..\..\Source\IDE\GX_IdeSearchPathFavoriteEdit.pas' {f_IdeSearchPathFavoriteEdit},
   GX_ReselectDesktop in '..\..\Source\Experts\GX_ReselectDesktop.pas',
   GX_eWarn in '..\..\Source\Editor\GX_eWarn.pas' {fmConfigureWarning},
-  GX_eIfDef in '..\..\Source\Editor\GX_eIfDef.pas' {fmConfigureIfDef};
+  GX_eIfDef in '..\..\Source\Editor\GX_eIfDef.pas' {fmConfigureIfDef},
+  GX_eConvertStrings in '..\..\Source\Editor\GX_eConvertStrings.pas' {fmEConvertStrings};
+
+{$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'} // if you get an error here, run the __build_project.cmd script first
+{$R *_version.res} // if you get an error here, run the __build_project.cmd script first
 
 begin
 end.
