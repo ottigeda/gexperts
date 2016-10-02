@@ -61,7 +61,7 @@
     <Parameters Name="HostApplication">c:\delphi\delphi2007\bin\bds.exe</Parameters>
   </Parameters>
   <VersionInfo>
-    <VersionInfo Name="IncludeVerInfo">True</VersionInfo>
+    <VersionInfo Name="IncludeVerInfo">False</VersionInfo>
     <VersionInfo Name="AutoIncBuild">False</VersionInfo>
     <VersionInfo Name="MajorVer">1</VersionInfo>
     <VersionInfo Name="MinorVer">3</VersionInfo>
@@ -203,9 +203,7 @@ call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
     <DCCReference Include="..\..\source\Editor\GX_eAlignOptions.pas">
       <Form>fmAlignOptions</Form>
     </DCCReference>
-    <DCCReference Include="..\..\source\Editor\GX_eChangeCase.pas">
-      <Form>fmChangeCase</Form>
-    </DCCReference>
+    <DCCReference Include="..\..\source\Editor\GX_eChangeCase.pas" />
     <DCCReference Include="..\..\source\Editor\GX_eComment.pas">
       <Form>fmCommentConfig</Form>
     </DCCReference>

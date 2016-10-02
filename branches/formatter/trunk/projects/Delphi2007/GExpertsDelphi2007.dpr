@@ -40,7 +40,7 @@ uses
   GX_DesignerMenu in '..\..\source\Framework\GX_DesignerMenu.pas',
   GX_eAlign in '..\..\source\Editor\GX_eAlign.pas' {fmAlign},
   GX_eAlignOptions in '..\..\source\Editor\GX_eAlignOptions.pas' {fmAlignOptions},
-  GX_eChangeCase in '..\..\source\Editor\GX_eChangeCase.pas' {fmChangeCase},
+  GX_eChangeCase in '..\..\source\Editor\GX_eChangeCase.pas',
   GX_eCodeFormatter in '..\..\source\Formatter\GX_eCodeFormatter.pas',
   GX_eComment in '..\..\source\Editor\GX_eComment.pas' {fmCommentConfig},
   GX_eDate in '..\..\source\Editor\GX_eDate.pas' {fmDateFormat},
