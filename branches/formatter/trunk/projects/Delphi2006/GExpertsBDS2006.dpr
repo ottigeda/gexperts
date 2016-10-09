@@ -215,7 +215,8 @@ uses
   GX_ReselectDesktop in '..\..\Source\Experts\GX_ReselectDesktop.pas',
   GX_eWarn in '..\..\Source\Editor\GX_eWarn.pas' {fmConfigureWarning},
   GX_eIfDef in '..\..\Source\Editor\GX_eIfDef.pas' {fmConfigureIfDef},
-  GX_eConvertStrings in '..\..\Source\Editor\GX_eConvertStrings.pas' {fmEConvertStrings};
+  GX_eConvertStrings in '..\..\Source\Editor\GX_eConvertStrings.pas' {fmEConvertStrings},
+  GX_IdeGotoEnhancer in '..\..\Source\IDE\GX_IdeGotoEnhancer.pas';
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R *_version.res}
