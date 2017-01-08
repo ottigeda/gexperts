@@ -474,6 +474,7 @@
 			</DCCReference>
 			<DCCReference Include="..\..\Source\IDE\GX_IdeGotoEnhancer.pas"/>
 			<DCCReference Include="..\..\Source\Utils\GX_dzMapFileReader.pas"/>
+			<DCCReference Include="..\..\Source\IDE\GX_IdeObjectInspectorEnhancer.pas"/>
 			<RcCompile Include="..\..\images\GXIcons.rc">
 				<Form>GXIcons.res</Form>
 			</RcCompile>

@@ -215,7 +215,8 @@ uses
   GX_eIfDef in '..\..\Source\Editor\GX_eIfDef.pas' {fmConfigureIfDef},
   GX_eConvertStrings in '..\..\Source\Editor\GX_eConvertStrings.pas' {fmEConvertStrings},
   GX_IdeGotoEnhancer in '..\..\Source\IDE\GX_IdeGotoEnhancer.pas',
-  GX_dzMapFileReader in '..\..\Source\Utils\GX_dzMapFileReader.pas';
+  GX_dzMapFileReader in '..\..\Source\Utils\GX_dzMapFileReader.pas',
+  GX_IdeObjectInspectorEnhancer in '..\..\Source\IDE\GX_IdeObjectInspectorEnhancer.pas';
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R *_version.res} // if you get an error here, run the __build_project.cmd script first
