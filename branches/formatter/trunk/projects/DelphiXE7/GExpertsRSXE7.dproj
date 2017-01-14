@@ -94,6 +94,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         </DCCReference>
         <DCCReference Include="..\..\source\Bookmarks\GX_Bookmarks.pas">
             <Form>fmGxBookmarksForm</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\ClassBrowser\GX_ClassBrowser.pas">
             <Form>fmClassBrowser</Form>
@@ -191,6 +192,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         </DCCReference>
         <DCCReference Include="..\..\Source\UsesExpert\GX_UsesExpertOptions.pas">
             <Form>fmUsesExpertOptions</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\Editor\GX_ePopupMenu.pas">
             <Form>fmEditorPopupMenuExpertConfig</Form>
@@ -444,6 +446,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\source\Utils\GX_NTAEditServiceNotifier.pas"/>
         <DCCReference Include="..\..\source\Bookmarks\GX_EditBookmark.pas">
             <Form>fmEditBookmarks</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_BookmarkList.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_dzQuicksort.pas"/>
@@ -468,8 +471,8 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\Source\PeInfo\GX_PeInfoPrint.pas">
             <Form>f_PeInfoPrint</Form>
         </DCCReference>
-        <DCCReference Include="..\..\Source\IDE\GX_IdeSearchPathFavorites.pas">
-            <Form>f_SarchPathFavorites</Form>
+        <DCCReference Include="..\..\Source\IDE\GX_IdeFavoritesList.pas">
+            <Form>f_GxIdeFavoritesList</Form>
         </DCCReference>
         <DCCReference Include="..\..\Source\IDE\GX_IdeSearchPathFavoriteEdit.pas">
             <Form>f_IdeSearchPathFavoriteEdit</Form>
@@ -486,6 +489,11 @@ $(PreBuildEvent)]]></PreBuildEvent>
         </DCCReference>
         <DCCReference Include="..\..\Source\IDE\GX_IdeGotoEnhancer.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_dzMapFileReader.pas"/>
+        <DCCReference Include="..\..\Source\IDE\GX_IdeObjectInspectorEnhancer.pas"/>
+        <DCCReference Include="..\..\Source\IDE\GX_IdeBuildEventFavoriteEdit.pas">
+            <Form>f_IdeBuildEventFavoriteEdit</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\IDE\GX_IdeBuildEventsEnhancer.pas"/>
         <RcCompile Include="..\..\images\GXIcons.rc">
             <Form>GXIcons.res</Form>
         </RcCompile>
