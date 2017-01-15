@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ProjectGuid>{cb5c67de-b6ba-40c4-9289-280ec735fc2b}</ProjectGuid>
     <MainSource>GExpertsDelphi2007.dpr</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
     <DCC_DependencyCheckOutputName>..\..\DLLs\GExpertsDelphi2007.dll</DCC_DependencyCheckOutputName>
