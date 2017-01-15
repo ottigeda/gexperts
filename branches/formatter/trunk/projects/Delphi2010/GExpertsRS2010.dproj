@@ -2,7 +2,7 @@
 		<PropertyGroup>
 			<ProjectGuid>{FCFABDD7-526A-4FC6-8809-72A25446A427}</ProjectGuid>
 			<MainSource>GExpertsRS2010.dpr</MainSource>
-			<Config Condition="'$(Config)'==''">Debug</Config>
+			<Config Condition="'$(Config)'==''">Release</Config>
 			<DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
 			<ProjectVersion>12.0</ProjectVersion>
 		</PropertyGroup>

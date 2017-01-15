@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{84D8A48D-40DE-46E2-B5D2-562447ADAEB5}</ProjectGuid>
         <MainSource>GExpertsRSXE4.dpr</MainSource>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <ProjectVersion>14.6</ProjectVersion>
         <Base>True</Base>

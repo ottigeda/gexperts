@@ -3,7 +3,7 @@
         <ProjectGuid>{1109E7A4-31BB-4DBB-945A-4F305C67DFEB}</ProjectGuid>
         <MainSource>GExpertsRSXE3.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Library</AppType>
         <FrameworkType>None</FrameworkType>
