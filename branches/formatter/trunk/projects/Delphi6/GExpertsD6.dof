@@ -4,7 +4,7 @@ Version=6.0
 A=8
 B=0
 C=1
-D=0
+D=1
 E=0
 F=0
 G=1
@@ -12,10 +12,10 @@ H=1
 I=1
 J=0
 K=0
-L=0
+L=1
 M=0
 N=1
-O=1
+O=0
 P=1
 Q=0
 R=0
@@ -45,7 +45,7 @@ OutputDir=..\..\DLLs
 UnitOutputDir=dcu
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=..\..\source\Framework;..\..\ExternalSource;..\..\ExternalSource\Abbrevia;..\..\ExternalSource\UniSynEdit
+SearchPath=$(DELPHI)\Lib\Debug;..\..\source\Framework;..\..\ExternalSource;..\..\ExternalSource\Abbrevia;..\..\ExternalSource\UniSynEdit
 Packages=rtl;vcl;vclx;vclsmp;designide
 Conditionals=
 DebugSourceDirs=
@@ -84,6 +84,9 @@ Comments=Open Source
 CompileDate=2011-02-05
 [Excluded Packages]
 c:\delphi\delphi6\Bin\dclib60.bpl=InterBase Data Access Components
+c:\delphi\delphi6\Bin\dclclxdb60.bpl=Borland CLX Database Components
+C:\Delphi\Delphi6\bin\dclclxstd60.bpl=Borland CLX Standard Components
 [HistoryLists\hlUnitAliases]
-Count=1
-Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
+Count=2
+Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;Actions=actnlist;Themes=Controls
+Item1=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;

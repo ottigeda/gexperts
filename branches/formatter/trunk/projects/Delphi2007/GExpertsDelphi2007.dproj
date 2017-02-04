@@ -411,10 +411,12 @@ call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
     <DCCReference Include="..\..\source\IDEDocking\GX_IdeDock.pas">
       <Form>fmIdeDockForm</Form>
     </DCCReference>
+    <DCCReference Include="..\..\Source\IDE\GX_IdeApplicationSettingsEnhancer.pas" />
     <DCCReference Include="..\..\Source\IDE\GX_IdeBuildEventFavoriteEdit.pas">
       <Form>f_IdeBuildEventFavoriteEdit</Form>
     </DCCReference>
     <DCCReference Include="..\..\Source\IDE\GX_IdeBuildEventsEnhancer.pas" />
+    <DCCReference Include="..\..\Source\IDE\GX_IdeDialogEnhancer.pas" />
     <DCCReference Include="..\..\source\IDE\GX_IdeEnhance.pas" />
     <DCCReference Include="..\..\Source\IDE\GX_IdeFavoritesList.pas">
       <Form>f_GxIdeFavoritesList</Form>
