@@ -73,6 +73,46 @@
       
       
       
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
       <Excluded_Packages Name="$(BDS)\bin\dclmid100.bpl">CodeGear MyBase DataAccess Components</Excluded_Packages>
       <Excluded_Packages Name="$(BDS)\bin\dcldb100.bpl">CodeGear Database Components</Excluded_Packages>
       <Excluded_Packages Name="$(BDS)\bin\applet100.bpl">CodeGear Control Panel Applet Package</Excluded_Packages>
@@ -520,6 +560,7 @@ call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
     <DCCReference Include="..\..\source\Utils\GX_IdeUtils.pas" />
     <DCCReference Include="..\..\source\Utils\GX_NTAEditServiceNotifier.pas" />
     <DCCReference Include="..\..\source\Utils\GX_OtaUtils.pas" />
+    <DCCReference Include="..\..\Source\Utils\GX_ReadMapFileThread.pas" />
     <DCCReference Include="..\..\Source\Utils\GX_VCLFixPack.pas" />
     <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas" />
     <RcCompile Include="..\..\images\GXIcons.rc">

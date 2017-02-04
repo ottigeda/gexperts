@@ -517,6 +517,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <Form>f_IdeBuildEventFavoriteEdit</Form>
         </DCCReference>
         <DCCReference Include="..\..\Source\IDE\GX_IdeBuildEventsEnhancer.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_ReadMapFileThread.pas"/>
         <RcCompile Include="..\..\images\GXIcons.rc">
             <Form>..\..\images\GXIcons.res</Form>
         </RcCompile>
