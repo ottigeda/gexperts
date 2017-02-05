@@ -1,0 +1,61 @@
+HelpMakers Delphi Site Tips 
+            Question: How do I put the current time on the title bar of my form?
+
+            Relation: [ GDI ]
+            ID: [ 000591 ] 
+Note:  The placement of the time varies according to whether it is Win95 or 
+below, as well as the form's size.  If the form is too narrow, this may write 
+the time over the top of the control buttons (maximize, minimize, etc).
+
+unit Unit1;
+
+interface
+
+uses
+  SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
+  Forms, Dialogs, ExtCtrls;
+
+type
+  TForm1 = class(TForm)
+    Timer1: TTimer;
+    procedure Timer1Timer(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+  dc: hDC;
+
+implementation
+
+{$R *.DFM}
+
+procedure TForm1.Timer1Timer(Sender: TObject);
+var
+  TheTime: array[0..80] of char;
+begin
+  StrPCopy(TheTime, TimeToStr(time));
+
+  TextOut(dc, width DIV 2, 5, TheTime, StrLen(TheTime));
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  dc := GetWindowDC(handle);
+end;
+
+procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  ReleaseDC(handle, dc); {This *must* be manually released.}
+end;
+
+end.
+
+
+
+

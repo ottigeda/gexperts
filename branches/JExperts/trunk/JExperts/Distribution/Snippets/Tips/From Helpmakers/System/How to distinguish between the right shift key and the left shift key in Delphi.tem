@@ -1,0 +1,54 @@
+HelpMakers Delphi Site Tips 
+            Question: How to distinguish between the right shift key and the 
+            left shift key in Delphi?
+
+            Relation: [ System ]
+            ID: [ 000075 ] 
+{ using this code you can determine which key is being pressed }
+
+type
+   tkeyspressed     = (kpRightShft, kpLeftShft, kpCtrl, kpAlt);
+   tkeyspset        = set of tkeyspressed;
+
+function getkeyshfstate : tkeyspset;
+begin
+   result := mem[$40:$17];    { $40 is the famous bimodal segment/selector }
+end;
+
+Use the code as a set. To know if the left shift is being pressed you do
+
+     ...
+     if getkeyshfstate in [kpLeftShft] then
+     .....
+
+	 
+-----------------------------------------
+Const
+     kpRightShft    = 1
+     kpLeftShft     = 1 shl 1;
+     kpInsertActive = 1 shl 7;
+     kpLeftCtrl     = 1 shl 8;
+     kpLeftAlt      = 1 shl 9;
+     kpSysReq       = 1 shl 10;
+     kpNumLockOn    = 1 shl 11;
+
+
+function getkeyshfstate : word;
+begin
+   result := memw[$40:$17];    { $40 is the famous bimodal segment/selector }
+end;
+
+This is how you use it now:
+     ...
+     if getkeyshfstate and kpLeftShft <> 0 then
+          .....                                        { Left Shift is pressed }
+     ...
+     if getkeyshfstate and kpLeftCtrl <> 0 then
+          .....                                        { Left Ctrl is pressed }
+
+
+
+
+            Copyright © HelpMakers, 1997 - 99 
+
+

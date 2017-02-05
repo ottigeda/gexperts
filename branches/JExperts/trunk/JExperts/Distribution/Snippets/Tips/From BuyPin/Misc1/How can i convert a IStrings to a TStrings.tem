@@ -1,0 +1,18 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can i convert a IStrings to a TStrings ? 
+
+Answer : 
+pass the instance of istrings to a TOlestring like this 
+
+var 
+ Iolala:Tstrings; 
+begin 
+ Ioalala:=ToleStrings.Create(iYourIStringsInstance); 
+end; 
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

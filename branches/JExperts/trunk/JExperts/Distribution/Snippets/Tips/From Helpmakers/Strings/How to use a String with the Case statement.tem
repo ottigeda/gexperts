@@ -1,0 +1,55 @@
+HelpMakers Delphi Site Tips 
+            Question: How to use a String with the Case statement?
+
+            Relation: [ String ]
+            ID: [ 000067 ] 
+A single Character is considered "ordinal" so, in your case, you 
+could code the following two level imbeded Case statements:
+        Case Code[1] of
+             'K':Case Code[2] of
+                 'T':begin
+                      {code for KTAA to KTZZ}
+                     end;
+                 'D':begin
+                      {code for KDAA to KDZZ}
+                     end;
+                 END;
+              'L':Case Code[2] of
+        etc...
+As an idea, you could turn the letters into their numeric values with
+the ORD and CHR functions, and then do a case statement on them. eg:
+
+function NumConvert(s: String): LongInt;
+var
+  i: Integer;
+begin
+   s := UpperCase(s); {work with uppercase strings}
+   for i := 1 to Length(s) do
+      result := result + (Ord(s[i]) * exp(((Length(s) - i) * 2) * ln(10)));
+   {We have taken the ascii value of the placeholder, and multiplied it by
+    it's position * 2, eg. an 'A' in the second position (as in cAke) would
+    be 65 * 10 ^ ((4 - 2) * 2), which is 650000 etc. The final result should
+    be 67657569 for the word 'cake'}
+end;
+
+(Note: if you're stuck for an ASCII chart, look in the DOS-QBASIC help file.
+       under contents you'll find an ASCII chart, - I'm sure Delphi will
+       probably have one somewhere as well. At worst, make a program to
+       generate one eg: for i := 1 to 255 do ShowMessage(IntToStr(i)+Chr(i)); )
+
+This function should generate a longint that could be used in a case statement,
+for example, if you wanted everything between AA and AC, your case statement
+would be:
+
+  s := 'abracadabra';
+  l := NumConvert(Copy(s, 1, 2)); {Get the first two characters of the string}
+  {at this stage l should contain 6566, check this with delphi debugger...}
+
+  case l of
+    6565..6567: ShowMessage('s between AA and AC'); {Includes ACAA to ACZZ}
+    6768..7171: ShowMessage('s between CD and GG'); {Includes GGAA to GGZZ}
+    7065: ShowMessage('s begins with FA');
+
+
+
+

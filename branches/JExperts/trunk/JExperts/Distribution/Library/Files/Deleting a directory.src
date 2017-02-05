@@ -1,0 +1,31 @@
+function DeleteAllFiles(FilesOrDir: string): boolean;
+{ Sends files or directory to the recycle bin. }
+var
+  F: TSHFileOpStruct;
+  From: string;
+  Resultval: integer;
+begin
+  FillChar(F, SizeOf(F), #0);
+  From := FilesOrDir + #0;
+  Screen.Cursor := crHourGlass;
+  try
+    F.wnd   := 0;
+    F.wFunc := FO_DELETE;
+    F.pFrom := PChar(From);
+    F.pTo   := nil;
+
+    F.fFlags := FOF_ALLOWUNDO or
+                FOF_NOCONFIRMATION or
+                FOF_SIMPLEPROGRESS or
+                FOF_FILESONLY;
+
+    F.fAnyOperationsAborted := False;
+    F.hNameMappings := nil;
+    Resultval := ShFileOperation(F);
+    Result := (ResultVal = 0);
+  finally
+    Screen.Cursor := crDefault;
+  end;
+end;
+
+

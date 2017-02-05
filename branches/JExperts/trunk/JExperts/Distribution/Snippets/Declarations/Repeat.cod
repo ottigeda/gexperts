@@ -1,0 +1,7 @@
+%TEST%=Test ?
+<CODE>
+       repeat
+
+
+       until %TEST%; 		
+</CODE>

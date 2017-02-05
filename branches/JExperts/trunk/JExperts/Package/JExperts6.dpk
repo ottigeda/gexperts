@@ -1,0 +1,43 @@
+package JExperts6;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS ON}
+{$RANGECHECKS ON}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JEDI Experts 1.0'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl,
+  Vclx,
+  designide;
+
+contains
+  JeExpert_Register in 'JeExpert_Register.pas',
+  JeExpert_Editor in 'JeExpert_Editor.pas',
+  JeExpert_Strings in 'JeExpert_Strings.pas',
+  JeExpert_Base in 'JeExpert_Base.pas',
+  JeExpert_Types in 'JeExpert_Types.pas',
+  JeExpert_FormEditor in 'JeExpert_FormEditor.pas',
+  JeExpert_Exported in 'JeExpert_Exported.pas';
+
+end.

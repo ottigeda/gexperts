@@ -1,0 +1,32 @@
+BuyPin Software - Delphi Tips
+Question : 
+I have a property "Permitted" and I want this to default to TPNone so that no 
+validation occurs by default on the Editbox. 
+
+type 
+paultype = (TPAlphabetical, TPAlphanumerical, TPInteger, TPNone, 
+TPReal); 
+published 
+{ Published declarations } 
+property Permitted : paultype read FPType write FPType default TPNone; 
+
+This didn't work - it always defaulted to TPAlphabetical - but when I switched 
+around TPAlphabetical and TPNone in the type declaration this worked - is this a 
+known issue? Is it a bug (that you have to declare your putative default value 
+first in the list, even when it might not be logical to do so)? 
+
+Answer : 
+The keyword default does not set values (the help explains this). Instead it 
+defines how .DFM files will store the property. To set a "default" value for any 
+property initialize it in the constructor. 
+
+constructor YourClassName.Create(AOwner:TComponent); 
+begin 
+     inherited; 
+     FPType := TPNone; 
+end; 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

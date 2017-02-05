@@ -1,0 +1,42 @@
+HelpMakers Delphi Site Tips 
+            Question: How do I call a function from a DLL?
+
+            Relation: [ FuncType ]
+            ID: [ 000022 ] 
+In order to call a function you must know it's exact syntax. and setup a 
+function type.  For example to call the CallMe function, which accepts two 
+integers and returns a string, from MyTest.Dll when a button is pushed, you 
+could use the following code:
+
+procedure TForm1.Button1Click(Sender: TObject); 
+type
+ TCallMeDll = function(a,b: Integer): string; 
+
+var 
+ CallMeDll: TCallMeDll;
+ FuncPtr: TFarProc;
+ hDll: THandle;
+ result: string; 
+
+begin
+ hDll:=LoadLibrary('Mytestdll.dll');
+ FuncPtr:=GetProcAddress(hDLL,'CallMe');
+ @CallMeDll:=FuncPtr;
+ if @CallMeDll <> nil then
+ result:=CallMeDll(4,5);
+ FuncPtr:=nil;
+ FreeLibrary(hDll);
+end; 
+
+Note that we must first load the dll into memory, then we can obtain a pointer 
+to the function, and assign that to the contents of CallMeDll. At this point I 
+am checking to see if the ProcAddress is Nil, this would indicate that the call 
+to GetProcAddress failed. 
+
+It is important to note that sometimes you might want to load the library, and 
+get the procedure address once at the beginning of your program, and free the 
+library once at the end.
+
+
+
+

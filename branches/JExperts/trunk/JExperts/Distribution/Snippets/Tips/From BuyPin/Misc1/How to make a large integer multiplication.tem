@@ -1,0 +1,49 @@
+BuyPin Software - Delphi Tips
+Question : 
+p is 32bits, q is 32bits but p*q>32bits. 
+I want to use more than one 32bits integers to maintain a large p*q result. 
+I know Int64 is a 64bits integer, but that is not a standard data type. 
+
+Answer : 
+You must use your own type (record) and do the multiply at the CPU level. The 
+following will do this for you. 
+
+type 
+  My64bitNo = record 
+    Low32,Hi32: dword; 
+  end; 
+
+function Multiply64(p,q: dword): My64BitNo; 
+var 
+  x: My64bitNo; 
+begin 
+  asm 
+    MOV EAX,[p] 
+    MUL [q] 
+    MOV [x.Low32],EAX 
+    MOV [x.Hi32],EDX 
+  end; 
+  Result := x 
+end; 
+
+The above does an unsigned 32x32->64 bit multiply, if you need a signed function 
+then replave all "dword" with "integer" above, and change the "MUL" cpu 
+instruction to "IMUL" and all will work signed. 
+
+Test the above with: 
+
+var 
+  r: My64BitNo; 
+begin 
+  r := Multiply64(40000000,80000000); 
+  showmessage(IntToStr(r.Hi32)+','+IntToStr(r.low32)) 
+end; 
+
+P.S. the '[' are optional in the asm code, it just makes it more legibble 
+because [] means contents of, i.e. the variable value and not it's address. 
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

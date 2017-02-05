@@ -1,0 +1,50 @@
+HelpMakers Delphi Site Tips 
+            Question: Circular referencing.
+
+            Relation: [ Misc ]
+            ID: [ 0001 ] 
+This tip addresses circular referencing between units; that is, where two units
+are dependent upon each other in some way. Or in more simple terms: two or
+more forms need to interact with each other at runtime. For those in the know,
+you'd probably say, "That's not allowed!" That's right, it's not allowed at the
+public or interface level. 
+
+But it is allowed at the private or implementation level. The reason for this 
+is that units declared in the uses clause of an implementation section are not 
+seen by the defining unit; that is, at compile time, they aren't referenced 
+for compilation. So if you move one or both of the uses declarations to the 
+implementation section, you can perform circular referencing. 
+
+As an example, let's say I have a form called Form1. It opens up another form
+called Form2. For simplicity's sake, let's say that once Form2 opens, it changes
+the Caption property of a TLabel on Form1 that says it's up and ready, and it's
+a pretty simple one-liner: 
+
+procedure TForm2.FormCreate(Sender: TObject);
+begin
+  Form1.Label1.Caption := 'I''m up and running!!!';
+end;
+
+This was made possible because I declared Unit1 (associated code for Form1)
+in the uses section in the implementation section of Unit2. 
+
+implementation
+
+uses Unit1;
+
+{$R *.DFM}
+
+...rest of the code
+
+Form2 came into existence because a procedure in Form1 created it. So under
+the implementation section of Unit1, I made a similar uses declaration to Unit2's
+uses, but declared Unit2 instead of Unit1. Having done this, Unit2 now can now
+access Unit1's public methods and functions and vice-versa.
+
+Admittedly, this topic is fairly old hat to most people. But those just starting to
+program in Delphi will find this invaluable when they need to have their forms
+interact with each other.
+
+
+
+

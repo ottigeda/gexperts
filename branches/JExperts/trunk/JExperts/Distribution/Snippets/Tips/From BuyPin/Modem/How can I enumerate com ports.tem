@@ -1,0 +1,30 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I enumerate com ports ? 
+
+Answer : 
+
+  CB_CommPort.Clear; 
+  for i := 1 to 9 
+   do begin 
+       cf := CreateFile(PChar('COM'+intToStr(i)),GENERIC_READ OR 
+GENERIC_WRITE,0,nil,OPEN_EXISTING,0,0); 
+       if cf ‹› INVALID_HANDLE_VALUE 
+        then CB_CommPort.Items.Add('COM'+intToStr(i)); 
+       CloseHandle(cf); 
+      end; 
+  if CB_CommPort.Items.Count = 0 
+   then begin 
+         Button1.Enabled:=false; 
+         CB_CommPort.ItemIndex := -1 
+         CB_CommPort.Enabled:=false; 
+        end 
+   else CB_CommPort.ItemIndex := 0 
+  CommP := TCommPort.Create; 
+
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

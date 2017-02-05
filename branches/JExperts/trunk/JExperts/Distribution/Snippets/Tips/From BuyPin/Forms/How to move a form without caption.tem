@@ -1,0 +1,69 @@
+BuyPin Software - Delphi Tips
+Question : 
+How to move a form without caption ? 
+
+Answer : 
+You need to 'trick' windows into thinking the mouse clicks in the (not present) 
+caption bar, when it has pressed in the form. i.e. ...... 
+
+  private 
+    { Private declarations } 
+    procedure WMNCHitTest(var M: TWMNCHitTest); message wm_NCHitTest; 
+
+implementation 
+
+{$R *.DFM} 
+
+procedure TMeterWin.WMNCHitTest(var M: TWMNCHitTest); 
+begin 
+  inherited; 
+  if  M.Result = htClient then 
+      begin 
+          {Title Bar} 
+          {The title bar is the caption area} 
+          if (m.ypos-MeterWin.top)‹MeterWin.height then 
+              M.Result := htCaption; 
+          {right bottom resize box } 
+           if (m.ypos-MeterWin.top)›(MeterWin.height-12) then    // MeterWin is 
+the name of my form 
+             if(m.xpos-MeterWin.left)›(MeterWin.width-12) then 
+              m.result:=HTBOTTOMRIGHT; 
+          {Right Top resize box} 
+           if (m.ypos-MeterWin.top)‹12 then 
+             if(m.xpos-MeterWin.left)›(MeterWin.width-12) then 
+              m.result:=HTTOPRIGHT; 
+          {Left Top resize box} 
+           if (m.ypos-MeterWin.top)‹12 then 
+             if (m.xpos-MeterWin.left)‹12 then 
+              M.Result:=HTTOPLEFT; 
+          {Left Bottom resize box} 
+           if (m.ypos-MeterWin.top)›(MeterWin.height-12) then 
+            if (m.xpos-MeterWin.left)‹12 then 
+             M.Result:=HTBOTTOMLEFT; 
+          {bottom resize} 
+           if (m.ypos-MeterWin.top)›(MeterWin.height-6) then 
+             if (m.xpos-MeterWin.left)‹(MeterWin.width-12) then 
+               IF (M.xPOS-MeterWin.LEFT)›12 then 
+                M.Result:=HTBottom; 
+          {Top resize} 
+           if (m.ypos-MeterWin.top)‹2 then 
+             if (m.xpos-MeterWin.left)‹(MeterWin.width-12) then 
+               IF (M.xPOS-MeterWin.LEFT)›12 then 
+                M.Result:=HTTOP; 
+          {right resize} 
+           If (m.xpos-MeterWin.left)›(MeterWin.width-6) then 
+             if (m.ypos-MeterWin.top)›12 then 
+                if(m.ypos-MeterWin.top)‹(MeterWin.height-12) then 
+                M.Result:=HTRight; 
+          {Left resize} 
+           If (m.xpos-MeterWin.left)‹6 then 
+             if (m.ypos-MeterWin.top)›12 then 
+                if(m.ypos-MeterWin.top)‹(MeterWin.height-12)then 
+                M.Result:=HTLEFT; 
+      end; 
+end; 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

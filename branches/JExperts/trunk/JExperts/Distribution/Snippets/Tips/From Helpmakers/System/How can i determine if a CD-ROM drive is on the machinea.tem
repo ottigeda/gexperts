@@ -1,0 +1,51 @@
+Question: How can i determine if a CD-ROM drive is on the machine?
+
+Relation: [ System ]
+ID: [ 000062 ]  
+I tried using the WIN API GetDriveType but it return the same number (4) 
+if it is a CD-ROM or a network drive.
+
+This should do the trick..
+
+function IsCDROM(DriveNum: Integer): Boolean; assembler;
+asm
+  MOV   AX,1500h { look for MSCDEX }
+  XOR   BX,BX
+  INT   2fh
+  OR    BX,BX
+  JZ    @Finish
+  MOV   AX,150Bh { check for using CD driver }
+  MOV   CX,DriveNum
+  INT   2fh
+  OR    AX,AX
+  @Finish:
+end;
+
+BTW under Win32 GetDriveType properly returns a CD-ROM drive.
+
+A:
+Function IsCdRom(DriveNum : Word) : Boolean;
+Var
+   F : WordBool;
+Begin
+   asm
+      mov ax, 1500h      { test for presence of MSCDEX }
+      xor bx, bx
+      int 2fh
+      mov ax, bx         { if bx = zero, MSCDEX is not present }
+      or  ax, ax         { return FALSE }
+      jz  @no_mscdex
+      mov ax, 150bh      { MSCDEX drive check }
+      mov cx, DriveNum   { cx contains drive }
+      int 2fh
+      @no_mscdex:
+      mov f,ax
+   end;
+   Result := F;          { Assign function return value }
+End;
+ 
+ 
+
+Copyright © HelpMakers, 1997 - 99 
+ 
+

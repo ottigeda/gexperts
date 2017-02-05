@@ -1,0 +1,53 @@
+HelpMakers Delphi Site Tips 
+            Question: How to save an array of record variable?
+
+            Relation: [ FuncType ]
+            ID: [ 000390 ] 
+I need to save a array of record variable. Which is the best way to do it?
+It's possible read the file with data-aware component?
+
+A:
+It's not very Delphi-like (but then, neither are Pascal records really),
+but you can read and write records to and from a file using the standard
+Pascal file manipulation procedures like so:
+
+type
+  TMyRec = record ;
+    Field1 : integer ;
+    Field2 : string ;
+  end ;
+
+  TMyRecArray = array [0..9] of TMyRec ;
+
+var
+  MyArray : TMyRecArray ;
+  MyRec : TMyRec ;
+  RecFile : file of TMyRec ;
+
+begin
+
+  {...some code that intializes MyArray goes here...}
+
+  AssignFile( RecFile, 'MYREC.FIL' ) ;
+  ReWrite( RecFile ) ;
+  for i := 0 to 9 do
+  begin
+    Write( RecFile, MyRec[i] ) ;
+  end ;
+  CloseFile( RecFile ) ;
+
+You can also use Read() to get a record from such a file, and Seek() to
+move to a particular record in the file (starting with 0).  For more
+details on these have a look at "I/O Routines" in the Delphi on-line
+help.
+
+If you want to do this with the Data Aware components, you'll have to
+construct a database where the database "records" reflect the structure
+of your Pascal records, then provide translation routines to get the
+data from one to the other.  I'm not aware of any way to do this
+directly, but it could certainly be encapsulated in a component.
+
+
+
+
+

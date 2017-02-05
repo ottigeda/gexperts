@@ -1,0 +1,6 @@
+Jv_RUNTIME	RCDATA		"runtime.xml"
+Jv_LEXICAL	RCDATA		"lexical.xml"
+Jv_ICON		RCDATA		"icon.ico"
+Jv_SEP		RCDATA		"separators.txt"
+Jv_TIPS		RCDATA		"tips.txt"
+Jv_EXCEPTIONS RCDATA	"exceptions.txt"

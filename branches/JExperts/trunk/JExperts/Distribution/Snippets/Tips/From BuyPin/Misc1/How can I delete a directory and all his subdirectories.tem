@@ -1,0 +1,54 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I delete a directory and all his subdirectories ? 
+
+Answer : 
+DeleteAllFiles() will delete a set of files or a directory of your choice and 
+place them in the Recycle Bin. It also displays the same animation of the 
+operation as does Windows Explorer. You can pass wildcards to the function. In 
+order to delete a directory, do not include the last backslash. For example: 
+DeleteAllFiles('C:\ThisDirectory'); 
+
+uses ShellAPI; 
+
+function DeleteAllFiles(FilesOrDir: string): boolean; 
+{ Sends files or directory to the recycle bin. } 
+var 
+  F: TSHFileOpStruct; 
+  pFromc: array[0..255] of Char; 
+  Resultval: integer; 
+  Dir: string; 
+begin 
+  { This, for some reason, fixes the AV that occurs when } 
+  { the directory doesn't exist. } 
+  Dir := ExtractFilePath(FilesOrDir); 
+
+  Screen.Cursor := crHourGlass; 
+  try 
+    FillChar(pFromc, SizeOf(pFromc), 0); 
+    StrPcopy(pFromc, ExpandFileName(FilesOrDir) + #0#0); 
+    F.wnd   := 0; 
+    F.wFunc := FO_DELETE; 
+    F.pFrom := pFromC; 
+    F.pTo   := nil; 
+
+    F.fFlags := FOF_ALLOWUNDO or 
+                FOF_NOCONFIRMATION or 
+                FOF_SIMPLEPROGRESS or 
+                FOF_FILESONLY; 
+
+    F.fAnyOperationsAborted := False; 
+    F.hNameMappings := nil; 
+    Resultval := ShFileOperation(F); 
+    Result := (ResultVal = 0); 
+  finally 
+    Screen.Cursor := crDefault; 
+  end; 
+end; 
+
+
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

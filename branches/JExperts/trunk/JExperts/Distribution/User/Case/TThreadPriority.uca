@@ -1,0 +1,30 @@
+<CASE>
+ <ITEM>
+  <NAME>tpIdle</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>tpLowest</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>tpLower</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>tpNormal</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>tpHigher</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>tpHighest</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>tpTimeCritical</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+</CASE>

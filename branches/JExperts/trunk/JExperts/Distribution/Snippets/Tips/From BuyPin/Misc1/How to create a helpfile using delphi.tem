@@ -1,0 +1,17 @@
+BuyPin Software - Delphi Tips
+Question : 
+How to create a helpfile using delphi ? 
+
+Answer : 
+1. Open the "Microsoft Help Workshop" tool in the following directory 
+"borland\delphiX\Help\Tools", file "hcw.exe". 
+2. Read the help file. You'll get some information on how to create the .rtf 
+file needed to generate the .hlp file. 
+
+You should not use Word 97. It looks like there is a problem with the generated 
+.rtf file while being read by the tool. Word 95 works fine. 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

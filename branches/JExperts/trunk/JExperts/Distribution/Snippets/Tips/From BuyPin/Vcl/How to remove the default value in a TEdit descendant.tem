@@ -1,0 +1,18 @@
+BuyPin Software - Delphi Tips
+Question : 
+How to remove the default value in a TEdit descendant ? 
+
+Answer : 
+Try this: 
+
+constructor TDummyEdit.Create(AOwner: TComponent); 
+begin 
+  inherited; 
+  ControlStyle:= ControlStyle - [csSetCaption]; 
+end; 
+
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

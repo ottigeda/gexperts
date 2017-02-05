@@ -1,0 +1,21 @@
+-----------------------
+ JEDI Experts
+-----------------------
+
+Informations : 
+Project : %PROJECT%
+Date : %DATE%
+Number of editions : %COUNT%
+Total time : %TOTAL%
+Average : %AVERAGE%	
+
+
+Items : 
+      Started at             Ended at         Duration
+%DATAS%
+
+
+------------------------------------------------------
+Copyright: (c) 1998-2002 Project JEDI, Sébastien Buysse
+                  http://delphi-jedi.org                       
+------------------------------------------------------

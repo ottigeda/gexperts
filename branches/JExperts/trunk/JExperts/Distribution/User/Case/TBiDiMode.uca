@@ -1,0 +1,18 @@
+<CASE>
+ <ITEM>
+  <NAME>bdLeftToRight</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>bdRightToLeft</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>bdRightToLeftNoAlign</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>bdRightToLeftReadingOnly</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+</CASE>

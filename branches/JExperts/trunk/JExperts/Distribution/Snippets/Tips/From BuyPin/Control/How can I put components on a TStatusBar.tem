@@ -1,0 +1,22 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I put components on a TStatusBar ? 
+
+Answer : 
+Create a new component and simply set the TStatusBar controlstyle to accept 
+objects... 
+
+constructor TMyNewStatusBar.Create(AOwner: TComponent); 
+begin 
+  inherited Create(AOwner); 
+  ControlStyle:= ControlStyle + [csAcceptsControls]; 
+end; 
+
+From their, simply start dumping TLabels, TImages or whatever directly on the 
+new statusbar. You still have to manage their positioning, but it's pretty 
+easy... 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

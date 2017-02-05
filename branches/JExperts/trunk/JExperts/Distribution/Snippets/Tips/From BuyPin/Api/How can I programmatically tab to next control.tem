@@ -1,0 +1,17 @@
+Question : 
+How can I programmatically tab to next control ? 
+
+Answer : 
+procedure TForm1.Edit1KeyPress(Sender: TObject; var Key: Char); 
+begin 
+  if Key = #32 then 
+  begin 
+    Key := #0; 
+    PostMessage(Screen.ActiveForm.Handle, WM_NEXTDLGCTL, 0, 0); 
+  end; 
+end; 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

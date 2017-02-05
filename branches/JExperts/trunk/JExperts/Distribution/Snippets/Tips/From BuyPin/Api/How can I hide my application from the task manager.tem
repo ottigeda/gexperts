@@ -1,0 +1,22 @@
+Question : 
+How can I hide my application from the task manager ? 
+
+Answer : 
+
+DEFINE IT: 
+
+function RegisterServiceProcess(dwProcessID: DWORD; dwType: DWORD) : DWORD; 
+stdcall; external 'KERNEL32.DLL'; 
+
+THEN... 
+
+RegisterServiceProcess(GetCurrentProcessId(), 1); 
+
+Yup, you guessed it... Changing the 0 to 1 will make it magically re-appear. 
+
+
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

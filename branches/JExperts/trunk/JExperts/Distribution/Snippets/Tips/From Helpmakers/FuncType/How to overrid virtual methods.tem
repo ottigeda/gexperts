@@ -1,0 +1,66 @@
+HelpMakers Delphi Site Tips 
+            Question: How to overrid virtual methods?
+
+            Relation: [ FuncType ]
+            ID: [ 000364 ] 
+Q:
+Anybody know what the difference is between OVERRIDING a virtual
+method and REPLACING it? I'm confused on this point.
+
+A:
+Say you have a class
+  TMyObject = class (TObject)
+and a subclass 
+  TOverrideObject = class (TMyObject)
+
+Further, TMyObject has a Wiggle method:
+  procedure Wiggle; virtual;
+and TOverrideObject overrides Wiggle
+  procedure Wiggle; override;
+and you've written the implementations for both.
+
+Now, you create a TList containing a whole bunch of MyObjects and 
+OverrideObjects in the TList.Items[n] property.  The Items property is a 
+pointer so to call your Wiggle method you have to cast Items.  Now you 
+could do this:
+
+  if TObject(Items[1]) is TMyObject then
+    TMyObject(Items[1]).Wiggle
+  else if TObject(Items[1]) is TOverrideObject then
+    TOverrideObject(Items[1]).Wiggle;
+
+but the power of polymorphism (and the override directive) allows you to 
+do this:
+
+  TMyObject(Items[1]).Wiggle;
+
+your application will look at the specific object instance pointed to by 
+Items[1] and say "yes this is a TMyObject, but, more specifically, it is 
+a TOverrideObject; and since the Wiggle method is a virtual method and 
+since TOverrideObject has an overridden Wiggle method I'm going to 
+execute the TOverrideObject.Wiggle method NOT the TMyObject.Wiggle 
+method."
+
+Now, say you left out the override directive in the declaration of the 
+TOverrideObject.Wiggle method and then tried 
+
+  TMyObject(Items[1]).Wiggle;
+
+The application would look and see that even though Items[1] is really a 
+TOverrideObject, it has no overridden version of the Wiggle method so 
+the application will execute TMyObject.Wiggle NOT TOverrideObject.Wiggle
+(which may or may not be what you want).
+
+So, overriding a method means declaring the method with the virtual (or 
+dynamic) directive in a base class and then declaring it with the 
+override directive in a sub class. Replacing a method means declaring it 
+in the subclass without the override directive.  Overriden methods of a
+subclass can be executed even when a specific instance of the subclass
+is cast as its base class.  Replaced methods can only be executed if the
+specific instance is cast as the specific class.
+
+[Brian Murray, murray@uansv3.vanderbilt.edu]
+
+
+
+

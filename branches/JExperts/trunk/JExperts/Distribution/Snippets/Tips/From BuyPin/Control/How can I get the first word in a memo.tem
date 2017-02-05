@@ -1,0 +1,25 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I get the first word in a memo ? 
+
+Answer : 
+function TForm1.GetFirstWord: string; 
+var F: integer; 
+    S: string; 
+begin 
+ F:=0; 
+ while True do 
+  if trim(Memo1.Lines[F])='' then Inc(F) else break;    // pass through 
+blank lines 
+ S:=trim(Memo1.Lines[F]); 
+ S:=Copy(S, 1, pos(' ', S));                // ' ' is #32, not empty string 
+(don't know how it looks out on screen' 
+ if S='' then S:=Memo1.Lines[F]; 
+Result:=Trim(S); 
+end; 
+
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

@@ -1,0 +1,17 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I draw a cursor on a TImage ? 
+
+Answer : 
+You may use : 
+
+DrawIcon(Image1.Canvas.handle, 0, 0, LoadCursor(0, IDC_ARROW)); 
+
+If you wanna get your cursor from a file, use LoadCursorFromFile instead. 
+If you wanna fill your bitmap background, uses DrawIconEx. 
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

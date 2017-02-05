@@ -1,0 +1,15 @@
+BuyPin Software - Delphi Tips
+Question : 
+Is there any way easy to save/load some bitmaps in a file? 
+
+Answer : 
+Create a resource file with all your bitmaps using Image Editor. 
+Link it into your source file using the {$r file.res} notation. 
+Load them into a TBitmap using the LoadFromResourceName method like so: 
+
+MyBitmap.LoadFromResourceName(HINSTANCE, 'MYRESBITMAP1'); 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

@@ -1,0 +1,505 @@
+HelpMakers Delphi Site TipsQuestion: How To Write Your Own Delphi 
+            Experts? [ Zipped ]
+
+            Relation: [ Misc ]
+            ID: [ 000439 ] 
+Copyright © by Bob Swart, for The Delphi Magazine issue #3, Sept 1995 
+
+Delphi is an open development environment, in that it has interfaces to enable 
+you to integrate your own tools and experts with it. This article will focus on 
+writing and integrating new Experts with Delphi. 
+
+Delphi has three kinds of experts: project experts, form experts and standard 
+experts. The first two can be found in the Options | Gallery dialog, while standard 
+experts can be found under the Help menu (like the Database Form Expert). 
+
+Project and Form Experts can be activated whenever you create a new Project or 
+Form (just like Project and Form Templates). Standard Experts are the third kind 
+of experts that generally do not create a new project or form, but "only" a new 
+file, or unit. If you've ever tried an Expert, you know what power and ease they 
+bring to you. The Project Expert develops an entire project for you based on your 
+specific preferences. The Form Experts develop custom forms that are added to 
+your current project. The Database Form Expert, for example, generates a form that 
+displays data from an external database. These example Experts are not just 
+external tools that can be started from Delphi, they actually communicate with 
+Delphi and form an integrated part of the development environment. 
+
+While this is not so strange for the existing Delphi Experts (after all, they were 
+developed and added by the same team that developed Delphi in the first place, 
+and we all know Delphi's written in Delphi), it sounds intriguing at least to know 
+that we, too, can write a Delphi Expert that is able to communicate with Delphi 
+in the same way. Could we actually write an Expert that also opens files in the 
+IDE, that can be used to start a new project from scratch? Yes, all this is possible, 
+and more, as we will see shortly! 
+
+TIExpert 
+The major reason why everybody thinks Experts are difficult is because they are 
+not documented. Not in the manuals or on-line Help, that is. If you take a look 
+at the documentation and source code on your harddisk, you'll find some important 
+files and even two example experts that are installed automatically by Delphi 
+itself. The important example files can be found in the delphi\doc subdirectory, 
+and are exptintf.pas and toolintf.pas. The first one shows how to derive and 
+register our own Expert, while the second one shows how to use the tool-services 
+of Delphi to make the integration complete. 
+
+If we want to derive our own expert, say TMyFirstExpert, we have to derive it 
+from the abstract base class TIExpert, which has seven abstract member functions 
+(GetStyle, GetName, GetComment, GetGlyph, GetState, GetIDString and GetMenuText) 
+and one member procedure Execute. Since TIExpert is an abstract base class, we 
+need to override every function we need for any particular expert (see also 
+listing 1 for TMyFirstExpert). 
+
+-------------------------------
+
+unit My1stexp;
+interface
+uses
+  WinTypes, Dialogs, ExptIntf;
+
+Type
+  TMy1stExp = class(TIExpert)
+  public
+    { Expert Style }
+    function GetStyle: TExpertStyle; override;
+
+    { Expert Strings }
+    function GetIDString: string; override;
+    function GetName: string; override;
+    function GetMenuText: string; override;
+    function GetState: TExpertState; override;
+    function GetGlyph: HBITMAP; override;
+    function GetComment: string; override;
+
+    { Launch the Expert }
+    procedure Execute; override;
+  end;
+
+  procedure Register;
+
+implementation
+
+  function TMy1stExp.GetStyle: TExpertStyle;
+  begin
+    Result := esStandard
+  end {GetStyle};
+
+  function TMy1stExp.GetIDString: String;
+  begin
+    Result := 'DrBob.MyFirstExpert'
+  end {GetIDString};
+
+  function TMy1stExp.GetName: String;
+  begin
+    Result := 'My First Expert'
+  end {GetName};
+
+  function TMy1stExp.GetMenuText: String;
+  begin
+    Result := '&My First Delphi Expert...'
+  end {GetMenuText};
+
+  function TMy1stExp.GetState: TExpertState;
+  begin
+    Result := [esEnabled]
+  end {GetState};
+
+  function TMy1stExp.GetGlyph: HBITMAP;
+  begin
+    Result := 0 { not needed for esStandard }
+  end GetGlyph};
+
+  function TMy1stExp.GetComment: String;
+  begin
+    Result := '' { not needed for esStandard }
+  end {GetComment};
+
+  procedure TMy1stExp.Execute;
+  begin
+    MessageDlg('Hello World: My First Expert is alive!', mtInformation, [mbOk], 0)
+  end {Execute};
+
+  procedure Register;
+  begin
+    RegisterLibraryExpert(TMy1stExp.Create)
+  end;
+end.
+
+Listing 1. Source Code for My First Expert (My1stExp.PAS)
+
+-------------------------------
+
+My First Expert: TMy1stExp 
+Let's have a closer look at our first expert from listing 1. Since TIExpert is 
+an abstract base class, we need to override every function we need for out 
+TMy1stExp. First of all, we need to specify the style of the expert with the 
+GetStyle method that can return one of three possible values: esStandard to tell 
+the IDE to treat the interface to this expert as a menu item on the Help menu, 
+esForm to tell the IDE to treat this expert interface in a fashion similar to 
+form templates, or esProject to tell the IDE to treat this interface in a fashion
+similar to project templates. For our TMy1stExp, a Standard type Expert that only 
+shows a MessageDlg to indicate that it's alive, we can use the esStandard style. 
+
+After we've set the style of the expert, all we need to do is fill the other 
+options accordingly. The GetName must return a unique descriptive name identifying 
+this expert, like 'My First Expert'. If style is esForm or esProject then 
+GetComment should return a 1 - 2 sentence describing the function of this expert. 
+
+Since the style is esStandard, we can return an empty string. If style is esForm 
+or esProject then GetGlyph should return a handle to a bitmap to be displayed in 
+the form or project list boxes or dialogs. This bitmap should have a size of 
+60x40 pixels in 16 colours. Again, since the style is just esStandard for our 
+TMy1stExp, we can return 0 here. If the style is esStandard then GetState returning 
+esChecked will cause the menu to display a checkmark. This function is called 
+each time the expert is shown in a menu or listbox in order to determine how it 
+should be displayed. We just leave it esEnabled for now. The GetIDString should 
+be unique to all experts that could be installed. By convention, the format of 
+the string is: CompanyName.ExpertFunction, like Borland.Expert or DrBob.MyFirstExpert. 
+
+If style is esStandard then GetMenuText should return the actual text to display 
+for the menu item, like 'My First Delphi Expert'. Since this function is called 
+each time the parent menu is pulled-down, it is even possible to provide context 
+sensitive text. 
+
+Finally, the Execute method is called whenever this expert is invoked via the menu, 
+form gallery dialog, or project gallery dialog. The style will determine how the 
+expert was invoked. In this case, we just call a MessageDlg in the Execute method 
+to indicate that the expert is actually alive. 
+
+To install our first expert, all we need to do is act like it's a new component: 
+pick Options | Install and add it to the list of installed components. When Delphi 
+is done with compiling and linking COMPLIB.DCL, you can find our first new expert 
+in the Help menu. Just click on it and it will show that it's alive. 
+
+And now for something completely different... Now that we've seen our first nice 
+but useless Delphi Expert, it's time to move on to more serious matters. Don't 
+worry, we'll be back to Experts before the end of this article, I just want to 
+make a little side-step to a subject that will make a nice example of a more 
+serious Delphi Expert. 
+
+On the DELPHI forum on CompuServe, one of the FAQ (Frequently Asked Questions) 
+that comes up rather frequently (otherwise it wouldn't be a FAQ, right?) is "How 
+do I write a DLL with Delphi?". The answer is not just that you need to write the 
+code starting with "library" and so on, the answer also needs to explain how to 
+compile the source for a DLL with Delphi. In their wisdom, Borland made the Delphi 
+IDE only capable to compile the current project. If you just open a file with the 
+source for the DLL and hit Ctrl-F9 to compile it, you won't get what you want. It 
+seems you must actually open your DLL .PAS source file as project and then you 
+can compile your DLL. During this process, Delphi will generate a .OPT and .RES 
+file by itself if these do not already exist. Fortunately, the Open Project dialog 
+has the ability to open .PAS files as opposed to normal Delphi .DPR project files, 
+otherwise this would be very obnoxious to do indeed. But all things considered, 
+I would like something that enables me to open a new or existing DLL at once so 
+I can compile it. 
+
+Speaking of DLLs, whenever I sit down to write a DLL in Delphi (or Borland Pascal, 
+for that matter), I pick up an old one to use as skeleton. Mostly, I re-use the 
+setup for the ExitProc routine and the exports settings. For this purpose, I've 
+written a DLL skeleton that can be loaded every time I need it. Considering the 
+fact that some of my friends also use this skeleton for their new DLLs, I decided 
+to make it something truly re-usable: a Delphi DLL Skeleton Generator.
+
+I've included the most Frequently Asked Questions all in one Form. How do I 
+write a Resource-only DLL? How do I write my own WEP (the same as ExitProc)? 
+How do I export routines from a DLL? All these questions can be answered if 
+you just select the appropriate options and hit OK to generate the DLL skeleton 
+source code. The most complete Delphi DLL Skeleton Source code (all options 
+enabled, except the BPW compatibility box, that by-the-way does not the SysUtils 
+unit and AddExitProc routine but has to setup the ExitProc chain by hand) 
+can be found in listing 2. 
+
+------------------------------
+
+library MyDLL;
+{ Generated by DLL Skeleton Expert (c) 1995 by Dr.Bob for The Delphi Magazine }
+uses WinTypes, WinProcs, SysUtils;
+
+{$R MyDLL.RES}
+
+  function Max(X,Y: Integer): Integer; export;
+  begin
+    if X > Y then Max := X
+             else Max := Y
+  end {Max};
+
+  procedure Swap(var X,Y: Integer); export;
+  var Z: Integer;
+  begin
+    Z := X;
+    X := Y;
+    Y := Z
+  end {Swap};
+
+exports max index 1,
+       swap index 2;
+
+  procedure MyDLLExitProc; far;
+  begin
+    { WEP & cleanup }
+  end;
+
+begin
+  AddExitProc(MyDLLExitProc);
+end.
+
+Listing 2. Generated DLL Skeleton Source Code
+
+-----------------------------
+
+Since not everybody would like to use the complete skeleton, I've made the form 
+to select which options you need. Behind the OkButtonClick is the source code 
+generator that just writes the selected source code to file. This is almost exactly 
+what I want: now I want something like this integrated into Delphi itself, so I 
+can generate a new Delphi DLL Skeleton and open it as my new project at the same 
+time. In order to make the DLL Skeleton Generator a Delphi Expert, all we have 
+to do is connect our Expert Execute method with our DLL Skeleton Generator Form: 
+
+
+  procedure TDLLSkExp.Execute;
+  begin
+    if not Assigned(DLLSkeletonGenerator) then
+      DLLSkeletonGenerator := TDLLSkeletonGenerator.Create(Application);
+    DLLSkeletonGenerator.Show;
+    DLLSkeletonGenerator.SetFocus
+  end;
+
+
+So, whenever the Expert is Executed, it will see if our DLL Skeleton Generator 
+Form already exists (i.e. if the Expert is already being executed) and create it 
+if it doesn't exists. It will then Show the form and give it the input focus. At 
+that point, the DLL Skeleton Generator Form is in control (you did notice the 
+"DLL Skeleton Expert" caption before, didn't you?). 
+
+The Final Frontier... 
+Only one thing remains: the final integration with the Delphi IDE. I would like 
+to open a new project with the source of the just generated DLL Skeleton inside. 
+For this, we need to communicate with the Delphi IDE itself. This is possible 
+with the special ToolServices that are provided from Delphi to its Experts. As 
+the Expert Interface, the ToolServices are not documented in the manual or on-line 
+help. 
+
+The only place you can find more information on this is in the toolintf.pas file, 
+again in the delphi\doc directory. 
+
+First of all, we need to check if the ToolServices are available to us. This is 
+just a check to see if ToolServices (a global variable from the TOOLINTF unit) is 
+not nil. If ToolServices are available, we can do several things. I would like to 
+close the current project, which can be done with the ToolServices.CloseProject 
+function. 
+
+Then, I would like to open a new project, with the just generated DLL Skeleton 
+source file as filename, which can be done with Tool.Services.OpenProject 
+function. 
+
+The last part of the OkButtonClick method of the DLL Skeleton Generator Form is 
+hence as follows: 
+
+
+  if ToolServices  nil then { I'm an expert!! }
+  begin
+    if ToolServices.CloseProject then
+      ToolServices.OpenProject(ExtractFileName(DLLName.Text)+'.PAS')
+  end
+
+
+Simple, eh? That's all we need to communicate with Delphi and write a truly
+integrated Delphi Standard Expert. 
+
+Project Expert 
+The DLL Skeleton Generator Expert is still a Standard Expert that is only 
+accessible from the Help menu. I would like to make it a Project Expert, so we 
+can pick it when we start a new project. To do this, we have to derive the 
+Project Expert from the Standard Expert and override four methods of the Standard 
+Expert. 
+
+First of all, we have to override the GetStyle and return esProject. Also, we 
+need to return a comment (this is not really needed) and a bitmap to display the 
+expert in the Gallery. 
+
+Standard and Project? 
+Remember the Database Form Expert? This one can be found in the gallery as a Form 
+Expert and in the Help menu as a Standard Expert. It seems to be both. I would 
+like to be able to use my DLL Skeleton Generator Expert not only a Standard Expert 
+but also as a Project Expert. In that case I have to modify the expert functions 
+compared to listing 1 to include both the esStandard and esProject styles (the 
+result is in listing 3). It seems that I have to override a fourth method to make 
+it all work: the GetIDString needs to return a truly unique ID string for both 
+the Standard and the Project Expert. Even though the two are essentially the same, 
+I need to return two special IDs. 
+
+If you don't, DELPHI will just GPF when you try to install the experts (with no 
+real clue as to where it when wrong). Which leads back to rule #1 from the 
+Component Building column: always have a backup of COMPLIB.DCL at hand when you 
+start to play with components and experts. 
+
+--------------------------
+unit Dllskexp;
+interface
+uses
+  SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
+  Forms, Dialogs, Buttons, StdCtrls, ExptIntf, ToolIntf;
+
+{ definition of class TDLLSKeletonGeneratorm, see disk with TDM #3 for details }
+
+Type
+  TDLLSkeletonStandardExpert = class(TIExpert)
+  public
+    { Expert Style }
+    function GetStyle: TExpertStyle; override;
+    { Expert Strings }
+    function GetIDString: string; override;
+    function GetName: string; override;
+    function GetMenuText: string; override;
+    function GetState: TExpertState; override;
+    function GetGlyph: HBITMAP; override;
+    function GetComment: string; override;
+    { Launch the Expert }
+    procedure Execute; override;
+  end;
+
+  TDLLSkeletonProjectExpert = class(TDLLSkeletonStandardExpert)
+  public
+    { Expert Style }
+    function GetStyle: TExpertStyle; override;
+    { Expert Strings }
+    function GetIDString: string; override;
+    function GetGlyph: HBITMAP; override;
+    function GetComment: string; override;
+  end;
+
+  procedure Register;
+
+implementation
+
+{$R *.DFM}
+
+{ implementation of class TDLLSKeletonGeneratorm, see disk for details }
+
+  function TDLLSkeletonStandardExpert.GetStyle: TExpertStyle;
+  begin
+    Result := esStandard
+  end {GetStyle};
+
+  function TDLLSkeletonStandardExpert.GetIDString: String;
+  begin
+    Result := 'DrBob.StandardDLLSkExp'
+  end {GetIDString};
+
+  function TDLLSkeletonStandardExpert.GetName: String;
+  begin
+    Result := 'DLL Skeleton Generator'
+  end {GetName};
+
+  function TDLLSkeletonStandardExpert.GetMenuText: String;
+  begin
+    Result := 'Dr.&Bob''s DLL Skeleton Expert...'
+  end {GetMenuText};
+
+  function TDLLSkeletonStandardExpert.GetState: TExpertState;
+  begin
+    Result := [esEnabled]
+  end {GetState};
+
+  function TDLLSkeletonStandardExpert.GetGlyph: HBITMAP;
+  begin
+    Result := 0 { not needed for esStandard }
+  end {GetGlyph};
+
+  function TDLLSkeletonStandardExpert.GetComment: String;
+  begin
+    Result := '' { not needed for esStandard }
+  end {GetComment};
+
+
+  procedure TDLLSkeletonStandardExpert.Execute;
+  begin
+    if not Assigned(DLLSkeletonGenerator) then
+      DLLSkeletonGenerator := TDLLSkeletonGenerator.Create(Application);
+    DLLSkeletonGenerator.Show;
+    DLLSkeletonGenerator.SetFocus
+  end {Execute};
+
+
+  {$R DLLSKEXP.RES}
+  Const
+    DLLSKEXPBITMAP = 666; { Bitmap ID }
+
+  function TDLLSkeletonProjectExpert.GetStyle: TExpertStyle;
+  begin
+    Result := esProject
+  end {GetStyle};
+
+  function TDLLSkeletonProjectExpert.GetIDString: String;
+  begin
+    Result := 'DrBob.ProjectDLLSkExp'
+  end {GetIDString};
+
+  function TDLLSkeletonProjectExpert.GetGlyph: HBITMAP;
+  begin
+    Result := LoadBitMap(HInstance, MakeIntResource(DLLSKEXPBITMAP))
+  end {GetGlyph};
+
+  function TDLLSkeletonProjectExpert.GetComment: String;
+  begin
+    Result := 'This Project Experts generates and opens a DLL Skeleton 
+	           Source File'#13+
+              'DLL Skeleton Expert (c) 1995 by Dr.Bob for The Delphi Magazine';
+  end {GetComment};
+
+
+  procedure Register;
+  begin
+    RegisterLibraryExpert(TDLLSkeletonStandardExpert.Create);
+    RegisterLibraryExpert(TDLLSkeletonProjectExpert.Create);
+  end;
+end.
+
+Listing 3. DLL Skeleton Generator Standard and Project Expert
+
+------------------------
+
+Now, if we install the experts with Options | Install, we get both a Standard 
+Expert in the Help menu and the Project Expert in the Gallery. If we enable the 
+gallery from the environments options, we can generate and open a DLL Skeleton 
+source file every time we start a new project. 
+
+If we select the DLL Skeleton Expert, we can select the required options. If we 
+click on OK, the Expert closes and we're in our main project: the generated source 
+of the DLL: 
+
+If you compare the figure 5. with listing 2 you should find no differences, of 
+course. 
+
+Since the source code for our generated DLL is opened as a New Project, we can 
+instantly compile it. Note that we cannot hit F9 (for run), as Delphi will display 
+an error message "Cannot run Unit or DLL". And once you have a skeleton, it's 
+easy to derive from that and add your own functions to the DLL. 
+
+Serious Business... 
+The example DLL Skeleton Generator Expert is provided on the subscribers' disk 
+with this issue of The Delphi Magazine. You'll also find another Expert, the one 
+I wrote about last issue: HeadConv. This Expert solves a more serious problem 
+that many people have: how do I use this foreign DLL written in C, as I only have 
+the C header file with it? The answer is to convert the C DLL header file to a 
+Delphi import unit. This is no simple task, especially for large header files, 
+and my HeadConv C DLL Header Converter Expert tries to assist in this task by 
+creating an initial convertion from which to start from. For some headers, the 
+initial conversion is good enough, for others it might require some afterwork 
+to be done. 
+
+Specifically, the declaration of nested structs and actual code (as opposed to 
+function declarations) will be a source of problems . 
+
+Are you in need of a C DLL Header Converter Expert? Then you should try the 
+HeadConv Expert. The Expert is based on the same principles as the DLL Skeleton 
+Generator Expert, only somewhat more advanced. While full source for the Skeleton 
+Expert is provided, the C DLL Header Converter Expert is provided without source. 
+In fact, it's not an entirely free program, as I've decided to "sell" it as a 
+shareware tool, and it is now part of Dr.Bob's Collection of Delphi IDE Experts.
+
+
+
+
+
+            Copyright © HelpMakers, 1997 - 99
+
+

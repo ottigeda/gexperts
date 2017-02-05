@@ -1,0 +1,25 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I make a wizzard ? 
+
+Answer : 
+Use a TPageControl with each TTabSheet having the property TabVisible set to 
+False. Place Back and Next buttons under the TPageControl and add: 
+
+YourPageCtl.SelectNextPage(True); 
+
+for the Next button OnClick event, and: 
+
+YourPageCtl.SelectNextPage(False); 
+
+for the Back button OnClick event. 
+
+During design-time TabVisible has no effect, and so when you run the program, 
+all of your controls on the TPageControl will shift up by the TabHeight! That's 
+why it's a good workaround to set TabHeight to 1, so that the difference between 
+run-time and design-time is as small as possible. 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

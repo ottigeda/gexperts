@@ -1,0 +1,46 @@
+HelpMakers Delphi Site Tips 
+            Question: How to create system modal application?
+
+            Relation: [ System ]
+            ID: [ 000130 ] 
+From: tnomad@digital.net
+Subject: Re: Delphi:  System Modal?
+Date: 5 Jun 1995 23:38:25 GMT
+
+>I need to set the application system modal, so the system is
+>still secure while allowing anyone to access the program.
+
+Ok, in light of this, here's a couple of suggestions:
+
+a) Create a form that consumes the screen (presumably 640x480) without any
+icons (maximize, minimize, system).
+
+b) In the FormDeactivate handler for the form, call the setFocus method as
+follows - this will disable Ctrl-Esc:
+
+	Form1.SetFocus;
+
+c) In the FormActivate, you must assign the Deactivate method to the
+application as follows:
+	Application.onDeactivate := FormDeactivate;
+
+d) Create a popup menu with one item.  The properties for the item must
+include Visible ->False.  Create a function for the single item and have it do
+something trivial (x := 1) to prevent the code from being stripped by Delphi.
+
+e) Assign the Popup menu to the form using the Popupmenu property.
+
+f) Create a shortcut for the popup menu in the FormActivate method as follows:
+
+    NullItem1.shortcut := ShortCut(VK_Tab, [ssAlt]);
+
+	(Note: NullItem1 should be replaced by the menu item you created).
+
+Steps d, e, and f disable Alt-Tab.
+
+
+
+
+            Copyright © HelpMakers, 1997 - 99 
+
+

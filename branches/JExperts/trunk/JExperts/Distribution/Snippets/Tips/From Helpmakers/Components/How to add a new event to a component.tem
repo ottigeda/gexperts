@@ -1,0 +1,119 @@
+HelpMakers Delphi Site Tips 
+            Question: How to add a new event to a component?
+
+            Relation: [ Components ]
+            ID: [ 000118 ] 
+I need to add a right-click event to a TDBGrid, but am at a loss as to
+how to accomplish it. I want to popup a menu. Do you know how? 
+
+Before I start into this there is an easier way to handle a right-mouse click to
+pop up a menu of sorts: Drop a TPopupMenu on a form and set its AutoPopup
+to True, then set the DBGrid's PopupMenu property to the name of the
+TPopupMenu. 
+
+It's amazing how easy it is (at least in many cases) to add functionality to a
+component. Mouse-clicks are problably the easiest to implement, since the
+message structure of the windows message is fairly simple - it's only one
+parameter! 
+
+unit Extgrid;
+
+interface
+
+uses
+ SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
+ Forms, Dialogs, Grids, DBGrids;
+
+type
+ TExtDBGrid = class(TDBGrid)
+ private
+   { Private declarations }
+   FOnRightClick : TNotifyEvent;
+   procedure WMRButtonDown(var Message : TWMRButtonDown); 
+   	message WM_RBUTTONDOWN;
+ protected
+   { Protected declarations }
+ public
+   { Public declarations }
+ published
+   { Published declarations }
+   property OnRightClick: TNotifyEvent read FOnRightClick write FOnRightClick;
+ end;
+
+procedure Register;
+
+implementation
+
+procedure TExtDBGrid.WMRButtonDown(var Message : TWMRButtonDown);
+begin
+ inherited;
+ if Assigned(FOnRightClick) then
+   FOnRightClick(Self);
+end;
+
+procedure Register;
+begin
+ RegisterComponents('Samples', [TExtDBGrid]);
+end;
+
+end.
+
+Okay, what did we just do... Well, first of all we defined an event handling
+procedure: 
+
+procedure WMRButtonDown(var Message : TWMRButtonDown);
+message WM_RBUTTONDOWN; 
+
+the message directive following the declaration tells the component to watch
+for the message WM_RBUTTONDOWN, which is the message for the right
+mouse buttond down. What we've done with this procedure is make the
+component look for this message. However, mere awareness isn't enough - by
+far! We have to add a property of type TNotifyEvent (which, if you remember
+is the domain in which mouse-clicks fall) so that users can add code to process
+it. So, in the published section of the unit, we added: 
+
+property OnRightClick: TNotifyEvent read FOnRightClick write
+FOnRightClick; 
+
+to assign the message to the component. 
+
+If you're familiar with writing components, you'll notice the difference in how
+message properties are handled as opposed to regular properties. Typically,
+when setting and getting property values you would use a Get or Set method or
+a direct read and write to the properties' fields. In essence, things happen in
+response to the change in state of the property. This appears to occur in the
+notation of the unit above, but there's actually a bit more going on. In fact, it's a
+bit backwards. The FOnRightClick is not really a variable, but rather a
+pointer to an event handling procedure. Luckily we don't have to know the
+mechanics behind this, because the compiler will automatically do all the work
+for us in creating the handler's declaration. However, if we look at the
+WMRButtonDown procedure, we'll see that the variable is actually being used
+as a procedure call: 
+
+procedure TExtDBGrid.WMRButtonDown(var Message : TWMRButtonDown);
+begin
+ inherited;
+ if Assigned(FOnRightClick) then
+   FOnRightClick(Self);
+end;
+
+As I mentioned above, message handling kind of works in reverse of regular
+property setting. Where with a regular property, the change in the state of the
+property causes some code to fire off, with an event, it's a message-aware
+procedure that sits in memory that changes the state of the message property.
+To illustrate this, in the code example above, the WMRButtonDown procedure
+makes the component aware of the right-click. Whenever the message appears
+in the message queue, WMRButtonDown fires. When it fires, it in turn fires off
+the FOnRightClick procedure, which, on the component would be the event
+handler, OnRightClick. 
+
+In any case, use this code as a basis for writing your own events. The online
+help under WinAPI help has excellent discussions of messages and how they
+interact with the system. In addition to this though, I strongly recommend getting
+a book on the Windows API and getting the Resource Kit and SDK to really
+get into event handling.
+
+
+
+
+

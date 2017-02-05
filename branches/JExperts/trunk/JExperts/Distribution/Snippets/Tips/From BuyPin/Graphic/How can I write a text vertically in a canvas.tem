@@ -1,0 +1,71 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I write a text vertically in a canvas ? 
+
+Answer : 
+You need to have the Windows unit in your uses clause. It is usually added
+automatically and should never be removed. Create a new project, drop a
+TPaintbox on the form and size it to take up most of the form. Add a handler
+to the paintboxes OnPaint event and replace it with the handler i posted.
+Compile and run the project.
+
+> Also, could you comment a little on the
+> crucial steps? I can't figure out how this code works.
+
+      FillRect( ClientRect );
+      Pen.Color := clBlack;
+      Pen.Width  := 2;
+      Font.Name := 'Arial';
+      Font.Size := 10;
+      Font.Style := [fsBold];
+      x0 := 30;
+      y0 := Height - 30;
+      MoveTo( x0, 5 );
+      LineTo( x0, y0 );
+      LineTo( Width-5, y0 );
+      TextOut( x0, y0+5,
+               'Horizontale Achse' );
+
+The first part is straight use of the Delphi Canvas methods to fill the area
+of the paintbox with some background and paint to perpendicular lines to
+serve as axis of a coordinate grid ( only the upper right quadrant in this
+case). A font is selected and the horizontal axis is labelled.
+
+      GetObject( Font.Handle, Sizeof(lf), @lf );
+
+This is where the fun starts. GetObject is an API function that fills a
+TLogfont record with information about a font, given the fonts handle. Look
+at the topic for LOGFONT in win32.hlp to see what information the record
+contains.
+
+      lf.lfEscapement := 900;
+
+lfEscapement rotates the baseline of the font in units of 1/10 degrees, so
+the assignment rotates the font 90 degrees counterclockwise.
+
+      Font.Handle := CreateFontIndirect( lf );
+
+We create a new font from the changed information and assign its handle to
+the canvas.font. Delphi takes care of disposing properly of the old font
+handle.
+
+      TextOut( x0-TextHeight('A')-5, y0,
+               'Vertikale Achse' );
+
+This labels the vertical axis with the rotated font.
+
+      DeleteObject( Font.Handle );
+      Font.Handle := 0;
+
+This is cleanup code that disposes of the created font handle. I'm never
+quite sure if this is actually required or if the cleanup task can be left
+to Delphi here as well. Since i'm paranoid by nature  i prefer to take
+the safe route and clean up what i created in code myself.
+
+
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

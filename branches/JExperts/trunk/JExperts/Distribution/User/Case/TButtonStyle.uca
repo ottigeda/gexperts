@@ -1,0 +1,14 @@
+<CASE>
+ <ITEM>
+  <NAME>bsAutoDetect</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>bsWin31</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>bsNew</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+</CASE>

@@ -1,0 +1,83 @@
+HelpMakers Delphi Site Tips 
+            Question: How do I decide whether or not to hightlight a day in a 
+            calendar?
+
+            Relation: [ Components ]
+            ID: [ 000603 ] 
+This is a custom component that overrides the DrawCell.  It changes the brush 
+and pen colors, then calls the inherited DrawCell method, then resets the 
+colors.
+
+unit New_cal;
+
+interface
+
+uses
+  SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
+  Forms, Dialogs, Grids, Calendar;
+
+type
+  TEMS = class(TCalendar)
+  private
+    { Private declarations }
+    FAllowHighlighting: boolean;
+  protected
+    { Protected declarations }
+  public
+    { Public declarations }
+    procedure DrawCell(ACol, ARow: Longint; ARect: TRect; 
+	 AState: TGridDrawState); override;
+    constructor Create(AOwner: TComponent); override;
+  published
+    { Published declarations }
+    property AllowHighlighting: boolean read FAllowHighlighting write 
+	 FAllowHighlighting;
+  end;
+
+
+procedure Register;
+
+
+implementation
+
+procedure Register;
+begin
+  RegisterComponents('Samples', [TEMS]);
+end;
+
+constructor TEMS.Create(AOwner: TComponent); 
+begin
+  AllowHighlighting := true;
+  DefaultDrawing := false;
+  inherited create(AOwner);
+end;
+
+procedure TEMS.DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState);
+var
+  OldCanvas: TCanvas;
+begin
+  inherited DrawCell(ACol, ARow, ARect, AState);
+  if AllowHighlighting and (gdSelected in AState) then begin
+    OldCanvas := TCanvas.create;
+    try
+      OldCanvas.brush.color := canvas.brush.color;
+      OldCanvas.font.color := canvas.font.color;
+
+      canvas.brush.color := clWhite;
+      canvas.font.color := clBlack;
+
+      inherited DrawCell(ACol, ARow, ARect, AState);
+
+      canvas.font.color := OldCanvas.font.color;
+      canvas.brush.color := canvas.brush.color;
+    finally
+      OldCanvas.free;
+    end;
+  end;
+end;
+
+end.
+
+
+
+

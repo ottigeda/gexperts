@@ -1,0 +1,12 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I get the selected item in a TreeView ? 
+
+Answer : 
+TTreeview has a property named Selected that always refers to the selected node. 
+
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

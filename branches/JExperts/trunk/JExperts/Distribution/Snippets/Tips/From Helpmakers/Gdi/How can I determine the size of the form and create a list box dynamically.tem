@@ -1,0 +1,79 @@
+HelpMakers Delphi Site Tips 
+            Question: How can I determine the size of the form and create a list 
+            box dynamically?
+
+            Relation: [ GDI ]
+            ID: [ 000063 ] 
+Setting the ListBox alignment to alLeft will cause the ListBox to be resized
+whenever the form is resized. Setting the width is easy (remember that the
+Width you see on the right side of the assignment is the Form's
+Width property).
+
+The number of elements that a ListBox will hold is limited only by available 
+memory.
+
+procedure TForm1.CreateListBox;
+var
+   LB : TListBox;
+begin
+   LB := TListBox.Create;
+   LB.Align := alLeft;
+   LB.Width := Width div 2;
+end;
+
+A:
+Here's logic that creates the list box dynamically and resizes it when the
+window is resized.  I hope it is helpful.  Also, I believe that a listbox is
+limited to 32K of data.
+
+unit Unit1;
+
+interface
+
+uses
+  SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
+  Forms, Dialogs,
+  StdCtrls  { you'll need this for the ListBox }  ;
+
+type
+  TForm1 = class(TForm)
+    procedure FormCreate(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+  listbox: TListBox ;
+
+implementation
+
+{$R *.DFM}
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+     listbox := TListBox.Create(self) ;
+     listbox.Parent := self ;
+     listbox.Top := 0 ;
+     listbox.Left := 0 ;
+     listbox.Width := self.Width div 2 ;
+     listbox.Height := self.Height div 2 ;
+     listbox.items.add('test 1') ;
+     listbox.items.add('test 2') ;
+     { etcetera ... }
+end;
+
+procedure TForm1.FormResize(Sender: TObject);
+begin
+     listbox.Width := self.Width div 2 ;
+     listbox.Height := self.Height div 2 ;
+end;
+
+end.
+
+
+
+

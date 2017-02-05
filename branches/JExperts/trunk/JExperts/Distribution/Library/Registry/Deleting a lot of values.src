@@ -1,0 +1,24 @@
+{*******************************************************}
+{                                                       }
+{   Delete keys from registry				}
+{   Params:						}
+{     StartKey: The key in which to delete values       }
+{     Keys: The array containing the values to delete   }
+{                                                       }
+{   Usage:                                              }
+{     DeleteKeys('Software\YourKey',['key1','Key2']);   }
+{*******************************************************}
+procedure DeleteKeys(StartKey:string; Keys: array of string);
+var
+ i: Integer;
+begin
+  with TRegistry.Create do
+  begin
+    OpenKey(StartKey,false);
+    for i:=Low(Keys) to High(Keys) do
+      if ValueExists(Keys[i]) then
+        DeleteValue(Keys[i]);
+    Free;
+  end;
+end;
+

@@ -1,0 +1,18 @@
+BuyPin Software - Delphi Tips
+Question : 
+How to load icon from ressource file ? 
+
+Answer : 
+var 
+   MyIcon : TIcon; 
+begin 
+   MyIcon := TIcon.create; 
+   MyIcon.handle := LoadIcon(hInstance, 'Icon1'); 
+... 
+
+end; 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

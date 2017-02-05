@@ -1,0 +1,7 @@
+procedure SendEmail(Destination, Subject: string);
+var
+ Tmp : array[0..255] of Char;
+begin
+  StrPCopy(Tmp,'Mailto:'+Destination+'?Subject='+Subject);
+  ShellExecute(0, nil, Tmp, nil, nil, SW_NORMAL);
+end;

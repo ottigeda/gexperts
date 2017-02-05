@@ -1,0 +1,25 @@
+BuyPin Software - Delphi Tips
+Question : 
+How to detect a left/top modification ? 
+
+Answer : 
+
+Private 
+  ... 
+Protected 
+  procedure WMMove(var Message: TWMMove); message WM_MOVE; 
+
+Public 
+  ... 
+
+procedure TMyComponent.WMMove(var Message: TWMMove); 
+Begin 
+  // Message.XPos horizontal position (Left) 
+  // Message.YPos vertical position (Top) 
+ {Do Something} 
+End; 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

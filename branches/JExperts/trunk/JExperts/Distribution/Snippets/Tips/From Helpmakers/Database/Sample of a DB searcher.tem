@@ -1,0 +1,161 @@
+       
+            Question: Sample of a DB searcher?
+
+            Relation: [ Database ]
+            ID: [ 000508 ] 
+Here's a quickie DB search utility.  It does its work by finding a string
+inside the field (it converts everything to an uppercase string, even floats).  
+This may be the slowest way to search, but it seems to work faster 
+than the other solutions I've found on the Net.  And it'll hit just 
+about anything.  For ex. say you have float field that has the
+number 4.509375354, and you search for 7, you'll hit it.  Also, It'll
+search on more than one field at a time - handy if you have two address fields.
+
+    I'm posting this little unit because when I first started in
+Delphi, one of my biggest troubles was finding a search utility and I 
+didn't know enough to write my own (fear struck deep into my bones).  
+So I hope this will help those of you who need it like I did.
+
+     It's fairly easy to understand, but if you need to know exactly 
+how to use it, just e-mail me personally and I'll be glad to help.  
+Look at the case statement to find out which field types are 
+supported (easy to add more).  If anyone finds a bug or adds
+some functionality to this code, please send it to me, I'd really
+appreciate it.  Thanks.
+
+Ryan
+
+{begin code}
+unit Finder;
+
+interface
+
+uses DB, DBTables, SysUtils;
+
+function GrabMemoFieldAsPChar(TheField : TMemoField): PChar;
+function DoFindIn(TheField : TField; SFor : String): Boolean;
+function FindIt(TheTable : TDataSet; TheFields : array of integer; 
+  SearchBackward : Boolean; FromBeginning : Boolean; SFor : String): Boolean;
+{ex. of FindIt -
+         if FindIt(NotesSearchT,
+         [NotesSearchT.FieldByName('Leadman').Index],
+           False, True, SearchText.Text) then DoSomething; }
+
+implementation
+
+function GrabMemoFieldAsPChar(TheField : TMemoField): PChar;
+begin
+with TBlobStream.Create(TheField, bmRead) do
+  begin
+    GetMem(Result, Size + 1);
+    FillChar(Result^, Size + 1, #0);
+    Read(Result^, Size);
+    Free;
+  end;
+end;
+
+function DoFindIn(TheField : TField; SFor : String): Boolean;
+var
+  PChForMemo : PChar;
+begin
+Result := False;
+case TheField.DataType of
+  ftString :
+    begin
+      if (Pos(SFor, UpperCase(TheField.AsString)) > 0) then
+        Result := True;
+    end;
+  ftInteger :
+    begin
+      if (Pos(SFor, TheField.AsString) > 0) then Result := True;
+    end;
+  ftBoolean :
+    begin
+      if SFor = UpperCase(TheField.AsString) then
+        Result := True;
+    end;
+  ftFloat :
+    begin
+      if (Pos(SFor, TheField.AsString) > 0) then Result := True;
+    end;
+  ftCurrency :
+    begin
+      if (Pos(SFor, TheField.AsString) > 0) then Result := True;
+    end;
+  ftDate .. ftDateTime :
+    begin
+      if (Pos(SFor, TheField.AsString) > 0) then Result := True;
+    end;
+  ftMemo :
+    begin
+      SFor[Ord(SFor[0]) + 1] := #0;
+      PChForMemo := GrabMemoFieldAsPChar(TMemoField(TheField));
+      StrUpper(PChForMemo);
+      if not (StrPos( PChForMemo, @SFor[1] ) = nil) then Result :=
+      True; FreeMem(PChForMemo, StrLen(PChForMemo + 1));
+    end;
+  end;
+end;
+
+function FindIt(TheTable : TDataSet; TheFields : array of integer;
+  SearchBackward : Boolean; FromBeginning : Boolean; SFor : String): Boolean;
+var
+ i, HighTheFields, LowTheFields : integer;
+ BM : TBookmark;
+begin
+TheTable.DisableControls;
+BM := TheTable.GetBookmark;
+try
+LowTheFields := Low(TheFields);
+HighTheFields := High(TheFields);
+SFor := UpperCase(SFor);
+Result := False;
+if FromBeginning then TheTable.First;
+if SearchBackward then
+  begin
+    TheTable.Prior;
+    while not TheTable.BOF do
+      begin
+        for i := LowTheFields to HighTheFields do
+          begin
+            if DoFindIn(TheTable.Fields[TheFields[i]], SFor) then
+              begin
+                Result := True;
+                Break;
+              end;
+          end;
+        if Result then Break else TheTable.Prior;
+      end;
+  end else
+  begin
+    TheTable.Next;
+    while not TheTable.EOF do
+      begin
+        for i := LowTheFields to HighTheFields do
+          begin
+            if DoFindIn(TheTable.Fields[TheFields[i]], SFor) then
+              begin
+                Result := True;
+                Break;
+              end;
+          end;
+        if Result then Break else TheTable.Next;
+      end;
+  end;
+finally
+TheTable.EnableControls;
+if not Result then
+  TheTable.GotoBookmark(BM);
+TheTable.FreeBookmark(BM);
+end;
+
+end;
+
+end.
+
+[Ryan Peterson, rpetersn@use.usit.net]
+
+
+
+
+

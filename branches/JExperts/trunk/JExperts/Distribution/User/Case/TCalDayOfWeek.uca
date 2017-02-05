@@ -1,0 +1,34 @@
+<CASE>
+ <ITEM>
+  <NAME>dowMonday</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dowTuesday</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dowWednesday</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dowThursday</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dowFriday</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dowSaturday</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dowSunday</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dowLocaleDefault</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+</CASE>

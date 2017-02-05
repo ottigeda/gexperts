@@ -1,0 +1,73 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I read from a modem ? 
+
+Answer : 
+u can open comm port like: 
+
+Var 
+PortSpec : array[0..255] of char; 
+PortNo   : Word; 
+success : Boolean; 
+error:integer; 
+begin 
+ FillChar(PortSpec,Sizeof(PortSpec),#0); 
+ StrPCopy(PortSpec,'Com1:19200,n,8,1'); 
+ PortSpec[3]:=Char(Ord(PortSpec[3])+Ord(PortNo)); 
+
+ if not BuildCommDCB(PortSpec,Mode) Then 
+  Begin 
+//something wrong... 
+  Exit; 
+  End; 
+
+ PortSpec[5]:=#0;    { 'Com1:' } 
+
+ Mode.Flags:=EV_RXCHAR +   EV_EVENT2;  { $1001 } 
+
+  Com := CreateFile(PortSpec,GENERIC_READ or GENERIC_WRITE, 
+                    0,    //* comm devices must be opened w/exclusive-access*/ 
+                    Nil, //* no security attrs */ 
+                    OPEN_EXISTING, //* comm devices must use OPEN_EXISTING*/ 
+                    0,    //* not overlapped I/O */ 
+                    0  //* hTemplate must be NULL for comm devices */ 
+                     ); 
+  if Com = INVALID_HANDLE_VALUE then Error := GetLastError; 
+  Success := GetCommState(Com,Mode); 
+
+  if not Success then  // Handle the error. 
+  begin 
+
+  end; 
+
+  Mode.BaudRate := 19200; 
+  Mode.ByteSize := 8; 
+  Mode.Parity := NOPARITY; 
+  Mode.StopBits := ONESTOPBIT;//needed to rewrite on NT 
+
+  Success := SetCommState(Com, Mode); 
+
+  if not Success then  // Handle the error. 
+  begin 
+
+  end; 
+end; 
+
+it opens the port. the "com" variable is dword. 
+
+u can clear comm buffer with 
+PurgeComm(Com,PURGE_RXCLEAR or PURGE_TXCLEAR); 
+and read with 
+Function ReadCh(Var Ch:Byte):dword; 
+var 
+ n : dword; 
+Begin 
+  Readfile(Com,ch,1,result,nil); 
+End; 
+
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

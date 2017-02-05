@@ -1,0 +1,58 @@
+Question : 
+How can I implement the CM_MOUSEENTER and CM_MOUSELEAVE ? 
+
+Answer : 
+The program code below will install a new component based on a TLabel that gives 
+you the required events. You can apply the same idea to other standard Delphi 
+controls. 
+
+unit uMyLabel; 
+
+ interface 
+
+ uses 
+   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, 
+   Dialogs, StdCtrls; 
+
+ type 
+   TMyLabel = class(TLabel) 
+   private 
+     FOnMouseEnter: TNotifyEvent; 
+     FOnMouseLeave: TNotifyEvent; 
+     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER; 
+     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE; 
+   published 
+     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter; 
+
+     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave; 
+
+   end; 
+
+ procedure Register; 
+
+ implementation 
+
+ procedure Register; 
+ begin 
+   RegisterComponents('Samples', [TMyLabel]); 
+ end; 
+
+ procedure TMyLabel.CMMouseEnter(var Message: TMessage); 
+ begin 
+   inherited; 
+   if Assigned(FOnMouseEnter) then FOnMouseEnter(Self); 
+ end; 
+
+ procedure TMyLabel.CMMouseLeave(var Message: TMessage); 
+ begin 
+   inherited; 
+   if Assigned(FOnMouseLeave) then FOnMouseLeave(Self); 
+ end; 
+
+ end. 
+
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

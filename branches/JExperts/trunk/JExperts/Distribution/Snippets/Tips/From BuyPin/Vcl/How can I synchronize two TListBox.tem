@@ -1,0 +1,130 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I synchronize two TListBox ? 
+
+Answer : 
+You derive a new class from TChecklistbox and handle WM_VSCROLL messages. You 
+simply send the message on to your "partner" control. Some care has to be taked 
+to avoid mutual recursion if both partners are of this class. Here is a simple 
+listbox descendent that has OnScroll events. You could use a handler for the 
+OnVScroll event to send the message to the partner control via SendMessage or 
+Perform. 
+
+unit exlist; 
+
+interface 
+
+uses 
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, 
+Dialogs, 
+  StdCtrls; 
+
+type 
+  TScrollNotification = Procedure (Const Msg: TWMScroll; Var 
+dontScroll: Boolean ) 
+                          of Object; 
+
+  TExListbox = class(TCustomListbox) 
+  private 
+    { Private declarations } 
+    FOnVScroll, FOnHScroll: TScrollNotification; 
+  protected 
+    { Protected declarations } 
+    Procedure WMVScroll( Var msg: TWMScroll ); message WM_VSCROLL; 
+    Procedure WMHScroll( Var msg: TWMScroll ); message WM_HSCROLL; 
+  public 
+    { Public declarations } 
+  published 
+    { Published declarations } 
+    property Align; 
+    property BorderStyle; 
+    property Color; 
+    property Columns; 
+    property Ctl3D; 
+    property DragCursor; 
+    property DragMode; 
+    property Enabled; 
+    property ExtendedSelect; 
+    property Font; 
+    property IntegralHeight; 
+    property ItemHeight; 
+    property Items; 
+    property MultiSelect; 
+    property ParentColor; 
+    property ParentCtl3D; 
+    property ParentFont; 
+    property ParentShowHint; 
+    property PopupMenu; 
+    property ShowHint; 
+    property Sorted; 
+    property Style; 
+    property TabOrder; 
+    property TabStop; 
+    property TabWidth; 
+    property Visible; 
+    property OnClick; 
+    property OnDblClick; 
+    property OnDragDrop; 
+    property OnDragOver; 
+    property OnDrawItem; 
+    property OnEndDrag; 
+    property OnEnter; 
+    property OnExit; 
+    property OnKeyDown; 
+    property OnKeyPress; 
+    property OnKeyUp; 
+    property OnMeasureItem; 
+    property OnMouseDown; 
+    property OnMouseMove; 
+    property OnMouseUp; 
+    property OnStartDrag; 
+
+    property OnVScroll: TScrollNotification read FOnVScroll write 
+FOnVScroll; 
+    property OnHScroll: TScrollNotification read FOnHScroll write 
+FOnHScroll; 
+
+  end; 
+
+procedure Register; 
+
+implementation 
+
+Procedure TExListbox.WMVScroll( Var msg: TWMScroll ); 
+  Var 
+    dontScroll: Boolean; 
+  Begin 
+    If Assigned(FOnVScroll) Then Begin 
+      dontScroll := False; 
+      FOnVScroll( msg, dontScroll ); 
+      If dontScroll Then 
+        Exit; 
+    End; 
+    inherited; 
+  End; 
+
+Procedure TExListbox.WMHScroll( Var msg: TWMScroll ); 
+  Var 
+    dontScroll: Boolean; 
+  Begin 
+    If Assigned(FOnHScroll) Then Begin 
+      dontScroll := False; 
+      FOnHScroll( msg, dontScroll ); 
+      If dontScroll Then 
+        Exit; 
+    End; 
+    inherited; 
+  End; 
+
+procedure Register; 
+begin 
+  RegisterComponents('PBGoodies', [TExListbox]); 
+end; 
+
+end. 
+
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

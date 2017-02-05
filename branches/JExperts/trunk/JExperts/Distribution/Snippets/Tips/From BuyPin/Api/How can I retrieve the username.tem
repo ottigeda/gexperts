@@ -1,0 +1,19 @@
+How can I retrieve the username ? 
+
+Answer : 
+var 
+   length:integer; 
+   TempUsername:Pchar; 
+
+begin 
+     length:=20; 
+     GetMem(TempUserName,Length); 
+     GetUsername(TempUsername,Length); 
+     //Use it 
+     FreeMem(TempUserName); 
+end; 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

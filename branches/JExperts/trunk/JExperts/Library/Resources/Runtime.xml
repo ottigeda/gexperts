@@ -1,0 +1,242 @@
+<RUNTIME>
+<100>
+<TYPE>I/O Errors</TYPE>
+<NAME>Disk read error</NAME>
+<TXT>Reported by Read on a typed file if you attempt to read past the end of the file.</TXT>
+</100>
+
+<101>
+<TYPE>I/O Errors</TYPE>
+<NAME>Disk write error</NAME>
+<TXT>Reported by CloseFile, Write, WriteIn, or Flush if the disk becomes full.</TXT>
+</101>
+
+<102>
+<TYPE>I/O Errors</TYPE>
+<NAME>File not Assigned</NAME>
+<TXT>Reported by Reset, Rewrite, Append, Rename, or Erase if the file variable has not been Assigned a name through a call to Assign or AssignFile.</TXT>
+</102>
+
+<103>
+<TYPE>I/O Errors</TYPE>
+<NAME>File not open</NAME>
+<TXT>Reported by CloseFile, Read Write, Seek, Eof, FilePos, FileSize, Flush, BlockRead, or BlockWrite if the file is not open.</TXT>
+</103>
+
+<104>
+<TYPE>I/O Errors</TYPE>
+<NAME>File not open for input</NAME>
+<TXT>Reported by Read, Readln, Eof, Eoln, SeekEof, or SeekEoln on a text file if the file is not open for input.</TXT>
+</104>
+
+<105>
+<TYPE>I/O Errors</TYPE>
+<NAME>File not open for output</NAME>
+<TXT>Reported by Write or Writeln on a text file if you do not generate a Console Application.</TXT>
+</105>
+
+<106>
+<TYPE>I/O Errors</TYPE>
+<NAME>Invalid numeric format</NAME>
+<TXT>Reported by Read or Readln if a numeric Value read from a text file does not conform to the proper numeric format.</TXT>
+</106>
+
+<200>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Division by Zero</NAME>
+<TXT>EDivByZero is raised when an Application tries to divide an integer by zero. In practice, this error is easy to trap and correct in a try...except block.</TXT>
+</200>
+
+<201>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Range check error</NAME>
+<TXT>ERangeError is an integer math Exception. It occurs when
+
+-An integer expression’s Value exceeds the bounds of the specified integer type to which it is Assigned.
+-Source code attempts to access an item in an array using an index Value that is not within the defined array.
+
+ERangeError is raised only if range checking is turned on.
+To turn on range checking, include the $R+ directive in project source code, or select Project|Options, choose the Compiler tab, and check the Range-checking option in the dialog box.</TXT>
+</201>
+
+<202>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Stack overflow</NAME>
+<TXT>EStackOverflow is raised when the current thread’s stack grows into the final guard page-that is,
+when the system cannot grow the stack dynamically. This can happen because of extremely large local variables, deeply recursive routines, or invalid assembly-language code.</TXT>
+</202>
+
+<203>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Heap overflow error</NAME>
+<TXT>EOutOfMemory occurs when an Application attempts to allocate dynamic memory, but there is not enough free memory in the system to meet the request.</TXT>
+</203>
+
+<204>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Invalid pointer operation</NAME>
+<TXT>EInvalidPointer indicates that an Application has attempted an invalid pointer operation. For example, it can occur if an Application tries to dispose of the same pointer twice,
+or refers to a pointer which has already been disposed of.</TXT>
+</204>
+
+<205>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Floating point overflow</NAME>
+<TXT>EOverflow is raised when a calculated result is too large to fit in the floating-point register allocated for it and data is therefore lost.</TXT>
+</205>
+
+<206>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Floating point underflow</NAME>
+<TXT>When a floating-point math operation produces a Value that is too small to be represented in a floating-point variable,
+the result ordinarily becomes zero. However, an Application can change the numeric coprocessor''s control word to unmask underflow hardware Exceptions;
+in this case, EUnderflow is raised when the coprocessor reports an underflow hardware Exception. The control word is reset after the Exception.</TXT>
+</206>
+
+<207>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Invalid floating point operation</NAME>
+<TXT>EInvalidOp is raised when the processor encounters an undefined instruction, invalid operation, or floating-point processor stack overflow.</TXT>
+</207>
+
+<210>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Abstract Method Error</NAME>
+<TXT>EAbstractError is raised when an Application tries to call an abstract method. It is also raised at design time when a component with an abstract method is placed on a form.</TXT>
+</210>
+
+<215>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Arithmetic overflow (integer only)</NAME>
+<TXT>EIntOverflow is an integer math Exception. It occurs when a calculated result is too large to fit in the register allocated for it and data is therefore lost.
+EIntOverflow is raised only if overflow checking is turned on. To turn on overflow checking, include the $Q+ directive in project source code, or select Project|Options, choose the Compiler tab, and check the Overflow-checking option in the dialog box.</TXT>
+</215>
+
+<216>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Access violation</NAME>
+<TXT>EAccessViolation is raised when an Application
+
+-Dereferences a nil pointer.
+-Writes to a code page.
+-Attempts to access a memory address for which there is no virtual memory allocated to the Application.</TXT>
+</216>
+
+<217>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Control-C</NAME>
+<TXT>EControlC is raised when a user presses Ctrl+C to terminate a console Application.</TXT>
+</217>
+
+<218>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Privileged instruction</NAME>
+<TXT>EPrivile is raised when an Application tries to execute a processor instruction that is invalid for the current processor privilege level.</TXT>
+</218>
+
+<219>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Invalid typecast</NAME>
+<TXT>EInvalidCast is raised when an Application tries to typecast an object illegally using the as operator.
+For example, the following expression generates an EInvalidTypecast Exception if AnObject is of a type incompatible with TObjectType :
+AnObject as TObjectType</TXT>
+</219>
+
+<220>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Invalid variant typecast</NAME>
+<TXT>EVariantError is raised when
+
+-An Application attempts an invalid variant typecast or operation.
+-A variant does not contain a required OLE IDispatch object.
+-The VarArrayCreate function is unable to Create a requested variant array.
+-A variant-array operation is attempted on something that is not a variant array.
+-A variant-array index is out of bounds.</TXT>
+</220>
+
+<221>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Invalid variant operation</NAME>
+<TXT>EVariantError is raised when
+
+-An Application attempts an invalid variant typecast or operation.
+-A variant does not contain a required OLE IDispatch object.
+-The VarArrayCreate function is unable to Create a requested variant array.
+-A variant-array operation is attempted on something that is not a variant array.
+-A variant-array index is out of bounds.</TXT>
+</221>
+
+<222>
+<TYPE>Fatal Errors</TYPE>
+<NAME>No variant method call dispatcher</NAME>
+<TXT>EVariantError is raised when
+
+-An Application attempts an invalid variant typecast or operation.
+-A variant does not contain a required OLE IDispatch object.
+-The VarArrayCreate function is unable to Create a requested variant array.
+-A variant-array operation is attempted on something that is not a variant array.
+-A variant-array index is out of bounds.</TXT>
+</222>
+
+<223>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Cannot Create variant array</NAME>
+<TXT>EVariantError is raised when
+
+-An Application attempts an invalid variant typecast or operation.
+-A variant does not contain a required OLE IDispatch object.
+-The VarArrayCreate function is unable to Create a requested variant array.
+-A variant-array operation is attempted on something that is not a variant array.
+-A variant-array index is out of bounds.</TXT>
+</223>
+
+<224>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Variant does not contain array</NAME>
+<TXT>EVariantError is raised when
+
+-An Application attempts an invalid variant typecast or operation.
+-A variant does not contain a required OLE IDispatch object.
+-The VarArrayCreate function is unable to Create a requested variant array.
+-A variant-array operation is attempted on something that is not a variant array.
+-A variant-array index is out of bounds.</TXT>
+</224>
+
+<225>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Variant array bounds error</NAME>
+<TXT>EVariantError is raised when
+
+-An Application attempts an invalid variant typecast or operation.
+-A variant does not contain a required OLE IDispatch object.
+-The VarArrayCreate function is unable to Create a requested variant array.
+-A variant-array operation is attempted on something that is not a variant array.
+-A variant-array index is out of bounds.</TXT>
+</225>
+
+<226>
+<TYPE>Fatal Errors</TYPE>
+<NAME>TLS initialization error</NAME>
+<TXT>No description</TXT>
+</226>
+
+<227>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Assertion failed</NAME>
+<TXT>EAssertionFailed is raised by the Assert procedure when an Application passes it a Boolean expression whose Value is False.
+The Exception is raised only if the $ASSERTIONS ON compiler directive is in effect.</TXT>
+</227>
+
+<228>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Interface Cast Error</NAME>
+<TXT>EIntfCastError is raised when an Application tries to typecast an interface illegally using the as operator.</TXT>
+</228>
+
+<229>
+<TYPE>Fatal Errors</TYPE>
+<NAME>Safecall error</NAME>
+<TXT>no description</TXT>
+</229>
+
+</RUNTIME>

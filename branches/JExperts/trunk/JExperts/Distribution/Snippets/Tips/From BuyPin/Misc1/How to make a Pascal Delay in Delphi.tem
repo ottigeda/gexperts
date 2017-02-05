@@ -1,0 +1,23 @@
+BuyPin Software - Delphi Tips
+Question : 
+How to make a Pascal Delay in Delphi ? 
+
+Answer : 
+Here is the code : (You can allso use Sleep(MSec), but its not so good) 
+
+procedure delay(msec:longint); 
+var 
+ Start,Stop:longint; 
+begin 
+  start := gettickcount; 
+  repeat 
+  stop := gettickcount; 
+  application.processmessages; 
+  until (stop - start ) ›= msec; 
+end; 
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

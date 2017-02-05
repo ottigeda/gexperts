@@ -1,0 +1,7 @@
+BU_HTML_TODO  	RCDATA		"ToDo.html"
+BU_TXT_TODO		RCDATA		"ToDo.txt"
+
+BU_HTML_SNIP    RCDATA		"Snippets.html"
+
+BU_HTML_LOGGER  RCDATA		"Logger.html"
+BU_TXT_LOGGER	RCDATA		"Logger.txt"

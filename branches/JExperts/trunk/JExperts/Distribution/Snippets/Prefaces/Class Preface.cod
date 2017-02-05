@@ -1,0 +1,13 @@
+;Class declaration
+%CLASS%=Class Name ?
+%AUTHOR%=Author name ?
+%LAST%=%DATE%
+%DOES%=What is it ?
+<CODE>
+////////////////////////////////////////////
+// Class %CLASS%
+// Author : %AUTHOR%
+// Last modified : %LAST%
+// What it does : %DOES%
+////////////////////////////////////////////
+</CODE>

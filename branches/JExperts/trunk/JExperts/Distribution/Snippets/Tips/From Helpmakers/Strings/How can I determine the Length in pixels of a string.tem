@@ -1,0 +1,39 @@
+HelpMakers Delphi Site Tips 
+            Question: How can I determine the Length in pixels of a string?
+
+            Relation: [ String ]
+            ID: [ 000008 ] 
+Use the Canvas methods TextHeight and TextWidth to determine the text height 
+and width of a string in pixels. Be sure to assign the font into the Canvas 
+before drawing or taking measurements. 
+
+All visual components have a Canvas property, but usually this property is 
+protected so that only direct descendents can draw on the Canvas.  Since you 
+write much of your code inside methods of a TForm descendent, you always have 
+access to your form's inherited Canvas property.  The TPaintBox co mponent 
+makes its Canvas property public so that you can draw on the component from 
+OnPaint event methods in the form. 
+
+If a component doesn't have a Canvas property you can use the following 
+function to get the text width based on the font passed.
+
+ 
+function GetTextWidth(CanvasOwner: TForm; Text : String; TextFont : TFont): Integer;
+var OldFont : TFont;
+begin
+   OldFont := TFont.Create;
+   try
+       OldFont.Assign( CanvasOWner.Font );
+       CanvasOWner.Font.Assign( TextFont );
+       Result := CanvasOwner.Canvas.TextWidth(Text);
+
+       CanvasOWner.Font.Assign( OldFont );
+    finally
+       OldFont.Free;
+    end;
+end;
+
+
+
+
+

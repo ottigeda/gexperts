@@ -1,0 +1,17 @@
+Question: How can the event handler of a popup menu item determine which component was right-clicked upon to activate that menu?
+
+Use the PopupMenu.PopupComponent property to determine what 
+control the menu was activated for. 
+
+procedure TForm1.PopupItem1Click(Sender: TObject);
+begin
+  Label1.Caption := PopupMenu1.PopupComponent.ClassName;
+end;
+ 
+The form's ActiveControl property can also be used, however, the active control 
+may not necessarily be the control that caused the popup menu to appear.
+ 
+
+Copyright © HelpMakers, 1997 - 99 
+ 
+

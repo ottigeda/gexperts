@@ -1,0 +1,12 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I change the default caption in the dialogs ? 
+
+Answer : 
+These are defined in CONSTS.PAS. You need to modify this file, compile it, and 
+place the resulting CONSTS.DCU in your \LIB directory. 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

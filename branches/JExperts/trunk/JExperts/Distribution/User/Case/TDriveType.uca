@@ -1,0 +1,30 @@
+<CASE>
+ <ITEM>
+  <NAME>dtUnknown</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dtNoDrive</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dtFloppy</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dtFixed</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dtNetwork</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dtCDROM</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dtRAM</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+</CASE>

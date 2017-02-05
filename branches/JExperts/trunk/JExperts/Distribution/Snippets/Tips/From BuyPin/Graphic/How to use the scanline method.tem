@@ -1,0 +1,37 @@
+BuyPin Software - Delphi Tips
+Question : 
+How to use the scanline method ? 
+
+Answer : 
+// an example of using scanline to get/set value of RGB colors 
+type 
+  // for use with scanline 
+  TRGB = array[0..6000] of TRGBTriple; 
+  PRGB = ^TRGB; 
+var 
+  PixColor : PRGB; 
+  InBmp : TBitmap; 
+  Row, Col : integer; 
+begin 
+  InBmp := TBitmap.Create; 
+  InBmp.LoadFromFile(BmpFileName); 
+  for Row := 0 to InBmp.Height - 1 do 
+    begin 
+    PixColor := InBmp.ScanLine[Row]; 
+    for Col := 0 to InBmp.Width - 1 do 
+      begin 
+      if (PixColor[Col].rgbtRed ‹= 85) then 
+        PixColor[Col].rgbtRed := 0; 
+      if (PixColor[Col].rgbtGreen ‹= 171) then 
+        PixColor[Col].rgbtGreen := 127; 
+      if (PixColor[Col].rgbtBlue ‹= 255) then 
+        PixColor[Col].rgbtBlue := 255; 
+      end; 
+    end; 
+
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

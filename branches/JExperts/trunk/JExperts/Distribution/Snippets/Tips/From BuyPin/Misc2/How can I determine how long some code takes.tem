@@ -1,0 +1,33 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I determine how long some code takes ? 
+
+Answer : 
+For a resolution of miliseconds, you can use this: 
+
+procedure TForm1.Button5Click(Sender: TObject); 
+var 
+   Start:longint; 
+   i,n:integer; 
+begin 
+   Start:=GetTickCount; 
+
+   {Your code to measure here} 
+   n:=0; 
+   for i:=1 to 9900000 do 
+   begin 
+     Inc(n); 
+   end; 
+
+   Label1.Caption:='Elapsed Time in miliseconds:' 
+                   +IntToStr(GetTickCount-Start); 
+end; 
+
+You else repeat n times the execution of your code, and later divide the result 
+by n... 
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

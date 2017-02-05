@@ -1,0 +1,50 @@
+HelpMakers Delphi Site Tips 
+            Question: How to use TMemoryStream to save data?
+
+            Relation: [ Components ]
+            ID: [ 000368 ] 
+Could anyone give any pointers to let me use
+TMemoryStream to save data - mainly lines of strings.
+
+A:
+Think of memory stream as a file that is located in memory.  So the writes
+are very similar to the write command for files.  (Actually it is closer to
+the blockwrite command.)
+
+To put a string the slow way you could do the following:
+
+    for i := 1 to Length(s) do memstream.Write(s[i], 1);
+
+That would write the string one character at a time.  Simple and easy to
+understand, but a bit slow.  A faster way would be to do the following:
+
+    memstream.Write(s[1], Length(s));
+
+The two lines do the same thing, they append characters to the stream.  If
+you have never done a seek on the stream, they just append to the end.
+
+Now to handle the line feeds you have to add them yourself:
+
+    memstream.Write(#13, 1);
+    memstream.Write(#10, 1);
+
+Or you could do some sneaky things like this:
+
+    procedure StreamWriteStr(var ms: TMemoryStream; s: string);
+    begin
+        ms.Write(s[1], Length(s));
+    end;
+
+    procedure StreamWriteLnStr(var ms: TMemoryStream; s: string);
+    begin
+        StreamWriteStr(ms, s + #13#10);
+    end;
+
+Or you could create you own descendant class of TMemoryStream with a method
+to write strings.
+
+[Jeffrey McArthur, j_mcarthur@bix.com]
+
+
+
+

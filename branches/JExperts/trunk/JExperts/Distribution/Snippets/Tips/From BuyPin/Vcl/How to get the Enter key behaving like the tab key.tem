@@ -1,0 +1,16 @@
+BuyPin Software - Delphi Tips
+Question : 
+How to get the Enter key behaving like the tab key ? 
+
+Answer : 
+In the Control's KeyPress event: 
+
+if (Key = #13) then begin 
+    Key := #0; 
+    PostMessage((Owner as TForm).Handle,WM_NEXTDLGCTL, 0, 0); 
+end; 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

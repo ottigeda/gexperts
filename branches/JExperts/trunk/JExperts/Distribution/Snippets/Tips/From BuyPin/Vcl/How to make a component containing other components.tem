@@ -1,0 +1,15 @@
+BuyPin Software - Delphi Tips
+Question : 
+How to make a component containing other components ? 
+
+Answer : 
+1. base your component on some kind of TWinCotnrol, like a panel 
+2. override the constructor and create your internal objects there. 
+3. set the parent properties of your internal objects to the owner object (your 
+new component) 
+4. override the destroy method and free your components. 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

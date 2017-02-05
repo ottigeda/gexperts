@@ -1,0 +1,20 @@
+BuyPin Software - Delphi Tips
+Question : 
+How to get a list of installed fonts ? 
+
+Answer : 
+procedure TMainForm.GetFontNames; 
+var 
+  DC: HDC; 
+begin 
+  DC := GetDC(0); 
+  EnumFonts(DC, nil, @EnumFontsProc, Pointer(FontName.Items)); 
+  ReleaseDC(0, DC); 
+  FontName.Sorted := True; 
+end; 
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

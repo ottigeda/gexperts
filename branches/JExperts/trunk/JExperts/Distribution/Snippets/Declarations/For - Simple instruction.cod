@@ -1,0 +1,6 @@
+%VAR%=Variable ?
+%FROM%=From ?
+%TO%=To ?
+<CODE>
+      for %VAR% := %FROM% to %TO% do	
+</CODE>

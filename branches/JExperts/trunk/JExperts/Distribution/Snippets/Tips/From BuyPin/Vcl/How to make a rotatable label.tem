@@ -1,0 +1,165 @@
+BuyPin Software - Delphi Tips
+Question : 
+How to make a rotatable label ? 
+
+Answer : 
+The following example shows how to create a rotated font. Note that this only 
+works with TrueType fonts. There are freeware components available that provide 
+rotated text labels, by the way. Search one of the usual sites: 
+
+Delphi Super Page http://sunsite.icm.edu.pl/delphi/ 
+US mirror site: http://www.cdrom.com/pub/delphi_www/ 
+German mirror 
+http://ftp.uni-erlangen.de/pub/source/MIRRORS/sunsite.icm.edu.pl/pub/delphi 
+Torry's Delphi Pages http://www.torry.ru/ 
+
+unit Unit1; 
+
+interface 
+
+uses 
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, 
+Dialogs, 
+  StdCtrls, Buttons, ExtCtrls, Grids; 
+
+type 
+  TForm1 = class(TForm) 
+    Edit1: TEdit; 
+    Label1: TLabel; 
+    Button1: TButton; 
+    Button2: TButton; 
+    FontDialog1: TFontDialog; 
+    Panel1: TPanel; 
+    PaintBox1: TPaintBox; 
+    procedure Button1Click(Sender: TObject); 
+    procedure Button2Click(Sender: TObject); 
+    procedure PaintBox1Paint(Sender: TObject); 
+  private 
+    { Private declarations } 
+  public 
+    { Public declarations } 
+  end; 
+
+var 
+  Form1: TForm1; 
+
+implementation 
+
+{$R *.DFM} 
+
+procedure TForm1.Button2Click(Sender: TObject); 
+begin 
+  If fontdialog1.execute then 
+    panel1.font := fontdialog1.font; 
+end; 
+
+procedure TForm1.Button1Click(Sender: TObject); 
+var 
+  lf: TLogFont; 
+begin 
+  FillChar( lf, sizeof(lf), 0 ); 
+  GetObject( panel1.font.handle, sizeof(lf), @lf ); 
+  lf.lfEscapement := StrToInt( edit1.text ); 
+  lf.lfOrientation := lf.lfEscapement; 
+  panel1.font.handle := CreateFontIndirect( lf ); 
+  panel1.invalidate; 
+end; 
+
+procedure TForm1.PaintBox1Paint(Sender: TObject); 
+begin 
+  With (Sender As TPaintbox) Do Begin 
+    Canvas.TextOut( 10,10, '' ); 
+    SetTextAlign( Canvas.handle, TA_CENTER or TA_BASELINE ); 
+    TextOut( Canvas.Handle, 
+             clientwidth div 2 + left, 
+             clientheight div 2 + top, 
+             'Teststring', 
+             10 ); 
+  End; 
+end; 
+
+end. 
+
+{ 
+object Form1: TForm1 
+  Left = 192 
+  Top = 128 
+  Width = 487 
+  Height = 347 
+  Caption = 'Form1' 
+  Color = clBtnFace 
+  Font.Charset = DEFAULT_CHARSET 
+  Font.Color = clWindowText 
+  Font.Height = -13 
+  Font.Name = 'MS Sans Serif' 
+  Font.Style = [] 
+  OldCreateOrder = False 
+  PixelsPerInch = 120 
+  TextHeight = 16 
+  object Label1: TLabel 
+    Left = 8 
+    Top = 256 
+    Width = 135 
+    Height = 16 
+    Caption = 'Angle in 1/10 degrees:' 
+  end 
+  object Edit1: TEdit 
+    Left = 8 
+    Top = 280 
+    Width = 121 
+    Height = 24 
+    TabOrder = 0 
+    Text = 'Edit1' 
+  end 
+  object Button1: TButton 
+    Left = 144 
+    Top = 280 
+    Width = 75 
+    Height = 25 
+    Caption = 'SetAngle' 
+    TabOrder = 1 
+    OnClick = Button1Click 
+  end 
+  object Button2: TButton 
+    Left = 248 
+    Top = 280 
+    Width = 75 
+    Height = 25 
+    Caption = 'Font...' 
+    TabOrder = 2 
+    OnClick = Button2Click 
+  end 
+  object Panel1: TPanel 
+    Left = 0 
+    Top = 0 
+    Width = 479 
+    Height = 241 
+    Align = alTop 
+    TabOrder = 3 
+    object PaintBox1: TPaintBox 
+      Left = 1 
+      Top = 1 
+      Width = 477 
+      Height = 239 
+      Align = alClient 
+      OnPaint = PaintBox1Paint 
+    end 
+  end 
+  object FontDialog1: TFontDialog 
+    Font.Charset = DEFAULT_CHARSET 
+    Font.Color = clWindowText 
+    Font.Height = -13 
+    Font.Name = 'MS Sans Serif' 
+    Font.Style = [] 
+    MinFontSize = 0 
+    MaxFontSize = 0 
+    Left = 408 
+    Top = 272 
+  end 
+end 
+} 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

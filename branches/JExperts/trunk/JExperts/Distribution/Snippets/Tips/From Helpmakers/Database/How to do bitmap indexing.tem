@@ -1,0 +1,74 @@
+HelpMakers Delphi Site Tips 
+            Question: How to do bitmap indexing?
+
+            Relation: [ Database ]
+            ID: [ 000134 ] 
+Bitmapped indexing is a method of indexing a database file that
+allows selections on multiple keys to occur up to 200 times faster
+than with traditional methods.  It is used in the mainframe dbms
+I work with, Model204 from Praxis.  It is used in the new Sybase "IQ"
+product.  Many other mid-size SQL server vendors now use it.
+
+Since Delphi compiles into Delphi, it would seem possible to write
+a bitmap indexer component that would run very efficiently.  This
+could reduce some of the scaling problems that small SQL servers
+encounter.
+
+
+How does bitmapped indexing work?
+
+Bitmapped indexing divides out of the selection process those fields
+that have a limited set of values.  Using previously prepared bitmaps,
+it moshes these parts very quickly, then uses these results to get
+a head start on processing the selection clauses that specify standard
+indexed fields.
+
+It represents the value of a field in a record as one bit in a blob.
+The blob for a (field,value) pair describes all the records in the file,
+at one bit per record.
+
+Typically, each record in a bitmapped file is considered to reside in
+a record slot.  One blob contains the "existence" bitmap of the file.
+The existence bit determine whether a valid record occupies a particular
+slot.  For each indexed field, for each discrete value, there is a
+bitmap blob.  If the file is of individuals, there might be two bitmaps
+for gender, 51 bitmaps for home state, 7 for marital status, dozens
+for home area code.  Selecting a subset of the records involves only
+and-ing and or-ing the bitmaps together and converting the resulting
+map into a record list that can combine with ordinary indexes.
+
+Deleting a record from the indexes requires only that one set its
+existence bit to 0.
+
+Obviously, a field that holds unique values like Social Security
+numbers cannot efficiently be bitmapped.  So bitmapped indexing must
+be combined with ordinary indexing.
+
+Also, most files do not use record slots.  A simple solution: create
+a keyed field named "record slot".  The output of the bitmap indexing
+component can pretend to be a select on field "record slot".
+
+In a selection step, if the bitmapped fields are combined first, the
+compiling of the other keys can be faster - one needs only to look
+at the records preselected by the bitmaps, not the whole file.
+
+The competition between vendors of bitmapping products seems to be
+in this area of strategy - how to combine the bitmap indexing with
+standard indexing in the most efficient way.
+
+A component or component set would need to include methods for
+updating a record's bitmaps, for adding a new bitmap when a new
+value appears for a field, for deciding when a field has acquired
+too many values, for converting a bitmap to a record list.
+
+A simple beginning would be to look at what could be done with a
+record structure:
+
+  (record_slot,indexed_field,indexed_value,bitmap_blob)
+
+One 10k bitmap can index 80,000 records.  500 of these bitmaps could
+reside in RAM on most newer machines.
+
+
+
+

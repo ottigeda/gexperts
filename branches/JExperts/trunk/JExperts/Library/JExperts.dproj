@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{0a68de58-6749-4657-96bf-38bc61c243e3}</ProjectGuid>
+    <MainSource>JExperts.dpr</MainSource>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_EnabledPackages>true</DCC_EnabledPackages>
+    <DCC_UsePackage>rtl;vcl;vclx;vclsmp;designide;jvcontrols;jvcore;jvcmp;jvcustom;jvdlgs</DCC_UsePackage>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>..\..\DLLs\JExperts.dll</DCC_DependencyCheckOutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_Optimize>False</DCC_Optimize>
+    <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_ImageBase>500000</DCC_ImageBase>
+    <DCC_ExeOutput>..\..\DLLs</DCC_ExeOutput>
+    <DCC_DcuOutput>..\..\dcu\delphi6</DCC_DcuOutput>
+    <DCC_ObjOutput>..\..\dcu\delphi6</DCC_ObjOutput>
+    <DCC_HppOutput>..\..\dcu\delphi6</DCC_HppOutput>
+    <DCC_UnitSearchPath>$(DELPHI)\Lib\Debug;C:\source\_sourceforge\gexperts\source\Framework;C:\source\_sourceforge\gexperts\ExternalSource;C:\source\_sourceforge\gexperts\ExternalSource\Abbrevia;C:\source\_sourceforge\gexperts\ExternalSource\UniSynEdit;C:\source\_sourceforge\gexperts\jedi_inc</DCC_UnitSearchPath>
+    <DCC_ResourcePath>$(DELPHI)\Lib\Debug;C:\source\_sourceforge\gexperts\source\Framework;C:\source\_sourceforge\gexperts\ExternalSource;C:\source\_sourceforge\gexperts\ExternalSource\Abbrevia;C:\source\_sourceforge\gexperts\ExternalSource\UniSynEdit;C:\source\_sourceforge\gexperts\jedi_inc</DCC_ResourcePath>
+    <DCC_ObjPath>$(DELPHI)\Lib\Debug;C:\source\_sourceforge\gexperts\source\Framework;C:\source\_sourceforge\gexperts\ExternalSource;C:\source\_sourceforge\gexperts\ExternalSource\Abbrevia;C:\source\_sourceforge\gexperts\ExternalSource\UniSynEdit;C:\source\_sourceforge\gexperts\jedi_inc</DCC_ObjPath>
+    <DCC_IncludePath>$(DELPHI)\Lib\Debug;C:\source\_sourceforge\gexperts\source\Framework;C:\source\_sourceforge\gexperts\ExternalSource;C:\source\_sourceforge\gexperts\ExternalSource\Abbrevia;C:\source\_sourceforge\gexperts\ExternalSource\UniSynEdit;C:\source\_sourceforge\gexperts\jedi_inc</DCC_IncludePath>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_Optimize>False</DCC_Optimize>
+    <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
+    <DCC_ImageBase>500000</DCC_ImageBase>
+    <DCC_ExeOutput>..\..\DLLs</DCC_ExeOutput>
+    <DCC_DcuOutput>..\..\dcu</DCC_DcuOutput>
+    <DCC_ObjOutput>..\..\dcu</DCC_ObjOutput>
+    <DCC_HppOutput>..\..\dcu</DCC_HppOutput>
+    <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\source\Framework;..\..\ExternalSource;..\..\ExternalSource\Abbrevia;..\..\ExternalSource\UniSynEdit;..\jedi_inc</DCC_UnitSearchPath>
+    <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\source\Framework;..\..\ExternalSource;..\..\ExternalSource\Abbrevia;..\..\ExternalSource\UniSynEdit;..\jedi_inc</DCC_ResourcePath>
+    <DCC_ObjPath>$(BDS)\lib\Debug;..\..\source\Framework;..\..\ExternalSource;..\..\ExternalSource\Abbrevia;..\..\ExternalSource\UniSynEdit;..\jedi_inc</DCC_ObjPath>
+    <DCC_IncludePath>$(BDS)\lib\Debug;..\..\source\Framework;..\..\ExternalSource;..\..\ExternalSource\Abbrevia;..\..\ExternalSource\UniSynEdit;..\jedi_inc</DCC_IncludePath>
+    <DCC_Define>DEBUG</DCC_Define>
+    <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
+    <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="RunParams">-ns</Parameters><Parameters Name="HostApplication">C:\Delphi\Delphi2007\Bin\bds.exe</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">3</VersionInfo><VersionInfo Name="Release">4</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">True</VersionInfo><VersionInfo Name="Locale">1033</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName">GExperts Development Team</VersionInfoKeys><VersionInfoKeys Name="FileDescription">GExperts for Delphi 6</VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.3.4.0</VersionInfoKeys><VersionInfoKeys Name="InternalName">GExperts for Delphi 6</VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename">GExpertsD6.dll</VersionInfoKeys><VersionInfoKeys Name="ProductName">GExperts for Delphi 6</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.34 Experimental 2011-02-05</VersionInfoKeys><VersionInfoKeys Name="Comments">Open Source</VersionInfoKeys><VersionInfoKeys Name="CompileDate">2011-02-05</VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">JExperts.dpr</Source></Source><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dcltee7100.bpl">TeeChart Components</Excluded_Packages>
+    </Excluded_Packages></Delphi.Personality></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup>
+    <DelphiCompile Include="JExperts.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="..\Package\JeExpert_Types.pas" />
+    <DCCReference Include="Classes\JeClass_CodeToHtml.pas" />
+    <DCCReference Include="Classes\JeClass_Options.pas" />
+    <DCCReference Include="Classes\JeClass_TransHeader.pas" />
+    <DCCReference Include="Experts\JeExpert_DllExported.pas" />
+    <DCCReference Include="Experts\JeExpert_Strings.pas" />
+    <DCCReference Include="Forms\JeFormAbout.pas">
+      <Form>foAbout</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormAddLibrary.pas">
+      <Form>foAddCodeLibrary</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormASCII.pas">
+      <Form>foAscii</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormAutoSave.pas">
+      <Form>foAutoSave</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormBatch.pas">
+      <Form>foBatch</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormBitBtn.pas">
+      <Form>foBitBtn</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormCaseOf.pas">
+      <Form>foCaseOf</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormCodeToHtml.pas">
+      <Form>foCodeToHtml</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormComponentSearch.pas">
+      <Form>foCompoSearch</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormCrlf.pas">
+      <Form>foCrlf</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormCursorEditor.pas">
+      <Form>foCursorEditor</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormDate.pas">
+      <Form>foDate</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormDateTime.pas">
+      <Form>foDateTime</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormDirectoryCleaner.pas">
+      <Form>foDirCleaner</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormEnumeration.pas">
+      <Form>foEnumeration</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormFavorites.pas">
+      <Form>foFavorites</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormFilter.pas">
+      <Form>foFilter</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormFind.pas">
+      <Form>foFindFirst</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormHint.pas">
+      <Form>foHintForm</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormLayout.pas">
+      <Form>foLayoutChooser</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormLayoutManage.pas">
+      <Form>foLayoutManage</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormLexical.pas">
+      <Form>foLexical</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormLibrary.pas">
+      <Form>foLibrary</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormMessageDlg.pas">
+      <Form>foMessageDialog</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormOptions.pas">
+      <Form>foOptions</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormPopup.pas">
+      <Form>foPopup</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormRecord.pas">
+      <Form>foRecord</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormRegister.pas">
+      <Form>foRegister</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormReport.pas">
+      <Form>foBugReport</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormRuntime.pas">
+      <Form>foRuntime</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormSeparators.pas">
+      <Form>foSeparator</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormSnippet.pas">
+      <Form>foSnippet</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormSpeedButton.pas">
+      <Form>foSpeedButton</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormTime.pas">
+      <Form>foTime</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormTimeLogger.pas">
+      <Form>foTimeLogger</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormTodo.pas">
+      <Form>foToDo</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormToDo_Add.pas">
+      <Form>foToDoAdd</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormTransHeader.pas">
+      <Form>foTransHeader</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormTryExcept.pas">
+      <Form>foTryExcept</Form>
+    </DCCReference>
+    <DCCReference Include="Forms\JeFormUnion.pas">
+      <Form>foUnion</Form>
+    </DCCReference>
+    <DCCReference Include="Units\JeUnit_Utils.pas" />
+  </ItemGroup>
+</Project>

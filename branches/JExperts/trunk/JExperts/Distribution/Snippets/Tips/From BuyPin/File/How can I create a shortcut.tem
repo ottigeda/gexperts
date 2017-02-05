@@ -1,0 +1,73 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I create a shortcut ? 
+
+Answer : 
+Here's how to create a shortcut on the desktop, start menu, send to menu, or 
+quick launch toolbar. Simple usage is like this: 
+CreateShortcut('c:\winnt\system32\notepad.exe', _DESKTOP); to create a shortcut 
+of Notepad.exe on the desktop. 
+
+uses 
+  Registry, ShlObj, ActiveX, ComObj; 
+
+type 
+  ShortcutType = (_DESKTOP, _QUICKLAUNCH, _SENDTO, _STARTMENU); 
+
+procedure CreateShortcut(FileName: string; Location: ShortcutType); 
+{ proc to create a shortcut on the desktop or startmenu. } 
+var 
+  MyObject : IUnknown; 
+  MySLink : IShellLink; 
+  MyPFile : IPersistFile; 
+  Directory, 
+  LinkName : string; 
+  WFileName : WideString; 
+  MyReg, 
+  QuickLaunchReg : TRegIniFile; 
+begin 
+  MyObject := CreateComObject(CLSID_ShellLink); 
+  MySLink := MyObject as IShellLink; 
+  MyPFile := MyObject as IPersistFile; 
+
+  MySLink.SetPath(PChar(FileName)); 
+
+  MyReg 
+:=TRegIniFile.Create('Software\MicroSoft\Windows\CurrentVersion\Explorer'); 
+  try 
+    LinkName := ChangeFileExt(FileName, '.lnk'); 
+    LinkName := ExtractFileName(LinkName); 
+    case Location of 
+      _DESKTOP    : Directory := MyReg.ReadString('Shell Folders','Desktop', 
+''); 
+      _STARTMENU  : Directory := MyReg.ReadString('Shell Folders','Start Menu', 
+''); 
+      _SENDTO     : Directory := MyReg.ReadString('Shell Folders','SendTo', ''); 
+
+      _QUICKLAUNCH: 
+        begin 
+          QuickLaunchReg := 
+TRegIniFile.Create('Software\MicroSoft\Windows\CurrentVersion\GrpConv'); 
+          try 
+            Directory := QuickLaunchReg.ReadString('MapGroups', 'Quick Launch', 
+''); 
+          finally 
+            QuickLaunchReg.Free; 
+          end; 
+        end; 
+    end; 
+
+    if Directory ‹› '' then 
+      begin 
+        WFileName := Directory + '\' + LinkName; 
+        MyPFile.Save(PWChar(WFileName), False); 
+      end; 
+  finally 
+    MyReg.Free; 
+  end; 
+end; 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

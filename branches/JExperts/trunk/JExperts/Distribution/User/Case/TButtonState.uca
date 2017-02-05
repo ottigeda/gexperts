@@ -1,0 +1,18 @@
+<CASE>
+ <ITEM>
+  <NAME>bsUp</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>bsDisabled</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>bsDown</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>bsExclusive</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+</CASE>

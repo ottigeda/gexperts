@@ -1,0 +1,24 @@
+BuyPin Software - Delphi Tips
+Question : 
+How to store a file in the executable ? 
+
+Answer : 
+you can include any kind of file into a Windows resoure, that would be a 
+solution to include the file with your app when you build the application. The 
+process is exceedingly simple: 
+
+Create a file exeres.rc: 
+
+DATAFILE RCDATA "testfile.exe" 
+
+Compile this with brcc32 to exeres.res. Include it into your project with an 
+
+{$R exeres.res} 
+
+You can now attach a TResourceStream instance to the resource and save it to 
+disk using the streams SaveToFile method. 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

@@ -1,0 +1,26 @@
+<CASE>
+ <ITEM>
+  <NAME>dmDragEnter</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dmDragLeave</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dmDragMove</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dmDragDrop</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dmDragCancel</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>dmFindTarget</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+</CASE>

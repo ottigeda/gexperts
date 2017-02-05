@@ -1,0 +1,81 @@
+Question : 
+How can I shutdown a client machine ? 
+
+Answer : 
+The InitiateSystemShutdown function initiates a shutdown and optional restart of 
+the specified computer. 
+
+BOOL InitiateSystemShutdown( 
+LPTSTR lpMachineName, // address of name of computer to shut down 
+LPTSTR lpMessage, // address of message to display in dialog box 
+DWORD dwTimeout, // time to display dialog box 
+BOOL bForceAppsClosed, // force applications with unsaved changes flag 
+BOOL bRebootAfterShutdown // reboot flag 
+); 
+
+Parameters 
+
+lpMachineName 
+
+Points to the null-terminated string that specifies the network name of the 
+computer to shut down. If lpMachineName is NULL or points to an empty string, 
+the function shuts down the local computer. 
+
+lpMessage 
+
+Points to a null-terminated string that specifies a message to display in the 
+shutdown dialog box. This parameter can be NULL if no message is required. 
+
+dwTimeout 
+
+Specifies the time (in seconds) that the dialog box should be displayed. While 
+this dialog box is displayed, the shutdown can be stopped by the 
+AbortSystemShutdown function. 
+If dwTimeout is not zero, InitiateSystemShutdown displays a dialog box on the 
+specified computer. The dialog box displays the name of the user who called the 
+function, displays the message specified by the lpMessage parameter, and prompts 
+the user to log off. The dialog box beeps when it is created and remains on top 
+of other windows in the system. The dialog box can be moved but not closed. A 
+timer counts down the remaining time before a forced shutdown. If the user logs 
+off, the system shuts down immediately. Otherwise, the computer is shut down 
+when the timer expires. 
+
+If dwTimeout is zero, the computer shuts down without displaying the dialog box, 
+and the shutdown cannot be stopped by AbortSystemShutdown. 
+
+bForceAppsClosed 
+
+Specifies whether applications with unsaved changes are to be forcibly closed. 
+If this parameter is TRUE, such applications are closed. If this parameter is 
+FALSE, a dialog box is displayed prompting the user to close the applications. 
+
+bRebootAfterShutdown 
+
+Specifies whether the computer is to restart immediately after shutting down. If 
+this parameter is TRUE, the computer is to restart. If this parameter is FALSE, 
+the system flushes all caches to disk, clears the screen, and displays a message 
+indicating that it is safe to power down. 
+
+Return Values 
+
+If the function succeeds, the return value is nonzero. If the function fails, 
+the return value is zero. To get extended error information, call GetLastError. 
+
+Remarks 
+
+To shut down the local computer, the calling process must have the 
+SE_SHUTDOWN_NAME privilege. To shut down a remote computer, the calling process 
+must have the SE_REMOTE_SHUTDOWN_NAME privilege on the remote computer. By 
+default, users can enable the SE_SHUTDOWN_NAME privilege on the computer they 
+are logged onto, and administrators can enable the SE_REMOTE_SHUTDOWN_NAME 
+privilege on remote computers. Common failures include an invalid or 
+inaccessible computer name or insufficient privilege. 
+
+See Also 
+
+AbortSystemShutdown 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

@@ -1,0 +1,16 @@
+BuyPin Software - Delphi Tips
+Question : 
+I want my component to has a drop down list box in the properties area that 
+lists all the objects of one kind. I need to join one object to the properties 
+of other one. 
+
+Answer : 
+This is done automatically when you declare a property whose type is the kind in 
+question. For instance, declaring a property of type TCustomEdit will make 
+Delphi bring a listbox for it will all TCustomEdit-compatible (e.g. TEdit, 
+TDBEdit, TMemo) components on the form and forms in used units. 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

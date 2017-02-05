@@ -1,0 +1,33 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I hide the close button on caption bar ? 
+
+Answer : 
+Try this 
+
+procedure TForm1.FormCreate(Sender: TObject); 
+var 
+  hwndHandle : THANDLE; 
+  hMenuHandle : HMENU; 
+  iPos:Integer; 
+begin 
+  hwndHandle := FindWindow(nil,PChar(Caption)); 
+
+  if (hwndHandle ‹› 0) then begin 
+    hMenuHandle := GetSystemMenu(hwndHandle, FALSE); 
+    if (hMenuHandle ‹› 0) then begin 
+      DeleteMenu(hMenuHandle, SC_CLOSE, MF_BYCOMMAND); 
+      iPos := GetMenuItemCount(hMenuHandle); 
+      Dec(iPos); 
+      { Make sure no errors occured i.e. -1 indicates an error } 
+      if iPos › -1 then 
+        DeleteMenu(hMenuHandle,iPos,MF_BYPOSITION); 
+    end; 
+  end; 
+end; 
+
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

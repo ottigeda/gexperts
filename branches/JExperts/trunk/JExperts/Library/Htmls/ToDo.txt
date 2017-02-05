@@ -1,0 +1,15 @@
+-----------------------
+ JEDI Experts
+-----------------------
+
+Informations : 
+%INFORMATIONS%
+
+Items : 
+%DATAS%
+
+
+------------------------------------------------------
+Copyright: (c) 1998-2002 Project JEDI, Sébastien Buysse
+                  http://delphi-jedi.org                       
+------------------------------------------------------

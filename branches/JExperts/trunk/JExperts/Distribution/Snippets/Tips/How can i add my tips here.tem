@@ -1,0 +1,28 @@
+Add your tips here !.
+
+The extension for tips files is tem.
+Simply put them in the data directory of the package (you can add
+subdirectories). 
+
+The extension for code files is cod.
+When the user clicks a code item in the menu, the code 
+is automatically added to the unit. You can also
+add subdirectories. A cob file start with declarations
+of variables to ask the user for. Those variables are 
+replaced in the code (delimited by <CODE></CODE>).
+You can start a comment with a ';'.
+%DATE% is the current date
+%TIME% is the current time
+%NOW% is the current date/time 
+If the name of the variable is %AUTHOR%, the default value is the user's name, 
+else, if it is %COMPANY%, the default value is the company name of the user,
+else, the default value is blank.
+See our samples for more informations about it.
+
+If you want to share your tem or cod files, simply zip
+them and send them to sbuysse@buypin.com, they'll
+be included in the next release.
+
+Thanks for your attention ;)
+
+Sebastien.

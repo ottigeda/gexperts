@@ -1,0 +1,54 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I enable/disable/hide/show the start button ? 
+
+Answer : 
+procedure TForm1.Button6Click(Sender: TObject); 
+var  Rgn : hRgn; 
+begin 
+{Hide the start button} 
+      Rgn := CreateRectRgn(0, 0, 0, 0); 
+      SetWindowRgn(FindWindowEx(FindWindow('Shell_TrayWnd', nil), 
+                                       0, 
+                                      'Button', 
+                                       nil), 
+                                       Rgn, 
+                                       true); 
+end; 
+
+procedure TForm1.Button5Click(Sender: TObject); 
+begin 
+  {Turn the start button back on} 
+  SetWindowRgn(FindWindowEx(FindWindow('Shell_TrayWnd', nil), 
+                                       0, 
+                                      'Button', 
+                                       nil), 
+                                       0, 
+                                       true); 
+end; 
+
+procedure TForm1.Button4Click(Sender: TObject); 
+begin 
+ {Disable the start button} 
+  EnableWindow(FindWindowEx(FindWindow('Shell_TrayWnd', nil), 
+                                       0, 
+                                       'Button', 
+                                       nil), 
+                                       false); 
+end; 
+
+procedure TForm1.Button3Click(Sender: TObject); 
+begin 
+ {Enable the start button} 
+  EnableWindow(FindWindowEx(FindWindow('Shell_TrayWnd', nil), 
+                                       0, 
+                                       'Button', 
+                                       nil), 
+                                       true); 
+end; 
+
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

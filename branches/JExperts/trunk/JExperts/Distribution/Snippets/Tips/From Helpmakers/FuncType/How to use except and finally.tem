@@ -1,0 +1,77 @@
+HelpMakers Delphi Site Tips 
+            Question: How to use " except " and " finally "?
+
+            Relation: [ FuncType ]
+            ID: [ 000407 ] 
+I wanted to write some fairly simple code...
+
+procedure part_of_starting_up(n:string....)
+var f: typed file;
+begin
+ try
+  assign/reset(f,n);
+  while not eof(f) do
+     read_and_process_each_record(f);
+  close(f);
+ except
+  on exxxxx do messagedlg('couldn't find/open file');
+  on eyyyyy do
+   begin
+    messagedlg('error reading file');
+    close(f);
+   end
+(etc)
+
+where exxxx = the exception created when reset failed,
+and  eyyyy = any exception occuring in my (dumb) file reading code.
+The key point, of course, is making sure that the file is closed if
+it was opened. (note: "fileExists" may not mean "file can be opened")
+
+I RTFM'd and used the browser, but am still confused as to what e____'s
+relate to this kind of file management. Is what I'm trying to do possible?
+Or should I do
+
+  try
+   assign/reset/readthefile
+  except blahblahblah
+  try
+   close;
+  except (*nothing*)
+
+
+Try this scheme. It worked for me.
+
+
+procedure part_of_starting_up(n:string....)
+var f: typed file;
+begin 
+     try
+          try
+               assign/reset(f,n);
+               while not eof(f) do
+               read_and_process_each_record(f);
+          finally
+               {$i-}     { No need to complain if close fails. }
+               close(f);
+               {$i+}
+          end;
+     except
+          on E:EInOutError do 
+               case e.ErrorCode of
+               nn1: messagedlg('couldn't find/open file');
+               nn2: messagedlt('error reading file');
+               end;
+     end
+(etc)
+
+Keep in mind that for the type of functions you are using you will
+get the same exception, called EInOutError. You have to use the errorcode 
+field to know what message to show. 
+
+A:
+You cannot combine except & finally in a try clause, unfortunately or wisely.
+
+
+
+
+

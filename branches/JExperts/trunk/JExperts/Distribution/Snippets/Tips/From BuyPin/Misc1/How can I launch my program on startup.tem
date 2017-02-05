@@ -1,0 +1,44 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I launch my program on startup ? 
+
+Answer : 
+ type 
+         TRunOnStartupAction = (rsRunOnce, rsRunAllways, rsRunNever); 
+
+ procedure SetRunOnStartup(sProgTitle, sCmdLine: string; RunType: 
+ TRunOnStartupAction); 
+ var 
+   reg  : TRegIniFile; 
+ begin 
+   reg := TRegIniFile.Create( '' ); 
+   reg.RootKey := HKEY_LOCAL_MACHINE; 
+   if RunType = rsRunOnce then 
+           reg.WriteString(sStartupRegKey+'Once'#0, sProgTitle, sCmdLine) 
+   else if RunType = rsRunAllways then 
+           reg.WriteString(sStartupRegKey+#0, sProgTitle, sCmdLine) 
+   else 
+           reg.DeleteKey(sStartupRegKey+#0, sProgTitle); 
+   reg.Free; 
+ end; 
+
+ function GetRunOnStartup(sProgTitle: string): TRunOnStartupAction; 
+ var 
+   reg  : TRegIniFile; 
+ begin 
+   reg := TRegIniFile.Create( '' ); 
+   reg.RootKey := HKEY_LOCAL_MACHINE; 
+   if reg.ReadString(sStartupRegKey+'Once'#0, sProgTitle, '') ‹› '' 
+ then 
+         result := rsRunOnce 
+   else if reg.ReadString(sStartupRegKey+#0, sProgTitle, '') ‹› '' then 
+         result := rsRunAllways 
+   else 
+         result := rsRunNever; 
+   reg.Free; 
+ end; 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

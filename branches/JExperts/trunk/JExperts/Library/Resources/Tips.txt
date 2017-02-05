@@ -1,0 +1,11 @@
+To indent your code, you can press ctrl+shift+i or ctrl+shift+u
+For a quick access in the component palette, go to component/configure palette and add a && like in a menu.
+To edit a TColor, TCursor, TFont property, just double click on the property in the object inspector
+To Create a multiline hint, double click the hint property in the object inspector, you''ll see the BU Multiline editor
+
+Delphi 4 only : To see a small funny video, go to help/about and press ctrl+chuck
+Delphi 4 only : To see the list of developers working on delphi, go to help/about and press ctrl+developers
+Delphi 4 only : To see the team working on delphi, go to help/about and press ctrl+team
+
+When you are in the code editor, press ctrl+e to make a quick search.
+To make a rectangular selection in the Delphi Ide, press the ALT key and select your text !.

@@ -1,0 +1,67 @@
+HelpMakers Delphi Site Tips 
+            Question: How can I write more than one line in a grid cell?
+
+            Relation: [ Components ]
+            ID: [ 000076 ] 
+You have to overwrite the OnDraw Event.
+
+here's a sample that has a multiple line heading which gets centered and
+"Bolded"
+
+procedure TForm1.grid1DrawCell(Sender: TObject; Col, Row: Longint;
+  Rect: TRect; State: TGridDrawState);
+
+ var l_oldalign : word;
+     l_YPos,l_XPos,i : integer;
+     s,s1 : string;
+     l_col,l_row :longint;
+
+begin
+  l_col := col;
+  l_row := row;
+  with sender as tstringgrid do
+  begin
+    if (l_row=0) then
+      canvas.font.style:=canvas.font.style+[fsbold];
+    if l_row=0 then
+    begin
+      l_oldalign:=settextalign(canvas.handle,ta_center);
+      l_XPos:=rect.left + (rect.right - rect.left) div 2;
+      s:=cells[l_col,l_row];
+      while s <>'' do
+      begin
+        if pos(#13,s)<>0 then
+        begin
+          if pos(#13,s)=1 then
+            s1:=''
+          else
+          begin
+            s1:=trim(copy(s,1,pred(pos(#13,s))));
+            delete(s,1,pred(pos(#13,s)));
+          end;
+          delete(s,1,2);
+        end
+        else
+        begin
+          s1:=trim(s);
+          s:='';
+        end;
+        l_YPos:=rect.top+2;
+        canvas.textrect(rect,l_Xpos,l_YPos,s1);
+        inc(rect.top,rowheights[l_row] div 3);
+      end;
+      settextalign(canvas.handle,l_oldalign);
+    end
+    else
+    begin
+       canvas.textrect(rect,rect.left+2,rect.top+2,cells[l_col,l_row]);
+    end;
+
+    canvas.font.style:=canvas.font.style-[fsbold];
+  end;
+end;
+
+
+
+
+

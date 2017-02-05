@@ -1,0 +1,5 @@
+%TEST%=Test ?
+<CODE>
+      if %TEST% then
+         
+</CODE>

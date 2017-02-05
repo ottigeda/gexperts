@@ -1,0 +1,8 @@
+%NAME%=Procedure name ?
+%PARAMS%=Parameters ?
+<CODE>
+      procedure %NAME% %PARAMS%;
+      begin
+
+      end;	
+</CODE>

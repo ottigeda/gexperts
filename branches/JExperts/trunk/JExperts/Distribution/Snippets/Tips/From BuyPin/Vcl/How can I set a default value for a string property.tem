@@ -1,0 +1,12 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I set a default value for a string property? 
+
+Answer : 
+You can't. You can prevent a string value from being stored in the DFM stream by 
+using the "stored" directive. 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

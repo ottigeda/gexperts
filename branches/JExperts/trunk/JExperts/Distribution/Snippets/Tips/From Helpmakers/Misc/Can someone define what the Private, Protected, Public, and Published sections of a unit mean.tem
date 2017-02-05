@@ -1,0 +1,48 @@
+HelpMakers Delphi Site Tips 
+            Question: Can someone define what the Private, Protected, Public, 
+            and Published sections of a unit mean?
+
+            Relation: [ Misc ]
+            ID: [ 000121 ] 
+These sections define the level of visibility of properties and methods of an
+object. In a nutshell, they are as follows: 
+
+ PRIVATE
+              Things contained in this section are totally private to the object.
+              External objects do not have access to any of the elements
+              contained here.
+ PROTECTED
+              Similar to private with one exception. Descendants of the object
+              have access to the methods and properties contained here.
+ PUBLIC
+              All external objects have access to elements here.
+ PUBLISHED
+              Similar to PUBLIC, but properties listed here show up at
+              design-time under the Object Inspector.
+
+These sections really come into play when you start building components.
+Typically, you'll put the local field variables assigned to properties in the
+PRIVATE section, along with functions and procedures that act only within the
+scope of object itself. With the PROTECTED methods, if you know the object
+will be inherited at some point, you'll put properties, functions and procedures
+here to give access to your descendants, but maintain privacy from external
+objects. 
+
+With the PUBLIC section, you'll place methods and procedures here that usually 
+don't have a corresponding property, but require full access by other entities; 
+or, insert properties that you don't want visible in the Object Inspector. 
+The PUBLISHED section by convention is for properties only, though I've put 
+procedures there just to see if I still had access to them. 
+
+A point that I should also make is that TForms have PRIVATE and PUBLIC
+sections as well. In most cases, you will not put them to use; however, there will
+be times when you want to add functionality and capabilities to the form that
+need to be assigned levels of visibility. Play around with this stuff. The more you
+understand it, the more you'll understand Object Oriented Programming. By the
+way, I suggest getting a book on general Object-oriented programming
+principles. Understanding the theory behind objects will help you get a better
+handle on Delphi programming.
+
+
+
+

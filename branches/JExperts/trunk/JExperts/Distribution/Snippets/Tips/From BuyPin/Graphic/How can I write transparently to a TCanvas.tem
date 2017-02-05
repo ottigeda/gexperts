@@ -1,0 +1,22 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I write transparently to a TCanvas ? 
+
+Answer : 
+var 
+  OldBkMode: Integer; 
+begin 
+  OldBkMode := SetBkMode(Canvas.Handle, Transparent); 
+  Canvas.font.color :=  clRed; 
+  Canvas.Font.Name := 'Times New Roman'; 
+  Canvas.Font.Size := 24; 
+  Canvas.TextOut(20, 20, 'Some Text'); 
+  if OldBkMode ‹› 0 then 
+    SetBkMode(Canvas.Handle, OldBkMode); 
+end; 
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

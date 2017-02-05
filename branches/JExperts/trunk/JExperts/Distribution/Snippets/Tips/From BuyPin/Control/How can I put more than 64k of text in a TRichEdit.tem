@@ -1,0 +1,13 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I put more than 64k of text in a TRichEdit ? 
+
+Answer : 
+In your form.create add the following line 
+
+SendMessage(RichEdit1.Handle, EM_EXLIMITTEXT, 0, $7FFFFFFF); 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

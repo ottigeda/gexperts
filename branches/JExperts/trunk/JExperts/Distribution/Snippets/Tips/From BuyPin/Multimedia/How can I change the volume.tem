@@ -1,0 +1,47 @@
+BuyPin Software - Delphi Tips
+Question : How can I change the volume ? 
+
+Answer : 
+procedure SetVolume(X: Word); 
+var 
+  iErr : Integer; 
+  i: integer; 
+  a: TAuxCaps; 
+begin 
+  for i := 0 to auxGetNumDevs do begin 
+    auxGetDevCaps(i,Addr(a),SizeOf(a)); 
+    If a.wTechnology = AUXCAPS_CDAUDIO Then break; 
+  end; 
+
+  // Sets volume equally for left and right channels. 
+  // VOLUME := LEFT*$10000 + RIGHT*1 (or the other way? :) 
+
+  iErr:=auxSetVolume(i,(X*$10001)); 
+  if (iErr‹›0) then ShowMessage('No audio devices are available!'); 
+end; 
+
+function GetVolume: Word; 
+var 
+  iErr : Integer; 
+  i: integer; 
+  a: TAuxCaps; 
+  vol: word; 
+begin 
+  for i := 0 to auxGetNumDevs do begin 
+    auxGetDevCaps(i,Addr(a),SizeOf(a)); 
+    If a.wTechnology = AUXCAPS_CDAUDIO Then break; 
+  end; 
+  iErr:=auxGetVolume(i,addr(vol)); 
+  GetVolume := vol; 
+  if (iErr‹›0) then ShowMessage('No audio devices are available!'); 
+end; 
+
+You'll have to modify AUXCAPS_CDAUDIO to whatever suits (check out available 
+values via the Ctrl+Space shortcut in Delphi 3) 
+
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

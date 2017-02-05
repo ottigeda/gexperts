@@ -1,0 +1,29 @@
+BuyPin Software - Delphi Tips
+Question : 
+How to make auto installing component ? 
+
+Answer : 
+The setup utility from our package writes into the registry. 
+
+For Delphi 3 : 
+1. HKEY_CURRENT_USER\Software\Borland\Delphi\3.0\Known Packages - add your 
+package info 
+2. HKEY_CURRENT_USER\Software\Borland\Delphi\3.0\Library - add your package path 
+to "SearchPath" value 
+
+For Delphi 4: 
+1. HKEY_CURRENT_USER\Software\Borland\Delphi\4.0\Known Packages - add your 
+package info 
+2. HKEY_CURRENT_USER\Software\Borland\Delphi\4.0\Library - add your package path 
+to "Search Path" value. 
+
+To add you help files add : 
+1. To delphi3[4].cnt file (in appropriate place) 
+- ":Index Yor Package =yourhelp.hlp" 
+- ":Include yourhelp.cnt" 
+2. To delphi3[4].cfg file ":Link yourhelp.hlp" 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

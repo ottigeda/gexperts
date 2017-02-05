@@ -1,0 +1,19 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I jump to a specific line in a TRichEdit ? 
+
+Answer : 
+with richedit1 do begin 
+   selstart := perform( em_lineindex, linenumber, 0 ); 
+   perform( em_scrollcaret, 0, 0 ); 
+ end; 
+
+The EM_LINEINDEX message returns the character index of the first character on a 
+given line, assigning that to selstart moves the caret to that position. The 
+control will only automatically scroll the caret into view if it has the focus, 
+thus the EM_SCROLLCARET. 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

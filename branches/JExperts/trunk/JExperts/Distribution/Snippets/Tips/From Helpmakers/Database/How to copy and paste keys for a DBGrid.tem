@@ -1,0 +1,66 @@
+HelpMakers Delphi Site Tips 
+            Question: How to copy and paste keys for a DBGrid?
+
+            Relation: [ Database ]
+            ID: [ 000490 ] 
+For all fellow haters of Shift-Ins, Ctrl-Ins etc.
+
+The following code shows a method for using the Ctrl-C and Ctrl-V keys
+for copy and paste in a DBGrid control. The grid must be in Edit or Insert
+mode for the paste to work.
+
+The code works, but it isn't very pretty. I'm sure it can be done with API
+calls, or by a bit of hacking. 
+
+Anyone care to upload a neater version ??
+
+1)	Add 'ClipBrd' to the Uses list
+2)	Add 'gk: Word;' to your global variables
+2)	Add the following procedures to Implementation, substituting
+	names as required
+
+procedure TMyForm.MyDBGridKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+{OnKeyDown event handler for your DBGrid}
+const
+   vk_c = $43;
+   vk_v = $56;
+begin
+if Shift = [ssCtrl] then
+   begin
+   if key = vk_v then
+      Shift := [ssShift];
+   if (key = vk_c) or (key = vk_v) then
+      begin
+      gk := Key;
+      key := 0;
+      end;
+   end
+end;
+
+procedure TMyForm.MyDBGridKeyPress(Sender: TObject; var Key: Char);
+{OnKeyPress event handler for your DBGrid}
+const
+   vk_c = $43;
+   vk_v = $56;
+begin
+if gk <> 0 then
+   begin
+   Key := chr(0);
+   if gk = vk_c then
+      ClipBoard.AsText := MyTable.Fields[MyDBGrid.SelectedIndex].AsString;
+   if gk = vk_v then
+      begin
+      if (MyTable.State = dsEdit) or (MyTable.State = dsInsert) then
+         MyTable.Fields[MyDBGrid.SelectedIndex].AsString := ClipBoard.AsText
+      else
+         MessageBeep(0);
+      end;
+   gk := 0;
+   end;
+end;
+
+
+
+
+

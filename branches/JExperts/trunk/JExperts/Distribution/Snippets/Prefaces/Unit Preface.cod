@@ -1,0 +1,25 @@
+;Unit declaration
+%NAME%=Unit name ?
+%AUTHOR%=Author name ?
+%VERSION%=Version number ?
+%LAST%=%DATE%
+%COMPANY%=Company name ?
+%DES%=Description ?
+%ENV%=Environment ? (w95/98/nt/...)
+%EMAIL%=Your email ?
+%WEBSITE%=Your website ?
+<CODE>
+(*===========================================================================
+                                Unit %NAME%
+
+	Author        : %AUTHOR%
+	Version       : %VERSION%
+	Last Modified : %LAST%
+	Copyright     : %COMPANY%
+	Description   : %DES%
+	Environment   : %ENV%
+	E-Mail        : %EMAIL%
+	WebSite       : %WEBSITE%
+                                                                    
+=============================================================================*)
+</CODE>

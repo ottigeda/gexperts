@@ -1,0 +1,80 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I get a computer's IP address ? 
+
+Answer : 
+unit Unit1; 
+
+interface 
+
+uses 
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, 
+  StdCtrls, Winsock; 
+
+type 
+  TForm1 = class(TForm) 
+    Button1: TButton; 
+    procedure Button1Click(Sender: TObject); 
+  private 
+    { Private declarations } 
+  public 
+    { Public declarations } 
+    function DetectHostIP: Boolean; 
+  end; 
+
+const 
+  HostIP: String = 'Unknown'; 
+
+var 
+  Form1: TForm1; 
+
+implementation 
+
+{$R *.DFM} 
+
+procedure TForm1.Button1Click(Sender: TObject); 
+begin 
+  DetectHostIP; 
+end; 
+
+//Detect own TCP/IP address 
+function TForm1.DetectHostIP: Boolean; 
+var 
+  wsdata : TWSAData; 
+  hostName : array [0..255] of char; 
+  hostEnt : PHostEnt; 
+  addr : PChar; 
+begin 
+  WSAStartup ($0101, wsdata); 
+  try 
+    gethostname (hostName, sizeof (hostName)); 
+    hostEnt := gethostbyname (hostName); 
+    if Assigned (hostEnt) then 
+      if Assigned (hostEnt^.h_addr_list) then begin 
+        addr := hostEnt^.h_addr_list^; 
+        if Assigned (addr) then begin 
+          HostIP := Format ('%d.%d.%d.%d', [byte (addr [0]), 
+          byte (addr [1]), byte (addr [2]), byte (addr [3])]); 
+          Result := True; 
+        end 
+        else 
+          Result := False; 
+      end 
+      else 
+        Result := False 
+    else begin 
+      MessageDlg(Format ('Winsock error %d', [WSAGetLastError]), mtError, 
+[mbOk], 0); 
+      Result := False; 
+    end; 
+  finally 
+    WSACleanup; 
+  end 
+end; 
+
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

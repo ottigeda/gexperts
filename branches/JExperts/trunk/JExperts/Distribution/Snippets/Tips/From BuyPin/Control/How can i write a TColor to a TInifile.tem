@@ -1,0 +1,26 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can i write a TColor to a TInifile ? 
+
+Answer : 
+To save the color to an INI, simply call IntToStr on the color (since TColor is 
+an Integer) and then write the value as you would any other string. 
+TIniFile.WriteInteger(....), no need to convert to a string. 
+
+var 
+   t:TIniFile; 
+   c:color; 
+begin 
+     t:=Tinifile.create('test.ini'); 
+
+     //to write it 
+     t.writeinteger('section','identifier',integer(c)); 
+
+     //to read it 
+     c:=TColor(t.readinteger('section','identifier',clblack); 
+end; 
+ 
+ 
+ 
+ 
+© All rights reserved 1999 BuyPin Software

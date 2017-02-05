@@ -1,0 +1,11 @@
+BuyPin Software - Delphi Tips
+Question : 
+How do I check if a path exists ? 
+
+Answer : 
+Use DirectoryExists(). 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

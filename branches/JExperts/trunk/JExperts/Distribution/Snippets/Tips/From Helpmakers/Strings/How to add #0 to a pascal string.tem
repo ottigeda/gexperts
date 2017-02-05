@@ -1,0 +1,48 @@
+HelpMakers Delphi Site Tips 
+            Question: How to add #0 to a pascal string?
+
+            Relation: [ String ]
+            ID: [ 000145 ] 
+I have seen many different pieces of code, some of which append a #0
+to the end of a string etc., but this seems to work just fine for me.
+If there is something wrong, please elaborate under what circumstances it
+would rear it's ugly head.
+
+A:
+The problem may be that you're not clear when you're calling standard
+Windows APIs that expect PChars, vs. Delphi's wrapper functions for many of
+these, which usually take Pascal style strings.  My experience has been that
+it's easy to get junk characters in a string or even throw a GPF if you're
+not careful with how you handle this stuff.
+
+The best "hack" for this that I know of is to pass the address of the
+[1]th element of a string to the API call (this skips the length byte of
+the string).  Many APIs do rely on the presence of the null byte at the
+end of a string for length determination so it's wise to add it, even if
+it sometimes appears to work without it.  Something like:
+
+var
+  S : string ;
+
+begin
+  S := 'This is the string to pass' + #0 ;
+  SomeAPICall( @S[1] ) ;
+
+You can also use a Pascal string as a return buffer in similar fashion
+with APIs that specify a maximum buffer length and return the number of
+characters retrieved as the function's value:
+
+var
+  S : string[128] ;
+
+begin
+  S[0] := Chr( SomeOtherAPICall( @S[1], 128 )) ;
+
+Since .INI file entries and String resource items are both limited to
+255 characters anyway, and it's often easier to manipulate Pascal style
+strings programmatically, these techniques can be quite useful for some
+of the more common Windows string purposes.
+
+
+
+

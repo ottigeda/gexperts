@@ -1,0 +1,105 @@
+HelpMakers Delphi Site Tips 
+            Question: How to pass a string in a message?
+
+            Relation: [ String ]
+            ID: [ 000413 ] 
+My problem is how to pass a string in a message. If I remember correctly,
+this can only be done in the lParam part, but there is something missing
+(Because it's not working!).
+
+A:
+In the Win16 API, lParam is a longint (32-bit value), and wParam is a word
+(16-bit value). So the only way to pass a string using lParam is by passing
+a pointer to it. The Windows-defined messages (such as WM_SetText, for
+example) are going to use a null-terminated string, which translates to a
+PChar in Delphi. So if you're going to pass a string using one of the
+standard windows messages you'll have to translate from a pascal string to a
+PChar, like this:
+
+procedure SetText(aWnd: hWnd; Value: string);
+var
+  p: array[0..255] of char;
+begin
+  StrPCopy(p, Value);
+  SendMessage(aWnd, wm_SetText, 0, Longint(p));
+end;
+
+Note that in the above example it is necessary to 'type-cast' the PChar 
+(which is essentially a pointer) to a longint, so the compiler won't reject 
+it. Also, its rather interesting that the compiler understands an 'array[]
+of char' to be the same thing as a PChar. In the above example, the StrPCopy
+function (in SysUtils) specifies that the first parameter needs to be of type
+PChar, but the type I passed to it looks like an array of char. So why
+didn't I declare p as a PChar? Because declaring it as a PChar would only be
+declaring a *pointer* to a string, whereas I needed to actually allocate the
+space to store the string. I could also have done something like:
+
+procedure SetText(aWnd: hWnd; Value: string);
+var
+  p: PChar;
+begin
+  GetMem(p, 256);
+  try
+    StrPCopy(p, Value);
+    SendMessage(aWnd, wm_SetText, 0, Longint(p));
+  finally
+    FreeMem(p, 256);
+  end;
+end;
+
+This would accomplish the same thing, but instead of allocating the storage
+for the null-terminated string on the stack, this stores it on the heap.  And
+this is fine, but I like the first example better because I don't have to
+worry about cleaning up afterward, and it should be faster, too. Now, what
+if I had used the PostMessage instead of SendMessage in the above example?
+If I did that, I would probably get a GPF! Why? Because PostMessage only
+places the message in a queue, while SendMessage delivers it before
+continuing on to the next line. So by placing it in a queue, that means I
+would continue on and deallocate the storage for the string before it
+actually got delivered! So, you should almost always use SendMessage when
+communicating with Windows controls (if you're going to do it the
+old-fashioned way, that is!).
+
+If you're talking about responding to a Windows message that uses a PChar in
+lParam, you could break that out like this:
+
+type
+  TMyComponent = class(TWinControl)
+  private
+    procedure wmMyMessage(var Msg: Message); message wm_MyMessage;
+  end;
+
+procedure TMyComponent.wmMyMessage;
+var
+  st: string;
+begin
+  st := StrPas(PChar(Msg.lParam));
+end;
+
+Anyway, if you want to define your own user-defined messages, you could 
+decide that you want to pass a pointer to a pascal string (PString) rather 
+than a pointer to a null-terminate string (PChar). In this case you could
+send the message like this:
+
+SendMessage(aWnd, wm_MyMessage, 0, Longint(@MyString));
+
+where MyString is a pascal string. Then in the component that receives the
+message, you could typecast the lParam to PString, and dereference using the
+'^'.  Like this:
+
+procedure MyMessage(var Msg: Message);
+begin
+  Label1.Caption := PString(Msg.lParam)^;
+end;
+
+Whew!  This turned into a long message! As you can see, there a lot of
+different things you can do with this. In fact, you can even pass whole
+records, or a pointer to an object which then would allow you to access any
+of its properties or methods! (But not from a DLL, sorry.) If you have any
+more questions on this, feel free to ask. I've had quite a bit of experience
+with this.
+
+
+
+
+

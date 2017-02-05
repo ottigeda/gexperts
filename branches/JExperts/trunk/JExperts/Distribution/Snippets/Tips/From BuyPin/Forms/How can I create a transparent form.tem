@@ -1,0 +1,60 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I create a transparent form ? 
+
+Answer : 
+You do this by defining a window region. Regions are a Windows concept, a type 
+of GDI object that defines an area. A region can be build using a group of API 
+function (see CreateRectRgn in win32.hlp and click on the Group link), form 
+simple geometric shapes like rectangles, ellipses or polygons, or from other 
+regions. A region can have "holes". Note that there is no easy way to build a 
+region tracing the outlines of some graphics on a bitmap, it would boil down to 
+defining a suitable polygon by hand or by examining the pixels on the bitmap one 
+by one in code to find the boundaries of the graphics. 
+
+Once you have build a suitable region you hand it to SetWindowRgn and your form 
+assumes the shape of the region. The following example builds a region from all 
+controls on a form and the forms caption. This makes the best approximation to a 
+transparent form Windows is capable of since mouse clicks on areas not included 
+in the window region will be delivered to the windows beneath even if they are 
+technically covered by the forms windowrect. 
+
+procedure TForm1.Button2Click(Sender: TObject); 
+ Var 
+   frmRegion, tempRegion: HRGN; 
+   i: Integer; 
+   Arect: TRect; 
+ Begin 
+   frmRegion := 0; 
+   For I:= 0 To ControlCount - 1 Do Begin 
+     // create a region for the control 
+     aRect := Controls[i].BoundsRect; 
+     // coordinates have to be window-relative, not client area relative 
+     OffsetRect( aRect, clientorigin.x - left, clientorigin.y - top ); 
+     tempRegion := CreateRectRgnIndirect( aRect ); 
+     // merge the region with the "summary" region we are building 
+     If frmRegion = 0 Then 
+       frmRegion := tempRegion 
+     Else Begin 
+       CombineRgn( frmRegion, frmRegion, tempRegion, RGN_OR ); 
+       DeleteObject( tempRegion ); 
+     End; 
+   End; 
+   // create a region for the caption and menu bar and add it to the 
+   // summary 
+   tempregion := 
+     CreateRectRgn( 0, 0, Width, 
+                    GetSystemMetrics( SM_CYCAPTION )+ 
+                    GetSystemMetrics( SM_CYSIZEFRAME )+ 
+                    GetSystemMetrics( SM_CYMENU ) * Ord(Menu ‹› Nil)); 
+
+   CombineRgn( frmRegion, frmRegion, tempRegion, RGN_OR ); 
+   DeleteObject( tempRegion ); 
+   SetWindowRgn( handle, frmRegion, true ); 
+ End; 
+
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

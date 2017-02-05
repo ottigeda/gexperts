@@ -1,0 +1,9 @@
+%NAME%=Function name ?
+%PARAMS%=Parameters ?
+%RESULT%=Return type ?
+<CODE>
+      function %NAME% %PARAMS% : %RESULT%;
+      begin
+
+      end;	
+</CODE>

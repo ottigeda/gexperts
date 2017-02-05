@@ -1,0 +1,51 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I make an auto completion combobox ? 
+
+Answer : 
+Set style to csDropDown, and add a OnChange event to it: 
+
+procedure TForm1.ComboBox1Change(Sender: TObject); 
+var 
+  t1, t2, num:Integer; 
+  found:Boolean; 
+begin 
+  t2:=0; 
+  t1:=0; 
+  num:=0; 
+  found:=false; 
+  for t1:=0 to ComboBox1.Items.Count-1 do 
+  begin 
+    if PartialComp(ComboBox1.Items.Strings[t1],ComboBox1.Text) then 
+    begin 
+      t2:=t1; 
+      found:=true; 
+      Inc(num); 
+    end; 
+  end; 
+  if found AND (num=1) then ComboBox1.ItemIndex:=t2; 
+end; 
+
+function TForm1.PartialComp(s1,s2:String):Boolean; 
+var 
+  t,l1,l2:Integer; 
+  same:Boolean; 
+begin 
+  t:=1; 
+  same:=true; 
+  l1:=Length(s1); 
+  l2:=Length(s2); 
+  if (l1‹1) OR (l2‹1) then same:=false; 
+  while (l1›t-1) AND (l2›t-1) AND same do 
+  begin 
+    if LowerCase(s1[t])=LowerCase(s2[t]) then same:=true else same:=false; 
+
+    Inc(t); 
+    end; 
+  PartialComp:=same; 
+end; 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

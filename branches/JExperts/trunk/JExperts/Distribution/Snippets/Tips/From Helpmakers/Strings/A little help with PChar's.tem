@@ -1,0 +1,73 @@
+HelpMakers Delphi Site Tips 
+            Question: A little help with PChar's
+
+            Relation: [ String ]
+            ID: [ 000115 ] 
+by Robert Vivrette - CIS: 76416,1373
+
+A few weeks back, a gentleman named Jean-fabien Connault (CIS:100745,233) wrote 
+me a short letter indicating a strange behavior in Delphi. Here is the code he 
+sent me:
+
+var
+  BufferWinDir: PChar;
+  MaxBuf : Integer;
+begin
+  MaxBuf := 144;
+  getMem(bufferWinDir,MaxBuf);
+  BufferWinDir := '';
+  MessageDlg('*** It''s before GetWindowsDirectory ***', mtInformation, [mbOK], 0);
+  GetWindowsDirectory(BufferWinDir,MaxBuf);
+  MessageDlg('*** It''s after GetWindowsDirectory ***', mtInformation, [mbOK], 0);
+end;
+
+
+At first glance, I could see nothing wrong with this. However, when the code 
+executed, it did indeed have very strange behavior. The first MessageDlg call 
+produced a normal dialog box with the appropriate text. However after executing 
+the GetWindowsDirectory API call, the second MessageDlg call totally flipped out. 
+
+It presented a dialog box that completely filled the screen with the OK button 
+occupying about 95% of the screen real-estate. Clicking on the button made the 
+whole screen appear to "click down" and then the program ended normally.
+
+After digging through it with the debugger, I realized what the problem was...
+The line:
+
+BufferWinDir := '';
+
+was not doing what he thought it was. His intention, of course, was to assign a 
+null string to BufferWinDir. However, what he was doing here was pointing 
+BufferWinDir to a null somewhere else in memory. Let me explain a bit:
+
+When you do a GetMem, windows requests a block of memory and returns an address 
+pointing to that memory. This address is stored in BufferWinDir. Let's presume 
+the address returned is 4807:0F80. Therefore, BufferWinDir (a pointer to an 
+array of characters) is now the 4-byte value 4807:0F80. When the compiler gets 
+to the line where you are assigning a null, it says "Create a Null string in 
+memory and put the address of that Null in BufferWinDir". 
+
+Let's say the compiler chooses 3DDF:0040 as the location of the null (which it 
+did in a test I did). By doing this assignment, BufferWinDir now points at this 
+null character instead of the array of characters previously reserved. Then, 
+when the GetWindowsDirectory procedure is called, Windows assigns the returned 
+value to the bytes starting at where BufferWinDir is located. This includes the 
+null character originally pointed to, plus a number of additional bytes that 
+could be anything. 
+
+As a result, the characters are writing over memory outside of the allocated 
+space, destroying other variables or code. In this case, the characters overwrote 
+some element of the DialogBox object, either Code or the Objects properties.
+
+The correct way to assign a null string (or any other string for that matter) to
+a pchar is to use StrPCopy as follows:
+
+StrPCopy(BufferWinDir,'');
+
+This function takes the listed string of characters (in this case a null string) 
+and copies them to the memory location pointed to by the first parameter. PChars 
+can sometimes be a bit tricky to work with. I hope this helps a bit!
+
+
+
+

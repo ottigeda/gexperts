@@ -1,0 +1,151 @@
+HelpMakers Delphi Site Tips 
+            Question: How to pass a function as a parameter?
+
+            Relation: [ FuncType ]
+            ID: [ 000365 ] 
+Q:
+Does anyone know how can I typecast a function's address into a
+LongInt? Or is there a way to pass a function as a parameter?
+Here is what I'm trying to do:
+
+ function DllFunction(p: Pointer): Integer;
+ far; external 'mydll';
+
+ function foo: integer;
+ begin
+ result := 1;
+ end;
+
+ procedure test;
+ var
+ l: LongInt;
+ begin
+ l := Addr(foo);  { Compile Error!!! I tried @foo and }
+                  { LongInt(foo), and they won't work neither. }
+ { This is what I need. }
+ DllFunction(foo);  { Compile Error!!! It can't take a function}
+                    { as the parameter. }
+ end;
+
+A:
+Sounds like what you need is a procedural type. Assuming that
+DllFunction() wants functions that look like what you've described
+above, something like the following should work: 
+
+type
+  TMyFuncType = function : integer ;
+
+var
+  MyFunc : TMyFuncType ;
+
+function foo: integer;
+begin
+  result := 1;
+end;
+
+begin
+  MyFunc := foo ;
+  DllFunction( longint( MyFunc )) ;
+
+You may also be able to get away with
+  DllFunction( longint( @foo )) ;
+
+though I'm not sure about all of the memory issues that may be involved 
+with a .DLL calling a routine in another code segment like this, you may 
+need to declare foo as far for this to work, or export it from the unit 
+or something.
+
+Also, depending on how DllFunction() is written, you might be able 
+to declare it thusly, so that it does the typecast implicitly:
+
+function DllFunction( p: TMyFuncType ): Integer; 
+  far; external 'mydll';
+
+so you wouldn't need the dummy MyFunc variable or the @ operator.
+
+[Stephen Posey, SLP@uno.edu]
+
+A:
+You can pass functions as parameters in Delphi/Pascal. However you have to
+set up a type for the compiler to use. Try the following (I actually
+compiled and tested this):
+
+unit Unit1;
+
+interface
+
+uses
+  SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
+  Forms, Dialogs, StdCtrls;
+
+type
+  TForm1 = class(TForm)
+    Button1: TButton;
+    Button2: TButton;
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.DFM}
+
+type
+	IntFunc = function: integer;
+
+function DllFunction(iFunc: IntFunc): integer; far;
+begin
+    DllFunction := iFunc; {Notice this is a function call}
+end;
+
+function iFoo: integer; far;
+begin
+	iFoo := 1;
+end;
+
+procedure TestIFunc;
+var
+	i: integer;
+begin
+	i := DllFunction(iFoo);
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+	TestIFunc;
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+	Close;
+end;
+
+end.
+
+[Jeffrey McArthur, j_mcarthur@bix.com]
+
+A:
+Two things you can do.  First, if you want to use longint to pass it, you
+can use
+   i := longint(@foo).
+
+The other thing you can do is bypass all this longint stuff and call the dll
+function with
+   DLLfunction (@foo);
+
+Note that if you're planning to call foo from within the DLL, you're
+probably going to need a thunk to resolve DS; look at MakeProcInstance for
+more info.
+
+[Sid Gudes, cougar@roadrunner.com]
+
+
+
+

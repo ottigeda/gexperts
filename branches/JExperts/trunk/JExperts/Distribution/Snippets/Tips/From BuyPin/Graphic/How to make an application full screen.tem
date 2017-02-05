@@ -1,0 +1,23 @@
+BuyPin Software - Delphi Tips
+Question : 
+How to make an application full screen ? 
+
+Answer : 
+Set the Borderstyle of your main form to bsNone and then use 
+SystemParametersInfo message to get the SPI_GETWORKAREA value then use SetBounds 
+to make your Window the correct size. 
+
+procedure TForm1.FormShow(Sender: TObject); 
+var 
+  r : TRect; 
+begin 
+  SystemParametersInfo(SPI_GETWORKAREA, 0, @r,0); 
+  Form1.SetBounds(r.left, r.top, r.Right-r.left, r.bottom-r.top); 
+end; 
+
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

@@ -1,0 +1,14 @@
+;Procedure declaration
+%AUTHOR%=Author name ?
+%PROC%=Procedure name ?
+;%LAST% is now the current date
+%LAST%=%DATE%
+%DOES%=What is it ?
+<CODE>
+////////////////////////////////////////////
+// Procedure %PROC%
+// Author : %AUTHOR%
+// Last modified : %LAST%
+// What it does : %DOES%
+////////////////////////////////////////////
+</CODE>

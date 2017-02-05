@@ -1,0 +1,361 @@
+
+Question : 
+How can I print header for a text file ? 
+
+Answer : 
+unit PrintStringsUnit1; 
+
+interface 
+
+uses 
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, 
+  StdCtrls; 
+
+type 
+  TForm1 = class(TForm) 
+    Memo1: TMemo; 
+    Button1: TButton; 
+    procedure Button1Click(Sender: TObject); 
+  private 
+    { Private declarations } 
+    Procedure PrintHeader( aCanvas: TCanvas; aPageCount: Integer; 
+                aTextrect: TRect; Var continue: Boolean ); 
+    Procedure PrintFooter( aCanvas: TCanvas; aPageCount: Integer; 
+                aTextrect: TRect; Var continue: Boolean ); 
+  public 
+    { Public declarations } 
+  end; 
+
+var 
+  Form1: TForm1; 
+
+implementation 
+
+uses Printers; 
+{$R *.DFM} 
+
+ Type 
+   THeaderFooterProc = 
+     Procedure( aCanvas: TCanvas; aPageCount: Integer; 
+                aTextrect: TRect; Var continue: Boolean ) of Object; 
+   { Prototype for a callback method that PrintString will cal 
+     when it is time to print a header or footer on a page. The 
+     parameters that will be passed to the callback are: 
+     aCanvas   : the canvas to output on 
+     aPageCount: page number of the current page, counting from 1 
+     aTextRect : output rectangle that should be used. This will be 
+                 the area available between non-printable margin and 
+                 top or bottom margin, in device units (dots). Output 
+                 is not restricted to this area, though. 
+     continue  : will be passed in as True. If the callback sets it 
+                 to false the print job will be aborted. } 
+
+{+----------------------------------------------------------- 
+ | Function PrintStrings 
+ | 
+ | Parameters : 
+ |   lines: 
+ |     contains the text to print, already formatted into 
+ |     lines of suitable length. No additional wordwrapping 
+ |     will be done by this routine and also no text clipping 
+ |     on the right margin! 
+ |   leftmargin, topmargin, rightmargin, bottommargin: 
+ |     define the print area. Unit is inches, the margins are 
+ |     measured from the edge of the paper, not the printable 
+ |     area, and are positive values! The margin will be adjusted 
+ |     if it lies outside the printable area. 
+ |   linesPerInch: 
+ |     used to calculate the line spacing independent of font 
+ |     size. 
+ |   aFont: 
+ |     font to use for printout, must not be Nil. 
+ |   measureonly: 
+ |     If true the routine will only count pages and not produce any 
+ |     output on the printer. Set this parameter to false to actually 
+ |     print the text. 
+ |   OnPrintheader: 
+ |     can be Nil. Callback that will be called after a new page has 
+ |     been started but before any text has been output on that page. 
+ |     The callback should be used to print a header and/or a watermark 
+ |     on the page. 
+ |   OnPrintfooter: 
+ |     can be Nil. Callback that will be called after all text for one 
+ |     page has been printed, before a new page is started. The callback 
+ |     should be used to print a footer on the page. 
+ | Returns: 
+ |   number of pages printed. If the job has been aborted the return 
+ |   value will be 0. 
+ | Description: 
+ |   Uses the Canvas.TextOut function to perform text output in 
+ |   the rectangle defined by the margins. The text can span 
+ |   multiple pages. 
+ | Nomenclature: 
+ |   Paper coordinates are relative to the upper left corner of the 
+ |   physical page, canvas coordinates (as used by Delphis Printer.Canvas) 
+ |   are relative to the upper left corner of the printable area. The 
+ |   printorigin variable below holds the origin of the canvas coordinate 
+ |   system in paper coordinates. Units for both systems are printer 
+ |   dots, the printers device unit, the unit for resolution is dots 
+ |   per inch (dpi). 
+ | Error Conditions: 
+ |   A valid font is required. Margins that are outside the printable 
+ |   area will be corrected, invalid margins will raise an EPrinter 
+ |   exception. 
+ | Created: 13.05.99 by P. Below 
+ +------------------------------------------------------------} 
+Function PrintStrings( lines: TStrings; 
+                        Const leftmargin, rightmargin, 
+                              topmargin, bottommargin: Single; 
+                        Const linesPerInch: single; 
+                        aFont: TFont; 
+                        measureonly: Boolean; 
+                        OnPrintheader, 
+                        OnPrintfooter: THeaderFooterProc ): Integer; 
+  Var 
+    continuePrint: Boolean;     { continue/abort flag for callbacks } 
+    pagecount    : Integer;     { number of current page } 
+    textrect     : TRect;       { output area, in canvas coordinates } 
+    headerrect   : TRect;       { area for header, in canvas coordinates } 
+    footerrect   : TRect;       { area for footes, in canvas coordinates } 
+    lineheight   : Integer;     { line spacing in dots } 
+    charheight   : Integer;     { font height in dots } 
+    textstart    : Integer;     { index of first line to print o 
+                                  current page, 0-based. } 
+
+  { Calculate text output and header/footer rectangles. } 
+  Procedure CalcPrintRects; 
+    Var 
+      X_resolution: Integer;  { horizontal printer resolution, in dpi } 
+      Y_resolution: Integer;  { vertical printer resolution, in dpi } 
+      pagerect    : TRect;    { total page, in paper coordinates } 
+      printorigin : TPoint;   { origin of canvas coordinate system i 
+                                paper coordinates. } 
+
+    { Get resolution, paper size and non-printable margin fro 
+      printer driver. } 
+    Procedure GetPrinterParameters; 
+      Begin 
+        With Printer.Canvas Do Begin 
+          X_resolution  := GetDeviceCaps( handle, LOGPIXELSX ); 
+          Y_resolution  := GetDeviceCaps( handle, LOGPIXELSY ); 
+          printorigin.X := GetDeviceCaps( handle, PHYSICALOFFSETX ); 
+          printorigin.Y := GetDeviceCaps( handle, PHYSICALOFFSETY ); 
+          pagerect.Left := 0; 
+          pagerect.Right:= GetDeviceCaps( handle, PHYSICALWIDTH ); 
+          pagerect.Top  := 0; 
+          pagerect.Bottom := GetDeviceCaps( handle, PHYSICALHEIGHT ); 
+        End; { With } 
+      End; { GetPrinterParameters } 
+
+    { Calculate area between the requested margins, paper-relative 
+      Adjust margins if they fall outside the printable area. 
+      Validate the margins, raise EPrinter exception if no text area 
+      is left. } 
+    Procedure CalcRects; 
+      Var 
+        max : Integer; 
+      Begin 
+        With textrect Do Begin 
+          { Figure textrect in paper coordinates } 
+          left := Round( leftmargin * X_resolution ) ; 
+          If left ‹ printorigin.x Then 
+            left := printorigin.x; 
+
+          top := Round( topmargin * Y_resolution ) ; 
+          If top ‹ printorigin.y Then 
+            top := printorigin.y; 
+
+          { Printer.PageWidth and PageHeight return the size of th 
+            printable area, we need to add the printorigin to get the 
+            edge of the printable area in paper coordinates. } 
+          right := pagerect.right - Round( rightmargin * X_resolution ); 
+          max   := Printer.PageWidth + printorigin.X; 
+          If right › max Then 
+            right := max; 
+
+          bottom := pagerect.bottom - Round( bottommargin * Y_resolution ); 
+          max    := Printer.PageHeight + printorigin.Y; 
+          If bottom › max Then 
+            bottom := max; 
+
+          { Validate the margins. } 
+          If (left ›= right) or (top ›= bottom) Then 
+            raise EPrinter.Create( 
+              'PrintString: the supplied margins are too large, there '+ 
+              'is no area to print left on the page.'); 
+        End; { With } 
+
+        { Convert textrect to canvas coordinates. } 
+        OffsetRect( textrect, -printorigin.X, -printorigin.Y ); 
+
+        { Build header and footer rects. } 
+        headerrect := Rect( textrect.left, 0, 
+                            textrect.right, textrect.top ); 
+        footerrect := Rect( textrect.left, textrect.bottom, 
+                            textrect.right, Printer.PageHeight ); 
+      End; { CalcRects } 
+
+    Begin { CalcPrintRects } 
+      GetPrinterParameters; 
+      CalcRects; 
+      lineheight := round( Y_resolution / linesPerInch ); 
+    End; { CalcPrintRects } 
+
+  { Print a page with headers and footers. } 
+  Procedure PrintPage; 
+    Procedure FireHeaderFooterEvent( event: THeaderFooterProc; r: TRect ); 
+      Begin 
+        If Assigned( event ) Then Begin 
+          event( 
+             Printer.Canvas, 
+             pagecount, 
+             r, 
+             ContinuePrint ); 
+          { Revert to our font, in case event handler change 
+            it. } 
+          Printer.Canvas.Font := aFont; 
+        End; { If } 
+      End; { FireHeaderFooterEvent } 
+
+    Procedure DoHeader; 
+      Begin 
+        FireHeaderFooterEvent( OnPrintHeader, headerrect ); 
+      End; { DoHeader } 
+
+    Procedure DoFooter; 
+      Begin 
+        FireHeaderFooterEvent( OnPrintFooter, footerrect ); 
+      End; { DoFooter } 
+
+    Procedure DoPage; 
+      Var 
+        y: Integer; 
+      Begin 
+        y:= textrect.top; 
+        While (textStart ‹ lines.count) and 
+              (y ‹= (textrect.bottom - charheight)) 
+        Do Begin 
+          { Note: use TextRect instead of TextOut to effect clippin 
+            of the line on the right margin. It is a bit slower, 
+            though. The clipping rect would be 
+            Rect( textrect.left, y, textrect.right, y+charheight). } 
+          printer.canvas.TextOut( textrect.left, y, lines[textStart] ); 
+          Inc( textStart ); 
+          Inc( y, lineheight ); 
+        End; { While } 
+      End; { DoPage } 
+
+    Begin { PrintPage } 
+      DoHeader; 
+      If ContinuePrint Then Begin 
+        DoPage; 
+        DoFooter; 
+        If (textStart ‹ lines.count) and ContinuePrint Then Begin 
+          Inc( pagecount ); 
+          Printer.NewPage; 
+        End; { If } 
+      End; 
+    End; { PrintPage } 
+
+  Begin { PrintStrings } 
+    Assert( Assigned(afont), 
+            'PrintString: requires a valid aFont parameter!' ); 
+
+    continuePrint := True; 
+    pagecount     := 1; 
+    textstart     := 0; 
+    Printer.BeginDoc; 
+    try 
+      CalcPrintRects; 
+      {$IFNDEF WIN32} 
+        { Fix for Delphi 1 bug. } 
+        Printer.Canvas.Font.PixelsPerInch := Y_resolution; 
+      {$ENDIF } 
+      Printer.Canvas.Font := aFont; 
+      charheight := printer.canvas.TextHeight( 'Äy' ); 
+      While (textstart ‹ lines.count) and ContinuePrint Do 
+        PrintPage; 
+    finally 
+      If continuePrint and not measureonly Then 
+        Printer.EndDoc 
+      Else begin 
+        Printer.Abort; 
+      end; 
+    end; 
+
+    If continuePrint Then 
+      Result := pagecount 
+    Else 
+      Result := 0; 
+  End; { PrintStrings } 
+
+
+procedure TForm1.Button1Click(Sender: TObject); 
+begin 
+  ShowMessage( Format( '%d pages printed', 
+               [ PrintStrings( 
+                   memo1.lines, 
+                   0.75, 0.5, 0.75, 1, 
+                   6, 
+                   memo1.font, 
+                   false, 
+                   PrintHeader, PrintFooter ) 
+                ] )); 
+end; 
+
+procedure TForm1.PrintFooter(aCanvas: TCanvas; aPageCount: Integer; 
+  aTextrect: TRect; var continue: Boolean); 
+var 
+  S: String; 
+  res: Integer; 
+begin 
+  with aCanvas do begin 
+    { Draw a gray line one point wide below the text } 
+    res := GetDeviceCaps( handle, LOGPIXELSY ); 
+    pen.Style := psSolid; 
+    pen.Color := clGray; 
+    pen.Width := Round( res / 72 ); 
+    MoveTo( aTextRect.Left, aTextRect.Top ); 
+    LineTo( aTextRect.Right, aTextRect.Top ); 
+    { Print the page number in Arial 8pt, gray, on right side o 
+      footer rect. } 
+    S:= Format('Page %d', [aPageCount] ); 
+    font.name := 'Arial'; 
+    font.Size := 8; 
+    font.Color := clGray; 
+    TextOut( aTextRect.Right - TextWidth(S), aTextRect.Top + res div 18, 
+             S ); 
+  end; 
+end; 
+
+procedure TForm1.PrintHeader(aCanvas: TCanvas; aPageCount: Integer; 
+  aTextrect: TRect; var continue: Boolean); 
+var 
+  res: Integer; 
+begin 
+  with aCanvas do begin 
+    { Draw a gray line one point wide 4 points above the text } 
+    res := GetDeviceCaps( handle, LOGPIXELSY ); 
+    pen.Style := psSolid; 
+    pen.Color := clGray; 
+    pen.Width := Round( res / 72 ); 
+    MoveTo( aTextRect.Left, aTextRect.Bottom - res div 18); 
+    LineTo( aTextRect.Right, aTextRect.Bottom - res div 18 ); 
+    { Print the company name in Arial 8pt, gray, on left side o 
+      footer rect. } 
+    font.name := 'Arial'; 
+    font.Size := 8; 
+    font.Color := clGray; 
+    TextOut( aTextRect.Left, aTextRect.Bottom - res div 10 - TextHeight('W'), 
+             'W. W. Shyster & Cie.' ); 
+  end; 
+end; 
+
+end. 
+
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

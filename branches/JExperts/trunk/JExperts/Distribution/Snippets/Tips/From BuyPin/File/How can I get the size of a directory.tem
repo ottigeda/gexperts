@@ -1,0 +1,37 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I get the size of a directory ? 
+
+Answer : 
+
+function GetDirectorySize(const ADirectory: string): Integer; 
+var 
+  Dir:  TSearchRec; 
+  Ret:  integer; 
+  Path: string; 
+begin 
+  Result := 0; 
+  Path   := ExtractFilePath(ADirectory); 
+  Ret    := Sysutils.FindFirst(ADirectory, faAnyFile, Dir); 
+
+  if Ret ‹› NO_ERROR then 
+    exit; 
+
+  try 
+    while ret=NO_ERROR do 
+    begin 
+      inc(Result, Dir.Size); 
+      if (Dir.Attr in [faDirectory]) and (Dir.Name[1] ‹› '.') then 
+         Inc(Result, GetDirectorySize(Path + Dir.Name + '\*.*')); 
+      Ret := Sysutils.FindNext(Dir); 
+    end; 
+  finally 
+    Sysutils.FindClose(Dir); 
+  end; 
+end; 
+
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

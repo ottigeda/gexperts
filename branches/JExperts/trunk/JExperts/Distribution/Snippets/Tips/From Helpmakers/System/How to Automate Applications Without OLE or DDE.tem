@@ -1,0 +1,512 @@
+HelpMakers Delphi Site TipsQuestion: How to Automate Applications 
+            Without OLE or DDE? [ Zipped ]
+
+            Relation: [ WinApi ]
+            ID: [ 000466 ] 
+Julian V. Moss
+
+MIS programmers often have to write software that can control other applications.
+Delphi has components that allow you to use DDE, while Delphi 2 does an excellent
+job of supporting OLE automation. But often the programs you want to control
+support neither of these methods. This article shows you the secret for controlling
+any application.
+
+IN an ideal world you could create a custom software solution to meet each new
+user requirement. But in reality that isn't practical. There may not be enough time or
+money in the budget to allow you to design a solution from scratch. But other factors
+can also force you to rely on some existing software to get information or carry out
+functions required by your Delphi applications, rather than doing so directly in
+Delphi. 
+
+As a Delphi developer you're already used to using ready-made software
+components to build your applications. Automation is one way of using other
+applications as components. Few applications support it, but DDE is one Windows
+method you can use to automate one program from another. Another method, OLE
+Automation, was introduced more recently. This, too, isn't widely supported yet,
+though this situation should change as new development tools make it easier to create
+OLE servers. Delphi 2 is a leader in this area. 
+
+What do you do when you need to automate another application, but it doesn't
+support DDE or OLE? You have to resort to the somewhat crude method of
+"keystroke stuffing": running the program as if you were sitting at the keyboard typing
+text into it. The SendKeys command in Visual Basic allows you to do this. But
+Delphi doesn't have an equivalent to SendKeys.
+
+A first stab at the problem
+Since we don't have this vital capability, the first place to turn is the Windows API
+reference. You probably know that all input into Windows applications arrives in the
+form of messages. The Windows API routines for producing messages,
+SendMessage and PostMessage, can be used to send messages like
+WM_KEYDOWN, WM_KEYUP, and WM_CHAR. 
+
+Although this path looks promising, it's a blind alley. You can generate keystroke
+messages for other windows this way, but the code needed to generate the correct
+parameters for the WM_KEYDOWN and WM_KEYUP messages, and to ensure
+that the messages arrive at the right time and are translated correctly by the receiving
+application, makes this by far the most complex method to implement. It's also the
+least reliable method since there's no way to guarantee that a message is not ignored,
+which will happen if it arrives before the receiving application is ready to deal with it.
+This is definitely not a good way to proceed.
+
+Another stab
+A better way to send keystrokes from one program to another is via the use of
+journal hooks. As the name implies, journal hooks are a low level interface that
+enable you to hook into the stream of Windows messages. Under Windows 3.1 you
+install a journal hook using the SetWindowsHook function, and you remove it using
+UnhookWindowsHook. In the 32-bit Windows environment you must use the very
+similar functions SetWindowsHookEx and UnhookWindowsHookEx. 
+
+Journal hook procedures are useful because they allow you to get information about
+what's going on in the system that you can't obtain any other way. Debugging tools
+such as Delphi's WinSight use journal hooks, as do shell programs and other
+software that needs to know what's going on in the system as a whole. 
+
+Two types of hook procedure are useful for automating other applications. A
+JournalRecordProc hook lets you monitor the stream of keyboard and mouse
+messages so that they can be recorded in some data structure. You can then install a
+JournalPlaybackProc hook to play back the sequence of messages later. This is
+essentially what the Windows 3.1 Recorder does. 
+
+Using journal hooks has some disadvantages, though. Because they hook into the
+system at a low level, journal hooks can adversely affect the stability of Windows. A
+JournalPlaybackProc procedure disables normal keyboard and mouse input while it's
+installed, so if the hook procedure doesn't terminate properly due to an unexpected
+event, the hook will remain and lock up your system. 
+
+Under Windows 3.1, which has a single message queue and where multitasking
+occurs only when one program yields to another, the most likely unexpected events
+are fatal and would probably crash a system anyway, so journal playback hooks
+pose less of a risk. In the multitasking, multiple input queue 32-bit environment,
+however, it's more difficult to predict what will happen while the messages are
+playing back. Also, anything that compromises system integrity is undesirable in the
+32-bit environment, which is often chosen because of its stability. Microsoft didn't
+provide a 32-bit version of Recorder for precisely this reason.
+
+Third time's a charm!
+Fortunately there's a third method of generating keystrokes, though it's the one that
+you're least likely to discover for yourself. Indeed, under Windows 3.1 it's
+completely undocumented. This method doesn't require the installation of alien code
+into Windows' messaging system, so it presents no risk to system integrity. It's also
+much simpler to use than trying to generate WM_KEYDOWN, WM_KEYUP, and
+WM_CHAR messages within your application. This is the method I'll describe here.
+
+Activating the right window
+No matter which method you use to send keystrokes to an application, you have to
+ensure that the program you want to send keystrokes to is active -- that is, it must be
+in the foreground with the input focus. When typing at the keyboard, one window
+must be active to receive your input. If none is active, Windows just beeps. The
+same condition applies when sending keystrokes from another program. Using the
+method to be described, keystrokes enter the messaging system exactly as if they
+had originated from the keyboard. Your Delphi program must ensure, as you would
+do when operating the program yourself, that its 'typing' goes to the right window. 
+
+What you can't do is activate the application by sending mouse movements. Due to
+the nature of mouse activity, it's difficult to know what to send without recording
+mouse movements using a journal hook. Playing mouse movements back is also
+prone to error since application windows may not always appear in the same place
+as before: this was always a limitation of Windows Recorder. There are ways to
+overcome some of these limitations, and these solutions have been exploited
+successfully by some third party automation tools. However, the process is much
+more difficult under 32-bit Windows, which provides each program with its own
+input message queue so that one program can't easily see another program's
+messages. It's simplest to accept that using mouse input is impractical and to control
+your target program using only keyboard input. 
+
+All of the Windows API functions for controlling other windows use a window
+handle, hWnd, to identify the target. You have a choice of methods for finding out
+what this target is. If you launch the target application from within your Delphi
+program [perhaps using the ShellExec function from Delphi Developer June
+1996 -- Ed.], then you know that once the program has initialised itself, its window
+will be the active one. Your program could simply wait a sufficient time for the
+program to initialize and then use the function GetActiveWindow to obtain the handle
+of the currently active window. Having obtained the handle, you can verify that it
+belongs to the window you want by getting the title bar text using GetWindowText or
+the window class name using GetClassName. 
+
+There are a few differences between 16-bit API functions and their 32-bit
+namesakes. In the 32-bit API the scope of GetActiveWindow is confined to the
+windows that are running on the calling process's thread. In effect, it will return the
+handle of the active window within your Delphi application. If some other program is
+currently active, the function will return a null value, since none of your Delphi forms
+will be active. So when using Delphi 2 you'll want to use the new API function
+GetForegroundWindow instead. 
+
+If you don't know whether the program you want is active or not, you can use
+FindWindow to find it. FindWindow takes two PChar parameters: the first is the
+window class name (such as TMyForm) and the second is the full window title bar
+text. Generally you pass FindWindow one parameter or the other, leaving the unused
+parameter as a null pointer (PChar(0)). If a matching window is found, the function
+returns its handle; otherwise, it returns zero. 
+
+Once you've got the handle of the window you want to automate, and before sending
+keystrokes to it, make sure that it's active. The window might be iconized, which you
+can test using the IsIconic function. If it is, you should restore it by calling the
+ShowWindow procedure, supplying as parameters the window handle and the value
+SW_RESTORE. This has exactly the same effect as restoring a window from an
+icon using the mouse, and it leaves the window active and ready to receive keyboard
+input. 
+
+If the window isn't iconic, for 16-bit programs you use the BringWindowToTop
+function to make sure it's active. Once again, in the 32-bit environment
+BringWindowToTop affects only your own application's windows (or more
+precisely, those on the same thread), so you should use SetForegroundWindow
+instead.
+
+WinCtl makes it all so easy
+I've refrained from giving actual examples of using these functions in your code
+because a better solution is to create a Delphi unit -- which I've called WinCtl --
+containing the functions you need to control an application. You can then call the
+functions in this unit from your program instead of calling the API directly. This has
+three benefits:
+
+   1.The unit takes care of converting between strings and the zero terminated
+     PChars that all API functions expect, so you can use Delphi strings and
+     nothing but Delphi strings. 
+
+   2.You need only call one function where you might need several lines of code if
+     you were using the raw API. 
+
+   3.The unit can hide API differences such as those I've already mentioned. When
+     the time comes to recompile your program with Delphi 2, a slightly modified
+     WinCtl unit will be all that you require. 
+
+The routines in WinCtl are explained in the following section. The code is for the
+16-bit version. A 32-bit version is included on your Developer's Disk. The disk also
+has a short test project, which opens a copy of Notepad, sends some text to it, and
+then closes the program after quitting out of the "Text has changed, do you want to
+save" dialog box. Thanks to WinCtl hiding the API differences, only one version of
+the test program is needed: a compiler conditional ensures that the correct version of
+the unit is used.
+
+WinCtl's non-automation methods
+WinCtl includes a couple of functions and procedures that aren't solely of use for the
+purpose of automating other applications but which are certainly useful to have when
+doing so. For example, when executing a command or option of the automated
+program, you'll often need to wait for a given interval to allow the program to carry
+out some processing, display another window, or whatever. The Delay procedure
+allows you to do this. You specify the length of the delay in milliseconds, and your
+program will wait for that length of time, regardless of the speed of the processor it is
+running on.
+
+
+{ Delay program execution by n milliseconds }
+procedure Delay(n: Integer);
+var
+   start: LongInt;
+begin
+   start := GetTickCount;
+   repeat
+      Application.ProcessMessages;
+   until (GetTickCount - start) >= n;
+end;
+
+
+In the June 1996 issue of Delphi Developer, I wrote an article called "Launching
+Applications from Delphi." ShellExec, the function I demonstrated in that article,
+lacks the parameter allowing you to specify whether to wait for the executed
+program to finish, since in this case you'll want to be returned to your program as
+soon as the program has been launched so you can automate it. 
+
+ShellExec takes five parameters. The op parameter is the shell operation to run,
+which to launch a program is 'open.' The parameters fn, par, and dir are the
+executable file path, the command line parameters (if any), and the initial starting
+directory (if not the default), in that order. The show parameter is one of the SW_
+constants defined in unit WinTypes. SW_NORMAL would usually be the best
+choice. The function returns the value False if it fails:
+
+
+{ Execute a command, such as to run a program }
+function ShellExec(const op, fn, par, 
+  dir: String; show: Word): Boolean;
+
+
+Here's what you'd use to launch an instance of Notepad:
+
+
+ShellExec('open', 'notepad.exe', '', '', 
+  SW_NORMAL);
+
+
+The wrappers
+The next group of functions are simple wrappers that make API functions easier to
+use. The purpose of each one should be obvious from its name. They let you find the
+handle of a window if you know that it is currently active (because you just launched
+the program, for example) or you know its title bar text or window class name. You
+can use WinSight to find a window's class name:
+
+
+{ Functions to obtain handle of desired window }
+function GetHandleFromWindowTitle
+  (const titletext: string): hWnd;
+var
+   strbuf: Array[0..255] of Char;
+begin
+   result := FindWindow(PChar(0),
+              StrPCopy(strbuf,titletext));
+end;
+
+function GetHandleFromWindowClass(
+  const classname: string): hWnd;
+var
+   strbuf: Array[0..255] of Char;
+begin
+   result := FindWindow(StrPCopy(strbuf,classname),
+              PChar(0));
+end;
+
+function GetHandleOfActiveWindow: hWnd;
+begin
+   result := GetActiveWindow;
+end;
+
+
+The next two functions complement the previous ones. They let you obtain the title
+bar text or class name of a window if you know its handle. If you want to make sure
+that the currently active window is what you think it is, one or other of these functions
+will help you:
+
+
+{ Functions to obtain identification of 
+  a window }
+function GetWindowTitleText
+  (whandle: hWnd): string;
+var
+   strbuf: Array[0..255] of Char;
+begin
+   GetWindowText(whandle,strbuf,255);
+   result := StrPas(strbuf);
+end;
+
+function GetWindowClassName
+  (whandle: hWnd): string;
+var
+   strbuf: Array[0..255] of Char;
+begin
+   GetClassName(whandle,strbuf,255);
+   result := StrPas(strbuf);
+end;
+
+
+MakeWindowActive
+The procedure MakeWindowActive is very important. As I've already said,
+keystrokes from whatever source are acted upon by whichever window, and
+whichever control within the window, currently has the input focus. All sorts of
+things-user interference or a background process suddenly displaying a message to
+list but two-could conspire to change the active window when you aren't expecting it,
+so it's a good idea to call MakeWindowActive before sending any keystrokes from
+your program to make sure they go to the right place:
+
+
+{ Procedure to make a specific window the 
+  active one }
+procedure MakeWindowActive(whandle: hWnd);
+begin
+   if IsIconic(whandle) then
+      ShowWindow(whandle,SW_RESTORE)
+   else
+      BringWindowToTop(whandle);
+end;
+
+
+SendKeys
+Now I come to the SendKeys procedure itself. This couldn't be simpler to use. Its
+one parameter is a string containing the keys that you want to be sent. If you want to
+send ASCII text, you just enter the ASCII text in the string: 
+
+
+{ Send key strokes to active window }
+procedure SendKeys(const text: String);
+
+
+The trouble is, not all the keys that you might want to send are printable ASCII
+characters. Some of the keys that you'll need to use when automating an application
+have no ASCII equivalents at all. Visual Basic's SendKeys command uses a
+meta-language in which special symbols and keynames within curly brackets are
+used to specify non-ASCII key codes. In this implementation I adopted the simpler
+expedient of defining a set of constants corresponding to the most commonly needed
+keys, and mapping these into the byte range 228 .. 255 (see Listing 1). This makes
+processing the key string simpler, but means that there's no way to send any of the
+ASCII codes in this range. Few people are likely to be inconvenienced by this;
+however, if you are, it wouldn't be too difficult to write a more sophisticated string
+parser that used an escape character in front of special key codes, allowing all 255
+ASCII codes to be sent if you wished. 
+
+
+Listing 1.Special key constants for use with SendKeys.
+
+
+SK_BKSP = #8;
+SK_TAB = #9;
+SK_ENTER = #13;
+SK_ESC = #27;
+SK_F1 = #228;
+SK_F2 = #229;
+SK_F3 = #230;
+SK_F4 = #231;
+SK_F5 = #232;
+SK_F6 = #233;
+SK_F7 = #234;
+SK_F8 = #235;
+SK_F9 = #236;
+SK_F10 = #237;
+SK_F11 = #238;
+SK_F12 = #239;
+SK_HOME = #240;
+SK_END = #241;
+SK_UP = #242;
+SK_DOWN = #243;
+SK_LEFT = #244;
+SK_RIGHT = #245;
+SK_PGUP = #246;
+SK_PGDN = #247;
+SK_INS = #248;
+SK_DEL = #249;
+SK_SHIFT_DN = #250;
+SK_SHIFT_UP = #251;
+SK_CTRL_DN = #252;
+SK_CTRL_UP = #253;
+SK_ALT_DN = #254;
+SK_ALT_UP = #255;
+
+
+Although SendKeys is easy to use, it wasn't quite as easy to implement. You can see
+the code in Listing 2.
+
+
+Listing 2.The SendKeys procedure.
+
+
+procedure SendKeys(const text: String);
+var
+   i: Integer;
+   shift: Boolean;
+   vk,scancode: Word;
+   ch: Char;
+   c,s: Byte;
+const
+   vk_keys: Array[0..9] of Byte =
+      (VK_HOME,VK_END,VK_UP,VK_DOWN,VK_LEFT,
+        VK_RIGHT,VK_PRIOR,VK_NEXT,VK_INSERT,
+        VK_DELETE);
+   vk_shft: Array[0..2] of Byte = 
+     (VK_SHIFT,VK_CONTROL,VK_MENU);
+   flags: Array[false..true] of Integer = 
+     (KEYEVENTF_KEYUP, 0);
+
+begin
+   shift := false;
+   for i := 1 to Length(text) do
+   begin
+      ch := text[i];
+      if ch >= #250 then
+      begin
+         s := Ord(ch) - 250;
+         shift := not Odd(s);
+         c := vk_shft[s shr 1];
+         scancode := MapVirtualKey(c,0);
+         Keybd_Event(c,scancode,flags[shift],0);
+      end
+      else
+      begin
+         vk := 0;
+         if ch >= #240 then
+            c := vk_keys[Ord(ch) - 240]
+         else if ch >= #228 then
+            {228 (F1) ==> $70 (vk_F1)}
+            c := Ord(ch) - 116
+         else if ch < #32 then
+            c := Ord(ch)
+         else
+         begin
+            vk := VkKeyScan(Word(ch));
+            c := LoByte(vk);
+         end;
+         scancode := MapVirtualKey(c,0);
+         if not shift and (Hi(vk) > 0) then
+            { $2A = scancode of VK_SHIFT }
+            Keybd_Event(VK_SHIFT,$2A,0,0);
+         Keybd_Event(c,scancode,0,0);
+         Keybd_Event(c,scancode,
+               KEYEVENTF_KEYUP,0);
+         if not shift and (Hi(vk) > 0) then
+            Keybd_Event(VK_SHIFT,
+               $2A,KEYEVENTF_KEYUP,0);
+      end;
+      Application.ProcessMessages;
+   end;
+end;
+
+
+As users we tend to think of a single keypress as being one event. However,
+SendKeys feeds information into the system at the same point as a keyboard driver.
+From the driver's point of view, a keypress is in fact two events, a key down and a
+key up. SendKeys generates both events for each keypress. 
+
+The keyboard driver knows nothing about ASCII codes. What it receives from the
+keyboard is a scan code: a number that corresponds to the physical position of the
+key on the keyboard. SendKeys derives the scan code from the ASCII code by first
+calling the API function VkKeyScan, which translates the ASCII byte code to a
+'virtual key code': an internal Windows representation of the key. For the special
+SK_ key values and the lower 32 characters of the ASCII set this step isn't
+necessary, and the virtual key code can be derived directly from the byte value. The
+virtual key code is then converted to a scan code using the MapVirtualKey function.
+Both the scan code and the virtual key code are required by the Keybd_Event
+procedure. 
+
+The scan code of a particular letter key is constant whether the character is lower or
+upper case, so the keyboard driver also needs to tell Windows whether the shift key
+is down. If an ASCII character is a shifted key, the high byte of the work returned
+by the VkKeyScan function is 1; SendKeys uses this fact to generate additional key
+down and key up events for the shift key, surrounding the key events for the
+character key. 
+
+Sometimes, though, you have to control when the shift key is pressed and released.
+For example, you might hold down Shift while moving the cursor arrows to select
+some text in an edit control. The same applies to the Alt and Ctrl keys, which are
+usually used in combination with other keys. To allow for this, there are separate
+down and up SK_ values for all three shift keys. To close an application you might
+use the following to send Alt-F4:
+
+SendKeys(SK_ALT_DN+SK_F4+SK_ALT_UP);
+
+When you use one of these shift key down values, remember to use the
+corresponding key up value, otherwise Windows will think that the key is stuck in the
+down position! 
+
+The keystrokes are entered into the message chain by calling the Keybd_Event
+function. This takes four parameters: the Windows virtual key code, the scan code, a
+flags doubleword that indicates whether the key is being pressed or released, and an
+extra information doubleword that you can set to zero. Because Keybd_Event
+doesn't exist in the 16-bit API, WinCtl16 includes a private Keybd_Event procedure
+which takes the same parameters as the public Win32 version, and passes the data
+to the undocumented Kbd_Event procedure. This keeps the SendKeys procedure
+itself free of any version-dependent code.
+
+Tips on putting automation to work
+Automating other applications is a process that entails a certain amount of trial and
+error. First, you have to get the sequence of keystrokes exactly right. Second, you
+must fine-tune the timing and the window handle management to get your code to
+work reliably every time. Remember, when you operate a program from the
+keyboard you're receiving visual feedback that tells you whether the program has
+responded to your input and is ready for the next command. Your Delphi program
+has to do the same thing blind, using only the functions described here. 
+
+Use the Delay function liberally to give your target program time to respond. Check
+the identity of the active window frequently and make sure you activate the target
+window before sending any keystrokes that might cause a disaster if received by the
+wrong program. Follow those three rules and you should find it easy, with the help of
+my WinCtl unit, to control other applications from Delphi.
+
+Julian Moss is a freelance technical writer and software developer based in Cumbria in
+the English Lake District. He developed Visual DialogScript, a batch and automation
+language for Windows. http://www.netlink.co.uk/users/jmtech 
+
+Copyright Pinnacle Publishing, Inc. 1996. All Rights Reserved.
+
+
+
+
+
+            Copyright © HelpMakers, 1997 - 99
+
+

@@ -1,0 +1,22 @@
+<CASE>
+ <ITEM>
+  <NAME>tbsButton</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>tbsCheck</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>tbsDropDown</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>tbsSeparator</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>tbsDivider</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+</CASE>

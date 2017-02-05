@@ -1,0 +1,28 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I tell the system to rename a file on the next reboot ? 
+
+Answer : 
+Windows has a mechanism to replace files that are currently in use on next boot. 
+So what the program could do is 
+
+a) save the updated version under another name, preferrably in the apps 
+directory (source and target need to be on the same volume). 
+b) If Win32Platform = VER_PLATFORM_WIN32_NT Then 
+      MoveFileEx( Pchar( tempFilenameWithPath ), 
+                  Pchar( realfilenamewithpath ), 
+                  MOVEFILE_REPLACE_EXISTING or MOVEFILE_DELAY_UNTIL_REBOOT ) 
+    Else 
+      WritePrivateProfileString( 
+        'rename', 
+        Pchar( realfilenamewithpath), 
+        Pchar( tempFilenameWithPath ), 
+        'wininit.ini' ); 
+
+Note that the wininit file needs to be set up using the short (DOS 8.3) versions 
+of long path and filenames. 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

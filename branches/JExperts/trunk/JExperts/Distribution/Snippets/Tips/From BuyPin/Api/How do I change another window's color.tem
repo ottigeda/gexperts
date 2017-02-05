@@ -1,0 +1,86 @@
+Question : 
+How do I change another window's color ? 
+
+Answer : 
+unit PrincipalCor; 
+
+interface 
+
+uses 
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, 
+  StdCtrls; 
+
+type 
+  TForm1 = class(TForm) 
+    Button1: TButton; 
+    procedure Button1Click(Sender: TObject); 
+    procedure FormShow(Sender: TObject); 
+  private 
+    { Private declarations } 
+    OldWndProc : TFarProc; 
+    NewWndProc : Pointer; 
+    procedure Cor(var Mensagem: TMessage); 
+  public 
+    { Public declarations } 
+  end; 
+
+var 
+  Form1: TForm1; 
+
+implementation 
+
+uses Unit2; 
+
+{$R *.DFM} 
+
+procedure TForm1.Cor(var Mensagem: TMessage); 
+var 
+  Rectang: TRect; 
+  brs: TBrush; 
+  hwin: THandle; 
+begin 
+  case Mensagem.Msg of 
+     WM_ERASEBKGND: 
+     begin 
+        brs := TBrush.Create; 
+        brs.Color := clBlue; 
+        hwin := FindWindow(nil, 'Janela2'); 
+        GetWindowRect(Form2.Handle, Rectang); 
+        Rectang.Top := 0; 
+        Rectang.Left := 0; 
+        FillRect(TWMEraseBkGnd(Mensagem).DC, Rectang, brs.Handle); 
+        brs.Free; 
+     end; 
+  else 
+      begin 
+        Mensagem.Result := 
+          CallWindowProc(OldWndProc,Form2.Handle, 
+            Mensagem.Msg, 
+            Mensagem.wParam, 
+            Mensagem.lParam); 
+      end; 
+  end; 
+
+end; 
+
+procedure TForm1.Button1Click(Sender: TObject); 
+begin 
+
+  OldWndProc := TFarProc(GetWindowLong(Form2.Handle, GWL_WNDPROC)); 
+  NewWndProc := MakeObjectInstance(Cor); 
+  SetWindowLong(Form2.Handle, GWL_WNDPROC, LongInt(NewWndProc)); 
+  Form2.Invalidate; 
+end; 
+
+procedure TForm1.FormShow(Sender: TObject); 
+begin 
+  Form2.Show; 
+end; 
+
+end. 
+
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

@@ -1,0 +1,149 @@
+HelpMakers Delphi Site Tips 
+            Question: Form display with different screen resolutions.
+
+            Relation: [ GDI ]
+            ID: [ 000157 ] 
+When designing forms, it is sometimes helpful to write the code 
+so that the screen and all of its objects are displayed at the 
+same size no matter what the screen resolution is.  Here is 
+some code to show how that is done:
+
+implementation
+const
+  ScreenWidth: LongInt = 800; {I designed my form in 800x600 mode.}
+  ScreenHeight: LongInt = 600;
+
+{$R *.DFM}
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  scaled := true;
+  if (screen.width <> ScreenWidth) then
+  begin
+    height := longint(height) * longint(screen.height) div ScreenHeight;
+    width := longint(width) * longint(screen.width) div ScreenWidth;
+    scaleBy(screen.width, ScreenWidth);
+  end;
+end;
+
+Then, you will want to have something that checks to see that 
+the font sizes are OK.  Before you change the font's size, you 
+would need to ensure the object actually has a font property.  
+This can be done as follows:
+
+uses typinfo;
+
+var
+  i: integer;
+begin
+  for i := componentCount - 1 downtto 0 do
+    with components[i] do
+    begin
+      if GetPropInfo(ClassInfo, 'font') <> nil  then
+        font.size := (NewFormWidth DIV OldFormWidth) * font.size;
+    end;
+end;
+
+
+Note:  The following are issue to bear in mind when scaling 
+Delphi applications (forms) on different screen resolutions:
+
+  * Decide early on in the form design stage whether you're 
+going to allow the form to be scaled or not.  The advantage of 
+not scaling is that nothing changes at runtime.  The 
+disadvantage of not scaling is that nothing changes at runtime 
+(your form may be far too small or too large to read on some 
+systems if it is not scaled).
+
+
+  * If you're NOT going to scale the form, set Scaled to False.
+
+  * Otherwise, set the Form's Scaled property to True.
+
+  * Set AutoScroll to False.  AutoScroll = True means 'don't 
+change the form's frame size at runtime' which doesn't look 
+good when the  form's contents do change size.
+
+  * Set the form's font to a scaleable TruueType font, like 
+Arial.   MS San Serif is an ok alternate, but remember that it 
+is still a  bitmapped font.  Only Arial will give you a font 
+within a pixel of the desired height.  NOTE: If the font used 
+in an application is not installed on the target computer, then 
+Windows will select an  alternative font within the same font 
+family to use instead.  This font may not match the same size 
+of the original font any may cause problems.
+
+  * Set the form's Position property to something other than 
+poDesigned.  poDesigned leaves the form where you left it at 
+design time, which for me always winds up way off to the left 
+on my 1280x1024 screen -  and completely off the 640x480 screen.
+
+  * Don't crowd controls on the form - leave at least 4 pixels 
+between  controls, so that a one pixel change in border 
+locations (due to  scaling) won't show up as ugly overlapping 
+controls.
+
+  * For single line labels that are alLeft or alRight aligned, 
+set AutoSize to True.  OOtherwise, set AutoSize to False.
+
+  * Make sure there is enough blank space in a label component 
+to allow for font width changes - a blank space that is 25% of 
+the length of the current string display length is a little too 
+much, but safe. (You'll need at least 30% expansion space for 
+string labels if you  plan to translate your app into other 
+languages) If AutoSize is  False, make sure you actually set 
+the label width appropriately.  If AutoSize is True, make sure 
+there is enough room for the label  to grow on its own.
+
+  * In multi-line, word-wrapped labels, leave at least one line 
+of blank space at the bottom.  You'll need this to catch the 
+overflow when the text wraps differently when the font width 
+changes with scaling. Don't assume that because you're using 
+large fonts, you don't have to allow for text overflow - 
+somebody else's large  fonts may be larger than yours!
+
+  * Be careful about opening a project in the IDE at different 
+resolutions.  The  form's PixelsPerInch property will be 
+modified as soon as the form is opened, and will be saved to 
+the DFM if you save the project. It's best to test the app by 
+running it standalone, and edit the form at only one 
+resolution. Editing at varying resolutions and font sizes 
+invites component drift  and sizing problems.
+
+  * Speaking of component drift, don't rescale a form multiple 
+times, at design time or a runtime.  Each rescaling introduces 
+roundoff errors which accumulate very quickly since coordinates 
+are  strictly integral.  As fractional amounts are truncated 
+off control's origins and sizes with each successive 
+rescaling,  the controls will appear to creep northwest and get 
+smaller. If you want to allow your users to rescale the form 
+any number  of times, start with a freshly loaded/created form 
+before each  scaling, so that scaling errors do not accumulate.
+
+  * Don't change the PixelsPerInch property of the form, period.
+
+  * In general, it is not  necessary to design forms at any 
+particular resolution, but it is crucial that you review their 
+appearance at 640x480 with small fonts and large, and at a 
+high-resolution with small fonts and large before releasing 
+your app.  This should be  part of your regular system 
+compatibility testing checklist.
+
+  * Pay close attention to any components that are essentially  
+single-line TMemos - things like TDBLookupCombo.  The Windows  
+multi-line edit control always shows only whole lines of text 
+-  if the control is too short for its font, a TMemo will show  
+nothing at all (a TEdit will show clipped text). For such  
+components, it's better to make them a few pixels too large 
+than to be one pixel too small and show not text at all.
+
+  * Keep in mind that all scaling is proportional to the 
+difference  in the font height between runtime and design time, 
+NOT the pixel resolution or screen size.  Remember also that 
+the origins of your controls will be changed when thhe form is 
+scaled - you can't very  well make components bigger without 
+also moving them over a bit.
+
+
+
+

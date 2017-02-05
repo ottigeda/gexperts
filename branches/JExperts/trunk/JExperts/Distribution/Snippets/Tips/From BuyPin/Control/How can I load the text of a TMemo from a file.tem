@@ -1,0 +1,13 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I load the text of a TMemo from a file ? 
+
+Answer : 
+Put a memo on a form and use the LoadFromFile method of the Lines property. 
+
+memo1.Lines.LoadFromFile('c:\yourfile.txt'); 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

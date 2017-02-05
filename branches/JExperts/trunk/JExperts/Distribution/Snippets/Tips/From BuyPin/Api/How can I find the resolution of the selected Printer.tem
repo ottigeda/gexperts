@@ -1,0 +1,33 @@
+Question : 
+How can I find the resolution of the selected Printer ? 
+
+Answer : 
+Look at the GetDeviceCaps function: 
+
+function GetPageWidth: Integer; 
+begin 
+  Result := Screen.PixelsPerInch*GetDeviceCaps(Printer.Handle, 
+PHYSICALWIDTH) div GetPixelsPerInchX 
+end; 
+
+function GetPageHeight: Integer; 
+begin 
+  Result := Screen.PixelsPerInch*GetDeviceCaps(Printer.Handle, 
+PHYSICALHEIGHT) div GetPixelsPerInchY 
+end; 
+
+function GetPixelsPerInchX: Integer; 
+begin 
+  Result := GetDeviceCaps(Printer.Handle, LOGPIXELSX) 
+end; 
+
+function GetPixelsPerInchY: Integer; 
+begin 
+  Result := GetDeviceCaps(Printer.Handle, LOGPIXELSY) 
+end; 
+
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

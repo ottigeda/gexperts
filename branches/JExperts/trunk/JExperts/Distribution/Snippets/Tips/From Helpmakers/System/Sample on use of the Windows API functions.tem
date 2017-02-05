@@ -1,0 +1,1546 @@
+HelpMakers Delphi Site TipsQuestion: Sample on use of the Windows 
+            API functions? [ Zipped ]
+
+            Relation: [ WinApi ]
+            ID: [ 000435 ] 
+Windows API calls are just calls to dynamic link libraries  
+
+Back in the early days of Windows, PCs had much less memory available than today. 
+The first version of Windows required only 256k of memory and two floppy drives... 
+amazingly little by today's standards. The designers of windows had to fit a lot 
+of code and resources into that 256k of memory, and still leave room for multiple 
+programs to run.  
+
+This feat was achieved by allowing multiple programs to share commonly used code 
+and resources. The vehicle used to provide this magic is the dynamic link library.
+
+ 
+Functions and resources contained in dynamic link libraries can be shared by 
+multiple applications.  The code and resources contained in a dynamic link 
+library are generally not loaded until needed, and can be freed when not in
+use.
+
+ 
+Most of the Windows system is comprised of dynamic link libraries. Usually dynamic 
+link libraries have the extension of  ".DLL" , but this is not a requirement. 
+An example would be in the heart of Windows itself : GDI.EXE, GDI32.DLL, USER.EXE, 
+USER32.DLL, KERNEL.EXE, KERNEL32.DLL, printer drivers (.drv), system drivers(.drv), 
+and some fonts(.fon).  
+
+An example of a resource only dynamic link library is contained in the  MORICONS.DLL  
+file that ships with Windows. It contains a variety of extra icons for Windows users 
+to brighten their desktops with.
+
+ 
+Some of the other advantages of placing code and resources in a dynamic link library 
+are:
+
+ 
+ Disk space is saved if multiple applications use a dynamic link library. This can 
+ sometimes make a drastic difference in the cost of deploying your applications 
+ since you can place common functions and resources in a single .DLL file, reducing 
+ the size of your executables.
+
+ The ability to upgrade and replace parts of the program without shipping a whole 
+ new executable.
+
+ The ability to load and execute different resources and code based on some specific 
+ criteria available only at runtime. A good example would be " PlugIn " 
+ applets that can be dynamically loaded by your application at runtime, without 
+ knowing what " PlugIns " might be available at compile time. 
+ 
+ This can make your program automatically extendible with after-market products.
+
+
+Loading a dynamic link library
+
+Your compiler most likely includes interface files to most of the Windows system 
+functions.  You simply link to the interface files, and any dynamic link libraries 
+that are used by your program are automatically loaded when your program is started. 
+In 16 Bit Windows, the actual function code is not added to your program, but 
+rather a pointer to the module name of the dynamic link library and the name of 
+the function (or its exported index number) is added.  
+
+In Win32, the DLL is mapped into the process' address space.  The dynamic link 
+library's file must exist at runtime or an error will occur.
+
+ 
+If your compiler does not include an interface to the function or dynamic link 
+library you want to use, you are going to have to declare a function prototype, 
+and a linking interface, to let your compiler know about the function you are 
+dynamically linking to. The instructions to do this should be included with your 
+compiler's documentation.
+ 
+A short example of a function prototype in  Pascal  for a dynamic link library 
+would be:
+
+ {$IFDEF Win32}
+ function MessageBeep(BeepType: Integer):Bool stdcall; external 'USER32';
+{$ELSE}
+ procedure MessageBeep(BeepType: Integer); far; external 'USER';
+{$ENDIF} 
+ 
+This prototype tells the compiler to link to a function named " MessageBeep " 
+located in USER32.DLL (if compiling under 32 bits), or a procedure named " MessageBeep " 
+located in USER.EXE (if compiling under 16 bits). The compiler is also made aware 
+that " MessageBeep " takes a integer size parameter, and uses the " stdcall " 
+passing convention (if compiling under 32 bits).
+
+When declaring an interface to a dynamic link library, you must be careful to 
+specify the way that the function expects to have its parameters and return value 
+passed, and who will maintain the stack. There are various calling techniques used 
+including:  PASCAL, CDECL, STDCALL,  and  FASTCALL . 
+
+In 16 bit Windows, most functions are exported using the  PASCAL  calling convention. 
+In 32 bit Windows,  STDCALL  is preferred since this should be compatible w/most 
+other languages.
+ 
+Most API functions are declared with " C " prototypes. If you are wanting 
+to port an interface to a  Pascal  based language, and you are not familiar with " C ", 
+your best bet is to get  Alain Tadros's  technical paper -- 
+"Using Borland's Delphi and C++ Together" .  
+
+It is available from Borland's World Wide Web site, Compuserve, and the Borland 
+BBS system and has some excellent additions by  Eric Uber .
+
+
+Dynamic loading at runtime
+
+Loading a dynamic link library at runtime allows you to load dynamic link libraries 
+that are not known at compile time,   or load a library for only a short time. 
+Printer drivers are a good example: You don't know what printer drivers will be 
+available on a users system until runtime, and you would only want to load a printer 
+driver during the printing phase of your program.
+ 
+One of the advantages to loading libraries dynamically is that you don't use up 
+resources (memory) until you actually load the library and the function you wish 
+to call.
+ 
+You load a dynamic link library at runtime by calling the Windows API function  
+LoadLibrary() .  Then you can search for a given function within the library 
+using the Windows API function  GetProcAddress() . Once you have the address of 
+the function you want, you can call it from your code.
+ 
+One thing to remember: Always call the Windows API function  FreeLibrary()  when 
+you are done using the dynamic link library.
+ 
+ Example: 
+
+ procedure Win31LoadUserAndCallBeepFn;
+var
+ DllHandle: THandle;
+ BeepFn: procedure(BeepType: Integer);
+begin
+ DllHandle := LoadLibrary('USER');
+ if DllHandle >= 32 then begin
+   @BeepFn := GetProcAddress(DllHandle, 'MessageBeep');
+   if @BeepFn <> nil then
+     BeepFn(-1);
+   FreeLibrary(DllHandle);
+ end;
+end;
+
+
+procedure Win32LoadUserAndCallBeepFn;
+var
+ DllHandle: THandle;
+ BeepFn: function(BeepType: Integer): Bool stdcall;
+begin
+ DllHandle := LoadLibrary('USER32');
+ if DllHandle <> 0 then begin
+   @BeepFn := GetProcAddress(DllHandle, 'MessageBeep');
+   if @BeepFn <> nil then
+     BeepFn($FFFFFFFF);
+   FreeLibrary(DllHandle);
+ end;
+end; 
+
+ 
+Here we have two code snippets showing the differences between loading a library 
+under 16 and 32 bit Windows. In this case, we must mark the function we are calling 
+as using the " stdcall " calling convention under 32 bit Windows, where 
+under 16 bit windows the " pascal " calling convention is assumed. Note 
+that the 16 bit version of  MessageBeep()  is a procedure, and the 32 bit version 
+is a function.
+ 
+The  LoadLibrary()  function takes a null-terminated string that names the library 
+file to be loaded. If the string does not contain a path, Windows searches for the 
+library in this order: the current directory; the Windows directory; the Windows 
+system directory; the directory containing the executable file for the current 
+task; the directories listed in the PATH environment variable; and finally, the 
+list of directories mapped in a network. If no extension is used, the extension 
+of " .DLL " is assumed. We check the value of the handle returned by  
+LoadLibrary()  for an error.  
+
+Under 16 bit Windows, the return value will be less than 32 if an error occurs, 
+and under 32 bit Windows, the return value will be 0 if an error occurs. We then 
+call the  GetProcAddress()  function to get the address of the  MessageBeep()  
+function.  The spelling of the function name is critical, and can be case sensitive 
+under different environments. If GetProcAddress()  successfully returns the address 
+of the function, then we can safely call the function. Finally we unload the 
+library to free up memory.
+
+
+Resource only dynamic link libraries  
+
+As mentioned, dynamic link libraries can hold resources as well. To use resources 
+contained in a dynamic link library, you simply make a call to  LoadLibrary() , 
+then you can load resources from the library using one of the Windows API resource 
+functions such as  LoadBitmap() , passing the handle to the dynamic link library 
+that you received from the  LoadLibrary()  call. Just don't forget to free your 
+resources and the library when you are done.
+ 
+You can use the snipit from the above section " Loading dynamic link libraries 
+at runtime " to load a dynamic link library, and then load a resource from the 
+library.
+ 
+ Example: 
+
+ LoadBitmap(DllHandle,'SOMEBMP'); 
+
+
+Stack usage and dynamic link libraries  
+
+When you call a function in a dynamic link library, the library generally uses the 
+stack of the calling application. Applications running under 16 Bit Windows had much 
+less stack space available (<64k) than what is available under 32 bit Windows 
+(1 MB). Since functions in a dynamic link library can call functions in other 
+dynamic link libraries as well as making callbacks, you should always thoroughly 
+test your program to make sure you have setup adequate stack space.
+
+
+Callback functions  
+
+Callback functions are a really wonderful feature of the Windows environment. 
+Callback functions allow you to send the " instanced " address of a 
+function in your application to a function contained in a dynamic link library. 
+The dynamic link library function can then call back to the function in your 
+application to pass back information.
+ 
+A good example of a Windows API function that utilizes callbacks is the  EnumFonts()  
+function. The  EnumFonts()  function enumerates fonts available to a given device 
+context. For each font enumerated, the  EnumFonts()  function will call back to a 
+function in your application, passing back information about that font. This 
+process continues as long as their are more fonts to enumerate, or until your 
+function returns zero, meaning that you wish to stop further enumerations.
+
+Most Windows API functions that accept a callback function as a parameter will 
+also accept an  lpData  parameter. This  lpData  parameter is used for " application 
+defined data ". You are free to define what this parameter is used for. The  
+lpData  parameter is usually passed to the dynamic link library as a longint, and 
+rarely as a far pointer. It is likely you will want to send something besides a 
+longint. You can always typecast a pointer to a data structure in your application 
+to a longint when calling dynamically linked functions, and typecast the longint 
+passed back to your callback function to a pointer so your may access your data 
+structure.
+
+As mentioned, when your callback function is called by the Windows API function, 
+the  lpData  parameter you originally passed to the Windows API function will be 
+passed back to your callback function for your use. This avoids having to declare 
+a global variable in your program. A good example of how this works would be if 
+you were to create a program containing a dialog box to show all the available 
+fonts in a drop-down listbox.  When you process the  WM_INITDIALOG  message, you 
+call the EnumFonts()  function, passing the instanced address of your callback 
+function that will process the font information.  
+
+Your callback function will perform the work to add each font's name to the 
+listbox. The only problem: your callback function does not have a handle to the 
+listbox. You could create a global variable to hold the listbox handle, but 
+instead, you should pass the handle of the listbox to your callback function 
+through the lpData  parameter, and let the dynamically linked function pass the 
+handle of the listbox back to your callback function.
+
+While it is always nice to keep global variables to a minimum, having the ability 
+to pass user defined data to the callback function becomes critically important 
+when you create callback functions inside a 16-bit dynamic link library.
+
+Generally, under 16-bit Windows, a dynamic link library has only one data segment. 
+Since multiple applications can use a single dynamic link library, and, since a 
+16-bit dynamic Link Library has a single data segment, any global variables 
+defined in the dynamic link library exist in memory only once.
+
+If you create a callback function in a dynamic link library, and use a global 
+variable to store data used during the callback, you run the risk of data 
+corruption.  Consider the following scenario: You have written several applications 
+that use your font dialog box. Rather than include your font dialog in each 
+application, you opt to store the dialog in a dynamic link library. 
+
+Suppose that you use a global variable in the dynamic link library to store the 
+listbox handle for your callback function.  Now suppose that more than one 
+application loads the dialog box at the same time. Each "copy" of your 
+font dialog box contains a different handle to it's listbox. Clearly, using a 
+global variable to hold the listbox handle will not work since the listbox handle 
+will be different for each dialog, and the global variable used to hold this 
+handle will get trashed. The way around this, is to pass the listbox handle to 
+the  EnumFonts()  function using the  lpData  parameter. This is not a problem, 
+when writing 32-bit dynamic link libraries for use under  Windows 95  and  
+Windows NT , as under both environments, dynamic link libraries have a separate 
+data area for each application that loads them. 
+
+None the less, it is still a good practice to always keep global variables to 
+a minimum.
+
+
+The Hook functions  
+
+A " hook " function is a callback function that can be inserted in the 
+Windows message system so an application can access the message stream before 
+other processing of the message takes place. Often times, there will be other 
+hooks already installed in the messaging system, so there will be times you will 
+need to call the next hook in the " Hook Chain " to allow the other 
+hooks in the chain to access the messages as well.
+
+When you install a hook function using the Windows API function  SetWindowsHookEx(), 
+you will receive a 32 bit handle to your installed hook function.  You will use 
+this handle to both remove the hook when you are done via the Windows API function 
+UnHookWindowsHookEx() , and when calling the next hook in the " Hook Chain " via 
+the Windows API function  CallNextHookEx() .  We have chosen to use the Windows " Ex " 
+hook functions since we want to be able to port to 32 bit Windows.
+ 
+System wide hooks require that your hook filter function reside in a dynamic link 
+library.  The filter function for an application specific hook may reside either 
+in the application or a dynamic link library.
+  
+
+Different types of Windows Hooks: 
+ 
+Windows defines the following types of hook functions:
+ 
+  WH_CALLWNDPROC 	- A window procedure hook called whenever the  SendMessage() 
+   function is called.
+  WH_CBT 	- A computer based training hook called before activating, creating, 
+   destroying, minimizing, maximizing, moving, or sizing a window; before completing 
+   a system command; before removing a mouse or keyboard event; before setting 
+   input focus; and before synchronizing the system message queue.
+  WH_DEBUG 	-A debugging hook called before any other filter installed by the  
+   SetWindowsHookEx()  function is called.
+  WH_GETMESSAGE 	- A message hook called whenever the  GetMessage()  function 
+   has retrieved a message from an application queue.
+  WH_HARDWARE 	- A nonstandard hardware message hook called whenever the 
+   application calls the  GetMessage()  or  PeekMessage()  function and there is 
+   a hardware event (other than a mouse or keyboard event) to process.
+  WH_JOURNALRECORD 	- A journaling record hook called when the system removes 
+   messages from the system message queue.
+  WH_JOURNALPLAYBACK 	- A journaling playback hook used to insert mouse and 
+   keyboard messages into the system message queue.
+  WH_KEYBOARD 	- A keyboard hook called whenever the application calls the  
+   GetMessage()  or  PeekMessage()  function and there is a  WM_KEYUP  or  
+   WM_KEYDOWN  keyboard message to process.
+  WH_MOUSE 	- A mouse message hook called whenever the application calls the  
+   GetMessage()  or  PeekMessage()  function and there is a mouse message to 
+   process.
+  WH_MSGFILTER 	- An application message hook called after a dialog box, message 
+   box, or menu has retrieved a message, but before the message isprocessed.
+  WH_SHELL 	- A shell application hook called when notification messages from 
+   the system have been made.
+  WH_SYSMSGFILTER 	- A system wide message hook called after a dialog box, message 
+   box, or menu has retrieved a message, but before the message is processed.
+
+Note: Debugging Windows hooks can be very difficult. The documentation has much 
+to be desired, so before you make the jump, always consult the  Microsoft Knowledge 
+Base  for any additional information regarding the hook you are designing for. If
+your hook hangs the system, pressing  CTRL+ESC  or  CTRL+AlT+DEL  should unhook 
+any system wide hooks that are in effect.
+
+
+Data storage in dynamic link libraries  
+
+Under 16 bit Windows, a dynamic link library is only loaded once no matter how 
+many applications request the library to be loaded, generally contains a single 
+data segment, and all global variables in the dynamic link library exist across 
+all applications that load the dynamic link library.  If any process causes 
+corruption in the data segment of the dynamic link library, other applications 
+using the dynamic link library can be affected. Many argue that sharing data 
+between applications through a 16 bit dynamic link library is considered a very 
+bad practice.
+
+Under  Windows 95 , the code for a dynamic link library is only loaded once no 
+matter how many applications request the library to be loaded, and the link to a 
+running application gets its own data storage area.  This provides some additional
+crash protection to other applications, since any corrupted global variables in a 
+dynamic link library caused by one application will not adversely affect other 
+applications using that dynamic link library.
+ 
+Under  Windows NT , a separate copy of both the dynamic link library's data and 
+code is linked to the calling application.  If we think about how the DLL is loaded, 
+we can still realize a memory saving when we talk about physical memory usage. 
+Each process does indeed gets its own copy of the DLL and the DLL data.  However, 
+it obtains this through a memory mapping of the DLL. That is, the DLL code is 
+mapped to each processes address space. In physical memory (as seen by the system) 
+the DLL is loaded only once.
+
+
+Instanced addresses and thunking  
+
+As already mentioned, 16-bit dynamic link libraries have only one data segment. 
+When you call a function in a dynamic link library, the data segment must be 
+switched from your application's data segment to that of the dynamic link library's 
+data segment, and back again after the function returns. If the dynamically linked 
+function happens to make a callback to a function in your application, the data 
+segment must be switched back to your application's data segment during the callback, 
+and back again to the dynamic link library's data segment when your function returns.
+
+When making a call to a dynamically linked function, the fixup code to switch the 
+data segment is transparent. In the case of a callback, additional magic is needed 
+by your application. The magic is made possible by using the Windows API function  
+MakeProcInstance()  to receive an " instance thunk " to your callback 
+procedure. This " instance thunk " is the glue that holds your callback 
+function and your data segment together during the callback. The procedure address 
+passed to the  MakeProcInstance()  function needs to be marked with both the " far " 
+and " exported " attributes. After the dynamic link library is through 
+using your callback function, and returns, you should always call the Windows API  
+FreeProcInstance()  function to free the instance thunk.
+ 
+Using the  MakeProcInstance()  function is not necessary in 32 bit applications, 
+or any dynamic link library (16 or 32 bit). It is, however, safe to use under these 
+conditions, so any code you have that uses these functions can be safely ported 
+to dynamic link libraries and 32 bit versions of Windows.
+
+
+The example:  
+
+We will now present an example of using Windows API functions by creating an 
+application that serves the useful function of hooking into the Windows messaging 
+system, and recording any keyboard and mouse input to be used for later playback. 
+We will call our macro recording application "  Hookit!  ". Our " Hookit! " 
+application is a great starting place for a full featured Windows macro recorder, 
+reminiscent of the early days of DOS and my favorite " Sidekick's Sidekick ", 
+Borland's highly successful TSR program " SuperKey "! It's worth noting 
+that unlike 16 bit Windows, neither  Windows 95  or  Windows NT  shipped with a 
+macro recording feature.
+ 
+Since " Hookit! " will use system wide Windows hook functions for  
+JournalRecord  and  JournalPlayback , we will also create a Windows dynamic link 
+library along the way! Both the application and the dynamic link library will 
+perform callbacks.
+
+Pascal  was originally designed to be a teaching language, thus the code example 
+presented was written in  Pascal , and can easily be ported to other languages such 
+as " C ". Note that the code cannot be ported to  Visual Basic,  since, 
+as of this writing,  Visual Basic  does not support creating dynamic link libraries 
+or callback functions.
+
+The code presented may also be directly ported between 16 and 32 bit compilers, 
+and will successfully compile with Borland's  Turbo Pascal for Windows 1.5, Borland 
+Pascal for Windows 7.0 / 7.01, Delphi 1.0 / 1.02, and Delphi 2.0 .  To make it easy 
+to port to other languages, no Pascal or  Delphi  specific features are used. The 
+code also serves as a model for creating a " traditional " Windows program 
+in  Delphi , and utilizing a dialog box template for the main window of a program.
+ 
+Although " Hookit! " uses features designed to run on Windows 3.1 or above, 
+the example code can be adapted to run on earlier versions of Windows ( 2.x and 3.0 ).
+
+
+The Journal Hooks: JournalRecord and JournalPlayback  
+
+The Journal hook functions provide a easy way to record keyboard and mouse events 
+on a system-wide basis, and play the events back at some later date.
+ 
+You can install a  JournalRecord  or  JournalPlayback  hook callback function by 
+calling the Windows API function  SetWindowsHookEx() , and passing the address of 
+your hook callback function. An instanced address is not needed, as both the  
+JournalRecord  and  JournalPlayback  callback functions are system wide hooks, 
+and must reside in a dynamic link library. Calling  SetWindowHookEx()  will 
+return a 32 bit handle to your hook callback function for you to identify yourself 
+to other hook functions already in the " Hook Chain ", and to remove 
+your hook from the chain when you are done recording.
+ 
+When you call  SetWindowsHookEx()  with the address of your  JournalRecord  callback 
+function, Windows will return immediately, and the recording begins. Your  JournalRecord  
+callback function will get called with a code indicating the following conditions: 
+
+  There is a keyboard
+or mouse event to record. 
+  The system is entering
+a modal state. 
+  The system leaving
+a modal state. 
+  The system wants you
+to call the next hook in the hook chain. 
+
+If there is a keyboard or mouse event, the code will equal " HC_ACTION ", 
+and you are free to record the event. A pointer to an  EVENTMSG  is passed to you 
+in the lParam parameter of your  JournalRecord  callback function. The system time 
+that the event was originally fired is contained in time parameter of the  EVENTMSG  
+structure.  For playback purposes, you will need to make a copy of the  EVENTMSG  
+and change the time in the copy to reflect the net time into the recording, since 
+you will need to synchronize the playback of the message to the system time at 
+playback. This is done by getting the system time when you start the recording, 
+and subtracting it from the message time.
+ 
+If the system enters a modal state, the code will equal " HC_SYSMODALON ", 
+indicating something bad has happened to the system, and you should temporarily 
+stop recording, and call the next message hook in the " Hook Chain ", 
+so hooks further down the chain will know what is going on. When the system 
+returns from a modal state, the code will equal " HC_SYSMODALOFF" , 
+and you may resume recording.
+ 
+Finally, if the code is less than zero, the system is asking you to call the next 
+hook in the chain, and you should do so without further processing. When you are 
+through recording, you can simply call the Windows API function
+UnHookWindowsHookEx()  passing back the 32 bit handle given to you when you 
+originally called the  SetWindowsHookEx()  function, and Windows will remove your 
+hook callback function from the " Hook Chain ".
+ 
+When you are ready to playback your recording, you will call  SetWindowsHookEx()  
+again, passing the address of your  JournalPlayback  callback function.  Windows 
+will return immediately, and the playback begins. During playback, normal mouse 
+and keyboard input is automatically disabled by the system.
+ 
+Your JournalPlayback callback function will get called with a code indicating one 
+the following conditions: 
+ 
+  HC_SKIP 	- You should retrieve the next message. If there are no more messages 
+   to play, then you may safely call the Windows API function  UnHookWindowsHookEx() , 
+   passing the handle to your hook function to end the playback.
+  HC_GETNEXT 	- You should play the current message.
+  HC_SYSMODALON 	- The system is entering a modal state. This indicates something 
+   bad has happened. You should call the next hook in the hook chain, so other hooks 
+   will know something is up.
+  HC_SYSMODALOFF 	- The system leaving a modal state, and Windows has unhooked 
+   your JournalPlayback callback procedure right out from under you. You are done. 
+   As your last act, you should call the next hook in the hook chain, so other 
+   hooks will know they are hosed as well.
+  Code < 0 	- The system wants you to call the next hook in the hook chain 
+   without further processing.
+
+You should go ahead and retrieve the first message before you call the SetWindowsHookEx()
+ function, since the system will ask you to play the first message before requesting 
+ the next message. You will also need to get the system time, since you will need 
+ to " fix up " the playback time of each of your recorded messages to synchronize 
+ with the system time at playback.
+
+Windows may ask you to play the same message more than once. The first time Windows 
+asks you to play the current message, your  JournalPlayback  callback function 
+should return the difference between the current time and the time the message is 
+scheduled to play. 
+
+If the difference between the current time and the time the message is scheduled 
+to play is negative, your  JournalPlayback callback function should return zero. 
+The  JournalPlayback  callback function must also return zero if the same message 
+is requested to be played more than once.
+
+
+How HOOKIT! works  
+
+Our application ( HOOKIT.EXE ) will contain four buttons:
+ 
+ Start Recording
+ Stop Recording
+ Playback
+ Done
+
+and one callback function:
+ 
+ PlaybackFinished()
+ 
+Our dynamic link library ( HOOKLIB.DLL ) will contain three functions that our 
+calling application will use:
+
+ StartRecording()
+ StopRecording()
+ Playback()
+ 
+and two hook functions that Windows will use:
+
+ JournalRecordProc()
+ JournalPlaybackProc()
+
+ 
+HOOKIT! application logic: 
+ 
+Allow the program to start only if the version of Windows is equal or greater 
+than Window's 3.1.
+
+We will need to supply a callback function to be called whenever a macro's playback 
+has finished, since the  Playback()  function will return immediately, and our 
+application will continue to execute during playback.  We will need to call  
+MakeProcInstance()  to get the instanced address of our callback function  
+PlaybackFinished()  to pass to the  Playback()  function. Since we cannot call  
+FreeProcInstance()  in the middle of the callback, we must declare a global 
+variable to hold the instanced address of  PlaybackFinished()  on program startup, 
+and free it on exit from the program.
+
+
+Create a main window from a Dialog Box template. 
+
+Upon creation of our main window, we will enable the " Start Recording " and " Done " 
+button. We will disable the  "Stop Recording " and " Playback " button, 
+since we have no recording to stop or playback.
+
+When the " Done " button is selected we will free the instanced address 
+of our callback function  PlaybackFinished()  and exit the program.
+
+When the " Start Recording " button is selected, we will disable the " 
+Start Recording " and " Done " button, since we don't want to allow 
+more than one recording at a time, and we don't want to allow the user to quit in 
+the middle of recording.
+
+We will enable the " Stop Recording " button and call our  StartRecording()  function. 
+If the  StartRecoding()  function returns an error, we will announce the error to 
+the user, and reset the buttons to their default state before the " Start 
+Recording " button was pressed.
+
+When the " End Recoding " button is pressed, We will call the  StopRecording()
+function passing it the filename to store the macro in. Then we will enable both the " Done " 
+and " StartRecording " buttons, since we can now allow the user to quit, 
+and we want the user to have the option to record or rerecord the session.  We 
+will enable " Playback " button only if anything has successfully been 
+recorded.
+
+When the " Playback " button is selected, we will disable all of our buttons, 
+and call the  Playback()  function, passing it the filename of the macro to play, the
+instanced address of our callback function  PlaybackFinished() , and a handle to 
+our main window to be passed back to us as application defined data. When the 
+macro playback is done, our hook function will callback to our program's  
+PlaybackFinished()  function, letting us know it has finished, and passing us back 
+the handle to our main window as application data. We must do this since the 
+Playback()  function will return immediately, causing our program to continue to 
+run during the macro's playback. 
+
+This will allow us to know when it safe to enable our program's buttons again. 
+If the  Playback()  function returns an error, we will reset the buttons to their 
+default state before the " Playback " button was pressed.
+
+When our callback function  PlaybackFininshed()  is called, we can enable the 
+" Start Recording ", " Playback " and " Done " buttons.
+
+
+HOOKLIB dynamic link library logic:  
+ 
+If an error occurs during the call to  StartRecord() , or, we are already recording 
+or playing, we will return zero without further processing.
+
+During the recording process, we will save keyboard and mouse events to an array. 
+For the sake of simplicity, we will limit the number of recorded events to what 
+will fit in a 64k memory block.
+
+When  StopRecording()  is called, if any events have been recorded, we will write 
+the recorded events to the disk for later playback. We will then unhook our  
+JournalRecordProc()  from the hook chain. We will return an error code of -1 if 
+nothing is currently recording or -2 if there was trouble unhooking from the " Hook Chain ".
+Otherwise we will return the number of messages recorded.
+
+When the  Playback()  function is called, we will start the playback. If an error 
+occurs or their is nothing to playback, we will return zero without further 
+processing.
+
+When the playback is finished, we will callback to the application announcing we 
+are done playing back the macro.
+
+Since the  SetWindowsHookEx()  function does not allow us an appdata parameter 
+for application defined data, we must declare several global variables for our 
+hook callback functions, and avoid letting more than one application invoke 
+either the  StartRecord()  and  Playback()  functions at any given time under 
+Windows 3.1.
+
+We will define a global pointer called " PMsgBuff  "that will point to 
+an array of  EventMsg  structures to record to and playback from.  Upon library 
+startup, we will initialize this pointer to nil.  Only when we are recording or 
+playing a macro will this pointer actually point to a memory block, otherwise it 
+will be nil. This will give us a way to determine whether or not we are in the 
+process of recording or playing a macro.
+
+We will also need to define global variables for:
+
+" TheHook "- A 32 bit handle to our hook proc.
+" StartTime "- The starting time of the recording or playback.
+" MsgCount "- The total number of messages recorded.
+" CurrentMsg "- The current message playing.
+" ReportDelayTime "- If we should report a delay time.
+" SysModalOn "- If the system is currently in a " modal " state.
+" cbPlaybackFinishedProc "- The instanced address of the application's 
+ PlaybackFinished() callback function.
+" cbAppData "- The user defined application data parameter passed to our  
+ Playback()  function.
+
+
+Got-Ya's! 
+ 
+JournalRecordProc()  is incorrectly documented as receiving a  MSG  structure.
+JournalRecordProc()  actually receives the same  EVENTMSG  structure that is 
+documented by  JournalPlaybackProc() .
+
+The  JournalRecordProc()  and  JournalPlaybackProc()  hook procedures do not 
+provide a user defined lpData parameter, so you must use global variables in 
+your dynamic link library.
+
+Mouse events recorded with  JournalRecord  may not play back correctly if the 
+display resolution has changed, or a window's position has changed.
+
+Keyboard events recorded with  JournalRecord  on a Windows system other than Windows 
+NT  will not play back correctly under  Windows NT . Under Windows 3.1, the keyboard 
+repeat count is stored in the ParamH parameter of the  EVENTMSG  structure. Under  
+Windows NT , this parameter is always 1.  The size of the  EVENTMSG  structure 
+also changes under Win32.
+
+Your  JournalPlaybackProc  may be called many times with the  HC_GETNEXT message. 
+The system expects you to continue providing the same event to play until you 
+receive a  HC_SKIP  message.
+
+Be sure to return a non-zero delay time only once for each unique event you process 
+in your JournalPlaybackProc , else  Windows NT  may hang due to timing differences. 
+If your  JournalPlaybackProc()  gets called with a code of  HC_GETNEXT  more than 
+once for the same event, return zero from your  JournalPlaybackProc .
+
+Interactive debugging of a journal hook cannot be done on a single machine. A  
+Windows NT  or  Win32  application has an advantage that the system will send a  
+WM_CANCELJOURNAL  message to all applications when the system pulls the hook out 
+from under the application when the user presses  CTRL+ESC  or  CTRL+ALT+DEL. 
+" HOOKIT! " handles this event gracefully.
+
+The  SetWindowsHookEx()  function will return immediately. This can be a problem 
+if your program needs to know when the playback has finished.
+
+Since you will most likely use the Windows API function  GetTickCount()  for 
+calculating messaging times, you always run the risk that the system time will 
+wrap if windows has not been restarted in the last 49 days.  If you account for 
+the fact that not all compilers support unsigned 32 bit integers, the system time 
+will appear to go negative sometime into the 24th day.
+
+The " handle " passed back from  SetWindowsHookEx()  is 32 bits wide, 
+even in 16 bit environments.
+
+You may need to set your compiler's link buffer to compile to disk when building 
+dynamic link libraries. If the file image is only created in memory, it will not 
+be available to the program that uses it.
+
+JournalRecordProc()  does not get along well with the new  Windows 95  " StartKey " 
+contained on some new keyboards.
+
+
+Source code for HOOKLIB.DLL  
+
+Note: Save the source as  HOOKLIB.PAS  for Pascal or HOOKLIB.DPR for Delphi .
+
+{$C FIXED PRELOAD PERMANENT}
+
+library HOOKLIB;
+
+{$IFDEF Win32}
+
+uses
+  Windows;
+
+type
+  TwMsg = Longint;
+  TwParam = Longint;
+  TlParam = Longint;
+
+{$ELSE}
+
+uses
+ {$IFDEF VER15}
+  WinTypes, WinProcs, Win31;
+ {$ELSE}
+ {$IFDEF VER70}
+  WinTypes, WinProcs, Win31;
+ {$ELSE}
+  WinTypes, WinProcs;
+ {$ENDIF}
+ {$ENDIF}
+
+type
+  TwMsg = Word;
+  TwParam = Word;
+  TlParam = Longint;
+
+{$ENDIF}
+
+const
+  MAXMSG = 6500;
+
+type
+  PEventMsg = ^TEventMsg;
+  TMsgBuff = Array[0..MAXMSG]
+of TEventMsg;
+  TcbPlaybackFinishedProc
+= Procedure(AppData: Longint)
+
+ {$IFDEF Win32} stdcall; {$ELSE} ; {$ENDIF}
+
+var
+  PMsgBuff: ^TMsgBuff;
+  TheHook: HHook;
+  StartTime: Longint;
+  MsgCount: Longint;
+  CurrentMsg: Longint;
+  ReportDelayTime: Bool;
+  SysModalOn: Bool;
+  cbPlaybackFinishedProc:
+TcbPlaybackFinishedProc;
+  cbAppData: Longint;
+
+
+{ ************************* }
+{ function JournalRecordProc(Code: Integer; }
+{  wParam: TwParam;                         }
+{  lParam: TlParam): Longint;               }
+{ Parameters: action to perform and message data. }
+{ Returns: zero unless code < 0, in which case return the result }
+{          from CallNextHookEx(). }
+{ ************************* }
+function JournalRecordProc(Code:
+Integer;
+                         
+ wParam: TwParam;
+                         
+ lParam: TlParam): Longint
+                         
+{$IFDEF Win32} stdcall; {$ELSE} ; export; {$ENDIF}
+begin
+  JournalRecordProc := 0;
+  case Code of
+
+    HC_ACTION: begin
+      if SysModalOn then exit;
+      if MsgCount > MAXMSG
+then exit;
+     {record the message}
+      PMsgBuff^[MsgCount]
+:= PEventMsg(lParam)^;
+     {set the delta time of
+the message}
+      Dec(PMsgBuff^[MsgCount].Time,StartTime);
+      Inc(MsgCount);
+      exit;
+    end;
+
+    HC_SYSMODALON: begin
+      SysModalOn := True;
+      CallNextHookEx(TheHook,
+Code, wParam, lParam);
+      exit;
+    end;
+
+    HC_SYSMODALOFF: begin
+      SysModalOn := False;
+      CallNextHookEx(TheHook,
+Code, wParam, lParam);
+      exit;
+    end;
+
+  end;
+  if code < 0 then
+    JournalRecordProc := CallNextHookEx(TheHook,
+              Code,
+              wParam,
+              lParam);
+end;
+
+
+{ ************************* }
+{ function StartRecording: Integer;}
+{ Parameters: none. }
+{ Returns: non zero if successful. }
+{ ************************* }
+function StartRecording: Integer
+                      {$IFDEF
+Win32} stdcall; {$ELSE} ; export; {$ENDIF}
+begin
+  StartRecording := 0;
+  if pMsgBuff <> nil
+then exit;
+  GetMem(PMsgBuff, Sizeof(TMsgBuff));
+  if PMsgBuff = nil then exit;
+  SysModalOn := False;
+  MsgCount := 0;
+  StartTime := GetTickCount;
+  TheHook := SetWindowsHookEx(WH_JOURNALRECORD,
+    JournalRecordProc,
+    hInstance,
+    0);
+  if TheHook <> 0 then
+begin
+    StartRecording := 1;
+    exit;
+  end else begin
+    FreeMem(PMsgBuff, Sizeof(TMsgBuff));
+    PMsgBuff := nil;
+  end;
+end;
+
+
+{ ************************* }
+{ function StopRecording(lpFileName: PChar): Integer; }
+{ Parameters: pointer to filename to save to. }
+{ Returns: number of records written. }
+{          -1 if not recording. }
+{          -2 unable to unhook. }
+{ ************************* }
+function StopRecording(lpFileName:
+PChar): Longint
+                      {$IFDEF
+Win32} stdcall; {$ELSE} ; export; {$ENDIF}
+
+var TheFile: File;
+begin
+  if PMsgBuff = nil then begin
+    StopRecording := -1;
+    exit;
+  end;
+  if UnHookWindowsHookEx(TheHook)
+= False then begin
+    StopRecording := -2;
+    exit;
+  end;
+  TheHook := 0;
+  if MsgCount > 0 then
+begin
+    Assign(TheFile, lpFileName);
+   {$I-}
+    Rewrite(TheFile, Sizeof(TEventMsg));
+   {$I+}
+    if IOResult <> 0
+then begin
+      FreeMem(PMsgBuff, Sizeof(TMsgBuff));
+      PMsgBuff := nil;
+      StopRecording := 0;
+      exit;
+    end;
+   {$I-}
+    Blockwrite(TheFile, PMsgBuff^,
+MsgCount);
+   {$I+}
+    if IOResult <> 0
+then begin
+      FreeMem(PMsgBuff, Sizeof(TMsgBuff));
+      PMsgBuff := nil;
+      StopRecording := 0;
+     {$I-}
+      Close(TheFile);
+     {$I+}
+      if IOResult <>
+0 then exit;
+      exit;
+    end;
+   {$I-}
+    Close(TheFile);
+   {$I+}
+    if IOResult <> 0
+then begin
+      FreeMem(PMsgBuff, Sizeof(TMsgBuff));
+      PMsgBuff := nil;
+      StopRecording := 0;
+      exit;
+    end;
+  end;
+  FreeMem(PMsgBuff, Sizeof(TMsgBuff));
+  PMsgBuff := nil;
+  StopRecording := MsgCount;
+end;
+
+
+{ ************************* }
+{ function JournalPlaybackProc(Code: Integer; }
+{  wParam: TwParam; }
+{  lParam: TlParam): Longint; }
+{ Parameters: action to perform and message data. }
+{ Returns:  if Code < 0, returns the result from CallNextHookEx(), }
+{            otherwise returns the requested time to wait to fire }
+{            the next event or zero. }
+{ ************************* }
+function JournalPlaybackProc(Code:
+Integer;
+   wParam: TwParam;
+   lParam: TlParam): Longint
+  {$IFDEF Win32} stdcall; {$ELSE} ; export; {$ENDIF}
+var
+  TimeToFire: Longint;
+begin
+  JournalPlaybackProc := 0;
+  case Code of
+    HC_SKIP: begin
+     {get the next message}
+      Inc(CurrentMsg);
+      ReportDelayTime := True;
+     {are we finished?}
+      if CurrentMsg >=
+(MsgCount-1) then
+        if TheHook <>
+0 then
+          if UnHookWindowsHookEx(TheHook)
+= True then begin
+            TheHook := 0;
+            FreeMem(PMsgBuff,
+Sizeof(TMsgBuff));
+            PMsgBuff := nil;
+           {callback to the
+application announcing we are finished}
+            cbPlaybackFinishedProc(cbAppData);
+          end;
+      exit;
+    end;
+
+    HC_GETNEXT: begin
+     {play the current message}
+      PEventMsg(lParam)^ :=
+PMsgBuff^[CurrentMsg];
+      PEventMsg(lParam)^.Time
+:= StartTime + PMsgBuff^[CurrentMsg].Time;
+     {if first time this message
+has played - report the delay time}
+      if ReportDelayTime then
+begin
+        ReportDelayTime :=
+False;
+        TimeToFire := PEventMsg(lParam)^.Time
+- GetTickCount;
+        if TimeToFire >
+0 then JournalPlaybackProc := TimeToFire;
+      end;
+      exit;
+    end;
+
+    HC_SYSMODALON:begin
+     {something is wrong}
+      SysModalOn := True;
+      CallNextHookEx(TheHook,
+Code, wParam, lParam);
+      exit;
+    end;
+
+    HC_SYSMODALOFF:begin
+     {we have been hosed by
+the system - our hook has been pulled!}
+      SysModalOn := False;
+      TheHook := 0;
+      FreeMem(PMsgBuff, Sizeof(TMsgBuff));
+      PMsgBuff := nil;
+     {callback to the application
+announcing we are finished}
+      cbPlaybackFinishedProc(cbAppData);
+      CallNextHookEx(TheHook,
+Code, wParam, lParam);
+      exit;
+    end;
+
+  end;
+  If code < 0  then
+    JournalPlaybackProc :=
+CallNextHookEx(TheHook,
+                Code,
+                wParam,
+                lParam);
+end;
+
+{ ************************* }
+{ function Playback(lpFileName: PChar; }
+{                    EndPlayProc: TcbPlaybackFinishedProc; }
+{                    AppData: Longint): Integer; }
+{ Parameters: pointer to filename to play. }
+{             application's EndPlay callback function. }
+{             application's defined data. }
+{ Returns: non zero if successful. }
+{ ************************* }
+function Playback(lpFileName:
+PChar;
+                   EndPlayProc:
+TcbPlaybackFinishedProc;
+                   AppData:
+Longint): Integer
+                  {$IFDEF
+Win32} stdcall; {$ELSE} ; export; {$ENDIF}
+var
+  TheFile: File;
+begin
+  Playback := 0;
+  If PMsgBuff <> nil
+then exit;
+  GetMem(PMsgBuff, Sizeof(TMsgBuff));
+  If PMsgBuff = nil then exit;
+  Assign(TheFile, lpFileName);
+ {$I-}
+  Reset(TheFile, Sizeof(TEventMsg));
+ {$I+}
+  if IOResult <> 0 then
+begin
+    FreeMem(PMsgBuff, Sizeof(TMsgBuff));
+    PMsgBuff := nil;
+    exit;
+  end;
+ {$I-}
+  MsgCount := FileSize(TheFile);
+ {$I+}
+  if IOResult <> 0 then
+begin
+    FreeMem(PMsgBuff, Sizeof(TMsgBuff));
+    PMsgBuff := nil;
+   {$I-}
+    Close(TheFile);
+   {$I+}
+    if IOResult <> 0
+then exit;
+    exit;
+  end;
+  if MsgCount = 0 then begin
+    FreeMem(PMsgBuff, Sizeof(TMsgBuff));
+    PMsgBuff := nil;
+   {$I-}
+    Close(TheFile);
+   {$I+}
+    if IOResult <> 0
+then exit;
+    exit;
+  end;
+ {$I-}
+  Blockread(TheFile, PMsgBuff^,
+MsgCount);
+ {$I+}
+  if IOResult <> 0 then
+begin
+    FreeMem(PMsgBuff, Sizeof(TMsgBuff));
+    PMsgBuff := nil;
+   {$I-}
+    Close(TheFile);
+   {$I+}
+    if IOResult <> 0
+then exit;
+    exit;
+  end;
+ {$I-}
+  Close(TheFile);
+ {$I+}
+  if IOResult <> 0 then
+begin
+    FreeMem(PMsgBuff, Sizeof(TMsgBuff));
+    PMsgBuff := nil;
+    exit;
+  end;
+  CurrentMsg := 0;
+  ReportDelayTime := True;
+  SysModalOn := False;
+ {save the application's callback
+procedure}
+  cbPlaybackFinishedProc :=
+EndPlayProc;
+ {save the application's defined
+data parameter}
+  cbAppData := AppData;
+  StartTime := GetTickCount;
+  TheHook := SetWindowsHookEx(WH_JOURNALPLAYBACK,
+    JournalPlayBackProc,
+    hInstance,
+    0);
+  if TheHook = 0 then begin
+    FreeMem(PMsgBuff, Sizeof(TMsgBuff));
+    PMsgBuff := nil;
+    exit;
+  end;
+  Playback := 1;
+end;
+
+exports
+  JournalRecordProc index
+1 name 'JOURNALRECORDPROC' resident,
+  StartRecording index 2 name
+'STARTRECORDING' resident,
+  StopRecording index 3 name
+'STOPRECORDING' resident,
+  JournalPlayBackProc index
+4 name 'JOURNALPLAYBACKPROC' resident,
+  Playback index 5 name 'PLAYBACK'
+resident;
+
+begin
+  PMsgBuff := nil;
+end. 
+
+Resource statements to build:  
+HOOKIT16.RES and HOOKIT32.RES
+
+Note: Save the source as  HOOKIT16.RC  for 16 bit environments
+or  HOOKIT32.RC  for 32 bit environments.  Use the  Borland Resource
+Command Line Compiler BRCC.EXE  to compile a 16 bit resource file and  
+BRCC32.EXE  to compile a 32 bit resource file.
+
+ HOOKIT DIALOG 15, 15, 63, 60
+STYLE WS_OVERLAPPED | WS_VISIBLE | WS_CAPTION | WS_MINIMIZEBOX
+CLASS "HOOKITDIALOGCLASS"
+CAPTION "HookIt!"
+BEGIN
+  CONTROL "Start Recording",
+101, "BUTTON", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE
+| WS_GROUP | WS_TABSTOP, 0, 0, 63, 15
+  CONTROL "Stop Recording",
+102, "BUTTON", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE
+| WS_GROUP | WS_TABSTOP, 0, 15, 63, 15
+  CONTROL "PlayBack",
+103, "BUTTON", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE
+| WS_GROUP | WS_TABSTOP, 0, 30, 63, 15
+  CONTROL "Done!",
+1, "BUTTON", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE |
+WS_GROUP | WS_TABSTOP, 0, 45, 63, 15
+END 
+
+Source code for HOOKIT.EXE  
+
+Note: Save the source as  HOOKIT.PAS  for  Pascal  or  HOOKIT.DPR  for  Delphi .
+
+ program HookIt;
+
+{$D HookIt!}
+
+{$C MOVEABLE PRELOAD PERMANENT}
+
+{$IFDEF Win32}
+
+{$R HOOKIT32.RES}
+
+uses
+  Windows, Messages;
+
+type  
+  TwMsg = Longint;
+  TwParam = Longint;
+  TlParam = Longint;
+
+{$ELSE}
+
+{$R HOOKIT16.RES}
+
+uses
+ {$IFDEF VER15}
+  WinTypes, WinProcs, Win31;
+ {$ELSE}
+ {$IFDEF VER70}
+  WinTypes, WinProcs, Win31;
+ {$ELSE}
+  WinTypes, WinProcs, Messages;
+ {$ENDIF}
+ {$ENDIF}
+
+type
+  TwMsg = Word;
+  TwParam = Word;
+  TlParam = Longint;
+
+{$ENDIF}
+
+type
+  TWinVersion = record
+   WinMajor : Byte;
+   WinMinor : Byte;
+   DosMajor : Byte;
+   DosMinor : Byte;
+  end;
+
+  TcbPlaybackFinishedProc = Procedure(AppData: Longint)
+                          {$IFDEF Win32} stdcall; {$ELSE} ; {$ENDIF}
+
+const
+  APPNAME = 'HookIt!';
+  CLASSNAME ='HOOKITDIALOGCLASS';
+  ID_BTN_START_RECORDING =
+101;
+  ID_BTN_STOP_RECORDING =
+102;
+  ID_BTN_PLAYBACK = 103;
+  ID_BTN_DONE = IDOK;
+  FILENAME = 'HOOKIT.MAC';
+
+var
+  PlaybackFinishedProc :TcbPlaybackFinishedProc;
+
+function StartRecording: Integer
+                       {$IFDEF
+Win32} stdcall; {$ELSE} ; far; {$ENDIF}
+                        external
+'HOOKLIB' index 2;
+
+
+function StopRecording(lpFileName:
+PChar): Integer
+                      {$IFDEF
+Win32} stdcall; {$ELSE} ; far; {$ENDIF}
+                       external
+'HOOKLIB' index 3;
+
+
+function Playback(lpFileName:
+PChar;
+                  EndPlayProc:
+TcbPlaybackFinishedProc;
+                  AppData:
+Longint): Integer
+                 {$IFDEF Win32}
+stdcall; {$ELSE} ; far; {$ENDIF}
+                  external
+'HOOKLIB' index 5;
+
+
+procedure PlaybackFinished(AppData:
+Longint)
+                         
+{$IFDEF Win32} stdcall; {$ELSE} ; export; {$ENDIF}
+
+begin
+  EnableWindow(GetDlgItem(hWnd(AppData),
+ID_BTN_START_RECORDING), True);
+  EnableWindow(GetDlgItem(hWnd(AppData),
+ID_BTN_STOP_RECORDING), False);
+  EnableWindow(GetDlgItem(hWnd(AppData),
+ID_BTN_PLAYBACK), True);
+  EnableWindow(GetDlgItem(hWnd(AppData),
+ID_BTN_DONE), True);
+  SetFocus(GetDlgItem(hWnd(AppData),
+ID_BTN_PLAYBACK));
+end;
+
+
+function HookitDialogProc(Dialog:
+HWnd;
+                         
+Msg: TwMsg;
+                         
+WParam: TwParam;
+                         
+LParam: TlParam): Longbool
+                         {$IFDEF
+Win32} stdcall; {$ELSE} ; export; {$ENDIF}
+begin
+  HookitDialogProc := True;
+ {do any default class handling
+here for HookItDlg}
+  HookitDialogProc := Longbool(DefDlgProc(Dialog,
+Msg, WParam, LParam));
+end;
+
+
+function MainDlgProc(Dialog: HWnd;
+                     Msg:TwMsg;
+                     WParam:TwParam;
+                     LParam:TlParam): Bool
+                    {$IFDEF Win32} stdcall; {$ELSE} ; export; {$ENDIF}
+begin
+  MainDlgProc := True;
+  case Msg Of
+
+    WM_INITDIALOG: begin
+      EnableWindow(GetDlgItem(Dialog,
+ID_BTN_START_RECORDING), True);
+      EnableWindow(GetDlgItem(Dialog,
+ID_BTN_STOP_RECORDING), False);
+      EnableWindow(GetDlgItem(Dialog,
+ID_BTN_PLAYBACK), False);
+      EnableWindow(GetDlgItem(Dialog,
+ID_BTN_DONE), True);
+      exit;
+    end;
+
+    WM_COMMAND: begin
+
+      case WParam of
+
+        ID_BTN_START_RECORDING:
+begin
+            EnableWindow(GetDlgItem(Dialog,
+ID_BTN_STOP_RECORDING), True);
+            SetFocus(GetDlgItem(Dialog,
+ID_BTN_STOP_RECORDING));
+            EnableWindow(GetDlgItem(Dialog,
+ID_BTN_START_RECORDING), False);
+            EnableWindow(GetDlgItem(Dialog,
+ID_BTN_PLAYBACK), False);
+            EnableWindow(GetDlgItem(Dialog,
+ID_BTN_DONE), False);
+            if StartRecording
+= 0 then begin
+              EnableWindow(GetDlgItem(Dialog,
+ID_BTN_START_RECORDING), True);
+              SetFocus(GetDlgItem(Dialog,
+ID_BTN_START_RECORDING));
+              EnableWindow(GetDlgItem(Dialog,
+ID_BTN_STOP_RECORDING), False);
+              EnableWindow(GetDlgItem(Dialog,
+ID_BTN_PLAYBACK), False);
+              EnableWindow(GetDlgItem(Dialog,
+ID_BTN_DONE), True);
+              Messagebox(Dialog,
+                         'Unable
+to start recording!',
+                         APPNAME,
+                         MB_OK);
+            end;
+          exit;
+        end;
+
+        ID_BTN_STOP_RECORDING:
+begin
+          if StopRecording(FILENAME)
+> 0 then begin
+            EnableWindow(GetDlgItem(Dialog,
+ID_BTN_START_RECORDING), True);
+            EnableWindow(GetDlgItem(Dialog,
+ID_BTN_PLAYBACK), True);
+            SetFocus(GetDlgItem(Dialog,
+ID_BTN_PLAYBACK));
+          end else begin
+            EnableWindow(GetDlgItem(Dialog,
+ID_BTN_START_RECORDING), True);
+            SetFocus(GetDlgItem(Dialog,
+ID_BTN_START_RECORDING));
+            EnableWindow(GetDlgItem(Dialog,
+ID_BTN_PLAYBACK), False);
+          end;
+          EnableWindow(GetDlgItem(Dialog,
+ID_BTN_STOP_RECORDING), False);
+          EnableWindow(GetDlgItem(Dialog,
+ID_BTN_DONE), True);
+          exit;
+        end;
+
+        ID_BTN_PLAYBACK: begin
+          EnableWindow(GetDlgItem(Dialog,
+ID_BTN_START_RECORDING), False);
+          EnableWindow(GetDlgItem(Dialog,
+ID_BTN_STOP_RECORDING), False);
+          EnableWindow(GetDlgItem(Dialog,
+ID_BTN_PLAYBACK), False);
+          EnableWindow(GetDlgItem(Dialog,
+ID_BTN_DONE), False);
+          if PlayBack(FILENAME,
+PlaybackFinishedProc, Dialog) = 0 then begin
+            EnableWindow(GetDlgItem(Dialog,
+ID_BTN_START_RECORDING), True);
+            EnableWindow(GetDlgItem(Dialog,
+ID_BTN_STOP_RECORDING), False);
+            EnableWindow(GetDlgItem(Dialog,
+ID_BTN_PLAYBACK), True);
+            EnableWindow(GetDlgItem(Dialog,
+ID_BTN_DONE), True);
+            SetFocus(GetDlgItem(hWnd(Dialog),
+ID_BTN_PLAYBACK));
+          end;
+          exit;
+        end;
+
+        ID_BTN_DONE: begin
+          EndDialog(Dialog,
+ID_BTN_DONE);
+          exit;
+        end;
+
+      end; {wParam}
+
+    end; {WM_COMMAND}
+
+    WM_CLOSE: begin
+      FreeProcInstance(@PlaybackFinishedProc);
+      EndDialog(Dialog, IDOK);
+      exit;
+    end;
+
+  end;
+  MainDlgProc := False;
+end;
+
+
+procedure Init;
+var
+  WindowClass: TWndClass;
+  WinVer: TWinVersion;
+begin
+  Longint(WinVer) := GetVersion;
+  if ((WinVer.WinMajor <
+3) OR
+      ((WinVer.WinMajor =
+3) AND
+       (WinVer.WinMinor <
+10)) ) then begin
+    Messagebox(0,
+               'Microsoft
+Windows 3.10 or greater required!',
+               APPNAME,
+               MB_OK);
+    halt;
+  end;
+  @PlaybackFinishedProc :=
+MakeProcInstance(@PlaybackFinished, hInstance);
+  If @PlaybackFinishedProc
+= nil then begin
+    Messagebox(0,
+               'Cannot create
+instance thunk!',
+               APPNAME,
+               MB_OK);
+    halt;
+  end;
+
+  if FindWindow(CLASSNAME,
+APPNAME) <> 0 then begin
+    Messagebox(0,
+               'Multiple Sessions
+not allowed',
+               APPNAME,
+               MB_OK);
+    halt;
+  end else begin
+    WindowClass.Style    
+    := CS_BYTEALIGNWINDOW;
+    WindowClass.lpfnWndProc
+  := @HookItDialogProc;
+    WindowClass.cbClsExtra
+   := 0;
+    WindowClass.cbWndExtra
+   := DLGWINDOWEXTRA;
+    WindowClass.hInstance
+    := hInstance;
+    WindowClass.hIcon    
+    := LoadIcon(0, IDI_APPLICATION);
+    WindowClass.hCursor  
+    := LoadCursor(0, IDC_ARROW);
+    WindowClass.hbrBackground
+:= GetStockObject(WHITE_BRUSH);
+    WindowClass.lpszMenuName
+ := nil;
+    WindowClass.lpszClassName
+:= CLASSNAME;
+    if not Bool(RegisterClass(WindowClass))
+then begin
+      Messagebox(0,
+                 'RegisterClass
+Failed!',
+                 APPNAME,
+                 MB_OK);
+      halt;
+    end;
+  end;
+end;
+
+procedure MyWinMain;
+var
+  WindowProc:TFarProc;
+begin
+  WindowProc:=MakeProcInstance(@MainDlgProc,
+hInstance);
+  DialogBox(hInstance, 'HOOKIT',
+0, WindowProc);
+  FreeProcInstance(WindowProc);
+end;
+
+
+{WinMain}
+begin
+  Init;
+  MyWinMain;
+end. 
+
+
+Conclusion:
+
+While writing Windows applications gets easier as development tools get more 
+sophisticated, there will be times when you must "bite the bullet" and a interface 
+to new functions that are not handled by your current tools.
+ 
+Remember... before you explore unchartered paths, check available resources for 
+documentation that may help to make your journey a pleasant and rewarding 
+experience.
+
+
+
+
+
+            Copyright © HelpMakers, 1997 - 99
+
+

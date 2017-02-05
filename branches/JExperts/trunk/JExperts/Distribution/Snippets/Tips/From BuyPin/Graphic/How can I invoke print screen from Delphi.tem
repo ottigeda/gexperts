@@ -1,0 +1,25 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I invoke print screen from Delphi ? 
+
+Answer : 
+
+ var 
+   Bitmap: TBitmap; 
+   R: TRect; 
+ begin 
+ Bitmap := TBitmap.Create; 
+ try 
+   Bitmap.Width := Form2.ClientWidth; 
+   Bitmap.Height := Form2.ClientHeight; 
+   R := Rect(0, 0, Form2.ClientWidth, Form2.ClientHeight); 
+   Bitmap.Canvas.CopyRect(R, Form2.Canvas, R); 
+   Bitmap.SaveToFile('TEST.BMP'); 
+ finally 
+   Bitmap.Free end end; 
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

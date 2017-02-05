@@ -1,0 +1,23 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I detect if TCP/IP is installed ? 
+
+Answer : 
+uses Winsock; 
+
+function WinsockEnabled: boolean; 
+var 
+   wsaData: TWSAData; 
+begin 
+     result := true; 
+     case Winsock.WSAStartup($0101,wsaData) of 
+        WSAEINVAL, WSASYSNOTREADY, WSAVERNOTSUPPORTED: result := false; 
+        else  Winsock.WSACleanup; 
+     end; 
+end; 
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

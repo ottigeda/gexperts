@@ -1,0 +1,7 @@
+%TEST%=Test ?
+<CODE>
+      while %TEST% do
+      begin
+
+      end;	
+</CODE>

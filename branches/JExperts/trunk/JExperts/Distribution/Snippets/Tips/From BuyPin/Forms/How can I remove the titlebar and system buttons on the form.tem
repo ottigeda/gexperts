@@ -1,0 +1,28 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I remove the titlebar and system buttons on the form ? 
+
+Answer : 
+Hi there, 
+
+override the CreateParams method like this: 
+
+procedure CreateParams(var params: TCreateparams); override; 
+
+procedure TForm1.CreateParams(var Params: TCreateParams); 
+begin 
+  inherited CreateParams(Params); 
+  Params.Style := Params.Style and not WS_CAPTION; 
+end 
+
+
+OR 
+To hide it.... 
+form1.Borderstyle := bsnone; 
+To show it... 
+form1.Borderstyle := bssingle; 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

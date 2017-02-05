@@ -1,0 +1,35 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I print a TTreeView ? 
+
+Answer : 
+Here is a possible approach : 
+
+Procedure DumpTreeviewToTextfile( Var F: Textfile; tree: TTreeview ); 
+Var 
+  node: TreeNode; 
+Begin 
+  node:= tree.Items.GetFirstnode; 
+  While node ‹› Nil Do Begin 
+    WriteLn(F, StringOfChar(' ', 2* node.Level ), node.Text ); 
+    node := node.GetNext; 
+  End; { While } 
+End; 
+
+Var 
+  F: Textfile; 
+Begin 
+  AssignPrn( F ); 
+  Rewrite(F); 
+  try 
+    DumpTreeviewToTextfile( F, treeview1 ); 
+  finally 
+    closefile(F); 
+  end; 
+End; 
+
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

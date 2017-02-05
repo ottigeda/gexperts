@@ -1,0 +1,14 @@
+<CASE>
+ <ITEM>
+  <NAME>tsTabs</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>tsButtons</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+ <ITEM>
+  <NAME>tsFlatButtons</NAME>
+  <TYPE>0</TYPE>
+ </ITEM>
+</CASE>

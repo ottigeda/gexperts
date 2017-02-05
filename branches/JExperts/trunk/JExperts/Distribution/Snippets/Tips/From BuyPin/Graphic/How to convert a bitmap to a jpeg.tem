@@ -1,0 +1,31 @@
+BuyPin Software - Delphi Tips
+Question : 
+How to convert a bitmap to a jpeg? 
+
+Answer : 
+Try this : 
+
+var 
+  Bitmap: TBitmap; 
+  JpegImg: TJpegImage; 
+begin 
+ Bitmap := TBitmap.Create; 
+ try 
+   Bitmap.LoadFromFile('MYBITMAP.BMP'); 
+   JpegImg := TJpegImage.Create; 
+   try 
+     JpegImg.Assign(Bitmap); 
+     JpegImg.SaveToFile('MYBITMAP.JPG'); 
+   finally 
+     JpegImg.Free end; 
+ finally 
+   Bitmap.Free 
+ end; 
+end; 
+
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

@@ -1,0 +1,64 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I get the icon for a file type ? 
+
+Answer : 
+
+//GetIconIndex is from Brad Stowers 
+function GetIconIndex(const AFile: string; Attrs: DWORD): integer; 
+var SFI: TSHFileInfo; 
+begin 
+  SHGetFileInfo(PChar(AFile), Attrs, SFI, SizeOf(TSHFileInfo), 
+                SHGFI_SYSICONINDEX or SHGFI_USEFILEATTRIBUTES); 
+  Result := SFI.iIcon; 
+end; 
+
+Just call this function with a fake filename with the extension of the image you 
+need. For example: 
+
+GetIconIndex('Temp.pas',0) 
+
+> How do you get a good looking 16x16 version of an icon retrieved using 
+> SHGFI_Icon. The resizing process performed by a TImageList looks 
+> _terrible_! For some reason, SHGFI_SmallIcon doesn't seem to work, 
+>either. 
+
+Get a copy of the small system imagelist and instead of getting a handle to the 
+file's icon using SHGFI_Icon, get the index number of the icon instead. Here's a 
+function that get's the system image list: 
+
+procedure SetupSysImage(ImageList:TImageList;Flags: Word); 
+var AHandle: DWord; 
+FileInfo: TSHFileInfo; 
+Begin 
+  AHandle:=SHGetFileInfo('',0,FileInfo,sizeof(TSHFileInfo),Flags); 
+  if AHandle‹›0 then 
+    Begin 
+    ImageList.Handle:=AHandle; 
+    ImageList.ShareImages:=True; 
+    ImageList.DrawingStyle:=dsTransparent; 
+    End; 
+End; 
+
+Here's an example of using it to get the small imagelist: 
+
+SetupSysImage(SmallSysImageList,SHGFI_SMALLICON or SHGFI_SYSICONINDEX) 
+
+Then you can use the following to get a file's image index (i.e. which image in 
+the aforementioned imagelist is the file's icon) 
+
+function GetImageIndex(FileName:String):Integer; 
+var FileInfo: TSHFileInfo; 
+Begin 
+  if SHGetFileInfo(Pchar(FileName),0,FileInfo,sizeof(TSHFileInfo), 
+SHGFI_SMALLICON or SHGFI_SYSICONINDEX)‹›0 then 
+    Result:=FileInfo.IIcon 
+  else 
+    Result:=0; 
+End; 
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

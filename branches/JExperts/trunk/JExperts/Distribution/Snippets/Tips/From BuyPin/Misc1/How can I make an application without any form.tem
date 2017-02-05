@@ -1,0 +1,21 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I make an application without any form ? 
+
+Answer : 
+{$APPTYPE CONSOLE} 
+
+program Test; 
+
+uses windows; 
+
+begin 
+    Writeln('Hello'); 
+    Write('Press Enter ...'); 
+    Readln; 
+end. 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

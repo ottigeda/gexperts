@@ -1,0 +1,22 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I put an icon in 'My Computer' ? 
+
+Answer : 
+You have to edit the registry. You can see a sample on the computer which has 
+dialup-networking 'cause it inserts an icon such a tricky way... 
+
+Start regedit and go to 
+HKLM\Software\Microsoft\Windows\CurrentVersion\explorer\mycomputer\NameSpace 
+\... 
+Learn how the dialup-networking is installed under its CLSID, i mean 
+{.......} 
+Find this CLSID under HKCR\Classes\CLSID\{.......} 
+
+You can do the same way like dialup-networking does - think out your own new 
+CLSID and write down these two branches of registry. 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

@@ -1,0 +1,87 @@
+HelpMakers Delphi Site Tips 
+            Question: Some words on class variables in Delphi.
+
+            Relation: [ FuncType ]
+            ID: [ 000135 ] 
+I have been generally pleased with Delphi's level of Object Orientation,
+but it does seem to be missing Class Variables.  It would be nice to be
+able to have a class/static/shared variable that gets updated every time
+the class is instantiated - like so:
+
+type
+    TNode = class
+    public
+        NodeCount : Integer = 0;  {THIS IS NOT ALLOWED}
+        constructor Create;
+        {
+        other stuff
+        }
+    end;
+
+    TNode.Create;
+    begin
+        inherited Create;
+        Inc(NodeCount);
+    end;
+
+
+It seems the compiler won't allow the typed constant within a class type
+declaration.  So the NodeCount variable gets reinitialized for every
+instantiation of the TNode class.  It will work by putting the class
+variable OUTSIDE of the type statement as a plain-old typed constant.
+
+
+But then rather than having OOP looking code like:
+        SampleNode := TNode.Create;
+        x := SampleNode.NodeCount;
+
+You have to resort to semi OOP/procedural code like:
+        SampleNode := TNode.Create;
+        x := NodeCount;
+
+A:
+It's not a big deal to get equivalent
+functionallity by using a class method. You simply declare NodeCount as
+a regular typed constant in the implementation section of your file.
+
+
+type
+    TNode = class
+    public
+        NodeCount : Integer = 0;  {THIS IS NOT ALLOWED}
+        constructor Create;
+        Class Function GetNodeCount : word;
+        {
+        other stuff
+        }
+    end;
+
+implementation
+const
+     NodeCount : word = 0;
+
+    TNode.Create;
+    begin
+        inherited Create;
+        Inc(NodeCount); 
+    end;
+
+    Function TNode.GetNodeCount : word;
+    begin
+       result := NodeCount;
+    end;
+
+
+
+So your code will look just as you want:
+        SampleNode := TNode.Create;
+        x := SampleNode.GetNodeCount;
+
+
+the follwing form is also legal:
+        x := TNode.GetNodeCount;
+
+
+
+
+

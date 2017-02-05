@@ -1,0 +1,23 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I draw disable the screen saver ? 
+
+Answer : 
+Just intercept the SC_SCREENSAVE message. 
+
+procedure TMyForm.WMSysCommand(var Message: TWMSysCommand); 
+begin 
+   if (Message.CmdType and $FFF0 = SC_SCREENSAVE) then 
+   begin 
+     // Don't allow the screen saver 
+   end 
+   else 
+    inherited; 
+end; 
+
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

@@ -1,0 +1,53 @@
+HelpMakers Delphi Site Tips 
+            Question: How to search the Text in the TDBMemo?
+
+            Relation: [ Database ]
+            ID: [ 000515 ] 
+What I want to do is search the Text in the TDBMemo, just like a Word Processor 
+searches for a particular word. I suspect that because the TDBMemo is attached 
+to the Paradox Table that searching this way is out of the Question.
+
+A:
+Try this procedure: Attach it to your OnFind Event for the FindDialog. The
+only problem is that I can't seem to get the found text to highlight in the
+DBMemo, although it works fine in a standard text Memo.
+
+procedure TMainForm.FindDialog1Find(Sender: TObject);
+var Buff, P, FT : PChar;
+    BuffLen     : Word;
+begin
+   With Sender as TFindDialog do
+   begin
+      GetMem(FT, Length(FindText) + 1);
+      StrPCopy(FT, FindText);
+      BuffLen:= DBMemo1.GetTextLen + 1;
+      GetMem(Buff,BuffLen);
+      DBMemo1.GetTextBuf(Buff,BuffLen);
+      P:= Buff + DBMemo1.SelStart + DBMemo1.SelLength;
+      P:= StrPos(P, FT);
+      if P = NIL then MessageBeep(0)
+      else
+      begin
+	 DBMemo1.SelStart:= P - Buff;
+	 DBMemo1.SelLength:= Length(FindText);
+      end;
+   FreeMem(FT, Length(FindText) + 1);
+   FreeMem(Buff,BuffLen);
+  end;
+end;
+
+To highlight the found text:
+
+begin
+	 DBMemo1.SelStart:= P - Buff;
+	 DBMemo1.SelLength:= Length(FindText);
+      end;
+   FreeMem(FT, Length(FindText) + 1);
+   FreeMem(Buff,BuffLen);
+   DBMemo1.SetFocus;
+  end;
+
+
+
+
+

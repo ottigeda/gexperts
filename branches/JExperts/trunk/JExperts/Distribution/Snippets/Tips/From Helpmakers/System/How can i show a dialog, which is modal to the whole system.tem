@@ -1,0 +1,41 @@
+Question: How can i show a dialog, which is modal to the whole system?
+
+Q:
+With showmodal I show a dialog, which is modal considering the app. how
+can i show a dialog, which is modal to the whole system (no switches to other
+tasks should be allowed)?
+
+I want to show dialogs, which comes on the top of all windows if the app
+running at background. how to realize this?
+
+A:
+Check out API-function SetSysModalWindow
+Check out API-function BringWindowToTop
+
+A:
+If you just want a simple dialog with a bit of text, an optional
+icon and some buttons, use MessageBox in WinProcs
+and use MB_SYSTEMMODAL in the TextType parameter.
+
+A:
+Use the SetSysModalWindow() Windows API function.  The following code
+snippet demonstrates its use.  There can be only one system-modal window at
+a time, and that handle is returned by SetSysModalWindow().  I suggest that
+you save that return value and then reset it when you are finished, as
+demonstrated below.
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+   x : word ;
+begin
+     x := SetSysModalWindow(AboutBox.handle) ;
+     AboutBox.showmodal ;
+     SetSysModalWindow(x) ;
+end;
+ 
+ 
+ 
+
+Copyright © HelpMakers, 1997 - 99   
+ 
+

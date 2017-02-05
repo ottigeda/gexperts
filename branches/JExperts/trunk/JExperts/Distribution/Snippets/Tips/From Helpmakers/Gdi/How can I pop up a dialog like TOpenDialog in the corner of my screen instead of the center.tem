@@ -1,0 +1,132 @@
+HelpMakers Delphi Site Tips 
+            Question: How can I pop up a dialog like TOpenDialog in the corner 
+            of my screen instead of the center?
+
+            Relation: [ GDI ]
+            ID: [ 000041 ] 
+This is kind of a weird one, because normally it's not something you'd consider.
+But take the situation in which you're editing a file and pop up a dialog box. By
+default, Windows dialogs pop up in the center of the screen, essentially blocking
+the view of your work. But to make matters worse, they're modal (which is
+probably a good thing anyway). So, in order to see your work - just in case you
+need the information underneath the dialog - you have to drag them to another
+location. No big deal, just a bit of a hassle. 
+
+Knowing this from the user's point of view, what can you do about it as a
+programmer? On the surface, it may seem that you won't be able to do much.
+The dialog boxes in Delphi are descendants of TCommonDialog, which is a
+standard Windows dialog, so direct manipulation with Delphi code isn't
+possible. Okay, I'm writing this article, so you know there's a way. But first,
+let's look at what we're faced with. 
+
+   1.TCommonDialog boxes such as TOpenDialog and TSaveDialog are
+     application-modal, meaning that when they pop up, your application is
+     inaccessible. 
+   2.Because of the inaccessibility mentioned above, direct manipulation of the
+     windows is impossible. 
+
+Given these two factors, what do we do? Well, we go around the back door.
+And the way we'll do this is with a TTimer. 
+
+In point one (1), I mentioned that your application is rendered inaccessible
+when a TCommonDialog box pops up to the screen. But that doesn't
+necessarily mean it's not running. Things like a TTimer will still run even if you
+pop up a modal dialog box. With that in mind, all we have to do is start the
+TTimer before we execute the TCommonDialog and have the code in the
+TTimer's OnTimer event handle finding our dialog box and moving it to a new
+position. Let's look at some code: 
+
+unit main;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ExtCtrls, StdCtrls;
+
+type
+  TForm1 = class(TForm)
+    OpenDialog1: TOpenDialog;
+    Button1: TButton;
+    Timer1: TTimer;
+    procedure Button1Click(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
+  private
+    { Private declarations }
+    dlgTitle : PChar;
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.DFM}
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  Timer1.Enabled := True;                       {Start the timer}
+  GetMem(dlgTitle, SizeOf(OpenDialog1.Title));  {Get memory for dialog title}
+  StrPCopy(dlgTitle, OpenDialog1.Title);        {Fill the space}
+  OpenDialog1.Execute;                          {Pop up the dialog}
+end;
+
+procedure TForm1.Timer1Timer(Sender: TObject);
+var
+  dlgWnd  : HWND;
+  dlgX,
+  dlgY    : Integer;
+  dlgRect : TRect;
+begin
+  dlgWnd := FindWindow('#32770', dlgTitle);     {Find the dialog window}
+  if dlgWnd <> 0 then begin
+    {In this next section we're going to get the dimensions of the dialog
+     so that we can use them to put the dialog right in the lower right-
+     hand corner of the screen. 0, 0 in place of the dlgX and dlgY vars
+     will place it where you want it.}
+    GetWindowRect(dlgWnd, dlgRect);
+    dlgX := Screen.Width  - (dlgRect.Right - dlgRect.Left);
+    dlgY := Screen.Height - (dlgRect.Bottom - dlgRect.Top);
+
+    {Set the window's position and kill the timer}
+    SetWindowPos(dlgWnd, 0, dlgX, dlgY, 0, 0, SWP_NOSIZE);
+    Timer1.Enabled := False;
+  end;
+
+  {Regardless, get rid of this memory allocation. No stinkin' stray pointers}
+  FreeMem(dlgTitle, SizeOf(OpenDialog1.Title));
+end;
+
+end.
+
+The code comments explain everything pretty clearly, so I won't go into details
+but I will tell you that I cheated. I had to ask around to find out what the class
+value for a TOpenDialog box was. However, the nice thing about the 32770
+value is that it is the class value for all TCommonDialog descendants. Therefore,
+you can use it for all of them. Nice. 
+
+As you can see from the code above, I start the timer running before I call the
+execute of the OpenDialog1. Then when the OnTimer event fires off, I look for
+the dialog window using my handy-dandy class value and the title of the dialog
+that I passed into a PChar (because FindWindow will only take a
+null-terminated string). 
+
+After that, I get the window's dimensions then use them to compute its position 
+relative to the screen to put it in the lower right-hand corner of the screen. 
+After that, I kill the timer, free unused memory space, and WHAMO! I've got a 
+TCommonDialog popping up where I want it and not where Windows will put it. 
+
+Are there any down sides to this? The obvious one you'll find when you put this
+code together is that there is a noticeable flash as the dialog gets moved. This is
+due in part to the TTimer. I set its interval value to 50ms; a lower value would
+be negligible for moving the window in time. 
+
+The only way to prevent the flash is to get a hook into the Windows workspace 
+and keep it from painting. But that would take a heck of a lot of code to put 
+together; in other words, it's more trouble than it's worth.
+
+
+
+

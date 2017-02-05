@@ -1,0 +1,13 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can i clear a canvas ? 
+
+Answer : 
+canvas.pen.color:=clwhite; 
+canvas.brush.color:=clwhite; 
+canvas.rectangle(0,0,canvas.width-1, canvas.height-1); 
+ 
+  
+ 
+ 
+© All rights reserved 1999 BuyPin Software

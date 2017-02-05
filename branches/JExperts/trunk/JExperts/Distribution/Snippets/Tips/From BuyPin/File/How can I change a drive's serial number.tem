@@ -1,0 +1,61 @@
+BuyPin Software - Delphi Tips
+Question : 
+How can I change a drive's serial number ? 
+
+Answer : 
+The Win32 API does not have a high-level function for this, as far as i'm aware. 
+Which means you have to do it via low-level disk access (DeviceIOControl) and it 
+requires different code on win9x and NT. 
+
+I have some old 16 bit code for the task: 
+
+Type 
+  TMediaID = Record  (* This is the MS-DOS original MediaID structur 
+*) 
+    wInfoLevel: WORD; 
+    dwSerialNumber: LongInt; 
+    VolLabel: ARRAY [0..10] of Char; 
+    FileSysType: ARRAY [0..7] of Char; 
+  End; 
+
+Procedure SetDiskSerialNum( drive: word; serialNo: LongInt ); 
+(* drive = 1 for A:, 2 for B: etc. *) 
+Var 
+  MediaID: TMediaID; 
+Begin 
+  (* first do a GetMediaID to fill MediaID with valid values *) 
+  asm 
+    push ds 
+    lea dx, MediaID 
+    mov cx, $0866 
+    mov bx, drive 
+    mov ax, ss 
+    mov ds, ax 
+    mov ax, $440D 
+    int $21 
+    pop ds 
+  end; 
+  (* load the new serial number *) 
+  MediaID.dwSerialNumber := serialNo; 
+  (* do a set media ID *) 
+  asm 
+    push ds 
+    lea dx, MediaID 
+    mov cx, $0846 
+    mov bx, drive 
+    mov ax, ss 
+    mov ds, ax 
+    mov ax, $440D 
+    int $21 
+    pop ds 
+  end; 
+End; { SetDiskSerialNum } 
+
+So if you do not find example code for doing this in 32 bit you may consider 
+writing a minute 16 bit program in Delphi 1 using this code and call it from 
+your 32 bit program, passing the serial number to set as commandline parameter. 
+  
+  
+  
+  
+© All rights reserved 1999 BuyPin Software 

@@ -1,0 +1,39 @@
+BuyPin Software - Delphi Tips
+Question : 
+How to convert a jpeg to a bitmap ? 
+
+Answer : 
+D3 and 4 come with a JPEG unit, just include it in your Uses clause and TImage 
+magically aquires the ability to load JPEG images. You now also have a 
+TJPEGImage class available, with it you can do things like 
+
+Var 
+  jpeg: TJPEGImage; 
+  bmp: TBitmap; 
+Begin 
+  jpeg:= TJPEGImage.Create; 
+  try 
+    jpeg.LoadFromFile( filename ); 
+    bmp:= TBitmap.Create; 
+    try 
+      bmp.Assign( jpeg ); 
+      bmp.SaveTofile( ChangeFileExt( filename, '.BMP' )); 
+    finally 
+      bmp.free 
+    end; 
+  finally 
+    jpeg.free 
+  end; 
+end; 
+
+A TJpegImage can be painted to a canvas via the canvas Draw or StretchDraw 
+method, it converts itself to a temp bitmap for this process, which can be a bit 
+memory intensive. 
+
+The source for the JPEG unit is in the Extras directory on your CD, by the way. 
+ 
+ 
+
+ 
+ 
+© All rights reserved 1999 BuyPin Software

@@ -1,0 +1,7 @@
+procedure SurfTo(Url: string);
+var
+ Tmp : array[0..255] of Char;
+begin
+  StrPCopy(Tmp,Url);
+  ShellExecute(0, nil, Tmp, nil, nil, SW_NORMAL);
+end;
