@@ -424,6 +424,7 @@ call ..\..\buildtools\movedll.cmd $(OUTPUTPATH)</PreBuildEvent>
     <DCCReference Include="..\..\source\IDE\GX_IdeFormEnhancer.pas" />
     <DCCReference Include="..\..\Source\IDE\GX_IdeGotoEnhancer.pas" />
     <DCCReference Include="..\..\source\IDE\GX_IdeInstallPackagesEnhancer.pas" />
+    <DCCReference Include="..\..\Source\IDE\GX_IdeManagedForm.pas" />
     <DCCReference Include="..\..\Source\IDE\GX_IdeObjectInspectorEnhancer.pas" />
     <DCCReference Include="..\..\source\IDE\GX_IdePackageRenameDlg.pas">
       <Form>fmIdxPackageRenameDlg</Form>
