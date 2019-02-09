@@ -14,7 +14,8 @@ type
 
 ///<summary> Reads a file's version information and returns the four parts of the version
 ///          number.
-///          @param Filename is a string with the name of the file to check
+///          @param Filename is a string with the name of the file to check, if empty, the
+///                 current program is checked.
 ///          @param Major is a word returning the major version number
 ///          @param Minor is a word returning the minor version number
 ///          @param Revision is a word returning the revision number
@@ -27,7 +28,8 @@ function GetFileBuildInfo(_Filename: string;
 
 ///<summary> Reads a file's version information and returns the four parts of the version
 ///          number.
-///          @param Filename is a string with the name of the file to check
+///          @param Filename is a string with the name of the file to check, if empty, the
+///                 current program is checked.
 ///          @param Major is an integer returning the major version number
 ///          @param Minor is an integer returning the minor version number
 ///          @param Revision is an integer returning the revision number
@@ -88,7 +90,8 @@ var
   VerValue: PVSFixedFileInfo;
   Dummy: DWORD;
 begin
-  Assert(_Filename <> '');
+  if _Filename = '' then
+    _Filename := GetModuleFilename;
   VerInfoSize := GetFileVersionInfoSize(PChar(_Filename), Dummy);
   Result := (VerInfoSize <> 0);
   if Result then begin
@@ -117,7 +120,8 @@ var
   VerValue: PVSFixedFileInfo;
   Dummy: DWORD;
 begin
-  Assert(_Filename <> '');
+  if _Filename = '' then
+    _Filename := GetModuleFilename;
   VerInfoSize := GetFileVersionInfoSize(PChar(_Filename), Dummy);
   Result := (VerInfoSize <> 0);
   if Result then begin
