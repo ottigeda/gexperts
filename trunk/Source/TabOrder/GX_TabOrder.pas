@@ -114,7 +114,7 @@ begin
   inherited;
   TControl_SetMinConstraints(Self);
 
-{$IF rtlversion > RtlVersionDelphi8 }
+{$IF rtlversion > RtlVersionDelphi2005 }
   tvComps.AlignWithMargins := True;
   tvComps.Margins.Left := 4;
   tvComps.Margins.Top := 4;
