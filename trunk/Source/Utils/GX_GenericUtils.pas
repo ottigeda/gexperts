@@ -3538,6 +3538,10 @@ begin
 end;
 
 function GetUserLocalApplicationDataFolder: string;
+{$if not defined(CSIDL_LOCAL_APPDATA)}
+const
+  CSIDL_LOCAL_APPDATA = $001c; { <user name>\Local Settings\Application Data (non roaming) }
+{$ifend}
 begin
   Result := GetSpecialFolderPath(CSIDL_LOCAL_APPDATA)
 end;
