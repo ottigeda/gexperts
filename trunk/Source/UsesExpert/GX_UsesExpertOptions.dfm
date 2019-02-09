@@ -4,7 +4,7 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Uses Clause Manager Options'
-  ClientHeight = 121
+  ClientHeight = 145
   ClientWidth = 289
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,7 +16,7 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
   Position = poScreenCenter
   DesignSize = (
     289
-    121)
+    145)
   PixelsPerInch = 96
   TextHeight = 13
   object chkReadMap: TCheckBox
@@ -52,25 +52,40 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
   end
   object btnOK: TButton
     Left = 128
-    Top = 88
+    Top = 112
     Width = 75
     Height = 25
-    Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'OK'
     Default = True
     ModalResult = 1
-    TabOrder = 3
+    TabOrder = 5
   end
   object btnCancel: TButton
     Left = 208
-    Top = 88
+    Top = 112
     Width = 75
     Height = 25
-    Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
+    TabOrder = 6
+  end
+  object chkDisableParserCache: TCheckBox
+    Left = 24
+    Top = 80
+    Width = 257
+    Height = 17
+    Caption = 'Disable Parser Cache'
+    TabOrder = 3
+  end
+  object btnClearCache: TButton
+    Left = 8
+    Top = 112
+    Width = 75
+    Height = 25
+    Caption = 'Clear Cache'
     TabOrder = 4
+    OnClick = btnClearCacheClick
   end
 end

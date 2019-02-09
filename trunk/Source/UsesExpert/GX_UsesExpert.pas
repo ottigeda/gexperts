@@ -37,6 +37,7 @@ type
     FAvailTabIndex: Integer;
     FReplaceFileUseUnit: Boolean;
     FParseAll: Boolean;
+    FDisableCache: Boolean;
     FOrigFileAddUnitExecute: TNotifyEvent;
     FReadMap: Boolean;
     procedure InternalExecute;
@@ -415,10 +416,14 @@ end;
 procedure TUsesExpert.Configure;
 var
   act: TBasicAction;
-  Found: boolean;
+  Found: Boolean;
+  CacheDir: string;
 begin
   Found := FindAction(act);
-  if TfmUsesExpertOptions.Execute(Application, Found, FReadMap, FReplaceFileUseUnit, FParseAll) then begin
+  CacheDir := ConfigInfo.CachingPath + 'UsesExpertCache';
+
+  if TfmUsesExpertOptions.Execute(Application, Found, CacheDir, FReadMap, FReplaceFileUseUnit,
+    FParseAll, FDisableCache) then begin
     SaveSettings;
     if Found then begin
       if FReplaceFileUseUnit then begin
@@ -464,6 +469,7 @@ begin
   FReadMap := Settings.ReadBool('ReadMap', True);
   FAvailTabIndex := Settings.ReadInteger('AvailTabIndex', 0);
   FParseAll := Settings.ReadBool('ParseAll', True);
+  FDisableCache := Settings.ReadBool('DisableCache', False);
 end;
 
 procedure TUsesExpert.InternalSaveSettings(Settings: TExpertSettings);
@@ -473,6 +479,7 @@ begin
   Settings.WriteBool('ReadMap', FReadMap);
   Settings.WriteInteger('AvailTabIndex', FAvailTabIndex);
   Settings.WriteBool('ParseAll', FParseAll);
+  Settings.WriteBool('DisableCache', FDisableCache);
 end;
 
 { TfmUsesManager }
@@ -622,6 +629,7 @@ procedure TfmUsesManager.FormCreate(Sender: TObject);
 var
   Selection: string;
   Paths: TStringList;
+  CacheDir: string;
 begin
   TControl_SetMinConstraints(Self);
   pnlUses.Constraints.MinWidth := pnlUses.Width;
@@ -645,12 +653,17 @@ begin
   Paths := TStringList.Create;
   try
     GxOtaGetAllPossiblePaths(Paths);
+
+    if FUsesExpert.FDisableCache then
+      CacheDir := ''
+    else
+      CacheDir := ConfigInfo.CachingPath + 'UsesExpertCache';
     if FUsesExpert.FParseAll then begin
 {$IFOPT D+}
         SendDebug('Running UnitExportParser thread to get identifiers from all units in search path');
 {$ENDIF D+}
-        FUnitExportParserThread := TUnitExportParserThread.Create(nil, Paths,
-          ConfigInfo.ConfigPath + 'UsesExpertCache', OnExportParserFinished);
+        FUnitExportParserThread := TUnitExportParserThread.Create(nil, Paths, CacheDir,
+          OnExportParserFinished);
         tim_Progress.Enabled := True;
     end else begin
       LoadFavorites;
@@ -661,8 +674,8 @@ begin
 {$IFOPT D+}
         SendDebug('Running UnitExportParser thread to get identifiers from favorites');
 {$ENDIF D+}
-        FUnitExportParserThread := TUnitExportParserThread.Create(FFavoriteUnits, Paths,
-          ConfigInfo.ConfigPath + 'UsesExpertCache', OnExportParserFinished);
+          FUnitExportParserThread := TUnitExportParserThread.Create(FFavoriteUnits, Paths, CacheDir,
+            OnExportParserFinished);
         tim_Progress.Enabled := True;
       end;
     end;
