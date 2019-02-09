@@ -914,8 +914,12 @@ var
 begin
   OnTerminate := _OnTerminate;
 
-  FCacheDirBS := IncludeTrailingPathDelimiter(_CacheDir);
-  UniqueString(FCacheDirBS);
+  if _CacheDir = '' then
+    FCacheDirBS := ''
+  else begin
+    FCacheDirBS := IncludeTrailingPathDelimiter(_CacheDir);
+    UniqueString(FCacheDirBS);
+  end;
 
   FIdentifiers := TStringList.Create;
   FUnits := TStringList.Create;
@@ -1116,7 +1120,8 @@ begin
   Searching.Stop;
 {$ENDIF}
 
-  ForceDirectories(FCacheDirBS);
+  if FCacheDirBS <> '' then
+    ForceDirectories(FCacheDirBS);
 
 {$IFDEF  DO_TIMING}
   Processing.Start;
@@ -1128,9 +1133,13 @@ begin
     UnitTime := UInt32(FFiles.Objects[FileIdx]);
     UnitName := ExtractFileName(fn);
     UnitName := ChangeFileExt(UnitName, '');
-    CacheFn := MangleFilename(fn);
-    CacheFn := FCacheDirBS + CacheFn;
-    if GxTryGetFileAge(CacheFn, CacheTime) and (UnitTime < CacheTime) then begin
+    if FCacheDirBS = '' then
+      CacheFn := ''
+    else begin
+      CacheFn := MangleFilename(fn);
+      CacheFn := FCacheDirBS + CacheFn;
+    end;
+    if (CacheFn <> '') and GxTryGetFileAge(CacheFn, CacheTime) and (UnitTime < CacheTime) then begin
 {$IFDEF  DO_TIMING}
       Inc(FLoadedUnitsCount);
 {$ENDIF}
@@ -1171,7 +1180,8 @@ begin
           Exit; //==>
         FUnits.Add(UnitName);
         sl := Parser.Identifiers;
-        sl.SaveToFile(CacheFn);
+        if CacheFn <> '' then
+          sl.SaveToFile(CacheFn);
         FIdentifiers.AddObject(UnitName, Pointer(PChar(UnitName)));
         for IdentIdx := 0 to sl.Count - 1 do begin
           FIdentifiers.AddObject(sl[IdentIdx], Pointer(PChar(UnitName)));
