@@ -246,7 +246,7 @@ begin
   Grid := TRenameStringGrid.Create(Self);
   Grid.Name := 'Grid';
   Grid.Parent := pnlNames;
-    // Delphi 6 does not support Margins, so we have to do it the hard way
+  // Delphi < 2006 does not support Margins, so we have to do it the hard way
   Grid.SetBounds(GridPad, GridPad, pnlNames.Width - (GridPad * 2), pnlNames.Height - (GridPad * 2));
   Grid.Anchors := [akLeft, akTop, akRight, akBottom];
   Grid.ColCount := 2;
@@ -629,12 +629,12 @@ type
 
 function TDefaultRenameComponentsMessage.GetMessage: string;
 resourcestring
-  SClearIndividualShortcut =
+  SSetToDefaults =
     'This will reset this expert to the default settings. ' +
     'In particular it will replace existing rename rules with the defaults. ' +
     'Do you really want to do that?';
 begin
-  Result := SClearIndividualShortcut;
+  Result := SSetToDefaults;
 end;
 
 
