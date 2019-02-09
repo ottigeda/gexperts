@@ -33,7 +33,7 @@ object fmTabOrder: TfmTabOrder
       Left = 8
       Top = 48
       Width = 97
-      Height = 25
+      Height = 29
       Action = act_MoveUp
       Caption = 'Move Up'
       ParentShowHint = False
@@ -118,7 +118,7 @@ object fmTabOrder: TfmTabOrder
       Left = 8
       Top = 80
       Width = 97
-      Height = 25
+      Height = 29
       Action = act_MoveDown
       Caption = 'Move Down'
       ParentShowHint = False
@@ -211,7 +211,7 @@ object fmTabOrder: TfmTabOrder
         Left = 8
         Top = 24
         Width = 97
-        Height = 25
+        Height = 29
         Caption = 'Y then X'
         TabOrder = 0
         OnClick = btnYthenXClick
@@ -279,7 +279,7 @@ object fmTabOrder: TfmTabOrder
         Left = 8
         Top = 56
         Width = 97
-        Height = 25
+        Height = 29
         Caption = 'X then Y'
         TabOrder = 1
         OnClick = btnXthenYClick
@@ -347,7 +347,7 @@ object fmTabOrder: TfmTabOrder
         Left = 8
         Top = 88
         Width = 97
-        Height = 25
+        Height = 29
         Caption = '&Reset Order'
         TabOrder = 2
         OnClick = btnResetOrderClick
@@ -372,15 +372,10 @@ object fmTabOrder: TfmTabOrder
       Caption = 'Arrange Components (Drag and Drop)'
       TabOrder = 0
       object tvComps: TTreeView
-        AlignWithMargins = True
-        Left = 6
-        Top = 20
-        Width = 352
-        Height = 221
-        Margins.Left = 4
-        Margins.Top = 4
-        Margins.Right = 4
-        Margins.Bottom = 4
+        Left = 2
+        Top = 16
+        Width = 360
+        Height = 229
         Align = alClient
         DragMode = dmAutomatic
         HideSelection = False

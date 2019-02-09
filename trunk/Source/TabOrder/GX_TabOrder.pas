@@ -50,7 +50,6 @@ type
     procedure ChildComponentCallback(Param: Pointer; Component: IOTAComponent; var Result: Boolean);
     procedure SelectCurrentComponent;
     procedure FillTreeView(FromComponent: IOTAComponent);
-    procedure ShowOrderButtons(Value: Boolean);
     procedure SortTreeViewComponentsByYThenXPosition;
     procedure SortTreeViewComponentsByXThenYPosition;
     procedure SortTreeViewComponentsByOriginalTabOrder;
@@ -66,7 +65,7 @@ implementation
 uses
   SysUtils, TypInfo,
   GX_Experts, GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_dzVclUtils,
-  GX_TabOrderOptions;
+  GX_TabOrderOptions, GX_dzCompilerAndRtlVersions;
 
 const
   TabOrderPropertyName = 'TabOrder';
@@ -114,6 +113,14 @@ constructor TfmTabOrder.Create(_Owner: TComponent);
 begin
   inherited;
   TControl_SetMinConstraints(Self);
+
+{$IF rtlversion > RtlVersionDelphi8 }
+  tvComps.AlignWithMargins := True;
+  tvComps.Margins.Left := 4;
+  tvComps.Margins.Top := 4;
+  tvComps.Margins.Right := 4;
+  tvComps.Margins.Bottom := 4;
+{$IFEND}
 end;
 
 procedure TfmTabOrder.act_MoveDownExecute(Sender: TObject);
@@ -193,7 +200,7 @@ begin
   begin
     // These are freed by the owner form
     ComponentData := TComponentData.Create(Self);
-    ShowOrderButtons(True);
+    grp_ByPosition.Visible := True;
     Component.GetPropValueByName(LeftPropertyName, ComponentData.X);
     Component.GetPropValueByName(TopPropertyName, ComponentData.Y);
     Component.GetPropValueByName(TabOrderPropertyName, ComponentData.TabOrder);
@@ -267,12 +274,6 @@ procedure TfmTabOrder.FillTreeView(FromComponent: IOTAComponent);
 begin
   if tvComps.Items.GetFirstNode <> nil then
     FromComponent.GetChildren(tvComps.Items.GetFirstNode, ChildComponentCallback);
-end;
-
-procedure TfmTabOrder.ShowOrderButtons(Value: Boolean);
-begin
-  btnYthenX.Visible := Value;
-  btnResetOrder.Visible := Value;
 end;
 
 { TTabExpert }
@@ -448,7 +449,7 @@ begin
   TabOrderForm := TfmTabOrder.Create(nil);
   try
     TabOrderForm.AutoSort := FAutoSort;
-    TabOrderForm.ShowOrderButtons(False);
+    TabOrderForm.grp_ByPosition.Visible := False;
     TabOrderForm.FormEditor := FormEditor;
     SetFormIcon(TabOrderForm);
 
@@ -468,7 +469,7 @@ begin
             AComponentName := GxOtaGetComponentName(AComponent);
 
             ComponentData := TComponentData.Create(TabOrderForm);
-            TabOrderForm.ShowOrderButtons(True);
+            TabOrderForm.grp_ByPosition.Visible := True;
             AComponent.GetPropValueByName('Left', ComponentData.X);
             AComponent.GetPropValueByName('Top', ComponentData.Y);
             AComponent.GetPropValueByName(TabOrderPropertyName, ComponentData.TabOrder);
