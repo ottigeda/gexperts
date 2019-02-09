@@ -19,32 +19,24 @@ uses
   SysUtils,
   Classes;
 
+type
+  EFileUtils = class(Exception);
+  /// <summary>
+  /// raised by DelTree if the DirName parameter is not a valid directory name </summary>
+  EDirNotFound = class(EFileUtils);
+
 const
   /// <summary>
   /// set of char constant containing all characters that are invalid in a filename </summary>
   INVALID_FILENAME_CHARS: set of AnsiChar = ['\', '/', ':', '*', '?', '"', '<', '>', '|'];
-type
-  TFileSystem = class
-  public
-    class function ExpandFileNameRelBaseDir(const _FileName, _BaseDir: string): string;
-    ///<summary>
-    /// Replaces all invalid characters in the file name with the given character </summary>
-    /// @param S is the input filename
-    /// @param ReplaceChar is the character to use for replacing in valid characters
-    ///                    defaults to '_'
-    /// @param AllowPathChars determines whether the name may contain '\' characters and a single
-    ///                       ':' as the second character, so a full path can be converted.
-    /// @returns a valid filename </summary>
-    class function MakeValidFilename(const _s: string; _ReplaceChar: Char = '_'; _AllowPathChars: Boolean = True): string;
-  end;
 
 type
   TFileAttributes = (
     dfaReadonly,
-    dfaHidden, //    Hidden files
-    dfaSysFile, //   System files
+    dfaHidden, // Hidden files
+    dfaSysFile, // System files
     dfaDirectory, // Directory files
-    dfaArchive //    Archive files
+    dfaArchive // Archive files
     );
 
   TFileAttributeSet = set of TFileAttributes;
@@ -108,7 +100,7 @@ type
     /// @param IncludePath determines whether the List of filenames includes the full path or not
     ///                    defaults to false
     /// @Returns true, if a matching file was found, false otherwise </summary>
-    function FindNext(out _FileName: string; _IncludePath: Boolean = False): Boolean; overload;
+    function FindNext(out _Filename: string; _IncludePath: Boolean = False): Boolean; overload;
     /// <summary>
     /// Calls SysUtils.FindFirst on first call and SysUtls.FindNext in later
     /// calls. If it returns true, use the SR property to get information about
@@ -146,7 +138,90 @@ type
     property Sr: TSearchRec read FSr;
   end;
 
+type
+  /// <summary>
+  /// This class owns all utility functions as class methods so they don't pollute the name space </summary>
+  TFileSystem = class
+  public
+    /// <summary>
+    /// Deletes the file using the SysUtils.DeleteFile function.
+    /// @param Filename is a string containing the name of the file
+    /// @param RaiseException is a boolean which controls whether the function
+    ///        retrieves the Windows error and raises an exception
+    ///        if it fails. If false, it will not raise an exception
+    ///        but just return false if deleting the file fails.
+    /// @param Force is a boolean which controls whether this function will try to delete
+    ///        readonly files, If true, it will use SetFileAttr to reset the
+    ///        readonly attribut and try to delete the file again.
+    /// @returns true, if the file could be deleted, false otherwise.
+    /// @raises EOSError if there was an error and RaiseException was true </summary>
+    class function DeleteFile(const _Filename: string; _RaiseException: Boolean = True;
+      _Force: Boolean = False): Boolean;
+
+    /// <summary>
+    /// Deletes an empty directory using the SysUtils function RemoveDir
+    /// The function will fail if the directory is not empty.
+    /// @param DirName is the name of the directory to delete
+    /// @param RaiseException is a boolean which controls whether the function
+    ///                       retrieves the Windows error and raises an exception
+    ///                       if it fails. If false, it will not raise an exception
+    ///                       but just return false if deleting the directory fails.
+    /// @param Force is a boolean which controls whether this function will try to delete
+    ///              readonly directories, If true, it will use SetFileAttr to reset the
+    ///              readonly attribut and try to delete the directory again.
+    /// @returns true, if the directory could be deleted, false otherwise.
+    /// @raises EOSError if there was an error and RaiseException was true </summary>
+    class function RemoveDir(const _DirName: string; _RaiseException: Boolean = True;
+      _Force: Boolean = False): Boolean;
+
+    /// <summary>
+    /// Deletes a directory with all files and subdirectories.
+    /// Note: This new function has a different order of parameters than
+    ///       the old DelTree function.
+    /// @param DirName is the name of the directory to delete
+    /// @param RaiseExceptin is a boolean which controls whether the function
+    ///                      retrieves the Windows error and raises an exception
+    ///                      if it fails. If false, it will not raise an exception
+    ///                      but just return false if deleting the directory fails.
+    /// @param Force specifies whether it should also delete readonly files
+    /// @returns true, if the directory could be deleted, false otherwise.
+    /// @raises EOSError if there was an error and RaiseException was true </summary>
+    class function DelDirTree(const _DirName: string; _RaiseException: Boolean = True;
+      _Force: Boolean = False): Boolean;
+
+    ///<summary>
+    /// Expands a relative FileName relative to the given BaseDir. </summary>
+    class function ExpandFileNameRelBaseDir(const _Filename, _BaseDir: string): string;
+
+    ///<summary>
+    /// checks if a filename is relative (meaning: Not an absolute path)
+    /// (This calls shlwapi.PathIsRelativeA/W.)
+    /// @returns true, if the filename is relative </summary>
+    class function PathIsRelative(const _Filename: string): Boolean;
+
+    ///<summary>
+    /// Replaces all invalid characters in the file name with the given character </summary>
+    /// @param S is the input filename
+    /// @param ReplaceChar is the character to use for replacing in valid characters
+    ///                    defaults to '_'
+    /// @param AllowPathChars determines whether the name may contain '\' characters and a single
+    ///                       ':' as the second character, so a full path can be converted.
+    /// @returns a valid filename </summary>
+    class function MakeValidFilename(const _s: string; _ReplaceChar: Char = '_'; _AllowPathChars: Boolean = True): string;
+  end;
+
 implementation
+
+uses
+  GX_dzMiscUtils;
+
+{$IF not Declared(_)}
+
+function _(const _s: string): string;
+begin
+  Result := _s;
+end;
+{$IFEND}
 
 { TSimpleDirEnumerator }
 
@@ -233,7 +308,7 @@ begin
   end;
 end;
 
-function TSimpleDirEnumerator.FindNext(out _FileName: string; _IncludePath: Boolean = False): Boolean;
+function TSimpleDirEnumerator.FindNext(out _Filename: string; _IncludePath: Boolean = False): Boolean;
 var
   Res: Integer;
   Attr: Integer;
@@ -292,9 +367,9 @@ begin
     end;
     Inc(FMatchCount);
     if _IncludePath then
-      _FileName := Path + Sr.Name
+      _Filename := Path + Sr.Name
     else
-      _FileName := Sr.Name;
+      _Filename := Sr.Name;
     Exit;
   until False;
 end;
@@ -315,38 +390,79 @@ end;
 
 { TFileSystem }
 
-const
-  shlwapi32 = 'shlwapi.dll';
-
-function PathIsRelative(pszPath: PChar): BOOL; stdcall; external shlwapi32
-{$IFDEF GX_VER200_up}
-name 'PathIsRelativeW';
-{$ELSE}
-name 'PathIsRelativeA';
-{$ENDIF}
-
-function PathCanonicalize(pszBuf: PChar; pszPath: PChar): BOOL; stdcall; external shlwapi32
-{$IFDEF GX_VER200_up}
-name 'PathCanonicalizeW';
-{$ELSE}
-name 'PathCanonicalizeA';
-{$ENDIF}
-
-// taken from
-// http://stackoverflow.com/a/5330691/49925
-
-class function TFileSystem.ExpandFileNameRelBaseDir(const _FileName, _BaseDir: string): string;
+class function TFileSystem.DeleteFile(const _Filename: string; _RaiseException: Boolean = True;
+  _Force: Boolean = False): Boolean;
 var
-  Buffer: array[0..MAX_PATH - 1] of Char;
+  Attr: Integer;
+  LastError: Cardinal;
 begin
-  if PathIsRelative(PChar(_FileName)) then begin
-    Result := IncludeTrailingPathDelimiter(_BaseDir) + _FileName;
-  end else begin
-    Result := _FileName;
+  Result := SysUtils.DeleteFile(_Filename);
+  if not Result and _Force then begin
+    Attr := FileGetAttr(_Filename);
+    Attr := Attr and not SysUtils.faReadOnly;
+    FileSetAttr(_Filename, Attr);
+    Result := SysUtils.DeleteFile(_Filename);
   end;
-  if PathCanonicalize(@Buffer[0], PChar(Result)) then begin
-    Result := Buffer;
+  if not Result and _RaiseException then begin
+    LastError := GetLastError;
+    // duplicate % so they get passed through the format function
+    RaiseLastOSErrorEx(LastError, Format(_('Error %%1:s (%%0:d) deleting file "%s"'), [_Filename]));
   end;
+end;
+
+class function TFileSystem.RemoveDir(const _DirName: string; _RaiseException: Boolean = True; _Force: Boolean = False): Boolean;
+var
+  Attr: Integer;
+  LastError: Cardinal;
+begin
+  Result := SysUtils.RemoveDir(_DirName);
+  if not Result and _Force then begin
+    Attr := FileGetAttr(_DirName);
+    Attr := Attr and not SysUtils.faReadOnly;
+    FileSetAttr(_DirName, Attr);
+    Result := SysUtils.RemoveDir(_DirName);
+  end;
+  if not Result and _RaiseException then begin
+    LastError := GetLastError;
+    // duplicate % so they get passed through the format function
+    RaiseLastOSErrorEx(LastError, Format(_('Error %%1:s (%%0:d) deleting directory "%s"'), [_DirName]));
+  end;
+end;
+
+class function TFileSystem.DelDirTree(const _DirName: string; _RaiseException,
+  _Force: Boolean): Boolean;
+var
+  Sr: TSearchRec;
+  Filename: string;
+begin
+  Result := DirectoryExists(ExcludeTrailingPathDelimiter(_DirName));
+  if not Result then begin
+    if _RaiseException then
+      raise EDirNotFound.CreateFmt(_('"%s" does not exist or is not a directory'), [_DirName]);
+    Exit;
+  end;
+  if 0 = FindFirst(IncludeTrailingPathDelimiter(_DirName) + '*.*', faAnyFile, Sr) then
+    try
+      repeat
+        if (Sr.Name = '.') or (Sr.Name = '..') then begin
+            // ignore
+        end else begin
+          Filename := IncludeTrailingPathDelimiter(_DirName) + Sr.Name;
+          if (Sr.Attr and SysUtils.faDirectory) <> 0 then begin
+            Result := DelDirTree(Filename, _RaiseException, _Force);
+            if not Result then
+              Exit;
+          end else begin
+            Result := DeleteFile(Filename, _RaiseException, _Force);
+            if not Result then
+              Exit;
+          end;
+        end;
+      until 0 <> FindNext(Sr);
+    finally
+      SysUtils.FindClose(Sr);
+    end;
+  Result := RemoveDir(_DirName, _RaiseException, _Force);
 end;
 
 {$IFNDEF SUPPORTS_UNICODE_STRING}
@@ -373,6 +489,44 @@ begin
       if not _AllowPathChars or (i <> 2) or (Result[2] <> ':') or not CharInSet(UpCase(Result[1]), ['A'..'Z']) then
         Result[i] := _ReplaceChar;
     end;
+  end;
+end;
+
+// taken from
+// http://stackoverflow.com/a/5330691/49925
+const
+  shlwapi32 = 'shlwapi.dll';
+
+function PathIsRelativeAPI(pszPath: PChar): BOOL; stdcall; external shlwapi32
+{$IFDEF UNICODE}
+Name 'PathIsRelativeW';
+{$ELSE}
+Name 'PathIsRelativeA';
+{$ENDIF}
+
+function PathCanonicalize(pszBuf: PChar; pszPath: PChar): BOOL; stdcall; external shlwapi32
+{$IFDEF UNICODE}
+Name 'PathCanonicalizeW';
+{$ELSE}
+Name 'PathCanonicalizeA';
+{$ENDIF}
+
+class function TFileSystem.PathIsRelative(const _Filename: string): Boolean;
+begin
+  Result := PathIsRelativeAPI(PChar(_Filename));
+end;
+
+class function TFileSystem.ExpandFileNameRelBaseDir(const _Filename, _BaseDir: string): string;
+var
+  Buffer: array[0..MAX_PATH - 1] of Char;
+begin
+  if PathIsRelative(_Filename) then begin
+    Result := IncludeTrailingPathDelimiter(_BaseDir) + _Filename;
+  end else begin
+    Result := _Filename;
+  end;
+  if PathCanonicalize(@Buffer[0], PChar(Result)) then begin
+    Result := Buffer;
   end;
 end;
 
