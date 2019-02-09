@@ -244,7 +244,8 @@ uses
   GX_eRemoveMatchingLines in '..\..\Source\Editor\GX_eRemoveMatchingLines.pas' {fmRemoveMatchingLinesExpertConfig},
   GX_TabOrderOptions in '..\..\Source\TabOrder\GX_TabOrderOptions.pas' {fmTabOrderOptions},
   GX_IdeDetectForms in '..\..\Source\ide\GX_IdeDetectForms.pas',
-  GX_dzCompilerAndRtlVersions in '..\..\source\framework\GX_dzCompilerAndRtlVersions.pas';
+  GX_dzCompilerAndRtlVersions in '..\..\source\framework\GX_dzCompilerAndRtlVersions.pas',
+  GX_dzMiscUtils in '..\..\Source\Utils\GX_dzMiscUtils.pas';
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
