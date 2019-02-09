@@ -115,6 +115,9 @@ type
     chkForceStartupDesktop: TCheckBox;
     cbxDesktop: TComboBox;
     chkEnhanceDockForms: TCheckBox;
+    lblCachingPath: TLabel;
+    edCachingPath: TEdit;
+    bCachingPath: TButton;
     procedure btnEnumerateModulesClick(Sender: TObject);
     procedure chkEditorKeyTracingClick(Sender: TObject);
     procedure sbVCLDirClick(Sender: TObject);
@@ -170,6 +173,7 @@ type
     procedure edHelpFileDropFiles(_Sender: TObject; _Files: TStrings);
     procedure UpdateIdeDialogCheckboxes;
     procedure SaveAllSettings;
+    procedure edCachingPathDropFiles(_Sender: TObject; _Files: TStrings);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -240,6 +244,7 @@ begin
   TWinControl_ActivateDropFiles(edVCLPath, edVCLPathOnDropFiles);
   TEdit_ActivateAutoComplete(edVCLPath, [acsFileSystem], [actSuggest]);
   TWinControl_ActivateDropFiles(edConfigPath, edConfigPathDropFiles);
+  TWinControl_ActivateDropFiles(edCachingPath, edCachingPathDropFiles);
   TEdit_ActivateAutoComplete(edConfigPath, [acsFileSystem], [actSuggest]);
   TWinControl_ActivateDropFiles(edHelpFile, edHelpFileDropFiles);
   TEdit_ActivateAutoComplete(edHelpFile, [acsFileSystem], [actSuggest]);
@@ -341,6 +346,11 @@ begin
   edConfigPath.Text := _Files[0];
 end;
 
+procedure TfmConfiguration.edCachingPathDropFiles(_Sender: TObject; _Files: TStrings);
+begin
+  edCachingPath.Text := _Files[0];
+end;
+
 procedure TfmConfiguration.edHelpFileDropFiles(_Sender: TObject; _Files: TStrings);
 begin
   edHelpFile.Text := _Files[0];
@@ -350,6 +360,7 @@ procedure TfmConfiguration.LoadGeneral;
 begin
   edVCLPath.Text := ConfigInfo.VclPath;
   edConfigPath.Text := ConfigInfo.ConfigPath;
+  edCachingPath.Text := ConfigInfo.CachingPath;
   edHelpFile.Text := ConfigInfo.HelpFile;
   chkUseCustomFont.Checked := ConfigInfo.EnableCustomFont;
   dlgUIFont.Font.Assign(ConfigInfo.CustomFont);
@@ -359,6 +370,7 @@ procedure TfmConfiguration.SaveGeneral;
 begin
   ConfigInfo.VclPath := edVCLPath.Text;
   ConfigInfo.ConfigPath := edConfigPath.Text;
+  ConfigInfo.CachingPath := edCachingPath.Text;
   ConfigInfo.HelpFile := edHelpFile.Text;
   ConfigInfo.EnableCustomFont := chkUseCustomFont.Checked;
   ConfigInfo.CustomFont.Assign(dlgUIFont.Font);

@@ -594,6 +594,7 @@ function GXShellExecute(const FileName, Parameters: string; const RaiseException
 // Get a Windows OS folder path.  Pass in one of the ShlObj.CSIDL_ constants
 function GetSpecialFolderPath(const FolderID: Integer): string;
 function GetUserApplicationDataFolder: string;
+function GetUserLocalApplicationDataFolder: string;
 
 // See if the current OS is Windows
 function RunningWindows: Boolean;
@@ -3534,6 +3535,11 @@ end;
 function GetUserApplicationDataFolder: string;
 begin
   Result := GetSpecialFolderPath(CSIDL_APPDATA);
+end;
+
+function GetUserLocalApplicationDataFolder: string;
+begin
+  Result := GetSpecialFolderPath(CSIDL_LOCAL_APPDATA)
 end;
 
 function RunningWindows: Boolean;

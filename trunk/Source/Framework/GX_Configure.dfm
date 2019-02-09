@@ -61,13 +61,13 @@ object fmConfiguration: TfmConfiguration
             Left = 8
             Top = 8
             Width = 586
-            Height = 169
+            Height = 225
             Align = alTop
             Caption = 'File Locations'
             TabOrder = 0
             DesignSize = (
               586
-              169)
+              225)
             object lblVCL: TLabel
               Left = 12
               Top = 24
@@ -86,7 +86,7 @@ object fmConfiguration: TfmConfiguration
             end
             object lblHelp: TLabel
               Left = 12
-              Top = 120
+              Top = 168
               Width = 43
               Height = 14
               Caption = 'Help &file'
@@ -114,12 +114,12 @@ object fmConfiguration: TfmConfiguration
             end
             object sbHelpFile: TButton
               Left = 556
-              Top = 136
+              Top = 184
               Width = 22
               Height = 22
               Anchors = [akTop, akRight]
               Caption = '...'
-              TabOrder = 5
+              TabOrder = 7
               OnClick = sbHelpFileClick
             end
             object edVCLPath: TEdit
@@ -140,16 +140,42 @@ object fmConfiguration: TfmConfiguration
             end
             object edHelpFile: TEdit
               Left = 12
+              Top = 184
+              Width = 541
+              Height = 22
+              Anchors = [akLeft, akTop, akRight]
+              TabOrder = 6
+            end
+            object lblCachingPath: TLabel
+              Left = 12
+              Top = 120
+              Width = 146
+              Height = 14
+              Caption = 'GExperts caching directory'
+              FocusControl = edConfigPath
+            end
+            object edCachingPath: TEdit
+              Left = 12
               Top = 136
               Width = 541
               Height = 22
               Anchors = [akLeft, akTop, akRight]
               TabOrder = 4
             end
+            object bCachingPath: TButton
+              Left = 556
+              Top = 136
+              Width = 22
+              Height = 22
+              Anchors = [akTop, akRight]
+              Caption = '...'
+              TabOrder = 5
+              OnClick = sbConfigDirClick
+            end
           end
           object gbxCustomFont: TGroupBox
             Left = 8
-            Top = 183
+            Top = 239
             Width = 586
             Height = 65
             Align = alTop
@@ -175,7 +201,7 @@ object fmConfiguration: TfmConfiguration
           end
           object pnlGeneralSpacer: TPanel
             Left = 8
-            Top = 177
+            Top = 233
             Width = 586
             Height = 6
             Align = alTop

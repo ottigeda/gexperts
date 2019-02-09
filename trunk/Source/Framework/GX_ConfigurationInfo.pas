@@ -12,6 +12,7 @@ type
   IConfigInfo = interface(IUnknown) //FI:W523 - we don't need a GUID
     procedure SaveSettings;
     procedure SetAlphabetizeMenu(const Value: Boolean);
+    procedure SetCachingPath(const Value: string);
     procedure SetConfigPath(const Value: string);
     procedure SetGExpertsPath(const Value: string);
     procedure SetEditorExpertsEnabled(const Value: Boolean);
@@ -21,6 +22,7 @@ type
     procedure SetHideWindowMenu(const Value: Boolean);
     procedure SetMoveComponentMenu(const Value: Boolean);
     function GetAlphabetizeMenu: Boolean;
+    function GetCachingPath: string;
     function GetConfigPath: string;
     function GetEditorExpertsEnabled: Boolean;
     function GetHelpFileLocation: string;
@@ -46,6 +48,9 @@ type
     // Return the location of the VCL source code.
     // Path is guaranteed to have a trailing backslash.
     property VCLPath: string read GetVclPath write SetVclPath;
+    // Return the path to store caching data
+    // is guaranteed to have a trailing backslash.
+    property CachingPath: string read GetCachingPath write SetCachingPath;
     // Return the path to the configuration files;
     // is guaranteed to have a trailing backslash.
     property ConfigPath: string read GetConfigPath write SetConfigPath;
@@ -211,6 +216,7 @@ type
     FVclPath: string;
     FGExpertsPath: string;
     FConfigPath: string;
+    FCachingPath: string;
     FHelpFileLocation: string;
     FIdeRootRegistryKey: string;
     FEditorExpertsEnabled: Boolean;
@@ -227,10 +233,12 @@ type
 {$ENDIF}
     procedure LoadSettings;
     function DefaultConfigPath: string;
+    function DefaultCachingPath: string;
   protected
     // IConfigInfo
     procedure SaveSettings;
     procedure SetAlphabetizeMenu(const Value: Boolean);
+    procedure SetCachingPath(const Value: string);
     procedure SetConfigPath(const Value: string);
     procedure SetGExpertsPath(const Value: string);
     procedure SetEditorExpertsEnabled(const Value: Boolean);
@@ -241,6 +249,7 @@ type
     procedure SetMoveComponentMenu(const Value: Boolean);
     function GetAlphabetizeMenu: Boolean;
     function GetConfigPath: string;
+    function GetCachingPath: string;
     function GetEditorExpertsEnabled: Boolean;
     function GExpertsIdeRootRegistryKey: string;
     function GetHelpFileLocation: string;
@@ -488,11 +497,17 @@ begin
 
   FGExpertsPath := AddSlash(ExtractFilePath(ThisDllName));
   FConfigPath := DefaultConfigPath;
+  FCachingPath := DefaultCachingPath;
 
   EditorEnhancements.Enabled := False;
 
   LoadSettings;
   ShowGxMessageBox(TShowBadDirectoryMessage, FConfigPath);
+end;
+
+function TConfigInfo.DefaultCachingPath: string;
+begin
+  Result := AddSlash(GetUserLocalApplicationDataFolder) + AddSlash('Gexperts') + IDEEnglishName;
 end;
 
 function TConfigInfo.DefaultConfigPath: string;
@@ -522,6 +537,7 @@ begin
   try
     FVclPath := AddSlash(Settings.ReadString(ConfigurationKey, 'VCLPath', FVclPath));
     FConfigPath := AddSlash(Settings.ReadString(ConfigurationKey, 'ConfigPath', FConfigPath));
+    FCachingPath := AddSlash(Settings.ReadString(ConfigurationKey, 'CachingPath', FCachingPath));
     FHelpFileLocation := Settings.ReadString(ConfigurationKey, 'HelpFile', FGExpertsPath + 'GExperts.chm');
     if SameText(ExtractFileExt(FHelpFileLocation), '.hlp') then
       FHelpFileLocation := ChangeFileExt(FHelpFileLocation, '.chm');
@@ -558,6 +574,7 @@ begin
   try
     Settings.WriteString(ConfigurationKey, 'VCLPath', FVclPath);
     Settings.WriteString(ConfigurationKey, 'ConfigPath', FConfigPath);
+    Settings.WriteString(ConfigurationKey, 'CachingPath', FCachingPath);
     Settings.WriteString(ConfigurationKey, 'HelpFile', FHelpFileLocation);
     Settings.WriteBool(ConfigurationKey, 'AlphabetizeMenu', FAlphabetizeMenu);
     Settings.WriteBool(ConfigurationKey, 'EditorExpertsEnabled', FEditorExpertsEnabled);
@@ -588,6 +605,11 @@ begin
   Result := AddSlash(FIdeRootRegistryKey) + SGExpertsString;
 end;
 
+procedure TConfigInfo.SetCachingPath(const Value: string);
+begin
+ FCachingPath := AddSlash(Value);
+end;
+
 procedure TConfigInfo.SetConfigPath(const Value: string);
 begin
   FConfigPath := AddSlash(Value);
@@ -598,6 +620,11 @@ begin
   Assert(not IsStandAlone);
 
   Result := FAlphabetizeMenu;
+end;
+
+function TConfigInfo.GetCachingPath: string;
+begin
+  Result := FCachingPath;
 end;
 
 function TConfigInfo.GetConfigPath: string;
