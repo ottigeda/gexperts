@@ -512,6 +512,7 @@ begin
   TStringGrid_AdjustRowHeight(sg_Implementation);
   TStringGrid_AdjustRowHeight(sg_SearchPath);
   TStringGrid_AdjustRowHeight(sg_Project);
+  TStringGrid_AdjustRowHeight(sg_Common);
   TStringGrid_AdjustRowHeight(sg_Favorite);
   TStringGrid_AdjustRowHeight(sg_Identifiers);
 end;
@@ -1066,6 +1067,8 @@ begin
       end;
     end;
   end;
+  {$IFOPT D+} SendDebugFmt('Drawing grid %s: DefaultRowHeight: %d Rect.Left: %d .Top: %d  .Width: %d .Height: %d',
+    [_sg.Name, _sg.DefaultRowHeight, _Rect.Left, _Rect.Top, _Rect.Right - _Rect.Left, _Rect.Bottom - _Rect.Top]);{$ENDIF}
   cnv.FillRect(_Rect);
   cnv.TextRect(_Rect, _Rect.Left + 2, _Rect.Top + 2, _Text);
 end;
