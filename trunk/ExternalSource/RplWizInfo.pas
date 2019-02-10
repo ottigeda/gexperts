@@ -1175,15 +1175,18 @@ begin
 
     Assert(Assigned(Parent), 'Parent not assigned');
     Assert(Assigned(Parent.LatestComponentInterface), 'Parent.LatestComponentInterface not assigned');
-    with Properties do
     try
-      {$IFOPT D+} SendDebug(Format('Creating with pos: (Left=%d, Top=%d', [GetLeft, GetTop])); {$ENDIF}
+      {$IFOPT D+}SendDebug(Format('Creating %s with pos: (Left=%d, Top=%d',
+        [NewType, Properties.GetLeft, Properties.GetTop]));{$ENDIF}
       // If this starts crashing try IDesigner.CreateComponent
       NewComponent := FormEditor.CreateComponent(Parent.LatestComponentInterface,
-        NewType, GetLeft, GetTop, GetWidth, GetHeight);
+        NewType, Properties.GetLeft, Properties.GetTop, Properties.GetWidth, Properties.GetHeight);
 
-    except on E: Exception do
-      raise Exception.Create('Error calling IOTAFormEditor.CreateComponent: ' + E.Message);
+    except
+      on E: Exception do begin
+        {$IFOPT D+}SendDebugError(e.Message);{$ENDIF}
+        raise Exception.Create('Error calling IOTAFormEditor.CreateComponent: ' + E.Message);
+      end;
     end;
   finally
     if OldGroup <> nil then
@@ -1196,11 +1199,13 @@ begin
   NewComponentInterface := NewComponent;
   UpdateComponentProperties(NewComponent);
 
-  try // Update prent
+  try // Update parent
     UpdateComponentParent(Parent, NewComponent);
   except
-    on E: Exception do
+    on E: Exception do begin
+      {$IFOPT D+}SendDebugError(e.Message);{$ENDIF}
       FController.HandleException(E, SUpdParent);
+    end;
   end;
 end;
 
@@ -1324,7 +1329,7 @@ function TCompInfo.Search(Parent: TCompInfo; FormEditor: IOTAFormEditor;
 
 resourcestring
   AncestorError = 'There are known bugs in the IDE that cause crashes trying '+
-    'to replace components on inherited froms.  The component %s can not be '+
+    'to replace components on inherited forms.  The component %s can not be '+
     'replaced, since it is on an inherited form.  Operation aborted.';
   SObjectProc = 'Object processing';
   SReplaceCompd = 'Component replaced successfully: %s - > %s:%s';
