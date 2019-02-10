@@ -926,6 +926,8 @@ var
   SizeChanged   : Boolean;
   R             : TRect;
   Rect: TRect;
+  w: Integer;
+  h: Integer;
 begin
   if Section = '' then
     StorageSection := Form.ClassName
@@ -933,6 +935,8 @@ begin
     StorageSection := Section;
 
   R := Form.BoundsRect;
+  w := Form.Width;
+  h := Form.Height;
   PosChanged := False;
   SizeChanged := False;
 
@@ -950,9 +954,13 @@ begin
     SizeChanged := True;
   end;
 
-  if PosChanged then
-    Form.BoundsRect := r
-  else if SizeChanged then begin
+  if PosChanged then begin
+    if not SizeChanged then begin
+      R.Right := R.Left + w;
+      R.Bottom := R.Top + h;
+    end;
+    Form.BoundsRect := r;
+  end else if SizeChanged then begin
     // center with the given size
     Rect := GetScreenWorkArea(Form);
     Form.SetBounds(Rect.Left + (Rect.Right - Rect.Left - (R.Right - R.Left)) div 2,
