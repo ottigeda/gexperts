@@ -220,6 +220,9 @@ begin
   FAvailable.Add('UNIT_LIBRARY');
   FAvailable.Add('UNIT_NAME_MISMATCH');
   FAvailable.Add('UNIT_PLATFORM');
+  FAvailable.Add('COMBINING_SIGNED_UNSIGNED64');
+  FAvailable.Add('IMPLICIT_CONVERSION_LOSS');
+  FAvailable.Add('IMPLICIT_INTEGER_CAST_LOSS');
   // new in Delphi 10.3 Rio
   FAvailable.Add('UNKNOWN_CUSTOM_ATTRIBUTE');
   FAvailable.Add('UNSAFE_CAST');
@@ -240,6 +243,95 @@ begin
   FAvailable.Add('ZERO_NIL_COMPAT');
 end;
 
+{$ELSE}
+{$IF CompilerVersion >= CompilerVersionDelphiX102}
+
+procedure TfmConfigureWarning.InitWarnings;
+begin
+  FAvailable.Add('SYMBOL_DEPRECATED');
+  FAvailable.Add('SYMBOL_LIBRARY');
+  FAvailable.Add('SYMBOL_PLATFORM');
+  FAvailable.Add('SYMBOL_EXPERIMENTAL');
+  FAvailable.Add('UNIT_LIBRARY');
+  FAvailable.Add('UNIT_PLATFORM');
+  FAvailable.Add('UNIT_DEPRECATED');
+  FAvailable.Add('UNIT_EXPERIMENTAL');
+  FAvailable.Add('HRESULT_COMPAT');
+  FAvailable.Add('HIDING_MEMBER');
+  FAvailable.Add('HIDDEN_VIRTUAL');
+  FAvailable.Add('GARBAGE');
+  FAvailable.Add('BOUNDS_ERROR');
+  FAvailable.Add('ZERO_NIL_COMPAT');
+  FAvailable.Add('STRING_CONST_TRUNCED');
+  FAvailable.Add('FOR_LOOP_VAR_VARPAR');
+  FAvailable.Add('TYPED_CONST_VARPAR');
+  FAvailable.Add('ASG_TO_TYPED_CONST');
+  FAvailable.Add('CASE_LABEL_RANGE');
+  FAvailable.Add('FOR_VARIABLE');
+  FAvailable.Add('CONSTRUCTING_ABSTRACT');
+  FAvailable.Add('COMPARISON_FALSE');
+  FAvailable.Add('COMPARISON_TRUE');
+  FAvailable.Add('COMPARING_SIGNED_UNSIGNED');
+  FAvailable.Add('COMBINING_SIGNED_UNSIGNED');
+  FAvailable.Add('UNSUPPORTED_CONSTRUCT');
+  FAvailable.Add('FILE_OPEN');
+  FAvailable.Add('FILE_OPEN_UNITSRC');
+  FAvailable.Add('BAD_GLOBAL_SYMBOL');
+  FAvailable.Add('DUPLICATE_CTOR_DTOR');
+  FAvailable.Add('INVALID_DIRECTIVE');
+  FAvailable.Add('PACKAGE_NO_LINK');
+  FAvailable.Add('PACKAGED_THREADVAR');
+  FAvailable.Add('IMPLICIT_IMPORT');
+  FAvailable.Add('HPPEMIT_IGNORED');
+  FAvailable.Add('NO_RETVAL');
+  FAvailable.Add('USE_BEFORE_DEF');
+  FAvailable.Add('FOR_LOOP_VAR_UNDEF');
+  FAvailable.Add('UNIT_NAME_MISMATCH');
+  FAvailable.Add('NO_CFG_FILE_FOUND');
+  FAvailable.Add('IMPLICIT_VARIANTS');
+  FAvailable.Add('UNICODE_TO_LOCALE');
+  FAvailable.Add('LOCALE_TO_UNICODE');
+  FAvailable.Add('IMAGEBASE_MULTIPLE');
+  FAvailable.Add('SUSPICIOUS_TYPECAST');
+  FAvailable.Add('PRIVATE_PROPACCESSOR');
+  FAvailable.Add('UNSAFE_TYPE');
+  FAvailable.Add('UNSAFE_CODE');
+  FAvailable.Add('UNSAFE_CAST');
+  FAvailable.Add('OPTION_TRUNCATED');
+  FAvailable.Add('WIDECHAR_REDUCED');
+  FAvailable.Add('DUPLICATES_IGNORED');
+  FAvailable.Add('UNIT_INIT_SEQ');
+  FAvailable.Add('LOCAL_PINVOKE');
+  FAvailable.Add('MESSAGE_DIRECTIVE');
+  FAvailable.Add('TYPEINFO_IMPLICITLY_ADDED');
+  FAvailable.Add('RLINK_WARNING');
+  FAvailable.Add('IMPLICIT_STRING_CAST');
+  FAvailable.Add('IMPLICIT_STRING_CAST_LOSS');
+  FAvailable.Add('EXPLICIT_STRING_CAST');
+  FAvailable.Add('EXPLICIT_STRING_CAST_LOSS');
+  FAvailable.Add('CVT_WCHAR_TO_ACHAR');
+  FAvailable.Add('CVT_NARROWING_STRING_LOST');
+  FAvailable.Add('CVT_ACHAR_TO_WCHAR');
+  FAvailable.Add('CVT_WIDENING_STRING_LOST');
+  FAvailable.Add('NON_PORTABLE_TYPECAST');
+  FAvailable.Add('LOST_EXTENDED_PRECISION');
+  FAvailable.Add('LNKDFM_NOTFOUND');
+  FAvailable.Add('IMMUTABLE_STRINGS');
+  FAvailable.Add('MOBILE_DELPHI');
+  FAvailable.Add('UNSAFE_VOID_POINTER');
+  FAvailable.Add('XML_WHITESPACE_NOT_ALLOWED');
+  FAvailable.Add('XML_UNKNOWN_ENTITY');
+  FAvailable.Add('XML_INVALID_NAME_START');
+  FAvailable.Add('XML_INVALID_NAME');
+  FAvailable.Add('XML_EXPECTED_CHARACTER');
+  FAvailable.Add('XML_CREF_NO_RESOLVE');
+  FAvailable.Add('XML_NO_PARM');
+  FAvailable.Add('XML_NO_MATCHING_PARM');
+// new in Delphi 10.2 Toky
+  FAvailable.Add('COMBINING_SIGNED_UNSIGNED64');
+  FAvailable.Add('IMPLICIT_CONVERSION_LOSS');
+  FAvailable.Add('IMPLICIT_INTEGER_CAST_LOSS');
+end;
 {$ELSE}
 {$IF CompilerVersion >= CompilerVersionDelphiXE3}
 
@@ -911,6 +1003,7 @@ end;
 {$IFEND}
 {$IFEND}
 {$IFEND}
+{$IFEND}
 
 constructor TfmConfigureWarning.Create(_Owner: TComponent);
 begin
@@ -1000,4 +1093,3 @@ end;
 initialization
   RegisterEditorExpert(TWarnExpert);
 end.
-
