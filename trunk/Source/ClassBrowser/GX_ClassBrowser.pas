@@ -459,8 +459,7 @@ var
       begin
         if FViewUnitNames then
         begin
-          with AClassItem do
-            NodeText := SourceName + '.' + Name;
+          NodeText := AClassItem.SourceName + '.' + AClassItem.Name;
         end
         else
           NodeText := AClassItem.Name;
@@ -507,8 +506,7 @@ begin
         // This is a root item - ObjectDerivedFrom = nil --> no ancestor.
         if FViewUnitNames then
         begin
-          with ClassInfoCollItem do
-            NodeText := SourceName + '.' + Name;
+          NodeText := ClassInfoCollItem.SourceName + '.' + ClassInfoCollItem.Name;
         end
         else
           NodeText := ClassInfoCollItem.Name;
@@ -802,14 +800,11 @@ end;
 procedure TfmClassBrowser.pnlDataResize(Sender: TObject);
 begin
   if csDestroying in ComponentState then Exit;
-  with lvInfo do
-  begin
     if lvInfo.ClientWidth > 50 then
     begin
-      Columns[5].Width := Max(lvInfo.ClientWidth - Columns[0].Width - Columns[1].Width -
-        Columns[2].Width - Columns[3].Width - Columns[4].Width, 0);
+      lvInfo.Columns[5].Width := Max(lvInfo.ClientWidth - lvInfo.Columns[0].Width - lvInfo.Columns[1].Width -
+        lvInfo.Columns[2].Width - lvInfo.Columns[3].Width - lvInfo.Columns[4].Width, 0);
     end;
-  end;
   tshMembers.Width := pcMain.ActivePage.Width;
   tshMembers.Height := pcMain.ActivePage.Height;
   DrawResize;
