@@ -34,6 +34,7 @@ type
      ideRS101U2, // Rad Studio 10.1 Berlin Update 2
      ideRS102, // Rad Studio 10.2 Tokyo
      ideRS103, // Rad Studio 10.3 Rio
+     ideRS103U1, // Rad Studio 10.3 Rio Update 1
      // C# Builder
      ideCSB100,
      // C++Builder
@@ -836,15 +837,16 @@ var
   CoreIdeFileVersion: TVersionNumber;
   VersionNumber: Integer;
 begin
-  Result := ideRS101;
   CoreIdeFileVersion := GetFileVersionNumber(GetIdeRootDirectory + 'Bin\coreide240.bpl');
-  VersionNumber := CompareVersionNumber(CoreIde2400Upd1, CoreIde2400);
-  if VersionNumber >= 0 then begin
-    Result := ideRS101U1;
-  end;
-  VersionNumber := CompareVersionNumber(CoreIde2400Upd2, CoreIde2400);
+  VersionNumber := CompareVersionNumber(CoreIdeFileVersion, CoreIde2400Upd2);
   if VersionNumber >= 0 then begin
     Result := ideRS101U2;
+  end else begin
+    VersionNumber := CompareVersionNumber(CoreIdeFileVersion, CoreIde2400Upd1);
+    if VersionNumber >= 0 then begin
+      Result := ideRS101U1;
+    end else
+      Result := ideRS101;
   end;
 end;
 
@@ -870,12 +872,28 @@ end;
   coreide260.bpl       26.0.32429.4364
   bds.exe              26.0.32429.4364
   dcldb260.bpl         26.0.32429.4364
+
+  Delphi 10.3.1 Rio Update 1
+  File                 File Version    Size       Modified Time
+  delphicoreide260.bpl 26.0.33219.4899
+  coreide260.bpl       26.0.33219.4899
+  bds.exe              26.0.33219.4899
+  dcldb260.bpl         26.0.33219.4899
 }
 function GetRS103Version: TBorlandIdeVersion;
 const
-  CoreIde2500: TVersionNumber = (Minor: 26; Major: 0; Build: 4364; Release: 32429);
+  CoreIde2600: TVersionNumber = (Minor: 26; Major: 0; Build: 4364; Release: 32429);
+  CoreIde2600Upd1: TVersionNumber = (Minor: 26; Major: 0; Build: 4899; Release: 33219);
+var
+  CoreIdeFileVersion: TVersionNumber;
+  VersionNumber: Integer;
 begin
-  Result := ideRS103;
+  CoreIdeFileVersion := GetFileVersionNumber(GetIdeRootDirectory + 'Bin\coreide260.bpl');
+  VersionNumber := CompareVersionNumber(CoreIdeFileVersion, CoreIde2600Upd1);
+  if VersionNumber >= 0 then begin
+    Result := ideRS103U1;
+  end else
+    Result := ideRS103;
 end;
 
 function GetBorlandIdeVersion: TBorlandIdeVersion;
@@ -1000,7 +1018,7 @@ begin
 
   {$IFDEF VER330}
     Result := GetRS103Version;
-    Assert(Result in [ideRS103]);
+  Assert(Result in [ideRS103, ideRS103U1]);
   {$ENDIF VER330}
 
   if Result = ideUnknown then
