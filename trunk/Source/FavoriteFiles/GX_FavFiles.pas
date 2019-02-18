@@ -831,6 +831,7 @@ begin
     FOptions.FIsFavMenuVisible := Settings.ReadBool(ConfigurationKey, 'IsFavMenuVisible', FOptions.FIsFavMenuVisible);
     ListView.ViewStyle := TViewStyle(Settings.ReadInteger(ConfigurationKey + '\Window', 'ListView', Ord(ListView.ViewStyle)));
     Assert(ListView.ViewStyle in [Low(TViewStyle)..High(TViewStyle)]);
+    MRUEntryFiles.Clear;
     Settings.ReadStrings(MRUEntryFiles, ConfigurationKey + PathDelim + 'MRUEntryFiles', 'EntryFile');
   finally
     FreeAndNil(Settings);
