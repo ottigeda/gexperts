@@ -464,7 +464,7 @@ begin
   FCommonSearchDone := False;
   FMapSearchDone := False;
 
-  SearchPath := TStringList.create;
+  SearchPath := TStringList.Create;
   try
     GetSearchPath(SearchPath);
 
