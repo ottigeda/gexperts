@@ -133,8 +133,7 @@ end;
 
 procedure TReadMapFileThread.StartFind;
 begin
-  GxOtaGetCurrentMapFileName(FMapFile);
-  if FileExists(FMapFile) then begin
+  if GxOtaGetCurrentMapFileName(FMapFile) then begin
 {$IFDEF GX_VER210_up}
     Start;
 {$ELSE}
