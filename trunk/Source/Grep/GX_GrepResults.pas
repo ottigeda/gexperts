@@ -579,7 +579,6 @@ begin
     Cursor := TempHourGlassCursor;
 
     FSearcher := TGrepSearchRunner.Create(FGrepSettings, lbResults.Items, ResultFiles);
-
     try
       FSearcher.OnSearchFile := StartFileSearch;
       FSearcher.OnSearchDirectory := StartDirectorySearch;
