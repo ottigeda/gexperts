@@ -79,6 +79,7 @@ type
     IncludeForms: Boolean;
     IncludeSQLs: Boolean;
     SaveOption: TGrepSaveOption;
+    UseMapFile: Boolean;
   end;
 
 type
@@ -386,6 +387,7 @@ type
   private
     FGrepSettings: TGrepSettings;
     procedure GrepProjectFile(const FileName: string; Context: TGrepSearchContext);
+    procedure GrepMapFile(const _MapFile: string);
   protected
     procedure DoHitMatch(LineNo: Integer; const Line: string;
       SPos, EPos: Integer); virtual;
@@ -412,7 +414,8 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Forms, Dialogs, Controls, DateUtils, StrUtils, Math,
-  GX_OtaUtils, GX_EditReader, GX_IdeUtils, GX_dzClassUtils, GX_GrepProgress;
+  GX_OtaUtils, GX_EditReader, GX_IdeUtils, GX_dzClassUtils, GX_GrepProgress,
+  GX_dzMapFileReader;
 
 const
   cIniSubKeyCount = 'Count';
@@ -509,6 +512,41 @@ begin
     FreeAndNil(Context);
   end;
 end;
+
+procedure TGrepSearchRunner.GrepMapFile(const _MapFile: string);
+var
+  Reader: TMapFileReader;
+  UnitsIdx: Integer;
+  SearchPath: TStringList;
+  Filename: string;
+  FullFn: string;
+  PathIdx: Integer;
+  Context: TGrepSearchContext;
+begin
+  Context := nil;
+  Reader := nil;
+  SearchPath := TStringList.Create;
+  try
+    Context := TGrepSearchContext.Create;
+    Context.Project := _MapFile;
+    GxOtaGetEffectiveLibraryPath(SearchPath);
+    Reader := TMapFileReader.Create(_MapFile);
+    for UnitsIdx := 0 to Reader.Units.Count - 1 do begin
+      FileName := Reader.Units[UnitsIdx] + '.pas';
+      for PathIdx := 0 to SearchPath.Count - 1 do begin
+        FullFn := ExpandFileName(AddSlash(SearchPath[PathIdx]) + FileName);
+        if FileExists(FullFn) then begin
+          GrepProjectFile(FullFn, Context);
+        end;
+      end;
+    end;
+  finally
+    FreeAndNil(Reader);
+    FreeAndNil(Context);
+    FreeAndNil(SearchPath);
+  end;
+end;
+
 
 procedure TGrepSearchRunner.GrepCurrentSourceEditor;
 resourcestring
@@ -681,6 +719,7 @@ procedure TGrepSearchRunner.Execute;
 var
   i: Integer;
   lExcludedDirs: string;
+  MapFile: string;
 begin
   FFileSearchCount := 0;
   FMatchCount := 0;
@@ -729,8 +768,14 @@ begin
         FExceptionList := TStringList.Create;
         try
           case FGrepSettings.GrepAction of
-            gaProjGrep:
-              GrepProject(GxOtaGetCurrentProject);
+            gaProjGrep: begin
+                if FGrepSettings.UseMapFile and GxOtaGetCurrentMapFileName(MapFile) then begin
+                  GrepMapFile(MapFile);
+                end else begin
+                  // UseMapFile is false or fallback if no map file found
+                  GrepProject(GxOtaGetCurrentProject);
+                end;
+              end;
             gaProjGroupGrep:
               GrepProjectGroup;
             gaCurrentOnlyGrep:

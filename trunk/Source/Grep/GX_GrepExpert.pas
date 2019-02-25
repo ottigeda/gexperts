@@ -64,6 +64,7 @@ type
     FGrepHistoryPagesTabMultiline: Boolean;
     FGrepHistoryPagesTabWidth: Integer;
     FGrepMouseWheelPrevNextMatch: Boolean;
+    FGrepUseMapFile: Boolean;
     function  GetGrepSaveHistoryListItems(AIndex: Integer): Boolean;
     procedure SetSearchList(New: TStrings);
     procedure SetReplaceList(New: TStrings);
@@ -122,6 +123,7 @@ type
     property GrepRegEx: Boolean read FGrepRegEx write FGrepRegEx;
     property GrepSaveOption: TGrepSaveOption read FGrepSaveOption write FGrepSaveOption;
     property GrepUseCurrentIdent: Boolean read FGrepUseCurrentIdent write FGrepUseCurrentIdent;
+    property GrepUseMapFile: Boolean read FGrepUseMapFile write FGrepUseMapFile;
     property NumContextLines: Integer read FNumContextLines write FNumContextLines;
 
     property GrepAdvancedOptions: Boolean read FGrepAdvancedOptions write FGrepAdvancedOptions;
@@ -476,6 +478,7 @@ begin
   Settings.WriteBool('RegEx', GrepRegEx);
   Settings.WriteInteger('SaveOption', Integer(GrepSaveOption));
   Settings.WriteBool('UseCurrentIdent', GrepUseCurrentIdent);
+  Settings.WriteBool('UseMapFile', GrepUseMapFile);
 
   Settings.WriteBool('AdvancedOptions', GrepAdvancedOptions);
   Settings.WriteInteger('SaveOptionDeafult', GrepSaveOptionDefaultValue);
@@ -738,6 +741,7 @@ begin
   FGrepRegEx := Settings.ReadBool('RegEx', False);
   FGrepSaveOption := TGrepSaveOption(Settings.ReadInteger('SaveOption', Integer(GrepSaveOption)));
   FGrepUseCurrentIdent := Settings.ReadBool('UseCurrentIdent', False);
+  FGrepUseMapFile := Settings.ReadBool('UseMapFile', False);
 
   FGrepAdvancedOptions := Settings.ReadBool('AdvancedOptions', GrepAdvancedOptions);
   FGrepSaveOptionDefaultValue := Settings.ReadInteger('SaveOptionDeafult', GrepSaveOptionDefaultValue);

@@ -11,8 +11,9 @@ type
     btnOK: TButton;
     btnCancel: TButton;
     chkGrepUseCurrentIdent: TCheckBox;
+    chkUseMapFile: TCheckBox;
   public
-    class function Execute(var UseCurrentIdent: Boolean): Boolean;
+    class function Execute(var UseCurrentIdent, UseMapFile: Boolean): Boolean;
   end;
 
 implementation
@@ -21,17 +22,19 @@ implementation
 
 { TfmGrepOptions }
 
-class function TfmGrepOptions.Execute(var UseCurrentIdent: Boolean): Boolean;
+class function TfmGrepOptions.Execute(var UseCurrentIdent, UseMapFile: Boolean): Boolean;
 var
   Dlg: TfmGrepOptions;
 begin
   Dlg := TfmGrepOptions.Create(nil);
   try
     Dlg.chkGrepUseCurrentIdent.Checked := UseCurrentIdent;
+    Dlg.chkUseMapFile.Checked := UseMapFile;
     Result := (Dlg.ShowModal = mrOk);
     if Result then
     begin
       UseCurrentIdent := Dlg.chkGrepUseCurrentIdent.Checked;
+      UseMapFile := Dlg.chkUseMapFile.Checked;
     end;
   finally
     FreeAndNil(Dlg);

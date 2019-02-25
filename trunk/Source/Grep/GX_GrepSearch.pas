@@ -156,10 +156,14 @@ end;
 procedure TfmGrepSearch.btnOptionsClick(Sender: TObject);
 var
   UseCurrentIdent: Boolean;
+  UseMapFile: Boolean;
 begin
   UseCurrentIdent := GrepExpert.GrepUseCurrentIdent;
-  if TfmGrepOptions.Execute(UseCurrentIdent) then
+  UseMapFile := GrepExpert.GrepUseMapFile;
+  if TfmGrepOptions.Execute(UseCurrentIdent, UseMapFile) then begin
     GrepExpert.GrepUseCurrentIdent := UseCurrentIdent;
+    GrepExpert.GrepUseMapFile := UseMapFile;
+  end;
 end;
 
 procedure TfmGrepSearch.btnSectionAllClick(Sender: TObject);
@@ -365,6 +369,7 @@ procedure TGrepDlgExpert.Configure;
 var
   GrepExpert: TGrepExpert;
   UseCurrentIdent: Boolean;
+  UseMapFile: Boolean;
 begin
   if not Assigned(fmGrepResults) then
     raise Exception.Create(SGrepResultsNotActive);
@@ -373,8 +378,11 @@ begin
   Assert(Assigned(GrepExpert));
 
   UseCurrentIdent := GrepExpert.GrepUseCurrentIdent;
-  if TfmGrepOptions.Execute(UseCurrentIdent) then
+  UseMapFile := GrepExpert.GrepUseMapFile;
+  if TfmGrepOptions.Execute(UseCurrentIdent, UseMapFile) then begin
     GrepExpert.GrepUseCurrentIdent := UseCurrentIdent;
+    GrepExpert.GrepUseMapFile := UseMapFile;
+  end;
 end;
 
 procedure TfmGrepSearch.btnOKClick(Sender: TObject);
@@ -687,6 +695,7 @@ begin
   Value.Directories := '';
   Value.ExcludedDirs := '';
   Value.IncludeSubdirs := True;
+  Value.UseMapFile := FGrepExpert.GrepUseMapFile;
 
   if rbAllProjFiles.Checked then
     Value.GrepAction := gaProjGrep
