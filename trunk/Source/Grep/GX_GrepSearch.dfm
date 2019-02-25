@@ -311,6 +311,7 @@ object fmGrepSearch: TfmGrepSearch
       Top = 26
       Width = 57
       Height = 14
+      Hint = 'Separate multiple directories by semicolon'
       Alignment = taRightJustify
       Caption = 'Di&rectories'
       FocusControl = cbDirectory
@@ -320,6 +321,7 @@ object fmGrepSearch: TfmGrepSearch
       Top = 55
       Width = 65
       Height = 14
+      Hint = 'Separate multiple directories by semicolon'
       Alignment = taRightJustify
       Caption = 'Exclude Dirs'
       FocusControl = cbExcludedDirs
