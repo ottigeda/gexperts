@@ -205,7 +205,7 @@
 
 [Setup]
 AllowNoIcons=true
-AppCopyright=Copyright 1996-{#ThisYear} by Erik Berry and the {#Product} Development Team
+AppCopyright=Copyright 1996-{#ThisYear} by Thomas Mueller, Erik Berry and the {#Product} Development Team
 AppName={#Product}
 AppVerName={#FullName}
 AppID={#AppIDValue}
@@ -238,6 +238,7 @@ Source: ..\Binaries\FormatterSettings-DelForEx.ini; DestDir: {app}; Flags: ignor
 Source: ..\Binaries\FormatterSettings-headwork.ini; DestDir: {app}; Flags: ignoreversion
 Source: ..\Binaries\FormatterSettings-twm.ini; DestDir: {app}; Flags: ignoreversion
 Source: ..\Binaries\preview.pas; DestDir: {app}; Flags: ignoreversion
+Source: ..\Binaries\proofreader.wav; DestDir: {app}; Flags: ignoreversion
 
 [Icons]
 Name: {group}\Debug Window; Filename: {app}\GExpertsDebugWindow.exe
@@ -283,6 +284,8 @@ begin
       IDYES:
         begin
           RegQueryStringValue(HKEY_CURRENT_USER, 'Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\GExperts-{#VerRegKey}\Misc', 'ConfigPath', DataPath);
+          DeleteDirAndSettings(DataPath);
+          RegQueryStringValue(HKEY_CURRENT_USER, 'Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\GExperts-{#VerRegKey}\Misc', 'CachingPath', DataPath);
           DeleteDirAndSettings(DataPath);
           DeleteDirAndSettings(ExpandConstant('{app}'));
           RegDeleteKeyIncludingSubkeys(HKEY_CURRENT_USER, 'Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\GExperts-{#VerRegKey}');
