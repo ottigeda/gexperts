@@ -129,7 +129,7 @@ international environments, refer to the IDE documentation under
 
 as well as the relevant CodeGear newsgroups at
  https://forums.codegear.com/
-and the old arvhives that are searchable here:
+and the old archives that are searchable here:
  http://groups.google.com/
 
 Specific to the localization of GExperts are the following items:
