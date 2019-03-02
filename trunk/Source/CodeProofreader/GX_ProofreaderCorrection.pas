@@ -19,7 +19,7 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, Classes, ToolsAPI,
+  SysUtils, Classes, ToolsAPI, MMSystem,
   GX_OtaUtils, GX_GenericUtils, GX_ProofreaderUtils,
   GX_EditorFormServices, GX_KibitzComp, GX_IdeUtils, StrUtils;
 
@@ -243,9 +243,27 @@ begin
 end;
 
 procedure TAutoTypeWriterNotifier.BeepOnDemand;
+{$IF not declared(SND_SYSTEM)}
+// older Delphi versions are missing this constant:
+const
+  SND_SYSTEM = $00200000; // Treat this as a system sound
+{$IFEND}
+var
+  SoundFlags: Cardinal;
 begin
   if FProofreaderData.BeepOnReplace then
-    Beep;
+  begin
+    if Length(FProofreaderData.CustomBeepSound) > 0 then
+    begin
+      SoundFlags := SND_FILENAME or SND_ASYNC;
+      if IsWindowsVistaOrLater then
+        SoundFlags := SoundFlags or SND_SYSTEM;
+
+      PlaySound(PChar(FProofreaderData.CustomBeepSound), 0, SoundFlags);
+    end
+    else
+      Beep;
+  end;
 end;
 
 function InternalNeedsReplacement(const ReplaceItem: TReplacementItem;

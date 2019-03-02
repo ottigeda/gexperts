@@ -76,6 +76,12 @@ type
     btnOK: TButton;
     btnCancel: TButton;
     btnHelp: TButton;
+    eCustomBeep: TEdit;
+    tabCommon: TTabSheet;
+    lblCustomBeep: TLabel;
+    btnSelectFile: TButton;
+    actTestBeep: TAction;
+    btnTestBeep: TButton;
     procedure FormShow(Sender: TObject);
     procedure cbLanguageChange(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
@@ -96,6 +102,9 @@ type
     procedure lvReplacementData(Sender: TObject; Item: TListItem);
     procedure PagesChange(Sender: TObject);
     procedure UMUpdateCols(var Msg: TMessage); message UM_UPDATECOLS;
+    procedure btnSelectFileClick(Sender: TObject);
+    procedure cbBeepClick(Sender: TObject);
+    procedure actTestBeepExecute(Sender: TObject);
   private
     FProofreaderExpert: TCodeProofreaderExpert;
     FProofreaderData: TProofreaderData;
@@ -113,9 +122,9 @@ type
 implementation
 
 uses
-  SysUtils, Windows,
+  SysUtils, Windows, MMSystem,
   GX_ProofreaderAutoCorrectEntry, GX_KibitzComp,
-  GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_dzVclUtils;
+  GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_dzVclUtils, GX_ConfigurationInfo;
 
 {$R *.dfm}
 
@@ -191,7 +200,10 @@ begin
     cbLanguage.Items.Add(ReplacementSourceText[i]);
 
   // Initialize option settings
+  btnSelectFile.Top    := eCustomBeep.Top - 1; // Ord(IsThemingEnabled);
+  btnSelectFile.Height := eCustomBeep.Height + 2; // * Ord(IsThemingEnabled);
   cbBeep.Checked := FProofreaderData.BeepOnReplace;
+  eCustomBeep.Text := FProofreaderData.CustomBeepSound;
   cbReplacerActive.Checked := FProofreaderData.ReplacerActive;
   cbEnableDictionary.Checked := FProofreaderData.DictionaryActive;
   cbEnableCompiler.Checked := FProofreaderData.CompilerActive;
@@ -229,6 +241,7 @@ begin
   begin
     // Store options
     BeepOnReplace := cbBeep.Checked;
+    CustomBeepSound := Trim(eCustomBeep.Text);
     ReplacerActive := cbReplacerActive.Checked;
     DictionaryActive := cbEnableDictionary.Checked;
     CompilerActive := cbEnableCompiler.Checked;
@@ -246,6 +259,18 @@ begin
     // Reload data from the tables based on the new settings
     //ReloadData;
   end;
+end;
+
+procedure TfmProofreaderConfig.btnSelectFileClick(Sender: TObject);
+var
+  LFileName: string;
+begin
+  inherited;
+  LFileName := eCustomBeep.Text;
+  if LFileName = '' then
+    LFileName := AddSlash(ConfigInfo.GExpertsPath) + 'proofreader.wav';
+  if ShowOpenDialog('Select custom sound file', 'wav', LFileName) then
+    eCustomBeep.Text := LFileName;
 end;
 
 procedure TfmProofreaderConfig.cbLanguageChange(Sender: TObject);
@@ -309,6 +334,14 @@ begin
     gbReplaceIf.Controls[i].Enabled := cbEnableDictionary.Checked or cbEnableCompiler.Checked;
   cbMustBeNearbyLetter.Enabled := cbMustBeNearbyLetter.Enabled and cbOneCharIncorrect.Checked;
   cbFirstCharMustBeCorrect.Enabled := cbEnableDictionary.Checked or cbEnableCompiler.Checked
+end;
+
+procedure TfmProofreaderConfig.cbBeepClick(Sender: TObject);
+begin
+  inherited;
+  eCustomBeep.Enabled := cbBeep.Checked;
+  btnTestBeep.Enabled := cbBeep.Checked;
+  btnSelectFile.Enabled := cbBeep.Checked;
 end;
 
 procedure TfmProofreaderConfig.cbEnableCompilerClick(Sender: TObject);
@@ -418,6 +451,26 @@ begin
     InsertDict;
 end;
 
+procedure TfmProofreaderConfig.actTestBeepExecute(Sender: TObject);
+{$IF not declared (SND_SYSTEM)}
+const
+  SND_SYSTEM = $00200000;
+{$IFEND}  
+var
+  SoundFlags: Cardinal;
+begin
+  inherited;
+  if Length(eCustomBeep.Text) > 0 then
+  begin
+    SoundFlags := SND_FILENAME or SND_ASYNC;
+    if IsWindowsVistaOrLater then
+      SoundFlags := SoundFlags or SND_SYSTEM;
+    PlaySound(PChar(eCustomBeep.Text), 0, SoundFlags);
+  end
+  else
+    SysUtils.Beep;
+end;
+
 procedure TfmProofreaderConfig.actListEditExecute(Sender: TObject);
 
   procedure EditReplace;
@@ -520,7 +573,9 @@ procedure TfmProofreaderConfig.ActionsUpdate(Action: TBasicAction; var Handled: 
 var
   SelCount: Integer;
 begin
-  if ActiveTab = tabReplacement then
+  if ActiveTab = tabCommon then
+    SelCount := 0
+  else if ActiveTab = tabReplacement then
     SelCount := lvReplacement.SelCount
   else if ActiveTab = tabDictionary then
     SelCount := lvDictionary.SelCount

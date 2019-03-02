@@ -28,6 +28,7 @@ type
     FAllowSwitchedChars: Boolean;
     FFirstCharMustBeCorrect: Boolean;
     FBeepOnReplace: Boolean;
+    FCustomBeepSound: string;
     FActiveTab: Integer;
 
     FReplaceLists: array[TReplacementSource] of TReplacementStringList;
@@ -72,6 +73,7 @@ type
     property AllowSwitchedChars: Boolean read FAllowSwitchedChars write FAllowSwitchedChars;
     property FirstCharMustBeCorrect: Boolean read FFirstCharMustBeCorrect write FFirstCharMustBeCorrect;
     property BeepOnReplace: Boolean read FBeepOnReplace write FBeepOnReplace;
+    property CustomBeepSound: string read FCustomBeepSound write FCustomBeepSound;
     property ActiveTab: Integer read FActiveTab write FActiveTab;
 
     property History: TCorrectionHistory read FHistory;
@@ -547,7 +549,8 @@ begin
   FAllowSwitchedChars := Settings.ReadBool('MixedLetter', True);
   FFirstCharMustBeCorrect := Settings.ReadBool('NoFirstOther', True);
   FBeepOnReplace := Settings.ReadBool('BeepOnReplace', True);
-  FActiveTab := Settings.ReadInteger('ActiveTab', 2);
+  FCustomBeepSound := Settings.ReadString('CustomBeepSound', '');
+  FActiveTab := Settings.ReadInteger('ActiveTab', 3); // the "History" tab.
 end;
 
 procedure TProofreaderData.SaveSettings(Settings: TExpertSettings);
@@ -566,6 +569,7 @@ begin
   Settings.WriteBool('MixedLetter', FAllowSwitchedChars);
   Settings.WriteBool('NoFirstOther', FFirstCharMustBeCorrect);
   Settings.WriteBool('BeepOnReplace', FBeepOnReplace);
+  Settings.WriteString('CustomBeepSound', FCustomBeepSound);
   Settings.WriteInteger('ActiveTab', FActiveTab);
 end;
 

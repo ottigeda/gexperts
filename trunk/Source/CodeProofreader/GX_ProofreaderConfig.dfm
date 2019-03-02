@@ -82,12 +82,63 @@ object fmProofreaderConfig: TfmProofreaderConfig
       Top = 6
       Width = 511
       Height = 415
-      ActivePage = tabDictionary
+      ActivePage = tabCommon
       Align = alClient
       MultiLine = True
-      TabIndex = 1
       TabOrder = 0
       OnChange = PagesChange
+      object tabCommon: TTabSheet
+        Caption = '&Settings'
+        ImageIndex = 3
+        DesignSize = (
+          503
+          386)
+        object lblCustomBeep: TLabel
+          Left = 22
+          Top = 29
+          Width = 266
+          Height = 14
+          Caption = 'Custom &beep file name (empty = default beep):'
+          FocusControl = eCustomBeep
+        end
+        object cbBeep: TCheckBox
+          Left = 4
+          Top = 4
+          Width = 175
+          Height = 17
+          Anchors = [akTop, akRight]
+          Caption = '&Beep when correcting'
+          TabOrder = 0
+          OnClick = cbBeepClick
+        end
+        object eCustomBeep: TEdit
+          Left = 22
+          Top = 48
+          Width = 395
+          Height = 22
+          Anchors = [akLeft, akTop, akRight]
+          TabOrder = 2
+          Text = 'eCustomBeep'
+        end
+        object btnSelectFile: TButton
+          Left = 423
+          Top = 48
+          Width = 75
+          Height = 22
+          Anchors = [akTop, akRight]
+          Caption = 'Browse...'
+          TabOrder = 3
+          OnClick = btnSelectFileClick
+        end
+        object btnTestBeep: TButton
+          Left = 423
+          Top = 21
+          Width = 75
+          Height = 25
+          Action = actTestBeep
+          TabOrder = 1
+        end
+      end
       object tabReplacement: TTabSheet
         Caption = '&AutoCorrect'
         object pnlReplacement: TPanel
@@ -453,9 +504,6 @@ object fmProofreaderConfig: TfmProofreaderConfig
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    DesignSize = (
-      523
-      30)
     object lblRules: TLabel
       Left = 14
       Top = 9
@@ -475,15 +523,6 @@ object fmProofreaderConfig: TfmProofreaderConfig
       ItemHeight = 14
       TabOrder = 0
       OnChange = cbLanguageChange
-    end
-    object cbBeep: TCheckBox
-      Left = 338
-      Top = 9
-      Width = 175
-      Height = 17
-      Anchors = [akTop, akRight]
-      Caption = '&Beep when correcting'
-      TabOrder = 1
     end
   end
   object Actions: TActionList
@@ -534,6 +573,12 @@ object fmProofreaderConfig: TfmProofreaderConfig
       Hint = 'Export Word List'
       ImageIndex = 31
       OnExecute = actExportWordsExecute
+    end
+    object actTestBeep: TAction
+      Category = 'Common'
+      Caption = 'Test'
+      ImageIndex = 43
+      OnExecute = actTestBeepExecute
     end
   end
   object pmList: TPopupMenu
