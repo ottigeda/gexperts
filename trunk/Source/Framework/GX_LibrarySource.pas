@@ -13,7 +13,7 @@ uses
   ToolsAPI; // Errors here indicate that you didn't link to the DesignIde package
 
 var
-  // used to detect duplicat GExperts.dlls loaded into the same IDE instance
+  // used to detect duplicate GExperts.dlls loaded into the same IDE instance
   GExpertsDllMarker: TComponent = nil;
 
 // This function needs to be interface-visible, otherwise
@@ -60,6 +60,7 @@ function InitWizard(const BorlandIDEServices: IBorlandIDEServices;
   var Terminate: TWizardTerminateProc): Boolean; stdcall;
 var
   WizardServices: IOTAWizardServices;
+  GExpertsDllMarker2: TComponent;
 begin
   Result := (BorlandIDEServices <> nil);
 
@@ -69,24 +70,41 @@ begin
     ShowNoPackagesError;
   end;
 
-  if Result then
-  begin
-    Assert(ToolsAPI.BorlandIDEServices = BorlandIDEServices);
+  if not Result then
+    Exit; //==>
 
-    Terminate := FinalizeWizard;
 
-    WizardServices := BorlandIDEServices as IOTAWizardServices;
-    Assert(Assigned(WizardServices));
+  Assert(ToolsAPI.BorlandIDEServices = BorlandIDEServices);
 
-    if (GExpertsDllMarker <> nil) then
-      FExpertIndex := WizardServices.AddWizard(TGExperts.Create as IOTAWizard)
-    else begin
-      // register a dummy wizard so we can fail gracefully
-      FExpertIndex := WizardServices.AddWizard(TDummyWizard.Create as IOTAWizard);
-    end;
-
-    Result := (FExpertIndex >= 0);
+  // Second check that the GExperts DLL is not loaded twice in the same IDE instance.
+  // The first check in CreateInstanceMutexes only works if two different GExperts DLLs are
+  // loaded into the IDE. If the same one is loaded twice, the initialization section
+  // (and thus CreateInstanceMutexes) is only called once.
+  // So we now do the same GExpertsDLLMarker trick again, with a different name this time
+  if Application.FindComponent('GExpertsDllMarker2') <> nil then begin
+      // OK, it is indeed the second (or third ...) call to InitWizard in the same DLL
+      // simply return true and exit.
+      // todo: Maybe we should display an error message?
+    Result := True;
+    Exit; //==>
   end;
+
+  GExpertsDllMarker2 := TComponent.Create(Application);
+  GExpertsDllMarker2.Name := 'GExpertsDllMarker2';
+
+  Terminate := FinalizeWizard;
+
+  WizardServices := BorlandIDEServices as IOTAWizardServices;
+  Assert(Assigned(WizardServices));
+
+  if (GExpertsDllMarker <> nil) then
+    FExpertIndex := WizardServices.AddWizard(TGExperts.Create as IOTAWizard)
+  else begin
+    // register a dummy wizard so we can fail gracefully
+    FExpertIndex := WizardServices.AddWizard(TDummyWizard.Create as IOTAWizard);
+  end;
+
+  Result := (FExpertIndex >= 0);
 end;
 
 exports
@@ -132,6 +150,11 @@ procedure CreateInstanceMutexes;
 begin
   // First, check that the GExperts DLL is not loaded twice in the same IDE instance.
   // This would play havoc with many of the functions.
+  // Unfortunately this only works if two different DLLs are loaded into the IDE.
+  // If the same one is loaded twice, the initialization (and thus CreateInstanceMutexes)
+  // is only called once. So we need another way of preventing this.
+  // But nothing is preventing us from doing the GExpertsDLLMarker trick twice, with
+  // a different name in InitWizard above.
   if Application.FindComponent('GExpertsDllMarker') <> nil then begin
     // Another instance of GExperts has already been loaded.
     // -> Fail silently and do not create an instance of TGExperts in InitWizard.
