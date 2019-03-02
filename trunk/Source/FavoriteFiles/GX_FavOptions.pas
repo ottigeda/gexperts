@@ -56,7 +56,6 @@ begin
   finally
     FreeAndNil(frm);
   end;
-
 end;
 
 {$IFNDEF GX_VER150_up} // Delphi 7
