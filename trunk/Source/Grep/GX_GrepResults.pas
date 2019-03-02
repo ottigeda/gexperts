@@ -36,7 +36,7 @@ type
     mitFileRefresh: TMenuItem;
     mitViewStayOnTop: TMenuItem;
     mitHelpSep1: TMenuItem;
-    Actions: TActionList;
+    TheActionList: TActionList;
     actFileSearch: TAction;
     actFileRefresh: TAction;
     actFileAbort: TAction;
@@ -253,7 +253,7 @@ type
     procedure actListGotoSelectedExecute(Sender: TObject);
     procedure actListContractExecute(Sender: TObject);
     procedure actListExpandExecute(Sender: TObject);
-    procedure ActionsUpdate(Action: TBasicAction; var Handled: Boolean);
+    procedure TheActionListUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure actHelpContentsExecute(Sender: TObject);
     procedure lbResultsClick(Sender: TObject);
     procedure actShowMatchContextExecute(Sender: TObject);
@@ -510,7 +510,7 @@ var
   CurrentGetTickCount: DWORD;
 begin
   SetStatusString(Format(SProcessing, [PathName]));
-  ActionsUpdate(nil, Dummy);
+  TheActionListUpdate(nil, Dummy);
   CurrentGetTickCount := GetTickCount;
   if CurrentGetTickCount <> FLastRepaintTick then
   begin
@@ -1785,7 +1785,7 @@ begin
   fmGrepResults := nil;
 end;
 
-procedure TfmGrepResults.ActionsUpdate(Action: TBasicAction; var Handled: Boolean);
+procedure TfmGrepResults.TheActionListUpdate(Action: TBasicAction; var Handled: Boolean);
 var
   HaveItems, Processing, AIsOnlySaveSettings: Boolean;
   AItem: TGrepHistoryListItem;

@@ -473,9 +473,9 @@ inherited fmGrepResults: TfmGrepResults
       end
     end
   end
-  object Actions: TActionList
+  object TheActionList: TActionList
     Images = dmSharedImages.Images
-    OnUpdate = ActionsUpdate
+    OnUpdate = TheActionListUpdate
     Left = 184
     Top = 32
     object actReplaceSelected: TAction
