@@ -529,7 +529,16 @@ begin
   try
     Context := TGrepSearchContext.Create;
     Context.Project := _MapFile;
-    GxOtaGetEffectiveLibraryPath(SearchPath);
+
+// This does not find units, that are actually part of the project
+// but not in the search path, and also does not find
+// units that are in the library part but only as .dcu files.
+//    GxOtaGetEffectiveLibraryPath(SearchPath);
+// This finds everything, but it might be too much. You usually don't
+// want to search RTL / VCL / FMX units.
+    GxOtaGetAllPossiblePaths(SearchPath);
+// todo: Make this more flexible.
+
     Reader := TMapFileReader.Create(_MapFile);
     for UnitsIdx := 0 to Reader.Units.Count - 1 do begin
       FileName := Reader.Units[UnitsIdx] + '.pas';
