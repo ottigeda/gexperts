@@ -679,34 +679,22 @@ end;
 
 procedure TGrepExpert.InternalLoadSettings(Settings: TExpertSettings);
 
-  // Build a guess for the RTL path from a passed in VCL path.
-  function RtlPath(const VisualPath: string): string;
+  ///<summary>
+  /// Build a guess for the SubSystem path from the passed in VCL path.
+  /// @returns true, if the SubSystem path exists </summary>
+  function TryGuessPath(const _VclPath, _SubSystem: string; out _SubSystemPath: string): Boolean;
   const
-    cCLX = 'clx';
     cVCL = 'vcl';
-    cRTL = 'rtl';
   var
     SubPos: Integer;
   begin
-    Result := '';
-
-    SubPos := AnsiCaseInsensitivePos(cVCL, VisualPath);
-    if SubPos > 0 then
-    begin
-      Result := VisualPath;
-      Delete(Result, SubPos, Length(cVCL));
-      Insert(cRTL, Result, SubPos);
-    end;
-
-    if Result <> '' then
-      Exit;
-
-    SubPos := AnsiCaseInsensitivePos(cCLX, VisualPath);
-    if SubPos > 0 then
-    begin
-      Result := VisualPath;
-      Delete(Result, SubPos, Length(cCLX));
-      Insert(cRTL, Result, SubPos);
+    Result := False;
+    SubPos := AnsiCaseInsensitivePos(cVCL, _VclPath);
+    if SubPos > 0 then begin
+      _SubSystemPath := _VclPath;
+      Delete(_SubSystemPath, SubPos, Length(cVCL));
+      Insert(_SubSystem, _SubSystemPath, SubPos);
+      Result := DirectoryExists(_SubSystemPath);
     end;
   end;
 
@@ -782,23 +770,23 @@ begin
   else
     FGrepSaveHistoryListItems := Settings.ReadInteger('SaveHistoryListItems', 0);
 
-  if MaskList.Count = 0 then
-  begin
-    MaskList.Add('*.pas;*.dpr;*.inc');
-    MaskList.Add('*.txt;*.html;*.htm;.rc;*.xml;*.todo;*.me');
-    if IsStandAlone or GxOtaHaveCPPSupport then
-      MaskList.Add('*.cpp;*.hpp;*.h;*.pas;*.dpr');
-    if IsStandAlone or GxOtaHaveCSharpSupport then
-      MaskList.Add('*.cs');
-  end;
-  if DirList.Count = 0 then
-  begin
-    TempPath := RemoveSlash(ConfigInfo.VCLPath);
-    if NotEmpty(TempPath) and DirectoryExists(TempPath) then
-      DirList.Add(TempPath);
-    TempPath := RtlPath(ConfigInfo.VCLPath);
-    if NotEmpty(TempPath) and DirectoryExists(TempPath) then
-      DirList.Add(RemoveSlash(TempPath));
+  EnsureStringInList(MaskList,'*.pas;*.dpr;*.inc');
+  EnsureStringInList(MaskList,'*.txt;*.html;*.htm;.rc;*.xml;*.todo;*.me');
+  if IsStandAlone or GxOtaHaveCPPSupport then
+    EnsureStringInList(MaskList,'*.cpp;*.hpp;*.h;*.pas;*.dpr');
+  if IsStandAlone or GxOtaHaveCSharpSupport then
+    EnsureStringInList(MaskList,'*.cs');
+
+  TempPath := RemoveSlash(ConfigInfo.VCLPath);
+  if NotEmpty(TempPath) then begin
+    if DirectoryExists(TempPath) then
+      EnsureStringInList(DirList, TempPath);
+    if TryGuessPath(ConfigInfo.VCLPath, 'rtl', TempPath) then
+      EnsureStringInList(DirList, RemoveSlash(TempPath));
+    if TryGuessPath(ConfigInfo.VCLPath, 'clx', TempPath) then
+      EnsureStringInList(DirList, RemoveSlash(TempPath));
+    if TryGuessPath(ConfigInfo.VCLPath, 'fmx', TempPath) then
+      EnsureStringInList(DirList, RemoveSlash(TempPath));
   end;
 
   fmGrepResults.InitGrepSettings(FillGrepSettings);
