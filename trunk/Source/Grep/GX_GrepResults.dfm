@@ -879,6 +879,15 @@ inherited fmGrepResults: TfmGrepResults
       object miSettingsSectionFinalization: TMenuItem
         Caption = 'Delphi Finalization'
       end
+      object miSettingsSep5: TMenuItem
+        Caption = '-'
+      end
+      object miSettingsFormHandleMultiline: TMenuItem
+        Caption = 'Form Handle Multiline'
+      end
+      object miSettingsFormHandleSpecialChars: TMenuItem
+        Caption = 'Form Handle Special Chars'
+      end
     end
     object mitHistorySep1: TMenuItem
       Caption = '-'

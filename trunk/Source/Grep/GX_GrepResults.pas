@@ -233,6 +233,9 @@ type
     ReplaceSelectedItem1: TMenuItem;
     Help2: TMenuItem;
     Contents1: TMenuItem;
+    miSettingsSep5: TMenuItem;
+    miSettingsFormHandleMultiline: TMenuItem;
+    miSettingsFormHandleSpecialChars: TMenuItem;
     procedure FormResize(Sender: TObject);
     procedure lbResultsMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure lbResultsKeyPress(Sender: TObject; var Key: Char);
@@ -2374,6 +2377,8 @@ begin
   miSettingsCaseSensitive.Checked := AItem.GrepSettings.CaseSensitive;
   miSettingsWholeWord.Checked := AItem.GrepSettings.WholeWord;
   miSettingsSearchFormFiles.Checked := AItem.GrepSettings.IncludeForms;
+  miSettingsFormHandleMultiline.Checked := AItem.GrepSettings.HandleFormMultiline;
+  miSettingsFormHandleSpecialChars.Checked := AItem.GrepSettings.HandleFormSpecialChars;
   miSettingsSearchSQLFiles.Checked := AItem.GrepSettings.IncludeSQLs;
   miSettingsRegularExpression.Checked := AItem.GrepSettings.RegEx;
 

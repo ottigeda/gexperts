@@ -77,6 +77,8 @@ type
     GrepAction: TGrepAction;
     CanRefresh: Boolean;
     IncludeForms: Boolean;
+    HandleFormMultiline: Boolean;
+    HandleFormSpecialChars: Boolean;
     IncludeSQLs: Boolean;
     SaveOption: TGrepSaveOption;
     UseMapFile: Boolean;
@@ -770,6 +772,8 @@ begin
       FSearcher.WholeWord := FGrepSettings.WholeWord;
       FSearcher.RegularExpression := FGrepSettings.RegEx;
       FSearcher.Pattern := FGrepSettings.Pattern;
+      FSearcher.HandleMultilineInDfm := FGrepSettings.HandleFormMultiline;
+      FSearcher.HandleSpecialCharasInDfm := FGrepSettings.HandleFormSpecialChars;
 
       FDupeFileList := TStringList.Create;
       try
@@ -1349,6 +1353,8 @@ begin
     FGrepSettings.Replace := AItemIni.ReadString(ASection, 'Replace', GrepSettings.Replace);
     FGrepSettings.GrepAction := TGrepAction(AItemIni.ReadInteger(ASection, 'GrepAction', Integer(GrepSettings.GrepAction)));
     FGrepSettings.IncludeForms := AItemIni.ReadBool(ASection, 'IncludeForms', GrepSettings.IncludeForms);
+    FGrepSettings.HandleFormMultiline := AItemIni.ReadBool(ASection, 'HandleFormMultiline', GrepSettings.HandleFormMultiline);
+    FGrepSettings.HandleFormSpecialChars := AItemIni.ReadBool(ASection, 'HandleFormSpecialChars', GrepSettings.HandleFormSpecialChars);
     FGrepSettings.IncludeSQLs := AItemIni.ReadBool(ASection, 'IncludeSQLs', GrepSettings.IncludeSQLs);
 
     FGrepSettings.IncludeCode := ReadAndCheckBool('IncludeCode', GrepSettings.IncludeCode);

@@ -33,6 +33,8 @@ type
     FGrepInitialization: Boolean;
     FGrepFinalization: Boolean;
     FGrepForms: Boolean;
+    FGrepFormsSpecialChars: Boolean;
+    FGrepFormsMultiline: Boolean;
     FGrepSQLFiles: Boolean;
     FGrepSearch: Integer;
     FGrepSub: Boolean;
@@ -116,6 +118,8 @@ type
     property GrepInitialization: Boolean read FGrepInitialization write FGrepInitialization;
     property GrepFinalization: Boolean read FGrepFinalization write FGrepFinalization;
     property GrepForms: Boolean read FGrepForms write FGrepForms;
+    property GrepFormsMultiline: Boolean read FGrepFormsMultiline write FGrepFormsMultiline;
+    property GrepFormsSpecialChars: Boolean read FGrepFormsSpecialChars write FGrepFormsSpecialChars;
     property GrepSQLFiles: Boolean read FGrepSQLFiles write FGrepSQLFiles;
     property GrepSearch: Integer read FGrepSearch write FGrepSearch;
     property GrepSub: Boolean read FGrepSub write FGrepSub;
@@ -463,6 +467,8 @@ begin
   Settings.WriteBool('Initialization', GrepInitialization);
   Settings.WriteBool('Finalization', GrepFinalization);
   Settings.WriteBool('Forms', GrepForms);
+  Settings.WriteBool('FormsSpecialChars', GrepFormsSpecialChars);
+  Settings.WriteBool('FormsMultiline', GrepFormsMultiline);
   Settings.WriteBool('SQLFiles', GrepSQLFiles);
   Settings.WriteInteger('Search', GrepSearch);
   Settings.WriteBool('SubDirectories', GrepSub);
@@ -520,6 +526,8 @@ begin
   Result.RegEx := GrepRegEx;
   Result.Pattern := '';
   Result.IncludeForms := GrepForms;
+  Result.HandleFormMultiline := GrepFormsMultiline;
+  Result.HandleFormSpecialChars := GrepFormsSpecialChars;
   Result.IncludeSQLs := GrepSQLFiles;
   Result.SaveOption := GrepSaveOption;
   Result.Mask := '';
@@ -713,7 +721,11 @@ begin
   FGrepImplementation := Settings.ReadBool('Implementation', True);
   FGrepInitialization := Settings.ReadBool('Initialization', True);
   FGrepFinalization := Settings.ReadBool('Finalization', True);
+
   FGrepForms := Settings.ReadBool('Forms', False);
+  FGrepFormsSpecialChars := Settings.ReadBool('FormsSpecialChars', False);
+  FGrepFormsMultiline := Settings.ReadBool('FormsMultiline', False);
+
   FGrepSQLFiles := Settings.ReadBool('SQLFiles', False);
   FGrepSearch := Settings.ReadInteger('Search', 1);
   FGrepSub := Settings.ReadBool('SubDirectories', True);

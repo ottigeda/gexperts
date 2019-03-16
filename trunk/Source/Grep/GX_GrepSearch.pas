@@ -15,6 +15,8 @@ type
     gbxOptions: TGroupBox;
     cbCaseSensitive: TCheckBox;
     cbForms: TCheckBox;
+    cbFormsMultiline: TCheckBox;
+    cbFormsSpecialChars: TCheckBox;
     gbxWhere: TGroupBox;
     rbAllProjFiles: TRadioButton;
     rbOpenFiles: TRadioButton;
@@ -488,6 +490,8 @@ begin
   FGrepExpert.GrepInitialization := cbSectionInitialization.Checked;
   FGrepExpert.GrepInterface := cbSectionInterface.Checked;
   FGrepExpert.GrepForms := cbForms.Checked;
+  FGrepExpert.GrepFormsMultiline := cbFormsMultiline.Checked;
+  FGrepExpert.GrepFormsSpecialChars := cbFormsSpecialChars.Checked;
   FGrepExpert.GrepSQLFiles := cbSQLFiles.Checked;
   FGrepExpert.GrepSub := cbInclude.Checked;
   FGrepExpert.GrepWholeWord := cbWholeWord.Checked;
@@ -593,6 +597,8 @@ begin
     cbSectionInitialization.Checked := FGrepExpert.GrepInitialization;
     cbSectionInterface.Checked := FGrepExpert.GrepInterface;
     cbForms.Checked := FGrepExpert.GrepForms;
+    cbFormsMultiline.Checked := FGrepExpert.GrepFormsMultiline;
+    cbFormsSpecialChars.Checked := FGrepExpert.GrepFormsSpecialChars;
     cbSQLFiles.Checked := FGrepExpert.GrepSQLFiles;
     cbInclude.Checked := FGrepExpert.GrepSub;
     cbWholeWord.Checked := FGrepExpert.GrepWholeWord;
@@ -689,6 +695,8 @@ begin
   Value.RegEx := cbRegEx.Checked;
   Value.Pattern := cbText.Text;
   Value.IncludeForms := cbForms.Checked;
+  Value.HandleFormMultiline:= cbFormsMultiline.Checked;
+  Value.HandleFormSpecialChars := cbFormsSpecialChars.Checked;
   Value.IncludeSQLs := cbSQLFiles.Checked;
   Value.SaveOption := TGrepSaveOption(rgSaveOption.ItemIndex);
   Value.Mask := '';
@@ -732,6 +740,8 @@ begin
   cbText.Text := Value.Pattern;
   cbText.SelectAll;
   cbForms.Checked := Value.IncludeForms;
+  cbFormsMultiline.Checked := Value.HandleFormMultiline;
+  cbFormsSpecialChars.Checked := Value.HandleFormSpecialChars;
   cbSQLFiles.Checked := Value.IncludeSQLs;
 
   rgSaveOption.ItemIndex := Integer(Value.SaveOption);
