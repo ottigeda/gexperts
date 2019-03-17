@@ -99,6 +99,7 @@ type
     UnitUsesSortColumn: Integer;
     UsedBySortColumn: Integer;
     IndirectSortColumn: Integer;
+    function TryGetSelectedUnit(out _SelectedNode: TTreeNode): Boolean;
     procedure ShowUnitsUsed;
     procedure ShowUsedBy;
     procedure IndirectDepend;
@@ -470,6 +471,12 @@ begin
   pnlPageControlHost.Width := pnlPageControlHost.Width - 1;
 end;
 
+function TfmProjDepend.TryGetSelectedUnit(out _SelectedNode: TTreeNode): Boolean;
+begin
+  _SelectedNode := tvUnits.Selected;
+  Result := Assigned(_SelectedNode);
+end;
+
 procedure TfmProjDepend.ShowUnitsUsed;
 var
   UnitIdx: Integer;
@@ -482,14 +489,13 @@ begin
   try
     lvUnitUses.Items.Clear;
 
-    SelectedNode := tvUnits.Selected;
-    if SelectedNode = nil then
+    if not TryGetSelectedUnit(SelectedNode) then
       Exit; //==>
 
     if SelectedNode = FRootNode then
       List := FUnitList
     else begin
-      UnitIdx := FUnitList.IndexOf(tvUnits.Selected.Text);
+      UnitIdx := FUnitList.IndexOf(SelectedNode.Text);
       if UnitIdx < 0 then
         Exit; //==>
       List := TStringList(FUnitList.Objects[UnitIdx]);
@@ -520,8 +526,7 @@ begin
   try
     lvUsedBy.Items.Clear;
 
-    SelectedNode := tvUnits.Selected;
-    if SelectedNode = nil then
+    if not TryGetSelectedUnit(SelectedNode) or (SelectedNode = FRootNode) then
       Exit; //==>
 
     SelectedText := SelectedNode.Text;
@@ -620,9 +625,10 @@ procedure TfmProjDepend.IndirectDepend;
 var
   List: TStrings;
   Cursor: IInterface;
+  SelectedNode: TTreeNode;
 begin
-  if tvUnits.Selected = nil then
-    Exit;
+  if not TryGetSelectedUnit(SelectedNode) then
+    Exit; //==>
 
   Cursor := TempHourGlassCursor;
   lvIndirect.Items.Clear;
@@ -630,7 +636,7 @@ begin
   try
     lvIndirect.Items.BeginUpdate;
     try
-      AddItems(List, tvUnits.Selected.Text);
+      AddItems(List, SelectedNode.Text);
     finally
       lvIndirect.Items.EndUpdate;
     end;
@@ -827,9 +833,11 @@ begin
 end;
 
 procedure TfmProjDepend.actOpenUnitTreeExecute(Sender: TObject);
+var
+  SelectedNode: TTreeNode;
 begin
-  if tvUnits.Selected <> nil then
-    OpenUnit(tvUnits.Selected.Text);
+  if TryGetSelectedUnit(SelectedNode) then
+    OpenUnit(SelectedNode.Text);
 end;
 
 procedure TfmProjDepend.actOpenUnitListExecute(Sender: TObject);
