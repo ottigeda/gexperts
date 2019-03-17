@@ -144,13 +144,13 @@ object fmProjDepend: TfmProjDepend
               Width = 140
             end
             item
-              Caption = 'Source Files'
+              Caption = 'Used By'
               Width = 120
             end>
           HideSelection = False
           ReadOnly = True
           RowSelect = True
-          PopupMenu = pmList
+          PopupMenu = pmIndirect
           SortType = stData
           TabOrder = 0
           ViewStyle = vsReport
@@ -195,7 +195,7 @@ object fmProjDepend: TfmProjDepend
     object tbnExport: TToolButton
       Left = 54
       Top = 0
-      Action = actFileExport
+      Action = actFileExportUses
     end
     object tbnSep2: TToolButton
       Left = 77
@@ -232,16 +232,17 @@ object fmProjDepend: TfmProjDepend
   end
   object pmList: TPopupMenu
     Images = dmSharedImages.Images
-    Left = 208
+    Left = 272
     Top = 72
-    object mitOpenUnitList: TMenuItem
+    object mitListOpenUnit: TMenuItem
       Action = actOpenUnitList
+      Default = True
     end
     object N1: TMenuItem
       Caption = '-'
     end
-    object mitIndirectUnitProperties: TMenuItem
-      Action = actViewIndirectUnitProperties
+    object mitListExportUsedUnits: TMenuItem
+      Action = actFileExportUses
     end
   end
   object MainMenu: TMainMenu
@@ -260,7 +261,7 @@ object fmProjDepend: TfmProjDepend
         Caption = '-'
       end
       object mitFileExport: TMenuItem
-        Action = actFileExport
+        Action = actFileExportUses
       end
       object mitFileFilter: TMenuItem
         Action = actFileFilter
@@ -352,18 +353,25 @@ object fmProjDepend: TfmProjDepend
     end
     object actViewIndirectUnitProperties: TAction
       Category = 'List'
-      Caption = 'Indirect Properties...'
+      Caption = 'Properties...'
       Hint = 'View indirect unit properties'
       ImageIndex = 35
       OnExecute = actViewIndirectUnitPropertiesExecute
     end
-    object actFileExport: TAction
+    object actFileExportUses: TAction
       Category = 'File'
       Caption = '&Export Used Units...'
-      Hint = 'Export Used Units...'
+      Hint = 'Export Used Units'
       ImageIndex = 31
       ShortCut = 16453
-      OnExecute = actFileExportExecute
+      OnExecute = actFileExportUsesExecute
+    end
+    object actFileExportIndirectDependencies: TAction
+      Category = 'File'
+      Caption = '&Export Indirect Dependencies...'
+      Hint = 'Export indirect dependencies'
+      ImageIndex = 31
+      OnExecute = actFileExportIndirectDependenciesExecute
     end
     object actFileFilter: TAction
       Category = 'File'
@@ -374,11 +382,22 @@ object fmProjDepend: TfmProjDepend
       OnExecute = actFileFilterExecute
     end
   end
-  object dlgSave: TSaveDialog
-    DefaultExt = 'csv'
-    Filter = 'CSV Files (*.csv)|*.csv|TXT Files (*.txt)|*.txt'
-    Title = 'Export Indirect Dependencies'
-    Left = 80
-    Top = 96
+  object pmIndirect: TPopupMenu
+    Images = dmSharedImages.Images
+    Left = 384
+    Top = 72
+    object mitIndirectOpenUnit: TMenuItem
+      Action = actOpenUnitList
+      Default = True
+    end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object mitIndirectUnitProperties: TMenuItem
+      Action = actViewIndirectUnitProperties
+    end
+    object mitIndirectExportUsedUnits: TMenuItem
+      Action = actFileExportIndirectDependencies
+    end
   end
 end

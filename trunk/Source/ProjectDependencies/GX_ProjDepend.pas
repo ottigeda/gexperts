@@ -23,10 +23,15 @@ type
     lvIndirect: TListView;
     pmTreeview: TPopupMenu;
     pmList: TPopupMenu;
+    pmIndirect: TPopupMenu;
     mitOpenUnitTree: TMenuItem;
-    mitOpenUnitList: TMenuItem;
+    mitListOpenUnit: TMenuItem;
+    N2: TMenuItem;
+    mitListExportUsedUnits: TMenuItem;
+    mitIndirectOpenUnit: TMenuItem;
     N1: TMenuItem;
     mitIndirectUnitProperties: TMenuItem;
+    mitIndirectExportUsedUnits: TMenuItem;
     MainMenu: TMainMenu;
     mitFile: TMenuItem;
     mitFileRefresh: TMenuItem;
@@ -53,13 +58,13 @@ type
     mitFileSep1: TMenuItem;
     actOpenUnitList: TAction;
     actViewIndirectUnitProperties: TAction;
-    actFileExport: TAction;
+    actFileExportUses: TAction;
+    actFileExportIndirectDependencies: TAction;
     actFileFilter: TAction;
     tbnSep2: TToolButton;
     tbnExport: TToolButton;
     tbnSep3: TToolButton;
     tbnFilter: TToolButton;
-    dlgSave: TSaveDialog;
     mitFileExport: TMenuItem;
     mitFileFilter: TMenuItem;
     mitFileSep2: TMenuItem;
@@ -84,8 +89,9 @@ type
     procedure tvUnitsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ActionsUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure FormKeyPress(Sender: TObject; var Key: Char);
-    procedure actFileExportExecute(Sender: TObject);
+    procedure actFileExportUsesExecute(Sender: TObject);
     procedure actFileFilterExecute(Sender: TObject);
+    procedure actFileExportIndirectDependenciesExecute(Sender: TObject);
   private
     FRootNode: TTreeNode;
     ProjectNotifier: TBaseIdeNotifier;
@@ -115,6 +121,7 @@ type
     procedure UpdateFormActions;
     procedure ExportAllDependencies;
     function ConfigurationKey: string;
+    procedure ExportIndirectDependencies;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -923,11 +930,17 @@ begin
   actViewIndirectUnitProperties.Enabled := (pcData.ActivePage = tshIndirect);
   actFileRefresh.Enabled := not FSearchInProgress;
   actFileAbort.Enabled := FSearchInProgress;
-  actFileExport.Enabled := not FSearchInProgress;
+  actFileExportUses.Enabled := not FSearchInProgress;
+  actFileExportIndirectDependencies.Enabled := not FSearchInProgress;
   actFileFilter.Enabled := not FSearchInProgress;
 end;
 
-procedure TfmProjDepend.actFileExportExecute(Sender: TObject);
+procedure TfmProjDepend.actFileExportIndirectDependenciesExecute(Sender: TObject);
+begin
+  ExportIndirectDependencies;
+end;
+
+procedure TfmProjDepend.actFileExportUsesExecute(Sender: TObject);
 begin
   ExportAllDependencies;
 end;
@@ -950,31 +963,20 @@ end;
 procedure TfmProjDepend.ExportAllDependencies;
 
   procedure AddListViewUsesEntries(ExportList: TStrings; const BaseUnit, UsingUnit, UsedUnit: string);
-  var
-    i: Integer;
-    Str: string;
   begin
     if FFilterList.IndexOf(UsingUnit) <> -1 then
-      Exit;
+      Exit; //==>
 
-    i := ExportList.Count - 1;
-    while i >= 0 do
-    begin
-      Str := ExportList[i];
-      Str := Copy(Str, Pos(',', Str) + 1);
-      if SameText(UsingUnit, Str) then
-        Break;
-      Dec(i);
-    end;
-
-    if i < 0 then
-      ExportList.Add(BaseUnit + ',' + UsingUnit);
+    if ExportList.IndexOf(UsingUnit) = -1 then
+      ExportList.Add(UsingUnit);
   end;
 
-  procedure AddItems(ProcessedUnitsList, ExportList: TStrings; const BaseUnit, UnitName: string);
+  procedure AddItems(ProcessedUnitsList: TStringList; ExportList: TStrings; const BaseUnit, UnitName: string);
   var
     i, j: Integer;
     UseUnitsList: TStringList;
+    ThisUnit: string;
+    Idx: Integer;
   begin
     i := FUnitList.IndexOf(UnitName);
     if i >= 0 then
@@ -983,45 +985,60 @@ procedure TfmProjDepend.ExportAllDependencies;
       UseUnitsList := TStringList(FUnitList.Objects[i]);
       for j := 0 to UseUnitsList.Count-1 do
       begin
-        AddListViewUsesEntries(ExportList, BaseUnit, UseUnitsList.Strings[j], UnitName);
-        if ProcessedUnitsList.IndexOf(UseUnitsList.Strings[j]) < 0 then
+        ThisUnit := UseUnitsList.Strings[j];
+        AddListViewUsesEntries(ExportList, BaseUnit, ThisUnit, UnitName);
+        if not ProcessedUnitsList.Find(ThisUnit, Idx) then
         begin
-          ProcessedUnitsList.Add(UseUnitsList.Strings[j]);
-          AddItems(ProcessedUnitsList, ExportList, BaseUnit, UseUnitsList.Strings[j]);
+          ProcessedUnitsList.Add(ThisUnit);
+          AddItems(ProcessedUnitsList, ExportList, BaseUnit, ThisUnit);
         end;
       end;
     end;
   end;
 
 var
-  List: TStringList;
+  ProcessedUnitsList: TStringList;
   OutputData: TStringList;
   TempData: TStringList;
   i: Integer;
   Cursor: IInterface;
+  fn: string;
+  UnitName: string;
+  j: Integer;
 begin
-  List := nil;
+  if not ShowSaveDialog('Export Indirect Dependencies', 'csv', fn,
+    'CSV Files (*.csv)|*.csv|TXT Files (*.txt)|*.txt') then
+    Exit; //==>
+
+  ProcessedUnitsList := nil;
   TempData := nil;
   OutputData := TStringList.Create;
   try
-    if dlgSave.Execute then
+    Cursor := TempHourGlassCursor;
+    TempData := TStringList.Create;
+    ProcessedUnitsList := TStringList.Create;
+    ProcessedUnitsList.Sorted := True;
+    ProcessedUnitsList.Duplicates := dupIgnore;
+    for i := 0 to tvUnits.Items.Count - 1 do
     begin
-      Cursor := TempHourGlassCursor;
-      TempData := TStringList.Create;
-      List := TStringList.Create;
-      for i := 0 to tvUnits.Items.Count - 1 do
-      begin
-        TempData.Clear;
-        AddItems(List, TempData, tvUnits.Items[i].Text, tvUnits.Items[i].Text);
-        OutputData.AddStrings(TempData);
+      TempData.Clear;
+      UnitName := tvUnits.Items[i].Text;
+      AddItems(ProcessedUnitsList, TempData, UnitName, UnitName);
+      UnitName := UnitName + ',';
+      for j := 0 to TempData.Count - 1 do begin
+        OutputData.Add(UnitName + TempData[j]);
       end;
-      OutputData.SaveToFile(dlgSave.FileName);
     end;
+    OutputData.SaveToFile(fn);
   finally
-    FreeAndNil(List);
+    FreeAndNil(ProcessedUnitsList);
     FreeAndNil(TempData);
     FreeAndNil(OutputData);
   end;
+end;
+
+procedure TfmProjDepend.ExportIndirectDependencies;
+begin
 end;
 
 function TfmProjDepend.ConfigurationKey: string;
