@@ -405,34 +405,39 @@ end;
 procedure TfmProjDepend.tvUnitsExpanding(Sender: TObject; Node: TTreeNode;
   var AllowExpansion: Boolean);
 var
-  i, j, k: Integer;
+  UnitIdx: Integer;
+  UsesIdx: Integer;
+  k: Integer;
   UseUnitsList: TStringList;
   CNode: TTreeNode;
 begin
   AllowExpansion := True;
   if Node = FRootNode then
-    Exit;
+    Exit; //==>
 
   while Node.Count > 0 do
     Node.Item[0].Free;
 
-  i := FUnitList.IndexOf(Node.Text);
-  if i >= 0 then
-  begin
-    UseUnitsList := TStringList(FUnitList.Objects[i]);
-    for j := 0 to UseUnitsList.Count - 1 do
-    begin
-      CNode := tvUnits.Items.AddChild(Node, UseUnitsList.Strings[j]);
-      CNode.SelectedIndex := ImageIndexUnit;
-      CNode.ImageIndex := ImageIndexUnit;
-      k := FUnitList.IndexOf(UseUnitsList.Strings[j]);
-      CNode.HasChildren := ((k > -1) and (TStringList(FUnitList.Objects[k]).Count > 0));
-    end;
-    if UseUnitsList.Count = 0 then
-      Node.HasChildren := False;
-  end
-  else
+  UnitIdx := FUnitList.IndexOf(Node.Text);
+  if UnitIdx < 0 then begin
     Node.HasChildren := False;
+    Exit; //==>
+  end;
+
+  UseUnitsList := TStringList(FUnitList.Objects[UnitIdx]);
+  if UseUnitsList.Count = 0 then begin
+    Node.HasChildren := False;
+    Exit; //==>
+  end;
+
+  for UsesIdx := 0 to UseUnitsList.Count - 1 do
+  begin
+    CNode := tvUnits.Items.AddChild(Node, UseUnitsList.Strings[UsesIdx]);
+    CNode.SelectedIndex := ImageIndexUnit;
+    CNode.ImageIndex := ImageIndexUnit;
+    k := FUnitList.IndexOf(UseUnitsList.Strings[UsesIdx]);
+    CNode.HasChildren := ((k > -1) and (TStringList(FUnitList.Objects[k]).Count > 0));
+  end;
 end;
 
 procedure TfmProjDepend.pnlPageControlHostResize(Sender: TObject);
@@ -467,29 +472,35 @@ end;
 
 procedure TfmProjDepend.ShowUnitsUsed;
 var
-  i, j: Integer;
+  UnitIdx: Integer;
+  UsesIdx: Integer;
   List: TStringList;
   ListItem: TListItem;
+  SelectedNode: TTreeNode;
 begin
   lvUnitUses.Items.BeginUpdate;
   try
     lvUnitUses.Items.Clear;
 
-    if tvUnits.Selected = nil then
-      Exit;
+    SelectedNode := tvUnits.Selected;
+    if SelectedNode = nil then
+      Exit; //==>
 
-    i := FUnitList.IndexOf(tvUnits.Selected.Text);
-    if i >= 0 then
+    if SelectedNode = FRootNode then
+      List := FUnitList
+    else begin
+      UnitIdx := FUnitList.IndexOf(tvUnits.Selected.Text);
+      if UnitIdx < 0 then
+        Exit; //==>
+      List := TStringList(FUnitList.Objects[UnitIdx]);
+    end;
+    for UsesIdx := 0 to List.Count - 1 do
     begin
-      List := TStringList(FUnitList.Objects[i]);
-      for j := 0 to List.Count - 1 do
+      if FFilterList.IndexOf(List.Strings[UsesIdx]) = -1 then
       begin
-        if FFilterList.IndexOf(List.Strings[j]) = -1 then
-        begin
-          ListItem := lvUnitUses.Items.Add;
-          ListItem.Caption := List.Strings[j];
-          ListItem.SubItems.Add(GetFileName(List.Strings[j]));
-        end;
+        ListItem := lvUnitUses.Items.Add;
+        ListItem.Caption := List.Strings[UsesIdx];
+        ListItem.SubItems.Add(GetFileName(List.Strings[UsesIdx]));
       end;
     end;
   finally
@@ -499,27 +510,31 @@ end;
 
 procedure TfmProjDepend.ShowUsedBy;
 var
-  i, j: Integer;
+  UnitIdx, UsesIdx: Integer;
   List: TStringList;
   ListItem: TListItem;
+  SelectedNode: TTreeNode;
+  SelectedText: string;
 begin
   lvUsedBy.Items.BeginUpdate;
   try
     lvUsedBy.Items.Clear;
 
-    if tvUnits.Selected = nil then
-      Exit;
+    SelectedNode := tvUnits.Selected;
+    if SelectedNode = nil then
+      Exit; //==>
 
-    for i := 0 to FUnitList.Count - 1 do
+    SelectedText := SelectedNode.Text;
+    for UnitIdx := 0 to FUnitList.Count - 1 do
     begin
-      List := TStringList(FUnitList.Objects[i]);
-      for j := 0 to List.Count - 1 do
+      List := TStringList(FUnitList.Objects[UnitIdx]);
+      for UsesIdx := 0 to List.Count - 1 do
       begin
-        if SameText(tvUnits.Selected.Text, List.Strings[j]) then
+        if SameText(SelectedText, List.Strings[UsesIdx]) then
         begin
           ListItem := lvUsedBy.Items.Add;
-          ListItem.Caption := FUnitList.Strings[i];
-          ListItem.SubItems.Add(GetFileName(FUnitList.Strings[i]));
+          ListItem.Caption := FUnitList.Strings[UnitIdx];
+          ListItem.SubItems.Add(GetFileName(FUnitList.Strings[UnitIdx]));
         end;
       end;
     end;
