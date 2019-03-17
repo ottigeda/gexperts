@@ -12,7 +12,7 @@ uses
   Controls;
 
 ///<summary>
-/// Bugixed version of the FilCtrl SelectDirectory function with identical parameters
+/// Bugfixed version of the FilCtrl SelectDirectory function with identical parameters
 /// The following bugs have been fixed:
 /// 1. Positioning the dialog works for all tested monitor combinations. This means
 ///    not only that the correct monitor is being selected (which is already fixed
