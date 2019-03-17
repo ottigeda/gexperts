@@ -122,6 +122,7 @@ type
     procedure ExportAllDependencies;
     function ConfigurationKey: string;
     procedure ExportIndirectDependencies;
+    function FindUnitInUnitList(const _UnitName: string; out _UsesList: TStringList): Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -413,11 +414,11 @@ end;
 procedure TfmProjDepend.tvUnitsExpanding(Sender: TObject; Node: TTreeNode;
   var AllowExpansion: Boolean);
 var
-  UnitIdx: Integer;
   UsesIdx: Integer;
-  k: Integer;
   UseUnitsList: TStringList;
   CNode: TTreeNode;
+  UnitName: string;
+  SubUsesList: TStringList;
 begin
   AllowExpansion := True;
   if Node = FRootNode then
@@ -426,25 +427,18 @@ begin
   while Node.Count > 0 do
     Node.Item[0].Free;
 
-  UnitIdx := FUnitList.IndexOf(Node.Text);
-  if UnitIdx < 0 then begin
-    Node.HasChildren := False;
-    Exit; //==>
-  end;
-
-  UseUnitsList := TStringList(FUnitList.Objects[UnitIdx]);
-  if UseUnitsList.Count = 0 then begin
+  if not  FindUnitInUnitList(Node.Text, UseUnitsList) or (UseUnitsList.Count = 0) then begin
     Node.HasChildren := False;
     Exit; //==>
   end;
 
   for UsesIdx := 0 to UseUnitsList.Count - 1 do
   begin
-    CNode := tvUnits.Items.AddChild(Node, UseUnitsList.Strings[UsesIdx]);
+    UnitName := UseUnitsList[UsesIdx];
+    CNode := tvUnits.Items.AddChild(Node, UnitName);
     CNode.SelectedIndex := ImageIndexUnit;
     CNode.ImageIndex := ImageIndexUnit;
-    k := FUnitList.IndexOf(UseUnitsList.Strings[UsesIdx]);
-    CNode.HasChildren := ((k > -1) and (TStringList(FUnitList.Objects[k]).Count > 0));
+    CNode.HasChildren := FindUnitInUnitList(UnitName, SubUsesList) and (SubUsesList.Count > 0);
   end;
 end;
 
@@ -486,7 +480,6 @@ end;
 
 procedure TfmProjDepend.ShowUnitsUsed;
 var
-  UnitIdx: Integer;
   UsesIdx: Integer;
   List: TStringList;
   ListItem: TListItem;
@@ -502,10 +495,8 @@ begin
     if SelectedNode = FRootNode then
       List := FUnitList
     else begin
-      UnitIdx := FUnitList.IndexOf(SelectedNode.Text);
-      if UnitIdx < 0 then
+      if not FindUnitInUnitList(SelectedNode.Text, List) then
         Exit; //==>
-      List := TStringList(FUnitList.Objects[UnitIdx]);
     end;
     for UsesIdx := 0 to List.Count - 1 do
     begin
@@ -606,27 +597,29 @@ procedure TfmProjDepend.IndirectDepend;
     end;
   end;
 
-  procedure AddItemsForUnit(ProcessedUnitsList: TStrings; const UnitName: string); forward;
+  procedure AddItemsForUnit(ProcessedUnitsList: TStringList; const UnitName: string); forward;
 
-  procedure AddItems(ProcessedUnitsList: TStrings; UseUnitsList: TStrings; const UnitName: string);
+  procedure AddItems(ProcessedUnitsList: TStringList; UseUnitsList: TStrings; const UsingUnit: string);
   var
     UnitIdx: Integer;
+    UsedUnit: string;
+    Idx: Integer;
   begin
     for UnitIdx := 0 to UseUnitsList.Count-1 do
     begin
-      AddListViewUsesEntries(UseUnitsList.Strings[UnitIdx], UnitName);
+      UsedUnit := UseUnitsList[UnitIdx];
+      AddListViewUsesEntries(UsedUnit, UsingUnit);
 
-      if ProcessedUnitsList.IndexOf(UseUnitsList.Strings[UnitIdx]) < 0 then
+      if not ProcessedUnitsList.Find(UsedUnit, Idx) then
       begin
-        ProcessedUnitsList.Add(UseUnitsList.Strings[UnitIdx]);
-        AddItemsForUnit(ProcessedUnitsList, UseUnitsList.Strings[UnitIdx]);
+        ProcessedUnitsList.Add(UsedUnit);
+        AddItemsForUnit(ProcessedUnitsList, UsedUnit);
       end;
     end;
   end;
 
-  procedure AddItemsForUnit(ProcessedUnitsList: TStrings; const UnitName: string);
+  procedure AddItemsForUnit(ProcessedUnitsList: TStringList; const UnitName: string);
   var
-    UnitIdx: Integer;
     UseUnitsList: TStringList;
 //    AddIdx: Integer;
   begin
@@ -635,21 +628,17 @@ procedure TfmProjDepend.IndirectDepend;
 //    if AddIdx = -1 then
 //      Exit; //==>
 
-    UnitIdx := FUnitList.IndexOf(UnitName);
-    if UnitIdx >= 0 then
-    begin
-      UseUnitsList := TStringList(FUnitList.Objects[UnitIdx]);
+    if FindUnitInUnitList(UnitName, UseUnitsList) then
       AddItems(ProcessedUnitsList, UseUnitsList, UnitName);
-    end;
   end;
 
-  procedure AddItemsForProject(ProcessedUnitsList: TStrings; const ProjectName: string);
+  procedure AddItemsForProject(ProcessedUnitsList: TStringList; const ProjectName: string);
   begin
     AddItems(ProcessedUnitsList, FUnitList, ProjectName);
   end;
 
 var
-  List: TStrings;
+  ProcessedUnitsList: TStringList;
   Cursor: IInterface;
   SelectedNode: TTreeNode;
 begin
@@ -657,19 +646,21 @@ begin
     Exit; //==>
 
   Cursor := TempHourGlassCursor;
-  List := nil;
+  ProcessedUnitsList := nil;
   lvIndirect.Items.BeginUpdate;
   try
-    List := TStringList.Create;
+    ProcessedUnitsList := TStringList.Create;
+    ProcessedUnitsList.Sorted := True;
+    ProcessedUnitsList.Duplicates := dupError;
     lvIndirect.Items.Clear;
       if SelectedNode = FRootNode then begin
-        AddItemsForProject(List, SelectedNode.Text);
+        AddItemsForProject(ProcessedUnitsList, SelectedNode.Text);
       end else begin
-        AddItemsForUnit(List, SelectedNode.Text);
+        AddItemsForUnit(ProcessedUnitsList, SelectedNode.Text);
       end;
   finally
     lvIndirect.Items.EndUpdate;
-    FreeAndNil(List);
+    FreeAndNil(ProcessedUnitsList);
   end;
 end;
 
@@ -960,38 +951,40 @@ begin
   end;
 end;
 
+function TfmProjDepend.FindUnitInUnitList(const _UnitName: string; out _UsesList: TStringList): Boolean;
+var
+  Idx: Integer;
+begin
+  Idx := FUnitList.IndexOf(_UnitName);
+  Result := (Idx >= 0);
+  if Result then
+    _UsesList := TStringList(FUnitList.Objects[Idx]);
+end;
+
 procedure TfmProjDepend.ExportAllDependencies;
-
-  procedure AddListViewUsesEntries(ExportList: TStrings; const BaseUnit, UsingUnit, UsedUnit: string);
-  begin
-    if FFilterList.IndexOf(UsingUnit) <> -1 then
-      Exit; //==>
-
-    if ExportList.IndexOf(UsingUnit) = -1 then
-      ExportList.Add(UsingUnit);
-  end;
 
   procedure AddItems(ProcessedUnitsList: TStringList; ExportList: TStrings; const BaseUnit, UnitName: string);
   var
-    i, j: Integer;
+    i: Integer;
     UseUnitsList: TStringList;
     ThisUnit: string;
     Idx: Integer;
   begin
-    i := FUnitList.IndexOf(UnitName);
-    if i >= 0 then
+    if not FindUnitInUnitList(UnitName, UseUnitsList) then
+      Exit; //==>
+    // Get list of items used by this project module, and recursively add for each one
+    for i := 0 to UseUnitsList.Count-1 do
     begin
-      // Get list of items used by this project module, and recursively add for each one
-      UseUnitsList := TStringList(FUnitList.Objects[i]);
-      for j := 0 to UseUnitsList.Count-1 do
-      begin
-        ThisUnit := UseUnitsList.Strings[j];
-        AddListViewUsesEntries(ExportList, BaseUnit, ThisUnit, UnitName);
-        if not ProcessedUnitsList.Find(ThisUnit, Idx) then
-        begin
-          ProcessedUnitsList.Add(ThisUnit);
-          AddItems(ProcessedUnitsList, ExportList, BaseUnit, ThisUnit);
-        end;
+      ThisUnit := UseUnitsList.Strings[i];
+      if FFilterList.IndexOf(ThisUnit) = -1 then begin
+        if ExportList.IndexOf(ThisUnit) = -1 then
+          ExportList.Add(ThisUnit);
+      end;
+
+      if not ProcessedUnitsList.Find(ThisUnit, Idx) then
+      begin                  
+        ProcessedUnitsList.Add(ThisUnit);
+        AddItems(ProcessedUnitsList, ExportList, BaseUnit, ThisUnit);
       end;
     end;
   end;
@@ -1018,7 +1011,7 @@ begin
     TempData := TStringList.Create;
     ProcessedUnitsList := TStringList.Create;
     ProcessedUnitsList.Sorted := True;
-    ProcessedUnitsList.Duplicates := dupIgnore;
+    ProcessedUnitsList.Duplicates := dupError;
     for i := 0 to tvUnits.Items.Count - 1 do
     begin
       TempData.Clear;
