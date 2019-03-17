@@ -14,7 +14,7 @@ uses
 ///<summary>
 /// Assigns st to sl and sorts it.
 /// sl.Objects contains the index into st+1
-///            so st[Integer(ls.Objects[i])] = sl[i] </summary>
+///            so st[Integer(ls.Objects[i]-1)] = sl[i] </summary>
 procedure TStrings_GetAsSortedList(_st: TStrings; _sl: TStringList; _Duplicates: TDuplicates = dupAccept);
 
 procedure TStrings_FreeWithObjects(_List: TStrings);
@@ -28,6 +28,8 @@ procedure TStringList_MakeIndex(_sl: TStringList);
 procedure TGXUnicodeStringList_MakeIndex(_sl: TGXUnicodeStringList);
 
 function TStrings_ValueFromIndex(_st: TStrings; _Idx: Integer): string;
+
+function TStringList_CreateSorted(_Duplicates: TDuplicates = dupError): TStringList;
 
 ///<summary>
 /// Like TComponent.FindComponent but optionally search recursively because in the IDE
@@ -155,6 +157,13 @@ begin
   for i := 0 to _sl.Count - 1 do
     _sl.Objects[i] := Pointer(i + 1);
   _sl.Sorted := True;
+end;
+
+function TStringList_CreateSorted(_Duplicates: TDuplicates): TStringList;
+begin
+  Result := TStringList.Create;
+  Result.Sorted := True;
+  Result.Duplicates := _Duplicates;
 end;
 
 end.
