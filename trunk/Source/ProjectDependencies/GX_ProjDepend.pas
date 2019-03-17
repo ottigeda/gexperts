@@ -599,15 +599,15 @@ procedure TfmProjDepend.IndirectDepend;
     end;
   end;
 
-  procedure AddItemsForProject(ProcessedUnitsList: TStrings; const ProjectName: string);
+  procedure AddItemsForUnit(ProcessedUnitsList: TStrings; const UnitName: string); forward;
+
+  procedure AddItems(ProcessedUnitsList: TStrings; UseUnitsList: TStrings; const UnitName: string);
   var
     UnitIdx: Integer;
-    UseUnitsList: TStringList;
   begin
-    UseUnitsList := FUnitList;
     for UnitIdx := 0 to UseUnitsList.Count-1 do
     begin
-      AddListViewUsesEntries(UseUnitsList.Strings[UnitIdx], ProjectName);
+      AddListViewUsesEntries(UseUnitsList.Strings[UnitIdx], UnitName);
 
       if ProcessedUnitsList.IndexOf(UseUnitsList.Strings[UnitIdx]) < 0 then
       begin
@@ -621,23 +621,24 @@ procedure TfmProjDepend.IndirectDepend;
   var
     UnitIdx: Integer;
     UseUnitsList: TStringList;
+//    AddIdx: Integer;
   begin
+    // checking if the unit has already been processed should speed this up a little
+//    AddIdx := ProcessedUnitsList.Add(UnitName);
+//    if AddIdx = -1 then
+//      Exit; //==>
+
     UnitIdx := FUnitList.IndexOf(UnitName);
     if UnitIdx >= 0 then
     begin
       UseUnitsList := TStringList(FUnitList.Objects[UnitIdx]);
-
-      for UnitIdx := 0 to UseUnitsList.Count-1 do
-      begin
-        AddListViewUsesEntries(UseUnitsList.Strings[UnitIdx], UnitName);
-
-        if ProcessedUnitsList.IndexOf(UseUnitsList.Strings[UnitIdx]) < 0 then
-        begin
-          ProcessedUnitsList.Add(UseUnitsList.Strings[UnitIdx]);
-          AddItemsForUnit(ProcessedUnitsList, UseUnitsList.Strings[UnitIdx]);
-        end;
-      end;
+      AddItems(ProcessedUnitsList, UseUnitsList, UnitName);
     end;
+  end;
+
+  procedure AddItemsForProject(ProcessedUnitsList: TStrings; const ProjectName: string);
+  begin
+    AddItems(ProcessedUnitsList, FUnitList, ProjectName);
   end;
 
 var
@@ -649,20 +650,18 @@ begin
     Exit; //==>
 
   Cursor := TempHourGlassCursor;
-  lvIndirect.Items.Clear;
-  List := TStringList.Create;
+  List := nil;
+  lvIndirect.Items.BeginUpdate;
   try
-    lvIndirect.Items.BeginUpdate;
-    try
+    List := TStringList.Create;
+    lvIndirect.Items.Clear;
       if SelectedNode = FRootNode then begin
         AddItemsForProject(List, SelectedNode.Text);
       end else begin
         AddItemsForUnit(List, SelectedNode.Text);
       end;
-    finally
-      lvIndirect.Items.EndUpdate;
-    end;
   finally
+    lvIndirect.Items.EndUpdate;
     FreeAndNil(List);
   end;
 end;
