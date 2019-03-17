@@ -155,7 +155,7 @@ uses
   mPasLex, mwPasParserTypes,
   GX_EditReader, GX_ProjDependProp, GX_GExperts, GX_ProjDependFilter,
   GX_GenericUtils, GX_GxUtils, GX_SharedImages, GX_IdeUtils, Math,
-  GX_dzVclUtils;
+  GX_dzVclUtils, GX_dzClassUtils;
 
 var
   fmProjDepend: TfmProjDepend = nil;
@@ -546,120 +546,83 @@ begin
   end;
 end;
 
-// This routine is in desperate need of optimization
 procedure TfmProjDepend.IndirectDepend;
 
-  function UsedUnitIsInCommaSeparatedList(const UsedUnit, CommaList: string): Boolean;
-  var
-    List: TStrings;
-  begin
-    List := TStringList.Create;
-    try
-      List.CommaText := CommaList;
+  procedure AddItemsForUnit(_ProcessedUnitsList: TStringList; const _UnitName: string); forward;
 
-      Result := (List.IndexOf(UsedUnit) >= 0);
-    finally
-      FreeAndNil(List);
-    end;
-  end;
-
-  procedure AddListViewUsesEntries(const UsingUnit, UsedUnit: string);
-  var
-    i: Integer;
-    ExistingUnitList: string;
-    ListItem: TListItem;
-  begin
-    if FFilterList.IndexOf(UsingUnit) <> -1 then
-      Exit;
-
-    i := lvIndirect.Items.Count-1;
-    while i >= 0 do
-    begin
-      if SameText(UsingUnit, lvIndirect.Items[i].Caption) then
-        Break;
-      Dec(i);
-    end;
-
-    if i < 0 then
-    begin
-      ListItem := lvIndirect.Items.Add;
-      ListItem.Caption := UsingUnit;
-      ListItem.SubItems.Add(UsedUnit);
-    end
-    else
-    begin
-      ExistingUnitList := lvIndirect.Items[i].SubItems[0];
-      if not UsedUnitIsInCommaSeparatedList(UsedUnit, ExistingUnitList) then
-      begin
-        ExistingUnitList := ExistingUnitList + ', ' + UsedUnit;
-        lvIndirect.Items[i].SubItems[0] := ExistingUnitList;
-      end;
-    end;
-  end;
-
-  procedure AddItemsForUnit(ProcessedUnitsList: TStringList; const UnitName: string); forward;
-
-  procedure AddItems(ProcessedUnitsList: TStringList; UseUnitsList: TStrings; const UsingUnit: string);
+  procedure AddItems(_ProcessedUnitsList: TStringList; _UsedUnitsList: TStrings; const _UsingUnit: string);
   var
     UnitIdx: Integer;
     UsedUnit: string;
     Idx: Integer;
+    UsedByUnitsList: TStringList;
   begin
-    for UnitIdx := 0 to UseUnitsList.Count-1 do
-    begin
-      UsedUnit := UseUnitsList[UnitIdx];
-      AddListViewUsesEntries(UsedUnit, UsingUnit);
-
-      if not ProcessedUnitsList.Find(UsedUnit, Idx) then
-      begin
-        ProcessedUnitsList.Add(UsedUnit);
-        AddItemsForUnit(ProcessedUnitsList, UsedUnit);
+    for UnitIdx := 0 to _UsedUnitsList.Count - 1 do begin
+      UsedUnit := _UsedUnitsList[UnitIdx];
+      if _ProcessedUnitsList.Find(UsedUnit, Idx) then begin
+        UsedByUnitsList := TStringList(_ProcessedUnitsList.Objects[Idx]);
+        UsedByUnitsList.Add(_UsingUnit);
+      end else begin
+        UsedByUnitsList := TStringList_CreateSorted(dupIgnore);
+        _ProcessedUnitsList.AddObject(UsedUnit, UsedByUnitsList);
+        UsedByUnitsList.Add(_UsingUnit);
+        AddItemsForUnit(_ProcessedUnitsList, UsedUnit);
       end;
     end;
   end;
 
-  procedure AddItemsForUnit(ProcessedUnitsList: TStringList; const UnitName: string);
+  procedure AddItemsForUnit(_ProcessedUnitsList: TStringList; const _UnitName: string);
   var
     UseUnitsList: TStringList;
-//    AddIdx: Integer;
+    Idx: Integer;
   begin
-    // checking if the unit has already been processed should speed this up a little
-//    AddIdx := ProcessedUnitsList.Add(UnitName);
-//    if AddIdx = -1 then
-//      Exit; //==>
-
-    if FindUnitInUnitList(UnitName, UseUnitsList) then
-      AddItems(ProcessedUnitsList, UseUnitsList, UnitName);
+    // Since we are parsing the uses tree depth first, it is possible that
+    // a unit listed in the project has already been processed, so here is an additional
+    // check for that case.
+    if not _ProcessedUnitsList.Find(_UnitName, Idx) then
+      Exit; //==>
+    if FindUnitInUnitList(_UnitName, UseUnitsList) then
+      AddItems(_ProcessedUnitsList, UseUnitsList, _UnitName);
   end;
 
-  procedure AddItemsForProject(ProcessedUnitsList: TStringList; const ProjectName: string);
+  procedure AddItemsForProject(_ProcessedUnitsList: TStringList; const _ProjectName: string);
   begin
-    AddItems(ProcessedUnitsList, FUnitList, ProjectName);
+    AddItems(_ProcessedUnitsList, FUnitList, ChangeFileExt(_ProjectName, ''));
   end;
 
 var
   ProcessedUnitsList: TStringList;
   Cursor: IInterface;
   SelectedNode: TTreeNode;
+  i: Integer;
+  ListItems: TListItems;
+  ListItem: TListItem;
+  UsedByList: TStringList;
 begin
   if not TryGetSelectedUnit(SelectedNode) then
     Exit; //==>
 
   Cursor := TempHourGlassCursor;
   ProcessedUnitsList := nil;
-  lvIndirect.Items.BeginUpdate;
+  ListItems := lvIndirect.Items;
+  ListItems.BeginUpdate;
   try
-    ProcessedUnitsList := TStringList.Create;
-    ProcessedUnitsList.Sorted := True;
-    ProcessedUnitsList.Duplicates := dupError;
-    lvIndirect.Items.Clear;
-      if SelectedNode = FRootNode then begin
-        AddItemsForProject(ProcessedUnitsList, SelectedNode.Text);
-      end else begin
-        AddItemsForUnit(ProcessedUnitsList, SelectedNode.Text);
-      end;
+    ListItems.Clear;
+    ProcessedUnitsList := TStringList_CreateSorted(dupError);
+    if SelectedNode = FRootNode then begin
+      AddItemsForProject(ProcessedUnitsList, SelectedNode.Text);
+    end else begin
+      AddItemsForUnit(ProcessedUnitsList, SelectedNode.Text);
+    end;
+    for i := 0 to ProcessedUnitsList.Count - 1 do begin
+      ListItem := ListItems.Add;
+      ListItem.Caption := ProcessedUnitsList[i];
+      UsedByList := TStringList(ProcessedUnitsList.Objects[i]);
+      ListItem.SubItems.Add(UsedByList.CommaText);
+      UsedByList.Free;
+    end;
   finally
-    lvIndirect.Items.EndUpdate;
+    ListItems.EndUpdate;
     FreeAndNil(ProcessedUnitsList);
   end;
 end;
@@ -1009,9 +972,7 @@ begin
   try
     Cursor := TempHourGlassCursor;
     TempData := TStringList.Create;
-    ProcessedUnitsList := TStringList.Create;
-    ProcessedUnitsList.Sorted := True;
-    ProcessedUnitsList.Duplicates := dupError;
+    ProcessedUnitsList := TStringList_CreateSorted(dupError);
     for i := 0 to tvUnits.Items.Count - 1 do
     begin
       TempData.Clear;
