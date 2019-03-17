@@ -87,6 +87,7 @@ type
     procedure actFileExportExecute(Sender: TObject);
     procedure actFileFilterExecute(Sender: TObject);
   private
+    FRootNode: TTreeNode;
     ProjectNotifier: TBaseIdeNotifier;
     FLastProject: string;
     FDoRefreshList: Boolean;
@@ -136,11 +137,6 @@ type
     function IsDefaultActive: Boolean; override;
   end;
 
-var
-  fmProjDepend: TfmProjDepend = nil;
-  DependExpert: TDependExpert = nil;
-  RootNode: TTreeNode = nil;
-
 implementation
 
 {$R *.dfm}
@@ -151,6 +147,10 @@ uses
   GX_EditReader, GX_ProjDependProp, GX_GExperts, GX_ProjDependFilter,
   GX_GenericUtils, GX_GxUtils, GX_SharedImages, GX_IdeUtils, Math,
   GX_dzVclUtils;
+
+var
+  fmProjDepend: TfmProjDepend = nil;
+  DependExpert: TDependExpert = nil;
 
 type
   TProjectNotifier = class(TBaseIdeNotifier)
@@ -286,7 +286,7 @@ begin
       if Parser.TokenID = tkIdentifier then
       begin
         UnitIdentifier := Parser.GetDottedIdentifierAtPos(True);
-        Node := tvUnits.Items.AddChild(RootNode, UnitIdentifier);
+        Node := tvUnits.Items.AddChild(FRootNode, UnitIdentifier);
         Node.HasChildren := True;
         Node.ImageIndex := Index;
         Node.SelectedIndex := Index;
@@ -369,14 +369,14 @@ begin
     StatusBar.SimpleText := SParsingUnits;
     StatusBar.Repaint;
 
-    RootNode := tvUnits.Items.Add(nil, ExtractFileName(GxOtaGetCurrentProjectFileName));
+    FRootNode := tvUnits.Items.Add(nil, ExtractFileName(GxOtaGetCurrentProjectFileName));
 
-    RootNode.ImageIndex := ImageIndexWindows;
-    RootNode.SelectedIndex := ImageIndexWindows;
+    FRootNode.ImageIndex := ImageIndexWindows;
+    FRootNode.SelectedIndex := ImageIndexWindows;
 
     LoadFileDependencies;
 
-    RootNode.Expand(False);
+    FRootNode.Expand(False);
     tvUnits.AlphaSort;
 
     FLastProject := GxOtaGetCurrentProjectFileName;
@@ -410,7 +410,7 @@ var
   CNode: TTreeNode;
 begin
   AllowExpansion := True;
-  if Node = RootNode then
+  if Node = FRootNode then
     Exit;
 
   while Node.Count > 0 do
