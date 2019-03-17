@@ -599,24 +599,42 @@ procedure TfmProjDepend.IndirectDepend;
     end;
   end;
 
-  procedure AddItems(ProcessedUnitsList: TStrings; const UnitName: string);
+  procedure AddItemsForProject(ProcessedUnitsList: TStrings; const ProjectName: string);
   var
-    i: Integer;
+    UnitIdx: Integer;
     UseUnitsList: TStringList;
   begin
-    i := FUnitList.IndexOf(UnitName);
-    if i >= 0 then
+    UseUnitsList := FUnitList;
+    for UnitIdx := 0 to UseUnitsList.Count-1 do
     begin
-      UseUnitsList := TStringList(FUnitList.Objects[i]);
+      AddListViewUsesEntries(UseUnitsList.Strings[UnitIdx], ProjectName);
 
-      for i := 0 to UseUnitsList.Count-1 do
+      if ProcessedUnitsList.IndexOf(UseUnitsList.Strings[UnitIdx]) < 0 then
       begin
-        AddListViewUsesEntries(UseUnitsList.Strings[i], UnitName);
+        ProcessedUnitsList.Add(UseUnitsList.Strings[UnitIdx]);
+        AddItemsForUnit(ProcessedUnitsList, UseUnitsList.Strings[UnitIdx]);
+      end;
+    end;
+  end;
 
-        if ProcessedUnitsList.IndexOf(UseUnitsList.Strings[i]) < 0 then
+  procedure AddItemsForUnit(ProcessedUnitsList: TStrings; const UnitName: string);
+  var
+    UnitIdx: Integer;
+    UseUnitsList: TStringList;
+  begin
+    UnitIdx := FUnitList.IndexOf(UnitName);
+    if UnitIdx >= 0 then
+    begin
+      UseUnitsList := TStringList(FUnitList.Objects[UnitIdx]);
+
+      for UnitIdx := 0 to UseUnitsList.Count-1 do
+      begin
+        AddListViewUsesEntries(UseUnitsList.Strings[UnitIdx], UnitName);
+
+        if ProcessedUnitsList.IndexOf(UseUnitsList.Strings[UnitIdx]) < 0 then
         begin
-          ProcessedUnitsList.Add(UseUnitsList.Strings[i]);
-          AddItems(ProcessedUnitsList, UseUnitsList.Strings[i]);
+          ProcessedUnitsList.Add(UseUnitsList.Strings[UnitIdx]);
+          AddItemsForUnit(ProcessedUnitsList, UseUnitsList.Strings[UnitIdx]);
         end;
       end;
     end;
@@ -636,7 +654,11 @@ begin
   try
     lvIndirect.Items.BeginUpdate;
     try
-      AddItems(List, SelectedNode.Text);
+      if SelectedNode = FRootNode then begin
+        AddItemsForProject(List, SelectedNode.Text);
+      end else begin
+        AddItemsForUnit(List, SelectedNode.Text);
+      end;
     finally
       lvIndirect.Items.EndUpdate;
     end;
