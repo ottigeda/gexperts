@@ -123,6 +123,11 @@ type
     function ConfigurationKey: string;
     procedure ExportIndirectDependencies;
     function FindUnitInUnitList(const _UnitName: string; out _UsesList: TStringList): Boolean;
+    ///<summary>
+    /// Fills ProcessedUnitsList with a list of all directly and indirectly used units and
+    /// a StringList of the units they are used by in the objects property. The latter
+    /// StringLists must be freed by the caller </summary>
+    procedure GetIndirectDependencies(_SelectedNode: TTreeNode; _ProcessedUnitsList: TStringList);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -546,7 +551,7 @@ begin
   end;
 end;
 
-procedure TfmProjDepend.IndirectDepend;
+procedure TfmProjDepend.GetIndirectDependencies(_SelectedNode: TTreeNode; _ProcessedUnitsList: TStringList);
 
   procedure AddItemsForUnit(_ProcessedUnitsList: TStringList; const _UnitName: string); forward;
 
@@ -590,6 +595,17 @@ procedure TfmProjDepend.IndirectDepend;
     AddItems(_ProcessedUnitsList, FUnitList, ChangeFileExt(_ProjectName, ''));
   end;
 
+begin
+  _ProcessedUnitsList.Clear;
+  Assert(_ProcessedUnitsList.Sorted);
+  if _SelectedNode = FRootNode then begin
+    AddItemsForProject(_ProcessedUnitsList, _SelectedNode.Text);
+  end else begin
+    AddItemsForUnit(_ProcessedUnitsList, _SelectedNode.Text);
+  end;
+end;
+
+procedure TfmProjDepend.IndirectDepend;
 var
   ProcessedUnitsList: TStringList;
   Cursor: IInterface;
@@ -609,11 +625,7 @@ begin
   try
     ListItems.Clear;
     ProcessedUnitsList := TStringList_CreateSorted(dupError);
-    if SelectedNode = FRootNode then begin
-      AddItemsForProject(ProcessedUnitsList, SelectedNode.Text);
-    end else begin
-      AddItemsForUnit(ProcessedUnitsList, SelectedNode.Text);
-    end;
+    GetIndirectDependencies(SelectedNode, ProcessedUnitsList);
     for i := 0 to ProcessedUnitsList.Count - 1 do begin
       ListItem := ListItems.Add;
       ListItem.Caption := ProcessedUnitsList[i];
@@ -945,7 +957,7 @@ procedure TfmProjDepend.ExportAllDependencies;
       end;
 
       if not ProcessedUnitsList.Find(ThisUnit, Idx) then
-      begin                  
+      begin
         ProcessedUnitsList.Add(ThisUnit);
         AddItems(ProcessedUnitsList, ExportList, BaseUnit, ThisUnit);
       end;
@@ -962,7 +974,7 @@ var
   UnitName: string;
   j: Integer;
 begin
-  if not ShowSaveDialog('Export Indirect Dependencies', 'csv', fn,
+  if not ShowSaveDialog('Export Dependencies', 'csv', fn,
     'CSV Files (*.csv)|*.csv|TXT Files (*.txt)|*.txt') then
     Exit; //==>
 
@@ -992,7 +1004,36 @@ begin
 end;
 
 procedure TfmProjDepend.ExportIndirectDependencies;
+var
+  ProcessedUnitsList: TStringList;
+  i: Integer;
+  UnitName: string;
+  UsedByList: TStringList;
+  OutputData: TStringList;
+  UsedByStr: string;
+  fn: string;
 begin
+  if not ShowSaveDialog('Export Indirect Dependencies', 'csv', fn,
+    'CSV Files (*.csv)|*.csv|TXT Files (*.txt)|*.txt') then
+    Exit; //==>
+
+  OutputData := nil;
+  ProcessedUnitsList := TStringList_CreateSorted(dupError);
+  try
+    GetIndirectDependencies(FRootNode, ProcessedUnitsList);
+    OutputData := TStringList.Create;
+    for i := 0 to ProcessedUnitsList.Count - 1 do begin
+      UnitName := ProcessedUnitsList[i];
+      UsedByList := TStringList(ProcessedUnitsList.Objects[i]);
+      UsedByStr := StringReplace(UsedByList.CommaText, ',', ' ', [rfReplaceAll]);
+      OutputData.Add(UnitName + ',' + UsedByStr);
+      UsedByList.Free;
+    end;
+    OutputData.SaveToFile(fn);
+  finally
+    FreeAndNil(OutputData);
+    FreeAndNil(ProcessedUnitsList);
+  end;
 end;
 
 function TfmProjDepend.ConfigurationKey: string;
