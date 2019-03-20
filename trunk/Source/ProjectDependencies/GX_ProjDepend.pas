@@ -601,6 +601,7 @@ begin
   if _SelectedNode = FRootNode then begin
     AddItemsForProject(_ProcessedUnitsList, _SelectedNode.Text);
   end else begin
+    _ProcessedUnitsList.AddObject(_SelectedNode.Text, TStringList_CreateSorted(dupIgnore));
     AddItemsForUnit(_ProcessedUnitsList, _SelectedNode.Text);
   end;
 end;
