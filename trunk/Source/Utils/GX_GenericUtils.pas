@@ -596,6 +596,11 @@ function GetSpecialFolderPath(const FolderID: Integer): string;
 function GetUserApplicationDataFolder: string;
 function GetUserLocalApplicationDataFolder: string;
 
+///<summary>
+/// Find the given file in the list of directories.
+///  @returns true, if the file has been found </sumary>
+function FindFileInSearchPath(const _fn: string; _SearchPath: TStrings; out _FullFn: string): Boolean;
+
 // See if the current OS is Windows
 function RunningWindows: Boolean;
 
@@ -3488,6 +3493,23 @@ begin
     Result := Format('%d.%d.%d.%d', [Version.Major, Version.Minor, Version.Release, Version.Build])
   else
     Result := SUnknown;
+end;
+
+function FindFileInSearchPath(const _fn: string; _SearchPath: TStrings; out _FullFn: string): Boolean;
+var
+  i: Integer;
+  dir: string;
+begin
+  Assert(Assigned(_SearchPath));
+  Result := True;
+  for i := 0 to _SearchPath.Count - 1 do begin
+    dir := AddSlash(_SearchPath[i]);
+    if FileExists(dir + _fn) then begin
+      _FullFn := dir + _fn;
+      Exit; //==>
+    end;
+  end;
+  Result := False;
 end;
 
 function GXShellExecute(const FileName, Parameters: string; const RaiseException: Boolean): Boolean;
