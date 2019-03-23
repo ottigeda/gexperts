@@ -102,6 +102,7 @@ type
     FSearchInProgress: Boolean;
     FAbortSignalled: Boolean;
     FFilterList: TStringList;
+    FSearchPaths: TStringList;
     UnitUsesSortColumn: Integer;
     UsedBySortColumn: Integer;
     IndirectSortColumn: Integer;
@@ -113,7 +114,7 @@ type
     procedure LoadSettings;
     procedure SaveSettings;
     procedure OpenUnit(const UnitName: string);
-    function LoadFileDepend(const FileName, UnitName, FormName: string): Boolean;
+    function LoadFileDepend(FileName: string; const UnitName, FormName: string): Boolean;
     procedure LoadFileDependencies;
     procedure BuildUses;
     procedure ClearFileList;
@@ -141,6 +142,8 @@ type
     procedure SetActive(New: Boolean); override;
   private
     FScanEntireUnit: Boolean;
+    FSearchLibraryPath: Boolean;
+    FSearchBrowsingPath: Boolean;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -160,7 +163,7 @@ uses
   mPasLex, mwPasParserTypes,
   GX_EditReader, GX_ProjDependProp, GX_GExperts, GX_ProjDependFilter,
   GX_GenericUtils, GX_GxUtils, GX_SharedImages, GX_IdeUtils, Math,
-  GX_dzVclUtils, GX_dzClassUtils;
+  GX_dzVclUtils, GX_dzClassUtils, GX_ProjDependOptions;
 
 var
   fmProjDepend: TfmProjDepend = nil;
@@ -226,7 +229,7 @@ begin
   end;
 end;
 
-function TfmProjDepend.LoadFileDepend(const FileName, UnitName, FormName: string): Boolean;
+function TfmProjDepend.LoadFileDepend(FileName: string; const UnitName, FormName: string): Boolean;
 var
   EditRead: TEditReader;
   FileContent: string;
@@ -256,6 +259,12 @@ begin
 
   StatusBar.SimpleText := FileName;
   StatusBar.Repaint;
+
+  if (FileName = '') and Assigned(FSearchPaths) then begin
+    if not FindFileInSearchPath(Unitname+ '.pas', FSearchPaths, FileName) then
+      Exit; //==>
+  end;
+
 
   if not IsDprOrPas(FileName) then
     Exit;
@@ -347,7 +356,16 @@ var
 begin
   CurrentProject := GxOtaGetCurrentProject;
   if not Assigned(CurrentProject) then
-    Exit;
+    Exit; //==>
+
+  if Assigned(DependExpert) and DependExpert.FSearchLibraryPath then begin
+    FSearchPaths := TStringList.Create;
+    if DependExpert.FSearchBrowsingPath then
+      GxOtaGetAllPossiblePaths(FSearchPaths, CurrentProject)
+    else
+      GxOtaGetEffectiveLibraryPath(FSearchPaths, CurrentProject);
+  end else
+    FreeAndNil(FSearchPaths);
 
   for i := 0 to CurrentProject.GetModuleCount-1 do
   begin
@@ -785,6 +803,7 @@ begin
 
   ClearUnitList;
   ClearFileList;
+  FreeAndNil(FSearchPaths);
   FreeAndNil(FUnitList);
   FreeAndNil(FFileList);
   FreeAndNil(FFilterList);
@@ -1084,25 +1103,24 @@ begin
 end;
 
 procedure TDependExpert.Configure;
-resourcestring
-  SConfigureExplanation = 'Do you want Project Dependencies to scan the entire unit for uses clauses?' + sLineBreak +
-                          sLineBreak +
-                          'This is slower, but will also find additional, unusual uses clauses that have been '+
-                          'conditionally defined.';
 begin
-  FScanEntireUnit := (MessageDlg(SConfigureExplanation, mtConfirmation, [mbYes, mbNo], 0) = mrYes);
+  TfmProjDependOptions.Execute(nil, FScanEntireUnit, FSearchLibraryPath, FSearchBrowsingPath);
 end;
 
 procedure TDependExpert.InternalSaveSettings(Settings: TExpertSettings);
 begin
   inherited InternalSaveSettings(Settings);
   Settings.WriteBool('ScanEntireUnit', FScanEntireUnit);
+  Settings.WriteBool('SearchLibraryPath', FSearchLibraryPath);
+  Settings.WriteBool('SearchBrowsingPath', FSearchBrowsingPath);
 end;
 
 procedure TDependExpert.InternalLoadSettings(Settings: TExpertSettings);
 begin
   inherited InternalLoadSettings(Settings);
   FScanEntireUnit := Settings.ReadBool('ScanEntireUnit', False);
+  FSearchLibraryPath := Settings.ReadBool('SearchLibraryPath', False);
+  FSearchBrowsingPath := Settings.ReadBool('SearchBrowsingPath', False);
 end;
 
 procedure TDependExpert.Execute(Sender: TObject);
