@@ -2,7 +2,7 @@
     <PropertyGroup>
         <Base>True</Base>
         <AppType>Library</AppType>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <FrameworkType>VCL</FrameworkType>
         <MainSource>GExpertsRS10.dpr</MainSource>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -60,11 +60,9 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
-        <PreBuildEvent>
-            <![CDATA[call ..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"
+        <PreBuildEvent><![CDATA[call ..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"
 call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"
-$(PreBuildEvent)]]>
-        </PreBuildEvent>
+$(PreBuildEvent)]]></PreBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_DebugInformation>0</DCC_DebugInformation>
@@ -181,6 +179,7 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Experts\GX_CopyComponentNames.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_DbugIntf.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_DesignerMenu.pas"/>
+        <DCCReference Include="..\..\Source\Editor\GX_eGotoModification.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_eAlign.pas">
             <Form>fmAlign</Form>
         </DCCReference>
@@ -377,7 +376,6 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\source\CodeProofreader\GX_ProofreaderCorrection.pas"/>
         <DCCReference Include="..\..\source\CodeProofreader\GX_ProofreaderData.pas"/>
-        <DCCReference Include="..\..\source\CodeProofreader\GX_ProofreaderDefaults.pas"/>
         <DCCReference Include="..\..\source\CodeProofreader\GX_ProofreaderExpert.pas"/>
         <DCCReference Include="..\..\source\CodeProofreader\GX_ProofreaderKeyboard.pas"/>
         <DCCReference Include="..\..\source\CodeProofreader\GX_ProofreaderUtils.pas"/>
@@ -531,18 +529,43 @@ $(PreBuildEvent)]]>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="..\..\Source\Utils\GX_dzSpeedBitBtn.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_UsageStatistics.pas">
+            <Form>fmUsageStatistics</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Utils\GX_dzDateUtils.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_UnitExportsParser.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_dzNamedThread.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_DummyWizard.pas"/>
+        <DCCReference Include="..\..\Source\IDE\GX_IdeMessageAutoClose.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_MemoEscFix.pas"/>
+        <DCCReference Include="..\..\Source\KeyboardShortcuts\GX_KeyboardShortcuts.pas">
+            <Form>fmGxKeyboardShortcuts</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\IDE\GX_IdeDockFormEnhancer.pas"/>
+        <DCCReference Include="..\..\Source\Experts\GX_AddDockWindow.pas">
+            <Form>fmGxDockForm</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Editor\GX_eRemoveMatchingLines.pas">
+            <Form>fmRemoveMatchingLinesExpertConfig</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\TabOrder\GX_TabOrderOptions.pas">
+            <Form>fmTabOrderOptions</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\ide\GX_IdeDetectForms.pas"/>
+        <DCCReference Include="..\..\source\framework\GX_dzCompilerAndRtlVersions.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_dzMiscUtils.pas"/>
         <RcCompile Include="..\..\images\GXIcons.rc">
             <Form>..\..\images\GXIcons.res</Form>
         </RcCompile>
+        <BuildConfiguration Include="Debug">
+            <Key>Cfg_2</Key>
+            <CfgParent>Base</CfgParent>
+        </BuildConfiguration>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
         <BuildConfiguration Include="Release">
             <Key>Cfg_1</Key>
-            <CfgParent>Base</CfgParent>
-        </BuildConfiguration>
-        <BuildConfiguration Include="Debug">
-            <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
         </BuildConfiguration>
     </ItemGroup>
