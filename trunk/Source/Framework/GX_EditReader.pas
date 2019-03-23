@@ -38,6 +38,7 @@ type
     procedure SaveToStreamToPos(Stream: TStream);
     procedure SaveToStream(Stream: TStream);
   public
+    class function GetText(const FileName: string): string; overload;
     constructor Create(const FileName: string);
     destructor Destroy; override;
     procedure FreeFileData;
@@ -46,7 +47,7 @@ type
     procedure GotoOffsetLine(L: Integer);
     procedure ShowSource;
     procedure ShowForm;
-    function GetText: string;
+    function GetText: string; overload;
     function GetTextFromPos: string;
     function GetTextToPos: string;
     ///<summary>
@@ -416,6 +417,18 @@ begin
     Result := ReadTextFromStream(Stream);
   finally
     Stream.Free;
+  end;
+end;
+
+class function TEditReader.GetText(const FileName: string): string;
+var
+  edr: TEditReader;
+begin
+  edr := TEditReader.Create(FileName);
+  try
+    Result := edr.GetText;
+  finally
+    edr.Free;
   end;
 end;
 

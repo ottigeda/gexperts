@@ -231,7 +231,6 @@ end;
 
 function TfmProjDepend.LoadFileDepend(FileName: string; const UnitName, FormName: string): Boolean;
 var
-  EditRead: TEditReader;
   FileContent: string;
   Parser: TmwPasLex;
   nUses: Integer;
@@ -282,12 +281,7 @@ begin
   // Since this edit reader is destroyed almost
   // immediately, do not call FreeFileData
   try
-    EditRead := TEditReader.Create(FileName);
-    try
-      FileContent := EditRead.GetText;
-    finally
-      FreeAndNil(EditRead);
-    end;
+    FileContent := TEditReader.GetText(FileName);
   except
     on E: Exception do
     begin

@@ -595,7 +595,6 @@ procedure TfmToDo.LoadFile(const FileName: string);
 var
   FileContent: String;
   IsCPPModule: Boolean;
-  InternalEditReader: TEditReader;
   HeaderFile: string;
 begin
   if FScannedFiles.IndexOf(FileName) >= 0 then
@@ -610,14 +609,7 @@ begin
   IsCPPModule := IsCppSourceModule(FileName);
 
   try
-    // Since this edit reader is destroyed almost
-    // immediately, do not call FreeFileData
-    InternalEditReader := TEditReader.Create(FileName);
-    try
-      FileContent := InternalEditReader.GetText;
-    finally
-      FreeAndNil(InternalEditReader);
-    end;
+    FileContent := TEditReader.GetText(FileName);
 
     if IsCPPModule then begin
       ParseCFile(FileName, FileContent, ParseComment);
