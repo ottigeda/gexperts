@@ -464,7 +464,7 @@ procedure GxOtaGetEffectiveLibraryPath(Paths: TStrings;
   Project: IOTAProject = nil; DoProcessing: Boolean = True);
 // Retrieve a guess at all possible paths where files in the current project
 // might be located by the compiler
-procedure GxOtaGetAllPossiblePaths(Paths: TStrings);
+procedure GxOtaGetAllPossiblePaths(Paths: TStrings; Project: IOTAProject = nil);
 // Locate a base file name in all possible paths (retrieved with GxOtaGetAllPossiblePaths)
 function GxOtaTryFindPathToFile(const FileName: string; out FullFilename: string): Boolean;
 function GxOtaFindPathToFile(const FileName: string): string;
@@ -2937,7 +2937,7 @@ begin
   end;
 end;
 
-procedure GxOtaGetAllPossiblePaths(Paths: TStrings);
+procedure GxOtaGetAllPossiblePaths(Paths: TStrings; Project: IOTAProject = nil);
 
   function GetPath(const FileName: string): string;
   begin
@@ -2986,10 +2986,15 @@ var
   i: Integer;
 begin
   Assert(Assigned(Paths));
+
   // Add path of the current project
-  AddAPath(GetPath(GxOtaGetCurrentProjectFileName));
+  if not Assigned(Project) then
+    Project := GxOtaGetCurrentProject;
+  AddAPath(GetPath(GxOtaGetProjectFileName(Project)));
+
   // Add library search paths
   GxOtaGetEffectiveLibraryPath(Paths);
+
   // Add paths of all files included in the project
   UnitList := TList.Create;
   try
@@ -3002,12 +3007,16 @@ begin
   finally
     FreeAndNil(UnitList);
   end;
+
   // Add current file path
   AddAPath(GetPath(GxOtaGetFileNameOfCurrentModule));
+
   // Add path of the current source file (probably same as first one)
   AddAPath(GetPath(GxOtaGetCurrentSourceFile));
+
   // Add path of the project group
   AddAPath(GetPath(GxOtaGetProjectGroupFileName));
+
   // Add paths to VCL source (since we are smart)
   AddVCLPaths;
 end;
