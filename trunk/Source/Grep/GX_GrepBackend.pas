@@ -548,6 +548,8 @@ begin
         FullFn := ExpandFileName(AddSlash(SearchPath[PathIdx]) + FileName);
         if FileExists(FullFn) then begin
           GrepProjectFile(FullFn, Context);
+          if FAbortSignalled then
+            Exit; //==>
         end;
       end;
     end;
