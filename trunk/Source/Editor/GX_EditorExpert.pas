@@ -41,7 +41,7 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, Dialogs, ActnList,
+  SysUtils, Dialogs, ActnList, ToolsAPI,
   GX_ActionBroker, GX_OtaUtils, GX_GxUtils, GX_GenericUtils,
   GX_MessageBox, GX_IconMessageBox;
 
@@ -154,16 +154,26 @@ end;
 procedure TEditorExpert.ActionOnUpdate(Sender: TObject);
 var
   SendingAction: TCustomAction;
+  Editor: IOTASourceEditor;
 begin
   // All editor experts require a current edit view
   SendingAction := Sender as TCustomAction;
   Assert(Assigned(SendingAction));
 
-  SendingAction.Enabled := (GxOtaGetTopMostEditView <> nil);
+  SendingAction.Enabled := GxOtaTryGetCurrentEditorAsSourceEditor(Editor);
 end;
 
 procedure TEditorExpert.DoExecute(Sender: TObject);
+var
+  Editor: IOTASourceEditor;
 begin
+  if not GxOtaTryGetCurrentEditorAsSourceEditor(Editor) then begin
+    // since apparently ActionOnUpdate isn't reliably called,
+    // we prevent editor actions from being executed here,
+    // if the current editor is not a source editor (but e.g. a form editor)
+    Exit; //==>
+  end;
+
   try
     Execute(Sender);
   except

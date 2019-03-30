@@ -517,9 +517,18 @@ function GxOtaGetCurrentModule: IOTAModule;
 
 // Returns the current IOTASourceEditor or nil if
 // there is no current source editor.
+// Note: This will return a source editor even if the currently active editor
+// is a form editor! This is probably not what you want.
+// See also GxOtaGetCurrentEditorAsSourceEditor
 function GxOtaGetCurrentSourceEditor: IOTASourceEditor;
 function GxOtaTryGetCurrentSourceEditor(out SourceEditor: IOTASourceEditor): boolean;
 procedure GxOtaShowCurrentSourceEditor;
+
+///<summary>
+/// Get the current source code editor or nil if there is none (e.g. the current
+/// editor is a form editor </summary>
+function GxOtaGetCurrentEditorAsSourceEditor: IOTASourceEditor;
+function GxOtaTryGetCurrentEditorAsSourceEditor(out SourceEditor: IOTASourceEditor): Boolean;
 
 // Raise an exception if the source editor is readonly
 procedure GxOtaAssertSourceEditorNotReadOnly(SourceEditor: IOTASourceEditor);
@@ -568,7 +577,8 @@ function GxOtaGetFormAsText(Form: IOTAFormEditor): string; overload;
 // if there is no IOTASourceEditor
 function GxOtaGetSourceEditorFromModule(Module: IOTAModule; const FileName: string = ''): IOTASourceEditor;
 
-// Get the active IOTAEditor
+// Get the active IOTAEditor (which can be an IOTASourceEditor or IOTAFormEditor
+// (or maybe even more in future IDE versions)
 function GxOtaGetCurrentEditor: IOTAEditor;
 
 // Get an editor for the file indicated by FileName
@@ -3925,6 +3935,20 @@ begin
       TopFile := Module.FileName;
     Result := GxOtaGetEditorFromModule(Module, TopFile);
   end;
+end;
+
+function GxOtaGetCurrentEditorAsSourceEditor: IOTASourceEditor;
+begin
+  if not GxOtaTryGetCurrentEditorAsSourceEditor(Result) then
+    Result := nil;
+end;
+
+function GxOtaTryGetCurrentEditorAsSourceEditor(out SourceEditor: IOTASourceEditor): Boolean;
+var
+  Editor: IOTAEditor;
+begin
+  Editor := GxOtaGetCurrentEditor;
+  Result := (Editor <> nil) and Supports(Editor, IOTASourceEditor, SourceEditor);
 end;
 
 function GxOtaGetEditorFromModule(Module: IOTAModule; const FileName: string): IOTAEditor;
