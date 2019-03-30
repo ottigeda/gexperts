@@ -348,13 +348,20 @@ end;
 
 procedure TGX_BaseExpert.SetActive(New: Boolean);
 begin
+  if FActive <> New then
+    if Assigned(FActionInt) then begin
+      if New then
+        FActionInt.ShortCut := FShortCut
+      else
+        FActionInt.ShortCut := 0;
+    end;
   FActive := New;
 end;
 
 procedure TGX_BaseExpert.SetShortCut(Value: TShortCut);
 begin
   FShortCut := Value;
-  if Assigned(FActionInt) then
+  if FActive and Assigned(FActionInt) then
     FActionInt.ShortCut := FShortCut;
 end;
 
