@@ -11,12 +11,8 @@ uses
 type
   TGX_Expert = class(TGX_BaseExpert)
   private
-    FShortCut: TShortCut;
-    FAction: IGxAction;
     procedure ActionOnUpdate(Sender: TObject);
   protected
-    procedure SetShortCut(Value: TShortCut); override;
-    function GetShortCut: TShortCut; override;
     function GetExpertIndex: Integer;
     procedure SetFormIcon(Form: TForm);
     procedure SetActive(New: Boolean); override;
@@ -172,25 +168,13 @@ begin
   if HasMenuItem then
   begin
     if New and not IsStandAlone then
-      FAction := GXMenuActionManager.RequestMenuExpertAction(Self)
+      FActionInt := GXMenuActionManager.RequestMenuExpertAction(Self)
     else
-      FAction := nil;
+      FActionInt := nil;
   end;
 
-  if Assigned(FAction) then
-    FAction.OnUpdate := ActionOnUpdate;
-end;
-
-function TGX_Expert.GetShortCut: TShortCut;
-begin
-  Result := FShortCut;
-end;
-
-procedure TGX_Expert.SetShortCut(Value: TShortCut);
-begin
-  FShortCut := Value;
-  if Assigned(FAction) then
-    FAction.ShortCut := FShortCut;
+  if Assigned(FActionInt) then
+    FActionInt.OnUpdate := ActionOnUpdate;
 end;
 
 { Globals }
@@ -296,7 +280,7 @@ end;
 
 function TGX_Expert.GetActionEnabled: Boolean;
 begin
-  Result := FAction.GetEnabled;
+  Result := FActionInt.GetEnabled;
 end;
 
 procedure TGX_Expert.DoCreateSubMenuItems(MenuItem: TMenuItem);
@@ -308,7 +292,7 @@ end;
 
 procedure TGX_Expert.DoUpdateAction;
 begin
-  UpdateAction(FAction.GetAction);
+  UpdateAction(FActionInt.GetAction);
 end;
 
 function TGX_Expert.GetDisplayName: string;

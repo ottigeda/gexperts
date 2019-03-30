@@ -3,7 +3,7 @@ unit GX_BaseExpert;
 interface
 
 uses
-  Classes, Graphics, GX_ConfigurationInfo;
+  Classes, Graphics, GX_ConfigurationInfo, GX_Actions;
 
 type
   TGX_BaseExpert = class(TObject)
@@ -14,9 +14,11 @@ type
   protected
     FBitmap: TBitmap;
     FActive: Boolean;
-    function GetShortCut: TShortCut; virtual; abstract;
+    FActionInt: IGxAction;
+    FShortCut: TShortCut;
     procedure SetActive(New: Boolean); virtual;
-    procedure SetShortCut(Value: TShortCut); virtual; abstract;
+    function GetShortCut: TShortCut; virtual;
+    procedure SetShortCut(Value: TShortCut); virtual;
     // Subkey used to store configuration details in the registry
     // defaults to GetName
     class function ConfigurationKey: string; virtual;
@@ -115,6 +117,8 @@ end;
 
 destructor TGX_BaseExpert.Destroy;
 begin
+  FActionInt := nil; // Clear out interface reference.
+
   FreeAndNil(FBitmap);
   try
     SetTotalCallCount(GetTotalCallCount + FCallCount);
@@ -197,6 +201,11 @@ end;
 function TGX_BaseExpert.GetOptionsBaseRegistryKey: string;
 begin
   Result := '';
+end;
+
+function TGX_BaseExpert.GetShortCut: TShortCut;
+begin
+  Result := FShortCut;
 end;
 
 function TGX_BaseExpert.HasCallCount: Boolean;
@@ -340,6 +349,13 @@ end;
 procedure TGX_BaseExpert.SetActive(New: Boolean);
 begin
   FActive := New;
+end;
+
+procedure TGX_BaseExpert.SetShortCut(Value: TShortCut);
+begin
+  FShortCut := Value;
+  if Assigned(FActionInt) then
+    FActionInt.ShortCut := FShortCut;
 end;
 
 end.

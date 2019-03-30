@@ -9,11 +9,8 @@ uses
 type
   TEditorExpert = class(TGX_BaseExpert)
   private
-    FGxAction: IGxAction;
     FActionName: string;
   protected
-    function GetShortCut: TShortCut; override;
-    procedure SetShortCut(Value: TShortCut); override;
     // defaults to ClassName
     function GetBitmapFileName: string; override;
     // you usually don't need to override this
@@ -99,30 +96,22 @@ begin
 
   FActionName := EditorExpertPrefix + GetName;
 
-  FGxAction := GxActionBroker.RequestAction(FActionName, GetBitmap);
-  FGxAction.OnExecute := Self.DoExecute;
-  FGxAction.Caption := GetDisplayName;
-  FGxAction.OnUpdate := ActionOnUpdate;
+  FActionInt := GxActionBroker.RequestAction(FActionName, GetBitmap);
+  FActionInt.OnExecute := Self.DoExecute;
+  FActionInt.Caption := GetDisplayName;
+  FActionInt.OnUpdate := ActionOnUpdate;
 
   ShortCut := GetDefaultShortCut;
 end;
 
 destructor TEditorExpert.Destroy;
 begin
-  FGxAction := nil; // Clear out interface reference.
-
   inherited Destroy;
 end;
 
 function TEditorExpert.GetOptionsBaseRegistryKey: string;
 begin
   Result := AddSlash(ConfigInfo.GExpertsIdeRootRegistryKey) + 'EditorExperts'; // Do not localize.
-end;
-
-function TEditorExpert.GetShortCut: TShortCut;
-begin
-  Assert(Assigned(FGxAction));
-  Result := FGxAction.ShortCut
 end;
 
 procedure TEditorExpert.LoadActiveAndShortCut(Settings: TGExpertsSettings);
@@ -137,12 +126,6 @@ begin
   inherited;
   Settings.WriteInteger(ConfigurationKey, 'ShortCut', ShortCut);
   Settings.WriteBool(ConfigurationKey, 'Active', Active);
-end;
-
-procedure TEditorExpert.SetShortCut(Value: TShortCut);
-begin
-  Assert(Assigned(FGxAction));
-  FGxAction.ShortCut := Value;
 end;
 
 function TEditorExpert.CanHaveShortCut: boolean;
