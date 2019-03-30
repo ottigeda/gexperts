@@ -2,8 +2,8 @@
 @if not defined gx_cmd_debug (echo off)
 @endlocal
 set iscc="C:\Program Files (x86)\Inno Setup 5\ISCC.exe"
-set version=1.3.12
-set instver=13C
+set version=1.3.13
+set instver=13D
 call :getdate
 set special=-experimental-twm-%dateYYYYMMDD%
 
