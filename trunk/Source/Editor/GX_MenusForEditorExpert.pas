@@ -217,6 +217,7 @@ procedure TGxMenusForEditorExperts.UpdateAction(Action: TCustomAction);
 begin
   Action.Enabled := Assigned(GExpertsInst.EditorExpertManager)
     and (GExpertsInst.EditorExpertManager.EditorExpertCount > 0);
+  // todo: Is this a good idea? Shouldn't the action always be visible?
   Action.Visible := Action.Enabled;
 end;
 
