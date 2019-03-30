@@ -1,3 +1,0 @@
-program hallo;
-begin
-end.
