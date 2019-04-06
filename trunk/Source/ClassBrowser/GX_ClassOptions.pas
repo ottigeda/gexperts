@@ -3,6 +3,7 @@ unit GX_ClassOptions;
 interface
 
 uses
+  Windows,
   SysUtils,
   Classes,
   StdCtrls,
@@ -76,6 +77,7 @@ type
       out _Filters: TClassBrowswerFilters);
     procedure FontToForm(_Font: TFont; _NameCombo: TComboBox; _SizeUd: TUpDown);
     procedure FormToFont(_Font: TFont; _NameCombo: TComboBox; _SizeUd: TUpDown);
+    procedure HandleFontShow(_Sender: TObject);
   public
     class function Execute(_Owner: TWinControl; _TreeFont, _ListFont, _EditorFont: TFont;
       var _AutomaticallyHideBrowser: Boolean;
@@ -155,6 +157,7 @@ begin
   FormToFont(_Font, _NameCombo, _SizeUd);
   dlg := TFontDialog.Create(Self);
   try
+    dlg.OnShow := HandleFontShow;
     dlg.Font := _Font;
     if dlg.Execute(Handle) then begin
       _Font.Assign(dlg.Font);
@@ -163,6 +166,11 @@ begin
   finally
     FreeAndNil(dlg);
   end;
+end;
+
+procedure TfmClassOptions.HandleFontShow(_Sender: TObject);
+begin
+  TForm_CenterOn((_Sender as TFontDialog).Handle, Self);
 end;
 
 procedure TfmClassOptions.b_EditorFontClick(Sender: TObject);

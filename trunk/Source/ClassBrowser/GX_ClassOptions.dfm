@@ -17,7 +17,6 @@ object fmClassOptions: TfmClassOptions
   OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 14
   object pnlContent: TPanel
