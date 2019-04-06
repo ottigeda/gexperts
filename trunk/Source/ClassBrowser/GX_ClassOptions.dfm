@@ -47,15 +47,15 @@ object fmClassOptions: TfmClassOptions
           Left = 8
           Top = 8
           Width = 387
-          Height = 105
+          Height = 169
           Anchors = [akLeft, akTop, akRight]
           Caption = 'Fonts'
           TabOrder = 0
           DesignSize = (
             387
-            105)
+            169)
           object lblTreeViewFont: TLabel
-            Left = 22
+            Left = 8
             Top = 24
             Width = 53
             Height = 14
@@ -64,8 +64,8 @@ object fmClassOptions: TfmClassOptions
             FocusControl = cbTreeView
           end
           object lblListViewFont: TLabel
-            Left = 30
-            Top = 49
+            Left = 8
+            Top = 72
             Width = 45
             Height = 14
             Alignment = taRightJustify
@@ -73,8 +73,8 @@ object fmClassOptions: TfmClassOptions
             FocusControl = cbListView
           end
           object lblEditorFont: TLabel
-            Left = 16
-            Top = 73
+            Left = 8
+            Top = 120
             Width = 59
             Height = 14
             Alignment = taRightJustify
@@ -82,8 +82,8 @@ object fmClassOptions: TfmClassOptions
             FocusControl = cbEditor
           end
           object cbTreeView: TComboBox
-            Left = 82
-            Top = 21
+            Left = 8
+            Top = 40
             Width = 233
             Height = 22
             Style = csDropDownList
@@ -92,92 +92,116 @@ object fmClassOptions: TfmClassOptions
             TabOrder = 0
           end
           object cbListView: TComboBox
-            Left = 82
-            Top = 45
+            Left = 8
+            Top = 88
             Width = 233
             Height = 22
             Style = csDropDownList
             Anchors = [akLeft, akTop, akRight]
             ItemHeight = 14
-            TabOrder = 3
+            TabOrder = 4
           end
           object cbEditor: TComboBox
-            Left = 82
-            Top = 69
+            Left = 8
+            Top = 136
             Width = 233
             Height = 22
             Style = csDropDownList
             Anchors = [akLeft, akTop, akRight]
             ItemHeight = 14
-            TabOrder = 6
+            TabOrder = 8
           end
           object sTreeView: TEdit
-            Left = 319
-            Top = 21
-            Width = 35
+            Left = 248
+            Top = 40
+            Width = 33
             Height = 22
             Anchors = [akTop, akRight]
             TabOrder = 1
             Text = '1'
           end
           object sListView: TEdit
-            Left = 319
-            Top = 45
+            Left = 248
+            Top = 88
             Width = 35
             Height = 22
             Anchors = [akTop, akRight]
-            TabOrder = 4
+            TabOrder = 5
             Text = '1'
           end
           object sEditor: TEdit
-            Left = 319
-            Top = 69
+            Left = 248
+            Top = 136
             Width = 35
             Height = 22
             Anchors = [akTop, akRight]
-            TabOrder = 7
+            TabOrder = 9
             Text = '1'
           end
           object udTree: TUpDown
-            Left = 354
-            Top = 21
-            Width = 16
+            Left = 281
+            Top = 40
+            Width = 17
             Height = 22
             Anchors = [akTop, akRight]
             Associate = sTreeView
             Min = 1
             Position = 1
             TabOrder = 2
-            Wrap = False
           end
           object udList: TUpDown
-            Left = 354
-            Top = 45
+            Left = 283
+            Top = 88
             Width = 16
             Height = 22
             Anchors = [akTop, akRight]
             Associate = sListView
             Min = 1
             Position = 1
-            TabOrder = 5
-            Wrap = False
+            TabOrder = 6
           end
           object udEditor: TUpDown
-            Left = 354
-            Top = 69
+            Left = 283
+            Top = 136
             Width = 16
             Height = 22
             Anchors = [akTop, akRight]
             Associate = sEditor
             Min = 1
             Position = 1
-            TabOrder = 8
-            Wrap = False
+            TabOrder = 10
+          end
+          object b_TreeFont: TButton
+            Left = 304
+            Top = 39
+            Width = 25
+            Height = 25
+            Caption = '...'
+            TabOrder = 3
+            OnClick = b_TreeFontClick
+          end
+          object b_ListFont: TButton
+            Left = 304
+            Top = 87
+            Width = 25
+            Height = 25
+            Caption = '...'
+            TabOrder = 7
+            OnClick = b_ListFontClick
+          end
+          object b_EditorFont: TButton
+            Left = 304
+            Top = 135
+            Width = 25
+            Height = 25
+            Caption = '...'
+            TabOrder = 11
+            OnClick = b_EditorFontClick
           end
         end
         object cbAutoHide: TCheckBox
           Left = 10
-          Top = 128
+          Top = 184
           Width = 359
           Height = 25
           Caption = '&Auto-hide window when jumping to class/member'

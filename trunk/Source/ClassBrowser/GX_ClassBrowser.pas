@@ -12,7 +12,8 @@ interface
 uses
   Windows, GX_ClassMgr, GX_ClassParsing, GX_Experts, GX_OtaUtils, GX_EnhancedEditor,
   Classes, Controls, Buttons, StdCtrls, Forms, Dialogs, ActnList, ToolWin, ToolsAPI,
-  Actions, Graphics, Menus, ExtCtrls, ComCtrls, ImgList, GX_BaseForm;
+  Actions, Graphics, Menus, ExtCtrls, ComCtrls, ImgList, GX_BaseForm,
+  GX_ClassOptions;
 
 type
   TInfoViewMode = (vmList, vmTree);
@@ -186,7 +187,7 @@ type
     FClassHierarchyBoxWidth: Integer;
     FClassHierarchyBoxSpace: Integer;
     FClassHierarchyFont: string;
-    FFilters: array[0..8] of Boolean;
+    FFilters: TClassBrowswerFilters;
     FLastFind: string;
     FLastHitTestItemIdx: Integer;
     FLastHitTestSubItemIdx: Integer;
@@ -264,7 +265,7 @@ implementation
 uses
   SysUtils, Messages, Printers, CommCtrl,
   GX_VerDepConst, GX_ClassIdentify, GX_ConfigurationInfo, GX_EditReader,
-  GX_ClassProp, GX_ClassOptions, GX_ClassReport, GX_GExperts,
+  GX_ClassProp, GX_ClassReport, GX_GExperts,
   GX_GxUtils, GX_GenericUtils, GX_SharedImages, GX_IdeUtils, Math,
   GX_dzVclUtils;
 
@@ -1901,57 +1902,11 @@ begin
 end;
 
 procedure TfmClassBrowser.actOptionsOptionsExecute(Sender: TObject);
-var
-  Dlg: TfmClassOptions;
-  i: Integer;
-  Tag: Integer;
-  gbxFilters: TGroupBox;
 begin
-  Dlg := TfmClassOptions.Create(nil);
-  try
-    Dlg.cbTreeView.ItemIndex := Dlg.cbTreeView.Items.IndexOf(tvBrowse.Font.Name);
-    Dlg.cbListView.ItemIndex := Dlg.cbListView.Items.IndexOf(lvInfo.Font.Name);
-    Dlg.cbEditor.ItemIndex := Dlg.cbEditor.Items.IndexOf(FCodeText.Font.Name);
-    Dlg.udTree.Position := tvBrowse.Font.Size;
-    Dlg.udList.Position := lvInfo.Font.Size;
-    Dlg.udEditor.Position := FCodeText.Font.Size;
-    Dlg.cbTop.Checked := FPrimitiveTop;
-    Dlg.cbStayInPackage.Checked := FStayInPackage;
-    Dlg.cbParseRecursing.Checked := FParseRecursing;
-    Dlg.cbAutoHide.Checked := FAutomaticallyHideBrowser;
-    { Set Filters }
-    gbxFilters := Dlg.gbxFilters;
-    for i := 0 to gbxFilters.ControlCount - 1 do
-      if gbxFilters.Controls[i] is TCheckBox then
-      begin
-        Tag := TCheckBox(gbxFilters.Controls[i]).Tag;
-        TCheckBox(gbxFilters.Controls[i]).Checked := FFilters[Tag];
-      end;
-    if Dlg.ShowModal = mrOk then
-    begin
-      for i := 0 to gbxFilters.ControlCount - 1 do
-        if gbxFilters.Controls[i] is TCheckBox then
-        begin
-          Tag := TCheckBox(gbxFilters.Controls[i]).Tag;
-          FFilters[Tag] := TCheckBox(gbxFilters.Controls[i]).Checked;
-        end;
-      tvBrowse.Font.Name := Dlg.cbTreeView.Text;
-      lvInfo.Font.Name := Dlg.cbListView.Text;
-      FCodeText.Font.Name := Dlg.cbEditor.Text;
-      FCodeText.Font.Size := Trunc(Dlg.udEditor.Position);
-      FMethodText.Font.Name := Dlg.cbEditor.Text;
-      FMethodText.Font.Size := Trunc(Dlg.udEditor.Position);
-      tvBrowse.Font.Size := Trunc(Dlg.udTree.Position);
-      lvInfo.Font.Size := Trunc(Dlg.udList.Position);
-      FPrimitiveTop := Dlg.cbTop.Checked;
-      FStayInPackage := Dlg.cbStayInPackage.Checked;
-      FParseRecursing := Dlg.cbParseRecursing.Checked;
-      FAutomaticallyHideBrowser := Dlg.cbAutoHide.Checked;
-      SaveSettings;
-      FiltersToActions;
-    end;
-  finally
-    FreeAndNil(Dlg);
+  if TfmClassOptions.Execute(Self, tvBrowse.Font, lvInfo.Font, FCodeText.Font, FAutomaticallyHideBrowser,
+    FPrimitiveTop, FStayInPackage, FParseRecursing, FFilters) then begin
+    SaveSettings;
+    FiltersToActions;
   end;
 end;
 
