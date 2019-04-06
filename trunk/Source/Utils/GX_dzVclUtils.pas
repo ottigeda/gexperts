@@ -126,10 +126,14 @@ type
 /// @param RowOffset gives the first row to use, -1 means "start at the first non-fixed row"
 /// @param ConstantCols is an array containg the indexes of columns that should keep their
 ///                     width.
+/// @returns True, if the grid is not wide enough to display all columns (that is: It should
+///                have a horizontal scrollbar)
+///          False, if all columns fit without scrolling
 /// @note that the default is to use the first 10 rows. </summary>
-procedure TGrid_Resize(_Grid: TCustomGrid); overload;
-procedure TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet; _RowOffset: Integer = -1); overload;
-procedure TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet; const _ConstantCols: array of Integer; _RowOffset: Integer = -1); overload;
+function TGrid_Resize(_Grid: TCustomGrid): Boolean; overload;
+function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet; _RowOffset: Integer = -1): Boolean; overload;
+function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet;
+  const _ConstantCols: array of Integer; _RowOffset: Integer = -1): Boolean; overload;
 {$IFNDEF GExperts}
 ///<summary> Resizes the columns of a TDbGrid to fit their contents
 ///          @param Grid is the TCustomDbGrid to work on
@@ -712,8 +716,6 @@ function TComboBox_GetObjectCaption(_cmb: TCustomComboBox; _Obj: Pointer; out _s
 ///          @param FocusControl is a boolean which determines whether to focus the control
 ///                              if it does not contain a valid value, default = false
 ///          @returns true, if these out parameters are valid </summary>
-function TComboBox_GetSelectedObject(_cmb: TCustomComboBox;
-  out _Obj: Pointer; _FocusControl: Boolean = False): Boolean; overload;
 {$ENDIF GExperts}
 function TComboBox_GetSelectedObject(_cmb: TCustomComboBox;
   out _Obj: Pointer; _FocusControl: Boolean = False): Boolean; overload;
@@ -746,6 +748,14 @@ function TComboBox_GetSelectedObject(_cmb: TCustomComboBox;
 ///          @returns true, if these out parameters are valid </summary>
 function TComboBox_GetSelectedObject(_cmb: TCustomComboBox;
   out _Item: string; out _Obj: Pointer; _FocusControl: Boolean = False): Boolean; overload;
+///<summary> Gets the object pointer of the selected combobox item
+///          @param cmb is the TCustomCombobox (descendant) to read from
+///          @param Item is the selected item, only valid if the function returns true
+///          @param ObjAsInt is the value of the object pointer of the selected item type casted
+///                          to integer, only valid if the function returns true
+///          @param FocusControl is a boolean which determines whether to focus the control
+///                              if it does not contain a valid value, default = false
+///          @returns true, if these out parameters are valid </summary>
 function TComboBox_GetSelectedObject(_cmb: TCustomComboBox;
   out _Item: string; out _ObjAsInt: Integer; _FocusControl: Boolean = False): Boolean; overload;
 
@@ -950,6 +960,8 @@ function TRadioGroup_GetItemCaption(_rg: TCustomRadioGroup;
 ///          Comparison is case insensitive </summary>
 function TRadioGroup_Select(_rg: TCustomRadioGroup; const _Item: string; _DefaultIdx: Integer = -1): Integer;
 
+procedure TRadioGroup_SelectWithoutClickEvent(_rg: TCustomRadioGroup; _Idx: Integer);
+
 ///<summary> Gets the object pointer of the selected RadioGroup item
 ///          @param cmb is the TCustomListbox (descendant) to read from
 ///          @param Idx is the listbox's ItemIndex, only valid if the function returns true
@@ -1029,14 +1041,34 @@ function TActionlist_Append(_al: TActionList; const _Caption: string; _ShortCut:
 function TActionlist_Append(_al: TActionList; const _Caption: string; _OnExecute: TNotifyEvent): TAction; overload;
 function TActionlist_Append(_al: TActionList; const _Caption: string; _OnExecute: TNotifyEvent; _ShortCut: TShortCut): TAction; overload;
 {$IFNDEF GExperts}
-///<summary> Tries to set the checkbox's width to accomodate the text, does not always
-///          work, especially since it does not take the WordWrap parameter into account
+///<summary>
+/// @returns the width of the checkbox in the given TCustomCheckbox
+/// Note: This is done by calling GetSystemMetrics(SM_CXMENUCHECK) which might not be correct. </summary>
+function TCheckBox_GetCheckWidth(_Chk: TCustomCheckBox): Integer;
+
+///<summary>
+/// @returns the width of the checkbox's text
+/// Note: This is done by calling GetSystemMetrics(SM_CXMENUCHECK) which might not be correct,
+///       also it adds 8 pixels for the gap between the checkbox and the text which might
+///       be wrong too. </summary>
+function TCheckBox_GetTextWidth(_Chk: TCustomCheckBox): Integer;
+
+///<summary> Calculates the required width for the checkbox to accomodate the caption text.
 ///          @param chk is the checkbox to autosize
 ///          @param ParentCanvas is the TCanvas to use for getting the text width
-///                              can be nil in which case the function tries the
-///                              Checkbox's parent controls until it finds either a TCustomControl
-///                              or TForm.
-///          @returns the new width or -1 if resizing failed. </summary>
+///                              can be nil in which case the function tries the Checkbox's
+///                              parent controls until it finds either a TCustomControl or TForm.
+///          @returns the required width or -1 if the calculation failed.
+/// Note: Does not always work, especially since it does not take the WordWrap property into account </summary>
+function TCheckBox_CalcAutoWidth(_Chk: TCustomCheckBox; _ParentCanvas: TCanvas = nil): Integer;
+
+///<summary> Tries to set the checkbox's width to accomodate the text.
+///          @param chk is the checkbox to autosize
+///          @param ParentCanvas is the TCanvas to use for getting the text width
+///                              can be nil in which case the function tries the Checkbox's
+///                              parent controls until it finds either a TCustomControl or TForm.
+///          @returns the new width or -1 if resizing failed.
+/// Note: Does not always work, especially since it does not take the WordWrap property into account </summary>
 function TCheckBox_Autosize(_Chk: TCustomCheckBox; _ParentCanvas: TCanvas = nil): Integer;
 
 ///<summary>
@@ -1049,7 +1081,15 @@ function TForm_GetMonitor(_frm: TForm): TMonitor;
 procedure TForm_CenterOn(_frm: TForm; _Center: TPoint); overload;
 ///<summary> centers a form on the given component, but makes sure the form is fully visible </summary>
 procedure TForm_CenterOn(_frm: TForm; _Center: TWinControl); overload;
+///<summary> centers a form on the given point, but makes sure the form is fully visible </summary>
+procedure TForm_CenterOn(_frmHwnd: HWND; _Center: TPoint); overload;
+///<summary> centers a form on the given component, but makes sure the form is fully visible </summary>
+procedure TForm_CenterOn(_frmHwnd: HWND; _Center: TWinControl); overload;
 {$IFNDEF GExperts}
+///<summary>
+/// @returns the center of the form as a TPoint </summary>
+function TForm_GetCenter(_frm: TForm): TPoint;
+
 type
   TFormPlacementEnum = (fpePositionOnly, fpeSizeOnly, fpePosAndSize);
 
@@ -1306,6 +1346,10 @@ function TMainMenu_FindMenuItem(_mnu: TMainMenu; const _Name: string; out _miFou
 
 function TMenuItem_FindMenuItem(_mi: TMenuItem; const _Name: string; out _miFound: TMenuItem): Boolean;
 {$IFNDEF GExperts}
+function TPopupMenu_FindSelectedRadioItem(_pm: TPopupMenu; _GroupIndex: Integer; out _miFound: TMenuItem): Boolean;
+
+function TMenuItem_FindSelectedRadioItem(_mi: TMenuItem; _GroupIndex: Integer; out _miFound: TMenuItem): Boolean;
+
 ///<summary> sets Screen.Cursor to NewCursor and restores it automatically when the returned interface
 ///          goes out of scope </summary>
 function TCursor_TemporaryChange(_NewCursor: TCursor = crHourGlass): IInterface;
@@ -1395,10 +1439,18 @@ procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; var _Rect: TRect; out _W
 procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; var _Rect: TRect); overload;
 procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; var _Rect: TRectLTWH); overload;
 procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; _frm: TForm); overload;
-
+{$IFNDEF GExperts}
+function TScreen_TryGetPrimaryMonitor(out _Monitor: TMonitor): Boolean;
+function TScreen_GetPrimaryMonitor: TMonitor;
+function TScreen_TryGetMonitorFromPointOrPrimary(_pnt: TPoint; out _Monitor: TMonitor): Boolean;
+function TScreen_TryGetMonitorFromPoint(_pnt: TPoint; out _Monitor: TMonitor): Boolean;
+{$ENDIF GExperts}
 function TScreen_MonitorFromPoint(_pnt: TPoint): TMonitor;
 {$IFNDEF GExperts}
 procedure TScreen_MakeFullyVisible(_frm: TForm); overload;
+procedure TScreen_MakeFullyVisible(var _Left, _Top, _Width, _Height: Integer); overload;
+procedure TScreen_MakeFullyVisible(var _Rect: TRect); overload;
+procedure TScreen_MakeFullyVisible(var _Rect: TRectLTWH); overload;
 {$ENDIF GExperts}
 ///<summary>
 /// Sets the given column of the StringList to the given string list,
@@ -2258,17 +2310,18 @@ begin
     _MinWidth := ColWidth;
 end;
 
-procedure TGrid_Resize(_Grid: TCustomGrid);
+function TGrid_Resize(_Grid: TCustomGrid): Boolean;
 begin
-  TGrid_Resize(_Grid, [roUseFirstRows], [], -1);
+  Result := TGrid_Resize(_Grid, [roUseFirstRows], [], -1);
 end;
 
-procedure TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet; _RowOffset: Integer);
+function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet; _RowOffset: Integer): Boolean;
 begin
-  TGrid_Resize(_Grid, _Options, [], _RowOffset);
+  Result := TGrid_Resize(_Grid, _Options, [], _RowOffset);
 end;
 
-procedure TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet; const _ConstantCols: array of Integer; _RowOffset: Integer);
+function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet;
+  const _ConstantCols: array of Integer; _RowOffset: Integer): Boolean;
 var
   Col, Row: Integer;
   Grid: TGridHack;
@@ -2345,22 +2398,27 @@ begin
     Inc(SumWidths, MinWidth);
   end;
 
-  if (SumWidths < Grid.ClientWidth) and (roUseGridWidth in _Options)
-    and (Length(_ConstantCols) < MaxCol + 1) then begin
-    Additional := (Grid.ClientWidth - SumWidths) div (MaxCol + 1 - Length(_ConstantCols));
-    for Col := MinCol to MaxCol do begin
-      if not ArrayContains(Col, _ConstantCols) then begin
-        Inc(ColWidths[Col], Additional);
-        Inc(SumWidths, Additional);
+  if SumWidths >= Grid.ClientWidth then begin
+    Result := True;
+  end else begin
+    Result := False;
+    if (roUseGridWidth in _Options) and (Length(_ConstantCols) < MaxCol + 1) then begin
+      Additional := (Grid.ClientWidth - SumWidths) div (MaxCol + 1 - Length(_ConstantCols));
+      for Col := MinCol to MaxCol do begin
+        if not ArrayContains(Col, _ConstantCols) then begin
+          Inc(ColWidths[Col], Additional);
+          Inc(SumWidths, Additional);
+        end;
+      end;
+      if SumWidths < Grid.ClientWidth then begin
+        Col := MaxCol;
+        while ArrayContains(Col, _ConstantCols) do
+          Dec(Col);
+        Inc(ColWidths[Col], Grid.ClientWidth - SumWidths);
       end;
     end;
-    if SumWidths < Grid.ClientWidth then begin
-      Col := MaxCol;
-      while ArrayContains(Col, _ConstantCols) do
-        Dec(Col);
-      Inc(ColWidths[Col], Grid.ClientWidth - SumWidths);
-    end;
   end;
+
   for Col := MinCol to MaxCol do
     Grid.ColWidths[Col] := ColWidths[Col];
 end;
@@ -3381,6 +3439,21 @@ begin
   Result := Hack.ItemIndex;
 end;
 
+procedure TRadioGroup_SelectWithoutClickEvent(_rg: TCustomRadioGroup; _Idx: Integer);
+var
+  Hack: TRadioGroupHack;
+  Event: TNotifyEvent;
+begin
+  Hack := TRadioGroupHack(_rg);
+  Event := Hack.OnClick;
+  try
+    Hack.OnClick := nil;
+    Hack.ItemIndex := _Idx;
+  finally
+    Hack.OnClick := Event;
+  end;
+end;
+
 function TRadioGroup_GetSelectedObject(_rg: TCustomRadioGroup; out _Idx: Integer; out _Obj: Pointer): Boolean;
 var
   Hack: TRadioGroupHack;
@@ -3599,12 +3672,26 @@ begin
   end;
 end;
 
+const
+  CHECKBOX_GAP = 8;
+
+function TCheckBox_GetCheckWidth(_Chk: TCustomCheckBox): Integer;
+begin
+  // not sure this is correct, but it seems to work
+  Result := GetSystemMetrics(SM_CXMENUCHECK);
+end;
+
+function TCheckBox_GetTextWidth(_Chk: TCustomCheckBox): Integer;
+begin
+  Result := _Chk.Width - TCheckBox_GetCheckWidth(_Chk) - CHECKBOX_GAP;
+end;
+
 type
   TCustomControlHack = class(TCustomControl)
     // for accessing the Canvas property
   end;
 
-function TCheckBox_Autosize(_Chk: TCustomCheckBox; _ParentCanvas: TCanvas = nil): Integer;
+function TCheckBox_CalcAutoWidth(_Chk: TCustomCheckBox; _ParentCanvas: TCanvas = nil): Integer;
 var
   Parent: TWinControl;
   s: string;
@@ -3624,25 +3711,38 @@ begin
   if _ParentCanvas <> nil then begin
     s := THackCheckBox(_Chk).Caption;
     w := _ParentCanvas.TextWidth(s);
-    Result := GetSystemMetrics(SM_CXMENUCHECK) + 8 + w;
-    _Chk.Width := Result;
+    Result := TCheckBox_GetCheckWidth(_Chk) + CHECKBOX_GAP + w;
   end else
     Result := -1;
 end;
+
+function TCheckBox_Autosize(_Chk: TCustomCheckBox; _ParentCanvas: TCanvas = nil): Integer;
+begin
+  Result := TCheckBox_CalcAutoWidth(_Chk, _ParentCanvas);
+  if Result <> -1 then
+    _Chk.Width := Result;
+end;
 {$ENDIF GExperts}
-function TScreen_MonitorFromPoint(_pnt: TPoint): TMonitor;
+function TScreen_TryGetMonitorFromPoint(_pnt: TPoint; out _Monitor: TMonitor): Boolean;
 var
   i: Integer;
   WaRect: TRect;
 begin
+  Result := True;
   for i := 0 to Screen.MonitorCount - 1 do begin
-    Result := Screen.Monitors[i];
-    WaRect := Result.WorkareaRect;
+    _Monitor := Screen.Monitors[i];
+    WaRect := _Monitor.WorkareaRect;
     if (WaRect.Top <= _pnt.Y) and (WaRect.Bottom >= _pnt.Y)
       and (WaRect.Left <= _pnt.X) and (WaRect.Right >= _pnt.X) then
-      Exit;
+      Exit; //==>
   end;
-  Result := nil;
+  Result := False;
+end;
+
+function TScreen_MonitorFromPoint(_pnt: TPoint): TMonitor;
+begin
+  if not TScreen_TryGetMonitorFromPoint(_pnt, Result) then
+    Result := nil;
 end;
 {$IFNDEF GExperts}
 function TForm_GetMonitor(_frm: TForm): TMonitor;
@@ -3667,6 +3767,17 @@ begin
   TMonitor_MakeFullyVisible(Monitor, _frm);
 end;
 
+procedure TForm_CenterOn(_frmHwnd: HWND; _Center: TPoint);
+var
+  Position: TRect;
+begin
+  GetWindowRect(_frmHwnd, Position);
+  SetWindowPos(_frmHwnd, HWND_TOPMOST,
+    _Center.x - (Position.Right - Position.Left) div 2,
+    _Center.y - (Position.Bottom - Position.Top) div 2,
+    0, 0, SWP_SHOWWINDOW or SWP_NOSIZE);
+end;
+
 procedure TForm_CenterOn(_frm: TForm; _Center: TWinControl);
 begin
   if not Assigned(_Center) then
@@ -3687,7 +3798,30 @@ begin
     TForm_CenterOn(_frm, Point(Screen.Width div 2, Screen.Height div 2));
   end;
 end;
+
+procedure TForm_CenterOn(_frmHwnd: HWND; _Center: TWinControl);
+begin
+  if not Assigned(_Center) then
+    _Center := Application.MainForm;
+  if not Assigned(_Center) then begin
+    if Screen.FormCount > 0 then
+      _Center := Screen.Forms[0];
+  end;
+  if Assigned(_Center) then begin
+    if Assigned(_Center.Parent) then
+      TForm_CenterOn(_frmHwnd, _Center.ClientToScreen(Point(_Center.Width div 2, _Center.Height div 2)))
+    else
+      TForm_CenterOn(_frmHwnd, Point(_Center.Left + _Center.Width div 2, _Center.Top + _Center.Height div 2));
+  end else begin
+    TForm_CenterOn(_frmHwnd, Point(Screen.Width div 2, Screen.Height div 2));
+  end;
+end;
 {$IFNDEF GExperts}
+function TForm_GetCenter(_frm: TForm): TPoint;
+begin
+  Result := CenterPoint(_frm.BoundsRect);
+end;
+
 function TApplication_GetRegistryPath: string;
 var
   VerInfo: IFileInfo;
@@ -4372,7 +4506,28 @@ begin
   end;
   Result := False;
 end;
+{$IFNDEF GExperts}
+function TPopupMenu_FindSelectedRadioItem(_pm: TPopupMenu; _GroupIndex: Integer; out _miFound: TMenuItem): Boolean;
+begin
+  Result := TMenuItem_FindSelectedRadioItem(_pm.Items, _GroupIndex, _miFound);
+end;
 
+function TMenuItem_FindSelectedRadioItem(_mi: TMenuItem; _GroupIndex: Integer; out _miFound: TMenuItem): Boolean;
+var
+  i: Integer;
+  mi: TMenuItem;
+begin
+  for i := 0 to _mi.Count - 1 do begin
+    mi := _mi.Items[i];
+    if mi.Checked and ((_GroupIndex = -1) or (_mi.GroupIndex = _GroupIndex)) then begin
+      _miFound := mi;
+      Result := True;
+      Exit; //==>
+    end;
+  end;
+  Result := False;
+end;
+{$ENDIF GExperts}
 function TMenuItem_AppendSubmenuItem(_mi: TMenuItem; const _Caption: string; _OnClick: TNotifyEvent): TMenuItem;
 begin
   Result := TMenuItem.Create(_mi);
@@ -5488,30 +5643,65 @@ begin
 end;
 {$IFNDEF GExperts}
 function TScreen_GetPrimaryMonitor: TMonitor;
+begin
+  if not TScreen_TryGetPrimaryMonitor(Result) then
+    Result := nil;
+end;
+
+function TScreen_TryGetPrimaryMonitor(out _Monitor: TMonitor): Boolean;
 var
   i: Integer;
 begin
+  Result := True;
   for i := 0 to Screen.MonitorCount - 1 do begin
     if Screen.Monitors[i].Primary then begin
-      Result := Screen.Monitors[i];
-      Exit;
+      _Monitor := Screen.Monitors[i];
+      Exit; //==>
     end;
   end;
   // In theory this cannot happen, but it apparently does anayway when
   // switching between remote desktop and local desktop on Windows XP,
   // possibly on later Windows too.
-  Result := nil;
+  Result := False;
+end;
+
+function TScreen_TryGetMonitorFromPointOrPrimary(_pnt: TPoint; out _Monitor: TMonitor): Boolean;
+begin
+  Result := TScreen_TryGetMonitorFromPoint(_pnt, _Monitor);
+  if not Result then
+    Result := TScreen_TryGetPrimaryMonitor(_Monitor);
 end;
 
 procedure TScreen_MakeFullyVisible(_frm: TForm);
 var
   Monitor: TMonitor;
 begin
-  Monitor := TScreen_MonitorFromPoint(TRect_Center(_frm.BoundsRect));
-  if not Assigned(Monitor) then
-    Monitor := TScreen_GetPrimaryMonitor;
-  if Assigned(Monitor) then
+  if TScreen_TryGetMonitorFromPointOrPrimary(TRect_Center(_frm.BoundsRect), Monitor) then
     TMonitor_MakeFullyVisible(Monitor, _frm);
+end;
+
+procedure TScreen_MakeFullyVisible(var _Left, _Top, _Width, _Height: Integer);
+var
+  Monitor: TMonitor;
+begin
+  if TScreen_TryGetMonitorFromPointOrPrimary(TRect_Center(TRect_FromLTWH(_Left, _Top, _Width, _Height)), Monitor) then
+    TMonitor_MakeFullyVisible(Monitor, _Left, _Top, _Width, _Height);
+end;
+
+procedure TScreen_MakeFullyVisible(var _Rect: TRect); overload;
+var
+  Monitor: TMonitor;
+begin
+  if TScreen_TryGetMonitorFromPointOrPrimary(TRect_Center(_Rect), Monitor) then
+    TMonitor_MakeFullyVisible(Monitor, _Rect);
+end;
+
+procedure TScreen_MakeFullyVisible(var _Rect: TRectLTWH); overload;
+var
+  Monitor: TMonitor;
+begin
+  if TScreen_TryGetMonitorFromPointOrPrimary(TRect_Center(_Rect), Monitor) then
+    TMonitor_MakeFullyVisible(Monitor, _Rect);
 end;
 
 { TRectLTWH }
