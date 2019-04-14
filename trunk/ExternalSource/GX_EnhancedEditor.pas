@@ -65,6 +65,7 @@ type
     procedure SetOnStatusChange(const Value: TStatusChangeEvent);
     procedure DoOnChange;
   public
+    class function DefaultActiveLineColor: TColor;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear;
@@ -143,6 +144,12 @@ begin
 end;
 
 { TGxEnhancedEditor }
+
+class function TGxEnhancedEditor.DefaultActiveLineColor: TColor;
+begin
+  // this is the default value for the active line background in the Delphi IDE.
+  Result := RGB(250, 255, 230);
+end;
 
 constructor TGxEnhancedEditor.Create(AOwner: TComponent);
 begin
