@@ -342,6 +342,7 @@ begin
       FMemo.OnChange := Self.HandleMemoChange;
 //      FMemo.ScrollBars := ssBoth;
 //      FMemo.WordWrap := False;
+      FMemo.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
 
       FListbox.Parent := FTabSheetList;
       FListbox.Align := alClient;
@@ -500,7 +501,6 @@ begin
   finally
     FMemo.EndUpdate;
   end;
-
 end;
 
 function TSearchPathEnhancer.doAddDots(const _s: TGXUnicodeString): TGXUnicodeString;
