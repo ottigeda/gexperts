@@ -7,7 +7,8 @@ interface
 uses
   SysUtils,
   Classes,
-  Forms;
+  Forms,
+  GX_EnhancedEditor;
 
 type
   TGxIdeSearchPathEnhancer = class
@@ -42,11 +43,14 @@ uses
   GX_IdeDialogEnhancer;
 
 type
+  TLineProcessMethod = function(const _s: TGXUnicodeString): TGXUnicodeString of object;
+
+type
   TSearchPathEnhancer = class(TIdeDialogEnhancer)
   private
     FForm: TCustomForm;
     FListbox: TListBox;
-    FMemo: TMemo;
+    FMemo: TGxEnhancedEditor;
 
     FPageControl: TPageControl;
     FTabSheetList: TTabSheet;
@@ -70,6 +74,7 @@ type
     FEnabled: Boolean;
     FAddDotsBtn: TButton;
     FDelDotsBtn: TButton;
+    FProjectDir: string;
 {$IFDEF GX_VER320_up} // RAD Studio 10.2 Tokyo (26; BDS 19)
     FTimer: TTimer;
 {$ENDIF GX_VER320_up}
@@ -99,8 +104,13 @@ type
     procedure EditEntry(_Sender: TWinControl; var _Name, _Value: string; var _OK: Boolean);
     procedure AddDotsBtnClick(_Sender: TObject);
     procedure DelDotsBtnClick(_Sender: TObject);
-    procedure GetSelectedMemoLines(out _StartIdx, _EndIdx: Integer; _Lines: TStrings);
-    procedure SelectMemoLines(out _StartIdx, _EndIdx: Integer);
+    procedure CopyMemoToList;
+    procedure ProcessSelectedMemoLines(_ProcessMethod: TLineProcessMethod);
+    function doAddDots(const _s: TGXUnicodeString): TGXUnicodeString;
+    function doDelDots(const _s: TGXUnicodeString): TGXUnicodeString;
+    function doMakeAbsolute(const _s: TGXUnicodeString): TGXUnicodeString;
+    function doMakeRelative(const _s: TGXUnicodeString): TGXUnicodeString;
+    procedure ProcessAllMemoLines(_ProcessMethod: TLineProcessMethod);
 {$IFDEF GX_VER320_up} // RAD Studio 10.2 Tokyo (26; BDS 19)
     procedure HandleTimer(_Sender: TObject);
 {$ENDIF GX_VER320_up}
@@ -325,14 +335,13 @@ begin
       FTabSheetMemo.PageControl := FPageControl;
       FTabSheetMemo.Caption := '&Memo';
 
-      FMemo := TMemo.Create(_Form);
+      FMemo := TGxEnhancedEditor.Create(_Form);
       FMemo.Parent := FTabSheetMemo;
       FMemo.Align := alClient;
-      FMemo.HideSelection := False;
-      FMemo.Lines.Text := FListbox.Items.Text;
+//      FMemo.HideSelection := False;
       FMemo.OnChange := Self.HandleMemoChange;
-      FMemo.ScrollBars := ssBoth;
-      FMemo.WordWrap := False;
+//      FMemo.ScrollBars := ssBoth;
+//      FMemo.WordWrap := False;
 
       FListbox.Parent := FTabSheetList;
       FListbox.Align := alClient;
@@ -456,77 +465,65 @@ begin
 end;
 {$ENDIF GX_VER320_up}
 
-procedure TSearchPathEnhancer.GetSelectedMemoLines(out _StartIdx, _EndIdx: Integer; _Lines: TStrings);
+procedure TSearchPathEnhancer.ProcessSelectedMemoLines(_ProcessMethod: TLineProcessMethod);
 var
-  SelStart: Integer;
-  SelEnd: Integer;
+  i: Integer;
+  sl: TGXUnicodeStringList;
+  StartIdx: Integer;
+  EndIdx: Integer;
 begin
-  SendMessage(FMemo.Handle, EM_GETSEL, Longint(@SelStart), Longint(@SelEnd));
-  _StartIdx := SendMessage(FMemo.Handle, EM_LINEFROMCHAR, SelStart, 0);
-  _EndIdx := SendMessage(FMemo.Handle, EM_LINEFROMCHAR, SelEnd - 1, 0);
-  _Lines.Assign(FMemo.Lines);
-  if _StartIdx < 0 then
-    _StartIdx := 0;
-  if _EndIdx >= _Lines.Count then
-    _EndIdx := _Lines.Count - 1;
+  if FMemo.LineCount = 0 then
+    Exit; //==>
+
+  sl := TGXUnicodeStringList.Create;
+  try
+    FMemo.GetSelectedLines(StartIdx, EndIdx, sl);
+    for i := StartIdx to EndIdx do begin
+      sl[i] := _ProcessMethod(sl[i]);
+    end;
+    FMemo.Text := sl.Text;
+    FMemo.SelectLines(StartIdx, EndIdx);
+  finally
+    FreeAndNil(sl);
+  end;
 end;
 
-procedure TSearchPathEnhancer.SelectMemoLines(out _StartIdx, _EndIdx: Integer);
+procedure TSearchPathEnhancer.ProcessAllMemoLines(_ProcessMethod: TLineProcessMethod);
 var
-  SelStart: Integer;
-  SelEnd: Integer;
+  i: Integer;
 begin
-  SelStart := SendMessage(FMemo.Handle, EM_LINEINDEX, _StartIdx, 0);
-  SelEnd := SendMessage(FMemo.Handle, EM_LINEINDEX, _EndIdx + 1, 0);
-  SendMessage(FMemo.Handle, EM_SETSEL, SelStart, SelEnd);
+  FMemo.BeginUpdate;
+  try
+    for i := 0 to FMemo.LineCount - 1 do begin
+      FMemo.SetLine(i, _ProcessMethod(FMemo.GetLine(i)));
+    end;
+  finally
+    FMemo.EndUpdate;
+  end;
+
+end;
+
+function TSearchPathEnhancer.doAddDots(const _s: TGXUnicodeString): TGXUnicodeString;
+begin
+  Result := '..\' + _s;
+end;
+
+function TSearchPathEnhancer.doDelDots(const _s: TGXUnicodeString): TGXUnicodeString;
+begin
+  if LeftStr(_s, 3) = '..\' then begin
+    Result := Copy(_s, 4);
+  end else
+    Result := _s;
 end;
 
 procedure TSearchPathEnhancer.AddDotsBtnClick(_Sender: TObject);
-var
-  i: Integer;
-  s: string;
-  sl: TStringList;
-  StartIdx: Integer;
-  EndIdx: Integer;
 begin
-  sl := TStringList.Create;
-  try
-    GetSelectedMemoLines(StartIdx, EndIdx, sl);
-    for i := StartIdx to EndIdx do begin
-      s := sl[i];
-      s := '..\' + s;
-      sl[i] := s;
-    end;
-    FMemo.Lines.Assign(sl);
-    SelectMemoLines(StartIdx, EndIdx);
-  finally
-    FreeAndNil(sl);
-  end;
+  ProcessSelectedMemoLines(doAddDots);
 end;
 
 procedure TSearchPathEnhancer.DelDotsBtnClick(_Sender: TObject);
-var
-  i: Integer;
-  s: string;
-  sl: TStringList;
-  StartIdx: Integer;
-  EndIdx: Integer;
 begin
-  sl := TStringList.Create;
-  try
-    GetSelectedMemoLines(StartIdx, EndIdx, sl);
-    for i := StartIdx to EndIdx do begin
-      s := sl[i];
-      if LeftStr(s, 3) = '..\' then begin
-        s := Copy(s, 4);
-        sl[i] := s;
-      end;
-    end;
-    FMemo.Lines.Assign(sl);
-    SelectMemoLines(StartIdx, EndIdx);
-  finally
-    FreeAndNil(sl);
-  end;
+  ProcessSelectedMemoLines(doDelDots);
 end;
 
 procedure TSearchPathEnhancer.InitFavoritesMenu;
@@ -582,72 +579,54 @@ begin
     if FPageControl.ActivePage = FTabSheetList then
       FListbox.Items.AddStrings(sl)
     else
-      FMemo.Lines.AddStrings(sl);
+      FMemo.AddStrings(sl);
   finally
     FreeAndNil(sl);
   end;
 end;
 
+function TSearchPathEnhancer.doMakeAbsolute(const _s: TGXUnicodeString): TGXUnicodeString;
+begin
+  if (_s <> '') and not StartsText('$(BDS)\', _s) then begin
+    Result := TFileSystem.ExpandFileNameRelBaseDir(_s, FProjectDir);
+  end else
+    Result := _s;
+end;
+
 procedure TSearchPathEnhancer.MakeAbsoluteBtnClick(_Sender: TObject);
 var
-  i: Integer;
   ProjectFile: string;
-  ProjectDir: string;
-  AbsoluteDir: string;
-  RelativeDir: string;
 begin
   ProjectFile := GxOtaGetCurrentProjectFileName(False);
   if ProjectFile = '' then
     Exit; //==>
-  ProjectDir := ExtractFilePath(ProjectFile);
-  FMemo.Lines.BeginUpdate;
-  try
-    for i := 0 to FMemo.Lines.Count - 1 do begin
-      RelativeDir := FMemo.Lines[i];
-      if not StartsText('$(BDS)\', RelativeDir) then begin
-        AbsoluteDir := TFileSystem.ExpandFileNameRelBaseDir(RelativeDir, ProjectDir);
-        FMemo.Lines[i] := AbsoluteDir;
-      end;
-    end;
-    RelativeDir := FEdit.Text;
-    if not StartsText('$(BDS)\', RelativeDir) then begin
-      AbsoluteDir := TFileSystem.ExpandFileNameRelBaseDir(RelativeDir, ProjectDir);
-      FEdit.Text := AbsoluteDir;
-    end;
-  finally
-    FMemo.Lines.EndUpdate;
-  end;
+
+  FProjectDir := ExtractFilePath(ProjectFile);
+  ProcessAllMemoLines(doMakeAbsolute);
+
+  FEdit.Text := doMakeAbsolute(FEdit.Text);
+end;
+
+function TSearchPathEnhancer.doMakeRelative(const _s: TGXUnicodeString): TGXUnicodeString;
+begin
+  if (_s <> '') and not StartsText('$(BDS)\', _s) then begin
+    Result := ExtractRelativePath(AddSlash(FProjectDir), _s);
+  end else
+    Result := _s;
 end;
 
 procedure TSearchPathEnhancer.MakeRelativeBtnClick(_Sender: TObject);
 var
-  i: Integer;
   ProjectFile: string;
-  ProjectDir: string;
-  AbsoluteDir: string;
-  RelativeDir: string;
 begin
   ProjectFile := GxOtaGetCurrentProjectFileName(True);
   if ProjectFile = '' then
     Exit; //==>
-  ProjectDir := ExtractFilePath(ProjectFile);
-  FMemo.Lines.BeginUpdate;
-  try
-    for i := 0 to FMemo.Lines.Count - 1 do begin
-      AbsoluteDir := FMemo.Lines[i];
-      if not StartsText('$(BDS)\', AbsoluteDir) then begin
-        RelativeDir := ExtractRelativePath(IncludeTrailingPathDelimiter(ProjectDir), AbsoluteDir);
-        FMemo.Lines[i] := RelativeDir;
-      end;
-    end;
-    AbsoluteDir := FEdit.Text;
-    if not StartsText('$(BDS)\', AbsoluteDir) then begin
-      RelativeDir := ExtractRelativePath(IncludeTrailingPathDelimiter(ProjectDir), AbsoluteDir);
-      FEdit.Text := RelativeDir;
-    end;
-  finally
-    FMemo.Lines.EndUpdate;
-  end;
+
+  FProjectDir := ExtractFilePath(ProjectFile);
+  ProcessAllMemoLines(doMakeRelative);
+
+  FEdit.Text := doMakeRelative(FEdit.Text);
 end;
 
 procedure TSearchPathEnhancer.AddRecursiveBtnClick(_Sender: TObject);
@@ -657,7 +636,8 @@ var
   RecurseIdx: Integer;
 begin
   if FEdit.Text = '' then
-    Exit;
+    Exit; //==>
+
   Dirs := TStringList.Create;
   try
     TSimpleDirEnumerator.EnumDirsOnly(FEdit.Text + '\*', Dirs, True);
@@ -674,7 +654,7 @@ begin
       end;
       Inc(RecurseIdx);
     end;
-    FMemo.Lines.AddStrings(Dirs);
+    FMemo.AddStrings(Dirs);
   finally
     FreeAndNil(Dirs);
   end;
@@ -686,10 +666,13 @@ var
 begin
   SwitchingToMemo := (FPageControl.ActivePage = FTabSheetList);
   if SwitchingToMemo then begin
-    FMemo.Lines.Text := FListbox.Items.Text;
-    FMemo.CaretPos := Point(FMemo.CaretPos.X, FListbox.ItemIndex);
+    FMemo.Text := FListbox.Items.Text;
+    FMemo.CaretXY := Point(FMemo.CaretXY.X, FListbox.ItemIndex);
   end else begin
-    FListbox.ItemIndex := FMemo.CaretPos.Y;
+    // We could also update the listbox' content here, but that would not help in the case
+    // where the user clicks OK without switching back to the list box. So this update must
+    // be done elsewhere.
+    FListbox.ItemIndex := FMemo.CaretXY.Y;
   end;
 end;
 
@@ -728,13 +711,14 @@ var
   Pos: TPoint;
 begin
   if FPageControl.ActivePage = FTabSheetMemo then begin
-    Pos := FMemo.CaretPos;
+    Pos := FMemo.CaretXY;
     LineIdx := Pos.Y;
-    if LineIdx > 0 then
-      FMemo.Lines.Exchange(LineIdx - 1, LineIdx);
+    if LineIdx > 0 then begin
+      FMemo.ExchangeLines(LineIdx - 1, LineIdx);
+      Pos.Y := Pos.Y - 1;
+      FMemo.CaretXY := Pos;
+    end;
     FMemo.SetFocus;
-    Pos.Y := Pos.Y - 1;
-    FMemo.CaretPos := Pos;
   end else
     FUpClick(FUpBtn);
 end;
@@ -744,9 +728,11 @@ var
   LineIdx: Integer;
 begin
   if FPageControl.ActivePage = FTabSheetMemo then begin
-    LineIdx := FMemo.CaretPos.Y;
-    if LineIdx < FMemo.Lines.Count - 1 then
-      FMemo.Lines.Exchange(LineIdx, LineIdx + 1);
+    LineIdx := FMemo.CaretXY.Y;
+    if LineIdx < FMemo.LineCount - 1 then begin
+      FMemo.ExchangeLines(LineIdx, LineIdx + 1);
+      FMemo.CaretXY := Point(FMemo.CaretXY.X, LineIdx + 1);
+    end;
     FMemo.SetFocus;
   end else
     FDownClick(FDownBtn);
@@ -757,7 +743,7 @@ var
   Idx: Integer;
 begin
   if FPageControl.ActivePage = FTabSheetMemo then begin
-    FMemo.Lines.Add(FEdit.Text);
+    FMemo.AddLine(FEdit.Text);
   end else begin
     Idx := FListbox.Items.Add(FEdit.Text);
     // In order to prevent adding the path twice, we need to select the new entry and
@@ -786,10 +772,17 @@ begin
 end;
 {$ENDIF GX_VER300_up}
 
+procedure TSearchPathEnhancer.CopyMemoToList;
+begin
+  if not Assigned(FListbox) or not Assigned(FMemo) then
+    Exit; //==>
+
+  FListbox.Items.Text := FMemo.Text;
+end;
+
 procedure TSearchPathEnhancer.HandleMemoChange(_Sender: TObject);
 begin
-  if Assigned(FListbox) and Assigned(FMemo) then
-    FListbox.Items := FMemo.Lines;
+  CopyMemoToList;
 end;
 
 initialization
