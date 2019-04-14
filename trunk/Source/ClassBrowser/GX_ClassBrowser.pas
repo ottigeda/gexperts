@@ -1855,7 +1855,7 @@ begin
   FCodeText.Align := alClient;
   FCodeText.ReadOnly := True;
   FCodeText.Highlighter := gxpPas;
-  FCodeText.ActiveLineColor := $D0FFFF;
+  FCodeText.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
 end;
 
 procedure TfmClassBrowser.ViewBrowserDetails;

@@ -80,7 +80,7 @@ uses
   SynEdit,
   GX_dzVclUtils,
   GX_MacroLibraryEditEntry,
-  GX_MacroLibrary;
+  GX_MacroLibrary, GX_EnhancedEditor;
 
 {$R *.dfm}
 
@@ -129,7 +129,7 @@ begin
   FMemo.ReadOnly := True;
   FMemo.Font.Height := -11;
   FMemo.Font.Name := 'Courier New';
-  FMemo.ActiveLineColor := $D0FFFF;
+  FMemo.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
   FMemo.OnEnter := MemoOnEnter;
   fmemo.onexit := MemoOnExit;
   FMemo.OnSpecialLineColors := HandleOnSpecialLineColors;

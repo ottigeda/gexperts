@@ -126,7 +126,7 @@ end;
 
 procedure TfmCodeFormatterEditCapitalization.HandleOnEnterList(Sender: TObject);
 begin
-  FWords.ActiveLineColor := RGB(250, 255, 230);
+  FWords.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
 end;
 
 procedure TfmCodeFormatterEditCapitalization.HandleOnExitList(Sender: TObject);
