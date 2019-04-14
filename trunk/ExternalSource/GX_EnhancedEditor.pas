@@ -63,6 +63,7 @@ type
     function GetActiveLineColor: TColor;
     procedure SetActiveLineColor(const Value: TColor);
     procedure SetOnStatusChange(const Value: TStatusChangeEvent);
+    procedure DoOnChange;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -71,6 +72,11 @@ type
     procedure CutToClipboard;
     procedure PasteFromClipBoard;
     procedure SetSelection(AStart, ALength: Integer);
+    ///<summary>
+    /// Gets the index of first and last selected line. Also returns all(!) lines in the memo
+    /// if AllLines is assigend </summary>
+    procedure GetSelectedLines(out _StartIdx, _EndIdx: Integer; _AllLines: TGXUnicodeStringList);
+    procedure SelectLines(_StartIdx, _EndIdx: Integer);
     procedure SetFocus; override;
     procedure Print(const ATitle: string);
     function Focused: Boolean; override;
@@ -79,8 +85,12 @@ type
     procedure SaveToFile(const AFilename: string);
     procedure BeginUpdate;
     procedure EndUpdate;
+    procedure AddLine(_s: string);
+    procedure ExchangeLines(_Index1, _Index2: Integer);
     procedure GetLines(ALines: TGXUnicodeStringList);
     procedure SetLines(ALines: TGXUnicodeStringList);
+    procedure AddStrings(AStrings: TGXUnicodeStringList); overload;
+    procedure AddStrings(AStrings: TStringList); overload;
     function GetLine(AIdx: Integer): TGXUnicodeString;
     procedure SetLine(AIdx: Integer; ALine: TGXUnicodeString);
     property Highlighter: TGXSyntaxHighlighter read GetHighlighter write SetHighlighter;
@@ -125,7 +135,7 @@ procedure Register;
 implementation
 
 uses
- SysUtils, SynUnicode;
+ SysUtils, SynUnicode, Math;
 
 procedure Register;
 begin
@@ -170,6 +180,30 @@ begin
   inherited Destroy;
 end;
 
+procedure TGxEnhancedEditor.DoOnChange;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
+end;
+
+procedure TGxEnhancedEditor.AddLine(_s: string);
+begin
+  FEditor.Lines.Add(_s);
+  DoOnChange;
+end;
+
+procedure TGxEnhancedEditor.AddStrings(AStrings: TGXUnicodeStringList);
+begin
+  FEditor.Lines.AddStrings(AStrings);
+  DoOnChange;
+end;
+
+procedure TGxEnhancedEditor.AddStrings(AStrings: TStringList);
+begin
+  FEditor.Lines.AddStrings(AStrings);
+  DoOnChange;
+end;
+
 procedure TGxEnhancedEditor.BeginUpdate;
 begin
   FEditor.Lines.BeginUpdate;
@@ -180,9 +214,16 @@ begin
   FEditor.Lines.EndUpdate;
 end;
 
+procedure TGxEnhancedEditor.ExchangeLines(_Index1, _Index2: Integer);
+begin
+  FEditor.Lines.Exchange(_Index1, _Index2);
+  DoOnChange;
+end;
+
 procedure TGxEnhancedEditor.Clear;
 begin
   FEditor.ClearAll;
+  DoOnChange;
 end;
 
 procedure TGxEnhancedEditor.SetOnChange(const Value: TNotifyEvent);
@@ -323,7 +364,39 @@ end;
 
 procedure TGxEnhancedEditor.SetCaretXY(const Value: TPoint);
 begin
-  FEditor.CaretXY := BufferCoord(1, Value.Y + 1);
+  FEditor.CaretXY := BufferCoord(Value.X, Value.Y + 1);
+end;
+
+procedure TGxEnhancedEditor.GetSelectedLines(out _StartIdx, _EndIdx: Integer; _AllLines: TGXUnicodeStringList);
+var
+  SelStart: Integer;
+  SelEnd: Integer;
+begin
+  SelStart := FEditor.SelStart;
+  SelEnd := FEditor.SelEnd;
+  _StartIdx := FEditor.CharIndexToRowCol(SelStart).Line - 1;
+  if SelEnd > SelStart then
+    _EndIdx := FEditor.CharIndexToRowCol(SelEnd - 1).Line - 1
+  else
+    _EndIdx := _StartIdx;
+  if Assigned(_AllLines) then
+    GetLines(_AllLines);
+end;
+
+procedure TGxEnhancedEditor.SelectLines(_StartIdx, _EndIdx: Integer);
+var
+  SelStart: Integer;
+  SelEnd: Integer;
+  Line: TGXUnicodeString;
+begin
+  SelStart := FEditor.RowColToCharIndex(BufferCoord(1, _StartIdx + 1));
+  if _EndIdx + 1 = LineCount then begin
+    Line := GetLine(_EndIdx);
+    SelEnd := FEditor.RowColToCharIndex(BufferCoord(Length(Line) + 1, _EndIdx + 1));
+  end else
+    SelEnd := FEditor.RowColToCharIndex(BufferCoord(1, _EndIdx + 2));
+  FEditor.SelStart := SelStart;
+  FEditor.SelEnd := SelEnd;
 end;
 
 function TGxEnhancedEditor.GetTopLine: Integer;
@@ -416,6 +489,7 @@ end;
 procedure TGxEnhancedEditor.SetText(const Value: string);
 begin
   FEditor.Text := Value;
+  DoOnChange;
 end;
 
 function TGxEnhancedEditor.GetSelStart: Integer;
@@ -463,11 +537,13 @@ end;
 procedure TGxEnhancedEditor.SetLine(AIdx: Integer; ALine: TGXUnicodeString);
 begin
   FEditor.Lines[AIdx] := ALine;
+  DoOnChange;
 end;
 
 procedure TGxEnhancedEditor.SetLines(ALines: TGXUnicodeStringList);
 begin
   FEditor.Lines.Assign(ALines);
+  DoOnChange;
 end;
 
 function TGxEnhancedEditor.GetNormalizedText: string;
