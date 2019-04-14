@@ -1,5 +1,7 @@
 unit GX_ClassOptions;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -159,7 +161,11 @@ begin
   try
     dlg.OnShow := HandleFontShow;
     dlg.Font := _Font;
+{$IFDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
     if dlg.Execute(Handle) then begin
+{$ELSE}
+    if dlg.Execute then begin
+{$ENDIF}
       _Font.Assign(dlg.Font);
       FontToForm(_Font, _NameCombo, _SizeUd);
     end;
