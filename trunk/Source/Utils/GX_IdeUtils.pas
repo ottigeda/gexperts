@@ -453,6 +453,7 @@ function GetIdeBackgroundColor(const _RegKey: string): TColor;
 var
   Reg: TRegistry;
   Value: Integer;
+  s: string;
 const
   IdePalette: array [0..15] of TColor = (clBlack, clMaroon, clGreen,
     clOlive, clNavy, clPurple, clTeal, clLtGray, clDkGray, clRed,
@@ -463,8 +464,8 @@ begin
   try
     if Reg.OpenKey(GxOtaGetIdeBaseRegistryKey + _RegKey, False) then
     begin
-      if TryReadRegString(reg, 'Default Background', Value) then begin
-        if SameText(Value, 'False') then begin
+      if TryReadRegString(reg, 'Default Background', s) then begin
+        if SameText(s, 'False') then begin
           if Reg.ValueExists('Background Color') then
           begin
             if Reg.GetDataType('Background Color') = rdInteger then
@@ -487,6 +488,7 @@ function GetIdeForegroundColor(const _RegKey: string): TColor;
 var
   Reg: TRegistry;
   Value: Integer;
+  s: string;
 const
   IdePalette: array [0..15] of TColor = (clBlack, clMaroon, clGreen,
     clOlive, clNavy, clPurple, clTeal, clLtGray, clDkGray, clRed,
@@ -497,8 +499,8 @@ begin
   try
     if Reg.OpenKey(GxOtaGetIdeBaseRegistryKey + _RegKey, False) then
     begin
-      if TryReadRegString(reg, 'Default Foreground', Value) then begin
-        if SameText(Value, 'False') then begin
+      if TryReadRegString(reg, 'Default Foreground', s) then begin
+        if SameText(s, 'False') then begin
           if Reg.ValueExists('Foreground Color') then
           begin
             if Reg.GetDataType('Foreground Color') = rdInteger then
