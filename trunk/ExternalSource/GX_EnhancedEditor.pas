@@ -9,7 +9,7 @@ interface
 uses
   Windows, Classes, Graphics, Controls,
   SynEdit, SynMemo, SynEditTypes, SynEditTextBuffer, GX_SynMemoUtils,
-  GX_GenericUtils;
+  GX_GenericUtils, SynEditKeyCmds;
 
 type
   TGxEnhancedEditor = class(TWinControl)
@@ -23,6 +23,7 @@ type
     FOnKeyUp: TKeyEvent;
     FOnMouseDown: TMouseEvent;
     FONStatusChange: TStatusChangeEvent;
+    FOnCommandProcessed: TNotifyEvent;
     function  GetReadOnly: Boolean;
     procedure SetReadOnly(const Value: Boolean);
     function  GetModified: Boolean;
@@ -64,6 +65,9 @@ type
     procedure SetActiveLineColor(const Value: TColor);
     procedure SetOnStatusChange(const Value: TStatusChangeEvent);
     procedure DoOnChange;
+    procedure SetOnCommandProcessed(const Value: TNotifyEvent);
+    procedure HandleCommeandProcessed(Sender: TObject; var Command: TSynEditorCommand;
+      var AChar: WideChar; Data: pointer);
   public
     class function DefaultActiveLineColor: TColor;
     constructor Create(AOwner: TComponent); override;
@@ -129,6 +133,8 @@ type
     property OnKeyUp: TKeyEvent read FOnKeyUp write SetOnKeyUp;
     property OnMouseDown: TMouseEvent read FOnMouseDown write SetOnMouseDown;
     property OnStatusChange: TStatusChangeEvent read FONStatusChange write SetOnStatusChange;
+    property OnCommandProcessed: TNotifyEvent read FOnCommandProcessed write SetOnCommandProcessed;
+
   end;
 
 procedure Register;
@@ -243,6 +249,19 @@ procedure TGxEnhancedEditor.SetOnClick(const Value: TNotifyEvent);
 begin
   FOnClick := Value;
   FEditor.OnClick := Value;
+end;
+
+procedure TGxEnhancedEditor.SetOnCommandProcessed(const Value: TNotifyEvent);
+begin
+  FOnCommandProcessed := Value;
+  FEditor.OnCommandProcessed := HandleCommeandProcessed;
+end;
+
+procedure TGxEnhancedEditor.HandleCommeandProcessed(Sender: TObject;
+  var Command: TSynEditorCommand; var AChar: WideChar; Data: Pointer);
+begin
+  if Assigned(FOnCommandProcessed) then
+    FOnCommandProcessed(Self);
 end;
 
 procedure TGxEnhancedEditor.SetOnStatusChange(const Value: TStatusChangeEvent);
@@ -375,16 +394,12 @@ begin
 end;
 
 procedure TGxEnhancedEditor.GetSelectedLines(out _StartIdx, _EndIdx: Integer; _AllLines: TGXUnicodeStringList);
-var
-  SelStart: Integer;
-  SelEnd: Integer;
 begin
-  SelStart := FEditor.SelStart;
-  SelEnd := FEditor.SelEnd;
-  _StartIdx := FEditor.CharIndexToRowCol(SelStart).Line - 1;
-  if SelEnd > SelStart then
-    _EndIdx := FEditor.CharIndexToRowCol(SelEnd - 1).Line - 1
-  else
+  _StartIdx := FEditor.BlockBegin.Line - 1;
+  _EndIdx := FEditor.BlockEnd.Line - 1;
+  if FEditor.BlockEnd.Char = 1 then
+    Dec(_EndIdx);
+  if _EndIdx < _StartIdx then
     _EndIdx := _StartIdx;
   if Assigned(_AllLines) then
     GetLines(_AllLines);
