@@ -71,7 +71,9 @@ function TryGetDesktopCombo(out _cmb: TCombobox): Boolean;
 function GetIdeEdition: string;
 
 // Get the IDE's editor background color
+function GetIdeEditorForegroundColor: TColor;
 function GetIdeEditorBackgroundColor: TColor;
+function GetIdeEditorLineHighlightColor: TColor;
 function GetIdeEnvironmentOverrides(Overrides: TStrings): Boolean;
 
 // Set the PopupMode property in Delphi 8+ to get the z-order/layering right
@@ -389,9 +391,65 @@ begin
   end;
 end;
 
-function GetIdeEditorBackgroundColor: TColor;
-const
-  RegAddKey = '\Editor\Highlight\Whitespace'; // do not localize
+
+function TryReadRegString(_reg: TRegistry; const _Name: string; out _Value: string): Boolean;
+begin
+  if _reg.ValueExists(_Name) then begin
+    if _reg.GetDataType(_Name) = rdString then begin
+      _Value := _reg.ReadString(_Name);
+      Result := True;
+      Exit //==>
+    end;
+  end;
+  Result := False;
+end;
+
+{$IFDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
+function GetIdeBackgroundColor(const _RegKey: string): TColor;
+var
+  Reg: TRegistry;
+  Value: string;
+begin
+  Result := clWindow;
+  Reg := TRegistry.Create;
+  try
+    if Reg.OpenKey(GxOtaGetIdeBaseRegistryKey + _RegKey, False) then
+    begin
+      if TryReadRegString(reg, 'Default Background', Value) then begin
+        if SameText(Value, 'False') then begin
+          if TryReadRegString(reg, 'Background Color New', Value) then
+            Result := StringToColor(Value);
+        end;
+      end;
+    end;
+  finally
+    FreeAndNil(Reg);
+  end;
+end;
+
+function GetIdeForegroundColor(const _RegKey: string): TColor;
+var
+  Reg: TRegistry;
+  Value: string;
+begin
+  Result := clWindowText;
+  Reg := TRegistry.Create;
+  try
+    if Reg.OpenKey(GxOtaGetIdeBaseRegistryKey + _RegKey, False) then
+    begin
+      if TryReadRegString(reg, 'Default Foreground', Value) then begin
+        if SameText(Value, 'False') then begin
+          if TryReadRegString(reg, 'Foreground Color New', Value) then
+            Result := StringToColor(Value);
+        end;
+      end;
+    end;
+  finally
+    FreeAndNil(Reg);
+  end;
+end;
+{$ELSE} // Delphi 6 / 7
+function GetIdeBackgroundColor(const _RegKey: string): TColor;
 var
   Reg: TRegistry;
   Value: Integer;
@@ -403,23 +461,18 @@ begin
   Result := clWindow;
   Reg := TRegistry.Create;
   try
-    if Reg.OpenKey(GxOtaGetIdeBaseRegistryKey + RegAddKey, False) then
+    if Reg.OpenKey(GxOtaGetIdeBaseRegistryKey + _RegKey, False) then
     begin
-      if Reg.ValueExists('Default Background') then
-      begin
-        if Reg.GetDataType('Default Background') = rdString then
-        begin
-          if SameText(Reg.ReadString('Default Background'), 'False') then
+      if TryReadRegString(reg, 'Default Background', Value) then begin
+        if SameText(Value, 'False') then begin
+          if Reg.ValueExists('Background Color') then
           begin
-            if Reg.ValueExists('Background Color') then
+            if Reg.GetDataType('Background Color') = rdInteger then
             begin
-              if Reg.GetDataType('Background Color') = rdInteger then
-              begin
-                Value := Reg.ReadInteger('Background Color');
-                if (Value > 15) or (Value < 0) then
-                  Value := 15;
-                Result := IdePalette[Value];
-              end;
+              Value := Reg.ReadInteger('Background Color');
+              if (Value > 15) or (Value < 0) then
+                Value := 15;
+              Result := IdePalette[Value];
             end;
           end;
         end;
@@ -428,7 +481,65 @@ begin
   finally
     FreeAndNil(Reg);
   end;
+end;
+
+function GetIdeForegroundColor(const _RegKey: string): TColor;
+var
+  Reg: TRegistry;
+  Value: Integer;
+const
+  IdePalette: array [0..15] of TColor = (clBlack, clMaroon, clGreen,
+    clOlive, clNavy, clPurple, clTeal, clLtGray, clDkGray, clRed,
+    clLime, clYellow, clBlue, clFuchsia, clAqua, clWhite);
+begin
+  Result := clWindowText;
+  Reg := TRegistry.Create;
+  try
+    if Reg.OpenKey(GxOtaGetIdeBaseRegistryKey + _RegKey, False) then
+    begin
+      if TryReadRegString(reg, 'Default Foreground', Value) then begin
+        if SameText(Value, 'False') then begin
+          if Reg.ValueExists('Foreground Color') then
+          begin
+            if Reg.GetDataType('Foreground Color') = rdInteger then
+            begin
+              Value := Reg.ReadInteger('Foreground Color');
+              if (Value > 15) or (Value < 0) then
+                Value := 15;
+              Result := IdePalette[Value];
+            end;
+          end;
+        end;
+      end;
+    end;
+  finally
+    FreeAndNil(Reg);
+  end;
+end;
+{$ENDIF}
+
+function GetIdeEditorBackgroundColor: TColor;
+const
+  RegAddKey = '\Editor\Highlight\Whitespace'; // do not localize
+begin
+  Result := GetIdeBackgroundColor(RegAddKey);
   {$IFOPT D+}SendDebug('IDE Background Color is: ' + ColorToString(Result) + '  '); {$ENDIF}
+end;
+
+function GetIdeEditorForegroundColor: TColor;
+const
+  RegAddKey = '\Editor\Highlight\Whitespace'; // do not localize
+begin
+  Result := GetIdeForegroundColor(RegAddKey);
+  {$IFOPT D+}SendDebug('IDE Foreground Color is: ' + ColorToString(Result) + '  '); {$ENDIF}
+end;
+
+function GetIdeEditorLineHighlightColor: TColor;
+const
+  RegAddKey = '\Editor\Highlight\Line Highlight'; // do not localize
+begin
+  Result := GetIdeBackgroundColor(RegAddKey);
+  {$IFOPT D+}SendDebug('IDE Line Highlight Color is: ' + ColorToString(Result) + '  '); {$ENDIF}
 end;
 
 function GetIdeEnvironmentOverrides(Overrides: TStrings): Boolean;
