@@ -50,6 +50,8 @@ type
   private
     FForm: TCustomForm;
     FListbox: TListBox;
+    FListboxOnClick: TNotifyEvent;
+    FListBoxItemIndex: Integer;
     FMemo: TGxEnhancedEditor;
 
     FPageControl: TPageControl;
@@ -111,6 +113,9 @@ type
     function doMakeAbsolute(const _s: TGXUnicodeString): TGXUnicodeString;
     function doMakeRelative(const _s: TGXUnicodeString): TGXUnicodeString;
     procedure ProcessAllMemoLines(_ProcessMethod: TLineProcessMethod);
+    procedure HandleMemoCommandProcessed(_Sender: TObject);
+    procedure HandleMemoClick(_Sender: TObject);
+    procedure HandleListboxClick(_Sender: TObject);
 {$IFDEF GX_VER320_up} // RAD Studio 10.2 Tokyo (26; BDS 19)
     procedure HandleTimer(_Sender: TObject);
 {$ENDIF GX_VER320_up}
@@ -340,12 +345,16 @@ begin
       FMemo.Align := alClient;
 //      FMemo.HideSelection := False;
       FMemo.OnChange := Self.HandleMemoChange;
+      FMemo.OnCommandProcessed := Self.HandleMemoCommandProcessed;
+      FMemo.OnClick := Self.HandleMemoClick;
 //      FMemo.ScrollBars := ssBoth;
 //      FMemo.WordWrap := False;
       FMemo.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
 
       FListbox.Parent := FTabSheetList;
       FListbox.Align := alClient;
+      FListboxOnClick := FListbox.OnClick;
+      FListbox.OnClick := HandleListboxClick;
 
       FDelDotsBtn := TButton.Create(_Form);
       h := FDelDotsBtn.Height - 4;
@@ -439,6 +448,8 @@ begin
       cmp := _Form.FindComponent('InvalidPathLbl');
       if cmp is TLabel then
         TLabel(cmp).Caption := TLabel(cmp).Caption + ' Drag and drop is enabled.';
+
+      TWinControl_SetFocus(FListbox);
 
 {$IFDEF GX_VER320_up} // RAD Studio 10.2 Tokyo (26; BDS 19)
       // Workaround for a problem that only exists in Delphi 10.2 if theming is enabled:
@@ -667,7 +678,7 @@ begin
   SwitchingToMemo := (FPageControl.ActivePage = FTabSheetList);
   if SwitchingToMemo then begin
     FMemo.Text := FListbox.Items.Text;
-    FMemo.CaretXY := Point(FMemo.CaretXY.X, FListbox.ItemIndex);
+    FMemo.CaretXY := Point(FMemo.CaretXY.X, FListboxItemIndex);
   end else begin
     // We could also update the listbox' content here, but that would not help in the case
     // where the user clicks OK without switching back to the list box. So this update must
@@ -718,7 +729,7 @@ begin
       Pos.Y := Pos.Y - 1;
       FMemo.CaretXY := Pos;
     end;
-    FMemo.SetFocus;
+    TWinControl_SetFocus(FMemo);
   end else
     FUpClick(FUpBtn);
 end;
@@ -733,10 +744,16 @@ begin
       FMemo.ExchangeLines(LineIdx, LineIdx + 1);
       FMemo.CaretXY := Point(FMemo.CaretXY.X, LineIdx + 1);
     end;
-    FMemo.SetFocus;
+    TWinControl_SetFocus(FMemo);
   end else
     FDownClick(FDownBtn);
 end;
+
+type
+  TListBox = class(StdCtrls.TListBox)
+  public
+    procedure ForceItemIndex(_Idx: Integer); // must *NOT* be virtual
+  end;
 
 procedure TSearchPathEnhancer.AddBtnClick(_Sender: TObject);
 var
@@ -748,8 +765,7 @@ begin
     Idx := FListbox.Items.Add(FEdit.Text);
     // In order to prevent adding the path twice, we need to select the new entry and
     // call the OnClick event.
-    FListbox.ItemIndex := Idx;
-    FListbox.OnClick(FListbox);
+    TListBox(FListbox).ForceItemIndex(Idx);
   end;
 end;
 
@@ -785,8 +801,40 @@ begin
   CopyMemoToList;
 end;
 
+procedure TSearchPathEnhancer.HandleMemoClick(_Sender: TObject);
+var
+  Idx: Integer;
+begin
+  Idx := FMemo.CaretXY.Y;
+  TListBox(FListbox).ForceItemIndex(Idx);
+end;
+
+procedure TSearchPathEnhancer.HandleMemoCommandProcessed(_Sender: TObject);
+var
+  Idx: Integer;
+begin
+  Idx := FMemo.CaretXY.Y;
+  TListBox(FListbox).ForceItemIndex(Idx);
+end;
+
+procedure TSearchPathEnhancer.HandleListboxClick(_Sender: TObject);
+begin
+  FListBoxItemIndex := FListbox.ItemIndex;
+  if Assigned(FListboxOnClick) then
+    FListboxOnClick(_Sender);
+end;
+
+{ TListBox }
+
+procedure TListBox.ForceItemIndex(_Idx: Integer);
+begin
+  if (_Idx >= 0) and (_Idx < Items.Count) then begin
+    ItemIndex := _Idx;
+    Click;
+  end;
+end;
+
 initialization
 finalization
   FreeAndNil(TheSearchPathEnhancer);
 end.
-
