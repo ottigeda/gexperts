@@ -23,7 +23,6 @@ type
     pgeMain: TPageControl;
     lblDescription: TLabel;
     tshType: TTabSheet;
-    rgpFeedbackType: TRadioGroup;
     pnlContent: TPanel;
     pnlButtons: TPanel;
     btnCancel: TButton;
@@ -69,6 +68,12 @@ type
     pnlDescription: TPanel;
     pnlMain: TPanel;
     chkGExpertsSettings: TCheckBox;
+    l_BugReportUrl: TLabel;
+    rb_BugReport: TRadioButton;
+    rb_FeatureRequest: TRadioButton;
+    l_FeatureUrl: TLabel;
+    l_Verify: TLabel;
+    l_URL: TLabel;
     procedure actPrevUpdate(Sender: TObject);
     procedure actNextUpdate(Sender: TObject);
     procedure actPrevExecute(Sender: TObject);
@@ -118,6 +123,7 @@ type
     function GetTabReportText(Tab: TTabSheet): string;
     function GetBugDetailsString: string;
     function GetSystemConfigurationString: string;
+    procedure Init(const ABugEmail, AFeatureEmail: string);
   public
     class procedure Execute(AOwner: TComponent; const ABugEmail, AFeatureEmail: string);
   end;
@@ -126,7 +132,7 @@ implementation
 
 uses Windows, SysUtils, ShellAPI, TypInfo, Clipbrd, Registry,
   GX_GenericUtils, GX_ConfigurationInfo, GX_OtaUtils, GX_GetIdeVersion, GX_IdeUtils,
-  Menus, Math;
+  Menus, Math, Graphics, GX_dzVclUtils;
 
 {$R *.dfm}
 
@@ -154,9 +160,16 @@ var
   Form: TfmFeedbackWizard;
 begin
   Form := TfmFeedbackWizard.Create(AOwner);
-  Form.FBugEmail := ABugEmail;
-  Form.FFeatureEmail := AFeatureEmail;
+  Form.Init(ABugEmail, AFeatureEmail);
   Form.Show; // Non-modal, this frees itself using caFree Action
+end;
+
+procedure TfmFeedbackWizard.Init(const ABugEmail, AFeatureEmail: string);
+begin
+  FBugEmail := ABugEmail;
+  FFeatureEmail := AFeatureEmail;
+  TLabel_MakeUrlLabel(l_BugReportUrl, FBugEmail, True);
+  TLabel_MakeUrlLabel(l_FeatureUrl, FFeatureEmail, True)
 end;
 
 procedure TfmFeedbackWizard.SetDescriptionCaption;
@@ -175,7 +188,7 @@ end;
 
 function TfmFeedbackWizard.GetFeedbackType: TFeedbackType;
 begin
-  if rgpFeedbackType.ItemIndex = 0 then
+  if rb_BugReport.Checked then
     Result := fbBug
   else
     Result := fbFeature;
@@ -189,7 +202,7 @@ const
     '  Feature requests are suggestions for future development ' +
     'of GExperts.' + sLineBreak + sLineBreak +
     '  Please verify you are using the latest GExperts release before ' +
-    'sending in feedback.  See: http://www.gexperts.org/';
+    'sending in feedback.  See: https://gexperts.dummzeuch.de/';
   BugDescriptionDescription =
     '  Please enter a detailed description of the bug.  Include any unique ' +
     'data about your system setup that you think might assist us in ' +
@@ -225,12 +238,11 @@ const
     'determine when the requested feature would be helpful.' + ConfigurationDescription2;
   ReportDescription =
     '  Click Finish to copy the generated report to the clipboard and ' +
-    'create an email (using your default email client) where you can then ' +
-    'paste the report into the email.' + sLineBreak + sLineBreak +
+    'open your web browser where you can then ' +
+    'paste the report into a bug report or feature request ticket.' + sLineBreak + sLineBreak +
     '  You may also save the generated report to a file and send it at a ' +
     'later date to %s.' + sLineBreak + sLineBreak +
-    '  This wizard does not transmit any information to us unless ' +
-    'you manually send an email with the generated report included.';
+    '  This wizard does not directly transmit any information to us.';
 var
   Lines: TStrings;
 begin
@@ -317,9 +329,9 @@ const
   SNext = '&Next  >';
 begin
   actNext.Enabled := CanProceed;
-  if OnLastPage then
-    actNext.Caption := SFinish
-  else
+  if OnLastPage then begin
+    actNext.Caption := SFinish;
+  end else
     actNext.Caption := SNext;
 end;
 
@@ -333,14 +345,9 @@ end;
 
 procedure TfmFeedbackWizard.actNextExecute(Sender: TObject);
 begin
-  if OnLastPage then
-  begin
-    Clipboard.AsText := mmoReport.Lines.Text;
+  if OnLastPage then begin
     btnEmail.Click;
-    Close;
-  end
-  else
-  begin
+  end else begin
     FActiveTab := GetNextTab;
     UpdateForNewTab;
     pgeMain.ActivePage := FActiveTab;
@@ -352,6 +359,8 @@ procedure TfmFeedbackWizard.FormCreate(Sender: TObject);
 var
   i: Integer;
 begin
+  TLabel_MakeUrlLabel(l_URL);
+
   for i := 0 to pgeMain.PageCount - 1 do
     pgeMain.Pages[i].TabVisible := False;
   pgeMain.ActivePage := pgeMain.Pages[0];
@@ -478,24 +487,9 @@ end;
 procedure TfmFeedbackWizard.btnEmailClick(Sender: TObject);
 var
   ExecFilename: string;
-  Address: string;
-  Subject: string;
-  Body: string;
-const
-  SFillInReminder = 'Please remember to paste the generated report here';
-  SFillInReminderPaste = SFillInReminder;
-  SFillInReminderAttach = SFillInReminder + ' or attach %s';
 begin
-  Subject := 'GExperts ' + GetFeedbackTypeString; // Do not localize.
-  Address := GetDestinationEmail;
-  if dlgSaveReport.FileName <> '' then
-    Body := Format(SFillInReminderAttach, [dlgSaveReport.FileName])
-  else
-    Body := SFillInReminderPaste;
-
   // Do not localize the lines below.
-  ExecFilename := Format('mailto:%s?Subject=%s&Body=%s', [Address, Subject, Body]);
-  ExecFilename := StringReplace(ExecFilename, ' ', '%20', [rfReplaceAll]);
+  ExecFilename := GetDestinationEmail;
   ShellExecute(Self.Handle, 'open', PChar(ExecFilename), nil, PChar(ExtractFilePath(application.ExeName)), SW_SHOWNORMAL);
 end;
 

@@ -39,10 +39,8 @@ object fmAbout: TfmAbout
     Top = 72
     Width = 147
     Height = 14
-    Cursor = crHandPoint
     Alignment = taCenter
     Caption = 'http://www.gexperts.org/'
-    OnClick = lblWebPageClick
   end
   object lblProjectLeader: TLabel
     Left = 275

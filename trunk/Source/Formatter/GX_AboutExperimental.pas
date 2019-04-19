@@ -37,7 +37,8 @@ implementation
 uses
   ToolsAPI,
   GX_GenericUtils,
-  GX_LibrarySource;
+  GX_LibrarySource,
+  GX_dzVclUtils;
 
 { TfmAboutExperimental }
 
@@ -45,10 +46,8 @@ constructor TfmAboutExperimental.Create(_Owner: TComponent);
 begin
   inherited;
 
-  SetFontUnderline(l_DummzeuchDe);
-  SetFontColor(l_DummzeuchDe, clBlue);
-  SetFontUnderline(l_Formatter);
-  SetFontColor(l_Formatter, clBlue);
+  TLabel_MakeUrlLabel(l_DummzeuchDe);
+  TLabel_MakeUrlLabel(l_Formatter, 'http://web.archive.org/web/20121115141650/http://www.aew.wur.nl/UK/Delforexp');
 end;
 
 class function TfmAboutExperimental.GetVersionStr: string;
@@ -80,7 +79,7 @@ begin
     Result := AboutBoxServices.AddPluginInfo(
       'GExperts Experimental' + DupeString,
       Desc + #13#10
-      + 'http://gexperts.dummzeuch.de/',
+      + 'https://gexperts.dummzeuch.de/',
       GetAboutIcon,
       False,
       '', // leave this empty!
@@ -94,7 +93,9 @@ end;
 {$ENDIF not GX_VER170_up}
 
 initialization
-  TfmAboutExperimental.SetCustomBuildEmails('gexperts@dummzeuch.de', 'gexperts@dummzeuch.de');
+  TfmAboutExperimental.SetCustomBuildEmails(
+    'https://bugs.dummzeuch.de/',
+    'https://features.dummzeuch.de/');
   gblAboutFormClass := TfmAboutExperimental;
 end.
 

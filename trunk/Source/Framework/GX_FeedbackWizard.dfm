@@ -128,6 +128,7 @@ object fmFeedbackWizard: TfmFeedbackWizard
           Height = 367
           Align = alClient
           Color = 15858687
+          HideSelection = False
           ReadOnly = True
           TabOrder = 0
           OnEnter = InfoMemoEnter
@@ -140,7 +141,7 @@ object fmFeedbackWizard: TfmFeedbackWizard
           Left = 0
           Top = 0
           Width = 195
-          Height = 238
+          Height = 367
           Align = alClient
           Color = 15858687
           ReadOnly = True
@@ -170,17 +171,60 @@ object fmFeedbackWizard: TfmFeedbackWizard
         OnResize = pgeMainResize
         object tshType: TTabSheet
           Caption = 'Feedback Type'
-          object rgpFeedbackType: TRadioGroup
+          object l_BugReportUrl: TLabel
+            Left = 40
+            Top = 176
+            Width = 107
+            Height = 14
+            Caption = 'http://bla.blub.com'
+          end
+          object l_FeatureUrl: TLabel
+            Left = 40
+            Top = 224
+            Width = 107
+            Height = 14
+            Caption = 'http://bla.blub.com'
+          end
+          object l_Verify: TLabel
             Left = 8
-            Top = 6
-            Width = 177
-            Height = 73
-            Caption = ' Feedback Type '
-            ItemIndex = 0
-            Items.Strings = (
-              '&Bug Report'
-              '&Feature Request')
+            Top = 8
+            Width = 472
+            Height = 16
+            Caption = 
+              'Please verify you are using the latest GExperts release before s' +
+              'ending in feedback.'
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clRed
+            Font.Height = -13
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+          end
+          object l_URL: TLabel
+            Left = 8
+            Top = 32
+            Width = 184
+            Height = 14
+            Caption = 'https://gexperts.dummzeuch.de/'
+          end
+          object rb_BugReport: TRadioButton
+            Left = 16
+            Top = 152
+            Width = 113
+            Height = 17
+            Caption = '&Bug Report'
+            Checked = True
             TabOrder = 0
+            TabStop = True
+            OnClick = rgpFeedbackTypeClick
+          end
+          object rb_FeatureRequest: TRadioButton
+            Left = 16
+            Top = 200
+            Width = 113
+            Height = 17
+            Caption = '&Feature Request'
+            TabOrder = 1
             OnClick = rgpFeedbackTypeClick
           end
         end
@@ -406,7 +450,7 @@ object fmFeedbackWizard: TfmFeedbackWizard
               Top = 86
               Width = 110
               Height = 27
-              Caption = 'Compose &Email'
+              Caption = 'Open &Browser'
               TabOrder = 2
               OnClick = btnEmailClick
             end

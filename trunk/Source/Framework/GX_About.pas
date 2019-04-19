@@ -31,7 +31,6 @@ type
     mmoContributors: TMemo;
     tim_Scroll: TTimer;
     procedure btnEmailClick(Sender: TObject);
-    procedure lblWebPageClick(Sender: TObject);
     procedure tim_ScrollTimer(Sender: TObject);
   private
     procedure InitVersionInfoControls;
@@ -67,7 +66,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Graphics, ToolsApi, Messages,
-  GX_GenericUtils, GX_FeedbackWizard, GX_LibrarySource;
+  GX_GenericUtils, GX_FeedbackWizard, GX_LibrarySource, GX_dzVclUtils;
 
 const
   DefaultBugEmail = 'bugs@gexperts.org';  // Do not localize.
@@ -83,18 +82,6 @@ begin
   Close;
 end;
 
-procedure TfmAbout.lblWebPageClick(Sender: TObject);
-var
-  Lbl: TLabel;
-  URL: string;
-begin
-  Lbl := Sender as TLabel;
-  URL := Lbl.Hint;
-  if URL = '' then
-    URL := Lbl.Caption;
-  GXShellExecute(URL, '', True);
-end;
-
 constructor TfmAbout.Create(AOwner: TComponent);
 begin
   inherited;
@@ -108,10 +95,10 @@ begin
   SetFontSize(lblGExperts, +4);
   SetFontSize(lblVersion, +4);
   SetFontUnderline(lblErik);
-  SetFontUnderline(lblWebPage);
   SetFontColor(lblErik, clBlue);
-  SetFontColor(lblWebPage, clBlue);
   SetFontColor(mmoBuildDetails, clRed);
+
+  TLabel_MakeUrlLabel(lblWebPage);
 
   imgLogo.Picture.Bitmap.LoadFromResourceName(HInstance, 'ABOUT_WIZ');
   InitVersionInfoControls;

@@ -47,11 +47,9 @@ inherited fmAboutExperimental: TfmAboutExperimental
     Top = 88
     Width = 385
     Height = 14
-    Cursor = crHandPoint
     Alignment = taCenter
     AutoSize = False
     Caption = 'https://gexperts.dummzeuch.de'
-    OnClick = lblWebPageClick
   end
   object l_Formatter: TLabel [11]
     Left = 224
@@ -59,15 +57,9 @@ inherited fmAboutExperimental: TfmAboutExperimental
     Width = 385
     Height = 14
     Cursor = crHandPoint
-    Hint = 
-      'http://web.archive.org/web/20121115141650/http://www.aew.wur.nl/' +
-      'UK/Delforexp'
     Alignment = taCenter
     AutoSize = False
     Caption = 'Code formatter based on DelForExp by Egbert van Nes'
-    ParentShowHint = False
-    ShowHint = True
-    OnClick = lblWebPageClick
   end
   inherited mmoBuildDetails: TMemo
     Left = 240
