@@ -25,7 +25,7 @@ uses
   Classes,
   Windows,
   SysUtils,
-//  Graphics,
+  Graphics,
   Forms,
   Messages,
   Controls,
@@ -505,6 +505,14 @@ function TEdit_TextToInt(_ed: TLabeledEdit; _FocusControl: Boolean = True): Inte
 ///          @param Default is the value to use if the edit does not contain an integer
 ///          @returns the controls content as an integer
 function TEdit_TextToIntDef(_ed: TCustomEdit; _Default: Integer): Integer;
+{$ENDIF}
+///<summary>
+/// Changes the label's font to be blue and underlined, changes the mouse pointer to crHandPoint
+/// and adds an OnClick event that opens the URL in default web browser.
+/// Optionally it sets the caption to the URL  </summary>
+procedure TLabel_MakeUrlLabel(_lbl: TLabel); overload;
+procedure TLabel_MakeUrlLabel(_lbl: TLabel; const _URL: string; _SetCaption: Boolean = False); overload;
+{$IFNDEF GExperts}
 
 type
   ///<summary>
@@ -2210,7 +2218,49 @@ begin
   if not TEdit_TryTextToInt(_ed, Result) then
     Result := _Default;
 end;
+{$ENDIF}
+type
+  TUrlLabelHandler = class(TComponent)
+  private
+    FLbl: TLabel;
+    FUrl: string;
+    procedure HandleOnClick(_Sender: TObject);
+  public
+    constructor Create(_lbl: TLabel; const _URL: string); reintroduce;
+  end;
 
+constructor TUrlLabelHandler.Create(_lbl: TLabel; const _URL: string);
+begin
+  inherited Create(_lbl);
+  FLbl := _lbl;
+  FUrl := _URL;
+  FLbl.OnClick := HandleOnClick;
+  FLbl.Font.Style := FLbl.Font.Style + [fsUnderline];
+  FLbl.Font.Color := clBlue;
+  FLbl.Cursor := crHandPoint;
+  if (FLbl.hint = '') and (Menus.StripHotkey(FLbl.Caption) <> FUrl) then begin
+    FLbl.hint := FUrl;
+    FLbl.ShowHint := True;
+  end;
+end;
+
+procedure TUrlLabelHandler.HandleOnClick(_Sender: TObject);
+begin
+  ShellExecute(Application.Handle, 'open', PChar(FUrl), nil, nil, SW_SHOWNORMAL);
+end;
+
+procedure TLabel_MakeUrlLabel(_lbl: TLabel);
+begin
+  TLabel_MakeUrlLabel(_lbl, Menus.StripHotkey(_lbl.Caption), False);
+end;
+
+procedure TLabel_MakeUrlLabel(_lbl: TLabel; const _URL: string; _SetCaption: Boolean = False);
+begin
+  if _SetCaption then
+    _lbl.Caption := _URL;
+  TUrlLabelHandler.Create(_lbl, _URL);
+end;
+{$IFNDEF GExperts}
 function TTreeView_GetAsText(_Tree: TTreeView; _Indentation: Integer = 2; _Marker: Char = #0): string;
 var
   Level: Integer;
