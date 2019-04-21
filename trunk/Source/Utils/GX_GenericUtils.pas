@@ -827,7 +827,7 @@ uses
   {$IFDEF UNICODE} Character, {$ENDIF}
   ShLwApi,
   ShellAPI, ShlObj, ActiveX, StrUtils, Math,
-  GX_dzSelectDirectoryFix;
+  GX_dzSelectDirectoryFix, GX_dzOsUtils;
 
 const
   shlwapi32 = 'shlwapi.dll';
@@ -3431,7 +3431,6 @@ begin
   Data := AnsiStr; // Let the RTL do the convesion for us
 end;
 
-{$IFDEF MSWINDOWS}
 function GetFileVersionNumber(const FileName: string;
   MustExist: Boolean = True; MustHaveVersion: Boolean = True): TVersionNumber;
 var
@@ -3479,7 +3478,6 @@ begin
     FreeMem(VersionInfoBuffer);
   end;
 end;
-{$ENDIF MSWINDOWS}
 
 function GetFileVersionString(const FileName: string;
   MustExist: Boolean = True; MustHaveVersion: Boolean = True): string;
@@ -3626,42 +3624,8 @@ begin
       end;
     VER_PLATFORM_WIN32_NT:
       begin
-        if Win32MajorVersion in [3, 4] then
-          OSPlatform := 'Windows NT'
-        else if Win32MajorVersion = 5 then
-        begin
-          case Win32MinorVersion of
-            0: OSPlatform := 'Windows 2000';
-            1: OSPlatform := 'Windows XP';
-            2: begin
-                OSPlatform := 'Windows XP64';
-                if (VerInfoEx.dwOSVersionInfoSize > 0) and (VerInfoEx.wProductType <> VER_NT_WORKSTATION) then
-                  OSPlatform := 'Windows Server 2003';
-               end;
-          end;
-        end
-        else if (Win32MajorVersion = 6) then
-        begin
-          case Win32MinorVersion of
-          0:
-            begin
-              OSPlatform := 'Windows Vista';
-              if (VerInfoEx.dwOSVersionInfoSize > 0) and (VerInfoEx.wProductType <> VER_NT_WORKSTATION) then
-                OSPlatform := 'Windows Server 2008';
-            end;
-          1:
-            begin
-              if (VerInfoEx.dwOSVersionInfoSize > 0) then
-              begin
-                if (VerInfoEx.wProductType = VER_NT_WORKSTATION) then
-                  OSPlatform := 'Windows 7'
-                else if (VerInfoEx.wProductType <> VER_NT_WORKSTATION) then
-                  OSPlatform := 'Windows Server 2008 R2';
-              end;
-            end;
-          end;
-        end;
-        BuildNumber := Win32BuildNumber;
+        Result := GetOsVersionString;
+        Exit; //==>
       end;
     VER_PLATFORM_WIN32s:
       begin
@@ -4155,11 +4119,8 @@ begin
 end;
 
 function ThisDllName: string;
-var
-  Buf: array[0..MAX_PATH + 1] of Char;
 begin
-  GetModuleFileName(HINSTANCE, Buf, SizeOf(Buf) - 1);
-  Result := StrPas(Buf);
+  Result := GX_dzOsUtils.GetModuleFileName(HINSTANCE);
 end;
 
 function VclInstance: LongWord;
