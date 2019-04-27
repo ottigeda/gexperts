@@ -3580,8 +3580,6 @@ function GetVersionExA(lpVersionInformation: Pointer): BOOL; stdcall;
   external kernel32 name 'GetVersionExA';
 
 function GetOSString: string;
-const
-  VER_NT_WORKSTATION = $00000001;
 var
   OSPlatform: string;
   BuildNumber: Integer;
