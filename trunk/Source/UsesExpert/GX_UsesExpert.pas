@@ -180,6 +180,11 @@ type
     OpenUnit1: TMenuItem;
     mi_AvailAddToIntf: TMenuItem;
     actAvailAddAllToFav: TAction;
+    pnlIdentifiersProgress: TPanel;
+    lblIdentifiers: TLabel;
+    lblUnitsParsed: TLabel;
+    lblUnitsLoaded: TLabel;
+    lblUnitsFound: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -509,7 +514,6 @@ begin
 
   sg_Identifiers.Cells[0, 0] := 'Identifier';
   sg_Identifiers.Cells[1, 0] := 'Unit';
-  sg_Identifiers.Cells[0, 1] := 'searching ...';
 
   TStringGrid_AdjustRowHeight(sg_Interface);
   TStringGrid_AdjustRowHeight(sg_Implementation);
@@ -1640,6 +1644,7 @@ procedure TfmUsesManager.ResizeIdentiferGrid;
 begin
   TGrid_Resize(sg_Identifiers, [roUseGridWidth, roUseAllRows]);
   TGrid_RestrictToGridWdith(sg_Identifiers, [1]);
+  pnlIdentifiersProgress.Left := (sg_Identifiers.Width - pnlIdentifiersProgress.Width) div 2;
 end;
 
 procedure TfmUsesManager.edtUnitFilterKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -1697,8 +1702,13 @@ end;
 procedure TfmUsesManager.tim_ProgressTimer(Sender: TObject);
 begin
   if Assigned(FUnitExportParserThread) then begin
-    sg_Identifiers.Cells[1, 1] := IntToStr(FUnitExportParserThread.Identifiers.Count);
-  end;
+    lblUnitsFound.Caption := Format('Units found: %d', [FUnitExportParserThread.FoundUnitsCount]);
+    lblUnitsParsed.Caption := Format('Units parsed: %d', [FUnitExportParserThread.ParsedUnitsCount]);
+    lblUnitsLoaded.Caption := Format('Units loaded: %d', [FUnitExportParserThread.LoadedUnitsCount]);
+    lblIdentifiers.Caption := Format('Identifiers found: %d', [FUnitExportParserThread.Identifiers.Count]);
+    pnlIdentifiersProgress.Visible := True;
+  end else
+    pnlIdentifiersProgress.Visible := False;
 end;
 
 procedure TfmUsesManager.LoadFavorites;
@@ -1729,6 +1739,7 @@ var
   Idx: Integer;
 begin
   tim_Progress.Enabled := False;
+  pnlIdentifiersProgress.Visible := False;
   if not Assigned(FUnitExportParserThread) then
     Exit; //==>
 
@@ -1737,6 +1748,7 @@ begin
 
 {$IFOPT D+}
   SendDebugFmt('UnitExportParser finished, found %d identifiers', [sl.Count]);
+  SendDebugFmt('UnitExportParser found %d units', [FUnitExportParserThread.FoundUnitsCount]);
   SendDebugFmt('UnitExportParser loaded %d units', [FUnitExportParserThread.LoadedUnitsCount]);
   SendDebugFmt('UnitExportParser parsed %d units', [FUnitExportParserThread.ParsedUnitsCount]);
 {$IFDEF DO_TIMING}

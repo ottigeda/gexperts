@@ -377,6 +377,42 @@ object fmUsesManager: TfmUsesManager
             TabOrder = 1
           end
         end
+        object pnlIdentifiersProgress: TPanel
+          Left = 152
+          Top = 160
+          Width = 193
+          Height = 113
+          TabOrder = 2
+          Visible = False
+          object lblIdentifiers: TLabel
+            Left = 16
+            Top = 88
+            Width = 117
+            Height = 14
+            Caption = 'Identifiers found: %d'
+          end
+          object lblUnitsParsed: TLabel
+            Left = 16
+            Top = 40
+            Width = 94
+            Height = 14
+            Caption = 'Units parsed: %d'
+          end
+          object lblUnitsLoaded: TLabel
+            Left = 16
+            Top = 64
+            Width = 94
+            Height = 14
+            Caption = 'Units loaded: %d'
+          end
+          object lblUnitsFound: TLabel
+            Left = 16
+            Top = 16
+            Width = 90
+            Height = 14
+            Caption = 'Units found: %d'
+          end
+        end
       end
     end
     object pnlAvailableHeader: TPanel

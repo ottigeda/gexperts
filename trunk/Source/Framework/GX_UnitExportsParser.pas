@@ -150,6 +150,7 @@ type
     FCacheDirBS: string;
     FParsedUnitsCount: Integer;
     FLoadedUnitsCount: Integer;
+    FFoundUnitsCount: Integer;
 {$IFDEF DO_TIMING}
     FLoadingTimeMS: Int64;
     FInsertingTimeMS: Int64;
@@ -178,6 +179,7 @@ type
     /// @NOTE: Make a copy of these PChars (e.g. assign them to a string because they point
     ///        to entries in FUnits that are freed in the destructor! </summary>
     property Identifiers: TStrings read FIdentifiers;
+    property FoundUnitsCount: Integer read FFoundUnitsCount;
     property ParsedUnitsCount: Integer read FParsedUnitsCount;
     property LoadedUnitsCount: Integer read FLoadedUnitsCount;
 {$IFDEF DO_TIMING}
@@ -1099,6 +1101,8 @@ begin
   try
     sl := TStringList.Create;
     GetAllFilesInPath(FilesInPath);
+
+    FFoundUnitsCount := FilesInPath.Count;
 
     if Assigned(FFiles) then begin
       for FileIdx := 0 to FFiles.Count - 1 do begin
