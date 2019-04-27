@@ -13,14 +13,14 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
-        <Cfg_1>true</Cfg_1>
-        <CfgParent>Base</CfgParent>
         <Base>true</Base>
+        <CfgParent>Base</CfgParent>
+        <Cfg_1>true</Cfg_1>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
-        <Cfg_2>true</Cfg_2>
-        <CfgParent>Base</CfgParent>
         <Base>true</Base>
+        <CfgParent>Base</CfgParent>
+        <Cfg_2>true</Cfg_2>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
@@ -71,7 +71,7 @@
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_ActionBroker.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_Actions.pas"/>
-        <DCCReference Include="..\..\source\Experts\GX_AsciiChart.pas">
+        <DCCReference Include="..\..\source\AsciiChart\GX_AsciiChart.pas">
             <Form>fmAsciiChart</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\BackupProject\GX_Backup.pas">
@@ -109,7 +109,7 @@
         <DCCReference Include="..\..\source\ClassBrowser\GX_ClassReport.pas">
             <Form>fmClassReport</Form>
         </DCCReference>
-        <DCCReference Include="..\..\source\Experts\GX_CleanDirectories.pas">
+        <DCCReference Include="..\..\source\CleanDirectories\GX_CleanDirectories.pas">
             <Form>fmCleanDirectories</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\ClipboardHistory\GX_ClipboardHistory.pas">
@@ -127,7 +127,7 @@
         <DCCReference Include="..\..\source\CodeLibrarian\GX_CodeSrch.pas">
             <Form>fmCodeSearch</Form>
         </DCCReference>
-        <DCCReference Include="..\..\source\Experts\GX_ComponentGrid.pas">
+        <DCCReference Include="..\..\source\ComponentGrid\GX_ComponentGrid.pas">
             <Form>fmComponentGrid</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\RenameComponents\GX_CompRename.pas">
@@ -139,7 +139,7 @@
         <DCCReference Include="..\..\source\RenameComponents\GX_CompRenameConfig.pas">
             <Form>fmCompRenameConfig</Form>
         </DCCReference>
-        <DCCReference Include="..\..\source\Experts\GX_CompsToCode.pas">
+        <DCCReference Include="..\..\source\ComponentsToCode\GX_CompsToCode.pas">
             <Form>fmCompsToCode</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_ConfigurationInfo.pas"/>
@@ -151,9 +151,10 @@
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_Consts.pas"/>
-        <DCCReference Include="..\..\source\Experts\GX_CopyComponentNames.pas"/>
+        <DCCReference Include="..\..\source\CopyComponentNames\GX_CopyComponentNames.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_DbugIntf.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_DesignerMenu.pas"/>
+        <DCCReference Include="..\..\Source\Editor\GX_eGotoModification.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_eAlign.pas">
             <Form>fmAlign</Form>
         </DCCReference>
@@ -200,7 +201,7 @@
             <Form>fmEditorShortcut</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_EditReader.pas"/>
-        <DCCReference Include="..\..\source\Experts\GX_ExpertManager.pas">
+        <DCCReference Include="..\..\source\ExpertManager\GX_ExpertManager.pas">
             <Form>fmExpertManager</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_Experts.pas"/>
@@ -222,7 +223,7 @@
             <Form>fmFeedbackWizard</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_FileScanner.pas"/>
-        <DCCReference Include="..\..\source\Experts\GX_FindComponentRef.pas"/>
+        <DCCReference Include="..\..\source\FindComponentReference\GX_FindComponentRef.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_GenericClasses.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_GenericUtils.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_GetIdeVersion.pas"/>
@@ -253,14 +254,14 @@
             <Form>fmGrepSelect</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_GxUtils.pas"/>
-        <DCCReference Include="..\..\source\Experts\GX_HideNonVisualComps.pas"/>
+        <DCCReference Include="..\..\source\HideNonvisualComponents\GX_HideNonVisualComps.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_IconMessageBox.pas"/>
         <DCCReference Include="..\..\source\IDEDocking\GX_IdeDock.pas">
             <Form>fmIdeDockForm</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\IDE\GX_IdeEnhance.pas"/>
         <DCCReference Include="..\..\source\IDE\GX_IdeFormEnhancer.pas"/>
-        <DCCReference Include="..\..\source\Experts\GX_IdeShortCuts.pas">
+        <DCCReference Include="..\..\source\IdeShortCuts\GX_IdeShortCuts.pas">
             <Form>fmIdeShortCuts</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_IdeUtils.pas"/>
@@ -275,6 +276,9 @@
         <DCCReference Include="..\..\source\MacroLibrary\GX_MacroLibrary.pas">
             <Form>fmMacroLibrary</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\MacroLibrary\GX_MacroLibraryEditEntry.pas">
+            <Form>fmEditMacroItem</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\MacroLibrary\GX_MacroLibraryNamePrompt.pas">
             <Form>fmMacroLibraryNamePrompt</Form>
         </DCCReference>
@@ -282,9 +286,6 @@
             <Form>fmGxMacroLibraryConfig</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_MacroParser.pas"/>
-        <DCCReference Include="..\..\Source\MacroLibrary\GX_MacroLibraryEditEntry.pas">
-            <Form>fmEditMacroItem</Form>
-        </DCCReference>
         <DCCReference Include="..\..\source\MacroTemplates\GX_MacroSelect.pas">
             <Form>fmMacroSelect</Form>
         </DCCReference>
@@ -337,6 +338,9 @@
         <DCCReference Include="..\..\source\ProjectDependencies\GX_ProjDependProp.pas">
             <Form>fmProjDependProp</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\ProjectDependencies\GX_ProjDependOptions.pas">
+            <Form>fmProjDependOptions</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\ProjectOptionSets\GX_ProjOptionSets.pas">
             <Form>fmProjOptionSets</Form>
         </DCCReference>
@@ -377,7 +381,7 @@
         <DCCReference Include="..\..\source\SetComponentProperties\GX_SetComponentPropsStatus.pas">
             <Form>fmSetComponentPropsStatus</Form>
         </DCCReference>
-        <DCCReference Include="..\..\source\Experts\GX_SetFocusControl.pas"/>
+        <DCCReference Include="..\..\source\SetFocusControl\GX_SetFocusControl.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_SharedImages.pas">
             <Form>dmSharedImages</Form>
             <DesignClass>TDataModule</DesignClass>
@@ -434,7 +438,7 @@
         </DCCReference>
         <DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterUnicode.pas"/>
         <DCCReference Include="..\..\source\IDE\GX_IdeSearchPathEnhancer.pas"/>
-        <DCCReference Include="..\..\source\Experts\GX_HideNavbar.pas"/>
+        <DCCReference Include="..\..\source\HideNavigationToolbar\GX_HideNavbar.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_dzVclUtils.pas"/>
         <DCCReference Include="..\..\source\IDE\GX_IdeProjectOptionsEnhancer.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_PasteAs.pas"/>
@@ -472,7 +476,7 @@
         <DCCReference Include="..\..\Source\IDE\GX_IdeSearchPathFavoriteEdit.pas">
             <Form>f_IdeSearchPathFavoriteEdit</Form>
         </DCCReference>
-        <DCCReference Include="..\..\Source\Experts\GX_ReselectDesktop.pas"/>
+        <DCCReference Include="..\..\Source\ReselectDesktop\GX_ReselectDesktop.pas"/>
         <DCCReference Include="..\..\Source\Editor\GX_eWarn.pas">
             <Form>fmConfigureWarning</Form>
         </DCCReference>
@@ -494,7 +498,7 @@
         <DCCReference Include="..\..\Source\IDE\GX_IdeDialogEnhancer.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeManagedForm.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeFormChangeManager.pas"/>
-        <DCCReference Include="..\..\source\IDE\GX_IdeManagedFormHandler.pas"/>
+        <DCCReference Include="..\..\Source\IDE\GX_IdeManagedFormHandler.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_ConfigureFormEnhancements.pas">
             <Form>frConfigureFormEnhancements</Form>
             <DesignClass>TFrame</DesignClass>
@@ -504,6 +508,27 @@
             <Form>fmUsageStatistics</Form>
         </DCCReference>
         <DCCReference Include="..\..\Source\Utils\GX_dzDateUtils.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_UnitExportsParser.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_dzNamedThread.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_DummyWizard.pas"/>
+        <DCCReference Include="..\..\Source\IDE\GX_IdeMessageAutoClose.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_MemoEscFix.pas"/>
+        <DCCReference Include="..\..\Source\KeyboardShortcuts\GX_KeyboardShortcuts.pas">
+            <Form>fmGxKeyboardShortcuts</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\IDE\GX_IdeDockFormEnhancer.pas"/>
+        <DCCReference Include="..\..\Source\AddDockWindow\GX_AddDockWindow.pas">
+            <Form>fmGxDockForm</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Editor\GX_eRemoveMatchingLines.pas">
+            <Form>fmRemoveMatchingLinesExpertConfig</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\TabOrder\GX_TabOrderOptions.pas">
+            <Form>fmTabOrderOptions</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\ide\GX_IdeDetectForms.pas"/>
+        <DCCReference Include="..\..\source\framework\GX_dzCompilerAndRtlVersions.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_dzMiscUtils.pas"/>
         <RcCompile Include="..\..\images\GXIcons.rc">
             <Form>GXIcons.res</Form>
         </RcCompile>
