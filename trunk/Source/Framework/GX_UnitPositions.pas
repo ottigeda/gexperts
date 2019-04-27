@@ -31,8 +31,7 @@ implementation
 uses
   SysUtils, GX_OtaUtils, GX_GenericUtils, mwPasParserTypes;
 
-resourcestring
-  // todo: Why are these ResourceStrings? They will never get translated.
+const
   SUnitName = 'unit';
   SProgramName = 'program';
   SLibraryName = 'library';
