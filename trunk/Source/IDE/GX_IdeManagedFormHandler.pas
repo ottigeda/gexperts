@@ -466,10 +466,13 @@ begin
 
   // ** Component menu **
 
+{$IFNDEF GX_VER330_up} // RAD Studio 10.3 Rio (27; BDS 20)
   // Delphi 6/7/2005-2010/XE-XE8/10/10.1/10.2: Component -> Install Packages -> Components
+  // does not work for Delphi 10.3 (bug #123)
   Reg(TManagedFormHandlerPakComponentsDlg.Create(
     'TPakComponentsDlg', 'Components (in Package)',
     [sfcMakeSizable, sfcStoreSize, sfcStorePosition]));
+{$ENDIF}
 
   // ** Tools menu **
 
