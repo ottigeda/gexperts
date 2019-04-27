@@ -148,12 +148,12 @@ type
     FIdentifiers: TStrings;
     FPaths: TStringList;
     FCacheDirBS: string;
+    FParsedUnitsCount: Integer;
+    FLoadedUnitsCount: Integer;
 {$IFDEF DO_TIMING}
     FLoadingTimeMS: Int64;
     FInsertingTimeMS: Int64;
     FSortingTimeMS: Int64;
-    FParsedUnitsCount: Integer;
-    FLoadedUnitsCount: Integer;
     FProcessingTimeMS: Int64;
     FTotalTimeMS: Int64;
     FSearchingTimeMS: Int64;
@@ -178,9 +178,9 @@ type
     /// @NOTE: Make a copy of these PChars (e.g. assign them to a string because they point
     ///        to entries in FUnits that are freed in the destructor! </summary>
     property Identifiers: TStrings read FIdentifiers;
-{$IFDEF DO_TIMING}
     property ParsedUnitsCount: Integer read FParsedUnitsCount;
     property LoadedUnitsCount: Integer read FLoadedUnitsCount;
+{$IFDEF DO_TIMING}
     property LoadingTimeMS: Int64 read FLoadingTimeMS;
     property InsertingTimeMS: Int64 read FInsertingTimeMS;
     property ParsingTimeMS: Int64 read FParsingTimeMS;
@@ -1140,9 +1140,7 @@ begin
       CacheFn := FCacheDirBS + CacheFn;
     end;
     if (CacheFn <> '') and GxTryGetFileAge(CacheFn, CacheTime) and (UnitTime < CacheTime) then begin
-{$IFDEF  DO_TIMING}
       Inc(FLoadedUnitsCount);
-{$ENDIF}
       sl := TStringList.Create;
       try
 {$IFDEF  DO_TIMING}
@@ -1168,8 +1166,8 @@ begin
         FreeAndNil(sl);
       end;
     end else begin
-{$IFDEF  DO_TIMING}
       Inc(FParsedUnitsCount);
+{$IFDEF  DO_TIMING}
       Parsing.Start;
 {$ENDIF}
       Parser := TUnitExportsParser.Create(fn);
