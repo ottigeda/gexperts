@@ -22,7 +22,7 @@ type
   end;
 
 type
-  TPasteAsType = (paRaw, paStringArray, paAdd, paSLineBreak,
+  TPasteAsType = (paRaw, paStringArray, paAdd, paPlus, paSLineBreak,
     paChar10, paChar13, paChars1310, paCRLF, paCR_LF);
 
 type
@@ -108,7 +108,7 @@ const
 
 const
   cPasteAsTypeText: array[TPasteAsType] of string = (
-    '%s', '%s,', 'Add(%s);', '%s + sLineBreak +',
+    '%s', '%s,', 'Add(%s);', '%s +', '%s + sLineBreak +',
     '%s + #10 +', '%s + #13 +', '%s + #13#10 +', '%s + CRLF +', '%s + CR_LF +');
 
 class procedure TfmEConvertStrings.Execute(_bmp: TBitmap; _sl: TStrings);
@@ -154,7 +154,7 @@ begin
   chk_ExtractRaw.Left := x;
   chk_TrimLeft.Left := x;
   chk_TrimRight.Left := x;
-  chk_Indent.Left := X;
+  chk_Indent.Left := x;
   rg_ConvertType.Left := x;
   chk_QuoteStrings.Left := x;
   chk_AppendSpace.Left := x;
@@ -330,6 +330,7 @@ begin
         ALineStart := _Prefix + 'Add(';
         ALineEnd := ');';
       end;
+    paPlus: ALineEnd := ' +';
     paSLineBreak: ALineEnd := ' + sLineBreak +';
     paChar10: ALineEnd := '#10 +';
     paChar13: ALineEnd := '#13 +';

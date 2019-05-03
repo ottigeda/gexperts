@@ -3,13 +3,13 @@ inherited fmEConvertStrings: TfmEConvertStrings
   Top = 0
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'Convert Strings'
-  ClientHeight = 441
+  ClientHeight = 481
   ClientWidth = 689
   ParentFont = False
   OnResize = FormResize
   DesignSize = (
     689
-    441)
+    481)
   PixelsPerInch = 96
   TextHeight = 13
   object l_Input: TLabel
@@ -30,7 +30,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
   end
   object l_Prefix: TLabel
     Left = 264
-    Top = 328
+    Top = 360
     Width = 28
     Height = 13
     Caption = '&Prefix'
@@ -41,7 +41,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Left = 8
     Top = 24
     Width = 241
-    Height = 369
+    Height = 409
     Anchors = [akLeft, akTop, akBottom]
     ScrollBars = ssBoth
     TabOrder = 0
@@ -52,7 +52,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Left = 440
     Top = 24
     Width = 241
-    Height = 369
+    Height = 409
     Anchors = [akLeft, akTop, akBottom]
     ScrollBars = ssBoth
     TabOrder = 11
@@ -60,7 +60,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
   end
   object chk_QuoteStrings: TCheckBox
     Left = 264
-    Top = 280
+    Top = 312
     Width = 161
     Height = 25
     Caption = '&Quote strings'
@@ -69,7 +69,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
   end
   object chk_AppendSpace: TCheckBox
     Left = 264
-    Top = 304
+    Top = 336
     Width = 161
     Height = 17
     Caption = '&Append space'
@@ -78,7 +78,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
   end
   object b_CopyToClipboard: TButton
     Left = 352
-    Top = 408
+    Top = 448
     Width = 121
     Height = 25
     Anchors = [akRight, akBottom]
@@ -88,7 +88,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
   end
   object b_Insert: TButton
     Left = 480
-    Top = 408
+    Top = 448
     Width = 121
     Height = 25
     Anchors = [akRight, akBottom]
@@ -98,7 +98,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
   end
   object b_Close: TButton
     Left = 608
-    Top = 408
+    Top = 448
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -120,13 +120,14 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Left = 264
     Top = 96
     Width = 161
-    Height = 185
+    Height = 217
     Caption = '&Convert Type'
     ItemIndex = 0
     Items.Strings = (
-      '&1: %s'
-      '&2: %s,'
-      '&3: Add(%s);'
+      '&0: %s'
+      '&1: %s,'
+      '&2: Add(%s);'
+      '&3: %s +'
       '&4: %s + sLineBreak +'
       '&5: %s + #10 +'
       '&6: %s + #13 +'
@@ -138,7 +139,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
   end
   object ed_Prefix: TEdit
     Left = 264
-    Top = 344
+    Top = 376
     Width = 161
     Height = 21
     TabOrder = 8
@@ -146,7 +147,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
   end
   object b_PasteFromClipboard: TButton
     Left = 8
-    Top = 408
+    Top = 448
     Width = 121
     Height = 25
     Anchors = [akLeft, akBottom]
@@ -156,7 +157,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
   end
   object b_ToSQL: TButton
     Left = 264
-    Top = 376
+    Top = 408
     Width = 75
     Height = 25
     Caption = '-> &SQL'
@@ -165,7 +166,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
   end
   object b_ToTStrings: TButton
     Left = 352
-    Top = 376
+    Top = 408
     Width = 75
     Height = 25
     Caption = '-> &TStrings'
