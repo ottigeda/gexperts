@@ -200,4 +200,25 @@ inherited fmEConvertStrings: TfmEConvertStrings
     TabOrder = 4
     OnClick = chk_IndentClick
   end
+  object b_Favorites: TButton
+    Left = 136
+    Top = 448
+    Width = 75
+    Height = 25
+    Anchors = [akLeft, akBottom]
+    Caption = 'Favorites >'
+    TabOrder = 16
+    OnClick = b_FavoritesClick
+  end
+  object pm_Favorites: TPopupMenu
+    Left = 160
+    Top = 432
+    object mi_FavoritesSaveAs: TMenuItem
+      Caption = 'Save as ...'
+      OnClick = mi_FavoritesSaveAsClick
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+  end
 end

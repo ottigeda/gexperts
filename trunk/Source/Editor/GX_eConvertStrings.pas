@@ -15,7 +15,8 @@ uses
   StdCtrls,
   ExtCtrls,
   GX_BaseForm,
-  GX_MemoEscFix;
+  GX_MemoEscFix,
+  Menus;
 
 type
   TMemo = class(TMemoEscFix)
@@ -46,6 +47,10 @@ type
     chk_TrimLeft: TCheckBox;
     chk_TrimRight: TCheckBox;
     chk_Indent: TCheckBox;
+    b_Favorites: TButton;
+    pm_Favorites: TPopupMenu;
+    N1: TMenuItem;
+    mi_FavoritesSaveAs: TMenuItem;
     procedure chk_ExtractRawClick(Sender: TObject);
     procedure rg_ConvertTypeClick(Sender: TObject);
     procedure b_CopyToClipboardClick(Sender: TObject);
@@ -61,6 +66,8 @@ type
     procedure chk_TrimLeftClick(Sender: TObject);
     procedure chk_TrimRightClick(Sender: TObject);
     procedure chk_IndentClick(Sender: TObject);
+    procedure b_FavoritesClick(Sender: TObject);
+    procedure mi_FavoritesSaveAsClick(Sender: TObject);
   private
     FUpdating: Boolean;
     procedure SetData(_sl: TStrings);
@@ -72,6 +79,7 @@ type
     procedure LoadSettings;
     procedure SaveSettings;
     procedure TrimStrings(_sl: TStrings; _TrimLeft, _TrimRight: Boolean);
+    procedure OnFavoriteClick(_Sender: TObject);
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
@@ -90,7 +98,9 @@ uses
   GX_OtaUtils,
   GX_EditorExpert,
   GX_ConfigurationInfo,
-  ToolsAPI;
+  ToolsAPI,
+  GX_dzFileUtils,
+  IniFiles;
 
 type
   TConvertStringsExpert = class(TEditorExpert)
@@ -126,9 +136,29 @@ begin
 end;
 
 constructor TfmEConvertStrings.Create(_Owner: TComponent);
+var
+  ConfigDir: string;
+  Favs: TStringList;
+  i: Integer;
+  FavName: string;
+  fn: string;
 begin
   inherited;
   TControl_SetMinConstraints(Self);
+
+  ConfigDir := AddSlash(ConfigInfo.ConfigPath + TConvertStringsExpert.ConfigurationKey);
+
+  Favs := TStringList.Create;
+  try
+    TSimpleDirEnumerator.EnumFilesOnly(ConfigDir + '*.ini', Favs, True);
+    for i := 0 to Favs.Count - 1 do begin
+      fn := Favs[i];
+      FavName := ChangeFileExt(ExtractFileName(fn), '');
+      TPopupMenu_AppendMenuItem(pm_Favorites, FavName, OnFavoriteClick);
+    end;
+  finally
+    FreeAndNil(Favs);
+  end;
 end;
 
 destructor TfmEConvertStrings.Destroy;
@@ -172,6 +202,73 @@ begin
   m_Output.Left := x;
 end;
 
+procedure TfmEConvertStrings.mi_FavoritesSaveAsClick(Sender: TObject);
+var
+  NewFavName: string;
+  FavDir: string;
+  fn: string;
+  ini: TMemIniFile;
+  Exists: Boolean;
+begin
+  if not InputQuery('Favorite Name', 'New Favorite', NewFavName) then
+    Exit; //==>
+
+  NewFavName := Trim(NewFavName);
+  if NewFavName = '' then
+    Exit; //==>
+
+  FavDir := ConfigInfo.ConfigPath + TConvertStringsExpert.ConfigurationKey;
+  ForceDirectories(FavDir);
+  fn := AddSlash(FavDir) + NewFavName + '.INI';
+  Exists := FileExists(fn);
+  if Exists then
+    if mrYes <> MessageDlg('A favorite with this name already exists.' + #13 + #10 + 'Overwrite it?', mtWarning, [mbYes, mbCancel], 0) then
+      Exit; //==>
+
+  ini := TMemIniFile.Create(fn);
+  try
+    ini.WriteBool('Favorite', 'ExtractRaw', chk_ExtractRaw.Checked);
+    ini.WriteBool('Favorite', 'TrimLeft', chk_TrimLeft.Checked);
+    ini.WriteBool('Favorite', 'TrimRight', chk_TrimRight.Checked);
+    ini.WriteBool('Favorite', 'KeepIndent', chk_Indent.Checked);
+    ini.WriteInteger('Favorite', 'ConvertType', rg_ConvertType.ItemIndex);
+    ini.WriteBool('Favorite', 'QuoteStrings', chk_QuoteStrings.Checked);
+    ini.WriteBool('Favorite', 'AppendSpace', chk_AppendSpace.Checked);
+    ini.WriteString('Favorite', 'Prefix', ed_Prefix.Text);
+    ini.UpdateFile;
+  finally
+    FreeAndNil(ini);
+  end;
+
+  if not Exists then
+    TPopupMenu_AppendMenuItem(pm_Favorites, NewFavName, OnFavoriteClick);
+end;
+
+procedure TfmEConvertStrings.OnFavoriteClick(_Sender: TObject);
+var
+  mi: TMenuItem;
+  FavName: string;
+  fn: string;
+  ini: TMemIniFile;
+begin
+  mi := _Sender as TMenuItem;
+  FavName := Menus.StripHotkey(mi.Caption);
+  fn := AddSlash(ConfigInfo.ConfigPath + TConvertStringsExpert.ConfigurationKey) + FavName + '.ini';
+  ini := TMemIniFile.Create(fn);
+  try
+    chk_ExtractRaw.Checked := ini.ReadBool('Favorite', 'ExtractRaw', False);
+    chk_TrimLeft.Checked := ini.ReadBool('Favorite', 'TrimLeft', False);
+    chk_TrimRight.Checked := ini.ReadBool('Favorite', 'TrimRight', False);
+    chk_Indent.Checked := ini.ReadBool('Favorite', 'KeepIndent', False);
+    rg_ConvertType.ItemIndex := ini.ReadInteger('Favorite', 'ConvertType', 0);
+    chk_QuoteStrings.Checked := ini.ReadBool('Favorite', 'QuoteStrings', False);
+    chk_AppendSpace.Checked := ini.ReadBool('Favorite', 'AppendSpace', False);
+    ed_Prefix.Text := ini.ReadString('Favorite', 'Prefix', '');
+  finally
+    FreeAndNil(ini);
+  end;
+end;
+
 procedure TfmEConvertStrings.SaveSettings;
 var
   GXSettings: TGExpertsSettings;
@@ -186,9 +283,11 @@ begin
     Settings.WriteBool('ExtractRaw', chk_ExtractRaw.Checked);
     Settings.WriteBool('TrimLeft', chk_TrimLeft.Checked);
     Settings.WriteBool('TrimRight', chk_TrimRight.Checked);
+    Settings.WriteBool('KeepIndent', chk_Indent.Checked);
     Settings.WriteInteger('ConvertType', rg_ConvertType.ItemIndex);
     Settings.WriteBool('QuoteStrings', chk_QuoteStrings.Checked);
     Settings.WriteBool('AppendSpace', chk_AppendSpace.Checked);
+    Settings.WriteString('Prefix', ed_Prefix.Text);
   finally
     FreeAndNil(Settings);
     FreeAndNil(GXSettings);
@@ -250,9 +349,11 @@ begin
     chk_ExtractRaw.Checked := Settings.ReadBool('ExtractRaw', True);
     chk_TrimLeft.Checked := Settings.ReadBool('TrimLeft', True);
     chk_TrimRight.Checked := Settings.ReadBool('TrimRight', True);
+    chk_Indent.Checked := Settings.ReadBool('KeepIndent', False);
     rg_ConvertType.ItemIndex := Settings.ReadInteger('ConvertType', Ord(paAdd));
     chk_QuoteStrings.Checked := Settings.ReadBool('QuoteStrings', True);
     chk_AppendSpace.Checked := Settings.ReadBool('AppendSpace', True);
+    ed_Prefix.Text := Settings.ReadString('Prefix', '');
   finally
     FreeAndNil(Settings);
     FreeAndNil(GXSettings);
@@ -456,6 +557,16 @@ end;
 procedure TfmEConvertStrings.b_CopyToClipboardClick(Sender: TObject);
 begin
   Clipboard.AsText := m_Output.Lines.Text;
+end;
+
+procedure TfmEConvertStrings.b_FavoritesClick(Sender: TObject);
+var
+  Point: TPoint;
+begin
+  Point.x := b_Favorites.Width;
+  Point.Y := 0;
+  Point := b_Favorites.ClientToScreen(Point);
+  pm_Favorites.Popup(Point.x, Point.Y);
 end;
 
 procedure TfmEConvertStrings.b_InsertClick(Sender: TObject);
