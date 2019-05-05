@@ -30,7 +30,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
   end
   object l_Prefix: TLabel
     Left = 264
-    Top = 360
+    Top = 400
     Width = 28
     Height = 13
     Caption = '&Prefix'
@@ -60,20 +60,20 @@ inherited fmEConvertStrings: TfmEConvertStrings
   end
   object chk_QuoteStrings: TCheckBox
     Left = 264
-    Top = 312
+    Top = 352
     Width = 161
     Height = 25
     Caption = '&Quote strings'
-    TabOrder = 6
+    TabOrder = 8
     OnClick = chk_QuoteStringsClick
   end
   object chk_AppendSpace: TCheckBox
     Left = 264
-    Top = 336
+    Top = 376
     Width = 161
     Height = 17
     Caption = '&Append space'
-    TabOrder = 7
+    TabOrder = 9
     OnClick = chk_AppendSpaceClick
   end
   object b_CopyToClipboard: TButton
@@ -83,7 +83,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'Copy To Clip&board'
-    TabOrder = 13
+    TabOrder = 12
     OnClick = b_CopyToClipboardClick
   end
   object b_Insert: TButton
@@ -93,7 +93,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'I&nsert and Close'
-    TabOrder = 14
+    TabOrder = 13
     OnClick = b_InsertClick
   end
   object b_Close: TButton
@@ -105,20 +105,20 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Cancel = True
     Caption = 'Close'
     ModalResult = 2
-    TabOrder = 15
+    TabOrder = 14
   end
   object chk_ExtractRaw: TCheckBox
     Left = 264
-    Top = 24
+    Top = 64
     Width = 161
     Height = 17
     Caption = '&Extract Raw Strings'
-    TabOrder = 1
+    TabOrder = 3
     OnClick = chk_ExtractRawClick
   end
   object rg_ConvertType: TRadioGroup
     Left = 264
-    Top = 96
+    Top = 136
     Width = 161
     Height = 217
     Caption = '&Convert Type'
@@ -134,15 +134,15 @@ inherited fmEConvertStrings: TfmEConvertStrings
       '&7: %s + #13#10 +'
       '&8: %s + CRLF +'
       '&9: %s + CR_LF +')
-    TabOrder = 5
+    TabOrder = 7
     OnClick = rg_ConvertTypeClick
   end
   object ed_Prefix: TEdit
     Left = 264
-    Top = 376
+    Top = 416
     Width = 161
     Height = 21
-    TabOrder = 8
+    TabOrder = 10
     OnChange = ed_PrefixChange
   end
   object b_PasteFromClipboard: TButton
@@ -152,73 +152,68 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Height = 25
     Anchors = [akLeft, akBottom]
     Caption = 'Paste &From Clipboard'
-    TabOrder = 12
+    TabOrder = 1
     OnClick = b_PasteFromClipboardClick
-  end
-  object b_ToSQL: TButton
-    Left = 264
-    Top = 408
-    Width = 75
-    Height = 25
-    Caption = '-> &SQL'
-    TabOrder = 9
-    OnClick = b_ToSQLClick
-  end
-  object b_ToTStrings: TButton
-    Left = 352
-    Top = 408
-    Width = 75
-    Height = 25
-    Caption = '-> &TStrings'
-    TabOrder = 10
-    OnClick = b_ToTStringsClick
   end
   object chk_TrimLeft: TCheckBox
     Left = 264
-    Top = 40
+    Top = 80
     Width = 161
     Height = 17
     Caption = 'Trim &Left'
-    TabOrder = 2
+    TabOrder = 4
     OnClick = chk_TrimLeftClick
   end
   object chk_TrimRight: TCheckBox
     Left = 264
-    Top = 56
+    Top = 96
     Width = 161
     Height = 17
     Caption = 'Trim &Right'
-    TabOrder = 3
+    TabOrder = 5
     OnClick = chk_TrimRightClick
   end
   object chk_Indent: TCheckBox
     Left = 264
-    Top = 72
+    Top = 112
     Width = 97
     Height = 17
     Caption = '&Keep Indent'
-    TabOrder = 4
+    TabOrder = 6
     OnClick = chk_IndentClick
   end
   object b_Favorites: TButton
-    Left = 136
-    Top = 448
-    Width = 75
+    Left = 264
+    Top = 24
+    Width = 161
     Height = 25
+    Action = act_Favorites
     Anchors = [akLeft, akBottom]
-    Caption = 'Favorites >'
-    TabOrder = 16
-    OnClick = b_FavoritesClick
+    TabOrder = 2
   end
   object pm_Favorites: TPopupMenu
-    Left = 160
-    Top = 432
+    OnPopup = pm_FavoritesPopup
+    Left = 384
+    Top = 16
     object mi_FavoritesSaveAs: TMenuItem
       Caption = 'Save as ...'
       OnClick = mi_FavoritesSaveAsClick
     end
     object N1: TMenuItem
       Caption = '-'
+    end
+    object mi_Opendirectory: TMenuItem
+      Caption = 'Open directory'
+      OnClick = mi_OpendirectoryClick
+    end
+  end
+  object TheActionList: TActionList
+    Left = 184
+    Top = 440
+    object act_Favorites: TAction
+      Caption = 'Favorites (F10) >'
+      ShortCut = 121
+      OnExecute = act_FavoritesExecute
     end
   end
 end
