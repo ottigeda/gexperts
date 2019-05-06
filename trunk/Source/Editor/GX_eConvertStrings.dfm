@@ -17,7 +17,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Top = 8
     Width = 26
     Height = 13
-    Caption = '&Input'
+    Caption = 'Input'
     FocusControl = m_Input
   end
   object l_Output: TLabel
@@ -25,17 +25,24 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Top = 8
     Width = 34
     Height = 13
-    Caption = '&Output'
+    Caption = 'Output'
     FocusControl = m_Output
   end
   object l_Prefix: TLabel
     Left = 264
-    Top = 400
-    Width = 28
+    Top = 216
+    Width = 82
     Height = 13
-    Caption = '&Prefix'
+    Caption = 'Prefix for all lines'
     FocusControl = ed_Prefix
     OnClick = b_CopyToClipboardClick
+  end
+  object l_Suffix: TLabel
+    Left = 264
+    Top = 320
+    Width = 82
+    Height = 13
+    Caption = 'Suffix for all lines'
   end
   object m_Input: TMemo
     Left = 8
@@ -44,7 +51,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Height = 409
     Anchors = [akLeft, akTop, akBottom]
     ScrollBars = ssBoth
-    TabOrder = 0
+    TabOrder = 18
     WordWrap = False
     OnChange = m_InputChange
   end
@@ -55,25 +62,25 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Height = 409
     Anchors = [akLeft, akTop, akBottom]
     ScrollBars = ssBoth
-    TabOrder = 11
+    TabOrder = 17
     WordWrap = False
   end
   object chk_QuoteStrings: TCheckBox
     Left = 264
-    Top = 352
+    Top = 160
     Width = 161
-    Height = 25
+    Height = 17
     Caption = '&Quote strings'
-    TabOrder = 8
+    TabOrder = 6
     OnClick = chk_QuoteStringsClick
   end
   object chk_AppendSpace: TCheckBox
     Left = 264
-    Top = 376
+    Top = 184
     Width = 161
     Height = 17
     Caption = '&Append space'
-    TabOrder = 9
+    TabOrder = 7
     OnClick = chk_AppendSpaceClick
   end
   object b_CopyToClipboard: TButton
@@ -83,7 +90,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'Copy To Clip&board'
-    TabOrder = 12
+    TabOrder = 14
     OnClick = b_CopyToClipboardClick
   end
   object b_Insert: TButton
@@ -93,7 +100,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'I&nsert and Close'
-    TabOrder = 13
+    TabOrder = 15
     OnClick = b_InsertClick
   end
   object b_Close: TButton
@@ -105,7 +112,7 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Cancel = True
     Caption = 'Close'
     ModalResult = 2
-    TabOrder = 14
+    TabOrder = 16
   end
   object chk_ExtractRaw: TCheckBox
     Left = 264
@@ -113,36 +120,15 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Width = 161
     Height = 17
     Caption = '&Extract Raw Strings'
-    TabOrder = 3
+    TabOrder = 2
     OnClick = chk_ExtractRawClick
-  end
-  object rg_ConvertType: TRadioGroup
-    Left = 264
-    Top = 136
-    Width = 161
-    Height = 217
-    Caption = '&Convert Type'
-    ItemIndex = 0
-    Items.Strings = (
-      '&0: %s'
-      '&1: %s,'
-      '&2: Add(%s);'
-      '&3: %s +'
-      '&4: %s + sLineBreak +'
-      '&5: %s + #10 +'
-      '&6: %s + #13 +'
-      '&7: %s + #13#10 +'
-      '&8: %s + CRLF +'
-      '&9: %s + CR_LF +')
-    TabOrder = 7
-    OnClick = rg_ConvertTypeClick
   end
   object ed_Prefix: TEdit
     Left = 264
-    Top = 416
+    Top = 232
     Width = 161
     Height = 21
-    TabOrder = 10
+    TabOrder = 8
     OnChange = ed_PrefixChange
   end
   object b_PasteFromClipboard: TButton
@@ -152,34 +138,34 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Height = 25
     Anchors = [akLeft, akBottom]
     Caption = 'Paste &From Clipboard'
-    TabOrder = 1
+    TabOrder = 0
     OnClick = b_PasteFromClipboardClick
   end
   object chk_TrimLeft: TCheckBox
     Left = 264
-    Top = 80
+    Top = 88
     Width = 161
     Height = 17
     Caption = 'Trim &Left'
-    TabOrder = 4
+    TabOrder = 3
     OnClick = chk_TrimLeftClick
   end
   object chk_TrimRight: TCheckBox
     Left = 264
-    Top = 96
+    Top = 112
     Width = 161
     Height = 17
     Caption = 'Trim &Right'
-    TabOrder = 5
+    TabOrder = 4
     OnClick = chk_TrimRightClick
   end
   object chk_Indent: TCheckBox
     Left = 264
-    Top = 112
-    Width = 97
+    Top = 136
+    Width = 161
     Height = 17
     Caption = '&Keep Indent'
-    TabOrder = 6
+    TabOrder = 5
     OnClick = chk_IndentClick
   end
   object b_Favorites: TButton
@@ -189,7 +175,51 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Height = 25
     Action = act_Favorites
     Anchors = [akLeft, akBottom]
-    TabOrder = 2
+    TabOrder = 1
+  end
+  object ed_PrefixFirst: TEdit
+    Left = 264
+    Top = 280
+    Width = 161
+    Height = 21
+    TabOrder = 10
+    OnChange = ed_PrefixFirstChange
+  end
+  object chk_PrefixFirst: TCheckBox
+    Left = 264
+    Top = 264
+    Width = 161
+    Height = 17
+    Margins.Bottom = 0
+    Caption = 'Same Prefix for first line'
+    TabOrder = 9
+    OnClick = chk_PrefixFirstClick
+  end
+  object ed_Suffix: TEdit
+    Left = 264
+    Top = 336
+    Width = 161
+    Height = 21
+    TabOrder = 11
+    OnChange = ed_SuffixChange
+  end
+  object chk_SuffixLast: TCheckBox
+    Left = 264
+    Top = 368
+    Width = 161
+    Height = 17
+    Margins.Bottom = 0
+    Caption = 'Same suffix for last line'
+    TabOrder = 12
+    OnClick = chk_SuffixLastClick
+  end
+  object ed_SuffixLast: TEdit
+    Left = 264
+    Top = 384
+    Width = 161
+    Height = 21
+    TabOrder = 13
+    OnChange = ed_SuffixLastChange
   end
   object pm_Favorites: TPopupMenu
     OnPopup = pm_FavoritesPopup

@@ -24,10 +24,6 @@ type
   end;
 
 type
-  TPasteAsType = (paRaw, paStringArray, paAdd, paPlus, paSLineBreak,
-    paChar10, paChar13, paChars1310, paCRLF, paCR_LF);
-
-type
   TfmEConvertStrings = class(TfmBaseForm)
     m_Input: TMemo;
     l_Input: TLabel;
@@ -39,7 +35,6 @@ type
     b_Insert: TButton;
     b_Close: TButton;
     chk_ExtractRaw: TCheckBox;
-    rg_ConvertType: TRadioGroup;
     l_Prefix: TLabel;
     ed_Prefix: TEdit;
     b_PasteFromClipboard: TButton;
@@ -53,6 +48,12 @@ type
     TheActionList: TActionList;
     act_Favorites: TAction;
     mi_Opendirectory: TMenuItem;
+    ed_PrefixFirst: TEdit;
+    l_Suffix: TLabel;
+    chk_PrefixFirst: TCheckBox;
+    ed_Suffix: TEdit;
+    chk_SuffixLast: TCheckBox;
+    ed_SuffixLast: TEdit;
     procedure chk_ExtractRawClick(Sender: TObject);
     procedure rg_ConvertTypeClick(Sender: TObject);
     procedure b_CopyToClipboardClick(Sender: TObject);
@@ -70,14 +71,20 @@ type
     procedure act_FavoritesExecute(Sender: TObject);
     procedure pm_FavoritesPopup(Sender: TObject);
     procedure mi_OpendirectoryClick(Sender: TObject);
+    procedure chk_PrefixFirstClick(Sender: TObject);
+    procedure ed_PrefixFirstChange(Sender: TObject);
+    procedure ed_SuffixChange(Sender: TObject);
+    procedure chk_SuffixLastClick(Sender: TObject);
+    procedure ed_SuffixLastChange(Sender: TObject);
   private
     FUpdating: Boolean;
     procedure SetData(_sl: TStrings);
     procedure ConvertStrings;
     procedure ExtractRawStrings(_sl: TStrings; _AddBaseIndent, _TrimLeft, _TrimRight: Boolean);
     function DetermineIndent(_sl: TStrings): Integer;
-    procedure ConvertToCode(_sl: TStrings; _Indent: Boolean; _PasteAsType: TPasteAsType;
-      _QuoteStrings: Boolean; _AppendSpace: Boolean; const _Prefix: string);
+    procedure ConvertToCode(_sl: TStrings; _Indent: Boolean;
+      _QuoteStrings: Boolean; _AppendSpace: Boolean;
+      const _FirstPrefix, _Prefix, _Suffix, _LastSuffix: string);
     procedure LoadSettings;
     procedure SaveSettings;
     procedure TrimStrings(_sl: TStrings; _TrimLeft, _TrimRight: Boolean);
@@ -95,14 +102,16 @@ implementation
 uses
   StrUtils,
   Clipbrd,
+  ToolsAPI,
+  IniFiles,
+  ShellAPI,
   GX_dzVclUtils,
   GX_GenericUtils,
   GX_OtaUtils,
   GX_EditorExpert,
   GX_ConfigurationInfo,
-  ToolsAPI,
   GX_dzFileUtils,
-  IniFiles, ShellAPI;
+  GX_dzClassUtils;
 
 type
   TConvertStringsExpert = class(TEditorExpert)
@@ -117,11 +126,6 @@ type
 
 const
   SINGLE_QUOTE = '''';
-
-const
-  cPasteAsTypeText: array[TPasteAsType] of string = (
-    '%s', '%s,', 'Add(%s);', '%s +', '%s + sLineBreak +',
-    '%s + #10 +', '%s + #13 +', '%s + #13#10 +', '%s + CRLF +', '%s + CR_LF +');
 
 class procedure TfmEConvertStrings.Execute(_bmp: TBitmap; _sl: TStrings);
 var
@@ -162,17 +166,22 @@ var
 begin
   m := m_Input.Left;
   cw := ClientWidth;
-  x := (cw - rg_ConvertType.Width) div 2;
+  x := (cw - b_Favorites.Width) div 2;
+  b_Favorites.Left := x;
   chk_ExtractRaw.Left := x;
   chk_TrimLeft.Left := x;
   chk_TrimRight.Left := x;
   chk_Indent.Left := x;
-  rg_ConvertType.Left := x;
   chk_QuoteStrings.Left := x;
   chk_AppendSpace.Left := x;
   l_Prefix.Left := x;
   ed_Prefix.Left := x;
-  b_Favorites.Left := x;
+  chk_PrefixFirst.Left := x;
+  l_Suffix.Left := x;
+  ed_PrefixFirst.Left := x;
+  ed_Suffix.Left := x;
+  chk_SuffixLast.Left := x;
+  ed_SuffixLast.Left := x;
 
   w := x - 2 * m;
   m_Input.Width := w;
@@ -188,7 +197,7 @@ var
   NewFavName: string;
   FavDir: string;
   fn: string;
-  ini: TMemIniFile;
+  Section: TIniSection;
   Exists: Boolean;
 begin
   if not InputQuery('Favorite Name', 'New Favorite', NewFavName) then
@@ -206,19 +215,24 @@ begin
     if mrYes <> MessageDlg('A favorite with this name already exists.' + #13 + #10 + 'Overwrite it?', mtWarning, [mbYes, mbCancel], 0) then
       Exit; //==>
 
-  ini := TMemIniFile.Create(fn);
+  Section := TIniSection.Create(fn, 'Favorite');
   try
-    ini.WriteBool('Favorite', 'ExtractRaw', chk_ExtractRaw.Checked);
-    ini.WriteBool('Favorite', 'TrimLeft', chk_TrimLeft.Checked);
-    ini.WriteBool('Favorite', 'TrimRight', chk_TrimRight.Checked);
-    ini.WriteBool('Favorite', 'KeepIndent', chk_Indent.Checked);
-    ini.WriteInteger('Favorite', 'ConvertType', rg_ConvertType.ItemIndex);
-    ini.WriteBool('Favorite', 'QuoteStrings', chk_QuoteStrings.Checked);
-    ini.WriteBool('Favorite', 'AppendSpace', chk_AppendSpace.Checked);
-    ini.WriteString('Favorite', 'Prefix', ed_Prefix.Text);
-    ini.UpdateFile;
+    Section.WriteBool('ExtractRaw', chk_ExtractRaw.Checked);
+    Section.WriteBool('TrimLeft', chk_TrimLeft.Checked);
+    Section.WriteBool('TrimRight', chk_TrimRight.Checked);
+    Section.WriteBool('KeepIndent', chk_Indent.Checked);
+    Section.WriteBool('QuoteStrings', chk_QuoteStrings.Checked);
+    Section.WriteBool('AppendSpace', chk_AppendSpace.Checked);
+    Section.WriteString('Prefix', ed_Prefix.Text);
+    Section.WriteString('Prefix', ed_Prefix.Text);
+    Section.WriteBool('SamePrefix', chk_PrefixFirst.Checked);
+    Section.WriteString('FirstPrefix', ed_PrefixFirst.Text);
+    Section.WriteString('Suffix', ed_Suffix.Text);
+    Section.WriteBool('SameSuffix', chk_SuffixLast.Checked);
+    Section.WriteString('LastSuffix', ed_SuffixLast.Text);
+    Section.UpdateFile;
   finally
-    FreeAndNil(ini);
+    FreeAndNil(Section);
   end;
 
   if not Exists then
@@ -230,23 +244,27 @@ var
   mi: TMenuItem;
   FavName: string;
   fn: string;
-  ini: TMemIniFile;
+  Section: TIniSection;
 begin
   mi := _Sender as TMenuItem;
   FavName := Menus.StripHotkey(mi.Caption);
   fn := AddSlash(ConfigInfo.ConfigPath + TConvertStringsExpert.ConfigurationKey) + FavName + '.ini';
-  ini := TMemIniFile.Create(fn);
+  Section := TIniSection.Create(fn, 'Favorite');
   try
-    chk_ExtractRaw.Checked := ini.ReadBool('Favorite', 'ExtractRaw', False);
-    chk_TrimLeft.Checked := ini.ReadBool('Favorite', 'TrimLeft', False);
-    chk_TrimRight.Checked := ini.ReadBool('Favorite', 'TrimRight', False);
-    chk_Indent.Checked := ini.ReadBool('Favorite', 'KeepIndent', False);
-    rg_ConvertType.ItemIndex := ini.ReadInteger('Favorite', 'ConvertType', 0);
-    chk_QuoteStrings.Checked := ini.ReadBool('Favorite', 'QuoteStrings', False);
-    chk_AppendSpace.Checked := ini.ReadBool('Favorite', 'AppendSpace', False);
-    ed_Prefix.Text := ini.ReadString('Favorite', 'Prefix', '');
+    chk_ExtractRaw.Checked := Section.ReadBool('ExtractRaw', False);
+    chk_TrimLeft.Checked := Section.ReadBool('TrimLeft', False);
+    chk_TrimRight.Checked := Section.ReadBool('TrimRight', False);
+    chk_Indent.Checked := Section.ReadBool('KeepIndent', False);
+    chk_QuoteStrings.Checked := Section.ReadBool('QuoteStrings', False);
+    chk_AppendSpace.Checked := Section.ReadBool('AppendSpace', False);
+    ed_Prefix.Text := Section.ReadString('Prefix', '');
+    chk_PrefixFirst.Checked := Section.ReadBool('SamePrefix', True);
+    ed_PrefixFirst.Text := Section.ReadString('FirstPrefix', '');
+    ed_Suffix.Text := Section.ReadString('Suffix', '');
+    chk_SuffixLast.Checked := Section.ReadBool('SameSuffix', True);
+    ed_SuffixLast.Text := Section.ReadString('LastSuffix', '')
   finally
-    FreeAndNil(ini);
+    FreeAndNil(Section);
   end;
 end;
 
@@ -306,10 +324,15 @@ begin
     Settings.WriteBool('TrimLeft', chk_TrimLeft.Checked);
     Settings.WriteBool('TrimRight', chk_TrimRight.Checked);
     Settings.WriteBool('KeepIndent', chk_Indent.Checked);
-    Settings.WriteInteger('ConvertType', rg_ConvertType.ItemIndex);
     Settings.WriteBool('QuoteStrings', chk_QuoteStrings.Checked);
     Settings.WriteBool('AppendSpace', chk_AppendSpace.Checked);
     Settings.WriteString('Prefix', ed_Prefix.Text);
+    Settings.WriteBool('SamePrefix', chk_PrefixFirst.Checked);
+    Settings.WriteString('FirstPrefix', ed_PrefixFirst.Text);
+    Settings.WriteString('Prefix', ed_Prefix.Text);
+    Settings.WriteString('Suffix', ed_Suffix.Text);
+    Settings.WriteBool('SameSuffix', chk_SuffixLast.Checked);
+    Settings.WriteString('LastSuffix', ed_SuffixLast.Text);
   finally
     FreeAndNil(Settings);
     FreeAndNil(GXSettings);
@@ -368,14 +391,19 @@ begin
   try
     Settings := GXSettings.CreateExpertSettings(TConvertStringsExpert.ConfigurationKey);
     Settings.LoadForm('Window', Self);
+
     chk_ExtractRaw.Checked := Settings.ReadBool('ExtractRaw', True);
     chk_TrimLeft.Checked := Settings.ReadBool('TrimLeft', True);
     chk_TrimRight.Checked := Settings.ReadBool('TrimRight', True);
     chk_Indent.Checked := Settings.ReadBool('KeepIndent', False);
-    rg_ConvertType.ItemIndex := Settings.ReadInteger('ConvertType', Ord(paAdd));
     chk_QuoteStrings.Checked := Settings.ReadBool('QuoteStrings', True);
     chk_AppendSpace.Checked := Settings.ReadBool('AppendSpace', True);
     ed_Prefix.Text := Settings.ReadString('Prefix', '');
+    chk_PrefixFirst.Checked := Settings.ReadBool('SamePrefix', True);
+    ed_PrefixFirst.Text := Settings.ReadString('FirstPrefix', '');
+    ed_Suffix.Text := Settings.ReadString('Suffix', '');
+    chk_SuffixLast.Checked := Settings.ReadBool('SameSuffix', True);
+    ed_SuffixLast.Text := Settings.ReadString('LastSuffix', '');
   finally
     FreeAndNil(Settings);
     FreeAndNil(GXSettings);
@@ -429,11 +457,14 @@ begin
   end;
 end;
 
-procedure TfmEConvertStrings.ConvertToCode(_sl: TStrings; _Indent: Boolean; _PasteAsType: TPasteAsType;
-  _QuoteStrings: Boolean; _AppendSpace: Boolean; const _Prefix: string);
+procedure TfmEConvertStrings.ConvertToCode(_sl: TStrings;
+  _Indent, _QuoteStrings, _AppendSpace: Boolean;
+  const _FirstPrefix, _Prefix, _Suffix, _LastSuffix: string);
 var
-  i, FirstCharPos: Integer;
-  ALine, BaseIndent, ALineStart, ALineEnd, ALineStartBase, AAddDot: string;
+  cnt: Integer;
+  i: Integer;
+  FirstCharPos: Integer;
+  Line, BaseIndent: string;
 begin
   if _Indent then
     FirstCharPos := DetermineIndent(_sl)
@@ -442,39 +473,24 @@ begin
   // this works, because FirstCharPos is the smallest Indent for all lines
   BaseIndent := LeftStr(_sl[0], FirstCharPos - 1);
 
-  ALineStart := '';
-  ALineEnd := '';
-  ALineStartBase := '';
-  AAddDot := '';
-  case _PasteAsType of
-    paRaw: ; // no change
-    paStringArray: ALineEnd := ',';
-    paAdd: begin
-        ALineStart := _Prefix + 'Add(';
-        ALineEnd := ');';
-      end;
-    paPlus: ALineEnd := ' +';
-    paSLineBreak: ALineEnd := ' + sLineBreak +';
-    paChar10: ALineEnd := '#10 +';
-    paChar13: ALineEnd := '#13 +';
-    paChars1310: ALineEnd := '#13#10 +';
-    paCRLF: ALineEnd := ' + CRLF +';
-    paCR_LF: ALineEnd := ' + CR_LF +';
-  end;
-
-  for i := 0 to _sl.Count - 1 do begin
-    ALine := Copy(_sl[i], FirstCharPos);
+  cnt := _sl.Count;
+  for i := 0 to cnt - 1 do begin
+    Line := Copy(_sl[i], FirstCharPos);
 
     if _QuoteStrings then
-      ALine := AnsiQuotedStr(ALine + IfThen(_AppendSpace, ' '), SINGLE_QUOTE);
+      Line := AnsiQuotedStr(Line + IfThen(_AppendSpace, ' '), SINGLE_QUOTE);
 
-    ALine := ALineStart + ALine;
-    if ALineStartBase <> '' then
-      ALine := IfThen(i = 0, AAddDot, ALineStartBase) + ALine;
-    if (i < _sl.Count - 1) or (_PasteAsType = paAdd) then
-      ALine := ALine + ALineEnd;
+    if i = 0 then
+      Line := _FirstPrefix + Line
+    else
+      Line := _Prefix + Line;
 
-    _sl[i] := BaseIndent + ALine;
+    if i = cnt - 1 then
+      Line := Line + _LastSuffix
+    else
+      Line := Line + _Suffix;
+
+    _sl[i] := BaseIndent + Line;
   end;
 end;
 
@@ -504,26 +520,36 @@ end;
 procedure TfmEConvertStrings.ConvertStrings;
 var
   sl: TStrings;
-  PasteAsType: TPasteAsType;
-  QuoteStrings: Boolean;
-  AppendSpace: Boolean;
+  Prefix: string;
+  FirstPrefix: string;
+  Suffix: string;
+  LastSuffix: string;
 begin
   if FUpdating then
     Exit;
 
   sl := TStringList.Create;
   try
-    PasteAsType := TPasteAsType(rg_ConvertType.ItemIndex);
-    QuoteStrings := chk_QuoteStrings.Checked;
-    AppendSpace := chk_AppendSpace.Checked;
-
     sl.Assign(m_Input.Lines);
     if chk_ExtractRaw.Checked then
       ExtractRawStrings(sl, chk_Indent.Checked, chk_TrimLeft.Checked, chk_TrimRight.Checked)
     else
       TrimStrings(sl, chk_TrimLeft.Checked, chk_TrimRight.Checked);
+
     if sl.Count > 0 then begin
-      ConvertToCode(sl, chk_Indent.Checked, PasteAsType, QuoteStrings, AppendSpace, ed_Prefix.Text);
+      Prefix := ed_Prefix.Text;
+      if chk_PrefixFirst.Checked then
+        FirstPrefix := Prefix
+      else
+        FirstPrefix := ed_PrefixFirst.Text;
+
+      Suffix := ed_Suffix.Text;
+      if chk_SuffixLast.Checked then
+        LastSuffix := Suffix
+      else
+        LastSuffix := ed_SuffixLast.Text;
+      ConvertToCode(sl, chk_Indent.Checked, chk_QuoteStrings.Checked, chk_AppendSpace.Checked,
+        FirstPrefix, Prefix, Suffix, LastSuffix);
     end;
     m_Output.Lines.Assign(sl);
   finally
@@ -537,6 +563,21 @@ begin
 end;
 
 procedure TfmEConvertStrings.ed_PrefixChange(Sender: TObject);
+begin
+  ConvertStrings;
+end;
+
+procedure TfmEConvertStrings.ed_PrefixFirstChange(Sender: TObject);
+begin
+  ConvertStrings;
+end;
+
+procedure TfmEConvertStrings.ed_SuffixChange(Sender: TObject);
+begin
+  ConvertStrings;
+end;
+
+procedure TfmEConvertStrings.ed_SuffixLastChange(Sender: TObject);
 begin
   ConvertStrings;
 end;
@@ -561,7 +602,17 @@ begin
   ConvertStrings;
 end;
 
+procedure TfmEConvertStrings.chk_PrefixFirstClick(Sender: TObject);
+begin
+  ConvertStrings;
+end;
+
 procedure TfmEConvertStrings.chk_QuoteStringsClick(Sender: TObject);
+begin
+  ConvertStrings;
+end;
+
+procedure TfmEConvertStrings.chk_SuffixLastClick(Sender: TObject);
 begin
   ConvertStrings;
 end;
