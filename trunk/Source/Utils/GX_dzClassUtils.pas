@@ -9,6 +9,7 @@ interface
 uses
   SysUtils,
   Classes,
+  IniFiles,
   GX_GenericUtils;
 
 ///<summary>
@@ -44,6 +45,25 @@ function TComponent_FindComponent(_Owner: TComponent; const _Name: string; _Recu
 function IsSameMethod(_Method1, _Method2: TNotifyEvent): Boolean;
 
 procedure TList_FreeWithObjects(_List: TList);
+
+type
+  TIniSection = class
+  private
+    FIni: TMemIniFile;
+    FSection: string;
+  public
+    constructor Create(const _Filename: string; const _Section: string);
+    destructor Destroy; override;
+    procedure Clear;
+    function SectionExists: Boolean;
+    function ReadBool(const _Ident: string; _Default: Boolean = False): Boolean;
+    function ReadInteger(const _Ident: string; _Default: Integer = -1): Integer;
+    function ReadString(const _Ident: string; const _Default: string = ''): string;
+    procedure WriteBool(const _Ident: string; _Value: Boolean);
+    procedure WriteInteger(const _Ident: string; _Value: Integer);
+    procedure WriteString(const _Ident: string; const _Value: string);
+    procedure UpdateFile;
+  end;
 
 implementation
 
@@ -164,6 +184,85 @@ begin
   Result := TStringList.Create;
   Result.Sorted := True;
   Result.Duplicates := _Duplicates;
+end;
+
+{ TIniSection }
+
+procedure TIniSection.Clear;
+begin
+  FIni.EraseSection(FSection);
+end;
+
+constructor TIniSection.Create(const _Filename, _Section: string);
+begin
+  FIni := TMemIniFile.Create(_Filename);
+  FSection := _Section;
+end;
+
+destructor TIniSection.Destroy;
+begin
+  if Assigned(FIni) then begin
+    FIni.UpdateFile;
+    FreeAndNil(FIni);
+  end;
+  inherited;
+end;
+
+function TIniSection.ReadBool(const _Ident: string; _Default: Boolean = False): Boolean;
+var
+  s: string;
+  IntValue: Integer;
+begin
+  s := FIni.ReadString(FSection, _Ident, '');
+  if TryStrToInt(s, IntValue) then
+    Result := (IntValue <> 0)
+  else begin
+    Result := SameText(s, 'TRUE') or SameText(s, 'T') or SameText(s, 'Yes') or SameText(s, 'Y');
+  end;
+end;
+
+function TIniSection.ReadInteger(const _Ident: string; _Default: Integer): Integer;
+begin
+  Result := FIni.ReadInteger(FSection, _Ident, _Default);
+end;
+
+function TIniSection.ReadString(const _Ident, _Default: string): string;
+begin
+  Result := FIni.ReadString(FSection, _Ident, _Default);
+end;
+
+function TIniSection.SectionExists: Boolean;
+begin
+  Result := FIni.SectionExists(FSection);
+end;
+
+procedure TIniSection.UpdateFile;
+begin
+  FIni.UpdateFile;
+end;
+
+function Bool2Str(_Value: Boolean): string;
+begin
+  if _Value then
+    Result := 'True'
+  else
+    Result := 'False';
+end;
+
+procedure TIniSection.WriteBool(const _Ident: string; _Value: Boolean);
+begin
+  // -> True  / False
+  FIni.WriteString(FSection, _Ident, Bool2Str(_Value));
+end;
+
+procedure TIniSection.WriteInteger(const _Ident: string; _Value: Integer);
+begin
+  FIni.WriteInteger(FSection, _Ident, _Value);
+end;
+
+procedure TIniSection.WriteString(const _Ident, _Value: string);
+begin
+  FIni.WriteString(FSection, _Ident, _Value);
 end;
 
 end.
