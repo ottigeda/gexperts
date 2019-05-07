@@ -174,7 +174,6 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Width = 161
     Height = 25
     Action = act_Favorites
-    Anchors = [akLeft, akBottom]
     TabOrder = 1
   end
   object ed_PrefixFirst: TEdit
