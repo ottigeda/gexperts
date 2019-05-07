@@ -89,6 +89,7 @@ type
     procedure SaveSettings;
     procedure TrimStrings(_sl: TStrings; _TrimLeft, _TrimRight: Boolean);
     procedure OnFavoriteClick(_Sender: TObject);
+    procedure CopyDefaultsFromResource(const _ConfigDir, _ResName, _Filename: string);
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
@@ -291,6 +292,13 @@ begin
   TPopupMenu_AppendMenuItem(pm_Favorites, '-', TNotifyEvent(nil));
 
   ConfigDir := AddSlash(ConfigInfo.ConfigPath + TConvertStringsExpert.ConfigurationKey);
+  if not DirectoryExists(ConfigDir) then begin
+    ForceDirectories(ConfigDir);
+    CopyDefaultsFromResource(ConfigDir, 'ConvertStringsAddToSql', 'Add-to-SQL.ini');
+    CopyDefaultsFromResource(ConfigDir, 'ConvertStringsSqlToAdd', 'SQL-to-Add.ini');
+    CopyDefaultsFromResource(ConfigDir, 'ConvertStringsSqlToString', 'SQL-to-string.ini');
+    CopyDefaultsFromResource(ConfigDir, 'ConvertStringsStringToSql', 'String-to-SQL.ini');
+  end;
 
   Favs := TStringList.Create;
   try
@@ -307,6 +315,22 @@ begin
   if cnt > 0 then
     TPopupMenu_AppendMenuItem(pm_Favorites, '-', TNotifyEvent(nil));
   TPopupMenu_AppendMenuItem(pm_Favorites, 'Open directory', mi_OpendirectoryClick);
+end;
+
+procedure TfmEConvertStrings.CopyDefaultsFromResource(const _ConfigDir, _ResName, _Filename: string);
+var
+  ResStream: TResourceStream;
+  FileStream: TFileStream;
+begin
+  FileStream := nil;
+  ResStream := TResourceStream.Create(hInstance, _ResName, RT_RCDATA);
+  try
+    FileStream := TFileStream.Create(AddSlash(_ConfigDir) + _Filename, fmOpenReadWrite or fmCreate);
+    FileStream.CopyFrom(ResStream, ResStream.Size);
+  finally
+    FreeAndNil(FileStream);
+    FreeAndNil(ResStream);
+  end;
 end;
 
 procedure TfmEConvertStrings.SaveSettings;
