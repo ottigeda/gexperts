@@ -604,6 +604,7 @@ end;
 
 procedure TfmEConvertStrings.chk_PrefixFirstClick(Sender: TObject);
 begin
+  ed_PrefixFirst.Enabled := not chk_PrefixFirst.Checked;
   ConvertStrings;
 end;
 
@@ -614,6 +615,7 @@ end;
 
 procedure TfmEConvertStrings.chk_SuffixLastClick(Sender: TObject);
 begin
+  ed_SuffixLast.Enabled := not chk_SuffixLast.Checked;
   ConvertStrings;
 end;
 
