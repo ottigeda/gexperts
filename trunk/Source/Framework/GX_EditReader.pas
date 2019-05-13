@@ -57,6 +57,7 @@ type
     ///<symmary>
     /// Returns the cursor position in charcacter coordinates, that is without expanding tabs </summary>
     function GetCurrentCharPos: TOTACharPos;
+    procedure UnfoldCode;
     property BufSize: Integer read FBufSize write SetBufSize;
     property FileName: string read FFileName write SetFileName;
     property LineCount: Integer read GetLineCount;
@@ -299,6 +300,18 @@ begin
     else
       FEditIntf.Show;
   end;
+end;
+
+procedure TEditReader.UnfoldCode;
+{$IFDEF GX_DELPHI2005_UP}
+var
+  EditView: IOTAEditView;
+{$ENDIF}
+begin
+{$IFDEF GX_DELPHI2005_UP}
+  if GxOtaTryGetTopMostEditView(FEditIntf, EditView) then
+    (EditView as IOTAElideActions).UnElideNearestBlock;
+{$ENDIF}
 end;
 
 procedure TEditReader.ShowForm;

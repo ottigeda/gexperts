@@ -607,6 +607,7 @@ begin
       else
         FEditReader.GotoLine(ProcInfo.LineNo);
       FEditReader.ShowSource;
+      FEditReader.UnfoldCode;
       FEditReader.FreeFileData;
       ModalResult := mrOk;
     end;
