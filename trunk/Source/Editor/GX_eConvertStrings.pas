@@ -278,6 +278,8 @@ begin
 end;
 
 procedure TfmEConvertStrings.pm_FavoritesPopup(Sender: TObject);
+const
+  NilEvent: TMethod = (Code: nil; Data: nil);
 var
   ConfigDir: string;
   Favs: TStringList;
@@ -289,7 +291,7 @@ begin
   inherited;
   pm_Favorites.Items.Clear;
   TPopupMenu_AppendMenuItem(pm_Favorites, 'Save as ...', mi_FavoritesSaveAsClick);
-  TPopupMenu_AppendMenuItem(pm_Favorites, '-', TNotifyEvent(nil));
+  TPopupMenu_AppendMenuItem(pm_Favorites, '-', TNotifyEvent(NilEvent));
 
   ConfigDir := AddSlash(ConfigInfo.ConfigPath + TConvertStringsExpert.ConfigurationKey);
   if not DirectoryExists(ConfigDir) then begin
@@ -313,7 +315,7 @@ begin
   end;
 
   if cnt > 0 then
-    TPopupMenu_AppendMenuItem(pm_Favorites, '-', TNotifyEvent(nil));
+    TPopupMenu_AppendMenuItem(pm_Favorites, '-', TNotifyEvent(NilEvent));
   TPopupMenu_AppendMenuItem(pm_Favorites, 'Open directory', mi_OpendirectoryClick);
 end;
 

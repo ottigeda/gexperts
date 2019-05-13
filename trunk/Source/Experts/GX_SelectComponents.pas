@@ -95,7 +95,7 @@ type
     class function GetName: string; override;
 
     function GetActionCaption: string; override;
-    procedure Click(aSender: TObject); override;
+    procedure Execute(Sender: TObject); override;
     function HasConfigOptions: Boolean; override;
   end;
 
@@ -479,7 +479,7 @@ begin
   aAction.Enabled := GxOtaCurrentlyEditingForm;
 end;
 
-procedure TComponentSelectExpert.Click(aSender: TObject);
+procedure TComponentSelectExpert.Execute(Sender: TObject);
 begin
   if not Assigned(TheForm) then
     TheForm := TSelectComponentsForm.Create(nil);
