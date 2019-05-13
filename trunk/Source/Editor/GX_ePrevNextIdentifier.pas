@@ -4,6 +4,8 @@
 
 unit GX_ePrevNextIdentifier;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -161,6 +163,9 @@ begin
       EditView.Paint;
     end;
   end;
+{$IFDEF GX_DELPHI2005_UP}
+  (EditView as IOTAElideActions).UnElideNearestBlock;
+{$ENDIF}
 end;
 
 procedure TBaseIdentExpert.Execute;
