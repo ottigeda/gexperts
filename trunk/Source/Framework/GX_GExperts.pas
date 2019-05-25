@@ -14,7 +14,6 @@ type
     FEditorExpertsManager: TGxEditorExpertManager;
     FExpertList: TList;
     FStartingUp: Boolean;
-    FCloseMessageViewTimer: TTimer;
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
     FLastDesktopName: string;
 {$ENDIF}
@@ -417,23 +416,34 @@ begin
 end;
 
 procedure TGExperts.TimedCloseMessageView;
+var
+  TheTimer: TTimer;
 begin
-  FCloseMessageViewTimer :=  TTimer.Create(nil);
-  FCloseMessageViewTimer.OnTimer := OnCloseMessageViewTimer;
+  TheTimer :=  TTimer.Create(nil);
+  TheTimer.OnTimer := OnCloseMessageViewTimer;
 end;
 
 procedure TGExperts.OnCloseMessageViewTimer(_Sender: TObject);
 var
+  Timer: TTimer;
   MessageViewForm: TForm;
 begin
-  FCloseMessageViewTimer.Enabled := False;
-  FreeAndNil(FCloseMessageViewTimer);
-  MessageViewForm := FindClassForm('TMsgWindow');
-  if MessageViewForm = nil then // otherwise TMessageViewForm is used
-    MessageViewForm := FindClassForm('TMessageViewForm');
-  if MessageViewForm = nil then
-    Exit; //==>
-  MessageViewForm.Hide;
+  try
+    Timer := _Sender as TTimer;
+    Timer.Enabled := False;
+    FreeAndNil(Timer);
+    MessageViewForm := FindClassForm('TMsgWindow');
+    if MessageViewForm = nil then // otherwise TMessageViewForm is used
+      MessageViewForm := FindClassForm('TMessageViewForm');
+    if MessageViewForm = nil then
+      Exit; //==>
+    MessageViewForm.Hide;
+  except
+    on E: Exception do begin
+{$IFOPT D+}SendDebugError(E.Message + ' in TGExperts.OnCloseMessageViewTimer');
+{$ENDIF}
+    end;
+  end;
 end;
 
 { TUnsupportedIDEMessage }
