@@ -75,13 +75,20 @@ end;
 procedure TMessageAutoCloseComponent.BeforeDestruction;
 begin
   inherited;
-  if FErrorCount.Caption <> '0' then
-    Exit; //==>
-  if FWarningCount.Caption <> '0' then
-    Exit; //==>
-  if FHintCount.Caption <> '0' then
-    Exit; //==>
-  GExpertsInst.TimedCloseMessageView;
+  try
+    if FErrorCount.Caption <> '0' then
+      Exit; //==>
+    if FWarningCount.Caption <> '0' then
+      Exit; //==>
+    if FHintCount.Caption <> '0' then
+      Exit; //==>
+    GExpertsInst.TimedCloseMessageView;
+  except
+    on e: Exception do begin
+{$IFOPT D+}SendDebugError(e.Message + ' in TMessageAutoCloseComponent.BeforeDestruction');
+{$ENDIF}
+    end;
+  end;
 end;
 {$ENDIF GX_VER170_up} // Delphi 9/2005 (BDS 2)
 
@@ -92,7 +99,7 @@ begin
 {$IFDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
   Result := Assigned(TheMessageAutoClose);
 {$ELSE}
-  Result := false;
+  Result := False;
 {$ENDIF GX_VER170_up} // Delphi 9/2005 (BDS 2)
 end;
 
