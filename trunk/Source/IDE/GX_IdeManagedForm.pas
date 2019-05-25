@@ -61,6 +61,9 @@ type
     procedure DoComboDropDownCount;
     procedure MakeComponentsResizable; virtual;
     procedure DoCollapseTreeNodes; virtual;
+{$IFDEF GX_DELPHI_TOKYO_UP}
+    procedure DoAddSizeGrip; virtual;
+{$ENDIF}
     function AddMadeSizeablePanel: TPanel;
   public
     FFormChanges: TFormChanges;
@@ -188,6 +191,9 @@ uses
   OleDB,
   ComObj,
   ActiveX,
+{$IFDEF GX_DELPHI_TOKYO_UP}
+  GX_SizeGripHWND,
+{$ENDIF GX_DELPHI_TOKYO_UP}
   GX_ConfigurationInfo,
   GX_GenericUtils,
   GX_dzClassUtils,
@@ -292,6 +298,24 @@ class function TManagedForm.GenerateName(const _FormName: string): string;
 begin
   Result := 'GXManagedForm_' + _FormName;
 end;
+
+{$IFDEF GX_DELPHI_TOKYO_UP}
+procedure TManagedForm.DoAddSizeGrip;
+var
+  C      : TComponent;
+  Target : TWinControl;
+begin
+  if FForm.BorderStyle = bsSizeable then
+  begin
+    Target := nil;
+    C := FForm.FindComponent('CancelButton');
+    if C is TButton then
+      Target := TButton(C).Parent;
+    if Assigned(Target) then
+      GxSetWindowSizeGrip(Target.Handle, True);
+  end;
+end;
+{$ENDIF}
 
 class function TManagedForm.AlreadyExists(const _Form: TCustomForm): Boolean;
 var
@@ -1129,6 +1153,13 @@ begin
 
   DoHookOnFormDestroy;
   DoMakeResizable;
+{$IFDEF GX_DELPHI_TOKYO_UP}
+  // When Embarcadero added theming to the IDE in 10.2 Tokyo they introduced quite a few
+  // problems (which is the polite phrasing) one is that the frames of several windows
+  // is only 1 pixel wide so it's difficult to hit it for resizing the window.
+  // Adding a size grip makes this a bit easier.
+  DoAddSizeGrip;
+{$ENDIF}
   DoFixFormErrors;
   DoLoadFormState;
   DoCollapseTreeNodes;
