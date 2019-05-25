@@ -15,6 +15,7 @@ object fmConfiguration: TfmConfiguration
   OldCreateOrder = True
   Scaled = False
   OnKeyDown = FormKeyDown
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 14
   object pnlMain: TPanel

@@ -148,6 +148,7 @@ type
     procedure btnClearSuppressedMessagesClick(Sender: TObject);
     procedure btnExportClick(Sender: TObject);
     procedure btnUsageClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FOIFont: TFont;
     FCPFont: TFont;
@@ -186,6 +187,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils,
+  GX_SizeGripHWND,
   GX_GxUtils, GX_EditorEnhancements, GX_Experts, GX_IdeEnhance,
   GX_ConfigurationInfo, GX_EditorExpertManager, GX_MessageBox,
   GX_GExperts, GX_EditorShortcut, GX_MenuActions, GX_GenericUtils, GX_IdeUtils,
@@ -905,6 +907,13 @@ begin
     tshDebug.TabVisible := True;
     pcConfig.ActivePage := tshDebug;
   end;
+end;
+
+procedure TfmConfiguration.FormShow(Sender: TObject);
+begin
+  inherited;
+  if pnlButtons.HandleAllocated then
+    GxSetWindowSizeGrip(pnlButtonsRight.Handle, True);
 end;
 
 type TControlCracker = class(TControl);
