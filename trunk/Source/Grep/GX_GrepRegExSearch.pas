@@ -180,7 +180,7 @@ var
     Prefix: TGXUnicodeString;
   begin
     if not FHandleMultilineInDfm then begin
-      doSearchLine(_Line, _LineIdx);
+      doSearchLine(_Line, _CurrLineIdx);
       Exit //==>
     end;
 
