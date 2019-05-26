@@ -3,7 +3,7 @@ object fmGrepOptions: TfmGrepOptions
   Top = 263
   BorderStyle = bsDialog
   Caption = 'Grep Search Options'
-  ClientHeight = 137
+  ClientHeight = 105
   ClientWidth = 401
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -16,20 +16,20 @@ object fmGrepOptions: TfmGrepOptions
   Scaled = False
   DesignSize = (
     401
-    137)
+    105)
   PixelsPerInch = 96
   TextHeight = 14
   object gbxOptions: TGroupBox
     Left = 8
     Top = 8
     Width = 385
-    Height = 89
+    Height = 57
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Grep Options'
     TabOrder = 0
     DesignSize = (
       385
-      89)
+      57)
     object chkGrepUseCurrentIdent: TCheckBox
       Left = 8
       Top = 24
@@ -39,18 +39,10 @@ object fmGrepOptions: TfmGrepOptions
       Caption = 'Use &current editor identifier as the default search string'
       TabOrder = 0
     end
-    object chkUseMapFile: TCheckBox
-      Left = 8
-      Top = 48
-      Width = 369
-      Height = 17
-      Caption = 'Use map file instead of dpr file for project search'
-      TabOrder = 1
-    end
   end
   object btnOK: TButton
     Left = 240
-    Top = 104
+    Top = 72
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -61,7 +53,7 @@ object fmGrepOptions: TfmGrepOptions
   end
   object btnCancel: TButton
     Left = 320
-    Top = 104
+    Top = 72
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]

@@ -55,6 +55,8 @@ type
     timHintTimer: TTimer;
     btnGrepAll: TButton;
     btnSectionAll: TButton;
+    chk_UseMapFile: TCheckBox;
+    txt_NoMapFile: TStaticText;
     procedure btnBrowseClick(Sender: TObject);
     procedure rbDirectoriesClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
@@ -158,13 +160,10 @@ end;
 procedure TfmGrepSearch.btnOptionsClick(Sender: TObject);
 var
   UseCurrentIdent: Boolean;
-  UseMapFile: Boolean;
 begin
   UseCurrentIdent := GrepExpert.GrepUseCurrentIdent;
-  UseMapFile := GrepExpert.GrepUseMapFile;
-  if TfmGrepOptions.Execute(UseCurrentIdent, UseMapFile) then begin
+  if TfmGrepOptions.Execute(UseCurrentIdent) then begin
     GrepExpert.GrepUseCurrentIdent := UseCurrentIdent;
-    GrepExpert.GrepUseMapFile := UseMapFile;
   end;
 end;
 
@@ -371,7 +370,6 @@ procedure TGrepDlgExpert.Configure;
 var
   GrepExpert: TGrepExpert;
   UseCurrentIdent: Boolean;
-  UseMapFile: Boolean;
 begin
   if not Assigned(fmGrepResults) then
     raise Exception.Create(SGrepResultsNotActive);
@@ -380,10 +378,8 @@ begin
   Assert(Assigned(GrepExpert));
 
   UseCurrentIdent := GrepExpert.GrepUseCurrentIdent;
-  UseMapFile := GrepExpert.GrepUseMapFile;
-  if TfmGrepOptions.Execute(UseCurrentIdent, UseMapFile) then begin
+  if TfmGrepOptions.Execute(UseCurrentIdent) then begin
     GrepExpert.GrepUseCurrentIdent := UseCurrentIdent;
-    GrepExpert.GrepUseMapFile := UseMapFile;
   end;
 end;
 
@@ -511,6 +507,8 @@ begin
     FGrepExpert.GrepSearch := 4
   else if rbResults.Checked then
     FGrepExpert.GrepSearch := 5;
+
+  FGrepExpert.GrepUseMapFile := chk_UseMapFile.Checked;
 end;
 
 procedure TfmGrepSearch.timHintTimerTimer(Sender: TObject);
@@ -621,6 +619,7 @@ begin
     else
       rbAllProjFiles.Checked := True;
     end;
+    chk_UseMapFile.Checked := FGrepExpert.GrepUseMapFile;
 
     if cbText.Items.Count > 0 then
       cbText.Text := cbText.Items[0];
@@ -650,17 +649,28 @@ begin
 end;
 
 procedure TfmGrepSearch.CheckEnabledWhereControls;
+var
+  MapFn: string;
 begin
   if not IsStandAlone then
   begin
     if Trim(GxOtaGetCurrentProjectName) = '' then
     begin
       rbAllProjFiles.Enabled := False;
+      chk_UseMapFile.Enabled := False;
+      txt_NoMapFile.Visible := True;
       rbOpenFiles.Enabled := False;
     end
     else
     begin
       rbAllProjFiles.Enabled := True;
+      if GxOtaGetCurrentMapFileName(MapFn) then begin
+        txt_NoMapFile.Visible := False;
+        chk_UseMapFile.Enabled := True;
+      end else begin
+        txt_NoMapFile.Visible := True;
+        chk_UseMapFile.Enabled := False;
+      end;
       rbOpenFiles.Enabled := True;
     end;
 

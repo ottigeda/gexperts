@@ -3,7 +3,7 @@ object fmGrepSearch: TfmGrepSearch
   Top = 189
   BorderStyle = bsDialog
   Caption = 'Grep Search'
-  ClientHeight = 563
+  ClientHeight = 588
   ClientWidth = 489
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -20,7 +20,7 @@ object fmGrepSearch: TfmGrepSearch
   OnCreate = FormCreate
   DesignSize = (
     489
-    563)
+    588)
   PixelsPerInch = 96
   TextHeight = 14
   object lblFind: TLabel
@@ -47,12 +47,12 @@ object fmGrepSearch: TfmGrepSearch
     Left = 8
     Top = 40
     Width = 233
-    Height = 145
+    Height = 169
     Caption = 'Options'
     TabOrder = 1
     DesignSize = (
       233
-      145)
+      169)
     object cbCaseSensitive: TCheckBox
       Left = 10
       Top = 18
@@ -125,13 +125,25 @@ object fmGrepSearch: TfmGrepSearch
     Left = 248
     Top = 40
     Width = 233
-    Height = 145
+    Height = 169
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Files'
     TabOrder = 2
     DesignSize = (
       233
-      145)
+      169)
+    object chk_UseMapFile: TCheckBox
+      Left = 24
+      Top = 80
+      Width = 201
+      Height = 17
+      Hint = 
+        'Parses the .map file to get the unit names of all units used in ' +
+        'the project.'#13#10'You must enable generating a map file with publics' +
+        ' or a detailed map file in Linker Options.'
+      Caption = 'Parse map file'
+      TabOrder = 3
+    end
     object rbAllProjFiles: TRadioButton
       Left = 10
       Top = 58
@@ -146,22 +158,22 @@ object fmGrepSearch: TfmGrepSearch
     end
     object rbOpenFiles: TRadioButton
       Left = 10
-      Top = 78
+      Top = 102
       Width = 216
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = '&Open project files'
-      TabOrder = 3
+      TabOrder = 4
       OnClick = rbDirectoriesClick
     end
     object rbDirectories: TRadioButton
       Left = 10
-      Top = 98
+      Top = 122
       Width = 216
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = '&Directories'
-      TabOrder = 4
+      TabOrder = 5
       OnClick = rbDirectoriesClick
     end
     object rbCurrentOnly: TRadioButton
@@ -186,18 +198,32 @@ object fmGrepSearch: TfmGrepSearch
     end
     object rbResults: TRadioButton
       Left = 10
-      Top = 119
+      Top = 143
       Width = 216
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Pre&vious search result files'
-      TabOrder = 5
+      TabOrder = 6
       OnClick = rbDirectoriesClick
+    end
+    object txt_NoMapFile: TStaticText
+      Left = 40
+      Top = 80
+      Width = 116
+      Height = 18
+      Hint = 
+        'Parses the .map file to get the unit names of all units used in ' +
+        'the project.'#13#10'You must enable generating a map file with publics' +
+        ' or a detailed map file in Linker Options.'
+      Margins.Bottom = 0
+      Caption = 'Map file not available'
+      TabOrder = 7
+      Visible = False
     end
   end
   object gbxContentTypes: TGroupBox
     Left = 8
-    Top = 192
+    Top = 216
     Width = 233
     Height = 105
     Caption = 'Delphi Code Content Types'
@@ -248,7 +274,7 @@ object fmGrepSearch: TfmGrepSearch
   end
   object gbxUnitSections: TGroupBox
     Left = 248
-    Top = 192
+    Top = 216
     Width = 233
     Height = 105
     Anchors = [akLeft, akTop, akRight]
@@ -310,7 +336,7 @@ object fmGrepSearch: TfmGrepSearch
   end
   object gbxDirectories: TGroupBox
     Left = 8
-    Top = 300
+    Top = 324
     Width = 474
     Height = 133
     Anchors = [akLeft, akTop, akRight]
@@ -412,7 +438,7 @@ object fmGrepSearch: TfmGrepSearch
   end
   object pnlBottom: TPanel
     Left = 0
-    Top = 528
+    Top = 553
     Width = 489
     Height = 35
     Align = alBottom
@@ -474,7 +500,7 @@ object fmGrepSearch: TfmGrepSearch
   end
   object rgSaveOption: TRadioGroup
     Left = 8
-    Top = 440
+    Top = 464
     Width = 474
     Height = 81
     Anchors = [akLeft, akTop, akRight]
