@@ -187,7 +187,9 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils,
+{$IFDEF GX_DELPHI_TOKYO_UP}
   GX_SizeGripHWND,
+{$ENDIF}
   GX_GxUtils, GX_EditorEnhancements, GX_Experts, GX_IdeEnhance,
   GX_ConfigurationInfo, GX_EditorExpertManager, GX_MessageBox,
   GX_GExperts, GX_EditorShortcut, GX_MenuActions, GX_GenericUtils, GX_IdeUtils,
@@ -912,8 +914,10 @@ end;
 procedure TfmConfiguration.FormShow(Sender: TObject);
 begin
   inherited;
+{$IFDEF GX_DELPHI_TOKYO_UP}
   if pnlButtons.HandleAllocated then
     GxSetWindowSizeGrip(pnlButtonsRight.Handle, True);
+{$ENDIF}
 end;
 
 type TControlCracker = class(TControl);
