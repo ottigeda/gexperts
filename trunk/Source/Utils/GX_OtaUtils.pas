@@ -312,16 +312,24 @@ function GxOtaGetCurrentProject: IOTAProject;
 // See if there is an active project
 function GxOtaHaveCurrentProject: Boolean;
 
-// Returns file name of the project; returns
-// an empty string if there is no (active) project.
-// Use NormalizeBdsProj to get the dpr instead of the bdsproj/dproj for Delphi projects
+///<summary>
+/// Get the file name of the given project
+/// @parram Project is the project whose file name is requested
+/// @param NormalizeBdsProj = True means to get the the dpr instead of the bdsproj/dproj for Delphi projects
+/// @returns an empty string if Project is nil, otherwise the full file name of the project </summary>
 function GxOtaGetProjectFileName(Project: IOTAProject; NormalizeBdsProj: Boolean = False): string;
+
+///<summary>
+/// Get the file name of the current project
+/// @param NormalizeBdsProj = True means to get the the dpr instead of the bdsproj/dproj for Delphi projects
+/// @returns the full file name of the project or an empty string if there is no current project </summary>
 function GxOtaGetCurrentProjectFileName(NormalizeBdsProj: Boolean = False): string;
 
-// Returns the name of the currently active project; returns
-// an empty string if there is no (active) project.
-// The name of a project is the project's file name without
-// a file extension and without path information.
+///<summary>
+/// Returns the name of the currently active project; returns
+/// an empty string if there is no (active) project.
+/// The name of a project is the project's file name without
+/// a file extension and without path information. </summary>
 function GxOtaGetCurrentProjectName: string;
 
 // Returns the output directory of the given project
