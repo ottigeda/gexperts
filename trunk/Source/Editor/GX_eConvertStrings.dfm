@@ -189,7 +189,6 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Top = 264
     Width = 161
     Height = 17
-    Margins.Bottom = 0
     Caption = 'Same Prefix for first line'
     TabOrder = 9
     OnClick = chk_PrefixFirstClick
@@ -207,7 +206,6 @@ inherited fmEConvertStrings: TfmEConvertStrings
     Top = 368
     Width = 161
     Height = 17
-    Margins.Bottom = 0
     Caption = 'Same suffix for last line'
     TabOrder = 12
     OnClick = chk_SuffixLastClick
