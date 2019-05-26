@@ -215,7 +215,6 @@ object fmGrepSearch: TfmGrepSearch
         'Parses the .map file to get the unit names of all units used in ' +
         'the project.'#13#10'You must enable generating a map file with publics' +
         ' or a detailed map file in Linker Options.'
-      Margins.Bottom = 0
       Caption = 'Map file not available'
       TabOrder = 7
       Visible = False
