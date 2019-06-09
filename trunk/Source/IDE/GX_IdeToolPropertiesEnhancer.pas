@@ -29,7 +29,8 @@ uses
   GX_dzClassUtils,
   GX_IdeDialogEnhancer,
   GX_GenericUtils,
-  GX_dzFileUtils;
+  GX_dzFileUtils,
+  GX_CustomClipboard;
 
 const
   DelphiToolMenuEntry = 'Delphi Tool Menu Entry';
@@ -44,8 +45,17 @@ type
   end;
 
 type
+  TClipFormatToolsEntry = class(TGXCustomClipboard)
+  public
+    constructor Create;
+    function TryReadFromClipboard(out _ToolsEntry: TToolsEntry): Boolean;
+    procedure WriteToClipboard(const _ToolsEntry: TToolsEntry);
+  end;
+
+type
   TToolPropertiesEnhancer = class(TIdeDialogEnhancer)
   private
+    FClipFormat: TClipFormatToolsEntry;
     edTitle: TEdit;
     edProgram: TEdit;
     edWorkingDir: TEdit;
@@ -56,11 +66,16 @@ type
     procedure b_ImportClick(_Sender: TObject);
     procedure LoadEntry(const _fn: string; out _Entry: TToolsEntry);
     procedure SaveEntry(const _fn: string; const _Entry: TToolsEntry);
+    procedure HandleCopyToClipboard(_Sender: TObject);
+    procedure HandlePasteFromClipboard(_Sender: TObject);
+    procedure GetEntry(out _Entry: TToolsEntry);
+    procedure SetEntry(const _Entry: TToolsEntry);
   protected
     function IsDesiredForm(_Form: TCustomForm): Boolean; override;
     procedure EnhanceForm(_Form: TForm); override;
   public
     constructor Create;
+    destructor Destroy; override;
   end;
 
 var
@@ -89,6 +104,13 @@ begin
   inherited;
   // todo: Initialize this sensibly somehow. Maybe the user's documents directory?
   FDirectory := 'c:\';
+  FClipFormat := TClipFormatToolsEntry.Create;
+end;
+
+destructor TToolPropertiesEnhancer.Destroy;
+begin
+  FreeAndNil(FClipFormat);
+  inherited;
 end;
 
 procedure TToolPropertiesEnhancer.HandleFilesDropped(_Sender: TObject; _Files: TStrings);
@@ -118,12 +140,18 @@ var
   HelpButton: TButton;
   CancelButton: TButton;
   b_Import: TButton;
+  pm: TPopupMenu;
 begin
 // Drop files only works in Delphi 6 and 7 while autocomplete works in all versions.
 // The "new" IDE apparently does something to TEdits that prevent them to receive WM_DROPFILES
 // messages.
 // I tried to use this for re-registering the drop files handler but it did not help:
 //  FControlChangedHandle := TIDEFormEnhancements.RegisterControlChangeCallback(HandleControlChanged);
+
+  if _Form.FindComponent('GxExportButton') <> nil then begin
+    // Form has already been enhanced
+    Exit; //==>
+  end;
 
   if not TComponent_FindComponent(_Form, 'edTitle', True, TComponent(edTitle), TEdit) then
     Exit; //==>
@@ -162,6 +190,11 @@ begin
   b_Import.Left := HelpButton.Left;
   b_Import.Width := HelpButton.Width;
   b_Import.OnClick := b_ImportClick;
+
+  pm := TPopupMenu.Create(_Form);
+  TPopupMenu_AppendMenuItem(pm, 'Copy entry to clipboard', HandleCopyToClipboard);
+  TPopupMenu_AppendMenuItem(pm, 'Paste entry from clipboard', HandlePasteFromClipboard);
+  _Form.PopupMenu := pm;
 end;
 
 //procedure TToolPropertiesEnhancer.HandleControlChanged(_Sender: TObject; _Form: TCustomForm; _Control: TWinControl);
@@ -182,15 +215,28 @@ end;
 //  end;
 //end;
 
+procedure TToolPropertiesEnhancer.GetEntry(out _Entry: TToolsEntry);
+begin
+  _Entry.Title := edTitle.Text;
+  _Entry.Path := edProgram.Text;
+  _Entry.WorkingDir := edWorkingDir.Text;
+  _Entry.Params := edParameters.Text;
+end;
+
+procedure TToolPropertiesEnhancer.SetEntry(const _Entry: TToolsEntry);
+begin
+  edTitle.Text := _Entry.Title;
+  edProgram.Text := _Entry.Path;
+  edWorkingDir.Text := _Entry.WorkingDir;
+  edParameters.Text := _Entry.Params;
+end;
+
 procedure TToolPropertiesEnhancer.b_ExportClick(_Sender: TObject);
 var
   fn: string;
   Entry: TToolsEntry;
 begin
-  Entry.Title := edTitle.Text;
-  Entry.Path := edProgram.Text;
-  Entry.WorkingDir := edWorkingDir.Text;
-  Entry.Params := edParameters.Text;
+  GetEntry(Entry);
 
   fn := StripHotkey(Entry.Title);
   fn := TFileSystem.MakeValidFilename(fn);
@@ -215,10 +261,23 @@ begin
 
   LoadEntry(fn, Entry);
 
-  edTitle.Text := Entry.Title;
-  edProgram.Text := Entry.Path;
-  edWorkingDir.Text := Entry.WorkingDir;
-  edParameters.Text := Entry.Params;
+  SetEntry(Entry);
+end;
+
+procedure TToolPropertiesEnhancer.HandleCopyToClipboard(_Sender: TObject);
+var
+  Entry: TToolsEntry;
+begin
+  GetEntry(Entry);
+  FClipFormat.WriteToClipboard(Entry);
+end;
+
+procedure TToolPropertiesEnhancer.HandlePasteFromClipboard(_Sender: TObject);
+var
+  Entry: TToolsEntry;
+begin
+  if FClipFormat.TryReadFromClipboard(Entry) then
+    SetEntry(Entry);
 end;
 
 procedure TToolPropertiesEnhancer.LoadEntry(const _fn: string; out _Entry: TToolsEntry);
@@ -250,6 +309,102 @@ begin
   finally
     FreeAndNil(ini);
   end;
+end;
+
+{ TClipFormatToolsEntry }
+
+constructor TClipFormatToolsEntry.Create;
+begin
+  inherited Create('Delphi.ToolsEntry');
+end;
+
+function TClipFormatToolsEntry.TryReadFromClipboard(out _ToolsEntry: TToolsEntry): Boolean;
+var
+  WideCharArr: array of WideChar;
+  Idx: Integer;
+  Size: Integer;
+
+  function Pull: WideString;
+  var
+    i: Integer;
+  begin
+    Result := '';
+    i := 0;
+    while (WideCharArr[Idx + i] <> #0) and (Idx + i < Size) do begin
+      Result := Result + WideCharArr[Idx + i];
+      Inc(i);
+    end;
+    Inc(Idx, i + 1);
+  end;
+
+var
+  Buffer: TByteDynArray;
+begin
+  Result := doTryReadFromClipboard(Buffer);
+  if not Result then begin
+    // clipboard does not contain that format
+    Exit; //==>
+  end;
+  Size := Length(Buffer);
+  if Odd(Size) then begin
+    // Buffer length cannot be odd
+    Exit; //==>
+  end;
+  Size := Size div 2;
+  SetLength(WideCharArr, Size);
+  Move(Buffer[0], WideCharArr[0], Size * 2);
+
+  Idx := 0;
+
+  _ToolsEntry.Title := Pull();
+  _ToolsEntry.Path := Pull();
+  _ToolsEntry.WorkingDir := Pull();
+  _ToolsEntry.Params := Pull();
+end;
+
+procedure TClipFormatToolsEntry.WriteToClipboard(const _ToolsEntry: TToolsEntry);
+var
+  WideCharArr: array of WideChar;
+  Idx: Integer;
+  Size: Integer;
+
+  procedure Push(const _ws: WideString);
+  var
+    Len: Integer;
+    i: Integer;
+  begin
+    Len := Length(_ws);
+    for i := 1 to Len do begin
+      Assert(Idx + i - 1 < Size);
+      WideCharArr[Idx + i - 1] := _ws[i];
+    end;
+    Inc(Idx, Len);
+    WideCharArr[Idx] := #0;
+    Inc(Idx);
+  end;
+
+var
+  ws: WideString;
+  Buffer: TByteDynArray;
+begin
+  Size := Length(_ToolsEntry.Title) + 1
+    + Length(_ToolsEntry.Path) + 1
+    + Length(_ToolsEntry.WorkingDir) + 1
+    + Length(_ToolsEntry.Params) + 1;
+  SetLength(WideCharArr, Size);
+
+  Idx := 0;
+  ws := _ToolsEntry.Title;
+  Push(ws);
+  ws := _ToolsEntry.Path;
+  Push(ws);
+  ws := _ToolsEntry.WorkingDir;
+  Push(ws);
+  ws := _ToolsEntry.Params;
+  Push(ws);
+  SetLength(Buffer, Size * 2);
+  Move(WideCharArr[0], Buffer[0], Size * 2);
+  doWriteToClipboard(Buffer);
 end;
 
 initialization
