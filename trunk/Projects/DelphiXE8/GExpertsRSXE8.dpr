@@ -244,7 +244,9 @@ uses
   GX_TabOrderOptions in '..\..\Source\TabOrder\GX_TabOrderOptions.pas' {fmTabOrderOptions},
   GX_IdeDetectForms in '..\..\Source\ide\GX_IdeDetectForms.pas',
   GX_dzCompilerAndRtlVersions in '..\..\source\framework\GX_dzCompilerAndRtlVersions.pas',
-  GX_dzMiscUtils in '..\..\Source\Utils\GX_dzMiscUtils.pas';
+  GX_dzMiscUtils in '..\..\Source\Utils\GX_dzMiscUtils.pas',
+  GX_SelectComponents in '..\..\Source\Experts\GX_SelectComponents.pas' {SelectComponentsForm},
+  GX_CustomClipboard in '..\..\Source\Framework\GX_CustomClipboard.pas';
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
