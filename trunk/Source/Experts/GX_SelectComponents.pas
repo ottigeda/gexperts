@@ -8,12 +8,13 @@ interface
 
 uses
   Classes, Forms, Controls, ExtCtrls, ToolsAPI, ComCtrls, StdCtrls, Dialogs,
-  ActnList, ImgList, Graphics, Buttons, DesignWindows, GX_BaseForm;
+  ActnList, ImgList, Graphics, Buttons, DesignWindows, GX_BaseForm,
+  GX_GenericUtils;
 
 type
   TComponentInfo = record
-    rName: WideString;
-    rType: WideString;
+    rName: TGXUnicodeString;
+    rType: TGXUnicodeString;
   end;
 
   TSelectComponentsForm = class(TfmBaseForm)
@@ -60,7 +61,7 @@ type
     procedure SelectCurrentComponent;
     procedure FillTreeView(const aFromComponent: IOTAComponent);
 
-    procedure SelectComponentOnForm(const aName: WideString; const aAddToSelection: Boolean = False);
+    procedure SelectComponentOnForm(const aName: TGXUnicodeString; const aAddToSelection: Boolean = False);
 
     procedure SetCurrentNode(const aNode: TTreeNode);
     procedure FindNextNode;
@@ -84,7 +85,7 @@ implementation
 
 uses
   SysUtils, Windows, Messages, TypInfo,
-  GX_Experts, GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_SharedImages,
+  GX_Experts, GX_GxUtils, GX_OtaUtils, GX_SharedImages,
   GX_ConfigurationInfo;
 
 type
@@ -102,7 +103,7 @@ type
 var
   TheForm: TSelectComponentsForm;
   Filter: TComponentInfo;
-  LastComponentName: WideString;
+  LastComponentName: TGXUnicodeString;
 
 procedure GetInfo(const aTreeNode: TTreeNode; const aGetType: Boolean; var aInfo: TComponentInfo); overload;
 var
@@ -122,7 +123,7 @@ begin
   end;
 end;
 
-function GetInfo(const aText: WideString): TComponentInfo; overload;
+function GetInfo(const aText: TGXUnicodeString): TComponentInfo; overload;
 var
   aPos: Integer;
 begin
@@ -139,7 +140,7 @@ begin
   end;
 end;
 
-function FilterToText(const aFilter: TComponentInfo) : WideString;
+function FilterToText(const aFilter: TComponentInfo) : TGXUnicodeString;
 begin
   with aFilter do
   begin
@@ -150,7 +151,7 @@ begin
   end;
 end;
 
-procedure TSelectComponentsForm.SelectComponentOnForm(const aName: WideString;
+procedure TSelectComponentsForm.SelectComponentOnForm(const aName: TGXUnicodeString;
   const aAddToSelection: Boolean);
 var
   aComponent: IOTAComponent;
@@ -268,7 +269,7 @@ procedure TSelectComponentsForm.ChildComponentCallback(aParam: Pointer;
   aComponent: IOTAComponent; var aResult: Boolean);
 var
   aTreeNode: TTreeNode;
-  aName: WideString;
+  aName: TGXUnicodeString;
 begin
   aName := GxOtaGetComponentName(aComponent);
   aTreeNode := TreeView.Items.AddChildObject(TTreeNode(aParam), aName + ' : ' + aComponent.GetComponentType, nil);
@@ -445,7 +446,7 @@ end;
 
 procedure TSelectComponentsForm.FormActivate(Sender: TObject);
 var
-  aName: WideString;
+  aName: TGXUnicodeString;
   aInfo: TComponentInfo;
   aNodeIndex: Integer;
   aTreeNode: TTreeNode;
@@ -516,8 +517,8 @@ end;
 
 procedure TSelectComponentsForm.Init;
 var
-  aParentName: WideString;
-  aParentType: WideString;
+  aParentName: TGXUnicodeString;
+  aParentType: TGXUnicodeString;
   aComponent: IOTAComponent;
 begin
   TreeView.Items.BeginUpdate;
