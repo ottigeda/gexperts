@@ -818,6 +818,7 @@ var
   ShapeLeft: Integer;
   L: Integer;
 begin
+  // todo: This could use GX_dzVclUtils.TWinControl_Lock
   SendMessage(scInherit.Handle, WM_SETREDRAW, WPARAM(False), 0);
   try
     tshInherit.Width := pcMain.ActivePage.Width;
@@ -1099,7 +1100,8 @@ var
   i: Integer;
   EntryCount: Integer;
 begin
-  if (tvBrowse.Selected = nil) or (tvBrowse.Selected.Level = 0) then Exit;
+  if (tvBrowse.Selected = nil) or (tvBrowse.Selected.Level = 0) then
+    Exit; //==>
 
   // Get the list of ancestor classes.
   InheritList := TStringList.Create;
@@ -1532,47 +1534,32 @@ end;
 procedure TfmClassBrowser.PrintClassHierarchyBuiltIn;
 var
   OInfo: TBrowseClassInfoCollection;
-  Dlg: TfmClassReport;
 resourcestring
   SClassReport = 'Class Hierarchy Report';
 begin
   if (tvBrowse.Selected = nil) or (tvBrowse.Selected.Level = 0) then
     raise Exception.Create(SSelectClassFirst);
-  Dlg := TfmClassReport.Create(nil);
+
+  if not TfmClassReport.Execute(Self, FClassHierarchyFontSize, FClassHierarchyBoxWidth,
+    FClassHierarchyBoxSpace, FClassHierarchyFont) then
+    Exit; //==>
+
+  OInfo := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
+
+  Screen.Cursor := crHourGlass;
+  Printer.Title := SClassReport;
+  Printer.BeginDoc;
   try
-    Dlg.udFontSize.Position := FClassHierarchyFontSize;
-    Dlg.udBoxSize.Position := FClassHierarchyBoxWidth;
-    Dlg.udBoxSpacing.Position := FClassHierarchyBoxSpace;
-    Dlg.cbxFont.ItemIndex := Dlg.cbxFont.Items.IndexOf(FClassHierarchyFont);
-
-    if Dlg.ShowModal = mrCancel then
-      Exit;
-    OInfo := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
-
-    Screen.Cursor := crHourglass;
-    Printer.Title := SClassReport;
-    Printer.BeginDoc;
-    try
-      with Printer.Canvas do
-      begin
-        Font.Name := Dlg.cbxFont.Text;
-        Font.Size := Trunc(Dlg.udFontSize.Position);
-        Font.Style := [];
-      end;
-      PrintClassDiagramBuiltIn(OInfo, Printer.Canvas, Trunc(Dlg.udBoxSize.Position),
-        Trunc(Dlg.udBoxSpacing.Position));
-    finally
-      Printer.EndDoc;
-      Screen.Cursor := crDefault;
+    with Printer.Canvas do begin
+      Font.Name := FClassHierarchyFont;
+      Font.Size := FClassHierarchyFontSize;
+      Font.Style := [];
     end;
-
-    FClassHierarchyFontSize := Dlg.udFontSize.Position;
-    FClassHierarchyBoxWidth := Dlg.udBoxSize.Position;
-    FClassHierarchyBoxSpace := Dlg.udBoxSpacing.Position;
-    FClassHierarchyFont     := Dlg.cbxFont.Text;
-
+    PrintClassDiagramBuiltIn(OInfo, Printer.Canvas, FClassHierarchyBoxWidth,
+      FClassHierarchyBoxSpace);
   finally
-    FreeAndNil(Dlg);
+    Printer.EndDoc;
+    Screen.Cursor := crDefault;
   end;
 end;
 
