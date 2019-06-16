@@ -19,7 +19,6 @@ uses
   GX_ClassOptions in '..\..\source\ClassBrowser\GX_ClassOptions.pas' {fmClassOptions},
   GX_ClassParsing in '..\..\source\ClassBrowser\GX_ClassParsing.pas' {fmClassParsing},
   GX_ClassProp in '..\..\source\ClassBrowser\GX_ClassProp.pas' {fmClassProp},
-  GX_ClassReport in '..\..\source\ClassBrowser\GX_ClassReport.pas' {fmClassReport},
   GX_CleanDirectories in '..\..\source\CleanDirectories\GX_CleanDirectories.pas' {fmCleanDirectories},
   GX_ClipboardHistory in '..\..\source\ClipboardHistory\GX_ClipboardHistory.pas' {fmClipboardHistory},
   GX_ClipboardOptions in '..\..\source\ClipboardHistory\GX_ClipboardOptions.pas' {fmClipboardOptions},
