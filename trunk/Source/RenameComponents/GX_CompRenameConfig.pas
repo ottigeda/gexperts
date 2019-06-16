@@ -191,7 +191,7 @@ begin
   Assert(Assigned(_Src));
   Assert(Assigned(_Dest));
 
-  TStrings_FreeObjects(_Dest);
+  TStrings_FreeAllObjects(_Dest);
   _Dest.Clear;
 
   for i := 0 to _Src.Count - 1 do begin
@@ -664,7 +664,7 @@ begin
     if ShowGxMessageBox(TDefaultRenameComponentsMessage) <> mrYes then
       Exit; //==>
 
-  TStrings_FreeObjects(FValueList);
+  TStrings_FreeAllObjects(FValueList);
   FValueList.Clear;
   FValueList.AddObject('TAction=act', CreateStringlist(['Caption']));
   FValueList.AddObject('TBitBtn=btn', CreateStringlist(['Caption', 'Enabled']));

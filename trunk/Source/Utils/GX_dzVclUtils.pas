@@ -827,7 +827,7 @@ procedure TComboBox_SelectWithoutChangeEvent(_cmb: TCustomComboBox; _Idx: Intege
 ///          @param cmb is the TCustomCombobox (descendant) to use
 ///          @param Items is the TStrings to assign
 procedure TComboBox_AssignItems(_cmb: TCustomComboBox; _Items: TStrings);
-{$ENDIF}
+{$ENDIF GExperts}
 ///<summary>
 /// Add a new item with Object = Pointer(Value) </summary>
 procedure TComboBox_AddIntObject(_cmb: TCustomComboBox; const _Item: string; _Value: Integer);
@@ -1511,6 +1511,7 @@ uses
   u_dzGraphicsUtils,
   u_dzOsUtils;
 {$ENDIF GExperts}
+  GX_dzClassUtils,
   GX_GenericUtils;
 {$IFNDEF GExperts}
 function _(const _s: string): string; inline;
@@ -2834,24 +2835,6 @@ end;
 {$ENDIF GExperts}
 type
   TComboBoxHack = class(TCustomComboBox);
-
-// todo: This is originally from u_dzClassUtils and should be moved there again
-/// <summary>
-/// Frees all objects stored in the TStrings intance and returns the instance,
-/// meant to be called like
-/// @code( TStrings_FreeAllObjects(sl).Free; ) or
-/// @code( TStrings_FreeAllObjects(sl).Clear; ) </summary>
-
-function TStrings_FreeAllObjects(_Strings: TStrings): TStrings;
-var
-  i: Integer;
-begin
-  for i := 0 to _Strings.Count - 1 do begin
-    _Strings.Objects[i].Free;
-    _Strings.Objects[i] := nil;
-  end;
-  Result := _Strings;
-end;
 
 procedure TComboBox_ClearWithObjects(_cmb: TCustomComboBox);
 begin

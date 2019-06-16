@@ -175,7 +175,7 @@ end;
 
 destructor TRegExprMatcher.Destroy;
 begin
-  TStrings_FreeObjects(FMatches);
+  TStrings_FreeAllObjects(FMatches);
   inherited;
 end;
 

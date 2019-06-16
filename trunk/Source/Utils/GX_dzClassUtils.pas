@@ -20,7 +20,12 @@ procedure TStrings_GetAsSortedList(_st: TStrings; _sl: TStringList; _Duplicates:
 
 procedure TStrings_FreeWithObjects(_List: TStrings);
 
-procedure TStrings_FreeObjects(_List: TStrings);
+/// <summary>
+/// Frees all objects stored in the TStrings intance and returns the instance,
+/// meant to be called like
+/// @code( TStrings_FreeAllObjects(sl).Free; ) or
+/// @code( TStrings_FreeAllObjects(sl).Clear; ) </summary>
+function TStrings_FreeAllObjects(_Strings: TStrings): TStrings;
 
 ///<summary>
 /// assign the current index to the Objects property and then sort the list </summary>
@@ -90,16 +95,17 @@ begin
   _List.Free;
 end;
 
-procedure TStrings_FreeObjects(_List: TStrings);
+function TStrings_FreeAllObjects(_Strings: TStrings): TStrings;
 var
   i: Integer;
 begin
-  if not Assigned(_List) then
+  if not Assigned(_Strings) then
     Exit; //==>
-  for i := 0 to _List.Count - 1 do begin
-    _List.Objects[i].Free;
-    _List.Objects[i] := nil;
+  for i := 0 to _Strings.Count - 1 do begin
+    _Strings.Objects[i].Free;
+    _Strings.Objects[i] := nil;
   end;
+  Result := _Strings;
 end;
 
 function IsSameMethod(_Method1, _Method2: TNotifyEvent): Boolean;
