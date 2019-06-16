@@ -61,6 +61,20 @@ type
     b_TreeFont: TButton;
     b_ListFont: TButton;
     b_EditorFont: TButton;
+    tshPrinting: TTabSheet;
+    gbxPrintingFont: TGroupBox;
+    lblFont: TLabel;
+    lblFontSize: TLabel;
+    cbReportFont: TComboBox;
+    spnFontSize: TEdit;
+    udReportFontSize: TUpDown;
+    gbxPrintingBox: TGroupBox;
+    lblBoxSize: TLabel;
+    spnBoxSize: TEdit;
+    udReportBoxSize: TUpDown;
+    spnBoxSpacing: TEdit;
+    lblBoxSpacing: TLabel;
+    udReportBoxSpacing: TUpDown;
     procedure b_TreeFontClick(Sender: TObject);
     procedure b_ListFontClick(Sender: TObject);
     procedure b_EditorFontClick(Sender: TObject);
@@ -72,11 +86,15 @@ type
     procedure SetData(_TreeFont, _ListFont, _EditorFont: TFont;
       _AutomaticallyHideBrowser: Boolean;
       _PrimitiveTop, _StayInPackage, _ParseRecursing: Boolean;
-      _Filters: TClassBrowswerFilters);
+      _Filters: TClassBrowswerFilters;
+      _ReportFontSize, _ReportBoxWidth, _ReportBoxSpace: Integer;
+      const _ReportFont: string);
     procedure GetData(_TreeFont, _ListFont, _EditorFont: TFont;
       out _AutomaticallyHideBrowser: Boolean;
       out _PrimitiveTop, _StayInPackage, _ParseRecursing: Boolean;
-      out _Filters: TClassBrowswerFilters);
+      out _Filters: TClassBrowswerFilters;
+      out _ReportFontSize, _ReportBoxWidth, _ReportBoxSpace: Integer;
+      out _ReportFont: string);
     procedure FontToForm(_Font: TFont; _NameCombo: TComboBox; _SizeUd: TUpDown);
     procedure FormToFont(_Font: TFont; _NameCombo: TComboBox; _SizeUd: TUpDown);
     procedure HandleFontShow(_Sender: TObject);
@@ -84,7 +102,9 @@ type
     class function Execute(_Owner: TWinControl; _TreeFont, _ListFont, _EditorFont: TFont;
       var _AutomaticallyHideBrowser: Boolean;
       var _PrimitiveTop, _StayInPackage, _ParseRecursing: Boolean;
-      var _Filters: TClassBrowswerFilters): Boolean;
+      var _Filters: TClassBrowswerFilters;
+      var _ReportFontSize, _ReportBoxWidth, _ReportBoxSpace: Integer;
+      var _ReportFont: string): Boolean;
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -107,6 +127,7 @@ begin
   cbTreeView.Items.Assign(Screen.Fonts);
   cbListView.Items.Assign(Screen.Fonts);
   cbEditor.Items.Assign(Screen.Fonts);
+  cbReportFont.Items.assign(Screen.Fonts);
 end;
 
 destructor TfmClassOptions.Destroy;
@@ -117,21 +138,26 @@ begin
   inherited;
 end;
 
+
 class function TfmClassOptions.Execute(_Owner: TWinControl; _TreeFont, _ListFont, _EditorFont: TFont;
   var _AutomaticallyHideBrowser: Boolean;
   var _PrimitiveTop, _StayInPackage, _ParseRecursing: Boolean;
-  var _Filters: TClassBrowswerFilters): Boolean;
+  var _Filters: TClassBrowswerFilters;
+  var _ReportFontSize, _ReportBoxWidth, _ReportBoxSpace: Integer;
+  var _ReportFont: string): Boolean;
 var
   frm: TfmClassOptions;
 begin
   frm := TfmClassOptions.Create(_Owner);
   try
     frm.SetData(_TreeFont, _ListFont, _EditorFont, _AutomaticallyHideBrowser,
-      _PrimitiveTop, _StayInPackage, _ParseRecursing, _Filters);
+      _PrimitiveTop, _StayInPackage, _ParseRecursing, _Filters,
+      _ReportFontSize, _ReportBoxWidth, _ReportBoxSpace, _ReportFont);
     Result := (mrOk = frm.ShowModal);
     if Result then
       frm.GetData(_TreeFont, _ListFont, _EditorFont, _AutomaticallyHideBrowser,
-        _PrimitiveTop, _StayInPackage, _ParseRecursing, _Filters);
+        _PrimitiveTop, _StayInPackage, _ParseRecursing, _Filters,
+        _ReportFontSize, _ReportBoxWidth, _ReportBoxSpace, _ReportFont);
   finally
     FreeAndNil(frm);
   end;
@@ -197,7 +223,9 @@ end;
 procedure TfmClassOptions.GetData(_TreeFont, _ListFont, _EditorFont: TFont;
   out _AutomaticallyHideBrowser: Boolean;
   out _PrimitiveTop, _StayInPackage, _ParseRecursing: Boolean;
-  out _Filters: TClassBrowswerFilters);
+  out _Filters: TClassBrowswerFilters;
+  out _ReportFontSize, _ReportBoxWidth, _ReportBoxSpace: Integer;
+  out _ReportFont: string);
 var
   i: Integer;
 begin
@@ -218,12 +246,20 @@ begin
       Tag := TCheckBox(gbxFilters.Controls[i]).Tag;
       _Filters[Tag] := TCheckBox(gbxFilters.Controls[i]).Checked;
     end;
+
+  _ReportFontSize := udReportFontSize.Position;
+  _ReportBoxWidth := udReportBoxSize.Position;
+  _ReportBoxSpace := udReportBoxSpacing.Position;
+  _ReportFont := cbReportFont.Text;
 end;
+
 
 procedure TfmClassOptions.SetData(_TreeFont, _ListFont, _EditorFont: TFont;
   _AutomaticallyHideBrowser: Boolean;
   _PrimitiveTop, _StayInPackage, _ParseRecursing: Boolean;
-  _Filters: TClassBrowswerFilters);
+  _Filters: TClassBrowswerFilters;
+  _ReportFontSize, _ReportBoxWidth, _ReportBoxSpace: Integer;
+  const _ReportFont: string);
 var
   i: Integer;
 begin
@@ -245,6 +281,11 @@ begin
       TCheckBox(gbxFilters.Controls[i]).Checked := _Filters[Tag];
     end;
   end;
+
+  udReportFontSize.Position := _ReportFontSize;
+  udReportBoxSize.Position := _ReportBoxWidth;
+  udReportBoxSpacing.Position := _ReportBoxSpace;
+  cbReportFont.ItemIndex := cbReportFont.Items.IndexOf(_ReportFont);
 end;
 
 end.

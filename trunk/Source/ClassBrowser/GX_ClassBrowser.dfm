@@ -448,6 +448,18 @@ object fmClassBrowser: TfmClassBrowser
     object pmiBrowserProperties: TMenuItem
       Action = actViewClassProperties
     end
+    object pmiBrowserSep2: TMenuItem
+      Caption = '-'
+    end
+    object pmiBrowserPrint: TMenuItem
+      Caption = 'P&rint'
+      object pmiBrowserPrintClassHierarchy: TMenuItem
+        Action = actFilePrintClassHierarchy
+      end
+      object pmiBrowserPrintClassReport: TMenuItem
+        Action = actFilePrintClassReport
+      end
+    end
   end
   object dlgPrinterSetup: TPrinterSetupDialog
     Left = 72
@@ -500,14 +512,14 @@ object fmClassBrowser: TfmClassBrowser
     end
     object actFilePrintClassReport: TAction
       Category = 'File'
-      Caption = '&Class Report...'
-      Hint = 'Print class report...'
+      Caption = '&Class Report'
+      Hint = 'Print class report'
       OnExecute = actFilePrintClassReportExecute
     end
     object actFilePrintClassHierarchy: TAction
       Category = 'File'
-      Caption = 'Class &Hierarchy...'
-      Hint = 'Print class hierarchy...'
+      Caption = 'Class &Hierarchy'
+      Hint = 'Print class hierarchy'
       OnExecute = actFilePrintClassHierarchyExecute
     end
     object actFilePrinterSetup: TAction

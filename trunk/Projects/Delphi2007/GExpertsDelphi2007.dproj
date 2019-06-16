@@ -169,9 +169,6 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\ClassBrowser\GX_ClassProp.pas">
             <Form>fmClassProp</Form>
         </DCCReference>
-        <DCCReference Include="..\..\source\ClassBrowser\GX_ClassReport.pas">
-            <Form>fmClassReport</Form>
-        </DCCReference>
         <DCCReference Include="..\..\source\CleanDirectories\GX_CleanDirectories.pas">
             <Form>fmCleanDirectories</Form>
         </DCCReference>
@@ -262,6 +259,9 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\ExpertManager\GX_ExpertManager.pas">
             <Form>fmExpertManager</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Experts\GX_SelectComponents.pas">
+            <Form>SelectComponentsForm</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\FavoriteFiles\GX_FavFileProp.pas">
             <Form>fmFavFileProp</Form>
         </DCCReference>
@@ -328,6 +328,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
             <Form>frConfigureFormEnhancements</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_Consts.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_CustomClipboard.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_DbugIntf.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_DesignerMenu.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_DummyWizard.pas"/>

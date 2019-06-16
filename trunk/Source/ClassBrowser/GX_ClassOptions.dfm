@@ -344,6 +344,129 @@ object fmClassOptions: TfmClassOptions
           end
         end
       end
+      object tshPrinting: TTabSheet
+        Caption = 'Printing'
+        ImageIndex = 2
+        DesignSize = (
+          403
+          310)
+        object gbxPrintingFont: TGroupBox
+          Left = 8
+          Top = 8
+          Width = 387
+          Height = 73
+          Anchors = [akLeft, akTop, akRight, akBottom]
+          Caption = 'Font for Class Hierarchy'
+          TabOrder = 0
+          DesignSize = (
+            387
+            73)
+          object lblFont: TLabel
+            Left = 8
+            Top = 24
+            Width = 25
+            Height = 14
+            Caption = 'Font'
+            FocusControl = cbReportFont
+          end
+          object lblFontSize: TLabel
+            Left = 226
+            Top = 24
+            Width = 21
+            Height = 14
+            Caption = 'Size'
+            FocusControl = spnFontSize
+          end
+          object cbReportFont: TComboBox
+            Left = 8
+            Top = 40
+            Width = 209
+            Height = 22
+            Style = csDropDownList
+            Anchors = [akLeft, akTop, akRight]
+            ItemHeight = 14
+            TabOrder = 0
+          end
+          object spnFontSize: TEdit
+            Left = 224
+            Top = 40
+            Width = 65
+            Height = 22
+            TabOrder = 1
+            Text = '1'
+          end
+          object udReportFontSize: TUpDown
+            Left = 285
+            Top = 40
+            Width = 16
+            Height = 22
+            Associate = spnFontSize
+            Min = 1
+            Position = 1
+            TabOrder = 2
+          end
+        end
+        object gbxPrintingBox: TGroupBox
+          Left = 8
+          Top = 88
+          Width = 387
+          Height = 129
+          Caption = 'Boxes for Class Hierarchy'
+          TabOrder = 1
+          object lblBoxSize: TLabel
+            Left = 8
+            Top = 24
+            Width = 94
+            Height = 14
+            Caption = 'Size in characters'
+            FocusControl = spnBoxSize
+          end
+          object lblBoxSpacing: TLabel
+            Left = 8
+            Top = 76
+            Width = 88
+            Height = 14
+            Caption = 'Spacing in pixels'
+            FocusControl = spnBoxSpacing
+          end
+          object spnBoxSize: TEdit
+            Left = 8
+            Top = 40
+            Width = 45
+            Height = 22
+            TabOrder = 0
+            Text = '1'
+          end
+          object udReportBoxSize: TUpDown
+            Left = 53
+            Top = 40
+            Width = 16
+            Height = 22
+            Associate = spnBoxSize
+            Min = 1
+            Position = 1
+            TabOrder = 1
+          end
+          object spnBoxSpacing: TEdit
+            Left = 8
+            Top = 96
+            Width = 45
+            Height = 22
+            TabOrder = 2
+            Text = '1'
+          end
+          object udReportBoxSpacing: TUpDown
+            Left = 53
+            Top = 96
+            Width = 16
+            Height = 22
+            Associate = spnBoxSpacing
+            Min = 1
+            Position = 1
+            TabOrder = 3
+          end
+        end
+      end
     end
   end
   object pnlButtons: TPanel

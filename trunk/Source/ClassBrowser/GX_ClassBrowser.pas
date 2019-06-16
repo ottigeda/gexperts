@@ -132,6 +132,10 @@ type
     mitViewPublic: TMenuItem;
     mitViewPublished: TMenuItem;
     timKeyDelay: TTimer;
+    pmiBrowserPrint: TMenuItem;
+    pmiBrowserSep2: TMenuItem;
+    pmiBrowserPrintClassHierarchy: TMenuItem;
+    pmiBrowserPrintClassReport: TMenuItem;
     procedure tvBrowseChange(Sender: TObject; Node: TTreeNode);
     procedure pnlDataResize(Sender: TObject);
     procedure lvInfoChange(Sender: TObject; Item: TListItem; Change: TItemChange);
@@ -265,7 +269,7 @@ implementation
 uses
   SysUtils, Messages, Printers, CommCtrl,
   GX_VerDepConst, GX_ClassIdentify, GX_ConfigurationInfo, GX_EditReader,
-  GX_ClassProp, GX_ClassReport, GX_GExperts,
+  GX_ClassProp, GX_GExperts,
   GX_GxUtils, GX_GenericUtils, GX_SharedImages, GX_IdeUtils, Math,
   GX_dzVclUtils;
 
@@ -1540,10 +1544,6 @@ begin
   if (tvBrowse.Selected = nil) or (tvBrowse.Selected.Level = 0) then
     raise Exception.Create(SSelectClassFirst);
 
-  if not TfmClassReport.Execute(Self, FClassHierarchyFontSize, FClassHierarchyBoxWidth,
-    FClassHierarchyBoxSpace, FClassHierarchyFont) then
-    Exit; //==>
-
   OInfo := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
 
   Screen.Cursor := crHourGlass;
@@ -1891,7 +1891,9 @@ end;
 procedure TfmClassBrowser.actOptionsOptionsExecute(Sender: TObject);
 begin
   if TfmClassOptions.Execute(Self, tvBrowse.Font, lvInfo.Font, FCodeText.Font, FAutomaticallyHideBrowser,
-    FPrimitiveTop, FStayInPackage, FParseRecursing, FFilters) then begin
+    FPrimitiveTop, FStayInPackage, FParseRecursing, FFilters,
+    FClassHierarchyFontSize, FClassHierarchyBoxWidth,
+    FClassHierarchyBoxSpace, FClassHierarchyFont) then begin
     SaveSettings;
     FiltersToActions;
   end;
