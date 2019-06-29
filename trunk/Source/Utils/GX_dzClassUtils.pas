@@ -99,13 +99,13 @@ function TStrings_FreeAllObjects(_Strings: TStrings): TStrings;
 var
   i: Integer;
 begin
+  Result := _Strings;
   if not Assigned(_Strings) then
     Exit; //==>
   for i := 0 to _Strings.Count - 1 do begin
     _Strings.Objects[i].Free;
     _Strings.Objects[i] := nil;
   end;
-  Result := _Strings;
 end;
 
 function IsSameMethod(_Method1, _Method2: TNotifyEvent): Boolean;
