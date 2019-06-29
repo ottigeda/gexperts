@@ -47,6 +47,9 @@ unit SynEditExport;
 
 {$I SynEdit.inc}
 
+// If you define this, some debug code in TSynCustomExporter.CopyToClipboardFormat will be active
+{.$DEFINE DEBUG_COPY_TO_CLIPBOARD}
+
 interface
 
 uses
@@ -401,6 +404,9 @@ var
   hDataSize: UINT;
   PtrData: PByte;
 {$ENDIF}
+{$IFDEF DEBUG_COPY_TO_CLIPBOARD}
+  fs: TFileStream;
+{$ENDIF}
 begin
 {$IFNDEF SYN_CLX}
   hDataSize := GetBufferSize + 1;
@@ -413,6 +419,11 @@ begin
       try
         fBuffer.Position := 0;
         fBuffer.Read(PtrData^, hDataSize - 1); // trailing #0
+{$IFDEF DEBUG_COPY_TO_CLIPBOARD}
+          fs := TFileStream.Create('d:\twm\test.bin', fmCreate);
+          fs.Write(PtrData^, hDataSize - 1);
+          FreeAndNil(fs);
+{$ENDIF}
       finally
         GlobalUnlock(hData);
       end;
