@@ -26,7 +26,9 @@ type
       MousePos: TPoint; var Handled: Boolean);
     procedure sg_ActionsMouseWheelUp(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
+    function ConfigurationKey: string;
     function CompareShortcuts(_Idx1, _Idx2: Integer): Integer;
     procedure SwapEntries(_Idx1, _Idx2: Integer);
     procedure DrawStringGridCell(_sg: TStringGrid; const _Text: string;
@@ -128,6 +130,19 @@ begin
   end;
 end;
 
+procedure TfmGxKeyboardShortcuts.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  Settings: TGExpertsSettings;
+begin
+  // Do not localize any of the following lines.
+  Settings := TGExpertsSettings.Create;
+  try
+    Settings.SaveForm(Self, ConfigurationKey + '\Window');
+  finally
+    FreeAndNil(Settings);
+  end;
+end;
+
 function TfmGxKeyboardShortcuts.ScrollGrid(_Grid: TStringGrid; _Direction: Integer;
   _Shift: TShiftState; _MousePos: TPoint): Boolean;
 var
@@ -182,6 +197,11 @@ begin
   Result := ShiftToStr(Shift) + KeyToStr(Key);
 end;
 
+function TfmGxKeyboardShortcuts.ConfigurationKey: string;
+begin
+  Result := TGxKeyboardShortcuts.ConfigurationKey;
+end;
+
 constructor TfmGxKeyboardShortcuts.Create(_Owner: TComponent);
 var
   i: Integer;
@@ -191,10 +211,18 @@ var
   j: Integer;
   ShortCut: TShortCut;
   s: string;
+  Settings: TGExpertsSettings;
 begin
   inherited;
 
   TControl_SetMinConstraints(Self);
+
+  Settings := TGExpertsSettings.Create;
+  try
+    Settings.LoadForm(Self, ConfigurationKey + '\Window');
+  finally
+    FreeAndNil(Settings);
+  end;
 
   sg_Actions.Cells[0, 0] := 'Shortcut';
   sg_Actions.Cells[1, 0] := 'Action';

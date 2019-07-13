@@ -12,6 +12,7 @@ object fmGxKeyboardShortcuts: TfmGxKeyboardShortcuts
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = True
+  OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 14
   object sg_Actions: TStringGrid
