@@ -21,7 +21,7 @@ object fmGxKeyboardShortcuts: TfmGxKeyboardShortcuts
     Width = 589
     Height = 468
     Align = alClient
-    ColCount = 3
+    ColCount = 4
     DefaultColWidth = 50
     DefaultRowHeight = 20
     FixedCols = 0
@@ -29,6 +29,7 @@ object fmGxKeyboardShortcuts: TfmGxKeyboardShortcuts
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect]
     TabOrder = 0
     OnDrawCell = sg_ActionsDrawCell
+    OnMouseUp = sg_ActionsMouseUp
     OnMouseWheelDown = sg_ActionsMouseWheelDown
     OnMouseWheelUp = sg_ActionsMouseWheelUp
   end

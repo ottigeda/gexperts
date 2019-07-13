@@ -27,14 +27,17 @@ type
     procedure sg_ActionsMouseWheelUp(Sender: TObject; Shift: TShiftState;
       MousePos: TPoint; var Handled: Boolean);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure sg_ActionsMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   private
+    FSortingCol: Integer;
     function ConfigurationKey: string;
-    function CompareShortcuts(_Idx1, _Idx2: Integer): Integer;
+    function CompareEntries(_Idx1, _Idx2: Integer): Integer;
     procedure SwapEntries(_Idx1, _Idx2: Integer);
     procedure DrawStringGridCell(_sg: TStringGrid; const _Text: string;
       const _Rect: TRect; _State: TGridDrawState; _Duplicate: Boolean);
     function ScrollGrid(_Grid: TStringGrid; _Direction: Integer; _Shift: TShiftState;
       _MousePos: TPoint): Boolean;
+    function GetShortcut(_Idx: Integer): TShortCut;
   public
     class procedure Execute(_bmp: TBitmap);
     constructor Create(_Owner: TComponent); override;
@@ -165,38 +168,6 @@ begin
     Result := False;
 end;
 
-function ShortcutToSortText(_Shortcut: TShortCut): string;
-
-  function ShiftToChar(_KeyIsSet: Boolean; _c: Char): Char;
-  begin
-    if _KeyIsSet then
-      Result := _c
-    else
-      Result := ' ';
-  end;
-
-  function ShiftToStr(_Shift: TShiftState): string;
-  begin
-    // ssShift, ssAlt, ssCtrl,
-    Result := ShiftToChar(ssShift in _Shift, 'S')
-      + ShiftToChar(ssAlt in _Shift, 'A')
-      + ShiftToChar(ssCtrl in _Shift, 'C');
-  end;
-
-  function KeyToStr(_Key: Word): string;
-  begin
-    Result := ShortCutToText(ShortCut(_Key, []));
-    Result := RightStr(StringOfChar(' ', 20) + Result, 20);
-  end;
-
-var
-  Key: Word;
-  Shift: TShiftState;
-begin
-  ShortCutToKey(_Shortcut, Key, Shift);
-  Result := ShiftToStr(Shift) + KeyToStr(Key);
-end;
-
 function TfmGxKeyboardShortcuts.ConfigurationKey: string;
 begin
   Result := TGxKeyboardShortcuts.ConfigurationKey;
@@ -204,18 +175,45 @@ end;
 
 constructor TfmGxKeyboardShortcuts.Create(_Owner: TComponent);
 var
+  TabStr: string;
+  Row: Integer;
+
+  procedure AppendLine(_Shortcut: TShortCut; _act: TCustomAction; _IsSecondary: Boolean = False);
+  var
+    Key: Word;
+    Shift: TShiftState;
+    KeyStr: string;
+    ShiftStr: string;
+  begin
+    TGrid_SetNonfixedRowCount(sg_Actions, Row);
+    ShortCutToKey(_Shortcut, Key, Shift);
+    KeyStr := ShortCutToText(ShortCut(Key, []));
+    if _IsSecondary then
+      KeyStr := KeyStr + ' *';
+    ShiftStr := ShortCutToText(ShortCut(VK_TAB, Shift));
+    ShiftStr := LeftStr(ShiftStr, Length(ShiftStr) - Length(TabStr) - 1);
+    sg_Actions.Objects[0, Row] := Pointer(_Shortcut);
+    sg_Actions.Cells[0, Row] := ShiftStr;
+    sg_Actions.Cells[1, Row] := KeyStr;
+    sg_Actions.Cells[2, Row] := _act.Name;
+    sg_Actions.Cells[3, Row] := _act.Caption;
+    Inc(Row);
+  end;
+
+var
   i: Integer;
   ContAct: TContainedAction;
   act: TCustomAction;
-  Row: Integer;
   j: Integer;
-  ShortCut: TShortCut;
+  TheShortCut: TShortCut;
   s: string;
   Settings: TGExpertsSettings;
 begin
   inherited;
 
   TControl_SetMinConstraints(Self);
+
+  FSortingCol := 1;
 
   Settings := TGExpertsSettings.Create;
   try
@@ -224,54 +222,50 @@ begin
     FreeAndNil(Settings);
   end;
 
-  sg_Actions.Cells[0, 0] := 'Shortcut';
-  sg_Actions.Cells[1, 0] := 'Action';
-  sg_Actions.Cells[2, 0] := 'Caption';
+  sg_Actions.Cells[0, 0] := 'Modifier';
+  sg_Actions.Cells[1, 0] := 'Key';
+  sg_Actions.Cells[2, 0] := 'Action';
+  sg_Actions.Cells[3, 0] := 'Caption';
 
   sg_Actions.OnMouseWheelDown := sg_ActionsMouseWheelDown;
   sg_Actions.OnMouseWheelUp := sg_ActionsMouseWheelUp;
 
+  TabStr := ShortCutToText(ShortCut(VK_TAB, []));
   Row := sg_Actions.FixedRows;
   for i := 0 to GxActionBroker.ActionCount - 1 do begin
     ContAct := GxActionBroker.Actions[i];
     if ContAct is TCustomAction then begin
       act := TCustomAction(ContAct);
       if act.ShortCut <> 0 then begin
-        TGrid_SetNonfixedRowCount(sg_Actions, Row);
-        sg_Actions.Objects[0, Row] := Pointer(act.ShortCut);
-        sg_Actions.Cells[0, Row] := ShortCutToText(act.ShortCut);
-        sg_Actions.Cells[1, Row] := act.Name;
-        sg_Actions.Cells[2, Row] := act.Caption;
-        Inc(Row);
+        AppendLine(act.ShortCut, act);
       end;
       for j := 0 to act.SecondaryShortCuts.Count - 1 do begin
-        ShortCut := act.SecondaryShortCuts.ShortCuts[j];
-        if ShortCut = 0 then begin
+        TheShortCut := act.SecondaryShortCuts.ShortCuts[j];
+        if TheShortCut = 0 then begin
+          // somebody assigned an invalid shortcut like 'Shift-Ctrl-Enter' to some action
+          // it's probably futile to try and convert the string to a shortcut, but we do
+          // it anyway.
           s := act.SecondaryShortCuts.Strings[j];
 {$IFOPT D+}
           SendDebugFmt('secondary shortcut for action %s is 0 (text: %s)', [act.Name, s]);
 {$ENDIF}
-          ShortCut := TextToShortCut(s);
+          TheShortCut := TextToShortCut(s);
         end;
-        if ShortCut = 0 then begin
+        if TheShortCut = 0 then begin
 {$IFOPT D+}
           SendDebugFmt('secondary shortcut for action %s is still 0 after TextToShortcut', [act.Name]);
 {$ENDIF}
         end else begin
-          TGrid_SetNonfixedRowCount(sg_Actions, Row);
-          sg_Actions.Objects[0, Row] := Pointer(ShortCut);
-          sg_Actions.Cells[0, Row] := s + ' *';
-          sg_Actions.Cells[1, Row] := act.Name;
-          sg_Actions.Cells[2, Row] := act.Caption;
-          Inc(Row);
+          AppendLine(TheShortCut, act, True);
         end;
       end;
     end;
   end;
-  QuickSort(sg_Actions.FixedRows, Row - 1, CompareShortcuts, SwapEntries);
+
+  QuickSort(sg_Actions.FixedRows, Row - 1, CompareEntries, SwapEntries);
 
   for i := sg_Actions.FixedRows to Row - 2 do begin
-    if SameText(sg_Actions.Cells[0, i], sg_Actions.Cells[0, i + 1]) then begin
+    if SameText(ShortCutToText(GetShortcut(i)), ShortCutToText(GetShortcut(i + 1))) then begin
       sg_Actions.Objects[1, i] := Pointer(1);
       sg_Actions.Objects[1, i + 1] := Pointer(1);
     end;
@@ -281,18 +275,80 @@ begin
   TGrid_Resize(sg_Actions, [roUseGridWidth, roUseAllRows, roReduceMinWidth]);
 end;
 
-function TfmGxKeyboardShortcuts.CompareShortcuts(_Idx1, _Idx2: Integer): Integer;
+function TfmGxKeyboardShortcuts.GetShortcut(_Idx: Integer): TShortCut;
+begin
+  Result := Integer(sg_Actions.Objects[0, _Idx]);
+end;
+
+function ShiftToChar(_KeyIsSet: Boolean; _c: Char): Char;
+begin
+  if _KeyIsSet then
+    Result := _c
+  else
+    Result := ' ';
+end;
+
+function ShiftToStr(_Shift: TShiftState): string;
+begin
+  // ssShift, ssAlt, ssCtrl,
+  Result := ShiftToChar(ssShift in _Shift, 'S')
+    + ShiftToChar(ssAlt in _Shift, 'A')
+    + ShiftToChar(ssCtrl in _Shift, 'C');
+end;
+
+function KeyToStr(_Key: Word): string;
+begin
+  Result := ShortCutToText(ShortCut(_Key, []));
+  Result := RightStr(StringOfChar(' ', 20) + Result, 20);
+end;
+
+function ShortcutToSortTextAlpha(_Shortcut: TShortCut): string;
 var
-  ShortCut1: TShortCut;
-  ShortCut2: TShortCut;
+  Key: Word;
+  Shift: TShiftState;
+begin
+  ShortCutToKey(_Shortcut, Key, Shift);
+  Result := ShiftToStr(Shift) + KeyToStr(Key);
+end;
+
+function ShortcutToSortTextMainKey(_Shortcut: TShortCut): string;
+var
+  Key: Word;
+  Shift: TShiftState;
+begin
+  ShortCutToKey(_Shortcut, Key, Shift);
+  Result := KeyToStr(Key) + ShiftToStr(Shift);
+end;
+
+function TfmGxKeyboardShortcuts.CompareEntries(_Idx1, _Idx2: Integer): Integer;
+var
   s1: string;
   s2: string;
+  Key1: Word;
+  Key2: Word;
+  Shift1: TShiftState;
+  Shift2: TShiftState;
+  c: Integer;
 begin
-  ShortCut1 := Integer(sg_Actions.Objects[0, _Idx1]);
-  ShortCut2 := Integer(sg_Actions.Objects[0, _Idx2]);
-  s1 := ShortcutToSortText(ShortCut1);
-  s2 := ShortcutToSortText(ShortCut2);
-  Result := CompareText(s1, s2);
+  ShortCutToKey(GetShortcut(_Idx1), Key1, Shift1);
+  ShortCutToKey(GetShortcut(_Idx2), Key2, Shift2);
+  c := Abs(FSortingCol) - 1;
+  case c of
+    1: begin
+        s1 := KeyToStr(Key1);
+        s2 := KeyToStr(Key2);
+      end;
+    2, 3: begin
+        s1 := sg_Actions.Cells[c, _Idx1];
+        s2 := sg_Actions.Cells[c, _Idx2];
+      end;
+  else // 0
+    s1 := ShiftToStr(Shift1);
+    s2 := ShiftToStr(Shift2);
+  end;
+  s1 := s1 + '@' + sg_Actions.Rows[_Idx1].Text;
+  s2 := s2 + '@' + sg_Actions.Rows[_Idx2].Text;
+  Result := Sign(FSortingCol) * CompareText(s1, s2);
 end;
 
 procedure TfmGxKeyboardShortcuts.SwapEntries(_Idx1, _Idx2: Integer);
@@ -309,6 +365,10 @@ begin
   p := sg_Actions.Objects[0, _Idx1];
   sg_Actions.Objects[0, _Idx1] := sg_Actions.Objects[0, _Idx2];
   sg_Actions.Objects[0, _Idx2] := p;
+
+  p := sg_Actions.Objects[1, _Idx1];
+  sg_Actions.Objects[1, _Idx1] := sg_Actions.Objects[1, _Idx2];
+  sg_Actions.Objects[1, _Idx2] := p;
 end;
 
 procedure TfmGxKeyboardShortcuts.DrawStringGridCell(_sg: TStringGrid; const _Text: string;
@@ -317,13 +377,9 @@ var
   cnv: TCanvas;
 begin
   cnv := _sg.Canvas;
-  if _Text = '' then
-    cnv.Brush.Color := _sg.Color
-  else begin
-    if _Duplicate then begin
-      cnv.Brush.Color := clYellow;
-      cnv.Font.Color := clBlack;
-    end;
+  if _Duplicate then begin
+    cnv.Brush.Color := clYellow;
+    cnv.Font.Color := clBlack;
   end;
   cnv.FillRect(_Rect);
   cnv.TextRect(_Rect, _Rect.Left + 2, _Rect.Top + 2, _Text);
@@ -335,6 +391,23 @@ var
   sg: TStringGrid absolute Sender;
 begin
   DrawStringGridCell(sg, sg.Cells[ACol, ARow], Rect, State, LongBool(sg.Objects[1, ARow]));
+end;
+
+procedure TfmGxKeyboardShortcuts.sg_ActionsMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  c: Integer;
+  r: Integer;
+begin
+  sg_Actions.MouseToCell(X, Y, c, r);
+  if r < sg_Actions.FixedRows then begin
+    Inc(c);
+    if c = Abs(FSortingCol) then
+      FSortingCol := -FSortingCol
+    else
+      FSortingCol := c;
+    QuickSort(sg_Actions.FixedRows, sg_Actions.RowCount - 1, CompareEntries, SwapEntries);
+  end;
 end;
 
 procedure TfmGxKeyboardShortcuts.sg_ActionsMouseWheelDown(Sender: TObject;
