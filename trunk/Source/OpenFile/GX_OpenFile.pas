@@ -882,6 +882,28 @@ begin
   tmrFilter.Enabled := False;
 end; 
 
+procedure FocusCodeEditor;
+var
+  i: Integer;
+  frm: TForm;
+  j: Integer;
+  cmp: TComponent;
+begin
+  for i := 0 to Screen.FormCount - 1 do begin
+    frm := Screen.Forms[i];
+    if frm.Name = 'EditWindow_0' then begin
+      frm.BringToFront;
+      for j := 0 to frm.ComponentCount - 1 do begin
+        cmp := frm.Components[j];
+        if cmp.ClassNameIs('TEditControl') then begin
+          TWinControl_SetFocus(TWinControl(cmp));
+          Exit; //==>
+        end;
+      end;
+    end;
+  end;
+end;
+
 procedure TfmOpenFile.btnOKClick(Sender: TObject);
 var
   i: Integer;
@@ -890,8 +912,8 @@ var
 begin
   FAvailableFiles.Terminate;
   Src := CurrentListView;
-  if Src.SelCount > 0 then
-    for i := 0 to Src.Items.Count - 1 do
+  if Src.SelCount > 0 then begin
+    for i := 0 to Src.Items.Count - 1 do begin
       if Src.Items[i].Selected then
       begin
         FileName := MakeFileName(Src.Items[i]);
@@ -900,6 +922,9 @@ begin
         //if i = Src.Items.Count - 1 then
         // Focus last editor/form
       end;
+    end;
+    FocusCodeEditor;
+  end;
 end;
 
 procedure TfmOpenFile.DeleteFromFavorites(Item: TListItem);
