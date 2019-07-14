@@ -245,7 +245,8 @@ uses
   GX_dzCompilerAndRtlVersions in '..\..\source\framework\GX_dzCompilerAndRtlVersions.pas',
   GX_dzMiscUtils in '..\..\Source\Utils\GX_dzMiscUtils.pas',
   GX_SelectComponents in '..\..\Source\Experts\GX_SelectComponents.pas' {SelectComponentsForm},
-  GX_CustomClipboard in '..\..\Source\Framework\GX_CustomClipboard.pas';
+  GX_CustomClipboard in '..\..\Source\Framework\GX_CustomClipboard.pas',
+  GX_FocusCodeEditor in '..\..\Source\FocusCodeEditor\GX_FocusCodeEditor.pas';
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
