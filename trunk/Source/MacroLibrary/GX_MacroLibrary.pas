@@ -1345,7 +1345,7 @@ begin
     FBitmap := Graphics.TBitmap.Create;
     GetMacroLibraryForm.GetRecordBitmap(FBitmap);
   end;
-  result := FBitmap;
+  Result := FBitmap;
 end;
 
 function TMacroLibRecordExpert.GetDefaultShortCut: TShortCut;
