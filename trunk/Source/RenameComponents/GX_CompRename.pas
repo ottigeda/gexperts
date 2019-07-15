@@ -1071,6 +1071,7 @@ var
   i: Integer;
   OtherProps: TStringList;
   cnt: integer;
+  LSection: string;
 begin
   inherited InternalSaveSettings(Settings);
   Assert(Assigned(FRenameRuleList));
@@ -1095,9 +1096,14 @@ begin
 
   for i := 0 to FRenameRuleList.Count - 1 do
   begin
+    LSection := FRenameRuleList.Names[i];
     OtherProps := FRenameRuleList.Objects[i] as TStringList;
     if Assigned(OtherProps) then
-      Settings.WriteStrings(FRenameRuleList.Names[i], OtherProps);
+      Settings.WriteStrings(LSection, OtherProps)
+    else begin
+      if Settings.SectionExists(LSection) then
+        Settings.EraseSection(LSection);
+    end;
   end;
 end;
 
