@@ -183,7 +183,6 @@ type
     procedure InitializeFileTypes(const SelectType: string);
     procedure LoadSettings;
     procedure SaveSettings;
-    function ConfigurationKey: string;
     procedure CopyColumns(Source: TListView);
     procedure ResizeListViewColumns;
     procedure SetCurrentListView(const Value: TListView);
@@ -242,8 +241,8 @@ type
     destructor Destroy; override;
     function HasConfigOptions: Boolean; override;
     function HasMenuItem: Boolean; override;
-    procedure InternalLoadSettings(ASettings: TExpertSettings); override;
-    procedure InternalSaveSettings(ASettings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
     procedure Execute(Sender: TObject); override;
     function GetActionCaption: string; override;
     class function GetName: string; override;
@@ -288,7 +287,6 @@ constructor TOpenFileExpert.Create;
 begin
   inherited;
   Settings := TOpenFileSettings.Create;
-  Settings.ConfigurationKey := ConfigurationKey;
   OpenFileExpert := Self;
   FNotifier := TOpenFileNotifier.Create;
   FNotifier.AddNotifierToIDE;
@@ -316,16 +314,16 @@ begin
   Result := True;
 end;
 
-procedure TOpenFileExpert.InternalLoadSettings(ASettings: TExpertSettings);
+procedure TOpenFileExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
-  Settings.InternalLoadSettings(ASettings);
+  Settings.InternalLoadSettings(_Settings);
 end;
 
-procedure TOpenFileExpert.InternalSaveSettings(ASettings: TExpertSettings);
+procedure TOpenFileExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited;
-  Settings.InternalSaveSettings(ASettings);
+  Settings.InternalSaveSettings(_Settings);
   HijackIDEActions;
 end;
 
@@ -1117,11 +1115,6 @@ begin
   ModalResult := mrOK;
 end;
 
-function TfmOpenFile.ConfigurationKey: string;
-begin
-  Result := 'OpenFile';
-end;
-
 procedure TfmOpenFile.CopyColumns(Source: TListView);
 begin
   Assert(Assigned(Source));
@@ -1232,33 +1225,26 @@ end;
 
 procedure TfmOpenFile.LoadSettings;
 var
-  GExSettings: TGExpertsSettings;
+  Settings: IExpertSettings;
 begin
   // do not localize
-  GExSettings := TGExpertsSettings.Create;
-  try
-    GExSettings.LoadForm(Self, ConfigurationKey + '\Window');
-    FFileColumnWidth := GExSettings.ReadInteger(ConfigurationKey, 'FileColumnWidth', lvSearchPath.Columns[0].Width);
-    MapTabVisible := GExSettings.ReadBool(ConfigurationKey, 'ShowMapTab', False);
-  finally
-    FreeAndNil(GExSettings);
-  end;
+  Settings := TOpenFileExpert.GetSettings;
+  Settings.LoadForm('Window', Self);
+  FFileColumnWidth := Settings.ReadInteger('FileColumnWidth', lvSearchPath.Columns[0].Width);
+  MapTabVisible := Settings.ReadBool('ShowMapTab', False);
   EnsureFormVisible(Self);
 end;
 
 procedure TfmOpenFile.SaveSettings;
 var
-  GExSettings: TGExpertsSettings;
+  Settings: IExpertSettings;
 begin
   // do not localize
-  GExSettings := TGExpertsSettings.Create;
-  try
-    GExSettings.SaveForm(Self, ConfigurationKey + '\Window');
-    if Assigned(CurrentListView) then
-      GExSettings.WriteInteger(ConfigurationKey, 'FileColumnWidth', CurrentListView.Columns[0].Width);
-  finally
-    FreeAndNil(GExSettings);
-  end;
+  Settings := TOpenFileExpert.GetSettings;
+  Settings.SaveForm('Window', Self);
+  if Assigned(CurrentListView) then
+    Settings.WriteInteger('FileColumnWidth', CurrentListView.Columns[0].Width);
+  Settings.WriteBool('ShowMapTab', MapTabVisible);
 end;
 
 procedure TfmOpenFile.InitializeFileTypes(const SelectType: string);

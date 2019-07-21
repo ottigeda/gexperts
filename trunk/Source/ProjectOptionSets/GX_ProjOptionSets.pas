@@ -8,7 +8,7 @@ interface
 uses
   Windows, ToolsAPI, TypInfo, Classes, Controls, Forms, StdCtrls,
   ExtCtrls, CheckLst, Menus, ComCtrls, ToolWin, ActnList, OmniXml,
-  GX_IdeDock, GX_Experts, GX_ConfigurationInfo;
+  GX_IdeDock, GX_Experts, GX_ConfigurationInfo, Actions;
 
 type
   TfmProjOptionSets = class;
@@ -18,7 +18,7 @@ type
     function GetStorageFile: string;
   protected
     procedure UpdateAction(Action: TCustomAction); override;
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     procedure SetActive(New: Boolean); override;
   public
     constructor Create; override;
@@ -153,7 +153,6 @@ type
     procedure RefreshEnvCheckmarks;
     procedure AddNewOptionSet(const SetName: string);
     function HaveSelectedSet: Boolean;
-    function ConfigurationKey: string;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -465,9 +464,9 @@ begin
     'ProjectOptionSets-' + IdeProductName + MajorVersionNumberChar + '.xml';
 end;
 
-procedure TProjOptionSetsExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TProjOptionSetsExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalLoadSettings(Settings);
+  inherited InternalLoadSettings(_Settings);
   // This procedure is only called once so it is safe to register the form here.
   if Active then
     IdeDockManager.RegisterDockableForm(TfmProjOptionSets,
@@ -1301,25 +1300,21 @@ begin
 end;
 
 procedure TfmProjOptionSets.SaveSettings;
+var
+  Settings: IExpertSettings;
 begin
   // Do not localize any of the below items
-  with TGExpertsSettings.Create do
-  try
-    SaveForm(Self, ConfigurationKey + '\Window', [fsSize]);
-  finally
-    Free;
-  end;
+  Settings := TProjOptionSetsExpert.GetSettings;
+  Settings.SaveForm('Window', Self, [fsSize]);
 end;
 
 procedure TfmProjOptionSets.LoadSettings;
+var
+  Settings: IExpertSettings;
 begin
   // Do not localize any of the below items
-  with TGExpertsSettings.Create do
-  try
-    LoadForm(Self, ConfigurationKey + '\Window', [fsSize]);
-  finally
-    Free;
-  end;
+  Settings := TProjOptionSetsExpert.GetSettings;
+  Settings.LoadForm('Window', Self, [fsSize]);
 end;
 
 procedure TfmProjOptionSets.mniPrjSortByCheckmarkClick(Sender: TObject);
@@ -1664,11 +1659,6 @@ begin
         Result := GetVariantValueAsString(FPrjOptions.Values[AOption], tmpObj.OptionKind);
     end;
   end;
-end;
-
-function TfmProjOptionSets.ConfigurationKey: string;
-begin
-  Result := TProjOptionSetsExpert.ConfigurationKey;
 end;
 
 procedure TfmProjOptionSets.mniModifyPrjOptionValuesClick(Sender: TObject);

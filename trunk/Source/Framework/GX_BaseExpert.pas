@@ -19,9 +19,6 @@ type
     procedure SetActive(New: Boolean); virtual;
     function GetShortCut: TShortCut; virtual;
     procedure SetShortCut(Value: TShortCut); virtual;
-    // Subkey used to store configuration details in the registry
-    // defaults to GetName
-    class function ConfigurationKey: string; virtual;
     // Return the file name of an icon associated with
     // the expert. Do not specify a path.
     // This bitmap must be included in the
@@ -34,11 +31,9 @@ type
     // Defaults to GetName.
     function GetBitmapFileName: string; virtual;
     // Overrride to load any configuration settings
-    procedure InternalLoadSettings(Settings: TExpertSettings); overload; virtual;
-    procedure InternalLoadSettings(_GxSettings: TGExpertsSettings); overload;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); virtual;
     // Overrride to save any configuration settings
-    procedure InternalSaveSettings(Settings: TExpertSettings); overload; virtual;
-    procedure InternalSaveSettings(_GxSettings: TGExpertsSettings); overload;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); virtual;
     // do nothing, overridden by TGX_Expert and TEditorExpert because
     // theses settings are "traditionally" stored differently.
     procedure LoadActiveAndShortCut(Settings: TGExpertsSettings); virtual;
@@ -48,6 +43,9 @@ type
   public
     // Internal name of expert for expert identification.
     class function GetName: string; virtual;
+    // Subkey used to store configuration details in the registry
+    // defaults to GetName
+    class function ConfigurationKey: string; virtual;
     constructor Create;
     destructor Destroy; override;
     function CanHaveShortCut: boolean; virtual; abstract;
@@ -77,6 +75,7 @@ type
     function GetDefaultShortCut: TShortCut; virtual;
     // Returns true, see also Configure
     function HasConfigOptions: Boolean; virtual;
+    class function GetSettings: IExpertSettings; virtual;
     // Creates a Settings object and passes it to
     // the virtual methods
     // LoadActiveAndShortCut and InternalLoadSettings
@@ -91,7 +90,7 @@ type
     procedure SaveSettings(_GxSettings: TGExpertsSettings); overload;
     // Returns an empty string, overridden by TGX_Expert and TEditorExpert
     // to return the correct values.
-    function GetOptionsBaseRegistryKey: string; virtual;
+    class function GetOptionsBaseRegistryKey: string; virtual;
     // Defaults to True
     function IsDefaultActive: Boolean; virtual;
     procedure ClearCallCounts;
@@ -198,9 +197,14 @@ begin
   Result := Self.ClassName;
 end;
 
-function TGX_BaseExpert.GetOptionsBaseRegistryKey: string;
+class function TGX_BaseExpert.GetOptionsBaseRegistryKey: string;
 begin
   Result := '';
+end;
+
+class function TGX_BaseExpert.GetSettings: IExpertSettings;
+begin
+  Result := ConfigInfo.GetExpertSettings(ConfigurationKey, GetOptionsBaseRegistryKey);
 end;
 
 function TGX_BaseExpert.GetShortCut: TShortCut;
@@ -223,38 +227,14 @@ begin
   Inc(FCallCount);
 end;
 
-procedure TGX_BaseExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TGX_BaseExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   // do nothing
 end;
 
-procedure TGX_BaseExpert.InternalLoadSettings(_GxSettings: TGExpertsSettings);
-var
-  ExpSettings: TExpertSettings;
-begin
-  ExpSettings := _GxSettings.CreateExpertSettings(ConfigurationKey);
-  try
-    InternalLoadSettings(ExpSettings);
-  finally
-    FreeAndNil(ExpSettings);
-  end;
-end;
-
-procedure TGX_BaseExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TGX_BaseExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   // do nothing
-end;
-
-procedure TGX_BaseExpert.InternalSaveSettings(_GxSettings: TGExpertsSettings);
-var
-  ExpSettings: TExpertSettings;
-begin
-  ExpSettings := _GxSettings.CreateExpertSettings(ConfigurationKey);
-  try
-    InternalSaveSettings(ExpSettings);
-  finally
-    FreeAndNil(ExpSettings);
-  end;
 end;
 
 function TGX_BaseExpert.IsDefaultActive: Boolean;
@@ -283,7 +263,7 @@ end;
 procedure TGX_BaseExpert.LoadSettings(_GxSettings: TGExpertsSettings);
 begin
   LoadActiveAndShortCut(_GxSettings);
-  InternalLoadSettings(_GxSettings);
+  InternalLoadSettings(GetSettings);
 end;
 
 function TGX_BaseExpert.GetTotalCallCount: Integer;
@@ -325,7 +305,8 @@ end;
 procedure TGX_BaseExpert.SaveSettings(_GxSettings: TGExpertsSettings);
 begin
   SaveActiveAndShortCut(_GxSettings);
-  InternalSaveSettings(_GxSettings);
+
+  InternalSaveSettings(GetSettings);
 end;
 
 procedure TGX_BaseExpert.SetTotalCallCount(Value: Integer);

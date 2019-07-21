@@ -188,7 +188,6 @@ type
     procedure RemoveKeyboardBindings;
     function  MacroInfoForItem(Item: TListItem): TMacroInfo;
     function  MacroInfoFromPointer(Ptr: Pointer): TMacroInfo;
-    function  RegistryKey: string;
     function HaveSelectedMacro: Boolean;
     function SelectedMacroIndex: Integer;
     procedure SelectMacro(Index: Integer);
@@ -213,7 +212,7 @@ type
     FStoragePath: string;
     function GetStorageFile: string;
   protected
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -675,40 +674,34 @@ end;
 
 procedure TfmMacroLibrary.SaveSettings;
 var
-  Settings: TGExpertsSettings;
+  Settings: IExpertSettings;
 begin
   // Do not localize.
-  Settings := TGExpertsSettings.Create(AddSlash(ConfigInfo.GExpertsIdeRootRegistryKey) + RegistryKey);
-  try
-    Settings.SaveForm(Self, 'Window');
-    Settings.WriteInteger('Window', 'ViewStyle', Integer(lvMacros.ViewStyle));
-    Settings.WriteBool(RegistrySection, 'Suspended', FSuspended);
-    Settings.WriteBool('Window', 'ViewToolbar', Toolbar.Visible);
-    Settings.WriteBool(RegistrySection, 'ViewDescription', DescriptionVisible);
-    Settings.WriteInteger('Window', 'DescriptionSize', pnlDescription.Height);
-    Settings.WriteBool(RegistrySection, 'PromptForName', FPromptForName);
-  finally
-    FreeAndNil(Settings);
-  end;
+  Settings := TMacroLibExpert.GetSettings;
+  Settings.WriteBool('Suspended', FSuspended);
+  Settings.WriteBool('ViewDescription', DescriptionVisible);
+  Settings.WriteBool('PromptForName', FPromptForName);
+  Settings.SaveForm('Window', Self);
+  Settings :=  Settings.Subkey('Window');
+  Settings.WriteInteger('ViewStyle', Integer(lvMacros.ViewStyle));
+  Settings.WriteBool('ViewToolbar', Toolbar.Visible);
+  Settings.WriteInteger('DescriptionSize', pnlDescription.Height);
 end;
 
 procedure TfmMacroLibrary.LoadSettings;
 var
-  Settings: TGExpertsSettings;
+  Settings: IExpertSettings;
 begin
   // Do not localize.
-  Settings := TGExpertsSettings.Create(AddSlash(ConfigInfo.GExpertsIdeRootRegistryKey) + RegistryKey);
-  try
-    Settings.LoadForm(Self, 'Window');
-    FSuspended := Settings.ReadBool(RegistrySection, 'Suspended', False);
-    //lvMacros.ViewStyle := TViewStyle(RegIni.ReadEnumerated(RegistrySection, 'ViewStyle', TypeInfo(TViewStyle), Integer(vsReport)));
-    Toolbar.Visible := Settings.ReadBool('Window', 'ViewToolbar', True);
-    DescriptionVisible := Settings.ReadBool(RegistrySection, 'ViewDescription', True);
-    pnlDescription.Height := Settings.ReadInteger('Window', 'DescriptionSize', pnlDescription.Height);
-    FPromptForName := Settings.ReadBool(RegistrySection, 'PromptForName', False);
-  finally
-    FreeAndNil(Settings);
-  end;
+  Settings := TMacroLibExpert.GetSettings;
+  FSuspended := Settings.ReadBool('Suspended', False);
+  FPromptForName := Settings.ReadBool('PromptForName', False);
+  DescriptionVisible := Settings.ReadBool('ViewDescription', True);
+  //lvMacros.ViewStyle := TViewStyle(RegIni.ReadEnumerated('ViewStyle', TypeInfo(TViewStyle), Integer(vsReport)));
+  Settings.LoadForm('Window', Self);
+  Settings := Settings.Subkey('Window');
+  Toolbar.Visible := Settings.ReadBool('ViewToolbar', True);
+  pnlDescription.Height := Settings.ReadInteger('DescriptionSize', pnlDescription.Height);
   EnsureFormVisible(Self);
 end;
 
@@ -1062,11 +1055,6 @@ begin
   Result := TObject(Ptr) as TMacroInfo;
 end;
 
-function TfmMacroLibrary.RegistryKey: string;
-begin
-  Result := TMacroLibExpert.GetName;
-end;
-
 function TfmMacroLibrary.HaveSelectedMacro: Boolean;
 begin
   Result := Assigned(lvMacros.Selected);
@@ -1269,7 +1257,7 @@ begin
     ShowGxMessageBox(TIDEMacroBugMessage);
 end;
 
-procedure TMacroLibExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TMacroLibExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
   // This procedure is only called once, so it is safe to

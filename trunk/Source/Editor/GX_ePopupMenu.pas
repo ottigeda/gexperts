@@ -104,8 +104,8 @@ type
     function GetDefaultShortCut: TShortCut; override;
     function GetHelpString: string; override;
     function HasConfigOptions: Boolean; override;
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   end;
 
 { TGxEditorPopupMenuExpert }
@@ -243,38 +243,34 @@ begin
   Result := True;
 end;
 
-procedure TGxEditorPopupMenuExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TGxEditorPopupMenuExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
-  Settings.ReadBool('ForceEditorActive', FForceEditorActive);
+  _Settings.ReadBool('ForceEditorActive', FForceEditorActive);
   FShortcuts.Clear;
-  if Settings.SectionExists('menu') then begin
-    Settings.ReadSectionValues('menu', FShortcuts);
+  if _Settings.SectionExists('menu') then begin
+    _Settings.ReadSectionValues('menu', FShortcuts);
   end else begin
     SetDefaults(FShortcuts);
   end;
-  FFormHeight := Settings.ReadInteger('FormHeight', FFormHeight);
+  FFormHeight := _Settings.ReadInteger('FormHeight', FFormHeight);
 end;
 
-procedure TGxEditorPopupMenuExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TGxEditorPopupMenuExpert.InternalSaveSettings(_Settings: IExpertSettings);
 var
   i: Integer;
   s: string;
-  MnuSettings: TExpertSettings;
+  MnuSettings: IExpertSettings;
 begin
   inherited;
-  Settings.WriteBool('ForceEditorActive', FForceEditorActive);
-  Settings.EraseSection('menu');
-  MnuSettings := Settings.CreateExpertSettings('menu');
-  try
-    for i := 0 to FShortcuts.Count - 1 do begin
-      s := FShortcuts.Names[i];
-      MnuSettings.WriteString(s, FShortcuts.Values[s]);
-    end;
-  finally
-    FreeAndNil(MnuSettings);
+  _Settings.WriteBool('ForceEditorActive', FForceEditorActive);
+  _Settings.EraseSection('menu');
+  MnuSettings := _Settings.Subkey('menu');
+  for i := 0 to FShortcuts.Count - 1 do begin
+    s := FShortcuts.Names[i];
+    MnuSettings.WriteString(s, FShortcuts.Values[s]);
   end;
-  Settings.WriteInteger('FormHeight', FFormHeight);
+  _Settings.WriteInteger('FormHeight', FFormHeight);
 end;
 
 class procedure TGxEditorPopupMenuExpert.SetDefaults(_sl: TStringList);

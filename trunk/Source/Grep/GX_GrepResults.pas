@@ -385,7 +385,7 @@ type
     procedure InitGrepSettings(AGrepSettings: TGrepSettings);
     function  Execute(AState: TGrepSearchState): Boolean;
     procedure UpdateFromSettings;
-    procedure InternalSaveSettings(Settings: TExpertSettings);
+    procedure InternalSaveSettings(_Settings: IExpertSettings);
     property StayOnTop: Boolean read GetStayOnTop write SetStayOnTop;
     property ShowContext: Boolean read FShowContext write SetShowContext;
     property ShowFullFilename: Boolean read FShowFullFilename write SetShowFullFilename;
@@ -843,125 +843,101 @@ begin
   FGrepSettings := AGrepSettings;
 end;
 
-procedure TfmGrepResults.InternalSaveSettings(Settings: TExpertSettings);
+procedure TfmGrepResults.InternalSaveSettings(_Settings: IExpertSettings);
 var
-  WindowSettings: TExpertSettings;
+  WindowSettings: IExpertSettings;
   Percent: integer;
   IM: TGrepHistoryListMode;
   IT: TPageIndexType;
 begin
-  Settings.SaveForm('Window', Self);
-  WindowSettings := Settings.CreateExpertSettings('Window');
-  try
-    WindowSettings.WriteBool('OnTop', StayOnTop);
-    if IsStandAlone then
-      WindowSettings.WriteBool('ShowToolBar', ToolBar.Visible);
-    WindowSettings.WriteBool('ShowContext', ShowContext);
-    WindowSettings.WriteBool('ShowHistoryList', ShowHistoryList);
+  _Settings.SaveForm('Window', Self);
+  WindowSettings := _Settings.Subkey('Window');
+  WindowSettings.WriteBool('OnTop', StayOnTop);
+  if IsStandAlone then
+    WindowSettings.WriteBool('ShowToolBar', ToolBar.Visible);
+  WindowSettings.WriteBool('ShowContext', ShowContext);
+  WindowSettings.WriteBool('ShowHistoryList', ShowHistoryList);
 
-    if GrepExpert.ContextSaveFixedHeight then
-      WindowSettings.WriteInteger('ContextHeight', reContext.Height)
-    else
-    begin
-      Percent := (reContext.Height * 100) div ClientHeight;
-      WindowSettings.WriteInteger('ContextHeightPercent', Percent);
-    end;
-
-    WindowSettings.WriteInteger('HistoryListWidth', lbHistoryList.Width);
-
-    WindowSettings.WriteBool('ShowFullFilename', ShowFullFilename);
-    WindowSettings.WriteBool('ShowLineIndent', ShowLineIndent);
-
-    for IM := Low(TGrepHistoryListMode) to High(TGrepHistoryListMode) do
-      for IT := Low(TPageSavedIndexType) to High(TPageSavedIndexType) do
-        WindowSettings.WriteInteger(cKeyPageIndexType[IT] + cKeyPageIndexMode[IM], FPageIndexes[IM, IT]);
-
-    WindowSettings.WriteInteger('HistoryListPage', tcHistoryListPage.TabIndex);
-  finally
-    WindowSettings.Free;
+  if GrepExpert.ContextSaveFixedHeight then
+    WindowSettings.WriteInteger('ContextHeight', reContext.Height)
+  else begin
+    Percent := (reContext.Height * 100) div ClientHeight;
+    WindowSettings.WriteInteger('ContextHeightPercent', Percent);
   end;
+
+  WindowSettings.WriteInteger('HistoryListWidth', lbHistoryList.Width);
+
+  WindowSettings.WriteBool('ShowFullFilename', ShowFullFilename);
+  WindowSettings.WriteBool('ShowLineIndent', ShowLineIndent);
+
+  for IM := Low(TGrepHistoryListMode) to High(TGrepHistoryListMode) do
+    for IT := Low(TPageSavedIndexType) to High(TPageSavedIndexType) do
+      WindowSettings.WriteInteger(cKeyPageIndexType[IT] + cKeyPageIndexMode[IM], FPageIndexes[IM, IT]);
+
+  WindowSettings.WriteInteger('HistoryListPage', tcHistoryListPage.TabIndex);
 end;
 
 procedure TfmGrepResults.SaveSettings;
 var
-  Settings: TGExpertsSettings;
-  ExpSettings: TExpertSettings;
+  Settings: IExpertSettings;
 begin
-  // Do not localize any of the below strings.
-  ExpSettings := nil;
-  Settings := TGExpertsSettings.Create;
-  try
-    ExpSettings := Settings.CreateExpertSettings(ConfigurationKey);
-    InternalSaveSettings(ExpSettings);
-  finally
-    FreeAndNil(ExpSettings);
-    FreeAndNil(Settings);
-  end;
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  InternalSaveSettings(Settings);
 end;
 
 procedure TfmGrepResults.LoadSettings;
 var
-  WindowSettings: TExpertSettings;
-  Settings: TGExpertsSettings;
-  ExpSettings: TExpertSettings;
+  WindowSettings: IExpertSettings;
+  ExpSettings: IExpertSettings;
   AHistoryIniVersion: Integer;
   IM: TGrepHistoryListMode;
   IT: TPageIndexType;
 begin
   // Do not localize any of the below strings.
-  WindowSettings := nil;
-  ExpSettings := nil;
-  Settings := TGExpertsSettings.Create;
-  try
-    ExpSettings := Settings.CreateExpertSettings(ConfigurationKey);
-    AHistoryIniVersion := ExpSettings.ReadInteger('HistoryIniVersion', 0);
+  ExpSettings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  AHistoryIniVersion := ExpSettings.ReadInteger('HistoryIniVersion', 0);
 
-    ExpSettings.LoadForm('Window', Self);
-    WindowSettings := ExpSettings.CreateExpertSettings('Window');
-    EnsureFormVisible(Self);
-    StayOnTop := WindowSettings.ReadBool('OnTop', True);
-    if IsStandAlone then
-      ToolBar.Visible := WindowSettings.ReadBool('ShowToolBar', ToolBar.Visible)
-    else
-      ToolBar.Visible := True;
+  ExpSettings.LoadForm('Window', Self);
+  WindowSettings := ExpSettings.Subkey('Window');
+  EnsureFormVisible(Self);
+  StayOnTop := WindowSettings.ReadBool('OnTop', True);
+  if IsStandAlone then
+    ToolBar.Visible := WindowSettings.ReadBool('ShowToolBar', ToolBar.Visible)
+  else
+    ToolBar.Visible := True;
 
-    ShowContext := WindowSettings.ReadBool('ShowContext', True);
+  ShowContext := WindowSettings.ReadBool('ShowContext', True);
 
-    for IM := Low(TGrepHistoryListMode) to High(TGrepHistoryListMode) do
-      for IT := Low(TPageSavedIndexType) to High(TPageSavedIndexType) do
-        FPageIndexes[IM, IT] := WindowSettings.ReadInteger(cKeyPageIndexType[IT] + cKeyPageIndexMode[IM], FPageIndexes[IM, IT]);
+  for IM := Low(TGrepHistoryListMode) to High(TGrepHistoryListMode) do
+    for IT := Low(TPageSavedIndexType) to High(TPageSavedIndexType) do
+      FPageIndexes[IM, IT] := WindowSettings.ReadInteger(cKeyPageIndexType[IT] + cKeyPageIndexMode[IM], FPageIndexes[IM, IT]);
 
-    if AHistoryIniVersion = 0 then
-    begin
-      ShowHistoryList := WindowSettings.ReadBool('ShowFoundList', True);
-      FLoadHistoryListWidth := WindowSettings.ReadInteger('FoundListWidth', lbHistoryList.Width)
-    end
-    else
-    begin
-      ShowHistoryList := WindowSettings.ReadBool('ShowHistoryList', True);
-      FLoadHistoryListWidth := WindowSettings.ReadInteger('HistoryListWidth', lbHistoryList.Width);
-    end;
-
-    if WindowSettings.ValueExists('ContextHeightPercent') then
-      FLoadContextHeightPercent := WindowSettings.ReadInteger('ContextHeightPercent', 20)
-    else
-      FLoadContextHeightPercent := -1;
-
-    if WindowSettings.ValueExists('ContextHeight') then
-      FLoadContextHeight := WindowSettings.ReadInteger('ContextHeight', reContext.Height)
-    else
-      FLoadContextHeight := pnlMain.Height - ToolBar.Height - SplitterContext.Height -
-        WindowSettings.ReadInteger('ResultsHeight', lbResults.Height);
-
-    ShowFullFilename := WindowSettings.ReadBool('ShowFullFilename', False);
-    ShowLineIndent := WindowSettings.ReadBool('ShowLineIndent', False);
-
-    FLoadHistoryListPage := WindowSettings.ReadInteger('HistoryListPage', tcHistoryListPage.TabIndex);
-  finally
-    FreeAndNil(WindowSettings);
-    FreeAndNil(ExpSettings);
-    FreeAndNil(Settings);
+  if AHistoryIniVersion = 0 then
+  begin
+    ShowHistoryList := WindowSettings.ReadBool('ShowFoundList', True);
+    FLoadHistoryListWidth := WindowSettings.ReadInteger('FoundListWidth', lbHistoryList.Width)
+  end
+  else
+  begin
+    ShowHistoryList := WindowSettings.ReadBool('ShowHistoryList', True);
+    FLoadHistoryListWidth := WindowSettings.ReadInteger('HistoryListWidth', lbHistoryList.Width);
   end;
+
+  if WindowSettings.ValueExists('ContextHeightPercent') then
+    FLoadContextHeightPercent := WindowSettings.ReadInteger('ContextHeightPercent', 20)
+  else
+    FLoadContextHeightPercent := -1;
+
+  if WindowSettings.ValueExists('ContextHeight') then
+    FLoadContextHeight := WindowSettings.ReadInteger('ContextHeight', reContext.Height)
+  else
+    FLoadContextHeight := pnlMain.Height - ToolBar.Height - SplitterContext.Height -
+      WindowSettings.ReadInteger('ResultsHeight', lbResults.Height);
+
+  ShowFullFilename := WindowSettings.ReadBool('ShowFullFilename', False);
+  ShowLineIndent := WindowSettings.ReadBool('ShowLineIndent', False);
+
+  FLoadHistoryListPage := WindowSettings.ReadInteger('HistoryListPage', tcHistoryListPage.TabIndex);
 end;
 
 procedure TfmGrepResults.UpdateFromSettings;

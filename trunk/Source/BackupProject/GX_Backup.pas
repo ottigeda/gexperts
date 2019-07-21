@@ -66,7 +66,6 @@ type
     procedure LoadSettings;
     procedure CollectFilesForBackup;
     procedure IncrementProgress;
-    function ConfigurationKey: string;
     procedure lbFilesOnFilesDropped(_Sender: TObject; _Files: TStrings);
     procedure AddFilesInDirs(_Dirs: TStrings);
   public
@@ -87,8 +86,8 @@ type
     FIgnoreScmDirs: Boolean;
     FIgnoreBackupFiles: Boolean;
   protected
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   public
     constructor Create; override;
 
@@ -1099,7 +1098,7 @@ procedure TfmBackup.SaveSettings;
 var
   Settings: IExpertSettings;
 begin
-  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  Settings := TBackupExpert.GetSettings;
   // Do not localize.
   Settings.SaveForm('Window', Self);
   Settings.WriteString('LastZipDir', ExtractFilePath(FLastZipFile));
@@ -1110,7 +1109,7 @@ var
   Settings: IExpertSettings;
   fn: string;
 begin
-  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  Settings :=TBackupExpert.GetSettings;
   // Do not localize.
   Settings.LoadForm('Window', Self);
 
@@ -1137,11 +1136,6 @@ begin
       Position := 0
     else
       Position := Position + 1;
-end;
-
-function TfmBackup.ConfigurationKey: string;
-begin
-  Result := TBackupExpert.ConfigurationKey;
 end;
 
 procedure TfmBackup.FileFailure(Sender: TObject; Item: TAbArchiveItem;
@@ -1255,36 +1249,36 @@ begin
   end;
 end;
 
-procedure TBackupExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TBackupExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalSaveSettings(Settings);
+  inherited InternalSaveSettings(_Settings);
   // Do not localize any of the following lines.
-  Settings.WriteBool('Include', FBackupInc);
-  Settings.WriteEnumerated('Type', TypeInfo(TBackupType), Ord(FBackupType));
-  Settings.WriteString('Directory', FBackupDir);
-  Settings.WriteBool('IncludeDir', FIncludeDir);
-  Settings.WriteEnumerated('BackupScope', TypeInfo(TBackupScope), Ord(FBackupScope));
-  Settings.WriteBool('FollowLibraryPath', FFollowLibraryPath);
-  Settings.WriteBool('AddDirsRecursively', FAddDirsRecursively);
-  Settings.WriteBool('IgnoreHistoryDir', FIgnoreHistoryDir);
-  Settings.WriteBool('IgnoreScmDirs', FIgnoreScmDirs);
-  Settings.WriteBool('IgnoreBackupFiles', FIgnoreBackupFiles);
+  _Settings.WriteBool('Include', FBackupInc);
+  _Settings.WriteEnumerated('Type', TypeInfo(TBackupType), Ord(FBackupType));
+  _Settings.WriteString('Directory', FBackupDir);
+  _Settings.WriteBool('IncludeDir', FIncludeDir);
+  _Settings.WriteEnumerated('BackupScope', TypeInfo(TBackupScope), Ord(FBackupScope));
+  _Settings.WriteBool('FollowLibraryPath', FFollowLibraryPath);
+  _Settings.WriteBool('AddDirsRecursively', FAddDirsRecursively);
+  _Settings.WriteBool('IgnoreHistoryDir', FIgnoreHistoryDir);
+  _Settings.WriteBool('IgnoreScmDirs', FIgnoreScmDirs);
+  _Settings.WriteBool('IgnoreBackupFiles', FIgnoreBackupFiles);
 end;
 
-procedure TBackupExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TBackupExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalLoadSettings(Settings);
+  inherited InternalLoadSettings(_Settings);
   // Do not localize any of the following lines.
-  FBackupInc := Settings.ReadBool('Include', FBackupInc);
-  FBackupType := TBackupType(Settings.ReadEnumerated('Type', TypeInfo(TBackupType), Ord(FBackupType)));
-  FBackupDir := Settings.ReadString('Directory', FBackupDir);
-  FIncludeDir := Settings.ReadBool('IncludeDir', FIncludeDir);
-  FBackupScope := TBackupScope(Settings.ReadEnumerated('BackupScope', TypeInfo(TBackupScope), Ord(FBackupScope)));
-  FFollowLibraryPath := Settings.ReadBool('FollowLibraryPath', FFollowLibraryPath);
-  FAddDirsRecursively := Settings.ReadBool('AddDirsRecursively', FAddDirsRecursively);
-  FIgnoreHistoryDir := Settings.ReadBool('IgnoreHistoryDir', FIgnoreHistoryDir);
-  FIgnoreScmDirs := Settings.ReadBool('IgnoreScmDirs', FIgnoreScmDirs);
-  FIgnoreBackupFiles := Settings.ReadBool('IgnoreBackupFiles', FIgnoreBackupFiles);
+  FBackupInc := _Settings.ReadBool('Include', FBackupInc);
+  FBackupType := TBackupType(_Settings.ReadEnumerated('Type', TypeInfo(TBackupType), Ord(FBackupType)));
+  FBackupDir := _Settings.ReadString('Directory', FBackupDir);
+  FIncludeDir := _Settings.ReadBool('IncludeDir', FIncludeDir);
+  FBackupScope := TBackupScope(_Settings.ReadEnumerated('BackupScope', TypeInfo(TBackupScope), Ord(FBackupScope)));
+  FFollowLibraryPath := _Settings.ReadBool('FollowLibraryPath', FFollowLibraryPath);
+  FAddDirsRecursively := _Settings.ReadBool('AddDirsRecursively', FAddDirsRecursively);
+  FIgnoreHistoryDir := _Settings.ReadBool('IgnoreHistoryDir', FIgnoreHistoryDir);
+  FIgnoreScmDirs := _Settings.ReadBool('IgnoreScmDirs', FIgnoreScmDirs);
+  FIgnoreBackupFiles := _Settings.ReadBool('IgnoreBackupFiles', FIgnoreBackupFiles);
 end;
 
 initialization

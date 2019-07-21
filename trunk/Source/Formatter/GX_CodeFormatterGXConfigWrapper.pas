@@ -14,7 +14,7 @@ uses
 type
   TGxConfigWrapper = class(TInterfacedObject, IConfigReader, IConfigWriter)
   private
-    FSettings: TExpertSettings;
+    FSettings: IExpertSettings;
   protected // implementation of IConfigReader
     function ReadBool(const AName: string; ADefault: Boolean): Boolean;
     function ReadInteger(const AName: string; ADefault: Integer): Integer;
@@ -26,17 +26,17 @@ type
     procedure WriteString(const AName: string; const AValue: string);
     procedure WriteStrings(const ASection: string; const AList: TStrings);
   public
-    constructor Create(ASettings: TExpertSettings);
+    constructor Create(_Settings: IExpertSettings);
   end;
 
 implementation
 
 { TGxConfigWrapper }
 
-constructor TGxConfigWrapper.Create(ASettings: TExpertSettings);
+constructor TGxConfigWrapper.Create(_Settings: IExpertSettings);
 begin
   inherited Create;
-  FSettings := ASettings;
+  FSettings := _Settings;
 end;
 
 function TGxConfigWrapper.ReadBool(const AName: string; ADefault: Boolean): Boolean;

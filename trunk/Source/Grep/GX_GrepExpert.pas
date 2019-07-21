@@ -80,8 +80,8 @@ type
   protected
     function  CreateSettings: TCustomIniFile;
     procedure SetActive(New: Boolean); override;
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -452,71 +452,71 @@ begin
   end;
 end;
 
-procedure TGrepExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TGrepExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalSaveSettings(Settings);
+  inherited InternalSaveSettings(_Settings);
   // do not localize any of the following lines
-  Settings.WriteInteger( 'HistoryIniVersion', FHistoryIniVersion);
+  _Settings.WriteInteger( 'HistoryIniVersion', FHistoryIniVersion);
 
-  Settings.WriteBool('CaseSensitive', GrepCaseSensitive);
-  Settings.WriteBool('Code', GrepCode);
-  Settings.WriteBool('Strings', GrepStrings);
-  Settings.WriteBool('NoComments', not GrepComments);
-  Settings.WriteBool('Interface', GrepInterface);
-  Settings.WriteBool('Implementation', GrepImplementation);
-  Settings.WriteBool('Initialization', GrepInitialization);
-  Settings.WriteBool('Finalization', GrepFinalization);
-  Settings.WriteBool('Forms', GrepForms);
-  Settings.WriteBool('FormsSpecialChars', GrepFormsSpecialChars);
-  Settings.WriteBool('FormsMultiline', GrepFormsMultiline);
-  Settings.WriteBool('SQLFiles', GrepSQLFiles);
-  Settings.WriteInteger('Search', GrepSearch);
-  Settings.WriteBool('SubDirectories', GrepSub);
-  Settings.WriteBool('ExpandAll', GrepExpandAll);
-  Settings.WriteBool('ExpandIf', GrepExpandIf);
-  Settings.WriteInteger('ExpandIfFiles', GrepExpandIfFiles);
-  Settings.WriteInteger('ExpandIfMatches', GrepExpandIfMatches);
-  Settings.WriteBool('ExpandFew', GrepExpandFew);
-  Settings.WriteInteger('ExpandFewLines', GrepExpandFewLines);
-  Settings.WriteBool('Whole Word', GrepWholeWord);
-  Settings.WriteBool('Middle', GrepMiddle);
-  Settings.WriteBool('AutoHide', AutoHide);
-  Settings.WriteBool('RegEx', GrepRegEx);
-  Settings.WriteInteger('SaveOption', Integer(GrepSaveOption));
-  Settings.WriteBool('UseCurrentIdent', GrepUseCurrentIdent);
-  Settings.WriteBool('UseMapFile', GrepUseMapFile);
+  _Settings.WriteBool('CaseSensitive', GrepCaseSensitive);
+  _Settings.WriteBool('Code', GrepCode);
+  _Settings.WriteBool('Strings', GrepStrings);
+  _Settings.WriteBool('NoComments', not GrepComments);
+  _Settings.WriteBool('Interface', GrepInterface);
+  _Settings.WriteBool('Implementation', GrepImplementation);
+  _Settings.WriteBool('Initialization', GrepInitialization);
+  _Settings.WriteBool('Finalization', GrepFinalization);
+  _Settings.WriteBool('Forms', GrepForms);
+  _Settings.WriteBool('FormsSpecialChars', GrepFormsSpecialChars);
+  _Settings.WriteBool('FormsMultiline', GrepFormsMultiline);
+  _Settings.WriteBool('SQLFiles', GrepSQLFiles);
+  _Settings.WriteInteger('Search', GrepSearch);
+  _Settings.WriteBool('SubDirectories', GrepSub);
+  _Settings.WriteBool('ExpandAll', GrepExpandAll);
+  _Settings.WriteBool('ExpandIf', GrepExpandIf);
+  _Settings.WriteInteger('ExpandIfFiles', GrepExpandIfFiles);
+  _Settings.WriteInteger('ExpandIfMatches', GrepExpandIfMatches);
+  _Settings.WriteBool('ExpandFew', GrepExpandFew);
+  _Settings.WriteInteger('ExpandFewLines', GrepExpandFewLines);
+  _Settings.WriteBool('Whole Word', GrepWholeWord);
+  _Settings.WriteBool('Middle', GrepMiddle);
+  _Settings.WriteBool('AutoHide', AutoHide);
+  _Settings.WriteBool('RegEx', GrepRegEx);
+  _Settings.WriteInteger('SaveOption', Integer(GrepSaveOption));
+  _Settings.WriteBool('UseCurrentIdent', GrepUseCurrentIdent);
+  _Settings.WriteBool('UseMapFile', GrepUseMapFile);
 
-  Settings.WriteBool('AdvancedOptions', GrepAdvancedOptions);
-  Settings.WriteInteger('SaveOptionDeafult', GrepSaveOptionDefaultValue);
-  Settings.WriteInteger('SaveOptionDeafult4Open', GrepOpenSaveOptionDefaultValue);
-  Settings.WriteBool('FileListDeleteAfterDays', GrepFileListDeleteAfterDays);
-  Settings.WriteInteger('DeleteAfterDays', GrepDeleteAfterDays);
-  Settings.WriteBool('EmptyResultsMoveToOnlySaveParams', GrepEmptyMoveToOnlySaveParams);
-  Settings.WriteInteger('OnlySaveParamsAction', GrepOnlySaveParamsAction);
-  Settings.WriteInteger('HistoryListDefaultPage', GrepHistoryListDefaultPage);
-  Settings.WriteBool('QuickRefresh', GrepQuickRefresh);
+  _Settings.WriteBool('AdvancedOptions', GrepAdvancedOptions);
+  _Settings.WriteInteger('SaveOptionDeafult', GrepSaveOptionDefaultValue);
+  _Settings.WriteInteger('SaveOptionDeafult4Open', GrepOpenSaveOptionDefaultValue);
+  _Settings.WriteBool('FileListDeleteAfterDays', GrepFileListDeleteAfterDays);
+  _Settings.WriteInteger('DeleteAfterDays', GrepDeleteAfterDays);
+  _Settings.WriteBool('EmptyResultsMoveToOnlySaveParams', GrepEmptyMoveToOnlySaveParams);
+  _Settings.WriteInteger('OnlySaveParamsAction', GrepOnlySaveParamsAction);
+  _Settings.WriteInteger('HistoryListDefaultPage', GrepHistoryListDefaultPage);
+  _Settings.WriteBool('QuickRefresh', GrepQuickRefresh);
 
-  Settings.WriteBool('ListUseDefaultColors', ListUseDefaultColors);
-  Settings.SaveFont('ListFont', ListFont, [ffColor]);
-  Settings.WriteInteger('ListMatchTextColor', ListMatchTextColor);
-  Settings.WriteInteger('ListMatchBrushColor', ListMatchBrushColor);
-  Settings.SaveFont('ContextFont', ContextFont, [ffColor]);
-  Settings.WriteInteger('ContextMatchColor', ContextMatchColor);
-  Settings.WriteInteger('ContextMatchLineColor', ContextMatchLineColor);
+  _Settings.WriteBool('ListUseDefaultColors', ListUseDefaultColors);
+  _Settings.SaveFont('ListFont', ListFont, [ffColor]);
+  _Settings.WriteInteger('ListMatchTextColor', ListMatchTextColor);
+  _Settings.WriteInteger('ListMatchBrushColor', ListMatchBrushColor);
+  _Settings.SaveFont('ContextFont', ContextFont, [ffColor]);
+  _Settings.WriteInteger('ContextMatchColor', ContextMatchColor);
+  _Settings.WriteInteger('ContextMatchLineColor', ContextMatchLineColor);
 
-  Settings.WriteInteger('NumContextLines', NumContextLines);
-  Settings.WriteInteger('SaveHistoryListItems', FGrepSaveHistoryListItems);
-  Settings.WriteBool('ContextSaveFixedHeight', ContextSaveFixedHeight);
+  _Settings.WriteInteger('NumContextLines', NumContextLines);
+  _Settings.WriteInteger('SaveHistoryListItems', FGrepSaveHistoryListItems);
+  _Settings.WriteBool('ContextSaveFixedHeight', ContextSaveFixedHeight);
 
-  Settings.WriteBool('HistoryPagesTabMultilin', GrepHistoryPagesTabMultiline);
-  Settings.WriteInteger('HistoryPagesTabWidth', GrepHistoryPagesTabWidth);
-  Settings.WriteBool('MouseWheelPrevNextMatch', GrepMouseWheelPrevNextMatch);
+  _Settings.WriteBool('HistoryPagesTabMultilin', GrepHistoryPagesTabMultiline);
+  _Settings.WriteInteger('HistoryPagesTabWidth', GrepHistoryPagesTabWidth);
+  _Settings.WriteBool('MouseWheelPrevNextMatch', GrepMouseWheelPrevNextMatch);
 
-  Settings.WriteStrings('DirectoryList', DirList, 'GrepDir');
-  Settings.WriteStrings('SearchList', SearchList, 'GrepSearch');
-  Settings.WriteStrings('ReplaceList', ReplaceList, 'GrepReplace');
-  Settings.WriteStrings('MaskList', MaskList, 'GrepMask');
-  Settings.WriteStrings('ExcludedDirsList', ExcludedDirsList, 'GrepExcludedDirs');
+  _Settings.WriteStrings('DirectoryList', DirList, 'GrepDir');
+  _Settings.WriteStrings('SearchList', SearchList, 'GrepSearch');
+  _Settings.WriteStrings('ReplaceList', ReplaceList, 'GrepReplace');
+  _Settings.WriteStrings('MaskList', MaskList, 'GrepMask');
+  _Settings.WriteStrings('ExcludedDirsList', ExcludedDirsList, 'GrepExcludedDirs');
 end;
 
 function TGrepExpert.FillGrepSettings: TGrepSettings;
@@ -685,7 +685,7 @@ begin
   end;
 end;
 
-procedure TGrepExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TGrepExpert.InternalLoadSettings(_Settings: IExpertSettings);
 
   ///<summary>
   /// Build a guess for the SubSystem path from the passed in VCL path.
@@ -709,78 +709,78 @@ procedure TGrepExpert.InternalLoadSettings(Settings: TExpertSettings);
 var
   TempPath: string;
 begin
-  inherited InternalLoadSettings(Settings);
+  inherited InternalLoadSettings(_Settings);
   // Do not localize any of the following lines
-  FHistoryIniVersion := Settings.ReadInteger('HistoryIniVersion', 0);
+  FHistoryIniVersion := _Settings.ReadInteger('HistoryIniVersion', 0);
 
-  FGrepCaseSensitive := Settings.ReadBool('CaseSensitive', False);
-  FGrepCode := Settings.ReadBool('Code', True);
-  FGrepStrings := Settings.ReadBool('Strings', True);
-  FGrepComments := not Settings.ReadBool('NoComments', False);
-  FGrepInterface := Settings.ReadBool('Interface', True);
-  FGrepImplementation := Settings.ReadBool('Implementation', True);
-  FGrepInitialization := Settings.ReadBool('Initialization', True);
-  FGrepFinalization := Settings.ReadBool('Finalization', True);
+  FGrepCaseSensitive := _Settings.ReadBool('CaseSensitive', False);
+  FGrepCode := _Settings.ReadBool('Code', True);
+  FGrepStrings := _Settings.ReadBool('Strings', True);
+  FGrepComments := not _Settings.ReadBool('NoComments', False);
+  FGrepInterface := _Settings.ReadBool('Interface', True);
+  FGrepImplementation := _Settings.ReadBool('Implementation', True);
+  FGrepInitialization := _Settings.ReadBool('Initialization', True);
+  FGrepFinalization := _Settings.ReadBool('Finalization', True);
 
-  FGrepForms := Settings.ReadBool('Forms', False);
-  FGrepFormsSpecialChars := Settings.ReadBool('FormsSpecialChars', False);
-  FGrepFormsMultiline := Settings.ReadBool('FormsMultiline', False);
+  FGrepForms := _Settings.ReadBool('Forms', False);
+  FGrepFormsSpecialChars := _Settings.ReadBool('FormsSpecialChars', False);
+  FGrepFormsMultiline := _Settings.ReadBool('FormsMultiline', False);
 
-  FGrepSQLFiles := Settings.ReadBool('SQLFiles', False);
-  FGrepSearch := Settings.ReadInteger('Search', 1);
-  FGrepSub := Settings.ReadBool('SubDirectories', True);
-  FGrepExpandAll := Settings.ReadBool('ExpandAll', False);
-  FGrepExpandIf := Settings.ReadBool('ExpandIf', False);
-  FGrepExpandIfFiles := Settings.ReadInteger('ExpandIfFiles', FGrepExpandIfFiles);
-  FGrepExpandIfMatches := Settings.ReadInteger('ExpandIfMatches', FGrepExpandIfMatches);
-  FGrepExpandFew := Settings.ReadBool('ExpandFew', False);
-  FGrepExpandFewLines := Settings.ReadInteger('ExpandFewLines', FGrepExpandFewLines);
-  FGrepWholeWord := Settings.ReadBool('Whole Word', True);
-  FGrepMiddle := Settings.ReadBool('Middle', True);
-  FAutoHide := Settings.ReadBool('AutoHide', False);
-  FGrepRegEx := Settings.ReadBool('RegEx', False);
-  FGrepSaveOption := TGrepSaveOption(Settings.ReadInteger('SaveOption', Integer(GrepSaveOption)));
-  FGrepUseCurrentIdent := Settings.ReadBool('UseCurrentIdent', False);
-  FGrepUseMapFile := Settings.ReadBool('UseMapFile', False);
+  FGrepSQLFiles := _Settings.ReadBool('SQLFiles', False);
+  FGrepSearch := _Settings.ReadInteger('Search', 1);
+  FGrepSub := _Settings.ReadBool('SubDirectories', True);
+  FGrepExpandAll := _Settings.ReadBool('ExpandAll', False);
+  FGrepExpandIf := _Settings.ReadBool('ExpandIf', False);
+  FGrepExpandIfFiles := _Settings.ReadInteger('ExpandIfFiles', FGrepExpandIfFiles);
+  FGrepExpandIfMatches := _Settings.ReadInteger('ExpandIfMatches', FGrepExpandIfMatches);
+  FGrepExpandFew := _Settings.ReadBool('ExpandFew', False);
+  FGrepExpandFewLines := _Settings.ReadInteger('ExpandFewLines', FGrepExpandFewLines);
+  FGrepWholeWord := _Settings.ReadBool('Whole Word', True);
+  FGrepMiddle := _Settings.ReadBool('Middle', True);
+  FAutoHide := _Settings.ReadBool('AutoHide', False);
+  FGrepRegEx := _Settings.ReadBool('RegEx', False);
+  FGrepSaveOption := TGrepSaveOption(_Settings.ReadInteger('SaveOption', Integer(GrepSaveOption)));
+  FGrepUseCurrentIdent := _Settings.ReadBool('UseCurrentIdent', False);
+  FGrepUseMapFile := _Settings.ReadBool('UseMapFile', False);
 
-  FGrepAdvancedOptions := Settings.ReadBool('AdvancedOptions', GrepAdvancedOptions);
-  FGrepSaveOptionDefaultValue := Settings.ReadInteger('SaveOptionDeafult', GrepSaveOptionDefaultValue);
-  FGrepOpenSaveOptionDefaultValue := Settings.ReadInteger('SaveOptionDeafult4Open', GrepOpenSaveOptionDefaultValue);
-  FGrepFileListDeleteAfterDays := Settings.ReadBool('FileListDeleteAfterDays', GrepFileListDeleteAfterDays);
-  FGrepDeleteAfterDays := Settings.ReadInteger('DeleteAfterDays', GrepDeleteAfterDays);
-  FGrepEmptyMoveToOnlySaveParams := Settings.ReadBool('EmptyResultsMoveToOnlySaveParams', GrepEmptyMoveToOnlySaveParams);
-  FGrepOnlySaveParamsAction := Settings.ReadInteger('OnlySaveParamsAction', GrepOnlySaveParamsAction);
-  FGrepHistoryListDefaultPage := Settings.ReadInteger('HistoryListDefaultPage', GrepHistoryListDefaultPage);
-  FGrepQuickRefresh := Settings.ReadBool('QuickRefresh', GrepQuickRefresh);
+  FGrepAdvancedOptions := _Settings.ReadBool('AdvancedOptions', GrepAdvancedOptions);
+  FGrepSaveOptionDefaultValue := _Settings.ReadInteger('SaveOptionDeafult', GrepSaveOptionDefaultValue);
+  FGrepOpenSaveOptionDefaultValue := _Settings.ReadInteger('SaveOptionDeafult4Open', GrepOpenSaveOptionDefaultValue);
+  FGrepFileListDeleteAfterDays := _Settings.ReadBool('FileListDeleteAfterDays', GrepFileListDeleteAfterDays);
+  FGrepDeleteAfterDays := _Settings.ReadInteger('DeleteAfterDays', GrepDeleteAfterDays);
+  FGrepEmptyMoveToOnlySaveParams := _Settings.ReadBool('EmptyResultsMoveToOnlySaveParams', GrepEmptyMoveToOnlySaveParams);
+  FGrepOnlySaveParamsAction := _Settings.ReadInteger('OnlySaveParamsAction', GrepOnlySaveParamsAction);
+  FGrepHistoryListDefaultPage := _Settings.ReadInteger('HistoryListDefaultPage', GrepHistoryListDefaultPage);
+  FGrepQuickRefresh := _Settings.ReadBool('QuickRefresh', GrepQuickRefresh);
 
-  FListUseDefaultColors := Settings.ReadBool('ListUseDefaultColors', False);
-  Settings.LoadFont('ListFont', ListFont, [ffColor]);
-  FListMatchTextColor :=  Settings.ReadInteger('ListMatchTextColor', FListMatchTextColor);
-  FListMatchBrushColor :=  Settings.ReadInteger('ListMatchBrushColor', FListMatchBrushColor);
-  Settings.LoadFont('ContextFont', ContextFont, [ffColor]);
-  FContextMatchColor :=  Settings.ReadInteger('ContextMatchColor', FContextMatchColor);
-  if Settings.ValueExists('ContextMatchLineColor') then
-    FContextMatchLineColor := Settings.ReadInteger('ContextMatchLineColor', FContextMatchLineColor)
+  FListUseDefaultColors := _Settings.ReadBool('ListUseDefaultColors', False);
+  _Settings.LoadFont('ListFont', ListFont, [ffColor]);
+  FListMatchTextColor :=  _Settings.ReadInteger('ListMatchTextColor', FListMatchTextColor);
+  FListMatchBrushColor :=  _Settings.ReadInteger('ListMatchBrushColor', FListMatchBrushColor);
+  _Settings.LoadFont('ContextFont', ContextFont, [ffColor]);
+  FContextMatchColor :=  _Settings.ReadInteger('ContextMatchColor', FContextMatchColor);
+  if _Settings.ValueExists('ContextMatchLineColor') then
+    FContextMatchLineColor := _Settings.ReadInteger('ContextMatchLineColor', FContextMatchLineColor)
   else
     FContextMatchLineColor := FContextMatchColor;
 
-  FNumContextLines :=  Settings.ReadInteger('NumContextLines', FNumContextLines);
-  FContextSaveFixedHeight := Settings.ReadBool('ContextSaveFixedHeight', FContextSaveFixedHeight);
+  FNumContextLines :=  _Settings.ReadInteger('NumContextLines', FNumContextLines);
+  FContextSaveFixedHeight := _Settings.ReadBool('ContextSaveFixedHeight', FContextSaveFixedHeight);
 
-  FGrepHistoryPagesTabMultiline := Settings.ReadBool('HistoryPagesTabMultilin', GrepHistoryPagesTabMultiline);
-  FGrepHistoryPagesTabWidth := Settings.ReadInteger('HistoryPagesTabWidth', GrepHistoryPagesTabWidth);
-  FGrepMouseWheelPrevNextMatch := Settings.ReadBool('MouseWheelPrevNextMatch', GrepMouseWheelPrevNextMatch);
+  FGrepHistoryPagesTabMultiline := _Settings.ReadBool('HistoryPagesTabMultilin', GrepHistoryPagesTabMultiline);
+  FGrepHistoryPagesTabWidth := _Settings.ReadInteger('HistoryPagesTabWidth', GrepHistoryPagesTabWidth);
+  FGrepMouseWheelPrevNextMatch := _Settings.ReadBool('MouseWheelPrevNextMatch', GrepMouseWheelPrevNextMatch);
 
-  Settings.ReadStrings('DirectoryList', DirList, 'GrepDir');
-  Settings.ReadStrings('SearchList', SearchList, 'GrepSearch');
-  Settings.ReadStrings('ReplaceList', ReplaceList, 'GrepReplace');
-  Settings.ReadStrings('MaskList', MaskList, 'GrepMask');
-  Settings.ReadStrings('ExcludedDirsList', ExcludedDirsList, 'GrepExcludedDirs');
+  _Settings.ReadStrings('DirectoryList', DirList, 'GrepDir');
+  _Settings.ReadStrings('SearchList', SearchList, 'GrepSearch');
+  _Settings.ReadStrings('ReplaceList', ReplaceList, 'GrepReplace');
+  _Settings.ReadStrings('MaskList', MaskList, 'GrepMask');
+  _Settings.ReadStrings('ExcludedDirsList', ExcludedDirsList, 'GrepExcludedDirs');
 
   if FHistoryIniVersion = 0 then
-    FGrepSaveHistoryListItems := Settings.ReadInteger('SaveResultListItems', 0)
+    FGrepSaveHistoryListItems := _Settings.ReadInteger('SaveResultListItems', 0)
   else
-    FGrepSaveHistoryListItems := Settings.ReadInteger('SaveHistoryListItems', 0);
+    FGrepSaveHistoryListItems := _Settings.ReadInteger('SaveHistoryListItems', 0);
 
   EnsureStringInList(MaskList,'*.pas;*.dpr;*.inc');
   EnsureStringInList(MaskList,'*.txt;*.html;*.htm;.rc;*.xml;*.todo;*.me');
@@ -813,10 +813,10 @@ begin
 
     FHistoryIniVersion := 2;
 
-    Settings.EraseSection(ConfigurationKey);
+    _Settings.EraseSection(ConfigurationKey);
 
-    InternalSaveSettings(Settings);
-    fmGrepResults.InternalSaveSettings(Settings);
+    InternalSaveSettings(_Settings);
+    fmGrepResults.InternalSaveSettings(_Settings);
 
     HistoryListSaveSettings;
   end
@@ -824,7 +824,7 @@ begin
   begin
     HistoryListDeleteFromSettings(delAll);
     FHistoryIniVersion := 2;
-    InternalSaveSettings(Settings);
+    InternalSaveSettings(_Settings);
     HistoryListSaveSettings;
   end;
 end;

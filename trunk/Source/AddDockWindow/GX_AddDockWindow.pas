@@ -60,10 +60,8 @@ type
     function HasConfigOptions: Boolean; override;
     // optional if HasConfigOptions returns false
     procedure Configure; override;
-    // Overrride to load any configuration settings
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    // Overrride to save any configuration settings
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
     procedure Execute(Sender: TObject); override;
   end;
 
@@ -118,16 +116,16 @@ begin
   Result := False;
 end;
 
-procedure TGxAddDockWindow.InternalLoadSettings(Settings: TExpertSettings);
+procedure TGxAddDockWindow.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
-//  FSomeData := Settings.ReadString('TestSetting', FSomeData);
+//  FSomeData := _Settings.ReadString('TestSetting', FSomeData);
 end;
 
-procedure TGxAddDockWindow.InternalSaveSettings(Settings: TExpertSettings);
+procedure TGxAddDockWindow.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited;
-//  Settings.WriteString('TestSetting', FSomeData);
+//  _Settings.WriteString('TestSetting', FSomeData);
 end;
 
 procedure TGxAddDockWindow.SetActive(New: Boolean);

@@ -135,15 +135,11 @@ end;
 
 procedure TfmGxKeyboardShortcuts.FormClose(Sender: TObject; var Action: TCloseAction);
 var
-  Settings: TGExpertsSettings;
+  Settings: IExpertSettings;
 begin
   // Do not localize any of the following lines.
-  Settings := TGExpertsSettings.Create;
-  try
-    Settings.SaveForm(Self, ConfigurationKey + '\Window');
-  finally
-    FreeAndNil(Settings);
-  end;
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  Settings.SaveForm('Window', Self);
 end;
 
 function TfmGxKeyboardShortcuts.ScrollGrid(_Grid: TStringGrid; _Direction: Integer;
@@ -207,7 +203,7 @@ var
   j: Integer;
   TheShortCut: TShortCut;
   s: string;
-  Settings: TGExpertsSettings;
+  Settings: IExpertSettings;
 begin
   inherited;
 
@@ -215,12 +211,8 @@ begin
 
   FSortingCol := 1;
 
-  Settings := TGExpertsSettings.Create;
-  try
-    Settings.LoadForm(Self, ConfigurationKey + '\Window');
-  finally
-    FreeAndNil(Settings);
-  end;
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  Settings.LoadForm('Window', Self);
 
   sg_Actions.Cells[0, 0] := 'Modifier';
   sg_Actions.Cells[1, 0] := 'Key';

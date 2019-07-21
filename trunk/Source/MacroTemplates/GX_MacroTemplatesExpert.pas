@@ -84,8 +84,8 @@ type
     class function GetName: string; override;
     function GetHelpString: string; override;
 
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
 
     procedure ReloadSettings;
     property Settings: TExpandTemplateSettings read FSettings;
@@ -786,44 +786,44 @@ begin
     'The supported macros are available via the context menu in the template editor.  See the help file for more complete documentation.';
 end;
 
-procedure TMacroTemplatesExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TMacroTemplatesExpert.InternalLoadSettings(_Settings: IExpertSettings);
 var
-  SettingStorage: TMacroTemplatesIni;
+  SettingsBase: IExpertSettings;
+  SubSettings: IExpertSettings;
 begin
-  SettingStorage := TMacroTemplatesIni.Create;
-  try
-    FSettings.ProgrammerName := SettingStorage.ReadString(ProgrammerIDKey,
-      ProgrammerNameIdent, EmptyString);
-    if FSettings.ProgrammerName = EmptyStr then
-      FSettings.ProgrammerName := GetCurrentUser;
-    FSettings.ProgrammerInitials := SettingStorage.ReadString(ProgrammerIDKey,
-      ProgrammerInitialsIdent, EmptyString);
-    if FSettings.ProgrammerInitials = EmptyString then
-      FSettings.ProgrammerInitials := GetInitials(FSettings.ProgrammerName);
-    ShortCut := SettingStorage.ReadInteger(CommonConfigurationKey, ShortCutIdent, ShortCut);
-    FSettings.ExpandWithChar := SettingStorage.ReadBool(CommonConfigurationKey, ExpandWithCharIdent, FSettings.ExpandWithChar);
-    FSettings.ExpandDelay := SettingStorage.ReadInteger(CommonConfigurationKey, ExpandDelayIdent, -1);
-    ConfigAutoExpand;
-  finally
-    FreeAndNil(SettingStorage);
-  end;
+  SettingsBase := TMacroTemplatesExpert.GetSettings;
+
+  SubSettings := SettingsBase.Subkey(ProgrammerIDKey);
+  FSettings.ProgrammerName := SubSettings.ReadString(ProgrammerNameIdent, '');
+  if FSettings.ProgrammerName = '' then
+    FSettings.ProgrammerName := GetCurrentUser;
+  FSettings.ProgrammerInitials := SubSettings.ReadString(ProgrammerInitialsIdent, '');
+  if FSettings.ProgrammerInitials = ''then
+    FSettings.ProgrammerInitials := GetInitials(FSettings.ProgrammerName);
+
+  SubSettings := SettingsBase.Subkey(CommonConfigurationKey);
+  ShortCut := SubSettings.ReadInteger(ShortCutIdent, ShortCut);
+  FSettings.ExpandWithChar := SubSettings.ReadBool(ExpandWithCharIdent, FSettings.ExpandWithChar);
+  FSettings.ExpandDelay := SubSettings.ReadInteger(ExpandDelayIdent, -1);
+  ConfigAutoExpand;
 end;
 
-procedure TMacroTemplatesExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TMacroTemplatesExpert.InternalSaveSettings(_Settings: IExpertSettings);
 var
-  SettingStorage: TMacroTemplatesIni;
+  SettingsBase: IExpertSettings;
+  SubSettings: IExpertSettings;
 begin
-  SettingStorage := TMacroTemplatesIni.Create;
-  try
-    SettingStorage.WriteInteger(CommonConfigurationKey, ShortCutIdent, ShortCut);
-    SettingStorage.WriteString(ProgrammerIDKey, ProgrammerNameIdent, FSettings.ProgrammerName);
-    SettingStorage.WriteString(ProgrammerIDKey, ProgrammerInitialsIdent, FSettings.ProgrammerInitials);
-    SettingStorage.WriteBool(CommonConfigurationKey, ExpandWithCharIdent, FSettings.ExpandWithChar);
-    if FSettings.ExpandDelay >= 0 then // Non-default
-      SettingStorage.WriteInteger(CommonConfigurationKey, ExpandDelayIdent, FSettings.ExpandDelay);
-  finally
-    FreeAndNil(SettingStorage);
-  end;
+  SettingsBase := TMacroTemplatesExpert.GetSettings;
+
+  SubSettings := SettingsBase.Subkey(ProgrammerIDKey);
+  SubSettings.WriteString(ProgrammerNameIdent, FSettings.ProgrammerName);
+  SubSettings.WriteString(ProgrammerInitialsIdent, FSettings.ProgrammerInitials);
+
+  SubSettings := SettingsBase.Subkey(CommonConfigurationKey);
+  SubSettings.WriteInteger(ShortCutIdent, ShortCut);
+  SubSettings.WriteBool(ExpandWithCharIdent, FSettings.ExpandWithChar);
+  if FSettings.ExpandDelay >= 0 then // Non-default
+    SubSettings.WriteInteger(ExpandDelayIdent, FSettings.ExpandDelay);
 end;
 
 // Prepare the new cursor position after insertion of a template

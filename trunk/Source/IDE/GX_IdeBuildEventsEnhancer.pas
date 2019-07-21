@@ -160,37 +160,21 @@ end;
 
 procedure TBuildEventsEnhancer.LoadSettings;
 var
-  Settings: TGExpertsSettings;
-  ExpSettings: TExpertSettings;
+  ExpSettings: IExpertSettings;
 begin
-  ExpSettings := nil;
-  Settings := TGExpertsSettings.Create;
-  try
-    ExpSettings := Settings.CreateExpertSettings(ConfigurationKey);
-    ExpSettings.ReadStrings('BuildEventsFavorites', FFavorites);
-  finally
-    FreeAndNil(ExpSettings);
-    FreeAndNil(Settings);
-  end;
+  ExpSettings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  ExpSettings.ReadStrings('BuildEventsFavorites', FFavorites);
 end;
 
 procedure TBuildEventsEnhancer.SaveSettings;
 var
-  Settings: TGExpertsSettings;
-  ExpSettings: TExpertSettings;
+  ExpSettings: IExpertSettings;
 begin
   Assert(ConfigInfo <> nil, 'No ConfigInfo found');
 
   // do not localize any of the below items
-  ExpSettings := nil;
-  Settings := TGExpertsSettings.Create;
-  try
-    ExpSettings := Settings.CreateExpertSettings(ConfigurationKey);
-    ExpSettings.WriteStrings('BuildEventsFavorites', FFavorites);
-  finally
-    FreeAndNil(ExpSettings);
-    FreeAndNil(Settings);
-  end;
+  ExpSettings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  ExpSettings.WriteStrings('BuildEventsFavorites', FFavorites);
 end;
 
 function TBuildEventsEnhancer.IsBuildEventsForm(_Form: TCustomForm): Boolean;

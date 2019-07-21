@@ -112,7 +112,7 @@ type
     property EnableKeyboardShortcuts: Boolean read GetEnableKeyboardShortcuts;
     property EnableCustomFont: Boolean read GetEnableCustomFont write SetEnableCustomFont;
     function CustomFont: TFont;
-    function GetExpertSettings(const _Section: string): IExpertSettings;
+    function GetExpertSettings(const _Section: string; const _BaseKey: string = ''): IExpertSettings;
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
     function GetForceDesktopOnStartup: Boolean;
     procedure SetForceDesktopOnStartup(const _Value: Boolean);
@@ -229,15 +229,6 @@ const
 procedure SaveTreeSettings(Tree: TTreeView; Options: TTreeSaveOptions; SettingsKey: string);
 procedure LoadTreeSettings(Tree: TTreeView; Options: TTreeSaveOptions; const SettingsKey: string);
 
-implementation
-
-uses
-  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils,
-  GX_EditorEnhancements, GX_MessageBox,
-  GX_GenericUtils, GX_GenericClasses, GX_IdeUtils, GX_OtaUtils, GX_VerDepConst,
-  Math, GX_BaseForm, GX_IdeDock;
-
 type
   TExpertSettingsEx = class(TInterfacedObject, IExpertSettings)
   private
@@ -254,6 +245,15 @@ type
     /// the one used by this instance, that is FSection+'\'+Section. </summary>
     function Subkey(const Section: string): IExpertSettings;
   end;
+
+implementation
+
+uses
+  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
+  SysUtils,
+  GX_EditorEnhancements, GX_MessageBox,
+  GX_GenericUtils, GX_GenericClasses, GX_IdeUtils, GX_OtaUtils, GX_VerDepConst,
+  Math, GX_BaseForm, GX_IdeDock;
 
 type
   TConfigInfo = class(TSingletonInterfacedObject, IConfigInfo)
@@ -310,7 +310,7 @@ type
     procedure SetEnableCustomFont(const Value: Boolean);
     function CustomFont: TFont;
     procedure UpdateScreenForms;
-    function GetExpertSettings(const _Section: string): IExpertSettings;
+    function GetExpertSettings(const _Section: string; const _BaseKey: string = ''): IExpertSettings;
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
     function GetForceDesktopOnStartup: Boolean;
     procedure SetForceDesktopOnStartup(const _Value: Boolean);
@@ -749,9 +749,9 @@ begin
   Result := FEnableKeyboardShortcuts;
 end;
 
-function TConfigInfo.GetExpertSettings(const _Section: string): IExpertSettings;
+function TConfigInfo.GetExpertSettings(const _Section: string; const _BaseKey: string = ''): IExpertSettings;
 begin
-  Result := TExpertSettingsEx.Create(TGExpertsSettings.Create(''), _Section);
+  Result := TExpertSettingsEx.Create(TGExpertsSettings.Create(_BaseKey), _Section);
 end;
 
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
@@ -1351,8 +1351,15 @@ begin
 end;
 
 function TExpertSettingsEx.Subkey(const Section: string): IExpertSettings;
+var
+  fn: string;
 begin
-  Result := TExpertSettingsEx.Create(TGExpertsSettings.Create, FExpertSettings.FSection + '\' + Section);
+  // TODO -cfixme :
+  // This works only if FGexpertsSettings is accessing the registry.
+  // It won't work if it is using an INI file
+  // Maybe there should be a method to clone it?
+  fn := FGExpertsSettings.FileName;
+  Result := TExpertSettingsEx.Create(TGExpertsSettings.Create(fn), FExpertSettings.FSection + '\' + Section);
 end;
 
 initialization

@@ -46,8 +46,8 @@ type
   private
     FAppendComment: Boolean;
   protected
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   public
     class function GetName: string; override;
     constructor Create; override;
@@ -183,20 +183,20 @@ begin
   Result := False;
 end;
 
-procedure TIfDefExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TIfDefExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalLoadSettings(Settings);
+  inherited InternalLoadSettings(_Settings);
 
   // Do not localize any of the below items
-  FAppendComment := Settings.ReadBool('AppendComment', False);
+  FAppendComment := _Settings.ReadBool('AppendComment', False);
 end;
 
-procedure TIfDefExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TIfDefExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalSaveSettings(Settings);
+  inherited InternalSaveSettings(_Settings);
 
   // Do not localize any of the below items
-  Settings.WriteBool('AppendComment', FAppendComment);
+  _Settings.WriteBool('AppendComment', FAppendComment);
 end;
 
 { TfmConfigureIfDef }

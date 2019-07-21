@@ -49,7 +49,7 @@ type
     function GetReplacements(Dictionary: TReplacementSource): TReplacementStringList;
     procedure ValidateReplacementIndex(ReplacementList: TReplacementStringList; Index: Integer);
   public
-    constructor Create(const ConfigurationKey: string);
+    constructor Create;
     destructor Destroy; override;
     procedure SaveData;
     procedure ReloadData;
@@ -60,8 +60,8 @@ type
     function FindReplacementIndex(const Zone: TReplacementSource; const TypedString: string): Integer;
     function FindReplacement(const Zone: TReplacementSource; const TypedString: string): TReplacementItem;
 
-    procedure SaveSettings(Settings: TExpertSettings);
-    procedure LoadSettings(Settings: TExpertSettings);
+    procedure SaveSettings(_Settings: IExpertSettings);
+    procedure LoadSettings(_Settings: IExpertSettings);
     property ReplacerActive: Boolean read FReplacerActive write FReplacerActive;
     property DictionaryActive: Boolean read FDictionaryActive write FDictionaryActive;
     property CompilerActive: Boolean read FCompilerActive write FCompilerActive;
@@ -101,7 +101,7 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   Dialogs,
   GX_ProofreaderCorrection, GX_ProofreaderKeyboard, GX_GenericUtils,
-  GX_XmlUtils, Math;
+  GX_XmlUtils, Math, GX_ProofreaderExpert;
 
 type
   EProofreader = class(Exception);
@@ -231,23 +231,15 @@ end;
 
 { TProofreaderData }
 
-constructor TProofreaderData.Create(const ConfigurationKey: string);
+constructor TProofreaderData.Create;
 var
   i: TReplacementSource;
-  Settings: TGExpertsSettings;
-  ExpSettings: TExpertSettings;
+  Settings: IExpertSettings;
 begin
   inherited Create;
 
-  ExpSettings := nil;
-  Settings := TGExpertsSettings.Create;
-  try
-    ExpSettings := Settings.CreateExpertSettings(ConfigurationKey);
-    LoadSettings(ExpSettings);
-  finally
-    FreeAndNil(ExpSettings);
-    FreeAndNil(Settings);
-  end;
+  Settings := TCodeProofreaderExpert.GetSettings;
+  LoadSettings(Settings);
 
   for i := Low(TReplacementSource) to High(TReplacementSource) do
   begin
@@ -532,45 +524,45 @@ begin
   Doc.Save(GetXmlFileName, ofIndent);
 end;
 
-procedure TProofreaderData.LoadSettings(Settings: TExpertSettings);
+procedure TProofreaderData.LoadSettings(_Settings: IExpertSettings);
 begin
   // Do not localize any of the items below:
-  FReplacerActive := Settings.ReadBool('ReplacerActive', False);
-  FDictionaryActive := Settings.ReadBool('DictionaryActive', False);
+  FReplacerActive := _Settings.ReadBool('ReplacerActive', False);
+  FDictionaryActive := _Settings.ReadBool('DictionaryActive', False);
   {$IFNDEF GX_BCB}
   // C++Builder does not have support for compiler-assisted proofreading
-  FCompilerActive := Settings.ReadBool('CompilerActive', False);
+  FCompilerActive := _Settings.ReadBool('CompilerActive', False);
   {$ENDIF GX_BCB}
-  FDictionaryCaseMayDiffer := Settings.ReadBool('DictionaryCaseDiffer', True);
-  FOneCharIncorrect := Settings.ReadBool('OtherLetter', True);
-  FMustBeNearbyLetter := Settings.ReadBool('NearbyLetter', False);
-  FAllowOneCharacterMissing := Settings.ReadBool('NoLetter', True);
-  FAllowExtraChar := Settings.ReadBool('MoreLetter', True);
-  FAllowSwitchedChars := Settings.ReadBool('MixedLetter', True);
-  FFirstCharMustBeCorrect := Settings.ReadBool('NoFirstOther', True);
-  FBeepOnReplace := Settings.ReadBool('BeepOnReplace', True);
-  FCustomBeepSound := Settings.ReadString('CustomBeepSound', '');
-  FActiveTab := Settings.ReadInteger('ActiveTab', 3); // the "History" tab.
+  FDictionaryCaseMayDiffer := _Settings.ReadBool('DictionaryCaseDiffer', True);
+  FOneCharIncorrect := _Settings.ReadBool('OtherLetter', True);
+  FMustBeNearbyLetter := _Settings.ReadBool('NearbyLetter', False);
+  FAllowOneCharacterMissing := _Settings.ReadBool('NoLetter', True);
+  FAllowExtraChar := _Settings.ReadBool('MoreLetter', True);
+  FAllowSwitchedChars := _Settings.ReadBool('MixedLetter', True);
+  FFirstCharMustBeCorrect := _Settings.ReadBool('NoFirstOther', True);
+  FBeepOnReplace := _Settings.ReadBool('BeepOnReplace', True);
+  FCustomBeepSound := _Settings.ReadString('CustomBeepSound', '');
+  FActiveTab := _Settings.ReadInteger('ActiveTab', 3); // the "History" tab.
 end;
 
-procedure TProofreaderData.SaveSettings(Settings: TExpertSettings);
+procedure TProofreaderData.SaveSettings(_Settings: IExpertSettings);
 begin
   // Do not localize any of the items below:
-  Settings.WriteBool('ReplacerActive', FReplacerActive);
-  Settings.WriteBool('DictionaryActive', FDictionaryActive);
+  _Settings.WriteBool('ReplacerActive', FReplacerActive);
+  _Settings.WriteBool('DictionaryActive', FDictionaryActive);
   {$IFNDEF GX_BCB}
-  Settings.WriteBool('CompilerActive', FCompilerActive);
+  _Settings.WriteBool('CompilerActive', FCompilerActive);
   {$ENDIF GX_BCB}
-  Settings.WriteBool('DictionaryCaseDiffer', FDictionaryCaseMayDiffer);
-  Settings.WriteBool('OtherLetter', FOneCharIncorrect);
-  Settings.WriteBool('NearbyLetter', FMustBeNearbyLetter);
-  Settings.WriteBool('NoLetter', FAllowOneCharacterMissing);
-  Settings.WriteBool('MoreLetter', FAllowExtraChar);
-  Settings.WriteBool('MixedLetter', FAllowSwitchedChars);
-  Settings.WriteBool('NoFirstOther', FFirstCharMustBeCorrect);
-  Settings.WriteBool('BeepOnReplace', FBeepOnReplace);
-  Settings.WriteString('CustomBeepSound', FCustomBeepSound);
-  Settings.WriteInteger('ActiveTab', FActiveTab);
+  _Settings.WriteBool('DictionaryCaseDiffer', FDictionaryCaseMayDiffer);
+  _Settings.WriteBool('OtherLetter', FOneCharIncorrect);
+  _Settings.WriteBool('NearbyLetter', FMustBeNearbyLetter);
+  _Settings.WriteBool('NoLetter', FAllowOneCharacterMissing);
+  _Settings.WriteBool('MoreLetter', FAllowExtraChar);
+  _Settings.WriteBool('MixedLetter', FAllowSwitchedChars);
+  _Settings.WriteBool('NoFirstOther', FFirstCharMustBeCorrect);
+  _Settings.WriteBool('BeepOnReplace', FBeepOnReplace);
+  _Settings.WriteString('CustomBeepSound', FCustomBeepSound);
+  _Settings.WriteInteger('ActiveTab', FActiveTab);
 end;
 
 function TProofreaderData.FindDictionary(const Zone: TReplacementSource; const AWord: string): string;

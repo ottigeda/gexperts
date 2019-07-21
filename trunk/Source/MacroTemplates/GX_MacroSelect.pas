@@ -151,28 +151,26 @@ begin
 end;
 
 procedure TfmMacroSelect.LoadFormLayout;
+var
+  Settings: IExpertSettings;
 begin
   // do not localize
-  with TGExpertsSettings.Create(MacroTemplatesBaseKey) do
-  try
-    LoadForm(Self, WindowPosKey, [fsSize]);
-    lvMacros.Columns[0].Width := ReadInteger(WindowPosKey, 'NameWidth', lvMacros.Columns[0].Width);
-  finally
-    Free;
-  end;
+  Settings := TMacroTemplatesExpert.GetSettings;
+  Settings.LoadForm(WindowPosKey, Self, [fsSize]);
+  Settings := Settings.Subkey(WindowPosKey);
+  lvMacros.Columns[0].Width := Settings.ReadInteger('NameWidth', lvMacros.Columns[0].Width);
 end;
 
 procedure TfmMacroSelect.SaveFormLayout;
+var
+  Settings: IExpertSettings;
 begin
   // do not localize
-  with TGExpertsSettings.Create(MacroTemplatesBaseKey) do
-  try
-    if WindowState = wsNormal then // save only if not maximized/minimized
-      SaveForm(Self, WindowPosKey, [fsSize]);
-    WriteInteger(WindowPosKey, 'NameWidth', lvMacros.Columns[0].Width);
-  finally
-    Free;
-  end;
+  Settings := TMacroTemplatesExpert.GetSettings;
+  if WindowState = wsNormal then // save only if not maximized/minimized
+    Settings.SaveForm(WindowPosKey, Self, [fsSize]);
+  Settings := Settings.Subkey(WindowPosKey);
+  Settings.WriteInteger('NameWidth', lvMacros.Columns[0].Width);
 end;
 
 procedure TfmMacroSelect.FormCreate(Sender: TObject);

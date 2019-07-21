@@ -19,8 +19,8 @@ type
   protected
   public
     constructor Create;
-    procedure LoadSettings(Settings: TExpertSettings);
-    procedure SaveSettings(Settings: TExpertSettings);
+    procedure LoadSettings(_Settings: IExpertSettings);
+    procedure SaveSettings(_Settings: iExpertSettings);
     procedure ConvertToCode(ALines: TStrings; AOnlyUpdateLines: Boolean);
     procedure ExtractRawStrings(ALines: TStrings; ADoAddBaseIndent: Boolean);
     function  ExecuteConfig(AConfigExpert: TEditorExpert; ForceShow: Boolean): Boolean;
@@ -64,20 +64,20 @@ begin
     AList.AddObject(cPasteAsTypeText[AType], TObject(Integer(AType)));
 end;
 
-procedure TPasteAsHandler.LoadSettings(Settings: TExpertSettings);
+procedure TPasteAsHandler.LoadSettings(_Settings: IExpertSettings);
 begin
-  PasteAsType := TPasteAsType(Settings.ReadEnumerated('PasteAsType', TypeInfo(TPasteAsType), Ord(paStringArray)));
-  CreateQuotedString := Settings.ReadBool('CreateQuotedString', True);
-  AddExtraSpaceAtTheEnd := Settings.ReadBool('AddExtraSpaceAtTheEnd', True);
-  ShowOptions := Settings.ReadBool('ShowOptions', True);
+  PasteAsType := TPasteAsType(_Settings.ReadEnumerated('PasteAsType', TypeInfo(TPasteAsType), Ord(paStringArray)));
+  CreateQuotedString := _Settings.ReadBool('CreateQuotedString', True);
+  AddExtraSpaceAtTheEnd := _Settings.ReadBool('AddExtraSpaceAtTheEnd', True);
+  ShowOptions := _Settings.ReadBool('ShowOptions', True);
 end;
 
-procedure TPasteAsHandler.SaveSettings(Settings: TExpertSettings);
+procedure TPasteAsHandler.SaveSettings(_Settings: IExpertSettings);
 begin
-  Settings.WriteEnumerated('PasteAsType', TypeInfo(TPasteAsType), Ord(FPasteAsType));
-  Settings.WriteBool('CreateQuotedString', FCreateQuotedString);
-  Settings.WriteBool('AddExtraSpaceAtTheEnd', FAddExtraSpaceAtTheEnd);
-  Settings.WriteBool('ShowOptions', FShowOptions);
+  _Settings.WriteEnumerated('PasteAsType', TypeInfo(TPasteAsType), Ord(FPasteAsType));
+  _Settings.WriteBool('CreateQuotedString', FCreateQuotedString);
+  _Settings.WriteBool('AddExtraSpaceAtTheEnd', FAddExtraSpaceAtTheEnd);
+  _Settings.WriteBool('ShowOptions', FShowOptions);
 end;
 
 function TPasteAsHandler.DetermineIndent(ALines: TStrings): Integer;

@@ -37,10 +37,10 @@ type
     function FindIdentAction(const Source: string; Pos: Integer;
       var FoundPos: Integer; var Ident: string): Boolean;
     procedure InternalExecute; override;
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
-    class function ConfigurationKey: string; override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   public
+    class function ConfigurationKey: string; override;
     class function GetName: string; override;
     constructor Create; override;
     function GetDefaultShortCut: TShortCut; override;
@@ -49,9 +49,8 @@ type
   end;
 
   TNextIdentExpert = class(TPrevIdentExpert)
-  protected
-    class function ConfigurationKey: string; override;
   public
+    class function ConfigurationKey: string; override;
     class function GetName: string; override;
     constructor Create; override;
     function GetDefaultShortCut: TShortCut; override;
@@ -271,18 +270,18 @@ begin
   Result := 'PrevIdentifier';
 end;
 
-procedure TPrevIdentExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TPrevIdentExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalLoadSettings(Settings);
+  inherited InternalLoadSettings(_Settings);
   // Do not localize any of the below items.
-  ViewChangeType := TViewChangeType(Settings.ReadEnumerated('ViewChangeType', TypeInfo(TViewChangeType), Ord(vctScrollCenter)));
+  ViewChangeType := TViewChangeType(_Settings.ReadEnumerated('ViewChangeType', TypeInfo(TViewChangeType), Ord(vctScrollCenter)));
 end;
 
-procedure TPrevIdentExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TPrevIdentExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalSaveSettings(Settings);
+  inherited InternalSaveSettings(_Settings);
   // Do not localize any of the below items.
-  Settings.WriteEnumerated('ViewChangeType', TypeInfo(TViewChangeType), Ord(ViewChangeType));
+  _Settings.WriteEnumerated('ViewChangeType', TypeInfo(TViewChangeType), Ord(ViewChangeType));
 end;
 
 { TNextIdentExpert }

@@ -85,7 +85,6 @@ type
     procedure SaveSettings;
     procedure LoadSettings;
     procedure UpdateCleanExtList;
-    function ConfigurationKey: string;
     procedure clbDirsOnFilesDropped(_Sender: TObject; _Files: TStrings);
     procedure clbExtensionsOnFilesDropped(_Sender: TObject; _Files: TStrings);
   public
@@ -99,8 +98,8 @@ type
     FCleanList: TStrings;
     FIncludeBinaryDirs: Boolean;
   protected
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -581,7 +580,7 @@ procedure TfmCleanDirectories.LoadSettings;
 var
   Settings: IExpertSettings;
 begin
-  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  Settings := TCleanExpert.GetSettings;
   // Do not localize any of the below strings.
   Settings.LoadForm('Window', Self, [fsSize]);
 end;
@@ -590,7 +589,7 @@ procedure TfmCleanDirectories.SaveSettings;
 var
   Settings: IExpertSettings;
 begin
-  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  Settings := TCleanExpert.GetSettings;
   // Do not localize any of the below strings.
   Settings.SaveForm('Window', Self, [fsSize]);
 end;
@@ -621,11 +620,6 @@ begin
   for i := 0 to clbExtensions.Items.Count - 1 do
     if clbExtensions.Checked[i] then
       CleanExtList.Add(clbExtensions.Items[i]);
-end;
-
-function TfmCleanDirectories.ConfigurationKey: string;
-begin
-  Result := TCleanExpert.ConfigurationKey; 
 end;
 
 { TCleanExpert }
@@ -676,24 +670,24 @@ begin
   end;
 end;
 
-procedure TCleanExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TCleanExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalLoadSettings(Settings);
+  inherited InternalLoadSettings(_Settings);
   // Do not localize.
-  Settings.ReadStrings('Delete', CleanList, 'CleanExt');
-  Settings.ReadStrings('Extensions', ExtensionList, 'AvailableExt');
-  FReportErrors := Settings.ReadBool('ReportError', True);
-  FIncludeBinaryDirs := Settings.ReadBool('IncludeBinaryDirs', False)
+  _Settings.ReadStrings('Delete', CleanList, 'CleanExt');
+  _Settings.ReadStrings('Extensions', ExtensionList, 'AvailableExt');
+  FReportErrors := _Settings.ReadBool('ReportError', True);
+  FIncludeBinaryDirs := _Settings.ReadBool('IncludeBinaryDirs', False)
 end;
 
-procedure TCleanExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TCleanExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalSaveSettings(Settings);
+  inherited InternalSaveSettings(_Settings);
   // Do not localize.
-  Settings.WriteBool('ReportError', FReportErrors);
-  Settings.WriteBool('IncludeBinaryDirs', FIncludeBinaryDirs);
-  Settings.WriteStrings('Extensions', ExtensionList, 'AvailableExt');
-  Settings.WriteStrings('Delete', CleanList, 'CleanExt');
+  _Settings.WriteBool('ReportError', FReportErrors);
+  _Settings.WriteBool('IncludeBinaryDirs', FIncludeBinaryDirs);
+  _Settings.WriteStrings('Extensions', ExtensionList, 'AvailableExt');
+  _Settings.WriteStrings('Delete', CleanList, 'CleanExt');
 end;
 
 function TCleanExpert.HasConfigOptions: Boolean;

@@ -71,8 +71,8 @@ type
     class function GetName: string; override;
     function HasConfigOptions: Boolean; override;
     function HasMenuItem: Boolean; override;
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
     function IsDefaultActive: Boolean; override;
   end;
 
@@ -82,7 +82,7 @@ var
 
 {TSetComponentPropsExpert}
 
-// Get an instance of the settings container (TSetComponentPropsSettings)
+// Get an instance of the Settings container (TSetComponentPropsSettings)
 constructor TSetComponentPropsExpert.Create;
 begin
   inherited;
@@ -149,35 +149,35 @@ begin
 end;
 
 // Gets the expert settings from the registry
-procedure TSetComponentPropsExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TSetComponentPropsExpert.InternalLoadSettings(_Settings: IExpertSettings);
 var
   Instance: TSetComponentPropsSettings;
 begin
   inherited;
   Instance := TSetComponentPropsSettings.GetInstance;
-  Instance.Simulate := Settings.ReadBool('Simulate', True);
-  Instance.Verbose := Settings.ReadBool('Verbose', True);
-  Settings.ReadStrings('Components', Instance.Components, 'Components');
-  Settings.ReadStrings('Properties', Instance.Properties, 'Properties');
-  Settings.ReadStrings('Values', Instance.Values, 'Values');
-  Settings.ReadStrings('Property Types', Instance.PropertyTypes, 'PropertyTypes');
+  Instance.Simulate := _Settings.ReadBool('Simulate', True);
+  Instance.Verbose := _Settings.ReadBool('Verbose', True);
+  _Settings.ReadStrings('Components', Instance.Components, 'Components');
+  _Settings.ReadStrings('Properties', Instance.Properties, 'Properties');
+  _Settings.ReadStrings('Values', Instance.Values, 'Values');
+  _Settings.ReadStrings('Property Types', Instance.PropertyTypes, 'PropertyTypes');
   Assert((Instance.Components.Count = Instance.Properties.Count) and
     (Instance.Components.Count = Instance.Values.Count));
 end;
 
 // Saves the expert settings to the registry
-procedure TSetComponentPropsExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TSetComponentPropsExpert.InternalSaveSettings(_Settings: IExpertSettings);
 var
   Instance: TSetComponentPropsSettings;
 begin
   inherited;
   Instance := TSetComponentPropsSettings.GetInstance;
-  Settings.WriteBool('Simulate', Instance.Simulate);
-  Settings.WriteBool('Verbose', Instance.Verbose);
-  Settings.WriteStrings('Components', Instance.Components, 'Components');
-  Settings.WriteStrings('Properties', Instance.Properties, 'Properties');
-  Settings.WriteStrings('Values', Instance.Values, 'Values');
-  Settings.WriteStrings('Property Types', Instance.PropertyTypes, 'PropertyTypes');
+  _Settings.WriteBool('Simulate', Instance.Simulate);
+  _Settings.WriteBool('Verbose', Instance.Verbose);
+  _Settings.WriteStrings('Components', Instance.Components, 'Components');
+  _Settings.WriteStrings('Properties', Instance.Properties, 'Properties');
+  _Settings.WriteStrings('Values', Instance.Values, 'Values');
+  _Settings.WriteStrings('Property Types', Instance.PropertyTypes, 'PropertyTypes');
 end;
 
 // Called to clean up the expert when it is disabled at runtime or destroyed on shutdown.

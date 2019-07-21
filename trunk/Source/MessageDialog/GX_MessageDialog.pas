@@ -219,7 +219,6 @@ type
     procedure SetEmbedSelection(const Value: Integer);
     procedure SetFunctionResults(const SelectedFunctionResults: string);
     procedure SetQuotes(const Value: Boolean);
-    function ConfigurationKey: string;
     function GetDialogBoxType: string;
     procedure SetDialogBoxType(const TypeText: string);
     function GetModality: string;
@@ -266,8 +265,8 @@ type
     FSettings: TMessageDialogSettings;
   protected
     procedure UpdateAction(Action: TCustomAction); override;
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -681,64 +680,48 @@ const
 
 procedure TfmMessageDialog.SaveSettings;
 var
-  GExpertsSettings: TGExpertsSettings;
-  ExpSettings: TExpertSettings;
+  ExpSettings: IExpertSettings;
 begin
-  ExpSettings := nil;
-  GExpertsSettings := TGExpertsSettings.Create;
-  try
-    ExpSettings := GExpertsSettings.CreateExpertSettings(ConfigurationKey);
-    ExpSettings.WriteInteger(MsgExpMsgActivePageIdent, pgeMessageDialog.ActivePageIndex);
-    ExpSettings.WriteString(MsgExpMsgTypeIdent, DialogType);
-    ExpSettings.WriteString(MsgExpMsgBoxTypeIdent, DialogBoxType);
-    ExpSettings.WriteString(MsgExpMsgButtonsIdent, DialogButtons);
-    ExpSettings.WriteString(MsgExpMsgModalityIdent, Modality);
-    ExpSettings.WriteString(MsgExpMsgFunctionResultsIdent, FunctionResults);
-    ExpSettings.WriteInteger(MsgExpMsgHelpContextIdent, DialogHelpContext);
-    ExpSettings.WriteInteger(MsgExpMsgEmbed, EmbedSelection);
-    ExpSettings.WriteBool(MsgExpMsgQuotesIdent, Quotes);
-    ExpSettings.WriteBool(MsgExpMsgGNUGettextSupportIdent, GNUGettextSupport);
-    ExpSettings.WriteBool(MsgExpMsgCaptionQuotesIdent, CaptionQuotes);
-    ExpSettings.WriteString(MsgExpMsgDefaultButtonIdent, DefaultButton);
-    ExpSettings.WriteBool(MsgExpMsgEnableDefaultButtonIdent, DefaultButtonCheckbox);
-  finally
-    FreeAndNil(ExpSettings);
-    FreeAndNil(GExpertsSettings);
-  end;
+  ExpSettings := TMsgExpExpert.GetSettings;
+  ExpSettings.WriteInteger(MsgExpMsgActivePageIdent, pgeMessageDialog.ActivePageIndex);
+  ExpSettings.WriteString(MsgExpMsgTypeIdent, DialogType);
+  ExpSettings.WriteString(MsgExpMsgBoxTypeIdent, DialogBoxType);
+  ExpSettings.WriteString(MsgExpMsgButtonsIdent, DialogButtons);
+  ExpSettings.WriteString(MsgExpMsgModalityIdent, Modality);
+  ExpSettings.WriteString(MsgExpMsgFunctionResultsIdent, FunctionResults);
+  ExpSettings.WriteInteger(MsgExpMsgHelpContextIdent, DialogHelpContext);
+  ExpSettings.WriteInteger(MsgExpMsgEmbed, EmbedSelection);
+  ExpSettings.WriteBool(MsgExpMsgQuotesIdent, Quotes);
+  ExpSettings.WriteBool(MsgExpMsgGNUGettextSupportIdent, GnuGetTextSupport);
+  ExpSettings.WriteBool(MsgExpMsgCaptionQuotesIdent, CaptionQuotes);
+  ExpSettings.WriteString(MsgExpMsgDefaultButtonIdent, DefaultButton);
+  ExpSettings.WriteBool(MsgExpMsgEnableDefaultButtonIdent, DefaultButtonCheckbox);
 end;
 
 procedure TfmMessageDialog.LoadSettings;
 var
-  GExpertsSettings: TGExpertsSettings;
-  ExpSettings: TExpertSettings;
+  ExpSettings: IExpertSettings;
   LastPageIndex: Integer;
 begin
-  ExpSettings := nil;
-  GExpertsSettings := TGExpertsSettings.Create;
-  try
-    ExpSettings := GExpertsSettings.CreateExpertSettings(ConfigurationKey);
-    EmbedSelection := ExpSettings.ReadInteger(MsgExpMsgEmbed, MsgExpMsgEmbedDefault);
-    LastPageIndex := ExpSettings.ReadInteger(MsgExpMsgActivePageIdent, MsgExpMsgActivePageDefault);
-    if (LastPageIndex >= 0) and (LastPageIndex < pgeMessageDialog.PageCount) then
-    begin
-      pgeMessageDialog.ActivePageIndex := LastPageIndex;
-      pgeMessageDialogChange(pgeMessageDialog);
-    end;
-    DialogType := ExpSettings.ReadString(MsgExpMsgTypeIdent, MsgExpMsgTypeDefault);
-    DialogBoxType := ExpSettings.ReadString(MsgExpMsgBoxTypeIdent, MsgExpMsgBoxTypeDefault);
-    AllDialogButtons := ExpSettings.ReadString(MsgExpMsgButtonsIdent, MsgExpMsgButtonsDefault);
-    Modality := ExpSettings.ReadString(MsgExpMsgModalityIdent, MsgExpMsgModalityDefault);
-    AllFunctionResults := ExpSettings.ReadString(MsgExpMsgFunctionResultsIdent, MsgExpMsgFunctionResultsDefault);
-    DialogHelpContext := ExpSettings.ReadInteger(MsgExpMsgHelpContextIdent, MsgExpMsgHelpContextDefault);
-    Quotes := ExpSettings.ReadBool(MsgExpMsgQuotesIdent, MsgExpMsgQuotesDefault);
-    GNUGettextSupport := ExpSettings.ReadBool(MsgExpMsgGNUGettextSupportIdent, MsgExpMsgGNUGettextSupportDefault);
-    CaptionQuotes := ExpSettings.ReadBool(MsgExpMsgCaptionQuotesIdent, MsgExpMsgCaptionQuotesDefault);
-    DefaultButton := ExpSettings.ReadString(MsgExpMsgDefaultButtonIdent, MsgExpMsgDefaultButtonDefault);
-    DefaultButtonCheckbox := ExpSettings.ReadBool(MsgExpMsgEnableDefaultButtonIdent, MsgExpMsgEnableDefaultButtonDefault);
-  finally
-    FreeAndNil(ExpSettings);
-    FreeAndNil(GExpertsSettings);
+  ExpSettings := TMsgExpExpert.GetSettings;
+  EmbedSelection := ExpSettings.ReadInteger(MsgExpMsgEmbed, MsgExpMsgEmbedDefault);
+  LastPageIndex := ExpSettings.ReadInteger(MsgExpMsgActivePageIdent, MsgExpMsgActivePageDefault);
+  if (LastPageIndex >= 0) and (LastPageIndex < pgeMessageDialog.PageCount) then
+  begin
+    pgeMessageDialog.ActivePageIndex := LastPageIndex;
+    pgeMessageDialogChange(pgeMessageDialog);
   end;
+  DialogType := ExpSettings.ReadString(MsgExpMsgTypeIdent, MsgExpMsgTypeDefault);
+  DialogBoxType := ExpSettings.ReadString(MsgExpMsgBoxTypeIdent, MsgExpMsgBoxTypeDefault);
+  AllDialogButtons := ExpSettings.ReadString(MsgExpMsgButtonsIdent, MsgExpMsgButtonsDefault);
+  Modality := ExpSettings.ReadString(MsgExpMsgModalityIdent, MsgExpMsgModalityDefault);
+  AllFunctionResults := ExpSettings.ReadString(MsgExpMsgFunctionResultsIdent, MsgExpMsgFunctionResultsDefault);
+  DialogHelpContext := ExpSettings.ReadInteger(MsgExpMsgHelpContextIdent, MsgExpMsgHelpContextDefault);
+  Quotes := ExpSettings.ReadBool(MsgExpMsgQuotesIdent, MsgExpMsgQuotesDefault);
+  GNUGettextSupport := ExpSettings.ReadBool(MsgExpMsgGNUGettextSupportIdent, MsgExpMsgGNUGettextSupportDefault);
+  CaptionQuotes := ExpSettings.ReadBool(MsgExpMsgCaptionQuotesIdent, MsgExpMsgCaptionQuotesDefault);
+  DefaultButton := ExpSettings.ReadString(MsgExpMsgDefaultButtonIdent, MsgExpMsgDefaultButtonDefault);
+  DefaultButtonCheckbox := ExpSettings.ReadBool(MsgExpMsgEnableDefaultButtonIdent, MsgExpMsgEnableDefaultButtonDefault);
 end;
 
 procedure TfmMessageDialog.mmoMessageKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -852,11 +835,6 @@ end;
 procedure TfmMessageDialog.SetQuotes(const Value: Boolean);
 begin
   chkQuotes.Checked := Value;
-end;
-
-function TfmMessageDialog.ConfigurationKey: string;
-begin
-  Result := TMsgExpExpert.ConfigurationKey;
 end;
 
 function TfmMessageDialog.GetDialogBoxType: string;
@@ -990,25 +968,25 @@ begin
   end;
 end;
 
-procedure TMsgExpExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TMsgExpExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
   FSettings.ConcatenationString :=
-    Settings.ReadString(MsgDlgConcateIdent, FSettings.ConcatenationString);
+    _Settings.ReadString(MsgDlgConcateIdent, FSettings.ConcatenationString);
   FSettings.CppConcatenationString :=
-    Settings.ReadString(MsgDlgCppConcateIdent, FSettings.CppConcatenationString);
-  FSettings.GnuGetTextFunction := TGnuGetTextFunction(Settings.ReadEnumerated(
+    _Settings.ReadString(MsgDlgCppConcateIdent, FSettings.CppConcatenationString);
+  FSettings.GnuGetTextFunction := TGnuGetTextFunction(_Settings.ReadEnumerated(
     MsgExpMsgGNUGettextFunctionIdent, TypeInfo(TGnuGetTextFunction), Ord(MsgExpMsgGNUGettextFunctionDefault)));
-  FSettings.GnuGetTextIndividual := Settings.ReadBool(MsgExpMsgGNUGettextIndividualIdent, MsgExpMsgGNUGettextIndividualDefault);
+  FSettings.GnuGetTextIndividual := _Settings.ReadBool(MsgExpMsgGNUGettextIndividualIdent, MsgExpMsgGNUGettextIndividualDefault);
 end;
 
-procedure TMsgExpExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TMsgExpExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
-  Settings.WriteString(MsgDlgConcateIdent, FSettings.ConcatenationString);
-  Settings.WriteString(MsgDlgCppConcateIdent, FSettings.CppConcatenationString);
-  Settings.WriteEnumerated(MsgExpMsgGNUGettextFunctionIdent,TypeInfo(TGnuGetTextFunction), Ord(FSettings.GNUGettextFunction));
-  Settings.WriteBool(MsgExpMsgGNUGettextIndividualIdent, FSettings.GNUGettextIndividual);
-  inherited InternalSaveSettings(Settings);
+  _Settings.WriteString(MsgDlgConcateIdent, FSettings.ConcatenationString);
+  _Settings.WriteString(MsgDlgCppConcateIdent, FSettings.CppConcatenationString);
+  _Settings.WriteEnumerated(MsgExpMsgGNUGettextFunctionIdent,TypeInfo(TGnuGetTextFunction), Ord(FSettings.GNUGettextFunction));
+  _Settings.WriteBool(MsgExpMsgGNUGettextIndividualIdent, FSettings.GNUGettextIndividual);
+  inherited InternalSaveSettings(_Settings);
 end;
 
 procedure TMsgExpExpert.Configure;

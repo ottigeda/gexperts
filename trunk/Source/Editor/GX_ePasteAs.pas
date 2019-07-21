@@ -9,8 +9,8 @@ uses
 type
   TPasteAsExpert = class(TEditorExpert)
   protected
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   public
     class function GetName: string; override;
     constructor Create; override;
@@ -86,16 +86,16 @@ begin
   Result := 'PasteAs';
 end;
 
-procedure TPasteAsExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TPasteAsExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalLoadSettings(Settings);
-  PasteAsHandler.LoadSettings(Settings);
+  inherited InternalLoadSettings(_Settings);
+  PasteAsHandler.LoadSettings(_Settings);
 end;
 
-procedure TPasteAsExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TPasteAsExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalSaveSettings(Settings);
-  PasteAsHandler.SaveSettings(Settings);
+  inherited InternalSaveSettings(_Settings);
+  PasteAsHandler.SaveSettings(_Settings);
 end;
 
 procedure TPasteAsExpert.Configure;

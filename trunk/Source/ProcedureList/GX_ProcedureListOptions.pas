@@ -3,7 +3,8 @@ unit GX_ProcedureListOptions;
 interface
 
 uses
-  Types, Classes, Graphics, Controls, Forms, ExtCtrls, StdCtrls, GX_BaseForm;
+  Types, Classes, Graphics, Controls, Forms, ExtCtrls, StdCtrls, GX_BaseForm,
+  GX_ConfigurationInfo;
 
 type
   TProcedureListOptions = class(TObject)
@@ -35,8 +36,8 @@ type
     property SearchClassName: Boolean read FSearchClassName write FSearchClassName;
     property Options: TProcedureListOptions read FOptions write FOptions;
     property ObjectNameVisible: Boolean read FObjectNameVisible write FObjectNameVisible;
-    procedure LoadSettings(const ConfigurationKey: string);
-    procedure SaveSettings(const ConfigurationKey: string);
+    procedure LoadSettings(_Settings: IExpertSettings);
+    procedure SaveSettings(_Settings: IExpertSettings);
 
     constructor Create;
     destructor Destroy; override;
@@ -76,7 +77,7 @@ implementation
 
 uses
   SysUtils, Dialogs,
-  GX_ConfigurationInfo, GX_GenericUtils;
+  GX_GenericUtils;
 
 const
   CodeViewFontKey = 'CodeViewFont';
@@ -100,7 +101,7 @@ begin
   inherited;
 end;
 
-procedure TProcedureListOptions.LoadSettings(const ConfigurationKey: string);
+procedure TProcedureListOptions.LoadSettings(_Settings: IExpertSettings);
 
   function GetCodeViewAlignment(Value: string): TAlign;
   begin
@@ -114,34 +115,23 @@ procedure TProcedureListOptions.LoadSettings(const ConfigurationKey: string);
       Result := alBottom;
   end;
 
-var
-  Settings: TGExpertsSettings;
-  ExpSettings: TExpertSettings;
 begin
   // Do not localize any of the following lines
-  ExpSettings := nil;
-  Settings := TGExpertsSettings.Create(ConfigInfo.GExpertsIdeRootRegistryKey);
-  try
-    ExpSettings := Settings.CreateExpertSettings(ConfigurationKey);
-    FBoundsRect := ExpSettings.ReadBounds(Bounds(317, 279, 550, 500));
-    FCodeViewVisible := ExpSettings.ReadBool('ShowProcedureBody', False);
-    FCodeViewWidth := ExpSettings.ReadInteger('ProcedureWidth', 292);
-    FCodeViewHeight := ExpSettings.ReadInteger('ProcedureHeight', 100);
-    FCodeViewAlignment := GetCodeViewAlignment(ExpSettings.ReadString('ProcedureAlignment', 'Right'));
-    FAlignmentChanged := ExpSettings.ReadBool('AlignmentChanged', False);
-    FSortOnColumn := ExpSettings.ReadInteger('SortColumn', FSortOnColumn);
-    ExpSettings.LoadFont(DialogFontKey, FDialogFont);
-    ExpSettings.LoadFont(CodeViewFontKey, FCodeViewFont);
-    FSearchAll := ExpSettings.ReadBool('SearchAll', True);
-    FSearchClassName := ExpSettings.ReadBool('SearchClassName', True);
-    FObjectNameVisible := ExpSettings.ReadBool('ShowObjectName', True);
-  finally
-    FreeAndNil(ExpSettings);
-    FreeAndNil(Settings);
-  end;
+  FBoundsRect := _Settings.ReadBounds(Bounds(317, 279, 550, 500));
+  FCodeViewVisible := _Settings.ReadBool('ShowProcedureBody', False);
+  FCodeViewWidth := _Settings.ReadInteger('ProcedureWidth', 292);
+  FCodeViewHeight := _Settings.ReadInteger('ProcedureHeight', 100);
+  FCodeViewAlignment := GetCodeViewAlignment(_Settings.ReadString('ProcedureAlignment', 'Right'));
+  FAlignmentChanged := _Settings.ReadBool('AlignmentChanged', False);
+  FSortOnColumn := _Settings.ReadInteger('SortColumn', FSortOnColumn);
+  _Settings.LoadFont(DialogFontKey, FDialogFont);
+  _Settings.LoadFont(CodeViewFontKey, FCodeViewFont);
+  FSearchAll := _Settings.ReadBool('SearchAll', True);
+  FSearchClassName := _Settings.ReadBool('SearchClassName', True);
+  FObjectNameVisible := _Settings.ReadBool('ShowObjectName', True);
 end;
 
-procedure TProcedureListOptions.SaveSettings(const ConfigurationKey: string);
+procedure TProcedureListOptions.SaveSettings(_Settings: IExpertSettings);
 
   function GetAlignmentString(Value: TAlign): string;
   begin
@@ -155,31 +145,20 @@ procedure TProcedureListOptions.SaveSettings(const ConfigurationKey: string);
     end;
   end;
 
-var
-  GxSettings: TGExpertsSettings;
-  Settings: TExpertSettings;
 begin
   // Do not localize any of the following lines
-  Settings := nil;
-  GxSettings := TGExpertsSettings.Create(ConfigInfo.GExpertsIdeRootRegistryKey);
-  try
-    Settings := GxSettings.CreateExpertSettings(ConfigurationKey);
-    Settings.WriteBool('SearchAll', FSearchAll);
-    Settings.WriteBool('SearchClassName', FSearchClassName);
-    Settings.WriteBounds(BoundsRect);
-    Settings.WriteInteger('SortColumn', FSortOnColumn);
-    Settings.WriteInteger('ProcedureWidth', FCodeViewWidth);
-    Settings.WriteInteger('ProcedureHeight', FCodeViewHeight);
-    Settings.WriteString('ProcedureAlignment', GetAlignmentString(FCodeViewAlignment));
-    Settings.SaveFont(DialogFontKey, FDialogFont);
-    Settings.SaveFont(CodeViewFontKey, FCodeViewFont);
-    Settings.WriteBool('ShowProcedureBody', FCodeViewVisible);
-    Settings.WriteBool('AlignmentChanged', FAlignmentChanged);
-    Settings.WriteBool('ShowObjectName', FObjectNameVisible);
-  finally
-    FreeAndNil(Settings);
-    FreeAndNil(GxSettings);
-  end;
+  _Settings.WriteBool('SearchAll', FSearchAll);
+  _Settings.WriteBool('SearchClassName', FSearchClassName);
+  _Settings.WriteBounds(BoundsRect);
+  _Settings.WriteInteger('SortColumn', FSortOnColumn);
+  _Settings.WriteInteger('ProcedureWidth', FCodeViewWidth);
+  _Settings.WriteInteger('ProcedureHeight', FCodeViewHeight);
+  _Settings.WriteString('ProcedureAlignment', GetAlignmentString(FCodeViewAlignment));
+  _Settings.SaveFont(DialogFontKey, FDialogFont);
+  _Settings.SaveFont(CodeViewFontKey, FCodeViewFont);
+  _Settings.WriteBool('ShowProcedureBody', FCodeViewVisible);
+  _Settings.WriteBool('AlignmentChanged', FAlignmentChanged);
+  _Settings.WriteBool('ShowObjectName', FObjectNameVisible);
 end;
 
 procedure TProcedureListOptions.SetBoundsRect(const AValue: TRect);

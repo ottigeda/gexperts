@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Forms, Controls, ExtCtrls, Buttons, ActnList, ToolsAPI, ComCtrls, StdCtrls, GX_BaseForm, 
-  GX_ConfigurationInfo;
+  GX_ConfigurationInfo, Actions;
 
 type
   TTabAutoSortEnum = (tasYthenX, tasXthenY, tasNone);
@@ -91,10 +91,8 @@ type
   protected
     procedure UpdateAction(Action: TCustomAction); override;
     procedure Configure; override;
-    // Overrride to load any configuration settings
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    // Overrride to save any configuration settings
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   public
     function GetActionCaption: string; override;
     class function GetName: string; override;
@@ -588,18 +586,18 @@ end;
 //  Result := True;
 //end;
 
-procedure TTabExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TTabExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalLoadSettings(Settings);
+  inherited InternalLoadSettings(_Settings);
   // Do not localize.
-  FAutoSort := TTabAutoSortEnum(Settings.ReadEnumerated('AutoSort',
+  FAutoSort := TTabAutoSortEnum(_Settings.ReadEnumerated('AutoSort',
     TypeInfo(TTabAutoSortEnum), Ord(tasXthenY)));
 end;
 
-procedure TTabExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TTabExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited;
-  Settings.WriteEnumerated('AutoSort', TypeInfo(TTabAutoSortEnum), Ord(FAutoSort));
+  _Settings.WriteEnumerated('AutoSort', TypeInfo(TTabAutoSortEnum), Ord(FAutoSort));
 end;
 
 initialization

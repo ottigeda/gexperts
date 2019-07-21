@@ -39,16 +39,16 @@ type
 
   TTokenList = class(TStringList)
   private
-    procedure LoadFromSettings(ExpSettings: TExpertSettings);
-    procedure SaveToSettings(ExpSettings: TExpertSettings);
+    procedure LoadFromSettings(_Settings: IExpertSettings);
+    procedure SaveToSettings(_Settings: IExpertSettings);
     procedure AddToken(const Token: string; Priority: TToDoPriority);
   public
     destructor Destroy; override;
   end;
 
   TDirList = class(TStringList)
-    procedure LoadFromSettings(ExpSettings: TExpertSettings);
-    procedure SaveToSettings(ExpSettings: TExpertSettings);
+    procedure LoadFromSettings(_Settings: IExpertSettings);
+    procedure SaveToSettings(_Settings: IExpertSettings);
   end;
 
   TToDoInfo = class(TObject)
@@ -133,7 +133,6 @@ type
     procedure EnumerateProjects;
     procedure SaveSettings;
     procedure LoadSettings;
-    function ConfigurationKey: string;
     function PriorityToImageIndex(Priority: TToDoPriority): Integer;
     function NumericPriorityToGXPriority(const PriorityStr: string): TToDoPriority;
     procedure ParsePasFile(const _Filename: string; const _Content: string; _Callback: TParsePasFileCallback);
@@ -156,8 +155,8 @@ type
     FFont: TFont;
   protected
     procedure SetActive(New: Boolean); override;
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -197,7 +196,7 @@ type
 
 { TTokenList }
 
-procedure TTokenList.LoadFromSettings(ExpSettings: TExpertSettings);
+procedure TTokenList.LoadFromSettings(_Settings: IExpertSettings);
 resourcestring
   SWhiteSpaceWarning = 'GExperts found the "%s" To Do List token with leading and/or trailing spaces.' + sLineBreak +
     sLineBreak +
@@ -214,34 +213,31 @@ var
   i: Integer;
   TokenInfo: TTokenInfo;
   TempTokenText: string;
-  ListSettings: TExpertSettings;
+  ListSettings: IExpertSettings;
 begin
-  ExpSettings.ReadSection('Tokens', Self);
-  ListSettings := ExpSettings.CreateExpertSettings('Tokens');
-  try
-    for i := 0 to Count - 1 do
+  _Settings.ReadSection('Tokens', Self);
+  ListSettings := _Settings.Subkey('Tokens');
+  for i := 0 to Count - 1 do
+  begin
+    // Sanity checks of tokens
+    TempTokenText := Self[i];
+    if TempTokenText <> Trim(TempTokenText) then
     begin
-      // Sanity checks of tokens
-      TempTokenText := Self[i];
-      if TempTokenText <> Trim(TempTokenText) then
-      begin
-        MessageDlg(Format(SWhiteSpaceWarning, [TempTokenText]), mtWarning, [mbOK], 0);
-        TempTokenText := Trim(TempTokenText);
-      end;
-
-      if (Length(TempTokenText) > 0) and (TempTokenText[1] = '$') then
-      begin
-        MessageDlg(Format(SLeadingDollarWarning, [TempTokenText]), mtWarning, [mbOK], 0);
-      end;
-
-      TokenInfo := TTokenInfo.Create;
-      TokenInfo.Token := Self[i];
-      TokenInfo.Priority := TToDoPriority(ListSettings.ReadInteger(TokenInfo.Token, 1));
-      Objects[i] := TokenInfo;
+      MessageDlg(Format(SWhiteSpaceWarning, [TempTokenText]), mtWarning, [mbOK], 0);
+      TempTokenText := Trim(TempTokenText);
     end;
-  finally
-    FreeAndNil(ListSettings);
+
+    if (Length(TempTokenText) > 0) and (TempTokenText[1] = '$') then
+    begin
+      MessageDlg(Format(SLeadingDollarWarning, [TempTokenText]), mtWarning, [mbOK], 0);
+    end;
+
+    TokenInfo := TTokenInfo.Create;
+    TokenInfo.Token := Self[i];
+    TokenInfo.Priority := TToDoPriority(ListSettings.ReadInteger(TokenInfo.Token, 1));
+    Objects[i] := TokenInfo;
   end;
+
   if Count = 0 then
   begin
     // No tokens found, create a default list of tokens
@@ -254,20 +250,16 @@ begin
   end;
 end;
 
-procedure TTokenList.SaveToSettings(ExpSettings: TExpertSettings);
+procedure TTokenList.SaveToSettings(_Settings: IExpertSettings);
 var
   i: Integer;
-  ListSettings: TExpertSettings;
+  ListSettings: IExpertSettings;
 begin
   // Do not localize any of the below items.
-  ExpSettings.EraseSection('Tokens');
-  ListSettings := ExpSettings.CreateExpertSettings('Tokens');
-  try
-    for i := 0 to Count - 1 do
-      ListSettings.WriteInteger(Self[i], Ord(TTokenInfo(Objects[i]).Priority));
-  finally
-    FreeAndNil(ListSettings);
-  end;
+  _Settings.EraseSection('Tokens');
+  ListSettings := _Settings.Subkey('Tokens');
+  for i := 0 to Count - 1 do
+    ListSettings.WriteInteger(Self[i], Ord(TTokenInfo(Objects[i]).Priority));
 end;
 
 procedure TTokenList.AddToken(const Token: string; Priority: TToDoPriority);
@@ -1196,29 +1188,24 @@ begin
 end;
 
 procedure TfmToDo.SaveSettings;
+var
+  Settings: IExpertSettings;
 begin
+  Settings :=  TToDoExpert.GetSettings;
   // Do not localize any of the below items
-  with TGExpertsSettings.Create do
-  try
-    WriteBool(ConfigurationKey, 'SortAscending', FSortAscending);
-    WriteInteger(ConfigurationKey, 'SortColumn', FColumnIndex);
-    SaveForm(Self, ConfigurationKey + '\Window', [fsSize]);
-  finally
-    Free;
-  end;
+  Settings.WriteBool('SortAscending', FSortAscending);
+  Settings.WriteInteger('SortColumn', FColumnIndex);
+  Settings.SaveForm('Window', Self, [fsSize]);
 end;
 
 procedure TfmToDo.LoadSettings;
+var
+  Settings: IExpertSettings;
 begin
-  // Do not localize any of the below items
-  with TGExpertsSettings.Create do
-  try
-    FSortAscending := ReadBool(ConfigurationKey, 'SortAscending', True);
-    FColumnIndex := ReadInteger(ConfigurationKey, 'SortColumn', 0);
-    LoadForm(Self, ConfigurationKey + '\Window', [fsSize]);
-  finally
-    Free;
-  end;
+  Settings :=  TToDoExpert.GetSettings;
+  FSortAscending := Settings.ReadBool('SortAscending', True);
+  FColumnIndex := Settings.ReadInteger('SortColumn', 0);
+  Settings.LoadForm('Window', Self, [fsSize]);
 end;
 
 procedure TfmToDo.FormResize(Sender: TObject);
@@ -1256,11 +1243,6 @@ begin
     Key := 0;
     Close;
   end;
-end;
-
-function TfmToDo.ConfigurationKey: string;
-begin
-  Result := TToDoExpert.ConfigurationKey;
 end;
 
 { TToDoExpert }
@@ -1408,40 +1390,40 @@ begin
   Result := 'ToDoList'; // Do not localize.
 end;
 
-procedure TToDoExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TToDoExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalLoadSettings(Settings);
+  inherited InternalLoadSettings(_Settings);
 
   // Do not localize
-  FTokenList.LoadFromSettings(Settings);
-  FDirectoryHistoryList.LoadFromSettings(Settings);
+  FTokenList.LoadFromSettings(_Settings);
+  FDirectoryHistoryList.LoadFromSettings(_Settings);
 
-  FShowTokens := Settings.ReadBool('ShowTokens', False);
-  FAddMessage := Settings.ReadBool('AddMessage', False);
-  FHideOnGoto := Settings.ReadBool('HideOnGoto', False);
-  FScanType := TToDoScanType(Settings.ReadEnumerated('ScanType', TypeInfo(TToDoScanType), Ord(tstProject)));
-  fDirsToScan := Settings.ReadString('DirToScan', '');
-  fRecurseDirScan := Settings.ReadBool('RecurseDirScan', False);
-  Settings.LoadFont('Font', FFont);
+  FShowTokens := _Settings.ReadBool('ShowTokens', False);
+  FAddMessage := _Settings.ReadBool('AddMessage', False);
+  FHideOnGoto := _Settings.ReadBool('HideOnGoto', False);
+  FScanType := TToDoScanType(_Settings.ReadEnumerated('ScanType', TypeInfo(TToDoScanType), Ord(tstProject)));
+  fDirsToScan := _Settings.ReadString('DirToScan', '');
+  fRecurseDirScan := _Settings.ReadBool('RecurseDirScan', False);
+  _Settings.LoadFont('Font', FFont);
 
   if Active then
     IdeDockManager.RegisterDockableForm(TfmToDo, fmToDo, 'fmToDo');
 end;
 
-procedure TToDoExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TToDoExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalSaveSettings(Settings);
+  inherited InternalSaveSettings(_Settings);
 
   // Do not localize
-  FTokenList.SaveToSettings(Settings);
-  FDirectoryHistoryList.SaveToSettings(Settings);
-  Settings.WriteBool('ShowTokens', FShowTokens);
-  Settings.WriteBool('AddMessage', FAddMessage);
-  Settings.WriteBool('HideOnGoto', FHideOnGoto);
-  Settings.WriteEnumerated('ScanType', TypeInfo(TToDoScanType), Ord(FScanType));
-  Settings.WriteString('DirToScan', FDirsToScan);
-  Settings.WriteBool('RecurseDirScan', FRecurseDirScan);
-  Settings.SaveFont('Font', FFont);
+  FTokenList.SaveToSettings(_Settings);
+  FDirectoryHistoryList.SaveToSettings(_Settings);
+  _Settings.WriteBool('ShowTokens', FShowTokens);
+  _Settings.WriteBool('AddMessage', FAddMessage);
+  _Settings.WriteBool('HideOnGoto', FHideOnGoto);
+  _Settings.WriteEnumerated('ScanType', TypeInfo(TToDoScanType), Ord(FScanType));
+  _Settings.WriteString('DirToScan', FDirsToScan);
+  _Settings.WriteBool('RecurseDirScan', FRecurseDirScan);
+  _Settings.SaveFont('Font', FFont);
 end;
 
 procedure TToDoExpert.SetActive(New: Boolean);
@@ -1458,25 +1440,21 @@ end;
 
 { TDirList }
 
-procedure TDirList.LoadFromSettings(ExpSettings: TExpertSettings);
+procedure TDirList.LoadFromSettings(_Settings: IExpertSettings);
 begin
-  ExpSettings.ReadSection('DirList', Self);
+  _Settings.ReadSection('DirList', Self);
 end;
 
-procedure TDirList.SaveToSettings(ExpSettings: TExpertSettings);
+procedure TDirList.SaveToSettings(_Settings: IExpertSettings);
 var
   i: Integer;
-  ListSettings: TExpertSettings;
+  ListSettings: IExpertSettings;
 begin
   // Do not localize any of the below items.
-  ExpSettings.EraseSection('DirList');
-  ListSettings := ExpSettings.CreateExpertSettings('DirList');
-  try
-    for i := 0 to Count - 1 do
-      ListSettings.WriteString(Self[i], '');
-  finally
-    FreeAndNil(ListSettings);
-  end;
+  _Settings.EraseSection('DirList');
+  ListSettings := _Settings.Subkey('DirList');
+  for i := 0 to Count - 1 do
+    ListSettings.WriteString(Self[i], '');
 end;
 
 function TfmToDo.PriorityToImageIndex(Priority: TToDoPriority): Integer;

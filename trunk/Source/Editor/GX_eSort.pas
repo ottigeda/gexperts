@@ -98,8 +98,8 @@ type
     function GetHelpString: string; override;
     function HasConfigOptions: boolean; override;
     procedure Configure; override;
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   end;
 
 { TSortExpert }
@@ -170,7 +170,7 @@ begin
   TfrmSortOptions.Execute(nil, FCustomPrefixOrder);
 end;
 
-procedure TSortExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TSortExpert.InternalLoadSettings(_Settings: IExpertSettings);
 var
   sl: TStringList;
   i: Integer;
@@ -178,7 +178,7 @@ begin
   inherited;
   sl := TStringList.Create;
   try
-    Settings.ReadStrings('CustomSortOrder', sl);
+    _Settings.ReadStrings('CustomSortOrder', sl);
     if sl.Count <> Length(PrefixArray) + 1 then begin
       {$IFOPT D+}SendDebug('Number of CustomSortOrder items is wrong, ignoring them.'); {$ENDIF}
       Exit; //==>
@@ -193,7 +193,7 @@ begin
   end;
 end;
 
-procedure TSortExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TSortExpert.InternalSaveSettings(_Settings: IExpertSettings);
 var
   sl: TStringList;
   i: Integer;
@@ -204,7 +204,7 @@ begin
     for i := 0 to FCustomPrefixOrder.Count - 1 do begin
       sl.Add(String(FCustomPrefixOrder[i]));
     end;
-    Settings.WriteStrings('CustomSortOrder', sl);
+    _Settings.WriteStrings('CustomSortOrder', sl);
   finally
     FreeAndNil(sl);
   end;

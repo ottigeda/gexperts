@@ -10,7 +10,7 @@ uses
   Classes, Graphics, Controls, Forms, Dialogs, ActnList, ComCtrls,
   Menus, StdCtrls, ExtCtrls, ToolWin,
   SynEdit, // This expert requires SynEdit from http://synedit.sf.net/
-  GX_Experts, GX_ConfigurationInfo, GX_BaseForm;
+  GX_Experts, GX_ConfigurationInfo, GX_BaseForm, Actions;
 
 type
   TGXCopyFormat = (cfText, cfHTMLFragment, cfRTFFragment);
@@ -86,8 +86,8 @@ type
     FSaveFilter: Integer;
     FBackgroundColor: TColor;
   protected
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -388,28 +388,28 @@ begin
   end;
 end;
 
-procedure TSourceExportExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TSourceExportExpert.InternalLoadSettings(_Settings: IExpertSettings);
 var
   NewCopyFormat: TGXCopyFormat;
 begin
-  inherited InternalLoadSettings(Settings);
+  inherited InternalLoadSettings(_Settings);
   // Do not localize.
-  NewCopyFormat := TGXCopyFormat(Settings.ReadEnumerated('Copy Format', TypeInfo(TGXCopyFormat), 0));
+  NewCopyFormat := TGXCopyFormat(_Settings.ReadEnumerated('Copy Format', TypeInfo(TGXCopyFormat), 0));
   Assert(NewCopyFormat in [Low(TGXCopyFormat)..High(TGXCopyFormat)]);
   FDefaultCopyFormat := NewCopyFormat;
-  FSaveDir := Settings.ReadString('Save Directory', '');
-  FSaveFilter := Settings.ReadInteger('Save Format', 1);
-  FBackgroundColor := Settings.ReadInteger('Background', GetIdeEditorBackgroundColor);
+  FSaveDir := _Settings.ReadString('Save Directory', '');
+  FSaveFilter := _Settings.ReadInteger('Save Format', 1);
+  FBackgroundColor := _Settings.ReadInteger('Background', GetIdeEditorBackgroundColor);
 end;
 
-procedure TSourceExportExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TSourceExportExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalSaveSettings(Settings);
+  inherited InternalSaveSettings(_Settings);
   // Do not localize.
-  Settings.WriteInteger('Copy Format', Ord(FDefaultCopyFormat));
-  Settings.WriteString('Save Directory', FSaveDir);
-  Settings.WriteInteger('Save Format', FSaveFilter);
-  Settings.WriteInteger('Background', FBackgroundColor);
+  _Settings.WriteInteger('Copy Format', Ord(FDefaultCopyFormat));
+  _Settings.WriteString('Save Directory', FSaveDir);
+  _Settings.WriteInteger('Save Format', FSaveFilter);
+  _Settings.WriteInteger('Background', FBackgroundColor);
 end;
 
 procedure TSourceExportExpert.Configure;

@@ -7,7 +7,7 @@ interface
 uses
   Windows, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, GX_PeInfo, ComCtrls, Menus,
-  GX_IdeDock, DropTarget, DropSource, ActnList, ToolWin, StdCtrls, SysUtils;
+  GX_IdeDock, DropTarget, DropSource, ActnList, ToolWin, StdCtrls, SysUtils, Actions;
 
 type
   TfmPeInformation = class(TfmIdeDockForm)
@@ -101,7 +101,6 @@ type
     procedure LoadSettings;
     procedure DropFiles(Sender: TObject; ShiftState: TShiftState; Point: TPoint; var Effect: Longint);
     procedure SetNumberType(const Value: TNumberType);
-    function ConfigurationKey: string;
     procedure SetVersionInfo(const AFilename: string);
     procedure SetPackageInfo(const AFilename: string);
   public
@@ -395,30 +394,27 @@ begin
 end;
 
 procedure TfmPeInformation.SaveSettings;
+var
+  Settings: IExpertSettings;
 begin
   // do not localize any of the below lines
-  with TGExpertsSettings.Create do
-  try
-    SaveForm(Self, ConfigurationKey + '\Window');
-    WriteInteger(ConfigurationKey, 'Numbers', Integer(NumberType));
-    WriteString(ConfigurationKey, 'BinPath', ExtractFilePath(FFileName));
-  finally
-    Free;
-  end;
+  Settings :=  TPEExpert.GetSettings;
+  Settings.SaveForm('Window', Self);
+  Settings.WriteInteger('Numbers', Integer(NumberType));
+  Settings.WriteString('BinPath', ExtractFilePath(FFileName));
 end;
 
 procedure TfmPeInformation.LoadSettings;
+var
+  Settings: IExpertSettings;
 begin
   // do not localize any of the below lines
-  with TGExpertsSettings.Create do
-  try
-    LoadForm(Self, ConfigurationKey + '\Window');
-    NumberType := TNumberType(ReadInteger(ConfigurationKey, 'Numbers', Ord(ntHex)));
-    FFileName := ReadString(ConfigurationKey, 'BinPath', '');
-    FFileName :=  IncludeTrailingPathDelimiter(FFileName) + 'SomeExecutable.exe';
-  finally
-    Free;
-  end;
+  Settings :=  TPEExpert.GetSettings;
+  Settings.LoadForm('Window', Self);
+  NumberType := TNumberType(Settings.ReadInteger('Numbers', Ord(ntHex)));
+  FFileName := Settings.ReadString('BinPath', '');
+  FFileName :=  AddSlash(FFileName) + 'SomeExecutable.exe';
+
   EnsureFormVisible(Self);
 end;
 
@@ -868,11 +864,6 @@ begin
     Key := 0;
     Close;
   end;
-end;
-
-function TfmPeInformation.ConfigurationKey: string;
-begin
-   Result := TPEExpert.ConfigurationKey;
 end;
 
 { TPEExpert }

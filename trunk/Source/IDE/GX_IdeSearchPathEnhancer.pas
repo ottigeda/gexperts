@@ -174,37 +174,21 @@ end;
 
 procedure TSearchPathEnhancer.LoadSettings;
 var
-  Settings: TGExpertsSettings;
-  ExpSettings: TExpertSettings;
+  ExpSettings: IExpertSettings;
 begin
-  ExpSettings := nil;
-  Settings := TGExpertsSettings.Create;
-  try
-    ExpSettings := Settings.CreateExpertSettings(ConfigurationKey);
-    ExpSettings.ReadStrings('SearchPathFavorites', FFavorites);
-  finally
-    FreeAndNil(ExpSettings);
-    FreeAndNil(Settings);
-  end;
+  ExpSettings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  ExpSettings.ReadStrings('SearchPathFavorites', FFavorites);
 end;
 
 procedure TSearchPathEnhancer.SaveSettings;
 var
-  Settings: TGExpertsSettings;
-  ExpSettings: TExpertSettings;
+  ExpSettings: IExpertSettings;
 begin
   Assert(ConfigInfo <> nil, 'No ConfigInfo found');
 
   // do not localize any of the below items
-  ExpSettings := nil;
-  Settings := TGExpertsSettings.Create;
-  try
-    ExpSettings := Settings.CreateExpertSettings(ConfigurationKey);
-    ExpSettings.WriteStrings('SearchPathFavorites', FFavorites);
-  finally
-    FreeAndNil(ExpSettings);
-    FreeAndNil(Settings);
-  end;
+  ExpSettings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  ExpSettings.WriteStrings('SearchPathFavorites', FFavorites);
 end;
 
 procedure TSearchPathEnhancer.HandleFilesDropped(_Sender: TObject; _Files: TStrings);

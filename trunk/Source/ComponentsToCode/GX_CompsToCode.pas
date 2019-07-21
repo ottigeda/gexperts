@@ -39,8 +39,8 @@ type
   TCompsToCodeExpert = class(TGX_Expert)
   protected
     procedure UpdateAction(Action: TCustomAction); override;
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   private
     FSettings: TCToCSettings;
     function GetDesignerComps: TComponentArray;
@@ -382,26 +382,26 @@ begin
   end;
 end;
 
-procedure TCompsToCodeExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TCompsToCodeExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalLoadSettings(Settings);
+  inherited InternalLoadSettings(_Settings);
   // Do not localize any of the below items.
-  FSettings.BinProps := TBinProps(Settings.ReadEnumerated('BinaryProperties', TypeInfo(TBinProps), Ord(bpComment)));
-  FSettings.Prepend := Settings.ReadBool('PrependWithComponent', False);
-  FSettings.UseDelphiWith := Settings.ReadBool('UseDelphiWith', False);
-  FSettings.CreateFreeCode := Settings.ReadBool('CreateFreeCode', False);
-  FSettings.Language := TCToCLanguage(Settings.ReadEnumerated('Language', TypeInfo(TCToCLanguage), Ord(FSettings.Language)));
+  FSettings.BinProps := TBinProps(_Settings.ReadEnumerated('BinaryProperties', TypeInfo(TBinProps), Ord(bpComment)));
+  FSettings.Prepend := _Settings.ReadBool('PrependWithComponent', False);
+  FSettings.UseDelphiWith := _Settings.ReadBool('UseDelphiWith', False);
+  FSettings.CreateFreeCode := _Settings.ReadBool('CreateFreeCode', False);
+  FSettings.Language := TCToCLanguage(_Settings.ReadEnumerated('Language', TypeInfo(TCToCLanguage), Ord(FSettings.Language)));
 end;
 
-procedure TCompsToCodeExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TCompsToCodeExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalSaveSettings(Settings);
+  inherited InternalSaveSettings(_Settings);
   // Do not localize any of the below items.
-  Settings.WriteEnumerated('BinaryProperties', TypeInfo(TBinProps), Ord(FSettings.BinProps));
-  Settings.WriteBool('PrependWithComponent', FSettings.Prepend);
-  Settings.WriteBool('UseDelphiWith', FSettings.UseDelphiWith);
-  Settings.WriteBool('CreateFreeCode', FSettings.CreateFreeCode);
-  Settings.WriteEnumerated('Language', TypeInfo(TCToCLanguage), Ord(FSettings.Language));
+  _Settings.WriteEnumerated('BinaryProperties', TypeInfo(TBinProps), Ord(FSettings.BinProps));
+  _Settings.WriteBool('PrependWithComponent', FSettings.Prepend);
+  _Settings.WriteBool('UseDelphiWith', FSettings.UseDelphiWith);
+  _Settings.WriteBool('CreateFreeCode', FSettings.CreateFreeCode);
+  _Settings.WriteEnumerated('Language', TypeInfo(TCToCLanguage), Ord(FSettings.Language));
 end;
 
 procedure TCompsToCodeExpert.Configure;

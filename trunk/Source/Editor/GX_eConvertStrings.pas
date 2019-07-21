@@ -17,7 +17,8 @@ uses
   GX_BaseForm,
   GX_MemoEscFix,
   Menus,
-  ActnList;
+  ActnList,
+  Actions;
 
 type
   TMemo = class(TMemoEscFix)
@@ -162,35 +163,35 @@ procedure TfmEConvertStrings.FormResize(Sender: TObject);
 var
   cw: Integer;
   w: Integer;
-  x: Integer;
+  X: Integer;
   m: Integer;
 begin
   m := m_Input.Left;
   cw := ClientWidth;
-  x := (cw - b_Favorites.Width) div 2;
-  b_Favorites.Left := x;
-  chk_ExtractRaw.Left := x;
-  chk_TrimLeft.Left := x;
-  chk_TrimRight.Left := x;
-  chk_Indent.Left := x;
-  chk_QuoteStrings.Left := x;
-  chk_AppendSpace.Left := x;
-  l_Prefix.Left := x;
-  ed_Prefix.Left := x;
-  chk_PrefixFirst.Left := x;
-  l_Suffix.Left := x;
-  ed_PrefixFirst.Left := x;
-  ed_Suffix.Left := x;
-  chk_SuffixLast.Left := x;
-  ed_SuffixLast.Left := x;
+  X := (cw - b_Favorites.Width) div 2;
+  b_Favorites.Left := X;
+  chk_ExtractRaw.Left := X;
+  chk_TrimLeft.Left := X;
+  chk_TrimRight.Left := X;
+  chk_Indent.Left := X;
+  chk_QuoteStrings.Left := X;
+  chk_AppendSpace.Left := X;
+  l_Prefix.Left := X;
+  ed_Prefix.Left := X;
+  chk_PrefixFirst.Left := X;
+  l_Suffix.Left := X;
+  ed_PrefixFirst.Left := X;
+  ed_Suffix.Left := X;
+  chk_SuffixLast.Left := X;
+  ed_SuffixLast.Left := X;
 
-  w := x - 2 * m;
+  w := X - 2 * m;
   m_Input.Width := w;
   m_Output.Width := w;
 
-  x := cw - w - m;
-  l_Output.Left := x;
-  m_Output.Left := x;
+  X := cw - w - m;
+  l_Output.Left := X;
+  m_Output.Left := X;
 end;
 
 procedure TfmEConvertStrings.mi_FavoritesSaveAsClick(Sender: TObject);
@@ -337,32 +338,24 @@ end;
 
 procedure TfmEConvertStrings.SaveSettings;
 var
-  GXSettings: TGExpertsSettings;
-  Settings: TExpertSettings;
+  Settings: IExpertSettings;
 begin
   // Do not localize any of the following lines.
-  Settings := nil;
-  GXSettings := TGExpertsSettings.Create;
-  try
-    Settings := GXSettings.CreateExpertSettings(TConvertStringsExpert.ConfigurationKey);
-    Settings.SaveForm('Window', Self);
-    Settings.WriteBool('ExtractRaw', chk_ExtractRaw.Checked);
-    Settings.WriteBool('TrimLeft', chk_TrimLeft.Checked);
-    Settings.WriteBool('TrimRight', chk_TrimRight.Checked);
-    Settings.WriteBool('KeepIndent', chk_Indent.Checked);
-    Settings.WriteBool('QuoteStrings', chk_QuoteStrings.Checked);
-    Settings.WriteBool('AppendSpace', chk_AppendSpace.Checked);
-    Settings.WriteString('Prefix', ed_Prefix.Text);
-    Settings.WriteBool('SamePrefix', chk_PrefixFirst.Checked);
-    Settings.WriteString('FirstPrefix', ed_PrefixFirst.Text);
-    Settings.WriteString('Prefix', ed_Prefix.Text);
-    Settings.WriteString('Suffix', ed_Suffix.Text);
-    Settings.WriteBool('SameSuffix', chk_SuffixLast.Checked);
-    Settings.WriteString('LastSuffix', ed_SuffixLast.Text);
-  finally
-    FreeAndNil(Settings);
-    FreeAndNil(GXSettings);
-  end;
+  Settings := TConvertStringsExpert.GetSettings;
+  Settings.SaveForm('Window', Self);
+  Settings.WriteBool('ExtractRaw', chk_ExtractRaw.Checked);
+  Settings.WriteBool('TrimLeft', chk_TrimLeft.Checked);
+  Settings.WriteBool('TrimRight', chk_TrimRight.Checked);
+  Settings.WriteBool('KeepIndent', chk_Indent.Checked);
+  Settings.WriteBool('QuoteStrings', chk_QuoteStrings.Checked);
+  Settings.WriteBool('AppendSpace', chk_AppendSpace.Checked);
+  Settings.WriteString('Prefix', ed_Prefix.Text);
+  Settings.WriteBool('SamePrefix', chk_PrefixFirst.Checked);
+  Settings.WriteString('FirstPrefix', ed_PrefixFirst.Text);
+  Settings.WriteString('Prefix', ed_Prefix.Text);
+  Settings.WriteString('Suffix', ed_Suffix.Text);
+  Settings.WriteBool('SameSuffix', chk_SuffixLast.Checked);
+  Settings.WriteString('LastSuffix', ed_SuffixLast.Text);
 end;
 
 procedure TfmEConvertStrings.SetData(_sl: TStrings);
@@ -408,32 +401,24 @@ end;
 
 procedure TfmEConvertStrings.LoadSettings;
 var
-  GXSettings: TGExpertsSettings;
-  Settings: TExpertSettings;
+  Settings: IExpertSettings;
 begin
   // Do not localize any of the following lines.
-  Settings := nil;
-  GXSettings := TGExpertsSettings.Create;
-  try
-    Settings := GXSettings.CreateExpertSettings(TConvertStringsExpert.ConfigurationKey);
-    Settings.LoadForm('Window', Self);
+  Settings := TConvertStringsExpert.GetSettings;
+  Settings.LoadForm('Window', Self);
 
-    chk_ExtractRaw.Checked := Settings.ReadBool('ExtractRaw', True);
-    chk_TrimLeft.Checked := Settings.ReadBool('TrimLeft', True);
-    chk_TrimRight.Checked := Settings.ReadBool('TrimRight', True);
-    chk_Indent.Checked := Settings.ReadBool('KeepIndent', False);
-    chk_QuoteStrings.Checked := Settings.ReadBool('QuoteStrings', True);
-    chk_AppendSpace.Checked := Settings.ReadBool('AppendSpace', True);
-    ed_Prefix.Text := Settings.ReadString('Prefix', '');
-    chk_PrefixFirst.Checked := Settings.ReadBool('SamePrefix', True);
-    ed_PrefixFirst.Text := Settings.ReadString('FirstPrefix', '');
-    ed_Suffix.Text := Settings.ReadString('Suffix', '');
-    chk_SuffixLast.Checked := Settings.ReadBool('SameSuffix', True);
-    ed_SuffixLast.Text := Settings.ReadString('LastSuffix', '');
-  finally
-    FreeAndNil(Settings);
-    FreeAndNil(GXSettings);
-  end;
+  chk_ExtractRaw.Checked := Settings.ReadBool('ExtractRaw', True);
+  chk_TrimLeft.Checked := Settings.ReadBool('TrimLeft', True);
+  chk_TrimRight.Checked := Settings.ReadBool('TrimRight', True);
+  chk_Indent.Checked := Settings.ReadBool('KeepIndent', False);
+  chk_QuoteStrings.Checked := Settings.ReadBool('QuoteStrings', True);
+  chk_AppendSpace.Checked := Settings.ReadBool('AppendSpace', True);
+  ed_Prefix.Text := Settings.ReadString('Prefix', '');
+  chk_PrefixFirst.Checked := Settings.ReadBool('SamePrefix', True);
+  ed_PrefixFirst.Text := Settings.ReadString('FirstPrefix', '');
+  ed_Suffix.Text := Settings.ReadString('Suffix', '');
+  chk_SuffixLast.Checked := Settings.ReadBool('SameSuffix', True);
+  ed_SuffixLast.Text := Settings.ReadString('LastSuffix', '');
 end;
 
 function TfmEConvertStrings.DetermineIndent(_sl: TStrings): Integer;
@@ -659,10 +644,10 @@ procedure TfmEConvertStrings.act_FavoritesExecute(Sender: TObject);
 var
   Point: TPoint;
 begin
-  Point.x := b_Favorites.Width;
+  Point.X := b_Favorites.Width;
   Point.Y := 0;
   Point := b_Favorites.ClientToScreen(Point);
-  pm_Favorites.Popup(Point.x, Point.Y);
+  pm_Favorites.Popup(Point.X, Point.Y);
 end;
 
 procedure TfmEConvertStrings.b_CopyToClipboardClick(Sender: TObject);
@@ -739,3 +724,4 @@ end;
 initialization
   RegisterEditorExpert(TConvertStringsExpert);
 end.
+

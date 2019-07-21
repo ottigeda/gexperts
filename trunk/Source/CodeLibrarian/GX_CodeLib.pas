@@ -10,7 +10,7 @@ uses
   GX_Experts, GX_EnhancedEditor,
   Forms, Controls, StdActns, Classes, ActnList,
   Dialogs, Menus, ComCtrls, ToolWin, ExtCtrls, GpStructuredStorage,
-  GX_GenericUtils, GX_BaseForm, System.Actions;
+  GX_GenericUtils, GX_BaseForm, Actions;
 
 type
   TSearchRecord = record
@@ -224,7 +224,6 @@ type
     procedure SetupSyntaxHighlightingControl;
     function IsCodeSnippet(Node: TTreeNode): Boolean;
     function IsFolder(Node: TTreeNode): Boolean;
-    function ConfigurationKey: string;
     procedure AddNewNode(Folder: Boolean);
     function GetNodePath(Node: TTreeNode): TGXUnicodeString;
     function GetNodeParentPath(Node: TTreeNode): TGXUnicodeString;
@@ -844,7 +843,7 @@ procedure TfmCodeLib.SaveSettings;
 var
   Settings: IExpertSettings;
 begin
-  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  Settings := TCodeLibExpert.GetSettings;
   // Do not localize any of the following lines.
   Settings.WriteString('StoragePath', StoragePath);
   Settings.SaveFont('Editor', FCodeText.Font);
@@ -863,7 +862,7 @@ procedure TfmCodeLib.LoadSettings;
 var
   Settings: IExpertSettings;
 begin
-  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  Settings := TCodeLibExpert.GetSettings;
   // Do not localize any of the following lines.
   StoragePath := Settings.ReadString('StoragePath', StoragePath);
   Settings.LoadFont('Editor', FCodeText.Font);
@@ -1222,11 +1221,6 @@ function TfmCodeLib.IsCodeSnippet(Node: TTreeNode): Boolean;
 begin
   Assert(Assigned(Node));
   Result := Node.ImageIndex = ImageIndexDocument;
-end;
-
-function TfmCodeLib.ConfigurationKey: string;
-begin
-  Result := TCodeLibExpert.ConfigurationKey;
 end;
 
 procedure TfmCodeLib.AssertValidFileName(const FileName: TGXUnicodeString);

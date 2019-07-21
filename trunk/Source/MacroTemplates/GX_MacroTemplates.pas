@@ -55,13 +55,6 @@ type
     property Form: TCustomForm read FForm write FForm;
   end;
 
-  TMacroTemplatesIni = class(TGExpertsSettings)
-  protected
-    FBaseKey: string;
-  public
-    constructor Create;
-  end;
-
   TfmMacroTemplates = class(TfmBaseForm)
     PageControl: TPageControl;
     pmMacros: TPopupMenu;
@@ -300,7 +293,6 @@ function GetProgrammerInfo(var VInfo: TProgrammerInfo): Boolean;
 function GetInitials(const AFullName: string): string;
 function GenProgrammerSeq: Integer;
 function GenSeqNewValue(const ASeqName: string): Integer;
-function MacroTemplatesBaseKey: string;
 
 implementation
 
@@ -309,7 +301,7 @@ implementation
 uses
   SysUtils, Windows, Graphics, Clipbrd, GX_SharedImages,
   GX_GxUtils, GX_MacroParser, GX_MacroTemplateEdit, GX_OtaUtils, GX_IdeUtils,
-  Math;
+  Math, GX_MacroTemplatesExpert;
 
 var
   ProgInfoProc: TGetProgrammerInfo;
@@ -369,13 +361,12 @@ end;
 
 // Gets a programmer's sequence number
 function ReadSeqValue(const ASeqName: string): Integer;
+var
+  Settings: IExpertSettings;
 begin
-  with TMacroTemplatesIni.Create do
-  try
-    Result := ReadInteger(SequenceConfigurationKey, ASeqName, 0);
-  finally
-    Free;
-  end;
+  Settings := TMacroTemplatesExpert.GetSettings;
+  Result := Settings.Subkey(SequenceConfigurationKey)
+    .ReadInteger(ASeqName, 0);
 end;
 
 function ReadProgrammerSeqValue: Integer;
@@ -396,31 +387,24 @@ end;
 
 // Generate new sequence number
 function GenSeqNewValue(const ASeqName: string): Integer;
+var
+  Settings: IExpertSettings;
+  SubSettings: IExpertSettings;
 begin
-  with TMacroTemplatesIni.Create do
-  try
-    Result := ReadInteger(SequenceConfigurationKey, ASeqName, 0);
-    Inc(Result);
-    WriteInteger(SequenceConfigurationKey, ASeqName, Result);
-  finally
-    Free;
-  end;
+  Settings := TMacroTemplatesExpert.GetSettings;
+  SubSettings := Settings.Subkey(SequenceConfigurationKey);
+  Result := SubSettings.ReadInteger(ASeqName, 0);
+  Inc(Result);
+  SubSettings.WriteInteger(ASeqName, Result);
 end;
 
 procedure SetSeqValue(const ASeqName: string; ANewValue: Integer);
+var
+  Settings: IExpertSettings;
 begin
-  with TMacroTemplatesIni.Create do
-  try
-    WriteInteger(SequenceConfigurationKey, ASeqName, ANewValue);
-  finally
-    Free;
-  end;
-end;
-
-function MacroTemplatesBaseKey: string;
-begin
-  Result := ConfigInfo.GExpertsIdeRootRegistryKey +
-    PathDelim + 'EditorExperts' + PathDelim + 'MacroTemplates';
+  Settings := TMacroTemplatesExpert.GetSettings;
+  Settings.Subkey(SequenceConfigurationKey)
+    .WriteInteger(ASeqName, ANewValue);
 end;
 
 { TTemplateSettings }
@@ -686,43 +670,42 @@ begin
 end;
 
 procedure TfmMacroTemplates.LoadFormLayout;
+var
+  Settings: IExpertSettings;
 begin
   // do not localize
-  with TGExpertsSettings.Create(MacroTemplatesBaseKey) do
-  try
-    LoadForm(Self, WindowPosKey);
-    pnlList.Height := ReadInteger(WindowPosKey, 'ListSplitter', pnlList.Height);
-    pnlUses.Width := ReadInteger(WindowPosKey, 'UsesSplitter', pnlUses.Width);
-    pnlUsesImplementation.Height := ReadInteger(WindowPosKey, 'UsesSecSplitter', pnlUsesImplementation.Height);
-    lvTemplates.Columns[0].Width := ReadInteger(WindowPosKey, 'NameWidth', lvTemplates.Columns[0].Width);
-    lvTemplates.Columns[1].Width := ReadInteger(WindowPosKey, 'DescriptionWidth', lvTemplates.Columns[1].Width);
-    lvTemplates.Columns[2].Width := ReadInteger(WindowPosKey, 'ShortCutWidth', lvTemplates.Columns[2].Width);
-    CurrentSyntaxMode := TGXSyntaxHighlighter(ReadEnumerated(WindowPosKey, 'SyntaxHighlighter',
-      TypeInfo(TGXSyntaxHighlighter), Ord(FCurrentSyntaxMode)));
-  finally
-    Free;
-  end;
+  Settings := TMacroTemplatesExpert.GetSettings;
+  Settings.LoadForm(WindowPosKey, Self);
+  Settings := Settings.Subkey(WindowPosKey);
+  pnlList.Height := Settings.ReadInteger('ListSplitter', pnlList.Height);
+  pnlUses.Width := Settings.ReadInteger('UsesSplitter', pnlUses.Width);
+  pnlUsesImplementation.Height := Settings.ReadInteger('UsesSecSplitter', pnlUsesImplementation.Height);
+  lvTemplates.Columns[0].Width := Settings.ReadInteger('NameWidth', lvTemplates.Columns[0].Width);
+  lvTemplates.Columns[1].Width := Settings.ReadInteger('DescriptionWidth', lvTemplates.Columns[1].Width);
+  lvTemplates.Columns[2].Width := Settings.ReadInteger('ShortCutWidth', lvTemplates.Columns[2].Width);
+  CurrentSyntaxMode := TGXSyntaxHighlighter(Settings.ReadEnumerated('SyntaxHighlighter',
+    TypeInfo(TGXSyntaxHighlighter), Ord(FCurrentSyntaxMode)));
+
   EnsureFormVisible(Self);
 end;
 
 procedure TfmMacroTemplates.SaveFormLayout;
+var
+  Settings: IExpertSettings;
 begin
-  // do not localize
-  with TGExpertsSettings.Create(MacroTemplatesBaseKey) do
-  try
-    if WindowState = wsNormal then begin
-      // Save only if not maximized/minimized
-      SaveForm(Self, WindowPosKey);
-      WriteInteger(WindowPosKey, 'ListSplitter', pnlList.Height);
-      WriteInteger(WindowPosKey, 'UsesSplitter', pnlUses.Width);
-      WriteInteger(WindowPosKey, 'UsesSecSplitter', pnlUsesImplementation.Height);
-      WriteInteger(WindowPosKey, 'NameWidth', lvTemplates.Columns[0].Width);
-      WriteInteger(WindowPosKey, 'DescriptionWidth', lvTemplates.Columns[1].Width);
-      WriteInteger(WindowPosKey, 'ShortCutWidth', lvTemplates.Columns[2].Width);
-      WriteInteger(WindowPosKey, 'SyntaxHighlighter', Ord(FCurrentSyntaxMode));
-    end;
-  finally
-    Free;
+  if WindowState = wsNormal then begin
+    // Save only if not maximized/minimized
+    Settings := TMacroTemplatesExpert.GetSettings;
+    // do not localize
+    Settings.SaveForm(WindowPosKey, Self);
+    Settings := Settings.Subkey(WindowPosKey);
+    Settings.WriteInteger('ListSplitter', pnlList.Height);
+    Settings.WriteInteger('UsesSplitter', pnlUses.Width);
+    Settings.WriteInteger('UsesSecSplitter', pnlUsesImplementation.Height);
+    Settings.WriteInteger('NameWidth', lvTemplates.Columns[0].Width);
+    Settings.WriteInteger('DescriptionWidth', lvTemplates.Columns[1].Width);
+    Settings.WriteInteger('ShortCutWidth', lvTemplates.Columns[2].Width);
+    Settings.WriteInteger('SyntaxHighlighter', Ord(FCurrentSyntaxMode));
   end;
 end;
 
@@ -1174,14 +1157,6 @@ procedure TfmMacroTemplates.MarkTextModified;
 begin
   FTextModified := True;
   FModified := True;
-end;
-
-{ TMacroTemplatesIni }
-
-constructor TMacroTemplatesIni.Create;
-begin
-  FBaseKey := MacroTemplatesBaseKey;
-  inherited Create(FBaseKey);
 end;
 
 { TProgrammerMacroLibrary }

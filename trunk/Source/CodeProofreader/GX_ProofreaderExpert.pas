@@ -14,7 +14,7 @@ type
     procedure CopyDefaultsFromResource(const _FileName: string);
   protected
     procedure SetActive(New: Boolean); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -67,7 +67,7 @@ begin
   try
     if FProofreaderData = nil then
     begin
-      FProofreaderData := TProofreaderData.Create(ConfigurationKey);
+      FProofreaderData := TProofreaderData.Create;
       CreatedDataToConfigure := True;
     end;
 
@@ -139,12 +139,12 @@ begin
   Result := 'CodeProofreader';
 end;
 
-procedure TCodeProofreaderExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TCodeProofreaderExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalSaveSettings(Settings);
+  inherited InternalSaveSettings(_Settings);
 
   if Assigned(FProofreaderData) then
-    FProofreaderData.SaveSettings(Settings);
+    FProofreaderData.SaveSettings(_Settings);
 end;
 
 procedure TCodeProofreaderExpert.SetActive(New: Boolean);
@@ -154,7 +154,7 @@ begin
   if Active then
   begin
     if not Assigned(FProofreaderData) then
-      FProofreaderData := TProofreaderData.Create(ConfigurationKey);
+      FProofreaderData := TProofreaderData.Create;
 
     FProofreaderData.ReloadData;
   end

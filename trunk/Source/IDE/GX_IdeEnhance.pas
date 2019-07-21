@@ -289,115 +289,98 @@ end;
 
 procedure TIdeEnhancements.LoadSettings;
 var
-  Settings: TGExpertsSettings;
-  ExpSettings: TExpertSettings;
+  ExpSettings: IExpertSettings;
 begin
   Assert(ConfigInfo <> nil, 'No ConfigInfo found');
 
   // do not localize any of the below items
-  ExpSettings := nil;
-  Settings := TGExpertsSettings.Create;
-  try
-    ExpSettings := Settings.CreateExpertSettings(ConfigurationKey);
-    EnhanceIDEForms := ExpSettings.ReadBool('EnhanceIDEForms', False);
-    IdeFormsAllowResize := ExpSettings.ReadBool('IdeFormsAllowResize', False);
-    IdeFormsRememberPosition := ExpSettings.ReadBool('IdeFormsRememberPosition', False);
-    EnhanceSearchPath := ExpSettings.ReadBool('EnhanceSearchPath', False);
-    EnhanceToolProperties := ExpSettings.ReadBool('EnhanceToolProperties', False);
-    EnhanceInstallPackages := ExpSettings.ReadBool('EnhanceInstallPackages', False);
-    EnhanceGotoDialog := ExpSettings.ReadBool('EnhanceGotoDialog', False);
-    EnhanceDockForms := ExpSettings.ReadBool('EnhanceDockForms', False);
-    AutoCloseMessageWindow := ExpSettings.ReadBool('AutoCloseMessageWindow', False);
-    EnhanceBuildEventsDialog := ExpSettings.ReadBool('EnhanceBuildEventsDialog', False);
-    EnhanceApplicationSettingsDialog := ExpSettings.ReadBool('EnhanceApplicationSettingsDialog', False);
+  ExpSettings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  EnhanceIDEForms := ExpSettings.ReadBool('EnhanceIDEForms', False);
+  IdeFormsAllowResize := ExpSettings.ReadBool('IdeFormsAllowResize', False);
+  IdeFormsRememberPosition := ExpSettings.ReadBool('IdeFormsRememberPosition', False);
+  EnhanceSearchPath := ExpSettings.ReadBool('EnhanceSearchPath', False);
+  EnhanceToolProperties := ExpSettings.ReadBool('EnhanceToolProperties', False);
+  EnhanceInstallPackages := ExpSettings.ReadBool('EnhanceInstallPackages', False);
+  EnhanceGotoDialog := ExpSettings.ReadBool('EnhanceGotoDialog', False);
+  EnhanceDockForms := ExpSettings.ReadBool('EnhanceDockForms', False);
+  AutoCloseMessageWindow := ExpSettings.ReadBool('AutoCloseMessageWindow', False);
+  EnhanceBuildEventsDialog := ExpSettings.ReadBool('EnhanceBuildEventsDialog', False);
+  EnhanceApplicationSettingsDialog := ExpSettings.ReadBool('EnhanceApplicationSettingsDialog', False);
 
-    // File saving
-    AutoSave := ExpSettings.ReadBool('AutoSave', False);
-    AutoSaveInterval := ExpSettings.ReadInteger('AutoSaveInterval', 5);
+  // File saving
+  AutoSave := ExpSettings.ReadBool('AutoSave', False);
+  AutoSaveInterval := ExpSettings.ReadInteger('AutoSaveInterval', 5);
 
-    // Object Inspector
-    ExpSettings.LoadFont('OIFont', OIFont);
-    OIFontEnabled := ExpSettings.ReadBool('EnableOIFont', False);
-    OICustomFontNames := ExpSettings.ReadBool('OICustomFontNames', False);
-    OIHideDescPane := ExpSettings.ReadBool('ObjectInspectorHideDescPane', False);
-    OIHideHotCmds := ExpSettings.ReadBool('ObjectInspectorHideHotCmds', False);
+  // Object Inspector
+  ExpSettings.LoadFont('OIFont', OIFont);
+  OIFontEnabled := ExpSettings.ReadBool('EnableOIFont', False);
+  OICustomFontNames := ExpSettings.ReadBool('OICustomFontNames', False);
+  OIHideDescPane := ExpSettings.ReadBool('ObjectInspectorHideDescPane', False);
+  OIHideHotCmds := ExpSettings.ReadBool('ObjectInspectorHideHotCmds', False);
 
-    // Component palette
-    CPFontEnabled := ExpSettings.ReadBool('EnableCPFont', False);
-    ExpSettings.LoadFont('CPFont', CPFont);
-    CPMultiLine := ExpSettings.ReadBool('CPMultiLine', False);
-    CPScrollOpposite := ExpSettings.ReadBool('CPScrollOpposite', False);
-    CPRaggedRight := ExpSettings.ReadBool('CPRaggedRight', False);
-    CPFlatButtons := ExpSettings.ReadBool('CPFlatButtons', False);
-    CPAsButtons := ExpSettings.ReadBool('CPAsButtons', False);
-    CPTabsInPopup := ExpSettings.ReadBool('CPTabsInPopup', False);
-    CPTabsInPopupAlphaSort := ExpSettings.ReadBool('CPTabsInPopupAlphaSort', False);
-    CPHotTracking := ExpSettings.ReadBool('CPHotTracking', False);
+  // Component palette
+  CPFontEnabled := ExpSettings.ReadBool('EnableCPFont', False);
+  ExpSettings.LoadFont('CPFont', CPFont);
+  CPMultiLine := ExpSettings.ReadBool('CPMultiLine', False);
+  CPScrollOpposite := ExpSettings.ReadBool('CPScrollOpposite', False);
+  CPRaggedRight := ExpSettings.ReadBool('CPRaggedRight', False);
+  CPFlatButtons := ExpSettings.ReadBool('CPFlatButtons', False);
+  CPAsButtons := ExpSettings.ReadBool('CPAsButtons', False);
+  CPTabsInPopup := ExpSettings.ReadBool('CPTabsInPopup', False);
+  CPTabsInPopupAlphaSort := ExpSettings.ReadBool('CPTabsInPopupAlphaSort', False);
+  CPHotTracking := ExpSettings.ReadBool('CPHotTracking', False);
 
-    // MultiLine tab dock host
-    MultiLineTabDockHost := ExpSettings.ReadBool('MultiLineTabDockHost', False);
-    DefaultMultiLineTabDockHost := ExpSettings.ReadBool('DefaultMultiLineTabDockHost', True);
-  finally
-    FreeAndNil(ExpSettings);
-    FreeAndNil(Settings);
-  end;
+  // MultiLine tab dock host
+  MultiLineTabDockHost := ExpSettings.ReadBool('MultiLineTabDockHost', False);
+  DefaultMultiLineTabDockHost := ExpSettings.ReadBool('DefaultMultiLineTabDockHost', True);
 end;
 
 procedure TIdeEnhancements.SaveSettings;
 var
-  Settings: TGExpertsSettings;
-  ExpSettings: TExpertSettings;
+  ExpSettings: IExpertSettings;
 begin
   Assert(ConfigInfo <> nil, 'No ConfigInfo found');
 
-  // do not localize any of the below items
-  ExpSettings := nil;
-  Settings := TGExpertsSettings.Create;
-  try
-    ExpSettings := Settings.CreateExpertSettings(ConfigurationKey);
-    ExpSettings.WriteBool('EnhanceIDEForms', EnhanceIDEForms);
-    ExpSettings.WriteBool('IdeFormsAllowResize', IdeFormsAllowResize);
-    ExpSettings.WriteBool('IdeFormsRememberPosition', IdeFormsRememberPosition);
-    ExpSettings.WriteBool('EnhanceSearchPath', EnhanceSearchPath);
-    ExpSettings.WriteBool('EnhanceToolProperties', EnhanceToolProperties);
-    ExpSettings.WriteBool('EnhanceInstallPackages', EnhanceInstallPackages);
-    ExpSettings.WriteBool('EnhanceGotoDialog', EnhanceGotoDialog);
-    ExpSettings.WriteBool('EnhanceDockForms', EnhanceDockForms);
-    ExpSettings.WriteBool('AutoCloseMessageWindow', AutoCloseMessageWindow);
-    ExpSettings.WriteBool('EnhanceBuildEventsDialog', EnhanceBuildEventsDialog);
-    ExpSettings.WriteBool('EnhanceApplicationSettingsDialog', EnhanceApplicationSettingsDialog);
+  ExpSettings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  ExpSettings.WriteBool('EnhanceIDEForms', EnhanceIDEForms);
+  ExpSettings.WriteBool('IdeFormsAllowResize', IdeFormsAllowResize);
+  ExpSettings.WriteBool('IdeFormsRememberPosition', IdeFormsRememberPosition);
+  ExpSettings.WriteBool('EnhanceSearchPath', EnhanceSearchPath);
+  ExpSettings.WriteBool('EnhanceToolProperties', EnhanceToolProperties);
+  ExpSettings.WriteBool('EnhanceInstallPackages', EnhanceInstallPackages);
+  ExpSettings.WriteBool('EnhanceGotoDialog', EnhanceGotoDialog);
+  ExpSettings.WriteBool('EnhanceDockForms', EnhanceDockForms);
+  ExpSettings.WriteBool('AutoCloseMessageWindow', AutoCloseMessageWindow);
+  ExpSettings.WriteBool('EnhanceBuildEventsDialog', EnhanceBuildEventsDialog);
+  ExpSettings.WriteBool('EnhanceApplicationSettingsDialog', EnhanceApplicationSettingsDialog);
 
-    // File saving
-    ExpSettings.WriteBool('AutoSave', AutoSave);
-    ExpSettings.WriteInteger('AutoSaveInterval', AutoSaveInterval);
-    // Fonts
-    ExpSettings.WriteBool('EnableOIFont', OIFontEnabled);
-    ExpSettings.WriteBool('OICustomFontNames', OICustomFontNames);
+  // File saving
+  ExpSettings.WriteBool('AutoSave', AutoSave);
+  ExpSettings.WriteInteger('AutoSaveInterval', AutoSaveInterval);
+  // Fonts
+  ExpSettings.WriteBool('EnableOIFont', OIFontEnabled);
+  ExpSettings.WriteBool('OICustomFontNames', OICustomFontNames);
 
-    ExpSettings.SaveFont('OIFont', OIFont);
+  ExpSettings.SaveFont('OIFont', OIFont);
 
-    ExpSettings.WriteBool('ObjectInspectorHideHotCmds', OIHideHotCmds);
-    ExpSettings.WriteBool('ObjectInspectorHideDescPane', OIHideDescPane);
+  ExpSettings.WriteBool('ObjectInspectorHideHotCmds', OIHideHotCmds);
+  ExpSettings.WriteBool('ObjectInspectorHideDescPane', OIHideDescPane);
 
-    // Component palette
-    ExpSettings.SaveFont('CPFont', CPFont);
-    ExpSettings.WriteBool('EnableCPFont', CPFontEnabled);
-    ExpSettings.WriteBool('CPTabsInPopupAlphaSort', CPTabsInPopupAlphaSort);
-    ExpSettings.WriteBool('CPTabsInPopup', CPTabsInPopup);
-    ExpSettings.WriteBool('CPMultiLine', CPMultiLine);
-    ExpSettings.WriteBool('CPScrollOpposite', CPScrollOpposite);
-    ExpSettings.WriteBool('CPRaggedRight', CPRaggedRight);
-    ExpSettings.WriteBool('CPHotTracking', CPHotTracking);
-    ExpSettings.WriteBool('CPAsButtons', CPAsButtons);
-    ExpSettings.WriteBool('CPFlatButtons', CPFlatButtons);
+  // Component palette
+  ExpSettings.SaveFont('CPFont', CPFont);
+  ExpSettings.WriteBool('EnableCPFont', CPFontEnabled);
+  ExpSettings.WriteBool('CPTabsInPopupAlphaSort', CPTabsInPopupAlphaSort);
+  ExpSettings.WriteBool('CPTabsInPopup', CPTabsInPopup);
+  ExpSettings.WriteBool('CPMultiLine', CPMultiLine);
+  ExpSettings.WriteBool('CPScrollOpposite', CPScrollOpposite);
+  ExpSettings.WriteBool('CPRaggedRight', CPRaggedRight);
+  ExpSettings.WriteBool('CPHotTracking', CPHotTracking);
+  ExpSettings.WriteBool('CPAsButtons', CPAsButtons);
+  ExpSettings.WriteBool('CPFlatButtons', CPFlatButtons);
 
-    // MultiLine tab dock host
-    ExpSettings.WriteBool('MultiLineTabDockHost', MultiLineTabDockHost);
-    ExpSettings.WriteBool('DefaultMultiLineTabDockHost', DefaultMultiLineTabDockHost);
-  finally
-    FreeAndNil(ExpSettings);
-    FreeAndNil(Settings);
-  end;
+  // MultiLine tab dock host
+  ExpSettings.WriteBool('MultiLineTabDockHost', MultiLineTabDockHost);
+  ExpSettings.WriteBool('DefaultMultiLineTabDockHost', DefaultMultiLineTabDockHost);
 end;
 
 procedure TIdeEnhancements.AddTabsToPopup(Sender: TObject);

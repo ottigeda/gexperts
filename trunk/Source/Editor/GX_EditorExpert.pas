@@ -26,7 +26,7 @@ type
     procedure DoExecute(Sender: TObject);
     function GetActionName: string;
     // you usually don't need to override this
-    function GetOptionsBaseRegistryKey: string; override;
+    class function GetOptionsBaseRegistryKey: string; override;
   end;
 
   TEditorExpertClass = class of TEditorExpert;
@@ -109,7 +109,7 @@ begin
   inherited Destroy;
 end;
 
-function TEditorExpert.GetOptionsBaseRegistryKey: string;
+class function TEditorExpert.GetOptionsBaseRegistryKey: string;
 begin
   Result := AddSlash(ConfigInfo.GExpertsIdeRootRegistryKey) + 'EditorExperts'; // Do not localize.
 end;

@@ -10,7 +10,7 @@ interface
 uses
   DropTarget, DropSource,
   Windows, Classes, ImgList, Controls, Forms, Dialogs,
-  Menus, ComCtrls, ActnList, ToolWin, GX_Experts, GX_BaseForm;
+  Menus, ComCtrls, ActnList, ToolWin, GX_Experts, GX_BaseForm, ImageList, Actions;
 
 type
   TExpertManagerExpert = class;
@@ -82,7 +82,6 @@ type
     function ConfirmIfGExperts(const FileName: string): Boolean;
     procedure LoadSettings;
     procedure SaveSettings;
-    function ConfigurationKey: string;
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateWithManager(AOwner: TComponent; Manager: TExpertManagerExpert);
@@ -143,9 +142,6 @@ type
   protected
     function GetMessage: string; override;
   end;
-
-const
-  FormSaveKey = '\Window';
 
 function GetListItemState(ListItem: TListItem): TGxExpertState;
 begin
@@ -317,11 +313,6 @@ begin
   end;
 end;
 
-function TfmExpertManager.ConfigurationKey: string;
-begin
-  Result := 'ExpertManager';
-end;
-
 function TfmExpertManager.ConfirmIfGExperts(const FileName: string): Boolean;
 begin
   Result := True;
@@ -389,36 +380,24 @@ end;
 
 procedure TfmExpertManager.LoadSettings;
 var
-  Settings: TGExpertsSettings;
-  SaveKey: string;
+  Settings: IExpertSettings;
 begin
+  Settings := TExpertManagerExpert.GetSettings;
   // Do not localize.
-  Settings := TGExpertsSettings.Create;
-  try
-    SaveKey := ConfigurationKey + FormSaveKey;
-    Settings.LoadForm(Self, SaveKey);
-    //lvExperts.Columns[0].Width := Settings.ReadInteger(SaveKey, 'Col1Width', lvExperts.Columns[0].Width);
-    //lvExperts.Columns[1].Width := Settings.ReadInteger(SaveKey, 'Col2Width', lvExperts.Columns[1].Width);
-  finally
-    FreeAndNil(Settings);
-  end;
+  Settings.LoadForm('Window', Self);
+  //lvExperts.Columns[0].Width := Settings.ReadInteger(SaveKey, 'Col1Width', lvExperts.Columns[0].Width);
+  //lvExperts.Columns[1].Width := Settings.ReadInteger(SaveKey, 'Col2Width', lvExperts.Columns[1].Width);
 end;
 
 procedure TfmExpertManager.SaveSettings;
 var
-  Settings: TGExpertsSettings;
-  SaveKey: string;
+  Settings: IExpertSettings;
 begin
+  Settings := TExpertManagerExpert.GetSettings;
   // Do not localize.
-  Settings := TGExpertsSettings.Create;
-  try
-    SaveKey := ConfigurationKey + FormSaveKey;
-    Settings.SaveForm(Self, SaveKey);
-    //Settings.WriteInteger(SaveKey, 'Col1Width', lvExperts.Columns[0].Width);
-    //Settings.WriteInteger(SaveKey, 'Col2Width', lvExperts.Columns[1].Width);
-  finally
-    FreeAndNil(Settings);
-  end;
+  Settings.SaveForm('Window', Self);
+  //Settings.WriteInteger(SaveKey, 'Col1Width', lvExperts.Columns[0].Width);
+  //Settings.WriteInteger(SaveKey, 'Col2Width', lvExperts.Columns[1].Width);
 end;
 
 procedure TfmExpertManager.FormResize(Sender: TObject);

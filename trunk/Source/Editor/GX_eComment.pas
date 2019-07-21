@@ -44,8 +44,8 @@ type
 
   TCommentExpert = class(TSelectionEditorExpert)
   protected
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     function ProcessSelected(Lines: TStrings): Boolean; override;
   public
     class function GetName: string; override;
@@ -176,57 +176,57 @@ begin
   Result := 'Comment';
 end;
 
-procedure TCommentExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TCommentExpert.InternalLoadSettings(_Settings: IExpertSettings);
 var
   I, ACount: Integer;
   AIndexText: String;
   AStyle: TExtensionStyle;
 begin
-  inherited InternalLoadSettings(Settings);
+  inherited InternalLoadSettings(_Settings);
   // Do not localize any of the below items.
   Styles.Clear;
-  ACount := Settings.ReadInteger(cIniStyleCount, 1);  //1= default style is always created
+  ACount := _Settings.ReadInteger(cIniStyleCount, 1);  //1= default style is always created
   for I := 0 to ACount-1 do
   begin
     AStyle := TExtensionStyle.Create;
     AStyle.IsDefault := I = 0;
     AIndexText := IfThen(not AStyle.IsDefault, IntToStr(I));
 
-    AStyle.Extensions := Settings.ReadString(cIniExtensions + AIndexText, cNameDefaultStyle);
+    AStyle.Extensions := _Settings.ReadString(cIniExtensions + AIndexText, cNameDefaultStyle);
     AStyle.CommentType :=
-      TCommentType(Settings.ReadEnumerated(cIniCommentType + AIndexText, TypeInfo(TCommentType), Ord(ctSlash)));
-    AStyle.InsertRemoveSpace := Settings.ReadBool(cIniInsertRemoveSpace + AIndexText, False);
+      TCommentType(_Settings.ReadEnumerated(cIniCommentType + AIndexText, TypeInfo(TCommentType), Ord(ctSlash)));
+    AStyle.InsertRemoveSpace := _Settings.ReadBool(cIniInsertRemoveSpace + AIndexText, False);
 
     Styles.AddObject(AStyle.Extensions, AStyle);
   end;
 end;
 
-procedure TCommentExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TCommentExpert.InternalSaveSettings(_Settings: IExpertSettings);
 var
   I, ACount: Integer;
   AIndexText: String;
   AStyle: TExtensionStyle;
 begin
-  inherited InternalSaveSettings(Settings);
+  inherited InternalSaveSettings(_Settings);
   // Do not localize any of the below items.
-  ACount := Settings.ReadInteger(cIniStyleCount, 0);
-  Settings.WriteInteger(cIniStyleCount, Styles.Count);
+  ACount := _Settings.ReadInteger(cIniStyleCount, 0);
+  _Settings.WriteInteger(cIniStyleCount, Styles.Count);
   for I := 0 to Styles.Count-1 do
   begin
     AStyle := TExtensionStyle(Styles.Objects[I]);
     AIndexText := IfThen(not AStyle.IsDefault, IntToStr(I));
 
     if not AStyle.IsDefault then
-      Settings.WriteString(cIniExtensions + AIndexText, AStyle.Extensions);
-    Settings.WriteEnumerated(cIniCommentType + AIndexText, TypeInfo(TCommentType), Ord(AStyle.CommentType));
-    Settings.WriteBool(cIniInsertRemoveSpace + AIndexText, AStyle.InsertRemoveSpace);
+      _Settings.WriteString(cIniExtensions + AIndexText, AStyle.Extensions);
+    _Settings.WriteEnumerated(cIniCommentType + AIndexText, TypeInfo(TCommentType), Ord(AStyle.CommentType));
+    _Settings.WriteBool(cIniInsertRemoveSpace + AIndexText, AStyle.InsertRemoveSpace);
   end;
   for I := Styles.Count to ACount-1 do
   begin
     AIndexText := IntToStr(I);
-    Settings.DeleteKey(cIniExtensions + AIndexText);
-    Settings.DeleteKey(cIniCommentType + AIndexText);
-    Settings.DeleteKey(cIniInsertRemoveSpace + AIndexText);
+    _Settings.DeleteKey(cIniExtensions + AIndexText);
+    _Settings.DeleteKey(cIniCommentType + AIndexText);
+    _Settings.DeleteKey(cIniInsertRemoveSpace + AIndexText);
   end;
 end;
 

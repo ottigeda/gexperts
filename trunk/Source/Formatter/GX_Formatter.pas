@@ -19,8 +19,8 @@ type
   private
     FExpert: TCodeFormatterExpert;
   protected
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -95,16 +95,16 @@ begin
   Result := True;
 end;
 
-procedure TGxCodeFormatterExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TGxCodeFormatterExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
-  FExpert.InternalLoadSettings(Settings);
+  FExpert.InternalLoadSettings(_Settings);
 end;
 
-procedure TGxCodeFormatterExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TGxCodeFormatterExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited;
-  FExpert.InternalSaveSettings(Settings);
+  FExpert.InternalSaveSettings(_Settings);
 end;
 
 function FormatFile(_FileName: PChar): Boolean;

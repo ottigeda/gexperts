@@ -109,7 +109,6 @@ type
     procedure KillHint;
     procedure DoHint(Sender: TObject);
     procedure DoDeactivate(Sender: TObject);
-    function ConfigurationKey: string;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -161,7 +160,7 @@ var
   Settings: IExpertSettings;
 begin
   KillHint;
-  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  Settings := TASCIIExpert.GetSettings;
     // Do not localize any of the following lines.
   Settings.WriteInteger('Font Size', FDisplayFontSize);
   Settings.WriteString('Font Name', FFontName);
@@ -719,8 +718,8 @@ begin
   updFontSize.Max := MaximumDisplayFontSize;
   updFontSize.Min := MinimumDisplayFontSize;
 
-  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
-    // Do not localize any of the following items.
+  Settings := TASCIIExpert.GetSettings;
+  // Do not localize any of the following items.
   FDisplayFontSize := Settings.ReadInteger('Font Size', DefaultDisplayFontSize);
   FFontName := Settings.ReadString('Font Name', DefaultFontName);
   FStartCharacter := Settings.ReadInteger('Font Base', 0);
@@ -750,11 +749,6 @@ end;
 procedure TfmAsciiChart.ToolBarResize(Sender: TObject);
 begin
   eChars.Width := (Sender as TControl).ClientWidth - eChars.Left - btnClear.Width;
-end;
-
-function TfmAsciiChart.ConfigurationKey: string;
-begin
-  Result := TASCIIExpert.ConfigurationKey;
 end;
 
 initialization

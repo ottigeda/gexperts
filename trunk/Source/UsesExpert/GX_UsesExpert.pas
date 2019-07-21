@@ -46,8 +46,8 @@ type
     procedure InternalExecute;
     function FindAction(out _Action: TBasicAction): Boolean;
   protected
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
     function GetBitmapFileName: string; override;
   public
     class function GetName: string; override;
@@ -470,24 +470,24 @@ begin
   end;
 end;
 
-procedure TUsesExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TUsesExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
-  FReplaceFileUseUnit := Settings.ReadBool('ReplaceFileUseUnit', False);
-  FReadMap := Settings.ReadBool('ReadMap', True);
-  FAvailTabIndex := Settings.ReadInteger('AvailTabIndex', 0);
-  FParseAll := Settings.ReadBool('ParseAll', True);
-  FDisableCache := Settings.ReadBool('DisableCache', False);
+  FReplaceFileUseUnit := _Settings.ReadBool('ReplaceFileUseUnit', False);
+  FReadMap := _Settings.ReadBool('ReadMap', True);
+  FAvailTabIndex := _Settings.ReadInteger('AvailTabIndex', 0);
+  FParseAll := _Settings.ReadBool('ParseAll', True);
+  FDisableCache := _Settings.ReadBool('DisableCache', False);
 end;
 
-procedure TUsesExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TUsesExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited;
-  Settings.WriteBool('ReplaceFileUseUnit', FReplaceFileUseUnit);
-  Settings.WriteBool('ReadMap', FReadMap);
-  Settings.WriteInteger('AvailTabIndex', FAvailTabIndex);
-  Settings.WriteBool('ParseAll', FParseAll);
-  Settings.WriteBool('DisableCache', FDisableCache);
+  _Settings.WriteBool('ReplaceFileUseUnit', FReplaceFileUseUnit);
+  _Settings.WriteBool('ReadMap', FReadMap);
+  _Settings.WriteInteger('AvailTabIndex', FAvailTabIndex);
+  _Settings.WriteBool('ParseAll', FParseAll);
+  _Settings.WriteBool('DisableCache', FDisableCache);
 end;
 
 { TfmUsesManager }

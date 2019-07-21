@@ -43,10 +43,8 @@ type
     function GetDisplayName: string; override;
     // optional, but recommended
     function GetHelpString: string; override;
-    // Overrride to load any configuration settings
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    // Overrride to save any configuration settings
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   end;
 
 type
@@ -250,23 +248,23 @@ begin
   Result := SRemoveLinesEditorExpertHelp;
 end;
 
-procedure TGxRemoveMatchingLinesEditorExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TGxRemoveMatchingLinesEditorExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalLoadSettings(Settings);
+  inherited InternalLoadSettings(_Settings);
 
   FMatches.Clear;
-  Settings.ReadStrings('Matches', FMatches);
-  FRegEx := Settings.ReadBool('RegEx', False);
+  _Settings.ReadStrings('Matches', FMatches);
+  FRegEx := _Settings.ReadBool('RegEx', False);
   if FMatches.Count = 0 then
     TfmRemoveMatchingLinesExpertConfig.SetDefault(FMatches, FRegEx);
 end;
 
-procedure TGxRemoveMatchingLinesEditorExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TGxRemoveMatchingLinesEditorExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalSaveSettings(Settings);
+  inherited InternalSaveSettings(_Settings);
 
-  Settings.WriteStrings('Matches', FMatches);
-  Settings.WriteBool('RegEx', FRegEx);
+  _Settings.WriteStrings('Matches', FMatches);
+  _Settings.WriteBool('RegEx', FRegEx);
 end;
 
 class procedure TfmRemoveMatchingLinesExpertConfig.SetDefault(_Matches: TStrings; _RegEx: Boolean);

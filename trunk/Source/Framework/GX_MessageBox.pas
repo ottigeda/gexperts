@@ -181,25 +181,21 @@ begin
 end;
 
 procedure TGxMsgBoxAdaptor.DoPermanentlySuppress;
+var
+  Settings: IExpertSettings;
 begin
   if not AllowSuppress then
     Exit;
-  with TGExpertsSettings.Create do
-  try
-    WriteBool(ConfigurationKey, Self.ClassName, True); // Do not localize
-  finally
-    Free;
-  end;
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  Settings.WriteBool(Self.ClassName, True); // Do not localize
 end;
 
 function TGxMsgBoxAdaptor.IsPermanentlySuppressed: Boolean;
+var
+  Settings: IExpertSettings;
 begin
-  with TGExpertsSettings.Create do
-  try
-    Result := ReadBool(ConfigurationKey, Self.ClassName, False); // Do not localize
-  finally
-    Free;
-  end;
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  Result := Settings.ReadBool(Self.ClassName, False); // Do not localize
 end;
 
 function TGxMsgBoxAdaptor.ShouldShow: Boolean;

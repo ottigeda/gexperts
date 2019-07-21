@@ -21,8 +21,8 @@ type
     FExpert: TCodeFormatterExpert;
   protected
     function GetBitmapFileName: string; override;
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   public
     class function GetName: string; override;
     constructor Create; override;
@@ -52,20 +52,12 @@ uses
 
 procedure TeCodeFormatterExpert.AddToCapitalization(const _Identifier: TGXUnicodeString);
 var
-  GExpertsSettings: TGExpertsSettings;
-  ExpSettings: TExpertSettings;
+  Settings: IExpertSettings;
 begin
   FExpert.AddToCapitalization(_Identifier);
 
-  ExpSettings := nil;
-  GExpertsSettings := TGExpertsSettings.Create;
-  try
-    ExpSettings := GExpertsSettings.CreateExpertSettings(ConfigurationKey);
-    InternalSaveSettings(ExpSettings);
-  finally
-    FreeAndNil(ExpSettings);
-    FreeAndNil(GExpertsSettings);
-  end;
+  Settings :=  GetSettings;
+  InternalSaveSettings(Settings);
 end;
 
 procedure TeCodeFormatterExpert.Configure;
@@ -158,16 +150,16 @@ begin
   Result := True;
 end;
 
-procedure TeCodeFormatterExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TeCodeFormatterExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
-  FExpert.InternalLoadSettings(Settings);
+  FExpert.InternalLoadSettings(_Settings);
 end;
 
-procedure TeCodeFormatterExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TeCodeFormatterExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited;
-  FExpert.InternalSaveSettings(Settings);
+  FExpert.InternalSaveSettings(_Settings);
 end;
 
 initialization

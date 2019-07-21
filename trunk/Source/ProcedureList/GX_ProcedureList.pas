@@ -100,7 +100,6 @@ type
     procedure ClearObjectStrings;
     procedure LoadObjectCombobox;
     procedure InitializeForm;
-    function ConfigurationKey: string;
     procedure LoadSettings;
     procedure SaveSettings;
     procedure SetupSyntaxHighlightingControl;
@@ -340,12 +339,12 @@ begin
   FOptions.CodeViewWidth := pnlFunctionBody.Width;
   FOptions.CodeViewHeight := pnlFunctionBody.Height;
   FOptions.DialogFont.Assign(lvProcs.Font);
-  FOptions.SaveSettings(ConfigurationKey);
+  FOptions.SaveSettings(TProcedureExpert.GetSettings);
 end;
 
 procedure TfmProcedureList.LoadSettings;
 begin
-  FOptions.LoadSettings(ConfigurationKey);
+  FOptions.LoadSettings(TProcedureExpert.GetSettings);
   BoundsRect := FOptions.BoundsRect;
   ApplyOptions(True);
   EnsureFormVisible(Self);
@@ -445,10 +444,7 @@ begin
   cbxObjects.ItemIndex := cbxObjects.Items.IndexOf(SAllString);
 end;
 
-function TfmProcedureList.ConfigurationKey: string;
-begin
-  Result := TProcedureExpert.ConfigurationKey;
-end;
+{ TProcedureExpert }
 
 constructor TProcedureExpert.Create;
 begin
@@ -713,12 +709,12 @@ var
   lclOptions: TProcedureListOptions;
 begin
   lclOptions := TProcedureListOptions.Create;
-  lclOptions.LoadSettings(ConfigurationKey);
+  lclOptions.LoadSettings(GetSettings);
   with TfmProcedureListOptions.Create(nil) do
   try
     Options := lclOptions;
     if ShowModal = mrOK then
-      lclOptions.SaveSettings(ConfigurationKey);
+      lclOptions.SaveSettings(GetSettings);
   finally
     Free;
     FreeAndNil(lclOptions);

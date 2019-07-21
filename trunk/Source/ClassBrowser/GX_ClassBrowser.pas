@@ -231,7 +231,6 @@ type
     FLastProject: string;
     procedure SetupEditorControls;
     function Images: TImageList;
-    function ConfigurationKey: string;
     procedure UpdateListFilter;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1160,7 +1159,7 @@ var
   Settings: IExpertSettings;
   i: Integer;
 begin
-  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  Settings := TClassExpert.GetSettings;
   // Do not localize any of the following lines.
   Settings.SaveForm('Window', Self);
   Settings.Subkey('Window').WriteInteger('Split', tvBrowse.Width);
@@ -1189,7 +1188,7 @@ begin
   Left := (Screen.Width - Width) div 2;
   Top := (Screen.Height - Height) div 2;
 
-  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
+  Settings := TClassExpert.GetSettings;
   // Do not localize any of the following lines.
   Settings.LoadForm('Window', Self);
   tvBrowse.Width := Settings.Subkey('Window').ReadInteger('Split', tvBrowse.Width);
@@ -1603,11 +1602,6 @@ end;
 function TfmClassBrowser.Images: TImageList;
 begin
   Result := GetSharedImageList;
-end;
-
-function TfmClassBrowser.ConfigurationKey: string;
-begin
-  Result := TClassExpert.ConfigurationKey;
 end;
 
 { TClassExpert }

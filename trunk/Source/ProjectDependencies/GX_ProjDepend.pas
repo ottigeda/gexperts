@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Controls, ComCtrls, ActnList, Menus, ToolWin, ExtCtrls,
-  Forms, GX_Experts, GX_OtaUtils, GX_ConfigurationInfo, Dialogs, GX_BaseForm;
+  Forms, GX_Experts, GX_OtaUtils, GX_ConfigurationInfo, Dialogs, GX_BaseForm, Actions;
 
 type
   TfmProjDepend = class(TfmBaseForm)
@@ -121,7 +121,6 @@ type
     procedure ClearUnitList;
     procedure UpdateFormActions;
     procedure ExportAllDependencies;
-    function ConfigurationKey: string;
     procedure ExportIndirectDependencies;
     function FindUnitInUnitList(const _UnitName: string; out _UsesList: TStringList): Boolean;
     ///<summary>
@@ -137,8 +136,8 @@ type
   TDependExpert = class(TGX_Expert)
   protected
     procedure UpdateAction(Action: TCustomAction); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     procedure SetActive(New: Boolean); override;
   private
     FScanEntireUnit: Boolean;
@@ -654,32 +653,26 @@ end;
 
 procedure TfmProjDepend.SaveSettings;
 var
-  Settings: TGExpertsSettings;
+  Settings: IExpertSettings;
 begin
   // Do not localize.
-  Settings := TGExpertsSettings.Create;
-  try
-    Settings.SaveForm(Self, ConfigurationKey + '\Window');
-    Settings.WriteInteger(ConfigurationKey + '\Window', 'Splitter', tvUnits.Width);
-    Settings.WriteString(ConfigurationKey, 'ExcludedFiles', FFilterList.CommaText);
-  finally
-    FreeAndNil(Settings);
-  end;
+  Settings := TDependExpert.GetSettings;
+  Settings.SaveForm('Window', Self);
+  Settings.WriteString('ExcludedFiles', FFilterList.CommaText);
+  Settings := Settings.Subkey('Window');
+  Settings.WriteInteger('Splitter', tvUnits.Width);
 end;
 
 procedure TfmProjDepend.LoadSettings;
 var
-  Settings: TGExpertsSettings;
+  Settings: IExpertSettings;
 begin
   // Do not localize.
-  Settings := TGExpertsSettings.Create;
-  try
-    Settings.LoadForm(Self, ConfigurationKey + '\Window');
-    tvUnits.Width := Settings.ReadInteger(ConfigurationKey + '\Window', 'Splitter', tvUnits.Width);
-    FFilterList.CommaText := Settings.ReadString(ConfigurationKey, 'ExcludedFiles', '');
-  finally
-    FreeAndNil(Settings);
-  end;
+  Settings := TDependExpert.GetSettings;
+  FFilterList.CommaText := Settings.ReadString('ExcludedFiles', '');
+  Settings.LoadForm('Window', Self);
+  Settings :=Settings.Subkey('Window');
+  tvUnits.Width := Settings.ReadInteger('Splitter', tvUnits.Width);
 end;
 
 procedure TfmProjDepend.OpenUnit(const UnitName: string);
@@ -1050,11 +1043,6 @@ begin
   end;
 end;
 
-function TfmProjDepend.ConfigurationKey: string;
-begin
-  Result := TDependExpert.ConfigurationKey;
-end;
-
 { TDependExpert }
 
 constructor TDependExpert.Create;
@@ -1101,20 +1089,20 @@ begin
   TfmProjDependOptions.Execute(nil, FScanEntireUnit, FSearchLibraryPath, FSearchBrowsingPath);
 end;
 
-procedure TDependExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TDependExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalSaveSettings(Settings);
-  Settings.WriteBool('ScanEntireUnit', FScanEntireUnit);
-  Settings.WriteBool('SearchLibraryPath', FSearchLibraryPath);
-  Settings.WriteBool('SearchBrowsingPath', FSearchBrowsingPath);
+  inherited InternalSaveSettings(_Settings);
+  _Settings.WriteBool('ScanEntireUnit', FScanEntireUnit);
+  _Settings.WriteBool('SearchLibraryPath', FSearchLibraryPath);
+  _Settings.WriteBool('SearchBrowsingPath', FSearchBrowsingPath);
 end;
 
-procedure TDependExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TDependExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalLoadSettings(Settings);
-  FScanEntireUnit := Settings.ReadBool('ScanEntireUnit', False);
-  FSearchLibraryPath := Settings.ReadBool('SearchLibraryPath', False);
-  FSearchBrowsingPath := Settings.ReadBool('SearchBrowsingPath', False);
+  inherited InternalLoadSettings(_Settings);
+  FScanEntireUnit := _Settings.ReadBool('ScanEntireUnit', False);
+  FSearchLibraryPath := _Settings.ReadBool('SearchLibraryPath', False);
+  FSearchBrowsingPath := _Settings.ReadBool('SearchBrowsingPath', False);
 end;
 
 procedure TDependExpert.Execute(Sender: TObject);

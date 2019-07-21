@@ -53,8 +53,8 @@ type
   private
     FLayoutType: TLayoutType;
   protected
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
     class function FormsConfigurationKey: string;
   public
     constructor Create; override;
@@ -285,18 +285,18 @@ begin
   end;
 end;
 
-procedure TLayoutExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TLayoutExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalLoadSettings(Settings);
+  inherited InternalLoadSettings(_Settings);
   // Do not localize any of the below items
-  FLayoutType := TLayoutType(Settings.ReadEnumerated('Layout', TypeInfo(TLayoutType), Ord(ltLayout1)));
+  FLayoutType := TLayoutType(_Settings.ReadEnumerated('Layout', TypeInfo(TLayoutType), Ord(ltLayout1)));
 end;
 
-procedure TLayoutExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TLayoutExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalSaveSettings(Settings);
+  inherited InternalSaveSettings(_Settings);
   // Do not localize any of the below items
-  Settings.WriteEnumerated('Layout', TypeInfo(TLayoutType), Ord(FLayoutType));
+  _Settings.WriteEnumerated('Layout', TypeInfo(TLayoutType), Ord(FLayoutType));
 end;
 
 procedure TLayoutExpert.Configure;

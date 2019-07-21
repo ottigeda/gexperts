@@ -29,8 +29,8 @@ type
     ///<summary>
     /// @returns true if formatting was actually done </summary>
     function Execute: Boolean;
-    procedure InternalLoadSettings(Settings: TExpertSettings);
-    procedure InternalSaveSettings(Settings: TExpertSettings);
+    procedure InternalLoadSettings(_Settings: IExpertSettings);
+    procedure InternalSaveSettings(_Settings: IExpertSettings);
     function FormatFile(const _FileName: string): Boolean;
     procedure AddToCapitalization(const _Identifier: TGXUnicodeString);
   end;
@@ -327,19 +327,19 @@ begin
   end;
 end;
 
-procedure TCodeFormatterExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TCodeFormatterExpert.InternalLoadSettings(_Settings: IExpertSettings);
 var
   Reader: IConfigReader;
 begin
-  Reader := TGxConfigWrapper.Create(Settings);
+  Reader := TGxConfigWrapper.Create(_Settings);
   TCodeFormatterConfigHandler.ReadSettings(Reader, FEngine.Settings);
 end;
 
-procedure TCodeFormatterExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TCodeFormatterExpert.InternalSaveSettings(_Settings: IExpertSettings);
 var
   Writer: IConfigWriter;
 begin
-  Writer := TGxConfigWrapper.Create(Settings);
+  Writer := TGxConfigWrapper.Create(_Settings);
   TCodeFormatterConfigHandler.WriteSettings(Writer, FEngine.Settings);
 end;
 
