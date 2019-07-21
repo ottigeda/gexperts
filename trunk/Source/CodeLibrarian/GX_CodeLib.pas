@@ -10,7 +10,7 @@ uses
   GX_Experts, GX_EnhancedEditor,
   Forms, Controls, StdActns, Classes, ActnList,
   Dialogs, Menus, ComCtrls, ToolWin, ExtCtrls, GpStructuredStorage,
-  GX_GenericUtils, GX_BaseForm;
+  GX_GenericUtils, GX_BaseForm, System.Actions;
 
 type
   TSearchRecord = record
@@ -842,44 +842,40 @@ end;
 
 procedure TfmCodeLib.SaveSettings;
 var
-  Settings: TGExpertsSettings;
+  Settings: IExpertSettings;
 begin
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
   // Do not localize any of the following lines.
-  Settings := TGExpertsSettings.Create;
-  try
-    Settings.SaveForm(Self, ConfigurationKey + '\Window');
-    Settings.WriteInteger(ConfigurationKey + '\Window', 'Layout', Ord(Layout));
-    if Layout = clSide then
-      Settings.WriteInteger(ConfigurationKey + '\Window', 'Splitter', tvTopics.Width)
-    else
-      Settings.WriteInteger(ConfigurationKey + '\Window', 'Splitter', tvTopics.Height);
-    Settings.WriteString(ConfigurationKey, 'StoragePath', StoragePath);
-    Settings.SaveFont(ConfigurationKey + '\Editor', FCodeText.Font);
-    Settings.SaveFont(ConfigurationKey + '\TreeView', tvTopics.Font);
-  finally
-    FreeAndNil(Settings);
-  end;
+  Settings.WriteString('StoragePath', StoragePath);
+  Settings.SaveFont('Editor', FCodeText.Font);
+  Settings.SaveFont('TreeView', tvTopics.Font);
+
+  Settings.SaveForm('Window', Self);
+  Settings := Settings.Subkey('Window');
+  Settings.WriteInteger('Layout', Ord(Layout));
+  if Layout = clSide then
+    Settings.WriteInteger('Splitter', tvTopics.Width)
+  else
+    Settings.WriteInteger('Splitter', tvTopics.Height);
 end;
 
 procedure TfmCodeLib.LoadSettings;
 var
-  Settings: TGExpertsSettings;
+  Settings: IExpertSettings;
 begin
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
   // Do not localize any of the following lines.
-  Settings := TGExpertsSettings.Create;
-  try
-    Settings.LoadForm(Self, ConfigurationKey + '\Window');
-    Layout := TCodeLayout(Settings.ReadInteger(ConfigurationKey + '\Window', 'Layout', 0));
-    if Layout = clSide then
-      tvTopics.Width := Settings.ReadInteger(ConfigurationKey + '\Window', 'Splitter', tvTopics.Width)
-    else
-      tvTopics.Height := Settings.ReadInteger(ConfigurationKey + '\Window', 'Splitter', tvTopics.Height);
-    StoragePath := Settings.ReadString(ConfigurationKey, 'StoragePath', StoragePath);
-    Settings.LoadFont(ConfigurationKey + '\Editor', FCodeText.Font);
-    Settings.LoadFont(ConfigurationKey + '\TreeView', tvTopics.Font);
-  finally
-    FreeAndNil(Settings);
-  end;
+  StoragePath := Settings.ReadString('StoragePath', StoragePath);
+  Settings.LoadFont('Editor', FCodeText.Font);
+  Settings.LoadFont('TreeView', tvTopics.Font);
+
+  Settings.LoadForm('Window', Self);
+  Settings := Settings.Subkey('Window');
+  Layout := TCodeLayout(Settings.ReadInteger('Layout', 0));
+  if Layout = clSide then
+    tvTopics.Width := Settings.ReadInteger('Splitter', tvTopics.Width)
+  else
+    tvTopics.Height := Settings.ReadInteger('Splitter', tvTopics.Height);
 end;
 
 procedure TfmCodeLib.HelpExecute(Sender: TObject);
