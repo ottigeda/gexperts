@@ -579,28 +579,20 @@ end;
 
 procedure TfmCleanDirectories.LoadSettings;
 var
-  Settings: TGExpertsSettings;
+  Settings: IExpertSettings;
 begin
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
   // Do not localize any of the below strings.
-  Settings := TGExpertsSettings.Create;
-  try
-    Settings.LoadForm(Self, ConfigurationKey + '\Window', [fsSize]);
-  finally
-    FreeAndNil(Settings);
-  end;
+  Settings.LoadForm('Window', Self, [fsSize]);
 end;
 
 procedure TfmCleanDirectories.SaveSettings;
 var
-  Settings: TGExpertsSettings;
+  Settings: IExpertSettings;
 begin
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
   // Do not localize any of the below strings.
-  Settings := TGExpertsSettings.Create;
-  try
-    Settings.SaveForm(Self, ConfigurationKey + '\Window', [fsSize]);
-  finally
-    FreeAndNil(Settings);
-  end;
+  Settings.SaveForm('Window', Self, [fsSize]);
 end;
 
 procedure TfmCleanDirectories.CheckActionExecute(Sender: TObject);
