@@ -1097,41 +1097,34 @@ end;
 
 procedure TfmBackup.SaveSettings;
 var
-  Settings: TGExpertsSettings;
+  Settings: IExpertSettings;
 begin
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
   // Do not localize.
-  Settings := TGExpertsSettings.Create;
-  try
-    Settings.SaveForm(Self, ConfigurationKey + '\Window');
-    Settings.WriteString(ConfigurationKey, 'LastZipDir', ExtractFilePath(FLastZipFile));
-  finally
-    FreeAndNil(Settings);
-  end;
+  Settings.SaveForm('Window', Self);
+  Settings.WriteString('LastZipDir', ExtractFilePath(FLastZipFile));
 end;
 
 procedure TfmBackup.LoadSettings;
 var
-  Settings: TGExpertsSettings;
+  Settings: IExpertSettings;
   fn: string;
 begin
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
   // Do not localize.
-  Settings := TGExpertsSettings.Create;
-  try
-    Settings.LoadForm(Self, ConfigurationKey + '\Window');
+  Settings.LoadForm('Window', Self);
 
-    if FCurrentBackupScope = bsActiveProject then
-      fn := ChangeFileExt(ExtractFileName(GxOtaGetCurrentProjectFileName), '')
-    else
-      fn := ChangeFileExt(ExtractFileName(GxOtaGetProjectGroupFileName), '');
+  if FCurrentBackupScope = bsActiveProject then
+    fn := ChangeFileExt(ExtractFileName(GxOtaGetCurrentProjectFileName), '')
+  else
+    fn := ChangeFileExt(ExtractFileName(GxOtaGetProjectGroupFileName), '');
 
-    FLastZipFile := Settings.ReadString(ConfigurationKey, 'LastZipDir', '');
-    if FLastZipFile <> '' then
-      FLastZipFile := IncludeTrailingPathDelimiter(FLastZipFile) + fn
-    else
-      FLastZipFile := fn;
-  finally
-    FreeAndNil(Settings);
-  end;
+  FLastZipFile := Settings.ReadString('LastZipDir', '');
+  if FLastZipFile <> '' then
+    FLastZipFile := IncludeTrailingPathDelimiter(FLastZipFile) + fn
+  else
+    FLastZipFile := fn;
+
   EnsureFormVisible(Self);
 end;
 
