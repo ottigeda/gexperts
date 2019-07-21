@@ -6,7 +6,7 @@ interface
 
 uses
   Forms, StdCtrls, Classes, Controls, Messages, Grids, Menus, Dialogs, ActnList,
-  ExtCtrls, GX_BaseForm;
+  ExtCtrls, GX_BaseForm, Graphics, Mask, Actions;
 
 const
   UM_SHOW_CONTROL = WM_USER + 133;
@@ -23,6 +23,8 @@ type
   private
     FComponents: TStringList;
     FOnRowHeaderClick: TOnRowHeaderClick;
+    procedure CMEnter(var Message: TCMEnter); message CM_ENTER;
+    procedure CMExit(var Message: TCMExit); message CM_EXIT;
   protected
     function GetEditStyle(ACol: Integer; ARow: Integer): TEditStyle; override;
     function CreateEditor: TInplaceEdit; override;
@@ -729,9 +731,28 @@ begin
         FValueList.Objects[Index] := Additional;
     end;
   UpdateOtherProps;
+  if Grid.CanFocus then
+    ActiveControl := Grid;
 end;
 
 { TRenameStringGrid }
+
+const
+  clEditFocused   = clHighlight;  // e.g. $D77800;
+  clEditUnfocused = clBtnFace;    // e.g. $f0f0f0;
+
+procedure TRenameStringGrid.CMEnter(var Message: TCMEnter);
+begin
+  inherited;
+  if Assigned(InplaceEditor) then
+    TMaskEdit(InplaceEditor).Color := clEditFocused;
+end;
+
+procedure TRenameStringGrid.CMExit(var Message: TCMExit);
+begin
+  if Assigned(InplaceEditor) then
+    TMaskEdit(InplaceEditor).Color := clEditUnfocused;
+end;
 
 constructor TRenameStringGrid.Create(AOwner: TComponent);
 begin
@@ -767,6 +788,10 @@ begin
   Result := TInplaceEditList.Create(Self);
   (Result as TInplaceEditList).OnGetPickListitems := OnGetComponentList;
   (Result as TInplaceEditList).DropDownRows := 15;
+  if Focused then
+    TMaskEdit(Result).Color := clEditFocused
+  else
+    TMaskEdit(Result).Color := clEditUnfocused;
 end;
 
 function TRenameStringGrid.GetEditStyle(ACol, ARow: Integer): TEditStyle;
