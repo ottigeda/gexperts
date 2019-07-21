@@ -9,6 +9,45 @@ uses
   Graphics, Classes, TypInfo, Forms, ComCtrls, Types, IniFiles;
 
 type
+  TGXFontFlag = (ffColor);
+  TGXFontFlags = set of TGXFontFlag;
+
+  TFormSaveFlag = (fsSize, fsPosition);
+  TFormSaveFlags = set of TFormSaveFlag;
+
+type
+  IExpertSettings = interface(IUnknown)
+    function ReadBool(const Ident: string; Default: Boolean): Boolean;
+    procedure WriteBool(const Ident: string; Value: Boolean);
+    function ReadBounds(const Default: TRect): TRect;
+    procedure WriteBounds(const Value: TRect);
+    function ReadInteger(const Ident: string; Default: Longint): Longint;
+    procedure WriteInteger(const Ident: string; Value: Longint);
+    function ReadString(const Ident: string; const Default: string): string;
+    procedure WriteString(const Ident: string; const Value: string);
+    function ReadAnsiChar(const Ident: string; Default: AnsiChar): AnsiChar;
+    procedure WriteAnsiChar(const Ident: string; Value: AnsiChar);
+    function ReadEnumerated(const Ident: string; TypeInfo: PTypeInfo; Default: Longint): Longint;
+    procedure WriteEnumerated(const Ident: string; TypeInfo: PTypeInfo; Value: Longint);
+    procedure EraseSection(const Section: string);
+    procedure ReadSection(const Section: string; Strings: TStrings);
+    procedure LoadFont(const FontName: string; const Font: TFont; Flags: TGXFontFlags = []);
+    procedure SaveFont(const FontName: string; const Font: TFont; Flags: TGXFontFlags = []);
+    procedure LoadForm(const Section: string; Form: TCustomForm; FormSaveFlags: TFormSaveFlags = [fsSize, fsPosition]);
+    procedure SaveForm(const Section: string; Form: TCustomForm; FormSaveFlags: TFormSaveFlags = [fsSize, fsPosition]);
+    procedure ReadStrings(const ListName: string; List: TStrings; const Ident: string = 'Item');
+    procedure WriteStrings(const ListName: string; List: TStrings; const Ident: string = 'Item');
+    function ValueExists(const Ident: string): Boolean;
+    ///<summary>
+    /// SubSection can be empty </summary>
+    function SectionExists(const SubSection: string): boolean;
+    ///<summary>
+    /// SubSection can be empty </summary>
+    procedure ReadSectionValues(const SubSection: string; Strings: TStrings);
+    procedure DeleteKey(const Ident: String);
+  end;
+
+type
   IConfigInfo = interface(IUnknown) //FI:W523 - we don't need a GUID
     procedure SaveSettings;
     procedure SetAlphabetizeMenu(const Value: Boolean);
@@ -69,6 +108,7 @@ type
     property EnableKeyboardShortcuts: Boolean read GetEnableKeyboardShortcuts;
     property EnableCustomFont: Boolean read GetEnableCustomFont write SetEnableCustomFont;
     function CustomFont: TFont;
+    function GetExpertSettings(const _Section: string): IExpertSettings;
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
     function GetForceDesktopOnStartup: Boolean;
     procedure SetForceDesktopOnStartup(const _Value: Boolean);
@@ -76,12 +116,6 @@ type
     procedure SetForcedStartupDesktop(const _Value: string);
 {$ENDIF}
   end;
-
-  TGXFontFlag = (ffColor);
-  TGXFontFlags = set of TGXFontFlag;
-
-  TFormSaveFlag = (fsSize, fsPosition);
-  TFormSaveFlags = set of TFormSaveFlag;
 
   TGExpertsBaseSettings = class(TCustomIniFile)
   private
@@ -136,7 +170,7 @@ type
     function ReadEnumerated(const Ident: string; TypeInfo: PTypeInfo; Default: Longint): Longint;
     procedure WriteEnumerated(const Ident: string; TypeInfo: PTypeInfo; Value: Longint);
     procedure EraseSection(const Section: string);
-    procedure ReadSection(const Section: string; Strings: TStrings); 
+    procedure ReadSection(const Section: string; Strings: TStrings);
     procedure LoadFont(const FontName: string; const Font: TFont; Flags: TGXFontFlags = []);
     procedure SaveFont(const FontName: string; const Font: TFont; Flags: TGXFontFlags = []);
     procedure LoadForm(const Section: string; Form: TCustomForm; FormSaveFlags: TFormSaveFlags = [fsSize, fsPosition]);
@@ -201,6 +235,19 @@ uses
   Math, GX_BaseForm, GX_IdeDock;
 
 type
+  TExpertSettingsEx = class(TInterfacedObject, IExpertSettings)
+  private
+    FExpertSettings: TExpertSettings;
+    FGExpertsSettings: TGExpertsSettings;
+  protected
+    // this could be private, but it would cause a hint "Private symbol ... declared but never used"
+    property ExpertSettings: TExpertSettings read FExpertSettings implements IExpertSettings;
+  public
+    constructor Create(_GExpertsSettings: TGExpertsSettings; const _Section: string);
+    destructor Destroy; override;
+  end;
+
+type
   TConfigInfo = class(TSingletonInterfacedObject, IConfigInfo)
   private
     FVclPath: string;
@@ -255,6 +302,7 @@ type
     procedure SetEnableCustomFont(const Value: Boolean);
     function CustomFont: TFont;
     procedure UpdateScreenForms;
+    function GetExpertSettings(const _Section: string): IExpertSettings;
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
     function GetForceDesktopOnStartup: Boolean;
     procedure SetForceDesktopOnStartup(const _Value: Boolean);
@@ -691,6 +739,11 @@ end;
 function TConfigInfo.GetEnableKeyboardShortcuts: Boolean;
 begin
   Result := FEnableKeyboardShortcuts;
+end;
+
+function TConfigInfo.GetExpertSettings(const _Section: string): IExpertSettings;
+begin
+  Result := TExpertSettingsEx.Create(TGExpertsSettings.Create(''), _Section);
 end;
 
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
@@ -1271,6 +1324,22 @@ end;
 procedure TGExpertsBaseSettings.WriteTime(const Section, Name: string; Value: TDateTime);
 begin
   FIniFile.WriteTime(Section, Name, Value);
+end;
+
+{ TExpertSettingsEx }
+
+constructor TExpertSettingsEx.Create(_GExpertsSettings: TGExpertsSettings; const _Section: string);
+begin
+  inherited Create;
+  FGExpertsSettings := _GExpertsSettings;
+  FExpertSettings := TExpertSettings.Create(FGExpertsSettings, _Section);
+end;
+
+destructor TExpertSettingsEx.Destroy;
+begin
+  FreeAndnil(FExpertSettings);
+  FreeAndNil(FGExpertsSettings);
+  inherited;
 end;
 
 initialization
