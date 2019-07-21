@@ -45,6 +45,10 @@ type
     /// SubSection can be empty </summary>
     procedure ReadSectionValues(const SubSection: string; Strings: TStrings);
     procedure DeleteKey(const Ident: String);
+    ///<summary>
+    /// Create a new IExpertSettings instance that reads/writes to Section below
+    /// the one used by this instance, that is FSection+'\'+Section. </summary>
+    function Subkey(const Section: string): IExpertSettings;
   end;
 
 type
@@ -245,6 +249,10 @@ type
   public
     constructor Create(_GExpertsSettings: TGExpertsSettings; const _Section: string);
     destructor Destroy; override;
+    ///<summary>
+    /// Create a new IExpertSettings instance that reads/writes to Section below
+    /// the one used by this instance, that is FSection+'\'+Section. </summary>
+    function Subkey(const Section: string): IExpertSettings;
   end;
 
 type
@@ -1340,6 +1348,11 @@ begin
   FreeAndnil(FExpertSettings);
   FreeAndNil(FGExpertsSettings);
   inherited;
+end;
+
+function TExpertSettingsEx.Subkey(const Section: string): IExpertSettings;
+begin
+  Result := TExpertSettingsEx.Create(TGExpertsSettings.Create, FExpertSettings.FSection + '\' + Section);
 end;
 
 initialization
