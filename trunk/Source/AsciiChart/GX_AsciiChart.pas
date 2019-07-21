@@ -158,22 +158,26 @@ const
 
 procedure TfmAsciiChart.FormClose(Sender: TObject; var Action: TCloseAction);
 var
-  Settings: TGExpertsSettings;
+  GxSettings: TGExpertsSettings;
+  Settings: TExpertSettings;
 begin
   KillHint;
-  // Do not localize any of the following lines.
-  Settings := TGExpertsSettings.Create;
+  Settings := nil;
+  GxSettings := TGExpertsSettings.Create;
   try
-    Settings.WriteInteger(ConfigurationKey, 'Font Size', FDisplayFontSize);
-    Settings.WriteString(ConfigurationKey, 'Font Name', FFontName);
-    Settings.WriteInteger(ConfigurationKey, 'Font Base', FStartCharacter);
-    Settings.WriteString(ConfigurationKey, 'Edit Display Text', eChars.Text);
-    Settings.WriteBool(ConfigurationKey, 'Show Hex', FShowHex);
-    Settings.WriteInteger(ConfigurationKey, 'Zoom Font Size', FZoomFontSize);
-    Settings.WriteBool(ConfigurationKey, 'Show Hint', FShowHints);
-    Settings.SaveForm(Self, ConfigurationKey + '\Window');
+    // Do not localize any of the following lines.
+    Settings := GxSettings.CreateExpertSettings(ConfigurationKey);
+    Settings.WriteInteger('Font Size', FDisplayFontSize);
+    Settings.WriteString('Font Name', FFontName);
+    Settings.WriteInteger('Font Base', FStartCharacter);
+    Settings.WriteString('Edit Display Text', eChars.Text);
+    Settings.WriteBool('Show Hex', FShowHex);
+    Settings.WriteInteger('Zoom Font Size', FZoomFontSize);
+    Settings.WriteBool('Show Hint', FShowHints);
+    Settings.SaveForm('Window', Self);
   finally
     FreeAndNil(Settings);
+    FreeAndNil(GxSettings);
   end;
 end;
 
@@ -712,7 +716,8 @@ end;
 
 constructor TfmAsciiChart.Create(AOwner: TComponent);
 var
-  Settings: TGExpertsSettings;
+  GxSettings: TGExpertsSettings;
+  Settings: TExpertSettings;
 begin
   inherited;
 
@@ -722,20 +727,24 @@ begin
   CenterForm(Self);
   updFontSize.Max := MaximumDisplayFontSize;
   updFontSize.Min := MinimumDisplayFontSize;
-  Settings := TGExpertsSettings.Create;
+
+  Settings := nil;
+  GxSettings := TGExpertsSettings.Create;
   try
+    Settings := GxSettings.CreateExpertSettings(ConfigurationKey);
     // Do not localize any of the following items.
-    FDisplayFontSize := Settings.ReadInteger(ConfigurationKey, 'Font Size', DefaultDisplayFontSize);
-    FFontName := Settings.ReadString(ConfigurationKey, 'Font Name', DefaultFontName);
-    FStartCharacter := Settings.ReadInteger(ConfigurationKey, 'Font Base', 0);
-    FShowHex := Settings.ReadBool(ConfigurationKey, 'Show Hex', False);
-    FZoomFontSize := Settings.ReadInteger(ConfigurationKey, 'Zoom Font Size', 32);
-    eChars.Text := Settings.ReadString(ConfigurationKey, 'Edit Display Text', '');
+    FDisplayFontSize := Settings.ReadInteger('Font Size', DefaultDisplayFontSize);
+    FFontName := Settings.ReadString('Font Name', DefaultFontName);
+    FStartCharacter := Settings.ReadInteger('Font Base', 0);
+    FShowHex := Settings.ReadBool('Show Hex', False);
+    FZoomFontSize := Settings.ReadInteger('Zoom Font Size', 32);
+    eChars.Text := Settings.ReadString('Edit Display Text', '');
     eChars.SelStart := Length(eChars.Text);
-    FShowHints := Settings.ReadBool(ConfigurationKey, 'Show Hint', True);
-    Settings.LoadForm(Self, ConfigurationKey + '\Window');
+    FShowHints := Settings.ReadBool('Show Hint', True);
+    Settings.LoadForm('Window', Self);
   finally
     FreeAndNil(Settings);
+    FreeAndNil(GxSettings);
   end;
 
   updFontSize.Position := FDisplayFontSize;
