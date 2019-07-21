@@ -784,28 +784,32 @@ end;
 
 procedure TfmFavFiles.SaveSettings;
 var
-  Settings: TGExpertsSettings;
+  GxSettings: TGExpertsSettings;
+  Settings: TExpertSettings;
   Key: string;
 begin
   // Do not localize.
-  Settings := TGExpertsSettings.Create;
+  Settings := nil;
+  GxSettings := TGExpertsSettings.Create;
   try
-    Settings.SaveForm(Self, ConfigurationKey + '\Window');
-    Settings.WriteInteger(ConfigurationKey + '\Window', 'Splitter', Max(tvFolders.Width, 30));
-    Settings.WriteInteger(ConfigurationKey + '\Window', 'Splitter2', Max(FFileViewer.Height, 30));
+    Settings := GxSettings.CreateExpertSettings(ConfigurationKey);
+    Settings.SaveForm('Window', Self);
+    Settings.WriteInteger('Window\Splitter', Max(tvFolders.Width, 30));
+    Settings.WriteInteger('Window\Splitter2', Max(FFileViewer.Height, 30));
     if FEntryFile = GetDefaultEntryFileName then
-      Settings.DeleteKey(ConfigurationKey, 'EntryFile')
+      Settings.DeleteKey('EntryFile')
     else
-      Settings.WriteString(ConfigurationKey, 'EntryFile', FEntryFile);
-    Settings.WriteBool(ConfigurationKey, 'FolderDelete', FOptions.FFolderDelete);
-    Settings.WriteBool(ConfigurationKey, 'ExpandAll', FOptions.FExpandAll);
-    Settings.WriteBool(ConfigurationKey, 'ExecHide', FOptions.FExecHide);
-    Settings.WriteBool(ConfigurationKey, 'ShowPreview', FOptions.FShowPreview);
-    Settings.WriteBool(ConfigurationKey, 'IsFavMenuVisible', FOptions.FIsFavMenuVisible);
-    Settings.WriteInteger(ConfigurationKey + '\Window', 'ListView', Ord(ListView.ViewStyle));
-    Settings.WriteStrings(MRUEntryFiles, ConfigurationKey + PathDelim + 'MRUEntryFiles', 'EntryFile');
+      Settings.WriteString('EntryFile', FEntryFile);
+    Settings.WriteBool('FolderDelete', FOptions.FFolderDelete);
+    Settings.WriteBool('ExpandAll', FOptions.FExpandAll);
+    Settings.WriteBool('ExecHide', FOptions.FExecHide);
+    Settings.WriteBool('ShowPreview', FOptions.FShowPreview);
+    Settings.WriteBool('IsFavMenuVisible', FOptions.FIsFavMenuVisible);
+    Settings.WriteInteger('Window\ListView', Ord(ListView.ViewStyle));
+    Settings.WriteStrings('MRUEntryFiles', MRUEntryFiles, 'EntryFile');
   finally
     FreeAndNil(Settings);
+    FreeAndNil(GxSettings);
   end;
 
   Key := AddSlash(ConfigInfo.GExpertsIdeRootRegistryKey) + ConfigurationKey;
@@ -814,27 +818,30 @@ end;
 
 procedure TfmFavFiles.LoadSettings;
 var
-  Settings: TGExpertsSettings;
+  GxSettings: TGExpertsSettings;
+  Settings: TExpertSettings;
   Key: string;
 begin
   // Do not localize.
-  Settings := TGExpertsSettings.Create;
+  GxSettings := TGExpertsSettings.Create;
   try
-    Settings.LoadForm(Self, ConfigurationKey + '\Window');
-    tvFolders.Width := Settings.ReadInteger(ConfigurationKey + '\Window', 'Splitter', tvFolders.Width);
-    FFileViewer.Height := Settings.ReadInteger(ConfigurationKey + '\Window', 'Splitter2', FFileViewer.Height);
-    EntryFile := Settings.ReadString(ConfigurationKey, 'EntryFile', GetDefaultEntryFileName);
-    FOptions.FFolderDelete := Settings.ReadBool(ConfigurationKey, 'FolderDelete', FOptions.FFolderDelete);
-    FOptions.FExpandAll := Settings.ReadBool(ConfigurationKey, 'ExpandAll', FOptions.FExpandAll);
-    FOptions.FExecHide := Settings.ReadBool(ConfigurationKey, 'ExecHide', FOptions.FExecHide);
-    FOptions.FShowPreview := Settings.ReadBool(ConfigurationKey, 'ShowPreview', FOptions.FShowPreview);
-    FOptions.FIsFavMenuVisible := Settings.ReadBool(ConfigurationKey, 'IsFavMenuVisible', FOptions.FIsFavMenuVisible);
-    ListView.ViewStyle := TViewStyle(Settings.ReadInteger(ConfigurationKey + '\Window', 'ListView', Ord(ListView.ViewStyle)));
+   Settings := GxSettings.CreateExpertSettings(ConfigurationKey);
+    Settings.LoadForm('Window', Self);
+    tvFolders.Width := Settings.ReadInteger('Window\Splitter', tvFolders.Width);
+    FFileViewer.Height := Settings.ReadInteger('Window\Splitter2', FFileViewer.Height);
+    EntryFile := Settings.ReadString('EntryFile', GetDefaultEntryFileName);
+    FOptions.FFolderDelete := Settings.ReadBool('FolderDelete', FOptions.FFolderDelete);
+    FOptions.FExpandAll := Settings.ReadBool('ExpandAll', FOptions.FExpandAll);
+    FOptions.FExecHide := Settings.ReadBool('ExecHide', FOptions.FExecHide);
+    FOptions.FShowPreview := Settings.ReadBool('ShowPreview', FOptions.FShowPreview);
+    FOptions.FIsFavMenuVisible := Settings.ReadBool('IsFavMenuVisible', FOptions.FIsFavMenuVisible);
+    ListView.ViewStyle := TViewStyle(Settings.ReadInteger('Window\ListView', Ord(ListView.ViewStyle)));
     Assert(ListView.ViewStyle in [Low(TViewStyle)..High(TViewStyle)]);
     MRUEntryFiles.Clear;
-    Settings.ReadStrings(MRUEntryFiles, ConfigurationKey + PathDelim + 'MRUEntryFiles', 'EntryFile');
+    Settings.ReadStrings('MRUEntryFiles', MRUEntryFiles, 'EntryFile');
   finally
     FreeAndNil(Settings);
+    FreeAndNil(GxSettings);
   end;
 
   Key := AddSlash(ConfigInfo.GExpertsIdeRootRegistryKey) + ConfigurationKey;
