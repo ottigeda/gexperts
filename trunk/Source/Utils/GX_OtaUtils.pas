@@ -838,7 +838,7 @@ begin
     Editor := GxOtaGetFileEditorForModule(Module, i);
     if Supports(Editor, IOTAFormEditor, FormEditor) then
     begin
-      Assert(not Assigned(Result));
+      Assert(not Assigned(Result), 'There should never be more than one form for a module');
       Result := FormEditor;
       // In order to assert our assumptions that only one form
       // is ever associated with a module, do not call Break; here.
