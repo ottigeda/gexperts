@@ -180,16 +180,6 @@ type
 
 function ConfigInfo: IConfigInfo;
 
-//
-// Registry persistence utility functions
-//
-
-// Write List to registry at Key, using SubKey as the prefix for the string values
-procedure RegReadStrings(const Settings: TGExpertsSettings; const List: TStrings; const Key, SubKey: string);
-
-// Read from registry at Key strings into List, using SubKey as the prefix for the string values.
-procedure RegWriteStrings(const Settings: TGExpertsSettings; const List: TStrings; const Key, SubKey: string);
-
 type
   TTreeSaveOption = (stsSelected, stsExpanded);
   TTreeSaveOptions = set of TTreeSaveOption;
@@ -291,26 +281,6 @@ begin
     FPrivateConfigurationInfo := TConfigInfo.Create;
 
   Result := FPrivateConfigurationInfo;
-end;
-
-procedure RegSaveFont(const Settings: TGExpertsSettings; const Key: string; const Font: TFont);
-begin
-  Settings.SaveFont(Key, Font);
-end;
-
-procedure RegLoadFont(const Settings: TGExpertsSettings; const Key: string; const Font: TFont);
-begin
-  Settings.LoadFont(Key, Font);
-end;
-
-procedure RegReadStrings(const Settings: TGExpertsSettings; const List: TStrings; const Key, SubKey: string);
-begin
-  Settings.ReadStrings(List, Key, SubKey);
-end;
-
-procedure RegWriteStrings(const Settings: TGExpertsSettings; const List: TStrings; const Key, SubKey: string);
-begin
-  Settings.WriteStrings(List, Key, SubKey);
 end;
 
 // Return a text path to the node passed in
