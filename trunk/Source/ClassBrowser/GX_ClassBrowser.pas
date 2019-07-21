@@ -273,14 +273,6 @@ uses
   GX_GxUtils, GX_GenericUtils, GX_SharedImages, GX_IdeUtils, Math,
   GX_dzVclUtils;
 
-function ExpertClassKey: string;
-begin
-  if IsStandAlone then
-    Result := '\Software\GExperts\'
-  else
-    Result := ConfigInfo.GExpertsIdeRootRegistryKey;
-end;
-
 { TClassProjectNotifier }
 
 constructor TClassProjectNotifier.Create(Form: TfmClassBrowser);
@@ -1165,83 +1157,62 @@ end;
 
 procedure TfmClassBrowser.SaveSettings;
 var
-  Settings: TGExpertsSettings;
-  ExpSettings: TExpertSettings;
+  Settings: IExpertSettings;
   i: Integer;
 begin
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
   // Do not localize any of the following lines.
-  ExpSettings := nil;
-  Settings := TGExpertsSettings.Create(ExpertClassKey);
-  try
-    ExpSettings := Settings.CreateExpertSettings(ConfigurationKey);
-    Settings.SaveForm(Self, AddSlash(ConfigurationKey) + 'Window');
-    Settings.WriteInteger(AddSlash(ConfigurationKey) + 'Window', 'Split', tvBrowse.Width);
-    ExpSettings.WriteInteger('ViewMode', Ord(FInfoViewMode));
-    ExpSettings.WriteBool('PrimitiveTop', FPrimitiveTop);
-    ExpSettings.WriteBool('StayInPackage', FStayInPackage);
-    ExpSettings.WriteBool('ParseRecursing', FParseRecursing);
-    ExpSettings.WriteBool('AutomaticallyHideBrowser', FAutomaticallyHideBrowser);
-    ExpSettings.WriteBool('UnitNames', FViewUnitNames);
-    ExpSettings.WriteInteger('ClassHierarchyFontSize', FClassHierarchyFontSize);
-    ExpSettings.WriteInteger('ClassHierarchyBoxWidth', FClassHierarchyBoxWidth);
-    ExpSettings.WriteInteger('ClassHierarchyBoxSpace', FClassHierarchyBoxSpace);
-    ExpSettings.WriteString('ClassHierarchyFont', 'Arial');
-    for i := Low(FFilters) to High(FFilters) do
-      ExpSettings.WriteBool(Format('Filter%d', [i]), FFilters[i]);
-
-    ExpSettings.SaveFont('TreeFont', tvBrowse.Font);
-    ExpSettings.SaveFont('ListFont', lvInfo.Font);
-    ExpSettings.SaveFont('EditorFont', FCodeText.Font);
-  finally
-    FreeAndNil(ExpSettings);
-    FreeAndNil(Settings);
-  end;
+  Settings.SaveForm('Window', Self);
+  Settings.Subkey('Window').WriteInteger('Split', tvBrowse.Width);
+  Settings.WriteInteger('ViewMode', Ord(FInfoViewMode));
+  Settings.WriteBool('PrimitiveTop', FPrimitiveTop);
+  Settings.WriteBool('StayInPackage', FStayInPackage);
+  Settings.WriteBool('ParseRecursing', FParseRecursing);
+  Settings.WriteBool('AutomaticallyHideBrowser', FAutomaticallyHideBrowser);
+  Settings.WriteBool('UnitNames', FViewUnitNames);
+  Settings.WriteInteger('ClassHierarchyFontSize', FClassHierarchyFontSize);
+  Settings.WriteInteger('ClassHierarchyBoxWidth', FClassHierarchyBoxWidth);
+  Settings.WriteInteger('ClassHierarchyBoxSpace', FClassHierarchyBoxSpace);
+  Settings.WriteString('ClassHierarchyFont', 'Arial');
+  for i := Low(FFilters) to High(FFilters) do
+    Settings.WriteBool(Format('Filter%d', [i]), FFilters[i]);
+  Settings.SaveFont('TreeFont', tvBrowse.Font);
+  Settings.SaveFont('ListFont', lvInfo.Font);
+  Settings.SaveFont('EditorFont', FCodeText.Font);
 end;
 
 procedure TfmClassBrowser.LoadSettings;
 var
-  Settings: TGExpertsSettings;
-  ExpSettings: TExpertSettings;
+  Settings: IExpertSettings;
   i: Integer;
 begin
   Left := (Screen.Width - Width) div 2;
   Top := (Screen.Height - Height) div 2;
 
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
   // Do not localize any of the following lines.
-  ExpSettings := nil;
-  Settings := TGExpertsSettings.Create(ExpertClassKey);
-  try
-    ExpSettings := Settings.CreateExpertSettings(ConfigurationKey);
-    Settings.LoadForm(Self, AddSlash(ConfigurationKey) + 'Window');
-    tvBrowse.Width := Settings.ReadInteger(AddSlash(ConfigurationKey) + 'Window', 'Split', tvBrowse.Width);
-    if tvBrowse.Width = 0 then
-      tvBrowse.Width := 100;
-    FInfoViewMode := TInfoViewMode(ExpSettings.ReadInteger('ViewMode', Ord(FInfoViewMode)));
-    FViewUnitNames := ExpSettings.ReadBool('UnitNames', False);
-    FClassHierarchyFontSize := ExpSettings.ReadInteger('ClassHierarchyFontSize', 8);
-    FClassHierarchyBoxWidth := ExpSettings.ReadInteger('ClassHierarchyBoxWidth', 25);
-    FClassHierarchyBoxSpace := ExpSettings.ReadInteger('ClassHierarchyBoxSpace', 10);
-    FClassHierarchyFont := ExpSettings.ReadString('ClassHierarchyFont', 'Arial');
-    if IsStandAlone then
-      ClassList.StoragePath := AddSlash(ExtractFilePath(Application.ExeName))
-    else begin
-      ClassList.StoragePath := AddSlash(ConfigInfo.ConfigPath + ClassBrowserStorageFolder);
-      FPrimitiveTop := ExpSettings.ReadBool('PrimitiveTop', FPrimitiveTop);
-      FStayInPackage := ExpSettings.ReadBool('StayInPackage', FStayInPackage);
-      FParseRecursing := ExpSettings.ReadBool('ParseRecursing', FParseRecursing);
-      FAutomaticallyHideBrowser := ExpSettings.ReadBool('AutomaticallyHideBrowser', FAutomaticallyHideBrowser);
-      for i := Low(FFilters) to High(FFilters) do
-        FFilters[i] := ExpSettings.ReadBool(Format('Filter%d', [i]), True);
+  Settings.LoadForm('Window', Self);
+  tvBrowse.Width := Settings.Subkey('Window').ReadInteger('Split', tvBrowse.Width);
+  if tvBrowse.Width = 0 then
+    tvBrowse.Width := 100;
+  FInfoViewMode := TInfoViewMode(Settings.ReadInteger('ViewMode', Ord(FInfoViewMode)));
+  FViewUnitNames := Settings.ReadBool('UnitNames', False);
+  FClassHierarchyFontSize := Settings.ReadInteger('ClassHierarchyFontSize', 8);
+  FClassHierarchyBoxWidth := Settings.ReadInteger('ClassHierarchyBoxWidth', 25);
+  FClassHierarchyBoxSpace := Settings.ReadInteger('ClassHierarchyBoxSpace', 10);
+  FClassHierarchyFont := Settings.ReadString('ClassHierarchyFont', 'Arial');
+  ClassList.StoragePath := AddSlash(ConfigInfo.ConfigPath + ClassBrowserStorageFolder);
+  FPrimitiveTop := Settings.ReadBool('PrimitiveTop', FPrimitiveTop);
+  FStayInPackage := Settings.ReadBool('StayInPackage', FStayInPackage);
+  FParseRecursing := Settings.ReadBool('ParseRecursing', FParseRecursing);
+  FAutomaticallyHideBrowser := Settings.ReadBool('AutomaticallyHideBrowser', FAutomaticallyHideBrowser);
+  for i := Low(FFilters) to High(FFilters) do
+    FFilters[i] := Settings.ReadBool(Format('Filter%d', [i]), True);
 
-      ExpSettings.LoadFont('TreeFont', tvBrowse.Font);
-      ExpSettings.LoadFont('ListFont', lvInfo.Font);
-      ExpSettings.LoadFont('EditorFont', FCodeText.Font);
-      FMethodText.Font.Assign(FCodeText.Font);
-    end;
-  finally
-    FreeAndNil(ExpSettings);
-    FreeAndNil(Settings);
-  end;
+  Settings.LoadFont('TreeFont', tvBrowse.Font);
+  Settings.LoadFont('ListFont', lvInfo.Font);
+  Settings.LoadFont('EditorFont', FCodeText.Font);
+  FMethodText.Font.Assign(FCodeText.Font);
   FiltersToActions;
 end;
 
@@ -1444,15 +1415,13 @@ begin
       Screen.Cursor := crDefault;
     end;
   end;
-  if (not IsStandAlone) and FLoadProject then
-  begin
-    StatusBar.SimpleText := SLoadingProject;
-    StatusBar.Repaint;
-    FLoadProject := False;
-    RemoveProject;
-    Application.ProcessMessages;
-    AddProject;
-  end;
+
+  StatusBar.SimpleText := SLoadingProject;
+  StatusBar.Repaint;
+  FLoadProject := False;
+  RemoveProject;
+  Application.ProcessMessages;
+  AddProject;
 end;
 
 procedure TfmClassBrowser.PrintClassDiagramBuiltIn(OInfo: TBrowseClassInfoCollection;
@@ -1600,22 +1569,16 @@ begin
 
   LoadSettings;
 
-  if not IsStandAlone then
-  begin
-    FProjectNotifier := TClassProjectNotifier.Create(Self);
-    FProjectNotifier.AddNotifierToIDE;
-  end;
+  FProjectNotifier := TClassProjectNotifier.Create(Self);
+  FProjectNotifier.AddNotifierToIDE;
 end;
 
 destructor TfmClassBrowser.Destroy;
 begin
   SaveSettings;
 
-  if not IsStandAlone then
-  begin
-    FProjectNotifier.RemoveNotifierFromIDE;
-    FProjectNotifier := nil;
-  end;
+  FProjectNotifier.RemoveNotifierFromIDE;
+  FProjectNotifier := nil;
 
   FreeAndNil(FClassList);
 
@@ -1873,14 +1836,12 @@ end;
 
 procedure TfmClassBrowser.actHelpHelpExecute(Sender: TObject);
 begin
-  if not IsStandAlone then
-    GxContextHelp(Self, 5);
+  GxContextHelp(Self, 5);
 end;
 
 procedure TfmClassBrowser.actHelpContentsExecute(Sender: TObject);
 begin
-  if not IsStandAlone then
-    GxContextHelpContents(Self);
+  GxContextHelpContents(Self);
 end;
 
 procedure TfmClassBrowser.actHelpAboutExecute(Sender: TObject);
