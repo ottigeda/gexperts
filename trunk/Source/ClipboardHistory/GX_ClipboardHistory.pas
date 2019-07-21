@@ -330,35 +330,29 @@ end;
 
 procedure TfmClipboardHistory.SaveSettings;
 var
-  Settings: TGExpertsSettings;
+  Settings: IExpertSettings;
 begin
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
   // Do not localize.
-  Settings := TGExpertsSettings.Create;
-  try
-    Settings.SaveForm(Self, ConfigurationKey);
-    Settings.WriteInteger(ConfigurationKey, 'SplitterRatio', Round(SplitterRatio * 100));
-    Settings.WriteBool(ConfigurationKey, 'ViewToolBar', ToolBar.Visible);
-    Settings.WriteBool(ConfigurationKey, 'PasteAsOptions', pnlPasteAsOptions.Visible);
-  finally
-    FreeAndNil(Settings);
-  end;
+  Settings.SaveForm('Window', Self);
+  Settings := Settings.Subkey('Window');
+  Settings.WriteInteger('SplitterRatio', Round(SplitterRatio * 100));
+  Settings.WriteBool('ViewToolBar', ToolBar.Visible);
+  Settings.WriteBool('PasteAsOptions', pnlPasteAsOptions.Visible);
 end;
 
 procedure TfmClipboardHistory.LoadSettings;
 var
-  Settings: TGExpertsSettings;
+  Settings: IExpertSettings;
 begin
+  Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
   // Do not localize.
-  Settings := TGExpertsSettings.Create;
-  try
-    Settings.LoadForm(Self, ConfigurationKey);
-    SplitterRatio := Settings.ReadInteger(ConfigurationKey, 'SplitterRatio', 50) / 100;
-    mmoClipText.Height :=  Trunc(SplitterRatio * (mmoClipText.Height + lvClip.Height));
-    ToolBar.Visible := Settings.ReadBool(ConfigurationKey, 'ViewToolBar', True);
-    pnlPasteAsOptions.Visible := Settings.ReadBool(ConfigurationKey, 'PasteAsOptions', True);
-  finally
-    FreeAndNil(Settings);
-  end;
+  Settings.LoadForm('Window', Self);
+  Settings := Settings.Subkey('Window');
+  SplitterRatio := Settings.ReadInteger('SplitterRatio', 50) / 100;
+  mmoClipText.Height := Trunc(SplitterRatio * (mmoClipText.Height + lvClip.Height));
+  ToolBar.Visible := Settings.ReadBool('ViewToolBar', True);
+  pnlPasteAsOptions.Visible := Settings.ReadBool('PasteAsOptions', True);
   EnsureFormVisible(Self);
 end;
 
@@ -729,7 +723,7 @@ end;
 
 function TfmClipboardHistory.ConfigurationKey: string;
 begin
-  Result := TClipExpert.ConfigurationKey + PathDelim + 'Window';
+  Result := TClipExpert.ConfigurationKey;
 end;
 
 procedure TfmClipboardHistory.HookClipboard;
