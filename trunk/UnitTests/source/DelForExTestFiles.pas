@@ -174,8 +174,8 @@ begin
 
   Filename := 'testfile_' + s + '.pas';
   InFile := 'testcases\input\' + Filename;
-  ExpectedFile := 'testcases\expected-' + GetResultDir + '\' + Filename;
-  OutputFile := 'testcases\output-' + GetResultDir + '\' + Filename;
+  ExpectedFile := 'testcases\expected\' + GetResultDir + '\' + Filename;
+  OutputFile := 'testcases\output\' + GetResultDir + '\' + Filename;
   Params := Format('"%s" "%s"', [ExpectedFile, OutputFile]);
   ShellExecute(0, '', PChar('C:\Program Files (x86)\Beyond Compare 3\bcompare.exe'),
     PChar(Params), '', SW_NORMAL);
@@ -230,7 +230,7 @@ var
 begin
   Filename := 'testfile_' + _Filename + '.pas';
   InFile := 'testcases\input\' + Filename;
-  ExpectedFile := 'testcases\expected-' + GetResultDir + '\' + Filename;
+  ExpectedFile := 'testcases\expected\' + GetResultDir + '\' + Filename;
   if not FileExists(InFile) then begin
 //    ExpectedException := EFileDoesNotExist;
     raise EFileDoesNotExist.CreateFmt('Input file does not exist: %s', [InFile]);
@@ -251,10 +251,10 @@ begin
       TrimTrailingCrLf(ExpectedText);
       TrimTrailingCrLf(st);
 // uncomment if you want to use e.g. BeyondCompare do the comparison
-//      st.SaveToFile('testcases\output-' + GetResultDir + '\' + Filename);
+//      st.SaveToFile('testcases\output\' + GetResultDir + '\' + Filename);
       CheckEquals(ExpectedText.Text, st.Text, 'error in output');
     except
-      st.SaveToFile('testcases\output-' + GetResultDir + '\' + Filename);
+      st.SaveToFile('testcases\output\' + GetResultDir + '\' + Filename);
       if not _AllowFailure then
         raise;
     end;
