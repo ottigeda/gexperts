@@ -1,80 +1,117 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <ProjectGuid>{29a50c38-e85b-424f-86b6-68e259c53afd}</ProjectGuid>
-    <MainSource>GX_FormatterUnitTests.dpr</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>..\GX_FormatterUnitTests.exe</DCC_DependencyCheckOutputName>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Version>7.0</Version>
-    <DCC_DebugInformation>False</DCC_DebugInformation>
-    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
-    <DCC_Optimize>False</DCC_Optimize>
-    <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
-    <DCC_RangeChecking>True</DCC_RangeChecking>
-    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
-    <DCC_ExeOutput>..\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>..\..\source\framework;..\..\source\utils;..\..\externalsource\UniSynEdit</DCC_UnitSearchPath>
-    <DCC_ResourcePath>..\..\source\framework;..\..\source\utils;..\..\externalsource\UniSynEdit</DCC_ResourcePath>
-    <DCC_ObjPath>..\..\source\framework;..\..\source\utils;..\..\externalsource\UniSynEdit</DCC_ObjPath>
-    <DCC_IncludePath>..\..\source\framework;..\..\source\utils;..\..\externalsource\UniSynEdit</DCC_IncludePath>
-    <DCC_Define>RELEASE</DCC_Define>
-    <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
-    <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
-    <DCC_HppOutput>.\dcu</DCC_HppOutput>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <Version>7.0</Version>
-    <DCC_Optimize>False</DCC_Optimize>
-    <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
-    <DCC_RangeChecking>True</DCC_RangeChecking>
-    <DCC_ExeOutput>..\</DCC_ExeOutput>
-    <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\externalsource\UniSynEdit</DCC_UnitSearchPath>
-    <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\externalsource\UniSynEdit</DCC_ResourcePath>
-    <DCC_ObjPath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\externalsource\UniSynEdit</DCC_ObjPath>
-    <DCC_IncludePath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\externalsource\UniSynEdit</DCC_IncludePath>
-    <DCC_DcuOutput>..\dcu\delphi2007</DCC_DcuOutput>
-    <DCC_ObjOutput>..\dcu\delphi2007</DCC_ObjOutput>
-    <DCC_HppOutput>..\dcu\delphi2007</DCC_HppOutput>
-    <DCC_Define>DEBUG</DCC_Define>
-  </PropertyGroup>
-  <ProjectExtensions>
-    <Borland.Personality>Delphi.Personality</Borland.Personality>
-    <Borland.ProjectType>VCLApplication</Borland.ProjectType>
-    <BorlandProject>
-<BorlandProject><Delphi.Personality><Parameters><Parameters Name="DebugSourceDirs">C:\Program Files\Borland\BDS\3.0\source\dUnit\src\</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">1</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1033</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.1</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
-      
-      
-      
-      
-      <Excluded_Packages Name="c:\program files\borland\bds\3.0\Bin\dbwebxprt.bpl">Borland Web Wizard Package</Excluded_Packages>
-      <Excluded_Packages Name="c:\program files\borland\bds\3.0\Bin\dcltee90.bpl">TeeChart Components</Excluded_Packages>
-    </Excluded_Packages><Source><Source Name="MainSource">GX_FormatterUnitTests.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
-  </ProjectExtensions>
-  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
-  <ItemGroup>
-    <DelphiCompile Include="GX_FormatterUnitTests.dpr">
-      <MainSource>MainSource</MainSource>
-    </DelphiCompile>
-    <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterEngine.pas" />
-    <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterFormatter.pas" />
-    <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterParser.pas" />
-    <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterSettings.pas" />
-    <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterStack.pas" />
-    <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterTokenList.pas" />
-    <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterTokens.pas" />
-    <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterTypes.pas" />
-    <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterUnicode.pas" />
-    <DCCReference Include="..\..\Source\Formatter\GX_CodeFormatterConfigHandler.pas" />
-    <DCCReference Include="..\..\Source\Formatter\GX_CodeFormatterDefaultSettings.pas" />
-    <DCCReference Include="..\..\Source\Utils\GX_GenericUtils.pas" />
-    <DCCReference Include="..\dunit\DUnitConsts.pas" />
-    <DCCReference Include="..\dunit\GUITestRunner.pas" />
-    <DCCReference Include="..\dunit\TestFramework.pas" />
-    <DCCReference Include="DelForExTestFiles.pas" />
-    <DCCReference Include="DelForExTestOldNew.pas" />
-  </ItemGroup>
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+        <DCC_DependencyCheckOutputName>..\GX_FormatterUnitTests.exe</DCC_DependencyCheckOutputName>
+        <MainSource>GX_FormatterUnitTests.dpr</MainSource>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{29a50c38-e85b-424f-86b6-68e259c53afd}</ProjectGuid>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
+        <DCC_DebugInformation>False</DCC_DebugInformation>
+        <DCC_Define>RELEASE</DCC_Define>
+        <DCC_ExeOutput>..\</DCC_ExeOutput>
+        <DCC_HppOutput>.\dcu</DCC_HppOutput>
+        <DCC_IncludePath>..\..\source\framework;..\..\source\utils;..\..\externalsource\UniSynEdit</DCC_IncludePath>
+        <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
+        <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+        <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
+        <DCC_ObjPath>..\..\source\framework;..\..\source\utils;..\..\externalsource\UniSynEdit</DCC_ObjPath>
+        <DCC_Optimize>False</DCC_Optimize>
+        <DCC_RangeChecking>True</DCC_RangeChecking>
+        <DCC_ResourcePath>..\..\source\framework;..\..\source\utils;..\..\externalsource\UniSynEdit</DCC_ResourcePath>
+        <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+        <DCC_UnitSearchPath>..\..\source\framework;..\..\source\utils;..\..\externalsource\UniSynEdit</DCC_UnitSearchPath>
+        <Version>7.0</Version>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DCC_DcuOutput>..\dcu\delphi2007</DCC_DcuOutput>
+        <DCC_Define>DEBUG</DCC_Define>
+        <DCC_ExeOutput>..\</DCC_ExeOutput>
+        <DCC_HppOutput>..\dcu\delphi2007</DCC_HppOutput>
+        <DCC_IncludePath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit</DCC_IncludePath>
+        <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
+        <DCC_ObjOutput>..\dcu\delphi2007</DCC_ObjOutput>
+        <DCC_ObjPath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit</DCC_ObjPath>
+        <DCC_Optimize>False</DCC_Optimize>
+        <DCC_RangeChecking>True</DCC_RangeChecking>
+        <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit</DCC_ResourcePath>
+        <DCC_UnitAlias>Actions=ActnList;ImageList=Controls</DCC_UnitAlias>
+        <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit</DCC_UnitSearchPath>
+        <Version>7.0</Version>
+    </PropertyGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Delphi.Personality</Borland.Personality>
+        <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+        <BorlandProject>
+            <BorlandProject>
+                <Delphi.Personality>
+                    <Parameters>
+                        <Parameters Name="DebugSourceDirs">C:\Program Files\Borland\BDS\3.0\source\dUnit\src\</Parameters>
+                        <Parameters Name="UseLauncher">False</Parameters>
+                        <Parameters Name="LoadAllSymbols">True</Parameters>
+                        <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+                    </Parameters>
+                    <VersionInfo>
+                        <VersionInfo Name="IncludeVerInfo">False</VersionInfo>
+                        <VersionInfo Name="AutoIncBuild">False</VersionInfo>
+                        <VersionInfo Name="MajorVer">1</VersionInfo>
+                        <VersionInfo Name="MinorVer">0</VersionInfo>
+                        <VersionInfo Name="Release">0</VersionInfo>
+                        <VersionInfo Name="Build">1</VersionInfo>
+                        <VersionInfo Name="Debug">False</VersionInfo>
+                        <VersionInfo Name="PreRelease">False</VersionInfo>
+                        <VersionInfo Name="Special">False</VersionInfo>
+                        <VersionInfo Name="Private">False</VersionInfo>
+                        <VersionInfo Name="DLL">False</VersionInfo>
+                        <VersionInfo Name="Locale">1033</VersionInfo>
+                        <VersionInfo Name="CodePage">1252</VersionInfo>
+                    </VersionInfo>
+                    <VersionInfoKeys>
+                        <VersionInfoKeys Name="FileVersion">1.0.0.1</VersionInfoKeys>
+                        <VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
+                        <VersionInfoKeys Name="CompanyName"/>
+                        <VersionInfoKeys Name="FileDescription"/>
+                        <VersionInfoKeys Name="InternalName"/>
+                        <VersionInfoKeys Name="LegalCopyright"/>
+                        <VersionInfoKeys Name="LegalTrademarks"/>
+                        <VersionInfoKeys Name="OriginalFilename"/>
+                        <VersionInfoKeys Name="ProductName"/>
+                    </VersionInfoKeys>
+                    <Excluded_Packages>
+                        <Excluded_Packages Name="c:\program files\borland\bds\3.0\Bin\dbwebxprt.bpl">Borland Web Wizard Package</Excluded_Packages>
+                        <Excluded_Packages Name="c:\program files\borland\bds\3.0\Bin\dcltee90.bpl">TeeChart Components</Excluded_Packages>
+                    </Excluded_Packages>
+                    <Source>
+                        <Source Name="MainSource">GX_FormatterUnitTests.dpr</Source>
+                    </Source>
+                </Delphi.Personality>
+            </BorlandProject>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets"/>
+    <ItemGroup>
+        <DelphiCompile Include="GX_FormatterUnitTests.dpr">
+            <MainSource>MainSource</MainSource>
+        </DelphiCompile>
+        <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterEngine.pas"/>
+        <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterFormatter.pas"/>
+        <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterParser.pas"/>
+        <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterSettings.pas"/>
+        <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterStack.pas"/>
+        <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterTokenList.pas"/>
+        <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterTokens.pas"/>
+        <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterTypes.pas"/>
+        <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterUnicode.pas"/>
+        <DCCReference Include="..\..\Source\Formatter\GX_CodeFormatterConfigHandler.pas"/>
+        <DCCReference Include="..\..\Source\Formatter\GX_CodeFormatterDefaultSettings.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_GenericUtils.pas"/>
+        <DCCReference Include="..\dunit\DUnitConsts.pas"/>
+        <DCCReference Include="..\dunit\GUITestRunner.pas"/>
+        <DCCReference Include="..\dunit\TestFramework.pas"/>
+        <DCCReference Include="DelForExTestFiles.pas"/>
+        <DCCReference Include="DelForExTestOldNew.pas"/>
+    </ItemGroup>
 </Project>

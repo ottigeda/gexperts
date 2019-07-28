@@ -183,7 +183,7 @@ end;
 
 function TTestTestfiles.GetConfigDirBS: string;
 begin
-  Result := '..\release\';
+  Result := '..\binaries\';
 end;
 
 procedure TTestTestfiles.SetUp;

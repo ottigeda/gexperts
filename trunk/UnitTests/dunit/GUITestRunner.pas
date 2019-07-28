@@ -43,10 +43,14 @@ uses
 
   Windows,
   Math,
-  Graphics, Controls, Forms, 
+  Graphics, Controls, Forms,
   ComCtrls, ExtCtrls, StdCtrls, ImgList, Buttons, Menus, ActnList,
   Classes, IniFiles, ToolWin, DUnitConsts, Actions, ImageList;
-
+// if you get compile errors for units Actions and ImageList, add the folowing unit aliases
+// to the project's Unit Aliases:
+// * Actions=ActnList
+// * ImageList=Controls
+// These are the units in which these types were declared in previous Delphi versions.
 
 
 const
