@@ -61,6 +61,10 @@ type
     edWorkingDir: TEdit;
     edParameters: TEdit;
     FDirectory: string;
+    FOrigMacroOnClick: TNotifyEvent;
+    FForm: TForm;
+    FOrigFormHeight: Integer;
+    FOrigMacrolistHeight: Integer;
     procedure HandleFilesDropped(_Sender: TObject; _Files: TStrings);
     procedure b_ExportClick(_Sender: TObject);
     procedure b_ImportClick(_Sender: TObject);
@@ -70,6 +74,7 @@ type
     procedure HandlePasteFromClipboard(_Sender: TObject);
     procedure GetEntry(out _Entry: TToolsEntry);
     procedure SetEntry(const _Entry: TToolsEntry);
+    procedure HandleMacroButtonClick(_Sender: TObject);
   protected
     function IsDesiredForm(_Form: TCustomForm): Boolean; override;
     procedure EnhanceForm(_Form: TForm); override;
@@ -134,6 +139,10 @@ begin
     and SameText(_Form.Name, 'TransEditDlg');
 end;
 
+type
+  TCustomButtonHack = class(TCustomButton)
+  end;
+
 procedure TToolPropertiesEnhancer.EnhanceForm(_Form: TForm);
 var
   b_Export: TButton;
@@ -141,6 +150,9 @@ var
   CancelButton: TButton;
   b_Import: TButton;
   pm: TPopupMenu;
+  // The macro button is a button in Delphi 2007 and a TBitBtn in 10.3, so a TCustomButton should work for all
+  MacroButton: TCustomButton;
+  MacroList: TListBox;
 begin
 // Drop files only works in Delphi 6 and 7 while autocomplete works in all versions.
 // The "new" IDE apparently does something to TEdits that prevent them to receive WM_DROPFILES
@@ -172,6 +184,9 @@ begin
 
   CancelButton := _Form.FindComponent('CancelButton') as TButton;
   HelpButton := _Form.FindComponent('HelpButton') as TButton;
+  MacroButton := _Form.FindComponent('MacroButton') as TCustomButton;
+  FOrigMacroOnClick := TCustomButtonHack(MacroButton).OnClick;
+  TCustomButtonHack(MacroButton).OnClick := Self.HandleMacroButtonClick;
 
   b_Export := TButton.Create(_Form);
   b_Export.Name := 'GxExportButton';
@@ -195,6 +210,38 @@ begin
   TPopupMenu_AppendMenuItem(pm, 'Copy entry to clipboard', HandleCopyToClipboard);
   TPopupMenu_AppendMenuItem(pm, 'Paste entry from clipboard', HandlePasteFromClipboard);
   _Form.PopupMenu := pm;
+
+  FForm := _Form;
+  FOrigFormHeight := FForm.Height;
+  MacroList := FForm.FindComponent('MacroList') as TListBox;
+  FOrigMacrolistHeight := MacroList.Height;
+end;
+
+procedure TToolPropertiesEnhancer.HandleMacroButtonClick(_Sender: TObject);
+var
+  MacroList: TListBox;
+  Diff: Integer;
+  Monitor: TMonitor;
+  WorkArea: TRectLTWH;
+  DesiredHeight: Integer;
+begin
+  MacroList := FForm.FindComponent('MacroList') as TListBox;
+  FOrigMacroOnClick(_Sender);
+  if FForm.Height > FOrigFormHeight then begin
+    DesiredHeight := 540;
+    Monitor := TForm_GetMonitor(FForm);
+    if not Assigned(Monitor) then
+      Exit; //==>
+    TRectLTWH_Assign(WorkArea, Monitor.WorkareaRect);
+    if DesiredHeight > WorkArea.Height then
+      DesiredHeight := WorkArea.Height;
+    Diff := DesiredHeight - FForm.Height;
+    FForm.Height := DesiredHeight;
+    MacroList.Height := MacroList.Height + Diff;
+    TMonitor_MakeFullyVisible(Monitor, FForm);
+  end else begin
+    MacroList.Height := FOrigMacrolistHeight;
+  end;
 end;
 
 //procedure TToolPropertiesEnhancer.HandleControlChanged(_Sender: TObject; _Form: TCustomForm; _Control: TWinControl);
@@ -411,3 +458,4 @@ initialization
 finalization
   TGxIdeToolPropertiesEnhancer.SetEnabled(False);
 end.
+

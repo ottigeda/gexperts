@@ -1079,12 +1079,12 @@ function TCheckBox_CalcAutoWidth(_Chk: TCustomCheckBox; _ParentCanvas: TCanvas =
 /// Note: Does not always work, especially since it does not take the WordWrap property into account </summary>
 function TCheckBox_Autosize(_Chk: TCustomCheckBox; _ParentCanvas: TCanvas = nil): Integer;
 
+{$ENDIF GExperts}
 ///<summary>
 /// The same as TForm.Monitor, but it works.
 /// @returns the monitor on wich the center point of the form is located.
 ///          Warning: The result might be nil if the form is outside the visible area. </summary>
 function TForm_GetMonitor(_frm: TForm): TMonitor;
-{$ENDIF GExperts}
 ///<summary> centers a form on the given point, but makes sure the form is fully visible </summary>
 procedure TForm_CenterOn(_frm: TForm; _Center: TPoint); overload;
 ///<summary> centers a form on the given component, but makes sure the form is fully visible </summary>
@@ -3777,7 +3777,7 @@ begin
   if not TScreen_TryGetMonitorFromPoint(_pnt, Result) then
     Result := nil;
 end;
-{$IFNDEF GExperts}
+
 function TForm_GetMonitor(_frm: TForm): TMonitor;
 var
   Center: TPoint;
@@ -3786,7 +3786,7 @@ begin
   Center.Y := _frm.Top + _frm.Height div 2;
   Result := TScreen_MonitorFromPoint(Center);
 end;
-{$ENDIF GExperts}
+
 procedure TForm_CenterOn(_frm: TForm; _Center: TPoint);
 var
   Monitor: TMonitor;
