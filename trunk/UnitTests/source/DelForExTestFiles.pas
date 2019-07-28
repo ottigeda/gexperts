@@ -233,11 +233,11 @@ begin
   ExpectedFile := 'testcases\expected-' + GetResultDir + '\' + Filename;
   if not FileExists(InFile) then begin
 //    ExpectedException := EFileDoesNotExist;
-    raise EFileDoesNotExist.Create('Input file does not exist');
+    raise EFileDoesNotExist.CreateFmt('Input file does not exist: %s', [InFile]);
   end;
   if not FileExists(ExpectedFile) then begin
 //    ExpectedException := EFileDoesNotExist;
-    raise EFileDoesNotExist.Create('Expected file does not exist');
+    raise EFileDoesNotExist.CreateFmt('Expected file does not exist: %s', [ExpectedFile]);
   end;
 
   ExpectedText := nil;
