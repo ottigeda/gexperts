@@ -278,7 +278,6 @@
       <Entry>raise</Entry>
       <Entry>Random</Entry>
       <Entry>Randomize</Entry>
-      <Entry>read</Entry>
       <Entry>ReadBool</Entry>
       <Entry>ReadString</Entry>
       <Entry>record</Entry>
@@ -384,8 +383,6 @@
       <Entry>Word</Entry>
       <Entry>WordBool</Entry>
       <Entry>wParam</Entry>
-      <Entry>write</Entry>
-      <Entry>Write</Entry>
       <Entry>WriteBool</Entry>
       <Entry>WriteInteger</Entry>
       <Entry>xor</Entry>
