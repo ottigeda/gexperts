@@ -328,6 +328,7 @@ object fmProofreaderConfig: TfmProofreaderConfig
                 TabOrder = 1
                 ViewStyle = vsReport
                 OnData = lvDictionaryData
+                OnDataFind = lvDictionaryDataFind
                 OnDblClick = lvDictionaryDblClick
               end
             end

@@ -59,6 +59,7 @@ type
     function FindInStrings(Strings: TStrings; const ListIsSorted: Boolean; const Word: string): string;
     function FindReplacementIndex(const Zone: TReplacementSource; const TypedString: string): Integer;
     function FindReplacement(const Zone: TReplacementSource; const TypedString: string): TReplacementItem;
+    function DictionaryIncrementalSearch(const Zone: TReplacementSource; const TypedString: string): Integer;
 
     procedure SaveSettings(_Settings: IExpertSettings);
     procedure LoadSettings(_Settings: IExpertSettings);
@@ -273,6 +274,12 @@ end;
 function TProofreaderData.GetXmlFileName: string;
 begin
   Result := AddSlash(ConfigInfo.ConfigPath) + 'CodeProofreader.xml'
+end;
+
+function TProofreaderData.DictionaryIncrementalSearch(const Zone: TReplacementSource;
+  const TypedString: string): Integer;
+begin
+  FDictionaryLists[Zone].Find(TypedString, Result);
 end;
 
 function XmlStringToReplacementSource(const LanguageName: string): TReplacementSource;

@@ -5,7 +5,7 @@ unit GX_ProofreaderConfig;
 interface
 
 uses
-  Classes, Controls, Forms, Dialogs, ComCtrls, StdCtrls,
+  Windows, Classes, Controls, Forms, Dialogs, ComCtrls, StdCtrls,
   ActnList, ToolWin, ExtCtrls, Menus, Messages,
   GX_ProofreaderExpert, GX_ProofreaderData, GX_ProofreaderUtils, GX_SharedImages,
   GX_BaseForm;
@@ -105,6 +105,9 @@ type
     procedure btnSelectFileClick(Sender: TObject);
     procedure cbBeepClick(Sender: TObject);
     procedure actTestBeepExecute(Sender: TObject);
+    procedure lvDictionaryDataFind(Sender: TObject; Find: TItemFind; const FindString: string;
+      const FindPosition: TPoint; FindData: Pointer; StartIndex: Integer;
+      Direction: TSearchDirection; Wrap: Boolean; var Index: Integer);
   private
     FProofreaderExpert: TCodeProofreaderExpert;
     FProofreaderData: TProofreaderData;
@@ -122,7 +125,7 @@ type
 implementation
 
 uses
-  SysUtils, Windows, MMSystem,
+  SysUtils, MMSystem,
   GX_ProofreaderAutoCorrectEntry, GX_KibitzComp,
   GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_dzVclUtils, GX_ConfigurationInfo;
 
@@ -659,6 +662,13 @@ end;
 procedure TfmProofreaderConfig.lvDictionaryData(Sender: TObject; Item: TListItem);
 begin
   Item.Caption := FProofreaderData.GetDictionaryEntry(GetReplacementSource, Item.Index);
+end;
+
+procedure TfmProofreaderConfig.lvDictionaryDataFind(Sender: TObject; Find: TItemFind;
+  const FindString: string; const FindPosition: TPoint; FindData: Pointer; StartIndex: Integer;
+  Direction: TSearchDirection; Wrap: Boolean; var Index: Integer);
+begin
+  Index := FProofreaderData.DictionaryIncrementalSearch(GetReplacementSource, FindString);
 end;
 
 procedure TfmProofreaderConfig.lvReplacementData(Sender: TObject; Item: TListItem);
