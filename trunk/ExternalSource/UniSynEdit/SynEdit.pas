@@ -4955,7 +4955,7 @@ var
   nMaxScroll: Integer;
   ScrollInfo: TScrollInfo;
   iRightChar: Integer;
-  iClientRect: TRect;
+//  iClientRect: TRect;
 begin
   if not HandleAllocated or (PaintLock <> 0) then
     Include(FStateFlags, sfScrollbarChanged)
