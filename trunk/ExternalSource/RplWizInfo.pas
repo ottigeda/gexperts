@@ -1402,10 +1402,10 @@ begin
           FController.SignalObjectEnd(ListName, CompObject);
         end;
 
-        except
-          on E: Exception do
-            FController.HandleException(E, SObjectProc);
-        end;
+      except
+        on E: Exception do
+          FController.HandleException(E, SObjectProc);
+      end;
     end
   finally
     FController.SignalStackEnd(StackName);
