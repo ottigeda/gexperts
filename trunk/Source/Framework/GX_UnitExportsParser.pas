@@ -164,14 +164,14 @@ type
     procedure GetAllFilesInPath(_sl: TStringList);
     procedure GetAllFilesInDir(_dir: string; _sl: TStringList);
   protected
-    procedure Execute; override;
+    procedure doExecute; override;
   public
     ///<summary>
     /// @param Files is a list of unit names, without path and extension, which are to be parsed.
     ///              Can be NIL, in which case all files in the search path will be parsed
     /// @param Paths is a list of possible search paths
     /// @param CacheDir is a directory to cache the identifier lists </summary>
-    constructor Create(const _Files: TStrings; _Paths: TStrings; const _CacheDir: string; _OnTerminate: TNotifyEvent);
+    constructor Create(const _Files: TStrings; _Paths: TStrings; const _CacheDir: string);
     destructor Destroy; override;
     ///<summary>
     /// After execution Identifiers contains a sorted list of all identfiers. The
@@ -909,13 +909,11 @@ end;
 { TUnitExportParserThread }
 
 constructor TUnitExportParserThread.Create(const _Files: TStrings; _Paths: TStrings;
-  const _CacheDir: string; _OnTerminate: TNotifyEvent);
+  const _CacheDir: string);
 var
   i: Integer;
   s: string;
 begin
-  OnTerminate := _OnTerminate;
-
   if _CacheDir = '' then
     FCacheDirBS := ''
   else begin
@@ -1018,7 +1016,7 @@ begin
   end;
 end;
 
-procedure TUnitExportParserThread.Execute;
+procedure TUnitExportParserThread.doExecute;
 var
   FilesInPath: TStringList;
 

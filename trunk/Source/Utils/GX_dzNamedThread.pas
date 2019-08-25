@@ -23,11 +23,6 @@ type
     FFlags: LongWord; // reserved for future use, must be zero
   end;
 
-///<summary>
-/// Set the name (displayed in the debugger) for the current thread
-/// @param Name is a string with the name to use </summary>
-procedure SetThreadName(const _Name: AnsiString);
-
 type
   /// <summary>
   /// A TThread that sets its name to its class name. Make sure you call
@@ -35,18 +30,35 @@ type
   TNamedThread = class(TThread)
   protected
     FThreadName: string;
+    FHasFinished: Boolean;
     ///<summary>
     /// Calls SetThreadName with FThreadName </summary>
     procedure SetName; virtual;
     ///<summary>
-    /// Calls SetName </summary>
+    /// Calls SetName and doExecute
+    /// @NOTE that this method is not virtual, override doExecute instead </summary>
+{$IFDEF GX_DELPHI2005_UP}
+    // only Delphi 2005 and later support the final keyword
+    procedure Execute; override; final;
+{$ELSE}
     procedure Execute; override;
+{$ENDIF}
+    ///<summary>
+    /// Does nothing, override to do the actual work </summary>
+    procedure doExecute; virtual;
     function GetThreadName: string;
   public
+    ///<summary>
+    /// Set the name (displayed in the debugger) for the current thread
+    /// @param Name is a string with the name to use </summary>
+    class procedure SetThreadName(const _Name: AnsiString);
     ///<summary>
     /// @param CreateSuspended (see TThread.Create)
     /// @param Name is the name to set for the thread, if empty, the ClassName will be used </summary>
     constructor Create(_CreateSuspended: Boolean; const _Name: string = '');
+    ///<summary>
+    /// Is set to true when the doExecute method exits </summary>
+    property HasFinished: Boolean read FHasFinished;
   end;
 
 implementation
@@ -55,7 +67,7 @@ implementation
 {$WARN UNSAFE_CODE OFF}
 {$ENDIF}
 
-procedure SetThreadName(const _Name: AnsiString);
+class procedure TNamedThread.SetThreadName(const _Name: AnsiString);
 var
   ThreadNameInfo: TThreadNameInfo;
 begin
@@ -82,9 +94,19 @@ begin
   inherited Create(_CreateSuspended);
 end;
 
+procedure TNamedThread.doExecute;
+begin
+  // does nothing
+end;
+
 procedure TNamedThread.Execute;
 begin
-  SetName;
+  try
+    SetName;
+    doExecute;
+  finally
+    FHasFinished := True;
+  end;
 end;
 
 function TNamedThread.GetThreadName: string;
@@ -99,6 +121,5 @@ end;
 
 initialization
   // set the name for the main thread to 'Main'
-  SetThreadName('Main');
+  TNamedThread.SetThreadName('Main');
 end.
-

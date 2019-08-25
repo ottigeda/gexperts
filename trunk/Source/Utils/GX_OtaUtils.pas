@@ -679,6 +679,18 @@ type
     procedure ProcessDestroyed({$IFDEF GX_VER170_up} const {$ENDIF} Process: IOTAProcess); virtual;
   end;
 
+type
+  TProjectChangedNotifier = class(TBaseIdeNotifier)
+  private
+    FOnProjectChanged: TNotifyEvent;
+    FLastProject: string;
+  public
+    constructor Create(_OnProjectChanged: TNotifyEvent);
+    procedure FileNotification(NotifyCode: TOTAFileNotification;
+      const FileName: string; var Cancel: Boolean); override;
+  end;
+
+type
   EStandAloneUsage = class(Exception);
 
 const
@@ -2983,7 +2995,7 @@ procedure GxOtaGetAllPossiblePaths(Paths: TStrings; Project: IOTAProject = nil);
       // TODO: Cache the IDE source dir list between calls
       DirFinder.StartFind;
       Sleep(1);
-      while not DirFinder.Complete do
+      while not DirFinder.HasTerminated do
         Sleep(1);
       DirFinder.LockResults;
       try
@@ -5234,6 +5246,30 @@ end;
 procedure TBaseDebuggerNotifier.ProcessDestroyed({$IFDEF GX_VER170_up} const {$ENDIF} Process: IOTAProcess);
 begin
   // Nothing
+end;
+
+{ TProjectChangedNotifier }
+
+constructor TProjectChangedNotifier.Create(_OnProjectChanged: TNotifyEvent);
+begin
+  inherited Create;
+  Assert(Assigned(_OnProjectChanged));
+  FOnProjectChanged := _OnProjectChanged;
+end;
+
+procedure TProjectChangedNotifier.FileNotification(NotifyCode: TOTAFileNotification;
+  const FileName: string; var Cancel: Boolean);
+var
+  ThisProject: string;
+begin
+  if NotifyCode = ofnActiveProjectChanged then begin
+    // Check if the project actually has changed
+    ThisProject := GxOtaGetCurrentProjectFileName;
+    if ThisProject = FLastProject then
+      Exit; //==>
+    FLastProject := ThisProject;
+    FOnProjectChanged(Self);
+  end;
 end;
 
 initialization

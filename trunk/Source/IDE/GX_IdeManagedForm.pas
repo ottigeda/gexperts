@@ -659,7 +659,7 @@ type
     FParentCenterY: Integer;
     procedure CenterWindow(wHandle: HWND);
   protected
-    procedure Execute; override;
+    procedure doExecute; override;
   public
     constructor Create(_ParentHandle: HWND);
   end;
@@ -690,7 +690,7 @@ begin
     Rect.Right - Rect.Left, Rect.Bottom - Rect.Top, False);
 end;
 
-procedure TMoveWindowThread.Execute;
+procedure TMoveWindowThread.doExecute;
 var
   Rect: TRect;
   MaxTickCount: DWORD;

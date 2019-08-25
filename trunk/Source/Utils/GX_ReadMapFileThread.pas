@@ -18,18 +18,16 @@ type
     FMapFile: string;
     FResults: TStringList;
     FResultsLock: TCriticalSection;
-    FComplete: Boolean;
     FOnFindComplete: TThreadMethod;
     FFileExtensions: TStringList;
   protected
-    procedure Execute; override;
+    procedure doExecute; override;
   public
     constructor Create;
     destructor Destroy; override;
     procedure StartFind;
     procedure LockResults;
     procedure ReleaseResults;
-    property Complete: Boolean read FComplete;
     property SearchPath: TStringList read FSearchPath;
     property FileExtensions: TStringList read FFileExtensions;
     property OnFindComplete: TThreadMethod read FOnFindComplete write FOnFindComplete;
@@ -63,7 +61,7 @@ begin
   FreeAndNil(FResultsLock);
 end;
 
-procedure TReadMapFileThread.Execute;
+procedure TReadMapFileThread.doExecute;
 var
   UnitIdx: Integer;
   Reader: TMapFileReader;
@@ -75,7 +73,6 @@ var
 begin
   inherited;
 
-  FComplete := False;
   try
     LockResults;
     try
@@ -114,7 +111,6 @@ begin
       Exit;
     if Assigned(FOnFindComplete) then
       Synchronize(FOnFindComplete);
-    FComplete := True;
   except
     on E: Exception do
       MessageBox(0, PChar(E.Message), 'File Search Thread', MB_OK + MB_ICONERROR + MB_APPLMODAL);

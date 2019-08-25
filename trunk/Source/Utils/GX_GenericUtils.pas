@@ -793,16 +793,14 @@ type
     FFindComplete: TThreadMethod;
     FResultsLock: TCriticalSection;
     FDirectoriesOnly: Boolean;
-    FComplete: Boolean;
     FDirsToIgnore: TStringList;
     procedure SetDirsToIgnore(const Value: TStringList);
   protected
-    procedure Execute; override;
+    procedure doExecute; override;
     procedure FindFilesInDir(const Dir: string; Recursive: Boolean);
     procedure AddResult(const FileName: string); virtual;
   public
     property DirsToIgnore: TStringList read FDirsToIgnore write SetDirsToIgnore;
-    property Complete: Boolean read FComplete;
     property FileMasks: TStringList read FFileMasks;
     property SearchDirs: TStringList read FSearchDirs;
     property DirectoriesOnly: Boolean read FDirectoriesOnly write FDirectoriesOnly;
@@ -4717,13 +4715,12 @@ begin
   FreeAndNil(FRecursiveSearchDirs);
 end;
 
-procedure TFileFindThread.Execute;
+procedure TFileFindThread.doExecute;
 var
   i: Integer;
 begin
   inherited;
 
-  FComplete := False;
   try
     LockResults;
     try
@@ -4751,7 +4748,6 @@ begin
       Exit;
     if Assigned(FFindComplete) then
       Synchronize(FFindComplete);
-    FComplete := True;
   except
     on E: Exception do
       MessageBox(0, PChar(E.Message), 'File Search Thread', MB_OK + MB_ICONERROR + MB_APPLMODAL);
