@@ -1380,12 +1380,17 @@ begin
             end;
           end;
 
+{$IFDEF GX_DELPHIXE3_UP}
+          if Children.Count > 0 then
+            raise Exception.CreateFmt(
+              'Due to a bug in the Open Tools API since Delphi XE3 %s cannot be replaced because it has sub components.',
+              [StackName]);
+{$ENDIF}
           // Create a new one & assign properties
           CreateComponent(Parent, FormEditor, NewType);
 
           // Recreate child objects
           Result := Children.Replace(Self, FormEditor, List, NewType) + 1;
-
         finally
           FController.SignalObjectEnd(ListName, CompObject);
         end;
