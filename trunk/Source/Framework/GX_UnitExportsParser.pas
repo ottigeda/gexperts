@@ -997,6 +997,8 @@ begin
   if SysUtils.FindFirst(_dir + '*.pas', faAnyFile, sr) = 0 then begin
     try
       repeat
+        if Terminated then
+          Exit; //==>
         if (sr.Attr and (faDirectory or faHidden or faSysFile or faTemporary or faSymLink)) = 0 then begin
           _sl.AddObject(_dir + sr.Name, Pointer(FileTimeToDosTime(sr.FindData.ftLastWriteTime)));
         end;
@@ -1012,6 +1014,8 @@ var
   i: Integer;
 begin
   for i := 0 to FPaths.Count - 1 do begin
+    if Terminated then
+      Exit; //==>
     GetAllFilesInDir(FPaths[i], _sl);
   end;
 end;
@@ -1047,13 +1051,15 @@ var
     fn: string;
   begin
     for i := 0 to FilesInPath.Count - 1 do begin
+      if Terminated then
+        Exit; //==>
       fn := FilesInPath[i];
       fno := ExtractFileName(fn);
       if SameText(fno, _fn) then begin
         Result := True;
         _FoundFn := fn;
         _FileAge := GXNativeUInt(FilesInPath.Objects[i]);
-        Exit;
+        Exit; //==>
       end;
     end;
     Result := False;
@@ -1099,11 +1105,15 @@ begin
   try
     sl := TStringList.Create;
     GetAllFilesInPath(FilesInPath);
+    if Terminated then
+      Exit; //==>
 
     FFoundUnitsCount := FilesInPath.Count;
 
     if Assigned(FFiles) then begin
       for FileIdx := 0 to FFiles.Count - 1 do begin
+        if Terminated then
+          Exit; //==>
         if TryFindPathToFile(FFiles[FileIdx] + '.pas', fn, UnitTime) then
           sl.AddObject(fn, Pointer(UnitTime));
       end;
