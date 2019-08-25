@@ -2995,7 +2995,7 @@ procedure GxOtaGetAllPossiblePaths(Paths: TStrings; Project: IOTAProject = nil);
       // TODO: Cache the IDE source dir list between calls
       DirFinder.StartFind;
       Sleep(1);
-      while not DirFinder.HasTerminated do
+      while not DirFinder.HasFinished do
         Sleep(1);
       DirFinder.LockResults;
       try
