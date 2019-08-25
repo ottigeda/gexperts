@@ -8,7 +8,8 @@ uses
   Classes, Controls, Forms, Menus, ComCtrls,
   ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
-  GX_KbdShortCutBroker, GX_UnitExportsParser, GX_dzCompilerAndRtlVersions;
+  GX_KbdShortCutBroker, GX_UnitExportsParser, GX_dzCompilerAndRtlVersions,
+  GX_OtaUtils;
 
 {$IFOPT D+}
 {$IF RTLVersion > RtlVersionDelphiXE}
@@ -43,8 +44,11 @@ type
     FDisableCache: Boolean;
     FOrigFileAddUnitExecute: TNotifyEvent;
     FReadMap: Boolean;
+    FProjectChangedNotifier: TProjectChangedNotifier;
+    FUnitExportParserThread: TUnitExportParserThread;
     procedure InternalExecute;
     function FindAction(out _Action: TBasicAction): Boolean;
+    procedure HandleProjectChanged(_Sender: TObject);
   protected
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     procedure InternalSaveSettings(_Settings: IExpertSettings); override;
@@ -248,7 +252,6 @@ type
     FLeftRatio: Double;
     FAliases: TStringList;
     FFindThread: TFileFindThread;
-    FUnitExportParserThread: TUnitExportParserThread;
     // maintains a list unit name mappings from "originally used" to "currently used"
     // this is necessary to put units which have been switched between using prefixes and
     // not in the correct place of the unit list.
@@ -286,7 +289,6 @@ type
     procedure lbxFavoriteFilesDropped(_Sender: TObject; _Files: TStrings);
     procedure LoadFavorites;
     procedure SaveFavorites;
-    procedure OnExportParserFinished(_Sender: TObject);
     procedure ResizeIdentiferGrid;
     procedure SwitchUnitsTab(_Direction: Integer);
     function AddToStringGrid(sg: TStringGrid; const UnitName: string): Integer;
@@ -312,12 +314,11 @@ implementation
 
 uses
   SysUtils, Messages, Windows, Graphics, StrUtils, Math, ToolsAPI,
-  GX_OtaUtils, GX_IdeUtils, GX_UsesManager, GX_dzVclUtils, GX_dzMapFileReader, GX_dzFileUtils,
+  GX_IdeUtils, GX_UsesManager, GX_dzVclUtils, GX_dzMapFileReader, GX_dzFileUtils,
 {$IFOPT D+}
   GX_DbugIntf,
 {$ENDIF D+}
   GX_UsesExpertOptions, GX_MessageBox, GX_dzOsUtils;
-
 
 { TUsesExpert }
 
@@ -331,6 +332,16 @@ destructor TUsesExpert.Destroy;
 var
   act: TBasicAction;
 begin
+{$IFOPT D+}
+  SendDebug('Freeing UnitExportParserThread');
+{$ENDIF D+}
+  FreeAndNil(FUnitExportParserThread);
+{$IFOPT D+}
+  SendDebug('UnitExportParserThread has been freed');
+{$ENDIF D+}
+
+  FreeAndNil(FProjectChangedNotifier);
+
   SaveSettings;
 
   if Assigned(FOrigFileAddUnitExecute) then
@@ -352,6 +363,9 @@ begin
       act.OnExecute := Self.Execute;
     end;
   end;
+  FProjectChangedNotifier := TProjectChangedNotifier.Create(HandleProjectChanged);
+  FProjectChangedNotifier.AddNotifierToIDE;
+  HandleProjectChanged(FProjectChangedNotifier);
 end;
 
 function TUsesExpert.FindAction(out _Action: TBasicAction): Boolean;
@@ -414,6 +428,59 @@ end;
 function TUsesExpert.GetBitmapFileName: string;
 begin
   Result := ClassName;
+end;
+
+procedure TUsesExpert.HandleProjectChanged(_Sender: TObject);
+var
+  Paths: TStrings;
+  CacheDir: string;
+  FavoriteUnits: TStringList;
+  fn: string;
+begin
+  FreeAndNil(FUnitExportParserThread);
+
+  if FDisableCache then
+    CacheDir := ''
+  else
+    CacheDir := ConfigInfo.CachingPath + 'UsesExpertCache';
+
+  Paths := TStringList.Create;
+  try
+    GxOtaGetAllPossiblePaths(Paths);
+
+    if FDisableCache then
+      CacheDir := ''
+    else
+      CacheDir := ConfigInfo.CachingPath + 'UsesExpertCache';
+    if FParseAll then begin
+{$IFOPT D+}
+      SendDebug('Running UnitExportParser thread to get identifiers from all units in search path');
+{$ENDIF D+}
+      FUnitExportParserThread := TUnitExportParserThread.Create(nil, Paths, CacheDir);
+    end else begin
+{$IFOPT D+}
+      SendDebug('Loading favorites');
+{$ENDIF D+}
+      FavoriteUnits := TStringList.Create;
+      FavoriteUnits.Sorted := False;
+      FavoriteUnits.Clear;
+      fn := ConfigInfo.ConfigPath + 'FavoriteUnits.txt'; // do not localize
+      if FileExists(fn) then
+        FavoriteUnits.LoadFromFile(fn);
+      FavoriteUnits.Sorted := True;
+{$IFOPT D+}
+      SendDebugFmt('Done loading %d favorites', [FavoriteUnits.Count]);
+{$ENDIF D+}
+      if FavoriteUnits.Count > 0 then begin
+{$IFOPT D+}
+        SendDebug('Running UnitExportParser thread to get identifiers from favorites');
+{$ENDIF D+}
+        FUnitExportParserThread := TUnitExportParserThread.Create(FavoriteUnits, Paths, CacheDir);
+      end;
+    end;
+  finally
+    FreeAndNil(Paths);
+  end;
 end;
 
 function TUsesExpert.HasConfigOptions: Boolean;
@@ -636,8 +703,6 @@ procedure TfmUsesManager.FormCreate(Sender: TObject);
 
 var
   Selection: string;
-  Paths: TStringList;
-  CacheDir: string;
 begin
   TControl_SetMinConstraints(Self);
   pnlUses.Constraints.MinWidth := pnlUses.Width;
@@ -658,38 +723,9 @@ begin
   FAliases := TStringList.Create;
   FOldToNewUnitNameMap := TStringList.Create;
 
-  Paths := TStringList.Create;
-  try
-    GxOtaGetAllPossiblePaths(Paths);
+  LoadFavorites;
 
-    if FUsesExpert.FDisableCache then
-      CacheDir := ''
-    else
-      CacheDir := ConfigInfo.CachingPath + 'UsesExpertCache';
-    if FUsesExpert.FParseAll then begin
-{$IFOPT D+}
-        SendDebug('Running UnitExportParser thread to get identifiers from all units in search path');
-{$ENDIF D+}
-        FUnitExportParserThread := TUnitExportParserThread.Create(nil, Paths, CacheDir,
-          OnExportParserFinished);
-        tim_Progress.Enabled := True;
-    end else begin
-      LoadFavorites;
-
-      if FFavoriteUnits.Count = 0 then begin
-        sg_Identifiers.Cells[0, 1] := 'no favorites selected';
-      end else begin
-{$IFOPT D+}
-        SendDebug('Running UnitExportParser thread to get identifiers from favorites');
-{$ENDIF D+}
-          FUnitExportParserThread := TUnitExportParserThread.Create(FFavoriteUnits, Paths, CacheDir,
-            OnExportParserFinished);
-        tim_Progress.Enabled := True;
-      end;
-    end;
-  finally
-    FreeAndNil(Paths);
-  end;
+  tim_Progress.Enabled := True;
 
   FFindThread := TFileFindThread.Create;
   FFindThread.FileMasks.Add('*.pas');
@@ -734,15 +770,9 @@ begin
     FFindThread.Terminate;
   end;
 
-  if Assigned(FUnitExportParserThread) then begin
-    FUnitExportParserThread.OnTerminate := nil;
-    FUnitExportParserThread.Terminate;
-  end;
-
   FreeAndNil(FOldToNewUnitNameMap);
   FreeAndNil(FAliases);
   FreeAndNil(FFindThread);
-  FreeAndNil(FUnitExportParserThread);
   FreeAndNil(FProjectUnits);
   FreeAndNil(FCommonUnits);
   FreeAndNil(FFavoriteUnits);
@@ -1699,18 +1729,6 @@ begin
   ResizeIdentiferGrid;
 end;
 
-procedure TfmUsesManager.tim_ProgressTimer(Sender: TObject);
-begin
-  if Assigned(FUnitExportParserThread) then begin
-    lblUnitsFound.Caption := Format('Units found: %d', [FUnitExportParserThread.FoundUnitsCount]);
-    lblUnitsParsed.Caption := Format('Units parsed: %d', [FUnitExportParserThread.ParsedUnitsCount]);
-    lblUnitsLoaded.Caption := Format('Units loaded: %d', [FUnitExportParserThread.LoadedUnitsCount]);
-    lblIdentifiers.Caption := Format('Identifiers found: %d', [FUnitExportParserThread.Identifiers.Count]);
-    pnlIdentifiersProgress.Visible := True;
-  end else
-    pnlIdentifiersProgress.Visible := False;
-end;
-
 procedure TfmUsesManager.LoadFavorites;
 var
   fn: string;
@@ -1729,7 +1747,7 @@ begin
 {$ENDIF D+}
 end;
 
-procedure TfmUsesManager.OnExportParserFinished(_Sender: TObject);
+procedure TfmUsesManager.tim_ProgressTimer(Sender: TObject);
 var
   IdentIdx: Integer;
   FixedRows: Integer;
@@ -1737,51 +1755,62 @@ var
   Identifier: string;
   sl: TStrings;
   Idx: Integer;
+  upt: TUnitExportParserThread;
 begin
-  tim_Progress.Enabled := False;
-  pnlIdentifiersProgress.Visible := False;
-  if not Assigned(FUnitExportParserThread) then
-    Exit; //==>
+  upt := FUsesExpert.FUnitExportParserThread;
+  if Assigned(upt) and not upt.HasFinished then begin
+    lblUnitsFound.Caption := Format('Units found: %d', [upt.FoundUnitsCount]);
+    lblUnitsParsed.Caption := Format('Units parsed: %d', [upt.ParsedUnitsCount]);
+    lblUnitsLoaded.Caption := Format('Units loaded: %d', [upt.LoadedUnitsCount]);
+    lblIdentifiers.Caption := Format('Identifiers found: %d', [upt.Identifiers.Count]);
+    pnlIdentifiersProgress.Visible := True;
+  end else begin
+    pnlIdentifiersProgress.Visible := False;
+    tim_Progress.Enabled := False;
+    pnlIdentifiersProgress.Visible := False;
+    if not Assigned(upt) then
+      Exit; //==>
 
-  FixedRows := sg_Identifiers.FixedRows;
-  sl := FUnitExportParserThread.Identifiers;
+    FixedRows := sg_Identifiers.FixedRows;
+    sl := upt.Identifiers;
 
 {$IFOPT D+}
-  SendDebugFmt('UnitExportParser finished, found %d identifiers', [sl.Count]);
-  SendDebugFmt('UnitExportParser found %d units', [FUnitExportParserThread.FoundUnitsCount]);
-  SendDebugFmt('UnitExportParser loaded %d units', [FUnitExportParserThread.LoadedUnitsCount]);
-  SendDebugFmt('UnitExportParser parsed %d units', [FUnitExportParserThread.ParsedUnitsCount]);
+    SendDebugFmt('UnitExportParser finished, found %d identifiers', [sl.Count]);
+    SendDebugFmt('UnitExportParser found %d units', [upt.FoundUnitsCount]);
+    SendDebugFmt('UnitExportParser loaded %d units', [upt.LoadedUnitsCount]);
+    SendDebugFmt('UnitExportParser parsed %d units', [upt.ParsedUnitsCount]);
 {$IFDEF DO_TIMING}
-  SendDebugFmt('UnitExportParser searching time %d ms', [FUnitExportParserThread.SearchingTimeMS]);
-  SendDebugFmt('UnitExportParser loading time %d ms', [FUnitExportParserThread.LoadingTimeMS]);
-  SendDebugFmt('UnitExportParser inserting time %d ms', [FUnitExportParserThread.InsertingTimeMS]);
-  SendDebugFmt('UnitExportParser parsing time %d ms', [FUnitExportParserThread.ParsingTimeMS]);
-  SendDebugFmt('UnitExportParser processing time %d ms', [FUnitExportParserThread.ProcessingTimeMS]);
-  SendDebugFmt('UnitExportParser sorting time %d ms', [FUnitExportParserThread.SortingTimeMS]);
-  SendDebugFmt('UnitExportParser total time %d ms', [FUnitExportParserThread.TotalTimeMS]);
+    SendDebugFmt('UnitExportParser searching time %d ms', [upt.SearchingTimeMS]);
+    SendDebugFmt('UnitExportParser loading time %d ms', [upt.LoadingTimeMS]);
+    SendDebugFmt('UnitExportParser inserting time %d ms', [upt.InsertingTimeMS]);
+    SendDebugFmt('UnitExportParser parsing time %d ms', [upt.ParsingTimeMS]);
+    SendDebugFmt('UnitExportParser processing time %d ms', [upt.ProcessingTimeMS]);
+    SendDebugFmt('UnitExportParser sorting time %d ms', [upt.SortingTimeMS]);
+    SendDebugFmt('UnitExportParser total time %d ms', [upt.TotalTimeMS]);
 {$ENDIF}
 {$ENDIF D+}
 
 {$IFOPT D+}
-  SendDebug('Preprocessing identifiers');
+    SendDebug('Preprocessing identifiers');
 {$ENDIF D+}
-  sg_Identifiers.RowCount := FixedRows + 1;
-  sg_Identifiers.Cells[0, FixedRows] := '';
-  sg_Identifiers.Cells[1, FixedRows] := '';
-  for IdentIdx := 0 to sl.Count - 1 do begin
-    Identifier := sl[IdentIdx];
-    UniqueString(Identifier);
-    UnitName := PChar(sl.Objects[IdentIdx]);
+    sg_Identifiers.RowCount := FixedRows + 1;
+    sg_Identifiers.Cells[0, FixedRows] := '';
+    sg_Identifiers.Cells[1, FixedRows] := '';
+    for IdentIdx := 0 to sl.Count - 1 do begin
+      Identifier := sl[IdentIdx];
+      UniqueString(Identifier);
+      UnitName := PChar(sl.Objects[IdentIdx]);
     // make sure the string is valid and not freed in the thread
-    if FSearchPathUnits.Find(UnitName, Idx) then begin
-      UnitName := FSearchPathUnits[Idx];
-      FFavUnitsExports.AddObject(Identifier, Pointer(PChar(UnitName)));
+      if FSearchPathUnits.Find(UnitName, Idx) then begin
+        UnitName := FSearchPathUnits[Idx];
+        FFavUnitsExports.AddObject(Identifier, Pointer(PChar(UnitName)));
+      end;
     end;
-  end;
 {$IFOPT D+}
-  SendDebug('Done preprocessing identifiers');
+    SendDebug('Done preprocessing identifiers');
 {$ENDIF D+}
-  FilterIdentifiers;
+    FilterIdentifiers;
+  end;
 end;
 
 type
