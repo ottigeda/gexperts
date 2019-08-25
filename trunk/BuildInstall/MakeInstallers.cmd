@@ -2,8 +2,13 @@
 @if not defined gx_cmd_debug (echo off)
 @endlocal
 set iscc="C:\Program Files (x86)\Inno Setup 5\ISCC.exe"
-set version=1.3.13
-set instver=13D
+
+call :readver
+rem echo %result%
+set version=%result%
+
+rem set instver=13D
+set instver=%version%
 call :getdate
 set special=-experimental-twm-%dateYYYYMMDD%
 
@@ -38,6 +43,44 @@ set Prefix=%2
 if "%prefix%" == "" set Prefix=%Delphi%
 %iscc% GExperts.iss /d%Delphi% /dVersion=%version% /fGX%Prefix%-%instver%%special%
 rem %iscc% GExperts.iss /dDelphi2010 /dVersion=%version% /fGXRS2010-%instver%-experimental-twm-%date%.exe
+goto :eof
+
+:readver
+rem taken from https://stackoverflow.com/a/2866328/49925 but heavily modified
+setlocal enableextensions enabledelayedexpansion
+set IniFile=..\projects\GExperts_version.ini
+set MajorVer=unknown
+set MinorVer=unknown
+set Release=unknown
+set CurrSection=
+for /f "usebackq delims=" %%a in ("!IniFile!") do (
+    set ln=%%a
+	
+    if "x!ln:~0,1!"=="x[" (
+        set CurrSection=!ln!
+    ) else (
+        for /f "tokens=1,2 delims==" %%b in ("!ln!") do (
+            set currkey=%%b
+            set currval=%%c
+            if "x!CurrSection!"=="x[Version Info]" (
+				if "x!currkey!"=="x!MajorVer" (
+					rem echo MajorVer: !currval!
+					set MajorVer=!currval!
+				) else if "x!currkey!"=="x!MinorVer" (
+					rem echo MinorVer: !currval!
+					set MinorVer=!currval!
+				) else if "x!currkey!"=="x!Release" (
+					rem echo Release: !currval!
+					set Release=!currval!
+				) else (
+					rem echo other: !currkey!=!currval!
+				)
+            )
+        )
+    )
+)
+
+endlocal & set result=%MajorVer%.%MinorVer%.%Release%
 goto :eof
 
 :getdate
