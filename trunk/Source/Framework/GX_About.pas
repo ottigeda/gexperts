@@ -164,16 +164,21 @@ begin
   Result := LoadBitmap(HInstance, GX_ABOUT_ICON24);
 end;
 
+
 class function TfmAbout.GetVersionStr: string;
 resourcestring
   SVersion = 'Version';
   SUnknown = '<unknown>';
+var
+  Version: TVersionNumber;
 begin
-  try
-    Result := Format('%s %s', [SVersion, GetFileVersionString(ThisDllName, True, False)]);
-  except
-    Result := Format('%s %s', [SVersion, SUnknown]);
-  end;
+  Version.IsValid := False;
+    Version := GetFileVersionNumber(ThisDllName, False, False);
+  if Version.IsValid then
+    Result := Format('%d.%d.%d build %d', [Version.Major, Version.Minor, Version.Release, Version.Build])
+  else
+    Result := SUnknown;
+  Result := SVersion + ' ' + Result;
 end;
 
 {$IFOPT D+}
