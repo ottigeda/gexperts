@@ -27,7 +27,7 @@ implementation
 
 uses
   Windows, Forms, GX_GxUtils, GX_OtaUtils, GX_VerDepConst,
-  GX_GExperts, GX_MessageBox, GX_CodeLib, GX_GrepExpert, GX_ExpertManager,
+  GX_DbugIntf,  GX_GExperts, GX_MessageBox, GX_CodeLib, GX_GrepExpert, GX_ExpertManager,
   GX_PeInformation, GX_GenericUtils, GX_DummyWizard;
 
 const
@@ -97,13 +97,18 @@ begin
   WizardServices := BorlandIDEServices as IOTAWizardServices;
   Assert(Assigned(WizardServices));
 
-  if (GExpertsDllMarker <> nil) then
-    FExpertIndex := WizardServices.AddWizard(TGExperts.Create as IOTAWizard)
-  else begin
+  if (GExpertsDllMarker <> nil) then begin
+    FExpertIndex := WizardServices.AddWizard(TGExperts.Create as IOTAWizard);
+    {$IFOPT D+} SendDebugFmt('Expert added with index %d', [FExpertIndex]); {$ENDIF}
+  end else begin
     // register a dummy wizard so we can fail gracefully
     FExpertIndex := WizardServices.AddWizard(TDummyWizard.Create as IOTAWizard);
+    {$IFOPT D+} SendDebugFmt('GExperts is already active, added dummy expert with index %d', [FExpertIndex]); {$ENDIF}
   end;
 
+  // some code on the Internet checks for <> 0 here, but this seems to be wrong.
+  // I have definitely seen AddWizard return 0 and the Expert was active.
+  // Unfortunately there seems to be no official documentation on the return code's value.
   Result := (FExpertIndex >= 0);
 end;
 
