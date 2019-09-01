@@ -199,15 +199,18 @@ begin
         begin
           for i := 0 to FExpertList.Count - 1 do
           begin
-            {$IFOPT D+}if ExpertList[i] <> nil then SendDebug('Destroying Expert: ' + ExpertList[i].GetName); {$ENDIF}
-            try
-              ExpertList[i].Free;
-            except
-              on E: Exception do
-              begin
-                // Report the exception and continue to destroy the other experts
-                MessageDlg(Format('Error destroying expert %d: %s', [i, E.Message]), mtError, [mbOK], 0);
-                {$IFOPT D+} SendDebugError(Format('Error destroying expert %d: %s', [i, E.Message])); {$ENDIF}
+            if ExpertList[i] <> nil then begin
+              {$IFOPT D+}SendDebug('Destroying Expert: ' + ExpertList[i].GetName); {$ENDIF}
+              try
+                ExpertList[i].Free;
+                {$IFOPT D+}SendDebug('done Destroying Expert: ' + ExpertList[i].GetName); {$ENDIF}
+              except
+                on E: Exception do
+                begin
+                  // Report the exception and continue to destroy the other experts
+                  MessageDlg(Format('Error destroying expert %d: %s', [i, E.Message]), mtError, [mbOK], 0);
+                  {$IFOPT D+} SendDebugError(Format('Error destroying expert %d: %s', [i, E.Message])); {$ENDIF}
+                end;
               end;
             end;
           end;
@@ -233,6 +236,7 @@ begin
 
     FPrivateGExpertsInst := nil;
     inherited Destroy;
+    {$IFOPT D+} SendDebug('done Destroying GExperts'); {$ENDIF}
   except
     on E: Exception do
     begin
