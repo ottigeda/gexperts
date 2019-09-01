@@ -187,7 +187,7 @@ begin
   Add('external', rtForward);
   Add('far', rtFuncDirective);
   Add('file', rtReserved);
-  Add('final', rtDirective);
+  Add('final', rtFuncDirective);
   Add('finalization', rtInitialization);
   Add('finally', rtExcept);
   Add('for', rtWhile);

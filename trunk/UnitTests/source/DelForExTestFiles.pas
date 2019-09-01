@@ -50,6 +50,7 @@ type
     procedure testEmptyStringAssignment;
     procedure testEmptyUnit;
     procedure testFormula;
+    procedure testFinalMethod;
     procedure testHashCharStrings;
     procedure testHexNumbers;
     procedure testIfdefs;
@@ -525,6 +526,11 @@ end;
 procedure TTestTestfiles.testFormula;
 begin
   TestFile('Formula');
+end;
+
+procedure TTestTestfiles.testFinalMethod;
+begin
+  TestFile('FinalMethod');
 end;
 
 procedure TTestTestfiles.testGenericClass;
