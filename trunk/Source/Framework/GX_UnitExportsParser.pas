@@ -1050,6 +1050,7 @@ var
     fno: string;
     fn: string;
   begin
+    Result := False;
     for i := 0 to FilesInPath.Count - 1 do begin
       if Terminated then
         Exit; //==>
@@ -1062,7 +1063,6 @@ var
         Exit; //==>
       end;
     end;
-    Result := False;
   end;
 
 var
