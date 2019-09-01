@@ -49,6 +49,7 @@ type
     procedure InternalExecute;
     function FindAction(out _Action: TBasicAction): Boolean;
     procedure HandleProjectChanged(_Sender: TObject);
+    procedure StartUnitParserThread;
   protected
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     procedure InternalSaveSettings(_Settings: IExpertSettings); override;
@@ -431,6 +432,11 @@ begin
 end;
 
 procedure TUsesExpert.HandleProjectChanged(_Sender: TObject);
+begin
+  StartUnitParserThread;
+end;
+
+procedure TUsesExpert.StartUnitParserThread;
 var
   Paths: TStrings;
   CacheDir: string;
@@ -567,6 +573,11 @@ begin
   SendDebug('Creating UsesManager form');
 {$ENDIF D+}
   FUsesExpert := _UsesExpert;
+
+  // To ensure we get the latest version of all units, start the thread again
+  // it will run fast if everything is already cached.
+  FUsesExpert.StartUnitParserThread;
+
   inherited Create(_Owner);
 
   DoubleBuffered := True;
