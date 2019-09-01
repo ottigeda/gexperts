@@ -333,15 +333,20 @@ destructor TUsesExpert.Destroy;
 var
   act: TBasicAction;
 begin
+  if Assigned(FUnitExportParserThread) then begin
 {$IFOPT D+}
   SendDebug('Freeing UnitExportParserThread');
 {$ENDIF D+}
   FreeAndNil(FUnitExportParserThread);
 {$IFOPT D+}
-  SendDebug('UnitExportParserThread has been freed');
+  SendDebug('done freeing UnitExportParserThread');
 {$ENDIF D+}
+  end;
 
-  FreeAndNil(FProjectChangedNotifier);
+  if Assigned(FProjectChangedNotifier) then begin
+    FProjectChangedNotifier.RemoveNotifierFromIDE;
+    FProjectChangedNotifier := nil;
+  end;
 
   SaveSettings;
 
