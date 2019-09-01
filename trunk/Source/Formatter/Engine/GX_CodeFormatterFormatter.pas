@@ -1260,7 +1260,12 @@ var
           until FStack.IsEmpty or (FLastPopResType in [rtClass, rtClassDecl, rtRecord, rtTry, rtCase, rtBegin, rtAsm (* , rtVisibility *)]);
 
           if FStack.IsEmpty then
-            FStack.nIndent := 0;
+            FStack.nIndent := 0
+          else begin
+            if (FLastPopResType = rtCase) and (FStack.GetTopType = rtClass) then
+              FLastPopResType := FStack.Pop;
+          end;
+
 
           if Settings.FeedBeforeEnd and (FPrevToken <> nil)
             and (GetToken(FTokenIdx - 1).ReservedType <> rtLineFeed) then begin
