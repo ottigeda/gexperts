@@ -128,7 +128,8 @@ procedure FreeGXMenuActionManager;
 begin
   // Anything else would be an error in assumptions;
   // nothing fatal, but not good.
-  {$IFOPT D+}Assert(PrivateGXMenuActionManager <> nil, 'PrivateGXMenuActionManager is nil');{$ENDIF}
+  {$IFOPT D+}if not Assigned(PrivateGXMenuActionManager) then
+    SendDebugWarning('PrivateGXMenuActionManager is nil');{$ENDIF}
 
   FreeAndNil(PrivateGXMenuActionManager);
 end;
