@@ -10,8 +10,7 @@ var
 begin
   RegisterConverter(TStringList,
     function: integer
-    var
-      i: integer;
+    var i: integer;
     begin
     end);
 end;
