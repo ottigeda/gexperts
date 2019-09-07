@@ -1,16 +1,19 @@
-unit testfile_Anonymous;
+﻿unit testfile_Anonymous;
 
 interface
 
 implementation
 
-function SomeProc: boolean;
+procedure SomeProc;
 var
-  i: integer;
+  s: string;
 begin
   RegisterConverter(TStringList,
     function: integer
-    var i: integer;
+    var
+      b: boolean;
     begin
+      bla;
+      blub;
     end);
 end;

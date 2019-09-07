@@ -30,6 +30,8 @@ type
   published
     procedure testAbstractSealedClass;
     procedure testAngledBrackets;
+    procedure testAnonymous;
+    procedure testAnonymous2;
     procedure testArabic;
     procedure testAsm;
     procedure testAsmProblem1;
@@ -97,7 +99,6 @@ type
     procedure testUsesWithComment;
     procedure testVariantExtendedRecord;
 
-    procedure testAnonymousCurrentlyFails;
     procedure testCurlyHalfCommentEndCurrentlyFails;
     procedure testIfThenElse2CurrentlyFails;
     procedure testComplexCurrentlyFails;
@@ -560,9 +561,14 @@ begin
   TestFile('AngledBrackets');
 end;
 
-procedure TTestTestfiles.testAnonymousCurrentlyFails;
+procedure TTestTestfiles.testAnonymous;
 begin
-  TestFile('Anonymous', True);
+  TestFile('Anonymous');
+end;
+
+procedure TTestTestfiles.testAnonymous2;
+begin
+  TestFile('Anonymous2');
 end;
 
 procedure TTestTestfiles.testArabic;

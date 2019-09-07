@@ -486,12 +486,12 @@ end;
 
 procedure TCodeFormatterFormatter.PutCommentBefore(const _Comment: TGXUnicodeString);
 var
-  J: Integer;
+  j: Integer;
   P: TPascalToken;
   s: TGXUnicodeString;
 begin
-  J := FTokenIdx - 2;
-  P := GetToken(J);
+  j := FTokenIdx - 2;
+  P := GetToken(j);
 
   s := _Comment;
 
@@ -561,7 +561,7 @@ begin
     and FPrevToken.GetExpression(PrevExpression) and (PrevExpression[1] = '/') then begin
     // fix for situation with a // comment on prev line: begin becomes part of the comment
     if FPrevToken.ChangeComment('{') then begin
-      FPrevToken.SetSpace([spAfter], true);
+      FPrevToken.SetSpace([spAfter], True);
     end else begin
       i := 0;
       Token := nil;
@@ -1215,11 +1215,20 @@ var
           if (FStack.GetTopType in [rtClass, rtClassDecl, rtRecord]) then begin
             FStack.Push(FCurrentRType, 1);
           end else begin
-            FStack.Push(FCurrentRType, 0);
-            if not PrevTokenIsRType(rtEquals) then begin
-              DecPrevLineIndent;
-              if Settings.FeedAfterVar then
-                AssertLineFeedAfter(FTokenIdx);
+            if (FStack.GetTopType = rtProcDeclare) then begin
+              // inline function
+              FStack.Push(FCurrentRType, 1);
+              if not PrevTokenIsRType(rtEquals) then begin
+                if Settings.FeedAfterVar then
+                  AssertLineFeedAfter(FTokenIdx);
+              end;
+            end else begin
+              FStack.Push(FCurrentRType, 0);
+              if not PrevTokenIsRType(rtEquals) then begin
+                DecPrevLineIndent;
+                if Settings.FeedAfterVar then
+                  AssertLineFeedAfter(FTokenIdx);
+              end;
             end;
           end;
         end;
@@ -1266,7 +1275,6 @@ var
               FLastPopResType := FStack.Pop;
           end;
 
-
           if Settings.FeedBeforeEnd and (FPrevToken <> nil)
             and (GetToken(FTokenIdx - 1).ReservedType <> rtLineFeed) then begin
             FPrevLine := AssertLineFeedAfter(FTokenIdx - 1);
@@ -1310,7 +1318,7 @@ var
       rtSemiColon:
         if not (FStack.GetTopType in [rtLeftBr, rtLeftHook]) then begin
           if (FStack.GetTopType = rtUses) and (Settings.NoIndentUsesComma) and (FPrevToken is TLineFeed) then
-              SetPrevLineIndent(-1);
+            SetPrevLineIndent(-1);
 
           while not FStack.IsEmpty and (FStack.GetTopType in [rtDo, rtWhile,
             rtProcDeclare, rtThen, rtProgram, rtUses, rtColon, rtClassDecl])
@@ -1371,7 +1379,7 @@ var
         UppercaseCompilerDirective(FCurrentToken);
     end;
 
-      FPrevToken := FCurrentToken;
+    FPrevToken := FCurrentToken;
   end;
 
 begin { procedure TCodeFormatterFormatter.doExecute; }
@@ -1427,14 +1435,14 @@ var
   end;
 
 var
-  TokenIdx, J, k: Integer;
+  TokenIdx, j, k: Integer;
   K2, LineLen: Integer;
   Token: TPascalToken;
   Expression: TAlignExpression;
 begin
   LineLen := 0;
   FPrevLine := nil;
-  J := 0;
+  j := 0;
   TokenIdx := 0;
   while TokenIdx < FTokens.Count do begin
     Token := GetToken(TokenIdx);
@@ -1459,20 +1467,20 @@ begin
       if (LineLen > Settings.WrapPosition) then
         LineLen := 0;
 
-      J := TokenIdx;
+      j := TokenIdx;
     end;
 
-    if Settings.WrapLines and (LineLen > Settings.WrapPosition) and (TokenIdx > J + 3) then begin
+    if Settings.WrapLines and (LineLen > Settings.WrapPosition) and (TokenIdx > j + 3) then begin
       k := TokenIdx - 1;
       K2 := 0;
       HasInserted := False;
 
-      while (k >= J) and not HasInserted do begin
+      while (k >= j) and not HasInserted do begin
         if (GetToken(k).ReservedType in [rtThen, rtDo])
           or (GetToken(k).ReservedType = rtElse)
           and (GetToken(k + 1).ReservedType <> rtIf) then begin
           InsertLinefeed(k + 1);
-          TokenIdx := J;
+          TokenIdx := j;
         end;
 
         if (K2 = 0) and (GetToken(k).Space(spAfter)
@@ -1482,9 +1490,9 @@ begin
         Dec(k);
       end;
 
-      if not HasInserted and (K2 <> 0) and (K2 > J) then begin
+      if not HasInserted and (K2 <> 0) and (K2 > j) then begin
         InsertLinefeed(K2);
-        TokenIdx := J;
+        TokenIdx := j;
       end;
 
       LineLen := 0;
