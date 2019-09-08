@@ -88,6 +88,7 @@ type
     procedure testNestedEventType;
     procedure testOperatorOverloading;
     procedure testQuotesError;
+    procedure testReadWrite;
     procedure testRecordMethod;
     procedure testSingleElse;
     procedure testSlashCommentToCurly;
@@ -417,6 +418,11 @@ end;
 procedure TTestTestfiles.testQuotesError;
 begin
   TestFile('QuotesError');
+end;
+
+procedure TTestTestfiles.testReadWrite;
+begin
+  TestFile('ReadWrite');
 end;
 
 procedure TTestTestfiles.testRecordMethod;
