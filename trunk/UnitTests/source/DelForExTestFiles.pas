@@ -57,12 +57,12 @@ type
     procedure testEmptyProgram;
     procedure testEmptyStringAssignment;
     procedure testEmptyUnit;
-    procedure testfileFakeGenericCreate;
-    procedure testfileGenericCreate;
+    procedure testFakeGenericCreate;
     procedure testFinalMethod;
     procedure testFormula;
     procedure testGenericClass;
     procedure testGenericClass2;
+    procedure testGenericCreate;
     procedure testGenericField;
     procedure testGenericFunction;
     procedure testGenericInterface;
@@ -527,12 +527,12 @@ begin
   TestFile('ConstVar');
 end;
 
-procedure TTestTestfiles.testfileGenericCreate;
+procedure TTestTestfiles.testGenericCreate;
 begin
   TestFile('GenericCreate');
 end;
 
-procedure TTestTestfiles.testfileFakeGenericCreate;
+procedure TTestTestfiles.testFakeGenericCreate;
 begin
   TestFile('FakeGenericCreate');
 end;
