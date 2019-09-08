@@ -471,7 +471,12 @@ begin
 
   with pFontsInfo^ do
   begin
+  try
     Assert(LockCount < RefCount, 'Call DeactivateFontsInfo before calling this.');
+  except
+    // yes this does not make sense, it's just a convenient place to put a breakpoint
+    raise;
+  end;
     if RefCount > 1 then
       Dec(RefCount)
     else
