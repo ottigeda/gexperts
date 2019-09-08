@@ -63,6 +63,12 @@ type
     procedure testFormula;
     procedure testGenericClass;
     procedure testGenericClass2;
+    procedure testGenericField;
+    procedure testGenericFunction;
+    procedure testGenericInterface;
+    procedure testGenericProcTypes;
+    procedure testGenericRecord;
+    procedure testGenericVariable;
     procedure testHashCharStrings;
     procedure testHexNumbers;
     procedure testIfdefs;
@@ -398,7 +404,7 @@ begin
   TestFile('TypeOf');
 end;
 
-procedure TTestTestfiles.TestUnicode;
+procedure TTestTestfiles.testUnicode;
 begin
   TestFile('unicode');
 end;
@@ -549,6 +555,36 @@ end;
 procedure TTestTestfiles.testGenericClass2;
 begin
   TestFile('GenericClass2');
+end;
+
+procedure TTestTestfiles.testGenericField;
+begin
+  TestFile('GenericField');
+end;
+
+procedure TTestTestfiles.testGenericFunction;
+begin
+  TestFile('GenericFunctions');
+end;
+
+procedure TTestTestfiles.testGenericInterface;
+begin
+  TestFile('GenericInterface');
+end;
+
+procedure TTestTestfiles.testGenericProcTypes;
+begin
+  TestFile('GenericProcTypes');
+end;
+
+procedure TTestTestfiles.testGenericRecord;
+begin
+  TestFile('GenericRecord');
+end;
+
+procedure TTestTestfiles.testGenericVariable;
+begin
+  TestFile('GenericVariable');
 end;
 
 procedure TTestTestfiles.testAbstractSealedClass;
@@ -741,10 +777,10 @@ begin
 end;
 
 initialization
-  RegisterTest(TTestFilesDefaultFormatting.Suite);
-  RegisterTest(TTestFilesHeadworkFormatting.Suite);
   RegisterTest(TTestFilesBorlandFormatting.Suite);
+  RegisterTest(TTestFilesDefaultFormatting.Suite);
   RegisterTest(TTestFilesDelforFormatting.Suite);
-  RegisterTest(TTestFilesTwmFormatting.Suite);
+  RegisterTest(TTestFilesHeadworkFormatting.Suite);
   RegisterTest(TTestFilesSpecial.Suite);
+  RegisterTest(TTestFilesTwmFormatting.Suite);
 end.

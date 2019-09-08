@@ -157,7 +157,7 @@ var
       if not FCurrentToken.GetExpression(exp) or (exp = '<=') or (exp = '>=') then
         Exit; //=>
 
-      if FStack.GetTopType in [rtType, rtProcedure] then begin
+      if FStack.GetTopType in [rtClass, rtType, rtVar, rtProcedure, rtProcDeclare] then begin
         Result := True;
         Exit; //=>
       end;
