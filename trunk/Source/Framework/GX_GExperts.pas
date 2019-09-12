@@ -186,6 +186,7 @@ resourcestring
   SDestructionError = 'GExperts destruction error: ';
 var
   i: Integer;
+  ExpName : string;
 begin
   try
     {$IFOPT D+} SendDebug('Destroying GExperts'); {$ENDIF}
@@ -200,16 +201,18 @@ begin
           for i := 0 to FExpertList.Count - 1 do
           begin
             if ExpertList[i] <> nil then begin
-              {$IFOPT D+}SendDebug('Destroying Expert: ' + ExpertList[i].GetName); {$ENDIF}
+              ExpName := ExpertList[i].GetName;
+              UniqueString(ExpName);
+              {$IFOPT D+}SendDebug('Destroying Expert: ' + ExpName); {$ENDIF}
               try
                 ExpertList[i].Free;
-                {$IFOPT D+}SendDebug('done Destroying Expert: ' + ExpertList[i].GetName); {$ENDIF}
+                {$IFOPT D+}SendDebug('done Destroying Expert: ' + ExpName); {$ENDIF}
               except
                 on E: Exception do
                 begin
                   // Report the exception and continue to destroy the other experts
-                  MessageDlg(Format('Error destroying expert %d: %s', [i, E.Message]), mtError, [mbOK], 0);
-                  {$IFOPT D+} SendDebugError(Format('Error destroying expert %d: %s', [i, E.Message])); {$ENDIF}
+                  MessageDlg(Format('Error destroying expert %d - %s: %s', [i, ExpName, E.Message]), mtError, [mbOK], 0);
+                  {$IFOPT D+} SendDebugError(Format('Error destroying expert %d - %s: %s', [i, ExpName, E.Message])); {$ENDIF}
                 end;
               end;
             end;
