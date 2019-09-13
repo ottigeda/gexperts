@@ -216,7 +216,6 @@ uses
   GX_eWarn in '..\..\Source\Editor\GX_eWarn.pas' {fmConfigureWarning},
   GX_eIfDef in '..\..\Source\Editor\GX_eIfDef.pas' {fmConfigureIfDef},
   GX_eConvertStrings in '..\..\Source\Editor\GX_eConvertStrings.pas' {fmEConvertStrings},
-  GX_IdeGotoEnhancer in '..\..\Source\IDE\GX_IdeGotoEnhancer.pas',
   GX_dzMapFileReader in '..\..\Source\Utils\GX_dzMapFileReader.pas',
   GX_IdeObjectInspectorEnhancer in '..\..\Source\IDE\GX_IdeObjectInspectorEnhancer.pas',
   GX_IdeBuildEventFavoriteEdit in '..\..\Source\IDE\GX_IdeBuildEventFavoriteEdit.pas' {f_IdeBuildEventFavoriteEdit},
@@ -247,7 +246,10 @@ uses
   GX_dzCompilerAndRtlVersions in '..\..\source\framework\GX_dzCompilerAndRtlVersions.pas',
   GX_dzMiscUtils in '..\..\Source\Utils\GX_dzMiscUtils.pas',
   GX_SelectComponents in '..\..\Source\Experts\GX_SelectComponents.pas' {SelectComponentsForm},
-  GX_CustomClipboard in '..\..\Source\Framework\GX_CustomClipboard.pas';
+  GX_CustomClipboard in '..\..\Source\Framework\GX_CustomClipboard.pas',
+  GX_Goto in '..\..\Source\Goto\GX_Goto.pas' {f_Goto},
+  GX_FocusCodeEditor in '..\..\Source\FocusCodeEditor\GX_FocusCodeEditor.pas',
+  GX_GotoConfig in '..\..\Source\Goto\GX_GotoConfig.pas' {f_GotoConfig};
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
