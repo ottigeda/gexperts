@@ -164,6 +164,7 @@ function GxOtaGetCharPosFromPos(Position: Longint; EditView: IOTAEditView): TOTA
 
 // Get the TOTAEditPos for the edit view (defaults to the topmost view)
 function GxOtaGetCurrentEditPos(EditView: IOTAEditView = nil): TOTAEditPos;
+function GxOtaTryGetCurrentEditPos(out _EditPos: TOTAEditPos): Boolean;
 // Get the position in the character array for the edit view (defaults to the topmost view)
 function GxOtaGetCurrentEditBufferPos(EditView: IOTAEditView = nil): Integer;
 
@@ -4432,6 +4433,15 @@ begin
   Assert(Assigned(EditWriter));
   EditWriter.CopyTo(Position);
   Result := EditWriter.CurrentPos;
+end;
+
+function GxOtaTryGetCurrentEditPos(out _EditPos: TOTAEditPos): Boolean;
+var
+  View: IOTAEditView;
+begin
+  Result := GxOtaTryGetTopMostEditView(View);
+  if Result then
+    _EditPos := View.CursorPos;
 end;
 
 function GxOtaGetCurrentEditPos(EditView: IOTAEditView): TOTAEditPos;
