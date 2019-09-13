@@ -30,9 +30,9 @@ type
     // signals that no icon file is available.
     // Defaults to GetName.
     function GetBitmapFileName: string; virtual;
-    // Overrride to load any configuration settings
+    // Override to load any configuration settings
     procedure InternalLoadSettings(_Settings: IExpertSettings); virtual;
-    // Overrride to save any configuration settings
+    // Override to save any configuration settings
     procedure InternalSaveSettings(_Settings: IExpertSettings); virtual;
     // do nothing, overridden by TGX_Expert and TEditorExpert because
     // theses settings are "traditionally" stored differently.
