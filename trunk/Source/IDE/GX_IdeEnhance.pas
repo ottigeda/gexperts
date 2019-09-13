@@ -55,7 +55,6 @@ type
     FEnhanceSearchPath: Boolean;
     FEnhanceInstallPackages: Boolean;
     FEnhanceToolProperties: Boolean;
-    FEnhanceGotoDialog: Boolean;
     FEnhanceDockForms: Boolean;
     FAutoCloseMessageWindow: Boolean;
 
@@ -87,7 +86,6 @@ type
     procedure SetEnhanceSearchPath(Value: Boolean);
     procedure SetEnhanceToolProperties(const Value: Boolean);
     procedure SetEnhanceInstallPackages(const Value: Boolean);
-    procedure SetEnhanceGotoDialog(const Value: Boolean);
     procedure SetEnhanceDockForms(const Value: Boolean);
     procedure SetIdeFormsAllowResize(const Value: Boolean);
     procedure SetIdeFormsRememberPosition(const Value: Boolean);
@@ -117,8 +115,6 @@ type
     property EnhanceSearchPath: Boolean read FEnhanceSearchPath write SetEnhanceSearchPath;
     // Tool Options dialog
     property EnhanceToolProperties: Boolean read FEnhanceToolProperties write SetEnhanceToolProperties;
-    // Goto dialog
-    property EnhanceGotoDialog: Boolean read FEnhanceGotoDialog write SetEnhanceGotoDialog;
     // Dock forms
     property EnhanceDockForms: Boolean read FenhanceDockForms write SetEnhanceDockForms;
     // automatically close messages window
@@ -166,7 +162,7 @@ uses
   GX_GenericUtils, GX_GxUtils, GX_IdeUtils, GX_OtaUtils, GX_ConfigurationInfo, 
   GX_IdeSearchPathEnhancer, GX_IdeProjectOptionsEnhancer,
   GX_IdeToolPropertiesEnhancer, GX_IdeInstallPackagesEnhancer, 
-  GX_IdeGotoEnhancer, GX_IdeObjectInspectorEnhancer, GX_IdeBuildEventsEnhancer, 
+  GX_IdeObjectInspectorEnhancer, GX_IdeBuildEventsEnhancer, 
   GX_IdeApplicationSettingsEnhancer, GX_IdeMessageAutoClose, GX_IdeDockFormEnhancer;
 
 { TIdeEnhancements }
@@ -252,12 +248,6 @@ begin
   TGxIdeApplicationSettingsEnhancer.SetEnabled(Value and EnhanceIDEForms);
 end;
 
-procedure TIdeEnhancements.SetEnhanceGotoDialog(const Value: Boolean);
-begin
-  FEnhanceGotoDialog := Value;
-  TGxIdeGotoEnhancer.SetEnabled(Value and EnhanceIDEForms);
-end;
-
 procedure TIdeEnhancements.SetEnhanceDockForms(const Value: Boolean);
 begin
   FEnhanceDockForms := Value;
@@ -301,7 +291,6 @@ begin
   EnhanceSearchPath := ExpSettings.ReadBool('EnhanceSearchPath', False);
   EnhanceToolProperties := ExpSettings.ReadBool('EnhanceToolProperties', False);
   EnhanceInstallPackages := ExpSettings.ReadBool('EnhanceInstallPackages', False);
-  EnhanceGotoDialog := ExpSettings.ReadBool('EnhanceGotoDialog', False);
   EnhanceDockForms := ExpSettings.ReadBool('EnhanceDockForms', False);
   AutoCloseMessageWindow := ExpSettings.ReadBool('AutoCloseMessageWindow', False);
   EnhanceBuildEventsDialog := ExpSettings.ReadBool('EnhanceBuildEventsDialog', False);
@@ -348,7 +337,6 @@ begin
   ExpSettings.WriteBool('EnhanceSearchPath', EnhanceSearchPath);
   ExpSettings.WriteBool('EnhanceToolProperties', EnhanceToolProperties);
   ExpSettings.WriteBool('EnhanceInstallPackages', EnhanceInstallPackages);
-  ExpSettings.WriteBool('EnhanceGotoDialog', EnhanceGotoDialog);
   ExpSettings.WriteBool('EnhanceDockForms', EnhanceDockForms);
   ExpSettings.WriteBool('AutoCloseMessageWindow', AutoCloseMessageWindow);
   ExpSettings.WriteBool('EnhanceBuildEventsDialog', EnhanceBuildEventsDialog);

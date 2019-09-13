@@ -316,61 +316,53 @@ object fmConfiguration: TfmConfiguration
             Caption = 'Enhance Install Packages dialog with ... Explorer button'
             TabOrder = 5
           end
-          object chkEnhanceGotoDialog: TCheckBox
-            Left = 24
-            Top = 133
-            Width = 489
-            Height = 17
-            Caption = 'Enhance Goto dialog with list of source locations'
-            TabOrder = 6
-          end
           object chkEnhanceBuildEventsDialog: TCheckBox
             Left = 24
-            Top = 190
+            Top = 170
             Width = 489
-            Height = 17
+            Height = 18
             Caption = 'Enhance Build Events dialog with Favourites'
-            TabOrder = 9
+            TabOrder = 8
           end
           object chkEnhanceApplicationSettingsDialog: TCheckBox
             Left = 24
-            Top = 152
+            Top = 132
             Width = 489
-            Height = 17
+            Height = 18
             Caption = 'Enhance Application Settings dialog with version button'
-            TabOrder = 7
+            TabOrder = 6
           end
           object chkAutoCloseMessage: TCheckBox
             Left = 24
-            Top = 209
+            Top = 189
             Width = 489
-            Height = 17
+            Height = 18
             Caption = 'Automatically close message window after successful compile'
-            TabOrder = 10
+            TabOrder = 9
           end
           object chkForceStartupDesktop: TCheckBox
             Left = 24
-            Top = 228
+            Top = 208
             Width = 489
-            Height = 17
+            Height = 18
             Caption = 'Force desktop on startup (leave empty for last selected)'
-            TabOrder = 11
+            TabOrder = 10
           end
           object cbxDesktop: TComboBox
             Left = 40
-            Top = 245
+            Top = 225
             Width = 145
             Height = 22
             ItemHeight = 14
-            TabOrder = 12
+            TabOrder = 11
           end
           object chkEnhanceDockForms: TCheckBox
             Left = 24
-            Top = 171
+            Top = 151
             Width = 489
-            Height = 17
+            Height = 18
             Caption = 'Enhance Dock Forms to allow minimize and Win+arrow positioning'
-            TabOrder = 8
+            TabOrder = 7
           end
         end
         object gbxObjectInspector: TGroupBox

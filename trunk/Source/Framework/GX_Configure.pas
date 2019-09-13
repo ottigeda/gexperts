@@ -100,7 +100,6 @@ type
     chkEnhanceInstallPackages: TCheckBox;
     btnImport: TButton;
     btnExport: TButton;
-    chkEnhanceGotoDialog: TCheckBox;
     gbxObjectInspector: TGroupBox;
     chkOIFontNames: TCheckBox;
     chkOIHideHotCmds: TCheckBox;
@@ -498,7 +497,6 @@ begin
   chkEnhanceSearchPaths.Checked := IdeEnhancements.EnhanceSearchPath;
   chkEnhanceToolProperties.Checked := IdeEnhancements.EnhanceToolProperties;
   chkEnhanceInstallPackages.Checked := IdeEnhancements.EnhanceInstallPackages;
-  chkEnhanceGotoDialog.Checked := IdeEnhancements.EnhanceGotoDialog;
   chkEnhanceDockForms.Checked := IdeEnhancements.EnhanceDockForms;
 {$IFDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
   chkAutoCloseMessage.Checked := IdeEnhancements.AutoCloseMessageWindow;
@@ -614,7 +612,6 @@ begin
   IdeEnhancements.EnhanceSearchPath := chkEnhanceSearchPaths.Checked;
   IdeEnhancements.EnhanceInstallPackages := chkEnhanceInstallPackages.Checked;
   IdeEnhancements.EnhanceToolProperties := chkEnhanceToolProperties.Checked;
-  IdeEnhancements.EnhanceGotoDialog := chkEnhanceGotoDialog.Checked;
   IdeEnhancements.EnhanceDockForms := chkEnhanceDockForms.Checked;
 {$IFDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
   IdeEnhancements.AutoCloseMessageWindow := chkAutoCloseMessage.Checked;
@@ -991,7 +988,6 @@ begin
   chkEnhanceSearchPaths.Enabled := EnableState;
   chkEnhanceToolProperties.Enabled := EnableState;
   chkEnhanceInstallPackages.Enabled := EnableState;
-  chkEnhanceGotoDialog.Enabled := EnableState;
   chkEnhanceDockForms.Enabled := EnableState;
   chkEnhanceBuildEventsDialog.Enabled := EnableState;
   chkEnhanceApplicationSettingsDialog.Enabled := EnableState;
