@@ -5,7 +5,7 @@ unit GX_GExperts;
 interface
 
 uses
-  Classes, ToolsAPI, Controls, ExtCtrls,
+  SysUtils, Classes, ToolsAPI, Controls, ExtCtrls,
   GX_EditorExpertManager, GX_Experts;
 
 type
@@ -64,7 +64,7 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, Dialogs, Forms,
+  Dialogs, Forms,
   GX_GenericUtils, GX_GetIdeVersion, GX_About, GX_MenuActions, GX_MessageBox,
   GX_ConfigurationInfo, GX_Configure, GX_KbdShortCutBroker, GX_SharedImages,
   GX_IdeUtils, GX_IdeEnhance, GX_EditorChangeServices, GX_ToolbarDropDown;
