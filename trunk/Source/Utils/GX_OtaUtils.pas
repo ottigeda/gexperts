@@ -503,6 +503,7 @@ function GxOtaGetIdeActionList: TCustomActionList;
 
 // Find an action in the IDE's action list by name and return it.
 function GxOtaGetIdeActionByName(const Name: string): TContainedAction;
+function GxOtaTryGetIdeActionByName(const Name: string; out _Action: TContainedAction): Boolean;
 
 function GxOtaGetEditorServices: IOTAEditorServices;
 
@@ -3182,7 +3183,7 @@ begin
   Result := NTAServices.ActionList;
 end;
 
-function GxOtaGetIdeActionByName(const Name: string): TContainedAction;
+function GxOtaTryGetIdeActionByName(const Name: string; out _Action: TContainedAction): Boolean;
 var
   IdeActionList: TCustomActionList;
   InspectedAction: TContainedAction;
@@ -3190,21 +3191,39 @@ var
 begin
   IdeActionList := GxOtaGetIdeActionList;
   Assert(Assigned(IdeActionList));
-  Result := nil;
+  Result := False;
   i := IdeActionList.ActionCount;
-  while i > 0 do
-  begin
+  while i > 0 do begin
     Dec(i);
 
     InspectedAction := IdeActionList.Actions[i];
     Assert(Assigned(InspectedAction));
 
-    if SameText(InspectedAction.Name, Name) then
-    begin
-      Result := InspectedAction;
-      Break;
+    if SameText(InspectedAction.Name, Name) then begin
+      _Action := InspectedAction;
+      Result := True;
+      Exit;
     end;
   end;
+(*
+  if not Assigned(Result) then
+  begin
+    MainForm := GetIdeMainForm;
+    if Assigned(MainForm) then
+    begin
+      Action := MainForm.FindComponent(Name);
+      if Action is TCustomAction then
+        Result := Action as TCustomAction;
+    end;
+  end;
+*)
+end;
+
+
+function GxOtaGetIdeActionByName(const Name: string): TContainedAction;
+begin
+  if not GxOtaTryGetIdeActionByName(Name, Result) then
+    Result := nil;
 (*
   if not Assigned(Result) then
   begin

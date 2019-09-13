@@ -578,9 +578,8 @@ procedure HijackIDEAction(const ActionName: string; var OriginalIDEAction: TNoti
 var
   Action: TContainedAction;
 begin
-  Action := GxOtaGetIdeActionByName(ActionName);
-  if (Action <> nil) and (Action is TCustomAction) then
-  begin
+  if GxOtaTryGetIdeActionByName(ActionName, Action)
+    and (Action is TCustomAction) then begin
     OriginalIDEAction := (Action as TCustomAction).OnExecute;
     (Action as TCustomAction).OnExecute := NewIDEAction;
   end;
@@ -590,10 +589,12 @@ procedure ResetIDEAction(const ActionName: string; IDEHandler: TNotifyEvent);
 var
   Action: TContainedAction;
 begin
+  // todo: Is this correct? Can we always be sure that the IDEHandler
+  //       was assigned? If not, our own handler might still be active
+  //       and cause problems.
   if not Assigned(IDEHandler) then
     Exit;
-  Action := GxOtaGetIdeActionByName(ActionName);
-  if Assigned(Action) then
+  if GxOtaTryGetIdeActionByName(ActionName, Action) then
     Action.OnExecute := IDEHandler;
 end;
 
