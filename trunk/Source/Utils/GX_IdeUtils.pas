@@ -15,7 +15,7 @@ interface
 {$I GX_CondDefine.inc}
 
 uses
-  Graphics, Forms, Menus, ComCtrls, Controls, Classes, StdCtrls;
+  Graphics, Forms, Menus, ComCtrls, Controls, Classes, StdCtrls, ActnList;
 
 const
   EditorFormClassName = 'TEditWindow';
@@ -65,10 +65,12 @@ function TryGetIdeDesktops(out _Items: TStrings): Boolean;
 
 function TryGetDesktopCombo(out _cmb: TCombobox): Boolean;
 
-
 // Return the IDE's version identifier, such as ENT, CSS, PRO, STD,
 // or the empty string if unknown
 function GetIdeEdition: string;
+
+procedure HijackIDEAction(const ActionName: string; var OriginalIDEAction: TNotifyEvent; NewIDEAction: TNotifyEvent);
+procedure ResetIDEAction(const ActionName: string; IDEHandler: TNotifyEvent);
 
 // Get the IDE's editor background color
 function GetIdeEditorForegroundColor: TColor;
@@ -570,6 +572,29 @@ begin
     FreeAndNil(Reg);
     FreeAndNil(Names);
   end;
+end;
+
+procedure HijackIDEAction(const ActionName: string; var OriginalIDEAction: TNotifyEvent; NewIDEAction: TNotifyEvent);
+var
+  Action: TContainedAction;
+begin
+  Action := GxOtaGetIdeActionByName(ActionName);
+  if (Action <> nil) and (Action is TCustomAction) then
+  begin
+    OriginalIDEAction := (Action as TCustomAction).OnExecute;
+    (Action as TCustomAction).OnExecute := NewIDEAction;
+  end;
+end;
+
+procedure ResetIDEAction(const ActionName: string; IDEHandler: TNotifyEvent);
+var
+  Action: TContainedAction;
+begin
+  if not Assigned(IDEHandler) then
+    Exit;
+  Action := GxOtaGetIdeActionByName(ActionName);
+  if Assigned(Action) then
+    Action.OnExecute := IDEHandler;
 end;
 
 procedure SetNonModalFormPopupMode(Form: TCustomForm);

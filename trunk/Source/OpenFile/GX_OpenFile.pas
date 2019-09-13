@@ -233,8 +233,6 @@ type
     procedure OpenForm(Sender: TObject);
     procedure OpenProject(Sender: TObject);
     procedure HijackIDEActions;
-    procedure HijackIDEAction(const ActionName: string; var OriginalIDEAction: TNotifyEvent; NewIDEAction: TNotifyEvent);
-    procedure ResetIDEAction(const ActionName: string; IDEHandler: TNotifyEvent);
   public
     Settings: TOpenFileSettings;
     constructor Create; override;
@@ -327,18 +325,6 @@ begin
   HijackIDEActions;
 end;
 
-procedure TOpenFileExpert.HijackIDEAction(const ActionName: string; var OriginalIDEAction: TNotifyEvent; NewIDEAction: TNotifyEvent);
-var
-  Action: TContainedAction;
-begin
-  Action := GxOtaGetIdeActionByName(ActionName);
-  if (Action <> nil) and (Action is TCustomAction) then
-  begin
-    OriginalIDEAction := (Action as TCustomAction).OnExecute;
-    (Action as TCustomAction).OnExecute := NewIDEAction;
-  end;
-end;
-
 procedure TOpenFileExpert.Execute(Sender: TObject);
 begin
   OpenExpert(otOpenMenu);
@@ -407,17 +393,6 @@ procedure TOpenFileExpert.AfterIDEInitialized;
 begin
   inherited;
   HijackIDEActions;
-end;
-
-procedure TOpenFileExpert.ResetIDEAction(const ActionName: string; IDEHandler: TNotifyEvent);
-var
-  Action: TContainedAction;
-begin
-  if not Assigned(IDEHandler) then
-    Exit;
-  Action := GxOtaGetIdeActionByName(ActionName);
-  if Assigned(Action) then
-    Action.OnExecute := IDEHandler;
 end;
 
 { TAvailableFiles }
