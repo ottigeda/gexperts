@@ -209,6 +209,7 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\Source\Editor\GX_eSortOptions.pas">
             <Form>frmSortOptions</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\UsesExpert\GX_UsesExpert.pas">
             <Form>fmUsesManager</Form>
@@ -517,7 +518,6 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\Source\Editor\GX_eConvertStrings.pas">
             <Form>fmEConvertStrings</Form>
         </DCCReference>
-        <DCCReference Include="..\..\Source\IDE\GX_IdeGotoEnhancer.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_dzMapFileReader.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeObjectInspectorEnhancer.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeBuildEventFavoriteEdit.pas">
@@ -553,6 +553,7 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\Source\Editor\GX_eRemoveMatchingLines.pas">
             <Form>fmRemoveMatchingLinesExpertConfig</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\TabOrder\GX_TabOrderOptions.pas">
             <Form>fmTabOrderOptions</Form>

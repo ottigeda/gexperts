@@ -501,7 +501,6 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\Source\Editor\GX_eConvertStrings.pas">
             <Form>fmEConvertStrings</Form>
         </DCCReference>
-        <DCCReference Include="..\..\Source\IDE\GX_IdeGotoEnhancer.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_dzMapFileReader.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeObjectInspectorEnhancer.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeBuildEventFavoriteEdit.pas">
