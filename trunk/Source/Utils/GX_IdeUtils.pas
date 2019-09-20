@@ -15,7 +15,7 @@ interface
 {$I GX_CondDefine.inc}
 
 uses
-  Graphics, Forms, Menus, ComCtrls, Controls, Classes, StdCtrls, ActnList;
+  Graphics, Forms, Menus, ComCtrls, Controls, Classes, StdCtrls, ActnList, Actions;
 
 const
   EditorFormClassName = 'TEditWindow';
