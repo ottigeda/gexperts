@@ -12,9 +12,9 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
+  Actions,
   GX_BaseForm,
   GX_UnitPositions,
-  ActnList,
   GX_ConfigurationInfo;
 
 type
