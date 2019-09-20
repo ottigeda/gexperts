@@ -32,6 +32,8 @@ type
     procedure testAngledBrackets;
     procedure testAnonymous;
     procedure testAnonymous2;
+    procedure testAnonymous3;
+    procedure testAnonymous4;
     procedure testArabic;
     procedure testAsm;
     procedure testAsmProblem1;
@@ -611,6 +613,16 @@ end;
 procedure TTestTestfiles.testAnonymous2;
 begin
   TestFile('Anonymous2');
+end;
+
+procedure TTestTestfiles.testAnonymous3;
+begin
+  TestFile('Anonymous3');
+end;
+
+procedure TTestTestfiles.testAnonymous4;
+begin
+  TestFile('Anonymous4');
 end;
 
 procedure TTestTestfiles.testArabic;
