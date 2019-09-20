@@ -1033,7 +1033,7 @@ var
               Prev1 := FTokens[TempWordIdx];
             end;
 
-            FunctDeclare := (Prev1 <> nil) and (Prev1.ReservedType in [rtEquals, rtColon, rtComma]);
+            FunctDeclare := (Prev1 <> nil) and (Prev1.ReservedType in [rtEquals, rtColon, rtComma, rtLeftBr]);
           end else
             FunctDeclare := False;
 
