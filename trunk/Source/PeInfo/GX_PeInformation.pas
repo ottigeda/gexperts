@@ -291,7 +291,9 @@ begin
             p := Pos('@', s);
             if p > 0 then begin
               s := Copy(s, p + 1, 255);
-              p := Pos('$', s);
+              p := Pos(#$09, s);
+              if p = 0 then
+                p := Pos('$', s);
               if p > 0 then
                 s := Copy(s, 1, p - 1);
               sl.Add(s);
