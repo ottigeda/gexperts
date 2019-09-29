@@ -5,6 +5,6 @@ interface
 implementation
 
 begin
-  if Source is TSomething <T> then
+  if Source is TSomething<T> then
     ProcD<T>(5);
 end.
