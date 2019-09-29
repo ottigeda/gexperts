@@ -27,11 +27,11 @@ type
 type
   TCodeFormatterSegment = class
   private
-    FStack: TStackArray;
     FStackPtr: Integer;
     FNIndent: Integer;
     FProcLevel: Integer;
     FGenericsElement: Boolean;
+    FStack: TStackArray;
     function TopRec: PStackRec;
     procedure SetGenericsElement(_Value: Boolean);
   public
