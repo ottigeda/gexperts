@@ -151,7 +151,7 @@ begin
   end;
 
   if FTokens.Count >= MaxCollectionSize - 100 then
-    raise ECodeFormatter.Create('File to large to reformat')
+    raise ECodeFormatter.Create('File is too large to reformat')
 end;
 
 function PCharPlus(_p: PGXUnicodeChar; _Offset: integer): PGXUnicodeChar;
