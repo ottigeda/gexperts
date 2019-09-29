@@ -34,7 +34,7 @@ type
     FProcLevel: Integer;
     FGenericsElement: Boolean;
     FStack: TStackArray;
-    function TopRec: PStackRec;
+    function GetTopRec: PStackRec;
     procedure SetGenericsElement(_Value: Boolean);
   public
     constructor Create;
@@ -99,7 +99,7 @@ end;
 function TCodeFormatterSegment.GetTopType: TReservedType;
 begin
   if FStackPtr >= 0 then
-    Result := TopRec.RT
+    Result := GetTopRec.RT
   else
     Result := rtNothing;
 end;
@@ -113,13 +113,16 @@ begin
 end;
 
 procedure TCodeFormatterSegment.Push(_Type: TReservedType; _IncIndent: Integer);
+var
+  tr: PStackRec;
 begin
-  Inc(FStackPtr);
-  if FStackPtr > MaxStack then
+  if FStackPtr >= MaxStack then
     raise EFormatException.Create('Stack overflow');
 
-  TopRec.RT := _Type;
-  TopRec.nInd := FNIndent;
+  Inc(FStackPtr);
+  tr := GetTopRec;
+  tr.RT := _Type;
+  tr.nInd := FNIndent;
   FNIndent := FNIndent + _IncIndent;
 end;
 
@@ -130,24 +133,27 @@ end;
 
 function TCodeFormatterSegment.HasType(_Type: TReservedType): Boolean;
 var
-  I: Integer;
+  i: Integer;
 begin
   Result := False;
-  for I := 0 to FStackPtr do
-    if FStack[I].RT = _Type then begin
+  for i := 0 to FStackPtr do
+    if FStack[i].RT = _Type then begin
       Result := True;
       Exit;
     end;
 end;
 
 function TCodeFormatterSegment.Pop: TReservedType;
+var
+  tr: PStackRec;
 begin
   if FStackPtr >= 0 then begin
-    FNIndent := TopRec.nInd;
-    if (TopRec.RT = rtProcedure) and (FProcLevel > 0) then
+    tr := GetTopRec;
+    FNIndent := tr.nInd;
+    if (tr.RT = rtProcedure) and (FProcLevel > 0) then
       Dec(FProcLevel);
 
-    Result := TopRec^.RT;
+    Result := tr^.RT;
     Dec(FStackPtr);
   end else begin
     FNIndent := 0;
@@ -156,7 +162,7 @@ begin
   end;
 end;
 
-function TCodeFormatterSegment.TopRec: PStackRec;
+function TCodeFormatterSegment.GetTopRec: PStackRec;
 begin
   Result := @FStack[FStackPtr];
 end;
@@ -164,7 +170,7 @@ end;
 function TCodeFormatterSegment.GetTopIndent: Integer;
 begin
   if not IsEmpty then begin
-    Result := TopRec.nInd;
+    Result := GetTopRec.nInd;
     NIndent := Result;
   end else
     Result := NIndent;
