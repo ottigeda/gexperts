@@ -68,6 +68,8 @@ type
     procedure testGenericField;
     procedure testGenericFunctions;
     procedure testGenericFunctions2;
+    procedure testGenericFunctions3;
+    procedure testGenericFunctions4;
     procedure testGenericInterface;
     procedure testGenericProcTypes;
     procedure testGenericRecord;
@@ -89,6 +91,8 @@ type
     procedure testNestedClass5;
     procedure testNestedClass6;
     procedure testNestedEventType;
+    procedure testNoGeneric;
+    procedure testNoGeneric2;
     procedure testOperatorOverloading;
     procedure testQuotesError;
     procedure testReadWrite;
@@ -393,6 +397,16 @@ begin
   TestFile('NestedEventType');
 end;
 
+procedure TTestTestfiles.testNoGeneric;
+begin
+  TestFile('NoGeneric');
+end;
+
+procedure TTestTestfiles.testNoGeneric2;
+begin
+  TestFile('NoGeneric2');
+end;
+
 procedure TTestTestfiles.testOperatorOverloading;
 begin
   TestFile('OperatorOverloading');
@@ -579,6 +593,16 @@ end;
 procedure TTestTestfiles.testGenericFunctions2;
 begin
   TestFile('GenericFunctions2');
+end;
+
+procedure TTestTestfiles.testGenericFunctions3;
+begin
+  TestFile('GenericFunctions3');
+end;
+
+procedure TTestTestfiles.testGenericFunctions4;
+begin
+  TestFile('GenericFunctions4');
 end;
 
 procedure TTestTestfiles.testGenericInterface;
