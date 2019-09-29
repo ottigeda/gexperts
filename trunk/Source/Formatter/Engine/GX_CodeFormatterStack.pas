@@ -1,7 +1,9 @@
-// defines a stack and a stackstack for the code formatter based on a pseudo template
-// Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
-// Contributors:        Thomas Mueller (http://www.dummzeuch.de)
-//                      Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of several language features
+///<summary>
+/// defines a stack and a stackstack for the code formatter based on a pseudo template
+/// Original Author: Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
+/// Contributors:    Thomas Mueller (http://www.dummzeuch.de)
+///                  Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of several language features
+///</summary>
 
 unit GX_CodeFormatterStack;
 
@@ -37,21 +39,28 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    {: returns the topmost item from the stack without removing it }
+    ///<summary>
+    /// @returns the topmost item from the stack without removing it </summary>
     function GetTopType: TReservedType;
     function GetTopIndent: Integer;
-    {: like GetTopType, but takes an index, Idx = 0 is equivalent to GetTopType,
-       Idx=1 returns the next etc. }
+    ///<summary>
+    /// like GetTopType, but takes an index, Idx = 0 is equivalent to GetTopType,
+    /// Idx=1 returns the next etc. </summary>
     function GetType(_Idx: Integer): TReservedType;
-    {: Check whether _Type is somewhere on the stack }
+    ///<summary>
+    /// Check whether _Type is somewhere on the stack </summary>
     function HasType(_Type: TReservedType): Boolean;
     function Pop: TReservedType;
     procedure Push(_Type: TReservedType; _IncIndent: Integer);
-    {: returns True if the stack is empty }
+    ///<summary>
+    /// @returns True if the stack is empty </summary>
     function IsEmpty: Boolean;
-    {: clears the stack and returns the number of items that were left }
+    ///<summary>
+    /// clears the stack and returns the number of items that were left </summary>
     function Clear: Integer;
     function Depth: Integer;
+    ///<sumamry>
+    /// Creates a new stack and copies all elements to it </summary>
     function Clone: TCodeFormatterSegment;
     property NIndent: Integer read FNIndent write FNIndent;
     property ProcLevel: Integer read FProcLevel write FProcLevel;
