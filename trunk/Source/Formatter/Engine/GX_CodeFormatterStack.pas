@@ -32,10 +32,8 @@ type
     FStackPtr: Integer;
     FNIndent: Integer;
     FProcLevel: Integer;
-    FGenericsElement: Boolean;
     FStack: TStackArray;
     function GetTopRec: PStackRec;
-    procedure SetGenericsElement(_Value: Boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -64,7 +62,6 @@ type
     function Clone: TCodeFormatterSegment;
     property NIndent: Integer read FNIndent write FNIndent;
     property ProcLevel: Integer read FProcLevel write FProcLevel;
-    property GenericsElement: Boolean read FGenericsElement write SetGenericsElement;
   end;
 
 {$DEFINE STACK_TEMPLATE}
@@ -88,7 +85,6 @@ begin
   FStackPtr := -1;
   FNIndent := 0;
   FProcLevel := 0;
-  FGenericsElement := False;
 end;
 
 destructor TCodeFormatterSegment.Destroy;
@@ -124,11 +120,6 @@ begin
   tr.RT := _Type;
   tr.nInd := FNIndent;
   FNIndent := FNIndent + _IncIndent;
-end;
-
-procedure TCodeFormatterSegment.SetGenericsElement(_Value: Boolean);
-begin
-  FGenericsElement := _Value;
 end;
 
 function TCodeFormatterSegment.HasType(_Type: TReservedType): Boolean;

@@ -63,7 +63,8 @@ type
     rtLogOper, rtEquals, rtForward, rtDefault, rtInitialization, rtComma,
     rtUses, rtProcDeclare, rtFuncDirective, rtAbsolute, rtComment, rtRecCase, rtDot,
     rtCompIf, rtDotDot,
-    rtCompElse, rtCompEndif);
+    rtCompElse, rtCompEndif,
+    rtGenericStart);
 
 const
   NoReservedTypes = [rtNothing, rtComma, rtColon, rtLineFeed, rtDefault,

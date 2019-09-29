@@ -142,7 +142,7 @@ var
   wType: TWordType;
   Idx: Integer;
 
-  function DetectGeneric: Boolean;
+  function DetectGenericStart: Boolean;
   var
     Next: TPascalToken;
     NextNext: TPascalToken;
@@ -150,71 +150,57 @@ var
     exp: TGXUnicodeString;
   begin
     Result := False;
-    try
-      if FCurrentRType <> rtLogOper then
-        Exit; //=>
 
-      if not FCurrentToken.GetExpression(exp) or (exp = '<=') or (exp = '>=') then
-        Exit; //=>
+    if FCurrentRType <> rtLogOper then
+      Exit; //==>
 
-      if FStack.GetTopType in [rtClass, rtType, rtVar, rtProcedure, rtProcDeclare] then begin
-        Result := True;
-        Exit; //=>
-      end;
+    if not FCurrentToken.GetExpression(exp) or (exp <> '<') then
+      Exit; //==>
 
-      if not GetNextNoComment(_TokenIdx, Next, Offset) then
-        Exit;
+    Idx := 0;
+    rType := FStack.GetType(Idx);
+    while rType = rtGenericStart do begin
+      Inc(Idx);
+      rType := FStack.GetType(Idx);
+    end;
 
-      if (exp = '>') then begin
-        if FStack.GenericsElement then begin
-          Result := True;
-        end;
-        if Next.ReservedType = rtDot then begin
-          // detect "x>.5" in contrast to "TSomeGeneric<SomeType>.Create"
-          if not GetNextNoComment(_TokenIdx + 1, NextNext, Offset) or (NextNext.WordType = wtNumber) then
-            Result := False
-          else
-            Result := True;
-          Exit;
-        end;
-        if (Next.ReservedType = rtSemiColon) or (Next.ReservedType = rtRightBr) then begin
-          Result := True;
-          Exit;
-        end;
-      end;
+    if rType in [rtClass, rtType, rtVar, rtProcedure, rtProcDeclare] then begin
+      Result := True;
+      Exit; //==>
+    end;
 
-      if Next.ReservedType in [rtLogOper, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then begin
-        Result := False;
-        Exit; //=>
-      end;
+    if not GetNextNoComment(_TokenIdx, Next, Offset) then
+      Exit; //==>
 
-      Idx := _TokenIdx + Offset;
+    if Next.ReservedType in [rtLogOper, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then begin
+      Result := False;
+      Exit; //==>
+    end;
 
-      while GetNextNoComment(Idx, Next, Offset) do begin
-        case Next.ReservedType of
-          rtLogOper:
-            if GetNextNoComment(Idx + Offset, Next) then begin
-              if Next.ReservedType in [rtEquals, rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then begin
-                Result := True;
-                Exit; //=>
-              end else
-                Inc(Idx, Offset + 1);
+    Idx := _TokenIdx + Offset;
+
+    while GetNextNoComment(Idx, Next, Offset) do begin
+      case Next.ReservedType of
+        rtLogOper:
+          if GetNextNoComment(Idx + Offset, Next) then begin
+            if Next.ReservedType in [rtEquals, rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then begin
+              Result := True;
+              Exit; //==>
             end else
-              Exit; //=>
+              Inc(Idx, Offset + 1);
+          end else
+            Exit; //==>
 
-          rtComma:
-            Inc(Idx, Offset + 1);
-        else
-          Exit; //=>
-        end;
+        rtComma:
+          Inc(Idx, Offset + 1);
+      else
+        Exit; //==>
       end;
-    finally
-      // Maybe the generics code should be refactored to actually place the start on the stack
-      // like the code for expressions places the opening bracket there etc.
-      FStack.GenericsElement := Result;
     end;
   end;
 
+var
+  exp: TGXUnicodeString;
 begin
   if _CurrentToken = nil then
     Exit;
@@ -244,11 +230,28 @@ begin
     rtIf, rtUntil, rtWhile, rtCase, rtRecord:
       _CurrentToken.SetSpace([spAfter], True);
 
-    rtLogOper:
-      if DetectGeneric then
-        _CurrentToken.SetSpace([], True)
-      else
-        _CurrentToken.SetSpace(Settings.SpaceOperators, True);
+    rtLogOper: begin
+        if not _CurrentToken.GetExpression(exp) then
+          raise EFormatException.Create('Programmer error: GetExpression for logical operator returned False');
+
+        if (exp = '<') then begin
+          if DetectGenericStart then begin
+            FStack.Push(rtGenericStart, 0);
+            _CurrentToken.SetSpace([], True)
+          end else begin
+            _CurrentToken.SetSpace(Settings.SpaceOperators, True);
+          end;
+        end else if exp = '>' then begin
+          if FStack.HasType(rtGenericStart) then begin
+            _CurrentToken.SetSpace([], True);
+            repeat
+              FLastPopResType := FStack.Pop;
+            until (FLastPopResType = rtGenericStart) or FStack.IsEmpty;
+          end else
+            _CurrentToken.SetSpace(Settings.SpaceOperators, True);
+        end else
+          _CurrentToken.SetSpace(Settings.SpaceOperators, True);
+      end;
 
     rtOper, rtMathOper, rtPlus, rtMinus, rtEquals:
       _CurrentToken.SetSpace(Settings.SpaceOperators, True);
@@ -263,10 +266,7 @@ begin
       _CurrentToken.SetSpace(Settings.SpaceSemiColon, True);
 
     rtComma:
-      if DetectGeneric then
-        _CurrentToken.SetSpace([], True)
-      else
-        _CurrentToken.SetSpace(Settings.SpaceComma, True);
+      _CurrentToken.SetSpace(Settings.SpaceComma, True);
 
     rtLeftBr: begin
         _CurrentToken.SetSpace(Settings.SpaceLeftBr, True);
