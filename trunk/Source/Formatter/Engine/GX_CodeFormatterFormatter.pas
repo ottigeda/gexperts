@@ -166,6 +166,9 @@ var
         Exit;
 
       if (exp = '>') then begin
+        if FStack.GenericsElement then begin
+          Result := True;
+        end;
         if Next.ReservedType = rtDot then begin
           // detect "x>.5" in contrast to "TSomeGeneric<SomeType>.Create"
           if not GetNextNoComment(_TokenIdx + 1, NextNext, Offset) or (NextNext.WordType = wtNumber) then
@@ -191,7 +194,7 @@ var
         case Next.ReservedType of
           rtLogOper:
             if GetNextNoComment(Idx + Offset, Next) then begin
-              if Next.ReservedType in [rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then begin
+              if Next.ReservedType in [rtEquals, rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then begin
                 Result := True;
                 Exit; //=>
               end else
@@ -206,6 +209,8 @@ var
         end;
       end;
     finally
+      // Maybe the generics code should be refactored to actually place the start on the stack
+      // like the code for expressions places the opening bracket there etc.
       FStack.GenericsElement := Result;
     end;
   end;
