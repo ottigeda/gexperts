@@ -49,6 +49,7 @@ type
     function AlignExpression(_Idx: Integer; _Pos: Integer): TPascalToken;
     procedure CheckWrapping;
     function PrevTokenIsRType(_rType: TReservedType): Boolean;
+    function PrevTokenIsWType(_wType: TWordType): Boolean;
     procedure CheckBlankLinesAroundProc;
     procedure PutCommentBefore(const _Comment: TGXUnicodeString);
     procedure FormatAsm(_NTmp: Integer);
@@ -81,6 +82,7 @@ type
     procedure HandleThen;
     procedure HandleColon(_RemoveMe: Integer);
     procedure HandleElse(_NTmp: Integer);
+    function DetectGenericStart(_TokenIdx: Integer): Boolean;
 
     property Settings: TCodeFormatterSettings read FSettings write FSettings;
   public
@@ -135,71 +137,80 @@ begin
   OldExpr.Free;
 end;
 
+function TCodeFormatterFormatter.DetectGenericStart(_TokenIdx: Integer): Boolean;
+var
+  Next: TPascalToken;
+  Idx: Integer;
+  Offset: Integer;
+  exp: TGXUnicodeString;
+  rType: TReservedType;
+begin
+  Result := False;
+
+  if FCurrentRType <> rtLogOper then
+    Exit; //==>
+
+  if not FCurrentToken.GetExpression(exp) or (exp <> '<') then
+    Exit; //==>
+
+  if not PrevTokenIsWType(wtWord) then
+    Exit; //==>
+
+  Idx := 0;
+  rType := FStack.GetType(Idx);
+  while rType = rtGenericStart do begin
+    Inc(Idx);
+    rType := FStack.GetType(Idx);
+  end;
+  if rType in [rtClass, rtType, rtVar, rtProcedure, rtProcDeclare] then begin
+    Result := True;
+    Exit; //==>
+  end;
+
+  // These were the easy cases.
+  // Now we must detect whether a '<' is followed by a '>' with reasonable intermediate tokens.
+
+  if not GetNextNoComment(_TokenIdx, Next, Offset) then
+    Exit; //==>
+
+  // the next token must be an identifier (= rtNothing) (correct?)
+  if (Next.ReservedType <> rtNothing) or (Next.WordType <> wtWord) then
+    Exit; //==>
+
+  Idx := _TokenIdx + Offset;
+  while GetNextNoComment(Idx, Next, Offset) do begin
+    case Next.ReservedType of
+      rtLogOper: begin
+          if Next.GetExpression(exp) and (exp = '>') then begin
+            Result := True;
+            Exit; //==>
+          end;
+          // no '>' ? -> no Generic
+          Exit; //==>
+        end;
+      // also allowed:
+      rtNothing: begin
+          // but only an identifier (correct?)
+          if Next.WordType <> wtWord then
+            Exit; //==>
+        end;
+      rtComma: begin
+        // OK
+        end;
+      // anything else?
+    else
+      Exit; //==>
+    end;
+    Inc(Idx, Offset + 1);
+  end;
+end;
+
 procedure TCodeFormatterFormatter.AdjustSpacing(_CurrentToken, _PrevToken: TPascalToken; _TokenIdx: Integer);
 var
   Prev2: TPascalToken;
   rType: TReservedType;
   wType: TWordType;
   Idx: Integer;
-
-  function DetectGenericStart: Boolean;
-  var
-    Next: TPascalToken;
-    NextNext: TPascalToken;
-    Idx, Offset: Integer;
-    exp: TGXUnicodeString;
-  begin
-    Result := False;
-
-    if FCurrentRType <> rtLogOper then
-      Exit; //==>
-
-    if not FCurrentToken.GetExpression(exp) or (exp <> '<') then
-      Exit; //==>
-
-    Idx := 0;
-    rType := FStack.GetType(Idx);
-    while rType = rtGenericStart do begin
-      Inc(Idx);
-      rType := FStack.GetType(Idx);
-    end;
-
-    if rType in [rtClass, rtType, rtVar, rtProcedure, rtProcDeclare] then begin
-      Result := True;
-      Exit; //==>
-    end;
-
-    if not GetNextNoComment(_TokenIdx, Next, Offset) then
-      Exit; //==>
-
-    if Next.ReservedType in [rtLogOper, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then begin
-      Result := False;
-      Exit; //==>
-    end;
-
-    Idx := _TokenIdx + Offset;
-
-    while GetNextNoComment(Idx, Next, Offset) do begin
-      case Next.ReservedType of
-        rtLogOper:
-          if GetNextNoComment(Idx + Offset, Next) then begin
-            if Next.ReservedType in [rtEquals, rtLogOper, rtDot, rtComma, rtSemiColon, rtLeftBr, rtRightBr] then begin
-              Result := True;
-              Exit; //==>
-            end else
-              Inc(Idx, Offset + 1);
-          end else
-            Exit; //==>
-
-        rtComma:
-          Inc(Idx, Offset + 1);
-      else
-        Exit; //==>
-      end;
-    end;
-  end;
-
-var
   exp: TGXUnicodeString;
 begin
   if _CurrentToken = nil then
@@ -235,7 +246,7 @@ begin
           raise EFormatException.Create('Programmer error: GetExpression for logical operator returned False');
 
         if (exp = '<') then begin
-          if DetectGenericStart then begin
+          if DetectGenericStart(_TokenIdx) then begin
             FStack.Push(rtGenericStart, 0);
             _CurrentToken.SetSpace([], True)
           end else begin
@@ -456,6 +467,11 @@ end;
 function TCodeFormatterFormatter.PrevTokenIsRType(_rType: TReservedType): Boolean;
 begin
   Result := Assigned(FPrevToken) and (FPrevToken.ReservedType = _rType);
+end;
+
+function TCodeFormatterFormatter.PrevTokenIsWType(_wType: TWordType): Boolean;
+begin
+  Result := Assigned(FPrevToken) and (FPrevToken.WordType = _wType);
 end;
 
 {: checks and corrects the number of blank lines before a procedure / function declaration }
