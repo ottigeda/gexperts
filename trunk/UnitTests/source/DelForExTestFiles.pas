@@ -66,7 +66,8 @@ type
     procedure testGenericClass2;
     procedure testGenericCreate;
     procedure testGenericField;
-    procedure testGenericFunction;
+    procedure testGenericFunctions;
+    procedure testGenericFunctions2;
     procedure testGenericInterface;
     procedure testGenericProcTypes;
     procedure testGenericRecord;
@@ -570,9 +571,14 @@ begin
   TestFile('GenericField');
 end;
 
-procedure TTestTestfiles.testGenericFunction;
+procedure TTestTestfiles.testGenericFunctions;
 begin
   TestFile('GenericFunctions');
+end;
+
+procedure TTestTestfiles.testGenericFunctions2;
+begin
+  TestFile('GenericFunctions2');
 end;
 
 procedure TTestTestfiles.testGenericInterface;
