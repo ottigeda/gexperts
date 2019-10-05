@@ -113,9 +113,10 @@ type
     procedure testUsesWithComment;
     procedure testVariantExtendedRecord;
 
-    procedure testCurlyHalfCommentEndCurrentlyFails;
-    procedure testIfThenElse2CurrentlyFails;
     procedure testComplexCurrentlyFails;
+    procedure testCurlyHalfCommentEndCurrentlyFails;
+    procedure testFormatWithLineBreaksCurrentlyFails;
+    procedure testIfThenElse2CurrentlyFails;
   end;
 
 type
@@ -558,6 +559,11 @@ end;
 procedure TTestTestfiles.testFakeGenericCreate;
 begin
   TestFile('FakeGenericCreate');
+end;
+
+procedure TTestTestfiles.testFormatWithLineBreaksCurrentlyFails;
+begin
+  TestFile('FormatWithLineBreaks');
 end;
 
 procedure TTestTestfiles.testFormula;
