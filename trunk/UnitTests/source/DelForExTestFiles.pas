@@ -52,6 +52,7 @@ type
     procedure testConstSetWithComment;
     procedure testConstSetWithCommentAtEnd;
     procedure testConstVar;
+    procedure testConstWithLineBreak;
     procedure testControlChars;
     procedure testCurlyBracesInWhile;
     procedure testDisableFormatComment;
@@ -562,6 +563,11 @@ end;
 procedure TTestTestfiles.testConstVar;
 begin
   TestFile('ConstVar');
+end;
+
+procedure TTestTestfiles.testConstWithLineBreak;
+begin
+  TestFile('ConstWithLineBreak');
 end;
 
 procedure TTestTestfiles.testGenericCreate;
