@@ -47,6 +47,7 @@ type
     procedure testClassVar;
     procedure testCommentEnd;
     procedure testCompilerDirectives;
+    procedure testConstArray;
     procedure testConstSet;
     procedure testConstSetWithComment;
     procedure testConstSetWithCommentAtEnd;
@@ -531,6 +532,11 @@ end;
 procedure TTestTestfiles.testHexNumbers;
 begin
   TestFile('HexNumbers');
+end;
+
+procedure TTestTestfiles.testConstArray;
+begin
+  TestFile('ConstArray');
 end;
 
 procedure TTestTestfiles.testConstSet;
