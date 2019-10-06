@@ -63,6 +63,7 @@ type
     procedure testEmptyUnit;
     procedure testFakeGenericCreate;
     procedure testFinalMethod;
+    procedure testFormatWithLineBreaks;
     procedure testFormula;
     procedure testGenericClass;
     procedure testGenericClass2;
@@ -81,6 +82,8 @@ type
     procedure testIfdefs;
     procedure testIfElseendif;
     procedure testIfThenElse;
+    procedure testIfThenElse2; virtual;
+    procedure testIfthenelse3;
     procedure testIfThenTry;
     procedure testIndentComment;
     procedure testJustOpeningComment;
@@ -118,8 +121,6 @@ type
 
     procedure testComplexCurrentlyFails;
     procedure testCurlyHalfCommentEndCurrentlyFails;
-    procedure testFormatWithLineBreaksCurrentlyFails;
-    procedure testIfThenElse2CurrentlyFails;
   end;
 
 type
@@ -142,6 +143,8 @@ type
   protected
     function GetFormatSettings: TCodeFormatterEngineSettings; override;
     function GetResultDir: string; override;
+  published
+    procedure testIfThenElse2; override;
   end;
 
 type
@@ -277,9 +280,11 @@ begin
 //      st.SaveToFile('testcases\output\' + GetResultDir + '\' + Filename);
       CheckEquals(ExpectedText.Text, st.Text, 'error in output');
     except
-      st.SaveToFile('testcases\output\' + GetResultDir + '\' + Filename);
-      if not _AllowFailure then
+      on e: ETestFailure do begin
+        st.SaveToFile('testcases\output\' + GetResultDir + '\' + Filename);
+        e.Message := ' known ' + e.Message;
         raise;
+      end;
     end;
   finally
     ExpectedText.Free;
@@ -347,9 +352,14 @@ begin
   TestFile('ifthenelse');
 end;
 
-procedure TTestTestfiles.testIfThenElse2CurrentlyFails;
+procedure TTestTestfiles.testIfThenElse2;
 begin
-  TestFile('ifthenelse2', True);
+  TestFile('ifthenelse2');
+end;
+
+procedure TTestTestfiles.testIfthenelse3;
+begin
+  TestFile('Ifthenelse3');
 end;
 
 procedure TTestTestfiles.testIfThenTry;
@@ -580,7 +590,7 @@ begin
   TestFile('FakeGenericCreate');
 end;
 
-procedure TTestTestfiles.testFormatWithLineBreaksCurrentlyFails;
+procedure TTestTestfiles.testFormatWithLineBreaks;
 begin
   TestFile('FormatWithLineBreaks');
 end;
@@ -795,6 +805,11 @@ end;
 function TTestFilesDelforFormatting.GetResultDir: string;
 begin
   Result := 'delforex';
+end;
+
+procedure TTestFilesDelforFormatting.testIfThenElse2;
+begin
+  TestFile('IfThenElse2', True);
 end;
 
 { TTestFilesDefaultFormatting }
