@@ -332,7 +332,7 @@ const
     ET_UNCLOSED_PROCESSING_INSTRUCTION,
     ET_WRONG_ORDER,
 
-  ET_ATTLIST_DECL_START_EXPECTED,
+    ET_ATTLIST_DECL_START_EXPECTED,
     ET_INVALID_ATTLIST_DECL_NAME,
     ET_DOUBLE_DOCTYPE,
     ET_CONDITIONAL_SECTION_NOT_ALLOWED,
@@ -356,13 +356,13 @@ const
     ET_UNKNOWN_DECL_TYPE,
     ET_WHITESPACE_EXPECTED,
 
-  ET_INVALID_NAMESPACE_URI,
+    ET_INVALID_NAMESPACE_URI,
     ET_INVALID_PREFIX,
     ET_INVALID_QUALIFIED_NAME,
     ET_NAMESPACE_URI_NOT_FOUND,
     ET_WRONG_PREFIX_MAPPING_NESTING,
 
-  ET_ENCODING_NOT_SUPPORTED
+    ET_ENCODING_NOT_SUPPORTED
     ];
 
   ET_DOCTYPE_FATAL_ERRORS: TXmlErrorTypes = [
@@ -10988,7 +10988,7 @@ begin
     treeWalker := CreateTreeWalker(node,
                                     // Hide entity reference nodes:
       [ntElement_Node,
-      ntAttribute_Node,
+        ntAttribute_Node,
         ntText_Node,
         ntCDATA_Section_Node,
         ntEntity_Node,
@@ -10999,7 +10999,7 @@ begin
         ntDocument_Fragment_Node,
         ntNotation_Node,
         ntDocument_Type_Decl_Node],
-        nil,
+      nil,
       true);
     try
       case elmDecl.ContentType of
@@ -12895,7 +12895,7 @@ begin
               if hasMalformedDecl
                 or invalidEncoding
                 or not (declType in [DT_TEXT_DECLARATION,
-                DT_XML_OR_TEXT_DECLARATION,
+                  DT_XML_OR_TEXT_DECLARATION,
                   DT_UNSPECIFIED])
                 then result := false
               else begin
@@ -12960,10 +12960,10 @@ begin
           LTIterator := Doc.CreateNodeIterator(
             Doc.DocumentElement,
             [ntElement_Node,
-            ntCDATA_Section_Node,
+              ntCDATA_Section_Node,
               ntProcessing_Instruction_Node,
               ntComment_Node],
-              nil,
+            nil,
             False);
           LTIterator.NextNode; // Remark: Returns the <dummy> root element.
           if LTIterator.NextNode <> nil then
@@ -13242,9 +13242,9 @@ begin
       AS_MIXED_CONTENTTYPE,
       AS_STRICT_MIXED_CONTENTTYPE: FAllowedChildTypes := [
 {$IFDEF INCLUDE_NAMESPACE_ABSTRACT_SCHEMA_MODEL}
-      AS_ALL_CM,
+        AS_ALL_CM,
 {$ENDIF}
-      AS_CHOICE_CM,
+        AS_CHOICE_CM,
         AS_SEQUENCE_CM];
   end;
 end;
@@ -13270,7 +13270,7 @@ begin
     AS_ELEMENT_CONTENTTYPE,
       AS_MIXED_CONTENTTYPE,
       AS_STRICT_MIXED_CONTENTTYPE: FAllowedChildTypes := [AS_ALL_CM,
-      AS_CHOICE_CM,
+        AS_CHOICE_CM,
         AS_SEQUENCE_CM];
   end;
   FAttributeDeclarations := TdomASNamedObjectMapNS.create(aOwner);
@@ -15177,7 +15177,7 @@ begin
     if XmlDeclarationAllowed then begin
       if aInputSource.hasMalformedDecl
         or not (aInputSource.declType in [DT_TEXT_DECLARATION,
-        DT_XML_OR_TEXT_DECLARATION,
+          DT_XML_OR_TEXT_DECLARATION,
           DT_UNSPECIFIED])
         then begin
         FTokenType := DTD_END_OF_SOURCE_TOKEN;
@@ -16970,7 +16970,7 @@ begin
           with InputSrc do begin
             if HasMalformedDecl
               or not (DeclType in [DT_TEXT_DECLARATION,
-              DT_XML_OR_TEXT_DECLARATION,
+                DT_XML_OR_TEXT_DECLARATION,
                 DT_UNSPECIFIED]) then
               raise EParserException.Create('Invalid text declaration.');
             if invalidEncoding then
@@ -21848,7 +21848,7 @@ begin
 
   if inputSource.hasMalformedDecl
     or not (inputSource.declType in [DT_XML_DECLARATION,
-    DT_XML_OR_TEXT_DECLARATION,
+      DT_XML_OR_TEXT_DECLARATION,
       DT_UNSPECIFIED])
     then begin
     sendErrorNotification(ET_INVALID_XML_DECL);
@@ -21931,7 +21931,7 @@ begin
   try
     if InputSrc.hasMalformedDecl
       or not (InputSrc.declType in [DT_TEXT_DECLARATION,
-      DT_XML_OR_TEXT_DECLARATION,
+        DT_XML_OR_TEXT_DECLARATION,
         DT_UNSPECIFIED])
       then begin
       sendErrorNotification(ET_INVALID_TEXT_DECL);
@@ -22023,7 +22023,7 @@ begin
   try
     if InputSrc.hasMalformedDecl
       or not (InputSrc.declType in [DT_TEXT_DECLARATION,
-      DT_XML_OR_TEXT_DECLARATION,
+        DT_XML_OR_TEXT_DECLARATION,
         DT_UNSPECIFIED])
       then begin
       sendErrorNotification(ET_INVALID_TEXT_DECL);
@@ -23486,7 +23486,7 @@ begin
           end;
 
           if not (FLastSymbol in [XPATH_LEFT_PARENTHESIS_TOKEN,
-            XPATH_LEFT_SQUARE_BRACKET_TOKEN,
+              XPATH_LEFT_SQUARE_BRACKET_TOKEN,
               XPATH_COMMERCIAL_AT_TOKEN,
               XPATH_COMMA_TOKEN,
               XPATH_DOUBLE_COLON_TOKEN,
@@ -23777,13 +23777,13 @@ begin
     if assigned(node) then begin
       with node.referenceDocument.createNodeIterator(node,
         [ntElement_Node,
-        ntText_Node,
+          ntText_Node,
           ntCDATA_Section_Node,
           ntEntity_Reference_Node,
           ntProcessing_Instruction_Node,
           ntComment_Node,
           ntDocument_Node],
-          nil,
+        nil,
         false) do begin
         n := NextNode;
         while assigned(n) do begin
@@ -23800,13 +23800,13 @@ begin
       try
         with node.referenceDocument.createNodeIterator(node,
           [ntElement_Node,
-          ntText_Node,
+            ntText_Node,
             ntCDATA_Section_Node,
             ntEntity_Reference_Node,
             ntProcessing_Instruction_Node,
             ntComment_Node,
             ntDocument_Node],
-            nil,
+          nil,
           false) do begin
           n := NextNode;
           while assigned(n) do begin
@@ -24266,7 +24266,7 @@ function TdomXPathSyntaxTree.evaluate: TdomXPathCustomResult;
 begin
   if assigned(contextNode) then
     if not (contextNode.nodeType in [ntElement_Node,
-      ntAttribute_Node,
+        ntAttribute_Node,
         ntText_Node,
         ntProcessing_Instruction_Node,
         ntComment_Node,
@@ -25127,7 +25127,7 @@ procedure TXPathExpression.setContextNode(const node: TdomNode);
 begin
   if assigned(node) then
     if not (node.nodeType in [ntElement_Node,
-      ntAttribute_Node,
+        ntAttribute_Node,
         ntText_Node,
         ntProcessing_Instruction_Node,
         ntComment_Node,
@@ -25437,12 +25437,12 @@ begin
   if assigned(contextNode) then begin
     with contextNode.referenceDocument.createNodeIterator(contextNode,
       [ntElement_Node,
-      ntText_Node,
+        ntText_Node,
         ntCDATA_Section_Node,
         ntEntity_Reference_Node,
         ntProcessing_Instruction_Node,
         ntComment_Node],
-        nil,
+      nil,
       false) do begin
       n := NextNode;
       if n = contextNode then n := NextNode;
@@ -25467,13 +25467,13 @@ begin
   if assigned(contextNode) then begin
     with contextNode.referenceDocument.createNodeIterator(contextNode,
       [ntElement_Node,
-      ntText_Node,
+        ntText_Node,
         ntCDATA_Section_Node,
         ntEntity_Reference_Node,
         ntProcessing_Instruction_Node,
         ntComment_Node,
         ntDocument_Node],
-        nil,
+      nil,
       false) do begin
       n := NextNode;
       while assigned(n) do begin
