@@ -97,6 +97,7 @@ type
     procedure testQuotesError;
     procedure testReadWrite;
     procedure testRecordMethod;
+    procedure testSetWithLinebreaks;
     procedure testSingleElse;
     procedure testSlashCommentToCurly;
     procedure testStarCommentAtEol;
@@ -169,7 +170,8 @@ uses
   ShellAPI,
   StrUtils,
   Dialogs,
-  GX_CodeFormatterConfigHandler;
+  GX_CodeFormatterConfigHandler,
+  GX_DbugIntf;
 
 { TTestTestfiles }
 
@@ -446,6 +448,11 @@ end;
 procedure TTestTestfiles.testRecordMethod;
 begin
   TestFile('RecordMethod');
+end;
+
+procedure TTestTestfiles.testSetWithLinebreaks;
+begin
+  TestFile('SetWithLinebreaks');
 end;
 
 procedure TTestTestfiles.testJustOpeningComment;
