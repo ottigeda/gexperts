@@ -89,7 +89,8 @@ type
     procedure SetSpace(_Space: TSpaceSet; _State: Boolean); override;
     procedure SetReservedType(_ReservedType: TReservedType); override;
     function Space(_Space: TSpace): Boolean; override;
-    {: @returns <spaces><the expression><spaces> }
+    ///<summary>
+    /// @returns <spaces><the expression><spaces> </summary>
     function GetContent: TGXUnicodeString; override;
     procedure GetLength(var _Length: Integer); override;
     function GetWordType: TWordType; override;
@@ -111,7 +112,8 @@ type
     constructor Create(_Like: TExpression; _AlignPos: Byte);
     // Note: As a side effect, this adjusts FNoOfspaces
     procedure GetLength(var _Length: Integer); override;
-    {: @returns <spaces><the expression><spaces> }
+    ///<summary>
+    /// @returns <spaces><the expression><spaces> </summary>
     function GetContent: TGXUnicodeString; override;
     property NoOfSpaces: byte read FNoOfSpaces write FNoOfSpaces;
   end;
