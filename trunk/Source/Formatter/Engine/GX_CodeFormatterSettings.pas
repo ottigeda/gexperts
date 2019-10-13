@@ -221,6 +221,7 @@ var
   Idx: Integer;
   CommentedIdx: Integer;
 begin
+  // todo: Why is this a method of the Settings class? It should be in the formatter class!
   if not (_Word.GetExpression(Expression)) then
     Exit;
 
