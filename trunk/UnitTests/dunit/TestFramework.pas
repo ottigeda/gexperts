@@ -2841,7 +2841,6 @@ end;
 {$ELSE}
 {$IFDEF RTTI}
 var
-  I: Integer;
   LMethod: TRttiMethod;
   MethodName: string;
   Duplicate: boolean;
