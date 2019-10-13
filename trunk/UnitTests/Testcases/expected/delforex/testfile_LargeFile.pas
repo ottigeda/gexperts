@@ -5113,7 +5113,7 @@ begin
   BracketStr := trimWhitespace(Source);
   if length(BracketStr) < 2 then begin Error := true; exit; end;
   if (BracketStr[1] <> '(') or (BracketStr[length(BracketStr)] <> ')')
-  then Error := true
+    then Error := true
   else begin
     content := trimWhitespace(copy(BracketStr, 2, Length(BracketStr) - 2));
     Error := false;
@@ -6980,8 +6980,8 @@ begin
     then raise EInuse_Err.create('Inuse node error.');
   if node.NodeType = ntAttribute_Node
     then if assigned((node as TdomAttr).FOwnerMap)
-    then if (node as TdomAttr).FOwnerMap <> self
-      then raise EInuse_Err.create('Inuse attribute error.');
+      then if (node as TdomAttr).FOwnerMap <> self
+        then raise EInuse_Err.create('Inuse attribute error.');
 end;
 
 procedure TdomNamedNodeMap.checkNotNamespaceAware;
@@ -11864,7 +11864,7 @@ begin
           if not assigned(dereferencedEntityDecl) then begin
             if not allowUnresolvableEntities
               then if not isXmlPredefinedEntityName(WideStrings[i])
-              then raise EConvertError.create('Entity reference cannot be resolved.');
+                then raise EConvertError.create('Entity reference cannot be resolved.');
           end else begin
             updatedEntities := TUtilsWideStringList.create;
             try
@@ -18060,7 +18060,7 @@ begin
       for I := 0 to Pred(Count) do
         if Assigned(Objects[I])
           then if Objects[I] is TXmlCustomHandler
-          then Self.Add.XmlHandler := TXmlCustomHandler(Objects[I]);
+            then Self.Add.XmlHandler := TXmlCustomHandler(Objects[I]);
   end else inherited Assign(Source);
 end;
 
@@ -18757,7 +18757,7 @@ begin
   if length(content) = 0
     then raise EParserException.create('Parser error.');
   if wideChar(content[length(content)]) <> ')'
-  then raise EParserException.create('Parser error.');
+    then raise EParserException.create('Parser error.');
   XMLTruncRoundBrackets(content, dummy, Error);
   if Error or (dummy = '')
     then raise EParserException.create('Parser error.');
@@ -18821,7 +18821,7 @@ begin
   if length(content) = 0
     then raise EParserException.create('Parser error.');
   if wideChar(content[length(content)]) <> ')'
-  then raise EParserException.create('Parser error.');
+    then raise EParserException.create('Parser error.');
   XMLTruncRoundBrackets(content, dummy, Error);
   if Error or (dummy = '')
     then raise EParserException.create('Parser error.');
@@ -20227,7 +20227,7 @@ begin
       inc(attrNameLength);
       if attrNameLength <= 6
         then if tail^ <> XMLNS[attrNameLength]
-        then isXmlns := false;
+          then isXmlns := false;
       inc(tail);
     end;
     setString(attrName, head, attrNameLength);
