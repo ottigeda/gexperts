@@ -4653,12 +4653,12 @@ end;
 
 function IDEEditorStringToString(const S: IDEEditBufferString): string; overload;
 begin
-  Result := Utf8ToAnsi(S);
+  Result := UTF8ToString(S);
 end;
 
 function UTF8ToUnicodeString(S: UTF8String): WideString;
 begin
-  Result := Utf8ToAnsi(S);
+  Result := UTF8ToWideString(S);
 end;
 {$ENDIF GX_VER200_up}
 {$ENDIF GX_VER160_up}
