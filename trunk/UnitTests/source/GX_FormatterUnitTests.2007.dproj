@@ -28,17 +28,18 @@
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DCC_DcuOutput>..\dcu\delphi2007</DCC_DcuOutput>
-        <DCC_Define>DEBUG;ASSERT_TRACING</DCC_Define>
+        <DCC_Define>DEBUG;_ASSERT_TRACING</DCC_Define>
         <DCC_ExeOutput>..\</DCC_ExeOutput>
         <DCC_HppOutput>..\dcu\delphi2007</DCC_HppOutput>
         <DCC_IncludePath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit</DCC_IncludePath>
         <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
+        <DCC_MapFile>3</DCC_MapFile>
         <DCC_ObjOutput>..\dcu\delphi2007</DCC_ObjOutput>
         <DCC_ObjPath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit</DCC_ObjPath>
         <DCC_Optimize>False</DCC_Optimize>
         <DCC_RangeChecking>True</DCC_RangeChecking>
         <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit</DCC_ResourcePath>
-        <DCC_UnitAlias>Actions=ActnList;ImageList=Controls</DCC_UnitAlias>
+        <DCC_UnitAlias>Actions=ActnList;ImageList=Controls;UITypes=Dialogs</DCC_UnitAlias>
         <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit</DCC_UnitSearchPath>
         <Version>7.0</Version>
     </PropertyGroup>
