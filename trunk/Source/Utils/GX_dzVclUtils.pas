@@ -38,9 +38,9 @@ uses
 //  DBGrids,
 //  Buttons,
   Menus,
-//{$IFDEF HAS_UNIT_SYSTEM_ACTIONS}
-//  System.Actions,
-//{$ENDIF}
+//  Types,
+  UITypes,  // if you get a compile error here, add UITypes=Dialogs to the unit aliases
+  Actions,
   ActnList;
 //  ComObj,
 //  u_dzTranslator,

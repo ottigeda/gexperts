@@ -9,6 +9,7 @@ interface
 uses
   Windows,
   SysUtils,
+  UITypes, // if you get a compile error here, add UITypes=Dialogs to the unit aliases
   Controls;
 
 ///<summary>

@@ -12,6 +12,7 @@ interface
 
 uses
   SysUtils, Classes, Dialogs, SyncObjs, Graphics, Controls, Forms, StdCtrls,
+  UITypes, // if you get a compile error here, add UITypes=Dialogs to the unit aliases 
   {$IFNDEF UNICODE} SynUnicode, {$ENDIF UNICODE} // UniSynEdit is required for TWideStringList in Delphi 2007 and earlier
   Types, CheckLst, TypInfo, ExtCtrls, ComCtrls, GX_dzNamedThread;
 
