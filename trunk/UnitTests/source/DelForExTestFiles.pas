@@ -283,7 +283,7 @@ begin
       on e: ETestFailure do begin
         st.SaveToFile('testcases\output\' + GetResultDir + '\' + Filename);
         if _AllowFailure then
-          e.Message := ' known ' + e.Message;
+          e.Message := 'known ' + e.Message;
         raise;
       end;
     end;
