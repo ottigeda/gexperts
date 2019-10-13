@@ -79,11 +79,13 @@ type
     procedure testGenericVariable;
     procedure testHashCharStrings;
     procedure testHexNumbers;
+    procedure testIfAndThen;
+    procedure testIfAndThen2;
     procedure testIfdefs;
     procedure testIfElseendif;
     procedure testIfThenElse;
     procedure testIfThenElse2; virtual;
-    procedure testIfthenelse3;
+    procedure testIfThenElse3;
     procedure testIfThenTry;
     procedure testIndentComment;
     procedure testJustOpeningComment;
@@ -143,8 +145,6 @@ type
   protected
     function GetFormatSettings: TCodeFormatterEngineSettings; override;
     function GetResultDir: string; override;
-  published
-    procedure testIfThenElse2; override;
   end;
 
 type
@@ -282,7 +282,8 @@ begin
     except
       on e: ETestFailure do begin
         st.SaveToFile('testcases\output\' + GetResultDir + '\' + Filename);
-        e.Message := ' known ' + e.Message;
+        if _AllowFailure then
+          e.Message := ' known ' + e.Message;
         raise;
       end;
     end;
@@ -320,6 +321,16 @@ end;
 procedure TTestTestfiles.testAssemblerNewlines;
 begin
   TestFile('assemblernewline');
+end;
+
+procedure TTestTestfiles.testIfAndThen;
+begin
+  TestFile('IfAndThen');
+end;
+
+procedure TTestTestfiles.testIfAndThen2;
+begin
+  TestFile('IfAndThen2');
 end;
 
 procedure TTestTestfiles.testIfdefs;
@@ -805,11 +816,6 @@ end;
 function TTestFilesDelforFormatting.GetResultDir: string;
 begin
   Result := 'delforex';
-end;
-
-procedure TTestFilesDelforFormatting.testIfThenElse2;
-begin
-  TestFile('IfThenElse2', True);
 end;
 
 { TTestFilesDefaultFormatting }
