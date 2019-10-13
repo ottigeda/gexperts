@@ -8,7 +8,7 @@ procedure test;
 begin
   if True
     then Hallo
-    else Welt;
+  else Welt;
 end;
 
 end.
