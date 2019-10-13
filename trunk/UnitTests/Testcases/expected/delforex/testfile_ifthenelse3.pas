@@ -8,7 +8,7 @@ procedure test;
 begin
   if boolarr[0]
     then Hallo
-    else Welt;
+  else Welt;
 end;
 
 end.
