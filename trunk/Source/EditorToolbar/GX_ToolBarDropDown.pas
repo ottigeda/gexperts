@@ -116,6 +116,7 @@ type
 
   TPositionPopupListing = class(TRefCountedPopupMenu, IPopupInterface)
   private
+    FCurrentSourceFn: string;
     procedure GotoPosition(Sender: TObject);
   protected
     procedure FillMenuWithContent; override;
@@ -129,7 +130,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils,
-  Graphics, StdCtrls, Forms, Dialogs,
+  Graphics, StdCtrls, Forms, Dialogs, ToolsAPI,
   GX_Actions, GX_ActionBroker,
   GX_GxUtils, GX_GenericUtils, GX_IdeUtils,
   GX_EditReader, GX_UsesManager, GX_UnitPositions, Math;
@@ -466,10 +467,21 @@ begin
 end;
 
 procedure TPositionPopupListing.GotoPosition(Sender: TObject);
+var
+  View: IOTAEditView;
+  CursorPos: TOTAEditPos;
 begin
   Assert(Sender is TMenuItem);
-  GxOtaGotoPosition(TMenuItem(Sender).Tag);
-  GxOtaMakeSourceVisible(GxOtaGetCurrentSourceFile);
+
+  GxOtaMakeSourceVisible(FCurrentSourceFn);
+
+  if not GxOtaTryGetTopMostEditView(View) then
+    Exit; //==>
+
+  CursorPos := View.CursorPos;
+  CursorPos.Line := TMenuItem(Sender).Tag;
+  View.CursorPos := CursorPos;
+  View.Center(CursorPos.Line, CursorPos.Col);
 end;
 
 procedure TPositionPopupListing.FillMenuWithContent;
@@ -479,17 +491,18 @@ var
   i: Integer;
   UnitPosition: TUnitPosition;
 begin
-  AssertIsDprOrPasOrInc(GxOtaGetCurrentSourceFile);
-  UnitPositions := TUnitPositions.Create(GxOtaGetCurrentSourceEditor);
+  FCurrentSourceFn := GxOtaGetCurrentSourceFile;
+  AssertIsDprOrPasOrInc(FCurrentSourceFn);
+  UnitPositions := TUnitPositions.Create(FCurrentSourceFn);
   try
     for i := 0 to UnitPositions.Count - 1 do
     begin
       UnitPosition := UnitPositions.Positions[i];
-      if UnitPosition.Position <> -1 then
+      if UnitPosition.LineNo <> -1 then
       begin
         MenuItem := TMenuItem.Create(Self);
         MenuItem.Caption := UnitPosition.Name;
-        MenuItem.Tag     := UnitPosition.Position;
+        MenuItem.Tag     := UnitPosition.LineNo;
         MenuItem.OnClick := GotoPosition;
         Self.Items.Add(MenuItem);
       end;

@@ -29,6 +29,7 @@ type
     procedure cmb_LineNumberKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     FUnitPositions: TUnitPositions;
+    FCurrentSourceFn: string;
     procedure SetData(_Row: Integer);
     procedure GetData(out _Row: Integer);
   public
@@ -46,7 +47,8 @@ uses
   GX_OtaUtils,
   GX_Experts,
   GX_IdeUtils,
-  GX_GotoConfig;
+  GX_GotoConfig,
+  GX_EditReader;
 
 const
   SEARCH_GOTO_COMMAND = 'SearchGotoCommand';
@@ -86,13 +88,15 @@ begin
   Items := lb_UnitPositions.Items;
   Items.BeginUpdate;
   try
-    FUnitPositions := TUnitPositions.Create(GxOtaGetCurrentSourceEditor);
+    FCurrentSourceFn := GxOtaGetCurrentSourceFile;
+    FUnitPositions := TUnitPositions.Create(FCurrentSourceFn);
     for i := 0 to FUnitPositions.Count - 1 do begin
       Items.Add(FUnitPositions.Positions[i].Name);
     end;
   finally
     Items.EndUpdate;
   end;
+
   lb_UnitPositions.ClientHeight := (FUnitPositions.Count + 1) * lb_UnitPositions.ItemHeight;
   b_Ok.Top := lb_UnitPositions.Top + lb_UnitPositions.Height + 8;
   b_Cancel.Top := b_Ok.Top;
@@ -177,17 +181,12 @@ end;
 procedure Tf_Goto.lb_UnitPositionsClick(Sender: TObject);
 var
   Idx: Integer;
-  View: IOTAEditView;
-  CharPos: TOTACharPos;
-  CursorPos: TOTAEditPos;
 begin
   Idx := lb_UnitPositions.ItemIndex;
   if Idx = -1 then
     Exit; //==>
-  View := GxOtaGetTopMostEditView;
-  CharPos := GxOtaGetCharPosFromPos(FUnitPositions.Positions[Idx].Position, View);
-  View.ConvertPos(False, CursorPos, CharPos);
-  TCombobox_SetText(cmb_LineNumber, IntToStr(CursorPos.Line));
+
+  TCombobox_SetText(cmb_LineNumber, IntToStr(FUnitPositions.Positions[Idx].LineNo));
   TCombobox_SelectAll(cmb_LineNumber);
 end;
 

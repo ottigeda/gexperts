@@ -3,12 +3,12 @@ unit GX_UnitPositions;
 interface
 
 uses
-  Classes, ToolsAPI, mPasLex;
+  Classes, mPasLex;
 
 type
   TUnitPosition = record
     Name: string;
-    Position: Integer;
+    LineNo: Integer;
   end;
 
   TUnitPositions = class(TObject)
@@ -20,7 +20,7 @@ type
     function GetCount: Integer;
     function GetPosition(Index: Integer): TUnitPosition;
   public
-    constructor Create(const SourceEditor: IOTASourceEditor);
+    constructor Create(const _Filename: string);
     destructor Destroy; override;
     property Count: Integer read GetCount;
     property Positions[Index: Integer]: TUnitPosition read GetPosition;
@@ -29,7 +29,7 @@ type
 implementation
 
 uses
-  SysUtils, GX_OtaUtils, GX_GenericUtils, mwPasParserTypes;
+  SysUtils, GX_OtaUtils, GX_GenericUtils, mwPasParserTypes, GX_EditReader;
 
 const
   SUnitName = 'unit';
@@ -49,14 +49,13 @@ const
 
 { TUnitPositions }
 
-constructor TUnitPositions.Create(const SourceEditor: IOTASourceEditor);
+constructor TUnitPositions.Create(const _Filename: string);
 begin
   inherited Create;
 
-  Assert(Assigned(SourceEditor));
   FParser := nil;
   FPosList := TStringList.Create;
-  FFileContent := GxOtaReadEditorTextToString(SourceEditor.CreateReader);
+  FFileContent := TEditReader.GetText(_FileName);
   FParser := TmwPasLex.Create;
   FParser.Origin := @FFileContent[1];
   GetPositions;
@@ -77,7 +76,7 @@ end;
 function TUnitPositions.GetPosition(Index: Integer): TUnitPosition;
 begin
   Result.Name := FPosList[Index];
-  Result.Position := GXNativeInt(FPosList.Objects[Index]);
+  Result.LineNo := GXNativeInt(FPosList.Objects[Index]);
 end;
 
 procedure TUnitPositions.GetPositions;
@@ -97,63 +96,63 @@ begin
   begin
     case FParser.TokenID of
       tkEnd: // Only the last 'end' will be recorded (see below)
-        EndPos := FParser.TokenPos;
+        EndPos := FParser.LineNumber + 1;
       tkBegin:
         begin
           if IsProgramOrLibrary and not FoundBeginAlready then
           begin
-            FPosList.AddObject(SBeginName, TObject(FParser.TokenPos));
+            FPosList.AddObject(SBeginName, TObject(FParser.LineNumber + 1));
             FoundBeginAlready := True;
           end;
         end;
       tkProgram:
         begin
-          FPosList.AddObject(SProgramName, TObject(FParser.TokenPos));
+          FPosList.AddObject(SProgramName, TObject(FParser.LineNumber + 1));
           IsProgramOrLibrary := True;
         end;
       tkLibrary:
         begin
-          FPosList.AddObject(SLibraryName, TObject(FParser.TokenPos));
+          FPosList.AddObject(SLibraryName, TObject(FParser.LineNumber + 1));
           IsProgramOrLibrary := True;
         end;
       tkPackage:
         begin
-          FPosList.AddObject(SPackageName, TObject(FParser.TokenPos));
+          FPosList.AddObject(SPackageName, TObject(FParser.LineNumber + 1));
           IsProgramOrLibrary := True;
         end;
       tkUnit:
-        FPosList.AddObject(SUnitName, TObject(FParser.TokenPos));
+        FPosList.AddObject(SUnitName, TObject(FParser.LineNumber + 1));
       tkFinalization:
-        FPosList.AddObject(SFinalizationName, TObject(FParser.TokenPos));
+        FPosList.AddObject(SFinalizationName, TObject(FParser.LineNumber + 1));
       tkInitialization:
-        FPosList.AddObject(SInitializationName, TObject(FParser.TokenPos));
+        FPosList.AddObject(SInitializationName, TObject(FParser.LineNumber + 1));
       tkInterface:
         begin
           if Section = sUnknown then
           begin
-            FPosList.AddObject(SInterfaceName, TObject(FParser.TokenPos));
+            FPosList.AddObject(SInterfaceName, TObject(FParser.LineNumber + 1));
             Section := sInterface;
           end;
         end;
       tkImplementation:
         begin
           Section := sImplementation;
-          FPosList.AddObject(SImplementationName, TObject(FParser.TokenPos));
+          FPosList.AddObject(SImplementationName, TObject(FParser.LineNumber + 1));
         end;
       tkContains:
         begin
-          FPosList.AddObject(SContainsName, TObject(FParser.TokenPos));
+          FPosList.AddObject(SContainsName, TObject(FParser.LineNumber + 1));
         end;
       tkRequires:
         begin
-          FPosList.AddObject(SRequiresName, TObject(FParser.TokenPos));
+          FPosList.AddObject(SRequiresName, TObject(FParser.LineNumber + 1));
         end;
       tkUses:
         begin
           if Section = sImplementation then
-            FPosList.AddObject(SImplementationUsesName, TObject(FParser.TokenPos))
+            FPosList.AddObject(SImplementationUsesName, TObject(FParser.LineNumber + 1))
           else
-            FPosList.AddObject(SInterfaceUsesName, TObject(FParser.TokenPos));
+            FPosList.AddObject(SInterfaceUsesName, TObject(FParser.LineNumber + 1));
         end;
     else // FI:W506
       // Ignore the token
