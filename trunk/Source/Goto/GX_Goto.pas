@@ -22,7 +22,7 @@ type
     cmb_LineNumber: TComboBox;
     l_LineNumber: TLabel;
     lb_UnitPositions: TListBox;
-    b_OK: TButton;
+    b_Ok: TButton;
     b_Cancel: TButton;
     procedure lb_UnitPositionsClick(Sender: TObject);
     procedure lb_UnitPositionsDblClick(Sender: TObject);
@@ -32,7 +32,7 @@ type
     procedure SetData(_Row: Integer);
     procedure GetData(out _Row: Integer);
   public
-    class function Execute(var _Row: Integer): boolean;
+    class function Execute(var _Row: Integer): Boolean;
     constructor Create(_Owner: TComponent); override;
   end;
 
@@ -41,6 +41,7 @@ implementation
 {$R *.dfm}
 
 uses
+  Registry,
   ToolsAPI,
   GX_OtaUtils,
   GX_Experts,
@@ -54,11 +55,11 @@ type
   TGotoExpert = class(TGX_Expert)
   private
     FIdeGotoActionEvent: TNotifyEvent;
-    FOverrideSearchGoto: boolean;
+    FOverrideSearchGoto: Boolean;
     procedure HijackIdeActions;
     procedure ResetIdeActions;
   protected
-    procedure SetActive(New: boolean); override;
+    procedure SetActive(New: Boolean); override;
     procedure Configure; override;
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     procedure InternalSaveSettings(_Settings: IExpertSettings); override;
@@ -67,7 +68,7 @@ type
     class function GetName: string; override;
     destructor Destroy; override;
     procedure Execute(Sender: TObject); override;
-    function HasConfigOptions: boolean; override;
+    function HasConfigOptions: Boolean; override;
     procedure AfterIDEInitialized; override;
   end;
 
@@ -77,6 +78,9 @@ constructor Tf_Goto.Create(_Owner: TComponent);
 var
   Items: TStrings;
   i: Integer;
+  reg: TRegistry;
+  cnt: Integer;
+  s: string;
 begin
   inherited;
   Items := lb_UnitPositions.Items;
@@ -90,12 +94,42 @@ begin
     Items.EndUpdate;
   end;
   lb_UnitPositions.ClientHeight := (FUnitPositions.Count + 1) * lb_UnitPositions.ItemHeight;
-  b_OK.Top := lb_UnitPositions.Top + lb_UnitPositions.Height + 8;
-  b_Cancel.Top := b_OK.Top;
-  self.ClientHeight := b_OK.Top + b_OK.Height + 8;
+  b_Ok.Top := lb_UnitPositions.Top + lb_UnitPositions.Height + 8;
+  b_Cancel.Top := b_Ok.Top;
+  Self.ClientHeight := b_Ok.Top + b_Ok.Height + 8;
+
+  // Unfortunately the IDE only updates the registry when it closes down so this list will be
+  // outdated if the user switched from the IDE's goto dialog to the GExperts one.
+  // todo: Does this history list really make any sense? I for one have never used it.
+  // Remembering the active line before the goto so we can go back where we came from makes more
+  // sense, but the Undo function already does that (but not everybody knows this).  
+  reg := TRegistry.Create;
+  try
+    reg.RootKey := HKEY_CURRENT_USER;
+    if reg.OpenKeyReadOnly(GxOtaGetIdeBaseRegistryKey + '\History Lists\hlGotoLine') then begin
+      if reg.ValueExists('Count') then begin
+        cnt := reg.ReadInteger('Count');
+        Items := cmb_LineNumber.Items;
+        Items.BeginUpdate;
+        try
+          for i := 0 to cnt - 1 do begin
+            s := 'Item' + IntToStr(i);
+            if reg.ValueExists(s) then begin
+              s := reg.ReadString(s);
+              Items.Add(s);
+            end;
+          end;
+        finally
+          Items.EndUpdate;
+        end;
+      end;
+    end;
+  finally
+    FreeAndNil(reg);
+  end;
 end;
 
-class function Tf_Goto.Execute(var _Row: Integer): boolean;
+class function Tf_Goto.Execute(var _Row: Integer): Boolean;
 var
   frm: Tf_Goto;
 begin
@@ -203,15 +237,17 @@ begin
   Result := 'GotoExpert';
 end;
 
-function TGotoExpert.HasConfigOptions: boolean;
+function TGotoExpert.HasConfigOptions: Boolean;
 begin
   Result := True;
 end;
 
 procedure TGotoExpert.Configure;
 begin
-  Tf_GotoConfig.Execute(FOverrideSearchGoto);
-
+  if Tf_GotoConfig.Execute(FOverrideSearchGoto) then begin
+    ResetIdeActions;
+    HijackIdeActions;
+  end;
 end;
 
 procedure TGotoExpert.InternalLoadSettings(_Settings: IExpertSettings);
@@ -238,7 +274,7 @@ begin
     ResetIDEAction(SEARCH_GOTO_COMMAND, FIdeGotoActionEvent);
 end;
 
-procedure TGotoExpert.SetActive(New: boolean);
+procedure TGotoExpert.SetActive(New: Boolean);
 begin
   inherited;
   if New then begin

@@ -5,8 +5,6 @@ inherited f_Goto: Tf_Goto
   ClientHeight = 219
   ClientWidth = 217
   Position = poMainFormCenter
-  ExplicitWidth = 223
-  ExplicitHeight = 244
   PixelsPerInch = 96
   TextHeight = 13
   object l_LineNumber: TLabel
