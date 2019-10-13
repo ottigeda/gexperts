@@ -572,6 +572,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
             <Form>fmUsesExpertOptions</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_BookmarkList.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_dzAssertTrace.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_dzClassUtils.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_dzDateUtils.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_dzFileUtils.pas"/>

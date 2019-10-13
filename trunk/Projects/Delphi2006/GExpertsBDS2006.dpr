@@ -249,7 +249,8 @@ uses
   GX_CustomClipboard in '..\..\Source\Framework\GX_CustomClipboard.pas',
   GX_Goto in '..\..\Source\Goto\GX_Goto.pas' {f_Goto},
   GX_FocusCodeEditor in '..\..\Source\FocusCodeEditor\GX_FocusCodeEditor.pas',
-  GX_GotoConfig in '..\..\Source\Goto\GX_GotoConfig.pas' {f_GotoConfig};
+  GX_GotoConfig in '..\..\Source\Goto\GX_GotoConfig.pas' {f_GotoConfig},
+  GX_dzAssertTrace in '..\..\Source\Utils\GX_dzAssertTrace.pas';
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
