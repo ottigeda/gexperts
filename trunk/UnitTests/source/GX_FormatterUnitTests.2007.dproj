@@ -28,7 +28,7 @@
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DCC_DcuOutput>..\dcu\delphi2007</DCC_DcuOutput>
-        <DCC_Define>DEBUG</DCC_Define>
+        <DCC_Define>DEBUG;ASSERT_TRACING</DCC_Define>
         <DCC_ExeOutput>..\</DCC_ExeOutput>
         <DCC_HppOutput>..\dcu\delphi2007</DCC_HppOutput>
         <DCC_IncludePath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit</DCC_IncludePath>
@@ -107,6 +107,7 @@
         <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterUnicode.pas"/>
         <DCCReference Include="..\..\Source\Formatter\GX_CodeFormatterConfigHandler.pas"/>
         <DCCReference Include="..\..\Source\Formatter\GX_CodeFormatterDefaultSettings.pas"/>
+        <DCCReference Include="..\..\source\utils\GX_dzAssertTrace.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_GenericUtils.pas"/>
         <DCCReference Include="..\dunit\DUnitConsts.pas"/>
         <DCCReference Include="..\dunit\GUITestRunner.pas"/>
