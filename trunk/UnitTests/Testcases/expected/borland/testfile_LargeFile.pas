@@ -15758,7 +15758,7 @@ begin
 
       // '?>':
       if (CurrentCharInfo.CodePoint = $003F) // '?'
-      and Match('>') then
+        and Match('>') then
       begin // '>'
 
         // Calculate FEncoding:
@@ -16179,7 +16179,7 @@ begin
                       begin
                         FInputSource.Next;
                         if (FInputSource.CurrentCodePoint = GT_CODE) // '>'
-                        and (not DQ_Open)
+                          and (not DQ_Open)
                           and (not SQ_Open)
                           and (not Bracket_Open)
                           and (SubEndMarker = '') then
@@ -16239,7 +16239,7 @@ begin
                               end;
                               if (FInputSource.CurrentCodePoint =
                                 RS_BRACKET_CODE) // ']'
-                              and (not SQ_Open)
+                                and (not SQ_Open)
                                 and (not DQ_Open) then
                                 Bracket_Open := false;
                             end; {if not ...}
@@ -16248,7 +16248,7 @@ begin
                           begin {if BracketOpened ... }
                             if (FInputSource.CurrentCodePoint = LS_BRACKET_CODE)
                               // '['
-                            and (not SQ_Open)
+                              and (not SQ_Open)
                               and (not DQ_Open) then
                               Bracket_Open := true;
                           end; {if BracketOpened ... else ...}

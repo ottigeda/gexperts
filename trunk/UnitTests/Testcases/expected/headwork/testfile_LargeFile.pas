@@ -27035,7 +27035,7 @@ begin
               end
             else
               if (lastSyntaxNode is TdomXPathAndOperator) or
-              (lastSyntaxNode is TdomXPathComma) or
+                (lastSyntaxNode is TdomXPathComma) or
                 (lastSyntaxNode is TdomXPathCommercialAt) or
                 (lastSyntaxNode is TdomXPathCustomAxisName) then
                 begin
@@ -27044,7 +27044,7 @@ begin
                 end
               else
                 if (lastSyntaxNode is TdomXPathDivExpr) or
-                (lastSyntaxNode is TdomXPathModExpr) or
+                  (lastSyntaxNode is TdomXPathModExpr) or
                   (lastSyntaxNode is TdomXPathMultiplyExpr) then
                   begin
                     if tokenizer.isFollowing(XPATH_SHEFFER_STROKE_OPERATOR_TOKEN) or
@@ -27069,7 +27069,7 @@ begin
                       end
                     else
                       if (stack.peek(0) is TdomXPathMinusOperator) and
-                      ((stack.peek(1) is TdomXPathPlusExpr) or
+                        ((stack.peek(1) is TdomXPathPlusExpr) or
                         (stack.peek(1) is TdomXPathMinusExpr)) then
                         begin
                 // XPath 1.0, prod. [25]:
@@ -27089,7 +27089,7 @@ begin
                   end
                 else
                   if (lastSyntaxNode is TdomXPathDivOperator) or
-                  (lastSyntaxNode is TdomXPathDoubleColon) then
+                    (lastSyntaxNode is TdomXPathDoubleColon) then
                     begin
                       stack.push(lastSyntaxNode);
                       break;
@@ -27133,7 +27133,7 @@ begin
                             end
                           else
                             if (lastSyntaxNode is TdomXPathGreaterThanExpr) or
-                            (lastSyntaxNode is TdomXPathGreaterThanOrEqualExpr) or
+                              (lastSyntaxNode is TdomXPathGreaterThanOrEqualExpr) or
                               (lastSyntaxNode is TdomXPathLessThanExpr) or
                               (lastSyntaxNode is TdomXPathLessThanOrEqualExpr) then
                               begin
@@ -27165,7 +27165,7 @@ begin
                                   end
                                 else
                                   if (stack.peek(0) is TdomXPathIsNotEqualOperator) and
-                                  ((stack.peek(1) is TdomXPathIsEqualExpr) or
+                                    ((stack.peek(1) is TdomXPathIsEqualExpr) or
                                     (stack.peek(1) is TdomXPathIsNotEqualExpr)) then
                                     begin
                 // XPath 1.0, prod. [23]:
@@ -27185,14 +27185,14 @@ begin
                               end
                             else
                               if (lastSyntaxNode is TdomXPathGreaterThanOperator) or
-                              (lastSyntaxNode is TdomXPathGreaterThanOrEqualOperator) then
+                                (lastSyntaxNode is TdomXPathGreaterThanOrEqualOperator) then
                                 begin
                                   stack.push(lastSyntaxNode);
                                   break;
                                 end
                               else
                                 if (lastSyntaxNode is TdomXPathIsEqualExpr) or
-                                (lastSyntaxNode is TdomXPathIsNotEqualExpr) then
+                                  (lastSyntaxNode is TdomXPathIsNotEqualExpr) then
                                   begin
                                     if tokenizer.isFollowing(XPATH_SHEFFER_STROKE_OPERATOR_TOKEN) or
                                       tokenizer.isFollowing(XPATH_MULTIPLY_OPERATOR_TOKEN) or
@@ -27231,7 +27231,7 @@ begin
                                   end
                                 else
                                   if (lastSyntaxNode is TdomXPathIsEqualOperator) or
-                                  (lastSyntaxNode is TdomXPathIsNotEqualOperator) or
+                                    (lastSyntaxNode is TdomXPathIsNotEqualOperator) or
                                     (lastSyntaxNode is TdomXPathLeftParenthesis) or
                                     (lastSyntaxNode is TdomXPathLeftSquareBracket) or
                                     (lastSyntaxNode is TdomXPathLessThanOperator) or
@@ -27262,7 +27262,7 @@ begin
                                       end
                                     else
                                       if (lastSyntaxNode is TdomXPathMinusExpr) or
-                                      (lastSyntaxNode is TdomXPathPlusExpr) then
+                                        (lastSyntaxNode is TdomXPathPlusExpr) then
                                         begin
                                           if tokenizer.isFollowing(XPATH_SHEFFER_STROKE_OPERATOR_TOKEN) or
                                             tokenizer.isFollowing(XPATH_MULTIPLY_OPERATOR_TOKEN) or
@@ -27290,7 +27290,7 @@ begin
                                             end
                                           else
                                             if (stack.peek(0) is TdomXPathLessThanOrEqualOperator) and
-                                            ((stack.peek(1) is TdomXPathLessThanExpr) or
+                                              ((stack.peek(1) is TdomXPathLessThanExpr) or
                                               (stack.peek(1) is TdomXPathLessThanOrEqualExpr) or
                                               (stack.peek(1) is TdomXPathGreaterThanExpr) or
                                               (stack.peek(1) is TdomXPathGreaterThanOrEqualExpr)) then
@@ -27304,7 +27304,7 @@ begin
                                               end
                                             else
                                               if (stack.peek(0) is TdomXPathGreaterThanOperator) and
-                                              ((stack.peek(1) is TdomXPathLessThanExpr) or
+                                                ((stack.peek(1) is TdomXPathLessThanExpr) or
                                                 (stack.peek(1) is TdomXPathLessThanOrEqualExpr) or
                                                 (stack.peek(1) is TdomXPathGreaterThanExpr) or
                                                 (stack.peek(1) is TdomXPathGreaterThanOrEqualExpr)) then
@@ -27318,7 +27318,7 @@ begin
                                                 end
                                               else
                                                 if (stack.peek(0) is TdomXPathGreaterThanOrEqualOperator) and
-                                                ((stack.peek(1) is TdomXPathLessThanExpr) or
+                                                  ((stack.peek(1) is TdomXPathLessThanExpr) or
                                                   (stack.peek(1) is TdomXPathLessThanOrEqualExpr) or
                                                   (stack.peek(1) is TdomXPathGreaterThanExpr) or
                                                   (stack.peek(1) is TdomXPathGreaterThanOrEqualExpr)) then
@@ -27340,7 +27340,7 @@ begin
                                         end
                                       else
                                         if (lastSyntaxNode is TdomXPathMinusOperator) or
-                                        (lastSyntaxNode is TdomXPathModOperator) or
+                                          (lastSyntaxNode is TdomXPathModOperator) or
                                           (lastSyntaxNode is TdomXPathMultiplyOperator) then
                                           begin
                                             stack.push(lastSyntaxNode);
@@ -27402,7 +27402,7 @@ begin
                                               end
                                             else
                                               if (lastSyntaxNode is TdomXPathNodeTypeComment) or
-                                              (lastSyntaxNode is TdomXPathNodeTypeNode) or
+                                                (lastSyntaxNode is TdomXPathNodeTypeNode) or
                                                 (lastSyntaxNode is TdomXPathNodeTypePI) or
                                                 (lastSyntaxNode is TdomXPathNodeTypeText) then
                                                 begin
@@ -27586,7 +27586,7 @@ begin
                                                                     end
                                                                   else
                                                                     if (stack.peek(0) is TdomXPathLiteral) and
-                                                                    (stack.peek(1) is TdomXPathLeftParenthesis) and
+                                                                      (stack.peek(1) is TdomXPathLeftParenthesis) and
                                                                       (stack.peek(2) is TdomXPathNodeTypePI) then
                                                                       begin
                                                                         lastSyntaxNode.free;
@@ -27599,7 +27599,7 @@ begin
                                                                       end
                                                                     else
                                                                       if (stack.peek(0) is TdomXPathExpr) and
-                                                                      (stack.peek(1) is TdomXPathLeftParenthesis) and not
+                                                                        (stack.peek(1) is TdomXPathLeftParenthesis) and not
                                                                         (stack.peek(2) is TdomXPathFunctionName) then
                                                                         begin
                                                                           lastSyntaxNode.free;
@@ -27744,7 +27744,7 @@ begin
                                                                                     end
                                                                                   else
                                                                                     if (not assigned(stack.peek(1))) or
-                                                                                    (stack.peek(1) is TdomXPathShefferStrokeOperator) then
+                                                                                      (stack.peek(1) is TdomXPathShefferStrokeOperator) then
                                                                                       begin
                   // XPath 1.0, prod. [2]:
                                                                                         stack.pop.free;
@@ -27793,7 +27793,7 @@ begin
                                                                                 end
                                                                               else
                                                                                 if (stack.peek(0) is TdomXPathMultiplyOperator) and
-                                                                                ((stack.peek(1) is TdomXPathMultiplyExpr) or
+                                                                                  ((stack.peek(1) is TdomXPathMultiplyExpr) or
                                                                                   (stack.peek(1) is TdomXPathDivExpr) or
                                                                                   (stack.peek(1) is TdomXPathModExpr)) then
                                                                                   begin
@@ -27806,7 +27806,7 @@ begin
                                                                                   end
                                                                                 else
                                                                                   if (stack.peek(0) is TdomXPathDivOperator) and
-                                                                                  ((stack.peek(1) is TdomXPathMultiplyExpr) or
+                                                                                    ((stack.peek(1) is TdomXPathMultiplyExpr) or
                                                                                     (stack.peek(1) is TdomXPathDivExpr) or
                                                                                     (stack.peek(1) is TdomXPathModExpr)) then
                                                                                     begin
@@ -27819,7 +27819,7 @@ begin
                                                                                     end
                                                                                   else
                                                                                     if (stack.peek(0) is TdomXPathModOperator) and
-                                                                                    ((stack.peek(1) is TdomXPathMultiplyExpr) or
+                                                                                      ((stack.peek(1) is TdomXPathMultiplyExpr) or
                                                                                       (stack.peek(1) is TdomXPathDivExpr) or
                                                                                       (stack.peek(1) is TdomXPathModExpr)) then
                                                                                       begin
@@ -29325,7 +29325,7 @@ begin
               end
             else
               if (rightResult is TdomXPathNumberResult) or
-              (rightResult is TdomXPathBooleanResult) or
+                (rightResult is TdomXPathBooleanResult) or
                 (rightResult is TdomXPathStringResult) then
                 begin
                   stringResult := XPathStringFunc(rightResult);
@@ -29345,7 +29345,7 @@ begin
           end
         else
           if (leftResult is TdomXPathBooleanResult) or
-          (rightResult is TdomXPathBooleanResult) then
+            (rightResult is TdomXPathBooleanResult) then
             begin
               leftBoolean := XPathBooleanFunc(leftResult);
               rightBoolean := XPathBooleanFunc(rightResult);
@@ -29358,7 +29358,7 @@ begin
             end
           else
             if (leftResult is TdomXPathNumberResult) or
-            (rightResult is TdomXPathNumberResult) then
+              (rightResult is TdomXPathNumberResult) then
               begin
                 leftNumber := XPathNumberFunc(leftResult);
                 rightNumber := XPathNumberFunc(rightResult);
@@ -29466,7 +29466,7 @@ begin
               end
             else
               if (rightResult is TdomXPathNumberResult) or
-              (rightResult is TdomXPathBooleanResult) or
+                (rightResult is TdomXPathBooleanResult) or
                 (rightResult is TdomXPathStringResult) then
                 begin
                   stringResult := XPathStringFunc(rightResult);
@@ -29486,7 +29486,7 @@ begin
           end
         else
           if (leftResult is TdomXPathBooleanResult) or
-          (rightResult is TdomXPathBooleanResult) then
+            (rightResult is TdomXPathBooleanResult) then
             begin
               leftBoolean := XPathBooleanFunc(leftResult);
               rightBoolean := XPathBooleanFunc(rightResult);
@@ -29499,7 +29499,7 @@ begin
             end
           else
             if (leftResult is TdomXPathNumberResult) or
-            (rightResult is TdomXPathNumberResult) then
+              (rightResult is TdomXPathNumberResult) then
               begin
                 leftNumber := XPathNumberFunc(leftResult);
                 rightNumber := XPathNumberFunc(rightResult);
@@ -29595,7 +29595,7 @@ begin
           end
         else
           if (leftResult is TdomXPathNodeSetResult) and
-          ((rightResult is TdomXPathNumberResult) or
+            ((rightResult is TdomXPathNumberResult) or
             (rightResult is TdomXPathBooleanResult) or
             (rightResult is TdomXPathStringResult)) then
             begin
@@ -29617,7 +29617,7 @@ begin
             if ((leftResult is TdomXPathNumberResult) or
               (leftResult is TdomXPathBooleanResult) or
               (leftResult is TdomXPathStringResult)) and
-            (rightResult is TdomXPathNodeSetResult) then
+              (rightResult is TdomXPathNodeSetResult) then
               begin
                 stringResult := XPathStringFunc(leftResult);
                 for i := 0 to pred(TdomXPathNodeSetResult(rightResult).length) do
@@ -29713,7 +29713,7 @@ begin
           end
         else
           if (leftResult is TdomXPathNodeSetResult) and
-          ((rightResult is TdomXPathNumberResult) or
+            ((rightResult is TdomXPathNumberResult) or
             (rightResult is TdomXPathBooleanResult) or
             (rightResult is TdomXPathStringResult)) then
             begin
@@ -29735,7 +29735,7 @@ begin
             if ((leftResult is TdomXPathNumberResult) or
               (leftResult is TdomXPathBooleanResult) or
               (leftResult is TdomXPathStringResult)) and
-            (rightResult is TdomXPathNodeSetResult) then
+              (rightResult is TdomXPathNodeSetResult) then
               begin
                 stringResult := XPathStringFunc(leftResult);
                 for i := 0 to pred(TdomXPathNodeSetResult(rightResult).length) do
@@ -29836,7 +29836,7 @@ begin
           end
         else
           if (leftResult is TdomXPathNodeSetResult) and
-          ((rightResult is TdomXPathNumberResult) or
+            ((rightResult is TdomXPathNumberResult) or
             (rightResult is TdomXPathBooleanResult) or
             (rightResult is TdomXPathStringResult)) then
             begin
@@ -29858,7 +29858,7 @@ begin
             if ((leftResult is TdomXPathNumberResult) or
               (leftResult is TdomXPathBooleanResult) or
               (leftResult is TdomXPathStringResult)) and
-            (rightResult is TdomXPathNodeSetResult) then
+              (rightResult is TdomXPathNodeSetResult) then
               begin
                 stringResult := XPathStringFunc(leftResult);
                 for i := 0 to pred(TdomXPathNodeSetResult(rightResult).length) do
@@ -29954,7 +29954,7 @@ begin
           end
         else
           if (leftResult is TdomXPathNodeSetResult) and
-          ((rightResult is TdomXPathNumberResult) or
+            ((rightResult is TdomXPathNumberResult) or
             (rightResult is TdomXPathBooleanResult) or
             (rightResult is TdomXPathStringResult)) then
             begin
@@ -29976,7 +29976,7 @@ begin
             if ((leftResult is TdomXPathNumberResult) or
               (leftResult is TdomXPathBooleanResult) or
               (leftResult is TdomXPathStringResult)) and
-            (rightResult is TdomXPathNodeSetResult) then
+              (rightResult is TdomXPathNodeSetResult) then
               begin
                 stringResult := XPathStringFunc(leftResult);
                 for i := 0 to pred(TdomXPathNodeSetResult(rightResult).length) do
