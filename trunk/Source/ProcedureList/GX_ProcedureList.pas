@@ -166,18 +166,9 @@ begin
 end;
 
 procedure TfmProcedureList.LoadProcs;
-var
-  edt: TEditReader;
 begin
-  // Since this edit reader is destroyed almost
-  // immediately, do not call FreeFileData
-  edt := TEditReader.Create(FFileName);
-  try
-    FUnitText := edt.GetText;
-    FFileScanner.UnitText := FUnitText;
-  finally
-    edt.Free;
-  end;
+  FUnitText :=  TEditReader.GetText(FFileName);
+  FFileScanner.UnitText := FUnitText;
   Caption := Caption + ' - ' + ExtractFileName(FFileName);
 
   ClearObjectStrings;
