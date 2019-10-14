@@ -58,8 +58,8 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>FileVersion=1.0.0.1;ProductVersion=1.0.0.0;CompanyName=;FileDescription=;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=</VerInfo_Keys>
         <DCC_ExeOutput>..\</DCC_ExeOutput>
-        <DCC_UnitSearchPath>..\..\source\framework;..\..\source\utils;..\..\source\include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <DCC_DcuOutput>.\dcu\delphiXE8</DCC_DcuOutput>
+        <DCC_UnitSearchPath>..\..\source\framework;..\..\source\utils;..\..\source\include;..\dunit;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_DcuOutput>..\dcu\delphi10-3</DCC_DcuOutput>
         <DCC_DependencyCheckOutputName>..\..\GX_FormatterUnitTests.exe</DCC_DependencyCheckOutputName>
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
@@ -136,7 +136,6 @@
         <DCC_MapFile>3</DCC_MapFile>
         <VerInfo_IncludeVerInfo>false</VerInfo_IncludeVerInfo>
         <VerInfo_Keys>CompanyName=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
-        <DCC_DcuOutput>..\dcu\delphiXE8</DCC_DcuOutput>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
