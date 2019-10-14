@@ -38,7 +38,7 @@ uses
 //  DBGrids,
 //  Buttons,
   Menus,
-//  Types,
+  Types, // for inlining Point
   UITypes,  // if you get a compile error here, add UITypes=Dialogs to the unit aliases
   Actions,
   ActnList;
