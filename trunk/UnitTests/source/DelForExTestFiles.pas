@@ -86,6 +86,7 @@ type
     procedure testIfAndThen2;
     procedure testIfdefs;
     procedure testIfElseendif;
+    procedure testIfInSet;
     procedure testIfThen;
     procedure testIfThenElse;
     procedure testIfThenElse2; virtual;
@@ -126,7 +127,7 @@ type
     procedure testUsesWithComment;
     procedure testVariantExtendedRecord;
 
-    procedure testComplexCurrentlyFails;
+    procedure testComplex;
     procedure testCurlyHalfCommentEndCurrentlyFails;
   end;
 
@@ -318,9 +319,9 @@ begin
   TestFile('compilerdirectives');
 end;
 
-procedure TTestTestfiles.testComplexCurrentlyFails;
+procedure TTestTestfiles.testComplex;
 begin
-  TestFile('complex', True);
+  TestFile('complex');
 end;
 
 procedure TTestTestfiles.testAssemblerNewlines;
@@ -363,6 +364,11 @@ begin
   TestFile('IfElseEndif');
 end;
 
+procedure TTestTestfiles.testIfInSet;
+begin
+  TestFile('IfInSet');
+end;
+
 procedure TTestTestfiles.testIfThen;
 begin
   TestFile('ifthen');
@@ -378,12 +384,12 @@ begin
   TestFile('ifthenelse2');
 end;
 
-procedure TTestTestfiles.testIfthenelse3;
+procedure TTestTestfiles.testIfThenElse3;
 begin
   TestFile('Ifthenelse3');
 end;
 
-procedure TTestTestfiles.testIfthenelse4;
+procedure TTestTestfiles.testIfThenElse4;
 begin
   TestFile('Ifthenelse4');
 end;
