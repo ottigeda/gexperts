@@ -63,6 +63,9 @@ type
     procedure testEmptyUnit;
     procedure testFakeGenericCreate;
     procedure testFinalMethod;
+    procedure testFluentCode1;
+    procedure testFluentCode2;
+    procedure testFluentCode3;
     procedure testFormatWithLineBreaks;
     procedure testFormula;
     procedure testGenericClass;
@@ -83,9 +86,11 @@ type
     procedure testIfAndThen2;
     procedure testIfdefs;
     procedure testIfElseendif;
+    procedure testIfThen;
     procedure testIfThenElse;
     procedure testIfThenElse2; virtual;
     procedure testIfThenElse3;
+    procedure testIfThenElse4;
     procedure testIfThenTry;
     procedure testIndentComment;
     procedure testJustOpeningComment;
@@ -358,6 +363,11 @@ begin
   TestFile('IfElseEndif');
 end;
 
+procedure TTestTestfiles.testIfThen;
+begin
+  TestFile('ifthen');
+end;
+
 procedure TTestTestfiles.testIfThenElse;
 begin
   TestFile('ifthenelse');
@@ -371,6 +381,11 @@ end;
 procedure TTestTestfiles.testIfthenelse3;
 begin
   TestFile('Ifthenelse3');
+end;
+
+procedure TTestTestfiles.testIfthenelse4;
+begin
+  TestFile('Ifthenelse4');
 end;
 
 procedure TTestTestfiles.testIfThenTry;
@@ -614,6 +629,21 @@ end;
 procedure TTestTestfiles.testFinalMethod;
 begin
   TestFile('FinalMethod');
+end;
+
+procedure TTestTestfiles.testFluentCode1;
+begin
+  TestFile('FluentCode1');
+end;
+
+procedure TTestTestfiles.testFluentCode2;
+begin
+  TestFile('FluentCode2');
+end;
+
+procedure TTestTestfiles.testFluentCode3;
+begin
+  TestFile('FluentCode3');
 end;
 
 procedure TTestTestfiles.testGenericClass;
