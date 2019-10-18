@@ -981,11 +981,7 @@ begin
     rtLeftHook: begin
         // left hook = '['
         Assert(False, 'trace');
-        if PrevTokenIsWType(wtWord) and SameText(FPrevToken.GetContent, 'array') then begin
-          // this is an ugly workaround for the test case
-          // testfile_ConstArray
-          // At least it doesn't seem to break anything else though
-          // -- 2019-10-06 twm
+        if PrevTokenIsWType(wtWord) and not PrevTokenIsRType(rtOper) then begin
           Assert(False, 'trace');
           FStack.Push(FCurrentRType, 0);
         end else begin
