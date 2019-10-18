@@ -6,12 +6,11 @@ implementation
 
 procedure bla;
 begin
-  if IsXmlWhiteSpace(S[i]) then begin // White space?
-    text.addWideChar(SPACE)
+  if true then begin
   end else if S[i] = '&' then
-    kindOfToken := IS_REFSTART
+    blub
   else
-    text.addWideChar(S[i]);
+    exit;
 end;
 
 end.
