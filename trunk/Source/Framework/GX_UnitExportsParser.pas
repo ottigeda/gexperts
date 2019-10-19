@@ -725,7 +725,7 @@ begin
       tkClass: begin
           FParser.NextNoJunkEx;
           if not (FParser.Tokenid in [tkFunction, tkProcedure, tkConstructor, tkDestructor, tkOperator,
-            tkVar, tkThreadvar, tkProperty]) then begin
+              tkVar, tkThreadvar, tkProperty, tkOf]) then begin
             // nested class declaration
             if FParser.Tokenid = tkRoundOpen then begin
               // class declaration with ancestor
