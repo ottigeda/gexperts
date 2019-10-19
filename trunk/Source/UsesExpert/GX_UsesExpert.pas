@@ -297,7 +297,7 @@ type
     function IndexInStringGrid(sg: TStringGrid; const UnitName: string): integer;
     procedure FilterStringGrid(Filter: string; List: TStrings; sg: TStringGrid);
     procedure DrawStringGridCell(_sg: TStringGrid; const _Text: string; const _Rect: TRect;
-      _State: TGridDrawState; _Focused: Boolean);
+      _State: TGridDrawState; _Focused: Boolean; _Tag: integer);
   protected
     FProjectUnits: TStringList;
     FCommonUnits: TStringList;
@@ -1104,7 +1104,7 @@ begin
 end;
 
 procedure TfmUsesManager.DrawStringGridCell(_sg: TStringGrid; const _Text: string; const _Rect: TRect;
-  _State: TGridDrawState; _Focused: Boolean);
+  _State: TGridDrawState; _Focused: Boolean; _Tag: Integer);
 var
   cnv: TCanvas;
 begin
@@ -1117,6 +1117,10 @@ begin
         cnv.Brush.Color := clDkGray;
         // I would have used clHighlightText but that becomes unreadable when theming is active
         cnv.Font.Color := clWhite;
+      end;
+    end else begin
+      if _Tag <> 0  then begin
+        cnv.Brush.Color := clYellow;
       end;
     end;
   end;
@@ -1133,7 +1137,7 @@ procedure TfmUsesManager.sg_UsedDrawCell(Sender: TObject; ACol, ARow: Integer; R
 var
   sg: TStringGrid absolute Sender;
 begin
-  DrawStringGridCell(sg, sg.Cells[ACol, ARow], Rect, State, sg.Focused);
+  DrawStringGridCell(sg, sg.Cells[ACol, ARow], Rect, State, sg.Focused, Integer(sg.Objects[ACol, ARow]));
 end;
 
 procedure TfmUsesManager.sg_MouseDownForDragging(Sender: TObject; Button: TMouseButton;
@@ -1387,7 +1391,7 @@ var
   GridFocused: Boolean;
 begin
   GridFocused := sg.Focused or edtUnitFilter.Focused or edtIdentifierFilter.Focused;
-  DrawStringGridCell(sg, sg.Cells[ACol, ARow], Rect, State, GridFocused);
+  DrawStringGridCell(sg, sg.Cells[ACol, ARow], Rect, State, GridFocused, 0);
 end;
 
 procedure TfmUsesManager.sg_ImplementationDblClick(Sender: TObject);
@@ -1877,6 +1881,7 @@ var
           if OrigUnitName <> NewUnitName then begin
             FOldToNewUnitNameMap.Values[OrigUnitName] := NewUnitName;
             sg.Cells[0, UnitIdx] := NewUnitName;
+            sg.Objects[0, UnitIdx] := Pointer(1);
           end;
           Break;
         end;
@@ -1961,6 +1966,7 @@ procedure TfmUsesManager.btnRemoveDotsClick(Sender: TObject);
       if NewUnitName <> OrigUnitName then begin
         FOldToNewUnitNameMap.Values[OrigUnitName] := NewUnitName;
         sg.Cells[0, i] := NewUnitName;
+        sg.Objects[0, i] := pointer(1);
       end;
     end;
   end;
