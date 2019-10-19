@@ -29,6 +29,8 @@ type
     procedure ExecuteDoubleClickAction; override;
   published
     procedure testAbstractSealedClass;
+    procedure testAttributes;
+    procedure testAttributes2;
     procedure testAngledBrackets;
     procedure testAnonymous;
     procedure testAnonymous2;
@@ -268,8 +270,8 @@ begin
     raise EFileDoesNotExist.CreateFmt('Input file does not exist: %s', [InFile]);
   end;
   if not FileExists(ExpectedFile) then begin
-//    ExpectedException := EFileDoesNotExist;
-    raise EFileDoesNotExist.CreateFmt('Expected file does not exist: %s', [ExpectedFile]);
+    CheckTrue(CopyFile(PChar(InFile), PChar(ExpectedFile), True), 'Copying file failed');
+    Self.Status('Warning: Input file was copied to expected!');
   end;
 
   ExpectedText := nil;
@@ -327,6 +329,16 @@ end;
 procedure TTestTestfiles.testAssemblerNewlines;
 begin
   TestFile('assemblernewline');
+end;
+
+procedure TTestTestfiles.testAttributes;
+begin
+  TestFile('Attributes');
+end;
+
+procedure TTestTestfiles.testAttributes2;
+begin
+  TestFile('Attributes2');
 end;
 
 procedure TTestTestfiles.testIfAndThen;
