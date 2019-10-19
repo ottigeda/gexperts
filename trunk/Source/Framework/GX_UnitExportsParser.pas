@@ -594,6 +594,10 @@ begin
       if FParser.Tokenid = tkImplementation then
         Exit;
       case FParser.Tokenid of
+        tkSquareOpen: begin
+            // attribute declarations
+            SkipToClosingDelimiter(tkSquareOpen, tkSquareClose);
+          end;
         tkConst: begin
             DeclarationType := dtConst;
           end;
@@ -722,10 +726,13 @@ begin
     case FParser.Tokenid of
       tkEnd:
         Exit; //==>
+      tkLower: begin
+          SkipToClosingDelimiter(tkLower, tkGreater);
+        end;
       tkClass: begin
           FParser.NextNoJunkEx;
           if not (FParser.Tokenid in [tkFunction, tkProcedure, tkConstructor, tkDestructor, tkOperator,
-              tkVar, tkThreadvar, tkProperty, tkOf]) then begin
+              tkVar, tkThreadvar, tkProperty, tkOf, tkSemicolon]) then begin
             // nested class declaration
             if FParser.Tokenid = tkRoundOpen then begin
               // class declaration with ancestor
@@ -787,6 +794,9 @@ begin
         end;
       tkInterface, tkDispinterface, tkClass: begin
           FParser.NextNoJunkEx;
+          if FParser.TokenId = tkAbstract then begin
+            FParser.NextNoJunkEx;
+          end;
           if FParser.Tokenid = tkSemiColon then begin
             // forward declaration: type Tbla = class;
             //                  or: type Tbla = interface;
