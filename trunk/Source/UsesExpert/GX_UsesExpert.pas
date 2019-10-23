@@ -5,7 +5,8 @@ interface
 {$I 'GX_CondDefine.inc'}
 
 uses
-  Classes, Controls, Forms, Menus, ComCtrls,
+  Windows, SysUtils,
+  Classes, Controls, Forms, Menus, ComCtrls, Buttons, ImageList, ImgList,
   ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
   GX_KbdShortCutBroker, GX_UnitExportsParser, GX_dzCompilerAndRtlVersions,
@@ -190,6 +191,16 @@ type
     lblUnitsParsed: TLabel;
     lblUnitsLoaded: TLabel;
     lblUnitsFound: TLabel;
+    btnCopySaveCurrentList: TButton;
+    btnCopySaveProjectListMenu: TSpeedButton;
+    pmCopySaveProjectList: TPopupMenu;
+    mCopytoClipboard1: TMenuItem;
+    Save1: TMenuItem;
+    ImageList1: TImageList;
+    dlgSave: TSaveDialog;
+    pnlMatchIdentifier: TPanel;
+    rbMatchAnyware: TRadioButton;
+    rbMatchAtStart: TRadioButton;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -249,6 +260,12 @@ type
     procedure tim_ProgressTimer(Sender: TObject);
     procedure actFavAddUnitExecute(Sender: TObject);
     procedure actAvailAddAllToFavExecute(Sender: TObject);
+    procedure btnCopySaveProjectListClick(Sender: TObject);
+    procedure btnCopySaveProjectListMenuClick(Sender: TObject);
+    procedure mCopytoClipboard1Click(Sender: TObject);
+    procedure rbMatchAnywareClick(Sender: TObject);
+    procedure rbMatchAtStartClick(Sender: TObject);
+    procedure Save1Click(Sender: TObject);
   private
     FLeftRatio: Double;
     FAliases: TStringList;
@@ -257,6 +274,7 @@ type
     // this is necessary to put units which have been switched between using prefixes and
     // not in the correct place of the unit list.
     FOldToNewUnitNameMap: TStringList;
+    FCaption_lblFilter: string;
     procedure GetCommonFiles;
     procedure GetProjectFiles;
     function TryGetMapFiles: Boolean;
@@ -293,11 +311,14 @@ type
     procedure ResizeIdentiferGrid;
     procedure SwitchUnitsTab(_Direction: Integer);
     function AddToStringGrid(sg: TStringGrid; const UnitName: string): Integer;
+    procedure CopyProjectListToClipboard;
     procedure DeleteFromStringGrid(sg: TStringGrid; const UnitName: string);
     function IndexInStringGrid(sg: TStringGrid; const UnitName: string): integer;
     procedure FilterStringGrid(Filter: string; List: TStrings; sg: TStringGrid);
     procedure DrawStringGridCell(_sg: TStringGrid; const _Text: string; const _Rect: TRect;
       _State: TGridDrawState; _Focused: Boolean; _Tag: integer);
+    procedure SaveProjectListToDisk;
+    procedure ShowIdentifiersFilterResult(const cnt: Integer);
   protected
     FProjectUnits: TStringList;
     FCommonUnits: TStringList;
@@ -314,7 +335,7 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Messages, Windows, Graphics, StrUtils, Math, ToolsAPI,
+  Messages, Graphics, StrUtils, Math, ToolsAPI, Clipbrd,
   GX_IdeUtils, GX_UsesManager, GX_dzVclUtils, GX_dzMapFileReader, GX_dzFileUtils,
 {$IFOPT D+}
   GX_DbugIntf,
@@ -674,17 +695,17 @@ begin
   SendDebug('Reading common files');
 {$ENDIF D+}
   // Read all dcu files from the $(DELPHI)\lib directory (for XE+ use the Win32\Release subdir)
-  Found := SysUtils.FindFirst(AddSlash(ExtractFilePath(GetIdeRootDirectory)) +
+  Found := FindFirst(AddSlash(ExtractFilePath(GetIdeRootDirectory)) +
     AddSlash('lib') {$IFDEF GX_VER220_up} + AddSlash('Win32') + AddSlash('Release') {$ENDIF} + '*.dcu', $3F, SearchRec);
   try
     while Found = 0 do
     begin
       if not ((SearchRec.Attr and faDirectory) = faDirectory) then
         FCommonUnits.Add(ExtractPureFileName(SearchRec.Name));
-      Found := SysUtils.FindNext(SearchRec);
+      Found := FindNext(SearchRec);
     end;
   finally
-    SysUtils.FindClose(SearchRec);
+    FindClose(SearchRec);
   end;
 {$IFOPT D+}
   SendDebug('Done reading common files');
@@ -720,6 +741,9 @@ procedure TfmUsesManager.FormCreate(Sender: TObject);
 var
   Selection: string;
 begin
+  FCaption_lblFilter := lblFilter.Caption; // for showing Filter results
+  lblFilter.Tag := -1; // Initialize
+
   TControl_SetMinConstraints(Self);
   pnlUses.Constraints.MinWidth := pnlUses.Width;
    
@@ -915,11 +939,23 @@ end;
 
 procedure TfmUsesManager.pcUnitsChange(Sender: TObject);
 begin
-  if pcUnits.ActivePage = tabIdentifiers then begin
+  if pcUnits.ActivePage = tabIdentifiers then
+  begin
+    if lblFilter.Tag <> -1 then // if identifier filter results number has previously been set
+      ShowIdentifiersFilterResult(lblFilter.Tag) // then restore identifier filter results number
+    else // if identifier filter results number has NOT previously been set
+    begin
+      // if identifier filter term has been set e.g. automatically by IDE editor selection:
+      if Trim(edtIdentifierFilter.Text) <> '' then
+        FilterIdentifiers;
+    end;
     edtIdentifierFilter.Visible := True;
     TWinControl_SetFocus(edtIdentifierFilter);
     edtUnitFilter.Visible := False;
-  end else begin
+  end
+  else
+  begin
+    lblFilter.Caption := FCaption_lblFilter; // reset filter label caption
     edtUnitFilter.Visible := True;
     TWinControl_SetFocus(edtUnitFilter);
     edtIdentifierFilter.Visible := False;
@@ -1674,20 +1710,56 @@ begin
   TStringGrid_Clear(sg_Identifiers);
   TGrid_SetNonfixedRowCount(sg_Identifiers, FFavUnitsExports.Count);
   cnt := 0;
-  for i := 0 to FFavUnitsExports.Count - 1 do begin
-    Identifier := FFavUnitsExports[i];
-    if (Filter = '') or StartsText(Filter, Identifier) then begin
-      sg_Identifiers.Cells[0, FixedRows + cnt] := Identifier;
-      UnitName := PChar(FFavUnitsExports.Objects[i]);
-      sg_Identifiers.Cells[1, FixedRows + cnt] := UnitName;
-      Inc(cnt);
+
+  // This is more efficient rather than doing the radio-check inside the loop:
+  if rbMatchAnyware.Checked then
+  begin
+    for i := 0 to FFavUnitsExports.Count - 1 do // Todo: OPTIMIZE PERFORMANCE Loop with TParallel.For !!!
+    begin
+      // Todo: refactor!
+      Identifier := FFavUnitsExports[i];
+      if (Filter = '') or StrUtils.ContainsText(Identifier, Filter) then
+      begin
+        sg_Identifiers.Cells[0, FixedRows + cnt] := Identifier;
+        UnitName := PChar(FFavUnitsExports.Objects[i]);
+        sg_Identifiers.Cells[1, FixedRows + cnt] := UnitName;
+        Inc(cnt);
+      end;
+    end;
+  end
+  else if rbMatchAtStart.Checked then
+  begin
+    for i := 0 to FFavUnitsExports.Count - 1 do // Todo: OPTIMIZE PERFORMANCE Loop with TParallel.For !!!
+    begin
+      // Todo: refactor!
+      Identifier := FFavUnitsExports[i];
+      if (Filter = '') or StrUtils.StartsText(Filter, Identifier) then
+      begin
+        sg_Identifiers.Cells[0, FixedRows + cnt] := Identifier;
+        UnitName := PChar(FFavUnitsExports.Objects[i]);
+        sg_Identifiers.Cells[1, FixedRows + cnt] := UnitName;
+        Inc(cnt);
+      end;
     end;
   end;
+
+  // show the filter results:
+  ShowIdentifiersFilterResult(cnt);
+
   TGrid_SetNonfixedRowCount(sg_Identifiers, cnt);
 {$IFOPT D+}
   SendDebug('Done filtering identifiers');
 {$ENDIF D+}
   ResizeIdentiferGrid;
+end;
+
+procedure TfmUsesManager.ShowIdentifiersFilterResult(const cnt: Integer);
+begin
+  if pcUnits.ActivePage = tabIdentifiers then
+  begin
+    lblFilter.Caption := FCaption_lblFilter + ': ' + IntToStr(cnt) + ' results';
+    lblFilter.Tag := cnt; // remember filter results number
+  end;
 end;
 
 procedure TfmUsesManager.ResizeIdentiferGrid;
@@ -2283,6 +2355,84 @@ begin
   col := sg.ColCount - 1;
   for i := sg.Selection.Top to sg.Selection.Bottom do
     AddToFavorites(sg.Cells[col, i]);
+end;
+
+function PAKeyPressed(const Key: Integer): Boolean;
+begin
+  Result := (GetAsyncKeyState(Key) and $8000 <> 0);
+end;
+
+procedure TfmUsesManager.btnCopySaveProjectListClick(Sender: TObject);
+begin
+  // Save instead of Copy if the CTRL modifier key is pressed:
+  if PAKeyPressed(VK_CONTROL) then
+    SaveProjectListToDisk
+  else
+    CopyProjectListToClipboard;
+end;
+
+procedure TfmUsesManager.btnCopySaveProjectListMenuClick(Sender: TObject);
+var
+  Pt: TPoint;
+begin
+  Pt.X := btnCopySaveCurrentList.Left + 0;
+  Pt.Y := btnCopySaveCurrentList.Top + btnCopySaveCurrentList.Height;
+  Pt := pnlProjFooter.ClientToScreen(Pt);
+  pmCopySaveProjectList.Popup(Pt.X, Pt.Y);
+end;
+
+procedure TfmUsesManager.CopyProjectListToClipboard;
+begin
+  Clipboard.AsText := sg_Project.AssociatedList.Text;
+end;
+
+procedure TfmUsesManager.mCopytoClipboard1Click(Sender: TObject);
+begin
+  CopyProjectListToClipboard;
+end;
+
+procedure TfmUsesManager.rbMatchAnywareClick(Sender: TObject);
+begin
+  // Re-filter:
+  Forms.Screen.Cursor := crHourGlass;
+  try
+    FilterIdentifiers;
+  finally
+    Forms.Screen.Cursor := crDefault;
+  end;
+
+  // Todo: Save this setting
+end;
+
+procedure TfmUsesManager.rbMatchAtStartClick(Sender: TObject);
+begin
+  // Re-filter:
+  Forms.Screen.Cursor := crHourGlass;
+  try
+    FilterIdentifiers;
+  finally
+    Forms.Screen.Cursor := crDefault;
+  end;
+
+  // Todo: Save this setting
+end;
+
+procedure TfmUsesManager.Save1Click(Sender: TObject);
+begin
+  SaveProjectListToDisk;
+end;
+
+procedure TfmUsesManager.SaveProjectListToDisk;
+begin
+  dlgSave.Title := 'Save the List of Project Units';
+  dlgSave.InitialDir := GetCurrentDir;
+  dlgSave.Filter := 'Text file|*.txt';
+  dlgSave.DefaultExt := 'txt';
+  dlgSave.FilterIndex := 1;
+  if dlgSave.Execute then
+  begin
+    sg_Project.AssociatedList.SaveToFile(dlgSave.FileName);
+  end;
 end;
 
 { TStringGrid }
