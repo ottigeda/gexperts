@@ -264,6 +264,8 @@ function LeftTrimNChars(const AValue: string; const TrimChars: TSysCharSet = [#9
 {$IFNDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
 function StartsText(const SubStr, Str: string): Boolean;
 function StartsStr(const SubStr, Str: string): Boolean;
+// Note the oder of arguments: it's the full text first and the sub string last!
+function ContainsText(const Str,SubStr: string): Boolean;
 // Delphi 6 does not have the overloaded version with start only, so we implement it here
 function Copy(const _Value: string; _Start, _Len: Integer): string; overload;
 function Copy(const _Value: string; _Start: Integer): string; overload;
@@ -1591,6 +1593,12 @@ begin
 end;
 
 {$IFNDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
+
+function ContainsText(const Str, SubStr: string): Boolean;
+begin
+  Result := (CaseInsensitivePos(SubStr, Str) > 0);
+end;
+
 function StartsText(const SubStr, Str: string): Boolean;
 begin
   Result := CaseInsensitivePos(SubStr, Str) = 1;
