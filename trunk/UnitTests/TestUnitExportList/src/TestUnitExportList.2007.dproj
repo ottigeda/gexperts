@@ -1,93 +1,64 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-        <DCC_DependencyCheckOutputName>..\GX_FormatterUnitTests.exe</DCC_DependencyCheckOutputName>
-        <MainSource>GX_FormatterUnitTests.dpr</MainSource>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{29a50c38-e85b-424f-86b6-68e259c53afd}</ProjectGuid>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
-        <DCC_DebugInformation>False</DCC_DebugInformation>
-        <DCC_Define>RELEASE</DCC_Define>
-        <DCC_ExeOutput>..\</DCC_ExeOutput>
-        <DCC_HppOutput>.\dcu</DCC_HppOutput>
-        <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
-        <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
-        <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
-        <DCC_Optimize>False</DCC_Optimize>
-        <DCC_RangeChecking>True</DCC_RangeChecking>
-        <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
-        <Version>7.0</Version>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <DCC_DcuOutput>..\dcu\delphi2007</DCC_DcuOutput>
-        <DCC_Define>DEBUG;_ASSERT_TRACING</DCC_Define>
-        <DCC_ExeOutput>..\</DCC_ExeOutput>
-        <DCC_HppOutput>..\dcu\delphi2007</DCC_HppOutput>
-        <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
-        <DCC_MapFile>3</DCC_MapFile>
-        <DCC_ObjOutput>..\dcu\delphi2007</DCC_ObjOutput>
-        <DCC_Optimize>False</DCC_Optimize>
-        <DCC_RangeChecking>True</DCC_RangeChecking>
-        <DCC_UnitAlias>Actions=ActnList;ImageList=Controls;UITypes=Dialogs</DCC_UnitAlias>
-        <Version>7.0</Version>
-    </PropertyGroup>
-    <ProjectExtensions>
-        <Borland.Personality>Delphi.Personality</Borland.Personality>
-        <Borland.ProjectType>VCLApplication</Borland.ProjectType>
-        <BorlandProject>
-            <BorlandProject>
-                <Delphi.Personality>
-                    <Parameters>
-                        <Parameters Name="DebugSourceDirs">C:\Program Files\Borland\BDS\3.0\source\dUnit\src\</Parameters>
-                        <Parameters Name="UseLauncher">False</Parameters>
-                        <Parameters Name="LoadAllSymbols">True</Parameters>
-                        <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
-                    </Parameters>
-                    <VersionInfo>
-                        <VersionInfo Name="IncludeVerInfo">False</VersionInfo>
-                        <VersionInfo Name="AutoIncBuild">False</VersionInfo>
-                        <VersionInfo Name="MajorVer">1</VersionInfo>
-                        <VersionInfo Name="MinorVer">0</VersionInfo>
-                        <VersionInfo Name="Release">0</VersionInfo>
-                        <VersionInfo Name="Build">1</VersionInfo>
-                        <VersionInfo Name="Debug">False</VersionInfo>
-                        <VersionInfo Name="PreRelease">False</VersionInfo>
-                        <VersionInfo Name="Special">False</VersionInfo>
-                        <VersionInfo Name="Private">False</VersionInfo>
-                        <VersionInfo Name="DLL">False</VersionInfo>
-                        <VersionInfo Name="Locale">1033</VersionInfo>
-                        <VersionInfo Name="CodePage">1252</VersionInfo>
-                    </VersionInfo>
-                    <VersionInfoKeys>
-                        <VersionInfoKeys Name="FileVersion">1.0.0.1</VersionInfoKeys>
-                        <VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
-                        <VersionInfoKeys Name="CompanyName"/>
-                        <VersionInfoKeys Name="FileDescription"/>
-                        <VersionInfoKeys Name="InternalName"/>
-                        <VersionInfoKeys Name="LegalCopyright"/>
-                        <VersionInfoKeys Name="LegalTrademarks"/>
-                        <VersionInfoKeys Name="OriginalFilename"/>
-                        <VersionInfoKeys Name="ProductName"/>
-                    </VersionInfoKeys>
-                    <Excluded_Packages>
-                        <Excluded_Packages Name="c:\program files\borland\bds\3.0\Bin\dbwebxprt.bpl">Borland Web Wizard Package</Excluded_Packages>
-                        <Excluded_Packages Name="c:\program files\borland\bds\3.0\Bin\dcltee90.bpl">TeeChart Components</Excluded_Packages>
-                    </Excluded_Packages>
-                    <Source>
-                        <Source Name="MainSource">TestUnitExportList.dpr</Source>
-                    </Source>
-                </Delphi.Personality>
-            </BorlandProject>
-        </BorlandProject>
-    </ProjectExtensions>
-    <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets"/>
-    <ItemGroup>
-        <DelphiCompile Include="TestUnitExportList.dpr">
-            <MainSource>MainSource</MainSource>
-        </DelphiCompile>
-    </ItemGroup>
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{bf6c9f1c-7996-4a0e-91e6-56fb006683b0}</ProjectGuid>
+    <MainSource>TestUnitExportList.dpr</MainSource>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>..\TestUnitExportList.exe</DCC_DependencyCheckOutputName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_Define>RELEASE</DCC_Define>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_Define>DEBUG</DCC_Define>
+    <DCC_Optimize>False</DCC_Optimize>
+    <DCC_MapFile>3</DCC_MapFile>
+    <DCC_ExeOutput>..\</DCC_ExeOutput>
+    <DCC_DcuOutput>..\dcu\delphi2007</DCC_DcuOutput>
+    <DCC_ObjOutput>..\dcu\delphi2007</DCC_ObjOutput>
+    <DCC_HppOutput>..\dcu\delphi2007</DCC_HppOutput>
+    <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\dunit;..\..\..\Source\Utils</DCC_UnitSearchPath>
+    <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\dunit;..\..\..\Source\Utils</DCC_ResourcePath>
+    <DCC_ObjPath>$(BDS)\lib\Debug;..\..\dunit;..\..\..\Source\Utils</DCC_ObjPath>
+    <DCC_IncludePath>$(BDS)\lib\Debug;..\..\dunit;..\..\..\Source\Utils</DCC_IncludePath>
+    <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
+    <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
+    <DCC_UnitAlias>Actions=ActnList;ImageList=Controls;UITypes=Dialogs</DCC_UnitAlias>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">2057</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="C:\Users\Public\Documents\RAD Studio\5.0\Bpl\dclfsBDE11.bpl">FastScript 1.9 BDE Components</Excluded_Packages>
+      <Excluded_Packages Name="C:\Users\Public\Documents\RAD Studio\5.0\Bpl\DclTeePro911.bpl">TeeChart Pro 2017 Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="C:\Users\Public\Documents\RAD Studio\5.0\Bpl\dclfs11.bpl">FastScript 1.9 Components</Excluded_Packages>
+      <Excluded_Packages Name="C:\Users\Public\Documents\RAD Studio\5.0\Bpl\dclfsADO11.bpl">FastScript 1.9 ADO Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dcltee7100.bpl">TeeChart Components</Excluded_Packages>
+    </Excluded_Packages><Source><Source Name="MainSource">TestUnitExportList.dpr</Source></Source></Delphi.Personality></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup>
+    <DelphiCompile Include="TestUnitExportList.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="..\..\..\Source\UsesExpert\GX_UnitExportList.pas" />
+    <DCCReference Include="..\..\dunit\GUITestRunner.pas" />
+    <DCCReference Include="GX_UnitExportListTest.pas" />
+  </ItemGroup>
 </Project>
