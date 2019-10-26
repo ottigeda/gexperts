@@ -166,10 +166,6 @@ object fmUsesManager: TfmUsesManager
             Top = 0
             Width = 25
             Height = 25
-            Margins.Left = 0
-            Margins.Top = 0
-            Margins.Right = 0
-            Margins.Bottom = 0
             Glyph.Data = {
               AE000000424DAE00000000000000360000002800000008000000050000000100
               18000000000078000000C30E0000C30E00000000000000000000FF00FFFF00FF

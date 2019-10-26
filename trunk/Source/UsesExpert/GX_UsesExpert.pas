@@ -1718,7 +1718,7 @@ begin
     begin
       // Todo: refactor!
       Identifier := FFavUnitsExports[i];
-      if (Filter = '') or StrUtils.ContainsText(Identifier, Filter) then
+      if (Filter = '') or ContainsText(Identifier, Filter) then
       begin
         sg_Identifiers.Cells[0, FixedRows + cnt] := Identifier;
         UnitName := PChar(FFavUnitsExports.Objects[i]);
@@ -1733,7 +1733,7 @@ begin
     begin
       // Todo: refactor!
       Identifier := FFavUnitsExports[i];
-      if (Filter = '') or StrUtils.StartsText(Filter, Identifier) then
+      if (Filter = '') or StartsText(Filter, Identifier) then
       begin
         sg_Identifiers.Cells[0, FixedRows + cnt] := Identifier;
         UnitName := PChar(FFavUnitsExports.Objects[i]);
@@ -1892,7 +1892,7 @@ begin
       Identifier := sl[IdentIdx];
       UniqueString(Identifier);
       UnitName := PChar(sl.Objects[IdentIdx]);
-    // make sure the string is valid and not freed in the thread
+      // make sure the string is valid and not freed in the thread
       if FSearchPathUnits.Find(UnitName, Idx) then begin
         UnitName := FSearchPathUnits[Idx];
         FFavUnitsExports.AddObject(Identifier, Pointer(PChar(UnitName)));
