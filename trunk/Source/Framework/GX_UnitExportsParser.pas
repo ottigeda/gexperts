@@ -98,6 +98,7 @@ type
     procedure HandleTypeDeclaration;
     procedure SkipVarDeclaration;
     function GetIdentifier(_Idx: Integer): TIdentifier;
+    procedure SkipDirectives;
   public
     ///<summary>
     /// @returns the name of the given identifier type </summary>
@@ -714,8 +715,10 @@ begin
     FParser.NextNoJunkEx;
   end;
   while FParser.Tokenid <> tkNull do begin
-    if FParser.Tokenid = tkSemiColon then
+    if FParser.Tokenid = tkSemiColon then begin
+      SkipDirectives;
       Exit; //==>
+    end;
     FParser.NextNoJunkEx;
   end;
 end;
@@ -732,7 +735,7 @@ begin
       tkClass: begin
           FParser.NextNoJunkEx;
           if not (FParser.Tokenid in [tkFunction, tkProcedure, tkConstructor, tkDestructor, tkOperator,
-              tkVar, tkThreadvar, tkProperty, tkOf, tkSemicolon]) then begin
+              tkVar, tkThreadvar, tkProperty, tkOf, tkSemiColon]) then begin
             // nested class declaration
             if FParser.Tokenid = tkRoundOpen then begin
               // class declaration with ancestor
@@ -794,7 +797,7 @@ begin
         end;
       tkInterface, tkDispinterface, tkClass: begin
           FParser.NextNoJunkEx;
-          if FParser.TokenId = tkAbstract then begin
+          if FParser.Tokenid = tkAbstract then begin
             FParser.NextNoJunkEx;
           end;
           if FParser.Tokenid = tkSemiColon then begin
@@ -898,6 +901,60 @@ begin
   end;
 end;
 
+// skip function or procedure declaration directives:
+// * calling convention: Register, Pascal, cdecl, StdCall, Savecall
+// * varargs
+// * external with optionally a string (constant or literal)
+//   * optionally followed by name and and an string (constant or literal) -- or --
+//   * optionally followed by index and a number
+//   * optionally followed by delayed
+
+procedure TUnitExportsParser.SkipDirectives;
+const
+  CallingConventions = [tkRegister, tkPascal, tkCdecl, tkStdcall, tkSafecall];
+var
+  SemicolonPos: Integer;
+
+  function SkipToSemicolon: Boolean;
+  begin
+    Result := False;
+    while FParser.NextNoJunkEx do begin
+      Result := (FParser.Tokenid = tkSemiColon);
+      if Result then begin
+        SemicolonPos := FParser.RunPos;
+        Exit; //==>
+      end;
+    end;
+  end;
+
+begin
+  SemicolonPos := FParser.RunPos;
+  if not FParser.NextNoJunkEx then begin
+    // todo: this is an error -> handle it gracefully somehow
+    Exit; //==>
+  end;
+  if FParser.Tokenid in CallingConventions then begin
+    if not SkipToSemicolon then begin
+      // todo: this is an error -> handle it gracefully somehow
+      Exit; //==>
+    end;
+    if not FParser.NextNoJunkEx then begin
+      // todo: this is an error -> handle it gracefully somehow
+      Exit; //==>
+    end;
+  end;
+  if FParser.Tokenid = tkExternal then begin
+    if not SkipToSemicolon then begin
+      // todo: this is an error -> handle it gracefully somehow
+      Exit; //==>
+    end;
+  end else begin
+    FParser.RunPos := SemicolonPos;
+    Exit; //==>
+  end;
+//  if FParser.TokenID in [tkvarargs] then
+end;
+
 procedure TUnitExportsParser.SkipFunctionDeclaration;
 begin
   FParser.NextNoJunkEx;
@@ -910,8 +967,10 @@ begin
     Exit; //==>
   end;
   while FParser.Tokenid <> tkNull do begin
-    if FParser.Tokenid = tkSemiColon then
+    if FParser.Tokenid = tkSemiColon then begin
+      SkipDirectives;
       Exit; //==>
+    end;
     FParser.NextNoJunkEx;
   end;
 end;
