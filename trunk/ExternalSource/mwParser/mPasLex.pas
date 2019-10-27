@@ -496,11 +496,14 @@ begin
 end;
 
 function TmwPasLex.Func33: TTokenKind;
+var
+  c: char;
 begin
   if KeyComp('Or') then Result := tkOr else
     if KeyComp('Name') then
     begin
-      if inSymbols(CharAhead(fStringLen)) then Result := tkIdentifier else
+      c := CharAhead(fStringLen);
+      if (c <> '''') and inSymbols(c) then Result := tkIdentifier else
         Result := tkName
     end else
       if KeyComp('Asm') then Result := tkAsm else Result := tkIdentifier;
@@ -601,7 +604,8 @@ begin
     if inSymbols(CharAhead(fStringLen)) then Result := tkIdentifier else
       Result := tkIndex
   end else
-    if KeyComp('Out') then Result := tkOut else Result := tkIdentifier;
+    if KeyComp('Out') then Result := tkOut else
+    if KeyComp('Delayed') then Result := tkDelayed else Result := tkIdentifier
 end;
 
 function TmwPasLex.Func57: TTokenKind;
@@ -1448,6 +1452,9 @@ end;
 procedure TmwPasLex.doProcTable(AChar: Char);
 begin
   if Ord(AChar) <= 127 then begin
+    // todo: Shouldn't this be
+    // fProcTable[AChar];
+    // ?
     fProcTable[fOrigin[Run]];
   end else begin
     // This considers characters > #127 to be identifiers, AChar is a WideChar in Delphi >=2009 !

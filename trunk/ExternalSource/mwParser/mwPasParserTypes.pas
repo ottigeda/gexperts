@@ -124,6 +124,7 @@ type
  // ptCurrency,
     tkDefault,
  // ptDefineDirect,
+    tkDelayed,
  // ptDeprecated, // DR 2001-10-20
     tkDestructor,
     tkDispid,
@@ -311,36 +312,22 @@ type
 
 const
   IdentDirect: TTokenKindSet = [tkAbsolute, tkAbstract, tkAssembler, tkCdecl,
-    tkDefault, tkDispid, tkDynamic, tkExport, tkExternal, tkFar, tkForward,
+    tkDefault, tkDelayed, tkDispid, tkDynamic, tkExport, tkExternal, tkFar, tkForward,
     tkIdentifier, tkIndex, tkMessage, tkName, tkNear, tkNodefault, tkOverride,
     tkPascal, tkRead, tkReadonly, tkRegister, tkResident, tkSafecall, tkStdcall,
     tkStored, tkVirtual, tkWrite, tkWriteonly, tkReintroduce, tkOverload, tkImplements];
 
 Const
   BigIdentDirect: TTokenKindSet = [tkAbsolute, tkAbstract, tkAssembler,
-    tkAutomated, tkCdecl, tkDefault, tkDispid, tkDynamic, tkExport, tkExternal,
+    tkAutomated, tkCdecl, tkDefault, tkDelayed, tkDispid, tkDynamic, tkExport, tkExternal,
     tkFar, tkForward, tkIdentifier, tkIndex, tkMessage, tkName, tkNear,
     tkNodefault, tkOverride, tkPascal, tkPrivate, tkProtected, tkPublic,
     tkPublished, tkRead, tkReadonly, tkRegister, tkResident, tksafecall,
     tkstdcall, tkStored, tkVirtual, tkWrite, tkWriteonly];
 
 var
-  // todo: Do we really want to change this set depending on the current compiler version?
-  //       It shouldn't hurt to simply support tkOperator for older Delphis too.
-  // May include tkOperator after initialization
-  MethodMarkers: set of TTokenKind = [tkProcedure, tkFunction, tkConstructor, tkDestructor];
+  MethodMarkers: set of TTokenKind = [tkProcedure, tkFunction, tkConstructor, tkDestructor, tkOperator];
 
 implementation
 
-procedure Initialize;
-begin
-  {$IFDEF CONDITIONALEXPRESSIONS}
-    {$IF CompilerVersion >= 16}
-    Include(MethodMarkers, tkOperator);
-    {$IFEND}
-  {$ENDIF}
-end;
-
-initialization
-  Initialize;
 end.
