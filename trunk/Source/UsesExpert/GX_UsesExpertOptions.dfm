@@ -24,8 +24,13 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
     Top = 8
     Width = 273
     Height = 17
+    Hint = 
+      'Requires that you turn on map file generation in the project'#39's l' +
+      'inker options.'
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Read project units from map file rather than .dpr'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 0
   end
   object chkReplaceFileUnit: TCheckBox
