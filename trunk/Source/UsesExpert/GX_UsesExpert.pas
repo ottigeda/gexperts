@@ -201,6 +201,9 @@ type
     pnlMatchIdentifier: TPanel;
     rbMatchAnyware: TRadioButton;
     rbMatchAtStart: TRadioButton;
+    p_NoMapFile: TPanel;
+    l_NoMapFile: TLabel;
+    b_NoMapFileClose: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -266,6 +269,7 @@ type
     procedure rbMatchAnywareClick(Sender: TObject);
     procedure rbMatchAtStartClick(Sender: TObject);
     procedure Save1Click(Sender: TObject);
+    procedure b_NoMapFileCloseClick(Sender: TObject);
   private
     FLeftRatio: Double;
     FAliases: TStringList;
@@ -667,22 +671,26 @@ var
   MapFile: string;
 begin
   Result := False;
-  Project := GxOtaGetCurrentProject;
-  if not Assigned(Project) then
-    Exit;
-  OutputDir := GxOtaGetProjectOutputDir(Project);
-  ProjectFilename := GxOtaGetProjectFileName(Project);
-  MapFile := AddSlash(OutputDir) + ExtractFilename(ProjectFilename);
-  MapFile := ChangeFileExt(MapFile, '.map');
-  MapFile := TFileSystem.ExpandFileNameRelBaseDir(MapFile, ExtractFileDir(ProjectFilename));
-  if not FileExists(MapFile) then
-    Exit;
-  Reader := TMapFileReader.Create(MapFile);
   try
-    FProjectUnits.Assign(Reader.Units);
-    Result := (FProjectUnits.Count > 0)
+    Project := GxOtaGetCurrentProject;
+    if not Assigned(Project) then
+      Exit; //==>
+    OutputDir := GxOtaGetProjectOutputDir(Project);
+    ProjectFilename := GxOtaGetProjectFileName(Project);
+    MapFile := AddSlash(OutputDir) + ExtractFileName(ProjectFilename);
+    MapFile := ChangeFileExt(MapFile, '.map');
+    MapFile := TFileSystem.ExpandFileNameRelBaseDir(MapFile, ExtractFileDir(ProjectFilename));
+    if not FileExists(MapFile) then
+      Exit; //==>
+    Reader := TMapFileReader.Create(MapFile);
+    try
+      FProjectUnits.Assign(Reader.Units);
+      Result := (FProjectUnits.Count > 0)
+    finally
+      FreeAndNil(Reader);
+    end;
   finally
-    FreeAndNil(Reader);
+    p_NoMapFile.Visible := not Result;
   end;
 end;
 
@@ -2049,6 +2057,12 @@ begin
 
   RemoveDotsfrom(sg_Interface);
   RemoveDotsfrom(sg_Implementation);
+end;
+
+procedure TfmUsesManager.b_NoMapFileCloseClick(Sender: TObject);
+begin
+  inherited;
+  p_NoMapFile.Visible := False;
 end;
 
 procedure TfmUsesManager.SaveChanges;

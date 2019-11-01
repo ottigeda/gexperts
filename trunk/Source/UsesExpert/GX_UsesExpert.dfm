@@ -135,7 +135,7 @@ object fmUsesManager: TfmUsesManager
             Left = 3
             Top = 3
             Width = 596
-            Height = 334
+            Height = 301
             Align = alClient
             ColCount = 1
             DefaultColWidth = 100
@@ -151,6 +151,41 @@ object fmUsesManager: TfmUsesManager
             OnDragOver = lbxAvailDragOver
             OnDrawCell = sg_AvailDrawCell
             OnMouseDown = sg_MouseDownForDragging
+          end
+          object p_NoMapFile: TPanel
+            Left = 3
+            Top = 304
+            Width = 596
+            Height = 33
+            Align = alBottom
+            BevelOuter = bvNone
+            Color = clYellow
+            TabOrder = 1
+            Visible = False
+            DesignSize = (
+              596
+              33)
+            object l_NoMapFile: TLabel
+              Left = 0
+              Top = 0
+              Width = 596
+              Height = 33
+              Align = alClient
+              Caption = 
+                'No .map file was found, reading units from .dpr file. Enable map' +
+                ' file generation in the project'#39's Linker options.'
+              WordWrap = True
+            end
+            object b_NoMapFileClose: TButton
+              Left = 571
+              Top = 0
+              Width = 25
+              Height = 33
+              Anchors = [akTop, akRight, akBottom]
+              Caption = 'X'
+              TabOrder = 0
+              OnClick = b_NoMapFileCloseClick
+            end
           end
         end
         object pnlProjFooter: TPanel
