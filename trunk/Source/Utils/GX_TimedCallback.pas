@@ -10,41 +10,44 @@ uses
 type
   TTimedCallback = class(TObject)
   private
-    FInitTimer: TTimer;
+    FTimer: TTimer;
     FCallback: TNotifyEvent;
-    FInitCount: Integer;
-    procedure OnInitTimer(Sender: TObject);
+    FFreeAfterCallback: boolean;
+    procedure HandleTimer(Sender: TObject);
   public
-    constructor Create(CallBack: TNotifyEvent);
+    constructor Create(CallBack: TNotifyEvent; _DelayMS: integer; _FreeAfterCallback: boolean);
   end;
 
 implementation
 
 { TTimedCallback }
 
-constructor TTimedCallback.Create(CallBack: TNotifyEvent);
+constructor TTimedCallback.Create(CallBack: TNotifyEvent; _DelayMS: integer;
+  _FreeAfterCallback: boolean);
 begin
   inherited Create;
+
   Assert(Assigned(Callback));
-  FInitTimer := TTimer.Create(nil);
-  FInitTimer.Enabled := False;
-  FInitTimer.OnTimer := OnInitTimer;
-  FInitTimer.Interval := 400;
-  FInitTimer.Enabled := True;
-  FInitCount := 0;
+
+  FTimer := TTimer.Create(nil);
+  FTimer.Enabled := False;
+  FTimer.OnTimer := HandleTimer;
+  FTimer.Interval := _DelayMS;
+  FTimer.Enabled := True;
+
   FCallback := CallBack;
+
+  FFreeAfterCallback := _FreeAfterCallback;
 end;
 
-procedure TTimedCallback.OnInitTimer(Sender: TObject);
+procedure TTimedCallback.HandleTimer(Sender: TObject);
 begin
-  Inc(FInitCount);
-  if (FInitCount >= 4) then
-  begin
-    FInitTimer.Enabled := False;
-    FreeAndNil(FInitTimer);
-    if Assigned(FCallback) then
-      FCallback(Self);
-  end;
+  FTimer.Enabled := False;
+  FreeAndNil(FTimer);
+  if Assigned(FCallback) then
+    FCallback(Self);
+  if FFreeAfterCallback then
+    Free;
 end;
 
 end.

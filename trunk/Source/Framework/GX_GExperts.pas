@@ -77,7 +77,6 @@ type
 
 var
   FPrivateGExpertsInst: TGExperts = nil;
-  InitHelper: TTimedCallback = nil;
   SharedImages: TdmSharedImages = nil;
 
 function GExpertsInst(CheckValid: Boolean): TGExperts;
@@ -127,7 +126,9 @@ begin
   inherited Create;
   FStartingUp := True;
   InitializeGExperts;
-  InitHelper := TTimedCallback.Create(DoAfterIDEInitialized);
+
+  TTimedCallback.Create(DoAfterIDEInitialized, 1200, True);
+
   gblAboutFormClass.AddToAboutDialog;
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
   FLastDesktopName := GetIdeDesktopName;
@@ -455,9 +456,6 @@ begin
 end;
 
 initialization
-
-finalization
-  FreeAndNil(InitHelper);
 
 end.
 
