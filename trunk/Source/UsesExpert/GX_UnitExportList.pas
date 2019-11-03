@@ -1,3 +1,7 @@
+// This list was meant to store the identifier list of the Uses Expert to speed up searching, but
+// it turned out that it is not necessary. I'm not deleting the file but will remove it from all
+// projects.
+// -- 2019-11-03 twm
 unit GX_UnitExportList;
 
 interface
