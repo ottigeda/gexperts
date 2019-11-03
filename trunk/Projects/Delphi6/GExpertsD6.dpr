@@ -250,7 +250,8 @@ uses
   GX_Goto in '..\..\Source\Goto\GX_Goto.pas' {f_Goto},
   GX_FocusCodeEditor in '..\..\Source\FocusCodeEditor\GX_FocusCodeEditor.pas',
   GX_GotoConfig in '..\..\Source\Goto\GX_GotoConfig.pas' {f_GotoConfig},
-  GX_dzAssertTrace in '..\..\Source\Utils\GX_dzAssertTrace.pas';
+  GX_dzAssertTrace in '..\..\Source\Utils\GX_dzAssertTrace.pas',
+  GX_TimedCallback in '..\..\Source\Utils\GX_TimedCallback.pas';
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
