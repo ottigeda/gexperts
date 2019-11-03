@@ -312,8 +312,21 @@ procedure AddMRUString(Text: string; List: TStrings; DeleteTrailingDelimiter: Bo
 procedure DeleteStringFromList(List: TStrings; const Item: string);
 // Ensure a string is in a list
 procedure EnsureStringInList(List: TStrings; const Item: string);
-// Filter the Source string list into Dest based on the substring Filter being present
-procedure FilterStringList(Source, Dest: TStrings; const Filter: string; 
+///<summary>
+/// checks whether the given string matches the given filter
+/// @param Filter is the filter to use
+/// @param s is the string to check
+/// @param CaseSensitive if True, do a case sensitive match
+/// @param MatchAnywhere if True, check for the filter anywhere in the string
+///                         false, check for the filter at the begin of the string
+/// @param returns True, if the string matches the filter
+///                False, if it doesn't <summary>
+function StrMatchesFilter(const _Filter: string; _s: string;
+  _CaseSensitive: Boolean; _MatchAnywhere: Boolean): Boolean;
+///<summary>
+/// Calls StrMatchesFilter for each string in Source and adds it to Dest if it matches.
+/// Also adds the Source objects for matching strings. </summary>
+procedure FilterStringList(Source, Dest: TStrings; const Filter: string;
     CaseSensitive: Boolean = True; MatchAnywhere: Boolean = True);
 procedure AddStringsPresentInString(Source, Dest: TStrings; const FilterString: string);
 // Return the comma text of a string list with a space after each comma
@@ -1862,6 +1875,14 @@ begin
     List.Add(Item);
 end;
 
+function StrMatchesFilter(const _Filter: string; _s: string;
+  _CaseSensitive: Boolean; _MatchAnywhere: Boolean): Boolean;
+begin
+  Result := (_Filter = '')
+    or (_MatchAnywhere and StrContains(_Filter, _s, _CaseSensitive))
+    or ((not _MatchAnywhere) and StrBeginsWith(_Filter, _s, _CaseSensitive));
+end;
+
 procedure FilterStringList(Source, Dest: TStrings; const Filter: string;
     CaseSensitive: Boolean; MatchAnywhere: Boolean);
 var
@@ -1873,10 +1894,8 @@ begin
     Dest.Clear;
     for i := 0 to Source.Count - 1 do
     begin
-      if (Filter = '') or
-      ((MatchAnywhere) and (StrContains(Filter, Source[i], CaseSensitive))) or
-      ((not MatchAnywhere) and (StrBeginsWith(Filter, Source[i], CaseSensitive))) then
-        Dest.Add(Source[i]);
+      if StrMatchesFilter(Filter, Source[i], CaseSensitive, MatchAnywhere) then
+        Dest.AddObject(Source[i], Source.Objects[i]);
     end;
   finally
     Dest.EndUpdate;
