@@ -451,7 +451,7 @@ object fmUsesManager: TfmUsesManager
               Top = 6
               Width = 125
               Height = 17
-              Caption = 'Match anywhere'
+              Caption = 'Match &anywhere'
               Checked = True
               Font.Charset = ANSI_CHARSET
               Font.Color = clWindowText
@@ -468,7 +468,7 @@ object fmUsesManager: TfmUsesManager
               Top = 6
               Width = 113
               Height = 17
-              Caption = 'Match at start'
+              Caption = 'Match at s&tart'
               Font.Charset = ANSI_CHARSET
               Font.Color = clWindowText
               Font.Height = -12
