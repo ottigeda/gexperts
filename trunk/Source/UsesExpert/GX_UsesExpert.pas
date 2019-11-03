@@ -959,6 +959,7 @@ begin
     edtIdentifierFilter.Visible := True;
     TWinControl_SetFocus(edtIdentifierFilter);
     edtUnitFilter.Visible := False;
+    lblFilter.FocusControl := edtIdentifierFilter;
   end
   else
   begin
@@ -966,6 +967,7 @@ begin
     edtUnitFilter.Visible := True;
     TWinControl_SetFocus(edtUnitFilter);
     edtIdentifierFilter.Visible := False;
+    lblFilter.FocusControl := edtUnitFilter;
   end;
 end;
 
@@ -1707,53 +1709,37 @@ var
   UnitName: string;
   Filter: string;
   FixedRows: Integer;
+  FilterList: TStrings;
+  MatchAnywhere: Boolean;
   cnt: Integer;
 begin
 {$IFOPT D+}
   SendDebug('Filtering identifiers');
 {$ENDIF D+}
   Filter := Trim(edtIdentifierFilter.Text);
-  FixedRows := sg_Identifiers.FixedRows;
-  TStringGrid_Clear(sg_Identifiers);
-  TGrid_SetNonfixedRowCount(sg_Identifiers, FFavUnitsExports.Count);
-  cnt := 0;
 
-  // This is more efficient rather than doing the radio-check inside the loop:
-  if rbMatchAnyware.Checked then
-  begin
-    for i := 0 to FFavUnitsExports.Count - 1 do // Todo: OPTIMIZE PERFORMANCE Loop with TParallel.For !!!
-    begin
-      // Todo: refactor!
-      Identifier := FFavUnitsExports[i];
-      if (Filter = '') or ContainsText(Identifier, Filter) then
-      begin
-        sg_Identifiers.Cells[0, FixedRows + cnt] := Identifier;
+  MatchAnywhere := rbMatchAnyware.Checked;
+  FilterList := TStringList.Create;
+  try
+    FilterStringList(FFavUnitsExports, FilterList, Filter, False, MatchAnywhere);
+    cnt := FilterList.Count;
+    TGrid_SetNonfixedRowCount(sg_Identifiers, cnt);
+    if cnt = 0 then
+      TStringGrid_Clear(sg_Identifiers)
+    else begin
+      FixedRows := sg_Identifiers.FixedRows;
+      TGrid_SetNonfixedRowCount(sg_Identifiers, cnt);
+      for i := 0 to cnt - 1 do begin
+        Identifier := FilterList[i];
+        sg_Identifiers.Cells[0, FixedRows + i] := Identifier;
         UnitName := PChar(FFavUnitsExports.Objects[i]);
-        sg_Identifiers.Cells[1, FixedRows + cnt] := UnitName;
-        Inc(cnt);
+        sg_Identifiers.Cells[1, FixedRows + i] := UnitName;
       end;
     end;
-  end
-  else if rbMatchAtStart.Checked then
-  begin
-    for i := 0 to FFavUnitsExports.Count - 1 do // Todo: OPTIMIZE PERFORMANCE Loop with TParallel.For !!!
-    begin
-      // Todo: refactor!
-      Identifier := FFavUnitsExports[i];
-      if (Filter = '') or StartsText(Filter, Identifier) then
-      begin
-        sg_Identifiers.Cells[0, FixedRows + cnt] := Identifier;
-        UnitName := PChar(FFavUnitsExports.Objects[i]);
-        sg_Identifiers.Cells[1, FixedRows + cnt] := UnitName;
-        Inc(cnt);
-      end;
-    end;
+    ShowIdentifiersFilterResult(cnt);
+  finally
+    FreeAndNil(FilterList);
   end;
-
-  // show the filter results:
-  ShowIdentifiersFilterResult(cnt);
-
-  TGrid_SetNonfixedRowCount(sg_Identifiers, cnt);
 {$IFOPT D+}
   SendDebug('Done filtering identifiers');
 {$ENDIF D+}
