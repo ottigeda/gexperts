@@ -594,6 +594,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\Utils\GX_NTAEditServiceNotifier.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_OtaUtils.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_ReadMapFileThread.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_TimedCallback.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_VCLFixPack.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas"/>
         <RcCompile Include="..\..\Binaries\CodeProofreaderDefault.rc">
