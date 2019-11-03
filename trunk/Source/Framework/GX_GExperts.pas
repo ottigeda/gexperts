@@ -43,8 +43,6 @@ type
     property StartingUp: Boolean read FStartingUp;
     procedure RefreshExpertShortCuts;
     procedure ShowConfigurationForm;
-    class procedure DelayedRegister;
-    class procedure DoInitialize(Sender: TObject);
     procedure DoAfterIDEInitialized(Sender: TObject);
 
     function GetSharedImages: TImageList;
@@ -67,19 +65,10 @@ uses
   Dialogs, Forms,
   GX_GenericUtils, GX_GetIdeVersion, GX_About, GX_MenuActions, GX_MessageBox,
   GX_ConfigurationInfo, GX_Configure, GX_KbdShortCutBroker, GX_SharedImages,
-  GX_IdeUtils, GX_IdeEnhance, GX_EditorChangeServices, GX_ToolbarDropDown;
+  GX_IdeUtils, GX_IdeEnhance, GX_EditorChangeServices, GX_ToolbarDropDown,
+  GX_TimedCallback;
 
 type
-  TInitHelper = class(TObject)
-  private
-    FInitTimer: TTimer;
-    FCallback: TNotifyEvent;
-    FInitCount: Integer;
-    procedure OnInitTimer(Sender: TObject);
-  public
-    constructor Create(CallBack: TNotifyEvent);
-  end;
-
   TUnsupportedIDEMessage = class(TGxMsgBoxAdaptor)
   protected
     function GetMessage: string; override;
@@ -88,7 +77,7 @@ type
 
 var
   FPrivateGExpertsInst: TGExperts = nil;
-  InitHelper: TInitHelper = nil;
+  InitHelper: TTimedCallback = nil;
   SharedImages: TdmSharedImages = nil;
 
 function GExpertsInst(CheckValid: Boolean): TGExperts;
@@ -138,18 +127,12 @@ begin
   inherited Create;
   FStartingUp := True;
   InitializeGExperts;
-  InitHelper := TInitHelper.Create(DoAfterIDEInitialized);
+  InitHelper := TTimedCallback.Create(DoAfterIDEInitialized);
   gblAboutFormClass.AddToAboutDialog;
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
   FLastDesktopName := GetIdeDesktopName;
   {$IFOPT D+} SendDebug('LastDesktopName:' + FLastDesktopName);  {$ENDIF}
 {$ENDIF}
-end;
-
-class procedure TGExperts.DelayedRegister;
-begin
-  {$IFOPT D+} SendDebug('TGExperts.DelayedRegister'); {$ENDIF}
-  InitHelper := TInitHelper.Create(DoInitialize);
 end;
 
 procedure TGExperts.InitializeGExperts;
@@ -379,12 +362,6 @@ begin
   end;
 end;
 
-class procedure TGExperts.DoInitialize(Sender: TObject);
-begin
-  {$IFOPT D+} SendDebug('TGExperts.DoInitialize'); {$ENDIF}
-  (BorlandIDEServices as IOTAWizardServices).AddWizard(TGExperts.Create as IOTAWizard);
-end;
-
 procedure TGExperts.DoAfterIDEInitialized(Sender: TObject);
 var
   i: Integer;
@@ -475,33 +452,6 @@ begin
       ideD800, ideD801,
       ideRS2010, ideRS2010U1 // Keyboard macro streaming broken
     ]);
-end;
-
-{ TInitHelper }
-
-constructor TInitHelper.Create(CallBack: TNotifyEvent);
-begin
-  inherited Create;
-  Assert(Assigned(Callback));
-  FInitTimer := TTimer.Create(nil);
-  FInitTimer.Enabled := False;
-  FInitTimer.OnTimer := OnInitTimer;
-  FInitTimer.Interval := 400;
-  FInitTimer.Enabled := True;
-  FInitCount := 0;
-  FCallback := CallBack;
-end;
-
-procedure TInitHelper.OnInitTimer(Sender: TObject);
-begin
-  Inc(FInitCount);
-  if (FInitCount >= 4) then
-  begin
-    FInitTimer.Enabled := False;
-    FreeAndNil(FInitTimer);
-    if Assigned(FCallback) then
-      FCallback(Self);
-  end;
 end;
 
 initialization
