@@ -374,7 +374,7 @@ begin
   for i := 0 to FExpertList.Count - 1 do
     ExpertList[i].AfterIDEInitialized;
   if RunningDelphi8OrGreater then
-    GxKeyboardShortCutBroker.DoUpdateKeyBindings;
+    GxKeyboardShortCutBroker.DoUpdateKeyBindings(True);
   GXMenuActionManager.ArrangeMenuItems;
   GXMenuActionManager.MoveMainMenuItems;
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}

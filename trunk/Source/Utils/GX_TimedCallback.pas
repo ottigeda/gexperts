@@ -12,10 +12,12 @@ type
   private
     FTimer: TTimer;
     FCallback: TNotifyEvent;
-    FFreeAfterCallback: boolean;
+    FFreeAfterCallback: Boolean;
     procedure HandleTimer(Sender: TObject);
   public
     constructor Create(CallBack: TNotifyEvent; _DelayMS: integer; _FreeAfterCallback: boolean);
+    destructor Destroy; override;
+    procedure Reset;
   end;
 
 implementation
@@ -40,14 +42,25 @@ begin
   FFreeAfterCallback := _FreeAfterCallback;
 end;
 
+destructor TTimedCallback.Destroy;
+begin
+  FreeAndNil(FTimer);
+  inherited;
+end;
+
 procedure TTimedCallback.HandleTimer(Sender: TObject);
 begin
   FTimer.Enabled := False;
-  FreeAndNil(FTimer);
   if Assigned(FCallback) then
     FCallback(Self);
   if FFreeAfterCallback then
     Free;
+end;
+
+procedure TTimedCallback.Reset;
+begin
+  FTimer.Enabled := False;
+  FTimer.Enabled := True;
 end;
 
 end.

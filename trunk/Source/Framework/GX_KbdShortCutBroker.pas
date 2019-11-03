@@ -45,7 +45,10 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
 
-    procedure DoUpdateKeyBindings;
+    ///<summary>
+    /// @param Immediate = True forces an immediate call of InstallKeyboardBindings
+    ///                    False delays it
+    procedure DoUpdateKeyBindings(_Immediate: boolean);
   end;
 
 function GxKeyboardShortCutBroker: IGxKeyboardShortCutBroker;
@@ -57,7 +60,8 @@ uses
   ToolsAPI,
   Forms, Controls, Types, Graphics, Messages, Windows, Contnrs,
   GX_GenericClasses, GX_GExperts, GX_IdeUtils, GX_ConfigurationInfo,
-  GX_EditorEnhancements, GX_GxUtils, GX_dzVclUtils, GX_OtaUtils;
+  GX_EditorEnhancements, GX_GxUtils, GX_dzVclUtils, GX_OtaUtils,
+  GX_TimedCallback;
 
 // First of all we have shared code; in
 // particular, we share a large chunk
@@ -81,7 +85,7 @@ type
     // for binding keys to actions. IOW, DoUpdateKeyBindings does not
     // imply the use if IOTAKeyboardBindingServices (although that
     // is exactly the way it is implemented in a descendant class).
-    procedure DoUpdateKeyBindings; virtual; abstract;
+    procedure DoUpdateKeyBindings(_Immediate: boolean); virtual; abstract;
     procedure RemoveShortCut(AShortcutList: TObjectList; AGxKeyboardShortCut: TObject);
   public
     constructor Create;
@@ -241,7 +245,7 @@ begin
   Assert(AShortCutList.Remove(AGxKeyboardShortCut) <> -1);
 
   if not Updating then
-    DoUpdateKeyBindings;
+    DoUpdateKeyBindings(False);
 end;
 
 procedure TGxBaseKeyboardShortCutBroker.RemoveOneKeyShortCut(AGxOneKeyShortCut: TObject);
@@ -290,7 +294,7 @@ begin
     KbdShortCut.FShortCut := NewShortCut;
 
     if not Updating then
-      DoUpdateKeyBindings;
+      DoUpdateKeyBindings(False);
   end;
 end;
 
@@ -374,6 +378,11 @@ type
     FKeyboardBindingIndex: Integer;
     FUpdateCount: Integer;
     FInstallingKeyboardBinding: Boolean;
+{$IFDEF KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
+    // This fixes a problem where pressing Insert causes a noticable delay (Bug #147)
+    // because it results in multiple uninstalling and installing the GExperts keyboard binding.
+    FDoInstallCallback: TTimedCallback;
+{$ENDIF}
   private
     procedure InstallKeyboardBindings;
     procedure RemoveKeyboardBindings;
@@ -381,9 +390,12 @@ type
 
     //procedure UpdateShortCut(AGxKeyboardShortCut: TObject; NewShortCut: TShortCut); override;
     function Updating: Boolean; override;
-    procedure DoUpdateKeyBindings; override;
+    procedure DoUpdateKeyBindings(_Immediate: boolean); override;
 
     procedure AssertNoDuplicateShortCut(const Value: TShortCut); override;
+{$IFDEF KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
+    procedure DelayedInstallKeyboardBindings(_Sender: TObject);
+{$ENDIF}
   public
     function RequestMenuShortCut(const Trigger: TTriggerMethod; const MenuItem: TMenuItem): IGxKeyboardShortCut; override;
 
@@ -437,6 +449,10 @@ end;
 
 destructor TGxNativeKeyboardShortCutBroker.Destroy;
 begin
+{$IFDEF KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
+  FreeAndNil(FDoInstallCallback);
+{$ENDIF}
+
   Assert(not Updating);
 
   RemoveKeyboardBindings;
@@ -447,10 +463,35 @@ begin
   inherited Destroy;
 end;
 
-procedure TGxNativeKeyboardShortCutBroker.DoUpdateKeyBindings;
+{$IFDEF KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
+procedure TGxNativeKeyboardShortCutBroker.DelayedInstallKeyboardBindings(_Sender: TObject);
+begin
+  InstallKeyboardBindings;
+end;
+{$ENDIF}
+
+procedure TGxNativeKeyboardShortCutBroker.DoUpdateKeyBindings(_Immediate: boolean);
 begin
   RemoveKeyboardBindings;
+{$IFDEF KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
+  // In Delphi 10.3 Rio the IDE restarts the keyboard services every time the user presses Insert
+  // which causes multiple calls to this method. Since this means that the GExperts keyboard
+  // binding was removed and installed every single time this caused a noticable delay (bug #147).
+  // This is a workaround for this problem. It works by enabling a 500 ms timer before reinstalling
+  // the keyboard bindings again.
+  // todo: This is a hack and there should be a better way to handle this.
+  if _Immediate then begin
+    FreeAndNil(FDoInstallCallback);
+    InstallKeyboardBindings;
+  end else begin
+    if not Assigned(FDoInstallCallback) then
+      FDoInstallCallback := TTimedCallback.Create(DelayedInstallKeyboardBindings, 500, False)
+    else
+      FDoInstallCallback.Reset;
+  end;
+{$ELSE}
   InstallKeyboardBindings;
+{$ENDIF}
 end;
 
 procedure TGxNativeKeyboardShortCutBroker.EndUpdate;
@@ -464,10 +505,10 @@ begin
     begin
       if Assigned(GExpertsInst(False)) then
         if not GExpertsInst.StartingUp then
-          DoUpdateKeyBindings;
+          DoUpdateKeyBindings(True);
     end
     else
-      DoUpdateKeyBindings;
+      DoUpdateKeyBindings(True);
   end
 end;
 
@@ -476,6 +517,9 @@ var
   IKeyboardServices: IOTAKeyboardServices;
   IKeyboardBinding: IOTAKeyboardBinding;
 begin
+  if FKeyboardBindingIndex <> InvalidIndex then
+    Exit;
+
   // Starting with Delphi XE3 apparently this gets called again from within
   // the call to IKeyboardServices.AddKeyboardBinding, so FKeyboardBindingIndex
   // isn't set. Therefore this workaround: It prevents the second call
@@ -496,8 +540,6 @@ begin
 
     if FShortCutList.Count = 0 then
       Exit;
-
-    Assert(FKeyboardBindingIndex = InvalidIndex);
 
     IKeyboardServices := GxOtaGetKeyboardServices;
     Assert(Assigned(IKeyboardServices));
@@ -525,14 +567,13 @@ begin
   // If the keyboard binding has been
   // installed, remove it - otherwise
   // ignore the request to remove it.
-  if FKeyboardBindingIndex <> InvalidIndex then
-  begin
+  if FKeyboardBindingIndex <> InvalidIndex then begin
     IKeyboardServices := GxOtaGetKeyboardServices;
     try
       IKeyboardServices.RemoveKeyboardBinding(FKeyboardBindingIndex);
     except
       on E: Exception do
-        raise E.Create('Error removing keyboard shortcuts from IDE: ' +E.Message);
+        raise E.Create('Error removing keyboard shortcuts from IDE: ' + E.Message);
     end;
     FKeyboardBindingIndex := InvalidIndex;
   end;

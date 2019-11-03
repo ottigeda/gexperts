@@ -171,6 +171,13 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$ENDIF GX_VER340_up}
 {$ENDIF GX_VER320_up}
 
+{$ifdef GX_VER330_up}
+  // That problem was introduced in Delphi 10.3 Rio, let's hope it will be fixed in later versions
+  {$IFNDEF GX_VER340_up}
+    {$DEFINE KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
+  {$ENDIF GX_VER340_up}
+{$ENDIF GX_VER330_up}
+
 // Define GX_ENHANCED_EDITOR if SynEdit is available
 {$IFDEF SYNEDIT}
   {$DEFINE UniSynEdit}
