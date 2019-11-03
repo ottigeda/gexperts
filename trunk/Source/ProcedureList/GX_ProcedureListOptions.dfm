@@ -4,8 +4,8 @@ object fmProcedureListOptions: TfmProcedureListOptions
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Procedure List Configuration'
-  ClientHeight = 196
-  ClientWidth = 526
+  ClientHeight = 194
+  ClientWidth = 569
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -16,17 +16,13 @@ object fmProcedureListOptions: TfmProcedureListOptions
   Position = poScreenCenter
   Scaled = False
   OnShow = FormShow
-  DesignSize = (
-    526
-    196)
   PixelsPerInch = 96
   TextHeight = 14
   object btnOK: TButton
-    Left = 350
-    Top = 159
+    Left = 400
+    Top = 160
     Width = 75
     Height = 26
-    Anchors = [akRight, akBottom]
     Caption = 'OK'
     Default = True
     ModalResult = 1
@@ -34,11 +30,10 @@ object fmProcedureListOptions: TfmProcedureListOptions
     OnClick = btnOKClick
   end
   object btnCancel: TButton
-    Left = 437
-    Top = 159
+    Left = 488
+    Top = 160
     Width = 75
     Height = 26
-    Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -46,10 +41,9 @@ object fmProcedureListOptions: TfmProcedureListOptions
   end
   object gbCodeView: TGroupBox
     Left = 288
-    Top = 9
-    Width = 225
-    Height = 140
-    Anchors = [akTop, akRight]
+    Top = 8
+    Width = 273
+    Height = 145
     Caption = 'Code View'
     TabOrder = 1
     object lblDock: TLabel
@@ -75,22 +69,30 @@ object fmProcedureListOptions: TfmProcedureListOptions
         'Right'
         'Bottom')
     end
-    object pnlCVFont: TPanel
-      Left = 16
-      Top = 78
-      Width = 105
-      Height = 41
-      Caption = 'AaBbYyZz'
+    object grp_CvFont: TGroupBox
+      Left = 8
+      Top = 88
+      Width = 257
+      Height = 49
+      Caption = 'Font'
       TabOrder = 2
-    end
-    object btnChangeCodeViewFont: TButton
-      Left = 130
-      Top = 86
-      Width = 85
-      Height = 25
-      Caption = 'Change Font'
-      TabOrder = 3
-      OnClick = btnChangeCodeViewFontClick
+      object pnlCVFont: TPanel
+        Left = 8
+        Top = 16
+        Width = 145
+        Height = 23
+        Caption = 'AaBbYyZz'
+        TabOrder = 1
+      end
+      object btnChangeCodeViewFont: TButton
+        Left = 160
+        Top = 15
+        Width = 85
+        Height = 25
+        Caption = 'Change ...'
+        TabOrder = 0
+        OnClick = btnChangeCodeViewFontClick
+      end
     end
     object chkShowCodeView: TCheckBox
       Left = 16
@@ -102,29 +104,36 @@ object fmProcedureListOptions: TfmProcedureListOptions
     end
   end
   object gbDialog: TGroupBox
-    Left = 12
-    Top = 9
-    Width = 265
-    Height = 140
-    Anchors = [akLeft, akTop, akRight]
+    Left = 8
+    Top = 8
+    Width = 273
+    Height = 145
     Caption = 'Procedure List'
     TabOrder = 0
-    object pnlDialogFont: TPanel
-      Left = 16
+    object grp_ListFont: TGroupBox
+      Left = 8
       Top = 88
-      Width = 105
-      Height = 41
-      Caption = 'AaBbYyZz'
+      Width = 257
+      Height = 49
+      Caption = 'Font'
       TabOrder = 3
-    end
-    object btnChgDialogFont: TButton
-      Left = 134
-      Top = 96
-      Width = 85
-      Height = 25
-      Caption = 'Change Font'
-      TabOrder = 4
-      OnClick = btnChgDialogFontClick
+      object pnlDialogFont: TPanel
+        Left = 8
+        Top = 16
+        Width = 145
+        Height = 25
+        Caption = 'AaBbYyZz'
+        TabOrder = 1
+      end
+      object btnChgDialogFont: TButton
+        Left = 160
+        Top = 16
+        Width = 85
+        Height = 25
+        Caption = 'Change ...'
+        TabOrder = 0
+        OnClick = btnChgDialogFontClick
+      end
     end
     object chkShowObjectName: TCheckBox
       Left = 16

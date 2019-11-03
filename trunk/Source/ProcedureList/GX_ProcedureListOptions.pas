@@ -49,9 +49,11 @@ type
     gbCodeView: TGroupBox;
     cbCVDock: TComboBox;
     lblDock: TLabel;
+    grp_CvFont: TGroupBox;
     pnlCVFont: TPanel;
     btnChangeCodeViewFont: TButton;
     gbDialog: TGroupBox;
+    grp_ListFont: TGroupBox;
     pnlDialogFont: TPanel;
     btnChgDialogFont: TButton;
     chkShowCodeView: TCheckBox;
