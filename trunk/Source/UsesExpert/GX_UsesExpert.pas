@@ -143,7 +143,6 @@ type
     edtUnitFilter: TEdit;
     lblFilter: TLabel;
     mitAvailAddToFav: TMenuItem;
-    mitAvailDelFromFav: TMenuItem;
     mitAvailSep1: TMenuItem;
     mitAvailSep2: TMenuItem;
     mitAvailOpenUnit: TMenuItem;

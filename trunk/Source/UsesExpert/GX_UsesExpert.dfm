@@ -60,7 +60,7 @@ object fmUsesManager: TfmUsesManager
           BevelOuter = bvNone
           TabOrder = 1
           object btnSearchPathAddToIntf: TButton
-            Left = 8
+            Left = 4
             Top = 0
             Width = 145
             Height = 25
@@ -68,7 +68,7 @@ object fmUsesManager: TfmUsesManager
             TabOrder = 0
           end
           object btnSearchPathAddToImpl: TButton
-            Left = 160
+            Left = 154
             Top = 0
             Width = 145
             Height = 25
@@ -76,7 +76,7 @@ object fmUsesManager: TfmUsesManager
             TabOrder = 1
           end
           object btnAddSearchPathlToFavorites: TButton
-            Left = 312
+            Left = 304
             Top = 0
             Width = 145
             Height = 25
@@ -197,7 +197,7 @@ object fmUsesManager: TfmUsesManager
           BevelOuter = bvNone
           TabOrder = 1
           object btnCopySaveProjectListMenu: TSpeedButton
-            Left = 568
+            Left = 574
             Top = 0
             Width = 25
             Height = 25
@@ -214,7 +214,7 @@ object fmUsesManager: TfmUsesManager
             OnClick = btnCopySaveProjectListMenuClick
           end
           object btnProjectAddToInterface: TButton
-            Left = 8
+            Left = 4
             Top = 0
             Width = 145
             Height = 25
@@ -222,15 +222,15 @@ object fmUsesManager: TfmUsesManager
             TabOrder = 0
           end
           object btnProjectAddToImplementation: TButton
-            Left = 158
+            Left = 154
             Top = 0
-            Width = 154
+            Width = 145
             Height = 25
             Action = actAvailAddToImpl
             TabOrder = 1
           end
           object btnAddProjectToFavorites: TButton
-            Left = 317
+            Left = 304
             Top = 0
             Width = 145
             Height = 25
@@ -238,9 +238,9 @@ object fmUsesManager: TfmUsesManager
             TabOrder = 2
           end
           object btnCopySaveCurrentList: TButton
-            Left = 467
+            Left = 454
             Top = 0
-            Width = 104
+            Width = 123
             Height = 25
             Hint = 'Copy the list of Project units to the clipboard.'
             Caption = 'Copy/Save List'
@@ -293,7 +293,7 @@ object fmUsesManager: TfmUsesManager
           BevelOuter = bvNone
           TabOrder = 1
           object btnCommonAddToInterface: TButton
-            Left = 8
+            Left = 4
             Top = 0
             Width = 145
             Height = 25
@@ -301,7 +301,7 @@ object fmUsesManager: TfmUsesManager
             TabOrder = 0
           end
           object btnCommonAddToImplementation: TButton
-            Left = 160
+            Left = 154
             Top = 0
             Width = 145
             Height = 25
@@ -309,7 +309,7 @@ object fmUsesManager: TfmUsesManager
             TabOrder = 1
           end
           object btnAddRtlToFavorites: TButton
-            Left = 312
+            Left = 304
             Top = 0
             Width = 145
             Height = 25
@@ -362,7 +362,7 @@ object fmUsesManager: TfmUsesManager
           BevelOuter = bvNone
           TabOrder = 1
           object btnFavoriteAddToInterface: TButton
-            Left = 8
+            Left = 4
             Top = 0
             Width = 145
             Height = 25
@@ -370,7 +370,7 @@ object fmUsesManager: TfmUsesManager
             TabOrder = 0
           end
           object btnFavoriteAddToImplementation: TButton
-            Left = 160
+            Left = 154
             Top = 0
             Width = 145
             Height = 25
@@ -378,17 +378,17 @@ object fmUsesManager: TfmUsesManager
             TabOrder = 1
           end
           object btnFavoriteAddToFavorites: TButton
-            Left = 312
+            Left = 304
             Top = 0
-            Width = 73
+            Width = 145
             Height = 25
             Action = actFavAddUnit
             TabOrder = 2
           end
           object btnFavoriteDeleteFromFavorites: TButton
-            Left = 392
+            Left = 454
             Top = 0
-            Width = 73
+            Width = 145
             Height = 25
             Action = actFavDelUnit
             TabOrder = 3
@@ -402,7 +402,7 @@ object fmUsesManager: TfmUsesManager
           Left = 0
           Top = 0
           Width = 602
-          Height = 337
+          Height = 340
           Align = alClient
           ColCount = 2
           DefaultColWidth = 150
@@ -416,31 +416,31 @@ object fmUsesManager: TfmUsesManager
         end
         object pnlIdentifiersFooter: TPanel
           Left = 0
-          Top = 337
+          Top = 340
           Width = 602
-          Height = 34
+          Height = 31
           Align = alBottom
           BevelOuter = bvNone
           TabOrder = 1
           object btnIdentifiersAddToIntf: TButton
             Left = 4
-            Top = 4
-            Width = 140
+            Top = 0
+            Width = 145
             Height = 25
             Action = actAvailAddToIntf
             TabOrder = 0
           end
           object btnIdentifiersAddToImpl: TButton
-            Left = 152
-            Top = 4
-            Width = 157
+            Left = 154
+            Top = 0
+            Width = 145
             Height = 25
             Action = actAvailAddToImpl
             TabOrder = 1
           end
           object pnlMatchIdentifier: TPanel
-            Left = 313
-            Top = 2
+            Left = 304
+            Top = 0
             Width = 255
             Height = 30
             BevelOuter = bvNone
@@ -879,9 +879,6 @@ object fmUsesManager: TfmUsesManager
     end
     object mitAvailAddToFav: TMenuItem
       Action = actAvailAddToFav
-    end
-    object mitAvailDelFromFav: TMenuItem
-      Action = actFavDelUnit
     end
   end
   object dlgOpen: TOpenDialog
