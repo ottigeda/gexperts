@@ -203,6 +203,13 @@ type
     p_NoMapFile: TPanel;
     l_NoMapFile: TLabel;
     b_NoMapFileClose: TButton;
+    sbUCM: TStatusBar;
+    pmUCMStatusBar: TPopupMenu;
+    mCopyThisTextToTheClipboard: TMenuItem;
+    mCopyThisFileToTheClipboard: TMenuItem;
+    mShowThisFileInWindowsExplorer: TMenuItem;
+    mitAvailSep3: TMenuItem;
+    mCopyThisIdentifierToTheClipboard: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -269,6 +276,23 @@ type
     procedure rbMatchAtStartClick(Sender: TObject);
     procedure Save1Click(Sender: TObject);
     procedure b_NoMapFileCloseClick(Sender: TObject);
+    procedure mCopyThisFileToTheClipboardClick(Sender: TObject);
+    procedure mCopyThisIdentifierToTheClipboardClick(Sender: TObject);
+    procedure mCopyThisTextToTheClipboardClick(Sender: TObject);
+    procedure mShowThisFileInWindowsExplorerClick(Sender: TObject);
+    procedure pmuAvailPopup(Sender: TObject);
+    procedure pmUCMStatusBarPopup(Sender: TObject);
+    procedure sbUCMDblClick(Sender: TObject);
+    procedure sg_CommonSelectCell(Sender: TObject; ACol, ARow: Integer; var
+        CanSelect: Boolean);
+    procedure sg_FavoriteSelectCell(Sender: TObject; ACol, ARow: Integer; var
+        CanSelect: Boolean);
+    procedure sg_IdentifiersSelectCell(Sender: TObject; ACol, ARow: Integer; var
+        CanSelect: Boolean);
+    procedure sg_ProjectSelectCell(Sender: TObject; ACol, ARow: Integer; var
+        CanSelect: Boolean);
+    procedure sg_SearchPathSelectCell(Sender: TObject; ACol, ARow: Integer; var
+        CanSelect: Boolean);
   private
     FLeftRatio: Double;
     FAliases: TStringList;
@@ -315,6 +339,7 @@ type
     procedure SwitchUnitsTab(_Direction: Integer);
     function AddToStringGrid(sg: TStringGrid; const UnitName: string): Integer;
     procedure CopyProjectListToClipboard;
+    procedure CopyStatusBarTextToClipboard;
     procedure DeleteFromStringGrid(sg: TStringGrid; const UnitName: string);
     function IndexInStringGrid(sg: TStringGrid; const UnitName: string): integer;
     procedure FilterStringGrid(Filter: string; List: TStrings; sg: TStringGrid);
@@ -322,6 +347,7 @@ type
       _State: TGridDrawState; _Focused: Boolean; _Tag: integer);
     procedure SaveProjectListToDisk;
     procedure ShowIdentifiersFilterResult(const cnt: Integer);
+    procedure ShowSelectedUnitPathInStatusBar(const ARow: Integer);
   protected
     FProjectUnits: TStringList;
     FCommonUnits: TStringList;
@@ -946,6 +972,8 @@ end;
 
 procedure TfmUsesManager.pcUnitsChange(Sender: TObject);
 begin
+  sbUCM.SimpleText := ''; // keep it consistent
+
   if pcUnits.ActivePage = tabIdentifiers then
   begin
     if lblFilter.Tag <> -1 then // if identifier filter results number has previously been set
@@ -1510,6 +1538,7 @@ begin
 end;
 
 procedure TfmUsesManager.lbxAvailDblClick(Sender: TObject);
+// Todo: make it work also on Identifiers tab!
 var
   Src: TStringGrid;
   col: Integer;
@@ -2432,6 +2461,113 @@ begin
   begin
     sg_Project.AssociatedList.SaveToFile(dlgSave.FileName);
   end;
+end;
+
+procedure TfmUsesManager.sbUCMDblClick(Sender: TObject);
+begin
+  if sbUCM.SimpleText <> '' then
+  begin
+    // Todo: if IsCtrlDown then show and select the file in Windows Explorer
+    CopyStatusBarTextToClipboard;
+  end;
+end;
+
+procedure TfmUsesManager.CopyStatusBarTextToClipboard;
+begin
+  Clipboard.AsText := sbUCM.SimpleText;
+end;
+
+procedure TfmUsesManager.mCopyThisFileToTheClipboardClick(Sender: TObject);
+begin
+  ShowMessage('Not yet implemented.');
+  // Todo: Implement this
+end;
+
+procedure TfmUsesManager.mCopyThisIdentifierToTheClipboardClick(Sender: TObject);
+begin
+  Clipboard.AsText := sg_Identifiers.Cells[0, sg_Identifiers.Row];
+end;
+
+procedure TfmUsesManager.mCopyThisTextToTheClipboardClick(Sender: TObject);
+begin
+  CopyStatusBarTextToClipboard;
+end;
+
+procedure TfmUsesManager.mShowThisFileInWindowsExplorerClick(Sender: TObject);
+begin
+  ShowMessage('Not yet implemented.');
+  // Todo: Implement this
+end;
+
+procedure TfmUsesManager.pmuAvailPopup(Sender: TObject);
+// before popup of the context menu units-list
+var
+  ThisSrc: TStringGrid;
+begin
+  ThisSrc := GetAvailableSourceList; // sg_*
+  Assert(Assigned(ThisSrc));
+  mCopyThisIdentifierToTheClipboard.Visible := (ThisSrc.Name = sg_Identifiers.Name);
+end;
+
+procedure TfmUsesManager.pmUCMStatusBarPopup(Sender: TObject);
+var
+  StatusBarFileExists: Boolean;
+begin
+  if sbUCM.SimpleText = '' then ABORT;
+  StatusBarFileExists := FileExists(sbUCM.SimpleText);
+  mCopyThisFileToTheClipboard.Enabled    := StatusBarFileExists;
+  mShowThisFileInWindowsExplorer.Enabled := StatusBarFileExists;
+end;
+
+procedure TfmUsesManager.sg_CommonSelectCell(Sender: TObject; ACol, ARow:
+    Integer; var CanSelect: Boolean);
+begin
+  ShowSelectedUnitPathInStatusBar(ARow);
+end;
+
+procedure TfmUsesManager.sg_FavoriteSelectCell(Sender: TObject; ACol, ARow:
+    Integer; var CanSelect: Boolean);
+begin
+  ShowSelectedUnitPathInStatusBar(ARow);
+end;
+
+procedure TfmUsesManager.sg_IdentifiersSelectCell(Sender: TObject; ACol, ARow:
+    Integer; var CanSelect: Boolean);
+begin
+  ShowSelectedUnitPathInStatusBar(ARow);
+end;
+
+procedure TfmUsesManager.sg_ProjectSelectCell(Sender: TObject; ACol, ARow:
+    Integer; var CanSelect: Boolean);
+begin
+  ShowSelectedUnitPathInStatusBar(ARow);
+end;
+
+procedure TfmUsesManager.sg_SearchPathSelectCell(Sender: TObject; ACol, ARow:
+    Integer; var CanSelect: Boolean);
+begin
+  ShowSelectedUnitPathInStatusBar(ARow);
+end;
+
+procedure TfmUsesManager.ShowSelectedUnitPathInStatusBar(const ARow: Integer);
+var
+  ThisSrc: TStringGrid;
+  ThisUnitCol: Integer;
+  ThisUnitName: string;
+  ThisFullFileName: string;
+begin
+  // Activate this if you are concerned about performance:
+  //if not IsCtrlDown then EXIT;
+  ThisSrc := GetAvailableSourceList; // sg_*
+  Assert(Assigned(ThisSrc));
+  ThisUnitCol := ThisSrc.ColCount - 1;
+  ThisUnitName := ThisSrc.Cells[ThisUnitCol, ARow];
+  if GxOtaTryFindPathToFile(ThisUnitName + '.pas', ThisFullFileName) then
+  begin
+    sbUCM.SimpleText := ThisFullFileName;
+  end
+  else // not GxOtaTryFindPathToFile
+    sbUCM.SimpleText := '';
 end;
 
 { TStringGrid }
