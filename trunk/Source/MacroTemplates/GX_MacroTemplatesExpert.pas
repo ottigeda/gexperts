@@ -305,13 +305,13 @@ begin
     GxOtaInsertTextIntoEditorAtBufferPos(ATemplateCode, InsertOff);
     // Delete template code (done after the insert to avoid problems)
     if CodeLen > 0 then
-      GxOtaDeleteTextFromPos(ATemplateOffset, CodeLen);
+      GxOtaDeleteByteFromPos(ATemplateOffset, CodeLen);
   end
   else
   begin
     InsertOff := AInsertOffset;
     if CodeLen > 0 then
-      GxOtaDeleteTextFromPos(ATemplateOffset, CodeLen);
+      GxOtaDeleteByteFromPos(ATemplateOffset, CodeLen);
     GxOtaInsertTextIntoEditorAtBufferPos(ATemplateCode, InsertOff);
   end;
 end;
