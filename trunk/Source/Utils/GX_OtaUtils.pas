@@ -3022,7 +3022,7 @@ begin
   IdePathString := GxOtaGetIdeLibraryPath;
   SplitIdePath(Paths, IdePathString);
   if DoProcessing then begin
-      // todo: Is it correct to use GetCurrentDir here? Sholdn't that either be the
+      // todo: Is it correct to use GetCurrentDir here? Shouldn't that either be the
       //       IDE base path or the project's directory?
     ProcessPaths(Paths, GetCurrentDir, '');
   end;
@@ -3040,15 +3040,15 @@ var
 begin
   Assert(Assigned(Paths));
   Paths.Clear;
-  // todo: Is it correct to pass DoProcessing here? Shoudn't that be done explicitly below?
+  // todo: Is it correct to pass DoProcessing here? Shouldn't that be done explicitly below?
   GxOtaGetProjectSourcePathStrings(Paths, Project, DoProcessing);
   IdeLibraryPath := TStringList.Create;
   try
-    // todo: Is it correct to pass DoProcessing here? Shoudn't that be done explicitly below?
+    // todo: Is it correct to pass DoProcessing here? Shouldn't that be done explicitly below?
     GxOtaGetIdeLibraryPathStrings(IdeLibraryPath, DoProcessing);
     if DoProcessing then begin
       PlatformName := GxOtaGetProjectPlatform(Project);
-      // todo: Is it correct to use GetCurrentDir here? Sholdn't that either be the
+      // todo: Is it correct to use GetCurrentDir here? Shouldn't that either be the
       //       IDE base path or the project's directory?
       ProcessPaths(IdeLibraryPath, GetCurrentDir, PlatformName);
     end;
