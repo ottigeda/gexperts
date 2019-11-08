@@ -1761,7 +1761,7 @@ begin
       for i := 0 to cnt - 1 do begin
         Identifier := FilterList[i];
         sg_Identifiers.Cells[0, FixedRows + i] := Identifier;
-        UnitName := PChar(FFavUnitsExports.Objects[i]);
+        UnitName := PChar(FilterList.Objects[i]);
         sg_Identifiers.Cells[1, FixedRows + i] := UnitName;
       end;
     end;
