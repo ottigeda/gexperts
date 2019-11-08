@@ -153,7 +153,7 @@ object fmConfiguration: TfmConfiguration
               Width = 146
               Height = 14
               Caption = 'GExperts caching directory'
-              FocusControl = edConfigPath
+              FocusControl = edCachingPath
             end
             object edCachingPath: TEdit
               Left = 12
@@ -171,7 +171,7 @@ object fmConfiguration: TfmConfiguration
               Anchors = [akTop, akRight]
               Caption = '...'
               TabOrder = 5
-              OnClick = sbConfigDirClick
+              OnClick = bCachingPathClick
             end
           end
           object gbxCustomFont: TGroupBox

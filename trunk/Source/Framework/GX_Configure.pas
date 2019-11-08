@@ -121,6 +121,7 @@ type
     procedure chkEditorKeyTracingClick(Sender: TObject);
     procedure sbVCLDirClick(Sender: TObject);
     procedure sbConfigDirClick(Sender: TObject);
+    procedure bCachingPathClick(Sender: TObject);
     procedure sbHelpFileClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
@@ -389,6 +390,17 @@ begin
   TempString := edVCLPath.Text;
   if GetDirectory(SSelVclDir, TempString, self) then
     edVCLPath.Text := TempString;
+end;
+
+procedure TfmConfiguration.bCachingPathClick(Sender: TObject);
+resourcestring
+  SSelCachingDir = 'Select Caching Directory';
+var
+  TempString: string;
+begin
+  TempString := edCachingPath.Text;
+  if GetDirectory(SSelCachingDir, TempString, Self) then
+    edCachingPath.Text := TempString;
 end;
 
 procedure TfmConfiguration.sbConfigDirClick(Sender: TObject);
