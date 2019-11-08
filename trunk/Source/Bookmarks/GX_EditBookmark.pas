@@ -102,7 +102,7 @@ begin
 
   List := TList.Create;
   try
-    GxOtaFillUnitInfoListForCurrentProject(List);
+    GxOtaFillUnitInfoListForProject(List, GxOtaGetCurrentProject);
     for i := 0 to List.Count - 1 do begin
       ui := TObject(List[i]) as TUnitInfo;
       cmb_Module.Items.AddObject(ExtractFileName(ui.Filename), ui);

@@ -229,8 +229,8 @@ procedure GxOtaFillComponentInfoList(const List: TList);
 /// Frees all Objects in the List and clears it. </summary>
 procedure ClearUnitInfoList(const List: TList);
 ///<summary>
-/// Fills List with TUnitInfo objects for all modules in the current project. </summary>
-procedure GxOtaFillUnitInfoListForCurrentProject(const List: TList);
+/// Fills List with TUnitInfo objects for all modules in the given project. </summary>
+procedure GxOtaFillUnitInfoListForProject(List: TList; _Project: IOTAProject);
 
 //
 //
@@ -293,7 +293,7 @@ function GxOtaHaveCPPSupport: Boolean;
 function GxOtaHaveDelphiSupport: Boolean;
 function GxOtaHaveCSharpSupport: Boolean;
 
-// Get the preferred hex number display prefix chanacters for our personality
+// Get the preferred hex number display prefix characters for our personality
 function GxOtaGetHexPrefix: string;
 
 // See if the user is editing a form
@@ -443,8 +443,12 @@ function GxOtaGetIdeLibraryPath: string;
 function GxOtaGetIdeBrowsingPath: string;
 
 ///<summary>
-/// Returns the project's platform, if any (and supported), or an empty string </summary>
+/// Returns the project's current platform, if any (and supported), or an empty string </summary>
 function GxOtaGetProjectPlatform(Project: IOTAProject = nil): string;
+
+///<summary>
+/// Returns the project's current config, if any (and supported), or an empty string </summary>
+function GxOtaGetProjectConfig(Project: IOTAProject = nil): string;
 
 ///<summary>
 /// Returns the project's framework, if any (and supported), or an empty string </summary>
@@ -722,23 +726,20 @@ begin
   end;
 end;
 
-procedure GxOtaFillUnitInfoListForCurrentProject(const List: TList);
+procedure GxOtaFillUnitInfoListForProject(List: TList; _Project: IOTAProject);
 var
   i: Integer;
-  CurrentProject: IOTAProject;
   ModuleInfo: IOTAModuleInfo;
   UnitInfo: TUnitInfo;
 begin
   Assert(Assigned(List));
+  Assert(Assigned(_Project));
+
   ClearUnitInfoList(List);
 
-  CurrentProject := GxOtaGetCurrentProject;
-  if not Assigned(CurrentProject) then
-    Exit;
-
-  for i := 0 to CurrentProject.GetModuleCount - 1 do
+  for i := 0 to _Project.GetModuleCount - 1 do
   begin
-    ModuleInfo := CurrentProject.GetModule(i);
+    ModuleInfo := _Project.GetModule(i);
     Assert(Assigned(ModuleInfo));
 
     if ModuleInfo.FileName <> '' then
@@ -1479,11 +1480,112 @@ begin
   Result := IncludeTrailingPathDelimiter(Result);
 end;
 
+
+type
+  TPathProcessor = class
+  private
+    FIdeBasePath: string;
+    FConfigName: string;
+    FPlatformName: string;
+    FPrefix: string;
+    FEnvironment: TStringList;
+    class function ReplaceMacro(const Str, OldValue, NewValue: string): string;
+  public
+    ///<summary>
+    /// @param Prefix will be used for relative paths
+    /// @param Project will be used to determine Platform and Config, if not given, the
+    ///                current project will be used. </summary>
+    constructor Create(const _Prefix: string; _Project: IOTAProject = nil);
+    destructor Destroy; override;
+    function Process(const _Path: string): string;
+    property PlatformName: string read FPlatformName write FPlatformName;
+    property ConfigName: string read FConfigName write FConfigName;
+  end;
+
+{ TPathProcessor }
+
+constructor TPathProcessor.Create(const _Prefix: string; _Project: IOTAProject = nil);
+
+  procedure Init(_Project: IOTAProject);
+{$IFDEF GX_VER230_up}
+  begin
+    if _Project = nil then
+      _Project := GxOtaGetCurrentProject;
+    if _Project <> nil then begin
+      FPlatformName := _Project.CurrentPlatform;
+      FConfigName := _Project.CurrentConfiguration;
+    end;
+  end;
+{$ELSE}
+  begin
+    // do nothing
+  end;
+{$ENDIF}
+
+begin
+  inherited Create;
+  FPrefix := _Prefix;
+  Init(_Project);
+  FIdeBasePath := RemoveSlash(GetIdeRootDirectory);
+  FEnvironment := TStringList.Create;
+  GetEnvironmentVariables(FEnvironment);
+end;
+
+destructor TPathProcessor.Destroy;
+begin
+  FreeAndNil(FEnvironment);
+  inherited;
+end;
+
+function TPathProcessor.Process(const _Path: string): string;
+const
+  IDEBaseMacros: array [0..2] of string = ('BDS', 'DELPHI', 'BCB');
+var
+  i: Integer;
+  EnvName: string;
+  EnvValue: string;
+begin
+  Result := _Path;
+
+  // Expand the IDE base folder names $([DELPHI,BCB,BDS])
+  for i := Low(IDEBaseMacros) to High(IDEBaseMacros) do
+    Result := ReplaceMacro(Result, IDEBaseMacros[i], FIdeBasePath);
+
+  // Expand any environment variable macros
+  for i := 0 to FEnvironment.Count - 1 do begin
+    EnvName := FEnvironment.Names[i];
+    EnvValue := FEnvironment.Values[EnvName];
+    if (Trim(EnvName) <> '') and (Trim(EnvValue) <> '') then
+      Result := ReplaceMacro(Result, EnvName, EnvValue);
+  end;
+
+  if FPlatformName <> '' then
+    Result := ReplaceMacro(Result, 'Platform', FPlatformName);
+
+  if FConfigName <> '' then
+    Result := ReplaceMacro(Result, 'Config', FConfigName);
+
+  if not IsPathAbsolute(Result) then begin
+    if FPrefix <> '' then begin
+      Result := TFileSystem.ExpandFileNameRelBaseDir(Result, FPrefix);
+    end;
+  end;
+end;
+
+class function TPathProcessor.ReplaceMacro(const Str, OldValue, NewValue: string): string;
+var
+  ReplaceVal: string;
+begin
+  ReplaceVal := '$(' + OldValue + ')';
+  Result := StringReplace(Str, ReplaceVal, NewValue, [rfReplaceAll, rfIgnoreCase]);
+end;
+
 function GxOtaGetCurrentMapFileName(out MapFile: string): boolean;
 var
   Project: IOTAProject;
   OutputDir: string;
   ProjectFilename: string;
+  PathProcessor: TPathProcessor;
 begin
   Result := False;
   Project := GxOtaGetCurrentProject;
@@ -1492,7 +1594,14 @@ begin
     ProjectFilename := GxOtaGetProjectFileName(Project);
     MapFile := AddSlash(OutputDir) + ExtractFilename(ProjectFilename);
     MapFile := ChangeFileExt(MapFile, '.map');
-    MapFile := TFileSystem.ExpandFileNameRelBaseDir(MapFile, ExtractFileDir(ProjectFilename));
+
+    PathProcessor := TPathProcessor.Create(ExtractFileDir(ProjectFilename), Project);
+    try
+      MapFile := PathProcessor.Process(MapFile);
+    finally
+      FreeAndNil(PathProcessor);
+    end;
+
     Result := FileExists(MapFile);
   end else
     MapFile := '';
@@ -2744,14 +2853,6 @@ begin
     Result := '';
 end;
 
-function ReplaceMacro(const Str, OldValue, NewValue: string): string;
-var
-  ReplaceVal: string;
-begin
-  ReplaceVal := '$(' + OldValue + ')';
-  Result := StringReplace(Str, ReplaceVal, NewValue, [rfReplaceAll, rfIgnoreCase]);
-end;
-
 procedure SplitIdePath(Strings: TStrings; IdePathString: string);
 var
   PathItem: string;
@@ -2782,6 +2883,17 @@ begin
 {$endif GX_VER230_up}
 end;
 
+function GxOtaGetProjectConfig(Project: IOTAProject = nil): string;
+begin
+  Result := '';
+{$ifdef GX_VER230_up}
+  if Project = nil then
+    Project := GxOtaGetCurrentProject;
+  if Project <> nil then
+    Result := Project.CurrentConfiguration;
+{$endif GX_VER230_up}
+end;
+
 function GxOtaGetProjectFrameworkType(Project: IOTAProject = nil): string;
 begin
 {$ifdef GX_VER230_up}
@@ -2794,48 +2906,22 @@ begin
 end;
 
 procedure ProcessPaths(Paths: TStrings; const Prefix: string; const PlatformName: string);
-const
-  IDEBaseMacros: array [0..2] of string = ('BDS', 'DELPHI', 'BCB');
 var
   i: Integer;
-  DirIdx: Integer;
   PathItem: string;
-  BasePath: string;
-  Environment: TStringList;
-  EnvName: string;
-  EnvValue: string;
+  PathProcessor: TPathProcessor;
 begin
-  BasePath := RemoveSlash(GetIdeRootDirectory);
-  Environment := TStringList.Create;
+  PathProcessor := TPathProcessor.Create(Prefix);
   try
-    GetEnvironmentVariables(Environment);
-    for DirIdx := 0 to Paths.Count - 1 do begin
-      PathItem := Paths[DirIdx];
-      // Expand the IDE base folder names $([DELPHI,BCB,BDS])
-      for i := Low(IDEBaseMacros) to High(IDEBaseMacros) do
-        PathItem := ReplaceMacro(PathItem, IDEBaseMacros[i], BasePath);
-
-      // Expand any environment variable macros
-      for i := 0 to Environment.Count - 1 do begin
-        EnvName := Environment.Names[i];
-        EnvValue := Environment.Values[Environment.Names[i]];
-        if (Trim(EnvName) <> '') and (Trim(EnvValue) <> '') then
-          PathItem := ReplaceMacro(PathItem, EnvName, EnvValue);
-      end;
-
-      if PlatformName <> '' then
-        PathItem := ReplaceMacro(PathItem, 'Platform', PlatformName);
-
-      if not IsPathAbsolute(PathItem) then
-      begin
-        if Prefix <> '' then begin
-          PathItem := TFileSystem.ExpandFileNameRelBaseDir(PathItem, Prefix);
-        end;
-      end;
-      Paths[DirIdx] := PathItem;
+    // todo: What about ConfigName?
+    PathProcessor.PlatformName := PlatformName;
+    for i := 0 to Paths.Count - 1 do begin
+      PathItem := Paths[i];
+      PathItem := PathProcessor.Process(PathItem);
+      Paths[i] := PathItem;
     end;
   finally
-    FreeAndNil(Environment);
+    FreeAndNil(PathProcessor);
   end;
 end;
 
@@ -2917,7 +3003,6 @@ begin
     end;
   end;
 
-
   if DoProcessing then begin
     PlatformName := GxOtaGetProjectPlatform(Project);
     ProcessPaths(Paths, ProjectDir, PlatformName);
@@ -2937,6 +3022,8 @@ begin
   IdePathString := GxOtaGetIdeLibraryPath;
   SplitIdePath(Paths, IdePathString);
   if DoProcessing then begin
+      // todo: Is it correct to use GetCurrentDir here? Sholdn't that either be the
+      //       IDE base path or the project's directory?
     ProcessPaths(Paths, GetCurrentDir, '');
   end;
   for i := 0 to Paths.Count - 1 do begin
@@ -2953,12 +3040,16 @@ var
 begin
   Assert(Assigned(Paths));
   Paths.Clear;
+  // todo: Is it correct to pass DoProcessing here? Shoudn't that be done explicitly below?
   GxOtaGetProjectSourcePathStrings(Paths, Project, DoProcessing);
   IdeLibraryPath := TStringList.Create;
   try
+    // todo: Is it correct to pass DoProcessing here? Shoudn't that be done explicitly below?
     GxOtaGetIdeLibraryPathStrings(IdeLibraryPath, DoProcessing);
     if DoProcessing then begin
       PlatformName := GxOtaGetProjectPlatform(Project);
+      // todo: Is it correct to use GetCurrentDir here? Sholdn't that either be the
+      //       IDE base path or the project's directory?
       ProcessPaths(IdeLibraryPath, GetCurrentDir, PlatformName);
     end;
     for i := 0 to IdeLibraryPath.Count - 1 do begin
@@ -2973,12 +3064,16 @@ procedure GxOtaGetAllPossiblePaths(Paths: TStrings; Project: IOTAProject = nil);
 
   function GetPath(const FileName: string): string;
   begin
-    Result := AddSlash(ExtractFilePath(FileName));
+    if FileName <> '' then begin
+      Result := ExtractFilePath(FileName);
+      if Result <> '' then
+        Result := AddSlash(Result);
+    end;
   end;
 
   procedure AddAPath(const APath: string);
   begin
-    if DirectoryExists(APath) then
+    if (APath <> '') and DirectoryExists(APath) then
       EnsureStringInList(Paths, APath);
   end;
 
@@ -3022,22 +3117,26 @@ begin
   // Add path of the current project
   if not Assigned(Project) then
     Project := GxOtaGetCurrentProject;
-  AddAPath(GetPath(GxOtaGetProjectFileName(Project)));
+
+  if Assigned(Project) then
+    AddAPath(GetPath(GxOtaGetProjectFileName(Project)));
 
   // Add library search paths
   GxOtaGetEffectiveLibraryPath(Paths);
 
   // Add paths of all files included in the project
-  UnitList := TList.Create;
-  try
-    GxOtaFillUnitInfoListForCurrentProject(UnitList);
-    for i := 0 to UnitList.Count - 1 do
-    begin
-      UnitInfo := TUnitInfo(UnitList[i]);
-      AddAPath(GetPath(UnitInfo.FileName));
+  if Assigned(Project) then begin
+    UnitList := TList.Create;
+    try
+      GxOtaFillUnitInfoListForProject(UnitList, Project);
+      for i := 0 to UnitList.Count - 1 do begin
+        UnitInfo := TUnitInfo(UnitList[i]);
+        AddAPath(GetPath(UnitInfo.FileName));
+      end;
+    finally
+      ClearUnitInfoList(UnitList);
+      FreeAndNil(UnitList);
     end;
-  finally
-    FreeAndNil(UnitList);
   end;
 
   // Add current file path

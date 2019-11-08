@@ -689,30 +689,19 @@ end;
 
 function TfmUsesManager.TryGetMapFiles: boolean;
 var
-  Project: IOTAProject;
-  ProjectFilename: string;
   Reader: TMapFileReader;
-  OutputDir: string;
   MapFile: string;
 begin
-  Result := False;
+  Result := GxOtaGetCurrentMapFileName(MapFile);
   try
-    Project := GxOtaGetCurrentProject;
-    if not Assigned(Project) then
-      Exit; //==>
-    OutputDir := GxOtaGetProjectOutputDir(Project);
-    ProjectFilename := GxOtaGetProjectFileName(Project);
-    MapFile := AddSlash(OutputDir) + ExtractFileName(ProjectFilename);
-    MapFile := ChangeFileExt(MapFile, '.map');
-    MapFile := TFileSystem.ExpandFileNameRelBaseDir(MapFile, ExtractFileDir(ProjectFilename));
-    if not FileExists(MapFile) then
-      Exit; //==>
-    Reader := TMapFileReader.Create(MapFile);
-    try
-      FProjectUnits.Assign(Reader.Units);
-      Result := (FProjectUnits.Count > 0)
-    finally
-      FreeAndNil(Reader);
+    if Result then begin
+      Reader := TMapFileReader.Create(MapFile);
+      try
+        FProjectUnits.Assign(Reader.Units);
+        Result := (FProjectUnits.Count > 0)
+      finally
+        FreeAndNil(Reader);
+      end;
     end;
   finally
     p_NoMapFile.Visible := not Result;
@@ -2562,7 +2551,7 @@ begin
   Assert(Assigned(ThisSrc));
   ThisUnitCol := ThisSrc.ColCount - 1;
   ThisUnitName := ThisSrc.Cells[ThisUnitCol, ARow];
-  if GxOtaTryFindPathToFile(ThisUnitName + '.pas', ThisFullFileName) then
+  if (ThisUnitName <> '') and GxOtaTryFindPathToFile(ThisUnitName + '.pas', ThisFullFileName) then
   begin
     sbUCM.SimpleText := ThisFullFileName;
   end
