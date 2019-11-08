@@ -6,6 +6,7 @@ unit GX_dzMapFileReader;
 interface
 
 uses
+  SysUtils,
   Classes;
 
 type
@@ -31,7 +32,7 @@ type
 implementation
 
 uses
-  SysUtils;
+  GX_GenericUtils;
 
 { TMapFileReader }
 
@@ -70,7 +71,7 @@ end;
 function TryCutAt(const _SubStr: string; var _Str: string): Boolean;
 var
   StartPos: Integer;
-  p: integer;
+  p: Integer;
 begin
   StartPos := Pos(_SubStr, _Str);
   Result := (StartPos > 0);
@@ -81,21 +82,34 @@ begin
 end;
 
 procedure TMapFileReader.ParseSegments(_StartIdx: Integer);
+const
+  StrACBP = ' ACBP=';
+  StrALIGN = ' ALIGN=';
 var
   i: Integer;
   s: string;
   p: Integer;
+  AlignStr: string;
 begin
+  if StrContains(StrACBP, FContent.Text) then begin
+    // 32-bit platform
+    AlignStr := StrACBP;
+  end else if StrContains(StrALIGN, FContent.Text) then begin
+    // 64-bit platform
+    AlignStr := StrALIGN;
+  end else
+    Exit; //==>
+
   for i := _StartIdx to FContent.Count - 1 do begin
     s := FContent[i];
     if s = '' then
-      Exit;
+      Exit; //==>
     if TryCutAt(' M=', s) then begin
-      p := Pos(' ACBP=', s);
+      p := Pos(AlignStr, s);
       if p > 0 then begin
         s := Copy(s, 1, p);
         s := Trim(s);
-        FUnits.add(s);
+        FUnits.Add(s);
       end;
     end;
   end;
