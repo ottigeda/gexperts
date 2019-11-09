@@ -117,6 +117,8 @@ type
     lblCachingPath: TLabel;
     edCachingPath: TEdit;
     bCachingPath: TButton;
+    chk_FontForNewForms: TCheckBox;
+    b_CustomFontForNewForms: TButton;
     procedure btnEnumerateModulesClick(Sender: TObject);
     procedure chkEditorKeyTracingClick(Sender: TObject);
     procedure sbVCLDirClick(Sender: TObject);
@@ -149,6 +151,7 @@ type
     procedure btnExportClick(Sender: TObject);
     procedure btnUsageClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure b_CustomFontForNewFormsClick(Sender: TObject);
   private
     FOIFont: TFont;
     FCPFont: TFont;
@@ -451,6 +454,25 @@ end;
 procedure TfmConfiguration.btnUsageClick(Sender: TObject);
 begin
   TfmUsageStatistics.Execute(Self);
+end;
+
+procedure TfmConfiguration.b_CustomFontForNewFormsClick(Sender: TObject);
+begin
+  dlgUIFont.Font.Height := DefFontData.Height;
+  dlgUIFont.Font.Orientation := DefFontData.Orientation;
+  dlgUIFont.Font.Pitch := DefFontData.Pitch;
+  dlgUIFont.Font.Style := DefFontData.Style;
+  dlgUIFont.Font.Charset := DefFontData.Charset;
+  dlgUIFont.Font.Name := DefFontData.Name;
+  if dlgUIFont.Execute then begin
+    chk_FontForNewForms.Checked := True;
+    DefFontData.Height := dlgUIFont.Font.Height;
+    DefFontData.Orientation := dlgUIFont.Font.Orientation;
+    DefFontData.Pitch := dlgUIFont.Font.Pitch;
+    DefFontData.Style := dlgUIFont.Font.Style;
+    DefFontData.Charset := dlgUIFont.Font.Charset;
+    DefFontData.Name := dlgUIFont.Font.Name;
+  end;
 end;
 
 procedure TfmConfiguration.btnHelpClick(Sender: TObject);

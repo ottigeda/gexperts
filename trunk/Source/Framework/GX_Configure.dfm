@@ -364,6 +364,25 @@ object fmConfiguration: TfmConfiguration
             Caption = 'Enhance Dock Forms to allow minimize and Win+arrow positioning'
             TabOrder = 7
           end
+          object chk_FontForNewForms: TCheckBox
+            Left = 24
+            Top = 256
+            Width = 489
+            Height = 17
+            Caption = 'Custom Font for new forms (sets DefFontData)'
+            TabOrder = 12
+            Visible = False
+          end
+          object b_CustomFontForNewForms: TButton
+            Left = 38
+            Top = 272
+            Width = 79
+            Height = 25
+            Caption = 'Font...'
+            TabOrder = 13
+            Visible = False
+            OnClick = b_CustomFontForNewFormsClick
+          end
         end
         object gbxObjectInspector: TGroupBox
           Left = 280
