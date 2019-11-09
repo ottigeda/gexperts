@@ -460,12 +460,6 @@ object fmUsesManager: TfmUsesManager
               Height = 17
               Caption = 'Match &anywhere'
               Checked = True
-              Font.Charset = ANSI_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -12
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
               TabOrder = 0
               TabStop = True
               OnClick = rbMatchAnywareClick
@@ -476,12 +470,6 @@ object fmUsesManager: TfmUsesManager
               Width = 113
               Height = 17
               Caption = 'Match at s&tart'
-              Font.Charset = ANSI_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -12
-              Font.Name = 'Tahoma'
-              Font.Style = []
-              ParentFont = False
               TabOrder = 1
               OnClick = rbMatchAtStartClick
             end
