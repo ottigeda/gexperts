@@ -189,7 +189,7 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils,
+  SysUtils, UITypes,
 {$IFDEF GX_DELPHI_TOKYO_UP}
   GX_SizeGripHWND,
 {$ENDIF}
@@ -465,7 +465,7 @@ begin
   dlgUIFont.Font.Pitch := DefFontData.Pitch;
   dlgUIFont.Font.Style := DefFontData.Style;
   dlgUIFont.Font.Charset := DefFontData.Charset;
-  dlgUIFont.Font.Name := DefFontData.Name;
+  dlgUIFont.Font.Name := TFontName(DefFontData.Name);
   if dlgUIFont.Execute then begin
     chk_FontForNewForms.Checked := True;
     DefFontData.Height := dlgUIFont.Font.Height;
@@ -475,7 +475,7 @@ begin
     DefFontData.Pitch := dlgUIFont.Font.Pitch;
     DefFontData.Style := dlgUIFont.Font.Style;
     DefFontData.Charset := dlgUIFont.Font.Charset;
-    DefFontData.Name := dlgUIFont.Font.Name;
+    DefFontData.Name := TFontDataName(dlgUIFont.Font.Name);
   end;
 end;
 
