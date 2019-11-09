@@ -44,6 +44,21 @@ function GetFileBuildInfo(const _Filename: string;
 function GetModuleFilename: string; overload;
 function GetModuleFilename(const _Module: Cardinal): string; overload;
 
+///<summary> tries to open a file with the associated application
+///          @param Filename is the name of the file to open
+///          @returns true on success, false otherwise </summary>
+function OpenFileWithAssociatedApp(const _Filename: string; _ShowAssociateDialog: Boolean = False): Boolean;
+
+///<summary> Calls ShellExecuteEx with the given parameters </summary>
+function ShellExecEx(const _Filename: string; const _Parameters: string;
+  const _Verb: string; _CmdShow: Integer; _ShowAssociateDialog: Boolean = False): Boolean;
+
+///<summary>
+/// Opens Windows Explorer and selects the given file, if it exists. If it doesn't exist, it
+/// opens the first directory in that filename that exists.
+/// @returns True if the file exists, False if not </summary>
+function OpenExplorerAndSelectFile(const _Filename: string): Boolean;
+
 ///<summary>
 /// @returns true, if the Ctrl key is currently pressed </summary>
 function IsCtrlDown: Boolean;
@@ -61,6 +76,9 @@ function IsShiftDown: Boolean;
 function GetOsVersionString: string;
 
 implementation
+
+uses
+  ShellAPI;
 
 function IsShiftDown: Boolean;
 var
@@ -162,6 +180,54 @@ begin
     _Revision := Revision;
     _Build := Build;
   end;
+end;
+
+function ShellExecEx(const _Filename: string; const _Parameters: string;
+  const _Verb: string; _CmdShow: Integer; _ShowAssociateDialog: Boolean = False): Boolean;
+var
+  Sei: TShellExecuteInfo;
+begin
+  FillChar(Sei, SizeOf(Sei), #0);
+  Sei.cbSize := SizeOf(Sei);
+  Sei.FMask := SEE_MASK_DOENVSUBST;
+  if not _ShowAssociateDialog then
+    Sei.FMask := Sei.FMask or SEE_MASK_FLAG_NO_UI;
+  Sei.lpFile := PChar(_Filename);
+  if _Parameters <> '' then
+    Sei.lpParameters := PChar(_Parameters)
+  else
+    Sei.lpParameters := nil;
+  if _Verb <> '' then
+    Sei.lpVerb := PChar(_Verb)
+  else
+    Sei.lpVerb := nil;
+  Sei.nShow := _CmdShow;
+  Result := ShellExecuteEx(@Sei);
+end;
+
+function OpenExplorerAndSelectFile(const _Filename: string): Boolean;
+var
+  fn: string;
+begin
+  fn := _Filename;
+  Result := FileExists(fn);
+  if Result then begin
+    ShellExecEx('explorer.exe', '/select,"' + fn + '"', '', SW_SHOWNORMAL);
+    Exit; //==>
+  end;
+
+  while ExtractFileName(fn) <> '' do begin
+    fn := ExtractFileDir(fn);
+    if (fn <> '') and DirectoryExists(fn) then begin
+      ShellExecEx(fn, '', '', SW_SHOWNORMAL);
+      Exit; //==>
+    end;
+  end;
+end;
+
+function OpenFileWithAssociatedApp(const _Filename: string; _ShowAssociateDialog: Boolean = False): Boolean;
+begin
+  Result := ShellExecEx(_Filename, '', 'open', SW_SHOWNORMAL, _ShowAssociateDialog);
 end;
 
 // Delphi 2007 declares only the GetVersionEx function with a TOsVersionInfo record,
