@@ -2469,8 +2469,7 @@ end;
 
 procedure TfmUsesManager.mCopyThisFileToTheClipboardClick(Sender: TObject);
 begin
-  ShowMessage('Not yet implemented.');
-  // Todo: Implement this
+  CopyFileToClipboard(sbUCM.SimpleText);
 end;
 
 procedure TfmUsesManager.mCopyThisIdentifierToTheClipboardClick(Sender: TObject);
