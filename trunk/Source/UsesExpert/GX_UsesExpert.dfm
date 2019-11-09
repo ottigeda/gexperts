@@ -818,8 +818,14 @@ object fmUsesManager: TfmUsesManager
     Top = 471
     Width = 922
     Height = 19
+    Hint = 
+      'DOUBLE-click on this Status Bar to copy the text displayed on th' +
+      'e Status Bar to the Clipboard.'#13#10'Or RIGHT-click on the Status Bar' +
+      ' to show a popup menu with more options.'
     Panels = <>
+    ParentShowHint = False
     PopupMenu = pmUCMStatusBar
+    ShowHint = True
     SimplePanel = True
     OnDblClick = sbUCMDblClick
   end
@@ -1025,6 +1031,7 @@ object fmUsesManager: TfmUsesManager
     Top = 248
   end
   object pm_Favorite: TPopupMenu
+    OnPopup = pm_FavoritePopup
     Left = 560
     Top = 112
     object mi_FavAddToImpl: TMenuItem
@@ -1037,7 +1044,7 @@ object fmUsesManager: TfmUsesManager
     object N1: TMenuItem
       Caption = '-'
     end
-    object OpenUnit1: TMenuItem
+    object mi_FavOpenUnit: TMenuItem
       Action = actOpenUnit
     end
     object N2: TMenuItem
@@ -1493,7 +1500,7 @@ object fmUsesManager: TfmUsesManager
       OnClick = mCopyThisFileToTheClipboardClick
     end
     object mShowThisFileInWindowsExplorer: TMenuItem
-      Caption = 'Show this File in WindowsExplorer'
+      Caption = 'Open Location of this File'
       ImageIndex = 3
       OnClick = mShowThisFileInWindowsExplorerClick
     end

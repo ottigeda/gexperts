@@ -182,7 +182,7 @@ type
     mi_FavAddUnit: TMenuItem;
     mi_FavDelUnit: TMenuItem;
     N2: TMenuItem;
-    OpenUnit1: TMenuItem;
+    mi_FavOpenUnit: TMenuItem;
     mi_AvailAddToIntf: TMenuItem;
     actAvailAddAllToFav: TAction;
     pnlIdentifiersProgress: TPanel;
@@ -282,6 +282,7 @@ type
     procedure mShowThisFileInWindowsExplorerClick(Sender: TObject);
     procedure pmuAvailPopup(Sender: TObject);
     procedure pmUCMStatusBarPopup(Sender: TObject);
+    procedure pm_FavoritePopup(Sender: TObject);
     procedure sbUCMDblClick(Sender: TObject);
     procedure sg_CommonSelectCell(Sender: TObject; ACol, ARow: Integer; var
         CanSelect: Boolean);
@@ -2484,12 +2485,11 @@ end;
 
 procedure TfmUsesManager.mShowThisFileInWindowsExplorerClick(Sender: TObject);
 begin
-  ShowMessage('Not yet implemented.');
-  // Todo: Implement this
+  OpenExplorerAndSelectFile(sbUCM.SimpleText);
 end;
 
 procedure TfmUsesManager.pmuAvailPopup(Sender: TObject);
-// before popup of the context menu units-list
+// before popup of the units-list context menu
 var
   ThisSrc: TStringGrid;
 begin
@@ -2502,38 +2502,56 @@ procedure TfmUsesManager.pmUCMStatusBarPopup(Sender: TObject);
 var
   StatusBarFileExists: Boolean;
 begin
-  if sbUCM.SimpleText = '' then ABORT;
+  if sbUCM.SimpleText = '' then
+    Abort;
+
   StatusBarFileExists := FileExists(sbUCM.SimpleText);
-  mCopyThisFileToTheClipboard.Enabled    := StatusBarFileExists;
+  mCopyThisFileToTheClipboard.Enabled := StatusBarFileExists;
   mShowThisFileInWindowsExplorer.Enabled := StatusBarFileExists;
 end;
 
-procedure TfmUsesManager.sg_CommonSelectCell(Sender: TObject; ACol, ARow:
-    Integer; var CanSelect: Boolean);
+procedure TfmUsesManager.pm_FavoritePopup(Sender: TObject);
+var
+  FavoriteListIsEmpty: Boolean;
+begin
+  // in the Favorite tab, disable irrelevant Favorite list popup menu items if the list is empty:
+  if sg_Favorite.RowCount = 1 then
+    FavoriteListIsEmpty := (sg_Favorite.Cells[0, 0] = '') // if Favorite list is empty
+  else
+    FavoriteListIsEmpty := False;
+
+  mi_FavAddToImpl.Enabled := not FavoriteListIsEmpty;
+  mi_FavAddtoIntf.Enabled := not FavoriteListIsEmpty;
+  mi_FavOpenUnit.Visible := not FavoriteListIsEmpty;
+  mi_FavDelUnit.Enabled := not FavoriteListIsEmpty;
+end;
+
+procedure TfmUsesManager.sg_CommonSelectCell(Sender: TObject; ACol, ARow: Integer;
+  var CanSelect: Boolean);
 begin
   ShowSelectedUnitPathInStatusBar(ARow);
 end;
 
-procedure TfmUsesManager.sg_FavoriteSelectCell(Sender: TObject; ACol, ARow:
-    Integer; var CanSelect: Boolean);
+procedure TfmUsesManager.sg_FavoriteSelectCell(Sender: TObject; ACol, ARow: Integer;
+  var CanSelect: Boolean);
 begin
   ShowSelectedUnitPathInStatusBar(ARow);
 end;
 
-procedure TfmUsesManager.sg_IdentifiersSelectCell(Sender: TObject; ACol, ARow:
-    Integer; var CanSelect: Boolean);
+procedure TfmUsesManager.sg_IdentifiersSelectCell(Sender: TObject; ACol, ARow: Integer;
+  var CanSelect: Boolean);
 begin
   ShowSelectedUnitPathInStatusBar(ARow);
 end;
 
-procedure TfmUsesManager.sg_ProjectSelectCell(Sender: TObject; ACol, ARow:
-    Integer; var CanSelect: Boolean);
+procedure TfmUsesManager.sg_ProjectSelectCell(Sender: TObject; ACol, ARow: Integer;
+  var CanSelect: Boolean);
 begin
   ShowSelectedUnitPathInStatusBar(ARow);
 end;
 
-procedure TfmUsesManager.sg_SearchPathSelectCell(Sender: TObject; ACol, ARow:
-    Integer; var CanSelect: Boolean);
+procedure TfmUsesManager.sg_SearchPathSelectCell(Sender: TObject; ACol, ARow: Integer;
+  var CanSelect: Boolean);
 begin
   ShowSelectedUnitPathInStatusBar(ARow);
 end;
