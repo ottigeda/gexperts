@@ -639,6 +639,12 @@ function FileIsReadOnly(const FileName: string): Boolean;
 function CanWriteToDirectory(const Dir: string): Boolean;
 function CanCreateFile(const FileName: string): Boolean;
 
+///<summary>
+/// Copies a single file to the Clipboard.
+/// @raises Exception if anything goes wrong, in particular if the filename is empty
+///                   or  the file does not exist. </summary>
+procedure CopyFileToClipboard(_Filename: string);
+
 // Displays a directory selection box.
 // Returns True if the user selected a directory; Dir then
 // contains the selected directory.
@@ -840,7 +846,7 @@ uses
   GX_Debug,
   {$IFDEF UNICODE} Character, {$ENDIF}
   ShLwApi,
-  ShellAPI, ShlObj, ActiveX, StrUtils, Math,
+  ShellAPI, ShlObj, ActiveX, StrUtils, Math, Clipbrd,
   GX_dzSelectDirectoryFix, GX_dzOsUtils;
 
 const
@@ -4689,6 +4695,42 @@ begin
 end;
 {$ENDIF GX_VER200_up}
 {$ENDIF GX_VER160_up}
+
+procedure CopyFileToClipboard(_Filename: string);
+var
+  DropFiles: PDropFiles;
+  hGlobal: THandle;
+  ThisLen: Integer;
+begin
+  if _Filename = '' then
+    raise Exception.Create('Filename parameter must not be empty');
+
+  if not FileExists(_Filename) then
+    raise Exception.Create('File does not exist: ' + _Filename);
+
+  ThisLen := Length(_Filename);
+  hGlobal := GlobalAlloc(GMEM_SHARE or GMEM_MOVEABLE or GMEM_ZEROINIT,
+    SizeOf(TDropFiles) + ((ThisLen + 2) * SizeOf(Char)));
+  if hGlobal = 0 then
+    RaiseLastOsError;
+
+  try
+    DropFiles := GlobalLock(hGlobal);
+    if DropFiles = nil then
+      RaiseLastOsError;
+    try
+      DropFiles^.pFiles := SizeOf(TDropFiles);
+      DropFiles^.fWide := (SizeOf(Char) = SizeOf(WideChar));
+
+      Move(_Filename[1], PByte(Cardinal(DropFiles) + SizeOf(TDropFiles))^, ThisLen * SizeOf(Char));
+    finally
+      GlobalUnlock(hGlobal);
+    end;
+    Clipboard.SetAsHandle(CF_HDROP, hGlobal);
+  except
+    GlobalFree(hGlobal);
+  end;
+end;
 
 { TFileFindThread }
 
