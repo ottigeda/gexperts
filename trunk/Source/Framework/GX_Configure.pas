@@ -459,7 +459,9 @@ end;
 procedure TfmConfiguration.b_CustomFontForNewFormsClick(Sender: TObject);
 begin
   dlgUIFont.Font.Height := DefFontData.Height;
+{$IFDEF GX_DELPHI2005_UP}
   dlgUIFont.Font.Orientation := DefFontData.Orientation;
+{$ENDIF}
   dlgUIFont.Font.Pitch := DefFontData.Pitch;
   dlgUIFont.Font.Style := DefFontData.Style;
   dlgUIFont.Font.Charset := DefFontData.Charset;
@@ -467,7 +469,9 @@ begin
   if dlgUIFont.Execute then begin
     chk_FontForNewForms.Checked := True;
     DefFontData.Height := dlgUIFont.Font.Height;
+{$IFDEF GX_DELPHI2005_UP}
     DefFontData.Orientation := dlgUIFont.Font.Orientation;
+{$ENDIF}
     DefFontData.Pitch := dlgUIFont.Font.Pitch;
     DefFontData.Style := dlgUIFont.Font.Style;
     DefFontData.Charset := dlgUIFont.Font.Charset;
