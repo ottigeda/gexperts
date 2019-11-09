@@ -882,7 +882,7 @@ object fmUsesManager: TfmUsesManager
     end
   end
   object pmuAvail: TPopupMenu
-    Images = ImageList1
+    Images = il_MenuIcons
     OnPopup = pmuAvailPopup
     Left = 456
     Top = 112
@@ -1058,21 +1058,21 @@ object fmUsesManager: TfmUsesManager
     end
   end
   object pmCopySaveProjectList: TPopupMenu
-    Images = ImageList1
+    Images = il_MenuIcons
     Left = 488
     Top = 240
-    object mCopytoClipboard1: TMenuItem
+    object mi_CopyProjectListToClipboard: TMenuItem
       Caption = 'Copy the List of Project Units to the Clipboard   '
       ImageIndex = 0
-      OnClick = mCopytoClipboard1Click
+      OnClick = mi_CopyProjectListToClipboardClick
     end
-    object Save1: TMenuItem
-      Caption = 'Save the List of Project Units to Disk...'
+    object mi_SaveProjectList: TMenuItem
+      Caption = 'Save the List of Project Units to Disk ...'
       ImageIndex = 1
-      OnClick = Save1Click
+      OnClick = mi_SaveProjectListClick
     end
   end
-  object ImageList1: TImageList
+  object il_MenuIcons: TImageList
     Left = 600
     Top = 240
     Bitmap = {
@@ -1484,7 +1484,7 @@ object fmUsesManager: TfmUsesManager
     Top = 240
   end
   object pmUCMStatusBar: TPopupMenu
-    Images = ImageList1
+    Images = il_MenuIcons
     OnPopup = pmUCMStatusBarPopup
     Left = 424
     Top = 432

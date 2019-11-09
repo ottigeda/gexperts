@@ -193,9 +193,9 @@ type
     btnCopySaveCurrentList: TButton;
     btnCopySaveProjectListMenu: TSpeedButton;
     pmCopySaveProjectList: TPopupMenu;
-    mCopytoClipboard1: TMenuItem;
-    Save1: TMenuItem;
-    ImageList1: TImageList;
+    mi_CopyProjectListToClipboard: TMenuItem;
+    mi_SaveProjectList: TMenuItem;
+    il_MenuIcons: TImageList;
     dlgSave: TSaveDialog;
     pnlMatchIdentifier: TPanel;
     rbMatchAnyware: TRadioButton;
@@ -271,10 +271,10 @@ type
     procedure actAvailAddAllToFavExecute(Sender: TObject);
     procedure btnCopySaveProjectListClick(Sender: TObject);
     procedure btnCopySaveProjectListMenuClick(Sender: TObject);
-    procedure mCopytoClipboard1Click(Sender: TObject);
+    procedure mi_CopyProjectListToClipboardClick(Sender: TObject);
     procedure rbMatchAnywareClick(Sender: TObject);
     procedure rbMatchAtStartClick(Sender: TObject);
-    procedure Save1Click(Sender: TObject);
+    procedure mi_SaveProjectListClick(Sender: TObject);
     procedure b_NoMapFileCloseClick(Sender: TObject);
     procedure mCopyThisFileToTheClipboardClick(Sender: TObject);
     procedure mCopyThisIdentifierToTheClipboardClick(Sender: TObject);
@@ -2404,7 +2404,7 @@ begin
   Clipboard.AsText := sg_Project.AssociatedList.Text;
 end;
 
-procedure TfmUsesManager.mCopytoClipboard1Click(Sender: TObject);
+procedure TfmUsesManager.mi_CopyProjectListToClipboardClick(Sender: TObject);
 begin
   CopyProjectListToClipboard;
 end;
@@ -2435,7 +2435,7 @@ begin
   // Todo: Save this setting
 end;
 
-procedure TfmUsesManager.Save1Click(Sender: TObject);
+procedure TfmUsesManager.mi_SaveProjectListClick(Sender: TObject);
 begin
   SaveProjectListToDisk;
 end;
