@@ -1559,11 +1559,11 @@ var
     if IsDotNet then
     begin
       if not IsDCU(FileName) then
-        PathUnits.Add(ExtractPureFileName(FileName));
+        PathUnits.Add(FileName);
     end
     else begin
       if not IsDCUIL(FileName) then
-        PathUnits.Add(ExtractPureFileName(FileName));
+        PathUnits.Add(FileName);
     end;
   end;
 
@@ -1697,14 +1697,22 @@ end;
 procedure TfmUsesManager.FilterStringGrid(Filter: string; List: TStrings; sg: TStringGrid);
 var
   FilterList: TStrings;
+  PureUnitNames: TStringList;
+  i: Integer;
 begin
+  PureUnitNames := nil;
   FilterList := TStringList.Create;
   try
-    FilterStringList(List, FilterList, Filter, False);
+    PureUnitNames := TStringList.Create;
+    for i := 0 to List.Count - 1 do begin
+      PureUnitNames.Add(ExtractPureFileName(List[i]));
+    end;
+    FilterStringList(PureUnitNames, FilterList, Filter, False);
     TStringGrid_AssignCol(sg, 0, FilterList);
     TGrid_Resize(sg, [roUseGridWidth, roUseAllRows]);
   finally
     FreeAndNil(FilterList);
+    FreeAndNil(PureUnitNames);
   end;
 end;
 
@@ -1752,7 +1760,7 @@ begin
         Identifier := FilterList[i];
         sg_Identifiers.Cells[0, FixedRows + i] := Identifier;
         UnitName := PChar(FilterList.Objects[i]);
-        sg_Identifiers.Cells[1, FixedRows + i] := UnitName;
+        sg_Identifiers.Cells[1, FixedRows + i] := ExtractPureFileName(UnitName);
       end;
     end;
     ShowIdentifiersFilterResult(cnt);
@@ -1855,7 +1863,7 @@ procedure TfmUsesManager.tim_ProgressTimer(Sender: TObject);
 var
   IdentIdx: Integer;
   FixedRows: Integer;
-  UnitName: string;
+  UnitFile: string;
   Identifier: string;
   sl: TStrings;
   Idx: Integer;
@@ -1903,11 +1911,11 @@ begin
     for IdentIdx := 0 to sl.Count - 1 do begin
       Identifier := sl[IdentIdx];
       UniqueString(Identifier);
-      UnitName := PChar(sl.Objects[IdentIdx]);
+      UnitFile := PChar(sl.Objects[IdentIdx]);
       // make sure the string is valid and not freed in the thread
-      if FSearchPathUnits.Find(UnitName, Idx) then begin
-        UnitName := FSearchPathUnits[Idx];
-        FFavUnitsExports.AddObject(Identifier, Pointer(PChar(UnitName)));
+      if FSearchPathUnits.Find(UnitFile, Idx) then begin
+        UnitFile := FSearchPathUnits[Idx];
+        FFavUnitsExports.AddObject(Identifier, Pointer(PChar(UnitFile)));
       end;
     end;
 {$IFOPT D+}

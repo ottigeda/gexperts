@@ -144,7 +144,7 @@ type
 type
   TUnitExportParserThread = class(TNamedThread)
   private
-    FUnits: TStringList;
+    FUnitFiles: TStringList;
     FFiles: TStringList;
     FIdentifiers: TStrings;
     FPaths: TStringList;
@@ -991,7 +991,7 @@ begin
   end;
 
   FIdentifiers := TStringList.Create;
-  FUnits := TStringList.Create;
+  FUnitFiles := TStringList.Create;
 
   if Assigned(_Files) then begin
     FFiles := TStringList.Create;
@@ -1019,7 +1019,7 @@ begin
   FreeAndNil(FPaths);
   FreeAndNil(FFiles);
   FreeAndNil(FIdentifiers);
-  FreeAndNil(FUnits);
+  FreeAndNil(FUnitFiles);
 end;
 
 procedure TUnitExportParserThread.AddSymbols(_Parser: TUnitExportsParser);
@@ -1232,14 +1232,14 @@ begin
         Loading.Stop;
 {$ENDIF}
 
-        FUnits.Add(UnitName);
-        FIdentifiers.AddObject(UnitName, Pointer(PChar(UnitName)));
+        FUnitFiles.Add(fn);
+        FIdentifiers.AddObject(UnitName, Pointer(PChar(fn)));
 
 {$IFDEF  DO_TIMING}
         Inserting.Start;
 {$ENDIF}
         for IdentIdx := 0 to sl.Count - 1 do
-          FIdentifiers.AddObject(sl[IdentIdx], Pointer(PChar(UnitName)));
+          FIdentifiers.AddObject(sl[IdentIdx], Pointer(PChar(fn)));
 {$IFDEF  DO_TIMING}
         Inserting.Stop;
 {$ENDIF}
@@ -1257,13 +1257,13 @@ begin
         Parser.Execute;
         if Terminated then
           Exit; //==>
-        FUnits.Add(UnitName);
+        FUnitFiles.Add(fn);
         sl := Parser.Identifiers;
         if CacheFn <> '' then
           sl.SaveToFile(CacheFn);
-        FIdentifiers.AddObject(UnitName, Pointer(PChar(UnitName)));
+        FIdentifiers.AddObject(UnitName, Pointer(PChar(fn)));
         for IdentIdx := 0 to sl.Count - 1 do begin
-          FIdentifiers.AddObject(sl[IdentIdx], Pointer(PChar(UnitName)));
+          FIdentifiers.AddObject(sl[IdentIdx], Pointer(PChar(fn)));
         end;
       finally
         FreeAndNil(Parser);
