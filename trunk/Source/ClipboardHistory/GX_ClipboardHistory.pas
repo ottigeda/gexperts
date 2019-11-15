@@ -964,11 +964,12 @@ begin
 
   // This procedure is only called once, so it is safe to
   // register the form for docking here.
-  if Active then
+  if Active then begin
     IdeDockManager.RegisterDockableForm(TfmClipboardHistory, fmClipboardHistory, 'fmClipboardHistory');
 
-  if FAutoStart and (fmClipboardHistory = nil) then
-    fmClipboardHistory := TfmClipboardHistory.Create(nil);
+    if FAutoStart and (fmClipboardHistory = nil) then
+      fmClipboardHistory := TfmClipboardHistory.Create(nil);
+  end;
 end;
 
 procedure TClipExpert.InternalSaveSettings(_Settings: IExpertSettings);
