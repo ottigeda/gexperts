@@ -39,7 +39,7 @@ uses
 //  Buttons,
   Menus,
   Types, // for inlining Point
-  UITypes,  // if you get a compile error here, add UITypes=Dialogs to the unit aliases
+  UITypes, // if you get a compile error here, add UITypes=Dialogs to the unit aliases
   Actions,
   ActnList;
 //  ComObj,
@@ -1462,8 +1462,11 @@ procedure TScreen_MakeFullyVisible(var _Rect: TRectLTWH); overload;
 {$ENDIF GExperts}
 ///<summary>
 /// Sets the given column of the StringList to the given string list,
-/// adjusting the RowCount if necessary </summary>
-procedure TStringGrid_AssignCol(_Grid: TStringGrid; _Col: Integer; _sl: TStrings);
+/// adjusting the RowCount if necessary.
+/// @param IncludeObjects determines whether the string list's Objects[] are also copyied to
+///                       string grid's Objects[] property. </summary>
+procedure TStringGrid_AssignCol(_Grid: TStringGrid; _Col: Integer; _sl: TStrings;
+  _IncludeObjects: Boolean = False);
 
 ///<summary>
 /// Adds the entries of the given column to the string list
@@ -1514,6 +1517,7 @@ uses
   GX_dzClassUtils,
   GX_GenericUtils;
 {$IFNDEF GExperts}
+
 function _(const _s: string): string; inline;
 begin
   Result := dzDGetText(_s, 'dzlib');
@@ -1821,7 +1825,8 @@ begin
     _Grid.Cells[c, _Grid.FixedRows] := '';
 end;
 
-procedure TStringGrid_AssignCol(_Grid: TStringGrid; _Col: Integer; _sl: TStrings);
+procedure TStringGrid_AssignCol(_Grid: TStringGrid; _Col: Integer; _sl: TStrings;
+  _IncludeObjects: Boolean = False);
 var
   FixedRows: Integer;
   cnt: Integer;
@@ -1832,9 +1837,14 @@ begin
   TGrid_SetNonfixedRowCount(_Grid, cnt);
   if cnt = 0 then begin
     _Grid.Cells[_Col, FixedRows] := '';
+    if _IncludeObjects then
+      _Grid.Objects[_Col, FixedRows] := nil;
   end else begin
-    for i := 0 to cnt - 1 do
+    for i := 0 to cnt - 1 do begin
       _Grid.Cells[_Col, FixedRows + i] := _sl[i];
+      if _IncludeObjects then
+        _Grid.Objects[_Col, FixedRows] := _sl.Objects[i];
+    end;
   end;
 end;
 
