@@ -310,8 +310,11 @@ procedure AddMRUString(Text: string; List: TStrings; DeleteTrailingDelimiter: Bo
   MaxListCount, MaxTextLength: Integer; AllowBlank: Boolean = False); overload;
 // Delete a string from a string list
 procedure DeleteStringFromList(List: TStrings; const Item: string);
-// Ensure a string is in a list
-procedure EnsureStringInList(List: TStrings; const Item: string);
+///<summary>
+/// Ensure a string is in the given list.
+/// @returns a string referencing the string stored in the list (either the original one
+///          that was just added, or the one the was already stored). </summary>
+function EnsureStringInList(List: TStrings; const Item: string): string;
 ///<summary>
 /// checks whether the given string matches the given filter
 /// @param Filter is the filter to use
@@ -1871,14 +1874,15 @@ begin
     List.Delete(Index);
 end;
 
-procedure EnsureStringInList(List: TStrings; const Item: string);
+function EnsureStringInList(List: TStrings; const Item: string): string;
 var
   Index: Integer;
 begin
   Assert(Assigned(List));
   Index := List.IndexOf(Item);
   if Index = -1 then
-    List.Add(Item);
+    Index := List.Add(Item);
+  Result := List[Index]
 end;
 
 function StrMatchesFilter(const _Filter: string; _s: string;
