@@ -310,7 +310,7 @@ type
     function AddToIntfSection(const UnitName: string): Integer;
     procedure DeleteFromIntfSection(const UnitName: string);
     procedure DeleteFromImplSection(const UnitName: string);
-    procedure OpenUnit(const UnitName: string);
+    function OpenUnit(const UnitName: string): Boolean;
     procedure ReadUsesList;
     function ApplyAlias(const UnitName: string): string;
     procedure UnAlias(sg: TStringGrid);
@@ -948,12 +948,12 @@ begin
   DeleteFromStringGrid(sg_Interface, UnitName);
 end;
 
-procedure TfmUsesManager.OpenUnit(const UnitName: string);
+function TfmUsesManager.OpenUnit(const UnitName: string): Boolean;
 var
   FileName: string;
 begin
   FileName := UnitName + '.pas';
-  GxOtaOpenFileFromPath(FileName);
+  Result := GxOtaOpenFileFromPath(FileName);
 end;
 
 procedure TfmUsesManager.pcUnitsChange(Sender: TObject);
@@ -1505,6 +1505,22 @@ begin
     Result :=  GetAvailableSourceList;
 end;
 
+{ TSourcetNotFoundMessage }
+
+type
+  TSourcetNotFoundMessage = class(TGxMsgBoxAdaptor)
+  protected
+    function GetMessage: string; override;
+  end;
+
+function TSourcetNotFoundMessage.GetMessage: string;
+resourcestring
+  SUnitNotFound =
+    'The source code for this unit could not be found.';
+begin
+  Result := SUnitNotFound;
+end;
+
 procedure TfmUsesManager.OpenSelectedUnit(List: TStringGrid);
 var
   UnitName: string;
@@ -1514,8 +1530,10 @@ begin
 
   col := List.ColCount-1;
   UnitName := List.Cells[col, List.row];
-  OpenUnit(UnitName);
-  ModalResult := mrCancel;
+  if OpenUnit(UnitName) then
+    ModalResult := mrCancel
+  else
+    ShowGxMessageBox(TSourcetNotFoundMessage);
 end;
 
 procedure TfmUsesManager.actOpenUnitExecute(Sender: TObject);
@@ -2568,6 +2586,7 @@ var
   ThisUnitCol: Integer;
   ThisUnitName: string;
   ThisFullFileName: string;
+  Obj: PChar;
 begin
   // Activate this if you are concerned about performance:
   //if not IsCtrlDown then EXIT;
@@ -2575,15 +2594,21 @@ begin
   Assert(Assigned(ThisSrc));
   // the unit name is always in the rightmost column
   ThisUnitCol := ThisSrc.ColCount - 1;
+  Obj := PChar(Pointer(ThisSrc.Objects[ThisUnitCol, ARow]));
   ThisUnitName := ThisSrc.Cells[ThisUnitCol, ARow];
   if ThisUnitName = '' then begin
     sbUCM.SimpleText := '';
-  end else if GxOtaTryFindPathToFile(ThisUnitName + '.pas', ThisFullFileName) then begin
-    sbUCM.SimpleText := ThisFullFileName;
-  end else if GxOtaTryFindPathToFile(ThisUnitName + '.dcu', ThisFullFileName) then begin
-    sbUCM.SimpleText := ThisFullFileName;
-  end else
-    sbUCM.SimpleText := '';
+  end else begin
+    if Assigned(Obj) then begin
+      ThisFullFileName := Obj;
+      sbUCM.SimpleText := ThisFullFileName;
+    end else if GxOtaTryFindPathToFile(ThisUnitName + '.pas', ThisFullFileName) then begin
+      sbUCM.SimpleText := ThisFullFileName;
+    end else if GxOtaTryFindPathToFile(ThisUnitName + '.dcu', ThisFullFileName) then begin
+      sbUCM.SimpleText := ThisFullFileName;
+    end else
+      sbUCM.SimpleText := '';
+  end;
 end;
 
 { TStringGrid }
