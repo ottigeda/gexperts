@@ -1843,7 +1843,7 @@ begin
     for i := 0 to cnt - 1 do begin
       _Grid.Cells[_Col, FixedRows + i] := _sl[i];
       if _IncludeObjects then
-        _Grid.Objects[_Col, FixedRows] := _sl.Objects[i];
+        _Grid.Objects[_Col, FixedRows + i] := _sl.Objects[i];
     end;
   end;
 end;
