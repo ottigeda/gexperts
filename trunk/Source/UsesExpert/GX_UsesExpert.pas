@@ -2574,13 +2574,16 @@ begin
   //if not IsCtrlDown then EXIT;
   ThisSrc := GetAvailableSourceList; // sg_*
   Assert(Assigned(ThisSrc));
+  // the unit name is always in the rightmost column
   ThisUnitCol := ThisSrc.ColCount - 1;
   ThisUnitName := ThisSrc.Cells[ThisUnitCol, ARow];
-  if (ThisUnitName <> '') and GxOtaTryFindPathToFile(ThisUnitName + '.pas', ThisFullFileName) then
-  begin
+  if ThisUnitName = '' then begin
+    sbUCM.SimpleText := '';
+  end else if GxOtaTryFindPathToFile(ThisUnitName + '.pas', ThisFullFileName) then begin
     sbUCM.SimpleText := ThisFullFileName;
-  end
-  else // not GxOtaTryFindPathToFile
+  end else if GxOtaTryFindPathToFile(ThisUnitName + '.dcu', ThisFullFileName) then begin
+    sbUCM.SimpleText := ThisFullFileName;
+  end else
     sbUCM.SimpleText := '';
 end;
 
