@@ -343,7 +343,7 @@ type
     procedure CopyStatusBarTextToClipboard;
     procedure DeleteFromStringGrid(sg: TStringGrid; const UnitName: string);
     function IndexInStringGrid(sg: TStringGrid; const UnitName: string): integer;
-    procedure FilterStringGrid(Filter: string; List: TStrings; sg: TStringGrid);
+    procedure FilterStringGrid(Filter: string; sg: TStringGrid);
     procedure DrawStringGridCell(_sg: TStringGrid; const _Text: string; const _Rect: TRect;
       _State: TGridDrawState; _Focused: Boolean; _Tag: integer);
     procedure SaveProjectListToDisk;
@@ -680,7 +680,7 @@ begin
       FileName := IModuleInfo.FileName;
       // We don't want blank names, packages, etc.
       if IsPas(FileName) then
-        FProjectUnits.Add(ExtractPureFileName(FileName));
+        FProjectUnits.Add(FileName);
     end;
   end;
 {$IFOPT D+}
@@ -711,25 +711,21 @@ end;
 
 procedure TfmUsesManager.GetCommonFiles;
 var
-  Found: Integer;
-  SearchRec: TSearchRec;
+  BaseDir: string;
 begin
 {$IFOPT D+}
   SendDebug('Reading common files');
 {$ENDIF D+}
+
   // Read all dcu files from the $(DELPHI)\lib directory (for XE+ use the Win32\Release subdir)
-  Found := FindFirst(AddSlash(ExtractFilePath(GetIdeRootDirectory)) +
-    AddSlash('lib') {$IFDEF GX_VER220_up} + AddSlash('Win32') + AddSlash('Release') {$ENDIF} + '*.dcu', $3F, SearchRec);
-  try
-    while Found = 0 do
-    begin
-      if not ((SearchRec.Attr and faDirectory) = faDirectory) then
-        FCommonUnits.Add(ExtractPureFileName(SearchRec.Name));
-      Found := FindNext(SearchRec);
-    end;
-  finally
-    FindClose(SearchRec);
-  end;
+  BaseDir := AddSlash(ExtractFilePath(GetIdeRootDirectory));
+{$IFDEF GX_DELPHIXE_UP}
+  BaseDir := BaseDir + AddSlash('Win32') + AddSlash('Release')
+{$ELSE}
+  BaseDir := BaseDir + AddSlash('lib');
+{$ENDIF}
+  TSimpleDirEnumerator.EnumFilesOnly(BaseDir + '*.dcu', FCommonUnits, True);
+
 {$IFOPT D+}
   SendDebug('Done reading common files');
 {$ENDIF D+}
@@ -1694,21 +1690,23 @@ begin
   sg_SearchPath.Invalidate;
 end;
 
-procedure TfmUsesManager.FilterStringGrid(Filter: string; List: TStrings; sg: TStringGrid);
+procedure TfmUsesManager.FilterStringGrid(Filter: string; sg: TStringGrid);
 var
   FilterList: TStrings;
   PureUnitNames: TStringList;
   i: Integer;
+  List: TStrings;
 begin
   PureUnitNames := nil;
   FilterList := TStringList.Create;
   try
     PureUnitNames := TStringList.Create;
+    List := sg.AssociatedList;
     for i := 0 to List.Count - 1 do begin
-      PureUnitNames.Add(ExtractPureFileName(List[i]));
+      PureUnitNames.AddObject(ExtractPureFileName(List[i]), Pointer(PChar(List[i])));
     end;
     FilterStringList(PureUnitNames, FilterList, Filter, False);
-    TStringGrid_AssignCol(sg, 0, FilterList);
+    TStringGrid_AssignCol(sg, 0, FilterList, True);
     TGrid_Resize(sg, [roUseGridWidth, roUseAllRows]);
   finally
     FreeAndNil(FilterList);
@@ -1721,10 +1719,10 @@ var
   Filter: string;
 begin
   Filter := Trim(edtUnitFilter.Text);
-  FilterStringGrid(Filter, FFavoriteUnits, sg_Favorite);
-  FilterStringGrid(Filter, FProjectUnits, sg_Project);
-  FilterStringGrid(Filter, FCommonUnits, sg_Common);
-  FilterStringGrid(Filter, FSearchPathUnits, sg_SearchPath);
+  FilterStringGrid(Filter, sg_Favorite);
+  FilterStringGrid(Filter, sg_Project);
+  FilterStringGrid(Filter, sg_Common);
+  FilterStringGrid(Filter, sg_SearchPath);
 
   SelectFirstItemInLists;
 end;
@@ -1761,6 +1759,7 @@ begin
         sg_Identifiers.Cells[0, FixedRows + i] := Identifier;
         UnitName := PChar(FilterList.Objects[i]);
         sg_Identifiers.Cells[1, FixedRows + i] := ExtractPureFileName(UnitName);
+        sg_Identifiers.Objects[1, FixedRows + i] := Pointer(PChar(UnitName));
       end;
     end;
     ShowIdentifiersFilterResult(cnt);
