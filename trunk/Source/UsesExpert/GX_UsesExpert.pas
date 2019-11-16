@@ -29,11 +29,11 @@ type
 type
   TStringGrid = class(Grids.TStringGrid)
   private
-    function GetAssociatedList: TStrings;
-    procedure SetAssociatedList(const Value: TStrings);
+    function GetAssociatedList: TStringList;
+    procedure SetAssociatedList(const Value: TStringList);
   published
   public
-    property AssociatedList: TStrings read GetAssociatedList write SetAssociatedList;
+    property AssociatedList: TStringList read GetAssociatedList write SetAssociatedList;
   end;
 
 type
@@ -303,9 +303,9 @@ type
     // not in the correct place of the unit list.
     FOldToNewUnitNameMap: TStringList;
     FCaption_lblFilter: string;
-    procedure GetCommonFiles;
-    procedure GetProjectFiles;
-    function TryGetMapFiles: Boolean;
+    procedure GetCommonUnits;
+    procedure GetProjectUnits;
+    function TryGetMapFileUnits: Boolean;
     function AddToImplSection(const UnitName: string; RemoveFromInterface: Boolean): Integer;
     function AddToIntfSection(const UnitName: string): Integer;
     procedure DeleteFromIntfSection(const UnitName: string);
@@ -350,6 +350,7 @@ type
     procedure ShowIdentifiersFilterResult(const cnt: Integer);
     procedure ShowSelectedUnitPathInStatusBar(const ARow: Integer);
   protected
+    FSourceFilenames: TStringList;
     FProjectUnits: TStringList;
     FCommonUnits: TStringList;
     FFavoriteUnits: TStringList;
@@ -658,18 +659,19 @@ begin
   TStringGrid_AdjustRowHeight(sg_Identifiers);
 end;
 
-procedure TfmUsesManager.GetProjectFiles;
+procedure TfmUsesManager.GetProjectUnits;
 var
   IProject: IOTAProject;
   IModuleInfo: IOTAModuleInfo;
   i: Integer;
   FileName: string;
+  UnitName: string;
 begin
 {$IFOPT D+}
-  SendDebug('Reading project files');
+  SendDebug('Reading project units');
 {$ENDIF D+}
   FProjectUnits.Clear;
-  if not FUsesExpert.FReadMap or not TryGetMapFiles then begin
+  if not FUsesExpert.FReadMap or not TryGetMapFileUnits then begin
     IProject := GxOtaGetCurrentProject;
     if not Assigned(IProject) then
       Exit;
@@ -679,16 +681,19 @@ begin
 
       FileName := IModuleInfo.FileName;
       // We don't want blank names, packages, etc.
-      if IsPas(FileName) then
-        FProjectUnits.Add(FileName);
+      if IsPas(FileName) then begin
+        FileName := EnsureStringInList(FSourceFilenames, FileName);
+        UnitName := ExtractPureFileName(FileName);
+        FProjectUnits.AddObject(UnitName, Pointer(PChar(FileName)));
+      end;
     end;
   end;
 {$IFOPT D+}
-  SendDebug('Done reading project files');
+  SendDebug('Done reading project units');
 {$ENDIF D+}
 end;
 
-function TfmUsesManager.TryGetMapFiles: boolean;
+function TfmUsesManager.TryGetMapFileUnits: boolean;
 var
   Reader: TMapFileReader;
   MapFile: string;
@@ -709,9 +714,11 @@ begin
   end;
 end;
 
-procedure TfmUsesManager.GetCommonFiles;
+procedure TfmUsesManager.GetCommonUnits;
 var
   BaseDir: string;
+  i: Integer;
+  UnitName: string;
 begin
 {$IFOPT D+}
   SendDebug('Reading common files');
@@ -724,7 +731,11 @@ begin
 {$ELSE}
   BaseDir := BaseDir + AddSlash('lib');
 {$ENDIF}
-  TSimpleDirEnumerator.EnumFilesOnly(BaseDir + '*.dcu', FCommonUnits, True);
+  TSimpleDirEnumerator.EnumFilesOnly(BaseDir + '*.dcu', FCommonUnits, False);
+  for i := 0 to FCommonUnits.Count - 1 do begin
+    UnitName := ExtractPureFileName(FCommonUnits[i]);
+    FCommonUnits[i] := UnitName;
+  end;
 
 {$IFOPT D+}
   SendDebug('Done reading common files');
@@ -765,7 +776,10 @@ begin
 
   TControl_SetMinConstraints(Self);
   pnlUses.Constraints.MinWidth := pnlUses.Width;
-   
+
+  FSourceFilenames := TStringList.Create;
+  FSourceFilenames.Sorted := True;
+
   FProjectUnits := TStringList.Create;
   sg_Project.AssociatedList := FProjectUnits;
 
@@ -798,8 +812,10 @@ begin
 
   pcUnits.ActivePage := tabSearchPath;
   GxOtaGetUnitAliases(FAliases);
-  GetCommonFiles;
-  GetProjectFiles;
+
+  GetCommonUnits;
+  GetProjectUnits;
+
   ReadUsesList;
 
   TWinControl_ActivateDropFiles(sg_Interface, lbxInterfaceFilesDropped);
@@ -837,6 +853,7 @@ begin
   FreeAndNil(FFavoriteUnits);
   FreeAndNil(FSearchPathUnits);
   FreeAndNil(FFavUnitsExports);
+  FreeAndNil(FSourceFilenames);
 end;
 
 procedure TfmUsesManager.FormResize(Sender: TObject);
@@ -1568,16 +1585,22 @@ var
   FileName: string;
   IsDotNet: Boolean;
 
-  procedure AddPathUnit(const FileName: string);
+  procedure AddPathUnit(FileName: string);
+  var
+    UnitName: string;
   begin
-    if IsDotNet then
-    begin
-      if not IsDCU(FileName) then
-        PathUnits.Add(FileName);
-    end
-    else begin
-      if not IsDCUIL(FileName) then
-        PathUnits.Add(FileName);
+    if IsDotNet then begin
+      // do we really care about dotNET in Delphi any more?
+      if IsDCU(FileName) then
+        Exit; //==>
+    end else if IsDCUIL(FileName) then
+      Exit; //==>
+    UnitName := ExtractPureFileName(FileName);
+    if IsPas(FileName) then begin
+      FileName := EnsureStringInList(FSourceFilenames, FileName);
+      PathUnits.AddObject(UnitName, Pointer(PChar(FileName)));
+    end else begin
+      PathUnits.Add(UnitName);
     end;
   end;
 
@@ -1616,6 +1639,7 @@ begin
         AddPathUnit(FileName);
     end;
     FSearchPathUnits.Assign(PathUnits);
+    FSearchPathUnits.Sorted := True;
   finally
     FreeAndNil(PathUnits);
     FreeAndNil(PathFiles);
@@ -1711,24 +1735,16 @@ end;
 procedure TfmUsesManager.FilterStringGrid(Filter: string; sg: TStringGrid);
 var
   FilterList: TStrings;
-  PureUnitNames: TStringList;
-  i: Integer;
   List: TStrings;
 begin
-  PureUnitNames := nil;
   FilterList := TStringList.Create;
   try
-    PureUnitNames := TStringList.Create;
     List := sg.AssociatedList;
-    for i := 0 to List.Count - 1 do begin
-      PureUnitNames.AddObject(ExtractPureFileName(List[i]), Pointer(PChar(List[i])));
-    end;
-    FilterStringList(PureUnitNames, FilterList, Filter, False);
+    FilterStringList(List, FilterList, Filter, False);
     TStringGrid_AssignCol(sg, 0, FilterList, True);
     TGrid_Resize(sg, [roUseGridWidth, roUseAllRows]);
   finally
     FreeAndNil(FilterList);
-    FreeAndNil(PureUnitNames);
   end;
 end;
 
@@ -1749,7 +1765,7 @@ procedure TfmUsesManager.FilterIdentifiers;
 var
   i: Integer;
   Identifier: string;
-  UnitName: string;
+  UnitName: PChar;
   Filter: string;
   FixedRows: Integer;
   FilterList: TStrings;
@@ -1777,7 +1793,7 @@ begin
         sg_Identifiers.Cells[0, FixedRows + i] := Identifier;
         UnitName := PChar(FilterList.Objects[i]);
         sg_Identifiers.Cells[1, FixedRows + i] := ExtractPureFileName(UnitName);
-        sg_Identifiers.Objects[1, FixedRows + i] := Pointer(PChar(UnitName));
+        sg_Identifiers.Objects[1, FixedRows + i] := Pointer(UnitName);
       end;
     end;
     ShowIdentifiersFilterResult(cnt);
@@ -1881,6 +1897,7 @@ var
   IdentIdx: Integer;
   FixedRows: Integer;
   UnitFile: string;
+  UnitName: string;
   Identifier: string;
   sl: TStrings;
   Idx: Integer;
@@ -1927,11 +1944,18 @@ begin
     sg_Identifiers.Cells[1, FixedRows] := '';
     for IdentIdx := 0 to sl.Count - 1 do begin
       Identifier := sl[IdentIdx];
+      // make sure the string is valid and not freed in the thread
       UniqueString(Identifier);
       UnitFile := PChar(sl.Objects[IdentIdx]);
-      // make sure the string is valid and not freed in the thread
-      if FSearchPathUnits.Find(UnitFile, Idx) then begin
-        UnitFile := FSearchPathUnits[Idx];
+      UnitName := ExtractPureFileName(UnitFile);
+      if FSearchPathUnits.Find(UnitName, Idx) then begin
+        UnitName := FSearchPathUnits[Idx];
+        if FSearchPathUnits.Objects[Idx] = nil then begin
+          UniqueString(UnitFile);
+          UnitFile := EnsureStringInList(FSourceFilenames, UnitFile);
+          FSearchPathUnits.Objects[Idx] := Pointer(PChar(UnitFile));
+        end else
+          UnitFile := PChar(FSearchPathUnits.Objects[Idx]);
         FFavUnitsExports.AddObject(Identifier, Pointer(PChar(UnitFile)));
       end;
     end;
@@ -2587,6 +2611,8 @@ var
   ThisUnitName: string;
   ThisFullFileName: string;
   Obj: PChar;
+  Idx: Integer;
+  sl: TStringList;
 begin
   // Activate this if you are concerned about performance:
   //if not IsCtrlDown then EXIT;
@@ -2602,9 +2628,15 @@ begin
     if Assigned(Obj) then begin
       ThisFullFileName := Obj;
       sbUCM.SimpleText := ThisFullFileName;
-    end else if GxOtaTryFindPathToFile(ThisUnitName + '.pas', ThisFullFileName) then begin
-      sbUCM.SimpleText := ThisFullFileName;
-    end else if GxOtaTryFindPathToFile(ThisUnitName + '.dcu', ThisFullFileName) then begin
+    end else if GxOtaTryFindPathToFile(ThisUnitName + '.pas', ThisFullFileName)
+      or GxOtaTryFindPathToFile(ThisUnitName + '.dcu', ThisFullFileName) then begin
+      sl := ThisSrc.AssociatedList;
+      if sl.Find(ThisUnitName, Idx) then begin
+        ThisFullFileName := EnsureStringInList(FSourceFilenames, ThisFullFileName);
+        Obj := PChar(ThisFullFileName);
+        sl.Objects[Idx] := Pointer(Obj);
+        ThisSrc.Objects[ThisUnitCol, ARow] := Pointer(Obj);
+      end;
       sbUCM.SimpleText := ThisFullFileName;
     end else
       sbUCM.SimpleText := '';
@@ -2613,12 +2645,12 @@ end;
 
 { TStringGrid }
 
-function TStringGrid.GetAssociatedList: TStrings;
+function TStringGrid.GetAssociatedList: TStringList;
 begin
-  Result := TStrings(Tag);
+  Result := TStringList(Tag);
 end;
 
-procedure TStringGrid.SetAssociatedList(const Value: TStrings);
+procedure TStringGrid.SetAssociatedList(const Value: TStringList);
 begin
   Tag := Integer(Value);
 end;
