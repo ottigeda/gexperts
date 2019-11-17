@@ -725,7 +725,7 @@ begin
   // Read all dcu files from the $(DELPHI)\lib directory (for XE+ use the Win32\Release subdir)
   BaseDir := AddSlash(ExtractFilePath(GetIdeRootDirectory));
 {$IFDEF GX_DELPHIXE_UP}
-  BaseDir := BaseDir + AddSlash('Win32') + AddSlash('Release')
+  BaseDir := BaseDir + AddSlash('Win32') + AddSlash('Release');
 {$ELSE}
   BaseDir := BaseDir + AddSlash('lib');
 {$ENDIF}
