@@ -350,7 +350,6 @@ type
     procedure ShowIdentifiersFilterResult(const cnt: Integer);
     procedure ShowSelectedUnitPathInStatusBar(const ARow: Integer);
   protected
-    FSourceFilenames: TStringList;
     FProjectUnits: TStringList;
     FCommonUnits: TStringList;
     FFavoriteUnits: TStringList;
@@ -682,9 +681,8 @@ begin
       FileName := IModuleInfo.FileName;
       // We don't want blank names, packages, etc.
       if IsPas(FileName) then begin
-        FileName := EnsureStringInList(FSourceFilenames, FileName);
         UnitName := ExtractPureFileName(FileName);
-        FProjectUnits.AddObject(UnitName, Pointer(PChar(FileName)));
+        FProjectUnits.Add(UnitName);
       end;
     end;
   end;
@@ -777,9 +775,6 @@ begin
   TControl_SetMinConstraints(Self);
   pnlUses.Constraints.MinWidth := pnlUses.Width;
 
-  FSourceFilenames := TStringList.Create;
-  FSourceFilenames.Sorted := True;
-
   FProjectUnits := TStringList.Create;
   sg_Project.AssociatedList := FProjectUnits;
 
@@ -836,6 +831,27 @@ begin
   edtIdentifierFilter.SelectAll;
 end;
 
+procedure FreePChars(_sl: TStrings);
+var
+  i: Integer;
+  p: PChar;
+begin
+  if not Assigned(_sl) then
+    Exit; //==>
+  for i := 0 to _sl.Count - 1 do begin
+    p := PChar(_sl.Objects[i]);
+    _sl.Objects[i] := nil;
+    if Assigned(p) then
+     try
+      StrDispose(p);
+     except
+       on e: Exception do begin
+         {$IFOPT D+}SendDebugError(E.Message);{$ENDIF}
+       end;
+     end;
+  end;
+end;
+
 procedure TfmUsesManager.FormDestroy(Sender: TObject);
 begin
   tim_Progress.Enabled := False;
@@ -851,9 +867,11 @@ begin
   FreeAndNil(FProjectUnits);
   FreeAndNil(FCommonUnits);
   FreeAndNil(FFavoriteUnits);
+
+  FreePChars(FSearchPathUnits);
   FreeAndNil(FSearchPathUnits);
+
   FreeAndNil(FFavUnitsExports);
-  FreeAndNil(FSourceFilenames);
 end;
 
 procedure TfmUsesManager.FormResize(Sender: TObject);
@@ -1597,8 +1615,7 @@ var
       Exit; //==>
     UnitName := ExtractPureFileName(FileName);
     if IsPas(FileName) then begin
-      FileName := EnsureStringInList(FSourceFilenames, FileName);
-      PathUnits.AddObject(UnitName, Pointer(PChar(FileName)));
+      PathUnits.AddObject(UnitName, Pointer(StrNew(PChar(FileName))));
     end else begin
       PathUnits.Add(UnitName);
     end;
@@ -1793,7 +1810,6 @@ begin
         sg_Identifiers.Cells[0, FixedRows + i] := Identifier;
         UnitName := PChar(FilterList.Objects[i]);
         sg_Identifiers.Cells[1, FixedRows + i] := ExtractPureFileName(UnitName);
-        sg_Identifiers.Objects[1, FixedRows + i] := Pointer(UnitName);
       end;
     end;
     ShowIdentifiersFilterResult(cnt);
@@ -1897,6 +1913,7 @@ var
   IdentIdx: Integer;
   FixedRows: Integer;
   UnitFile: string;
+  PCharUnitFile: PChar;
   UnitName: string;
   Identifier: string;
   sl: TStrings;
@@ -1950,13 +1967,16 @@ begin
       UnitName := ExtractPureFileName(UnitFile);
       if FSearchPathUnits.Find(UnitName, Idx) then begin
         UnitName := FSearchPathUnits[Idx];
-        if FSearchPathUnits.Objects[Idx] = nil then begin
-          UniqueString(UnitFile);
-          UnitFile := EnsureStringInList(FSourceFilenames, UnitFile);
-          FSearchPathUnits.Objects[Idx] := Pointer(PChar(UnitFile));
-        end else
-          UnitFile := PChar(FSearchPathUnits.Objects[Idx]);
-        FFavUnitsExports.AddObject(Identifier, Pointer(PChar(UnitFile)));
+        PCharUnitFile := PChar(FSearchPathUnits.Objects[Idx]);
+        if PCharUnitFile = nil then begin
+          PCharUnitFile := StrNew(PChar(UnitFile));
+          FSearchPathUnits.Objects[Idx] := Pointer(PCharUnitFile);
+        end;
+        FFavUnitsExports.AddObject(Identifier, Pointer(PCharUnitFile));
+      end else begin
+{$IFOPT D+}
+        SendDebugFmt('Unit for identifier %s (%s) not found in SearchPathUnits', [Identifier, UnitName]);
+{$ENDIF D+}
       end;
     end;
 {$IFOPT D+}
@@ -2612,7 +2632,6 @@ var
   ThisFullFileName: string;
   Obj: PChar;
   Idx: Integer;
-  sl: TStringList;
 begin
   // Activate this if you are concerned about performance:
   //if not IsCtrlDown then EXIT;
@@ -2620,24 +2639,29 @@ begin
   Assert(Assigned(ThisSrc));
   // the unit name is always in the rightmost column
   ThisUnitCol := ThisSrc.ColCount - 1;
-  Obj := PChar(Pointer(ThisSrc.Objects[ThisUnitCol, ARow]));
   ThisUnitName := ThisSrc.Cells[ThisUnitCol, ARow];
   if ThisUnitName = '' then begin
     sbUCM.SimpleText := '';
   end else begin
+    if FSearchPathUnits.Find(ThisUnitName, Idx) then
+      Obj := PChar(FSearchPathUnits.Objects[Idx])
+    else begin
+      Idx := -1;
+      Obj := nil;
+    end;
     if Assigned(Obj) then begin
       ThisFullFileName := Obj;
       sbUCM.SimpleText := ThisFullFileName;
     end else if GxOtaTryFindPathToFile(ThisUnitName + '.pas', ThisFullFileName)
       or GxOtaTryFindPathToFile(ThisUnitName + '.dcu', ThisFullFileName) then begin
-      sl := ThisSrc.AssociatedList;
-      if sl.Find(ThisUnitName, Idx) then begin
-        ThisFullFileName := EnsureStringInList(FSourceFilenames, ThisFullFileName);
-        Obj := PChar(ThisFullFileName);
-        sl.Objects[Idx] := Pointer(Obj);
-        ThisSrc.Objects[ThisUnitCol, ARow] := Pointer(Obj);
-      end;
       sbUCM.SimpleText := ThisFullFileName;
+      if Idx = -1 then begin
+        {$IFOPT d+}SendDebugFmt('Unit %s not found in SearchPathUnits', [ThisUnitName]); {$ENDIF}
+      end else begin
+        {$IFOPT d+}SendDebugFmt('Adding full filename for unit %s', [ThisUnitName]); {$ENDIF}
+        Obj := StrNew(PChar(ThisFullFileName));
+        FSearchPathUnits.Objects[Idx] := Pointer(Obj);
+      end;
     end else
       sbUCM.SimpleText := '';
   end;
