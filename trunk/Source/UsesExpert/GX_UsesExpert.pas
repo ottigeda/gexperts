@@ -724,10 +724,9 @@ begin
 
   // Read all dcu files from the $(DELPHI)\lib directory (for XE+ use the Win32\Release subdir)
   BaseDir := AddSlash(ExtractFilePath(GetIdeRootDirectory));
+  BaseDir := BaseDir + AddSlash('lib');
 {$IFDEF GX_DELPHIXE_UP}
   BaseDir := BaseDir + AddSlash('Win32') + AddSlash('Release');
-{$ELSE}
-  BaseDir := BaseDir + AddSlash('lib');
 {$ENDIF}
   TSimpleDirEnumerator.EnumFilesOnly(BaseDir + '*.dcu', FCommonUnits, False);
   for i := 0 to FCommonUnits.Count - 1 do begin
@@ -1387,16 +1386,24 @@ end;
 
 procedure TfmUsesManager.actAvailAddAllToFavExecute(Sender: TObject);
 var
+  OnSelCell: TSelectCellEvent;
   i: Integer;
   FileName: string;
   Src: TStringGrid;
 begin
   FileName := '';
-  Src := GetAvailableSourceList;
-  for i := Src.FixedRows to Src.RowCount - 1 do begin
-    FileName := Src.Cells[0, i];
-    if FileName <> '' then
-      AddToFavorites(FileName);
+  OnSelCell := sg_Favorite.OnSelectCell;
+  try
+    sg_Favorite.OnSelectCell := nil;
+
+    Src := GetAvailableSourceList;
+    for i := Src.FixedRows to Src.RowCount - 1 do begin
+      FileName := Src.Cells[0, i];
+      if FileName <> '' then
+        AddToFavorites(FileName);
+    end;
+  finally
+    sg_Favorite.OnSelectCell := OnSelCell;
   end;
   edtUnitFilter.Text := '';
   pcUnits.ActivePage := tabFavorite;
