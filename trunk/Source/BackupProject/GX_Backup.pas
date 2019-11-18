@@ -113,7 +113,7 @@ uses
   Windows, SysUtils, AbConst, StrUtils, Math,
   GX_OtaUtils, GX_MacroParser, GX_GxUtils,
   GX_BackupOptions, GX_BackupConfig, GX_dzVclUtils, GX_MessageBox,
-  GX_dzFileUtils;
+  GX_dzFileUtils, GX_BackupNotFound;
 
 const // Do not localize these constants.
   ItemSeparatorChar = '|';
@@ -599,6 +599,35 @@ begin
   end;
 end;
 
+procedure RemoveDuplicates(_NotFound: TStringList);
+var
+  i: Integer;
+  s: string;
+  p: Integer;
+  j: Integer;
+  cnt: Integer;
+begin
+  i := 0;
+  while i < _NotFound.Count do begin
+    s := _NotFound[i];
+    p := Pos('|', s);
+    if p > 1 then begin
+      // P should always be > 1
+      s := LeftStr(s, p - 1);
+      cnt := 0;
+      for j := _NotFound.Count - 1 downto i + 1 do begin
+        if StartsText(s, _NotFound[j]) then begin
+          _NotFound.Delete(j);
+          Inc(cnt);
+        end;
+      end;
+      if cnt > 0 then
+        _NotFound[i] := _NotFound[i] + Format(' and %d more', [cnt]);
+    end;
+    Inc(i);
+  end;
+end;
+
 procedure TfmBackup.CollectFilesForBackup;
 resourcestring
   SCollectingBackupFiles = 'Collecting Files...';
@@ -639,14 +668,16 @@ begin
       if FBackupExpert.FollowLibraryPath and (FFilesFoundNowhere.Count > 0) then
         LocateFileOnPathAndAdd(FFilesFoundNowhere);
 
+      RemoveDuplicates(FFilesFoundNowhere);
+      FFilesFoundNowhere.Sort;
       FFilesFoundNowhere.Text := StringReplace(FFilesFoundNowhere.Text,
         '|', ' from ', [rfReplaceAll]);
-      FFilesFoundNowhere.Sort;
       Self.Enabled := True;
       FreeAndNil(FProgressForm);
 
-      if FFilesFoundNowhere.Count > 0 then
-        MessageDlg(Format(SFilesNotFound, [FFilesFoundNowhere.Text]), mtWarning, [mbOK], 0);
+      if FFilesFoundNowhere.Count > 0 then begin
+        TfmBackupNotFound.Execute(Self, FFilesFoundNowhere);
+      end;
     end;
   finally
     Self.Enabled := True;
