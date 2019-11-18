@@ -249,7 +249,8 @@ uses
   GX_FocusCodeEditor in '..\..\Source\FocusCodeEditor\GX_FocusCodeEditor.pas',
   GX_GotoConfig in '..\..\Source\Goto\GX_GotoConfig.pas' {f_GotoConfig},
   GX_dzAssertTrace in '..\..\Source\Utils\GX_dzAssertTrace.pas',
-  GX_TimedCallback in '..\..\Source\Utils\GX_TimedCallback.pas';
+  GX_TimedCallback in '..\..\Source\Utils\GX_TimedCallback.pas',
+  GX_BackupNotFound in '..\..\Source\BackupProject\GX_BackupNotFound.pas' {fmBackupNotFound};
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}

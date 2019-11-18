@@ -30,7 +30,9 @@ inherited fmBackupNotFound: TfmBackupNotFound
     Width = 81
     Height = 25
     Anchors = [akRight, akBottom]
+    Cancel = True
     Caption = 'OK'
+    Default = True
     TabOrder = 1
     OnClick = b_OKClick
   end
