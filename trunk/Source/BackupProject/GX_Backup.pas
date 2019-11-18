@@ -676,7 +676,7 @@ begin
       FreeAndNil(FProgressForm);
 
       if FFilesFoundNowhere.Count > 0 then begin
-        TfmBackupNotFound.Execute(Self, FFilesFoundNowhere);
+        TfmBackupNotFound.Execute(Self, FFilesFoundNowhere, FBackupExpert.FollowLibraryPath);
       end;
     end;
   finally
