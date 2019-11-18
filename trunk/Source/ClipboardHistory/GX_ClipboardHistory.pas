@@ -456,10 +456,23 @@ procedure TfmClipboardHistory.lvClipChange(Sender: TObject; Item: TListItem; Cha
 begin
   if FLoading or (csDestroying in ComponentState) then
     Exit;
-  if lvClip.Selected <> nil then
-    mmoClipText.Lines.Text := GetSelectedItemsText
-  else
+  if lvClip.Selected = nil then begin
     mmoClipText.Clear;
+  end else
+    try
+      mmoClipText.Lines.Text := GetSelectedItemsText;
+    except
+      on EInvalidOperation do begin
+        // sometimes setting the memo text fails
+        // according to the Win32API documentation this can only happen if there is
+        // insufficient space available to set the text in the edit control.
+        // On the otherhand, this has happened with large but not huge texts (<5000 characters)
+        // so I doubt that this is the real problem here. In my case the error happened
+        // during debugging, so maybe that's a factor in it too.
+        // If this exception is not handled it will crash the IDE.
+        // For now we will simply ignore it since it happens so rarely.
+      end;
+    end;
 end;
 
 constructor TfmClipboardHistory.Create(AOwner: TComponent);
@@ -903,7 +916,7 @@ begin
   except
     on E: Exception do
     begin
-      // Ignore exceptions
+      {$IFOPT D+} SendDebugError(e.Message); {$ENDIF}
     end;
   end;
 end;
