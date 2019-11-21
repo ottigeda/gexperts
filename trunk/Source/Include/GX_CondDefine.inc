@@ -111,6 +111,7 @@
   If you get here, you are probably trying to compile GExperts with a new Delphi release.
   In addition to define a new GX_VERxxx_UP symbol, you should also have a look at
   * GX_VerDepConst.pas
+  * GX_GetIdeVersion.pas
   * GX_StandAloneLoadDLL.pas
   * GX_eIfDef.pas
   * GX_UnitExportParser.pas
