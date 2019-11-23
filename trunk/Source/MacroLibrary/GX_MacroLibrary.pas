@@ -239,6 +239,7 @@ type
     class function GetName: string; override;
     function GetHelpString: string; override;
     function GetBitmap: Graphics.TBitmap; override;
+    function IsDefaultActive: Boolean; override;
   end;
 
   TMacroLibPlaybackExpert = class(TGX_Expert)
@@ -253,6 +254,7 @@ type
     class function GetName: string; override;
     function GetHelpString: string; override;
     function GetBitmap: Graphics.TBitmap; override;
+    function IsDefaultActive: Boolean; override;
   end;
 
 var
@@ -1210,12 +1212,12 @@ end;
 
 procedure TfmMacroLibrary.GetPlayBitmap(_bmp: TBitmap);
 begin
-  Toolbar.Images.GetBitmap(actPlayback.ImageIndex, _bmp);
+  GetSharedImageList.GetBitmap(actPlayback.ImageIndex, _bmp);
 end;
 
 procedure TfmMacroLibrary.GetRecordBitmap(_bmp: TBitmap);
 begin
-  Toolbar.Images.GetBitmap(actRecord.ImageIndex, _bmp);
+  GetSharedImageList.GetBitmap(actRecord.ImageIndex, _bmp);
 end;
 
 { TMacroLibExpert }
@@ -1315,6 +1317,11 @@ begin
   Result := False;
 end;
 
+function TMacroLibRecordExpert.IsDefaultActive: Boolean;
+begin
+  Result := False;
+end;
+
 procedure TMacroLibRecordExpert.Execute(Sender: TObject);
 begin
   GetMacroLibraryForm.actRecord.Execute;
@@ -1370,6 +1377,11 @@ begin
 end;
 
 function TMacroLibPlaybackExpert.HasConfigOptions: Boolean;
+begin
+  Result := False;
+end;
+
+function TMacroLibPlaybackExpert.IsDefaultActive: Boolean;
 begin
   Result := False;
 end;
