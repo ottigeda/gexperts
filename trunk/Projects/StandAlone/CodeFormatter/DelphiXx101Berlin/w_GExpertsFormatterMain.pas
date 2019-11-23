@@ -58,8 +58,8 @@ uses
   GX_StandAloneLoadDLL;
 
 type
-  TFormatFileFunc = function(_FileName: PChar): Boolean;
-  TFormatFilesFunc = function(_FileNames: PChar): Boolean;
+  TFormatFileFunc = function(_FileName: PWideChar): Boolean;
+  TFormatFilesFunc = function(_FileNames: PWideChar): Boolean;
   TConfigureFormatterProc = procedure;
 
 const
@@ -110,7 +110,7 @@ end;
 procedure doFormatFile(FileName: string);
 begin
   FileName := ExpandFileName(FileName);
-  FormatFile(PChar(FileName));
+  FormatFile(PWideChar(FileName));
 end;
 
 procedure Batch;
@@ -128,7 +128,7 @@ begin
     end;
     FileList.StrictDelimiter := True;
     FileList.Delimiter := ';';
-    FormatFiles(PChar(FileList.DelimitedText));
+    FormatFiles(PWideChar(FileList.DelimitedText));
   finally
     FileList.Free;
   end;

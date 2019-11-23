@@ -46,7 +46,9 @@ uses
 {$IFOPT D+}GX_DbugIntf,
 {$ENDIF}
   Menus,
-  GX_IdeUtils;
+  GX_IdeUtils,
+  GX_GExperts,
+  GX_About;
 
 { TeCodeFormatterExpert }
 
@@ -56,7 +58,7 @@ var
 begin
   FExpert.AddToCapitalization(_Identifier);
 
-  Settings :=  GetSettings;
+  Settings := GetSettings;
   InternalSaveSettings(Settings);
 end;
 
@@ -82,7 +84,7 @@ end;
 
 function TeCodeFormatterExpert.IsDefaultActive: Boolean;
 begin
-  Result := not RunningRSXEOrGreater;
+  Result := not RunningRSXEOrGreater and not RunningCPPBuilder;
 end;
 
 procedure TeCodeFormatterExpert.Execute(Sender: TObject);
@@ -161,6 +163,149 @@ begin
   inherited;
   FExpert.InternalSaveSettings(_Settings);
 end;
+
+function FormatFile(_FileName: PWideChar): Boolean;
+{$IFNDEF GX_BCB} export;
+{$ENDIF GX_BCB}
+var
+  FormatterStandAlone: TeCodeFormatterExpert;
+begin
+  Result := False;
+  InitSharedResources;
+  try
+    try
+      FormatterStandAlone := TeCodeFormatterExpert.Create;
+      try
+        FormatterStandAlone.LoadSettings;
+        Result := FormatterStandAlone.FExpert.FormatFile(_FileName);
+        FormatterStandAlone.SaveSettings;
+      finally
+        FormatterStandAlone.Free;
+      end;
+    except
+      on E: Exception do begin
+        GxLogAndShowException(E, E.Message);
+      end;
+    end;
+  finally
+    FreeSharedResources;
+  end;
+end;
+
+{ This is a simple implementation. It originally TStrings.StrictDelimiter
+  was used but that only exists in Delphi 2006 and up. }
+
+procedure SplitStr(_InStr: string; _Delimiter: Char; _sl: TStrings);
+var
+  Start: Integer;
+  i: Integer;
+begin
+  Assert(Assigned(_sl));
+
+  _InStr := _InStr + ';';
+  _sl.Clear;
+  Start := 1;
+  for i := 1 to Length(_InStr) do begin
+    if _InStr[i] = _Delimiter then begin
+      _sl.Add(Copy(_InStr, Start, i - Start));
+      Start := i + 1;
+    end;
+  end;
+end;
+
+procedure FormatFiles(AFileNames: PWideChar);
+{$IFNDEF GX_BCB} export;
+{$ENDIF GX_BCB}
+var
+  FormatterStandAlone: TeCodeFormatterExpert;
+  FileList: TStringList;
+  i: Integer;
+begin
+  InitSharedResources;
+  try
+    try
+      FormatterStandAlone := TeCodeFormatterExpert.Create;
+      try
+        FormatterStandAlone.LoadSettings;
+        FileList := TStringList.Create;
+        try
+          SplitStr(AFileNames, ';', FileList);
+          for i := 0 to Pred(FileList.Count) do
+            FormatterStandAlone.FExpert.FormatFile(FileList[i]);
+        finally
+          FileList.Free;
+        end;
+        FormatterStandAlone.SaveSettings;
+      finally
+        FormatterStandAlone.Free;
+      end;
+    except
+      on E: Exception do begin
+        GxLogAndShowException(E, E.Message);
+      end;
+    end;
+  finally
+    FreeSharedResources;
+  end;
+end;
+
+procedure ConfigureFormatter();
+{$IFNDEF GX_BCB} export;
+{$ENDIF GX_BCB}
+var
+  FormatterStandAlone: TeCodeFormatterExpert;
+begin
+  InitSharedResources;
+  try
+    try
+      FormatterStandAlone := TeCodeFormatterExpert.Create;
+      try
+        FormatterStandAlone.LoadSettings;
+        FormatterStandAlone.Configure;
+        FormatterStandAlone.SaveSettings;
+      finally
+        FormatterStandAlone.Free;
+      end;
+    except
+      on E: Exception do begin
+        GxLogAndShowException(E, E.Message);
+      end;
+    end;
+  finally
+    FreeSharedResources;
+  end;
+end;
+
+procedure AboutFormatter();
+{$IFNDEF GX_BCB} export;
+{$ENDIF GX_BCB}
+var
+  frm: TfmAbout;
+begin
+  InitSharedResources;
+  try
+    try
+      frm := gblAboutFormClass.Create(nil);
+      try
+        frm.ShowModal;
+      finally
+        frm.Free;
+      end;
+    except
+      on E: Exception do begin
+        GxLogAndShowException(E, E.Message);
+      end;
+    end;
+  finally
+    FreeSharedResources;
+  end;
+end;
+
+exports
+  FormatFile,
+  FormatFiles,
+  ConfigureFormatter,
+  AboutFormatter;
 
 initialization
   RegisterEditorExpert(TeCodeFormatterExpert);
