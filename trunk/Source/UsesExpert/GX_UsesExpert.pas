@@ -164,6 +164,7 @@ type
     m_IntfUnalias: TMenuItem;
     m_ImplUnAlias: TMenuItem;
     tabIdentifiers: TTabSheet;
+    pnlIdentifiers: TPanel;
     sg_Identifiers: TStringGrid;
     pnlIdentifiersFooter: TPanel;
     btnIdentifiersAddToIntf: TButton;

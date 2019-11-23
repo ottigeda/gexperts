@@ -100,7 +100,6 @@ object fmUsesManager: TfmUsesManager
             Width = 596
             Height = 315
             Align = alClient
-            Color = clBtnFace
             ColCount = 1
             DefaultColWidth = 100
             DefaultRowHeight = 16
@@ -402,24 +401,35 @@ object fmUsesManager: TfmUsesManager
       object tabIdentifiers: TTabSheet
         Caption = 'Identifiers'
         ImageIndex = 4
-        object sg_Identifiers: TStringGrid
+        object pnlIdentifiers: TPanel
           Left = 0
           Top = 0
           Width = 602
           Height = 321
           Align = alClient
-          ColCount = 2
-          DefaultColWidth = 150
-          DefaultRowHeight = 16
-          FixedCols = 0
-          RowCount = 2
-          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goColSizing, goRowSelect]
-          PopupMenu = pmuAvail
+          BevelOuter = bvNone
+          BorderWidth = 3
+          FullRepaint = False
           TabOrder = 0
-          OnDblClick = lbxAvailDblClick
-          OnDrawCell = sg_AvailDrawCell
-          OnMouseDown = sg_MouseDownForDragging
-          OnSelectCell = sg_IdentifiersSelectCell
+          object sg_Identifiers: TStringGrid
+            Left = 3
+            Top = 3
+            Width = 596
+            Height = 315
+            Align = alClient
+            ColCount = 2
+            DefaultColWidth = 150
+            DefaultRowHeight = 16
+            FixedCols = 0
+            RowCount = 2
+            Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goColSizing, goRowSelect]
+            PopupMenu = pmuAvail
+            TabOrder = 0
+            OnDblClick = lbxAvailDblClick
+            OnDrawCell = sg_AvailDrawCell
+            OnMouseDown = sg_MouseDownForDragging
+            OnSelectCell = sg_IdentifiersSelectCell
+          end
         end
         object pnlIdentifiersFooter: TPanel
           Left = 0
