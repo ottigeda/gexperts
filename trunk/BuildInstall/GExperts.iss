@@ -16,7 +16,7 @@
 
 #define Product "GExperts"
 #define VerRegKey "1.3"
-#define RegCompany   "Borland"
+#define RegCompany   "Embarcadero"
 
 #ifdef Delphi6
   #define IDEShortName "Delphi"
@@ -25,6 +25,7 @@
   #define DLLSuffix    "D6"
   #define IDERegName   "Delphi"
   #define IDERegVer    "6"
+  #define RegCompany   "Borland"
 #endif
 #ifdef Delphi7
   #define IDEShortName "Delphi"
@@ -33,6 +34,7 @@
   #define DLLSuffix    "D7"
   #define IDERegName   "Delphi"
   #define IDERegVer    "7"
+  #define RegCompany   "Borland"
 #endif
 #ifdef Delphi8
   #define IDEShortName "Delphi"
@@ -41,6 +43,7 @@
   #define DLLSuffix    "D8"
   #define IDERegName   "BDS"
   #define IDERegVer    "2"
+  #define RegCompany   "Borland"
 #endif
 #ifdef Delphi2005
   #define IDEShortName "Delphi"
@@ -49,6 +52,7 @@
   #define DLLSuffix    "Delphi2005"
   #define IDERegName   "BDS"
   #define IDERegVer    "3"
+  #define RegCompany   "Borland"
 #endif
 #ifdef BDS2006
   #define IDEShortName "BDS"
@@ -57,6 +61,7 @@
   #define DLLSuffix    "BDS2006"
   #define IDERegName   "BDS"
   #define IDERegVer    "4"
+  #define RegCompany   "Borland"
 #endif
 #ifdef Delphi2007
   #define IDEShortName "Delphi"
@@ -65,6 +70,7 @@
   #define DLLSuffix    "Delphi2007"
   #define IDERegName   "BDS"
   #define IDERegVer    "5"
+  #define RegCompany   "Borland"
 #endif
 #ifdef RS2009
   #define IDEShortName "RADStudio"
@@ -91,7 +97,6 @@
   #define DLLSuffix    "RSXE1"
   #define IDERegName   "BDS"
   #define IDERegVer    "8"
-  #define RegCompany   "Embarcadero"
 #endif
 #ifdef RSXE2
   #define IDEShortName "RADStudio"
@@ -100,7 +105,6 @@
   #define DLLSuffix    "RSXE2"
   #define IDERegName   "BDS"
   #define IDERegVer    "9"
-  #define RegCompany   "Embarcadero"
 #endif
 #ifdef RSXE3
   #define IDEShortName "RADStudio"
@@ -109,7 +113,6 @@
   #define DLLSuffix    "RSXE3"
   #define IDERegName   "BDS"
   #define IDERegVer    "10"
-  #define RegCompany   "Embarcadero"
 #endif
 #ifdef RSXE4
   #define IDEShortName "RADStudio"
@@ -118,7 +121,6 @@
   #define DLLSuffix    "RSXE4"
   #define IDERegName   "BDS"
   #define IDERegVer    "11"
-  #define RegCompany   "Embarcadero"
 #endif
 #ifdef RSXE5
   #define IDEShortName "RADStudio"
@@ -127,7 +129,6 @@
   #define DLLSuffix    "RSXE5"
   #define IDERegName   "BDS"
   #define IDERegVer    "12"
-  #define RegCompany   "Embarcadero"
 #endif
 #ifdef RSXE6
   #define IDEShortName "RADStudio"
@@ -136,7 +137,6 @@
   #define DLLSuffix    "RSXE6"
   #define IDERegName   "BDS"
   #define IDERegVer    "14" ; Not 13
-  #define RegCompany   "Embarcadero"
 #endif
 #ifdef RSXE7
   #define IDEShortName "RADStudio"
@@ -145,7 +145,6 @@
   #define DLLSuffix    "RSXE7"
   #define IDERegName   "BDS"
   #define IDERegVer    "15"
-  #define RegCompany   "Embarcadero"
 #endif
 #ifdef RSXE8
   #define IDEShortName "RADStudio"
@@ -154,7 +153,6 @@
   #define DLLSuffix    "RSXE8"
   #define IDERegName   "BDS"
   #define IDERegVer    "16"
-  #define RegCompany   "Embarcadero"
 #endif
 #ifdef RS100
   #define IDEShortName "RADStudio"
@@ -163,7 +161,6 @@
   #define DLLSuffix    "RS10"
   #define IDERegName   "BDS"
   #define IDERegVer    "17"
-  #define RegCompany   "Embarcadero"
 #endif
 #ifdef RS101
   #define IDEShortName "RADStudio"
@@ -172,7 +169,6 @@
   #define DLLSuffix    "RS101"
   #define IDERegName   "BDS"
   #define IDERegVer    "18"
-  #define RegCompany   "Embarcadero"
 #endif
 #ifdef RS102
   #define IDEShortName "RADStudio"
@@ -181,7 +177,6 @@
   #define DLLSuffix    "RS102"
   #define IDERegName   "BDS"
   #define IDERegVer    "19"
-  #define RegCompany   "Embarcadero"
 #endif
 #ifdef RS103
   #define IDEShortName "RADStudio"
@@ -190,7 +185,6 @@
   #define DLLSuffix    "RS103"
   #define IDERegName   "BDS"
   #define IDERegVer    "20"
-  #define RegCompany   "Embarcadero"
 #endif
 
 #ifndef IDEShortName
@@ -247,6 +241,7 @@ Name: {group}\GExperts Help; Filename: {app}\GExperts.chm
 Name: {group}\GExperts Readme; Filename: {app}\Readme.txt
 Name: {group}\Grep Search; Filename: {app}\GExpertsGrep.exe
 Name: {group}\PE Information; Filename: {app}\GExpertsPeInformation.exe
+Name: {group}\Source Code Formatter; Filename: {app}\GExpertsFormatter.exe
 
 [Registry]
 Root: HKCU; Subkey: Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\Experts; ValueType: STRING; ValueName: GExperts; ValueData: {app}\{#DLLName}; Flags: uninsdeletevalue; Check: IDEExecuted

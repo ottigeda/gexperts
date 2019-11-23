@@ -1,4 +1,4 @@
-GExperts 1.3.10
+GExperts 1.3
 Open Source Programming Tools for Delphi and C++Builder
 
 Source code, the FAQ, and the latest news are available at:
@@ -62,6 +62,10 @@ KNOWN LIMITATIONS/BUGS
   Delphi 2009 - 2010 Update 1:
    - Record and playback in the Marco Library does not work.  This is an IDE
      bug handling editor macro streams (QC 78289).
+  Delphi XE3 - 10.3 Update 3:
+   - Replace Components fails for components that contain sub-components, e.g.
+     TTable with static fields. This is an IDE bug (RSP25645).
+	 Until this IDE bug has been fixed, this functionality has been disabled.
 
 
 INSTALLATION
@@ -105,6 +109,11 @@ Add/Remove Programs or Programs [and Features] tool.
 
 CHANGE LOG
 ----------------------
+Sorry, I have not maintained the change log since I took over from
+Eric Berry. There were many. I particular of course support for the
+latest released versions of RAD Studio / Delphi.
+-- Thomas Mueller
+
 VERSION 1.38 (September 2015)
 - General: Added support for RAD Studio 10 Seattle.
 - General: Improved Unicode support for several GExperts tools (Thomas Mueller).
