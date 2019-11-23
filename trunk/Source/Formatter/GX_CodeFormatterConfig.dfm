@@ -716,6 +716,7 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
       Height = 25
       Caption = 'Help'
       TabOrder = 0
+      Visible = False
       OnClick = b_HelpClick
     end
     object b_Ok: TButton

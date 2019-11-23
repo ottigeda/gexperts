@@ -742,7 +742,6 @@ var
 begin
   frm := TfmCodeFormatterConfig.Create(nil);
   try
-    frm.HelpFile := 'delfor.hlp';
     frm.SettingsToForm(_Settings);
     Result := frm.ShowModal;
     if Result = mrOk then
