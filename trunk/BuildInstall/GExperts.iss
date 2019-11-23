@@ -223,6 +223,7 @@ Source: ..\Binaries\GExpertsPeInformation.exe; DestDir: {app}; Flags: ignorevers
 Source: ..\Binaries\ExpertManager.exe; DestDir: {app}; Flags: ignoreversion
 Source: ..\Binaries\GExpertsDebugWindow.exe; DestDir: {app}; Flags: ignoreversion
 Source: ..\Binaries\GExpertsGrep.exe; DestDir: {app}; Flags: ignoreversion
+Source: ..\Binaries\GExpertsFormatter.exe; DestDir: {app}; Flags: ignoreversion
 Source: ..\Documentation\GExperts.chm; DestDir: {app}; Flags: ignoreversion
 Source: ..\Binaries\{#DLLName}; DestDir: {app}; Flags: ignoreversion
 Source: ..\ExternalSource\DbugIntf.pas; DestDir: {app}; Flags: ignoreversion
