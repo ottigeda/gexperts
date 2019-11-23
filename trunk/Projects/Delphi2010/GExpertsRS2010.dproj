@@ -402,7 +402,6 @@
         <DCCReference Include="..\..\source\Framework\GX_VerDepConst.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas"/>
         <DCCReference Include="..\..\source\BackupProject\GX_Zipper.pas"/>
-        <DCCReference Include="..\..\source\Formatter\GX_Formatter.pas"/>
         <DCCReference Include="..\..\source\Formatter\GX_CodeFormatterBreakpoints.pas"/>
         <DCCReference Include="..\..\source\Formatter\GX_CodeFormatterConfig.pas">
             <Form>fmCodeFormatterConfig</Form>

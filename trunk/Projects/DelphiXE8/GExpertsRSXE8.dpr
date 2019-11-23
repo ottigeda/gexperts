@@ -166,7 +166,6 @@ uses
   GX_VerDepConst in '..\..\source\Framework\GX_VerDepConst.pas',
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
   GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas',
-  GX_Formatter in '..\..\source\Formatter\GX_Formatter.pas',
   GX_CodeFormatterBreakpoints in '..\..\source\Formatter\GX_CodeFormatterBreakpoints.pas',
   GX_CodeFormatterConfig in '..\..\source\Formatter\GX_CodeFormatterConfig.pas' {fmCodeFormatterConfig},
   GX_CodeFormatterConfigHandler in '..\..\source\Formatter\GX_CodeFormatterConfigHandler.pas',

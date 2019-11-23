@@ -106,9 +106,6 @@
         <DCCReference Include="..\..\source\ClassBrowser\GX_ClassProp.pas">
             <Form>fmClassProp</Form>
         </DCCReference>
-        <DCCReference Include="..\..\source\ClassBrowser\GX_ClassReport.pas">
-            <Form>fmClassReport</Form>
-        </DCCReference>
         <DCCReference Include="..\..\source\CleanDirectories\GX_CleanDirectories.pas">
             <Form>fmCleanDirectories</Form>
         </DCCReference>
@@ -412,7 +409,6 @@
         <DCCReference Include="..\..\source\Framework\GX_VerDepConst.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas"/>
         <DCCReference Include="..\..\source\BackupProject\GX_Zipper.pas"/>
-        <DCCReference Include="..\..\source\Formatter\GX_Formatter.pas"/>
         <DCCReference Include="..\..\source\Formatter\GX_CodeFormatterBreakpoints.pas"/>
         <DCCReference Include="..\..\source\Formatter\GX_CodeFormatterConfig.pas">
             <Form>fmCodeFormatterConfig</Form>
@@ -486,7 +482,6 @@
         <DCCReference Include="..\..\Source\Editor\GX_eConvertStrings.pas">
             <Form>fmEConvertStrings</Form>
         </DCCReference>
-        <DCCReference Include="..\..\Source\IDE\GX_IdeGotoEnhancer.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_dzMapFileReader.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeObjectInspectorEnhancer.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeBuildEventFavoriteEdit.pas">
@@ -529,6 +524,18 @@
         <DCCReference Include="..\..\Source\ide\GX_IdeDetectForms.pas"/>
         <DCCReference Include="..\..\source\framework\GX_dzCompilerAndRtlVersions.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_dzMiscUtils.pas"/>
+        <DCCReference Include="..\..\Source\Experts\GX_SelectComponents.pas">
+            <Form>SelectComponentsForm</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Framework\GX_CustomClipboard.pas"/>
+        <DCCReference Include="..\..\Source\Goto\GX_Goto.pas">
+            <Form>f_Goto</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\FocusCodeEditor\GX_FocusCodeEditor.pas"/>
+        <DCCReference Include="..\..\Source\Goto\GX_GotoConfig.pas">
+            <Form>f_GotoConfig</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Utils\GX_dzAssertTrace.pas"/>
         <RcCompile Include="..\..\images\GXIcons.rc">
             <Form>GXIcons.res</Form>
         </RcCompile>

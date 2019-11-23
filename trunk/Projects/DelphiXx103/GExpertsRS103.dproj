@@ -552,7 +552,15 @@ $(PreBuildEvent)]]>
             <Form>SelectComponentsForm</Form>
         </DCCReference>
         <DCCReference Include="..\..\Source\Framework\GX_CustomClipboard.pas"/>
+        <DCCReference Include="..\..\Source\Goto\GX_Goto.pas">
+            <Form>f_Goto</Form>
+        </DCCReference>
         <DCCReference Include="..\..\Source\FocusCodeEditor\GX_FocusCodeEditor.pas"/>
+        <DCCReference Include="..\..\Source\Goto\GX_GotoConfig.pas">
+            <Form>f_GotoConfig</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Utils\GX_dzAssertTrace.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_TimedCallback.pas"/>
         <RcCompile Include="..\..\images\GXIcons.rc">
             <Form>..\..\images\GXIcons.res</Form>
         </RcCompile>

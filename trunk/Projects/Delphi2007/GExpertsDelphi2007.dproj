@@ -144,6 +144,9 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\BackupProject\GX_BackupConfig.pas">
             <Form>fmBackupConfig</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\BackupProject\GX_BackupNotFound.pas">
+            <Form>fmBackupNotFound</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\BackupProject\GX_BackupOptions.pas">
             <Form>fmBackupOptions</Form>
         </DCCReference>
@@ -304,7 +307,6 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\Formatter\GX_CodeFormatterGXConfigWrapper.pas"/>
         <DCCReference Include="..\..\Source\Formatter\GX_eAddToCaptitalization.pas"/>
         <DCCReference Include="..\..\source\Formatter\GX_eCodeFormatter.pas"/>
-        <DCCReference Include="..\..\source\Formatter\GX_Formatter.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_About.pas">
             <Form>fmAbout</Form>
         </DCCReference>
