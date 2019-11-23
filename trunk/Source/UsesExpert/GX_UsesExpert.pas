@@ -1805,7 +1805,10 @@ begin
   MatchAnywhere := rbMatchAnyware.Checked;
   FilterList := TStringList.Create;
   try
-    FilterStringList(FFavUnitsExports, FilterList, Filter, False, MatchAnywhere);
+    if Filter = '' then
+      FilterList.Assign(FFavUnitsExports)
+    else
+      FilterStringList(FFavUnitsExports, FilterList, Filter, False, MatchAnywhere);
     cnt := FilterList.Count;
     TGrid_SetNonfixedRowCount(sg_Identifiers, cnt);
     if cnt = 0 then
