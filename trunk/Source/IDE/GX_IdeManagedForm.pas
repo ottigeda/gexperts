@@ -52,6 +52,11 @@ type
     /// Creates a unique comonent name based on the form name  </summary>
     class function GenerateName(const _FormName: string): string;
   protected
+{$IFDEF GX_DELPHI_TOKYO_UP}
+    FTimer: TTimer;
+    procedure DoAddSizeGrip; virtual;
+    procedure HandleTimer(_Sender: TObject);
+{$ENDIF GX_DELPHI_TOKYO_UP}
     procedure DoHookOnFormDestroy; virtual;
     procedure DoFixFormErrors; virtual;
     procedure DoMakeResizable; virtual;
@@ -61,9 +66,6 @@ type
     procedure DoComboDropDownCount;
     procedure MakeComponentsResizable; virtual;
     procedure DoCollapseTreeNodes; virtual;
-{$IFDEF GX_DELPHI_TOKYO_UP}
-    procedure DoAddSizeGrip; virtual;
-{$ENDIF}
     function AddMadeSizeablePanel: TPanel;
   public
     FFormChanges: TFormChanges;
@@ -315,7 +317,14 @@ begin
       GxSetWindowSizeGrip(Target.Handle, True);
   end;
 end;
-{$ENDIF}
+
+procedure TManagedForm.HandleTimer(_Sender: TObject);
+begin
+  FTimer.Enabled := False;
+  FForm.Left := FForm.Left - 1;
+  FForm.Left := FForm.Left + 1;
+end;
+{$ENDIF GX_DELPHI_TOKYO_UP}
 
 class function TManagedForm.AlreadyExists(const _Form: TCustomForm): Boolean;
 var
@@ -1159,6 +1168,16 @@ begin
   // is only 1 pixel wide so it's difficult to hit it for resizing the window.
   // Adding a size grip makes this a bit easier.
   DoAddSizeGrip;
+  // Workaround for a problem that only exists in Delphi 10.2 if theming is enabled:
+  // If the form's position is changed while it is still drawing (as is the case for all
+  // forms that get manipulated by GExperts), it can no longer be moved or resized.
+  // https://sourceforge.net/p/gexperts/bugs/86/
+  // Workaround: In a timer, move the form by 1 pixel
+  FTimer := TTimer.Create(FForm);
+  FTimer.Enabled := False;
+  FTimer.OnTimer := HandleTimer;
+  FTimer.Interval := 50;
+  FTimer.Enabled := True;
 {$ENDIF}
   DoFixFormErrors;
   DoLoadFormState;

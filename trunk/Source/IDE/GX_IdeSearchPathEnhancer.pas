@@ -77,9 +77,6 @@ type
     FAddDotsBtn: TButton;
     FDelDotsBtn: TButton;
     FProjectDir: string;
-{$IFDEF GX_VER320_up} // RAD Studio 10.2 Tokyo (26; BDS 19)
-    FTimer: TTimer;
-{$ENDIF GX_VER320_up}
 {$IFNDEF GX_VER300_up} // RAD Studio 10 Seattle (24; BDS 17)
     FBrowseBtn: TCustomButton;
     FBrowseClick: TNotifyEvent;
@@ -116,9 +113,6 @@ type
     procedure HandleMemoCommandProcessed(_Sender: TObject);
     procedure HandleMemoClick(_Sender: TObject);
     procedure HandleListboxClick(_Sender: TObject);
-{$IFDEF GX_VER320_up} // RAD Studio 10.2 Tokyo (26; BDS 19)
-    procedure HandleTimer(_Sender: TObject);
-{$ENDIF GX_VER320_up}
   protected
     function IsDesiredForm(_Form: TCustomForm): Boolean; override;
     procedure EnhanceForm(_Form: TForm); override;
@@ -434,32 +428,9 @@ begin
         TLabel(cmp).Caption := TLabel(cmp).Caption + ' Drag and drop is enabled.';
 
       TWinControl_SetFocus(FListbox);
-
-{$IFDEF GX_VER320_up} // RAD Studio 10.2 Tokyo (26; BDS 19)
-      // Workaround for a problem that only exists in Delphi 10.2 if theming is enabled:
-      // If the form's position is changed while it is still drawing (as is the case for all
-      // forms that get manipulated by GExperts), it can no longer be moved or resized.
-      // https://sourceforge.net/p/gexperts/bugs/86/
-      // Workaround: In a timer, move the form by 1 pixel
-      FTimer := TTimer.Create(_Form);
-      FTimer.Enabled := False;
-      FTimer.OnTimer := HandleTimer;
-      FTimer.Interval := 50;
-      FTimer.Enabled := True;
-{$ENDIF GX_VER320_up}
     end;
   end;
 end;
-
-{$IFDEF GX_VER320_up} // RAD Studio 10.2 Tokyo (26; BDS 19)
-
-procedure TSearchPathEnhancer.HandleTimer(_Sender: TObject);
-begin
-  FTimer.Enabled := False;
-  FForm.Left := FForm.Left - 1;
-  FForm.Left := FForm.Left + 1;
-end;
-{$ENDIF GX_VER320_up}
 
 procedure TSearchPathEnhancer.ProcessSelectedMemoLines(_ProcessMethod: TLineProcessMethod);
 var
