@@ -12,12 +12,14 @@ object fmUsesManager: TfmUsesManager
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
+  KeyPreview = True
   OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
@@ -473,6 +475,7 @@ object fmUsesManager: TfmUsesManager
               TabOrder = 0
               TabStop = True
               OnClick = rbMatchAnywareClick
+              OnEnter = rbMatchAnywareEnter
             end
             object rbMatchAtStart: TRadioButton
               Left = 138
@@ -482,6 +485,7 @@ object fmUsesManager: TfmUsesManager
               Caption = 'Match at s&tart'
               TabOrder = 1
               OnClick = rbMatchAtStartClick
+              OnEnter = rbMatchAtStartEnter
             end
           end
         end

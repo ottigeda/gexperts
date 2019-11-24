@@ -285,16 +285,14 @@ type
     procedure pmUCMStatusBarPopup(Sender: TObject);
     procedure pm_FavoritePopup(Sender: TObject);
     procedure sbUCMDblClick(Sender: TObject);
-    procedure sg_CommonSelectCell(Sender: TObject; ACol, ARow: Integer; var
-        CanSelect: Boolean);
-    procedure sg_FavoriteSelectCell(Sender: TObject; ACol, ARow: Integer; var
-        CanSelect: Boolean);
-    procedure sg_IdentifiersSelectCell(Sender: TObject; ACol, ARow: Integer; var
-        CanSelect: Boolean);
-    procedure sg_ProjectSelectCell(Sender: TObject; ACol, ARow: Integer; var
-        CanSelect: Boolean);
-    procedure sg_SearchPathSelectCell(Sender: TObject; ACol, ARow: Integer; var
-        CanSelect: Boolean);
+    procedure sg_CommonSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
+    procedure sg_FavoriteSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
+    procedure sg_IdentifiersSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
+    procedure sg_ProjectSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
+    procedure sg_SearchPathSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure rbMatchAnywareEnter(Sender: TObject);
+    procedure rbMatchAtStartEnter(Sender: TObject);
   private
     FLeftRatio: Double;
     FAliases: TStringList;
@@ -304,6 +302,7 @@ type
     // not in the correct place of the unit list.
     FOldToNewUnitNameMap: TStringList;
     FCaption_lblFilter: string;
+    FForceFocusToIdentifierFilter: Boolean;
     procedure GetCommonUnits;
     procedure GetProjectUnits;
     function TryGetMapFileUnits: Boolean;
@@ -872,6 +871,18 @@ begin
   FreeAndNil(FSearchPathUnits);
 
   FreeAndNil(FFavUnitsExports);
+end;
+
+procedure TfmUsesManager.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  inherited;
+  if (ssAlt in Shift) and edtIdentifierFilter.Focused then begin
+    if Key = Ord('A') then begin
+      FForceFocusToIdentifierFilter := True;
+    end else if Key = Ord('T') then begin
+      FForceFocusToIdentifierFilter := True;
+    end;
+  end;
 end;
 
 procedure TfmUsesManager.FormResize(Sender: TObject);
@@ -1693,6 +1704,11 @@ end;
 
 procedure TfmUsesManager.edtIdentifierFilterEnter(Sender: TObject);
 begin
+  if FForceFocusToIdentifierFilter then begin
+    // keep the edit from selecting everything which would be annoying
+    edtIdentifierFilter.SelStart := edtIdentifierFilter.SelStart + edtIdentifierFilter.SelLength;
+    FForceFocusToIdentifierFilter := False;
+  end;
   sg_Identifiers.Invalidate;
 end;
 
@@ -2502,6 +2518,14 @@ begin
   // Todo: Save this setting
 end;
 
+procedure TfmUsesManager.rbMatchAnywareEnter(Sender: TObject);
+begin
+  if FForceFocusToIdentifierFilter then begin
+    rbMatchAnyware.Checked := True;
+    edtIdentifierFilter.SetFocus;
+  end;
+end;
+
 procedure TfmUsesManager.rbMatchAtStartClick(Sender: TObject);
 begin
   // Re-filter:
@@ -2513,6 +2537,14 @@ begin
   end;
 
   // Todo: Save this setting
+end;
+
+procedure TfmUsesManager.rbMatchAtStartEnter(Sender: TObject);
+begin
+  if FForceFocusToIdentifierFilter then begin
+    rbMatchAtStart.Checked := True;
+    edtIdentifierFilter.SetFocus;
+  end;
 end;
 
 procedure TfmUsesManager.mi_SaveProjectListClick(Sender: TObject);
