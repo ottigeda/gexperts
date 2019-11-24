@@ -281,7 +281,9 @@ object fmConfiguration: TfmConfiguration
             Top = 76
             Width = 489
             Height = 17
-            Caption = 'Enable drag && drop and autocomplete for search paths'
+            Caption = 
+              'Enable drag && drop, autocomplete and other enhancement for sear' +
+              'ch paths'
             TabOrder = 3
           end
           object chkEnhanceToolProperties: TCheckBox
