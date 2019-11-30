@@ -1610,16 +1610,18 @@ begin
     try
       FTokenIdx := 0;
       while GetToken(FTokenIdx, FCurrentToken) do begin
-//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'if') then
+//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'procedure') then
 //          gblAssertTraceOn := True;
-//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'Welt') then
+//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'implementation') then
 //          gblAssertTraceOn := False;
-        Assert(False, Format('CurrentToken: "%s" (%s)', [FCurrentToken.GetContent, FCurrentToken.ClassName]));
-        if FWrapIndent then
-          Assert(False, 'WrapIndent: True')
-        else
-          Assert(False, 'WrapIndent: False');
+//        Assert(False, 'Stack.Depth: ' + IntToStr(FStack.Depth)
+//          + ' .TopType: ' + GetEnumname(TypeInfo(TReservedType), Ord(FStack.GetTopType))
+//          + ' .TopIndent: ' + IntToStr(FStack.GetTopIndent));
+        Assert(False, 'WrapIndent: ' + Ifthen(FWrapIndent, 'True', 'False'));
+        Assert(False, 'before CheckIndent: NTmp: ' + IntToStr(NTmp) + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
+        Assert(False, 'CurrentToken: ' + FCurrentToken.GetForDebug);
         CheckIndent(NTmp, PrevOldNspaces);
+        Assert(False, 'after CheckIndent:  NTmp: ' + IntToStr(NTmp) + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
         Inc(FTokenIdx);
       end;
     finally
