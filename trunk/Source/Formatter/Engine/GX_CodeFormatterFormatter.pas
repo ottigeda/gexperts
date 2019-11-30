@@ -850,7 +850,7 @@ begin
       AssertLineFeedAfter(FTokenIdx);
   end;
 
-  FStack.GetTopIndent;
+  FStack.nIndent := FStack.GetTopIndent;
   if FPrevToken = FPrevLine then
     SetPrevLineIndent(_NTmp);
 
@@ -1035,7 +1035,7 @@ begin
         while not FStack.IsEmpty and (FStack.GetTopType <> rtTry) do
           FStack.Pop;
 
-        FStack.GetTopIndent;
+        FStack.nIndent := FStack.GetTopIndent;
         SetPrevLineIndent(_NTmp);
         FStack.nIndent := FStack.nIndent + 1;
         FWrapIndent := False;

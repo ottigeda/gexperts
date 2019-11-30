@@ -162,7 +162,6 @@ function TCodeFormatterSegment.GetTopIndent: Integer;
 begin
   if not IsEmpty then begin
     Result := GetTopRec.nInd;
-    NIndent := Result;
   end else
     Result := NIndent;
 end;
