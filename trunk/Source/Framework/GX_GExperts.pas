@@ -195,7 +195,7 @@ begin
                 on E: Exception do
                 begin
                   // Report the exception and continue to destroy the other experts
-                  MessageDlg(Format('Error destroying expert %d - %s: %s', [i, ExpName, E.Message]), mtError, [mbOK], 0);
+                  MessageDlg(Format('GExperts error destroying expert %d - %s: %s', [i, ExpName, E.Message]), mtError, [mbOK], 0);
                   {$IFOPT D+} SendDebugError(Format('Error destroying expert %d - %s: %s', [i, ExpName, E.Message])); {$ENDIF}
                 end;
               end;
