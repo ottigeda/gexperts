@@ -924,13 +924,13 @@ begin
     rtClass: begin
         if not (GetNextNoComment(FTokenIdx, Next)
           and (Next.ReservedType in [rtProcedure, rtProcDeclare, rtOf, rtVar])) then begin
-            { not a "class function" or "class of" declaration }
+          // not a "class function" or "class of" declaration
           FWrapIndent := False;
           FStack.Push(rtClassDecl, 1);
-        end else
-            { first assume that it is a class declaration
-              the first procedure replaces it with rtClass }
+        end else begin
+          // first assume that it is a class declaration the first procedure replaces it with rtClass
           FCurrentToken.SetSpace([spAfter], True);
+        end;
       end;
 
     rtUntil: begin
