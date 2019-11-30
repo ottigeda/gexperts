@@ -1,7 +1,9 @@
 @setlocal enableextensions
 @if not defined gx_cmd_debug (echo off)
 @endlocal
-set iscc="C:\Program Files (x86)\Inno Setup 5\ISCC.exe"
+set iscc="C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+
+if not exist %iscc% goto ISerror
 
 call :readver
 rem echo %result%
@@ -114,4 +116,13 @@ goto :eof
 
 :s_error
 echo WMIC is not available, cannot deterimine date and time
+goto :eof
 pause
+
+
+:ISerror
+echo InnoSetup compiler not found:
+echo %iscc%
+echo Install InnnoSetup or correct the setting for iscc at the start of the script!
+pause
+goto :eof
