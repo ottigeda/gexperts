@@ -131,6 +131,15 @@ type
 
     procedure testComplex;
     procedure testCurlyHalfCommentEndCurrentlyFails;
+    procedure testForLoopWithInlineVar1CurrentlyFails;
+    procedure testForLoopWithInlineVar2CurrentlyFails;
+    procedure testForLoopWithInlineVar3CurrentlyFails;
+    procedure testForLoopWithInlineVar4CurrentlyFails;
+    procedure testInlineConst1CurrentlyFails;
+    procedure testInlineConst2CurrentlyFails;
+    procedure testInlineVar1CurrentlyFails;
+    procedure testInlineVar2CurrentlyFails;
+    procedure testInlineVar3CurrentlyFails;
   end;
 
 type
@@ -547,6 +556,31 @@ begin
   TestFile('IndentComment');
 end;
 
+procedure TTestTestfiles.testInlineConst1CurrentlyFails;
+begin
+  TestFile('InlineConst1');
+end;
+
+procedure TTestTestfiles.testInlineConst2CurrentlyFails;
+begin
+  TestFile('InlineConst2');
+end;
+
+procedure TTestTestfiles.testInlineVar1CurrentlyFails;
+begin
+  TestFile('InlineVar1');
+end;
+
+procedure TTestTestfiles.testInlineVar2CurrentlyFails;
+begin
+  TestFile('InlineVar2');
+end;
+
+procedure TTestTestfiles.testInlineVar3CurrentlyFails;
+begin
+  TestFile('InlineVar3');
+end;
+
 procedure TTestTestfiles.testUnterminatedString;
 begin
   TestFile('UnterminatedString');
@@ -632,6 +666,26 @@ end;
 procedure TTestTestfiles.testFakeGenericCreate;
 begin
   TestFile('FakeGenericCreate');
+end;
+
+procedure TTestTestfiles.testForLoopWithInlineVar1CurrentlyFails;
+begin
+  TestFile('ForLoopWithInlineVar1');
+end;
+
+procedure TTestTestfiles.testForLoopWithInlineVar2CurrentlyFails;
+begin
+  TestFile('ForLoopWithInlineVar2');
+end;
+
+procedure TTestTestfiles.testForLoopWithInlineVar3CurrentlyFails;
+begin
+  TestFile('ForLoopWithInlineVar3');
+end;
+
+procedure TTestTestfiles.testForLoopWithInlineVar4CurrentlyFails;
+begin
+  TestFile('ForLoopWithInlineVar4');
 end;
 
 procedure TTestTestfiles.testFormatWithLineBreaks;
