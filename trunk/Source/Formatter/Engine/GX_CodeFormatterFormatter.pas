@@ -884,6 +884,7 @@ var
   FunctDeclare, IsDelegate, NoBlankLine: Boolean;
   FeedRound: TFeedBegin;
   wType: TWordType;
+  exp: TGXUnicodeString;
 begin
   if FCurrentToken = nil then
     Exit;
@@ -1387,8 +1388,10 @@ begin
                 AssertLineFeedAfter(FTokenIdx);
             end;
           end else begin
-            if (FPrevToken is TLineFeed) and (FStack.GetTopType = rtBegin) then begin
+            if ((FPrevToken is TLineFeed) and (FStack.GetTopType = rtBegin)) then begin
               // inline var declaration
+            end else if (FPrevToken.GetExpression(exp) and SameText(Exp, 'for')) then begin
+              // for with inline var declaration
             end else begin
               FStack.Push(FCurrentRType, 0);
               if not PrevTokenIsRType(rtEquals) then begin
