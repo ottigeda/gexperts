@@ -825,6 +825,7 @@ object fmUsesManager: TfmUsesManager
       'e Status Bar to the Clipboard.'#13#10'Or RIGHT-click on the Status Bar' +
       ' to show a popup menu with more options.'
     Panels = <>
+    ParentFont = True
     ParentShowHint = False
     PopupMenu = pmUCMStatusBar
     ShowHint = True
