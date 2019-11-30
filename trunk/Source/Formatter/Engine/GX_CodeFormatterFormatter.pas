@@ -91,7 +91,7 @@ type
     procedure HandleColon(_RemoveMe: Integer);
     procedure HandleElse(_NTmp: Integer);
     function DetectGenericStart(_TokenIdx: Integer): Boolean;
-    procedure CheckIndent(var NTmp: Integer; var PrevOldNspaces: Integer);
+    procedure CheckIndent(var _NTmp: Integer; var _PrevOldNspaces: Integer);
     procedure HandleCapitalization(_CurrentToken: TPascalToken);
     property Settings: TCodeFormatterSettings read FSettings write FSettings;
   public
@@ -875,7 +875,7 @@ begin
   FWrapIndent := False;
 end;
 
-procedure TCodeFormatterFormatter.CheckIndent;
+procedure TCodeFormatterFormatter.CheckIndent(var _NTmp: Integer; var _PrevOldNspaces: Integer);
 var
   RemoveMe: Integer;
   Next: TPascalToken;
@@ -914,7 +914,7 @@ begin
       HandleColon(RemoveMe);
 
     rtElse:
-      HandleElse(NTmp);
+      HandleElse(_NTmp);
 
     rtRepeat, rtRecord: begin
         FStack.Push(FCurrentRType, 1);
@@ -937,7 +937,7 @@ begin
         repeat
           FLastPopResType := FStack.Pop;
         until (FLastPopResType = rtRepeat) or FStack.IsEmpty;
-        SetPrevLineIndent(NTmp);
+        SetPrevLineIndent(_NTmp);
       end;
 
     rtLeftBr: begin
@@ -1034,7 +1034,7 @@ begin
           FStack.Pop;
 
         FStack.GetTopIndent;
-        SetPrevLineIndent(NTmp);
+        SetPrevLineIndent(_NTmp);
         FStack.nIndent := FStack.nIndent + 1;
         FWrapIndent := False;
       end;
@@ -1091,10 +1091,10 @@ begin
 
           if FWrapIndent and not Settings.NoIndentVarDecl then begin
             Assert(False, 'trace');
-            NTmp := 1;
+            _NTmp := 1;
           end else begin
             Assert(False, 'trace');
-            NTmp := 0;
+            _NTmp := 0;
           end;
 
           if Next.ReservedType in [rtLineFeed] then begin
@@ -1114,11 +1114,11 @@ begin
 
         FPrevPrevLine := FPrevLine;
         FPrevLine := TLineFeed(FCurrentToken);
-        SetPrevLineIndent(NTmp);
+        SetPrevLineIndent(_NTmp);
       end;
 
     rtAsm: begin
-        FormatAsm(NTmp);
+        FormatAsm(_NTmp);
         Exit;
       end;
 
@@ -1238,7 +1238,7 @@ begin
 
               if (FStack.nIndent > 0) then begin
                 FStack.nIndent := 0;
-                SetPrevLineIndent(NTmp);
+                SetPrevLineIndent(_NTmp);
               end;
 
               FStack.ProcLevel := 0;
@@ -1255,7 +1255,7 @@ begin
             FStack.ProcLevel := FStack.ProcLevel + 1;
 
             if FStack.nIndent = 0 then begin
-              SetPrevLineIndent(NTmp);
+              SetPrevLineIndent(_NTmp);
               FStack.nIndent := FStack.nIndent + 1;
             end;
           end;
@@ -1272,7 +1272,7 @@ begin
           end else begin
             if (not FunctDeclare) and (not (FStack.GetTopType = rtClass)) then begin
               FStack.nIndent := 0;
-              SetPrevLineIndent(NTmp);
+              SetPrevLineIndent(_NTmp);
             end;
 
             FStack.Push(rtProcDeclare, 0);
@@ -1298,7 +1298,7 @@ begin
         FWrapIndent := False;
         { DecPrevIndent; }
         { nIndent := 0; }
-        SetPrevLineIndent(NTmp);
+        SetPrevLineIndent(_NTmp);
       end;
 
     rtBegin, rtTry: begin
@@ -1350,7 +1350,7 @@ begin
 
         FStack.Push(FCurrentRType, 1);
         if FPrevToken = FPrevLine then begin
-          SetPrevLineIndent(NTmp);
+          SetPrevLineIndent(_NTmp);
           DecPrevLineIndent;
         end;
 
@@ -1453,7 +1453,7 @@ begin
         end;
 
         if (FPrevToken = FPrevLine) then
-          SetPrevLineIndent(NTmp);
+          SetPrevLineIndent(_NTmp);
 
         if NoBeginTryIndent(FCurrentRType) then
           FStack.nIndent := FStack.nIndent + 1;
@@ -1465,7 +1465,7 @@ begin
 
         if FStack.IsEmpty and (FStack.nIndent > 0) then begin
           FStack.nIndent := 0;
-          SetPrevLineIndent(NTmp);
+          SetPrevLineIndent(_NTmp);
         end;
 
         AdjustSpacing(GetToken(FTokenIdx + 1), FCurrentToken, FTokenIdx + 1);
@@ -1474,11 +1474,11 @@ begin
             or (FCurrentToken.WordType in [wtFullOutComment, wtHalfOutComment]) then
             FPrevLine.NoOfSpaces := FPrevLine.OldNoOfSpaces
           else begin
-            if PrevOldNspaces >= 0 then
+            if _PrevOldNspaces >= 0 then
               FPrevLine.NoOfSpaces := FPrevLine.NoOfSpaces +
-                (FPrevLine.OldNoOfSpaces - PrevOldNspaces)
+                (FPrevLine.OldNoOfSpaces - _PrevOldNspaces)
             else
-              PrevOldNspaces := FPrevLine.OldNoOfSpaces;
+              _PrevOldNspaces := FPrevLine.OldNoOfSpaces;
           end;
         end else if Settings.AlignComments and (FCurrentToken.WordType = wtFullComment) then begin
           if GetToken(FTokenIdx + 1, Next) and (Next.ReservedType = rtLineFeed) then
@@ -1538,18 +1538,18 @@ begin
 
   if not (FCurrentRType in [rtLineFeed, rtComment]) then begin
     Assert(False, 'trace');
-    PrevOldNspaces := -1;
+    _PrevOldNspaces := -1;
   end;
-  Assert(False, Format('PrevOldNSpaces=%d', [PrevOldNspaces]));
+  Assert(False, Format('PrevOldNSpaces=%d', [_PrevOldNspaces]));
 
   if wType = wtCompDirective then begin
     FWrapIndent := False;
 
     if not Settings.IndentCompDirectives and PrevTokenIsRType(rtLineFeed) then begin
       Assert(False, 'trace');
-      NTmp := -FStack.nIndent;
-      Assert(False, Format('NTmp=%d', [NTmp]));
-      SetPrevLineIndent(NTmp);
+      _NTmp := -FStack.nIndent;
+      Assert(False, Format('NTmp=%d', [_NTmp]));
+      SetPrevLineIndent(_NTmp);
     end;
 
     if Settings.UpperCompDirectives then
