@@ -6,6 +6,7 @@ implementation
 
 procedure bla;
 begin
+  SomeProc;
   var I := 22;
   ShowMessage(I.ToString);
 end;

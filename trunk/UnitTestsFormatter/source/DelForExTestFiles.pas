@@ -96,6 +96,12 @@ type
     procedure testIfThenElse4;
     procedure testIfThenTry;
     procedure testIndentComment;
+    procedure testInlineVar1;
+    procedure testInlineVar2;
+    procedure testInlineVar3;
+    procedure testInlineVar4;
+    procedure testInlineVar5;
+    procedure testInlineVar6;
     procedure testJustOpeningComment;
     procedure testJustOpeningStarCommentInAsm;
     procedure testLargeFile;
@@ -137,9 +143,6 @@ type
     procedure testForLoopWithInlineVar4CurrentlyFails;
     procedure testInlineConst1CurrentlyFails;
     procedure testInlineConst2CurrentlyFails;
-    procedure testInlineVar1CurrentlyFails;
-    procedure testInlineVar2CurrentlyFails;
-    procedure testInlineVar3CurrentlyFails;
   end;
 
 type
@@ -566,19 +569,34 @@ begin
   TestFile('InlineConst2');
 end;
 
-procedure TTestTestfiles.testInlineVar1CurrentlyFails;
+procedure TTestTestfiles.testInlineVar1;
 begin
   TestFile('InlineVar1');
 end;
 
-procedure TTestTestfiles.testInlineVar2CurrentlyFails;
+procedure TTestTestfiles.testInlineVar2;
 begin
   TestFile('InlineVar2');
 end;
 
-procedure TTestTestfiles.testInlineVar3CurrentlyFails;
+procedure TTestTestfiles.testInlineVar3;
 begin
   TestFile('InlineVar3');
+end;
+
+procedure TTestTestfiles.testInlineVar4;
+begin
+  TestFile('InlineVar4');
+end;
+
+procedure TTestTestfiles.testInlineVar5;
+begin
+  TestFile('InlineVar5');
+end;
+
+procedure TTestTestfiles.testInlineVar6;
+begin
+  TestFile('InlineVar6');
 end;
 
 procedure TTestTestfiles.testUnterminatedString;

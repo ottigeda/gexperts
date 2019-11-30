@@ -397,7 +397,7 @@ begin
     end;
 
     if (Prev2 <> nil) and (Prev2.ReservedType in [rtOper,
-      rtMathOper, rtPlus, rtMinus, rtSemiColon, rtOf,
+        rtMathOper, rtPlus, rtMinus, rtSemiColon, rtOf,
         rtMinus, rtLogOper, rtEquals, rtAssignOper, rtLeftBr,
         rtLeftHook, rtComma, rtDefault]) then begin
       Assert(False, 'trace');
@@ -894,7 +894,7 @@ begin
   { This handles the case where a reserved word was used as the name of
     a class member. Is that even allowed? }
   if (FCurrentRType in [rtWhile, rtEnd, rtRepeat, rtBegin, rtUses, rtTry,
-    rtProgram, rtType, rtVar, rtIf, rtThen, rtElse] + StandardDirectives)
+      rtProgram, rtType, rtVar, rtIf, rtThen, rtElse] + StandardDirectives)
     and PrevTokenIsRType(rtDot) then begin
     Assert(False, 'trace');
     FCurrentToken.SetReservedType(rtNothing);
@@ -1380,18 +1380,22 @@ begin
           FStack.Push(FCurrentRType, 1);
         end else begin
           if (FStack.GetTopType = rtProcDeclare) then begin
-              // inline function
+            // inline function
             FStack.Push(FCurrentRType, 1);
             if not PrevTokenIsRType(rtEquals) then begin
               if Settings.FeedAfterVar then
                 AssertLineFeedAfter(FTokenIdx);
             end;
           end else begin
-            FStack.Push(FCurrentRType, 0);
-            if not PrevTokenIsRType(rtEquals) then begin
-              DecPrevLineIndent;
-              if Settings.FeedAfterVar then
-                AssertLineFeedAfter(FTokenIdx);
+            if (FPrevToken is TLineFeed) and (FStack.GetTopType = rtBegin) then begin
+              // inline var declaration
+            end else begin
+              FStack.Push(FCurrentRType, 0);
+              if not PrevTokenIsRType(rtEquals) then begin
+                DecPrevLineIndent;
+                if Settings.FeedAfterVar then
+                  AssertLineFeedAfter(FTokenIdx);
+              end;
             end;
           end;
         end;
@@ -1485,7 +1489,7 @@ begin
           SetPrevLineIndent(-1);
 
         while not FStack.IsEmpty and (FStack.GetTopType in [rtDo, rtWhile,
-          rtProcDeclare, rtThen, rtProgram, rtUses, rtColon, rtClassDecl])
+            rtProcDeclare, rtThen, rtProgram, rtUses, rtColon, rtClassDecl])
           or (FStack.GetTopType = rtIfElse) do
           FStack.Pop;
 

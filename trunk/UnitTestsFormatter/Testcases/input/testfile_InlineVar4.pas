@@ -1,4 +1,4 @@
-unit testfile_InlineVar3;
+unit testfile_InlineVar4;
 
 interface
 
@@ -6,7 +6,9 @@ implementation
 
 procedure bla;
 begin
-  var I := 22;
+  SomeProc;
+  var I: Integer;
+  I := 22;
   ShowMessage(I.ToString);
 end;
 
