@@ -152,15 +152,6 @@ type
     FParsedUnitsCount: Integer;
     FLoadedUnitsCount: Integer;
     FFoundUnitsCount: Integer;
-{$IFDEF DO_TIMING}
-    FLoadingTimeMS: Int64;
-    FInsertingTimeMS: Int64;
-    FSortingTimeMS: Int64;
-    FProcessingTimeMS: Int64;
-    FTotalTimeMS: Int64;
-    FSearchingTimeMS: Int64;
-    FParsingTimeMS: Int64;
-{$ENDIF}
     procedure AddSymbols(_Parser: TUnitExportsParser);
     procedure GetAllFilesInPath(_sl: TStringList);
     procedure GetAllFilesInDir(_dir: string; _sl: TStringList);
@@ -183,15 +174,6 @@ type
     property FoundUnitsCount: Integer read FFoundUnitsCount;
     property ParsedUnitsCount: Integer read FParsedUnitsCount;
     property LoadedUnitsCount: Integer read FLoadedUnitsCount;
-{$IFDEF DO_TIMING}
-    property LoadingTimeMS: Int64 read FLoadingTimeMS;
-    property InsertingTimeMS: Int64 read FInsertingTimeMS;
-    property ParsingTimeMS: Int64 read FParsingTimeMS;
-    property ProcessingTimeMS: Int64 read FProcessingTimeMS;
-    property SortingTimeMS: Int64 read FSortingTimeMS;
-    property TotalTimeMS: Int64 read FTotalTimeMS;
-    property SearchingTimeMS: Int64 read FSearchingTimeMS;
-{$ENDIF}
   end;
 
 implementation
@@ -199,6 +181,9 @@ implementation
 uses
 {$IFDEF DO_TIMING}
   System.Diagnostics,
+{$ENDIF}
+{$IFOPT D+}
+  GX_DbugIntf,
 {$ENDIF}
   StrUtils,
   GX_GenericUtils;
@@ -1276,25 +1261,34 @@ begin
   if Terminated then
     Exit; //==>
 
-{$IFDEF  DO_TIMING}
+{$IFDEF DO_TIMING}
   Processing.Stop;
 
   Sorting.Start;
 {$ENDIF}
   TStringList(FIdentifiers).Sort;
-{$IFDEF  DO_TIMING}
+{$IFDEF DO_TIMING}
   Sorting.Stop;
 
   Total.Stop;
-
-  FSearchingTimeMS := Searching.ElapsedMilliseconds;
-  FSortingTimeMS := Sorting.ElapsedMilliseconds;
-  FLoadingTimeMS := Loading.ElapsedMilliseconds;
-  FInsertingTimeMS := Inserting.ElapsedMilliseconds;
-  FParsingTimeMS := Parsing.ElapsedMilliseconds;
-  FProcessingTimeMS := Processing.ElapsedMilliseconds;
-  FTotalTimeMS := Total.ElapsedMilliseconds;
 {$ENDIF}
+
+{$IF Declared(SendDebug)}
+  SendDebugFmt('UnitExportParser finished, found %d identifiers', [FIdentifiers.Count]);
+  SendDebugFmt('UnitExportParser found %d units', [FFoundUnitsCount]);
+  SendDebugFmt('UnitExportParser loaded %d units', [FLoadedUnitsCount]);
+  SendDebugFmt('UnitExportParser parsed %d units', [FParsedUnitsCount]);
+
+{$IFDEF DO_TIMING}
+  SendDebugFmt('UnitExportParser searching time %d ms', [Searching.ElapsedMilliseconds]);
+  SendDebugFmt('UnitExportParser loading time %d ms', [Loading.ElapsedMilliseconds]);
+  SendDebugFmt('UnitExportParser inserting time %d ms', [Inserting.ElapsedMilliseconds]);
+  SendDebugFmt('UnitExportParser parsing time %d ms', [Parsing.ElapsedMilliseconds]);
+  SendDebugFmt('UnitExportParser processing time %d ms', [Processing.ElapsedMilliseconds]);
+  SendDebugFmt('UnitExportParser sorting time %d ms', [Sorting.ElapsedMilliseconds]);
+  SendDebugFmt('UnitExportParser total time %d ms', [Total.ElapsedMilliseconds]);
+{$ENDIF}
+{$IFEND}
 end;
 
 end.

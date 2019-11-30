@@ -13,11 +13,7 @@ uses
   GX_OtaUtils;
 
 {$IFOPT D+}
-{$IF RTLVersion > RtlVersionDelphiXE}
-// System.Diagnostics, which exports TStopWatch, was added to the RTL in DelphiXE2
-{$DEFINE DO_TIMING}
 {.$DEFINE DEBUG_GRID_DRAWING}
-{$IFEND RTLVersion}
 {$ELSE}
 {$UNDEF DEBUG_GRID_DRAWING}
 {$ENDIF}
@@ -1921,21 +1917,38 @@ procedure TfmUsesManager.LoadFavorites;
 var
   fn: string;
 begin
-{$IFOPT D+}
+{$IF Declared(SendDebug)}
   SendDebug('Loading favorites');
-{$ENDIF D+}
+{$IFEND}
   FFavoriteUnits.Sorted := False;
   FFavoriteUnits.Clear;
   fn := ConfigInfo.ConfigPath + 'FavoriteUnits.txt'; // do not localize
   if FileExists(fn) then
     FFavoriteUnits.LoadFromFile(fn);
   FFavoriteUnits.Sorted := True;
-{$IFOPT D+}
+{$IF Declared(SendDebug)}
   SendDebugFmt('Done loading %d favorites', [FFavoriteUnits.Count]);
-{$ENDIF D+}
+{$IFEND}
 end;
 
 procedure TfmUsesManager.tim_ProgressTimer(Sender: TObject);
+{$IF Declared(SendDebug)}
+var
+  NotFoundUnits: TStringList;
+{$IFEND}
+
+{$IF Declared(NotFoundUnits)}
+  procedure SendDebugUnitNotFound(const _Identifier, _UnitName: string);
+  var
+    Idx: Integer;
+  begin
+    if not NotFoundUnits.Find(_UnitName, Idx) then begin
+      SendDebugFmt('Unit for identifier %s (%s) not found in SearchPathUnits', [_Identifier, _UnitName]);
+      NotFoundUnits.Add(_UnitName);
+    end;
+  end;
+{$IFEND}
+
 var
   IdentIdx: Integer;
   FixedRows: Integer;
@@ -1964,51 +1977,45 @@ begin
     FixedRows := sg_Identifiers.FixedRows;
     sl := upt.Identifiers;
 
-{$IFOPT D+}
-    SendDebugFmt('UnitExportParser finished, found %d identifiers', [sl.Count]);
-    SendDebugFmt('UnitExportParser found %d units', [upt.FoundUnitsCount]);
-    SendDebugFmt('UnitExportParser loaded %d units', [upt.LoadedUnitsCount]);
-    SendDebugFmt('UnitExportParser parsed %d units', [upt.ParsedUnitsCount]);
-{$IFDEF DO_TIMING}
-    SendDebugFmt('UnitExportParser searching time %d ms', [upt.SearchingTimeMS]);
-    SendDebugFmt('UnitExportParser loading time %d ms', [upt.LoadingTimeMS]);
-    SendDebugFmt('UnitExportParser inserting time %d ms', [upt.InsertingTimeMS]);
-    SendDebugFmt('UnitExportParser parsing time %d ms', [upt.ParsingTimeMS]);
-    SendDebugFmt('UnitExportParser processing time %d ms', [upt.ProcessingTimeMS]);
-    SendDebugFmt('UnitExportParser sorting time %d ms', [upt.SortingTimeMS]);
-    SendDebugFmt('UnitExportParser total time %d ms', [upt.TotalTimeMS]);
-{$ENDIF}
-{$ENDIF D+}
-
-{$IFOPT D+}
+{$IF Declared(SendDebug)}
     SendDebug('Preprocessing identifiers');
-{$ENDIF D+}
+{$IFEND}
     sg_Identifiers.RowCount := FixedRows + 1;
     sg_Identifiers.Cells[0, FixedRows] := '';
     sg_Identifiers.Cells[1, FixedRows] := '';
-    for IdentIdx := 0 to sl.Count - 1 do begin
-      Identifier := sl[IdentIdx];
+{$IF Declared(NotFoundUnits)}
+    NotFoundUnits := TStringList.Create;
+    try
+      NotFoundUnits.Sorted := True;
+{$IFEND}
+      for IdentIdx := 0 to sl.Count - 1 do begin
+        Identifier := sl[IdentIdx];
       // make sure the string is valid and not freed in the thread
-      UniqueString(Identifier);
-      UnitFile := PChar(sl.Objects[IdentIdx]);
-      UnitName := ExtractPureFileName(UnitFile);
-      if FSearchPathUnits.Find(UnitName, Idx) then begin
-        UnitName := FSearchPathUnits[Idx];
-        PCharUnitFile := PChar(FSearchPathUnits.Objects[Idx]);
-        if PCharUnitFile = nil then begin
-          PCharUnitFile := StrNew(PChar(UnitFile));
-          FSearchPathUnits.Objects[Idx] := Pointer(PCharUnitFile);
+        UniqueString(Identifier);
+        UnitFile := PChar(sl.Objects[IdentIdx]);
+        UnitName := ExtractPureFileName(UnitFile);
+        if FSearchPathUnits.Find(UnitName, Idx) then begin
+          UnitName := FSearchPathUnits[Idx];
+          PCharUnitFile := PChar(FSearchPathUnits.Objects[Idx]);
+          if PCharUnitFile = nil then begin
+            PCharUnitFile := StrNew(PChar(UnitFile));
+            FSearchPathUnits.Objects[Idx] := Pointer(PCharUnitFile);
+          end;
+          FFavUnitsExports.AddObject(Identifier, Pointer(PCharUnitFile));
+{$IF Declared(SendDebugUnitNotFound)}
+        end else begin
+          SendDebugUnitNotFound(Identifier, UnitName)
+{$IFEND}
         end;
-        FFavUnitsExports.AddObject(Identifier, Pointer(PCharUnitFile));
-      end else begin
-{$IFOPT D+}
-        SendDebugFmt('Unit for identifier %s (%s) not found in SearchPathUnits', [Identifier, UnitName]);
-{$ENDIF D+}
       end;
+{$IF Declared(NotFoundUnits)}
+    finally
+      FreeAndNil(NotFoundUnits);
     end;
-{$IFOPT D+}
+{$IFEND}
+{$IF Declared(SendDebug)}
     SendDebug('Done preprocessing identifiers');
-{$ENDIF D+}
+{$IFEND}
     FilterIdentifiers;
   end;
 end;
