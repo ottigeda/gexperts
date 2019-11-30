@@ -1164,11 +1164,21 @@ begin
       end;
 
     rtFuncDirective, rtDefault: begin
-        Next := GetNextNoComment(FTokenIdx, RemoveMe);
-        if (Next.ReservedType = rtColon)
-          or not (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass])
-          or (FPrevToken.ReservedType in [rtProcedure, rtProcDeclare, rtDot]) then
+        if FPrevToken.ReservedType in [rtProcedure, rtProcDeclare, rtDot] then begin
+          // the previous token was 'procedure' or '.' -> it's an identifier
+          // todo: What if the previous token was a line feed an the one before that was
+          //       'procedure' or '.' or if there was a comment in between ?
           FCurrentToken.SetReservedType(rtNothing);
+        end else if not (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass]) then begin
+          // we are not in a procedure or class declaration -> it's an identifier
+          FCurrentToken.SetReservedType(rtNothing);
+        end else begin
+          Next := GetNextNoComment(FTokenIdx, RemoveMe);
+          if Next.ReservedType = rtColon then begin
+            // followed by ':' -> Its an identifier
+            FCurrentToken.SetReservedType(rtNothing);
+          end;
+        end;
       end;
 
     rtForward: begin
