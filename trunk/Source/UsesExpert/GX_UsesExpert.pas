@@ -504,6 +504,10 @@ begin
 
   Paths := TStringList.Create;
   try
+  // We only take identifiers from units listed in the search path, so one could be tempted
+  // to only parse these units. But the effective library path does not contain the browsing
+  // path for units for which only dcu files are available in the library path.
+//    GxOtaGetEffectiveLibraryPath(Paths);
     GxOtaGetAllPossiblePaths(Paths);
 
     if FDisableCache then
