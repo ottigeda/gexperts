@@ -29,8 +29,6 @@ type
     procedure ExecuteDoubleClickAction; override;
   published
     procedure testAbstractSealedClass;
-    procedure testAttributes;
-    procedure testAttributes2;
     procedure testAngledBrackets;
     procedure testAnonymous;
     procedure testAnonymous2;
@@ -40,6 +38,8 @@ type
     procedure testAsm;
     procedure testAsmProblem1;
     procedure testAssemblerNewlines;
+    procedure testAttributes;
+    procedure testAttributes2;
     procedure testCharList;
     procedure testClassFields;
     procedure testClassInImplementation;
@@ -68,6 +68,10 @@ type
     procedure testFluentCode1;
     procedure testFluentCode2;
     procedure testFluentCode3;
+    procedure testForLoopWithInlineVar1;
+    procedure testForLoopWithInlineVar2;
+    procedure testForLoopWithInlineVar3;
+    procedure testForLoopWithInlineVar4;
     procedure testFormatWithLineBreaks;
     procedure testFormula;
     procedure testGenericClass;
@@ -96,6 +100,8 @@ type
     procedure testIfThenElse4;
     procedure testIfThenTry;
     procedure testIndentComment;
+    procedure testInlineConst1;
+    procedure testInlineConst2;
     procedure testInlineVar1;
     procedure testInlineVar2;
     procedure testInlineVar3;
@@ -137,12 +143,6 @@ type
 
     procedure testComplex;
     procedure testCurlyHalfCommentEndCurrentlyFails;
-    procedure testForLoopWithInlineVar1CurrentlyFails;
-    procedure testForLoopWithInlineVar2CurrentlyFails;
-    procedure testForLoopWithInlineVar3CurrentlyFails;
-    procedure testForLoopWithInlineVar4CurrentlyFails;
-    procedure testInlineConst1CurrentlyFails;
-    procedure testInlineConst2CurrentlyFails;
   end;
 
 type
@@ -559,12 +559,12 @@ begin
   TestFile('IndentComment');
 end;
 
-procedure TTestTestfiles.testInlineConst1CurrentlyFails;
+procedure TTestTestfiles.testInlineConst1;
 begin
   TestFile('InlineConst1');
 end;
 
-procedure TTestTestfiles.testInlineConst2CurrentlyFails;
+procedure TTestTestfiles.testInlineConst2;
 begin
   TestFile('InlineConst2');
 end;
@@ -686,22 +686,22 @@ begin
   TestFile('FakeGenericCreate');
 end;
 
-procedure TTestTestfiles.testForLoopWithInlineVar1CurrentlyFails;
+procedure TTestTestfiles.testForLoopWithInlineVar1;
 begin
   TestFile('ForLoopWithInlineVar1');
 end;
 
-procedure TTestTestfiles.testForLoopWithInlineVar2CurrentlyFails;
+procedure TTestTestfiles.testForLoopWithInlineVar2;
 begin
   TestFile('ForLoopWithInlineVar2');
 end;
 
-procedure TTestTestfiles.testForLoopWithInlineVar3CurrentlyFails;
+procedure TTestTestfiles.testForLoopWithInlineVar3;
 begin
   TestFile('ForLoopWithInlineVar3');
 end;
 
-procedure TTestTestfiles.testForLoopWithInlineVar4CurrentlyFails;
+procedure TTestTestfiles.testForLoopWithInlineVar4;
 begin
   TestFile('ForLoopWithInlineVar4');
 end;
