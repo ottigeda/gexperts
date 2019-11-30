@@ -292,7 +292,7 @@ type
   private
     FLeftRatio: Double;
     FAliases: TStringList;
-    FFindThread: TFileFindThread;
+    FSearchPathThread: TFileFindThread;
     // maintains a list unit name mappings from "originally used" to "currently used"
     // this is necessary to put units which have been switched between using prefixes and
     // not in the correct place of the unit list.
@@ -790,12 +790,12 @@ begin
 
   tim_Progress.Enabled := True;
 
-  FFindThread := TFileFindThread.Create;
-  FFindThread.FileMasks.Add('*.pas');
-  FFindThread.FileMasks.Add('*.dcu');
-  GxOtaGetEffectiveLibraryPath(FFindThread.SearchDirs);
-  FFindThread.OnFindComplete := SearchPathReady;
-  FFindThread.StartFind;
+  FSearchPathThread := TFileFindThread.Create;
+  FSearchPathThread.FileMasks.Add('*.pas');
+  FSearchPathThread.FileMasks.Add('*.dcu');
+  GxOtaGetEffectiveLibraryPath(FSearchPathThread.SearchDirs);
+  FSearchPathThread.OnFindComplete := SearchPathReady;
+  FSearchPathThread.StartFind;
 {$IFOPT D+}
   SendDebug('Started SearchPath FindThread');
 {$ENDIF D+}
@@ -851,14 +851,14 @@ procedure TfmUsesManager.FormDestroy(Sender: TObject);
 begin
   tim_Progress.Enabled := False;
 
-  if Assigned(FFindThread) then begin
-    FFindThread.OnFindComplete := nil;
-    FFindThread.Terminate;
+  if Assigned(FSearchPathThread) then begin
+    FSearchPathThread.OnFindComplete := nil;
+    FSearchPathThread.Terminate;
   end;
 
   FreeAndNil(FOldToNewUnitNameMap);
   FreeAndNil(FAliases);
-  FreeAndNil(FFindThread);
+  FreeAndNil(FSearchPathThread);
   FreeAndNil(FProjectUnits);
   FreeAndNil(FCommonUnits);
   FreeAndNil(FFavoriteUnits);
@@ -1637,7 +1637,7 @@ var
   end;
 
 begin
-  if not Assigned(FFindThread) then begin
+  if not Assigned(FSearchPathThread) then begin
     // If it is not assigned, something went wrong in the form's constructor
     // which freed the thread but a synchronise call was still waiting to be executed.
     Exit; //==>
@@ -1652,11 +1652,11 @@ begin
     PathFiles := TStringList.Create;
     PathUnits.Sorted := True;
     PathUnits.Duplicates := dupIgnore;
-    FFindThread.LockResults;
+    FSearchPathThread.LockResults;
     try
-      PathFiles.Assign(FFindThread.Results);
+      PathFiles.Assign(FSearchPathThread.Results);
     finally
-      FFindThread.ReleaseResults;
+      FSearchPathThread.ReleaseResults;
     end;
 {$IFOPT D+}
   SendDebugFmt('Found %d files in SarchPath', [PathFiles.Count]);
