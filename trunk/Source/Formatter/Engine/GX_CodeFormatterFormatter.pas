@@ -7,10 +7,11 @@ unit GX_CodeFormatterFormatter;
 
 {$I GX_CondDefine.inc}
 
-// this unit uses Assert(False, 'trace') for trace logging (for the line numbers)
-// by default, we turn it off
+// This unit uses Assert(False, 'some text') for trace logging (for the line numbers)
+// Therefore we must turn off Assertions by default.
 {$C-}
 {$IFDEF ASSERT_TRACING}
+// Assertions should only be turned on in the unit tests
 {$C+}
 {$ENDIF}
 
@@ -899,7 +900,7 @@ begin
   if (FCurrentRType in [rtWhile, rtEnd, rtRepeat, rtBegin, rtUses, rtTry,
       rtProgram, rtType, rtVar, rtIf, rtThen, rtElse] + StandardDirectives)
     and PrevTokenIsRType(rtDot) then begin
-    Assert(False, 'trace');
+    Assert(False, '.CheckIndent: SetReservedType to rtNothing');
     FCurrentToken.SetReservedType(rtNothing);
     FCurrentRType := rtNothing;
   end;
@@ -943,16 +944,16 @@ begin
       end;
 
     rtLeftBr: begin
-        Assert(False, 'trace');
+        Assert(False, '.CheckIndent: LeftBr');
         if (FStack.GetTopType = rtLeftBr) then begin
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent: Top is LeftBr');
           FStack.Push(FCurrentRType, 0)
         end else begin
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent: Top is not Leftbr');
           FOldWrapIndent := FWrapIndent;
           if (FStack.ProcLevel <= 0) or (FStack.GetTopType <> rtProcedure) then begin
             Assert(False, 'trace');
-              // not very clean
+            // not very clean
             FStack.Push(FCurrentRType, 1);
           end else begin
             Assert(False, 'trace');
@@ -983,7 +984,7 @@ begin
 
     rtLeftHook: begin
         // left hook = '['
-        Assert(False, 'trace');
+        Assert(False, '.CheckIndent: LeftHook');
         if PrevTokenIsWType(wtWord) and not PrevTokenIsRType(rtOper) then begin
           Assert(False, 'trace');
           FStack.Push(FCurrentRType, 0);
@@ -1000,7 +1001,7 @@ begin
       end;
 
     rtRightBr: begin
-        Assert(False, 'trace');
+        Assert(False, '.CheckIndent: RightBr');
         repeat
           Assert(False, 'trace');
           FLastPopResType := FStack.Pop;
@@ -1014,7 +1015,7 @@ begin
 
     rtRightHook: begin
         // right hook = ']'
-        Assert(False, 'trace');
+        Assert(False, '.CheckIndent: RightHook');
         repeat
           Assert(False, 'trace');
           FLastPopResType := FStack.Pop;
@@ -1069,47 +1070,48 @@ begin
       end;
 
     rtLineFeed: begin
+        Assert(False, '.CheckIndent: LineFeed');
         if FStack.IsEmpty then begin
-          Assert(False, 'setting WrapIndent to False');
+          Assert(False, '.CheckIndent: setting WrapIndent to False');
           FWrapIndent := False;
 //        end else if FStack.GetTopType in [rtIf, rtIfElse] then begin
         end else if FStack.GetTopType in [rtIf] then begin
-          Assert(False, 'setting WrapIndent to True');
+          Assert(False, '.CheckIndent: setting WrapIndent to True');
           FWrapIndent := True;
         end;
 
         if Settings.RemoveDoubleBlank and (FTokenIdx >= 2) and (FPrevToken <> nil)
           and (FPrevToken = FPrevLine) and (FTokens[FTokenIdx - 2] = FPrevPrevLine) then begin
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent: remove double blank line');
           FTokens.Extract(FTokenIdx - 2).Free;
           Dec(FTokenIdx);
         end;
 
         if GetNextNoComment(FTokenIdx, Next) then begin
           if Next.ReservedType in [rtElse, rtIfElse, rtBegin, rtEnd, rtUntil, rtExcept] then begin
-            Assert(False, 'setting WrapIndent to False');
+            Assert(False, '.CheckIndent: setting WrapIndent to False');
             FWrapIndent := False;
           end;
 
           if FWrapIndent and not Settings.NoIndentVarDecl then begin
-            Assert(False, 'setting NTmp to 1');
+            Assert(False, '.CheckIndent: setting NTmp to 1');
             _NTmp := 1;
           end else begin
-            Assert(False, 'setting NTmp to 0');
+            Assert(False, '.CheckIndent: setting NTmp to 0');
             _NTmp := 0;
           end;
 
           if Next.ReservedType in [rtLineFeed] then begin
-            Assert(False, 'setting WrapIndent to False');
+            Assert(False, '.CheckIndent: setting WrapIndent to False');
             FWrapIndent := False;
           end else if FStack.GetTopType in [rtUses, rtLeftBr] then begin
-            Assert(False, 'setting WrapIndent to False');
+            Assert(False, '.CheckIndent: setting WrapIndent to False');
             FWrapIndent := False;
           end else if FStack.GetTopType in [rtLeftHook] then begin
-            Assert(False, 'setting WrapIndent to False');
+            Assert(False, '.CheckIndent: setting WrapIndent to False');
             FWrapIndent := False;
           end else begin
-            Assert(False, 'setting WrapIndent to True');
+            Assert(False, '.CheckIndent: setting WrapIndent to True');
             FWrapIndent := True;
           end;
         end;
@@ -1164,6 +1166,7 @@ begin
       end;
 
     rtFuncDirective, rtDefault: begin
+        Assert(False, '.CheckIndent: rtFuncDirective');
         if FPrevToken.ReservedType in [rtProcedure, rtProcDeclare, rtDot] then begin
           // the previous token was 'procedure' or '.' -> it's an identifier
           // todo: What if the previous token was a line feed an the one before that was
@@ -1182,6 +1185,7 @@ begin
       end;
 
     rtForward: begin
+        Assert(False, '.CheckIndent: rtForward');
         if FStack.GetTopType in [rtProcedure, rtProcDeclare] then
           FStack.Pop
         else
@@ -1189,15 +1193,16 @@ begin
       end;
 
     rtProcedure: begin
+        Assert(False, '.CheckIndent: rtProcedure');
         if FStack.GetTopType in [rtClassDecl, rtRecord] then begin
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent: Top type is Class or Record');
           FStack.Pop;
           FStack.Push(rtClass, 1);
         end else if (FStack.GetTopType in [rtVar, rtType])
           and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord])
           and (FPrevToken.ReservedType <> rtEquals) then begin
           // There was a nested class/record declaration that ended
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent: Nested Class or Record ended');
           FStack.Pop;
           FStack.Pop;
           FStack.Push(rtClass, 1);
@@ -1207,16 +1212,16 @@ begin
         TempWordIdx := FTokenIdx;
 
         if Prev1 <> nil then begin
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent: Prev1 <> nil');
           while (TempWordIdx > 0) and (Prev1.ReservedType in [rtComment, rtLineFeed]) do begin
-            Assert(False, 'trace');
+            Assert(False, '.CheckIndent: in while');
             Dec(TempWordIdx);
             Prev1 := FTokens[TempWordIdx];
           end;
 
           FunctDeclare := (Prev1 <> nil) and (Prev1.ReservedType in [rtEquals, rtColon, rtComma, rtLeftBr]);
         end else begin
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent: Prev1 = nil');
           FunctDeclare := False;
         end;
 
@@ -1224,10 +1229,10 @@ begin
         IsDelegate := False;
 
         if not FunctDeclare then begin
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent: FunctDeclar = False');
           RemoveMe := 0;
           repeat
-            Assert(False, 'trace');
+            Assert(False, '.CheckIndent: in repeat');
             Inc(RemoveMe);
             if GetToken(FTokenIdx + RemoveMe, Next) then
               if Next.ReservedType = rtLeftBr then
@@ -1238,60 +1243,60 @@ begin
 
           // Begin before a SemiColon, presume that is a anonymous delegate...
           if Next.ReservedType = rtBegin then begin
-            Assert(False, 'trace');
+            Assert(False, '.CheckIndent: Next.ReservedType = rtBegin');
             IsDelegate := True;
             Next.AddOption(toFeedNewLine); // Force NewLine Feed!
           end;
 
           if Next <> nil then begin
-            Assert(False, 'trace');
+            Assert(False, '.CheckIndent: Next <> nil');
             repeat
-              Assert(False, 'trace');
+              Assert(False, '.CheckIndent: in repeat');
               Inc(RemoveMe);
             until not GetToken(FTokenIdx + RemoveMe, Next) or not (Next.ReservedType in [rtLineFeed, rtComment]);
 
             if (Next <> nil) and (Next.ReservedType = rtForward) then begin
-              Assert(False, 'trace');
+              Assert(False, '.CheckIndent: Next = rtForward');
               NoBlankLine := True;
             end;
           end;
         end;
 
         if not (FunctDeclare or FIsInInterfacePart or (FStack.GetTopType = rtClass)) then begin
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent: not (FunctDeclare or InInterface or (TopType = rtClass))');
           if not FStack.HasType(rtProcedure) then begin
-            Assert(False, 'trace');
+            Assert(False, '.CheckIndent: Stack.HasType(rtProcedure) = False');
             if not IsDelegate then begin
-              Assert(False, 'trace');
+              Assert(False, '.CheckIndent: not IsDelegate');
 
               if (FStack.nIndent > 0) then begin
-                Assert(False, 'trace');
+                Assert(False, '.CheckIndent: Stack.nIndent > 0');
                 FStack.nIndent := 0;
                 SetPrevLineIndent(_NTmp);
               end;
 
               FStack.ProcLevel := 0;
               if Settings.BlankProc and not NoBlankLine then begin
-                Assert(False, 'trace');
+                Assert(False, '.CheckIndent: Blank Lines Around Proc');
                 CheckBlankLinesAroundProc;
               end;
 
               if Settings.CommentFunction then begin
-                Assert(False, 'trace');
+                Assert(False, 'trac.CheckIndent: Procedure comment');
                 PutCommentBefore('{ procedure }');
               end;
             end;
           end else begin
-            Assert(False, 'trace');
+            Assert(False, '.CheckIndent: Stack.HasType(rtProcedure) = True');
             if Settings.BlankSubProc and not NoBlankLine then begin
-              Assert(False, 'trace');
+              Assert(False, '.CheckIndent: Blanc Lines Around Sub Proc');
               CheckBlankLinesAroundProc;
             end;
 
             FStack.ProcLevel := FStack.ProcLevel + 1;
 
             if FStack.nIndent = 0 then begin
-              Assert(False, 'trace');
+              Assert(False, '.CheckIndent: Stack.nIndent=0');
               SetPrevLineIndent(_NTmp);
               FStack.nIndent := FStack.nIndent + 1;
             end;
@@ -1299,19 +1304,19 @@ begin
 
           FStack.Push(rtProcedure, 0);
         end else begin
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent: (FunctDeclare or InInterface or (TopType = rtClass))');
           // Array of Procedure, Reference To Function...
           if (FStack.GetTopType = rtType) and Assigned(Prev1) and (Prev1.ReservedType in [rtOf, rtOper, rtComma]) then begin
-            Assert(False, 'trace');
+            Assert(False, '.CheckIndent: type declaration');
             // SetPrevLineIndent(NTmp);
             //
             // FStack.ProcLevel := FStack.ProcLevel + 1;
             ////              FStack.Push(FCurrentRType  , 1);
             //
           end else begin
-            Assert(False, 'trace');
+            Assert(False, '.CheckIndent: no type declaration');
             if (not FunctDeclare) and (not (FStack.GetTopType = rtClass)) then begin
-              Assert(False, 'trace');
+              Assert(False, '.CheckIndent: TopType <> rtClass');
               FStack.nIndent := 0;
               SetPrevLineIndent(_NTmp);
             end;
@@ -1445,30 +1450,32 @@ begin
         end;
       end;
 
-    rtCase:
-      if not (FStack.GetTopType in [rtRecord, rtLeftBr]) then
-        FStack.Push(FCurrentRType, 0)
-      else begin
-        FWrapIndent := False;
-        FStack.Push(rtRecCase, 1);
+    rtCase: begin
+        if not (FStack.GetTopType in [rtRecord, rtLeftBr]) then
+          FStack.Push(FCurrentRType, 0)
+        else begin
+          FWrapIndent := False;
+          FStack.Push(rtRecCase, 1);
+        end;
       end;
 
-    rtDo:
-      if FStack.GetTopType in [rtWhile, rtOn] then begin
-        FLastPopResType := FStack.GetTopType;
-        FStack.Push(FCurrentRType, 1);
-        FWrapIndent := False;
+    rtDo: begin
+        if FStack.GetTopType in [rtWhile, rtOn] then begin
+          FLastPopResType := FStack.GetTopType;
+          FStack.Push(FCurrentRType, 1);
+          FWrapIndent := False;
 
-        if Settings.NoFeedBeforeThen and (FPrevToken = FPrevLine) then begin
-          FTokens.Extract(FTokenIdx - 1).Free;
-          Dec(FTokenIdx);
-          CheckSlashComment;
-        end;
+          if Settings.NoFeedBeforeThen and (FPrevToken = FPrevLine) then begin
+            FTokens.Extract(FTokenIdx - 1).Free;
+            Dec(FTokenIdx);
+            CheckSlashComment;
+          end;
 
-        if Settings.FeedAfterThen then begin
-          if AssertLineFeedAfter(FTokenIdx) <> FPrevLine then begin
-            if (FLastPopResType in [rtOn, rtWhile]) and Settings.ExceptSingle then
-              CheckShortLine;
+          if Settings.FeedAfterThen then begin
+            if AssertLineFeedAfter(FTokenIdx) <> FPrevLine then begin
+              if (FLastPopResType in [rtOn, rtWhile]) and Settings.ExceptSingle then
+                CheckShortLine;
+            end;
           end;
         end;
       end;
@@ -1527,32 +1534,39 @@ begin
         end;
       end;
 
-    rtSemiColon:
-      if not (FStack.GetTopType in [rtLeftBr, rtLeftHook]) then begin
-        if (FStack.GetTopType = rtUses) and (Settings.NoIndentUsesComma) and (FPrevToken is TLineFeed) then
-          SetPrevLineIndent(-1);
+    rtSemiColon: begin
+        Assert(False, '.CheckIndent: rtSemiColon');
+        if not (FStack.GetTopType in [rtLeftBr, rtLeftHook]) then begin
+          Assert(False, '.CheckIndent: Not (LeftBr or LeftHook)');
+          if (FStack.GetTopType = rtUses) and (Settings.NoIndentUsesComma) and (FPrevToken is TLineFeed) then
+            SetPrevLineIndent(-1);
 
         while not FStack.IsEmpty and (FStack.GetTopType in [rtDo, rtWhile,
             rtProcDeclare, rtThen, rtProgram, rtUses, rtColon, rtClassDecl])
-          or (FStack.GetTopType = rtIfElse) do
-          FStack.Pop;
+          or (FStack.GetTopType = rtIfElse) do begin
+            Assert(False, '.CheckIndent: in while');
+            FStack.Pop;
+          end;
 
-        FWrapIndent := False;
-        RemoveMe := 0;
+          FWrapIndent := False;
+          RemoveMe := 0;
 
-        repeat
-          Inc(RemoveMe);
-        until not GetToken(FTokenIdx + RemoveMe, Next) or (not (Next.ReservedType in [{ rtComment, }rtLineFeed]));
+          repeat
+            Assert(False, '.CheckIndent: in repeat');
+            Inc(RemoveMe);
+          until not GetToken(FTokenIdx + RemoveMe, Next) or (not (Next.ReservedType in [{ rtComment, }rtLineFeed]));
 
-        if Next <> nil then begin
-          if (Next.ReservedType = rtAbsolute)
-            or ((FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass])
-            and (Next.ReservedType in [rtFuncDirective, rtForward])
-            and (FStack.ProcLevel = 0)) then
-            FWrapIndent := True
-          else if Settings.FeedAfterSemiColon
-            and not (Next.ReservedType in [rtForward, rtFuncDirective, rtDefault]) then
-            AssertLineFeedAfter(FTokenIdx);
+          if Next <> nil then begin
+            Assert(False, '.CheckIndent: Next <> nil');
+            if (Next.ReservedType = rtAbsolute)
+              or ((FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass])
+              and (Next.ReservedType in [rtFuncDirective, rtForward])
+              and (FStack.ProcLevel = 0)) then
+              FWrapIndent := True
+            else if Settings.FeedAfterSemiColon
+              and not (Next.ReservedType in [rtForward, rtFuncDirective, rtDefault]) then
+              AssertLineFeedAfter(FTokenIdx);
+          end;
         end;
       end;
 
@@ -1574,20 +1588,21 @@ begin
       end;
   end; // case FCurrentRType
 
-  Assert(False, 'trace');
+  Assert(False, '.CheckIndent: after case');
   AdjustSpacing(FCurrentToken, FPrevToken, FTokenIdx);
 
   if not (FCurrentRType in [rtLineFeed, rtComment]) then begin
-    Assert(False, 'trace');
+    Assert(False, '.CheckIndent: rtLineFeed or rtComment');
     _PrevOldNspaces := -1;
   end;
-  Assert(False, Format('PrevOldNSpaces=%d', [_PrevOldNspaces]));
+  Assert(False, Format('.CheckIndent: PrevOldNSpaces=%d', [_PrevOldNspaces]));
 
   if wType = wtCompDirective then begin
+    Assert(False, '.CheckIndent: compiler directive');
     FWrapIndent := False;
 
     if not Settings.IndentCompDirectives and PrevTokenIsRType(rtLineFeed) then begin
-      Assert(False, 'trace');
+      Assert(False, '.CheckIndent: IndentCompDirectives');
       _NTmp := -FStack.nIndent;
       Assert(False, Format('NTmp=%d', [_NTmp]));
       SetPrevLineIndent(_NTmp);
@@ -1598,6 +1613,7 @@ begin
   end;
 
   FPrevToken := FCurrentToken;
+  Assert(False, '.CheckIndent: PrevToken: ' + FPrevToken.GetForDebug);
 end;
 
 procedure TCodeFormatterFormatter.doExecute(_Tokens: TPascalTokenList);
@@ -1624,14 +1640,16 @@ begin
 //          gblAssertTraceOn := True;
 //        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'implementation') then
 //          gblAssertTraceOn := False;
-//        Assert(False, 'Stack.Depth: ' + IntToStr(FStack.Depth)
-//          + ' .TopType: ' + GetEnumname(TypeInfo(TReservedType), Ord(FStack.GetTopType))
-//          + ' .TopIndent: ' + IntToStr(FStack.GetTopIndent));
-        Assert(False, 'WrapIndent: ' + Ifthen(FWrapIndent, 'True', 'False'));
-        Assert(False, 'before CheckIndent: NTmp: ' + IntToStr(NTmp) + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
-        Assert(False, 'CurrentToken: ' + FCurrentToken.GetForDebug);
+        Assert(False, '.doExecute: Stack.Depth: ' + IntToStr(FStack.Depth)
+          + ' .TopType: ' + GetEnumname(TypeInfo(TReservedType), Ord(FStack.GetTopType))
+          + ' .TopIndent: ' + IntToStr(FStack.GetTopIndent));
+        Assert(False, '.doExecute: WrapIndent: ' + Ifthen(FWrapIndent, 'True', 'False'));
+        Assert(False, '.doExecute: before CheckIndent: NTmp: ' + IntToStr(NTmp)
+          + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
+        Assert(False, '.doExecute: CurrentToken: ' + FCurrentToken.GetForDebug);
         CheckIndent(NTmp, PrevOldNspaces);
-        Assert(False, 'after CheckIndent:  NTmp: ' + IntToStr(NTmp) + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
+        Assert(False, '.doExecute: after CheckIndent:  NTmp: ' + IntToStr(NTmp)
+          + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
         Inc(FTokenIdx);
       end;
     finally

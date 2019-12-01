@@ -9,6 +9,14 @@ unit GX_CodeFormatterStack;
 
 {$I GX_CondDefine.inc}
 
+// This unit uses Assert(False, 'some text') for trace logging (for the line numbers)
+// Therefore we must turn off Assertions by default.
+{$C-}
+{$IFDEF ASSERT_TRACING}
+// Assertions should only be turned on in the unit tests
+{$C+}
+{$ENDIF}
+
 interface
 
 uses
@@ -38,7 +46,8 @@ type
     constructor Create;
     destructor Destroy; override;
     ///<summary>
-    /// @returns the topmost item from the stack without removing it </summary>
+    /// @returns the topmost item from the stack without removing it
+    ///          if the stack is empty, it returns rtNothing. </summary>
     function GetTopType: TReservedType;
     function GetTopIndent: Integer;
     ///<summary>
@@ -77,6 +86,10 @@ type
 
 implementation
 
+uses
+  TypInfo,
+  SysUtils;
+
 { TCodeFormatterSegment }
 
 constructor TCodeFormatterSegment.Create;
@@ -112,6 +125,9 @@ procedure TCodeFormatterSegment.Push(_Type: TReservedType; _IncIndent: Integer);
 var
   tr: PStackRec;
 begin
+  Assert(False, 'Stack.Push: Type: ' + GetEnumname(TypeInfo(TReservedType), Ord(_Type))
+    + ' IncIndent: ' + IntToStr(_IncIndent));
+
   if FStackPtr >= MaxStack then
     raise EFormatException.Create('Stack overflow');
 
@@ -140,6 +156,7 @@ var
 begin
   if FStackPtr >= 0 then begin
     tr := GetTopRec;
+    Assert(False, 'Stack.Pop: ' + GetEnumname(TypeInfo(TReservedType), Ord(tr.RT)));
     FNIndent := tr.nInd;
     if (tr.RT = rtProcedure) and (FProcLevel > 0) then
       Dec(FProcLevel);
@@ -147,6 +164,7 @@ begin
     Result := tr^.RT;
     Dec(FStackPtr);
   end else begin
+    Assert(False, 'Stack.Pop: empty stack');
     FNIndent := 0;
     FProcLevel := 0;
     Result := rtNothing;
@@ -198,4 +216,3 @@ end;
 {$INCLUDE DelforStackTemplate.tpl}
 
 end.
-
