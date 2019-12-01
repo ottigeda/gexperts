@@ -64,9 +64,12 @@ type
     procedure AdjustSpacing(_CurrentToken, _PrevToken: TPascalToken; _TokenIdx: Integer);
 
     {: return token with index Idx or nil if out of bounds }
-    function GetToken(_Idx: Integer): TPascalToken; overload;
-    {: get token with index Idx, returns False if index is out of bounds }
-    function GetToken(_Idx: Integer; out _Token: TPascalToken): Boolean; overload;
+    function GetToken(_Idx: Integer): TPascalToken;
+    ///<summary>
+    /// Get token with index Idx,
+    /// @returns True and the Token if there is one
+    ///          False and Token=nil if index is out of bounds </summary>
+    function TryGetToken(_Idx: Integer; out _Token: TPascalToken): Boolean;
 
     {: Check whether the token at index Idx has the reserved type RType
        @param Idx is the index of the token to check
@@ -257,45 +260,45 @@ begin
                  it also unnecessarily sets each token's case three times }
   HandleCapitalization(_CurrentToken);
 
-  Assert(False, 'trace');
+  Assert(False, '.AdjustSpacing');
   case rType of
     rtThen, rtOf, rtElse, rtDo, rtAsm: begin
-        Assert(False, 'trace');
+        Assert(False, '.AdjustSpacing');
         _CurrentToken.SetSpace([spBefore, spAfter], True);
       end;
 
     rtEnd, rtFuncDirective: begin
-        Assert(False, 'trace');
+        Assert(False, '.AdjustSpacing');
         _CurrentToken.SetSpace([spBefore], True);
       end;
 
     rtIf, rtUntil, rtWhile, rtCase, rtRecord: begin
-        Assert(False, 'trace');
+        Assert(False, '.AdjustSpacing');
         _CurrentToken.SetSpace([spAfter], True);
       end;
 
     rtLogOper: begin
-        Assert(False, 'trace');
+        Assert(False, '.AdjustSpacing');
         if not _CurrentToken.GetExpression(exp) then
           raise EFormatException.Create('Programmer error: GetExpression for logical operator returned False');
 
         if (exp = '<') then begin
-          Assert(False, 'trace');
+          Assert(False, '.AdjustSpacing');
           if DetectGenericStart(_TokenIdx) then begin
-            Assert(False, 'trace');
+            Assert(False, '.AdjustSpacing');
             FStack.Push(rtGenericStart, 0);
             _CurrentToken.SetSpace([], True)
           end else begin
-            Assert(False, 'trace');
+            Assert(False, '.AdjustSpacing');
             _CurrentToken.SetSpace(Settings.SpaceOperators, True);
           end;
         end else if exp = '>' then begin
-          Assert(False, 'trace');
+          Assert(False, '.AdjustSpacing');
           if FStack.HasType(rtGenericStart) then begin
-            Assert(False, 'trace');
+            Assert(False, '.AdjustSpacing');
             _CurrentToken.SetSpace([], True);
             repeat
-              Assert(False, 'trace');
+              Assert(False, '.AdjustSpacing');
               FLastPopResType := FStack.Pop;
             until (FLastPopResType = rtGenericStart) or FStack.IsEmpty;
           end else
@@ -305,79 +308,79 @@ begin
       end;
 
     rtOper, rtMathOper, rtPlus, rtMinus, rtEquals: begin
-        Assert(False, 'trace');
+        Assert(False, '.AdjustSpacing');
         _CurrentToken.SetSpace(Settings.SpaceOperators, True);
       end;
 
     rtAssignOper: begin
-        Assert(False, 'trace');
+        Assert(False, '.AdjustSpacing');
         _CurrentToken.SetSpace(Settings.SpaceEqualOper, True);
       end;
 
     rtColon: begin
-        Assert(False, 'trace');
+        Assert(False, '.AdjustSpacing');
         _CurrentToken.SetSpace(Settings.SpaceColon, True);
       end;
 
     rtSemiColon: begin
-        Assert(False, 'trace');
+        Assert(False, '.AdjustSpacing');
         _CurrentToken.SetSpace(Settings.SpaceSemiColon, True);
       end;
 
     rtComma: begin
-        Assert(False, 'trace');
+        Assert(False, '.AdjustSpacing');
         _CurrentToken.SetSpace(Settings.SpaceComma, True);
       end;
 
     rtLeftBr: begin
-        Assert(False, 'trace');
+        Assert(False, '.AdjustSpacing');
         _CurrentToken.SetSpace(Settings.SpaceLeftBr, True);
         if _PrevToken.ReservedType = rtLeftBr then begin
-          Assert(False, 'trace');
+          Assert(False, '.AdjustSpacing');
           _CurrentToken.SetSpace([spBefore], False);
         end;
       end;
 
     rtLeftHook: begin
-        Assert(False, 'trace');
+        Assert(False, '.AdjustSpacing');
         _CurrentToken.SetSpace(Settings.SpaceLeftHook, True);
         if _PrevToken.ReservedType = rtLeftHook then begin
-          Assert(False, 'trace');
+          Assert(False, '.AdjustSpacing');
           _CurrentToken.SetSpace([spBefore], False);
         end;
       end;
 
     rtRightBr: begin
-        Assert(False, 'trace');
+        Assert(False, '.AdjustSpacing');
         _CurrentToken.SetSpace(Settings.SpaceRightBr, True);
       end;
 
     rtRightHook: begin
-        Assert(False, 'trace');
+        Assert(False, '.AdjustSpacing');
         _CurrentToken.SetSpace(Settings.SpaceRightHook, True);
       end;
   end;
 
   // todo: This doesn't belong here, it's about the case of hex numbers, not spacing
   if (wType = wtHexNumber) and Settings.UpperNumbers then begin
-    Assert(False, 'trace');
+    Assert(False, '.AdjustSpacing');
     _CurrentToken.SetExpressionCase(rfUpperCase);
   end;
 
   { delimiter between 2 words (necessary) }
 
   if _PrevToken = nil then begin
-    Assert(False, 'trace');
+    Assert(False, '.AdjustSpacing');
     Exit;
   end;
 
   { append space after : , ; }
   if Settings.SpaceOperators <> [] then begin
-    Assert(False, 'trace');
+    Assert(False, '.AdjustSpacing');
     if wType in [wtString, wtFullComment, wtHalfComment, wtHalfStarComment] then begin
-      Assert(False, 'trace');
+      Assert(False, '.AdjustSpacing');
       if not (_PrevToken.ReservedType in [rtDotDot, rtLineFeed]) then begin
-        Assert(False, 'trace');
+        Assert(False, '.AdjustSpacing');
         _CurrentToken.SetSpace([spBefore], True);
       end;
     end;
@@ -388,13 +391,13 @@ begin
     Idx := 0;
 
     while (Prev2 <> nil) and (Prev2.ReservedType in [rtComment, rtLineFeed]) do begin
-      Assert(False, 'trace');
+      Assert(False, '.AdjustSpacing');
       Inc(Idx);
       if Idx > _TokenIdx then begin
-        Assert(False, 'trace');
+        Assert(False, '.AdjustSpacing');
         Prev2 := nil;
       end else begin
-        Assert(False, 'trace');
+        Assert(False, '.AdjustSpacing');
         Prev2 := FTokens[_TokenIdx - Idx];
       end;
     end;
@@ -403,33 +406,33 @@ begin
         rtMathOper, rtPlus, rtMinus, rtSemiColon, rtOf,
         rtMinus, rtLogOper, rtEquals, rtAssignOper, rtLeftBr,
         rtLeftHook, rtComma, rtDefault]) then begin
-      Assert(False, 'trace');
+      Assert(False, '.AdjustSpacing');
       _CurrentToken.SetSpace([spAfter], False); { sign operator }
     end;
   end;
 
   if rType = rtLeftHook then begin
-    Assert(False, 'trace');
+    Assert(False, '.AdjustSpacing');
     if not (_PrevToken.ReservedType in [rtReserved, rtNothing, rtRightBr, rtRightHook]) then begin
-      Assert(False, 'trace');
+      Assert(False, '.AdjustSpacing');
       _CurrentToken.SetSpace([spBefore], True);
     end;
   end;
 
   if _CurrentToken.Space(spBefore)
     and (_PrevToken.ReservedType in [rtLeftBr, rtLeftHook, rtLineFeed]) then begin
-    Assert(False, 'trace');
+    Assert(False, '.AdjustSpacing');
     _CurrentToken.SetSpace([spBefore], False);
   end;
 
   if (_PrevToken.WordType in [wtWord, wtNumber, wtHexNumber, wtString])
     and (wType in [wtWord, wtNumber, wtHexNumber]) then begin
-    Assert(False, 'trace');
+    Assert(False, '.AdjustSpacing');
     _CurrentToken.SetSpace([spBefore], True);
   end;
 
   if _CurrentToken.Space(spBefore) and _PrevToken.Space(spAfter) then begin
-    Assert(False, 'trace');
+    Assert(False, '.AdjustSpacing');
     _PrevToken.SetSpace([spAfter], False); { avoid double spaces }
   end;
 end;
@@ -438,17 +441,17 @@ function TCodeFormatterFormatter.TokenAtIs(_Idx: Integer; _rType: TReservedType)
 var
   Token: TPascalToken;
 begin
-  Result := GetToken(_Idx, Token);
+  Result := TryGetToken(_Idx, Token);
   if Result then
     Result := (Token.ReservedType = _rType);
 end;
 
 function TCodeFormatterFormatter.GetToken(_Idx: Integer): TPascalToken;
 begin
-  GetToken(_Idx, Result);
+  TryGetToken(_Idx, Result);
 end;
 
-function TCodeFormatterFormatter.GetToken(_Idx: Integer; out _Token: TPascalToken): Boolean;
+function TCodeFormatterFormatter.TryGetToken(_Idx: Integer; out _Token: TPascalToken): Boolean;
 begin
   Result := (_Idx >= 0) and (_Idx < FTokens.Count);
   if Result then
@@ -469,7 +472,7 @@ begin
 
   repeat
     Inc(_Offset);
-    Result := GetToken(_StartPos + _Offset, _Token);
+    Result := TryGetToken(_StartPos + _Offset, _Token);
   until not Result or (_Token.ReservedType <> rtComment);
 end;
 
@@ -583,7 +586,7 @@ begin
     end else begin
       // we got one linefeed already, check if there is another one -> empty line
       Inc(k);
-      if GetToken(FTokenIdx - k, Prev2) and (Prev2.ReservedType <> rtLineFeed) then begin
+      if TryGetToken(FTokenIdx - k, Prev2) and (Prev2.ReservedType <> rtLineFeed) then begin
         // no, only one -> add one for an empty line
         FPrevLine := InsertBlankLines(FTokenIdx - k + 1, 1);
         FPrevToken := FPrevLine;
@@ -665,7 +668,7 @@ var
   PrevExpression: TGXUnicodeString;
   i: Integer;
 begin
-  if GetToken(FTokenIdx - 1, FPrevToken) and (FPrevToken.ReservedType = rtComment)
+  if TryGetToken(FTokenIdx - 1, FPrevToken) and (FPrevToken.ReservedType = rtComment)
     and FPrevToken.GetExpression(PrevExpression) and (PrevExpression[1] = '/') then begin
     // fix for situation with a // comment on prev line: begin becomes part of the comment
     if FPrevToken.ChangeComment('{') then begin
@@ -952,26 +955,26 @@ begin
           Assert(False, '.CheckIndent: Top is not Leftbr');
           FOldWrapIndent := FWrapIndent;
           if (FStack.ProcLevel <= 0) or (FStack.GetTopType <> rtProcedure) then begin
-            Assert(False, 'trace');
+            Assert(False, '.CheckIndent');
             // not very clean
             FStack.Push(FCurrentRType, 1);
           end else begin
-            Assert(False, 'trace');
+            Assert(False, '.CheckIndent');
             RemoveMe := 1;
-            while (FTokenIdx > RemoveMe) and (GetToken(FTokenIdx - RemoveMe, Next)
+            while (FTokenIdx > RemoveMe) and (TryGetToken(FTokenIdx - RemoveMe, Next)
               and (Next.ReservedType in [rtDot, rtNothing])) do begin
-              Assert(False, 'trace');
+              Assert(False, '.CheckIndent');
               Inc(RemoveMe);
             end;
             if (Next <> nil) and (Next.ReservedType = rtProcedure) then begin
-              Assert(False, 'trace');
+              Assert(False, '.CheckIndent');
               FStack.Push(FCurrentRType, 0);
             end else begin
-              Assert(False, 'trace');
+              Assert(False, '.CheckIndent');
               FStack.Push(FCurrentRType, 1);
             end;
           end;
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent');
           FWrapIndent := False;
         end;
       end;
@@ -986,12 +989,12 @@ begin
         // left hook = '['
         Assert(False, '.CheckIndent: LeftHook');
         if PrevTokenIsWType(wtWord) and not PrevTokenIsRType(rtOper) then begin
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent');
           FStack.Push(FCurrentRType, 0);
         end else begin
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent');
           FWrapIndent := False;
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent');
           FStack.Push(FCurrentRType, 1);
         end;
       end;
@@ -1003,12 +1006,12 @@ begin
     rtRightBr: begin
         Assert(False, '.CheckIndent: RightBr');
         repeat
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent');
           FLastPopResType := FStack.Pop;
         until (FLastPopResType = rtLeftBr) or FStack.IsEmpty;
 
         if FStack.GetTopType <> rtLeftBr then begin
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent');
           FWrapIndent := FOldWrapIndent;
         end;
       end;
@@ -1017,17 +1020,17 @@ begin
         // right hook = ']'
         Assert(False, '.CheckIndent: RightHook');
         repeat
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent');
           FLastPopResType := FStack.Pop;
         until (FLastPopResType = rtLeftHook) or FStack.IsEmpty;
 
-        Assert(False, 'trace');
+        Assert(False, '.CheckIndent');
         if FStack.GetTopType = rtClassDecl then begin
           // Interface GUID
-          Assert(False, 'trace');
+          Assert(False, '.CheckIndent');
           FWrapIndent := False;
 //          end else if FStack.GetTopType = rtLeftHook then begin
-//            Assert(False, 'trace');
+//            Assert(False, '.CheckIndent');
 //            FWrapIndent := FOldHookWrapIndent;
         end;
       end;
@@ -1208,9 +1211,9 @@ begin
           FStack.Push(rtClass, 1);
           DecPrevLineIndent;
         end;
+
         Prev1 := FPrevToken;
         TempWordIdx := FTokenIdx;
-
         if Prev1 <> nil then begin
           Assert(False, '.CheckIndent: Prev1 <> nil');
           while (TempWordIdx > 0) and (Prev1.ReservedType in [rtComment, rtLineFeed]) do begin
@@ -1234,11 +1237,11 @@ begin
           repeat
             Assert(False, '.CheckIndent: in repeat');
             Inc(RemoveMe);
-            if GetToken(FTokenIdx + RemoveMe, Next) then
+            if TryGetToken(FTokenIdx + RemoveMe, Next) then
               if Next.ReservedType = rtLeftBr then
                 repeat
                   Inc(RemoveMe);
-                until not GetToken(FTokenIdx + RemoveMe, Next) or (Next.ReservedType = rtRightBr);
+                until not TryGetToken(FTokenIdx + RemoveMe, Next) or (Next.ReservedType = rtRightBr);
           until (Next = nil) or (Next.ReservedType in [rtSemiColon, rtBegin]);
 
           // Begin before a SemiColon, presume that is a anonymous delegate...
@@ -1253,7 +1256,7 @@ begin
             repeat
               Assert(False, '.CheckIndent: in repeat');
               Inc(RemoveMe);
-            until not GetToken(FTokenIdx + RemoveMe, Next) or not (Next.ReservedType in [rtLineFeed, rtComment]);
+            until not TryGetToken(FTokenIdx + RemoveMe, Next) or not (Next.ReservedType in [rtLineFeed, rtComment]);
 
             if (Next <> nil) and (Next.ReservedType = rtForward) then begin
               Assert(False, '.CheckIndent: Next = rtForward');
@@ -1529,7 +1532,7 @@ begin
               _PrevOldNspaces := FPrevLine.OldNoOfSpaces;
           end;
         end else if Settings.AlignComments and (FCurrentToken.WordType = wtFullComment) then begin
-          if GetToken(FTokenIdx + 1, Next) and (Next.ReservedType = rtLineFeed) then
+          if TryGetToken(FTokenIdx + 1, Next) and (Next.ReservedType = rtLineFeed) then
             FCurrentToken := AlignExpression(FTokenIdx, Settings.AlignCommentPos);
         end;
       end;
@@ -1547,13 +1550,15 @@ begin
             FStack.Pop;
           end;
 
+          // todo: This only works, if 'absolute' or any of the function directives ('overload',
+          // 'stdcall' etc). are on the same line as the function / procedure declaration:
+          // Look for 'absolute' or a function directive before the next line feed
           FWrapIndent := False;
           RemoveMe := 0;
-
           repeat
             Assert(False, '.CheckIndent: in repeat');
             Inc(RemoveMe);
-          until not GetToken(FTokenIdx + RemoveMe, Next) or (not (Next.ReservedType in [{ rtComment, }rtLineFeed]));
+          until not TryGetToken(FTokenIdx + RemoveMe, Next) or (not (Next.ReservedType in [{ rtComment, }rtLineFeed]));
 
           if Next <> nil then begin
             Assert(False, '.CheckIndent: Next <> nil');
@@ -1634,10 +1639,10 @@ begin
     FStackStack := TCodeFormatterStack.Create;
     try
       FTokenIdx := 0;
-      while GetToken(FTokenIdx, FCurrentToken) do begin
+      while TryGetToken(FTokenIdx, FCurrentToken) do begin
 //        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'procedure') then
 //          gblAssertTraceOn := True;
-//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'implementation') then
+//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = '{ende}') then
 //          gblAssertTraceOn := False;
         Assert(False, '.doExecute: Stack.Depth: ' + IntToStr(FStack.Depth)
           + ' .TopType: ' + GetEnumname(TypeInfo(TReservedType), Ord(FStack.GetTopType))
