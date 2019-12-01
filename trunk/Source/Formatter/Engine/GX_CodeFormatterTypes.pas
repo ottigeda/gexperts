@@ -75,13 +75,8 @@ const
     rtForward];
 
 type
-  {: stores all known reserved words in lower case with their associated type,
-     must be ordered perfectly on words!!
-     NOTE: This is for Delphi 2005, there are some words that aren't reserved
-           in earlier Delphi versions, maybe that should be configurable?
-           That could be done by converting this list into a oObjects.TStrCollection
-           which only contains those words that are known for the configured Delphi
-           version. }
+  ///<summary>
+  /// Stores all known reserved words in lower case with their associated type. </summary>
   TReservedWordList = class
   private
     FWords: TStringList;
@@ -100,10 +95,11 @@ type
   TTokenOption = (toFeedNewLine);
   TTokenOptions = set of TTokenOption;
 
-{: changes the string case as specified in aCase
-   @param aStr is the input string
-   @param aCase is a TCase specifying the desired case
-   @returns the modified string }
+///<summary>
+/// changes the string case as specified in Case
+/// @param Str is the input string
+/// @param Case is a TCase specifying the desired case
+/// @returns the modified string </summary>
 function AdjustCase(const _str: TGXUnicodeString; _Case: TCase): TGXUnicodeString;
 
 implementation
@@ -155,6 +151,10 @@ begin
   FWords := TStringList.Create;
   FWords.Sorted := True;
   FWords.Duplicates := dupError;
+
+  // This list is for Delphi 2005 which introduced some new reserved words.
+  // We don't really care about earlier versions any more.
+  // todo: Are there any additions in later versions?
 
   Add('absolute', rtAbsolute);
   Add('abstract', rtFuncDirective);
