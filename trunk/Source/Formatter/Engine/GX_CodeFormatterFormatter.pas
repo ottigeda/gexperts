@@ -1158,14 +1158,14 @@ begin
       end;
 
     rtAbsolute:
-      if not (FStack.GetTopType in [rtVar, rtType]) then
-        FCurrentToken.SetReservedType(rtNothing)
-      else begin
-        Next := GetNextNoComment(FTokenIdx, RemoveMe);
-        if Next.ReservedType = rtColon then begin
-          DecPrevLineIndent;
-          FCurrentToken.SetReservedType(rtNothing);
-        end;
+      if not (FStack.GetTopType in [rtVar, rtType]) then begin
+        // We are not in a type or var declaration, so it's an identifier
+        // todo: is rtType really correct here?
+        FCurrentToken.SetReservedType(rtNothing);
+      end else if TryGetNextNoComment(FTokenIdx, Next) and (Next.ReservedType = rtColon) then begin
+        // followed by a ':' ? it's an identifier
+        DecPrevLineIndent;
+        FCurrentToken.SetReservedType(rtNothing);
       end;
 
     rtFuncDirective, rtDefault: begin
@@ -1189,10 +1189,14 @@ begin
 
     rtForward: begin
         Assert(False, '.CheckIndent: rtForward');
-        if FStack.GetTopType in [rtProcedure, rtProcDeclare] then
-          FStack.Pop
-        else
+        if FStack.GetTopType in [rtProcedure, rtProcDeclare] then begin
+          // todo: This fails because rtProcDeclare is removed from the stack as soon as
+          //       a semicolon is encountered.
+          FStack.Pop;
+        end else begin
+          // we are not in a procedure or class declaration -> it's an identifier
           FCurrentToken.SetReservedType(rtNothing);
+        end;
       end;
 
     rtProcedure: begin
@@ -1331,7 +1335,7 @@ begin
 
     rtInterface: begin
         if PrevTokenIsRType(rtEquals) then begin
-          { declaration of a OLE object: IClass = interface [' dfgsgdf'] }
+          // declaration of a OLE object: IClass = interface ['GUID-goes-here']
           FStack.Push(rtClassDecl, 1);
         end else begin
           FIsInInterfacePart := True;
