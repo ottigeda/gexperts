@@ -63,23 +63,24 @@ type
     procedure FormatAsm(_NTmp: Integer);
     procedure AdjustSpacing(_CurrentToken, _PrevToken: TPascalToken; _TokenIdx: Integer);
 
-    {: return token with index Idx or nil if out of bounds }
+    ///<summary>
+    /// @returns the token at index Idx or nil if out of bounds </summary>
     function GetToken(_Idx: Integer): TPascalToken;
     ///<summary>
-    /// Get token with index Idx,
+    /// Get token at index Idx,
     /// @returns True and the Token if there is one
     ///          False and Token=nil if index is out of bounds </summary>
     function TryGetToken(_Idx: Integer; out _Token: TPascalToken): Boolean;
-
-    {: Check whether the token at index Idx has the reserved type RType
-       @param Idx is the index of the token to check
-       @param RType is the queried reserverd type
-       @returns true, if the token has the queried type, false otherwise }
+    ///<summary>
+    /// Check whether the token at index Idx has the reserved type RType
+    /// @param Idx is the index of the token to check
+    /// @param RType is the queried reserverd type
+    /// @returns true, if the token has the queried type, false otherwise </summary>
     function TokenAtIs(_Idx: Integer; _rType: TReservedType): Boolean;
 
-    function GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken; overload;
-    function GetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean; overload;
-    function GetNextNoComment(_StartPos: Integer; out _Token: TPascalToken): Boolean; overload;
+    function GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken;
+    function TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean; overload;
+    function TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken): Boolean; overload;
 
     function InsertBlankLines(_AtIndex, _NLines: Integer): TLineFeed;
     function AssertLineFeedAfter(_StartPos: Integer): TLineFeed;
@@ -186,7 +187,7 @@ begin
   // These were the easy cases.
   // Now we must detect whether a '<' is followed by a '>' with reasonable intermediate tokens.
 
-  if not GetNextNoComment(_TokenIdx, Next, Offset) then
+  if not TryGetNextNoComment(_TokenIdx, Next, Offset) then
     Exit; //==>
 
   // the next token must be an identifier (= rtNothing) (correct?)
@@ -194,7 +195,7 @@ begin
     Exit; //==>
 
   Idx := _TokenIdx + Offset;
-  while GetNextNoComment(Idx, Next, Offset) do begin
+  while TryGetNextNoComment(Idx, Next, Offset) do begin
     case Next.ReservedType of
       rtLogOper: begin
           if Next.GetExpression(exp) and (exp = '>') then begin
@@ -462,11 +463,11 @@ end;
 
 function TCodeFormatterFormatter.GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken;
 begin
-  if not GetNextNoComment(_StartPos, Result, _Offset) then
+  if not TryGetNextNoComment(_StartPos, Result, _Offset) then
     Result := nil;
 end;
 
-function TCodeFormatterFormatter.GetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean;
+function TCodeFormatterFormatter.TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean;
 begin
   _Offset := 0;
 
@@ -476,11 +477,11 @@ begin
   until not Result or (_Token.ReservedType <> rtComment);
 end;
 
-function TCodeFormatterFormatter.GetNextNoComment(_StartPos: Integer; out _Token: TPascalToken): Boolean;
+function TCodeFormatterFormatter.TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken): Boolean;
 var
   Offset: Integer;
 begin
-  Result := GetNextNoComment(_StartPos, _Token, Offset);
+  Result := TryGetNextNoComment(_StartPos, _Token, Offset);
 end;
 
 function TCodeFormatterFormatter.InsertBlankLines(_AtIndex, _NLines: Integer): TLineFeed;
@@ -512,7 +513,7 @@ var
   Next: TPascalToken;
   Offset: Integer;
 begin
-  if GetNextNoComment(_StartPos, Next, Offset) and (Next.ReservedType <> rtLineFeed) then
+  if TryGetNextNoComment(_StartPos, Next, Offset) and (Next.ReservedType <> rtLineFeed) then
     Result := InsertBlankLines(_StartPos + Offset, 1)
   else
     Result := FPrevLine;
@@ -849,8 +850,7 @@ begin
       FPrevToken := FPrevLine;
     end;
 
-    if GetNextNoComment(FTokenIdx, Next)
-      and (Next.ReservedType <> rtIf) then
+    if TryGetNextNoComment(FTokenIdx, Next) and (Next.ReservedType <> rtIf) then
       AssertLineFeedAfter(FTokenIdx);
   end;
 
@@ -928,7 +928,7 @@ begin
       end;
 
     rtClass: begin
-        if not (GetNextNoComment(FTokenIdx, Next)
+        if not (TryGetNextNoComment(FTokenIdx, Next)
           and (Next.ReservedType in [rtProcedure, rtProcDeclare, rtOf, rtVar])) then begin
           // not a "class function" or "class of" declaration
           FWrapIndent := False;
@@ -1090,7 +1090,7 @@ begin
           Dec(FTokenIdx);
         end;
 
-        if GetNextNoComment(FTokenIdx, Next) then begin
+        if TryGetNextNoComment(FTokenIdx, Next) then begin
           if Next.ReservedType in [rtElse, rtIfElse, rtBegin, rtEnd, rtUntil, rtExcept] then begin
             Assert(False, '.CheckIndent: setting WrapIndent to False');
             FWrapIndent := False;
