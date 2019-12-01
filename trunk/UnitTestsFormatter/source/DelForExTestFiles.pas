@@ -28,6 +28,8 @@ type
     procedure TearDown; override;
     procedure ExecuteDoubleClickAction; override;
   published
+    procedure testAbsoluteGlobal;
+    procedure testAbsoluteInProc;
     procedure testAbstractSealedClass;
     procedure testAngledBrackets;
     procedure testAnonymous;
@@ -111,6 +113,9 @@ type
     procedure testJustOpeningComment;
     procedure testJustOpeningStarCommentInAsm;
     procedure testLargeFile;
+    procedure testMultilineFunctionDirective1;
+    procedure testMultilineFunctionDirective2;
+    procedure testMultilineMethodDirective;
     procedure testNestedClass;
     procedure testNestedClass2;
     procedure testNestedClass3;
@@ -196,7 +201,8 @@ uses
   StrUtils,
   Dialogs,
   GX_CodeFormatterConfigHandler,
-  GX_DbugIntf;
+  GX_DbugIntf,
+  GX_dzAssertTrace;
 
 { TTestTestfiles }
 
@@ -298,6 +304,8 @@ begin
       TrimTrailingCrLf(st);
 // uncomment if you want to use e.g. BeyondCompare do the comparison
 //      st.SaveToFile('testcases\output\' + GetResultDir + '\' + Filename);
+      WriteTrace('d:\' + Filename + '.Log');
+      ClearTrace;
       CheckEquals(ExpectedText.Text, st.Text, 'error in output');
     except
       on e: ETestFailure do begin
@@ -431,6 +439,21 @@ end;
 procedure TTestTestfiles.testLargeFile;
 begin
   TestFile('LargeFile');
+end;
+
+procedure TTestTestfiles.testMultilineFunctionDirective1;
+begin
+  TestFile('MultilineFunctionDirective1');
+end;
+
+procedure TTestTestfiles.testMultilineFunctionDirective2;
+begin
+  TestFile('MultilineFunctionDirective2');
+end;
+
+procedure TTestTestfiles.testMultilineMethodDirective;
+begin
+  TestFile('MultilineMethodDirective');
 end;
 
 procedure TTestTestfiles.testNestedClass;
@@ -789,6 +812,16 @@ end;
 procedure TTestTestfiles.testGenericVariable;
 begin
   TestFile('GenericVariable');
+end;
+
+procedure TTestTestfiles.testAbsoluteGlobal;
+begin
+  TestFile('AbsoluteGlobal');
+end;
+
+procedure TTestTestfiles.testAbsoluteInProc;
+begin
+  TestFile('AbsoluteInProc');
 end;
 
 procedure TTestTestfiles.testAbstractSealedClass;
