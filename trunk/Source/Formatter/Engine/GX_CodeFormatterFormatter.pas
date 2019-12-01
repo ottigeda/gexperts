@@ -1269,7 +1269,7 @@ begin
             if not IsDelegate then begin
               Assert(False, '.CheckIndent: not IsDelegate');
 
-              if (FStack.nIndent > 0) then begin
+              if FStack.nIndent > 0 then begin
                 Assert(False, '.CheckIndent: Stack.nIndent > 0');
                 FStack.nIndent := 0;
                 SetPrevLineIndent(_NTmp);
@@ -1315,7 +1315,7 @@ begin
             //
           end else begin
             Assert(False, '.CheckIndent: no type declaration');
-            if (not FunctDeclare) and (not (FStack.GetTopType = rtClass)) then begin
+            if (not FunctDeclare) and (FStack.GetTopType <> rtClass) then begin
               Assert(False, '.CheckIndent: TopType <> rtClass');
               FStack.nIndent := 0;
               SetPrevLineIndent(_NTmp);
@@ -1541,9 +1541,8 @@ begin
           if (FStack.GetTopType = rtUses) and (Settings.NoIndentUsesComma) and (FPrevToken is TLineFeed) then
             SetPrevLineIndent(-1);
 
-        while not FStack.IsEmpty and (FStack.GetTopType in [rtDo, rtWhile,
-            rtProcDeclare, rtThen, rtProgram, rtUses, rtColon, rtClassDecl])
-          or (FStack.GetTopType = rtIfElse) do begin
+          while (FStack.GetTopType in
+            [rtDo, rtWhile, rtProcDeclare, rtThen, rtProgram, rtUses, rtColon, rtClassDecl, rtIfElse]) do begin
             Assert(False, '.CheckIndent: in while');
             FStack.Pop;
           end;
