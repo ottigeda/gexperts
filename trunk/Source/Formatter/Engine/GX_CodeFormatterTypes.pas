@@ -72,7 +72,7 @@ const
     rtCompIf, rtCompElse, rtCompEndif, rtVisibility];
 
   StandardDirectives = [rtDefault, rtAbsolute, rtVisibility, rtFuncDirective,
-    rtAbsolute, rtForward];
+    rtForward];
 
 type
   {: stores all known reserved words in lower case with their associated type,
