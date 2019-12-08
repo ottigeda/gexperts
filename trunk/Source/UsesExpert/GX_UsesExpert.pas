@@ -339,7 +339,6 @@ type
     procedure CopyStatusBarTextToClipboard;
     procedure DeleteFromStringGrid(sg: TStringGrid; const UnitName: string);
     function IndexInStringGrid(sg: TStringGrid; const UnitName: string): integer;
-    procedure FilterStringGrid(Filter: string; sg: TStringGrid);
     procedure DrawStringGridCell(_sg: TStringGrid; const _Text: string; const _Rect: TRect;
       _State: TGridDrawState; _Focused: Boolean; _Tag: integer);
     procedure SaveProjectListToDisk;
@@ -1773,32 +1772,43 @@ begin
   sg_SearchPath.Invalidate;
 end;
 
-procedure TfmUsesManager.FilterStringGrid(Filter: string; sg: TStringGrid);
-var
-  FilterList: TStrings;
-  List: TStrings;
-begin
-  FilterList := TStringList.Create;
-  try
-    List := sg.AssociatedList;
-    FilterStringList(List, FilterList, Filter, False);
-    TStringGrid_AssignCol(sg, 0, FilterList, True);
-    TGrid_Resize(sg, [roUseGridWidth, roUseAllRows]);
-  finally
-    FreeAndNil(FilterList);
-  end;
-end;
-
 procedure TfmUsesManager.FilterVisibleUnits;
-var
-  Filter: string;
-begin
-  Filter := Trim(edtUnitFilter.Text);
-  FilterStringGrid(Filter, sg_Favorite);
-  FilterStringGrid(Filter, sg_Project);
-  FilterStringGrid(Filter, sg_Common);
-  FilterStringGrid(Filter, sg_SearchPath);
 
+  procedure FilterStringGrid(Filter: TStrings; sg: TStringGrid);
+  var
+    FilterList: TStrings;
+    List: TStrings;
+  begin
+    FilterList := TStringList.Create;
+    try
+      List := sg.AssociatedList;
+      FilterStringListMatchAnywhere(List, FilterList, Filter, False);
+      TStringGrid_AssignCol(sg, 0, FilterList, True);
+      TGrid_Resize(sg, [roUseGridWidth, roUseAllRows]);
+    finally
+      FreeAndNil(FilterList);
+    end;
+  end;
+
+var
+  Filter: TStringList;
+  i: Integer;
+begin
+  Filter := TStringList.Create;
+  try
+    Filter.Delimiter := ' ';
+    Filter.DelimitedText := Trim(edtUnitFilter.Text);
+    for i := Filter.Count - 1 downto 0 do begin
+      if Filter[i] = '' then
+        Filter.Delete(i);
+    end;
+    FilterStringGrid(Filter, sg_Favorite);
+    FilterStringGrid(Filter, sg_Project);
+    FilterStringGrid(Filter, sg_Common);
+    FilterStringGrid(Filter, sg_SearchPath);
+  finally
+    FreeAndNil(Filter);
+  end;
   SelectFirstItemInLists;
 end;
 
@@ -1823,8 +1833,12 @@ begin
   try
     if Filter = '' then
       FilterList.Assign(FFavUnitsExports)
-    else
-      FilterStringList(FFavUnitsExports, FilterList, Filter, False, MatchAnywhere);
+    else begin
+      if MatchAnywhere then
+        FilterStringListMatchAnywhere(FFavUnitsExports, FilterList, Filter, False)
+      else
+        FilterStringListMatchStart(FFavUnitsExports, FilterList, Filter, False);
+    end;
     cnt := FilterList.Count;
     TGrid_SetNonfixedRowCount(sg_Identifiers, cnt);
     if cnt = 0 then

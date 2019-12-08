@@ -324,13 +324,17 @@ function EnsureStringInList(List: TStrings; const Item: string): string;
 ///                         false, check for the filter at the begin of the string
 /// @param returns True, if the string matches the filter
 ///                False, if it doesn't <summary>
-function StrMatchesFilter(const _Filter: string; _s: string;
-  _CaseSensitive: Boolean; _MatchAnywhere: Boolean): Boolean;
+//function StrMatchesFilter(const _Filter: string; _s: string;
+//  _CaseSensitive: Boolean; _MatchAnywhere: Boolean): Boolean;
 ///<summary>
 /// Calls StrMatchesFilter for each string in Source and adds it to Dest if it matches.
 /// Also adds the Source objects for matching strings. </summary>
-procedure FilterStringList(Source, Dest: TStrings; const Filter: string;
-    CaseSensitive: Boolean = True; MatchAnywhere: Boolean = True);
+procedure FilterStringListMatchStart(Source, Dest: TStrings; const Filter: string;
+  CaseSensitive: Boolean = True);
+procedure FilterStringListMatchAnywhere(Source, Dest: TStrings; const Filter: string;
+  CaseSensitive: Boolean = True);overload;
+procedure FilterStringListMatchAnywhere(Source, Dest: TStrings; Filter: TStrings;
+  CaseSensitive: Boolean = True); overload;
 procedure AddStringsPresentInString(Source, Dest: TStrings; const FilterString: string);
 // Return the comma text of a string list with a space after each comma
 function SpacedCommaText(Source: TStrings): string;
@@ -1885,27 +1889,91 @@ begin
   Result := List[Index]
 end;
 
-function StrMatchesFilter(const _Filter: string; _s: string;
-  _CaseSensitive: Boolean; _MatchAnywhere: Boolean): Boolean;
-begin
-  Result := (_Filter = '')
-    or (_MatchAnywhere and StrContains(_Filter, _s, _CaseSensitive))
-    or ((not _MatchAnywhere) and StrBeginsWith(_Filter, _s, _CaseSensitive));
-end;
-
-procedure FilterStringList(Source, Dest: TStrings; const Filter: string;
-    CaseSensitive: Boolean; MatchAnywhere: Boolean);
+procedure FilterStringListMatchStart(Source, Dest: TStrings; const Filter: string;
+  CaseSensitive: Boolean = True);
 var
   i: Integer;
 begin
   Assert(Assigned(Source) and Assigned(Dest));
   Dest.BeginUpdate;
   try
-    Dest.Clear;
-    for i := 0 to Source.Count - 1 do
-    begin
-      if StrMatchesFilter(Filter, Source[i], CaseSensitive, MatchAnywhere) then
-        Dest.AddObject(Source[i], Source.Objects[i]);
+    if Filter = '' then
+      Dest.Assign(Source)
+    else begin
+      Dest.Clear;
+      for i := 0 to Source.Count - 1 do begin
+        if StrBeginsWith(Filter, Source[i], CaseSensitive) then
+          Dest.AddObject(Source[i], Source.Objects[i]);
+      end;
+    end;
+  finally
+    Dest.EndUpdate;
+  end;
+end;
+
+//function StrMatchesFilter(const _Filter: string; _s: string;
+//  _CaseSensitive: Boolean; _MatchAnywhere: Boolean): Boolean;
+//begin
+//  Result := (_Filter = '')
+//    or (_MatchAnywhere and StrContains(_Filter, _s, _CaseSensitive))
+//    or ((not _MatchAnywhere) and StrBeginsWith(_Filter, _s, _CaseSensitive));
+//end;
+
+procedure FilterStringListMatchAnywhere(Source, Dest: TStrings; const Filter: string;
+  CaseSensitive: Boolean = True);
+var
+  i: Integer;
+  s: string;
+begin
+  Assert(Assigned(Source) and Assigned(Dest));
+  Dest.BeginUpdate;
+  try
+    if Filter = '' then begin
+      Dest.Assign(Source);
+    end else begin
+      Dest.Clear;
+      for i := 0 to Source.Count - 1 do begin
+        s := Source[i];
+        if StrContains(Filter, s, CaseSensitive) then
+          Dest.AddObject(s, Source.Objects[i]);
+      end;
+    end;
+  finally
+    Dest.EndUpdate;
+  end;
+end;
+
+procedure FilterStringListMatchAnywhere(Source, Dest: TStrings; Filter: TStrings;
+  CaseSensitive: boolean);
+
+  function StrMatchesAny(const _s: string; _Filter: TStrings; _CaseSensitive: Boolean): boolean;
+  var
+    i: integer;
+  begin
+    for i := 0 to _Filter.Count - 1 do begin
+      if not StrContains(_Filter[i], _s, _CaseSensitive) then begin
+        Result := False;
+        Exit; //==>
+      end;
+    end;
+    Result := True;
+  end;
+
+var
+  i: Integer;
+  s: string;
+begin
+  Assert(Assigned(Source) and Assigned(Dest) and Assigned(Filter));
+  Dest.BeginUpdate;
+  try
+    if Filter.Count = 0 then
+      Dest.Assign(Source)
+    else begin
+      for i := 0 to Source.Count - 1 do begin
+        s := Source[i];
+        if StrMatchesAny(s, Filter, CaseSensitive) then
+          Dest.AddObject(s, Source.Objects[i]);
+      end;
     end;
   finally
     Dest.EndUpdate;
@@ -1946,6 +2014,14 @@ begin
   else
     Result := CaseInsensitivePos(SubStr, Str) > 0;
 end;
+
+{function StrContains(const SubStr, Str: string; CaseSensitive: Boolean): Boolean;
+begin
+  if CaseSensitive then
+    Result := Pos(SubStr, Str) > 0
+  else
+    Result := CaseInsensitivePos(SubStr, Str) > 0;
+end;}
 
 function StrContainsWhiteSpace(const Str: string): Boolean;
 var

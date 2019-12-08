@@ -325,7 +325,7 @@ var
   Filter: string;
 begin
   Filter := Trim(ed_Filter.Text);
-  FilterStringList(FAvailable, lb_Warn.Items, Filter, False);
+  FilterStringListMatchAnywhere(FAvailable, lb_Warn.Items, Filter, False);
   SelectBestItem;
 end;
 
