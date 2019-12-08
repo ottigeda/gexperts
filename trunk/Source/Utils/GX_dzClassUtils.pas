@@ -20,6 +20,10 @@ procedure TStrings_GetAsSortedList(_st: TStrings; _sl: TStringList; _Duplicates:
 
 procedure TStrings_FreeWithObjects(_List: TStrings);
 
+///<summary>
+/// removes all empty strings from the list (does not trim, so strings containing spaces will remain) </summary>
+procedure TStrings_RemoveEmptyStrings(_List: TStrings);
+
 /// <summary>
 /// Frees all objects stored in the TStrings intance and returns the instance,
 /// meant to be called like
@@ -80,6 +84,16 @@ begin
     for i := 0 to _List.Count - 1 do
       TObject(_List[i]).Free;
     FreeAndNil(_List);
+  end;
+end;
+
+procedure TStrings_RemoveEmptyStrings(_List: TStrings);
+var
+  i: Integer;
+begin
+  for i := _List.Count - 1 downto 0 do begin
+    if _List[i] = '' then
+      _List.Delete(i);
   end;
 end;
 
@@ -272,3 +286,4 @@ begin
 end;
 
 end.
+
