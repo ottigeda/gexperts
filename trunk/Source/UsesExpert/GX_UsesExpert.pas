@@ -207,6 +207,7 @@ type
     mShowThisFileInWindowsExplorer: TMenuItem;
     mitAvailSep3: TMenuItem;
     mCopyThisIdentifierToTheClipboard: TMenuItem;
+    mSearchThisOnTheWeb: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -287,6 +288,7 @@ type
     procedure sg_ProjectSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
     procedure sg_SearchPathSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure mSearchThisOnTheWebClick(Sender: TObject);
     procedure rbMatchAnywareEnter(Sender: TObject);
     procedure rbMatchAtStartEnter(Sender: TObject);
   private
@@ -360,7 +362,7 @@ implementation
 {$R *.dfm}
 
 uses
-  Messages, Graphics, StrUtils, Math, ToolsAPI, Clipbrd,
+  Messages, Graphics, StrUtils, Math, ToolsAPI, Clipbrd, ShellAPI,
   GX_IdeUtils, GX_UsesManager, GX_dzVclUtils, GX_dzMapFileReader, GX_dzFileUtils,
 {$IFOPT D+}
   GX_DbugIntf,
@@ -2624,6 +2626,17 @@ begin
   CopyStatusBarTextToClipboard;
 end;
 
+procedure TfmUsesManager.mSearchThisOnTheWebClick(Sender: TObject);
+begin
+  // google the identifier name together with the unit name:
+  ShellExecute(0, 'open',
+    PChar('https://www.google.com/search?q=' +
+      sg_Identifiers.Cells[0, sg_Identifiers.Row] + ' ' +
+      sg_Identifiers.Cells[1, sg_Identifiers.Row]
+    ),
+    nil, nil, SW_SHOW);
+end;
+
 procedure TfmUsesManager.mShowThisFileInWindowsExplorerClick(Sender: TObject);
 begin
   OpenExplorerAndSelectFile(sbUCM.SimpleText);
@@ -2633,10 +2646,12 @@ procedure TfmUsesManager.pmuAvailPopup(Sender: TObject);
 // before popup of the units-list context menu
 var
   ThisSrc: TStringGrid;
+  IsIdentifiersTab: Boolean;
 begin
   ThisSrc := GetAvailableSourceList; // sg_*
-  Assert(Assigned(ThisSrc));
-  mCopyThisIdentifierToTheClipboard.Visible := (ThisSrc.Name = sg_Identifiers.Name);
+  IsIdentifiersTab := (ThisSrc = sg_Identifiers);
+  mCopyThisIdentifierToTheClipboard.Visible := IsIdentifiersTab;
+  mSearchThisOnTheWeb.Visible := IsIdentifiersTab;
 end;
 
 procedure TfmUsesManager.pmUCMStatusBarPopup(Sender: TObject);
