@@ -365,7 +365,7 @@ uses
 {$IFOPT D+}
   GX_DbugIntf,
 {$ENDIF D+}
-  GX_UsesExpertOptions, GX_MessageBox, GX_dzOsUtils;
+  GX_UsesExpertOptions, GX_MessageBox, GX_dzOsUtils, GX_dzClassUtils;
 
 { TUsesExpert }
 
@@ -1792,16 +1792,12 @@ procedure TfmUsesManager.FilterVisibleUnits;
 
 var
   Filter: TStringList;
-  i: Integer;
 begin
   Filter := TStringList.Create;
   try
     Filter.Delimiter := ' ';
     Filter.DelimitedText := Trim(edtUnitFilter.Text);
-    for i := Filter.Count - 1 downto 0 do begin
-      if Filter[i] = '' then
-        Filter.Delete(i);
-    end;
+    TStrings_RemoveEmptyStrings(Filter);
     FilterStringGrid(Filter, sg_Favorite);
     FilterStringGrid(Filter, sg_Project);
     FilterStringGrid(Filter, sg_Common);
@@ -1822,6 +1818,7 @@ var
   FilterList: TStrings;
   MatchAnywhere: Boolean;
   cnt: Integer;
+  MultiFilter: TStringList;
 begin
 {$IFOPT D+}
   SendDebug('Filtering identifiers');
@@ -1834,9 +1831,17 @@ begin
     if Filter = '' then
       FilterList.Assign(FFavUnitsExports)
     else begin
-      if MatchAnywhere then
-        FilterStringListMatchAnywhere(FFavUnitsExports, FilterList, Filter, False)
-      else
+      if MatchAnywhere then begin
+        MultiFilter := TStringList.Create;
+        try
+          MultiFilter.Delimiter := ' ';
+          MultiFilter.DelimitedText := Filter;
+          TStrings_RemoveEmptyStrings(MultiFilter);
+          FilterStringListMatchAnywhere(FFavUnitsExports, FilterList, MultiFilter, False);
+        finally
+          FreeAndNil(MultiFilter);
+        end;
+      end else
         FilterStringListMatchStart(FFavUnitsExports, FilterList, Filter, False);
     end;
     cnt := FilterList.Count;
