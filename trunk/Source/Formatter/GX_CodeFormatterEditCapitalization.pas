@@ -193,6 +193,7 @@ var
   s: string;
   sl: TGXUnicodeStringList;
   Idx: Integer;
+  yPos: Integer;
 begin
   s := ed_Search.Text;
   if s = '' then
@@ -204,7 +205,11 @@ begin
     sl.Find(s, Idx);
     if Idx >= sl.Count then
       Idx := sl.Count - 1;
-    FWords.CaretXY := Point(0, GXNativeInt(sl.Objects[Idx]) - 1);
+    if Idx >= 0 then
+      yPos := GXNativeInt(sl.Objects[Idx]) - 1
+    else
+      yPos := 0;
+    FWords.CaretXY := Point(0, yPos);
   finally
     FreeAndNil(sl);
   end;
