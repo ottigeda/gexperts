@@ -613,24 +613,8 @@ begin
 end;
 
 procedure TfmCodeFormatterConfig.b_EditCapitalizationClick(Sender: TObject);
-var
-  FileEditDlg: TfmCodeFormatterEditCapitalization;
-  Cur: TCursor;
 begin
-  Cur := Screen.Cursor;
-  Screen.Cursor := crHourGlass;
-  FileEditDlg := TfmCodeFormatterEditCapitalization.Create(Self);
-  try
-    FileEditDlg.ListToForm(FCapitalization);
-    Screen.Cursor := Cur;
-    if mrOk = FileEditDlg.ShowModal then begin
-      if FileEditDlg.IsChanged then
-        FileEditDlg.FormToList(FCapitalization);
-    end;
-  finally
-    Screen.Cursor := Cur;
-    FileEditDlg.Free;
-  end;
+  TfmCodeFormatterEditCapitalization.Execute(Self, FCapitalization);
 end;
 
 procedure TfmCodeFormatterConfig.ts_PreviewShow(Sender: TObject);

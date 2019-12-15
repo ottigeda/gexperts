@@ -64,6 +64,7 @@ type
     procedure HandleOnEnterList(Sender: TObject);
     procedure HandleOnExitList(Sender: TObject);
   public
+    class function Execute(_Owner: TWinControl; _Words: TGXUnicodeStringList): Boolean;
     constructor Create(_Owner: TComponent); override;
     procedure ListToForm(_Words: TGXUnicodeStringList);
     procedure FormToList(_Words: TGXUnicodeStringList);
@@ -80,6 +81,26 @@ uses
   GX_GxUtils;
 
 { TfmCodeFormatterCapitalization }
+
+class function TfmCodeFormatterEditCapitalization.Execute(_Owner: TWinControl;
+  _Words: TGXUnicodeStringList): Boolean;
+var
+  frm: TfmCodeFormatterEditCapitalization;
+begin
+  frm := TfmCodeFormatterEditCapitalization.Create(_Owner);
+  try
+    TForm_CenterOn(frm, _Owner);
+    frm.ListToForm(_Words);
+    Result := (frm.ShowModal = mrOk);
+    if Result then begin
+      Result := frm.IsChanged;
+      if Result then
+        frm.FormToList(_Words);
+    end;
+  finally
+    FreeAndNil(frm);
+  end;
+end;
 
 constructor TfmCodeFormatterEditCapitalization.Create(_Owner: TComponent);
 begin
