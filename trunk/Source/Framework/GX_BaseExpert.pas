@@ -8,6 +8,7 @@ uses
 type
   TGX_BaseExpert = class(TObject)
   private
+    FNoDisplaynameWarningSent: Boolean;
     FCallCount: Integer;
     function GetTotalCallCount: Integer;
     procedure SetTotalCallCount(Value: Integer);
@@ -157,7 +158,9 @@ begin
     begin
       if not GxLoadBitmapForExpert(BitmapFile, FBitmap) then
       begin
-        {$IFOPT D+} SendDebugError('Missing bitmap ' + BitmapFile + ' for ' + Self.ClassName); {$ENDIF}
+{$IF Declared(SendDebugError)}
+        SendDebugError('Missing bitmap ' + BitmapFile + ' for ' + Self.ClassName);
+{$IFEND}
         ShowGxMessageBox(TShowMissingIconMessage, ChangeFileExt(BitmapFile, '.bmp'));
       end;
     end
@@ -182,7 +185,12 @@ end;
 
 function TGX_BaseExpert.GetDisplayName: string;
 begin
-  {$IFOPT D+} SendDebugError('The expert ' + Self.ClassName + ' does not provide a human-readable name'); {$ENDIF D+}
+{$IF Declared(SendDebugWarning)}
+  if not FNoDisplaynameWarningSent then begin
+    SendDebugWarning('The expert ' + Self.ClassName + ' does not provide a human-readable name');
+    FNoDisplaynameWarningSent := True;
+  end;
+{$IFEND}
   Result := Self.ClassName;
 end;
 
@@ -193,7 +201,9 @@ end;
 
 class function TGX_BaseExpert.GetName: string;
 begin
-  {$IFOPT D+} SendDebugError('The expert ' + Self.ClassName + ' does not provide a Name'); {$ENDIF D+}
+  // This used to send an error to the debug window, but since there is nothing
+  // wrong with using the ClassName and it is also described as optional in the
+  // sample experts, we no longer do that.
   Result := Self.ClassName;
 end;
 
