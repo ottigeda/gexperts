@@ -67,7 +67,6 @@ type
     chk_IndentTryElse: TCheckBox;
     l_Capitalize: TLabel;
     ts_Align: TTabSheet;
-    OpenDialog: TOpenDialog;
     chk_WrapLines: TCheckBox;
     l_WrapAtPosition: TLabel;
     ed_WrapPosition: TEdit;
@@ -112,8 +111,6 @@ type
     mi_Import: TMenuItem;
     mi_Export: TMenuItem;
     b_Tools: TButton;
-    od_Import: TOpenDialog;
-    sd_Export: TSaveDialog;
     grp_ExtraIndentBefore: TGroupBox;
     grp_AlwaysBreakLine: TGroupBox;
     grp_ForceBlankLineBetween: TGroupBox;
@@ -124,7 +121,6 @@ type
     ed_CapitalizationFile: TEdit;
     b_CapitalizationSelect: TButton;
     rg_Capitalization: TRadioGroup;
-    od_CapitalizationFile: TOpenDialog;
     grp_ConfigPrecedence: TGroupBox;
     grp_DirectivesPreventFormatting: TGroupBox;
     l_MiscStart: TLabel;
@@ -578,29 +574,28 @@ end;
 
 procedure TfmCodeFormatterConfig.b_CapitalizationSelectClick(Sender: TObject);
 var
-  s: string;
+  fn: string;
 begin
-  od_CapitalizationFile.FileName := ed_CapitalizationFile.Text;
-  if not od_CapitalizationFile.Execute then
-    Exit;
+  fn := ed_CapitalizationFile.Text;
+  if not ShowOpenDialog('Capitalization file', 'txt', fn) then
+    Exit; //==>
 
-  s := od_CapitalizationFile.FileName;
-  if FileExists(s) then begin
+  if FileExists(fn) then begin
     if FCapitalization.Count > 0 then begin
       if mrYes <> MessageDlg(
         'Your current capitalization list is not empty and the file already exists.'#13#10
         + 'Do you want to discard your list and load the selected file instead?',
         mtWarning, [mbYes, mbCancel], 0) then
-        Exit;
+        Exit; //==>
     end;
-    FCapitalization.LoadFromFile(s);
+    FCapitalization.LoadFromFile(fn);
   end else begin
     if FCapitalization.Count > 0 then begin
-      FCapitalization.SaveToFile(s);
+      FCapitalization.SaveToFile(fn);
     end;
   end;
 
-  ed_CapitalizationFile.Text := s;
+  ed_CapitalizationFile.Text := fn;
 end;
 
 procedure TfmCodeFormatterConfig.b_HelpClick(Sender: TObject);
@@ -684,15 +679,17 @@ end;
 procedure TfmCodeFormatterConfig.mi_ImportClick(Sender: TObject);
 var
   Settings: TCodeFormatterSettings;
+  fn: string;
 begin
   grid_Spacing.EditorMode := False;
-  od_Import.FileName := 'DelForExOptions.ini';
-  if not od_Import.Execute then
-    Exit;
+
+  fn := 'DelForExOptions.ini';
+  if not ShowOpenDialog('Select formatter options to load', 'ini', fn) then
+    Exit; //==>
 
   Settings := TCodeFormatterSettings.Create;
   try
-    TCodeFormatterConfigHandler.ImportFromFile(od_Import.FileName, Settings);
+    TCodeFormatterConfigHandler.ImportFromFile(fn, Settings);
     SettingsToForm(Settings);
   finally
     Settings.Free;
@@ -705,16 +702,18 @@ end;
 procedure TfmCodeFormatterConfig.mi_ExportClick(Sender: TObject);
 var
   Settings: TCodeFormatterSettings;
+  fn: string;
 begin
   grid_Spacing.EditorMode := False;
-  sd_Export.FileName := 'DelForExOptions.ini';
-  if not sd_Export.Execute then
-    Exit;
+
+  fn := 'DelForExOptions.ini';
+  if not ShowSaveDialog('Formatter Options', 'ini', fn) then
+    Exit; //==>
 
   Settings := TCodeFormatterSettings.Create;
   try
     FormToSettings(Settings);
-    TCodeFormatterConfigHandler.ExportToFile(sd_Export.FileName, Settings);
+    TCodeFormatterConfigHandler.ExportToFile(fn, Settings);
   finally
     Settings.Free;
   end;

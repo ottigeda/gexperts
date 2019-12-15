@@ -756,11 +756,6 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
       OnClick = b_ToolsClick
     end
   end
-  object OpenDialog: TOpenDialog
-    Filter = 'Any file(*.*)|*.*|Text file (*.txt)|*.txt'
-    Left = 581
-    Top = 7
-  end
   object pm_Extra: TPopupMenu
     Left = 328
     Top = 40
@@ -779,25 +774,5 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
       Caption = 'Export ...'
       OnClick = mi_ExportClick
     end
-  end
-  object od_Import: TOpenDialog
-    Filter = 'INI-Files (*.ini)|*.ini|all files (*.*)|*.*'
-    Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing, ofDontAddToRecent]
-    Left = 240
-    Top = 280
-  end
-  object sd_Export: TSaveDialog
-    Filter = 'INI-Files (*.ini)|*.ini|all files (*.*)|*.*'
-    Options = [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist, ofNoReadOnlyReturn, ofEnableSizing, ofDontAddToRecent]
-    Left = 184
-    Top = 272
-  end
-  object od_CapitalizationFile: TOpenDialog
-    DefaultExt = 'txt'
-    Filter = 'text files (*.txt)|*.txt|all files (*.*)|*.*'
-    FilterIndex = 0
-    Options = [ofHideReadOnly, ofPathMustExist, ofEnableSizing]
-    Left = 304
-    Top = 288
   end
 end
