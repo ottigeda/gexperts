@@ -16,7 +16,7 @@ uses
 /// Bugfixed version of the FilCtrl SelectDirectory function with identical parameters
 /// The following bugs have been fixed:
 /// 1. Positioning the dialog works for all tested monitor combinations. This means
-///    not only that the correct monitor is being selected (which is already fixed
+///    not only that the correct monitor is being selected (which is already fixed in
 ///    Delphi 10.1 (and possibly earlier) but also that it is correctly centered
 ///    on that monitor.
 /// 2. The given directory is not only selected but the tree view is also scrolled
