@@ -48,18 +48,29 @@ uses
   Menus,
   GX_IdeUtils,
   GX_GExperts,
-  GX_About;
+  GX_About,
+  GX_CodeFormatterConfigHandler,
+  GX_CodeFormatterSettings;
 
 { TeCodeFormatterExpert }
 
 procedure TeCodeFormatterExpert.AddToCapitalization(const _Identifier: TGXUnicodeString);
 var
-  Settings: IExpertSettings;
+  Settings: TCodeFormatterSettings;
+  Timestamp: TDateTime;
 begin
   FExpert.AddToCapitalization(_Identifier);
 
-  Settings := GetSettings;
-  InternalSaveSettings(Settings);
+  Settings := FExpert.Engine.Settings;
+
+  Timestamp := Settings.CapFileTimestamp;
+  if TCodeFormatterConfigHandler.WriteCaptialization(Settings.CapitalizationFile, Settings.CapNames,
+    Timestamp) then begin
+    Settings.CapFileTimestamp := Timestamp;
+  end else begin
+    // The file has been changed since it was last read
+    // todo: Do something intelligent here
+  end;
 end;
 
 procedure TeCodeFormatterExpert.Configure;

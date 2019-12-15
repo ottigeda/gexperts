@@ -33,6 +33,7 @@ type
     procedure InternalSaveSettings(_Settings: IExpertSettings);
     function FormatFile(const _FileName: string): Boolean;
     procedure AddToCapitalization(const _Identifier: TGXUnicodeString);
+    property Engine: TCodeFormatterEngine read FEngine;
   end;
 
 implementation
@@ -41,7 +42,9 @@ uses
   IniFiles,
   ToolsAPI,
   GX_OtaUtils,
+{$IFOPT D+}
   GX_DbugIntf,
+{$ENDIF}
   GX_CodeFormatterGXConfigWrapper,
   GX_CodeFormatterTypes,
   GX_CodeFormatterConfig,
@@ -54,8 +57,9 @@ uses
 
 procedure XSendDebug(const Msg: string);
 begin //FI:W519
-{$IFOPT D+}SendDebug('GXFormatter: ' + Msg);
-{$ENDIF}
+{$IF Declared(SendDebug)}
+  SendDebug('GXFormatter: ' + Msg);
+{$IFEND}
 end;
 
 { TCodeFormatterExpert }
@@ -230,7 +234,7 @@ var
   FormattedBlockEnd: string;
 begin
   Result := False;
-  
+
   if not GxOtaTryGetCurrentSourceEditor(SourceEditor) then
     raise ECodeFormatter.Create(str_NoEditor);
   FileName := SourceEditor.FileName;
