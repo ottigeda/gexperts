@@ -32,7 +32,9 @@ type
     procedure InternalLoadSettings(_Settings: IExpertSettings);
     procedure InternalSaveSettings(_Settings: IExpertSettings);
     function FormatFile(const _FileName: string): Boolean;
-    procedure AddToCapitalization(const _Identifier: TGXUnicodeString);
+    ///<summary>
+    /// @returns True, if the captialization list was changed </summary>
+    function AddToCapitalization(const _Identifier: TGXUnicodeString): Boolean;
     property Engine: TCodeFormatterEngine read FEngine;
   end;
 
@@ -64,14 +66,19 @@ end;
 
 { TCodeFormatterExpert }
 
-procedure TCodeFormatterExpert.AddToCapitalization(const _Identifier: TGXUnicodeString);
+function TCodeFormatterExpert.AddToCapitalization(const _Identifier: TGXUnicodeString): Boolean;
 var
   Idx: Integer;
   sl: TGXUnicodeStringList;
+  old: TGXUnicodeString;
 begin
   sl := FEngine.Settings.CapNames;
-  if sl.Find(_Identifier, Idx) then
+  if sl.Find(_Identifier, Idx) then begin
+    old := sl[Idx];
+    Result := (old <> _Identifier);
     sl.Delete(Idx);
+  end else
+    Result := True;
   sl.Add(_Identifier);
 end;
 

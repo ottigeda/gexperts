@@ -59,17 +59,17 @@ var
   Settings: TCodeFormatterSettings;
   Timestamp: TDateTime;
 begin
-  FExpert.AddToCapitalization(_Identifier);
+  if FExpert.AddToCapitalization(_Identifier) then begin
+    Settings := FExpert.Engine.Settings;
 
-  Settings := FExpert.Engine.Settings;
-
-  Timestamp := Settings.CapFileTimestamp;
-  if TCodeFormatterConfigHandler.WriteCaptialization(Settings.CapitalizationFile, Settings.CapNames,
-    Timestamp) then begin
-    Settings.CapFileTimestamp := Timestamp;
-  end else begin
-    // The file has been changed since it was last read
-    // todo: Do something intelligent here
+    Timestamp := Settings.CapFileTimestamp;
+    if TCodeFormatterConfigHandler.WriteCaptialization(Settings.CapitalizationFile, Settings.CapNames,
+      Timestamp) then begin
+      Settings.CapFileTimestamp := Timestamp;
+    end else begin
+      // The file has been changed since it was last read
+      // todo: Do something intelligent here
+    end;
   end;
 end;
 
