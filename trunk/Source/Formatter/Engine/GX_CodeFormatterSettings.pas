@@ -79,8 +79,8 @@ type
     FeedElseIf: Boolean; {: line feed between else and if }
     FillNewWords: TCapfileModeSet; {: how to use the capitalization file }
     FeedAfterSemiColon: Boolean;
-    StartCommentOut: String; {: special comment to start unformatted section }
-    EndCommentOut: String; {: special comment to end unformatted section }
+    StartCommentOut: string; {: special comment to start unformatted section }
+    EndCommentOut: string; {: special comment to end unformatted section }
     CommentFunction: Boolean; {: add a function comment }
     CommentUnit: Boolean; {: add a unit comment }
     WrapLines: Boolean; {: wrap long lines }
@@ -104,8 +104,9 @@ type
   TCodeFormatterSettings = class
   private
     FSettings: TCodeFormatterEngineSettings;
-    FCapNames: TGxUnicodeStringList;
+    FCapNames: TGXUnicodeStringList;
     FCapFile: string;
+    FCapFileTimestamp: TDateTime;
     FShowDoneDialog: Boolean;
     FConfigPrecedence: TConfigPrecedenceArr;
     function GetConfigPrecedence(_Idx: TOneToThree): TConfigPrecedenceEnum;
@@ -161,8 +162,8 @@ type
     property FeedElseIf: Boolean read FSettings.FeedElseIf;
     property FillNewWords: TCapfileModeSet read FSettings.FillNewWords;
     property FeedAfterSemiColon: Boolean read FSettings.FeedAfterSemiColon;
-    property StartCommentOut: String read FSettings.StartCommentOut;
-    property EndCommentOut: String read FSettings.EndCommentOut;
+    property StartCommentOut: string read FSettings.StartCommentOut;
+    property EndCommentOut: string read FSettings.EndCommentOut;
     property CommentFunction: Boolean read FSettings.CommentFunction;
     property CommentUnit: Boolean read FSettings.CommentUnit;
     property WrapLines: Boolean read FSettings.WrapLines;
@@ -172,6 +173,7 @@ type
     property AlignVarPos: Byte read FSettings.AlignVarPos;
     property AlignVar: Boolean read FSettings.AlignVar;
     // settings for the wizard
+    property CapFileTimestamp: TDateTime read FCapFileTimestamp write FCapFileTimestamp;
     property CapitalizationFile: string read FCapFile write FCapFile;
   end;
 
@@ -188,9 +190,11 @@ uses
 constructor TCodeFormatterSettings.Create;
 begin
   inherited;
-  FCapNames := TGXUnicodeStringList.Create;
+  FCapNames := TGxUnicodeStringList.Create;
   FCapNames.Sorted := True;
-  FCapNames.Duplicates:= dupIgnore;
+  FCapNames.Duplicates := dupIgnore;
+
+  FCapFileTimestamp := -1;
 
   FShowDoneDialog := True;
   FSettings := BorlandDefaults;

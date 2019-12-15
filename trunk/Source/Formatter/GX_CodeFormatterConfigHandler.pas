@@ -13,7 +13,8 @@ uses
   Classes,
   IniFiles,
   GX_CodeFormatterSettings,
-  GX_CodeFormatterTypes;
+  GX_CodeFormatterTypes,
+  GX_GenericUtils;
 
 const
   FORMATTER_CONFIG_PREFIX = 'FormatterSettings-';
@@ -57,6 +58,29 @@ type
   public
     class procedure WriteSettings(_Writer: IConfigWriter; _Settings: TCodeFormatterSettings);
     class procedure ReadSettings(_Reader: IConfigReader; _Settings: TCodeFormatterSettings);
+    ///<summary>
+    /// Writes the capitalization list to the file, if that file is not younger than the
+    /// LastRead timestamp or LastRead is 0.
+    /// @param fn is the file name to write to (may be empty, then no writing is done)
+    /// @param List is the capitalization list to write
+    /// @param LastRead is the time the list was last read, or <0 if no check should be done
+    ///                 on return it contains the current last modified time of the file, either
+    ///                 because it has been written to (Result = True), or as it was on the disk
+    ///                 (Result = False)
+    ///                 If the file does not exist, it will contain 0.
+    /// @returns True when the file was written or the file name was empty
+    ///          False if the file's last modified time was newer than LastRead </summary>
+    class function WriteCaptialization(const _fn: string; _List: TGXUnicodeStringList;
+      var _LastRead: TDateTime): Boolean;
+    ///<summary>
+    /// Read the capitalization list from the given file. Also return's the file's last modified
+    /// timestamp. If the file could not be read, the capitalization list will be empty.
+    /// @param fn is the file to read, can be empty which will have the same effect as if the
+    ///           file doesn't exist.
+    /// @param List is the capitalization list
+    /// @param LastRead returns the last modified time stamp of the file or -1 if it doesn't exist </summary>
+    class procedure ReadCapitalization(const _fn: string; _List: TGXUnicodeStringList;
+      out _LastRead: TDateTime);
     class procedure ExportToFile(const _Filename: string; _Settings: TCodeFormatterSettings);
     class procedure ImportFromFile(const _Filename: string; _Settings: TCodeFormatterSettings);
     class procedure GetDefaultsList(_Defaults: TStrings);
@@ -136,6 +160,39 @@ end;
 
 { TCodeFormatterConfigHandler }
 
+class procedure TCodeFormatterConfigHandler.ReadCapitalization(const _fn: string; _List: TGXUnicodeStringList;
+  out _LastRead: TDateTime);
+begin
+  _List.Clear;
+
+  if _fn = '' then begin
+    _LastRead := -1;
+    Exit; //==>
+  end;
+
+  if not FileAge(_fn, _LastRead) then begin
+{$IF declared(SendDebugError)}
+    SendDebugError('Capitalization file does not exist: ' + _fn);
+{$IFEND}
+    _LastRead := -1;
+    Exit; //==>
+  end;
+
+  try
+    _List.LoadFromFile(_fn);
+{$IF Declared(SendDebug)}
+    SendDebug('Capitalization list has been read from ' + _fn);
+{$ifend}
+  except
+    on e: Exception do begin
+{$IF declared(SendDebugError)}
+      SendDebugError(e.Message + ' while loading the capitalization file');
+      _LastRead := -1;
+{$IFEND}
+    end;
+  end;
+end;
+
 class procedure TCodeFormatterConfigHandler.ReadSettings(_Reader: IConfigReader; _Settings: TCodeFormatterSettings);
 
   function ReadSpaceSet(const _Name: string; _Default: TSpaceSet): TSpaceSet;
@@ -148,26 +205,13 @@ var
   cps: set of TConfigPrecedenceEnum;
   cp: TConfigPrecedenceEnum;
   fn: string;
+  Timestamp: TDateTime;
 begin
   fn := ConfigInfo.ConfigPath + 'CodeFormatterCapitalization.txt';
   _Settings.CapitalizationFile := _Reader.ReadString('CapitalizationFile', fn);
-  _Settings.CapNames.Clear;
-  if (_Settings.CapitalizationFile <> '') then begin
-    if FileExists(_Settings.CapitalizationFile) then begin
-      try
-        _Settings.CapNames.LoadFromFile(_Settings.CapitalizationFile);
-      except
-{$IF declared(SendDebugError)}
-      on e: Exception do
-        SendDebugError(e.Message + ' while loading the capitalization file');
-{$IFEND}
-      end;
-    end else begin
-{$IF declared(SendDebugError)}
-      SendDebugError('Capitalization file does not exist: ' + _Settings.CapitalizationFile);
-{$IFEND}
-    end;
-  end;
+
+  ReadCapitalization(_Settings.CapitalizationFile, _Settings.CapNames, Timestamp);
+  _Settings.CapFileTimestamp := Timestamp;
 
   _Settings.ConfigPrecedence[1] := IntToConfigPrecedence(_Reader.ReadInteger('Precedence1', Ord(cpDirective)));
   _Settings.ConfigPrecedence[2] := IntToConfigPrecedence(_Reader.ReadInteger('Precedence2', Ord(cpIniFile)));
@@ -251,6 +295,40 @@ begin
   _Settings.Settings := ES;
 end;
 
+class function TCodeFormatterConfigHandler.WriteCaptialization(const _fn: string; _List: TGXUnicodeStringList;
+  var _LastRead: TDateTime): Boolean;
+var
+  CurrentTimestamp: TDateTime;
+begin
+  Result := True;
+
+  if _fn = '' then begin
+    _LastRead := -1;
+    Exit; //==>
+  end;
+
+  if FileAge(_fn, CurrentTimestamp) then begin
+    if (_LastRead >= 0) and (CurrentTimestamp > _LastRead) then begin
+      _LastRead := CurrentTimestamp;
+      Result := False;
+{$IF Declared(SendDebugWarning)}
+      SendDebugWarning('Capitalization file has changed since it was last read, not overwriting it.');
+{$ifend}
+      Exit; //==>
+    end;
+  end;
+
+  try
+    _List.SaveToFile(_fn);
+  except //FI:W501
+{$IF declared(SendDebugError)}
+    on e: Exception do
+      SendDebugError(e.Message + ' while saving the capitalization file');
+{$IFEND}
+  end;
+  FileAge(_fn, _LastRead);
+end;
+
 class procedure TCodeFormatterConfigHandler.WriteSettings(_Writer: IConfigWriter; _Settings: TCodeFormatterSettings);
 
   procedure WriteSpaceSet(const _Name: string; _Value: TSpaceSet);
@@ -258,6 +336,8 @@ class procedure TCodeFormatterConfigHandler.WriteSettings(_Writer: IConfigWriter
     _Writer.WriteInteger(_Name, SpaceSetToInt(_Value));
   end;
 
+var
+  Timestamp: TDateTime;
 begin
   WriteSpaceSet('SpaceOperators', _Settings.SpaceOperators);
   WriteSpaceSet('SpaceColon', _Settings.SpaceColon);
@@ -316,15 +396,15 @@ begin
 
   _Writer.WriteString('CapitalizationFile', string(_Settings.CapitalizationFile));
 
-  if _Settings.CapitalizationFile <> '' then begin
-    try
-      _Settings.CapNames.SaveToFile(string(_Settings.CapitalizationFile));
-    except //FI:W501
-{$IF declared(SendDebugError)}
-      on e: Exception do
-        SendDebugError(e.Message + ' while saving the capitalization file');
+  Timestamp := _Settings.CapFileTimestamp;
+  if WriteCaptialization(_Settings.CapitalizationFile, _Settings.CapNames, Timestamp) then begin
+    _Settings.CapFileTimestamp := Timestamp;
+  end else begin
+    // todo: Are there any better ways to handle this?
+    //       Maybe we could merge the files in this case.
+{$IF Declared(SendDebugWarning)}
+    SendDebugWarning('Any changes to the capitalization list are lost.');
 {$IFEND}
-    end;
   end;
 end;
 
