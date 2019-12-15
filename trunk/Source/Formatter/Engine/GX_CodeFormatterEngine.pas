@@ -1,6 +1,6 @@
 // the main code formatter engine, combines the parser and formatter do do the work
 // Original Author:     Egbert van Nes (http://www.dow.wau.nl/aew/People/Egbert_van_Nes.html)
-// Contributors:        Thomas Mueller (http://www.dummzeuch.de)
+// Contributors:        Thomas Mueller (https://blog.dummzeuch.de)
 //                      Jens Borrisholt (Jens@borrisholt.dk) - Cleaning up the code, and making it aware of several language features
 
 unit GX_CodeFormatterEngine;
@@ -21,23 +21,6 @@ uses
   GX_CodeFormatterTypes,
   GX_CodeFormatterTokens,
   GX_CodeFormatterSettings;
-
-(*
-WISHLIST:
-- suppress read-only file message
-- read capitalization from var const type blocks
-- sorting methods
-- Is it possible to insert a "user customisable" line or group of lines before each
-function/procedure, to allow the developer to comment it. Ex :
-
-{------------Name of the proc------------------------}  (Simple)
-
-{***************************
- * ...Comment ...
- * ...Comment ...
- ***************************/ (A few lines)}
-
- *)
 
 type
   TCodeFormatterEngine = class(TObject)
