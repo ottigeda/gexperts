@@ -1,4 +1,4 @@
-object fmCodeFormatterConfig: TfmCodeFormatterConfig
+inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
   Left = 532
   Top = 220
   HelpContext = 100

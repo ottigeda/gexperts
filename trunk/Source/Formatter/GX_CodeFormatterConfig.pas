@@ -26,7 +26,8 @@ uses
   GX_CodeFormatterEngine,
   GX_CodeFormatterSettings,
   GX_EnhancedEditor,
-  GX_GenericUtils;
+  GX_GenericUtils,
+  GX_BaseForm;
 
 type
   TStringGrid = class(Grids.TStringGrid)
@@ -44,7 +45,7 @@ type
   end;
 
 type
-  TfmCodeFormatterConfig = class(TForm)
+  TfmCodeFormatterConfig = class(TfmBaseForm)
     pc_Main: TPageControl;
     ts_Indent: TTabSheet;
     ts_Spacing: TTabSheet;
@@ -164,6 +165,7 @@ type
     procedure HandleCaptitalizationFileDropped(_Sender: TObject; _Files: TStrings);
     procedure m_PreviewFileDropped(_Sender: TObject; _Files: TStrings);
     procedure UpdatePreview;
+    procedure ChangeCapitalizationFile(const _fn: string);
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
@@ -262,7 +264,7 @@ end;
 
 procedure TfmCodeFormatterConfig.HandleCaptitalizationFileDropped(_Sender: TObject; _Files: TStrings);
 begin
-  ed_CapitalizationFile.Text := _Files[0];
+  ChangeCapitalizationFile(_Files[0]);
 end;
 
 procedure TfmCodeFormatterConfig.m_PreviewFileDropped(_Sender: TObject; _Files: TStrings);
@@ -567,15 +569,12 @@ begin
     ts_PreviewShow(nil);
 end;
 
-procedure TfmCodeFormatterConfig.b_CapitalizationSelectClick(Sender: TObject);
-var
-  fn: string;
+procedure TfmCodeFormatterConfig.ChangeCapitalizationFile(const _fn: string);
 begin
-  fn := ed_CapitalizationFile.Text;
-  if not ShowOpenDialog('Capitalization file', 'txt', fn) then
+  if SameText(ed_CapitalizationFile.Text, _fn) then
     Exit; //==>
 
-  if FileExists(fn) then begin
+  if FileExists(_fn) then begin
     if FCapitalization.Count > 0 then begin
       if mrYes <> MessageDlg(
         'Your current capitalization list is not empty and the file already exists.'#13#10
@@ -583,14 +582,24 @@ begin
         mtWarning, [mbYes, mbCancel], 0) then
         Exit; //==>
     end;
-    FCapitalization.LoadFromFile(fn);
+    FCapitalization.LoadFromFile(_fn);
   end else begin
     if FCapitalization.Count > 0 then begin
-      FCapitalization.SaveToFile(fn);
+      FCapitalization.SaveToFile(_fn);
     end;
   end;
 
-  ed_CapitalizationFile.Text := fn;
+  ed_CapitalizationFile.Text := _fn;
+end;
+
+procedure TfmCodeFormatterConfig.b_CapitalizationSelectClick(Sender: TObject);
+var
+  fn: string;
+begin
+  fn := ed_CapitalizationFile.Text;
+  if not ShowOpenDialog('Capitalization file', 'txt', fn) then
+    Exit; //==>
+  ChangeCapitalizationFile(fn);
 end;
 
 procedure TfmCodeFormatterConfig.b_HelpClick(Sender: TObject);
