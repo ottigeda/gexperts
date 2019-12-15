@@ -23,10 +23,11 @@ uses
   Buttons,
   ExtCtrls,
   GX_EnhancedEditor,
-  GX_GenericUtils;
+  GX_GenericUtils,
+  GX_BaseForm;
 
 type
-  TfmCodeFormatterEditCapitalization = class(TForm)
+  TfmCodeFormatterEditCapitalization = class(TfmBaseForm)
     p_Buttons: TPanel;
     TheActionList: TActionList;
     act_AllUpperCase: TAction;

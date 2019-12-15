@@ -3,10 +3,10 @@ unit GX_AutoTodoDone;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, Dialogs, StdCtrls;
+  SysUtils, Classes, Controls, Forms, Dialogs, StdCtrls, GX_BaseForm;
 
 type
-  TfmAutoTodoDone = class(TForm)
+  TfmAutoTodoDone = class(TfmBaseForm)
     lblMesssage: TLabel;
     btnOK: TButton;
     chkDontShowAgain: TCheckBox;

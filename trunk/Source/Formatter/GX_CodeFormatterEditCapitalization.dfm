@@ -1,4 +1,4 @@
-object fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
+inherited fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
   Left = 317
   Top = 211
   Width = 377

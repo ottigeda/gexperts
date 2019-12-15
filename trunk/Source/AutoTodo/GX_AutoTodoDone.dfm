@@ -1,4 +1,4 @@
-object fmAutoTodoDone: TfmAutoTodoDone
+inherited fmAutoTodoDone: TfmAutoTodoDone
   Left = 341
   Top = 244
   BorderIcons = []
