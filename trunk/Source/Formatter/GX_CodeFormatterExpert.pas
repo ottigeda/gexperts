@@ -63,7 +63,7 @@ end;
 procedure TCodeFormatterExpert.AddToCapitalization(const _Identifier: TGXUnicodeString);
 var
   Idx: Integer;
-  sl: TStringList;
+  sl: TGXUnicodeStringList;
 begin
   sl := FEngine.Settings.CapNames;
   if sl.Find(_Identifier, Idx) then

@@ -10,9 +10,11 @@ unit GX_CodeFormatterSettings;
 interface
 
 uses
+  SysUtils,
   Classes,
   GX_CodeFormatterTypes,
-  GX_CodeFormatterTokens;
+  GX_CodeFormatterTokens,
+  GX_GenericUtils;
 
 type
   TFeedBegin = (Unchanged, Hanging, NewLine);
@@ -102,9 +104,8 @@ type
   TCodeFormatterSettings = class
   private
     FSettings: TCodeFormatterEngineSettings;
-    FCapNames: TStringList;
+    FCapNames: TGxUnicodeStringList;
     FCapFile: string;
-    FUseCapFile: Boolean;
     FShowDoneDialog: Boolean;
     FConfigPrecedence: TConfigPrecedenceArr;
     function GetConfigPrecedence(_Idx: TOneToThree): TConfigPrecedenceEnum;
@@ -117,7 +118,7 @@ type
     procedure HandleCapitalization(_Word: TPascalToken);
 
     property Settings: TCodeFormatterEngineSettings read FSettings write SetSettings;
-    property CapNames: TStringList read FCapNames;
+    property CapNames: TGXUnicodeStringList read FCapNames;
     property ConfigPrecedence[_Idx: TOneToThree]: TConfigPrecedenceEnum read GetConfigPrecedence write SetConfigPrecedence;
 
     property SpaceOperators: TSpaceSet read FSettings.SpaceOperators;
@@ -172,7 +173,6 @@ type
     property AlignVar: Boolean read FSettings.AlignVar;
     // settings for the wizard
     property CapitalizationFile: string read FCapFile write FCapFile;
-    property UseCapitalizationFile: Boolean read FUseCapFile write FUseCapFile;
   end;
 
 function IntToCapfileMode(_Value: Integer): TCapfileModeSet;
@@ -181,8 +181,6 @@ function CapfileModeToInt(_Mode: TCapfileModeSet): Integer;
 implementation
 
 uses
-  SysUtils,
-  GX_GenericUtils,
   GX_CodeFormatterDefaultSettings;
 
 { TCodeFormatterSettings }
@@ -190,9 +188,8 @@ uses
 constructor TCodeFormatterSettings.Create;
 begin
   inherited;
-  FCapNames := TStringList.Create;
+  FCapNames := TGXUnicodeStringList.Create;
   FCapNames.Sorted := True;
-  FCapNames.CaseSensitive := False;
   FCapNames.Duplicates:= dupIgnore;
 
   FShowDoneDialog := True;

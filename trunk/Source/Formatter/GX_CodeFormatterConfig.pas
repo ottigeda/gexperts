@@ -116,8 +116,7 @@ type
     grp_ForceBlankLineBetween: TGroupBox;
     l_TryStyle: TLabel;
     cmb_FeedRoundTry: TComboBox;
-    rb_CapitalizationInRegistry: TRadioButton;
-    rb_CapitalizationInFile: TRadioButton;
+    l_CapitalizationInFile: TLabel;
     ed_CapitalizationFile: TEdit;
     b_CapitalizationSelect: TButton;
     rg_Capitalization: TRadioGroup;
@@ -145,8 +144,6 @@ type
     procedure mi_ResetToDefaultClick(Sender: TObject);
     procedure mi_ImportClick(Sender: TObject);
     procedure mi_ExportClick(Sender: TObject);
-    procedure rb_CapitalizationInRegistryClick(Sender: TObject);
-    procedure rb_CapitalizationInFileClick(Sender: TObject);
     procedure b_CapitalizationSelectClick(Sender: TObject);
     procedure lb_PrecedenceClick(Sender: TObject);
     procedure b_PrecedenceUpClick(Sender: TObject);
@@ -421,7 +418,6 @@ var
   i: Integer;
   Idx: Integer;
 begin
-  _Settings.UseCapitalizationFile := rb_CapitalizationInFile.Checked;
   _Settings.CapitalizationFile := ed_CapitalizationFile.Text;
   _Settings.CapNames.Assign(FCapitalization);
 
@@ -527,7 +523,6 @@ var
   cp: TConfigPrecedenceEnum;
   PrecedenceSet: set of TConfigPrecedenceEnum;
 begin
-  rb_CapitalizationInFile.Checked := _Settings.UseCapitalizationFile;
   ed_CapitalizationFile.Text := string(_Settings.CapitalizationFile);
   FCapitalization.Assign(_Settings.CapNames);
 
@@ -621,18 +616,6 @@ procedure TfmCodeFormatterConfig.HandleOnStatusChange(Sender: TObject; Changes: 
 begin
   if m_PreviewAfter.TopLine <> m_PreviewBefore.TopLine then
     m_PreviewAfter.TopLine := m_PreviewBefore.TopLine;
-end;
-
-procedure TfmCodeFormatterConfig.rb_CapitalizationInFileClick(Sender: TObject);
-begin
-  ed_CapitalizationFile.Enabled := True;
-  b_CapitalizationSelect.Enabled := True;
-end;
-
-procedure TfmCodeFormatterConfig.rb_CapitalizationInRegistryClick(Sender: TObject);
-begin
-  ed_CapitalizationFile.Enabled := False;
-  b_CapitalizationSelect.Enabled := False;
 end;
 
 procedure TfmCodeFormatterConfig.FormShow(Sender: TObject);

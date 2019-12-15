@@ -395,6 +395,13 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           Height = 13
           Caption = 'Identifiers'
         end
+        object l_CapitalizationInFile: TLabel
+          Left = 16
+          Top = 248
+          Width = 126
+          Height = 13
+          Caption = 'Capitalization stored in file'
+        end
         object chk_UpperCompDirectives: TCheckBox
           Left = 16
           Top = 24
@@ -446,38 +453,16 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           Height = 25
           Anchors = [akTop, akRight]
           Caption = 'Edit ...'
-          TabOrder = 8
+          TabOrder = 6
           OnClick = b_EditCapitalizationClick
         end
-        object rb_CapitalizationInRegistry: TRadioButton
-          Left = 16
-          Top = 232
-          Width = 353
-          Height = 13
-          Caption = 'Stored in Registry (slow for large lists)'
-          Checked = True
-          TabOrder = 6
-          TabStop = True
-          OnClick = rb_CapitalizationInRegistryClick
-        end
-        object rb_CapitalizationInFile: TRadioButton
-          Left = 16
-          Top = 248
-          Width = 353
-          Height = 14
-          Caption = 'Stored in File'
-          TabOrder = 7
-          TabStop = True
-          OnClick = rb_CapitalizationInFileClick
-        end
         object ed_CapitalizationFile: TEdit
-          Left = 32
+          Left = 16
           Top = 264
-          Width = 337
+          Width = 353
           Height = 21
           Anchors = [akLeft, akTop, akRight]
-          Enabled = False
-          TabOrder = 9
+          TabOrder = 7
         end
         object b_CapitalizationSelect: TButton
           Left = 377
@@ -486,15 +471,14 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           Height = 25
           Anchors = [akTop, akRight]
           Caption = 'Select ...'
-          Enabled = False
-          TabOrder = 10
+          TabOrder = 8
           OnClick = b_CapitalizationSelectClick
         end
         object rg_Capitalization: TRadioGroup
           Left = 8
           Top = 96
           Width = 385
-          Height = 121
+          Height = 129
           Caption = 'User Defined Capitalization'
           Items.Strings = (
             'Do not use list'
@@ -559,10 +543,7 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           Width = 13
           Height = 21
           Associate = ed_AlignCommentPos
-          Min = 0
-          Position = 0
           TabOrder = 2
-          Wrap = False
         end
         object chk_AlignVar: TCheckBox
           Left = 16
@@ -586,10 +567,7 @@ object fmCodeFormatterConfig: TfmCodeFormatterConfig
           Width = 13
           Height = 21
           Associate = ed_AlignVarPos
-          Min = 0
-          Position = 0
           TabOrder = 5
-          Wrap = False
         end
       end
       object ts_Misc: TTabSheet

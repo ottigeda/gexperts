@@ -65,6 +65,12 @@ type
 
 implementation
 
+uses
+{$IFOPT D+}
+  GX_DbugIntf,
+{$ENDIF}
+  GX_ConfigurationInfo;
+
 { TIniFileWrapper }
 
 constructor TIniFileWrapper.Create(_IniFile: TCustomIniFile);
@@ -141,14 +147,27 @@ var
   ES: TCodeFormatterEngineSettings;
   cps: set of TConfigPrecedenceEnum;
   cp: TConfigPrecedenceEnum;
+  fn: string;
 begin
-  _Settings.UseCapitalizationFile := _Reader.ReadBool('UseCapitalizationFile', False);
-  _Settings.CapitalizationFile := _Reader.ReadString('CapitalizationFile', '');
+  fn := ConfigInfo.ConfigPath + 'CodeFormatterCapitalization.txt';
+  _Settings.CapitalizationFile := _Reader.ReadString('CapitalizationFile', fn);
   _Settings.CapNames.Clear;
-  if _Settings.UseCapitalizationFile and (_Settings.CapitalizationFile <> '') and FileExists(_Settings.CapitalizationFile) then
-    _Settings.CapNames.LoadFromFile(_Settings.CapitalizationFile)
-  else
-    _Reader.ReadStrings('Capitalization', _Settings.CapNames);
+  if (_Settings.CapitalizationFile <> '') then begin
+    if FileExists(_Settings.CapitalizationFile) then begin
+      try
+        _Settings.CapNames.LoadFromFile(_Settings.CapitalizationFile);
+      except
+{$IF declared(SendDebugError)}
+      on e: Exception do
+        SendDebugError(e.Message + ' while loading the capitalization file');
+{$IFEND}
+      end;
+    end else begin
+{$IF declared(SendDebugError)}
+      SendDebugError('Capitalization file does not exist: ' + _Settings.CapitalizationFile);
+{$IFEND}
+    end;
+  end;
 
   _Settings.ConfigPrecedence[1] := IntToConfigPrecedence(_Reader.ReadInteger('Precedence1', Ord(cpDirective)));
   _Settings.ConfigPrecedence[2] := IntToConfigPrecedence(_Reader.ReadInteger('Precedence2', Ord(cpIniFile)));
@@ -295,17 +314,18 @@ begin
   _Writer.WriteInteger('Precedence2', Ord(_Settings.ConfigPrecedence[2]));
   _Writer.WriteInteger('Precedence3', Ord(_Settings.ConfigPrecedence[3]));
 
-  _Writer.WriteBool('UseCapitalizationFile', _Settings.UseCapitalizationFile);
   _Writer.WriteString('CapitalizationFile', string(_Settings.CapitalizationFile));
 
-  if _Settings.UseCapitalizationFile and (_Settings.CapitalizationFile <> '') then begin
+  if _Settings.CapitalizationFile <> '' then begin
     try
       _Settings.CapNames.SaveToFile(string(_Settings.CapitalizationFile));
     except //FI:W501
-        // ignore, file might be readonly
+{$IF declared(SendDebugError)}
+      on e: Exception do
+        SendDebugError(e.Message + ' while saving the capitalization file');
+{$IFEND}
     end;
-  end else
-    _Writer.WriteStrings('Capitalization', _Settings.CapNames);
+  end;
 end;
 
 class procedure TCodeFormatterConfigHandler.ExportToFile(const _Filename: string; _Settings: TCodeFormatterSettings);
