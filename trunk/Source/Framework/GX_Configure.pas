@@ -152,6 +152,7 @@ type
     procedure btnUsageClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure b_CustomFontForNewFormsClick(Sender: TObject);
+    procedure chkUseCustomFontClick(Sender: TObject);
   private
     FOIFont: TFont;
     FCPFont: TFont;
@@ -879,6 +880,15 @@ begin
                  (Sender as TCheckBox).Enabled;
 
   chkDefaultMultiLineTabDockHost.Enabled := EnableState;
+end;
+
+procedure TfmConfiguration.chkUseCustomFontClick(Sender: TObject);
+begin
+  if chkUseCustomFont.Checked then begin
+    Self.Font.Assign(dlgUIFont.Font);
+  end else begin
+    GxSetDefaultFont(Self);
+  end;
 end;
 
 procedure TfmConfiguration.btnConfigureToolBarClick(Sender: TObject);
