@@ -160,6 +160,19 @@ end;
 
 { TCodeFormatterConfigHandler }
 
+{$IFNDEF GX_DELPHI2006_UP}
+// the overloaded version of FileAge returning a TDateTime was introduced in Delphi 2006
+ function FileAge(const _fn: string; out FileDateTime: TDateTime): Boolean;
+var
+  FileModified: Integer;
+begin
+  FileModified := SysUtils.FileAge(_fn);
+  Result := (FileModified = -1);
+  if Result then
+    FileDateTime := FileDateToDateTime(FileModified)
+end;
+{$ENDIF}
+
 class procedure TCodeFormatterConfigHandler.ReadCapitalization(const _fn: string; _List: TGXUnicodeStringList;
   out _LastRead: TDateTime);
 begin
@@ -182,7 +195,7 @@ begin
     _List.LoadFromFile(_fn);
 {$IF Declared(SendDebug)}
     SendDebug('Capitalization list has been read from ' + _fn);
-{$ifend}
+{$IFEND}
   except
     on e: Exception do begin
 {$IF declared(SendDebugError)}
@@ -313,7 +326,7 @@ begin
       Result := False;
 {$IF Declared(SendDebugWarning)}
       SendDebugWarning('Capitalization file has changed since it was last read, not overwriting it.');
-{$ifend}
+{$IFEND}
       Exit; //==>
     end;
   end;
