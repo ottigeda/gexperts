@@ -10,7 +10,7 @@ uses
   GX_Zipper, AbArcTyp, AbUtils, GX_BaseForm, GX_GenericUtils;
 
 type
-  TBackupExpert = class;
+  TBackupProjectExpert = class;
 
   TBackupType = (btFile, btDir);
 
@@ -47,7 +47,7 @@ type
     FZipPassword: string;
     FProgressForm: TfmProgress;
     FCurrentBackupScope: TBackupScope;
-    FBackupExpert: TBackupExpert;
+    FBackupExpert: TBackupProjectExpert;
     FLibraryPath: TStringList;
     FFilesFoundNowhere: TStringList;
     FZipComponent: TGXZipper;
@@ -73,7 +73,7 @@ type
     destructor Destroy; override;
   end;
 
-  TBackupExpert = class(TGX_Expert)
+  TBackupProjectExpert = class(TGX_Expert)
   private
     FFollowLibraryPath: Boolean;
     FBackupInc: Boolean;
@@ -1129,7 +1129,7 @@ procedure TfmBackup.SaveSettings;
 var
   Settings: IExpertSettings;
 begin
-  Settings := TBackupExpert.GetSettings;
+  Settings := TBackupProjectExpert.GetSettings;
   // Do not localize.
   Settings.SaveForm('Window', Self);
   Settings.WriteString('LastZipDir', ExtractFilePath(FLastZipFile));
@@ -1140,7 +1140,7 @@ var
   Settings: IExpertSettings;
   fn: string;
 begin
-  Settings :=TBackupExpert.GetSettings;
+  Settings :=TBackupProjectExpert.GetSettings;
   // Do not localize.
   Settings.LoadForm('Window', Self);
 
@@ -1198,9 +1198,9 @@ begin
   FProgressForm.Progress.Position := Progress;
 end;
 
-{ TBackupExpert }
+{ TBackupProjectExpert }
 
-constructor TBackupExpert.Create;
+constructor TBackupProjectExpert.Create;
 begin
   inherited Create;
   FBackupType := btFile;
@@ -1213,19 +1213,19 @@ begin
   FIgnoreBackupFiles := True;
 end;
 
-function TBackupExpert.GetActionCaption: string;
+function TBackupProjectExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = '&Backup Project...';
 begin
   Result := SMenuCaption;
 end;
 
-class function TBackupExpert.GetName: string;
+class function TBackupProjectExpert.GetName: string;
 begin
   Result := 'BackupProject'; // Do not localize.
 end;
 
-procedure TBackupExpert.Execute(Sender: TObject);
+procedure TBackupProjectExpert.Execute(Sender: TObject);
 var
   Dlg: TfmBackup;
 begin
@@ -1241,7 +1241,7 @@ begin
   end;
 end;
 
-procedure TBackupExpert.Configure;
+procedure TBackupProjectExpert.Configure;
 var
   Dlg: TfmBackupConfig;
 begin
@@ -1280,7 +1280,7 @@ begin
   end;
 end;
 
-procedure TBackupExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TBackupProjectExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited InternalSaveSettings(_Settings);
   // Do not localize any of the following lines.
@@ -1296,7 +1296,7 @@ begin
   _Settings.WriteBool('IgnoreBackupFiles', FIgnoreBackupFiles);
 end;
 
-procedure TBackupExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TBackupProjectExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited InternalLoadSettings(_Settings);
   // Do not localize any of the following lines.
@@ -1313,7 +1313,7 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TBackupExpert);
+  RegisterGX_Expert(TBackupProjectExpert);
 
 end.
 
