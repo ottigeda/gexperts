@@ -6,6 +6,9 @@ uses
   ToolsAPI;
 
 type
+  ///<summary>
+  /// This dummy wizard is registerd with the IDE if another instance of GExperts has already
+  /// been installed. (See GX_LibrarySource.InitWizard) </summary>
   TDummyWizard = class(TNotifierObject, IOTAWizard)
   protected
     // IOTAWizard
