@@ -37,7 +37,7 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, Windows, Classes, Graphics, Forms, ActnList, Menus,
+  SysUtils, Windows, Classes, Graphics, ActnList, Menus,
   GX_GenericClasses, GX_ActionBroker, GX_ConfigurationInfo,
   GX_GExperts, GX_GenericUtils, GX_IdeUtils, GX_OtaUtils, Math,
   GX_KbdShortCutBroker;
