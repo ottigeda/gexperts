@@ -126,7 +126,7 @@ uses
   GX_GExperts, GX_ConfigurationInfo, GX_GxUtils, GX_GenericUtils, GX_IdeUtils;
 
 type
-  TASCIIExpert = class(TGX_Expert)
+  TAsciiChartExpert = class(TGX_Expert)
   protected
     procedure SetActive(New: Boolean); override;
   public
@@ -160,7 +160,7 @@ var
   Settings: IExpertSettings;
 begin
   KillHint;
-  Settings := TASCIIExpert.GetSettings;
+  Settings := TAsciiChartExpert.GetSettings;
     // Do not localize any of the following lines.
   Settings.WriteInteger('Font Size', FDisplayFontSize);
   Settings.WriteString('Font Name', FFontName);
@@ -521,9 +521,9 @@ begin
   cbxFontName.Perform(CB_SETDROPPEDWIDTH, 220, 0);
 end;
 
-{ TASCIIExpert }
+{ TAsciiChartExpert }
 
-procedure TASCIIExpert.Execute(Sender: TObject);
+procedure TAsciiChartExpert.Execute(Sender: TObject);
 begin
   if fmAsciiChart = nil then
   begin
@@ -536,31 +536,31 @@ begin
   IncCallCount;
 end;
 
-destructor TASCIIExpert.Destroy;
+destructor TAsciiChartExpert.Destroy;
 begin
   FreeAndNil(fmAsciiChart);
 
   inherited Destroy;
 end;
 
-function TASCIIExpert.GetActionCaption: string;
+function TAsciiChartExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = '&ASCII Chart';
 begin
   Result := SMenuCaption;
 end;
 
-class function TASCIIExpert.GetName: string;
+class function TAsciiChartExpert.GetName: string;
 begin
   Result := 'ASCIIChart'; // Do not localize.
 end;
 
-function TASCIIExpert.HasConfigOptions: Boolean;
+function TAsciiChartExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
 end;
 
-procedure TASCIIExpert.SetActive(New: Boolean);
+procedure TAsciiChartExpert.SetActive(New: Boolean);
 begin
   if New <> Active then
   begin
@@ -718,7 +718,7 @@ begin
   updFontSize.Max := MaximumDisplayFontSize;
   updFontSize.Min := MinimumDisplayFontSize;
 
-  Settings := TASCIIExpert.GetSettings;
+  Settings := TAsciiChartExpert.GetSettings;
   // Do not localize any of the following items.
   FDisplayFontSize := Settings.ReadInteger('Font Size', DefaultDisplayFontSize);
   FFontName := Settings.ReadString('Font Name', DefaultFontName);
@@ -752,6 +752,6 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TASCIIExpert);
+  RegisterGX_Expert(TAsciiChartExpert);
 end.
 
