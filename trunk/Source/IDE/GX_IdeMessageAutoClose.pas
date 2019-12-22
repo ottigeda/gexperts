@@ -1,4 +1,5 @@
 unit GX_IdeMessageAutoClose;
+
 {$I GX_CondDefine.inc}
 
 interface
@@ -32,10 +33,6 @@ uses
   GX_IdeDialogEnhancer,
   GX_GExperts;
 
-type
-  TWinControlHack = class(TWinControl)
-  end;
-
 {$IFDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
 // this expert does not work for Delphi 6 and 7, it causes access violations
 type
@@ -46,7 +43,9 @@ type
     procedure EnhanceForm(_Form: TForm); override;
   public
   end;
+{$ENDIF GX_VER170_up} // Delphi 9/2005 (BDS 2)
 
+{$IF declared(TMessageAutoClose)}
 var
   TheMessageAutoClose: TMessageAutoClose = nil;
 
@@ -85,35 +84,37 @@ begin
     GExpertsInst.TimedCloseMessageView;
   except
     on e: Exception do begin
-{$IFOPT D+}SendDebugError(e.Message + ' in TMessageAutoCloseComponent.BeforeDestruction');
-{$ENDIF}
+{$IF declared(SendDebugError)}
+      SendDebugError(e.Message + ' in TMessageAutoCloseComponent.BeforeDestruction');
+{$IFEND}
     end;
   end;
 end;
-{$ENDIF GX_VER170_up} // Delphi 9/2005 (BDS 2)
+{$IFEND}
 
 { TGxMessageAutoClose }
 
 class function TGxMessageAutoClose.GetEnabled: Boolean;
 begin
-{$IFDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
+{$IF declared(TMessageAutoClose)}
   Result := Assigned(TheMessageAutoClose);
 {$ELSE}
   Result := False;
-{$ENDIF GX_VER170_up} // Delphi 9/2005 (BDS 2)
+{$IFEND}
 end;
 
 class procedure TGxMessageAutoClose.SetEnabled(const Value: Boolean);
 begin
-{$IFDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
+{$IF declared(TMessageAutoClose)}
   if Value then begin
     if not Assigned(TheMessageAutoClose) then
       TheMessageAutoClose := TMessageAutoClose.Create
   end else
     FreeAndNil(TheMessageAutoClose);
-{$ENDIF GX_VER170_up} // Delphi 9/2005 (BDS 2)
+{$IFEND}
 end;
-{$IFDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
+
+{$IF declared(TMessageAutoClose)}
 
 { TMessageAutoClose }
 
@@ -147,6 +148,6 @@ begin
   cmp := TMessageAutoCloseComponent.Create(_Form, HintCount, WarningCount, ErrorCount);
   cmp.Name := GxMessageAutoCloseComponent;
 end;
-{$ENDIF GX_VER170_up} // Delphi 9/2005 (BDS 2)
+{$IFEND}
 
 end.
