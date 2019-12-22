@@ -133,7 +133,8 @@ type
     destructor Destroy; override;
   end;
 
-  TDependExpert = class(TGX_Expert)
+type
+  TProjectDependenciesExpert = class(TGX_Expert)
   protected
     procedure UpdateAction(Action: TCustomAction); override;
     procedure InternalSaveSettings(_Settings: IExpertSettings); override;
@@ -166,7 +167,7 @@ uses
 
 var
   fmProjDepend: TfmProjDepend = nil;
-  DependExpert: TDependExpert = nil;
+  DependExpert: TProjectDependenciesExpert = nil;
 
 type
   TProjectNotifier = class(TBaseIdeNotifier)
@@ -656,7 +657,7 @@ var
   Settings: IExpertSettings;
 begin
   // Do not localize.
-  Settings := TDependExpert.GetSettings;
+  Settings := TProjectDependenciesExpert.GetSettings;
   Settings.SaveForm('Window', Self);
   Settings.WriteString('ExcludedFiles', FFilterList.CommaText);
   Settings := Settings.Subkey('Window');
@@ -668,7 +669,7 @@ var
   Settings: IExpertSettings;
 begin
   // Do not localize.
-  Settings := TDependExpert.GetSettings;
+  Settings := TProjectDependenciesExpert.GetSettings;
   FFilterList.CommaText := Settings.ReadString('ExcludedFiles', '');
   Settings.LoadForm('Window', Self);
   Settings :=Settings.Subkey('Window');
@@ -1043,15 +1044,15 @@ begin
   end;
 end;
 
-{ TDependExpert }
+{ TProjectDependenciesExpert }
 
-constructor TDependExpert.Create;
+constructor TProjectDependenciesExpert.Create;
 begin
   inherited Create;
   DependExpert := Self;
 end;
 
-destructor TDependExpert.Destroy;
+destructor TProjectDependenciesExpert.Destroy;
 begin
   DependExpert := nil;
 
@@ -1060,7 +1061,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TDependExpert.SetActive(New: Boolean);
+procedure TProjectDependenciesExpert.SetActive(New: Boolean);
 begin
   if New <> Active then
   begin
@@ -1072,24 +1073,24 @@ begin
   end;
 end;
 
-function TDependExpert.GetActionCaption: string;
+function TProjectDependenciesExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = 'Project &Dependencies';
 begin
   Result := SMenuCaption;
 end;
 
-class function TDependExpert.GetName: string;
+class function TProjectDependenciesExpert.GetName: string;
 begin
   Result := 'ProjectDependencies';
 end;
 
-procedure TDependExpert.Configure;
+procedure TProjectDependenciesExpert.Configure;
 begin
   TfmProjDependOptions.Execute(nil, FScanEntireUnit, FSearchLibraryPath, FSearchBrowsingPath);
 end;
 
-procedure TDependExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TProjectDependenciesExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited InternalSaveSettings(_Settings);
   _Settings.WriteBool('ScanEntireUnit', FScanEntireUnit);
@@ -1097,7 +1098,7 @@ begin
   _Settings.WriteBool('SearchBrowsingPath', FSearchBrowsingPath);
 end;
 
-procedure TDependExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TProjectDependenciesExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited InternalLoadSettings(_Settings);
   FScanEntireUnit := _Settings.ReadBool('ScanEntireUnit', False);
@@ -1105,7 +1106,7 @@ begin
   FSearchBrowsingPath := _Settings.ReadBool('SearchBrowsingPath', False);
 end;
 
-procedure TDependExpert.Execute(Sender: TObject);
+procedure TProjectDependenciesExpert.Execute(Sender: TObject);
 begin
   if fmProjDepend = nil then
   begin
@@ -1120,17 +1121,17 @@ begin
   IncCallCount;
 end;
 
-function TDependExpert.IsDefaultActive: Boolean;
+function TProjectDependenciesExpert.IsDefaultActive: Boolean;
 begin
   Result := not RunningCPPBuilder;
 end;
 
-procedure TDependExpert.UpdateAction(Action: TCustomAction);
+procedure TProjectDependenciesExpert.UpdateAction(Action: TCustomAction);
 begin
   Action.Enabled := GxOtaHaveCurrentProject;
 end;
 
 initialization
-  RegisterGX_Expert(TDependExpert);
+  RegisterGX_Expert(TProjectDependenciesExpert);
 end.
 

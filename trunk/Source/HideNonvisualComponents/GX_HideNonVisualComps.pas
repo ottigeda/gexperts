@@ -11,7 +11,7 @@ uses
   GX_OtaUtils, Forms, SysUtils, Windows, GX_GenericUtils, Controls, Classes;
 
 type
-  THideNonVisualComps = class(TGX_Expert)
+  THideNonVisualCompsExpert = class(TGX_Expert)
   protected
     procedure UpdateAction(Action: TCustomAction); override;
     procedure ToggleNonVisualVisible(Form: TCustomForm);
@@ -24,9 +24,9 @@ type
     function HasDesignerMenuItem: Boolean; override;
   end;
 
-{ THideNonVisualComps }
+{ THideNonVisualCompsExpert }
 
-procedure THideNonVisualComps.Execute(Sender: TObject);
+procedure THideNonVisualCompsExpert.Execute(Sender: TObject);
 var
   DesignForm: TCustomForm;
 begin
@@ -39,32 +39,32 @@ begin
   ToggleNonVisualVisible(DesignForm);
 end;
 
-class function THideNonVisualComps.ConfigurationKey: string;
+class function THideNonVisualCompsExpert.ConfigurationKey: string;
 begin
   Result := 'HideNonVisualComps';
 end;
 
-function THideNonVisualComps.GetActionCaption: string;
+function THideNonVisualCompsExpert.GetActionCaption: string;
 begin
   Result := 'Hide/Show Non-Visual';
 end;
 
-class function THideNonVisualComps.GetName: string;
+class function THideNonVisualCompsExpert.GetName: string;
 begin
   Result := 'HideComponents';
 end;
 
-function THideNonVisualComps.HasConfigOptions: Boolean;
+function THideNonVisualCompsExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
 end;
 
-function THideNonVisualComps.HasDesignerMenuItem: Boolean;
+function THideNonVisualCompsExpert.HasDesignerMenuItem: Boolean;
 begin
   Result := True;
 end;
 
-procedure THideNonVisualComps.ToggleNonVisualVisible(Form: TCustomForm);
+procedure THideNonVisualCompsExpert.ToggleNonVisualVisible(Form: TCustomForm);
 const
   NonVisualClassName = 'TContainer';
 var
@@ -121,12 +121,12 @@ begin
   end;
 end;
 
-procedure THideNonVisualComps.UpdateAction(Action: TCustomAction);
+procedure THideNonVisualCompsExpert.UpdateAction(Action: TCustomAction);
 begin
   Action.Enabled := GxOtaCurrentlyEditingForm;
 end;
 
 initialization
-  RegisterGX_Expert(THideNonVisualComps);
+  RegisterGX_Expert(THideNonVisualCompsExpert);
 
 end.

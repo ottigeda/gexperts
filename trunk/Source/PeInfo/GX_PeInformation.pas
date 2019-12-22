@@ -123,7 +123,7 @@ uses
   GX_dzVclUtils, GX_PeInfoPrint;
 
 type
-  TPEExpert = class(TGX_Expert)
+  TPEInformationExpert = class(TGX_Expert)
   protected
     procedure SetActive(New: Boolean); override;
   public
@@ -137,7 +137,7 @@ type
 
 var
   fmPeInformation: TfmPeInformation = nil;
-  PeExpert: TPEExpert;
+  PeExpert: TPEInformationExpert;
 
 procedure SetListViewItem(AItem: TListItem; AValue: string);
 var
@@ -400,7 +400,7 @@ var
   Settings: IExpertSettings;
 begin
   // do not localize any of the below lines
-  Settings :=  TPEExpert.GetSettings;
+  Settings :=  TPEInformationExpert.GetSettings;
   Settings.SaveForm('Window', Self);
   Settings.WriteInteger('Numbers', Integer(NumberType));
   Settings.WriteString('BinPath', ExtractFilePath(FFileName));
@@ -411,7 +411,7 @@ var
   Settings: IExpertSettings;
 begin
   // do not localize any of the below lines
-  Settings :=  TPEExpert.GetSettings;
+  Settings :=  TPEInformationExpert.GetSettings;
   Settings.LoadForm('Window', Self);
   NumberType := TNumberType(Settings.ReadInteger('Numbers', Ord(ntHex)));
   FFileName := Settings.ReadString('BinPath', '');
@@ -868,21 +868,21 @@ begin
   end;
 end;
 
-{ TPEExpert }
+{ TPEInformationExpert }
 
-constructor TPEExpert.Create;
+constructor TPEInformationExpert.Create;
 begin
   inherited Create;
   PeExpert := Self;
 end;
 
-destructor TPEExpert.Destroy;
+destructor TPEInformationExpert.Destroy;
 begin
   PeExpert := nil;
   inherited;
 end;
 
-procedure TPEExpert.SetActive(New: Boolean);
+procedure TPEInformationExpert.SetActive(New: Boolean);
 begin
   if New <> Active then
   begin
@@ -897,19 +897,19 @@ begin
   end;
 end;
 
-function TPEExpert.GetActionCaption: string;
+function TPEInformationExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = 'P&E Information';
 begin
   Result := SMenuCaption;
 end;
 
-class function TPEExpert.GetName: string;
+class function TPEInformationExpert.GetName: string;
 begin
   Result := 'PEInformation';
 end;
 
-procedure TPEExpert.Execute(Sender: TObject);
+procedure TPEInformationExpert.Execute(Sender: TObject);
 begin
   if fmPeInformation = nil then
     fmPeInformation := TfmPeInformation.Create(nil);
@@ -919,14 +919,14 @@ begin
   IncCallCount;
 end;
 
-function TPEExpert.HasConfigOptions: Boolean;
+function TPEInformationExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
 end;
 
 procedure ShowPeInfo(CmdLine: PAnsiChar); cdecl; {$IFNDEF GX_BCB} export; {$ENDIF GX_BCB}
 var
-  PEExpertStandAlone: TPEExpert;
+  PEExpertStandAlone: TPEInformationExpert;
   fn: string;
 begin
   try
@@ -935,7 +935,7 @@ begin
     InitSharedResources;
     try
       {$IFOPT D+}SendDebug('Created CodeLib window');{$ENDIF}
-      PEExpertStandAlone := TPEExpert.Create;
+      PEExpertStandAlone := TPEInformationExpert.Create;
       PEExpertStandAlone.LoadSettings;
       fmPeInformation := TfmPeInformation.Create(nil);
       if Assigned(CmdLine) then begin
@@ -961,6 +961,6 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TPEExpert);
+  RegisterGX_Expert(TPEInformationExpert);
 end.
 
