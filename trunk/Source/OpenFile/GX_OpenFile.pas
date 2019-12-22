@@ -238,7 +238,6 @@ type
     constructor Create; override;
     destructor Destroy; override;
     function HasConfigOptions: Boolean; override;
-    function HasMenuItem: Boolean; override;
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     procedure InternalSaveSettings(_Settings: IExpertSettings); override;
     procedure Execute(Sender: TObject); override;
@@ -303,11 +302,6 @@ begin
 end;
 
 function TOpenFileExpert.HasConfigOptions: Boolean;
-begin
-  Result := True;
-end;
-
-function TOpenFileExpert.HasMenuItem: Boolean;
 begin
   Result := True;
 end;

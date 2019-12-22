@@ -136,7 +136,6 @@ type
     class function GetName: string; override;
     procedure Execute(Sender: TObject); override;
     function HasConfigOptions: Boolean; override;
-    function HasMenuItem: Boolean; override;
     procedure Configure; override;
     procedure UpdateAction(Action: TCustomAction); override;
   end;
@@ -498,11 +497,6 @@ begin
 end;
 
 function TProcedureListExpert.HasConfigOptions: Boolean;
-begin
-  Result := True;
-end;
-
-function TProcedureListExpert.HasMenuItem: Boolean;
 begin
   Result := True;
 end;

@@ -111,7 +111,6 @@ type
     procedure Execute(Sender: TObject); override;
     function GetActionCaption: string; override;
     function HasConfigOptions: Boolean; override;
-    function HasMenuItem: Boolean; override;
 
     property InitialExperts: TStrings read FInitialExperts;
     property InitialDisabledExperts: TStrings read FInitialDisabledExperts;
@@ -658,11 +657,6 @@ end;
 function TExpertManagerExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
-end;
-
-function TExpertManagerExpert.HasMenuItem: Boolean;
-begin
-  Result := True;
 end;
 
 { TShowDisableCurrentMessage }

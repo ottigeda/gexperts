@@ -108,7 +108,6 @@ type
     function GetActionCaption: string; override;
     class function GetName: string; override;
     function HasConfigOptions: Boolean; override;
-    function HasMenuItem: Boolean; override;
     procedure Execute(Sender: TObject); override;
   end;
 
@@ -192,11 +191,6 @@ end;
 function TBookmarksExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
-end;
-
-function TBookmarksExpert.HasMenuItem: Boolean;
-begin
-  Result := True;
 end;
 
 { TfmGxBookmarksForm }

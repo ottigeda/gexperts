@@ -72,7 +72,6 @@ type
     function GetActionCaption: string; override;
     class function GetName: string; override;
     function HasConfigOptions: Boolean; override;
-    function HasMenuItem: Boolean; override;
     procedure Configure; override;
     procedure Execute(Sender: TObject); override;
   end;
@@ -282,11 +281,6 @@ begin
 end;
 
 function TInsertAutoTodoExpert.HasConfigOptions: Boolean;
-begin
-  Result := True;
-end;
-
-function TInsertAutoTodoExpert.HasMenuItem: Boolean;
 begin
   Result := True;
 end;
