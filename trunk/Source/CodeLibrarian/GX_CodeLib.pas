@@ -247,7 +247,7 @@ type
     property Layout: TCodeLayout read FLayout write SetLayout;
   end;
 
-  TCodeLibExpert = class(TGX_Expert)
+  TCodeLibrarianExpert = class(TGX_Expert)
   protected
     FCodeLibForm: TfmCodeLib;
     procedure SetActive(New: Boolean); override;
@@ -843,7 +843,7 @@ procedure TfmCodeLib.SaveSettings;
 var
   Settings: IExpertSettings;
 begin
-  Settings := TCodeLibExpert.GetSettings;
+  Settings := TCodeLibrarianExpert.GetSettings;
   // Do not localize any of the following lines.
   Settings.WriteString('StoragePath', StoragePath);
   Settings.SaveFont('Editor', FCodeText.Font);
@@ -862,7 +862,7 @@ procedure TfmCodeLib.LoadSettings;
 var
   Settings: IExpertSettings;
 begin
-  Settings := TCodeLibExpert.GetSettings;
+  Settings := TCodeLibrarianExpert.GetSettings;
   // Do not localize any of the following lines.
   StoragePath := Settings.ReadString('StoragePath', StoragePath);
   Settings.LoadFont('Editor', FCodeText.Font);
@@ -1306,15 +1306,15 @@ begin
   Result := ReadOnlyCodeLibDBMsg;
 end;
 
-{ TCodeLibExpert }
+{ TCodeLibrarianExpert }
 
-destructor TCodeLibExpert.Destroy;
+destructor TCodeLibrarianExpert.Destroy;
 begin
   FreeAndNil(FCodeLibForm);
   inherited;
 end;
 
-procedure TCodeLibExpert.SetActive(New: Boolean);
+procedure TCodeLibrarianExpert.SetActive(New: Boolean);
 begin
   if New <> Active then
   begin
@@ -1333,19 +1333,19 @@ begin
   end;
 end;
 
-function TCodeLibExpert.GetActionCaption: string;
+function TCodeLibrarianExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = 'Code &Librarian';
 begin
   Result := SMenuCaption;
 end;
 
-class function TCodeLibExpert.GetName: string;
+class function TCodeLibrarianExpert.GetName: string;
 begin
   Result := 'CodeLibrarian';
 end;
 
-procedure TCodeLibExpert.Execute(Sender: TObject);
+procedure TCodeLibrarianExpert.Execute(Sender: TObject);
 resourcestring
   SSetConfigPath = 'You must set the configuration path in the GExperts Options dialog for the Code Librarian to work.';
 begin
@@ -1363,12 +1363,12 @@ begin
   IncCallCount;
 end;
 
-function TCodeLibExpert.HasConfigOptions: Boolean;
+function TCodeLibrarianExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
 end;
 
-procedure TCodeLibExpert.CreateCodeLibForm;
+procedure TCodeLibrarianExpert.CreateCodeLibForm;
 begin
   {$IFOPT D+}SendDebug('Creating CodeLib form');{$ENDIF}
   if FCodeLibForm = nil then
@@ -1380,14 +1380,14 @@ end;
 
 procedure ShowCodeLib;
 var
-  CodeLibStandAlone: TCodeLibExpert;
+  CodeLibStandAlone: TCodeLibrarianExpert;
 begin
   {$IFOPT D+} SendDebug('Showing CodeLib expert'); {$ENDIF}
   CodeLibStandAlone := nil;
   InitSharedResources;
   try
     {$IFOPT D+} SendDebug('Created CodeLib window'); {$ENDIF}
-    CodeLibStandAlone := TCodeLibExpert.Create;
+    CodeLibStandAlone := TCodeLibrarianExpert.Create;
     CodeLibStandAlone.LoadSettings;
     CodeLibStandAlone.CreateCodeLibForm;
     CodeLibStandAlone.FCodeLibForm.ShowModal;
@@ -1693,7 +1693,7 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TCodeLibExpert);
+  RegisterGX_Expert(TCodeLibrarianExpert);
 
 end.
 

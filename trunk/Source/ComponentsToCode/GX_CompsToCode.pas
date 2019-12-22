@@ -36,7 +36,7 @@ type
     Language: TCToCLanguage;
   end;
 
-  TCompsToCodeExpert = class(TGX_Expert)
+  TComponentsToCodeExpert = class(TGX_Expert)
   protected
     procedure UpdateAction(Action: TCustomAction); override;
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
@@ -342,9 +342,9 @@ begin
   FCodeText.Text := DoGetCreationCode(FSettings, [Edit1, SpeedButton1]);
 end;
 
-{ TCompsToCodeExpert }
+{ TComponentsToCodeExpert }
 
-constructor TCompsToCodeExpert.Create;
+constructor TComponentsToCodeExpert.Create;
 begin
   inherited;
   if RunningCPPBuilder then
@@ -353,19 +353,19 @@ begin
     FSettings.Language := lPascal; // This is only a default and is configurable in the dialog
 end;
 
-function TCompsToCodeExpert.GetActionCaption: string;
+function TComponentsToCodeExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = '&Components to Code';
 begin
   Result := SMenuCaption;
 end;
 
-class function TCompsToCodeExpert.GetName: string;
+class function TComponentsToCodeExpert.GetName: string;
 begin
   Result := 'ComponentsToCode';
 end;
 
-procedure TCompsToCodeExpert.Execute(Sender: TObject);
+procedure TComponentsToCodeExpert.Execute(Sender: TObject);
 var
   Comps: TComponentArray;
 begin
@@ -382,7 +382,7 @@ begin
   end;
 end;
 
-procedure TCompsToCodeExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TComponentsToCodeExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited InternalLoadSettings(_Settings);
   // Do not localize any of the below items.
@@ -393,7 +393,7 @@ begin
   FSettings.Language := TCToCLanguage(_Settings.ReadEnumerated('Language', TypeInfo(TCToCLanguage), Ord(FSettings.Language)));
 end;
 
-procedure TCompsToCodeExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TComponentsToCodeExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited InternalSaveSettings(_Settings);
   // Do not localize any of the below items.
@@ -404,7 +404,7 @@ begin
   _Settings.WriteEnumerated('Language', TypeInfo(TCToCLanguage), Ord(FSettings.Language));
 end;
 
-procedure TCompsToCodeExpert.Configure;
+procedure TComponentsToCodeExpert.Configure;
 var
   Dlg: TfmCompsToCode;
 begin
@@ -459,7 +459,7 @@ begin
   end;
 end;
 
-function TCompsToCodeExpert.GetDesignerComps: TComponentArray;
+function TComponentsToCodeExpert.GetDesignerComps: TComponentArray;
 var
   FormEditor: IOTAFormEditor;
   AComponent: IOTAComponent;
@@ -493,12 +493,12 @@ begin
   SetLength(Result, Count);
 end;
 
-procedure TCompsToCodeExpert.UpdateAction(Action: TCustomAction);
+procedure TComponentsToCodeExpert.UpdateAction(Action: TCustomAction);
 begin
   Action.Enabled := GxOtaCurrentlyEditingForm;
 end;
 
-function TCompsToCodeExpert.HasDesignerMenuItem: Boolean;
+function TComponentsToCodeExpert.HasDesignerMenuItem: Boolean;
 begin
   Result := True;
 end;
@@ -1115,7 +1115,7 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TCompsToCodeExpert);
+  RegisterGX_Expert(TComponentsToCodeExpert);
 
 end.
 

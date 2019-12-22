@@ -110,12 +110,12 @@ uses
   GX_IdeUtils, Graphics, GX_GxUtils, TypInfo, GX_dzVclUtils, GX_dzClassUtils;
 
 type
-  TCompRenameExpert = class;
+  TRenameComponentsExpert = class;
 
   TCompRenameNotifier = class(TInterfacedObject, IGxEditorNotification)
   private
     FChangeServiceNotifierIndex: Integer;
-    FClient: TCompRenameExpert;
+    FClient: TRenameComponentsExpert;
   protected
     // IGxEditorNotification
     procedure NewModuleOpened(const Module: IOTAModule);
@@ -128,13 +128,13 @@ type
   protected
     procedure Attach;
   public
-    constructor Create(const Client: TCompRenameExpert);
+    constructor Create(const Client: TRenameComponentsExpert);
     destructor Destroy; override;
 
     procedure Detach;
   end;
 
-  TCompRenameExpert = class(TGX_Expert)
+  TRenameComponentsExpert = class(TGX_Expert)
   private
     FCompRenameNotifier: TCompRenameNotifier;
     FRenameRuleListVcl: TStringList;
@@ -183,7 +183,7 @@ resourcestring
   SPropertyNotFound = 'Property not found';
 
 var
-  PrivateCompRenameExpert: TCompRenameExpert;
+  PrivateCompRenameExpert: TRenameComponentsExpert;
 
 { TfmCompRename }
 
@@ -533,7 +533,7 @@ begin
     FClient.ComponentRenamed(FormEditor, Component, OldName, NewName);
 end;
 
-constructor TCompRenameNotifier.Create(const Client: TCompRenameExpert);
+constructor TCompRenameNotifier.Create(const Client: TRenameComponentsExpert);
 begin
   inherited Create;
 
@@ -585,9 +585,9 @@ begin // FI:W519
   // Nothing
 end;
 
-{ TCompRenameExpert }
+{ TRenameComponentsExpert }
 
-function  TCompRenameExpert.GetActiveRenameRuleList: TStringList;
+function  TRenameComponentsExpert.GetActiveRenameRuleList: TStringList;
 begin
   if GxOtaActiveDesignerIsFMX then begin
     Result := FRenameRuleListFmx;
@@ -598,7 +598,7 @@ begin
 end;
 
 
-procedure TCompRenameExpert.AddNewClass(const AClassName: WideString);
+procedure TRenameComponentsExpert.AddNewClass(const AClassName: WideString);
 var
   RuleList: TStringList;
 begin
@@ -614,7 +614,7 @@ begin
   end;
 end;
 
-procedure TCompRenameExpert.Execute(Sender: TObject);
+procedure TRenameComponentsExpert.Execute(Sender: TObject);
 var
   SelCount: Integer;
   CurrentComponent: IOTAComponent;
@@ -638,12 +638,12 @@ begin
   IncCallCount;
 end;
 
-procedure TCompRenameExpert.Configure;
+procedure TRenameComponentsExpert.Configure;
 begin
   Configure('');
 end;
 
-procedure TCompRenameExpert.Configure(const _Selected: string);
+procedure TRenameComponentsExpert.Configure(const _Selected: string);
 begin
 //    SetFormIcon(Dialog);
   FRenameRuleListVcl.Sort;
@@ -653,7 +653,7 @@ begin
     SaveSettings;
 end;
 
-procedure TCompRenameExpert.HandleOnImport(_Sender: TObject);
+procedure TRenameComponentsExpert.HandleOnImport(_Sender: TObject);
 var
   GXSettings: TGExpertsSettings;
   Settings: IExpertSettings;
@@ -681,7 +681,7 @@ begin
   (_Sender as TfmCompRenameConfig).SetData(FRenameRuleListVcl, FShowDialog, FAutoAddClasses, FFormWidth, FFormHeight, '');
 end;
 
-procedure TCompRenameExpert.HandleOnExport(_Sender: TObject);
+procedure TRenameComponentsExpert.HandleOnExport(_Sender: TObject);
 var
   GXSettings: TGExpertsSettings;
   Settings: IExpertSettings;
@@ -707,7 +707,7 @@ begin
   end;
 end;
 
-procedure TCompRenameExpert.ComponentRenamed(const FormEditor: IOTAFormEditor;
+procedure TRenameComponentsExpert.ComponentRenamed(const FormEditor: IOTAFormEditor;
     Component: IOTAComponent; const OldName, NewName: WideString);
 begin
   // Bug: Delphi 8 can not set string properties on components
@@ -733,7 +733,7 @@ begin
   end;
 end;
 
-constructor TCompRenameExpert.Create;
+constructor TRenameComponentsExpert.Create;
 begin
   inherited Create;
   PrivateCompRenameExpert := Self;
@@ -748,7 +748,7 @@ begin
   AddNotifier;
 end;
 
-destructor TCompRenameExpert.Destroy;
+destructor TRenameComponentsExpert.Destroy;
 begin
   PrivateCompRenameExpert := nil;
   RemoveNotifier;
@@ -762,7 +762,7 @@ begin
   inherited;
 end;
 
-function TCompRenameExpert.DoRename(const Component: IOTAComponent; UseRules: Boolean): TModalResult;
+function TRenameComponentsExpert.DoRename(const Component: IOTAComponent; UseRules: Boolean): TModalResult;
 var
   i: Integer;
   Pipe1Pos: Integer;
@@ -969,7 +969,7 @@ begin
   end
 end;
 
-procedure TCompRenameExpert.DoOnTimer(Sender: TObject);
+procedure TRenameComponentsExpert.DoOnTimer(Sender: TObject);
 var
   i: Integer;
   FormName: WideString;
@@ -1009,19 +1009,19 @@ begin
   end;
 end;
 
-procedure TCompRenameExpert.FormEditorModified(const FormEditor: IOTAFormEditor);
+procedure TRenameComponentsExpert.FormEditorModified(const FormEditor: IOTAFormEditor);
 begin // FI:W519
   // Nothing
 end;
 
-function TCompRenameExpert.GetActionCaption: string;
+function TRenameComponentsExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = 'Rename Components...';
 begin
   Result := SMenuCaption;
 end;
 
-function TCompRenameExpert.GetClassRenameRule(const AClassName: WideString): WideString;
+function TRenameComponentsExpert.GetClassRenameRule(const AClassName: WideString): WideString;
 var
   RuleList: TStringList;
 begin
@@ -1030,27 +1030,27 @@ begin
   Result := RuleList.Values[AClassName];
 end;
 
-function TCompRenameExpert.GetDefaultShortCut: TShortCut;
+function TRenameComponentsExpert.GetDefaultShortCut: TShortCut;
 begin
   Result := Menus.ShortCut(VK_F2, [ssShift]);
 end;
 
-class function TCompRenameExpert.GetName: string;
+class function TRenameComponentsExpert.GetName: string;
 begin
   Result := 'RenameComponents';
 end;
 
-function TCompRenameExpert.HasConfigOptions: Boolean;
+function TRenameComponentsExpert.HasConfigOptions: Boolean;
 begin
   Result := True;
 end;
 
-function TCompRenameExpert.HasDesignerMenuItem: Boolean;
+function TRenameComponentsExpert.HasDesignerMenuItem: Boolean;
 begin
   Result := True;
 end;
 
-procedure TCompRenameExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TRenameComponentsExpert.InternalLoadSettings(_Settings: IExpertSettings);
 var
   OtherProps: TStringList;
   i: Integer;
@@ -1114,7 +1114,7 @@ begin
   FreeAndNil(OtherProps);
 end;
 
-procedure TCompRenameExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TRenameComponentsExpert.InternalSaveSettings(_Settings: IExpertSettings);
 var
   i: Integer;
   OtherProps: TStringList;
@@ -1155,7 +1155,7 @@ begin
   end;
 end;
 
-function TCompRenameExpert.IsValidComponentName(const OldName, NewName: WideString; var Reason: WideString): Boolean;
+function TRenameComponentsExpert.IsValidComponentName(const OldName, NewName: WideString; var Reason: WideString): Boolean;
 resourcestring
   InalidIdent = 'Invalid identifier';
   DuplicateName = 'Duplicate name';
@@ -1179,7 +1179,7 @@ begin
   end;
 end;
 
-procedure TCompRenameExpert.SetActive(New: Boolean);
+procedure TRenameComponentsExpert.SetActive(New: Boolean);
 begin
   if New <> Active then
   begin
@@ -1191,13 +1191,13 @@ begin
   end;
 end;
 
-procedure TCompRenameExpert.AddNotifier;
+procedure TRenameComponentsExpert.AddNotifier;
 begin
   if not Assigned(FCompRenameNotifier) then
     FCompRenameNotifier := TCompRenameNotifier.Create(Self);
 end;
 
-procedure TCompRenameExpert.RemoveNotifier;
+procedure TRenameComponentsExpert.RemoveNotifier;
 begin
   if Assigned(FCompRenameNotifier) then
   begin
@@ -1206,7 +1206,7 @@ begin
   end;
 end;
 
-function TCompRenameExpert.IsDefaultComponentName(Component: IOTAComponent; const NewName: WideString): Boolean;
+function TRenameComponentsExpert.IsDefaultComponentName(Component: IOTAComponent; const NewName: WideString): Boolean;
 var
   Prefix: WideString;
   Suffix: WideString;
@@ -1223,7 +1223,7 @@ begin
     Result := True;
 end;
 
-function TCompRenameExpert.IsDefaultActive: Boolean;
+function TRenameComponentsExpert.IsDefaultActive: Boolean;
 begin
   // IDE Bug: This expert does not work under Delphi 8
   Result := not RunningDelphi8;
@@ -1320,7 +1320,7 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TCompRenameExpert);
+  RegisterGX_Expert(TRenameComponentsExpert);
 
 end.
 

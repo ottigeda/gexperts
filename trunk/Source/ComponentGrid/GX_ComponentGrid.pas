@@ -53,7 +53,7 @@ type
     destructor Destroy; override;
   end;
 
-  TGridExpert = class(TGX_Expert)
+  TComponentGridExpert = class(TGX_Expert)
   protected
     procedure UpdateAction(Action: TCustomAction); override;
   public
@@ -174,14 +174,14 @@ begin
   end;
 end;
 
-{ TGridExpert }
+{ TComponentGridExpert }
 
-procedure TGridExpert.UpdateAction(Action: TCustomAction);
+procedure TComponentGridExpert.UpdateAction(Action: TCustomAction);
 begin
   Action.Enabled := GxOtaCurrentlyEditingForm;;
 end;
 
-procedure TGridExpert.Execute(Sender: TObject);
+procedure TComponentGridExpert.Execute(Sender: TObject);
 var
   Dlg: TfmComponentGrid;
 begin
@@ -195,24 +195,24 @@ begin
   IncCallCount;
 end;
 
-constructor TGridExpert.Create;
+constructor TComponentGridExpert.Create;
 begin
   inherited Create;
 end;
 
-function TGridExpert.GetActionCaption: string;
+function TComponentGridExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = 'Component &Grid...';
 begin
   Result := SMenuCaption;
 end;
 
-class function TGridExpert.GetName: string;
+class function TComponentGridExpert.GetName: string;
 begin
   Result := 'ComponentGrid';
 end;
 
-function TGridExpert.HasConfigOptions: Boolean;
+function TComponentGridExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
 end;
@@ -469,6 +469,6 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TGridExpert);
+  RegisterGX_Expert(TComponentGridExpert);
 end.
 
