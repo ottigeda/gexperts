@@ -247,7 +247,7 @@ type
       const FileName: string; var Cancel: Boolean); override;
   end;
 
-  TClassExpert = class(TGX_Expert)
+  TClassBrowserExpert = class(TGX_Expert)
   private
     fmClassBrowser: TfmClassBrowser;
   protected
@@ -1159,7 +1159,7 @@ var
   Settings: IExpertSettings;
   i: Integer;
 begin
-  Settings := TClassExpert.GetSettings;
+  Settings := TClassBrowserExpert.GetSettings;
   // Do not localize any of the following lines.
   Settings.SaveForm('Window', Self);
   Settings.Subkey('Window').WriteInteger('Split', tvBrowse.Width);
@@ -1188,7 +1188,7 @@ begin
   Left := (Screen.Width - Width) div 2;
   Top := (Screen.Height - Height) div 2;
 
-  Settings := TClassExpert.GetSettings;
+  Settings := TClassBrowserExpert.GetSettings;
   // Do not localize any of the following lines.
   Settings.LoadForm('Window', Self);
   tvBrowse.Width := Settings.Subkey('Window').ReadInteger('Split', tvBrowse.Width);
@@ -1604,9 +1604,9 @@ begin
   Result := GetSharedImageList;
 end;
 
-{ TClassExpert }
+{ TClassBrowserExpert }
 
-procedure TClassExpert.SetActive(New: Boolean);
+procedure TClassBrowserExpert.SetActive(New: Boolean);
 begin
   if New <> Active then
   begin
@@ -1626,26 +1626,26 @@ begin
   end;
 end;
 
-destructor TClassExpert.Destroy;
+destructor TClassBrowserExpert.Destroy;
 begin
   FreeAndNil(fmClassBrowser);
 
   inherited Destroy;
 end;
 
-function TClassExpert.GetActionCaption: string;
+function TClassBrowserExpert.GetActionCaption: string;
 resourcestring
   SClassBrowserMenuCaption = 'Class Bro&wser';
 begin
   Result := SClassBrowserMenuCaption;
 end;
 
-class function TClassExpert.GetName: string;
+class function TClassBrowserExpert.GetName: string;
 begin
   Result := 'ClassBrowser'; // do not localize
 end;
 
-procedure TClassExpert.Execute(Sender: TObject);
+procedure TClassBrowserExpert.Execute(Sender: TObject);
 begin
   if fmClassBrowser = nil then
   begin
@@ -1658,12 +1658,12 @@ begin
   IncCallCount;
 end;
 
-function TClassExpert.HasConfigOptions: Boolean;
+function TClassBrowserExpert.HasConfigOptions: Boolean;
 begin
   HasConfigOptions := False;
 end;
 
-function TClassExpert.IsDefaultActive: Boolean;
+function TClassBrowserExpert.IsDefaultActive: Boolean;
 begin
   Result := not RunningCPPBuilder;
 end;
@@ -1999,6 +1999,6 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TClassExpert);
+  RegisterGX_Expert(TClassBrowserExpert);
 end.
 
