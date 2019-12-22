@@ -235,7 +235,7 @@ uses
 type
   EFavFiles = class(Exception);
 
-  TFilesExpert = class(TGX_Expert)
+  TFavoriteFilesExpert = class(TGX_Expert)
   private
     FFavoriteFiles: TfmFavFiles;
     FOptions: TFavFilesOptions;
@@ -789,7 +789,7 @@ var
   Key: string;
 begin
   // Do not localize.
-  Settings := TFilesExpert.GetSettings;
+  Settings := TFavoriteFilesExpert.GetSettings;
   Settings.SaveForm('Window', Self);
   Settings.WriteInteger('Window\Splitter', Max(tvFolders.Width, 30));
   Settings.WriteInteger('Window\Splitter2', Max(FFileViewer.Height, 30));
@@ -815,7 +815,7 @@ var
   Key: string;
 begin
   // Do not localize.
-  Settings := TFilesExpert.GetSettings;
+  Settings := TFavoriteFilesExpert.GetSettings;
   Settings.LoadForm('Window', Self);
   tvFolders.Width := Settings.ReadInteger('Window\Splitter', tvFolders.Width);
   FFileViewer.Height := Settings.ReadInteger('Window\Splitter2', FFileViewer.Height);
@@ -1567,7 +1567,7 @@ end;
 
 function TfmFavFiles.ConfigurationKey: string;
 begin
-  Result := TFilesExpert.ConfigurationKey;
+  Result := TFavoriteFilesExpert.ConfigurationKey;
 end;
 
 function TfmFavFiles.GetFolder(const FolderNode: TTreeNode): TGXFolder;
@@ -1600,9 +1600,9 @@ begin
   AListItem.ImageIndex := GetSystemImageIndexForFile(MakeFileNameAbsolute(AFile.FileName));
 end;
 
-{ TFilesExpert }
+{ TFavoriteFilesExpert }
 
-procedure TFilesExpert.SetActive(New: Boolean);
+procedure TFavoriteFilesExpert.SetActive(New: Boolean);
 begin
   if New <> Active then
   begin
@@ -1629,20 +1629,20 @@ begin
   end;
 end;
 
-function TFilesExpert.GetActionCaption: string;
+function TFavoriteFilesExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = 'Favorite &Files';
 begin
   Result := SMenuCaption;
 end;
 
-class function TFilesExpert.GetName: string;
+class function TFavoriteFilesExpert.GetName: string;
 begin
   Result := 'FavoriteFiles'; // Do not localize.
 end;
 
 {$IFDEF GX_VER150_up}
-procedure TFilesExpert.HandleOnSettingsChanged(_Sender: TObject);
+procedure TFavoriteFilesExpert.HandleOnSettingsChanged(_Sender: TObject);
 begin
   if FOptions.FIsFavMenuVisible then begin
     if not Assigned(FFavMenuItem) then
@@ -1653,7 +1653,7 @@ begin
   end;
 end;
 
-function TFilesExpert.FindRecentMenuItem(out _MenuItem: TMenuItem): Boolean;
+function TFavoriteFilesExpert.FindRecentMenuItem(out _MenuItem: TMenuItem): Boolean;
 var
   MainMenu: TMainMenu;
 begin
@@ -1672,7 +1672,7 @@ begin
   _mi.Insert(_Idx, Result);
 end;
 
-procedure TFilesExpert.InsertFavMenuItem;
+procedure TFavoriteFilesExpert.InsertFavMenuItem;
 var
   mi: TMenuItem;
   Parent: TMenuItem;
@@ -1691,7 +1691,7 @@ begin
   TMenuItem_AppendSubmenuItem(FFavMenuItem, 'dummy entry', OnFavDummyClick);
 end;
 
-procedure TFilesExpert.AfterIDEInitialized;
+procedure TFavoriteFilesExpert.AfterIDEInitialized;
 begin
   inherited;
   // todo: This is far from optimal. We should not need to create the form just to load the
@@ -1706,7 +1706,7 @@ begin
     InsertFavMenuItem;
 end;
 
-function TFilesExpert.TryGetRootFolder(out _Folder: TGXFolder): Boolean;
+function TFavoriteFilesExpert.TryGetRootFolder(out _Folder: TGXFolder): Boolean;
 begin
   if FFavoriteFiles = nil then begin
     FFavoriteFiles := TfmFavFiles.Create(nil, FOptions);
@@ -1750,7 +1750,7 @@ begin
   Result := False;
 end;
 
-function TFilesExpert.TryGetMenuItem(_Sender: TObject; out _mi: TMenuItem): Boolean;
+function TFavoriteFilesExpert.TryGetMenuItem(_Sender: TObject; out _mi: TMenuItem): Boolean;
 var
   ABact: TABMenuAction;
   s: string;
@@ -1787,7 +1787,7 @@ begin
   end;
 end;
 
-procedure TFilesExpert.OnFavDummyClick(_Sender: TObject);
+procedure TFavoriteFilesExpert.OnFavDummyClick(_Sender: TObject);
 begin
   // this should never be called
 end;
@@ -1799,7 +1799,7 @@ const
   );
 
 
-procedure TFilesExpert.OnFavoritesClicked(_Sender: TObject);
+procedure TFavoriteFilesExpert.OnFavoritesClicked(_Sender: TObject);
 var
   FavMi: TMenuItem;
   Folder: TGXFolder;
@@ -1836,7 +1836,7 @@ begin
     Result := '0' + Result;
 end;
 
-procedure TFilesExpert.OnFavFolderClicked(_Sender: TObject);
+procedure TFavoriteFilesExpert.OnFavFolderClicked(_Sender: TObject);
 const
   MaxPrefix = Ord('X') - Ord('A') + 10;
 var
@@ -1905,7 +1905,7 @@ begin
   end;
 end;
 
-procedure TFilesExpert.OnFavFileClicked(_Sender: TObject);
+procedure TFavoriteFilesExpert.OnFavFileClicked(_Sender: TObject);
 var
   FavMi: TMenuItem;
   FavFile: TGXFile;
@@ -1920,7 +1920,7 @@ begin
 end;
 {$ENDIF}
 
-procedure TFilesExpert.Configure;
+procedure TFavoriteFilesExpert.Configure;
 begin
   if TfmFavOptions.Execute(nil, FOptions.FFolderDelete, FOptions.FExpandAll, FOptions.FExecHide,
     FOptions.FShowPreview, FOptions.FIsFavMenuVisible) then
@@ -1929,20 +1929,20 @@ begin
 {$ENDIF}
 end;
 
-constructor TFilesExpert.Create;
+constructor TFavoriteFilesExpert.Create;
 begin
   inherited;
   FOptions := TFavFilesOptions.Create;
 end;
 
-destructor TFilesExpert.Destroy;
+destructor TFavoriteFilesExpert.Destroy;
 begin
   FreeAndNil(FOptions);
   FreeAndNil(FFavoriteFiles);
   inherited;
 end;
 
-procedure TFilesExpert.Execute(Sender: TObject);
+procedure TFavoriteFilesExpert.Execute(Sender: TObject);
 begin
   if FFavoriteFiles = nil then
   begin
@@ -1959,19 +1959,19 @@ begin
   IncCallCount;
 end;
 
-function TFilesExpert.HasConfigOptions: Boolean;
+function TFavoriteFilesExpert.HasConfigOptions: Boolean;
 begin
   Result := True;
 end;
 
-procedure TFilesExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TFavoriteFilesExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
   if Assigned(FFavoriteFiles) then
     FFavoriteFiles.LoadSettings;
 end;
 
-procedure TFilesExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TFavoriteFilesExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited;
   if Assigned(FFavoriteFiles) then
@@ -2044,7 +2044,7 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TFilesExpert);
+  RegisterGX_Expert(TFavoriteFilesExpert);
 
 end.
 

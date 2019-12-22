@@ -30,7 +30,7 @@ resourcestring
   rsFindComponentReference = 'Find Component Reference';
 
 type
-  TFindCompRefWizard = class(TGX_Expert)
+  TFindComponentReferenceExpert = class(TGX_Expert)
   private
     procedure FindSelectedComponentInSource(Module: IOTAModule; FrmEditor: IOTAFormEditor);
     procedure FindSelectedComponentOnForm(Module: IOTAModule; SrcEditor: IOTASourceEditor);
@@ -45,12 +45,12 @@ type
     constructor Create; override;
   end;
 
-class function TFindCompRefWizard.GetName: string;
+class function TFindComponentReferenceExpert.GetName: string;
 begin
   Result := 'FindComponentReference';
 end;
 
-procedure TFindCompRefWizard.Execute(Sender: TObject);
+procedure TFindComponentReferenceExpert.Execute(Sender: TObject);
 var
   Module: IOTAModule;
   CurEditor: IOTAEditor;
@@ -67,7 +67,7 @@ begin
     FindSelectedComponentOnForm(Module, SrcEditor);
 end;
 
-procedure TFindCompRefWizard.FindSelectedComponentOnForm(Module: IOTAModule;
+procedure TFindComponentReferenceExpert.FindSelectedComponentOnForm(Module: IOTAModule;
   SrcEditor: IOTASourceEditor);
 var
   SrcText, CurWord: string;
@@ -97,7 +97,7 @@ begin
     raise Exception.CreateFmt(rsNoAssociatedForm, [SrcEditor.FileName]);
 end;
 
-procedure TFindCompRefWizard.FindSelectedComponentInSource(Module: IOTAModule;
+procedure TFindComponentReferenceExpert.FindSelectedComponentInSource(Module: IOTAModule;
   FrmEditor: IOTAFormEditor);
 var
   Comp: IOTAComponent;
@@ -136,38 +136,38 @@ begin
     raise Exception.Create(rsNoSelectedComponent);
 end;
 
-function TFindCompRefWizard.GetDisplayName: string;
+function TFindComponentReferenceExpert.GetDisplayName: string;
 begin
   Result := rsFindComponentReference;
 end;
 
-constructor TFindCompRefWizard.Create;
+constructor TFindComponentReferenceExpert.Create;
 begin
   inherited;
 end;
 
-function TFindCompRefWizard.GetDefaultShortCut: TShortCut;
+function TFindComponentReferenceExpert.GetDefaultShortCut: TShortCut;
 begin
   Result := scCtrl + scShift + Ord('F');
 end;
 
-function TFindCompRefWizard.GetActionCaption: string;
+function TFindComponentReferenceExpert.GetActionCaption: string;
 begin
   Result := rsFindComponentReference;
 end;
 
-function TFindCompRefWizard.HasConfigOptions: Boolean;
+function TFindComponentReferenceExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
 end;
 
-function TFindCompRefWizard.HasDesignerMenuItem: Boolean;
+function TFindComponentReferenceExpert.HasDesignerMenuItem: Boolean;
 begin
   Result := True;
 end;
 
 initialization
-  RegisterGX_Expert(TFindCompRefWizard);
+  RegisterGX_Expert(TFindComponentReferenceExpert);
 
 end.
 
