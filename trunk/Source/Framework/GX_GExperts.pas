@@ -388,18 +388,6 @@ begin
 {$ENDIF}
 end;
 
-function FindClassForm(const AClassName: string): TForm;
-var
-  i: Integer;
-begin
-  Result := nil;
-  for i := 0 to Screen.FormCount - 1 do
-    if Screen.Forms[i].ClassNameIs(AClassName) then begin
-      Result := Screen.Forms[i];
-      Break;
-    end;
-end;
-
 procedure TGExperts.TimedCloseMessageView;
 var
   TheTimer: TTimer;
@@ -411,18 +399,12 @@ end;
 procedure TGExperts.OnCloseMessageViewTimer(_Sender: TObject);
 var
   Timer: TTimer;
-  MessageViewForm: TForm;
 begin
   try
     Timer := _Sender as TTimer;
     Timer.Enabled := False;
     FreeAndNil(Timer);
-    MessageViewForm := FindClassForm('TMsgWindow');
-    if MessageViewForm = nil then // otherwise TMessageViewForm is used
-      MessageViewForm := FindClassForm('TMessageViewForm');
-    if MessageViewForm = nil then
-      Exit; //==>
-    MessageViewForm.Hide;
+    TryCloseMessageView;
   except
     on E: Exception do begin
 {$IFOPT D+}SendDebugError(E.Message + ' in TGExperts.OnCloseMessageViewTimer');

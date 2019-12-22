@@ -46,6 +46,24 @@ function GetIDEFormNamed(const FormName: string): TCustomForm;
 // while the replace confirmation dialog is up, so we detect that case here
 function IsReplaceConfirmDialogOnScreen: Boolean;
 
+///<summary>
+/// Searches through Screen.Forms for a form of the given class
+/// @param ClassName is the classname of the form we are looking for
+/// @param Form contains the first form of the given class, only valid if Result = True
+/// @returns True, if a form could be found, False otherwise </summary>
+function TScreen_TryFindClassForm(const _ClassName: string; out _Form: TForm): Boolean;
+
+///<summary>
+/// Searches Screen.Forms for the Message View form
+/// @param Form contains the message view form, only valid if Result = True
+/// @returns True, if the form could be found, False otherwise </summary>
+function TryFindMessageView(out _Form: TForm): Boolean;
+
+///<summary>
+/// Searches Screen.Forms for the Message View form and closes it if found
+/// @returns True, if the form could be found and was closed, False otherwise </summary>
+function TryCloseMessageView: Boolean;
+
 // Return the IDE's root directory (the installation directory).
 // Returns an empty string if the information could not be retrieved.
 function GetIdeRootDirectory: string;
@@ -821,6 +839,40 @@ begin
   finally
     FreeAndNil(reg);
   end;
+end;
+
+function TScreen_TryFindClassForm(const _ClassName: string; out _Form: TForm): Boolean;
+var
+  i: Integer;
+  frm: TForm;
+begin
+  Result := True;
+  for i := 0 to Screen.FormCount - 1 do begin
+    frm := Screen.Forms[i];
+    if frm.ClassNameIs(_ClassName) then begin
+      _Form := frm;
+      Exit; //==>
+    end;
+  end;
+  Result := False;
+end;
+
+function TryFindMessageView(out _Form: TForm): Boolean;
+begin
+  Result := TScreen_TryFindClassForm('TMsgWindow', _Form);
+  if not Result then begin
+    // otherwise TMessageViewForm is used
+    Result := TScreen_TryFindClassForm('TMessageViewForm', _Form);
+  end;
+end;
+
+function TryCloseMessageView: Boolean;
+var
+  MessageViewForm: TForm;
+begin
+  Result := TryFindMessageView(MessageViewForm);
+  if Result then
+    MessageViewForm.Hide;
 end;
 
 end.
