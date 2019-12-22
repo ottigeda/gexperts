@@ -77,6 +77,9 @@ type
     procedure GetMenuItems(out MenuItems: TMenuItemArray; SkipMoreItems: Boolean = True);
     procedure MoreActionExecute(Sender: TObject);
     procedure SortMenuItems(var MenuItems: TMenuItemArray);
+    ///<summary>
+    /// Creates one large GExperts menu containing all experts, without a 'more ...' item
+    /// and without the separater and the Configuration and About entries </summary>
     procedure NormalizeMenuItems;
   protected
     // IGxMenuActionManager
@@ -388,14 +391,6 @@ procedure TGXMenuActionManager.ArrangeMenuItems;
   end;
 
 var
-  i: Integer;
-  ScreenRect: TRect;
-  ScreenHeight: Integer;
-  MaxMenuItems: Integer;
-  MoreMenuItem: TMenuItem;
-  ParentItem: TMenuItem;
-  Item: TMenuItem;
-  CurrentIndex: Integer;
   MenuItems: TMenuItemArray;
 
   function GetMenuItem(const ActName: string): TMenuItem;
@@ -415,35 +410,42 @@ var
     end;
   end;
 
+var
+  i: Integer;
+  ScreenRect: TRect;
+  ScreenHeight: Integer;
+  MaxMenuItems: Integer;
+  MoreMenuItem: TMenuItem;
+  ParentItem: TMenuItem;
+  Item: TMenuItem;
+  CurrentIndex: Integer;
 begin
   {$IFOPT D+} SendDebug('Arranging menu items'); {$ENDIF}
   NormalizeMenuItems;
   GetMenuItems(MenuItems);
   if Assigned(MenuItems) then
     SortMenuItems(MenuItems);
+  // unfortunately this is too early to get the monitor on which the display form resides
+  // so the WorkArea is probably that of the main monitor which might be wrong (and definitely
+  // is on my personal system).
   ScreenRect := GetScreenWorkArea(GetIdeMainForm);
   ScreenHeight := ScreenRect.Bottom - ScreenRect.Top - 75;
-  if RunningDelphi7OrGreater then
-  begin
-//    GetMainMenuTop;
-    MaxMenuItems := ScreenHeight div GetMainMenuItemHeight;
-    if PlaceGxMainMenuInToolsMenu then begin
-      // we don't known at wich position in the tools menu our entry will
-      // end up, so we assume it to be at position 5
-      Dec(MaxMenuItems, 5);
-    end;
-    { TODO -oanybody -cbug : if the IDE window is not at the top of the screen,
-      there is less space for the menu than the screen height. Depending on how
-      far down it is, the menu will be drawn upwards, so at least half screen
-      height is always available. If the menu needs more space, it will overlap
-      the main menu item and releasing the mouse after clicking on the main menu
-      item will trigger a click on the item then under the mouse. We could try
-      to figure out how much space really is available and set MaxMenuItems to
-      that number. }
-    MaxMenuItems := Max(8, MaxMenuItems);
-  end
-  else
-    MaxMenuItems := ScreenHeight;
+
+  MaxMenuItems := ScreenHeight div GetMainMenuItemHeight;
+  if PlaceGxMainMenuInToolsMenu then begin
+    // we don't known at wich position in the tools menu our entry will
+    // end up, so we assume it to be at position 5
+    Dec(MaxMenuItems, 5);
+  end;
+  { TODO -oanybody -cbug : if the IDE window is not at the top of the screen,
+    there is less space for the menu than the screen height. Depending on how
+    far down it is, the menu will be drawn upwards, so at least half screen
+    height is always available. If the menu needs more space, it will overlap
+    the main menu item and releasing the mouse after clicking on the main menu
+    item will trigger a click on the item then under the mouse. We could try
+    to figure out how much space really is available and set MaxMenuItems to
+    that number. }
+  MaxMenuItems := Max(8, MaxMenuItems);
 
   ParentItem := FGExpertsTopLevelMenu;
   CurrentIndex := 0;
@@ -576,4 +578,5 @@ finalization
   {$IFOPT D+}Assert(PrivateGXMenuActionManager = nil, 'PrivateGXMenuActionManager is not nil during finalization');{$ENDIF}
 
 end.
+
 
