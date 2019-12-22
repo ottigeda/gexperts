@@ -50,7 +50,6 @@ type
   protected
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     procedure InternalSaveSettings(_Settings: IExpertSettings); override;
-    function GetBitmapFileName: string; override;
   public
     class function GetName: string; override;
     constructor Create; override;
@@ -477,11 +476,6 @@ end;
 class function TUsesExpert.GetName: string;
 begin
   Result := 'UsesClauseMgr';
-end;
-
-function TUsesExpert.GetBitmapFileName: string;
-begin
-  Result := ClassName;
 end;
 
 procedure TUsesExpert.HandleProjectChanged(_Sender: TObject);

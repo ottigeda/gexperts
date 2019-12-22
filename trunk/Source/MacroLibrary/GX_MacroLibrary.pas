@@ -219,7 +219,6 @@ type
     function GetActionCaption: string; override;
     class function GetName: string; override;
     function GetHelpString: string; override;
-    function GetBitmapFileName: string; override;
     procedure Execute(Sender: TObject); override;
     procedure Configure; override;
     function HasConfigOptions: Boolean; override;
@@ -1269,11 +1268,6 @@ begin
 
   if (fmMacroLibrary = nil) then
     fmMacroLibrary := TfmMacroLibrary.Create(nil);
-end;
-
-function TMacroLibExpert.GetBitmapFileName: string;
-begin
-  Result := 'MacroLibrary'; // Do not localize.
 end;
 
 function TMacroLibExpert.GetHelpString: string;

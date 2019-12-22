@@ -11,8 +11,6 @@ type
   private
     FActionName: string;
   protected
-    // defaults to ClassName
-    function GetBitmapFileName: string; override;
     // you usually don't need to override this
     procedure LoadActiveAndShortCut(Settings: TGExpertsSettings); override;
     // you usually don't need to override this
@@ -139,11 +137,6 @@ var
 function EditorExpertClassList: TList;
 begin
   Result := PrivateEditorExpertClassList;
-end;
-
-function TEditorExpert.GetBitmapFileName: string;
-begin
-  Result := ClassName;
 end;
 
 function TEditorExpert.GetActionName: string;

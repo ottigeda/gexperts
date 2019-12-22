@@ -20,7 +20,6 @@ type
   private
     FExpert: TCodeFormatterExpert;
   protected
-    function GetBitmapFileName: string; override;
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   public
@@ -102,11 +101,6 @@ procedure TeCodeFormatterExpert.Execute(Sender: TObject);
 begin
   if FExpert.Execute then
     IncCallCount;
-end;
-
-function TeCodeFormatterExpert.GetBitmapFileName: string;
-begin
-  Result := 'TCodeFormatterExpert';
 end;
 
 function TeCodeFormatterExpert.GetDefaultShortCut: TShortCut;

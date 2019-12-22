@@ -94,7 +94,7 @@ type
 {$ENDIF}
 
 type
-  TGxBookmarksExpert = class(TGX_Expert)
+  TBookmarksExpert = class(TGX_Expert)
   private
 {$IFDEF GX_VER170_up}
     FNotifierIdx: Integer;
@@ -114,11 +114,11 @@ type
 
 var
   fmBookmarks: TfmGxBookmarksForm = nil;
-  BookmarksExpert: TGxBookmarksExpert = nil;
+  BookmarksExpert: TBookmarksExpert = nil;
 
 { TGxBookmarksExpert }
 
-constructor TGxBookmarksExpert.Create;
+constructor TBookmarksExpert.Create;
 begin
   inherited Create;
 
@@ -132,7 +132,7 @@ begin
   BookmarksExpert :=  Self;
 end;
 
-destructor TGxBookmarksExpert.Destroy;
+destructor TBookmarksExpert.Destroy;
 begin
   BookmarksExpert := nil;
 {$IFDEF GX_VER170_up}
@@ -145,7 +145,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TGxBookmarksExpert.SetActive(New: Boolean);
+procedure TBookmarksExpert.SetActive(New: Boolean);
 begin
   if New <> Active then begin
     inherited SetActive(New);
@@ -158,7 +158,7 @@ begin
   end;
 end;
 
-procedure TGxBookmarksExpert.Execute(Sender: TObject);
+procedure TBookmarksExpert.Execute(Sender: TObject);
 begin
   if fmBookmarks = nil then begin
     fmBookmarks := TfmGxBookmarksForm.Create(nil);
@@ -170,31 +170,31 @@ begin
 end;
 
 {$IFDEF GX_VER170_up}
-procedure TGxBookmarksExpert.EditorViewActivated(_Sender: TObject; _EditView: IOTAEditView);
+procedure TBookmarksExpert.EditorViewActivated(_Sender: TObject; _EditView: IOTAEditView);
 begin
   if Assigned(fmBookmarks) then
     fmBookmarks.Init;
 end;
 {$ENDIF}
 
-function TGxBookmarksExpert.GetActionCaption: string;
+function TBookmarksExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = 'Editor Bookmarks';
 begin
   Result := SMenuCaption;
 end;
 
-class function TGxBookmarksExpert.GetName: string;
+class function TBookmarksExpert.GetName: string;
 begin
   Result := 'BookmarksExpert';
 end;
 
-function TGxBookmarksExpert.HasConfigOptions: Boolean;
+function TBookmarksExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
 end;
 
-function TGxBookmarksExpert.HasMenuItem: Boolean;
+function TBookmarksExpert.HasMenuItem: Boolean;
 begin
   Result := True;
 end;
@@ -587,5 +587,5 @@ end;
 {$ENDIF}
 
 initialization
-  RegisterGX_Expert(TGxBookmarksExpert);
+  RegisterGX_Expert(TBookmarksExpert);
 end.

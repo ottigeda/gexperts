@@ -29,7 +29,7 @@ type
     // script located in that directory.
     // It is possible to return an empty string. This
     // signals that no icon file is available.
-    // Defaults to GetName.
+    // Defaults to ClassName.
     function GetBitmapFileName: string; virtual;
     // Override to load any configuration settings
     procedure InternalLoadSettings(_Settings: IExpertSettings); virtual;
@@ -175,7 +175,7 @@ end;
 
 function TGX_BaseExpert.GetBitmapFileName: string;
 begin
-  Result := GetName;
+  Result := ClassName;
 end;
 
 function TGX_BaseExpert.GetDefaultShortCut: TShortCut;
