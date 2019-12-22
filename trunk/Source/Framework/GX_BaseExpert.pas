@@ -3,12 +3,16 @@ unit GX_BaseExpert;
 interface
 
 uses
-  Classes, Graphics, GX_ConfigurationInfo, GX_Actions;
+  Classes, Graphics,
+  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
+  GX_ConfigurationInfo, GX_Actions;
 
 type
   TGX_BaseExpert = class(TObject)
   private
+{$IF Declared(SendDebugWarning)}
     FNoDisplaynameWarningSent: Boolean;
+{$IFEND}
     FCallCount: Integer;
     function GetTotalCallCount: Integer;
     procedure SetTotalCallCount(Value: Integer);
@@ -104,7 +108,6 @@ type
 implementation
 
 uses
-  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Dialogs, GX_GxUtils, GX_MessageBox, GX_IconMessageBox;
 
 { TGX_BaseExpert }
