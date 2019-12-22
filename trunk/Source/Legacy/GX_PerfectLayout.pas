@@ -49,7 +49,7 @@ uses SysUtils, Windows, Menus, Dialogs,
 type
   TLayoutType = (ltLayout1, ltLayout2, ltCustom);
 
-  TLayoutExpert = class(TGX_Expert)
+  TPerfectLayoutExpert = class(TGX_Expert)
   private
     FLayoutType: TLayoutType;
   protected
@@ -117,12 +117,12 @@ begin
   // Do not localize any of the items below
   Settings := TGExpertsSettings.Create;
   try
-    Settings.DeleteKey(ConfigInfo.GExpertsIdeRootRegistryKey, TLayoutExpert.FormsConfigurationKey);
+    Settings.DeleteKey(ConfigInfo.GExpertsIdeRootRegistryKey, TPerfectLayoutExpert.FormsConfigurationKey);
   finally
     FreeAndNil(Settings);
   end;
 
-  Key := AddSlash(ConfigInfo.GExpertsIdeRootRegistryKey) + TLayoutExpert.FormsConfigurationKey;
+  Key := AddSlash(ConfigInfo.GExpertsIdeRootRegistryKey) + TPerfectLayoutExpert.FormsConfigurationKey;
   Settings := TGExpertsSettings.Create(Key);
   try
     for i := 0 to Screen.FormCount - 1 do
@@ -143,29 +143,29 @@ end;
 
 { TPerfectLayoutExpert }
 
-constructor TLayoutExpert.Create;
+constructor TPerfectLayoutExpert.Create;
 begin
   inherited Create;
 end;
 
-function TLayoutExpert.GetActionCaption: string;
+function TPerfectLayoutExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = 'Perfect La&yout';
 begin
   Result := SMenuCaption;
 end;
 
-function TLayoutExpert.GetDefaultShortCut: TShortCut;
+function TPerfectLayoutExpert.GetDefaultShortCut: TShortCut;
 begin
   Result := Menus.ShortCut(Word('L'), [ssCtrl, ssShift]);
 end;
 
-class function TLayoutExpert.GetName: string;
+class function TPerfectLayoutExpert.GetName: string;
 begin
   Result := 'PerfectLayout';  // Do not localize.
 end;
 
-procedure TLayoutExpert.Execute(Sender: TObject);
+procedure TPerfectLayoutExpert.Execute(Sender: TObject);
 
   procedure LoadCustomLayout;
 
@@ -285,21 +285,21 @@ begin
   end;
 end;
 
-procedure TLayoutExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TPerfectLayoutExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited InternalLoadSettings(_Settings);
   // Do not localize any of the below items
   FLayoutType := TLayoutType(_Settings.ReadEnumerated('Layout', TypeInfo(TLayoutType), Ord(ltLayout1)));
 end;
 
-procedure TLayoutExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TPerfectLayoutExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited InternalSaveSettings(_Settings);
   // Do not localize any of the below items
   _Settings.WriteEnumerated('Layout', TypeInfo(TLayoutType), Ord(FLayoutType));
 end;
 
-procedure TLayoutExpert.Configure;
+procedure TPerfectLayoutExpert.Configure;
 var
   Dlg: TfmPerfectLayout;
 begin
@@ -324,18 +324,18 @@ begin
   end;
 end;
 
-function TLayoutExpert.IsDefaultActive: Boolean;
+function TPerfectLayoutExpert.IsDefaultActive: Boolean;
 begin
   Result := False; // Delphi 5+ provide more powerful saved desktops
 end;
 
-class function TLayoutExpert.FormsConfigurationKey: string;
+class function TPerfectLayoutExpert.FormsConfigurationKey: string;
 begin
   Result := AddSlash(ConfigurationKey) + 'Forms';
 end;
 
 initialization
-  RegisterGX_Expert(TLayoutExpert);
+  RegisterGX_Expert(TPerfectLayoutExpert);
 
 end.
 
