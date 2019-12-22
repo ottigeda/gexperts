@@ -159,7 +159,7 @@ type
     procedure LoadSettings;
   end;
 
-  TClipExpert = class(TGX_Expert)
+  TClipboardHistoryExpert = class(TGX_Expert)
   private
     FMaxClip: Integer;
     FAutoStart: Boolean;
@@ -183,7 +183,7 @@ type
 
 var
   fmClipboardHistory: TfmClipboardHistory = nil;
-  ClipExpert: TClipExpert = nil;
+  ClipExpert: TClipboardHistoryExpert = nil;
 
 implementation
 
@@ -331,7 +331,7 @@ procedure TfmClipboardHistory.SaveSettings;
 var
   Settings: IExpertSettings;
 begin
-  Settings := TClipExpert.GetSettings;
+  Settings := TClipboardHistoryExpert.GetSettings;
   // Do not localize.
   Settings.SaveForm('Window', Self);
   Settings := Settings.Subkey('Window');
@@ -344,7 +344,7 @@ procedure TfmClipboardHistory.LoadSettings;
 var
   Settings: IExpertSettings;
 begin
-  Settings := TClipExpert.GetSettings;
+  Settings := TClipboardHistoryExpert.GetSettings;
   // Do not localize.
   Settings.LoadForm('Window', Self);
   Settings := Settings.Subkey('Window');
@@ -921,9 +921,9 @@ begin
   end;
 end;
 
-{ TClipExpert }
+{ TClipboardHistoryExpert }
 
-constructor TClipExpert.Create;
+constructor TClipboardHistoryExpert.Create;
 begin
   inherited Create;
   FStoragePath := ConfigInfo.ConfigPath;
@@ -934,7 +934,7 @@ begin
   ClipExpert := Self;
 end;
 
-destructor TClipExpert.Destroy;
+destructor TClipboardHistoryExpert.Destroy;
 begin
   FreeAndNil(fmClipboardHistory);
   ClipExpert := nil;
@@ -942,19 +942,19 @@ begin
   inherited Destroy;
 end;
 
-function TClipExpert.GetActionCaption: string;
+function TClipboardHistoryExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = 'Clipboard &History';
 begin
   Result := SMenuCaption;
 end;
 
-class function TClipExpert.GetName: string;
+class function TClipboardHistoryExpert.GetName: string;
 begin
   Result := 'ClipboardHistory';
 end;
 
-procedure TClipExpert.Execute(Sender: TObject);
+procedure TClipboardHistoryExpert.Execute(Sender: TObject);
 begin
   // If the form doesn't exist, create it.
   if fmClipboardHistory = nil then
@@ -967,7 +967,7 @@ begin
   IncCallCount;
 end;
 
-procedure TClipExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TClipboardHistoryExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited InternalLoadSettings(_Settings);
   // Do not localize.
@@ -985,7 +985,7 @@ begin
   end;
 end;
 
-procedure TClipExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TClipboardHistoryExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited InternalSaveSettings(_Settings);
   // Do not localize.
@@ -994,7 +994,7 @@ begin
   _Settings.WriteBool('AutoClose', FAutoClose);
 end;
 
-procedure TClipExpert.Configure;
+procedure TClipboardHistoryExpert.Configure;
 var
   Dlg: TfmClipboardOptions;
 begin
@@ -1015,12 +1015,12 @@ begin
   end;
 end;
 
-function TClipExpert.GetStorageFile: string;
+function TClipboardHistoryExpert.GetStorageFile: string;
 begin
   Result := FStoragePath + ClipStorageFileName;
 end;
 
-procedure TClipExpert.SetActive(New: Boolean);
+procedure TClipboardHistoryExpert.SetActive(New: Boolean);
 begin
   if New <> Active then
   begin
@@ -1033,6 +1033,6 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TClipExpert);
+  RegisterGX_Expert(TClipboardHistoryExpert);
 end.
 

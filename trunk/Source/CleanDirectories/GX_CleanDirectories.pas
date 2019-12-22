@@ -14,7 +14,7 @@ uses
   GX_Experts, GX_ConfigurationInfo, GX_BaseForm, Actions;
 
 type
-  TCleanExpert = class;
+  TCleanDirectoriesExpert = class;
 
   TfmCleanDirectories = class(TfmBaseForm)
     ActionList: TActionList;
@@ -73,7 +73,7 @@ type
     procedure FormResize(Sender: TObject);
     procedure CheckActionExecute(Sender: TObject);
   private
-    CleanExpert: TCleanExpert;
+    CleanExpert: TCleanDirectoriesExpert;
     CleanExtList: TStringList;
     FTotalBytesCleaned: Integer;
     FTotalFilesCleaned: Integer;
@@ -88,10 +88,10 @@ type
     procedure clbDirsOnFilesDropped(_Sender: TObject; _Files: TStrings);
     procedure clbExtensionsOnFilesDropped(_Sender: TObject; _Files: TStrings);
   public
-    constructor CreateParametrized(OwningExpert: TCleanExpert);
+    constructor CreateParametrized(OwningExpert: TCleanDirectoriesExpert);
   end;
 
-  TCleanExpert = class(TGX_Expert)
+  TCleanDirectoriesExpert = class(TGX_Expert)
   private
     FReportErrors: Boolean;
     FExtensionList: TStrings;
@@ -301,7 +301,7 @@ begin
   end;
 end;
 
-constructor TfmCleanDirectories.CreateParametrized(OwningExpert: TCleanExpert);
+constructor TfmCleanDirectories.CreateParametrized(OwningExpert: TCleanDirectoriesExpert);
 begin
   CleanExpert := OwningExpert;
 
@@ -580,7 +580,7 @@ procedure TfmCleanDirectories.LoadSettings;
 var
   Settings: IExpertSettings;
 begin
-  Settings := TCleanExpert.GetSettings;
+  Settings := TCleanDirectoriesExpert.GetSettings;
   // Do not localize any of the below strings.
   Settings.LoadForm('Window', Self, [fsSize]);
 end;
@@ -589,7 +589,7 @@ procedure TfmCleanDirectories.SaveSettings;
 var
   Settings: IExpertSettings;
 begin
-  Settings := TCleanExpert.GetSettings;
+  Settings := TCleanDirectoriesExpert.GetSettings;
   // Do not localize any of the below strings.
   Settings.SaveForm('Window', Self, [fsSize]);
 end;
@@ -622,9 +622,9 @@ begin
       CleanExtList.Add(clbExtensions.Items[i]);
 end;
 
-{ TCleanExpert }
+{ TCleanDirectoriesExpert }
 
-constructor TCleanExpert.Create;
+constructor TCleanDirectoriesExpert.Create;
 begin
   inherited Create;
 
@@ -632,7 +632,7 @@ begin
   FExtensionList := TStringList.Create;
 end;
 
-destructor TCleanExpert.Destroy;
+destructor TCleanDirectoriesExpert.Destroy;
 begin
   SaveSettings;
 
@@ -642,19 +642,19 @@ begin
   inherited Destroy;
 end;
 
-function TCleanExpert.GetActionCaption: string;
+function TCleanDirectoriesExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = 'Clea&n Directories...';
 begin
   Result := SMenuCaption;
 end;
 
-class function TCleanExpert.GetName: string;
+class function TCleanDirectoriesExpert.GetName: string;
 begin
   Result := 'CleanDirectories';
 end;
 
-procedure TCleanExpert.Execute(Sender: TObject);
+procedure TCleanDirectoriesExpert.Execute(Sender: TObject);
 var
   Dlg: TfmCleanDirectories;
 begin
@@ -670,7 +670,7 @@ begin
   end;
 end;
 
-procedure TCleanExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TCleanDirectoriesExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited InternalLoadSettings(_Settings);
   // Do not localize.
@@ -680,7 +680,7 @@ begin
   FIncludeBinaryDirs := _Settings.ReadBool('IncludeBinaryDirs', False)
 end;
 
-procedure TCleanExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TCleanDirectoriesExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited InternalSaveSettings(_Settings);
   // Do not localize.
@@ -690,12 +690,12 @@ begin
   _Settings.WriteStrings('Delete', CleanList, 'CleanExt');
 end;
 
-function TCleanExpert.HasConfigOptions: Boolean;
+function TCleanDirectoriesExpert.HasConfigOptions: Boolean;
 begin
   Result := True;
 end;
 
-procedure TCleanExpert.Configure;
+procedure TCleanDirectoriesExpert.Configure;
 resourcestring
   SAddExeDcuDirsToCleanList =
     'Would you like the project''s unit output and executable' + sLineBreak +
@@ -707,6 +707,6 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TCleanExpert);
+  RegisterGX_Expert(TCleanDirectoriesExpert);
 end.
 
