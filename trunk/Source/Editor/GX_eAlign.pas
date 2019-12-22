@@ -44,7 +44,7 @@ resourcestring
 type
   TGXAlignMode = (gamRightmost, gamFirstToken);
 
-  TAlignExpert = class(TSelectionEditorExpert)
+  TAlignLinesExpert = class(TSelectionEditorExpert)
   private
     FWhitespace: Integer;
     FLastToken: string;
@@ -69,26 +69,26 @@ type
   end;
 
 var
-  AlignExpertInst: TAlignExpert;
+  AlignExpertInst: TAlignLinesExpert;
 
 
-{ TAlignExpert }
+{ TAlignLinesExpert }
 
-constructor TAlignExpert.Create;
+constructor TAlignLinesExpert.Create;
 begin
   inherited Create;
   FTokens := TStringList.Create;
   AlignExpertInst := Self;
 end;
 
-destructor TAlignExpert.Destroy;
+destructor TAlignLinesExpert.Destroy;
 begin
   AlignExpertInst := nil;
   FreeAndNil(FTokens);
   inherited;
 end;
 
-procedure TAlignExpert.Configure;
+procedure TAlignLinesExpert.Configure;
 var
   Dlg: TfmAlignOptions;
 begin
@@ -110,19 +110,19 @@ begin
   end;
 end;
 
-function TAlignExpert.GetDefaultShortCut: TShortCut;
+function TAlignLinesExpert.GetDefaultShortCut: TShortCut;
 begin
   Result := scCtrl + scAlt + Ord('Z');
 end;
 
-function TAlignExpert.GetDisplayName: string;
+function TAlignLinesExpert.GetDisplayName: string;
 resourcestring
   SAlignName = 'Align Lines';
 begin
   Result := SAlignName;
 end;
 
-function TAlignExpert.GetHelpString: string;
+function TAlignLinesExpert.GetHelpString: string;
 resourcestring
   SAlignHelp =
     '  This expert aligns the text of the selected lines at the first occurrence of a chosen token in each line.  To use it, select a block of code in the code editor and activate this expert.  '+
@@ -134,17 +134,17 @@ begin
   Result := SAlignHelp;
 end;
 
-class function TAlignExpert.GetName: string;
+class function TAlignLinesExpert.GetName: string;
 begin
   Result := 'Align';
 end;
 
-function TAlignExpert.HasConfigOptions: Boolean;
+function TAlignLinesExpert.HasConfigOptions: Boolean;
 begin
   Result := True;
 end;
 
-function TAlignExpert.ProcessSelected(Lines: TStrings): Boolean;
+function TAlignLinesExpert.ProcessSelected(Lines: TStrings): Boolean;
 resourcestring
   STokenListEmpty = 'The token list is empty.' + sLineBreak +
                     'Please add tokens using the configuration dialog.';
@@ -229,7 +229,7 @@ begin
   Result := True;
 end;
 
-procedure TAlignExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TAlignLinesExpert.InternalLoadSettings(_Settings: IExpertSettings);
 var
   i: Integer;
 begin
@@ -247,7 +247,7 @@ begin
       FTokens.Add(DEFAULT_TOKENS[i]);
 end;
 
-procedure TAlignExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TAlignLinesExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited InternalSaveSettings(_Settings);
 
@@ -271,7 +271,7 @@ begin
   ModalResult := mrOk;
 end;
 
-function TAlignExpert.QueryUserForAlignToken(var Token: string; var Mode: TGXAlignMode): Boolean;
+function TAlignLinesExpert.QueryUserForAlignToken(var Token: string; var Mode: TGXAlignMode): Boolean;
 var
   Dialog: TfmAlign;
 begin
@@ -303,7 +303,7 @@ begin
   AlignExpertInst.LoadConfiguration(Self);
 end;
 
-procedure TAlignExpert.LoadConfiguration(Dialog: TfmAlign);
+procedure TAlignLinesExpert.LoadConfiguration(Dialog: TfmAlign);
 var
   LastIndex: Integer;
 begin
@@ -322,6 +322,6 @@ begin
 end;
 
 initialization
-  RegisterEditorExpert(TAlignExpert);
+  RegisterEditorExpert(TAlignLinesExpert);
 end.
 
