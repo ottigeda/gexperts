@@ -260,7 +260,7 @@ uses
   GX_MessageOptions, GX_ConfigurationInfo, GX_Experts;
 
 type
-  TMsgExpExpert = class(TGX_Expert)
+  TMessageDialogExpert = class(TGX_Expert)
   private
     FSettings: TMessageDialogSettings;
   protected
@@ -682,7 +682,7 @@ procedure TfmMessageDialog.SaveSettings;
 var
   ExpSettings: IExpertSettings;
 begin
-  ExpSettings := TMsgExpExpert.GetSettings;
+  ExpSettings := TMessageDialogExpert.GetSettings;
   ExpSettings.WriteInteger(MsgExpMsgActivePageIdent, pgeMessageDialog.ActivePageIndex);
   ExpSettings.WriteString(MsgExpMsgTypeIdent, DialogType);
   ExpSettings.WriteString(MsgExpMsgBoxTypeIdent, DialogBoxType);
@@ -703,7 +703,7 @@ var
   ExpSettings: IExpertSettings;
   LastPageIndex: Integer;
 begin
-  ExpSettings := TMsgExpExpert.GetSettings;
+  ExpSettings := TMessageDialogExpert.GetSettings;
   EmbedSelection := ExpSettings.ReadInteger(MsgExpMsgEmbed, MsgExpMsgEmbedDefault);
   LastPageIndex := ExpSettings.ReadInteger(MsgExpMsgActivePageIdent, MsgExpMsgActivePageDefault);
   if (LastPageIndex >= 0) and (LastPageIndex < pgeMessageDialog.PageCount) then
@@ -882,40 +882,40 @@ begin
   inherited;
 end;
 
-{ TMsgExpExpert }
+{ TMessageDialogExpert }
 
-constructor TMsgExpExpert.Create;
+constructor TMessageDialogExpert.Create;
 begin
   inherited;
   FSettings := TMessageDialogSettings.Create;
 end;
 
-destructor TMsgExpExpert.Destroy;
+destructor TMessageDialogExpert.Destroy;
 begin
   FreeAndNil(FSettings);
   inherited;
 end;
 
-function TMsgExpExpert.GetActionCaption: string;
+function TMessageDialogExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = '&Message Dialog...';
 begin
   Result := SMenuCaption;
 end;
 
-function TMsgExpExpert.GetDefaultShortCut: TShortCut;
+function TMessageDialogExpert.GetDefaultShortCut: TShortCut;
 begin
   Result := 0;
   // this shortcut conflicts with a Declare Field standard shortcut in the IDE
   //  Result := Menus.ShortCut(Ord('D'), [ssCtrl, ssShift]);
 end;
 
-class function TMsgExpExpert.GetName: string;
+class function TMessageDialogExpert.GetName: string;
 begin
   Result := 'MessageDialog';
 end;
 
-procedure TMsgExpExpert.Execute(Sender: TObject);
+procedure TMessageDialogExpert.Execute(Sender: TObject);
 resourcestring
   SWrongFileType = 'This expert is for use in pas, dpr, inc, and cpp files only.';
 var
@@ -968,7 +968,7 @@ begin
   end;
 end;
 
-procedure TMsgExpExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TMessageDialogExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
   FSettings.ConcatenationString :=
@@ -980,7 +980,7 @@ begin
   FSettings.GnuGetTextIndividual := _Settings.ReadBool(MsgExpMsgGNUGettextIndividualIdent, MsgExpMsgGNUGettextIndividualDefault);
 end;
 
-procedure TMsgExpExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TMessageDialogExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   _Settings.WriteString(MsgDlgConcateIdent, FSettings.ConcatenationString);
   _Settings.WriteString(MsgDlgCppConcateIdent, FSettings.CppConcatenationString);
@@ -989,7 +989,7 @@ begin
   inherited InternalSaveSettings(_Settings);
 end;
 
-procedure TMsgExpExpert.Configure;
+procedure TMessageDialogExpert.Configure;
 begin
   if TfmMessageOptions.Execute(nil,
     FSettings.FConcatenationString, FSettings.FCppConcatenationString,
@@ -997,7 +997,7 @@ begin
   end;
 end;
 
-procedure TMsgExpExpert.UpdateAction(Action: TCustomAction);
+procedure TMessageDialogExpert.UpdateAction(Action: TCustomAction);
 const
   SAllowableFileExtensions = '.pas;.dpr;.inc;.cpp';
 begin
@@ -1428,6 +1428,6 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TMsgExpExpert);
+  RegisterGX_Expert(TMessageDialogExpert);
 end.
 

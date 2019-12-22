@@ -30,7 +30,7 @@ type
     procedure Configure; override;
   end;
 
-  TPrevIdentExpert = class(TBaseIdentExpert)
+  TPreviousIdentExpert = class(TBaseIdentExpert)
   private
     Previous: Boolean;
   protected
@@ -48,7 +48,7 @@ type
     function GetHelpString: string; override;
   end;
 
-  TNextIdentExpert = class(TPrevIdentExpert)
+  TNextIdentExpert = class(TPreviousIdentExpert)
   public
     class function ConfigurationKey: string; override;
     class function GetName: string; override;
@@ -220,15 +220,15 @@ begin
   end;
 end;
 
-{ TPrevIdentExpert }
+{ TPreviousIdentExpert }
 
-constructor TPrevIdentExpert.Create;
+constructor TPreviousIdentExpert.Create;
 begin
   inherited Create;
   Previous := True;
 end;
 
-procedure TPrevIdentExpert.InternalExecute;
+procedure TPreviousIdentExpert.InternalExecute;
 var
   FoundPos: Integer;
   Ident: string;
@@ -239,45 +239,45 @@ begin
     MessageBeep($FFFFFFFF);
 end;
 
-function TPrevIdentExpert.FindIdentAction(const Source: string; Pos: Integer;
+function TPreviousIdentExpert.FindIdentAction(const Source: string; Pos: Integer;
   var FoundPos: Integer; var Ident: string): Boolean;
 begin
   Result := FindIdentAtPos(Source, Pos, Previous, FoundPos, Ident);
 end;
 
-function TPrevIdentExpert.GetHelpString: string;
+function TPreviousIdentExpert.GetHelpString: string;
 begin
   Result := Format(SIdentHelpString, ['previous']);
 end;
 
-function TPrevIdentExpert.GetDefaultShortCut: TShortCut;
+function TPreviousIdentExpert.GetDefaultShortCut: TShortCut;
 begin
   Result := scCtrl + scAlt + VK_UP;
 end;
 
-function TPrevIdentExpert.GetDisplayName: string;
+function TPreviousIdentExpert.GetDisplayName: string;
 begin
   Result := 'Previous Identifier Reference';
 end;
 
-class function TPrevIdentExpert.GetName: string;
+class function TPreviousIdentExpert.GetName: string;
 begin
   Result := 'PreviousIdent';
 end;
 
-class function TPrevIdentExpert.ConfigurationKey: string;
+class function TPreviousIdentExpert.ConfigurationKey: string;
 begin
   Result := 'PrevIdentifier';
 end;
 
-procedure TPrevIdentExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TPreviousIdentExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited InternalLoadSettings(_Settings);
   // Do not localize any of the below items.
   ViewChangeType := TViewChangeType(_Settings.ReadEnumerated('ViewChangeType', TypeInfo(TViewChangeType), Ord(vctScrollCenter)));
 end;
 
-procedure TPrevIdentExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TPreviousIdentExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited InternalSaveSettings(_Settings);
   // Do not localize any of the below items.
@@ -318,7 +318,7 @@ begin
 end;
 
 initialization
-  RegisterEditorExpert(TPrevIdentExpert);
+  RegisterEditorExpert(TPreviousIdentExpert);
   RegisterEditorExpert(TNextIdentExpert);
 
 end.

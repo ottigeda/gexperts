@@ -23,7 +23,7 @@ type
     function HasConfigOptions: Boolean; override;
   end;
 
-  TLocateDelimiter = class(TBaseDelimiterExpert)
+  TLocateDelimiterExpert = class(TBaseDelimiterExpert)
   public
     class function GetName: string; override;
     constructor Create; override;
@@ -36,7 +36,7 @@ type
   end;
 
 type
-  TMoveToDelimiter = class(TBaseDelimiterExpert)
+  TMoveToDelimiterExpert = class(TBaseDelimiterExpert)
   public
     class function GetName: string; override;
     constructor Create; override;
@@ -637,15 +637,15 @@ begin
   Result := False;
 end;
 
-{ TMoveToDelimiter }
+{ TMoveToDelimiterExpert }
 
-constructor TMoveToDelimiter.Create;
+constructor TMoveToDelimiterExpert.Create;
 begin
   inherited Create;
   ThreeDelimiters := True;
 end;
 
-procedure TMoveToDelimiter.DoDelimiterAction(Editor: IOTASourceEditor;
+procedure TMoveToDelimiterExpert.DoDelimiterAction(Editor: IOTASourceEditor;
   Offset: Integer; SChar, EChar: TOTACharPos);
 var
   EditView: IOTAEditView;
@@ -664,38 +664,38 @@ begin
   EditView.Paint;
 end;
 
-function TMoveToDelimiter.GetDefaultShortCut: TShortCut;
+function TMoveToDelimiterExpert.GetDefaultShortCut: TShortCut;
 begin
   Result := scCtrl + scAlt + VK_RIGHT;
 end;
 
-function TMoveToDelimiter.GetDisplayName: string;
+function TMoveToDelimiterExpert.GetDisplayName: string;
 resourcestring
   SMoveToExpertName = 'Move to Matching Delimiter';
 begin
   Result := SMoveToExpertName;
 end;
 
-function TMoveToDelimiter.GetHelpString: string;
+function TMoveToDelimiterExpert.GetHelpString: string;
 begin
   Result := SDelimiterHelpPrefix + SDelimiterMoveToMessage +
     SDelimiterHelpSuffix + SDelimiterUsage;
 end;
 
-class function TMoveToDelimiter.GetName: string;
+class function TMoveToDelimiterExpert.GetName: string;
 begin
   Result := 'MoveToDelimiter';
 end;
 
-{ TLocateDelimiter }
+{ TLocateDelimiterExpert }
 
-constructor TLocateDelimiter.Create;
+constructor TLocateDelimiterExpert.Create;
 begin
   inherited Create;
   ThreeDelimiters := False;
 end;
 
-procedure TLocateDelimiter.DoDelimiterAction(Editor: IOTASourceEditor;
+procedure TLocateDelimiterExpert.DoDelimiterAction(Editor: IOTASourceEditor;
   Offset: Integer; SChar, EChar: TOTACharPos);
 var
   EditView: IOTAEditView;
@@ -711,31 +711,31 @@ begin
     GxOtaSelectBlock(Editor, EChar, SChar);
 end;
 
-function TLocateDelimiter.GetDefaultShortCut: TShortCut;
+function TLocateDelimiterExpert.GetDefaultShortCut: TShortCut;
 begin
   Result := scCtrl + scAlt + VK_LEFT;
 end;
 
-function TLocateDelimiter.GetDisplayName: string;
+function TLocateDelimiterExpert.GetDisplayName: string;
 resourcestring
   SLocateDelimiterName = 'Locate Matching Delimiter';
 begin
   Result := SLocateDelimiterName;
 end;
 
-function TLocateDelimiter.GetHelpString: string;
+function TLocateDelimiterExpert.GetHelpString: string;
 begin
   Result := SDelimiterHelpPrefix + SDelimiterLocateMessage +
     SDelimiterHelpSuffix + SDelimiterUsage;
 end;
 
-class function TLocateDelimiter.GetName: string;
+class function TLocateDelimiterExpert.GetName: string;
 begin
   Result := 'LocateDelimiter';
 end;
 
 initialization
-  RegisterEditorExpert(TLocateDelimiter);
-  RegisterEditorExpert(TMoveToDelimiter);
+  RegisterEditorExpert(TLocateDelimiterExpert);
+  RegisterEditorExpert(TMoveToDelimiterExpert);
 end.
 

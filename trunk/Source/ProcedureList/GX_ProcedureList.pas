@@ -128,7 +128,7 @@ resourcestring
   SNoneString = '<None>';
 
 type
-  TProcedureExpert = class(TGX_Expert)
+  TProcedureListExpert = class(TGX_Expert)
   public
     constructor Create; override;
     function GetActionCaption: string; override;
@@ -330,12 +330,12 @@ begin
   FOptions.CodeViewWidth := pnlFunctionBody.Width;
   FOptions.CodeViewHeight := pnlFunctionBody.Height;
   FOptions.DialogFont.Assign(lvProcs.Font);
-  FOptions.SaveSettings(TProcedureExpert.GetSettings);
+  FOptions.SaveSettings(TProcedureListExpert.GetSettings);
 end;
 
 procedure TfmProcedureList.LoadSettings;
 begin
-  FOptions.LoadSettings(TProcedureExpert.GetSettings);
+  FOptions.LoadSettings(TProcedureListExpert.GetSettings);
   BoundsRect := FOptions.BoundsRect;
   ApplyOptions(True);
   EnsureFormVisible(Self);
@@ -435,26 +435,26 @@ begin
   cbxObjects.ItemIndex := cbxObjects.Items.IndexOf(SAllString);
 end;
 
-{ TProcedureExpert }
+{ TProcedureListExpert }
 
-constructor TProcedureExpert.Create;
+constructor TProcedureListExpert.Create;
 begin
   inherited;
 end;
 
-function TProcedureExpert.GetActionCaption: string;
+function TProcedureListExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = '&Procedure List...';
 begin
   Result := SMenuCaption;
 end;
 
-function TProcedureExpert.GetDefaultShortCut: TShortCut;
+function TProcedureListExpert.GetDefaultShortCut: TShortCut;
 begin
   Result := Menus.ShortCut(Word('G'), [ssCtrl]);
 end;
 
-procedure TProcedureExpert.Execute(Sender: TObject);
+procedure TProcedureListExpert.Execute(Sender: TObject);
 var
   FileName: string;
   TempFileName: string;
@@ -497,12 +497,12 @@ begin
   IncCallCount;
 end;
 
-function TProcedureExpert.HasConfigOptions: Boolean;
+function TProcedureListExpert.HasConfigOptions: Boolean;
 begin
   Result := True;
 end;
 
-function TProcedureExpert.HasMenuItem: Boolean;
+function TProcedureListExpert.HasMenuItem: Boolean;
 begin
   Result := True;
 end;
@@ -690,12 +690,12 @@ begin
   end;
 end;
 
-class function TProcedureExpert.GetName: string;
+class function TProcedureListExpert.GetName: string;
 begin
   Result := 'ProcedureList'; // Do not localize.
 end;
 
-procedure TProcedureExpert.Configure;
+procedure TProcedureListExpert.Configure;
 var
   lclOptions: TProcedureListOptions;
 begin
@@ -712,7 +712,7 @@ begin
   end;
 end;
 
-procedure TProcedureExpert.UpdateAction(Action: TCustomAction);
+procedure TProcedureListExpert.UpdateAction(Action: TCustomAction);
 const
   SAllowableFileExtensions =
     '.pas;.dpr;.inc;.dfm;.xfm;.nfm;.tlb;.ocx;.olb;.dll;.exe;.cpp;.c;.h'; // Do not localize.
@@ -838,7 +838,7 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TProcedureExpert);
+  RegisterGX_Expert(TProcedureListExpert);
 
 end.
 

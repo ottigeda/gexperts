@@ -207,7 +207,7 @@ type
     procedure LoadSettings;
   end;
 
-  TMacroLibExpert = class(TGX_Expert)
+  TMacroLibraryExpert = class(TGX_Expert)
   private
     FStoragePath: string;
     function GetStorageFile: string;
@@ -258,7 +258,7 @@ type
 
 var
   fmMacroLibrary: TfmMacroLibrary = nil;
-  MacroLibExpert: TMacroLibExpert = nil;
+  MacroLibExpert: TMacroLibraryExpert = nil;
 
 implementation
 
@@ -678,7 +678,7 @@ var
   Settings: IExpertSettings;
 begin
   // Do not localize.
-  Settings := TMacroLibExpert.GetSettings;
+  Settings := TMacroLibraryExpert.GetSettings;
   Settings.WriteBool('Suspended', FSuspended);
   Settings.WriteBool('ViewDescription', DescriptionVisible);
   Settings.WriteBool('PromptForName', FPromptForName);
@@ -694,7 +694,7 @@ var
   Settings: IExpertSettings;
 begin
   // Do not localize.
-  Settings := TMacroLibExpert.GetSettings;
+  Settings := TMacroLibraryExpert.GetSettings;
   FSuspended := Settings.ReadBool('Suspended', False);
   FPromptForName := Settings.ReadBool('PromptForName', False);
   DescriptionVisible := Settings.ReadBool('ViewDescription', True);
@@ -1219,9 +1219,9 @@ begin
   GetSharedImageList.GetBitmap(actRecord.ImageIndex, _bmp);
 end;
 
-{ TMacroLibExpert }
+{ TMacroLibraryExpert }
 
-constructor TMacroLibExpert.Create;
+constructor TMacroLibraryExpert.Create;
 begin
   inherited;
   FStoragePath := ConfigInfo.ConfigPath;
@@ -1229,24 +1229,24 @@ begin
   MacroLibExpert := Self;
 end;
 
-destructor TMacroLibExpert.Destroy;
+destructor TMacroLibraryExpert.Destroy;
 begin
   FreeAndNil(fmMacroLibrary);
   MacroLibExpert := nil;
   inherited;
 end;
 
-function TMacroLibExpert.GetActionCaption: string;
+function TMacroLibraryExpert.GetActionCaption: string;
 begin
   Result := SMacroLibCaption;
 end;
 
-class function TMacroLibExpert.GetName: string;
+class function TMacroLibraryExpert.GetName: string;
 begin
   Result := 'MacroLibrary';
 end;
 
-procedure TMacroLibExpert.Execute(Sender: TObject);
+procedure TMacroLibraryExpert.Execute(Sender: TObject);
 begin
   // If the form does not exist, create it
   if fmMacroLibrary = nil then
@@ -1258,7 +1258,7 @@ begin
     ShowGxMessageBox(TIDEMacroBugMessage);
 end;
 
-procedure TMacroLibExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TMacroLibraryExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
   // This procedure is only called once, so it is safe to
@@ -1270,7 +1270,7 @@ begin
     fmMacroLibrary := TfmMacroLibrary.Create(nil);
 end;
 
-function TMacroLibExpert.GetHelpString: string;
+function TMacroLibraryExpert.GetHelpString: string;
 resourcestring
   SHelpString =
   '  Manage keyboard macros.';
@@ -1278,23 +1278,23 @@ begin
   Result := SHelpString;
 end;
 
-function TMacroLibExpert.GetStorageFile: string;
+function TMacroLibraryExpert.GetStorageFile: string;
 begin
   Result := FStoragePath + MacroLibraryStorageFileName;
 end;
 
-function TMacroLibExpert.HasConfigOptions: Boolean;
+function TMacroLibraryExpert.HasConfigOptions: Boolean;
 begin
   Result := True;
 end;
 
-procedure TMacroLibExpert.Configure;
+procedure TMacroLibraryExpert.Configure;
 begin
   if TfmGxMacroLibraryConfig.Execute(fmMacroLibrary.FPromptForName) then
     fmMacroLibrary.SaveSettings;
 end;
 
-function TMacroLibExpert.IsDefaultActive: Boolean;
+function TMacroLibraryExpert.IsDefaultActive: Boolean;
 begin
   Result := not RunningRS2009;
 end;
@@ -1437,7 +1437,7 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TMacroLibExpert);
+  RegisterGX_Expert(TMacroLibraryExpert);
   RegisterGX_Expert(TMacroLibRecordExpert);
   RegisterGX_Expert(TMacroLibPlaybackExpert);
 

@@ -9,7 +9,7 @@ uses
   GX_EditorExpert, GX_ConfigurationInfo, GX_BaseForm;
 
 type
-  TDateExpert = class(TEditorExpert)
+  TDateTimeExpert = class(TEditorExpert)
   private
     FDateFormat: string;
   protected
@@ -41,9 +41,9 @@ uses
 
 {$R *.dfm}
 
-{ TDateExpert }
+{ TDateTimeExpert }
 
-procedure TDateExpert.Configure;
+procedure TDateTimeExpert.Configure;
 begin
   with TfmDateFormat.Create(nil) do
   try
@@ -55,13 +55,13 @@ begin
   end;
 end;
 
-constructor TDateExpert.Create;
+constructor TDateTimeExpert.Create;
 begin
   inherited Create;
   FDateFormat := {$IFDEF GX_VER220_up}FormatSettings.{$ENDIF}ShortDateFormat;
 end;
 
-procedure TDateExpert.Execute(Sender: TObject);
+procedure TDateTimeExpert.Execute(Sender: TObject);
 resourcestring
   SInvalidDateTimeFormat = 'Invalid date/time format';
 var
@@ -77,19 +77,19 @@ begin
   IncCallCount;
 end;
 
-function TDateExpert.GetDefaultShortCut: TShortCut;
+function TDateTimeExpert.GetDefaultShortCut: TShortCut;
 begin
   Result := scCtrl + scAlt + Ord('A');
 end;
 
-function TDateExpert.GetDisplayName: string;
+function TDateTimeExpert.GetDisplayName: string;
 resourcestring
   SDateExpertName = 'Insert Date/Time';
 begin
   Result := SDateExpertName;
 end;
 
-function TDateExpert.GetHelpString: string;
+function TDateTimeExpert.GetHelpString: string;
 resourcestring
   SDateExpertHelp =
     '  This expert inserts the current date/time at the cursor position in ' +
@@ -100,24 +100,24 @@ begin
   Result := SDateExpertHelp;
 end;
 
-class function TDateExpert.GetName: string;
+class function TDateTimeExpert.GetName: string;
 begin
   Result := 'DateTime';
 end;
 
-procedure TDateExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TDateTimeExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited InternalLoadSettings(_Settings);
   DateFormat := _Settings.ReadString('Format', FDateFormat); // Do not localize
 end;
 
-procedure TDateExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TDateTimeExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited InternalSaveSettings(_Settings);
   _Settings.WriteString('Format', DateFormat); // Do not localize
 end;
 
 initialization
-  RegisterEditorExpert(TDateExpert);
+  RegisterEditorExpert(TDateTimeExpert);
 end.
 
