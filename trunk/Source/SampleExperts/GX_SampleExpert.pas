@@ -44,8 +44,6 @@ type
   protected
     procedure SetActive(New: Boolean); override;
   public
-    // optional, defaults to ClassName
-    class function GetName: string; override;
     // optional, defauls to true
     function CanHaveShortCut: boolean; override;
     constructor Create; override;
@@ -61,10 +59,10 @@ type
     function HasMenuItem: Boolean; override;
     // optional if HasConfigOptions returns false
     procedure Configure; override;
-    // Overrride to load any configuration settings
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
-    // Overrride to save any configuration settings
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    // Override to load any configuration settings
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    // Override to save any configuration settings
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
     procedure Execute(Sender: TObject); override;
   end;
 
@@ -187,23 +185,9 @@ begin
 end;
 
 //*********************************************************
-//    Name: TGxSampleExpert.GetName
-// Purpose: Used to determine the unique keyword used to
-//          save the active state and shortcut into the registry
-//    Note: The inherited implementation returns the
-//          expert's class name. This is usually fine
-//          as long as it is unique within GExperts.
-//          Feel free to omit this method from your expert.
-//*********************************************************
-class function TGxSampleExpert.GetName: string;
-begin
-  Result := 'SampleExpert';
-end;
-
-//*********************************************************
 //    Name: TGxSampleExpert.HasConfigOptions
 // Purpose: This expert should have a configure button in
-// 	        the configuration dialog
+//          the configuration dialog
 //*********************************************************
 function TGxSampleExpert.HasConfigOptions: Boolean;
 begin
@@ -224,10 +208,10 @@ end;
 //    Name: TGxSampleExpert.LoadSettings
 // Purpose: Gets the expert settings from the registry
 //*********************************************************
-procedure TGxSampleExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TGxSampleExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
-  FSomeData := Settings.ReadString('TestSetting', FSomeData);
+  FSomeData := _Settings.ReadString('TestSetting', FSomeData);
 end;
 
 //*********************************************************
@@ -235,10 +219,10 @@ end;
 // Purpose: Saves the expert settings to the registry
 // You must call this manually in the destructor
 //*********************************************************
-procedure TGxSampleExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TGxSampleExpert.InternalSaveSettings(_Settings: IExpertSettings); 
 begin
   inherited;
-  Settings.WriteString('TestSetting', FSomeData);
+  _Settings.WriteString('TestSetting', FSomeData);
 end;
 
 //********************************************************************
@@ -263,7 +247,7 @@ begin
 end;
 
 //*********************************************************
-// Purpose: Lets GExperts know about this new expert
+// Purpose: Lets GExperts know about this expert
 //*********************************************************
 initialization
   RegisterGX_Expert(TGxSampleExpert);

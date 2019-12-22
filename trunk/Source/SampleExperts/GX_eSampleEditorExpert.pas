@@ -26,8 +26,6 @@ type
   private
     FData: string;
   public
-    // optional, defaults to ClassName
-    class function GetName: string; override;
     constructor Create; override;
     // optional, defaults to true
     function CanHaveShortCut: boolean; override;
@@ -44,9 +42,9 @@ type
     // optional, defaults to true
     function HasConfigOptions: Boolean; override;
     // Overrride to load any configuration settings
-    procedure InternalLoadSettings(Settings: TExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     // Overrride to save any configuration settings
-    procedure InternalSaveSettings(Settings: TExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   end;
 
 type
@@ -210,24 +208,6 @@ begin
 end;
 
 //*********************************************************
-//    Name: TGxSampleEditorExpert.GetName
-// Purpose: Each editor expert needs to provide a name
-//          that represents this editor expert.
-//    Note: This string will be used to construct an action
-//          name and therefore must be a valid identifier.
-//          The inherited implementation returns the
-//          expert's class name. This is usually fine
-//          as long as it is unique within GExperts.
-//          Feel free to omit this method from your expert.
-//*********************************************************
-class function TGxSampleEditorExpert.GetName: string;
-const
-  SName = 'SampleEditorExpert';
-begin
-  Result := SName;
-end;
-
-//*********************************************************
 //    Name: TGxSampleEditorExpert.HasConfigOptions
 // Purpose: Let the world know whether this expert has
 //          configuration options.
@@ -237,22 +217,22 @@ begin
   Result := True;
 end;
 
-procedure TGxSampleEditorExpert.InternalLoadSettings(Settings: TExpertSettings);
+procedure TGxSampleEditorExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalLoadSettings(Settings);
+  inherited;
 
-  FData := Settings.ReadString('TestData', FData);
+  FData := _Settings.ReadString('TestData', FData);
 end;
 
-procedure TGxSampleEditorExpert.InternalSaveSettings(Settings: TExpertSettings);
+procedure TGxSampleEditorExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
-  inherited InternalSaveSettings(Settings);
+  inherited;
 
-  Settings.WriteString('TestData', FData);
+  _Settings.WriteString('TestData', FData);
 end;
 
 //*******************************************************************
-// Purpose: Tells GExperts about the existance of this editor expert
+// Purpose: Lets GExperts know about this editor expert
 //*******************************************************************
 initialization
   RegisterEditorExpert(TGxSampleEditorExpert);
