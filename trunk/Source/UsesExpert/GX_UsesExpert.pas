@@ -33,7 +33,7 @@ type
   end;
 
 type
-  TUsesExpert = class(TGX_Expert)
+  TUsesClauseMgrExpert = class(TGX_Expert)
   private
     FAvailTabIndex: Integer;
     FReplaceFileUseUnit: Boolean;
@@ -351,9 +351,9 @@ type
     FFavoriteUnits: TStringList;
     FSearchPathUnits: TStringList;
     FFavUnitsExports: TStringList;
-    FUsesExpert: TUsesExpert;
+    FUsesExpert: TUsesClauseMgrExpert;
   public
-    constructor Create(_Owner: TComponent; _UsesExpert: TUsesExpert); reintroduce;
+    constructor Create(_Owner: TComponent; _UsesExpert: TUsesClauseMgrExpert); reintroduce;
   end;
 
 implementation
@@ -368,15 +368,15 @@ uses
 {$ENDIF D+}
   GX_UsesExpertOptions, GX_MessageBox, GX_dzOsUtils, GX_dzClassUtils;
 
-{ TUsesExpert }
+{ TUsesClauseMgrExpert }
 
-constructor TUsesExpert.Create;
+constructor TUsesClauseMgrExpert.Create;
 begin
   inherited;
   LoadSettings;
 end;
 
-destructor TUsesExpert.Destroy;
+destructor TUsesClauseMgrExpert.Destroy;
 var
   act: TBasicAction;
 begin
@@ -404,7 +404,7 @@ begin
   inherited;
 end;
 
-procedure TUsesExpert.AfterIDEInitialized;
+procedure TUsesClauseMgrExpert.AfterIDEInitialized;
 var
   act: TBasicAction;
 begin
@@ -421,7 +421,7 @@ begin
   HandleProjectChanged(FProjectChangedNotifier);
 end;
 
-function TUsesExpert.FindAction(out _Action: TBasicAction): Boolean;
+function TUsesClauseMgrExpert.FindAction(out _Action: TBasicAction): Boolean;
 var
   MainMenu: TMainMenu;
   mi: TMenuItem;
@@ -438,24 +438,24 @@ begin
   end;
 end;
 
-procedure TUsesExpert.Execute(Sender: TObject);
+procedure TUsesClauseMgrExpert.Execute(Sender: TObject);
 begin
   InternalExecute;
 end;
 
-function TUsesExpert.GetDefaultShortCut: TShortCut;
+function TUsesClauseMgrExpert.GetDefaultShortCut: TShortCut;
 begin
   Result := scShift + scAlt + Ord('U');
 end;
 
-function TUsesExpert.GetActionCaption: string;
+function TUsesClauseMgrExpert.GetActionCaption: string;
 resourcestring
   SUsesExpert = '&Uses Clause Manager ...';
 begin
   Result := SUsesExpert;
 end;
 
-//procedure TUsesExpert.GetHelpString(List: TStrings);
+//procedure TUsesClauseMgrExpert.GetHelpString(List: TStrings);
 //resourcestring
 //  SUsesExpertHelp =
 //    '  This expert is designed to help you manage the uses clauses of your Delphi files.  ' +
@@ -473,17 +473,17 @@ end;
 //  List.Text := SUsesExpertHelp;
 //end;
 
-class function TUsesExpert.GetName: string;
+class function TUsesClauseMgrExpert.GetName: string;
 begin
   Result := 'UsesClauseMgr';
 end;
 
-procedure TUsesExpert.HandleProjectChanged(_Sender: TObject);
+procedure TUsesClauseMgrExpert.HandleProjectChanged(_Sender: TObject);
 begin
   StartUnitParserThread;
 end;
 
-procedure TUsesExpert.StartUnitParserThread;
+procedure TUsesClauseMgrExpert.StartUnitParserThread;
 var
   Paths: TStrings;
   CacheDir: string;
@@ -540,12 +540,12 @@ begin
   end;
 end;
 
-function TUsesExpert.HasConfigOptions: Boolean;
+function TUsesClauseMgrExpert.HasConfigOptions: Boolean;
 begin
   Result := True;
 end;
 
-procedure TUsesExpert.Configure;
+procedure TUsesClauseMgrExpert.Configure;
 var
   act: TBasicAction;
   Found: Boolean;
@@ -571,7 +571,7 @@ begin
   end;
 end;
 
-procedure TUsesExpert.InternalExecute;
+procedure TUsesClauseMgrExpert.InternalExecute;
 var
   Form: TfmUsesManager;
 begin
@@ -594,7 +594,7 @@ begin
   end;
 end;
 
-procedure TUsesExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TUsesClauseMgrExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
   FReplaceFileUseUnit := _Settings.ReadBool('ReplaceFileUseUnit', False);
@@ -604,7 +604,7 @@ begin
   FDisableCache := _Settings.ReadBool('DisableCache', False);
 end;
 
-procedure TUsesExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TUsesClauseMgrExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited;
   _Settings.WriteBool('ReplaceFileUseUnit', FReplaceFileUseUnit);
@@ -616,7 +616,7 @@ end;
 
 { TfmUsesManager }
 
-constructor TfmUsesManager.Create(_Owner: TComponent; _UsesExpert: TUsesExpert);
+constructor TfmUsesManager.Create(_Owner: TComponent; _UsesExpert: TUsesClauseMgrExpert);
 var
   Bitmap: TBitmap;
 begin
@@ -2762,6 +2762,6 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TUsesExpert);
+  RegisterGX_Expert(TUsesClauseMgrExpert);
 end.
 

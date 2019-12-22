@@ -44,7 +44,7 @@ type
     destructor Destroy; override;
   end;
 
-  TShortCutExpert = class(TGX_Expert)
+  TIDEMenuShortCutsExpert = class(TGX_Expert)
   private
     FOldShortCuts: TStringList;
     FPackageNotifier: TBaseIdeNotifier;
@@ -80,19 +80,19 @@ uses
 type
   TPackageLoadingNotifier = class(TBaseIdeNotifier)
   private
-    FShortCutExpert: TShortCutExpert;
+    FShortCutExpert: TIDEMenuShortCutsExpert;
   public
     procedure FileNotification(NotifyCode: TOTAFileNotification;
       const FileName: string; var Cancel: Boolean); override;
-    constructor Create(const AClient: TShortCutExpert);
+    constructor Create(const AClient: TIDEMenuShortCutsExpert);
     destructor Destroy; override;
   end;
 
   TProcessNotifier = class(TBaseDebuggerNotifier)
   private
-    FShortCutExpert: TShortCutExpert;
+    FShortCutExpert: TIDEMenuShortCutsExpert;
   public
-    constructor Create(const AClient: TShortCutExpert);
+    constructor Create(const AClient: TIDEMenuShortCutsExpert);
     procedure ProcessCreated({$IFDEF GX_VER170_up} const {$ENDIF} Process: IOTAProcess); override;
     procedure ProcessDestroyed({$IFDEF GX_VER170_up} const {$ENDIF} Process: IOTAProcess); override;
     destructor Destroy; override;
@@ -348,12 +348,12 @@ end;
 
 function TfmIdeShortCuts.ShortCutConfigurationKey: string;
 begin
-  Result := TShortCutExpert.ConfigurationKey;
+  Result := TIDEMenuShortCutsExpert.ConfigurationKey;
 end;
 
 function TfmIdeShortCuts.WindowConfigurationKey: string;
 begin
-  Result := TShortCutExpert.ConfigurationKey + PathDelim + 'Window';
+  Result := TIDEMenuShortCutsExpert.ConfigurationKey + PathDelim + 'Window';
 end;
 
 procedure TfmIdeShortCuts.FormShow(Sender: TObject);
@@ -406,9 +406,9 @@ begin
   end;
 end;
 
-{ TShortCutExpert }
+{ TIDEMenuShortCutsExpert }
 
-procedure TShortCutExpert.Execute(Sender: TObject);
+procedure TIDEMenuShortCutsExpert.Execute(Sender: TObject);
 var
   Dlg: TfmIdeShortCuts;
 begin
@@ -429,14 +429,14 @@ begin
   end;
 end;
 
-destructor TShortCutExpert.Destroy;
+destructor TIDEMenuShortCutsExpert.Destroy;
 begin
   FinalizeShortCutExpert;
 
   inherited;
 end;
 
-procedure TShortCutExpert.FinalizeShortCutExpert;
+procedure TIDEMenuShortCutsExpert.FinalizeShortCutExpert;
 begin
   if Assigned(FUpdateTimer) then
     FUpdateTimer.Enabled := False;
@@ -456,24 +456,24 @@ begin
   FreeAndNil(FOldShortCuts);
 end;
 
-function TShortCutExpert.GetActionCaption: string;
+function TIDEMenuShortCutsExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = '&IDE Menu Shortcuts...';
 begin
   Result := SMenuCaption;
 end;
 
-class function TShortCutExpert.GetName: string;
+class function TIDEMenuShortCutsExpert.GetName: string;
 begin
   Result := 'IDEMenuShortCuts'; // Do not localize.
 end;
 
-function TShortCutExpert.HasConfigOptions: Boolean;
+function TIDEMenuShortCutsExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
 end;
 
-procedure TShortCutExpert.InitializeShortCutExpert;
+procedure TIDEMenuShortCutsExpert.InitializeShortCutExpert;
 begin
   Assert(FOldShortCuts = nil);
   FOldShortCuts := TStringList.Create;
@@ -494,7 +494,7 @@ begin
   FUpdateTimer.OnTimer := OnUpdateTimer;
 end;
 
-procedure TShortCutExpert.QueueReinitializeShortcuts;
+procedure TIDEMenuShortCutsExpert.QueueReinitializeShortcuts;
 begin
   // Restart the timer delay before updating the shortcuts.
   // This prevents us from updating constantly during startup, etc.
@@ -504,7 +504,7 @@ begin
 end;
 
 // Read shortcut settings from the registry and apply to the menu
-procedure TShortCutExpert.ReadFromRegistryIDE;
+procedure TIDEMenuShortCutsExpert.ReadFromRegistryIDE;
 var
   i: Integer;
   RegValues: TStrings;
@@ -563,7 +563,7 @@ begin
   {$IFOPT D+} SendDebug('Done setting IDE shortcuts'); {$ENDIF}
 end;
 
-procedure TShortCutExpert.ResetShortCuts;
+procedure TIDEMenuShortCutsExpert.ResetShortCuts;
 var
   i: Integer;
   AMenuItem: TMenuItem;
@@ -591,7 +591,7 @@ begin
   end;
 end;
 
-procedure TShortCutExpert.SetActive(New: Boolean);
+procedure TIDEMenuShortCutsExpert.SetActive(New: Boolean);
 begin
   if New <> Active then
   begin
@@ -610,7 +610,7 @@ begin
   end;
 end;
 
-procedure TShortCutExpert.OnUpdateTimer(Sender: TObject);
+procedure TIDEMenuShortCutsExpert.OnUpdateTimer(Sender: TObject);
 begin
   Inc(FUpdateCount);
   {$IFOPT D+} SendDebug('IDE shortcut update timer expired, calling ReadFromRegistryIDE.  Update Count: ' + IntToStr(FUpdateCount)); {$ENDIF}
@@ -624,7 +624,7 @@ end;
 
 { TPackageLoadingNotifier }
 
-constructor TPackageLoadingNotifier.Create(const AClient: TShortCutExpert);
+constructor TPackageLoadingNotifier.Create(const AClient: TIDEMenuShortCutsExpert);
 begin
   inherited Create;
 
@@ -650,7 +650,7 @@ end;
 
 { TProcessNotifier }
 
-constructor TProcessNotifier.Create(const AClient: TShortCutExpert);
+constructor TProcessNotifier.Create(const AClient: TIDEMenuShortCutsExpert);
 begin
   inherited Create;
   Assert(Assigned(AClient));
@@ -676,7 +676,7 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TShortCutExpert);
+  RegisterGX_Expert(TIDEMenuShortCutsExpert);
 
 end.
 

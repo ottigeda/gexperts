@@ -59,7 +59,7 @@ uses
   GX_SetComponentPropsConfig, GX_SetComponentPropsStatus;
 
 type
-  TSetComponentPropsExpert = class(TGX_Expert)
+  TSetComponentPropertiesExpert = class(TGX_Expert)
   protected
     procedure SetActive(New: Boolean); override;
   public
@@ -78,12 +78,12 @@ type
 
 var
   GxSetComponentPropsSettings: TSetComponentPropsSettings = nil;
-  SetComponentPropsExpert: TSetComponentPropsExpert = nil;
+  SetComponentPropsExpert: TSetComponentPropertiesExpert = nil;
 
-{TSetComponentPropsExpert}
+{TSetComponentPropertiesExpert}
 
 // Get an instance of the Settings container (TSetComponentPropsSettings)
-constructor TSetComponentPropsExpert.Create;
+constructor TSetComponentPropertiesExpert.Create;
 begin
   inherited;
   TSetComponentPropsSettings.GetInstance; // Get an instance of the settings container
@@ -93,7 +93,7 @@ begin
 end;
 
 // Be sure to free the settings conatiner (TSetComponentPropsSettings)
-destructor TSetComponentPropsExpert.Destroy;
+destructor TSetComponentPropertiesExpert.Destroy;
 begin
   Active := False; // Prevent re-creating TSetComponentPropsSettings later when setting Active=False
   SetComponentPropsExpert := nil;
@@ -102,13 +102,13 @@ begin
 end;
 
 // When the menu item is clicked, open the configuration dialog
-procedure TSetComponentPropsExpert.Execute(Sender: TObject);
+procedure TSetComponentPropertiesExpert.Execute(Sender: TObject);
 begin
   Configure;
 end;
 
 // Action taken when user clicks the Configure button on the Experts tab of menu item GExperts/GExperts Configuration...
-procedure TSetComponentPropsExpert.Configure;
+procedure TSetComponentPropertiesExpert.Configure;
 begin
   with TfmSetComponentPropsConfig.Create(nil) do
   begin
@@ -123,7 +123,7 @@ begin
 end;
 
 // Returns the string displayed on the GExperts menu item
-function TSetComponentPropsExpert.GetActionCaption: string;
+function TSetComponentPropertiesExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = 'Set Component Properties...';
 begin
@@ -131,25 +131,25 @@ begin
 end;
 
 // Used to determine the unique keyword used to save the active state and shortcut into the registry
-class function TSetComponentPropsExpert.GetName: string;
+class function TSetComponentPropertiesExpert.GetName: string;
 begin
   Result := 'SetComponentProperties';
 end;
 
 // This expert should have a configure button in the configuration dialog
-function TSetComponentPropsExpert.HasConfigOptions: Boolean;
+function TSetComponentPropertiesExpert.HasConfigOptions: Boolean;
 begin
   Result := True;
 end;
 
 // This expert does not have a visible menu item in the GExperts top level menu
-function TSetComponentPropsExpert.HasMenuItem: Boolean;
+function TSetComponentPropertiesExpert.HasMenuItem: Boolean;
 begin
   Result := False;
 end;
 
 // Gets the expert settings from the registry
-procedure TSetComponentPropsExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TSetComponentPropertiesExpert.InternalLoadSettings(_Settings: IExpertSettings);
 var
   Instance: TSetComponentPropsSettings;
 begin
@@ -166,7 +166,7 @@ begin
 end;
 
 // Saves the expert settings to the registry
-procedure TSetComponentPropsExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TSetComponentPropertiesExpert.InternalSaveSettings(_Settings: IExpertSettings);
 var
   Instance: TSetComponentPropsSettings;
 begin
@@ -181,7 +181,7 @@ begin
 end;
 
 // Called to clean up the expert when it is disabled at runtime or destroyed on shutdown.
-procedure TSetComponentPropsExpert.SetActive(New: Boolean);
+procedure TSetComponentPropertiesExpert.SetActive(New: Boolean);
 begin
   if New <> Active then
   begin
@@ -462,13 +462,13 @@ begin
   end;
 end;
 
-function TSetComponentPropsExpert.IsDefaultActive: Boolean;
+function TSetComponentPropertiesExpert.IsDefaultActive: Boolean;
 begin
   Result := False;
 end;
 
 initialization
-  RegisterGX_Expert(TSetComponentPropsExpert);
+  RegisterGX_Expert(TSetComponentPropertiesExpert);
 
 end.
 
