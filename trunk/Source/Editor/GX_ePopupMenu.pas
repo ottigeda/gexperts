@@ -84,7 +84,7 @@ uses
   GX_MenusForEditorExpert;
 
 type
-  TGxEditorPopupMenuExpert = class(TEditorExpert)
+  TEditorPopupMenuExpert = class(TEditorExpert)
   private
     FFormHeight: Integer;
     FGExpertsShortcutMenu: TPopupMenu;
@@ -108,9 +108,9 @@ type
     procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   end;
 
-{ TGxEditorPopupMenuExpert }
+{ TEditorPopupMenuExpert }
 
-procedure TGxEditorPopupMenuExpert.Configure;
+procedure TEditorPopupMenuExpert.Configure;
 var
   frm: TfmEditorPopupMenuExpertConfig;
 begin
@@ -127,27 +127,27 @@ begin
   end;
 end;
 
-constructor TGxEditorPopupMenuExpert.Create;
+constructor TEditorPopupMenuExpert.Create;
 begin
   inherited;
   FShortcuts := TStringList.Create;
   FForceEditorActive := True;
 end;
 
-destructor TGxEditorPopupMenuExpert.Destroy;
+destructor TEditorPopupMenuExpert.Destroy;
 begin
   FreeAndNil(FGExpertsShortcutMenu);
   FreeAndNil(FShortcuts);
   inherited;
 end;
 
-function TGxEditorPopupMenuExpert.IsEditorActive(out ctl: TWinControl): Boolean;
+function TEditorPopupMenuExpert.IsEditorActive(out ctl: TWinControl): Boolean;
 begin
   ctl := Screen.ActiveControl;
   Result := Assigned(ctl) and (ctl.Name = 'Editor') and ctl.ClassNameIs('TEditControl');
 end;
 
-procedure TGxEditorPopupMenuExpert.Execute(Sender: TObject);
+procedure TEditorPopupMenuExpert.Execute(Sender: TObject);
 var
   ctl: TWinControl;
   pnt: TPoint;
@@ -205,24 +205,24 @@ begin
   IncCallCount;
 end;
 
-procedure TGxEditorPopupMenuExpert.ShowConfigForm(_Sender: TObject);
+procedure TEditorPopupMenuExpert.ShowConfigForm(_Sender: TObject);
 begin
   GExpertsInst.ShowConfigurationForm;
 end;
 
-function TGxEditorPopupMenuExpert.GetDefaultShortCut: TShortCut;
+function TEditorPopupMenuExpert.GetDefaultShortCut: TShortCut;
 begin
   Result := scCtrl + Ord('H');
 end;
 
-function TGxEditorPopupMenuExpert.GetDisplayName: string;
+function TEditorPopupMenuExpert.GetDisplayName: string;
 resourcestring
   SDisplayName = 'Editor Popup Menu';
 begin
   Result := SDisplayName;
 end;
 
-function TGxEditorPopupMenuExpert.GetHelpString: string;
+function TEditorPopupMenuExpert.GetHelpString: string;
 resourcestring
   SGxEditorPopupMenuExpertHelp =
     'Adds a new shortcut to the editor that shows a configurable popup menu ' +
@@ -231,19 +231,19 @@ begin
   Result := SGxEditorPopupMenuExpertHelp;
 end;
 
-class function TGxEditorPopupMenuExpert.GetName: string;
+class function TEditorPopupMenuExpert.GetName: string;
 const
   SName = 'EditorPopupMenu';
 begin
   Result := SName;
 end;
 
-function TGxEditorPopupMenuExpert.HasConfigOptions: Boolean;
+function TEditorPopupMenuExpert.HasConfigOptions: Boolean;
 begin
   Result := True;
 end;
 
-procedure TGxEditorPopupMenuExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TEditorPopupMenuExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
   _Settings.ReadBool('ForceEditorActive', FForceEditorActive);
@@ -256,7 +256,7 @@ begin
   FFormHeight := _Settings.ReadInteger('FormHeight', FFormHeight);
 end;
 
-procedure TGxEditorPopupMenuExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TEditorPopupMenuExpert.InternalSaveSettings(_Settings: IExpertSettings);
 var
   i: Integer;
   s: string;
@@ -273,7 +273,7 @@ begin
   _Settings.WriteInteger('FormHeight', FFormHeight);
 end;
 
-class procedure TGxEditorPopupMenuExpert.SetDefaults(_sl: TStringList);
+class procedure TEditorPopupMenuExpert.SetDefaults(_sl: TStringList);
 begin
   _sl.Add('A=Align');
   _sl.Add('B=BookmarksExpert');
@@ -325,7 +325,7 @@ begin
   EdExpManager := GExpertsInst.EditorExpertManager;
   for i := 0 to EdExpManager.EditorExpertCount - 1 do begin
     Expert := EdExpManager.EditorExpertList[i];
-    if not (Expert is TGxEditorPopupMenuExpert) then
+    if not (Expert is TEditorPopupMenuExpert) then
       lb_EditorExperts.Items.AddObject(Expert.GetDisplayName, Expert);
   end;
   lb_EditorExperts.Sorted := True;
@@ -434,7 +434,7 @@ var
 begin
   sl := TStringList.Create;
   try
-    TGxEditorPopupMenuExpert.SetDefaults(sl);
+    TEditorPopupMenuExpert.SetDefaults(sl);
     SetData(sl, True);
   finally
     FreeAndNil(sl);
@@ -644,5 +644,5 @@ begin
 end;
 
 initialization
-  RegisterEditorExpert(TGxEditorPopupMenuExpert);
+  RegisterEditorExpert(TEditorPopupMenuExpert);
 end.

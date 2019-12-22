@@ -9,7 +9,7 @@ uses
   Math, ToolsAPI, GX_Experts, GX_GExperts, GX_OtaUtils;
 
 type
-  TGxSetFocusControlExpert = class(TGX_Expert)
+  TSetFocusControlExpert = class(TGX_Expert)
   protected
     procedure UpdateAction(Action: TCustomAction); override;
   public
@@ -23,42 +23,42 @@ type
 
   TLabelHack = class(TCustomLabel);
 
-{ TGxSetFocusControlExpert }
+{ TSetFocusControlExpert }
 
-constructor TGxSetFocusControlExpert.Create;
+constructor TSetFocusControlExpert.Create;
 begin
   inherited;
   //ShortCut := Menus.ShortCut(Word('F'), [ssShift, ssCtrl]);
 end;
 
-function TGxSetFocusControlExpert.GetActionCaption: string;
+function TSetFocusControlExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = 'Set &FocusControl';
 begin
   Result := SMenuCaption;
 end;
 
-class function TGxSetFocusControlExpert.GetName: string;
+class function TSetFocusControlExpert.GetName: string;
 begin
   Result := 'SetFocusControl';
 end;
 
-function TGxSetFocusControlExpert.HasConfigOptions: Boolean;
+function TSetFocusControlExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
 end;
 
-function TGxSetFocusControlExpert.HasDesignerMenuItem: Boolean;
+function TSetFocusControlExpert.HasDesignerMenuItem: Boolean;
 begin
   Result := True;
 end;
 
-procedure TGxSetFocusControlExpert.UpdateAction(Action: TCustomAction);
+procedure TSetFocusControlExpert.UpdateAction(Action: TCustomAction);
 begin
   Action.Enabled := GxOtaCurrentlyEditingForm;
 end;
 
-procedure TGxSetFocusControlExpert.Execute(Sender: TObject);
+procedure TSetFocusControlExpert.Execute(Sender: TObject);
 var
   Form: IOTAFormEditor;
   FirstControlSelected: Boolean;
@@ -183,5 +183,5 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TGxSetFocusControlExpert);
+  RegisterGX_Expert(TSetFocusControlExpert);
 end.

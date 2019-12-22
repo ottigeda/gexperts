@@ -54,7 +54,7 @@ type
   end;
 
 type
-  TGxGotoModification = class(TEditorExpert)
+  TGotoModificationBaseExpert = class(TEditorExpert)
   private
     FNotifier: Integer;
     procedure HandleWindowOpened(_Sender: TObject; const _EditWindow: INTAEditWindow);
@@ -67,7 +67,7 @@ type
   end;
 
 type
-  TGxGotoPrevModification = class(TGxGotoModification)
+  TGotoPrevModificationExpert = class(TGotoModificationBaseExpert)
   public
     function GetDefaultShortCut: TShortCut; override;
     procedure Execute(Sender: TObject); override;
@@ -77,7 +77,7 @@ type
   end;
 
 type
-  TGxGotoNextModification = class(TGxGotoModification)
+  TGotoNextModificationExpert = class(TGotoModificationBaseExpert)
   public
     function GetDefaultShortCut: TShortCut; override;
     procedure Execute(Sender: TObject); override;
@@ -176,15 +176,15 @@ begin
   // we don't care
 end;
 
-{ TGxGotoModification }
+{ TGotoModificationBaseExpert }
 
-constructor TGxGotoModification.Create;
+constructor TGotoModificationBaseExpert.Create;
 begin
   inherited Create;
   FNotifier := GxOtaGetEditorServices.AddNotifier(TEditorNotifier.Create(HandleWindowOpened, nil));
 end;
 
-destructor TGxGotoModification.Destroy;
+destructor TGotoModificationBaseExpert.Destroy;
 begin
   if FNotifier <> InvalidNotifierIndex then begin
     GxOtaGetEditorServices.RemoveNotifier(FNotifier);
@@ -192,12 +192,12 @@ begin
   inherited;
 end;
 
-procedure TGxGotoModification.HandleWindowOpened(_Sender: TObject; const _EditWindow: INTAEditWindow);
+procedure TGotoModificationBaseExpert.HandleWindowOpened(_Sender: TObject; const _EditWindow: INTAEditWindow);
 begin
   CreateMenuItem(_EditWindow.GetForm);
 end;
 
-procedure TGxGotoModification.CreateMenuItem(_EditForm: TCustomForm);
+procedure TGotoModificationBaseExpert.CreateMenuItem(_EditForm: TCustomForm);
 var
   EditView: IOTAEditView;
   cmp: TComponent;
@@ -231,7 +231,7 @@ begin
   mi.ShortCut := Self.ShortCut;
 end;
 
-procedure TGxGotoModification.SetActive(New: Boolean);
+procedure TGotoModificationBaseExpert.SetActive(New: Boolean);
 begin
   inherited;
   if New then begin
@@ -243,9 +243,9 @@ begin
   end;
 end;
 
-{ TGxGotoPrevModification }
+{ TGotoPrevModificationExpert }
 
-procedure TGxGotoPrevModification.Execute(Sender: TObject);
+procedure TGotoPrevModificationExpert.Execute(Sender: TObject);
 var
   View: IOTAEditView;
 begin
@@ -255,7 +255,7 @@ begin
   View.NavigateToModification(sdBackward, mtAnyMod);
 end;
 
-function TGxGotoPrevModification.GetDefaultShortCut: TShortCut;
+function TGotoPrevModificationExpert.GetDefaultShortCut: TShortCut;
 begin
   // This is the default shortcut the IDE uses for this functionality, so it should be
   // safe to hijack it.
@@ -264,14 +264,14 @@ begin
   Result := Menus.ShortCut(VK_F7, [ssCtrl, ssShift])
 end;
 
-function TGxGotoPrevModification.GetDisplayName: string;
+function TGotoPrevModificationExpert.GetDisplayName: string;
 resourcestring
   SDisplayName = 'Goto Previous Modification';
 begin
   Result := SDisplayName;
 end;
 
-function TGxGotoPrevModification.GetHelpString: string;
+function TGotoPrevModificationExpert.GetHelpString: string;
 resourcestring
   SSampleEditorExpertHelp =
     'Navigates to the previous modification in the editor window.';
@@ -279,14 +279,14 @@ begin
   Result := SSampleEditorExpertHelp;
 end;
 
-function TGxGotoPrevModification.HasConfigOptions: Boolean;
+function TGotoPrevModificationExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
 end;
 
-{ TGxGotoNextModification }
+{ TGotoNextModificationExpert }
 
-procedure TGxGotoNextModification.Execute(Sender: TObject);
+procedure TGotoNextModificationExpert.Execute(Sender: TObject);
 var
   View: IOTAEditView;
 begin
@@ -295,7 +295,7 @@ begin
   View.NavigateToModification(sdForward, mtAnyMod);
 end;
 
-function TGxGotoNextModification.GetDefaultShortCut: TShortCut;
+function TGotoNextModificationExpert.GetDefaultShortCut: TShortCut;
 begin
   // This is the default shortcut the IDE uses for this functionality, so it should be
   // safe to hijack it.
@@ -304,14 +304,14 @@ begin
   Result := Menus.ShortCut(VK_F8, [ssCtrl, ssShift])
 end;
 
-function TGxGotoNextModification.GetDisplayName: string;
+function TGotoNextModificationExpert.GetDisplayName: string;
 resourcestring
   SDisplayName = 'Goto Next Modification';
 begin
   Result := SDisplayName;
 end;
 
-function TGxGotoNextModification.GetHelpString: string;
+function TGotoNextModificationExpert.GetHelpString: string;
 resourcestring
   SSampleEditorExpertHelp =
     'Navigates to the next modification in the editor window.';
@@ -319,14 +319,14 @@ begin
   Result := SSampleEditorExpertHelp;
 end;
 
-function TGxGotoNextModification.HasConfigOptions: Boolean;
+function TGotoNextModificationExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
 end;
 
 initialization
-  RegisterEditorExpert(TGxGotoPrevModification);
-  RegisterEditorExpert(TGxGotoNextModification);
+  RegisterEditorExpert(TGotoPrevModificationExpert);
+  RegisterEditorExpert(TGotoNextModificationExpert);
 {$ENDIF}
 
 end.

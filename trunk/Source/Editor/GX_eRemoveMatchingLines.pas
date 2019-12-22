@@ -31,7 +31,7 @@ type
   ///  public
   ///    { Public declarations }
   ///  end;
-  TGxRemoveMatchingLinesEditorExpert = class(TEditorExpert)
+  TRemoveMatchingLinesExpert = class(TEditorExpert)
   private
     FMatches: TStringList;
     FRegEx: Boolean;
@@ -82,15 +82,15 @@ uses
   RegExpr,
   GX_dzClassUtils;
 
-{ TGxRemoveMatchingLinesEditorExpert }
+{ TRemoveMatchingLinesExpert }
 
-procedure TGxRemoveMatchingLinesEditorExpert.Configure;
+procedure TRemoveMatchingLinesExpert.Configure;
 begin
   if TfmRemoveMatchingLinesExpertConfig.Execute(nil, FMatches, FRegEx) then
     SaveSettings;
 end;
 
-constructor TGxRemoveMatchingLinesEditorExpert.Create;
+constructor TRemoveMatchingLinesExpert.Create;
 begin
   inherited Create;
 
@@ -196,9 +196,9 @@ begin
   end;
 end;
 
-{ TGxRemoveMatchingLinesEditorExpert }
+{ TRemoveMatchingLinesExpert }
 
-procedure TGxRemoveMatchingLinesEditorExpert.Execute(Sender: TObject);
+procedure TRemoveMatchingLinesExpert.Execute(Sender: TObject);
 var
   Text: TGXUnicodeStringList;
   LineIdx: Integer;
@@ -231,14 +231,14 @@ begin
   end;
 end;
 
-function TGxRemoveMatchingLinesEditorExpert.GetDisplayName: string;
+function TRemoveMatchingLinesExpert.GetDisplayName: string;
 resourcestring
   SDisplayName = 'Remove Matching Lines';
 begin
   Result := SDisplayName;
 end;
 
-function TGxRemoveMatchingLinesEditorExpert.GetHelpString: string;
+function TRemoveMatchingLinesExpert.GetHelpString: string;
 resourcestring
   SRemoveLinesEditorExpertHelp = 'Removes lines from the current editor that consist only '
     + 'of the configured text, optionally padded with spaces, or those matching as set of '
@@ -248,7 +248,7 @@ begin
   Result := SRemoveLinesEditorExpertHelp;
 end;
 
-procedure TGxRemoveMatchingLinesEditorExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TRemoveMatchingLinesExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited InternalLoadSettings(_Settings);
 
@@ -259,7 +259,7 @@ begin
     TfmRemoveMatchingLinesExpertConfig.SetDefault(FMatches, FRegEx);
 end;
 
-procedure TGxRemoveMatchingLinesEditorExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TRemoveMatchingLinesExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited InternalSaveSettings(_Settings);
 
@@ -363,5 +363,5 @@ begin
 end;
 
 initialization
-  RegisterEditorExpert(TGxRemoveMatchingLinesEditorExpert);
+  RegisterEditorExpert(TRemoveMatchingLinesExpert);
 end.

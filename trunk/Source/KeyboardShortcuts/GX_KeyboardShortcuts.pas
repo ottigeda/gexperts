@@ -63,7 +63,7 @@ uses
   GX_GenericUtils;
 
 type
-  TGxKeyboardShortcuts = class(TGX_Expert)
+  TKeyboardShortcutsExpert = class(TGX_Expert)
   private
   protected
   public
@@ -76,36 +76,36 @@ type
     procedure Execute(Sender: TObject); override;
   end;
 
-{ TGxKeyboardShortcuts }
+{ TKeyboardShortcutsExpert }
 
-procedure TGxKeyboardShortcuts.Execute(Sender: TObject);
+procedure TKeyboardShortcutsExpert.Execute(Sender: TObject);
 begin
   TfmGxKeyboardShortcuts.Execute(GetBitmap);
 end;
 
-function TGxKeyboardShortcuts.CanHaveShortCut: Boolean;
+function TKeyboardShortcutsExpert.CanHaveShortCut: Boolean;
 begin
   Result := False;
 end;
 
-constructor TGxKeyboardShortcuts.Create;
+constructor TKeyboardShortcutsExpert.Create;
 begin
   inherited Create;
 end;
 
-destructor TGxKeyboardShortcuts.Destroy;
+destructor TKeyboardShortcutsExpert.Destroy;
 begin
   inherited Destroy;
 end;
 
-function TGxKeyboardShortcuts.GetActionCaption: string;
+function TKeyboardShortcutsExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = 'Keyboard Shortcuts';
 begin
   Result := SMenuCaption;
 end;
 
-function TGxKeyboardShortcuts.GetHelpString: string;
+function TKeyboardShortcutsExpert.GetHelpString: string;
 resourcestring
   SSampleExpertHelp =
     'List all keyboard shortcuts of registered actions in the IDE';
@@ -113,7 +113,7 @@ begin
   Result := SSampleExpertHelp;
 end;
 
-function TGxKeyboardShortcuts.HasConfigOptions: Boolean;
+function TKeyboardShortcutsExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
 end;
@@ -166,7 +166,7 @@ end;
 
 function TfmGxKeyboardShortcuts.ConfigurationKey: string;
 begin
-  Result := TGxKeyboardShortcuts.ConfigurationKey;
+  Result := TKeyboardShortcutsExpert.ConfigurationKey;
 end;
 
 constructor TfmGxKeyboardShortcuts.Create(_Owner: TComponent);
@@ -419,5 +419,5 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TGxKeyboardShortcuts);
+  RegisterGX_Expert(TKeyboardShortcutsExpert);
 end.

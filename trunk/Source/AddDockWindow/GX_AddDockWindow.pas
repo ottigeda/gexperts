@@ -44,7 +44,7 @@ uses
   Windows;
 
 type
-  TGxAddDockWindow = class(TGX_Expert)
+  TAddDockWindowExpert = class(TGX_Expert)
   private
   protected
     procedure SetActive(New: Boolean); override;
@@ -65,44 +65,44 @@ type
     procedure Execute(Sender: TObject); override;
   end;
 
-{ TGxAddDockWindow }
+{ TAddDockWindowExpert }
 
-procedure TGxAddDockWindow.Execute(Sender: TObject);
+procedure TAddDockWindowExpert.Execute(Sender: TObject);
 begin
   TfmGxDockForm.Create(Application).Show;
 end;
 
-function TGxAddDockWindow.CanHaveShortCut: Boolean;
+function TAddDockWindowExpert.CanHaveShortCut: Boolean;
 begin
   Result := True;
 end;
 
-procedure TGxAddDockWindow.Configure;
+procedure TAddDockWindowExpert.Configure;
 resourcestring
   SYouClickedConfigure = 'You clicked the Configuration button!';
 begin
   MessageDlg(SYouClickedConfigure, mtInformation, [mbOK], 0);
 end;
 
-constructor TGxAddDockWindow.Create;
+constructor TAddDockWindowExpert.Create;
 begin
   inherited Create;
 end;
 
-destructor TGxAddDockWindow.Destroy;
+destructor TAddDockWindowExpert.Destroy;
 begin
   // Free any created objects here
   inherited Destroy;
 end;
 
-function TGxAddDockWindow.GetActionCaption: string;
+function TAddDockWindowExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = 'Add Dock Window';
 begin
   Result := SMenuCaption;
 end;
 
-function TGxAddDockWindow.GetHelpString: string;
+function TAddDockWindowExpert.GetHelpString: string;
 resourcestring
   SAddDockWindowHelp =
     'Provides a new dock window that can be used to dock any dockable form. ' +
@@ -111,24 +111,24 @@ begin
   Result := SAddDockWindowHelp;
 end;
 
-function TGxAddDockWindow.HasConfigOptions: Boolean;
+function TAddDockWindowExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
 end;
 
-procedure TGxAddDockWindow.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TAddDockWindowExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
 //  FSomeData := _Settings.ReadString('TestSetting', FSomeData);
 end;
 
-procedure TGxAddDockWindow.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TAddDockWindowExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited;
 //  _Settings.WriteString('TestSetting', FSomeData);
 end;
 
-procedure TGxAddDockWindow.SetActive(New: Boolean);
+procedure TAddDockWindowExpert.SetActive(New: Boolean);
 begin
   if New <> Active then begin
     inherited SetActive(New);
@@ -166,5 +166,5 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TGxAddDockWindow);
+  RegisterGX_Expert(TAddDockWindowExpert);
 end.
