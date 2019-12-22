@@ -37,15 +37,10 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, Windows, Classes, Graphics, ActnList, Menus,
+  SysUtils, Windows, Classes, Graphics, Forms, ActnList, Menus,
   GX_GenericClasses, GX_ActionBroker, GX_ConfigurationInfo,
   GX_GExperts, GX_GenericUtils, GX_IdeUtils, GX_OtaUtils, Math,
   GX_KbdShortCutBroker;
-
-// We can enable a hack / kludge to get around
-// menu shortcut an initialization issue in
-// the IDE.
-{$DEFINE GX_UseMenuShortCutInitializationWorkAround}
 
 // ****************************************************************************
 
@@ -63,9 +58,7 @@ type
     FGExpertsTopLevelMenu: TMenuItem;
     procedure ConfigClick(Sender: TObject);
     procedure AboutClick(Sender: TObject);
-    {$IFDEF GX_UseMenuShortCutInitializationWorkAround}
-      procedure TopLevelMenuClick(Sender: TObject);
-    {$ENDIF GX_UseMenuShortCutInitializationWorkAround}
+    procedure TopLevelMenuClick(Sender: TObject);
   private
     function GetAlphabetical: Boolean;
     function GetPlaceGxMainMenuInToolsMenu: Boolean;
@@ -151,9 +144,8 @@ begin
 
   // Create GExperts drop down menu.
   FGExpertsTopLevelMenu := TMenuItem.Create(nil);
-  {$IFDEF GX_UseMenuShortCutInitializationWorkAround}
-     FGExpertsTopLevelMenu.OnClick := TopLevelMenuClick;
-  {$ENDIF GX_UseMenuShortCutInitializationWorkAround}
+  FGExpertsTopLevelMenu.OnClick := TopLevelMenuClick;
+
   FMoreAction := GxActionBroker.RequestAction('GExpertsMoreAction', nil); // Do not localize.
   FMoreAction.Caption := 'More';
   FMoreAction.OnExecute := MoreActionExecute;
@@ -212,7 +204,6 @@ begin
   ShowGXAboutForm;
 end;
 
-{$IFDEF GX_UseMenuShortCutInitializationWorkAround}
 procedure TGXMenuActionManager.TopLevelMenuClick(Sender: TObject);
 var
   i: Integer;
@@ -220,6 +211,8 @@ var
   AttachedAction: TCustomAction;
   MenuItems: TMenuItemArray;
 begin
+  ArrangeMenuItems;
+
   GetMenuItems(MenuItems);
   for i := 0 to (Length(MenuItems) - 1) do
   begin
@@ -234,7 +227,6 @@ begin
     end;
   end;
 end;
-{$ENDIF GX_UseMenuShortCutInitializationWorkAround}
 
 function TGXMenuActionManager.GetAlphabetical: Boolean;
 begin
@@ -425,9 +417,7 @@ begin
   GetMenuItems(MenuItems);
   if Assigned(MenuItems) then
     SortMenuItems(MenuItems);
-  // unfortunately this is too early to get the monitor on which the display form resides
-  // so the WorkArea is probably that of the main monitor which might be wrong (and definitely
-  // is on my personal system).
+
   ScreenRect := GetScreenWorkArea(GetIdeMainForm);
   ScreenHeight := ScreenRect.Bottom - ScreenRect.Top - 75;
 

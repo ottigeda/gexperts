@@ -127,6 +127,8 @@ begin
   FStartingUp := True;
   InitializeGExperts;
 
+  // No idea where these 1200 ms came from, but basically it means that the
+  // method will be called when the application handles events the first time.
   TTimedCallback.Create(DoAfterIDEInitialized, 1200, True);
 
   gblAboutFormClass.AddToAboutDialog;
@@ -375,7 +377,7 @@ begin
     ExpertList[i].AfterIDEInitialized;
   if RunningDelphi8OrGreater then
     GxKeyboardShortCutBroker.DoUpdateKeyBindings(True);
-  GXMenuActionManager.ArrangeMenuItems;
+
   GXMenuActionManager.MoveMainMenuItems;
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
   // se also GX_EditorChangeServices
