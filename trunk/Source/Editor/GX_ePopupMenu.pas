@@ -187,9 +187,9 @@ begin
           Expert.Execute);
       end else if GExpertsInst.FindExpert(ExpName, idx) then begin
         Expert := GExpertsInst.ExpertList[idx];
-        if Expert is TGxMenusForEditorExperts then begin
+        if Expert is TMenusForEditorExperts then begin
           TPopupMenu_AppendMenuItem(FGExpertsShortcutMenu, '&' + Key + ' ' + Expert.GetDisplayName,
-            TGxMenusForEditorExperts(Expert).ShowPopup);
+            TMenusForEditorExperts(Expert).ShowPopup);
         end else begin
           TPopupMenu_AppendMenuItem(FGExpertsShortcutMenu, '&' + Key + ' ' + Expert.GetDisplayName,
             Expert.Execute);

@@ -8,7 +8,7 @@ uses
   Menus, ActnList, GX_Experts;
 
 type
-  TGxMenusForEditorExperts = class(TGX_Expert)
+  TMenusForEditorExperts = class(TGX_Expert)
   private
     procedure PopulatePopupMenu(const PopupMenu: TPopupMenu);
   protected
@@ -57,9 +57,9 @@ begin
   FreeAndNil(InternalPopupMenu);
 end;
 
-{ TGxMenusForEditorExperts }
+{ TMenusForEditorExperts }
 
-procedure TGxMenusForEditorExperts.Execute(Sender: TObject);
+procedure TMenusForEditorExperts.Execute(Sender: TObject);
 var
   IsToolButton: Boolean;
 begin
@@ -73,7 +73,7 @@ begin
   end;
 end;
 
-procedure TGxMenusForEditorExperts.ShowPopup(Sender: TObject);
+procedure TMenusForEditorExperts.ShowPopup(Sender: TObject);
 var
   MousePosition: TPoint;
   APopupMenu: TPopupMenu;
@@ -93,7 +93,7 @@ begin
 end;
 
 // Note: Partially duplicated below
-procedure TGxMenusForEditorExperts.CreateSubMenuItems(MenuItem: TMenuItem);
+procedure TMenusForEditorExperts.CreateSubMenuItems(MenuItem: TMenuItem);
 var
   i: Integer;
   AGExpertsInstance: TGExperts;
@@ -130,7 +130,7 @@ begin
   end;
 end;
 
-procedure TGxMenusForEditorExperts.PopulatePopupMenu(const PopupMenu: TPopupMenu);
+procedure TMenusForEditorExperts.PopulatePopupMenu(const PopupMenu: TPopupMenu);
 
   procedure ClearMenuItems(AMenu: TMenu);
   begin
@@ -173,36 +173,36 @@ begin
   end;
 end;
 
-function TGxMenusForEditorExperts.GetActionCaption: string;
+function TMenusForEditorExperts.GetActionCaption: string;
 resourcestring
   SCaption = 'Editor Experts';
 begin
   Result := SCaption;
 end;
 
-function TGxMenusForEditorExperts.GetDisplayName: string;
+function TMenusForEditorExperts.GetDisplayName: string;
 resourcestring
   SDisplayName = 'Editor Experts';
 begin
   Result := SDisplayName;
 end;
 
-class function TGxMenusForEditorExperts.GetName: string;
+class function TMenusForEditorExperts.GetName: string;
 begin
   Result := 'EditorExpertsMenu';
 end;
 
-function TGxMenusForEditorExperts.HasConfigOptions: Boolean;
+function TMenusForEditorExperts.HasConfigOptions: Boolean;
 begin
   Result := False;
 end;
 
-function TGxMenusForEditorExperts.HasSubmenuItems: Boolean;
+function TMenusForEditorExperts.HasSubmenuItems: Boolean;
 begin
   Result := SupportsSubmenu;
 end;
 
-function TGxMenusForEditorExperts.SupportsSubmenu: Boolean;
+function TMenusForEditorExperts.SupportsSubmenu: Boolean;
 begin
   // The Delphi 7- IDEs seem to clear out the submenu item shortcuts
   Result := RunningDelphi8OrGreater;
@@ -213,7 +213,7 @@ begin
   end;
 end;
 
-procedure TGxMenusForEditorExperts.UpdateAction(Action: TCustomAction);
+procedure TMenusForEditorExperts.UpdateAction(Action: TCustomAction);
 begin
   Action.Enabled := Assigned(GExpertsInst.EditorExpertManager)
     and (GExpertsInst.EditorExpertManager.EditorExpertCount > 0);
@@ -222,7 +222,7 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TGxMenusForEditorExperts);
+  RegisterGX_Expert(TMenusForEditorExperts);
 
 finalization
   ReleaseInternalPopupMenu;
