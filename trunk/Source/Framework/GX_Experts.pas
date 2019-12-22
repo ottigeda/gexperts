@@ -44,6 +44,11 @@ type
     // it calls GetActionCaption and removes any Hotkey characters and '...'
     // This is probably OK for most experts.
     function GetDisplayName: string; override;
+    ///<summary>
+    /// @returns the category of this expert. It is used to create submenus in the GExperts menu.
+    ///          Defaults to an empty string, meaning the expert is listed directly in
+    ///          the GExperts menu. </summary>
+    class function GetCategory: string; virtual;
     // Defaults to True
     function HasMenuItem: Boolean; virtual;
     // Defaults to False
@@ -60,8 +65,6 @@ type
     // Index of expert; used to determine a "historic"
     // menu item order in the GExperts menu item.
     property ExpertIndex: Integer read GetExpertIndex;
-    // Keyboard shortcut associated with the expert
-    property ShortCut: TShortCut read GetShortCut write SetShortCut;
   end;
 
   TGX_ExpertClass = class of TGX_Expert;
@@ -117,6 +120,11 @@ function TGX_Expert.GetActionName: string;
 begin
   // Default action name from expert name; do not localize.
   Result := 'GX_' + GetName + 'Action';
+end;
+
+class function TGX_Expert.GetCategory: string;
+begin
+  Result := '';
 end;
 
 function TGX_Expert.GetExpertIndex: Integer;
