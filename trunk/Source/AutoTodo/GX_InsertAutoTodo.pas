@@ -56,7 +56,7 @@ type
   EAutoTodo = class(Exception);
 
 type
-  TGxInsertAutoTodoExpert = class(TGX_Expert)
+  TInsertAutoTodoExpert = class(TGX_Expert)
   private
     FUsername: string;
     FTextToInsert: string;
@@ -123,9 +123,9 @@ begin
   Result.X := _Offset - FOffsets[Result.Y] + 1;
 end;
 
-{ TGxInsertAutoTodoExpert }
+{ TInsertAutoTodoExpert }
 
-procedure TGxInsertAutoTodoExpert.Execute(Sender: TObject);
+procedure TInsertAutoTodoExpert.Execute(Sender: TObject);
 
   function PointToCharPos(_Pnt: TPoint): TOTACharPos;
   begin
@@ -234,7 +234,7 @@ begin
     end;
 end;
 
-procedure TGxInsertAutoTodoExpert.Configure;
+procedure TInsertAutoTodoExpert.Configure;
 var
   Dialog: tfmInsertAutoTodoForm;
 begin
@@ -251,7 +251,7 @@ begin
   end;
 end;
 
-constructor TGxInsertAutoTodoExpert.Create;
+constructor TInsertAutoTodoExpert.Create;
 begin
   inherited Create;
 
@@ -263,35 +263,35 @@ begin
   // ShortCut := Menus.ShortCut(Word('Z'), [ssCtrl, ssShift, ssAlt]);
 end;
 
-destructor TGxInsertAutoTodoExpert.Destroy;
+destructor TInsertAutoTodoExpert.Destroy;
 begin
   // Free any created objects here
   inherited Destroy;
 end;
 
-function TGxInsertAutoTodoExpert.GetActionCaption: string;
+function TInsertAutoTodoExpert.GetActionCaption: string;
 resourcestring
   SMenuCaption = 'Comment Empty Code Blocks...';
 begin
   Result := SMenuCaption;
 end;
 
-class function TGxInsertAutoTodoExpert.GetName: string;
+class function TInsertAutoTodoExpert.GetName: string;
 begin
   Result := 'InsertAutoToDo';
 end;
 
-function TGxInsertAutoTodoExpert.HasConfigOptions: Boolean;
+function TInsertAutoTodoExpert.HasConfigOptions: Boolean;
 begin
   Result := True;
 end;
 
-function TGxInsertAutoTodoExpert.HasMenuItem: Boolean;
+function TInsertAutoTodoExpert.HasMenuItem: Boolean;
 begin
   Result := True;
 end;
 
-procedure TGxInsertAutoTodoExpert.InternalLoadSettings(_Settings: IExpertSettings);
+procedure TInsertAutoTodoExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
   FUsername := _Settings.ReadString('Username', FUsername);
@@ -299,7 +299,7 @@ begin
   FDoneDialogEnabled := _Settings.ReadBool('DoneDialogEnabled', FDoneDialogEnabled);
 end;
 
-procedure TGxInsertAutoTodoExpert.InternalSaveSettings(_Settings: IExpertSettings);
+procedure TInsertAutoTodoExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited;
   _Settings.WriteString('Username', FUsername);
@@ -307,13 +307,13 @@ begin
   _Settings.WriteBool('DoneDialogEnabled', FDoneDialogEnabled);
 end;
 
-procedure TGxInsertAutoTodoExpert.SetActive(New: Boolean);
+procedure TInsertAutoTodoExpert.SetActive(New: Boolean);
 begin
   inherited SetActive(New);
   // nothing else to do
 end;
 
-procedure TGxInsertAutoTodoExpert.UpdateAction(Action: TCustomAction);
+procedure TInsertAutoTodoExpert.UpdateAction(Action: TCustomAction);
 const
   SAllowableFileExtensions = '.pas;.dpr;.inc';
 begin
@@ -374,5 +374,5 @@ begin
 end;
 
 initialization
-  RegisterGX_Expert(TGxInsertAutoTodoExpert);
+  RegisterGX_Expert(TInsertAutoTodoExpert);
 end.
