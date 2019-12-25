@@ -147,22 +147,21 @@ begin
 end;
 
 function GetMainMenuItemHeight: Integer;
-{$IFDEF GX_VER150_up}
 var
   MainForm: TCustomForm;
   Component: TComponent;
 begin
-  Result := 23;
+  // start with what Windows says, but add 2 pixels (that's correct for at least my computer),
+  Result := GetSystemMetrics(SM_CYMENU) + 2;
+  // but it doesn't really matter, because:
+  // Since at least Delphi 6 the IDE no longer uses a regular main menu but a TActionMenuBar which
+  // is higher than a regular main menu. It has the name 'MenuBar' and is a component of the main form.
   MainForm := GetIdeMainForm;
   Component := nil;
   if MainForm <> nil then
     Component := MainForm.FindComponent('MenuBar');
-  if (Component is TControl) then
+  if (Component <> nil) and (Component is TControl) then
     Result := TControl(Component).ClientHeight; // This is approximate?
-{$ELSE}
-begin
-  Result := GetSystemMetrics(SM_CYMENU);
-{$ENDIF}
 end;
 
 function GetStandardMenuItemHeight: Integer;
