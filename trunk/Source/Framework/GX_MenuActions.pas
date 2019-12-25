@@ -12,7 +12,7 @@ type
     ['{79950A81-D020-11D3-A941-B048DE000000}']
     function GetAlphabetical: Boolean;
     procedure SetAlphabetical(const DoAlphabetize: Boolean);
-    function GetPlaceGxMainMenuInToolsMenu: Boolean;
+    function GetIsGxMainMenuInToolsMenu: Boolean;
     function GetHideWindowMenu: Boolean;
     procedure SetHideWindowMenu(const Value: Boolean);
     function GetMoveComponentMenu: Boolean;
@@ -23,7 +23,7 @@ type
     procedure MoveMainMenuItems;
 
     property Alphabetical: Boolean read GetAlphabetical write SetAlphabetical;
-    property PlaceGxMainMenuInToolsMenu: Boolean read GetPlaceGxMainMenuInToolsMenu;
+    property IsGxMainMenuInToolsMenu: Boolean read GetIsGxMainMenuInToolsMenu;
     property HideWindowMenu: Boolean read GetHideWindowMenu write SetHideWindowMenu;
     property MoveComponentMenu: Boolean read GetMoveComponentMenu write SetMoveComponentMenu;
   end;
@@ -37,9 +37,9 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, Windows, Classes, Graphics, ActnList, Menus,
+  SysUtils, Windows, Classes, Graphics, ActnList, Menus, Forms, Math,
   GX_GenericClasses, GX_ActionBroker, GX_ConfigurationInfo,
-  GX_GExperts, GX_GenericUtils, GX_IdeUtils, GX_OtaUtils, Math,
+  GX_GExperts, GX_GenericUtils, GX_IdeUtils, GX_OtaUtils,
   GX_KbdShortCutBroker;
 
 // ****************************************************************************
@@ -56,12 +56,13 @@ type
     FAboutAction: IGxAction;
     FMoreAction: IGxAction;
     FGExpertsTopLevelMenu: TMenuItem;
+    FIsGxMainMenuInToolsMenu: Boolean;
     procedure ConfigClick(Sender: TObject);
     procedure AboutClick(Sender: TObject);
     procedure TopLevelMenuClick(Sender: TObject);
   private
     function GetAlphabetical: Boolean;
-    function GetPlaceGxMainMenuInToolsMenu: Boolean;
+    function GetIsGxMainMenuInToolsMenu: Boolean;
 
     procedure SetAlphabetical(const DoAlphabetize: Boolean);
 
@@ -91,7 +92,7 @@ type
     procedure MoveMainMenuItems;
 
     property Alphabetical: Boolean read GetAlphabetical write SetAlphabetical;
-    property PlaceGxMainMenuInToolsMenu: Boolean read GetPlaceGxMainMenuInToolsMenu;
+    property IsGxMainMenuInToolsMenu: Boolean read GetIsGxMainMenuInToolsMenu;
     property HideWindowMenu: boolean read GetHideWindowMenu write SetHideWindowMenu;
     property MoveComponentMenu: Boolean read GetMoveComponentMenu write SetMoveComponentMenu;
   end;
@@ -142,6 +143,8 @@ var
 begin
   inherited Create;
 
+  FIsGxMainMenuInToolsMenu := ConfigInfo.PlaceGxMainMenuInToolsMenu;
+
   // Create GExperts drop down menu.
   FGExpertsTopLevelMenu := TMenuItem.Create(nil);
   FGExpertsTopLevelMenu.OnClick := TopLevelMenuClick;
@@ -171,7 +174,7 @@ begin
   Assert(Assigned(MainMenu), 'MainMenu component not found');
 
   // Insert GExperts drop down menu.
-  if PlaceGxMainMenuInToolsMenu and GetToolsMenuItem(MainMenu.Items, ToolsMenuItem) then
+  if IsGxMainMenuInToolsMenu and GetToolsMenuItem(MainMenu.Items, ToolsMenuItem) then
     ToolsMenuItem.Insert(0, FGExpertsTopLevelMenu)
   else
     MainMenu.Items.Insert(MainMenu.Items.Count - 2, FGExpertsTopLevelMenu);
@@ -292,7 +295,7 @@ begin
     ComponentMenu := ToolsMenu.Items[Idx];
     ToolsMenu.Delete(Idx);
     Idx := ToolsMenu.MenuIndex;
-    if not PlaceGxMainMenuInToolsMenu then
+    if not IsGxMainMenuInToolsMenu then
       Dec(Idx);
     MainMenu.Items.Insert(Idx, ComponentMenu);
     ConfigInfo.MoveComponentMenu := False;
@@ -334,9 +337,10 @@ begin
   Result.ShortCut := ShortCut;
 end;
 
-function TGXMenuActionManager.GetPlaceGxMainMenuInToolsMenu: Boolean;
+function TGXMenuActionManager.GetIsGxMainMenuInToolsMenu: Boolean;
 begin
-  Result := ConfigInfo.PlaceGxMainMenuInToolsMenu;
+  // this is where the menu item currently is, in contrast to where it was configured to be
+  Result := FIsGxMainMenuInToolsMenu;
 end;
 
 function TGXMenuActionManager.GetMatchingMenuItem(Items: TMenuItem; const MenuName: string;
@@ -372,6 +376,38 @@ begin
 end;
 
 procedure TGXMenuActionManager.ArrangeMenuItems;
+
+  function GetMenuTopPos: Integer;
+  var
+    MainForm: TCustomForm;
+//    BorderHeight: Integer;
+//    CaptionHeight: Integer;
+  begin
+    // None of the functions I tried actually worked as expected in a multi monitor scenario
+    // where those monitors use different scaling. I assume that any of the following will work
+    // if the scaling is the same for all monitors (I haven't tried it with anything but 1920x1200
+    // because that would mess with all the icons on the destkop.)
+
+    // This returns 24 on my system:
+//    BorderHeight := GetSystemMetrics(SM_CYBORDER);
+//    CaptionHeight := GetSystemMetrics(SM_CYCAPTION);
+//    Result := BorderHeight + CaptionHeight;
+
+    // while this returns 23:
+    MainForm := GetIdeMainForm;
+    Result := MainForm.ClientOrigin.y;
+
+    // the correct value would have been:
+    // * 23 on the primary monitor (with scaling = 100%
+    // * 46 on the secondary monitor (with scaling = 200%
+    // I'll stick with the ClientOrigin based version since it is the easiest.
+    //
+    // The problem probably is that up to Delphi 10.3.3 (which currently is the latest version)
+    // the DPI awareness setting in the manifest is not set to per-monitor, so all API functions
+    // return the System DPI which seems to be the DPI of the primary monitor. A test program with
+    // DPI awareness "Per Monitor V2" returns the expected values.
+    // -- 2019-12-25 twm
+  end;
 
   function NewMoreItem(Num: Integer): TMenuItem;
   begin
@@ -411,6 +447,9 @@ var
   ParentItem: TMenuItem;
   Item: TMenuItem;
   CurrentIndex: Integer;
+  MenuTopPos: Integer;
+  MainMenuHeight: Integer;
+  MenuItemHeight: Integer;
 begin
   {$IFOPT D+} SendDebug('Arranging menu items'); {$ENDIF}
   NormalizeMenuItems;
@@ -419,22 +458,20 @@ begin
     SortMenuItems(MenuItems);
 
   ScreenRect := GetScreenWorkArea(GetIdeMainForm);
-  ScreenHeight := ScreenRect.Bottom - ScreenRect.Top - 75;
-
-  MaxMenuItems := ScreenHeight div GetMainMenuItemHeight;
-  if PlaceGxMainMenuInToolsMenu then begin
-    // we don't known at wich position in the tools menu our entry will
-    // end up, so we assume it to be at position 5
-    Dec(MaxMenuItems, 5);
+  ScreenHeight := ScreenRect.Bottom - ScreenRect.Top;
+  MenuTopPos := GetMenuTopPos;
+  MainMenuHeight := GetMainMenuItemHeight;
+  // No idea why, but on my computer GetSystemMetrics(SM_CYMENU) returns 20 while the actual height
+  // of a menu item seems to be 22. I'll assume that this is due to some kind of a 1 pixel border
+  // above and below, so we add 2 Pixels.
+  MenuItemHeight := GetSystemMetrics(SM_CYMENU) + 2;
+  // On top of that there seem to be several additional pixels at the to pand bottom of the
+  // menu itself
+  MaxMenuItems := (ScreenHeight - MenuTopPos - MainMenuHeight - 3) div MenuItemHeight;
+  if IsGxMainMenuInToolsMenu then begin
+    Dec(MaxMenuItems, FGExpertsTopLevelMenu.MenuIndex + 1);
   end;
-  { TODO -oanybody -cbug : if the IDE window is not at the top of the screen,
-    there is less space for the menu than the screen height. Depending on how
-    far down it is, the menu will be drawn upwards, so at least half screen
-    height is always available. If the menu needs more space, it will overlap
-    the main menu item and releasing the mouse after clicking on the main menu
-    item will trigger a click on the item then under the mouse. We could try
-    to figure out how much space really is available and set MaxMenuItems to
-    that number. }
+  // make it at least 8 items high
   MaxMenuItems := Max(8, MaxMenuItems);
 
   ParentItem := FGExpertsTopLevelMenu;
