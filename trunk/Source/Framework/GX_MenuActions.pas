@@ -12,7 +12,6 @@ type
     ['{79950A81-D020-11D3-A941-B048DE000000}']
     function GetAlphabetical: Boolean;
     procedure SetAlphabetical(const DoAlphabetize: Boolean);
-    function GetIsGxMainMenuInToolsMenu: Boolean;
     function GetHideWindowMenu: Boolean;
     procedure SetHideWindowMenu(const Value: Boolean);
     function GetMoveComponentMenu: Boolean;
@@ -23,7 +22,6 @@ type
     procedure MoveMainMenuItems;
 
     property Alphabetical: Boolean read GetAlphabetical write SetAlphabetical;
-    property IsGxMainMenuInToolsMenu: Boolean read GetIsGxMainMenuInToolsMenu;
     property HideWindowMenu: Boolean read GetHideWindowMenu write SetHideWindowMenu;
     property MoveComponentMenu: Boolean read GetMoveComponentMenu write SetMoveComponentMenu;
   end;
@@ -465,9 +463,19 @@ begin
   // of a menu item seems to be 22. I'll assume that this is due to some kind of a 1 pixel border
   // above and below, so we add 2 Pixels.
   MenuItemHeight := GetSystemMetrics(SM_CYMENU) + 2;
+{$IFDEF GX_DELPHI_RIO_UP}
+  // in Rio, the height of a menu item is 24 pixels (on my computer)
+  Inc(MenuItemHeight, 2);
+{$ENDIF}
   // On top of that there seem to be several additional pixels at the to pand bottom of the
   // menu itself
-  MaxMenuItems := (ScreenHeight - MenuTopPos - MainMenuHeight - 3) div MenuItemHeight;
+  MaxMenuItems := (ScreenHeight - MenuTopPos - MainMenuHeight - 4) div MenuItemHeight;
+
+{$IFOPT D+}
+  SendDebugFmt('ScreenHeight: %d MenuTopPos: %d MainMenuHeight: %d MenuItemHeight: %d MaxMenuItems: %d',
+    [ScreenHeight, MenuTopPos, MainMenuHeight, MenuItemHeight, MaxMenuItems]);
+{$ENDIF}
+
   if IsGxMainMenuInToolsMenu then begin
     Dec(MaxMenuItems, FGExpertsTopLevelMenu.MenuIndex + 1);
   end;
