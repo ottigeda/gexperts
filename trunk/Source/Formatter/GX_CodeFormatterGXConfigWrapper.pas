@@ -29,6 +29,8 @@ type
     constructor Create(_Settings: IExpertSettings);
   end;
 
+function GetDefaultCapitalizationFilename: string;
+
 implementation
 
 { TGxConfigWrapper }
@@ -77,6 +79,11 @@ end;
 procedure TGxConfigWrapper.WriteStrings(const ASection: string; const AList: TStrings);
 begin
   FSettings.WriteStrings(ASection, AList, 'List');
+end;
+
+function GetDefaultCapitalizationFilename: string;
+begin
+  Result := ConfigInfo.ConfigPath + 'CodeFormatterCapitalization.txt';
 end;
 
 end.

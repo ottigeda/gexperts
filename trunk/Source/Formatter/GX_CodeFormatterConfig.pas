@@ -182,7 +182,8 @@ uses
   GX_GxUtils,
   GX_CodeFormatterConfigHandler,
   GX_CodeFormatterEditCapitalization,
-  GX_CodeFormatterDefaultSettings;
+  GX_CodeFormatterDefaultSettings,
+  GX_CodeFormatterGXConfigWrapper;
 
 resourcestring
   str_None = 'None';
@@ -550,13 +551,15 @@ resourcestring
   str_CouldNotReadS = 'Could not read default configuration %s.';
 var
   Defaults: TCodeFormatterSettings;
+  CapFn: string;
 begin
   _Which := StringReplace(_Which, '&', '', [rfReplaceAll]);
   grid_Spacing.EditorMode := False;
   Defaults := TCodeFormatterSettings.Create;
   try
     if _Which <> str_DefaultSettings then begin
-      if not TCodeFormatterConfigHandler.GetDefaultConfig(_Which, Defaults) then begin
+      CapFn := GetDefaultCapitalizationFilename;
+      if not TCodeFormatterConfigHandler.GetDefaultConfig(_Which, Defaults, CapFn) then begin
         MessageDlg(Format(str_CouldNotReadS, [_Which]), mtError, [mbOK], 0);
         Exit;
       end;
@@ -672,6 +675,7 @@ procedure TfmCodeFormatterConfig.mi_ImportClick(Sender: TObject);
 var
   Settings: TCodeFormatterSettings;
   fn: string;
+  CapFn: string;
 begin
   grid_Spacing.EditorMode := False;
 
@@ -681,7 +685,8 @@ begin
 
   Settings := TCodeFormatterSettings.Create;
   try
-    TCodeFormatterConfigHandler.ImportFromFile(fn, Settings);
+    CapFn := GetDefaultCapitalizationFilename;
+    TCodeFormatterConfigHandler.ImportFromFile(fn, Settings, CapFn);
     SettingsToForm(Settings);
   finally
     Settings.Free;

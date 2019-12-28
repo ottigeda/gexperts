@@ -57,7 +57,8 @@ type
   TCodeFormatterConfigHandler = class
   public
     class procedure WriteSettings(_Writer: IConfigWriter; _Settings: TCodeFormatterSettings);
-    class procedure ReadSettings(_Reader: IConfigReader; _Settings: TCodeFormatterSettings);
+    class procedure ReadSettings(_Reader: IConfigReader; _Settings: TCodeFormatterSettings;
+      const _CapitalizationFn: string);
     ///<summary>
     /// Writes the capitalization list to the file, if that file is not younger than the
     /// LastRead timestamp or LastRead is 0.
@@ -82,18 +83,19 @@ type
     class procedure ReadCapitalization(const _fn: string; _List: TGXUnicodeStringList;
       out _LastRead: TDateTime);
     class procedure ExportToFile(const _Filename: string; _Settings: TCodeFormatterSettings);
-    class procedure ImportFromFile(const _Filename: string; _Settings: TCodeFormatterSettings);
+    class procedure ImportFromFile(const _Filename: string; _Settings: TCodeFormatterSettings;
+      const _CapitalizationFn: string);
     class procedure GetDefaultsList(_Defaults: TStrings);
-    class function GetDefaultConfig(const _Name: string; _Settings: TCodeFormatterSettings): Boolean;
+    class function GetDefaultConfig(const _Name: string; _Settings: TCodeFormatterSettings;
+      const _CapitalizationFn: string): Boolean;
   end;
 
 implementation
 
-uses
 {$IFOPT D+}
-  GX_DbugIntf,
+uses
+  GX_DbugIntf;
 {$ENDIF}
-  GX_ConfigurationInfo;
 
 { TIniFileWrapper }
 
@@ -162,7 +164,7 @@ end;
 
 {$IFNDEF GX_DELPHI2006_UP}
 // the overloaded version of FileAge returning a TDateTime was introduced in Delphi 2006
- function FileAge(const _fn: string; out FileDateTime: TDateTime): Boolean;
+function FileAge(const _fn: string; out FileDateTime: TDateTime): Boolean;
 var
   FileModified: Integer;
 begin
@@ -206,7 +208,8 @@ begin
   end;
 end;
 
-class procedure TCodeFormatterConfigHandler.ReadSettings(_Reader: IConfigReader; _Settings: TCodeFormatterSettings);
+class procedure TCodeFormatterConfigHandler.ReadSettings(_Reader: IConfigReader; _Settings: TCodeFormatterSettings;
+  const _CapitalizationFn: string);
 
   function ReadSpaceSet(const _Name: string; _Default: TSpaceSet): TSpaceSet;
   begin
@@ -220,7 +223,7 @@ var
   fn: string;
   Timestamp: TDateTime;
 begin
-  fn := ConfigInfo.ConfigPath + 'CodeFormatterCapitalization.txt';
+  fn := _CapitalizationFn;
   _Settings.CapitalizationFile := _Reader.ReadString('CapitalizationFile', fn);
 
   ReadCapitalization(_Settings.CapitalizationFile, _Settings.CapNames, Timestamp);
@@ -441,14 +444,15 @@ begin
   Result := ExtractFilePath(GetModuleName(HInstance));
 end;
 
-class function TCodeFormatterConfigHandler.GetDefaultConfig(const _Name: string; _Settings: TCodeFormatterSettings): Boolean;
+class function TCodeFormatterConfigHandler.GetDefaultConfig(const _Name: string;
+  _Settings: TCodeFormatterSettings; const _CapitalizationFn: string): Boolean;
 var
   FileName: string;
 begin
   FileName := GetModulePath + FORMATTER_CONFIG_PREFIX + _Name + '.ini';
   Result := FileExists(FileName);
   if Result then
-    ImportFromFile(FileName, _Settings);
+    ImportFromFile(FileName, _Settings, _CapitalizationFn);
 end;
 
 class procedure TCodeFormatterConfigHandler.GetDefaultsList(_Defaults: TStrings);
@@ -471,7 +475,8 @@ begin
   end;
 end;
 
-class procedure TCodeFormatterConfigHandler.ImportFromFile(const _Filename: string; _Settings: TCodeFormatterSettings);
+class procedure TCodeFormatterConfigHandler.ImportFromFile(const _Filename: string;
+  _Settings: TCodeFormatterSettings; const _CapitalizationFn: string);
 var
   Reader: IConfigReader;
   Ini: TMemIniFile;
@@ -479,7 +484,7 @@ begin
   Ini := TMemIniFile.Create(_Filename);
   try
     Reader := TIniFileWrapper.Create(Ini);
-    ReadSettings(Reader, _Settings);
+    ReadSettings(Reader, _Settings, _CapitalizationFn);
   finally
     Ini.Free;
   end;

@@ -269,7 +269,8 @@ begin
         if SettingsName <> '' then begin
           XSendDebug(Format('Use settings "%s"', [SettingsName]));
           TempSettings := TCodeFormatterSettings.Create;
-          if TCodeFormatterConfigHandler.GetDefaultConfig(SettingsName, TempSettings) then begin
+          if TCodeFormatterConfigHandler.GetDefaultConfig(SettingsName, TempSettings,
+            GetDefaultCapitalizationFilename) then begin
             OrigSettings := FEngine.Settings.Settings;
             FEngine.Settings.Settings := TempSettings.Settings;
           end else
@@ -343,7 +344,8 @@ var
   Reader: IConfigReader;
 begin
   Reader := TGxConfigWrapper.Create(_Settings);
-  TCodeFormatterConfigHandler.ReadSettings(Reader, FEngine.Settings);
+  TCodeFormatterConfigHandler.ReadSettings(Reader, FEngine.Settings,
+    GetDefaultCapitalizationFilename);
 end;
 
 procedure TCodeFormatterExpert.InternalSaveSettings(_Settings: IExpertSettings);
@@ -378,7 +380,8 @@ begin
       if SettingsName <> '' then begin
         XSendDebug(Format('Use settings "%s"', [SettingsName]));
         TempSettings := TCodeFormatterSettings.Create;
-        if TCodeFormatterConfigHandler.GetDefaultConfig(SettingsName, TempSettings) then begin
+        if TCodeFormatterConfigHandler.GetDefaultConfig(SettingsName, TempSettings,
+          GetDefaultCapitalizationFilename) then begin
           OrigSettings := FEngine.Settings.Settings;
           FEngine.Settings.Settings := TempSettings.Settings;
         end else
