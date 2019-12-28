@@ -226,8 +226,7 @@ var
 begin
   case I of
     -1: T := 3;
-    -3:
-      begin
+    -3: begin
         T := 1;
       end;
     -4: ;
@@ -244,28 +243,25 @@ begin
       X
   else
     T;
-  if I > 10 then
-    begin
-      I := I - 2;
-    end; {both lines begin at same position}
+  if I > 10 then begin
+    I := I - 2;
+  end; {both lines begin at same position}
 
   if T[1][1] then
     SendMessage(-1, -3
       10)
-  else
-    begin
-      k
-    end;
+  else begin
+    k
+  end;
 
   if X1 then
     if X2 then
       X3
-    else
-      if x4 then
+    else if x4 then
 
-        if Count = 0 then
+      if Count = 0 then
       //34567890123456789012345678901234567890123456789012345678901234567890123456789012
-          ;
+        ;
   x5
   else
     x6;
@@ -273,57 +269,46 @@ begin
 
     if T then
       k
-    else
-      if P then
-        S
-      else
-        if S then
-          T;
+    else if P then
+      S
+    else if S then
+      T;
 
     if T then
       with k[1] do
         Result := 0
-    else
-      if T then //test
-        Result := 10;
-    if T {//t} then //t
-      begin //test
-      end;
+    else if T then //test
+      Result := 10;
+    if T {//t} then {//t} begin //test
+    end;
 
     if T,
       l then
       J
     else {bla
-    bla}
-      begin
-        k;
-      end;
-    with T do
-      begin
-      end;
+    bla}begin
+      k;
+    end;
+    with T do begin
+    end;
     if T then
       I
+    else if T then
+      I
+    else if T then
+      I
     else
-      if T then
-        I
-      else
-        if T then
-          I
-        else
-          kk;
+      kk;
 
     case k of
       A,
-        b:
-        begin
+        b: begin
           Test;
         end;
       C: Test;
-      k:
-        begin
+      k: begin
         end;
-    else
-      begin
+    else begin
         k;
         l;
       end;

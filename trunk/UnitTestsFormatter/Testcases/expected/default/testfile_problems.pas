@@ -8,7 +8,7 @@ case ParamStatus of
     k;
 const
   SepStr = ^I#39#13#10', / ?; `" <> [] {} - = +|()%@&^$ # !~ * ';
-    {----------------------------------------------------------
+  {----------------------------------------------------------
   Do not try to compile this file !!!!
   Nonsense pascal with solved and few unsolved problems in DelFor
   -----------------------------------------------------------}

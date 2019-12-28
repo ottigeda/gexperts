@@ -38,13 +38,10 @@ const
 var
   J: Double;
 begin
-  if S > J then
-    begin
-      SubProc;
-    end
-  else
-    begin
-      S := Foo;
-    end;
+  if S > J then begin
+    SubProc;
+  end else begin
+    S := Foo;
+  end;
 end;
 end.
