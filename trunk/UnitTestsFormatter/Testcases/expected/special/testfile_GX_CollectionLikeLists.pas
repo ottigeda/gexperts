@@ -109,8 +109,7 @@ var
   I: Integer;
 begin
   IndexOf := -1;
-  if Search(KeyOf(Item), I) then
-  begin
+  if Search(KeyOf(Item), I) then begin
     if Duplicates then
       while (I < Count) and (Item <> Items[I]) do
         inc(I);
@@ -147,17 +146,14 @@ begin
   Search := False;
   L := 0;
   H := Count - 1;
-  while L <= H do
-  begin
+  while L <= H do begin
     I := (L + H) shr 1;
     C := Compare(KeyOf(Items[I]), Key);
     if C < 0 then
       L := I + 1
-    else
-    begin
+    else begin
       H := I - 1;
-      if C = 0 then
-      begin
+      if C = 0 then begin
         Search := True;
         if not Duplicates then L := I;
       end;
@@ -179,4 +175,3 @@ begin
 end;
 
 end.
-

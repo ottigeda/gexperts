@@ -71,8 +71,7 @@ destructor TBookmarks.Destroy;
 var
   i: Integer;
 begin
-  if Assigned(fList) then
-  begin
+  if Assigned(fList) then begin
     for i := 0 to fList.Count - 1 do
       TBookmark(fList[i]).Free;
     fList.Free;
@@ -177,4 +176,3 @@ begin
 end;
 
 end.
-

@@ -16,14 +16,18 @@ uses
   GX_GenericUtils;
 
 type
+  TAdjustSettings = procedure(var _cfg: TCodeFormatterEngineSettings) of object;
+
+type
   TTestTestfiles = class(TFileTestCase)
   private
     FFormatter: TCodeFormatterEngine;
     FConfigName: string;
     procedure TrimTrailingCrLf(_sl: TGxUnicodeStringList);
-    procedure TestFormatting(const _ConfigName: string);
+    procedure TestFormatting(const _ConfigName: string; _AdjustSettings: TAdjustSettings = nil);
     function GetFormatSettings(const _Name: string): TCodeFormatterEngineSettings;
     function GetConfigDirBS: string;
+    procedure AdjustSettings_Special(var _cfg: TCodeFormatterEngineSettings);
   protected
     procedure SetUp; override;
     procedure TearDown; override;
@@ -36,6 +40,7 @@ type
     procedure TestBorlandFormatting;
     procedure TestDelforFormatting;
     procedure TestDefaultFormatting;
+    procedure TestSpecialFormatting;
   end;
 
 implementation
@@ -50,6 +55,12 @@ uses
   GX_dzAssertTrace;
 
 { TTestTestfiles }
+
+procedure TTestTestfiles.AdjustSettings_Special(var _cfg: TCodeFormatterEngineSettings);
+begin
+  _cfg.ExceptSingle := True;
+  FConfigName := 'special';
+end;
 
 procedure TTestTestfiles.ExecuteDoubleClickAction;
 const
@@ -115,6 +126,11 @@ begin
   TestFormatting('headwork');
 end;
 
+procedure TTestTestfiles.TestSpecialFormatting;
+begin
+  TestFormatting('twm', AdjustSettings_Special);
+end;
+
 procedure TTestTestfiles.TestTwmFormatting;
 begin
   TestFormatting('twm');
@@ -135,19 +151,23 @@ begin
   TestFormatting('delforex');
 end;
 
-procedure TTestTestfiles.TestFormatting(const _ConfigName: string);
+procedure TTestTestfiles.TestFormatting(const _ConfigName: string; _AdjustSettings: TAdjustSettings = nil);
 var
   Filename: string;
   InFile: string;
   ExpectedFile: string;
   ExpectedText: TGxUnicodeStringList;
   st: TGxUnicodeStringList;
+  Cfg: TCodeFormatterEngineSettings;
 begin
   FConfigName := _ConfigName;
-  FFormatter.Settings.Settings := GetFormatSettings(_ConfigName);
+  Cfg := GetFormatSettings(FConfigName);
+  if Assigned(_AdjustSettings) then
+    _AdjustSettings(Cfg);
+  FFormatter.Settings.Settings := Cfg;
   InFile := TestFileName;
   Filename := Extractfilename(InFile);
-  ExpectedFile := 'testcases\expected\' + _ConfigName + '\' + Filename;
+  ExpectedFile := 'testcases\expected\' + FConfigName + '\' + Filename;
   if not FileExists(InFile) then begin
 //    ExpectedException := EFileDoesNotExist;
     raise EFileDoesNotExist.CreateFmt('Input file does not exist: %s', [InFile]);
@@ -174,7 +194,7 @@ begin
       CheckEquals(ExpectedText.Text, st.Text, 'error in output');
     except
       on e: ETestFailure do begin
-        st.SaveToFile('testcases\output\' + _ConfigName + '\' + Filename);
+        st.SaveToFile('testcases\output\' + FConfigName + '\' + Filename);
 //        if _AllowFailure then
 //          e.Message := 'known ' + e.Message;
         raise;
@@ -198,12 +218,6 @@ begin
     Settings.Free;
   end;
 end;
-
-//function TTestFilesSpecial.GetFormatSettings: TCodeFormatterEngineSettings;
-//begin
-//  Result := inherited GetFormatSettings;
-//  Result.ExceptSingle := True;
-//end;
 
 initialization
   RegisterTest(TTestTestfiles.Suite);

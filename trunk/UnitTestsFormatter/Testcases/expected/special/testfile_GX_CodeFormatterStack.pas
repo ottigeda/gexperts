@@ -48,12 +48,12 @@ type
     property ProcLevel: Integer read FProcLevel write FProcLevel;
   end;
 
-{$define STACK_TEMPLATE}
+{$DEFINE STACK_TEMPLATE}
 type
   _STACK_ITEM_ = TCodeFormatterStack;
 const
   _MAX_DEPTH_ = 150;
-{$include DelforStackTemplate.tpl}
+{$INCLUDE DelforStackTemplate.tpl}
 
 type
   TCodeFormatterStackStack = class(_STACK_)
@@ -166,7 +166,6 @@ end;
 
 { TDelForStackStack }
 
-{$include DelforStackTemplate.tpl}
+{$INCLUDE DelforStackTemplate.tpl}
 
 end.
-
