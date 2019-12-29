@@ -332,7 +332,6 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_Consts.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_CustomClipboard.pas"/>
-        <DCCReference Include="..\..\source\Framework\GX_DbugIntf.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_DesignerMenu.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_DummyWizard.pas"/>
         <DCCReference Include="..\..\source\framework\GX_dzCompilerAndRtlVersions.pas"/>
@@ -485,13 +484,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\OpenFile\GX_OpenFileConfig.pas">
             <Form>fmOpenFileConfig</Form>
         </DCCReference>
-        <DCCReference Include="..\..\source\PeInfo\GX_PeInfo.pas"/>
-        <DCCReference Include="..\..\Source\PeInfo\GX_PeInfoPrint.pas">
-            <Form>f_PeInfoPrint</Form>
-        </DCCReference>
-        <DCCReference Include="..\..\source\PeInfo\GX_PeInformation.pas">
-            <Form>fmPeInformation</Form>
-        </DCCReference>
+        <DCCReference Include="..\..\Source\PeInfo\GX_PeInformation.pas"/>
         <DCCReference Include="..\..\source\ProcedureList\GX_ProcedureList.pas">
             <Form>fmProcedureList</Form>
         </DCCReference>
@@ -574,6 +567,8 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
             <Form>fmUsesExpertOptions</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_BookmarkList.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_DbugIntf.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_Debug.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_dzAssertTrace.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_dzClassUtils.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_dzDateUtils.pas"/>

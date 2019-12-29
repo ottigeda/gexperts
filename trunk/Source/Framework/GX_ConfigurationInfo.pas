@@ -57,7 +57,6 @@ type
     procedure SetAlphabetizeMenu(const Value: Boolean);
     procedure SetCachingPath(const Value: string);
     procedure SetConfigPath(const Value: string);
-    procedure SetGExpertsPath(const Value: string);
     procedure SetEditorExpertsEnabled(const Value: Boolean);
     procedure SetHelpFileLocation(const Value: string);
     procedure SetVclPath(const Value: string);
