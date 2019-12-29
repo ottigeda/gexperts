@@ -18,6 +18,8 @@ uses
   GX_dzNamedThread in '..\..\..\Source\Utils\GX_dzNamedThread.pas';
 
 {$R *_version.res}
+{$R *_icon.res}
+{$R *_manifest.res}
 
 begin
   Application.Initialize;
