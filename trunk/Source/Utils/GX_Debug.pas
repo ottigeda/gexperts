@@ -2,6 +2,7 @@ unit GX_Debug;
 
 {$I GX_CondDefine.inc}
 
+// if GX_DEBUGLOG is not defined (which is the default), this unit appears empty to the comiler
 {$IFDEF GX_DEBUGLOG}
 
 interface
@@ -92,7 +93,8 @@ finalization
   JclStopExceptionTracking;
 
 {$ELSE not GX_DEBUGLOG}
-interface implementation
+interface
+implementation
 {$ENDIF not GX_DEBUGLOG}
 
 end.
