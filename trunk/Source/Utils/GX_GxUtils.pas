@@ -51,7 +51,7 @@ implementation
 uses
   Windows, SysUtils, Forms,
   DdeMan, // Needed to test for linking against VCLX package.
-  GX_GenericUtils, GX_IdeUtils;
+  GX_VerDepConst, GX_GenericUtils, GX_ConfigurationInfo, GX_IdeUtils;
 
 function BuiltWithPackages: Boolean;
 var
@@ -67,6 +67,9 @@ begin
 end;
 
 procedure ShowNoPackagesError;
+const
+  // Text description of packages with which GExperts must be compiled to work
+  RequiredPackageText = '  vcl, vclx, and designide';
 resourcestring
   SGxBuildError = 'GExperts build error';
   SNotBuiltWithRequiredPackages =
