@@ -108,10 +108,23 @@
         </BorlandProject>
     </ProjectExtensions>
     <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets"/>
+    <PropertyGroup>
+        <PreBuildEvent>call ..\..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"</PreBuildEvent>
+    </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="GExpertsPeInformation.dpr">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="..\..\..\Source\Utils\GX_DbugIntf.pas"/>
+        <DCCReference Include="..\..\..\Source\Utils\GX_Debug.pas"/>
+        <DCCReference Include="..\..\..\Source\Utils\GX_dzClassUtils.pas"/>
+        <DCCReference Include="..\..\..\Source\Utils\GX_dzNamedThread.pas"/>
+        <DCCReference Include="..\..\..\Source\Utils\GX_dzOsUtils.pas"/>
+        <DCCReference Include="..\..\..\Source\Utils\GX_dzPackageInfo.pas"/>
+        <DCCReference Include="..\..\..\Source\Utils\GX_dzSelectDirectoryFix.pas"/>
+        <DCCReference Include="..\..\..\Source\Utils\GX_dzVclUtils.pas"/>
+        <DCCReference Include="..\..\..\Source\Utils\GX_dzVersionInfo.pas"/>
+        <DCCReference Include="..\..\..\Source\Utils\GX_GenericUtils.pas"/>
         <DCCReference Include="src\GX_PeInfo.pas"/>
         <DCCReference Include="src\GX_PeInfoPrint.pas">
             <Form>f_PeInfoPrint</Form>
