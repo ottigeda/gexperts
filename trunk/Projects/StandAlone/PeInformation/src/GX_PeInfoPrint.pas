@@ -12,8 +12,7 @@ uses
   Controls,
   Forms,
   Dialogs,
-  StdCtrls,
-  GX_BaseForm;
+  StdCtrls;
 
 type
   TPeInfoTabs = (pitMsDos, pitPeHeader, pitPeOptHeader, pitImports, pitExports, pitVersionInfo, pitPackageInfo);
@@ -21,7 +20,7 @@ type
   TPeInfoTabSet = set of TPeInfoTabs;
 
 type
-  Tf_PeInfoPrint = class(TfmBaseForm)
+  Tf_PeInfoPrint = class(TForm)
     chk_MsDosHeader: TCheckBox;
     chk_PeHeader: TCheckBox;
     chk_PeOptional: TCheckBox;

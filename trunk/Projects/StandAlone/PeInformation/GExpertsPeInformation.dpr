@@ -1,9 +1,15 @@
 program GExpertsPeInformation;
 
 uses
-  GX_StandAloneLoadDLL in '..\..\..\Source\Framework\GX_StandAloneLoadDLL.pas',
-  PeInformationMain in 'PeInformationMain.pas';
+  Forms,
+  GX_PeInfo in 'src\GX_PeInfo.pas',
+  GX_PeInformation in 'src\GX_PeInformation.pas' {fmPeInformation},
+  GX_PeInfoPrint in 'src\GX_PeInfoPrint.pas' {f_PeInfoPrint},
+  GX_SharedImages in 'src\GX_SharedImages.pas' {dmSharedImages: TDataModule};
 
 begin
-  Main;
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfmPeInformation, fmPeInformation);
+  Application.Run;
 end.

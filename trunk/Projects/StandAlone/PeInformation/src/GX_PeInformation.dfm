@@ -1,26 +1,32 @@
-inherited fmPeInformation: TfmPeInformation
+object fmPeInformation: TfmPeInformation
   Left = 375
   Top = 189
   Caption = 'PE Information'
-  ClientHeight = 459
-  ClientWidth = 489
+  ClientHeight = 426
+  ClientWidth = 454
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
   KeyPreview = True
   Menu = MainMenu
+  OldCreateOrder = True
   OnActivate = FormActivate
   OnKeyDown = FormKeyDown
   OnResize = FormResize
   PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 13
   object pcMain: TPageControl
     Left = 0
     Top = 22
-    Width = 489
-    Height = 437
+    Width = 454
+    Height = 404
     ActivePage = tshMSDOS
     Align = alClient
     HotTrack = True
     MultiLine = True
-    TabIndex = 0
     TabOrder = 0
     OnChange = pcMainChange
     object tshMSDOS: TTabSheet
@@ -28,17 +34,17 @@ inherited fmPeInformation: TfmPeInformation
       object lvMSDOS: TListView
         Left = 0
         Top = 0
-        Width = 481
-        Height = 408
+        Width = 446
+        Height = 358
         Align = alClient
         Columns = <
           item
             Caption = 'Field'
-            Width = 200
+            Width = 186
           end
           item
             Caption = 'Value'
-            Width = 210
+            Width = 195
           end>
         ColumnClick = False
         OwnerData = True
@@ -56,17 +62,17 @@ inherited fmPeInformation: TfmPeInformation
       object lvPEHeader: TListView
         Left = 0
         Top = 0
-        Width = 481
-        Height = 408
+        Width = 447
+        Height = 379
         Align = alClient
         Columns = <
           item
             Caption = 'Field'
-            Width = 200
+            Width = 186
           end
           item
             Caption = 'Value'
-            Width = 210
+            Width = 195
           end>
         ColumnClick = False
         OwnerData = True
@@ -82,17 +88,17 @@ inherited fmPeInformation: TfmPeInformation
       object lvPEOptionalHeader: TListView
         Left = 0
         Top = 0
-        Width = 481
-        Height = 408
+        Width = 447
+        Height = 379
         Align = alClient
         Columns = <
           item
             Caption = 'Field'
-            Width = 200
+            Width = 186
           end
           item
             Caption = 'Value'
-            Width = 210
+            Width = 195
           end>
         ColumnClick = False
         OwnerData = True
@@ -106,17 +112,15 @@ inherited fmPeInformation: TfmPeInformation
     object tshImport: TTabSheet
       Caption = 'Imports'
       object splImport: TSplitter
-        Left = 135
+        Left = 125
         Top = 0
-        Width = 3
-        Height = 408
-        Cursor = crHSplit
+        Height = 379
       end
       object lvImports: TListView
         Left = 0
         Top = 0
-        Width = 135
-        Height = 408
+        Width = 125
+        Height = 379
         Align = alLeft
         Columns = <
           item
@@ -134,19 +138,19 @@ inherited fmPeInformation: TfmPeInformation
         OnData = lvImportsData
       end
       object lvImportFunctions: TListView
-        Left = 138
+        Left = 128
         Top = 0
-        Width = 343
-        Height = 408
+        Width = 319
+        Height = 379
         Align = alClient
         Columns = <
           item
             Caption = 'Name'
-            Width = 200
+            Width = 186
           end
           item
             Caption = 'Ordinal'
-            Width = 120
+            Width = 111
           end>
         ColumnClick = False
         OwnerData = True
@@ -162,21 +166,21 @@ inherited fmPeInformation: TfmPeInformation
       object lvExportFunctions: TListView
         Left = 0
         Top = 0
-        Width = 481
-        Height = 408
+        Width = 447
+        Height = 379
         Align = alClient
         Columns = <
           item
             Caption = 'Name'
-            Width = 200
+            Width = 186
           end
           item
             Caption = 'Ordinal'
-            Width = 120
+            Width = 111
           end
           item
             Caption = 'Entry Point'
-            Width = 100
+            Width = 93
           end>
         ColumnClick = False
         OwnerData = True
@@ -193,17 +197,17 @@ inherited fmPeInformation: TfmPeInformation
       object lvVersionInfo: TListView
         Left = 0
         Top = 0
-        Width = 481
-        Height = 408
+        Width = 447
+        Height = 379
         Align = alClient
         Columns = <
           item
             Caption = 'Name'
-            Width = 150
+            Width = 139
           end
           item
             Caption = 'Value'
-            Width = 350
+            Width = 325
           end>
         ColumnClick = False
         ReadOnly = True
@@ -216,25 +220,25 @@ inherited fmPeInformation: TfmPeInformation
       Caption = 'Package Info'
       ImageIndex = 6
       object splPackageInfo: TSplitter
-        Left = 142
+        Left = 132
         Top = 0
-        Height = 408
+        Height = 379
       end
       object lbPackageInfoType: TListBox
         Left = 0
         Top = 0
-        Width = 142
-        Height = 408
+        Width = 132
+        Height = 379
         Align = alLeft
         ItemHeight = 14
         TabOrder = 0
         OnClick = lbPackageInfoTypeClick
       end
       object lbPackageInfo: TListBox
-        Left = 145
+        Left = 135
         Top = 0
-        Width = 336
-        Height = 389
+        Width = 311
+        Height = 358
         Align = alClient
         ItemHeight = 14
         TabOrder = 1
@@ -244,12 +248,10 @@ inherited fmPeInformation: TfmPeInformation
   object ToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 489
+    Width = 454
     Height = 22
     AutoSize = True
     DisabledImages = dmSharedImages.DisabledImages
-    EdgeBorders = []
-    Flat = True
     Images = dmSharedImages.Images
     ParentShowHint = False
     ShowHint = True

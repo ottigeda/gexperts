@@ -1,11 +1,16 @@
-inherited f_PeInfoPrint: Tf_PeInfoPrint
+object f_PeInfoPrint: Tf_PeInfoPrint
   Left = 326
   Top = 228
   BorderStyle = bsDialog
   Caption = 'Print PE Information'
   ClientHeight = 225
   ClientWidth = 233
-  ParentFont = False
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
   OldCreateOrder = True
   Position = poOwnerFormCenter
   PixelsPerInch = 96

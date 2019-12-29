@@ -7,10 +7,10 @@ interface
 uses
   Windows, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, GX_PeInfo, ComCtrls, Menus,
-  GX_IdeDock, DropTarget, DropSource, ActnList, ToolWin, StdCtrls, SysUtils, Actions;
+  DropTarget, DropSource, ActnList, ToolWin, StdCtrls, SysUtils;
 
 type
-  TfmPeInformation = class(TfmIdeDockForm)
+  TfmPeInformation = class(TForm)
     pcMain: TPageControl;
     tshMSDOS: TTabSheet;
     tshImport: TTabSheet;
@@ -110,34 +110,25 @@ type
     property NumberType: TNumberType read FNumberType write SetNumberType;
   end;
 
-procedure ShowPeInfo(CmdLine: PAnsiChar); cdecl; {$IFNDEF GX_BCB} export; {$ENDIF GX_BCB}
+var
+  fmPeInformation: TfmPeInformation;
 
 implementation
 
 {$R *.dfm}
 
 uses
-  StrUtils, GX_GxUtils, GX_GenericUtils, GX_Experts,
-  GX_ConfigurationInfo, GX_GExperts, Clipbrd, GX_SharedImages, Math,
-  GX_DbugIntf, GX_dzVersionInfo, GX_dzPackageInfo, GX_dzClassUtils,
-  GX_dzVclUtils, GX_PeInfoPrint;
-
-type
-  TPEInformationExpert = class(TGX_Expert)
-  protected
-    procedure SetActive(New: Boolean); override;
-  public
-    constructor Create; override;
-    destructor Destroy; override;
-    function GetActionCaption: string; override;
-    class function GetName: string; override;
-    procedure Execute(Sender: TObject); override;
-    function HasConfigOptions: Boolean; override;
-  end;
-
-var
-  fmPeInformation: TfmPeInformation = nil;
-  PeExpert: TPEInformationExpert;
+  StrUtils,
+  Math,
+  Clipbrd,
+  GX_GenericUtils,
+  GX_SharedImages,
+  GX_DbugIntf,
+  GX_dzVersionInfo,
+  GX_dzPackageInfo,
+  GX_dzClassUtils,
+  GX_dzVclUtils,
+  GX_PeInfoPrint;
 
 procedure SetListViewItem(AItem: TListItem; AValue: string);
 var
@@ -396,26 +387,26 @@ begin
 end;
 
 procedure TfmPeInformation.SaveSettings;
-var
-  Settings: IExpertSettings;
+//var
+//  Settings: IExpertSettings;
 begin
   // do not localize any of the below lines
-  Settings :=  TPEInformationExpert.GetSettings;
-  Settings.SaveForm('Window', Self);
-  Settings.WriteInteger('Numbers', Integer(NumberType));
-  Settings.WriteString('BinPath', ExtractFilePath(FFileName));
+//  Settings :=  TPEInformationExpert.GetSettings;
+//  Settings.SaveForm('Window', Self);
+//  Settings.WriteInteger('Numbers', Integer(NumberType));
+//  Settings.WriteString('BinPath', ExtractFilePath(FFileName));
 end;
 
 procedure TfmPeInformation.LoadSettings;
-var
-  Settings: IExpertSettings;
+//var
+//  Settings: IExpertSettings;
 begin
   // do not localize any of the below lines
-  Settings :=  TPEInformationExpert.GetSettings;
-  Settings.LoadForm('Window', Self);
-  NumberType := TNumberType(Settings.ReadInteger('Numbers', Ord(ntHex)));
-  FFileName := Settings.ReadString('BinPath', '');
-  FFileName :=  AddSlash(FFileName) + 'SomeExecutable.exe';
+//  Settings :=  TPEInformationExpert.GetSettings;
+//  Settings.LoadForm('Window', Self);
+//  NumberType := TNumberType(Settings.ReadInteger('Numbers', Ord(ntHex)));
+//  FFileName := Settings.ReadString('BinPath', '');
+//  FFileName :=  AddSlash(FFileName) + 'SomeExecutable.exe';
 
   EnsureFormVisible(Self);
 end;
@@ -789,12 +780,12 @@ end;
 
 procedure TfmPeInformation.actHelpHelpExecute(Sender: TObject);
 begin
-  GxContextHelp(Self, 16);
+//  GxContextHelp(Self, 16);
 end;
 
 procedure TfmPeInformation.actHelpAboutExecute(Sender: TObject);
 begin
-  ShowGXAboutForm;
+//  ShowGXAboutForm;
 end;
 
 procedure TfmPeInformation.actOptionsDecimalExecute(Sender: TObject);
@@ -815,8 +806,8 @@ begin
 
   TControl_SetMinConstraints(Self);
 
-  if Assigned(PeExpert) then
-    PeExpert.SetFormIcon(Self);
+//  if Assigned(PeExpert) then
+//    PeExpert.SetFormIcon(Self);
 
   FileDrop := TDropFileTarget.Create(nil);
   FileDrop.OnDrop := DropFiles;
@@ -850,7 +841,7 @@ end;
 
 procedure TfmPeInformation.actHelpContentsExecute(Sender: TObject);
 begin
-  GxContextHelpContents(Self);
+//  GxContextHelpContents(Self);
 end;
 
 procedure TfmPeInformation.ActionsUpdate(Action: TBasicAction; var Handled: Boolean);
@@ -868,99 +859,5 @@ begin
   end;
 end;
 
-{ TPEInformationExpert }
-
-constructor TPEInformationExpert.Create;
-begin
-  inherited Create;
-  PeExpert := Self;
-end;
-
-destructor TPEInformationExpert.Destroy;
-begin
-  PeExpert := nil;
-  inherited;
-end;
-
-procedure TPEInformationExpert.SetActive(New: Boolean);
-begin
-  if New <> Active then
-  begin
-    inherited SetActive(New);
-    if New then
-      IdeDockManager.RegisterDockableForm(TfmPeInformation, fmPeInformation, 'fmPeInformation')
-    else
-    begin
-      IdeDockManager.UnRegisterDockableForm(fmPeInformation, 'fmPeInformation');
-      FreeAndNil(fmPeInformation);
-    end;
-  end;
-end;
-
-function TPEInformationExpert.GetActionCaption: string;
-resourcestring
-  SMenuCaption = 'P&E Information';
-begin
-  Result := SMenuCaption;
-end;
-
-class function TPEInformationExpert.GetName: string;
-begin
-  Result := 'PEInformation';
-end;
-
-procedure TPEInformationExpert.Execute(Sender: TObject);
-begin
-  if fmPeInformation = nil then
-    fmPeInformation := TfmPeInformation.Create(nil);
-  IdeDockManager.ShowForm(fmPeInformation);
-  EnsureFormVisible(fmPeInformation);
-
-  IncCallCount;
-end;
-
-function TPEInformationExpert.HasConfigOptions: Boolean;
-begin
-  Result := False;
-end;
-
-procedure ShowPeInfo(CmdLine: PAnsiChar); cdecl; {$IFNDEF GX_BCB} export; {$ENDIF GX_BCB}
-var
-  PEExpertStandAlone: TPEInformationExpert;
-  fn: string;
-begin
-  try
-    {$IFOPT D+}SendDebug('Showing PE Information');{$ENDIF}
-    PEExpertStandAlone := nil;
-    InitSharedResources;
-    try
-      {$IFOPT D+}SendDebug('Created CodeLib window');{$ENDIF}
-      PEExpertStandAlone := TPEInformationExpert.Create;
-      PEExpertStandAlone.LoadSettings;
-      fmPeInformation := TfmPeInformation.Create(nil);
-      if Assigned(CmdLine) then begin
-        fn := string(CmdLine);
-        if fn <> '' then
-          fmPeInformation.LoadPEInfo(fn);
-      end;
-      fmPeInformation.ShowModal;
-      PEExpertStandAlone.SaveSettings;
-    finally
-    // Destroying the form will result in an access violation in
-    // TfmIdeDockForm.Destroy which I could not debug and prevent properly.
-    // Just setting it to nil creates a memory leak, but we are shutting down anyway.
-    // -- 2016-06-05 twm
-      fmPeInformation := nil;
-      FreeAndNil(PEExpertStandAlone);
-      FreeSharedResources;
-    end;
-  except
-    on e: exception do
-      Application.ShowException(e);
-  end;
-end;
-
-initialization
-  RegisterGX_Expert(TPEInformationExpert);
 end.
 
