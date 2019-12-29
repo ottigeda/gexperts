@@ -38,6 +38,7 @@ uses
   GX_Consts in '..\..\source\Framework\GX_Consts.pas',
   GX_CopyComponentNames in '..\..\source\CopyComponentNames\GX_CopyComponentNames.pas',
   GX_DbugIntf in '..\..\source\Utils\GX_DbugIntf.pas',
+  GX_Debug in '..\..\Source\Utils\GX_Debug.pas',
   GX_DesignerMenu in '..\..\source\Framework\GX_DesignerMenu.pas',
   GX_eGotoModification in '..\..\Source\Editor\GX_eGotoModification.pas',
   GX_eAlign in '..\..\source\Editor\GX_eAlign.pas' {fmAlign},
