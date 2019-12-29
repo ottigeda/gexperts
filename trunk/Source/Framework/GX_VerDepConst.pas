@@ -9,8 +9,6 @@ interface
 const
   // This will likely never change again in future IDE versions, so it is global
   ExptIntfExpertEntryPoint = 'INITEXPERT0017';
-  // Text description of packages with which GExperts must be compiled to work
-  RequiredPackageText = '  vcl, vclx, and designide';
   TTabDockHostFormName = 'TTabDockHostForm';
 
   {$IFDEF GX_VER220_up} 
