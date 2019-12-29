@@ -7,7 +7,8 @@ interface
 uses
   Windows, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, GX_PeInfo, ComCtrls, Menus,
-  DropTarget, DropSource, ActnList, ToolWin, StdCtrls, SysUtils;
+  GX_SharedImages,
+  ActnList, ToolWin, StdCtrls, SysUtils;
 
 type
   TfmPeInformation = class(TForm)
@@ -76,7 +77,6 @@ type
     procedure lvImportsData(Sender: TObject; Item: TListItem);
     procedure lvExportFunctionsData(Sender: TObject; Item: TListItem);
     procedure lvImportFunctionsData(Sender: TObject; Item: TListItem);
-    procedure FormActivate(Sender: TObject);
     procedure actEditCopyExecute(Sender: TObject);
     procedure actFileOpenExecute(Sender: TObject);
     procedure actFilePrinterSetupExecute(Sender: TObject);
@@ -95,11 +95,10 @@ type
     FNumberType: TNumberType;
     FFileName: string;
     FBlockEvents: Boolean;
-    FileDrop: TDropFileTarget;
     procedure LoadPEInfo(const AFileName: string);
     procedure SaveSettings;
     procedure LoadSettings;
-    procedure DropFiles(Sender: TObject; ShiftState: TShiftState; Point: TPoint; var Effect: Longint);
+    procedure HandleFilesDropped(_Sender: TObject; _Files: TStrings);
     procedure SetNumberType(const Value: TNumberType);
     procedure SetVersionInfo(const AFilename: string);
     procedure SetPackageInfo(const AFilename: string);
@@ -122,12 +121,11 @@ uses
   Math,
   Clipbrd,
   GX_GenericUtils,
-  GX_SharedImages,
   GX_DbugIntf,
-  GX_dzVersionInfo,
-  GX_dzPackageInfo,
-  GX_dzClassUtils,
-  GX_dzVclUtils,
+  u_dzVersionInfo,
+  u_dzPackageInfo,
+  u_dzClassUtils,
+  u_dzVclUtils,
   GX_PeInfoPrint;
 
 procedure SetListViewItem(AItem: TListItem; AValue: string);
@@ -387,26 +385,33 @@ begin
 end;
 
 procedure TfmPeInformation.SaveSettings;
-//var
-//  Settings: IExpertSettings;
+var
+  RegEntry: TRegistryEntry;
+  s: string;
 begin
-  // do not localize any of the below lines
-//  Settings :=  TPEInformationExpert.GetSettings;
-//  Settings.SaveForm('Window', Self);
-//  Settings.WriteInteger('Numbers', Integer(NumberType));
-//  Settings.WriteString('BinPath', ExtractFilePath(FFileName));
+  RegEntry := TForm_GetPlacementRegistryEntry(Self, 'GExperts');
+  TForm_StorePlacement(Self, fpePosAndSize, RegEntry);
+
+  RegEntry.KeyName := TApplication_GetConfigRegistryPath('GExperts');
+  TRegistry_WriteInteger(RegEntry.KeyName, 'Numbers', Integer(NumberType));
+
+  s := ExtractFilePath(FFileName);
+  if s <> '\' then
+    TRegistry_WriteString(RegEntry.KeyName, 'BinPath', ExtractFilePath(FFileName));
 end;
 
 procedure TfmPeInformation.LoadSettings;
-//var
-//  Settings: IExpertSettings;
+var
+  RegEntry: TRegistryEntry;
 begin
-  // do not localize any of the below lines
-//  Settings :=  TPEInformationExpert.GetSettings;
-//  Settings.LoadForm('Window', Self);
-//  NumberType := TNumberType(Settings.ReadInteger('Numbers', Ord(ntHex)));
-//  FFileName := Settings.ReadString('BinPath', '');
-//  FFileName :=  AddSlash(FFileName) + 'SomeExecutable.exe';
+  RegEntry := TForm_GetPlacementRegistryEntry(Self, 'GExperts');
+  TForm_ReadPlacement(Self, fpePosAndSize, RegEntry);
+
+  RegEntry.KeyName := TApplication_GetConfigRegistryPath('GExperts');
+  NumberType := TNumberType(TRegistry_ReadInteger(RegEntry.KeyName, 'Numbers', Ord(ntHex)));
+
+  FFileName := TRegistry_ReadString(RegEntry.KeyName, 'BinPath', '');
+  FFileName := AddSlash(FFileName) + 'SomeExecutable.exe';
 
   EnsureFormVisible(Self);
 end;
@@ -418,11 +423,10 @@ begin
   FormResize(Self);
 end;
 
-procedure TfmPeInformation.DropFiles(Sender: TObject; ShiftState: TShiftState; Point: TPoint; var Effect: Longint);
+procedure TfmPeInformation.HandleFilesDropped(_Sender: TObject; _Files: TStrings);
 begin
-  if (FileDrop.Files = nil) or (FileDrop.Files.Count < 1) then
-    Exit;
-  LoadPEInfo(FileDrop.Files[0]);
+  if _Files.Count >= 0 then
+    LoadPEInfo(_Files[0]);
 end;
 
 procedure TfmPeInformation.lvMSDOSData(Sender: TObject; Item: TListItem);
@@ -491,13 +495,6 @@ begin
 
   Item.Caption := ImpExp.Items[Item.Index].FunctionName;
   Item.SubItems.Add(PEInfo.IntToNum(ImpExp.Items[Item.Index].Ordinal));
-end;
-
-procedure TfmPeInformation.FormActivate(Sender: TObject);
-begin
-  // Needed later because docking cancels the registration??
-  //if FileDrop <> nil then
-  //  FileDrop.Register(pcMain);
 end;
 
 procedure TfmPeInformation.actEditCopyExecute(Sender: TObject);
@@ -806,14 +803,13 @@ begin
 
   TControl_SetMinConstraints(Self);
 
-//  if Assigned(PeExpert) then
-//    PeExpert.SetFormIcon(Self);
+  u_dzVclUtils.TWinControl_ActivateDropFiles(Self, HandleFilesDropped);
 
-  FileDrop := TDropFileTarget.Create(nil);
-  FileDrop.OnDrop := DropFiles;
-  FileDrop.DragTypes := [dtCopy, dtMove, dtLink];
-  FileDrop.ShowImage := True;
-  FileDrop.Register(pcMain);
+//  FileDrop := TDropFileTarget.Create(nil);
+//  FileDrop.OnDrop := DropFiles;
+//  FileDrop.DragTypes := [dtCopy, dtMove, dtLink];
+//  FileDrop.ShowImage := True;
+//  FileDrop.Register(pcMain);
 
   pcMain.ActivePage := tshMSDOS;
   CenterForm(Self);
@@ -828,11 +824,11 @@ begin
 
   TListbox_ClearWithObjects(lbPackageInfoType);
 
-  if Assigned(FileDrop) then
-  begin
-    FileDrop.Unregister;
-    FreeAndNil(FileDrop);
-  end;
+//  if Assigned(FileDrop) then
+//  begin
+//    FileDrop.Unregister;
+//    FreeAndNil(FileDrop);
+//  end;
 
   inherited Destroy;
 

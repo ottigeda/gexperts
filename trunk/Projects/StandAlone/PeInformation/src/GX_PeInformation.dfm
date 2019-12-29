@@ -13,7 +13,6 @@ object fmPeInformation: TfmPeInformation
   KeyPreview = True
   Menu = MainMenu
   OldCreateOrder = True
-  OnActivate = FormActivate
   OnKeyDown = FormKeyDown
   OnResize = FormResize
   PixelsPerInch = 96
@@ -222,15 +221,15 @@ object fmPeInformation: TfmPeInformation
       object splPackageInfo: TSplitter
         Left = 132
         Top = 0
-        Height = 379
+        Height = 358
       end
       object lbPackageInfoType: TListBox
         Left = 0
         Top = 0
         Width = 132
-        Height = 379
+        Height = 358
         Align = alLeft
-        ItemHeight = 14
+        ItemHeight = 13
         TabOrder = 0
         OnClick = lbPackageInfoTypeClick
       end
@@ -240,7 +239,7 @@ object fmPeInformation: TfmPeInformation
         Width = 311
         Height = 358
         Align = alClient
-        ItemHeight = 14
+        ItemHeight = 13
         TabOrder = 1
       end
     end

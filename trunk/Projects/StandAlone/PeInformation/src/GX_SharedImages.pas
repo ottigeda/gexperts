@@ -5,13 +5,18 @@ unit GX_SharedImages;
 interface
 
 uses
-  Classes, ImgList, Controls;
+  Classes,
+  ImgList,
+  Controls;
 
 type
   TdmSharedImages = class(TDataModule)
     Images: TImageList;
     DisabledImages: TImageList;
   end;
+
+var
+  dmSharedImages: TdmSharedImages;
 
 const
   ImageIndexNew = 10;
@@ -23,7 +28,7 @@ const
   ImageIndexGear = 28;
   ImageIndexClosedFolder = 21;
   ImageIndexOpenFolder = 22;
-  ImageIndexDocument  = 23;
+  ImageIndexDocument = 23;
   ImageIndexArrow = 43;
   ImageIndexCheck = 46;
   ImageIndexBlank = 47;

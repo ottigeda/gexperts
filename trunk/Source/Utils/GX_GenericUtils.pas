@@ -14,7 +14,7 @@ uses
   SysUtils, Classes, Dialogs, SyncObjs, Graphics, Controls, Forms, StdCtrls,
   UITypes, // if you get a compile error here, add UITypes=Dialogs to the unit aliases 
   {$IFNDEF UNICODE} SynUnicode, {$ENDIF UNICODE} // UniSynEdit is required for TWideStringList in Delphi 2007 and earlier
-  Types, CheckLst, TypInfo, ExtCtrls, ComCtrls, GX_dzNamedThread;
+  Types, CheckLst, TypInfo, ExtCtrls, ComCtrls, u_dzErrorThread;
 
 const
   AllFilesWildCard = '*.*';
@@ -813,7 +813,7 @@ function IDEEditorStringToString(const S: IDEEditBufferString): string; overload
 {$ENDIF GX_VER160_up}
 
 type
-  TFileFindThread = class(TNamedThread)
+  TFileFindThread = class(TErrorThread)
   private
     FFileMasks: TStringList;
     FResults: TStringList;
@@ -854,7 +854,7 @@ uses
   {$IFDEF UNICODE} Character, {$ENDIF}
   ShLwApi,
   ShellAPI, ShlObj, ActiveX, StrUtils, Math, Clipbrd,
-  GX_dzSelectDirectoryFix, GX_dzOsUtils;
+  u_dzSelectDirectoryFix, u_dzOsUtils, FileCtrl;
 
 const
   shlwapi32 = 'shlwapi.dll';
@@ -3856,7 +3856,7 @@ begin
     OldErrorMode := SetErrorMode(SEM_FAILCRITICALERRORS);
     try
       BrowseRoot := '';
-      Result := dzSelectDirectory(Caption, BrowseRoot, Dir, Parent);
+      Result := dzSelectDirectory(Caption, BrowseRoot, Dir, [sdNewUI], Parent);
     finally
       SetErrorMode(OldErrorMode);
     end;
@@ -4230,7 +4230,7 @@ end;
 
 function ThisDllName: string;
 begin
-  Result := GX_dzOsUtils.GetModuleFileName(HINSTANCE);
+  Result := u_dzOsUtils.GetModuleFileName(HINSTANCE);
 end;
 
 function VclInstance: LongWord;

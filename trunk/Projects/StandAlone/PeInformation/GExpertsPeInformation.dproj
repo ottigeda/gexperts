@@ -1,140 +1,522 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
-        <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-        <DCC_DependencyCheckOutputName>..\..\..\binaries\GExpertsPeInformation.exe</DCC_DependencyCheckOutputName>
-        <DCC_UsePackage>vcl;vclx</DCC_UsePackage>
-        <MainSource>GExpertsPeInformation.dpr</MainSource>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{0bbdde7e-378f-4816-b0dc-2ff18052d95a}</ProjectGuid>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
-        <DCC_DebugInformation>False</DCC_DebugInformation>
-        <DCC_Define>RELEASE</DCC_Define>
-        <DCC_Description>GExperts Grep</DCC_Description>
-        <DCC_ExeOutput>..\..\..\binaries</DCC_ExeOutput>
-        <DCC_HppOutput>.\dcu</DCC_HppOutput>
-        <DCC_ImageBase>500000</DCC_ImageBase>
-        <DCC_IncludePath>..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_IncludePath>
-        <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
-        <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
-        <DCC_ObjPath>..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_ObjPath>
-        <DCC_ResourcePath>..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_ResourcePath>
-        <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
-        <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
-        <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
-        <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-        <DCC_UnitAlias>UITypes=Dialogs;Actions=ActnList</DCC_UnitAlias>
-        <DCC_UnitSearchPath>..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_UnitSearchPath>
-        <DCC_WriteableConstants>True</DCC_WriteableConstants>
-        <Version>7.0</Version>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
-        <DCC_Define>DEBUG</DCC_Define>
-        <DCC_Description>GExperts Grep</DCC_Description>
-        <DCC_ExeOutput>..\..\..\binaries</DCC_ExeOutput>
-        <DCC_GenerateStackFrames>True</DCC_GenerateStackFrames>
-        <DCC_HppOutput>.\dcu</DCC_HppOutput>
-        <DCC_ImageBase>500000</DCC_ImageBase>
-        <DCC_IncludePath>$(BDS)\lib\Debug;..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_IncludePath>
-        <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
-        <DCC_MapFile>3</DCC_MapFile>
-        <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
-        <DCC_ObjPath>$(BDS)\lib\Debug;..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_ObjPath>
-        <DCC_Optimize>False</DCC_Optimize>
-        <DCC_RangeChecking>True</DCC_RangeChecking>
-        <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_ResourcePath>
-        <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
-        <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
-        <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
-        <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-        <DCC_UnitAlias>UITypes=Dialogs;Actions=ActnList</DCC_UnitAlias>
-        <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_UnitSearchPath>
-        <DCC_WriteableConstants>True</DCC_WriteableConstants>
-        <Version>7.0</Version>
-    </PropertyGroup>
-    <ProjectExtensions>
-        <Borland.Personality>Delphi.Personality</Borland.Personality>
-        <Borland.ProjectType>VCLApplication</Borland.ProjectType>
-        <BorlandProject>
-            <BorlandProject>
-                <Delphi.Personality>
-                    <Parameters>
-                        <Parameters Name="UseLauncher">False</Parameters>
-                        <Parameters Name="LoadAllSymbols">True</Parameters>
-                        <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
-                        <Parameters Name="RunParams">c:\source\_sourceforge\gexperts\binaries\GExpertsD6.dll</Parameters>
-                    </Parameters>
-                    <VersionInfo>
-                        <VersionInfo Name="IncludeVerInfo">False</VersionInfo>
-                        <VersionInfo Name="AutoIncBuild">False</VersionInfo>
-                        <VersionInfo Name="MajorVer">1</VersionInfo>
-                        <VersionInfo Name="MinorVer">1</VersionInfo>
-                        <VersionInfo Name="Release">1</VersionInfo>
-                        <VersionInfo Name="Build">0</VersionInfo>
-                        <VersionInfo Name="Debug">False</VersionInfo>
-                        <VersionInfo Name="PreRelease">True</VersionInfo>
-                        <VersionInfo Name="Special">False</VersionInfo>
-                        <VersionInfo Name="Private">False</VersionInfo>
-                        <VersionInfo Name="DLL">False</VersionInfo>
-                        <VersionInfo Name="Locale">1033</VersionInfo>
-                        <VersionInfo Name="CodePage">1252</VersionInfo>
-                    </VersionInfo>
-                    <VersionInfoKeys>
-                        <VersionInfoKeys Name="CompanyName"/>
-                        <VersionInfoKeys Name="FileDescription"/>
-                        <VersionInfoKeys Name="FileVersion">1.1.1.0</VersionInfoKeys>
-                        <VersionInfoKeys Name="InternalName"/>
-                        <VersionInfoKeys Name="LegalCopyright"/>
-                        <VersionInfoKeys Name="LegalTrademarks"/>
-                        <VersionInfoKeys Name="OriginalFilename"/>
-                        <VersionInfoKeys Name="ProductName"/>
-                        <VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
-                        <VersionInfoKeys Name="Comments"/>
-                    </VersionInfoKeys>
-                    <Source>
-                        <Source Name="MainSource">GExpertsPeInformation.dpr</Source>
-                    </Source>
-                    <Excluded_Packages>
-                        <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                        <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
-                        <Excluded_Packages Name="$(BDS)\bin\dcltee7100.bpl">TeeChart Components</Excluded_Packages>
-                    </Excluded_Packages>
-                </Delphi.Personality>
-            </BorlandProject>
-        </BorlandProject>
-    </ProjectExtensions>
-    <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets"/>
-    <PropertyGroup>
-        <PreBuildEvent>call ..\..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"</PreBuildEvent>
-    </PropertyGroup>
-    <ItemGroup>
-        <DelphiCompile Include="GExpertsPeInformation.dpr">
-            <MainSource>MainSource</MainSource>
-        </DelphiCompile>
-        <DCCReference Include="..\..\..\Source\Utils\GX_DbugIntf.pas"/>
-        <DCCReference Include="..\..\..\Source\Utils\GX_Debug.pas"/>
-        <DCCReference Include="..\..\..\Source\Utils\GX_dzClassUtils.pas"/>
-        <DCCReference Include="..\..\..\Source\Utils\GX_dzNamedThread.pas"/>
-        <DCCReference Include="..\..\..\Source\Utils\GX_dzOsUtils.pas"/>
-        <DCCReference Include="..\..\..\Source\Utils\GX_dzPackageInfo.pas"/>
-        <DCCReference Include="..\..\..\Source\Utils\GX_dzSelectDirectoryFix.pas"/>
-        <DCCReference Include="..\..\..\Source\Utils\GX_dzVclUtils.pas"/>
-        <DCCReference Include="..\..\..\Source\Utils\GX_dzVersionInfo.pas"/>
-        <DCCReference Include="..\..\..\Source\Utils\GX_GenericUtils.pas"/>
-        <DCCReference Include="src\GX_PeInfo.pas"/>
-        <DCCReference Include="src\GX_PeInfoPrint.pas">
-            <Form>f_PeInfoPrint</Form>
-        </DCCReference>
-        <DCCReference Include="src\GX_PeInformation.pas">
-            <Form>fmPeInformation</Form>
-        </DCCReference>
-        <DCCReference Include="src\GX_SharedImages.pas">
-            <Form>dmSharedImages</Form>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
-    </ItemGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>..\..\..\binaries\GExpertsPeInformation.exe</DCC_DependencyCheckOutputName>
+    <DCC_UsePackage>vcl;vclx</DCC_UsePackage>
+    <MainSource>GExpertsPeInformation.dpr</MainSource>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0bbdde7e-378f-4816-b0dc-2ff18052d95a}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_Define>RELEASE;NO_TRANSLATION;no_translation_hint</DCC_Define>
+    <DCC_Description>GExperts Grep</DCC_Description>
+    <DCC_ExeOutput>..\..\..\binaries</DCC_ExeOutput>
+    <DCC_HppOutput>.\dcu</DCC_HppOutput>
+    <DCC_ImageBase>500000</DCC_ImageBase>
+    <DCC_IncludePath>..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_IncludePath>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
+    <DCC_ObjPath>..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_ObjPath>
+    <DCC_ResourcePath>..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_ResourcePath>
+    <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
+    <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
+    <DCC_UnitAlias>UITypes=Dialogs;Actions=ActnList</DCC_UnitAlias>
+    <DCC_UnitSearchPath>..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_UnitSearchPath>
+    <DCC_WriteableConstants>True</DCC_WriteableConstants>
+    <Version>7.0</Version>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
+    <DCC_Define>DEBUG;NO_TRANSLATION;no_translation_hint</DCC_Define>
+    <DCC_Description>GExperts Grep</DCC_Description>
+    <DCC_ExeOutput>..\..\..\binaries</DCC_ExeOutput>
+    <DCC_GenerateStackFrames>True</DCC_GenerateStackFrames>
+    <DCC_HppOutput>.\dcu</DCC_HppOutput>
+    <DCC_ImageBase>500000</DCC_ImageBase>
+    <DCC_IncludePath>$(BDS)\lib\Debug;..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_IncludePath>
+    <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
+    <DCC_MapFile>3</DCC_MapFile>
+    <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
+    <DCC_ObjPath>$(BDS)\lib\Debug;..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_ObjPath>
+    <DCC_Optimize>False</DCC_Optimize>
+    <DCC_RangeChecking>True</DCC_RangeChecking>
+    <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_ResourcePath>
+    <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
+    <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
+    <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
+    <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
+    <DCC_UnitAlias>UITypes=Dialogs;Actions=ActnList</DCC_UnitAlias>
+    <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_UnitSearchPath>
+    <DCC_WriteableConstants>True</DCC_WriteableConstants>
+    <Version>7.0</Version>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters><Parameters Name="RunParams"></Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">1</VersionInfo><VersionInfo Name="Release">1</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">True</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1033</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.1.1.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">GExpertsPeInformation.dpr</Source></Source><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dcltee7100.bpl">TeeChart Components</Excluded_Packages>
+    </Excluded_Packages></Delphi.Personality></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>call ..\..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"</PreBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <DelphiCompile Include="GExpertsPeInformation.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzClassUtils.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzConvertUtils.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzDateUtils.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzErrorThread.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzFileStreams.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzFileUtils.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzLineBuilder.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzMiscUtils.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzNamedThread.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzOsUtils.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzPackageInfo.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzQuicksort.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzSelectDirectoryFix.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzSortProvider.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzSortUtils.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzStringUtils.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzTranslator.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzTypes.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzTypesUtils.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzVariantUtils.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzVclUtils.pas" />
+    <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzVersionInfo.pas" />
+    <DCCReference Include="..\..\..\Source\Utils\GX_DbugIntf.pas" />
+    <DCCReference Include="..\..\..\Source\Utils\GX_Debug.pas" />
+    <DCCReference Include="..\..\..\Source\Utils\GX_GenericUtils.pas" />
+    <DCCReference Include="src\GX_PeInfo.pas" />
+    <DCCReference Include="src\GX_PeInfoPrint.pas">
+      <Form>f_PeInfoPrint</Form>
+    </DCCReference>
+    <DCCReference Include="src\GX_PeInformation.pas">
+      <Form>fmPeInformation</Form>
+    </DCCReference>
+    <DCCReference Include="src\GX_SharedImages.pas">
+      <Form>dmSharedImages</Form>
+      <DesignClass>TDataModule</DesignClass>
+    </DCCReference>
+  </ItemGroup>
 </Project>
