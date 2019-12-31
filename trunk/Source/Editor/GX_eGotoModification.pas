@@ -96,7 +96,7 @@ uses
   GX_OtaUtils,
   GX_GenericUtils,
   GX_GExperts,
-  GX_dzVclUtils;
+  u_dzVclUtils;
 
 { Called when a new edit view is created(opInsert) or destroyed(opRemove) }
 
