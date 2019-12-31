@@ -855,8 +855,8 @@ uses
   GX_Debug,
   {$IFDEF UNICODE} Character, {$ENDIF}
   ShLwApi,
-  ShellAPI, ShlObj, ActiveX, StrUtils, Math, Clipbrd,
-  u_dzSelectDirectoryFix, u_dzOsUtils, FileCtrl;
+  ShellAPI, ShlObj, ActiveX, StrUtils, Math, Clipbrd, FileCtrl,
+  u_dzSelectDirectoryFix, u_dzOsUtils;
 
 const
   shlwapi32 = 'shlwapi.dll';
@@ -2060,9 +2060,9 @@ end;
 
 function PrepareDirectoryForWriting(const Dir: string): Boolean;
 begin
-  if not DirectoryExists(Dir) then
+  if not SysUtils.DirectoryExists(Dir) then
   begin
-    Result := ForceDirectories(Dir);
+    Result := SysUtils.ForceDirectories(Dir);
     if not Result then
       Exit;
   end;
@@ -3802,7 +3802,7 @@ end;
 function CanWriteToDirectory(const Dir: string): Boolean;
 begin
   Result := False;
-  if DirectoryExists(Dir) then
+  if SysUtils.DirectoryExists(Dir) then
     Result := CanCreateFile(AddSlash(Dir) + 'GExpertsDirectoryWritePermissionsTest.xyzz');
 end;
 
@@ -3811,7 +3811,7 @@ var
   Handle: THandle;
 begin
   Result := False;
-  if DirectoryExists(ExtractFileDir(FileName)) then begin
+  if SysUtils.DirectoryExists(ExtractFileDir(FileName)) then begin
     Handle := FileCreate(FileName);
     Result := Handle > 0;
     if Result then begin
