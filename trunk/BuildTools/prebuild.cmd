@@ -20,7 +20,11 @@ rem echo OUTPUTDIR=%OUTPUTDIR%
 
 pushd %OUTPUTDIR%
 rem echo calling prepbuild.exe
-"%~dp0\prepbuild.exe" --incbuild --readini="%PROJECTNAMEONLY%" --WriteRc="%PROJECTNAMEONLY%" --InputManifest="%PROJECTNAMEONLY%.manifest.in" --manifest="%PROJECTNAMEONLY%" --updatemanifest --WriteManifestRc="%PROJECTNAMEONLY%" --ignoremanifesterrors
+set MANIFESTOPTIONS=
+if not exist %PROJECTNAMEONLY%_Manifest.in goto nomaniin
+set MANIFESTOPTIONS=--InputManifest="%PROJECTNAMEONLY%.manifest.in" --manifest="%PROJECTNAMEONLY%" --updatemanifest --ignoremanifesterrors
+:nomaniin 
+"%~dp0\prepbuild.exe" --incbuild --readini="%PROJECTNAMEONLY%" --WriteRc="%PROJECTNAMEONLY%" %MANIFESTOPTIONS%
 brcc32 "%PROJECTNAMEONLY%_Version.rc"
 
 echo checking for mainfest.rc
