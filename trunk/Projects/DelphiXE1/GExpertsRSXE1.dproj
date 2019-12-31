@@ -26,41 +26,32 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
+        <DCC_Define>NO_TRANSLATION;NO_TRANSLATION_HINT;$(DCC_Define)</DCC_Define>
         <DCC_DependencyCheckOutputName>GExpertsRSXE1.dll</DCC_DependencyCheckOutputName>
         <DCC_ExeOutput>..\..\Binaries</DCC_ExeOutput>
         <DCC_ImageBase>00400000</DCC_ImageBase>
+        <DCC_MapFile>3</DCC_MapFile>
+        <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Winapi;System.Win;$(DCC_Namespace)</DCC_Namespace>
         <DCC_Platform>x86</DCC_Platform>
         <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
         <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
         <DCC_UnitAlias>Actions=Actnlist;ImageList=ImgList;UITypes=Types;$(DCC_UnitAlias)</DCC_UnitAlias>
-        <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\source\Include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\source\Include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_UsePackage>rtl;vcl;vclx;vclactnband;xmlrtl;designide</DCC_UsePackage>
         <GenDll>true</GenDll>
         <UsePackages>true</UsePackages>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
-        <DCC_DebugInformation>false</DCC_DebugInformation>
+        <DCC_DebugInformation>False</DCC_DebugInformation>
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
-        <DCC_ExeOutput>..\..\Binaries</DCC_ExeOutput>
-        <DCC_HppOutput>dcu</DCC_HppOutput>
-        <DCC_IncludePath>..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\..\synedit\source;$(DCC_IncludePath)</DCC_IncludePath>
         <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
-        <DCC_ObjOutput>dcu</DCC_ObjOutput>
-        <DCC_ObjPath>..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\..\synedit\source;$(DCC_ObjPath)</DCC_ObjPath>
-        <DCC_ResourcePath>..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\..\synedit\source;$(DCC_ResourcePath)</DCC_ResourcePath>
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
         <DCC_DependencyCheckOutputName>..\..\Binaries\GExpertsRSXE1.dll</DCC_DependencyCheckOutputName>
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
-        <DCC_HppOutput>dcu</DCC_HppOutput>
-        <DCC_IncludePath>$(BDS)\lib\Debug;$(BDS)\Lib\Debug\Indy10;..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\..\synedit\source;$(DCC_IncludePath)</DCC_IncludePath>
-        <DCC_ObjOutput>dcu</DCC_ObjOutput>
-        <DCC_ObjPath>$(BDS)\lib\Debug;$(BDS)\Lib\Debug\Indy10;..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\..\synedit\source;$(DCC_ObjPath)</DCC_ObjPath>
         <DCC_Optimize>False</DCC_Optimize>
-        <DCC_ResourcePath>$(BDS)\lib\Debug;$(BDS)\Lib\Debug\Indy10;..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\..\synedit\source;$(DCC_ResourcePath)</DCC_ResourcePath>
-        <DCC_UnitSearchPath>$(BDS)\lib\Debug;$(BDS)\Lib\Debug\Indy10;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="GExpertsRSXE1.dpr">
@@ -106,9 +97,6 @@
         <DCCReference Include="..\..\source\ClassBrowser\GX_ClassProp.pas">
             <Form>fmClassProp</Form>
         </DCCReference>
-        <DCCReference Include="..\..\source\ClassBrowser\GX_ClassReport.pas">
-            <Form>fmClassReport</Form>
-        </DCCReference>
         <DCCReference Include="..\..\source\CleanDirectories\GX_CleanDirectories.pas">
             <Form>fmCleanDirectories</Form>
         </DCCReference>
@@ -152,7 +140,6 @@
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_Consts.pas"/>
         <DCCReference Include="..\..\source\CopyComponentNames\GX_CopyComponentNames.pas"/>
-        <DCCReference Include="..\..\source\Framework\GX_DbugIntf.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_DesignerMenu.pas"/>
         <DCCReference Include="..\..\Source\Editor\GX_eGotoModification.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_eAlign.pas">
@@ -316,7 +303,6 @@
             <Form>fmOpenFileConfig</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_OtaUtils.pas"/>
-        <DCCReference Include="..\..\source\PeInfo\GX_PeInfo.pas"/>
         <DCCReference Include="..\..\source\PeInfo\GX_PeInformation.pas">
             <Form>fmPeInformation</Form>
         </DCCReference>
@@ -438,7 +424,6 @@
         <DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterUnicode.pas"/>
         <DCCReference Include="..\..\source\IDE\GX_IdeSearchPathEnhancer.pas"/>
         <DCCReference Include="..\..\source\HideNavigationToolbar\GX_HideNavbar.pas"/>
-        <DCCReference Include="..\..\source\Utils\GX_dzVclUtils.pas"/>
         <DCCReference Include="..\..\source\IDE\GX_IdeProjectOptionsEnhancer.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_PasteAs.pas"/>
         <DCCReference Include="..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas"/>
@@ -447,28 +432,18 @@
             <Form>fmEditBookmarks</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_BookmarkList.pas"/>
-        <DCCReference Include="..\..\source\Utils\GX_dzQuicksort.pas"/>
         <DCCReference Include="..\..\source\IDE\GX_IdeInstallPackagesEnhancer.pas"/>
         <DCCReference Include="..\..\source\IDE\GX_IdePackageRenameDlg.pas">
             <Form>fmIdxPackageRenameDlg</Form>
         </DCCReference>
-        <DCCReference Include="..\..\Source\Utils\GX_dzClassUtils.pas"/>
         <DCCReference Include="..\..\source\framework\GX_EventHook.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_BaseExpert.pas"/>
         <DCCReference Include="..\..\Source\AutoTodo\GX_uAutoTodoHandler.pas"/>
         <DCCReference Include="..\..\Source\AutoTodo\GX_AutoTodoDone.pas">
             <Form>fmAutoTodoDone</Form>
         </DCCReference>
-        <DCCReference Include="..\..\Source\Utils\GX_dzFileUtils.pas"/>
-        <DCCReference Include="..\..\Source\Utils\GX_dzSelectDirectoryFix.pas"/>
         <DCCReference Include="..\..\Source\Formatter\GX_eAddToCaptitalization.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_VCLFixPack.pas"/>
-        <DCCReference Include="..\..\Source\Utils\GX_dzVersionInfo.pas"/>
-        <DCCReference Include="..\..\Source\Utils\GX_dzOsUtils.pas"/>
-        <DCCReference Include="..\..\Source\Utils\GX_dzPackageInfo.pas"/>
-        <DCCReference Include="..\..\Source\PeInfo\GX_PeInfoPrint.pas">
-            <Form>f_PeInfoPrint</Form>
-        </DCCReference>
         <DCCReference Include="..\..\Source\IDE\GX_IdeFavoritesList.pas">
             <Form>f_GxIdeFavoritesList</Form>
         </DCCReference>
@@ -485,8 +460,6 @@
         <DCCReference Include="..\..\Source\Editor\GX_eConvertStrings.pas">
             <Form>fmEConvertStrings</Form>
         </DCCReference>
-        <DCCReference Include="..\..\Source\IDE\GX_IdeGotoEnhancer.pas"/>
-        <DCCReference Include="..\..\Source\Utils\GX_dzMapFileReader.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeObjectInspectorEnhancer.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeBuildEventFavoriteEdit.pas">
             <Form>f_IdeBuildEventFavoriteEdit</Form>
@@ -502,13 +475,10 @@
             <Form>frConfigureFormEnhancements</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="..\..\Source\Utils\GX_dzSpeedBitBtn.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_UsageStatistics.pas">
             <Form>fmUsageStatistics</Form>
         </DCCReference>
-        <DCCReference Include="..\..\Source\Utils\GX_dzDateUtils.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_UnitExportsParser.pas"/>
-        <DCCReference Include="..\..\Source\Utils\GX_dzNamedThread.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_DummyWizard.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeMessageAutoClose.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_MemoEscFix.pas"/>
@@ -527,7 +497,6 @@
         </DCCReference>
         <DCCReference Include="..\..\Source\ide\GX_IdeDetectForms.pas"/>
         <DCCReference Include="..\..\source\framework\GX_dzCompilerAndRtlVersions.pas"/>
-        <DCCReference Include="..\..\Source\Utils\GX_dzMiscUtils.pas"/>
         <RcCompile Include="..\..\images\GXIcons.rc">
             <Form>GXIcons.res</Form>
         </RcCompile>
