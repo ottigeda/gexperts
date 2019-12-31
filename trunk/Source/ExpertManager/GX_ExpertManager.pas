@@ -10,7 +10,7 @@ interface
 uses
   DropTarget, DropSource,
   Windows, Classes, ImgList, Controls, Forms, Dialogs,
-  Menus, ComCtrls, ActnList, ToolWin, GX_Experts, GX_BaseForm, ImageList, Actions;
+  Menus, ComCtrls, ActnList, ToolWin, GX_Experts, GX_BaseForm, Actions;
 
 type
   TExpertManagerExpert = class;

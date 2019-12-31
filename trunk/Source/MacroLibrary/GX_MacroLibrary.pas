@@ -10,7 +10,7 @@ uses
   ComCtrls, StdCtrls, ExtCtrls, Menus,
   OmniXML,
   GX_Experts, GX_ConfigurationInfo, GX_KbdShortCutBroker, GX_GenericUtils,
-  GX_IdeDock, ActnList, ImgList, ToolWin, ToolsAPI, ImageList, Actions,
+  GX_IdeDock, ActnList, ImgList, ToolWin, ToolsAPI, Actions,
   GX_MemoEscFix;
 
 type

@@ -6,7 +6,7 @@ interface
 
 uses
   Windows, SysUtils,
-  Classes, Controls, Forms, Menus, ComCtrls, Buttons, ImageList, ImgList,
+  Classes, Controls, Forms, Menus, ComCtrls, Buttons, ImgList,
   ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
   GX_KbdShortCutBroker, GX_UnitExportsParser, GX_dzCompilerAndRtlVersions,

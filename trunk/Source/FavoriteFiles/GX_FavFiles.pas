@@ -7,7 +7,7 @@ interface
 uses
   GX_FavUtil, DropTarget, FileView, Windows, SysUtils, Classes, Controls, Forms,
   ComCtrls, Menus, ExtCtrls, ImgList, ActnList, ToolWin, Dialogs, Actions,
-  ImageList, GX_BaseForm;
+  GX_BaseForm;
 
 type
   TFavFilesOptions = class
