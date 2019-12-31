@@ -20,7 +20,7 @@ uses
   Contnrs,
   GX_EditorExpert,
   GX_ConfigurationInfo,
-  GX_dzCompilerAndRtlVersions,
+  u_dzCompilerAndRtlVersions,
   GX_BaseForm,
   GX_BaseExpert,
   GX_GenericUtils;

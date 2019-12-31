@@ -65,7 +65,7 @@ implementation
 uses
   SysUtils, TypInfo,
   GX_Experts, GX_GxUtils, GX_GenericUtils, GX_OtaUtils, u_dzVclUtils,
-  GX_TabOrderOptions, GX_dzCompilerAndRtlVersions;
+  GX_TabOrderOptions, u_dzCompilerAndRtlVersions;
 
 const
   TabOrderPropertyName = 'TabOrder';
