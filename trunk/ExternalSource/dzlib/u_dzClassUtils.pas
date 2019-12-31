@@ -5,6 +5,8 @@
 /// </summary>
 unit u_dzClassUtils;
 
+{$INCLUDE 'dzlib.inc'}
+
 interface
 
 uses
@@ -181,7 +183,10 @@ function TStrings_ValueFromIndex(_st: TStrings; _Idx: Integer): string;
 /// Free a TList object an all TObjects it contains
 /// NOTE: this function is obsolete, use contnrs.TObjectList instead!
 /// </summary>
-procedure TList_FreeWithItems(var _List: TList); deprecated; // use contnrs.TObjectList
+procedure TList_FreeWithItems(var _List: TList);
+{$IFDEF HAS_UNIT_CONTNRS}
+deprecated; // use contnrs.TObjectList
+{$ENDIF}
 
 /// <summary>
 /// Extracts the Idx'th item from the list without freeing it.
