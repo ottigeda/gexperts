@@ -371,7 +371,7 @@ implementation
 uses
   Math,
   GraphUtil,
-  jpeg,
+  jpeg, // if you get a compile error here you might need to add Vcl.Imaging to the unit scope names
   u_dzConvertUtils;
 
 function _(const _s: string): string; inline;
