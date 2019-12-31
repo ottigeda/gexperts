@@ -52,7 +52,7 @@ implementation
 {$R *.dfm}
 
 uses
-  GX_GenericUtils, GX_GxUtils, GX_dzVclUtils, GX_MacroParser;
+  GX_GenericUtils, GX_GxUtils, u_dzVclUtils, GX_MacroParser;
 
 constructor TfmBackupConfig.Create(_Owner: TComponent);
 var

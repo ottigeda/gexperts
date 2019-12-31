@@ -42,10 +42,10 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  StrUtils,
+  StrUtils, Math,
   {$IFNDEF UNICODE} SynUnicode, {$ENDIF UNICODE}
   GX_EditorExpert, GX_eSelectionEditorExpert, GX_ConfigurationInfo,
-  GX_eSortOptions, GX_dzQuicksort, Math;
+  GX_eSortOptions, u_dzQuicksort;
 
 { TfmeSortConfig }
 

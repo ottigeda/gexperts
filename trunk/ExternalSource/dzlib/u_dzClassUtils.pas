@@ -38,6 +38,8 @@ function StringListOf(const _sl: TStrings; out _Guard: IInterface; _Sorted: Bool
 /// Creates a TStringList from the given array of string. </summary>
 function TStringList_CreateFrom(const _sa: array of string; _Sorted: Boolean = False): TStringList;
 
+function TStringList_CreateSorted(_Duplicates: TDuplicates = dupError): TStringList;
+
 ///<summary>
 /// Check if the given string is already in the list (using IndexOf, so it works for both, sorted
 /// and unsorted lists). If it isn't, the string is added and the Idx is its new index.
@@ -173,6 +175,8 @@ function TStrings_BeginUpdate(_Strings: TStrings): IInterface;
 /// @returns the index of the first matching line or -1 if no match is found </summary>
 function TStrings_IndexOfValue(_st: TStrings; const _Value: string): Integer;
 
+function TStrings_ValueFromIndex(_st: TStrings; _Idx: Integer): string;
+
 /// <summary>
 /// Free a TList object an all TObjects it contains
 /// NOTE: this function is obsolete, use contnrs.TObjectList instead!
@@ -183,6 +187,11 @@ procedure TList_FreeWithItems(var _List: TList); deprecated; // use contnrs.TObj
 /// Extracts the Idx'th item from the list without freeing it.
 /// </summary>
 function TObjectList_Extract(_lst: TObjectList; _Idx: Integer): TObject;
+
+/// This will do a depth first search.
+/// Name can be an empty string, which will return the first component with an empty name.</sumamry>
+function TComponent_FindComponent(_Owner: TComponent; const _Name: string; _Recursive: Boolean;
+  out _Found: TComponent; _CmpClass: TComponentClass = nil): Boolean;
 
 /// <summary>
 /// Write a string to the stream
@@ -647,6 +656,33 @@ begin
   end;
 end;
 
+function TComponent_FindComponent(_Owner: TComponent; const _Name: string; _Recursive: Boolean;
+  out _Found: TComponent; _CmpClass: TComponentClass = nil): Boolean;
+var
+  i: Integer;
+  comp: TComponent;
+begin
+  Result := False;
+  if (_Owner = nil) then
+    Exit;
+
+  for i := 0 to _Owner.ComponentCount - 1 do begin
+    comp := _Owner.Components[i];
+    if SameText(comp.Name, _Name) then begin
+      Result := not Assigned(_CmpClass) or (comp is _CmpClass);
+      if Result then begin
+        _Found := comp;
+        Exit;
+      end;
+    end;
+    if _Recursive then begin
+      Result := TComponent_FindComponent(comp, _Name, _Recursive, _Found, _CmpClass);
+      if Result then
+        Exit;
+    end;
+  end;
+end;
+
 function TStrings_RemoveTrailingSpaces(_Strings: TStrings): Boolean;
 var
   i: Integer;
@@ -933,6 +969,16 @@ begin
     Inc(Result);
   end;
   Result := -1;
+end;
+
+function TStrings_ValueFromIndex(_st: TStrings; _Idx: Integer): string;
+var
+  Name: string;
+begin
+  Assert(Assigned(_st));
+
+  Name := _st.Names[_Idx];
+  Result := _st.Values[Name];
 end;
 
 function TStream_WriteString(_Stream: TStream; const _s: string): Integer;
@@ -1965,6 +2011,13 @@ begin
   for s in _sa do
     Result.Add(s);
   Result.Sorted := _Sorted;
+end;
+
+function TStringList_CreateSorted(_Duplicates: TDuplicates): TStringList;
+begin
+  Result := TStringList.Create;
+  Result.Sorted := True;
+  Result.Duplicates := _Duplicates;
 end;
 
 type

@@ -24,12 +24,12 @@ uses
   Forms,
   Messages,
   Menus,
+  u_dzVclUtils,
+  u_dzClassUtils,
+  u_dzFileUtils,
   GX_IdeFormEnhancer,
-  GX_dzVclUtils,
-  GX_dzClassUtils,
   GX_IdeDialogEnhancer,
   GX_GenericUtils,
-  GX_dzFileUtils,
   GX_CustomClipboard;
 
 const

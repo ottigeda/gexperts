@@ -114,7 +114,7 @@ uses
   AnsiStrings,
 {$ENDIF}
   GX_CodeFormatterUnicode,
-  GX_dzAssertTrace;
+  u_dzAssertTrace;
 
 class procedure TCodeFormatterFormatter.Execute(_Tokens: TPascalTokenList; _Settings: TCodeFormatterSettings);
 var
@@ -1163,7 +1163,7 @@ begin
         // todo: is rtType really correct here?
         FCurrentToken.SetReservedType(rtNothing);
       end else if TryGetNextNoComment(FTokenIdx, Next) and (Next.ReservedType = rtColon) then begin
-        // followed by a ':' ? it's an identifier
+        // When followed by a ':', it's an identifier
         DecPrevLineIndent;
         FCurrentToken.SetReservedType(rtNothing);
       end;
@@ -1545,8 +1545,10 @@ begin
         Assert(False, '.CheckIndent: rtSemiColon');
         if not (FStack.GetTopType in [rtLeftBr, rtLeftHook]) then begin
           Assert(False, '.CheckIndent: Not (LeftBr or LeftHook)');
-          if (FStack.GetTopType = rtUses) and (Settings.NoIndentUsesComma) and (FPrevToken is TLineFeed) then
-            SetPrevLineIndent(-1);
+          if FStack.GetTopType = rtUses then begin
+            if (Settings.NoIndentUsesComma) and (FPrevToken is TLineFeed) then
+              SetPrevLineIndent(-1);
+          end;
 
           while (FStack.GetTopType in
             [rtDo, rtWhile, rtProcDeclare, rtThen, rtProgram, rtUses, rtColon, rtClassDecl, rtIfElse]) do begin

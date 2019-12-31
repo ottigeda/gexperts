@@ -8,7 +8,7 @@ uses
   SysUtils, Classes, Windows, Menus, Forms, Controls, ToolsAPI,
   GX_EditorExpert, GX_GenericUtils, GX_OtaUtils,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  GX_dzVclUtils;
+  u_dzVclUtils;
 
 type
   TChangeCase = (ccLowerCase, ccUpperCase, ccTitleCase, ccSentenceCase, ccToggleCase, ccNone);

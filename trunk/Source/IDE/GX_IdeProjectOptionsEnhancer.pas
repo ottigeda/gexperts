@@ -28,8 +28,8 @@ uses
   ExtCtrls,
   ActnList,
   Menus,
+  u_dzVclUtils,
   GX_IdeFormEnhancer,
-  GX_dzVclUtils,
   GX_IdeDialogEnhancer;
 
 type

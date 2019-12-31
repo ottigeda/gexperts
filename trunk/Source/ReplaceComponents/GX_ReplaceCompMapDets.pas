@@ -123,7 +123,7 @@ implementation
 uses
   SysUtils, Dialogs,
   GX_OtaUtils, GX_GenericUtils, GX_ReplaceCompUtils, GX_ConfigurationInfo,
-  GX_dzVclUtils;
+  u_dzVclUtils;
 
 {$R *.dfm}
 

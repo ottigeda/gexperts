@@ -75,7 +75,7 @@ uses
   CommCtrl,
   GX_EditorExpert,
   GX_ConfigurationInfo,
-  GX_dzVclUtils,
+  u_dzVclUtils,
   GX_GExperts,
   GX_EditorExpertManager,
   GX_Experts,

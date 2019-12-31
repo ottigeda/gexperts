@@ -107,7 +107,7 @@ type
 implementation
 
 uses
-  Math, DateUtils, StrUtils, GX_dzVclUtils;
+  Math, DateUtils, StrUtils, u_dzVclUtils;
 
 {$R *.dfm}
 

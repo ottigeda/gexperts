@@ -9,10 +9,10 @@ uses
   SysUtils,
   Classes,
   SyncObjs,
-  GX_dzNamedThread;
+  u_dzErrorThread;
 
 type
-  TReadMapFileThread = class(TNamedThread)
+  TReadMapFileThread = class(TErrorThread)
   private
     FSearchPath: TStringList;
     FMapFile: string;
@@ -37,7 +37,7 @@ type
 implementation
 
 uses
-  GX_dzMapFileReader,
+  u_dzMapFileReader,
   GX_OtaUtils,
   GX_GenericUtils;
 

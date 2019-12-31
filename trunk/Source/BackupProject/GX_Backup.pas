@@ -112,8 +112,8 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   Windows, SysUtils, AbConst, StrUtils, Math,
   GX_OtaUtils, GX_MacroParser, GX_GxUtils,
-  GX_BackupOptions, GX_BackupConfig, GX_dzVclUtils, GX_MessageBox,
-  GX_dzFileUtils, GX_BackupNotFound;
+  GX_BackupOptions, GX_BackupConfig, u_dzVclUtils, GX_MessageBox,
+  u_dzFileUtils, GX_BackupNotFound;
 
 const // Do not localize these constants.
   ItemSeparatorChar = '|';

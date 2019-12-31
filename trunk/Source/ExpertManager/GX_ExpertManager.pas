@@ -129,7 +129,7 @@ uses
   SysUtils, CommCtrl,
   GX_GExperts, GX_GxUtils, GX_GenericUtils, GX_OtaUtils,
   GX_ConfigurationInfo, GX_MessageBox, GX_SharedImages, GX_IdeUtils,
-  GX_VerDepConst, GX_dzVclUtils;
+  GX_VerDepConst, u_dzVclUtils;
 
 type
   TGxExpertState = (gesCurrentlyEnabled, gesNextTimeEnabled,

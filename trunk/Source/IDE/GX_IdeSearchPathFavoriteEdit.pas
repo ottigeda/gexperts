@@ -39,7 +39,7 @@ implementation
 {$R *.dfm}
 
 uses
-  GX_dzVclUtils,
+  u_dzVclUtils,
   GX_GenericUtils;
 
 { Tf_IdeSearchPathFavoriteEdit }

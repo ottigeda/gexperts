@@ -362,11 +362,11 @@ implementation
 
 uses
   Messages, Graphics, StrUtils, Math, ToolsAPI, Clipbrd, ShellAPI,
-  GX_IdeUtils, GX_UsesManager, GX_dzVclUtils, GX_dzMapFileReader, GX_dzFileUtils,
+  GX_IdeUtils, GX_UsesManager, u_dzVclUtils, u_dzMapFileReader, u_dzFileUtils,
 {$IFOPT D+}
   GX_DbugIntf,
 {$ENDIF D+}
-  GX_UsesExpertOptions, GX_MessageBox, GX_dzOsUtils, GX_dzClassUtils;
+  GX_UsesExpertOptions, GX_MessageBox, u_dzOsUtils, u_dzClassUtils;
 
 { TUsesClauseMgrExpert }
 
@@ -1793,7 +1793,7 @@ begin
   try
     Filter.Delimiter := ' ';
     Filter.DelimitedText := Trim(edtUnitFilter.Text);
-    TStrings_RemoveEmptyStrings(Filter);
+    TStrings_RemoveEmptyLines(Filter);
     FilterStringGrid(Filter, sg_Favorite);
     FilterStringGrid(Filter, sg_Project);
     FilterStringGrid(Filter, sg_Common);
@@ -1832,7 +1832,7 @@ begin
         try
           MultiFilter.Delimiter := ' ';
           MultiFilter.DelimitedText := Filter;
-          TStrings_RemoveEmptyStrings(MultiFilter);
+          TStrings_RemoveEmptyLines(MultiFilter);
           FilterStringListMatchAnywhere(FFavUnitsExports, FilterList, MultiFilter, False);
         finally
           FreeAndNil(MultiFilter);

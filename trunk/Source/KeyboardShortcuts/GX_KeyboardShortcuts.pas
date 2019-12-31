@@ -55,11 +55,11 @@ uses
   Math,
   Actions,
   ActnList,
+  u_dzVclUtils,
+  u_dzQuicksort,
   GX_GExperts,
   GX_ConfigurationInfo,
   GX_ActionBroker,
-  GX_dzVclUtils,
-  GX_dzQuicksort,
   GX_GenericUtils;
 
 type

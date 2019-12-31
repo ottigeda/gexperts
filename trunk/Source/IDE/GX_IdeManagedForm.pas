@@ -198,9 +198,9 @@ uses
 {$ENDIF GX_DELPHI_TOKYO_UP}
   GX_ConfigurationInfo,
   GX_GenericUtils,
-  GX_dzClassUtils,
+  u_dzClassUtils,
   GX_IdeUtils,
-  GX_dzNamedThread;
+  u_dzErrorThread;
 
 const
   WidthIdent = 'Width';
@@ -267,7 +267,7 @@ end;
 
 destructor TAnchorInfoList.Destroy;
 begin
-  TList_FreeWithObjects(FList);
+  TList_FreeWithItems(FList);
   inherited;
 end;
 
@@ -661,7 +661,7 @@ end;
 {$ENDIF GX_VER170_up}
 
 type
-  TMoveWindowThread = class(TNamedThread)
+  TMoveWindowThread = class(TErrorThread)
   private
     FParentHandle: HWND;
     FParentCenterX: Integer;

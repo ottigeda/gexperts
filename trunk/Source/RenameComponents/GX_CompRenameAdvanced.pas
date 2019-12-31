@@ -34,7 +34,7 @@ implementation
 {$R *.dfm}
 
 uses
-  GX_dzVclUtils;
+  u_dzVclUtils;
 
 { TfmCompRenameAdvanced }
 

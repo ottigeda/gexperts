@@ -26,7 +26,7 @@ implementation
 uses Windows, Dialogs, ExtCtrls,
   ActnList, Menus, ComCtrls, 
   GX_GenericUtils, GX_ConfigurationInfo, 
-  GX_dzVclUtils, GX_IdeFormChangeManager, GX_IdeManagedFormHandler,
+  u_dzVclUtils, GX_IdeFormChangeManager, GX_IdeManagedFormHandler,
   GX_IdeManagedForm;
 
 type

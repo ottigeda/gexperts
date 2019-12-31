@@ -40,7 +40,7 @@ implementation
 {$R *.dfm}
 
 uses
-  GX_MessageBox, GX_dzFileUtils;
+  GX_MessageBox, u_dzFileUtils;
 
 { TfmUsesExpertOptions }
 

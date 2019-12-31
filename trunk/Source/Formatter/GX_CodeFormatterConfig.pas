@@ -178,7 +178,7 @@ implementation
 
 uses
   Messages,
-  GX_dzVclUtils,
+  u_dzVclUtils,
   GX_GxUtils,
   GX_CodeFormatterConfigHandler,
   GX_CodeFormatterEditCapitalization,

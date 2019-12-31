@@ -104,8 +104,8 @@ implementation
 uses
   ToolsAPI,
   StrUtils,
-  GX_OtaUtils,
-  GX_dzVclUtils;
+  u_dzVclUtils,
+  GX_OtaUtils;
 
 { TIfDefExpert }
 

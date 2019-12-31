@@ -224,13 +224,13 @@ implementation
 uses
   Messages, ShellAPI, StrUtils, DropSource,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  ToolsAPI,
+  ToolsAPI, Math, 
   GX_FavNewFolder, GX_FavFolderProp, GX_FavFileProp, GX_FavOptions,
   {$IFNDEF STANDALONE}
   GX_ConfigurationInfo, GX_Experts, GX_GExperts,
   {$ENDIF STANDALONE}
   GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_SharedImages, OmniXML,
-  GX_XmlUtils, GX_IdeUtils, Math, GX_dzVclUtils;
+  GX_XmlUtils, GX_IdeUtils, u_dzVclUtils;
 
 type
   EFavFiles = class(Exception);

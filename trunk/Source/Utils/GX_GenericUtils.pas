@@ -706,6 +706,8 @@ function FileNameHasWildcards(const FileName: string): Boolean;
 // Returns zero on failure, a valid image index otherwise.
 function GetSystemImageIndexForFile(const FileName: string): Integer;
 
+procedure TGXUnicodeStringList_MakeIndex(_sl: TGXUnicodeStringList);
+
 // Load a binary/text form file into a TStrings object
 procedure LoadFormFileToStrings(const FileName: string; Strings: TGXUnicodeStringList; out WasBinary: Boolean); overload;
 procedure LoadFormFileToStrings(const FileName: string; Strings: TGXUnicodeStringList); overload;
@@ -4068,6 +4070,18 @@ begin
   end
   else
     Result := 0;
+end;
+
+procedure TGXUnicodeStringList_MakeIndex(_sl: TGXUnicodeStringList);
+var
+  i: Integer;
+begin
+  Assert(Assigned(_sl));
+
+  _sl.Sorted := False;
+  for i := 0 to _sl.Count - 1 do
+    _sl.Objects[i] := Pointer(i + 1);
+  _sl.Sorted := True;
 end;
 
 procedure LoadFormFileToStrings(const FileName: string; Strings: TGXUnicodeStringList; out WasBinary: Boolean);

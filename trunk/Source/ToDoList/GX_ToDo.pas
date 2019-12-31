@@ -176,10 +176,11 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, Dialogs, Clipbrd, Windows, StrUtils,
+  SysUtils, Dialogs, Clipbrd, Windows, StrUtils, Math,
   mPasLex, mwBCBTokenList, mwPasParserTypes,
+  u_dzVclUtils,
   GX_GxUtils, GX_GenericUtils, GX_EditReader,
-  GX_ToDoOptions, GX_SharedImages, Math, GX_dzVclUtils;
+  GX_ToDoOptions, GX_SharedImages;
 
 resourcestring
   SParsingError = 'A parsing error occurred in file %s.' + sLineBreak;

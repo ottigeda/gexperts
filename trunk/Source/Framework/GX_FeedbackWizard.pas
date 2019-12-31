@@ -132,7 +132,7 @@ implementation
 
 uses Windows, SysUtils, ShellAPI, TypInfo, Clipbrd, Registry,
   GX_GenericUtils, GX_ConfigurationInfo, GX_OtaUtils, GX_GetIdeVersion, GX_IdeUtils,
-  Menus, Math, Graphics, GX_dzVclUtils;
+  Menus, Math, Graphics, u_dzVclUtils;
 
 {$R *.dfm}
 

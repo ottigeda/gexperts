@@ -75,12 +75,11 @@ uses
   Menus,
   Registry,
   ToolsAPI,
-
-  GX_GExperts,
-  GX_dzVclUtils,
-  GX_OtaUtils,
   RegExpr,
-  GX_dzClassUtils;
+  u_dzClassUtils,
+  u_dzVclUtils,
+  GX_GExperts,
+  GX_OtaUtils;
 
 { TRemoveMatchingLinesExpert }
 

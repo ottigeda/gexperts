@@ -115,7 +115,7 @@ implementation
 
 uses
   Dialogs,
-  GX_dzVclUtils;
+  u_dzVclUtils;
 
 constructor TfmClassOptions.Create(_Owner: TComponent);
 begin

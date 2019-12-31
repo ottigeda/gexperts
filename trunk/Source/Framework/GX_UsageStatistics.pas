@@ -40,10 +40,10 @@ implementation
 {$R *.dfm}
 
 uses
+  u_dzVclUtils,
+  u_dzDateUtils,
   GX_GExperts,
-  GX_BaseExpert,
-  GX_dzVclUtils,
-  GX_dzDateUtils;
+  GX_BaseExpert, u_dzConvertUtils;
 
 { TfmUsageStatistics }
 

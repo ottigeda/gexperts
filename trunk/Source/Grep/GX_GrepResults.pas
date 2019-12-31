@@ -408,7 +408,7 @@ uses
   SysUtils, Messages, ToolsAPI, Math, StrUtils, IniFiles, TypInfo, Contnrs, Clipbrd, DateUtils,
   GX_GExperts, GX_GenericUtils, GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_MessageBox,
   GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect,
-  GX_GrepProgress, GX_dzVclUtils;
+  GX_GrepProgress, u_dzVclUtils;
 
 resourcestring
   SGrepReplaceStats = 'Replaced %d occurrence(s) in %.2f seconds';

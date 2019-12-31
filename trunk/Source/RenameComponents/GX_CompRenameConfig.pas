@@ -140,7 +140,7 @@ implementation
 uses
   Windows, SysUtils, Math, StrUtils,
   GX_GenericUtils, GX_OtaUtils, GX_SharedImages, GX_GxUtils, GX_CompRenameAdvanced,
-  GX_MessageBox, GX_dzVclUtils, GX_dzClassUtils;
+  GX_MessageBox, u_dzClassUtils, u_dzVclUtils;
 
 function CompareClassFunc(List: TStringList; Index1, Index2: Integer): Integer;
 var

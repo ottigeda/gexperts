@@ -71,8 +71,8 @@ implementation
 
 uses
   Messages,
+  u_dzVclUtils,
   GX_OtaUtils,
-  GX_dzVclUtils,
   GX_GenericUtils;
 
 { TWarnExpert }

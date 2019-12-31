@@ -278,7 +278,7 @@ uses
   GX_CodeSrch, GX_CodeOpt, GX_GxUtils,
   GX_OtaUtils, GX_IdeUtils,
   GX_GExperts, GX_ConfigurationInfo, GX_MessageBox, GX_SharedImages,
-  GX_dzVclUtils;
+  u_dzVclUtils;
 
 const
   DefaultFileName = 'CodeLibrarian.fs';

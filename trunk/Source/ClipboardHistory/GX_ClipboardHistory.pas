@@ -192,7 +192,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   Windows, Messages, SysUtils, Clipbrd, Dialogs, Math, StrUtils, OmniXML,
-  GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_dzVclUtils,
+  GX_GxUtils, GX_GenericUtils, GX_OtaUtils, u_dzVclUtils,
   GX_GExperts, GX_ClipboardOptions, GX_SharedImages, GX_XmlUtils,
   GX_PasteAs;
 

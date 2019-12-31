@@ -30,7 +30,7 @@ uses
   GX_IdeFormEnhancer,
   GX_GenericUtils,
   GX_IdeDialogEnhancer,
-  GX_dzClassUtils;
+  u_dzClassUtils;
 
 type
   TInstallPackagesEnhancer = class(TIdeDialogEnhancer)

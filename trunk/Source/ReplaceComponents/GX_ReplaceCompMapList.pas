@@ -78,11 +78,11 @@ type
 
 implementation
 
+{$R *.dfm}
+
 uses
   SysUtils, Windows, Dialogs, Gx_GenericUtils, GX_ConfigurationInfo,
-  GX_ReplaceCompMapGrpList, GX_dzVclUtils;
-
-{$R *.dfm}
+  GX_ReplaceCompMapGrpList, u_dzVclUtils;
 
 resourcestring
   SAllItemsGroup = '< All groups >';

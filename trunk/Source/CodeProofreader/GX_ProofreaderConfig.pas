@@ -127,7 +127,7 @@ implementation
 uses
   SysUtils, MMSystem,
   GX_ProofreaderAutoCorrectEntry, GX_KibitzComp,
-  GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_dzVclUtils, GX_ConfigurationInfo;
+  GX_GxUtils, GX_GenericUtils, GX_OtaUtils, u_dzVclUtils, GX_ConfigurationInfo;
 
 {$R *.dfm}
 

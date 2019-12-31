@@ -88,7 +88,7 @@ uses
   Themes,
   GX_GenericUtils,
   GX_BaseExpert,
-  GX_dzVclUtils,
+  u_dzVclUtils,
   GX_DbugIntf;
 
 resourcestring

@@ -78,7 +78,7 @@ implementation
 
 uses
   SynEdit,
-  GX_dzVclUtils,
+  u_dzVclUtils,
   GX_MacroLibraryEditEntry,
   GX_MacroLibrary, GX_EnhancedEditor;
 

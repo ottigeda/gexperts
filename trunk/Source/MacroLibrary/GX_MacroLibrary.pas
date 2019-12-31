@@ -265,11 +265,11 @@ implementation
 {$R *.dfm}
 
 uses
-  ActiveX,
+  ActiveX, Math,
   GX_GxUtils, GX_OtaUtils,
   GX_SharedImages, GX_XmlUtils,
-  GX_MacroLibraryNamePrompt, GX_MacroLibraryConfig, Math, GX_IdeUtils,
-  GX_MessageBox, GX_dzVclUtils;
+  GX_MacroLibraryNamePrompt, GX_MacroLibraryConfig, GX_IdeUtils,
+  GX_MessageBox, u_dzVclUtils;
 
 type
   TIDEMacroBugMessage = class(TGxMsgBoxAdaptor)

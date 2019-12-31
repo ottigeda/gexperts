@@ -39,13 +39,13 @@ uses
   Types,
   ComCtrls,
   ExtCtrls,
+  u_dzVclUtils,
+  u_dzClassUtils,
   GX_IdeProjectOptionsEnhancer,
-  GX_dzVclUtils,
   GX_IdeFormEnhancer,
   GX_IdeFavoritesList,
   GX_ConfigurationInfo,
   GX_IdeBuildEventFavoriteEdit,
-  GX_dzClassUtils,
   GX_IdeDialogEnhancer;
 
 type

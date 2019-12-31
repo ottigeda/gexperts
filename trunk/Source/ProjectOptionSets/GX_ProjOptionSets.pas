@@ -170,7 +170,7 @@ uses
   {$IFOPT D+} GX_DbugIntf, Clipbrd, {$ENDIF}
   Variants, SysUtils, Messages, Dialogs,
   GX_GxUtils, GX_GenericUtils, GX_IdeUtils, GX_OtaUtils,
-  GX_VerDepConst, GX_ProjOptMap, GX_SharedImages, GX_XmlUtils, GX_dzVclUtils;
+  GX_VerDepConst, GX_ProjOptMap, GX_SharedImages, GX_XmlUtils, u_dzVclUtils;
 
 resourcestring
   SOptValue = '%s value';

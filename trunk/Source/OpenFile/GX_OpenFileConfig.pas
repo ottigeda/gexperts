@@ -150,7 +150,7 @@ type
 implementation
 
 uses
-  SysUtils, Dialogs, GX_GenericUtils, GX_GxUtils, GX_dzVclUtils;
+  SysUtils, Dialogs, GX_GenericUtils, GX_GxUtils, u_dzVclUtils;
 
 {$R *.dfm}
 

@@ -38,7 +38,7 @@ uses
   GX_GenericUtils,
   GX_ConfigurationInfo,
   GX_EventHook,
-  GX_dzVclUtils,
+  u_dzVclUtils,
   GX_IdeDetectForms,
   GX_IdeUtils;
 

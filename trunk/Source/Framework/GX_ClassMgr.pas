@@ -161,7 +161,7 @@ implementation
 uses
   SysUtils, Dialogs, Controls, IniFiles,
   ToolsAPI,
-  GX_GenericUtils, GX_OtaUtils, GX_dzFileUtils, mwPasParserTypes;
+  GX_GenericUtils, GX_OtaUtils, u_dzFileUtils, mwPasParserTypes;
 
 { TClassList }
 

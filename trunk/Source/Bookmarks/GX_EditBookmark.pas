@@ -47,7 +47,7 @@ implementation
 
 uses
   GX_OtaUtils,
-  GX_dzVclUtils;
+  u_dzVclUtils;
 
 { TfmEditBookmarks }
 

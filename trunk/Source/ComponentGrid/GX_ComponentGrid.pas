@@ -71,7 +71,7 @@ implementation
 uses
   SysUtils, Graphics, Printers, Windows, Dialogs, ToolsAPI,
   GX_Consts, GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_SharedImages,
-  GX_dzVclUtils;
+  u_dzVclUtils;
 
 type
   TGridProperty = record

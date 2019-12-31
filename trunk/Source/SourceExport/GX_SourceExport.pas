@@ -107,7 +107,7 @@ uses
   SynEditExport, SynExportHtml, SynExportRtf, SynEditPrint,
   GX_GenericUtils, GX_GxUtils, GX_OtaUtils, GX_IdeUtils,
   GX_SynMemoUtils, GX_SourceExportOptions, GX_SharedImages, SynUnicode,
-  GX_dzVclUtils;
+  u_dzVclUtils;
 
 const
   HighlighterDefaultRegKey = '\SourceExport\Highlighters\';

@@ -159,11 +159,11 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Windows, ToolsAPI,
+  SysUtils, Windows, ToolsAPI, Math,
   mPasLex, mwPasParserTypes,
   GX_EditReader, GX_ProjDependProp, GX_GExperts, GX_ProjDependFilter,
-  GX_GenericUtils, GX_GxUtils, GX_SharedImages, GX_IdeUtils, Math,
-  GX_dzVclUtils, GX_dzClassUtils, GX_ProjDependOptions;
+  GX_GenericUtils, GX_GxUtils, GX_SharedImages, GX_IdeUtils,
+  u_dzClassUtils, u_dzVclUtils, GX_ProjDependOptions;
 
 var
   fmProjDepend: TfmProjDepend = nil;

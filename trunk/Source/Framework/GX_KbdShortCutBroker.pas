@@ -60,7 +60,7 @@ uses
   ToolsAPI,
   Forms, Controls, Types, Graphics, Messages, Windows, Contnrs,
   GX_GenericClasses, GX_GExperts, GX_IdeUtils, GX_ConfigurationInfo,
-  GX_EditorEnhancements, GX_GxUtils, GX_dzVclUtils, GX_OtaUtils,
+  GX_EditorEnhancements, GX_GxUtils, u_dzVclUtils, GX_OtaUtils,
   GX_TimedCallback;
 
 // First of all we have shared code; in

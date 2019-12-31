@@ -49,7 +49,7 @@ implementation
 
 {$R *.dfm}
 
-uses SysUtils, GX_GenericUtils, GX_dzVclUtils;
+uses SysUtils, GX_GenericUtils, u_dzVclUtils;
 
 procedure TfmProjDependFilter.mitAddFilesClick(Sender: TObject);
 var

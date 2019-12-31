@@ -107,13 +107,13 @@ uses
   ToolsAPI,
   IniFiles,
   ShellAPI,
-  GX_dzVclUtils,
+  u_dzVclUtils,
+  u_dzFileUtils,
+  u_dzClassUtils,
   GX_GenericUtils,
   GX_OtaUtils,
   GX_EditorExpert,
-  GX_ConfigurationInfo,
-  GX_dzFileUtils,
-  GX_dzClassUtils;
+  GX_ConfigurationInfo;
 
 type
   TConvertStringsExpert = class(TEditorExpert)

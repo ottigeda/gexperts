@@ -71,7 +71,7 @@ uses
   GX_OtaUtils,
   GX_GenericUtils,
   GX_NTAEditServiceNotifier,
-  GX_dzVclUtils,
+  u_dzVclUtils,
   GX_EditBookmark;
 
 {$IFDEF GX_VER170_up}

@@ -66,7 +66,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Graphics, ToolsApi, Messages,
-  GX_GenericUtils, GX_FeedbackWizard, GX_LibrarySource, GX_dzVclUtils;
+  GX_GenericUtils, GX_FeedbackWizard, GX_LibrarySource, u_dzVclUtils;
 
 const
   DefaultBugEmail = 'bugs@gexperts.org';  // Do not localize.

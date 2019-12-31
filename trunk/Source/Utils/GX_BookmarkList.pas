@@ -45,7 +45,7 @@ type
 implementation
 
 uses
-  GX_dzQuicksort;
+  u_dzQuicksort;
 
 { TBookmark }
 

@@ -709,7 +709,7 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   Variants, Windows, ActiveX, DesignIntf, TypInfo,
   GX_EditReader, GX_VerDepConst, SynUnicode, Math, StrUtils,
-  GX_GetIdeVersion, GX_dzFileUtils;
+  GX_GetIdeVersion, u_dzFileUtils;
 
 const
   EditReaderBufferSize = 1024 * 24;

@@ -75,7 +75,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, ToolsAPI,
-  GX_ConfigurationInfo, GX_GxUtils, GX_GenericUtils, ActnList, GX_dzVclUtils;
+  GX_ConfigurationInfo, GX_GxUtils, GX_GenericUtils, ActnList, u_dzVclUtils;
 
 type
   TPackageLoadingNotifier = class(TBaseIdeNotifier)

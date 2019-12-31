@@ -13,7 +13,7 @@ interface
 uses
   Classes, Controls, Forms, StdCtrls, ExtCtrls, ToolsAPI, ComCtrls, Buttons,
   GX_Experts, GX_ConfigurationInfo, GX_EditorChangeServices, Contnrs, Messages,
-  Types, GX_BaseForm, GX_dzSpeedBitBtn;
+  Types, GX_BaseForm, u_dzSpeedBitBtn;
 
 type
   TIsValidComponentName = function (const OldName, NewName: WideString; var Reason: WideString): Boolean of object;
@@ -107,7 +107,7 @@ implementation
 
 uses
   SysUtils, Windows, Menus, StrUtils, IniFiles, GX_CompRenameConfig, GX_OtaUtils, GX_GenericUtils,
-  GX_IdeUtils, Graphics, GX_GxUtils, TypInfo, GX_dzVclUtils, GX_dzClassUtils;
+  GX_IdeUtils, Graphics, GX_GxUtils, TypInfo, u_dzClassUtils, u_dzVclUtils;
 
 type
   TRenameComponentsExpert = class;

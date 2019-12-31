@@ -39,7 +39,7 @@ implementation
 
 uses
   Clipbrd,
-  GX_dzMiscUtils;
+  u_dzMiscUtils;
 
 { TGXCustomClipboard }
 

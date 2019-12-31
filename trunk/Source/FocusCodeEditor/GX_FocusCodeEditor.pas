@@ -26,7 +26,7 @@ uses
   Menus,
   Forms,
   Controls,
-  GX_dzVclUtils;
+  u_dzVclUtils;
 
 { TFocusCodeEditorExpert }
 

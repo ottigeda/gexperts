@@ -31,7 +31,7 @@ uses
   SysUtils,
   GX_OtaUtils, GX_GenericUtils, GX_ConfigurationInfo,
   GX_EditorExpert, GX_eSelectionEditorExpert, GX_eAlignOptions, Math,
-  GX_dzVclUtils;
+  u_dzVclUtils;
 
 const
   DEFAULT_WHITESPACE = 1;

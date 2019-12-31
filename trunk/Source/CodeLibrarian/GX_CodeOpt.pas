@@ -47,7 +47,7 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, GX_GenericUtils, GX_dzVclUtils;
+  SysUtils, GX_GenericUtils, u_dzVclUtils;
 
 procedure TfmCodeOptions.sbBrowseClick(Sender: TObject);
 var

@@ -64,7 +64,7 @@ implementation
 
 uses
   SysUtils, TypInfo,
-  GX_Experts, GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_dzVclUtils,
+  GX_Experts, GX_GxUtils, GX_GenericUtils, GX_OtaUtils, u_dzVclUtils,
   GX_TabOrderOptions, GX_dzCompilerAndRtlVersions;
 
 const

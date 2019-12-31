@@ -60,7 +60,7 @@ implementation
 {$R *.dfm}
 
 uses
-  GX_GenericUtils, GX_ToDo, GX_dzVclUtils, Graphics, SysUtils;
+  SysUtils, Graphics, u_dzVclUtils, GX_GenericUtils, GX_ToDo;
 
 procedure TfmToDoOptions.UpdateButtonState;
 var

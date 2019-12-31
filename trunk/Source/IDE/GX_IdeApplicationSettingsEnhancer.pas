@@ -26,11 +26,11 @@ uses
   Types,
   ComCtrls,
   ExtCtrls,
+  u_dzClassUtils,
+  u_dzVclUtils,
   GX_IdeProjectOptionsEnhancer,
-  GX_dzVclUtils,
   GX_IdeFormEnhancer,
   GX_ConfigurationInfo,
-  GX_dzClassUtils,
   GX_VerDepConst,
   GX_IdeDialogEnhancer;
 

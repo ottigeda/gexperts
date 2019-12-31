@@ -197,7 +197,7 @@ uses
   GX_GxUtils, GX_EditorEnhancements, GX_Experts, GX_IdeEnhance,
   GX_ConfigurationInfo, GX_EditorExpertManager, GX_MessageBox,
   GX_GExperts, GX_EditorShortcut, GX_MenuActions, GX_GenericUtils, GX_IdeUtils,
-  GX_OtaUtils, GX_dzVclUtils, GX_KbdShortCutBroker, GX_UsageStatistics,
+  GX_OtaUtils, u_dzVclUtils, GX_KbdShortCutBroker, GX_UsageStatistics,
   GX_BaseExpert;
 
 type

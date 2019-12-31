@@ -25,7 +25,7 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Menus, GX_dzVclUtils;
+  SysUtils, Menus, u_dzVclUtils;
 
 { TfmEditorShortcut }
 

@@ -6,8 +6,8 @@ uses
   Windows,
   SysUtils,
   Classes,
-  GX_dzNamedThread,
-  GX_dzCompilerAndRtlVersions,
+  u_dzErrorThread,
+  u_dzCompilerAndRtlVersions,
   mwPasParserTypes,
   mPasLex;
 
@@ -142,7 +142,7 @@ type
   end;
 
 type
-  TUnitExportParserThread = class(TNamedThread)
+  TUnitExportParserThread = class(TErrorThread)
   private
     FUnitFiles: TStringList;
     FFiles: TStringList;

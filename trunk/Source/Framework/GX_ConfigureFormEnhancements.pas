@@ -51,7 +51,7 @@ implementation
 
 uses
   GX_IdeManagedFormHandler,
-  GX_dzVclUtils;
+  u_dzVclUtils;
 
 {$R *.dfm}
 

@@ -416,8 +416,8 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Forms, Dialogs, Controls, DateUtils, StrUtils, Math,
-  GX_OtaUtils, GX_EditReader, GX_IdeUtils, GX_dzClassUtils, GX_GrepProgress,
-  GX_dzMapFileReader;
+  GX_OtaUtils, GX_EditReader, GX_IdeUtils, u_dzClassUtils, GX_GrepProgress,
+  u_dzMapFileReader;
 
 const
   cIniSubKeyCount = 'Count';
@@ -2053,9 +2053,10 @@ var
   var
     I: Integer;
   begin
-    for I := 0 to ASection.Count - 1 do
-                   //order index to first                                 //keyindex
+    for I := 0 to ASection.Count - 1 do begin
+                     //order index to first                                 //keyindex
       ASection[I] := TStrings_ValueFromIndex(ASection, I) + '=' + Copy(ASection.Names[I], 12);
+    end;
     ASection.Sort;
   end;
 
