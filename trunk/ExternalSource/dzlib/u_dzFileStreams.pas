@@ -5,7 +5,7 @@
 ///          and sets the properties to sensible values for temporary files. </summary>
 unit u_dzFileStreams;
 
-{$I dzlibjedi.inc}
+{$INCLUDE 'dzlib.inc'}
 
 interface
 
@@ -254,14 +254,15 @@ type
 {$ENDIF}
 
 type
-{$IFDEF DELPHIXE_UP}
+{$IFDEF THANDLESTREAM_CREATE_HANDLE_IS_THANDLE}
+  THandleStreamCreateHandleCast = THandle;
+{$ELSE}
+  THandleStreamCreateHandleCast = Integer;
+{$ENDIF}
+{$IFDEF THANDLESTREAM_HANDLE_IS_THANDLE}
   THandleCast = THandle;
 {$ELSE}
-  THandleCast = Integer; // Delphi < XE wrongly declares the handle parameter
-                         // to THandleStream.Create as signed integer while
-                         // it really should be unsigned. Delphi XE corrects
-                         // this but in order to compile with all version we
-                         // need this cond. define.
+  THandleCast = Integer;
 {$ENDIF}
 
 class procedure TdzFile.CreateReadFree(const _fn: string; var _Buffer; _Size: Integer);
@@ -292,7 +293,7 @@ end;
 
 constructor TdzFile.Create(const _Filename: string);
 begin
-  inherited Create(THandleCast(INVALID_HANDLE_VALUE));
+  inherited Create(THandleStreamCreateHandleCast(INVALID_HANDLE_VALUE));
   FFilename := _Filename;
   FAccessMode := [faRead];
   FShareMode := [fsRead];
