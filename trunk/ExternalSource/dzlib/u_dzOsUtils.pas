@@ -1231,7 +1231,7 @@ begin
 end;
 
 function TryGetWindowsVersionFromRegistry(out _Values: TWinCurrentRec): Boolean;
-{$IF not Defined(KEY_WOW64_64KEY)}
+{$IF not Declared(KEY_WOW64_64KEY)}
 const
   KEY_WOW64_64KEY = $0100;
 {$IFEND}
