@@ -31,7 +31,8 @@ type
 implementation
 
 uses
-  StrUtils, u_dzStringUtils;
+  StrUtils,
+  u_dzStringUtils;
 
 { TMapFileReader }
 
