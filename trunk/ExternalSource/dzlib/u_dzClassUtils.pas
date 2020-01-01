@@ -1052,7 +1052,9 @@ end;
 // Turn Warning off, because Delphi 2007 thinks that the variable might not have been initialized.
 // But that is not the case.
 // 2019-06-03 pp
+{$IFDEF SUPPORTS_WARN_USE_BEFORE_DEF}
 {$WARN USE_BEFORE_DEF OFF}
+{$ENDIF}
 
 function TStream_ReadStringLn(_Stream: TStream; out _s: string): Integer;
 var
@@ -1089,7 +1091,9 @@ begin
   end;
   _Stream.Position := NewPos;
 end;
+{$IFDEF SUPPORTS_WARN_USE_BEFORE_DEF}
 {$WARN USE_BEFORE_DEF DEFAULT}
+{$ENDIF}
 
 function TStrings_TryStringByObj(_Strings: TStrings; _Obj: Pointer; out _Value: string): Boolean;
 var
@@ -2042,7 +2046,7 @@ end;
 
 function TStringList_CreateFrom(const _sa: array of string; _Sorted: Boolean = False): TStringList;
 var
-  i: integer;
+  i: Integer;
 begin
   Result := TStringList.Create;
   for i := Low(_sa) to High(_sa) do

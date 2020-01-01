@@ -3,6 +3,8 @@
 {$IFDEF DELPHI7_UP}
 // TBitBtn.WordWrap was introduced in Delphi 7
 {$DEFINE HAS_BITBTN_WORDWRAP}
+// So was the $WARN USE_BEFORE_DEF define
+{$DEFINE SUPPORTS_WARN_USE_BEFORE_DEF}
 {$ENDIF}
 
 {$IFDEF DELPHI2005_UP}
@@ -26,4 +28,8 @@
 // AHandle is declared as THandle (otherwise it's an Integer)
 {$DEFINE THANDLESTREAM_CREATE_HANDLE_IS_THANDLE}
 {$ENDIF}
+
+{$WARN SYMBOL_PLATFORM OFF}
+{$WARN UNIT_PLATFORM OFF}
+
 
