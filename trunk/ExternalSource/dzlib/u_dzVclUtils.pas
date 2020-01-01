@@ -35,6 +35,7 @@ uses
   ActnList,
   ComObj,
   u_dzTranslator,
+  u_dzDateUtils, // we need this for $IF Declared(TryIso2Time)
   u_dzTypes;
 
 var
@@ -70,13 +71,6 @@ type
     procedure BuildFilterStrings(GraphicClass: TGraphicClass; var Descriptions, Filters: string);
     function GetFilterString(GraphicClass: TGraphicClass = nil): string;
   end;
-
-function GetModifierKeyState: TShiftState; deprecated; // use u_dzOsUtils.GetModifierKeyState
-function IsAltDown: Boolean; deprecated; // use u_dzOsUtils.IsAltDown
-function IsCtrlDown: Boolean; deprecated; // use u_dzOsUtils.IsCtrlDown
-///<summary>
-/// @returns true, if the shift key is currently pressed </summary>
-function IsShiftDown: Boolean; deprecated; // use u_dzOsUtils.IsShiftDown
 
 ///<summary> returns the global file formats list </summary>
 function GetFileFormats: TFileFormatsList;
@@ -270,22 +264,11 @@ procedure TStringGrid_SetNonfixedCell(_Grid: TStringGrid; _Col, _Row: Integer; c
   _Data: Integer); overload;
 function TStringGrid_GetNonfixedCell(_Grid: TStringGrid; _Col, _Row: Integer): string;
 
-///<summary> exports the contents of the string grid to a tab separated text file (deprecated, use TGrid_ExportTofile instead)
-///          @param Grid is the string grid to export
-///          @param Filename is the name of the text file to create </summary>
-procedure TStringGrid_ExportToFile(_Grid: TCustomGrid; const _Filename: string); deprecated; // use TGrid_ExportTofile instead
-
 ///<summary> scrolls up the lines of a string grid
 ///          @param Grid is the TStringGrid to scroll
 ///          @param Top is the topmost row to scroll, if passed as -1 defaults to the first non-fixed row
 ///          @param Bottom is the bottommost row to scroll, if passed as -1 defaults to RowCount-1 </summary>
 procedure TStringGrid_ScrollUp(_Grid: TStringGrid; _Top: Integer = -1; _Bottom: Integer = -1);
-
-///<summary> sets the row count, taking the fixed rows into account  (deprecated, use TGrid_SetRowCount instead) </summary>
-procedure TStringGrid_SetRowCount(_Grid: TCustomGrid; _RowCount: Integer); deprecated; // use TGrid_SetRowCount instead
-
-///<summary> sets the column count, taking the fixed columns into account </summary>
-procedure TStringGrid_SetColCount(_Grid: TCustomGrid; _ColCount: Integer); deprecated; // use TGrid_SetColCount instead
 
 ///<summary> deletes the given row from the string grid and moves all rows below it up by one,
 ///   if there is only one non-fixed row left, this row is cleared but not deleted.
@@ -1619,7 +1602,6 @@ uses
   rxGif,
 {$ENDIF GIFByRx}
   u_dzConvertUtils,
-  u_dzDateUtils,
   u_dzStringUtils,
   u_dzFileUtils,
   u_dzClassUtils,
@@ -1914,22 +1896,6 @@ begin
   Result := Grid.RowCount - Grid.FixedRows;
 end;
 
-procedure TStringGrid_SetRowCount(_Grid: TCustomGrid; _RowCount: Integer);
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
-begin
-  TGrid_SetRowCount(_Grid, _RowCount);
-end;
-
-procedure TStringGrid_SetColCount(_Grid: TCustomGrid; _ColCount: Integer);
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
-begin
-  TGrid_SetColCount(_Grid, _ColCount);
-end;
-
 procedure TGrid_SetRowNoClick(_Grid: TCustomGrid; _Row: Integer);
 var
   Event: TNotifyEvent;
@@ -1944,14 +1910,6 @@ begin
   finally
     Grid.OnClick := Event;
   end;
-end;
-
-procedure TStringGrid_ExportToFile(_Grid: TCustomGrid; const _Filename: string);
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
-begin
-  TGrid_ExportToFile(_Grid, _Filename, True);
 end;
 
 procedure TStringGrid_Clear(_Grid: TStringGrid);
@@ -5969,26 +5927,6 @@ begin
   end;
 end;
 {$ENDIF}
-
-function IsShiftDown: Boolean;
-begin
-  Result := u_dzOsUtils.IsShiftDown;
-end;
-
-function IsCtrlDown: Boolean;
-begin
-  Result := u_dzOsUtils.IsCtrlDown;
-end;
-
-function IsAltDown: Boolean;
-begin
-  Result := u_dzOsUtils.IsAltDown;
-end;
-
-function GetModifierKeyState: TShiftState;
-begin
-  Result := u_dzOsUtils.GetModifierKeyState;
-end;
 
 type
   TExtKeyArr = array[0..13] of Word;
