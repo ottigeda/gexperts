@@ -16,7 +16,8 @@ uses
   Contnrs,
   IniFiles,
   Registry,
-  u_dzTranslator;
+  u_dzTranslator,
+  u_dzDateUtils; // we need this for the $IF Declared() directives
 
 // NOTE: The naming convention is <extended-class>_<Methodname>
 
@@ -341,6 +342,7 @@ function TIniFile_ReadInt(_Ini: TCustomIniFile; const _Section, _Ident: string):
 function TIniFile_ReadInt(const _Filename: string; const _Section, _Ident: string; _Default: Integer): Integer; overload;
 function TIniFile_ReadInt(_Ini: TCustomIniFile; const _Section, _Ident: string; _Default: Integer): Integer; overload;
 
+{$IF Declared(TryStr2Date)}
 ///<summary>
 /// Reads a date from the ini-file, raises an exception if the value is not a valid date.
 /// Since this uses u_dzDateUtils.Str2Date it supports any date format this functions supports.
@@ -348,6 +350,9 @@ function TIniFile_ReadInt(_Ini: TCustomIniFile; const _Section, _Ident: string; 
 /// @NOTE that a missing entry or an empty string will alse result in an EConvertError exception. </summary>
 function TIniFile_ReadDate(_Ini: TCustomIniFile; const _Section, _Ident: string): TDateTime; overload;
 function TIniFile_ReadDate(const _Filename: string; const _Section, _Ident: string): TDateTime; overload;
+{$IFEND}
+
+{$IF Declared(TryStr2Date)}
 ///<summary>
 /// Tries to read a date in ISO format from the ini-file
 /// @raises EStringConvertError if a string could be read but was not a valid date
@@ -356,6 +361,7 @@ function TIniFile_TryReadDate(_Ini: TCustomIniFile; const _Section, _Ident: stri
   out _Value: TDateTime): Boolean; overload;
 function TIniFile_TryReadDate(const _Filename: string; const _Section, _Ident: string;
   out _Value: TDateTime): Boolean; overload;
+{$IFEND}
 
 ///<summary>
 /// Writes a date in ISO format to the ini file </summary>
@@ -383,18 +389,18 @@ procedure TIniFile_WriteSectionValues(_Ini: TCustomIniFile; const _Section: stri
 /// Reads the given section from the given .INI file and returns all its keys as a TStrings
 /// (This is short for opening the file, calling Ini.ReadSection and closing it.)
 /// @raises Exception if the section does not exist. </summary>
-procedure TIniFile_ReadSectionKeys(const _Filename, _Section: string; _sl: TStrings); inline;
+procedure TIniFile_ReadSectionKeys(const _Filename, _Section: string; _sl: TStrings);
 
 ///<summary>
 /// Reads the given section from the given .INI file and returns it as Name=Value pairs.
 /// (This is short for opening the file, calling Ini.ReadSectionValues and closing it.)
 /// @raises Exception if the section does not exist. </summary>
-procedure TIniFile_ReadSectionValues(const _Filename, _Section: string; _sl: TStrings); inline;
+procedure TIniFile_ReadSectionValues(const _Filename, _Section: string; _sl: TStrings);
 ///<summary>
 /// @returns True, if the section exists
 ///          False if not
 /// Note: Also returns false if the file does not exist. </summary>
-function TIniFile_TryReadSectionValues(const _Filename, _Section: string; _sl: TStrings): Boolean; inline;
+function TIniFile_TryReadSectionValues(const _Filename, _Section: string; _sl: TStrings): Boolean;
 
 type
   TIniSection = class
@@ -627,10 +633,12 @@ uses
   StrUtils,
   u_dzConvertUtils,
   u_dzMiscUtils,
-  u_dzStringUtils,
-  u_dzDateUtils;
+  u_dzStringUtils;
 
-function _(const _s: string): string; inline;
+function _(const _s: string): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := dzDGetText(_s, 'dzlib');
 end;
@@ -867,6 +875,13 @@ begin
   end;
 end;
 
+{$IF not Declared(SameStr)}
+function SameStr(const _s1, _s2: string): Boolean;
+begin
+  Result := (_s1 = _s2);
+end;
+{$IFEND}
+
 function TStrings_Same(_sl1, _sl2: TStrings): Boolean;
 var
   i: Integer;
@@ -1074,7 +1089,7 @@ begin
   end;
   _Stream.Position := NewPos;
 end;
-{$WARN USE_BEFORE_DEF ON}
+{$WARN USE_BEFORE_DEF DEFAULT}
 
 function TStrings_TryStringByObj(_Strings: TStrings; _Obj: Pointer; out _Value: string): Boolean;
 var
@@ -1294,6 +1309,7 @@ begin
   _Ini.WriteString(_Section, _Ident, Float2Str(_Value));
 end;
 
+{$IF Declared(TryStr2Date)}
 function TIniFile_TryReadDate(_Ini: TCustomIniFile; const _Section, _Ident: string; out _Value: TDateTime): Boolean;
 var
   s: string;
@@ -1311,7 +1327,9 @@ begin
     end;
   end;
 end;
+{$IFEND}
 
+{$IF Declared(TryStr2Date)}
 function TIniFile_TryReadDate(const _Filename: string; const _Section, _Ident: string;
   out _Value: TDateTime): Boolean;
 var
@@ -1328,7 +1346,9 @@ begin
     end;
   end;
 end;
+{$IFEND}
 
+{$IF Declared(TryStr2Date)}
 function TIniFile_ReadDate(_Ini: TCustomIniFile; const _Section, _Ident: string): TDateTime;
 var
   ErrStr: string;
@@ -1339,7 +1359,9 @@ begin
     raise EStringConvertError.Create(ErrStr);
   end;
 end;
+{$IFEND}
 
+{$IF Declared(TryStr2Date)}
 function TIniFile_ReadDate(const _Filename: string; const _Section, _Ident: string): TDateTime; overload;
 var
   ErrStr: string;
@@ -1350,6 +1372,7 @@ begin
     raise EStringConvertError.Create(ErrStr);
   end;
 end;
+{$IFEND}
 
 procedure TIniFile_WriteDate(_Ini: TCustomIniFile; const _Section, _Ident: string; const _Value: TDateTime);
 begin
@@ -1501,6 +1524,9 @@ begin
 end;
 
 procedure TIniFile_ReadSectionKeys(const _Filename, _Section: string; _sl: TStrings);
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 var
   Ini: TMemIniFile;
   ErrStr: string;
@@ -1518,7 +1544,10 @@ begin
   end;
 end;
 
-function TIniFile_TryReadSectionValues(const _Filename, _Section: string; _sl: TStrings): Boolean; inline;
+function TIniFile_TryReadSectionValues(const _Filename, _Section: string; _sl: TStrings): Boolean;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 var
   Ini: TMemIniFile;
 begin
@@ -1532,7 +1561,10 @@ begin
   end;
 end;
 
-procedure TIniFile_ReadSectionValues(const _Filename, _Section: string; _sl: TStrings); inline;
+procedure TIniFile_ReadSectionValues(const _Filename, _Section: string; _sl: TStrings);
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 var
   ErrStr: string;
 begin
@@ -2010,11 +2042,11 @@ end;
 
 function TStringList_CreateFrom(const _sa: array of string; _Sorted: Boolean = False): TStringList;
 var
-  s: string;
+  i: integer;
 begin
   Result := TStringList.Create;
-  for s in _sa do
-    Result.Add(s);
+  for i := Low(_sa) to High(_sa) do
+    Result.Add(_sa[i]);
   Result.Sorted := _Sorted;
 end;
 
