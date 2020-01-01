@@ -1,5 +1,7 @@
 unit u_dzGraphicsUtils;
 
+{$INCLUDE 'dzlib.inc'}
+
 {.$OPTIMIZATION ON}
 
 {$IFOPT O-} // Optimization
@@ -560,6 +562,7 @@ begin
   RGN := CreateRectRgn(_Rect.Left, _Rect.Top, _Rect.Right, _Rect.Bottom);
   if RGN = 0 then
     raise Exception.Create(_('CreateRectRgn failed'));
+
   try
     Res := SelectClipRgn(_Canvas.Handle, RGN);
     if Res = Error then

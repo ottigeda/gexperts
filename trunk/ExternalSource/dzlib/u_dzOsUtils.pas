@@ -1,6 +1,8 @@
 ///<summary> This unit contains operating system dependent functions, at least some of them. </summary>
 unit u_dzOsUtils;
 
+{$INCLUDE 'dzlib.inc'}
+
 interface
 
 uses
@@ -1226,6 +1228,10 @@ begin
 end;
 
 function TryGetWindowsVersionFromRegistry(out _Values: TWinCurrentRec): Boolean;
+{$IF not Defined(KEY_WOW64_64KEY)}
+const
+  KEY_WOW64_64KEY = $0100;
+{$IFEND}
 var
   Reg: TRegistry;
 begin

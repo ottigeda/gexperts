@@ -249,7 +249,7 @@ type
 {$ELSE}
   THandleStreamHack = class(TStream)
   private
-    FHandle: DWORD;
+    FHandle: Integer;
   end;
 {$ENDIF}
 
@@ -264,6 +264,9 @@ type
 {$ELSE}
   THandleCast = Integer;
 {$ENDIF}
+
+const
+  INVALID_HANDLE_VALUE = -1;
 
 class procedure TdzFile.CreateReadFree(const _fn: string; var _Buffer; _Size: Integer);
 var
@@ -371,7 +374,7 @@ begin
   repeat
     ApiHandle := Windows.CreateFile(PChar(FFilename), Access,
       TheShareMode, FSecurityAttributes, Disposition, FFileAttributes or FFileFlags, 0);
-    Result := (ApiHandle <> INVALID_HANDLE_VALUE);
+    Result := (ApiHandle <> THandle(INVALID_HANDLE_VALUE));
     if not Result and ResetReadOnly and not TriedResetReadonly then
       TFileSystem.SetReadonly(FFilename, False, ehReturnFalse);
   until Result or TriedResetReadonly or not ResetReadOnly or not (faWrite in AccessMode) and ResetReadOnly;

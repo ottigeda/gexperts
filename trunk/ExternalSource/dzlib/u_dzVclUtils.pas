@@ -2132,6 +2132,13 @@ type
   TEditHack = class(TCustomEdit)
   end;
 
+{$IF NOT Declared(ECM_FIRST)}
+const
+  ECM_FIRST = $1500;                       
+  EM_SETCUEBANNER = ECM_FIRST + 1;
+  EM_GETCUEBANNER = ECM_FIRST + 2;
+{$IFEND}
+
 procedure TEdit_SetCueBanner(_ed: TCustomEdit; const _Banner: WideString);
 begin
   SendMessage(_ed.Handle, EM_SETCUEBANNER, wParam(True), LParam(PWChar(_Banner)));

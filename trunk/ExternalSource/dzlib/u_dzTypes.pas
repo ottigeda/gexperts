@@ -1,5 +1,7 @@
 unit u_dzTypes;
 
+{$INCLUDE 'dzlib.inc'}
+
 interface
 
 uses
@@ -18,6 +20,9 @@ type
   TSingleArray = array of Single;
   TDoubleArray = array of Double;
   TExtendedArray = array of Extended;
+{$IF not Declared(TBytes)}
+  TBytes = array of Byte;
+{$IFEND}
 
 implementation
 
