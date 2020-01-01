@@ -182,12 +182,9 @@ function TStrings_ValueFromIndex(_st: TStrings; _Idx: Integer): string;
 
 /// <summary>
 /// Free a TList object an all TObjects it contains
-/// NOTE: this function is obsolete, use contnrs.TObjectList instead!
+/// NOTE: Consider using Contnrs.TObjectList instead!
 /// </summary>
 procedure TList_FreeWithItems(var _List: TList);
-{$IFDEF HAS_UNIT_CONTNRS}
-deprecated; // use contnrs.TObjectList
-{$ENDIF}
 
 /// <summary>
 /// Extracts the Idx'th item from the list without freeing it.
