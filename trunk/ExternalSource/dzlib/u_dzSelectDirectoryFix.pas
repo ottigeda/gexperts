@@ -84,6 +84,7 @@ end;
 // subclass the given window by replacing its WindowProc
 
 {$IF not Declared(NativeInt)}
+// Delphi 6 does not declare it
 type
   NativeInt = Integer;
 {$IFEND}
