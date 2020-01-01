@@ -29,11 +29,20 @@ const
 function _(const _s: string): string;
 
 function GetText(const _s: string): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 
 function dzGetText(const _s: string): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 
 function DGetText(const _s: string; const _TextDomain: string = ''): string;
 ///<summary> use this if you pass variables rather than constants to avoid warnings in the dxgettext tool </summary>
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 function dzDGetText(const _s: string; const _TextDomain: string = ''): string;
 
 ///<summary> translate using the DZLIB_TRANSLATION_DOMAIN </summary>
