@@ -5,7 +5,8 @@ unit u_dzTypes;
 interface
 
 uses
-  SysUtils;
+  SysUtils,
+  Types; // for $IF Declared(TBytes)
 
 type
   EdzException = class(Exception)
