@@ -1,5 +1,6 @@
 [FileVersion]
 Version=6.0
+
 [Compiler]
 A=8
 B=0
@@ -30,8 +31,9 @@ Z=1
 ShowHints=1
 ShowWarnings=1
 UnitAliases=Actions=actnlist;Themes=Controls;ImageList=Controls;ShLwApi=GX_ShLwApi;UITypes=Types
+
 [Linker]
-MapFile=0
+MapFile=3
 OutputObjs=0
 ConsoleApp=1
 DebugInfo=0
@@ -40,22 +42,25 @@ MinStackSize=16384
 MaxStackSize=1048576
 ImageBase=5242880
 ExeDescription=
+
 [Directories]
 OutputDir=..\..\Binaries
 UnitOutputDir=dcu
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=..\..\source\Framework;..\..\ExternalSource;..\..\ExternalSource\mwParser;..\..\ExternalSource\Abbrevia;..\..\ExternalSource\UniSynEdit;..\..\source\Include
+SearchPath=..\..\source\Framework;..\..\ExternalSource;..\..\ExternalSource\mwParser;..\..\ExternalSource\Abbrevia;..\..\ExternalSource\UniSynEdit;..\..\ExternalSource\dzlib;..\..\source\Include
 Packages=rtl;vcl;vclx;vclsmp;designide
-Conditionals=
+Conditionals=NO_TRANSLATION;NO_TRANSLATION_HINT
 DebugSourceDirs=
 UsePackages=1
+
 [Parameters]
 RunParams=-ns
 HostApplication=C:\Delphi\Delphi6\Bin\delphi32.exe
 Launcher=
 UseLauncher=0
 DebugCWD=
+
 [Version Info]
 IncludeVerInfo=0
 AutoIncBuild=0
@@ -70,6 +75,7 @@ Private=0
 DLL=1
 Locale=1033
 CodePage=1252
+
 [Version Info Keys]
 CompanyName=Erik Berry and the GExperts Development Team
 FileDescription=GExperts for Delphi 6
@@ -81,6 +87,7 @@ OriginalFilename=GExpertsD6.dll
 ProductName=GExperts for Delphi
 ProductVersion=1.38
 Comments=Open Source
+
 [Excluded Packages]
 c:\delphi\delphi6\Bin\dclib60.bpl=InterBase Data Access Components
 c:\delphi\delphi6\Bin\dclclxdb60.bpl=Borland CLX Database Components
