@@ -116,12 +116,12 @@
 		</Linker>
 		<Directories>
 			<Directories Name="OutputDir" Type="String">..\..\Binaries</Directories>
-			<Directories Name="UnitOutputDir" Type="String">dcu</Directories>
+			<Directories Name="UnitOutputDir" Type="String">.\dcu</Directories>
 			<Directories Name="PackageDLLOutputDir" Type="String"></Directories>
 			<Directories Name="PackageDCPOutputDir" Type="String"></Directories>
-			<Directories Name="SearchPath" Type="String">..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\source\Include</Directories>
+			<Directories Name="SearchPath" Type="String">..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\source\Include</Directories>
 			<Directories Name="Packages" Type="String">vcl;rtl;vclx;designide</Directories>
-			<Directories Name="Conditionals" Type="String"></Directories>
+			<Directories Name="Conditionals" Type="String">NO_TRANSLATION;NO_TRANSLATION_HINT</Directories>
 			<Directories Name="DebugSourceDirs" Type="String"></Directories>
 			<Directories Name="UsePackages" Type="Boolean">True</Directories>
 		</Directories>
