@@ -3,6 +3,8 @@
 /// in later versions) </summary>
 unit u_dzSelectDirectoryFix;
 
+{$INCLUDE 'dzlibjedi.inc'}
+
 interface
 
 uses
@@ -10,6 +12,12 @@ uses
   SysUtils,
   FileCtrl,
   Controls;
+
+{$IF not Declared(TSelectDirExtOpt)}
+type
+  TSelectDirExtOpt = (sdNewFolder, sdShowEdit, sdShowShares, sdNewUI, sdShowFiles, sdValidateDir);
+  TSelectDirExtOpts = set of TSelectDirExtOpt;
+{$IFEND}
 
 ///<summary>
 /// Bugixed version of the FilCtrl SelectDirectory function with identical parameters
@@ -75,6 +83,11 @@ end;
 
 // subclass the given window by replacing its WindowProc
 
+{$IF not Declared(NativeInt)}
+type
+  NativeInt = Integer;
+{$IFEND}
+
 procedure TSelectDirCallback.SubClass(_Wnd: HWND);
 begin
   if FWndProcPrevious <> nil then
@@ -82,7 +95,7 @@ begin
   FWnd := _Wnd;
   FWndProcPrevious := TFNWndProc(GetWindowLong(_Wnd, GWL_WNDPROC));
   FWndProcInstanceStub := MakeObjectInstance(WndProcSubClassed);
-  SetWindowlong(_Wnd, GWL_WNDPROC, NativeInt(FWndProcInstanceStub));
+  SetWindowLong(_Wnd, GWL_WNDPROC, NativeInt(FWndProcInstanceStub));
 end;
 
 // un-subclass the window by restoring the previous WindowProc
@@ -90,7 +103,7 @@ end;
 procedure TSelectDirCallback.UnsubClass;
 begin
   if FWndProcPrevious <> nil then begin
-    SetWindowlong(FWnd, GWL_WNDPROC, NativeInt(FWndProcPrevious));
+    SetWindowLong(FWnd, GWL_WNDPROC, NativeInt(FWndProcPrevious));
     FreeObjectInstance(FWndProcInstanceStub);
     FWndProcPrevious := nil;
     FWndProcInstanceStub := nil;
@@ -124,15 +137,15 @@ begin
     // this is new: Center on the parent form if a parent was given
     frm := GetParentForm(FParent);
     Monitor := Screen.MonitorFromWindow(frm.Handle);
-    RefLtwh.Assign(frm.BoundsRect);
+    TRectLTWH_Assign(RefLtwh, frm.BoundsRect);
   end else begin
     if Assigned(Application.MainForm) then
       Monitor := Screen.MonitorFromWindow(Application.MainForm.Handle)
     else
       Monitor := Screen.MonitorFromWindow(0);
-    RefLtwh.Assign(Monitor.BoundsRect);
+    TRectLTWH_Assign(RefLtwh, Monitor.BoundsRect);
   end;
-  ltwh.Assign(Rect);
+  TRectLTWH_Assign(ltwh, Rect);
   ltwh.Left := RefLtwh.Left + RefLtwh.Width div 2 - ltwh.Width div 2;
   ltwh.Top := RefLtwh.Top + RefLtwh.Height div 2 - ltwh.Height div 2;
   TMonitor_MakeFullyVisible(Monitor, ltwh);
@@ -140,6 +153,10 @@ begin
 end;
 
 function TSelectDirCallback.SelectDirCB(_Wnd: HWND; _uMsg: UINT; _lParam, _lpData: lParam): Integer;
+{$IF not Declared(SInvalidPath)}
+resourcestring
+  SInvalidPath = '"%s" is an invalid path';
+{$IFEND}
 
   procedure SelectDirectory;
   begin
@@ -192,6 +209,19 @@ end;
 
 function dzSelectDirectory(const Caption: string; const Root: WideString;
   var Directory: string; Options: TSelectDirExtOpts = [sdNewUI]; Parent: TWinControl = nil): Boolean;
+{$IF not Declared(BIF_NEWDIALOGSTYLE)}
+const
+  BIF_NEWDIALOGSTYLE = $0040;
+{$IFEND}
+{$IF not Declared(BIF_NONEWFOLDERBUTTON)}
+const
+  BIF_NONEWFOLDERBUTTON = $200;
+{$IFEND}
+{$IF not Declared(BIF_SHAREABLE)}
+const
+  BIF_SHAREABLE = $8000;
+{$IFEND}
+
 var
   BrowseInfo: TBrowseInfo;
   OldErrorMode: Cardinal;

@@ -4,7 +4,7 @@
 ///  @author        twm </summary>
 unit u_dzVclUtils;
 
-{$INCLUDE dzlibjedi.inc}
+{$INCLUDE dzlib.inc}
 
 // If this conditional define is set, all messages received in the hooked
 // WindowProc are written to the console window -> requires a console
@@ -273,7 +273,7 @@ function TStringGrid_GetNonfixedCell(_Grid: TStringGrid; _Col, _Row: Integer): s
 ///<summary> exports the contents of the string grid to a tab separated text file (deprecated, use TGrid_ExportTofile instead)
 ///          @param Grid is the string grid to export
 ///          @param Filename is the name of the text file to create </summary>
-procedure TStringGrid_ExportToFile(_Grid: TCustomGrid; const _Filename: string); deprecated; inline; // use TGrid_ExportTofile instead
+procedure TStringGrid_ExportToFile(_Grid: TCustomGrid; const _Filename: string); deprecated; // use TGrid_ExportTofile instead
 
 ///<summary> scrolls up the lines of a string grid
 ///          @param Grid is the TStringGrid to scroll
@@ -282,10 +282,10 @@ procedure TStringGrid_ExportToFile(_Grid: TCustomGrid; const _Filename: string);
 procedure TStringGrid_ScrollUp(_Grid: TStringGrid; _Top: Integer = -1; _Bottom: Integer = -1);
 
 ///<summary> sets the row count, taking the fixed rows into account  (deprecated, use TGrid_SetRowCount instead) </summary>
-procedure TStringGrid_SetRowCount(_Grid: TCustomGrid; _RowCount: Integer); deprecated; inline; // use TGrid_SetRowCount instead
+procedure TStringGrid_SetRowCount(_Grid: TCustomGrid; _RowCount: Integer); deprecated; // use TGrid_SetRowCount instead
 
 ///<summary> sets the column count, taking the fixed columns into account </summary>
-procedure TStringGrid_SetColCount(_Grid: TCustomGrid; _ColCount: Integer); deprecated; inline; // use TGrid_SetColCount instead
+procedure TStringGrid_SetColCount(_Grid: TCustomGrid; _ColCount: Integer); deprecated; // use TGrid_SetColCount instead
 
 ///<summary> deletes the given row from the string grid and moves all rows below it up by one,
 ///   if there is only one non-fixed row left, this row is cleared but not deleted.
@@ -489,7 +489,9 @@ function TEdit_IsTextInt(_ed: TCustomEdit; _MinValue, _MaxValue: Integer;
   _OkColor: TColor; _ErrColor: TColor = clYellow): Boolean; overload;
 function TEdit_IsTextInt(_ed: TCustomEdit; _OkColor: TColor = clWindow; _ErrColor: TColor = clYellow): Boolean; overload;
 
+{$IF Declared(TryIso2Time)}
 function TEdit_TextHHMMSSToTime(_ed: TCustomEdit; _FocusControl: Boolean = True): TDateTime;
+{$IFEND}
 
 function TEdit_IsTextNonEmpty(_ed: TCustomEdit; _OkColor: TColor = clWindow; _ErrColor: TColor = clYellow): Boolean;
 
@@ -1137,8 +1139,12 @@ type
   TRegistryEntry = record
     KeyName: string;
     ValueName: string;
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
     class function Create(const _KeyName, _ValueName: string): TRegistryEntry; static;
+{$ENDIF}
   end;
+
+function TRegistryEntry_Create(const _KeyName, _ValueName: string): TRegistryEntry;
 
 ///<summary>
 /// deprecated version of TForm_StorePlacement
@@ -1465,6 +1471,7 @@ procedure TActionList_SetCategoryEnabled(_al: TActionList; const _Category: stri
 ///          might want to see. </summary>
 function TGroupBox_SetFileCaption(_grp: TCustomGroupBox; const _Prefix: string; const _Filename: string): string;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 type
   TActionListShortcutHelper = class
   private
@@ -1484,19 +1491,23 @@ type
     procedure RemoveShortcuts;
     procedure AssignShortcuts;
   end;
+{$ENDIF}
 
 type
   TRectLTWH = record
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
   private
     function GetTopLeft: TPoint;
     procedure SetTopLeft(_TopLeft: TPoint);
     function GetBottomLeft: TPoint;
     procedure SetBottomLeft(const _BottomLeft: TPoint);
   public
+{$ENDIF}
     Left: Integer;
     Top: Integer;
     Width: Integer;
     Height: Integer;
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
     procedure Assign(_Left, _Top, _Width, _Height: Integer); overload;
     procedure Assign(_a: TRect); overload;
     procedure AssignTLRB(_Left, _Top, _Right, _Bottom: Integer);
@@ -1510,6 +1521,7 @@ type
     class operator Implicit(_a: TRect): TRectLTWH;
     class operator Implicit(_a: TRectLTWH): TRect;
     class function FromLTWH(_Left, _Top, _Width, _Height: Integer): TRectLTWH; static;
+{$ENDIF}
   end;
 
 procedure TRectLTWH_Assign(var _LTWH: TRectLTWH; _Left, _Top, _Width, _Height: Integer); overload;
@@ -1593,11 +1605,7 @@ implementation
 
 uses
   Consts,
-{$IFDEF RTL230_UP}
-  Vcl.Imaging.JPEG,
-{$ELSE}
-  JPEG,
-{$ENDIF RTL230_UP}
+  JPEG, // if you get a compile error here add VCL.Imaging to Unit Scope Prefixes
   ShellApi,
   StrUtils,
   Types,
@@ -1624,7 +1632,10 @@ uses
   u_dzTypesUtils,
   u_dzOsUtils;
 
-function _(const _s: string): string; inline;
+function _(const _s: string): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := dzDGetText(_s, DZLIB_TRANSLATION_DOMAIN);
 end;
@@ -1638,7 +1649,7 @@ var
   Size: Integer;
 begin
   if _ContainsLength then
-    s := LowerCase(Copy(_GlyphStr, 9))
+    s := LowerCase(TailStr(_GlyphStr, 9))
   else
     s := LowerCase(_GlyphStr);
   Size := Length(s) div 2;
@@ -1665,7 +1676,7 @@ var
   Size: Integer;
 begin
   if _ContainsLength then
-    s := LowerCase(Copy(_Content, 9))
+    s := LowerCase(TailStr(_Content, 9))
   else
     s := LowerCase(_Content);
   Size := Length(s) div 2;
@@ -1904,11 +1915,17 @@ begin
 end;
 
 procedure TStringGrid_SetRowCount(_Grid: TCustomGrid; _RowCount: Integer);
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   TGrid_SetRowCount(_Grid, _RowCount);
 end;
 
 procedure TStringGrid_SetColCount(_Grid: TCustomGrid; _ColCount: Integer);
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   TGrid_SetColCount(_Grid, _ColCount);
 end;
@@ -1930,6 +1947,9 @@ begin
 end;
 
 procedure TStringGrid_ExportToFile(_Grid: TCustomGrid; const _Filename: string);
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   TGrid_ExportToFile(_Grid, _Filename, True);
 end;
@@ -2183,6 +2203,7 @@ begin
   end;
 end;
 
+{$IF Declared(TryIso2Time)}
 function TEdit_TextHHMMSSToTime(_ed: TCustomEdit; _FocusControl: Boolean = True): TDateTime;
 var
   s: string;
@@ -2195,6 +2216,7 @@ begin
     raise EConvertError.CreateFmt(_('"%s" is not a time value (format: hh:mm:ss) (%s).'), [s, _ed.Name]);
   end;
 end;
+{$IFEND}
 
 function TEdit_TextToDouble(_ed: TCustomEdit; _FocusControl: Boolean = True): Double;
 var
@@ -4246,7 +4268,7 @@ var
   Bounds: TRectLTWH;
 begin
   try
-    Bounds.Assign(_frm.BoundsRect);
+    TRectLTWH_Assign(Bounds, _frm.BoundsRect);
     case _Which of
       fpePositionOnly: begin
           Bounds.Width := -1;
@@ -4272,7 +4294,7 @@ var
   Bounds: TRectLTWH;
 begin
   try
-    Bounds.Assign(_frm.BoundsRect);
+    TRectLTWH_Assign(Bounds, _frm.BoundsRect);
     case _Which of
       fpePositionOnly: begin
           Bounds.Width := -1;
@@ -4339,10 +4361,14 @@ end;
 function TForm_ReadPlacement(out _Bounds: TRectLTWH; const _RegistryPath: string;
   _HKEY: HKEY = HKEY_CURRENT_USER): Boolean; overload;
 var
-  fn: TFilename;
+  Path: string;
+  fn: string;
+  dir: string;
 begin
-  fn := _RegistryPath;
-  Result := TForm_ReadPlacement(_Bounds, TRegistryEntry.Create(fn.Directory, fn.FileName), _HKEY);
+  Path := _RegistryPath;
+  dir := ExtractFileDir(Path);
+  fn := ExtractFileName(Path);
+  Result := TForm_ReadPlacement(_Bounds, TRegistryEntry_Create(dir, fn), _HKEY);
 end;
 
 function TForm_ReadPlacement(_frm: TForm; _Which: TFormPlacementEnum; const _RegEntry: TRegistryEntry;
@@ -5869,6 +5895,7 @@ begin
   Result.OnExecute := _OnExecute;
 end;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 { TActionListShortcutHelper }
 
 constructor TActionListShortcutHelper.Create(_al: TActionList);
@@ -5941,6 +5968,7 @@ begin
     Action.SecondaryShortcuts.Add(ShortCutToText(SecondaryShortcuts[i]));
   end;
 end;
+{$ENDIF}
 
 function IsShiftDown: Boolean;
 begin
@@ -6141,11 +6169,14 @@ end;
 procedure TScreen_MakeFullyVisible(var _Rect: TRectLTWH); overload;
 var
   Monitor: TMonitor;
+  Rect: TRect;
 begin
-  if TScreen_TryGetMonitorFromPointOrPrimary(TRect_Center(_Rect), Monitor) then
+  Rect := TRect_FromLTWH(_Rect.Left, _Rect.Top, _Rect.Width, _Rect.Height);
+  if TScreen_TryGetMonitorFromPointOrPrimary(TRect_Center(Rect), Monitor) then
     TMonitor_MakeFullyVisible(Monitor, _Rect);
 end;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 { TRectLTWH }
 
 procedure TRectLTWH.Assign(_Left, _Top, _Width, _Height: Integer);
@@ -6208,6 +6239,7 @@ class operator TRectLTWH.Implicit(_a: TRect): TRectLTWH;
 begin
   Result.Assign(_a);
 end;
+{$ENDIF}
 
 procedure TRectLTWH_Assign(var _LTWH: TRectLTWH; _Left, _Top, _Width, _Height: Integer);
 begin
@@ -6574,9 +6606,17 @@ begin
   WM_WINDOW_PROC_HOOK_HELPER := RegisterWindowMessage('WM_WINDOW_PROC_HOOK_HELPER');
 end;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 { TRegistryEntry }
 
 class function TRegistryEntry.Create(const _KeyName, _ValueName: string): TRegistryEntry;
+begin
+  Result.KeyName := _KeyName;
+  Result.ValueName := _ValueName;
+end;
+{$ENDIF}
+
+function TRegistryEntry_Create(const _KeyName, _ValueName: string): TRegistryEntry;
 begin
   Result.KeyName := _KeyName;
   Result.ValueName := _ValueName;

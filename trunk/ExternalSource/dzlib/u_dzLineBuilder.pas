@@ -12,10 +12,16 @@ type
   private
     FListSeparator: string;
     FContent: string;
+{$IF Declared(TFormatSettings)}
     FFormatSettings: TFormatSettings;
+{$ELSE}
+    FDecimalSeparator: Char;
+{$IFEND}
     FQuoteChar: Char;
     FColumnCount: Integer;
     FForceQuoted: Boolean;
+    function GetDecimalSeparator: Char;
+    procedure SetDecimalSeparator(_Value: Char);
   public
     ///<summary> Creates a TLineBuilder instance with the given separator
     ///          @param ListSeparator is the separator string to use, defaults to TAB (#9)
@@ -60,12 +66,14 @@ type
     ///<summary> allows read access to the content that has been built </summary>
     property Content: string read FContent;
     property ColumnCount: Integer read FColumnCount;
-    property DecimalSeparator: Char read FFormatSettings.DecimalSeparator write FFormatSettings.DecimalSeparator default '.';
+    property DecimalSeparator: Char read GetDecimalSeparator write SetDecimalSeparator default '.';
     property ListSeparator: string read FListSeparator write FListSeparator;
     ///<summary> If set to true, every column will be enclosed in quotes </summary>
     property ForceQuoted: Boolean read FForceQuoted write FForceQuoted;
     property QuoteChar: Char read FQuoteChar write FQuoteChar;
+{$IF Declared(TFormatSettings)}
     property FormatSettings: TFormatSettings read FFormatSettings;
+{$IFEND}
   end;
 
 implementation
@@ -82,11 +90,33 @@ constructor TLineBuilder.Create(const _ListSeparator: string = #9; const _Decima
 begin
   inherited Create;
   FListSeparator := _ListSeparator;
+{$IF Declared(TFormatSettings)}
   FFormatSettings := GetUserDefaultLocaleSettings;
   FFormatSettings.DecimalSeparator := _DecimalSeparator;
   FFormatSettings.ThousandSeparator := #0;
+{$ELSE}
+  FDecimalSeparator := _DecimalSeparator;
+{$IFEND}
   FQuoteChar := '"';
   FColumnCount := 0;
+end;
+
+function TLineBuilder.GetDecimalSeparator: Char;
+begin
+{$IF Declared(TFormatSettings)}
+  Result := FFormatSettings.DecimalSeparator;
+{$ELSE}
+  Result := FDecimalSeparator;
+{$IFEND}
+end;
+
+procedure TLineBuilder.SetDecimalSeparator(_Value: Char);
+begin
+{$IF Declared(TFormatSettings)}
+  FFormatSettings.DecimalSeparator := _Value;
+{$ELSE}
+  FDecimalSeparator := _Value;
+{$IFEND}
 end;
 
 procedure TLineBuilder.Add(_IntValue: Integer);
@@ -105,19 +135,67 @@ begin
 end;
 
 procedure TLineBuilder.Add(_FloatValue: Extended; _Decimals: Integer);
+{$IF Declared(TFormatSettings)}
 begin
   Add(FloatToStrF(_FloatValue, fffixed, 18, _Decimals, FFormatSettings));
 end;
+{$ELSE}
+var
+  SysDecimalSep: Char;
+  SysThousandSep: Char;
+begin
+  SysDecimalSep := SysUtils.DecimalSeparator;
+  SysThousandSep := SysUtils.ThousandSeparator;
+  try
+    Add(FloatToStrF(_FloatValue, fffixed, 18, _Decimals));
+  finally
+    SysUtils.DecimalSeparator := SysDecimalSep;
+    SysUtils.ThousandSeparator := SysThousandSep;
+  end;
+end;
+{$IFEND}
 
 procedure TLineBuilder.Add(_FloatValue: Extended);
+{$IF Declared(TFormatSettings)}
 begin
   Add(FloatToStr(_FloatValue, FFormatSettings));
 end;
+{$ELSE}
+var
+  SysDecimalSep: Char;
+  SysThousandSep: Char;
+begin
+  SysDecimalSep := SysUtils.DecimalSeparator;
+  SysThousandSep := SysUtils.ThousandSeparator;
+  try
+    Add(FloatToStr(_FloatValue));
+  finally
+    SysUtils.DecimalSeparator := SysDecimalSep;
+    SysUtils.ThousandSeparator := SysThousandSep;
+  end;
+end;
+{$IFEND}
 
 procedure TLineBuilder.Add(_FloatValue: Extended; _IntDigits, _FracDigits: Integer);
+{$IF Declared(TFormatSettings)}
 begin
   Add(Format('%*.*f', [_IntDigits, _FracDigits, _FloatValue], FFormatSettings));
 end;
+{$ELSE}
+var
+  SysDecimalSep: Char;
+  SysThousandSep: Char;
+begin
+  SysDecimalSep := SysUtils.DecimalSeparator;
+  SysThousandSep := SysUtils.ThousandSeparator;
+  try
+    Add(Format('%*.*f', [_IntDigits, _FracDigits, _FloatValue]));
+  finally
+    SysUtils.DecimalSeparator := SysDecimalSep;
+    SysUtils.ThousandSeparator := SysThousandSep;
+  end;
+end;
+{$IFEND}
 
 procedure TLineBuilder.Add(const _Column: string);
 var
@@ -204,7 +282,7 @@ begin
   Result := p <> 0;
   if Result then begin
     _Column := LeftStr(FContent, p - 1);
-    FContent := Copy(FContent, p + 1);
+    FContent := TailStr(FContent, p + 1);
     Dec(FColumnCount);
   end;
 end;

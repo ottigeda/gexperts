@@ -48,17 +48,24 @@ type
     Blue: Byte;
     Green: Byte;
     Red: Byte;
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
     function GetColor: TColor;
     procedure SetColor(_Color: TColor);
     procedure SetGray(_Value: Byte);
     function GetLuminance: Byte;
     function GetFastLuminance: Byte; overload;
-    class function GetFastLuminance(_Red, _Green, _Blue: Byte): Byte; overload; static;
+    class function GetFastLuminance(_Red, _Green, _Blue: Byte): Byte; overload; static; inline;
     function GetBrightness(_Channel: TRgbBrightnessChannelEnum): Byte;
     procedure SetBrightness(_Value: Byte);
     procedure GetHls(out _Hls: THlsRec);
     procedure SetHls(const _Hls: THlsRec);
+{$ENDIF}
   end;
+
+function TdzRgbTriple_GetFastLuminance(const _Triple: TdzRgbTriple): Byte;
+procedure TdzRgbTriple_SetColor(var _Triple: TdzRgbTriple; _Color: TColor);
+
+function GetFastLuminance(_Red, _Green, _Blue: Byte): Byte;
 
 type
   TdzRgbTripleArray = packed array[0..MaxInt div SizeOf(TdzRgbTriple) - 1] of TdzRgbTriple;
@@ -71,6 +78,7 @@ type
     Green: Byte;
     Red: Byte;
     Reserved: Byte;
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
     function GetColor: TColor;
     procedure SetColor(_Color: TColor);
     procedure SetGray(_Value: Byte);
@@ -80,6 +88,7 @@ type
     procedure SetBrightness(_Value: Byte);
     procedure GetHls(out _Hue, _Luminance, _Saturation: Word);
     procedure SetHls(_Hue, _Luminance, _Saturation: Word);
+{$ENDIF}
   end;
 
 type
@@ -146,52 +155,53 @@ procedure TCanvas_DrawArrow(_Canvas: TCanvas; _From, _To: TPoint; _ArrowHeadLeng
 procedure TCanvas_DrawTriangle(_Canvas: TCanvas; _Tip: TPoint; _Height: Integer);
 
 function TCanvas_BitBlt(_Canvas: TCanvas; _DestPos: TPoint; _Size: TPoint; _Src: TBitmap; _SrcPos: TPoint;
-  _Rop: DWORD = SRCCOPY): LongBool; inline; overload;
+  _Rop: DWORD = SRCCOPY): LongBool; overload;
 
 function TCanvas_BitBlt(_Canvas: TCanvas; _DestRect: TRect; _Src: TBitmap; _SrcPos: TPoint;
-  _Rop: DWORD = SRCCOPY): LongBool; inline; overload;
+  _Rop: DWORD = SRCCOPY): LongBool; overload;
 
 function TCanvas_BitBlt(_Canvas: TCanvas; _DestPos: TPoint; _Src: TBitmap; _SrcPos: TPoint;
-  _Rop: DWORD = SRCCOPY): LongBool; inline; overload;
+  _Rop: DWORD = SRCCOPY): LongBool; overload;
 
-function TCanvas_BitBlt(_Canvas: TCanvas; _DestPos: TPoint; _Src: TBitmap; _Rop: DWORD = SRCCOPY): LongBool; inline; overload;
+function TCanvas_BitBlt(_Canvas: TCanvas; _DestPos: TPoint; _Src: TBitmap; _Rop: DWORD = SRCCOPY): LongBool; overload;
 
 ///<summary> abbreviation for StretchBlt that takes TRect </summary>
 function dzStretchBlt(_DestHandle: Hdc; _DestRect: TRect;
-  _SrcHandle: Hdc; _SrcRect: TRect; _Rop: DWORD = SRCCOPY): LongBool; inline; overload;
+  _SrcHandle: Hdc; _SrcRect: TRect; _Rop: DWORD = SRCCOPY): LongBool; overload;
 
 ///<summary> abbreviation for StretchBlt that takes TCanvas and TRect </summary>
 function dzStretchBlt(_DestCnv: TCanvas; _DestRect: TRect;
-  _SrcHandle: Hdc; _SrcRect: TRect; _Rop: DWORD = SRCCOPY): LongBool; inline; overload;
+  _SrcHandle: Hdc; _SrcRect: TRect; _Rop: DWORD = SRCCOPY): LongBool; overload;
 
 ///<summary> abbreviation for StretchBlt that takes TRect and TBitmap </summary>
 function dzStretchBlt(_DestHandle: Hdc; _DestRect: TRect;
-  _Src: TBitmap; _Rop: DWORD = SRCCOPY): LongBool; inline; overload;
+  _Src: TBitmap; _Rop: DWORD = SRCCOPY): LongBool; overload;
 
 ///<summary> abbreviation for StretchBlt that takes TCanvas, TRect and TBitmap </summary>
 function dzStretchBlt(_DestCnv: TCanvas; _DestRect: TRect;
-  _Src: TBitmap; _Rop: DWORD = SRCCOPY): LongBool; inline; overload;
+  _Src: TBitmap; _Rop: DWORD = SRCCOPY): LongBool; overload;
 
 ///<summary>
 /// Abbreviation for StretchBlt that takes two TBitmap, resizes and keeps the spect ratio,
 /// using stretchmode HALFTONE (which usually gives the best quality but is a bit slower).
 /// The original stretchmode and the brush origin are preserved.
 /// https://msdn.microsoft.com/en-us/library/windows/desktop/dd145089(v=vs.85).aspx </summary>
-function dzStretchBlt(_DestBmp, _SrcBmp: TBitmap; _Rop: DWORD = SRCCOPY): LongBool; {inline; }
-overload;
+function dzStretchBlt(_DestBmp, _SrcBmp: TBitmap; _Rop: DWORD = SRCCOPY): LongBool; overload;
 
 ///<summary> abbreviation for BitBlt that takes TPoint / TRect and TBitmap parameters </summary>
 function dzBitBlt(_DestHandle: Hdc; _DestPos: TPoint; _Size: TPoint; _Src: TBitmap; _SrcPos: TPoint;
-  _Rop: DWORD = SRCCOPY): LongBool; inline; overload;
+  _Rop: DWORD = SRCCOPY): LongBool; overload;
 
 function dzBitBlt(_DestHandle: Hdc; _DestRect: TRect; _Src: TBitmap; _SrcPos: TPoint;
-  _Rop: DWORD = SRCCOPY): LongBool; inline; overload;
+  _Rop: DWORD = SRCCOPY): LongBool; overload;
 
 function dzBitBlt(_DestHandle: Hdc; _DestPos: TPoint; _Src: TBitmap; _SrcPos: TPoint;
-  _Rop: DWORD = SRCCOPY): LongBool; inline; overload;
+  _Rop: DWORD = SRCCOPY): LongBool; overload;
 
 function dzBitBlt(_DestHandle: Hdc; _DestPos: TPoint; _Src: TBitmap;
-  _Rop: DWORD = SRCCOPY): LongBool; inline; overload;
+  _Rop: DWORD = SRCCOPY): LongBool; overload;
+
+procedure TBitmap_SetSize(_bmp: TBitmap; _Width, _Height: integer);
 
 function TBitmap_BitBlt(_DestBmp: TBitmap; _DestPos: TPoint; _Size: TPoint; _Src: TBitmap; _SrcPos: TPoint;
   _Rop: DWORD = SRCCOPY): LongBool; overload;
@@ -199,7 +209,8 @@ function TBitmap_BitBlt(_DestBmp: TBitmap; _DestRect: TRect; _Src: TBitmap; _Src
   _Rop: DWORD = SRCCOPY): LongBool; overload;
 function TBitmap_BitBlt(_DestBmp: TBitmap; _DestPos: TPoint; _Src: TBitmap; _SrcPos: TPoint;
   _Rop: DWORD = SRCCOPY): LongBool; overload;
-function TBitmap_BitBlt(_DestBmp: TBitmap; _DestPos: TPoint; _Src: TBitmap; _Rop: DWORD = SRCCOPY): LongBool; overload;
+function TBitmap_BitBlt(_DestBmp: TBitmap; _DestPos: TPoint; _Src: TBitmap;
+  _Rop: DWORD = SRCCOPY): LongBool; overload;
 
 ///<summary> load a jpeg file and assign it to the bitmap </summary>
 procedure TBitmap_LoadJpg(_bmp: TBitmap; const _JpgFn: string); overload;
@@ -376,34 +387,52 @@ uses
   jpeg, // if you get a compile error here you might need to add Vcl.Imaging to the unit scope names
   u_dzConvertUtils;
 
-function _(const _s: string): string; inline;
+function _(const _s: string): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := dzDGetText(_s, 'dzlib');
 end;
 
 function dzStretchBlt(_DestHandle: Hdc; _DestRect: TRect; _SrcHandle: Hdc; _SrcRect: TRect; _Rop: DWORD): LongBool;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := StretchBlt(_DestHandle, _DestRect.Left, _DestRect.Top, TRect_Width(_DestRect), TRect_Height(_DestRect),
     _SrcHandle, _SrcRect.Left, _SrcRect.Top, TRect_Width(_SrcRect), TRect_Height(_SrcRect), _Rop);
 end;
 
 function dzStretchBlt(_DestCnv: TCanvas; _DestRect: TRect; _SrcHandle: Hdc; _SrcRect: TRect; _Rop: DWORD): LongBool;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := dzStretchBlt(_DestCnv.Handle, _DestRect, _SrcHandle, _SrcRect, _Rop);
 end;
 
 function dzStretchBlt(_DestHandle: Hdc; _DestRect: TRect; _Src: TBitmap; _Rop: DWORD): LongBool;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := StretchBlt(_DestHandle, _DestRect.Left, _DestRect.Top, TRect_Width(_DestRect), TRect_Height(_DestRect),
     _Src.Canvas.Handle, 0, 0, _Src.Width, _Src.Height, _Rop);
 end;
 
 function dzStretchBlt(_DestCnv: TCanvas; _DestRect: TRect; _Src: TBitmap; _Rop: DWORD): LongBool;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := dzStretchBlt(_DestCnv.Handle, _DestRect, _Src, _Rop);
 end;
 
 function dzStretchBlt(_DestBmp, _SrcBmp: TBitmap; _Rop: DWORD = SRCCOPY): LongBool;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 var
   DstHandle: Hdc;
   OrigBltMode: Integer;
@@ -447,7 +476,10 @@ begin
 end;
 
 function dzBitBlt(_DestHandle: Hdc; _DestPos: TPoint; _Size: TPoint; _Src: TBitmap; _SrcPos: TPoint;
-  _Rop: DWORD): LongBool; overload;
+  _Rop: DWORD): LongBool;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := Windows.BitBlt(
     _DestHandle,
@@ -458,7 +490,10 @@ begin
 end;
 
 function dzBitBlt(_DestHandle: Hdc; _DestRect: TRect; _Src: TBitmap; _SrcPos: TPoint;
-  _Rop: DWORD): LongBool; overload;
+  _Rop: DWORD): LongBool;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := Windows.BitBlt(
     _DestHandle,
@@ -469,7 +504,10 @@ begin
 end;
 
 function dzBitBlt(_DestHandle: Hdc; _DestPos: TPoint; _Src: TBitmap; _SrcPos: TPoint;
-  _Rop: DWORD): LongBool; overload;
+  _Rop: DWORD): LongBool;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := Windows.BitBlt(
     _DestHandle,
@@ -481,6 +519,9 @@ begin
 end;
 
 function dzBitBlt(_DestHandle: Hdc; _DestPos: TPoint; _Src: TBitmap; _Rop: DWORD): LongBool; overload;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := Windows.BitBlt(
     _DestHandle,
@@ -493,6 +534,9 @@ end;
 
 function TCanvas_BitBlt(_Canvas: TCanvas; _DestPos: TPoint; _Size: TPoint; _Src: TBitmap; _SrcPos: TPoint;
   _Rop: DWORD = SRCCOPY): LongBool;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := dzBitBlt(
     _Canvas.Handle,
@@ -505,6 +549,9 @@ end;
 
 function TCanvas_BitBlt(_Canvas: TCanvas; _DestRect: TRect; _Src: TBitmap; _SrcPos: TPoint;
   _Rop: DWORD = SRCCOPY): LongBool;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := dzBitBlt(
     _Canvas.Handle,
@@ -516,6 +563,9 @@ end;
 
 function TCanvas_BitBlt(_Canvas: TCanvas; _DestPos: TPoint; _Src: TBitmap; _SrcPos: TPoint;
   _Rop: DWORD = SRCCOPY): LongBool;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := dzBitBlt(
     _Canvas.Handle,
@@ -526,6 +576,9 @@ begin
 end;
 
 function TCanvas_BitBlt(_Canvas: TCanvas; _DestPos: TPoint; _Src: TBitmap; _Rop: DWORD = SRCCOPY): LongBool;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := dzBitBlt(
     _Canvas.Handle,
@@ -678,6 +731,25 @@ begin
   _Canvas.Polygon([_Tip, Point(BaselineLeft, BaselineY), Point(BaselineRight, BaselineY)]);
 end;
 
+function TdzRgbTriple_GetFastLuminance(const _Triple: TdzRgbTriple): Byte;
+begin
+  Result := GetFastLuminance(_Triple.Red, _Triple.Green, _Triple.Blue);
+end;
+
+procedure TdzRgbTriple_SetColor(var _Triple: TdzRgbTriple; _Color: TColor);
+begin
+  _Color := ColorToRGB(_Color);
+  _Triple.Red := GetRValue(_Color);
+  _Triple.Green := GetGValue(_Color);
+  _Triple.Blue := GetBValue(_Color);
+end;
+
+function GetFastLuminance(_Red, _Green, _Blue: Byte): Byte;
+begin
+  Result := Round(0.299 * _Red + 0.587 * _Green + 0.114 * _Blue);
+end;
+
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 { TdzRgbTriple }
 
 function TdzRgbTriple.GetBrightness(_Channel: TRgbBrightnessChannelEnum): Byte;
@@ -935,6 +1007,16 @@ end;
 procedure TdzRgbQuad.SetHls(_Hue, _Luminance, _Saturation: Word);
 begin
   SetColor(ColorHLSToRGB(_Hue, _Luminance, _Saturation));
+end;
+{$ENDIF}
+
+procedure TBitmap_SetSize(_bmp: TBitmap; _Width, _Height: integer);
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
+begin
+  _bmp.Width := _Width;
+  _bmp.Height := _Height;
 end;
 
 {$IF Declared(TBitmap32)}
@@ -1511,7 +1593,7 @@ begin
   _DstBmp.PixelFormat := pf24bit;
   w := _SrcBmp.Width;
   h := _SrcBmp.Height;
-  _DstBmp.SetSize(w, h);
+  TBitmap_SetSize(_DstBmp, w, h);
 
   for y := 0 to h - 1 do begin
     SrcLine := _SrcBmp.ScanLine[y];
@@ -1539,7 +1621,7 @@ begin
   w := _SrcBmp.Width;
   h := _SrcBmp.Height;
   _DstBmp.Palette := MakeGrayPalette;
-  _DstBmp.SetSize(w, h);
+  TBitmap_SetSize(_DstBmp, w, h);
 
   for y := 0 to h - 1 do begin
     SrcLine := _SrcBmp.ScanLine[y];
@@ -1602,7 +1684,7 @@ begin
   _SrcBmp.PixelFormat := pf8bit;
   _DstBmp.PixelFormat := pf8bit;
   _DstBmp.Palette := MakeGrayPalette;
-  _DstBmp.SetSize(_SrcBmp.Width, _SrcBmp.Height);
+  TBitmap_SetSize(_DstBmp, _SrcBmp.Width, _SrcBmp.Height);
 
   WorkAreaWidth := _SrcBmp.Width - 2;
   WorkAreaHeight := _SrcBmp.Height - 2;
@@ -1729,7 +1811,7 @@ begin
 
   _SrcBmp.PixelFormat := pf24bit;
   _DstBmp.PixelFormat := pf24bit;
-  _DstBmp.SetSize(_SrcBmp.Width, _SrcBmp.Height);
+  TBitmap_SetSize(_DstBmp, _SrcBmp.Width, _SrcBmp.Height);
 
   WorkAreaWidth := _SrcBmp.Width - 2;
   WorkAreaHeight := _SrcBmp.Height - 2;
@@ -1873,7 +1955,7 @@ begin
   _SrcBmp.PixelFormat := pf8bit;
   _DstBmp.PixelFormat := pf8bit;
   _DstBmp.Palette := MakeGrayPalette;
-  _DstBmp.SetSize(_SrcBmp.Width, _SrcBmp.Height);
+  TBitmap_SetSize(_DstBmp, _SrcBmp.Width, _SrcBmp.Height);
 
   WorkAreaWidth := _SrcBmp.Width - 2;
   WorkAreaHeight := _SrcBmp.Height - 2;
@@ -2009,7 +2091,7 @@ begin
 
   _SrcBmp.PixelFormat := pf24bit;
   _DstBmp.PixelFormat := pf24bit;
-  _DstBmp.SetSize(_SrcBmp.Width, _SrcBmp.Height);
+  TBitmap_SetSize(_DstBmp, _SrcBmp.Width, _SrcBmp.Height);
 
   WorkAreaWidth := _SrcBmp.Width - 2;
   WorkAreaHeight := _SrcBmp.Height - 2;
@@ -2127,7 +2209,10 @@ begin
 end;
 
 function TBitmap_BitBlt(_DestBmp: TBitmap; _DestPos: TPoint; _Size: TPoint; _Src: TBitmap; _SrcPos: TPoint;
-  _Rop: DWORD = SRCCOPY): LongBool; overload;
+  _Rop: DWORD = SRCCOPY): LongBool;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := TCanvas_BitBlt(
     _DestBmp.Canvas,
@@ -2139,7 +2224,10 @@ begin
 end;
 
 function TBitmap_BitBlt(_DestBmp: TBitmap; _DestRect: TRect; _Src: TBitmap; _SrcPos: TPoint;
-  _Rop: DWORD = SRCCOPY): LongBool; overload;
+  _Rop: DWORD = SRCCOPY): LongBool;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := TCanvas_BitBlt(
     _DestBmp.Canvas,
@@ -2150,7 +2238,10 @@ begin
 end;
 
 function TBitmap_BitBlt(_DestBmp: TBitmap; _DestPos: TPoint; _Src: TBitmap; _SrcPos: TPoint;
-  _Rop: DWORD = SRCCOPY): LongBool; overload;
+  _Rop: DWORD = SRCCOPY): LongBool;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := TCanvas_BitBlt(
     _DestBmp.Canvas,
@@ -2160,7 +2251,10 @@ begin
     _Rop);
 end;
 
-function TBitmap_BitBlt(_DestBmp: TBitmap; _DestPos: TPoint; _Src: TBitmap; _Rop: DWORD): LongBool; overload;
+function TBitmap_BitBlt(_DestBmp: TBitmap; _DestPos: TPoint; _Src: TBitmap; _Rop: DWORD): LongBool;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := TCanvas_BitBlt(
     _DestBmp.Canvas,
@@ -2171,19 +2265,28 @@ begin
 end;
 
 function ColorBrightness(_Red, _Green, _Blue: Byte): Byte;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
-  Result := TdzRgbTriple.GetFastLuminance(_Red, _Green, _Blue);
+  Result := GetFastLuminance(_Red, _Green, _Blue);
 end;
 
 function ColorBrightness(_Color: TColor): Byte;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 var
   RGB: TdzRgbTriple;
 begin
-  RGB.SetColor(_Color);
-  Result := RGB.GetFastLuminance;
+  TdzRgbTriple_SetColor(RGB, _Color);
+  Result := TdzRgbTriple_GetFastLuminance(RGB);
 end;
 
 function BestForegroundForColor(_Red, _Green, _Blue: Byte): TColor;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   if ColorBrightness(_Red, _Green, _Blue) < 123 then
     Result := clWhite
@@ -2192,6 +2295,9 @@ begin
 end;
 
 function BestForegroundForColor(_Color: TColor): TColor;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   if ColorBrightness(_Color) < 123 then
     Result := clWhite
@@ -2322,6 +2428,9 @@ begin
 end;
 
 function RainbowColor(_MinHue, _MaxHue, _Hue: Integer): TColor; overload;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 // taken from https://stackoverflow.com/a/19719171/49925
 begin
   Result := RainbowColor((_Hue - _MinHue) / (_MaxHue - _MinHue + 1));

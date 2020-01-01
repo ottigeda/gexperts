@@ -236,6 +236,31 @@ procedure StrReadLn(var _f: file; _p: PChar);
 /// length. </summary>
 procedure StrReadZ(var _f: file; _p: PChar);
 
+{$IF not Declared(PosEx)}
+function PosEx(const SubStr, S: string; Offset: Integer = 1): Integer;
+{$DEFINE POSEX_IMPLEMENTATION_REQUIRED}
+{$IFEND}
+
+{$IF not Declared(SameStr)}
+function SameStr(const _s1, _s2: string): Boolean;
+{$DEFINE SAMESTR_IMPLEMENTATION_REQUIRED}
+{$IFEND}
+
+{$IF not Declared(StartsText)}
+function StartsText(const _Start, _s: string): Boolean;
+{$DEFINE STARTSTEXT_IMPLEMENTATION_REQUIRED}
+{$IFEND}
+
+{$IF not Declared(ContainsStr)}
+function ContainsStr(const _Text, _SubText: string): Boolean;
+{$DEFINE CONTAINSSTR_IMPLEMENTATION_REQUIRED}
+{$IFEND}
+
+{$IF not Declared(ReplaceStr)}
+function ReplaceStr(const _Text, _FromText, _ToText: string): string;
+{$DEFINE REPLACESTR_IMPLEMENTATION_REQUIRED}
+{$IFEND}
+
 ///</summary>
 /// @Returns true if Searched starts with the string Match. </summary>
 function MatchStr(const _Searched, _Match: string): Boolean;
@@ -383,6 +408,7 @@ function Copy(const _s: string; _Pos: Integer): string; overload;
 ///<summary>
 /// Converts Tab characters into SpcCount spaces </summary>
 function Tab2Spaces(const _s: string; _SpcCount: Integer): string;
+
 function StartsWith(const _Start, _s: string): Boolean;
 function EndsWith(const _End, _s: string): Boolean;
 
@@ -395,10 +421,12 @@ function UnquoteString(const _s: string; _Quote: Char = '"'): string;
 /// @returns the string, if it isn't NIL or 'NULL' if it is. </summary>
 function StringOrNull(_p: PChar): string;
 
+{$IF Declared(TFormatSettings)}
 ///<summary>
 /// @returns the default locale settings as read from the system's regional settings </summary>
 function GetUserDefaultLocaleSettings: TFormatSettings;
 function GetSystemDefaultLocaleSettings: TFormatSettings;
+{$IFEND}
 
 ///<summary>
 /// Read the content of the file into a string and return it </summary>
@@ -415,7 +443,10 @@ implementation
 uses
   u_dzConvertUtils;
 
-function _(const _s: string): string; inline;
+function _(const _s: string): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := dzDGetText(_s, 'dzlib');
 end;
@@ -563,7 +594,7 @@ end;
 function ExtractFirstN(var _s: string; _n: Integer): string;
 begin
   Result := Copy(_s, 1, _n);
-  _s := Copy(_s, _n + 1);
+  _s := TailStr(_s, _n + 1);
 end;
 
 // Note: _s cannot be const, because it is passed to ExtractFirstWord which needs a var parameter
@@ -709,6 +740,34 @@ begin
   else
     Result := _s;
 end;
+
+{$IFDEF SAMESTR_IMPLEMENTATION_REQUIRED}
+function SameStr(const _s1, _s2: string): Boolean;
+begin
+  Result := (_s1 = _s2);
+end;
+{$ENDIF}
+
+{$IFDEF STARTSTEXT_IMPLEMENTATION_REQUIRED}
+function StartsText(const _Start, _s: string): Boolean;
+begin
+  Result := UStartsWith(_Start, _s);
+end;
+{$ENDIF}
+
+{$IFDEF CONTAINSSTR_IMPLEMENTATION_REQUIRED}
+function ContainsStr(const _Text, _SubText: string): Boolean;
+begin
+  Result := (Pos(_SubText, _Text) > 0);
+end;
+{$ENDIF}
+
+{$IFDEF REPLACESTR_IMPLEMENTATION_REQUIRED}
+function ReplaceStr(const _Text, _FromText, _ToText: string): string;
+begin
+  Result := StringReplace(_Text, _FromText, _ToText, [rfReplaceAll]);
+end;
+{$ENDIF}
 
 function MatchStr(const _Searched, _Match: string): Boolean;
 begin
@@ -1044,12 +1103,118 @@ begin
     Result := TailStr(_s, p + Length(_Delimiter));
 end;
 
+{$IFDEF POSEX_IMPLEMENTATION_REQUIRED}
+
+(* ***** BEGIN LICENSE BLOCK *****
+ *
+ * The function PosEx is licensed under the CodeGear license terms.
+ *
+ * The initial developer of the original code is Fastcode
+ *
+ * Portions created by the initial developer are Copyright (C) 2002-2004
+ * the initial developer. All Rights Reserved.
+ *
+ * Contributor(s): Aleksandr Sharahov
+ *
+ * ***** END LICENSE BLOCK ***** *)
+function PosEx(const SubStr, S: string; Offset: Integer = 1): Integer;
+asm
+       test  eax, eax
+       jz    @Nil
+       test  edx, edx
+       jz    @Nil
+       dec   ecx
+       jl    @Nil
+
+       push  esi
+       push  ebx
+
+       mov   esi, [edx-4]  //Length(Str)
+       mov   ebx, [eax-4]  //Length(Substr)
+       sub   esi, ecx      //effective length of Str
+       add   edx, ecx      //addr of the first char at starting position
+       cmp   esi, ebx
+       jl    @Past         //jump if EffectiveLength(Str)<Length(Substr)
+       test  ebx, ebx
+       jle   @Past         //jump if Length(Substr)<=0
+
+       add   esp, -12
+       add   ebx, -1       //Length(Substr)-1
+       add   esi, edx      //addr of the terminator
+       add   edx, ebx      //addr of the last char at starting position
+       mov   [esp+8], esi  //save addr of the terminator
+       add   eax, ebx      //addr of the last char of Substr
+       sub   ecx, edx      //-@Str[Length(Substr)]
+       neg   ebx           //-(Length(Substr)-1)
+       mov   [esp+4], ecx  //save -@Str[Length(Substr)]
+       mov   [esp], ebx    //save -(Length(Substr)-1)
+       movzx ecx, byte ptr [eax] //the last char of Substr
+
+@Loop:
+       cmp   cl, [edx]
+       jz    @Test0
+@AfterTest0:
+       cmp   cl, [edx+1]
+       jz    @TestT
+@AfterTestT:
+       add   edx, 4
+       cmp   edx, [esp+8]
+       jb   @Continue
+@EndLoop:
+       add   edx, -2
+       cmp   edx, [esp+8]
+       jb    @Loop
+@Exit:
+       add   esp, 12
+@Past:
+       pop   ebx
+       pop   esi
+@Nil:
+       xor   eax, eax
+       ret
+@Continue:
+       cmp   cl, [edx-2]
+       jz    @Test2
+       cmp   cl, [edx-1]
+       jnz   @Loop
+@Test1:
+       add   edx,  1
+@Test2:
+       add   edx, -2
+@Test0:
+       add   edx, -1
+@TestT:
+       mov   esi, [esp]
+       test  esi, esi
+       jz    @Found
+@String:
+       movzx ebx, word ptr [esi+eax]
+       cmp   bx, word ptr [esi+edx+1]
+       jnz   @AfterTestT
+       cmp   esi, -2
+       jge   @Found
+       movzx ebx, word ptr [esi+eax+2]
+       cmp   bx, word ptr [esi+edx+3]
+       jnz   @AfterTestT
+       add   esi, 4
+       jl    @String
+@Found:
+       mov   eax, [esp+4]
+       add   edx, 2
+
+       cmp   edx, [esp+8]
+       ja    @Exit
+
+       add   esp, 12
+       add   eax, edx
+       pop   ebx
+       pop   esi
+end;
+{$ENDIF}
+
 function PosStr(const _SubStr, _s: string; _Start: Integer): Integer;
 begin
   Result := PosEx(_SubStr, _s, _Start);
-  //  Result := Pos(_SubStr, TailStr(_s, _Start));
-  //  if Result > 0 then
-  //    Result := Result + _Start - 1;
 end;
 
 function FindString(const _SubStr, _Str: string; var _Head, _Tail: string): Boolean;
@@ -1129,6 +1294,7 @@ begin
     Result := 'NULL'; // do not translate
 end;
 
+{$IF Declared(TFormatSettings)}
 function GetSystemDefaultLocaleSettings: TFormatSettings;
 begin
 {$IFDEF RTL220_UP}
@@ -1146,6 +1312,7 @@ begin
   GetLocaleFormatSettings(GetUserDefaultLCID, Result);
 {$ENDIF}
 end;
+{$IFEND}
 
 function ZeroPadLeft(_Value: Integer; _Len: Integer): string;
 var

@@ -229,7 +229,10 @@ uses
   u_dzStringUtils,
   u_dzConvertUtils;
 
-function _(const _s: string): string; inline;
+function _(const _s: string): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := dzDGetText(_s, 'dzlib');
 end;

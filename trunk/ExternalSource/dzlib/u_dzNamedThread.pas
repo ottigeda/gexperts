@@ -51,7 +51,9 @@ type
 
 implementation
 
+{$IFDEF SUPPORTS_UNSAFE_WARNINGS}
 {$WARN UNSAFE_CODE OFF}
+{$ENDIF}
 
 procedure SetThreadName(const _Name: AnsiString);
 var

@@ -29,7 +29,7 @@ type
 implementation
 
 uses
-  StrUtils;
+  StrUtils, u_dzStringUtils;
 
 { TMapFileReader }
 

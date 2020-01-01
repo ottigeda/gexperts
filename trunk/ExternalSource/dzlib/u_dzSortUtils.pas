@@ -1,5 +1,8 @@
 unit u_dzSortUtils;
 
+{$INCLUDE 'dzlib.inc'}
+{$INCLUDE 'dzlibjedi.inc'}
+
 interface
 
 // To use any of the sorting algorithms, you need to supply either the two callbacks
@@ -34,7 +37,11 @@ type
   end;
 
 type
-  IQSDataHandler = ISortDataHandler deprecated; // use ISortDataHandler instead
+  IQSDataHandler = ISortDataHandler
+{$IFDEF SUPPORTS_DEPRECATED_TYPES}
+  deprecated // use ISortDataHandler instead
+{$ENDIF}
+  ;
 
 implementation
 

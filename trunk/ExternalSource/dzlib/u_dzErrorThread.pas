@@ -20,6 +20,12 @@ type
     FExceptionClass: TClass;
     FErrorMessage: string;
     FHasFinished: Boolean;
+{$IF not Declared(SyncEvent)}
+    // In Delphi 6 these are private in TThread so we can't simply access them but must implement
+    // them ourselves.
+    procedure CheckThreadError(ErrCode: Integer); overload;
+    procedure CheckThreadError(Success: Boolean); overload;
+{$IFEND}
   protected
     ///<summary>
     /// Calls inherited to set the thread name and then the doExecute method.
@@ -35,7 +41,7 @@ type
     /// @param TimeoutMsecs is the desired timeout in milliseconds
     /// @param ReturnValue is the result of the thread procecedure (the ReturnValue property
     ///                    of TThread). Only valid if Result = True.
-    /// @retursn True, if the thread has terminated, False otherwise. </summary>
+    /// @returns True, if the thread has terminated, False otherwise. </summary>
     function WaitFor(_TimeoutMsecs: DWORD; out _ReturnValue: DWORD): Boolean; overload;
     function WaitFor(_TimeoutMsecs: DWORD): Boolean; overload;
     ///<summary>
@@ -53,7 +59,24 @@ type
 
 implementation
 
+uses
+  RTLConsts;
+
 { TErrorThread }
+
+{$IF not Declared(SyncEvent)}
+procedure TErrorThread.CheckThreadError(ErrCode: Integer);
+begin
+  if ErrCode <> 0 then
+    raise EThread.CreateFmt(SThreadError, [SysErrorMessage(ErrCode), ErrCode]);
+end;
+
+procedure TErrorThread.CheckThreadError(Success: Boolean);
+begin
+  if not Success then
+    CheckThreadError(GetLastError);
+end;
+{$IFEND}
 
 procedure TErrorThread.doExecute;
 begin
@@ -84,6 +107,8 @@ var
 begin
   Result := WaitFor(_TimeoutMsecs, Dummy);
 end;
+
+{$IF Declared(SyncEvent)}
 
 function TErrorThread.WaitFor(_TimeoutMsecs: DWORD; out _ReturnValue: DWORD): Boolean;
 var
@@ -119,5 +144,44 @@ begin
   if Result then
     CheckThreadError(GetExitCodeThread(H[0], _ReturnValue));
 end;
+
+{$ELSE}
+// Delphi 6 did not have a SyncEvent variable (later versions declare it in Classes)
+
+function TErrorThread.WaitFor(_TimeoutMsecs: DWORD; out _ReturnValue: DWORD): Boolean;
+var
+  H: THandle;
+  WaitResult: Cardinal;
+  Msg: TMsg;
+begin
+  H := Handle;
+  if GetCurrentThreadID = MainThreadID then begin
+    WaitResult := 0;
+    repeat
+      { This prevents a potential deadlock if the background thread
+        does a SendMessage to the foreground thread }
+      if WaitResult = WAIT_OBJECT_0 + 1 then
+        PeekMessage(Msg, 0, 0, 0, PM_NOREMOVE);
+      if _TimeoutMsecs = INFINITE then begin
+        WaitResult := MsgWaitForMultipleObjects(2, H, False, 1000, QS_SENDMESSAGE)
+      end else begin
+        WaitResult := MsgWaitForMultipleObjects(1, H, False, _TimeoutMsecs, QS_SENDMESSAGE);
+      end;
+      CheckThreadError(WaitResult <> WAIT_FAILED);
+      if WaitResult = WAIT_OBJECT_0 + 1 then
+        CheckSynchronize;
+      Result := (WaitResult = WAIT_OBJECT_0);
+    until Result or (_TimeoutMsecs <> INFINITE);
+  end else begin
+    WaitResult := WaitForSingleObject(H, _TimeoutMsecs);
+    Result := True;
+    if WaitResult = WAIT_FAILED then
+      RaiseLastOSError;
+    Result := (WaitResult <> WAIT_TIMEOUT);
+  end;
+  if Result then
+    CheckThreadError(GetExitCodeThread(H, _ReturnValue));
+end;
+{$IFEND}
 
 end.

@@ -167,30 +167,31 @@ type
 
 type
   /// <summary>
+  /// possible return values for the callback function </summary>
+  TCopyProgressResult = (
+    prContinue, // continue with the copy/move operation
+    prCancel, // cancel the operation, cannot be resumed
+    prStop, // stop the operation, can be resumed, if cfwRestartable was passed
+    prQuiet); // continue the operation, do not call the callback
+
+  /// <summary>
+  /// reason for calling the callback function </summary>
+  TCopyProgressReason = (
+    prChunkFinished, // a chunk of the file has been copied
+    prStreamSwitch); // started to copy a new stream (set in the first callback)
+
+type
+  /// <summary>
   /// Represents the status of a CopyFile/MoveFileWithProgress operation, passed
   /// as parameter to the callback function. </summary>
   TCopyProgressStatus = class
-  public
-    type
-      /// <summary>
-      /// possible return values for the callback function </summary>
-      TProgressResult = (
-        prContinue, // continue with the copy/move operation
-        prCancel, // cancel the operation, cannot be resumed
-        prStop, // stop the operation, can be resumed, if cfwRestartable was passed
-        prQuiet); // continue the operation, do not call the callback
-      /// <summary>
-      /// reason for calling the callback function </summary>
-      TProgressReason = (
-        prChunkFinished, // a chunk of the file has been copied
-        prStreamSwitch); // started to copy a new stream (set in the first callback)
   protected
     FTotalFileSize: LARGE_INTEGER;
     FTotalBytesTransferred: LARGE_INTEGER;
     FStreamSize: LARGE_INTEGER;
     FStreamBytesTransferred: LARGE_INTEGER;
     FStreamNumber: LongWord;
-    FCallbackReason: TProgressReason;
+    FCallbackReason: TCopyProgressReason;
     FSourceFile: THandle;
     FDestinationFile: THandle;
   public
@@ -211,7 +212,7 @@ type
     property StreamNumber: LongWord read FStreamNumber;
     /// <summary>
     /// reason for callback </summary>
-    property CallbackReason: TProgressReason read FCallbackReason;
+    property CallbackReason: TCopyProgressReason read FCallbackReason;
     /// <summary>
     /// Handle of source file </summary>
     property SourceFile: THandle read FSourceFile;
@@ -226,7 +227,7 @@ type
   ///  @param Continue determines whether to continue copying or aborting, defaults
   ///         to prContinue </summary>
   TCopyFileProgressEvt = procedure(_Status: TCopyProgressStatus;
-    var _Continue: TCopyProgressStatus.TProgressResult) of object;
+    var _Continue: TCopyProgressResult) of object;
 
   /// <summary>
   /// defines the action to take if a file already exists but has a different content </summary>
@@ -269,7 +270,7 @@ type
     procedure doOnSyncingFile(const _SrcFile, _DstFile: string; _Total, _Done: Int64);
     function doOnFileExists(const _SrcDir, _DstDir, _Filename: string): TFileExistsAction;
     function doOnQueryFileSync(const _SrcFile, _DstFile: string): TQueryFileSyncAction;
-    procedure ProgressStatusCallback(_Status: TCopyProgressStatus; var _Continue: TCopyProgressStatus.TProgressResult);
+    procedure ProgressStatusCallback(_Status: TCopyProgressStatus; var _Continue: TCopyProgressResult);
   public
     /// <summary>
     /// Checks if there are files in the source directory that are already in
@@ -316,40 +317,46 @@ type
     function PathBS: string;
   end;
 
+type
+  TCopyFileFlags = (cfFailIfExists, cfForceOverwrite, cfRaiseException);
+  TCopyFileFlagSet = set of TCopyFileFlags;
+  TCopyFileFlagIfExists = (cfeFailIfExists, cfeOverwriteIfExists);
+  TCopyFileFlagOverwriteReadonly = (cforDoNotOverwriteReadonly, cforOverwriteReadonly);
+  TMoveFileExFlags = (mfCopyAllowed, {mfCreateHardlink,}mfDelayUntilReboot, mfFailIfNotTrackable,
+    mfReplaceExisting, mfWriteThrough);
+  TMoveFileExFlagSet = set of TMoveFileExFlags;
+  TMatchingFileResult = (mfNotFound, mfDirectory, mfFile, mfSpecial);
+  TCopyFileWithProgressRestartable = (cfwrNotRestartable, cfwrRestartable);
+  TCopyFileWithProgressFlags = (cfwFailIfExists, cfwRestartable, cfwRaiseException);
+  TCopyFileWithProgressFlagSet = set of TCopyFileWithProgressFlags;
+  TCopyFileWithProgressResult = (cfwOK, cfwAborted, cfwError);
+  TMoveFileWithProgressFlags = (
+    mfwFailIfExists, /// < fail if the destination file already exists
+    mfwAllowCopy, /// < allow using copy and delete if necessary
+    mfwDelayUntilReboot, /// < wait until next reboot for moving the file
+    mfwWriteThrough, /// < Setting this value guarantees that a move performed as a copy and delete operation is flushed to disk before the function returns.
+    mfwFailIfNotTrackable, /// < The function fails if the source file is a link source, but the file cannot be tracked after the move.
+    mfwRaiseException); /// < raise an exception if there is an error
+  TMoveFileWithProgressFlagSet = set of TMoveFileWithProgressFlags;
+  TCopyDirCreateIntermediate = (cdciCreateIntermediate, cdciDoNotCreateIntermediate);
+
+const
+  /// <summary>
+  /// set of char constant containing all characters that are invalid in a filename </summary>
+  INVALID_FILENAME_CHARS: set of AnsiChar = ['\', '/', ':', '*', '?', '"', '<', '>', '|'];
+
+type
   /// <summary>
   /// This class owns all utility functions as class methods so they don't pollute the name space </summary>
   TFileSystem = class
   public
-    type
-      TCopyFileFlags = (cfFailIfExists, cfForceOverwrite, cfRaiseException);
-      TCopyFileFlagSet = set of TCopyFileFlags;
-      TCopyFileFlagIfExists = (cfeFailIfExists, cfeOverwriteIfExists);
-      TCopyFileFlagOverwriteReadonly = (cforDoNotOverwriteReadonly, cforOverwriteReadonly);
-      TMoveFileExFlags = (mfCopyAllowed, {mfCreateHardlink,} mfDelayUntilReboot, mfFailIfNotTrackable,
-        mfReplaceExisting, mfWriteThrough);
-      TMoveFileExFlagSet = set of TMoveFileExFlags;
-      TMatchingFileResult = (mfNotFound, mfDirectory, mfFile, mfSpecial);
-      TCopyFileWithProgressRestartable = (cfwrNotRestartable, cfwrRestartable);
-      TCopyFileWithProgressFlags = (cfwFailIfExists, cfwRestartable, cfwRaiseException);
-      TCopyFileWithProgressFlagSet = set of TCopyFileWithProgressFlags;
-      TCopyFileWithProgressResult = (cfwOK, cfwAborted, cfwError);
-      TMoveFileWithProgressFlags = (
-        mfwFailIfExists, /// < fail if the destination file already exists
-        mfwAllowCopy, /// < allow using copy and delete if necessary
-        mfwDelayUntilReboot, /// < wait until next reboot for moving the file
-        mfwWriteThrough, /// < Setting this value guarantees that a move performed as a copy and delete operation is flushed to disk before the function returns.
-        mfwFailIfNotTrackable, /// < The function fails if the source file is a link source, but the file cannot be tracked after the move.
-        mfwRaiseException); /// < raise an exception if there is an error
-      TMoveFileWithProgressFlagSet = set of TMoveFileWithProgressFlags;
-      TCopyDirCreateIntermediate = (cdciCreateIntermediate, cdciDoNotCreateIntermediate);
-    const
-      /// <summary>
-      /// set of char constant containing all characters that are invalid in a filename </summary>
-      INVALID_FILENAME_CHARS: set of AnsiChar = ['\', '/', ':', '*', '?', '"', '<', '>', '|'];
     class function CheckAccessToFile(DesiredAccess: DWORD; const Filename: WideString): Boolean;
     ///<summary>
     /// wraps the windows API function GetFullPathName </summary>
-    class function GetFullPathName(const _fn: string): string; static;
+    class function GetFullPathName(const _fn: string): string;
+{$IFDEF SUPPORTS_STATIC}
+     static;
+{$ENDIF}
     /// <summary>
     /// Returns a temporary filename.
     /// @param Directory is a string with the directory to create the file in, defaults
@@ -841,6 +848,7 @@ type
     /// @Returns true if the file exists and is writable </summary>
     class function IsFileWritable(const _Filename: string): Boolean;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
     /// <summary>
     /// creates a backup of the file appending the current date and time to the base
     /// file name. If the copy operation fails, an underscore and a number will be appended
@@ -854,14 +862,17 @@ type
     /// @returns the full filename of the created backup file
     /// @raises EBackupFailed if the copy operation failed even for the 1000th attempt. </summary>
     class function BackupFile(const _Filename: string; const _BackupDir: string = ''): string;
-
+{$ENDIF}
     ///<summary>
     /// Generates a backup of the filename by appending the current date and time to the base
     /// @param Filename is the name of the file to back up
     /// @param BackupDir is a directory in which to create the backup file, if empty
     ///                  the same directory as the original file is used
     /// @returns the full filename for the backup file </summary>
-    class function GenerateBackupFilename(const _Filename: string; _BackupDir: string = ''): string; static;
+    class function GenerateBackupFilename(const _Filename: string; _BackupDir: string = ''): string;
+{$IFDEF SUPPORTS_STATIC}
+     static;
+{$ENDIF}
 
     ///<summary>
     /// Uses kernel32.GetFullPathName and then compares the result using SameText.
@@ -877,20 +888,38 @@ type
     /// @param DateTime is a TDateTime value to append
     /// @param IncludeTime determines whether to append the date only or date and time
     /// see also AppendDate and AppendDateAndTime </summary>
-    class function AppendDateTime(const _Filename: string; _DateTime: TDateTime; _IncludeTime: Boolean): string; overload; static;
+    class function AppendDateTime(const _Filename: string; _DateTime: TDateTime; _IncludeTime: Boolean): string; overload;
+{$IFDEF SUPPORTS_STATIC}
+     static;
+{$ENDIF}
 
     ///<summary>
     /// Appends the current date to the filename in the format _YYYY-MM-DD </summary>
-    class function AppendDate(const _Filename: string): string; overload; static;
+    class function AppendDate(const _Filename: string): string; overload;
+{$IFDEF SUPPORTS_STATIC}
+     static;
+{$ENDIF}
+
     ///<summary>
     /// Appends the given date to the filename in the format _YYYY-MM-DD </summary>
-    class function AppendDate(const _Filename: string; _Date: TDateTime): string; overload; static;
+    class function AppendDate(const _Filename: string; _Date: TDateTime): string; overload;
+{$IFDEF SUPPORTS_STATIC}
+     static;
+{$ENDIF}
+
     ///<summary>
     /// Appends the current date and time to the filename in the format _YYYY-MM-DD_HH-MM-SS </summary>
-    class function AppendDateAndTime(const _Filename: string): string; overload; static;
+    class function AppendDateAndTime(const _Filename: string): string; overload;
+{$IFDEF SUPPORTS_STATIC}
+     static;
+{$ENDIF}
+
     ///<summary>
     /// Appends the given date and time to the filename in the format _YYYY-MM-DD_HH-MM-SS </summary>
-    class function AppendDateAndTime(const _Filename: string; _DateTime: TDateTime): string; overload; static;
+    class function AppendDateAndTime(const _Filename: string; _DateTime: TDateTime): string; overload;
+{$IFDEF SUPPORTS_STATIC}
+     static;
+{$ENDIF}
 
     /// <summary>
     /// @returns a TFileInfoRec containing the filename, filesize and last access
@@ -946,6 +975,7 @@ type
     class function RemoveFileExtLast(const _Filename: string): string;
   end;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 type
   TFilename = record
   private
@@ -1070,17 +1100,18 @@ type
     class operator Add(_a, _b: TSearchPath): TSearchPath;
     class operator Add(_a: TSearchPath; const _b: string): TSearchPath;
   end;
+{$ENDIF}
+
+type
+  /// <summary>
+  /// callback event for generating a filename for the given generation </summary>
+  TOnGenerateFilename = procedure(_Sender: TObject; _Generation: Integer; var _Filename: string) of object;
 
 type
   /// <summary>
   /// This class handles keeping generations of files, e.g. log files. The default
   /// is to keep 10 generations </summary>
   TFileGenerationHandler = class
-  public
-    type
-      /// <summary>
-      /// callback event for generating a filename for the given generation </summary>
-      TOnGenerateFilename = procedure(_Sender: TObject; _Generation: Integer; var _Filename: string) of object;
   private
     FBaseName: string;
     FSuffix: string;
@@ -1122,11 +1153,11 @@ type
 
 /// <summary>
 /// This is an abbreviation for IncludeTrailingPathDelimiter </summary>
-function itpd(const _DirName: string): string; inline;
+function itpd(const _DirName: string): string;
 
 ///<summary>
 /// This is an abbreviation for ExcludeTrailingPathDelimiter </summary>
-function etpd(const _DirName: string): string; inline;
+function etpd(const _DirName: string): string;
 
 ///<summary>
 /// Assign a filename and open the file.
@@ -1146,17 +1177,26 @@ uses
   u_dzDateUtils,
   u_dzFileStreams;
 
-function _(const _s: string): string; inline;
+function _(const _s: string): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := dzDGetText(_s, 'dzlib');
 end;
 
-function itpd(const _DirName: string): string; inline;
+function itpd(const _DirName: string): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := IncludeTrailingPathDelimiter(_DirName);
 end;
 
-function etpd(const _DirName: string): string; inline;
+function etpd(const _DirName: string): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := ExcludeTrailingPathDelimiter(_DirName);
 end;
@@ -1872,6 +1912,7 @@ begin
   Result := _BackupDir + Base + '_' + ReplaceChars(DateTime2Iso(Now, True), ': ', '-_') + Ext;
 end;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 class function TFileSystem.BackupFile(const _Filename: string; const _BackupDir: string = ''): string;
 var
   i: Integer;
@@ -1900,6 +1941,7 @@ begin
       + BackupFilename.Extension;
   end;
 end;
+{$ENDIF}
 
 class function TFileSystem.ContainsWildcard(const _Mask: string): Boolean;
 begin
@@ -1962,7 +2004,7 @@ end;
 
 type
   TProgressRedir = class(TCopyProgressStatus)
-  strict private
+  private
     FOnProgress: TCopyFileProgressEvt;
   private
     FCancelFlag: BOOL;
@@ -1970,7 +2012,7 @@ type
     FExceptAddr: Pointer;
     FExceptMsg: string;
     FExceptClass: string;
-    function doProgress(): TCopyProgressStatus.TProgressResult;
+    function doProgress(): TCopyProgressResult;
   public
     constructor Create(_OnProgress: TCopyFileProgressEvt);
   end;
@@ -2098,6 +2140,7 @@ end;
 class function TFileSystem.CopyMatchingFiles(const _Mask, _SrcDir, _DestDir: string;
   _Flags: TCopyFileFlagSet; _FilesSkipped: TStrings = nil): Integer;
 var
+  i: integer;
   Files: TStringList;
   s: string;
   SrcDirBs: string;
@@ -2109,7 +2152,8 @@ begin
   Files := TStringList.Create;
   try
     TSimpleDirEnumerator.Execute(SrcDirBs + _Mask, Files, [dfaHidden, dfaSysFile, dfaArchive]);
-    for s in Files do begin
+    for i := 0 to Files.Count -1 do begin
+      s := Files[i];
       if Self.CopyFile(SrcDirBs + s, DestDirBS + s, _Flags) then
         Inc(Result)
       else begin
@@ -2687,7 +2731,7 @@ begin
   FOnProgress := _OnProgress;
 end;
 
-function TProgressRedir.doProgress(): TCopyProgressStatus.TProgressResult;
+function TProgressRedir.doProgress(): TCopyProgressResult;
 begin
   Result := prContinue;
   try
@@ -2911,7 +2955,7 @@ begin
 end;
 
 procedure TDirectorySync.ProgressStatusCallback(_Status: TCopyProgressStatus;
-  var _Continue: TCopyProgressStatus.TProgressResult);
+  var _Continue: TCopyProgressResult);
 begin
   try
     doOnSyncingFile(FCurrentSource, FCurrentDest, _Status.TotalFileSize.QuadPart, _Status.TotalBytesTransferred.QuadPart);
@@ -3078,6 +3122,7 @@ begin
   TTextRec(_File).Mode := 0;
 end;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 { TFilename }
 
 class operator TFilename.Implicit(const _s: string): TFilename;
@@ -3552,6 +3597,7 @@ function TSearchPath.Value: string;
 begin
   Result := FValue;
 end;
+{$ENDIF}
 
 initialization
   // according to MSDN:

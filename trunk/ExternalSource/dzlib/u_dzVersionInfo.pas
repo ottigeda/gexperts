@@ -27,6 +27,7 @@ type
     Revision: Integer;
     Build: Integer;
     IsValid: Boolean;
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
     procedure CheckValid;
     procedure Init(_Major, _Minor, _Revision, _Build: Integer);
     class operator GreaterThan(_a, _b: TFileVersionRec): Boolean;
@@ -35,6 +36,7 @@ type
     class operator NotEqual(_a, _b: TFileVersionRec): Boolean;
     class operator LessThan(_a, _b: TFileVersionRec): Boolean;
     class operator LessThanOrEqual(_a, _b: TFileVersionRec): Boolean;
+{$ENDIF}
   end;
 
 type
@@ -71,25 +73,26 @@ type
   end;
 
 type
+  TEXEVersionData = record
+    CompanyName,
+      FileDescription,
+      FileVersion,
+      InternalName,
+      LegalCopyRight,
+      LegalTradeMarks,
+      OriginalFilename,
+      ProductName,
+      ProductVersion,
+      Comments,
+      PrivateBuild,
+      SpecialBuild: string;
+  end;
+
+type
   ///<summary> abstract ancestor, do not instantiate this class, instantiate one of
   ///          the derived classes below </summary>
   TCustomFileInfo = class(TInterfacedObject)
   private
-    type
-      TEXEVersionData = record
-        CompanyName,
-          FileDescription,
-          FileVersion,
-          InternalName,
-          LegalCopyRight,
-          LegalTradeMarks,
-          OriginalFilename,
-          ProductName,
-          ProductVersion,
-          Comments,
-          PrivateBuild,
-          SpecialBuild: string;
-      end;
   private
     FAllowExceptions: Boolean;
     FFilename: string;
@@ -413,6 +416,7 @@ begin
   FFilename := GetModuleFilename;
 end;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 { TFileVersionRec }
 
 procedure TFileVersionRec.CheckValid;
@@ -492,6 +496,7 @@ begin
 
   Result := not (_a = _b);
 end;
+{$ENDIF}
 
 { TDummyFileInfo }
 

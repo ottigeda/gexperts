@@ -1,7 +1,11 @@
 {.GXFormatter.config=twm}
-/// <summary> implements some utility functions for converting TDateTime to and from strings
-///           in ISO 6801 format (note that these functions do not implement the complete
-///           standard but only the extended form without omitting date parts). </summary>
+///<summary>
+/// Implements some utility functions for converting TDateTime to and from strings
+/// in ISO 6801 format (note that these functions do not implement the complete
+/// standard but only the extended form without omitting date parts).
+/// NOTE: Many of these function rely on passing a TFormatSettings parameter to RTL
+///       functions. Since TFormatSettings is not available in Delphi 6 these functions
+///       are also not available. </summary>
 unit u_dzDateUtils;
 
 {$I dzlibjedi.inc}
@@ -48,9 +52,10 @@ function Month2Str(_Month: TMonthNumbers): string;
 /// @returns a string with the date (and optionally the time) in the format
 ///          'yyyy-mm-dd hh:mm:ss'
 /// </summary>
-function DateTime2Iso(_dt: TDateTime; _IncludeTime: Boolean = False): string; inline;
-function Date2Iso(_Date: TDateTime): string; inline;
+function DateTime2Iso(_dt: TDateTime; _IncludeTime: Boolean = False): string;
+function Date2Iso(_Date: TDateTime): string;
 
+{$IF Declared(TFormatSettings)}
 /// <summary>
 /// Converts the time part of a TDateTime value to a string in ISO 8601 format
 /// @param dt is the TDateTime value to convert
@@ -63,7 +68,10 @@ function Date2Iso(_Date: TDateTime): string; inline;
 ///          'hh:mm:ss.nnn'
 /// </summary>
 function Time2Iso(_dt: TDateTime; _IncludeSeconds: Boolean = True;
-  _IncludeMilliSeconds: Boolean = False; _Separator: Char = #0): string; inline;
+  _IncludeMilliSeconds: Boolean = False; _Separator: Char = #0): string;
+{$IFEND}
+
+{$IF Declared(TFormatSettings)}
 /// <summary>
 /// converts a string that contains a time in ISO 8601 format to a TDateTime value
 /// @param s is the string to convert, it must be in the form 'hh:mm:ss' or 'hh:mm'
@@ -72,7 +80,11 @@ function Time2Iso(_dt: TDateTime; _IncludeSeconds: Boolean = True;
 ///       Time2Iso, e.g. 00:00:00.999.
 /// </summary>
 function Iso2Time(const _s: string): TDateTime;
+{$IFEND}
+
+{$IF Declared(TFormatSettings)}
 function TryIso2Time(const _s: string; out _Time: TDateTime): Boolean;
+{$IFEND}
 
 ///<summary>
 /// Assumes the format hhhh<separator>mm where separator can be #0 meaning no separator
@@ -82,6 +94,7 @@ function TryIso2Time(const _s: string; out _Time: TDateTime): Boolean;
 /// TryHHmm2Hours('234h', 'h') and TryHHmm2Hours('234h00', 'h') are both valid. </summary>
 function TryHHmm2Hours(const _s: string; out _Hours: Extended; const _Separator: Char = #0): Boolean;
 
+{$IF Declared(TFormatSettings)}
 /// <summary>
 /// converts a string that contains a date in ISO 8601 format to a TDateTime value
 /// @param s is the string to convert, it must be in the form 'yyyy-mm-dd' or 'yyyymmdd', it must
@@ -90,7 +103,9 @@ function TryHHmm2Hours(const _s: string; out _Hours: Extended; const _Separator:
 /// </summary>
 function Iso2Date(const _s: string): TDateTime;
 function TryIso2Date(const _s: string; out _Date: TDateTime): Boolean;
+{$IFEND}
 
+{$IF Declared(TFormatSettings)}
 /// <summary>
 /// converts a string that contains a date and time in ISO 8601 format to a TDateTime value
 /// @param s is the string to convert, it must be in the form 'yyyy-mm-dd hh:mm[:ss]'
@@ -98,7 +113,9 @@ function TryIso2Date(const _s: string; out _Date: TDateTime): Boolean;
 /// </summary>
 function Iso2DateTime(const _s: string): TDateTime;
 function TryIso2DateTime(const _s: string; out _DateTime: TDateTime): Boolean;
+{$IFEND}
 
+{$IF Declared(TFormatSettings)}
 ///<summary>
 /// Tries to convert a date/time string to a TDateTime value.
 /// Date/time formats are tried in the following order:
@@ -109,17 +126,23 @@ function TryIso2DateTime(const _s: string; out _DateTime: TDateTime): Boolean;
 /// (I had to decide between the sane UK format or the brain dead US format, i chose the UK format.)
 ///  </summary>
 function TryStr2DateTime(const _s: string; out _DateTime: TDateTime): Boolean;
+{$IFEND}
 
+{$IF Declared(TFormatSettings)}
 ///<summary>
 /// Tries to convert a string that contains the date and time in
 /// German format (dd.mm.yyyy hh:mm:ss.zzz) to a TDateTimeValue
 /// @returns true, if the function succeeded, false if not </summary>
 function Tryddmmyyyyhhmmss2DateTime(const _s: string; out _DateTime: TDateTime): Boolean;
+{$IFEND}
 
 function Date2ddmmyyyy(_Date: TDateTime): string;
+{$IF Declared(TFormatSettings)}
 function ddmmyyyy2Date(const _s: string): TDateTime;
 function Tryddmmyyyy2Date(const _s: string; out _Date: TDateTime): Boolean;
+{$IFEND}
 
+{$IF Declared(TFormatSettings)}
 ///<summary>
 /// Tries to to convert a string to a date. Date formats are tried in the following order:
 /// * format configured in Windows
@@ -130,6 +153,7 @@ function Tryddmmyyyy2Date(const _s: string; out _Date: TDateTime): Boolean;
 ///  </summary>
 function TryStr2Date(const _s: string; out _dt: TDateTime): Boolean;
 function Str2Date(const _s: string): TDateTime;
+{$IFEND}
 
 implementation
 
@@ -139,7 +163,10 @@ uses
   DateUtils,
   u_dzStringUtils;
 
-function _(const _s: string): string; inline;
+function _(const _s: string): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := dzDGetText(_s, 'dzlib');
 end;
@@ -191,6 +218,9 @@ begin
 end;
 
 function DateTime2Iso(_dt: TDateTime; _IncludeTime: Boolean = False): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   if _IncludeTime then
     DateTimeToString(Result, 'yyyy-mm-dd hh:nn:ss', _dt) // do not translate
@@ -198,7 +228,10 @@ begin
     DateTimeToString(Result, 'yyyy-mm-dd', _dt); // do not translate
 end;
 
-function Date2Iso(_Date: TDateTime): string; inline;
+function Date2Iso(_Date: TDateTime): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := DateTime2Iso(_Date, False);
 end;
@@ -207,6 +240,8 @@ function Date2ddmmyyyy(_Date: TDateTime): string;
 begin
   DateTimeToString(Result, 'dd.mm.yyyy', _Date); // do not translate
 end;
+
+{$IF Declared(TFormatSettings)}
 
 function Tryddmmyyyy2Date(const _s: string; out _Date: TDateTime): Boolean;
 var
@@ -217,6 +252,9 @@ begin
   Settings.ShortDateFormat := 'dd.mm.yyyy'; // do not translate
   Result := TryStrToDate(_s, _Date, Settings);
 end;
+{$IFEND}
+
+{$IF Declared(TFormatSettings)}
 
 function ddmmyyyy2Date(const _s: string): TDateTime;
 var
@@ -227,9 +265,15 @@ begin
   Settings.ShortDateFormat := 'dd.mm.yyyy'; // do not translate
   Result := StrToDate(_s, Settings);
 end;
+{$IFEND}
+
+{$IF Declared(TFormatSettings)}
 
 function Time2Iso(_dt: TDateTime; _IncludeSeconds: Boolean = True;
-  _IncludeMilliSeconds: Boolean = False; _Separator: Char = #0): string; inline;
+  _IncludeMilliSeconds: Boolean = False; _Separator: Char = #0): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 var
   fmt: string;
   Settings: TFormatSettings;
@@ -245,6 +289,7 @@ begin
   end;
   DateTimeToString(Result, fmt, _dt, Settings);
 end;
+{$IFEND}
 
 function TryHHmm2Hours(const _s: string; out _Hours: Extended; const _Separator: Char = #0): Boolean;
 var
@@ -275,6 +320,8 @@ begin
     _Hours := hh + mm / 60;
 end;
 
+{$IF Declared(TFormatSettings)}
+
 function TryIso2Time(const _s: string; out _Time: TDateTime): Boolean;
 var
   Settings: TFormatSettings;
@@ -284,6 +331,9 @@ begin
   Settings.ShortTimeFormat := 'hh:nn:ss'; // do not translate
   Result := TryStrToTime(_s, _Time, Settings);
 end;
+{$IFEND}
+
+{$IF Declared(TFormatSettings)}
 
 function Iso2Time(const _s: string): TDateTime;
 var
@@ -294,6 +344,9 @@ begin
   Settings.ShortTimeFormat := 'hh:nn:ss'; // do not translate
   Result := StrToTime(_s, Settings);
 end;
+{$IFEND}
+
+{$IF Declared(TFormatSettings)}
 
 function TryIso2Date(const _s: string; out _Date: TDateTime): Boolean;
 var
@@ -318,12 +371,18 @@ begin
       Result := TryEncodeDate(Year, Month, Day, _Date);
   end;
 end;
+{$IFEND}
+
+{$IF Declared(TFormatSettings)}
 
 function Iso2Date(const _s: string): TDateTime;
 begin
   if not TryIso2Date(_s, Result) then
     raise EConvertError.CreateFmt(_('''%s'' is not a valid date'), [_s]);
 end;
+{$IFEND}
+
+{$IF Declared(TFormatSettings)}
 
 function TryIso2DateTime(const _s: string; out _DateTime: TDateTime): Boolean;
 var
@@ -336,6 +395,9 @@ begin
   Settings.ShortTimeFormat := 'hh:nn:ss.zzz'; // do not translate
   Result := TryStrToDateTime(_s, _DateTime, Settings);
 end;
+{$IFEND}
+
+{$IF Declared(TFormatSettings)}
 
 function Iso2DateTime(const _s: string): TDateTime;
 var
@@ -348,6 +410,9 @@ begin
   Settings.ShortTimeFormat := 'hh:nn:ss.zzz'; // do not translate
   Result := StrToDateTime(_s, Settings);
 end;
+{$IFEND}
+
+{$IF Declared(TFormatSettings)}
 
 function Tryddmmyyyyhhmmss2DateTime(const _s: string; out _DateTime: TDateTime): Boolean;
 var
@@ -360,6 +425,9 @@ begin
   Settings.ShortTimeFormat := 'hh:nn:ss.zzz'; // do not translate
   Result := TryStrToDateTime(_s, _DateTime, Settings);
 end;
+{$IFEND}
+
+{$IF Declared(TFormatSettings)}
 
 function TryStr2DateTime(const _s: string; out _DateTime: TDateTime): Boolean;
 begin
@@ -380,6 +448,9 @@ begin
         Result := False;
       end;
 end;
+{$IFEND}
+
+{$IF Declared(TFormatSettings)}
 
 function TryStr2Date(const _s: string; out _dt: TDateTime): Boolean;
 var
@@ -402,11 +473,14 @@ begin
           Result := False;
       end;
 end;
+{$IFEND}
 
+{$IF Declared(TFormatSettings)}
 function Str2Date(const _s: string): TDateTime;
 begin
   if not TryStr2Date(_s, Result) then
     raise EConvertError.CreateFmt(_('''%s'' is not a valid date'), [_s]);
 end;
+{$IFEND}
 
 end.

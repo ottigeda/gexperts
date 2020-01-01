@@ -25,10 +25,11 @@ type
   end;
 
 type
+  TDummyIntegerArray = array[0..0] of Integer;
+
+type
   TdzIntegerArraySortProvider = class(TdzAbstractSortProvider)
   private
-    type
-      TDummyIntegerArray = array[0..0] of Integer;
   private
     FOriginal: ^TDummyIntegerArray;
   protected
@@ -37,6 +38,8 @@ type
     constructor Create(const _Original: array of Integer);
   end;
 
+type
+  TSortCompareCallback = function(_IndexA: Integer; _IndexB: Integer): Integer of object;
 type
   ///<summary>
   /// The SortProvider provides sorting to a static array or list without changing that list.
@@ -66,8 +69,6 @@ type
   ///</summary>
   TdzSortProvider = class(TdzAbstractSortProvider)
   public
-    type
-      TSortCompareCallback = function(_IndexA: Integer; _IndexB: Integer): Integer of object;
   protected
     FOnCompare: TSortCompareCallback;
     function doCompare(_IndexA, _IndexB: Integer): Integer; override;

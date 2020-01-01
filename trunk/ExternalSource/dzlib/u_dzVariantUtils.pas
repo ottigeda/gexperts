@@ -168,6 +168,7 @@ function Var2ExtEx(const _v: Variant; const _Source: string): Extended;
 ///          @returns the extended value of v or the Default if v can not be converted </summary>
 function Var2Ext(const _v: Variant; const _Default: Extended): Extended;
 
+{$IF Declared(Str2Date)}
 ///<summary> Converts a variant to a TDateTime.
 ///          Raises an exception if v can not be converted.
 ///          @param v Variant value to convert
@@ -177,8 +178,11 @@ function Var2Ext(const _v: Variant; const _Default: Extended): Extended;
 ///          @raises EVarIsEmpty if v is empty
 ///          @raises EVariantConvertError if there is some other conversion error </summary>
 function Var2DateTimeEx(const _v: Variant; const _Source: string): TDateTime;
+{$IFEND}
 
+{$IF Declared(TryStr2Date)}
 function TryVar2DateTime(const _v: Variant; out _dt: TDateTime): Boolean;
+{$IFEND}
 
 ///<summary> Converts a variant to an ISO format DateTime string (yyyy-mm-dd hh:mm:ss)
 ///          @param v Variant value to convert
@@ -192,6 +196,7 @@ function Var2DateTimeStr(const _v: Variant; const _NullValue: string = '*NULL*')
 ///          @returns an ISO format Date string of v or NullValue if v can not be converted </summary>
 function Var2DateStr(const _v: Variant; const _NullValue: string = '*NULL*'): string;
 
+{$IF Declared(Str2Date)}
 ///<summary> Converts a variant to an ISO format Date string (yyyy-mm-dd)
 ///          @param v Variant value to convert
 ///          @param Source string to include in the exception message
@@ -200,6 +205,7 @@ function Var2DateStr(const _v: Variant; const _NullValue: string = '*NULL*'): st
 ///          @raises EVariantConvertError if there is some other conversion error </summary>
 ///          @returns an ISO format Date string of v or NullValue if v can not be converted </summary>
 function Var2DateStrEx(const _v: Variant; const _Source: string): string;
+{$IFEND}
 
 ///<summary> Converts a variant to a string
 ///          If v is null or empty, it returns false.
@@ -240,7 +246,10 @@ uses
   u_dzConvertUtils,
   u_dzDateUtils;
 
-function _(const _s: string): string; inline;
+function _(const _s: string): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := dzDGetText(_s, 'dzlib');
 end;
@@ -416,6 +425,7 @@ begin
     Result := _NullValue;
 end;
 
+{$IF Declared(Str2Date)}
 function Var2DateTimeEx(const _v: Variant; const _Source: string): TDateTime;
 const
   EXPECTED = 'Date'; // do not translate
@@ -435,7 +445,9 @@ begin
     end;
   end;
 end;
+{$IFEND}
 
+{$IF Declared(TryStr2Date)}
 function TryVar2DateTime(const _v: Variant; out _dt: TDateTime): Boolean;
         // from Variants
 
@@ -465,6 +477,7 @@ begin
     _dt := d;
   end;
 end;
+{$IFEND}
 
 function Var2DateTimeStr(const _v: Variant; const _NullValue: string = '*NULL*'): string;
 var
@@ -496,6 +509,7 @@ begin
     end;
 end;
 
+{$IF Declared(Str2Date)}
 function Var2DateStrEx(const _v: Variant; const _Source: string): string;
 const
   EXPECTED = 'Date'; // do not translate
@@ -519,6 +533,7 @@ begin
 
   Result := FormatDateTime('yyyy-mm-dd', DateOf(Value)); // do not translate
 end;
+{$IFEND}
 
 function TryVar2Single(const _v: Variant; out _Value: Single): Boolean;
 const

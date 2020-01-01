@@ -27,11 +27,15 @@ const
   DZLIB_TRANSLATION_DOMAIN = 'dzlib';
 
 function _(const _s: string): string;
-function GetText(const _s: string): string; inline;
-function dzGetText(const _s: string): string; inline;
+
+function GetText(const _s: string): string;
+
+function dzGetText(const _s: string): string;
+
 function DGetText(const _s: string; const _TextDomain: string = ''): string;
 ///<summary> use this if you pass variables rather than constants to avoid warnings in the dxgettext tool </summary>
-function dzDGetText(const _s: string; const _TextDomain: string = ''): string; inline;
+function dzDGetText(const _s: string; const _TextDomain: string = ''): string;
+
 ///<summary> translate using the DZLIB_TRANSLATION_DOMAIN </summary>
 function dzlibGetText(const _s: string): string;
 procedure TranslateComponent(_Object: TComponent; const _TextDomain: string = '');
@@ -84,11 +88,17 @@ begin
 end;
 
 function GetText(const _s: string): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := u_dzTranslator._(_s);
 end;
 
 function dzGetText(const _s: string): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := u_dzTranslator._(_s);
 end;
@@ -103,6 +113,9 @@ begin
 end;
 
 function dzDGetText(const _s: string; const _TextDomain: string = ''): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := DGetText(_s, _TextDomain);
 end;

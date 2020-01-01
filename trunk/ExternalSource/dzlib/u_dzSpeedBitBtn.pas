@@ -1,5 +1,8 @@
 unit u_dzSpeedBitBtn;
 
+{$INCLUDE 'dzlib.inc'}
+{$INCLUDE 'dzlibjedi.inc'}
+
 interface
 
 uses
@@ -173,9 +176,11 @@ constructor TdzSpeedBitBtn.Create(_btn: TComponent);
 
     procedure HandleTextOnly;
     begin
+  {$IFDEF HAS_BITBTN_WORDWRAP}
       if FBtn.WordWrap then begin
         HandleTextOnlyMultiLine;
-      end else begin
+      end else
+  {$ENDIF}begin
         HandleTextOnlySingleLine;
       end;
     end;
@@ -246,9 +251,11 @@ constructor TdzSpeedBitBtn.Create(_btn: TComponent);
     begin
       // This is complicated. For now we will only support buttons with
       // Layout=blGlyphLeft
+  {$IFDEF HAS_BITBTN_WORDWRAP}
       if FBtn.WordWrap then begin
         HandleBmpAndMultilineText;
-      end else begin
+      end else
+  {$ENDIF}begin
         HandleBmpAndSingleLineText;
       end;
     end;

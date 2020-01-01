@@ -14,11 +14,14 @@ uses
   u_dzTypes,
   u_dzTranslator;
 
+{$IF Declared(TFormatSettings)}
+// Delphi 6 does not have that type
 var
   ///<summary>
   /// contains the User's format setting, but with decimal separator = '.' and no thousands
   /// separator </summary>
   DZ_FORMAT_DECIMAL_POINT: TFormatSettings;
+{$IFEND}
 
 type
   ///<summary>
@@ -221,7 +224,9 @@ function Str2Float(const _s: string; const _Source: string; _DecSeparator: Char 
 /// @param flt is the float, only valid if the function returns true
 /// @param DecSeparator is the decimal separator to use, defaults to '.',
 ///        if passed as #0, GuessDecimalSeparator is called to guess it
-/// @returns true, if s could be converted, false otherwise </summary>
+/// @returns true, if s could be converted, false otherwise
+/// NOTE: This is not thread safe in Delphi 6 because there it changes the global
+///       variable DecimalSeparator in SysUtils. </summary>
 {$IFNDEF Win64}
 function TryStr2Float(const _s: string; out _flt: Extended; _DecSeparator: Char = '.'): Boolean; overload;
 {$ENDIF}
@@ -231,7 +236,9 @@ function TryStr2Float(const _s: string; out _flt: Extended; _DecSeparator: Char 
 /// @param flt is the float, only valid if the function returns true
 /// @param DecSeparator is the decimal separator to use, defaults to '.',
 ///        if passed as #0, GuessDecimalSeparator is called to guess it
-/// @returns true, if s could be converted, false otherwise </summary>
+/// @returns true, if s could be converted, false otherwise
+/// NOTE: This is not thread safe in Delphi 6 because there it changes the global
+///       variable DecimalSeparator in SysUtils. </summary>
 function TryStr2Float(const _s: string; out _flt: Double; _DecSeparator: Char = '.'): Boolean; overload;
 function TryStr2Float(const _s: string; out _flt: Single; _DecSeparator: Char = '.'): Boolean; overload;
 
@@ -304,12 +311,14 @@ function SecondsToHumanReadableString(_Seconds: Int64): string; overload;
 /// @note that the value will get rounded to full seconds. </summary>
 function SecondsToHumanReadableString(const _Seconds: Extended): string; overload;
 
+{$IF Declared(TFormatSettings)}
 ///<summary>
 /// returns the default locale settings as read from the user's regional settings </summary>
 function GetUserDefaultLocaleSettings: TFormatSettings; deprecated; // use u_dzStringUtils.GetUserDefaultLocaleSettings instead
 ///<summary>
 /// returns the default locale settings as read from the system's regional settings </summary>
 function GetSystemDefaultLocaleSettings: TFormatSettings; deprecated; // use u_dzStringUtils.GetSystemDefaultLocaleSettings instead
+{$IFEND}
 
 ///<summary>
 /// returns the long word split into an array of byte
@@ -330,7 +339,7 @@ function ByteArr2LongWord(const _Arr: array of Byte; _MsbFirst: Boolean = False)
 /// aka converts intel (little endian) to motorola (big endian) byte order format
 /// (This is just an alias for system.swap for consistency with Swap32.)
 ///</summary
-function Swap16(_Value: Word): Word; inline;
+function Swap16(_Value: Word): Word;
 
 ///<summary>
 /// returns a 32 bit value in reversed byte order e.g. $12345678 -> $78563412
@@ -340,6 +349,7 @@ function Swap32pas(_Value: LongWord): LongWord;
 
 function BitReverse32(v: LongWord): LongWord;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 type
   TBoolToStr = record
   private
@@ -362,6 +372,7 @@ type
     class function Create(const _TrueStr, _FalseStr: string): TBoolToStr; static;
     function ToString(_b: Boolean): string;
   end;
+{$ENDIF}
 
 ///<summary> Uses 'True' and 'False' (no translation) </summary>
 function Bool2Str(_b: Boolean): string;
@@ -369,6 +380,7 @@ function Bool2Str(_b: Boolean): string;
 type
   TBitNumber32 = 0..31;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 type
   ///<summary>
   /// Stores up to 32 bits similar to the Delphi TBits class but
@@ -390,9 +402,11 @@ type
     function Value: LongWord;
     function AsString: string;
   end;
+{$ENDIF}
 
 type
   TBitNumber8 = 0..8;
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 type
   ///<summary>
   /// Stores up to 8 bits similar to the Delphi TBits class but
@@ -422,7 +436,7 @@ type
     // There is no BitwiseNot operator, but the LogicalNot also works
     class operator LogicalNot(_a: TBits8): TBits8;
   end;
-
+{$ENDIF}
   { TODO -otwm :
     Create a generic TdzBits record that stores the value in a dynamically allocated byte array.
     Since this array is automatically initialized/finalized, it can still be a record rather than a class. }
@@ -447,7 +461,10 @@ uses
   StrUtils,
   u_dzStringUtils;
 
-function _(const _s: string): string; inline;
+function _(const _s: string): string;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := dzDGetText(_s, 'dzlib');
 end;
@@ -704,18 +721,19 @@ end;
 
 function Float2Str(_flt: Extended; _DecSeparator: Char = '.'): string;
 var
-  FormatSettings: TFormatSettings;
+  s: AnsiString;
 begin
+  Str(_flt, s);
+  Result := string(s);
   if _DecSeparator = #0 then
     _DecSeparator := DecimalSeparator;
-  FormatSettings := DZ_FORMAT_DECIMAL_POINT;
-  FormatSettings.DecimalSeparator := _DecSeparator;
-  Result := SysUtils.FloatToStr(_flt, FormatSettings);
+  if _DecSeparator <> '.' then
+    Result := ReplaceStr(Result, '.', _DecSeparator);
 end;
 
 function Float2Str(_flt: Extended; _Width, _Decimals: Integer; _DecSeparator: Char): string;
 var
-  s: ShortString;
+  s: AnsiString;
 begin
   Str(_flt: _Width: _Decimals, s);
   Result := string(s);
@@ -818,13 +836,27 @@ end;
 
 function TryStr2Float(const _s: string; out _flt: Extended; _DecSeparator: Char = '.'): Boolean;
 var
+{$IF Declared(TFormatSettings)}
   FmtSettings: TFormatSettings;
+{$ELSE}
+  SysDecimalSeparator: Char;
+{$IFEND}
 begin
   if _DecSeparator = #0 then
     _DecSeparator := GuessDecimalSeparator(_s);
+{$IF Declared(TFormatSettings)}
   FmtSettings := DZ_FORMAT_DECIMAL_POINT;
   FmtSettings.DecimalSeparator := _DecSeparator;
   Result := TextToFloat(PChar(_s), _flt, fvExtended, FmtSettings);
+{$ELSE}
+  SysDecimalSeparator := DecimalSeparator;
+  try
+    SysUtils.DecimalSeparator := _DecSeparator;
+    Result := TextToFloat(PChar(_s), _flt, fvExtended);
+  finally
+    SysUtils.DecimalSeparator := SysDecimalSeparator;
+  end;
+{$IFEND}
 end;
 {$ENDIF}
 
@@ -897,6 +929,7 @@ begin
   Result := SecondsToHumanReadableString(Round(_Seconds));
 end;
 
+{$IF Declared(TFormatSettings)}
 function GetSystemDefaultLocaleSettings: TFormatSettings;
 begin
   Result := u_dzStringUtils.GetSystemDefaultLocaleSettings;
@@ -906,6 +939,7 @@ function GetUserDefaultLocaleSettings: TFormatSettings;
 begin
   Result := u_dzStringUtils.GetUserDefaultLocaleSettings;
 end;
+{$IFEND}
 
 function LongWord2ByteArr(_Value: LongWord; _MsbFirst: Boolean = False): TBytes;
 begin
@@ -934,7 +968,10 @@ begin
   end;
 end;
 
-function Swap16(_Value: Word): Word; inline;
+function Swap16(_Value: Word): Word;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
   Result := swap(_Value);
 end;
@@ -970,6 +1007,7 @@ begin
   Result := (v shr 16) or (v shl 16);
 end;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 { TBits32 }
 
 function TBits32.AsString: string;
@@ -1096,6 +1134,7 @@ function TBits8.Value: Byte;
 begin
   Result := FValue;
 end;
+{$ENDIF}
 
 function Bool2Str(_b: Boolean): string;
 begin
@@ -1105,6 +1144,7 @@ begin
     Result := 'False'; // do not translate
 end;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 { TBoolToStr }
 
 class function TBoolToStr.Create(const _TrueStr, _FalseStr: string): TBoolToStr;
@@ -1137,9 +1177,11 @@ class function TBoolToStr.CreateYN: TBoolToStr;
 begin
   Result := Create('Y', 'N');
 end;
+{$ENDIF}
 
 function GetLocalizedOneLetterYesStr: string;
 begin
+  // todo: This should really use PGetText, e.g. PGetText('Yes/No one letter', 'Y')
   // Translator: Convert to the equivalent of 'Y' (only one letter)
   Result := _('Y(es)');
   // if it wasn't translated we use English 'Y'
@@ -1149,6 +1191,7 @@ end;
 
 function GetLocalizedOneLetterNoStr: string;
 begin
+  // todo: This should really use PGetText, e.g. PGetText('Yes/No one letter', 'N')
   // Translator: Convert to the equivalent of 'N' (only one letter)
   Result := _('N(o)');
   // if it wasn't translated we use English 'N'
@@ -1156,6 +1199,7 @@ begin
     Result := 'N';
 end;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 class function TBoolToStr.CreateYNLocalized: TBoolToStr;
 begin
   Result := Create(GetLocalizedOneLetterYesStr, GetLocalizedOneLetterNoStr);
@@ -1165,6 +1209,7 @@ function TBoolToStr.ToString(_b: Boolean): string;
 begin
   Result := FBoolStrings[_b];
 end;
+{$ENDIF}
 
 function AssertYNStringLength: Boolean;
 var
@@ -1194,9 +1239,11 @@ begin
 end;
 
 initialization
+{$IF Declared(TFormatSettings)}
   DZ_FORMAT_DECIMAL_POINT := u_dzStringUtils.GetUserDefaultLocaleSettings;
   DZ_FORMAT_DECIMAL_POINT.DecimalSeparator := '.';
   DZ_FORMAT_DECIMAL_POINT.ThousandSeparator := #0;
+{$IFEND}
 
   Assert(AssertYNStringLength);
   Assert(AssertSwap32);
