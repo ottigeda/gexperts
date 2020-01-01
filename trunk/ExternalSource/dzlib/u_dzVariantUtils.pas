@@ -11,7 +11,8 @@ uses
   Variants,
   VarUtils,
   u_dzTranslator,
-  u_dzTypes;
+  u_dzTypes,
+  u_dzDateUtils; // we need this for $IF Declared(Str2Date)
 
 type
   ///<summary> raised if there is a conversion error in one of the Var2XxxEx functions </summary>
@@ -245,8 +246,7 @@ implementation
 
 uses
   DateUtils,
-  u_dzConvertUtils,
-  u_dzDateUtils;
+  u_dzConvertUtils;
 
 function _(const _s: string): string;
 {$IFDEF SUPPORTS_INLINE}
@@ -451,7 +451,7 @@ end;
 
 {$IF Declared(TryStr2Date)}
 function TryVar2DateTime(const _v: Variant; out _dt: TDateTime): Boolean;
-        // from Variants
+  // from Variants
 
   function VarToDoubleCustom(const V: TVarData; out AValue: Double): Boolean;
   var
