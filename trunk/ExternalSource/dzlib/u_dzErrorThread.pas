@@ -21,7 +21,7 @@ type
     FErrorMessage: string;
     FHasFinished: Boolean;
 {$IF not Declared(SyncEvent)}
-    // In Delphi 6 these are private in TThread so we can't simply access them but must implement
+    // In Delphi 6 these are private in TThread so we can't simply call them but must implement
     // them ourselves.
     procedure CheckThreadError(ErrCode: Integer); overload;
     procedure CheckThreadError(Success: Boolean); overload;
@@ -59,12 +59,12 @@ type
 
 implementation
 
+{$IF not Declared(SyncEvent)}
 uses
   RTLConsts;
 
 { TErrorThread }
 
-{$IF not Declared(SyncEvent)}
 procedure TErrorThread.CheckThreadError(ErrCode: Integer);
 begin
   if ErrCode <> 0 then
