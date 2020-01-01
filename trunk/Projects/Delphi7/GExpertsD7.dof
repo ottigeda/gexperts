@@ -95,9 +95,9 @@ OutputDir=..\..\Binaries
 UnitOutputDir=dcu
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=..\..\source\Framework;..\..\ExternalSource;..\..\ExternalSource\mwParser;..\..\ExternalSource\Abbrevia;..\..\ExternalSource\UniSynEdit;..\..\source\Include
+SearchPath=..\..\source\Framework;..\..\ExternalSource;..\..\ExternalSource\mwParser;..\..\ExternalSource\Abbrevia;..\..\ExternalSource\UniSynEdit;..\..\ExternalSource\dzlib;..\..\source\Include
 Packages=rtl;vcl;vclx;vclsmp;designide;vcljpg
-Conditionals=
+Conditionals=NO_TRANSLATION;NO_TRANSLATION_HINT
 DebugSourceDirs=
 UsePackages=1
 [Parameters]
@@ -131,16 +131,3 @@ OriginalFilename=GExpertsD7.dll
 ProductName=GExperts for Delphi
 ProductVersion=1.38
 Comments=Open Source
-[HistoryLists\hlUnitAliases]
-Count=2
-Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;Actions=Actnlist;ImageList=Controls;ShLwApi=GX_ShLwApi;UiTypes=Types
-Item1=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;Actions=Actnlist;ImageList=Controls;ShLwApi=GX_ShLwApi
-[HistoryLists\hlSearchPath]
-Count=1
-Item0=..\..\source\Framework;..\..\ExternalSource;..\..\ExternalSource\mwParser;..\..\ExternalSource\Abbrevia;..\..\ExternalSource\UniSynEdit;..\..\source\Include
-[HistoryLists\hlUnitOutputDirectory]
-Count=1
-Item0=dcu
-[HistoryLists\hlOutputDirectorry]
-Count=1
-Item0=..\..\Binaries
