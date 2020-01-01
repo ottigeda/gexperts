@@ -201,7 +201,7 @@ function dzBitBlt(_DestHandle: Hdc; _DestPos: TPoint; _Src: TBitmap; _SrcPos: TP
 function dzBitBlt(_DestHandle: Hdc; _DestPos: TPoint; _Src: TBitmap;
   _Rop: DWORD = SRCCOPY): LongBool; overload;
 
-procedure TBitmap_SetSize(_bmp: TBitmap; _Width, _Height: integer);
+procedure TBitmap_SetSize(_bmp: TBitmap; _Width, _Height: Integer);
 
 function TBitmap_BitBlt(_DestBmp: TBitmap; _DestPos: TPoint; _Size: TPoint; _Src: TBitmap; _SrcPos: TPoint;
   _Rop: DWORD = SRCCOPY): LongBool; overload;
@@ -611,7 +611,12 @@ var
   RGN: THandle;
   Res: Integer;
 begin
+{$IFNDEF DELPHIX_TOKYO_UP}
+  // Older Delphis think the function result is not assigned if we don't assign it here.
+  // Newer Delphis warn that this assignment is not necessary.
+  // So we have a bloody IFDEF here to make all compilers shut up.
   Result := False;
+{$ENDIF}
   RGN := CreateRectRgn(_Rect.Left, _Rect.Top, _Rect.Right, _Rect.Bottom);
   if RGN = 0 then
     raise Exception.Create(_('CreateRectRgn failed'));
@@ -1010,7 +1015,7 @@ begin
 end;
 {$ENDIF}
 
-procedure TBitmap_SetSize(_bmp: TBitmap; _Width, _Height: integer);
+procedure TBitmap_SetSize(_bmp: TBitmap; _Width, _Height: Integer);
 {$IFDEF SUPPORTS_INLINE}
 inline;
 {$ENDIF}
@@ -2437,3 +2442,4 @@ begin
 end;
 
 end.
+
