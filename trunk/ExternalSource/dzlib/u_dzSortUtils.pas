@@ -1,7 +1,6 @@
 unit u_dzSortUtils;
 
 {$INCLUDE 'dzlib.inc'}
-{$INCLUDE 'dzlibjedi.inc'}
 
 interface
 

@@ -6,7 +6,7 @@
 /// your thread's execute procedure. </summary>
 unit u_dzNamedThread;
 
-{$INCLUDE 'dzlibjedi.inc'}
+{$INCLUDE 'dzlib.inc'}
 
 interface
 

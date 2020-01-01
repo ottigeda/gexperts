@@ -5,7 +5,7 @@
 /// @author twm </summary>
 unit u_dzStringUtils;
 
-{$I dzlibjedi.inc}
+{$INCLUDE 'dzlib.inc'}
 
 interface
 

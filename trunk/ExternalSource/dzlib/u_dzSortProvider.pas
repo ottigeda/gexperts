@@ -1,5 +1,7 @@
 unit u_dzSortProvider;
 
+{$INCLUDE 'dzlib.inc'}
+
 interface
 
 uses

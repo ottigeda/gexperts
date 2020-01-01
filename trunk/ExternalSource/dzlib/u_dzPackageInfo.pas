@@ -1,5 +1,7 @@
 unit u_dzPackageInfo;
 
+{$INCLUDE 'dzlib.inc'}
+
 interface
 
 uses

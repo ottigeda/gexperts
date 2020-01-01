@@ -5,7 +5,7 @@
 /// which originally was a Delphi conversion of TwmStringFunc. </summary>
 unit u_dzConvertUtils;
 
-{$I dzlib.inc}
+{$INCLUDE 'dzlib.inc'}
 
 interface
 

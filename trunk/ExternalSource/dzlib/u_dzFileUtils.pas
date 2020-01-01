@@ -3,7 +3,7 @@
 /// implements utility functions for file accesss </summary>
 unit u_dzFileUtils;
 
-{$I dzlibjedi.inc}
+{$INCLUDE 'dzlib.inc'}
 
 interface
 

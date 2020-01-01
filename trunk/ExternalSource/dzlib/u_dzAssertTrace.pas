@@ -1,5 +1,7 @@
 unit u_dzAssertTrace;
 
+{$INCLUDE 'dzlib.inc'}
+
 interface
 
 uses

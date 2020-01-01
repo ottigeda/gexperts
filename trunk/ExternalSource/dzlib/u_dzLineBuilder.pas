@@ -1,5 +1,7 @@
 unit u_dzLineBuilder;
 
+{$INCLUDE 'dzlib.inc'}
+
 interface
 
 uses

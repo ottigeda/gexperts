@@ -2,6 +2,8 @@
 /// several utility functions for Variants </summary>
 unit u_dzVariantUtils;
 
+{$INCLUDE 'dzlib.inc'}
+
 interface
 
 uses

@@ -8,7 +8,7 @@
 ///       are also not available. </summary>
 unit u_dzDateUtils;
 
-{$I dzlibjedi.inc}
+{$INCLUDE 'dzlib.inc'}
 
 interface
 

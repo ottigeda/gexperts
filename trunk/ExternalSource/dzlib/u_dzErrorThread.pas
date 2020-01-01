@@ -1,6 +1,6 @@
 unit u_dzErrorThread;
 
-{$INCLUDE 'dzlibjedi.inc'}
+{$INCLUDE 'dzlib.inc'}
 
 interface
 

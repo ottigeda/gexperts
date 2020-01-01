@@ -1,5 +1,7 @@
 unit u_dzCompilerAndRtlVersions;
 
+{$INCLUDE 'dzlib.inc'}
+
 interface
 
 const

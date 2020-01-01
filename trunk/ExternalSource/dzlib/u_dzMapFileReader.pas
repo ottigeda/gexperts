@@ -1,5 +1,7 @@
 unit u_dzMapFileReader;
 
+{$INCLUDE 'dzlib.inc'}
+
 interface
 
 uses

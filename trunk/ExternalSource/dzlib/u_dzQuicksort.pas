@@ -3,8 +3,9 @@
    function.
    @author(Thomas Mueller http://www.dummzeuch.de)
 }
-
 unit u_dzQuicksort;
+
+{$INCLUDE 'dzlib.inc'}
 
 interface
 

@@ -16,10 +16,7 @@
 
 unit u_dzMiscUtils;
 
-{$I dzlibjedi.inc}
-
-{$WARN SYMBOL_PLATFORM off}
-{$WARN UNIT_PLATFORM off}
+{$INCLUDE 'dzlib.inc'}
 
 interface
 

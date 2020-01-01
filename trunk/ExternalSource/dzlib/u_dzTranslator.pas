@@ -1,7 +1,7 @@
 {.GXFormatter.config=twm}
 unit u_dzTranslator;
 
-{$I dzlibjedi.inc}
+{$INCLUDE 'dzlib.inc'}
 
 {$IFNDEF NO_TRANSLATION}
 // for now uses gnugettext

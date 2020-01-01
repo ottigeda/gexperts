@@ -3,7 +3,7 @@
 /// in later versions) </summary>
 unit u_dzSelectDirectoryFix;
 
-{$INCLUDE 'dzlibjedi.inc'}
+{$INCLUDE 'dzlib.inc'}
 
 interface
 

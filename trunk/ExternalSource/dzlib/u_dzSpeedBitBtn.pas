@@ -1,7 +1,6 @@
 unit u_dzSpeedBitBtn;
 
 {$INCLUDE 'dzlib.inc'}
-{$INCLUDE 'dzlibjedi.inc'}
 
 interface
 

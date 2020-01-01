@@ -1,6 +1,8 @@
 {.GXFormatter.config=twm}
 unit u_dzVersionInfo;
 
+{$INCLUDE 'dzlib.inc'}
+
 interface
 
 uses
