@@ -540,7 +540,6 @@ $(PreBuildEvent)]]>
             <Form>fmTabOrderOptions</Form>
         </DCCReference>
         <DCCReference Include="..\..\Source\ide\GX_IdeDetectForms.pas"/>
-        <DCCReference Include="..\..\source\framework\GX_dzCompilerAndRtlVersions.pas"/>
         <DCCReference Include="..\..\Source\Experts\GX_SelectComponents.pas">
             <Form>SelectComponentsForm</Form>
         </DCCReference>

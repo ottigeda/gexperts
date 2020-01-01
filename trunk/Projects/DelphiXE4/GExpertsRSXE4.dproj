@@ -537,7 +537,6 @@ $(PreBuildEvent)]]>
             <Form>fmTabOrderOptions</Form>
         </DCCReference>
         <DCCReference Include="..\..\Source\ide\GX_IdeDetectForms.pas"/>
-        <DCCReference Include="..\..\source\framework\GX_dzCompilerAndRtlVersions.pas"/>
         <RcCompile Include="..\..\images\GXIcons.rc">
             <Form>..\..\images\GXIcons.res</Form>
         </RcCompile>
