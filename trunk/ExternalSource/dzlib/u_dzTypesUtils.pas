@@ -10,9 +10,15 @@ uses
 
 ///<summary> Returns the Rect's width </summary>
 function TRect_Width(const _Rect: TRect): Integer;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 
 ///<summary> Returns the Rect's height </summary>
 function TRect_Height(const _Rect: TRect): Integer;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 
 ///<summary>
 /// @returns a TRect generated from Left, Top, Width and Height </summary>
@@ -20,14 +26,25 @@ function TRect_FromLTWH(_l, _t, _w, _h: Integer): TRect;
 
 ///<summary> returns the center point of the Rect </summary>
 function TRect_Center(const _Rect: TRect): TPoint;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 
 ///<summary>
 /// Check whether a TRect contains a TPoint </summary>
-function TRect_Contains(const _Rect: TRect; const _Pnt: TPoint): Boolean; overload;
+function TRect_Contains(const _Rect: TRect; const _Pnt: TPoint): Boolean;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
+overload;
 
 ///<summary>
 /// Check whether a TRect contains a point with the given coordinates </summary>
-function TRect_Contains(const _Rect: TRect; _x, _y: Integer): Boolean; overload;
+function TRect_Contains(const _Rect: TRect; _x, _y: Integer): Boolean;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
+overload;
 
 implementation
 
