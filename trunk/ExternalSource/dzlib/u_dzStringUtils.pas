@@ -237,7 +237,7 @@ procedure StrReadLn(var _f: file; _p: PChar);
 procedure StrReadZ(var _f: file; _p: PChar);
 
 {$IF not Declared(PosEx)}
-function PosEx(const SubStr, S: string; Offset: Integer = 1): Integer;
+function PosEx(const _SubStr, _S: string; _Offset: Integer = 1): Integer;
 {$DEFINE POSEX_IMPLEMENTATION_REQUIRED}
 {$IFEND}
 
@@ -285,7 +285,10 @@ function CenterStr(const _s: string; _MaxLen: Integer): string;
 
 ///<summary>
 /// @returns the sub string starting from position Start </summary>
-function TailStr(const _s: string; _Start: Integer): string;
+{$IFDEF SUPPORTS_UNICODE_STRING}
+function TailStr(const _s: AnsiString; _Start: Integer): AnsiString; overload;
+{$ENDIF}
+function TailStr(const _s: string; _Start: Integer): string; overload;
 
 ///<summary>
 /// Cuts off the rightmost CutLen characters of a string </summary>
@@ -597,8 +600,8 @@ begin
   _s := TailStr(_s, _n + 1);
 end;
 
-// Note: _s cannot be const, because it is passed to ExtractFirstWord which needs a var parameter
 function SplitString(_sl: TStrings; _s: string; const _Delimiter: string): TStrings;
+// Note: _s cannot be const, because it is passed to ExtractFirstWord which needs a var parameter
 var
   s: string;
 begin
@@ -742,6 +745,7 @@ begin
 end;
 
 {$IFDEF SAMESTR_IMPLEMENTATION_REQUIRED}
+
 function SameStr(const _s1, _s2: string): Boolean;
 begin
   Result := (_s1 = _s2);
@@ -749,6 +753,7 @@ end;
 {$ENDIF}
 
 {$IFDEF STARTSTEXT_IMPLEMENTATION_REQUIRED}
+
 function StartsText(const _Start, _s: string): Boolean;
 begin
   Result := UStartsWith(_Start, _s);
@@ -756,6 +761,7 @@ end;
 {$ENDIF}
 
 {$IFDEF CONTAINSSTR_IMPLEMENTATION_REQUIRED}
+
 function ContainsStr(const _Text, _SubText: string): Boolean;
 begin
   Result := (Pos(_SubText, _Text) > 0);
@@ -763,6 +769,7 @@ end;
 {$ENDIF}
 
 {$IFDEF REPLACESTR_IMPLEMENTATION_REQUIRED}
+
 function ReplaceStr(const _Text, _FromText, _ToText: string): string;
 begin
   Result := StringReplace(_Text, _FromText, _ToText, [rfReplaceAll]);
@@ -1065,6 +1072,17 @@ begin
     Result := Copy(_s, _Start, Length(_s) - _Start + 1);
 end;
 
+{$IFDEF SUPPORTS_UNICODE_STRING}
+
+function TailStr(const _s: AnsiString; _Start: Integer): AnsiString; overload;
+begin
+  if _Start > Length(_s) then
+    Result := ''
+  else
+    Result := Copy(_s, _Start, Length(_s) - _Start + 1);
+end;
+{$ENDIF}
+
 function StrCutRight(const _s: string; _CutLen: Integer): string;
 begin
   Result := LeftStr(_s, Length(_s) - _CutLen);
@@ -1117,7 +1135,8 @@ end;
  * Contributor(s): Aleksandr Sharahov
  *
  * ***** END LICENSE BLOCK ***** *)
-function PosEx(const SubStr, S: string; Offset: Integer = 1): Integer;
+
+function PosEx(const _SubStr, _s: string; _Offset: Integer = 1): Integer;
 asm
        test  eax, eax
        jz    @Nil
@@ -1295,6 +1314,7 @@ begin
 end;
 
 {$IF Declared(TFormatSettings)}
+
 function GetSystemDefaultLocaleSettings: TFormatSettings;
 begin
 {$IFDEF RTL220_UP}
