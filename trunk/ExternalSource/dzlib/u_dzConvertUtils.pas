@@ -399,8 +399,41 @@ type
     ///<summary>
     /// Overwrite the given bit range with the given value (reverse of Extract) </summary>
     procedure Overwrite(_BitFirst, _BitLast: TBitNumber32; _Value: LongWord);
-    function Value: LongWord;
+    function Value: Cardinal;
     function AsString: string;
+  end;
+{$ENDIF}
+
+type
+  TBitNumber16 = 0..15;
+
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
+type
+  ///<summary>
+  /// Stores up to 16 bits similar to the Delphi TBits class but
+  /// as a record, so it does not need a destructor </summary>
+  TBits16 = record
+  private
+    FValue: Word;
+  public
+    class function Create(_Value: Word): TBits16; static;
+    procedure Init(_Value: Word);
+    function IsBitSet(_BitNo: TBitNumber16): Boolean;
+    function IsAnyBitSet: Boolean;
+    procedure SetBit(_BitNo: TBitNumber16; _BitValue: Boolean);
+    ///<summary>
+    /// interpret the given bit range as an integer and return it </summary>
+    function Extract(_BitFirst, _BitLast: TBitNumber16): Word;
+    ///<summary>
+    /// Overwrite the given bit range with the given value (reverse of Extract) </summary>
+    procedure Overwrite(_BitFirst, _BitLast: TBitNumber16; _Value: Word);
+    function Value: Word;
+    function AsString: string;
+    class operator BitwiseAnd(_a, _b: TBits16): TBits16;
+    class operator BitwiseOr(_a, _b: TBits16): TBits16;
+    class operator BitwiseXor(_a, _b: TBits16): TBits16;
+    // There is no BitwiseNot operator, but the LogicalNot also works
+    class operator LogicalNot(_a: TBits16): TBits16;
   end;
 {$ENDIF}
 
@@ -711,24 +744,37 @@ begin
   Result := Result * Sign;
 end;
 
-{$IFDEF RTL220_UP}
+{$IF Declared(FormatSettings)}
 
 function DecimalSeparator: Char; inline;
 begin
   Result := FormatSettings.DecimalSeparator;
 end;
-{$ENDIF}
+{$IFEND}
 
 function Float2Str(_flt: Extended; _DecSeparator: Char = '.'): string;
 var
-  s: AnsiString;
+{$IF Declared(TFormatSettings)}
+  FmtSettings: TFormatSettings;
+{$ELSE}
+  SysDecimalSeparator: Char;
+{$IFEND}
 begin
-  Str(_flt, s);
-  Result := string(s);
   if _DecSeparator = #0 then
     _DecSeparator := DecimalSeparator;
-  if _DecSeparator <> '.' then
-    Result := ReplaceStr(Result, '.', _DecSeparator);
+{$IF Declared(TFormatSettings)}
+  FmtSettings := DZ_FORMAT_DECIMAL_POINT;
+  FmtSettings.DecimalSeparator := _DecSeparator;
+  Result := FloatToStr(_flt, FmtSettings);
+{$ELSE}
+  SysDecimalSeparator := DecimalSeparator;
+  try
+    SysUtils.DecimalSeparator := _DecSeparator;
+    Result := FloatToStr(_flt);
+  finally
+    SysUtils.DecimalSeparator := SysDecimalSeparator;
+  end;
+{$IFEND}
 end;
 
 function Float2Str(_flt: Extended; _Width, _Decimals: Integer; _DecSeparator: Char): string;
@@ -930,6 +976,7 @@ begin
 end;
 
 {$IF Declared(TFormatSettings)}
+
 function GetSystemDefaultLocaleSettings: TFormatSettings;
 begin
   Result := u_dzStringUtils.GetSystemDefaultLocaleSettings;
@@ -1070,6 +1117,93 @@ begin
   Result := FValue;
 end;
 
+{ TBits16 }
+
+function TBits16.AsString: string;
+var
+  i: Integer;
+begin
+  Result := DupeString('0', 8);
+  for i := 7 downto 0 do
+    if IsBitSet(i) then
+      Result[8 - i] := '1';
+end;
+
+class function TBits16.Create(_Value: Word): TBits16;
+begin
+  Result.Init(_Value);
+end;
+
+procedure TBits16.Init(_Value: Word);
+begin
+  FValue := _Value;
+end;
+
+function TBits16.IsAnyBitSet: Boolean;
+begin
+  Result := FValue <> 0;
+end;
+
+function TBits16.IsBitSet(_BitNo: TBitNumber16): Boolean;
+begin
+  Result := ((FValue and (1 shl _BitNo)) <> 0);
+end;
+
+class operator TBits16.BitwiseAnd(_a, _b: TBits16): TBits16;
+begin
+  Result.Init(_a.Value and _b.Value);
+end;
+
+class operator TBits16.LogicalNot(_a: TBits16): TBits16;
+begin
+  Result.Init(_a.Value xor $FF);
+end;
+
+class operator TBits16.BitwiseOr(_a, _b: TBits16): TBits16;
+begin
+  Result.Init(_a.Value or _b.Value);
+end;
+
+class operator TBits16.BitwiseXor(_a, _b: TBits16): TBits16;
+begin
+  Result.Init(_a.Value xor _b.Value);
+end;
+
+function TBits16.Extract(_BitFirst, _BitLast: TBitNumber16): Word;
+var
+  i: TBitNumber16;
+begin
+  Result := 0;
+  for i := _BitLast downto _BitFirst do begin
+    Result := Result shl 1;
+    if IsBitSet(i) then
+      Result := Result + 1;
+  end;
+end;
+
+procedure TBits16.Overwrite(_BitFirst, _BitLast: TBitNumber16; _Value: Word);
+var
+  i: TBitNumber16;
+begin
+  for i := _BitFirst to _BitLast do begin
+    SetBit(i, (_Value and $00000001) <> 0);
+    _Value := _Value shr 1;
+  end;
+end;
+
+procedure TBits16.SetBit(_BitNo: TBitNumber16; _BitValue: Boolean);
+begin
+  if _BitValue then
+    FValue := FValue or (1 shl _BitNo)
+  else
+    FValue := FValue and not (1 shl _BitNo);
+end;
+
+function TBits16.Value: Word;
+begin
+  Result := FValue;
+end;
+
 { TBits8 }
 
 function TBits8.AsString: string;
@@ -1200,6 +1334,7 @@ begin
 end;
 
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
+
 class function TBoolToStr.CreateYNLocalized: TBoolToStr;
 begin
   Result := Create(GetLocalizedOneLetterYesStr, GetLocalizedOneLetterNoStr);
