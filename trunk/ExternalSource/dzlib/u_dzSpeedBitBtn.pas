@@ -8,6 +8,7 @@ uses
   Windows,
   Classes,
   SysUtils,
+  Types,
   Buttons,
   Graphics;
 
