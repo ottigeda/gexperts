@@ -2,9 +2,10 @@
 @if not defined gx_cmd_debug (echo off)
 @endlocal
 @rem prebuild.cmd should be called as pre-build event like this:
-@rem Path\to\buildtools\prebuild.cmd $(OUTPUTDIR)$(OUTPUTNAME)
+@rem call ..\buildtools\prebuild.cmd $(PROJECTPATH)
 @echo %0
 @echo running in %CD%
+
 set PROJECTPATH=%1
 rem remove quotes
 set PROJECTPATH=%PROJECTPATH:"=%
@@ -12,8 +13,11 @@ rem echo PROJECTPATH=%PROJECTPATH%
 
 if "%PROJECTPATH%"=="" goto NeedPara
 rem echo PROJECTPATH=%PROJECTPATH%
-set PROJECTNAMEONLY=%~dpn1
-rem echo PROJECTNAMEONLY=%PROJECTNAMEONLY%
+call :DelExt %1
+echo RESULT=%RESULT%
+call :DelExt %RESULT%
+set PROJECTNAMEONLY=%RESULT%
+echo PROJECTNAMEONLY=%PROJECTNAMEONLY%
 
 set OUTPUTDIR=%~dp1
 rem echo OUTPUTDIR=%OUTPUTDIR%
@@ -21,10 +25,12 @@ rem echo OUTPUTDIR=%OUTPUTDIR%
 pushd %OUTPUTDIR%
 rem echo calling prepbuild.exe
 set MANIFESTOPTIONS=
-if not exist %PROJECTNAMEONLY%_Manifest.in goto nomaniin
-set MANIFESTOPTIONS=--InputManifest="%PROJECTNAMEONLY%.manifest.in" --manifest="%PROJECTNAMEONLY%" --updatemanifest --ignoremanifesterrors
+set INPUTMANIFEST=%PROJECTNAMEONLY%.manifest.in
+if not exist "%INPUTMANIFEST%" goto nomaniin
+set MANIFESTOPTIONS=--InputManifest="%INPUTMANIFEST%" --manifest="%PROJECTNAMEONLY%" --updatemanifest --WriteManifestRc="%PROJECTNAMEONLY%" --ignoremanifesterrors
 :nomaniin 
-"%~dp0\prepbuild.exe" --incbuild --readini="%PROJECTNAMEONLY%" --WriteRc="%PROJECTNAMEONLY%" %MANIFESTOPTIONS%
+rem echo MANIFESTOPTIONS=%MANIFESTOPTIONS%
+"%~dp0\prepbuild.exe" --incbuild --BuildDateTime={today} --readini="%PROJECTNAMEONLY%" --WriteRc="%PROJECTNAMEONLY%" %MANIFESTOPTIONS%
 brcc32 "%PROJECTNAMEONLY%_Version.rc"
 
 echo checking for mainfest.rc
@@ -60,3 +66,10 @@ goto :EOF
 
 :NeedPara
 echo Error: Needs the base filename of the executable as parameter
+goto :EOF
+
+:DelExt
+setlocal
+set RESULT=%~dpn1
+endlocal & set RESULT=%RESULT%
+
