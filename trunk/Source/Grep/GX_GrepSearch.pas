@@ -687,6 +687,7 @@ begin
     rbOpenFiles.Enabled := False;
     rbAllProjGroupFiles.Enabled := False;
     rbAllProjFiles.Enabled := False;
+    chk_UseMapFile.Enabled := False;
     rbCurrentOnly.Enabled := False;
   end;
 end;
