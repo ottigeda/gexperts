@@ -5,7 +5,10 @@
 {$DEFINE HAS_BITBTN_WORDWRAP}
 // So was the $WARN USE_BEFORE_DEF define
 {$DEFINE SUPPORTS_WARN_USE_BEFORE_DEF}
+// Not sure about TBitmap.SetSize, was it introduced with Delphi 7 or later?
+{$DEFINE SUPPPORTS_BITMAP_SETSIZE}
 {$ENDIF}
+
 
 {$IFDEF DELPHI2005_UP}
 // Delphi 6 and 7 understood deprecated, but not for types

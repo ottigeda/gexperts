@@ -12,7 +12,7 @@ unit u_dzGraphicsUtils;
 // If optimization is on, we turn off assertions, just in case the programmer forgot.
 // The reason for this is that we have some assertions below that might significantly impact
 // performance.
-{$C-} // this is the short form for $ASSERTIONS ON
+{$C-} // this is the short form for $ASSERTIONS OFF
 {$ENDIF}
 
 {.$DEFINE dzUseGraphics32}
@@ -28,6 +28,7 @@ uses
   GR32, // libs\graphics32\src
 {$ENDIF}
   u_dzTranslator,
+  u_dzConvertUtils,
   u_dzTypesUtils;
 
 type
@@ -53,6 +54,7 @@ type
   end;
 
 type
+  PdzRgbTriple = ^TdzRgbTriple;
   TdzRgbTriple = packed record
     // do not change the order of the fields, do not add any fields
     Blue: Byte;
@@ -66,7 +68,7 @@ type
     function GetFastLuminance: Byte; overload;
     class function GetFastLuminance(_Red, _Green, _Blue: Byte): Byte; overload; static; inline;
     function GetBrightness(_Channel: TRgbBrightnessChannelEnum): Byte;
-    procedure SetBrightness(_Value: Byte);
+    procedure SetBrightness(_Value: Byte); deprecated; //use SetGray
     procedure GetHls(out _Hls: THlsRec);
     procedure SetHls(const _Hls: THlsRec);
 {$ENDIF}
@@ -81,6 +83,11 @@ type
 {$IFEND}
 
 function AddToPtr(const _Ptr: Pointer; _Offset: NativeInt): Pointer;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
+
+function PtrDiff(const _Ptr1, _Ptr2: Pointer): NativeInt; inline;
 {$IFDEF SUPPORTS_INLINE}
 inline;
 {$ENDIF}
@@ -104,6 +111,7 @@ type
   PdzRgbTripleArray = ^TdzRgbTripleArray;
 
 type
+  PdzRgbQuad = ^TdzRgbQuad;
   TdzRgbQuad = packed record
     // do not change the order of the fields, do not add any fields
     Blue: Byte;
@@ -117,7 +125,7 @@ type
     function GetLuminance: Word;
     function GetFastLuminance: Word;
     function GetBrightness(_Channel: TRgbBrightnessChannelEnum): Word;
-    procedure SetBrightness(_Value: Byte);
+    procedure SetBrightness(_Value: Byte); deprecated; //use SetGray
     procedure GetHls(out _Hue, _Luminance, _Saturation: Word);
     procedure SetHls(_Hue, _Luminance, _Saturation: Word);
 {$ENDIF}
@@ -450,7 +458,7 @@ inline;
 {$ENDIF}
 
 ///<summary>
-/// calculates the average brightness of an bitmap with PixelFormat = pf8Bit
+/// Calculates the average brightness of an bitmap with PixelFormat = pf8Bit
 /// @param bmp is the bitmap to process
 /// @param LowCutoff is the lower brightness limit for pixels to be include in the calculation
 /// @param HighCutoff is the upper brightness limit for pixels to be include in the calculation
@@ -461,7 +469,7 @@ function TBitmap8_TryCalcAverage(_bmp: TBitmap; _LowCutoff, _HighCutoff: Byte;
   out _Average: Byte): Boolean;
 
 ///<summary>
-/// calculates the average brightness of an bitmap with PixelFormat = pf24Bit
+/// Calculates the average brightness of an bitmap with PixelFormat = pf24Bit
 /// @param bmp is the bitmap to process
 /// @param LowCutoff is the lower brightness limit for pixels to be include in the calculation
 /// @param HighCutoff is the upper brightness limit for pixels to be include in the calculation
@@ -473,6 +481,18 @@ function TBitmap24_TryCalcAverage(_bmp: TBitmap; _LowCutoff, _HighCutoff: Byte;
   _Channel: TRgbBrightnessChannelEnum;
   out _Average: Byte): Boolean;
 
+///<summary>
+/// Calculates the average brightness of an bitmap with PixelFormat = pf24Bit thereby only
+/// using the blue channel.
+/// @param bmp is the bitmap to process
+/// @param LowCutoff is the lower brightness limit for pixels to be include in the calculation
+/// @param HighCutoff is the upper brightness limit for pixels to be include in the calculation
+/// @param Average returns the calculated average, only valid if Result = True
+/// @returns True, if at least on pixel was in the desired interval
+///          False, if not </summary>
+function TBitmap24_TryCalcAverageBlue(_bmp: TBitmap; _LowCutoff, _HighCutoff: Byte;
+  out _Average: Byte): Boolean;
+
 type
   // Note: The bitmap is stored upside down, so the y coordinates are reversed!
   TPixel24FilterCallback = procedure(_x, _y: Integer; var _Pixel: TdzRgbTriple) of object;
@@ -482,6 +502,35 @@ type
 /// Calls the given callback procedure for each pixel of the bitmap </summary>
 procedure TBitmap24_FilterPixels(_SrcBmp, _DstBmp: TBitmap; _Callback: TPixel24FilterCallback);
 procedure TBitmap8_FilterPixels(_SrcBmp, _DstBmp: TBitmap; _Callback: TPixel8FilterCallback);
+
+type
+  TGammaCurve = array[0..255] of Byte;
+
+///</summary>
+/// Apply the given gamma curves to the respctive colors of the bitmap </summary>
+procedure TBitmap24_ApplyGamma(_SrcBmp, _DstBmp: TBitmap; const _GammaRed, _GammaGreen, _GammaBlue: TGammaCurve); overload;
+
+///</summary>
+/// Apply the given gamma curve to all colors of the bitmap </summary>
+procedure TBitmap24_ApplyGamma(_SrcBmp, _DstBmp: TBitmap; const _Gamma: TGammaCurve); overload;
+
+///</summary>
+/// Apply the given gamma curve to an 8 bit gray scale bitmap </summary>
+procedure TBitmap8_ApplyGamma(_SrcBmp, _DstBmp: TBitmap; const _Gamma: TGammaCurve); overload;
+
+///</summary>
+/// Apply the given gamma curve to a 24 bit gray scale bitmap and convert it to 8 bit
+/// in the process.
+/// @param SrcBmp is the source bitmap, must have PixelFormat pf24bit and be grayscale
+///               The algoritm only takes the blue channel for the conversion.
+/// @param DstBmp is the destinateion bitmap, it will be set to the same size as the source
+///               and to PixelFormat pf8bit and a gray scale palette.
+/// @param Gamma is an array representing the gamma curve to apply. </summary>
+procedure TBitmap24_ApplyGammaTo8(_SrcBmp, _DstBmp: TBitmap; const _Gamma: TGammaCurve); overload;
+
+///</summary>
+/// Sequentially Apply the given gamma curves to an 8 bit gray scale bitmap </summary>
+procedure TBitmap8_ApplyMultiGamma(_SrcBmp, _DstBmp: TBitmap; const _GammaArr: array of TGammaCurve); overload;
 
 type
   ///<summary>
@@ -503,8 +552,11 @@ type
   private
     FLowCutOff: Byte;
     FHighCutOff: Byte;
-    FFactor: Extended;
+    FDivisor: Integer;
     procedure StretchColor(var _Color: Byte);
+{$IFDEF SUPPORTS_INLINE}
+    inline;
+{$ENDIF}
   public
     constructor Create(_LowCutoff, _HighCutoff: Byte);
     procedure FilterCallback(_x, _y: Integer; var _Pixel: TdzRgbTriple); overload;
@@ -516,6 +568,9 @@ type
   private
     FMoveBy: Integer;
     procedure MoveColor(var _Color: Byte);
+{$IFDEF SUPPORTS_INLINE}
+    inline;
+{$ENDIF}
   public
     constructor Create(_MoveBy: Integer);
     procedure FilterCallback(_x, _y: Integer; var _Pixel: TdzRgbTriple); overload;
@@ -556,9 +611,8 @@ implementation
 
 uses
   Math,
-  GraphUtil,
   jpeg, // if you get a compile error here you might need to add Vcl.Imaging to the unit scope names
-  u_dzConvertUtils;
+  GraphUtil;
 
 function _(const _s: string): string;
 {$IFDEF SUPPORTS_INLINE}
@@ -1205,9 +1259,16 @@ end;
 {$ENDIF}
 
 procedure TBitmap_SetSize(_bmp: TBitmap; _Width, _Height: Integer);
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 begin
+{$IFDEF SUPPPORTS_BITMAP_SETSIZE}
+  _bmp.SetSize(_Width, _Height);
+{$ELSE}
   _bmp.Width := _Width;
   _bmp.Height := _Height;
+{$ENDIF}
 end;
 
 {$IF Declared(TBitmap32)}
@@ -1770,13 +1831,18 @@ begin
 end;
 
 procedure TBitmap24_FilterPixels(_SrcBmp, _DstBmp: TBitmap; _Callback: TPixel24FilterCallback);
+const
+  BytesPerPixel = 3;
 var
   x: Integer;
   y: Integer;
   w: Integer;
   h: Integer;
-  SrcLine: PdzRgbTripleArray;
-  DstLine: PdzRgbTripleArray;
+  SrcLine: PByte;
+  DstLine: PByte;
+  SrcPixel: PByte;
+  DstPixel: PByte;
+  BytesPerLine: Integer;
 begin
   Assert(Assigned(_SrcBmp));
 
@@ -1786,41 +1852,306 @@ begin
   h := _SrcBmp.Height;
   TBitmap_SetSize(_DstBmp, w, h);
 
+  BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
+  Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
+
+  SrcLine := _SrcBmp.ScanLine[0];
+  DstLine := _DstBmp.ScanLine[0];
   for y := 0 to h - 1 do begin
-    SrcLine := _SrcBmp.ScanLine[y];
-    DstLine := _DstBmp.ScanLine[y];
+    Assert(SrcLine = _SrcBmp.ScanLine[y]);
+    Assert(DstLine = _DstBmp.ScanLine[y]);
+    SrcPixel := SrcLine;
+    DstPixel := DstLine;
     for x := 0 to w - 1 do begin
-      DstLine^[x] := SrcLine^[x];
-      _Callback(x, y, DstLine^[x]);
+      PdzRgbTriple(DstPixel)^ := PdzRgbTriple(SrcPixel)^;
+      _Callback(x, y, PdzRgbTriple(DstPixel)^);
+      Inc(SrcPixel, BytesPerPixel);
+      Inc(DstPixel, BytesPerPixel);
     end;
+    Dec(SrcLine, BytesPerLine);
+    Dec(DstLine, BytesPerLine);
   end;
 end;
 
 procedure TBitmap8_FilterPixels(_SrcBmp, _DstBmp: TBitmap; _Callback: TPixel8FilterCallback);
+const
+  BytesPerPixel = 1;
 var
   x: Integer;
   y: Integer;
   w: Integer;
   h: Integer;
-  SrcLine: PByteArray;
-  DstLine: PByteArray;
+  SrcLine: PByte;
+  DstLine: PByte;
+  SrcPixel: PByte;
+  DstPixel: PByte;
+  BytesPerLine: Integer;
 begin
   Assert(Assigned(_SrcBmp));
 
   _SrcBmp.PixelFormat := pf8bit;
+  _DstBmp.Assign(nil);
   _DstBmp.PixelFormat := pf8bit;
   w := _SrcBmp.Width;
   h := _SrcBmp.Height;
   _DstBmp.Palette := MakeGrayPalette;
   TBitmap_SetSize(_DstBmp, w, h);
 
+  BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
+  Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
+
+  SrcLine := _SrcBmp.ScanLine[0];
+  DstLine := _DstBmp.ScanLine[0];
   for y := 0 to h - 1 do begin
-    SrcLine := _SrcBmp.ScanLine[y];
-    DstLine := _DstBmp.ScanLine[y];
+    Assert(SrcLine = _SrcBmp.ScanLine[y]);
+    Assert(DstLine = _DstBmp.ScanLine[y]);
+    SrcPixel := SrcLine;
+    DstPixel := DstLine;
     for x := 0 to w - 1 do begin
-      DstLine^[x] := SrcLine^[x];
-      _Callback(x, y, DstLine^[x]);
+      DstPixel^ := SrcPixel^;
+      _Callback(x, y, DstPixel^);
+      Inc(SrcPixel, BytesPerPixel);
+      Inc(DstPixel, BytesPerPixel);
     end;
+    Dec(SrcLine, BytesPerLine);
+    Dec(DstLine, BytesPerLine);
+  end;
+end;
+
+procedure TBitmap24_ApplyGamma(_SrcBmp, _DstBmp: TBitmap; const _GammaRed, _GammaGreen, _GammaBlue: TGammaCurve);
+const
+  BytesPerPixel = 3;
+var
+  x: Integer;
+  y: Integer;
+  w: Integer;
+  h: Integer;
+  SrcLine: PByte;
+  DstLine: PByte;
+  SrcPixel: PByte;
+  DstPixel: PByte;
+  DstTriple: PdzRgbTriple;
+  SrcTriple: PdzRgbTriple;
+  BytesPerLine: Integer;
+begin
+  Assert(Assigned(_SrcBmp));
+  Assert(_SrcBmp.PixelFormat = pf24bit);
+
+  _DstBmp.PixelFormat := pf24bit;
+  w := _SrcBmp.Width;
+  h := _SrcBmp.Height;
+  TBitmap_SetSize(_DstBmp, w, h);
+
+  BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
+  Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
+
+  SrcLine := _SrcBmp.ScanLine[0];
+  DstLine := _DstBmp.ScanLine[0];
+  for y := 0 to h - 1 do begin
+    Assert(SrcLine = _SrcBmp.ScanLine[y]);
+    Assert(DstLine = _DstBmp.ScanLine[y]);
+    SrcPixel := SrcLine;
+    DstPixel := DstLine;
+    for x := 0 to w - 1 do begin
+      SrcTriple := PdzRgbTriple(SrcPixel);
+      DstTriple := PdzRgbTriple(DstPixel);
+      DstTriple.Red := _GammaRed[SrcTriple.Red];
+      DstTriple.Green := _GammaGreen[SrcTriple.Green];
+      DstTriple.Blue := _GammaBlue[SrcTriple.Blue];
+      Inc(SrcPixel, BytesPerPixel);
+      Inc(DstPixel, BytesPerPixel);
+    end;
+    Dec(SrcLine, BytesPerLine);
+    Dec(DstLine, BytesPerLine);
+  end;
+end;
+
+procedure TBitmap24_ApplyGamma(_SrcBmp, _DstBmp: TBitmap; const _Gamma: TGammaCurve);
+const
+  BytesPerPixel = 3;
+var
+  x: Integer;
+  y: Integer;
+  w: Integer;
+  h: Integer;
+  SrcLine: PByte;
+  DstLine: PByte;
+  SrcPixel: PByte;
+  DstPixel: PByte;
+  DstTriple: PdzRgbTriple;
+  SrcTriple: PdzRgbTriple;
+  BytesPerLine: Integer;
+begin
+  Assert(Assigned(_SrcBmp));
+  Assert(_SrcBmp.PixelFormat = pf24bit);
+
+  _DstBmp.PixelFormat := pf24bit;
+  w := _SrcBmp.Width;
+  h := _SrcBmp.Height;
+  TBitmap_SetSize(_DstBmp, w, h);
+
+  BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
+  Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
+
+  SrcLine := _SrcBmp.ScanLine[0];
+  DstLine := _DstBmp.ScanLine[0];
+  for y := 0 to h - 1 do begin
+    Assert(SrcLine = _SrcBmp.ScanLine[y]);
+    Assert(DstLine = _DstBmp.ScanLine[y]);
+    SrcPixel := SrcLine;
+    DstPixel := DstLine;
+    for x := 0 to w - 1 do begin
+      SrcTriple := PdzRgbTriple(SrcPixel);
+      DstTriple := PdzRgbTriple(DstPixel);
+      DstTriple.Red := _Gamma[SrcTriple.Red];
+      DstTriple.Green := _Gamma[SrcTriple.Green];
+      DstTriple.Blue := _Gamma[SrcTriple.Blue];
+      Inc(SrcPixel, BytesPerPixel);
+      Inc(DstPixel, BytesPerPixel);
+    end;
+    Dec(SrcLine, BytesPerLine);
+    Dec(DstLine, BytesPerLine);
+  end;
+end;
+
+procedure TBitmap24_ApplyGammaTo8(_SrcBmp, _DstBmp: TBitmap; const _Gamma: TGammaCurve); overload;
+const
+  BytesPerPixelInput = 3;
+  BytesPerPixelOutput = 1;
+var
+  x: Integer;
+  y: Integer;
+  w: Integer;
+  h: Integer;
+  SrcLine: PByte;
+  DstLine: PByte;
+  SrcPixel: PByte;
+  DstPixel: PByte;
+  BytesPerLineInput: Integer;
+  BytesPerLineOutput: Integer;
+begin
+  Assert(Assigned(_SrcBmp));
+  Assert(_SrcBmp.PixelFormat = pf24bit);
+
+  w := _SrcBmp.Width;
+  h := _SrcBmp.Height;
+  _DstBmp.Assign(nil);
+  TBitmap_MakeMono8(_DstBmp);
+  TBitmap_SetSize(_DstBmp, w, h);
+
+  BytesPerLineInput := ((w * 8 * BytesPerPixelInput + 31) and not 31) div 8;
+  Assert(BytesPerLineInput = Graphics.BytesPerScanline(w, BytesPerPixelInput * 8, 32));
+
+  BytesPerLineOutput := ((w * 8 * BytesPerPixelOutput + 31) and not 31) div 8;
+  Assert(BytesPerLineOutput = Graphics.BytesPerScanline(w, BytesPerPixelOutput * 8, 32));
+
+  SrcLine := _SrcBmp.ScanLine[0];
+  DstLine := _DstBmp.ScanLine[0];
+  for y := 0 to h - 1 do begin
+    Assert(SrcLine = _SrcBmp.ScanLine[y]);
+    Assert(DstLine = _DstBmp.ScanLine[y]);
+    SrcPixel := SrcLine;
+    DstPixel := DstLine;
+    for x := 0 to w - 1 do begin
+      DstPixel^ := _Gamma[SrcPixel^];
+      Inc(SrcPixel, BytesPerPixelInput);
+      Inc(DstPixel, BytesPerPixelOutput);
+    end;
+    Dec(SrcLine, BytesPerLineInput);
+    Dec(DstLine, BytesPerLineOutput);
+  end;
+end;
+
+procedure TBitmap8_ApplyGamma(_SrcBmp, _DstBmp: TBitmap; const _Gamma: TGammaCurve);
+const
+  BytesPerPixel = 1;
+var
+  x: Integer;
+  y: Integer;
+  w: Integer;
+  h: Integer;
+  SrcLine: PByte;
+  DstLine: PByte;
+  SrcPixel: PByte;
+  DstPixel: PByte;
+  BytesPerLine: Integer;
+begin
+  Assert(Assigned(_SrcBmp));
+  Assert(_SrcBmp.PixelFormat = pf8bit);
+
+  _DstBmp.Assign(nil);
+  _DstBmp.PixelFormat := pf8bit;
+  w := _SrcBmp.Width;
+  h := _SrcBmp.Height;
+  _DstBmp.Palette := MakeGrayPalette;
+  TBitmap_SetSize(_DstBmp, w, h);
+
+  BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
+  Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
+
+  SrcLine := _SrcBmp.ScanLine[0];
+  DstLine := _DstBmp.ScanLine[0];
+  for y := 0 to h - 1 do begin
+    Assert(SrcLine = _SrcBmp.ScanLine[y]);
+    Assert(DstLine = _DstBmp.ScanLine[y]);
+    SrcPixel := SrcLine;
+    DstPixel := DstLine;
+    for x := 0 to w - 1 do begin
+      DstPixel^ := _Gamma[SrcPixel^];
+      Inc(SrcPixel, BytesPerPixel);
+      Inc(DstPixel, BytesPerPixel);
+    end;
+    Dec(SrcLine, BytesPerLine);
+    Dec(DstLine, BytesPerLine);
+  end;
+end;
+
+procedure TBitmap8_ApplyMultiGamma(_SrcBmp, _DstBmp: TBitmap; const _GammaArr: array of TGammaCurve);
+const
+  BytesPerPixel = 1;
+var
+  x: Integer;
+  y: Integer;
+  w: Integer;
+  h: Integer;
+  SrcLine: PByte;
+  DstLine: PByte;
+  SrcPixel: PByte;
+  DstPixel: PByte;
+  BytesPerLine: Integer;
+  i: Integer;
+  Value: Byte;
+begin
+  Assert(Assigned(_SrcBmp));
+  Assert(_SrcBmp.PixelFormat = pf8bit);
+
+  _DstBmp.Assign(nil);
+  _DstBmp.PixelFormat := pf8bit;
+  w := _SrcBmp.Width;
+  h := _SrcBmp.Height;
+  _DstBmp.Palette := MakeGrayPalette;
+  TBitmap_SetSize(_DstBmp, w, h);
+
+  BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
+  Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
+
+  SrcLine := _SrcBmp.ScanLine[0];
+  DstLine := _DstBmp.ScanLine[0];
+  for y := 0 to h - 1 do begin
+    Assert(SrcLine = _SrcBmp.ScanLine[y]);
+    Assert(DstLine = _DstBmp.ScanLine[y]);
+    SrcPixel := SrcLine;
+    DstPixel := DstLine;
+    for x := 0 to w - 1 do begin
+      Value := SrcPixel^;
+      for i := Low(_GammaArr) to High(_GammaArr) do
+        Value := _GammaArr[i][Value];
+      DstPixel^ := Value;
+      Inc(SrcPixel, BytesPerPixel);
+      Inc(DstPixel, BytesPerPixel);
+    end;
+    Dec(SrcLine, BytesPerLine);
+    Dec(DstLine, BytesPerLine);
   end;
 end;
 
@@ -1880,7 +2211,7 @@ begin
   WorkAreaWidth := _SrcBmp.Width - 2;
   WorkAreaHeight := _SrcBmp.Height - 2;
   BytesPerLine := (((WorkAreaWidth + 2) * 8 * BytesPerPixel + 31) and not 31) div 8;
-//  Assert(BytesPerLine = Graphics.BytesPerScanline(WorkAreaWidth + 2, BytesPerPixel * 8, 32));
+  Assert(BytesPerLine = Graphics.BytesPerScanline(WorkAreaWidth + 2, BytesPerPixel * 8, 32));
 
   // Copy first row unchanged
   SrcRow := _SrcBmp.ScanLine[0];
@@ -2135,6 +2466,8 @@ var
   CenterBrightness: Integer;
   AvgBrightness: Integer;
   BytesPerLine: Integer;
+  AlphaEntrySize: NativeInt;
+  AlphaPtr: PSingle;
 begin
   // sharpening is blending of the current pixel
   // with the average of the surrounding ones,
@@ -2151,7 +2484,9 @@ begin
   WorkAreaWidth := _SrcBmp.Width - 2;
   WorkAreaHeight := _SrcBmp.Height - 2;
   BytesPerLine := (((WorkAreaWidth + 2) * 8 * BytesPerPixel + 31) and not 31) div 8;
-//  Assert(BytesPerLine = Graphics.BytesPerScanline(WorkAreaWidth + 2, BytesPerPixel * 8, 32));
+  Assert(BytesPerLine = Graphics.BytesPerScanline(WorkAreaWidth + 2, BytesPerPixel * 8, 32));
+
+  AlphaEntrySize := PtrDiff(@(_AlphaMap[0][1]), @(_AlphaMap[0][0]));
 
   SrcRow := _SrcBmp.ScanLine[0];
   DstRow := _DstBmp.ScanLine[0];
@@ -2192,10 +2527,12 @@ begin
     SrcPixelTop := PPixel(Integer(SrcPixelCenter) + BytesPerLine);
     SrcPixelBottom := PPixel(Integer(SrcPixelCenter) - BytesPerLine);
 
+    AlphaPtr := @(_AlphaMap[Row][0]);
     for Column := 1 to WorkAreaWidth do begin
       CenterBrightness := SrcPixelCenter^;
 
-      Alpha := _AlphaMap[Row][Column];
+      Assert(AlphaPtr = @(_AlphaMap[Row][Column]));
+      Alpha := AlphaPtr^;
       Assert((Alpha >= 0) and (Alpha <= 5), Format('Alpha[%d][%d] must be >=1 and <=5', [Row, Column]));
       // since 0 <= Alpha <= 5 we can be sure that 0 <= Beta <= 1
       Beta := Alpha / 5;
@@ -2232,6 +2569,8 @@ begin
       Inc(SrcPixelCenter);
       Inc(SrcPixelRight);
       Inc(SrcPixelBottom);
+
+      AlphaPtr := AddToPtr(AlphaPtr, AlphaEntrySize);
     end;
 
     // copy Last column unchanged
@@ -2454,6 +2793,11 @@ begin
   Result := Pointer(NativeInt(_Ptr) + _Offset);
 end;
 
+function PtrDiff(const _Ptr1, _Ptr2: Pointer): NativeInt; inline;
+begin
+  Result := NativeInt(_Ptr1) - NativeInt(_Ptr2);
+end;
+
 function TBitmap8_TryCalcAverage(_bmp: TBitmap; _LowCutoff, _HighCutoff: Byte;
   out _Average: Byte): Boolean;
 const
@@ -2463,9 +2807,10 @@ var
   h: Integer;
   x: Integer;
   y: Integer;
-  ScanLine: PByteArray;
+  ScanLine: PByte;
+  Pixel: PByte;
   Value: Byte;
-  Sum: Extended;
+  Sum: Integer;
   cnt: Integer;
   BytesPerLine: Integer;
 begin
@@ -2479,18 +2824,20 @@ begin
   ScanLine := _bmp.ScanLine[0];
   for y := 0 to h - 1 do begin
     Assert(ScanLine = _bmp.ScanLine[y]);
+    Pixel := ScanLine;
     for x := 0 to w - 1 do begin
-      Value := ScanLine^[x];
+      Value := Pixel^;
       if (Value >= _LowCutoff) and (Value <= _HighCutoff) then begin
         Sum := Sum + Value;
         Inc(cnt);
       end;
+      Inc(Pixel, BytesPerPixel);
     end;
-    ScanLine := AddToPtr(ScanLine, -BytesPerLine);
+    Dec(ScanLine, BytesPerLine);
   end;
   Result := (cnt > 0);
   if Result then
-    _Average := Round(Sum / cnt);
+    _Average := Sum div cnt;
 end;
 
 function TBitmap24_TryCalcAverage(_bmp: TBitmap; _LowCutoff, _HighCutoff: Byte;
@@ -2503,14 +2850,12 @@ var
   h: Integer;
   x: Integer;
   y: Integer;
-  ScanLine: PdzRgbTripleArray;
+  ScanLine: PByte;
+  Pixel: PByte;
   Value: Byte;
-  Sum: Extended;
+  Sum: Integer;
   cnt: Integer;
   BytesPerLine: Integer;
-{$IFNDEF SUPPORTS_ENHANCED_RECORDS}
-  Pixel: ^TdzRgbTriple;
-{$ENDIF}
 begin
   w := _bmp.Width;
   h := _bmp.Height;
@@ -2522,23 +2867,67 @@ begin
   ScanLine := _bmp.ScanLine[0];
   for y := 0 to h - 1 do begin
     Assert(ScanLine = _bmp.ScanLine[y]);
+    Pixel := ScanLine;
     for x := 0 to w - 1 do begin
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
-      Value := ScanLine^[x].GetBrightness(_Channel);
+      Value := PdzRgbTriple(Pixel).GetBrightness(_Channel);
 {$ELSE}
-      Pixel := @(ScanLine^[x]);
-      Value := GetRgbBrightness(Pixel.Red, Pixel.Green, Pixel.Blue, _Channel);
+      Value := GetRgbBrightness(PdzRgbTriple(Pixel).Red, PdzRgbTriple(Pixel).Green, PdzRgbTriple(Pixel).Blue, _Channel);
 {$ENDIF}
       if (Value >= _LowCutoff) and (Value <= _HighCutoff) then begin
         Sum := Sum + Value;
         Inc(cnt);
       end;
+      Inc(Pixel, BytesPerPixel);
     end;
-    ScanLine := AddToPtr(ScanLine, -BytesPerLine);
+    Dec(ScanLine, BytesPerLine);
   end;
   Result := (cnt > 0);
   if Result then
-    _Average := Round(Sum / cnt);
+    _Average := Sum div cnt;
+end;
+
+function TBitmap24_TryCalcAverageBlue(_bmp: TBitmap; _LowCutoff, _HighCutoff: Byte;
+  out _Average: Byte): Boolean;
+const
+  BytesPerPixel = SizeOf(TdzRgbTriple);
+var
+  w: Integer;
+  h: Integer;
+  x: Integer;
+  y: Integer;
+  ScanLine: PByte;
+  Pixel: PByte;
+  Value: Byte;
+  Sum: Integer;
+  cnt: Integer;
+  BytesPerLine: Integer;
+begin
+  w := _bmp.Width;
+  h := _bmp.Height;
+  BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
+  Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
+
+  Sum := 0;
+  cnt := 0;
+  ScanLine := _bmp.ScanLine[0];
+  for y := 0 to h - 1 do begin
+    Assert(ScanLine = _bmp.ScanLine[y]);
+    Pixel := ScanLine;
+    for x := 0 to w - 1 do begin
+      // the first byte of the triple is the blue value
+      Value := Pixel^;
+      if (Value >= _LowCutoff) and (Value <= _HighCutoff) then begin
+        Sum := Sum + Value;
+        Inc(cnt);
+      end;
+      Inc(Pixel, BytesPerPixel);
+    end;
+    Dec(ScanLine, BytesPerLine);
+  end;
+  Result := (cnt > 0);
+  if Result then
+    _Average := Sum div cnt;
 end;
 
 function ColorBrightness(_Red, _Green, _Blue: Byte): Byte;
@@ -2612,7 +3001,7 @@ begin
   inherited Create;
   FLowCutOff := _LowCutoff;
   FHighCutOff := _HighCutoff;
-  FFactor := 256 / (_HighCutoff - _LowCutoff);
+  FDivisor := _HighCutoff - _LowCutoff;
 end;
 
 procedure TPixelFilterStretch.StretchColor(var _Color: Byte);
@@ -2621,10 +3010,8 @@ var
 begin
   Value := _Color;
   if (Value > FLowCutOff) and (Value < FHighCutOff) then begin
-    Value := Round((Value - FLowCutOff) * FFactor);
-    if Value > 255 then
-      Value := 255;
-    _Color := Value;
+    Value := ((Value - FLowCutOff) * 256) div FDivisor;
+    _Color := ReduceToByte(Value);
   end;
 end;
 
@@ -2656,13 +3043,9 @@ procedure TPixelFilterMove.MoveColor(var _Color: Byte);
 var
   Value: Integer;
 begin
-  Value := _Color + FMoveBy;
-  if Value < 0 then
-    _Color := 0
-  else if Value > 255 then
-    _Color := 255
-  else
-    _Color := Value;
+  Value := _Color;
+  Value := Value + FMoveBy;
+  _Color := ReduceToByte(Value);
 end;
 
 procedure TPixelFilterMove.FilterCallback(_x, _y: Integer; var _Pixel: TdzRgbTriple);

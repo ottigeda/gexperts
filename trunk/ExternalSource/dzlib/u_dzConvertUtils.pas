@@ -140,6 +140,13 @@ function Long2Num(_l: ULong; _Base: Byte; _MinWidth: Integer = 1): string;
 function isNumberN(const _s: string; _Base: TBaseN): Integer;
 
 ///<summary>
+/// Reduces an Integer to a Byte value by cutting it off at 0 and 255 </summary>
+function ReduceToByte(const _Value: Integer): Byte;
+{$IFDEF SUPPORTS_INLINE}
+    inline;
+{$ENDIF}
+
+///<summary>
 /// Converts a string of the form '-hh:mm:ss', 'hh:mm:ss',
 /// '+hh:mm:ss', 'mm:ss' or 'ss' to a number of seconds. </summary>
 function TimeStrToSeconds(const _Zeit: string): Integer;
@@ -575,6 +582,16 @@ begin
   end;
   while Length(Result) < _MinWidth do
     Result := '0' + Result;
+end;
+
+function ReduceToByte(const _Value: Integer): Byte; inline;
+begin
+  if _Value < 0 then
+    Result := 0
+  else if _Value > 255 then
+    Result := 255
+  else
+    Result := _Value;
 end;
 
 function isHexDigit(_a: Char): Boolean;
