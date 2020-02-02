@@ -21,6 +21,7 @@ inherited f_Goto: Tf_Goto
     Height = 21
     ItemHeight = 13
     TabOrder = 0
+    OnChange = cmb_LineNumberChange
     OnKeyDown = cmb_LineNumberKeyDown
   end
   object lb_UnitPositions: TListBox

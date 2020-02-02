@@ -27,6 +27,7 @@ type
     procedure lb_UnitPositionsClick(Sender: TObject);
     procedure lb_UnitPositionsDblClick(Sender: TObject);
     procedure cmb_LineNumberKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure cmb_LineNumberChange(Sender: TObject);
   private
     FUnitPositions: TUnitPositions;
     FCurrentSourceFn: string;
@@ -106,7 +107,7 @@ begin
   // outdated if the user switched from the IDE's goto dialog to the GExperts one.
   // todo: Does this history list really make any sense? I for one have never used it.
   // Remembering the active line before the goto so we can go back where we came from makes more
-  // sense, but the Undo function already does that (but not everybody knows this).  
+  // sense, but the Undo function already does that (but not everybody knows this).
   reg := TRegistry.Create;
   try
     reg.RootKey := HKEY_CURRENT_USER;
@@ -141,7 +142,8 @@ begin
   try
     frm.SetData(_Row);
     Result := (frm.ShowModal = mrOk);
-    frm.GetData(_Row);
+    if Result then
+      frm.GetData(_Row);
   finally
     FreeAndNil(frm);
   end;
@@ -149,12 +151,19 @@ end;
 
 procedure Tf_Goto.GetData(out _Row: Integer);
 begin
-  _Row := StrToInt(cmb_LineNumber.Text);
+  _Row := StrToInt(Trim(cmb_LineNumber.Text));
 end;
 
 procedure Tf_Goto.SetData(_Row: Integer);
 begin
   cmb_LineNumber.Text := IntToStr(_Row);
+end;
+
+procedure Tf_Goto.cmb_LineNumberChange(Sender: TObject);
+var
+  Line: Integer;
+begin
+  b_Ok.Enabled := TryStrToInt(Trim(cmb_LineNumber.Text), Line);
 end;
 
 procedure Tf_Goto.cmb_LineNumberKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
