@@ -29,7 +29,9 @@ function LoadAnyGExpertsDLL: IGExpertsDll;
 implementation
 
 uses
-  Forms;
+  Forms,
+  Dialogs,
+  u_dzOsUtils;
 
 type
   TGExpertsDll = class(TInterfacedObject, IGExpertsDll)
@@ -53,6 +55,9 @@ function TryLoad(const _DllName: string; out _Dll: IGExpertsDll): Boolean;
 begin
   try
     _Dll := LoadGExpertsDll(_DllName);
+    if IsShiftDown then begin
+      MessageDlg(Format('Successfully loaded %s', [_DllName]), mtInformation, [mbOK], 0);
+    end;
     Result := True;
   except
     Result := False;
