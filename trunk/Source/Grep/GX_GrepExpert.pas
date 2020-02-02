@@ -67,6 +67,8 @@ type
     FGrepHistoryPagesTabWidth: Integer;
     FGrepMouseWheelPrevNextMatch: Boolean;
     FGrepUseMapFile: Boolean;
+    FGrepMinDepth: Integer;
+    FGrepMaxDepth: Integer;
     function  GetGrepSaveHistoryListItems(AIndex: Integer): Boolean;
     procedure SetSearchList(New: TStrings);
     procedure SetReplaceList(New: TStrings);
@@ -128,6 +130,8 @@ type
     property GrepSaveOption: TGrepSaveOption read FGrepSaveOption write FGrepSaveOption;
     property GrepUseCurrentIdent: Boolean read FGrepUseCurrentIdent write FGrepUseCurrentIdent;
     property GrepUseMapFile: Boolean read FGrepUseMapFile write FGrepUseMapFile;
+    property GrepMinDepth: Integer read FGrepMinDepth write FGrepMinDepth;
+    property GrepMaxDepth: Integer read FGrepMaxDepth write FGrepMaxDepth;
     property NumContextLines: Integer read FNumContextLines write FNumContextLines;
 
     property GrepAdvancedOptions: Boolean read FGrepAdvancedOptions write FGrepAdvancedOptions;
@@ -239,6 +243,9 @@ begin
   FAutoHide := False;
 
   FHistoryList := TGrepHistoryList.Create;
+
+  FGrepMinDepth := 0;
+  FGrepMaxDepth := -1;
 
   FGrepAdvancedOptions := False;
 
@@ -485,6 +492,8 @@ begin
   _Settings.WriteInteger('SaveOption', Integer(GrepSaveOption));
   _Settings.WriteBool('UseCurrentIdent', GrepUseCurrentIdent);
   _Settings.WriteBool('UseMapFile', GrepUseMapFile);
+  _Settings.WriteInteger('MinDepth', GrepMinDepth);
+  _Settings.WriteInteger('MaxDepth', GrepMaxDepth);
 
   _Settings.WriteBool('AdvancedOptions', GrepAdvancedOptions);
   _Settings.WriteInteger('SaveOptionDeafult', GrepSaveOptionDefaultValue);
@@ -534,6 +543,8 @@ begin
   Result.Directories := '';
   Result.ExcludedDirs := '';
   Result.IncludeSubdirs := GrepSub;
+  Result.MinDepth := GrepMinDepth;
+  Result.MaxDepth := GrepMaxDepth;
 
   Result.IncludeCode := GrepCode;
   Result.IncludeStrings := GrepStrings;
@@ -742,6 +753,8 @@ begin
   FGrepSaveOption := TGrepSaveOption(_Settings.ReadInteger('SaveOption', Integer(GrepSaveOption)));
   FGrepUseCurrentIdent := _Settings.ReadBool('UseCurrentIdent', False);
   FGrepUseMapFile := _Settings.ReadBool('UseMapFile', False);
+  FGrepMinDepth := _Settings.ReadInteger('MinDepth', 0);
+  FGrepMaxDepth := _Settings.ReadInteger('MaxDepth', -1);
 
   FGrepAdvancedOptions := _Settings.ReadBool('AdvancedOptions', GrepAdvancedOptions);
   FGrepSaveOptionDefaultValue := _Settings.ReadInteger('SaveOptionDeafult', GrepSaveOptionDefaultValue);

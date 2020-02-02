@@ -69,6 +69,8 @@ type
     WholeWord: Boolean;
     RegEx: Boolean;
     IncludeSubdirs: Boolean;
+    MinDepth: Integer;
+    MaxDepth: Integer;
     Directories: string;
     ExcludedDirs: string;
     Mask: string;
@@ -396,7 +398,7 @@ type
     procedure GrepCurrentSourceEditor;
     procedure GrepProjectGroup;
     procedure GrepProject(Project: IOTAProject);
-    procedure GrepDirectory(Dir, Mask: string);
+    procedure GrepDirectory(Dir, Mask: string; _Depth: integer);
     procedure GrepDirectories(const Dir, Mask: string);
     procedure GrepResults;
   public
@@ -602,7 +604,7 @@ begin
       if FAbortSignalled then
         Break;
       FSearchRoot := DirList[i];
-      GrepDirectory(DirList[i], Mask);
+      GrepDirectory(DirList[i], Mask, 0);
     end;
   finally
     FreeAndNil(DirList);
@@ -611,7 +613,18 @@ end;
 
 {$WARN SYMBOL_PLATFORM OFF}
 
-procedure TGrepSearchRunner.GrepDirectory(Dir, Mask: string);
+function IsDirectory(_Attr: Integer): Boolean;
+{$IFDEF SupportsInline}
+inline;
+{$ENDIF}
+begin
+  Result := ((_Attr and faDirectory) <> 0);
+{$IFDEF GX_VER150_up}
+  Result := Result and ((_Attr and faSymLink) = 0);
+{$ENDIF}
+end;
+
+procedure TGrepSearchRunner.GrepDirectory(Dir, Mask: string; _Depth: integer);
 resourcestring
   SSpecifiedDirectoryDoesNotExist = 'The search directory %s does not exist';
 var
@@ -622,7 +635,7 @@ var
   SearchFile: string;
   Context: TGrepSearchContext;
 begin
-  {$IFOPT D+} SendDebug('DirGrep on: ' +Dir+'; Mask: '+Mask); {$ENDIF}
+  {$IFOPT D+}SendDebug('DirGrep on: ' + Dir + '; Mask: ' + ReplaceStr(Mask, #13, ';')); {$ENDIF}
   Dir := AddSlash(Dir);
   if not DirectoryExists(Dir) then
     raise Exception.CreateFmt(SSpecifiedDirectoryDoesNotExist, [Dir]);
@@ -638,20 +651,14 @@ begin
     if FGrepSettings.IncludeSQLs and (Masks.IndexOf('*.sql') = -1) then
       Masks.Add('*.sql');
 
-    if FGrepSettings.IncludeSubdirs then
-    begin
+    if FGrepSettings.IncludeSubdirs then begin
       Result := FindFirst(Dir + AllFilesWildCard, faAnyFile, Search);
       StartDirectorySearch(Dir);
       try
-        while Result = 0 do
-        begin
-          if ((Search.Attr and faDirectory) <> 0) {$IFDEF GX_VER150_up} and ((Search.Attr and faSymLink) = 0) {$ENDIF} then
-          begin
-            if (Search.Name <> '.') and (Search.Name <> '..') then
-            begin
-              if IsEmpty(FGrepSettings.ExcludedDirs) or (not FExcludedDirsRegEx.Exec(Dir + Search.Name)) then
-                GrepDirectory(Dir + Search.Name, Mask);
-            end;
+        while Result = 0 do begin
+          if IsDirectory(Search.Attr) and (Search.Name <> '.') and (Search.Name <> '..') then begin
+            if IsEmpty(FGrepSettings.ExcludedDirs) or (not FExcludedDirsRegEx.Exec(Dir + Search.Name)) then
+              GrepDirectory(Dir + Search.Name, Mask, _Depth + 1);
           end;
           if FAbortSignalled then
             Exit;
@@ -662,47 +669,47 @@ begin
       end;
     end;
 
-    for i := 0 to Masks.Count-1 do
-    begin
-      if FAbortSignalled then
-        Break;
+    if (_Depth >= FGrepSettings.MinDepth) and ((FGrepSettings.MaxDepth < 0) or (_Depth <= FGrepSettings.MaxDepth)) then begin
+      for i := 0 to Masks.Count-1 do
+      begin
+        if FAbortSignalled then
+          Break;
 
-      Result := FindFirst(Dir + Trim(Masks.Strings[i]), faAnyFile, Search);
-      try
-        StartDirectorySearch(Dir);
-        Context := TGrepSearchContext.Create;
+        Result := FindFirst(Dir + Trim(Masks.Strings[i]), faAnyFile, Search);
         try
-          while Result = 0 do
-          begin
-            if (Search.Attr and faDirectory) <> 0 then
-              Result := FindNext(Search)
-            else
+          StartDirectorySearch(Dir);
+          Context := TGrepSearchContext.Create;
+          try
+            while Result = 0 do
             begin
-              Assert(FFileResult = nil, 'FFileResult leak');
-              FFileResult := nil;
+              if (Search.Attr and faDirectory) <> 0 then
+                Result := FindNext(Search)
+              else begin
+                Assert(FFileResult = nil, 'FFileResult leak');
+                FFileResult := nil;
 
-              // FindFirst matches *.pas~ with a wildcard of *.pas, so we correct for that here
-              if WildcardCompare(Masks.Strings[i], Search.Name, True) then
-              begin
-                SearchFile := Dir + Search.Name;
-                if IsEmpty(FGrepSettings.ExcludedDirs) or (not FExcludedDirsRegEx.Exec(SearchFile)) then
-                  ExecuteSearchOnFile(SearchFile, Context);
+                // FindFirst matches *.pas~ with a wildcard of *.pas, so we correct for that here
+                if WildcardCompare(Masks.Strings[i], Search.Name, True) then begin
+                  SearchFile := Dir + Search.Name;
+                  if IsEmpty(FGrepSettings.ExcludedDirs) or (not FExcludedDirsRegEx.Exec(SearchFile)) then
+                    ExecuteSearchOnFile(SearchFile, Context);
+                end;
+                FFileResult := nil;
+
+                if FAbortSignalled then
+                  Break;
+
+                Result := FindNext(Search);
               end;
-              FFileResult := nil;
-
-              if FAbortSignalled then
-                Break;
-
-              Result := FindNext(Search);
-            end;
-          end; // while
+            end; // while
+          finally
+            FreeAndNil(Context);
+          end; // finally
         finally
-          FreeAndNil(Context);
+          FindClose(Search);
         end; // finally
-      finally
-        FindClose(Search);
-      end; // finally
-    end;
+      end; // for
+    end; // if
   finally
     FreeAndNil(Masks);
   end; // finally
@@ -1329,11 +1336,13 @@ begin
 
     FTotalMatchCount := AItemIni.ReadInteger(ASection, 'TotalMatchCount', TotalMatchCount);
 
-  //GrepSettings
+    // GrepSettings
     FGrepSettings.CaseSensitive := AItemIni.ReadBool(ASection, 'CaseSensitive', GrepSettings.CaseSensitive);
     FGrepSettings.WholeWord := AItemIni.ReadBool(ASection, 'WholeWord', GrepSettings.WholeWord);
     FGrepSettings.RegEx := AItemIni.ReadBool(ASection, 'RegEx', GrepSettings.RegEx);
     FGrepSettings.IncludeSubdirs := AItemIni.ReadBool(ASection, 'IncludeSubdirs', GrepSettings.IncludeSubdirs);
+    FGrepSettings.MinDepth := AItemIni.ReadInteger(ASection, 'MinDepth', GrepSettings.MinDepth);
+    FGrepSettings.MaxDepth := AItemIni.ReadInteger(ASection, 'MaxDepth', GrepSettings.MaxDepth);
     FGrepSettings.Directories := AItemIni.ReadString(ASection, 'Directories', GrepSettings.Directories);
     FGrepSettings.ExcludedDirs := AItemIni.ReadString(ASection, 'ExcludedDirs', GrepSettings.ExcludedDirs);
     FGrepSettings.Mask := AItemIni.ReadString(ASection, 'Mask', GrepSettings.Mask);
@@ -1426,11 +1435,14 @@ begin
 
     AItemIni.WriteInteger(ASection, 'TotalMatchCount', TotalMatchCount);
 
-  //GrepSettings
+    // GrepSettings
     AItemIni.WriteBool(ASection, 'CaseSensitive', GrepSettings.CaseSensitive);
     AItemIni.WriteBool(ASection, 'WholeWord', GrepSettings.WholeWord);
     AItemIni.WriteBool(ASection, 'RegEx', GrepSettings.RegEx);
     AItemIni.WriteBool(ASection, 'IncludeSubdirs', GrepSettings.IncludeSubdirs);
+    AItemIni.WriteInteger(ASection, 'MinDepth', GrepSettings.MinDepth);
+    AItemIni.WriteInteger(ASection, 'MaxDepth', GrepSettings.MaxDepth);
+
     AItemIni.WriteString(ASection, 'Directories', GrepSettings.Directories);
     AItemIni.WriteString(ASection, 'ExcludedDirs', GrepSettings.ExcludedDirs);
     AItemIni.WriteString(ASection, 'Mask', GrepSettings.Mask);

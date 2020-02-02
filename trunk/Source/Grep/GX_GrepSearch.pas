@@ -57,6 +57,9 @@ type
     btnSectionAll: TButton;
     chk_UseMapFile: TCheckBox;
     txt_NoMapFile: TStaticText;
+    l_MinMaxDepth: TLabel;
+    ed_MinDepth: TEdit;
+    ed_MaxDepth: TEdit;
     procedure btnBrowseClick(Sender: TObject);
     procedure rbDirectoriesClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
@@ -78,6 +81,7 @@ type
     procedure timHintTimerTimer(Sender: TObject);
     procedure btnGrepAllClick(Sender: TObject);
     procedure btnSectionAllClick(Sender: TObject);
+    procedure cbIncludeClick(Sender: TObject);
   private
     FGrepExpert: TGrepExpert;
     FEmbedded: Boolean;
@@ -274,6 +278,16 @@ begin
   CheckContentTypeSelection(cbGrepStrings);
 end;
 
+procedure TfmGrepSearch.cbIncludeClick(Sender: TObject);
+var
+  b: Boolean;
+begin
+  b := cbInclude.Checked;
+  l_MinMaxDepth.Enabled := b;
+  ed_MinDepth.Enabled := b;
+  ed_MaxDepth.Enabled := b;
+end;
+
 procedure TfmGrepSearch.CheckSectionSelection(ClickedOption: TCheckBox);
 resourcestring
   SCannotDisableAllContentTypes = 'You cannot disable all unit sections.';
@@ -390,6 +404,7 @@ resourcestring
 var
   i: Integer;
   Dirs: TStringList;
+  s: string;
 begin
   // we allow for ' ' (spaces)
   if cbText.Text = '' then
@@ -397,13 +412,13 @@ begin
 
   if rbDirectories.Checked then
   begin
-    if IsEmpty(cbDirectory.Text) then
-      cbDirectory.Text := GetCurrentDir;
+    s := Trim(cbDirectory.Text);
+    if IsEmpty(s) then
+      s := GetCurrentDir;
     Dirs := TStringList.Create;
     try
-      AnsiStrTok(cbDirectory.Text, ';', Dirs);
-      for i := 0 to Dirs.Count - 1 do
-      begin
+      AnsiStrTok(s, ';', Dirs);
+      for i := 0 to Dirs.Count - 1 do begin
         Dirs[i] := ExpandFileName(AddSlash(Dirs[i]));
         if not DirectoryExists(Dirs[i]) then
           raise Exception.CreateFmt(SSpecifiedDirectoryDoesNotExist, [Dirs[i]]);
@@ -415,9 +430,10 @@ begin
       FreeAndNil(Dirs);
     end;
   end;
-  while StartsStr(';', cbExcludedDirs.Text) do
-    cbExcludedDirs.Text := Copy(cbExcludedDirs.Text, 2);
-  cbExcludedDirs.Text := StringReplace(cbExcludedDirs.Text, ';;', ';', [rfReplaceAll]);
+  s := cbExcludedDirs.Text;
+  while StartsStr(';', s) do
+    s := Copy(s, 2);
+  cbExcludedDirs.Text := StringReplace(s, ';;', ';', [rfReplaceAll]);
 
   SaveFormSettings;
 
@@ -507,6 +523,9 @@ begin
     FGrepExpert.GrepSearch := 4
   else if rbResults.Checked then
     FGrepExpert.GrepSearch := 5;
+
+  FGrepExpert.GrepMinDepth := StrToIntDef(ed_MinDepth.Text, 0);
+  FGrepExpert.GrepMaxDepth := StrToIntDef(ed_MaxDepth.Text, -1);
 
   FGrepExpert.GrepUseMapFile := chk_UseMapFile.Checked;
 end;
@@ -619,6 +638,13 @@ begin
     else
       rbAllProjFiles.Checked := True;
     end;
+
+    ed_MinDepth.Text := IntToStr(FGrepExpert.GrepMinDepth);
+    if FGrepExpert.GrepMaxDepth >= 0 then
+      ed_MaxDepth.Text := IntToStr(FGrepExpert.GrepMaxDepth)
+    else
+      ed_MaxDepth.Text :=  '';
+
     chk_UseMapFile.Checked := FGrepExpert.GrepUseMapFile;
 
     if cbText.Items.Count > 0 then
@@ -732,6 +758,8 @@ begin
     Value.Mask := cbMasks.Text;
     Value.Directories := cbDirectory.Text;
     Value.IncludeSubdirs := cbInclude.Checked;
+    Value.MinDepth := StrToIntDef(ed_MinDepth.Text, 0);
+    Value.MaxDepth := StrToIntDef(ed_MaxDepth.Text, -1);
     Value.ExcludedDirs := cbExcludedDirs.Text;
   end;
 end;
