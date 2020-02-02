@@ -584,7 +584,7 @@ begin
     Result := '0' + Result;
 end;
 
-function ReduceToByte(const _Value: Integer): Byte; inline;
+function ReduceToByte(const _Value: Integer): Byte;
 begin
   if _Value < 0 then
     Result := 0

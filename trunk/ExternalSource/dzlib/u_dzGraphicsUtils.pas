@@ -87,7 +87,7 @@ function AddToPtr(const _Ptr: Pointer; _Offset: NativeInt): Pointer;
 inline;
 {$ENDIF}
 
-function PtrDiff(const _Ptr1, _Ptr2: Pointer): NativeInt; inline;
+function PtrDiff(const _Ptr1, _Ptr2: Pointer): NativeInt;
 {$IFDEF SUPPORTS_INLINE}
 inline;
 {$ENDIF}
@@ -2793,7 +2793,7 @@ begin
   Result := Pointer(NativeInt(_Ptr) + _Offset);
 end;
 
-function PtrDiff(const _Ptr1, _Ptr2: Pointer): NativeInt; inline;
+function PtrDiff(const _Ptr1, _Ptr2: Pointer): NativeInt;
 begin
   Result := NativeInt(_Ptr1) - NativeInt(_Ptr2);
 end;
