@@ -34,7 +34,7 @@ begin
       ShowGrep := Dll.GetProcAddress('ShowGrep');
       ShowGrep;
     end;
-    // it worked halt the program
+    // it worked, halt the program
     Halt(0);
   except
     on e: Exception do begin
