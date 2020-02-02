@@ -374,6 +374,7 @@ type
     procedure DoEmbeddedSearch(Sender: TObject);
     procedure UpdateHistoryPagesOptions;
     property lbHistoryListIndexForHistoryMenuActions: Integer read FlbHistoryListIndexForHistoryMenuActions write FlbHistoryListIndexForHistoryMenuActions;
+    procedure GetEnabledFlags(out _IsOnlySaveSettings, _HaveItems, _Processing: Boolean);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure AssignSettingsToForm;
@@ -1746,6 +1747,9 @@ begin
   FSavedFileMasksCaption := miSettingsFileMasks.Caption;
   FSaveItemEmptyCaption := miHistoryItemName.Caption;
   FSaveSortCaption := miHistorySort.Caption;
+
+  actViewStayOnTop.Visible := IsStandAlone;
+  tbnSep6.Visible := actViewStayOnTop.Visible;
 end;
 
 destructor TfmGrepResults.Destroy;
@@ -1764,19 +1768,28 @@ begin
   fmGrepResults := nil;
 end;
 
+procedure TfmGrepResults.GetEnabledFlags(out _IsOnlySaveSettings, _HaveItems, _Processing: Boolean);
+var
+  Idx: Integer;
+  AItem: TGrepHistoryListItem;
+begin
+  Idx := lbHistoryList.ItemIndex;
+  if Idx <> -1 then begin
+    AItem := GrepExpert.HistoryList.Items[Idx];
+    _IsOnlySaveSettings := AItem.IsOnlySaveSettings;
+  end else
+    _IsOnlySaveSettings := False;
+
+  _HaveItems := not _IsOnlySaveSettings and (lbResults.Items.Count > 0);
+  _Processing := DoingSearchOrReplace;
+end;
+
 procedure TfmGrepResults.TheActionListUpdate(Action: TBasicAction; var Handled: Boolean);
 var
   HaveItems, Processing, AIsOnlySaveSettings: Boolean;
-  AItem: TGrepHistoryListItem;
 begin
-  if lbHistoryList.ItemIndex <> -1 then
-    AItem := GrepExpert.HistoryList.Items[lbHistoryList.ItemIndex]
-  else
-    AItem := nil;
-  AIsOnlySaveSettings := Assigned(AItem) and AItem.IsOnlySaveSettings;
+  GetEnabledFlags(AIsOnlySaveSettings, HaveItems, Processing);
 
-  HaveItems := (lbResults.Items.Count > 0) and not AIsOnlySaveSettings;
-  Processing := DoingSearchOrReplace;
   actFileSearch.Enabled := not Processing;
   actViewOptions.Enabled := not Processing;
   actViewStayOnTop.Enabled := not Processing;
@@ -1791,9 +1804,6 @@ begin
   actReplaceSelected.Enabled := not Processing and HaveItems;
   actViewShowFullFilename.Enabled := not Processing and not AIsOnlySaveSettings;
   actViewShowIndent.Enabled := not Processing and not AIsOnlySaveSettings;
-
-  actViewStayOnTop.Visible := IsStandAlone;
-  tbnSep6.Visible := actViewStayOnTop.Visible;
 
   actViewStayOnTop.Checked := StayOnTop;
   actViewShowContext.Checked := ShowContext;
@@ -2371,9 +2381,13 @@ end;
 procedure TfmGrepResults.actHistoryUpdate(Sender: TObject);
 var
   AAction: TAction;
+  IsOnlySaveSettings: Boolean;
+  HaveItems: Boolean;
+  Processing: Boolean;
 begin
+  GetEnabledFlags(IsOnlySaveSettings, HaveItems, Processing);
   AAction := Sender as TAction;
-  AAction.Enabled := not DoingSearchOrReplace and (lbHistoryList.Count > 0) and
+  AAction.Enabled := not Processing and HaveItems and (lbHistoryList.Count > 0) and
     ( (AAction.Tag = 1) or (GrepExpert.HistoryList.ListMode <> hlmSettings) );
 end;
 
