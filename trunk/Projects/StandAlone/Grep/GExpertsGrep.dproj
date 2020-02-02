@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <DCC_DependencyCheckOutputName>..\..\..\binaries\GExpertsGrep.exe</DCC_DependencyCheckOutputName>
         <DCC_UsePackage>vcl;vclx</DCC_UsePackage>
@@ -13,7 +13,7 @@
         <DCC_AssertionsAtRuntime>False</DCC_AssertionsAtRuntime>
         <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
         <DCC_DebugInformation>False</DCC_DebugInformation>
-        <DCC_Define>RELEASE</DCC_Define>
+        <DCC_Define>RELEASE;NO_TRANSLATION;NO_TRANSLATION_HINT</DCC_Define>
         <DCC_Description>GExperts Grep</DCC_Description>
         <DCC_ExeOutput>..\..\..\binaries</DCC_ExeOutput>
         <DCC_HppOutput>.\dcu</DCC_HppOutput>
@@ -31,7 +31,7 @@
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
-        <DCC_Define>DEBUG</DCC_Define>
+        <DCC_Define>DEBUG;NO_TRANSLATION;NO_TRANSLATION_HINT</DCC_Define>
         <DCC_Description>GExperts Grep</DCC_Description>
         <DCC_ExeOutput>..\..\..\binaries</DCC_ExeOutput>
         <DCC_GenerateStackFrames>True</DCC_GenerateStackFrames>
@@ -109,6 +109,15 @@
         <DelphiCompile Include="GExpertsGrep.dpr">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzClassUtils.pas"/>
+        <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzConvertUtils.pas"/>
+        <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzDateUtils.pas"/>
+        <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzFileUtils.pas"/>
+        <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzMiscUtils.pas"/>
+        <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzOsUtils.pas"/>
+        <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzStringUtils.pas"/>
+        <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzTranslator.pas"/>
+        <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzTypes.pas"/>
         <DCCReference Include="..\..\..\Source\Framework\GX_StandAloneLoadDLL.pas"/>
         <DCCReference Include="GrepMain.pas"/>
     </ItemGroup>
