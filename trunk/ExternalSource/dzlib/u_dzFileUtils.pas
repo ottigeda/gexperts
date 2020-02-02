@@ -1174,8 +1174,7 @@ uses
   Masks,
   u_dzMiscUtils,
   u_dzStringUtils,
-  u_dzDateUtils,
-  u_dzFileStreams;
+  u_dzDateUtils;
 
 function _(const _s: string): string;
 {$IFDEF SUPPORTS_INLINE}
