@@ -30,7 +30,10 @@ uses
   Buttons,
   Menus,
 {$IFDEF HAS_UNIT_SYSTEM_ACTIONS}
-  System.Actions,
+  Actions,
+{$ENDIF}
+{$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  UITypes,
 {$ENDIF}
   ActnList,
   ComObj,

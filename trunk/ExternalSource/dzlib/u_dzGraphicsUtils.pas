@@ -4,6 +4,8 @@ unit u_dzGraphicsUtils;
 
 {$IFDEF OPTIMIZE_DZ_GRAPHIC_UTILS}
 {$OPTIMIZATION ON}
+{$RANGECHECKS OFF}
+{$OVERFLOWCHECKS OFF}
 {$ENDIF}
 
 {$IFOPT O-} // Optimization
@@ -13,6 +15,14 @@ unit u_dzGraphicsUtils;
 // The reason for this is that we have some assertions below that might significantly impact
 // performance.
 {$C-} // this is the short form for $ASSERTIONS OFF
+{$ENDIF}
+
+{$IFOPT Q+}
+{$MESSAGE WARN 'Overflow checking is on, consider turning it off for significantly better performance'}
+{$ENDIF}
+
+{$IFOPT R+}
+{$MESSAGE WARN 'Range checking is on, consider turning it off for significantly better performance'}
 {$ENDIF}
 
 {.$DEFINE dzUseGraphics32}
@@ -28,6 +38,7 @@ uses
   GR32, // libs\graphics32\src
 {$ENDIF}
   u_dzTranslator,
+  u_dzTypes,
   u_dzConvertUtils,
   u_dzTypesUtils;
 
@@ -439,9 +450,6 @@ procedure TBitmap_Sharpen(_SrcBmp, _DstBmp: TBitmap; _Alpha: Single); overload;
 {$IFDEF SUPPORTS_INLINE}
 inline;
 {$ENDIF}
-
-type
-  TSingleMatrix = array of array of Single;
 
 ///<summary>
 /// Sharpens a bitmap, pixelformat must be pf24bit
@@ -1525,10 +1533,6 @@ end;
 // original source: http://www.delphigeist.com/2009/09/blur-bitmap-algorithm.html
 // but heavily modified
 
-type
-  TByteMatrix = array of array of Byte;
-  TBitMatrix = array of array of Boolean;
-
 procedure BlurBuffer(const _In: TByteMatrix; out _out: TByteMatrix);
 var
   w: Integer;
@@ -1852,6 +1856,9 @@ begin
   h := _SrcBmp.Height;
   TBitmap_SetSize(_DstBmp, w, h);
 
+  if h = 0 then
+    Exit; //==>
+
   BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
   Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
 
@@ -1897,6 +1904,9 @@ begin
   _DstBmp.Palette := MakeGrayPalette;
   TBitmap_SetSize(_DstBmp, w, h);
 
+  if h = 0 then
+    Exit; //==>
+
   BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
   Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
 
@@ -1941,6 +1951,9 @@ begin
   w := _SrcBmp.Width;
   h := _SrcBmp.Height;
   TBitmap_SetSize(_DstBmp, w, h);
+
+  if h = 0 then
+    Exit; //==>
 
   BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
   Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
@@ -1989,6 +2002,9 @@ begin
   w := _SrcBmp.Width;
   h := _SrcBmp.Height;
   TBitmap_SetSize(_DstBmp, w, h);
+
+  if h = 0 then
+    Exit; //==>
 
   BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
   Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
@@ -2039,6 +2055,9 @@ begin
   TBitmap_MakeMono8(_DstBmp);
   TBitmap_SetSize(_DstBmp, w, h);
 
+  if h = 0 then
+    Exit; //==>
+
   BytesPerLineInput := ((w * 8 * BytesPerPixelInput + 31) and not 31) div 8;
   Assert(BytesPerLineInput = Graphics.BytesPerScanline(w, BytesPerPixelInput * 8, 32));
 
@@ -2086,6 +2105,9 @@ begin
   _DstBmp.Palette := MakeGrayPalette;
   TBitmap_SetSize(_DstBmp, w, h);
 
+  if h = 0 then
+    Exit; //==>
+
   BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
   Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
 
@@ -2131,6 +2153,9 @@ begin
   h := _SrcBmp.Height;
   _DstBmp.Palette := MakeGrayPalette;
   TBitmap_SetSize(_DstBmp, w, h);
+
+  if h = 0 then
+    Exit; //==>
 
   BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
   Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
@@ -2262,13 +2287,7 @@ begin
       // add center pixel weighted by alpha
       AvgBrightness := (IntAlpha * CenterBrightness + $7FFF) shr 16 - AvgBrightness;
 
-      // ensure range
-      if AvgBrightness < 0 then
-        AvgBrightness := 0
-      else if AvgBrightness > 255 then
-        AvgBrightness := 255;
-
-      DstPixel^ := AvgBrightness;
+      DstPixel^ := ReduceToByte(AvgBrightness);
 
       Inc(DstPixel);
 
@@ -2391,24 +2410,10 @@ begin
       AvgGreen := (IntAlpha * p^.rgbtGreen + $7FFF) shr 16 - AvgGreen;
       AvgBlue := (IntAlpha * p^.rgbtBlue + $7FFF) shr 16 - AvgBlue;
 
-      // ensure range (this looks stupid, but avoids function calls)
-      if AvgRed < 0 then
-        AvgRed := 0
-      else if AvgRed > 255 then
-        AvgRed := 255;
-      if AvgGreen < 0 then
-        AvgGreen := 0
-      else if AvgGreen > 255 then
-        AvgGreen := 255;
-      if AvgBlue < 0 then
-        AvgBlue := 0
-      else if AvgBlue > 255 then
-        AvgBlue := 255;
-
       Inc(DstPixel);
-      DstPixel^.rgbtRed := AvgRed;
-      DstPixel^.rgbtGreen := AvgGreen;
-      DstPixel^.rgbtBlue := AvgBlue;
+      DstPixel^.rgbtRed := ReduceToByte(AvgRed);
+      DstPixel^.rgbtGreen := ReduceToByte(AvgGreen);
+      DstPixel^.rgbtBlue := ReduceToByte(AvgBlue);
     end;
     Inc(DstPixel);
     Inc(SrcPixels[1]);
@@ -2527,7 +2532,7 @@ begin
     SrcPixelTop := PPixel(Integer(SrcPixelCenter) + BytesPerLine);
     SrcPixelBottom := PPixel(Integer(SrcPixelCenter) - BytesPerLine);
 
-    AlphaPtr := @(_AlphaMap[Row][0]);
+    AlphaPtr := @(_AlphaMap[Row][1]);
     for Column := 1 to WorkAreaWidth do begin
       CenterBrightness := SrcPixelCenter^;
 
@@ -2553,14 +2558,8 @@ begin
       // add center pixel weighted by alpha
       AvgBrightness := (IntAlpha * CenterBrightness + $7FFF) shr 16 - AvgBrightness;
 
-      // ensure range
-      if AvgBrightness < 0 then
-        AvgBrightness := 0
-      else if AvgBrightness > 255 then
-        AvgBrightness := 255;
-
       // write into the target pixel
-      DstPixel^ := AvgBrightness;
+      DstPixel^ := ReduceToByte(AvgBrightness);
 
       Inc(DstPixel);
 
@@ -2695,25 +2694,11 @@ begin
       AvgGreen := (IntAlpha * p^.rgbtGreen + $7FFF) shr 16 - AvgGreen;
       AvgBlue := (IntAlpha * p^.rgbtBlue + $7FFF) shr 16 - AvgBlue;
 
-      // ensure range (this looks stupid, but avoids function calls)
-      if AvgRed < 0 then
-        AvgRed := 0
-      else if AvgRed > 255 then
-        AvgRed := 255;
-      if AvgGreen < 0 then
-        AvgGreen := 0
-      else if AvgGreen > 255 then
-        AvgGreen := 255;
-      if AvgBlue < 0 then
-        AvgBlue := 0
-      else if AvgBlue > 255 then
-        AvgBlue := 255;
-
       // write into the target pixel
       Inc(DstPixel);
-      DstPixel^.rgbtRed := AvgRed;
-      DstPixel^.rgbtGreen := AvgGreen;
-      DstPixel^.rgbtBlue := AvgBlue;
+      DstPixel^.rgbtRed := ReduceToByte(AvgRed);
+      DstPixel^.rgbtGreen := ReduceToByte(AvgGreen);
+      DstPixel^.rgbtBlue := ReduceToByte(AvgBlue);
     end;
     Inc(DstPixel);
     Inc(SrcPixels[1]);
@@ -2814,8 +2799,14 @@ var
   cnt: Integer;
   BytesPerLine: Integer;
 begin
-  w := _bmp.Width;
   h := _bmp.Height;
+  if h = 0 then begin
+    Result := False;
+    Exit; //==>
+  end;
+
+  w := _bmp.Width;
+
   BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
   Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
 
@@ -2857,8 +2848,15 @@ var
   cnt: Integer;
   BytesPerLine: Integer;
 begin
-  w := _bmp.Width;
   h := _bmp.Height;
+
+  if h = 0 then begin
+    Result := False;
+    Exit; //==>
+  end;
+
+  w := _bmp.Width;
+
   BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
   Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
 
@@ -2903,8 +2901,15 @@ var
   cnt: Integer;
   BytesPerLine: Integer;
 begin
-  w := _bmp.Width;
   h := _bmp.Height;
+
+  if h = 0 then begin
+    Result := False;
+    Exit; //==>
+  end;
+
+  w := _bmp.Width;
+
   BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
   Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
 

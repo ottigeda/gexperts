@@ -4,6 +4,7 @@
 unit u_dzSelectDirectoryFix;
 
 {$INCLUDE 'dzlib.inc'}
+{.$INCLUDE 'jedi.inc'}
 
 interface
 
@@ -11,6 +12,9 @@ uses
   Windows,
   SysUtils,
   FileCtrl,
+{$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  UITypes,
+{$ENDIF}
   Controls;
 
 {$IF not Declared(TSelectDirExtOpt)}

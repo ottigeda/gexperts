@@ -25,6 +25,13 @@ type
   TBytes = array of Byte;
 {$IFEND}
 
+type
+  TByteMatrix = array of array of Byte;
+  TBitMatrix = array of array of Boolean;
+
+  TSingleMatrix = array of array of Single;
+  TDoubleMatrix = array of array of Double;
+
 implementation
 
 end.

@@ -36,8 +36,11 @@ type
   protected
     FThreadName: string;
     ///<summary>
-    /// Calls SetThreadName with FThreadName </summary>
-    procedure SetName; virtual;
+    /// Calls SetName with FThreadName </summary>
+    procedure SetName; overload; virtual;
+    ///<summary>
+    /// @note: Do *not* make this a class method! </summary>
+    procedure SetName(const _Name: string); overload; virtual;
     ///<summary>
     /// Calls SetName </summary>
     procedure Execute; override;
@@ -92,13 +95,17 @@ begin
   Result := FThreadName;
 end;
 
+procedure TNamedThread.SetName(const _Name: string);
+begin
+  SetThreadName(AnsiString(_Name));
+end;
+
 procedure TNamedThread.SetName;
 begin
-  SetThreadName(AnsiString(FThreadName));
+  SetName(FThreadName);
 end;
 
 initialization
   // set the name for the main thread to 'Main'
   SetThreadName('Main');
 end.
-

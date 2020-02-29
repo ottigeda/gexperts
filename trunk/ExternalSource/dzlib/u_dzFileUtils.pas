@@ -355,7 +355,7 @@ type
     /// wraps the windows API function GetFullPathName </summary>
     class function GetFullPathName(const _fn: string): string;
 {$IFDEF SUPPORTS_STATIC}
-     static;
+    static;
 {$ENDIF}
     /// <summary>
     /// Returns a temporary filename.
@@ -862,6 +862,18 @@ type
     /// @returns the full filename of the created backup file
     /// @raises EBackupFailed if the copy operation failed even for the 1000th attempt. </summary>
     class function BackupFile(const _Filename: string; const _BackupDir: string = ''): string;
+    /// <summary>
+    /// Moves the file to a new, unique name, appending the current date and time to the base
+    /// file name. If the move operation fails, an underscore and a number will be appended
+    /// to the filename. That number will be incremented, until the copy operation succeeds
+    /// or it reaches 999.
+    /// See also TFileGenerationHandler and GenerateBackupFilename.
+    /// @param Filename is the name of the file to move
+    /// @param BackupDir is a directory in which to create the backup file, if empty
+    ///                  the same directory as the original file is used
+    /// @returns the full filename the file has been moved to.
+    /// @raises EBackupFailed if the copy operation failed even for the 1000th attempt. </summary>
+    class function MoveFileToBackup(const _Filename: string; const _BackupDir: string = ''): string;
 {$ENDIF}
     ///<summary>
     /// Generates a backup of the filename by appending the current date and time to the base
@@ -871,7 +883,7 @@ type
     /// @returns the full filename for the backup file </summary>
     class function GenerateBackupFilename(const _Filename: string; _BackupDir: string = ''): string;
 {$IFDEF SUPPORTS_STATIC}
-     static;
+    static;
 {$ENDIF}
 
     ///<summary>
@@ -890,35 +902,35 @@ type
     /// see also AppendDate and AppendDateAndTime </summary>
     class function AppendDateTime(const _Filename: string; _DateTime: TDateTime; _IncludeTime: Boolean): string; overload;
 {$IFDEF SUPPORTS_STATIC}
-     static;
+    static;
 {$ENDIF}
 
     ///<summary>
     /// Appends the current date to the filename in the format _YYYY-MM-DD </summary>
     class function AppendDate(const _Filename: string): string; overload;
 {$IFDEF SUPPORTS_STATIC}
-     static;
+    static;
 {$ENDIF}
 
     ///<summary>
     /// Appends the given date to the filename in the format _YYYY-MM-DD </summary>
     class function AppendDate(const _Filename: string; _Date: TDateTime): string; overload;
 {$IFDEF SUPPORTS_STATIC}
-     static;
+    static;
 {$ENDIF}
 
     ///<summary>
     /// Appends the current date and time to the filename in the format _YYYY-MM-DD_HH-MM-SS </summary>
     class function AppendDateAndTime(const _Filename: string): string; overload;
 {$IFDEF SUPPORTS_STATIC}
-     static;
+    static;
 {$ENDIF}
 
     ///<summary>
     /// Appends the given date and time to the filename in the format _YYYY-MM-DD_HH-MM-SS </summary>
     class function AppendDateAndTime(const _Filename: string; _DateTime: TDateTime): string; overload;
 {$IFDEF SUPPORTS_STATIC}
-     static;
+    static;
 {$ENDIF}
 
     /// <summary>
@@ -1068,6 +1080,12 @@ type
     /// Same as Full </summary>
     class operator Implicit(_a: TFilename): string;
   end;
+
+type
+  // TFilename might not be this record, because there are multiple declarations of this type
+  // in the RTL and other libraries, so it depends on the units included and their order which
+  // one is used. TdzFilename will always be this record.
+  TdzFilename = TFilename;
 
 type
   TSearchPath = record
@@ -1940,6 +1958,36 @@ begin
       + BackupFilename.Extension;
   end;
 end;
+
+class function TFileSystem.MoveFileToBackup(const _Filename: string; const _BackupDir: string = ''): string;
+var
+  i: Integer;
+  BackupFilename: TFilename;
+  LastError: Cardinal;
+  ErrorMessage: string;
+begin
+  BackupFilename := GenerateBackupFilename(_Filename, _BackupDir);
+  Result := BackupFilename;
+
+  ForceDir(ExtractFilePath(BackupFilename));
+
+  i := 0;
+  while not Self.MoveFileEx(_Filename, Result, [mfCopyAllowed], ehReturnFalse) do begin
+    Inc(i);
+    if i = 1000 then begin
+      LastError := GetLastError;
+      ErrorMessage := SysErrorMessage(LastError);
+      raise EBackupFailed.CreateFmt(
+        _('Failed to create a backup of "%s". Tried 1000 different file names based on "%s".')
+        + ' (%s)',
+        [_Filename, BackupFilename.Filename, ErrorMessage]);
+    end;
+    Result := BackupFilename.DirectoryBS
+      + BackupFilename.FilenameOnly + '_' + IntToStr(i)
+      + BackupFilename.Extension;
+  end;
+end;
+
 {$ENDIF}
 
 class function TFileSystem.ContainsWildcard(const _Mask: string): Boolean;
@@ -2139,7 +2187,7 @@ end;
 class function TFileSystem.CopyMatchingFiles(const _Mask, _SrcDir, _DestDir: string;
   _Flags: TCopyFileFlagSet; _FilesSkipped: TStrings = nil): Integer;
 var
-  i: integer;
+  i: Integer;
   Files: TStringList;
   s: string;
   SrcDirBs: string;
@@ -2151,7 +2199,7 @@ begin
   Files := TStringList.Create;
   try
     TSimpleDirEnumerator.Execute(SrcDirBs + _Mask, Files, [dfaHidden, dfaSysFile, dfaArchive]);
-    for i := 0 to Files.Count -1 do begin
+    for i := 0 to Files.Count - 1 do begin
       s := Files[i];
       if Self.CopyFile(SrcDirBs + s, DestDirBS + s, _Flags) then
         Inc(Result)

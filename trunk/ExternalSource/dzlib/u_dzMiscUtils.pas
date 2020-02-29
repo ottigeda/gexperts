@@ -17,6 +17,7 @@
 unit u_dzMiscUtils;
 
 {$INCLUDE 'dzlib.inc'}
+{.$INCLUDE 'jedi.inc'}
 
 interface
 
@@ -78,11 +79,13 @@ procedure HexDumpToDbl(const _s: string; var _Value: Double);
 ///<summary> converts a hexdump of an extended back to an extended value </summary>
 procedure HexDumpToExtended(const _s: string; var _Value: Extended);
 
+{$IFNDEF HAS_INTTOHEX_FUNCTION}
 ///<summary> converts an integer to a 8 digit hex string </summary>
 function IntToHex(_Value: Integer): string; overload;
 
 ///<summary> converts an In64 to a 16 digit hex string </summary>
 function IntToHex(_Value: Int64): string; overload;
+{$ENDIF HAS_INTTOHEX_FUNCTION}
 
 ///<summary> Converts an integer to a boolean.
 ///          @param Int is the integer to convert
@@ -514,6 +517,7 @@ begin
   end;
 end;
 
+{$IFNDEF HAS_INTTOHEX_FUNCTION}
 function IntToHex(_Value: Integer): string;
 begin
   Result := IntToHex(_Value, SizeOf(_Value) * 2);
@@ -523,6 +527,7 @@ function IntToHex(_Value: Int64): string;
 begin
   Result := IntToHex(_Value, SizeOf(_Value) * 2);
 end;
+{$ENDIF HAS_INTTOHEX_FUNCTION}
 
 type
   PStringDescriptor = ^TStringDescriptor;

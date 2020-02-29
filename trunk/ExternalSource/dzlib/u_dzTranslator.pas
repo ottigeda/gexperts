@@ -346,8 +346,14 @@ initialization
   AddDomainForResourceString('delphi100');
 {$ELSE}{$IFDEF DELPHIX_BERLIN}
   AddDomainForResourceString('delphi101');
+{$ELSE}{$IFDEF DELPHIX_TOKYO}
+  AddDomainForResourceString('delphi102');
+{$ELSE}{$IFDEF DELPHIX_RIO}
+  AddDomainForResourceString('delphi103');
 {$ELSE}
   'unknown Delphi version!';
+{$ENDIF}
+{$ENDIF}
 {$ENDIF}
 {$ENDIF}
 {$ENDIF}

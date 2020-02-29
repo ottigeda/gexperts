@@ -161,7 +161,9 @@ function PrependBackslash(const _s: string): string;
 ///<summary>
 /// Replaces an existing extension in Name with Ext or adds Ext to Name if
 /// it does not have an extension.
-/// Consider using TFileSystem.ChangeFileExtFull or .ChangeFileExtLast instead. </summary>
+/// @param Name is the (file) name to which the extension is to be added.
+/// @param Ext is the extension, Note that a dot (.) will be prefixed if there is none
+/// NOTE: Consider using TFileSystem.ChangeFileExtFull or .ChangeFileExtLast instead. </summary>
 function ForceExtension(const _Name, _Ext: string): string;
 ///<summary>
 /// Returns only the filename (incl. extension) portion of Name. </summary>

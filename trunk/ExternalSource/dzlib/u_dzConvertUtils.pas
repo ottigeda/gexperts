@@ -306,9 +306,18 @@ const
   HoursPerDay = 24;
   MinutesPerDay = HoursPerDay * MinutesPerHour;
   SecondsPerDay = MinutesPerDay * SecondsPerMinute;
-  MillisecondsPerMinute = SecondsPerMinute * 1000;
-  MillisecondsPerHour = SecondsPerHour * 1000;
-  MillisecondsPerDay = SecondsPerDay * 1000;
+  MillisecondsPerSecond = 1000;
+  MillisecondsPerMinute = SecondsPerMinute * MillisecondsPerSecond;
+  MillisecondsPerHour = SecondsPerHour * MillisecondsPerSecond;
+  MillisecondsPerDay = SecondsPerDay * MillisecondsPerSecond;
+  MicrosecondsPerMillisecond = 1000;
+  MicrosecondsPerSecond = MillisecondsPerSecond * MicrosecondsPerMillisecond;
+  MicrosecondsPerMinute = Int64(SecondsPerMinute) * MicrosecondsPerSecond;
+  MicrosecondsPerHour = Int64(SecondsPerHour) * MicrosecondsPerSecond;
+  MicrosecondsPerDay = Int64(SecondsPerDay) * MicrosecondsPerSecond;
+
+const
+  OneMicrosecond = 1 / MSecsPerDay / 1000;
 
 ///<summary>
 /// returns a human readable string of the form '5d 23h' or '25h 15m' or '20m 21s' </summary>
