@@ -401,7 +401,7 @@ object fmUsesManager: TfmUsesManager
         end
       end
       object tabIdentifiers: TTabSheet
-        Caption = 'Identifiers'
+        Caption = '&Identifiers'
         ImageIndex = 4
         object pnlIdentifiers: TPanel
           Left = 0
