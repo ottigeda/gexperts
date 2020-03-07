@@ -664,22 +664,27 @@ begin
 {$IFOPT D+}
   SendDebug('Reading project units');
 {$ENDIF D+}
-  FProjectUnits.Clear;
-  if not FUsesExpert.FReadMap or not TryGetMapFileUnits then begin
-    IProject := GxOtaGetCurrentProject;
-    if not Assigned(IProject) then
-      Exit;
-    for i := 0 to IProject.GetModuleCount - 1 do begin
-      IModuleInfo := IProject.GetModule(i);
-      Assert(IModuleInfo <> nil);
+  FProjectUnits.BeginUpdate;
+  try
+    FProjectUnits.Clear;
+    if not FUsesExpert.FReadMap or not TryGetMapFileUnits then begin
+      IProject := GxOtaGetCurrentProject;
+      if not Assigned(IProject) then
+        Exit;
+      for i := 0 to IProject.GetModuleCount - 1 do begin
+        IModuleInfo := IProject.GetModule(i);
+        Assert(IModuleInfo <> nil);
 
-      FileName := IModuleInfo.FileName;
+        FileName := IModuleInfo.FileName;
       // We don't want blank names, packages, etc.
-      if IsPas(FileName) then begin
-        UnitName := ExtractPureFileName(FileName);
-        FProjectUnits.Add(UnitName);
+        if IsPas(FileName) then begin
+          UnitName := ExtractPureFileName(FileName);
+          FProjectUnits.Add(UnitName);
+        end;
       end;
     end;
+  finally
+    FProjectUnits.EndUpdate;
   end;
 {$IFOPT D+}
   SendDebug('Done reading project units');
@@ -1620,6 +1625,7 @@ var
   procedure AddPathUnit(FileName: string);
   var
     UnitName: string;
+    Idx: Integer;
   begin
     if IsDotNet then begin
       // do we really care about dotNET in Delphi any more?
@@ -1629,7 +1635,8 @@ var
       Exit; //==>
     UnitName := ExtractPureFileName(FileName);
     if IsPas(FileName) then begin
-      PathUnits.AddObject(UnitName, Pointer(StrNew(PChar(FileName))));
+      if not PathUnits.Find(UnitName, Idx) then
+        PathUnits.AddObject(UnitName, Pointer(StrNew(PChar(FileName))));
     end else begin
       PathUnits.Add(UnitName);
     end;
@@ -1670,6 +1677,8 @@ begin
         AddPathUnit(FileName);
     end;
     FSearchPathUnits.Assign(PathUnits);
+    // todo: This unnecessarily sorts the alreadys sorted list
+    //       It's probably not a real performance problem but ...
     FSearchPathUnits.Sorted := True;
   finally
     FreeAndNil(PathUnits);
@@ -2009,7 +2018,7 @@ begin
 {$IFEND}
       for IdentIdx := 0 to sl.Count - 1 do begin
         Identifier := sl[IdentIdx];
-      // make sure the string is valid and not freed in the thread
+        // make sure the string is valid and not freed in the thread
         UniqueString(Identifier);
         UnitFile := PChar(sl.Objects[IdentIdx]);
         UnitName := ExtractPureFileName(UnitFile);
@@ -2715,8 +2724,6 @@ var
   Obj: PChar;
   Idx: Integer;
 begin
-  // Activate this if you are concerned about performance:
-  //if not IsCtrlDown then EXIT;
   ThisSrc := GetAvailableSourceList; // sg_*
   Assert(Assigned(ThisSrc));
   // the unit name is always in the rightmost column
