@@ -82,6 +82,7 @@ type
     procedure btnGrepAllClick(Sender: TObject);
     procedure btnSectionAllClick(Sender: TObject);
     procedure cbIncludeClick(Sender: TObject);
+    procedure ed_MinDepthChange(Sender: TObject);
   private
     FGrepExpert: TGrepExpert;
     FEmbedded: Boolean;
@@ -465,6 +466,15 @@ begin
 
   LoadFormSettings;
   FCheckedWhere := True;
+end;
+
+procedure TfmGrepSearch.ed_MinDepthChange(Sender: TObject);
+begin
+  inherited;
+  if ed_MinDepth.Text <> '0' then
+    ed_MinDepth.Color := clYellow
+  else
+    ed_MinDepth.Color := clWindow;
 end;
 
 procedure TfmGrepSearch.FormCreate(Sender: TObject);

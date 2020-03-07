@@ -450,6 +450,7 @@ object fmGrepSearch: TfmGrepSearch
       Enabled = False
       TabOrder = 5
       Text = '0'
+      OnChange = ed_MinDepthChange
     end
     object ed_MaxDepth: TEdit
       Left = 152
