@@ -1029,10 +1029,10 @@ function TStream_ReadShortStringBinary(_Stream: TStream): ShortString;
 var
   Len: Byte;
 begin
-  _Stream.Read(Len, SizeOf(Len));
+  _Stream.ReadBuffer(Len, SizeOf(Len));
   Result[0] := AnsiChar(Chr(Len));
   if Len > 0 then
-    _Stream.Read(Result[1], Len);
+    _Stream.ReadBuffer(Result[1], Len);
 end;
 
 function TStream_WriteStringLn(_Stream: TStream; const _s: string): Integer;
@@ -1083,7 +1083,7 @@ begin
   SetLength(s, Result);
   if Result <> 0 then begin
     _Stream.Position := OldPos;
-    _Stream.Read(s[1], Length(s));
+    _Stream.ReadBuffer(s[1], Length(s));
     _s := string(s);
   end;
   _Stream.Position := NewPos;

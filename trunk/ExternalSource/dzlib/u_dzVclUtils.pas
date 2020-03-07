@@ -1644,7 +1644,7 @@ begin
     raise EdzVclUtils.CreateFmt(_('Glyph string contained invalid character at position %d.'), [Res]);
   st := TMemoryStream.Create;
   try
-    st.Write(Buf[0], Size);
+    st.WriteBuffer(Buf[0], Size);
     st.Position := 0;
     _btn.Glyph.LoadFromStream(st);
   finally
@@ -1671,7 +1671,7 @@ begin
     raise EdzVclUtils.CreateFmt(_('Bitmap string contained invalid character at position %d.'), [Res]);
   st := TMemoryStream.Create;
   try
-    st.Write(Buf[0], Size);
+    st.WriteBuffer(Buf[0], Size);
     st.Position := 0;
     _bmp.LoadFromStream(st);
   finally
@@ -3756,7 +3756,7 @@ var
 begin
   st := TMemoryStream.Create;
   try
-    st.Write(_s[1], Length(_s));
+    st.WriteBuffer(_s[1], Length(_s));
     st.Position := 0;
     _Re.Lines.LoadFromStream(st);
   finally
