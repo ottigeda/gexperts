@@ -1,6 +1,7 @@
 unit u_dzGraphicsUtils;
 
 {$INCLUDE 'dzlib.inc'}
+{.$INCLUDE 'dzlibjedi.inc'}
 
 {$IFDEF OPTIMIZE_DZ_GRAPHIC_UTILS}
 {$OPTIMIZATION ON}
@@ -34,6 +35,9 @@ uses
   Types,
   SysUtils,
   Graphics,
+{$IFDEF HAS_UNIT_SYSTEM_UITYPES}
+  System.UITypes,
+{$ENDIF}
 {$IFDEF dzUseGraphics32}
   GR32, // libs\graphics32\src
 {$ENDIF}
