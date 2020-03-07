@@ -2387,8 +2387,8 @@ var
 begin
   GetEnabledFlags(IsOnlySaveSettings, HaveItems, Processing);
   AAction := Sender as TAction;
-  AAction.Enabled := not Processing and HaveItems and (lbHistoryList.Count > 0) and
-    ( (AAction.Tag = 1) or (GrepExpert.HistoryList.ListMode <> hlmSettings) );
+  AAction.Enabled := not Processing and (lbHistoryList.Count > 0) and
+    ((AAction.tag = 1) or (GrepExpert.HistoryList.ListMode <> hlmSettings));
 end;
 
 procedure TfmGrepResults.miHistoryItemNameClick(Sender: TObject);
