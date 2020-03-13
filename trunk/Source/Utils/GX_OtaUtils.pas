@@ -1593,7 +1593,7 @@ begin
     OutputDir := GxOtaGetProjectOutputDir(Project);
     ProjectFilename := GxOtaGetProjectFileName(Project);
     MapFile := AddSlash(OutputDir) + ExtractFilename(ProjectFilename);
-    MapFile := ChangeFileExt(MapFile, '.map');
+    MapFile := TFileSystem.ChangeFileExtFull(MapFile, '.map');
 
     PathProcessor := TPathProcessor.Create(ExtractFileDir(ProjectFilename), Project);
     try
