@@ -1248,14 +1248,14 @@ begin
                 until not TryGetToken(FTokenIdx + RemoveMe, Next) or (Next.ReservedType = rtRightBr);
           until (Next = nil) or (Next.ReservedType in [rtSemiColon, rtBegin]);
 
-          // Begin before a SemiColon, presume that is a anonymous delegate...
-          if Next.ReservedType = rtBegin then begin
-            Assert(False, '.CheckIndent: Next.ReservedType = rtBegin');
-            IsDelegate := True;
-            Next.AddOption(toFeedNewLine); // Force NewLine Feed!
-          end;
-
           if Next <> nil then begin
+            // Begin before a SemiColon, presume that is a anonymous delegate...
+            if Next.ReservedType = rtBegin then begin
+              Assert(False, '.CheckIndent: Next.ReservedType = rtBegin');
+              IsDelegate := True;
+              Next.AddOption(toFeedNewLine); // Force NewLine Feed!
+            end;
+
             Assert(False, '.CheckIndent: Next <> nil');
             repeat
               Assert(False, '.CheckIndent: in repeat');
