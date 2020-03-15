@@ -3,7 +3,7 @@ object fmPrevNextConfig: TfmPrevNextConfig
   Top = 211
   BorderStyle = bsDialog
   Caption = 'Prev/Next Identifier Options'
-  ClientHeight = 116
+  ClientHeight = 137
   ClientWidth = 312
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -16,14 +16,14 @@ object fmPrevNextConfig: TfmPrevNextConfig
   Scaled = False
   DesignSize = (
     312
-    116)
+    137)
   PixelsPerInch = 96
   TextHeight = 14
   object gbxPrevNextOptions: TGroupBox
     Left = 8
     Top = 8
     Width = 297
-    Height = 65
+    Height = 86
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 'Prev/Next Identifier Options'
     TabOrder = 0
@@ -35,10 +35,18 @@ object fmPrevNextConfig: TfmPrevNextConfig
       Caption = 'Center found identifiers in the editor'
       TabOrder = 0
     end
+    object chk_Unfold: TCheckBox
+      Left = 16
+      Top = 56
+      Width = 265
+      Height = 17
+      Caption = 'Call "unfold nearest" at position'
+      TabOrder = 1
+    end
   end
   object btnOK: TButton
     Left = 148
-    Top = 83
+    Top = 104
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
@@ -49,7 +57,7 @@ object fmPrevNextConfig: TfmPrevNextConfig
   end
   object btnCancel: TButton
     Left = 228
-    Top = 83
+    Top = 104
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
