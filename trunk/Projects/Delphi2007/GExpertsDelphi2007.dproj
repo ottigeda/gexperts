@@ -118,7 +118,8 @@
     </ProjectExtensions>
     <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets"/>
     <PropertyGroup>
-        <PreBuildEvent>call ..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"
+        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd
+call ..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"
 call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
     </PropertyGroup>
     <ItemGroup>

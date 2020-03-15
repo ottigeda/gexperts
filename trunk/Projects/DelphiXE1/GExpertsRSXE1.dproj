@@ -515,7 +515,8 @@
     <Import Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')" Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj"/>
     <PropertyGroup>
         <PreBuildEvent>
-            <![CDATA[call ..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"
+            <![CDATA[call ..\..\images\_CreateGXIconsRc.cmd
+call ..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"
 call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"]]>
         </PreBuildEvent>
     </PropertyGroup>

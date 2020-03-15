@@ -523,7 +523,8 @@
     <Import Project="$(BDS)\Bin\CodeGear.Delphi.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')"/>
     <PropertyGroup>
         <PreBuildEvent>
-            <![CDATA[call ..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"
+            <![CDATA[call ..\..\images\_CreateGXIconsRc.cmd
+call ..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"
 call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"]]>
         </PreBuildEvent>
     </PropertyGroup>
