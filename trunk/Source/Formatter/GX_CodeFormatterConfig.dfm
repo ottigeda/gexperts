@@ -9,7 +9,6 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
   ParentFont = True
   OldCreateOrder = True
   PopupMenu = pm_Extra
-  Position = poScreenCenter
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -197,7 +196,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         object cmb_FeedRoundBegin: TComboBox
           Left = 240
           Top = 112
-          Width = 169
+          Width = 185
           Height = 21
           Style = csDropDownList
           ItemHeight = 13
@@ -351,7 +350,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         object cmb_FeedRoundTry: TComboBox
           Left = 240
           Top = 160
-          Width = 169
+          Width = 185
           Height = 21
           Style = csDropDownList
           ItemHeight = 13
