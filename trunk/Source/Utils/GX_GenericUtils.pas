@@ -262,13 +262,8 @@ function LeftTrimNChars(const AValue: string; const TrimChars: TSysCharSet = [#9
   AMaxCount: Integer = 0): string;
 
 {$IFNDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
-function StartsText(const SubStr, Str: string): Boolean;
-function StartsStr(const SubStr, Str: string): Boolean;
-// Note the oder of arguments: it's the full text first and the sub string last!
-function ContainsText(const Str,SubStr: string): Boolean;
-// Delphi 6 does not have the overloaded version with start only, so we implement it here
-function Copy(const _Value: string; _Start, _Len: Integer): string; overload;
-function Copy(const _Value: string; _Start: Integer): string; overload;
+// Note the order of arguments: it's the full text first and the sub string last!
+function ContainsText(const Str, SubStr: string): Boolean;
 {$ENDIF}
 
 // See if a string begins/ends with a specific substring
@@ -856,7 +851,7 @@ uses
   {$IFDEF UNICODE} Character, {$ENDIF}
   ShLwApi,
   ShellAPI, ShlObj, ActiveX, StrUtils, Math, Clipbrd, FileCtrl,
-  u_dzSelectDirectoryFix, u_dzOsUtils;
+  u_dzSelectDirectoryFix, u_dzOsUtils, u_dzStringUtils;
 
 const
   shlwapi32 = 'shlwapi.dll';
@@ -1621,32 +1616,10 @@ begin
 end;
 
 {$IFNDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
-
 function ContainsText(const Str, SubStr: string): Boolean;
 begin
   Result := (CaseInsensitivePos(SubStr, Str) > 0);
 end;
-
-function StartsText(const SubStr, Str: string): Boolean;
-begin
-  Result := CaseInsensitivePos(SubStr, Str) = 1;
-end;
-
-function StartsStr(const SubStr, Str: string): Boolean;
-begin
-  Result := Pos(SubStr, Str) = 1;
-end;
-
-function Copy(const _Value: string; _Start, _Len: Integer): string;
-begin
-  Result := System.Copy(_Value, _Start, _Len);
-end;
-
-function Copy(const _Value: string; _Start: Integer): string;
-begin
-  Result := System.Copy(_Value, _Start, MaxInt);
-end;
-
 {$ENDIF}
 
 function StrBeginsWith(const SubStr, Str: string; CaseSensitive: Boolean): Boolean;

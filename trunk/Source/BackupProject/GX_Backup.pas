@@ -113,7 +113,7 @@ uses
   Windows, SysUtils, AbConst, StrUtils, Math,
   GX_OtaUtils, GX_MacroParser, GX_GxUtils,
   GX_BackupOptions, GX_BackupConfig, u_dzVclUtils, GX_MessageBox,
-  u_dzFileUtils, GX_BackupNotFound;
+  u_dzFileUtils, GX_BackupNotFound, u_dzStringUtils;
 
 const // Do not localize these constants.
   ItemSeparatorChar = '|';

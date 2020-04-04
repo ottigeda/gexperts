@@ -43,6 +43,7 @@ implementation
 uses
   IniFiles,
   ToolsAPI,
+  u_dzStringUtils,
   GX_OtaUtils,
 {$IFOPT D+}
   GX_DbugIntf,

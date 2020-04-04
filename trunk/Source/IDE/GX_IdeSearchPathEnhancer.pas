@@ -32,6 +32,7 @@ uses
   ComCtrls,
   GX_IdeFormEnhancer,
   u_dzVclUtils,
+  u_dzStringUtils,
   u_dzClassUtils,
   u_dzFileUtils,
   GX_OtaUtils,

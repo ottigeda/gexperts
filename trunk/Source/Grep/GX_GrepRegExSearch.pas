@@ -62,6 +62,9 @@ type
 
 implementation
 
+uses
+  u_dzStringUtils;
+
 const
   CReplacementChar: TGXUnicodeChar = #1; // don't match false-positives when searcing for spaces
 

@@ -105,6 +105,7 @@ uses
   ToolsAPI,
   StrUtils,
   u_dzVclUtils,
+  u_dzStringUtils,
   GX_OtaUtils;
 
 { TIfDefExpert }

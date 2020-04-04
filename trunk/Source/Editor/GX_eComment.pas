@@ -105,7 +105,7 @@ implementation
 
 uses
   SysUtils, StrUtils, Math,
-  GX_EditorExpert, GX_OtaUtils, GX_GenericUtils;
+  GX_EditorExpert, GX_OtaUtils, GX_GenericUtils, u_dzStringUtils;
 
 var
   // This is *local* and used by both the comment

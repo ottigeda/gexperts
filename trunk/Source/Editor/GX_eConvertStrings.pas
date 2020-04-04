@@ -113,7 +113,7 @@ uses
   GX_GenericUtils,
   GX_OtaUtils,
   GX_EditorExpert,
-  GX_ConfigurationInfo;
+  GX_ConfigurationInfo, u_dzStringUtils;
 
 type
   TConvertStringsExpert = class(TEditorExpert)

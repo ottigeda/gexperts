@@ -89,7 +89,8 @@ implementation
 
 uses
   SysUtils, Clipbrd, ComCtrls, ToolsAPI, TypInfo, Menus, StrUtils,
-  GX_GenericUtils, GX_GxUtils, GX_OtaUtils, GX_MessageBox, GX_IdeUtils;
+  GX_GenericUtils, GX_GxUtils, GX_OtaUtils, GX_MessageBox, GX_IdeUtils,
+  u_dzStringUtils;
 
 type
   TCCOptions = (ccBinaryRemove, ccBinaryComment, ccBinaryUncomment,

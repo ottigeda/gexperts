@@ -205,7 +205,7 @@ implementation
 uses
   SysUtils, Menus, Graphics, Windows, ToolsAPI, StrUtils,
   GX_IdeUtils, GX_SharedImages, GX_Experts, GX_ConfigurationInfo, GX_OtaUtils,
-  GX_GxUtils, u_dzVclUtils, u_dzMapFileReader, u_dzFileUtils;
+  GX_GxUtils, u_dzVclUtils, u_dzMapFileReader, u_dzFileUtils, u_dzStringUtils;
 
 resourcestring
   SOpenUnitMenuName = 'OpenFile';

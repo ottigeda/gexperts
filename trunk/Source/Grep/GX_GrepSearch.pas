@@ -135,7 +135,7 @@ implementation
 uses
   SysUtils, Windows, Messages, Graphics, StrUtils, Menus, RegExpr, Math,
   GX_GenericUtils, GX_GxUtils, GX_OtaUtils, GX_GrepResults, GX_GrepOptions,
-  GX_GrepRegExSearch, u_dzVclUtils, u_dzOsUtils;
+  GX_GrepRegExSearch, u_dzVclUtils, u_dzOsUtils, u_dzStringUtils;
 
 resourcestring
   SGrepResultsNotActive = 'The Grep Results window is not active';

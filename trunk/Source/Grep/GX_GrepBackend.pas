@@ -419,7 +419,7 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Forms, Dialogs, Controls, DateUtils, StrUtils, Math,
   GX_OtaUtils, GX_EditReader, GX_IdeUtils, u_dzClassUtils, GX_GrepProgress,
-  u_dzMapFileReader;
+  u_dzMapFileReader, u_dzStringUtils;
 
 const
   cIniSubKeyCount = 'Count';

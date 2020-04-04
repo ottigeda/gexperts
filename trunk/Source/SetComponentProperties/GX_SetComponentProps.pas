@@ -56,7 +56,7 @@ implementation
 uses
   SysUtils, TypInfo,
   GX_Experts, Gx_GenericUtils, GX_ConfigurationInfo,
-  GX_SetComponentPropsConfig, GX_SetComponentPropsStatus;
+  GX_SetComponentPropsConfig, GX_SetComponentPropsStatus, u_dzStringUtils;
 
 type
   TSetComponentPropertiesExpert = class(TGX_Expert)

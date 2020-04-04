@@ -44,7 +44,7 @@ type
 implementation
 
 uses
-  GX_GenericUtils;
+  GX_GenericUtils, u_dzStringUtils;
 
 const
   // Unfortunately this is strictly no longer true, because e.g. Umlauts can also be used as

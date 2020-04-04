@@ -180,7 +180,7 @@ uses
   mPasLex, mwBCBTokenList, mwPasParserTypes,
   u_dzVclUtils,
   GX_GxUtils, GX_GenericUtils, GX_EditReader,
-  GX_ToDoOptions, GX_SharedImages;
+  GX_ToDoOptions, GX_SharedImages, u_dzStringUtils;
 
 resourcestring
   SParsingError = 'A parsing error occurred in file %s.' + sLineBreak;

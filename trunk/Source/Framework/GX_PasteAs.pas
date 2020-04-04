@@ -38,7 +38,7 @@ implementation
 
 uses
   Windows, SysUtils, StrUtils, Controls, GX_OtaUtils, GX_ePasteAs,
-  GX_GenericUtils;
+  GX_GenericUtils, u_dzStringUtils;
 
 const
   cPasteAsTypeText: array[TPasteAsType] of String = (
