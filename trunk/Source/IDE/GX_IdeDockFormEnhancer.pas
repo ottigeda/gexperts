@@ -22,7 +22,7 @@ uses
   Forms,
   StrUtils,
   GX_GenericUtils,
-  GX_IdeDialogEnhancer;
+  GX_IdeDialogEnhancer, u_dzStringUtils;
 
 type
   TIdeDockFormEnhancer = class(TIdeDialogEnhancer)

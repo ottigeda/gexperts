@@ -107,7 +107,8 @@ implementation
 
 uses
   SysUtils, Windows, Menus, StrUtils, IniFiles, GX_CompRenameConfig, GX_OtaUtils, GX_GenericUtils,
-  GX_IdeUtils, Graphics, GX_GxUtils, TypInfo, u_dzClassUtils, u_dzVclUtils;
+  GX_IdeUtils, Graphics, GX_GxUtils, TypInfo, u_dzClassUtils, u_dzVclUtils,
+  u_dzStringUtils;
 
 type
   TRenameComponentsExpert = class;

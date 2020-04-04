@@ -121,7 +121,7 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   Windows, Clipbrd, Menus, StrUtils, Math,
   GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_IdeUtils,
-  GX_SharedImages, GX_Experts, u_dzVclUtils;
+  GX_SharedImages, GX_Experts, u_dzVclUtils, u_dzStringUtils;
 
 resourcestring
   SAllString = '<All>';

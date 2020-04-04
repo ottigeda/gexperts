@@ -182,10 +182,11 @@ uses
 {$IFDEF DO_TIMING}
   System.Diagnostics,
 {$ENDIF}
+  StrUtils,
+  u_dzStringUtils,
 {$IFOPT D+}
   GX_DbugIntf,
 {$ENDIF}
-  StrUtils,
   GX_GenericUtils;
 
 { TPasLexEx }

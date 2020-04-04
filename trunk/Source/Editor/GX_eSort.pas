@@ -45,7 +45,7 @@ uses
   StrUtils, Math,
   {$IFNDEF UNICODE} SynUnicode, {$ENDIF UNICODE}
   GX_EditorExpert, GX_eSelectionEditorExpert, GX_ConfigurationInfo,
-  GX_eSortOptions, u_dzQuicksort;
+  GX_eSortOptions, u_dzQuicksort, u_dzStringUtils;
 
 { TfmeSortConfig }
 

@@ -261,11 +261,6 @@ function LeftTrimChars(var Value: string; const TrimChars: TSysCharSet = [#9, #3
 function LeftTrimNChars(const AValue: string; const TrimChars: TSysCharSet = [#9, #32];
   AMaxCount: Integer = 0): string;
 
-{$IFNDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
-// Note the order of arguments: it's the full text first and the sub string last!
-function ContainsText(const Str, SubStr: string): Boolean;
-{$ENDIF}
-
 // See if a string begins/ends with a specific substring
 function StrBeginsWith(const SubStr, Str: string; CaseSensitive: Boolean = True): Boolean;
 function StrEndsWith(const SubStr, Str: string; CaseSensitive: Boolean = True): Boolean;
@@ -1615,27 +1610,20 @@ begin
     Delete(Result, 1, CharCnt);  
 end;
 
-{$IFNDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
-function ContainsText(const Str, SubStr: string): Boolean;
-begin
-  Result := (CaseInsensitivePos(SubStr, Str) > 0);
-end;
-{$ENDIF}
-
 function StrBeginsWith(const SubStr, Str: string; CaseSensitive: Boolean): Boolean;
 begin
   if CaseSensitive then
-    Result := Pos(SubStr, Str) = 1
+    Result := StartsStr(SubStr, Str)
   else
-    Result := CaseInsensitivePos(SubStr, Str) = 1;
+    Result := StartsText(SubStr, Str);
 end;
 
 function StrEndsWith(const SubStr, Str: string; CaseSensitive: Boolean): Boolean;
 begin
   if CaseSensitive then
-    Result := RightStr(Str, Length(SubStr)) = SubStr
+    Result := EndsStr(SubStr, Str)
   else
-    Result := SameText(RightStr(Str, Length(SubStr)), SubStr);
+    Result := EndsText(SubStr, Str);
 end;
 
 function DeleteRight(const Value: string; NumChars: Integer): string;
