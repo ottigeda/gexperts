@@ -4,7 +4,7 @@
 ///  @author        twm </summary>
 unit u_dzVclUtils;
 
-{$INCLUDE dzlib.inc}
+{$INCLUDE 'dzlib.inc'}
 
 // If this conditional define is set, all messages received in the hooked
 // WindowProc are written to the console window -> requires a console
@@ -504,6 +504,10 @@ function TEdit_TextToIntDef(_ed: TCustomEdit; _Default: Integer): Integer;
 /// Optionally it sets the caption to the URL  </summary>
 procedure TLabel_MakeUrlLabel(_lbl: TLabel); overload;
 procedure TLabel_MakeUrlLabel(_lbl: TLabel; const _URL: string; _SetCaption: Boolean = False); overload;
+
+///<summary>
+/// sets BevelOuter to bvNone for all panels in the array </summary>
+procedure TPanel_BevelNone(const _Panels: array of TPanel);
 
 type
   ///<summary>
@@ -1741,17 +1745,19 @@ end;
 
 procedure TGrid_ExportToStream(_Grid: TCustomGrid; _Stream: TStream; _IncludeFixed: Boolean = False);
 var
-  s: string;
+  s: AnsiString;
 begin
-  s := TGrid_GetText(_Grid, _IncludeFixed);
+  // todo: Should this convert to UTF8 instead?
+  s := AnsiString(TGrid_GetText(_Grid, _IncludeFixed));
   TStream_WriteStringLn(_Stream, s);
 end;
 
 procedure TGrid_ExportToStream(_Grid: TCustomGrid; _Stream: TStream; _Selection: TGridRect);
 var
-  s: string;
+  s: AnsiString;
 begin
-  s := TGrid_GetText(_Grid, _Selection);
+  // todo: Should this convert to UTF8 instead?
+  s := AnsiString(TGrid_GetText(_Grid, _Selection));
   TStream_WriteStringLn(_Stream, s);
 end;
 
@@ -2115,7 +2121,7 @@ type
 
 {$IF NOT Declared(ECM_FIRST)}
 const
-  ECM_FIRST = $1500;                       
+  ECM_FIRST = $1500;
   EM_SETCUEBANNER = ECM_FIRST + 1;
   EM_GETCUEBANNER = ECM_FIRST + 2;
 {$IFEND}
@@ -2396,6 +2402,14 @@ begin
   if _SetCaption then
     _lbl.Caption := _URL;
   TUrlLabelHandler.Create(_lbl, _URL);
+end;
+
+procedure TPanel_BevelNone(const _Panels: array of TPanel);
+var
+  i: Integer;
+begin
+  for i := Low(_Panels) to High(_Panels) do
+    _Panels[i].BevelOuter := bvNone;
 end;
 
 function TTreeView_GetAsText(_Tree: TTreeView; _Indentation: Integer = 2; _Marker: Char = #0): string;

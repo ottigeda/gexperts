@@ -17,6 +17,7 @@ uses
   IniFiles,
   Registry,
   u_dzTranslator,
+  u_dzTypes,
   u_dzDateUtils; // we need this for the $IF Declared() directives
 
 // NOTE: The naming convention is <extended-class>_<Methodname>
@@ -202,7 +203,7 @@ function TComponent_FindComponent(_Owner: TComponent; const _Name: string; _Recu
 /// @param s is the string to write
 /// @returns the number of bytes written.
 /// </summary>
-function TStream_WriteString(_Stream: TStream; const _s: string): Integer;
+function TStream_WriteString(_Stream: TStream; const _s: RawByteString): Integer;
 
 /// <summary>
 /// Write a ShortString to the stream as binary, that is the length byte followed by len content bytes
@@ -225,7 +226,7 @@ function TStream_ReadShortStringBinary(_Stream: TStream): ShortString;
 /// @param s is the string to write
 /// @returns the number of bytes written.
 /// </summary>
-function TStream_WriteStringLn(_Stream: TStream; const _s: string): Integer;
+function TStream_WriteStringLn(_Stream: TStream; const _s: RawByteString): Integer;
 
 /// <summary>
 /// Read a line from a stream, that is, a string ending in CRLF
@@ -998,7 +999,7 @@ begin
   Result := _st.Values[Name];
 end;
 
-function TStream_WriteString(_Stream: TStream; const _s: string): Integer;
+function TStream_WriteString(_Stream: TStream; const _s: RawByteString): Integer;
 var
   Len: Integer;
   ErrCode: DWORD;
@@ -1035,7 +1036,7 @@ begin
     _Stream.ReadBuffer(Result[1], Len);
 end;
 
-function TStream_WriteStringLn(_Stream: TStream; const _s: string): Integer;
+function TStream_WriteStringLn(_Stream: TStream; const _s: RawByteString): Integer;
 begin
   Result := TStream_WriteString(_Stream, _s);
   Result := Result + TStream_WriteString(_Stream, #13#10);
@@ -1043,7 +1044,7 @@ end;
 
 function TStream_WriteFmtLn(_Stream: TStream; const _Format: string; _Args: array of const): Integer;
 begin
-  Result := TStream_WriteStringLn(_Stream, Format(_Format, _Args));
+  Result := TStream_WriteStringLn(_Stream, AnsiString(Format(_Format, _Args)));
 end;
 
 // Turn Warning off, because Delphi 2007 thinks that the variable might not have been initialized.
@@ -1063,6 +1064,8 @@ var
 begin
   // twm: this is not really efficient, because it reads single bytes, if it becomes a problem, optimize it ;-)
   OldPos := _Stream.Position;
+  Endstring := 0;
+  NewPos := 0;
   while True do begin
     if _Stream.Read(c, 1) = 0 then begin // end of file
       EndString := _Stream.Position;

@@ -250,7 +250,14 @@ function SameStr(const _s1, _s2: string): Boolean;
 
 {$IF not Declared(StartsText)}
 function StartsText(const _Start, _s: string): Boolean;
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$DEFINE STARTSTEXT_IMPLEMENTATION_REQUIRED}
+{$IFEND}
+
+{$IF not Declared(StartsStr)}
+function StartsStr(const _Start, _s: string): boolean;
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$DEFINE STARTSSTR_IMPLEMENTATION_REQUIRED}
 {$IFEND}
 
 {$IF not Declared(ContainsStr)}
@@ -409,16 +416,26 @@ function Copy(const _s: AnsiString; _Pos: Integer): AnsiString; overload;
 function Copy(const _s: string; _Pos, _Len: Integer): string; overload;
 function Copy(const _s: string; _Pos: Integer): string; overload;
 {$ENDIF SUPPORTS_UNICODE}
+{$IFNDEF DELPHI2005_UP}
+// Delphi 6/7 does not have Copy without the length parameter
+function Copy(const _s: string; _Pos: Integer): string; overload;
+function Copy(const _s: string; _Pos, _Len: Integer): string; overload;
+{$ENDIF ~DELPHI2005_UP}
 
 ///<summary>
 /// Converts Tab characters into SpcCount spaces </summary>
 function Tab2Spaces(const _s: string; _SpcCount: Integer): string;
 
 function StartsWith(const _Start, _s: string): Boolean;
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+
 function EndsWith(const _End, _s: string): Boolean;
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
 function UStartsWith(const _Start, _s: string): Boolean;
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 function UEndsWith(const _End, _s: string): Boolean;
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
 function UnquoteString(const _s: string; _Quote: Char = '"'): string;
 
@@ -755,15 +772,20 @@ end;
 {$ENDIF}
 
 {$IFDEF STARTSTEXT_IMPLEMENTATION_REQUIRED}
-
 function StartsText(const _Start, _s: string): Boolean;
 begin
   Result := UStartsWith(_Start, _s);
 end;
 {$ENDIF}
 
-{$IFDEF CONTAINSSTR_IMPLEMENTATION_REQUIRED}
+{$IFDEF STARTSSTR_IMPLEMENTATION_REQUIRED}
+function StartsStr(const _Start, _s: string): boolean;
+begin
+  Result := AnsiStartsStr(_Start,_s);
+end;
+{$ENDIF}
 
+{$IFDEF CONTAINSSTR_IMPLEMENTATION_REQUIRED}
 function ContainsStr(const _Text, _SubText: string): Boolean;
 begin
   Result := (Pos(_SubText, _Text) > 0);
@@ -1278,22 +1300,22 @@ end;
 
 function StartsWith(const _Start, _s: string): Boolean;
 begin
-  Result := AnsiSameStr(_Start, LeftStr(_s, Length(_Start)));
+  Result := AnsiStartsStr(_Start, _s)
 end;
 
 function UStartsWith(const _Start, _s: string): Boolean;
 begin
-  Result := AnsiSameText(_Start, LeftStr(_s, Length(_Start)));
+  Result := AnsiStartsText(_Start, LeftStr(_s, Length(_Start)));
 end;
 
 function EndsWith(const _End, _s: string): Boolean;
 begin
-  Result := AnsiSameStr(_End, RightStr(_s, Length(_End)));
+  Result := AnsiEndsStr(_End, RightStr(_s, Length(_End)));
 end;
 
 function UEndsWith(const _End, _s: string): Boolean;
 begin
-  Result := AnsiSameText(_End, RightStr(_s, Length(_End)));
+  Result := AnsiEndsText(_end, _s);
 end;
 
 function UnquoteString(const _s: string; _Quote: Char): string;
@@ -1473,6 +1495,19 @@ begin
   Result := System.Copy(_s, _Pos);
 end;
 {$ENDIF SUPPORTS_UNICODE}
+
+{$IFNDEF DELPHI2005_UP}
+// Delphi 6 does not have Copy without the length parameter
+function Copy(const _s: string; _Pos: Integer): string;
+begin
+  Result := Copy(_s, _Pos, Length(_s) - _Pos);
+end;
+
+function Copy(const _s: string; _Pos, _Len: Integer): string;
+begin
+  Result := System.Copy(_s, _Pos, _Len);
+end;
+{$ENDIF ~DELPHI2005_UP}
 
 function MakeUniqueString(const _s: string): string;
 begin

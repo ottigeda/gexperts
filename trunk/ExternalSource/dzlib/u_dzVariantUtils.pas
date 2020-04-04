@@ -171,7 +171,7 @@ function Var2ExtEx(const _v: Variant; const _Source: string): Extended;
 ///          @returns the extended value of v or the Default if v can not be converted </summary>
 function Var2Ext(const _v: Variant; const _Default: Extended): Extended;
 
-{$IF Declared(Str2Date)}
+{$IF Declared(TryStrToDateTime)}
 ///<summary> Converts a variant to a TDateTime.
 ///          Raises an exception if v can not be converted.
 ///          @param v Variant value to convert
@@ -183,7 +183,7 @@ function Var2Ext(const _v: Variant; const _Default: Extended): Extended;
 function Var2DateTimeEx(const _v: Variant; const _Source: string): TDateTime;
 {$IFEND}
 
-{$IF Declared(TryStr2Date)}
+{$IF Declared(TryStr2DateTime)}
 function TryVar2DateTime(const _v: Variant; out _dt: TDateTime): Boolean;
 {$IFEND}
 
@@ -427,7 +427,7 @@ begin
     Result := _NullValue;
 end;
 
-{$IF Declared(Str2Date)}
+{$IF Declared(TryStrToDateTime)}
 function Var2DateTimeEx(const _v: Variant; const _Source: string): TDateTime;
 const
   EXPECTED = 'Date'; // do not translate
@@ -437,7 +437,8 @@ begin
   if VarIsEmpty(_v) then
     raise EVarIsEmpty.CreateFmt(_('Variant is Empty, should be %s: %s'), [EXPECTED, _Source]);
   if VarIsStr(_v) then begin
-    Result := Str2Date(_v);
+    if not TryStrToDateTime(_v, Result) then
+      raise EVariantConvertError.CreateFmt(_('Variant can not be converted to %s: %s'), [EXPECTED, _Source]);
   end else begin
     try
       Result := _v;
@@ -449,10 +450,10 @@ begin
 end;
 {$IFEND}
 
-{$IF Declared(TryStr2Date)}
+{$IF Declared(TryStr2DateTime)}
 function TryVar2DateTime(const _v: Variant; out _dt: TDateTime): Boolean;
-  // from Variants
 
+  // from Variants
   function VarToDoubleCustom(const V: TVarData; out AValue: Double): Boolean;
   var
     LHandler: TCustomVariantType;
@@ -473,7 +474,7 @@ begin
   if Result then
     _dt := VarToDateTime(_v)
   else if VarIsStr(_v) then
-    Result := TryStr2Date(_v, _dt)
+    Result := TryStr2DateTime(_v, _dt)
   else begin
     Result := VarToDoubleCustom(TVarData(_v), d);
     _dt := d;

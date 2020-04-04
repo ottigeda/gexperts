@@ -24,6 +24,9 @@ type
 {$IF not Declared(TBytes)}
   TBytes = array of Byte;
 {$IFEND}
+{$IF not Declared(RawByteString)}
+  RawByteString = AnsiString;
+{$IFEND}
 
 type
   TByteMatrix = array of array of Byte;

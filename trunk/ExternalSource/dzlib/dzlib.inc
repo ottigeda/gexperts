@@ -1,5 +1,19 @@
 {$INCLUDE 'dzlibjedi.inc'}
 
+{$IFDEF RTL210_UP}
+{$DEFINE HAS_JSON_SUPPORT}
+{$ENDIF}
+
+{$IFDEF RTL270_UP}
+{$DEFINE HAS_UNIT_SYSTEM_JSON}
+{$ENDIF}
+
+{$IFDEF DELPHIXE7_UP}
+// For now I assume the BDE is not installed for Delphi XE7 and later, but that
+// largely depends on what the user selected for installation.
+{$DEFINE BDE_IS_DEPRECATED}
+{$ENDIF}
+
 {$IFDEF DELPHI7_UP}
 // TBitBtn.WordWrap was introduced in Delphi 7
 {$DEFINE HAS_BITBTN_WORDWRAP}
@@ -10,11 +24,14 @@
 {$IFDEF DELPHI2005_UP}
 // Delphi 6 and 7 understood deprecated, but not for types
 {$DEFINE SUPPORTS_DEPRECATED_TYPES}
+{$DEFINE HAS_UNIT_WIDESTRINGS}
+{$DEFINE OPENDIALOG_EXCUTE_HAS_HANDLE}
 {$ENDIF}
 
 {$IFDEF DELPHI2006_UP}
-// TBitmap.SetSize was it introduced with Delphi 2006
+// TBitmap.SetSize was introduced with Delphi 2006
 {$DEFINE SUPPPORTS_BITMAP_SETSIZE}
+{$DEFINE DATASET_GETFIELDS_IS_WIDESTRINGLIST}
 {$ENDIF}
 
 {$IFDEF DELPHI7_UP}
@@ -35,17 +52,22 @@
 {$IFDEF DELPHI2009_UP}
 // THandleStream.FHandle is declared as THandle (before that it's an Integer)
 {$DEFINE THANDLESTREAM_HANDLE_IS_THANDLE}
+{$DEFINE HAS_TOBJECT_TOSTRING}
 {$ENDIF}
 
 {$IFDEF DELPHIXE2_UP}
 // AHandle is declared as THandle (otherwise it's an Integer)
 {$DEFINE THANDLESTREAM_CREATE_HANDLE_IS_THANDLE}
+{$DEFINE MAXLISTSIZE_IS_DEPRECATED}
 {$ENDIF}
 
 {$IFDEF DELPHIX_TOKYO_UP}
 // this function probably already exist in earlier versions, I just run across a compile error for 10.2 Tokyo
 {$DEFINE HAS_INTTOHEX_FUNCTION}
 {$ENDIF}
+
+// we currently support only Windows (and a very small subset of Win64), so we turn platform
+// warnings off
 
 {$WARN SYMBOL_PLATFORM OFF}
 {$WARN UNIT_PLATFORM OFF}
