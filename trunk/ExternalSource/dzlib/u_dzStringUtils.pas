@@ -255,9 +255,21 @@ function StartsText(const _Start, _s: string): Boolean;
 {$IFEND}
 
 {$IF not Declared(StartsStr)}
-function StartsStr(const _Start, _s: string): boolean;
+function StartsStr(const _Start, _s: string): Boolean;
 {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$DEFINE STARTSSTR_IMPLEMENTATION_REQUIRED}
+{$IFEND}
+
+{$IF not Declared(EndsText)}
+function EndsText(const _End, _s: string): Boolean;
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$DEFINE ENDSTEXT_IMPLEMENTATION_REQUIRED}
+{$IFEND}
+
+{$IF not Declared(EndsStr)}
+function EndsStr(const _End, _s: string): Boolean;
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{$DEFINE ENDSSTR_IMPLEMENTATION_REQUIRED}
 {$IFEND}
 
 {$IF not Declared(ContainsStr)}
@@ -782,6 +794,20 @@ end;
 function StartsStr(const _Start, _s: string): boolean;
 begin
   Result := AnsiStartsStr(_Start,_s);
+end;
+{$ENDIF}
+
+{$IFDEF ENDSTEXT_IMPLEMENTATION_REQUIRED}
+function EndsText(const _End, _s: string): Boolean;
+begin
+  Result := AnsiEndsText(_End, _s);
+end;
+{$ENDIF}
+
+{$IFDEF ENDSSTR_IMPLEMENTATION_REQUIRED}
+function EndsStr(const _End, _s: string): boolean;
+begin
+  Result := AnsiEndsStr(_End, _s);
 end;
 {$ENDIF}
 
