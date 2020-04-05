@@ -1498,7 +1498,6 @@ begin
   FFileViewer.Parent := pnlFileView;
   FFileViewer.Align := alClient;
 
-  SetShowPreview(FOptions.FShowPreview);
   FMRUEntryFiles := TStringList.Create;
 
   SetupSystemImageLists;
@@ -1511,6 +1510,9 @@ begin
   CenterForm(Self);
   LoadSettings;
   LoadEntries;
+
+  SetShowPreview(FOptions.FShowPreview);
+
   ListView.Columns[0].Width := ColumnTextWidth;
   ListView.Columns[1].Width := ColumnTextWidth;
   ListView.Columns[2].Width := ColumnTextWidth;
