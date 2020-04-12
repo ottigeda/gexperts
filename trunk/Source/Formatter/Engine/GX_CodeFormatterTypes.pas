@@ -61,7 +61,7 @@ type
     rtLeftBr, rtRightBr, rtLeftHook, rtRightHook, rtMathOper, rtAssignOper,
     rtMinus, rtPlus,
     rtLogOper, rtEquals, rtForward, rtDefault, rtInitialization, rtComma,
-    rtUses, rtProcDeclare, rtFuncDirective, rtAbsolute, rtComment, rtRecCase, rtDot,
+    rtUses, rtProcDeclare, rtFuncDirective, rtPropertyAccess, rtAbsolute, rtComment, rtRecCase, rtDot,
     rtCompIf, rtDotDot,
     rtCompElse, rtCompEndif,
     rtGenericStart);
@@ -234,7 +234,7 @@ begin
   Add('public', rtVisibility);
   Add('published', rtVisibility);
   Add('raise', rtReserved);
-  Add('read', rtFuncDirective);
+  Add('read', rtPropertyAccess);
   Add('readonly', rtFuncDirective);
   Add('record', rtRecord);
   Add('reference', rtReserved);
@@ -266,7 +266,7 @@ begin
   Add('virtual', rtFuncDirective);
   Add('while', rtWhile);
   Add('with', rtWhile);
-  Add('write', rtFuncDirective);
+  Add('write', rtPropertyAccess);
   Add('writeonly', rtFuncDirective);
   Add('xor', rtOper);
 end;

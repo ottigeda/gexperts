@@ -1168,11 +1168,11 @@ begin
         FCurrentToken.SetReservedType(rtNothing);
       end;
 
-    rtFuncDirective, rtDefault: begin
+    rtFuncDirective, rtDefault, rtPropertyAccess: begin
         Assert(False, '.CheckIndent: rtFuncDirective');
         if FPrevToken.ReservedType in [rtProcedure, rtProcDeclare, rtDot] then begin
           // the previous token was 'procedure' or '.' -> it's an identifier
-          // todo: What if the previous token was a line feed an the one before that was
+          // todo: What if the previous token was a line feed and the one before that was
           //       'procedure' or '.' or if there was a comment in between ?
           FCurrentToken.SetReservedType(rtNothing);
         end else if not (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass]) then begin
@@ -1646,17 +1646,17 @@ begin
     try
       FTokenIdx := 0;
       while TryGetToken(FTokenIdx, FCurrentToken) do begin
-//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'procedure') then
+//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'bla') then
 //          gblAssertTraceOn := True;
-//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = '{ende}') then
+//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'constructor') then
 //          gblAssertTraceOn := False;
+        Assert(False, '**** .doExecute: CurrentToken: ' + FCurrentToken.GetForDebug);
         Assert(False, '.doExecute: Stack.Depth: ' + IntToStr(FStack.Depth)
           + ' .TopType: ' + GetEnumname(TypeInfo(TReservedType), Ord(FStack.GetTopType))
           + ' .TopIndent: ' + IntToStr(FStack.GetTopIndent));
         Assert(False, '.doExecute: WrapIndent: ' + Ifthen(FWrapIndent, 'True', 'False'));
         Assert(False, '.doExecute: before CheckIndent: NTmp: ' + IntToStr(NTmp)
           + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
-        Assert(False, '.doExecute: CurrentToken: ' + FCurrentToken.GetForDebug);
         CheckIndent(NTmp, PrevOldNspaces);
         Assert(False, '.doExecute: after CheckIndent:  NTmp: ' + IntToStr(NTmp)
           + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
