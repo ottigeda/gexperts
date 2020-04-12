@@ -28,26 +28,100 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DCC_DcuOutput>..\dcu\delphi2007</DCC_DcuOutput>
-    <DCC_Define>DEBUG;_ASSERT_TRACING</DCC_Define>
+    <DCC_Define>DEBUG;NO_TRANSLATION;NO_TRANSLATION_HINT;_ASSERT_TRACING</DCC_Define>
     <DCC_ExeOutput>..\</DCC_ExeOutput>
     <DCC_HppOutput>..\dcu\delphi2007</DCC_HppOutput>
-    <DCC_IncludePath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit;..\dunit</DCC_IncludePath>
+    <DCC_IncludePath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit;..\..\ExternalSource\dzlib;..\dunit</DCC_IncludePath>
     <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
     <DCC_MapFile>3</DCC_MapFile>
     <DCC_ObjOutput>..\dcu\delphi2007</DCC_ObjOutput>
-    <DCC_ObjPath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit;..\dunit</DCC_ObjPath>
+    <DCC_ObjPath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit;..\..\ExternalSource\dzlib;..\dunit</DCC_ObjPath>
     <DCC_Optimize>False</DCC_Optimize>
     <DCC_RangeChecking>True</DCC_RangeChecking>
-    <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit;..\dunit</DCC_ResourcePath>
-    <DCC_UnitAlias>Actions=ActnList;ImageList=Controls;UITypes=Dialogs</DCC_UnitAlias>
-    <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit;..\dunit</DCC_UnitSearchPath>
+    <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit;..\..\ExternalSource\dzlib;..\dunit</DCC_ResourcePath>
+    <DCC_UnitAlias>Actions=ActnList;ImageList=Controls;UITypes=Dialogs;DbugIntf=gx_DbugIntf</DCC_UnitAlias>
+    <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit;..\..\ExternalSource\dzlib;..\dunit</DCC_UnitSearchPath>
     <Version>7.0</Version>
+    <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
+    <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
   </PropertyGroup>
   <ProjectExtensions>
     <Borland.Personality>Delphi.Personality</Borland.Personality>
     <Borland.ProjectType>VCLApplication</Borland.ProjectType>
     <BorlandProject>
 <BorlandProject><Delphi.Personality><Parameters><Parameters Name="DebugSourceDirs">C:\Program Files\Borland\BDS\3.0\source\dUnit\src\</Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">1</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1033</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.1</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys></VersionInfoKeys><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
       
       
       
@@ -76,7 +150,7 @@
     <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterUnicode.pas" />
     <DCCReference Include="..\..\Source\Formatter\GX_CodeFormatterConfigHandler.pas" />
     <DCCReference Include="..\..\Source\Formatter\GX_CodeFormatterDefaultSettings.pas" />
-    <DCCReference Include="..\..\source\utils\GX_dzAssertTrace.pas" />
+    <DCCReference Include="..\..\Source\Utils\GX_DbugIntf.pas" />
     <DCCReference Include="..\..\Source\Utils\GX_GenericUtils.pas" />
     <DCCReference Include="..\dunit\DUnitConsts.pas" />
     <DCCReference Include="..\dunit\GUITestRunner.pas" />

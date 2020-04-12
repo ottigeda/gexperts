@@ -45,7 +45,7 @@ implementation
 
 uses
   Types,
-  GX_dzFileUtils;
+  u_dzFileUtils;
 
 constructor TFolderTestSuite.Create(TestClass: TFileTestCaseClass; const ABaseFolder, AFileMask: string; ARecursive:
   Boolean);

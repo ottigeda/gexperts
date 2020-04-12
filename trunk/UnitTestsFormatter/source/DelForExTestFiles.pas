@@ -53,7 +53,7 @@ uses
   Registry,
   GX_CodeFormatterConfigHandler,
   GX_DbugIntf,
-  GX_dzAssertTrace;
+  u_dzAssertTrace;
 
 { TTestTestfiles }
 

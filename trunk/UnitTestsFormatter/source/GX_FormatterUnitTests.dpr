@@ -53,8 +53,8 @@ uses
   GX_CodeFormatterConfigHandler in '..\..\Source\Formatter\GX_CodeFormatterConfigHandler.pas',
   GX_CodeFormatterUnicode in '..\..\Source\Formatter\engine\GX_CodeFormatterUnicode.pas',
   GX_GenericUtils in '..\..\Source\Utils\GX_GenericUtils.pas',
-  GX_dzAssertTrace in '..\..\source\utils\GX_dzAssertTrace.pas',
-  TestFrameworkExt in '..\dunit\TestFrameworkExt.pas';
+  TestFrameworkExt in '..\dunit\TestFrameworkExt.pas',
+  GX_DbugIntf in '..\..\Source\Utils\GX_DbugIntf.pas';
 
 begin
   ReportMemoryLeaksOnShutdown := True;
