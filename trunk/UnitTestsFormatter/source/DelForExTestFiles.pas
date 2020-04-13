@@ -238,6 +238,11 @@ begin
       CheckEquals(ExpectedText.Text, st.Text, 'error in output');
     except
       on e: ETestFailure do begin
+        // Since st.LoadFromFile assumes UTF-8 even if there is no BOM but the content
+        // can be converted from UTF-8, st.SaveFormat has been set sfUTF8.
+        // This will add a BOM in st.SaveToFile.
+        // This is not quite what we want, but since BeyondCompare can handle that
+        // we don't really care.
         st.SaveToFile('testcases\output\' + FConfigName + '\' + Filename);
 //        if _AllowFailure then
 //          e.Message := 'known ' + e.Message;
