@@ -51,11 +51,11 @@ type
     function ReadWord(out _Dest: TGXUnicodeString; var _Source: PGXUnicodeChar): TWordType;
     {: Adds a single line of text to the parse tree }
     procedure AddLine(_Buff: PGXUnicodeChar);
-    procedure DoExecute(_Text: TGXUnicodeStringList);
+    procedure DoExecute(_Text: TGXUnicodeStringList);{$IFDEF SupportsInline} inline; {$ENDIF}
   public
     constructor Create(_Settings: TCodeFormatterSettings);
     destructor Destroy; override;
-    function DetachTokens: TPascalTokenList;
+    function DetachTokens: TPascalTokenList;{$IFDEF SupportsInline} inline; {$ENDIF}
     {: parses the text and returns a parse tree }
     class function Execute(_Text: TGXUnicodeStringList; _Settings: TCodeFormatterSettings): TPascalTokenList;
   end;

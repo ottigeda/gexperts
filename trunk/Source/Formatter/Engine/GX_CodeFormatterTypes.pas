@@ -12,7 +12,8 @@ interface
 uses
   SysUtils,
   Classes,
-  GX_GenericUtils;
+  GX_GenericUtils,
+  GX_CodeFormatterUnicode;
 
 type
   ECodeFormatter = class(Exception);
@@ -44,8 +45,8 @@ type
   TSpace = (spBefore, spAfter);
   TSpaceSet = set of TSpace;
 
-function SpaceSetToInt(_SpaceSet: TSpaceSet): Integer;
-function IntToSpaceSet(_Value: Integer): TSpaceSet;
+function SpaceSetToInt(_SpaceSet: TSpaceSet): Integer;{$IFDEF SupportsInline} inline; {$ENDIF}
+function IntToSpaceSet(_Value: Integer): TSpaceSet;{$IFDEF SupportsInline} inline; {$ENDIF}
 
 const
   spBoth = [spBefore, spAfter];
@@ -66,6 +67,9 @@ type
     rtCompElse, rtCompEndif,
     rtGenericStart);
 
+type
+  TReservedTypeSet = set of TReservedType;
+
 const
   NoReservedTypes = [rtNothing, rtComma, rtColon, rtLineFeed, rtDefault,
     rtFuncDirective, rtAbsolute, rtComment, rtLeftBr, rtRightBr, rtForward,
@@ -83,8 +87,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function FindWord(const _s: string; out _ReservedType: TReservedType): Boolean;
-    procedure Add(const _s: string; _ReservedType: TReservedType);
+    function FindWord(const _s: string; out _ReservedType: TReservedType): Boolean;{$IFDEF SupportsInline} inline; {$ENDIF}
+    procedure Add(const _s: string; _ReservedType: TReservedType);{$IFDEF SupportsInline} inline; {$ENDIF}
   end;
 
 var
@@ -100,12 +104,9 @@ type
 /// @param Str is the input string
 /// @param Case is a TCase specifying the desired case
 /// @returns the modified string </summary>
-function AdjustCase(const _str: TGXUnicodeString; _Case: TCase): TGXUnicodeString;
+function AdjustCase(const _str: TGXUnicodeString; _Case: TCase): TGXUnicodeString;{$IFDEF SupportsInline} inline; {$ENDIF}
 
 implementation
-
-uses
-  GX_CodeFormatterUnicode;
 
 function AdjustCase(const _str: TGXUnicodeString; _Case: TCase): TGXUnicodeString;
 var

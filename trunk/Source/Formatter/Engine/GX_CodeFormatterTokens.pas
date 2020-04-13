@@ -11,9 +11,11 @@ interface
 
 uses
   SysUtils,
+  Classes,
   StrUtils,
   TypInfo,
   GX_GenericUtils,
+  GX_CodeFormatterUnicode,
   GX_CodeFormatterTypes;
 
 type
@@ -40,8 +42,8 @@ type
     function GetExpressionCase: TCase; virtual;
     procedure SetOptions(_Options: TTokenOptions); virtual;
     function GetOptions: TTokenOptions; virtual;
-    procedure AddOption(_Option: TTokenOption);
-    function HasOption(_Option: TTokenOption): Boolean;
+    procedure AddOption(_Option: TTokenOption);{$IFDEF SupportsInline} inline; {$ENDIF}
+    function HasOption(_Option: TTokenOption): Boolean;{$IFDEF SupportsInline} inline; {$ENDIF}
 
     function GetForDebug: TGXUnicodeString; virtual;
 
@@ -61,8 +63,8 @@ type
   public
     constructor Create(_OldnSpaces: Integer; _SpacePerIndent: Integer);
     function GetWordType: TWordType; override;
-    procedure SetIndent(_Value: Integer);
-    procedure IncIndent(_Value: Integer);
+    procedure SetIndent(_Value: Integer);{$IFDEF SupportsInline} inline; {$ENDIF}
+    procedure IncIndent(_Value: Integer);{$IFDEF SupportsInline} inline; {$ENDIF}
     procedure GetLength(var _Length: Integer); override;
     function GetReservedType: TReservedType; override;
 
