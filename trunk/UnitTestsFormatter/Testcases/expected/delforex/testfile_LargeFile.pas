@@ -5605,7 +5605,6 @@ end;
 
 
 //+++++++++++++++++++++++++ TDomBaseComponent +++++++++++++++++++++++++
-
 function TDomBaseComponent.getXdomVersion: wideString;
 begin
   result := '3.1.14';
@@ -5614,7 +5613,6 @@ end;
 
 
 //++++++++++++++++++++++++ TDomImplementation +++++++++++++++++++++++++
-
 constructor TDomImplementation.create(aOwner: TComponent);
 begin
   inherited create(aOwner);
@@ -6112,7 +6110,6 @@ end;
 
 
 //++++++++++++++++++++++++++++ TdomTreeWalker +++++++++++++++++++++++++++++++
-
 constructor TdomTreeWalker.create(const Root: TdomNode;
   const WhatToShow: TdomWhatToShow;
   const NodeFilter: TdomNodeFilter;
@@ -6390,7 +6387,6 @@ end;
 
 
 //++++++++++++++++++++++++++++ TdomNodeIterator +++++++++++++++++++++++++++++++
-
 constructor TdomNodeIterator.create(const Root: TdomNode;
   const WhatToShow: TdomWhatToShow;
   const nodeFilter: TdomNodeFilter;
@@ -6588,7 +6584,6 @@ end;
 
 
 //++++++++++++++++++++++++++++ TdomNodeList +++++++++++++++++++++++++++++++
-
 constructor TdomNodeList.create(const nodeList: TList);
 begin
   inherited create;
@@ -6615,7 +6610,6 @@ end;
 
 
 //++++++++++++++++++++++++ TdomElementsNodeList ++++++++++++++++++++++++++
-
 constructor TdomElementsNodeList.create(const QueryName: wideString;
   const StartElement: TdomNode);
 begin
@@ -6720,7 +6714,6 @@ end;
 
 
 //+++++++++++++++++++++TdomElementsNodeListNS ++++++++++++++++++++++++++
-
 constructor TdomElementsNodeListNS.create(const QueryNamespaceURI,
   QueryLocalName: wideString;
   const StartElement: TdomNode);
@@ -6829,7 +6822,6 @@ end;
 
 
 //+++++++++++++++++++++++ TdomOwnerNamedNodeMap +++++++++++++++++++++++++++
-
 constructor TdomOwnerNamedNodeMap.create(const aItemClass: TdomCustomNodeClass);
 begin
   FItemClass := aItemClass;
@@ -6944,7 +6936,6 @@ end;
 
 
 //+++++++++++++++++++++++++ TdomNamedNodeMap +++++++++++++++++++++++++++++
-
 constructor TdomNamedNodeMap.create(const aOwner: TdomNode;
   const nodeList: TList;
   const allowedNTs: TDomNodeTypeSet;
@@ -7126,7 +7117,6 @@ end;
 
 
 //+++++++++++++++++++++++++++ TdomCustomNode ++++++++++++++++++++++++++++++
-
 procedure TdomCustomNode.raiseException(const E: ExceptClass);
 begin
   if E = EHierarchyRequestError
@@ -7145,7 +7135,6 @@ end;
 
 
 //++++++++++++++++++++++++++++++ TdomNode +++++++++++++++++++++++++++++++++
-
 constructor TdomNode.create(const aOwner: TCustomOwnedObject);
 begin
   inherited create(aOwner);
@@ -8171,7 +8160,6 @@ end;
 
 
 //+++++++++++++++++++++++++ TdomCharacterData ++++++++++++++++++++++++++++
-
 constructor TdomCharacterData.create(const aOwner: TdomDocument);
 begin
   inherited create(aOwner);
@@ -8259,7 +8247,6 @@ end;
 
 
 // +++++++++++++++++++++++++++++ TdomAttr +++++++++++++++++++++++++++++
-
 constructor TdomAttr.create(const aOwner: TdomDocument;
   const name: wideString;
   const spcfd: boolean);
@@ -8525,7 +8512,6 @@ end;
 
 
 //++++++++++++++++++++++++++++ TdomElement ++++++++++++++++++++++++++++++++
-
 constructor TdomElement.create(const aOwner: TdomDocument;
   const tagName: wideString);
 begin
@@ -9039,7 +9025,6 @@ end;
 
 
 //+++++++++++++++++++++++++++++ TdomText +++++++++++++++++++++++++++++++++
-
 constructor TdomText.create(const aOwner: TdomDocument);
 begin
   inherited create(aOwner);
@@ -9092,7 +9077,6 @@ end;
 
 
 //++++++++++++++++++++++++++++ TdomComment +++++++++++++++++++++++++++++++
-
 constructor TdomComment.create(const aOwner: TdomDocument);
 begin
   inherited create(aOwner);
@@ -9113,7 +9097,6 @@ end;
 
 
 //+++++++++++++++++++++ TdomProcessingInstruction +++++++++++++++++++++++++
-
 constructor TdomProcessingInstruction.create(const aOwner: TdomDocument;
   const targ: wideString);
 begin
@@ -9163,7 +9146,6 @@ end;
 
 
 //++++++++++++++++++++++++++ TdomCDATASection +++++++++++++++++++++++++++++
-
 constructor TdomCDATASection.create(const aOwner: TdomDocument);
 begin
   inherited create(aOwner);
@@ -9183,7 +9165,6 @@ end;
 
 
 //++++++++++++++++++++++++ TdomDocumentTypeDecl +++++++++++++++++++++++++++
-
 constructor TdomDocumentTypeDecl.create(const aOwner: TdomDocument;
   const doctypeName,
   pubId,
@@ -9283,7 +9264,6 @@ end;
 
 
 //++++++++++++++++++++++++++ TdomDocumentType +++++++++++++++++++++++++++++
-
 constructor TdomDocumentType.create(const aOwner: TDomImplementation;
   const doctypeName,
   pubId,
@@ -9383,7 +9363,6 @@ end;
 
 
 //++++++++++++++++++++++++++ TdomNotation ++++++++++++++++++++++++++++++
-
 constructor TdomNotation.create(const aOwner: TdomDocument;
   const name,
   pubId,
@@ -9421,7 +9400,6 @@ end;
 
 
 //+++++++++++++++++++++++++++ TdomEntity +++++++++++++++++++++++++++++++++
-
 constructor TdomEntity.create(const aOwner: TdomDocument;
   const name,
   pubId,
@@ -9497,7 +9475,6 @@ end;
 
 
 //++++++++++++++++++++++++ TdomEntityReference +++++++++++++++++++++++++
-
 constructor TdomEntityReference.create(const aOwner: TdomDocument;
   const name: wideString);
 begin
@@ -9583,7 +9560,6 @@ end;
 
 
 //++++++++++++++++++++++++ TdomDocumentFragment +++++++++++++++++++++++++++
-
 constructor TdomDocumentFragment.create(const aOwner: TdomDocument);
 begin
   inherited create(aOwner);
@@ -9634,7 +9610,6 @@ end;
 
 
 //+++++++++++++++++++++++++ TdomXPathNamespace ++++++++++++++++++++++++++++
-
 constructor TdomXPathNamespace.create(const aOwnerSet: TdomXPathNodeSetResult;
   const aOwnerElement: TdomElement;
   const aNamespaceUri,
@@ -9718,7 +9693,6 @@ end;
 
 
 //++++++++++++++++++++++++++++ TdomDocument +++++++++++++++++++++++++++++++
-
 constructor TdomDocument.create(const aOwner: TDomImplementation;
   const aDoctype: TdomDocumentType);
 begin
@@ -11193,7 +11167,6 @@ end;
 
 
 //+++++++++++++++++++++++++ TdomASObjectList +++++++++++++++++++++++++++++
-
 constructor TdomASObjectList.create;
 begin
   inherited create;
@@ -11258,7 +11231,6 @@ end;
 
 
 //+++++++++++++++++++++++++ TdomASNamedObjectMap +++++++++++++++++++++++++
-
 constructor TdomASNamedObjectMap.create(const aOwner: TdomASModel);
 begin
   inherited create;
@@ -11321,7 +11293,6 @@ end;
 
 {$IFDEF INCLUDE_NAMESPACE_ABSTRACT_SCHEMA_MODEL}
 //+++++++++++++++++++++++++ TdomASObjectListNS +++++++++++++++++++++++++++++
-
 constructor TdomASObjectListNS.create;
 begin
   inherited create;
@@ -11386,7 +11357,6 @@ end;
 
 
 //++++++++++++++++++++++++ TdomASNamedObjectMapNS ++++++++++++++++++++++++
-
 constructor TdomASNamedObjectMapNS.create(const aOwner: TdomASModelNS);
 begin
   inherited create;
@@ -11452,7 +11422,6 @@ end;
 
 
 //++++++++++++++++++++++ TdomASModelCollection ++++++++++++++++++++++++++
-
 constructor TdomASModelCollection.create(const aOwner: TdomDocumentTypeDecl);
 begin
   if not assigned(aOwner) then
@@ -12229,7 +12198,6 @@ end;
 
 {$IFDEF INCLUDE_NAMESPACE_ABSTRACT_SCHEMA_MODEL}
 //+++++++++++++++++++++ TdomASModelCollectionNS +++++++++++++++++++++++++
-
 constructor TdomASModelCollectionNS.create(const aOwner: TdomDocument);
 begin
   if not assigned(aOwner)
@@ -12358,7 +12326,6 @@ end;
 
 
 //+++++++++++++++++++++++++++ TdomASObject +++++++++++++++++++++++++++++++
-
 constructor TdomASObject.create(const aOwner: TdomASModel;
   const aName: wideString);
 begin
@@ -12377,7 +12344,6 @@ end;
 
 {$IFDEF INCLUDE_NAMESPACE_ABSTRACT_SCHEMA_MODEL}
 //+++++++++++++++++++++++ TdomCustomASObjectNS +++++++++++++++++++++++++++
-
 constructor TdomCustomASObjectNS.create(const aOwner: TdomCustomASModelNS);
 begin
   inherited create;
@@ -12388,7 +12354,6 @@ end;
 
 
 //++++++++++++++++++++++++++ TdomASObjectNS ++++++++++++++++++++++++++++++
-
 constructor TdomASObjectNS.create(const aOwner: TdomASModelNS;
   const aNamespaceURI,
   aPrefix,
@@ -12428,7 +12393,6 @@ end;
 
 
 //+++++++++++++++++++++++++++ TdomASContentModel +++++++++++++++++++++++++++
-
 constructor TdomASContentModel.create(const aOwnerElementDecl: TdomASElementDecl;
   const aName: wideString;
   const aContentModelType: TdomASContentModelType);
@@ -12683,7 +12647,6 @@ end;
 
 {$IFDEF INCLUDE_NAMESPACE_ABSTRACT_SCHEMA_MODEL}
 //++++++++++++++++++++++++++ TdomASContentModelNS ++++++++++++++++++++++++++
-
 constructor TdomASContentModelNS.create(const aOwnerElementDecl: TdomASElementDeclNS;
   const aContentModelType: TdomASContentModelType);
 begin
@@ -12767,7 +12730,6 @@ end;
 
 
 //+++++++++++++++++++++++++ TdomASAttributeDecl ++++++++++++++++++++++++++
-
 constructor TdomASAttributeDecl.create(const aOwnerElementDecl: TdomASElementDecl;
   const aAttrName,
   aDefaultValue: wideString;
@@ -12797,7 +12759,6 @@ end;
 
 {$IFDEF INCLUDE_NAMESPACE_ABSTRACT_SCHEMA_MODEL}
 //++++++++++++++++++++++++ TdomASAttributeDeclNS +++++++++++++++++++++++++
-
 constructor TdomASAttributeDeclNS.create(const aOwnerElementDecl: TdomASElementDeclNS;
   const aNamespaceURI,
   aPrefix,
@@ -12824,7 +12785,6 @@ end;
 
 
 //+++++++++++++++++++++++++++ TdomASEntityDecl +++++++++++++++++++++++++++
-
 constructor TdomASEntityDecl.create(const aOwner: TdomASModel;
   const aName,
   aReplacementText,
@@ -12985,7 +12945,6 @@ end;
 
 {$IFDEF INCLUDE_NAMESPACE_ABSTRACT_SCHEMA_MODEL}
 //++++++++++++++++++++++++++ TdomASEntityDeclNS ++++++++++++++++++++++++++
-
 constructor TdomASEntityDeclNS.create(const aOwner: TdomASModelNS;
   const aNamespaceURI,
   aPrefix,
@@ -13064,7 +13023,6 @@ end;
 
 
 //++++++++++++++++++++++++++ TdomASNotationDecl ++++++++++++++++++++++++++
-
 constructor TdomASNotationDecl.create(const aOwner: TdomASModel;
   const aName,
   aPublicId,
@@ -13086,7 +13044,6 @@ end;
 
 {$IFDEF INCLUDE_NAMESPACE_ABSTRACT_SCHEMA_MODEL}
 //+++++++++++++++++++++++++ TdomASNotationDeclNS +++++++++++++++++++++++++
-
 constructor TdomASNotationDeclNS.create(const aOwner: TdomASModelNS;
   const aNamespaceURI,
   aPrefix,
@@ -13110,7 +13067,6 @@ end;
 
 
 //++++++++++++++++++++++++++ TdomASElementDecl +++++++++++++++++++++++++++
-
 constructor TdomASElementDecl.create(const aOwner: TdomASModel;
   const aName: wideString;
   const aContentType: TdomASContentType);
@@ -13253,7 +13209,6 @@ end;
 
 {$IFDEF INCLUDE_NAMESPACE_ABSTRACT_SCHEMA_MODEL}
 //+++++++++++++++++++++++++ TdomASElementDeclNS ++++++++++++++++++++++++++
-
 constructor TdomASElementDeclNS.create(const aOwner: TdomASModelNS;
   const aNamespaceURI,
   aPrefix,
@@ -13375,7 +13330,6 @@ end;
 
 
 //+++++++++++++++++++++++++++++ TdomASModel +++++++++++++++++++++++++++++
-
 constructor TdomASModel.create(const aOwner: TdomASModelCollection);
 begin
   inherited create(aOwner);
@@ -13533,7 +13487,6 @@ end;
 
 {$IFDEF INCLUDE_NAMESPACE_ABSTRACT_SCHEMA_MODEL}
 //++++++++++++++++++++++++++ TdomCustomASModelNS ++++++++++++++++++++++++++
-
 constructor TdomCustomASModelNS.create(const aOwner: TDomImplementation);
 begin
   inherited create;
@@ -13550,7 +13503,6 @@ end;
 
 
 //++++++++++++++++++++++++++++ TdomASModelNS ++++++++++++++++++++++++++++
-
 constructor TdomASModelNS.create(const aOwner: TDomImplementation);
 begin
   inherited create(aOwner);
@@ -13712,7 +13664,6 @@ end;
 
 
 // +++++++++++++++++++++++++++ TXmlSourceCode ++++++++++++++++++++++++++
-
 procedure TXmlSourceCode.calculatePieceOffset(const startItem: integer);
 var
   os, i: integer;
@@ -13899,7 +13850,6 @@ end;
 
 
 // ++++++++++++++++++++++++ TXmlSourceCodePiece ++++++++++++++++++++++++
-
 constructor TXmlSourceCodePiece.create(const pt: TdomPieceType);
 begin
   FPieceType := pt;
@@ -13911,7 +13861,6 @@ end;
 
 
 // +++++++++++++++++++++++ TStandardResourceResolver +++++++++++++++++++++++
-
 function TStandardResourceResolver.acquireStreamFromUri(const URI: wideString): TStream;
 var
   Path: TFilename;
@@ -16613,7 +16562,6 @@ end;
 
 
 // +++++++++++++++++++++++++ TXmlOutputSource +++++++++++++++++++++++++
-
 constructor TXmlOutputSource.create(const stream: TStream;
   const bufSize: integer);
 begin
@@ -16675,7 +16623,6 @@ end;
 
 
 // ++++++++++++++++++++++++++ TdomError ++++++++++++++++++++++++++
-
 constructor TdomError.create(const ARelatedException: TXmlErrorType;
   const AStartByteNumber,
   AStartCharNumber,
@@ -16807,7 +16754,6 @@ end;
 
 
 // ++++++++++++++++++++++++++++ TdomPERepository +++++++++++++++++++++++++++++
-
 constructor TdomPERepository.create(const aOwner: TXmlCustomReader);
 begin
   if not assigned(aOwner) then
@@ -16894,7 +16840,6 @@ end;
 
 
 // ++++++++++++++++++++++ TdomPEInfoObject ++++++++++++++++++++++
-
 constructor TdomPEInfoObject.create(const aOwner: TdomPERepository;
   const entityName,
   litValue: wideString);
@@ -17010,7 +16955,6 @@ end;
 
 
 // +++++++++++++++++++++++++++++++ TXmlSignal +++++++++++++++++++++++++++++++
-
 procedure TXmlSignal.CheckWellformedness(out XmlErrorType: TXmlErrorType;
   out Flaw: WideString);
 begin
@@ -17962,7 +17906,6 @@ end;
 
 
 // ++++++++++++++++++++++++++++ TXmlCustomHandler ++++++++++++++++++++++++++++
-
 procedure TXmlCustomHandler.sendErrorNotification(const target: TXmlCustomReader;
   const xmlErrorType: TXmlErrorType;
   const location: IDomLocator;
@@ -17978,7 +17921,6 @@ end;
 
 
 // +++++++++++++++++++++++++++ TXmlStandardHandler +++++++++++++++++++++++++++
-
 procedure TXmlStandardHandler.Notification(AComponent: TComponent; operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
@@ -18002,7 +17944,6 @@ end;
 
 
 // +++++++++++++++++++++++++++++ TXmlHandlerItem +++++++++++++++++++++++++++++
-
 function TXmlHandlerItem.getXmlHandler: TXmlCustomHandler;
 begin
   Result := FXmlHandler;
@@ -18022,7 +17963,6 @@ end;
 
 
 // +++++++++++++++++++++++++++++++ TXmlHandlers ++++++++++++++++++++++++++++++
-
 constructor TXmlHandlers.Create(Distributor: TXmlDistributor);
 begin
   inherited Create(TXmlHandlerItem);
@@ -18079,7 +18019,6 @@ end;
 
 
 // +++++++++++++++++++++++++++++ TXmlDistributor +++++++++++++++++++++++++++++
-
 constructor TXmlDistributor.create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -18155,7 +18094,6 @@ end;
 
 
 // +++++++++++++++++++++++ TXmlWFTestHandler +++++++++++++++++++++++
-
 constructor TXmlWFTestHandler.create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -18444,7 +18382,6 @@ end;
 
 
 // ++++++++++++++++++++++++++++ TXmlDomBuilder ++++++++++++++++++++++++++++
-
 constructor TXmlDomBuilder.create(AOwner: TComponent);
 begin
   inherited create(AOwner);
@@ -18728,7 +18665,6 @@ end;
 
 
 // ++++++++++++++++++++++++++ TXmlASBuilder +++++++++++++++++++++++++++
-
 constructor TXmlASBuilder.create(AOwner: TComponent);
 begin
   inherited create(AOwner);
@@ -19022,7 +18958,6 @@ end;
 
 
 // ++++++++++++++++++++++++ TXmlStreamBuilder ++++++++++++++++++++++++++
-
 constructor TXmlStreamBuilder.create(aOwner: TComponent);
 begin
   inherited;
@@ -19792,7 +19727,6 @@ end;
 
 
 // +++++++++++++++++++++++++ TXmlCustomReader ++++++++++++++++++++++++++
-
 constructor TXmlCustomReader.Create(AOwner: TComponent);
 begin
   inherited;
@@ -19861,7 +19795,6 @@ end;
 
 
 // ++++++++++++++++++++++ TXmlStandardDocReader ++++++++++++++++++++++++
-
 constructor TXmlStandardDocReader.create(AOwner: TComponent);
 begin
   inherited create(AOwner);
@@ -20575,7 +20508,6 @@ end;
 
 
 // +++++++++++++++++++++ TXmlStandardDtdReader +++++++++++++++++++++
-
 constructor TXmlStandardDtdReader.create(AOwner: TComponent);
 begin
   inherited;
@@ -21198,7 +21130,6 @@ end;
 
 
 // +++++++++++++++++++++++ TXmlStandardDomReader +++++++++++++++++++++++
-
 constructor TXmlStandardDomReader.create(AOwner: TComponent);
 begin
   inherited create(AOwner);
@@ -21592,7 +21523,6 @@ end;
 
 
 // +++++++++++++++++++++++++ TXmlCustomParser +++++++++++++++++++++++++
-
 constructor TXmlCustomParser.create(aOwner: TComponent);
 begin
   inherited;

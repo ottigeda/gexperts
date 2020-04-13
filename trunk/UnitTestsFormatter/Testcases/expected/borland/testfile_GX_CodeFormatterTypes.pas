@@ -278,10 +278,10 @@ type
     function Compare(Key1, Key2: Pointer): Integer; override;
   end;
 
-  {: changes the string case as specified in aCase
-     @param aStr is the input string
-     @param aCase is a TCase specifying the desired case
-     @returns the modified string }
+{: changes the string case as specified in aCase
+   @param aStr is the input string
+   @param aCase is a TCase specifying the desired case
+   @returns the modified string }
 function AdjustCase(aStr: string; aCase: TCase): string;
 
 implementation

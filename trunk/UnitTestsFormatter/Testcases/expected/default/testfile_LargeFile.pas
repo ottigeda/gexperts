@@ -4828,7 +4828,7 @@ type
       TdomXPathNodeSetResult; virtual;
   end;
 
-  { XPath Helper Functions}
+{ XPath Helper Functions}
 function XPathRound(const d: double): double;
 function XPathWideStringToNumber(const s: wideString): double;
 
