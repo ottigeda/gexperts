@@ -657,7 +657,7 @@ begin
       try
         while Result = 0 do begin
           if IsDirectory(Search.Attr) and (Search.Name <> '.') and (Search.Name <> '..') then begin
-            if IsEmpty(FGrepSettings.ExcludedDirs) or (not FExcludedDirsRegEx.Exec(Dir + Search.Name)) then
+            if not Assigned(FExcludedDirsRegEx) or (not FExcludedDirsRegEx.Exec(Dir + Search.Name)) then
               GrepDirectory(Dir + Search.Name, Mask, _Depth + 1);
           end;
           if FAbortSignalled then
@@ -691,7 +691,7 @@ begin
                 // FindFirst matches *.pas~ with a wildcard of *.pas, so we correct for that here
                 if WildcardCompare(Masks.Strings[i], Search.Name, True) then begin
                   SearchFile := Dir + Search.Name;
-                  if IsEmpty(FGrepSettings.ExcludedDirs) or (not FExcludedDirsRegEx.Exec(SearchFile)) then
+                  if not Assigned(FExcludedDirsRegEx) or (not FExcludedDirsRegEx.Exec(SearchFile)) then
                     ExecuteSearchOnFile(SearchFile, Context);
                 end;
                 FFileResult := nil;
@@ -744,7 +744,7 @@ begin
   FFileSearchCount := 0;
   FMatchCount := 0;
 
-  FExcludedDirsRegEx := TRegExpr.Create;
+  FExcludedDirsRegEx := nil;
   try
     if NotEmpty(FGrepSettings.ExcludedDirs) then
     begin
@@ -754,6 +754,7 @@ begin
         Dec(i);
       SetLength(lExcludedDirs, i);
       lExcludedDirs := QuoteRegExprMetaChars(lExcludedDirs);
+      FExcludedDirsRegEx := TRegExpr.Create;
       FExcludedDirsRegEx.Expression := StringReplace(lExcludedDirs, ';', '|', [rfReplaceAll]);
       FExcludedDirsRegEx.ModifierI := True;
       try
