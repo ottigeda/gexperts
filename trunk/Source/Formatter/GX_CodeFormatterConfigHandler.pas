@@ -300,8 +300,6 @@ begin
   ES.FeedAfterSemiColon := _Reader.ReadBool('FeedAfterSemiColon', ES.FeedAfterSemiColon); //: Boolean;
   ES.StartCommentOut := _Reader.ReadString('StartCommentOut', ES.StartCommentOut);
   ES.EndCommentOut := _Reader.ReadString('EndCommentOut', ES.EndCommentOut);
-  ES.CommentFunction := _Reader.ReadBool('CommentFunction', ES.CommentFunction); //: Boolean;
-  ES.CommentUnit := _Reader.ReadBool('CommentUnit', ES.CommentUnit); //: Boolean;
   ES.WrapLines := _Reader.ReadBool('WrapLines', ES.WrapLines); //: Boolean;
   ES.WrapPosition := _Reader.ReadInteger('WrapPosition', ES.WrapPosition); //: Byte;
   ES.AlignCommentPos := _Reader.ReadInteger('AlignCommentPos', ES.AlignCommentPos); //: Byte;
@@ -397,8 +395,6 @@ begin
   _Writer.WriteBool('FeedAfterSemiColon', _Settings.FeedAfterSemiColon); //: Boolean;
   _Writer.WriteString('StartCommentOut', string(_Settings.StartCommentOut)); //: TCommentArray;
   _Writer.WriteString('EndCommentOut', string(_Settings.EndCommentOut)); //: TCommentArray;
-  _Writer.WriteBool('CommentFunction', _Settings.CommentFunction); //: Boolean;
-  _Writer.WriteBool('CommentUnit', _Settings.CommentUnit); //: Boolean;
   _Writer.WriteBool('WrapLines', _Settings.WrapLines); //: Boolean;
   _Writer.WriteInteger('WrapPosition', _Settings.WrapPosition); //: Byte;
   _Writer.WriteInteger('AlignCommentPos', _Settings.AlignCommentPos); //: Byte;

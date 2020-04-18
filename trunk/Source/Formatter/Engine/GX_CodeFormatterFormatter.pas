@@ -686,7 +686,7 @@ begin
     // Now check for another one before that
     Inc(k);
     if not TryGetToken(FTokenIdx - k, Prev2) or (Prev2.ReservedType = rtLineFeed) then begin
-      // There is no previus token or there is already a second line feed, we are done.
+      // There is no previous token or there is already a second line feed, we are done.
       Exit; //==>
     end;
 
@@ -1401,11 +1401,6 @@ begin
               if FSettings.BlankProc and not NoBlankLine then begin
                 Assert(False, '.CheckIndent: Blank Lines Around Proc');
                 CheckBlankLinesAroundProc;
-              end;
-
-              if FSettings.CommentFunction then begin
-                Assert(False, 'trac.CheckIndent: Procedure comment');
-                PutCommentBefore('{ procedure }');
               end;
             end;
           end else begin

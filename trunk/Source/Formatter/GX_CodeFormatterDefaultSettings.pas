@@ -28,8 +28,6 @@ begin
   Result.BlankProc := True;
   Result.BlankSubProc := False;
   Result.ChangeIndent := True;
-  Result.CommentFunction := False;
-  Result.CommentUnit := False;
   Result.ExceptSingle := False;
   Result.FeedAfterSemiColon := False;
   Result.FeedAfterThen := False;
@@ -82,8 +80,6 @@ begin
   Result.BlankProc := True;
   Result.BlankSubProc := False;
   Result.ChangeIndent := True;
-  Result.CommentFunction := False;
-  Result.CommentUnit := False;
   Result.ExceptSingle := False;
   Result.FeedAfterSemiColon := True;
   Result.FeedAfterThen := True;

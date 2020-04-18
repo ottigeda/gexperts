@@ -81,8 +81,6 @@ type
     FeedAfterSemiColon: Boolean;
     StartCommentOut: string; {: special comment to start unformatted section }
     EndCommentOut: string; {: special comment to end unformatted section }
-    CommentFunction: Boolean; {: add a function comment }
-    CommentUnit: Boolean; {: add a unit comment }
     WrapLines: Boolean; {: wrap long lines }
     WrapPosition: Byte; {: wrap position for long lines }
     AlignCommentPos: Byte; {: position to align comments }
@@ -164,8 +162,6 @@ type
     property FeedAfterSemiColon: Boolean read FSettings.FeedAfterSemiColon;
     property StartCommentOut: string read FSettings.StartCommentOut;
     property EndCommentOut: string read FSettings.EndCommentOut;
-    property CommentFunction: Boolean read FSettings.CommentFunction;
-    property CommentUnit: Boolean read FSettings.CommentUnit;
     property WrapLines: Boolean read FSettings.WrapLines;
     property WrapPosition: Byte read FSettings.WrapPosition;
     property AlignCommentPos: Byte read FSettings.AlignCommentPos;
