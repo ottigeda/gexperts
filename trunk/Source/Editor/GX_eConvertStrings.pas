@@ -42,6 +42,7 @@ type
     chk_TrimLeft: TCheckBox;
     chk_TrimRight: TCheckBox;
     chk_Indent: TCheckBox;
+    chk_AlignRightQuote: TCheckBox;
     b_Favorites: TButton;
     pm_Favorites: TPopupMenu;
     N1: TMenuItem;
@@ -68,6 +69,7 @@ type
     procedure chk_TrimLeftClick(Sender: TObject);
     procedure chk_TrimRightClick(Sender: TObject);
     procedure chk_IndentClick(Sender: TObject);
+    procedure chk_AlignRightQuoteClick(Sender: TObject);
     procedure mi_FavoritesSaveAsClick(Sender: TObject);
     procedure act_FavoritesExecute(Sender: TObject);
     procedure pm_FavoritesPopup(Sender: TObject);
@@ -84,7 +86,7 @@ type
     procedure ExtractRawStrings(_sl: TStrings; _AddBaseIndent, _TrimLeft, _TrimRight: Boolean);
     function DetermineIndent(_sl: TStrings): Integer;
     procedure ConvertToCode(_sl: TStrings; _Indent: Boolean;
-      _QuoteStrings: Boolean; _AppendSpace: Boolean;
+      _QuoteStrings: Boolean; _AppendSpace, _AlignRightQuote: Boolean;
       const _FirstPrefix, _Prefix, _Suffix, _LastSuffix: string);
     procedure LoadSettings;
     procedure SaveSettings;
@@ -110,10 +112,11 @@ uses
   u_dzVclUtils,
   u_dzFileUtils,
   u_dzClassUtils,
+  u_dzStringUtils,
   GX_GenericUtils,
   GX_OtaUtils,
   GX_EditorExpert,
-  GX_ConfigurationInfo, u_dzStringUtils;
+  GX_ConfigurationInfo;
 
 type
   TConvertStringsExpert = class(TEditorExpert)
@@ -176,6 +179,7 @@ begin
   chk_Indent.Left := X;
   chk_QuoteStrings.Left := X;
   chk_AppendSpace.Left := X;
+  chk_AlignRightQuote.Left := X;
   l_Prefix.Left := X;
   ed_Prefix.Left := X;
   chk_PrefixFirst.Left := X;
@@ -232,6 +236,7 @@ begin
     Section.WriteString('Suffix', ed_Suffix.Text);
     Section.WriteBool('SameSuffix', chk_SuffixLast.Checked);
     Section.WriteString('LastSuffix', ed_SuffixLast.Text);
+    Section.WriteBool('AlignRightQuote', chk_AlignRightQuote.Checked);
     Section.UpdateFile;
   finally
     FreeAndNil(Section);
@@ -259,6 +264,7 @@ begin
     chk_Indent.Checked := Section.ReadBool('KeepIndent', False);
     chk_QuoteStrings.Checked := Section.ReadBool('QuoteStrings', False);
     chk_AppendSpace.Checked := Section.ReadBool('AppendSpace', False);
+    chk_AlignRightQuote.Checked := Section.ReadBool('AlignRightQuote', False);
     ed_Prefix.Text := Section.ReadString('Prefix', '');
     chk_PrefixFirst.Checked := Section.ReadBool('SamePrefix', True);
     ed_PrefixFirst.Text := Section.ReadString('FirstPrefix', '');
@@ -356,6 +362,7 @@ begin
   Settings.WriteString('Suffix', ed_Suffix.Text);
   Settings.WriteBool('SameSuffix', chk_SuffixLast.Checked);
   Settings.WriteString('LastSuffix', ed_SuffixLast.Text);
+  Settings.WriteBool('AlignRightQuote', chk_AlignRightQuote.Checked);
 end;
 
 procedure TfmEConvertStrings.SetData(_sl: TStrings);
@@ -419,6 +426,7 @@ begin
   ed_Suffix.Text := Settings.ReadString('Suffix', '');
   chk_SuffixLast.Checked := Settings.ReadBool('SameSuffix', True);
   ed_SuffixLast.Text := Settings.ReadString('LastSuffix', '');
+  chk_AlignRightQuote.Checked := Settings.ReadBool('AlignRightQuote', True);
 end;
 
 function TfmEConvertStrings.DetermineIndent(_sl: TStrings): Integer;
@@ -469,13 +477,25 @@ begin
 end;
 
 procedure TfmEConvertStrings.ConvertToCode(_sl: TStrings;
-  _Indent, _QuoteStrings, _AppendSpace: Boolean;
+  _Indent, _QuoteStrings, _AppendSpace, _AlignRightQuote: Boolean;
   const _FirstPrefix, _Prefix, _Suffix, _LastSuffix: string);
 var
   cnt: Integer;
   i: Integer;
   FirstCharPos: Integer;
   Line, BaseIndent: string;
+  MaxLength: Integer;
+  LineLength: Integer;
+
+  function CountCharInString(str: string; SearchChar: char): integer;
+  var
+    i: integer;
+  begin
+    Result := 0;
+    for i := 1 to Length(str) do
+      if str[i] = SearchChar then Inc(Result);
+  end;
+
 begin
   if _Indent then
     FirstCharPos := DetermineIndent(_sl)
@@ -484,9 +504,36 @@ begin
   // this works, because FirstCharPos is the smallest Indent for all lines
   BaseIndent := LeftStr(_sl[0], FirstCharPos - 1);
 
+  MaxLength := 0;
+  if _AlignRightQuote then
+  begin
+    for i := 0 to _sl.Count - 1 do
+    begin
+      Line := Copy(_sl[i], FirstCharPos);
+
+      if _QuoteStrings then
+        LineLength := Length(Line) +CountCharInString(Line, SINGLE_QUOTE)
+      else
+        LineLength := Length(Line);
+
+      if MaxLength < LineLength then
+        MaxLength := LineLength;
+    end;
+  end;
+
   cnt := _sl.Count;
   for i := 0 to cnt - 1 do begin
     Line := Copy(_sl[i], FirstCharPos);
+
+    if _AlignRightQuote then
+    begin
+    if _QuoteStrings then
+        LineLength := Length(Line) +CountCharInString(Line, SINGLE_QUOTE)
+      else
+        LineLength := Length(Line);
+
+      Line := Line + StringOfChar(' ', MaxLength -LineLength);
+    end;
 
     if _QuoteStrings then
       Line := AnsiQuotedStr(Line + IfThen(_AppendSpace, ' '), SINGLE_QUOTE);
@@ -560,7 +607,7 @@ begin
       else
         LastSuffix := ed_SuffixLast.Text;
       ConvertToCode(sl, chk_Indent.Checked, chk_QuoteStrings.Checked, chk_AppendSpace.Checked,
-        FirstPrefix, Prefix, Suffix, LastSuffix);
+        chk_AlignRightQuote.Checked, FirstPrefix, Prefix, Suffix, LastSuffix);
     end;
     m_Output.Lines.Assign(sl);
   finally
@@ -594,6 +641,11 @@ begin
 end;
 
 procedure TfmEConvertStrings.rg_ConvertTypeClick(Sender: TObject);
+begin
+  ConvertStrings;
+end;
+
+procedure TfmEConvertStrings.chk_AlignRightQuoteClick(Sender: TObject);
 begin
   ConvertStrings;
 end;
