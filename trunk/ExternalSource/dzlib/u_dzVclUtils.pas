@@ -5664,7 +5664,8 @@ begin
       sl.Add(fn);
     end;
     DragFinish(_Msg.wParam);
-    doCallback(sl);
+    if cnt > 0 then
+      doCallback(sl);
   finally
     FreeAndNil(sl);
   end;

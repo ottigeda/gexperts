@@ -17,7 +17,6 @@
 unit u_dzMiscUtils;
 
 {$INCLUDE 'dzlib.inc'}
-{.$INCLUDE 'jedi.inc'}
 
 interface
 

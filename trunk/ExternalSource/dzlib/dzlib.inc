@@ -31,7 +31,15 @@
 {$IFDEF DELPHI2006_UP}
 // TBitmap.SetSize was introduced with Delphi 2006
 {$DEFINE SUPPPORTS_BITMAP_SETSIZE}
+{$ENDIF}
+
+{$IFDEF DELPHI2006_UP}
+{$IFNDEF DELPHI2009_UP}
+// Delphi 2006 introduced an overloaded version of TDataSet.GetFields which takes a TWideStringList
+// parameter and deprecated the version that took TStrings. Delphi 2009 removed the deprecated
+// warning again because TStrings is Unicode.
 {$DEFINE DATASET_GETFIELDS_IS_WIDESTRINGLIST}
+{$ENDIF}
 {$ENDIF}
 
 {$IFDEF DELPHI7_UP}
@@ -59,6 +67,10 @@
 // AHandle is declared as THandle (otherwise it's an Integer)
 {$DEFINE THANDLESTREAM_CREATE_HANDLE_IS_THANDLE}
 {$DEFINE MAXLISTSIZE_IS_DEPRECATED}
+{$ENDIF}
+
+{$IFDEF DELPHIXE6_UP}
+{$DEFINE JSONOBJECT_HAS_COUNT}
 {$ENDIF}
 
 {$IFDEF DELPHIX_TOKYO_UP}
