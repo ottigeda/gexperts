@@ -174,7 +174,6 @@ begin
     until Result or (_TimeoutMsecs <> INFINITE);
   end else begin
     WaitResult := WaitForSingleObject(H, _TimeoutMsecs);
-    Result := True;
     if WaitResult = WAIT_FAILED then
       RaiseLastOSError;
     Result := (WaitResult <> WAIT_TIMEOUT);

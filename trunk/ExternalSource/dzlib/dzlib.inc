@@ -12,6 +12,7 @@
 // For now I assume the BDE is not installed for Delphi XE7 and later, but that
 // largely depends on what the user selected for installation.
 {$DEFINE BDE_IS_DEPRECATED}
+{$DEFINE HAS_UNIT_NETENCODING}
 {$ENDIF}
 
 {$IFDEF DELPHI7_UP}
@@ -61,6 +62,10 @@
 // THandleStream.FHandle is declared as THandle (before that it's an Integer)
 {$DEFINE THANDLESTREAM_HANDLE_IS_THANDLE}
 {$DEFINE HAS_TOBJECT_TOSTRING}
+{$ENDIF}
+
+{$IFDEF DELPHIXE_UP}
+{$DEFINE HAS_UNIT_GENERICS_COLLECTION}
 {$ENDIF}
 
 {$IFDEF DELPHIXE2_UP}

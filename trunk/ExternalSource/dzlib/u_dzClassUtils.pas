@@ -1064,8 +1064,10 @@ var
 begin
   // twm: this is not really efficient, because it reads single bytes, if it becomes a problem, optimize it ;-)
   OldPos := _Stream.Position;
+{$IFNDEF DELPHIX_SEATTLE_UP}
   Endstring := 0;
   NewPos := 0;
+{$ENDIF}
   while True do begin
     if _Stream.Read(c, 1) = 0 then begin // end of file
       EndString := _Stream.Position;

@@ -10,7 +10,9 @@ unit u_dzGraphicsUtils;
 {$ENDIF}
 
 {$IFOPT O-} // Optimization
-{$MESSAGE WARN 'optimization is off, consider turning it on for significantly better performance'}
+{$IFNDEF NO_OPTIMIZE_DZ_GRAPHIC_UTILS_HINT}
+{$MESSAGE HINT 'optimization is off, consider turning it on for significantly better performance'}
+{$ENDIF}
 {$ELSE}
 // If optimization is on, we turn off assertions, just in case the programmer forgot.
 // The reason for this is that we have some assertions below that might significantly impact
@@ -668,13 +670,18 @@ var
   wDst: Integer;
   hDst: Integer;
 begin
+  wDst := _DestBmp.Width;
+  hDst := _DestBmp.Height;
+  if wDst = 0 then
+    raise Exception.Create(_('Destination bitmap width must not be 0.'));
+  if hDst = 0 then
+    raise Exception.Create(_('Destination bitmap height must not be 0.'));
+
   DstHandle := _DestBmp.Canvas.Handle;
   OrigBltMode := GetStretchBltMode(DstHandle);
   try
     SetBrushOrgEx(DstHandle, 0, 0, @OrigBrushOrigin);
     SetStretchBltMode(DstHandle, HALFTONE);
-    wDst := _DestBmp.Width;
-    hDst := _DestBmp.Height;
     wSrc := _SrcBmp.Width;
     hSrc := _SrcBmp.Height;
     if (hSrc = 0) or (wSrc = 0) then begin
@@ -682,14 +689,19 @@ begin
       // todo: Should this clear DestBmp?
       Result := False;
     end else begin
-      if hSrc > wSrc then begin
-        x := Round((wDst * (hSrc - wSrc)) / 2 / hSrc);
-        y := 0;
-        wDst := Round(wDst * wSrc / hSrc);
-      end else begin
+      if SameValue(wSrc / hSrc, wDst / hDst) then begin
         x := 0;
-        y := Round((hDst * (wSrc - hSrc)) / 2 / wSrc);
-        hDst := Round(hDst * hSrc / wSrc);
+        y := 0;
+      end else begin
+        if hSrc > wSrc then begin
+          x := Round((wDst * (hSrc - wSrc)) / 2 / hSrc);
+          y := 0;
+          wDst := Round(wDst * wSrc / hSrc);
+        end else begin
+          x := 0;
+          y := Round((hDst * (wSrc - hSrc)) / 2 / wSrc);
+          hDst := Round(hDst * hSrc / wSrc);
+        end;
       end;
       Result := dzStretchBlt(DstHandle, Rect(x, y, x + wDst - 1, y + hDst - 1), _SrcBmp);
     end;
