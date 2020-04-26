@@ -1,5 +1,7 @@
 unit GX_eIfDef;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -89,6 +91,7 @@ type
     procedure IncludeFilesListReady;
     procedure OnInludeFileSelected(_Sender: TObject);
     function AddIncludePage(_No: Integer; const _FullFn: string; _IsIncluded: Boolean): TTabSheet;
+    function IsKnownIncFile(const _fn: string): Boolean;
   public
     class function Execute(_bmp: TBitmap; var _AppendComment: Boolean;
       out _Text: string; out _IncludeFile: string): Boolean;
@@ -239,6 +242,9 @@ begin
 
   FTabDefinitions := TObjectList.Create;
 
+  // This searches for any .inc file in the path that may not have been included
+  // in the current unit. These will be offered to be included via the '+' button
+  // on the right. See IncludeFilesListReady.
   FFindThread := TFileFindThread.Create;
   FFindThread.FileMasks.Add('*.inc');
   FFindThread.SearchDirs.Assign(FSearchPath);
@@ -769,63 +775,101 @@ procedure TfmConfigureIfDef.InitIncludes;
     for i := 0 to FSearchPath.Count - 1 do begin
       FullFn := AddSlash(FSearchPath[i]) + _fn;
       if FileExists(FullFn) then begin
-        AddIncludePage(_Number, FullFn, True);
-        Inc(_Number);
+        if not IsKnownSourceFile(FullFn) then begin
+          AddIncludePage(_Number, FullFn, True);
+          Inc(_Number);
+        end;
       end;
     end;
   end;
 
-const
-  INCLUDE_STR = '$Include';
-  I_STR = '$I';
+  procedure HandleFile(var _Number: Integer; _Lines: TGXUnicodeStringList);
+  const
+    INCLUDE_STR = '$Include';
+    I_STR = '$I';
+  var
+    LineIdx: Integer;
+    s: string;
+    fn: string;
+    Comment: string;
+  begin
+    for LineIdx := 0 to _Lines.Count - 1 do begin
+      s := _Lines[LineIdx];
+      if IsCompilerDirective(s, INCLUDE_STR, fn, Comment)
+        or IsCompilerDirective(s, I_STR, fn, Comment) then begin
+        AddIfFound(_Number, fn);
+      end;
+    end;
+  end;
+
 var
-  Lines: TGXUnicodeStringList;
-  i: Integer;
-  s: string;
-  fn: string;
   Number: Integer;
-  Comment: string;
+  Lines: TGXUnicodeStringList;
+  DefIdx: Integer;
+  def: TIfdefTabDefinition;
 begin
   Number := 1;
   Lines := TGXUnicodeStringList.Create;
   try
     if not GxOtaGetActiveEditorText(Lines, False) then
       Exit;
-    for i := 0 to Lines.Count - 1 do begin
-      s := Lines[i];
-      if IsCompilerDirective(s, INCLUDE_STR, fn, Comment)
-        or IsCompilerDirective(s, I_STR, fn, Comment) then begin
-        AddIfFound(Number, fn);
-      end;
-    end;
+
+    HandleFile(Number, Lines);
   finally
     FreeAndNil(Lines);
   end;
+
+  // search those include files for additional includes
+  // todo: Maybe these should just be added to the defines of the original include files
+  // rather than to a separate tab. The user hasn't explicitly included them after all
+  // and might not even be aware of them.
+  DefIdx := 0;
+  while DefIdx < FTabDefinitions.Count do begin
+    def := FTabDefinitions[DefIdx] as TIfdefTabDefinition;
+    if def.Filename <> '' then begin
+      Lines := TGXUnicodeStringList.Create;
+      try
+        Lines.LoadFromFile(def.Filename);
+        HandleFile(Number, Lines);
+      finally
+        FreeAndNil(Lines);
+      end;
+    end;
+    Inc(DefIdx);
+  end;
+end;
+
+function TfmConfigureIfDef.IsKnownIncFile(const _fn: string): Boolean;
+var
+  DefIdx: Integer;
+  def: TIfdefTabDefinition;
+begin
+  for DefIdx := 0 to FTabDefinitions.Count - 1 do begin
+    def := FTabDefinitions[DefIdx] as TIfdefTabDefinition;
+    if SameText(_fn, def.Filename) then begin
+      Result := True;
+      Exit;
+    end;
+  end;
+  Result := False;
 end;
 
 procedure TfmConfigureIfDef.IncludeFilesListReady;
-
-  function IsKnownIncFile(const _fn: string): Boolean;
-  var
-    DefIdx: Integer;
-    def: TIfdefTabDefinition;
-  begin
-    for DefIdx := 0 to FTabDefinitions.Count - 1 do begin
-      def := FTabDefinitions[DefIdx] as TIfdefTabDefinition;
-      if SameText(_fn, def.Filename) then begin
-        Result := True;
-        Exit;
-      end;
-    end;
-    Result := False;
-  end;
-
 var
   ResIdx: Integer;
   fn: string;
 begin
   // This is called via Synchronize.
   // Can we be sure that the static tabs have already been created?
+  if not Assigned(FFindThread) then begin
+    // Ff the form's constructor raises an exception after the thread has been
+    // started, FFindThread might will already have been freed here because it
+    // was waiting in Synchronize for the main thread to become idle.
+    // Checking for FFindThread = NIL is not an ideal solution for this, but
+    // still better than an Access Violation.
+    Exit; //==>
+  end;
+
   for ResIdx := 0 to FFindThread.Results.Count - 1 do begin
     fn := FFindThread.Results[ResIdx];
     if not IsKnownIncFile(fn) then begin
