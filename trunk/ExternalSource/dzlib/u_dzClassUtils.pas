@@ -1047,13 +1047,6 @@ begin
   Result := TStream_WriteStringLn(_Stream, AnsiString(Format(_Format, _Args)));
 end;
 
-// Turn Warning off, because Delphi 2007 thinks that the variable might not have been initialized.
-// But that is not the case.
-// 2019-06-03 pp
-{$IFDEF SUPPORTS_WARN_USE_BEFORE_DEF}
-{$WARN USE_BEFORE_DEF OFF}
-{$ENDIF}
-
 function TStream_ReadStringLn(_Stream: TStream; out _s: string): Integer;
 var
   OldPos: Int64;
@@ -1093,9 +1086,6 @@ begin
   end;
   _Stream.Position := NewPos;
 end;
-{$IFDEF SUPPORTS_WARN_USE_BEFORE_DEF}
-{$WARN USE_BEFORE_DEF DEFAULT}
-{$ENDIF}
 
 function TStrings_TryStringByObj(_Strings: TStrings; _Obj: Pointer; out _Value: string): Boolean;
 var
