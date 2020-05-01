@@ -3,7 +3,7 @@ object fmGrepSearch: TfmGrepSearch
   Top = 189
   BorderStyle = bsDialog
   Caption = 'Grep Search'
-  ClientHeight = 540
+  ClientHeight = 588
   ClientWidth = 681
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -20,7 +20,7 @@ object fmGrepSearch: TfmGrepSearch
   OnCreate = FormCreate
   DesignSize = (
     681
-    540)
+    588)
   PixelsPerInch = 96
   TextHeight = 14
   object lblFind: TLabel
@@ -162,7 +162,7 @@ object fmGrepSearch: TfmGrepSearch
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = '&Open project files'
-      TabOrder = 4
+      TabOrder = 5
       OnClick = rbDirectoriesClick
     end
     object rbDirectories: TRadioButton
@@ -172,7 +172,7 @@ object fmGrepSearch: TfmGrepSearch
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = '&Directories'
-      TabOrder = 5
+      TabOrder = 6
       OnClick = rbDirectoriesClick
     end
     object rbCurrentOnly: TRadioButton
@@ -202,7 +202,7 @@ object fmGrepSearch: TfmGrepSearch
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Pre&vious search result files'
-      TabOrder = 6
+      TabOrder = 7
       OnClick = rbDirectoriesClick
     end
     object txt_NoMapFile: TStaticText
@@ -215,7 +215,7 @@ object fmGrepSearch: TfmGrepSearch
         'the project.'#13#10'You must enable generating a map file with publics' +
         ' or a detailed map file in Linker Options.'
       Caption = 'Map file not available'
-      TabOrder = 7
+      TabOrder = 4
       Visible = False
     end
   end
@@ -337,76 +337,78 @@ object fmGrepSearch: TfmGrepSearch
     Left = 8
     Top = 240
     Width = 666
-    Height = 173
+    Height = 217
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Directory Search'
     TabOrder = 5
     DesignSize = (
       666
-      173)
+      217)
     object lblMasks: TLabel
-      Left = 25
-      Top = 84
-      Width = 53
+      Left = 8
+      Top = 72
+      Width = 188
       Height = 14
-      Hint = 'Separate multiple file masks by semicolon'
-      Alignment = taRightJustify
-      Caption = 'File mas&ks'
+      Caption = 'File mas&ks (separate by semicolon)'
       FocusControl = cbMasks
     end
     object lblDirectory: TLabel
-      Left = 21
-      Top = 26
-      Width = 57
+      Left = 8
+      Top = 24
+      Width = 192
       Height = 14
-      Hint = 'Separate multiple directories by semicolon'
-      Alignment = taRightJustify
-      Caption = 'Di&rectories'
+      Caption = 'Di&rectories (separate by semicolon)'
       FocusControl = cbDirectory
     end
     object lblExcludeDirs: TLabel
-      Left = 13
-      Top = 55
-      Width = 65
+      Left = 24
+      Top = 168
+      Width = 200
       Height = 14
-      Hint = 'Separate multiple directories by semicolon'
-      Alignment = taRightJustify
-      Caption = 'Exclude Dirs'
+      Caption = 'Exclude Dirs (separate by semicolon)'
       FocusControl = cbExcludedDirs
     end
     object l_MinMaxDepth: TLabel
-      Left = 104
-      Top = 128
+      Left = 176
+      Top = 121
       Width = 90
       Height = 14
       Caption = 'Min / Max Depth'
     end
     object cbMasks: TComboBox
-      Left = 84
-      Top = 80
-      Width = 547
+      Left = 8
+      Top = 88
+      Width = 617
       Height = 22
-      Hint = 'Separate multiple file masks by semicolon'
       Anchors = [akLeft, akTop, akRight]
       DropDownCount = 15
       ItemHeight = 14
-      TabOrder = 3
+      TabOrder = 2
       OnKeyDown = ComboKeyDown
     end
+    object chk_SubDirRegex: TCheckBox
+      Left = 240
+      Top = 168
+      Width = 149
+      Height = 17
+      Caption = 'Regular expression'
+      TabOrder = 7
+      OnClick = chk_SubDirRegexClick
+    end
     object cbInclude: TCheckBox
-      Left = 84
-      Top = 106
-      Width = 571
+      Left = 8
+      Top = 128
+      Width = 149
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Search su&bdirectories'
-      TabOrder = 4
+      TabOrder = 3
       OnClick = cbIncludeClick
     end
     object cbDirectory: TComboBox
-      Left = 84
-      Top = 22
-      Width = 547
+      Left = 8
+      Top = 40
+      Width = 617
       Height = 22
       Hint = 'Separate multiple directories by semicolon'
       Anchors = [akLeft, akTop, akRight]
@@ -418,9 +420,9 @@ object fmGrepSearch: TfmGrepSearch
     end
     object btnBrowse: TButton
       Left = 632
-      Top = 22
-      Width = 20
-      Height = 20
+      Top = 39
+      Width = 25
+      Height = 25
       Hint = 'Select Directory'
       Anchors = [akTop, akRight]
       Caption = '...'
@@ -430,41 +432,41 @@ object fmGrepSearch: TfmGrepSearch
       OnClick = btnBrowseClick
     end
     object cbExcludedDirs: TComboBox
-      Left = 84
-      Top = 51
-      Width = 547
+      Left = 24
+      Top = 184
+      Width = 601
       Height = 22
-      Hint = 'Separate multiple directories by semicolon'
       Anchors = [akLeft, akTop, akRight]
       DropDownCount = 15
       ItemHeight = 14
-      TabOrder = 2
+      TabOrder = 6
       OnDropDown = cbExcludedDirsDropDown
       OnKeyDown = ComboKeyDown
     end
     object ed_MinDepth: TEdit
-      Left = 104
-      Top = 144
+      Left = 176
+      Top = 136
       Width = 41
       Height = 22
       Enabled = False
-      TabOrder = 5
+      TabOrder = 4
       Text = '0'
       OnChange = ed_MinDepthChange
     end
     object ed_MaxDepth: TEdit
-      Left = 152
-      Top = 144
+      Left = 224
+      Top = 136
       Width = 41
       Height = 22
+      Hint = 'empty for no depth limit'
       Enabled = False
-      TabOrder = 6
+      TabOrder = 5
       Text = '0'
     end
   end
   object pnlBottom: TPanel
     Left = 0
-    Top = 505
+    Top = 553
     Width = 681
     Height = 35
     Align = alBottom
@@ -526,7 +528,7 @@ object fmGrepSearch: TfmGrepSearch
   end
   object rgSaveOption: TRadioGroup
     Left = 8
-    Top = 416
+    Top = 464
     Width = 666
     Height = 81
     Anchors = [akLeft, akTop, akRight]

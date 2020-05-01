@@ -69,6 +69,7 @@ type
     FGrepUseMapFile: Boolean;
     FGrepMinDepth: Integer;
     FGrepMaxDepth: Integer;
+    FExcludedDirsIsRegEx: Boolean;
     function  GetGrepSaveHistoryListItems(AIndex: Integer): Boolean;
     procedure SetSearchList(New: TStrings);
     procedure SetReplaceList(New: TStrings);
@@ -170,6 +171,7 @@ type
     property MaskList: TStrings read FMaskList write SetMaskList;
     property DirList: TStrings read FDirList write SetDirList;
     property ExcludedDirsList: TStrings read FExcludedDirsList write SetExcludedDirsList;
+    property ExcludedDirsIsRegEx: Boolean read FExcludedDirsIsRegEx write FExcludedDirsIsRegEx;
 
     property HistoryIniVersion: Integer read FHistoryIniVersion;
     property HistoryList: TGrepHistoryList read FHistoryList;
@@ -492,6 +494,7 @@ begin
   _Settings.WriteInteger('SaveOption', Integer(GrepSaveOption));
   _Settings.WriteBool('UseCurrentIdent', GrepUseCurrentIdent);
   _Settings.WriteBool('UseMapFile', GrepUseMapFile);
+  _Settings.WriteBool('ExcludedDirsIsRegEx', ExcludedDirsIsRegEx);
   _Settings.WriteInteger('MinDepth', GrepMinDepth);
   _Settings.WriteInteger('MaxDepth', GrepMaxDepth);
 
@@ -543,6 +546,7 @@ begin
   Result.Directories := '';
   Result.ExcludedDirs := '';
   Result.IncludeSubdirs := GrepSub;
+  Result.ExcludedDirsIsRegEx := ExcludedDirsIsRegEx;
   Result.MinDepth := GrepMinDepth;
   Result.MaxDepth := GrepMaxDepth;
 
@@ -753,6 +757,7 @@ begin
   FGrepSaveOption := TGrepSaveOption(_Settings.ReadInteger('SaveOption', Integer(GrepSaveOption)));
   FGrepUseCurrentIdent := _Settings.ReadBool('UseCurrentIdent', False);
   FGrepUseMapFile := _Settings.ReadBool('UseMapFile', False);
+  FExcludedDirsIsRegEx := _Settings.ReadBool('ExcludedDirsIsRegEx', False);
   FGrepMinDepth := _Settings.ReadInteger('MinDepth', 0);
   FGrepMaxDepth := _Settings.ReadInteger('MaxDepth', -1);
 

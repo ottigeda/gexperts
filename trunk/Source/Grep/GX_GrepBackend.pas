@@ -73,6 +73,7 @@ type
     MaxDepth: Integer;
     Directories: string;
     ExcludedDirs: string;
+    ExcludedDirsIsRegEx: Boolean;
     Mask: string;
     Pattern: string;
     Replace: string;
@@ -657,7 +658,7 @@ begin
       try
         while Result = 0 do begin
           if IsDirectory(Search.Attr) and (Search.Name <> '.') and (Search.Name <> '..') then begin
-            if not Assigned(FExcludedDirsRegEx) or (not FExcludedDirsRegEx.Exec(Dir + Search.Name)) then
+            if not Assigned(FExcludedDirsRegEx) or (not FExcludedDirsRegEx.Exec(Search.Name)) then
               GrepDirectory(Dir + Search.Name, Mask, _Depth + 1);
           end;
           if FAbortSignalled then
@@ -691,8 +692,7 @@ begin
                 // FindFirst matches *.pas~ with a wildcard of *.pas, so we correct for that here
                 if WildcardCompare(Masks.Strings[i], Search.Name, True) then begin
                   SearchFile := Dir + Search.Name;
-                  if not Assigned(FExcludedDirsRegEx) or (not FExcludedDirsRegEx.Exec(SearchFile)) then
-                    ExecuteSearchOnFile(SearchFile, Context);
+                  ExecuteSearchOnFile(SearchFile, Context);
                 end;
                 FFileResult := nil;
 
@@ -749,13 +749,17 @@ begin
     if NotEmpty(FGrepSettings.ExcludedDirs) then
     begin
       lExcludedDirs := Trim(FGrepSettings.ExcludedDirs);
-      i := Length(lExcludedDirs);
-      while (i > 0) and (lExcludedDirs[i] = ';') do
-        Dec(i);
-      SetLength(lExcludedDirs, i);
-      lExcludedDirs := QuoteRegExprMetaChars(lExcludedDirs);
       FExcludedDirsRegEx := TRegExpr.Create;
-      FExcludedDirsRegEx.Expression := StringReplace(lExcludedDirs, ';', '|', [rfReplaceAll]);
+      if FGrepSettings.ExcludedDirsIsRegEx then begin
+        FExcludedDirsRegEx.Expression := lExcludedDirs;
+      end else begin
+        i := Length(lExcludedDirs);
+        while (i > 0) and (lExcludedDirs[i] = ';') do
+          Dec(i);
+        SetLength(lExcludedDirs, i);
+        lExcludedDirs := QuoteRegExprMetaChars(lExcludedDirs);
+        FExcludedDirsRegEx.Expression := '^' + StringReplace(lExcludedDirs, ';', '$|^', [rfReplaceAll]) + '$';
+      end;
       FExcludedDirsRegEx.ModifierI := True;
       try
         FExcludedDirsRegEx.Compile;
@@ -1346,6 +1350,7 @@ begin
     FGrepSettings.MaxDepth := AItemIni.ReadInteger(ASection, 'MaxDepth', GrepSettings.MaxDepth);
     FGrepSettings.Directories := AItemIni.ReadString(ASection, 'Directories', GrepSettings.Directories);
     FGrepSettings.ExcludedDirs := AItemIni.ReadString(ASection, 'ExcludedDirs', GrepSettings.ExcludedDirs);
+    FGrepSettings.ExcludedDirsIsRegEx := AItemIni.ReadBool(ASection, 'ExcludedDirsIsRegEx', GrepSettings.ExcludedDirsIsRegEx);
     FGrepSettings.Mask := AItemIni.ReadString(ASection, 'Mask', GrepSettings.Mask);
 
     if AItemIni.ValueExists(ASection, 'PatternEx') then
@@ -1446,6 +1451,7 @@ begin
 
     AItemIni.WriteString(ASection, 'Directories', GrepSettings.Directories);
     AItemIni.WriteString(ASection, 'ExcludedDirs', GrepSettings.ExcludedDirs);
+    AItemIni.WriteBool(ASection, 'ExcludedDirsIsRegEx', GrepSettings.ExcludedDirsIsRegEx);
     AItemIni.WriteString(ASection, 'Mask', GrepSettings.Mask);
     AItemIni.WriteString(ASection, 'PatternEx', '#' + GrepSettings.Pattern + '#');
     AItemIni.WriteString(ASection, 'Replace', GrepSettings.Replace);

@@ -60,6 +60,7 @@ type
     l_MinMaxDepth: TLabel;
     ed_MinDepth: TEdit;
     ed_MaxDepth: TEdit;
+    chk_SubDirRegex: TCheckBox;
     procedure btnBrowseClick(Sender: TObject);
     procedure rbDirectoriesClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
@@ -83,6 +84,7 @@ type
     procedure btnSectionAllClick(Sender: TObject);
     procedure cbIncludeClick(Sender: TObject);
     procedure ed_MinDepthChange(Sender: TObject);
+    procedure chk_SubDirRegexClick(Sender: TObject);
   private
     FGrepExpert: TGrepExpert;
     FEmbedded: Boolean;
@@ -536,6 +538,7 @@ begin
 
   FGrepExpert.GrepMinDepth := StrToIntDef(ed_MinDepth.Text, 0);
   FGrepExpert.GrepMaxDepth := StrToIntDef(ed_MaxDepth.Text, -1);
+  FGrepExpert.ExcludedDirsIsRegEx := chk_SubDirRegex.Checked;
 
   FGrepExpert.GrepUseMapFile := chk_UseMapFile.Checked;
 end;
@@ -655,6 +658,8 @@ begin
     else
       ed_MaxDepth.Text :=  '';
 
+    chk_SubDirRegex.Checked := FGrepExpert.ExcludedDirsIsRegEx;
+
     chk_UseMapFile.Checked := FGrepExpert.GrepUseMapFile;
 
     if cbText.Items.Count > 0 then
@@ -771,6 +776,7 @@ begin
     Value.MinDepth := StrToIntDef(ed_MinDepth.Text, 0);
     Value.MaxDepth := StrToIntDef(ed_MaxDepth.Text, -1);
     Value.ExcludedDirs := cbExcludedDirs.Text;
+    Value.ExcludedDirsIsRegEx := chk_SubDirRegex.Checked;
   end;
 end;
 
@@ -812,7 +818,8 @@ begin
       cbDirectory.Text := Value.Directories;
       cbInclude.Checked := Value.IncludeSubdirs;
       cbExcludedDirs.Text := Value.ExcludedDirs;
-    end ;
+        chk_SubDirRegex.Checked := Value.ExcludedDirsIsRegEx;
+    end;
   end;
   EnableDirectoryControls(rbDirectories.Checked);
 end;
@@ -981,6 +988,14 @@ begin
 
   Show;
   BringToFront;
+end;
+
+procedure TfmGrepSearch.chk_SubDirRegexClick(Sender: TObject);
+begin
+  if chk_SubDirRegex.Checked then
+    lblExcludeDirs.Caption := 'Exclude Dirs'
+  else
+    lblExcludeDirs.Caption := 'Exclude Dirs (separate by semicolon)'
 end;
 
 initialization

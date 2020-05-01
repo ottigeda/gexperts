@@ -825,14 +825,17 @@ inherited fmGrepResults: TfmGrepResults
       object miSettingsDirectoriesData: TMenuItem
         Caption = 'Directories'
       end
-      object miSettingsExcludeDirs: TMenuItem
-        Caption = 'Exclude Dirs'
-      end
       object miSettingsFileMasks: TMenuItem
         Caption = 'File Masks'
       end
       object miSettingsSearchSubDirectories: TMenuItem
         Caption = 'Search Subdirectories'
+      end
+      object miSettingsExcludeDirs: TMenuItem
+        Caption = 'Exclude Dirs'
+      end
+      object miSettingsExcludeDirsIsRegEx: TMenuItem
+        Caption = 'Exclude Dirs is RegEx'
       end
       object miSettingsSep2: TMenuItem
         Caption = '-'

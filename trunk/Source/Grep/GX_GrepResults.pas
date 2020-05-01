@@ -236,6 +236,7 @@ type
     miSettingsSep5: TMenuItem;
     miSettingsFormHandleMultiline: TMenuItem;
     miSettingsFormHandleSpecialChars: TMenuItem;
+    miSettingsExcludeDirsIsRegEx: TMenuItem;
     procedure FormResize(Sender: TObject);
     procedure lbResultsMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure lbResultsKeyPress(Sender: TObject; var Key: Char);
@@ -2354,6 +2355,8 @@ begin
   miSettingsExcludeDirs.Visible := IsDirectorySettings;
   miSettingsExcludeDirs.Checked := AItem.GrepSettings.ExcludedDirs <> '';
   miSettingsExcludeDirs.Caption := Format('%s = %s', [FSavedExcludeDirsCaption, AItem.GrepSettings.ExcludedDirs]);
+  miSettingsExcludeDirsIsRegEx.Visible := IsDirectorySettings;
+  miSettingsExcludeDirsIsRegEx.Checked := AItem.GrepSettings.ExcludedDirsIsRegEx;
   miSettingsFileMasks.Visible := IsDirectorySettings;
   miSettingsFileMasks.Checked := AItem.GrepSettings.Mask <> '';
   miSettingsFileMasks.Caption := Format('%s = %s', [FSavedFileMasksCaption, AItem.GrepSettings.Mask]);
