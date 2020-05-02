@@ -90,10 +90,9 @@ type
     FEmbedded: Boolean;
     FCheckedWhere: Boolean;
     FEmbeddedHolder: TWinControl;
-    FSaveWidth: Integer;
-    FSaveOptionsGroupWidth: Integer;
-    FSaveWhereGroupWidth: Integer;
-    FSaveWhereGroupLeft: Integer;
+    FOriginalWidth: Integer;
+    FOriginalOptionsGroupWidth: Integer;
+    FOriginalWhereGroupWidth: Integer;
     FLoadingSettings: Boolean;
     FTheHintWindow: THintWindow;
     procedure EnableDirectoryControls(New: Boolean);
@@ -141,10 +140,6 @@ uses
 
 resourcestring
   SGrepResultsNotActive = 'The Grep Results window is not active';
-
-const
-  cEmbeddedLeft = 2;
-  cEmbeddedTop = 55;
 
 { TfmGrepSearch }
 
@@ -488,10 +483,9 @@ end;
 
 procedure TfmGrepSearch.FormCreate(Sender: TObject);
 begin
-  FSaveWidth := Width;
-  FSaveOptionsGroupWidth := gbxOptions.Width;
-  FSaveWhereGroupWidth := gbxWhere.Width;
-  FSaveWhereGroupLeft := gbxWhere.Left;
+  FOriginalWidth := Width;
+  FOriginalOptionsGroupWidth := gbxOptions.Width;
+  FOriginalWhereGroupWidth := gbxWhere.Width;
 end;
 
 procedure TfmGrepSearch.cbDirectoryOnDropFiles(_Sender: TObject; _Files: TStrings);
@@ -904,84 +898,103 @@ end;
 
 procedure TfmGrepSearch.EmbeddedSetHeights;
 
-  function MoveTo(ATopDelta: Integer; AMainCtrl: TControl; AItemsDelta: Integer; AItems: array of TControl): Integer;
-  var
-    I, ADelta: Integer;
-  begin
-    AMainCtrl.Top := AMainCtrl.Top - ATopDelta;
-    Result := 0;
-    for I := 0 to High(AItems) do
-    begin
-      if AItemsDelta > 0 then
-      begin
-        ADelta := (I+1) * AItemsDelta;
-        Inc(Result, ADelta div 2);
-      end
-      else
-        ADelta := ATopDelta;
-      AItems[I].Top := AItems[I].Top - ADelta;
-    end;
-    if High(AItems) = -1 then
-      Inc(Result, AItemsDelta);
-    if AItemsDelta > 0 then
-      AMainCtrl.Height := AMainCtrl.Height - Result;
-    Inc(Result, ATopDelta);
-  end;
+//  function MoveTo(ATopDelta: Integer; AMainCtrl: TControl; AItemsDelta: Integer; AItems: array of TControl): Integer;
+//  var
+//    I, Delta: Integer;
+//  begin
+//    AMainCtrl.Top := AMainCtrl.Top - ATopDelta;
+//    Result := 0;
+//    for I := 0 to High(AItems) do
+//    begin
+//      if AItemsDelta > 0 then
+//      begin
+//        Delta := (I+1) * AItemsDelta;
+//        Inc(Result, Delta div 2);
+//      end
+//      else
+//        Delta := ATopDelta;
+//      AItems[I].Top := AItems[I].Top - Delta;
+//    end;
+//    if High(AItems) = -1 then
+//      Inc(Result, AItemsDelta);
+//    if AItemsDelta > 0 then
+//      AMainCtrl.Height := AMainCtrl.Height - Result;
+//    Inc(Result, ATopDelta);
+//  end;
 
-var
-  LHS: Integer;  // LastHeightsSum
+//var
+//  LHS: Integer;  // LastHeightsSum
 begin
-  MoveTo(5, cbText, 0, [lblFind]);
+  // I'm not sure this has ever been necessary, but it's definitely broken now after many new
+  // controls have been added. So I've commented it out but I leave it here in case it turns
+  // out to be necessary after all. -- 2020-05-02 twm
 
-         MoveTo(10, gbxOptions, 3, [cbCaseSensitive, cbWholeWord, cbForms, cbSQLFiles, cbRegEx]);
-  LHS := MoveTo(10, gbxWhere, 5, [rbCurrentOnly, rbAllProjGroupFiles, rbAllProjFiles, rbOpenFiles, rbDirectories, rbResults]);
-         gbxWhere.Height := gbxWhere.Height + 13;
-         gbxOptions.Height := gbxWhere.Height;
-
-         MoveTo(-5 + LHS, gbxContentTypes, 3, [cbGrepCode, cbGrepStrings, cbGrepComments]);
-  LHS := MoveTo(-5 + LHS, gbxUnitSections, 3, [cbSectionInterface, cbSectionImplementation, cbSectionInitialization, cbSectionFinalization]);
-         gbxContentTypes.Height := gbxUnitSections.Height;
-
-  LHS := MoveTo(4 + LHS, gbxDirectories, 5, [cbDirectory, cbExcludedDirs, cbMasks, cbInclude]);
-         lblDirectory.Top := cbDirectory.Top;
-         btnBrowse.Top := cbDirectory.Top;
-         lblExcludeDirs.Top := cbExcludedDirs.Top;
-         lblMasks.Top := cbMasks.Top;
-
-  LHS := MoveTo(5 + LHS, rgSaveOption, 15, []);
-
-  Height := Height - LHS - 3;
+//  MoveTo(5, cbText, 0, [lblFind]);
+//
+//         MoveTo(10, gbxOptions, 3, [cbCaseSensitive, cbWholeWord, cbForms, cbSQLFiles, cbRegEx]);
+//  LHS := MoveTo(10, gbxWhere, 5, [rbCurrentOnly, rbAllProjGroupFiles, rbAllProjFiles, rbOpenFiles, rbDirectories, rbResults]);
+//         gbxWhere.Height := gbxWhere.Height + 13;
+//         gbxOptions.Height := gbxWhere.Height;
+//
+//         MoveTo(-5 + LHS, gbxContentTypes, 3, [cbGrepCode, cbGrepStrings, cbGrepComments]);
+//  LHS := MoveTo(-5 + LHS, gbxUnitSections, 3, [cbSectionInterface, cbSectionImplementation, cbSectionInitialization, cbSectionFinalization]);
+//         gbxContentTypes.Height := gbxUnitSections.Height;
+//
+//  LHS := MoveTo(4 + LHS, gbxDirectories, 5, [cbDirectory, cbExcludedDirs, cbMasks, cbInclude]);
+//         lblDirectory.Top := cbDirectory.Top;
+//         btnBrowse.Top := cbDirectory.Top;
+//         lblExcludeDirs.Top := cbExcludedDirs.Top;
+//         lblMasks.Top := cbMasks.Top;
+//
+//  LHS := MoveTo(5 + LHS, rgSaveOption, 15, []);
+//
+//  Height := Height - LHS - 3;
 end;
 
 procedure TfmGrepSearch.EmbeddedUpdatePos;
 const
+  cEmbeddedLeft = 1;
+  cEmbeddedTop = 55;
   cMinWidth = 382;
-  cWhereWidthCorrection = 5; //???
 var
-  ADelta, ADeltaLeft, ADeltaRight, AWidth: Integer;
+  NewWidth: Integer;
+  Margins: Integer;
+  HorizontalScale: Double;
 begin
   Left := FEmbeddedHolder.Left + cEmbeddedLeft;
   Top := FEmbeddedHolder.Top + cEmbeddedTop;
 
-  AWidth := FEmbeddedHolder.Width - 4;
-  if AWidth >= FSaveWidth then
-    Exit;
+  NewWidth := FEmbeddedHolder.Width - 2 * cEmbeddedLeft;
+  if NewWidth >= FOriginalWidth then
+    NewWidth := FOriginalWidth
+  else
+    NewWidth := Max(NewWidth, cMinWidth);
 
-  AWidth := Max(AWidth, cMinWidth);
-  gbxWhere.Anchors := [akTop, akLeft];
+  Margins := gbxWhere.Left - (gbxOptions.Left + gbxOptions.Width);
+  HorizontalScale := (NewWidth - 3 * Margins) / (FOriginalWidth - 3 * Margins);
+
+  gbxContentTypes.Anchors := [akTop, akLeft];
   gbxUnitSections.Anchors := [akTop, akLeft];
 
-  ADelta := FSaveWidth - AWidth;
-  ADeltaLeft := ADelta div 2;
-  ADeltaRight := ADelta - ADeltaLeft;
-  Width := AWidth;
+  gbxOptions.Left := Margins div 2;
+  gbxOptions.Width := Trunc(FOriginalOptionsGroupWidth * HorizontalScale);
+  cbFormsSpecialChars.Left := (gbxOptions.Width - cbFormsMultiline.Left) div 2;
 
-  gbxOptions.Width := FSaveOptionsGroupWidth - ADeltaLeft;
-  gbxContentTypes.Width := FSaveOptionsGroupWidth - ADeltaLeft;
-  gbxWhere.Left := FSaveWhereGroupLeft - ADeltaLeft;
-  gbxWhere.Width := FSaveWhereGroupWidth - ADeltaRight + cWhereWidthCorrection;
-  gbxUnitSections.Left := FSaveWhereGroupLeft - ADeltaLeft;
-  gbxUnitSections.Width := FSaveWhereGroupWidth - ADeltaRight + cWhereWidthCorrection;
+  gbxWhere.Left := Margins + gbxOptions.Left + gbxOptions.Width;
+  gbxWhere.Width := Trunc(FOriginalWhereGroupWidth * HorizontalScale);
+
+  gbxContentTypes.Left := Margins + gbxWhere.Left + gbxWhere.Width;
+  gbxContentTypes.Width := NewWidth - gbxContentTypes.Left - Margins div 2;
+  gbxUnitSections.Left := Margins + gbxWhere.Left + gbxWhere.Width;
+  gbxUnitSections.Width := NewWidth - gbxUnitSections.Left - Margins div 2;
+
+  gbxDirectories.Left := Margins div 2;
+  gbxDirectories.Width := NewWidth - Margins;
+
+  rgSaveOption.Left := Margins div 2;
+  rgSaveOption.Width := NewWidth - Margins;
+
+  Width := NewWidth;
 end;
 
 procedure TfmGrepSearch.FormClose(Sender: TObject; var Action: TCloseAction);
