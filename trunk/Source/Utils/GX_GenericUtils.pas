@@ -804,6 +804,12 @@ function IDEEditorStringToString(const S: IDEEditBufferString): string; overload
 {$ENDIF GX_VER200_up}
 {$ENDIF GX_VER160_up}
 
+procedure AddSCMDirsToIgnore(_List: TGXUnicodeStringList); overload;
+procedure AddSCMDirsToIgnore(_List: TStringList); overload;
+
+procedure AddDelphiDirsToIgnore(_List: TGXUnicodeStringList); overload;
+procedure AddDelphiDirsToIgnore(_List: TStringList); overload;
+
 type
   TFileFindThread = class(TErrorThread)
   private
@@ -4787,12 +4793,37 @@ begin
   end;
 end;
 
+procedure AddDelphiDirsToIgnore(_List: TGXUnicodeStringList);
+begin
+  _List.Add('__history');
+  _List.Add('__recovery');
+end;
+
+procedure AddDelphiDirsToIgnore(_List: TStringList);
+begin
+  _List.Add('__history');
+  _List.Add('__recovery');
+end;
+
+procedure AddSCMDirsToIgnore(_List: TGXUnicodeStringList);
+begin
+  _List.Add('.svn');
+  _List.Add('.hg');
+  _List.Add('.git');
+end;
+
+procedure AddSCMDirsToIgnore(_List: TStringList);
+begin
+  _List.Add('.svn');
+  _List.Add('.hg');
+  _List.Add('.git');
+end;
+
 { TFileFindThread }
 
 procedure TFileFindThread.AddDelphiDirsToIgnore;
 begin
-  FDirsToIgnore.Add('__history');
-  FDirsToIgnore.Add('__recovery');
+  GX_GenericUtils.AddDelphiDirsToIgnore(FDirsToIgnore);
 end;
 
 procedure TFileFindThread.AddResult(const FileName: string);
@@ -4807,9 +4838,7 @@ end;
 
 procedure TFileFindThread.AddSCMDirsToIgnore;
 begin
-  FDirsToIgnore.Add('.svn');
-  FDirsToIgnore.Add('.hg');
-  FDirsToIgnore.Add('.git');
+  GX_GenericUtils.AddSCMDirsToIgnore(FDirsToIgnore);
 end;
 
 constructor TFileFindThread.Create;
