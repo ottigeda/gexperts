@@ -188,18 +188,25 @@ begin
   cbMasks.Enabled := New;
   cbExcludedDirs.Enabled := New;
   cbInclude.Enabled := New;
+  ed_MinDepth.Enabled := New;
+  ed_MaxDepth.Enabled := New;
+  chk_SubDirRegex.Enabled := New;
   btnBrowse.Enabled := New;
   if not New then
   begin
     cbDirectory.Color := clBtnface;
     cbExcludedDirs.Color := clBtnface;
     cbMasks.Color := clBtnface;
+    ed_MinDepth.Color := clBtnface;
+    ed_MaxDepth.Color := clBtnface;
   end
   else
   begin
     cbDirectory.Color := clWindow;
     cbExcludedDirs.Color := clWindow;
     cbMasks.Color := clWindow;
+    ed_MinDepth.Color := clWindow;
+    ed_MaxDepth.Color := clWindow;
   end
 end;
 
