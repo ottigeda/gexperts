@@ -611,6 +611,8 @@ procedure TfmGrepSearch.LoadFormSettings;
     SetSearchPattern(Selection);
   end;
 
+var
+  sl: TStringList;
 begin
   if not Assigned(fmGrepResults) then
     raise Exception.Create(SGrepResultsNotActive);
@@ -623,6 +625,16 @@ begin
     cbDirectory.Items.Assign(FGrepExpert.DirList);
     cbMasks.Items.Assign(FGrepExpert.MaskList);
     cbExcludedDirs.Items.Assign(FGrepExpert.ExcludedDirsList);
+    sl := TStringList.Create;
+    try
+      AddDelphiDirsToIgnore(sl);
+      AddSCMDirsToIgnore(sl);
+      sl.Delimiter := ';';
+      cbExcludedDirs.Items.Add(sl.DelimitedText);
+    finally
+      FreeAndNil(sl);
+    end;
+
     rbResults.Enabled := fmGrepResults.lbResults.Count > 0;
 
     cbCaseSensitive.Checked := FGrepExpert.GrepCaseSensitive;
