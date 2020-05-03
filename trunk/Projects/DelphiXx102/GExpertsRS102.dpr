@@ -233,7 +233,8 @@ uses
   GX_FocusCodeEditor in '..\..\Source\FocusCodeEditor\GX_FocusCodeEditor.pas',
   GX_GotoConfig in '..\..\Source\Goto\GX_GotoConfig.pas' {f_GotoConfig},
   GX_TimedCallback in '..\..\Source\Utils\GX_TimedCallback.pas',
-  GX_BackupNotFound in '..\..\Source\BackupProject\GX_BackupNotFound.pas' {fmBackupNotFound};
+  GX_BackupNotFound in '..\..\Source\BackupProject\GX_BackupNotFound.pas' {fmBackupNotFound},
+  GX_QuickEditHotkey in '..\..\Source\QuickEditHotkey\GX_QuickEditHotkey.pas';
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}

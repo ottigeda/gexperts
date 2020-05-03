@@ -43,7 +43,7 @@
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Winapi;Vcl;System.Win;Vcl.Imaging;$(DCC_Namespace)</DCC_Namespace>
         <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
         <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
-        <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\source\Include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\source\Include;..\..\externalsource\tregexpr;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_UsePackage>rtl;vcl;vclx;vclactnband;xmlrtl;designide;$(DCC_UsePackage)</DCC_UsePackage>
         <GenDll>true</GenDll>
         <Manifest_File>None</Manifest_File>
@@ -167,6 +167,8 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_Consts.pas"/>
         <DCCReference Include="..\..\source\CopyComponentNames\GX_CopyComponentNames.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_DbugIntf.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_Debug.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_DesignerMenu.pas"/>
         <DCCReference Include="..\..\Source\Editor\GX_eGotoModification.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_eAlign.pas">
@@ -522,6 +524,21 @@ $(PreBuildEvent)]]>
             <Form>fmTabOrderOptions</Form>
         </DCCReference>
         <DCCReference Include="..\..\Source\ide\GX_IdeDetectForms.pas"/>
+        <DCCReference Include="..\..\Source\Experts\GX_SelectComponents.pas">
+            <Form>SelectComponentsForm</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Framework\GX_CustomClipboard.pas"/>
+        <DCCReference Include="..\..\Source\Goto\GX_Goto.pas">
+            <Form>f_Goto</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\FocusCodeEditor\GX_FocusCodeEditor.pas"/>
+        <DCCReference Include="..\..\Source\Goto\GX_GotoConfig.pas">
+            <Form>f_GotoConfig</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Utils\GX_TimedCallback.pas"/>
+        <DCCReference Include="..\..\Source\BackupProject\GX_BackupNotFound.pas">
+            <Form>fmBackupNotFound</Form>
+        </DCCReference>
         <RcCompile Include="..\..\images\GXIcons.rc">
             <Form>..\..\images\GXIcons.res</Form>
         </RcCompile>
