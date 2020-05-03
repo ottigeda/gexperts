@@ -388,17 +388,26 @@ procedure TIniFile_WriteSectionValues(_Ini: TCustomIniFile; const _Section: stri
 /// (This is short for opening the file, calling Ini.ReadSection and closing it.)
 /// @raises Exception if the section does not exist. </summary>
 procedure TIniFile_ReadSectionKeys(const _Filename, _Section: string; _sl: TStrings);
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 
 ///<summary>
 /// Reads the given section from the given .INI file and returns it as Name=Value pairs.
 /// (This is short for opening the file, calling Ini.ReadSectionValues and closing it.)
 /// @raises Exception if the section does not exist. </summary>
 procedure TIniFile_ReadSectionValues(const _Filename, _Section: string; _sl: TStrings);
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 ///<summary>
 /// @returns True, if the section exists
 ///          False if not
 /// Note: Also returns false if the file does not exist. </summary>
 function TIniFile_TryReadSectionValues(const _Filename, _Section: string; _sl: TStrings): Boolean;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 
 type
   TIniSection = class
@@ -1057,7 +1066,8 @@ var
 begin
   // twm: this is not really efficient, because it reads single bytes, if it becomes a problem, optimize it ;-)
   OldPos := _Stream.Position;
-{$IFNDEF DELPHIX_SEATTLE_UP}
+
+{$IFNDEF DELPHIX_BERLIN_UP}
   Endstring := 0;
   NewPos := 0;
 {$ENDIF}
@@ -1520,9 +1530,6 @@ begin
 end;
 
 procedure TIniFile_ReadSectionKeys(const _Filename, _Section: string; _sl: TStrings);
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
 var
   Ini: TMemIniFile;
   ErrStr: string;
@@ -1541,9 +1548,6 @@ begin
 end;
 
 function TIniFile_TryReadSectionValues(const _Filename, _Section: string; _sl: TStrings): Boolean;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
 var
   Ini: TMemIniFile;
 begin
@@ -1558,9 +1562,6 @@ begin
 end;
 
 procedure TIniFile_ReadSectionValues(const _Filename, _Section: string; _sl: TStrings);
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
 var
   ErrStr: string;
 begin
