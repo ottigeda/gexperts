@@ -61,6 +61,7 @@ type
     ed_MinDepth: TEdit;
     ed_MaxDepth: TEdit;
     chk_SubDirRegex: TCheckBox;
+    b_TestRegEx: TButton;
     procedure btnBrowseClick(Sender: TObject);
     procedure rbDirectoriesClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
@@ -85,6 +86,7 @@ type
     procedure cbIncludeClick(Sender: TObject);
     procedure ed_MinDepthChange(Sender: TObject);
     procedure chk_SubDirRegexClick(Sender: TObject);
+    procedure b_TestRegExClick(Sender: TObject);
   private
     FGrepExpert: TGrepExpert;
     FEmbedded: Boolean;
@@ -136,7 +138,7 @@ implementation
 uses
   SysUtils, Windows, Messages, Graphics, StrUtils, Menus, RegExpr, Math,
   GX_GenericUtils, GX_GxUtils, GX_OtaUtils, GX_GrepResults, GX_GrepOptions,
-  GX_GrepRegExSearch, u_dzVclUtils, u_dzOsUtils, u_dzStringUtils;
+  GX_GrepRegExSearch, u_dzVclUtils, u_dzOsUtils, u_dzStringUtils, GX_TestRegEx;
 
 resourcestring
   SGrepResultsNotActive = 'The Grep Results window is not active';
@@ -175,6 +177,19 @@ begin
   cbSectionImplementation.Checked := True;
   cbSectionInitialization.Checked := True;
   cbSectionFinalization.Checked := True;
+end;
+
+procedure TfmGrepSearch.b_TestRegExClick(Sender: TObject);
+var
+  s: string;
+  b: Boolean;
+begin
+  s := cbText.Text;
+  b := cbCaseSensitive.Checked;
+  if TfmTestRegEx.Execute(Self, s, b) then begin
+    cbText.Text := s;
+    cbCaseSensitive.Checked := b;
+  end;
 end;
 
 procedure TfmGrepSearch.EnableDirectoryControls(New: Boolean);

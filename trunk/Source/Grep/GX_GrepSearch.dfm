@@ -120,6 +120,15 @@ object fmGrepSearch: TfmGrepSearch
       Caption = 'Search S&QL files'
       TabOrder = 5
     end
+    object b_TestRegEx: TButton
+      Left = 24
+      Top = 144
+      Width = 75
+      Height = 25
+      Caption = 'Test ...'
+      TabOrder = 7
+      OnClick = b_TestRegExClick
+    end
   end
   object gbxWhere: TGroupBox
     Left = 248
@@ -545,7 +554,7 @@ object fmGrepSearch: TfmGrepSearch
   object timHintTimer: TTimer
     Interval = 5000
     OnTimer = timHintTimerTimer
-    Left = 176
-    Top = 136
+    Left = 168
+    Top = 64
   end
 end

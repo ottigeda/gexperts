@@ -407,6 +407,9 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
             <Form>fmGrepSelect</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Grep\GX_Replace.pas"/>
+        <DCCReference Include="..\..\Source\Grep\GX_TestRegEx.pas">
+            <Form>fmTestRegEx</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\HideNavigationToolbar\GX_HideNavbar.pas"/>
         <DCCReference Include="..\..\source\HideNonvisualComponents\GX_HideNonVisualComps.pas"/>
         <DCCReference Include="..\..\source\IDEDocking\GX_IdeDock.pas">
