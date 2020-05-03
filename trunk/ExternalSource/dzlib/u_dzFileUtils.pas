@@ -744,7 +744,12 @@ type
     ///<summary>
     /// @param RaiseException determines whether an exception should be raised if the directory does not exist
     /// @raises EDirNotFound if the directory does not exist and RaiseException is true </summary>
-    class function DirExists(const _DirName: string; _RaiseException: Boolean = False): Boolean;
+    class function DirExists(const _DirName: string): Boolean; overload;
+    class function DirExists(const _DirName: string; _RaiseException: Boolean): Boolean; overload; deprecated; // use AssertDirExists instead
+    ///<summary>
+    /// Checks if the given directory exists.
+    /// @raises EDirNotFound if the directory does not exist. </summary>
+    class procedure AssertDirExists(const _DirName: string);
 
     ///<summary>
     /// @param DirNames is a TStrings object containing a list of directory names to check.
@@ -2364,10 +2369,23 @@ begin
     raise EFileNotFound.CreateFmt(_('File not found: %s'), [_Filename]);
 end;
 
-class function TFileSystem.DirExists(const _DirName: string; _RaiseException: Boolean = False): Boolean;
+class function TFileSystem.DirExists(const _DirName: string): Boolean;
 begin
   Result := SysUtils.DirectoryExists(_DirName);
-  if not Result and _RaiseException then
+end;
+
+class function TFileSystem.DirExists(const _DirName: string; _RaiseException: Boolean): Boolean;
+begin
+  Result := False;
+  if _RaiseException then
+    AssertDirExists(_DirName)
+  else
+    Result := DirExists(_DirName);
+end;
+
+class procedure TFileSystem.AssertDirExists(const _DirName: string);
+begin
+  if not SysUtils.DirectoryExists(_DirName) then
     raise EDirNotFound.CreateFmt(_('Directory not found: %s'), [_DirName]);
 end;
 

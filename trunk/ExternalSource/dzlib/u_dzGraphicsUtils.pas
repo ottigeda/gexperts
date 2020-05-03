@@ -1752,11 +1752,15 @@ begin
   if _Bottom > _bmp.Height - 2 then
     _Bottom := _bmp.Height - 2;
 
-  _bmp.PixelFormat := pf24bit;
-
   // prepare the working buffer for blurring and an empty mask
   BufH := _Bottom - _Top + 1;
   BufW := _Right - _Left + 1;
+
+  if (BufH <= 1) or (BufW <= 1) then
+    Exit; //==>
+
+  _bmp.PixelFormat := pf24bit;
+
   SetLength(Buffer1, BufH);
   SetLength(Mask, BufH);
   for y := 0 to BufH - 1 do begin
