@@ -627,12 +627,15 @@ begin
   begin
     if not GxOtaTryGetCurrentFormEditor(FFormEditor) then
       Exit;
-    SelCount := FFormEditor.GetSelCount;
-    for i := 0 to SelCount - 1 do
-    begin
-      CurrentComponent := FFormEditor.GetSelComponent(i);
-      if DoRename(CurrentComponent, False) = mrCancel then
-        Break;
+    try
+      SelCount := FFormEditor.GetSelCount;
+      for i := 0 to SelCount - 1 do begin
+        CurrentComponent := FFormEditor.GetSelComponent(i);
+        if DoRename(CurrentComponent, False) = mrCancel then
+          Break;
+      end;
+    finally
+      FFormEditor := nil;
     end;
   end;
 
