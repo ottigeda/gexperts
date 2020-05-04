@@ -131,7 +131,7 @@ begin
   FMemo.Font.Name := 'Courier New';
   FMemo.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
   FMemo.OnEnter := MemoOnEnter;
-  fmemo.onexit := MemoOnExit;
+  fmemo.OnExit := MemoOnExit;
   FMemo.OnSpecialLineColors := HandleOnSpecialLineColors;
   FMemo.Options := FMemo.Options - [eoScrollPastEol, eoScrollPastEof, eoEnhanceHomeKey, eoEnhanceEndKey];
   FMemo.PopupMenu := pmKeystrokes;
