@@ -173,7 +173,7 @@ begin
 
   FActive := New;
 
-  if HasMenuItem then
+  if HasMenuItem or HasDesignerMenuItem then
   begin
     if New and not IsStandAlone then
       FActionInt := GXMenuActionManager.RequestMenuExpertAction(Self)
