@@ -89,6 +89,7 @@ uses
   GX_GrepSearch in '..\..\source\Grep\GX_GrepSearch.pas' {fmGrepSearch},
   GX_GrepProgress in '..\..\Source\Grep\GX_GrepProgress.pas' {fmGrepProgress},
   GX_GrepSelect in '..\..\Source\Grep\GX_GrepSelect.pas' {fmGrepSelect},
+  GX_TestRegEx in '..\..\Source\Grep\GX_TestRegEx.pas' {fmTestRegEx},
   GX_GxUtils in '..\..\source\Utils\GX_GxUtils.pas',
   GX_HideNonVisualComps in '..\..\source\HideNonvisualComponents\GX_HideNonVisualComps.pas',
   GX_IconMessageBox in '..\..\source\Framework\GX_IconMessageBox.pas',
@@ -233,8 +234,7 @@ uses
   GX_FocusCodeEditor in '..\..\Source\FocusCodeEditor\GX_FocusCodeEditor.pas',
   GX_GotoConfig in '..\..\Source\Goto\GX_GotoConfig.pas' {f_GotoConfig},
   GX_TimedCallback in '..\..\Source\Utils\GX_TimedCallback.pas',
-  GX_BackupNotFound in '..\..\Source\BackupProject\GX_BackupNotFound.pas' {fmBackupNotFound},
-  GX_QuickEditHotkey in '..\..\Source\QuickEditHotkey\GX_QuickEditHotkey.pas';
+  GX_BackupNotFound in '..\..\Source\BackupProject\GX_BackupNotFound.pas' {fmBackupNotFound};
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
