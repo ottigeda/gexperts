@@ -236,7 +236,7 @@ function TSortExpert.ProcessSelected(Lines: TStrings): Boolean;
   begin
     Result := AnsiStartsText(_Prefix + ' ', _Line);
     if Result then
-      _Line := Trim(Copy(_Line, Length(_Prefix) + 1, 255));
+      _Line := Trim(Copy(_Line, Length(_Prefix) + 1));
   end;
 
 var
@@ -360,11 +360,11 @@ begin
       Prefix := Prefix + ' ';
       if (PrefixIdx1 = -1) and StartsText(Prefix, s1) then begin
         PrefixIdx1 := i;
-        s1 := Copy(s1, Length(Prefix) + 1, 255);
+        s1 := Copy(s1, Length(Prefix) + 1);
       end;
       if (PrefixIdx2 = -1) and StartsText(Prefix, s2) then begin
         PrefixIdx2 := i;
-        s2 := Copy(s2, Length(Prefix) + 1, 255);
+        s2 := Copy(s2, Length(Prefix) + 1);
       end;
     end;
   end;

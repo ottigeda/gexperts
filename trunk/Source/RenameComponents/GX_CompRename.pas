@@ -610,7 +610,7 @@ begin
   if RuleList.IndexOfName(AClassName) < 0 then
   begin
     // No -> add "TClass=Class" as new entry
-    RuleList.Add(AClassName+'='+Copy(AClassName, 2, Length(AClassName)-1));
+    RuleList.Add(AClassName+'='+Copy(AClassName, 2));
     SaveSettings;
   end;
 end;
@@ -1219,10 +1219,10 @@ begin
   Result := False;
   Prefix := Component.GetComponentType;
   if (Length(Prefix) > 1) and (Prefix[1] = 'T') then
-    Prefix := Copy(Prefix, 2, 999);
+    Prefix := Copy(Prefix, 2);
   if not StartsText(Prefix, NewName) then
     Exit;
-  Suffix := Copy(NewName, Length(Prefix) + 1, 999);
+  Suffix := Copy(NewName, Length(Prefix) + 1);
   if StrToIntDef(Suffix, -999) <> -999 then
     Result := True;
 end;

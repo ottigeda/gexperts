@@ -1230,7 +1230,7 @@ function GetQuotedToken(const Str: string): string;
     Assert(Length(Str) > 0);
     Assert(Str[1] = Quote);
     Result := '';
-    Token := Copy(Str, 2, 999999);
+    Token := Copy(Str, 2);
     EndQuotePos := Pos(Quote, Token);
     if EndQuotePos > 0 then
       Result := Copy(Token, 1, EndQuotePos - 1);

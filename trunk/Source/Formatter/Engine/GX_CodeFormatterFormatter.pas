@@ -119,6 +119,7 @@ uses
 {$IFDEF GX_VER250_up}
   AnsiStrings,
 {$ENDIF}
+  u_dzStringUtils,
   u_dzAssertTrace;
 
 class procedure TCodeFormatterFormatter.Execute(_Tokens: TPascalTokenList; _Settings: TCodeFormatterSettings);
@@ -803,7 +804,7 @@ begin
       if (PrevPasWord.ReservedType = rtComment)
         and PrevPasWord.GetExpression(Expression)
         and (Expression[1] = '/') then begin
-        FPrevToken.SetExpression('{' + Copy(PrevExpression, 2, 999999) + '}');
+        FPrevToken.SetExpression('{' + Copy(PrevExpression, 2) + '}');
         Exit;
       end else
         FTokens.Extract(FTokenIdx - 1);

@@ -6,7 +6,7 @@ interface
 
 uses
   Windows, SysUtils,
-  Classes, Controls, Forms, Menus, ComCtrls, Buttons, ImgList,
+  Classes, Controls, Forms, Menus, ComCtrls, Buttons, ImgList, ImageList,
   ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
   GX_KbdShortCutBroker, GX_UnitExportsParser, u_dzCompilerAndRtlVersions,
@@ -362,11 +362,12 @@ implementation
 
 uses
   Messages, Graphics, StrUtils, Math, ToolsAPI, Clipbrd, ShellAPI,
-  GX_IdeUtils, GX_UsesManager, u_dzVclUtils, u_dzMapFileReader, u_dzFileUtils,
+  u_dzVclUtils, u_dzMapFileReader, u_dzFileUtils, u_dzOsUtils, u_dzClassUtils, u_dzStringUtils,
+  GX_IdeUtils, GX_UsesManager,
 {$IFOPT D+}
   GX_DbugIntf,
 {$ENDIF D+}
-  GX_UsesExpertOptions, GX_MessageBox, u_dzOsUtils, u_dzClassUtils;
+  GX_UsesExpertOptions, GX_MessageBox;
 
 { TUsesClauseMgrExpert }
 
@@ -2175,7 +2176,7 @@ procedure TfmUsesManager.btnRemoveDotsClick(Sender: TObject);
       NewUnitName := OrigUnitName;
       p := Pos('.', NewUnitName);
       while p > 0 do begin
-        NewUnitName := Copy(NewUnitName, p + 1, 255);
+        NewUnitName := Copy(NewUnitName, p + 1);
         p := Pos('.', NewUnitName);
       end;
       if NewUnitName <> OrigUnitName then begin

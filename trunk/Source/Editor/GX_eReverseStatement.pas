@@ -26,7 +26,9 @@ type
 implementation
 
 uses
-  SysUtils, GX_EditorExpert, GX_OtaUtils, GX_GenericUtils;
+  SysUtils,
+  u_dzStringUtils,
+  GX_EditorExpert, GX_OtaUtils, GX_GenericUtils;
 
 { TReverseStatementExpert }
 
@@ -112,7 +114,7 @@ begin
     Exit;
   AssignPos := Pos(AssignOp, S);
   SemPos := LastDelimiter(';', S);
-  TrailingString := Copy(S, SemPos + 1, 9999);
+  TrailingString := Copy(S, SemPos + 1);
 
   if (AssignPos > 1) and (SemPos > 3) and (Length(S) > AssignPos + 1) then
   begin

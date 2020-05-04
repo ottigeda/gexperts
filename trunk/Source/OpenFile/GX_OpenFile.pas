@@ -649,7 +649,7 @@ begin
           FileExt := LowerCase(ExtractFileExt(FileName));
           FilePath := ExtractFilePath(FileName);
           if StartsStr('.', FileExt) then
-            FileExt := Copy(FileExt, 2, Length(FileExt));
+            FileExt := Copy(FileExt, 2);
           if FileExt = '' then // Unknown files
             Exit;
           if FilePath = '' then // Temporary unsaved files, SQL in the editor, etc.

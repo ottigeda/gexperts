@@ -122,6 +122,9 @@ type
 
 implementation
 
+uses
+  u_dzStringUtils;
+
 { TPascalToken }
 
 function TPascalToken.GetExpression(out _Expression: TGXUnicodeString): Boolean;
@@ -234,9 +237,9 @@ begin
         GetExpression(Expr);
 
         if Copy(Expr, 1, 1) = '{' then
-          Directive := Copy(Expr, 3, 999999)
+          Directive := Copy(Expr, 3)
         else if Copy(Expr, 1, 2) = '(*' then
-          Directive := Copy(Expr, 4, 999999);
+          Directive := Copy(Expr, 4);
 
         Directive := LowerCase(Directive);
 

@@ -167,7 +167,7 @@ procedure ScanForIncludesAndAdd(const FileName: string;
       IncludePrefix := GetIncludePrefix(Line);
       if IncludePrefix <> '' then
       begin
-        FileSpec := Trim(Copy(Line, Length(IncludePrefix) + 1, 9999));
+        FileSpec := Trim(Copy(Line, Length(IncludePrefix) + 1));
         CommentPos := Pos('//', FileSpec);
         if CommentPos > 1 then
           FileSpec := Copy(FileSpec, 1, CommentPos - 1);

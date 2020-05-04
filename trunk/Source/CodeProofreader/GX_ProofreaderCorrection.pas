@@ -19,9 +19,10 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, Classes, ToolsAPI, MMSystem,
+  SysUtils, Classes, ToolsAPI, MMSystem, StrUtils,
+  u_dzStringUtils,
   GX_OtaUtils, GX_GenericUtils, GX_ProofreaderUtils,
-  GX_EditorFormServices, GX_KibitzComp, GX_IdeUtils, StrUtils;
+  GX_EditorFormServices, GX_KibitzComp, GX_IdeUtils;
 
 type
   IEditorPositionInformation = interface(IUnknown)
@@ -581,7 +582,7 @@ begin
     AdjustEditorPosition(EditorPositionInformation, ReplaceItem.Replace, ReplaceItem.Typed);
 
     ReplacedPartOfSource := Copy(SourceString,
-      Length(SourceString) - Length(ReplaceItem.Typed) + 1, Length(SourceString));
+      Length(SourceString) - Length(ReplaceItem.Typed) + 1);
 
     AppendAutoCorrectHistory(ReplacementSourceTable, ReplacedPartOfSource, ReplaceItem.Replace);
 
@@ -619,7 +620,7 @@ begin
       AdjustEditorPosition(EditorPositionInformation, ReplacementString, ReplaceItem.Typed);
 
     ReplacedPartOfSource := Copy(SourceString,
-      Length(SourceString) - Length(ReplaceItem.Typed) + 1, Length(SourceString));
+      Length(SourceString) - Length(ReplaceItem.Typed) + 1);
 
     AppendAutoCorrectHistory(ReplacementSourceTable, ReplacedPartOfSource, ReplaceItem.Replace);
 

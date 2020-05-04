@@ -275,10 +275,10 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Windows, Clipbrd,
+  u_dzVclUtils, u_dzStringUtils,
   GX_CodeSrch, GX_CodeOpt, GX_GxUtils,
   GX_OtaUtils, GX_IdeUtils,
-  GX_GExperts, GX_ConfigurationInfo, GX_MessageBox, GX_SharedImages,
-  u_dzVclUtils;
+  GX_GExperts, GX_ConfigurationInfo, GX_MessageBox, GX_SharedImages;
 
 const
   DefaultFileName = 'CodeLibrarian.fs';
@@ -306,7 +306,7 @@ begin
   if FileName <> '' then
   begin
     if FileName[1] = CodeLibPathSep then
-      Result := Result + Copy(FileName, 2, 9999999)
+      Result := Result + Copy(FileName, 2)
     else
       Result := Result + FileName;
   end;
@@ -716,7 +716,7 @@ begin
           if FirstLoop and IsSnippet and (FCodeText.Focused) and (Length(FCodeText.SelText) > 0) then
           begin
             InTopic := False;
-            Match := DoMatch(Copy(CodeDB.FileText, FCodeText.SelStart + Length(FCodeText.SelText) + 1, 999999));
+            Match := DoMatch(Copy(CodeDB.FileText, FCodeText.SelStart + Length(FCodeText.SelText) + 1));
             //{$IFOPT D+}SendDebug('InterText search found '+FSearch.Text+' at '+IntToStr(Match)+' in '+Copy(CodeDB.FieldByName('Code').AsString, GetByteSelStart + FCodeText.SelLength, 999999));{$ENDIF}
             if Match > 0 then
             begin

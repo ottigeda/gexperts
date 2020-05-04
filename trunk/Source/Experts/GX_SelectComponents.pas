@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, Forms, Controls, ExtCtrls, ToolsAPI, ComCtrls, StdCtrls, Dialogs,
-  ActnList, ImgList, Graphics, Buttons, DesignWindows, GX_BaseForm,
+  ActnList, Actions, ImgList, Graphics, Buttons, DesignWindows, GX_BaseForm,
   GX_GenericUtils;
 
 type
@@ -85,6 +85,7 @@ implementation
 
 uses
   SysUtils, Windows, Messages, TypInfo,
+  u_dzStringUtils,
   GX_Experts, GX_GxUtils, GX_OtaUtils, GX_SharedImages,
   GX_ConfigurationInfo;
 
@@ -117,7 +118,7 @@ begin
     if aPos > 0 then
     begin
       if aGetType then
-        rType := Copy(rName, aPos + 3, Length(rName));
+        rType := Copy(rName, aPos + 3);
       rName := Copy(rName, 1, aPos - 1);
     end;
   end;
@@ -134,7 +135,7 @@ begin
 
     if aPos > 0 then
     begin
-      rType := Trim(Copy(rName, aPos + 1, Length(rName)));
+      rType := Trim(Copy(rName, aPos + 1));
       rName := Trim(Copy(rName, 1, aPos - 1));
     end;
   end;

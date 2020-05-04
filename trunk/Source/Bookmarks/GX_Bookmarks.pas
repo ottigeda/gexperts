@@ -66,12 +66,13 @@ uses
 {$ENDIF}
   Windows,
   Graphics,
+  u_dzStringUtils,
+  u_dzVclUtils,
   GX_GExperts,
   GX_ConfigurationInfo,
   GX_OtaUtils,
   GX_GenericUtils,
   GX_NTAEditServiceNotifier,
-  u_dzVclUtils,
   GX_EditBookmark;
 
 {$IFDEF GX_VER170_up}
@@ -539,7 +540,7 @@ var
       sl.Text := bm.Text;
       for i := 0 to sl.Count - 1 do begin
         s := sl[i];
-        LineText := Copy(s, 2, 255);
+        LineText := Copy(s, 2);
         s := Copy(s, 1, 1);
         if s = '>' then begin
           LbCanvas.Brush.Color := BGBookmark;

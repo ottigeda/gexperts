@@ -79,6 +79,7 @@ implementation
 uses
   u_dzClassUtils,
   u_dzVclUtils,
+  u_dzStringUtils,
   GX_GxUtils;
 
 { TfmCodeFormatterCapitalization }
@@ -273,7 +274,7 @@ var
 begin
   if TryGetLine(Idx, Line) and (Line <> '') then begin
     if Line[1] = '*' then
-      Line := Copy(Line, 2, 255)
+      Line := Copy(Line, 2)
     else
       Line := '*' + Line;
     SetLine(Idx, Line);

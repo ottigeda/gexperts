@@ -28,10 +28,10 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils,
+  SysUtils, Math,
+  u_dzStringUtils, u_dzVclUtils,
   GX_OtaUtils, GX_GenericUtils, GX_ConfigurationInfo,
-  GX_EditorExpert, GX_eSelectionEditorExpert, GX_eAlignOptions, Math,
-  u_dzVclUtils;
+  GX_EditorExpert, GX_eSelectionEditorExpert, GX_eAlignOptions;
 
 const
   DEFAULT_WHITESPACE = 1;
@@ -221,7 +221,7 @@ begin
     begin
       Temp := TrimRight(Copy(Lines[i], 1, PosIndex - 1));
       MaxPos := Max(AlignIndex - Length(ExpandTabsInLine(Temp, TabSize)), FWhitespace);
-      LineSuffix := Copy(Lines[i], PosIndex, Length(Lines[i]));
+      LineSuffix := Copy(Lines[i], PosIndex);
       Lines[i] := Temp + StringOfChar(' ', MaxPos) + LineSuffix;
     end;
   end;

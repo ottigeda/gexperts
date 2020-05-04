@@ -163,7 +163,7 @@ var
 begin
   Line := Trim(ProcLine);
   if StartsText('class ', Line) then
-    Line := Trim(Copy(Line, Length('class '), Length(Line)));
+    Line := Trim(Copy(Line, Length('class ')));
 
   ParamStart := Pos('(', Line);
   if ParamStart = 0 then

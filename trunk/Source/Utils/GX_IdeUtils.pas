@@ -640,7 +640,7 @@ var
 begin
   RegKey := GxOtaGetIdeBaseRegistryKey;
   LastSlashPos := LastCharPos(RegKey, '\');
-  Version := Copy(RegKey, LastSlashPos + 1, 999);
+  Version := Copy(RegKey, LastSlashPos + 1);
   Result := Version;
   if RunningDelphi8OrGreater then
     Result := 'BDS' + Version;
