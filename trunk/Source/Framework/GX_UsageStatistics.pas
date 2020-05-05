@@ -41,9 +41,9 @@ implementation
 
 uses
   u_dzVclUtils,
-  u_dzDateUtils,
+  u_dzConvertUtils,
   GX_GExperts,
-  GX_BaseExpert, u_dzConvertUtils;
+  GX_BaseExpert;
 
 { TfmUsageStatistics }
 

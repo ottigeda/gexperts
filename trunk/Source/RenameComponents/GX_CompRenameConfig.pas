@@ -139,8 +139,9 @@ implementation
 
 uses
   Windows, SysUtils, Math, StrUtils,
+  u_dzClassUtils, u_dzVclUtils, u_dzStringUtils,
   GX_GenericUtils, GX_OtaUtils, GX_SharedImages, GX_GxUtils, GX_CompRenameAdvanced,
-  GX_MessageBox, u_dzClassUtils, u_dzVclUtils, u_dzStringUtils;
+  GX_MessageBox;
 
 function CompareClassFunc(List: TStringList; Index1, Index2: Integer): Integer;
 var

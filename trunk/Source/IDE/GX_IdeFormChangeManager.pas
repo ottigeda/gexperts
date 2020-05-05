@@ -35,10 +35,7 @@ uses
   Menus,
   ComCtrls,
   Messages,
-  GX_GenericUtils,
-  GX_ConfigurationInfo,
   GX_EventHook,
-  u_dzVclUtils,
   GX_IdeDetectForms,
   GX_IdeUtils;
 

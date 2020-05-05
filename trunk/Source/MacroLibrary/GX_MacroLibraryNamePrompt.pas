@@ -17,7 +17,6 @@ uses
   ActnList,
   Actions,
   Menus,
-  SynUnicode,
   SynMemo,
   GX_BaseForm,
   GX_GenericUtils,

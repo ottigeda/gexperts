@@ -420,8 +420,8 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Forms, Dialogs, Controls, DateUtils, StrUtils, Math,
-  GX_OtaUtils, GX_EditReader, GX_IdeUtils, u_dzClassUtils, GX_GrepProgress,
-  u_dzMapFileReader, u_dzStringUtils;
+  u_dzClassUtils, u_dzMapFileReader, u_dzStringUtils,
+  GX_OtaUtils, GX_IdeUtils, GX_GrepProgress;
 
 const
   cIniSubKeyCount = 'Count';

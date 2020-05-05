@@ -12,7 +12,6 @@ uses
   GX_EditorExpert,
   GX_CodeFormatterExpert,
   GX_ConfigurationInfo,
-  GX_KbdShortCutBroker,
   GX_GenericUtils;
 
 type

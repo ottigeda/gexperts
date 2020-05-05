@@ -5,7 +5,7 @@ unit GX_SynMemoUtils;
 interface
 
 uses  // If you get errors here, add SynEdit to your library path
-  SynEdit, SynUnicode,
+  SynEdit,
   GX_GenericUtils, GX_IDEUtils;
 
 function GetGXHighlighterForCurrentSourceEditor: TGXSyntaxHighlighter;
@@ -15,10 +15,9 @@ procedure SetSynEditHighlighter(SynEdit: TCustomSynEdit; Highlighter: TGXSyntaxH
 implementation
 
 uses
+  SysUtils, Classes, Graphics, ToolsAPI,
   SynEditHighlighter, SynHighlighterPas, SynHighlighterCpp, SynHighlighterHtml,
-  SynHighlighterSql, SynHighlighterCS, SynHighlighterXML, SynHighlighterGeneral,
-  GX_VerDepConst, Classes,
-  SysUtils, ToolsAPI, GX_OtaUtils, Graphics;
+  SynHighlighterSql, SynHighlighterCS, SynHighlighterXML, SynHighlighterGeneral, GX_OtaUtils;
 
 procedure GxGetIDEHighLigherSettings(Highlighter: TSynCustomHighlighter; const Prefer: string);
 var

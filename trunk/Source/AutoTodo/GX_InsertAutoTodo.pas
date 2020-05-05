@@ -49,7 +49,8 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   Actions, ActnList, ToolsAPI, Types,
-  GX_GExperts, GX_ConfigurationInfo, GX_uAutoTodoHandler, u_dzVclUtils,
+  u_dzVclUtils,
+  GX_ConfigurationInfo, GX_uAutoTodoHandler,
   GX_OtaUtils, GX_GenericUtils, GX_AutoTodoDone;
 
 type

@@ -78,8 +78,7 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Dialogs,
-  GX_GenericUtils;
+  SysUtils, Dialogs;
 
 const
   CodeViewFontKey = 'CodeViewFont';

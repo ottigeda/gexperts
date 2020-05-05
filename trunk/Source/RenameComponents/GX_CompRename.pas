@@ -106,9 +106,9 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Windows, Menus, StrUtils, IniFiles, GX_CompRenameConfig, GX_OtaUtils, GX_GenericUtils,
-  GX_IdeUtils, Graphics, GX_GxUtils, TypInfo, u_dzClassUtils, u_dzVclUtils,
-  u_dzStringUtils;
+  SysUtils, Windows, Menus, StrUtils, IniFiles, Graphics, TypInfo,
+  u_dzClassUtils, u_dzVclUtils, u_dzStringUtils,
+  GX_CompRenameConfig, GX_OtaUtils, GX_GenericUtils, GX_IdeUtils;
 
 type
   TRenameComponentsExpert = class;

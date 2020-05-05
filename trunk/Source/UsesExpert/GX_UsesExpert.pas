@@ -9,7 +9,7 @@ uses
   Classes, Controls, Forms, Menus, ComCtrls, Buttons, ImgList, ImageList,
   ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
-  GX_KbdShortCutBroker, GX_UnitExportsParser, u_dzCompilerAndRtlVersions,
+  GX_UnitExportsParser,
   GX_OtaUtils;
 
 {$IFOPT D+}

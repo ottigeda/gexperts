@@ -5,7 +5,7 @@ unit GX_ProofreaderUtils;
 interface
 
 uses
-  Classes, Contnrs, GX_GenericClasses;
+  Classes, Contnrs;
 
 type
   TGXWhereReplace = (wrAnywhere, wrWordBegin, wrWordEnd, wrWholeWord);

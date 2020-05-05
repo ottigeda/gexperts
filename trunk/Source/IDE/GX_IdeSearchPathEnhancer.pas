@@ -30,7 +30,6 @@ uses
   ActnList,
   StrUtils,
   ComCtrls,
-  GX_IdeFormEnhancer,
   u_dzVclUtils,
   u_dzStringUtils,
   u_dzClassUtils,

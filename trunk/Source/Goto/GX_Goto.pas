@@ -48,8 +48,7 @@ uses
   GX_OtaUtils,
   GX_Experts,
   GX_IdeUtils,
-  GX_GotoConfig,
-  GX_EditReader;
+  GX_GotoConfig;
 
 const
   SEARCH_GOTO_COMMAND = 'SearchGotoCommand';

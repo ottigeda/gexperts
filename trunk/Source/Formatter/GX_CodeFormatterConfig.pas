@@ -179,7 +179,6 @@ implementation
 uses
   Messages,
   u_dzVclUtils,
-  GX_GxUtils,
   GX_CodeFormatterConfigHandler,
   GX_CodeFormatterEditCapitalization,
   GX_CodeFormatterDefaultSettings,

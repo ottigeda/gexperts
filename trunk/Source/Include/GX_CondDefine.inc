@@ -155,6 +155,9 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 // Turn on IDE docking support
 {$DEFINE EnableIdeDockingSupport}
 
+{$WARN SYMBOL_PLATFORM OFF}
+{$WARN UNIT_PLATFORM OFF}
+
 // All IDEs support this feature to some degree (though Delphi 8+ do not support multiline editor tabs)
 {$DEFINE GX_EditorEnhancements}
 

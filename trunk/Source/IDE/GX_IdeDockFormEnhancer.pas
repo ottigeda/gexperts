@@ -21,8 +21,8 @@ uses
 {$ENDIF}
   Forms,
   StrUtils,
-  GX_GenericUtils,
-  GX_IdeDialogEnhancer, u_dzStringUtils;
+  u_dzStringUtils,
+  GX_IdeDialogEnhancer;
 
 type
   TIdeDockFormEnhancer = class(TIdeDialogEnhancer)

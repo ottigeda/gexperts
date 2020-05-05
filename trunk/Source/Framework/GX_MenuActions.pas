@@ -37,8 +37,7 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Windows, Classes, Graphics, ActnList, Menus, Forms, Math,
   GX_GenericClasses, GX_ActionBroker, GX_ConfigurationInfo,
-  GX_GExperts, GX_GenericUtils, GX_IdeUtils, GX_OtaUtils,
-  GX_KbdShortCutBroker;
+  GX_GExperts, GX_GenericUtils, GX_IdeUtils, GX_OtaUtils;
 
 // ****************************************************************************
 

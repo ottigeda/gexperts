@@ -133,8 +133,8 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Windows, Registry, StrUtils,
-  GX_GenericUtils, GX_OtaUtils, GX_GxUtils, u_dzCompilerAndRtlVersions,
-  u_dzStringUtils;
+  u_dzCompilerAndRtlVersions, u_dzStringUtils,
+  GX_GenericUtils, GX_OtaUtils, GX_GxUtils;
 
 function GetIdeMainForm: TCustomForm;
 begin

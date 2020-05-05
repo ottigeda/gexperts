@@ -64,7 +64,7 @@ type
     ///<summary>
     /// Checks and corrects the number of blank lines before a procedure / function declaration </summary>
     procedure CheckBlankLinesAroundProc;
-    procedure PutCommentBefore(const _Comment: TGXUnicodeString);
+    //procedure PutCommentBefore(const _Comment: TGXUnicodeString);
     procedure FormatAsm(_NTmp: Integer);
     procedure AdjustSpacing(_CurrentToken, _PrevToken: TPascalToken; _TokenIdx: Integer);
 
@@ -712,33 +712,32 @@ begin
   end;
 end;
 
-procedure TCodeFormatterFormatter.PutCommentBefore(const _Comment: TGXUnicodeString);
-var
-  j: Integer;
-  P: TPascalToken;
-  s: TGXUnicodeString;
-begin
-  j := FTokenIdx - 2;
-  P := GetToken(j);
-
-  s := _Comment;
-
-  if P.ReservedType = rtComment then
-    P.SetExpression(s)
-  else begin
-    P := TExpression.Create(wtWord, s);
-    P.SetReservedType(rtComment);
-    FTokens.AtInsert(FTokenIdx, P);
-    Inc(FTokenIdx);
-    P := TLineFeed.Create(0, FSettings.SpacePerIndent);
-    TLineFeed(P).SetIndent(FStack.nIndent);
-    FTokens.AtInsert(FTokenIdx, P);
-    Inc(FTokenIdx);
-  end;
-end;
+//procedure TCodeFormatterFormatter.PutCommentBefore(const _Comment: TGXUnicodeString);
+//var
+//  j: Integer;
+//  P: TPascalToken;
+//  s: TGXUnicodeString;
+//begin
+//  j := FTokenIdx - 2;
+//  P := GetToken(j);
+//
+//  s := _Comment;
+//
+//  if P.ReservedType = rtComment then
+//    P.SetExpression(s)
+//  else begin
+//    P := TExpression.Create(wtWord, s);
+//    P.SetReservedType(rtComment);
+//    FTokens.AtInsert(FTokenIdx, P);
+//    Inc(FTokenIdx);
+//    P := TLineFeed.Create(0, FSettings.SpacePerIndent);
+//    TLineFeed(P).SetIndent(FStack.nIndent);
+//    FTokens.AtInsert(FTokenIdx, P);
+//    Inc(FTokenIdx);
+//  end;
+//end;
 
 // When we enter this method FCurrentToken is 'asm' and FCurrentRType is rtAsm
-
 procedure TCodeFormatterFormatter.FormatAsm(_NTmp: Integer);
 begin
   // remove var / type stuff

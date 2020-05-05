@@ -37,11 +37,10 @@ implementation
 uses
 {$IFOPT D+}GX_DbugIntf,
 {$ENDIF}
+  Windows,
   Registry,
   Menus,
-  GX_GExperts,
-  GX_ConfigurationInfo,
-  Windows;
+  GX_ConfigurationInfo;
 
 type
   TAddDockWindowExpert = class(TGX_Expert)

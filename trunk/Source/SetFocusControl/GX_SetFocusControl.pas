@@ -6,7 +6,7 @@ implementation
 
 uses
   Classes, ActnList, Menus, Windows, Controls, StdCtrls, Contnrs, Types,
-  Math, ToolsAPI, GX_Experts, GX_GExperts, GX_OtaUtils;
+  Math, ToolsAPI, GX_Experts, GX_OtaUtils;
 
 type
   TSetFocusControlExpert = class(TGX_Expert)

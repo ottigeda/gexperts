@@ -23,7 +23,7 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  Windows, SysUtils, GX_OtaUtils, GX_IdeUtils, GX_GenericUtils;
+  Windows, SysUtils, GX_OtaUtils, GX_IdeUtils;
 
 type
   PObject = ^TObject;

@@ -28,8 +28,6 @@ uses
   Classes,
   Graphics,
   u_dzClassUtils,
-  GX_OtaUtils,
-  GX_IdeFormEnhancer,
   GX_IdeDialogEnhancer,
   GX_GExperts;
 

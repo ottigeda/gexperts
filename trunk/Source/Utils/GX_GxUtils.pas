@@ -51,7 +51,7 @@ implementation
 uses
   Windows, SysUtils, Forms,
   DdeMan, // Needed to test for linking against VCLX package.
-  GX_VerDepConst, GX_GenericUtils, GX_ConfigurationInfo, GX_IdeUtils;
+  GX_GenericUtils, GX_ConfigurationInfo, GX_IdeUtils;
 
 function BuiltWithPackages: Boolean;
 var

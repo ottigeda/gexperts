@@ -77,7 +77,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, TypInfo, {$ENDIF}
   Windows, SysUtils, Classes, Contnrs,
-  GX_GenericUtils, GX_IdeUtils, GX_GenericClasses;
+  GX_GenericUtils, GX_IdeUtils;
 
 type
   TListenerRecord = record

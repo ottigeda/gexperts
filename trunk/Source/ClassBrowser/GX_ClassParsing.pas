@@ -20,8 +20,6 @@ implementation
 
 {$R *.dfm}
 
-uses GX_GenericUtils;
-
 class function TfmClassParsing.CreateAndShow(Owner: TComponent; FileCount: Integer): TfmClassParsing;
 begin
   Result := TfmClassParsing.Create(Owner);

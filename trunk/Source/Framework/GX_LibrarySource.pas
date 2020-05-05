@@ -28,7 +28,7 @@ implementation
 uses
   Windows, Forms, GX_GxUtils, GX_OtaUtils, GX_VerDepConst,
   GX_DbugIntf,  GX_GExperts, GX_MessageBox, GX_CodeLib, GX_GrepExpert, GX_ExpertManager,
-  GX_GenericUtils, GX_DummyWizard;
+  GX_DummyWizard;
 
 const
   InvalidIndex = -1;

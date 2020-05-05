@@ -48,8 +48,10 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, StrUtils, SynEditHighlighter, SynUnicode, GX_SynMemoUtils, GX_VerDepConst, GX_GenericUtils,
-  GX_IdeUtils, u_dzVclUtils, u_dzStringUtils;
+  SysUtils, StrUtils,
+  u_dzVclUtils, u_dzStringUtils,
+  SynEditHighlighter, SynUnicode,
+  GX_SynMemoUtils, GX_GenericUtils, GX_IdeUtils;
 
 {$R *.dfm}
 

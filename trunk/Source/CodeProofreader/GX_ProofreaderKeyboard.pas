@@ -13,7 +13,7 @@ var
 implementation
 
 uses
-  Windows, GX_GenericUtils, SysUtils;
+  Windows, SysUtils, GX_GenericUtils;
 
 function CharsAreNearOnKeyboard(const a, b: Char): Boolean;
 var

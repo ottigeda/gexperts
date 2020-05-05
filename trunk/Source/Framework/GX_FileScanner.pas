@@ -121,7 +121,7 @@ type
 
 implementation
 
-uses SysUtils, StrUtils, Contnrs, GX_GenericUtils, Math, GX_IdeUtils, GX_OtaUtils,
+uses SysUtils, StrUtils, Contnrs, GX_GenericUtils, Math,
   u_dzStringUtils;
 
 resourcestring

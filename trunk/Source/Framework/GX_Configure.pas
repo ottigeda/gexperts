@@ -6,7 +6,7 @@ interface
 
 uses
   Windows, Classes, Graphics, Controls, Forms, Dialogs, Menus,
-  StdCtrls, ComCtrls, ExtCtrls, GX_EditorExpert, GX_BaseForm, 
+  StdCtrls, ComCtrls, ExtCtrls, GX_BaseForm,
   GX_ConfigureExperts, GX_ConfigureFormEnhancements;
 
 type
@@ -194,9 +194,9 @@ uses
 {$IFDEF GX_DELPHI_TOKYO_UP}
   GX_SizeGripHWND,
 {$ENDIF}
-  GX_GxUtils, GX_EditorEnhancements, GX_Experts, GX_IdeEnhance,
+  GX_GxUtils, GX_EditorEnhancements, GX_IdeEnhance,
   GX_ConfigurationInfo, GX_EditorExpertManager, GX_MessageBox,
-  GX_GExperts, GX_EditorShortcut, GX_MenuActions, GX_GenericUtils, GX_IdeUtils,
+  GX_GExperts, GX_MenuActions, GX_GenericUtils, GX_IdeUtils,
   GX_OtaUtils, u_dzVclUtils, GX_KbdShortCutBroker, GX_UsageStatistics,
   GX_BaseExpert;
 

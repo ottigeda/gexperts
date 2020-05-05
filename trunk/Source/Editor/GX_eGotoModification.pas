@@ -17,10 +17,7 @@ uses
   Menus,
   ToolsAPI,
   DockForm,
-  GX_Experts,
-  GX_EditorExpert,
-  GX_ConfigurationInfo,
-  GX_BaseForm;
+  GX_EditorExpert;
 
 // There are already IDE actions for navigating to the previous/next modification in the editor
 // window. They have keyboard shortcuts but apparently no menu entries:
@@ -93,10 +90,8 @@ uses
 {$IFOPT D+}GX_DbugIntf,
 {$ENDIF}
   Registry,
-  GX_OtaUtils,
-  GX_GenericUtils,
-  GX_GExperts,
-  u_dzVclUtils;
+  u_dzVclUtils,
+  GX_OtaUtils;
 
 { Called when a new edit view is created(opInsert) or destroyed(opRemove) }
 

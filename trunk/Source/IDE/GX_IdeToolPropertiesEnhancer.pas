@@ -27,7 +27,6 @@ uses
   u_dzVclUtils,
   u_dzClassUtils,
   u_dzFileUtils,
-  GX_IdeFormEnhancer,
   GX_IdeDialogEnhancer,
   GX_GenericUtils,
   GX_CustomClipboard;

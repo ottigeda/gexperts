@@ -67,7 +67,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Consts,
-  GX_ConfigurationInfo, GX_GenericUtils, GX_GxUtils;
+  GX_ConfigurationInfo;
 
 const
   MsgDlgResults: array[TMsgDlgBtn] of Integer = (

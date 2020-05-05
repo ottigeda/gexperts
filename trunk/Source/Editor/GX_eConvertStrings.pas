@@ -106,7 +106,6 @@ implementation
 uses
   StrUtils,
   Clipbrd,
-  ToolsAPI,
   IniFiles,
   u_dzVclUtils,
   u_dzFileUtils,

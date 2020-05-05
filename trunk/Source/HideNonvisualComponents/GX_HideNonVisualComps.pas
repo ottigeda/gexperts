@@ -3,7 +3,8 @@ unit GX_HideNonVisualComps;
 interface
 
 uses
-  GX_Experts, ActnList, GX_ConfigurationInfo;
+  ActnList,
+  GX_Experts;
 
 implementation
 

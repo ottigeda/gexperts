@@ -37,7 +37,6 @@ implementation
 uses
   ToolsAPI,
   u_dzVclUtils,
-  GX_GenericUtils,
   GX_LibrarySource;
 
 { TfmAboutExperimental }

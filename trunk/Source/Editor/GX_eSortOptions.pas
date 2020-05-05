@@ -41,8 +41,6 @@ implementation
 
 {$R *.dfm}
 
-uses
-  u_dzVclUtils;
 
 { TfrmSortOptions }
 

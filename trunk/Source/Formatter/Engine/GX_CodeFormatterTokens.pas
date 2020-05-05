@@ -15,7 +15,6 @@ uses
   StrUtils,
   TypInfo,
   GX_GenericUtils,
-  GX_CodeFormatterUnicode,
   GX_CodeFormatterTypes;
 
 type

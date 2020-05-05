@@ -10,9 +10,8 @@ uses
 implementation
 
 uses
-  StrUtils, GX_GxUtils, GX_GenericUtils, GX_Experts,
-  GX_ConfigurationInfo, GX_GExperts,
-  GX_DbugIntf;
+  StrUtils, GX_GenericUtils, GX_Experts,
+  GX_ConfigurationInfo;
 
 type
   TPEInformationExpert = class(TGX_Expert)

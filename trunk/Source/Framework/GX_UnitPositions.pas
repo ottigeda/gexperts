@@ -29,7 +29,7 @@ type
 implementation
 
 uses
-  SysUtils, GX_OtaUtils, GX_GenericUtils, mwPasParserTypes, GX_EditReader;
+  SysUtils, GX_GenericUtils, mwPasParserTypes, GX_EditReader;
 
 const
   SUnitName = 'unit';

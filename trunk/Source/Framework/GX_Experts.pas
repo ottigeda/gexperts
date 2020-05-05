@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Graphics, Forms, ActnList, Menus,
-  GX_Actions, GX_ConfigurationInfo, GX_BaseExpert;
+  GX_ConfigurationInfo, GX_BaseExpert;
 
 type
   TGX_Expert = class(TGX_BaseExpert)
@@ -81,8 +81,8 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Dialogs,
-  GX_MenuActions, GX_MessageBox, GX_IconMessageBox,
-  GX_GxUtils, GX_OtaUtils, GX_GenericUtils;
+  GX_MenuActions,
+  GX_OtaUtils, GX_GenericUtils;
 
 { TGX_Expert }
 

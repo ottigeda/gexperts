@@ -10,9 +10,8 @@ uses
   Forms,
   Graphics,
   StdCtrls,
-  GX_EditorExpert,
-  GX_ConfigurationInfo,
   u_dzCompilerAndRtlVersions,
+  GX_EditorExpert,
   GX_BaseForm,
   GX_BaseExpert;
 

@@ -29,7 +29,6 @@ uses
   ActnList,
   Menus,
   u_dzVclUtils,
-  GX_IdeFormEnhancer,
   GX_IdeDialogEnhancer;
 
 type

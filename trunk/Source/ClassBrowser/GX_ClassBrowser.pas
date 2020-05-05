@@ -266,11 +266,11 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Messages, Printers, CommCtrl,
-  GX_VerDepConst, GX_ClassIdentify, GX_ConfigurationInfo, GX_EditReader,
+  SysUtils, Messages, Printers, CommCtrl, Math,
+  u_dzVclUtils,
+  GX_VerDepConst, GX_ClassIdentify, GX_ConfigurationInfo,
   GX_ClassProp, GX_GExperts,
-  GX_GxUtils, GX_GenericUtils, GX_SharedImages, GX_IdeUtils, Math,
-  u_dzVclUtils;
+  GX_GxUtils, GX_GenericUtils, GX_SharedImages, GX_IdeUtils;
 
 { TClassProjectNotifier }
 

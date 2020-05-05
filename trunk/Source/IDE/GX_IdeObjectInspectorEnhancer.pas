@@ -12,7 +12,6 @@ unit GX_IdeObjectInspectorEnhancer;
 interface
 
 uses
-  ToolsAPI,
   DesignIntf,
   Classes,
   Forms;

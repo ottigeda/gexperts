@@ -57,7 +57,6 @@ uses
   ActnList,
   u_dzVclUtils,
   u_dzQuicksort,
-  GX_GExperts,
   GX_ConfigurationInfo,
   GX_ActionBroker,
   GX_GenericUtils;

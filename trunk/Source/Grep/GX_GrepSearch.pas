@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Controls, Forms, StdCtrls, ExtCtrls,
-  GX_Experts, GX_GrepExpert, GX_GrepBackend, GX_BaseForm, GX_KbdShortCutBroker;
+  GX_Experts, GX_GrepExpert, GX_GrepBackend, GX_BaseForm;
 
 type
   TfmGrepSearch = class(TfmBaseForm)
@@ -136,9 +136,11 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Windows, Messages, Graphics, StrUtils, Menus, SynRegExpr, Math,
+  SysUtils, Windows, Messages, Graphics, StrUtils, Menus, Math,
+  SynRegExpr,
+  u_dzVclUtils, u_dzOsUtils, u_dzStringUtils,
   GX_GenericUtils, GX_GxUtils, GX_OtaUtils, GX_GrepResults, GX_GrepOptions,
-  GX_GrepRegExSearch, u_dzVclUtils, u_dzOsUtils, u_dzStringUtils, GX_TestRegEx;
+  GX_TestRegEx;
 
 resourcestring
   SGrepResultsNotActive = 'The Grep Results window is not active';

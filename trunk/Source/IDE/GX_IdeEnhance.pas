@@ -159,10 +159,10 @@ uses
   {$IFDEF MSWINDOWS} VCLEditors, {$ENDIF MSWINDOWS}
   {$IFDEF VER150} Controls, Buttons, {$ENDIF VER150}
   SysUtils, Forms,
-  GX_GenericUtils, GX_GxUtils, GX_IdeUtils, GX_OtaUtils, GX_ConfigurationInfo, 
+  GX_GenericUtils, GX_GxUtils, GX_IdeUtils, GX_OtaUtils, GX_ConfigurationInfo,
   GX_IdeSearchPathEnhancer, GX_IdeProjectOptionsEnhancer,
-  GX_IdeToolPropertiesEnhancer, GX_IdeInstallPackagesEnhancer, 
-  GX_IdeObjectInspectorEnhancer, GX_IdeBuildEventsEnhancer, 
+  GX_IdeToolPropertiesEnhancer, GX_IdeInstallPackagesEnhancer,
+  GX_IdeObjectInspectorEnhancer, GX_IdeBuildEventsEnhancer,
   GX_IdeApplicationSettingsEnhancer, GX_IdeMessageAutoClose, GX_IdeDockFormEnhancer;
 
 { TIdeEnhancements }

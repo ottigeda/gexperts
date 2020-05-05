@@ -18,7 +18,7 @@ interface
 implementation
 
 uses SysUtils, Classes, ToolsAPI,
-  GX_OtaUtils, GX_Experts, GX_GenericUtils, GX_KbdShortCutBroker;
+  GX_OtaUtils, GX_Experts, GX_GenericUtils;
 
 resourcestring
   rsNoComponentFound = 'A component named %s was not found on the form';

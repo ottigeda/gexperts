@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, Forms, Controls, ExtCtrls, ToolsAPI, ComCtrls, StdCtrls, Dialogs,
-  ActnList, Actions, ImgList, Graphics, Buttons, DesignWindows, GX_BaseForm,
+  ActnList, Actions, ImgList, Graphics, Buttons, GX_BaseForm,
   GX_GenericUtils;
 
 type
@@ -86,8 +86,7 @@ implementation
 uses
   SysUtils, Windows, Messages, TypInfo,
   u_dzStringUtils,
-  GX_Experts, GX_GxUtils, GX_OtaUtils, GX_SharedImages,
-  GX_ConfigurationInfo;
+  GX_Experts, GX_OtaUtils, GX_SharedImages;
 
 type
   TComponentSelectExpert = class(TGX_Expert)

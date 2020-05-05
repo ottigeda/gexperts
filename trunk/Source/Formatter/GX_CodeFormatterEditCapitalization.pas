@@ -77,10 +77,8 @@ implementation
 {$R *.DFM}
 
 uses
-  u_dzClassUtils,
   u_dzVclUtils,
-  u_dzStringUtils,
-  GX_GxUtils;
+  u_dzStringUtils;
 
 { TfmCodeFormatterCapitalization }
 

@@ -5,7 +5,7 @@ unit GX_EditorExpertManager;
 interface
 
 uses
-  Classes, Contnrs, GX_GenericClasses, GX_EditorExpert;
+  Classes, Contnrs, GX_EditorExpert;
 
 type
   TGxEditorExpertManager = class(TObject)

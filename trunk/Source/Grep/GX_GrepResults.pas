@@ -407,10 +407,10 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF D+}
-  SysUtils, Messages, ToolsAPI, Math, StrUtils, IniFiles, TypInfo, Contnrs, Clipbrd, DateUtils,
+  SysUtils, Messages, Math, StrUtils, IniFiles, TypInfo, Contnrs, Clipbrd, DateUtils,
+  u_dzVclUtils,
   GX_GExperts, GX_GenericUtils, GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_MessageBox,
-  GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect,
-  GX_GrepProgress, u_dzVclUtils;
+  GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect, GX_GrepProgress;
 
 resourcestring
   SGrepReplaceStats = 'Replaced %d occurrence(s) in %.2f seconds';

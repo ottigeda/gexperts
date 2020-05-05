@@ -13,7 +13,6 @@ uses
   StdCtrls,
   ExtCtrls,
   ComCtrls,
-  GX_Experts,
   GX_EditorExpert,
   GX_ConfigurationInfo,
   GX_BaseForm,
@@ -74,11 +73,9 @@ uses
 {$ENDIF}
   Menus,
   Registry,
-  ToolsAPI,
   SynRegExpr,
   u_dzClassUtils,
   u_dzVclUtils,
-  GX_GExperts,
   GX_OtaUtils;
 
 { TRemoveMatchingLinesExpert }

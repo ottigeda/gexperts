@@ -24,8 +24,7 @@ interface
 
 uses
   ToolsAPI,
-  Classes,
-  DockForm;
+  Classes;
 
 type
   IHideNavigationToolbarExpert = interface ['{BC189A61-9313-4ABE-8AB3-2B80B3709DF5}']

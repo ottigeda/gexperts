@@ -25,12 +25,9 @@ uses
   StdCtrls,
   CheckLst,
   Dialogs,
-  ShellApi,
-  GX_OtaUtils,
-  GX_IdeFormEnhancer,
+  u_dzClassUtils,
   GX_GenericUtils,
-  GX_IdeDialogEnhancer,
-  u_dzClassUtils;
+  GX_IdeDialogEnhancer;
 
 type
   TInstallPackagesEnhancer = class(TIdeDialogEnhancer)

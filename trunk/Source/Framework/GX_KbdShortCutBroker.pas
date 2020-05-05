@@ -5,8 +5,7 @@ unit GX_KbdShortCutBroker;
 interface
 
 uses
-  SysUtils, Classes, Menus,
-  GX_EventHook;
+  SysUtils, Classes, Menus;
 
 type
   EDuplicateShortCut = class(Exception);
@@ -60,8 +59,7 @@ uses
   ToolsAPI,
   Forms, Controls, Types, Graphics, Messages, Windows, Contnrs,
   GX_GenericClasses, GX_GExperts, GX_IdeUtils, GX_ConfigurationInfo,
-  GX_EditorEnhancements, GX_GxUtils, u_dzVclUtils, GX_OtaUtils,
-  GX_TimedCallback;
+  GX_OtaUtils, GX_TimedCallback;
 
 // First of all we have shared code; in
 // particular, we share a large chunk

@@ -27,10 +27,6 @@ uses
   ComCtrls,
   ExtCtrls,
   u_dzClassUtils,
-  u_dzVclUtils,
-  GX_IdeProjectOptionsEnhancer,
-  GX_IdeFormEnhancer,
-  GX_ConfigurationInfo,
   GX_VerDepConst,
   GX_IdeDialogEnhancer;
 

@@ -40,12 +40,11 @@ function GetTemplateFromUser(const ATemplateName: string; MacroFile: TMacroFile)
 
 implementation
 
+{$R *.dfm}
+
 uses
   Messages, Windows,
-  GX_MacroTemplates, GX_MacroTemplatesExpert, GX_ConfigurationInfo,
-  GX_GenericUtils, GX_GxUtils;
-
-{$R *.dfm}
+  GX_MacroTemplatesExpert, GX_ConfigurationInfo, GX_GenericUtils;
 
 function GetTemplateFromUser(const ATemplateName: string; MacroFile: TMacroFile): Integer;
 begin

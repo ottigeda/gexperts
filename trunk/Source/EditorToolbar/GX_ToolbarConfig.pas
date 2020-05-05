@@ -81,7 +81,8 @@ implementation
 
 uses
   SysUtils, Graphics, Menus, Messages, StrUtils,
-  GX_ActionBroker, GX_GenericUtils, GX_GxUtils, GX_Toolbar, u_dzStringUtils;
+  u_dzStringUtils,
+  GX_ActionBroker, GX_GenericUtils, GX_GxUtils, GX_Toolbar;
 
 procedure AddActionToListbox(Action: TContainedAction; Listbox: TCustomListbox; Select: Boolean);
 var
