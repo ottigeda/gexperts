@@ -20,12 +20,14 @@ unit u_dzGraphicsUtils;
 {$C-} // this is the short form for $ASSERTIONS OFF
 {$ENDIF}
 
+{$IFNDEF NO_OPTIMIZE_DZ_GRAPHIC_UTILS_HINT}
 {$IFOPT Q+}
 {$MESSAGE WARN 'Overflow checking is on, consider turning it off for significantly better performance'}
 {$ENDIF}
 
 {$IFOPT R+}
 {$MESSAGE WARN 'Range checking is on, consider turning it off for significantly better performance'}
+{$ENDIF}
 {$ENDIF}
 
 {.$DEFINE dzUseGraphics32}

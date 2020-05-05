@@ -84,7 +84,7 @@ $(PreBuildEvent)]]>
         <VerInfo_Keys>CompanyName=Erik Berry and the GExperts Development Team;FileDescription=GExperts for RAD Studio XE5;FileVersion=1.3.8.0;InternalName=GExperts for RAD Studio XE5;LegalCopyright=;LegalTrademarks=;OriginalFilename=GExpertsRSXE5.dll;ProductName=GExperts for RAD Studio;ProductVersion=1.38;Comments=Open Source;CompileDate=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
-        <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+        <DCC_Define>DEBUG;NO_OPTIMIZE_DZ_GRAPHIC_UTILS_HINT;$(DCC_Define)</DCC_Define>
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
         <DCC_Optimize>false</DCC_Optimize>
     </PropertyGroup>
