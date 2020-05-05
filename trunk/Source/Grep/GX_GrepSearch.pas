@@ -136,7 +136,7 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Windows, Messages, Graphics, StrUtils, Menus, RegExpr, Math,
+  SysUtils, Windows, Messages, Graphics, StrUtils, Menus, SynRegExpr, Math,
   GX_GenericUtils, GX_GxUtils, GX_OtaUtils, GX_GrepResults, GX_GrepOptions,
   GX_GrepRegExSearch, u_dzVclUtils, u_dzOsUtils, u_dzStringUtils, GX_TestRegEx;
 

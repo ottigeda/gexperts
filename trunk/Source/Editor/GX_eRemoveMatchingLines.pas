@@ -75,7 +75,7 @@ uses
   Menus,
   Registry,
   ToolsAPI,
-  RegExpr,
+  SynRegExpr,
   u_dzClassUtils,
   u_dzVclUtils,
   GX_GExperts,

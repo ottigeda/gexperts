@@ -13,7 +13,7 @@ function ReplaceLine(LineResult: TLineResult; GrepSettings: TGrepSettings): Inte
 
 implementation
 
-uses SysUtils, Controls, Dialogs, ToolsAPI, GX_OtaUtils, GX_GenericUtils, RegExpr;
+uses SysUtils, Controls, Dialogs, ToolsAPI, GX_OtaUtils, GX_GenericUtils, SynRegExpr;
 
 type
   ESkipFileReplaceException = class(Exception);

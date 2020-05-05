@@ -42,7 +42,8 @@ interface
 uses
   Classes,
   ToolsAPI,
-  RegExpr, IniFiles,
+  IniFiles,
+  SynRegExpr,
   GX_GrepRegExSearch, GX_GenericUtils;
 
 type
