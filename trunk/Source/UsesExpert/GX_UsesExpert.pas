@@ -361,7 +361,7 @@ implementation
 {$R *.dfm}
 
 uses
-  Messages, Graphics, StrUtils, Math, ToolsAPI, Clipbrd, ShellAPI,
+  Messages, Graphics, StrUtils, Math, ToolsAPI, Clipbrd,
   u_dzVclUtils, u_dzMapFileReader, u_dzFileUtils, u_dzOsUtils, u_dzClassUtils, u_dzStringUtils,
   GX_IdeUtils, GX_UsesManager,
 {$IFOPT D+}
@@ -2633,12 +2633,9 @@ end;
 procedure TfmUsesManager.mSearchThisOnTheWebClick(Sender: TObject);
 begin
   // google the identifier name together with the unit name:
-  ShellExecute(0, 'open',
-    PChar('https://www.google.com/search?q=' +
+  GXShellOpen('https://www.google.com/search?q=' +
       sg_Identifiers.Cells[0, sg_Identifiers.Row] + ' ' +
-      sg_Identifiers.Cells[1, sg_Identifiers.Row]
-    ),
-    nil, nil, SW_SHOW);
+      sg_Identifiers.Cells[1, sg_Identifiers.Row], False);
 end;
 
 procedure TfmUsesManager.mShowThisFileInWindowsExplorerClick(Sender: TObject);

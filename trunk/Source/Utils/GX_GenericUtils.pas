@@ -603,6 +603,8 @@ function GetFileVersionString(const FileName: string;
 // Executes FileName and passes Parameters to the application
 // If RaiseException is True, an exception is raised on failure
 function GXShellExecute(const FileName, Parameters: string; const RaiseException: Boolean): Boolean;
+// opens a file or url
+function GXShellOpen(const _Parameters: string; const RaiseException: Boolean): Boolean;
 
 // Get a Windows OS folder path.  Pass in one of the ShlObj.CSIDL_ constants
 function GetSpecialFolderPath(const FolderID: Integer): string;
@@ -3600,6 +3602,17 @@ begin
   Result := (ReturnVal > 32);
   if (not Result) and RaiseException then
     raise Exception.CreateFmt('%s (%s)', [SysErrorMessage(GetLastError), FileName]);
+end;
+
+function GXShellOpen(const _Parameters: string; const RaiseException: Boolean): Boolean;
+var
+  ReturnVal: Integer;
+begin
+  ReturnVal := ShellExecute(Application.Handle, 'open', PChar(_Parameters), nil,
+    PChar(ExtractFilePath(Application.ExeName)), SW_SHOWNORMAL);
+  Result := (ReturnVal > 32);
+  if (not Result) and RaiseException then
+    raise Exception.CreateFmt('%s (%s)', [SysErrorMessage(GetLastError), _Parameters]);
 end;
 
 procedure FreeItemIDList(var IDList: PItemIDList);

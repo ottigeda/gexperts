@@ -108,7 +108,6 @@ uses
   Clipbrd,
   ToolsAPI,
   IniFiles,
-  ShellAPI,
   u_dzVclUtils,
   u_dzFileUtils,
   u_dzClassUtils,
@@ -281,7 +280,7 @@ var
   ConfigDir: string;
 begin
   ConfigDir := AddSlash(ConfigInfo.ConfigPath + TConvertStringsExpert.ConfigurationKey);
-  ShellExecute(0, nil, 'explorer.exe', PChar('/d,' + ConfigDir), nil, SW_SHOWNORMAL)
+  GXShellExecute('explorer.exe', '/d,' + ConfigDir, False);
 end;
 
 procedure TfmEConvertStrings.pm_FavoritesPopup(Sender: TObject);

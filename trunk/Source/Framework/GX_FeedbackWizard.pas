@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, ComCtrls, ActnList,
-  GX_BaseForm, Actions;
+  GX_BaseForm, Actions, ShellAPI;
 
 type
   TFeedbackType = (fbBug, fbFeature);
@@ -130,7 +130,7 @@ type
 
 implementation
 
-uses Windows, SysUtils, ShellAPI, TypInfo, Clipbrd, Registry,
+uses Windows, SysUtils, TypInfo, Clipbrd, Registry,
   GX_GenericUtils, GX_ConfigurationInfo, GX_OtaUtils, GX_GetIdeVersion, GX_IdeUtils,
   Menus, Math, Graphics, u_dzVclUtils;
 
@@ -490,7 +490,7 @@ var
 begin
   // Do not localize the lines below.
   ExecFilename := GetDestinationEmail;
-  ShellExecute(Self.Handle, 'open', PChar(ExecFilename), nil, PChar(ExtractFilePath(application.ExeName)), SW_SHOWNORMAL);
+  GXShellOpen(ExecFilename, False);
 end;
 
 procedure TfmFeedbackWizard.btnCopyClick(Sender: TObject);

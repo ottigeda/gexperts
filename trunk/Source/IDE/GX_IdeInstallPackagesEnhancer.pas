@@ -143,7 +143,7 @@ begin
     fn := Wow64fn;
 
   // open an explorer window and select the package file there
-  ShellExecute(0, nil, 'explorer.exe', PChar('/select,' + fn), nil, SW_SHOWNORMAL)
+  GXShellExecute('explorer.exe', '/select,' + fn, False);
 end;
 
 //procedure TInstallPackagesEnhancer.b_RenameClick(_Sender: TObject);
