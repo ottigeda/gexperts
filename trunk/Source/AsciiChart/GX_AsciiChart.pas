@@ -375,18 +375,33 @@ procedure TfmAsciiChart.GetFonts;
 var
   DC: HDC;
   LFont: TLogFont;
+  sl: TStringList;
 begin
   FillChar(LFont, SizeOf(LFont), 0);
   LFont.lfCharset := DEFAULT_CHARSET;
 
+  sl := nil;
   DC := GetDC(0);
   try
-    EnumFontFamiliesEx(DC, LFont, @EnumFontsProc, Longint(cbxFontName.Items), 0);
+    sl := TStringList.Create;
+    EnumFontFamiliesEx(DC, LFont, @EnumFontsProc, Longint(sl), 0);
+
+    sl.Sort;
+    // move all fonts starting with '@' to the end of the list
+    if (sl.Count > 0) and (Copy(sl[sl.Count - 1], 1, 1) <> '@') then begin
+      while Copy(sl[0], 1, 1) = '@' do begin
+        sl.Add(sl[0]);
+        sl.Delete(0);
+      end;
+    end;
+    
+    cbxFontName.Items.Assign(sl);
   finally
+    FreeAndNil(sl);
     ReleaseDC(0, DC);
   end;
 
-  cbxFontName.Sorted := True;
+//  cbxFontName.Sorted := True;
 end;
 
 procedure TfmAsciiChart.SetFontName(const NewFontName: string);
