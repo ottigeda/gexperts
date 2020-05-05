@@ -31,7 +31,7 @@
         <DCC_StringChecks>off</DCC_StringChecks>
         <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
         <DCC_UnitAlias>Actions=Actnlist;ImageList=ImgList;UiTypes=Types;$(DCC_UnitAlias)</DCC_UnitAlias>
-        <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\source\Include;..\..\externalsource\tregexpr;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\source\Include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_UsePackage>rtl;vcl;vclx;designide</DCC_UsePackage>
         <GenDll>true</GenDll>
         <UsePackages>true</UsePackages>
@@ -241,6 +241,9 @@
         </DCCReference>
         <DCCReference Include="..\..\Source\Grep\GX_GrepSelect.pas">
             <Form>fmGrepSelect</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Grep\GX_TestRegEx.pas">
+            <Form>fmTestRegEx</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_GxUtils.pas"/>
         <DCCReference Include="..\..\source\HideNonvisualComponents\GX_HideNonVisualComps.pas"/>
