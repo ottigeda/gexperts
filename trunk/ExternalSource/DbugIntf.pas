@@ -6,8 +6,13 @@
  * GExperts debug window.  This includes usage in commercial, shareware,
  * freeware, public domain, and other applications.
  *)
-
+ 
+ // The following IFNDEF allows to include this unit via {$I 'dbugintf.pas'} in GExperts,
+ // unit source\utils\GX_DbugIntf.pas, so the source code is not duplicated.
+ // If you use DbugIntf.pas anywhere else, you won't need it.
+{$IFNDEF GX_DBUGINTF}
 unit DbugIntf;
+{$ENDIF}
 
 interface
 
