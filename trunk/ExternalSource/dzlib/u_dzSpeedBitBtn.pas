@@ -22,9 +22,7 @@ type
   /// To use it create it with TdzSpeedBitBtn.Create(BitBtn) where BitBtn is an already existing
   /// TBitBtn component. TdzSpeedBitBtn will be automatically destroyed when the associated BitBtn
   /// is destroyed, so don't free it yourself.
-  /// Hotkeys do not work, neither to Actions.
-  /// Note that this has so far only been tested with Windows 8.1. I have no idea what it looks
-  /// like on Windows XP, Vista, 7 or 10. </summary>
+  /// Hotkeys do not work, neither to Actions.</summary>
   TdzSpeedBitBtn = class(TComponent)
   private
     FCaption: string;
@@ -126,6 +124,7 @@ constructor TdzSpeedBitBtn.Create(_btn: TComponent);
       TextSize: TSize;
       x: Integer;
       y: Integer;
+      r: TRect;
     begin
       TextSize := cnv.TextExtent(FCaption);
       x := FBtn.Margin;
@@ -136,7 +135,11 @@ constructor TdzSpeedBitBtn.Create(_btn: TComponent);
       end else begin
         // left align
       end;
-      cnv.TextOut(x, y, FCaption);
+      r.Left := x;
+      r.Top := y - 1;
+      r.Right := x + TextSize.cx;
+      r.Bottom := y + TextSize.cy;
+      DrawText(cnv.Handle, PChar(FCaption), -1, r, DT_LEFT or DT_TOP or DT_NOCLIP or DT_SINGLELINE);
     end;
 
     procedure HandleTextOnlyMultiLine;
@@ -189,6 +192,7 @@ constructor TdzSpeedBitBtn.Create(_btn: TComponent);
     var
       TextSize: TSize;
       RequiredWidth: Integer;
+      r: TRect;
       x: Integer;
     begin
       TextSize := cnv.TextExtent(FCaption);
@@ -197,11 +201,19 @@ constructor TdzSpeedBitBtn.Create(_btn: TComponent);
         RequiredWidth := FOrigBmp.Width + FBtn.Spacing + TextSize.cx;
         x := (_w - RequiredWidth) div 2;
         cnv.Draw(x, (_h - FOrigBmp.Width) div 2, FOrigBmp);
-        cnv.TextOut(x + FBtn.Margin + FBtn.Spacing + FOrigBmp.Width, (_h - TextSize.cy) div 2, FCaption);
+        r.Left := x + FBtn.Margin + FBtn.Spacing + FOrigBmp.Width;
+        r.Top := (_h - TextSize.cy) div 2;
+        r.Right := r.Left + TextSize.cx;
+        r.Bottom := r.Top + TextSize.cy;
+        DrawText(cnv.Handle, PChar(FCaption), -1, r, DT_LEFT or DT_TOP or DT_NOCLIP or DT_SINGLELINE);
       end else begin
         // left align image and text
         cnv.Draw(FBtn.Margin, (_h - FOrigBmp.Height) div 2, FOrigBmp);
-        cnv.TextOut(FBtn.Margin + FBtn.Spacing + FOrigBmp.Width, (_h - TextSize.cy) div 2, FCaption);
+        r.Left := FBtn.Margin + FBtn.Spacing + FOrigBmp.Width;
+        r.Top := (_h - TextSize.cy) div 2;
+        r.Right := r.Left + TextSize.cx;
+        r.Bottom := r.Top + TextSize.cy;
+        DrawText(cnv.Handle, PChar(FCaption), -1, r, DT_LEFT or DT_TOP or DT_NOCLIP or DT_SINGLELINE);
       end;
     end;
 
@@ -366,6 +378,11 @@ begin
     FBtn.Glyph := FDownBmp
   else
     FBtn.Glyph := FUpBmp;
+
+  // Setting Glyph may change the NumGlyph property (if the Width to Height ration of the bitmap
+  // is 4, 3 or 2 to 1). We don't want that, so we change it back. (Bloody computer trying to
+  // be clever :-(.)
+  FBtn.NumGlyphs := 1;
 end;
 
 { TdzSpeedBitBtnGroup }
