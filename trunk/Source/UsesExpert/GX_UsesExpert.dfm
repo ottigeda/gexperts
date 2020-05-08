@@ -526,7 +526,6 @@ object fmUsesManager: TfmUsesManager
               Height = 25
               Caption = 'Start First'
               TabOrder = 2
-              Visible = False
             end
           end
         end

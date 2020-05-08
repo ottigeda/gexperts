@@ -79,7 +79,7 @@ begin
   _ReplaceFileUseUnit := chkReplaceFileUnit.Checked;
   _ParseAll := chkParseAll.Checked;
   _DisableCache := chkDisableParserCache.Checked;
-  rg_FilterIdentifiers.ItemIndex := Ord(_FilterIdentifiers);
+  _FilterIdentifiers := TFilterIdentifiersEnum(rg_FilterIdentifiers.ItemIndex);
 end;
 
 procedure TfmUsesExpertOptions.SetData(const _CanReplaceFindUseUnit: Boolean; const _CacheDir: string;
@@ -95,7 +95,7 @@ begin
   chkReplaceFileUnit.Checked := _ReplaceFileUseUnit;
   chkParseAll.Checked := _ParseAll;
   chkDisableParserCache.Checked := _DisableCache;
-  _FilterIdentifiers := TFilterIdentifiersEnum(rg_FilterIdentifiers.ItemIndex);
+  rg_FilterIdentifiers.ItemIndex := Ord(_FilterIdentifiers);
 end;
 
 { TClearCacheMessage }

@@ -1860,6 +1860,18 @@ begin
         finally
           FreeAndNil(MultiFilter);
         end;
+        if FilterType = fieStartFirst then begin
+          Idx := 0;
+          for i := 0 to FilterList.Count - 1 do begin
+            Identifier := FilterList[i];
+            if StartsText(Filter, Identifier) then begin
+              UnitName := PChar(FilterList.Objects[i]);
+              FilterList.Delete(i);
+              FilterList.InsertObject(Idx, Identifier, Pointer(UnitName));
+              Inc(Idx);
+            end;
+          end;
+        end;
       end else
         FilterStringListMatchStart(FFavUnitsExports, FilterList, Filter, False);
     end;
@@ -2556,12 +2568,8 @@ end;
 
 procedure TfmUsesManager.sb_MatchWhereClick(Sender: TObject);
 begin
-  Forms.Screen.Cursor := crHourGlass;
-  try
-    FilterIdentifiers;
-  finally
-    Forms.Screen.Cursor := crDefault;
-  end;
+  TCursor_TemporaryChange();
+  FilterIdentifiers;
   FForceFocusToIdentifierFilter := True;
   edtIdentifierFilter.SetFocus;
 end;
