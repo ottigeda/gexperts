@@ -375,8 +375,6 @@ end;
 procedure TfmProjDepend.BuildUses;
 resourcestring
   SParsingUnits = 'Parsing units...';
-var
-  Cursor: IInterface;
 begin
   ClearFileList;
   ClearUnitList;
@@ -384,8 +382,8 @@ begin
   FSearchInProgress := True;
   FAbortSignalled := False;
 
+  TCursor_TempHourglass;
   tvUnits.Items.BeginUpdate;
-  Cursor := TempHourGlassCursor;
   try
     // Clear current scroll box.
     lvIndirect.Items.Clear;
@@ -621,7 +619,6 @@ end;
 procedure TfmProjDepend.IndirectDepend;
 var
   ProcessedUnitsList: TStringList;
-  Cursor: IInterface;
   SelectedNode: TTreeNode;
   i: Integer;
   ListItems: TListItems;
@@ -631,7 +628,7 @@ begin
   if not TryGetSelectedUnit(SelectedNode) then
     Exit; //==>
 
-  Cursor := TempHourGlassCursor;
+  TCursor_TempHourglass;
   ProcessedUnitsList := nil;
   ListItems := lvIndirect.Items;
   ListItems.BeginUpdate;
@@ -977,7 +974,6 @@ var
   OutputData: TStringList;
   TempData: TStringList;
   i: Integer;
-  Cursor: IInterface;
   fn: string;
   UnitName: string;
   j: Integer;
@@ -990,7 +986,7 @@ begin
   TempData := nil;
   OutputData := TStringList.Create;
   try
-    Cursor := TempHourGlassCursor;
+    TCursor_TempHourglass;
     TempData := TStringList.Create;
     ProcessedUnitsList := TStringList_CreateSorted(dupError);
     for i := 0 to tvUnits.Items.Count - 1 do

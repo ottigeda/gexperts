@@ -608,10 +608,8 @@ begin
 end;
 
 procedure TAvailableFiles.FreeThreads;
-var
-  Cursor: IInterface;
 begin
-  Cursor := TempHourGlassCursor;
+  TCursor_TempHourglass;
 
   if Assigned(FSearchPathThread) then begin
     FSearchPathThread.OnFindComplete := nil;

@@ -710,9 +710,8 @@ end;
 procedure TfmToDo.RefreshTodoList;
 var
   AListItem: TListItem;
-  Cursor: IInterface;
 begin
-  Cursor := TempHourGlassCursor;
+  TCursor_TempHourglass;
   try
     ToDoExpert.FTokenList.CustomSort(SortStringListByLength);
     FScannedFiles.Clear;
@@ -802,7 +801,6 @@ var
   InternalEditReader: TEditReader;
   ClosestLineMatch: Integer;
   IsCPPModule: Boolean;
-  Cursor: IInterface;
   MatchChecker: TMatchChecker;
 begin
   inherited;
@@ -816,7 +814,7 @@ begin
   if not GxOtaIsFileOpen(SelectedItem.FileName) then
     GxOtaOpenFile(SelectedItem.FileName);
 
-  Cursor := TempHourGlassCursor;
+  TCursor_TempHourglass;
   InternalEditReader := nil;
   MatchChecker := TMatchChecker.Create(SelectedItem);
   try

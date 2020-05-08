@@ -379,14 +379,13 @@ var
   mFile: TGXFile;
   i: Integer;
   LItem: TListItem;
-  Cursor: IInterface;
 begin
   if (csDestroying in ComponentState) then
     Exit;
   if tvFolders.Selected = nil then
     Exit;
 
-  Cursor := TempHourGlassCursor;
+  TCursor_TempHourglass;
   ListView.Items.BeginUpdate;
   try
     ListView.Items.Clear;
@@ -959,7 +958,7 @@ begin
     begin
       if (tvFolders.Selected = nil) or (tvFolders.Selected = Node) or Node.HasAsParent(tvFolders.Selected) then
         Exit;
-      Cursor := TempHourGlassCursor;
+      Cursor := TCursor_TempHourglass;
       tvFolders.Items.BeginUpdate;
       try
         tvFolders.Selected.MoveTo(Node, naAddChild);
@@ -972,7 +971,6 @@ begin
         *)
       finally
         tvFolders.Items.EndUpdate;
-        Screen.Cursor := crDefault;
       end;
     end
     else if Source = ListView then
@@ -994,6 +992,7 @@ begin
   except
     on E: Exception do
     begin
+      Cursor := nil;
       GxLogAndShowException(E);
       tvFolders.EndDrag(False);
     end;
@@ -1041,7 +1040,6 @@ var
   mFile: TGXFile;
   LItem: TListItem;
   Folder: TGXFolder;
-  Cursor: IInterface;
 begin
   if (tvFolders.Selected = nil) or (AFileName = '') then
     Exit;
@@ -1050,7 +1048,7 @@ begin
   LItem := nil;
 {$ENDIF}
   Folder := GetFolder(tvFolders.Selected);
-  Cursor := TempHourGlassCursor;
+  TCursor_TempHourglass;
   ListView.Items.BeginUpdate;
   try
     mFile := TGXFile.Create(Folder);
@@ -1089,14 +1087,13 @@ var
   i: Integer;
   LItem: TListItem;
   Folder: TGXFolder;
-  Cursor: IInterface;
 begin
   if (Files = nil) or (Files.Count < 1) or (tvFolders.Selected = nil) then
     Exit;
 
   LItem := nil;
   Folder := GetFolder(tvFolders.Selected);
-  Cursor := TempHourGlassCursor;
+  TCursor_TempHourglass;
   ListView.Items.BeginUpdate;
   try
     for i := 0 to Files.Count - 1 do

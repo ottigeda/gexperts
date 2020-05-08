@@ -385,8 +385,8 @@ var
   Node: TTreeNode;
   AClassItem: TClassItem;
 begin
+  TCursor_TempHourglass;
   tvBrowse.Items.BeginUpdate;
-  Screen.Cursor := crHourGlass;
   try
     tvBrowse.Selected := nil;
     tvBrowse.Items.Clear;
@@ -400,7 +400,6 @@ begin
     end;
   finally
     tvBrowse.Items.EndUpdate;
-    Screen.Cursor := crDefault;
   end;
 end;
 
@@ -408,10 +407,10 @@ procedure TfmClassBrowser.LoadObjects(Item: TClassItem; ONode: TTreeNode);
 resourcestring
   SSorting = 'Sorting...';
 begin
+  TCursor_TempHourglass;
   tvBrowse.Items.BeginUpdate;
-  Screen.Cursor := crHourglass;
-  tvBrowse.SortType := stNone;
   try
+    tvBrowse.SortType := stNone;
     tvBrowse.Selected := nil;
     // while ONode.Count > 0 do
     //  ONode.Item[0].Free;
@@ -427,7 +426,6 @@ begin
     StatusBar.SimpleText := SSorting;
     StatusBar.Repaint;
     tvBrowse.SortType := ComCtrls.stText;
-    Screen.Cursor := crDefault;
     tvBrowse.Items.EndUpdate;
     StatusBar.SimpleText := '';
   end;
@@ -733,22 +731,19 @@ begin
     begin
       if tvBrowse.Selected.Level > 0 then
       begin
-        Screen.Cursor := crHourglass;
-        try
-          OInfo := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
-          if not OInfo.IsLoaded then
-            OInfo.LoadMethods;
-          TimeSpent := GetTickCount;
-          if pcMain.ActivePage = tshCode then
-            LoadCode;
-          if pcMain.ActivePage = tshInherit then
-            DrawInheritance;
-          TimeSpent := GetTickCount - TimeSpent;
-          LoadList(OInfo);
-          StatusBar.SimpleText := Format(SSourceModule, [OInfo.SourceName, TimeSpent]);
-        finally
-          Screen.Cursor := crDefault;
-        end;
+        TCursor_TempHourglass;
+
+        OInfo := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
+        if not OInfo.IsLoaded then
+          OInfo.LoadMethods;
+        TimeSpent := GetTickCount;
+        if pcMain.ActivePage = tshCode then
+          LoadCode;
+        if pcMain.ActivePage = tshInherit then
+          DrawInheritance;
+        TimeSpent := GetTickCount - TimeSpent;
+        LoadList(OInfo);
+        StatusBar.SimpleText := Format(SSourceModule, [OInfo.SourceName, TimeSpent]);
       end
       else
       begin
@@ -918,7 +913,8 @@ var
   SourceFileName: string;
   MInfo: TBrowseMethodInfoItem;
 begin
-  Screen.Cursor := crHourglass;
+  TCursor_TempHourglass;
+
   FCodeText.BeginUpdate;
   try
     if tvBrowse.Selected = nil then Exit;
@@ -954,7 +950,6 @@ begin
     end;
   finally
     FCodeText.EndUpdate;
-    Screen.Cursor := crDefault;
   end;
 end;
 
@@ -972,17 +967,14 @@ var
   Ticks: DWORD;
   Item: TClassItem;
 begin
-  Screen.Cursor := crHourglass;
-  try
-    Ticks := GetTickCount;
-    Item := TClassItem(tvBrowse.Selected.Data);
-    Item.Recurse := FParseRecursing;
-    Item.Load;
-    LoadObjects(Item, tvBrowse.Selected);
-    StatusBar.SimpleText := GetClassesParsedText(Item.ClassCount, GetTickCount - Ticks);
-  finally
-    Screen.Cursor := crDefault;
-  end;
+  TCursor_TempHourglass;
+
+  Ticks := GetTickCount;
+  Item := TClassItem(tvBrowse.Selected.Data);
+  Item.Recurse := FParseRecursing;
+  Item.Load;
+  LoadObjects(Item, tvBrowse.Selected);
+  StatusBar.SimpleText := GetClassesParsedText(Item.ClassCount, GetTickCount - Ticks);
 end;
 
 procedure TfmClassBrowser.GetInheritedList(List: TStrings; const StartClassName: string);
@@ -1098,9 +1090,10 @@ begin
   if (tvBrowse.Selected = nil) or (tvBrowse.Selected.Level = 0) then
     Exit; //==>
 
+  TCursor_TempHourglass;
+
   // Get the list of ancestor classes.
   InheritList := TStringList.Create;
-  Screen.Cursor := crHourglass;
   try
     DrawClassName := (TObject(tvBrowse.Selected.Data) as TBrowseClassInfoCollection).Name;
     InheritList.Add(DrawClassName);
@@ -1150,7 +1143,6 @@ begin
 
   finally
     FreeAndNil(InheritList);
-    Screen.Cursor := crDefault;
   end;
 end;
 
@@ -1238,14 +1230,13 @@ begin
   if (tvBrowse.Selected = nil) or (tvBrowse.Selected.Level = 0) then
     Exit;
   OInfo := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
-  Screen.Cursor := crHourglass;
+  TCursor_TempHourglass;
   Printer.Title := SClassReport;
   Printer.BeginDoc;
   try
     PrintClassBuiltIn(OInfo, Printer.Canvas);
   finally
     Printer.EndDoc;
-    Screen.Cursor := crDefault;
   end;
 end;
 
@@ -1404,15 +1395,13 @@ begin
   begin
     FIsFirstInvocation := False;
     Application.ProcessMessages;
-    Screen.Cursor := crHourglass;
-    try
-      StatusBar.SimpleText := SLoadingClasses;
-      StatusBar.Repaint;
-      ClassList.LoadFromFile;
-      LoadAllObjects;
-    finally
-      Screen.Cursor := crDefault;
-    end;
+
+    TCursor_TempHourglass;
+
+    StatusBar.SimpleText := SLoadingClasses;
+    StatusBar.Repaint;
+    ClassList.LoadFromFile;
+    LoadAllObjects;
   end;
 
   StatusBar.SimpleText := SLoadingProject;
@@ -1514,7 +1503,8 @@ begin
 
   OInfo := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
 
-  Screen.Cursor := crHourGlass;
+  TCursor_TempHourglass;
+
   Printer.Title := SClassReport;
   Printer.BeginDoc;
   try
@@ -1527,7 +1517,6 @@ begin
       FClassHierarchyBoxSpace);
   finally
     Printer.EndDoc;
-    Screen.Cursor := crDefault;
   end;
 end;
 
@@ -1774,14 +1763,11 @@ var
 begin
   if (tvBrowse.Selected = nil) or (tvBrowse.Selected.Level = 0) then
     Exit;
-  Self.Cursor := crHourglass;
-  try
-    OInfo := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
-    LoadList(OInfo);
-    StatusBar.SimpleText := OInfo.SourceName + ': ' + IntToStr(OInfo.LineNo);
-  finally
-    Self.Cursor := crDefault;
-  end;
+  TCursor_TempHourglass;
+
+  OInfo := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
+  LoadList(OInfo);
+  StatusBar.SimpleText := OInfo.SourceName + ': ' + IntToStr(OInfo.LineNo);
 end;
 
 procedure TfmClassBrowser.SetupEditorControls;

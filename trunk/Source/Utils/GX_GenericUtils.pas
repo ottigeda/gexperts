@@ -747,9 +747,6 @@ procedure GxLogException(const E: Exception; const Msg: string = '');
 // Show an error dialog if the error string is not empty
 function ShowError(const Error: string): Boolean;
 
-// Set the Screen.Cursor to crHourGlass until the interface goes out of scope
-function TempHourGlassCursor: IInterface;
-
 procedure GetEnvironmentVariables(Strings: TStrings);
 
 function FindTextIdent(Id: string; const Source: string;
@@ -861,15 +858,6 @@ const
 
 function StrCmpLogicalW(psz1, psz2: PWideChar): Integer; stdcall;
   external shlwapi32 name 'StrCmpLogicalW';
-
-type
-  TTempHourClassCursor = class(TInterfacedObject, IInterface)
-  private
-    FOldCursor: TCursor;
-  public
-    constructor Create;
-    destructor Destroy; override;
-  end;
 
 var
   ASCIICharTable: array [#0..#255] of Byte;
@@ -4252,24 +4240,6 @@ begin
   Result := Trim(Error) <> '';
   if Result then
     MessageDlg(Error, mtError, [mbOK], 0);
-end;
-
-constructor TTempHourClassCursor.Create;
-begin
-  inherited;
-  FOldCursor := Screen.Cursor;
-  Screen.Cursor := crHourGlass;
-end;
-
-destructor TTempHourClassCursor.Destroy;
-begin
-  Screen.Cursor := FOldCursor;
-  inherited;
-end;
-
-function TempHourGlassCursor: IInterface;
-begin
-  Result := TTempHourClassCursor.Create as IInterface;
 end;
 
 procedure GetEnvironmentVariables(Strings: TStrings);

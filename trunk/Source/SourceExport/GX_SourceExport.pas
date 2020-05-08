@@ -182,7 +182,6 @@ resourcestring
   SDialogTitle = 'Save %s As';
 var
   Exporter: TSynCustomExporter;
-  Cursor: IInterface;
 begin
   Assert(Assigned(SourceExportExpert));
 
@@ -194,7 +193,7 @@ begin
 
   if GetOpenSaveDialogExecute(dlgSave) then
   begin
-    Cursor := TempHourGlassCursor;
+    TCursor_TempHourglass;
     SourceExportExpert.FSaveDir := ExtractFilePath(ExpandFileName(dlgSave.FileName));
     SourceExportExpert.FSaveFilter := dlgSave.FilterIndex;
     if dlgSave.FilterIndex = 1 then
@@ -292,11 +291,10 @@ end;
 procedure TfmSourceExport.actPrintExecute(Sender: TObject);
 var
   SynPrint: TSynEditPrint;
-  Cursor: IInterface;
 begin
   Assert(Assigned(FEditor));
   Assert(Assigned(SourceExportExpert));
-  Cursor := TempHourGlassCursor;
+  TCursor_TempHourglass;
   SynPrint := TSynEditPrint.Create(nil);
   try
     SynPrint.SynEdit := FEditor;

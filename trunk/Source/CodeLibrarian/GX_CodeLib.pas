@@ -687,88 +687,83 @@ var
   IsSnippet: Boolean;
 begin
   try
-    Screen.Cursor := crHourGlass;
-    try
-      Node := nil;
-      if not First then
-      begin
-        //if ActiveControl = FCodeText then
-          Node := tvTopics.Selected
-        //else
-        //  Node := tvTopics.Selected.GetNext;
-      end;
-      if First or (Node = nil) then
-        Node := tvTopics.Items.GetFirstNode;
-      Match := 0;
-      InTopic := False;
-      FirstLoop := True;
-      while Node <> nil do
-      begin
-        NodePath := GetNodePath(Node);
-        IsSnippet := IsCodeSnippet(Node);
-        if IsSnippet then
-          CodeDB.OpenFile(NodePath)
-        else
-          CodeDB.CloseFile;
-        //{$IFOPT D+}SendDebug('Starting search from '+Node.Text+ ' for '+IntToStr(Integer(Node.Data)));{$ENDIF}
-        begin
-          //{$IFOPT D+}SendDebug('Found the key: '+IntToStr(Integer(Node.Data)));{$ENDIF}
-          if FirstLoop and IsSnippet and (FCodeText.Focused) and (Length(FCodeText.SelText) > 0) then
-          begin
-            InTopic := False;
-            Match := DoMatch(Copy(CodeDB.FileText, FCodeText.SelStart + Length(FCodeText.SelText) + 1));
-            //{$IFOPT D+}SendDebug('InterText search found '+FSearch.Text+' at '+IntToStr(Match)+' in '+Copy(CodeDB.FieldByName('Code').AsString, GetByteSelStart + FCodeText.SelLength, 999999));{$ENDIF}
-            if Match > 0 then
-            begin
-              //{$IFOPT D+}SendDebug('Found a match at position '+IntToStr(Match)+'("'+Copy(Copy(CodeDB.FieldByName('Code').AsString, GetByteSelStart + FCodeText.SelLength, 999999), 1, 15)+'")'+' SelStart = '+IntToStr(FCodeText.SelStart)+' SelLength = '+IntToStr(FCodeText.SelLength));{$ENDIF}
-              //FCodeText.Perform(EM_LINEFROMCHAR, FCodeText.SelStart, 0);
-              Match := Match + FCodeText.SelStart + Length(FCodeText.SelText);
-              //{$IFOPT D+}SendDebug('Matched Text: "'+Copy(CodeDB.FieldByName('Code').AsString, Match, 12)+'"');{$ENDIF}
-            end;
-          end
-          else // Search the complete topic and code text
-          begin
-            if not FirstLoop then
-            begin
-              InTopic := True;
-              Match := DoMatch(Node.Text);
-            end;
-            //{$IFOPT D+}SendDebug('Topic match on '+CodeDB.FieldByName(AttrTopic).AsString+' returned '+IntToStr(Match));{$ENDIF}
-            if (Match = 0) and IsSnippet then
-            begin
-              Match := DoMatch(CodeDB.FileText);
-              InTopic := False;
-              //{$IFOPT D+}SendDebug('Code match on '+CodeDB.FieldByName('Code').AsString+' returned '+IntToStr(Match));{$ENDIF}
-            end;
-          end;
-          if Match > 0 then Break;
-        end;
-        Node := Node.GetNext;
-        FirstLoop := False;
-      end;
-      if Node = nil then
-        SysUtils.Beep;
-      if Match > 0 then
-      begin
-        //{$IFOPT D+}SendDebug('Found a match!  InTopic: '+BooleanText(InTopic));{$ENDIF}
-        //{$IFOPT D+}SendDebug('Match Text: '+Copy(FCodeText.Lines.Text, Match, 10));{$ENDIF}
-        tvTopics.Selected := Node;
-        if InTopic then
-          tvTopics.SetFocus
-        else
-        begin
-          TWinControl_SetFocus(FCodeText);
-          Dec(Match);
-          FCodeText.SetSelection(Match, Length(FSearch.Text));
-          //{$IFOPT D+}SendDebug('Focused Text: '+Copy(FCodeText.Lines.Text, Match - 1, 10));{$ENDIF}
-        end;
-      end;
-    except
-      on E: Exception do
-        GxLogAndShowException(E);
+    Node := nil;
+    if not First then
+    begin
+      //if ActiveControl = FCodeText then
+        Node := tvTopics.Selected
+      //else
+      //  Node := tvTopics.Selected.GetNext;
     end;
-  finally
-    Screen.Cursor := crDefault;
+    if First or (Node = nil) then
+      Node := tvTopics.Items.GetFirstNode;
+    Match := 0;
+    InTopic := False;
+    FirstLoop := True;
+    while Node <> nil do
+    begin
+      NodePath := GetNodePath(Node);
+      IsSnippet := IsCodeSnippet(Node);
+      if IsSnippet then
+        CodeDB.OpenFile(NodePath)
+      else
+        CodeDB.CloseFile;
+      //{$IFOPT D+}SendDebug('Starting search from '+Node.Text+ ' for '+IntToStr(Integer(Node.Data)));{$ENDIF}
+      begin
+        //{$IFOPT D+}SendDebug('Found the key: '+IntToStr(Integer(Node.Data)));{$ENDIF}
+        if FirstLoop and IsSnippet and (FCodeText.Focused) and (Length(FCodeText.SelText) > 0) then
+        begin
+          InTopic := False;
+          Match := DoMatch(Copy(CodeDB.FileText, FCodeText.SelStart + Length(FCodeText.SelText) + 1));
+          //{$IFOPT D+}SendDebug('InterText search found '+FSearch.Text+' at '+IntToStr(Match)+' in '+Copy(CodeDB.FieldByName('Code').AsString, GetByteSelStart + FCodeText.SelLength, 999999));{$ENDIF}
+          if Match > 0 then
+          begin
+            //{$IFOPT D+}SendDebug('Found a match at position '+IntToStr(Match)+'("'+Copy(Copy(CodeDB.FieldByName('Code').AsString, GetByteSelStart + FCodeText.SelLength, 999999), 1, 15)+'")'+' SelStart = '+IntToStr(FCodeText.SelStart)+' SelLength = '+IntToStr(FCodeText.SelLength));{$ENDIF}
+            //FCodeText.Perform(EM_LINEFROMCHAR, FCodeText.SelStart, 0);
+            Match := Match + FCodeText.SelStart + Length(FCodeText.SelText);
+            //{$IFOPT D+}SendDebug('Matched Text: "'+Copy(CodeDB.FieldByName('Code').AsString, Match, 12)+'"');{$ENDIF}
+          end;
+        end
+        else // Search the complete topic and code text
+        begin
+          if not FirstLoop then
+          begin
+            InTopic := True;
+            Match := DoMatch(Node.Text);
+          end;
+          //{$IFOPT D+}SendDebug('Topic match on '+CodeDB.FieldByName(AttrTopic).AsString+' returned '+IntToStr(Match));{$ENDIF}
+          if (Match = 0) and IsSnippet then
+          begin
+            Match := DoMatch(CodeDB.FileText);
+            InTopic := False;
+            //{$IFOPT D+}SendDebug('Code match on '+CodeDB.FieldByName('Code').AsString+' returned '+IntToStr(Match));{$ENDIF}
+          end;
+        end;
+        if Match > 0 then Break;
+      end;
+      Node := Node.GetNext;
+      FirstLoop := False;
+    end;
+    if Node = nil then
+      SysUtils.Beep;
+    if Match > 0 then
+    begin
+      //{$IFOPT D+}SendDebug('Found a match!  InTopic: '+BooleanText(InTopic));{$ENDIF}
+      //{$IFOPT D+}SendDebug('Match Text: '+Copy(FCodeText.Lines.Text, Match, 10));{$ENDIF}
+      tvTopics.Selected := Node;
+      if InTopic then
+        tvTopics.SetFocus
+      else
+      begin
+        TWinControl_SetFocus(FCodeText);
+        Dec(Match);
+        FCodeText.SetSelection(Match, Length(FSearch.Text));
+        //{$IFOPT D+}SendDebug('Focused Text: '+Copy(FCodeText.Lines.Text, Match - 1, 10));{$ENDIF}
+      end;
+    end;
+  except
+    on E: Exception do
+      GxLogAndShowException(E);
   end;
 end;
 
@@ -1107,32 +1102,29 @@ begin
   SetToolbarGradient(ToolBar);
   SetupSyntaxHighlightingControl;
 
-  Screen.Cursor := crHourglass;
-  try
-    CodeDB := nil;
-    {$IFOPT D+}SendDebug('Setting CodeLib storage path');{$ENDIF}
-    StoragePath := AddSlash(ConfigInfo.ConfigPath);
-    {$IFOPT D+}SendDebug('Storage path: ' + StoragePath);{$ENDIF}
-    FLayout := clSide;
+  TCursor_TempHourglass;
 
-    FModified := False;
-    CenterForm(Self);
-    {$IFOPT D+}SendDebug('Loading CodeLib settings');{$ENDIF}
-    LoadSettings;
-    {$IFOPT D+}SendDebug('Opening CodeLib storage');{$ENDIF}
-    CodeDB := OpenStorage(StoragePath + DefaultFileName); // do not localize
-    if CodeDB = nil then
-    begin
-      MessageDlg(SCouldNotCreateStorage, mtError, [mbOK], 0);
-      Exit;
-    end;
-    {$IFOPT D+}SendDebug('Opened storage file');{$ENDIF}
-    InitializeTreeView;
-    InitializeSyntaxLanguages;
-    FModified := False;
-  finally
-    Screen.Cursor := crDefault;
+  CodeDB := nil;
+  {$IFOPT D+}SendDebug('Setting CodeLib storage path');{$ENDIF}
+  StoragePath := AddSlash(ConfigInfo.ConfigPath);
+  {$IFOPT D+}SendDebug('Storage path: ' + StoragePath);{$ENDIF}
+  FLayout := clSide;
+
+  FModified := False;
+  CenterForm(Self);
+  {$IFOPT D+}SendDebug('Loading CodeLib settings');{$ENDIF}
+  LoadSettings;
+  {$IFOPT D+}SendDebug('Opening CodeLib storage');{$ENDIF}
+  CodeDB := OpenStorage(StoragePath + DefaultFileName); // do not localize
+  if CodeDB = nil then
+  begin
+    MessageDlg(SCouldNotCreateStorage, mtError, [mbOK], 0);
+    Exit;
   end;
+  {$IFOPT D+}SendDebug('Opened storage file');{$ENDIF}
+  InitializeTreeView;
+  InitializeSyntaxLanguages;
+  FModified := False;
 end;
 
 destructor TfmCodeLib.Destroy;

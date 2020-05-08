@@ -129,11 +129,12 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils,
+  SysUtils, Math,
   Graphics, StdCtrls, Forms, Dialogs, ToolsAPI,
+  u_dzVclUtils,
   GX_Actions, GX_ActionBroker,
   GX_GxUtils, GX_GenericUtils, GX_IdeUtils,
-  GX_EditReader, GX_UsesManager, GX_UnitPositions, Math;
+  GX_EditReader, GX_UsesManager, GX_UnitPositions;
 
 const
   MinMenuLines = 5;
@@ -294,10 +295,8 @@ begin
 end;
 
 procedure TRefCountedPopupMenu.PopupAt(const APoint: TPoint);
-var
-  Cursor: IInterface;
 begin
-  Cursor := TempHourglassCursor;
+  TCursor_TempHourglass;
   Application.ProcessMessages;
   FPopupPoint := APoint;
 

@@ -349,12 +349,11 @@ end;
 procedure TfmProcedureList.lvProcsColumnClick(Sender: TObject; Column: TListColumn);
 var
   i: Integer;
-  Cursor: IInterface;
 begin
   i := Column.Index;
   if i <> 0 then
   begin
-    Cursor := TempHourGlassCursor;
+    TCursor_TempHourglass;
     FOptions.SortOnColumn := i;
     FillListBox;
   end;
@@ -458,11 +457,10 @@ var
   FileName: string;
   TempFileName: string;
   Dlg: TfmProcedureList;
-  Cursor: IInterface;
 resourcestring
   SPasOrDprOrCPPOnly = 'This expert is for use in .pas, .dpr, .inc, .cpp, .c, and .h files only';
 begin
-  Cursor := TempHourGlassCursor;
+  TCursor_TempHourglass;
   FileName := GxOtaGetCurrentSourceFile;
   if IsForm(FileName) then
   begin

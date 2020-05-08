@@ -542,7 +542,6 @@ var
   TimeStart: TDateTime;
   FilesSearched: Cardinal;
   MatchesFound: Cardinal;
-  Cursor: IInterface;
   ResultFiles: TStringList;
   I : Integer;
   AItemIndex, ATopIndex : Integer;
@@ -581,7 +580,7 @@ begin
     EnsureFormVisible(Self);
 
     TimeStart := Now;
-    Cursor := TempHourGlassCursor;
+    TCursor_TempHourglass;
 
     FSearcher := TGrepSearchRunner.Create(FGrepSettings, lbResults.Items, ResultFiles);
     try
@@ -1887,7 +1886,6 @@ procedure TfmGrepResults.actReplaceAllExecute(Sender: TObject);
 var
   TimeStart: TDateTime;
   MatchesFound: Integer;
-  Cursor: IInterface;
 begin
   Assert(not DoingSearchOrReplace);
 
@@ -1896,7 +1894,7 @@ begin
 
   FReplaceInProgress := True;
   try
-    Cursor := TempHourGlassCursor;
+    TCursor_TempHourglass;
     TimeStart := Now;
     SetStatusString('');
     MatchesFound := ReplaceAll(lbResults.Items, FGrepSettings);
@@ -1918,7 +1916,6 @@ var
   FileResult: TFileResult;
   MatchFile: string;
   ResultObject: TObject;
-  Cursor: IInterface;
 begin
   Assert(not DoingSearchOrReplace);
 
@@ -1935,7 +1932,7 @@ begin
       FileResult := TFileResult(ResultObject);
       if not QueryUserForReplaceOptions(FileResult.FileName) then
         Exit;
-      Cursor := TempHourGlassCursor;
+      TCursor_TempHourglass;
       TimeStart := Now;
       MatchesFound := ReplaceAllInFiles(FileResult, FGrepSettings);
     end
@@ -1945,7 +1942,7 @@ begin
       MatchFile := TFileResult(CurrentLine.Collection).FileName;
       if not QueryUserForReplaceOptions(MatchFile + SReplaceLine + IntToStr(CurrentLine.LineNo)) then
         Exit;
-      Cursor := TempHourGlassCursor;
+      TCursor_TempHourglass;
       TimeStart := Now;
       MatchesFound := ReplaceLine(CurrentLine, FGrepSettings);
     end

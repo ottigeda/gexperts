@@ -236,10 +236,8 @@ begin
 end;
 
 procedure TfmProofreaderConfig.btnOKClick(Sender: TObject);
-var
-  Cursor: IInterface;
 begin
-  Cursor := TempHourGlassCursor;
+  TCursor_TempHourglass;
   with FProofreaderData do
   begin
     // Store options

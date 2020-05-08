@@ -1491,12 +1491,10 @@ begin
 end;
 
 procedure TfmProjOptionSets.actApplySetExecute(Sender: TObject);
-var
-  Cursor: IInterface;
 begin
   if HaveSelectedSet then
   begin
-    Cursor := TempHourGlassCursor;
+    TCursor_TempHourglass;
     ApplySetOptions;
   end;
 end;

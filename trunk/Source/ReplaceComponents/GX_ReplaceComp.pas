@@ -56,6 +56,7 @@ implementation
 
 uses
   SysUtils, Windows, Dialogs, ActnList,
+  u_dzVclUtils,
   GX_Experts, GX_GxUtils, GX_OtaUtils, GX_GenericUtils, GX_GenericClasses,
   GX_ReplaceCompMapList, GX_ConfigurationInfo, GX_ReplaceCompLog, GX_ReplaceCompUtils;
 
@@ -251,34 +252,32 @@ begin
   SaveFormSettings;
 
   ModalResult := mrOk;
-  Screen.Cursor := crHourglass;
+
+  TCursor_TempHourglass;
+
+  FController := PrepareController;
   try
-    FController := PrepareController;
+    FController.SourceClassName := SearchComponent;
+    FController.DestClassName := ReplaceComponent;
+
+    FController.SignalBegin;
     try
-      FController.SourceClassName := SearchComponent;
-      FController.DestClassName := ReplaceComponent;
-
-      FController.SignalBegin;
-      try
-        if rbSelectedOnCurrentForm.Checked then
-          ReplaceComponentsOnCurrentForm(True)
-        else if rbAllOnCurrentForm.Checked then
-          ReplaceComponentsOnCurrentForm(False)
-        else if rbAllInProject.Checked then
-          ReplaceComponentsOnAllForms;
-      finally
-        FController.SignalEnd;
-      end;
-      // Refresh the object inspector, since some properties have changed
-      GxOtaRefreshCurrentDesigner;
-
-      if TCompRepControllerReal(FController).ShowLogWin then
-        ShowLogWin(SearchComponent, ReplaceComponent, TCompRepControllerReal(FController).LogEvents);
+      if rbSelectedOnCurrentForm.Checked then
+        ReplaceComponentsOnCurrentForm(True)
+      else if rbAllOnCurrentForm.Checked then
+        ReplaceComponentsOnCurrentForm(False)
+      else if rbAllInProject.Checked then
+        ReplaceComponentsOnAllForms;
     finally
-      FreeAndNil(FController);
+      FController.SignalEnd;
     end;
+      // Refresh the object inspector, since some properties have changed
+    GxOtaRefreshCurrentDesigner;
+
+    if TCompRepControllerReal(FController).ShowLogWin then
+      ShowLogWin(SearchComponent, ReplaceComponent, TCompRepControllerReal(FController).LogEvents);
   finally
-    Screen.Cursor := crDefault;
+    FreeAndNil(FController);
   end;
 end;
 

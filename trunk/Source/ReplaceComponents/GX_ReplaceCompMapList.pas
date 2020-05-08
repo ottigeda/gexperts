@@ -496,12 +496,11 @@ end;
 procedure TfmReplaceCompMapList.lvMapItemsColumnClick(Sender: TObject; Column: TListColumn);
 var
   i: Integer;
-  Cursor: IInterface;
 begin
   i := Column.Index;
   if i >= 0 then
   begin
-    Cursor := TempHourGlassCursor;
+    TCursor_TempHourglass;
     Inc(i);
     if Abs(FSortOnColumn) = i then
       FSortOnColumn := -FSortOnColumn

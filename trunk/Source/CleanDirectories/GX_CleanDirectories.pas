@@ -519,6 +519,7 @@ resourcestring
 var
   i: Integer;
   ConfirmMessage: string;
+  Cursor: IInterface;
 begin
   UpdateCleanExtList;
   FTotalBytesCleaned := 0;
@@ -527,7 +528,8 @@ begin
   lCleaning.Visible := True;
   lCleaning.Repaint;
 
-  Self.Cursor := crHourglass;
+  Cursor := TCursor_TempHourglass;
+
   try
     for i := 0 to clbDirs.Items.Count - 1 do
     begin
@@ -544,13 +546,13 @@ begin
       CleanDirectory(clbDirs.Items[i], clbDirs.Checked[i]);
     end;
   finally
-    Self.Cursor := crDefault;
     if FTotalFilesCleaned = 1 then
       ConfirmMessage := SOneCleaningComplete
     else
       ConfirmMessage := SCleaningComplete;
     // Prevent the status dialog from becoming hidden behind this window
     Self.Hide;
+    Cursor := nil;
     MessageDlg(Format(ConfirmMessage,
                       [FTotalFilesCleaned,
                        FormatFloat('#,;;0', FTotalBytesCleaned)]),

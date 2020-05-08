@@ -634,6 +634,8 @@ resourcestring
   SFilesNotFound = 'The following included files could not be found for backup:' + sLineBreak +
     sLineBreak +
     '%s';
+var
+  Cursor: IInterface;
 begin
   lbFiles.Clear;
   FFilesFoundNowhere.Clear;
@@ -647,14 +649,13 @@ begin
     FProgressForm.Progress.Max := 40;
 
     FDoAbortCollectingFiles := False;
-    Screen.Cursor := crHourglass;
+    TCursor_TempHourglass;
     lbFiles.Items.BeginUpdate;
     try
       DoCollectFiles;
     finally
       lbFiles.Sorted := True;
       lbFiles.Items.EndUpdate;
-      Screen.Cursor := crDefault;
     end;
 
     if FBackupExpert.FBackupInc then
@@ -676,6 +677,7 @@ begin
       FreeAndNil(FProgressForm);
 
       if FFilesFoundNowhere.Count > 0 then begin
+        Cursor := nil;
         TfmBackupNotFound.Execute(Self, FFilesFoundNowhere, FBackupExpert.FollowLibraryPath);
       end;
     end;
@@ -688,7 +690,6 @@ end;
 
 procedure TfmBackup.PerformBackup(const Path, FileName: string);
 var
-  Cursor: IInterface;
   DestFile: string;
 begin
   Assert(FProgressForm = nil);
@@ -697,7 +698,7 @@ begin
   try
     DestFile := Path + FileName;
     FZipComponent := TGXZipper.Create(DestFile, fmCreate or fmShareDenyWrite);
-    Cursor := TempHourGlassCursor;
+    TCursor_TempHourglass;
     FProgressForm.Progress.Position := 0;
     Self.Enabled := False;
     FProgressForm.Show;
