@@ -8,8 +8,9 @@ uses
   Windows, SysUtils,
   Classes, Controls, Forms, Menus, ComCtrls, Buttons, ImgList, ImageList,
   ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types,
+  u_dzSpeedBitBtn,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
-  GX_UnitExportsParser,
+  GX_UnitExportsParser, GX_UsesExpertOptions,
   GX_OtaUtils;
 
 {$IFOPT D+}
@@ -41,6 +42,7 @@ type
     FDisableCache: Boolean;
     FOrigFileAddUnitExecute: TNotifyEvent;
     FReadMap: Boolean;
+    FFilterIdentifiers: TFilterIdentifiersEnum;
     FProjectChangedNotifier: TProjectChangedNotifier;
     FUnitExportParserThread: TUnitExportParserThread;
     procedure InternalExecute;
@@ -102,14 +104,18 @@ type
     m_ImplSep2: TMenuItem;
     pnlFooter: TPanel;
     pnlFavFooter: TPanel;
+    grp_FavoriteAdd: TGroupBox;
     btnFavoriteAddToInterface: TButton;
     btnFavoriteAddToImplementation: TButton;
     btnFavoriteAddToFavorites: TButton;
     btnFavoriteDeleteFromFavorites: TButton;
     pnlProjFooter: TPanel;
+    grp_ProjectAdd: TGroupBox;
     btnProjectAddToInterface: TButton;
     btnProjectAddToImplementation: TButton;
+    grp_IdentifiersAdd: TGroupBox;
     pnlCommonFooter: TPanel;
+    grp_CommonAdd: TGroupBox;
     btnCommonAddToInterface: TButton;
     btnCommonAddToImplementation: TButton;
     dlgOpen: TOpenDialog;
@@ -120,8 +126,10 @@ type
     actImplMove: TAction;
     actFavDelUnit: TAction;
     actAvailAddToFav: TAction;
-    actAvailAddToImpl: TAction;
-    actAvailAddToIntf: TAction;
+    actAddToImplementationMenu: TAction;
+    actAddToInterfaceMenu: TAction;
+    actAddToInterfaceBtn: TAction;
+    actAddToImplementationBtn: TAction;
     b_DeleteFromIntf: TButton;
     b_DeleteFromImpl: TButton;
     b_MoveToImpl: TButton;
@@ -129,6 +137,7 @@ type
     actOpenUnit: TAction;
     tabSearchPath: TTabSheet;
     pnlSearchPathFooter: TPanel;
+    grp_SearchPathAdd: TGroupBox;
     btnSearchPathAddToIntf: TButton;
     btnSearchPathAddToImpl: TButton;
     pnlSearchPath: TPanel;
@@ -193,9 +202,10 @@ type
     mi_SaveProjectList: TMenuItem;
     il_MenuIcons: TImageList;
     dlgSave: TSaveDialog;
-    pnlMatchIdentifier: TPanel;
-    rbMatchAnyware: TRadioButton;
-    rbMatchAtStart: TRadioButton;
+    grp_IdentifiersMatch: TGroupBox;
+    b_IdentifierMatchAnywhere: TBitBtn;
+    b_IdentifierMatchStart: TBitBtn;
+    b_IdentifierMatchSort: TBitBtn;
     p_NoMapFile: TPanel;
     l_NoMapFile: TLabel;
     b_NoMapFileClose: TButton;
@@ -221,8 +231,8 @@ type
     procedure actIntfDeleteExecute(Sender: TObject);
     procedure actFavDelUnitExecute(Sender: TObject);
     procedure actAvailAddToFavExecute(Sender: TObject);
-    procedure actAvailAddToIntfExecute(Sender: TObject);
-    procedure actAvailAddToImplExecute(Sender: TObject);
+    procedure actAddToInterfaceExecute(Sender: TObject);
+    procedure actAddToImplementationExecute(Sender: TObject);
     procedure sg_InterfaceDblClick(Sender: TObject);
     procedure lbxAvailDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
@@ -269,8 +279,6 @@ type
     procedure btnCopySaveProjectListClick(Sender: TObject);
     procedure btnCopySaveProjectListMenuClick(Sender: TObject);
     procedure mi_CopyProjectListToClipboardClick(Sender: TObject);
-    procedure rbMatchAnywareClick(Sender: TObject);
-    procedure rbMatchAtStartClick(Sender: TObject);
     procedure mi_SaveProjectListClick(Sender: TObject);
     procedure b_NoMapFileCloseClick(Sender: TObject);
     procedure mCopyThisFileToTheClipboardClick(Sender: TObject);
@@ -286,10 +294,7 @@ type
     procedure sg_IdentifiersSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
     procedure sg_ProjectSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
     procedure sg_SearchPathSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure mSearchThisOnTheWebClick(Sender: TObject);
-    procedure rbMatchAnywareEnter(Sender: TObject);
-    procedure rbMatchAtStartEnter(Sender: TObject);
   private
     FLeftRatio: Double;
     FAliases: TStringList;
@@ -300,6 +305,7 @@ type
     FOldToNewUnitNameMap: TStringList;
     FCaption_lblFilter: string;
     FForceFocusToIdentifierFilter: Boolean;
+    FIdentifierMatchGrp: TdzSpeedBitBtnGroup;
     procedure GetCommonUnits;
     procedure GetProjectUnits;
     function TryGetMapFileUnits: Boolean;
@@ -345,6 +351,7 @@ type
     procedure SaveProjectListToDisk;
     procedure ShowIdentifiersFilterResult(const cnt: Integer);
     procedure ShowSelectedUnitPathInStatusBar(const ARow: Integer);
+    procedure sb_MatchWhereClick(Sender: TObject);
   protected
     FProjectUnits: TStringList;
     FCommonUnits: TStringList;
@@ -367,7 +374,7 @@ uses
 {$IFOPT D+}
   GX_DbugIntf,
 {$ENDIF D+}
-  GX_UsesExpertOptions, GX_MessageBox;
+  GX_MessageBox;
 
 { TUsesClauseMgrExpert }
 
@@ -556,7 +563,7 @@ begin
   CacheDir := ConfigInfo.CachingPath + 'UsesExpertCache';
 
   if TfmUsesExpertOptions.Execute(Application, Found, CacheDir, FReadMap, FReplaceFileUseUnit,
-    FParseAll, FDisableCache) then begin
+    FParseAll, FDisableCache, FFilterIdentifiers) then begin
     SaveSettings;
     if Found then begin
       if FReplaceFileUseUnit then begin
@@ -635,6 +642,15 @@ begin
   DoubleBuffered := True;
   pnlUnits.DoubleBuffered := True;
   pnlUses.DoubleBuffered := True;
+
+  FIdentifierMatchGrp :=  TdzSpeedBitBtnGroup.Create;
+  FIdentifierMatchGrp.AllowAllUp := False;
+  FIdentifierMatchGrp.Add(b_IdentifierMatchStart, Ord(fieStartOnly));
+  FIdentifierMatchGrp.Add(b_IdentifierMatchAnywhere, Ord(fieAnywhere));
+  FIdentifierMatchGrp.Add(b_IdentifierMatchSort, Ord(fieStartFirst));
+  // this only works if the order the buttons are added is the same as the order of the enums
+  FIdentifierMatchGrp.SetDown(Ord(FUsesExpert.FFilterIdentifiers));
+  FIdentifierMatchGrp.OnClick := sb_MatchWhereClick;
 
   FLeftRatio :=  pnlUses.Width / ClientWidth;
 
@@ -872,18 +888,6 @@ begin
   FreeAndNil(FSearchPathUnits);
 
   FreeAndNil(FFavUnitsExports);
-end;
-
-procedure TfmUsesManager.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  inherited;
-  if (ssAlt in Shift) and edtIdentifierFilter.Focused then begin
-    if Key = Ord('A') then begin
-      FForceFocusToIdentifierFilter := True;
-    end else if Key = Ord('T') then begin
-      FForceFocusToIdentifierFilter := True;
-    end;
-  end;
 end;
 
 procedure TfmUsesManager.FormResize(Sender: TObject);
@@ -1299,8 +1303,10 @@ begin
   AvailableSourceList := GetAvailableSourceList;
   ActiveLBHasSelection := HaveSelectedItem(AvailableSourceList);
 
-  actAvailAddToImpl.Enabled := ActiveLBHasSelection;
-  actAvailAddToIntf.Enabled := ActiveLBHasSelection;
+  actAddToImplementationBtn.Enabled := ActiveLBHasSelection;
+  actAddToImplementationMenu.Enabled := ActiveLBHasSelection;
+  actAddToInterfaceBtn.Enabled := ActiveLBHasSelection;
+  actAddToInterfaceMenu.Enabled := ActiveLBHasSelection;
   actAvailAddToFav.Enabled := ActiveLBHasSelection;
   actFavDelUnit.Enabled := HaveSelectedItem(sg_Favorite);
 
@@ -1332,6 +1338,8 @@ begin
     Exit; //==>
 
   Result := sg.Selection.Bottom - sg.Selection.Top >= 0;
+  if Result then
+    Result := (sg.Cells[0, sg.Selection.Top] <> '');
 end;
 
 procedure TfmUsesManager.DeleteSelected(sg: TStringGrid);
@@ -1441,7 +1449,7 @@ begin
   pcUnits.Change;
 end;
 
-procedure TfmUsesManager.actAvailAddToIntfExecute(Sender: TObject);
+procedure TfmUsesManager.actAddToInterfaceExecute(Sender: TObject);
 var
   Src: TStringGrid;
   i: Integer;
@@ -1457,7 +1465,7 @@ begin
     sg_Interface.Row := Row;
 end;
 
-procedure TfmUsesManager.actAvailAddToImplExecute(Sender: TObject);
+procedure TfmUsesManager.actAddToImplementationExecute(Sender: TObject);
 var
   i: Integer;
   Src: TStringGrid;
@@ -1822,22 +1830,27 @@ var
   Filter: string;
   FixedRows: Integer;
   FilterList: TStrings;
-  MatchAnywhere: Boolean;
+  FilterType: TFilterIdentifiersEnum;
   cnt: Integer;
   MultiFilter: TStringList;
+  Idx: Integer;
 begin
 {$IFOPT D+}
   SendDebug('Filtering identifiers');
 {$ENDIF D+}
   Filter := Trim(edtIdentifierFilter.Text);
 
-  MatchAnywhere := rbMatchAnyware.Checked;
+  if FIdentifierMatchGrp.TryGetSelected(Idx) then
+    FilterType := TFilterIdentifiersEnum(Idx)
+  else
+    FilterType := FUsesExpert.FFilterIdentifiers;
+
   FilterList := TStringList.Create;
   try
     if Filter = '' then
       FilterList.Assign(FFavUnitsExports)
     else begin
-      if MatchAnywhere then begin
+      if FilterType in [fieAnywhere, fieStartFirst] then begin
         MultiFilter := TStringList.Create;
         try
           MultiFilter.Delimiter := ' ';
@@ -2541,46 +2554,16 @@ begin
   CopyProjectListToClipboard;
 end;
 
-procedure TfmUsesManager.rbMatchAnywareClick(Sender: TObject);
+procedure TfmUsesManager.sb_MatchWhereClick(Sender: TObject);
 begin
-  // Re-filter:
   Forms.Screen.Cursor := crHourGlass;
   try
     FilterIdentifiers;
   finally
     Forms.Screen.Cursor := crDefault;
   end;
-
-  // Todo: Save this setting
-end;
-
-procedure TfmUsesManager.rbMatchAnywareEnter(Sender: TObject);
-begin
-  if FForceFocusToIdentifierFilter then begin
-    rbMatchAnyware.Checked := True;
-    edtIdentifierFilter.SetFocus;
-  end;
-end;
-
-procedure TfmUsesManager.rbMatchAtStartClick(Sender: TObject);
-begin
-  // Re-filter:
-  Forms.Screen.Cursor := crHourGlass;
-  try
-    FilterIdentifiers;
-  finally
-    Forms.Screen.Cursor := crDefault;
-  end;
-
-  // Todo: Save this setting
-end;
-
-procedure TfmUsesManager.rbMatchAtStartEnter(Sender: TObject);
-begin
-  if FForceFocusToIdentifierFilter then begin
-    rbMatchAtStart.Checked := True;
-    edtIdentifierFilter.SetFocus;
-  end;
+  FForceFocusToIdentifierFilter := True;
+  edtIdentifierFilter.SetFocus;
 end;
 
 procedure TfmUsesManager.mi_SaveProjectListClick(Sender: TObject);

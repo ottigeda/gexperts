@@ -4,7 +4,7 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Uses Clause Manager Options'
-  ClientHeight = 145
+  ClientHeight = 257
   ClientWidth = 289
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,7 +16,7 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
   Position = poScreenCenter
   DesignSize = (
     289
-    145)
+    257)
   PixelsPerInch = 96
   TextHeight = 13
   object chkReadMap: TCheckBox
@@ -57,7 +57,7 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
   end
   object btnOK: TButton
     Left = 128
-    Top = 112
+    Top = 224
     Width = 75
     Height = 25
     Cancel = True
@@ -68,7 +68,7 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
   end
   object btnCancel: TButton
     Left = 208
-    Top = 112
+    Top = 224
     Width = 75
     Height = 25
     Cancel = True
@@ -85,12 +85,26 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
     TabOrder = 3
   end
   object btnClearCache: TButton
-    Left = 8
-    Top = 112
+    Left = 40
+    Top = 104
     Width = 75
     Height = 25
     Caption = 'Clear Cache'
     TabOrder = 4
     OnClick = btnClearCacheClick
+  end
+  object rg_FilterIdentifiers: TRadioGroup
+    Left = 8
+    Top = 136
+    Width = 273
+    Height = 81
+    Caption = 'Show identifiers matching search string ...'
+    Items.Strings = (
+      'at start only'
+      'anywhere'
+      'at start first then anywhere')
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 7
   end
 end

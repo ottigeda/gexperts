@@ -12,7 +12,11 @@ uses
   Controls,
   Forms,
   Dialogs,
-  StdCtrls;
+  StdCtrls,
+  ExtCtrls;
+
+type
+  TFilterIdentifiersEnum = (fieStartOnly, fieAnywhere, fieStartFirst);
 
 type
   TfmUsesExpertOptions = class(TForm)
@@ -23,16 +27,20 @@ type
     chkParseAll: TCheckBox;
     chkDisableParserCache: TCheckBox;
     btnClearCache: TButton;
+    rg_FilterIdentifiers: TRadioGroup;
     procedure btnClearCacheClick(Sender: TObject);
   private
     FCacheDir: string;
     procedure SetData(const _CanReplaceFindUseUnit: Boolean; const _CacheDir: string;
-      const _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache: Boolean);
-    procedure GetData(out _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache: Boolean);
+      const _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache: Boolean;
+      _FilterIdentifiers: TFilterIdentifiersEnum);
+    procedure GetData(out _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache: Boolean;
+      out _FilterIdentifiers: TFilterIdentifiersEnum);
   public
     class function Execute(_Owner: TComponent; _CanReplaceFindUseUnit: Boolean;
       const _CacheDir: string;
-      var _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache: Boolean): Boolean;
+      var _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache: Boolean;
+      var _FilterIdentifiers: TFilterIdentifiersEnum): Boolean;
   end;
 
 implementation
@@ -40,39 +48,43 @@ implementation
 {$R *.dfm}
 
 uses
-  GX_MessageBox, u_dzFileUtils;
+  u_dzFileUtils,
+  GX_MessageBox;
 
 { TfmUsesExpertOptions }
 
 class function TfmUsesExpertOptions.Execute(_Owner: TComponent; _CanReplaceFindUseUnit: Boolean;
   const _CacheDir: string;
-  var _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache: Boolean): Boolean;
+  var _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache: Boolean;
+  var _FilterIdentifiers: TFilterIdentifiersEnum): Boolean;
 var
   frm: TfmUsesExpertOptions;
 begin
   frm := TfmUsesExpertOptions.Create(_Owner);
   try
     frm.SetData(_CanReplaceFindUseUnit, _CacheDir, _ReadMapFile, _ReplaceFileUseUnit, _ParseAll,
-      _DisableCache);
+      _DisableCache, _FilterIdentifiers);
     Result := (frm.ShowModal = mrOk);
     if Result then
-      frm.GetData(_ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache);
+      frm.GetData(_ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache, _FilterIdentifiers);
   finally
     FreeAndNil(frm);
   end;
 end;
 
-procedure TfmUsesExpertOptions.GetData(out _ReadMapFile, _ReplaceFileUseUnit, _ParseAll: Boolean;
-  out _DisableCache: Boolean);
+procedure TfmUsesExpertOptions.GetData(out _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache: Boolean;
+  out _FilterIdentifiers: TFilterIdentifiersEnum);
 begin
   _ReadMapFile := chkReadMap.Checked;
   _ReplaceFileUseUnit := chkReplaceFileUnit.Checked;
   _ParseAll := chkParseAll.Checked;
   _DisableCache := chkDisableParserCache.Checked;
+  rg_FilterIdentifiers.ItemIndex := Ord(_FilterIdentifiers);
 end;
 
 procedure TfmUsesExpertOptions.SetData(const _CanReplaceFindUseUnit: Boolean; const _CacheDir: string;
-  const _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache: Boolean);
+  const _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache: Boolean;
+  _FilterIdentifiers: TFilterIdentifiersEnum);
 begin
   chkReplaceFileUnit.Enabled := _CanReplaceFindUseUnit;
   FCacheDir := _CacheDir;
@@ -83,6 +95,7 @@ begin
   chkReplaceFileUnit.Checked := _ReplaceFileUseUnit;
   chkParseAll.Checked := _ParseAll;
   chkDisableParserCache.Checked := _DisableCache;
+  _FilterIdentifiers := TFilterIdentifiersEnum(rg_FilterIdentifiers.ItemIndex);
 end;
 
 { TClearCacheMessage }

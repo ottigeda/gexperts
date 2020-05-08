@@ -19,7 +19,6 @@ object fmUsesManager: TfmUsesManager
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnKeyDown = FormKeyDown
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
@@ -55,42 +54,50 @@ object fmUsesManager: TfmUsesManager
         ImageIndex = 3
         object pnlSearchPathFooter: TPanel
           Left = 0
-          Top = 321
+          Top = 304
           Width = 602
-          Height = 31
+          Height = 48
           Align = alBottom
           BevelOuter = bvNone
           TabOrder = 1
-          object btnSearchPathAddToIntf: TButton
+          object grp_SearchPathAdd: TGroupBox
             Left = 4
             Top = 0
-            Width = 145
-            Height = 25
-            Action = actAvailAddToIntf
+            Width = 265
+            Height = 49
+            Caption = 'Add to ...'
             TabOrder = 0
-          end
-          object btnSearchPathAddToImpl: TButton
-            Left = 154
-            Top = 0
-            Width = 145
-            Height = 25
-            Action = actAvailAddToImpl
-            TabOrder = 1
+            object btnSearchPathAddToIntf: TButton
+              Left = 8
+              Top = 16
+              Width = 121
+              Height = 25
+              Action = actAddToInterfaceBtn
+              TabOrder = 0
+            end
+            object btnSearchPathAddToImpl: TButton
+              Left = 136
+              Top = 16
+              Width = 121
+              Height = 25
+              Action = actAddToImplementationBtn
+              TabOrder = 1
+            end
           end
           object btnAddSearchPathlToFavorites: TButton
-            Left = 304
-            Top = 0
+            Left = 288
+            Top = 16
             Width = 145
             Height = 25
             Action = actAvailAddAllToFav
-            TabOrder = 2
+            TabOrder = 1
           end
         end
         object pnlSearchPath: TPanel
           Left = 0
           Top = 0
           Width = 602
-          Height = 321
+          Height = 304
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -100,7 +107,7 @@ object fmUsesManager: TfmUsesManager
             Left = 3
             Top = 3
             Width = 596
-            Height = 315
+            Height = 298
             Align = alClient
             ColCount = 1
             DefaultColWidth = 100
@@ -127,7 +134,7 @@ object fmUsesManager: TfmUsesManager
           Left = 0
           Top = 0
           Width = 602
-          Height = 321
+          Height = 304
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -137,7 +144,7 @@ object fmUsesManager: TfmUsesManager
             Left = 3
             Top = 3
             Width = 596
-            Height = 282
+            Height = 265
             Align = alClient
             ColCount = 1
             DefaultColWidth = 100
@@ -157,7 +164,7 @@ object fmUsesManager: TfmUsesManager
           end
           object p_NoMapFile: TPanel
             Left = 3
-            Top = 285
+            Top = 268
             Width = 596
             Height = 33
             Align = alBottom
@@ -193,15 +200,15 @@ object fmUsesManager: TfmUsesManager
         end
         object pnlProjFooter: TPanel
           Left = 0
-          Top = 321
+          Top = 304
           Width = 602
-          Height = 31
+          Height = 48
           Align = alBottom
           BevelOuter = bvNone
           TabOrder = 1
           object btnCopySaveProjectListMenu: TSpeedButton
-            Left = 574
-            Top = 0
+            Left = 560
+            Top = 16
             Width = 25
             Height = 25
             Glyph.Data = {
@@ -216,38 +223,46 @@ object fmUsesManager: TfmUsesManager
             Spacing = 0
             OnClick = btnCopySaveProjectListMenuClick
           end
-          object btnProjectAddToInterface: TButton
+          object grp_ProjectAdd: TGroupBox
             Left = 4
             Top = 0
-            Width = 145
-            Height = 25
-            Action = actAvailAddToIntf
+            Width = 265
+            Height = 49
+            Caption = 'Add to ...'
             TabOrder = 0
-          end
-          object btnProjectAddToImplementation: TButton
-            Left = 154
-            Top = 0
-            Width = 145
-            Height = 25
-            Action = actAvailAddToImpl
-            TabOrder = 1
+            object btnProjectAddToInterface: TButton
+              Left = 8
+              Top = 16
+              Width = 121
+              Height = 25
+              Action = actAddToInterfaceBtn
+              TabOrder = 0
+            end
+            object btnProjectAddToImplementation: TButton
+              Left = 136
+              Top = 16
+              Width = 121
+              Height = 25
+              Action = actAddToImplementationBtn
+              TabOrder = 1
+            end
           end
           object btnAddProjectToFavorites: TButton
-            Left = 304
-            Top = 0
+            Left = 288
+            Top = 16
             Width = 145
             Height = 25
             Action = actAvailAddAllToFav
-            TabOrder = 2
+            TabOrder = 1
           end
           object btnCopySaveCurrentList: TButton
-            Left = 454
-            Top = 0
+            Left = 440
+            Top = 16
             Width = 123
             Height = 25
             Hint = 'Copy the list of Project units to the clipboard.'
             Caption = 'Copy/Save List'
-            TabOrder = 3
+            TabOrder = 2
             OnClick = btnCopySaveProjectListClick
           end
         end
@@ -259,7 +274,7 @@ object fmUsesManager: TfmUsesManager
           Left = 0
           Top = 0
           Width = 602
-          Height = 321
+          Height = 304
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -269,7 +284,7 @@ object fmUsesManager: TfmUsesManager
             Left = 3
             Top = 3
             Width = 596
-            Height = 315
+            Height = 298
             Align = alClient
             ColCount = 1
             DefaultColWidth = 100
@@ -290,35 +305,43 @@ object fmUsesManager: TfmUsesManager
         end
         object pnlCommonFooter: TPanel
           Left = 0
-          Top = 321
+          Top = 304
           Width = 602
-          Height = 31
+          Height = 48
           Align = alBottom
           BevelOuter = bvNone
           TabOrder = 1
-          object btnCommonAddToInterface: TButton
+          object grp_CommonAdd: TGroupBox
             Left = 4
             Top = 0
-            Width = 145
-            Height = 25
-            Action = actAvailAddToIntf
+            Width = 266
+            Height = 49
+            Caption = 'Add to ...'
             TabOrder = 0
-          end
-          object btnCommonAddToImplementation: TButton
-            Left = 154
-            Top = 0
-            Width = 145
-            Height = 25
-            Action = actAvailAddToImpl
-            TabOrder = 1
+            object btnCommonAddToInterface: TButton
+              Left = 8
+              Top = 16
+              Width = 121
+              Height = 25
+              Action = actAddToInterfaceBtn
+              TabOrder = 0
+            end
+            object btnCommonAddToImplementation: TButton
+              Left = 136
+              Top = 16
+              Width = 121
+              Height = 25
+              Action = actAddToImplementationBtn
+              TabOrder = 1
+            end
           end
           object btnAddRtlToFavorites: TButton
-            Left = 304
-            Top = 0
+            Left = 288
+            Top = 16
             Width = 145
             Height = 25
             Action = actAvailAddAllToFav
-            TabOrder = 2
+            TabOrder = 1
           end
         end
       end
@@ -329,7 +352,7 @@ object fmUsesManager: TfmUsesManager
           Left = 0
           Top = 0
           Width = 602
-          Height = 321
+          Height = 304
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -339,7 +362,7 @@ object fmUsesManager: TfmUsesManager
             Left = 3
             Top = 3
             Width = 596
-            Height = 315
+            Height = 298
             Align = alClient
             ColCount = 1
             DefaultColWidth = 100
@@ -360,43 +383,51 @@ object fmUsesManager: TfmUsesManager
         end
         object pnlFavFooter: TPanel
           Left = 0
-          Top = 321
+          Top = 304
           Width = 602
-          Height = 31
+          Height = 48
           Align = alBottom
           BevelOuter = bvNone
           TabOrder = 1
-          object btnFavoriteAddToInterface: TButton
+          object grp_FavoriteAdd: TGroupBox
             Left = 4
             Top = 0
-            Width = 145
-            Height = 25
-            Action = actAvailAddToIntf
+            Width = 266
+            Height = 49
+            Caption = 'Add to ...'
             TabOrder = 0
-          end
-          object btnFavoriteAddToImplementation: TButton
-            Left = 154
-            Top = 0
-            Width = 145
-            Height = 25
-            Action = actAvailAddToImpl
-            TabOrder = 1
+            object btnFavoriteAddToInterface: TButton
+              Left = 8
+              Top = 16
+              Width = 121
+              Height = 25
+              Action = actAddToInterfaceBtn
+              TabOrder = 0
+            end
+            object btnFavoriteAddToImplementation: TButton
+              Left = 136
+              Top = 16
+              Width = 121
+              Height = 25
+              Action = actAddToImplementationBtn
+              TabOrder = 1
+            end
           end
           object btnFavoriteAddToFavorites: TButton
-            Left = 304
-            Top = 0
+            Left = 288
+            Top = 16
             Width = 145
             Height = 25
             Action = actFavAddUnit
-            TabOrder = 2
+            TabOrder = 1
           end
           object btnFavoriteDeleteFromFavorites: TButton
-            Left = 454
-            Top = 0
+            Left = 440
+            Top = 16
             Width = 145
             Height = 25
             Action = actFavDelUnit
-            TabOrder = 3
+            TabOrder = 2
           end
         end
       end
@@ -407,7 +438,7 @@ object fmUsesManager: TfmUsesManager
           Left = 0
           Top = 0
           Width = 602
-          Height = 321
+          Height = 304
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -417,7 +448,7 @@ object fmUsesManager: TfmUsesManager
             Left = 3
             Top = 3
             Width = 596
-            Height = 315
+            Height = 298
             Align = alClient
             ColCount = 2
             DefaultColWidth = 150
@@ -435,57 +466,67 @@ object fmUsesManager: TfmUsesManager
         end
         object pnlIdentifiersFooter: TPanel
           Left = 0
-          Top = 321
+          Top = 304
           Width = 602
-          Height = 31
+          Height = 48
           Align = alBottom
           BevelOuter = bvNone
           TabOrder = 1
-          object btnIdentifiersAddToIntf: TButton
+          object grp_IdentifiersAdd: TGroupBox
             Left = 4
             Top = 0
-            Width = 145
-            Height = 25
-            Action = actAvailAddToIntf
+            Width = 265
+            Height = 49
+            Caption = 'Add to ...'
             TabOrder = 0
-          end
-          object btnIdentifiersAddToImpl: TButton
-            Left = 154
-            Top = 0
-            Width = 145
-            Height = 25
-            Action = actAvailAddToImpl
-            TabOrder = 1
-          end
-          object pnlMatchIdentifier: TPanel
-            Left = 304
-            Top = 0
-            Width = 255
-            Height = 30
-            BevelOuter = bvNone
-            ParentColor = True
-            TabOrder = 2
-            object rbMatchAnyware: TRadioButton
-              Left = 4
-              Top = 6
-              Width = 125
-              Height = 17
-              Caption = 'Match &anywhere'
-              Checked = True
+            object btnIdentifiersAddToIntf: TButton
+              Left = 8
+              Top = 16
+              Width = 121
+              Height = 25
+              Action = actAddToInterfaceBtn
               TabOrder = 0
-              TabStop = True
-              OnClick = rbMatchAnywareClick
-              OnEnter = rbMatchAnywareEnter
             end
-            object rbMatchAtStart: TRadioButton
-              Left = 138
-              Top = 6
-              Width = 113
-              Height = 17
-              Caption = 'Match at s&tart'
+            object btnIdentifiersAddToImpl: TButton
+              Left = 136
+              Top = 16
+              Width = 121
+              Height = 25
+              Action = actAddToImplementationBtn
               TabOrder = 1
-              OnClick = rbMatchAtStartClick
-              OnEnter = rbMatchAtStartEnter
+            end
+          end
+          object grp_IdentifiersMatch: TGroupBox
+            Left = 280
+            Top = 0
+            Width = 321
+            Height = 49
+            Caption = 'Match filter at ...'
+            TabOrder = 1
+            object b_IdentifierMatchAnywhere: TBitBtn
+              Left = 112
+              Top = 17
+              Width = 97
+              Height = 25
+              Caption = '&Anywhere'
+              TabOrder = 1
+            end
+            object b_IdentifierMatchStart: TBitBtn
+              Left = 8
+              Top = 17
+              Width = 97
+              Height = 25
+              Caption = 'S&tart'
+              TabOrder = 0
+            end
+            object b_IdentifierMatchSort: TBitBtn
+              Left = 216
+              Top = 17
+              Width = 97
+              Height = 25
+              Caption = 'Start First'
+              TabOrder = 2
+              Visible = False
             end
           end
         end
@@ -790,7 +831,7 @@ object fmUsesManager: TfmUsesManager
         Cancel = True
         Caption = 'Cancel'
         ModalResult = 2
-        TabOrder = 1
+        TabOrder = 2
       end
       object btnOK: TButton
         Left = 189
@@ -801,7 +842,7 @@ object fmUsesManager: TfmUsesManager
         Default = True
         ParentShowHint = False
         ShowHint = True
-        TabOrder = 2
+        TabOrder = 1
       end
       object btnOpen: TButton
         Left = 72
@@ -890,12 +931,12 @@ object fmUsesManager: TfmUsesManager
     Left = 456
     Top = 112
     object mitAvailAddToUses: TMenuItem
-      Action = actAvailAddToImpl
+      Action = actAddToImplementationMenu
       Default = True
       ImageIndex = 6
     end
     object mi_AvailAddToIntf: TMenuItem
-      Action = actAvailAddToIntf
+      Action = actAddToInterfaceMenu
       ImageIndex = 7
     end
     object mitAvailSep1: TMenuItem
@@ -973,15 +1014,15 @@ object fmUsesManager: TfmUsesManager
       ImageIndex = 41
       OnExecute = actAvailAddToFavExecute
     end
-    object actAvailAddToIntf: TAction
-      Category = 'Avail'
+    object actAddToInterfaceMenu: TAction
+      Category = 'AddMenu'
       Caption = 'Add to Interfa&ce'
-      OnExecute = actAvailAddToIntfExecute
+      OnExecute = actAddToInterfaceExecute
     end
-    object actAvailAddToImpl: TAction
-      Category = 'Avail'
+    object actAddToImplementationMenu: TAction
+      Category = 'AddMenu'
       Caption = 'Add to Imp&lementation'
-      OnExecute = actAvailAddToImplExecute
+      OnExecute = actAddToImplementationExecute
     end
     object actOpenUnit: TAction
       Caption = 'Open Unit'
@@ -1030,6 +1071,16 @@ object fmUsesManager: TfmUsesManager
       Caption = 'Add all to Favorite'
       OnExecute = actAvailAddAllToFavExecute
     end
+    object actAddToInterfaceBtn: TAction
+      Category = 'AddBtn'
+      Caption = 'Interfa&ce'
+      OnExecute = actAddToInterfaceExecute
+    end
+    object actAddToImplementationBtn: TAction
+      Category = 'AddBtn'
+      Caption = 'Imp&lementation'
+      OnExecute = actAddToImplementationExecute
+    end
   end
   object tim_Progress: TTimer
     Enabled = False
@@ -1043,11 +1094,11 @@ object fmUsesManager: TfmUsesManager
     Left = 560
     Top = 112
     object mi_FavAddToImpl: TMenuItem
-      Action = actAvailAddToImpl
+      Action = actAddToImplementationMenu
       Default = True
     end
     object mi_FavAddtoIntf: TMenuItem
-      Action = actAvailAddToIntf
+      Action = actAddToInterfaceMenu
     end
     object N1: TMenuItem
       Caption = '-'
