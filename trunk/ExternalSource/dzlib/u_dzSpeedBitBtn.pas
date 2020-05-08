@@ -6,11 +6,14 @@ interface
 
 uses
   Windows,
+  Messages,
   Classes,
   SysUtils,
   Types,
   Buttons,
-  Graphics;
+  Controls,
+  Graphics,
+  u_dzVclUtils;
 
 type
   ///<summary>
@@ -22,11 +25,10 @@ type
   /// To use it create it with TdzSpeedBitBtn.Create(BitBtn) where BitBtn is an already existing
   /// TBitBtn component. TdzSpeedBitBtn will be automatically destroyed when the associated BitBtn
   /// is destroyed, so don't free it yourself.
-  /// Hotkeys do not work, neither to Actions.</summary>
-  TdzSpeedBitBtn = class(TComponent)
+  /// Note: Actions do not work.</summary>
+  TdzSpeedBitBtn = class(TWindowProcHook)
   private
     FCaption: string;
-    FBtn: TBitBtn;
     FOrigBmp: TBitmap;
     FOrigOnClick: TNotifyEvent;
     FUpBmp: TBitmap;
@@ -37,11 +39,14 @@ type
     function GetDown: Boolean;
     procedure SetDown(const Value: Boolean);
     procedure UpdateGlyph;
+    function GetBitBtn: TBitBtn;
+  protected
+    procedure NewWindowProc(var _Msg: TMessage); override;
   public
-    constructor Create(_btn: TComponent); override;
+    constructor Create(_btn: TWinControl);
     destructor Destroy; override;
     property Down: Boolean read GetDown write SetDown;
-    property BitBtn: TBitBtn read FBtn;
+    property BitBtn: TBitBtn read GetBitBtn;
     property Data: Pointer read FData write FData;
   end;
 
@@ -61,8 +66,10 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function Add(_btn: TBitBtn; _Data: Pointer = nil): TdzSpeedBitBtn;
-    ///<sumamry>
+    function Add(_btn: TBitBtn): TdzSpeedBitBtn; overload;
+    function Add(_btn: TBitBtn; _Data: Pointer): TdzSpeedBitBtn; overload;
+    function Add(_btn: TBitBtn; _Data: Integer): TdzSpeedBitBtn; overload;
+    ///<summary>
     /// Sets the given button's down state to False, if allowed
     /// @param Idx is the index of the button to change
     /// @returns True, if the button could be set to Down=False, which is only possible if
@@ -71,12 +78,13 @@ type
     ///                  Down = True
     ///          False, otherwise </summary>
     function SetUp(_Idx: Integer): Boolean; overload;
-    procedure SetDown(_Idx: Integer); overload;
-    procedure SetDown(_btn: TBitBtn); overload;
+    function SetUp(_btn: TBitBtn): Boolean; overload;
+    procedure SetDown(_Idx: Integer; _CallClick: Boolean = False); overload;
+    procedure SetDown(_btn: TBitBtn; _CallClick: Boolean = False); overload;
     ///<summary>
     /// Note: This only works, if all Data values are different. Otherwise
     ///       all buttons matching Data will be set to down. </summary>
-    procedure SetDown(_Data: Pointer); overload;
+    procedure SetDown(_Data: Pointer; _CallClick: Boolean = False); overload;
     function isDown(_Idx: Integer): Boolean; overload;
     function isDown(_btn: TBitBtn): Boolean; overload;
     ///<summary>
@@ -93,11 +101,13 @@ type
 implementation
 
 uses
+  Math,
+  Forms,
   u_dzGraphicsUtils;
 
 { TdzSpeedBitBtn }
 
-constructor TdzSpeedBitBtn.Create(_btn: TComponent);
+constructor TdzSpeedBitBtn.Create(_btn: TWinControl);
 
   procedure PrepareBmp(_w, _h: Integer; _Color: TColor; _Edge: UINT; out _bmp: TBitmap);
   var
@@ -108,10 +118,10 @@ constructor TdzSpeedBitBtn.Create(_btn: TComponent);
       x: Integer;
       y: Integer;
     begin
-      x := FBtn.Margin;
+      x := BitBtn.Margin;
       y := (_h - FOrigBmp.Height) div 2;
       if x = -1 then begin
-        // center image the button
+        // center image in the button
         x := (_w - FOrigBmp.Width) div 2;
       end else begin
         // left align image
@@ -121,66 +131,61 @@ constructor TdzSpeedBitBtn.Create(_btn: TComponent);
 
     procedure HandleTextOnlySingleLine;
     var
-      TextSize: TSize;
       x: Integer;
-      y: Integer;
       r: TRect;
+      HorizontalAlignment: TDrawTextHorizontalAlignment;
     begin
-      TextSize := cnv.TextExtent(FCaption);
-      x := FBtn.Margin;
-      y := (_h - TextSize.cy) div 2;
+      x := BitBtn.Margin;
       if x = -1 then begin
-        // center
-        x := (_w - TextSize.cx) div 2;
+        HorizontalAlignment := dthaCenter;
+        r := Rect(2, 0, _w - 3, _h);
       end else begin
-        // left align
+        HorizontalAlignment := dthaLeft;
+        r := Rect(x + 2, 0, _w - 3, _h);
       end;
-      r.Left := x;
-      r.Top := y - 1;
-      r.Right := x + TextSize.cx;
-      r.Bottom := y + TextSize.cy;
-      DrawText(cnv.Handle, PChar(FCaption), -1, r, DT_LEFT or DT_TOP or DT_NOCLIP or DT_SINGLELINE);
+      TCanvas_DrawTextSingleLine(cnv, FCaption, r, HorizontalAlignment, dtvaCenter, []);
     end;
 
     procedure HandleTextOnlyMultiLine;
     var
-      qrc: TRect;
+      x: Integer;
+      r: TRect;
       TextWidth: Integer;
       TextHeight: Integer;
     begin
-      if FBtn.Margin = -1 then begin
+      x := BitBtn.Margin;
+      if x = -1 then begin
         // center
-        qrc := Rect(0, 0, _w - 1, _h - 2);
-        TCanvas_DrawText(cnv, FCaption, qrc, [dtfCalcRect, dtfCenter, dtfWordBreak]);
-        TextWidth := qrc.Right - qrc.Left;
-        TextHeight := qrc.Bottom - qrc.Top;
-        qrc.Left := (_w - TextWidth) div 2;
-        qrc.Top := (_h - TextHeight) div 2;
-        qrc.Right := qrc.Left + TextWidth;
-        qrc.Bottom := qrc.Top + TextHeight;
-        TCanvas_DrawText(cnv, FCaption, qrc, [dtfCenter, dtfWordBreak]);
+        r := Rect(2, 0, _w - 3, _h - 4);
+        TCanvas_DrawText(cnv, FCaption, r, [dtfCalcRect, dtfCenter, dtfWordBreak]);
+        TextHeight := r.Bottom - r.Top;
+        r.Left := 2;
+        r.Top := Max(0, (_h - TextHeight) div 2);
+        r.Right := _w - 3;
+        r.Bottom := Min(_h - 4, r.Top + TextHeight);
+        TCanvas_DrawText(cnv, FCaption, r, [dtfCenter, dtfWordBreak]);
       end else begin
         // left align the centered text
         // Yes, that doesn't make much sense, but TBitBtn works that way.
         // Actually it's even worse: TBitBtn draws the text centered on the possible button width
         // and then moves it to the right which clips the text if it is too wide.
         // We don't make that mistake here but still center the text and then move it.
-        qrc := Rect(0, 0, _w - 1 - FBtn.Margin, _h - 2);
-        TCanvas_DrawText(cnv, FCaption, qrc, [dtfCalcRect, dtfCenter, dtfWordBreak]);
-        TextWidth := qrc.Right - qrc.Left;
-        TextHeight := qrc.Bottom - qrc.Top;
-        qrc.Left := FBtn.Margin;
-        qrc.Top := (_h - TextHeight) div 2;
-        qrc.Right := qrc.Left + TextWidth;
-        qrc.Bottom := qrc.Top + TextHeight;
-        TCanvas_DrawText(cnv, FCaption, qrc, [dtfCenter, dtfWordBreak]);
+        r := Rect(x + 2, 0, _w - 3, _h - 4);
+        TCanvas_DrawText(cnv, FCaption, r, [dtfCalcRect, dtfCenter, dtfWordBreak]);
+        TextWidth := r.Right - r.Left;
+        TextHeight := r.Bottom - r.Top;
+        r.Left := x + 2;
+        r.Top := Max(0, (_h - TextHeight) div 2);
+        r.Right := Min(_w - 3, x + 2 + TextWidth);
+        r.Bottom := Min(_h - 4, r.Top + TextHeight);
+        TCanvas_DrawText(cnv, FCaption, r, [dtfCenter, dtfWordBreak]);
       end;
     end;
 
     procedure HandleTextOnly;
     begin
   {$IFDEF HAS_BITBTN_WORDWRAP}
-      if FBtn.WordWrap then begin
+      if BitBtn.WordWrap then begin
         HandleTextOnlyMultiLine;
       end else
   {$ENDIF}begin
@@ -196,66 +201,66 @@ constructor TdzSpeedBitBtn.Create(_btn: TComponent);
       x: Integer;
     begin
       TextSize := cnv.TextExtent(FCaption);
-      if FBtn.Margin = -1 then begin
+      if BitBtn.Margin = -1 then begin
         // center image and text on the button
-        RequiredWidth := FOrigBmp.Width + FBtn.Spacing + TextSize.cx;
+        RequiredWidth := FOrigBmp.Width + BitBtn.Spacing + TextSize.cx;
         x := (_w - RequiredWidth) div 2;
         cnv.Draw(x, (_h - FOrigBmp.Width) div 2, FOrigBmp);
-        r.Left := x + FBtn.Margin + FBtn.Spacing + FOrigBmp.Width;
+        r.Left := x + BitBtn.Margin + BitBtn.Spacing + FOrigBmp.Width;
         r.Top := (_h - TextSize.cy) div 2;
         r.Right := r.Left + TextSize.cx;
         r.Bottom := r.Top + TextSize.cy;
-        DrawText(cnv.Handle, PChar(FCaption), -1, r, DT_LEFT or DT_TOP or DT_NOCLIP or DT_SINGLELINE);
+        TCanvas_DrawText(cnv, FCaption, r, [dtfLeft, dtfTopSingle, dtfSingleLine, dtfNoClip]);
       end else begin
         // left align image and text
-        cnv.Draw(FBtn.Margin, (_h - FOrigBmp.Height) div 2, FOrigBmp);
-        r.Left := FBtn.Margin + FBtn.Spacing + FOrigBmp.Width;
+        cnv.Draw(BitBtn.Margin, (_h - FOrigBmp.Height) div 2, FOrigBmp);
+        r.Left := BitBtn.Margin + BitBtn.Spacing + FOrigBmp.Width;
         r.Top := (_h - TextSize.cy) div 2;
         r.Right := r.Left + TextSize.cx;
         r.Bottom := r.Top + TextSize.cy;
-        DrawText(cnv.Handle, PChar(FCaption), -1, r, DT_LEFT or DT_TOP or DT_NOCLIP or DT_SINGLELINE);
+        TCanvas_DrawText(cnv, FCaption, r, [dtfLeft, dtfTopSingle, dtfSingleLine, dtfNoClip]);
       end;
     end;
 
     procedure HandleBmpAndMultilineText;
     var
-      qrc: TRect;
+      r: TRect;
       TextWidth: Integer;
       TextHeight: Integer;
       RequiredWidth: Integer;
       x: Integer;
     begin
-      if FBtn.Margin = -1 then begin
+      if BitBtn.Margin = -1 then begin
         // center image and text on the button
 
-        qrc := Rect(0, 0, _w - FOrigBmp.Width - 1 - FBtn.Spacing, _h - 2);
-        TCanvas_DrawText(cnv, FCaption, qrc, [dtfCalcRect, dtfCenter, dtfWordBreak]);
-        TextWidth := qrc.Right - qrc.Left;
-        TextHeight := qrc.Bottom - qrc.Top;
-        RequiredWidth := FOrigBmp.Width + FBtn.Spacing + TextWidth;
+        r := Rect(0, 0, _w - FOrigBmp.Width - 1 - BitBtn.Spacing, _h - 2);
+        TCanvas_DrawText(cnv, FCaption, r, [dtfCalcRect, dtfCenter, dtfWordBreak]);
+        TextWidth := r.Right - r.Left;
+        TextHeight := r.Bottom - r.Top;
+        RequiredWidth := FOrigBmp.Width + BitBtn.Spacing + TextWidth;
         x := (_w - RequiredWidth) div 2;
         cnv.Draw(x, (_h - FOrigBmp.Height) div 2, FOrigBmp);
 
-        qrc.Left := x + FOrigBmp.Width + FBtn.Spacing;
-        qrc.Top := (_h - TextHeight) div 2;
-        qrc.Right := qrc.Left + TextWidth;
-        qrc.Bottom := qrc.Top + TextHeight;
-        TCanvas_DrawText(cnv, FCaption, qrc, [dtfCenter, dtfWordBreak]);
+        r.Left := x + FOrigBmp.Width + BitBtn.Spacing;
+        r.Top := (_h - TextHeight) div 2;
+        r.Right := r.Left + TextWidth;
+        r.Bottom := r.Top + TextHeight;
+        TCanvas_DrawText(cnv, FCaption, r, [dtfCenter, dtfWordBreak]);
       end else begin
         // left align image and text
 
-        qrc := Rect(0, 0, _w - FBtn.Margin - FOrigBmp.Width - 1 - FBtn.Spacing, _h - 2);
-        TCanvas_DrawText(cnv, FCaption, qrc, [dtfCalcRect, dtfCenter, dtfWordBreak]);
-        TextWidth := qrc.Right - qrc.Left;
-        TextHeight := qrc.Bottom - qrc.Top;
+        r := Rect(0, 0, _w - BitBtn.Margin - FOrigBmp.Width - 1 - BitBtn.Spacing, _h - 2);
+        TCanvas_DrawText(cnv, FCaption, r, [dtfCalcRect, dtfCenter, dtfWordBreak]);
+        TextWidth := r.Right - r.Left;
+        TextHeight := r.Bottom - r.Top;
 
-        cnv.Draw(FBtn.Margin, (_h - FOrigBmp.Width) div 2, FOrigBmp);
+        cnv.Draw(BitBtn.Margin, (_h - FOrigBmp.Width) div 2, FOrigBmp);
 
-        qrc.Left := FBtn.Margin + FOrigBmp.Width + FBtn.Spacing;
-        qrc.Top := (_h - TextWidth) div 2;
-        qrc.Right := qrc.Left + TextWidth;
-        qrc.Bottom := qrc.Top + TextHeight;
-        TCanvas_DrawText(cnv, FCaption, qrc, [dtfCenter, dtfWordBreak]);
+        r.Left := BitBtn.Margin + FOrigBmp.Width + BitBtn.Spacing;
+        r.Top := (_h - TextWidth) div 2;
+        r.Right := r.Left + TextWidth;
+        r.Bottom := r.Top + TextHeight;
+        TCanvas_DrawText(cnv, FCaption, r, [dtfCenter, dtfWordBreak]);
       end;
     end;
 
@@ -264,7 +269,7 @@ constructor TdzSpeedBitBtn.Create(_btn: TComponent);
       // This is complicated. For now we will only support buttons with
       // Layout=blGlyphLeft
   {$IFDEF HAS_BITBTN_WORDWRAP}
-      if FBtn.WordWrap then begin
+      if BitBtn.WordWrap then begin
         HandleBmpAndMultilineText;
       end else
   {$ENDIF}begin
@@ -273,7 +278,7 @@ constructor TdzSpeedBitBtn.Create(_btn: TComponent);
     end;
 
   var
-    qrc: TRect;
+    r: TRect;
   begin
     _bmp := TBitmap.Create;
     _bmp.Width := _w;
@@ -285,10 +290,12 @@ constructor TdzSpeedBitBtn.Create(_btn: TComponent);
     cnv.Brush.Color := _Color;
     cnv.Brush.Style := bsSolid;
     cnv.FillRect(Rect(0, 0, _w, _h));
-    cnv.Font := FBtn.Font;
 
-    qrc := Rect(0, 0, _w - 1, _h - 2);
-    DrawEdge(cnv.Handle, qrc, _Edge, BF_RECT);
+    r := Rect(0, 0, _w - 1, _h - 2);
+    DrawEdge(cnv.Handle, r, _Edge, BF_RECT);
+
+    cnv.Brush.Style := bsClear;
+    cnv.Font := BitBtn.Font;
 
     if FCaption <> '' then begin
       if (FOrigBmp.Width <> 0) and (FOrigBmp.Height <> 0) then begin
@@ -309,18 +316,17 @@ var
   ColBack2: TColor;
 begin
   inherited Create(_btn);
-  FBtn := _btn as TBitBtn;
-  FOrigOnClick := FBtn.OnClick;
-  FCaption := FBtn.Caption;
+  FOrigOnClick := BitBtn.OnClick;
+  FCaption := BitBtn.Caption;
 
   FOrigBmp := TBitmap.Create;
-  FOrigBmp.Assign(FBtn.Glyph);
+  FOrigBmp.Assign(BitBtn.Glyph);
   FOrigBmp.Transparent := True;
 
-  FBtn.Caption := '';
+  BitBtn.Caption := '';
 
-  w := FBtn.Width - 1;
-  h := FBtn.Height - 1;
+  w := BitBtn.ClientWidth;
+  h := BitBtn.ClientHeight;
 
   ColBack1 := rgb(240, 240, 240); // clBtnFace;
   ColBack2 := rgb(245, 245, 245); // a bit lighter than clBtnFace;
@@ -328,10 +334,10 @@ begin
   PrepareBmp(w, h, ColBack1, EDGE_RAISED, FUpBmp);
   PrepareBmp(w, h, ColBack2, EDGE_SUNKEN, FDownBmp);
 
-  FBtn.OnClick := HandleOnClick;
+  BitBtn.OnClick := HandleOnClick;
 
-  FBtn.Margin := -1;
-  FBtn.Spacing := 0;
+  BitBtn.Margin := -1;
+  BitBtn.Spacing := 0;
 
   UpdateGlyph;
 end;
@@ -339,7 +345,7 @@ end;
 destructor TdzSpeedBitBtn.Destroy;
 begin
   // If we get here, either the constructor failed (which automatically calls the destructor)
-  // or FBtn was already destroyed, so we must not access it at all.
+  // or BitBtn was already destroyed, so we must not access it at all.
   FUpBmp.Free;
   FDownBmp.Free;
   FOrigBmp.Free;
@@ -358,31 +364,48 @@ begin
   doOnClick(_Sender);
 end;
 
+procedure TdzSpeedBitBtn.NewWindowProc(var _Msg: TMessage);
+begin
+  if _Msg.Msg = CM_DIALOGKEY then begin
+    if IsAccel(TCMDialogChar(_Msg).CharCode, FCaption) and BitBtn.CanFocus then begin
+      BitBtn.Click;
+      _Msg.Result := 1;
+    end else
+      inherited;
+  end else
+    inherited;
+end;
+
+function TdzSpeedBitBtn.GetBitBtn: TBitBtn;
+begin
+  Result := Self.FCtrl as TBitBtn;
+end;
+
 function TdzSpeedBitBtn.GetDown: Boolean;
 begin
-  Result := (FBtn.Tag <> 0);
+  Result := (BitBtn.Tag <> 0);
 end;
 
 procedure TdzSpeedBitBtn.SetDown(const Value: Boolean);
 begin
   if Value then
-    FBtn.Tag := 1
+    BitBtn.Tag := 1
   else
-    FBtn.Tag := 0;
+    BitBtn.Tag := 0;
   UpdateGlyph;
 end;
 
 procedure TdzSpeedBitBtn.UpdateGlyph;
 begin
-  if FBtn.Tag <> 0 then
-    FBtn.Glyph := FDownBmp
+  if BitBtn.Tag <> 0 then
+    BitBtn.Glyph := FDownBmp
   else
-    FBtn.Glyph := FUpBmp;
+    BitBtn.Glyph := FUpBmp;
 
   // Setting Glyph may change the NumGlyph property (if the Width to Height ration of the bitmap
   // is 4, 3 or 2 to 1). We don't want that, so we change it back. (Bloody computer trying to
   // be clever :-(.)
-  FBtn.NumGlyphs := 1;
+  BitBtn.NumGlyphs := 1;
 end;
 
 { TdzSpeedBitBtnGroup }
@@ -399,12 +422,22 @@ begin
   inherited;
 end;
 
-function TdzSpeedBitBtnGroup.Add(_btn: TBitBtn; _Data: Pointer = nil): TdzSpeedBitBtn;
+function TdzSpeedBitBtnGroup.Add(_btn: TBitBtn; _Data: Pointer): TdzSpeedBitBtn;
 begin
   _btn.OnClick := Self.HandleClick;
   Result := TdzSpeedBitBtn.Create(_btn);
   Result.Data := _Data;
   FList.Add(Result);
+end;
+
+function TdzSpeedBitBtnGroup.Add(_btn: TBitBtn): TdzSpeedBitBtn;
+begin
+  Result := Add(_btn, nil);
+end;
+
+function TdzSpeedBitBtnGroup.Add(_btn: TBitBtn; _Data: Integer): TdzSpeedBitBtn;
+begin
+  Result := Add(_btn, Pointer(_Data));
 end;
 
 procedure TdzSpeedBitBtnGroup.doOnClick;
@@ -473,7 +506,7 @@ begin
   Result := False;
 end;
 
-procedure TdzSpeedBitBtnGroup.SetDown(_Idx: Integer);
+procedure TdzSpeedBitBtnGroup.SetDown(_Idx: Integer; _CallClick: Boolean = False);
 var
   i: Integer;
   sb: TdzSpeedBitBtn;
@@ -485,9 +518,11 @@ begin
     else
       sb.Down := False;
   end;
+  if _CallClick then
+    doOnClick;
 end;
 
-procedure TdzSpeedBitBtnGroup.SetDown(_btn: TBitBtn);
+procedure TdzSpeedBitBtnGroup.SetDown(_btn: TBitBtn; _CallClick: Boolean = False);
 var
   i: Integer;
   sb: TdzSpeedBitBtn;
@@ -499,9 +534,11 @@ begin
     else
       sb.Down := False;
   end;
+  if _CallClick then
+    doOnClick;
 end;
 
-procedure TdzSpeedBitBtnGroup.SetDown(_Data: Pointer);
+procedure TdzSpeedBitBtnGroup.SetDown(_Data: Pointer; _CallClick: Boolean = False);
 var
   i: Integer;
   sb: TdzSpeedBitBtn;
@@ -513,6 +550,33 @@ begin
     else
       sb.Down := False;
   end;
+  if _CallClick then
+    doOnClick;
+end;
+
+function TdzSpeedBitBtnGroup.SetUp(_btn: TBitBtn): Boolean;
+var
+  i: Integer;
+  sb: TdzSpeedBitBtn;
+begin
+  if FAllowAllUp then begin
+    for i := 0 to FList.Count - 1 do begin
+      sb := TdzSpeedBitBtn(FList[i]);
+      if sb.BitBtn = _btn then
+        sb.Down := False;
+    end;
+    Result := True;
+  end else if FList.Count = 2 then begin
+    for i := 0 to FList.Count - 1 do begin
+      sb := TdzSpeedBitBtn(FList[i]);
+      if sb.BitBtn = _btn then
+        sb.Down := False
+      else
+        sb.Down := True;
+    end;
+    Result := True;
+  end else
+    Result := False;
 end;
 
 function TdzSpeedBitBtnGroup.SetUp(_Idx: Integer): Boolean;
@@ -527,19 +591,17 @@ begin
         sb.Down := False;
     end;
     Result := True;
-  end else begin
-    if FList.Count = 2 then begin
-      for i := 0 to FList.Count - 1 do begin
-        sb := TdzSpeedBitBtn(FList[i]);
-        if i = _Idx then
-          sb.Down := False
-        else
-          sb.Down := True;
-      end;
-      Result := True;
-    end else
-      Result := False;
-  end;
+  end else if FList.Count = 2 then begin
+    for i := 0 to FList.Count - 1 do begin
+      sb := TdzSpeedBitBtn(FList[i]);
+      if i = _Idx then
+        sb.Down := False
+      else
+        sb.Down := True;
+    end;
+    Result := True;
+  end else
+    Result := False;
 end;
 
 function TdzSpeedBitBtnGroup.TryGetSelectedSb(out _Idx: Integer; out _sb: TdzSpeedBitBtn): Boolean;

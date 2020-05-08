@@ -169,6 +169,10 @@ inline;
 type
   TDrawTextFlags = (
     dtfLeft, dtfRight, dtfCenter, // horizontal alignment
+    dtfTopSingle, dtfBottomSingle, dtfVCenterSingle, // vertical alignment, only if dtfSingleLine is given
+    dtfSingleLine, // only print as single line (ignore line breaks).
+                   // Note that this is is not the same as not specifying dtfWordBreak because
+                   // it will also ignore existing line breaks.
     dtfWordBreak, // Breaks words. Lines are automatically broken between words if a word would
                   // extend past the edge of the rectangle specified by the lpRect parameter.
                   // A carriage return-line feed sequence also breaks the line.
@@ -181,18 +185,16 @@ type
                  // If there is only one line of text, DrawText modifies the right side of the
                  // rectangle so that it bounds the last character in the line. In either case,
                  // DrawText returns the height of the formatted text but does not draw the text.
-    dtfNoClip); // draw without clipping (slightly faster)
-// not implemented:
-//    dtfSingleLine, // only print as single line (ignore line breaks)
-//    dtfTopSingle, dtfBottomSingle, dtfVCenterSingle, // vertical alignment, only if dtfSingleLine is given
-//    dtfPathEllipsis, // replace characters in the middle of the string with ellipses ('...') so that
+    dtfPathEllipsis, // replace characters in the middle of the string with ellipses ('...') so that
                      // the result fits in the specified rectangle. If the string contains backslash
                      // (\) characters, preserves as much as possible of the text after the last backslash.
-//    dtfEndEllipsis, // if the end of a string does not fit in the rectangle, it is truncated and
+    dtfEndEllipsis, // if the end of a string does not fit in the rectangle, it is truncated and
                     // ellipses ('...') are added. If a word that is not at the end of the string
                     // goes beyond the limits of the rectangle, it is truncated without ellipses.
                     // (Unless dtfWordEllipsis is also specified.)
-//    dtfWordEllipsis, // Truncates any word that does not fit in the rectangle and adds ellipses ('...').
+    dtfWordEllipsis, // Truncates any word that does not fit in the rectangle and adds ellipses ('...').
+    dtfNoClip); // draw without clipping (slightly faster)
+// not implemented:
 //    dtfModifyStringEllipsis, // if given, together with one of the dtfXxxEllipsis flags, the
                              // string is modified to matcht the output.
 //    dtfEditControl,
@@ -201,10 +203,22 @@ type
 //    dtfPrefixOnly, dtRtlReading, dtfTabStop,
   TDrawTextFlagSet = set of TDrawTextFlags;
 
+  TDrawTextHorizontalAlignment = (dthaLeft, dthaRight, dthaCenter);
+  TDrawTextVerticalAlignment = (dtvaTop, dtvaBottom, dtvaCenter);
+  TDrawTextFlagsNoAlign = dtfCalcRect..dtfNoClip;
+  TDrawTextFlagSetNoAlign = set of TDrawTextFlagsNoAlign;
+
 ///<summary>
 /// Calculates the Rect necessary for drawing the text.
 /// @returns the calculated height </summary>
 function TCanvas_DrawText(_Canvas: TCanvas; const _Text: string; var _Rect: TRect; _Flags: TDrawTextFlagSet): Integer;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
+
+function TCanvas_DrawTextSingleLine(_Canvas: TCanvas; const _Text: string; var _Rect: TRect;
+  _HAlign: TDrawTextHorizontalAlignment; _VAlign: TDrawTextVerticalAlignment;
+  _Flags: TDrawTextFlagSetNoAlign): Integer;
 {$IFDEF SUPPORTS_INLINE}
 inline;
 {$ENDIF}
@@ -871,19 +885,70 @@ var
   Flags: LongWord;
 begin
   Flags := 0;
+
+  // horizontal alignment
   if dtfLeft in _Flags then
     Flags := Flags or DT_LEFT;
   if dtfRight in _Flags then
     Flags := Flags or DT_RIGHT;
   if dtfCenter in _Flags then
     Flags := Flags or DT_CENTER;
+
+  // vertical alignment (for single lines only)
+  if dtfTopSingle in _Flags then
+    Flags := Flags or DT_TOP;
+  if dtfBottomSingle in _Flags then
+    Flags := Flags or DT_BOTTOM;
+  if dtfVCenterSingle in _Flags then
+    Flags := Flags or DT_VCENTER;
+
   if dtfWordBreak in _Flags then
     Flags := Flags or DT_WORDBREAK;
+  if dtfSingleLine in _Flags then
+    Flags := Flags or DT_SINGLELINE;
+
+  // adding ellipsis '...'
+  if dtfPathEllipsis in _Flags then
+    Flags := Flags or DT_PATH_ELLIPSIS;
+  if dtfEndEllipsis in _Flags then
+    Flags := Flags or DT_END_ELLIPSIS;
+  if dtfWordEllipsis in _Flags then
+    Flags := Flags or DT_WORD_ELLIPSIS;
+
   if dtfNoClip in _Flags then
     Flags := Flags or DT_NOCLIP;
+
   if dtfCalcRect in _Flags then
     Flags := Flags or DT_CALCRECT;
+
   Result := Windows.DrawText(_Canvas.Handle, PChar(_Text), -1, _Rect, Flags);
+end;
+
+function TCanvas_DrawTextSingleLine(_Canvas: TCanvas; const _Text: string; var _Rect: TRect;
+  _HAlign: TDrawTextHorizontalAlignment; _VAlign: TDrawTextVerticalAlignment;
+  _Flags: TDrawTextFlagSetNoAlign): Integer;
+var
+  Flags: TDrawTextFlagSet;
+begin
+  Flags := _Flags;
+
+  case _HAlign of
+    dthaRight: Include(Flags, dtfRight);
+    dthaCenter: Include(Flags, dtfCenter);
+  else // dthaLeft:
+    Include(Flags, dtfLeft);
+  end;
+
+  case _VAlign of
+    dtvaBottom: Include(Flags, dtfBottomSingle);
+    dtvaCenter: Include(Flags, dtfVCenterSingle);
+  else // dtvaTop:
+    Include(Flags, dtfTopSingle);
+  end;
+
+  Include(Flags, dtfSingleLine);
+
+  Result := TCanvas_DrawText(_Canvas, _Text, _Rect, Flags)
 end;
 
 type
