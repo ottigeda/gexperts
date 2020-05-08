@@ -1435,9 +1435,18 @@ function TPopupMenu_FindSelectedRadioItem(_pm: TPopupMenu; _GroupIndex: Integer;
 
 function TMenuItem_FindSelectedRadioItem(_mi: TMenuItem; _GroupIndex: Integer; out _miFound: TMenuItem): Boolean;
 
-///<summary> sets Screen.Cursor to NewCursor and restores it automatically when the returned interface
-///          goes out of scope </summary>
+///<summary>
+/// Sets Screen.Cursor to NewCursor and restores it automatically when the returned interface
+/// goes out of scope </summary>
 function TCursor_TemporaryChange(_NewCursor: TCursor = crHourGlass): IInterface;
+
+///<summary>
+/// Sets Screen.Cursor to crHourglass and restores it automatically when the returned interface
+/// goes out of scope </summary>
+function TCursor_TempHourglass: IInterface;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 
 ///<summary> If the Checked property of the action = the Checked parameter nothing happens and
 ///          the function returns true. If they are different, it calls the action's Execute
@@ -5317,6 +5326,11 @@ end;
 function TCursor_TemporaryChange(_NewCursor: TCursor = crHourGlass): IInterface;
 begin
   Result := TCursorRestorer.Create(_NewCursor);
+end;
+
+function TCursor_TempHourglass: IInterface;
+begin
+  Result := TCursor_TemporaryChange(crHourGlass);
 end;
 
 type
