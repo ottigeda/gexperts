@@ -374,14 +374,14 @@ begin
           end;
         end;
       end;
-      MadeAnyChanges := MadeAnyChange or FileChanged;
+      MadeAnyChanges := MadeAnyChanges or FileChanged;
     end;
     if Assigned(CurrentEditor) then
       CurrentEditor.Show;
   finally
     TfmSetComponentPropsStatus.ReleaseMe;
   end;
-  if MadeAnyChange and Assigned(SetComponentPropsExpert) then
+  if MadeAnyChanges and Assigned(SetComponentPropsExpert) then
     SetComponentPropsExpert.IncCallCount;
 end;
 
