@@ -38,6 +38,7 @@ begin
   if (DesignForm.ClassName = 'TDataModuleForm') then
     raise Exception.Create('Please select a VCL form');
   ToggleNonVisualVisible(DesignForm);
+  IncCallCount;
 end;
 
 class function THideNonVisualCompsExpert.ConfigurationKey: string;
