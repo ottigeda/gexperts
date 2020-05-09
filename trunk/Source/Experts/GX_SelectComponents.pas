@@ -46,6 +46,7 @@ type
     procedure ActionListUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure ChangeModeActionHint(var HintStr: String; var CanShow: Boolean);
   private
+    FFilter: TComponentInfo;
     FNodesList: TList;
     FCurrentNode: TTreeNode;
     FFormEditor: IOTAFormEditor;
@@ -71,8 +72,8 @@ type
   protected
     property CurrentNode: TTreeNode read FCurrentNode write SetCurrentNode;
   public
-    procedure AfterConstruction; override;
-    procedure BeforeDestruction; override;
+    constructor Create(_Owner: TComponent); override;
+    destructor Destroy; override;
 
     property MiniMode: Boolean read FMiniMode  write ChangeMode;
     property StayOnTop: Boolean read FStayOnTop write SetStayOnTop;
@@ -102,7 +103,6 @@ type
 
 var
   TheForm: TSelectComponentsForm;
-  Filter: TComponentInfo;
   LastComponentName: TGXUnicodeString;
 
 procedure GetInfo(const aTreeNode: TTreeNode; const aGetType: Boolean; var aInfo: TComponentInfo); overload;
@@ -149,6 +149,18 @@ begin
     if rType <> '' then
       Result := Result + ':' + rType;
   end;
+end;
+
+constructor TSelectComponentsForm.Create(_Owner: TComponent);
+begin
+  inherited;
+  FNodesList := TList.Create;
+end;
+
+destructor TSelectComponentsForm.Destroy;
+begin
+  FreeAndNil(FNodesList);
+  inherited;
 end;
 
 procedure TSelectComponentsForm.SelectComponentOnForm(const aName: TGXUnicodeString;
@@ -211,18 +223,6 @@ begin
     SearchEdit.Font.Color := clRed;
 end;
 
-procedure TSelectComponentsForm.AfterConstruction;
-begin
-  inherited;
-  FNodesList := TList.Create;
-end;
-
-procedure TSelectComponentsForm.BeforeDestruction;
-begin
-  FreeAndNil(FNodesList);
-  inherited;
-end;
-
 procedure TSelectComponentsForm.ChangeMode(const aMiniMode: Boolean);
 var
   BestFitHeight: Integer;
@@ -280,7 +280,7 @@ end;
 procedure TSelectComponentsForm.ExactCheckBoxClick(Sender: TObject);
 begin
   FocusSearchEdit;
-  FilterNodes(Filter);
+  FilterNodes(FFilter);
 end;
 
 procedure TSelectComponentsForm.FillTreeView(const aFromComponent: IOTAComponent);
@@ -346,9 +346,9 @@ end;
 
 procedure TSelectComponentsForm.SearchEditChange(aSender: TObject);
 begin
-  Filter := GetInfo(SearchEdit.Text);
+  FFilter := GetInfo(SearchEdit.Text);
 
-  FilterNodes(Filter);
+  FilterNodes(FFilter);
 end;
 
 procedure TSelectComponentsForm.SearchEditKeyPress(Sender: TObject; var aKey: Char);
@@ -451,13 +451,13 @@ var
   aNodeIndex: Integer;
   aTreeNode: TTreeNode;
 begin
-  with Filter do
+  with FFilter do
   try
     Init;
     aName := LastComponentName;
 
     FocusSearchEdit;
-    SearchEdit.Text := FilterToText(Filter);
+    SearchEdit.Text := FilterToText(FFilter);
     SearchEdit.SelectAll;
 //    SearchEditChange(SearchEdit);
 
