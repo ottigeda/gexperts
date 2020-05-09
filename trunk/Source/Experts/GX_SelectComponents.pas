@@ -485,9 +485,6 @@ begin
     SearchEdit.Enabled := False;
     TreeView.Items.Clear;
 
-    if not GxOtaCurrentlyEditingForm then
-      Abort;
-
     if not GxOtaTryGetCurrentFormEditor(FFormEditor) then
       Abort;
 
