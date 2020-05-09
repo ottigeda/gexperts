@@ -486,6 +486,8 @@ begin
     TheForm := TSelectComponentsForm.Create(nil);
 
   TheForm.Show;
+
+  IncCallCount;
 end;
 
 function TComponentSelectExpert.GetActionCaption: string;
