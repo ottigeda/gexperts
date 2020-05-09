@@ -142,6 +142,8 @@ begin
     Result := Result + ':' + aFilter.rType;
 end;
 
+{ TSelectComponentsForm }
+
 constructor TSelectComponentsForm.Create(_Owner: TComponent);
 begin
   inherited;
@@ -323,7 +325,7 @@ begin
       if aFound then
         FNodesList.Add(aTreeNode);
 
-      if aFound then // Images disabled for now since D6 fails to show the right images, set StateIndex as well 
+      if aFound then // Images disabled for now since D6 fails to show the right images, set StateIndex as well
         aTreeNode.ImageIndex := ImageIndexArrow
       else
         aTreeNode.ImageIndex := -1;
@@ -465,48 +467,6 @@ begin
   end;
 end;
 
-procedure TComponentSelectExpert.UpdateAction(aAction: TCustomAction);
-begin
-  aAction.Enabled := GxOtaCurrentlyEditingForm;
-end;
-
-procedure TComponentSelectExpert.Execute(Sender: TObject);
-begin
-  if not Assigned(TheForm) then
-    TheForm := TSelectComponentsForm.Create(nil);
-
-  TheForm.Show;
-
-  IncCallCount;
-end;
-
-function TComponentSelectExpert.GetActionCaption: string;
-resourcestring
-  SMenuCaption = 'Select Components...';
-begin
-  Result := SMenuCaption;
-end;
-
-class function TComponentSelectExpert.GetName: string;
-begin
-  Result := 'SelectComponents';
-end;
-
-function TComponentSelectExpert.HasConfigOptions: Boolean;
-begin
-  Result := False;
-end;
-
-function GxOtaGetCurrentModule: IOTAModule;
-var
-  ModuleServices: IOTAModuleServices;
-begin
-  ModuleServices := BorlandIDEServices as IOTAModuleServices;
-  Assert(Assigned(ModuleServices));
-
-  Result := ModuleServices.CurrentModule;
-end;
-
 procedure TSelectComponentsForm.Init;
 var
   aParentName: TGXUnicodeString;
@@ -523,9 +483,7 @@ begin
     if not GxOtaCurrentlyEditingForm then
       Abort;
 
-    FFormEditor := GxOtaGetFormEditorFromModule(GxOtaGetCurrentModule);
-
-    if not Assigned(FFormEditor) then
+    if not GxOtaTryGetCurrentFormEditor(FFormEditor) then
       Abort;
 
     aComponent := FFormEditor.GetRootComponent;
@@ -596,6 +554,40 @@ begin
     HintStr := 'Expand'
   else
     HintStr := 'Contract';
+end;
+
+{ TComponentSelectExpert }
+
+procedure TComponentSelectExpert.UpdateAction(aAction: TCustomAction);
+begin
+  aAction.Enabled := GxOtaCurrentlyEditingForm;
+end;
+
+procedure TComponentSelectExpert.Execute(Sender: TObject);
+begin
+  if not Assigned(TheForm) then
+    TheForm := TSelectComponentsForm.Create(nil);
+
+  TheForm.Show;
+
+  IncCallCount;
+end;
+
+function TComponentSelectExpert.GetActionCaption: string;
+resourcestring
+  SMenuCaption = 'Select Components...';
+begin
+  Result := SMenuCaption;
+end;
+
+class function TComponentSelectExpert.GetName: string;
+begin
+  Result := 'SelectComponents';
+end;
+
+function TComponentSelectExpert.HasConfigOptions: Boolean;
+begin
+  Result := False;
 end;
 
 initialization
