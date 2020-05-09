@@ -109,17 +109,14 @@ procedure GetInfo(const aTreeNode: TTreeNode; const aGetType: Boolean; var aInfo
 var
   aPos: Integer;
 begin
-  with aInfo do
-  begin
-    rName := UpperCase(aTreeNode.Text);
-    aPos := Pos(' : ', rName);
+  aInfo.rName := UpperCase(aTreeNode.Text);
+  aPos := Pos(' : ', aInfo.rName);
 
-    if aPos > 0 then
-    begin
-      if aGetType then
-        rType := Copy(rName, aPos + 3);
-      rName := Copy(rName, 1, aPos - 1);
-    end;
+  if aPos > 0 then
+  begin
+    if aGetType then
+      aInfo.rType := Copy(aInfo.rName, aPos + 3);
+    aInfo.rName := Copy(aInfo.rName, 1, aPos - 1);
   end;
 end;
 
@@ -127,28 +124,22 @@ function GetInfo(const aText: TGXUnicodeString): TComponentInfo; overload;
 var
   aPos: Integer;
 begin
-  with Result do
-  begin
-    rName := UpperCase(aText);
-    aPos  := Pos(':', rName);
+  Result.rName := UpperCase(aText);
+  aPos  := Pos(':', Result.rName);
 
-    if aPos > 0 then
-    begin
-      rType := Trim(Copy(rName, aPos + 1));
-      rName := Trim(Copy(rName, 1, aPos - 1));
-    end;
+  if aPos > 0 then
+  begin
+    Result.rType := Trim(Copy(Result.rName, aPos + 1));
+    Result.rName := Trim(Copy(Result.rName, 1, aPos - 1));
   end;
 end;
 
 function FilterToText(const aFilter: TComponentInfo) : TGXUnicodeString;
 begin
-  with aFilter do
-  begin
-    Result := rName;
+  Result := aFilter.rName;
 
-    if rType <> '' then
-      Result := Result + ':' + rType;
-  end;
+  if aFilter.rType <> '' then
+    Result := Result + ':' + aFilter.rType;
 end;
 
 constructor TSelectComponentsForm.Create(_Owner: TComponent);
@@ -451,7 +442,6 @@ var
   aNodeIndex: Integer;
   aTreeNode: TTreeNode;
 begin
-  with FFilter do
   try
     Init;
     aName := LastComponentName;
