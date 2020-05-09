@@ -53,6 +53,7 @@ type
     FMiniMode: Boolean;
     FStayOnTop: Boolean;
     FLastHeight: Integer;
+    FLastComponentName: TGXUnicodeString;
 
     procedure Init;
     procedure FocusSearchEdit;
@@ -103,7 +104,6 @@ type
 
 var
   TheForm: TSelectComponentsForm;
-  LastComponentName: TGXUnicodeString;
 
 procedure GetInfo(const aTreeNode: TTreeNode; const aGetType: Boolean; var aInfo: TComponentInfo); overload;
 var
@@ -166,7 +166,7 @@ begin
 
   if Assigned(aComponent) then
   begin
-    LastComponentName := aName;
+    FLastComponentName := aName;
     aComponent.Select(aAddToSelection);
   end;
 end;
@@ -446,7 +446,7 @@ var
 begin
   try
     Init;
-    aName := LastComponentName;
+    aName := FLastComponentName;
 
     FocusSearchEdit;
     SearchEdit.Text := FilterToText(FFilter);
