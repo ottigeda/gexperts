@@ -20,6 +20,7 @@ type
     function GetDisplayName: string; override;
     function HasConfigOptions: Boolean; override;
     function HasSubmenuItems: Boolean; override;
+    function HasCallCount: Boolean; override;
     procedure CreateSubMenuItems(MenuItem: TMenuItem); override;
     procedure Execute(Sender: TObject); override;
     procedure ShowPopup(Sender: TObject);
@@ -190,6 +191,11 @@ end;
 class function TMenusForEditorExperts.GetName: string;
 begin
   Result := 'EditorExpertsMenu';
+end;
+
+function TMenusForEditorExperts.HasCallCount: Boolean;
+begin
+  Result := False;
 end;
 
 function TMenusForEditorExperts.HasConfigOptions: Boolean;
