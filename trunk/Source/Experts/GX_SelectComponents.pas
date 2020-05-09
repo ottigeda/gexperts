@@ -87,7 +87,7 @@ implementation
 
 uses
   SysUtils, Windows, Messages, TypInfo,
-  u_dzStringUtils,
+  u_dzStringUtils, u_dzVclUtils,
   GX_Experts, GX_OtaUtils, GX_SharedImages;
 
 type
@@ -473,10 +473,15 @@ var
   aParentType: TGXUnicodeString;
   aComponent: IOTAComponent;
 begin
+  // Even though we use Begin/EndUpdate for the Items, the tree view still flickers a lot.
+  // To prevent this, we could use LockWindowUpdate, which prevents this but it is strongly
+  // discouraged. Unfortunately TWinControl_Lock does not work on the treeview, but it works
+  // on the panel which contains the treeview.
+  TWinControl_Lock(TreePanel);
   TreeView.Items.BeginUpdate;
   try
     FNodesList.Clear;
-    
+
     SearchEdit.Enabled := False;
     TreeView.Items.Clear;
 
