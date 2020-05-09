@@ -459,7 +459,7 @@ begin
     FocusSearchEdit;
     SearchEdit.Text := FilterToText(Filter);
     SearchEdit.SelectAll;
-    SearchEditChange(SearchEdit);
+//    SearchEditChange(SearchEdit);
 
     for aNodeIndex := 0 to Pred(TreeView.Items.Count) do
     begin
