@@ -458,6 +458,7 @@ begin
   finally
     FreeAndNil(Dlg);
   end;
+  IncCallCount;
 end;
 
 class procedure TExpertManagerExpert.RemoveExpertFromRegistry(const ExpertName: string; IsEnabled: Boolean);

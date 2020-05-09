@@ -92,7 +92,7 @@ begin
   SetComponentPropsExpert := Self;
 end;
 
-// Be sure to free the settings conatiner (TSetComponentPropsSettings)
+// Be sure to free the settings container (TSetComponentPropsSettings)
 destructor TSetComponentPropertiesExpert.Destroy;
 begin
   Active := False; // Prevent re-creating TSetComponentPropsSettings later when setting Active=False
@@ -314,70 +314,75 @@ var
   FileName: string;
   FileChanged: Boolean;
   FileWasOpen: Boolean;
+  MadeAnyChanges: Boolean;
 begin
   FOutputMessages.Clear;
+  if IsCodeInsight then
+    Exit; //==>
 
   Settings := TSetComponentPropsSettings.GetInstance;
-  if IsCodeInsight = False then
-  begin
-    try
-      CurrentEditor := GxOtaGetCurrentEditor;
-      if Settings.Verbose then
-        TfmSetComponentPropsStatus.GetInstance.Show;
 
-      // Iterate all modules of the current project and get forms and datamodules
-      for IndexProjectModules := 0 to Pred(Project.GetModuleCount) do
+  MadeAnyChanges := False;
+  if Settings.Verbose then
+    TfmSetComponentPropsStatus.GetInstance.Show;
+  try
+    CurrentEditor := GxOtaGetCurrentEditor;
+
+    // Iterate all modules of the current project and get forms and datamodules
+    for IndexProjectModules := 0 to Pred(Project.GetModuleCount) do
+    begin
+      ModuleInfo := Project.GetModule(IndexProjectModules);
+      FileName := ModuleInfo.FileName;
+      FileChanged := False;
+      if Settings.Verbose then
+        TfmSetComponentPropsStatus.GetInstance.ProcessedFile := FileName;
+      if (not IsDcp(FileName)) and (FileName <> '') then
       begin
-        ModuleInfo := Project.GetModule(IndexProjectModules);
-        FileName := ModuleInfo.FileName;
-        FileChanged := False;
-        if Settings.Verbose then
-          TfmSetComponentPropsStatus.GetInstance.ProcessedFile := FileName;
-        if (not IsDcp(FileName)) and (FileName <> '') then
+        FileWasOpen := GxOtaIsFileOpen(FileName);
+        if Settings.OnlyOpenFiles then
         begin
-          FileWasOpen := GxOtaIsFileOpen(FileName);
-          if Settings.OnlyOpenFiles then
+          if not FileWasOpen then
+            Continue;
+        end;
+        try
+          Module := ModuleInfo.OpenModule;
+          if Assigned(Module) then
           begin
-            if not FileWasOpen then
-              Continue;
-          end;
-          try
-            Module := ModuleInfo.OpenModule;
-            if Assigned(Module) then
+            FormEditor := GxOtaGetFormEditorFromModule(Module);
+            if Assigned(FormEditor) then
             begin
-              FormEditor := GxOtaGetFormEditorFromModule(Module);
-              if Assigned(FormEditor) then
-              begin
-                RootComponent := FormEditor.GetRootComponent;
-                if Assigned(RootComponent) then begin
-                  FileChanged := FileChanged or CheckAndSetComponent(ModuleInfo.FileName, RootComponent);
-                  FileChanged := FileChanged or CheckChildComponents(RootComponent, ModuleInfo.FileName);
-                  if (not FileChanged) and (not FileWasOpen) then
-                    Module.CloseModule(True)
-                  else if FileChanged and (not FileWasOpen) then
-                    GxOtaOpenFile(FileName);
-                end;
+              RootComponent := FormEditor.GetRootComponent;
+              if Assigned(RootComponent) then begin
+                FileChanged := FileChanged or CheckAndSetComponent(ModuleInfo.FileName, RootComponent);
+                FileChanged := FileChanged or CheckChildComponents(RootComponent, ModuleInfo.FileName);
+                if (not FileChanged) and (not FileWasOpen) then
+                  Module.CloseModule(True)
+                else if FileChanged and (not FileWasOpen) then
+                  GxOtaOpenFile(FileName);
               end;
             end;
-          except
-            on EFOpenError do
-            begin
-              // Ignore exceptions about non-existing modules
-            end;
-          else
-            begin
-              // Other exceptions are re-raised
-              raise;
-            end;
+          end;
+        except
+          on EFOpenError do
+          begin
+            // Ignore exceptions about non-existing modules
+          end;
+        else
+          begin
+            // Other exceptions are re-raised
+            raise;
           end;
         end;
       end;
-      if Assigned(CurrentEditor) then
-        CurrentEditor.Show;
-    finally
-      TfmSetComponentPropsStatus.ReleaseMe;
+      MadeAnyChanges := MadeAnyChange or FileChanged;
     end;
+    if Assigned(CurrentEditor) then
+      CurrentEditor.Show;
+  finally
+    TfmSetComponentPropsStatus.ReleaseMe;
   end;
+  if MadeAnyChange and Assigned(SetComponentPropsExpert) then
+    SetComponentPropsExpert.IncCallCount;
 end;
 
 // Check a given component for properties to be set
