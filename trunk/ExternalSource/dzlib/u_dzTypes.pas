@@ -35,6 +35,9 @@ type
   TSingleMatrix = array of array of Single;
   TDoubleMatrix = array of array of Double;
 
+type
+  TMethodPointer = procedure of object;
+
 implementation
 
 end.
