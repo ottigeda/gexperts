@@ -225,6 +225,7 @@ begin
   finally
     FreeAndNil(Text);
   end;
+  IncCallCount;
 end;
 
 function TRemoveMatchingLinesExpert.GetDisplayName: string;
