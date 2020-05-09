@@ -65,6 +65,7 @@ begin
     FindSelectedComponentInSource(Module, FrmEditor)
   else if Supports(CurEditor, IOTASourceEditor, SrcEditor) then
     FindSelectedComponentOnForm(Module, SrcEditor);
+  IncCallCount;
 end;
 
 procedure TFindComponentReferenceExpert.FindSelectedComponentOnForm(Module: IOTAModule;
