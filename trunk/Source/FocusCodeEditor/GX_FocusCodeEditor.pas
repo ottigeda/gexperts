@@ -50,6 +50,7 @@ begin
       end;
     end;
   end;
+  IncCallCount;
 end;
 
 function TFocusCodeEditorExpert.GetActionCaption: string;
