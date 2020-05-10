@@ -110,22 +110,7 @@ type
 var
   TheForm: TSelectComponentsForm;
 
-procedure GetInfo(const aTreeNode: TTreeNode; const aGetType: Boolean; var aInfo: TComponentInfo); overload;
-var
-  p: Integer;
-begin
-  aInfo.rName := aTreeNode.Text;
-  p := Pos(' : ', aInfo.rName);
-
-  if p > 0 then
-  begin
-    if aGetType then
-      aInfo.rType := Copy(aInfo.rName, p + 3);
-    aInfo.rName := Copy(aInfo.rName, 1, p - 1);
-  end;
-end;
-
-function GetInfo(const aText: TGXUnicodeString): TComponentInfo; overload;
+function GetInfo(const aText: TGXUnicodeString): TComponentInfo;
 var
   p: Integer;
 begin
@@ -182,7 +167,7 @@ var
 begin
   if not FIsActivaingForm and Assigned(FFormEditor) and Assigned(TreeView.Selected) then
   begin
-    GetInfo(TreeView.Selected, False, Info);
+    Info := GetInfo(TreeView.Selected.Text);
     SelectComponentOnForm(Info.rName);
   end;
 end;
@@ -196,7 +181,7 @@ begin
   for Idx := 0 to Pred(FMatchingNodes.Count) do
   begin
     Node := FMatchingNodes [Idx];
-    GetInfo(Node, False, Info);
+    Info := GetInfo(Node.Text);
     SelectComponentOnForm(Info.rName, Idx > 0);
   end;
 
@@ -297,7 +282,7 @@ var
   IsTypeMatch: Boolean;
   NodeIdx: Integer;
   Node: TTreeNode;
-  aInfo: TComponentInfo;
+  Info: TComponentInfo;
   Found: Boolean;
 begin
   FMatchingNodes.Clear;
@@ -313,15 +298,15 @@ begin
     for NodeIdx := 0 to Pred(TreeView.Items.Count) do
     begin
       Node := TreeView.Items [NodeIdx];
-      GetInfo(Node, ByType, aInfo);
+      Info := GetInfo(Node.Text);
 
       IsNameMatch := ByName and
-        (not ExactName and (Pos(UpperCase(aFilter.rName), UpperCase(aInfo.rName)) > 0) or
-        (ExactName and SameText(aFilter.rName, aInfo.rName)));
+        (not ExactName and (Pos(UpperCase(aFilter.rName), UpperCase(Info.rName)) > 0) or
+        (ExactName and SameText(aFilter.rName, Info.rName)));
                         
       IsTypeMatch := ByType and
-        (not ExactType and (Pos(UpperCase(aFilter.rType), UpperCase(aInfo.rType)) > 0) or
-        (ExactType and SameText(aFilter.rType, aInfo.rType)));
+        (not ExactType and (Pos(UpperCase(aFilter.rType), UpperCase(Info.rType)) > 0) or
+        (ExactType and SameText(aFilter.rType, Info.rType)));
 
       Found := (ByName and not ByType and IsNameMatch) or
         (not ByName and ByType and IsTypeMatch) or
@@ -463,7 +448,7 @@ begin
       for Idx := 0 to Pred(TreeView.Items.Count) do
       begin
         Node := TreeView.Items[Idx];
-        GetInfo(Node, False, Info);
+        Info := GetInfo(Node.Text);
         if SameText(CmpName, Info.rName) then
         begin
           CurrentNode := Node;
