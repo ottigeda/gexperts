@@ -107,30 +107,30 @@ var
 
 procedure GetInfo(const aTreeNode: TTreeNode; const aGetType: Boolean; var aInfo: TComponentInfo); overload;
 var
-  aPos: Integer;
+  p: Integer;
 begin
   aInfo.rName := UpperCase(aTreeNode.Text);
-  aPos := Pos(' : ', aInfo.rName);
+  p := Pos(' : ', aInfo.rName);
 
-  if aPos > 0 then
+  if p > 0 then
   begin
     if aGetType then
-      aInfo.rType := Copy(aInfo.rName, aPos + 3);
-    aInfo.rName := Copy(aInfo.rName, 1, aPos - 1);
+      aInfo.rType := Copy(aInfo.rName, p + 3);
+    aInfo.rName := Copy(aInfo.rName, 1, p - 1);
   end;
 end;
 
 function GetInfo(const aText: TGXUnicodeString): TComponentInfo; overload;
 var
-  aPos: Integer;
+  p: Integer;
 begin
   Result.rName := UpperCase(aText);
-  aPos  := Pos(':', Result.rName);
+  p  := Pos(':', Result.rName);
 
-  if aPos > 0 then
+  if p > 0 then
   begin
-    Result.rType := Trim(Copy(Result.rName, aPos + 1));
-    Result.rName := Trim(Copy(Result.rName, 1, aPos - 1));
+    Result.rType := Trim(Copy(Result.rName, p + 1));
+    Result.rName := Trim(Copy(Result.rName, 1, p - 1));
   end;
 end;
 
@@ -159,40 +159,40 @@ end;
 procedure TSelectComponentsForm.SelectComponentOnForm(const aName: TGXUnicodeString;
   const aAddToSelection: Boolean);
 var
-  aComponent: IOTAComponent;
+  cmp: IOTAComponent;
 begin
-  aComponent := FFormEditor.FindComponent(aName);
+  cmp := FFormEditor.FindComponent(aName);
   TreeView.MultiSelect := aAddToSelection;
 
-  if Assigned(aComponent) then
+  if Assigned(cmp) then
   begin
     FLastComponentName := aName;
-    aComponent.Select(aAddToSelection);
+    cmp.Select(aAddToSelection);
   end;
 end;
 
 procedure TSelectComponentsForm.SelectCurrentComponent;
 var
-  aInfo: TComponentInfo;
+  Info: TComponentInfo;
 begin
   if Assigned(FFormEditor) and Assigned(TreeView.Selected) then
   begin
-    GetInfo(TreeView.Selected, False, aInfo);
-    SelectComponentOnForm(aInfo.rName);
+    GetInfo(TreeView.Selected, False, Info);
+    SelectComponentOnForm(Info.rName);
   end;
 end;
 
 procedure TSelectComponentsForm.SelectAllActionExecute(Sender: TObject);
 var
-  aIndex: Integer;
-  aNode: TTreeNode;
-  aInfo: TComponentInfo;
+  Idx: Integer;
+  Node: TTreeNode;
+  Info: TComponentInfo;
 begin
-  for aIndex := 0 to Pred(FNodesList.Count) do
+  for Idx := 0 to Pred(FNodesList.Count) do
   begin
-    aNode := FNodesList [aIndex];
-    GetInfo(aNode, False, aInfo);
-    SelectComponentOnForm(aInfo.rName, aIndex > 0);
+    Node := FNodesList [Idx];
+    GetInfo(Node, False, Info);
+    SelectComponentOnForm(Info.rName, Idx > 0);
   end;
 
   TreeView.Select(FNodesList);
@@ -261,12 +261,12 @@ end;
 procedure TSelectComponentsForm.ChildComponentCallback(aParam: Pointer;
   aComponent: IOTAComponent; var aResult: Boolean);
 var
-  aTreeNode: TTreeNode;
-  aName: TGXUnicodeString;
+  Node: TTreeNode;
+  CmpName: TGXUnicodeString;
 begin
-  aName := GxOtaGetComponentName(aComponent);
-  aTreeNode := TreeView.Items.AddChildObject(TTreeNode(aParam), aName + ' : ' + aComponent.GetComponentType, nil);
-  aComponent.GetChildren(aTreeNode, ChildComponentCallback);
+  CmpName := GxOtaGetComponentName(aComponent);
+  Node := TreeView.Items.AddChildObject(TTreeNode(aParam), CmpName + ' : ' + aComponent.GetComponentType, nil);
+  aComponent.GetChildren(Node, ChildComponentCallback);
   aResult := True;
 end;
 
@@ -284,51 +284,51 @@ end;
 
 procedure TSelectComponentsForm.FilterNodes(const aFilter: TComponentInfo);
 var
-  aByName: Boolean;
-  aByType: Boolean;
-  aExactName: Boolean;
-  aExactType: Boolean;
-  aNameMatch: Boolean;
-  aTypeMatch: Boolean;
-  aNodeIndex: Integer;
-  aTreeNode: TTreeNode;
+  ByName: Boolean;
+  ByType: Boolean;
+  ExactName: Boolean;
+  ExactType: Boolean;
+  IsNameMatch: Boolean;
+  IsTypeMatch: Boolean;
+  NodeIdx: Integer;
+  Node: TTreeNode;
   aInfo: TComponentInfo;
-  aFound: Boolean;
+  Found: Boolean;
 begin
   FNodesList.Clear;
 
   TreeView.Items.BeginUpdate;
   try
-    aByName := aFilter.rName <> '';
-    aByType := aFilter.rType <> '';
+    ByName := aFilter.rName <> '';
+    ByType := aFilter.rType <> '';
 
-    aExactName := ExactNameCheckBox.Checked;
-    aExactType := ExactTypeCheckBox.Checked;
+    ExactName := ExactNameCheckBox.Checked;
+    ExactType := ExactTypeCheckBox.Checked;
 
-    for aNodeIndex := 0 to Pred(TreeView.Items.Count) do
+    for NodeIdx := 0 to Pred(TreeView.Items.Count) do
     begin
-      aTreeNode := TreeView.Items [aNodeIndex];
-      GetInfo(aTreeNode, aByType, aInfo);
+      Node := TreeView.Items [NodeIdx];
+      GetInfo(Node, ByType, aInfo);
 
-      aNameMatch := aByName and
-        (not aExactName and (Pos(aFilter.rName, aInfo.rName) > 0) or
-        (aExactName and SameText(aFilter.rName, aInfo.rName)));
+      IsNameMatch := ByName and
+        (not ExactName and (Pos(aFilter.rName, aInfo.rName) > 0) or
+        (ExactName and SameText(aFilter.rName, aInfo.rName)));
                         
-      aTypeMatch := aByType and
-        (not aExactType and (Pos(aFilter.rType, aInfo.rType) > 0) or
-        (aExactType and SameText(aFilter.rType, aInfo.rType)));
+      IsTypeMatch := ByType and
+        (not ExactType and (Pos(aFilter.rType, aInfo.rType) > 0) or
+        (ExactType and SameText(aFilter.rType, aInfo.rType)));
 
-      aFound := (aByName and not aByType and aNameMatch) or
-        (not aByName and aByType and aTypeMatch) or
-        (aByName and aByType and aNameMatch and aTypeMatch);
+      Found := (ByName and not ByType and IsNameMatch) or
+        (not ByName and ByType and IsTypeMatch) or
+        (ByName and ByType and IsNameMatch and IsTypeMatch);
 
-      if aFound then
-        FNodesList.Add(aTreeNode);
+      if Found then
+        FNodesList.Add(Node);
 
-      if aFound then // Images disabled for now since D6 fails to show the right images, set StateIndex as well
-        aTreeNode.ImageIndex := ImageIndexArrow
+      if Found then // Images disabled for now since D6 fails to show the right images, set StateIndex as well
+        Node.ImageIndex := ImageIndexArrow
       else
-        aTreeNode.ImageIndex := -1;
+        Node.ImageIndex := -1;
     end;
   finally
     TreeView.Items.EndUpdate;
@@ -346,27 +346,27 @@ end;
 
 procedure TSelectComponentsForm.SearchEditKeyPress(Sender: TObject; var aKey: Char);
 var
-  aReset : Boolean;
+  IgnoreKey : Boolean;
 begin
-  aReset := True;
+  IgnoreKey := True;
 
   case Ord(aKey) of
     VK_RETURN: SelectAllAction.Execute;
     VK_ESCAPE: ;
     VK_SPACE: SearchEdit.Clear;
     else
-      aReset := False;
+      IgnoreKey := False;
   end;
 
-  if aReset then
+  if IgnoreKey then
     aKey := Chr(0);
 end;
 
 procedure TSelectComponentsForm.SearchEditKeyUp(Sender: TObject; var aKey: Word; Shift: TShiftState);
 var
-  aReset: Boolean;
+  IgnoreKey: Boolean;
 begin
-  aReset := True;
+  IgnoreKey := True;
 
   case aKey of
     VK_UP:
@@ -374,16 +374,16 @@ begin
     VK_DOWN:
       FindNextNode;
     else
-      aReset := False;
+      IgnoreKey := False;
   end;
 
-  if aReset then
+  if IgnoreKey then
     aKey := 0;
 end;
 
 procedure TSelectComponentsForm.FindNextNode;
 var
-  aNodeIndex : Integer;
+  Idx : Integer;
 begin
   if FNodesList.Count <= 0 then
   begin
@@ -391,12 +391,12 @@ begin
     Exit;
   end;
 
-  aNodeIndex := FNodesList.IndexOf(CurrentNode);
+  Idx := FNodesList.IndexOf(CurrentNode);
 
-  if (aNodeIndex > -1) and (aNodeIndex < Pred(FNodesList.Count)) then
+  if (Idx > -1) and (Idx < Pred(FNodesList.Count)) then
   begin
-    Inc(aNodeIndex);
-    CurrentNode := FNodesList[aNodeIndex];
+    Inc(Idx);
+    CurrentNode := FNodesList[Idx];
   end
   else
     CurrentNode := FNodesList.First;
@@ -404,7 +404,7 @@ end;
 
 procedure TSelectComponentsForm.FindPrevNode;
 var
-  aNodeIndex: Integer;
+  Idx: Integer;
 begin
   if FNodesList.Count <= 0 then
   begin
@@ -412,12 +412,12 @@ begin
     Exit;
   end;
 
-  aNodeIndex := FNodesList.IndexOf(CurrentNode);
+  Idx := FNodesList.IndexOf(CurrentNode);
 
-  if (aNodeIndex > 0) and (aNodeIndex < FNodesList.Count) then
+  if (Idx > 0) and (Idx < FNodesList.Count) then
   begin
-    Dec(aNodeIndex);
-    CurrentNode := FNodesList[aNodeIndex];
+    Dec(Idx);
+    CurrentNode := FNodesList[Idx];
   end
   else
     CurrentNode := FNodesList.Last;
@@ -439,27 +439,27 @@ end;
 
 procedure TSelectComponentsForm.FormActivate(Sender: TObject);
 var
-  aName: TGXUnicodeString;
-  aInfo: TComponentInfo;
-  aNodeIndex: Integer;
-  aTreeNode: TTreeNode;
+  CmpName: TGXUnicodeString;
+  Info: TComponentInfo;
+  Idx: Integer;
+  Node: TTreeNode;
 begin
   try
     Init;
-    aName := FLastComponentName;
+    CmpName := FLastComponentName;
 
     FocusSearchEdit;
     SearchEdit.Text := FilterToText(FFilter);
     SearchEdit.SelectAll;
 //    SearchEditChange(SearchEdit);
 
-    for aNodeIndex := 0 to Pred(TreeView.Items.Count) do
+    for Idx := 0 to Pred(TreeView.Items.Count) do
     begin
-      aTreeNode := TreeView.Items[aNodeIndex];
-      GetInfo(aTreeNode, False, aInfo);
-      if aName = aInfo.rName then
+      Node := TreeView.Items[Idx];
+      GetInfo(Node, False, Info);
+      if CmpName = Info.rName then
       begin
-        CurrentNode := aTreeNode;
+        CurrentNode := Node;
         Exit;
       end;
     end;
@@ -469,9 +469,9 @@ end;
 
 procedure TSelectComponentsForm.Init;
 var
-  aParentName: TGXUnicodeString;
-  aParentType: TGXUnicodeString;
-  aComponent: IOTAComponent;
+  ParentName: TGXUnicodeString;
+  ParentType: TGXUnicodeString;
+  cmp: IOTAComponent;
 begin
   // Even though we use Begin/EndUpdate for the Items, the tree view still flickers a lot.
   // To prevent this, we could use LockWindowUpdate, which prevents this but it is strongly
@@ -488,17 +488,17 @@ begin
     if not GxOtaTryGetCurrentFormEditor(FFormEditor) then
       Abort;
 
-    aComponent := FFormEditor.GetRootComponent;
+    cmp := FFormEditor.GetRootComponent;
 
-    if not Assigned(aComponent) then
+    if not Assigned(cmp) then
       Abort;
 
-    aParentType := aComponent.GetComponentType;
-    aParentName := GxOtaGetComponentName(aComponent);
+    ParentType := cmp.GetComponentType;
+    ParentName := GxOtaGetComponentName(cmp);
 
-    TreeView.Items.Add(nil, aParentName + ' : ' + aParentType);
+    TreeView.Items.Add(nil, ParentName + ' : ' + ParentType);
 
-    FillTreeView(aComponent);
+    FillTreeView(cmp);
     TreeView.FullExpand;
     TreeView.Selected := TreeView.Items.GetFirstNode;
     TreeView.Selected.MakeVisible;
