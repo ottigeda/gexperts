@@ -5,8 +5,8 @@ unit GX_ProjDepend;
 interface
 
 uses
-  Classes, Controls, ComCtrls, ActnList, Menus, ToolWin, ExtCtrls,
-  Forms, GX_Experts, GX_OtaUtils, GX_ConfigurationInfo, Dialogs, GX_BaseForm, Actions;
+  Classes, Controls, ComCtrls, ActnList, Menus, ToolWin, ExtCtrls, Actions, UITypes, Forms,
+  GX_Experts, GX_OtaUtils, GX_ConfigurationInfo, Dialogs, GX_BaseForm;
 
 type
   TfmProjDepend = class(TfmBaseForm)

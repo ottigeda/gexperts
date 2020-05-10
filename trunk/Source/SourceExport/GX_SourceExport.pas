@@ -7,10 +7,10 @@ unit GX_SourceExport;
 interface
 
 uses
-  Classes, Graphics, Controls, Forms, Dialogs, ActnList, ComCtrls,
-  Menus, StdCtrls, ExtCtrls, ToolWin,
+  Classes, Graphics, Controls, Forms, Dialogs, ActnList, Actions, ComCtrls,
+  Menus, StdCtrls, ExtCtrls, ToolWin, UITypes,
   SynEdit, // This expert requires SynEdit from http://synedit.sf.net/
-  GX_Experts, GX_ConfigurationInfo, GX_BaseForm, Actions;
+  GX_Experts, GX_ConfigurationInfo, GX_BaseForm;
 
 type
   TGXCopyFormat = (cfText, cfHTMLFragment, cfRTFFragment);

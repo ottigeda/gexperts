@@ -10,8 +10,8 @@ unit GX_CleanDirectories;
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, CheckLst, ExtCtrls, ActnList, Menus,
-  GX_Experts, GX_ConfigurationInfo, GX_BaseForm, Actions;
+  Classes, Controls, Forms, StdCtrls, CheckLst, ExtCtrls, ActnList, Menus, Actions, UITypes,
+  GX_Experts, GX_ConfigurationInfo, GX_BaseForm;
 
 type
   TCleanDirectoriesExpert = class;

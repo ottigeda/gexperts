@@ -10,10 +10,11 @@ interface
 {$DEFINE DoShowProgressForm}
 
 uses
-  Windows, GX_ClassMgr, GX_ClassParsing, GX_Experts, GX_OtaUtils, GX_EnhancedEditor,
+  Windows,
   Classes, Controls, Buttons, StdCtrls, Forms, Dialogs, ActnList, ToolWin, ToolsAPI,
-  Actions, Graphics, Menus, ExtCtrls, ComCtrls, ImgList, GX_BaseForm,
-  GX_ClassOptions;
+  Actions, Graphics, Menus, ExtCtrls, ComCtrls, ImgList, UITypes,
+  GX_BaseForm, GX_ClassOptions, GX_ClassMgr, GX_ClassParsing, GX_Experts,
+  GX_OtaUtils, GX_EnhancedEditor;
 
 type
   TInfoViewMode = (vmList, vmTree);

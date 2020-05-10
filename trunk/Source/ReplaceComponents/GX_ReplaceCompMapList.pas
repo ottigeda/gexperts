@@ -6,7 +6,7 @@ interface
 
 uses
   Messages, Classes, Controls, Forms, ComCtrls, StdCtrls,
-  ExtCtrls, Contnrs, ToolWin, ImgList, ActnList,
+  ExtCtrls, Contnrs, ToolWin, ImgList, ActnList, Actions, UITypes,
   GX_ReplaceCompData, GX_SharedImages, GX_ReplaceCompMapDets, GX_BaseForm;
 
 const

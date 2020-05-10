@@ -5,9 +5,10 @@ unit GX_FavFiles;
 interface
 
 uses
-  GX_FavUtil, DropTarget, FileView, Windows, SysUtils, Classes, Controls, Forms,
-  ComCtrls, Menus, ExtCtrls, ImgList, ActnList, ToolWin, Dialogs, Actions,
-  GX_BaseForm;
+  Windows, SysUtils, Classes, Controls, Forms, UITypes,
+  ComCtrls, Menus, ExtCtrls, ImgList, ImageList, ActnList, ToolWin, Dialogs, Actions,
+  DropTarget, FileView,
+  GX_FavUtil, GX_BaseForm;
 
 type
   TFavFilesOptions = class

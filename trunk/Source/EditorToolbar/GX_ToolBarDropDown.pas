@@ -6,7 +6,7 @@ interface
 
 uses
   Windows,
-  Classes, Controls, Menus,
+  Classes, Controls, Menus, UITypes,
   GX_OtaUtils;
 
 type

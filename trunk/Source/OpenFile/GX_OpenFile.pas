@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, Controls, Forms, Actions, ActnList, Dialogs, StdCtrls,
-  ComCtrls, ExtCtrls, GX_GenericUtils, ToolWin, Messages,
-  GX_OpenFileConfig, GX_BaseForm, GX_ReadMapFileThread;
+  ToolWin, Messages, UITypes, ComCtrls, ExtCtrls,
+  GX_GenericUtils, GX_OpenFileConfig, GX_BaseForm, GX_ReadMapFileThread;
 
 const
   UM_REFRESHLIST = WM_USER + 746;

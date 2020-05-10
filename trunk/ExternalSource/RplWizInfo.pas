@@ -45,7 +45,7 @@ unit RplWizInfo;
   for a component to replace. The Replace routine does the replacement.
 }
 
-// This is defined to use "hacked" version of TComponent - to access it's
+// This is defined to use "hacked" version of TComponent - to access its
 // private fields. It is used to re-link all components connected to the
 // old instance of the replaced component.
 // Optional. Use only if some components are not re-linked during replace.

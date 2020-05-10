@@ -7,10 +7,11 @@ unit GX_CodeLib;
 interface
 
 uses
+  Forms, Controls, StdActns, Classes, ActnList, Actions, UITypes,
+  Dialogs, Menus, ComCtrls, ToolWin, ExtCtrls,
+  GpStructuredStorage,
   GX_Experts, GX_EnhancedEditor,
-  Forms, Controls, StdActns, Classes, ActnList,
-  Dialogs, Menus, ComCtrls, ToolWin, ExtCtrls, GpStructuredStorage,
-  GX_GenericUtils, GX_BaseForm, Actions;
+  GX_GenericUtils, GX_BaseForm;
 
 type
   TSearchRecord = record

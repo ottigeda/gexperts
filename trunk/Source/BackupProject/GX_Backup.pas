@@ -5,7 +5,7 @@ unit GX_Backup;
 interface
 
 uses
-  Classes, Controls, Forms, ExtCtrls, Dialogs, StdCtrls,
+  Classes, Controls, Forms, ExtCtrls, Dialogs, StdCtrls, UITypes,
   ToolsAPI, GX_Progress, GX_Experts, GX_ConfigurationInfo,
   GX_Zipper, AbArcTyp, AbUtils, GX_BaseForm, GX_GenericUtils;
 

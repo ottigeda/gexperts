@@ -5,7 +5,7 @@ unit GX_ReplaceComp;
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, ToolsAPI,
+  Classes, Controls, Forms, StdCtrls, ToolsAPI, UITypes,
   RplWizInfo, GX_ReplaceCompData, GX_BaseForm;
 
 type

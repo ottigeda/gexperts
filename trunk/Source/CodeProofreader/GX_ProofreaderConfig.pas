@@ -6,7 +6,7 @@ interface
 
 uses
   Windows, Classes, Controls, Forms, Dialogs, ComCtrls, StdCtrls,
-  ActnList, ToolWin, ExtCtrls, Menus, Messages,
+  ActnList, Actions, ToolWin, ExtCtrls, Menus, Messages, UITypes,
   GX_ProofreaderExpert, GX_ProofreaderData, GX_ProofreaderUtils, GX_SharedImages,
   GX_BaseForm;
 

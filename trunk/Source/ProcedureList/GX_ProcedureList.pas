@@ -6,8 +6,8 @@ interface
 
 uses
   SysUtils, Classes, ActnList, Actions, Dialogs, ComCtrls, ToolWin, StdCtrls,
-  Controls, ExtCtrls, Messages, Forms, GX_EnhancedEditor,
-  GX_ProcedureListOptions, GX_FileScanner, GX_EditReader, GX_BaseForm;
+  Controls, ExtCtrls, Messages, Forms, UITypes,
+  GX_EnhancedEditor, GX_ProcedureListOptions, GX_FileScanner, GX_EditReader, GX_BaseForm;
 
 const
   UM_RESIZECOLS = WM_USER + 523;
