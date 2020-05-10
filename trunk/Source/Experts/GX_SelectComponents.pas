@@ -4,6 +4,10 @@ unit GX_SelectComponents;
 
 // TODO: Prevent selecting a VCL form + components, since it isn't actually possible
 
+// todo: It's not possible to select the form (that is: not select any component) with this
+// expert. Either find a way to implement this (the IDE's structure pane can do it)
+// or remove the form from the tree view.
+
 interface
 
 uses
@@ -46,8 +50,9 @@ type
     procedure ActionListUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure ChangeModeActionHint(var HintStr: String; var CanShow: Boolean);
   private
+    FIsActivaingForm: Boolean;
     FFilter: TComponentInfo;
-    FNodesList: TList;
+    FMatchingNodes: TList;
     FCurrentNode: TTreeNode;
     FFormEditor: IOTAFormEditor;
     FMiniMode: Boolean;
@@ -109,7 +114,7 @@ procedure GetInfo(const aTreeNode: TTreeNode; const aGetType: Boolean; var aInfo
 var
   p: Integer;
 begin
-  aInfo.rName := UpperCase(aTreeNode.Text);
+  aInfo.rName := aTreeNode.Text;
   p := Pos(' : ', aInfo.rName);
 
   if p > 0 then
@@ -124,7 +129,7 @@ function GetInfo(const aText: TGXUnicodeString): TComponentInfo; overload;
 var
   p: Integer;
 begin
-  Result.rName := UpperCase(aText);
+  Result.rName := aText;
   p  := Pos(':', Result.rName);
 
   if p > 0 then
@@ -147,12 +152,12 @@ end;
 constructor TSelectComponentsForm.Create(_Owner: TComponent);
 begin
   inherited;
-  FNodesList := TList.Create;
+  FMatchingNodes := TList.Create;
 end;
 
 destructor TSelectComponentsForm.Destroy;
 begin
-  FreeAndNil(FNodesList);
+  FreeAndNil(FMatchingNodes);
   inherited;
 end;
 
@@ -175,7 +180,7 @@ procedure TSelectComponentsForm.SelectCurrentComponent;
 var
   Info: TComponentInfo;
 begin
-  if Assigned(FFormEditor) and Assigned(TreeView.Selected) then
+  if not FIsActivaingForm and Assigned(FFormEditor) and Assigned(TreeView.Selected) then
   begin
     GetInfo(TreeView.Selected, False, Info);
     SelectComponentOnForm(Info.rName);
@@ -188,23 +193,23 @@ var
   Node: TTreeNode;
   Info: TComponentInfo;
 begin
-  for Idx := 0 to Pred(FNodesList.Count) do
+  for Idx := 0 to Pred(FMatchingNodes.Count) do
   begin
-    Node := FNodesList [Idx];
+    Node := FMatchingNodes [Idx];
     GetInfo(Node, False, Info);
     SelectComponentOnForm(Info.rName, Idx > 0);
   end;
 
-  TreeView.Select(FNodesList);
+  TreeView.Select(FMatchingNodes);
 end;
 
 procedure TSelectComponentsForm.SetCurrentNode(const aNode: TTreeNode);
 begin
-  if FNodesList.Count > 0 then
+  if FMatchingNodes.Count > 0 then
   begin
     FCurrentNode := aNode;
-    if not Assigned(FCurrentNode) or (FNodesList.IndexOf(FCurrentNode) < 0) then
-      FCurrentNode := FNodesList.First;
+    if not Assigned(FCurrentNode) or (FMatchingNodes.IndexOf(FCurrentNode) < 0) then
+      FCurrentNode := FMatchingNodes.First;
     TreeView.Select(FCurrentNode);
     SelectCurrentComponent;
   end
@@ -295,7 +300,7 @@ var
   aInfo: TComponentInfo;
   Found: Boolean;
 begin
-  FNodesList.Clear;
+  FMatchingNodes.Clear;
 
   TreeView.Items.BeginUpdate;
   try
@@ -311,11 +316,11 @@ begin
       GetInfo(Node, ByType, aInfo);
 
       IsNameMatch := ByName and
-        (not ExactName and (Pos(aFilter.rName, aInfo.rName) > 0) or
+        (not ExactName and (Pos(UpperCase(aFilter.rName), UpperCase(aInfo.rName)) > 0) or
         (ExactName and SameText(aFilter.rName, aInfo.rName)));
                         
       IsTypeMatch := ByType and
-        (not ExactType and (Pos(aFilter.rType, aInfo.rType) > 0) or
+        (not ExactType and (Pos(UpperCase(aFilter.rType), UpperCase(aInfo.rType)) > 0) or
         (ExactType and SameText(aFilter.rType, aInfo.rType)));
 
       Found := (ByName and not ByType and IsNameMatch) or
@@ -323,7 +328,7 @@ begin
         (ByName and ByType and IsNameMatch and IsTypeMatch);
 
       if Found then
-        FNodesList.Add(Node);
+        FMatchingNodes.Add(Node);
 
       if Found then // Images disabled for now since D6 fails to show the right images, set StateIndex as well
         Node.ImageIndex := ImageIndexArrow
@@ -385,42 +390,42 @@ procedure TSelectComponentsForm.FindNextNode;
 var
   Idx : Integer;
 begin
-  if FNodesList.Count <= 0 then
+  if FMatchingNodes.Count <= 0 then
   begin
     CurrentNode := nil;
     Exit;
   end;
 
-  Idx := FNodesList.IndexOf(CurrentNode);
+  Idx := FMatchingNodes.IndexOf(CurrentNode);
 
-  if (Idx > -1) and (Idx < Pred(FNodesList.Count)) then
+  if (Idx > -1) and (Idx < Pred(FMatchingNodes.Count)) then
   begin
     Inc(Idx);
-    CurrentNode := FNodesList[Idx];
+    CurrentNode := FMatchingNodes[Idx];
   end
   else
-    CurrentNode := FNodesList.First;
+    CurrentNode := FMatchingNodes.First;
 end;
 
 procedure TSelectComponentsForm.FindPrevNode;
 var
   Idx: Integer;
 begin
-  if FNodesList.Count <= 0 then
+  if FMatchingNodes.Count <= 0 then
   begin
     CurrentNode := nil;
     Exit;
   end;
 
-  Idx := FNodesList.IndexOf(CurrentNode);
+  Idx := FMatchingNodes.IndexOf(CurrentNode);
 
-  if (Idx > 0) and (Idx < FNodesList.Count) then
+  if (Idx > 0) and (Idx < FMatchingNodes.Count) then
   begin
     Dec(Idx);
-    CurrentNode := FNodesList[Idx];
+    CurrentNode := FMatchingNodes[Idx];
   end
   else
-    CurrentNode := FNodesList.Last;
+    CurrentNode := FMatchingNodes.Last;
 end;
 
 procedure TSelectComponentsForm.FormKeyPress(Sender: TObject; var Key: Char);
@@ -444,26 +449,31 @@ var
   Idx: Integer;
   Node: TTreeNode;
 begin
+  FIsActivaingForm := True;
   try
-    Init;
-    CmpName := FLastComponentName;
+    try
+      Init;
+      CmpName := FLastComponentName;
 
-    FocusSearchEdit;
-    SearchEdit.Text := FilterToText(FFilter);
-    SearchEdit.SelectAll;
-//    SearchEditChange(SearchEdit);
+      FocusSearchEdit;
+      SearchEdit.Text := FilterToText(FFilter);
+      SearchEdit.SelectAll;
+      SearchEditChange(SearchEdit);
 
-    for Idx := 0 to Pred(TreeView.Items.Count) do
-    begin
-      Node := TreeView.Items[Idx];
-      GetInfo(Node, False, Info);
-      if CmpName = Info.rName then
+      for Idx := 0 to Pred(TreeView.Items.Count) do
       begin
-        CurrentNode := Node;
-        Exit;
+        Node := TreeView.Items[Idx];
+        GetInfo(Node, False, Info);
+        if SameText(CmpName, Info.rName) then
+        begin
+          CurrentNode := Node;
+          Exit;
+        end;
       end;
+    except
     end;
-  except
+  finally
+    FIsActivaingForm := False;
   end;
 end;
 
@@ -471,7 +481,7 @@ procedure TSelectComponentsForm.Init;
 var
   ParentName: TGXUnicodeString;
   ParentType: TGXUnicodeString;
-  cmp: IOTAComponent;
+  Root: IOTAComponent;
 begin
   // Even though we use Begin/EndUpdate for the Items, the tree view still flickers a lot.
   // To prevent this, we could use LockWindowUpdate, which prevents this but it is strongly
@@ -480,7 +490,7 @@ begin
   TWinControl_Lock(TreePanel);
   TreeView.Items.BeginUpdate;
   try
-    FNodesList.Clear;
+    FMatchingNodes.Clear;
 
     SearchEdit.Enabled := False;
     TreeView.Items.Clear;
@@ -488,17 +498,16 @@ begin
     if not GxOtaTryGetCurrentFormEditor(FFormEditor) then
       Abort;
 
-    cmp := FFormEditor.GetRootComponent;
-
-    if not Assigned(cmp) then
+    Root := FFormEditor.GetRootComponent;
+    if not Assigned(Root) then
       Abort;
 
-    ParentType := cmp.GetComponentType;
-    ParentName := GxOtaGetComponentName(cmp);
+    ParentType := Root.GetComponentType;
+    ParentName := GxOtaGetComponentName(Root);
 
     TreeView.Items.Add(nil, ParentName + ' : ' + ParentType);
 
-    FillTreeView(cmp);
+    FillTreeView(Root);
     TreeView.FullExpand;
     TreeView.Selected := TreeView.Items.GetFirstNode;
     TreeView.Selected.MakeVisible;
@@ -543,9 +552,9 @@ end;
 
 procedure TSelectComponentsForm.ActionListUpdate(Action: TBasicAction; var Handled: Boolean);
 begin
-  SelectAllAction.Enabled := FNodesList.Count > 0;
+  SelectAllAction.Enabled := FMatchingNodes.Count > 0;
   if SelectAllAction.Enabled then
-    SelectAllAction.Caption := '&Select ' + IntToStr(FNodesList.Count)
+    SelectAllAction.Caption := '&Select ' + IntToStr(FMatchingNodes.Count)
   else
     SelectAllAction.Caption := 'Select';
 end;
