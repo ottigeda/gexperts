@@ -308,6 +308,9 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\Formatter\GX_CodeFormatterGXConfigWrapper.pas"/>
         <DCCReference Include="..\..\Source\Formatter\GX_eAddToCaptitalization.pas"/>
         <DCCReference Include="..\..\source\Formatter\GX_eCodeFormatter.pas"/>
+        <DCCReference Include="..\..\Source\FormHotkeys\GX_FormHotkeys.pas">
+            <Form>f_FormHotkeys</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_About.pas">
             <Form>fmAbout</Form>
         </DCCReference>
