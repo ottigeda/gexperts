@@ -239,7 +239,7 @@ procedure StrReadLn(var _f: file; _p: PChar);
 procedure StrReadZ(var _f: file; _p: PChar);
 
 {$IF not Declared(PosEx)}
-function PosEx(const _SubStr, _S: string; _Offset: Integer = 1): Integer;
+function PosEx(const _SubStr, _s: string; _Offset: Integer = 1): Integer;
 {$DEFINE POSEX_IMPLEMENTATION_REQUIRED}
 {$IFEND}
 
@@ -412,15 +412,26 @@ function ExtractFirstWord(var _s: string; _Delimiter: TCharSet; out _FirstWord: 
 function ExtractFirstN(var _s: string; _n: Integer): string;
 
 ///<summary>
-/// Split string s into the list of substrings delimited by delimter
+/// Split string s into the list of substrings delimited by any of the given delimiters
 /// NOTE: Duplicate delimiters are ignored, so 'abc  def' will be split into two strings (which you
 ///       would expect), but also 'abc'#9#9'def' is two words (which you might not expect)
 /// @param sl is the stringlist in which to return the result. If it is not empty, the
 ///           new strings will be appended to the existing content.
 /// @param s is the string to split
-/// @param Delimiter is a string containing all delimiter characters
+/// @param Delimiters is a string/array of char containing all delimiter characters
 /// @returns the sl parameter </summary>
-function SplitString(_sl: TStrings; _s: string; const _Delimiter: string): TStrings;
+function SplitString(_sl: TStrings; _s: string; const _Delimiters: string): TStrings; overload;
+function SplitString(_sl: TStrings; _s: string; const _Delimiters: array of Char): TStrings; overload;
+
+///<summary>
+/// Split string s into the array of substrings delimited by any of the given delimiters
+/// NOTE: Duplicate delimiters are ignored, so 'abc  def' will be split into two strings (which you
+///       would expect), but also 'abc'#9#9'def' is two words (which you might not expect)
+/// @param s is the string to split
+/// @param Delimiters is a string/array of char containing all delimiter characters
+/// @returns a TStringArray with the parts </summary>
+function SplitString(_s: string; const _Delimiters: string): TStringArray; overload;
+function SplitString(_s: string; const _Delimiters: array of Char): TStringArray; overload;
 
 {$IFDEF SUPPORTS_UNICODE}
 function Copy(const _s: AnsiString; _Pos, _Len: Integer): AnsiString; overload;
@@ -631,16 +642,68 @@ begin
   _s := TailStr(_s, _n + 1);
 end;
 
-function SplitString(_sl: TStrings; _s: string; const _Delimiter: string): TStrings;
+function SplitString(_sl: TStrings; _s: string; const _Delimiters: string): TStrings;
 // Note: _s cannot be const, because it is passed to ExtractFirstWord which needs a var parameter
 var
   s: string;
 begin
   Result := _sl;
   while _s <> '' do begin
-    s := ExtractFirstWord(_s, _Delimiter);
+    s := ExtractFirstWord(_s, _Delimiters);
     Result.Add(s);
   end;
+end;
+
+function SplitString(_sl: TStrings; _s: string; const _Delimiters: array of Char): TStrings;
+// Note: _s cannot be const, because it is passed to ExtractFirstWord which needs a var parameter
+// Note: The code is the same as in the overloaded version, but Delimiters is an array of char
+//       here.
+var
+  s: string;
+begin
+  Result := _sl;
+  while _s <> '' do begin
+    s := ExtractFirstWord(_s, _Delimiters);
+    Result.Add(s);
+  end;
+end;
+
+function SplitString(_s: string; const _Delimiters: string): TStringArray;
+// Note: _s cannot be const, because it is passed to ExtractFirstWord which needs a var parameter
+var
+  s: string;
+  Idx: Integer;
+begin
+  // Maximum number of possible substrings is Len(s) div 2 + 1:
+  // e.g. 'a b c d' (len=7) -> 'a', 'b', 'c', 'd'
+  SetLength(Result, Length(_s) div 2 + 1);
+  Idx := 0;
+  while _s <> '' do begin
+    s := ExtractFirstWord(_s, _Delimiters);
+    Result[Idx] := s;
+    Inc(Idx);
+  end;
+  SetLength(Result, Idx);
+end;
+
+function SplitString(_s: string; const _Delimiters: array of Char): TStringArray;
+// Note: _s cannot be const, because it is passed to ExtractFirstWord which needs a var parameter
+// Note: The code is the same as in the overloaded version, but Delimiters is an array of char
+//       here.
+var
+  s: string;
+  Idx: Integer;
+begin
+  // Maximum number of possible substrings is Len(s) div 2 + 1:
+  // e.g. 'a b c d' (len=7) -> 'a', 'b', 'c', 'd'
+  SetLength(Result, Length(_s) div 2 + 1);
+  Idx := 0;
+  while _s <> '' do begin
+    s := ExtractFirstWord(_s, _Delimiters);
+    Result[Idx] := s;
+    Inc(Idx);
+  end;
+  SetLength(Result, Idx);
 end;
 
 function ReplaceChars(const _s, _Search, _Replace: string): string;
@@ -793,7 +856,7 @@ end;
 {$IFDEF STARTSSTR_IMPLEMENTATION_REQUIRED}
 function StartsStr(const _Start, _s: string): boolean;
 begin
-  Result := AnsiStartsStr(_Start,_s);
+  Result := AnsiStartsStr(_Start, _s);
 end;
 {$ENDIF}
 
@@ -805,7 +868,7 @@ end;
 {$ENDIF}
 
 {$IFDEF ENDSSTR_IMPLEMENTATION_REQUIRED}
-function EndsStr(const _End, _s: string): boolean;
+function EndsStr(const _End, _s: string): Boolean;
 begin
   Result := AnsiEndsStr(_End, _s);
 end;
@@ -1341,7 +1404,7 @@ end;
 
 function UEndsWith(const _End, _s: string): Boolean;
 begin
-  Result := AnsiEndsText(_end, _s);
+  Result := AnsiEndsText(_End, _s);
 end;
 
 function UnquoteString(const _s: string; _Quote: Char): string;
