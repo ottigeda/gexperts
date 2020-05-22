@@ -189,13 +189,16 @@ end;
 procedure Tf_Goto.lb_UnitPositionsClick(Sender: TObject);
 var
   Idx: Integer;
+  Line:Integer;
 begin
   Idx := lb_UnitPositions.ItemIndex;
   if Idx = -1 then
     Exit; //==>
 
-  TCombobox_SetText(cmb_LineNumber, IntToStr(FUnitPositions.Positions[Idx].LineNo));
+  Line := FUnitPositions.Positions[Idx].LineNo;
+  TCombobox_SetText(cmb_LineNumber, IntToStr(Line));
   TCombobox_SelectAll(cmb_LineNumber);
+  b_Ok.Enabled := Line > 0;
 end;
 
 procedure Tf_Goto.lb_UnitPositionsDblClick(Sender: TObject);
