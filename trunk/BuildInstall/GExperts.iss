@@ -186,6 +186,14 @@
   #define IDERegName   "BDS"
   #define IDERegVer    "20"
 #endif
+#ifdef RS104
+  #define IDEShortName "RADStudio"
+  #define IDELongName  "RAD Studio"
+  #define IDEVer       "10.4"
+  #define DLLSuffix    "RS104"
+  #define IDERegName   "BDS"
+  #define IDERegVer    "21"
+#endif
 
 #ifndef IDEShortName
   #error Usage: "isppcc.exe GExperts.iss /dDelphi7 /dVersion=1.38"
