@@ -107,7 +107,7 @@
                                           {$DEFINE GX_VER330_up}  // RAD Studio 10.3 Rio (27; BDS 20)
                                           {$DEFINE GX_DELPHI_RIO_UP}
                                           {$IF CompilerVersion >= 34}
-                                            {$DEFINE GX_VER340_up}  // RAD Studio 10.4 Denali (28; BDS 21)
+                                            {$DEFINE GX_VER340_up}  // RAD Studio 10.4 Sydney (28; BDS 21)
                                             {$DEFINE GX_DELPHI_SYDNEY_UP}
 
                                             {$IF CompilerVersion >= 35}
@@ -189,6 +189,13 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   // Let's hope it will be fixed in later versions
   {$IFNDEF GX_VER350_up}
     {$DEFINE KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
+  {$ENDIF GX_VER340_up}
+{$ENDIF GX_VER330_up}
+
+{$IFDEF GX_VER330_up}
+  // Fix for https://quality.embarcadero.com/browse/RSP-28064
+  {$IFNDEF GX_VER340_up} // Fixed in 10.4
+    {$DEFINE LISTBOX_OWNERDRAW_FIX_ENABLED}
   {$ENDIF GX_VER340_up}
 {$ENDIF GX_VER330_up}
 

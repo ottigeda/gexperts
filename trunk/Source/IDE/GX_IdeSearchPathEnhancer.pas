@@ -30,6 +30,10 @@ uses
   ActnList,
   StrUtils,
   ComCtrls,
+{$IFDEF LISTBOX_OWNERDRAW_FIX_ENABLED}
+  Graphics,
+  Themes,
+{$ENDIF}
   u_dzVclUtils,
   u_dzStringUtils,
   u_dzClassUtils,
@@ -77,6 +81,9 @@ type
     FAddDotsBtn: TButton;
     FDelDotsBtn: TButton;
     FProjectDir: string;
+{$IFDEF LISTBOX_OWNERDRAW_FIX_ENABLED}
+    FListboxOnDrawItem: TDrawItemEvent;
+{$ENDIF LISTBOX_OWNERDRAW_FIX_ENABLED}
 {$IFNDEF GX_VER300_up} // RAD Studio 10 Seattle (24; BDS 17)
     FBrowseBtn: TCustomButton;
     FBrowseClick: TNotifyEvent;
@@ -113,6 +120,9 @@ type
     procedure HandleMemoCommandProcessed(_Sender: TObject);
     procedure HandleMemoClick(_Sender: TObject);
     procedure HandleListboxClick(_Sender: TObject);
+{$IFDEF LISTBOX_OWNERDRAW_FIX_ENABLED}
+    procedure HandleListboxDrawItem(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
+{$ENDIF}
   protected
     function IsDesiredForm(_Form: TCustomForm): Boolean; override;
     procedure EnhanceForm(_Form: TForm); override;
@@ -333,6 +343,11 @@ begin
       FListbox.Align := alClient;
       FListboxOnClick := FListbox.OnClick;
       FListbox.OnClick := HandleListboxClick;
+{$IFDEF LISTBOX_OWNERDRAW_FIX_ENABLED}
+      FListbox.ItemHeight := MulDiv(18, FTabSheetList.CurrentPPI, USER_DEFAULT_SCREEN_DPI);
+      FListboxOnDrawItem := FListbox.OnDrawItem;
+      FListbox.OnDrawItem := HandleListboxDrawItem;
+{$ENDIF}
 
       FDelDotsBtn := TButton.Create(_Form);
       h := FDelDotsBtn.Height - 4;
@@ -778,6 +793,45 @@ begin
   if Assigned(FListboxOnClick) then
     FListboxOnClick(_Sender);
 end;
+
+{$IFDEF LISTBOX_OWNERDRAW_FIX_ENABLED}
+procedure TSearchPathEnhancer.HandleListboxDrawItem(Control: TWinControl;
+  Index: Integer; Rect: TRect; State: TOwnerDrawState);
+var
+  LListBox: TListBox;
+  LText   : string;
+begin
+  if odSelected in State then begin
+    LListBox := TListBox(Control);
+
+    with LListBox.Canvas do begin
+      if TStyleManager.IsCustomStyleActive then begin
+        Brush.Color := StyleServices.GetSystemColor(clHighlight);
+        Font.Color  := StyleServices.GetStyleFontColor(sfListItemTextSelected);
+      end
+      else begin
+        Brush.Color := clHighlight;
+        Font.Color  := clHighlightText;
+      end;
+
+      FillRect(Rect);
+
+      if Index >= 0 then begin
+        LText := LListBox.Items[Index];
+        TextOut(
+          Rect.Left + 2,
+          Rect.Top + (Rect.Height - TextHeight(LText)) div 2,
+          LText
+        );
+      end;
+      // Hint: Don't check for odFocused and do not call DrawFocusRect(),
+      // that is already handled in the calling code!
+    end;
+  end
+  else
+    FListboxOnDrawItem(Control, Index, Rect, State); // call original code.
+end;
+{$ENDIF LISTBOX_OWNERDRAW_FIX_ENABLED}
 
 { TListBox }
 
