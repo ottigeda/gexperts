@@ -37,6 +37,7 @@ type
      ideRS103U1, // Rad Studio 10.3 Rio Update 1
      ideRS103U2, // Rad Studio 10.3 Rio Update 2
      ideRS103U3, // Rad Studio 10.3 Rio Update 3
+     ideRS104,   // Rad Studio 10.4 Sydney
      // C# Builder
      ideCSB100,
      // C++Builder
@@ -925,6 +926,24 @@ begin
   end;
 end;
 
+function GetRS104Version: TBorlandIdeVersion;
+const
+  CoreIde2700: TVersionNumber = (Minor: 27; Major: 0; Build: 37829; Release: 9790);
+var
+  CoreIdeFileVersion: TVersionNumber;
+  VersionNumber: Integer;
+begin
+  CoreIdeFileVersion := GetFileVersionNumber(GetIdeRootDirectory + 'Bin\coreide270.bpl');
+
+  VersionNumber := CompareVersionNumber(CoreIdeFileVersion, CoreIde2700);
+  if VersionNumber >= 0 then begin
+    Result := ideRS104;
+  end
+  else begin
+    Result := ideUnknown;
+  end;
+end;
+
 function GetBorlandIdeVersion: TBorlandIdeVersion;
 begin
   // We only actually detect the version once per session.
@@ -1049,6 +1068,11 @@ begin
     Result := GetRS103Version;
   Assert(Result in [ideRS103, ideRS103U1, ideRS103U2, ideRS103U3]);
   {$ENDIF VER330}
+
+  {$IFDEF VER340}
+    Result := GetRS104Version;
+    Assert(Result in [ideRS104]);
+  {$ENDIF VER340}
 
   if Result = ideUnknown then
     MessageDlg('Unknown IDE major version detected.  Please update GX_GetIdeVersion.pas.', mtError, [mbOK], 0);

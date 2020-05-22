@@ -107,19 +107,24 @@
                                           {$DEFINE GX_VER330_up}  // RAD Studio 10.3 Rio (27; BDS 20)
                                           {$DEFINE GX_DELPHI_RIO_UP}
                                           {$IF CompilerVersion >= 34}
-  unsupported Delphi version
-  If you get here, you are probably trying to compile GExperts with a new Delphi release.
-  In addition to define a new GX_VERxxx_UP symbol, you should also have a look at
-  * GX_VerDepConst.pas
-  * GX_GetIdeVersion.pas
-  * GX_StandAloneLoadDLL.pas
-  * GX_eIfDef.pas
-  * GX_UnitExportParser.pas
-  and also the include files for the 3rd party libraries used:
-  * AbDefine.inc
-  * SynEdit.inc
-  * SynEditJedi.inc (That's a copy of jedi.inc from Project JEDI)  
-  todo: List the other units that might need to be adapted.
+                                            {$DEFINE GX_VER340_up}  // RAD Studio 10.4 Denali (28; BDS 21)
+                                            {$DEFINE GX_DELPHI_SYDNEY_UP}
+
+                                            {$IF CompilerVersion >= 35}
+    unsupported Delphi version
+    If you get here, you are probably trying to compile GExperts with a new Delphi release.
+    In addition to define a new GX_VERxxx_UP symbol, you should also have a look at
+    * GX_VerDepConst.pas
+    * GX_GetIdeVersion.pas
+    * GX_StandAloneLoadDLL.pas
+    * GX_eIfDef.pas
+    * GX_UnitExportParser.pas
+    and also the include files for the 3rd party libraries used:
+    * AbDefine.inc
+    * SynEdit.inc
+    * SynEditJedi.inc (That's a copy of jedi.inc from Project JEDI)
+    todo: List the other units that might need to be adapted.
+                                            {$IFEND}
                                           {$IFEND}
                                         {$IFEND}
                                       {$IFEND}
@@ -166,10 +171,10 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 {$ENDIF GX_DELPHI2005_UP}
 
 {$IFDEF GX_VER320_up}
-{$IFNDEF GX_VER330_up}
+{$IFNDEF GX_VER333_up}
 // only for Delphi 10.2
   {$DEFINE STARTUP_LAYOUT_FIX_ENABLED}
-{$ENDIF GX_VER330_up}
+{$ENDIF GX_VER333_up}
 {$ENDIF GX_VER320_up}
 
 {$IFDEF GX_VER320_up}
@@ -179,9 +184,10 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$ENDIF GX_VER340_up}
 {$ENDIF GX_VER320_up}
 
-{$ifdef GX_VER330_up}
-  // That problem was introduced in Delphi 10.3 Rio, let's hope it will be fixed in later versions
-  {$IFNDEF GX_VER340_up}
+{$IFDEF GX_VER330_up}
+  // That problem was introduced in Delphi 10.3 Rio, and still exists in 10.4 Sydney.
+  // Let's hope it will be fixed in later versions
+  {$IFNDEF GX_VER350_up}
     {$DEFINE KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
   {$ENDIF GX_VER340_up}
 {$ENDIF GX_VER330_up}

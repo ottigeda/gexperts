@@ -214,6 +214,15 @@ const
     ClassBrowserStorageFolder = 'Classes.RADStudio10.3';
   {$ENDIF VER330}
 
+  {$IFDEF VER340} // Delphi/RAD Studio 10.4 Sydney
+    GExpertsDll = 'GExpertsRS104.dll';
+    TTabDockHostFormClassContainer = 'designide270.bpl';
+    MajorVersionNumberChar = '27';
+    IDEEnglishName = 'RAD Studio 10.4';
+    CompilerDefinedProductRegistryKey = CompanyRegPrefix + 'BDS\21.0';
+    ClassBrowserStorageFolder = 'Classes.RADStudio10.4';
+  {$ENDIF VER330}
+
 implementation
 
 end.
