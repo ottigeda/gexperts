@@ -656,9 +656,6 @@ begin
 end;
 
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
-type
-  TComboBoxHack = class(TComboBox);
-
 procedure TGxIdeNotifier.RestoreUserDesktop;
 var
   Settings     : TGExpertsSettings;
@@ -683,7 +680,7 @@ end;
 
 procedure TGxIdeNotifier.SaveUserDesktop;
 var
-  cbDesktop   : TComboBox;
+  cbDesktop   : TCustomComboBox;
   ndx         : Integer;
   LDesktopName: string;
   LIgnoreName : string;

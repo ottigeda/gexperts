@@ -16,6 +16,7 @@ type
     FStartingUp: Boolean;
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
     FLastDesktopName: string;
+    procedure ForceStartupDesktop(Sender: TObject);
 {$ENDIF}
     procedure InstallAddIn;
     function GetExpert(const Index: Integer): TGX_Expert;
@@ -368,9 +369,6 @@ end;
 procedure TGExperts.DoAfterIDEInitialized(Sender: TObject);
 var
   i: Integer;
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
-  s: string;
-{$ENDIF}
 begin
   FStartingUp := False;
   for i := 0 to FExpertList.Count - 1 do
@@ -380,15 +378,27 @@ begin
 
   GXMenuActionManager.MoveMainMenuItems;
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
-  // se also GX_EditorChangeServices
   if ConfigInfo.GetForceDesktopOnStartup then begin
-    s := ConfigInfo.GetForcedStartupDesktop;
-    if s = '' then
-      s := FLastDesktopName;
-    SetIdeDesktop(s);
+    // Unfortunatly the 1200 ms delay used to call DoAfterIDEInitialized are not always
+    // to be enough to also set the startup desktop, resulting in an access violation.
+    // Waiting an additional 500 ms seems to fix the issue.
+    TTimedCallback.Create(ForceStartupDesktop, 500, True);
   end;
 {$ENDIF}
 end;
+
+{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+procedure TGExperts.ForceStartupDesktop(Sender: TObject);
+var
+  s: string;
+begin
+  // see also GX_EditorChangeServices
+  s := ConfigInfo.GetForcedStartupDesktop;
+  if s = '' then
+    s := FLastDesktopName;
+  SetIdeDesktop(s);
+end;
+{$ENDIF}
 
 procedure TGExperts.TimedCloseMessageView;
 var

@@ -119,6 +119,7 @@ type
     bCachingPath: TButton;
     chk_FontForNewForms: TCheckBox;
     b_CustomFontForNewForms: TButton;
+    l_ForceDestkopAV: TLabel;
     procedure btnEnumerateModulesClick(Sender: TObject);
     procedure chkEditorKeyTracingClick(Sender: TObject);
     procedure sbVCLDirClick(Sender: TObject);
@@ -760,6 +761,7 @@ begin
 {$IFNDEF STARTUP_LAYOUT_FIX_ENABLED}
   chkForceStartupDesktop.Visible := False;
   cbxDesktop.Visible := False;
+  l_ForceDestkopAV.Visible := False;
 {$ENDIF}
 
 {$IFDEF GX_VER160_up} // Delphi 8 (BDS 1)

@@ -34,7 +34,7 @@ type
 
 procedure TReselectDesktopExpert.Execute(Sender: TObject);
 var
-  cbDesktop: TComboBox;
+  cbDesktop: TCustomComboBox;
 begin
   if not TryGetDesktopCombo(cbDesktop) then
     Exit; //==>

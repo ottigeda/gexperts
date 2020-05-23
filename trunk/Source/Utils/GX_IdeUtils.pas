@@ -81,7 +81,7 @@ procedure SetIdeDesktop(const _Desktop: string);
 /// Use with care!!!! </summary>
 function TryGetIdeDesktops(out _Items: TStrings): Boolean;
 
-function TryGetDesktopCombo(out _cmb: TCombobox): Boolean;
+function TryGetDesktopCombo(out _cmb: TCustomCombobox): Boolean;
 
 // Return the IDE's version identifier, such as ENT, CSS, PRO, STD,
 // or the empty string if unknown
@@ -325,10 +325,10 @@ begin
 end;
 
 type
-  TComboBoxHack = class(TComboBox)
+  TComboBoxHack = class(TCustomComboBox)
   end;
 
-function TryGetDesktopCombo(out _cmb: TCombobox): Boolean;
+function TryGetDesktopCombo(out _cmb: TCustomComboBox): Boolean;
 var
   AppBuilder: TForm;
 begin
@@ -336,24 +336,30 @@ begin
   AppBuilder := TForm(Application.FindComponent('AppBuilder'));
   if not Assigned(AppBuilder) then
     Exit;
-  _cmb := TComboBox(AppBuilder.FindComponent('cbDesktop'));
+  _cmb := TCustomComboBox(AppBuilder.FindComponent('cbDesktop'));
   Result := Assigned(_cmb);
 end;
 
 procedure SetIdeDesktop(const _Desktop: string);
 var
-  cbDesktop: TComboBox;
+  cbDesktop: TCustomComboBox;
 begin
   if not TryGetDesktopCombo(cbDesktop) then
     Exit; //==>
 
-  cbDesktop.Text := _Desktop;
-  TComboBoxHack(cbDesktop).Click;
+  TComboBoxHack(cbDesktop).Text := _Desktop;
+  try
+    TComboBoxHack(cbDesktop).Click;
+  except
+    // no idea why, but sometimes this causes an access violation
+    on E: EAccessViolation do
+      GxLogException(E, 'Error in SetIdeDesktop');
+  end;
 end;
 
 function TryGetIdeDesktops(out _Items: TStrings): Boolean;
 var
-  cbDesktop: TComboBox;
+  cbDesktop: TCustomComboBox;
 begin
   Result := TryGetDesktopCombo(cbDesktop);
   if Result then

@@ -358,6 +358,19 @@ object fmConfiguration: TfmConfiguration
             ItemHeight = 14
             TabOrder = 11
           end
+          object l_ForceDestkopAV: TLabel
+            Left = 192
+            Top = 229
+            Width = 288
+            Height = 14
+            Caption = 'Warning: Can cause Access Violations on IDE startup'
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clRed
+            Font.Height = -12
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+          end
           object chkEnhanceDockForms: TCheckBox
             Left = 24
             Top = 151
