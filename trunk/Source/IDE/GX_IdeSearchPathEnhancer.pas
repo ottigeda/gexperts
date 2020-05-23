@@ -8,7 +8,9 @@ uses
   SysUtils,
   Classes,
   Forms,
-  GX_EnhancedEditor;
+  SynEdit,
+  SynMemo,
+  SynEditKeyCmds;
 
 type
   TGxIdeSearchPathEnhancer = class
@@ -34,6 +36,7 @@ uses
   Graphics,
   Themes,
 {$ENDIF}
+  SynEditTypes,
   u_dzVclUtils,
   u_dzStringUtils,
   u_dzClassUtils,
@@ -44,7 +47,8 @@ uses
   GX_ConfigurationInfo,
   GX_IdeSearchPathFavoriteEdit,
   GX_IdeDetectForms,
-  GX_IdeDialogEnhancer;
+  GX_IdeDialogEnhancer,
+  GX_EnhancedEditor;
 
 type
   TLineProcessMethod = function(const _s: TGXUnicodeString): TGXUnicodeString of object;
@@ -56,7 +60,7 @@ type
     FListbox: TListBox;
     FListboxOnClick: TNotifyEvent;
     FListBoxItemIndex: Integer;
-    FMemo: TGxEnhancedEditor;
+    FMemo: TSynMemo;
 
     FPageControl: TPageControl;
     FTabSheetList: TTabSheet;
@@ -117,7 +121,8 @@ type
     function doMakeAbsolute(const _s: TGXUnicodeString): TGXUnicodeString;
     function doMakeRelative(const _s: TGXUnicodeString): TGXUnicodeString;
     procedure ProcessAllMemoLines(_ProcessMethod: TLineProcessMethod);
-    procedure HandleMemoCommandProcessed(_Sender: TObject);
+    procedure HandleMemoCommandProcessed(_Sender: TObject;
+      var _Command: TSynEditorCommand; var _Char: WideChar; _Data: Pointer);
     procedure HandleMemoClick(_Sender: TObject);
     procedure HandleListboxClick(_Sender: TObject);
 {$IFDEF LISTBOX_OWNERDRAW_FIX_ENABLED}
@@ -328,16 +333,19 @@ begin
       FTabSheetMemo.PageControl := FPageControl;
       FTabSheetMemo.Caption := '&Memo';
 
-      FMemo := TGxEnhancedEditor.Create(_Form);
+      FMemo := TSynMemo.Create(_Form);
       FMemo.Parent := FTabSheetMemo;
       FMemo.Align := alClient;
-//      FMemo.HideSelection := False;
+      FMemo.HideSelection := False;
       FMemo.OnChange := Self.HandleMemoChange;
       FMemo.OnCommandProcessed := Self.HandleMemoCommandProcessed;
       FMemo.OnClick := Self.HandleMemoClick;
-//      FMemo.ScrollBars := ssBoth;
-//      FMemo.WordWrap := False;
+      FMemo.WordWrap := False;
       FMemo.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
+      FMemo.RightEdge := 0;
+      FMemo.Gutter.Width := 0;
+      FMemo.Options := FMemo.Options - [eoScrollPastEol, eoTabsToSpaces] + [eoHideShowScrollbars];
+      GxOtaGetEditorFont(FMemo.Font, -1); // Editor font, size reduced by 1 pt.
 
       FListbox.Parent := FTabSheetList;
       FListbox.Align := alClient;
@@ -453,18 +461,36 @@ var
   sl: TGXUnicodeStringList;
   StartIdx: Integer;
   EndIdx: Integer;
+  SelStart: Integer;
+  Line: TGXUnicodeString;
+  SelEnd: Integer;
 begin
-  if FMemo.LineCount = 0 then
+  if FMemo.Lines.Count = 0 then
     Exit; //==>
 
   sl := TGXUnicodeStringList.Create;
   try
-    FMemo.GetSelectedLines(StartIdx, EndIdx, sl);
+    StartIdx := FMemo.BlockBegin.Line - 1;
+    EndIdx := FMemo.BlockEnd.Line - 1;
+    if FMemo.BlockEnd.Char = 1 then
+      Dec(EndIdx);
+    if EndIdx < StartIdx then
+      EndIdx := StartIdx;
+
+    sl.Assign(FMemo.Lines);
     for i := StartIdx to EndIdx do begin
       sl[i] := _ProcessMethod(sl[i]);
     end;
     FMemo.Text := sl.Text;
-    FMemo.SelectLines(StartIdx, EndIdx);
+
+    SelStart := FMemo.RowColToCharIndex(BufferCoord(1, StartIdx + 1));
+    if EndIdx + 1 = FMemo.Lines.Count then begin
+      Line := FMemo.Lines[EndIdx];
+      SelEnd := FMemo.RowColToCharIndex(BufferCoord(Length(Line) + 1, EndIdx + 1));
+    end else
+      SelEnd := FMemo.RowColToCharIndex(BufferCoord(1, EndIdx + 2));
+    FMemo.SelStart := SelStart;
+    FMemo.SelEnd := SelEnd;
   finally
     FreeAndNil(sl);
   end;
@@ -476,8 +502,8 @@ var
 begin
   FMemo.BeginUpdate;
   try
-    for i := 0 to FMemo.LineCount - 1 do begin
-      FMemo.SetLine(i, _ProcessMethod(FMemo.GetLine(i)));
+    for i := 0 to FMemo.Lines.Count - 1 do begin
+      FMemo.Lines[i] := _ProcessMethod(FMemo.Lines[i]);
     end;
   finally
     FMemo.EndUpdate;
@@ -560,7 +586,7 @@ begin
     if FPageControl.ActivePage = FTabSheetList then
       FListbox.Items.AddStrings(sl)
     else
-      FMemo.AddStrings(sl);
+      FMemo.Lines.AddStrings(sl);
   finally
     FreeAndNil(sl);
   end;
@@ -615,13 +641,22 @@ var
   Dirs: TStringList;
   i: Integer;
   RecurseIdx: Integer;
+  Path: WideString;
+  ProjectFile: string;
 begin
-  if FEdit.Text = '' then
+  Path := Trim(FEdit.Text);
+  if Path = '' then
     Exit; //==>
 
+  ProjectFile := GxOtaGetCurrentProjectFileName(False);
+  if ProjectFile = '' then
+    Exit; //==>
+
+  FProjectDir := ExtractFilePath(ProjectFile);
+  Path := doMakeAbsolute(Path);
   Dirs := TStringList.Create;
   try
-    TSimpleDirEnumerator.EnumDirsOnly(FEdit.Text + '\*', Dirs, True);
+    TSimpleDirEnumerator.EnumDirsOnly(Path + '\*', Dirs, True);
     for i := Dirs.Count - 1 downto 0 do begin
       if AnsiStartsStr('.', Dirs[i]) then
         Dirs.Delete(i);
@@ -635,7 +670,7 @@ begin
       end;
       Inc(RecurseIdx);
     end;
-    FMemo.AddStrings(Dirs);
+    FMemo.Lines.AddStrings(Dirs);
   finally
     FreeAndNil(Dirs);
   end;
@@ -648,12 +683,12 @@ begin
   SwitchingToMemo := (FPageControl.ActivePage = FTabSheetList);
   if SwitchingToMemo then begin
     FMemo.Text := FListbox.Items.Text;
-    FMemo.CaretXY := Point(FMemo.CaretXY.X, FListboxItemIndex);
+    FMemo.CaretY := FListBoxItemIndex + 1;
   end else begin
     // We could also update the listbox' content here, but that would not help in the case
     // where the user clicks OK without switching back to the list box. So this update must
     // be done elsewhere.
-    FListbox.ItemIndex := FMemo.CaretXY.Y;
+    FListbox.ItemIndex := FMemo.CaretY - 1;
   end;
 end;
 
@@ -689,15 +724,24 @@ end;
 procedure TSearchPathEnhancer.UpBtnClick(_Sender: TObject);
 var
   LineIdx: Integer;
-  Pos: TPoint;
+  YPos: Integer;
 begin
   if FPageControl.ActivePage = FTabSheetMemo then begin
-    Pos := FMemo.CaretXY;
-    LineIdx := Pos.Y;
-    if LineIdx > 0 then begin
-      FMemo.ExchangeLines(LineIdx - 1, LineIdx);
-      Pos.Y := Pos.Y - 1;
-      FMemo.CaretXY := Pos;
+    FMemo.BeginUpdate;
+    try
+      YPos := FMemo.CaretY;
+      LineIdx := YPos - 1;
+      if LineIdx > 0 then begin
+        if LineIdx = FMemo.Lines.Count - 1 then begin
+        // the last line might be empty, if it is, do not swap it with the non empty previous line
+          if Trim(FMemo.Lines[LineIdx]) = '' then
+            Exit; //==>
+        end;
+        FMemo.Lines.Exchange(LineIdx - 1, LineIdx);
+        FMemo.CaretY := YPos - 1;
+      end;
+    finally
+      FMemo.EndUpdate;
     end;
     TWinControl_SetFocus(FMemo);
   end else
@@ -706,13 +750,26 @@ end;
 
 procedure TSearchPathEnhancer.DownBtnClick(_Sender: TObject);
 var
-  LineIdx: Integer;
+  LineCnt: Integer;
+  YPos: Integer;
 begin
   if FPageControl.ActivePage = FTabSheetMemo then begin
-    LineIdx := FMemo.CaretXY.Y;
-    if LineIdx < FMemo.LineCount - 1 then begin
-      FMemo.ExchangeLines(LineIdx, LineIdx + 1);
-      FMemo.CaretXY := Point(FMemo.CaretXY.X, LineIdx + 1);
+    FMemo.BeginUpdate;
+    try
+      YPos := FMemo.CaretY;
+      LineCnt := FMemo.Lines.Count;
+      if YPos < LineCnt then begin
+        if YPos = LineCnt - 1 then begin
+        // the last line might be empty, if it is, do not swap it with the non empty previous line
+          if Trim(FMemo.Lines[YPos]) = '' then
+            Exit; //==>
+        end;
+
+        FMemo.Lines.Exchange(YPos - 1, YPos);
+        FMemo.CaretY := YPos + 1;
+      end;
+    finally
+      FMemo.EndUpdate;
     end;
     TWinControl_SetFocus(FMemo);
   end else
@@ -730,7 +787,7 @@ var
   Idx: Integer;
 begin
   if FPageControl.ActivePage = FTabSheetMemo then begin
-    FMemo.AddLine(FEdit.Text);
+    FMemo.Lines.Add(FEdit.Text);
   end else begin
     Idx := FListbox.Items.Add(FEdit.Text);
     // In order to prevent adding the path twice, we need to select the new entry and
@@ -775,15 +832,16 @@ procedure TSearchPathEnhancer.HandleMemoClick(_Sender: TObject);
 var
   Idx: Integer;
 begin
-  Idx := FMemo.CaretXY.Y;
+  Idx := FMemo.CaretY - 1;
   TListBox(FListbox).ForceItemIndex(Idx);
 end;
 
-procedure TSearchPathEnhancer.HandleMemoCommandProcessed(_Sender: TObject);
+procedure TSearchPathEnhancer.HandleMemoCommandProcessed(_Sender: TObject;
+  var _Command: TSynEditorCommand; var _Char: WideChar; _Data: Pointer);
 var
   Idx: Integer;
 begin
-  Idx := FMemo.CaretXY.Y;
+  Idx := FMemo.CaretY - 1;
   TListBox(FListbox).ForceItemIndex(Idx);
 end;
 
@@ -795,11 +853,12 @@ begin
 end;
 
 {$IFDEF LISTBOX_OWNERDRAW_FIX_ENABLED}
+
 procedure TSearchPathEnhancer.HandleListboxDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
 var
   LListBox: TListBox;
-  LText   : string;
+  LText: string;
 begin
   if odSelected in State then begin
     LListBox := TListBox(Control);
@@ -807,11 +866,10 @@ begin
     with LListBox.Canvas do begin
       if TStyleManager.IsCustomStyleActive then begin
         Brush.Color := StyleServices.GetSystemColor(clHighlight);
-        Font.Color  := StyleServices.GetStyleFontColor(sfListItemTextSelected);
-      end
-      else begin
+        Font.Color := StyleServices.GetStyleFontColor(sfListItemTextSelected);
+      end else begin
         Brush.Color := clHighlight;
-        Font.Color  := clHighlightText;
+        Font.Color := clHighlightText;
       end;
 
       FillRect(Rect);
@@ -822,13 +880,12 @@ begin
           Rect.Left + 2,
           Rect.Top + (Rect.Height - TextHeight(LText)) div 2,
           LText
-        );
+          );
       end;
       // Hint: Don't check for odFocused and do not call DrawFocusRect(),
       // that is already handled in the calling code!
     end;
-  end
-  else
+  end else
     FListboxOnDrawItem(Control, Index, Rect, State); // call original code.
 end;
 {$ENDIF LISTBOX_OWNERDRAW_FIX_ENABLED}
