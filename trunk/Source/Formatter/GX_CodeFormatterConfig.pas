@@ -182,7 +182,7 @@ uses
   GX_CodeFormatterConfigHandler,
   GX_CodeFormatterEditCapitalization,
   GX_CodeFormatterDefaultSettings,
-  GX_CodeFormatterGXConfigWrapper;
+  GX_CodeFormatterGXConfigWrapper, GX_OtaUtils;
 
 resourcestring
   str_None = 'None';
@@ -229,6 +229,7 @@ begin
   m_PreviewBefore.Width := 241;
   m_PreviewBefore.Height := 337;
   m_PreviewBefore.TabOrder := 0;
+  GxOtaGetEditorFont(m_PreviewBefore.Font);
   m_PreviewBefore.OnChange := ts_PreviewShow;
   m_PreviewBefore.OnStatusChange := HandleOnStatusChange;
   m_PreviewBefore.Highlighter := gxpPas;
@@ -242,6 +243,7 @@ begin
   m_PreviewAfter.Height := 337;
   m_PreviewAfter.Anchors := [akLeft, akTop, akRight];
   m_PreviewAfter.TabOrder := 1;
+  GxOtaGetEditorFont(m_PreviewAfter.Font);
   m_PreviewAfter.Highlighter := gxpPas;
 
   TWinControl_ActivateDropFiles(m_PreviewBefore, m_PreviewFileDropped);
