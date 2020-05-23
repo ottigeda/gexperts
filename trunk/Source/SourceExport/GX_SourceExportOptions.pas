@@ -51,6 +51,7 @@ uses
   SysUtils, StrUtils,
   u_dzVclUtils, u_dzStringUtils,
   SynEditHighlighter, SynUnicode,
+  GX_OtaUtils,
   GX_SynMemoUtils, GX_GenericUtils, GX_IdeUtils;
 
 {$R *.dfm}
@@ -87,6 +88,8 @@ begin
   FSampleEditor.Gutter.Width := 0;
   FSampleEditor.Options := FSampleEditor.Options + [eoNoCaret, eoNoSelection, eoHideShowScrollbars, eoAutoSizeMaxScrollWidth] - [eoScrollPastEof, eoScrollPastEol];
   FSampleEditor.OnStatusChange := SynEditSelectionChange;
+  GxOtaGetEditorFont(FSampleEditor.Font);
+
   GXHighlighter := GetGXHighlighterForCurrentSourceEditor;
 
   SetSynEditHighlighter(FSampleEditor, GXHighlighter);

@@ -122,6 +122,8 @@ begin
   Assert(Assigned(FEditor));
 
   FEditor.ClearAll;
+  GxOtaGetEditorFont(FEditor.Font);
+
   SetSynEditHighlighter(FEditor, GetGXHighlighterForCurrentSourceEditor);
 
   Result := GxOtaGetActiveEditorTextAsUnicodeString(Lines);
@@ -205,6 +207,7 @@ begin
       Exporter.UseBackground := True;
       Exporter.Highlighter := FEditor.Highlighter;
       Exporter.ExportAsText := True;
+      Exporter.Font := FEditor.Font;
       Exporter.Color := SourceExportExpert.FBackgroundColor;
       Application.ProcessMessages;
       Exporter.ExportAll(FEditor.Lines);
