@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, Contnrs, Forms, ActnList, ImgList, Menus, ToolsAPI,
-  Actions,
+  Actions, Graphics,
   GX_GenericUtils, GX_IdeUtils;
 
 // Returns the TObject represented by an IOTAComponent, if possible
@@ -546,6 +546,9 @@ function GxOtaTryGetCurrentEditorAsSourceEditor(out SourceEditor: IOTASourceEdit
 
 // Raise an exception if the source editor is readonly
 procedure GxOtaAssertSourceEditorNotReadOnly(SourceEditor: IOTASourceEditor);
+
+// Get the configured editor font.
+procedure GxOtaGetEditorFont(const AFont: TFont; ASizeAdjust: Integer = 0);
 
 // Returns a module interface for a given filename
 // May return nil if no such module is open.
@@ -3358,6 +3361,22 @@ function GxOtaGetEditorServices: IOTAEditorServices;
 begin
   Result := (BorlandIDEServices as IOTAEditorServices);
   Assert(Assigned(Result));
+end;
+
+procedure GxOtaGetEditorFont(const AFont: TFont; ASizeAdjust: Integer = 0);
+// ASizeAdjust >  0: Use this font size
+// ASizeAdjust <= 0: Reduce the configured font size by this value (e.G. -1)
+var
+  LServices : IOTAEditorServices;
+begin
+  LServices := GxOtaGetEditorServices;
+  if Assigned(LServices) then begin
+    AFont.Name := LServices.EditOptions.FontName;
+    if ASizeAdjust > 0 then
+      AFont.Size := ASizeAdjust
+    else
+      AFont.Size := LServices.EditOptions.FontSize + ASizeAdjust;
+  end;
 end;
 
 function GxOtaGetTopMostEditView: IOTAEditView;
