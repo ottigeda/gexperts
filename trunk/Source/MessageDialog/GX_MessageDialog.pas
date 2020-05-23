@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ComCtrls, GX_BaseForm,
-  GX_MemoEscFix;
+  GX_MemoEscFix, SynEdit, GX_GenericUtils;
 
 type
   TMemo = class(TMemoEscFix)
@@ -154,18 +154,6 @@ type
     chkMrYesToAll: TCheckBox;
     edtDefaultButton: TEdit;
     udDefaultButton: TUpDown;
-    pnlMessage: TPanel;
-    mmoMessage: TMemo;
-    pnlMessageTop: TPanel;
-    chkQuotes: TCheckBox;
-    chkGNUGettext: TCheckBox;
-    lblMessage: TLabel;
-    pnlButtonsRight: TPanel;
-    btnHelp: TButton;
-    btnCancel: TButton;
-    btnOK: TButton;
-    btnCopyToClipboard: TButton;
-    btnTest: TButton;
     pnlSettings: TPanel;
     edtHelpContext: TEdit;
     udHelpContext: TUpDown;
@@ -173,6 +161,20 @@ type
     cbxTypeEmbedded: TComboBox;
     lblEmbed: TLabel;
     chkDefaults: TCheckBox;
+    pnlMessage: TPanel;
+    mmoMessage: TMemo;
+    pnlMessageTop: TPanel;
+    lblMessage: TLabel;
+    chkQuotes: TCheckBox;
+    chkGNUGettext: TCheckBox;
+    pnlButtonsBottom: TPanel;
+    btnHelp: TButton;
+    btnCancel: TButton;
+    btnOK: TButton;
+    btnCopyToClipboard: TButton;
+    btnTest: TButton;
+    pnlTop: TPanel;
+    pnlEditor: TPanel;
     procedure btnCopyToClipboardClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
     procedure btnTestClick(Sender: TObject);
@@ -181,12 +183,27 @@ type
     procedure pgeMessageDialogChange(Sender: TObject);
     procedure cbxTypeEmbeddedChange(Sender: TObject);
     procedure chkQuotesClick(Sender: TObject);
+    procedure mmoMessageChange(Sender: TObject);
+    procedure MsgDlgDialogTypeClick(Sender: TObject);
+    procedure rbnIconWarningClick(Sender: TObject);
+    procedure chkMrYesClick(Sender: TObject);
+    procedure pgeMessageBoxOptionsChange(Sender: TObject);
+    procedure edtMsgBoxCaptionChange(Sender: TObject);
+    procedure chkQuoteCaptionClick(Sender: TObject);
+    procedure chkYesClick(Sender: TObject);
+    procedure chkDefaultDesktopOnlyClick(Sender: TObject);
+    procedure cbxModalityChange(Sender: TObject);
+    procedure chkGNUGettextClick(Sender: TObject);
+    procedure edtHelpContextChange(Sender: TObject);
+    procedure edtDefaultButtonChange(Sender: TObject);
+    procedure chkDefaultButtonClick(Sender: TObject);
   private
     FFunctionResultsGroupBox: TGroupBox;
     FMessageType: TAbstractMessageType;
     FSettings: TMessageDialogSettings;
     FUsesUnit: string;
     FUsesUnitCLX: string;
+    FEditor: TSynEdit;
     function AssembleGroupBoxCheckBoxesText(GroupBox: TGroupBox): string;
     function AssembleGroupBoxRadioButtonsText(GroupBox: TGroupBox): string;
     procedure DistributeGroupBoxCheckBoxesText(const Value: string; GroupBox: TGroupBox);
@@ -202,7 +219,7 @@ type
     function GetDialogType: string;
     function GetEmbedSelection: Integer;
     function GetFunctionResults: string;
-    function GetGeneratedCode: string;
+    function GetGeneratedCode: TGXUnicodeString;
     function GetQuotes: Boolean;
     procedure LoadEmbedList;
     procedure LoadSettings;
@@ -226,6 +243,7 @@ type
     function ModalityString: string;
     function GetGNUGettextSupport: Boolean;
     procedure SetGNUGettextSupport(const Value: Boolean);
+    procedure UpdatePreview;
 
     property AllDialogButtons: string read GetAllDialogButtons write SetAllDialogButtons;
     property AllFunctionResults: string read GetAllFunctionResults write SetAllFunctionResults;
@@ -244,7 +262,7 @@ type
   public
     constructor Create(AOwner: TComponent; Settings: TMessageDialogSettings); reintroduce;
     destructor Destroy; override;
-    property GeneratedCode: string read GetGeneratedCode;
+    property GeneratedCode: TGXUnicodeString read GetGeneratedCode;
     property MessageType: TAbstractMessageType read FMessageType write FMessageType;
     property UsesUnit: string read FUsesUnit write FUsesUnit;
     property UsesUnitCLX: string read FUsesUnitCLX write FUsesUnitCLX;
@@ -256,8 +274,9 @@ implementation
 
 uses
   SysUtils, Windows, TypInfo, Menus, ActnList, ClipBrd, Dialogs,
-  GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_UsesManager,
-  GX_MessageOptions, GX_ConfigurationInfo, GX_Experts;
+  GX_GxUtils, GX_OtaUtils, GX_UsesManager,
+  GX_MessageOptions, GX_ConfigurationInfo, GX_Experts, GX_SynMemoUtils,
+  u_dzVclUtils;
 
 type
   TMessageDialogExpert = class(TGX_Expert)
@@ -358,7 +377,11 @@ type
 constructor TfmMessageDialog.Create(AOwner: TComponent; Settings: TMessageDialogSettings);
 begin
   inherited Create(AOwner);
+
+  TControl_SetMinConstraints(Self);
+
   FMessageType := nil;
+
   pgeMessageDialogChange(Self);
   FSettings := Settings;
   LoadEmbedList;
@@ -373,7 +396,23 @@ begin
   if FSettings.GnuGetTextFunction = ggtUnderscore then
     chkGNUGettext.Caption := 'Add _(...) for &GNU Gettext'
   else
-    chkGNUGettext.Caption := 'Add GetText(...) for &GNU Gettext'
+    chkGNUGettext.Caption := 'Add GetText(...) for &GNU Gettext';
+
+  // Destroyed with form
+  FEditor := TSynEdit.Create(Self);
+  FEditor.Lines.Clear;
+  FEditor.Parent := pnlEditor;
+  FEditor.Align := alClient;
+  FEditor.TabOrder := 0;
+  FEditor.Gutter.Width := 0;
+  FEditor.TabWidth := 4;
+  FEditor.Options := FEditor.Options - [eoScrollPastEof, eoScrollPastEol] + [eoHideShowScrollbars];
+  FEditor.ReadOnly := True;
+  FEditor.RightEdge := 0;
+  GxOtaGetEditorFont(FEditor.Font);
+  SetSynEditHighlighter(FEditor, GetGXHighlighterForCurrentSourceEditor);
+
+  UpdatePreview;
 end;
 
 function TfmMessageDialog.AssembleGroupBoxCheckBoxesText(GroupBox: TGroupBox): string;
@@ -437,6 +476,7 @@ end;
 procedure TfmMessageDialog.cbDialogButtonsOrIfStatementClick(Sender: TObject);
 begin
   FixControlsEnablement(True);
+  UpdatePreview;
 end;
 
 procedure TfmMessageDialog.DistributeGroupBoxCheckBoxesText(const Value: string; GroupBox: TGroupBox);
@@ -484,6 +524,21 @@ begin
   finally
     Free;
   end;
+end;
+
+procedure TfmMessageDialog.edtDefaultButtonChange(Sender: TObject);
+begin
+  UpdatePreview;
+end;
+
+procedure TfmMessageDialog.edtHelpContextChange(Sender: TObject);
+begin
+  UpdatePreview;
+end;
+
+procedure TfmMessageDialog.edtMsgBoxCaptionChange(Sender: TObject);
+begin
+  UpdatePreview;
 end;
 
 procedure TfmMessageDialog.FixControlsEnablement(const CheckResults: Boolean);
@@ -570,7 +625,7 @@ begin
   Result := AssembleGroupBoxCheckBoxesText(FFunctionResultsGroupBox);
 end;
 
-function TfmMessageDialog.GetGeneratedCode: string;
+function TfmMessageDialog.GetGeneratedCode: TGXUnicodeString;
 var
   BuilderClass: TMessageDialogBuilderClass;
   Builder: TAbstractMessageDialogBuilder;
@@ -724,6 +779,17 @@ begin
   DefaultButtonCheckbox := ExpSettings.ReadBool(MsgExpMsgEnableDefaultButtonIdent, MsgExpMsgEnableDefaultButtonDefault);
 end;
 
+procedure TfmMessageDialog.mmoMessageChange(Sender: TObject);
+begin
+  UpdatePreview;
+end;
+
+procedure TfmMessageDialog.UpdatePreview;
+begin
+  if Assigned(FEditor) then
+    FEditor.Lines.Text := GetGeneratedCode;
+end;
+
 procedure TfmMessageDialog.mmoMessageKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if (Key = VK_RETURN) and (ssCtrl in Shift) then
@@ -731,6 +797,11 @@ begin
     Key := 0;
     ModalResult := mrOk;
   end;
+end;
+
+procedure TfmMessageDialog.pgeMessageBoxOptionsChange(Sender: TObject);
+begin
+  UpdatePreview;
 end;
 
 procedure TfmMessageDialog.pgeMessageDialogChange(Sender: TObject);
@@ -747,6 +818,7 @@ begin
     FMessageType := TMessageBoxType.Create(Self);
   end;
   FixControlsEnablement(False);
+  UpdatePreview;
 end;
 
 procedure TfmMessageDialog.PopulateMessageType;
@@ -772,6 +844,11 @@ begin
   FMessageType.Caption := edtMsgBoxCaption.Text;
   FMessageType.GnuGetTextSupport :=chkGNUGettext.Checked;
   FMessageType.GnuGetTextFunction := FSettings.GnuGetTextFunction;
+end;
+
+procedure TfmMessageDialog.rbnIconWarningClick(Sender: TObject);
+begin
+  UpdatePreview;
 end;
 
 procedure TfmMessageDialog.SetAllDialogButtons(const SelectedButtons: string);
@@ -866,14 +943,56 @@ begin
     Result := ',' + Result;
 end;
 
+procedure TfmMessageDialog.MsgDlgDialogTypeClick(Sender: TObject);
+begin
+  UpdatePreview;
+end;
+
+procedure TfmMessageDialog.cbxModalityChange(Sender: TObject);
+begin
+  UpdatePreview;
+end;
+
 procedure TfmMessageDialog.cbxTypeEmbeddedChange(Sender: TObject);
 begin
   FixControlsEnablement(False);
+  UpdatePreview;
+end;
+
+procedure TfmMessageDialog.chkDefaultButtonClick(Sender: TObject);
+begin
+  UpdatePreview;
+end;
+
+procedure TfmMessageDialog.chkDefaultDesktopOnlyClick(Sender: TObject);
+begin
+  UpdatePreview;
+end;
+
+procedure TfmMessageDialog.chkGNUGettextClick(Sender: TObject);
+begin
+  UpdatePreview;
+end;
+
+procedure TfmMessageDialog.chkMrYesClick(Sender: TObject);
+begin
+  UpdatePreview;
+end;
+
+procedure TfmMessageDialog.chkQuoteCaptionClick(Sender: TObject);
+begin
+  UpdatePreview;
 end;
 
 procedure TfmMessageDialog.chkQuotesClick(Sender: TObject);
 begin
   chkGNUGettext.Visible := chkQuotes.Checked;
+  UpdatePreview;
+end;
+
+procedure TfmMessageDialog.chkYesClick(Sender: TObject);
+begin
+  UpdatePreview;
 end;
 
 destructor TfmMessageDialog.Destroy;
