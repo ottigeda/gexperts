@@ -1324,9 +1324,12 @@ object fmMessageDialog: TfmMessageDialog
         Top = 3
         Width = 75
         Height = 25
+        Hint = 'Insert the generated code into the code editor'
         Caption = '&OK'
         Default = True
         ModalResult = 1
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 2
       end
       object btnCopyToClipboard: TButton
@@ -1334,7 +1337,10 @@ object fmMessageDialog: TfmMessageDialog
         Top = 3
         Width = 75
         Height = 25
+        Hint = 'Copy the generated code to the clipboard'
         Caption = 'Clipboa&rd'
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 1
         OnClick = btnCopyToClipboardClick
       end
