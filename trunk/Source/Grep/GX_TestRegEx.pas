@@ -35,11 +35,13 @@ type
     procedure tim_InputDelayTimer(Sender: TObject);
     procedure chk_CaseSensitiveClick(Sender: TObject);
   private
+    FMatchColor: TColor;
     FRegEx: TRegExpr;
     FCurrentCode: TGxUnicodeStringList;
     procedure UpdateOutput;
   public
-    class function Execute(_Owner: TComponent; var _RegEx: string; var _CaseSensitive: Boolean): Boolean;
+    class function Execute(_Owner: TComponent; _MatchFont: TFont; _MatchColor: TColor;
+      var _RegEx: string; var _CaseSensitive: Boolean): Boolean;
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -53,12 +55,15 @@ uses
 
 { TfmTestRegEx }
 
-class function TfmTestRegEx.Execute(_Owner: TComponent; var _RegEx: string; var _CaseSensitive: Boolean): Boolean;
+class function TfmTestRegEx.Execute(_Owner: TComponent; _MatchFont: TFont; _MatchColor: TColor;
+  var _RegEx: string; var _CaseSensitive: Boolean): Boolean;
 var
   frm: TfmTestRegEx;
 begin
   frm := TfmTestRegEx.Create(_Owner);
   try
+    frm.FMatchColor := _MatchColor;
+    frm.ed_RegEx.Font.Assign(_MatchFont);
     frm.ed_RegEx.Text := _RegEx;
     frm.chk_CaseSensitive.Checked := _CaseSensitive;
     Result := (frm.ShowModal = mrOk);
@@ -88,8 +93,6 @@ begin
   inherited;
 
   FRegEx := TRegExpr.Create;
-
-  GxOtaGetEditorFont(re_Test.Font);
 
   FCurrentCode := TGxUnicodeStringList.Create;
   if not GxOtaGetActiveEditorText(FCurrentCode, False) then begin
@@ -144,8 +147,9 @@ begin
           repeat
             re_Test.SelStart := StartOfLine + FRegEx.MatchPos[0] - 1;
             re_Test.SelLength := FRegEx.MatchLen[0];
-//          re_Test.SelAttributes.Color := clRed;
-            re_Test.SelAttributes.Style := [fsUnderline];
+
+            re_Test.SelAttributes.Color := FMatchColor;
+            re_Test.SelAttributes.Style := [fsBold];
           until not FRegEx.ExecNext;
         end;
       end;
