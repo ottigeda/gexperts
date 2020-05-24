@@ -1,10 +1,10 @@
 object fmTestRegEx: TfmTestRegEx
   Left = 0
   Top = 0
-  Width = 553
-  Height = 424
   BorderIcons = [biMaximize]
   Caption = 'Test Regular Expression'
+  ClientHeight = 385
+  ClientWidth = 537
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -25,12 +25,12 @@ object fmTestRegEx: TfmTestRegEx
     Height = 13
     Caption = 'Regular Expression'
   end
-  object l_TestText: TLabel
+  object l_Matches: TLabel
     Left = 8
     Top = 88
-    Width = 46
+    Width = 156
     Height = 13
-    Caption = 'Test Text'
+    Caption = 'Matching lines in the current unit'
   end
   object ed_RegEx: TEdit
     Left = 8
@@ -68,6 +68,8 @@ object fmTestRegEx: TfmTestRegEx
     Width = 521
     Height = 241
     Anchors = [akLeft, akTop, akRight, akBottom]
+    Lines.Strings = (
+      'Matching lines for the current regular expression go here.')
     TabOrder = 2
   end
   object chk_CaseSensitive: TCheckBox

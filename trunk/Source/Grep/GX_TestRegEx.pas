@@ -18,13 +18,14 @@ uses
   ExtCtrls,
   ComCtrls,
   SynRegExpr,
-  GX_BaseForm;
+  GX_BaseForm,
+  GX_GenericUtils;
 
 type
   TfmTestRegEx = class(TfmBaseForm)
     ed_RegEx: TEdit;
     l_RegEx: TLabel;
-    l_TestText: TLabel;
+    l_Matches: TLabel;
     b_OK: TButton;
     b_Cancel: TButton;
     tim_InputDelay: TTimer;
@@ -35,6 +36,7 @@ type
     procedure chk_CaseSensitiveClick(Sender: TObject);
   private
     FRegEx: TRegExpr;
+    FCurrentCode: TGxUnicodeStringList;
     procedure UpdateOutput;
   public
     class function Execute(_Owner: TComponent; var _RegEx: string; var _CaseSensitive: Boolean): Boolean;
@@ -45,6 +47,9 @@ type
 implementation
 
 {$R *.dfm}
+
+uses
+  GX_OtaUtils;
 
 { TfmTestRegEx }
 
@@ -71,17 +76,35 @@ begin
   UpdateOutput;
 end;
 
+function GetModuleDir: string;
+begin
+  Result := ExtractFilePath(GetModuleName(HInstance));
+end;
+
 constructor TfmTestRegEx.Create(_Owner: TComponent);
+var
+  s: string;
 begin
   inherited;
 
-  re_Test.Lines.Add('Some text goes here.');
-
   FRegEx := TRegExpr.Create;
+
+  GxOtaGetEditorFont(re_Test.Font);
+
+  FCurrentCode := TGxUnicodeStringList.Create;
+  if not GxOtaGetActiveEditorText(FCurrentCode, False) then begin
+    begin
+      s := IncludeTrailingPathDelimiter(GetModuleDir) + 'preview.pas';
+      if FileExists(s) then begin
+        FCurrentCode.LoadFromFile(s);
+      end
+    end;
+  end;
 end;
 
 destructor TfmTestRegEx.Destroy;
 begin
+  FreeAndNil(FCurrentCode);
   FreeAndNil(FRegEx);
   inherited;
 end;
@@ -101,36 +124,35 @@ procedure TfmTestRegEx.UpdateOutput;
 var
   Res: Boolean;
   i: Integer;
-  CursorPos: Integer;
   StartOfLine: Integer;
+  LineIdx: Integer;
 begin
   tim_InputDelay.Enabled := False;
 
   re_Test.Lines.BeginUpdate;
   try
-    CursorPos := re_Test.SelStart;
-    re_Test.SelectAll;
-    re_Test.SelAttributes.Color := clBlack;
-    re_Test.SelAttributes.Style := [];
+    re_Test.Clear;
     FRegEx.ModifierI := not chk_CaseSensitive.Checked;
     FRegEx.Expression := ed_RegEx.Text;
     try
       FRegEx.Compile;
-      for i := 0 to re_Test.Lines.Count - 1 do begin
-        StartOfLine := re_Test.Perform(EM_LINEINDEX, i, 0);
-        Res := FRegEx.Exec(re_Test.Lines[i]);
-        while Res do begin
-          re_Test.SelStart := StartOfLine + FRegEx.MatchPos[0] - 1;
-          re_Test.SelLength := FRegEx.MatchLen[0];
+      for i := 0 to FCurrentCode.Count - 1 do begin
+        Res := FRegEx.Exec(FCurrentCode[i]);
+        if Res then begin
+          LineIdx := re_Test.Lines.Add(FCurrentCode[i]);
+          StartOfLine := re_Test.Perform(EM_LINEINDEX, LineIdx, 0);
+          repeat
+            re_Test.SelStart := StartOfLine + FRegEx.MatchPos[0] - 1;
+            re_Test.SelLength := FRegEx.MatchLen[0];
 //          re_Test.SelAttributes.Color := clRed;
-          re_Test.SelAttributes.Style := [fsUnderline];
-          Res := FRegEx.ExecNext;
+            re_Test.SelAttributes.Style := [fsUnderline];
+          until not FRegEx.ExecNext;
         end;
       end;
     except
       // ignore
     end;
-    re_Test.SelStart := CursorPos;
+    re_Test.SelStart := 0;
     re_Test.SelLength := 0;
   finally
     re_Test.Lines.EndUpdate;
