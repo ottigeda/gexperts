@@ -285,6 +285,7 @@ begin
 
   FAvailable := TStringList.Create;
   InitWarnings;
+  GxOtaGetEditorFont(lb_Warn.Font, 0);
   lb_Warn.Items.Assign(FAvailable);
 end;
 

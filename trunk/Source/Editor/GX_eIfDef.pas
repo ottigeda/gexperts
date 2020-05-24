@@ -347,6 +347,7 @@ begin
   FStringGrid.TabOrder := 0;
   FStringGrid.ColWidths[0] := 50;
   FStringGrid.ColWidths[1] := 200;
+  GxOtaGetEditorFont(FStringGrid.Font, 0);
 
   FPanel := TPanel.Create(_Form);
   FPanel.Name := '';
@@ -376,6 +377,7 @@ end;
 
 procedure TIfdefTabDefinition.InitEvents;
 begin
+  TStringGrid_AdjustRowHeight(FStringGrid);
   TGrid_Resize(FStringGrid, [roUseGridWidth, roUseAllRows]);
   FStringGrid.OnSelectCell := HandleSelectCell;
   FEdit.OnChange := HandleEditChange;
@@ -941,4 +943,3 @@ end;
 initialization
   RegisterEditorExpert(TIfDefExpert);
 end.
-

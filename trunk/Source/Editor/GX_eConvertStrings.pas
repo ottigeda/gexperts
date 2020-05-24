@@ -148,6 +148,9 @@ constructor TfmEConvertStrings.Create(_Owner: TComponent);
 begin
   inherited;
   TControl_SetMinConstraints(Self);
+
+  GxOtaGetEditorFont(m_Input.Font, 0);
+  GxOtaGetEditorFont(m_Output.Font, 0);
 end;
 
 destructor TfmEConvertStrings.Destroy;
@@ -485,13 +488,14 @@ var
   MaxLength: Integer;
   LineLength: Integer;
 
-  function CountCharInString(str: string; SearchChar: char): integer;
+  function CountCharInString(str: string; SearchChar: char): Integer;
   var
-    i: integer;
+    i: Integer;
   begin
     Result := 0;
     for i := 1 to Length(str) do
-      if str[i] = SearchChar then Inc(Result);
+      if str[i] = SearchChar then
+        Inc(Result);
   end;
 
 begin
@@ -503,14 +507,12 @@ begin
   BaseIndent := LeftStr(_sl[0], FirstCharPos - 1);
 
   MaxLength := 0;
-  if _AlignRightQuote then
-  begin
-    for i := 0 to _sl.Count - 1 do
-    begin
+  if _AlignRightQuote then begin
+    for i := 0 to _sl.Count - 1 do begin
       Line := Copy(_sl[i], FirstCharPos);
 
       if _QuoteStrings then
-        LineLength := Length(Line) +CountCharInString(Line, SINGLE_QUOTE)
+        LineLength := Length(Line) + CountCharInString(Line, SINGLE_QUOTE)
       else
         LineLength := Length(Line);
 
@@ -523,14 +525,13 @@ begin
   for i := 0 to cnt - 1 do begin
     Line := Copy(_sl[i], FirstCharPos);
 
-    if _AlignRightQuote then
-    begin
-    if _QuoteStrings then
-        LineLength := Length(Line) +CountCharInString(Line, SINGLE_QUOTE)
+    if _AlignRightQuote then begin
+      if _QuoteStrings then
+        LineLength := Length(Line) + CountCharInString(Line, SINGLE_QUOTE)
       else
         LineLength := Length(Line);
 
-      Line := Line + StringOfChar(' ', MaxLength -LineLength);
+      Line := Line + StringOfChar(' ', MaxLength - LineLength);
     end;
 
     if _QuoteStrings then
@@ -774,4 +775,3 @@ end;
 initialization
   RegisterEditorExpert(TConvertStringsExpert);
 end.
-
