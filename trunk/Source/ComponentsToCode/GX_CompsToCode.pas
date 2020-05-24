@@ -297,6 +297,7 @@ begin
   FCodeText.ReadOnly := True;
   FCodeText.WantTabs := True;
   FCodeText.TabWidth := GxOtaGetTabWidth;
+  GxOtaGetEditorFont(FCodeText.Font, 0);
 end;
 
 procedure TfmCompsToCode.btnHelpClick(Sender: TObject);

@@ -328,6 +328,8 @@ constructor TfmRemoveMatchingLinesExpertConfig.Create(_Owner: TComponent);
 begin
   inherited;
   TControl_SetMinConstraints(Self);
+
+  GxOtaGetEditorFont(m_Lines.Font);
 end;
 
 procedure TfmRemoveMatchingLinesExpertConfig.b_DefaultsClick(Sender: TObject);

@@ -1045,8 +1045,7 @@ begin
   FTemplateText.OnEnter := TemplateCodeEnter;
   FTemplateText.Parent := pnlMacroText;
   FTemplateText.ReadOnly := True;
-  FTemplateText.Font.Height := -11;
-  FTemplateText.Font.Name := 'Courier New';
+  GxOtaGetEditorFont(FTemplateText.Font);
   FTemplateText.WantTabs := True;
   FTemplateText.OnChange := TemplateTextChanged;
 end;
