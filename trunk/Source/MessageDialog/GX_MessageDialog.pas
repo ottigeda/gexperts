@@ -274,6 +274,7 @@ implementation
 
 uses
   SysUtils, Windows, TypInfo, Menus, ActnList, ClipBrd, Dialogs,
+  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_GxUtils, GX_OtaUtils, GX_UsesManager,
   GX_MessageOptions, GX_ConfigurationInfo, GX_Experts, GX_SynMemoUtils,
   u_dzVclUtils;
@@ -378,7 +379,11 @@ constructor TfmMessageDialog.Create(AOwner: TComponent; Settings: TMessageDialog
 begin
   inherited Create(AOwner);
 
+{$IFOPT D+}SendDebugFmt('TfmMessageDialog.Width=%d TfmMessageDialog.Height=%d',
+    [Width, Height]);{$ENDIF}
   TControl_SetMinConstraints(Self);
+{$IFOPT D+}SendDebugFmt('TfmMessageDialog.MinWidth=%d TfmMessageDialog.MinHeight=%d',
+    [Constraints.MinWidth, Constraints.MinHeight]);{$ENDIF}
 
   FMessageType := nil;
 
