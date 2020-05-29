@@ -65,6 +65,8 @@ type
     procedure Prepend(_Line: TLineBuilder);
     ///<summary> Extracts the first column from the line, returns false when empty </summary>
     function ExtractFirst(out _Column: string): Boolean;
+    ///<summary> @returns the length of Content </summary>
+    function Length: Integer;
     ///<summary> allows read access to the content that has been built </summary>
     property Content: string read FContent;
     property ColumnCount: Integer read FColumnCount;
@@ -110,6 +112,11 @@ begin
 {$ELSE}
   Result := FDecimalSeparator;
 {$IFEND}
+end;
+
+function TLineBuilder.Length: Integer;
+begin
+  Result := System.Length(FContent);
 end;
 
 procedure TLineBuilder.SetDecimalSeparator(_Value: Char);

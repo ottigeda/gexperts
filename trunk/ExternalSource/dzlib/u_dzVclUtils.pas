@@ -576,6 +576,11 @@ procedure TTreeView_ClearWithObjects(_Tree: TTreeView);
 ///<summary> adds a new TTabSheet with the given Caption to the PageControl and returns it </summary>
 function TPageControl_AddTabSheet(_PageControl: TPageControl; const _Caption: string): TTabSheet;
 
+///<summary>
+/// Inserts a TTabSheet with the given caption at the given index into the page control and returns it </summary>
+function TPageControl_InsertTabSheet(_PageControl: TPageControl; _Idx: Integer;
+  const _Caption: string): TTabSheet;
+
 ///<summary> Draws the tab text for a TPageControl as horizontal text, useful, if you
 ///          want to have the tabs on the left or right but don't want vertical text.
 ///         Set the TPageControl's OwnerDraw property to true, the TabHeight property
@@ -2856,6 +2861,13 @@ begin
   Result.Parent := _PageControl;
   Result.PageControl := _PageControl;
   Result.Caption := _Caption;
+end;
+
+function TPageControl_InsertTabSheet(_PageControl: TPageControl; _Idx: Integer;
+  const _Caption: string): TTabSheet;
+begin
+  Result := TPageControl_AddTabSheet(_PageControl, _Caption);
+  Result.PageIndex := _Idx;
 end;
 
 procedure DrawTab(_TabControl: TCustomTabControl; const _Caption: string;

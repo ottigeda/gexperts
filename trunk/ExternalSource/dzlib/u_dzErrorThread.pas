@@ -45,6 +45,15 @@ type
     function WaitFor(_TimeoutMsecs: DWORD; out _ReturnValue: DWORD): Boolean; overload;
     function WaitFor(_TimeoutMsecs: DWORD): Boolean; overload;
     ///<summary>
+    /// Calls Windows.TerminateThread to kill the thread without freeing resources.
+    /// Read the documentation first!
+    /// https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminatethread
+    /// @ExitCode is the exit code to return to GetExitCodeThread calls.
+    ///           NOTE: ExitCode must *not* be STILL_ACTIVE (259)
+    /// @returns True, if TerminateThread was called
+    ///          False if not (e.g. if the thread was already finished or never started) </summary>
+    function Kill_YesIHaveReadTheTerminateThreadApiDocumentation(_ExitCode: DWORD): Boolean;
+    ///<summary>
     /// Is true, when the thread has finished executing </summary>
     property HasFinished: Boolean read FHasFinished;
     ///<summary>
@@ -101,6 +110,14 @@ begin
   end;
 end;
 
+function TErrorThread.Kill_YesIHaveReadTheTerminateThreadApiDocumentation(_ExitCode: DWORD): Boolean;
+begin
+  Result := not FHasFinished and (Handle <> 0);
+  if Result then begin
+    Win32Check(Windows.TerminateThread(Handle, 5));
+  end;
+end;
+
 function TErrorThread.WaitFor(_TimeoutMsecs: DWORD): Boolean;
 var
   Dummy: DWORD;
@@ -112,23 +129,23 @@ end;
 
 function TErrorThread.WaitFor(_TimeoutMsecs: DWORD; out _ReturnValue: DWORD): Boolean;
 var
-  H: array[0..1] of THandle;
+  h: array[0..1] of THandle;
   WaitResult: Cardinal;
   Msg: TMsg;
 begin
-  H[0] := Handle;
+  h[0] := Handle;
   if GetCurrentThreadID = MainThreadID then begin
     WaitResult := 0;
-    H[1] := SyncEvent;
+    h[1] := SyncEvent;
     repeat
       { This prevents a potential deadlock if the background thread
         does a SendMessage to the foreground thread }
       if WaitResult = WAIT_OBJECT_0 + 2 then
         PeekMessage(Msg, 0, 0, 0, PM_NOREMOVE);
       if _TimeoutMsecs = INFINITE then begin
-        WaitResult := MsgWaitForMultipleObjects(2, H, False, 1000, QS_SENDMESSAGE);
+        WaitResult := MsgWaitForMultipleObjects(2, h, False, 1000, QS_SENDMESSAGE);
       end else begin
-        WaitResult := MsgWaitForMultipleObjects(2, H, False, _TimeoutMsecs, QS_SENDMESSAGE);
+        WaitResult := MsgWaitForMultipleObjects(2, h, False, _TimeoutMsecs, QS_SENDMESSAGE);
       end;
       CheckThreadError(WaitResult <> WAIT_FAILED);
       if WaitResult = WAIT_OBJECT_0 + 1 then
@@ -136,13 +153,13 @@ begin
       Result := (WaitResult = WAIT_OBJECT_0);
     until Result or (_TimeoutMsecs <> INFINITE);
   end else begin
-    WaitResult := WaitForSingleObject(H[0], _TimeoutMsecs);
+    WaitResult := WaitForSingleObject(h[0], _TimeoutMsecs);
     if WaitResult = WAIT_FAILED then
       RaiseLastOSError;
     Result := (WaitResult <> WAIT_TIMEOUT);
   end;
   if Result then
-    CheckThreadError(GetExitCodeThread(H[0], _ReturnValue));
+    CheckThreadError(GetExitCodeThread(h[0], _ReturnValue));
 end;
 
 {$ELSE}
@@ -150,11 +167,11 @@ end;
 
 function TErrorThread.WaitFor(_TimeoutMsecs: DWORD; out _ReturnValue: DWORD): Boolean;
 var
-  H: THandle;
+  h: THandle;
   WaitResult: Cardinal;
   Msg: TMsg;
 begin
-  H := Handle;
+  h := Handle;
   if GetCurrentThreadID = MainThreadID then begin
     WaitResult := 0;
     repeat
@@ -163,9 +180,9 @@ begin
       if WaitResult = WAIT_OBJECT_0 + 1 then
         PeekMessage(Msg, 0, 0, 0, PM_NOREMOVE);
       if _TimeoutMsecs = INFINITE then begin
-        WaitResult := MsgWaitForMultipleObjects(2, H, False, 1000, QS_SENDMESSAGE)
+        WaitResult := MsgWaitForMultipleObjects(2, h, False, 1000, QS_SENDMESSAGE)
       end else begin
-        WaitResult := MsgWaitForMultipleObjects(1, H, False, _TimeoutMsecs, QS_SENDMESSAGE);
+        WaitResult := MsgWaitForMultipleObjects(1, h, False, _TimeoutMsecs, QS_SENDMESSAGE);
       end;
       CheckThreadError(WaitResult <> WAIT_FAILED);
       if WaitResult = WAIT_OBJECT_0 + 1 then
@@ -173,13 +190,13 @@ begin
       Result := (WaitResult = WAIT_OBJECT_0);
     until Result or (_TimeoutMsecs <> INFINITE);
   end else begin
-    WaitResult := WaitForSingleObject(H, _TimeoutMsecs);
+    WaitResult := WaitForSingleObject(h, _TimeoutMsecs);
     if WaitResult = WAIT_FAILED then
       RaiseLastOSError;
     Result := (WaitResult <> WAIT_TIMEOUT);
   end;
   if Result then
-    CheckThreadError(GetExitCodeThread(H, _ReturnValue));
+    CheckThreadError(GetExitCodeThread(h, _ReturnValue));
 end;
 {$IFEND}
 
