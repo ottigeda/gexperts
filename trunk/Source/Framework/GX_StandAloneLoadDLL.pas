@@ -4,7 +4,8 @@ interface
 
 uses
   Windows,
-  SysUtils;
+  SysUtils,
+  UiTypes;
 
 type
   EGxDllLoad = class(Exception)
