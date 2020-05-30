@@ -30,33 +30,40 @@ if not exist %INPUTMANIFEST% goto nomaniin
 set MANIFESTOPTIONS=--InputManifest=%INPUTMANIFEST% --manifest="%PROJECTNAMEONLY%" --updatemanifest --WriteManifestRc="%PROJECTNAMEONLY%" --ignoremanifesterrors
 :nomaniin
 rem echo MANIFESTOPTIONS=%MANIFESTOPTIONS%
-"%~dp0\prepbuild.exe" --incbuild --BuildDateTime={today} --readini="%PROJECTNAMEONLY%" --WriteRc="%PROJECTNAMEONLY%" %MANIFESTOPTIONS%
+"%~dp0\prepbuild.exe" --BuildDateTime={today} --readini="%PROJECTNAMEONLY%" --WriteRc="%PROJECTNAMEONLY%" %MANIFESTOPTIONS%
+echo compiling %PROJECTNAMEONLY%_Version.rc
 brcc32 "%PROJECTNAMEONLY%_Version.rc"
 
 echo checking for manifest.rc
-if not exist "%PROJECTNAMEONLY%_Manifest.rc" goto nomanirc
-echo manifest.rc file found
+set MANIFESTRC=%PROJECTNAMEONLY%_Manifest.rc
+if not exist "%MANIFESTRC%" goto nomanirc
+echo found: %MANIFESTRC%
 
 echo checking for .manifest
-if not exist "%PROJECTNAMEONLY%.manifest" goto nomani
-echo .manifest file found
-brcc32 "%PROJECTNAMEONLY%_Manifest.rc"
+set DOTMANIFEST=%PROJECTNAMEONLY%.manifest
+if not exist "%DOTMANIFEST%" goto nomani
+echo found: %DOTMANIFEST%
+
+echo compiling %MANIFESTRC%
+brcc32 "%MANIFESTRC%"
 goto donemani
 :nomanirc
-echo Hint: %PROJECTNAMEONLY%_Manifest.rc not found, skipping
+echo Hint: %MANIFESTRC% not found, skipping
 goto donemani
 :nomani
-echo Hint: %PROJECTNAMEONLY%.manifest not found, skipping
+echo Hint: %DOTMANIFEST% not found, skipping
 goto donemani
 :donemani
 
 echo checking for icon.rc
-if not exist "%PROJECTNAMEONLY%_Icon.rc" goto noicon
-echo icon.rc file found
-"%~dp0\rc" "%PROJECTNAMEONLY%_Icon.rc"
+set ICONRC=%PROJECTNAMEONLY%_Icon.rc
+if not exist "%ICONRC%" goto noicon
+echo found: %ICONRC%
+echo compiling %ICONRC%
+%~dp0\rc "%ICONRC%"
 goto doneicon
 :noicon
-echo Hint: %PROJECTNAMEONLY%_Icon.rc not found, skipping
+echo Hint: %ICONRC% not found, skipping
 :doneicon
 
 popd
