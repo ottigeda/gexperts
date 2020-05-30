@@ -5,7 +5,7 @@ interface
 uses
   Windows,
   SysUtils,
-  UiTypes;
+  UiTypes; // if you get a compile error here, add UiTypes=Dialogs to unit aliases
 
 type
   EGxDllLoad = class(Exception)
