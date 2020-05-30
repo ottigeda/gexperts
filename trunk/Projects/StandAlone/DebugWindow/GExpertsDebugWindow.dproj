@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <DCC_DependencyCheckOutputName>..\..\..\binaries\GExpertsDebugWindow.exe</DCC_DependencyCheckOutputName>
         <DCC_UsePackage>vcl;vclx</DCC_UsePackage>
@@ -12,44 +12,46 @@
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
         <DCC_DebugInformation>False</DCC_DebugInformation>
-        <DCC_Define>RELEASE</DCC_Define>
+        <DCC_Define>RELEASE;NO_TRANSLATION;NO_TRANSLATION_HINT</DCC_Define>
         <DCC_Description>GExperts Debug Window</DCC_Description>
         <DCC_ExeOutput>..\..\..\binaries</DCC_ExeOutput>
         <DCC_HppOutput>.\dcu</DCC_HppOutput>
         <DCC_ImageBase>500000</DCC_ImageBase>
-        <DCC_IncludePath>..\..\..\source\Utils;..\..\..\ExternalSource\UniSynEdit;..\..\..\Source\Include;..\..\..\source\framework</DCC_IncludePath>
+        <DCC_IncludePath>..\..\..\source\Utils;..\..\..\ExternalSource\UniSynEdit;..\..\..\Source\Include;..\..\..\source\framework;..\..\..\ExternalSource\dzlib;..\..\..\ExternalSource</DCC_IncludePath>
         <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
         <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
         <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
-        <DCC_ObjPath>..\..\..\source\Utils;..\..\..\ExternalSource\UniSynEdit;..\..\..\Source\Include;..\..\..\source\framework</DCC_ObjPath>
+        <DCC_ObjPath>..\..\..\source\Utils;..\..\..\ExternalSource\UniSynEdit;..\..\..\Source\Include;..\..\..\source\framework;..\..\..\ExternalSource\dzlib;..\..\..\ExternalSource</DCC_ObjPath>
         <DCC_RangeChecking>True</DCC_RangeChecking>
-        <DCC_ResourcePath>..\..\..\source\Utils;..\..\..\ExternalSource\UniSynEdit;..\..\..\Source\Include;..\..\..\source\framework</DCC_ResourcePath>
+        <DCC_ResourcePath>..\..\..\source\Utils;..\..\..\ExternalSource\UniSynEdit;..\..\..\Source\Include;..\..\..\source\framework;..\..\..\ExternalSource\dzlib;..\..\..\ExternalSource</DCC_ResourcePath>
         <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-        <DCC_UnitSearchPath>..\..\..\source\Utils;..\..\..\ExternalSource\UniSynEdit;..\..\..\Source\Include;..\..\..\source\framework</DCC_UnitSearchPath>
+        <DCC_UnitAlias>UITypes=Dialogs</DCC_UnitAlias>
+        <DCC_UnitSearchPath>..\..\..\source\Utils;..\..\..\ExternalSource\UniSynEdit;..\..\..\Source\Include;..\..\..\source\framework;..\..\..\ExternalSource\dzlib;..\..\..\ExternalSource</DCC_UnitSearchPath>
         <Version>7.0</Version>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
-        <DCC_Define>DEBUG</DCC_Define>
+        <DCC_Define>DEBUG;NO_TRANSLATION;NO_TRANSLATION_HINT</DCC_Define>
         <DCC_Description>GExperts Debug Window</DCC_Description>
         <DCC_ExeOutput>..\..\..\binaries</DCC_ExeOutput>
         <DCC_GenerateStackFrames>True</DCC_GenerateStackFrames>
         <DCC_HppOutput>.\dcu</DCC_HppOutput>
         <DCC_ImageBase>500000</DCC_ImageBase>
-        <DCC_IncludePath>$(BDS)\lib\Debug;..\..\..\source\Utils;..\..\..\ExternalSource\UniSynEdit;..\..\..\Source\Include;..\..\..\source\framework</DCC_IncludePath>
+        <DCC_IncludePath>$(BDS)\lib\Debug;..\..\..\source\Utils;..\..\..\ExternalSource\UniSynEdit;..\..\..\Source\Include;..\..\..\source\framework;..\..\..\ExternalSource\dzlib;..\..\..\ExternalSource</DCC_IncludePath>
         <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
         <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
-        <DCC_ObjPath>$(BDS)\lib\Debug;..\..\..\source\Utils;..\..\..\ExternalSource\UniSynEdit;..\..\..\Source\Include;..\..\..\source\framework</DCC_ObjPath>
+        <DCC_ObjPath>$(BDS)\lib\Debug;..\..\..\source\Utils;..\..\..\ExternalSource\UniSynEdit;..\..\..\Source\Include;..\..\..\source\framework;..\..\..\ExternalSource\dzlib;..\..\..\ExternalSource</DCC_ObjPath>
         <DCC_Optimize>False</DCC_Optimize>
         <DCC_RangeChecking>True</DCC_RangeChecking>
-        <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\..\source\Utils;..\..\..\ExternalSource\UniSynEdit;..\..\..\Source\Include;..\..\..\source\framework</DCC_ResourcePath>
+        <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\..\source\Utils;..\..\..\ExternalSource\UniSynEdit;..\..\..\Source\Include;..\..\..\source\framework;..\..\..\ExternalSource\dzlib;..\..\..\ExternalSource</DCC_ResourcePath>
         <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
         <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-        <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\..\source\Utils;..\..\..\ExternalSource\UniSynEdit;..\..\..\Source\Include;..\..\..\source\framework</DCC_UnitSearchPath>
+        <DCC_UnitAlias>UITypes=Dialogs</DCC_UnitAlias>
+        <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\..\source\Utils;..\..\..\ExternalSource\UniSynEdit;..\..\..\Source\Include;..\..\..\source\framework;..\..\..\ExternalSource\dzlib;..\..\..\ExternalSource</DCC_UnitSearchPath>
         <Version>7.0</Version>
     </PropertyGroup>
     <ProjectExtensions>
