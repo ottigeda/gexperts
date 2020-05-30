@@ -60,7 +60,7 @@ set ICONRC=%PROJECTNAMEONLY%_Icon.rc
 if not exist "%ICONRC%" goto noicon
 echo found: %ICONRC%
 echo compiling %ICONRC%
-%~dp0\rc "%ICONRC%"
+"%~dp0\rc" "%ICONRC%"
 goto doneicon
 :noicon
 echo Hint: %ICONRC% not found, skipping
