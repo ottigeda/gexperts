@@ -1,64 +1,103 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <ProjectGuid>{b015cc49-2edb-4529-8ad2-674d90d88897}</ProjectGuid>
-    <MainSource>CodeLibrarian.dpr</MainSource>
-    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-    <DCC_DependencyCheckOutputName>..\..\..\binaries\CodeLibrarian.exe</DCC_DependencyCheckOutputName>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Version>7.0</Version>
-    <DCC_DebugInformation>False</DCC_DebugInformation>
-    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
-    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
-    <DCC_Define>RELEASE</DCC_Define>
-    <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
-    <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-    <DCC_ExeOutput>..\..\..\binaries</DCC_ExeOutput>
-    <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
-    <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
-    <DCC_HppOutput>.\dcu</DCC_HppOutput>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <Version>7.0</Version>
-    <DCC_Define>DEBUG</DCC_Define>
-    <DCC_ExeOutput>..\..\..\binaries</DCC_ExeOutput>
-    <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
-    <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
-    <DCC_HppOutput>.\dcu</DCC_HppOutput>
-    <DCC_Optimize>False</DCC_Optimize>
-    <DCC_UnitSearchPath>$(BDS)\lib\Debug</DCC_UnitSearchPath>
-    <DCC_ResourcePath>$(BDS)\lib\Debug</DCC_ResourcePath>
-    <DCC_ObjPath>$(BDS)\lib\Debug</DCC_ObjPath>
-    <DCC_IncludePath>$(BDS)\lib\Debug</DCC_IncludePath>
-    <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
-    <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-  </PropertyGroup>
-  <ProjectExtensions>
-    <Borland.Personality>Delphi.Personality</Borland.Personality>
-    <Borland.ProjectType>VCLApplication</Borland.ProjectType>
-    <BorlandProject>
-<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">0</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">False</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1033</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">CodeLibrarian.dpr</Source></Source>  <Excluded_Packages>
-      
-      
-      
-      
-      
-      
-      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
-      <Excluded_Packages Name="$(BDS)\bin\dcltee7100.bpl">TeeChart Components</Excluded_Packages>
-    </Excluded_Packages>
-  </Delphi.Personality></BorlandProject></BorlandProject>
-  </ProjectExtensions>
-  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
-  <ItemGroup>
-    <DelphiCompile Include="CodeLibrarian.dpr">
-      <MainSource>MainSource</MainSource>
-    </DelphiCompile>
-    <DCCReference Include="..\..\..\Source\Framework\GX_StandAloneLoadDLL.pas" />
-    <DCCReference Include="CodeLibrarianMain.pas" />
-  </ItemGroup>
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+        <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+        <DCC_DependencyCheckOutputName>..\..\..\binaries\CodeLibrarian.exe</DCC_DependencyCheckOutputName>
+        <MainSource>CodeLibrarian.dpr</MainSource>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{b015cc49-2edb-4529-8ad2-674d90d88897}</ProjectGuid>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
+        <DCC_DebugInformation>False</DCC_DebugInformation>
+        <DCC_Define>RELEASE;NO_TRANSLATION;NO_TRANSLATION_HINT</DCC_Define>
+        <DCC_ExeOutput>..\..\..\binaries</DCC_ExeOutput>
+        <DCC_HppOutput>.\dcu</DCC_HppOutput>
+        <DCC_IncludePath>..\..\..\ExternalSource\dzlib</DCC_IncludePath>
+        <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+        <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
+        <DCC_ObjPath>..\..\..\ExternalSource\dzlib</DCC_ObjPath>
+        <DCC_ResourcePath>..\..\..\ExternalSource\dzlib</DCC_ResourcePath>
+        <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
+        <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+        <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
+        <DCC_UnitAlias>UiTypes=System</DCC_UnitAlias>
+        <DCC_UnitSearchPath>..\..\..\ExternalSource\dzlib</DCC_UnitSearchPath>
+        <Version>7.0</Version>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
+        <DCC_Define>DEBUG;NO_TRANSLATION;NO_TRANSLATION_HINT</DCC_Define>
+        <DCC_ExeOutput>..\..\..\binaries</DCC_ExeOutput>
+        <DCC_HppOutput>.\dcu</DCC_HppOutput>
+        <DCC_IncludePath>$(BDS)\lib\Debug;..\..\..\ExternalSource\dzlib</DCC_IncludePath>
+        <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
+        <DCC_ObjPath>$(BDS)\lib\Debug;..\..\..\ExternalSource\dzlib</DCC_ObjPath>
+        <DCC_Optimize>False</DCC_Optimize>
+        <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\..\ExternalSource\dzlib</DCC_ResourcePath>
+        <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
+        <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
+        <DCC_UnitAlias>UiTypes=System</DCC_UnitAlias>
+        <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\..\ExternalSource\dzlib</DCC_UnitSearchPath>
+        <Version>7.0</Version>
+    </PropertyGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Delphi.Personality</Borland.Personality>
+        <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+        <BorlandProject>
+            <BorlandProject>
+                <Delphi.Personality>
+                    <Parameters>
+                        <Parameters Name="UseLauncher">False</Parameters>
+                        <Parameters Name="LoadAllSymbols">True</Parameters>
+                        <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+                    </Parameters>
+                    <VersionInfo>
+                        <VersionInfo Name="IncludeVerInfo">False</VersionInfo>
+                        <VersionInfo Name="AutoIncBuild">False</VersionInfo>
+                        <VersionInfo Name="MajorVer">1</VersionInfo>
+                        <VersionInfo Name="MinorVer">0</VersionInfo>
+                        <VersionInfo Name="Release">0</VersionInfo>
+                        <VersionInfo Name="Build">0</VersionInfo>
+                        <VersionInfo Name="Debug">False</VersionInfo>
+                        <VersionInfo Name="PreRelease">False</VersionInfo>
+                        <VersionInfo Name="Special">False</VersionInfo>
+                        <VersionInfo Name="Private">False</VersionInfo>
+                        <VersionInfo Name="DLL">False</VersionInfo>
+                        <VersionInfo Name="Locale">1033</VersionInfo>
+                        <VersionInfo Name="CodePage">1252</VersionInfo>
+                    </VersionInfo>
+                    <VersionInfoKeys>
+                        <VersionInfoKeys Name="CompanyName"/>
+                        <VersionInfoKeys Name="FileDescription"/>
+                        <VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
+                        <VersionInfoKeys Name="InternalName"/>
+                        <VersionInfoKeys Name="LegalCopyright"/>
+                        <VersionInfoKeys Name="LegalTrademarks"/>
+                        <VersionInfoKeys Name="OriginalFilename"/>
+                        <VersionInfoKeys Name="ProductName"/>
+                        <VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
+                        <VersionInfoKeys Name="Comments"/>
+                    </VersionInfoKeys>
+                    <Source>
+                        <Source Name="MainSource">CodeLibrarian.dpr</Source>
+                    </Source>
+                    <Excluded_Packages>
+                        <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                        <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                        <Excluded_Packages Name="$(BDS)\bin\dcltee7100.bpl">TeeChart Components</Excluded_Packages>
+                    </Excluded_Packages>
+                </Delphi.Personality>
+            </BorlandProject>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets"/>
+    <ItemGroup>
+        <DelphiCompile Include="CodeLibrarian.dpr">
+            <MainSource>MainSource</MainSource>
+        </DelphiCompile>
+        <DCCReference Include="..\..\..\Source\Framework\GX_StandAloneLoadDLL.pas"/>
+        <DCCReference Include="CodeLibrarianMain.pas"/>
+    </ItemGroup>
 </Project>
