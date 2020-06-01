@@ -126,7 +126,7 @@
 			<Directories Name="UsePackages" Type="Boolean">True</Directories>
 		</Directories>
 		<Parameters>
-			<Parameters Name="RunParams" Type="String">-np</Parameters>
+			<Parameters Name="RunParams" Type="String">-np -ns</Parameters>
 			<Parameters Name="HostApplication" Type="String">c:\Delphi\Delphi2005\Bin\bds.exe</Parameters>
 			<Parameters Name="Launcher" Type="String"></Parameters>
 			<Parameters Name="UseLauncher" Type="Boolean">False</Parameters>
@@ -168,6 +168,8 @@
 			<Language Name="ActiveLang" Type="String"></Language>
 			<Language Name="ProjectLang" Type="String">$00000000</Language>
 			<Language Name="RootDir" Type="String"></Language>
-		</Language>
-	</Delphi.Personality>
+		</Language>  <Excluded_Packages>
+      <Excluded_Packages Name="c:\delphi\delphi2005\bin\dclado90.bpl">Borland ADO DB Components</Excluded_Packages>
+    </Excluded_Packages>
+  </Delphi.Personality>
 </BorlandProject>
