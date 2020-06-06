@@ -1239,7 +1239,11 @@ begin
     [_sg.Name, _sg.DefaultRowHeight, _Rect.Left, _Rect.Top, _Rect.Right - _Rect.Left, _Rect.Bottom - _Rect.Top]);
 {$ENDIF}
   cnv.FillRect(_Rect);
+{$IFDEF GX_DELPHI_TOKYO_UP}
+  cnv.TextRect(_Rect, _Rect.Left, _Rect.Top, _Text);
+{$ELSE}
   cnv.TextRect(_Rect, _Rect.Left + 2, _Rect.Top + 2, _Text);
+{$ENDIF}
 end;
 
 procedure TfmUsesManager.sg_UsedDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect;
@@ -1605,7 +1609,6 @@ begin
 end;
 
 procedure TfmUsesManager.lbxAvailDblClick(Sender: TObject);
-// Todo: make it work also on Identifiers tab!
 var
   Src: TStringGrid;
   col: Integer;
@@ -1615,6 +1618,8 @@ begin
   Assert(Assigned(Src));
   col := Src.ColCount - 1;
   UnitName := Src.Cells[col, Src.row];
+  if UnitName = '' then
+    Exit;
   if IsCtrlDown then begin
     OpenUnit(UnitName);
     ModalResult := mrCancel;
