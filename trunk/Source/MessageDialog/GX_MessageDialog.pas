@@ -197,6 +197,7 @@ type
     procedure edtHelpContextChange(Sender: TObject);
     procedure edtDefaultButtonChange(Sender: TObject);
     procedure chkDefaultButtonClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FFunctionResultsGroupBox: TGroupBox;
     FMessageType: TAbstractMessageType;
@@ -204,6 +205,8 @@ type
     FUsesUnit: string;
     FUsesUnitCLX: string;
     FEditor: TSynEdit;
+    FOrigWidth: Integer;
+    FOrigHeight: Integer;
     function AssembleGroupBoxCheckBoxesText(GroupBox: TGroupBox): string;
     function AssembleGroupBoxRadioButtonsText(GroupBox: TGroupBox): string;
     procedure DistributeGroupBoxCheckBoxesText(const Value: string; GroupBox: TGroupBox);
@@ -379,11 +382,10 @@ constructor TfmMessageDialog.Create(AOwner: TComponent; Settings: TMessageDialog
 begin
   inherited Create(AOwner);
 
-{$IFOPT D+}SendDebugFmt('TfmMessageDialog.Width=%d TfmMessageDialog.Height=%d',
-    [Width, Height]);{$ENDIF}
+  FOrigWidth := Width;
+  FOrigHeight := Height;
+
   TControl_SetMinConstraints(Self);
-{$IFOPT D+}SendDebugFmt('TfmMessageDialog.MinWidth=%d TfmMessageDialog.MinHeight=%d',
-    [Constraints.MinWidth, Constraints.MinHeight]);{$ENDIF}
 
   FMessageType := nil;
 
@@ -575,6 +577,18 @@ begin
     if CheckResults then
       (Control as TCheckBox).Checked := Control.Enabled;
   end;
+end;
+
+procedure TfmMessageDialog.FormShow(Sender: TObject);
+begin
+  inherited;
+
+//  if (Width < FOrigWidth) or (Height < FOrigHeight) then begin
+//    MessageBox(0, PChar(Format('Width (%d) < FOrigWidth(%d) or Height (%d) < FOrigHeight (%d)'#13#10
+//      + 'MinWidth: %d'#13#10
+//      + 'MinHeight: %d', [Width, FOrigWidth, Height, FOrigHeight, Constraints.MinWidth, Constraints.MinHeight])),
+//      PChar(''), MB_ICONWARNING or MB_OK);
+//  end;
 end;
 
 function TfmMessageDialog.GetAllDialogButtons: string;

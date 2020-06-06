@@ -3,6 +3,7 @@ object fmMessageDialog: TfmMessageDialog
   Top = 215
   Width = 669
   Height = 580
+  ActiveControl = mmoMessage
   Anchors = [akLeft, akBottom]
   BorderIcons = [biSystemMenu]
   Caption = 'Message Dialog'
@@ -15,6 +16,7 @@ object fmMessageDialog: TfmMessageDialog
   OldCreateOrder = True
   Position = poOwnerFormCenter
   Scaled = False
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 14
   object pnlTop: TPanel
@@ -41,7 +43,7 @@ object fmMessageDialog: TfmMessageDialog
         Height = 312
         ActivePage = tabMessageBox
         Align = alClient
-        TabIndex = 1
+        TabIndex = 0
         TabOrder = 2
         OnChange = pgeMessageDialogChange
         object tabMessageDlg: TTabSheet
@@ -49,8 +51,8 @@ object fmMessageDialog: TfmMessageDialog
           object pnlMessageDlg: TPanel
             Left = 0
             Top = 0
-            Width = 534
-            Height = 284
+            Width = 551
+            Height = 283
             Align = alClient
             Anchors = []
             BevelOuter = bvNone
@@ -1093,7 +1095,7 @@ object fmMessageDialog: TfmMessageDialog
                 Width = 104
                 Height = 13
                 Caption = 'Default button:'
-                TabOrder = 4
+                TabOrder = 3
                 OnClick = chkDefaultButtonClick
               end
               object gbxCaption: TGroupBox
@@ -1130,7 +1132,7 @@ object fmMessageDialog: TfmMessageDialog
                 Top = 216
                 Width = 32
                 Height = 22
-                TabOrder = 3
+                TabOrder = 4
                 Text = '1'
                 OnChange = edtDefaultButtonChange
               end
