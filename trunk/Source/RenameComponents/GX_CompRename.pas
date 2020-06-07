@@ -699,9 +699,8 @@ begin
   GXSettings := nil;
   ini := TMemIniFile.Create(fn);
   try
-    GXSettings := TGExpertsSettings.Create(ini, True);
-    ini := nil;
-    Settings :=TExpertSettingsEx.Create(GXSettings, ConfigurationKey);
+    GXSettings := TGExpertsSettings.Create(ini, False);
+    Settings := TExpertSettingsEx.Create(GXSettings, ConfigurationKey);
     GXSettings := nil;
     InternalSaveSettings(Settings);
     ini.UpdateFile;
