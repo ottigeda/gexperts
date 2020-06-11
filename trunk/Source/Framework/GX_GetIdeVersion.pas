@@ -926,9 +926,17 @@ begin
   end;
 end;
 
+{
+  Delphi 10.4 Sydney
+  File                 File Version    Size       Modified Time
+  delphicoreide270.bpl 27.0.37889.9797
+  coreide270.bpl       27.0.37889.9797
+  bds.exe              27.0.37889.9797
+  dcldb270.bpl         27.0.37889.9797
+}
 function GetRS104Version: TBorlandIdeVersion;
 const
-  CoreIde2700: TVersionNumber = (Minor: 27; Major: 0; Build: 37829; Release: 9790);
+  CoreIde2700: TVersionNumber = (Minor: 27; Major: 0; Build: 37829; Release: 9797);
 var
   CoreIdeFileVersion: TVersionNumber;
   VersionNumber: Integer;
