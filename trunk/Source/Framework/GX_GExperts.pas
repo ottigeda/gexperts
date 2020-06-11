@@ -380,7 +380,7 @@ begin
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
   if ConfigInfo.GetForceDesktopOnStartup then begin
     // Unfortunatly the 1200 ms delay used to call DoAfterIDEInitialized are not always
-    // to be enough to also set the startup desktop, resulting in an access violation.
+    // enough to also set the startup desktop, resulting in an access violation.
     // Waiting an additional 500 ms seems to fix the issue.
     TTimedCallback.Create(ForceStartupDesktop, 500, True);
   end;
