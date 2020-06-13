@@ -43,9 +43,7 @@ begin
   if not Assigned(InternalPopupMenu) then
   begin
     InternalPopupMenu := NewPopupMenu(nil, MenuName, paCenter, False, []);
-{$IFNDEF GX_VER320_up}
-    // assigninig icons has redraw problems in themed IDEs (Delphi 10.3 and 10.2)
-    // todo: Figure out the real problem and assign them again
+{$IFNDEF ICONS_IN_POPUP_MENUS_ARE_BROKEN}
     InternalPopupMenu.Images := GxOtaGetIdeImageList;
 {$ENDIF}
   end;

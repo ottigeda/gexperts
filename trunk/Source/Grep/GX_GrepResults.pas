@@ -1750,6 +1750,10 @@ begin
 
   actViewStayOnTop.Visible := IsStandAlone;
   tbnSep6.Visible := actViewStayOnTop.Visible;
+
+{$IFNDEF ICONS_IN_POPUP_MENUS_ARE_BROKEN}
+  pmHamburgerMenu.Images := GetSharedImageList;
+{$ENDIF}
 end;
 
 destructor TfmGrepResults.Destroy;

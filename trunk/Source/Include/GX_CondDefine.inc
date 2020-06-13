@@ -192,6 +192,14 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$ENDIF GX_VER340_up}
 {$ENDIF GX_VER330_up}
 
+{$IFNDEF GX_VER320_up}
+  {$IFNDEF GX_VER340_UP
+    // Assigninig icons has redraw problems in the early themed IDEs (Delphi 10.2 and 10.3)
+    // This was fixed in Delphi 10.4.
+    {$DEFINE ICONS_IN_POPUP_MENUS_ARE_BROKEN}
+  {$ENDIF}
+{$ENDIF}
+
 {$IFDEF GX_VER330_up}
   // Fix for https://quality.embarcadero.com/browse/RSP-28064
   {$IFNDEF GX_VER340_up} // Fixed in 10.4
