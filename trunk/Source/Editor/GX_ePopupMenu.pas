@@ -174,8 +174,7 @@ begin
   if not IsEditorActive(ctl) then
     Exit;
 
-  if Assigned(FGExpertsShortcutMenu) then
-    FreeAndNil(FGExpertsShortcutMenu);
+  FreeAndNil(FGExpertsShortcutMenu);
   FGExpertsShortcutMenu := TPopupMenu.Create(nil);
   for i := 0 to FShortcuts.Count - 1 do begin
     Key := FShortcuts.Names[i];
