@@ -395,16 +395,15 @@ procedure TGXMenuActionManager.ArrangeMenuItems;
 
     // while this returns 23:
     MainForm := GetIdeMainForm;
-{$IFNDEF GX_DELPHI_SYDNEY_UP}
     Result := MainForm.ClientOrigin.y;
-{$ELSE}
+{$IFDEF GX_DELPHI_SYDNEY_UP}
     // Starting with Delphi 10.4 (Sydney) the above returns -8 because the title bar is no
     // longer a real title bar (Curse you Microsoft! Why is everybody now starting to put
     // controls in the window title? What's wrong with a tool bar or a menu?).
     // So instead we look for the MenuBar and get the y coordinate its screen coordinates.
     // todo: Maybe this can be done for older versions too? It would be much nicer to not
     // need ifdefs here.
-zfx    MenuBar := MainForm.FindComponent('MenuBar');
+    MenuBar := MainForm.FindComponent('MenuBar');
     if Assigned(MenuBar) and (MenuBar is TWinControl) then begin
       Result := TWinControl(MenuBar).ClientToScreen(Point(0, 0)).y;
     end;
