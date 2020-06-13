@@ -35,7 +35,7 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, Windows, Classes, Graphics, ActnList, Menus, Forms, Math,
+  SysUtils, Windows, Classes, Graphics, Controls, ActnList, Menus, Forms, Math,
   GX_GenericClasses, GX_ActionBroker, GX_ConfigurationInfo,
   GX_GExperts, GX_GenericUtils, GX_IdeUtils, GX_OtaUtils;
 
@@ -379,6 +379,9 @@ procedure TGXMenuActionManager.ArrangeMenuItems;
     MainForm: TCustomForm;
 //    BorderHeight: Integer;
 //    CaptionHeight: Integer;
+{$IFDEF GX_DELPHI_SYDNEY_UP}
+    MenuBar: TComponent;
+{$ENDIF}
   begin
     // None of the functions I tried actually worked as expected in a multi monitor scenario
     // where those monitors use different scaling. I assume that any of the following will work
@@ -392,8 +395,20 @@ procedure TGXMenuActionManager.ArrangeMenuItems;
 
     // while this returns 23:
     MainForm := GetIdeMainForm;
+{$IFNDEF GX_DELPHI_SYDNEY_UP}
     Result := MainForm.ClientOrigin.y;
-
+{$ELSE}
+    // Starting with Delphi 10.4 (Sydney) the above returns -8 because the title bar is no
+    // longer a real title bar (Curse you Microsoft! Why is everybody now starting to put
+    // controls in the window title? What's wrong with a tool bar or a menu?).
+    // So instead we look for the MenuBar and get the y coordinate its screen coordinates.
+    // todo: Maybe this can be done for older versions too? It would be much nicer to not
+    // need ifdefs here.
+zfx    MenuBar := MainForm.FindComponent('MenuBar');
+    if Assigned(MenuBar) and (MenuBar is TWinControl) then begin
+      Result := TWinControl(MenuBar).ClientToScreen(Point(0, 0)).y;
+    end;
+{$ENDIF}
     // the correct value would have been:
     // * 23 on the primary monitor (with scaling = 100%
     // * 46 on the secondary monitor (with scaling = 200%
@@ -466,7 +481,7 @@ begin
   // in Rio, the height of a menu item is 24 pixels (on my computer)
   Inc(MenuItemHeight, 2);
 {$ENDIF}
-  // On top of that there seem to be several additional pixels at the to pand bottom of the
+  // On top of that there seem to be several additional pixels at the to pad the bottom of the
   // menu itself
   MaxMenuItems := (ScreenHeight - MenuTopPos - MainMenuHeight - 4) div MenuItemHeight;
 
