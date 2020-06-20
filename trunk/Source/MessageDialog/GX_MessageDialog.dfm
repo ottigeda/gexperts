@@ -16,7 +16,7 @@ object fmMessageDialog: TfmMessageDialog
   OldCreateOrder = True
   Position = poOwnerFormCenter
   Scaled = False
-  OnShow = FormShow
+  OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 14
   object pnlTop: TPanel

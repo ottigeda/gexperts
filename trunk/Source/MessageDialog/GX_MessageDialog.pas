@@ -197,7 +197,7 @@ type
     procedure edtHelpContextChange(Sender: TObject);
     procedure edtDefaultButtonChange(Sender: TObject);
     procedure chkDefaultButtonClick(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   private
     FFunctionResultsGroupBox: TGroupBox;
     FMessageType: TAbstractMessageType;
@@ -385,7 +385,9 @@ begin
   FOrigWidth := Width;
   FOrigHeight := Height;
 
-  TControl_SetMinConstraints(Self);
+// for some unknown reason this doesn't work here
+// so we use the FormResizeEvent instead
+//  TControl_SetMinConstraints(Self);
 
   FMessageType := nil;
 
@@ -579,16 +581,11 @@ begin
   end;
 end;
 
-procedure TfmMessageDialog.FormShow(Sender: TObject);
+procedure TfmMessageDialog.FormResize(Sender: TObject);
 begin
   inherited;
-
-//  if (Width < FOrigWidth) or (Height < FOrigHeight) then begin
-//    MessageBox(0, PChar(Format('Width (%d) < FOrigWidth(%d) or Height (%d) < FOrigHeight (%d)'#13#10
-//      + 'MinWidth: %d'#13#10
-//      + 'MinHeight: %d', [Width, FOrigWidth, Height, FOrigHeight, Constraints.MinWidth, Constraints.MinHeight])),
-//      PChar(''), MB_ICONWARNING or MB_OK);
-//  end;
+  if (Width < FOrigWidth) or (Height < FOrigHeight) then
+    SetBounds(Left, Top, FOrigWidth, FOrigHeight);
 end;
 
 function TfmMessageDialog.GetAllDialogButtons: string;
