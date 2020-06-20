@@ -276,7 +276,7 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Windows, TypInfo, Menus, ActnList, ClipBrd, Dialogs,
+  SysUtils, Windows, TypInfo, Menus, ActnList, ClipBrd, Dialogs, StrUtils,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_GxUtils, GX_OtaUtils, GX_UsesManager,
   GX_MessageOptions, GX_ConfigurationInfo, GX_Experts, GX_SynMemoUtils,
@@ -1328,7 +1328,9 @@ function TPascalMessageDialogBuilder.GetCode: string;
 
   function SurroundGnuGettext(Value: string): string;
   begin
-    if not FGNUGettextSupport then begin
+    if not FGNUGettextSupport
+      or (FQuotes and (Value = #39#39))
+      or (not FQuotes and (Value = '')) then begin
       Result := Value;
     end else begin
       if FGnuGetTextFunction = ggtUnderscore then
@@ -1376,6 +1378,7 @@ function TPascalMessageDialogBuilder.GetCode: string;
 
 var
   i: Integer;
+  p: Integer;
 begin
   // Build Pascal source code for MessageDlg
   Result := '';
@@ -1387,6 +1390,29 @@ begin
       Result := Result + ConcatString;
     end;
     Result := Result + BuildString(FText[FText.Count - 1]);
+  end;
+
+  if FQuotes then begin
+    // remove empty strings: +''+
+    p := Pos('+'#39#39'+', Result);
+    while p > 0 do begin
+      Result := Copy(Result, 1, p - 1) + Copy(Result, p + 3);
+      p := Pos('+'#39#39'+', Result);
+    end;
+    // also at the end: +''
+    if EndsStr('+'#39#39, Result) then
+      Result := LeftStr(Result, Length(Result) - 3);
+  end else begin
+    // remove empty lines: #13#10++#13#10
+    // which are invalid code, but apparently nobody noticed
+    p := Pos('++', Result);
+    while p > 0 do begin
+      Result := Copy(Result, 1, p - 1) + Copy(Result, p + 1);
+      p := Pos('++', Result);
+    end;
+    // also at the end: #13#10+
+    if EndsStr('+', Result) then
+      Result := LeftStr(Result, Length(Result) - 1);
   end;
 
   if Result <> '' then begin
