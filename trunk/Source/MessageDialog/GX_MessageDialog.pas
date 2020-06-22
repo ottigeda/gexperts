@@ -197,7 +197,8 @@ type
     procedure edtHelpContextChange(Sender: TObject);
     procedure edtDefaultButtonChange(Sender: TObject);
     procedure chkDefaultButtonClick(Sender: TObject);
-    procedure FormResize(Sender: TObject);
+    procedure FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight, MaxWidth,
+      MaxHeight: Integer);
   private
     FFunctionResultsGroupBox: TGroupBox;
     FMessageType: TAbstractMessageType;
@@ -581,11 +582,12 @@ begin
   end;
 end;
 
-procedure TfmMessageDialog.FormResize(Sender: TObject);
+procedure TfmMessageDialog.FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight, MaxWidth,
+  MaxHeight: Integer);
 begin
   inherited;
-  if (Width < FOrigWidth) or (Height < FOrigHeight) then
-    SetBounds(Left, Top, FOrigWidth, FOrigHeight);
+  MinWidth := FOrigWidth;
+  MinHeight := FOrigHeight;
 end;
 
 function TfmMessageDialog.GetAllDialogButtons: string;

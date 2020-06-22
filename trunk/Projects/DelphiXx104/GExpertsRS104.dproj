@@ -53,6 +53,7 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_MinorVer>3</VerInfo_MinorVer>
         <VerInfo_Release>8</VerInfo_Release>
+        <DCC_MapFile>3</DCC_MapFile>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
@@ -579,13 +580,13 @@ $(PreBuildEvent)]]></PreBuildEvent>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="..\..\Binaries\GExpertsRS104.dll" Configuration="Release" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\Binaries\GExpertsRS104.dll" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>GExpertsRS104.dll</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="..\..\Binaries\GExpertsRS104.dll" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\Binaries\GExpertsRS104.dll" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>GExpertsRS104.dll</RemoteName>
                         <Overwrite>true</Overwrite>
