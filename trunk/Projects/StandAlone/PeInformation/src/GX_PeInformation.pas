@@ -8,7 +8,10 @@ uses
   Windows, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, GX_PeInfo, ComCtrls, Menus,
   GX_SharedImages,
-  ActnList, ToolWin, StdCtrls, SysUtils;
+  ActnList, ToolWin, StdCtrls, SysUtils, Messages;
+
+const
+  WM_CheckParams = WM_USER + 4711;
 
 type
   TfmPeInformation = class(TForm)
@@ -102,6 +105,7 @@ type
     procedure SetNumberType(const Value: TNumberType);
     procedure SetVersionInfo(const AFilename: string);
     procedure SetPackageInfo(const AFilename: string);
+    procedure WmCheckParams(var _Msg: TMessage); message WM_CheckParams;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -242,6 +246,12 @@ begin
   finally
     VerItems.EndUpdate;
   end;
+end;
+
+procedure TfmPeInformation.WmCheckParams(var _Msg: TMessage);
+begin
+  if ParamCount >0 then
+    LoadPEInfo(ParamStr(1));
 end;
 
 procedure TfmPeInformation.SetPackageInfo(const AFilename: string);
@@ -799,6 +809,8 @@ constructor TfmPeInformation.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
+  HandleNeeded;
+
   SetToolbarGradient(ToolBar);
 
   TControl_SetMinConstraints(Self);
@@ -814,6 +826,8 @@ begin
   pcMain.ActivePage := tshMSDOS;
   CenterForm(Self);
   LoadSettings;
+
+  PostMessage(Handle, WM_CheckParams, 0, 0);
 end;
 
 destructor TfmPeInformation.Destroy;
