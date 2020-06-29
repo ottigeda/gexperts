@@ -182,6 +182,12 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\ClipboardHistory\GX_ClipboardOptions.pas">
             <Form>fmClipboardOptions</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\CloseExceptionNotification\GX_CloseExceptionNotification.pas">
+            <Form>fmGxCloseExceptionNotificationExpert</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\CloseExceptionNotification\GX_EditExceptionNotification.pas">
+            <Form>fmGxEditExceptionNotification</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\CodeLibrarian\GX_CodeLib.pas">
             <Form>fmCodeLib</Form>
         </DCCReference>

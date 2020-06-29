@@ -235,7 +235,9 @@ uses
   GX_GotoConfig in '..\..\Source\Goto\GX_GotoConfig.pas' {f_GotoConfig},
   GX_TimedCallback in '..\..\Source\Utils\GX_TimedCallback.pas',
   GX_BackupNotFound in '..\..\Source\BackupProject\GX_BackupNotFound.pas' {fmBackupNotFound},
-  GX_FormHotkeys in '..\..\Source\FormHotkeys\GX_FormHotkeys.pas' {f_FormHotkeys};
+  GX_FormHotkeys in '..\..\Source\FormHotkeys\GX_FormHotkeys.pas' {f_FormHotkeys},
+  GX_CloseExceptionNotification in '..\..\Source\CloseExceptionNotification\GX_CloseExceptionNotification.pas' {fmGxCloseExceptionNotificationExpert},
+  GX_EditExceptionNotification in '..\..\Source\CloseExceptionNotification\GX_EditExceptionNotification.pas' {fmGxEditExceptionNotification};
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
