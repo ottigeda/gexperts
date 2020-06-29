@@ -575,58 +575,60 @@ begin
     sl := TStringList.Create;
     sl.LoadFromFile(FFilename);
     s := sl.Text;
-    FParser.Origin := @s[1];
-    DeclarationType := dtNone;
-    while FParser.Tokenid <> tkNull do begin
-      if FParser.Tokenid = tkImplementation then
-        Exit;
-      case FParser.Tokenid of
-        tkSquareOpen: begin
-            // attribute declarations
-            SkipToClosingDelimiter(tkSquareOpen, tkSquareClose);
-          end;
-        tkConst: begin
-            DeclarationType := dtConst;
-          end;
-        tkVar: begin
-            DeclarationType := dtVar;
-          end;
-        tkType: begin
-            DeclarationType := dtType;
-          end;
-        tkIdentifier: begin
-            case DeclarationType of
-              dtNone: ;
-              dtConst: begin
-                  AddToConsts(FParser.Token);
-                  SkipConstDeclaration;
-                end;
-              dtType: begin
-                  AddToTypes(FParser.Token);
-                  HandleTypeDeclaration;
-                end;
-              dtVar: begin
-                  AddToVars(FParser.Token);
-                  SkipVarDeclaration;
-                end;
-              dtFunction: begin
-                  AddToFunctions(FParser.Token);
-                  SkipFunctionDeclaration;
-                end;
-              dtProcedure: begin
-                  AddToProcedures(FParser.Token);
-                  SkipProcedureDeclaration
-                end;
+    if s <> '' then begin
+      FParser.Origin := @s[1];
+      DeclarationType := dtNone;
+      while FParser.Tokenid <> tkNull do begin
+        if FParser.Tokenid = tkImplementation then
+          Exit;
+        case FParser.Tokenid of
+          tkSquareOpen: begin
+              // attribute declarations
+              SkipToClosingDelimiter(tkSquareOpen, tkSquareClose);
             end;
-          end;
-        tkProcedure: begin
-            DeclarationType := dtProcedure;
-          end;
-        tkFunction: begin
-            DeclarationType := dtFunction;
-          end;
+          tkConst: begin
+              DeclarationType := dtConst;
+            end;
+          tkVar: begin
+              DeclarationType := dtVar;
+            end;
+          tkType: begin
+              DeclarationType := dtType;
+            end;
+          tkIdentifier: begin
+              case DeclarationType of
+                dtNone: ;
+                dtConst: begin
+                    AddToConsts(FParser.Token);
+                    SkipConstDeclaration;
+                  end;
+                dtType: begin
+                    AddToTypes(FParser.Token);
+                    HandleTypeDeclaration;
+                  end;
+                dtVar: begin
+                    AddToVars(FParser.Token);
+                    SkipVarDeclaration;
+                  end;
+                dtFunction: begin
+                    AddToFunctions(FParser.Token);
+                    SkipFunctionDeclaration;
+                  end;
+                dtProcedure: begin
+                    AddToProcedures(FParser.Token);
+                    SkipProcedureDeclaration
+                  end;
+              end;
+            end;
+          tkProcedure: begin
+              DeclarationType := dtProcedure;
+            end;
+          tkFunction: begin
+              DeclarationType := dtFunction;
+            end;
+        end;
+        FParser.NextNoJunkEx;
       end;
-      FParser.NextNoJunkEx;
     end;
   finally
     FreeAndNil(sl);
