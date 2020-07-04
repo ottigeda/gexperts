@@ -31,7 +31,7 @@ inherited fmGxEditExceptionNotification: TfmGxEditExceptionNotification
     Top = 24
     Width = 281
     Height = 21
-    ItemHeight = 13
+    ItemHeight = 0
     TabOrder = 0
   end
   object ed_Message: TEdit
@@ -40,6 +40,7 @@ inherited fmGxEditExceptionNotification: TfmGxEditExceptionNotification
     Width = 529
     Height = 21
     TabOrder = 1
+    OnChange = ed_MessageChange
   end
   object re_Test: TRichEdit
     Left = 8
@@ -89,5 +90,12 @@ inherited fmGxEditExceptionNotification: TfmGxEditExceptionNotification
     ParentShowHint = False
     ShowHint = True
     TabOrder = 3
+  end
+  object tim_InputDelay: TTimer
+    Enabled = False
+    Interval = 500
+    OnTimer = tim_InputDelayTimer
+    Left = 264
+    Top = 200
   end
 end

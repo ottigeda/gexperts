@@ -4,7 +4,7 @@ object fmGxCloseExceptionNotificationExpert: TfmGxCloseExceptionNotificationExpe
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'Close Exception Notification'
   ClientHeight = 281
-  ClientWidth = 503
+  ClientWidth = 624
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -15,7 +15,7 @@ object fmGxCloseExceptionNotificationExpert: TfmGxCloseExceptionNotificationExpe
   OnDblClick = FormDblClick
   OnResize = FormResize
   DesignSize = (
-    503
+    624
     281)
   PixelsPerInch = 96
   TextHeight = 14
@@ -29,7 +29,7 @@ object fmGxCloseExceptionNotificationExpert: TfmGxCloseExceptionNotificationExpe
   object sg_Exceptions: TStringGrid
     Left = 8
     Top = 24
-    Width = 487
+    Width = 608
     Height = 217
     Anchors = [akLeft, akTop, akRight, akBottom]
     ColCount = 3
@@ -38,9 +38,10 @@ object fmGxCloseExceptionNotificationExpert: TfmGxCloseExceptionNotificationExpe
     FixedCols = 0
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect]
     TabOrder = 0
+    OnDblClick = sg_ExceptionsDblClick
   end
   object b_OK: TButton
-    Left = 342
+    Left = 463
     Top = 248
     Width = 75
     Height = 25
@@ -51,7 +52,7 @@ object fmGxCloseExceptionNotificationExpert: TfmGxCloseExceptionNotificationExpe
     TabOrder = 1
   end
   object b_Cancel: TButton
-    Left = 422
+    Left = 543
     Top = 248
     Width = 75
     Height = 25
