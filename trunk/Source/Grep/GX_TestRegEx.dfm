@@ -82,6 +82,7 @@ object fmTestRegEx: TfmTestRegEx
     OnClick = chk_CaseSensitiveClick
   end
   object tim_InputDelay: TTimer
+    Enabled = False
     Interval = 500
     OnTimer = tim_InputDelayTimer
     Left = 264
