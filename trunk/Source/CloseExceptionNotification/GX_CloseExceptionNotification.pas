@@ -541,12 +541,6 @@ end;
 
 procedure TfmGxCloseExceptionNotificationExpert.sg_ExceptionsDblClick(Sender: TObject);
 begin
-  inherited;
-
-end;
-
-procedure TfmGxCloseExceptionNotificationExpert.sg_ExceptionsDblClick(Sender: TObject);
-begin
   EditCurrentEntry;
 end;
 
