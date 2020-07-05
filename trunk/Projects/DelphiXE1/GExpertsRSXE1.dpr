@@ -123,7 +123,7 @@ uses
   GX_OpenFile in '..\..\source\OpenFile\GX_OpenFile.pas' {fmOpenFile},
   GX_OpenFileConfig in '..\..\source\OpenFile\GX_OpenFileConfig.pas' {fmOpenFileConfig},
   GX_OtaUtils in '..\..\source\Utils\GX_OtaUtils.pas',
-  GX_PeInformation in '..\..\source\PeInfo\GX_PeInformation.pas',
+  GX_PeInformation in '..\..\source\PeInfo\GX_PeInformation.pas' {fmPeInformation},
   GX_ProcedureList in '..\..\source\ProcedureList\GX_ProcedureList.pas' {fmProcedureList},
   GX_ProcedureListOptions in '..\..\source\ProcedureList\GX_ProcedureListOptions.pas' {fmProcedureListOptions},
   GX_Progress in '..\..\source\Framework\GX_Progress.pas' {fmProgress},
@@ -237,7 +237,8 @@ uses
   GX_BackupNotFound in '..\..\Source\BackupProject\GX_BackupNotFound.pas' {fmBackupNotFound},
   GX_FormHotkeys in '..\..\Source\FormHotkeys\GX_FormHotkeys.pas' {f_FormHotkeys},
   GX_CloseExceptionNotification in '..\..\Source\CloseExceptionNotification\GX_CloseExceptionNotification.pas' {fmGxCloseExceptionNotificationExpert},
-  GX_EditExceptionNotification in '..\..\Source\CloseExceptionNotification\GX_EditExceptionNotification.pas' {fmGxEditExceptionNotification};
+  GX_EditExceptionNotification in '..\..\Source\CloseExceptionNotification\GX_EditExceptionNotification.pas' {fmGxEditExceptionNotification},
+  GX_ExceptionNotification in '..\..\Source\CloseExceptionNotification\GX_ExceptionNotification.pas' {fmExceptionNotification};
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}

@@ -188,6 +188,9 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\Source\CloseExceptionNotification\GX_EditExceptionNotification.pas">
             <Form>fmGxEditExceptionNotification</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\CloseExceptionNotification\GX_ExceptionNotification.pas">
+            <Form>fmExceptionNotification</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\CodeLibrarian\GX_CodeLib.pas">
             <Form>fmCodeLib</Form>
         </DCCReference>

@@ -516,6 +516,15 @@
         <DCCReference Include="..\..\Source\BackupProject\GX_BackupNotFound.pas">
             <Form>fmBackupNotFound</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\FormHotkeys\GX_FormHotkeys.pas">
+            <Form>f_FormHotkeys</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\CloseExceptionNotification\GX_CloseExceptionNotification.pas">
+            <Form>fmGxCloseExceptionNotificationExpert</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\CloseExceptionNotification\GX_EditExceptionNotification.pas">
+            <Form>fmGxEditExceptionNotification</Form>
+        </DCCReference>
         <RcCompile Include="..\..\images\GXIcons.rc">
             <Form>GXIcons.res</Form>
         </RcCompile>

@@ -237,7 +237,8 @@ uses
   GX_BackupNotFound in '..\..\Source\BackupProject\GX_BackupNotFound.pas' {fmBackupNotFound},
   GX_CloseExceptionNotification in '..\..\Source\CloseExceptionNotification\GX_CloseExceptionNotification.pas' {fmGxCloseExceptionNotificationExpert},
   GX_EditExceptionNotification in '..\..\Source\CloseExceptionNotification\GX_EditExceptionNotification.pas' {fmGxEditExceptionNotification},
-  GX_FormHotkeys in '..\..\Source\FormHotkeys\GX_FormHotkeys.pas' {f_FormHotkeys};
+  GX_FormHotkeys in '..\..\Source\FormHotkeys\GX_FormHotkeys.pas' {f_FormHotkeys},
+  GX_ExceptionNotification in '..\..\Source\CloseExceptionNotification\GX_ExceptionNotification.pas' {fmExceptionNotification};
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}

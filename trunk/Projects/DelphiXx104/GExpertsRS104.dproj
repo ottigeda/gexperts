@@ -549,6 +549,14 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\Source\BackupProject\GX_BackupNotFound.pas">
             <Form>fmBackupNotFound</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\CloseExceptionNotification\GX_CloseExceptionNotification.pas">
+            <Form>fmGxCloseExceptionNotificationExpert</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\CloseExceptionNotification\GX_EditExceptionNotification.pas">
+            <Form>fmGxEditExceptionNotification</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <RcCompile Include="..\..\images\GXIcons.rc">
             <Form>..\..\images\GXIcons.res</Form>
         </RcCompile>
@@ -580,13 +588,13 @@ $(PreBuildEvent)]]></PreBuildEvent>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="..\..\Binaries\GExpertsRS104.dll" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\Binaries\GExpertsRS104.dll" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>GExpertsRS104.dll</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="..\..\Binaries\GExpertsRS104.dll" Configuration="Release" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\Binaries\GExpertsRS104.dll" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>GExpertsRS104.dll</RemoteName>
                         <Overwrite>true</Overwrite>

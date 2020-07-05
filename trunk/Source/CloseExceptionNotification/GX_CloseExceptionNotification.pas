@@ -1,4 +1,4 @@
-﻿unit GX_CloseExceptionNotification;
+unit GX_CloseExceptionNotification;
 
 {$I GX_CondDefine.inc}
 
@@ -53,12 +53,15 @@ uses
   TypInfo,
   StrUtils,
   u_dzVclUtils,
+  u_dzStringUtils,
   SynRegExpr,
   GX_Experts,
   GX_GExperts,
   GX_ConfigurationInfo,
   GX_IdeDialogEnhancer,
-  GX_TimedCallback;
+  GX_TimedCallback,
+  GX_OtaUtils,
+  GX_ExceptionNotification;
 
 type
   TExceptionNotification = class
@@ -103,6 +106,10 @@ type
   private
     FNotifications: TObjectList;
     FHandler: TExceptionNotificationHandler;
+    procedure HandleCheckExceptionEx(_Sender: TObject; const _Project, _Exception, _Message: string;
+      var _Action: TExceptionNotificationAction);
+    procedure HandleAddExceptionEx(_Sender: TObject; const _Project, _Exception, _Message: string;
+      var _Action: TExceptionNotificationAction);
   protected
     procedure SetActive(_Active: Boolean); override;
     procedure HandleCheckException(_Sender: TObject; const _Message: string;
@@ -236,8 +243,15 @@ begin
     inherited SetActive(_Active);
 
   if _Active then begin
-    if not Assigned(FHandler) then
-      FHandler := TExceptionNotificationHandler.Create(HandleCheckException, HandleAddException);
+{$IFDEF GX_DELPHI2005_UP}
+    if GX_ExceptionNotification.Hooked then begin
+      GX_ExceptionNotification.OnCheckException := HandleCheckExceptionEx;
+      GX_ExceptionNotification.OnIgnoreButtonClick := HandleAddExceptionEx;
+    end else
+{$ENDIF}begin
+      if not Assigned(FHandler) then
+        FHandler := TExceptionNotificationHandler.Create(HandleCheckException, HandleAddException);
+    end;
   end else begin
     FreeAndNil(FHandler);
   end;
@@ -310,6 +324,18 @@ begin
   end;
 end;
 
+procedure TGxCloseExceptionNotificationExpert.HandleAddExceptionEx(_Sender: TObject;
+  const _Project, _Exception, _Message: string; var _Action: TExceptionNotificationAction);
+var
+  ExceptionName: string;
+  MessageRE: string;
+begin
+  ExceptionName := _Exception;
+  MessageRE := _Message;
+  if TfmGxEditExceptionNotification.Execute(nil, _Message, ExceptionName, MessageRE, _Action) then
+    FNotifications.Add(TExceptionNotification.Create(ExceptionName, _Message, _Action));
+end;
+
 procedure TGxCloseExceptionNotificationExpert.HandleAddException(_Sender: TObject;
   const _Message: string; var _Action: TExceptionNotificationAction);
 var
@@ -321,32 +347,23 @@ begin
 
   if not TryGetMessageParts(_Message, Project, ExceptionName, ExceptionMsg) then
     Exit; //==>
-
-  if TfmGxEditExceptionNotification.Execute(nil, ExceptionMsg, ExceptionName, ExceptionMsg, _Action) then
-    FNotifications.Add(TExceptionNotification.Create(ExceptionName, ExceptionMsg, _Action));
+  HandleAddExceptionEx(_Sender, Project, ExceptionName, ExceptionMsg, _Action);
 end;
 
-procedure TGxCloseExceptionNotificationExpert.HandleCheckException(_Sender: TObject;
-  const _Message: string; var _Action: TExceptionNotificationAction);
+procedure TGxCloseExceptionNotificationExpert.HandleCheckExceptionEx(_Sender: TObject;
+  const _Project, _Exception, _Message: string; var _Action: TExceptionNotificationAction);
 var
-  Project: string;
-  ExceptionName: string;
-  ExceptionMsg: string;
   i: Integer;
-  Notification: TExceptionNotification;
   re: TRegExpr;
+  Notification: TExceptionNotification;
 begin
-  _Action := enaDisabled;
-  if not TryGetMessageParts(_Message, Project, ExceptionName, ExceptionMsg) then
-    Exit; //==>
-
   re := TRegExpr.Create;
   try
     for i := 0 to FNotifications.Count - 1 do begin
       Notification := FNotifications[i] as TExceptionNotification;
-      if SameText(ExceptionName, Notification.Name) then begin
+      if SameText(_Exception, Notification.Name) then begin
         re.Expression := Notification.MessageRE;
-        if re.Exec(ExceptionMsg) then begin
+        if re.Exec(_Message) then begin
           _Action := Notification.Action;
           Exit; //==>
         end;
@@ -355,6 +372,20 @@ begin
   finally
     FreeAndNil(re);
   end;
+end;
+
+procedure TGxCloseExceptionNotificationExpert.HandleCheckException(_Sender: TObject;
+  const _Message: string; var _Action: TExceptionNotificationAction);
+var
+  Project: string;
+  ExceptionName: string;
+  ExceptionMsg: string;
+begin
+  _Action := enaDisabled;
+  if not TryGetMessageParts(_Message, Project, ExceptionName, ExceptionMsg) then
+    Exit; //==>
+
+  HandleCheckExceptionEx(_Sender, Project, ExceptionName, ExceptionMsg, _Action);
 end;
 
 { TExceptionNotification }
