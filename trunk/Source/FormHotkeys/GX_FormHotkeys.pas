@@ -114,7 +114,7 @@ begin
   TheGrid.Cells[0, 0] := 'Component';
   TheGrid.Cells[1, 0] := 'Type';
   TheGrid.Cells[2, 0] := 'Caption';
-  TheGrid.Cells[3, 0] := 'Accellerator';
+  TheGrid.Cells[3, 0] := 'Accelerator';
   TheGrid.Cells[4, 0] := 'Shortcut';
   TheGrid.Cells[5, 0] := 'Secondary Shortcuts';
 
