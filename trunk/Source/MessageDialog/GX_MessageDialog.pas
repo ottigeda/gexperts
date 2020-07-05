@@ -281,7 +281,7 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_GxUtils, GX_OtaUtils, GX_UsesManager,
   GX_MessageOptions, GX_ConfigurationInfo, GX_Experts, GX_SynMemoUtils,
-  u_dzVclUtils;
+  u_dzVclUtils, u_dzStringUtils;
 
 type
   TMessageDialogExpert = class(TGX_Expert)
