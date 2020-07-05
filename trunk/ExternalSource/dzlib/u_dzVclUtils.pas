@@ -1430,6 +1430,9 @@ function TMenuItem_AppendSubmenuItem(_mi: TMenuItem; _Action: TBasicAction): TMe
 /// Recursively appends all submen items of Src to Dest </summary>
 procedure TMenuItem_AppendSubmenuItems(_Dest, _Src: TMenuItem);
 
+function TMenuItem_InsertSubmenuItem(_mi: TMenuItem; _Idx: Integer; const _Caption: string;
+  _OnClick: TNotifyEvent): TMenuItem;
+
 function TPopupMenu_FindMenuItem(_pm: TPopupMenu; const _Name: string; out _miFound: TMenuItem): Boolean;
 
 function TMainMenu_FindMenuItem(_mnu: TMainMenu; const _Name: string; out _miFound: TMenuItem): Boolean;
@@ -1784,7 +1787,7 @@ begin
   AssignFile(t, _Filename);
   Rewrite(t);
   try
-    Write(t, s);
+    write(t, s);
   finally
     CloseFile(t);
   end;
@@ -2185,6 +2188,7 @@ begin
 end;
 
 {$IF Declared(TryIso2Time)}
+
 function TEdit_TextHHMMSSToTime(_ed: TCustomEdit; _FocusControl: Boolean = True): TDateTime;
 var
   s: string;
@@ -3945,7 +3949,7 @@ end;
 
 procedure TControl_SetHint(_Ctrl: TControl; const _Hint: string);
 begin
-  _Ctrl.Hint := _Hint;
+  _Ctrl.hint := _Hint;
   _Ctrl.ShowHint := True;
 end;
 
@@ -5034,6 +5038,14 @@ begin
   end;
 end;
 
+function TMenuItem_InsertSubmenuItem(_mi: TMenuItem; _Idx: Integer; const _Caption: string; _OnClick: TNotifyEvent): TMenuItem;
+begin
+  Result := TMenuItem.Create(_mi);
+  Result.Caption := _Caption;
+  Result.OnClick := _OnClick;
+  _mi.Insert(_Idx, Result);
+end;
+
 procedure TPopupMenu_AppendAllMenuItems(_Dest: TPopupMenu; _Src: TPopupMenu; _InsertDivider: Boolean = True);
 var
   i: Integer;
@@ -5365,12 +5377,12 @@ constructor TWinControlLocker.Create(_Ctrl: TWinControl);
 begin
   inherited Create;
   FCtrl := _Ctrl;
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(False)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(False)), 0);
 end;
 
 destructor TWinControlLocker.Destroy;
 begin
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(True)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(True)), 0);
   RedrawWindow(FCtrl.Handle, nil, 0, RDW_ERASE or RDW_INVALIDATE or RDW_ALLCHILDREN);
   inherited;
 end;
@@ -5426,8 +5438,8 @@ end;
 procedure TdzButtonedEdit.Loaded;
 begin
   inherited;
-  if RightButton.Visible and (RightButton.Hint = '') then begin
-    RightButton.Hint := _('Ctrl+Return to ''click'' right button.');
+  if RightButton.Visible and (RightButton.hint = '') then begin
+    RightButton.hint := _('Ctrl+Return to ''click'' right button.');
     ShowHint := True;
   end;
 end;
@@ -6431,7 +6443,7 @@ var
   tb: TTrackBar;
 begin
   tb := TrackBar;
-  tb.Hint := IntToStr(tb.Position);
+  tb.hint := IntToStr(tb.Position);
   Application.ActivateHint(Mouse.CursorPos);
   doOnChange(_Sender);
 end;

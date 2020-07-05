@@ -1664,14 +1664,6 @@ begin
   Result := TMainMenu_FindMenuItem(MainMenu, 'FileClosedFilesItem', _MenuItem);
 end;
 
-function TMenuItem_InsertSubmenuItem(_mi: TMenuItem; _Idx: Integer; const _Caption: string; _OnClick: TNotifyEvent): TMenuItem;
-begin
-  Result := TMenuItem.Create(_mi);
-  Result.Caption := _Caption;
-  Result.OnClick := _OnClick;
-  _mi.Insert(_Idx, Result);
-end;
-
 procedure TFavoriteFilesExpert.InsertFavMenuItem;
 var
   mi: TMenuItem;
