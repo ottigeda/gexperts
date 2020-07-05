@@ -8,6 +8,10 @@
 {$DEFINE HAS_UNIT_SYSTEM_JSON}
 {$ENDIF}
 
+{$IFNDEF DELPHIXE7_UP}
+{$DEFINE STARTSTEXT_IMPLEMENTATION_REQUIRED}
+{$ENDIF}
+
 {$IFDEF DELPHIXE7_UP}
 // For now I assume the BDE is not installed for Delphi XE7 and later, but that
 // largely depends on what the user selected for installation.
