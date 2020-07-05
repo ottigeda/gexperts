@@ -33,7 +33,7 @@ type
   // Originally this simply redeclared NativeInt as Integer for older versions, but
   // that made it hard to find accidental usages of the wrong type.
   GXNativeInt = Integer;
-  GXNativeUInt = LongWord;
+  GXNativeUInt = Cardinal;
 {$IFNDEF GX_DELPHI2009_UP}
   UInt32 = Cardinal;
 {$ENDIF}
