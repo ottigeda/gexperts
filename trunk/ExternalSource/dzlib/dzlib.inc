@@ -87,6 +87,10 @@
 {$DEFINE HAS_INTTOHEX_FUNCTION}
 {$ENDIF}
 
+{$IFOPT T+}
+{$DEFINE TYPEDADDRESS_IS_ON}
+{$ENDIF}
+
 // we currently support only Windows (and a very small subset of Win64), so we turn platform
 // warnings off
 

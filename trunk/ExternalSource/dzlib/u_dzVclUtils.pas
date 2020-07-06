@@ -998,12 +998,14 @@ function TRadioGroup_Select(_rg: TCustomRadioGroup; const _Item: string; _Defaul
 procedure TRadioGroup_SelectWithoutClickEvent(_rg: TCustomRadioGroup; _Idx: Integer);
 
 ///<summary> Gets the object pointer of the selected RadioGroup item
-///          @param cmb is the TCustomListbox (descendant) to read from
-///          @param Idx is the listbox's ItemIndex, only valid if the function returns true
+///          @param cmb is the TCustomRadioGroup (descendant) to read from
+///          @param Idx is the radio group's ItemIndex, only valid if the function returns true
 ///          @param Obj is the value of the object pointer of the selected item, only valid
 ///                     if the function returns true
 ///          @returns true, if the out parameters are valid </summary>
-function TRadioGroup_GetSelectedObject(_rg: TCustomRadioGroup; out _Idx: Integer; out _Obj: Pointer): Boolean;
+function TRadioGroup_GetSelectedObject(_rg: TCustomRadioGroup; out _Idx: Integer; out _Obj: Pointer): Boolean; overload;
+function TRadioGroup_GetSelectedObject(_rg: TCustomRadioGroup; out _Obj: Pointer): Boolean; overload;
+function TRadioGroup_GetSelectedObject(_rg: TCustomRadioGroup; out _ObjAsInt: Integer): Boolean; overload;
 
 ///<summary> Writes a TPicture object to a String. The Format is
 ///          <pictureformat>#26<picturedata> </summary>
@@ -1787,7 +1789,7 @@ begin
   AssignFile(t, _Filename);
   Rewrite(t);
   try
-    write(t, s);
+    Write(t, s);
   finally
     CloseFile(t);
   end;
@@ -2188,7 +2190,6 @@ begin
 end;
 
 {$IF Declared(TryIso2Time)}
-
 function TEdit_TextHHMMSSToTime(_ed: TCustomEdit; _FocusControl: Boolean = True): TDateTime;
 var
   s: string;
@@ -3776,6 +3777,22 @@ begin
     _Obj := Hack.Items.Objects[_Idx];
 end;
 
+function TRadioGroup_GetSelectedObject(_rg: TCustomRadioGroup; out _Obj: Pointer): Boolean;
+var
+  Idx: Integer;
+begin
+  Result := TRadioGroup_GetSelectedObject(_rg, Idx, _Obj);
+end;
+
+function TRadioGroup_GetSelectedObject(_rg: TCustomRadioGroup; out _ObjAsInt: Integer): Boolean;
+var
+  Obj: Pointer;
+begin
+  Result := TRadioGroup_GetSelectedObject(_rg, Obj);
+  if Result then
+    _ObjAsInt := Integer(Obj);
+end;
+
 function TRichEdit_WriteToString(_Re: TRichEdit): string;
 var
   st: TMemoryStream;
@@ -3949,7 +3966,7 @@ end;
 
 procedure TControl_SetHint(_Ctrl: TControl; const _Hint: string);
 begin
-  _Ctrl.hint := _Hint;
+  _Ctrl.Hint := _Hint;
   _Ctrl.ShowHint := True;
 end;
 
@@ -5377,12 +5394,12 @@ constructor TWinControlLocker.Create(_Ctrl: TWinControl);
 begin
   inherited Create;
   FCtrl := _Ctrl;
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(False)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(False)), 0);
 end;
 
 destructor TWinControlLocker.Destroy;
 begin
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(True)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(True)), 0);
   RedrawWindow(FCtrl.Handle, nil, 0, RDW_ERASE or RDW_INVALIDATE or RDW_ALLCHILDREN);
   inherited;
 end;
@@ -5438,8 +5455,8 @@ end;
 procedure TdzButtonedEdit.Loaded;
 begin
   inherited;
-  if RightButton.Visible and (RightButton.hint = '') then begin
-    RightButton.hint := _('Ctrl+Return to ''click'' right button.');
+  if RightButton.Visible and (RightButton.Hint = '') then begin
+    RightButton.Hint := _('Ctrl+Return to ''click'' right button.');
     ShowHint := True;
   end;
 end;
@@ -6443,7 +6460,7 @@ var
   tb: TTrackBar;
 begin
   tb := TrackBar;
-  tb.hint := IntToStr(tb.Position);
+  tb.Hint := IntToStr(tb.Position);
   Application.ActivateHint(Mouse.CursorPos);
   doOnChange(_Sender);
 end;

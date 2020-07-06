@@ -114,8 +114,18 @@ type
     /// @param IncludePath determines whether the List of filenames includes the full path or not </summary>
     class function Execute(const _Mask: string; _List: TStrings;
       _MayHaveAttr: TFileAttributeSet = ALL_FILES_ATTRIB_SET; _IncludePath: Boolean = False; _Sort: Boolean = True): Integer;
+    /// <summary>
+    /// creates a TSimpleDirEnumerator, calls its FindAll method and frees it
+    /// @param List is a string list to which the files will be appended, may be nil
+    /// @param IncludePath determines whether the List of filenames includes the full path or not </summary>
     class function EnumFilesOnly(const _Mask: string; _List: TStrings;
-      _IncludePath: Boolean = False; _Sort: Boolean = True): Integer;
+      _IncludePath: Boolean = False; _Sort: Boolean = True): Integer; overload;
+    class function EnumFilesOnly(const _Mask: string;
+      _IncludePath: Boolean = False; _Sort: Boolean = True): TStringArray; overload;
+    /// <summary>
+    /// creates a TSimpleDirEnumerator, calls its FindAll method and frees it
+    /// @param List is a string list to which the files will be appended, may be nil
+    /// @param IncludePath determines whether the List of filenames includes the full path or not </summary>
     class function EnumDirsOnly(const _Mask: string; _List: TStrings;
       _IncludePath: Boolean = False; _Sort: Boolean = True): Integer;
     /// <summary>
@@ -1113,7 +1123,8 @@ type
     procedure Init(const _s: string);
     function PartCount: Integer;
     function Part(_Idx: Integer): string;
-    procedure GetParts(_Parts: TStrings);
+    procedure GetParts(_Parts: TStrings); overload;
+    function GetParts: TStringArray; overload;
     procedure AssignParts(_Parts: TStrings);
     class operator Implicit(_sl: TStrings): TSearchPath;
     class operator Implicit(const _s: string): TSearchPath;
@@ -1269,6 +1280,20 @@ begin
     end;
   finally
     FreeAndNil(enum);
+  end;
+end;
+
+class function TSimpleDirEnumerator.EnumFilesOnly(const _Mask: string; _IncludePath,
+  _Sort: Boolean): TStringArray;
+var
+  sl: TStringList;
+begin
+  sl := TStringList.Create;
+  try
+    EnumFilesOnly(_Mask, sl, _IncludePath, _Sort);
+    Result := TStringArray_FromStrings(sl);
+  finally
+    FreeAndNil(sl);
   end;
 end;
 
@@ -3648,6 +3673,18 @@ begin
   sl := AsStringlist;
   try
     _Parts.Assign(sl);
+  finally
+    FreeAndNil(sl);
+  end;
+end;
+
+function TSearchPath.GetParts: TStringArray;
+var
+  sl: TStringList;
+begin
+  sl := AsStringlist;
+  try
+    Result := TStringArray_FromStrings(sl);
   finally
     FreeAndNil(sl);
   end;

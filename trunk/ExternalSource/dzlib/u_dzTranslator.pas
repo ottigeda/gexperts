@@ -387,4 +387,3 @@ initialization
 
 {$ENDIF gnugettext}
 end.
-

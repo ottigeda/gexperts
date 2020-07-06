@@ -6,6 +6,7 @@ interface
 
 uses
   SysUtils,
+  Classes,
   Types; // for $IF Declared(TBytes)
 
 type
@@ -38,7 +39,18 @@ type
 type
   TMethodPointer = procedure of object;
 
+function TStringArray_FromStrings(_sl: TStrings): TStringArray;
+
 implementation
+
+function TStringArray_FromStrings(_sl: TStrings): TStringArray;
+var
+  i: Integer;
+begin
+  SetLength(Result, _sl.count);
+  for i := 0 to _sl.count - 1 do
+    Result[i] := _sl[i];
+end;
 
 end.
 
