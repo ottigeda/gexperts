@@ -107,7 +107,7 @@ procedure TfmGxEditExceptionNotification.SetData(const _Exception, _MessageRe, _
   _Action: TExceptionNotificationAction);
 begin
   cmb_Exception.Text := _Exception;
-  ed_Message.Text := _MessageRe;
+  ed_Message.Text := QuoteRegExprMetaChars(_Message);
   FMessage := _Message;
   re_Test.Text := _Message;
   rg_Action.ItemIndex := Ord(_Action);
