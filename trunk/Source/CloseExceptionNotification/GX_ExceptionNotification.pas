@@ -40,6 +40,9 @@ type
     procedure act_CopyToClipboardExecute(Sender: TObject);
   private
 {$IFDEF GX_DELPHI2005_UP}
+// only Delphi 2005 and later have the dll entry point we hook here.
+// for older versions, we hack the original exception dialog to automatically close it
+// so we don't need this code.
     FProject: string;
     FException: string;
     FMessage: string;
