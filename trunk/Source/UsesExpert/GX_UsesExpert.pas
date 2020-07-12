@@ -1239,7 +1239,7 @@ begin
     [_sg.Name, _sg.DefaultRowHeight, _Rect.Left, _Rect.Top, _Rect.Right - _Rect.Left, _Rect.Bottom - _Rect.Top]);
 {$ENDIF}
   cnv.FillRect(_Rect);
-{$IFDEF GX_DELPHI_TOKYO_UP}
+{$IFDEF GX_DELPHI_SYDNEY_UP}
   cnv.TextRect(_Rect, _Rect.Left, _Rect.Top, _Text);
 {$ELSE}
   cnv.TextRect(_Rect, _Rect.Left + 2, _Rect.Top + 2, _Text);
