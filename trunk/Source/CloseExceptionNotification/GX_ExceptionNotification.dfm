@@ -43,8 +43,20 @@ inherited fmExceptionNotification: TfmExceptionNotification
     Top = 88
     Width = 75
     Height = 25
+    Action = act_Ignore
     Anchors = [akLeft, akBottom]
-    Caption = 'Ignore ...'
     TabOrder = 2
+  end
+  object TheActionList: TActionList
+    Left = 288
+    Top = 64
+    object act_Ignore: TAction
+      Caption = '&Ignore ...'
+    end
+    object act_CopyToClipboard: TAction
+      Caption = 'Copy to Clipboard'
+      ShortCut = 16451
+      OnExecute = act_CopyToClipboardExecute
+    end
   end
 end

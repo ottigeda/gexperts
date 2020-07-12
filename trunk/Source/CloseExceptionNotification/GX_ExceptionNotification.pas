@@ -11,6 +11,8 @@ uses
   Classes,
   Graphics,
   Controls,
+  ActnList,
+  Actions,
   Forms,
   Dialogs,
   StdCtrls,
@@ -32,13 +34,17 @@ type
     b_Break: TButton;
     b_Continue: TButton;
     b_Ignore: TButton;
+    TheActionList: TActionList;
+    act_Ignore: TAction;
+    act_CopyToClipboard: TAction;
+    procedure act_CopyToClipboardExecute(Sender: TObject);
   private
 {$IFDEF GX_DELPHI2005_UP}
     FProject: string;
     FException: string;
     FMessage: string;
     FOnAddException: TOnCheckExceptionEx;
-    procedure b_IgnoreClick(Sender: TObject);
+    procedure act_IgnoreExecute(Sender: TObject);
     procedure SetData(_OnAddException: TOnCheckExceptionEx;
       const _Project, _Exception, _Message: string);
   public
@@ -55,9 +61,10 @@ implementation
 {$IFDEF GX_DELPHI2005_UP}
 
 uses
+  Clipbrd,
+  u_dzVclUtils,
 {$IFOPT D+}GX_DbugIntf,
 {$ENDIF}
-  u_dzVclUtils,
   GX_VerDepConst,
   GX_OtaUtils,
   GX_GenericUtils;
@@ -82,7 +89,7 @@ end;
 constructor TfmExceptionNotification.Create(_Owner: TComponent);
 begin
   inherited Create(_Owner);
-  b_Ignore.OnClick := b_IgnoreClick;
+  act_Ignore.OnExecute := act_IgnoreExecute;
 end;
 
 procedure TfmExceptionNotification.SetData(_OnAddException: TOnCheckExceptionEx;
@@ -97,7 +104,18 @@ begin
   b_Ignore.Visible := Assigned(FOnAddException);
 end;
 
-procedure TfmExceptionNotification.b_IgnoreClick(Sender: TObject);
+procedure TfmExceptionNotification.act_CopyToClipboardExecute(Sender: TObject);
+begin
+  Clipboard.AsText := '---------------------------'#13#10
+    + Caption + #13#10
+    + '---------------------------'#13#10
+    + l_Message.Caption + #13#10
+    + '---------------------------'#13#10
+    + '[' + b_Ignore.Caption + ']  [' + b_Break.Caption + ']  [' + b_Continue.Caption + ']'#13#10
+    + '---------------------------';
+end;
+
+procedure TfmExceptionNotification.act_IgnoreExecute(Sender: TObject);
 var
   Action: TExceptionNotificationAction;
 begin
@@ -139,13 +157,13 @@ begin
 {$ENDIF}
 
   GetExceptionMessage(Obj, Msg);
-{$IFOPT D+}SendDebugFmt('Exception message is %s', [Msg]);
+{$IFOPT D+}SendDebugFmt('Exception message is "%s"', [Msg]);
 {$ENDIF}
   GetExceptionName(Obj, ExceptionName);
-{$IFOPT D+}SendDebugFmt('Exception name is %s', [ExceptionName]);
+{$IFOPT D+}SendDebugFmt('Exception name is "%s"', [ExceptionName]);
 {$ENDIF}
   Projectname := GxOtaGetCurrentProjectName;
-{$IFOPT D+}SendDebugFmt('Project name is %s', [Projectname]);
+{$IFOPT D+}SendDebugFmt('Project name is "%s"', [Projectname]);
 {$ENDIF}
 
   Action := enaDisabled;
