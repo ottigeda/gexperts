@@ -1,4 +1,4 @@
-unit GX_ExceptionNotification;
+unit GX_FilterExceptionsNotification;
 
 {$I GX_CondDefine.inc}
 

@@ -1,4 +1,4 @@
-﻿unit GX_CloseExceptionNotification;
+﻿unit GX_FilterExceptions;
 
 {$I GX_CondDefine.inc}
 

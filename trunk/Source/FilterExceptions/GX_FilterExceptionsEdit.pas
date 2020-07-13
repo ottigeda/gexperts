@@ -1,4 +1,4 @@
-unit GX_EditExceptionNotification;
+unit GX_FilterExceptionsEdit;
 
 interface
 

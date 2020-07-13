@@ -1,10 +1,10 @@
 object fmGxCloseExceptionNotificationExpert: TfmGxCloseExceptionNotificationExpert
   Left = 381
   Top = 212
-  Width = 640
-  Height = 320
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'Close Exception Notification'
+  ClientHeight = 281
+  ClientWidth = 624
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
