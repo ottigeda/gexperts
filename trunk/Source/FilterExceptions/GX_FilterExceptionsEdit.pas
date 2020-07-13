@@ -22,7 +22,7 @@ type
   TExceptionNotificationAction = (enaDisabled, enaIgnore, enaBreak);
 
 type
-  TfmGxEditExceptionNotification = class(TfmBaseForm)
+  TfmGxFilterExceptionsEdit = class(TfmBaseForm)
     l_Project: TLabel;
     ed_Project: TEdit;
     b_ProjectAny: TButton;
@@ -69,12 +69,12 @@ uses
 
 { TfmGxEditExceptionNotification }
 
-class function TfmGxEditExceptionNotification.Execute(_Owner: TWinControl; const _Message: string;
+class function TfmGxFilterExceptionsEdit.Execute(_Owner: TWinControl; const _Message: string;
   var _Project, _ExceptionClass, _MessageRe: string; var _Action: TExceptionNotificationAction): Boolean;
 var
-  frm: TfmGxEditExceptionNotification;
+  frm: TfmGxFilterExceptionsEdit;
 begin
-  frm := TfmGxEditExceptionNotification.Create(_Owner);
+  frm := TfmGxFilterExceptionsEdit.Create(_Owner);
   try
     frm.SetData(_Message, _Project, _ExceptionClass, _MessageRe, _Action);
     Result := (frm.ShowModal = mrOk);
@@ -85,41 +85,41 @@ begin
   end;
 end;
 
-constructor TfmGxEditExceptionNotification.Create(_Owner: TComponent);
+constructor TfmGxFilterExceptionsEdit.Create(_Owner: TComponent);
 begin
   inherited;
   TControl_SetMinConstraints(self);
   FRegEx := TRegExpr.Create;
 end;
 
-destructor TfmGxEditExceptionNotification.Destroy;
+destructor TfmGxFilterExceptionsEdit.Destroy;
 begin
   FreeAndNil(FRegEx);
   inherited;
 end;
 
-procedure TfmGxEditExceptionNotification.b_ProjectNameClick(Sender: TObject);
+procedure TfmGxFilterExceptionsEdit.b_ProjectNameClick(Sender: TObject);
 begin
   ed_Project.Text := FProject;
 end;
 
-procedure TfmGxEditExceptionNotification.b_ProjectSessionClick(Sender: TObject);
+procedure TfmGxFilterExceptionsEdit.b_ProjectSessionClick(Sender: TObject);
 begin
   ed_Project.Text := '';
 end;
 
-procedure TfmGxEditExceptionNotification.b_ProjectAnyClick(Sender: TObject);
+procedure TfmGxFilterExceptionsEdit.b_ProjectAnyClick(Sender: TObject);
 begin
   ed_Project.Text := '.*';
 end;
 
-procedure TfmGxEditExceptionNotification.ed_MessageChange(Sender: TObject);
+procedure TfmGxFilterExceptionsEdit.ed_MessageChange(Sender: TObject);
 begin
   inherited;
   tim_InputDelay.Enabled := True;
 end;
 
-procedure TfmGxEditExceptionNotification.GetData(out _Project, _ExceptionClass, _MessageRe: string;
+procedure TfmGxFilterExceptionsEdit.GetData(out _Project, _ExceptionClass, _MessageRe: string;
   out _Action: TExceptionNotificationAction);
 begin
   _Project := ed_Project.Text;
@@ -128,7 +128,7 @@ begin
   _Action := TExceptionNotificationAction(rg_Action.ItemIndex);
 end;
 
-procedure TfmGxEditExceptionNotification.SetData(const _Message: string;
+procedure TfmGxFilterExceptionsEdit.SetData(const _Message: string;
   const _Project, _ExceptionClass, _MessageRe: string; _Action: TExceptionNotificationAction);
 begin
   FProject := _Project;
@@ -141,13 +141,13 @@ begin
   rg_Action.ItemIndex := Ord(_Action);
 end;
 
-procedure TfmGxEditExceptionNotification.tim_InputDelayTimer(Sender: TObject);
+procedure TfmGxFilterExceptionsEdit.tim_InputDelayTimer(Sender: TObject);
 begin
   inherited;
   UpdateMatches;
 end;
 
-procedure TfmGxEditExceptionNotification.UpdateMatches;
+procedure TfmGxFilterExceptionsEdit.UpdateMatches;
 var
   Res: Boolean;
   StartOfLine: Integer;

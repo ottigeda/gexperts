@@ -1,6 +1,6 @@
-inherited fmGxEditExceptionNotification: TfmGxEditExceptionNotification
+inherited fmGxFilterExceptionsEdit: TfmGxFilterExceptionsEdit
   BorderIcons = [biSystemMenu]
-  Caption = 'Exception Notification'
+  Caption = 'Exception Filter'
   ClientHeight = 313
   ClientWidth = 546
   PixelsPerInch = 96

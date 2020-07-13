@@ -17,7 +17,7 @@ uses
   Dialogs,
   StdCtrls,
   GX_BaseForm,
-  GX_EditExceptionNotification;
+  GX_FilterExceptionsEdit;
 
 type
   TOnCheckExceptionEx = procedure(_Sender: TObject; const _Project, _Exception, _Message: string;

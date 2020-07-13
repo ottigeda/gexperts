@@ -15,10 +15,10 @@ uses
   Contnrs,
   ToolsAPI,
   GX_BaseForm,
-  GX_EditExceptionNotification;
+  GX_FilterExceptionsEdit;
 
 type
-  TfmGxCloseExceptionNotificationExpert = class(TfmBaseForm)
+  TfmGxFilterExceptionsExpert = class(TfmBaseForm)
     sg_Exceptions: TStringGrid;
     b_OK: TButton;
     b_Cancel: TButton;
@@ -62,7 +62,7 @@ uses
   GX_IdeDialogEnhancer,
   GX_TimedCallback,
   GX_OtaUtils,
-  GX_ExceptionNotification;
+  GX_FilterExceptionsNotification;
 
 const
   COL_PROJECT = 0;
@@ -160,7 +160,7 @@ end;
 
 procedure TGxCloseExceptionNotificationExpert.Configure;
 begin
-  if TfmGxCloseExceptionNotificationExpert.Execute(nil, FNotifications) then begin
+  if TfmGxFilterExceptionsExpert.Execute(nil, FNotifications) then begin
     SaveSettings;
   end;
 end;
@@ -284,9 +284,9 @@ begin
 
   if _Active then begin
 {$IFDEF GX_DELPHI2005_UP}
-    if GX_ExceptionNotification.Hooked then begin
-      GX_ExceptionNotification.OnCheckException := HandleCheckExceptionEx;
-      GX_ExceptionNotification.OnIgnoreButtonClick := HandleAddExceptionEx;
+    if GX_FilterExceptionsNotification.Hooked then begin
+      GX_FilterExceptionsNotification.OnCheckException := HandleCheckExceptionEx;
+      GX_FilterExceptionsNotification.OnIgnoreButtonClick := HandleAddExceptionEx;
     end else
 {$ENDIF}begin
       if not Assigned(FHandler) then
@@ -374,7 +374,7 @@ begin
   Project := _Project;
   ExceptionClass := _ExceptionClass;
   MessageRE := _Message;
-  if TfmGxEditExceptionNotification.Execute(nil, _Message, Project, ExceptionClass, MessageRE, _Action) then
+  if TfmGxFilterExceptionsEdit.Execute(nil, _Message, Project, ExceptionClass, MessageRE, _Action) then
     FNotifications.Add(TExceptionNotification.Create(Project, ExceptionClass, MessageRE, _Action));
 end;
 
@@ -460,14 +460,14 @@ begin
   Result := ActionStr(FAction);
 end;
 
-{ TfmGxCloseExceptionNotificationExpert }
+{ TfmGxFilterExceptionsExpert }
 
-class function TfmGxCloseExceptionNotificationExpert.Execute(_Owner: TComponent;
+class function TfmGxFilterExceptionsExpert.Execute(_Owner: TComponent;
   _Notifications: TObjectList): Boolean;
 var
-  frm: TfmGxCloseExceptionNotificationExpert;
+  frm: TfmGxFilterExceptionsExpert;
 begin
-  frm := TfmGxCloseExceptionNotificationExpert.Create(_Owner);
+  frm := TfmGxFilterExceptionsExpert.Create(_Owner);
   try
     frm.SetData(_Notifications);
     Result := (frm.ShowModal = mrOk);
@@ -478,12 +478,12 @@ begin
   end;
 end;
 
-procedure TfmGxCloseExceptionNotificationExpert.FormDblClick(Sender: TObject);
+procedure TfmGxFilterExceptionsExpert.FormDblClick(Sender: TObject);
 begin
   raise Exception.Create('Error Message');
 end;
 
-procedure TfmGxCloseExceptionNotificationExpert.FormResize(Sender: TObject);
+procedure TfmGxFilterExceptionsExpert.FormResize(Sender: TObject);
 begin
   inherited;
   sg_Exceptions.ColWidths[COL_PROJECT] := 100;
@@ -492,7 +492,7 @@ begin
   sg_Exceptions.ColWidths[COL_ACTION] := 50;
 end;
 
-procedure TfmGxCloseExceptionNotificationExpert.b_AddClick(Sender: TObject);
+procedure TfmGxFilterExceptionsExpert.b_AddClick(Sender: TObject);
 var
   row: Integer;
   ExceptionName: string;
@@ -504,7 +504,7 @@ begin
   ExceptionName := 'Exception';
   MessageRE := 'Some error message';
   Action := enaIgnore;
-  if not TfmGxEditExceptionNotification.Execute(Self, '', Project, ExceptionName, MessageRE, Action) then
+  if not TfmGxFilterExceptionsEdit.Execute(Self, '', Project, ExceptionName, MessageRE, Action) then
     Exit; //==>
 
   row := TStringGrid_AppendRow(sg_Exceptions);
@@ -515,7 +515,7 @@ begin
   sg_Exceptions.Cells[COL_ACTION, row] := TExceptionNotification.ActionStr(Action);
 end;
 
-function TfmGxCloseExceptionNotificationExpert.TryGetCurrentEntry(out _Row: Integer;
+function TfmGxFilterExceptionsExpert.TryGetCurrentEntry(out _Row: Integer;
   out _Project, _ExceptionName, _MessageRE: string;
   out _Action: TExceptionNotificationAction): Boolean;
 begin
@@ -529,7 +529,7 @@ begin
   end;
 end;
 
-procedure TfmGxCloseExceptionNotificationExpert.b_DeleteClick(Sender: TObject);
+procedure TfmGxFilterExceptionsExpert.b_DeleteClick(Sender: TObject);
 var
   row: Integer;
   Project: string;
@@ -549,12 +549,12 @@ begin
   TStringGrid_DeleteRow(sg_Exceptions, row);
 end;
 
-procedure TfmGxCloseExceptionNotificationExpert.b_EditClick(Sender: TObject);
+procedure TfmGxFilterExceptionsExpert.b_EditClick(Sender: TObject);
 begin
   EditCurrentEntry;
 end;
 
-procedure TfmGxCloseExceptionNotificationExpert.EditCurrentEntry;
+procedure TfmGxFilterExceptionsExpert.EditCurrentEntry;
 var
   row: Integer;
   Project: string;
@@ -565,7 +565,7 @@ begin
   if not TryGetCurrentEntry(row, Project, ExceptionClass, MessageRE, Action) then
     Exit; //==>
 
-  if not TfmGxEditExceptionNotification.Execute(Self, '', Project, ExceptionClass, MessageRE, Action) then
+  if not TfmGxFilterExceptionsEdit.Execute(Self, '', Project, ExceptionClass, MessageRE, Action) then
     Exit; //==>
 
   sg_Exceptions.Cells[COL_PROJECT, row] := Project;
@@ -575,7 +575,7 @@ begin
   sg_Exceptions.Cells[COL_ACTION, row] := TExceptionNotification.ActionStr(Action);
 end;
 
-constructor TfmGxCloseExceptionNotificationExpert.Create(_Owner: TComponent);
+constructor TfmGxFilterExceptionsExpert.Create(_Owner: TComponent);
 begin
   inherited;
   TControl_SetMinConstraints(Self);
@@ -590,7 +590,7 @@ begin
   sg_Exceptions.Cells[COL_ACTION, 0] := 'Action';
 end;
 
-procedure TfmGxCloseExceptionNotificationExpert.GetData(_Notifications: TObjectList);
+procedure TfmGxFilterExceptionsExpert.GetData(_Notifications: TObjectList);
 var
   i: Integer;
   Project: string;
@@ -610,7 +610,7 @@ begin
   end;
 end;
 
-procedure TfmGxCloseExceptionNotificationExpert.SetData(_Notifications: TObjectList);
+procedure TfmGxFilterExceptionsExpert.SetData(_Notifications: TObjectList);
 var
   cnt: Integer;
   i: Integer;
@@ -631,7 +631,7 @@ begin
   TGrid_Resize(sg_Exceptions, [roUseGridWidth, roUseAllRows], [COL_PROJECT, COL_EXCEPTION, COL_ACTION]);
 end;
 
-procedure TfmGxCloseExceptionNotificationExpert.sg_ExceptionsDblClick(Sender: TObject);
+procedure TfmGxFilterExceptionsExpert.sg_ExceptionsDblClick(Sender: TObject);
 begin
   EditCurrentEntry;
 end;

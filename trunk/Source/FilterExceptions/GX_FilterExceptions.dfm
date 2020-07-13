@@ -1,8 +1,8 @@
-object fmGxCloseExceptionNotificationExpert: TfmGxCloseExceptionNotificationExpert
+object fmGxFilterExceptionsExpert: TfmGxFilterExceptionsExpert
   Left = 381
   Top = 212
   BorderIcons = [biSystemMenu, biMaximize]
-  Caption = 'Close Exception Notification'
+  Caption = 'Filter Exceptions'
   ClientHeight = 281
   ClientWidth = 624
   Color = clBtnFace
