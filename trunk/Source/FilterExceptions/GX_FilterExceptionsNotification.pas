@@ -37,7 +37,6 @@ type
     TheActionList: TActionList;
     act_Ignore: TAction;
     act_CopyToClipboard: TAction;
-    procedure act_CopyToClipboardExecute(Sender: TObject);
   private
 {$IFDEF GX_DELPHI2005_UP}
 // only Delphi 2005 and later have the dll entry point we hook here.
@@ -48,6 +47,7 @@ type
     FMessage: string;
     FOnAddException: TOnCheckExceptionEx;
     procedure act_IgnoreExecute(Sender: TObject);
+    procedure act_CopyToClipboardExecute(Sender: TObject);
     procedure SetData(_OnAddException: TOnCheckExceptionEx;
       const _Project, _Exception, _Message: string);
   public
@@ -93,6 +93,7 @@ constructor TfmExceptionNotification.Create(_Owner: TComponent);
 begin
   inherited Create(_Owner);
   act_Ignore.OnExecute := act_IgnoreExecute;
+  act_CopyToClipboard.OnExecute := act_CopyToClipboardExecute;
 end;
 
 procedure TfmExceptionNotification.SetData(_OnAddException: TOnCheckExceptionEx;

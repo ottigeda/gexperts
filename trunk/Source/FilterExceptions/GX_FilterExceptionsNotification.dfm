@@ -56,7 +56,6 @@ inherited fmExceptionNotification: TfmExceptionNotification
     object act_CopyToClipboard: TAction
       Caption = 'Copy to Clipboard'
       ShortCut = 16451
-      OnExecute = act_CopyToClipboardExecute
     end
   end
 end
