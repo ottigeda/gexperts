@@ -238,9 +238,9 @@ uses
   GX_TimedCallback in '..\..\Source\Utils\GX_TimedCallback.pas',
   GX_BackupNotFound in '..\..\Source\BackupProject\GX_BackupNotFound.pas' {fmBackupNotFound},
   GX_FormHotkeys in '..\..\Source\FormHotkeys\GX_FormHotkeys.pas' {f_FormHotkeys},
-  GX_CloseExceptionNotification in '..\..\Source\CloseExceptionNotification\GX_CloseExceptionNotification.pas' {fmGxCloseExceptionNotificationExpert},
-  GX_EditExceptionNotification in '..\..\Source\CloseExceptionNotification\GX_EditExceptionNotification.pas' {fmGxEditExceptionNotification},
-  GX_ExceptionNotification in '..\..\Source\CloseExceptionNotification\GX_ExceptionNotification.pas' {fmExceptionNotification};
+  GX_FilterExceptions in '..\..\Source\FilterExceptions\GX_FilterExceptions.pas' {fmGxFilterExceptionsExpert},
+  GX_FilterExceptionsEdit in '..\..\Source\FilterExceptions\GX_FilterExceptionsEdit.pas' {fmGxFilterExceptionsEdit},
+  GX_FilterExceptionsNotification in '..\..\Source\FilterExceptions\GX_FilterExceptionsNotification.pas' {fmExceptionNotification};
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
