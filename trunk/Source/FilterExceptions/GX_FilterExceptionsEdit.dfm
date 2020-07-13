@@ -92,9 +92,9 @@ inherited fmGxFilterExceptionsEdit: TfmGxFilterExceptionsEdit
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'Action'
     Items.Strings = (
-      'Disabled (no action)'
       'Ignore Exception'
-      'Break on Exception')
+      'Break on Exception'
+      'Disabled (no action)')
     ParentShowHint = False
     ShowHint = True
     TabOrder = 7

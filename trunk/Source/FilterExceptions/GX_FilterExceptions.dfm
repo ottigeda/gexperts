@@ -46,7 +46,7 @@ object fmGxFilterExceptionsExpert: TfmGxFilterExceptionsExpert
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
-    Caption = 'OK'
+    Caption = '&OK'
     Default = True
     ModalResult = 1
     TabOrder = 1
@@ -58,7 +58,7 @@ object fmGxFilterExceptionsExpert: TfmGxFilterExceptionsExpert
     Height = 25
     Anchors = [akRight, akBottom]
     Cancel = True
-    Caption = 'Cancel'
+    Caption = '&Cancel'
     ModalResult = 2
     TabOrder = 2
   end
@@ -68,7 +68,7 @@ object fmGxFilterExceptionsExpert: TfmGxFilterExceptionsExpert
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
-    Caption = 'Add ...'
+    Caption = '&Add ...'
     TabOrder = 3
     OnClick = b_AddClick
   end
@@ -78,7 +78,7 @@ object fmGxFilterExceptionsExpert: TfmGxFilterExceptionsExpert
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
-    Caption = 'Edit ...'
+    Caption = '&Edit ...'
     TabOrder = 4
     OnClick = b_EditClick
   end
@@ -88,7 +88,7 @@ object fmGxFilterExceptionsExpert: TfmGxFilterExceptionsExpert
     Width = 75
     Height = 25
     Anchors = [akLeft, akBottom]
-    Caption = 'Delete ...'
+    Caption = '&Delete ...'
     TabOrder = 5
     OnClick = b_DeleteClick
   end

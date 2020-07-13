@@ -19,7 +19,7 @@ uses
   SynRegExpr;
 
 type
-  TExceptionNotificationAction = (enaDisabled, enaIgnore, enaBreak);
+  TExceptionFilterAction = (efaIgnore, efaBreak, efaDisabled);
 
 type
   TfmGxFilterExceptionsEdit = class(TfmBaseForm)
@@ -49,13 +49,13 @@ type
     FMatchColor: TColor;
     FRegEx: TRegExpr;
     procedure SetData(const _Message: string; const _Project, _ExceptionClass, _MessageRe: string;
-      _Action: TExceptionNotificationAction);
+      _Action: TExceptionFilterAction);
     procedure GetData(out _Project, _ExceptionClass, _MessageRe: string;
-      out _Action: TExceptionNotificationAction);
+      out _Action: TExceptionFilterAction);
     procedure UpdateMatches;
   public
     class function Execute(_Owner: TWinControl; const _Message: string;
-      var _Project, _ExceptionClass, _MessageRe: string; var _Action: TExceptionNotificationAction): Boolean;
+      var _Project, _ExceptionClass, _MessageRe: string; var _Action: TExceptionFilterAction): Boolean;
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -70,7 +70,7 @@ uses
 { TfmGxEditExceptionNotification }
 
 class function TfmGxFilterExceptionsEdit.Execute(_Owner: TWinControl; const _Message: string;
-  var _Project, _ExceptionClass, _MessageRe: string; var _Action: TExceptionNotificationAction): Boolean;
+  var _Project, _ExceptionClass, _MessageRe: string; var _Action: TExceptionFilterAction): Boolean;
 var
   frm: TfmGxFilterExceptionsEdit;
 begin
@@ -120,24 +120,34 @@ begin
 end;
 
 procedure TfmGxFilterExceptionsEdit.GetData(out _Project, _ExceptionClass, _MessageRe: string;
-  out _Action: TExceptionNotificationAction);
+  out _Action: TExceptionFilterAction);
 begin
   _Project := ed_Project.Text;
   _ExceptionClass := cmb_Exception.Text;
   _MessageRe := ed_Message.Text;
-  _Action := TExceptionNotificationAction(rg_Action.ItemIndex);
+  _Action := TExceptionFilterAction(rg_Action.ItemIndex);
 end;
 
 procedure TfmGxFilterExceptionsEdit.SetData(const _Message: string;
-  const _Project, _ExceptionClass, _MessageRe: string; _Action: TExceptionNotificationAction);
+  const _Project, _ExceptionClass, _MessageRe: string; _Action: TExceptionFilterAction);
 begin
   FProject := _Project;
-  b_ProjectName.Caption := '^- ' + _Project;
+  if (_Project = '') or (_Project = '.*') then
+    b_ProjectName.Visible := False
+  else
+    b_ProjectName.Caption := '^- ' + _Project;
   ed_Project.Text := _Project;
   cmb_Exception.Text := _ExceptionClass;
-  ed_Message.Text := QuoteRegExprMetaChars(_Message);
-  FMessage := _Message;
-  re_Test.Text := _Message;
+  if _MessageRe = '' then
+    ed_Message.Text := QuoteRegExprMetaChars(_Message)
+  else
+    ed_Message.Text := _MessageRe;
+  if _Message <> '' then begin
+    FMessage := _Message;
+    re_Test.Text := _Message;
+  end else begin
+    FMessage := re_Test.Text;
+  end;
   rg_Action.ItemIndex := Ord(_Action);
 end;
 

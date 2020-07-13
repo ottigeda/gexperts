@@ -21,7 +21,7 @@ uses
 
 type
   TOnCheckExceptionEx = procedure(_Sender: TObject; const _Project, _Exception, _Message: string;
-    var _Action: TExceptionNotificationAction) of object;
+    var _Action: TExceptionFilterAction) of object;
 
 var
   Hooked: Boolean = False;
@@ -120,14 +120,14 @@ end;
 
 procedure TfmExceptionNotification.act_IgnoreExecute(Sender: TObject);
 var
-  Action: TExceptionNotificationAction;
+  Action: TExceptionFilterAction;
 begin
   if Assigned(FOnAddException) then begin
-    Action := enaDisabled;
+    Action := efaIgnore;
     FOnAddException(Self, FProject, FException, FMessage, Action);
     case Action of
-      enaIgnore: ModalResult := mrIgnore;
-      enaBreak: ModalResult := mrok;
+      efaIgnore: ModalResult := mrIgnore;
+      efaBreak: ModalResult := mrok;
     end;
   end;
 end;
@@ -152,7 +152,7 @@ function DoShowExceptionHooked(Obj: TObject): Boolean;
 var
   Msg: string;
   P: PByte;
-  Action: TExceptionNotificationAction;
+  Action: TExceptionFilterAction;
   ExceptionName: string;
   Projectname: string;
 begin
@@ -169,20 +169,20 @@ begin
 {$IFOPT D+}SendDebugFmt('Project name is "%s"', [Projectname]);
 {$ENDIF}
 
-  Action := enaDisabled;
+  Action := efaDisabled;
   if Assigned(OnCheckException) then begin
     OnCheckException(nil, Projectname, ExceptionName, Msg, Action);
   end;
 
-  if Action = enaDisabled then begin
+  if Action = efaDisabled then begin
     if TfmExceptionNotification.Execute(nil, OnIgnoreButtonClick, Projectname, ExceptionName, Msg) then
-      Action := enaBreak
+      Action := efaBreak
     else
-      Action := enaIgnore;
+      Action := efaIgnore;
   end;
 
   case Action of
-    enaBreak: begin
+    efaBreak: begin
         Result := False;
       end;
   else
