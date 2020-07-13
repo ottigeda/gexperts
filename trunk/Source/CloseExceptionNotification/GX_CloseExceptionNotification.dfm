@@ -32,7 +32,7 @@ object fmGxCloseExceptionNotificationExpert: TfmGxCloseExceptionNotificationExpe
     Width = 608
     Height = 217
     Anchors = [akLeft, akTop, akRight, akBottom]
-    ColCount = 3
+    ColCount = 4
     DefaultColWidth = 150
     DefaultRowHeight = 20
     FixedCols = 0

@@ -51,7 +51,7 @@ inherited fmExceptionNotification: TfmExceptionNotification
     Left = 288
     Top = 64
     object act_Ignore: TAction
-      Caption = '&Ignore ...'
+      Caption = '&Filter ...'
     end
     object act_CopyToClipboard: TAction
       Caption = 'Copy to Clipboard'

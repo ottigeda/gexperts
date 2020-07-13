@@ -23,6 +23,11 @@ type
 
 type
   TfmGxEditExceptionNotification = class(TfmBaseForm)
+    l_Project: TLabel;
+    ed_Project: TEdit;
+    b_ProjectAny: TButton;
+    b_ProjectSession: TButton;
+    b_ProjectName: TButton;
     l_Exception: TLabel;
     cmb_Exception: TComboBox;
     l_Message: TLabel;
@@ -35,18 +40,22 @@ type
     tim_InputDelay: TTimer;
     procedure tim_InputDelayTimer(Sender: TObject);
     procedure ed_MessageChange(Sender: TObject);
+    procedure b_ProjectAnyClick(Sender: TObject);
+    procedure b_ProjectSessionClick(Sender: TObject);
+    procedure b_ProjectNameClick(Sender: TObject);
   private
+    FProject: string;
     FMessage: string;
     FMatchColor: TColor;
     FRegEx: TRegExpr;
-    procedure SetData(const _Exception: string; const _MessageRe: string; const _Message: string;
+    procedure SetData(const _Message: string; const _Project, _ExceptionClass, _MessageRe: string;
       _Action: TExceptionNotificationAction);
-    procedure GetData(out _Exception: string; out _MessageRe: string;
+    procedure GetData(out _Project, _ExceptionClass, _MessageRe: string;
       out _Action: TExceptionNotificationAction);
     procedure UpdateMatches;
   public
     class function Execute(_Owner: TWinControl; const _Message: string;
-      var _Exception: string; var _MessageRe: string; var _Action: TExceptionNotificationAction): Boolean;
+      var _Project, _ExceptionClass, _MessageRe: string; var _Action: TExceptionNotificationAction): Boolean;
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -61,16 +70,16 @@ uses
 { TfmGxEditExceptionNotification }
 
 class function TfmGxEditExceptionNotification.Execute(_Owner: TWinControl; const _Message: string;
-  var _Exception: string; var _MessageRe: string; var _Action: TExceptionNotificationAction): Boolean;
+  var _Project, _ExceptionClass, _MessageRe: string; var _Action: TExceptionNotificationAction): Boolean;
 var
   frm: TfmGxEditExceptionNotification;
 begin
   frm := TfmGxEditExceptionNotification.Create(_Owner);
   try
-    frm.SetData(_Exception, _MessageRe, _Message, _Action);
+    frm.SetData(_Message, _Project, _ExceptionClass, _MessageRe, _Action);
     Result := (frm.ShowModal = mrOk);
     if Result then
-      frm.GetData(_Exception, _MessageRe, _Action);
+      frm.GetData(_Project, _ExceptionClass, _MessageRe, _Action);
   finally
     FreeAndNil(frm);
   end;
@@ -89,24 +98,43 @@ begin
   inherited;
 end;
 
+procedure TfmGxEditExceptionNotification.b_ProjectNameClick(Sender: TObject);
+begin
+  ed_Project.Text := FProject;
+end;
+
+procedure TfmGxEditExceptionNotification.b_ProjectSessionClick(Sender: TObject);
+begin
+  ed_Project.Text := '';
+end;
+
+procedure TfmGxEditExceptionNotification.b_ProjectAnyClick(Sender: TObject);
+begin
+  ed_Project.Text := '.*';
+end;
+
 procedure TfmGxEditExceptionNotification.ed_MessageChange(Sender: TObject);
 begin
   inherited;
   tim_InputDelay.Enabled := True;
 end;
 
-procedure TfmGxEditExceptionNotification.GetData(out _Exception, _MessageRe: string;
+procedure TfmGxEditExceptionNotification.GetData(out _Project, _ExceptionClass, _MessageRe: string;
   out _Action: TExceptionNotificationAction);
 begin
-  _Exception := cmb_Exception.Text;
+  _Project := ed_Project.Text;
+  _ExceptionClass := cmb_Exception.Text;
   _MessageRe := ed_Message.Text;
   _Action := TExceptionNotificationAction(rg_Action.ItemIndex);
 end;
 
-procedure TfmGxEditExceptionNotification.SetData(const _Exception, _MessageRe, _Message: string;
-  _Action: TExceptionNotificationAction);
+procedure TfmGxEditExceptionNotification.SetData(const _Message: string;
+  const _Project, _ExceptionClass, _MessageRe: string; _Action: TExceptionNotificationAction);
 begin
-  cmb_Exception.Text := _Exception;
+  FProject := _Project;
+  b_ProjectName.Caption := '^- ' + _Project;
+  ed_Project.Text := _Project;
+  cmb_Exception.Text := _ExceptionClass;
   ed_Message.Text := QuoteRegExprMetaChars(_Message);
   FMessage := _Message;
   re_Test.Text := _Message;

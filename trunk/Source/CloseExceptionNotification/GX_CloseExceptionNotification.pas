@@ -1,4 +1,4 @@
-unit GX_CloseExceptionNotification;
+﻿unit GX_CloseExceptionNotification;
 
 {$I GX_CondDefine.inc}
 
@@ -13,6 +13,7 @@ uses
   StdCtrls,
   Grids,
   Contnrs,
+  ToolsAPI,
   GX_BaseForm,
   GX_EditExceptionNotification;
 
@@ -32,7 +33,7 @@ type
     procedure FormDblClick(Sender: TObject);
     procedure sg_ExceptionsDblClick(Sender: TObject);
   private
-    function TryGetCurrentEntry(out _Row: Integer; out _ExceptionName, _MessageRE: string;
+    function TryGetCurrentEntry(out _Row: Integer; out _Project, _ExceptionName, _MessageRE: string;
       out _Action: TExceptionNotificationAction): Boolean;
     procedure EditCurrentEntry;
   protected
@@ -63,18 +64,26 @@ uses
   GX_OtaUtils,
   GX_ExceptionNotification;
 
+const
+  COL_PROJECT = 0;
+  COL_EXCEPTION = 1;
+  COL_MESSAGE = 2;
+  COL_ACTION = 3;
+
 type
   TExceptionNotification = class
   private
-    FName: string;
+    FProject: string;
+    FExceptionClass: string;
     FMessageRE: string;
     FAction: TExceptionNotificationAction;
   public
-    constructor Create(const _Name: string; const _MessageRE: string;
+    constructor Create(const _Project, _ExceptionClass, _MessageRE: string;
       _Action: TExceptionNotificationAction);
     function ActionStr: string; overload;
     class function ActionStr(_Action: TExceptionNotificationAction): string; overload;
-    property Name: string read FName write FName;
+    property Project: string read FProject write FProject;
+    property ExceptionClass: string read FExceptionClass write FExceptionClass;
     property MessageRE: string read FMessageRE write FMessageRE;
     property Action: TExceptionNotificationAction read FAction write FAction;
   end;
@@ -102,14 +111,25 @@ type
   end;
 
 type
+  TGxCloseExceptionDebuggerNotifier = class(TBaseDebuggerNotifier)
+  private
+    FDestroyedCallback: TNotifyEvent;
+  public
+    constructor Create(_DestroyedCallback: TNotifyEvent);
+    procedure ProcessDestroyed({$IFDEF GX_VER170_up}const{$ENDIF}Process: IOTAProcess); override;
+  end;
+
+type
   TGxCloseExceptionNotificationExpert = class(TGX_Expert)
   private
     FNotifications: TObjectList;
     FHandler: TExceptionNotificationHandler;
-    procedure HandleCheckExceptionEx(_Sender: TObject; const _Project, _Exception, _Message: string;
+    FDebuggerNotifier: TGxCloseExceptionDebuggerNotifier;
+    procedure HandleCheckExceptionEx(_Sender: TObject; const _Project, _ExceptionClass, _Message: string;
       var _Action: TExceptionNotificationAction);
-    procedure HandleAddExceptionEx(_Sender: TObject; const _Project, _Exception, _Message: string;
+    procedure HandleAddExceptionEx(_Sender: TObject; const _Project, _ExceptionClass, _Message: string;
       var _Action: TExceptionNotificationAction);
+    procedure HandleProcessDestroyed(_Sender: TObject);
   protected
     procedure SetActive(_Active: Boolean); override;
     procedure HandleCheckException(_Sender: TObject; const _Message: string;
@@ -149,12 +169,29 @@ constructor TGxCloseExceptionNotificationExpert.Create;
 begin
   inherited Create;
   FNotifications := TObjectList.Create(True);
+  FDebuggerNotifier := TGxCloseExceptionDebuggerNotifier.Create(HandleProcessDestroyed);
+  FDebuggerNotifier.AddNotifierToIDE;
 end;
 
 destructor TGxCloseExceptionNotificationExpert.Destroy;
 begin
+  if Assigned(FDebuggerNotifier) then
+    FDebuggerNotifier.RemoveNotifierFromIDE;
+  FDebuggerNotifier := nil;
   FreeAndNil(FNotifications);
   inherited Destroy;
+end;
+
+procedure TGxCloseExceptionNotificationExpert.HandleProcessDestroyed(_Sender: TObject);
+var
+  i: Integer;
+  Notification: TExceptionNotification;
+begin
+  for i := FNotifications.Count - 1 downto 0 do begin
+    Notification := FNotifications[i] as TExceptionNotification;
+    if Notification.Project = '' then
+      FNotifications.Delete(i);
+  end;
 end;
 
 function TGxCloseExceptionNotificationExpert.GetDisplayName: string;
@@ -189,7 +226,8 @@ var
   cnt: Integer;
   i: Integer;
   Item: string;
-  ExceptionName: string;
+  Project: string;
+  ExceptionClass: string;
   ExceptionMsg: string;
   ActionStr: string;
   Action: TExceptionNotificationAction;
@@ -200,17 +238,18 @@ begin
   cnt := SubKey.ReadInteger('Count', 0);
   for i := 0 to cnt - 1 do begin
     Item := 'Item' + IntToStr(i) + '.';
-    ExceptionName := SubKey.ReadString(Item + 'Name', '');
+    Project := SubKey.ReadString(Item + 'Project', '.*');
+    ExceptionClass := SubKey.ReadString(Item + 'Name', '');
     ExceptionMsg := SubKey.ReadString(Item + 'MessageRE', '');
     ActionStr := SubKey.ReadString(Item + 'Action', '');
-    if (ExceptionName <> '') and (ExceptionMsg <> '') then begin
+    if (ExceptionClass <> '') and (ExceptionMsg <> '') then begin
       if ActionStr = TExceptionNotification.ActionStr(enaIgnore) then
         Action := enaIgnore
       else if ActionStr = TExceptionNotification.ActionStr(enaBreak) then
         Action := enaBreak
       else
         Action := enaDisabled;
-      FNotifications.Add(TExceptionNotification.Create(ExceptionName, ExceptionMsg, Action));
+      FNotifications.Add(TExceptionNotification.Create(Project, ExceptionClass, ExceptionMsg, Action));
     end;
   end;
 end;
@@ -231,7 +270,8 @@ begin
   for i := 0 to FNotifications.Count - 1 do begin
     Item := 'Item' + IntToStr(i) + '.';
     Notification := FNotifications[i] as TExceptionNotification;
-    SubKey.WriteString(Item + 'Name', Notification.Name);
+    SubKey.WriteString(Item + 'Project', Notification.Project);
+    SubKey.WriteString(Item + 'Name', Notification.ExceptionClass);
     SubKey.WriteString(Item + 'MessageRE', Notification.MessageRE);
     SubKey.WriteString(Item + 'Action', Notification.ActionStr);
   end;
@@ -325,15 +365,17 @@ begin
 end;
 
 procedure TGxCloseExceptionNotificationExpert.HandleAddExceptionEx(_Sender: TObject;
-  const _Project, _Exception, _Message: string; var _Action: TExceptionNotificationAction);
+  const _Project, _ExceptionClass, _Message: string; var _Action: TExceptionNotificationAction);
 var
-  ExceptionName: string;
+  Project: string;
+  ExceptionClass: string;
   MessageRE: string;
 begin
-  ExceptionName := _Exception;
+  Project := _Project;
+  ExceptionClass := _ExceptionClass;
   MessageRE := _Message;
-  if TfmGxEditExceptionNotification.Execute(nil, _Message, ExceptionName, MessageRE, _Action) then
-    FNotifications.Add(TExceptionNotification.Create(ExceptionName, _Message, _Action));
+  if TfmGxEditExceptionNotification.Execute(nil, _Message, Project, ExceptionClass, MessageRE, _Action) then
+    FNotifications.Add(TExceptionNotification.Create(Project, ExceptionClass, MessageRE, _Action));
 end;
 
 procedure TGxCloseExceptionNotificationExpert.HandleAddException(_Sender: TObject;
@@ -351,7 +393,7 @@ begin
 end;
 
 procedure TGxCloseExceptionNotificationExpert.HandleCheckExceptionEx(_Sender: TObject;
-  const _Project, _Exception, _Message: string; var _Action: TExceptionNotificationAction);
+  const _Project, _ExceptionClass, _Message: string; var _Action: TExceptionNotificationAction);
 var
   i: Integer;
   re: TRegExpr;
@@ -361,11 +403,14 @@ begin
   try
     for i := 0 to FNotifications.Count - 1 do begin
       Notification := FNotifications[i] as TExceptionNotification;
-      if SameText(_Exception, Notification.Name) then begin
-        re.Expression := Notification.MessageRE;
-        if re.Exec(_Message) then begin
-          _Action := Notification.Action;
-          Exit; //==>
+      if SameText(_ExceptionClass, Notification.ExceptionClass) then begin
+        re.Expression := Notification.Project;
+        if (Notification.Project = '') or re.Exec(_Project) then begin
+          re.Expression := Notification.MessageRE;
+          if re.Exec(_Message) then begin
+            _Action := Notification.Action;
+            Exit; //==>
+          end;
         end;
       end;
     end;
@@ -390,11 +435,12 @@ end;
 
 { TExceptionNotification }
 
-constructor TExceptionNotification.Create(const _Name: string; const _MessageRE: string;
+constructor TExceptionNotification.Create(const _Project, _ExceptionClass, _MessageRE: string;
   _Action: TExceptionNotificationAction);
 begin
   inherited Create;
-  FName := _Name;
+  FProject := _Project;
+  FExceptionClass := _ExceptionClass;
   FMessageRE := _MessageRE;
   FAction := _Action;
 end;
@@ -440,9 +486,10 @@ end;
 procedure TfmGxCloseExceptionNotificationExpert.FormResize(Sender: TObject);
 begin
   inherited;
-  sg_Exceptions.ColWidths[0] := 100;
-  sg_Exceptions.ColWidths[1] := sg_Exceptions.ClientWidth - 150 - 2;
-  sg_Exceptions.ColWidths[2] := 50;
+  sg_Exceptions.ColWidths[COL_PROJECT] := 100;
+  sg_Exceptions.ColWidths[COL_EXCEPTION] := 100;
+  sg_Exceptions.ColWidths[COL_MESSAGE] := sg_Exceptions.ClientWidth - 250 - 3;
+  sg_Exceptions.ColWidths[COL_ACTION] := 50;
 end;
 
 procedure TfmGxCloseExceptionNotificationExpert.b_AddClick(Sender: TObject);
@@ -451,45 +498,52 @@ var
   ExceptionName: string;
   MessageRE: string;
   Action: TExceptionNotificationAction;
+  Project: string;
 begin
+  Project := '.*';
   ExceptionName := 'Exception';
   MessageRE := 'Some error message';
   Action := enaIgnore;
-  if not TfmGxEditExceptionNotification.Execute(Self, '', ExceptionName, MessageRE, Action) then
+  if not TfmGxEditExceptionNotification.Execute(Self, '', Project, ExceptionName, MessageRE, Action) then
     Exit; //==>
 
   row := TStringGrid_AppendRow(sg_Exceptions);
-  sg_Exceptions.Cells[0, row] := ExceptionName;
-  sg_Exceptions.Cells[1, row] := MessageRE;
-  sg_Exceptions.Objects[2, row] := Pointer(Ord(Action));
-  sg_Exceptions.Cells[2, row] := TExceptionNotification.ActionStr(Action);
+  sg_Exceptions.Cells[COL_PROJECT, row] := Project;
+  sg_Exceptions.Cells[COL_EXCEPTION, row] := ExceptionName;
+  sg_Exceptions.Cells[COL_MESSAGE, row] := MessageRE;
+  sg_Exceptions.Objects[COL_ACTION, row] := Pointer(Ord(Action));
+  sg_Exceptions.Cells[COL_ACTION, row] := TExceptionNotification.ActionStr(Action);
 end;
 
 function TfmGxCloseExceptionNotificationExpert.TryGetCurrentEntry(out _Row: Integer;
-  out _ExceptionName: string; out _MessageRE: string; out _Action: TExceptionNotificationAction): Boolean;
+  out _Project, _ExceptionName, _MessageRE: string;
+  out _Action: TExceptionNotificationAction): Boolean;
 begin
   _Row := sg_Exceptions.row;
-  _ExceptionName := sg_Exceptions.Cells[0, _Row];
+  _Project := sg_Exceptions.Cells[COL_PROJECT, _Row];
+  _ExceptionName := sg_Exceptions.Cells[COL_EXCEPTION, _Row];
   Result := (_ExceptionName <> '');
   if Result then begin
-    _MessageRE := sg_Exceptions.Cells[1, _Row];
-    _Action := TExceptionNotificationAction(Integer(sg_Exceptions.Objects[2, _Row]));
+    _MessageRE := sg_Exceptions.Cells[COL_MESSAGE, _Row];
+    _Action := TExceptionNotificationAction(Integer(sg_Exceptions.Objects[COL_ACTION, _Row]));
   end;
 end;
 
 procedure TfmGxCloseExceptionNotificationExpert.b_DeleteClick(Sender: TObject);
 var
   row: Integer;
-  ExceptionName: string;
+  Project: string;
+  ExceptionClass: string;
   MessageRE: string;
   Action: TExceptionNotificationAction;
 begin
-  if not TryGetCurrentEntry(row, ExceptionName, MessageRE, Action) then
+  if not TryGetCurrentEntry(row, Project, ExceptionClass, MessageRE, Action) then
     Exit; //==>
 
   if mrYes <> MessageDlg('Do you really want to delete this entry?'#13#10
-    + ExceptionName + #13#10
-    + MessageRE, mtWarning, [mbYes, mbCancel], 0) then
+    + 'Project: "' + Project + '"'#13#10
+    + 'Exception: ' + ExceptionClass + #13#10
+    + 'Message: ' + MessageRE, mtWarning, [mbYes, mbCancel], 0) then
     Exit; //==>
 
   TStringGrid_DeleteRow(sg_Exceptions, row);
@@ -503,20 +557,22 @@ end;
 procedure TfmGxCloseExceptionNotificationExpert.EditCurrentEntry;
 var
   row: Integer;
-  ExceptionName: string;
+  Project: string;
+  ExceptionClass: string;
   MessageRE: string;
   Action: TExceptionNotificationAction;
 begin
-  if not TryGetCurrentEntry(row, ExceptionName, MessageRE, Action) then
+  if not TryGetCurrentEntry(row, Project, ExceptionClass, MessageRE, Action) then
     Exit; //==>
 
-  if not TfmGxEditExceptionNotification.Execute(Self, '', ExceptionName, MessageRE, Action) then
+  if not TfmGxEditExceptionNotification.Execute(Self, '', Project, ExceptionClass, MessageRE, Action) then
     Exit; //==>
 
-  sg_Exceptions.Cells[0, row] := ExceptionName;
-  sg_Exceptions.Cells[1, row] := MessageRE;
-  sg_Exceptions.Objects[2, row] := Pointer(Ord(Action));
-  sg_Exceptions.Cells[2, row] := TExceptionNotification.ActionStr(Action);
+  sg_Exceptions.Cells[COL_PROJECT, row] := Project;
+  sg_Exceptions.Cells[COL_EXCEPTION, row] := ExceptionClass;
+  sg_Exceptions.Cells[COL_MESSAGE, row] := MessageRE;
+  sg_Exceptions.Objects[COL_ACTION, row] := Pointer(Ord(Action));
+  sg_Exceptions.Cells[COL_ACTION, row] := TExceptionNotification.ActionStr(Action);
 end;
 
 constructor TfmGxCloseExceptionNotificationExpert.Create(_Owner: TComponent);
@@ -524,28 +580,32 @@ begin
   inherited;
   TControl_SetMinConstraints(Self);
 
-  sg_Exceptions.ColWidths[0] := 100;
-  sg_Exceptions.ColWidths[1] := 250;
-  sg_Exceptions.ColWidths[2] := 50;
-  sg_Exceptions.Cells[0, 0] := 'Exception';
-  sg_Exceptions.Cells[1, 0] := 'Message (RegEx)';
-  sg_Exceptions.Cells[2, 0] := 'Action';
+  sg_Exceptions.ColWidths[COL_PROJECT] := 100;
+  sg_Exceptions.ColWidths[COL_EXCEPTION] := 100;
+  sg_Exceptions.ColWidths[COL_MESSAGE] := 250;
+  sg_Exceptions.ColWidths[COL_ACTION] := 50;
+  sg_Exceptions.Cells[COL_PROJECT, 0] := 'Project';
+  sg_Exceptions.Cells[COL_EXCEPTION, 0] := 'Exception';
+  sg_Exceptions.Cells[COL_MESSAGE, 0] := 'Message (RegEx)';
+  sg_Exceptions.Cells[COL_ACTION, 0] := 'Action';
 end;
 
 procedure TfmGxCloseExceptionNotificationExpert.GetData(_Notifications: TObjectList);
 var
   i: Integer;
-  s: string;
+  Project: string;
+  ExceptionClass: string;
   re: string;
   Action: TExceptionNotificationAction;
 begin
   _Notifications.Clear;
   for i := sg_Exceptions.FixedRows to sg_Exceptions.RowCount - 1 do begin
-    s := sg_Exceptions.Cells[0, i];
-    if s <> '' then begin
-      re := sg_Exceptions.Cells[1, i];
-      Action := TExceptionNotificationAction(Integer(sg_Exceptions.Objects[2, i]));
-      _Notifications.Add(TExceptionNotification.Create(s, re, Action))
+    Project := sg_Exceptions.Cells[COL_PROJECT, i];
+    ExceptionClass := sg_Exceptions.Cells[COL_EXCEPTION, i];
+    if ExceptionClass <> '' then begin
+      re := sg_Exceptions.Cells[COL_MESSAGE, i];
+      Action := TExceptionNotificationAction(Integer(sg_Exceptions.Objects[COL_ACTION, i]));
+      _Notifications.Add(TExceptionNotification.Create(Project, ExceptionClass, re, Action))
     end;
   end;
 end;
@@ -562,12 +622,13 @@ begin
   for i := 0 to cnt - 1 do begin
     LineIdx := sg_Exceptions.FixedRows + i;
     Notification := _Notifications[i] as TExceptionNotification;
-    sg_Exceptions.Cells[0, LineIdx] := Notification.Name;
-    sg_Exceptions.Cells[1, LineIdx] := Notification.MessageRE;
-    sg_Exceptions.Objects[2, LineIdx] := Pointer(Ord(Notification.Action));
-    sg_Exceptions.Cells[2, LineIdx] := Notification.ActionStr;
+    sg_Exceptions.Cells[COL_PROJECT, LineIdx] := Notification.Project;
+    sg_Exceptions.Cells[COL_EXCEPTION, LineIdx] := Notification.ExceptionClass;
+    sg_Exceptions.Cells[COL_MESSAGE, LineIdx] := Notification.MessageRE;
+    sg_Exceptions.Objects[COL_ACTION, LineIdx] := Pointer(Ord(Notification.Action));
+    sg_Exceptions.Cells[COL_ACTION, LineIdx] := Notification.ActionStr;
   end;
-  TGrid_Resize(sg_Exceptions, [roUseGridWidth, roUseAllRows], [0, 2]);
+  TGrid_Resize(sg_Exceptions, [roUseGridWidth, roUseAllRows], [COL_PROJECT, COL_EXCEPTION, COL_ACTION]);
 end;
 
 procedure TfmGxCloseExceptionNotificationExpert.sg_ExceptionsDblClick(Sender: TObject);
@@ -663,6 +724,21 @@ const
 begin
   FButtonToPress := nil;
   Result := (_Form.ClassName = DIALOG_CLASS) and (_Form.Name = DIALOG_NAME);
+end;
+
+{ TGxCloseExceptionDebuggerNotifier }
+
+constructor TGxCloseExceptionDebuggerNotifier.Create(_DestroyedCallback: TNotifyEvent);
+begin
+  inherited Create;
+  FDestroyedCallback := _DestroyedCallback;
+end;
+
+procedure TGxCloseExceptionDebuggerNotifier.ProcessDestroyed({$IFDEF GX_VER170_up}const{$ENDIF}Process: IOTAProcess);
+begin
+  inherited;
+  if Assigned(FDestroyedCallback) then
+    FDestroyedCallback(nil);
 end;
 
 initialization
