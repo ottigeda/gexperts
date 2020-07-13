@@ -267,27 +267,39 @@ procedure TStringGrid_SetNonfixedCell(_Grid: TStringGrid; _Col, _Row: Integer; c
   _Data: Integer); overload;
 function TStringGrid_GetNonfixedCell(_Grid: TStringGrid; _Col, _Row: Integer): string;
 
-///<summary> scrolls up the lines of a string grid
-///          @param Grid is the TStringGrid to scroll
-///          @param Top is the topmost row to scroll, if passed as -1 defaults to the first non-fixed row
-///          @param Bottom is the bottommost row to scroll, if passed as -1 defaults to RowCount-1 </summary>
+///<summary>
+/// scrolls up the lines of a string grid
+/// @param Grid is the TStringGrid to scroll
+/// @param Top is the topmost row to scroll, if passed as -1 defaults to the first non-fixed row
+/// @param Bottom is the bottommost row to scroll, if passed as -1 defaults to RowCount-1 </summary>
 procedure TStringGrid_ScrollUp(_Grid: TStringGrid; _Top: Integer = -1; _Bottom: Integer = -1);
 
-///<summary> deletes the given row from the string grid and moves all rows below it up by one,
-///   if there is only one non-fixed row left, this row is cleared but not deleted.
-///   @param Grid is the StringGrid to change
-///   @param Row is the index of the row to delete, or -1 to delete the current row
-///   @returns true, if the row was deleted </summary>
+///<summary>
+/// Deletes the given row from the string grid and moves all rows below it up by one,
+/// if there is only one non-fixed row left, this row is cleared but not deleted.
+/// @param Grid is the StringGrid to change
+/// @param Row is the index of the row to delete, or -1 to delete the current row
+/// @returns true, if the row was deleted </summary>
 function TStringGrid_DeleteRow(_Grid: TStringGrid; _Row: Integer = -1): Boolean;
 
-///<summary> inserts a row at the given index into the string grid and moves all rows below it down by one.
-///          @param Grid is the StringGrid to change
-///          @param Row is the index of the row to insert, or -1 to insert at the current row
-///          @returns the inserted row index or -1 if the row cannot be inserted </summary>
+///<summary>
+/// Inserts a row at the given index into the string grid and moves all rows below it down by one.
+/// @param Grid is the StringGrid to change
+/// @param Row is the index of the row to insert, or -1 to insert at the current row
+/// @returns the inserted row index or -1 if the row cannot be inserted </summary>
 function TStringGrid_InsertRow(_Grid: TStringGrid; _Row: Integer = -1): Integer;
 
-///<summary> Appends a row to the string grid and returns the index of the new row </summary>
-function TStringGrid_AppendRow(_Grid: TStringGrid): Integer;
+///<summary>
+/// Checks if the given row contains only empty strings in all non fixed cells </summary>
+function TStringGrid_IsRowEmpty(_Grid: TStringGrid; _Row: Integer): Boolean;
+
+///<summary>
+/// Appends a row to the string grid and returns the index of the new row
+/// @param UseEmpty determines whether to check if the last row is empty.
+///                 True means that no new row is added if the last row is empty, in that case
+///                      the index of the last row will be returned.
+///                 False means that a new row will be added even if the last row is empty </summary>
+function TStringGrid_AppendRow(_Grid: TStringGrid; _UseEmtpy: Boolean = False): Integer;
 
 ///<summary> Tries to convert the grid cell to a double, if an error occurs, it raises
 ///          an exception and optionally focuses the cell.
@@ -2098,8 +2110,25 @@ begin
   Result := _Row;
 end;
 
-function TStringGrid_AppendRow(_Grid: TStringGrid): Integer;
+function TStringGrid_IsRowEmpty(_Grid: TStringGrid; _Row: Integer): Boolean;
+var
+  i: Integer;
 begin
+  Result := False;
+  for i := _Grid.FixedCols to _Grid.ColCount - 1 do begin
+    if _Grid.Cells[i, _Row] <> '' then
+      Exit; //==>
+  end;
+  Result := True;
+end;
+
+function TStringGrid_AppendRow(_Grid: TStringGrid; _UseEmtpy: Boolean = False): Integer;
+begin
+  if _UseEmtpy then begin
+    Result := _Grid.RowCount - 1;
+    if TStringGrid_IsRowEmpty(_Grid, Result) then
+      Exit; //==>
+  end;
   Result := _Grid.RowCount;
   _Grid.RowCount := Result + 1;
 end;
