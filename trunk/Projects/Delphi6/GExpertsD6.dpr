@@ -237,10 +237,7 @@ uses
   GX_GotoConfig in '..\..\Source\Goto\GX_GotoConfig.pas' {f_GotoConfig},
   GX_TimedCallback in '..\..\Source\Utils\GX_TimedCallback.pas',
   GX_BackupNotFound in '..\..\Source\BackupProject\GX_BackupNotFound.pas' {fmBackupNotFound},
-  GX_FormHotkeys in '..\..\Source\FormHotkeys\GX_FormHotkeys.pas' {f_FormHotkeys},
-  GX_FilterExceptions in '..\..\Source\FilterExceptions\GX_FilterExceptions.pas' {fmGxFilterExceptionsExpert},
-  GX_FilterExceptionsEdit in '..\..\Source\FilterExceptions\GX_FilterExceptionsEdit.pas' {fmGxFilterExceptionsEdit},
-  GX_FilterExceptionsNotification in '..\..\Source\FilterExceptions\GX_FilterExceptionsNotification.pas' {fmExceptionNotification};
+  GX_FormHotkeys in '..\..\Source\FormHotkeys\GX_FormHotkeys.pas' {f_FormHotkeys};
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
