@@ -203,7 +203,10 @@ function TComponent_FindComponent(_Owner: TComponent; const _Name: string; _Recu
 /// @param s is the string to write
 /// @returns the number of bytes written.
 /// </summary>
-function TStream_WriteString(_Stream: TStream; const _s: RawByteString): Integer;
+function TStream_WriteString(_Stream: TStream; const _s: RawByteString): Integer; overload;
+{$IFDEF UNICODE}
+function TStream_WriteString(_Stream: TStream; const _s: string): Integer; overload;
+{$ENDIF}
 
 /// <summary>
 /// Write a ShortString to the stream as binary, that is the length byte followed by len content bytes
@@ -226,7 +229,10 @@ function TStream_ReadShortStringBinary(_Stream: TStream): ShortString;
 /// @param s is the string to write
 /// @returns the number of bytes written.
 /// </summary>
-function TStream_WriteStringLn(_Stream: TStream; const _s: RawByteString): Integer;
+function TStream_WriteStringLn(_Stream: TStream; const _s: RawByteString): Integer; overload;
+{$IFDEF UNICODE}
+function TStream_WriteStringLn(_Stream: TStream; const _s: string): Integer; overload;
+{$ENDIF}
 
 /// <summary>
 /// Read a line from a stream, that is, a string ending in CRLF
@@ -234,7 +240,10 @@ function TStream_WriteStringLn(_Stream: TStream; const _s: RawByteString): Integ
 /// @param s returns the read string, without the CRLF
 /// @returns the number of bytes read, excluding the CRLF
 /// </summary>
-function TStream_ReadStringLn(_Stream: TStream; out _s: string): Integer;
+function TStream_ReadStringLn(_Stream: TStream; out _s: RawByteString): Integer; overload;
+{$IFDEF UNICODE}
+function TStream_ReadStringLn(_Stream: TStream; out _s: string): Integer; overload;
+{$ENDIF}
 
 /// <summary>
 /// Write formatted data to the stream appending CRLF
@@ -1025,6 +1034,13 @@ begin
   end;
 end;
 
+{$IFDEF UNICODE}
+function TStream_WriteString(_Stream: TStream; const _s: string): Integer;
+begin
+  Result := TStream_WriteString(_Stream, RawByteString(_s));
+end;
+{$ENDIF}
+
 function TStream_WriteShortStringBinary(_Stream: TStream; const _s: ShortString): Integer;
 var
   Len: Byte;
@@ -1051,24 +1067,30 @@ begin
   Result := Result + TStream_WriteString(_Stream, #13#10);
 end;
 
+{$IFDEF UNICODE}
+function TStream_WriteStringLn(_Stream: TStream; const _s: string): Integer;
+begin
+  Result := TStream_WriteStringLn(_Stream, RawByteString(_s));
+end;
+{$ENDIF}
+
 function TStream_WriteFmtLn(_Stream: TStream; const _Format: string; _Args: array of const): Integer;
 begin
   Result := TStream_WriteStringLn(_Stream, AnsiString(Format(_Format, _Args)));
 end;
 
-function TStream_ReadStringLn(_Stream: TStream; out _s: string): Integer;
+function TStream_ReadStringLn(_Stream: TStream; out _s: RawByteString): Integer;
 var
   OldPos: Int64;
   EndString: Int64;
   NewPos: Int64;
   c: AnsiChar;
-  s: AnsiString;
 begin
   // twm: this is not really efficient, because it reads single bytes, if it becomes a problem, optimize it ;-)
   OldPos := _Stream.Position;
 
 {$IFNDEF DELPHIX_BERLIN_UP}
-  Endstring := 0;
+  EndString := 0;
   NewPos := 0;
 {$ENDIF}
   while True do begin
@@ -1088,14 +1110,23 @@ begin
     end;
   end;
   Result := EndString - OldPos;
-  SetLength(s, Result);
+  SetLength(_s, Result);
   if Result <> 0 then begin
     _Stream.Position := OldPos;
-    _Stream.ReadBuffer(s[1], Length(s));
-    _s := string(s);
+    _Stream.ReadBuffer(_s[1], Length(_s));
   end;
   _Stream.Position := NewPos;
 end;
+
+{$IFDEF UNICODE}
+function TStream_ReadStringLn(_Stream: TStream; out _s: string): Integer;
+var
+  s: RawByteString;
+begin
+  Result := TStream_ReadStringLn(_Stream, s);
+  _s := string(s);
+end;
+{$ENDIF}
 
 function TStrings_TryStringByObj(_Strings: TStrings; _Obj: Pointer; out _Value: string): Boolean;
 var

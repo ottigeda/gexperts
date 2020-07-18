@@ -267,26 +267,23 @@ procedure TStringGrid_SetNonfixedCell(_Grid: TStringGrid; _Col, _Row: Integer; c
   _Data: Integer); overload;
 function TStringGrid_GetNonfixedCell(_Grid: TStringGrid; _Col, _Row: Integer): string;
 
-///<summary>
-/// scrolls up the lines of a string grid
-/// @param Grid is the TStringGrid to scroll
-/// @param Top is the topmost row to scroll, if passed as -1 defaults to the first non-fixed row
-/// @param Bottom is the bottommost row to scroll, if passed as -1 defaults to RowCount-1 </summary>
+///<summary> scrolls up the lines of a string grid
+///          @param Grid is the TStringGrid to scroll
+///          @param Top is the topmost row to scroll, if passed as -1 defaults to the first non-fixed row
+///          @param Bottom is the bottommost row to scroll, if passed as -1 defaults to RowCount-1 </summary>
 procedure TStringGrid_ScrollUp(_Grid: TStringGrid; _Top: Integer = -1; _Bottom: Integer = -1);
 
-///<summary>
-/// Deletes the given row from the string grid and moves all rows below it up by one,
-/// if there is only one non-fixed row left, this row is cleared but not deleted.
-/// @param Grid is the StringGrid to change
-/// @param Row is the index of the row to delete, or -1 to delete the current row
-/// @returns true, if the row was deleted </summary>
+///<summary> deletes the given row from the string grid and moves all rows below it up by one,
+///   if there is only one non-fixed row left, this row is cleared but not deleted.
+///   @param Grid is the StringGrid to change
+///   @param Row is the index of the row to delete, or -1 to delete the current row
+///   @returns true, if the row was deleted </summary>
 function TStringGrid_DeleteRow(_Grid: TStringGrid; _Row: Integer = -1): Boolean;
 
-///<summary>
-/// Inserts a row at the given index into the string grid and moves all rows below it down by one.
-/// @param Grid is the StringGrid to change
-/// @param Row is the index of the row to insert, or -1 to insert at the current row
-/// @returns the inserted row index or -1 if the row cannot be inserted </summary>
+///<summary> inserts a row at the given index into the string grid and moves all rows below it down by one.
+///          @param Grid is the StringGrid to change
+///          @param Row is the index of the row to insert, or -1 to insert at the current row
+///          @returns the inserted row index or -1 if the row cannot be inserted </summary>
 function TStringGrid_InsertRow(_Grid: TStringGrid; _Row: Integer = -1): Integer;
 
 ///<summary>
@@ -2539,7 +2536,7 @@ begin
   for i := Low(_Arr) to High(_Arr) do begin
     Result := _Arr[i] = _Element;
     if Result then
-      Exit;
+      Exit; //==>
   end;
 end;
 
@@ -2550,7 +2547,7 @@ var
 begin
   if TCustomGrid(_Grid) is TCustomDbGrid then
     if (dgIndicator in TDbGridHack(_Grid).Options) and (_Col = 0) then
-      Exit;
+      Exit; //==>
   ColText := _Grid.GetEditText(_Col, _Row);
   ColWidth := _Grid.Canvas.TextWidth(ColText);
   if ColWidth > _MinWidth then

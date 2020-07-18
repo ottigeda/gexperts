@@ -27,23 +27,20 @@ const
   DZLIB_TRANSLATION_DOMAIN = 'dzlib';
 
 function _(const _s: string): string;
+/// we can't inline this function because we don't want to add gnugettext to units using it
 
 function GetText(const _s: string): string;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+/// we can't inline this function because we don't want to add gnugettext to units using it
 
 function dzGetText(const _s: string): string;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+/// we can't inline this function because we don't want to add gnugettext to units using it
 
 function DGetText(const _s: string; const _TextDomain: string = ''): string;
+/// we can't inline this function because we don't want to add gnugettext to units using it
+
 ///<summary> use this if you pass variables rather than constants to avoid warnings in the dxgettext tool </summary>
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
 function dzDGetText(const _s: string; const _TextDomain: string = ''): string;
+/// we can't inline this function because we don't want to add gnugettext to units using it
 
 ///<summary> translate using the DZLIB_TRANSLATION_DOMAIN </summary>
 function dzlibGetText(const _s: string): string;

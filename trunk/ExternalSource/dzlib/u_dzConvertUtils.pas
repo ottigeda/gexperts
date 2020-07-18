@@ -23,6 +23,10 @@ var
   DZ_FORMAT_DECIMAL_POINT: TFormatSettings;
 {$IFEND}
 
+{$IF Declared(FormatSettings)}
+function DecimalSeparator: Char; inline;
+{$IFEND}
+
 type
   ///<summary>
   /// Raised by the number conversion functions if a digit is invalid for the given base. </summary>
@@ -771,7 +775,6 @@ begin
 end;
 
 {$IF Declared(FormatSettings)}
-
 function DecimalSeparator: Char; inline;
 begin
   Result := FormatSettings.DecimalSeparator;

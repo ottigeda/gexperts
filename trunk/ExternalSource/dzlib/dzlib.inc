@@ -8,10 +8,6 @@
 {$DEFINE HAS_UNIT_SYSTEM_JSON}
 {$ENDIF}
 
-{$IFNDEF DELPHIXE7_UP}
-{$DEFINE STARTSTEXT_IMPLEMENTATION_REQUIRED}
-{$ENDIF}
-
 {$IFDEF DELPHIXE7_UP}
 // For now I assume the BDE is not installed for Delphi XE7 and later, but that
 // largely depends on what the user selected for installation.
@@ -48,7 +44,7 @@
 {$ENDIF}
 
 {$IFDEF DELPHI7_UP}
-{$IFNDEF DELPHI_2009_UP}
+{$IFNDEF DELPHI2009_UP}
 // Between Delphi 7 and 2007 Native(U)Int is wrongly declared as a 64 bit integer even though
 // the compiler only supports 32 bits.
 {$DEFINE NATIVE_INT_IS_WRONG}

@@ -7,7 +7,7 @@ interface
 uses
   SysUtils,
   Classes,
-  Types; // for $IF Declared(TBytes)
+  Types; // for $IF Declared(TBytes) and TStringDynArray
 
 type
   EdzException = class(Exception)
@@ -16,17 +16,23 @@ type
 type
   TErrorHandlingEnum = (ehReturnFalse, ehRaiseException);
 
+{$IF not Declared(RawByteString)}
 type
-  TStringArray = array of string;
+  RawByteString = AnsiString;
+{$IFEND}
+
+type
+{$IF not declared(TStringDynArray)}
+  TStringDynArray = array of string;
+{$IFEND}
+  TStringArray = TStringDynArray;
+  TRawByteStringArray = array of RawByteString;
   TIntegerArray = array of Integer;
   TSingleArray = array of Single;
   TDoubleArray = array of Double;
   TExtendedArray = array of Extended;
 {$IF not Declared(TBytes)}
   TBytes = array of Byte;
-{$IFEND}
-{$IF not Declared(RawByteString)}
-  RawByteString = AnsiString;
 {$IFEND}
 
 type
@@ -39,18 +45,6 @@ type
 type
   TMethodPointer = procedure of object;
 
-function TStringArray_FromStrings(_sl: TStrings): TStringArray;
-
 implementation
 
-function TStringArray_FromStrings(_sl: TStrings): TStringArray;
-var
-  i: Integer;
-begin
-  SetLength(Result, _sl.count);
-  for i := 0 to _sl.count - 1 do
-    Result[i] := _sl[i];
-end;
-
 end.
-

@@ -68,12 +68,14 @@ procedure StringToByteArray(const _s: string; var _buf: array of Byte; _ArraySiz
 ///<summary>
 /// @returns true, if the given string is one of the strings in the given array
 /// Comparison is case sensitive </summary>
-function IsStringIn(const _s: string; const _Arr: array of string): Boolean;
+function IsStringIn(const _s: string; const _Arr: array of string; out _Idx: Integer): Boolean; overload;
+function IsStringIn(const _s: string; const _Arr: array of string): Boolean; overload;
 
 ///<summary>
 /// @returns true, if the given string is one of the strings in the given array
 /// Comparison is case insensitive </summary>
-function IsTextIn(const _s: string; const _Arr: array of string): Boolean;
+function IsTextIn(const _s: string; const _Arr: array of string; out _Idx: Integer): Boolean; overload;
+function IsTextIn(const _s: string; const _Arr: array of string): Boolean; overload;
 
 ///<summary>
 /// Function is deprecated, use ExtractStr instead </summary>
@@ -433,6 +435,15 @@ function SplitString(_sl: TStrings; _s: string; const _Delimiters: array of Char
 function SplitString(_s: string; const _Delimiters: string): TStringArray; overload;
 function SplitString(_s: string; const _Delimiters: array of Char): TStringArray; overload;
 
+function TStringArray_FromStrings(_sl: TStrings): TStringArray;
+
+///<summary>
+/// Deletes Count entries from Arr starting from Index.
+/// @Note: It is allowed for Index > Length(Arr) and also Index+Count > Length(Arr)
+/// @raises ERangeCheck if Index or Count < 0 </summary>
+procedure Delete(var _Arr: TStringArray; _Index: Integer; _Count: Integer); overload;
+function Concat(const _Arr1, _Arr2: array of string): TStringArray; overload;
+
 {$IFDEF SUPPORTS_UNICODE}
 function Copy(const _s: AnsiString; _Pos, _Len: Integer): AnsiString; overload;
 function Copy(const _s: AnsiString; _Pos: Integer): AnsiString; overload;
@@ -486,6 +497,7 @@ function MakeUniqueString(const _s: WideString): WideString; overload;
 implementation
 
 uses
+  SysConst,
   u_dzConvertUtils;
 
 function _(const _s: string): string;
@@ -706,6 +718,58 @@ begin
   SetLength(Result, Idx);
 end;
 
+function TStringArray_FromStrings(_sl: TStrings): TStringArray;
+var
+  i: Integer;
+begin
+  SetLength(Result, _sl.count);
+  for i := 0 to _sl.count - 1 do
+    Result[i] := _sl[i];
+end;
+
+procedure Delete(var _Arr: TStringArray; _Index: Integer; _Count: Integer); overload;
+var
+  Len: Integer;
+  i: Integer;
+begin
+  if _Index < 0 then
+    raise ERangeError.CreateRes(@SRangeError);
+  if _Count < 0 then
+    raise ERangeError.CreateRes(@SRangeError);
+
+  Len := Length(_Arr);
+  if _Index > Len - 1 then begin
+    // after the end of the array -> nothing to do
+    Exit; //==>
+  end;
+
+  if _Index >= Len - _Count then begin
+    // delete from the end
+    SetLength(_Arr, _Index);
+    Exit; //==>
+  end;
+
+  for i := _Index to Len - _Count - 1 do begin
+    _Arr[i] := _Arr[i + _Count];
+  end;
+  SetLength(_Arr, Len - _Count);
+end;
+
+function Concat(const _Arr1, _Arr2: array of string): TStringArray;
+var
+  Len1: Integer;
+  Len2: Integer;
+  i: Integer;
+begin
+  Len1 := Length(_Arr1);
+  Len2 := Length(_Arr2);
+  SetLength(Result, Len1 + Len2);
+  for i := 0 to Len1 - 1 do
+    Result[i] := _Arr1[i];
+  for i := 0 to Len2 - 1 do
+    Result[i + Len1] := _Arr2[i];
+end;
+
 function ReplaceChars(const _s, _Search, _Replace: string): string;
 var
   i, j: LongInt;
@@ -761,7 +825,7 @@ begin
         Result[i] := _ReplaceChar;
         Dup := True;
       end else
-        Delete(Result, i, 1);
+        System.Delete(Result, i, 1);
     end else
       Dup := False;
 end;
@@ -849,12 +913,12 @@ end;
 {$IFDEF STARTSTEXT_IMPLEMENTATION_REQUIRED}
 function StartsText(const _Start, _s: string): Boolean;
 begin
-  Result := UStartsWith(_Start, _s);
+  Result := AnsiStartsText(_Start, _s);
 end;
 {$ENDIF}
 
 {$IFDEF STARTSSTR_IMPLEMENTATION_REQUIRED}
-function StartsStr(const _Start, _s: string): boolean;
+function StartsStr(const _Start, _s: string): Boolean;
 begin
   Result := AnsiStartsStr(_Start, _s);
 end;
@@ -1518,7 +1582,7 @@ begin
   Result := string(s);
 end;
 
-function IsStringIn(const _s: string; const _Arr: array of string): Boolean;
+function IsStringIn(const _s: string; const _Arr: array of string; out _Idx: Integer): Boolean;
 var
   i: Integer;
 begin
@@ -1526,20 +1590,36 @@ begin
   for i := 0 to Length(_Arr) - 1 do
     if _s = _Arr[i] then begin
       Result := True;
+      _Idx := i;
       Exit; //==>
     end;
 end;
 
-function IsTextIn(const _s: string; const _Arr: array of string): Boolean;
+function IsStringIn(const _s: string; const _Arr: array of string): Boolean;
+var
+  Idx: Integer;
+begin
+  Result := IsStringIn(_s, _Arr, Idx);
+end;
+
+function IsTextIn(const _s: string; const _Arr: array of string; out _Idx: Integer): Boolean; overload;
 var
   i: Integer;
 begin
   Result := False;
   for i := 0 to Length(_Arr) - 1 do
     if SameText(_s, _Arr[i]) then begin
+      _Idx := i;
       Result := True;
       Exit; //==>
     end;
+end;
+
+function IsTextIn(const _s: string; const _Arr: array of string): Boolean;
+var
+  Idx: Integer;
+begin
+  Result := IsTextIn(_s, _Arr, Idx);
 end;
 
 function StrToLowAscii(const _s: WideString): AnsiString;
