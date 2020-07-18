@@ -933,7 +933,11 @@ end;
   coreide270.bpl       27.0.37889.9797
   bds.exe              27.0.37889.9797
   dcldb270.bpl         27.0.37889.9797
+
+  Patch1 and Patch2 apparently did not change any of these versions and even those files
+  the patches relplaced still have the same version as the original files. WTF?
 }
+
 function GetRS104Version: TBorlandIdeVersion;
 const
   CoreIde2700: TVersionNumber = (Minor: 27; Major: 0; Build: 37829; Release: 9797);
