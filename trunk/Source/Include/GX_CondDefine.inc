@@ -207,6 +207,13 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$ENDIF GX_VER340_up}
 {$ENDIF GX_VER330_up}
 
+{$IFDEF GX_DELPHI_SYDNEY_UP}
+  // up to patch 2 owner drawn StringGrids were broken (e.g. in the Uses Clause Manager)
+  // In the code we check for patch 2 and only apply this
+  // fix if it has not been installed.
+  {$DEFINE STRING_GRID_OWNERDRAW_FIX_ENABLED}
+{$ENDIF GX_DELPHI_SYDNEY_UP}
+
 // Define GX_ENHANCED_EDITOR if SynEdit is available
 {$IFDEF SYNEDIT}
   {$DEFINE UniSynEdit}
