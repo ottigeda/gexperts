@@ -150,16 +150,15 @@ asm
   mov eax, [eax + $40]
 end;
 
+var
+  TrampolineDoShowException: TDoShowException;
+
 function DoShowExceptionHooked(Obj: TObject): Boolean;
 const
-{$IFNDEF GX_DELPHI2007_UP}
+{$IFDEF GX_DELPHIXE2_UP}
   ParamOffset = $A1;
 {$ELSE}
-{$IFNDEF GX_DELPHI2009_UP}
   ParamOffset = $99;
-{$ELSE}
-  ParamOffset = $A1;
-{$ENDIF}
 {$ENDIF}
 var
   Msg: string;
@@ -206,9 +205,6 @@ begin
     PostDebugMessage(Obj, 1, P);
   end;
 end;
-
-var
-  TrampolineDoShowException: TDoShowException;
 
 const
   // Delphi 6 and 7 don't have these packages, the debugger is probably part of the Delphi32.exe,
