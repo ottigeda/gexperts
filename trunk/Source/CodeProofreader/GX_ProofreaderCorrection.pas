@@ -547,7 +547,7 @@ begin
       end;
     end;
 
-    Delete(s, CaretPosition, Length(CaretLocator));
+    System.Delete(s, CaretPosition, Length(CaretLocator));
   end;
 end;
 
@@ -777,7 +777,7 @@ begin
       // Unfortunately, we have no means to do it any better, so it will
       // have to remain slightly wrong for the time being.
       TrailingChars := Copy(SourceString, n, n);
-      Delete(SourceString, n, n);
+      System.Delete(SourceString, n, n);
       if (Length(SourceString) = 0) or
          not (IsCharIdentifier(SourceString[Length(SourceString)])) then
       begin
@@ -801,7 +801,7 @@ begin
       while (n > 0) and IsCharIdentifier(SourceString[n]) do
         Dec(n);
 
-      Delete(SourceString, 1, n);
+      System.Delete(SourceString, 1, n);
 
       // At this stage, s contains the word that we are
       // looking at for proofreading. c contains all the

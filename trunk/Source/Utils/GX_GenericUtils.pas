@@ -1589,7 +1589,7 @@ begin
   while (Length(Value) > Result) and CharInSet(Value[Result+1], TrimChars) do
     Inc(Result);
 
-  Delete(Value, 1, Result);
+  System.Delete(Value, 1, Result);
 end;
 
 function LeftTrimNChars(const AValue: string; const TrimChars: TSysCharSet; AMaxCount: Integer): string;
@@ -1603,7 +1603,7 @@ begin
 
   Result := AValue;
   if CharCnt > 0 then
-    Delete(Result, 1, CharCnt);  
+    System.Delete(Result, 1, CharCnt);
 end;
 
 function StrBeginsWith(const SubStr, Str: string; CaseSensitive: Boolean): Boolean;
@@ -1628,7 +1628,7 @@ begin
   if NumChars < Length(Value) then
   begin
     Result := Value;
-    Delete(Result, Length(Result) - NumChars + 1, NumChars);
+    System.Delete(Result, Length(Result) - NumChars + 1, NumChars);
   end;
 end;
 
@@ -2114,7 +2114,7 @@ begin
   Result := AString;
   if Length(Result) > StringLength then
   begin
-    Delete(Result, StringLength + 1, Length(Result));
+    System.Delete(Result, StringLength + 1, Length(Result));
     Exit;
   end;
 

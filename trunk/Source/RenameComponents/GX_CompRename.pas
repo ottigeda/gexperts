@@ -805,15 +805,15 @@ begin
   Pipe2Pos := -1;
   Pipe1Pos := Pos(WideString('|'), RenameRule);
   if Pipe1Pos > 0 then begin
-    Delete(RenameRule, Pipe1Pos, 1);
+    System.Delete(RenameRule, Pipe1Pos, 1);
     Pipe2Pos := LastCharPos(RenameRule, '|');
     if (Pipe2Pos >= Pipe1Pos) then
-      Delete(RenameRule, Pipe2Pos, 1);
+      System.Delete(RenameRule, Pipe2Pos, 1);
   end;
 
   PlaceHolderPos := Pos(WideString('%d'), RenameRule);
   if PlaceHolderPos > 0 then
-    Delete(RenameRule, PlaceHolderPos, 2);
+    System.Delete(RenameRule, PlaceHolderPos, 2);
 
   CompName := GxOtaGetComponentName(Component);
   if CompName = '' then

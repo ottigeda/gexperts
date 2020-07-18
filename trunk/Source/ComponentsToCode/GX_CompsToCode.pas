@@ -653,7 +653,7 @@ var
       if p <> 0 then
       begin
         propName2 := propName;
-        Delete(propName2, 1, p);
+        System.Delete(propName2, 1, p);
         propName := Copy(propName, 1, p - 1);
       end
       else
@@ -817,7 +817,7 @@ var
         // next line has a ' +' in it at the end, which should be ignored.  One
         // example is TUpdateSQL with IDE generated SQL from DBDEMOS.biolife.db
         if (Length(ccLn) > 2) and (Copy(ccLn, Length(ccLn) - 1, 2) = ' +') then
-          Delete(ccLn, Length(ccLn) - 1, 2);
+          System.Delete(ccLn, Length(ccLn) - 1, 2);
         if (Length(ccLn) > 0) then
         begin
           if First then

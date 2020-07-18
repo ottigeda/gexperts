@@ -478,7 +478,7 @@ var
     IncludedFile := Entry;
     if SeparatorPos > 0 then
     begin
-      Delete(IncludedFile, SeparatorPos, Length(Entry));
+      System.Delete(IncludedFile, SeparatorPos, Length(Entry));
       RefererFile := Copy(Entry, SeparatorPos + 1);
     end
     else

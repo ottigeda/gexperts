@@ -417,7 +417,7 @@ begin
 
       // Remove comment characters
       ParsingString := CommentStr;
-      Delete(ParsingString, 1, Length(SComment));
+      System.Delete(ParsingString, 1, Length(SComment));
       // Remove white-space left and right
       ParsingString := Trim(ParsingString);
 
@@ -436,7 +436,7 @@ begin
       Info.Priority := TTokenInfo(ToDoExpert.FTokenList.Objects[i]).Priority;
 
       // Remove token from string
-      Delete(ParsingString, 1, Length(ToDoExpert.FTokenList[i]));
+      System.Delete(ParsingString, 1, Length(ToDoExpert.FTokenList[i]));
       ParsingString := Trim(ParsingString);
 
       // Identify numeric priority (if there is one)
@@ -453,7 +453,7 @@ begin
           // todo: shouldn't this check for tpNormal only?
           Info.Priority := NumericPriorityToGXPriority(Copy(ParsingString, 1, j));
         end;
-        Delete(ParsingString, 1, j);
+        System.Delete(ParsingString, 1, j);
         ParsingString := TrimLeft(ParsingString);
       end;
 
@@ -462,7 +462,7 @@ begin
       // Delete everything being with a possible trailing colon:
       j := Pos(':', ParsingString);
       if j > 0 then
-        Delete(ParsingString, j, Length(ParsingString))
+        System.Delete(ParsingString, j, Length(ParsingString))
       else
         ParsingString := '';
 
@@ -503,7 +503,7 @@ begin
         if Length(ParsingString) > 1 then
         begin
           OptionChar := UpCase(ParsingString[2]);
-          Delete(ParsingString, 1, 2);
+          System.Delete(ParsingString, 1, 2);
         end
         else
           Break;
@@ -522,7 +522,7 @@ begin
 
         // Delete everything up to, but not including, the
         // next option switch
-        Delete(ParsingString, 1, j);
+        System.Delete(ParsingString, 1, j);
       end;
 
       Info.Raw := CommentStr;
@@ -542,9 +542,9 @@ begin
       Info.Display := Copy(ParsingString, n, (m - n) + 1);
       // Delete -C and -O options from ToDo text
       if Pos(' -C', UpperCase(Info.Display)) > 0 then
-        Delete(Info.Display, Pos(' -C', UpperCase(Info.Display)), Length(Info.ToDoClass) + 3);
+        System.Delete(Info.Display, Pos(' -C', UpperCase(Info.Display)), Length(Info.ToDoClass) + 3);
       if Pos(' -O', UpperCase(Info.Display)) > 0 then
-        Delete(Info.Display, Pos(' -O', UpperCase(Info.Display)), Length(Info.Owner) + 3);
+        System.Delete(Info.Display, Pos(' -O', UpperCase(Info.Display)), Length(Info.Owner) + 3);
       // Remove excess whitespace
       Info.Display := Trim(CompressWhiteSpace(Info.Display));
       // Identify numeric priority (if there is one)
@@ -555,11 +555,11 @@ begin
           Break;
         Inc(j);
       end;
-      Delete(Info.Display, 1, j);
+      System.Delete(Info.Display, 1, j);
       Info.Display := TrimLeft(Info.Display);
       if StartsStr(':', Info.Display) then
       begin
-        Delete(Info.Display, 1, 1);
+        System.Delete(Info.Display, 1, 1);
         Info.Display := Trim(Info.Display);
       end;
       
