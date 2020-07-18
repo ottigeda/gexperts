@@ -2,6 +2,10 @@ unit GX_FilterExceptionsNotification;
 
 {$I GX_CondDefine.inc}
 
+{$IFNDEF GX_DELPHI2005_UP}
+'This only works for Delphi 2005 and newer'
+{$ENDIF}
+
 interface
 
 uses
@@ -23,10 +27,8 @@ type
   TOnCheckExceptionEx = procedure(_Sender: TObject; const _Project, _Exception, _Message: string;
     var _Action: TExceptionFilterAction) of object;
 
-var
-  Hooked: Boolean = False;
-  OnCheckException: TOnCheckExceptionEx = nil;
-  OnIgnoreButtonClick: TOnCheckExceptionEx = nil;
+procedure InstallHook(_OnCheckException, _OnFilterButtonClick: TOnCheckExceptionEx);
+procedure UninstallHook();
 
 type
   TfmExceptionNotification = class(TfmBaseForm)
@@ -38,10 +40,6 @@ type
     act_Ignore: TAction;
     act_CopyToClipboard: TAction;
   private
-{$IFDEF GX_DELPHI2005_UP}
-// only Delphi 2005 and later have the dll entry point we hook here.
-// for older versions, we hack the original exception dialog to automatically close it
-// so we don't need this code.
     FProject: string;
     FException: string;
     FMessage: string;
@@ -54,18 +52,16 @@ type
     class function Execute(_Owner: TWinControl; _OnAddException: TOnCheckExceptionEx;
       const _Project, _Exception, _Message: string): Boolean;
     constructor Create(_Owner: TComponent); override;
-{$ENDIF}
   end;
 
 implementation
 
 {$R *.dfm}
 
-{$IFDEF GX_DELPHI2005_UP}
-
 uses
   Clipbrd,
   u_dzVclUtils,
+  DDetours,
 {$IFOPT D+}GX_DbugIntf,
 {$ENDIF}
   GX_VerDepConst,
@@ -133,6 +129,11 @@ begin
   end;
 end;
 
+var
+  Hooked: Boolean = False;
+  OnCheckException: TOnCheckExceptionEx = nil;
+  OnIgnoreButtonClick: TOnCheckExceptionEx = nil;
+
 type
   TDoShowException = function(Obj: TObject): Boolean;
   TGetExceptionMessage = procedure(Obj: TObject; var Msg: string);
@@ -150,6 +151,16 @@ asm
 end;
 
 function DoShowExceptionHooked(Obj: TObject): Boolean;
+const
+{$IFNDEF GX_DELPHI2007_UP}
+  ParamOffset = $A1;
+{$ELSE}
+{$IFNDEF GX_DELPHI2009_UP}
+  ParamOffset = $99;
+{$ELSE}
+  ParamOffset = $A1;
+{$ENDIF}
+{$ENDIF}
 var
   Msg: string;
   P: PByte;
@@ -191,40 +202,13 @@ begin
 
     // this will resume running
     P := GetParam(Obj);
-    PByte(GXNativeInt(P) + $A1)^ := 1; // resume = true.
+    PByte(GXNativeInt(P) + ParamOffset)^ := 1; // resume = true.
     PostDebugMessage(Obj, 1, P);
   end;
 end;
 
-procedure PatchCode(Address: Pointer; const NewCode; Size: Integer);
 var
-  OldProtect: DWORD;
-begin
-  if VirtualProtect(Address, Size, PAGE_EXECUTE_READWRITE, OldProtect) then begin
-    Move(NewCode, Address^, Size);
-    FlushInstructionCache(GetCurrentProcess, Address, Size);
-    VirtualProtect(Address, Size, OldProtect, @OldProtect);
-  end;
-end;
-
-type
-  PInstruction = ^TInstruction;
-  TInstruction = packed record
-    Opcode: Byte;
-    Offset: Integer;
-  end;
-
-///<summary>
-/// Hooking fuer Imports des Executables
-/// Quelle: https://stackoverflow.com/a/8978266/49925 </summary>
-procedure RedirectProcedure(OldAddress, NewAddress: Pointer);
-var
-  NewCode: TInstruction;
-begin
-  NewCode.Opcode := $E9; //jump relative
-  NewCode.Offset := GXNativeInt(NewAddress) - GXNativeInt(OldAddress) - SizeOf(NewCode);
-  PatchCode(OldAddress, NewCode, SizeOf(NewCode));
-end;
+  TrampolineDoShowException: TDoShowException;
 
 const
   // Delphi 6 and 7 don't have these packages, the debugger is probably part of the Delphi32.exe,
@@ -251,7 +235,7 @@ const
   GetFilenameName = '@Debug@TDebugger@GetFilename$qqrv';
   PostDebugMessageName = '@Debug@TDebugger@PostDebugMessage$qqr15Debug@TDebugMsgpv';
 
-procedure InstallHook();
+procedure InstallHook(_OnCheckException, _OnFilterButtonClick: TOnCheckExceptionEx);
 var
   Win32DebugHandle: HMODULE;
   DbkDebugIdeHandle: HMODULE;
@@ -259,6 +243,9 @@ var
 begin
   if Hooked then
     Exit;
+
+  OnCheckException := _OnCheckException;
+  OnIgnoreButtonClick := _OnFilterButtonClick;
 
   Win32DebugHandle := GetModuleHandle(Win32DebugIdePackage);
   DbkDebugIdeHandle := GetModuleHandle(DbkDebugIdePackage);
@@ -270,12 +257,22 @@ begin
 
   if Assigned(DoShowExceptionPtr) and Assigned(GetExceptionMessage)
     and Assigned(PostDebugMessage) and Assigned(GetExceptionName) then begin
-    RedirectProcedure(DoShowExceptionPtr, @DoShowExceptionHooked);
+
+    @TrampolineDoShowException := InterceptCreate(DoShowExceptionPtr, @DoShowExceptionHooked);
+
     Hooked := True;
   end;
 end;
 
-initialization
-  InstallHook;
-{$ENDIF}
+procedure UninstallHook();
+begin
+  if not Hooked then
+    Exit; //==>
+
+  InterceptRemove(@TrampolineDoShowException);
+  Hooked := False;
+  OnCheckException := nil;
+  OnIgnoreButtonClick := nil;
+end;
+
 end.

@@ -1,5 +1,11 @@
 unit GX_FilterExceptionsEdit;
 
+{$I GX_CondDefine.inc}
+
+{$IFNDEF GX_DELPHI2005_UP}
+'This only works for Delphi 2005 and newer'
+{$ENDIF}
+
 interface
 
 uses

@@ -1,6 +1,10 @@
-unit GX_FilterExceptions;
+﻿unit GX_FilterExceptions;
 
 {$I GX_CondDefine.inc}
+
+{$IFNDEF GX_DELPHI2005_UP}
+'This only works for Delphi 2005 and newer'
+{$ENDIF}
 
 interface
 
@@ -59,8 +63,6 @@ uses
   GX_Experts,
   GX_GExperts,
   GX_ConfigurationInfo,
-  GX_IdeDialogEnhancer,
-  GX_TimedCallback,
   GX_OtaUtils,
   GX_FilterExceptionsNotification;
 
@@ -93,49 +95,26 @@ type
     var _Action: TExceptionFilterAction) of object;
 
 type
-  TExceptionNotificationHandler = class(TIdeDialogEnhancer)
-  private
-    FButtonToPress: TButton;
-    FBreakBtn: TComponent;
-    FContinueBtn: TComponent;
-    FOnCheckException: TOnCheckException;
-    FOnAddException: TOnCheckException;
-    FLblText: string;
-    procedure HandleCallbackTimer(_Sender: TObject);
-    procedure HandleGxButtonClick(_Sender: TObject);
-  protected
-    constructor Create(_OnCheckException, _OnAddException: TOnCheckException);
-    function IsDesiredForm(_Form: TCustomForm): Boolean; override;
-    procedure EnhanceForm(_Form: TForm); override;
-  public
-  end;
-
-type
   TGxFilterExceptionsDebuggerNotifier = class(TBaseDebuggerNotifier)
   private
     FDestroyedCallback: TNotifyEvent;
   public
     constructor Create(_DestroyedCallback: TNotifyEvent);
-    procedure ProcessDestroyed({$IFDEF GX_VER170_up}const{$ENDIF}Process: IOTAProcess); override;
+    procedure ProcessDestroyed(const Process: IOTAProcess); override;
   end;
 
 type
   TGxFilterExceptionsExpert = class(TGX_Expert)
   private
     FNotifications: TObjectList;
-    FHandler: TExceptionNotificationHandler;
     FDebuggerNotifier: TGxFilterExceptionsDebuggerNotifier;
-    procedure HandleCheckExceptionEx(_Sender: TObject; const _Project, _ExceptionClass, _Message: string;
+    procedure HandleCheckException(_Sender: TObject; const _Project, _ExceptionClass, _Message: string;
       var _Action: TExceptionFilterAction);
-    procedure HandleAddExceptionEx(_Sender: TObject; const _Project, _ExceptionClass, _Message: string;
+    procedure HandleAddException(_Sender: TObject; const _Project, _ExceptionClass, _Message: string;
       var _Action: TExceptionFilterAction);
     procedure HandleProcessDestroyed(_Sender: TObject);
   protected
     procedure SetActive(_Active: Boolean); override;
-    procedure HandleCheckException(_Sender: TObject; const _Message: string;
-      var _Action: TExceptionFilterAction);
-    procedure HandleAddException(_Sender: TObject; const _Message: string;
-      var _Action: TExceptionFilterAction);
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -282,17 +261,9 @@ begin
     inherited SetActive(_Active);
 
   if _Active then begin
-{$IFDEF GX_DELPHI2005_UP}
-    if GX_FilterExceptionsNotification.Hooked then begin
-      GX_FilterExceptionsNotification.OnCheckException := HandleCheckExceptionEx;
-      GX_FilterExceptionsNotification.OnIgnoreButtonClick := HandleAddExceptionEx;
-    end else
-{$ENDIF}begin
-      if not Assigned(FHandler) then
-        FHandler := TExceptionNotificationHandler.Create(HandleCheckException, HandleAddException);
-    end;
+    GX_FilterExceptionsNotification.InstallHook(HandleCheckException, HandleAddException);
   end else begin
-    FreeAndNil(FHandler);
+    GX_FilterExceptionsNotification.UninstallHook;
   end;
 end;
 
@@ -363,7 +334,7 @@ begin
   end;
 end;
 
-procedure TGxFilterExceptionsExpert.HandleAddExceptionEx(_Sender: TObject;
+procedure TGxFilterExceptionsExpert.HandleAddException(_Sender: TObject;
   const _Project, _ExceptionClass, _Message: string; var _Action: TExceptionFilterAction);
 var
   Project: string;
@@ -377,21 +348,7 @@ begin
     FNotifications.Add(TExceptionFilter.Create(Project, ExceptionClass, MessageRE, _Action));
 end;
 
-procedure TGxFilterExceptionsExpert.HandleAddException(_Sender: TObject;
-  const _Message: string; var _Action: TExceptionFilterAction);
-var
-  Project: string;
-  ExceptionName: string;
-  ExceptionMsg: string;
-begin
-  _Action := efaDisabled;
-
-  if not TryGetMessageParts(_Message, Project, ExceptionName, ExceptionMsg) then
-    Exit; //==>
-  HandleAddExceptionEx(_Sender, Project, ExceptionName, ExceptionMsg, _Action);
-end;
-
-procedure TGxFilterExceptionsExpert.HandleCheckExceptionEx(_Sender: TObject;
+procedure TGxFilterExceptionsExpert.HandleCheckException(_Sender: TObject;
   const _Project, _ExceptionClass, _Message: string; var _Action: TExceptionFilterAction);
 var
   i: Integer;
@@ -416,20 +373,6 @@ begin
   finally
     FreeAndNil(re);
   end;
-end;
-
-procedure TGxFilterExceptionsExpert.HandleCheckException(_Sender: TObject;
-  const _Message: string; var _Action: TExceptionFilterAction);
-var
-  Project: string;
-  ExceptionName: string;
-  ExceptionMsg: string;
-begin
-  _Action := efaDisabled;
-  if not TryGetMessageParts(_Message, Project, ExceptionName, ExceptionMsg) then
-    Exit; //==>
-
-  HandleCheckExceptionEx(_Sender, Project, ExceptionName, ExceptionMsg, _Action);
 end;
 
 { TExceptionNotification }
@@ -636,96 +579,6 @@ begin
   EditCurrentEntry;
 end;
 
-{ TExceptionNotificationHandler }
-
-constructor TExceptionNotificationHandler.Create(_OnCheckException, _OnAddException: TOnCheckException);
-begin
-  inherited Create;
-  FOnCheckException := _OnCheckException;
-  FOnAddException := _OnAddException;
-end;
-
-procedure TExceptionNotificationHandler.EnhanceForm(_Form: TForm);
-var
-  lbl: TComponent;
-  Action: TExceptionFilterAction;
-  btn: TComponent;
-  GXButton: TButton;
-begin
-  FButtonToPress := nil;
-
-  if not Assigned(FOnCheckException) then
-    Exit; //==>
-
-  lbl := _Form.FindComponent('lbExceptionMessage');
-  if not Assigned(lbl) then
-    Exit; //==>
-
-  FLblText := GetStrProp(lbl, 'Caption');
-  FContinueBtn := _Form.FindComponent('ContinueButton');
-  FBreakBtn := _Form.FindComponent('BreakButton');
-  Action := efaDisabled;
-  FOnCheckException(Self, FLblText, Action);
-  case Action of
-    efaIgnore:
-      btn := FContinueBtn;
-    efaBreak:
-      btn := FBreakBtn;
-  else // enaDisabled:
-    btn := nil;
-  end;
-  if Assigned(btn) and (btn is TButton) then begin
-    FButtonToPress := TButton(btn);
-    TTimedCallback.Create(HandleCallbackTimer, 50, True);
-  end else begin
-    GXButton := TButton.Create(_Form);
-    GXButton.Caption := 'GExperts';
-    GXButton.Parent := _Form;
-    GXButton.Top := TButton(FContinueBtn).Top;
-    GXButton.Width := TButton(FContinueBtn).Width;
-    GXButton.Left := TButton(FBreakBtn).Left - (TButton(FContinueBtn).Left - TButton(FBreakBtn).Left);
-    GXButton.OnClick := HandleGxButtonClick;
-  end;
-end;
-
-procedure TExceptionNotificationHandler.HandleGxButtonClick(_Sender: TObject);
-var
-  Action: TExceptionFilterAction;
-  btn: TComponent;
-begin
-  if Assigned(FOnAddException) then begin
-    Action := efaDisabled;
-    FOnAddException(_Sender, FLblText, Action);
-    case Action of
-      efaIgnore:
-        btn := FContinueBtn;
-      efaBreak:
-        btn := FBreakBtn;
-    else // enaDisabled:
-      btn := nil;
-    end;
-    if Assigned(btn) and (btn is TButton) then begin
-      FButtonToPress := TButton(btn);
-      TTimedCallback.Create(HandleCallbackTimer, 50, True);
-    end;
-  end;
-end;
-
-procedure TExceptionNotificationHandler.HandleCallbackTimer(_Sender: TObject);
-begin
-  if Assigned(FButtonToPress) then
-    FButtonToPress.Click;
-end;
-
-function TExceptionNotificationHandler.IsDesiredForm(_Form: TCustomForm): Boolean;
-const
-  DIALOG_CLASS = 'TExceptionNotificationDlg';
-  DIALOG_NAME = 'ExceptionNotificationDlg';
-begin
-  FButtonToPress := nil;
-  Result := (_Form.ClassName = DIALOG_CLASS) and (_Form.Name = DIALOG_NAME);
-end;
-
 { TGxCloseExceptionDebuggerNotifier }
 
 constructor TGxFilterExceptionsDebuggerNotifier.Create(_DestroyedCallback: TNotifyEvent);
@@ -734,7 +587,7 @@ begin
   FDestroyedCallback := _DestroyedCallback;
 end;
 
-procedure TGxFilterExceptionsDebuggerNotifier.ProcessDestroyed({$IFDEF GX_VER170_up}const{$ENDIF}Process: IOTAProcess);
+procedure TGxFilterExceptionsDebuggerNotifier.ProcessDestroyed(const Process: IOTAProcess);
 begin
   inherited;
   if Assigned(FDestroyedCallback) then
