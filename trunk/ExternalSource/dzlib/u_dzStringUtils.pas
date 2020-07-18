@@ -732,11 +732,20 @@ var
   Len: Integer;
   i: Integer;
 begin
-  if _Index < 0 then
+  if _Index < 0 then begin
+{$T-}
     raise ERangeError.CreateRes(@SRangeError);
-  if _Count < 0 then
+{$IFDEF TYPEDADDRESS_IS_ON}
+{$T+}
+{$ENDIF}
+end;
+  if _Count < 0 then begin
+{$T-}
     raise ERangeError.CreateRes(@SRangeError);
-
+{$IFDEF TYPEDADDRESS_IS_ON}
+{$T+}
+{$ENDIF}
+end;
   Len := Length(_Arr);
   if _Index > Len - 1 then begin
     // after the end of the array -> nothing to do
