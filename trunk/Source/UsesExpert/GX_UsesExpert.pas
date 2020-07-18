@@ -376,12 +376,30 @@ uses
 {$ENDIF D+}
   GX_MessageBox;
 
+{$IFDEF STRING_GRID_OWNERDRAW_FIX_ENABLED}
+var
+  gblIsPatch2Installed: Boolean = false;
+
+procedure CheckForPatch2;
+const
+  RegKey = 'Software\Embarcadero\BDS\21.0\CatalogRepository\Elements\10.4Patch2pro-10';
+var
+  Value: Integer;
+begin
+  Value := TRegistry_ReadInteger(RegKey, 'Installed', 0, HKEY_CURRENT_USER);
+  gblIsPatch2Installed := (Value <> 0);
+end;
+{$ENDIF}
+
 { TUsesClauseMgrExpert }
 
 constructor TUsesClauseMgrExpert.Create;
 begin
   inherited;
   LoadSettings;
+{$IFDEF STRING_GRID_OWNERDRAW_FIX_ENABLED}
+  CheckForPatch2;
+{$ENDIF}
 end;
 
 destructor TUsesClauseMgrExpert.Destroy;
@@ -1239,10 +1257,18 @@ begin
     [_sg.Name, _sg.DefaultRowHeight, _Rect.Left, _Rect.Top, _Rect.Right - _Rect.Left, _Rect.Bottom - _Rect.Top]);
 {$ENDIF}
   cnv.FillRect(_Rect);
-{$IFDEF GX_DELPHI_SYDNEY_UP}
-  cnv.TextRect(_Rect, _Rect.Left, _Rect.Top, _Text);
+{$IFDEF STRING_GRID_OWNERDRAW_FIX_ENABLED}
+  if gblIsPatch2Installed then begin
+    // Embarcadero managed to bungle the StringGrid redraw fix in patch 2. Now we have to
+    // check whether the grid is focused and use a different x offset in that case.
+    if _Focused then
+      cnv.TextRect(_Rect, _Rect.Left + 6, _Rect.Top + 2, _Text)
+    else
+      cnv.TextRect(_Rect, _Rect.Left + 2, _Rect.Top + 2, _Text);
+  end else
+    cnv.TextRect(_Rect, _Rect.Left, _Rect.Top, _Text);
 {$ELSE}
-  cnv.TextRect(_Rect, _Rect.Left + 2, _Rect.Top + 2, _Text);
+    cnv.TextRect(_Rect, _Rect.Left + 2, _Rect.Top + 2, _Text);
 {$ENDIF}
 end;
 
