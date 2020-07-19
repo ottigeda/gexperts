@@ -169,7 +169,7 @@ var
   FileModified: Integer;
 begin
   FileModified := SysUtils.FileAge(_fn);
-  Result := (FileModified = -1);
+  Result := (FileModified <> -1);
   if Result then
     FileDateTime := FileDateToDateTime(FileModified)
 end;
