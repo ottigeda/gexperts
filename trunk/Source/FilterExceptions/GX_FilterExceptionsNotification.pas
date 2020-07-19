@@ -145,10 +145,17 @@ var
   GetExceptionName: TGetExceptionName = nil;
   PostDebugMessage: TPostDebugMessage = nil;
 
+{$IFDEF GX_DELPHI2007_UP}
 function GetParam(Obj: Pointer): Pointer;
 asm
   mov eax, [eax + $40]
 end;
+{$ELSE}
+function GetParam(Obj: Pointer): Pointer;
+asm
+  mov eax, [eax + $3C]
+end;
+{$ENDIF}
 
 var
   TrampolineDoShowException: TDoShowException;
