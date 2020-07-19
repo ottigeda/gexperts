@@ -48,7 +48,7 @@ type
 // The following functions only work in Delpi 2005 if they are not inlined
 // (or optimization is turned off) otherwise we get an
 // "external exception C000001D" (Illegal Instruction)
-function SpaceSetToInt(_SpaceSet: TSpaceSet): Integer; inline;
+function SpaceSetToInt(_SpaceSet: TSpaceSet): Integer;
 {$IFDEF SupportsInline}{$IFDEF GX_DELPHI2006_UP}inline;{$ENDIF}{$ENDIF}
 function IntToSpaceSet(_Value: Integer): TSpaceSet;
 {$IFDEF SupportsInline}{$IFDEF GX_DELPHI2006_UP}inline;{$ENDIF}{$ENDIF}
