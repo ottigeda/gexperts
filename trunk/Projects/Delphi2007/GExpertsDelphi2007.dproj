@@ -41,7 +41,7 @@
         <DCC_ObjPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include</DCC_ObjPath>
         <DCC_Optimize>False</DCC_Optimize>
         <DCC_RangeChecking>True</DCC_RangeChecking>
-..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\source\Include;..\..\externalsource\ddetours</DCC_ResourcePath>
+        <DCC_ResourcePath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include</DCC_ResourcePath>
         <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
         <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
         <DCC_UnitAlias>Actions=ActnList;ImageList=ImgList;UITypes=Types</DCC_UnitAlias>
