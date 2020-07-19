@@ -176,6 +176,7 @@ object fmAbout: TfmAbout
       'Gerald Nunn'
       'Alex Petrov'
       'Puthoon'
+      'Mahdi Safsafi'
       'Martin Waldenburg')
     ParentCtl3D = False
     ReadOnly = True
