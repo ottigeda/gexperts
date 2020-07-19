@@ -28,7 +28,7 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, GX_ConfigurationInfo;
+  SysUtils, Dialogs, GX_ConfigurationInfo;
 
 { TGxEditorExpertManager }
 
@@ -62,23 +62,34 @@ begin
   Result := FEditorExpertList.Count;
 end;
 
-
 function TGxEditorExpertManager.GetExpertList: TList;
 begin
   Result := FEditorExpertList;
 end;
 
 procedure TGxEditorExpertManager.LoadEditorExperts;
+resourcestring
+  SEditorExpertCreationFailed = 'Editor expert "%s" could not be created.' + sLineBreak +
+  'Reason: %s';
 var
   i: Integer;
   EditorExpert: TEditorExpert;
+  ExpertClass: TEditorExpertClass;
 begin
   ConfigInfo.EditorExpertsEnabled := True;
   for i := 0 to EditorExpertClassList.Count - 1 do
   begin
-    EditorExpert := GetExpertClassByIndex(i).Create;
-    EditorExpert.LoadSettings;
-    FEditorExpertList.Add(EditorExpert);
+    ExpertClass := GetExpertClassByIndex(i);
+    try
+      EditorExpert := ExpertClass.Create;
+      EditorExpert.LoadSettings;
+      FEditorExpertList.Add(EditorExpert);
+    except
+      on E: Exception do begin
+        MessageDlg(Format(SEditorExpertCreationFailed, [ExpertClass.ClassName, E.Message]), mtError, [mbOK], 0);
+        // Eat the exception and load other experts (is this safe?)
+      end;
+    end;
   end;
 end;
 
