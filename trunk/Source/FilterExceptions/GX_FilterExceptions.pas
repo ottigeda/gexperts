@@ -359,7 +359,8 @@ begin
   try
     for i := 0 to FNotifications.Count - 1 do begin
       Notification := FNotifications[i] as TExceptionFilter;
-      if SameText(_ExceptionClass, Notification.ExceptionClass) then begin
+      re.Expression := Notification.ExceptionClass;
+      if (Notification.ExceptionClass = '') or re.Exec(_ExceptionClass) then begin
         re.Expression := Notification.Project;
         if (Notification.Project = '') or re.Exec(_Project) then begin
           re.Expression := Notification.MessageRE;
