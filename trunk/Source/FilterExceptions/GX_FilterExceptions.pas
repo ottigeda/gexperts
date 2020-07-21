@@ -341,11 +341,15 @@ var
   ExceptionClass: string;
   MessageRE: string;
 begin
-  Project := _Project;
-  ExceptionClass := _ExceptionClass;
-  MessageRE := '';
-  if TfmGxFilterExceptionsEdit.Execute(nil, _Message, Project, ExceptionClass, MessageRE, _Action) then
-    FNotifications.Add(TExceptionFilter.Create(Project, ExceptionClass, MessageRE, _Action));
+  if (_Project = '') and (_ExceptionClass = '') and (_Message = '') then begin
+    FNotifications.Add(TExceptionFilter.Create('', '', '', _Action));
+  end else begin
+    Project := _Project;
+    ExceptionClass := _ExceptionClass;
+    MessageRE := '';
+    if TfmGxFilterExceptionsEdit.Execute(nil, _Message, Project, ExceptionClass, MessageRE, _Action) then
+      FNotifications.Add(TExceptionFilter.Create(Project, ExceptionClass, MessageRE, _Action));
+  end;
 end;
 
 procedure TGxFilterExceptionsExpert.HandleCheckException(_Sender: TObject;
@@ -364,7 +368,7 @@ begin
         re.Expression := Notification.Project;
         if (Notification.Project = '') or re.Exec(_Project) then begin
           re.Expression := Notification.MessageRE;
-          if re.Exec(_Message) then begin
+          if (Notification.MessageRE = '') or re.Exec(_Message) then begin
             _Action := Notification.Action;
             Exit; //==>
           end;

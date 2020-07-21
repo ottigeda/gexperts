@@ -37,15 +37,18 @@ type
     b_Continue: TButton;
     b_Ignore: TButton;
     TheActionList: TActionList;
-    act_Ignore: TAction;
+    act_Filter: TAction;
     act_CopyToClipboard: TAction;
+    b_AllThisSession: TButton;
+    act_IgnoreAll: TAction;
+    procedure act_IgnoreAllExecute(Sender: TObject);
+    procedure act_FilterExecute(Sender: TObject);
+    procedure act_CopyToClipboardExecute(Sender: TObject);
   private
     FProject: string;
     FException: string;
     FMessage: string;
     FOnAddException: TOnCheckExceptionEx;
-    procedure act_IgnoreExecute(Sender: TObject);
-    procedure act_CopyToClipboardExecute(Sender: TObject);
     procedure SetData(_OnAddException: TOnCheckExceptionEx;
       const _Project, _Exception, _Message: string);
   public
@@ -88,8 +91,7 @@ end;
 constructor TfmExceptionNotification.Create(_Owner: TComponent);
 begin
   inherited Create(_Owner);
-  act_Ignore.OnExecute := act_IgnoreExecute;
-  act_CopyToClipboard.OnExecute := act_CopyToClipboardExecute;
+  TControl_SetMinConstraints(Self);
 end;
 
 procedure TfmExceptionNotification.SetData(_OnAddException: TOnCheckExceptionEx;
@@ -111,11 +113,12 @@ begin
     + '---------------------------'#13#10
     + l_Message.Caption + #13#10
     + '---------------------------'#13#10
-    + '[' + b_Ignore.Caption + ']  [' + b_Break.Caption + ']  [' + b_Continue.Caption + ']'#13#10
+    + '[' + b_Ignore.Caption + '] [' + b_AllThisSession.Caption + '] [' + b_Break.Caption
+    + '] [' + b_Continue.Caption + ']'#13#10
     + '---------------------------';
 end;
 
-procedure TfmExceptionNotification.act_IgnoreExecute(Sender: TObject);
+procedure TfmExceptionNotification.act_FilterExecute(Sender: TObject);
 var
   Action: TExceptionFilterAction;
 begin
@@ -126,6 +129,17 @@ begin
       efaIgnore: ModalResult := mrIgnore;
       efaBreak: ModalResult := mrok;
     end;
+  end;
+end;
+
+procedure TfmExceptionNotification.act_IgnoreAllExecute(Sender: TObject);
+var
+  Action: TExceptionFilterAction;
+begin
+  if Assigned(FOnAddException) then begin
+    Action := efaIgnore;
+    FOnAddException(Self, '', '', '', Action);
+    ModalResult := mrIgnore;
   end;
 end;
 
@@ -146,11 +160,13 @@ var
   PostDebugMessage: TPostDebugMessage = nil;
 
 {$IFDEF GX_DELPHI2007_UP}
+
 function GetParam(Obj: Pointer): Pointer;
 asm
   mov eax, [eax + $40]
 end;
 {$ELSE}
+
 function GetParam(Obj: Pointer): Pointer;
 asm
   mov eax, [eax + $3C]

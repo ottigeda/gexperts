@@ -29,26 +29,31 @@ type
 
 type
   TfmGxFilterExceptionsEdit = class(TfmBaseForm)
-    l_Project: TLabel;
-    ed_Project: TEdit;
-    b_ProjectAny: TButton;
-    b_ProjectSession: TButton;
-    b_ProjectName: TButton;
-    l_Exception: TLabel;
-    cmb_Exception: TComboBox;
-    l_Message: TLabel;
-    ed_Message: TEdit;
-    l_Matches: TLabel;
-    re_Test: TRichEdit;
     b_OK: TButton;
     b_Cancel: TButton;
     rg_Action: TRadioGroup;
     tim_InputDelay: TTimer;
+    grp_Project: TGroupBox;
+    ed_Project: TEdit;
+    b_ProjectName: TButton;
+    b_ProjectSession: TButton;
+    b_ProjectAny: TButton;
+    grp_ExceptionClass: TGroupBox;
+    cmb_Exception: TComboBox;
+    b_ExceptionCurrent: TButton;
+    grp_Message: TGroupBox;
+    l_Matches: TLabel;
+    ed_Message: TEdit;
+    re_Test: TRichEdit;
+    b_AllInCurrentSession: TButton;
     procedure tim_InputDelayTimer(Sender: TObject);
     procedure ed_MessageChange(Sender: TObject);
     procedure b_ProjectAnyClick(Sender: TObject);
     procedure b_ProjectSessionClick(Sender: TObject);
     procedure b_ProjectNameClick(Sender: TObject);
+    procedure b_AllInCurrentSessionClick(Sender: TObject);
+    procedure re_TestChange(Sender: TObject);
+    procedure b_ExceptionCurrentClick(Sender: TObject);
   private
     FProject: string;
     FMessage: string;
@@ -114,6 +119,19 @@ begin
   ed_Project.Text := '';
 end;
 
+procedure TfmGxFilterExceptionsEdit.b_AllInCurrentSessionClick(Sender: TObject);
+begin
+  ed_Project.Text := '';
+  ed_Message.Text := '';
+  cmb_Exception.Text := '';
+  ModalResult := mrOk;
+end;
+
+procedure TfmGxFilterExceptionsEdit.b_ExceptionCurrentClick(Sender: TObject);
+begin
+  cmb_Exception.Text := b_ExceptionCurrent.Caption;
+end;
+
 procedure TfmGxFilterExceptionsEdit.b_ProjectAnyClick(Sender: TObject);
 begin
   ed_Project.Text := '.*';
@@ -134,6 +152,11 @@ begin
   _Action := TExceptionFilterAction(rg_Action.ItemIndex);
 end;
 
+procedure TfmGxFilterExceptionsEdit.re_TestChange(Sender: TObject);
+begin
+  tim_InputDelay.Enabled := True;
+end;
+
 procedure TfmGxFilterExceptionsEdit.SetData(const _Message: string;
   const _Project, _ExceptionClass, _MessageRe: string; _Action: TExceptionFilterAction);
 begin
@@ -141,9 +164,11 @@ begin
   if (_Project = '') or (_Project = '.*') then
     b_ProjectName.Visible := False
   else
-    b_ProjectName.Caption := '^- ' + _Project;
+    b_ProjectName.Caption := _Project;
   ed_Project.Text := _Project;
   cmb_Exception.Text := _ExceptionClass;
+
+  b_ExceptionCurrent.Caption := _ExceptionClass;
   if _MessageRe = '' then
     ed_Message.Text := QuoteRegExprMetaChars(_Message)
   else
@@ -159,7 +184,6 @@ end;
 
 procedure TfmGxFilterExceptionsEdit.tim_InputDelayTimer(Sender: TObject);
 begin
-  inherited;
   UpdateMatches;
 end;
 
