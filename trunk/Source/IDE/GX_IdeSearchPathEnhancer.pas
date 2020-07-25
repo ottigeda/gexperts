@@ -585,8 +585,10 @@ begin
     sl.DelimitedText := FFavorites.Values[FavName];
     if FPageControl.ActivePage = FTabSheetList then
       FListbox.Items.AddStrings(sl)
-    else
+    else begin
       FMemo.Lines.AddStrings(sl);
+      CopyMemoToList;
+    end;
   finally
     FreeAndNil(sl);
   end;
