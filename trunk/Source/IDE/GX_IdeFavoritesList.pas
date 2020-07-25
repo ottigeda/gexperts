@@ -39,7 +39,7 @@ type
     function doOnEdit(var _Name, _Value: string): Boolean;
   public
     class procedure Execute(_Owner: TComponent; const _Caption: string;
-      _OnEdit: TOnEditFavoritesEntry; var _Favorites: TStringList);
+      _OnEdit: TOnEditFavoritesEntry; _Favorites: TStringList);
     constructor Create(_Owner: TComponent); override;
   end;
 
@@ -53,7 +53,7 @@ uses
 { Tf_GxIdeFavoritesList }
 
 class procedure Tf_GxIdeFavoritesList.Execute(_Owner: TComponent; const _Caption: string;
-  _OnEdit: TOnEditFavoritesEntry; var _Favorites: TStringList);
+  _OnEdit: TOnEditFavoritesEntry; _Favorites: TStringList);
 var
   frm: Tf_GxIdeFavoritesList;
 begin
@@ -136,6 +136,7 @@ var
   FavValue: string;
   li: TListItem;
 begin
+   _Favorites.Clear;
   for i := 0 to lv_Favorites.Items.Count - 1 do begin
     li := lv_Favorites.Items[i];
     FavName := li.Caption;
