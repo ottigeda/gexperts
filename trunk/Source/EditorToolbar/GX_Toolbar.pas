@@ -434,6 +434,11 @@ begin
   EdgeBorders := [AlignToEdgeMap[Self.Align]];
 end;
 
+function SameMethod(_Method1, _Method2: TMouseEvent): Boolean; {$IFDEF SupportsInline}inline;{$ENDIF}
+begin
+  Result := (TMethod(_Method1).Code = TMethod(_method2).Code) and (TMethod(_Method1).Data= TMethod(_method2).Data);
+end;
+
 procedure TGXToolBar.AddMiddleButtonClose;
 var
   TabMouseUp: TMouseEvent;
@@ -443,7 +448,7 @@ begin
   begin
     TabMouseUp := FTabControl.OnMouseUp;
     SelfMouseUp := OnMouseUp;
-    if (@TabMouseUp <> @SelfMouseUp) then
+    if SameMethod(TabMouseUp, SelfMouseUp) then
     begin
       FOldMouseUp := FTabControl.OnMouseUp;
       FTabControl.OnMouseUp := OnMouseUp;

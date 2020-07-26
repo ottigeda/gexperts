@@ -677,6 +677,11 @@ begin
   inherited Notification(AComponent, Operation);
 end;
 
+function SameMethod(_Method1, _Method2: TEditFormNotifier): Boolean; {$IFDEF SupportsInline}inline;{$ENDIF}
+begin
+  Result := (TMethod(_Method1).Code = TMethod(_Method2).Code) and (TMethod(_Method1).Data = TMethod(_Method2).Data);
+end;
+
 procedure TGxEditorFormServices.RemoveListener(Listener: TEditFormNotifier);
 var
   i: Integer;
@@ -688,7 +693,7 @@ begin
   for i := 0 to FListeners.Count-1 do
   begin
     AListenerRecord := FListeners[i];
-    if @AListenerRecord^.ListenerMethod = @Listener then
+    if SameMethod(AListenerRecord^.ListenerMethod, Listener) then
     begin
       Dispose(AListenerRecord);
       FListeners.Delete(i);
