@@ -64,6 +64,7 @@ implementation
 
 uses
   Clipbrd,
+  SyncObjs,
   ToolsApi,
   u_dzVclUtils,
   DDetours,
@@ -202,6 +203,7 @@ var
   // requires synchronization because it is set in InterceptWaitForDebugEvent by a different
   // thread than the one that uses it in --> use TCriticalSection
   FDebugEvent: TDebugEvent;
+  FDebugEventCritSect: TCriticalSection;
 
   OnCheckException: TOnCheckExceptionEx = nil;
   OnIgnoreButtonClick: TOnCheckExceptionEx = nil;
@@ -262,21 +264,22 @@ begin
   // WaitForDebugEvent  will only work for win32 process
   // For win64, ... you need to use different way => see GetExceptionObjectNew.
 
-  //Trampoline must be allways called. Otherwise => unpredictable behaviour.
+  //Trampoline must be always called. Otherwise => unpredictable behaviour.
   Result := TrampolineWaitForDebugEvent(lpDebugEvent, dwMilliseconds);
 
   if Assigned(lpDebugEvent) then begin
     try
       if lpDebugEvent^.dwDebugEventCode = EXCEPTION_DEBUG_EVENT then begin
-        { When a system fires a debug event, it blocks all threads of the process being debugged,
-          and only a call to ContinueDebugEvent resumes these suspended threads.
-          However, DoShowException is called from another Delphi IDE thread than this code
-          (not the thread that is debugging) meaning, you need to sync access using
-          monitor/critical_section.
-          Moreover, implementing a stack of TDebugEvent in a way you push here and you pop
-          DoShowException so you don't miss any event.
-        }
+        // When a system fires a debug event, it blocks all threads of the process being debugged,
+        // and only a call to ContinueDebugEvent resumes these suspended threads.
+        // However, DoShowException is called from another Delphi IDE thread than this code
+        // (not the thread that is debugging) meaning, you need to sync access using
+        // monitor/critical_section.
+        // Moreover, implementing a stack of TDebugEvent in a way you push here and you pop
+        // DoShowException so you don't miss any event.
+        FDebugEventCritSect.Enter;
         FDebugEvent := lpDebugEvent^;
+        FDebugEventCritSect.Leave;
       end;
     except
       Exit; //==>
@@ -541,6 +544,7 @@ begin
   Result := 0;
   // This function should only be used with old Delphi versions, where GetExceptionObjectNew does
   // not work, that is ParseThradOsInfo does not exist.
+  FDebugEventCritSect.Enter;
   if FDebugEvent.Exception.ExceptionRecord.NumberParameters > 1 then begin
     // Param[1] = Exception object.
     // FDebugEvent.dwProcessId = process id.
@@ -549,6 +553,7 @@ begin
     // see  TExceptionRecord for more info.
     Result := FDebugEvent.Exception.ExceptionRecord.ExceptionInformation[1];
   end;
+  FDebugEventCritSect.Leave;
 end;
 
 function GetExceptionObject(Thread: TThread): TAddress;
@@ -806,4 +811,8 @@ begin
   DDetours.EndTransaction(TransactionHandle);
 end;
 
+initialization
+  FDebugEventCritSect := TCriticalSection.Create;
+finalization
+  FreeAndNil(FDebugEventCritSect);
 end.
