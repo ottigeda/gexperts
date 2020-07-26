@@ -53,6 +53,8 @@ inherited fmExceptionNotification: TfmExceptionNotification
     Width = 169
     Height = 25
     Action = act_IgnoreAll
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 3
   end
   object TheActionList: TActionList
