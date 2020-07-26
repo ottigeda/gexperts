@@ -48,6 +48,7 @@
         <DCC_ImageBase>00400000</DCC_ImageBase>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Winapi;Vcl;System.Win;Vcl.Imaging;$(DCC_Namespace)</DCC_Namespace>
         <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
+        <DCC_TypedAtParameter>true</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
         <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_UsePackage>rtl;vcl;vclx;vclactnband;xmlrtl;designide;$(DCC_UsePackage)</DCC_UsePackage>
@@ -74,7 +75,6 @@ $(PreBuildEvent)]]>
         <DCC_DebugInformation>0</DCC_DebugInformation>
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
-        <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <Debugger_HostApplication>D:\IDE\Delphi XE8\Studio\16.0\bin\bds.exe</Debugger_HostApplication>
@@ -83,9 +83,10 @@ $(PreBuildEvent)]]>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;NO_OPTIMIZE_DZ_GRAPHIC_UTILS_HINT;$(DCC_Define)</DCC_Define>
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
+        <DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
         <DCC_Optimize>False</DCC_Optimize>
+        <DCC_RangeChecking>true</DCC_RangeChecking>
         <DCC_UnitSearchPath>$(BDS)\lib\Debug;$(BDS)\Lib\Debug\Indy10;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <Manifest_File>None</Manifest_File>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <Debugger_HostApplication>c:\delphi\DelphiXE8\bin\bds.exe</Debugger_HostApplication>

@@ -1,7 +1,5 @@
 library GExpertsRSXE6;
 
-{$E dll}
-
 uses
   GX_About in '..\..\source\Framework\GX_About.pas' {fmAbout},
   GX_ActionBroker in '..\..\source\Framework\GX_ActionBroker.pas',

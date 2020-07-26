@@ -50,6 +50,7 @@
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
         <DCC_Platform>x86</DCC_Platform>
         <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
+        <DCC_TypedAtParameter>true</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
         <DCC_UnitAlias>ImageList=ImgList;$(DCC_UnitAlias)</DCC_UnitAlias>
         <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
@@ -81,7 +82,6 @@ $(PreBuildEvent)]]>
         <DCC_HppOutput>.\dcu</DCC_HppOutput>
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
         <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
-        <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <Debugger_HostApplication>D:\IDE\Delphi XE4\11.0\bin\bds.exe</Debugger_HostApplication>
@@ -90,7 +90,9 @@ $(PreBuildEvent)]]>
         <DCC_Define>DEBUG;NO_OPTIMIZE_DZ_GRAPHIC_UTILS_HINT;$(DCC_Define)</DCC_Define>
         <DCC_DependencyCheckOutputName>..\..\Binaries\GExpertsRSXE4.dll</DCC_DependencyCheckOutputName>
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
+        <DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
         <DCC_Optimize>False</DCC_Optimize>
+        <DCC_RangeChecking>true</DCC_RangeChecking>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <Debugger_HostApplication>C:\Program Files (x86)\Embarcadero\RAD Studio\11.0\bin\bds.exe</Debugger_HostApplication>
