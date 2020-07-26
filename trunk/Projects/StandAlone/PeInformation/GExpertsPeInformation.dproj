@@ -130,6 +130,7 @@
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzSelectDirectoryFix.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzSortProvider.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzSortUtils.pas"/>
+        <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzStringArrayUtils.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzStringUtils.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzTranslator.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzTypes.pas"/>

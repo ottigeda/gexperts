@@ -30,7 +30,8 @@ uses
   u_dzLineBuilder in '..\..\..\ExternalSource\dzlib\u_dzLineBuilder.pas',
   u_dzVariantUtils in '..\..\..\ExternalSource\dzlib\u_dzVariantUtils.pas',
   u_dzTypesUtils in '..\..\..\ExternalSource\dzlib\u_dzTypesUtils.pas',
-  u_dzErrorThread in '..\..\..\ExternalSource\dzlib\u_dzErrorThread.pas';
+  u_dzErrorThread in '..\..\..\ExternalSource\dzlib\u_dzErrorThread.pas',
+  u_dzStringArrayUtils in '..\..\..\ExternalSource\dzlib\u_dzStringArrayUtils.pas';
 
 {$R *_version.res}
 {$R *_icon.res}
