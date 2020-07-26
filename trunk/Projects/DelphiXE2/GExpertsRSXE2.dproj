@@ -51,6 +51,7 @@
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Winapi;System.Win;$(DCC_Namespace)</DCC_Namespace>
         <DCC_Platform>x86</DCC_Platform>
         <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
+        <DCC_TypedAtParameter>true</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
         <DCC_UnitAlias>ImageList=ImgList;Actions=Actnlist;$(DCC_UnitAlias)</DCC_UnitAlias>
         <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
@@ -77,7 +78,6 @@ $(PreBuildEvent)]]>
         <DCC_DebugInformation>False</DCC_DebugInformation>
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
         <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
-        <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <Debugger_HostApplication>C:\Delphi\DelphiXE2\bin\bds.exe</Debugger_HostApplication>
@@ -91,9 +91,11 @@ $(PreBuildEvent)]]>
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
         <DCC_HppOutput>dcu</DCC_HppOutput>
         <DCC_IncludePath>$(BDS)\lib\Debug;$(BDS)\Lib\Debug\Indy10;..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\..\synedit\source;$(DCC_IncludePath)</DCC_IncludePath>
+        <DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
         <DCC_ObjOutput>dcu</DCC_ObjOutput>
         <DCC_ObjPath>$(BDS)\lib\Debug;$(BDS)\Lib\Debug\Indy10;..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\..\synedit\source;$(DCC_ObjPath)</DCC_ObjPath>
         <DCC_Optimize>False</DCC_Optimize>
+        <DCC_RangeChecking>true</DCC_RangeChecking>
         <DCC_ResourcePath>$(BDS)\lib\Debug;$(BDS)\Lib\Debug\Indy10;..\..\gx\source\framework;..\..\gx\externalsource;..\..\gx\externalsource\abbrevia;..\..\..\synedit\source;$(DCC_ResourcePath)</DCC_ResourcePath>
         <DCC_UnitSearchPath>$(BDS)\lib\Debug;$(BDS)\Lib\Debug\Indy10;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
