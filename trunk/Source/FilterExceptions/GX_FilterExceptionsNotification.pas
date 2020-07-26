@@ -67,6 +67,7 @@ uses
   SyncObjs,
   ToolsApi,
   u_dzVclUtils,
+  u_dzCriticalSection,
   DDetours,
   LegacyTypes,
 {$IFOPT D+}GX_DbugIntf,
@@ -203,7 +204,7 @@ var
   // requires synchronization because it is set in InterceptWaitForDebugEvent by a different
   // thread than the one that uses it in --> use TCriticalSection
   FDebugEvent: TDebugEvent;
-  FDebugEventCritSect: TCriticalSection;
+  FDebugEventCritSect: TdzCriticalSection;
 
   OnCheckException: TOnCheckExceptionEx = nil;
   OnIgnoreButtonClick: TOnCheckExceptionEx = nil;
@@ -812,7 +813,7 @@ begin
 end;
 
 initialization
-  FDebugEventCritSect := TCriticalSection.Create;
+  FDebugEventCritSect := TdzCriticalSection.Create;
 finalization
   FreeAndNil(FDebugEventCritSect);
 end.
