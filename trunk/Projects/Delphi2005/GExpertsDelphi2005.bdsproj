@@ -35,7 +35,7 @@
 			<Compiler Name="Q" Type="Integer">0</Compiler>
 			<Compiler Name="R" Type="Integer">0</Compiler>
 			<Compiler Name="S" Type="Integer">0</Compiler>
-			<Compiler Name="T" Type="Integer">0</Compiler>
+			<Compiler Name="T" Type="Integer">1</Compiler>
 			<Compiler Name="U" Type="Integer">0</Compiler>
 			<Compiler Name="V" Type="Integer">1</Compiler>
 			<Compiler Name="W" Type="Integer">0</Compiler>
@@ -121,7 +121,7 @@
 			<Directories Name="PackageDCPOutputDir" Type="String"></Directories>
 			<Directories Name="SearchPath" Type="String">..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\ExternalSource\ddetours;..\..\source\Include</Directories>
 			<Directories Name="Packages" Type="String">vcl;rtl;vclx;designide</Directories>
-			<Directories Name="Conditionals" Type="String">NO_TRANSLATION;NO_TRANSLATION_HINT</Directories>
+			<Directories Name="Conditionals" Type="String">NO_TRANSLATION;NO_TRANSLATION_HINT;OPTIMIZE_DZ_GRAPHIC_UTILS</Directories>
 			<Directories Name="DebugSourceDirs" Type="String"></Directories>
 			<Directories Name="UsePackages" Type="Boolean">True</Directories>
 		</Directories>
