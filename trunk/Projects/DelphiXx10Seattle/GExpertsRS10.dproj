@@ -41,6 +41,7 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
+        <DCC_TypedAtParameter>true</DCC_TypedAtParameter>
         <SanitizedProjectName>GExpertsRS10</SanitizedProjectName>
         <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
         <DCC_Define>NO_TRANSLATION;NO_TRANSLATION_HINT;$(DCC_Define)</DCC_Define>
@@ -72,13 +73,14 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCC_DebugInformation>0</DCC_DebugInformation>
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
-        <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <Debugger_HostApplication>C:\Delphi\Delphi_10\bin\bds.exe</Debugger_HostApplication>
         <Debugger_RunParams>-ns</Debugger_RunParams>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
+        <DCC_RangeChecking>true</DCC_RangeChecking>
+        <DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
         <DCC_Define>DEBUG;NO_OPTIMIZE_DZ_GRAPHIC_UTILS_HINT;$(DCC_Define)</DCC_Define>
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
         <DCC_Optimize>False</DCC_Optimize>
@@ -590,7 +592,6 @@ $(PreBuildEvent)]]></PreBuildEvent>
                     <Source Name="MainSource">GExpertsRS10.dpr</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\17.0\Bpl\SortProjects.bpl">Sort Projects plugin</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k230.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp230.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>

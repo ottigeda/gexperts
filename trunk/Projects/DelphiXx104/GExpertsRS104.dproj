@@ -54,6 +54,7 @@
         <VerInfo_MinorVer>3</VerInfo_MinorVer>
         <VerInfo_Release>8</VerInfo_Release>
         <DCC_MapFile>3</DCC_MapFile>
+        <DCC_TypedAtParameter>true</DCC_TypedAtParameter>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
@@ -66,7 +67,6 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCC_DebugInformation>0</DCC_DebugInformation>
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
-        <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -74,6 +74,8 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCC_Optimize>False</DCC_Optimize>
         <DCC_UnitSearchPath>$(BDS)\lib\Debug;$(BDS)\Lib\Debug\Indy10;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <Manifest_File>None</Manifest_File>
+        <DCC_RangeChecking>true</DCC_RangeChecking>
+        <DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <Debugger_HostApplication>$(BDS)\bin\bds.exe</Debugger_HostApplication>
@@ -592,13 +594,13 @@ $(PreBuildEvent)]]></PreBuildEvent>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="..\..\Binaries\GExpertsRS104.dll" Configuration="Release" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\Binaries\GExpertsRS104.dll" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>GExpertsRS104.dll</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="..\..\Binaries\GExpertsRS104.dll" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\Binaries\GExpertsRS104.dll" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>GExpertsRS104.dll</RemoteName>
                         <Overwrite>true</Overwrite>
