@@ -44,7 +44,8 @@ type
 implementation
 
 uses
-  GX_GenericUtils, u_dzStringUtils;
+  GX_GenericUtils, u_dzTypes,
+  u_dzStringUtils; // for overloaded Copy function with 2 parameters that does not exist in Delphi 6 and 7
 
 const
   // Unfortunately this is strictly no longer true, because e.g. Umlauts can also be used as
@@ -60,8 +61,6 @@ type
     PrevName: string;
     NextName: string;
   end;
-
-  TStringArray = array of string;
 
   TKeywordPair = record
     BeginKey: string;
