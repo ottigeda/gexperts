@@ -328,7 +328,7 @@ end;
 // Returns True if the programmer information was accessible and VInfo is filled
 function GetProgrammerInfo(var VInfo: TProgrammerInfo): Boolean;
 begin
-  if @ProgInfoProc <> nil then
+  if Assigned(ProgInfoProc) then
     Result := ProgInfoProc(VInfo)
   else
     Result := False;

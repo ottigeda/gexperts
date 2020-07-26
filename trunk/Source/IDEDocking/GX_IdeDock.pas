@@ -97,7 +97,7 @@ procedure TIdeDockManager.RegisterDockableForm(IdeDockFormClass: TIdeDockFormCla
        var IdeDockFormVar; const IdeDockFormName: string);
 begin
   {$IFDEF EnableIdeDockingSupport}
-  if @RegisterFieldAddress <> nil then
+  if Assigned(RegisterFieldAddress) then
     RegisterFieldAddress(IdeDockFormName, @IdeDockFormVar);
 
   RegisterDesktopFormClass(IdeDockFormClass, IdeDockFormName, IdeDockFormName);
@@ -109,7 +109,7 @@ procedure TIdeDockManager.UnRegisterDockableForm(var IdeDockFormVar; const IdeDo
 {$ENDIF EnableIdeDockingSupport}
 begin
   {$IFDEF EnableIdeDockingSupport}
-  if @UnregisterFieldAddress <> nil then
+  if Assigned(UnregisterFieldAddress) then
     UnregisterFieldAddress(@IdeDockFormVar);
   {$ENDIF EnableIdeDockingSupport}
 end;

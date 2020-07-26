@@ -114,7 +114,7 @@ end;
 procedure TGxSqueezedInClass.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   // Warning: Handle "Self" with care...
-  Assert(@ReplacedNotification <> nil);
+  Assert(Assigned(ReplacedNotification));
   ReplacedNotification(Self, AComponent, Operation); // Essentially call "inherited;"
 
   Assert(TComponent(Self) is TWinControl);
@@ -251,13 +251,13 @@ begin
   if FDockableFormClass = nil then
     Exit;
 
-  Assert(@ReplacedNotification <> nil);
+  Assert(Assigned(ReplacedNotification));
 
   if FNotificationVmtIndex < 0 then
     Exit;
 
   Assert(FSqueezingCode = GetVirtualMethodPointer(FDockableFormClass, FNotificationVmtIndex));
-  SetVirtualMethodPointer(FDockableFormClass, FNotificationVmtIndex, @ReplacedNotification);
+  SetVirtualMethodPointer(FDockableFormClass, FNotificationVmtIndex, Pointer(@ReplacedNotification));
   @ReplacedNotification := nil;
 end;
 
@@ -269,7 +269,7 @@ begin
     Exit;
   end;
 
-  Assert(@ReplacedNotification = nil);
+  Assert(Assigned(ReplacedNotification));
 
   if FNotificationVmtIndex < 0 then
     Exit;
