@@ -769,12 +769,12 @@ begin
     AdministratorsGroup) then
     Exit; //=>
   try
-    if @CheckTokenMembership = nil then begin
+    if Assigned(CheckTokenMembership) then begin
       Hdl := LoadLibrary(advapi32);
       if Hdl = 0 then
         Exit; //=>
       @CheckTokenMembership := GetProcAddress(Hdl, 'CheckTokenMembership');
-      if @CheckTokenMembership = nil then begin
+      if Assigned(CheckTokenMembership) then begin
         FreeLibrary(Hdl);
         Exit; //=>
       end;
