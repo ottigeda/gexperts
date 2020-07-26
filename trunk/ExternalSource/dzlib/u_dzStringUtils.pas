@@ -52,6 +52,7 @@ function StrToLowAscii(const _s: WideString): AnsiString;
 
 {$IFNDEF SUPPORTS_UNICODE}
 function CharInSet(_c: Char; const _CharSet: TSysCharSet): Boolean;
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 {$ENDIF SUPPORTS_UNICODE}
 
 ///<summary>
@@ -435,15 +436,6 @@ function SplitString(_sl: TStrings; _s: string; const _Delimiters: array of Char
 function SplitString(_s: string; const _Delimiters: string): TStringArray; overload;
 function SplitString(_s: string; const _Delimiters: array of Char): TStringArray; overload;
 
-function TStringArray_FromStrings(_sl: TStrings): TStringArray;
-
-///<summary>
-/// Deletes Count entries from Arr starting from Index.
-/// @Note: It is allowed for Index > Length(Arr) and also Index+Count > Length(Arr)
-/// @raises ERangeCheck if Index or Count < 0 </summary>
-procedure Delete(var _Arr: TStringArray; _Index: Integer; _Count: Integer); overload;
-function Concat(const _Arr1, _Arr2: array of string): TStringArray; overload;
-
 {$IFDEF SUPPORTS_UNICODE}
 function Copy(const _s: AnsiString; _Pos, _Len: Integer): AnsiString; overload;
 function Copy(const _s: AnsiString; _Pos: Integer): AnsiString; overload;
@@ -716,67 +708,6 @@ begin
     Inc(Idx);
   end;
   SetLength(Result, Idx);
-end;
-
-function TStringArray_FromStrings(_sl: TStrings): TStringArray;
-var
-  i: Integer;
-begin
-  SetLength(Result, _sl.count);
-  for i := 0 to _sl.count - 1 do
-    Result[i] := _sl[i];
-end;
-
-procedure Delete(var _Arr: TStringArray; _Index: Integer; _Count: Integer); overload;
-var
-  Len: Integer;
-  i: Integer;
-begin
-  if _Index < 0 then begin
-{$T-}
-    raise ERangeError.CreateRes(@SRangeError);
-{$IFDEF TYPEDADDRESS_IS_ON}
-{$T+}
-{$ENDIF}
-end;
-  if _Count < 0 then begin
-{$T-}
-    raise ERangeError.CreateRes(@SRangeError);
-{$IFDEF TYPEDADDRESS_IS_ON}
-{$T+}
-{$ENDIF}
-end;
-  Len := Length(_Arr);
-  if _Index > Len - 1 then begin
-    // after the end of the array -> nothing to do
-    Exit; //==>
-  end;
-
-  if _Index >= Len - _Count then begin
-    // delete from the end
-    SetLength(_Arr, _Index);
-    Exit; //==>
-  end;
-
-  for i := _Index to Len - _Count - 1 do begin
-    _Arr[i] := _Arr[i + _Count];
-  end;
-  SetLength(_Arr, Len - _Count);
-end;
-
-function Concat(const _Arr1, _Arr2: array of string): TStringArray;
-var
-  Len1: Integer;
-  Len2: Integer;
-  i: Integer;
-begin
-  Len1 := Length(_Arr1);
-  Len2 := Length(_Arr2);
-  SetLength(Result, Len1 + Len2);
-  for i := 0 to Len1 - 1 do
-    Result[i] := _Arr1[i];
-  for i := 0 to Len2 - 1 do
-    Result[i + Len1] := _Arr2[i];
 end;
 
 function ReplaceChars(const _s, _Search, _Replace: string): string;

@@ -1,7 +1,12 @@
 unit u_dzGraphicsUtils;
 
 {$INCLUDE 'dzlib.inc'}
-{.$INCLUDE 'dzlibjedi.inc'}
+
+{$IFDEF DELPHI2005}
+// the Delphi 2005 cmpiler crashes if this is compiled with typed @ operator
+// turned on
+{$TYPEDADDRESS OFF}
+{$ENDIF}
 
 {$IFDEF OPTIMIZE_DZ_GRAPHIC_UTILS}
 {$OPTIMIZATION ON}

@@ -59,7 +59,10 @@ const
 function isDecDigit(_a: Char): Boolean;
 ///<summary>
 /// Returns true if S is a valid positive decimal number </summary>
-function isDec(const _s: string): Boolean;
+function isDec(const _s: string): Boolean; overload;
+{$IFDEF unicode}
+function isDec(const _s: AnsiString): Boolean; overload;
+{$ENDIF}
 ///<summary>
 /// Converts a decimal digit to its number equivalent
 /// @Raises EDigitOutOfRange if there is an invalid digit. </summary>
@@ -146,9 +149,7 @@ function isNumberN(const _s: string; _Base: TBaseN): Integer;
 ///<summary>
 /// Reduces an Integer to a Byte value by cutting it off at 0 and 255 </summary>
 function ReduceToByte(const _Value: Integer): Byte;
-{$IFDEF SUPPORTS_INLINE}
-    inline;
-{$ENDIF}
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
 ///<summary>
 /// Converts a string of the form '-hh:mm:ss', 'hh:mm:ss',
@@ -669,6 +670,13 @@ function isDec(const _s: string): Boolean;
 begin
   Result := isNumber(_s, 10);
 end;
+
+{$IFDEF unicode}
+function isDec(const _s: AnsiString): Boolean;
+begin
+  Result := IsDec(string(_s));
+end;
+{$ENDIF}
 
 function DecDigit2Long(_a: Char): ULong;
 begin

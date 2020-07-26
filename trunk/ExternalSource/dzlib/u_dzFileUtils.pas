@@ -11,6 +11,7 @@ uses
   Windows,
   SysUtils,
   Classes,
+  Types,
   u_dzTranslator,
   u_dzTypes;
 
@@ -1208,7 +1209,8 @@ uses
   Masks,
   u_dzMiscUtils,
   u_dzStringUtils,
-  u_dzDateUtils;
+  u_dzDateUtils,
+  u_dzStringArrayUtils;
 
 function _(const _s: string): string;
 {$IFDEF SUPPORTS_INLINE}

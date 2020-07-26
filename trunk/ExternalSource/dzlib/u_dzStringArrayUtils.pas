@@ -1,0 +1,151 @@
+unit u_dzStringArrayUtils;
+
+{$INCLUDE 'dzlib.inc'}
+
+interface
+
+uses
+  SysUtils,
+  Classes,
+  u_dzTypes;
+
+function StringArrayOf(const _arr: array of string): TStringArray;
+
+function StringArrayCombine(_arr: TStringArray; _Separator: string): string;
+procedure StringArraySort(var _arr: TStringArray);
+
+function TStringArray_Concat(const _Arr1, _Arr2: array of string): TStringArray;
+
+///<summary>
+/// Deletes Count entries from Arr starting from Index.
+/// @Note: It is allowed for Index > Length(Arr) and also Index+Count > Length(Arr)
+/// @raises ERangeCheck if Index or Count < 0 </summary>
+procedure TStringArray_Delete(var _arr: TStringArray; _Index: Integer; _Count: Integer);
+
+function TStringArray_FromStrings(_sl: TStrings): TStringArray;
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+
+function TStrings_AsStringArray(_st: TStrings): TStringArray;
+procedure TStrings_AssignStringArray(_st: TStrings; _arr: TStringArray);
+procedure TStrings_AppendStringArray(_st: TStrings; _arr: TStringArray);
+
+implementation
+
+uses
+  SysConst;
+
+function StringArrayOf(const _arr: array of string): TStringArray;
+var
+  i: Integer;
+  len: Integer;
+begin
+  len := Length(_arr);
+  Setlength(Result, len);
+  for i := 0 to len - 1 do
+    Result[i] := _arr[i];
+end;
+
+function StringArrayCombine(_arr: TStringArray; _Separator: string): string;
+var
+  i: Integer;
+  len: Integer;
+begin
+  len := Length(_arr);
+  if len = 0 then begin
+    Result := '';
+  end else begin
+    Result := _arr[0];
+    for i := 1 to len - 1 do begin
+      Result := Result + _Separator + _arr[i];
+    end;
+  end;
+end;
+
+function TStrings_AsStringArray(_st: TStrings): TStringArray;
+var
+  cnt: Integer;
+  i: Integer;
+begin
+  cnt := _st.Count;
+  Setlength(Result, cnt);
+  for i := 0 to cnt - 1 do
+    Result[i] := _st[i];
+end;
+
+function TStringArray_FromStrings(_sl: TStrings): TStringArray;
+begin
+  Result := TStrings_AsStringArray(_sl);
+end;
+
+procedure TStrings_AssignStringArray(_st: TStrings; _arr: TStringArray);
+begin
+  _st.Clear;
+  TStrings_AppendStringArray(_st, _arr);
+end;
+
+procedure TStrings_AppendStringArray(_st: TStrings; _arr: TStringArray);
+var
+  i: Integer;
+begin
+  for i := 0 to Length(_arr) - 1 do
+    _st.Add(_arr[i]);
+end;
+
+procedure StringArraySort(var _arr: TStringArray);
+var
+  sl: TStringList;
+begin
+  sl := TStringList.Create;
+  try
+    TStrings_AssignStringArray(sl, _arr);
+    sl.Sort;
+    _arr := TStrings_AsStringArray(sl);
+  finally
+    FreeAndNil(sl);
+  end;
+end;
+
+procedure TStringArray_Delete(var _arr: TStringArray; _Index: Integer; _Count: Integer); overload;
+var
+  len: Integer;
+  i: Integer;
+begin
+  if _Index < 0 then
+    raise ERangeError.CreateRes(PResStringRec(@SRangeError));
+  if _Count < 0 then
+    raise ERangeError.CreateRes(PResStringRec(@SRangeError));
+
+  len := Length(_arr);
+  if _Index > len - 1 then begin
+    // after the end of the array -> nothing to do
+    Exit; //==>
+  end;
+
+  if _Index >= len - _Count then begin
+    // delete from the end
+    Setlength(_arr, _Index);
+    Exit; //==>
+  end;
+
+  for i := _Index to len - _Count - 1 do begin
+    _arr[i] := _arr[i + _Count];
+  end;
+  Setlength(_arr, len - _Count);
+end;
+
+function TStringArray_Concat(const _Arr1, _Arr2: array of string): TStringArray;
+var
+  Len1: Integer;
+  Len2: Integer;
+  i: Integer;
+begin
+  Len1 := Length(_Arr1);
+  Len2 := Length(_Arr2);
+  Setlength(Result, Len1 + Len2);
+  for i := 0 to Len1 - 1 do
+    Result[i] := _Arr1[i];
+  for i := 0 to Len2 - 1 do
+    Result[i + Len1] := _Arr2[i];
+end;
+
+end.
