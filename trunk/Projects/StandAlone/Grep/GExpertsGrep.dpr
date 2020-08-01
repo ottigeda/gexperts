@@ -13,7 +13,8 @@ uses
   u_dzTypes in '..\..\..\ExternalSource\dzlib\u_dzTypes.pas',
   u_dzConvertUtils in '..\..\..\ExternalSource\dzlib\u_dzConvertUtils.pas',
   u_dzDateUtils in '..\..\..\ExternalSource\dzlib\u_dzDateUtils.pas',
-  u_dzClassUtils in '..\..\..\ExternalSource\dzlib\u_dzClassUtils.pas';
+  u_dzClassUtils in '..\..\..\ExternalSource\dzlib\u_dzClassUtils.pas',
+  u_dzStringArrayUtils in '..\..\..\ExternalSource\dzlib\u_dzStringArrayUtils.pas';
 
 begin
   Main;

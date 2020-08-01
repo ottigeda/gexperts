@@ -117,6 +117,7 @@
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzFileUtils.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzMiscUtils.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzOsUtils.pas"/>
+        <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzStringArrayUtils.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzStringUtils.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzTranslator.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzTypes.pas"/>
