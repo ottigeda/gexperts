@@ -67,6 +67,15 @@ end;
 {$ALIGN ON}
 {$MINENUMSIZE 4}
 
+{$IF not declared(ULONG_PTR)}
+type
+  ULONG_PTR = LongWord;
+{$IFEND}
+
+{$IF not declared(ULONGLONG)}
+  ULONGLONG = UInt64;
+{$IFEND}
+
 type
   _PROCESSOR_CACHE_TYPE = (CacheUnified { = 0}, CacheInstruction { = 1}, CacheData { = 2}, CacheTrace { = 3});
   PROCESSOR_CACHE_TYPE = _PROCESSOR_CACHE_TYPE;
