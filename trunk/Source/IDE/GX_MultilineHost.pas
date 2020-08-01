@@ -251,7 +251,8 @@ begin
   if FDockableFormClass = nil then
     Exit;
 
-  Assert(Assigned(ReplacedNotification));
+  if not Assigned(ReplacedNotification) then
+    Exit;
 
   if FNotificationVmtIndex < 0 then
     Exit;
@@ -269,7 +270,7 @@ begin
     Exit;
   end;
 
-  Assert(Assigned(ReplacedNotification));
+  Assert(not Assigned(ReplacedNotification));
 
   if FNotificationVmtIndex < 0 then
     Exit;
