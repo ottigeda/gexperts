@@ -368,6 +368,11 @@ function Swap16(_Value: Word): Word;
 function Swap32(_Value: LongWord): LongWord;
 function Swap32pas(_Value: LongWord): LongWord;
 
+///<summary>
+/// returns a 64 bit value in reversed byte order e.g. $123456789ABCDEF0 -> $F0DEBC9A78563412
+/// aka converts intel (little endian) to motorola (big endian) byte order format </summary>
+function Swap64(_Value: UInt64): UInt64;
+
 function BitReverse32(v: LongWord): LongWord;
 
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
@@ -674,7 +679,7 @@ end;
 {$IFDEF unicode}
 function isDec(const _s: AnsiString): Boolean;
 begin
-  Result := IsDec(string(_s));
+  Result := isDec(string(_s));
 end;
 {$ENDIF}
 
@@ -1073,6 +1078,14 @@ end;
 function Swap32pas(_Value: LongWord): LongWord;
 begin
   Result := ((_Value shr 24) and $FF) + (((_Value shr 16) and $FF) shl 8) + (((_Value shr 8) and $FF) shl 16) + ((_Value and $FF) shl 24);
+end;
+
+function Swap64(_Value: UInt64): UInt64;
+asm
+  MOV     EDX,_Value.Int64Rec.Lo
+  BSWAP   EDX
+  MOV     EAX,_Value.Int64Rec.Hi
+  BSWAP   EAX
 end;
 
 function BitReverse32(v: LongWord): LongWord;

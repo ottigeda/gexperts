@@ -10,6 +10,53 @@ uses
   Types; // for $IF Declared(TBytes) and TStringDynArray
 
 type
+  // Fixed size signed and unsigned integer types
+{$IF not declared(Int8)}
+  Int8 = Shortint;
+{$IFEND}
+{$IF not declared(UInt8)}
+  UInt8 = Byte;
+{$IFEND}
+{$IF not declared(Int16)}
+  Int16 = Smallint;
+{$IFEND}
+{$IF not declared(UInt16)}
+  UInt16 = Word;
+{$IFEND}
+{$IF not declared(Int32)}
+  Int32 = Integer;
+{$IFEND}
+{$IF not declared(UInt32)}
+  UInt32 = Cardinal;
+{$IFEND}
+  // Int64 is predefined
+  // UInt64 is predefined
+
+{$IF not declared(PInt8)}
+  PInt8 = ^Int8;
+{$IFEND}
+{$IF not declared(PUInt8)}
+  PUInt8 = ^UInt8;
+{$IFEND}
+{$IF not declared(PInt16)}
+  PInt16 = ^Int16;
+{$IFEND}
+{$IF not declared(PUInt16)}
+  PUInt16 = ^UInt16;
+{$IFEND}
+{$IF not declared(PInt32)}
+  PInt32 = ^Int32;
+{$IFEND}
+{$IF not declared(PUInt32)}
+  PUInt32 = ^UInt32;
+{$IFEND}
+{$IF not declared(PInt64)}
+  PInt64 = ^Int64;
+{$IFEND}
+{$IF not declared(PUInt64)}
+  PUInt64 = ^UInt64;
+{$IFEND}
+type
   EdzException = class(Exception)
   end;
 

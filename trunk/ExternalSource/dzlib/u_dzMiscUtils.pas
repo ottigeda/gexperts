@@ -21,8 +21,8 @@ unit u_dzMiscUtils;
 interface
 
 uses
-  SysUtils,
   Windows,
+  SysUtils,
   Registry,
   u_dzTranslator;
 
@@ -85,6 +85,12 @@ function IntToHex(_Value: Integer): string; overload;
 ///<summary> converts an In64 to a 16 digit hex string </summary>
 function IntToHex(_Value: Int64): string; overload;
 {$ENDIF HAS_INTTOHEX_FUNCTION}
+
+{$IFNDEF HAS_INTTOHEX_FUNCTION_64}
+function IntToHex(_Value: UInt64): string; overload;
+{$ENDIF HAS_INTTOHEX_FUNCTION_64}
+
+function PtrToHex(_Value: Pointer): string;
 
 ///<summary> Converts an integer to a boolean.
 ///          @param Int is the integer to convert
@@ -224,6 +230,7 @@ uses
 {$ENDIF}
 {$ENDIF}
   StrUtils,
+  u_dzTypes,
   u_dzFileUtils,
   u_dzStringUtils,
   u_dzConvertUtils;
@@ -527,6 +534,23 @@ begin
   Result := IntToHex(_Value, SizeOf(_Value) * 2);
 end;
 {$ENDIF HAS_INTTOHEX_FUNCTION}
+
+{$IFNDEF HAS_INTTOHEX_FUNCTION_64}
+function IntToHex(_Value: UInt64): string; overload;
+var
+  Buf: PUInt32;
+begin
+  Buf := PUInt32(NativeUInt(@_Value) + 8);
+  Result := IntToHex(Buf^, 8);
+  Buf := PUInt32(@_Value);
+  Result := Result + IntToHex(Buf^, 8);
+end;
+{$ENDIF HAS_INTTOHEX_FUNCTION_64}
+
+function PtrToHex(_Value: Pointer): string;
+begin
+  Result := IntToHex(NativeUInt(_Value));
+end;
 
 type
   PStringDescriptor = ^TStringDescriptor;

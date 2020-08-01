@@ -81,6 +81,7 @@
 {$IFDEF DELPHIX_TOKYO_UP}
 // this function probably already exist in earlier versions, I just run across a compile error for 10.2 Tokyo
 {$DEFINE HAS_INTTOHEX_FUNCTION}
+{$DEFINE HAS_INTTOHEX_FUNCTION_64}
 {$ENDIF}
 
 {$IFOPT T+}
