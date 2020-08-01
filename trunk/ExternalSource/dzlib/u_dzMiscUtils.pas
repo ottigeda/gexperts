@@ -87,7 +87,9 @@ function IntToHex(_Value: Int64): string; overload;
 {$ENDIF HAS_INTTOHEX_FUNCTION}
 
 {$IFNDEF HAS_INTTOHEX_FUNCTION_64}
+{$IFDEF SUPPORTS_UINT64}
 function IntToHex(_Value: UInt64): string; overload;
+{$ENDIF SUPPORTS_UINT64}
 {$ENDIF HAS_INTTOHEX_FUNCTION_64}
 
 function PtrToHex(_Value: Pointer): string;
@@ -536,6 +538,7 @@ end;
 {$ENDIF HAS_INTTOHEX_FUNCTION}
 
 {$IFNDEF HAS_INTTOHEX_FUNCTION_64}
+{$IFDEF SUPPORTS_UINT64}
 function IntToHex(_Value: UInt64): string; overload;
 var
   Buf: PUInt32;
@@ -545,6 +548,7 @@ begin
   Buf := PUInt32(@_Value);
   Result := Result + IntToHex(Buf^, 8);
 end;
+{$ENDIF SUPPORTS_UINT64}
 {$ENDIF HAS_INTTOHEX_FUNCTION_64}
 
 function PtrToHex(_Value: Pointer): string;

@@ -30,6 +30,9 @@ type
   UInt32 = Cardinal;
 {$IFEND}
   // Int64 is predefined
+{$IF not declared(UInt64)}
+  UInt64 = Int64;
+{$IFEND}
   // UInt64 is predefined
 
 {$IF not declared(PInt8)}
@@ -56,6 +59,11 @@ type
 {$IF not declared(PUInt64)}
   PUInt64 = ^UInt64;
 {$IFEND}
+
+{$IF not declared(NativeUInt)}
+  NativeUInt = UInt32;
+{$IFEND}
+
 type
   EdzException = class(Exception)
   end;
