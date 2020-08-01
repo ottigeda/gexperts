@@ -1,10 +1,9 @@
 object fmInsertAutoTodoForm: TfmInsertAutoTodoForm
   Left = 381
   Top = 212
-  AutoScroll = False
   BorderIcons = [biSystemMenu]
   Caption = 'Comment Empty Code Blocks'
-  ClientHeight = 203
+  ClientHeight = 209
   ClientWidth = 614
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -15,7 +14,7 @@ object fmInsertAutoTodoForm: TfmInsertAutoTodoForm
   OldCreateOrder = True
   DesignSize = (
     614
-    203)
+    209)
   PixelsPerInch = 96
   TextHeight = 14
   object lblUsername: TLabel
@@ -48,8 +47,8 @@ object fmInsertAutoTodoForm: TfmInsertAutoTodoForm
   end
   object btnLoadDetault: TButton
     Left = 8
-    Top = 136
-    Width = 95
+    Top = 144
+    Width = 97
     Height = 25
     Anchors = [akLeft, akBottom]
     Caption = 'Load Default'
@@ -57,8 +56,8 @@ object fmInsertAutoTodoForm: TfmInsertAutoTodoForm
     OnClick = btnLoadDetaultClick
   end
   object btnInsertPlaceholder: TButton
-    Left = 114
-    Top = 135
+    Left = 112
+    Top = 144
     Width = 115
     Height = 25
     Anchors = [akLeft, akBottom]
@@ -69,13 +68,13 @@ object fmInsertAutoTodoForm: TfmInsertAutoTodoForm
     Left = 8
     Top = 72
     Width = 596
-    Height = 61
+    Height = 67
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 1
   end
   object pnlFooter: TPanel
     Left = 0
-    Top = 170
+    Top = 176
     Width = 614
     Height = 33
     Align = alBottom
