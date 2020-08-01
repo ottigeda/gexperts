@@ -374,6 +374,7 @@ type
     procedure ClearResultsData;
     procedure DoEmbeddedSearch(Sender: TObject);
     procedure UpdateHistoryPagesOptions;
+    procedure GoToMatchLine(MatchLine: TLineResult);
     property lbHistoryListIndexForHistoryMenuActions: Integer read FlbHistoryListIndexForHistoryMenuActions write FlbHistoryListIndexForHistoryMenuActions;
     procedure GetEnabledFlags(out _IsOnlySaveSettings, _HaveItems, _Processing: Boolean);
   protected
@@ -440,18 +441,30 @@ type
     function GetMessage: string; override;
   end;
 
-procedure GoToMatchLine(MatchLine: TLineResult; SourceEditorInMiddle: Boolean);
-var
-  MatchFileName: string;
+procedure TfmGrepResults.GoToMatchLine(MatchLine: TLineResult);
 resourcestring
   SCouldNotOpenFile = 'Could not open file %s';
+var
+  MatchFileName: string;
+  Params: string;
 begin
   MatchFileName := TFileResult(MatchLine.Collection).FileName;
 
-  if IsStandAlone then
-    GXShellExecute(MatchFileName, '', True)
-  else
-    GxOtaGoToFileLineColumn(MatchFileName, MatchLine.LineNo, MatchLine.Matches[0].SPos, MatchLine.Matches[0].EPos, SourceEditorInMiddle);
+  if IsStandAlone then begin
+    if GrepExpert.ExternalEditor = '' then begin
+      GXShellExecute(MatchFileName, '', True);
+    end else begin
+      Params := GrepExpert.ExternalEditorParams;
+      if Params = '' then
+        Params := '{FILE}';
+      Params := StringReplace(Params, '{FILE}', AnsiQuotedStr(MatchFileName, '"'), [rfReplaceAll, rfIgnoreCase]);
+      Params := StringReplace(Params, '{LINE}', IntToStr(MatchLine.LineNo), [rfReplaceAll, rfIgnoreCase]);
+      Params := StringReplace(Params, '{COLUMN}', IntToStr(MatchLine.Matches[0].SPos), [rfReplaceAll, rfIgnoreCase]);
+      GXShellExecute(GrepExpert.ExternalEditor, Params, True);
+    end;
+  end else
+    GxOtaGoToFileLineColumn(MatchFileName, MatchLine.LineNo, MatchLine.Matches[0].SPos,
+      MatchLine.Matches[0].EPos, GrepExpert.GrepMiddle);
 end;
 
 { TShowUnicodeReplaceMessage }
@@ -1684,7 +1697,7 @@ begin
   if CurrentLine = nil then
     Exit;
 
-  GoToMatchLine(CurrentLine, GrepExpert.GrepMiddle);
+  GoToMatchLine(CurrentLine);
 
   // Hide the results window if the window is not configured to stay on top in D8+ and we are floating
   if GrepExpert.AutoHide and RunningDelphi8OrGreater then begin

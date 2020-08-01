@@ -166,10 +166,16 @@ end;
 procedure TfmGrepSearch.btnOptionsClick(Sender: TObject);
 var
   UseCurrentIdent: Boolean;
+  ExternalEditor: string;
+  Params: string;
 begin
   UseCurrentIdent := GrepExpert.GrepUseCurrentIdent;
-  if TfmGrepOptions.Execute(UseCurrentIdent) then begin
+  ExternalEditor := GrepExpert.ExternalEditor;
+  Params := GrepExpert.ExternalEditorParams;
+  if TfmGrepOptions.Execute(UseCurrentIdent, ExternalEditor, Params) then begin
     GrepExpert.GrepUseCurrentIdent := UseCurrentIdent;
+    GrepExpert.ExternalEditor := ExternalEditor;
+    GrepExpert.ExternalEditorParams := Params;
   end;
 end;
 
@@ -406,6 +412,8 @@ procedure TGrepDlgExpert.Configure;
 var
   GrepExpert: TGrepExpert;
   UseCurrentIdent: Boolean;
+  ExternalEditor: string;
+  Params: string;
 begin
   if not Assigned(fmGrepResults) then
     raise Exception.Create(SGrepResultsNotActive);
@@ -414,8 +422,12 @@ begin
   Assert(Assigned(GrepExpert));
 
   UseCurrentIdent := GrepExpert.GrepUseCurrentIdent;
-  if TfmGrepOptions.Execute(UseCurrentIdent) then begin
+  ExternalEditor := GrepExpert.ExternalEditor;
+  Params := GrepExpert.ExternalEditorParams;
+  if TfmGrepOptions.Execute(UseCurrentIdent, ExternalEditor, Params) then begin
     GrepExpert.GrepUseCurrentIdent := UseCurrentIdent;
+    GrepExpert.ExternalEditor := ExternalEditor;
+    GrepExpert.ExternalEditorParams := Params;
   end;
 end;
 

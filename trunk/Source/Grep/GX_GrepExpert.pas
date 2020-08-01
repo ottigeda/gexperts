@@ -70,6 +70,8 @@ type
     FGrepMinDepth: Integer;
     FGrepMaxDepth: Integer;
     FExcludedDirsIsRegEx: Boolean;
+    FExternalEditor: string;
+    FExternalEditorParams: string;
     function  GetGrepSaveHistoryListItems(AIndex: Integer): Boolean;
     procedure SetSearchList(New: TStrings);
     procedure SetReplaceList(New: TStrings);
@@ -147,6 +149,9 @@ type
     property GrepHistoryPagesTabMultiline: Boolean read FGrepHistoryPagesTabMultiline write FGrepHistoryPagesTabMultiline;
     property GrepHistoryPagesTabWidth: Integer read FGrepHistoryPagesTabWidth write FGrepHistoryPagesTabWidth;
     property GrepMouseWheelPrevNextMatch: Boolean read FGrepMouseWheelPrevNextMatch write FGrepMouseWheelPrevNextMatch;
+
+    property ExternalEditor: string read FExternalEditor write FExternalEditor;
+    property ExternalEditorParams: string read FExternalEditorParams write FExternalEditorParams;
 
     property SaveOption: TGrepSaveOption read GetSaveOption;
     property OpenSaveOption: TGrepSaveOption read GetOpenSaveOption;
@@ -524,6 +529,9 @@ begin
   _Settings.WriteInteger('HistoryPagesTabWidth', GrepHistoryPagesTabWidth);
   _Settings.WriteBool('MouseWheelPrevNextMatch', GrepMouseWheelPrevNextMatch);
 
+  _Settings.WriteString('ExternalEditor', FExternalEditor);
+  _Settings.WriteString('ExternalEditorParams', FExternalEditorParams);
+
   _Settings.WriteStrings('DirectoryList', DirList, 'GrepDir');
   _Settings.WriteStrings('SearchList', SearchList, 'GrepSearch');
   _Settings.WriteStrings('ReplaceList', ReplaceList, 'GrepReplace');
@@ -788,6 +796,9 @@ begin
   FGrepHistoryPagesTabMultiline := _Settings.ReadBool('HistoryPagesTabMultilin', GrepHistoryPagesTabMultiline);
   FGrepHistoryPagesTabWidth := _Settings.ReadInteger('HistoryPagesTabWidth', GrepHistoryPagesTabWidth);
   FGrepMouseWheelPrevNextMatch := _Settings.ReadBool('MouseWheelPrevNextMatch', GrepMouseWheelPrevNextMatch);
+
+  FExternalEditor := _Settings.ReadString('ExternalEditor', FExternalEditor);
+  FExternalEditorParams := _Settings.ReadString('ExternalEditorParams', FExternalEditorParams);
 
   _Settings.ReadStrings('DirectoryList', DirList, 'GrepDir');
   _Settings.ReadStrings('SearchList', SearchList, 'GrepSearch');
