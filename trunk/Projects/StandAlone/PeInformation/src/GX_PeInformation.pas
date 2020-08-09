@@ -106,6 +106,7 @@ type
     procedure SetVersionInfo(const AFilename: string);
     procedure SetPackageInfo(const AFilename: string);
     procedure WmCheckParams(var _Msg: TMessage); message WM_CheckParams;
+    function EventsAllowedAndAllAssigned(_Item: TListItem): Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -439,49 +440,42 @@ begin
     LoadPEInfo(_Files[0]);
 end;
 
+function TfmPeInformation.EventsAllowedAndAllAssigned(_Item: TListItem): Boolean;
+begin
+  Result := not FBlockEvents
+    and Assigned(_Item)
+    and Assigned(PEInfo)
+    and Assigned(PEInfo.MSDOSHeader);
+end;
+
 procedure TfmPeInformation.lvMSDOSData(Sender: TObject; Item: TListItem);
 begin
-  if FBlockEvents then
-    Exit;
-  if not Assigned(Item) or not Assigned(PEInfo) or not assigned(PEInfo.MSDOSHeader) then
-    Exit;
-  SetListViewItem(Item, PEInfo.MSDOSHeader[Item.Index]);
+  if EventsAllowedAndAllAssigned(Item) then
+    SetListViewItem(Item, PEInfo.MSDOSHeader[Item.Index]);
 end;
 
 procedure TfmPeInformation.lvPEHeaderData(Sender: TObject; Item: TListItem);
 begin
-  if FBlockEvents then
-    Exit;
-  if not Assigned(Item) or not Assigned(PEInfo) or not assigned(PEInfo.PEHeaderList) then
-    Exit;
-  SetListViewItem(Item, PEInfo.PEHeaderList[Item.Index]);
+  if EventsAllowedAndAllAssigned(Item) then
+    SetListViewItem(Item, PEInfo.PEHeaderList[Item.Index]);
 end;
 
 procedure TfmPeInformation.lvPEOptionalHeaderData(Sender: TObject; Item: TListItem);
 begin
-  if FBlockEvents then
-    Exit;
-  if not Assigned(Item) or not Assigned(PEInfo) or not assigned(PEInfo.PEOptionalHeaderList) then
-    Exit;
-  SetListViewItem(Item, PEInfo.PEOptionalHeaderList[Item.Index]);
+  if EventsAllowedAndAllAssigned(Item) then
+    SetListViewItem(Item, PEInfo.PEOptionalHeaderList[Item.Index]);
 end;
 
 procedure TfmPeInformation.lvImportsData(Sender: TObject; Item: TListItem);
 begin
-  if FBlockEvents then
-    Exit;
-  if not Assigned(Item) or not Assigned(PEInfo) or not assigned(PEInfo.ImportList) then
-    Exit;
-  SetListViewItem(Item, PEInfo.ImportList[Item.Index]);
+  if EventsAllowedAndAllAssigned(Item) then
+    SetListViewItem(Item, PEInfo.ImportList[Item.Index]);
 end;
 
 procedure TfmPeInformation.lvExportFunctionsData(Sender: TObject; Item: TListItem);
 begin
-  if FBlockEvents then
-    Exit;
-  if not Assigned(Item) or not Assigned(PEInfo) or not assigned(PEInfo.ExportList) then
-    Exit;
-  SetListViewItem(Item, PEInfo.ExportList[Item.Index]);
+  if EventsAllowedAndAllAssigned(Item) then
+    SetListViewItem(Item, PEInfo.ExportList[Item.Index]);
 end;
 
 procedure TfmPeInformation.lvImportFunctionsData(Sender: TObject; Item: TListItem);
@@ -489,15 +483,11 @@ var
   ImpExp: TImportExport;
   SelectedListItem: TListItem;
 begin
-  if FBlockEvents then
-    Exit;
-
+  if not EventsAllowedAndAllAssigned(Item) then
+    Exit; //==>
   SelectedListItem := lvImports.Selected;
   if not Assigned(SelectedListItem) then
-    Exit;
-
-  if not Assigned(Item) or not Assigned(PEInfo) or not assigned(PEInfo.ImportList) then
-    Exit;
+    Exit; //==>
 
   ImpExp := TImportExport(PEInfo.ImportList.Objects[SelectedListItem.Index]);
 
