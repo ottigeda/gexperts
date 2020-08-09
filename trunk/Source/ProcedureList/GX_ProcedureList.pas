@@ -574,6 +574,7 @@ end;
 procedure TfmProcedureList.GotoCurrentlySelectedProcedure;
 var
   ProcInfo: TProcedure;
+  LineNo: Integer;
 begin
   if lvProcs.Selected <> nil then
   begin
@@ -582,11 +583,14 @@ begin
     begin
       Assert(FEditReader <> nil);
       if FOptions.CodeViewVisible and (FCodeText.LineCount > 1) then
-        FEditReader.GotoLine(ProcInfo.LineNo + FCodeText.TopLine - 1)
+        LineNo := ProcInfo.LineNo + FCodeText.TopLine - 1
       else
-        FEditReader.GotoLine(ProcInfo.LineNo);
+        LineNo := ProcInfo.LineNo;
+      FEditReader.GotoLine(ProcInfo.LineNo);
       FEditReader.ShowSource;
       FEditReader.UnfoldCode;
+      // we must go to the line again because UnfoldCode might have made it visible only now
+      FEditReader.GotoLine(LineNo);
       FEditReader.FreeFileData;
       ModalResult := mrOk;
     end;
