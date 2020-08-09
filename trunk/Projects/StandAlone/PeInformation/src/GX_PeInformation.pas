@@ -91,9 +91,9 @@ type
     procedure actOptionsHexExecute(Sender: TObject);
     procedure actHelpContentsExecute(Sender: TObject);
     procedure ActionsUpdate(Action: TBasicAction; var Handled: Boolean);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure lbPackageInfoTypeClick(Sender: TObject);
     procedure lvExportFunctionsColumnClick(Sender: TObject; Column: TListColumn);
+    procedure lvExportFunctionsKeyPress(Sender: TObject; var Key: Char);
   private
     PEInfo: TPEFileInfo;
     FNumberType: TNumberType;
@@ -101,6 +101,7 @@ type
     FBlockEvents: Boolean;
     FExportsColumnToSortOn: Integer;
     FExportsColumnSortedList: TList;
+    FExportsFilter: string;
     procedure LoadPEInfo(const AFileName: string);
     procedure SaveSettings;
     procedure LoadSettings;
@@ -111,6 +112,7 @@ type
     procedure WmCheckParams(var _Msg: TMessage); message WM_CheckParams;
     function EventsAllowedAndAllAssigned(_Item: TListItem): Boolean;
     function CompareExportRows(_RowIdx1, _RowIdx2: Integer): Integer;
+    procedure UpdateExportsFilter;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -521,27 +523,42 @@ begin
 end;
 
 procedure TfmPeInformation.lvExportFunctionsColumnClick(Sender: TObject; Column: TListColumn);
-var
-  i: Integer;
 begin
   if not Assigned(PEInfo) then
     Exit; //==>
+  if FExportsColumnToSortOn = Column.Index + 1 then
+    FExportsColumnToSortOn := -FExportsColumnToSortOn
+  else
+    FExportsColumnToSortOn := Column.Index + 1;
+  UpdateExportsFilter;
+end;
+
+procedure TfmPeInformation.UpdateExportsFilter;
+var
+  i: Integer;
+  ExpList: TStrings;
+  s: string;
+begin
+  if FExportsFilter = '' then
+    s := '<enter text to filter>'
+  else
+    s := '[' + FExportsFilter + ']';
+  lvExportFunctions.Columns[0].Caption := 'Name ' + s;
 
   if not Assigned(FExportsColumnSortedList) then
     FExportsColumnSortedList := TList.Create
   else
     FExportsColumnSortedList.Clear;
 
+  ExpList := PEInfo.ExportList;
   for i := 0 to PEInfo.ExportList.Count - 1 do begin
-    FExportsColumnSortedList.Add(Pointer(i + 1));
+    if (FExportsFilter = '') or StrContains(FExportsFilter, ExpList[i], False) then
+      FExportsColumnSortedList.Add(Pointer(i + 1));
   end;
 
-  if FExportsColumnToSortOn = Column.Index + 1 then
-    FExportsColumnToSortOn := -FExportsColumnToSortOn
-  else
-    FExportsColumnToSortOn := Column.Index + 1;
   FExportsColumnSortedList.Sort(ExportsCompareFunc);
 
+  lvExportFunctions.Items.Count := FExportsColumnSortedList.Count;
   lvExportFunctions.Invalidate;
 end;
 
@@ -555,6 +572,21 @@ begin
   if Assigned(FExportsColumnSortedList) then
     Idx := Integer(FExportsColumnSortedList[Idx]) - 1;
   SetListViewItem(Item, PEInfo.ExportList[Idx]);
+end;
+
+procedure TfmPeInformation.lvExportFunctionsKeyPress(Sender: TObject; var Key: Char);
+const
+  EscChar = Char(VK_ESCAPE);
+  BackspaceChar = Char(vk_back);
+begin
+  if Key = EscChar then
+    FExportsFilter := ''
+  else   if Key = BackspaceChar then begin
+    if FExportsFilter <> '' then
+      FExportsFilter := LeftStr(FExportsFilter, Length(FExportsFilter) - 1);
+  end else
+    FExportsFilter := FExportsFilter + Key;
+  UpdateExportsFilter;
 end;
 
 procedure TfmPeInformation.lvImportFunctionsData(Sender: TObject; Item: TListItem);
@@ -888,15 +920,11 @@ begin
 
   u_dzVclUtils.TWinControl_ActivateDropFiles(Self, HandleFilesDropped);
 
-//  FileDrop := TDropFileTarget.Create(nil);
-//  FileDrop.OnDrop := DropFiles;
-//  FileDrop.DragTypes := [dtCopy, dtMove, dtLink];
-//  FileDrop.ShowImage := True;
-//  FileDrop.Register(pcMain);
-
   pcMain.ActivePage := tshMSDOS;
   CenterForm(Self);
   LoadSettings;
+
+  FExportsColumnToSortOn := 1;
 
   PostMessage(Handle, WM_CheckParams, 0, 0);
 end;
@@ -930,15 +958,6 @@ procedure TfmPeInformation.ActionsUpdate(Action: TBasicAction; var Handled: Bool
 begin
   actOptionsDecimal.Checked := (NumberType = ntDecimal);
   actOptionsHex.Checked := (NumberType = ntHex);
-end;
-
-procedure TfmPeInformation.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  if Key = VK_ESCAPE then
-  begin
-    Key := 0;
-    Close;
-  end;
 end;
 
 end.

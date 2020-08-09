@@ -10,10 +10,8 @@ object fmPeInformation: TfmPeInformation
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  KeyPreview = True
   Menu = MainMenu
   OldCreateOrder = True
-  OnKeyDown = FormKeyDown
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
@@ -170,7 +168,7 @@ object fmPeInformation: TfmPeInformation
         Align = alClient
         Columns = <
           item
-            Caption = 'Name'
+            Caption = 'Name <enter text to filter>'
             Width = 186
           end
           item
@@ -188,6 +186,7 @@ object fmPeInformation: TfmPeInformation
         ViewStyle = vsReport
         OnColumnClick = lvExportFunctionsColumnClick
         OnData = lvExportFunctionsData
+        OnKeyPress = lvExportFunctionsKeyPress
       end
     end
     object tshVersionInfo: TTabSheet
