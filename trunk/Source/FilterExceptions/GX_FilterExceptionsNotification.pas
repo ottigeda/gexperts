@@ -714,17 +714,15 @@ const
 {$IFDEF GX_DELPHIXE_UP}
   // the name of the debugger and thread object changed with Delphi XE
   Win32Debugger = 'TNativeDebugger';
-  NativeThread = 'TNativeThread';
 {$ELSE}
   Win32Debugger = 'TWin32Debugger';
-  NativeThread = 'TWin32Thread';
 {$ENDIF}
   DoShowExceptionName = '@Win32debug@' + Win32Debugger + '@DoShowException$qqrv';
   GetExceptionMessageName = '@Debug@TDebugger@GetExceptionMessage$qqrv';
   GetExceptionNameName = '@Debug@TDebugger@GetExceptionName$qqrv';
   GetFilenameName = '@Debug@TDebugger@GetFilename$qqrv';
   PostDebugMessageName = '@Debug@TDebugger@PostDebugMessage$qqr15Debug@TDebugMsgpv';
-  ParseThreadOsInfoName = '@Win32debug@' + Win32Debugger + '@ParseThreadOsInfo$qqrrx19Dbk@DbkThreadOsInfor31Win32debug@TExceptionRecordInfo';
+  ParseThreadOsInfoName = '@Win32debug@TNativeThread@ParseThreadOsInfo$qqrrx19Dbk@DbkThreadOsInfor31Win32debug@TExceptionRecordInfo';
 
 procedure InstallHook(_OnCheckException, _OnFilterButtonClick: TOnCheckExceptionEx);
 var
