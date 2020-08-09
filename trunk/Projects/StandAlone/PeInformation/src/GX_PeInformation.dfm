@@ -181,12 +181,12 @@ object fmPeInformation: TfmPeInformation
             Caption = 'Entry Point'
             Width = 93
           end>
-        ColumnClick = False
         OwnerData = True
         ReadOnly = True
         RowSelect = True
         TabOrder = 0
         ViewStyle = vsReport
+        OnColumnClick = lvExportFunctionsColumnClick
         OnData = lvExportFunctionsData
       end
     end

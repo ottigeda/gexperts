@@ -93,11 +93,14 @@ type
     procedure ActionsUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure lbPackageInfoTypeClick(Sender: TObject);
+    procedure lvExportFunctionsColumnClick(Sender: TObject; Column: TListColumn);
   private
     PEInfo: TPEFileInfo;
     FNumberType: TNumberType;
     FFileName: string;
     FBlockEvents: Boolean;
+    FExportsColumnToSortOn: Integer;
+    FExportsColumnSortedList: TList;
     procedure LoadPEInfo(const AFileName: string);
     procedure SaveSettings;
     procedure LoadSettings;
@@ -107,6 +110,7 @@ type
     procedure SetPackageInfo(const AFilename: string);
     procedure WmCheckParams(var _Msg: TMessage); message WM_CheckParams;
     function EventsAllowedAndAllAssigned(_Item: TListItem): Boolean;
+    function CompareExportRows(_RowIdx1, _RowIdx2: Integer): Integer;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -125,32 +129,26 @@ uses
   StrUtils,
   Math,
   Clipbrd,
-  GX_GenericUtils,
-  GX_DbugIntf,
   u_dzVersionInfo,
+  u_dzStringUtils,
+  u_dzTypes,
   u_dzPackageInfo,
   u_dzClassUtils,
   u_dzVclUtils,
+  GX_GenericUtils,
+  GX_DbugIntf,
   GX_PeInfoPrint;
 
 procedure SetListViewItem(AItem: TListItem; AValue: string);
 var
-  ItemList: TStrings;
+  Arr: TStringArray;
   i: Integer;
 begin
-  AValue := '"' + AValue + '"';
-
-  AValue := StringReplace(AValue, #9, '","', [rfReplaceAll]);
-
-  ItemList := TStringList.Create;
-  try
-    ItemList.CommaText := AValue;
-    if ItemList.Count > 0 then
-      AItem.Caption := ItemList[0];
-    for i := 1 to ItemList.Count - 1 do
-      AItem.SubItems.Add(ItemList[i]);
-  finally
-    FreeAndNil(ItemList);
+  Arr := SplitString(AValue, #9);
+  if Length(Arr) > 0 then begin
+    AItem.Caption := Arr[0];
+    for i := 1 to High(Arr) do
+      AItem.SubItems.Add(Arr[i]);
   end;
 end;
 
@@ -472,16 +470,98 @@ begin
     SetListViewItem(Item, PEInfo.ImportList[Item.Index]);
 end;
 
-procedure TfmPeInformation.lvExportFunctionsData(Sender: TObject; Item: TListItem);
+function TfmPeInformation.CompareExportRows(_RowIdx1, _RowIdx2: Integer): Integer;
+var
+  Arr1: TStringArray;
+  Arr2: TStringArray;
+  ColIdx: Integer;
+  s1: string;
+  s2: string;
+  ExpList: TStrings;
 begin
-  if EventsAllowedAndAllAssigned(Item) then
-    SetListViewItem(Item, PEInfo.ExportList[Item.Index]);
+  ExpList := PEInfo.ExportList;
+  Arr1 := SplitString(ExpList[_RowIdx1], #9);
+  Arr2 := SplitString(ExpList[_RowIdx2], #9);
+
+  ColIdx := Abs(FExportsColumnToSortOn) - 1;
+  if ColIdx < Length(Arr1) then
+    s1 := Arr1[ColIdx]
+  else
+    s1 := '';
+
+  if ColIdx < Length(Arr2) then
+    s2 := Arr2[ColIdx]
+  else
+    s2 := '';
+  case ColIdx of
+    1, 2: begin
+        if s1 = '' then
+          s1 := '0';
+        if s2 = '' then
+          s2 := '0';
+        if FExportsColumnToSortOn < 0 then
+          Result := CompareValue(StrToint(s1), StrToint(s2))
+        else
+          Result := CompareValue(StrToint(s1), StrToint(s2));
+      end;
+  else // 0: begin
+    if FExportsColumnToSortOn < 0 then
+      Result := CompareText(s2, s1)
+    else
+      Result := CompareText(s1, s2);
+  end;
+end;
+
+function ExportsCompareFunc(Item1, Item2: Pointer): Integer;
+var
+  Idx1: Integer absolute Item1;
+  Idx2: Integer absolute Item2;
+begin
+  Result := fmPeInformation.CompareExportRows(Idx1 - 1, Idx2 - 1);
+end;
+
+procedure TfmPeInformation.lvExportFunctionsColumnClick(Sender: TObject; Column: TListColumn);
+var
+  i: Integer;
+begin
+  if not Assigned(PEInfo) then
+    Exit; //==>
+
+  if not Assigned(FExportsColumnSortedList) then
+    FExportsColumnSortedList := TList.Create
+  else
+    FExportsColumnSortedList.Clear;
+
+  for i := 0 to PEInfo.ExportList.Count - 1 do begin
+    FExportsColumnSortedList.Add(Pointer(i + 1));
+  end;
+
+  if FExportsColumnToSortOn = Column.Index + 1 then
+    FExportsColumnToSortOn := -FExportsColumnToSortOn
+  else
+    FExportsColumnToSortOn := Column.Index + 1;
+  FExportsColumnSortedList.Sort(ExportsCompareFunc);
+
+  lvExportFunctions.Invalidate;
+end;
+
+procedure TfmPeInformation.lvExportFunctionsData(Sender: TObject; Item: TListItem);
+var
+  Idx: Integer;
+begin
+  if not EventsAllowedAndAllAssigned(Item) then
+    Exit; //==>
+  Idx := Item.Index;
+  if Assigned(FExportsColumnSortedList) then
+    Idx := Integer(FExportsColumnSortedList[Idx]) - 1;
+  SetListViewItem(Item, PEInfo.ExportList[Idx]);
 end;
 
 procedure TfmPeInformation.lvImportFunctionsData(Sender: TObject; Item: TListItem);
 var
   ImpExp: TImportExport;
   SelectedListItem: TListItem;
+  Idx: Integer;
 begin
   if not EventsAllowedAndAllAssigned(Item) then
     Exit; //==>
@@ -493,8 +573,9 @@ begin
 
   Assert(Assigned(ImpExp));
 
-  Item.Caption := ImpExp.Items[Item.Index].FunctionName;
-  Item.SubItems.Add(PEInfo.IntToNum(ImpExp.Items[Item.Index].Ordinal));
+  Idx := Item.Index;
+  Item.Caption := ImpExp.Items[Idx].FunctionName;
+  Item.SubItems.Add(PEInfo.IntToNum(ImpExp.Items[Idx].Ordinal));
 end;
 
 procedure TfmPeInformation.actEditCopyExecute(Sender: TObject);
@@ -824,6 +905,7 @@ destructor TfmPeInformation.Destroy;
 begin
   SaveSettings;
 
+  FreeAndNil(FExportsColumnSortedList);
   FreeAndNil(PEInfo);
 
   TListbox_ClearWithObjects(lbPackageInfoType);
