@@ -1609,7 +1609,7 @@ end;
 // Delphi 6 does not have Copy without the length parameter
 function Copy(const _s: string; _Pos: Integer): string;
 begin
-  Result := Copy(_s, _Pos, Length(_s) - _Pos);
+  Result := Copy(_s, _Pos, Length(_s) - _Pos + 1);
 end;
 
 function Copy(const _s: string; _Pos, _Len: Integer): string;
