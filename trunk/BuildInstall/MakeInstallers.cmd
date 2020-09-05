@@ -1,7 +1,7 @@
 @setlocal enableextensions
 @if not defined gx_cmd_debug (echo off)
 @endlocal
-set iscc="C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+set iscc="C:\Program Files (x86)\Inno Setup 5\ISCC.exe"
 
 if not exist %iscc% goto ISerror
 
