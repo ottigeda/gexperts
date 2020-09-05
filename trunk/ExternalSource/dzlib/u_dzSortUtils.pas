@@ -42,6 +42,59 @@ type
 {$ENDIF}
   ;
 
+///<summary>
+/// Try to optimize the pivot by chosing the median of Left, Right and ((Left + Right) shr 1) </summary>
+function GetPivot(_Left, _Right: Integer; _CompareMeth: TCompareItemsMeth): Integer; inline; overload;
+///<summary>
+/// Try to optimize the pivot by chosing the median of Left, Right and ((Left + Right) shr 1) </summary>
+function GetPivot(_Left, _Right: Integer; _DataHandler: ISortDataHandler): Integer; inline; overload;
+
 implementation
+
+function GetPivot(_Left, _Right: Integer; _CompareMeth: TCompareItemsMeth): Integer;
+begin
+  Result := (_Left + _Right) shr 1;
+  // try to optimize the pivot by chosing the
+  // median of Left, Right and Result:
+  if _CompareMeth(_Left, Result) > 0 then begin
+    if _CompareMeth(Result, _Right) > 0 then begin
+      // Result is already the median
+    end else if _CompareMeth(_Right, _Left) > 0 then begin
+      Result := _Left;
+    end else
+      Result := _Right;
+  end else begin
+    if _CompareMeth(_Right, Result) > 0 then begin
+      // Result is already the median
+    end else if _CompareMeth(_Left, _Right) > 0 then begin
+      Result := _Left;
+    end else begin
+      Result := _Right;
+    end;
+  end;
+end;
+
+function GetPivot(_Left, _Right: Integer; _DataHandler: ISortDataHandler): Integer;
+begin
+  Result := (_Left + _Right) shr 1;
+  // try to optimize the pivot by chosing the
+  // median of Left, Right and Result:
+  if _DataHandler.Compare(_Left, Result) > 0 then begin
+    if _DataHandler.Compare(Result, _Right) > 0 then begin
+      // Result is already the median
+    end else if _DataHandler.Compare(_Right, _Left) > 0 then begin
+      Result := _Left;
+    end else
+      Result := _Right;
+  end else begin
+    if _DataHandler.Compare(_Right, Result) > 0 then begin
+      // Result is already the median
+    end else if _DataHandler.Compare(_Left, _Right) > 0 then begin
+      Result := _Left;
+    end else begin
+      Result := _Right;
+    end;
+  end;
+end;
 
 end.

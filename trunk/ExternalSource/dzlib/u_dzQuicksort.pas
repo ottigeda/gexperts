@@ -67,11 +67,14 @@ var
   I, J, P: Integer;
 begin
   if _Left >= _Right then
-    exit;
+    Exit; //==>
   repeat
     I := _Left;
     J := _Right;
-    P := (_Left + _Right) shr 1;
+//    P := (_Left + _Right) shr 1;
+    // Chosing the pivot element can make a big difference:
+    // In my unit tests its factor 100 for the TestPartSortedPartReverse test
+    P := GetPivot(I, J, _DataHandler);
     repeat
       while _DataHandler.Compare(I, P) < 0 do
         Inc(I);
@@ -100,11 +103,14 @@ var
   I, J, P: Integer;
 begin
   if _Left >= _Right then
-    exit;
+    Exit; //==>
   repeat
     I := _Left;
     J := _Right;
-    P := (_Left + _Right) shr 1;
+//    P := (_Left + _Right) shr 1;
+    // Chosing the pivot element can make a big difference:
+    // In my unit tests its factor 100 for the TestPartSortedPartReverse test
+    P := GetPivot(I, J, _CompareMeth);
     repeat
       while _CompareMeth(I, P) < 0 do
         Inc(I);

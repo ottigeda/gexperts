@@ -22,6 +22,9 @@ function TStringArray_Concat(const _Arr1, _Arr2: array of string): TStringArray;
 /// @raises ERangeCheck if Index or Count < 0 </summary>
 procedure TStringArray_Delete(var _arr: TStringArray; _Index: Integer; _Count: Integer);
 
+function TStringArray_Contains(const _arr: TStringArray; const _s: string; out _Idx: Integer): Boolean; overload;
+function TStringArray_Contains(const _arr: TStringArray; const _s: string): Boolean; overload;
+
 function TStringArray_FromStrings(_sl: TStrings): TStringArray;
 {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
@@ -131,6 +134,26 @@ begin
     _arr[i] := _arr[i + _Count];
   end;
   Setlength(_arr, len - _Count);
+end;
+
+function TStringArray_Contains(const _arr: TStringArray; const _s: string; out _Idx: Integer): Boolean;
+var
+  i: Integer;
+begin
+  for i := Low(_arr) to High(_arr) do begin
+    if _arr[i] = _s then begin
+      Result := True;
+      Exit; //==>
+    end;
+  end;
+  Result := False;
+end;
+
+function TStringArray_Contains(const _arr: TStringArray; const _s: string): Boolean;
+var
+  Idx: Integer;
+begin
+  Result := TStringArray_Contains(_arr, _s, Idx);
 end;
 
 function TStringArray_Concat(const _Arr1, _Arr2: array of string): TStringArray;

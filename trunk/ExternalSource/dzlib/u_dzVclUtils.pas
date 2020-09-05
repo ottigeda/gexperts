@@ -46,7 +46,7 @@ var
 
 type
   ///<summary> Ancestor to all exceptions raised in this unit. </summary>
-  EdzVclUtils = class(Exception);
+  EdzVclUtils = class(EdzException);
 
   ///<summary> raised if the Combobox passed to SetOwnerDrawComboItemCount is not owner drawn. </summary>
   EdzComboBoxNotOwnerDraw = class(EdzVclUtils);

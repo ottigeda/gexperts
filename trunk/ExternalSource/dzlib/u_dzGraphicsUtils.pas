@@ -274,6 +274,21 @@ function TCanvas_BitBlt(_Canvas: TCanvas; _DestPos: TPoint; _Src: TBitmap; _Rop:
 inline;
 {$ENDIF}
 
+///<summary> abbreviation for StretchBlt that takes TCanvas and TPoint values. </summary>
+function dzStretchBlt(_DestCnv: TCanvas; _DestTopLeft: TPoint; _DestSize: TPoint;
+  _SrcCnv: TCanvas; _SrcTopLeft: TPoint; _SrcSize: TPoint; _Rop: DWORD = SRCCOPY): BOOL; overload;
+{$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}
+
+///<summary> abbreviation for StretchBlt that takes TCanvas, TBitmap and TPoint values. </summary>
+function dzStretchBlt(_DestCnv: TCanvas; _DestTopLeft: TPoint; _DestSize: TPoint;
+  _SrcBmp: TBitmap; _SrcTopLeft: TPoint; _SrcSize: TPoint; _Rop: DWORD = SRCCOPY): BOOL; overload;
+{$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}
+
+///<summary> abbreviation for StretchBlt that takes two TBitmap and TPoint values. </summary>
+function dzStretchBlt(_DestBmp: TBitmap; _DestTopLeft: TPoint; _DestSize: TPoint;
+  _SrcBmp: TBitmap; _SrcTopLeft: TPoint; _SrcSize: TPoint; _Rop: DWORD = SRCCOPY): BOOL; overload;
+{$IFDEF SUPPORTS_INLINE}inline; {$ENDIF}
+
 ///<summary> abbreviation for StretchBlt that takes TRect </summary>
 function dzStretchBlt(_DestHandle: Hdc; _DestRect: TRect;
   _SrcHandle: Hdc; _SrcRect: TRect; _Rop: DWORD = SRCCOPY): LongBool; overload;
@@ -655,6 +670,31 @@ inline;
 {$ENDIF}
 begin
   Result := dzDGetText(_s, 'dzlib');
+end;
+
+function dzStretchBlt(_DestCnv: TCanvas; _DestTopLeft: TPoint; _DestSize: TPoint;
+  _SrcCnv: TCanvas; _SrcTopLeft: TPoint; _SrcSize: TPoint; _Rop: DWORD): BOOL;
+begin
+  Result := StretchBlt(_DestCnv.Handle,
+    _DestTopLeft.x, _DestTopLeft.y,
+    _DestSize.x, _DestSize.y,
+    _SrcCnv.Handle,
+    _SrcTopLeft.x, _SrcTopLeft.y,
+    _SrcSize.x, _SrcSize.y, _Rop);
+end;
+
+function dzStretchBlt(_DestCnv: TCanvas; _DestTopLeft: TPoint; _DestSize: TPoint;
+  _SrcBmp: TBitmap; _SrcTopLeft: TPoint; _SrcSize: TPoint; _Rop: DWORD = SRCCOPY): BOOL;
+begin
+  Result := dzStretchBlt(_DestCnv, _DestTopLeft, _DestSize,
+    _SrcBmp.Canvas, _SrcTopLeft, _SrcSize, _Rop);
+end;
+
+function dzStretchBlt(_DestBmp: TBitmap; _DestTopLeft: TPoint; _DestSize: TPoint;
+  _SrcBmp: TBitmap; _SrcTopLeft: TPoint; _SrcSize: TPoint; _Rop: DWORD = SRCCOPY): BOOL; overload;
+begin
+  Result := dzStretchBlt(_DestBmp.Canvas, _DestTopLeft, _DestSize,
+    _SrcBmp.Canvas, _SrcTopLeft, _SrcSize, _Rop);
 end;
 
 function dzStretchBlt(_DestHandle: Hdc; _DestRect: TRect; _SrcHandle: Hdc; _SrcRect: TRect; _Rop: DWORD): LongBool;
