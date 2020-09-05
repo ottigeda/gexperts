@@ -38,6 +38,7 @@ type
      ideRS103U2, // Rad Studio 10.3 Rio Update 2
      ideRS103U3, // Rad Studio 10.3 Rio Update 3
      ideRS104,   // Rad Studio 10.4 Sydney
+     ideRS104U1, // Rad Studio 10.4 Sydney Update 1
      // C# Builder
      ideCSB100,
      // C++Builder
@@ -936,24 +937,30 @@ end;
 
   Patch1 and Patch2 apparently did not change any of these versions and even those files
   the patches relplaced still have the same version as the original files. WTF?
+
+  Delphi 10.4.1 Sydney Update 1
+  File                 File Version    Size       Modified Time
+  delphicoreide270.bpl 27.0.38860.1461
+  coreide270.bpl       27.0.38860.1461
+  bds.exe              27.0.38860.1461
+  dcldb270.bpl         27.0.38860.1461
 }
 
 function GetRS104Version: TBorlandIdeVersion;
 const
-  CoreIde2700: TVersionNumber = (Minor: 27; Major: 0; Build: 37829; Release: 9797);
+  CoreIde2700:     TVersionNumber = (Minor: 27; Major: 0; Build: 37829; Release: 9797);
+  CoreIde2700UPd1: TVersionNumber = (Minor: 27; Major: 0; Build: 38860; Release: 1461);
 var
   CoreIdeFileVersion: TVersionNumber;
   VersionNumber: Integer;
 begin
   CoreIdeFileVersion := GetFileVersionNumber(GetIdeRootDirectory + 'Bin\coreide270.bpl');
 
-  VersionNumber := CompareVersionNumber(CoreIdeFileVersion, CoreIde2700);
+  VersionNumber := CompareVersionNumber(CoreIdeFileVersion, CoreIde2700UPd1);
   if VersionNumber >= 0 then begin
+    Result := ideRS104U1;
+  end else
     Result := ideRS104;
-  end
-  else begin
-    Result := ideUnknown;
-  end;
 end;
 
 function GetBorlandIdeVersion: TBorlandIdeVersion;
@@ -1083,7 +1090,7 @@ begin
 
   {$IFDEF VER340}
     Result := GetRS104Version;
-    Assert(Result in [ideRS104]);
+    Assert(Result in [ideRS104, ideRS104U1]);
   {$ENDIF VER340}
 
   if Result = ideUnknown then
