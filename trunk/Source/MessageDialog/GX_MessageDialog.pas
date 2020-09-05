@@ -197,8 +197,6 @@ type
     procedure edtHelpContextChange(Sender: TObject);
     procedure edtDefaultButtonChange(Sender: TObject);
     procedure chkDefaultButtonClick(Sender: TObject);
-    procedure FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight, MaxWidth,
-      MaxHeight: Integer);
   private
     FFunctionResultsGroupBox: TGroupBox;
     FMessageType: TAbstractMessageType;
@@ -206,8 +204,6 @@ type
     FUsesUnit: string;
     FUsesUnitCLX: string;
     FEditor: TSynEdit;
-    FOrigWidth: Integer;
-    FOrigHeight: Integer;
     function AssembleGroupBoxCheckBoxesText(GroupBox: TGroupBox): string;
     function AssembleGroupBoxRadioButtonsText(GroupBox: TGroupBox): string;
     procedure DistributeGroupBoxCheckBoxesText(const Value: string; GroupBox: TGroupBox);
@@ -263,6 +259,8 @@ type
     property Quotes: Boolean read GetQuotes write SetQuotes;
     property GNUGettextSupport: Boolean read GetGNUGettextSupport write SetGNUGettextSupport;
     property DialogBoxType: string read GetDialogBoxType write SetDialogBoxType;
+  protected
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent; Settings: TMessageDialogSettings); reintroduce;
     destructor Destroy; override;
@@ -383,13 +381,6 @@ constructor TfmMessageDialog.Create(AOwner: TComponent; Settings: TMessageDialog
 begin
   inherited Create(AOwner);
 
-  FOrigWidth := Width;
-  FOrigHeight := Height;
-
-// for some unknown reason this doesn't work here
-// so we use the FormResizeEvent instead
-//  TControl_SetMinConstraints(Self);
-
   FMessageType := nil;
 
   pgeMessageDialogChange(Self);
@@ -423,6 +414,12 @@ begin
   SetSynEditHighlighter(FEditor, GetGXHighlighterForCurrentSourceEditor);
 
   UpdatePreview;
+end;
+
+procedure TfmMessageDialog.Loaded;
+begin
+  inherited Loaded;
+  TControl_SetMinConstraints(Self);
 end;
 
 function TfmMessageDialog.AssembleGroupBoxCheckBoxesText(GroupBox: TGroupBox): string;
@@ -580,14 +577,6 @@ begin
     if CheckResults then
       (Control as TCheckBox).Checked := Control.Enabled;
   end;
-end;
-
-procedure TfmMessageDialog.FormConstrainedResize(Sender: TObject; var MinWidth, MinHeight, MaxWidth,
-  MaxHeight: Integer);
-begin
-  inherited;
-  MinWidth := FOrigWidth;
-  MinHeight := FOrigHeight;
 end;
 
 function TfmMessageDialog.GetAllDialogButtons: string;
