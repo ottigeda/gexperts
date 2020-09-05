@@ -370,7 +370,7 @@ implementation
 uses
   Messages, Graphics, StrUtils, Math, ToolsAPI, Clipbrd,
   u_dzVclUtils, u_dzMapFileReader, u_dzFileUtils, u_dzOsUtils, u_dzClassUtils, u_dzStringUtils,
-  GX_IdeUtils, GX_UsesManager,
+  GX_IdeUtils, GX_UsesManager, GX_GetIdeVersion,
 {$IFOPT D+}
   GX_DbugIntf,
 {$ENDIF D+}
@@ -386,8 +386,14 @@ const
 var
   Value: Integer;
 begin
-  Value := TRegistry_ReadInteger(RegKey, 'Installed', 0, HKEY_CURRENT_USER);
-  gblIsPatch2Installed := (Value <> 0);
+  if GetBorlandIdeVersion = ideRS104 then begin
+    Value := TRegistry_ReadInteger(RegKey, 'Installed', 0, HKEY_CURRENT_USER);
+    gblIsPatch2Installed := (Value <> 0);
+  end else begin
+    // 10.4 Update 1 included the fix from Patch 2
+    // We assume that the next updates will also include it
+    gblIsPatch2Installed := True
+  end;
 end;
 {$ENDIF}
 
