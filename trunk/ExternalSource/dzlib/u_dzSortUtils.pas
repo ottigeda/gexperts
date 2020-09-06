@@ -44,10 +44,10 @@ type
 
 ///<summary>
 /// Try to optimize the pivot by chosing the median of Left, Right and ((Left + Right) shr 1) </summary>
-function GetPivot(_Left, _Right: Integer; _CompareMeth: TCompareItemsMeth): Integer; inline; overload;
+function GetPivot(_Left, _Right: Integer; _CompareMeth: TCompareItemsMeth): Integer; {$IFDEF SupportsInline} inline; {$ENDIF} overload;
 ///<summary>
 /// Try to optimize the pivot by chosing the median of Left, Right and ((Left + Right) shr 1) </summary>
-function GetPivot(_Left, _Right: Integer; _DataHandler: ISortDataHandler): Integer; inline; overload;
+function GetPivot(_Left, _Right: Integer; _DataHandler: ISortDataHandler): Integer; {$IFDEF SupportsInline} inline; {$ENDIF} overload;
 
 implementation
 
