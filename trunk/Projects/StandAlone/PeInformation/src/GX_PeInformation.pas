@@ -209,6 +209,8 @@ end;
 procedure TfmPeInformation.SetVersionInfo(const AFilename: string);
 var
   VerItems: TListItems;
+  st: TStringList;
+  i: Integer;
 
   procedure AddItem(const ACaption, AValue: string);
   var
@@ -225,6 +227,8 @@ var
   VerInfo: IFileInfo;
 begin
   VerInfo := TFileInfo.Create(AFileName);
+  VerInfo.AllowExceptions := False;
+
   VerItems := lvVersionInfo.Items;
   VerItems.BeginUpdate;
   try
@@ -246,6 +250,14 @@ begin
       AddItem('Comments', VerInfo.Comments);
       AddItem('PrivateBuild', VerInfo.PrivateBuild);
       AddItem('SpecialBuild', VerInfo.SpecialBuild);
+      st := TStringList.Create;
+      try
+        VerInfo.GetAllStrings(st);
+        for i := 0 to st.Count - 1 do
+          AddItem(st.Names[i], st.Values[st.Names[i]]);
+      finally
+        FreeAndNil(st);
+      end;
     end;
   finally
     VerItems.EndUpdate;
