@@ -16,7 +16,8 @@ type
 
 type
   TFileProperty = (FpProductName, FpProductVersion, FpFileDescription, FpFileVersion, FpCopyright,
-    FpCompanyName, FpTrademarks, fpInternalName, fpOriginalFilename);
+    FpCompanyName, FpTrademarks, fpInternalName, fpOriginalFilename, fpComments, fpPrivateBuild,
+    fpSpecialBuild);
   TFilePropertySet = set of TFileProperty;
 
 type
@@ -72,6 +73,9 @@ type
     function LegalTradeMarks: string;
     function InternalName: string;
     function OriginalFilename: string;
+    function Comments: string;
+    function PrivateBuild: string;
+    function SpecialBuild: string;
   end;
 
 type
@@ -126,6 +130,9 @@ type
     function LegalTradeMarks: string;
     function InternalName: string;
     function OriginalFilename: string;
+    function Comments: string;
+    function PrivateBuild: string;
+    function SpecialBuild: string;
   public
     constructor Create;
     destructor Destroy; override;
@@ -212,6 +219,11 @@ begin
   FAllowExceptions := _Value;
 end;
 
+function TCustomFileInfo.SpecialBuild: string;
+begin
+  Result := GetFileProperty(fpSpecialBuild);
+end;
+
 function TCustomFileInfo.ReadVersionData: TEXEVersionData;
 // code taken from http://stackoverflow.com/a/5539411/49925
 type
@@ -293,7 +305,10 @@ begin
           FpFileVersion,
           FpCopyright,
           fpInternalName,
-          fpOriginalFilename: begin
+          fpOriginalFilename,
+          fpComments,
+          fpPrivateBuild,
+          fpSpecialBuild: begin
             if not HasVersionInfo then begin
               if FAllowExceptions then
                 raise EAIInvalidVersionInfo.CreateFmt(_('File "%s" has no version information.'), [Filename]);
@@ -311,6 +326,9 @@ begin
             FFileProperties[FpCompanyName] := fi.CompanyName;
             FFileProperties[fpOriginalFilename] := fi.OriginalFilename;
             FFileProperties[fpInternalName] := fi.InternalName;
+            FFileProperties[fpComments] := fi.Comments;
+            FFileProperties[fpPrivateBuild] := fi.PrivateBuild;
+            FFileProperties[fpSpecialBuild] := fi.SpecialBuild;
 
             FFilePropertiesRead := True;
           end;
@@ -328,6 +346,11 @@ end;
 function TCustomFileInfo.InternalName: string;
 begin
   Result := GetFileProperty(fpInternalName);
+end;
+
+function TCustomFileInfo.Comments: string;
+begin
+  Result := GetFileProperty(fpComments);
 end;
 
 function TCustomFileInfo.Company: string;
@@ -382,6 +405,11 @@ begin
     end;
   end else
     Result := _('<no version information>');
+end;
+
+function TCustomFileInfo.PrivateBuild: string;
+begin
+  Result := GetFileProperty(fpPrivateBuild);
 end;
 
 function TCustomFileInfo.ProductName: string;

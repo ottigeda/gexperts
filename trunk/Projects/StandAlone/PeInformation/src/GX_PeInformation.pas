@@ -243,6 +243,9 @@ begin
       AddItem('Trademarks', VerInfo.LegalTradeMarks);
       AddItem('Internal Name', VerInfo.InternalName);
       AddItem('Original Filename', VerInfo.OriginalFilename);
+      AddItem('Comments', VerInfo.Comments);
+      AddItem('PrivateBuild', VerInfo.PrivateBuild);
+      AddItem('SpecialBuild', VerInfo.SpecialBuild);
     end;
   finally
     VerItems.EndUpdate;
