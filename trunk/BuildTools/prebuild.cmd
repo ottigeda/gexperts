@@ -11,6 +11,8 @@ rem remove quotes
 set PROJECTPATH=%PROJECTPATH:"=%
 rem echo PROJECTPATH=%PROJECTPATH%
 
+subwcrev %~dp0\.. %~dp0\templates\SVN_Version_template.ini %~dp0\..\SVN_Version.ini
+
 if "%PROJECTPATH%"=="" goto NeedPara
 rem echo PROJECTPATH=%PROJECTPATH%
 call :DelExt %1

@@ -4,7 +4,8 @@
 @setlocal enableextensions
 @if not defined gx_cmd_debug (echo off)
 @endlocal
-buildtools\prepbuild.exe --incbuild --readini=projects\GExperts --updateini=projects\GExperts
+rem we no longer increment the build number, it's now set to the highes svn revision
+rem buildtools\prepbuild.exe --incbuild --readini=projects\GExperts --updateini=projects\GExperts
 if "%1"=="" goto :list
 call :doItem %1
 goto :eof
