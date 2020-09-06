@@ -6,7 +6,9 @@ unit u_dzVersionInfo;
 interface
 
 uses
-  SysUtils;
+  SysUtils,
+  Classes,
+  u_dzTypes;
 
 type
   EApplicationInfo = class(Exception);
@@ -76,6 +78,7 @@ type
     function Comments: string;
     function PrivateBuild: string;
     function SpecialBuild: string;
+    procedure GetAllStrings(_Strings: TStrings);
   end;
 
 type
@@ -133,6 +136,7 @@ type
     function Comments: string;
     function PrivateBuild: string;
     function SpecialBuild: string;
+    procedure GetAllStrings(_Strings: TStrings);
   public
     constructor Create;
     destructor Destroy; override;
@@ -224,6 +228,333 @@ begin
   Result := GetFileProperty(fpSpecialBuild);
 end;
 
+type
+  ///<summary>
+  /// Represents the organization of data in a file-version resource.
+  /// It contains a string that describes a specific aspect of a file, for example, a file's
+  /// version, its copyright notices, or its trademarks.
+  /// @member wLength The length, in bytes, of this String structure.
+  /// @member wValueLength: The size, in words, of the Value member.
+  /// @member wType The type of data in the version resource. This member is 1 if the version
+  ///               resource contains text data and 0 if the version resource contains binary data.
+  /// @member szKey An arbitrary Unicode string.
+  /// @member Value A zero-terminated string. See the szKey member description for more information.
+  /// @Note This record cannot be read or written as such because it contains a variable size
+  ///       field szKey. Call ReadVsVersionInfo to read it
+  /// see https://docs.microsoft.com/en-us/windows/win32/menurc/string-str </summary>
+  PVS_String = ^TVS_String;
+  TVS_String = packed record
+    wLength: UInt16;
+    wValueLength: UInt16;
+    wType: UInt16;
+    szKey: WideString;
+    // Padding: As many zero words as necessary to align the Children member on a 32-bit boundary.
+    Value: WideString;
+  end;
+  ///<summary>
+  /// Represents the organization of data in a file-version resource.
+  /// It contains language and code page formatting information for the strings specified by the
+  /// Children member. A code page is an ordered character set.
+  /// @member wLength The length, in bytes, of this StringTable structure, including all
+  ///                 structures indicated by the Children member.
+  /// @member wValueLength: This member is always equal to zero.
+  /// @member wType The type of data in the version resource. This member is 1 if the version
+  ///               resource contains text data and 0 if the version resource contains binary data.
+  /// @member szKey An 8-digit hexadecimal number stored as a Unicode string. The four most
+  ///               significant digits represent the language identifier. The four least
+  ///               significant digits represent the code page for which the data is formatted.
+  ///               Each Microsoft Standard Language identifier contains two parts:
+  ///               the low-order 10 bits specify the major language,
+  ///               and the high-order 6 bits specify the sublanguage.
+  ///               For a table of valid identifiers see ???
+  ///               (The  reference is missing from the original description.)
+  /// @Note This record cannot be read or written as such because it contains a variable size
+  ///       field szKey. Call ReadVsVersionInfo to read it
+  // see https://docs.microsoft.com/en-us/windows/win32/menurc/stringtable </summary>
+  PVS_StringTable = ^TVS_StringTable;
+  TVS_StringTable = packed record
+    wLength: UInt16;
+    wValueLength: UInt16;
+    wType: UInt16;
+    szKey: WideString;
+    // Padding: As many zero words as necessary to align the Children member on a 32-bit boundary.
+    Children: array of TVS_String;
+  end;
+  ///<summary>
+  /// Represents the organization of data in a file-version resource.
+  /// It contains version information that can be displayed for a particular language and code page.
+  /// @member wLength The length, in bytes, of the entire StringFileInfo block, including all
+  ///                 structures indicated by the Children member.
+  /// @member wValueLength This member is always equal to zero.
+  /// @member wType The type of data in the version resource. This member is 1 if the version
+  ///               resource contains text data and 0 if the version resource contains binary data.
+  /// @member szKey The Unicode string L"StringFileInfo"
+  /// @Note This record cannot be read or written as such because it contains a variable size
+  ///       field szKey. Call ReadVsVersionInfo to read it
+  /// see https://docs.microsoft.com/en-us/windows/win32/menurc/stringfileinfo </summary>
+  TVS_StringFileInfo = packed record
+    wLength: UInt16;
+    wValueLength: UInt16;
+    wType: UInt16;
+    szKey: WideString;
+    // Padding: As many zero words as necessary to align the Children member on a 32-bit boundary.
+    Children: array of TVS_StringTable;
+  end;
+
+  ///<summary>
+  /// Represents the organization of data in a file-version resource. It typically contains a list
+  /// of language and code page identifier pairs that the version of the application or DLL supports.
+  /// @member wLength The length, in bytes, of the Var structure.
+  /// @member wValueLength The length, in bytes, of the Value member.
+  /// @member wType The type of data in the version resource. This member is 1 if the version
+  ///               resource contains text data and 0 if the version resource contains binary data.
+  /// @member szKey The Unicode string L"Translation".
+  /// @member Value An array of one or more values that are language and code page identifier pairs.
+  ///               If you use the Var structure to list the languages your application or DLL
+  ///               supports instead of using multiple version resources, use the Value member to
+  ///               contain an array of DWORD values indicating the language and code page combinations
+  ///               supported by this file. The low-order word of each DWORD must contain a Microsoft
+  ///               language identifier, and the high-order word must contain the IBM code page number.
+  ///               Either high-order or low-order word can be zero, indicating that the file is
+  ///               language or code page independent. If the Var structure is omitted, the file
+  ///               will be interpreted as both language and code page independent.
+  /// @Note This record cannot be read or written as such because it contains a variable size
+  ///       field szKey. Call ReadVsVersionInfo to read it
+  /// see https://docs.microsoft.com/en-us/windows/win32/menurc/var-str </summary>
+  TVS_Var = packed record
+    wLength: UInt16;
+    wValueLength: UInt16;
+    wType: UInt16;
+    szKey: WideString;
+    // Padding: As many zero words as necessary to align the Value member on a 32-bit boundary.
+    Value: UInt32;
+  end;
+
+  ///<summary>
+  /// Represents the organization of data in a file-version resource. It contains version
+  /// information not dependent on a particular language and code page combination.
+  /// @member wLength The length, in bytes, of the entire VarFileInfo block,
+  ///                 including all structures indicated by the Children member.
+  /// @member wValueLength This member is always equal to zero.
+  /// @member wType The type of data in the version resource. This member is 1 if the version
+  ///               resource contains text data and 0 if the version resource contains binary data.
+  /// @member szKey The Unicode string L"VarFileInfo"
+  /// @member Children Typically contains a list of languages that the application or DLL supports.
+  /// @Note This record cannot be read or written as such because it contains a variable size
+  ///       field szKey. Call ReadVsVersionInfo to read it
+  /// see https://docs.microsoft.com/en-us/windows/win32/menurc/varfileinfo </summary>
+  TVS_VarFileInfo = packed record
+    wLength: UInt16;
+    wValueLength: UInt16;
+    wType: UInt16;
+    szKey: WideString;
+    // Padding: As many zero words as necessary to align the Children member on a 32-bit boundary.
+    Children: array of TVS_Var
+  end;
+
+  ///<summary>
+  /// Represents the organization of data in a file-version resource. It is the root structure
+  /// that contains all other file-version information structures.
+  /// @member wLength The length, in bytes, of the VS_VERSIONINFO structure. This length does not
+  ///                 include any padding that aligns any subsequent version resource data on a
+  ///                 32-bit boundary.
+  /// @member wValueLength The length, in bytes, of the Value member. This value is zero if there
+  ///                      is no Value member associated with the current version structure.
+  /// @member wType The type of data in the version resource. This member is 1 if the version
+  ///               resource contains text data and 0 if the version resource contains binary data.
+  /// @member szKey The Unicode string L"VS_VERSION_INFO".
+  /// @member Value Arbitrary data associated with this VS_VERSIONINFO structure.
+  ///               The wValueLength member specifies the length of this member;
+  ///               if wValueLength is zero, this member does not exist.
+  /// @member Children An array of zero or one StringFileInfo structures, and zero or one
+  ///                  VarFileInfo structures that are children of the current VS_VERSIONINFO
+  ///                  structure.
+  // @NOTE This record cannot be read or written as such because it contains a variable size
+  //       field szKey and needs padding for aligning the members. Call ReadVsVersionInfo to read it
+  /// see https://docs.microsoft.com/en-us/windows/win32/menurc/vs-versioninfo </summary>
+  TVsVersionInfo = packed record
+    wLength: UInt16;
+    wValueLength: UInt16;
+    wType: UInt16;
+    szKey: WideString;
+    // Padding1: Contains as many zero words as necessary to align the Value member on a 32-bit boundary.
+    Value: VS_FIXEDFILEINFO;
+    // Padding2: As many zero words as necessary to align the Children member on a 32-bit boundary.
+    //           These bytes are not included in wValueLength. This member is optional.
+    // Children: TBytes;
+  end;
+
+function ReadNullTerminatedWideString(const _Buffer: TBytes; _Offset: Integer): WideString;
+var
+  CharArr: array of WideChar;
+  BufLen: Integer;
+begin
+  BufLen := Length(_Buffer);
+  SetLength(CharArr, (BufLen - _Offset) div SizeOf(WideChar) + 1);
+  Move(_Buffer[_Offset], CharArr[0], BufLen - _Offset);
+  Result := PWideChar(@CharArr[0]);
+end;
+
+procedure ReadStringVsString(const _Buffer: TBytes; _Offset: Integer; out _VsString: TVS_String);
+var
+  szOffset: Integer;
+  Offset: Integer;
+begin
+  szOffset := SizeOf(UInt16) * 3;
+  Move(_Buffer[_Offset], _VsString, szOffset);
+
+  _VsString.szKey := ReadNullTerminatedWideString(_Buffer, _Offset + szOffset);
+
+  Offset := (_Offset + szOffset + (Length(_VsString.szKey) + 1) * SizeOf(WideChar) + 3) and (not 3);
+  _VsString.Value := ReadNullTerminatedWideString(_Buffer, Offset);
+end;
+
+procedure ReadVsStringTable(const _Buffer: TBytes; _Offset: Integer; out _StringTable: TVS_StringTable);
+var
+  szOffset: Integer;
+  Offset: Integer;
+  VsString: PVS_String;
+  Idx: Integer;
+begin
+  szOffset := SizeOf(UInt16) * 3;
+  Move(_Buffer[_Offset], _StringTable, szOffset);
+  if _StringTable.wValueLength <> 0 then
+    raise EdzException.CreateFmt(_('StringTable.wValueLength must bei 0 but is %d'), [_StringTable.wValueLength]);
+
+  _StringTable.szKey := ReadNullTerminatedWideString(_Buffer, _Offset + szOffset);
+  // _StringTable.szKey is the language code
+
+  SetLength(_StringTable.Children, 0);
+  Offset := (_Offset + szOffset + (Length(_StringTable.szKey) + 1) * SizeOf(WideChar) + 3) and (not 3);
+  repeat
+    Idx := Length(_StringTable.Children);
+    SetLength(_StringTable.Children, Idx + 1);
+    VsString := @_StringTable.Children[Idx];
+    ReadStringVsString(_Buffer, Offset, VsString^);
+    Offset := (Offset + VsString.wLength + 3) and (not 3);
+  until Offset >= _StringTable.wLength + _Offset;
+end;
+
+procedure ReadVsStringFileInfo(const _Buffer: TBytes; _Offset: Integer;
+  out _StringFileInfo: TVS_StringFileInfo);
+var
+  szOffset: Integer;
+  Offset: Integer;
+  StringTable: PVS_StringTable;
+  Idx: Integer;
+begin
+  szOffset := SizeOf(UInt16) * 3;
+  Move(_Buffer[_Offset], _StringFileInfo, szOffset);
+  if _StringFileInfo.wValueLength <> 0 then
+    raise EdzException.CreateFmt(_('StringFileInfo.wValueLength must bei 0 but is %d'), [_StringFileInfo.wValueLength]);
+
+  _StringFileInfo.szKey := ReadNullTerminatedWideString(_Buffer, _Offset + szOffset);
+  if _StringFileInfo.szKey <> 'StringFileInfo' then
+    raise EdzException.CreateFmt(_('StringFileInfo.szKey "StringFileInfo" but is "%s"'), [_StringFileInfo.szKey]);
+
+  SetLength(_StringFileInfo.Children, 0);
+  Offset := (_Offset + szOffset + (Length(_StringFileInfo.szKey) + 1) * SizeOf(WideChar) + 3) and (not 3);
+  repeat
+    Idx := Length(_StringFileInfo.Children);
+    SetLength(_StringFileInfo.Children, Idx + 1);
+    StringTable := @_StringFileInfo.Children[Idx];
+    ReadVsStringTable(_Buffer, Offset, StringTable^);
+    Offset := (Offset + StringTable.wLength + 3) and (not 3);
+  until Offset >= _StringFileInfo.wLength + _Offset;
+end;
+
+procedure ReadVsVarFileInfo(const _Buffer: TBytes; _Offset: Integer;
+  out _VarFileInfo: TVS_VarFileInfo);
+var
+  szOffset: Integer;
+begin
+  szOffset := SizeOf(UInt16) * 3;
+  Move(_Buffer[_Offset], _VarFileInfo, szOffset);
+  _VarFileInfo.szKey := ReadNullTerminatedWideString(_Buffer, _Offset + szOffset);
+end;
+
+procedure ReadVsVersionInfo(const _Buffer: TBytes; out _VerInfo: TVsVersionInfo;
+  out _StringFileInfo: TVS_StringFileInfo; out _VarFileInfo: TVS_VarFileInfo);
+var
+  Offset: Integer;
+  szOffset: Integer;
+  Key: WideString;
+begin
+  szOffset := SizeOf(UInt16) * 3;
+  Move(_Buffer[0], _VerInfo, szOffset);
+  if _VerInfo.wLength = 0 then
+    raise EdzException.Create('Version Info is empty');
+
+  _VerInfo.szKey := ReadNullTerminatedWideString(_Buffer, szOffset);
+  if _VerInfo.szKey <> 'VS_VERSION_INFO' then
+    raise EdzException.CreateFmt(_('VS_VersionInfo.szKey is not "VS_VERSION_INFO" but "%s"'), [_VerInfo.szKey]);
+
+  Offset := (szOffset + (Length(_VerInfo.szKey) + 1) * SizeOf(WideChar) + 3) and (not 3);
+  if _VerInfo.wValueLength > 0 then begin
+    Move(_Buffer[Offset], _VerInfo.Value, SizeOf(_VerInfo.Value));
+    if _VerInfo.Value.dwSignature <> $FEEF04BD then
+      raise EdzException.Create('Version Info has wrong signature');
+    Offset := Offset + SizeOf(_VerInfo.Value);
+  end;
+
+  _StringFileInfo.wLength := 0;
+  _VarFileInfo.wLength := 0;
+
+  // now it gets really complicated:
+  // Children is zero or one StringFileInfo structures and zero or one VarFileInfo structures
+  if Offset = _VerInfo.wLength then begin
+    // None of these structures exist
+    Exit; //==>
+  end;
+  // at least one of these structures exists. In order to find out which one it is, we must read
+  // the szKey string
+  szOffset := Offset + SizeOf(UInt16) * 3;
+  Key := ReadNullTerminatedWideString(_Buffer, szOffset);
+  if Key = 'StringFileInfo' then begin
+    ReadVsStringFileInfo(_Buffer, Offset, _StringFileInfo);
+    Offset := Offset + _StringFileInfo.wLength;
+    szOffset := Offset + SizeOf(UInt16) * 3;
+    Key := ReadNullTerminatedWideString(_Buffer, szOffset);
+  end;
+  if Key = 'VarFileInfo' then begin
+    ReadVsVarFileInfo(_Buffer, Offset, _VarFileInfo);
+  end;
+end;
+
+procedure TCustomFileInfo.GetAllStrings(_Strings: TStrings);
+var
+  Dummy: DWORD;
+  Len: DWORD;
+  Buf: TBytes;
+  InfoBase: TVsVersionInfo;
+  StringFileInfo: TVS_StringFileInfo;
+  VarFileInfo: TVS_VarFileInfo;
+  sfi: Integer;
+  Lang: WideString;
+  st: PVS_StringTable;
+  sti: Integer;
+begin
+  Len := GetFileVersionInfoSize(PChar(Filename), Dummy);
+  if Len = 0 then
+    RaiseLastOSError;
+  SetLength(Buf, Len);
+
+  if not GetFileVersionInfo(PChar(Filename), 0, Len, @Buf[0]) then
+    RaiseLastOSError;
+
+  ReadVsVersionInfo(Buf, InfoBase, StringFileInfo, VarFileInfo);
+  _Strings.Clear;
+  if StringFileInfo.wLength > 0 then begin
+    for sfi := 0 to Length(StringFileInfo.Children) - 1 do begin
+      st := @StringFileInfo.Children[sfi];
+      Lang := st.szKey;
+      for sti := 0 to Length(st.Children) - 1 do begin
+        _Strings.Values[Lang + '\' + st.Children[sti].szKey] := st.Children[sti].Value;
+      end;
+    end;
+  end;
+end;
+
 function TCustomFileInfo.ReadVersionData: TEXEVersionData;
 // code taken from http://stackoverflow.com/a/5539411/49925
 type
@@ -233,51 +564,47 @@ type
       wCodePage: Word;
   end;
 var
-  Dummy,
-    Len: Cardinal;
-  Buf, pntr: Pointer;
-  lang: string;
+  Dummy: DWORD;
+  Len: DWORD;
+  Buf: TBytes;
+  pntr: Pointer;
+  Lang: string;
 begin
   Len := GetFileVersionInfoSize(PChar(Filename), Dummy);
   if Len = 0 then
     RaiseLastOSError;
-  GetMem(Buf, Len);
-  try
-    if not GetFileVersionInfo(PChar(Filename), 0, Len, Buf) then
-      RaiseLastOSError;
+  SetLength(Buf, Len);
 
-    if not VerQueryValue(Buf, '\VarFileInfo\Translation\', pntr, Len) then
-      RaiseLastOSError;
+  if not GetFileVersionInfo(PChar(Filename), 0, Len, @Buf[0]) then
+    RaiseLastOSError;
+  if not VerQueryValue(Buf, '\VarFileInfo\Translation\', pntr, Len) then
+    RaiseLastOSError;
+  Lang := Format('%.4x%.4x', [PLandCodepage(pntr)^.wLanguage, PLandCodepage(pntr)^.wCodePage]);
 
-    lang := Format('%.4x%.4x', [PLandCodepage(pntr)^.wLanguage, PLandCodepage(pntr)^.wCodePage]);
-
-    if VerQueryValue(Buf, PChar('\StringFileInfo\' + lang + '\CompanyName'), pntr, Len) { and (@len <> nil)} then
-      Result.CompanyName := PChar(pntr);
-    if VerQueryValue(Buf, PChar('\StringFileInfo\' + lang + '\FileDescription'), pntr, Len) { and (@len <> nil)} then
-      Result.FileDescription := PChar(pntr);
-    if VerQueryValue(Buf, PChar('\StringFileInfo\' + lang + '\FileVersion'), pntr, Len) { and (@len <> nil)} then
-      Result.FileVersion := PChar(pntr);
-    if VerQueryValue(Buf, PChar('\StringFileInfo\' + lang + '\InternalName'), pntr, Len) { and (@len <> nil)} then
-      Result.InternalName := PChar(pntr);
-    if VerQueryValue(Buf, PChar('\StringFileInfo\' + lang + '\LegalCopyright'), pntr, Len) { and (@len <> nil)} then
-      Result.LegalCopyRight := PChar(pntr);
-    if VerQueryValue(Buf, PChar('\StringFileInfo\' + lang + '\LegalTrademarks'), pntr, Len) { and (@len <> nil)} then
-      Result.LegalTradeMarks := PChar(pntr);
-    if VerQueryValue(Buf, PChar('\StringFileInfo\' + lang + '\OriginalFileName'), pntr, Len) { and (@len <> nil)} then
-      Result.OriginalFilename := PChar(pntr);
-    if VerQueryValue(Buf, PChar('\StringFileInfo\' + lang + '\ProductName'), pntr, Len) { and (@len <> nil)} then
-      Result.ProductName := PChar(pntr);
-    if VerQueryValue(Buf, PChar('\StringFileInfo\' + lang + '\ProductVersion'), pntr, Len) { and (@len <> nil)} then
-      Result.ProductVersion := PChar(pntr);
-    if VerQueryValue(Buf, PChar('\StringFileInfo\' + lang + '\Comments'), pntr, Len) { and (@len <> nil)} then
-      Result.Comments := PChar(pntr);
-    if VerQueryValue(Buf, PChar('\StringFileInfo\' + lang + '\PrivateBuild'), pntr, Len) { and (@len <> nil)} then
-      Result.PrivateBuild := PChar(pntr);
-    if VerQueryValue(Buf, PChar('\StringFileInfo\' + lang + '\SpecialBuild'), pntr, Len) { and (@len <> nil)} then
-      Result.SpecialBuild := PChar(pntr);
-  finally
-    FreeMem(Buf);
-  end;
+  if VerQueryValue(@Buf[0], PChar('\StringFileInfo\' + Lang + '\CompanyName'), pntr, Len) { and (@len <> nil)} then
+    Result.CompanyName := PChar(pntr);
+  if VerQueryValue(@Buf[0], PChar('\StringFileInfo\' + Lang + '\FileDescription'), pntr, Len) { and (@len <> nil)} then
+    Result.FileDescription := PChar(pntr);
+  if VerQueryValue(@Buf[0], PChar('\StringFileInfo\' + Lang + '\FileVersion'), pntr, Len) { and (@len <> nil)} then
+    Result.FileVersion := PChar(pntr);
+  if VerQueryValue(@Buf[0], PChar('\StringFileInfo\' + Lang + '\InternalName'), pntr, Len) { and (@len <> nil)} then
+    Result.InternalName := PChar(pntr);
+  if VerQueryValue(@Buf[0], PChar('\StringFileInfo\' + Lang + '\LegalCopyright'), pntr, Len) { and (@len <> nil)} then
+    Result.LegalCopyRight := PChar(pntr);
+  if VerQueryValue(@Buf[0], PChar('\StringFileInfo\' + Lang + '\LegalTrademarks'), pntr, Len) { and (@len <> nil)} then
+    Result.LegalTradeMarks := PChar(pntr);
+  if VerQueryValue(@Buf[0], PChar('\StringFileInfo\' + Lang + '\OriginalFileName'), pntr, Len) { and (@len <> nil)} then
+    Result.OriginalFilename := PChar(pntr);
+  if VerQueryValue(@Buf[0], PChar('\StringFileInfo\' + Lang + '\ProductName'), pntr, Len) { and (@len <> nil)} then
+    Result.ProductName := PChar(pntr);
+  if VerQueryValue(@Buf[0], PChar('\StringFileInfo\' + Lang + '\ProductVersion'), pntr, Len) { and (@len <> nil)} then
+    Result.ProductVersion := PChar(pntr);
+  if VerQueryValue(@Buf[0], PChar('\StringFileInfo\' + Lang + '\Comments'), pntr, Len) { and (@len <> nil)} then
+    Result.Comments := PChar(pntr);
+  if VerQueryValue(@Buf[0], PChar('\StringFileInfo\' + Lang + '\PrivateBuild'), pntr, Len) { and (@len <> nil)} then
+    Result.PrivateBuild := PChar(pntr);
+  if VerQueryValue(@Buf[0], PChar('\StringFileInfo\' + Lang + '\SpecialBuild'), pntr, Len) { and (@len <> nil)} then
+    Result.SpecialBuild := PChar(pntr);
 end;
 
 function TCustomFileInfo.HasVersionInfo: Boolean;
