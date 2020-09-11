@@ -402,6 +402,12 @@ begin
   Settings := TSetComponentPropsSettings.GetInstance;
   if Assigned(NativeComponent) then
   begin
+    // This was my first try to capture writing Explicit* properties to the dfm file
+    // it didn't work
+//    PropType := Component.GetPropTypeByName('ExplicitWidth');
+//    if PropType <> tkUnknown then begin
+//      asm nop end;
+//    end;
     IndexComponents := 0;
     while IndexComponents < Settings.Components.Count do
     begin
