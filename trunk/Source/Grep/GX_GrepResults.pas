@@ -385,6 +385,7 @@ type
     GrepExpert: TGrepExpert;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Loaded; override;
     procedure InitGrepSettings(AGrepSettings: TGrepSettings);
     function  Execute(AState: TGrepSearchState): Boolean;
     procedure UpdateFromSettings;
@@ -864,6 +865,9 @@ var
   IM: TGrepHistoryListMode;
   IT: TPageIndexType;
 begin
+  if not Assigned(grepexpert) then
+    Exit; //==>
+
   _Settings.SaveForm('Window', Self);
   WindowSettings := _Settings.Subkey('Window');
   WindowSettings.WriteBool('OnTop', StayOnTop);
@@ -897,6 +901,24 @@ var
 begin
   Settings := ConfigInfo.GetExpertSettings(ConfigurationKey);
   InternalSaveSettings(Settings);
+end;
+
+procedure TfmGrepResults.Loaded;
+var
+  PropInfo: PPropInfo;
+  i: Integer;
+  cmp: TComponent;
+begin
+  inherited Loaded;
+  PropInfo := GetPropInfo(Self, 'StyleElements');
+  if Assigned(PropInfo) then
+    SetOrdProp(Self, PropInfo, 0);
+  for I := 0 to ComponentCount - 1 do begin
+    cmp := Components[I];
+    PropInfo := GetPropInfo(cmp, 'StyleElements');
+    if Assigned(PropInfo) then
+      SetOrdProp(cmp, PropInfo, 0);
+  end;
 end;
 
 procedure TfmGrepResults.LoadSettings;
