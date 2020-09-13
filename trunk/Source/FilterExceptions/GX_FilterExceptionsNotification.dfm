@@ -53,6 +53,7 @@ inherited fmExceptionNotification: TfmExceptionNotification
     Width = 169
     Height = 25
     Action = act_IgnoreAll
+    Anchors = [akLeft, akBottom]
     ParentShowHint = False
     ShowHint = True
     TabOrder = 3
