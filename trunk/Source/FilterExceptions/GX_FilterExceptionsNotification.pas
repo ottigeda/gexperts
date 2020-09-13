@@ -160,6 +160,11 @@ end;
 {$DEFINE IS_WIN32_ONLY}
 {$ENDIF}
 
+const
+  cNonDelphiException = $0EEDFAE4;
+  cCppBuilderException = $0EEDFAE6;
+  cDelphiException = $0EEDFADE;
+
 type
   TDebugger = class(TObject)
   end;
@@ -334,41 +339,47 @@ end;
 
 function ReadPointer(Process: IOTAProcess; Address: TAddress): TAddress;
 begin
-  { read pointer value }
-  Result := 0;
+  try
+    Result := 0;
 {$IFDEF IS_WIN32_ONLY}
-  Process.ReadProcessMemory(Address, SizeOf(Integer), Result);
+    Process.ReadProcessMemory(Address, SizeOf(Integer), Result);
 {$ELSE}
-  case Process.GetProcessType of
+    case Process.GetProcessType of
 {$IF declared(optiOS32)}
-    optiOS32,
+      optiOS32,
 {$IFEND}
 {$IF declared(optAndroid)}
-    optAndroid,
+      optAndroid,
 {$IFEND}
 {$IF declared(optOSX32)}
-    optOSX32,
+      optOSX32,
 {$IFEND}
     optWin32:
       Process.ReadProcessMemory(Address, SizeOf(Integer), Result);
 {$IF declared(optOSX64)}
-    optOSX64,
+      optOSX64,
 {$IFEND}
 {$IF declared(optLinux64)}
-    optLinux64,
+      optLinux64,
 {$IFEND}
 {$IF declared(optiOS64)}
-    optiOS64,
+      optiOS64,
 {$IFEND}
 {$IF declared(optAndroid64)}
-    optAndroid64,
+      optAndroid64,
 {$IFEND}
-    optWin64:
-      Process.ReadProcessMemory(Address, SizeOf(Int64), Result)
-  else
-    raise Exception.Create('Please implement me.');
-  end;
+      optWin64:
+        Process.ReadProcessMemory(Address, SizeOf(Int64), Result);
+    else
+      raise Exception.Create('Please implement me.');
+    end;
 {$ENDIF}
+  except
+{$IFOPT D+}
+    on e: Exception do
+      SendDebugError(e.Message);
+{$ENDIF}
+  end;
 end;
 
 function ReadClassParent(Process: IOTAProcess; AClass: TAddress): TAddress;
@@ -506,7 +517,7 @@ begin
   if I <> 0 then begin
     case I of
       4, 6, 8, 7, 9, 10:
-        Exit; //==>
+        Exit; // ==>
     end;
     ParseThreadOsInfo(Thread, Src, Parsed);
 
@@ -516,12 +527,12 @@ begin
     P := PPointer(P)^;
     C := PCardinal(Integer(P) + $18)^;
     { !!! don't optimize me !!! }
-    if (C <> $0EEDFAE6) then begin
-      if C = $0EEDFADE then begin
+    if (C <> cCppBuilderException) then begin
+      if C = cDelphiException then begin
         Inc(P, $38);
         Result := PUInt64(P)^;
-      end else if C = $0EEDFAE4 then begin
-        Exit; //==>
+      end else if C <> cNonDelphiException then begin
+        Exit; // ==>
       end else begin
         Inc(P, $38);
         Result := PUInt64(P)^;
@@ -532,8 +543,13 @@ begin
         Inc(P, $48);
         Result := PUInt64(P)^;
       end else begin
-        Inc(P, $48);
-        Result := PUInt64(P)^;
+        C := PCardinal(Integer(P) + $30)^;
+        if C <> 1 then begin
+          Inc(P, $48);
+          Result := PUInt64(P)^;
+        end else begin
+          Exit;
+        end;
       end;
     end;
   end;
@@ -552,7 +568,8 @@ begin
     // FDebugEvent.dwThreadId = dwThreadId id.
     // FDebugEvent.Exception.ExceptionRecord.ExceptionAddress = exception address.
     // see  TExceptionRecord for more info.
-    Result := FDebugEvent.Exception.ExceptionRecord.ExceptionInformation[1];
+    if FDebugEvent.Exception.ExceptionRecord.ExceptionCode = cDelphiException then
+      Result := FDebugEvent.Exception.ExceptionRecord.ExceptionInformation[1];
   end;
   FDebugEventCritSect.Leave;
 end;
@@ -815,3 +832,4 @@ initialization
 finalization
   FreeAndNil(FDebugEventCritSect);
 end.
+
