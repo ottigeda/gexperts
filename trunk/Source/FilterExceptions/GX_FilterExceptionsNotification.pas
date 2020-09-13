@@ -160,11 +160,6 @@ end;
 {$DEFINE IS_WIN32_ONLY}
 {$ENDIF}
 
-const
-  cNonDelphiException = $0EEDFAE4;
-  cCppBuilderException = $0EEDFAE6;
-  cDelphiException = $0EEDFADE;
-
 type
   TDebugger = class(TObject)
   end;
@@ -527,11 +522,12 @@ begin
     P := PPointer(P)^;
     C := PCardinal(Integer(P) + $18)^;
     { !!! don't optimize me !!! }
-    if (C <> cCppBuilderException) then begin
-      if C = cDelphiException then begin
+
+    if (C <> $0EEDFAE6 { cCppBuilderException }) then begin
+      if C = $0EEDFADE { cDelphiException } then begin
         Inc(P, $38);
         Result := PUInt64(P)^;
-      end else if C <> cNonDelphiException then begin
+      end else if C <> $0EEDFAE4 { cNonDelphiException } then begin
         Exit; // ==>
       end else begin
         Inc(P, $38);
@@ -568,7 +564,7 @@ begin
     // FDebugEvent.dwThreadId = dwThreadId id.
     // FDebugEvent.Exception.ExceptionRecord.ExceptionAddress = exception address.
     // see  TExceptionRecord for more info.
-    if FDebugEvent.Exception.ExceptionRecord.ExceptionCode = cDelphiException then
+    if FDebugEvent.Exception.ExceptionRecord.ExceptionCode = $0EEDFADE { cDelphiException } then
       Result := FDebugEvent.Exception.ExceptionRecord.ExceptionInformation[1];
   end;
   FDebugEventCritSect.Leave;
