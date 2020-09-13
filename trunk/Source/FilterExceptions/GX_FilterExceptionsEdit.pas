@@ -66,7 +66,7 @@ type
     procedure UpdateMatches;
   public
     class function Execute(_Owner: TWinControl; const _Message: string;
-      var _Project, _ExceptionClass, _MessageRe: string; var _Action: TExceptionFilterAction): Boolean;
+      var _ProjectRe, _ExceptionClassRe, _MessageRe: string; var _Action: TExceptionFilterAction): Boolean;
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -81,16 +81,16 @@ uses
 { TfmGxEditExceptionNotification }
 
 class function TfmGxFilterExceptionsEdit.Execute(_Owner: TWinControl; const _Message: string;
-  var _Project, _ExceptionClass, _MessageRe: string; var _Action: TExceptionFilterAction): Boolean;
+  var _ProjectRe, _ExceptionClassRe, _MessageRe: string; var _Action: TExceptionFilterAction): Boolean;
 var
   frm: TfmGxFilterExceptionsEdit;
 begin
   frm := TfmGxFilterExceptionsEdit.Create(_Owner);
   try
-    frm.SetData(_Message, _Project, _ExceptionClass, _MessageRe, _Action);
+    frm.SetData(_Message, _ProjectRe, _ExceptionClassRe, _MessageRe, _Action);
     Result := (frm.ShowModal = mrOk);
     if Result then
-      frm.GetData(_Project, _ExceptionClass, _MessageRe, _Action);
+      frm.GetData(_ProjectRe, _ExceptionClassRe, _MessageRe, _Action);
   finally
     FreeAndNil(frm);
   end;
@@ -166,7 +166,7 @@ begin
   else
     b_ProjectName.Caption := _Project;
   ed_Project.Text := _Project;
-  cmb_Exception.Text := _ExceptionClass;
+  cmb_Exception.Text := QuoteRegExprMetaChars(_ExceptionClass);
 
   b_ExceptionCurrent.Caption := _ExceptionClass;
   if _MessageRe = '' then
