@@ -157,6 +157,10 @@ begin
   if Assigned(FDebuggerNotifier) then
     FDebuggerNotifier.RemoveNotifierFromIDE;
   FDebuggerNotifier := nil;
+
+  // We probably don't need this because we call SaveSettings in several
+  // places where the content of the FNotifications list has changed.
+  SaveSettings;
   FreeAndNil(FNotifications);
   inherited Destroy;
 end;
@@ -171,6 +175,7 @@ begin
     if Notification.Project = '' then
       FNotifications.Delete(i);
   end;
+  SaveSettings;
 end;
 
 function TGxFilterExceptionsExpert.GetDisplayName: string;
@@ -370,6 +375,7 @@ begin
           re.Expression := Notification.MessageRE;
           if (Notification.MessageRE = '') or re.Exec(_Message) then begin
             _Action := Notification.Action;
+            IncCallCount;
             Exit; //==>
           end;
         end;
