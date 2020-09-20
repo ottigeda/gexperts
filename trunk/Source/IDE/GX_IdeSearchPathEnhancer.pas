@@ -494,6 +494,7 @@ begin
   finally
     FreeAndNil(sl);
   end;
+  CopyMemoToList;
 end;
 
 procedure TSearchPathEnhancer.ProcessAllMemoLines(_ProcessMethod: TLineProcessMethod);
