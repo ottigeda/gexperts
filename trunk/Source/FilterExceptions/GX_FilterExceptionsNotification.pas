@@ -349,8 +349,8 @@ begin
 {$IF declared(optOSX32)}
       optOSX32,
 {$IFEND}
-    optWin32:
-      Process.ReadProcessMemory(Address, SizeOf(Integer), Result);
+      optWin32:
+        Process.ReadProcessMemory(Address, SizeOf(Integer), Result);
 {$IF declared(optOSX64)}
       optOSX64,
 {$IFEND}
@@ -419,7 +419,8 @@ begin
   end;
 end;
 
-function GetCurrentExceptionAddress(Debugger: TDebugger; Process: TProcess; Thread: TThread): TAddress;
+function GetCurrentExceptionAddress(Debugger: TDebugger; Process: TProcess; Thread: TThread;
+  out _AddressHex: string): TAddress; overload;
 type
   {
     this is undocumented struct. You should not use it.
@@ -445,10 +446,12 @@ var
   LAddressRec: TAddressForGetExceptionAddress;
   IThread: IOTAThread;
   IProcess: IOTAProcess;
+  SizeOfResult: Integer;
 begin
   Supports(Thread, IOTAThread, IThread);
   Supports(Process, IOTAProcess, IProcess);
 
+  SizeOfResult := 0;
 {$IFDEF IS_WIN32_ONLY}
   // older delphi versions use the old OTAThreadContext struct
   // we could use FDebugEvent.Exception.ExceptionRecord.ExceptionAddress
@@ -458,51 +461,81 @@ begin
 {$ELSE}
   // thread is suspended so we can get current address from instruction pointer register
   case IProcess.GetProcessType of
-    optWin32: // x86
-      Result := IThread.OTAThreadContextEx.win32.Eip;
-    optWin64: // x64
-      Result := IThread.OTAThreadContextEx.win64.Rip;
+    optWin32: begin // x86
+        Result := IThread.OTAThreadContextEx.win32.Eip;
+        SizeOfResult := SizeOf(IThread.OTAThreadContextEx.win32.Eip);
+      end;
+    optWin64: begin // x64
+        Result := IThread.OTAThreadContextEx.win64.Rip;
+        SizeOfResult := SizeOf(IThread.OTAThreadContextEx.win64.Rip);
+      end;
 {$IF declared(optOSX32)}
-    optOSX32: // aarch32
+    optOSX32: begin // aarch32
 {$IFDEF GX_DELPHIXE3_UP}
-      Result := IThread.OTAThreadContextEx.arm32.Pc;
+        Result := IThread.OTAThreadContextEx.arm32.Pc;
+        SizeOfResult := SizeOf(IThread.OTAThreadContextEx.arm32.Pc);
 {$ELSE}
-      Result := IThread.OTAThreadContextEx.osx32.Eip;
+        Result := IThread.OTAThreadContextEx.osx32.Eip;
+        SizeOfResult := SizeOf(IThread.OTAThreadContextEx.osx32.Eip);
 {$ENDIF}
+      end;
 {$IFEND}
 {$IF declared(optOSX64)}
-    optOSX64: // aarch64
-      Result := IThread.OTAThreadContextEx.arm64.Pc;
+    optOSX64: begin // aarch64
+        Result := IThread.OTAThreadContextEx.arm64.Pc;
+        SizeOfResult := SizeOf(IThread.OTAThreadContextEx.arm64.Pc);
+      end;
 {$IFEND}
-// todo: Support other platforms
+  // todo: Support other platforms
   else
     Result := 0;
   end;
 {$ENDIF}
 
-  if 0 <> Result then
+  if 0 <> Result then begin
+    if SizeOfResult <> 0 then
+      _AddressHex := IntToHex(Result, SizeOfResult * 2);
     Exit; //==>
+  end;
 
   // using undocumented GetExceptionAddress function
   if FindExceptionAddress(Debugger) = 1 then begin
     FillChar(LAddressRec, SizeOf(LAddressRec), #00);
     GetExceptionAddress(Thread, LAddressRec);
-    if LAddressRec.Code = 1 then
-      Result := UInt64(LAddressRec.AddressRec.Address)
-    else
+    if LAddressRec.Code = 1 then begin
+      Result := UInt64(LAddressRec.AddressRec.Address);
+      SizeOfResult := SizeOf(LAddressRec.AddressRec.Address);
+    end else begin
       Result := LAddressRec.AddressRec.Address64;
+      SizeOfResult := SizeOf(LAddressRec.AddressRec.Address64);
+    end;
+    _AddressHex := IntToHex(Result, SizeOfResult * 2);
   end;
 end;
 
+function GetCurrentExceptionAddress(Debugger: TDebugger; Process: TProcess; Thread: TThread): TAddress; overload;
+var
+  AddressHex: string;
+begin
+  Result := GetCurrentExceptionAddress(Debugger, Process, Thread, AddressHex);
+end;
+
+type
+  TExceptionInformation = array[0..14] of UInt64; // this is a UInt64 and not NativeUInt as RTL !
+
 {$IFNDEF IS_WIN32_ONLY}
 
-function GetExceptionObjectNew(Thread: TThread): TAddress;
+function GetExceptionObjectNew(Thread: TThread; out _ExceptionInformation: TExceptionInformation): TAddress;
+type
+  PExceptionInformation = ^TExceptionInformation;
 var
   I: Integer;
   Src: TThreadOsInfoArray;
   Parsed: TParsedThreadOsInfoArray;
   P: PByte;
   C: Cardinal;
+  PE: PExceptionRecord;
+  Params: PExceptionInformation;
 begin
   // this function should be used only with new delphi versions
   Result := 0;
@@ -520,7 +553,15 @@ begin
     P := @Parsed[0];
     Inc(P, $A8);
     P := PPointer(P)^;
-    C := PCardinal(Integer(P) + $18)^;
+    PE := PExceptionRecord(Integer(P) + $18);
+    C := PE.ExceptionCode;
+    Params := Pointer(Integer(P) + $30);
+    _ExceptionInformation := Params^;
+{$IFOPT D+}
+    for I := Low(_ExceptionInformation) to High(_ExceptionInformation) do
+      SendDebugWarning('_ExceptionInformation[' + IntToStr(I) + '] = ' + IntToHex(_ExceptionInformation[I], SizeOf(_ExceptionInformation[I]) * 2));
+{$ENDIF}
+
     { !!! don't optimize me !!! }
 
     if (C <> $0EEDFAE6 { cCppBuilderException }) then begin
@@ -570,11 +611,11 @@ begin
   FDebugEventCritSect.Leave;
 end;
 
-function GetExceptionObject(Thread: TThread): TAddress;
+function GetExceptionObject(Thread: TThread; out _ExceptionInformation: TExceptionInformation): TAddress;
 begin
 {$IFNDEF IS_WIN32_ONLY}
   if Assigned(ParseThreadOsInfo) then
-    Result := GetExceptionObjectNew(Thread)
+    Result := GetExceptionObjectNew(Thread, _ExceptionInformation)
   else
 {$ENDIF}begin
     // Win32-Delphi-Version or ParseThreadOsInfo does not exist
@@ -602,11 +643,15 @@ var
   Projectname: string;
   sl: TStringList;
   s: string;
-  LAddress: TAddress;
+  ExceptionAddress: TAddress;
+  ExceptionObject: TAddress;
 {$IFDEF GX_DELPHI2006_UP}
   LineNo: Integer;
 {$ENDIF}
   LClass: TAddress;
+  AccessOp: string;
+  AccessAddress: UInt64;
+  ExceptionInformation: TExceptionInformation;
 begin
   Process := GetPocessFromDebugger(Debugger);
 
@@ -615,6 +660,70 @@ begin
   { get official iota interfaces: }
   Assert(Supports(Thread, IOTAThread, IThread));
   Assert(Supports(Process, IOTAProcess, IProcess));
+
+  // these is the information currently used for filtering
+  GetExceptionMessage(Debugger, Msg);
+  GetExceptionName(Debugger, ExceptionName);
+  ExceptionAddress := GetCurrentExceptionAddress(Debugger, Process, Thread, s);
+  ExceptionObject := GetExceptionObject(Thread, ExceptionInformation);
+  if SameText(ExceptionName, 'ERangeError') then begin
+    // The RTL does not add the exception address for range check errors to the message, so we
+    // do it here in order to allow filtering for it
+    Msg := Msg + ' at address ' + IntToHex(ExceptionInformation[0], Length(s));
+  end else if SameText(ExceptionName, '$C0000005' { STATUS_ACCESS_VIOLATION }) then begin
+    ExceptionName := 'EAccessViolation';
+    Msg := 'Access Violation at address ' + s;
+
+    case ExceptionInformation[0] of
+      0:
+        AccessOp := 'Read';
+      1:
+        AccessOp := 'Write';
+      8:
+        AccessOp := 'Execution';
+    else
+      AccessOp := 'Invalid access';
+    end;
+    AccessAddress := ExceptionInformation[1];
+    Msg := Format('Access violation at address %s. %s of address ',
+      [s, AccessOp]) + IntToHex(AccessAddress, Length(s));
+  end else if SameText(ExceptionName, '$C0000090' { STATUS_FLOAT_INVALID_OPERATION})
+    or SameText(ExceptionName, '$C000008F' { STATUS_FLOAT_INEXACT_RESULT })
+    or SameText(ExceptionName, '$C0000092' { STATUS_FLOAT_STACK_CHECK }) then begin
+    ExceptionName := 'EInvalidOp';
+    Msg := 'Invalid floating point operation at address ' + s;
+  end else if SameText(ExceptionName, '$C0000094' { STATUS_INTEGER_DIVIDE_BY_ZERO }) then begin
+    ExceptionName := 'EDivByZero';
+    Msg := 'Division by zero at address ' + s;
+  end else if SameText(ExceptionName, '$C000008C' { STATUS_ARRAY_BOUNDS_EXCEEDED }) then begin
+    ExceptionName := 'ERangeError';
+    Msg := 'Range check error at address ' + s;
+  end else if SameText(ExceptionName, '$C0000095' { STATUS_INTEGER_OVERFLOW }) then begin
+    ExceptionName := 'EIntOverflow';
+    Msg := 'Integer overflow at address ' + s;
+  end else if SameText(ExceptionName, '$C000008E' { STATUS_FLOAT_DIVIDE_BY_ZERO }) then begin
+    ExceptionName := 'EZeroDivide';
+    Msg := 'Floating point division by zero at address ' + s;
+  end else if SameText(ExceptionName, '$C0000091' { STATUS_FLOAT_OVERFLOW }) then begin
+    ExceptionName := 'EOverflow';
+    Msg := 'Floating point overflow at address ' + s;
+  end else if SameText(ExceptionName, '$C0000093' { STATUS_FLOAT_UNDERFLOW })
+    or SameText(ExceptionName, '$C000008D' { STATUS_FLOAT_DENORMAL_OPERAND }) then begin
+    ExceptionName := 'EUnderflow';
+    Msg := 'Floating point underflow at address ' + s;
+  end else if SameText(ExceptionName, '$C0000096' { STATUS_PRIVILEGED_INSTRUCTION }) then begin
+    ExceptionName := 'EPrivInstruction';
+    Msg := 'Privileged instruction at address ' + s;
+  end else if SameText(ExceptionName, '$C000013A' { STATUS_CONTROL_C_EXIT }) then begin
+    ExceptionName := 'EControlBreak';
+    Msg := 'Control-C hit at address ' + s;
+  end else if SameText(ExceptionName, '$C00000FD' { STATUS_STACK_OVERFLOW }) then begin
+    ExceptionName := 'EStackOverflow';
+    Msg := 'Stack overflow at address ' + s;
+  end;
+//      Result := System.reExternalException;
+
+  Projectname := GxOtaGetCurrentProjectName;
 
   // For now we only fill the string list with the additional information,
   // but this information will also be used for filtering later.
@@ -630,25 +739,22 @@ begin
     sl.Add('ThreadName=<not available>');
 {$ENDIF}
 
-    GetExceptionMessage(Debugger, s);
-    sl.Add(Format('ExceptionMessage="%s"', [s]));
+    sl.Add(Format('ExceptionMessage="%s"', [Msg]));
 
-    GetExceptionName(Debugger, s);
-    sl.Add(Format('ExceptionName="%s"', [s]));
+    sl.Add(Format('ExceptionName="%s"', [ExceptionName]));
 
     if TryGetExceptionDisplayName(Debugger, s) then
       sl.Add(Format('ExceptionDisplayName="%s"', [s]))
     else
       sl.Add('ExceptionDisplayName=<not available>');
 
-    LAddress := GetCurrentExceptionAddress(Debugger, Process, Thread);
-    if LAddress <> 0 then begin
-      sl.Add(Format('ExceptionAddress=%s', [IntToHex(LAddress, 8)]));
+    if ExceptionAddress <> 0 then begin
+      sl.Add(Format('ExceptionAddress=%s', [IntToHex(ExceptionAddress, 8)]));
 
 {$IFDEF GX_DELPHI2006_UP}
       // I have yet to see this actually working
       // -- 2020-07-26 twm
-      IProcess.SourceLocationFromAddress(LAddress, s, LineNo);
+      IProcess.SourceLocationFromAddress(ExceptionAddress, s, LineNo);
       if s <> '' then begin
         sl.Add(Format('FileName="%s"', [s]));
         sl.Add(Format('LineNumber=%d', [LineNo]));
@@ -662,11 +768,10 @@ begin
     end;
 
     // list of exception classes
-    LAddress := GetExceptionObject(Thread);
-    if 0 <> LAddress then begin
-      sl.Add(Format('ExceptionObject=%s', [IntToHex(LAddress, 8)]));
+    if 0 <> ExceptionObject then begin
+      sl.Add(Format('ExceptionObject=%s', [IntToHex(ExceptionObject, 8)]));
       // read class from object.
-      LClass := ReadPointer(IProcess, LAddress);
+      LClass := ReadPointer(IProcess, ExceptionObject);
       // get all classes.
       s := GetClasses(IProcess, LClass);
       sl.Add(Format('Classes=[%s]', [s]));
@@ -676,11 +781,6 @@ begin
   finally
     sl.Free();
   end;
-
-  // these is the information currently used for filtering
-  GetExceptionMessage(Debugger, Msg);
-  GetExceptionName(Debugger, ExceptionName);
-  Projectname := GxOtaGetCurrentProjectName;
 
   Action := efaDisabled;
   if Assigned(OnCheckException) then begin
