@@ -174,6 +174,7 @@ resourcestring
 var
   i: Integer;
   ExpName : string;
+  Expert: TGX_Expert;
 begin
   try
     {$IFOPT D+} SendDebug('Destroying GExperts'); {$ENDIF}
@@ -187,12 +188,13 @@ begin
         begin
           for i := 0 to FExpertList.Count - 1 do
           begin
-            if ExpertList[i] <> nil then begin
-              ExpName := ExpertList[i].GetName;
+            Expert := ExpertList[i];
+            if Expert <> nil then begin
+              ExpName := Expert.GetName;
               UniqueString(ExpName);
               {$IFOPT D+}SendDebug('Destroying Expert: ' + ExpName); {$ENDIF}
               try
-                ExpertList[i].Free;
+                Expert.Free;
                 {$IFOPT D+}SendDebug('done Destroying Expert: ' + ExpName); {$ENDIF}
               except
                 on E: Exception do
