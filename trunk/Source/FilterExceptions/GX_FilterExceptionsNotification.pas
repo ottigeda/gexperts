@@ -168,6 +168,8 @@ type
   TProcess = class(TObject)
   end;
 {$IF not declared(TOTAAddress)}
+  // todo: Is this really correct? Should it not be UINt32 instead because
+  //       Addresses were 32 bits before Win64 and other targets were introduced?
   TOTAAddress = UInt64;
 {$IFEND}
   TAddress = TOTAAddress;
@@ -191,7 +193,8 @@ type
   TThreadOsInfoArray = array[0..512] of Byte;
   TParsedThreadOsInfoArray = array[0..512] of Byte;
 
-  TGetThreadOsInfo = function(Thread: TThread; var Buffer: TThreadOsInfoArray): Integer;
+  // Result type for GetThreadOsInfo is Boolean !
+  TGetThreadOsInfo = function(Thread: TThread; var Buffer: TThreadOsInfoArray): Boolean;
   TParseThreadOsInfo = function(Thread: TThread; var SrcBuffer: TThreadOsInfoArray; var OutBuffer: TParsedThreadOsInfoArray): Integer;
 
   // redeclare WaitForDebugEvent
@@ -531,21 +534,23 @@ function GetExceptionObjectNew(Thread: TThread; out _ExceptionInformation: TExce
 type
   PExceptionInformation = ^TExceptionInformation;
 var
-  I: Integer;
+  Ok: Boolean;
   Src: TThreadOsInfoArray;
   Parsed: TParsedThreadOsInfoArray;
   P: PByte;
   C: Cardinal;
   PE: PExceptionRecord;
   Params: PExceptionInformation;
+  I: Integer;
 begin
   // this function should be used only with new delphi versions
   Result := 0;
   ZeroMemory(@Src, SizeOf(Src));
   ZeroMemory(@Parsed, SizeOf(Parsed));
-  I := GetThreadOsInfo(Thread, Src);
-  if I <> 0 then begin
-    case I of
+  Ok := GetThreadOsInfo(Thread, Src);
+  if Ok then begin
+    C := PCardinal(@Src[0])^;
+    case C of
       4, 6, 8, 7, 9, 10:
         Exit; // ==>
     end;
