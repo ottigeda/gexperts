@@ -601,7 +601,7 @@ var
 begin
   Result := 0;
   // This function should only be used with old Delphi versions, where GetExceptionObjectNew does
-  // not work, that is ParseThradOsInfo does not exist.
+  // not work, that is, ParseThreadOsInfo does not exist.
   FDebugEventCritSect.Enter;
   if FDebugEvent.Exception.ExceptionRecord.NumberParameters > 1 then begin
     // Param[1] = Exception object.
@@ -675,6 +675,7 @@ begin
   if SameText(ExceptionName, 'ERangeError') then begin
     // The RTL does not add the exception address for range check errors to the message, so we
     // do it here in order to allow filtering for it
+    // Unfortunately there seems to be no way to get the same info for other exception types,
     Msg := Msg + ' at address ' + IntToHex(ExceptionInformation[0], Length(s));
   end else if SameText(ExceptionName, '$C0000005' { STATUS_ACCESS_VIOLATION }) then begin
     ExceptionName := 'EAccessViolation';
