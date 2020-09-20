@@ -68,6 +68,10 @@ const
   sDesignPersonality = 'Design.Personality';
   {$ENDIF}
 
+  sLIBPREFIXOptionName    = 'SOPrefix';
+  sLIBSUFFIXOptionName    = 'SOSuffix';
+
+
 // returns an IOTAEditReader for the given or the current IOTASourceEditor if none is specified
 function GxOtaGetEditReaderForSourceEditor(SourceEditor: IOTASourceEditor = nil): IOTAEditReader;
 
@@ -1589,14 +1593,23 @@ var
   OutputDir: string;
   ProjectFilename: string;
   PathProcessor: TPathProcessor;
+  LibSuffix: string;
+  LibPrefix: string;
 begin
   Result := False;
   Project := GxOtaGetCurrentProject;
   if Assigned(Project) then begin
     OutputDir := GxOtaGetProjectOutputDir(Project);
-    ProjectFilename := GxOtaGetProjectFileName(Project);
-    MapFile := AddSlash(OutputDir) + ExtractFilename(ProjectFilename);
+    ProjectFilename := GxOtaGetProjectFileName(Project, True);
+    MapFile := ExtractFileName(ProjectFilename);
+    if IsPackage(ProjectFilename) then begin
+      MapFile := TFileSystem.RemoveFileExtFull(MapFile);
+      LibPrefix := Trim(VarToStr(Project.ProjectOptions.Values[sLIBPREFIXOptionName]));
+      LibSuffix := Trim(VarToStr(Project.ProjectOptions.Values[sLIBSUFFIXOptionName]));
+      MapFile := LibPrefix + MapFile + LibSuffix;
+    end;
     MapFile := TFileSystem.ChangeFileExtFull(MapFile, '.map');
+    MapFile := AddSlash(OutputDir) + MapFile;
 
     PathProcessor := TPathProcessor.Create(ExtractFileDir(ProjectFilename), Project);
     try
