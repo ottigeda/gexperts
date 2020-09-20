@@ -451,14 +451,15 @@ begin
   Supports(Thread, IOTAThread, IThread);
   Supports(Process, IOTAProcess, IProcess);
 
-  SizeOfResult := 0;
 {$IFDEF IS_WIN32_ONLY}
   // older delphi versions use the old OTAThreadContext struct
   // we could use FDebugEvent.Exception.ExceptionRecord.ExceptionAddress
   //  Result := DWord(FDebugEvent.Exception.ExceptionRecord.ExceptionAddress);
   // But for consistency we use the Eip here too.
   Result := IThread.OTAThreadContext.Eip;
+  SizeOfResult := SizeOf(IThread.OTAThreadContext.Eip);
 {$ELSE}
+  SizeOfResult := 0;
   // thread is suspended so we can get current address from instruction pointer register
   case IProcess.GetProcessType of
     optWin32: begin // x86
@@ -521,7 +522,8 @@ begin
 end;
 
 type
-  TExceptionInformation = array[0..14] of UInt64; // this is a UInt64 and not NativeUInt as RTL !
+  // These are UInt64 and not NativeUInt as RTL !
+  TExceptionInformation = array[0..EXCEPTION_MAXIMUM_PARAMETERS - 1] of UInt64;
 
 {$IFNDEF IS_WIN32_ONLY}
 
@@ -593,7 +595,9 @@ begin
 end;
 {$ENDIF}
 
-function GetExceptionObjectLegacy(Thread: TThread): TAddress;
+function GetExceptionObjectLegacy(Thread: TThread; out _ExceptionInformation: TExceptionInformation): TAddress;
+var
+  I: Integer;
 begin
   Result := 0;
   // This function should only be used with old Delphi versions, where GetExceptionObjectNew does
@@ -607,6 +611,8 @@ begin
     // see  TExceptionRecord for more info.
     if FDebugEvent.Exception.ExceptionRecord.ExceptionCode = $0EEDFADE { cDelphiException } then
       Result := FDebugEvent.Exception.ExceptionRecord.ExceptionInformation[1];
+    for I := 0 to FDebugEvent.Exception.ExceptionRecord.NumberParameters - 1 do
+      _ExceptionInformation[I] := FDebugEvent.Exception.ExceptionRecord.ExceptionInformation[I];
   end;
   FDebugEventCritSect.Leave;
 end;
@@ -619,7 +625,7 @@ begin
   else
 {$ENDIF}begin
     // Win32-Delphi-Version or ParseThreadOsInfo does not exist
-    Result := GetExceptionObjectLegacy(Thread)
+    Result := GetExceptionObjectLegacy(Thread, _ExceptionInformation);
   end;
 end;
 
@@ -776,7 +782,10 @@ begin
       s := GetClasses(IProcess, LClass);
       sl.Add(Format('Classes=[%s]', [s]));
     end;
-
+{$IFOPT D+}
+    for s in sl do
+      SendDebugWarning(s);
+{$ENDIF}
     s := sl.Text;
   finally
     sl.Free();
@@ -928,4 +937,3 @@ initialization
 finalization
   FreeAndNil(FDebugEventCritSect);
 end.
-
