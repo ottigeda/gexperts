@@ -1542,7 +1542,6 @@ begin
   FIsFirstInvocation := True;
   FLoadProject := True;
   FLastHitTestItemIdx := -1;
-  FLastHitTestItemIdx := -1;
 
   SetupEditorControls;
 
