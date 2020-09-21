@@ -1327,7 +1327,7 @@ begin
     if AIniMode = ifmMulti then
       FKeyIndex := AItemIni.ReadInteger(ASection, 'KeyIndex', FKeyIndex);
 
-    FLastSearchTime := AItemIni.ReadFloat(ASection, 'LastSearchTimeStamp', LastSearchTime);
+    // FLastSearchTime := AItemIni.ReadFloat(ASection, 'LastSearchTimeStamp', LastSearchTime);
     FLastSearchTime := AItemIni.ReadDateTime(ASection, 'LastSearchTime', LastSearchTime);
 
     FTotalMatchCount := AItemIni.ReadInteger(ASection, 'TotalMatchCount', TotalMatchCount);
@@ -1847,7 +1847,7 @@ end;
 
 function TGrepHistoryList.GetItems(AIndex: Integer): TGrepHistoryListItem;
 begin
-  Result := FHistoryList[FListMode].Items[AIndex]; //FI:W517 - false positive
+  Result := FHistoryList[FListMode].Items[AIndex];
 end;
 
 function TGrepHistoryList.HistoryItemByKeyIndex(AKeyIndex: Integer): TGrepHistoryListItem;
