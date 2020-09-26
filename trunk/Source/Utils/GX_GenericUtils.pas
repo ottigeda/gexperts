@@ -642,7 +642,7 @@ function CanCreateFile(const FileName: string): Boolean;
 /// Copies a single file to the Clipboard.
 /// @raises Exception if anything goes wrong, in particular if the filename is empty
 ///                   or  the file does not exist. </summary>
-procedure CopyFileToClipboard(_Filename: string);
+procedure CopyFileToClipboard(const _Filename: string);
 
 // Displays a directory selection box.
 // Returns True if the user selected a directory; Dir then
@@ -4740,7 +4740,7 @@ end;
 {$ENDIF GX_VER200_up}
 {$ENDIF GX_VER160_up}
 
-procedure CopyFileToClipboard(_Filename: string);
+procedure CopyFileToClipboard(const _Filename: string);
 var
   DropFiles: PDropFiles;
   hGlobal: THandle;

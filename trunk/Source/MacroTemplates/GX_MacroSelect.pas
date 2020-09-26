@@ -32,7 +32,7 @@ type
     function WindowPosKey: string;
   public
     function GetSelectedMacroCode: Integer;
-    procedure LoadTemplates(AMacroFile: TMacroFile; Filter: string = '');
+    procedure LoadTemplates(AMacroFile: TMacroFile; const Filter: string = '');
   end;
 
 // Returns the index of the selected macro
@@ -102,7 +102,7 @@ begin
   end;
 end;
 
-procedure TfmMacroSelect.LoadTemplates(AMacroFile: TMacroFile; Filter: string = '');
+procedure TfmMacroSelect.LoadTemplates(AMacroFile: TMacroFile; const Filter: string = '');
 
   procedure AddMacroToList(const AMacroName, AMacroDesc: string);
   var
