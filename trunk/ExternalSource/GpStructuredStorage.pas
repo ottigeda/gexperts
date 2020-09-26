@@ -783,7 +783,7 @@ begin
   end;
 end; { ReadString }
 
-procedure WriteString(str: TStream; value: string);
+procedure WriteString(str: TStream; const value: string);
 var
   len       : cardinal;
   sWideValue: TUnicodeString;

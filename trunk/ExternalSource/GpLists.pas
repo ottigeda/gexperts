@@ -258,7 +258,7 @@ type
   private
     sValue: string;
   public
-    constructor Create(aValue: string = '');
+    constructor Create(const aValue: string = '');
     property Value: string read sValue write sValue;
   end; { TGpString }
 
@@ -874,14 +874,14 @@ type
     function  Add(aClass: TClass): integer;
     procedure Clear;                                {$IFDEF GpLists_Inline}inline;{$ENDIF}
     procedure Delete(idx: integer);                 {$IFDEF GpLists_Inline}inline;{$ENDIF}
-    function  CreateObject(sClass: string): TObject;
+    function  CreateObject(const sClass: string): TObject;
     {$IFDEF GpLists_Enumerators}
     function  GetEnumerator: TGpClassListEnumerator;{$IFDEF GpLists_Inline}inline;{$ENDIF}
     {$ENDIF GpLists_Enumerators}
     function  IndexOf(aClass: TClass): integer; overload; {$IFDEF GpLists_Inline}inline;{$ENDIF}
-    function  IndexOf(sClass: string): integer; overload; {$IFDEF GpLists_Inline}inline;{$ENDIF}
+    function  IndexOf(const sClass: string): integer; overload; {$IFDEF GpLists_Inline}inline;{$ENDIF}
     procedure Remove(aClass: TClass); overload;     {$IFDEF GpLists_Inline}inline;{$ENDIF}
-    procedure Remove(sClass: string); overload;     {$IFDEF GpLists_Inline}inline;{$ENDIF}
+    procedure Remove(const sClass: string); overload;     {$IFDEF GpLists_Inline}inline;{$ENDIF}
     property Capacity: integer read GetCapacity write SetCapacity;
     property Count: integer read GetCount;
     property Items[idx: integer]: TClass read GetItems; default;
@@ -1164,7 +1164,7 @@ end; { TGpDateTime.Create }
 
 { TGpString }
 
-constructor TGpString.Create(aValue: string);
+constructor TGpString.Create(const aValue: string);
 begin
   inherited Create;
   sValue := aValue;
@@ -3455,7 +3455,7 @@ begin
     Result := clClasses.AddObject(aClass.ClassName, TObject(aClass));
 end; { TGpClassList.Add }
 
-function TGpClassList.CreateObject(sClass: string): TObject;
+function TGpClassList.CreateObject(const sClass: string): TObject;
 var
   idxClass: integer;
 begin
@@ -3478,12 +3478,12 @@ begin
   Result := clClasses.IndexOf(aClass.ClassName);
 end; { TGpClassList.IndexOf }
 
-function TGpClassList.IndexOf(sClass: string): integer;
+function TGpClassList.IndexOf(const sClass: string): integer;
 begin
   Result := clClasses.IndexOf(sClass);
 end; { TGpClassList.IndexOf }
 
-procedure TGpClassList.Remove(sClass: string);
+procedure TGpClassList.Remove(const sClass: string);
 var
   idxItem: integer;
 begin

@@ -11,7 +11,7 @@ uses
 
 function StringArrayOf(const _arr: array of string): TStringArray;
 
-function StringArrayCombine(_arr: TStringArray; _Separator: string): string;
+function StringArrayCombine(_arr: TStringArray; const _Separator: string): string;
 procedure StringArraySort(var _arr: TStringArray);
 
 function TStringArray_Concat(const _Arr1, _Arr2: array of string): TStringArray;
@@ -48,7 +48,7 @@ begin
     Result[i] := _arr[i];
 end;
 
-function StringArrayCombine(_arr: TStringArray; _Separator: string): string;
+function StringArrayCombine(_arr: TStringArray; const _Separator: string): string;
 var
   i: Integer;
   len: Integer;

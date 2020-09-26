@@ -211,8 +211,8 @@ type
     function  IsUnicodeCodepage(codepage: word): boolean;
     procedure PrepareStream; virtual;
     procedure SetCodepage(cp: word); virtual;
-    function  StreamName(param: string = ''): string; virtual;
-    procedure Win32Check(condition: boolean; method: string);
+    function  StreamName(const param: string = ''): string; virtual;
+    procedure Win32Check(condition: boolean; const method: string);
   public
     constructor Create(
       dataStream: TStream; access: TGpTSAccess;
@@ -993,7 +993,7 @@ end; { TGpTextStream.SetCodepage }
   @returns Error message prefix.
   @since   2001-05-15 (3.0)
 }
-function TGpTextStream.StreamName(param: string): string;
+function TGpTextStream.StreamName(const param: string): string;
 begin
   Result := 'TGpTextStream';
   if param <> '' then
@@ -1006,7 +1006,7 @@ end; { TGpTextStream.StreamName }
   @param   method    Name of TGpTextStream method that called Win32Check.
   @raises  EGpTextStream if (not condition).
 }
-procedure TGpTextStream.Win32Check(condition: boolean; method: string);
+procedure TGpTextStream.Win32Check(condition: boolean; const method: string);
 var
   Error: EGpTextStream;
 begin

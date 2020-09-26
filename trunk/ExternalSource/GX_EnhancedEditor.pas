@@ -90,7 +90,7 @@ type
     procedure SaveToFile(const AFilename: string);
     procedure BeginUpdate;
     procedure EndUpdate;
-    procedure AddLine(_s: string);
+    procedure AddLine(const _s: string);
     procedure ExchangeLines(_Index1, _Index2: Integer);
     procedure GetLines(ALines: TGXUnicodeStringList);
     procedure SetLines(ALines: TGXUnicodeStringList);
@@ -199,7 +199,7 @@ begin
     FOnChange(Self);
 end;
 
-procedure TGxEnhancedEditor.AddLine(_s: string);
+procedure TGxEnhancedEditor.AddLine(const _s: string);
 begin
   FEditor.Lines.Add(_s);
   DoOnChange;

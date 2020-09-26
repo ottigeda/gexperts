@@ -143,7 +143,7 @@ type
     function IndexAtLine(anIndex: Longint): Longint;
     function PositionToIndex(aPosition: Longint): Longint;
     procedure DeleteGroup(StartIndex: Longint; GroupCount: Longint);
-    function InsertString(StartIndex: Longint; ToInsert: String): Longint;
+    function InsertString(StartIndex: Longint; const ToInsert: String): Longint;
     function MoveGroup(OldStartIndex: Longint; NewStartIndex: Longint; GroupCount: Longint): Boolean;
     property Comments: TCommentState read FComment write FComment;
     property EndCount: Integer read FEndCount write FEndCount;
@@ -759,7 +759,7 @@ begin
   FTokenPositionsList.Insert(Index + 1, EndPos);
 end; { Insert }
 
-function TPasTokenList.InsertString(StartIndex: Longint; ToInsert: String): Longint;
+function TPasTokenList.InsertString(StartIndex: Longint; const ToInsert: String): Longint;
 var
   I, StartPos, EndPos, ItemLen: Longint;
   TempHelper: TPasTokenList;
