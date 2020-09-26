@@ -285,8 +285,7 @@ type
     procedure actHistoryUpdate(Sender: TObject);
     procedure tcHistoryListPageChange(Sender: TObject);
     procedure actHistorySortExecute(Sender: TObject);
-    procedure lbHistoryListMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
-      Y: Integer);
+    procedure lbHistoryListMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure actHistoryModifySaveOptionsExecute(Sender: TObject);
     procedure actViewShowIndentExecute(Sender: TObject);
     procedure miHistoryItemNameClick(Sender: TObject);
@@ -1910,6 +1909,10 @@ end;
 
 procedure TfmGrepResults.FormShow(Sender: TObject);
 begin
+  // Setting the panel's visibility to false and to true again, seems to fix bug #212: "Grep results window is empty"
+  // even though the panel is already set to visible when this event is called.
+  pnlMain.Visible := False;
+  pnlMain.Visible := True;
   AssignSettingsToForm;
   ResizeListBox;
 end;
