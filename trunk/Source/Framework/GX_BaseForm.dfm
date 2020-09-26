@@ -3,8 +3,8 @@ object fmBaseForm: TfmBaseForm
   Top = 220
   AutoScroll = False
   Caption = 'GExperts'
-  ClientHeight = 384
-  ClientWidth = 542
+  ClientHeight = 541
+  ClientWidth = 653
   Color = clBtnFace
   ParentFont = True
   OldCreateOrder = False
