@@ -81,7 +81,7 @@ type
     function GetOldName: WideString;
     procedure SetNewName(const Value: WideString);
     procedure SetOldName(const Value: WideString);
-    procedure AddComponentProperty(PropertyName, Value: WideString);
+    procedure AddComponentProperty(PropertyName: WideString; const Value: WideString);
     function GetComponentProperty(Index: Integer): WideString;
     procedure SetComponent(const _Component: IOTAComponent);
     procedure SetAlign(const _Component: IOTAComponent);
@@ -390,7 +390,7 @@ begin
     edtNewName.SelLength := SelEnd - SelStart;
 end;
 
-procedure TfmCompRename.AddComponentProperty(PropertyName, Value: WideString);
+procedure TfmCompRename.AddComponentProperty(PropertyName: WideString; const Value: WideString);
 
   procedure VerticallyMove(_cntrl: Tcontrol; _by: Integer);
   begin
