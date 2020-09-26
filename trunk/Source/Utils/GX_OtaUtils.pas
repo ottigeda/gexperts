@@ -3080,6 +3080,8 @@ procedure GxOtaGetAllPossiblePaths(Paths: TStrings; Project: IOTAProject = nil);
 
   function GetPath(const FileName: string): string;
   begin
+    Result := '';
+
     if FileName <> '' then begin
       Result := ExtractFilePath(FileName);
       if Result <> '' then
