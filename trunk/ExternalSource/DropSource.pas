@@ -258,7 +258,7 @@ type
   POffsets = ^TOffsets;
   TOffsets = array[0..$FFFF] of UINT;
 
-function ConvertFilesToShellIDList(path: string; files: TStrings): HGlobal;
+function ConvertFilesToShellIDList(const path: string; files: TStrings): HGlobal;
 var
   shf: IShellFolder;
   PathPidl, pidl: pItemIDList;
