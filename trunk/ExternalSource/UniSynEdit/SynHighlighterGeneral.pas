@@ -149,8 +149,8 @@ type
     procedure ResetRange; override;
     procedure SetRange(Value: Pointer); override;
 
-    function SaveToRegistry(RootKey: HKEY; Key: string): Boolean; override;
-    function LoadFromRegistry(RootKey: HKEY; Key: string): Boolean; override;
+    function SaveToRegistry(RootKey: HKEY; const Key: string): Boolean; override;
+    function LoadFromRegistry(RootKey: HKEY; const Key: string): Boolean; override;
 
     property OnGetTokenAttribute : TGetTokenAttributeEvent read FOnGetTokenAttribute write FOnGetTokenAttribute;
   published
@@ -751,7 +751,7 @@ begin
   Result := SYNS_LangGeneral;
 end;
 
-function TSynGeneralSyn.LoadFromRegistry(RootKey: HKEY; Key: string): Boolean;
+function TSynGeneralSyn.LoadFromRegistry(RootKey: HKEY; const Key: string): Boolean;
 var
   r: TBetterRegistry;
 begin
@@ -769,7 +769,7 @@ begin
   end;
 end;
 
-function TSynGeneralSyn.SaveToRegistry(RootKey: HKEY; Key: string): Boolean;
+function TSynGeneralSyn.SaveToRegistry(RootKey: HKEY; const Key: string): Boolean;
 var
   r: TBetterRegistry;
 begin

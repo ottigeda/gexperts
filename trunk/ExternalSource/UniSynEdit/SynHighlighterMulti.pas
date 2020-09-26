@@ -212,7 +212,7 @@ type
     procedure UnhookHighlighter(aHL: TSynCustomHighlighter);
     procedure Notification(aComp: TComponent; aOp: TOperation); override;
     function GetSampleSource: UnicodeString; override;
-    procedure SetSampleSource(Value: UnicodeString); override;
+    procedure SetSampleSource(const Value: UnicodeString); override;
     procedure DoSetLine(const Value: UnicodeString; LineNumber: Integer); override;
     //
     procedure OldRangeProc(Operation: TRangeOperation; var Range: TRangeUNativeInt);
@@ -236,8 +236,8 @@ type
     function UpdateRangeProcs: Boolean;
     property CurrScheme: Integer read FCurrScheme write FCurrScheme;
     property CurrLine: UnicodeString read FLineStr;
-    function LoadFromRegistry(RootKey: HKEY; Key: string): Boolean; override;
-    function SaveToRegistry(RootKey: HKEY; Key: string): Boolean; override;
+    function LoadFromRegistry(RootKey: HKEY; const Key: string): Boolean; override;
+    function SaveToRegistry(RootKey: HKEY; const Key: string): Boolean; override;
     function IsIdentChar(AChar: WideChar): Boolean; override;
   published
     property Schemes: TSchemes read FSchemes write SetSchemes;
@@ -687,13 +687,13 @@ begin
   Result := FSampleSource;
 end;
 
-procedure TSynMultiSyn.SetSampleSource(Value: UnicodeString);
+procedure TSynMultiSyn.SetSampleSource(const Value: UnicodeString);
 begin
   FSampleSource := Value;
 end;
 
 function TSynMultiSyn.LoadFromRegistry(RootKey: HKEY;
-  Key: string): Boolean;
+  const Key: string): Boolean;
 var
   r: TBetterRegistry;
   i: Integer;
@@ -722,7 +722,7 @@ begin
   end;
 end;
 
-function TSynMultiSyn.SaveToRegistry(RootKey: HKEY; Key: string): Boolean;
+function TSynMultiSyn.SaveToRegistry(RootKey: HKEY; const Key: string): Boolean;
 var
   r: TBetterRegistry;
   i: Integer;

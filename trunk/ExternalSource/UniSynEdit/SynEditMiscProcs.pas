@@ -159,7 +159,7 @@ procedure SynDrawGradient(const ACanvas: TCanvas; const AStartColor,
   AEndColor: TColor; ASteps: Integer; const ARect: TRect;
   const AHorizontal: Boolean); overload;
 
-function DeleteTypePrefixAndSynSuffix(S: string): string;
+function DeleteTypePrefixAndSynSuffix(const S: string): string;
 
 implementation
 
@@ -749,7 +749,7 @@ begin
 end;
 {$ENDIF}
 
-function DeleteTypePrefixAndSynSuffix(S: string): string;
+function DeleteTypePrefixAndSynSuffix(const S: string): string;
 begin
   Result := S;
   if CharInSet(Result[1], ['T', 't']) then //ClassName is never empty so no AV possible
