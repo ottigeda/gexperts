@@ -728,6 +728,7 @@ procedure TSearchPathEnhancer.UpBtnClick(_Sender: TObject);
 var
   LineIdx: Integer;
   YPos: Integer;
+  LSelected : Boolean;
 begin
   if FPageControl.ActivePage = FTabSheetMemo then begin
     FMemo.BeginUpdate;
@@ -747,14 +748,18 @@ begin
       FMemo.EndUpdate;
     end;
     TWinControl_SetFocus(FMemo);
-  end else
+  end else begin
+    LSelected := FListbox.Selected[FListBox.ItemIndex];
     FUpClick(FUpBtn);
+    FListbox.Selected[FListbox.ItemIndex] := LSelected;
+  end;
 end;
 
 procedure TSearchPathEnhancer.DownBtnClick(_Sender: TObject);
 var
   LineCnt: Integer;
   YPos: Integer;
+  LSelected : Boolean;
 begin
   if FPageControl.ActivePage = FTabSheetMemo then begin
     FMemo.BeginUpdate;
@@ -775,8 +780,11 @@ begin
       FMemo.EndUpdate;
     end;
     TWinControl_SetFocus(FMemo);
-  end else
+  end else begin
+    LSelected := FListBox.Selected[FListBox.ItemIndex];
     FDownClick(FDownBtn);
+    FListBox.Selected[FListbox.ItemIndex] := LSelected;
+  end;
 end;
 
 type
