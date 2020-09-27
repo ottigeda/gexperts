@@ -54,6 +54,12 @@ type
   TGotoModificationBaseExpert = class(TEditorExpert)
   private
     FNotifier: Integer;
+{$IFDEF EDITOR_POPUP_MENU_GETS_RECREATED}
+    FOrigPopupEvent: TNotifyEvent;
+    procedure InstallPopupHook(_pm: TPopupMenu);
+    procedure HandleOnMenuPopup(_Sender: TObject);
+    procedure AppendMenuItem(_pm: TPopupMenu);
+{$ENDIF}
     procedure HandleWindowOpened(_Sender: TObject; const _EditWindow: INTAEditWindow);
     procedure CreateMenuItem(_EditForm: TCustomForm);
   protected
@@ -192,18 +198,83 @@ begin
   CreateMenuItem(_EditWindow.GetForm);
 end;
 
+{$IFDEF EDITOR_POPUP_MENU_GETS_RECREATED}
+
+procedure TGotoModificationBaseExpert.InstallPopupHook(_pm: TPopupMenu);
+begin
+  FOrigPopupEvent := _pm.OnPopup;
+  _pm.OnPopup := Self.HandleOnMenuPopup;
+end;
+
+procedure TGotoModificationBaseExpert.HandleOnMenuPopup(_Sender: TObject);
+var
+  pm: TPopupMenu;
+begin
+  pm := _Sender as TPopupMenu;
+  if Assigned(FOrigPopupEvent) then begin
+    FOrigPopupEvent(_Sender);
+  end;
+  AppendMenuItem(pm);
+end;
+
+procedure TGotoModificationBaseExpert.AppendMenuItem(_pm: TPopupMenu);
+var
+  cmp: TComponent;
+  mi: TMenuItem;
+  MiName: string;
+begin
+  // we always want our entry to be at the end, we remove it first
+  MiName := 'GX' + Self.GetName;
+  cmp := _pm.FindComponent(MiName);
+  if Assigned(cmp) then begin
+    cmp.Free;
+  end;
+
+  // The IDE uses the same popup menu everywhere in the editor window.
+  // We only want to add to the editor.
+  if _pm.Items.Count = 0 then begin
+    // empty menu, e.g. on the gutter, when there is no breakpoint
+    Exit; //==>
+  end;
+  cmp := _pm.FindComponent('BreakpointEnable');
+  if Assigned(cmp) then begin
+    // breakpoint popup menu
+    Exit; //==>
+  end;
+
+  mi := TPopupMenu_AppendMenuItem(_pm, Self.GetDisplayName, Self.Execute);
+  mi.Name := MiName;
+  mi.ShortCut := Self.ShortCut;
+end;
+{$ENDIF}
+
 procedure TGotoModificationBaseExpert.CreateMenuItem(_EditForm: TCustomForm);
+
+{$IFNDEF EDITOR_POPUP_MENU_GETS_RECREATED}
+
+  procedure AppendMenuItem(_pm: TPopupMenu);
+  var
+    cmp: TComponent;
+    mi: TMenuItem;
+    MiName: string;
+  begin
+    MiName := 'GX' + Self.GetName;
+    cmp := _pm.FindComponent(MiName);
+    if Assigned(cmp) then begin
+      Exit; //==>
+    end;
+
+    mi := TPopupMenu_AppendMenuItem(_pm, Self.GetDisplayName, Self.Execute);
+    mi.Name := MiName;
+    mi.ShortCut := Self.ShortCut;
+  end;
+{$ENDIF}
+
 var
   EditView: IOTAEditView;
   cmp: TComponent;
   pm: TPopupMenu;
-  mi: TMenuItem;
 begin
-{$IFDEF GX_VER330_up}
-  // Adding an entry to the editor popup menu does not work with Delphi 10.3.
-  // The menu seems to be created dynamically and that fails if we add to it.
-  Exit; //==>
-{$ENDIF}
   if not Active then
     Exit; //==>
 
@@ -217,13 +288,13 @@ begin
     Exit; //==>
   pm := TPopupMenu(cmp);
 
-  cmp := pm.FindComponent('GX' + Self.GetName);
-  if Assigned(cmp) then
-    Exit; //==>
-
-  mi := TPopupMenu_AppendMenuItem(pm, Self.GetDisplayName, Self.Execute);
-  mi.Name := 'GX' + Self.GetName;
-  mi.ShortCut := Self.ShortCut;
+{$IFDEF EDITOR_POPUP_MENU_GETS_RECREATED}
+  // Adding an entry to the editor popup menu does not work with Delphi 10.3 and later.
+  // The menu seems to be created dynamically and that fails if we add to it.
+  InstallPopupHook(pm);
+{$ELSE}
+  AppendMenuItem(pm);
+{$ENDIF}
 end;
 
 procedure TGotoModificationBaseExpert.SetActive(New: Boolean);
@@ -325,4 +396,6 @@ initialization
 {$ENDIF}
 
 end.
+
+
 

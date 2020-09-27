@@ -190,6 +190,9 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$IFNDEF GX_VER350_up}
     {$DEFINE KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
   {$ENDIF GX_VER340_up}
+  // Starting with Delphi 10.3 Rio, the popup menu for the editor window gets recreated
+  // every time in its OnPopup event.
+  {$DEFINE EDITOR_POPUP_MENU_GETS_RECREATED}
 {$ENDIF GX_VER330_up}
 
 {$IFNDEF GX_VER320_up}
