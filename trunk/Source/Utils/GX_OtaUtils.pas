@@ -70,7 +70,7 @@ const
 
   sLIBPREFIXOptionName    = 'SOPrefix';
   sLIBSUFFIXOptionName    = 'SOSuffix';
-
+  sLIBVERSIONOptionName    = 'SOVersion';
 
 // returns an IOTAEditReader for the given or the current IOTASourceEditor if none is specified
 function GxOtaGetEditReaderForSourceEditor(SourceEditor: IOTASourceEditor = nil): IOTAEditReader;
@@ -1588,39 +1588,86 @@ begin
 end;
 
 function GxOtaGetCurrentMapFileName(out MapFile: string): boolean;
+type
+  TExeType = (etExe, etDll, etBpl);
 var
   Project: IOTAProject;
+  TargetName: string;
+{$IFNDEF GX_DELPHI2005_UP}
   OutputDir: string;
   ProjectFilename: string;
   PathProcessor: TPathProcessor;
   LibSuffix: string;
   LibPrefix: string;
+  GenDLL: string;
+  LibVersion: string;
+  ExeType: TExeType;
+  ExeExtension: string;
+{$ENDIF}
 begin
   Result := False;
+  MapFile := '';
   Project := GxOtaGetCurrentProject;
-  if Assigned(Project) then begin
-    OutputDir := GxOtaGetProjectOutputDir(Project);
-    ProjectFilename := GxOtaGetProjectFileName(Project, True);
-    MapFile := ExtractFileName(ProjectFilename);
-    if IsPackage(ProjectFilename) then begin
-      MapFile := TFileSystem.RemoveFileExtFull(MapFile);
-      LibPrefix := Trim(VarToStr(Project.ProjectOptions.Values[sLIBPREFIXOptionName]));
-      LibSuffix := Trim(VarToStr(Project.ProjectOptions.Values[sLIBSUFFIXOptionName]));
-      MapFile := LibPrefix + MapFile + LibSuffix;
-    end;
-    MapFile := TFileSystem.ChangeFileExtFull(MapFile, '.map');
-    MapFile := AddSlash(OutputDir) + MapFile;
+  if not Assigned(Project) then begin
+    // no project -> no .map file
+    Exit; //==>
+  end;
 
-    PathProcessor := TPathProcessor.Create(ExtractFileDir(ProjectFilename), Project);
-    try
-      MapFile := PathProcessor.Process(MapFile);
-    finally
-      FreeAndNil(PathProcessor);
-    end;
+{$IFDEF GX_DELPHI2005_UP}
+  // Delphi 2005 and up make this simple:
+  // Just call Project.ProjectOptions.TargetName and replace the extension with .map
+  TargetName := Project.ProjectOptions.TargetName;
+{$ELSE}
+  // Unfortunately Delphi 6 and 7 don't supply the TargetName property, so we try
+  // to generate the file name ourselves.
+  OutputDir := GxOtaGetProjectOutputDir(Project);
+  ProjectFilename := GxOtaGetProjectFileName(Project, True);
 
-    Result := FileExists(MapFile);
-  end else
-    MapFile := '';
+  // There seems to be no way to get the actual Target File Extension (from the project options),
+  // so we support only the most common ones here. Most likely this will also work
+  // for .cpl and other library types, because nobody used the LibVersion setting outsid of the
+  // Unix (Kylix) world, which we don't support here anyway.
+  if IsPackage(ProjectFilename) then begin
+    ExeType := etBpl;
+    ExeExtension := '.bpl';
+  end else begin
+    GenDLL := Trim(VarToStr(Project.ProjectOptions.Values['GenDLL']));
+    if SameText(GenDLL, 'True') then begin
+      ExeType := etDll;
+      ExeExtension := '.dll';
+    end else begin
+      ExeType := etExe;
+      ExeExtension := '.exe';
+    end;
+  end;
+  TargetName := ExtractFileName(ProjectFilename);
+  TargetName := TFileSystem.RemoveFileExtFull(TargetName);
+  if exetype in [etDll, etBpl] then begin
+    LibPrefix := Trim(VarToStr(Project.ProjectOptions.Values[sLIBPREFIXOptionName]));
+    LibSuffix := Trim(VarToStr(Project.ProjectOptions.Values[sLIBSUFFIXOptionName]));
+    LibVersion := Trim(VarToStr(Project.ProjectOptions.Values[sLIBVERSIONOptionName]));
+    TargetName := LibPrefix + TargetName + LibSuffix + ExeExtension;
+    if LibVersion <> '' then
+      TargetName := TargetName + '.' + LibVersion;
+  end;
+  TargetName := AddSlash(OutputDir) + TargetName;
+
+  PathProcessor := TPathProcessor.Create(ExtractFileDir(ProjectFilename), Project);
+  try
+    TargetName := PathProcessor.Process(TargetName);
+  finally
+    FreeAndNil(PathProcessor);
+  end;
+{$ENDIF}
+
+  // Yes, this is correct: Delphi replaces the part after the last '.' with '.map'.
+  // even for DLLs with a version suffix. So
+  // project1.dll.1.0.0
+  // becomes
+  // project1.dll.1.0.map
+  MapFile := TFileSystem.ChangeFileExtLast(TargetName, '.map');
+
+  Result := FileExists(MapFile);
 end;
 
 function GxOtaGetProjectGroupFileName: string;
