@@ -374,8 +374,9 @@ type
     procedure DoEmbeddedSearch(Sender: TObject);
     procedure UpdateHistoryPagesOptions;
     procedure GoToMatchLine(MatchLine: TLineResult);
-    property lbHistoryListIndexForHistoryMenuActions: Integer read FlbHistoryListIndexForHistoryMenuActions write FlbHistoryListIndexForHistoryMenuActions;
+    procedure ForceRedraw;
     procedure GetEnabledFlags(out _IsOnlySaveSettings, _HaveItems, _Processing: Boolean);
+    property lbHistoryListIndexForHistoryMenuActions: Integer read FlbHistoryListIndexForHistoryMenuActions write FlbHistoryListIndexForHistoryMenuActions;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure AssignSettingsToForm;
@@ -849,6 +850,7 @@ begin
   ResizeStatusBar;
   if Assigned(FEmbeddedGrepSearch) then
     FEmbeddedGrepSearch.EmbeddedUpdatePos;
+  ForceRedraw;
   lbResults.Refresh;
 end;
 
@@ -1909,12 +1911,16 @@ end;
 
 procedure TfmGrepResults.FormShow(Sender: TObject);
 begin
-  // Setting the panel's visibility to false and to true again, seems to fix bug #212: "Grep results window is empty"
-  // even though the panel is already set to visible when this event is called.
-  pnlMain.Visible := False;
-  pnlMain.Visible := True;
   AssignSettingsToForm;
   ResizeListBox;
+  ForceRedraw;
+end;
+
+procedure TfmGrepResults.ForceRedraw;
+begin
+  pnlMain.Visible := False;
+  pnlMain.Visible := True;
+//  Repaint;
 end;
 
 procedure TfmGrepResults.AssignSettingsToForm;
