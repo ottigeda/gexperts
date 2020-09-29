@@ -207,14 +207,14 @@ begin
 end;
 
 procedure TGotoModificationBaseExpert.HandleOnMenuPopup(_Sender: TObject);
-var
-  pm: TPopupMenu;
 begin
-  pm := _Sender as TPopupMenu;
   if Assigned(FOrigPopupEvent) then begin
     FOrigPopupEvent(_Sender);
   end;
-  AppendMenuItem(pm);
+  if _Sender is TPopupMenu then begin
+    // sometimes Delphi 10.4.1 passes a TMenuItem here, no idea how this can happen, but it caused a runtime error
+    AppendMenuItem(TPopupMenu(_Sender));
+  end;
 end;
 
 procedure TGotoModificationBaseExpert.AppendMenuItem(_pm: TPopupMenu);
@@ -396,6 +396,4 @@ initialization
 {$ENDIF}
 
 end.
-
-
 
