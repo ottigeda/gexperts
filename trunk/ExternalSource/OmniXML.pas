@@ -3229,10 +3229,15 @@ begin
         if ReadChar = '>' then begin
           NodeValue := InputStream.GetOutputBuffer;
           Exit;
-        end
-        else begin
-          InputStream.WriteOutputChar(ReadChar);
-          PState := psData;
+        end else begin
+          InputStream.WriteOutputChar(']');
+          if ReadChar = ']' then
+            PState := psEnd
+          else begin
+            InputStream.WriteOutputChar(']');
+            InputStream.WriteOutputChar(ReadChar);
+            PState := psData;
+          end;
         end;
     end;
   end;
