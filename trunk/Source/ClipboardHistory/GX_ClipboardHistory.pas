@@ -218,16 +218,22 @@ type
   end;
 
 function FirstLineOfText(const AClipString: string): TClipData;
+var
+  sl: TStringList;
+  i: Integer;
 begin
   Result.FirstLine := '';
-  with TStringList.Create do
+  sl := TStringList.Create;
   try
-    Text := AClipString;
-    Result.Count := Count;
-    if Result.Count > 0 then
-      Result.FirstLine := Strings[0];
+    sl.Text := AClipString;
+    Result.Count := sl.Count;
+    i := 0;
+    while (Result.FirstLine = '') and (i < sl.Count) do begin
+      Result.FirstLine := sl[i];
+      Inc(i);
+    end;
   finally
-    Free;
+    sl.Free;
   end;
 end;
 
