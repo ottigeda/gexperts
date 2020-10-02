@@ -4,5 +4,5 @@ unit GX_DbugIntf;
 
 {$DEFINE GX_DBUGINTF}
 
-{$I 'dbugintf.pas'}
+{$I '..\..\ExternalSource\dbugintf.pas'}
 
