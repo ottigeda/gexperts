@@ -135,7 +135,7 @@ const
   CFmtCPPVar = '';
   CFmtCPPDeclaration = '    %1:s *%0:s;';
   CFmtCPPCreation = '    %s = new %s(%s);';
-  CFmtCPPDeletion = '    delete[] %s;';
+  CFmtCPPDeletion = '    delete %s;';
   CFmtCPPWith = '';
   CFmtCPPParent = 'Parent = %s;';
   CFmtCPPName = 'Name = "%s";';
