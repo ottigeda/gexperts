@@ -2,6 +2,7 @@ object fmMacroTemplates: TfmMacroTemplates
   Left = 263
   Top = 193
   AutoScroll = False
+  ActiveControl = lvTemplates
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'Macro Templates'
   ClientHeight = 419
