@@ -200,6 +200,7 @@ type
     cbExpandWithChar: TCheckBox;
     tbExpandDelay: TTrackBar;
     lbl1Sec: TLabel;
+    l_MacroError: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
@@ -281,6 +282,7 @@ type
     procedure SetSettings(const AValue: TTemplateSettings);
     function WindowPosKey: string;
     procedure TemplateTextChanged(Sender: TObject);
+    procedure Loaded; override;
   public
     property Settings: TTemplateSettings read FSettings write SetSettings;
     property CurrentSyntaxMode: TGXSyntaxHighlighter read FCurrentSyntaxMode write SetCurrentSyntaxMode;
@@ -299,9 +301,9 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Windows, Graphics, Clipbrd, GX_SharedImages,
+  SysUtils, Windows, Graphics, Clipbrd, TypInfo, Math, GX_SharedImages,
   GX_GxUtils, GX_MacroParser, GX_MacroTemplateEdit, GX_OtaUtils, GX_IdeUtils,
-  Math, GX_MacroTemplatesExpert;
+  GX_MacroTemplatesExpert;
 
 var
   ProgInfoProc: TGetProgrammerInfo;
@@ -667,6 +669,24 @@ begin
     lvTemplates.Selected := nil;
   FTemplateText.Clear;
   SetEditing(False);
+end;
+
+procedure TfmMacroTemplates.Loaded;
+var
+  PropInfo: PPropInfo;
+  i: Integer;
+  cmp: TComponent;
+begin
+  inherited Loaded;
+  PropInfo := GetPropInfo(Self, 'StyleElements');
+  if Assigned(PropInfo) then
+    SetOrdProp(Self, PropInfo, 0);
+  for I := 0 to ComponentCount - 1 do begin
+    cmp := Components[I];
+    PropInfo := GetPropInfo(cmp, 'StyleElements');
+    if Assigned(PropInfo) then
+      SetOrdProp(cmp, PropInfo, 0);
+  end;
 end;
 
 procedure TfmMacroTemplates.LoadFormLayout;
@@ -1142,8 +1162,24 @@ begin
 end;
 
 procedure TfmMacroTemplates.TemplateTextChanged(Sender: TObject);
+var
+  MacroText: string;
+  i: Integer;
+  PercentCnt: Integer;
 begin
   MarkTextModified;
+  MacroText := FTemplateText.Text;
+  PercentCnt := 0;
+  for i := 1 to Length(MacroText) do begin
+    if MacroText[i] = '%' then
+      Inc(PercentCnt);
+  end;
+  if Odd(PercentCnt) then begin
+    l_MacroError.Caption := 'Number of ''%'' characters is not even. Note that a literal ''%'' character must be duplicated.';
+    l_MacroError.Visible := True;
+  end else begin
+    l_MacroError.Visible := False;
+  end;
 end;
 
 procedure TfmMacroTemplates.ClearModified;

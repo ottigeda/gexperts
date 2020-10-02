@@ -197,6 +197,22 @@ object fmMacroTemplates: TfmMacroTemplates
             Font.Style = []
             ParentFont = False
             TabOrder = 0
+            object l_MacroError: TLabel
+              Left = 5
+              Top = 157
+              Width = 435
+              Height = 14
+              Align = alBottom
+              Caption = 'Error messages go here, only visible if there is an error'
+              Font.Charset = EASTEUROPE_CHARSET
+              Font.Color = clRed
+              Font.Height = -11
+              Font.Name = 'Courier New'
+              Font.Style = []
+              ParentFont = False
+              Visible = False
+              WordWrap = True
+            end
           end
           object pnlUses: TPanel
             Left = 450
