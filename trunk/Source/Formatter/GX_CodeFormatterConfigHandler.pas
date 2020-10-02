@@ -60,19 +60,15 @@ type
     class procedure ReadSettings(_Reader: IConfigReader; _Settings: TCodeFormatterSettings;
       const _CapitalizationFn: string);
     ///<summary>
-    /// Writes the capitalization list to the file, if that file is not younger than the
-    /// LastRead timestamp or LastRead is 0.
+    /// Writes the capitalization list to the file
     /// @param fn is the file name to write to (may be empty, then no writing is done)
     /// @param List is the capitalization list to write
     /// @param LastRead is the time the list was last read, or <0 if no check should be done
-    ///                 on return it contains the current last modified time of the file, either
-    ///                 because it has been written to (Result = True), or as it was on the disk
-    ///                 (Result = False)
-    ///                 If the file does not exist, it will contain 0.
-    /// @returns True when the file was written or the file name was empty
-    ///          False if the file's last modified time was newer than LastRead </summary>
-    class function WriteCaptialization(const _fn: string; _List: TGXUnicodeStringList;
-      var _LastRead: TDateTime): Boolean;
+    ///                 on return it contains the current last modified time of the file
+    ///                 If the file on the disk is newer than LastRead its content will be read,
+    ///                 merged with the current list and then written. </summary>
+    class procedure WriteCaptialization(const _fn: string; _List: TGXUnicodeStringList;
+      var _LastRead: TDateTime);
     ///<summary>
     /// Read the capitalization list from the given file. Also return's the file's last modified
     /// timestamp. If the file could not be read, the capitalization list will be empty.
@@ -163,6 +159,7 @@ end;
 { TCodeFormatterConfigHandler }
 
 {$IFNDEF GX_DELPHI2006_UP}
+
 // the overloaded version of FileAge returning a TDateTime was introduced in Delphi 2006
 function FileAge(const _fn: string; out FileDateTime: TDateTime): Boolean;
 var
@@ -309,13 +306,13 @@ begin
   _Settings.Settings := ES;
 end;
 
-class function TCodeFormatterConfigHandler.WriteCaptialization(const _fn: string; _List: TGXUnicodeStringList;
-  var _LastRead: TDateTime): Boolean;
+class procedure TCodeFormatterConfigHandler.WriteCaptialization(const _fn: string; _List: TGXUnicodeStringList;
+  var _LastRead: TDateTime);
 var
   CurrentTimestamp: TDateTime;
+  OrigList: TGXUnicodeStringList;
+  i: Integer;
 begin
-  Result := True;
-
   if _fn = '' then begin
     _LastRead := -1;
     Exit; //==>
@@ -323,12 +320,21 @@ begin
 
   if FileAge(_fn, CurrentTimestamp) then begin
     if (_LastRead >= 0) and (CurrentTimestamp > _LastRead) then begin
-      _LastRead := CurrentTimestamp;
-      Result := False;
 {$IF Declared(SendDebugWarning)}
-      SendDebugWarning('Capitalization file has changed since it was last read, not overwriting it.');
+      SendDebugWarning('Capitalization file has changed since it was last read, merging contents.');
 {$IFEND}
-      Exit; //==>
+      OrigList := TGXUnicodeStringList.Create;
+      try
+        ReadCapitalization(_fn, OrigList, _LastRead);
+        // The list must always be sorted and ignore duplicates
+        Assert(_List.Sorted, 'Capitalization list is not sorted.');
+        Assert(_List.Duplicates = dupIgnore, 'Capitalization list does not ignore duplicates.');
+        for i := 0 to OrigList.Count - 1 do begin
+          _List.Add(OrigList[i]);
+        end;
+      finally
+        FreeAndNil(OrigList);
+      end;
     end;
   end;
 
@@ -409,15 +415,8 @@ begin
   _Writer.WriteString('CapitalizationFile', string(_Settings.CapitalizationFile));
 
   Timestamp := _Settings.CapFileTimestamp;
-  if WriteCaptialization(_Settings.CapitalizationFile, _Settings.CapNames, Timestamp) then begin
-    _Settings.CapFileTimestamp := Timestamp;
-  end else begin
-    // todo: Are there any better ways to handle this?
-    //       Maybe we could merge the files in this case.
-{$IF Declared(SendDebugWarning)}
-    SendDebugWarning('Any changes to the capitalization list are lost.');
-{$IFEND}
-  end;
+  WriteCaptialization(_Settings.CapitalizationFile, _Settings.CapNames, Timestamp);
+  _Settings.CapFileTimestamp := Timestamp;
 end;
 
 class procedure TCodeFormatterConfigHandler.ExportToFile(const _Filename: string; _Settings: TCodeFormatterSettings);
@@ -487,4 +486,3 @@ begin
 end;
 
 end.
-
