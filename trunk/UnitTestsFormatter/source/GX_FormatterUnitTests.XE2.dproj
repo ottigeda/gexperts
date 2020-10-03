@@ -26,6 +26,12 @@
         <CfgParent>Base</CfgParent>
         <Cfg_1>true</Cfg_1>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
+        <Base>true</Base>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
+        <Cfg_1_Win32>true</Cfg_1_Win32>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
         <Base>true</Base>
         <CfgParent>Base</CfgParent>
@@ -38,13 +44,13 @@
         <Cfg_2_Win32>true</Cfg_2_Win32>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
-        <DCC_DcuOutput>.\dcu\delphixe2</DCC_DcuOutput>
-        <DCC_Define>ASSERT_TRACING;$(DCC_Define)</DCC_Define>
+        <DCC_DcuOutput>..\dcu\delphixe2</DCC_DcuOutput>
+        <DCC_Define>NO_TRANSLATION$(DCC_Define)</DCC_Define>
         <DCC_DependencyCheckOutputName>..\GX_FormatterUnitTests.exe</DCC_DependencyCheckOutputName>
         <DCC_ExeOutput>..\</DCC_ExeOutput>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Winapi;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
         <DCC_UnitAlias>Actions=ActnList;ImageList=Controls;$(DCC_UnitAlias)</DCC_UnitAlias>
-        <DCC_UnitSearchPath>..\..\source\framework;..\..\source\utils;..\..\source\include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit;..\..\ExternalSource\dzlib;..\dunit;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <Manifest_File>None</Manifest_File>
         <VerInfo_Build>1</VerInfo_Build>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
@@ -55,7 +61,6 @@
         <DCC_Namespace>System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <Debugger_DebugSourcePath>C:\Program Files\Borland\BDS\3.0\source\dUnit\src\;$(Debugger_DebugSourcePath)</Debugger_DebugSourcePath>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_DebugInformation>False</DCC_DebugInformation>
@@ -70,11 +75,11 @@
         <DCC_RangeChecking>True</DCC_RangeChecking>
         <DCC_ResourcePath>..\..\;$(DCC_ResourcePath)</DCC_ResourcePath>
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
-        <DCC_UnitSearchPath>..\..\;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <Version>7.0</Version>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
+        <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
         <DCC_HppOutput>.\dcu</DCC_HppOutput>
         <DCC_IncludePath>..\..\source\framework;$(DCC_IncludePath)</DCC_IncludePath>
         <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
@@ -86,10 +91,7 @@
         <Version>7.0</Version>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
-        <DCC_DcuOutput>..\dcu\delphixe2</DCC_DcuOutput>
         <DCC_MapFile>3</DCC_MapFile>
-        <DCC_UnitAlias>System.Actions=Actnlist;System.ImageList=ImgList;$(DCC_UnitAlias)</DCC_UnitAlias>
-        <DCC_UnitSearchPath>..\dunit;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_IncludeVerInfo>false</VerInfo_IncludeVerInfo>
         <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.1;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
@@ -114,7 +116,8 @@
         <DCCReference Include="..\..\Source\Formatter\GX_CodeFormatterConfigHandler.pas"/>
         <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterUnicode.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_GenericUtils.pas"/>
-        <DCCReference Include="..\..\source\utils\GX_dzAssertTrace.pas"/>
+        <DCCReference Include="..\dunit\TestFrameworkExt.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_DbugIntf.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
