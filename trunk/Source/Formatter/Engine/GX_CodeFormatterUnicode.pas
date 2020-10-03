@@ -77,7 +77,8 @@ end;
 procedure SetString(var _s: TGXUnicodeString; _p: PGXUnicodeChar; _Len: integer);
 begin
   SetLength(_s, _Len);
-  Move(_p^, _s[1], _Len * SizeOf(_p^));
+  if _Len > 0 then
+    Move(_p^, _s[1], _Len * SizeOf(_p^));
 end;
 
 function StrLen(_p: PGXUnicodeChar): Integer;
