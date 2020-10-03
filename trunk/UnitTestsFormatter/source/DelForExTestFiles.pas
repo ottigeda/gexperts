@@ -210,7 +210,7 @@ begin
     _AdjustSettings(Cfg);
   FFormatter.Settings.Settings := Cfg;
   InFile := TestFileName;
-  Filename := Extractfilename(InFile);
+  Filename := ExtractFileName(InFile);
   ExpectedFile := 'testcases\expected\' + FConfigName + '\' + Filename;
   if not FileExists(InFile) then begin
 //    ExpectedException := EFileDoesNotExist;
