@@ -19,8 +19,8 @@ uses Test,
 interface
 //difficult constructs but all solved:
 const
- {(*}disasterString = #13#12'1+2'^r#13$F'ss'#$FF + #$FE'1+2''1+2'#12#12'''''1+3';
-  nulls = 'M'#0#0#0; {*)}
+ {(*}      disasterString = #13#12'1+2'^r#13$F'ss'#$FF + #$FE'1+2''1+2'#12#12'''''1+3';
+  nulls = 'M'#0#0#0;{*)}
   quote = '''';
   k = 1E+30;
 type
