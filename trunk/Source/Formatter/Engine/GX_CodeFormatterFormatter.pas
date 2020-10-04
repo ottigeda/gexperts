@@ -1775,10 +1775,10 @@ begin
     try
       FTokenIdx := 0;
       while TryGetToken(FTokenIdx, FCurrentToken) do begin
-        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = '{ 1st paragraph.') then
-          gblAssertTraceOn := True;
-        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'implementation') then
-          gblAssertTraceOn := False;
+//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'bla') then
+//          gblAssertTraceOn := True;
+//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'constructor') then
+//          gblAssertTraceOn := False;
         Assert(False, '**** .doExecute: CurrentToken: ' + FCurrentToken.GetForDebug);
         Assert(False, '.doExecute: Stack.Depth: ' + IntToStr(FStack.Depth) + ' .TopType: ' + GetEnumname(TypeInfo(TReservedType), Ord(FStack.GetTopType)) + ' .TopIndent: ' + IntToStr(FStack.GetTopIndent));
         Assert(False, '.doExecute: WrapIndent: ' + Ifthen(FWrapIndent, 'True', 'False'));
