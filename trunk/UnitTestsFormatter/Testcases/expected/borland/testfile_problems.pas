@@ -27,7 +27,7 @@ type
   Test = record
     A,
       b, {test}
-    C,
+      C,
       d,
       E,
       F: Integer;
