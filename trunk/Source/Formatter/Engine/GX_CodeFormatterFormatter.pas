@@ -82,7 +82,8 @@ type
     /// @param RType is the queried reserverd type
     /// @returns True, if the token has the queried type, False otherwise
     ///          also False, if the index is out of bounds. </summary>
-    function TokenAtIs(_Idx: Integer; _rType: TReservedType): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
+    function TokenAtIs(_Idx: Integer; _rType: TReservedType): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
+    function TokenAtIs(_Idx: Integer; _rTypes: TReservedTypeSet): Boolean; overload;{$IFDEF SupportsInline} inline; {$ENDIF}
 
     function GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken; {$IFDEF SupportsInline} inline; {$ENDIF}
     function TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
@@ -451,6 +452,15 @@ begin
     Result := (Token.ReservedType = _rType);
 end;
 
+function TCodeFormatterFormatter.TokenAtIs(_Idx: Integer; _rTypes: TReservedTypeSet): Boolean;
+var
+  Token: TPascalToken;
+begin
+  Result := TryGetToken(_Idx, Token);
+  if Result then
+    Result := (Token.ReservedType in _rTypes);
+end;
+
 function TCodeFormatterFormatter.GetToken(_Idx: Integer): TPascalToken;
 begin
   TryGetToken(_Idx, Result);
@@ -568,8 +578,15 @@ begin
   // todo: This can be implemented more efficiently because we know that
   //       Idx-2n-1 is a comment and Idx-2n must be the line feed in front of that comment
   //       until we hit a non-comment at Idx-2n-1.
+  //       -> No, we don't know that. There can be single line feeds in between that break
+  //          the 2n rule like this:
+  // { first line            <- LF + comment
+  //                         <- single LF
+  //   third line }          <- LF + comment
+  // procedure bla;
+  //
   // get a list of all line feeds in front of comments before the procedure
-  while TryGetPrevLineFeed(Idx, LineFeed) and TokenAtIs(Idx + 1, rtComment) do begin
+  while TryGetPrevLineFeed(Idx, LineFeed) and TokenAtIs(Idx + 1, [rtComment, rtLineFeed]) do begin
     Len := Length(CommentLFs);
     SetLength(CommentLFs, Len + 1);
     CommentLFs[Len] := LineFeed;
@@ -1758,20 +1775,16 @@ begin
     try
       FTokenIdx := 0;
       while TryGetToken(FTokenIdx, FCurrentToken) do begin
-//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'bla') then
-//          gblAssertTraceOn := True;
-//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'constructor') then
-//          gblAssertTraceOn := False;
+        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = '{ 1st paragraph.') then
+          gblAssertTraceOn := True;
+        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'implementation') then
+          gblAssertTraceOn := False;
         Assert(False, '**** .doExecute: CurrentToken: ' + FCurrentToken.GetForDebug);
-        Assert(False, '.doExecute: Stack.Depth: ' + IntToStr(FStack.Depth)
-          + ' .TopType: ' + GetEnumname(TypeInfo(TReservedType), Ord(FStack.GetTopType))
-          + ' .TopIndent: ' + IntToStr(FStack.GetTopIndent));
+        Assert(False, '.doExecute: Stack.Depth: ' + IntToStr(FStack.Depth) + ' .TopType: ' + GetEnumname(TypeInfo(TReservedType), Ord(FStack.GetTopType)) + ' .TopIndent: ' + IntToStr(FStack.GetTopIndent));
         Assert(False, '.doExecute: WrapIndent: ' + Ifthen(FWrapIndent, 'True', 'False'));
-        Assert(False, '.doExecute: before CheckIndent: NTmp: ' + IntToStr(NTmp)
-          + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
+        Assert(False, '.doExecute: before CheckIndent: NTmp: ' + IntToStr(NTmp) + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
         CheckIndent(NTmp, PrevOldNspaces);
-        Assert(False, '.doExecute: after CheckIndent:  NTmp: ' + IntToStr(NTmp)
-          + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
+        Assert(False, '.doExecute: after CheckIndent:  NTmp: ' + IntToStr(NTmp) + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
         Inc(FTokenIdx);
       end;
     finally
