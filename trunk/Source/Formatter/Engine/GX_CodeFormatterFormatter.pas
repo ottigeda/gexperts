@@ -708,10 +708,10 @@ begin
       Exit; //==>
     end;
 
-    if (Prev2.ReservedType = rtComment) and TokenAtIs(FTokenIdx - k - 1, rtLineFeed) then begin
+    if (Prev2.ReservedType in [rtComment, rtCompIf, rtCompElse]) and TokenAtIs(FTokenIdx - k - 1, rtLineFeed) then begin
       // There is a comment before the procedure. Check for more comments before that.
       Inc(k, 2);
-      while TryGetToken(FTokenIdx - k, Prev2) and (Prev2.ReservedType = rtComment)
+      while TryGetToken(FTokenIdx - k, Prev2) and (Prev2.ReservedType in [rtComment, rtCompIf, rtCompElse])
         and TokenAtIs(FTokenIdx - k - 1, rtLineFeed) do begin
         Inc(k, 2);
       end;
