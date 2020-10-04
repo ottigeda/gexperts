@@ -5766,7 +5766,6 @@ begin
 end;
 
 {$IFDEF INCLUDE_NAMESPACE_ABSTRACT_SCHEMA_MODEL}
-
 function TDomImplementation.createASModelNS: TdomASModelNS;
 begin
   Result := TdomASModelNS.create(self);
@@ -5840,7 +5839,6 @@ begin
 end;
 
 {$IFDEF INCLUDE_NAMESPACE_ABSTRACT_SCHEMA_MODEL}
-
 procedure TDomImplementation.freeASModelNS(var arg: TdomASModelNS);
 var
   index: integer;
@@ -5899,7 +5897,6 @@ begin
 end;
 
 {$IFDEF INCLUDE_NAMESPACE_ABSTRACT_SCHEMA_MODEL}
-
 procedure TDomImplementation.freeUnusedASModelsNS;
 var
   i: integer;
@@ -5916,7 +5913,6 @@ end;
 {$ENDIF}
 
 {$IFDEF IGNORE_DOCUMENT_FORMAT}
-
 function TDomImplementation.getDocInstance: TdomDocument;
 begin
   Result := TdomDocument.create(self, nil);
@@ -6075,7 +6071,6 @@ begin
 end;
 
 {$IFNDEF IGNORE_DOCUMENT_FORMAT}
-
 function TDomImplementation.getDocumentClass(const aNamespaceUri,
   aQualifiedName: wideString): TdomDocumentClass;
 var
@@ -6110,7 +6105,6 @@ begin
 end;
 
 {$IFNDEF IGNORE_DOCUMENT_FORMAT}
-
 class procedure TDomImplementation.RegisterDocumentFormat(const aNamespaceUri,
   aQualifiedName: wideString;
   aDocumentClass: TdomDocumentClass);
@@ -6138,7 +6132,6 @@ begin
 end;
 
 {$IFNDEF IGNORE_DOCUMENT_FORMAT}
-
 procedure TDomImplementation.setDefaultDocumentClass(const value: TdomDocumentClass);
 begin
   FDefaultDocumentClass := value;
@@ -6168,7 +6161,6 @@ begin
 end;
 
 {$IFNDEF IGNORE_DOCUMENT_FORMAT}
-
 function TDomImplementation.supportsDocumentFormat(const aNamespaceUri,
   aQualifiedName: wideString): boolean;
 var
@@ -22448,7 +22440,6 @@ begin
 end;
 
 {$IFNDEF LINUX}
-
 procedure TDomToXmlParser.setUseActiveCodePage(const value: boolean);
 begin
   FUseActiveCodePage := value;
