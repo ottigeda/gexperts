@@ -1644,7 +1644,7 @@ begin
       end;
 
     rtComment: begin
-        if FSettings.IndentComments and (FStack.GetTopType <> rtLeftHook) then
+        if FSettings.IndentComments and not (FStack.GetTopType in [rtLeftHook, rtRecord, rtClassDecl]) then
           FWrapIndent := False;
 
         if FStack.IsEmpty and (FStack.nIndent > 0) then begin
