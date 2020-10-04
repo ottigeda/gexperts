@@ -59,6 +59,7 @@ type
     procedure InstallPopupHook(_pm: TPopupMenu);
     procedure HandleOnMenuPopup(_Sender: TObject);
     procedure AppendMenuItem(_pm: TPopupMenu);
+    procedure RemoveMenuItem(_pm: TPopupMenu);
 {$ENDIF}
     procedure HandleWindowOpened(_Sender: TObject; const _EditWindow: INTAEditWindow);
     procedure CreateMenuItem(_EditForm: TCustomForm);
@@ -208,12 +209,30 @@ end;
 
 procedure TGotoModificationBaseExpert.HandleOnMenuPopup(_Sender: TObject);
 begin
+  if _Sender is TPopupMenu then begin
+    // I tried to only call RemoveMenuItem here, but this failed when the user pressed Shift+Ctrl+T for adding a todo
+    // https://sourceforge.net/p/gexperts/bugs/223/
+    // Using Items.Clear avoids this problem but might create other ones.
+    TPopupMenu(_Sender).Items.Clear;
+  end;
   if Assigned(FOrigPopupEvent) then begin
     FOrigPopupEvent(_Sender);
   end;
   if _Sender is TPopupMenu then begin
     // sometimes Delphi 10.4.1 passes a TMenuItem here, no idea how this can happen, but it caused a runtime error
     AppendMenuItem(TPopupMenu(_Sender));
+  end;
+end;
+
+procedure TGotoModificationBaseExpert.RemoveMenuItem(_pm: TPopupMenu);
+var
+  cmp: TComponent;
+  MiName: string;
+begin
+  MiName := 'GX' + Self.GetName;
+  cmp := _pm.FindComponent(MiName);
+  if Assigned(cmp) then begin
+    cmp.Free;
   end;
 end;
 
@@ -224,11 +243,7 @@ var
   MiName: string;
 begin
   // we always want our entry to be at the end, we remove it first
-  MiName := 'GX' + Self.GetName;
-  cmp := _pm.FindComponent(MiName);
-  if Assigned(cmp) then begin
-    cmp.Free;
-  end;
+  RemoveMenuItem(_pm);
 
   // The IDE uses the same popup menu everywhere in the editor window.
   // We only want to add to the editor.
@@ -396,4 +411,6 @@ initialization
 {$ENDIF}
 
 end.
+
+
 
