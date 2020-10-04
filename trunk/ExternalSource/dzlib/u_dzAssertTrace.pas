@@ -16,9 +16,6 @@ function ClearTrace: Boolean;
 
 implementation
 
-uses
-  DbugIntf;
-
 {$IFDEF ASSERT_TRACING}
 
 {$MESSAGE warn 'Assert tracing is turned on, this will impact performance!'}
