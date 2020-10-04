@@ -9,16 +9,16 @@
         <ProjectGuid>{29a50c38-e85b-424f-86b6-68e259c53afd}</ProjectGuid>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
+        <DCC_DcuOutput>..\dcu\delphi2007\release</DCC_DcuOutput>
         <DCC_DebugInformation>False</DCC_DebugInformation>
         <DCC_Define>RELEASE;NO_TRANSLATION;NO_TRANSLATION_HINT</DCC_Define>
         <DCC_ExeOutput>..\</DCC_ExeOutput>
-        <DCC_HppOutput>.\dcu</DCC_HppOutput>
+        <DCC_HppOutput>..\dcu\delphi2007\release</DCC_HppOutput>
         <DCC_IncludePath>..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit;..\..\ExternalSource\dzlib;..\dunit</DCC_IncludePath>
         <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
         <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
         <DCC_MapFile>3</DCC_MapFile>
-        <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
+        <DCC_ObjOutput>..\dcu\delphi2007\release</DCC_ObjOutput>
         <DCC_ObjPath>..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit;..\..\ExternalSource\dzlib;..\dunit</DCC_ObjPath>
         <DCC_Optimize>False</DCC_Optimize>
         <DCC_RangeChecking>True</DCC_RangeChecking>
@@ -31,14 +31,14 @@
         <Version>7.0</Version>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <DCC_DcuOutput>..\dcu\delphi2007</DCC_DcuOutput>
+        <DCC_DcuOutput>..\dcu\delphi2007\debug</DCC_DcuOutput>
         <DCC_Define>DEBUG;NO_TRANSLATION;NO_TRANSLATION_HINT;_ASSERT_TRACING</DCC_Define>
         <DCC_ExeOutput>..\</DCC_ExeOutput>
-        <DCC_HppOutput>..\dcu\delphi2007</DCC_HppOutput>
+        <DCC_HppOutput>..\dcu\delphi2007\debug</DCC_HppOutput>
         <DCC_IncludePath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit;..\..\ExternalSource\dzlib;..\dunit</DCC_IncludePath>
         <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
         <DCC_MapFile>3</DCC_MapFile>
-        <DCC_ObjOutput>..\dcu\delphi2007</DCC_ObjOutput>
+        <DCC_ObjOutput>..\dcu\delphi2007\debug</DCC_ObjOutput>
         <DCC_ObjPath>$(BDS)\lib\Debug;..\..\source\framework;..\..\source\utils;..\..\source\include;..\..\externalsource\UniSynEdit;..\..\ExternalSource\dzlib;..\dunit</DCC_ObjPath>
         <DCC_Optimize>False</DCC_Optimize>
         <DCC_RangeChecking>True</DCC_RangeChecking>
