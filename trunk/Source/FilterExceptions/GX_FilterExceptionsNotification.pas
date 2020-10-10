@@ -541,7 +541,9 @@ var
   C: Cardinal;
   PE: PExceptionRecord;
   Params: PExceptionInformation;
+{$IFOPT D+}
   I: Integer;
+{$ENDIF}
 begin
   // this function should be used only with new delphi versions
   Result := 0;
