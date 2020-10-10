@@ -20,6 +20,8 @@ const
   CompilerVersionDelphiXE2 = 23;
   CompilerVersionDelphiXE3 = 24;
   CompilerVersionDelphiXE4 = 25;
+  // Did anybody ever use AppMethod?
+  CompilerVersionAppMethod = 26.5;
   CompilerVersionDelphiXE5 = 26;
   CompilerVersionDelphiXE6 = 27;
   CompilerVersionDelphiXE7 = 28;
@@ -29,11 +31,17 @@ const
   CompilerVersionDelphiX101 = 31;
   CompilerVersionDelphiX102 = 32;
   CompilerVersionDelphiX103 = 33;
+  CompilerVersionDelphiX104 = 34;
   // if you are better at memorizing city names
   CompilerVersionDelphiSeattle = 30;
   CompilerVersionDelphiBerlin = 31;
   CompilerVersionDelphiTokyo = 32;
   CompilerVersionDelphiRio = 33;
+  CompilerVersionDelphiSydney = 34;
+
+{$IF CompilerVersion > CompilerVersionDelphiSydney}
+{$MESSAGE HINT 'Add new CompilerVersion(s) here'}
+{$IFEND}
 
 const
   RtlVersionDelphi6 = 14;
@@ -60,11 +68,17 @@ const
   RtlVersionDelphiX101 = 31;
   RtlVersionDelphiX102 = 32;
   RtlVersionDelphiX103 = 33;
+  RtlVersionDelphiX104 = 34;
   // if you are better at memorizing city names
   RtlVersionDelphiSeattle = 30;
   RtlVersionDelphiBerlin = 31;
   RtlVersionDelphiTokyo = 32;
   RtlVersionDelphiRio = 33;
+  RtlVersionDelphiSydney = 34;
+
+{$IF RtlVersion > RtlVersionDelphiSydney}
+{$MESSAGE HINT 'Add new RtlVersion(s) here'}
+{$IFEND}
 
 implementation
 
