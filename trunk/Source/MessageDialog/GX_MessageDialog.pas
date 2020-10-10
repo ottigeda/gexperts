@@ -1189,7 +1189,9 @@ function TCppMessageDialogBuilder.GetCode: string;
 
   function SurroundGnuGettext(Value: string): string;
   begin
-    if not FGNUGettextSupport then begin
+    if not FGnuGetTextSupport
+      or (FQuotes and (Value = '""'))
+      or (not FQuotes and (Value = '')) then begin
       Result := Value;
     end else begin
       if FGnuGetTextFunction = ggtUnderscore then
@@ -1255,6 +1257,7 @@ function TCppMessageDialogBuilder.GetCode: string;
 var
   i: Integer;
   ConcatStr: string;
+  p: Integer;
 begin
   if FQuotes and FGnuGetTextSupport and FGnuGetTextIndividual then
     ConcatStr := '+"' + CppConcatString + '"+'
@@ -1270,6 +1273,23 @@ begin
       Result := Result + ConcatStr;
     end;
     Result := Result + BuildString(FText[FText.Count - 1]);
+  end;
+
+  if FQuotes then begin
+    // remove empty strings: + "" +
+    p := Pos('+""', Result);
+    while p > 0 do begin
+      Result := Copy(Result, 1, p - 1) + Copy(Result, p + 3);
+      p := Pos('+""', Result);
+    end;
+    // also at the end: +''
+    if EndsStr('+""', Result) then
+      Result := LeftStr(Result, Length(Result) - 3);
+  end else begin
+    // todo: without quotes this doesn't really work. Has it ever?
+    //       What should it look like?
+    //       Input: 'bla'+CRLF+'blub'
+    //       Output: 'bla +"\n" + blub' ?
   end;
 
   if FQuotes then begin
