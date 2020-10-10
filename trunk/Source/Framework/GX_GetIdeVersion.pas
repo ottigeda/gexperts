@@ -1085,7 +1085,7 @@ begin
 
   {$IFDEF VER330}
     Result := GetRS103Version;
-  Assert(Result in [ideRS103, ideRS103U1, ideRS103U2, ideRS103U3]);
+    Assert(Result in [ideRS103, ideRS103U1, ideRS103U2, ideRS103U3]);
   {$ENDIF VER330}
 
   {$IFDEF VER340}
@@ -1098,6 +1098,10 @@ begin
 
   DetectedVersion := Result;
 end;
+
+{$IF CompilerVersion > 34} // new Delphi version
+  'Add the information for the new Delphi version above and increase the CompilerVersion in this conditional'
+{$IFEND}
 
 initialization
   DetectedVersion := ideUndetected;

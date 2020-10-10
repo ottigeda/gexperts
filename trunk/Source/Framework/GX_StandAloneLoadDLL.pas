@@ -67,6 +67,9 @@ end;
 
 function LoadAnyGExpertsDLL: IGExpertsDll;
 begin
+{$IF CompilerVersion > 34} // new Delphi version
+  'Add the information for the new Delphi version below and increase the CompilerVersion in this conditional'
+{$IFEND}
   if TryLoad('GExpertsRS104.dll', Result)
     or TryLoad('GExpertsRS103.dll', Result)
     or TryLoad('GExpertsRS102.dll', Result)

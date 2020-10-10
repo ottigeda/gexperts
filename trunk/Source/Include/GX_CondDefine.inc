@@ -118,11 +118,11 @@
     * GX_GetIdeVersion.pas
     * GX_StandAloneLoadDLL.pas
     * GX_eIfDef.pas
-    * GX_UnitExportParser.pas
     and also the include files for the 3rd party libraries used:
-    * AbDefine.inc
+    * AbDefine.Inc (usually not necessary)
     * SynEdit.inc
-    * SynEditJedi.inc (That's a copy of jedi.inc from Project JEDI)
+    * SynEditJedi.inc (That is a copy of jedi.inc from Project JEDI)
+    * dzlibjedi.Inc (That is a copy of jedi.inc from Project JEDI)
     todo: List the other units that might need to be adapted.
                                             {$IFEND}
                                           {$IFEND}
