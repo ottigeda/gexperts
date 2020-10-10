@@ -20,11 +20,8 @@ uses
   Menus,
   Messages,
   Contnrs,
-  GX_EditorExpert,
-  GX_ConfigurationInfo,
   u_dzCompilerAndRtlVersions,
   GX_BaseForm,
-  GX_BaseExpert,
   GX_GenericUtils;
 
 {$IF RTLVersion <= RtlVersionDelphi2005}
@@ -44,26 +41,10 @@ type
 {$IFEND}
 
 type
-  TIfDefExpert = class(TEditorExpert)
-  private
-    FAppendComment: Boolean;
-  protected
-    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
-    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
-  public
-    class function GetName: string; override;
-    constructor Create; override;
-    function GetDisplayName: string; override;
-    procedure Execute(Sender: TObject); override;
-    function GetHelpString: string; override;
-    function HasConfigOptions: Boolean; override;
-  end;
-
-type
   TfmConfigureIfDef = class(TfmBaseForm)
     pc_IfClasses: TPageControl;
     p_Bottom: TPanel;
-    b_OK: TButton;
+    b_Ok: TButton;
     b_Cancel: TButton;
     chk_AppendComment: TCheckBox;
     b_Open: TButton;
@@ -109,9 +90,28 @@ uses
   StrUtils,
   u_dzVclUtils,
   u_dzStringUtils,
+  GX_BaseExpert,
+  GX_EditorExpert,
+  GX_ConfigurationInfo,
   GX_OtaUtils;
 
 { TIfDefExpert }
+
+type
+  TIfDefExpert = class(TEditorExpert)
+  private
+    FAppendComment: Boolean;
+  protected
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
+  public
+    class function GetName: string; override;
+    constructor Create; override;
+    function GetDisplayName: string; override;
+    procedure Execute(Sender: TObject); override;
+    function GetHelpString: string; override;
+    function HasConfigOptions: Boolean; override;
+  end;
 
 constructor TIfDefExpert.Create;
 begin
@@ -581,6 +581,9 @@ procedure TfmConfigureIfDef.InitVerXxx;
 var
   def: TIfdefTabDefinition;
 begin
+{$IFDEF VER350}
+{$MESSAGE HINT 'Add a new Delphi version here'}
+{$ENDIF}
   def := TIfdefTabDefinition.Create(Self, pc_IfClasses, '&VERxxx', 4, 1, '{$IFNDEF %s}');
   FTabDefinitions.Add(def);
   def.AddGridRow('VER340', 'Delphi 10.4 Sydney / BDS 21');
@@ -618,31 +621,34 @@ procedure TfmConfigureIfDef.InitRtlVersion;
 var
   def: TIfdefTabDefinition;
 begin
+{$IF RTLVersion > RtlVersionDelphiSydney}
+{$MESSAGE HINT 'Add a new Delphi version here'}
+{$IFEND}
   def := TIfdefTabDefinition.Create(Self, pc_IfClasses, '&RtlVersion', 16, 2, '{$IF RtlVersion >= %s}');
   FTabDefinitions.Add(def);
-  def.AddGridRow('34', 'Delphi 10.4 Sydney / BDS 21');
-  def.AddGridRow('33', 'Delphi 10.3 Rio / BDS 20');
-  def.AddGridRow('32', 'Delphi 10.2 Tokyo / BDS 19');
-  def.AddGridRow('31', 'Delphi 10.1 Berlin / BDS 18');
-  def.AddGridRow('30', 'Delphi 10.0 Seattle / BDS 17');
-  def.AddGridRow('29', 'Delphi XE8 / BDS 16');
-  def.AddGridRow('28', 'Delphi XE7 / BDS 15');
-  def.AddGridRow('27', 'Delphi XE6 / BDS 14');
+  def.AddGridRow(IntToStr(RtlVersionDelphiSydney), 'Delphi 10.4 Sydney / BDS 21');
+  def.AddGridRow(IntToStr(RtlVersionDelphiRio), 'Delphi 10.3 Rio / BDS 20');
+  def.AddGridRow(IntToStr(RtlVersionDelphiTokyo), 'Delphi 10.2 Tokyo / BDS 19');
+  def.AddGridRow(IntToStr(RtlVersionDelphiBerlin), 'Delphi 10.1 Berlin / BDS 18');
+  def.AddGridRow(IntToStr(RtlVersionDelphiSeattle), 'Delphi 10.0 Seattle / BDS 17');
+  def.AddGridRow(IntToStr(RtlVersionDelphixe8), 'Delphi XE8 / BDS 16');
+  def.AddGridRow(IntToStr(RtlVersionDelphiXE7), 'Delphi XE7 / BDS 15');
+  def.AddGridRow(IntToStr(RtlVersionDelphiXE6), 'Delphi XE6 / BDS 14');
 //  def.AddGridRow('26.5', 'AppMethod'); ???
-  def.AddGridRow('26', 'Delphi XE5 / BDS 12');
-  def.AddGridRow('25', 'Delphi XE4 / BDS 11');
-  def.AddGridRow('24', 'Delphi XE3 / BDS 10');
-  def.AddGridRow('23', 'Delphi XE2 / BDS 9');
-  def.AddGridRow('22', 'Delphi XE1 / BDS 8');
-  def.AddGridRow('21', 'Delphi 2010 / BDS 7');
-  def.AddGridRow('20', 'Delphi 2009 / BDS 6');
+  def.AddGridRow(IntToStr(RtlVersionDelphiXE5), 'Delphi XE5 / BDS 12');
+  def.AddGridRow(IntToStr(RtlVersionDelphiXE4), 'Delphi XE4 / BDS 11');
+  def.AddGridRow(IntToStr(RtlVersionDelphiXE3), 'Delphi XE3 / BDS 10');
+  def.AddGridRow(IntToStr(RtlVersionDelphiXE2), 'Delphi XE2 / BDS 9');
+  def.AddGridRow(IntToStr(RtlVersionDelphiXE), 'Delphi XE1 / BDS 8');
+  def.AddGridRow(IntToStr(RtlVersionDelphi2010), 'Delphi 2010 / BDS 7');
+  def.AddGridRow(IntToStr(RtlVersionDelphi2009), 'Delphi 2009 / BDS 6');
 //  def.AddGridRow('19', 'Delphi 2007 .NET'); ???
-  def.AddGridRow('18', 'Delphi 2007 / BDS 4');
-  def.AddGridRow('18', 'Delphi 2006 / BDS 3');
-  def.AddGridRow('17', 'Delphi 2005 / BDS 2');
-  def.AddGridRow('16', 'Delphi 8 .NET / BDS 1');
-  def.AddGridRow('15', 'Delphi 7');
-  def.AddGridRow('14', 'Delphi 6');
+  def.AddGridRow(IntToStr(RtlVersionDelphi2007), 'Delphi 2007 / BDS 4');
+  def.AddGridRow(IntToStr(RtlVersionDelphi2006), 'Delphi 2006 / BDS 3');
+  def.AddGridRow(IntToStr(RtlVersionDelphi2005), 'Delphi 2005 / BDS 2');
+  def.AddGridRow(IntToStr(RtlVersionDelphi8), 'Delphi 8 .NET / BDS 1');
+  def.AddGridRow(IntToStr(RtlVersionDelphi7), 'Delphi 7');
+  def.AddGridRow(IntToStr(RtlVersionDelphi6), 'Delphi 6');
   def.InitEvents;
 end;
 
@@ -652,29 +658,32 @@ var
 begin
   def := TIfdefTabDefinition.Create(Self, pc_IfClasses, '&CompilerVersion', 21, 2, '{$IF CompilerVersion >= %s}');
   FTabDefinitions.Add(def);
-  def.AddGridRow('34', 'Delphi 10.4 Sydney / BDS 21');
-  def.AddGridRow('33', 'Delphi 10.3 Rio / BDS 20');
-  def.AddGridRow('32', 'Delphi 10.2 Tokyo / BDS 19');
-  def.AddGridRow('31', 'Delphi 10.1 Berlin / BDS 18');
-  def.AddGridRow('30', 'Delphi 10.0 Seattle / BDS 17');
-  def.AddGridRow('29', 'Delphi XE8 / BDS 16');
-  def.AddGridRow('28', 'Delphi XE7 / BDS 15');
-  def.AddGridRow('27', 'Delphi XE6 / BDS 14');
+{$IF CompilerVersion > CompilerVersionDelphiSydney}
+{$MESSAGE HINT 'Add a new Delphi version here'}
+{$IFEND}
+  def.AddGridRow(IntToStr(CompilerVersionDelphiSydney), 'Delphi 10.4 Sydney / BDS 21');
+  def.AddGridRow(IntToStr(CompilerVersionDelphiRio), 'Delphi 10.3 Rio / BDS 20');
+  def.AddGridRow(IntToStr(CompilerVersionDelphiTokyo), 'Delphi 10.2 Tokyo / BDS 19');
+  def.AddGridRow(IntToStr(CompilerVersionDelphiBerlin), 'Delphi 10.1 Berlin / BDS 18');
+  def.AddGridRow(IntToStr(CompilerVersionDelphiSeattle), 'Delphi 10.0 Seattle / BDS 17');
+  def.AddGridRow(IntToStr(CompilerVersionDelphiXE8), 'Delphi XE8 / BDS 16');
+  def.AddGridRow(IntToStr(CompilerVersionDelphiXE7), 'Delphi XE7 / BDS 15');
+  def.AddGridRow(IntToStr(CompilerVersionDelphiXE6), 'Delphi XE6 / BDS 14');
   def.AddGridRow('26.5', 'AppMethod');
-  def.AddGridRow('26', 'Delphi XE5 / BDS 12');
-  def.AddGridRow('25', 'Delphi XE4 / BDS 11');
-  def.AddGridRow('24', 'Delphi XE3 / BDS 10');
-  def.AddGridRow('23', 'Delphi XE2 / BDS 9');
-  def.AddGridRow('22', 'Delphi XE1 / BDS 8');
-  def.AddGridRow('21', 'Delphi 2010 / BDS 7');
-  def.AddGridRow('20', 'Delphi 2009 / BDS 6');
-  def.AddGridRow('19', 'Delphi 2007 .NET');
-  def.AddGridRow('18.5', 'Delphi 2007 / BDS 4');
-  def.AddGridRow('18', 'Delphi 2006 / BDS 3');
-  def.AddGridRow('17', 'Delphi 2005 / BDS 2');
-  def.AddGridRow('16', 'Delphi 8 .NET / BDS 1');
-  def.AddGridRow('15', 'Delphi 7');
-  def.AddGridRow('14', 'Delphi 6');
+  def.AddGridRow(IntToStr(CompilerVersionDelphiXE5), 'Delphi XE5 / BDS 12');
+  def.AddGridRow(IntToStr(CompilerVersionDelphiXE4), 'Delphi XE4 / BDS 11');
+  def.AddGridRow(IntToStr(CompilerVersionDelphiXE3), 'Delphi XE3 / BDS 10');
+  def.AddGridRow(IntToStr(CompilerVersionDelphiXE2), 'Delphi XE2 / BDS 9');
+  def.AddGridRow(IntToStr(CompilerVersionDelphiXE), 'Delphi XE1 / BDS 8');
+  def.AddGridRow(IntToStr(CompilerVersionDelphi2010), 'Delphi 2010 / BDS 7');
+  def.AddGridRow(IntToStr(CompilerVersionDelphi2009), 'Delphi 2009 / BDS 6');
+  def.AddGridRow(Format('%.1f', [CompilerVersionDelphi2007]), 'Delphi 2007 / BDS 4');
+  def.AddGridRow(IntToStr(CompilerVersionDelphi2007Net), 'Delphi 2007.NET');
+  def.AddGridRow(IntToStr(CompilerVersionDelphi2006), 'Delphi 2006 / BDS 3');
+  def.AddGridRow(IntToStr(CompilerVersionDelphi2005), 'Delphi 2005 / BDS 2');
+  def.AddGridRow(IntToStr(CompilerVersionDelphi8), 'Delphi 8 .NET / BDS 1');
+  def.AddGridRow(IntToStr(CompilerVersionDelphi7), 'Delphi 7');
+  def.AddGridRow(IntToStr(CompilerVersionDelphi6), 'Delphi 6');
   def.InitEvents;
 end;
 
