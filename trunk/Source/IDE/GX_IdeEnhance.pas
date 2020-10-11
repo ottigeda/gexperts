@@ -57,6 +57,8 @@ type
     FEnhanceToolProperties: Boolean;
     FEnhanceDockForms: Boolean;
     FAutoCloseMessageWindow: Boolean;
+    FAutoCloseIgnoreHints: Boolean;
+    FAutoCloseIgnoreWarnings: Boolean;
 
     procedure InstallMultiLineComponentTabs;
     procedure RemoveMultiLineComponentTabs;
@@ -118,6 +120,8 @@ type
     // Dock forms
     property EnhanceDockForms: Boolean read FenhanceDockForms write SetEnhanceDockForms;
     // automatically close messages window
+    property AutoCloseIgnoreHints: Boolean read FAutoCloseIgnoreHints write FAutoCloseIgnoreHints;
+    property AutoCloseIgnoreWarnings: Boolean read FAutoCloseIgnoreWarnings write FAutoCloseIgnoreWarnings;
     property AutoCloseMessageWindow: Boolean read FAutoCloseMessageWindow write SetAutoCloseMessageWindow;
     // Build Events dialog
     property  EnhanceBuildEventsDialog: boolean read FEnhanceBuildEventsDialog write SetEnhanceBuildEventsDialog;
@@ -292,6 +296,8 @@ begin
   EnhanceToolProperties := ExpSettings.ReadBool('EnhanceToolProperties', False);
   EnhanceInstallPackages := ExpSettings.ReadBool('EnhanceInstallPackages', False);
   EnhanceDockForms := ExpSettings.ReadBool('EnhanceDockForms', False);
+  AutoCloseIgnoreHints := ExpSettings.ReadBool('AutoCloseIgnoreHints', false);
+  AutoCloseIgnoreWarnings := ExpSettings.ReadBool('AutoCloseIgnoreWarnings', False);
   AutoCloseMessageWindow := ExpSettings.ReadBool('AutoCloseMessageWindow', False);
   EnhanceBuildEventsDialog := ExpSettings.ReadBool('EnhanceBuildEventsDialog', False);
   EnhanceApplicationSettingsDialog := ExpSettings.ReadBool('EnhanceApplicationSettingsDialog', False);
@@ -338,6 +344,8 @@ begin
   ExpSettings.WriteBool('EnhanceToolProperties', EnhanceToolProperties);
   ExpSettings.WriteBool('EnhanceInstallPackages', EnhanceInstallPackages);
   ExpSettings.WriteBool('EnhanceDockForms', EnhanceDockForms);
+  ExpSettings.WriteBool('AutoCloseIgnoreHints', AutoCloseIgnoreHints);
+  ExpSettings.WriteBool('AutoCloseIgnoreWarnings', AutoCloseIgnoreWarnings);
   ExpSettings.WriteBool('AutoCloseMessageWindow', AutoCloseMessageWindow);
   ExpSettings.WriteBool('EnhanceBuildEventsDialog', EnhanceBuildEventsDialog);
   ExpSettings.WriteBool('EnhanceApplicationSettingsDialog', EnhanceApplicationSettingsDialog);
@@ -478,7 +486,7 @@ end;
 procedure TIdeEnhancements.SetAutoCloseMessageWindow(const Value: Boolean);
 begin
   FAutoCloseMessageWindow := Value;
-  TGxMessageAutoClose.SetEnabled(Value and EnhanceIDEForms);
+  TGxMessageAutoClose.SetEnabled(Value and EnhanceIDEForms, FAutoCloseIgnoreHints, FAutoCloseIgnoreWarnings);
 end;
 
 procedure TIdeEnhancements.SetAutoSave(const Value: Boolean);

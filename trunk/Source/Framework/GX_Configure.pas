@@ -120,6 +120,8 @@ type
     chk_FontForNewForms: TCheckBox;
     b_CustomFontForNewForms: TButton;
     l_ForceDestkopAV: TLabel;
+    chkAutoCloseIgnoreHints: TCheckBox;
+    chkAutoCloseIgnoreWarnings: TCheckBox;
     procedure btnEnumerateModulesClick(Sender: TObject);
     procedure chkEditorKeyTracingClick(Sender: TObject);
     procedure sbVCLDirClick(Sender: TObject);
@@ -654,6 +656,8 @@ begin
   IdeEnhancements.EnhanceToolProperties := chkEnhanceToolProperties.Checked;
   IdeEnhancements.EnhanceDockForms := chkEnhanceDockForms.Checked;
 {$IFDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
+  IdeEnhancements.AutoCloseIgnoreHints := chkAutoCloseIgnoreHints.Checked;
+  IdeEnhancements.AutoCloseIgnoreWarnings := chkAutoCloseIgnoreWarnings.Checked;
   IdeEnhancements.AutoCloseMessageWindow := chkAutoCloseMessage.Checked;
 {$ENDIF GX_VER170_up} // Delphi 9/2005 (BDS 2)
 

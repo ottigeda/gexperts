@@ -260,6 +260,19 @@ object fmConfiguration: TfmConfiguration
           Height = 326
           Caption = 'IDE'
           TabOrder = 2
+          object l_ForceDestkopAV: TLabel
+            Left = 192
+            Top = 253
+            Width = 288
+            Height = 14
+            Caption = 'Warning: Can cause Access Violations on IDE startup'
+            Font.Charset = ANSI_CHARSET
+            Font.Color = clRed
+            Font.Height = -12
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            ParentFont = False
+          end
           object chkEnhanceDialogs: TCheckBox
             Left = 8
             Top = 22
@@ -342,34 +355,37 @@ object fmConfiguration: TfmConfiguration
             Caption = 'Automatically close message window after successful compile'
             TabOrder = 9
           end
+          object chkAutoCloseIgnoreHints: TCheckBox
+            Left = 48
+            Top = 208
+            Width = 233
+            Height = 17
+            Caption = 'Even if there are hints'
+            TabOrder = 10
+          end
+          object chkAutoCloseIgnoreWarnings: TCheckBox
+            Left = 280
+            Top = 208
+            Width = 233
+            Height = 17
+            Caption = 'Even if there are warnings'
+            TabOrder = 11
+          end
           object chkForceStartupDesktop: TCheckBox
             Left = 24
-            Top = 208
+            Top = 232
             Width = 489
             Height = 18
             Caption = 'Force desktop on startup (leave empty for last selected)'
-            TabOrder = 10
+            TabOrder = 12
           end
           object cbxDesktop: TComboBox
             Left = 40
-            Top = 225
+            Top = 249
             Width = 145
             Height = 22
             ItemHeight = 14
-            TabOrder = 11
-          end
-          object l_ForceDestkopAV: TLabel
-            Left = 192
-            Top = 229
-            Width = 288
-            Height = 14
-            Caption = 'Warning: Can cause Access Violations on IDE startup'
-            Font.Charset = ANSI_CHARSET
-            Font.Color = clRed
-            Font.Height = -12
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            ParentFont = False
+            TabOrder = 13
           end
           object chkEnhanceDockForms: TCheckBox
             Left = 24
@@ -381,20 +397,20 @@ object fmConfiguration: TfmConfiguration
           end
           object chk_FontForNewForms: TCheckBox
             Left = 24
-            Top = 256
+            Top = 280
             Width = 489
             Height = 17
             Caption = 'Custom Font for new forms (sets DefFontData)'
-            TabOrder = 12
+            TabOrder = 14
             Visible = False
           end
           object b_CustomFontForNewForms: TButton
             Left = 38
-            Top = 272
+            Top = 296
             Width = 79
             Height = 25
             Caption = 'Font...'
-            TabOrder = 13
+            TabOrder = 15
             Visible = False
             OnClick = b_CustomFontForNewFormsClick
           end
