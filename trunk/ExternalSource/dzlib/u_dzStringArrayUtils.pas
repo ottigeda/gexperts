@@ -16,6 +16,8 @@ procedure StringArraySort(var _arr: TStringArray);
 
 function TStringArray_Concat(const _Arr1, _Arr2: array of string): TStringArray;
 
+procedure TStringArray_Append(var _arr: TStringArray; const _Value: string);
+
 ///<summary>
 /// Deletes Count entries from Arr starting from Index.
 /// @Note: It is allowed for Index > Length(Arr) and also Index+Count > Length(Arr)
@@ -169,6 +171,15 @@ begin
     Result[i] := _Arr1[i];
   for i := 0 to Len2 - 1 do
     Result[i + Len1] := _Arr2[i];
+end;
+
+procedure TStringArray_Append(var _arr: TStringArray; const _Value: string);
+var
+  len: Integer;
+begin
+  len := Length(_arr);
+  Setlength(_arr, len + 1);
+  _arr[len] := _Value;
 end;
 
 end.

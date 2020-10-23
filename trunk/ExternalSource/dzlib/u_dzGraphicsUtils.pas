@@ -78,6 +78,11 @@ type
   end;
 
 type
+  TValueIdxTriple = (vitBlue, vitGreen, vitRed);
+
+type
+  PdzRgbTripleValues = ^TdzRgbTripleValues;
+  TdzRgbTripleValues = packed array[TValueIdxTriple] of Byte;
   PdzRgbTriple = ^TdzRgbTriple;
   TdzRgbTriple = packed record
     // do not change the order of the fields, do not add any fields
@@ -85,6 +90,8 @@ type
     Green: Byte;
     Red: Byte;
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
+    function GetValues(_Idx: TValueIdxTriple): Byte; inline;
+    procedure SetValues(_Idx: TValueIdxTriple; _Value: Byte); inline;
     function GetColor: TColor;
     procedure SetColor(_Color: TColor);
     procedure SetGray(_Value: Byte);
@@ -95,6 +102,7 @@ type
     procedure SetBrightness(_Value: Byte); deprecated; //use SetGray
     procedure GetHls(out _Hls: THlsRec);
     procedure SetHls(const _Hls: THlsRec);
+    property Values[_Idx: TValueIdxTriple]: Byte read GetValues write SetValues;
 {$ENDIF}
   end;
 
@@ -510,8 +518,8 @@ inline;
 ///<summary>
 /// Calculates the average brightness of an bitmap with PixelFormat = pf8Bit
 /// @param bmp is the bitmap to process
-/// @param LowCutoff is the lower brightness limit for pixels to be include in the calculation
-/// @param HighCutoff is the upper brightness limit for pixels to be include in the calculation
+/// @param LowCutoff is the lower brightness limit for pixels to be included in the calculation
+/// @param HighCutoff is the upper brightness limit for pixels to be included in the calculation
 /// @param Average returns the calculated average, only valid if Result = True
 /// @returns True, if at least on pixel was in the desired interval
 ///          False, if not </summary>
@@ -521,8 +529,8 @@ function TBitmap8_TryCalcAverage(_bmp: TBitmap; _LowCutoff, _HighCutoff: Byte;
 ///<summary>
 /// Calculates the average brightness of an bitmap with PixelFormat = pf24Bit
 /// @param bmp is the bitmap to process
-/// @param LowCutoff is the lower brightness limit for pixels to be include in the calculation
-/// @param HighCutoff is the upper brightness limit for pixels to be include in the calculation
+/// @param LowCutoff is the lower brightness limit for pixels to be included in the calculation
+/// @param HighCutoff is the upper brightness limit for pixels to be included in the calculation
 /// @param Channel determines how to calculate the brightness
 /// @param Average returns the calculated average, only valid if Result = True
 /// @returns True, if at least on pixel was in the desired interval
@@ -535,13 +543,41 @@ function TBitmap24_TryCalcAverage(_bmp: TBitmap; _LowCutoff, _HighCutoff: Byte;
 /// Calculates the average brightness of an bitmap with PixelFormat = pf24Bit thereby only
 /// using the blue channel.
 /// @param bmp is the bitmap to process
-/// @param LowCutoff is the lower brightness limit for pixels to be include in the calculation
-/// @param HighCutoff is the upper brightness limit for pixels to be include in the calculation
+/// @param LowCutoff is the lower brightness limit for pixels to be included in the calculation
+/// @param HighCutoff is the upper brightness limit for pixels to be included in the calculation
 /// @param Average returns the calculated average, only valid if Result = True
 /// @returns True, if at least on pixel was in the desired interval
 ///          False, if not </summary>
 function TBitmap24_TryCalcAverageBlue(_bmp: TBitmap; _LowCutoff, _HighCutoff: Byte;
   out _Average: Byte): Boolean;
+
+type
+  TUInt32Array256 = array[0..255] of UInt32;
+  TUInt64Array256 = array[0..255] of UInt64;
+
+///<summary>
+/// Calculate the histogram for a bitmap with PixelFormat = pf24 for the given channel
+/// @param bmp is the bitmap to process
+/// @param Channel determines how to calculate the brightness
+/// @returns a TUInt32Array256 containing the histogram </summary>
+function TBitmap24_GetHistogram(_bmp: TBitmap; _Channel: TRgbBrightnessChannelEnum): TUInt64Array256;
+///<summary>
+/// Calculate the histograms for red, green and blue for a bitmap with PixelFormat = pf24
+/// @param bmp is the bitmap to process
+/// @param Red returns the histogram for the red channel
+/// @param Green returns the histogram for the green channel
+/// @param Blue returns the histogram for the blue channel </summary>
+procedure TBitmap24_GetHistograms(_bmp: TBitmap; out _Red, _Green, _Blue: TUInt64Array256); overload;
+///<summary>
+/// Calculate the histograms for red, green, blue and brightness for a bitmap with PixelFormat = pf24
+/// @param bmp is the bitmap to process
+/// @param Channel determines how to calculate the brightness
+/// @param Red returns the histogram for the red channel
+/// @param Green returns the histogram for the green channel
+/// @param Blue returns the histogram for the blue channel
+/// @param Blue returns the histogram for the selected brightness channel </summary>
+procedure TBitmap24_GetHistograms(_bmp: TBitmap; _BrightnessChannel: TRgbBrightnessChannelEnum;
+  out _Red, _Green, _Blue, _Brightness: TUInt64Array256); overload;
 
 type
   // Note: The bitmap is stored upside down, so the y coordinates are reversed!
@@ -1164,6 +1200,16 @@ begin
   Red := GetRValue(_Color);
   Green := GetGValue(_Color);
   Blue := GetBValue(_Color);
+end;
+
+function TdzRgbTriple.GetValues(_Idx: TValueIdxTriple): Byte;
+begin
+  Result := TdzRgbTripleValues(Self)[_Idx];
+end;
+
+procedure TdzRgbTriple.SetValues(_Idx: TValueIdxTriple; _Value: Byte);
+begin
+  TdzRgbTripleValues(Self)[_Idx] := _Value;
 end;
 
 procedure TdzRgbTriple.SetBrightness(_Value: Byte);
@@ -3216,6 +3262,138 @@ function RainbowColor(_MinHue, _MaxHue, _Hue: Integer): TColor; overload;
 // taken from https://stackoverflow.com/a/19719171/49925
 begin
   Result := RainbowColor((_Hue - _MinHue) / (_MaxHue - _MinHue + 1));
+end;
+
+function TBitmap24_GetHistogram(_bmp: TBitmap; _Channel: TRgbBrightnessChannelEnum): TUInt64Array256; overload;
+const
+  BytesPerPixel = SizeOf(TdzRgbTriple);
+var
+  w: Integer;
+  h: Integer;
+  x: Integer;
+  y: Integer;
+  ScanLine: PByte;
+  Pixel: PByte;
+  BytesPerLine: Integer;
+begin
+  for x := Low(Result) to High(Result) do
+    Result[x] := 0;
+
+  h := _bmp.Height;
+  if h = 0 then begin
+    Exit; //==>
+  end;
+
+  w := _bmp.Width;
+
+  BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
+  Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
+
+  ScanLine := _bmp.ScanLine[0];
+  for y := 0 to h - 1 do begin
+    Assert(ScanLine = _bmp.ScanLine[y]);
+    Pixel := ScanLine;
+    for x := 0 to w - 1 do begin
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
+      Inc(Result[PdzRgbTriple(Pixel).GetBrightness(_Channel)]);
+{$ELSE}
+      Inc(Result[GetRgbBrightness(PdzRgbTriple(Pixel).Red, PdzRgbTriple(Pixel).Green, PdzRgbTriple(Pixel).Blue, _Channel)]);
+{$ENDIF}
+      Inc(Pixel, BytesPerPixel);
+    end;
+    Dec(ScanLine, BytesPerLine);
+  end;
+end;
+
+procedure TBitmap24_GetHistograms(_bmp: TBitmap; out _Red, _Green, _Blue: TUInt64Array256); overload;
+const
+  BytesPerPixel = SizeOf(TdzRgbTriple);
+var
+  w: Integer;
+  h: Integer;
+  x: Integer;
+  y: Integer;
+  ScanLine: PByte;
+  Pixel: PByte;
+  BytesPerLine: Integer;
+begin
+  for x := Low(_Red) to High(_Red) do begin
+    _Red[x] := 0;
+    _Green[x] := 0;
+    _Blue[x] := 0;
+  end;
+
+  h := _bmp.Height;
+  if h = 0 then begin
+    Exit; //==>
+  end;
+
+  w := _bmp.Width;
+
+  BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
+  Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
+
+  ScanLine := _bmp.ScanLine[0];
+  for y := 0 to h - 1 do begin
+    Assert(ScanLine = _bmp.ScanLine[y]);
+    Pixel := ScanLine;
+    for x := 0 to w - 1 do begin
+      Inc(_Red[PdzRgbTriple(Pixel).Red]);
+      Inc(_Green[PdzRgbTriple(Pixel).Green]);
+      Inc(_Blue[PdzRgbTriple(Pixel).Blue]);
+      Inc(Pixel, BytesPerPixel);
+    end;
+    Dec(ScanLine, BytesPerLine);
+  end;
+end;
+
+procedure TBitmap24_GetHistograms(_bmp: TBitmap; _BrightnessChannel: TRgbBrightnessChannelEnum;
+  out _Red, _Green, _Blue, _Brightness: TUInt64Array256); overload;
+const
+  BytesPerPixel = SizeOf(TdzRgbTriple);
+var
+  w: Integer;
+  h: Integer;
+  x: Integer;
+  y: Integer;
+  ScanLine: PByte;
+  Pixel: PByte;
+  BytesPerLine: Integer;
+begin
+  for x := Low(_Red) to High(_Red) do begin
+    _Red[x] := 0;
+    _Green[x] := 0;
+    _Blue[x] := 0;
+    _Brightness[x] := 0;
+  end;
+
+  h := _bmp.Height;
+  if h = 0 then begin
+    Exit; //==>
+  end;
+
+  w := _bmp.Width;
+
+  BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
+  Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
+
+  ScanLine := _bmp.ScanLine[0];
+  for y := 0 to h - 1 do begin
+    Assert(ScanLine = _bmp.ScanLine[y]);
+    Pixel := ScanLine;
+    for x := 0 to w - 1 do begin
+      Inc(_Red[PdzRgbTriple(Pixel).Red]);
+      Inc(_Green[PdzRgbTriple(Pixel).Green]);
+      Inc(_Blue[PdzRgbTriple(Pixel).Blue]);
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
+      Inc(_Brightness[PdzRgbTriple(Pixel).GetBrightness(_BrightnessChannel)]);
+{$ELSE}
+      Inc(_Brightness[GetRgbBrightness(PdzRgbTriple(Pixel).Red, PdzRgbTriple(Pixel).Green, PdzRgbTriple(Pixel).Blue, _BrightnessChannel)]);
+{$ENDIF}
+      Inc(Pixel, BytesPerPixel);
+    end;
+    Dec(ScanLine, BytesPerLine);
+  end;
 end;
 
 end.

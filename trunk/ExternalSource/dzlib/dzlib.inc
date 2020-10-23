@@ -62,6 +62,8 @@
 // THandleStream.FHandle is declared as THandle (before that it's an Integer)
 {$DEFINE THANDLESTREAM_HANDLE_IS_THANDLE}
 {$DEFINE HAS_TOBJECT_TOSTRING}
+// TMonitor.PixelsPerInch probably didn't exist in Delphi 2009, it does exist in Delphi 10.2 adjust as necessary 
+{$DEFINE HAS_TMONITOR_PIXELSPERINCH}
 {$ENDIF}
 
 {$IFDEF DELPHIXE_UP}
@@ -79,7 +81,7 @@
 {$ENDIF}
 
 {$IFDEF DELPHIX_TOKYO_UP}
-// this function probably already exist in earlier versions, I just run across a compile error for 10.2 Tokyo
+// this function probably already existed in earlier versions, I just run across a compile error for 10.2 Tokyo
 {$DEFINE HAS_INTTOHEX_FUNCTION}
 {$DEFINE HAS_INTTOHEX_FUNCTION_64}
 {$ENDIF}

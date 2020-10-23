@@ -29,6 +29,7 @@ uses
   DBGrids,
   Buttons,
   Menus,
+  MultiMon, // this unit doesn't exist in older Delphi versions, use a unit alias like Multimon=Windows in that case
 {$IFDEF HAS_UNIT_SYSTEM_ACTIONS}
   Actions,
 {$ENDIF}
@@ -58,6 +59,31 @@ type
   EdzListBoxNoSelection = class(EdzVclUtils);
 
   EdzStatusBarNoMatchingPanel = class(EdzVclUtils);
+
+{$IF not declared(WM_DPICHANGED)}
+const
+  WM_DPICHANGED = $02E0;
+{$IFEND}
+
+{$IF not declared(TWMDpi)}
+type
+  TDWordFiller = record
+{$IFDEF CPUX64}
+    Filler: array[1..4] of Byte; // Pad DWORD to make it 8 bytes (4+4) [x64 only]
+{$ENDIF}
+  end;
+
+type
+  TWMDpi = record
+    Msg: Cardinal;
+    MsgFiller: TDWordFiller;
+    YDpi: Word;
+    XDpi: Word;
+    WParamFiller: TDWordFiller;
+    ScaledRect: PRECT;
+    Result: LRESULT;
+  end;
+{$IFEND}
 
 type
   ///<summary> This is a copy of the TFileFormatsList class from Graphics which
@@ -1086,6 +1112,9 @@ function TActionlist_Append(_al: TActionList; const _Caption: string = ''): TAct
 function TActionlist_Append(_al: TActionList; const _Caption: string; _ShortCut: TShortCut): TAction; overload;
 function TActionlist_Append(_al: TActionList; const _Caption: string; _OnExecute: TNotifyEvent): TAction; overload;
 function TActionlist_Append(_al: TActionList; const _Caption: string; _OnExecute: TNotifyEvent; _ShortCut: TShortCut): TAction; overload;
+function TActionlist_Append(_al: TActionList; _ShortCut: TShortCut): TAction; overload;
+function TActionlist_Append(_al: TActionList; _OnExecute: TNotifyEvent): TAction; overload;
+function TActionlist_Append(_al: TActionList; _OnExecute: TNotifyEvent; _ShortCut: TShortCut): TAction; overload;
 
 ///<summary>
 /// @returns the width of the checkbox in the given TCustomCheckbox
@@ -1214,6 +1243,18 @@ function TForm_ReadPlacement(_frm: TForm; _Which: TFormPlacementEnum; const _Reg
 ///          true if it worked. </summary>
 function TForm_ReadPlacement(_frm: TForm; _Which: TFormPlacementEnum;
   _HKEY: HKEY = HKEY_CURRENT_USER): Boolean; overload;
+
+///<summary>
+/// similar to TForm_ReadPlacement but also adds a hidden component to the form which automatically
+/// calls TForm_StorePlacement when it is being destroyed, so we don't need explicitly call
+/// that in the form's destructor.
+/// @param frm is the form whose placement is to be read
+/// @param Which determines whether the Position and/or the size is to be read
+/// @param HKEY is the root key, defaults to HKEY_CURRENT_USER
+/// @returns false, if anything goes wrong, including any exceptions that might occur,
+///          true if it worked. </summary>
+function TForm_EnableStorePlacement(_frm: TForm; _Which: TFormPlacementEnum;
+  _HKEY: HKEY = HKEY_CURRENT_USER): Boolean;
 
 ///<summary> Generates the registry path for storing a form's placement as used in
 ///          TForm_Read/StorePlacement. </summary>
@@ -1536,6 +1577,8 @@ type
     /// Gets and sets the bottom left coordinates keeping the size </summary>
     property BottomLeft: TPoint read GetBottomLeft write SetBottomLeft;
     function GetCenter: TPoint;
+    function Right: Integer;
+    function Bottom: Integer;
     class operator Implicit(_a: TRect): TRectLTWH;
     class operator Implicit(_a: TRectLTWH): TRect;
     class function FromLTWH(_Left, _Top, _Width, _Height: Integer): TRectLTWH; static;
@@ -1606,6 +1649,36 @@ procedure TScreen_MakeFullyVisible(var _Left, _Top, _Width, _Height: Integer); o
 procedure TScreen_MakeFullyVisible(var _Rect: TRect); overload;
 procedure TScreen_MakeFullyVisible(var _Rect: TRectLTWH); overload;
 
+
+// this does not compile with Delphi 2007 (it does with Delphi 10.2)
+// todo: find the first verstion that compiles this
+{$IFDEF DELPHI2009_UP}
+{$DEFINE COMPILER_SUPPORTS_TDZSCREEN}
+{$ENDIF}
+
+{$IFDEF COMPILER_SUPPORTS_TDZSCREEN}
+type
+  PdzScreen = ^TdzScreen;
+  TdzScreen = record
+  public
+    type
+      PdzMonitor = ^TdzMonitor;
+      TdzMonitor = record
+      public
+        Handle: HMONITOR;
+        MonitorNum: Integer;
+        BoundsRect: TRectLTWH;
+        WorkArea: TRectLTWH;
+        Name: string;
+        IsPrimary: Boolean;
+      end;
+    type
+      TMonitorArr = array of TdzMonitor;
+  public
+    Monitors: TMonitorArr;
+    class function Create: TdzScreen; static;
+  end;
+{$ENDIF}
 ///<summary>
 /// Sets the given column of the StringList to the given string list,
 /// adjusting the RowCount if necessary.
@@ -4478,6 +4551,42 @@ begin
   Result := TForm_ReadPlacement(_frm, _Which, TForm_GetPlacementRegistryEntry(_frm), _HKEY);
 end;
 
+type
+  TFormStorePlacementEnabler = class(TComponent)
+  private
+    FForm: TForm;
+    FWhich: TFormPlacementEnum;
+    FHKEY: HKEY;
+  public
+    constructor Create(_frm: TForm; _Which: TFormPlacementEnum;
+      _HKEY: HKEY = HKEY_CURRENT_USER); reintroduce;
+    destructor Destroy; override;
+  end;
+
+{ TFormStorePlacementEnabler }
+
+constructor TFormStorePlacementEnabler.Create(_frm: TForm; _Which: TFormPlacementEnum; _HKEY: HKEY);
+begin
+  inherited Create(_frm);
+  Name := '';
+  FForm := _frm;
+  FWhich := _Which;
+  FHKEY := _HKEY;
+end;
+
+destructor TFormStorePlacementEnabler.Destroy;
+begin
+  TForm_StorePlacement(FForm, FWhich, FHKEY);
+  inherited;
+end;
+
+function TForm_EnableStorePlacement(_frm: TForm; _Which: TFormPlacementEnum;
+  _HKEY: HKEY = HKEY_CURRENT_USER): Boolean;
+begin
+  Result := TForm_ReadPlacement(_frm, _Which, _HKEY);
+  TFormStorePlacementEnabler.Create(_frm, _Which, _HKEY);
+end;
+
 procedure TForm_SetMinConstraints(_frm: TForm);
 begin
   TControl_SetMinConstraints(_frm);
@@ -5952,6 +6061,21 @@ begin
   Result.OnExecute := _OnExecute;
 end;
 
+function TActionlist_Append(_al: TActionList; _ShortCut: TShortCut): TAction;
+begin
+  Result := TActionlist_Append(_al, '', _ShortCut);
+end;
+
+function TActionlist_Append(_al: TActionList; _OnExecute: TNotifyEvent): TAction;
+begin
+  Result := TActionlist_Append(_al, '', _OnExecute);
+end;
+
+function TActionlist_Append(_al: TActionList; _OnExecute: TNotifyEvent; _ShortCut: TShortCut): TAction;
+begin
+  Result := TActionlist_Append(_al, '', _OnExecute, _ShortCut);
+end;
+
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
 { TActionListShortcutHelper }
 
@@ -6237,6 +6361,16 @@ end;
 class function TRectLTWH.FromLTWH(_Left, _Top, _Width, _Height: Integer): TRectLTWH;
 begin
   Result.Assign(_Left, _Top, _Width, _Height);
+end;
+
+function TRectLTWH.Right: Integer;
+begin
+  Result := Left + Width;
+end;
+
+function TRectLTWH.Bottom: Integer;
+begin
+  Result := Top + Height;
 end;
 
 function TRectLTWH.GetBottomLeft: TPoint;
@@ -6658,6 +6792,43 @@ begin
   Result.KeyName := _KeyName;
   Result.ValueName := _ValueName;
 end;
+
+{$IFDEF COMPILER_SUPPORTS_TDZSCREEN}
+
+{ TdzScreen }
+
+function EnumMonitorsProc(hm: HMONITOR; dc: HDC; r: PRECT; Data: Pointer): Boolean; stdcall;
+var
+  Info: TMonitorInfoEx;
+  M: TdzScreen.PdzMonitor;
+  Screen: PdzScreen;
+  Idx: Integer;
+begin
+  Screen := PdzScreen(Data);
+  Idx := Length(Screen.Monitors);
+  SetLength(Screen.Monitors, Idx + 1);
+  M := @(Screen.Monitors[Idx]);
+  M.Handle := hm;
+  M.MonitorNum := Idx;
+
+  ZeroMemory(@Info, SizeOf(Info));
+  Info.cbSize := SizeOf(Info);
+  // we need to typecast this because we pass a pointer ot TMonitorInfoEx rather than TMonitorInfo
+  if not GetMonitorInfo(hm, PMonitorInfo(@Info)) then
+    RaiseLastOSError;
+
+  M.BoundsRect := Info.rcMonitor;
+  M.WorkArea := Info.rcWork;
+  M.Name := PChar(@Info.szDevice[0]);
+
+  Result := True;
+end;
+
+class function TdzScreen.Create: TdzScreen;
+begin
+  EnumDisplayMonitors(0, nil, TMonitorEnumProc(@EnumMonitorsProc), Windows.LParam(@Result));
+end;
+{$ENDIF}
 
 initialization
   InitializeCustomMessages;

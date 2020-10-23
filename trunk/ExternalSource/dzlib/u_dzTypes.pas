@@ -89,6 +89,7 @@ type
 {$IF not Declared(TBytes)}
   TBytes = array of Byte;
 {$IFEND}
+  TUInt16Array = array of UInt16;
 
 type
   TByteMatrix = array of array of Byte;

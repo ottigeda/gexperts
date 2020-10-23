@@ -204,6 +204,20 @@ function OpenExplorerAndSelectFile(const _Filename: string): Boolean;
 ///          is enabled. (according to http://stackoverflow.com/a/1675793/49925)
 procedure JiggleMouse;
 
+type
+  TPowerRequestType = (
+    PowerRequestDisplayRequired = 0,
+    PowerRequestSystemRequired = 1,
+    PowerRequestAwayModeRequired = 2,
+    PowerRequestExecutionRequired = 3);
+
+///<summary>
+/// simple interface for the Windows API  PowerCreateRequest / PowerSetRequest / PowerClearRequest
+/// Avaiable in Windows 7 and later.
+/// @returns an interface which, when released, calls PowerClearRequest
+/// See also BlockScreenSaver </summary>
+function SetPowerRequest(const _Reason: WideString; _RequestType: TPowerRequestType): IInterface;
+
 ///<summary>
 /// Uses the Windows API PowerCreateRequest and PowerSetRequest (Windows 7 and later) to
 /// prevent the screen saver from starting.
@@ -880,12 +894,6 @@ type
         end;
         );
   end;
-type
-  TPowerRequestType = (
-    PowerRequestDisplayRequired = 0,
-    PowerRequestSystemRequired = 1,
-    PowerRequestAwayModeRequired = 2,
-    PowerRequestExecutionRequired = 3);
 
 type
   TPowerCreateRequest = function(_Context: PReasonContext): THandle; stdcall;
@@ -893,7 +901,7 @@ type
   TPowerClearRequest = function(_Handle: THandle; _RequestType: TPowerRequestType): LongBool; stdcall;
 
 type
-  TScreenSaverBlocker = class(TInterfacedObject, IInterface)
+  TPowerRequest = class(TInterfacedObject, IInterface)
   private
     FDllHandle: HMODULE;
     FRequestHandle: THandle;
@@ -903,11 +911,11 @@ type
     FContext: TReasonContext;
     FReason: array[0..255] of WideChar;
   public
-    constructor Create(const _Reason: WideString);
+    constructor Create(const _Reason: WideString; _RequestType: TPowerRequestType);
     destructor Destroy; override;
   end;
 
-constructor TScreenSaverBlocker.Create(const _Reason: WideString);
+constructor TPowerRequest.Create(const _Reason: WideString; _RequestType: TPowerRequestType);
 begin
   inherited Create;
   FDllHandle := SafeLoadLibrary(kernel32);
@@ -926,10 +934,10 @@ begin
   FRequestHandle := PowerCreateRequest(@FContext);
   if FRequestHandle = INVALID_HANDLE_VALUE then
     RaiseLastOSError;
-  Win32Check(PowerSetRequest(FRequestHandle, PowerRequestDisplayRequired));
+  Win32Check(PowerSetRequest(FRequestHandle, _RequestType));
 end;
 
-destructor TScreenSaverBlocker.Destroy;
+destructor TPowerRequest.Destroy;
 begin
   if FRequestHandle <> INVALID_HANDLE_VALUE then
     CloseHandle(FRequestHandle);
@@ -940,7 +948,12 @@ end;
 
 function BlockScreenSaver(const _Reason: WideString): IInterface;
 begin
-  Result := TScreenSaverBlocker.Create(_Reason);
+  Result := SetPowerRequest(_Reason, PowerRequestDisplayRequired);
+end;
+
+function SetPowerRequest(const _Reason: WideString; _RequestType: TPowerRequestType): IInterface;
+begin
+  Result := TPowerRequest.Create(_Reason, _RequestType);
 end;
 
 function CharToOem(const _s: string): AnsiString;
