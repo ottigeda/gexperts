@@ -1649,9 +1649,7 @@ procedure TScreen_MakeFullyVisible(var _Left, _Top, _Width, _Height: Integer); o
 procedure TScreen_MakeFullyVisible(var _Rect: TRect); overload;
 procedure TScreen_MakeFullyVisible(var _Rect: TRectLTWH); overload;
 
-
-// this does not compile with Delphi 2007 (it does with Delphi 10.2)
-// todo: find the first verstion that compiles this
+// this does not compile with Delphi 2007 (even though it should since it supposedly supports nested types)
 {$IFDEF DELPHI2009_UP}
 {$DEFINE COMPILER_SUPPORTS_TDZSCREEN}
 {$ENDIF}
