@@ -36,25 +36,32 @@ type
     l_Message: TLabel;
     b_Break: TButton;
     b_Continue: TButton;
-    b_Ignore: TButton;
+    b_Filter: TButton;
     TheActionList: TActionList;
     act_Filter: TAction;
     act_CopyToClipboard: TAction;
     b_AllThisSession: TButton;
     act_IgnoreAll: TAction;
+    b_AdditionalInfo: TButton;
+    act_AdditionalInfo: TAction;
     procedure act_IgnoreAllExecute(Sender: TObject);
     procedure act_FilterExecute(Sender: TObject);
     procedure act_CopyToClipboardExecute(Sender: TObject);
+    procedure act_AdditionalInfoExecute(Sender: TObject);
   private
     FProject: string;
     FException: string;
     FMessage: string;
     FOnAddException: TOnCheckExceptionEx;
+    FAdditionalData: TStrings;
+    FOrigHeight: Integer;
+    FOrignMinHeight: Integer;
+    m_Additional: TMemo;
     procedure SetData(_OnAddException: TOnCheckExceptionEx;
-      const _Project, _Exception, _Message: string);
+      const _Project, _Exception, _Message: string; _AdditionalData: TStrings);
   public
     class function Execute(_Owner: TWinControl; _OnAddException: TOnCheckExceptionEx;
-      const _Project, _Exception, _Message: string): Boolean;
+      const _Project, _Exception, _Message: string; _AdditionalData: TStrings): Boolean;
     constructor Create(_Owner: TComponent); override;
   end;
 
@@ -65,7 +72,7 @@ implementation
 uses
   Clipbrd,
   SyncObjs,
-  ToolsApi,
+  ToolsAPI,
   u_dzVclUtils,
   u_dzCriticalSection,
   DDetours,
@@ -79,15 +86,15 @@ uses
 { TfmExceptionNotification }
 
 class function TfmExceptionNotification.Execute(_Owner: TWinControl; _OnAddException: TOnCheckExceptionEx;
-  const _Project, _Exception, _Message: string): Boolean;
+  const _Project, _Exception, _Message: string; _AdditionalData: TStrings): Boolean;
 var
   frm: TfmExceptionNotification;
 begin
   frm := TfmExceptionNotification.Create(_Owner);
   try
     TForm_CenterOn(frm, _Owner);
-    frm.SetData(_OnAddException, _Project, _Exception, _Message);
-    Result := (frm.ShowModal = mrok);
+    frm.SetData(_OnAddException, _Project, _Exception, _Message, _AdditionalData);
+    Result := (frm.ShowModal = mrOk);
   finally
     FreeAndNil(frm);
   end;
@@ -100,7 +107,7 @@ begin
 end;
 
 procedure TfmExceptionNotification.SetData(_OnAddException: TOnCheckExceptionEx;
-  const _Project, _Exception, _Message: string);
+  const _Project, _Exception, _Message: string; _AdditionalData: TStrings);
 begin
   FOnAddException := _OnAddException;
   FProject := _Project;
@@ -108,7 +115,56 @@ begin
   FMessage := _Message;
   l_Message.Caption := Format('Project %s.exe raised exception class %s with message ''%s''.',
     [_Project, _Exception, _Message]);
-  b_Ignore.Visible := Assigned(FOnAddException);
+  b_Filter.Visible := Assigned(FOnAddException);
+  FAdditionalData := _AdditionalData;
+end;
+
+procedure TfmExceptionNotification.act_AdditionalInfoExecute(Sender: TObject);
+
+  procedure SafeSetAnchors(_Ctrl: TControl; _Anchors: TAnchors);
+  var
+    t: Integer;
+    l: Integer;
+  begin
+    t := _Ctrl.Top;
+    l := _Ctrl.Left;
+    _Ctrl.Anchors := _Anchors;
+    _Ctrl.Top := t;
+    _Ctrl.Left := l;
+  end;
+
+begin
+  if Assigned(m_Additional) then begin
+    FreeAndNil(m_Additional);
+    Constraints.MinHeight := FOrignMinHeight;
+    Height := FOrigHeight;
+    SafeSetAnchors(l_Message, [akLeft, akTop, akRight, akBottom]);
+    SafeSetAnchors(b_Filter, [akBottom, akLeft]);
+    SafeSetAnchors(b_AllThisSession, [akBottom, akLeft]);
+    SafeSetAnchors(b_AdditionalInfo, [akBottom, akLeft]);
+    SafeSetAnchors(b_Break, [akBottom, akRight]);
+    SafeSetAnchors(b_Continue, [akBottom, akRight]);
+  end else begin
+    FOrigHeight := Height;
+    FOrignMinHeight := Constraints.MinHeight;
+    SafeSetAnchors(l_Message, [akLeft, akTop, akRight]);
+    SafeSetAnchors(b_Filter, [akTop, akLeft]);
+    SafeSetAnchors(b_AllThisSession, [akTop, akLeft]);
+    SafeSetAnchors(b_AdditionalInfo, [akTop, akLeft]);
+    SafeSetAnchors(b_Break, [akTop, akRight]);
+    SafeSetAnchors(b_Continue, [akTop, akRight]);
+
+    m_Additional := TMemo.Create(Self);
+    m_Additional.Parent := Self;
+    m_Additional.Left := l_Message.Left;
+    m_Additional.Top := ClientHeight;
+    m_Additional.Width := ClientWidth - 2 * 8;
+    ClientHeight := ClientHeight + 200;
+    Constraints.MinHeight := Constraints.MinHeight + 200;
+    m_Additional.Height := ClientHeight - 8 - m_Additional.Top;
+    m_Additional.Anchors := [akLeft, akTop, akRight, akBottom];
+    m_Additional.Lines.Assign(FAdditionalData);
+  end;
 end;
 
 procedure TfmExceptionNotification.act_CopyToClipboardExecute(Sender: TObject);
@@ -118,8 +174,8 @@ begin
     + '---------------------------'#13#10
     + l_Message.Caption + #13#10
     + '---------------------------'#13#10
-    + '[' + b_Ignore.Caption + '] [' + b_AllThisSession.Caption + '] [' + b_Break.Caption
-    + '] [' + b_Continue.Caption + ']'#13#10
+    + '[' + b_Filter.Caption + '] [' + b_AllThisSession.Caption + '] [' + b_Break.Caption
+    + '] [' + b_AdditionalInfo.Caption + '] [' + b_Continue.Caption + ']'#13#10
     + '---------------------------';
 end;
 
@@ -132,7 +188,7 @@ begin
     FOnAddException(Self, FProject, FException, FMessage, Action);
     case Action of
       efaIgnore: ModalResult := mrIgnore;
-      efaBreak: ModalResult := mrok;
+      efaBreak: ModalResult := mrOk;
     end;
   end;
 end;
@@ -173,7 +229,6 @@ type
   TOTAAddress = UInt64;
 {$IFEND}
   TAddress = TOTAAddress;
-  TVmtOffset = (voParent, voClassName);
 
   TArrayOfShortInt = array[Byte] of ShortInt;
   PArrayOfShortInt = ^TArrayOfShortInt;
@@ -223,6 +278,10 @@ var
   GetExceptionName: TGetExceptionName = nil;
   PostDebugMessage: TPostDebugMessage = nil;
   GetExceptionAddress: TGetExceptionAddress = nil;
+
+  // the values of vmtClassName and vmtParent for the current target as read from the debugger
+  vmtClassNameValue: Int64;
+  vmtParentValue: Int64;
 
   Hooked: Boolean = False;
 
@@ -291,56 +350,14 @@ begin
   end;
 end;
 
-function GetVmtOffsetWin32(Offset: TVmtOffset): Int64;
-begin
-  // vmtX for win32.
-  case Offset of
-    voParent:
-      Result := vmtParent;
-    voClassName:
-      Result := vmtClassName;
-  else
-    raise Exception.Create('Unkown offset');
-  end;
-end;
-
-function GetVmtOffsetWin64(Offset: TVmtOffset): Int64;
-begin
-  // vmtX for win64.
-  case Offset of
-    voParent:
-      Result := -120;
-    voClassName:
-      Result := -136;
-  else
-    raise Exception.Create('Unkown offset');
-  end;
-end;
-
-function GetVmtOffset(Process: IOTAProcess; Offset: TVmtOffset): Int64;
-begin
-{$IFDEF IS_WIN32_ONLY}
-  Result := GetVmtOffsetWin32(Offset);
-{$ELSE}
-  { Each platform should have corresponding constant value. }
-  case Process.GetProcessType of
-    optWin32:
-      Result := GetVmtOffsetWin32(Offset);
-    optWin64:
-      Result := GetVmtOffsetWin64(Offset);
-    // implement others...
-  else
-    raise Exception.Create('Please implement me.');
-  end;
-{$ENDIF}
-end;
-
-function ReadPointer(Process: IOTAProcess; Address: TAddress): TAddress;
+function TryReadPointer(Process: IOTAProcess; Address: TAddress; out _Ptr: TAddress): Boolean;
+var
+  Res: Integer;
+  Size: Integer;
 begin
   try
-    Result := 0;
 {$IFDEF IS_WIN32_ONLY}
-    Process.ReadProcessMemory(Address, SizeOf(Integer), Result);
+    Size := SizeOf(Integer);
 {$ELSE}
     case Process.GetProcessType of
 {$IF declared(optiOS32)}
@@ -352,8 +369,9 @@ begin
 {$IF declared(optOSX32)}
       optOSX32,
 {$IFEND}
-      optWin32:
-        Process.ReadProcessMemory(Address, SizeOf(Integer), Result);
+      optWin32: begin
+          Size := SizeOf(Integer);
+        end;
 {$IF declared(optOSX64)}
       optOSX64,
 {$IFEND}
@@ -366,37 +384,56 @@ begin
 {$IF declared(optAndroid64)}
       optAndroid64,
 {$IFEND}
-      optWin64:
-        Process.ReadProcessMemory(Address, SizeOf(Int64), Result);
+      optWin64: begin
+          Size := SizeOf(Int64);
+        end;
     else
-      raise Exception.Create('Please implement me.');
+      raise Exception.Create('TryReadPointer not implemented for this process type.');
     end;
 {$ENDIF}
+    _Ptr := 0;
+    Res := Process.ReadProcessMemory(Address, Size, _Ptr);
+    Result := (Res = Size);
   except
+    on e: Exception do begin
 {$IFOPT D+}
-    on e: Exception do
       SendDebugError(e.Message);
 {$ENDIF}
+      Result := False;
+    end;
   end;
 end;
 
+///<summary>
+/// @returns the parent class or 0 if there is no parent </summary>
 function ReadClassParent(Process: IOTAProcess; AClass: TAddress): TAddress;
+var
+  P: TAddress;
 begin
-  { return parent class. }
-  Result := ReadPointer(Process, TAddress(Int64(AClass) + GetVmtOffset(Process, voParent)));
-  if 0 <> Result then
-    Result := ReadPointer(Process, Result);
+  if not TryReadPointer(Process, TAddress(Int64(AClass) + vmtParentValue), P) or (P = 0) then
+    Result := 0
+  else begin
+    if not TryReadPointer(Process, P, Result) then
+      Result := 0;
+  end;
 end;
 
-function ReadClassName(Process: IOTAProcess; AClass: TAddress): string;
+function TryReadClassName(Process: IOTAProcess; AClass: TAddress; out _ClassName: string): Boolean;
 var
+  Size: Integer;
+  Res: Integer;
   P: TAddress;
   U: ShortString;
 begin
   { return class name. }
-  P := ReadPointer(Process, TAddress(Int64(AClass) + GetVmtOffset(Process, voClassName)));
-  Process.ReadProcessMemory(P, SizeOf(U), U);
-  Result := UTF8ToUnicodeString(U)
+  Result := TryReadPointer(Process, TAddress(Int64(AClass) + vmtClassNameValue), P);
+  if Result then begin
+    Size := SizeOf(U);
+    Res := Process.ReadProcessMemory(P, Size, U);
+    Result := (Res = Size);
+    if Result then
+      _ClassName := UTF8ToUnicodeString(U)
+  end;
 end;
 
 function GetClasses(Process: IOTAProcess; AClass: TAddress): string;
@@ -411,10 +448,9 @@ begin
   try
     sl.Delimiter := ',';
     while 0 <> LClass do begin
-      s := ReadClassName(Process, LClass);
-      LClass := ReadClassParent(Process, LClass);
-      if s <> '' then
+      if TryReadClassName(Process, LClass, s) then
         sl.Add(s);
+      LClass := ReadClassParent(Process, LClass);
     end;
   finally
     Result := sl.DelimitedText;
@@ -542,7 +578,7 @@ var
   PE: PExceptionRecord;
   Params: PExceptionInformation;
 {$IFOPT D+}
-  I: Integer;
+  i: Integer;
 {$ENDIF}
 begin
   // this function should be used only with new delphi versions
@@ -567,8 +603,8 @@ begin
     Params := Pointer(Integer(P) + $30);
     _ExceptionInformation := Params^;
 {$IFOPT D+}
-    for I := Low(_ExceptionInformation) to High(_ExceptionInformation) do
-      SendDebugWarning('_ExceptionInformation[' + IntToStr(I) + '] = ' + IntToHex(_ExceptionInformation[I], SizeOf(_ExceptionInformation[I]) * 2));
+    for i := Low(_ExceptionInformation) to High(_ExceptionInformation) do
+      SendDebugWarning('_ExceptionInformation[' + IntToStr(i) + '] = ' + IntToHex(_ExceptionInformation[i], SizeOf(_ExceptionInformation[i]) * 2));
 {$ENDIF}
 
     { !!! don't optimize me !!! }
@@ -604,7 +640,7 @@ end;
 
 function GetExceptionObjectLegacy(Thread: TThread; out _ExceptionInformation: TExceptionInformation): TAddress;
 var
-  I: Integer;
+  i: Integer;
 begin
   Result := 0;
   // This function should only be used with old Delphi versions, where GetExceptionObjectNew does
@@ -618,8 +654,8 @@ begin
     // see  TExceptionRecord for more info.
     if FDebugEvent.Exception.ExceptionRecord.ExceptionCode = $0EEDFADE { cDelphiException } then
       Result := FDebugEvent.Exception.ExceptionRecord.ExceptionInformation[1];
-    for I := 0 to FDebugEvent.Exception.ExceptionRecord.NumberParameters - 1 do
-      _ExceptionInformation[I] := FDebugEvent.Exception.ExceptionRecord.ExceptionInformation[I];
+    for i := 0 to FDebugEvent.Exception.ExceptionRecord.NumberParameters - 1 do
+      _ExceptionInformation[i] := FDebugEvent.Exception.ExceptionRecord.ExceptionInformation[i];
   end;
   FDebugEventCritSect.Leave;
 end;
@@ -633,6 +669,35 @@ begin
 {$ENDIF}begin
     // Win32-Delphi-Version or ParseThreadOsInfo does not exist
     Result := GetExceptionObjectLegacy(Thread, _ExceptionInformation);
+  end;
+end;
+
+function TryReadIntVariable(_Process: IOTAProcess; _IThread: IOTAThread; const _VarName: string; out _Value: Int64): Boolean;
+var
+  ResultStr: PWideChar;
+  ResultStrSize: Cardinal;
+  CanModify: Boolean;
+  AllowSideEffects: Boolean;
+  FormatSpecifiers: PAnsiChar;
+  ResultAddr: TOTAAddress;
+  ResultSize: Cardinal;
+  ResultVal: Cardinal;
+  ResultWideStr: WideString;
+  Res: TOTAEvaluateResult;
+begin
+  ResultStrSize := 1024;
+  SetLength(ResultWideStr, ResultStrSize);
+  ResultStr := @ResultWideStr[1];
+  CanModify := False;
+  AllowSideEffects := False;
+  FormatSpecifiers := nil;
+  Res := _IThread.Evaluate(_VarName, ResultStr, ResultStrSize, CanModify, AllowSideEffects, FormatSpecifiers,
+    ResultAddr, ResultSize, ResultVal);
+  Result := (Res = erOK);
+  if Result then begin
+    // for whatever reason ResultAddr always seems to be $-1, so it's of no use.
+    // Therefore we convert the string represantation back to integer.
+    _Value := StrToInt(ResultStr);
   end;
 end;
 
@@ -654,7 +719,7 @@ var
 
   ExceptionName: string;
   Projectname: string;
-  sl: TStringList;
+  AdditionalData: TStringList;
   s: string;
   ExceptionAddress: TAddress;
   ExceptionObject: TAddress;
@@ -673,6 +738,10 @@ begin
   { get official iota interfaces: }
   Assert(Supports(Thread, IOTAThread, IThread));
   Assert(Supports(Process, IOTAProcess, IProcess));
+
+  // get vmt offsets for current target
+  Assert(TryReadIntVariable(IProcess, IThread, 'vmtClassName', vmtClassNameValue));
+  Assert(TryReadIntVariable(IProcess, IThread, 'vmtParent', vmtParentValue));
 
   // these is the information currently used for filtering
   GetExceptionMessage(Debugger, Msg);
@@ -741,74 +810,74 @@ begin
 
   // For now we only fill the string list with the additional information,
   // but this information will also be used for filtering later.
-  sl := TStringList.Create();
+  AdditionalData := TStringList.Create();
   try
     s := '';
 
-    sl.Add(Format('ThreadId=%d', [IThread.OSThreadID]));
-    sl.Add(Format('ProcessId=%d', [IProcess.ProcessId]));
+    AdditionalData.Add(Format('ThreadId=%d', [IThread.OSThreadID]));
+    AdditionalData.Add(Format('ProcessId=%d', [IProcess.ProcessId]));
 {$IFDEF GX_DELPHI2010_UP}
-    sl.Add(Format('ThreadName="%s"', [IThread.ThreadName]));
+    AdditionalData.Add(Format('ThreadName="%s"', [IThread.ThreadName]));
 {$ELSE}
     sl.Add('ThreadName=<not available>');
 {$ENDIF}
 
-    sl.Add(Format('ExceptionMessage="%s"', [Msg]));
+    AdditionalData.Add(Format('ExceptionMessage="%s"', [Msg]));
 
-    sl.Add(Format('ExceptionName="%s"', [ExceptionName]));
+    AdditionalData.Add(Format('ExceptionName="%s"', [ExceptionName]));
 
     if TryGetExceptionDisplayName(Debugger, s) then
-      sl.Add(Format('ExceptionDisplayName="%s"', [s]))
+      AdditionalData.Add(Format('ExceptionDisplayName="%s"', [s]))
     else
-      sl.Add('ExceptionDisplayName=<not available>');
+      AdditionalData.Add('ExceptionDisplayName=<not available>');
 
     if ExceptionAddress <> 0 then begin
-      sl.Add(Format('ExceptionAddress=%s', [IntToHex(ExceptionAddress, 8)]));
+      AdditionalData.Add(Format('ExceptionAddress=%s', [IntToHex(ExceptionAddress, 8)]));
 
 {$IFDEF GX_DELPHI2006_UP}
       // I have yet to see this actually working
       // -- 2020-07-26 twm
       IProcess.SourceLocationFromAddress(ExceptionAddress, s, LineNo);
       if s <> '' then begin
-        sl.Add(Format('FileName="%s"', [s]));
-        sl.Add(Format('LineNumber=%d', [LineNo]));
+        AdditionalData.Add(Format('FileName="%s"', [s]));
+        AdditionalData.Add(Format('LineNumber=%d', [LineNo]));
       end else
 {$ENDIF}begin
         // SourceLocationFromAddress does not exist or does not
         // return a file name
-        sl.Add('FileName=<not available>');
-        sl.Add('LineNumber=<not available>');
+        AdditionalData.Add('FileName=<not available>');
+        AdditionalData.Add('LineNumber=<not available>');
       end;
     end;
 
     // list of exception classes
     if 0 <> ExceptionObject then begin
-      sl.Add(Format('ExceptionObject=%s', [IntToHex(ExceptionObject, 8)]));
+      AdditionalData.Add(Format('ExceptionObject=%s', [IntToHex(ExceptionObject, 8)]));
       // read class from object.
-      LClass := ReadPointer(IProcess, ExceptionObject);
+      if TryReadPointer(IProcess, ExceptionObject, LClass) then begin
       // get all classes.
-      s := GetClasses(IProcess, LClass);
-      sl.Add(Format('Classes=[%s]', [s]));
+        s := GetClasses(IProcess, LClass);
+        AdditionalData.Add(Format('Classes=[%s]', [s]));
+      end;
     end;
 {$IFOPT D+}
-    for s in sl do
+    for s in AdditionalData do
       SendDebugWarning(s);
 {$ENDIF}
-    s := sl.Text;
+
+    Action := efaDisabled;
+    if Assigned(OnCheckException) then begin
+      OnCheckException(nil, Projectname, ExceptionName, Msg, Action);
+    end;
+
+    if Action = efaDisabled then begin
+      if TfmExceptionNotification.Execute(nil, OnIgnoreButtonClick, Projectname, ExceptionName, Msg, AdditionalData) then
+        Action := efaBreak
+      else
+        Action := efaIgnore;
+    end;
   finally
-    sl.Free();
-  end;
-
-  Action := efaDisabled;
-  if Assigned(OnCheckException) then begin
-    OnCheckException(nil, Projectname, ExceptionName, Msg, Action);
-  end;
-
-  if Action = efaDisabled then begin
-    if TfmExceptionNotification.Execute(nil, OnIgnoreButtonClick, Projectname, ExceptionName, Msg) then
-      Action := efaBreak
-    else
-      Action := efaIgnore;
+    AdditionalData.Free();
   end;
 
   case Action of

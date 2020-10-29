@@ -1,7 +1,7 @@
 inherited fmExceptionNotification: TfmExceptionNotification
-  BorderIcons = [biSystemMenu, biMinimize]
+  BorderIcons = []
   Caption = 'GExperts Debugger Exception Notification'
-  ClientHeight = 121
+  ClientHeight = 137
   ClientWidth = 585
   Position = poDesigned
   PixelsPerInch = 96
@@ -10,7 +10,7 @@ inherited fmExceptionNotification: TfmExceptionNotification
     Left = 8
     Top = 8
     Width = 569
-    Height = 73
+    Height = 89
     Anchors = [akLeft, akTop, akRight, akBottom]
     AutoSize = False
     Caption = 'Message goes here'
@@ -18,7 +18,7 @@ inherited fmExceptionNotification: TfmExceptionNotification
   end
   object b_Break: TButton
     Left = 424
-    Top = 88
+    Top = 104
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -29,7 +29,7 @@ inherited fmExceptionNotification: TfmExceptionNotification
   end
   object b_Continue: TButton
     Left = 504
-    Top = 88
+    Top = 104
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -38,9 +38,9 @@ inherited fmExceptionNotification: TfmExceptionNotification
     ModalResult = 5
     TabOrder = 1
   end
-  object b_Ignore: TButton
+  object b_Filter: TButton
     Left = 8
-    Top = 88
+    Top = 104
     Width = 75
     Height = 25
     Action = act_Filter
@@ -49,7 +49,7 @@ inherited fmExceptionNotification: TfmExceptionNotification
   end
   object b_AllThisSession: TButton
     Left = 88
-    Top = 88
+    Top = 104
     Width = 169
     Height = 25
     Action = act_IgnoreAll
@@ -57,6 +57,15 @@ inherited fmExceptionNotification: TfmExceptionNotification
     ParentShowHint = False
     ShowHint = True
     TabOrder = 3
+  end
+  object b_AdditionalInfo: TButton
+    Left = 272
+    Top = 104
+    Width = 137
+    Height = 25
+    Action = act_AdditionalInfo
+    Anchors = [akLeft, akBottom]
+    TabOrder = 4
   end
   object TheActionList: TActionList
     Left = 288
@@ -75,6 +84,10 @@ inherited fmExceptionNotification: TfmExceptionNotification
       Caption = 'Ignore &All this Session'
       Hint = 'Ignore all exceptions for the rest of this debugger session.'
       OnExecute = act_IgnoreAllExecute
+    end
+    object act_AdditionalInfo: TAction
+      Caption = 'Additional &Info'
+      OnExecute = act_AdditionalInfoExecute
     end
   end
 end
