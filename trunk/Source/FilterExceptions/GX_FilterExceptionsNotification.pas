@@ -674,20 +674,20 @@ end;
 
 function TryReadIntVariable(_Process: IOTAProcess; _IThread: IOTAThread; const _VarName: string; out _Value: Int64): Boolean;
 var
-  ResultStr: PWideChar;
+  ResultStr: PChar;
   ResultStrSize: Cardinal;
   CanModify: Boolean;
   AllowSideEffects: Boolean;
   FormatSpecifiers: PAnsiChar;
-  ResultAddr: TOTAAddress;
+  ResultAddr: Cardinal;
   ResultSize: Cardinal;
   ResultVal: Cardinal;
-  ResultWideStr: WideString;
+  ResultString: String;
   Res: TOTAEvaluateResult;
 begin
   ResultStrSize := 1024;
-  SetLength(ResultWideStr, ResultStrSize);
-  ResultStr := @ResultWideStr[1];
+  SetLength(ResultString, ResultStrSize);
+  ResultStr := @ResultString[1];
   CanModify := False;
   AllowSideEffects := False;
   FormatSpecifiers := nil;
@@ -819,7 +819,7 @@ begin
 {$IFDEF GX_DELPHI2010_UP}
     AdditionalData.Add(Format('ThreadName="%s"', [IThread.ThreadName]));
 {$ELSE}
-    sl.Add('ThreadName=<not available>');
+    AdditionalData.Add('ThreadName=<not available>');
 {$ENDIF}
 
     AdditionalData.Add(Format('ExceptionMessage="%s"', [Msg]));
