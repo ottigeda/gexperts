@@ -682,7 +682,7 @@ var
   ResultAddr: Cardinal;
   ResultSize: Cardinal;
   ResultVal: Cardinal;
-  ResultString: String;
+  ResultString: string;
   Res: TOTAEvaluateResult;
 begin
   ResultStrSize := 1024;
@@ -701,17 +701,9 @@ begin
   end;
 end;
 
-function DoShowExceptionHooked(Debugger: TDebugger): Boolean;
-const
-{$IFDEF GX_DELPHIXE2_UP}
-  ParamOffset = $A1;
-{$ELSE}
-  ParamOffset = $99;
-{$ENDIF}
+function TryGxShowException(_Debugger: TDebugger): TExceptionFilterAction;
 var
   Msg: string;
-  P: PByte;
-  Action: TExceptionFilterAction;
   Process: TProcess;
   Thread: TThread;
   IThread: IOTAThread;
@@ -731,22 +723,28 @@ var
   AccessAddress: UInt64;
   ExceptionInformation: TExceptionInformation;
 begin
-  Process := GetPocessFromDebugger(Debugger);
+  Result := efaDisabled;
 
+  Process := GetPocessFromDebugger(_Debugger);
   Thread := GetThreadFromProcess(Process);
 
   { get official iota interfaces: }
-  Assert(Supports(Thread, IOTAThread, IThread));
-  Assert(Supports(Process, IOTAProcess, IProcess));
+  if not Supports(Thread, IOTAThread, IThread) then
+    Exit; //==>
+
+  if not Supports(Process, IOTAProcess, IProcess) then
+    Exit; //==>
 
   // get vmt offsets for current target
-  Assert(TryReadIntVariable(IProcess, IThread, 'vmtClassName', vmtClassNameValue));
-  Assert(TryReadIntVariable(IProcess, IThread, 'vmtParent', vmtParentValue));
+  if not TryReadIntVariable(IProcess, IThread, 'vmtClassName', vmtClassNameValue) then
+    Exit; //==>
+  if not TryReadIntVariable(IProcess, IThread, 'vmtParent', vmtParentValue) then
+    Exit; //==>
 
   // these is the information currently used for filtering
-  GetExceptionMessage(Debugger, Msg);
-  GetExceptionName(Debugger, ExceptionName);
-  ExceptionAddress := GetCurrentExceptionAddress(Debugger, Process, Thread, s);
+  GetExceptionMessage(_Debugger, Msg);
+  GetExceptionName(_Debugger, ExceptionName);
+  ExceptionAddress := GetCurrentExceptionAddress(_Debugger, Process, Thread, s);
   ExceptionObject := GetExceptionObject(Thread, ExceptionInformation);
   if SameText(ExceptionName, 'ERangeError') then begin
     // The RTL does not add the exception address for range check errors to the message, so we
@@ -804,7 +802,6 @@ begin
     ExceptionName := 'EStackOverflow';
     Msg := 'Stack overflow at address ' + s;
   end;
-//      Result := System.reExternalException;
 
   Projectname := GxOtaGetCurrentProjectName;
 
@@ -826,7 +823,7 @@ begin
 
     AdditionalData.Add(Format('ExceptionName="%s"', [ExceptionName]));
 
-    if TryGetExceptionDisplayName(Debugger, s) then
+    if TryGetExceptionDisplayName(_Debugger, s) then
       AdditionalData.Add(Format('ExceptionDisplayName="%s"', [s]))
     else
       AdditionalData.Add('ExceptionDisplayName=<not available>');
@@ -865,32 +862,51 @@ begin
       SendDebugWarning(s);
 {$ENDIF}
 
-    Action := efaDisabled;
     if Assigned(OnCheckException) then begin
-      OnCheckException(nil, Projectname, ExceptionName, Msg, Action);
+      OnCheckException(nil, Projectname, ExceptionName, Msg, Result);
     end;
 
-    if Action = efaDisabled then begin
+    if Result = efaDisabled then begin
       if TfmExceptionNotification.Execute(nil, OnIgnoreButtonClick, Projectname, ExceptionName, Msg, AdditionalData) then
-        Action := efaBreak
+        Result := efaBreak
       else
-        Action := efaIgnore;
+        Result := efaIgnore;
     end;
   finally
     AdditionalData.Free();
   end;
+end;
 
-  case Action of
+function DoShowExceptionHooked(_Debugger: TDebugger): Boolean;
+const
+{$IFDEF GX_DELPHIXE2_UP}
+  ParamOffset = $A1;
+{$ELSE}
+  ParamOffset = $99;
+{$ENDIF}
+var
+  P: Pointer;
+  Res: TExceptionFilterAction;
+begin
+  try
+    Res := TryGxShowException(_Debugger);
+  except
+    Res := efaDisabled;
+  end;
+  case Res of
     efaBreak: begin
         Result := False;
+        Exit; //==>
+      end;
+    efaIgnore: begin
+        Result := True;
+        // this will resume running
+        P := GetPocessFromDebugger(_Debugger);
+        PByte(GXNativeInt(P) + ParamOffset)^ := 1; // resume = true.
+        PostDebugMessage(_Debugger, 1, P);
       end;
   else
-    Result := True;
-
-    // this will resume running
-    P := Pointer(Process);
-    PByte(GXNativeInt(P) + ParamOffset)^ := 1; // resume = true.
-    PostDebugMessage(Debugger, 1, Process);
+    Result := TrampolineDoShowException(_Debugger);
   end;
 end;
 
