@@ -964,6 +964,9 @@ begin
     FLoadContextHeightPercent := WindowSettings.ReadInteger('ContextHeightPercent', 20)
   else
     FLoadContextHeightPercent := -1;
+  // somehow people managed to save a value > 100, which caused the window to be partially blank
+  if FLoadContextHeightPercent > 100 then
+    FLoadContextHeightPercent := 100;
 
   if WindowSettings.ValueExists('ContextHeight') then
     FLoadContextHeight := WindowSettings.ReadInteger('ContextHeight', reContext.Height)
