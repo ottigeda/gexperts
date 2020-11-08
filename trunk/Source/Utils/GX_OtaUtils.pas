@@ -3061,7 +3061,12 @@ begin
     ProjectOptions := Project.GetProjectOptions;
     if Assigned(ProjectOptions) then
     begin
+      // in theory it is 'DCC_UnitSearchPath' (since at least Delphi 2009,
+      // see unit DCCStrs in the ToolsApi directory), but 'SrcDir' also works
+      // for older IDEs
       IdePathString := ProjectOptions.Values['SrcDir'];
+      // it is also possible to set the search path using the same property:
+      // ProjectOptions.Values['DCC_UnitSearchPath'] := 'bla;blub';
       SplitIdePath(Paths, IdePathString);
     end;
   end;
