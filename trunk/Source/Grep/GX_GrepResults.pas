@@ -859,6 +859,11 @@ begin
   FGrepSettings := AGrepSettings;
 end;
 
+function ForceBetween(_Min, _Max, _Value: Integer): Integer;
+begin
+  Result := Max(_Min, Max(_Max, _Value));
+end;
+
 procedure TfmGrepResults.InternalSaveSettings(_Settings: IExpertSettings);
 var
   WindowSettings: IExpertSettings;
@@ -881,6 +886,7 @@ begin
     WindowSettings.WriteInteger('ContextHeight', reContext.Height)
   else begin
     Percent := (reContext.Height * 100) div ClientHeight;
+    Percent := ForceBetween(20, 50, Percent);
     WindowSettings.WriteInteger('ContextHeightPercent', Percent);
   end;
 
@@ -960,13 +966,11 @@ begin
     FLoadHistoryListWidth := WindowSettings.ReadInteger('HistoryListWidth', lbHistoryList.Width);
   end;
 
-  if WindowSettings.ValueExists('ContextHeightPercent') then
-    FLoadContextHeightPercent := WindowSettings.ReadInteger('ContextHeightPercent', 20)
-  else
+  if WindowSettings.ValueExists('ContextHeightPercent') then begin
+    FLoadContextHeightPercent := WindowSettings.ReadInteger('ContextHeightPercent', 20);
+    FLoadContextHeightPercent := ForceBetween(20, 50, FLoadContextHeightPercent);
+  end else
     FLoadContextHeightPercent := -1;
-  // somehow people managed to save a value > 100, which caused the window to be partially blank
-  if FLoadContextHeightPercent > 100 then
-    FLoadContextHeightPercent := 100;
 
   if WindowSettings.ValueExists('ContextHeight') then
     FLoadContextHeight := WindowSettings.ReadInteger('ContextHeight', reContext.Height)
