@@ -45,10 +45,12 @@ type
     FFilterIdentifiers: TFilterIdentifiersEnum;
     FProjectChangedNotifier: TProjectChangedNotifier;
     FUnitExportParserThread: TUnitExportParserThread;
+    FSearchPathFavorites: Boolean;
     procedure InternalExecute;
     function FindAction(out _Action: TBasicAction): Boolean;
     procedure HandleProjectChanged(_Sender: TObject);
     procedure StartUnitParserThread;
+    procedure GetSearchPathFavorites(_sl: TStrings);
   protected
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     procedure InternalSaveSettings(_Settings: IExpertSettings); override;
@@ -374,7 +376,7 @@ uses
 {$IFOPT D+}
   GX_DbugIntf,
 {$ENDIF D+}
-  GX_MessageBox;
+  GX_MessageBox, GX_IdeSearchPathEnhancer, u_dzTypes, u_dzStringArrayUtils;
 
 {$IFDEF STRING_GRID_OWNERDRAW_FIX_ENABLED}
 var
@@ -515,12 +517,37 @@ begin
   StartUnitParserThread;
 end;
 
+procedure TUsesClauseMgrExpert.GetSearchPathFavorites(_sl: TStrings);
+var
+  SearchPathFavorites: TStringList;
+  i: Integer;
+begin
+  if not FSearchPathFavorites then begin
+    _sl.Clear;
+  end else begin
+    SearchPathFavorites := TStringList.Create;
+    try
+      if TGxIdeSearchPathEnhancer.TryGetSearchPathFavorites(SearchPathFavorites) then begin
+        for i := 0 to SearchPathFavorites.Count - 1 do begin
+          TStrings_AppendStringArray(_sl, SplitString(Trim(TailStrOf(SearchPathFavorites[i], '=')), ';'));
+        end;
+        for i := 0 to _sl.Count - 1 do begin
+          _sl[i] := AddSlash(_sl[i]);
+        end;
+      end;
+    finally
+      FreeAndNil(SearchPathFavorites);
+    end;
+  end;
+end;
+
 procedure TUsesClauseMgrExpert.StartUnitParserThread;
 var
   Paths: TStrings;
   CacheDir: string;
   FavoriteUnits: TStringList;
   fn: string;
+  sl: TStringList;
 begin
   FreeAndNil(FUnitExportParserThread);
 
@@ -535,7 +562,13 @@ begin
   // to only parse these units. But the effective library path does not contain the browsing
   // path for units for which only dcu files are available in the library path.
 //    GxOtaGetEffectiveLibraryPath(Paths);
-    GxOtaGetAllPossiblePaths(Paths);
+    sl := TStringList.Create;
+    try
+      GetSearchPathFavorites(sl);
+      GxOtaGetAllPossiblePaths(Paths, nil, sl);
+    finally
+      FreeAndNil(sl);
+    end;
 
     if FDisableCache then
       CacheDir := ''
@@ -587,7 +620,7 @@ begin
   CacheDir := ConfigInfo.CachingPath + 'UsesExpertCache';
 
   if TfmUsesExpertOptions.Execute(Application, Found, CacheDir, FReadMap, FReplaceFileUseUnit,
-    FParseAll, FDisableCache, FFilterIdentifiers) then begin
+    FParseAll, FDisableCache, FSearchPathFavorites, FFilterIdentifiers) then begin
     SaveSettings;
     if Found then begin
       if FReplaceFileUseUnit then begin
@@ -634,6 +667,7 @@ begin
   FAvailTabIndex := _Settings.ReadInteger('AvailTabIndex', 0);
   FParseAll := _Settings.ReadBool('ParseAll', True);
   FDisableCache := _Settings.ReadBool('DisableCache', False);
+  FSearchPathFavorites := _Settings.ReadBool('SearchPathFavorites', False);
 end;
 
 procedure TUsesClauseMgrExpert.InternalSaveSettings(_Settings: IExpertSettings);
@@ -644,6 +678,7 @@ begin
   _Settings.WriteInteger('AvailTabIndex', FAvailTabIndex);
   _Settings.WriteBool('ParseAll', FParseAll);
   _Settings.WriteBool('DisableCache', FDisableCache);
+  _Settings.WriteBool('SearchPathFavorites', FSearchPathFavorites);
 end;
 
 { TfmUsesManager }
@@ -808,6 +843,7 @@ procedure TfmUsesManager.FormCreate(Sender: TObject);
 
 var
   Selection: string;
+  sl: TStringList;
 begin
   FCaption_lblFilter := lblFilter.Caption; // for showing Filter results
   lblFilter.Tag := -1; // Initialize
@@ -838,7 +874,13 @@ begin
   FSearchPathThread := TFileFindThread.Create;
   FSearchPathThread.FileMasks.Add('*.pas');
   FSearchPathThread.FileMasks.Add('*.dcu');
-  GxOtaGetEffectiveLibraryPath(FSearchPathThread.SearchDirs);
+  sl := TStringList.Create;
+  try
+    FUsesExpert.GetSearchPathFavorites( sl);
+    GxOtaGetEffectiveLibraryPath(FSearchPathThread.SearchDirs, nil, True, sl);
+  finally
+    FreeAndNil(sl);
+  end;
   FSearchPathThread.OnFindComplete := SearchPathReady;
   FSearchPathThread.StartFind;
 {$IFOPT D+}

@@ -476,12 +476,15 @@ procedure GxOtaGetIdeLibraryPathStrings(Paths: TStrings; DoProcessing: Boolean =
 /// Return the effective library path, with the project specific paths
 /// first and then the IDE's global library path.
 /// @params if DoProcessing is true, the paths are macro expanded and non-existing
-///                         paths removed. </summary>
+///                         paths removed.
+/// @params AdditionalPaths are appended at the end and optionally processed too </summary>
 procedure GxOtaGetEffectiveLibraryPath(Paths: TStrings;
-  Project: IOTAProject = nil; DoProcessing: Boolean = True);
-// Retrieve a guess at all possible paths where files in the current project
-// might be located by the compiler
-procedure GxOtaGetAllPossiblePaths(Paths: TStrings; Project: IOTAProject = nil);
+  Project: IOTAProject = nil; DoProcessing: Boolean = True; AdditionalPaths: TStrings = nil);
+///<summary>
+/// Retrieve a guess at all possible paths where files in the current project
+/// might be located by the compiler
+/// @params AdditionalPaths are appended at the end and optionally processed too </summary>
+procedure GxOtaGetAllPossiblePaths(Paths: TStrings; Project: IOTAProject = nil; AdditionalPaths: TStrings = nil);
 // Locate a base file name in all possible paths (retrieved with GxOtaGetAllPossiblePaths)
 function GxOtaTryFindPathToFile(const FileName: string; out FullFilename: string): Boolean;
 function GxOtaFindPathToFile(const FileName: string): string;
@@ -3056,7 +3059,7 @@ begin
   begin
     ProjectDir := ExtractFileDir(Project.FileName);
     // Add the current project directory first
-    EnsureStringInList(Paths, ProjectDir);
+    Paths.Add(ProjectDir);
     // Then the project search path
     ProjectOptions := Project.GetProjectOptions;
     if Assigned(ProjectOptions) then
@@ -3069,14 +3072,13 @@ begin
       // ProjectOptions.Values['DCC_UnitSearchPath'] := 'bla;blub';
       SplitIdePath(Paths, IdePathString);
     end;
-  end;
-
-  if DoProcessing then begin
-    PlatformName := GxOtaGetProjectPlatform(Project);
-    ProcessPaths(Paths, ProjectDir, PlatformName);
-  end;
-  for i := 0 to Paths.Count - 1 do begin
-    Paths[i] := AddSlash(Paths[i]);
+    if DoProcessing then begin
+      PlatformName := GxOtaGetProjectPlatform(Project);
+      ProcessPaths(Paths, ProjectDir, PlatformName);
+    end;
+    for i := 0 to Paths.Count - 1 do begin
+      Paths[i] := AddSlash(Paths[i]);
+    end;
   end;
 end;
 
@@ -3090,8 +3092,8 @@ begin
   IdePathString := GxOtaGetIdeLibraryPath;
   SplitIdePath(Paths, IdePathString);
   if DoProcessing then begin
-      // todo: Is it correct to use GetCurrentDir here? Shouldn't that either be the
-      //       IDE base path or the project's directory?
+    // todo: Is it correct to use GetCurrentDir here? Shouldn't that either be the
+    //       IDE base path or the project's directory?
     ProcessPaths(Paths, GetCurrentDir, '');
   end;
   for i := 0 to Paths.Count - 1 do begin
@@ -3100,35 +3102,55 @@ begin
 end;
 
 procedure GxOtaGetEffectiveLibraryPath(Paths: TStrings;
-  Project: IOTAProject; DoProcessing: Boolean);
+  Project: IOTAProject = nil; DoProcessing: Boolean = True; AdditionalPaths: TStrings = nil);
 var
-  IdeLibraryPath: TStringList;
+  LocalList: TStringList;
   i: Integer;
   PlatformName: string;
+  ProjectDir: string;
 begin
   Assert(Assigned(Paths));
   Paths.Clear;
-  // todo: Is it correct to pass DoProcessing here? Shouldn't that be done explicitly below?
+  // DoProcessing = True uses the project file's directory as the base to expand relative paths
   GxOtaGetProjectSourcePathStrings(Paths, Project, DoProcessing);
-  IdeLibraryPath := TStringList.Create;
+  LocalList := TStringList.Create;
   try
-    // todo: Is it correct to pass DoProcessing here? Shouldn't that be done explicitly below?
-    GxOtaGetIdeLibraryPathStrings(IdeLibraryPath, DoProcessing);
+    // DoProcessing = True expands any general macros and relative paths
+    GxOtaGetIdeLibraryPathStrings(LocalList, DoProcessing);
     if DoProcessing then begin
+      // do another processing, this time also expanding the Platform related macros
       PlatformName := GxOtaGetProjectPlatform(Project);
-      // todo: Is it correct to use GetCurrentDir here? Shouldn't that either be the
-      //       IDE base path or the project's directory?
-      ProcessPaths(IdeLibraryPath, GetCurrentDir, PlatformName);
+      // There shouldn't be any more relatives paths left, so passing GetCurrentDir is probably fine
+      ProcessPaths(LocalList, GetCurrentDir, PlatformName);
     end;
-    for i := 0 to IdeLibraryPath.Count - 1 do begin
-      EnsureStringInList(Paths, IdeLibraryPath[i]);
+    for i := 0 to LocalList.Count - 1 do begin
+      EnsureStringInList(Paths, LocalList[i]);
+    end;
+    if Assigned(AdditionalPaths) then begin
+      // create a local copy, so we don't change the list passed as parameter
+      LocalList.Assign(AdditionalPaths);
+      if DoProcessing then begin
+        if not Assigned(Project) then
+          Project := GxOtaGetCurrentProject;
+        if Assigned(Project) then begin
+          ProjectDir := ExtractFileDir(Project.FileName);
+          PlatformName := GxOtaGetProjectPlatform(Project);
+        end else begin
+          ProjectDir := GetCurrentDir;
+          PlatformName := '';
+        end;
+        ProcessPaths(LocalList, ProjectDir, PlatformName);
+      end;
+      for i := 0 to LocalList.Count - 1 do begin
+        EnsureStringInList(Paths, LocalList[i]);
+      end;
     end;
   finally
-    FreeAndNil(IdeLibraryPath);
+    FreeAndNil(LocalList);
   end;
 end;
 
-procedure GxOtaGetAllPossiblePaths(Paths: TStrings; Project: IOTAProject = nil);
+procedure GxOtaGetAllPossiblePaths(Paths: TStrings; Project: IOTAProject = nil; AdditionalPaths: TStrings = nil);
 
   function GetPath(const FileName: string): string;
   begin
@@ -3181,6 +3203,9 @@ var
   UnitList: TList;
   UnitInfo: TUnitInfo;
   i: Integer;
+  LocalList: TStringList;
+  ProjectDir: string;
+  PlatformName: string;
 begin
   Assert(Assigned(Paths));
 
@@ -3220,6 +3245,27 @@ begin
 
   // Add paths to VCL source (since we are smart)
   AddVCLPaths;
+
+  if Assigned(AdditionalPaths) then begin
+    LocalList := TStringList.Create;
+    try
+      // create a local copy, so we don't change the list passed as parameter
+      LocalList.Assign(AdditionalPaths);
+      if Assigned(Project) then begin
+        ProjectDir := ExtractFileDir(Project.FileName);
+        PlatformName := GxOtaGetProjectPlatform(Project);
+      end else begin
+        ProjectDir := GetCurrentDir;
+        PlatformName := '';
+      end;
+      ProcessPaths(LocalList, ProjectDir, PlatformName);
+      for i := 0 to LocalList.Count - 1 do begin
+        AddAPath(LocalList[i]);
+      end;
+    finally
+      FreeAndNil(LocalList);
+    end;
+  end;
 end;
 
 function GxOtaTryFindPathToFile(const FileName: string; out FullFilename: string): Boolean; overload;

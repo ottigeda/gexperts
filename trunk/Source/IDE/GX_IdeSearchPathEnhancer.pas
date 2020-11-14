@@ -7,6 +7,7 @@ interface
 uses
   SysUtils,
   Classes,
+  Types,
   Forms,
   SynEdit,
   SynMemo,
@@ -17,6 +18,7 @@ type
   public
     class function GetEnabled: Boolean;
     class procedure SetEnabled(_Value: Boolean);
+    class function TryGetSearchPathFavorites(_Favorites: TStrings): Boolean;
   end;
 
 implementation
@@ -157,6 +159,17 @@ begin
       TheSearchPathEnhancer := TSearchPathEnhancer.Create;
     TheSearchPathEnhancer.Enabled := True;
   end;
+end;
+
+class function TGxIdeSearchPathEnhancer.TryGetSearchPathFavorites(_Favorites: TStrings): Boolean;
+begin
+  Assert(Assigned(_Favorites));
+  Result := GetEnabled;
+  if Result then begin
+    Assert(Assigned(TheSearchPathEnhancer));
+    _Favorites.Assign(TheSearchPathEnhancer.FFavorites);
+  end else
+    _Favorites.Clear;
 end;
 
 { TSearchPathEnhancer }
@@ -728,7 +741,7 @@ procedure TSearchPathEnhancer.UpBtnClick(_Sender: TObject);
 var
   LineIdx: Integer;
   YPos: Integer;
-  LSelected : Boolean;
+  LSelected: Boolean;
 begin
   if FPageControl.ActivePage = FTabSheetMemo then begin
     FMemo.BeginUpdate;
@@ -749,7 +762,7 @@ begin
     end;
     TWinControl_SetFocus(FMemo);
   end else begin
-    LSelected := FListbox.Selected[FListBox.ItemIndex];
+    LSelected := FListbox.Selected[FListbox.ItemIndex];
     FUpClick(FUpBtn);
     FListbox.Selected[FListbox.ItemIndex] := LSelected;
   end;
@@ -759,7 +772,7 @@ procedure TSearchPathEnhancer.DownBtnClick(_Sender: TObject);
 var
   LineCnt: Integer;
   YPos: Integer;
-  LSelected : Boolean;
+  LSelected: Boolean;
 begin
   if FPageControl.ActivePage = FTabSheetMemo then begin
     FMemo.BeginUpdate;
@@ -781,9 +794,9 @@ begin
     end;
     TWinControl_SetFocus(FMemo);
   end else begin
-    LSelected := FListBox.Selected[FListBox.ItemIndex];
+    LSelected := FListbox.Selected[FListbox.ItemIndex];
     FDownClick(FDownBtn);
-    FListBox.Selected[FListbox.ItemIndex] := LSelected;
+    FListbox.Selected[FListbox.ItemIndex] := LSelected;
   end;
 end;
 
@@ -915,3 +928,4 @@ initialization
 finalization
   FreeAndNil(TheSearchPathEnhancer);
 end.
+

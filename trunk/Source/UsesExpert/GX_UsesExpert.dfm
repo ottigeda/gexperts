@@ -44,7 +44,7 @@ object fmUsesManager: TfmUsesManager
       Top = 47
       Width = 610
       Height = 381
-      ActivePage = tabIdentifiers
+      ActivePage = tabSearchPath
       Align = alClient
       TabOrder = 1
       OnChange = pcUnitsChange
@@ -870,6 +870,7 @@ object fmUsesManager: TfmUsesManager
     PopupMenu = pmUCMStatusBar
     ShowHint = True
     SimplePanel = True
+    UseSystemFont = False
     OnDblClick = sbUCMDblClick
   end
   object pm_Intf: TPopupMenu
@@ -1134,7 +1135,7 @@ object fmUsesManager: TfmUsesManager
     Left = 600
     Top = 240
     Bitmap = {
-      494C010109003800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010109003800080010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       000000000000000000000000000000000000D1B08E00C69E7400000000FF0000
       00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000

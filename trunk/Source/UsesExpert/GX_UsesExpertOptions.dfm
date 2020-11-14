@@ -4,8 +4,8 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Uses Clause Manager Options'
-  ClientHeight = 257
-  ClientWidth = 289
+  ClientHeight = 297
+  ClientWidth = 329
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,14 +15,14 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
   OldCreateOrder = False
   Position = poScreenCenter
   DesignSize = (
-    289
-    257)
+    329
+    297)
   PixelsPerInch = 96
   TextHeight = 13
   object chkReadMap: TCheckBox
     Left = 8
     Top = 8
-    Width = 273
+    Width = 313
     Height = 17
     Hint = 
       'Requires that you turn on map file generation in the project'#39's l' +
@@ -36,7 +36,7 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
   object chkReplaceFileUnit: TCheckBox
     Left = 8
     Top = 32
-    Width = 273
+    Width = 313
     Height = 17
     Hint = 
       'If enabled, the menu entry File -> Use Unit will call the GExper' +
@@ -56,8 +56,8 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
     TabOrder = 2
   end
   object btnOK: TButton
-    Left = 128
-    Top = 224
+    Left = 160
+    Top = 264
     Width = 75
     Height = 25
     Cancel = True
@@ -67,8 +67,8 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
     TabOrder = 5
   end
   object btnCancel: TButton
-    Left = 208
-    Top = 224
+    Left = 240
+    Top = 264
     Width = 75
     Height = 25
     Cancel = True
@@ -95,8 +95,8 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
   end
   object rg_FilterIdentifiers: TRadioGroup
     Left = 8
-    Top = 136
-    Width = 273
+    Top = 168
+    Width = 313
     Height = 81
     Caption = 'Show identifiers matching search string ...'
     Items.Strings = (
@@ -106,5 +106,13 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
     ParentShowHint = False
     ShowHint = True
     TabOrder = 7
+  end
+  object chkSearchPathFavorites: TCheckBox
+    Left = 8
+    Top = 136
+    Width = 321
+    Height = 17
+    Caption = 'Also search the favorites configured for the search path'
+    TabOrder = 8
   end
 end
