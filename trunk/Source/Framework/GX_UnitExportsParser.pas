@@ -152,12 +152,12 @@ type
     FParsedUnitsCount: Integer;
     FLoadedUnitsCount: Integer;
     FFoundUnitsCount: Integer;
-    procedure AddSymbols(_Parser: TUnitExportsParser);
     procedure GetAllFilesInPath(_sl: TStringList);
     procedure GetAllFilesInDir(_dir: string; _sl: TStringList);
   protected
     procedure doExecute; override;
   public
+    class procedure AddSymbols(_Parser: TUnitExportsParser);
     ///<summary>
     /// @param Files is a list of unit names, without path and extension, which are to be parsed.
     ///              Can be NIL, in which case all files in the search path will be parsed
@@ -499,7 +499,7 @@ begin
         Exit; //==>
       end;
 
-      if TokenIsIfdef(Expression) then begin
+      if TokenIsIfdef(Expression) or TokenIsIfndef(Expression) then begin
         // nested $if
         SkipToEndif;
       end;
@@ -1010,7 +1010,7 @@ begin
   FreeAndNil(FUnitFiles);
 end;
 
-procedure TUnitExportParserThread.AddSymbols(_Parser: TUnitExportsParser);
+class procedure TUnitExportParserThread.AddSymbols(_Parser: TUnitExportsParser);
 var
   Symbols: TStrings;
   CompVer: Integer;
