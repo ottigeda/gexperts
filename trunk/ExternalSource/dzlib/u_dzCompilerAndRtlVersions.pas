@@ -32,6 +32,10 @@ const
   CompilerVersionDelphiX102 = 32;
   CompilerVersionDelphiX103 = 33;
   CompilerVersionDelphiX104 = 34;
+{$IF CompilerVersion > CompilerVersionDelphiX104}
+{$MESSAGE HINT 'Add new CompilerVersion(s) here'}
+{$IFEND}
+
   // if you are better at memorizing city names
   CompilerVersionDelphiSeattle = 30;
   CompilerVersionDelphiBerlin = 31;
@@ -69,6 +73,10 @@ const
   RtlVersionDelphiX102 = 32;
   RtlVersionDelphiX103 = 33;
   RtlVersionDelphiX104 = 34;
+{$IF RtlVersion > RtlVersionDelphiX104}
+{$MESSAGE HINT 'Add new RtlVersion(s) here'}
+{$IFEND}
+
   // if you are better at memorizing city names
   RtlVersionDelphiSeattle = 30;
   RtlVersionDelphiBerlin = 31;
