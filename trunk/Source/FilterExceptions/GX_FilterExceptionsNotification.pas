@@ -28,7 +28,8 @@ type
   TOnCheckExceptionEx = procedure(_Sender: TObject; const _Project, _Exception, _Message: string;
     var _Action: TExceptionFilterAction) of object;
 
-procedure InstallHook(_OnCheckException, _OnFilterButtonClick: TOnCheckExceptionEx);
+procedure InstallHook(_OnCheckException, _OnFilterButtonClick: TOnCheckExceptionEx;
+  _ConfigurationKey: string);
 procedure UninstallHook();
 
 type
@@ -54,15 +55,20 @@ type
     FMessage: string;
     FOnAddException: TOnCheckExceptionEx;
     FAdditionalData: TStrings;
+    FConfigurationKey: string;
     FOrigHeight: Integer;
-    FOrignMinHeight: Integer;
+    FOrigMinHeight: Integer;
     m_Additional: TMemo;
     procedure SetData(_OnAddException: TOnCheckExceptionEx;
-      const _Project, _Exception, _Message: string; _AdditionalData: TStrings);
+      const _Project, _Exception, _Message: string; _AdditionalData: TStrings;
+      _ConfigurationKey: string);
+    procedure ToggleAdditionalInfo;
   public
     class function Execute(_Owner: TWinControl; _OnAddException: TOnCheckExceptionEx;
-      const _Project, _Exception, _Message: string; _AdditionalData: TStrings): Boolean;
+      const _Project, _Exception, _Message: string; _AdditionalData: TStrings;
+      _ConfigurationKey: string): Boolean;
     constructor Create(_Owner: TComponent); override;
+    destructor Destroy; override;
   end;
 
 implementation
@@ -81,19 +87,24 @@ uses
 {$ENDIF}
   GX_VerDepConst,
   GX_OtaUtils,
-  GX_GenericUtils;
+  GX_GenericUtils,
+  GX_ConfigurationInfo;
+
+var
+  gblConfigurationKey: string;
 
 { TfmExceptionNotification }
 
 class function TfmExceptionNotification.Execute(_Owner: TWinControl; _OnAddException: TOnCheckExceptionEx;
-  const _Project, _Exception, _Message: string; _AdditionalData: TStrings): Boolean;
+  const _Project, _Exception, _Message: string; _AdditionalData: TStrings;
+  _ConfigurationKey: string): Boolean;
 var
   frm: TfmExceptionNotification;
 begin
   frm := TfmExceptionNotification.Create(_Owner);
   try
     TForm_CenterOn(frm, _Owner);
-    frm.SetData(_OnAddException, _Project, _Exception, _Message, _AdditionalData);
+    frm.SetData(_OnAddException, _Project, _Exception, _Message, _AdditionalData, _ConfigurationKey);
     Result := (frm.ShowModal = mrOk);
   finally
     FreeAndNil(frm);
@@ -106,8 +117,23 @@ begin
   TControl_SetMinConstraints(Self);
 end;
 
+destructor TfmExceptionNotification.Destroy;
+var
+  Settings: IExpertSettings;
+begin
+  if FConfigurationKey <> '' then begin
+    Settings := ConfigInfo.GetExpertSettings(FConfigurationKey);
+    Settings.WriteBool('AdditionalInfoVisible', Assigned(m_Additional));
+    Settings.SaveForm(Self.Name, Self);
+  end;
+  inherited;
+end;
+
 procedure TfmExceptionNotification.SetData(_OnAddException: TOnCheckExceptionEx;
-  const _Project, _Exception, _Message: string; _AdditionalData: TStrings);
+  const _Project, _Exception, _Message: string; _AdditionalData: TStrings;
+  _ConfigurationKey: string);
+var
+  Settings: IExpertSettings;
 begin
   FOnAddException := _OnAddException;
   FProject := _Project;
@@ -117,9 +143,14 @@ begin
     [_Project, _Exception, _Message]);
   b_Filter.Visible := Assigned(FOnAddException);
   FAdditionalData := _AdditionalData;
+  FConfigurationKey := _ConfigurationKey;
+  Settings := ConfigInfo.GetExpertSettings(FConfigurationKey);
+  if Settings.ReadBool('AdditionalInfoVisible', Assigned(m_Additional)) then
+    ToggleAdditionalInfo;
+  Settings.LoadForm(Self.Name, Self);
 end;
 
-procedure TfmExceptionNotification.act_AdditionalInfoExecute(Sender: TObject);
+procedure TfmExceptionNotification.ToggleAdditionalInfo;
 
   procedure SafeSetAnchors(_Ctrl: TControl; _Anchors: TAnchors);
   var
@@ -136,7 +167,7 @@ procedure TfmExceptionNotification.act_AdditionalInfoExecute(Sender: TObject);
 begin
   if Assigned(m_Additional) then begin
     FreeAndNil(m_Additional);
-    Constraints.MinHeight := FOrignMinHeight;
+    Constraints.MinHeight := FOrigMinHeight;
     Height := FOrigHeight;
     SafeSetAnchors(l_Message, [akLeft, akTop, akRight, akBottom]);
     SafeSetAnchors(b_Filter, [akBottom, akLeft]);
@@ -146,7 +177,7 @@ begin
     SafeSetAnchors(b_Continue, [akBottom, akRight]);
   end else begin
     FOrigHeight := Height;
-    FOrignMinHeight := Constraints.MinHeight;
+    FOrigMinHeight := Constraints.MinHeight;
     SafeSetAnchors(l_Message, [akLeft, akTop, akRight]);
     SafeSetAnchors(b_Filter, [akTop, akLeft]);
     SafeSetAnchors(b_AllThisSession, [akTop, akLeft]);
@@ -167,9 +198,16 @@ begin
   end;
 end;
 
-procedure TfmExceptionNotification.act_CopyToClipboardExecute(Sender: TObject);
+procedure TfmExceptionNotification.act_AdditionalInfoExecute(Sender: TObject);
 begin
-  Clipboard.AsText := '---------------------------'#13#10
+  ToggleAdditionalInfo;
+end;
+
+procedure TfmExceptionNotification.act_CopyToClipboardExecute(Sender: TObject);
+var
+  s: string;
+begin
+  s := '---------------------------'#13#10
     + Caption + #13#10
     + '---------------------------'#13#10
     + l_Message.Caption + #13#10
@@ -177,6 +215,11 @@ begin
     + '[' + b_Filter.Caption + '] [' + b_AllThisSession.Caption + '] [' + b_Break.Caption
     + '] [' + b_AdditionalInfo.Caption + '] [' + b_Continue.Caption + ']'#13#10
     + '---------------------------';
+  if Assigned(m_Additional) then
+    s := s + #13#10
+      + m_Additional.Lines.Text + #13#10
+      + '---------------------------';
+  Clipboard.AsText := s;
 end;
 
 procedure TfmExceptionNotification.act_FilterExecute(Sender: TObject);
@@ -867,7 +910,8 @@ begin
     end;
 
     if Result = efaDisabled then begin
-      if TfmExceptionNotification.Execute(nil, OnIgnoreButtonClick, Projectname, ExceptionName, Msg, AdditionalData) then
+      if TfmExceptionNotification.Execute(nil, OnIgnoreButtonClick, Projectname, ExceptionName,
+        Msg, AdditionalData, gblConfigurationKey) then
         Result := efaBreak
       else
         Result := efaIgnore;
@@ -939,7 +983,8 @@ const
   PostDebugMessageName = '@Debug@TDebugger@PostDebugMessage$qqr15Debug@TDebugMsgpv';
   ParseThreadOsInfoName = '@Win32debug@TNativeThread@ParseThreadOsInfo$qqrrx19Dbk@DbkThreadOsInfor31Win32debug@TExceptionRecordInfo';
 
-procedure InstallHook(_OnCheckException, _OnFilterButtonClick: TOnCheckExceptionEx);
+procedure InstallHook(_OnCheckException, _OnFilterButtonClick: TOnCheckExceptionEx;
+  _ConfigurationKey: string);
 var
   Win32DebugHandle: HMODULE;
   DbkDebugIdeHandle: HMODULE;
@@ -950,6 +995,7 @@ var
   DoShowExceptionPtr: Pointer;
   TransactionHandle: THandle;
 begin
+  gblConfigurationKey := _ConfigurationKey;
   if Hooked then
     Exit; //==>
 

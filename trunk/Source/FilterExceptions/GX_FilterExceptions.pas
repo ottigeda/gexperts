@@ -266,7 +266,7 @@ begin
     inherited SetActive(_Active);
 
   if _Active then begin
-    GX_FilterExceptionsNotification.InstallHook(HandleCheckException, HandleAddException);
+    GX_FilterExceptionsNotification.InstallHook(HandleCheckException, HandleAddException, ConfigurationKey);
   end else begin
     GX_FilterExceptionsNotification.UninstallHook;
   end;
