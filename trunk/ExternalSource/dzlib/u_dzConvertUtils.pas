@@ -921,7 +921,6 @@ begin
 end;
 
 {$IFNDEF Win64}
-
 function TryStr2Float(const _s: string; out _flt: Extended; _DecSeparator: Char = '.'): Boolean;
 var
 {$IF Declared(TFormatSettings)}

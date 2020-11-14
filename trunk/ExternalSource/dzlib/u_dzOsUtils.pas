@@ -9,11 +9,15 @@ uses
   Windows,
   SysUtils,
   Classes,
-  u_dzTranslator;
+  u_dzTranslator,
+  u_dzTypes;
 
 type
-  EOsFunc = class(Exception);
+  EOsFunc = class(EdzException);
   EOFNoFileinfo = class(EOsFunc);
+  EPowerRequestFailed = class(EOsFunc)
+    ErrorCode: Word;
+  end;
 
 ///<summary>
 /// Determines the computername
@@ -217,6 +221,7 @@ type
 /// @returns an interface which, when released, calls PowerClearRequest
 /// See also BlockScreenSaver </summary>
 function SetPowerRequest(const _Reason: WideString; _RequestType: TPowerRequestType): IInterface;
+function TrySetPowerRequest(const _Reason: WideString; _RequestType: TPowerRequestType; out _Request: IInterface): Boolean;
 
 ///<summary>
 /// Uses the Windows API PowerCreateRequest and PowerSetRequest (Windows 7 and later) to
@@ -916,6 +921,9 @@ type
   end;
 
 constructor TPowerRequest.Create(const _Reason: WideString; _RequestType: TPowerRequestType);
+var
+  LastError: DWORD;
+  Error: EPowerRequestFailed;
 begin
   inherited Create;
   FDllHandle := SafeLoadLibrary(kernel32);
@@ -931,10 +939,31 @@ begin
   FContext.Version := POWER_REQUEST_CONTEXT_VERSION;
   FContext.Flags := POWER_REQUEST_CONTEXT_SIMPLE_STRING;
   FContext.SimpleReasonString := @FReason[0];
+
   FRequestHandle := PowerCreateRequest(@FContext);
-  if FRequestHandle = INVALID_HANDLE_VALUE then
-    RaiseLastOSError;
-  Win32Check(PowerSetRequest(FRequestHandle, _RequestType));
+  if FRequestHandle = INVALID_HANDLE_VALUE then begin
+    LastError := GetLastError;
+    if LastError <> 0 then
+      Error := EPowerRequestFailed.CreateFmt(_('PowerCreateRequest failed with error code %d. (%s)'),
+        [LastError, SysErrorMessage(LastError)])
+    else
+      Error := EPowerRequestFailed.CreateFmt(_('PowerCreateRequest failed with error code %d. (unknown error)'),
+        [LastError]);
+    Error.ErrorCode := LastError;
+    raise Error;
+  end;
+
+  if not PowerSetRequest(FRequestHandle, _RequestType) then begin
+    LastError := GetLastError;
+    if LastError <> 0 then
+      Error := EPowerRequestFailed.CreateFmt(_('PowerCreateRequest failed with error code %d. (%s)'),
+        [LastError, SysErrorMessage(LastError)])
+    else
+      Error := EPowerRequestFailed.CreateFmt(_('PowerCreateRequest failed with error code %d. (unknown error)'),
+        [LastError]);
+    Error.ErrorCode := LastError;
+    raise Error;
+  end;
 end;
 
 destructor TPowerRequest.Destroy;
@@ -954,6 +983,17 @@ end;
 function SetPowerRequest(const _Reason: WideString; _RequestType: TPowerRequestType): IInterface;
 begin
   Result := TPowerRequest.Create(_Reason, _RequestType);
+end;
+
+function TrySetPowerRequest(const _Reason: WideString; _RequestType: TPowerRequestType; out _Request: IInterface): Boolean;
+begin
+  try
+    _Request := SetPowerRequest(_Reason, _RequestType);
+    Result := True;
+  except
+    Result := False;
+    _Request := nil;
+  end;
 end;
 
 function CharToOem(const _s: string): AnsiString;

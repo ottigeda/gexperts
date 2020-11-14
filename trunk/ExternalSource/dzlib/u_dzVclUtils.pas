@@ -6811,7 +6811,7 @@ begin
 
   ZeroMemory(@Info, SizeOf(Info));
   Info.cbSize := SizeOf(Info);
-  // we need to typecast this because we pass a pointer ot TMonitorInfoEx rather than TMonitorInfo
+  // we need to typecast this because we pass a pointer to TMonitorInfoEx rather than TMonitorInfo
   if not GetMonitorInfo(hm, PMonitorInfo(@Info)) then
     RaiseLastOSError;
 

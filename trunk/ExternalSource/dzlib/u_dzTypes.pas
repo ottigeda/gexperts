@@ -63,6 +63,13 @@ type
 {$IF not declared(NativeUInt)}
   NativeUInt = UInt32;
 {$IFEND}
+{$IF not declared(UIntPtr)}
+{$IF sizeOf(Pointer)=4}
+  UIntPtr = UInt32;
+{$ELSE}
+  UIntPtr = UInt64;
+{$IFEND}
+{$IFEND}
 
 type
   EdzException = class(Exception)

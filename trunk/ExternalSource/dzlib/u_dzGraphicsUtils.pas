@@ -559,7 +559,7 @@ type
 /// Calculate the histogram for a bitmap with PixelFormat = pf24 for the given channel
 /// @param bmp is the bitmap to process
 /// @param Channel determines how to calculate the brightness
-/// @returns a TUInt32Array256 containing the histogram </summary>
+/// @returns a TUInt64Array256 containing the histogram </summary>
 function TBitmap24_GetHistogram(_bmp: TBitmap; _Channel: TRgbBrightnessChannelEnum): TUInt64Array256;
 ///<summary>
 /// Calculate the histograms for red, green and blue for a bitmap with PixelFormat = pf24
@@ -578,6 +578,8 @@ procedure TBitmap24_GetHistograms(_bmp: TBitmap; out _Red, _Green, _Blue: TUInt6
 /// @param Blue returns the histogram for the selected brightness channel </summary>
 procedure TBitmap24_GetHistograms(_bmp: TBitmap; _BrightnessChannel: TRgbBrightnessChannelEnum;
   out _Red, _Green, _Blue, _Brightness: TUInt64Array256); overload;
+
+function TBitmap8_GetHistogram(_bmp: TBitmap): TUInt64Array256; overload;
 
 type
   // Note: The bitmap is stored upside down, so the y coordinates are reversed!
@@ -3262,6 +3264,43 @@ function RainbowColor(_MinHue, _MaxHue, _Hue: Integer): TColor; overload;
 // taken from https://stackoverflow.com/a/19719171/49925
 begin
   Result := RainbowColor((_Hue - _MinHue) / (_MaxHue - _MinHue + 1));
+end;
+
+function TBitmap8_GetHistogram(_bmp: TBitmap): TUInt64Array256; overload;
+const
+  BytesPerPixel = 1;
+var
+  w: Integer;
+  h: Integer;
+  x: Integer;
+  y: Integer;
+  ScanLine: PByte;
+  Pixel: PByte;
+  BytesPerLine: Integer;
+begin
+  for x := Low(Result) to High(Result) do
+    Result[x] := 0;
+
+  h := _bmp.Height;
+  if h = 0 then begin
+    Exit; //==>
+  end;
+
+  w := _bmp.Width;
+
+  BytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
+  Assert(BytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
+
+  ScanLine := _bmp.ScanLine[0];
+  for y := 0 to h - 1 do begin
+    Assert(ScanLine = _bmp.ScanLine[y]);
+    Pixel := ScanLine;
+    for x := 0 to w - 1 do begin
+      Inc(Result[Pixel^]);
+      Inc(Pixel, BytesPerPixel);
+    end;
+    Dec(ScanLine, BytesPerLine);
+  end;
 end;
 
 function TBitmap24_GetHistogram(_bmp: TBitmap; _Channel: TRgbBrightnessChannelEnum): TUInt64Array256; overload;

@@ -132,7 +132,10 @@ type
     /// exception message.
     /// NOTE: TStream.WriteBuffer is *not* virtual, so you must declare the object as
     /// TdzFile rather TStream for this method to be called. </summary.
-    procedure WriteBuffer(const _Buffer; _Count: LongInt);
+    procedure WriteBuffer(const _Buffer; _Count: NativeInt); overload;
+{$IF SizeOf(LongInt) <> SizeOf(NativeInt)}
+    procedure WriteBuffer(const _Buffer; _Count: LongInt); overload;
+{$IFEND}
     ///<summary> Closes the file and sets the handle to INVALID_HANDLE_VALUE </summary>
     procedure Close;
     ///<summary> returns true if Position = Size </summary>
@@ -291,7 +294,7 @@ begin
   Stream := TdzFile.Create(_fn);
   try
     Stream.OpenCreateWriteNoSharing;
-    Stream.WriteBuffer(_Buffer, _Size);
+    Stream.WriteBuffer(_Buffer, NativeInt(_Size));
   finally
     FreeAndNil(Stream);
   end;
@@ -417,7 +420,7 @@ begin
   FFileFlags := _FileFlags;
 end;
 
-procedure TdzFile.WriteBuffer(const _Buffer; _Count: Integer);
+procedure TdzFile.WriteBuffer(const _Buffer; _Count: NativeInt);
 var
   Written: Integer;
   LastError: LongWord;
@@ -435,6 +438,14 @@ begin
     end;
   end;
 end;
+
+{$IF SizeOf(LongInt) <> SizeOf(NativeInt)}
+
+procedure TdzFile.WriteBuffer(const _Buffer; _Count: LongInt);
+begin
+  WriteBuffer(_Buffer, NativeInt(_Count));
+end;
+{$IFEND}
 
 function TdzFile.Eof: Boolean;
 begin
