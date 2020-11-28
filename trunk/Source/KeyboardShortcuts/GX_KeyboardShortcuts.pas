@@ -34,7 +34,7 @@ type
     function CompareEntries(_Idx1, _Idx2: Integer): Integer;
     procedure SwapEntries(_Idx1, _Idx2: Integer);
     procedure DrawStringGridCell(_sg: TStringGrid; const _Text: string;
-      const _Rect: TRect; _State: TGridDrawState; _Duplicate: Boolean);
+      const _Rect: TRect; _State: TGridDrawState; _Focused: Boolean; _Duplicate: Boolean);
     function ScrollGrid(_Grid: TStringGrid; _Direction: Integer; _Shift: TShiftState;
       _MousePos: TPoint): Boolean;
     function GetShortcut(_Idx: Integer): TShortCut;
@@ -59,7 +59,8 @@ uses
   u_dzQuicksort,
   GX_ConfigurationInfo,
   GX_ActionBroker,
-  GX_GenericUtils;
+  GX_GenericUtils,
+  GX_GetIdeVersion;
 
 type
   TKeyboardShortcutsExpert = class(TGX_Expert)
@@ -363,7 +364,7 @@ begin
 end;
 
 procedure TfmGxKeyboardShortcuts.DrawStringGridCell(_sg: TStringGrid; const _Text: string;
-  const _Rect: TRect; _State: TGridDrawState; _Duplicate: Boolean);
+  const _Rect: TRect; _State: TGridDrawState; _Focused: Boolean; _Duplicate: Boolean);
 var
   cnv: TCanvas;
 begin
@@ -373,7 +374,19 @@ begin
     cnv.Font.Color := clBlack;
   end;
   cnv.FillRect(_Rect);
+{$IFDEF STRING_GRID_OWNERDRAW_FIX_ENABLED}
+  if GetBorlandIdeVersion in [ideRS104P2, ideRS104U1] then begin
+    // Embarcadero managed to bungle the StringGrid redraw fix in patch 2. Now we have to
+    // check whether the grid is focused and use a different x offset in that case.
+    if _Focused then
+      cnv.TextRect(_Rect, _Rect.Left + 6, _Rect.Top + 2, _Text)
+    else
+      cnv.TextRect(_Rect, _Rect.Left + 2, _Rect.Top + 2, _Text);
+  end else
+    cnv.TextRect(_Rect, _Rect.Left, _Rect.Top, _Text);
+{$ELSE}
   cnv.TextRect(_Rect, _Rect.Left + 2, _Rect.Top + 2, _Text);
+{$ENDIF}
 end;
 
 procedure TfmGxKeyboardShortcuts.sg_ActionsDrawCell(Sender: TObject; ACol, ARow: Integer;
@@ -381,7 +394,7 @@ procedure TfmGxKeyboardShortcuts.sg_ActionsDrawCell(Sender: TObject; ACol, ARow:
 var
   sg: TStringGrid absolute Sender;
 begin
-  DrawStringGridCell(sg, sg.Cells[ACol, ARow], Rect, State, LongBool(sg.Objects[1, ARow]));
+  DrawStringGridCell(sg, sg.Cells[ACol, ARow], Rect, State, sg.Focused, LongBool(sg.Objects[1, ARow]));
 end;
 
 procedure TfmGxKeyboardShortcuts.sg_ActionsMouseUp(Sender: TObject; Button: TMouseButton;

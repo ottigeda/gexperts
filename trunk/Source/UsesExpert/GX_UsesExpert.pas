@@ -378,36 +378,12 @@ uses
 {$ENDIF D+}
   GX_MessageBox, GX_IdeSearchPathEnhancer, u_dzTypes, u_dzStringArrayUtils;
 
-{$IFDEF STRING_GRID_OWNERDRAW_FIX_ENABLED}
-var
-  gblIsPatch2Installed: Boolean = false;
-
-procedure CheckForPatch2;
-const
-  RegKey = 'Software\Embarcadero\BDS\21.0\CatalogRepository\Elements\10.4Patch2pro-10';
-var
-  Value: Integer;
-begin
-  if GetBorlandIdeVersion = ideRS104 then begin
-    Value := TRegistry_ReadInteger(RegKey, 'Installed', 0, HKEY_CURRENT_USER);
-    gblIsPatch2Installed := (Value <> 0);
-  end else begin
-    // 10.4 Update 1 included the fix from Patch 2
-    // We assume that the next updates will also include it
-    gblIsPatch2Installed := True
-  end;
-end;
-{$ENDIF}
-
 { TUsesClauseMgrExpert }
 
 constructor TUsesClauseMgrExpert.Create;
 begin
   inherited;
   LoadSettings;
-{$IFDEF STRING_GRID_OWNERDRAW_FIX_ENABLED}
-  CheckForPatch2;
-{$ENDIF}
 end;
 
 destructor TUsesClauseMgrExpert.Destroy;
@@ -1306,7 +1282,7 @@ begin
 {$ENDIF}
   cnv.FillRect(_Rect);
 {$IFDEF STRING_GRID_OWNERDRAW_FIX_ENABLED}
-  if gblIsPatch2Installed then begin
+  if GetBorlandIdeVersion in [ideRS104P2, ideRS104U1] then begin
     // Embarcadero managed to bungle the StringGrid redraw fix in patch 2. Now we have to
     // check whether the grid is focused and use a different x offset in that case.
     if _Focused then

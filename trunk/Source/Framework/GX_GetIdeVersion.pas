@@ -38,6 +38,7 @@ type
      ideRS103U2, // Rad Studio 10.3 Rio Update 2
      ideRS103U3, // Rad Studio 10.3 Rio Update 3
      ideRS104,   // Rad Studio 10.4 Sydney
+     ideRS104P2, // Rad Studio 10.4 Sydney with Patch2 installed
      ideRS104U1, // Rad Studio 10.4 Sydney Update 1
      // C# Builder
      ideCSB100,
@@ -64,7 +65,8 @@ function GetBorlandIdeVersion: TBorlandIdeVersion;
 implementation
 
 uses
-  SysUtils, Dialogs,
+  Windows, SysUtils, Dialogs,
+  u_dzClassUtils,
   GX_GenericUtils, GX_IdeUtils;
 
 var
@@ -948,9 +950,11 @@ end;
 
 function GetRS104Version: TBorlandIdeVersion;
 const
+  RegKey = 'Software\Embarcadero\BDS\21.0\CatalogRepository\Elements\10.4Patch2pro-10';
   CoreIde2700:     TVersionNumber = (Minor: 27; Major: 0; Build: 37829; Release: 9797);
   CoreIde2700UPd1: TVersionNumber = (Minor: 27; Major: 0; Build: 38860; Release: 1461);
 var
+  RegValue: Integer;
   CoreIdeFileVersion: TVersionNumber;
   VersionNumber: Integer;
 begin
@@ -959,8 +963,13 @@ begin
   VersionNumber := CompareVersionNumber(CoreIdeFileVersion, CoreIde2700UPd1);
   if VersionNumber >= 0 then begin
     Result := ideRS104U1;
-  end else
-    Result := ideRS104;
+  end else begin
+    RegValue := TRegistry_ReadInteger(RegKey, 'Installed', 0, HKEY_CURRENT_USER);
+    if RegValue <> 0 then
+      Result := ideRS104P2
+    else
+      Result := ideRS104;
+  end;
 end;
 
 function GetBorlandIdeVersion: TBorlandIdeVersion;
@@ -1090,7 +1099,7 @@ begin
 
   {$IFDEF VER340}
     Result := GetRS104Version;
-    Assert(Result in [ideRS104, ideRS104U1]);
+    Assert(Result in [ideRS104, ideRS104P2, ideRS104U1]);
   {$ENDIF VER340}
 
   if Result = ideUnknown then
