@@ -1,5 +1,7 @@
 unit GX_FormHotkeys;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -15,8 +17,9 @@ uses
   Grids,
   StdCtrls,
   ActnList,
-  u_dzTypes,
-  Menus;
+  Actions,
+  Menus,
+  u_dzTypes;
 
 type
   PComponentRec = ^TComponentRec;
@@ -58,10 +61,11 @@ implementation
 
 uses
   ToolsAPI,
+  TypInfo,
   u_dzVclUtils,
   GX_OtaUtils,
   GX_Experts,
-  TypInfo;
+  GX_GetIdeVersion;
 
 type
   TFormHotkeysExpert = class(TGX_Expert)
@@ -253,7 +257,19 @@ begin
 //    [_sg.Name, _sg.DefaultRowHeight, _Rect.Left, _Rect.Top, _Rect.Right - _Rect.Left, _Rect.Bottom - _Rect.Top]);
 {$ENDIF}
   cnv.FillRect(_Rect);
-  cnv.TextRect(_Rect, _Rect.Left + 2, _Rect.Top + 2, _Text);
+{$IFDEF STRING_GRID_OWNERDRAW_FIX_ENABLED}
+  if GetBorlandIdeVersion in [ideRS104P2, ideRS104U1] then begin
+    // Embarcadero managed to bungle the StringGrid redraw fix in patch 2. Now we have to
+    // check whether the grid is focused and use a different x offset in that case.
+    if _Focused then
+      cnv.TextRect(_Rect, _Rect.Left + 6, _Rect.Top + 2, _Text)
+    else
+      cnv.TextRect(_Rect, _Rect.Left + 2, _Rect.Top + 2, _Text);
+  end else
+    cnv.TextRect(_Rect, _Rect.Left, _Rect.Top, _Text);
+{$ELSE}
+    cnv.TextRect(_Rect, _Rect.Left + 2, _Rect.Top + 2, _Text);
+{$ENDIF}
 end;
 
 { TFormHotkeysExpert }
