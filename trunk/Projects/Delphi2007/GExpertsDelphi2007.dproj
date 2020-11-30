@@ -418,6 +418,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\Grep\GX_GrepSearch.pas">
             <Form>fmGrepSearch</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Grep\GX_GrepSearchExpert.pas"/>
         <DCCReference Include="..\..\Source\Grep\GX_GrepSelect.pas">
             <Form>fmGrepSelect</Form>
         </DCCReference>
