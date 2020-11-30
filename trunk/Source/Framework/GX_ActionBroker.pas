@@ -22,15 +22,24 @@ type
     function GetActions(Index: Integer): TContainedAction;
     function GetActionCount: Integer;
 
-    // Finds an action in the list of available actions
-    // Includes all actions registered / requested via
-    // GExperts and the actions contained in the IDE's
-    // action list.
-    // Note that by finding an IDE action and querying
-    // for its category name, it is possible to group
-    // a GExperts action into the same category as a
-    // given IDE action.
+    ///<summary>
+    /// Finds an action in the list of available actions
+    /// Includes all actions registered / requested via
+    /// GExperts and the actions contained in the IDE's
+    /// action list.
+    /// @param ActionName is the name of the action to find, including(!) its category
+    /// @Note that by finding an IDE action and querying for its category name,
+    ///       it is possible to group a GExperts action into the same category as a
+    ///       given IDE action. </summary>
     function FindAction(const ActionName: string): TContainedAction;
+    ///<summary>
+    /// Finds a GExperts tools action. This is short for calling
+    /// FindAction(GenerateActionName(ActionName)) </summary>
+    function FindGExpertsAction(const ActionName: string): TContainedAction;
+    ///<summary>
+    /// Finds a GExperts tools action. This is short for calling
+    /// FindAction(GenerateMenuActionName(ActionName)) </summary>
+    function FindGExpertsMenuAction(const ActionName: string): TContainedAction;
     // Register an existing action with the action broker.
     // The action will be added to the IDE's action list,
     // making it available to every interested party.
@@ -53,12 +62,12 @@ type
 
     ///<summary>
     /// Generates the name for a menu action as set by RequestMenuAction
-    /// (by prefixing GExpertsActionCategory) </summary>
+    /// by prefixing GExpertsActionCategory ('GExperts')  </summary>
     function GenerateMenuActionName(const AActionName: string): string;
 
     ///<summary>
     /// Generates the name for a menu action as set by RequestAction
-    /// (by prefixing GExpertsActionCategory + GxGenericActionQualifier </summary>
+    /// (by prefixing GExpertsActionCategory ('GExperts') + GxGenericActionQualifier ('Tools') </summary>
     function GenerateActionName(const AActionName: string): string;
 
     // Access to all actions available to the broker; this
@@ -119,6 +128,8 @@ type
     function GetActions(Index: Integer): TContainedAction;
     function GetActionCount: Integer;
     function FindAction(const Name: string): TContainedAction;
+    function FindGExpertsAction(const ActionName: string): TContainedAction;
+    function FindGExpertsMenuAction(const ActionName: string): TContainedAction;
     function RegisterAction(Action: TContainedAction): IGxAction;
     function RequestAction(const ActionName: string; Bitmap: Graphics.TBitmap = nil): IGxAction;
     function RequestMenuAction(const ActionName: string; Bitmap: Graphics.TBitmap): IGxMenuAction;
@@ -198,6 +209,16 @@ begin
       Break;
     end;
   end;
+end;
+
+function TGxActionBroker.FindGExpertsAction(const ActionName: string): TContainedAction;
+begin
+  Result := FindAction(GenerateActionName(ActionName));
+end;
+
+function TGxActionBroker.FindGExpertsMenuAction(const ActionName: string): TContainedAction;
+begin
+  Result := FindAction(GenerateMenuActionName(ActionName));
 end;
 
 function TGxActionBroker.GenerateActionName(const AActionName: string): string;
