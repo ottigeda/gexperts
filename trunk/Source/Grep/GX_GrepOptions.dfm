@@ -29,7 +29,7 @@ object fmGrepOptions: TfmGrepOptions
   end
   object l_Parameters: TLabel
     Left = 8
-    Top = 96
+    Top = 80
     Width = 61
     Height = 14
     Caption = 'Parameters'
@@ -39,24 +39,22 @@ object fmGrepOptions: TfmGrepOptions
     Top = 144
     Width = 75
     Height = 25
-    Anchors = [akRight, akBottom]
     Caption = 'OK'
     Default = True
     ModalResult = 1
-    TabOrder = 3
+    TabOrder = 4
   end
   object btnCancel: TButton
     Left = 320
     Top = 144
     Width = 75
     Height = 25
-    Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 4
+    TabOrder = 5
   end
-  object chkGrepUseCurrentIdent: TCheckBox
+  object chkUseCurrentIdent: TCheckBox
     Left = 8
     Top = 16
     Width = 385
@@ -86,7 +84,7 @@ object fmGrepOptions: TfmGrepOptions
     Top = 112
     Width = 361
     Height = 22
-    TabOrder = 5
+    TabOrder = 3
   end
   object b_Parameters: TButton
     Left = 8
