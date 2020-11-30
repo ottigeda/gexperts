@@ -239,7 +239,7 @@ end;
 
 function TGotoExpert.GetActionCaption: string;
 begin
-  Result := '&Go to';
+  Result := 'Go to';
 end;
 
 class function TGotoExpert.GetName: string;
