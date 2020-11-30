@@ -58,7 +58,7 @@ type
     // see also HasConfigOptions
     procedure Configure; virtual;
     // @returns true, if the expert maintains a call count. Most experts return true, with
-    // the notable exception of the Grep Search expert because it's calls are counted
+    // the notable exception of the Grep Search expert because its calls are counted
     // by the Grep Results expert.
     function HasCallCount: Boolean; virtual;
     procedure IncCallCount;
