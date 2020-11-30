@@ -202,7 +202,8 @@ end;
 
 function TComponentGridExpert.GetActionCaption: string;
 resourcestring
-  SMenuCaption = 'Component &Grid...';
+  // we cannot use the G as hotkey because this would block Grep from using it
+  SMenuCaption = 'Component Grid...';
 begin
   Result := SMenuCaption;
 end;
