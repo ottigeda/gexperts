@@ -36,7 +36,12 @@ type
     procedure LoadEditorExperts;
     procedure FreeEditorExperts;
 
-    function FindExpert(const ExpertName: string; out Idx: Integer): boolean;
+    function FindExpert(const ExpertName: string; out Idx: Integer): Boolean; overload;
+    function FindExpert(const ExpertName: string; out Expert: TGX_Expert): Boolean; overload;
+    ///<summary>
+    /// Uses FindExpert to locate the expert with the given name and returns its Active property
+    /// @returns True if the expert is found and active, False otherwise </summary>
+    function IsExpertActive(const ExpertName: string): Boolean;
 
     property EditorExpertManager: TGxEditorExpertManager read FEditorExpertsManager;
     property ExpertList[const Index: Integer]: TGX_Expert read GetExpert;
@@ -52,7 +57,7 @@ type
   end;
 
 ///<summary>
-/// @param CheckValid, if true, raises an exceptoin if the instance is NIL </summary>
+/// @param CheckValid, if true, raises an exception if the instance is NIL </summary>
 function GExpertsInst(CheckValid: Boolean = False): TGExperts;
 procedure ShowGXAboutForm;
 procedure ShowGXConfigurationForm;
@@ -260,6 +265,15 @@ begin
   Result := False;
 end;
 
+function TGExperts.FindExpert(const ExpertName: string; out Expert: TGX_Expert): Boolean;
+var
+  Idx: Integer;
+begin
+  Result := FindExpert(ExpertName, Idx);
+  if Result then
+    Expert := ExpertList[Idx];
+end;
+
 procedure TGExperts.FreeEditorExperts;
 begin
   FreeAndNil(FEditorExpertsManager);
@@ -339,6 +353,14 @@ begin
   end;
 
   ShowGxMessageBox(TUnsupportedIDEMessage);
+end;
+
+function TGExperts.IsExpertActive(const ExpertName: string): Boolean;
+var
+  Expert: TGX_Expert;
+begin
+  Result := FindExpert(ExpertName, Expert);
+  Result := Result and Expert.Active;
 end;
 
 procedure TGExperts.LoadEditorExperts;
