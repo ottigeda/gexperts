@@ -5,8 +5,9 @@ unit GX_GrepExpert;
 interface
 
 uses
-  Classes, Graphics,
-  GX_Experts, GX_ConfigurationInfo, GX_GrepBackend, IniFiles, Windows;
+  Windows,
+  Classes, Graphics, IniFiles,
+  GX_Experts, GX_ConfigurationInfo, GX_GrepBackend;
 
 type
   TGrepExpert = class(TGX_Expert)
@@ -97,6 +98,9 @@ type
     class function ConfigurationKey: string; override;
     class function GetName: string; override;
     function GetHelpString: string; override;
+    ///<summary>
+    /// @returns false, because we now group the Grep menu items in a submenu </summary>
+    function HasMenuItem: Boolean; override;
 
     function  GrepConfigPath: String;
     function  GrepHistorySettingsFileName: String;
@@ -186,6 +190,7 @@ type
   protected
     procedure SetShortCut(Value: TShortCut); override;
   public
+    constructor Create; override;
     procedure Execute(Sender: TObject); override;
     function HasConfigOptions: Boolean; override;
     function GetDefaultShortCut: TShortCut; override;
@@ -193,12 +198,14 @@ type
     class function ConfigurationKey: string; override;
     class function GetName: string; override;
     function GetHelpString: string; override;
+    function HasMenuItem: Boolean; override;
   end;
 
   TGrepPrevItemExpert = class(TGX_Expert)
   protected
     procedure SetShortCut(Value: TShortCut); override;
   public
+    constructor Create; override;
     procedure Execute(Sender: TObject); override;
     function HasConfigOptions: Boolean; override;
     function GetDefaultShortCut: TShortCut; override;
@@ -206,10 +213,11 @@ type
     class function ConfigurationKey: string; override;
     class function GetName: string; override;
     function GetHelpString: string; override;
+    function HasMenuItem: Boolean; override;
   end;
 
 var
-  GrepStandAlone: TGrepExpert = nil;
+  gblGrepExpert: TGrepExpert = nil;
 
 procedure ShowGrep; {$IFNDEF GX_BCB} export; {$ENDIF GX_BCB}
 ///<summary>
@@ -225,13 +233,20 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF D+}
   GX_OtaUtils, GX_GenericUtils,
   GX_GrepResults, GX_GrepResultsOptions,
-  GX_IdeDock, GX_GExperts;
+  GX_IdeDock, GX_GExperts, GX_ActionBroker, GX_GrepOptions;
 
 { TGrepExpert }
 
 constructor TGrepExpert.Create;
 begin
   inherited Create;
+
+  // since we no longer have a menu entry in the GExperts menu
+  // we need to create an action here
+  FActionInt := GxActionBroker.RequestAction(GetActionName, GetBitmap);
+  FActionInt.OnExecute := Self.Execute;
+  FActionInt.Caption := GetActionCaption;
+
   FSearchList := TStringList.Create;
   FReplaceList := TStringList.Create;
   FMaskList := TStringList.Create;
@@ -284,7 +299,7 @@ begin
   SetFormIcon(fmGrepResults);
   if not IsStandAlone then
     IdeDockManager.RegisterDockableForm(TfmGrepResults, fmGrepResults, 'fmGrepResults');
-  fmGrepResults.GrepExpert := Self;
+  gblGrepExpert := Self;
 end;
 
 destructor TGrepExpert.Destroy;
@@ -322,7 +337,7 @@ end;
 
 class function TGrepExpert.GetName: string;
 begin
-  Result := 'GrepResults';
+  Result := GrepResultsName;
 end;
 
 procedure TGrepExpert.Execute(Sender: TObject);
@@ -680,6 +695,11 @@ begin
   end;
 end;
 
+function TGrepExpert.HasMenuItem: Boolean;
+begin
+  Result := False;
+end;
+
 procedure TGrepExpert.HistoryListDeleteFromSettings(ADelMode: TGrepDeleteMode; AItemIndex: Integer);
 var
   Settings: TCustomIniFile;
@@ -909,7 +929,6 @@ begin
     begin
       if fmGrepResults = nil then
         fmGrepResults := TfmGrepResults.Create(nil);
-      fmGrepResults.GrepExpert := Self;
     end
     else
       FreeAndNil(fmGrepResults);
@@ -926,15 +945,15 @@ begin
   {$IFOPT D+} SendDebug('Showing grep expert'); {$ENDIF}
   InitSharedResources;
   try
-    GrepStandAlone := TGrepExpert.Create;
+    gblGrepExpert := TGrepExpert.Create;
     try
       {$IFOPT D+} SendDebug('Created grep window'); {$ENDIF}
-      GrepStandAlone.LoadSettings;
-      GrepStandAlone.ShowModal;
-      GrepStandAlone.HistoryListSaveSettings;
-      GrepStandAlone.SaveSettings;
+      gblGrepExpert.LoadSettings;
+      gblGrepExpert.ShowModal;
+      gblGrepExpert.HistoryListSaveSettings;
+      gblGrepExpert.SaveSettings;
     finally
-      FreeAndNil(GrepStandAlone);
+      FreeAndNil(gblGrepExpert);
     end;
   finally
     FreeSharedResources;
@@ -946,15 +965,17 @@ begin
 {$IFOPT D+}SendDebug('Showing grep expert for directory ' + _Directory);{$ENDIF}
   InitSharedResources;
   try
-    GrepStandAlone := TGrepExpert.Create;
+    // gblGrepExpert is already set in the constructor, so assigning it here is not really necessary
+    gblGrepExpert := TGrepExpert.Create;
     try
       {$IFOPT D+} SendDebug('Created grep window'); {$ENDIF}
-      GrepStandAlone.LoadSettings;
-      GrepStandAlone.ShowStandAlone(_Directory);
-      GrepStandAlone.HistoryListSaveSettings;
-      GrepStandAlone.SaveSettings;
+      gblGrepExpert.LoadSettings;
+      gblGrepExpert.ShowStandAlone(_Directory);
+      gblGrepExpert.HistoryListSaveSettings;
+      gblGrepExpert.SaveSettings;
     finally
-      FreeAndNil(GrepStandAlone);
+      // the destructor sets the global variable to nil, so FreeAndNil is not really necesary here
+      FreeAndNil(gblGrepExpert);
     end;
   finally
     FreeSharedResources;
@@ -997,6 +1018,19 @@ begin
   Result := False;
 end;
 
+function TGrepNextItemExpert.HasMenuItem: Boolean;
+begin
+  Result := False;
+end;
+
+constructor TGrepNextItemExpert.Create;
+begin
+  inherited;
+  FActionInt := GxActionBroker.RequestAction(GetActionName, GetBitmap);
+  FActionInt.OnExecute := Self.Execute;
+  FActionInt.Caption := GetActionCaption;
+end;
+
 procedure TGrepNextItemExpert.Execute(Sender: TObject);
 begin
   if not Assigned(fmGrepResults) then
@@ -1030,7 +1064,7 @@ end;
 
 class function TGrepNextItemExpert.GetName: string;
 begin
-  Result := 'GrepNextItem';
+  Result := GrepNextItemName;
 end;
 
 procedure TGrepNextItemExpert.SetShortCut(Value: TShortCut);
@@ -1051,6 +1085,19 @@ end;
 function TGrepPrevItemExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
+end;
+
+function TGrepPrevItemExpert.HasMenuItem: Boolean;
+begin
+  Result := False;
+end;
+
+constructor TGrepPrevItemExpert.Create;
+begin
+  inherited;
+  FActionInt := GxActionBroker.RequestAction(GetActionName, GetBitmap);
+  FActionInt.OnExecute := Self.Execute;
+  FActionInt.Caption := GetActionCaption;
 end;
 
 procedure TGrepPrevItemExpert.Execute(Sender: TObject);
@@ -1086,7 +1133,7 @@ end;
 
 class function TGrepPrevItemExpert.GetName: string;
 begin
-  Result := 'GrepPrevItem';
+  Result := GrepPrevItemName;
 end;
 
 procedure TGrepPrevItemExpert.SetShortCut(Value: TShortCut);

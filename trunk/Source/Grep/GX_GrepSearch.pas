@@ -88,7 +88,6 @@ type
     procedure chk_SubDirRegexClick(Sender: TObject);
     procedure b_TestRegExClick(Sender: TObject);
   private
-    FGrepExpert: TGrepExpert;
     FEmbedded: Boolean;
     FCheckedWhere: Boolean;
     FEmbeddedHolder: TWinControl;
@@ -114,21 +113,6 @@ type
     procedure EmbeddedSetHeights;
     procedure RetrieveSettings(var Value: TGrepSettings);
     procedure AdjustSettings(Value: TGrepSettings);
-    property GrepExpert: TGrepExpert read FGrepExpert;
-  end;
-
-  TGrepDlgExpert = class(TGX_Expert)
-  public
-    constructor Create; override;
-    function GetActionCaption: string; override;
-    function GetDefaultShortCut: TShortCut; override;
-    class function GetName: string; override;
-    function GetHelpString: string; override;
-    procedure Execute(Sender: TObject); override;
-    procedure Configure; override;
-    // The call count of the Grep Search expert is included with the Grep Results expert
-    // so we return false here.
-    function HasCallCount: Boolean; override;
   end;
 
 implementation
@@ -141,9 +125,6 @@ uses
   u_dzVclUtils, u_dzOsUtils, u_dzStringUtils,
   GX_GenericUtils, GX_GxUtils, GX_OtaUtils, GX_GrepResults, GX_GrepOptions,
   GX_TestRegEx;
-
-resourcestring
-  SGrepResultsNotActive = 'The Grep Results window is not active';
 
 { TfmGrepSearch }
 
@@ -169,13 +150,14 @@ var
   ExternalEditor: string;
   Params: string;
 begin
-  UseCurrentIdent := GrepExpert.GrepUseCurrentIdent;
-  ExternalEditor := GrepExpert.ExternalEditor;
-  Params := GrepExpert.ExternalEditorParams;
+  Assert(Assigned(gblGrepMenuEntryExpert));
+  UseCurrentIdent := gblGrepExpert.GrepUseCurrentIdent;
+  ExternalEditor := gblGrepExpert.ExternalEditor;
+  Params := gblGrepExpert.ExternalEditorParams;
   if TfmGrepOptions.Execute(UseCurrentIdent, ExternalEditor, Params) then begin
-    GrepExpert.GrepUseCurrentIdent := UseCurrentIdent;
-    GrepExpert.ExternalEditor := ExternalEditor;
-    GrepExpert.ExternalEditorParams := Params;
+    gblGrepExpert.GrepUseCurrentIdent := UseCurrentIdent;
+    gblGrepExpert.ExternalEditor := ExternalEditor;
+    gblGrepExpert.ExternalEditorParams := Params;
   end;
 end;
 
@@ -194,7 +176,7 @@ var
 begin
   s := cbText.Text;
   b := cbCaseSensitive.Checked;
-  if TfmTestRegEx.Execute(Self, GrepExpert.ContextFont, GrepExpert.ContextMatchColor, s, b) then begin
+  if TfmTestRegEx.Execute(Self, gblGrepExpert.ContextFont, gblGrepExpert.ContextMatchColor, s, b) then begin
     cbText.Text := s;
     cbCaseSensitive.Checked := b;
   end;
@@ -361,76 +343,6 @@ begin
   CheckSectionSelection(cbSectionInterface);
 end;
 
-{ TGrepDlgExpert }
-
-constructor TGrepDlgExpert.Create;
-begin
-  inherited Create;
-end;
-
-function TGrepDlgExpert.GetActionCaption: string;
-resourcestring
-  SActionCaption = '&Grep Search...';
-begin
-  Result := SActionCaption;
-end;
-
-function TGrepDlgExpert.GetDefaultShortCut: TShortCut;
-begin
-  Result := Menus.ShortCut(Word('S'), [ssAlt, ssShift]);
-end;
-
-function TGrepDlgExpert.GetHelpString: string;
-resourcestring
-  SHelpString =
-  '  Grep regular expressions allow you to formulate complex searches'#13#10
-  + '  that are not possible using a basic text search.'#13#10
-  + '  GExperts implements a subset of the Perl regular expression syntax.';
-begin
-  Result := SHelpString;
-end;
-
-class function TGrepDlgExpert.GetName: string;
-begin
-  Result := 'GrepSearch'; // Do not localize.
-end;
-
-function TGrepDlgExpert.HasCallCount: Boolean;
-begin
-  Result := False;
-end;
-
-procedure TGrepDlgExpert.Execute(Sender: TObject);
-begin
-  if Assigned(fmGrepResults) then begin
-    fmGrepResults.Execute(gssNormal);
-  end else
-    raise Exception.Create(SGrepResultsNotActive);
-end;
-
-procedure TGrepDlgExpert.Configure;
-var
-  GrepExpert: TGrepExpert;
-  UseCurrentIdent: Boolean;
-  ExternalEditor: string;
-  Params: string;
-begin
-  if not Assigned(fmGrepResults) then
-    raise Exception.Create(SGrepResultsNotActive);
-
-  GrepExpert := fmGrepResults.GrepExpert;
-  Assert(Assigned(GrepExpert));
-
-  UseCurrentIdent := GrepExpert.GrepUseCurrentIdent;
-  ExternalEditor := GrepExpert.ExternalEditor;
-  Params := GrepExpert.ExternalEditorParams;
-  if TfmGrepOptions.Execute(UseCurrentIdent, ExternalEditor, Params) then begin
-    GrepExpert.GrepUseCurrentIdent := UseCurrentIdent;
-    GrepExpert.ExternalEditor := ExternalEditor;
-    GrepExpert.ExternalEditorParams := Params;
-  end;
-end;
-
 procedure TfmGrepSearch.btnOKClick(Sender: TObject);
 resourcestring
   SSpecifiedDirectoryDoesNotExist = 'The search directory %s does not exist.';
@@ -530,47 +442,47 @@ end;
 
 procedure TfmGrepSearch.SaveFormSettings;
 begin
-  AddMRUString(cbText.Text, FGrepExpert.SearchList, False, 90, -1);
-  AddMRUString(cbDirectory.Text, FGrepExpert.DirList, True);
-  AddMRUString(cbMasks.Text, FGrepExpert.MaskList, False);
-  AddMRUString(cbExcludedDirs.Text, FGrepExpert.ExcludedDirsList, False, True);
+  AddMRUString(cbText.Text, gblGrepExpert.SearchList, False, 90, -1);
+  AddMRUString(cbDirectory.Text, gblGrepExpert.DirList, True);
+  AddMRUString(cbMasks.Text, gblGrepExpert.MaskList, False);
+  AddMRUString(cbExcludedDirs.Text, gblGrepExpert.ExcludedDirsList, False, True);
 
-  FGrepExpert.GrepCaseSensitive := cbCaseSensitive.Checked;
-  FGrepExpert.GrepCode := cbGrepCode.Checked;
-  FGrepExpert.GrepComments := cbGrepComments.Checked;
-  FGrepExpert.GrepStrings := cbGrepStrings.Checked;
-  FGrepExpert.GrepFinalization := cbSectionFinalization.Checked;
-  FGrepExpert.GrepImplementation := cbSectionImplementation.Checked;
-  FGrepExpert.GrepInitialization := cbSectionInitialization.Checked;
-  FGrepExpert.GrepInterface := cbSectionInterface.Checked;
-  FGrepExpert.GrepForms := cbForms.Checked;
-  FGrepExpert.GrepFormsMultiline := cbFormsMultiline.Checked;
-  FGrepExpert.GrepFormsSpecialChars := cbFormsSpecialChars.Checked;
-  FGrepExpert.GrepSQLFiles := cbSQLFiles.Checked;
-  FGrepExpert.GrepSub := cbInclude.Checked;
-  FGrepExpert.GrepWholeWord := cbWholeWord.Checked;
-  FGrepExpert.GrepRegEx := cbRegEx.Checked;
+  gblGrepExpert.GrepCaseSensitive := cbCaseSensitive.Checked;
+  gblGrepExpert.GrepCode := cbGrepCode.Checked;
+  gblGrepExpert.GrepComments := cbGrepComments.Checked;
+  gblGrepExpert.GrepStrings := cbGrepStrings.Checked;
+  gblGrepExpert.GrepFinalization := cbSectionFinalization.Checked;
+  gblGrepExpert.GrepImplementation := cbSectionImplementation.Checked;
+  gblGrepExpert.GrepInitialization := cbSectionInitialization.Checked;
+  gblGrepExpert.GrepInterface := cbSectionInterface.Checked;
+  gblGrepExpert.GrepForms := cbForms.Checked;
+  gblGrepExpert.GrepFormsMultiline := cbFormsMultiline.Checked;
+  gblGrepExpert.GrepFormsSpecialChars := cbFormsSpecialChars.Checked;
+  gblGrepExpert.GrepSQLFiles := cbSQLFiles.Checked;
+  gblGrepExpert.GrepSub := cbInclude.Checked;
+  gblGrepExpert.GrepWholeWord := cbWholeWord.Checked;
+  gblGrepExpert.GrepRegEx := cbRegEx.Checked;
 
-  FGrepExpert.GrepSaveOption := TGrepSaveOption(rgSaveOption.ItemIndex);
+  gblGrepExpert.GrepSaveOption := TGrepSaveOption(rgSaveOption.ItemIndex);
 
   if rbCurrentOnly.Checked then
-    FGrepExpert.GrepSearch := 0
+    gblGrepExpert.GrepSearch := 0
   else if rbAllProjFiles.Checked then
-    FGrepExpert.GrepSearch := 1
+    gblGrepExpert.GrepSearch := 1
   else if rbOpenFiles.Checked then
-    FGrepExpert.GrepSearch := 2
+    gblGrepExpert.GrepSearch := 2
   else if rbDirectories.Checked then
-    FGrepExpert.GrepSearch := 3
+    gblGrepExpert.GrepSearch := 3
   else if rbAllProjGroupFiles.Checked then
-    FGrepExpert.GrepSearch := 4
+    gblGrepExpert.GrepSearch := 4
   else if rbResults.Checked then
-    FGrepExpert.GrepSearch := 5;
+    gblGrepExpert.GrepSearch := 5;
 
-  FGrepExpert.GrepMinDepth := StrToIntDef(ed_MinDepth.Text, 0);
-  FGrepExpert.GrepMaxDepth := StrToIntDef(ed_MaxDepth.Text, -1);
-  FGrepExpert.ExcludedDirsIsRegEx := chk_SubDirRegex.Checked;
+  gblGrepExpert.GrepMinDepth := StrToIntDef(ed_MinDepth.Text, 0);
+  gblGrepExpert.GrepMaxDepth := StrToIntDef(ed_MaxDepth.Text, -1);
+  gblGrepExpert.ExcludedDirsIsRegEx := chk_SubDirRegex.Checked;
 
-  FGrepExpert.GrepUseMapFile := chk_UseMapFile.Checked;
+  gblGrepExpert.GrepUseMapFile := chk_UseMapFile.Checked;
 end;
 
 procedure TfmGrepSearch.timHintTimerTimer(Sender: TObject);
@@ -622,7 +534,7 @@ procedure TfmGrepSearch.LoadFormSettings;
     Selection := fmGrepResults.ContextSearchText;
     if Trim(Selection) = '' then
       Selection := RetrieveEditorBlockSelection;
-    if (Trim(Selection) = '') and FGrepExpert.GrepUseCurrentIdent then
+    if (Trim(Selection) = '') and gblGrepExpert.GrepUseCurrentIdent then
       try
         Selection := GxOtaGetCurrentIdent;  //if access violation created
       except
@@ -634,20 +546,21 @@ procedure TfmGrepSearch.LoadFormSettings;
     SetSearchPattern(Selection);
   end;
 
+resourcestring
+  SGrepResultsNotActive = 'The Grep Results window is not active';
+
 var
   sl: TStringList;
 begin
   if not Assigned(fmGrepResults) then
     raise Exception.Create(SGrepResultsNotActive);
 
-  FGrepExpert := fmGrepResults.GrepExpert;
-
   FLoadingSettings := True;
   try
-    cbText.Items.Assign(FGrepExpert.SearchList);
-    cbDirectory.Items.Assign(FGrepExpert.DirList);
-    cbMasks.Items.Assign(FGrepExpert.MaskList);
-    cbExcludedDirs.Items.Assign(FGrepExpert.ExcludedDirsList);
+    cbText.Items.Assign(gblGrepExpert.SearchList);
+    cbDirectory.Items.Assign(gblGrepExpert.DirList);
+    cbMasks.Items.Assign(gblGrepExpert.MaskList);
+    cbExcludedDirs.Items.Assign(gblGrepExpert.ExcludedDirsList);
     sl := TStringList.Create;
     try
       AddDelphiDirsToIgnore(sl);
@@ -660,25 +573,25 @@ begin
 
     rbResults.Enabled := fmGrepResults.lbResults.Count > 0;
 
-    cbCaseSensitive.Checked := FGrepExpert.GrepCaseSensitive;
-    cbGrepCode.Checked := FGrepExpert.GrepCode;
-    cbGrepComments.Checked := FGrepExpert.GrepComments;
-    cbGrepStrings.Checked := FGrepExpert.GrepStrings;
-    cbSectionFinalization.Checked := FGrepExpert.GrepFinalization;
-    cbSectionImplementation.Checked := FGrepExpert.GrepImplementation;
-    cbSectionInitialization.Checked := FGrepExpert.GrepInitialization;
-    cbSectionInterface.Checked := FGrepExpert.GrepInterface;
-    cbForms.Checked := FGrepExpert.GrepForms;
-    cbFormsMultiline.Checked := FGrepExpert.GrepFormsMultiline;
-    cbFormsSpecialChars.Checked := FGrepExpert.GrepFormsSpecialChars;
-    cbSQLFiles.Checked := FGrepExpert.GrepSQLFiles;
-    cbInclude.Checked := FGrepExpert.GrepSub;
-    cbWholeWord.Checked := FGrepExpert.GrepWholeWord;
-    cbRegEx.Checked := FGrepExpert.GrepRegEx;
+    cbCaseSensitive.Checked := gblGrepExpert.GrepCaseSensitive;
+    cbGrepCode.Checked := gblGrepExpert.GrepCode;
+    cbGrepComments.Checked := gblGrepExpert.GrepComments;
+    cbGrepStrings.Checked := gblGrepExpert.GrepStrings;
+    cbSectionFinalization.Checked := gblGrepExpert.GrepFinalization;
+    cbSectionImplementation.Checked := gblGrepExpert.GrepImplementation;
+    cbSectionInitialization.Checked := gblGrepExpert.GrepInitialization;
+    cbSectionInterface.Checked := gblGrepExpert.GrepInterface;
+    cbForms.Checked := gblGrepExpert.GrepForms;
+    cbFormsMultiline.Checked := gblGrepExpert.GrepFormsMultiline;
+    cbFormsSpecialChars.Checked := gblGrepExpert.GrepFormsSpecialChars;
+    cbSQLFiles.Checked := gblGrepExpert.GrepSQLFiles;
+    cbInclude.Checked := gblGrepExpert.GrepSub;
+    cbWholeWord.Checked := gblGrepExpert.GrepWholeWord;
+    cbRegEx.Checked := gblGrepExpert.GrepRegEx;
 
-    rgSaveOption.ItemIndex := Integer(FGrepExpert.SaveOption);
+    rgSaveOption.ItemIndex := Integer(gblGrepExpert.SaveOption);
 
-    case FGrepExpert.GrepSearch of
+    case gblGrepExpert.GrepSearch of
       0: rbCurrentOnly.Checked := True;
       1: rbAllProjFiles.Checked := True;
       2: rbOpenFiles.Checked := True;
@@ -694,15 +607,15 @@ begin
       rbAllProjFiles.Checked := True;
     end;
 
-    ed_MinDepth.Text := IntToStr(FGrepExpert.GrepMinDepth);
-    if FGrepExpert.GrepMaxDepth >= 0 then
-      ed_MaxDepth.Text := IntToStr(FGrepExpert.GrepMaxDepth)
+    ed_MinDepth.Text := IntToStr(gblGrepExpert.GrepMinDepth);
+    if gblGrepExpert.GrepMaxDepth >= 0 then
+      ed_MaxDepth.Text := IntToStr(gblGrepExpert.GrepMaxDepth)
     else
       ed_MaxDepth.Text :=  '';
 
-    chk_SubDirRegex.Checked := FGrepExpert.ExcludedDirsIsRegEx;
+    chk_SubDirRegex.Checked := gblGrepExpert.ExcludedDirsIsRegEx;
 
-    chk_UseMapFile.Checked := FGrepExpert.GrepUseMapFile;
+    chk_UseMapFile.Checked := gblGrepExpert.GrepUseMapFile;
 
     if cbText.Items.Count > 0 then
       cbText.Text := cbText.Items[0];
@@ -713,7 +626,7 @@ begin
     if cbExcludedDirs.Items.Count > 0 then
       cbExcludedDirs.Text := cbExcludedDirs.Items[0];
 
-    if not FGrepExpert.GrepSaveHistoryListItems then begin
+    if not gblGrepExpert.GrepSaveHistoryListItems then begin
       rgSaveOption.Visible := False;
       Height := Height - rgSaveOption.Height;
     end;
@@ -797,7 +710,7 @@ begin
   Value.Directories := '';
   Value.ExcludedDirs := '';
   Value.IncludeSubdirs := True;
-  Value.UseMapFile := FGrepExpert.GrepUseMapFile;
+  Value.UseMapFile := gblGrepExpert.GrepUseMapFile;
 
   if rbAllProjFiles.Checked then
     Value.GrepAction := gaProjGrep
@@ -892,10 +805,10 @@ end;
 
 procedure TfmGrepSearch.UpdateMRUs;
 begin
-  FGrepExpert.SearchList.Assign(cbText.Items);
-  FGrepExpert.DirList.Assign(cbDirectory.Items);
-  FGrepExpert.MaskList.Assign(cbMasks.Items);
-  FGrepExpert.ExcludedDirsList.Assign(cbExcludedDirs.Items);
+  gblGrepExpert.SearchList.Assign(cbText.Items);
+  gblGrepExpert.DirList.Assign(cbDirectory.Items);
+  gblGrepExpert.MaskList.Assign(cbMasks.Items);
+  gblGrepExpert.ExcludedDirsList.Assign(cbExcludedDirs.Items);
 end;
 
 procedure TfmGrepSearch.EmbeddedInit(AHolderControl: TWinControl; ASearchEvent: TNotifyEvent);
@@ -1059,7 +972,5 @@ begin
     lblExcludeDirs.Caption := 'Exclude Dirs (separate by semicolon)'
 end;
 
-initialization
-  RegisterGX_Expert(TGrepDlgExpert);
 end.
 

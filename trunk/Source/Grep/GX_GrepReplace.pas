@@ -60,12 +60,12 @@ end;
 
 procedure TfmGrepReplace.LoadFormSettings;
 resourcestring
-  SGrepResultsNotActive = 'The Grep Results window is not active';
+  SGrepNotActive = 'The Grep expert is not active';
 begin
-  if not Assigned(fmGrepResults) then
-    raise Exception.Create(SGrepResultsNotActive);
+  if not Assigned(gblGrepExpert) then
+    raise Exception.Create(SGrepNotActive);
 
-  FGrepExpert := fmGrepResults.GrepExpert;
+  FGrepExpert := gblGrepExpert;
   cbReplace.Items.Assign(FGrepExpert.ReplaceList);
   chkUseRegEx.Checked := FGrepExpert.GrepRegEx;
 
