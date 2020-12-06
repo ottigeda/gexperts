@@ -50,6 +50,13 @@ type
     /// @param CreateSuspended (see TThread.Create)
     /// @param Name is the name to set for the thread, if empty, the ClassName will be used </summary>
     constructor Create(_CreateSuspended: Boolean; const _Name: string = '');
+    ///<summary>
+    /// This is not a class method so it only works for this thread object.
+    /// That's on purpose: The class methode introduced in later Delphi versions (it does exist
+    /// in Delphi 10.2) should always be called as TThread.CheckTerminates to prevent confusion
+    /// which thread is being checked.
+    /// @returns The value of the protected Perminated property </summary>
+    function CheckTerminated: Boolean;
   end;
 
 implementation
@@ -83,6 +90,11 @@ begin
     FThreadName := ClassName;
 
   inherited Create(_CreateSuspended);
+end;
+
+function TNamedThread.CheckTerminated: Boolean;
+begin
+  Result := Terminated;
 end;
 
 procedure TNamedThread.Execute;
