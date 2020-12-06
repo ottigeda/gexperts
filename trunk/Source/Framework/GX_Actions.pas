@@ -55,8 +55,6 @@ type
   IGxMenuAction = interface(IGxAction)
     ['{FD68EC31-D723-11D3-A95A-5AE3EA000000}']
     function GetAssociatedMenuItem: TMenuItem;
-
-    property AssociatedMenuItem: TMenuItem read GetAssociatedMenuItem;
   end;
 
 type

@@ -318,7 +318,7 @@ begin
   // Create the action with a linked menu item
   Result := GxActionBroker.RequestMenuAction(AName, Bitmap);
 
-  TempMenuItem := (Result as IGxMenuAction).AssociatedMenuItem;
+  TempMenuItem := (Result as IGxMenuAction).GetAssociatedMenuItem;
   Assert(Assigned(TempMenuItem));
 
   // Save the associated expert's index into the menu
