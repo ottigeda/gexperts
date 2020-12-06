@@ -19,6 +19,7 @@ type
     ///<summary>
     /// @returns false, because we now group the Grep menu items in a submenu </summary>
     function HasMenuItem: Boolean; override;
+    function CanHaveShortCut: boolean; override;
     function GetHelpString: string; override;
     procedure Execute(Sender: TObject); override;
     procedure Configure; override;
@@ -92,6 +93,11 @@ begin
     fmGrepResults.Execute(gssNormal);
   end else
     raise Exception.Create(SGrepResultsNotActive);
+end;
+
+function TGrepSearchExpert.CanHaveShortCut: boolean;
+begin
+  Result := True;
 end;
 
 procedure TGrepSearchExpert.Configure;

@@ -95,6 +95,7 @@ type
     procedure ShowStandAlone(const _Directory: string);
     function GetDefaultShortCut: TShortCut; override;
     function GetActionCaption: string; override;
+    function CanHaveShortCut: boolean; override;
     class function ConfigurationKey: string; override;
     class function GetName: string; override;
     function GetHelpString: string; override;
@@ -199,6 +200,7 @@ type
     class function GetName: string; override;
     function GetHelpString: string; override;
     function HasMenuItem: Boolean; override;
+    function CanHaveShortCut: boolean; override;
   end;
 
   TGrepPrevItemExpert = class(TGX_Expert)
@@ -214,6 +216,7 @@ type
     class function GetName: string; override;
     function GetHelpString: string; override;
     function HasMenuItem: Boolean; override;
+    function CanHaveShortCut: boolean; override;
   end;
 
 var
@@ -935,6 +938,11 @@ begin
   end;
 end;
 
+function TGrepExpert.CanHaveShortCut: boolean;
+begin
+  Result := True;
+end;
+
 class function TGrepExpert.ConfigurationKey: string;
 begin
   Result := 'Grep';
@@ -1008,6 +1016,11 @@ end;
 
 { TGrepNextItemExpert }
 
+function TGrepNextItemExpert.CanHaveShortCut: boolean;
+begin
+  Result := True;
+end;
+
 class function TGrepNextItemExpert.ConfigurationKey: string;
 begin
   Result := TGrepExpert.ConfigurationKey + 'Next';
@@ -1076,6 +1089,11 @@ begin
 end;
 
 { TGrepPrevItemExpert }
+
+function TGrepPrevItemExpert.CanHaveShortCut: boolean;
+begin
+  Result := True;
+end;
 
 class function TGrepPrevItemExpert.ConfigurationKey: string;
 begin
