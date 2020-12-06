@@ -14,13 +14,13 @@ type
     FNoDisplaynameWarningSent: Boolean;
 {$IFEND}
     FCallCount: Integer;
+    FShortCut: TShortCut;
     function GetTotalCallCount: Integer;
     procedure SetTotalCallCount(Value: Integer);
   protected
     FBitmap: TBitmap;
     FActive: Boolean;
     FActionInt: IGxAction;
-    FShortCut: TShortCut;
     procedure SetActive(New: Boolean); virtual;
     function GetShortCut: TShortCut; virtual;
     procedure SetShortCut(Value: TShortCut); virtual;
@@ -116,6 +116,7 @@ constructor TGX_BaseExpert.Create;
 begin
   inherited Create;
   FCallCount := 0;
+  FShortCut := GetDefaultShortCut;
 end;
 
 destructor TGX_BaseExpert.Destroy;

@@ -99,7 +99,6 @@ begin
 
   // Don't set Active to True.
   // Instead override IsDefaultActive and let LoadSettings do it
-  FShortCut := GetDefaultShortCut;
 end;
 
 procedure TGX_Expert.CreateSubMenuItems(MenuItem: TMenuItem);
@@ -171,8 +170,6 @@ begin
   if New = FActive then
     Exit;
 
-  FActive := New;
-
   if HasMenuItem or HasDesignerMenuItem then
   begin
     if New and not IsStandAlone then
@@ -183,6 +180,8 @@ begin
 
   if Assigned(FActionInt) then
     FActionInt.OnUpdate := ActionOnUpdate;
+
+  inherited;
 end;
 
 { Globals }
