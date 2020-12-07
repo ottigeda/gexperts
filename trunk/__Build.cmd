@@ -28,9 +28,9 @@ call :doItem XE7
 call :doItem XE8
 call :doItem Xx10Seattle
 call :doItem Xx101Berlin
-call :doItem Xx102
-call :doItem Xx103
-call :doItem Xx104
+call :doItem Xx102Tokyo
+call :doItem Xx103Rio
+call :doItem Xx104Sydney
 
 goto :eof
 
