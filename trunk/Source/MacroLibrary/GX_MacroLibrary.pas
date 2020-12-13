@@ -10,7 +10,7 @@ uses
   ComCtrls, StdCtrls, ExtCtrls, Menus,
   OmniXML,
   GX_Experts, GX_ConfigurationInfo, GX_KbdShortCutBroker, GX_GenericUtils,
-  GX_IdeDock, ActnList, ImgList, ToolWin, ToolsAPI, Actions,
+  GX_IdeDock, Actions, ActnList, ImageList, ImgList, ToolWin, ToolsAPI, 
   GX_MemoEscFix;
 
 type
@@ -237,7 +237,6 @@ type
     class function ConfigurationKey: string; override;
     class function GetName: string; override;
     function GetHelpString: string; override;
-    function GetBitmap: Graphics.TBitmap; override;
     function IsDefaultActive: Boolean; override;
   end;
 
@@ -252,7 +251,6 @@ type
     class function ConfigurationKey: string; override;
     class function GetName: string; override;
     function GetHelpString: string; override;
-    function GetBitmap: Graphics.TBitmap; override;
     function IsDefaultActive: Boolean; override;
   end;
 
@@ -1328,15 +1326,6 @@ begin
   Result := SMenuCaption;
 end;
 
-function TMacroLibRecordExpert.GetBitmap: Graphics.TBitmap;
-begin
-  if not Assigned(FBitmap) then begin
-    FBitmap := Graphics.TBitmap.Create;
-    GetMacroLibraryForm.GetRecordBitmap(FBitmap);
-  end;
-  Result := FBitmap;
-end;
-
 function TMacroLibRecordExpert.GetDefaultShortCut: TShortCut;
 begin
   Result := Menus.ShortCut(Ord('R'), [ssCtrl, ssShift]);
@@ -1390,15 +1379,6 @@ resourcestring
   SMenuCaption = 'Keyboard Macro Playback';
 begin
   Result := SMenuCaption;
-end;
-
-function TMacroLibPlaybackExpert.GetBitmap: Graphics.TBitmap;
-begin
-  if not Assigned(FBitmap) then begin
-    FBitmap := Graphics.TBitmap.Create;
-    GetMacroLibraryForm.GetPlayBitmap(FBitmap);
-  end;
-  result := FBitmap;
 end;
 
 function TMacroLibPlaybackExpert.GetDefaultShortCut: TShortCut;
