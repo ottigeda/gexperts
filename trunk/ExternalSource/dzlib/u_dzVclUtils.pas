@@ -6224,7 +6224,10 @@ end;
 
 procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; var _Left, _Top, _Width, _Height: Integer);
 begin
-  TMonitor_MakeFullyVisible(_Monitor.WorkareaRect, _Left, _Top, _Width, _Height);
+  if Assigned(_Monitor) then
+    TMonitor_MakeFullyVisible(_Monitor.WorkareaRect, _Left, _Top, _Width, _Height)
+  else
+    TScreen_MakeFullyVisible(_Left, _Top, _Width, _Height);
 end;
 
 procedure TMonitor_MakeFullyVisible(_MonitorRect: TRect; var _Rect: TRect; out _Width, _Height: Integer);
@@ -6244,9 +6247,21 @@ begin
 end;
 
 procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; var _Rect: TRect; out _Width, _Height: Integer);
+var
+  Left: Integer;
+  Top: Integer;
 begin
   if Assigned(_Monitor) then
-    TMonitor_MakeFullyVisible(_Monitor.WorkareaRect, _Rect, _Width, _Height);
+    TMonitor_MakeFullyVisible(_Monitor.WorkareaRect, _Rect, _Width, _Height)
+  else begin
+    Left := _Rect.Left;
+    Top := _Rect.Top;
+    TScreen_MakeFullyVisible(Left, Top, _Width, _Height);
+    _Rect.Left := Left;
+    _Rect.Top := Top;
+    _Rect.Right := Left + _Width;
+    _Rect.Bottom := Top + _Height;
+  end;
 end;
 
 procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; var _Rect: TRect);
@@ -6259,7 +6274,10 @@ end;
 
 procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; var _Rect: TRectLTWH);
 begin
-  TMonitor_MakeFullyVisible(_Monitor.WorkareaRect, _Rect.Left, _Rect.Top, _Rect.Width, _Rect.Height);
+  if Assigned(_Monitor) then
+    TMonitor_MakeFullyVisible(_Monitor.WorkareaRect, _Rect.Left, _Rect.Top, _Rect.Width, _Rect.Height)
+  else
+    TScreen_MakeFullyVisible(_Rect);
 end;
 
 procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; _frm: TForm);
