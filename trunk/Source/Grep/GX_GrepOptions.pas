@@ -75,9 +75,9 @@ implementation
 {$R *.dfm}
 
 uses
-  ComCtrls,
-  u_dzVclUtils,
-  GX_GenericUtils, GX_IdeUtils, GX_GExperts, GX_ActionBroker;
+  ComCtrls, Types,
+  u_dzVclUtils, 
+  GX_GenericUtils, GX_IdeUtils, GX_GExperts, GX_ActionBroker, GX_OtaUtils;
 
 { TfmGrepOptions }
 
@@ -145,6 +145,28 @@ end;
 
 { TGrepMenuEntryExpert }
 
+var
+  InternalPopupMenu: TPopupMenu;
+
+function GetInternalPopupMenu: TPopupMenu;
+const
+  MenuName = 'GxMenusForEditorExpertsInternalPopupMenu';
+begin
+  if not Assigned(InternalPopupMenu) then begin
+    InternalPopupMenu := NewPopupMenu(nil, MenuName, paCenter, False, []);
+{$IFNDEF ICONS_IN_POPUP_MENUS_ARE_BROKEN}
+    InternalPopupMenu.Images := GxOtaGetIdeImageList;
+{$ENDIF}
+  end;
+
+  Result := InternalPopupMenu;
+end;
+
+procedure ReleaseInternalPopupMenu;
+begin
+  FreeAndNil(InternalPopupMenu);
+end;
+
 constructor TGrepMenuEntryExpert.Create;
 begin
   inherited;
@@ -154,6 +176,7 @@ end;
 destructor TGrepMenuEntryExpert.Destroy;
 begin
   gblGrepMenuEntryExpert := nil;
+  ReleaseInternalPopupMenu;
   inherited;
 end;
 
@@ -233,13 +256,50 @@ begin
 end;
 
 procedure TGrepMenuEntryExpert.PopulatePopupMenu(const PopupMenu: TPopupMenu);
-begin
+var
+  GExpertsInstance: TGExperts;
 
+  procedure HandleExpert(const _ExpertName: string);
+  var
+    Expert: TGX_Expert;
+    ExpertMenuEntry: TMenuItem;
+  begin
+    if not GExpertsInstance.FindExpert(_ExpertName, Expert) then
+      Exit; //==>
+    if not Expert.Active then
+      Exit; //==>
+
+    ExpertMenuEntry := TMenuItem.Create(PopupMenu);
+    if Expert.HasMenuItem then begin
+      ExpertMenuEntry.Action := GxActionBroker.FindGExpertsMenuAction(Expert.GetActionName)
+    end else begin
+      ExpertMenuEntry.Action := GxActionBroker.FindGExpertsAction(Expert.GetActionName);
+    end;
+    PopupMenu.Items.Add(ExpertMenuEntry);
+  end;
+
+begin
+  GExpertsInstance := GExpertsInst;
+  Assert(Assigned(GExpertsInstance));
+
+  PopupMenu.Items.Clear;
+  HandleExpert(GrepSearchName);
+  HandleExpert(GrepResultsName);
+  HandleExpert(GrepPrevItemName);
+  HandleExpert(GrepNextItemName);
 end;
 
 procedure TGrepMenuEntryExpert.ShowPopup(Sender: TObject);
+var
+  MousePosition: TPoint;
+  APopupMenu: TPopupMenu;
 begin
+  MousePosition := Mouse.CursorPos;
+  APopupMenu := GetInternalPopupMenu;
+  Assert(Assigned(APopupMenu));
+  PopulatePopupMenu(APopupMenu);
 
+  APopupMenu.Popup(MousePosition.X, MousePosition.Y);
 end;
 
 function TGrepMenuEntryExpert.SupportsSubmenu: Boolean;
@@ -277,3 +337,4 @@ end;
 initialization
   RegisterGX_Expert(TGrepMenuEntryExpert);
 end.
+
