@@ -249,10 +249,11 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils,
+  SysUtils, Math,
+  u_dzVclUtils,
   GX_EditorEnhancements, GX_MessageBox,
   GX_GenericUtils, GX_GenericClasses, GX_IdeUtils, GX_OtaUtils, GX_VerDepConst,
-  Math, GX_BaseForm, GX_IdeDock, GX_GxUtils;
+  GX_BaseForm, GX_IdeDock, GX_GxUtils;
 
 type
   TConfigInfo = class(TSingletonInterfacedObject, IConfigInfo)
@@ -994,7 +995,8 @@ begin
       R.Right := R.Left + w;
       R.Bottom := R.Top + h;
     end;
-    Form.BoundsRect := r;
+    TScreen_MakeFullyVisible(R);
+    Form.BoundsRect := R;
   end else if SizeChanged then begin
     // center with the given size
     Rect := GetScreenWorkArea(Form);
