@@ -53,9 +53,11 @@ type
     class function GenerateName(const _FormName: string): string;
   protected
 {$IFDEF GX_DELPHI_TOKYO_UP}
+{$IFNDEF GX_DELPHI_RIO_UP}
     FTimer: TTimer;
-    procedure DoAddSizeGrip; virtual;
     procedure HandleTimer(_Sender: TObject);
+{$ENDIF ~GX_DELPHI_RIO_UP}
+    procedure DoAddSizeGrip; virtual;
 {$ENDIF GX_DELPHI_TOKYO_UP}
     procedure DoHookOnFormDestroy; virtual;
     procedure DoFixFormErrors; virtual;
@@ -318,12 +320,14 @@ begin
   end;
 end;
 
+{$IFNDEF GX_DELPHI_RIO_UP}
 procedure TManagedForm.HandleTimer(_Sender: TObject);
 begin
   FTimer.Enabled := False;
   FForm.Left := FForm.Left - 1;
   FForm.Left := FForm.Left + 1;
 end;
+{$ENDIF ~GX_DELPHI_RIO_UP}
 {$ENDIF GX_DELPHI_TOKYO_UP}
 
 class function TManagedForm.AlreadyExists(const _Form: TCustomForm): Boolean;
@@ -1168,6 +1172,8 @@ begin
   // is only 1 pixel wide so it's difficult to hit it for resizing the window.
   // Adding a size grip makes this a bit easier.
   DoAddSizeGrip;
+
+{$IFNDEF GX_DELPHI_RIO_UP}
   // Workaround for a problem that only exists in Delphi 10.2 if theming is enabled:
   // If the form's position is changed while it is still drawing (as is the case for all
   // forms that get manipulated by GExperts), it can no longer be moved or resized.
@@ -1178,6 +1184,7 @@ begin
   FTimer.OnTimer := HandleTimer;
   FTimer.Interval := 50;
   FTimer.Enabled := True;
+{$ENDIF}
 {$ENDIF}
   DoFixFormErrors;
   DoLoadFormState;
