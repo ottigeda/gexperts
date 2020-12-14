@@ -130,23 +130,15 @@ begin
 end;
 
 procedure TMenusForEditorExperts.PopulatePopupMenu(const PopupMenu: TPopupMenu);
-
-  procedure ClearMenuItems(AMenu: TMenu);
-  begin
-    Assert(Assigned(AMenu));
-    AMenu.Items.Clear;
-  end;
-
 var
   i: Integer;
   AGExpertsInstance: TGExperts;
   AEditorExpertManager: TGxEditorExpertManager;
   AEditorExpert: TEditorExpert;
-
   ExpertMenuEntry: TMenuItem;
 begin
   Assert(Assigned(PopupMenu));
-  ClearMenuItems(PopupMenu);
+  PopupMenu.Items.Clear;
 
   AGExpertsInstance := GExpertsInst;
   Assert(Assigned(AGExpertsInstance));
