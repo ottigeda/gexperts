@@ -196,8 +196,6 @@ type
     function GetDescriptionVisible: Boolean;
     property DescriptionVisible: Boolean read GetDescriptionVisible write SetDescriptionVisible;
     procedure RecordShortcutCallback(Sender: TObject);
-    procedure GetRecordBitmap(_bmp: TBitmap);
-    procedure GetPlayBitmap(_bmp: TBitmap);
   protected
     procedure AddToMacroLibrary(CR: IOTARecord);
   public
@@ -1205,16 +1203,6 @@ end;
 function TfmMacroLibrary.GetDescriptionVisible: Boolean;
 begin
   Result := pnlDescription.Visible;
-end;
-
-procedure TfmMacroLibrary.GetPlayBitmap(_bmp: TBitmap);
-begin
-  GetSharedImageList.GetBitmap(actPlayback.ImageIndex, _bmp);
-end;
-
-procedure TfmMacroLibrary.GetRecordBitmap(_bmp: TBitmap);
-begin
-  GetSharedImageList.GetBitmap(actRecord.ImageIndex, _bmp);
 end;
 
 { TMacroLibraryExpert }
