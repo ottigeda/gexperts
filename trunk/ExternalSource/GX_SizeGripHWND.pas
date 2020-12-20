@@ -43,7 +43,8 @@ unit GX_SizeGripHWND;
 interface
 
 uses
-  Windows;
+  Windows,
+  SysUtils;
 
 procedure GxSetWindowSizeGrip(hWnd: HWND; Enable: Boolean);
 
@@ -180,50 +181,55 @@ var
   end;
 
 begin
-  Info := PGripInfo(GetProp(hWnd, SizeGripProp));
-  if Info = nil then
-    Result := DefWindowProc(hWnd, Msg, wParam, lParam)
-  else if not Info^.Enabled then
-    Result := CallOld
-  else begin
-    case Msg of
-      WM_NCDESTROY:
-        begin
-          Result := CallOld;
-
-          SetWindowLong(hWnd, GWL_WNDPROC, NativeInt(@Info^.OldWndProc));
-          RemoveProp(hWnd, SizeGripProp);
-          Dispose(Info);
-        end;
-
-      WM_PAINT:
-        begin
-          Result := CallOld;
-          if wParam = 0 then
-            DrawSizeGrip(Info^.GripRect);
-        end;
-
-      WM_NCHITTEST:
-        begin
-          pt.X := GET_X_LPARAM(lParam);
-          pt.Y := GET_Y_LPARAM(lParam);
-          ScreenToClient(hWnd, pt);
-          if PtInRect(Info^.GripRect, pt) then
-            Result := HTBOTTOMRIGHT
-          else
+  try
+    Info := PGripInfo(GetProp(hWnd, SizeGripProp));
+    if Info = nil then
+      Result := DefWindowProc(hWnd, Msg, wParam, lParam)
+    else if not Info^.Enabled then
+      Result := CallOld
+    else begin
+      case Msg of
+        WM_NCDESTROY:
+          begin
             Result := CallOld;
-        end;
 
-      WM_SIZE:
-        begin
-          InvalidateGrip;
+            SetWindowLong(hWnd, GWL_WNDPROC, NativeInt(@Info^.OldWndProc));
+            RemoveProp(hWnd, SizeGripProp);
+            Dispose(Info);
+          end;
+
+        WM_PAINT:
+          begin
+            Result := CallOld;
+            if wParam = 0 then
+              DrawSizeGrip(Info^.GripRect);
+          end;
+
+        WM_NCHITTEST:
+          begin
+            pt.X := GET_X_LPARAM(lParam);
+            pt.Y := GET_Y_LPARAM(lParam);
+            ScreenToClient(hWnd, pt);
+            if PtInRect(Info^.GripRect, pt) then
+              Result := HTBOTTOMRIGHT
+            else
+              Result := CallOld;
+          end;
+
+        WM_SIZE:
+          begin
+            InvalidateGrip;
+            Result := CallOld;
+            UpdateGrip;
+          end;
+
+        else
           Result := CallOld;
-          UpdateGrip;
-        end;
-
-      else
-        Result := CallOld;
-    end; // case Msg of
+      end; // case Msg of
+    end;
+  except
+    on e: Exception do
+      Result := CallOld;
   end;
 end { SizeGripWndProc };
 
