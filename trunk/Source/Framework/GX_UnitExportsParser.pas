@@ -982,8 +982,10 @@ begin
     FFiles := nil;
 
   FPaths := TStringList.Create;
+  FPaths.Duplicates := dupIgnore;
+  FPaths.Sorted := True;
   for i := 0 to _Paths.Count - 1 do begin
-    s := _Paths[i];
+    s := AddSlash(_Paths[i]);
     UniqueString(s);
     FPaths.Add(s);
   end;
