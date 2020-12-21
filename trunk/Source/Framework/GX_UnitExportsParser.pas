@@ -9,7 +9,8 @@ uses
   u_dzErrorThread,
   u_dzCompilerAndRtlVersions,
   mwPasParserTypes,
-  mPasLex;
+  mPasLex,
+  GX_UnitExportList;
 
 {$IFOPT D+}
 {$IF RTLVersion > RtlVersionDelphiXE}
@@ -17,14 +18,6 @@ uses
 {$DEFINE DO_TIMING}
 {$IFEND}
 {$ENDIF}
-
-type
-  // itUnknown is only there so Delphi 6 does not bomb out because of NIL objects in FIdentifiers
-  TIdentifierTypes = (itUnknown, itConst, itType, itVar, itProcedure, itFunction);
-  TIdentifier = record
-    IdName: string;
-    IdType: TIdentifierTypes;
-  end;
 
 type
   TSkipToElseOrEndifResult = (seeElse, seeEndif, seeElseIf, seeNull);
@@ -82,14 +75,14 @@ type
     FConstants: TStrings;
     FTypes: TStrings;
     FVariables: TStrings;
-    FIdentifiers: TStrings;
+    FIdentifiers: TUnitIdentifierList;
     FSymbols: TStrings;
-    procedure AddToIdentifiers(const _Identifier: string; _IdType: TIdentifierTypes);
-    procedure AddToConsts(const _Token: string);
-    procedure AddToFunctions(const _Token: string);
-    procedure AddToProcedures(const _Token: string);
-    procedure AddToTypes(const _Token: string);
-    procedure AddToVars(const _Token: string);
+    procedure AddToIdentifiers(const _Identifier: string; _IdType: TUnitIdentifierTypes; _LineNo: Integer);
+    procedure AddToConsts(const _Token: string; _LineNo: Integer);
+    procedure AddToFunctions(const _Token: string; _LineNo: Integer);
+    procedure AddToProcedures(const _Token: string; _LineNo: Integer);
+    procedure AddToTypes(const _Token: string; _LineNo: Integer);
+    procedure AddToVars(const _Token: string; _LineNo: Integer);
     procedure SkipClassOrRecord;
     procedure SkipConstDeclaration;
     procedure SkipFunctionDeclaration;
@@ -97,12 +90,12 @@ type
     procedure SkipToClosingDelimiter(_OpeningDel, _ClosingDel: TTokenKind);
     procedure HandleTypeDeclaration;
     procedure SkipVarDeclaration;
-    function GetIdentifier(_Idx: Integer): TIdentifier;
+    function GetIdentifier(_Idx: Integer): TUnitIdentifier;
     procedure SkipDirectives;
   public
     ///<summary>
     /// @returns the name of the given identifier type </summary>
-    class function IdentfierTypeNames(_IdType: TIdentifierTypes): string;
+    class function IdentfierTypeNames(_IdType: TUnitIdentifierTypes): string;
     ///<summary>
     /// constructs a TUnitExportsParser instance for the given file </summary>
     constructor Create(const _Filename: string);
@@ -128,11 +121,11 @@ type
     property Types: TStrings read FTypes;
     ///<summary>
     /// Sorted list of all exported identifiers </summary>
-    property Identifiers: TStrings read FIdentifiers;
+    property Identifiers: TUnitIdentifierList read FIdentifiers;
     ///<summary>
     /// Sorted list of all exported identifiers as a TIdentifier record which
     /// in addition to the name contains the identifiert type </summary>
-    property Identifier[_Idx: Integer]: TIdentifier read GetIdentifier;
+    property Identifier[_Idx: Integer]: TUnitIdentifier read GetIdentifier;
     ///<summary>
     /// Count of exported identifiers </summary>
     function IdentifierCount: Integer;
@@ -146,7 +139,7 @@ type
   private
     FUnitFiles: TStringList;
     FFiles: TStringList;
-    FIdentifiers: TStrings;
+    FIdentifiers: TUnitExportlist;
     FPaths: TStringList;
     FCacheDirBS: string;
     FParsedUnitsCount: Integer;
@@ -165,12 +158,10 @@ type
     /// @param CacheDir is a directory to cache the identifier lists </summary>
     constructor Create(const _Files: TStrings; _Paths: TStrings; const _CacheDir: string);
     destructor Destroy; override;
+    function DetachIdentifiers: TUnitExportlist;
     ///<summary>
-    /// After execution Identifiers contains a sorted list of all identfiers. The
-    /// Objects[] pointers are PChars pointing to the unit in which they were found.
-    /// @NOTE: Make a copy of these PChars (e.g. assign them to a string because they point
-    ///        to entries in FUnits that are freed in the destructor! </summary>
-    property Identifiers: TStrings read FIdentifiers;
+    /// After execution Identifiers contains a sorted list of all identfiers. </summary>
+    property Identifiers: TUnitExportlist read FIdentifiers;
     property FoundUnitsCount: Integer read FFoundUnitsCount;
     property ParsedUnitsCount: Integer read FParsedUnitsCount;
     property LoadedUnitsCount: Integer read FLoadedUnitsCount;
@@ -510,7 +501,7 @@ end;
 
 { TUnitExportsParser }
 
-class function TUnitExportsParser.IdentfierTypeNames(_IdType: TIdentifierTypes): string;
+class function TUnitExportsParser.IdentfierTypeNames(_IdType: TUnitIdentifierTypes): string;
 begin
   case _IdType of
     itConst: Result := 'const';
@@ -543,7 +534,7 @@ begin
   CreateStrings(FConstants);
   CreateStrings(FVariables);
   CreateStrings(FTypes);
-  CreateStrings(FIdentifiers);
+  FIdentifiers := TUnitIdentifierList.Create(500);
   CreateStrings(FSymbols);
 end;
 
@@ -599,23 +590,23 @@ begin
               case DeclarationType of
                 dtNone: ;
                 dtConst: begin
-                    AddToConsts(FParser.Token);
+                    AddToConsts(FParser.Token, FParser.LineNumber);
                     SkipConstDeclaration;
                   end;
                 dtType: begin
-                    AddToTypes(FParser.Token);
+                    AddToTypes(FParser.Token, FParser.LineNumber);
                     HandleTypeDeclaration;
                   end;
                 dtVar: begin
-                    AddToVars(FParser.Token);
+                    AddToVars(FParser.Token, FParser.LineNumber);
                     SkipVarDeclaration;
                   end;
                 dtFunction: begin
-                    AddToFunctions(FParser.Token);
+                    AddToFunctions(FParser.Token, FParser.LineNumber);
                     SkipFunctionDeclaration;
                   end;
                 dtProcedure: begin
-                    AddToProcedures(FParser.Token);
+                    AddToProcedures(FParser.Token, FParser.LineNumber);
                     SkipProcedureDeclaration
                   end;
               end;
@@ -641,45 +632,44 @@ begin
   Result := FIdentifiers.Count;
 end;
 
-function TUnitExportsParser.GetIdentifier(_Idx: Integer): TIdentifier;
+function TUnitExportsParser.GetIdentifier(_Idx: Integer): TUnitIdentifier;
 begin
-  Result.IdName := FIdentifiers[_Idx];
-  Result.IdType := TIdentifierTypes(FIdentifiers.Objects[_Idx]);
+  Result := FIdentifiers[_Idx];
 end;
 
-procedure TUnitExportsParser.AddToIdentifiers(const _Identifier: string; _IdType: TIdentifierTypes);
+procedure TUnitExportsParser.AddToIdentifiers(const _Identifier: string; _IdType: TUnitIdentifierTypes; _LineNo: Integer);
 begin
-  FIdentifiers.AddObject(_Identifier, Pointer(Ord(_IdType)));
+  FIdentifiers.Add(_Identifier, _LineNo);
 end;
 
-procedure TUnitExportsParser.AddToConsts(const _Token: string);
+procedure TUnitExportsParser.AddToConsts(const _Token: string; _LineNo: Integer);
 begin
   FConstants.Add(_Token);
-  AddToIdentifiers(_Token, itConst);
+  AddToIdentifiers(_Token, itConst, _LineNo);
 end;
 
-procedure TUnitExportsParser.AddToVars(const _Token: string);
+procedure TUnitExportsParser.AddToVars(const _Token: string; _LineNo: Integer);
 begin
   FVariables.Add(_Token);
-  AddToIdentifiers(_Token, itVar);
+  AddToIdentifiers(_Token, itVar, _LineNo);
 end;
 
-procedure TUnitExportsParser.AddToTypes(const _Token: string);
+procedure TUnitExportsParser.AddToTypes(const _Token: string; _LineNo: Integer);
 begin
   FTypes.Add(_Token);
-  AddToIdentifiers(_Token, itType);
+  AddToIdentifiers(_Token, itType, _LineNo);
 end;
 
-procedure TUnitExportsParser.AddToFunctions(const _Token: string);
+procedure TUnitExportsParser.AddToFunctions(const _Token: string; _LineNo: Integer);
 begin
   FFunctions.Add(_Token);
-  AddToIdentifiers(_Token, itFunction);
+  AddToIdentifiers(_Token, itFunction, _LineNo);
 end;
 
-procedure TUnitExportsParser.AddToProcedures(const _Token: string);
+procedure TUnitExportsParser.AddToProcedures(const _Token: string; _LineNo: Integer);
 begin
   FProcedures.Add(_Token);
-  AddToIdentifiers(_Token, itProcedure);
+  AddToIdentifiers(_Token, itProcedure, _LineNo);
 end;
 
 procedure TUnitExportsParser.SkipToClosingDelimiter(_OpeningDel, _ClosingDel: TTokenKind);
@@ -770,7 +760,7 @@ begin
       if FParser.Tokenid = tkNull then
         Exit; //==>
       if FParser.Tokenid = tkIdentifier then begin
-        AddToIdentifiers(FParser.Token, itConst);
+        AddToIdentifiers(FParser.Token, itConst, FParser.LineNumber);
       end;
       FParser.NextNoJunkEx;
     end;
@@ -978,7 +968,7 @@ begin
     UniqueString(FCacheDirBS);
   end;
 
-  FIdentifiers := TStringList.Create;
+  FIdentifiers := TUnitExportlist.Create(5000);
   FUnitFiles := TStringList.Create;
 
   if Assigned(_Files) then begin
@@ -1008,6 +998,12 @@ begin
   FreeAndNil(FFiles);
   FreeAndNil(FIdentifiers);
   FreeAndNil(FUnitFiles);
+end;
+
+function TUnitExportParserThread.DetachIdentifiers: TUnitExportlist;
+begin
+  Result := FIdentifiers;
+  FIdentifiers := nil;
 end;
 
 class procedure TUnitExportParserThread.AddSymbols(_Parser: TUnitExportsParser);
@@ -1160,6 +1156,7 @@ end;
 procedure TUnitExportParserThread.doExecute;
 var
   FilesInPath: TStringList;
+  Item: TUnitIdentifier;
 
   function MakeFilename(const Path, FileName: string): string;
   begin
@@ -1206,8 +1203,10 @@ var
   FileIdx: Integer;
   fn: string;
   Parser: TUnitExportsParser;
+  FilesFound: TStringList;
   IdentIdx: Integer;
-  sl: TStrings;
+  ParsedIdentifiers: TUnitIdentifierList;
+  LoadedIdentifiers: TUnitIdentifierList;
   UnitName: string;
   CacheFn: string;
   UnitTime: UInt32;
@@ -1237,10 +1236,10 @@ begin
   Searching.Start;
 {$ENDIF}
 
-  sl := nil;
+  FilesFound := nil;
   FilesInPath := TStringList.Create;
   try
-    sl := TStringList.Create;
+    FilesFound := TStringList.Create;
     GetAllFilesInPath(FilesInPath);
     if Terminated then
       Exit; //==>
@@ -1252,17 +1251,17 @@ begin
         if Terminated then
           Exit; //==>
         if TryFindPathToFile(FFiles[FileIdx] + '.pas', fn, UnitTime) then
-          sl.AddObject(fn, Pointer(UnitTime));
+          FilesFound.AddObject(fn, Pointer(UnitTime));
       end;
-      if sl.Count = 0 then
+      if FilesFound.Count = 0 then
         Exit; //==>
-      FFiles.Assign(sl);
+      FFiles.Assign(FilesFound);
     end else begin
       FFiles := FilesInPath;
       FilesInPath := nil;
     end;
   finally
-    FreeAndNil(sl);
+    FreeAndNil(FilesFound);
     FreeAndNil(FilesInPath);
   end;
 {$IFDEF  DO_TIMING}
@@ -1292,29 +1291,34 @@ begin
     end;
     if (CacheFn <> '') and GxTryGetFileAge(CacheFn, CacheTime) and (UnitTime < CacheTime) then begin
       Inc(FLoadedUnitsCount);
-      sl := TStringList.Create;
+      LoadedIdentifiers := TUnitIdentifierList.Create(500);
       try
 {$IFDEF  DO_TIMING}
         Loading.Start;
 {$ENDIF}
-        sl.LoadFromFile(CacheFn);
+        LoadedIdentifiers.LoadFromFile(CacheFn);
 {$IFDEF  DO_TIMING}
         Loading.Stop;
 {$ENDIF}
 
         FUnitFiles.Add(fn);
-        FIdentifiers.AddObject(UnitName, Pointer(PChar(fn)));
+        // the unit name is also an identifier
+        // we save it with line number 1, even if the unit statement maight be further down
+        // but personally I want to jump to the fist line of a unit if I open it for the unit name
+        FIdentifiers.Add(UnitName, fn, 1);
 
 {$IFDEF  DO_TIMING}
         Inserting.Start;
 {$ENDIF}
-        for IdentIdx := 0 to sl.Count - 1 do
-          FIdentifiers.AddObject(sl[IdentIdx], Pointer(PChar(fn)));
+        for IdentIdx := 0 to LoadedIdentifiers.Count - 1 do begin
+          Item := LoadedIdentifiers[IdentIdx];
+          FIdentifiers.Add(Item.Identifier, fn, Item.LineNo);
+        end;
 {$IFDEF  DO_TIMING}
         Inserting.Stop;
 {$ENDIF}
       finally
-        FreeAndNil(sl);
+        FreeAndNil(LoadedIdentifiers);
       end;
     end else begin
       Inc(FParsedUnitsCount);
@@ -1328,12 +1332,16 @@ begin
         if Terminated then
           Exit; //==>
         FUnitFiles.Add(fn);
-        sl := Parser.Identifiers;
+        ParsedIdentifiers := Parser.Identifiers;
         if CacheFn <> '' then
-          sl.SaveToFile(CacheFn);
-        FIdentifiers.AddObject(UnitName, Pointer(PChar(fn)));
-        for IdentIdx := 0 to sl.Count - 1 do begin
-          FIdentifiers.AddObject(sl[IdentIdx], Pointer(PChar(fn)));
+          ParsedIdentifiers.SaveToFile(CacheFn);
+        // the unit name is also an identifier
+        // we save it with line number 1, even if the unit statement maight be further down
+        // but personally I want to jump to the fist line of a unit if I open it for the unit name
+        FIdentifiers.Add(UnitName, fn, 0);
+        for IdentIdx := 0 to ParsedIdentifiers.Count - 1 do begin
+          Item := ParsedIdentifiers[IdentIdx];
+          FIdentifiers.Add(Item.Identifier, fn, Item.LineNo);
         end;
       finally
         FreeAndNil(Parser);
@@ -1351,7 +1359,7 @@ begin
 
   Sorting.Start;
 {$ENDIF}
-  TStringList(FIdentifiers).Sort;
+  FIdentifiers.Sort;
 {$IFDEF DO_TIMING}
   Sorting.Stop;
 

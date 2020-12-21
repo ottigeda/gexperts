@@ -1905,7 +1905,7 @@ end;
 procedure FilterStringListMatchAnywhere(Source, Dest: TStrings; Filter: TStrings;
   CaseSensitive: boolean);
 
-  function StrMatchesAny(const _s: string; _Filter: TStrings; _CaseSensitive: Boolean): boolean;
+  function StrMatchesAll(const _s: string; _Filter: TStrings; _CaseSensitive: Boolean): boolean;
   var
     i: integer;
   begin
@@ -1930,7 +1930,7 @@ begin
     else begin
       for i := 0 to Source.Count - 1 do begin
         s := Source[i];
-        if StrMatchesAny(s, Filter, CaseSensitive) then
+        if StrMatchesAll(s, Filter, CaseSensitive) then
           Dest.AddObject(s, Source.Objects[i]);
       end;
     end;

@@ -10,7 +10,7 @@ uses
   ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types,
   u_dzSpeedBitBtn,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
-  GX_UnitExportsParser, GX_UsesExpertOptions,
+  GX_UnitExportsParser, GX_UsesExpertOptions, GX_UnitExportList,
   GX_OtaUtils;
 
 {$IFOPT D+}
@@ -359,7 +359,7 @@ type
     FCommonUnits: TStringList;
     FFavoriteUnits: TStringList;
     FSearchPathUnits: TStringList;
-    FFavUnitsExports: TStringList;
+    FIdentifiers: TUnitExportlist;
     FUsesExpert: TUsesClauseMgrExpert;
   public
     constructor Create(_Owner: TComponent; _UsesExpert: TUsesClauseMgrExpert); reintroduce;
@@ -839,7 +839,7 @@ begin
   FSearchPathUnits := TStringList.Create;
   sg_SearchPath.AssociatedList := FSearchPathUnits;
 
-  FFavUnitsExports := TStringList.Create;
+  FIdentifiers := TUnitExportlist.Create(0);
   FAliases := TStringList.Create;
   FOldToNewUnitNameMap := TStringList.Create;
 
@@ -929,7 +929,7 @@ begin
   FreePChars(FSearchPathUnits);
   FreeAndNil(FSearchPathUnits);
 
-  FreeAndNil(FFavUnitsExports);
+  FreeAndNil(FIdentifiers);
 end;
 
 procedure TfmUsesManager.FormResize(Sender: TObject);
@@ -1881,14 +1881,15 @@ procedure TfmUsesManager.FilterIdentifiers;
 var
   i: Integer;
   Identifier: string;
-  UnitName: PChar;
+  UnitName: string;
   Filter: string;
   FixedRows: Integer;
-  FilterList: TStrings;
+  FilterList: TList;
   FilterType: TFilterIdentifiersEnum;
   cnt: Integer;
   MultiFilter: TStringList;
   Idx: Integer;
+  Item: TUnitExport;
 begin
 {$IFOPT D+}
   SendDebug('Filtering identifiers');
@@ -1900,35 +1901,27 @@ begin
   else
     FilterType := FUsesExpert.FFilterIdentifiers;
 
-  FilterList := TStringList.Create;
+  FilterList := TList.Create;
   try
-    if Filter = '' then
-      FilterList.Assign(FFavUnitsExports)
-    else begin
-      if FilterType in [fieAnywhere, fieStartFirst] then begin
-        MultiFilter := TStringList.Create;
-        try
-          MultiFilter.Delimiter := ' ';
-          MultiFilter.DelimitedText := Filter;
-          TStrings_RemoveEmptyLines(MultiFilter);
-          FilterStringListMatchAnywhere(FFavUnitsExports, FilterList, MultiFilter, False);
-        finally
-          FreeAndNil(MultiFilter);
+    MultiFilter := TStringList.Create;
+    try
+      MultiFilter.Delimiter := ' ';
+      MultiFilter.DelimitedText := Filter;
+      TStrings_RemoveEmptyLines(MultiFilter);
+      if MultiFilter.Count = 0 then
+        FIdentifiers.AssignTo(FilterList)
+      else begin
+        case FilterType of
+          fieAnywhere:
+            FIdentifiers.SearchAnywhere(MultiFilter, FilterList);
+          fieStartFirst:
+            FIdentifiers.SearchStartFirst(MultiFilter, FilterList);
+        else // fieStartOnly
+          FIdentifiers.SearchStart(MultiFilter, FilterList);
         end;
-        if FilterType = fieStartFirst then begin
-          Idx := 0;
-          for i := 0 to FilterList.Count - 1 do begin
-            Identifier := FilterList[i];
-            if StartsText(Filter, Identifier) then begin
-              UnitName := PChar(FilterList.Objects[i]);
-              FilterList.Delete(i);
-              FilterList.InsertObject(Idx, Identifier, Pointer(UnitName));
-              Inc(Idx);
-            end;
-          end;
-        end;
-      end else
-        FilterStringListMatchStart(FFavUnitsExports, FilterList, Filter, False);
+      end;
+    finally
+      FreeAndNil(MultiFilter);
     end;
     cnt := FilterList.Count;
     TGrid_SetNonfixedRowCount(sg_Identifiers, cnt);
@@ -1938,9 +1931,10 @@ begin
       FixedRows := sg_Identifiers.FixedRows;
       TGrid_SetNonfixedRowCount(sg_Identifiers, cnt);
       for i := 0 to cnt - 1 do begin
-        Identifier := FilterList[i];
+        Item := TObject(FilterList[i]) as TUnitExport;
+        Identifier := Item.Identifier;
         sg_Identifiers.Cells[0, FixedRows + i] := Identifier;
-        UnitName := PChar(FilterList.Objects[i]);
+        UnitName := Item.FileName;
         sg_Identifiers.Cells[1, FixedRows + i] := ExtractPureFileName(UnitName);
       end;
     end;
@@ -2065,9 +2059,9 @@ var
   PCharUnitFile: PChar;
   UnitName: string;
   Identifier: string;
-  sl: TStrings;
   Idx: Integer;
   upt: TUnitExportParserThread;
+  Item: TUnitExport;
 begin
   upt := FUsesExpert.FUnitExportParserThread;
   if Assigned(upt) and not upt.HasFinished then begin
@@ -2084,7 +2078,8 @@ begin
       Exit; //==>
 
     FixedRows := sg_Identifiers.FixedRows;
-    sl := upt.Identifiers;
+    FreeAndNil(FIdentifiers);
+    FIdentifiers := upt.DetachIdentifiers;
 
 {$IF Declared(SendDebug)}
     SendDebug('Preprocessing identifiers');
@@ -2097,11 +2092,10 @@ begin
     try
       NotFoundUnits.Sorted := True;
 {$IFEND}
-      for IdentIdx := 0 to sl.Count - 1 do begin
-        Identifier := sl[IdentIdx];
-        // make sure the string is valid and not freed in the thread
-        UniqueString(Identifier);
-        UnitFile := PChar(sl.Objects[IdentIdx]);
+      for IdentIdx := 0 to FIdentifiers.Count - 1 do begin
+        Item := FIdentifiers[IdentIdx];
+        Identifier := Item.Identifier;
+        UnitFile := Item.FileName;
         UnitName := ExtractPureFileName(UnitFile);
         if FSearchPathUnits.Find(UnitName, Idx) then begin
           UnitName := FSearchPathUnits[Idx];
@@ -2110,7 +2104,6 @@ begin
             PCharUnitFile := StrNew(PChar(UnitFile));
             FSearchPathUnits.Objects[Idx] := Pointer(PCharUnitFile);
           end;
-          FFavUnitsExports.AddObject(Identifier, Pointer(PCharUnitFile));
 {$IF Declared(SendDebugUnitNotFound)}
         end else begin
           SendDebugUnitNotFound(Identifier, UnitName)
