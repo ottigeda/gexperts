@@ -86,6 +86,7 @@ type
 implementation
 
 uses
+  Math,
   StrUtils,
   u_dzQuicksort,
   u_dzStringUtils;
@@ -207,7 +208,7 @@ begin
   LcWords := TStringList.Create;
   try
     // convert to lower case once instead of comparing case insentively
-    // start with the second  item because we alreay know that the first on matches
+    // start with the second  item because we already know that the first one matches
     for WordIdx := 1 to _Words.Count - 1 do
       LcWords.Add(LowerCase(_Words[WordIdx]));
 
@@ -327,8 +328,11 @@ begin
   Item1 := FItems[_Idx1] as TUnitExport;
   Item2 := FItems[_Idx2] as TUnitExport;
   Result := AnsiCompareStr(Item1.LCIdentifier, Item2.LCIdentifier);
-  if Result = 0 then
+  if Result = 0 then begin
     Result := AnsiCompareStr(Item1.FileName, Item2.FileName);
+    if Result = 0 then
+      Result := CompareValue(Item1.LineNo, Item2.LineNo);
+  end;
 end;
 
 function TUnitExportlist.GetItems(_Idx: Integer): TUnitExport;
@@ -358,6 +362,8 @@ begin
   Item1 := FItems[_Idx1] as TUnitIdentifier;
   Item2 := FItems[_Idx2] as TUnitIdentifier;
   Result := AnsiCompareStr(Item1.LCIdentifier, Item2.LCIdentifier);
+  if Result = 0 then
+    Result := CompareValue(Item1.LineNo, Item2.LineNo);
 end;
 
 function TUnitIdentifierList.GetItems(_Idx: Integer): TUnitIdentifier;
