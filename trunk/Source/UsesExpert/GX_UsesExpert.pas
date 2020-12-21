@@ -1642,11 +1642,23 @@ procedure TfmUsesManager.OpenSelectedUnit(List: TStringGrid);
 var
   UnitName: string;
   col: Integer;
+  Obj: TObject;
+  Item: TUnitExport;
 begin
   Assert(Assigned(List));
 
-  col := List.ColCount-1;
-  UnitName := List.Cells[col, List.row];
+  col := List.ColCount - 1;
+  if List = sg_Identifiers then begin
+    Obj := List.Objects[col, List.Row];
+    if Assigned(Obj) then begin
+      Item := Obj as TUnitExport;
+      GxOtaGoToFileLine(Item.FileName, Item.LineNo + 1);
+      ModalResult := mrCancel;
+      Exit; //==>
+    end
+  end;
+
+  UnitName := List.Cells[col, List.Row];
   if OpenUnit(UnitName) then
     ModalResult := mrCancel
   else
@@ -1936,6 +1948,7 @@ begin
         sg_Identifiers.Cells[0, FixedRows + i] := Identifier;
         UnitName := Item.FileName;
         sg_Identifiers.Cells[1, FixedRows + i] := ExtractPureFileName(UnitName);
+        sg_Identifiers.Objects[1, FixedRows + i] := Item;
       end;
     end;
     ShowIdentifiersFilterResult(cnt);
@@ -2758,38 +2771,50 @@ var
   ThisUnitCol: Integer;
   ThisUnitName: string;
   ThisFullFileName: string;
-  Obj: PChar;
+  ThisUnitNamePtr: PChar;
+  Obj: tobject;
+  Item: TUnitExport;
   Idx: Integer;
 begin
   ThisSrc := GetAvailableSourceList; // sg_*
   Assert(Assigned(ThisSrc));
   // the unit name is always in the rightmost column
   ThisUnitCol := ThisSrc.ColCount - 1;
-  ThisUnitName := ThisSrc.Cells[ThisUnitCol, ARow];
-  if ThisUnitName = '' then begin
-    sbUCM.SimpleText := '';
-  end else begin
-    if FSearchPathUnits.Find(ThisUnitName, Idx) then
-      Obj := PChar(FSearchPathUnits.Objects[Idx])
-    else begin
-      Idx := -1;
-      Obj := nil;
-    end;
+  if ThisSrc = sg_Identifiers then begin
+    Obj := ThisSrc.Objects[ThisUnitCol, ARow];
     if Assigned(Obj) then begin
-      ThisFullFileName := Obj;
-      sbUCM.SimpleText := ThisFullFileName;
-    end else if GxOtaTryFindPathToFile(ThisUnitName + '.pas', ThisFullFileName)
-      or GxOtaTryFindPathToFile(ThisUnitName + '.dcu', ThisFullFileName) then begin
-      sbUCM.SimpleText := ThisFullFileName;
-      if Idx = -1 then begin
-        {$IFOPT d+}SendDebugFmt('Unit %s not found in SearchPathUnits', [ThisUnitName]); {$ENDIF}
-      end else begin
-        {$IFOPT d+}SendDebugFmt('Adding full filename for unit %s', [ThisUnitName]); {$ENDIF}
-        Obj := StrNew(PChar(ThisFullFileName));
-        FSearchPathUnits.Objects[Idx] := Pointer(Obj);
-      end;
-    end else
+      Item := obj as TUnitExport;
+      sbUCM.SimpleText := Format('%s:%d', [Item.FileName, Item.LineNo]);
+    end;
+  end else begin
+    ThisUnitName := ThisSrc.Cells[ThisUnitCol, ARow];
+    if ThisUnitName = '' then begin
       sbUCM.SimpleText := '';
+    end else begin
+      if FSearchPathUnits.Find(ThisUnitName, Idx) then
+        ThisUnitNamePtr := PChar(FSearchPathUnits.Objects[Idx])
+      else begin
+        Idx := -1;
+        ThisUnitNamePtr := nil;
+      end;
+      if Assigned(ThisUnitNamePtr) then begin
+        ThisFullFileName := ThisUnitNamePtr;
+        sbUCM.SimpleText := ThisFullFileName;
+      end else if GxOtaTryFindPathToFile(ThisUnitName + '.pas', ThisFullFileName)
+        or GxOtaTryFindPathToFile(ThisUnitName + '.dcu', ThisFullFileName) then begin
+        sbUCM.SimpleText := ThisFullFileName;
+        if Idx = -1 then begin
+{$IFOPT D+}SendDebugFmt('Unit %s not found in SearchPathUnits', [ThisUnitName]);
+{$ENDIF}
+        end else begin
+{$IFOPT D+}SendDebugFmt('Adding full filename for unit %s', [ThisUnitName]);
+{$ENDIF}
+          ThisUnitNamePtr := StrNew(PChar(ThisFullFileName));
+          FSearchPathUnits.Objects[Idx] := Pointer(ThisUnitNamePtr);
+        end;
+      end else
+        sbUCM.SimpleText := '';
+    end;
   end;
 end;
 
