@@ -165,6 +165,7 @@ uses
   GX_ToolBarDropDown in '..\..\source\EditorToolbar\GX_ToolBarDropDown.pas',
   GX_UnitPositions in '..\..\source\Framework\GX_UnitPositions.pas',
   GX_UsesManager in '..\..\source\Framework\GX_UsesManager.pas',
+  GX_UnitExportList in '..\..\Source\UsesExpert\GX_UnitExportList.pas',
   GX_VerDepConst in '..\..\source\Framework\GX_VerDepConst.pas',
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
   GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas',

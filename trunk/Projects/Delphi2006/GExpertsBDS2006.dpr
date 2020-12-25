@@ -167,6 +167,7 @@ uses
   GX_ToolBarDropDown in '..\..\source\EditorToolbar\GX_ToolBarDropDown.pas',
   GX_UnitPositions in '..\..\source\Framework\GX_UnitPositions.pas',
   GX_UsesManager in '..\..\source\Framework\GX_UsesManager.pas',
+  GX_UnitExportList in '..\..\Source\UsesExpert\GX_UnitExportList.pas',
   GX_VerDepConst in '..\..\source\Framework\GX_VerDepConst.pas',
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
   GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas',
@@ -246,7 +247,7 @@ uses
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
 {$R '..\..\Binaries\ConvertStrings.res' '..\..\Binaries\ConvertStrings.rc'}
-{$R *_version.res}
+{$R *_version.res} // if you get an error here, run the __build_project.cmd script first
 
 begin
 end.
