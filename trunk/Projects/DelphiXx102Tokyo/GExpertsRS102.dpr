@@ -240,7 +240,8 @@ uses
   GX_FormHotkeys in '..\..\Source\FormHotkeys\GX_FormHotkeys.pas' {f_FormHotkeys},
   GX_FilterExceptions in '..\..\Source\FilterExceptions\GX_FilterExceptions.pas' {fmGxFilterExceptionsExpert},
   GX_FilterExceptionsEdit in '..\..\Source\FilterExceptions\GX_FilterExceptionsEdit.pas' {fmGxFilterExceptionsEdit},
-  GX_FilterExceptionsNotification in '..\..\Source\FilterExceptions\GX_FilterExceptionsNotification.pas' {fmExceptionNotification};
+  GX_FilterExceptionsNotification in '..\..\Source\FilterExceptions\GX_FilterExceptionsNotification.pas' {fmExceptionNotification},
+  GX_ExplicitFilterExpert in '..\..\Source\ExplicitFilter\GX_ExplicitFilterExpert.pas' {fmGxExplicitFilter};
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
