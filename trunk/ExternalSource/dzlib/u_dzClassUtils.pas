@@ -679,9 +679,11 @@ procedure TList_ClearAndFreeAllItems(_List: TList);
 var
   i: Integer;
 begin
-  for i := 0 to _List.Count - 1 do
-    TObject(_List[i]).Free;
-  _List.Clear;
+  if Assigned(_List) then begin
+    for i := 0 to _List.Count - 1 do
+      TObject(_List[i]).Free;
+    _List.Clear;
+  end;
 end;
 
 function TObjectList_Extract(_lst: TObjectList; _Idx: Integer): TObject;
