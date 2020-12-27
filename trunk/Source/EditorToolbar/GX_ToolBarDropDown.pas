@@ -131,7 +131,7 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Math,
   Graphics, StdCtrls, Forms, Dialogs, ToolsAPI,
-  u_dzVclUtils,
+  u_dzVclUtils, u_dzClassUtils,
   GX_Actions, GX_ActionBroker,
   GX_GxUtils, GX_GenericUtils, GX_IdeUtils,
   GX_EditReader, GX_UsesManager, GX_UnitPositions;
@@ -190,8 +190,7 @@ end;
 destructor TBasePopupListing.Destroy;
 begin
   {$IFOPT D+} SendDebug('Clearing unit list'); {$ENDIF}
-  ClearUnitInfoList(FUnitList);
-  FreeAndNil(FUnitList);
+  TList_FreeWithItems(FUnitList);
 
   inherited Destroy;
 
@@ -271,7 +270,7 @@ end;
 
 procedure TBasePopupListing.PopulateUnitList;
 begin
-  ClearUnitInfoList(FUnitList);
+  TList_ClearAndFreeAllItems(FUnitList);
   GxOtaFillUnitInfoListForProject(FUnitList, GxOtaGetCurrentProject);
 end;
 
@@ -394,7 +393,7 @@ var
   UsesItem: TUsesItem;
 begin
   AssertIsDprOrPasOrInc(GxOtaGetCurrentSourceFile);
-  ClearUnitInfoList(FUnitList);
+  TList_ClearAndFreeAllItems(FUnitList);
   Aliases := TStringList.Create;
   try
     GxOtaGetUnitAliases(Aliases);
@@ -622,21 +621,17 @@ begin
   List := TList.Create;
   try
     GxOtaFillComponentInfoList(List);
-    try
-      List.Sort(CompareObjects);
+    List.Sort(CompareObjects);
 
-      for i := 0 to List.Count - 1 do
-      begin
-        CompInfo := TObject(List.Items[i]) as TCompInfo;
-        AddComponentsToPopup(CompInfo);
-      end;
-
-      AddNoneItemIfEmpty;
-    finally
-      ClearCompInfoList(List);
+    for i := 0 to List.Count - 1 do
+    begin
+      CompInfo := TObject(List.Items[i]) as TCompInfo;
+      AddComponentsToPopup(CompInfo);
     end;
+
+    AddNoneItemIfEmpty;
   finally
-    FreeAndNil(List);
+    TList_FreeWithItems(List);
   end;
 end;
 

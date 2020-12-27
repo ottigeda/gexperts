@@ -226,12 +226,8 @@ type
     property CompType: WideString read FCompType write FCompType;
   end;
 
-procedure ClearCompInfoList(const List: TList);
 procedure GxOtaFillComponentInfoList(const List: TList);
 
-///<summary>
-/// Frees all Objects in the List and clears it. </summary>
-procedure ClearUnitInfoList(const List: TList);
 ///<summary>
 /// Fills List with TUnitInfo objects for all modules in the given project. </summary>
 procedure GxOtaFillUnitInfoListForProject(List: TList; _Project: IOTAProject);
@@ -719,22 +715,10 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   Variants, Windows, ActiveX, DesignIntf, TypInfo,
   GX_EditReader, GX_VerDepConst, SynUnicode, Math, StrUtils,
-  GX_GetIdeVersion, u_dzFileUtils;
+  GX_GetIdeVersion, u_dzFileUtils, u_dzClassUtils;
 
 const
   EditReaderBufferSize = 1024 * 24;
-
-procedure ClearUnitInfoList(const List: TList);
-var
-  i: Integer;
-begin
-  if Assigned(List) then
-  begin
-    for i := 0 to List.Count-1 do
-      TObject(List[i]).Free;
-    List.Clear;
-  end;
-end;
 
 procedure GxOtaFillUnitInfoListForProject(List: TList; _Project: IOTAProject);
 var
@@ -745,7 +729,7 @@ begin
   Assert(Assigned(List));
   Assert(Assigned(_Project));
 
-  ClearUnitInfoList(List);
+  TList_ClearAndFreeAllItems(List);
 
   for i := 0 to _Project.GetModuleCount - 1 do
   begin
@@ -761,17 +745,6 @@ begin
       UnitInfo.FormName := ModuleInfo.FormName;
       UnitInfo.SourceName := ModuleInfo.Name;
     end;
-  end;
-end;
-
-procedure ClearCompInfoList(const List: TList);
-var
-  i: Integer;
-begin
-  if Assigned(List) then
-  begin
-    for i := 0 to List.Count - 1 do
-      TObject(List.Items[i]).Free;
   end;
 end;
 
@@ -3229,8 +3202,7 @@ begin
         AddAPath(GetPath(UnitInfo.FileName));
       end;
     finally
-      ClearUnitInfoList(UnitList);
-      FreeAndNil(UnitList);
+      TList_FreeWithItems(UnitList);
     end;
   end;
 
