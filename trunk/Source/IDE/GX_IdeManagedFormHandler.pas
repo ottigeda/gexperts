@@ -78,6 +78,9 @@ type
 
 implementation
 
+uses
+  u_dzClassUtils;
+
 
 var
   gblFormHandlers: TList = nil;
@@ -595,14 +598,8 @@ begin
 end;
 
 procedure FinalizeFormHandlers;
-var
-  i: Integer;
 begin
-  if Assigned(gblFormHandlers) then
-    for i := 0 to gblFormHandlers.Count - 1 do begin
-      TObject(gblFormHandlers[i]).Free;
-    end;
-  FreeAndNil(gblFormHandlers);
+  TList_FreeWithItems(gblFormHandlers);
 end;
 
 { TManagedFormHandlerRplcDialog }

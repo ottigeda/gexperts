@@ -35,6 +35,7 @@ uses
   Menus,
   ComCtrls,
   Messages,
+  u_dzClassUtils,
   GX_EventHook,
   GX_IdeDetectForms,
   GX_IdeUtils;
@@ -113,8 +114,6 @@ begin
 end;
 
 destructor TFormChangeManagerInternal.Destroy;
-var
-  i: Integer;
 begin
   // unhook first, to be sure none of these hooks is being called after we freed our lists
   if Assigned(FScreenActiveControlChangeHook) then
@@ -123,17 +122,9 @@ begin
   if Assigned(FScreenActiveFormChangeHook) then
     TScreenActiveFormChangeHook.Remove(FScreenActiveFormChangeHook);
 
-  if Assigned(FControlChangeCallbacks) then begin
-    for i := 0 to FControlChangeCallbacks.Count - 1 do
-      TObject(FControlChangeCallbacks[i]).Free;
-    FreeAndNil(FControlChangeCallbacks);
-  end;
+  TList_FreeWithItems(FControlChangeCallbacks);
 
-  if Assigned(FFormChangeCallbacks) then begin
-    for i := 0 to FFormChangeCallbacks.Count - 1 do
-      TObject(FFormChangeCallbacks[i]).Free;
-    FreeAndNil(FFormChangeCallbacks);
-  end;
+  TList_FreeWithItems(FFormChangeCallbacks);
 
   inherited;
 end;
