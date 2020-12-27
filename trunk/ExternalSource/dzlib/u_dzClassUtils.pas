@@ -181,11 +181,15 @@ function TStrings_IndexOfValue(_st: TStrings; const _Value: string): Integer;
 
 function TStrings_ValueFromIndex(_st: TStrings; _Idx: Integer): string;
 
-/// <summary>
-/// Free a TList object an all TObjects it contains
-/// NOTE: Consider using Contnrs.TObjectList instead!
-/// </summary>
+///<summary>
+/// Assumes all items in the list are TObjects, frees them and frees the list.
+/// NOTE: Consider using Contnrs.TObjectList instead! </summary>
 procedure TList_FreeWithItems(var _List: TList);
+
+///<summary>
+/// Assumes all items in the list are TObjects, frees them and clears the list.
+/// NOTE: Consider using Contnrs.TObjectList instead! </summary>
+procedure TList_ClearAndFreeAllItems(_List: TList);
 
 /// <summary>
 /// Extracts the Idx'th item from the list without freeing it.
@@ -669,6 +673,15 @@ begin
     _List.Free;
     _List := nil;
   end;
+end;
+
+procedure TList_ClearAndFreeAllItems(_List: TList);
+var
+  i: Integer;
+begin
+  for i := 0 to _List.Count - 1 do
+    TObject(_List[i]).Free;
+  _List.Clear;
 end;
 
 function TObjectList_Extract(_lst: TObjectList; _Idx: Integer): TObject;
@@ -2193,3 +2206,4 @@ begin
 end;
 
 end.
+
