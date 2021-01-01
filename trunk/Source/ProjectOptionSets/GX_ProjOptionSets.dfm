@@ -42,6 +42,7 @@ inherited fmProjOptionSets: TfmProjOptionSets
           PopupMenu = pmuSets
           TabOrder = 0
           OnClick = lstSetsClick
+          OnDblClick = lstSetsDblClick
         end
       end
     end
@@ -306,6 +307,7 @@ inherited fmProjOptionSets: TfmProjOptionSets
     end
     object mitPopApply: TMenuItem
       Action = actApplySet
+      Default = True
     end
     object mitPopSep: TMenuItem
       Caption = '-'

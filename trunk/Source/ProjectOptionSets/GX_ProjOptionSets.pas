@@ -9,27 +9,10 @@ uses
   Windows, ToolsAPI, TypInfo, Classes, Controls, Forms, StdCtrls, ExtCtrls, CheckLst, Menus,
   ComCtrls, ToolWin, ActnList, Actions, UITypes,
   OmniXml,
-  GX_IdeDock, GX_Experts, GX_ConfigurationInfo;
+  GX_IdeDock, GX_Experts, GX_ConfigurationInfo, GX_CheckListBoxWithHints;
 
 type
   TfmProjOptionSets = class;
-
-  TProjOptionSetsExpert = class(TGX_Expert)
-  private
-    function GetStorageFile: string;
-  protected
-    procedure UpdateAction(Action: TCustomAction); override;
-    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
-    procedure SetActive(New: Boolean); override;
-  public
-    constructor Create; override;
-    destructor Destroy; override;
-    function GetActionCaption: string; override;
-    class function GetName: string; override;
-    procedure Execute(Sender: TObject); override;
-    property StorageFile: string read GetStorageFile;
-    function HasConfigOptions: Boolean; override;
-  end;
 
   TOptionValueFunc = function(const AOption: string): string of object;
 
@@ -102,9 +85,10 @@ type
     procedure actRenameSetExecute(Sender: TObject);
     procedure mniModifyPrjOptionValuesClick(Sender: TObject);
     procedure pnlFilterComboHostResize(Sender: TObject);
+    procedure lstSetsDblClick(Sender: TObject);
   private
-    lstPrjOptions: TCheckListBox;
-    lstEnvOptions: TCheckListBox;
+    lstPrjOptions: TCheckListBoxWithHints;
+    lstEnvOptions: TCheckListBoxWithHints;
     FPrjSetOptions: TStringList;
     FEnvSetOptions: TStringList;
     FSetChanged: Boolean;
@@ -114,7 +98,6 @@ type
     FEnvOptions: IOTAEnvironmentOptions;
     FProjItemIndex: Integer;
     FEnvItemIndex: Integer;
-    function ProjOptsExpert: TProjOptionSetsExpert;
     procedure lstEnvironmentOptClickCheck(Sender: TObject);
     procedure lstProjectOptClickCheck(Sender: TObject);
     procedure lstEnvironmentOptMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -159,10 +142,6 @@ type
     destructor Destroy; override;
   end;
 
-var
-  fmProjOptionSets: TfmProjOptionSets;
-  PrjOptSetsExpert: TProjOptionSetsExpert;
-
 implementation
 
 {$R *.dfm}
@@ -206,6 +185,27 @@ const
     </ProjectOptionSets>
   }
 
+type
+  TProjOptionSetsExpert = class(TGX_Expert)
+  private
+    function GetStorageFile: string;
+  protected
+    procedure UpdateAction(Action: TCustomAction); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure SetActive(New: Boolean); override;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+    function GetActionCaption: string; override;
+    class function GetName: string; override;
+    procedure Execute(Sender: TObject); override;
+    property StorageFile: string read GetStorageFile;
+    function HasConfigOptions: Boolean; override;
+  end;
+
+var
+  fmProjOptionSets: TfmProjOptionSets;
+  PrjOptSetsExpert: TProjOptionSetsExpert;
 
 type
   TKindObject = class(TObject)
@@ -214,209 +214,6 @@ type
   public
     property OptionKind: TTypeKind read FOptionKind write FOptionKind;
   end;
-
-  TJCHListSortCompare = function(Item1, Item2: Integer): Integer of object;
-  TGetHintEvent = procedure(Sender: TObject; const CursorPos: TPoint; var HintStr: string) of object;
-
-  TCheckListBoxWithHints = class(TCheckListBox)
-  private
-    FOnGetHint: TGetHintEvent;
-    FSortAscend: Boolean;
-    FSortByString: Boolean;
-    FMouseDownIndex: Integer;
-    procedure CMHintShow(var Message: TMessage); message CM_HINTSHOW;
-    procedure SetSortAscend(const Value: Boolean);
-    procedure SetSortByString(const Value: Boolean);
-    procedure QuickSort(L, R: Integer; SCompare: TJCHListSortCompare);
-  protected
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure DoOnGetHint(const CursorPos: TPoint; var HintStr: string); // virtual;
-    function  CompareByStringAscending(Item1, Item2: Integer): Integer;
-    function  CompareByStringDescending(Item1, Item2: Integer): Integer;
-    function  CompareByCheckAscending(Item1, Item2: Integer): Integer;
-    function  CompareByCheckDescending(Item1, Item2: Integer): Integer;
-  public
-    constructor Create(AOwner: TComponent); override;
-    procedure SortList(Compare: TJCHListSortCompare);
-    procedure Resort;
-    property SortAscending: Boolean read FSortAscend write SetSortAscend;
-    property SortByString: Boolean read FSortByString write SetSortByString;
-    property OnGetHint: TGetHintEvent read FOnGetHint write FOnGetHint;
-  end;
-
-{ TCheckListBoxWithHints }
-
-procedure TCheckListBoxWithHints.QuickSort(L, R: Integer; SCompare: TJCHListSortCompare);
-var
-  I, J, P: Integer;
-  tmpObj: TObject;
-  tmpStr: string;
-  tmpChecked: Boolean;
-begin
-  repeat
-    I := L;
-    J := R;
-    P := (L + R) shr 1;
-    repeat
-      while SCompare(I, P) < 0 do Inc(I);
-      while SCompare(J, P) > 0 do Dec(J);
-      if I <= J then
-      begin
-        // exchange I and J
-        tmpStr           := Items[I];
-        tmpObj           := Items.Objects[I];
-        tmpChecked       := Self.Checked[I];
-
-        Items[I]         := Items[J];
-        Items.Objects[I] := Items.Objects[J];
-        Self.Checked[I]  := Self.Checked[J];
-
-        Items[J]         := tmpStr;
-        Items.Objects[J] := tmpObj;
-        Self.Checked[J]  := tmpChecked;
-        if P = I then
-          P := J
-        else if P = J then
-          P := I;
-
-        Inc(I);
-        Dec(J);
-      end;
-    until I > J;
-    if L < J then QuickSort(L, J, SCompare);
-    L := I;
-  until I >= R;
-end;
-
-procedure TCheckListBoxWithHints.CMHintShow(var Message: TMessage);
-var
-  NewHintStr: string;
-begin
-  NewHintStr := TCMHintShow(Message).HintInfo^.HintStr;
-  DoOnGetHint(TCMHintShow(Message).HintInfo^.CursorPos, NewHintStr);
-  TCMHintShow(Message).HintInfo^.HintStr := NewHintStr;
-  inherited;
-end;
-
-constructor TCheckListBoxWithHints.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FSortAscend := True;
-  FSortByString := True;
-  IntegralHeight := True;
-  FMouseDownIndex := -1;
-end;
-
-procedure TCheckListBoxWithHints.DoOnGetHint(const CursorPos: TPoint; var HintStr: string);
-begin
-  if Assigned(FOnGetHint) then
-    FOnGetHint(Self, CursorPos, HintStr);
-end;
-
-procedure TCheckListBoxWithHints.SetSortAscend(const Value: Boolean);
-begin
-  if Sorted then
-    Exit;
-  FSortAscend := Value;
-  Resort;
-end;
-
-procedure TCheckListBoxWithHints.SetSortByString(const Value: Boolean);
-begin
-  if Sorted then
-    Exit;
-  FSortByString := Value;
-  Resort;
-end;
-
-procedure TCheckListBoxWithHints.SortList(Compare: TJCHListSortCompare);
-begin
-  if Items.Count = 0 then Exit;
-  Items.BeginUpdate;
-  try
-    QuickSort(0, Items.Count - 1, Compare);
-  finally
-    Items.EndUpdate;
-  end;
-end;
-
-procedure TCheckListBoxWithHints.Resort;
-begin
-  if SortByString then
-  begin
-    if SortAscending then
-      SortList(CompareByStringAscending)
-    else
-      SortList(CompareByStringDescending);
-  end
-  else
-  begin
-    if SortAscending then
-      SortList(CompareByCheckAscending)
-    else
-      SortList(CompareByCheckDescending);
-  end;
-end;
-
-function TCheckListBoxWithHints.CompareByCheckAscending(Item1, Item2: Integer): Integer;
-begin
-  Result := 0;
-  if Self.Checked[Item1] and not Self.Checked[Item2] then
-    Result := -1
-  else if Self.Checked[Item1] and Self.Checked[Item2] then
-    Result := AnsiCompareText(Items[Item1], Items[Item2])
-  else if not Self.Checked[Item1] and not Self.Checked[Item2] then
-    Result := AnsiCompareText(Items[Item1], Items[Item2])
-  else if not Self.Checked[Item1] and Self.Checked[Item2] then
-    Result := 1;
-end;
-
-function TCheckListBoxWithHints.CompareByCheckDescending(Item1, Item2: Integer): Integer;
-begin
-  Result := 0;
-  if Self.Checked[Item1] and not Self.Checked[Item2] then
-    Result := 1
-  else if Self.Checked[Item1] and Self.Checked[Item2] then
-    Result := AnsiCompareText(Items[Item2], Items[Item1])
-  else if not Self.Checked[Item1] and not Self.Checked[Item2] then
-    Result := AnsiCompareText(Items[Item2], Items[Item1])
-  else if not Self.Checked[Item1] and Self.Checked[Item2] then
-    Result := -1;
-end;
-
-function TCheckListBoxWithHints.CompareByStringAscending(Item1, Item2: Integer): Integer;
-begin
-  Result := AnsiCompareText(Items[Item1], Items[Item2]);
-end;
-
-function TCheckListBoxWithHints.CompareByStringDescending(Item1, Item2: Integer): Integer;
-begin
-  Result := AnsiCompareText(Items[Item2], Items[Item1]);
-end;
-
-procedure TCheckListBoxWithHints.MouseMove(Shift: TShiftState; X, Y: Integer);
-begin
-  inherited MouseMove(Shift, X, Y);
-
-  // It would be very nice to have the hint permanently up,
-  // and have it tracking the current item under the
-  // mouse pointer.
-end;
-
-procedure TCheckListBoxWithHints.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  //Assert(FMouseDownIndex = -1);
-  FMouseDownIndex := ItemAtPos(Point(X, Y), True);
-  inherited MouseDown(Button, Shift, X, Y);
-end;
-
-procedure TCheckListBoxWithHints.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  FMouseDownIndex := -1;
-  inherited MouseUp(Button, Shift, X, Y);
-end;
 
 { TProjOptionSetsExpert }
 
@@ -516,8 +313,8 @@ begin
   LoadPrjOptionList;
   LoadEnvOptionList;
 
-  TCheckListBoxWithHints(lstPrjOptions).SortByString := True;
-  TCheckListBoxWithHints(lstEnvOptions).SortByString := True;
+  lstPrjOptions.SortByString := True;
+  lstEnvOptions.SortByString := True;
 
   FDom := nil; // start with nil DOM
   FPrjSetOptions := TStringList.Create;
@@ -574,6 +371,11 @@ begin
       FSetChanged := False;
     end;
   end;
+end;
+
+procedure TfmProjOptionSets.lstSetsDblClick(Sender: TObject);
+begin
+  actApplySet.Execute;
 end;
 
 procedure TfmProjOptionSets.AddNewOptionSet(const SetName: string);
@@ -809,10 +611,10 @@ begin
 
   // If we (un)dock, sort order is lost and we need to resort
   if Assigned(lstPrjOptions) then
-    TCheckListBoxWithHints(lstPrjOptions).Resort;
+    lstPrjOptions.Resort;
 
   if Assigned(lstEnvOptions) then
-    TCheckListBoxWithHints(lstEnvOptions).Resort;
+    lstEnvOptions.Resort;
 end;
 
 procedure TfmProjOptionSets.LoadOptionSetList;
@@ -1130,7 +932,7 @@ begin
   lstPrjOptions.OnClickCheck := lstProjectOptClickCheck;
   lstPrjOptions.OnMouseDown  := lstProjectOptMouseDown;
   lstPrjOptions.ShowHint := True;
-  TCheckListBoxWithHints(lstPrjOptions).OnGetHint := HandleOnGetHintPrj;
+  lstPrjOptions.OnGetHint := HandleOnGetHintPrj;
   // Activate this to update the hint as the mouse moves, without
   // having to select the listbox item under the cursor
   //TCheckListBoxWithHints(lstPrjOptions).OnMouseMove := lstOptionsMouseMove;
@@ -1142,7 +944,7 @@ begin
   lstEnvOptions.OnClickCheck := lstEnvironmentOptClickCheck;
   lstEnvOptions.OnMouseDown  := lstEnvironmentOptMouseDown;
   lstEnvOptions.ShowHint := True;
-  TCheckListBoxWithHints(lstEnvOptions).OnGetHint := HandleOnGetHintEnv;
+  lstEnvOptions.OnGetHint := HandleOnGetHintEnv;
   // Activate this to update the hint as the mouse moves, without
   // having to select the listbox item under the cursor
   //TCheckListBoxWithHints(lstEnvOptions).OnMouseMove := lstOptionsMouseMove;
@@ -1320,30 +1122,25 @@ end;
 
 procedure TfmProjOptionSets.mniPrjSortByCheckmarkClick(Sender: TObject);
 begin
-  TCheckListBoxWithHints(lstPrjOptions).SortByString := (Sender = mniPrjSortByName);
+  lstPrjOptions.SortByString := (Sender = mniPrjSortByName);
 end;
 
 procedure TfmProjOptionSets.mniPrjDescendingClick(Sender: TObject);
 begin
-  TCheckListBoxWithHints(lstPrjOptions).SortAscending := (Sender = mniPrjAscending);
+  lstPrjOptions.SortAscending := (Sender = mniPrjAscending);
 end;
 
 procedure TfmProjOptionSets.pmuPrjOptionsPopup(Sender: TObject);
 begin
-  if TCheckListBoxWithHints(lstPrjOptions).SortAscending then
+  if lstPrjOptions.SortAscending then
     mniPrjAscending.Checked := True
   else
     mniPrjDescending.Checked := True;
 
-  if TCheckListBoxWithHints(lstPrjOptions).SortByString then
+  if lstPrjOptions.SortByString then
     mniPrjSortByName.Checked := True
   else
     mniPrjSortByCheckmark.Checked := True;
-end;
-
-function TfmProjOptionSets.ProjOptsExpert: TProjOptionSetsExpert;
-begin
-  Result := PrjOptSetsExpert;
 end;
 
 procedure TfmProjOptionSets.cbFilterChange(Sender: TObject);
@@ -1370,7 +1167,7 @@ begin
     lstPrjOptions.Checked[i] := (j > -1);
   end;
   // Resort the list
-  TCheckListBoxWithHints(lstPrjOptions).Resort;
+  lstPrjOptions.Resort;
 end;
 
 procedure TfmProjOptionSets.mniModifyEnvOptionValuesClick(Sender: TObject);
@@ -1395,7 +1192,7 @@ begin
     lstEnvOptions.Checked[i] := (j > -1);
   end;
   // Resort the list
-  TCheckListBoxWithHints(lstEnvOptions).Resort;
+  lstEnvOptions.Resort;
 end;
 
 procedure TfmProjOptionSets.SetEnvOptionValue(const AOption, AValue: string);
@@ -1563,10 +1360,12 @@ end;
 procedure TfmProjOptionSets.LoadStorageIntoDOM;
 var
   Root: IXMLElement;
+  fn: string;
 begin
   FDom := CreateXMLDoc;
-  if FileExists(ProjOptsExpert.StorageFile) and (GetFileSize(ProjOptsExpert.StorageFile) <> 0) then
-    FDom.Load(ProjOptsExpert.StorageFile)
+  fn := PrjOptSetsExpert.StorageFile;
+  if FileExists(fn) and (GetFileSize(fn) <> 0) then
+    FDom.Load(fn)
   else begin
     AddXMLHeader(FDom);
     Root := FDom.CreateElement(ROOT_NODE);
@@ -1581,7 +1380,7 @@ begin
   if ExceptObject <> nil then
     Exit;
 
-  FDom.Save(ProjOptsExpert.StorageFile, ofIndent);
+  FDom.Save(PrjOptSetsExpert.StorageFile, ofIndent);
 end;
 
 function TfmProjOptionSets.FindSetByName(const Name: string): IXMLElement;
