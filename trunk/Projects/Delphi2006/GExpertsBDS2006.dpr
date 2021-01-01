@@ -134,6 +134,7 @@ uses
   GX_ProjDependFilter in '..\..\source\ProjectDependencies\GX_ProjDependFilter.pas' {fmProjDependFilter},
   GX_ProjDependProp in '..\..\source\ProjectDependencies\GX_ProjDependProp.pas' {fmProjDependProp},
   GX_ProjDependOptions in '..\..\Source\ProjectDependencies\GX_ProjDependOptions.pas' {fmProjDependOptions},
+  GX_CheckListBoxWithHints in '..\..\Source\ProjectOptionSets\GX_CheckListBoxWithHints.pas',
   GX_ProjOptionSets in '..\..\source\ProjectOptionSets\GX_ProjOptionSets.pas' {fmProjOptionSets},
   GX_ProjOptMap in '..\..\source\ProjectOptionSets\GX_ProjOptMap.pas',
   GX_ProofreaderAutoCorrectEntry in '..\..\source\CodeProofreader\GX_ProofreaderAutoCorrectEntry.pas' {fmProofreaderAutoCorrectEntry},
