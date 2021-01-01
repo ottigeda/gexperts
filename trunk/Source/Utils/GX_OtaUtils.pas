@@ -68,9 +68,27 @@ const
   sDesignPersonality = 'Design.Personality';
   {$ENDIF}
 
-  sLIBPREFIXOptionName    = 'SOPrefix';
-  sLIBSUFFIXOptionName    = 'SOSuffix';
-  sLIBVERSIONOptionName    = 'SOVersion';
+  OPTION_NAME_GEN_DLL =  'GenDLL';
+  OPTION_NAME_LIB_PREFIX = 'SOPrefix';
+  OPTION_NAME_LIB_SUFFIX = 'SOSuffix';
+  OPTION_NAME_LIB_VERSION = 'SOVersion';
+  OPTION_NAME_GEN_PACKAGE = 'GenPackage';
+  // The following should really be 'DCC_xxxx' for newer IDEs
+  // (see unit DCCStrs in the ToolsApi directory),
+  // but the old names still work so we keep using them until they break or we
+  // drop support for older IDEs.
+  // 'DCC_BplOutput'
+  OPTION_NAME_PKG_DLL_DIR = 'PkgDllDir';
+  // 'DCC_ExeOutput'
+  OPTION_NAME_OUTPUT_DIR = 'OutputDir';
+  // 'DCC_DefaultNamespace'
+  OPTION_NAME_DEFAULT_NAMESPACE = 'DefaultNamespace';
+  // 'DCC_NameSpace'
+  OPTION_NAME_NAMESPACE_PREFIX = 'NamespacePrefix';
+  // 'DCC_UnitSearchPath'
+  OPTION_NAME_UNIT_SEARCH_PATH = 'SrcDir';
+  // 'DCC_UnitAlias'
+  OPTION_NAME_UNIT_ALIASES = 'UnitAliases';
 
 // returns an IOTAEditReader for the given or the current IOTASourceEditor if none is specified
 function GxOtaGetEditReaderForSourceEditor(SourceEditor: IOTASourceEditor = nil): IOTAEditReader;
@@ -1444,16 +1462,16 @@ function GxOtaGetProjectOutputDir(Project: IOTAProject): string;
 // taken from http://cc.embarcadero.com/item/19823
 // (Ondrey Kelle)
 begin
-  if Project.ProjectOptions.Values['GenPackage'] then begin
+  if Project.ProjectOptions.Values[OPTION_NAME_GEN_PACKAGE] then begin
     // package project
     // use project options if specified
-    Result := Project.ProjectOptions.Values['PkgDllDir'];
+    Result := Project.ProjectOptions.Values[OPTION_NAME_PKG_DLL_DIR];
     // otherwise use environment options
     if Result = '' then
       Result := (BorlandIDEServices as IOTAServices).GetEnvironmentOptions.Values['PackageDPLOutput'];
   end else begin
     // non-package project, use project options
-    Result := Project.ProjectOptions.Values['OutputDir'];
+    Result := Project.ProjectOptions.Values[OPTION_NAME_OUTPUT_DIR];
   end;
 
   // default is the project's path
@@ -1607,7 +1625,7 @@ begin
     ExeType := etBpl;
     ExeExtension := '.bpl';
   end else begin
-    GenDLL := Trim(VarToStr(Project.ProjectOptions.Values['GenDLL']));
+    GenDLL := Trim(VarToStr(Project.ProjectOptions.Values[OPTION_NAME_GEN_DLL]));
     if SameText(GenDLL, 'True') then begin
       ExeType := etDll;
       ExeExtension := '.dll';
@@ -1619,9 +1637,9 @@ begin
   TargetName := ExtractFileName(ProjectFilename);
   TargetName := TFileSystem.RemoveFileExtFull(TargetName);
   if exetype in [etDll, etBpl] then begin
-    LibPrefix := Trim(VarToStr(Project.ProjectOptions.Values[sLIBPREFIXOptionName]));
-    LibSuffix := Trim(VarToStr(Project.ProjectOptions.Values[sLIBSUFFIXOptionName]));
-    LibVersion := Trim(VarToStr(Project.ProjectOptions.Values[sLIBVERSIONOptionName]));
+    LibPrefix := Trim(VarToStr(Project.ProjectOptions.Values[OPTION_NAME_LIB_PREFIX]));
+    LibSuffix := Trim(VarToStr(Project.ProjectOptions.Values[OPTION_NAME_LIB_SUFFIX]));
+    LibVersion := Trim(VarToStr(Project.ProjectOptions.Values[OPTION_NAME_LIB_VERSION]));
     TargetName := LibPrefix + TargetName + LibSuffix + ExeExtension;
     if LibVersion <> '' then
       TargetName := TargetName + '.' + LibVersion;
@@ -2999,9 +3017,8 @@ begin
 //      OptionNames := ProjectOptions.GetOptionNames;
 //      for i := Low(OptionNames) to High(OptionNames) - 1 do
 //        SendDebug(OptionNames[i].Name);
-
-      DefaultNamespace := ProjectOptions.Values['DefaultNamespace'];
-      ProjectNamespaces := ProjectOptions.Values['NamespacePrefix'];
+      DefaultNamespace := ProjectOptions.Values[OPTION_NAME_DEFAULT_NAMESPACE];
+      ProjectNamespaces := ProjectOptions.Values[OPTION_NAME_NAMESPACE_PREFIX];
       SplitIdePath(SearchPath, ProjectNamespaces);
 
       // For FMX oddly the NamespacePrefix does not include 'FMX', so if the
@@ -3037,10 +3054,7 @@ begin
     ProjectOptions := Project.GetProjectOptions;
     if Assigned(ProjectOptions) then
     begin
-      // in theory it is 'DCC_UnitSearchPath' (since at least Delphi 2009,
-      // see unit DCCStrs in the ToolsApi directory), but 'SrcDir' also works
-      // for older IDEs
-      IdePathString := ProjectOptions.Values['SrcDir'];
+      IdePathString := ProjectOptions.Values[OPTION_NAME_UNIT_SEARCH_PATH];
       // it is also possible to set the search path using the same property:
       // ProjectOptions.Values['DCC_UnitSearchPath'] := 'bla;blub';
       SplitIdePath(Paths, IdePathString);
@@ -3278,7 +3292,7 @@ var
 begin
   Assert(Assigned(Aliases));
   Aliases.Clear;
-  FoundAliases := GxOtaGetActiveProjectOption('UnitAliases', VarAliases);
+  FoundAliases := GxOtaGetActiveProjectOption(OPTION_NAME_UNIT_ALIASES, VarAliases);
   if FoundAliases then
   begin
     AliasString := VarAliases;
