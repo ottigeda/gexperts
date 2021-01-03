@@ -102,15 +102,11 @@ type
     procedure lstProjectOptClickCheck(Sender: TObject);
     procedure lstEnvironmentOptMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure lstProjectOptMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure ProcessListboxCheckClick(Listbox: TCheckListBox; Options: TStringList);
+    procedure ProcessListboxCheckClick(Listbox: TCheckListBoxWithHints; Options: TStringList);
     procedure HandleOnGetHintPrj(Sender: TObject; const CursorPos: TPoint; var HintStr: string);
     procedure HandleOnGetHintEnv(Sender: TObject; const CursorPos: TPoint; var HintStr: string);
     procedure SetupListOptionsControls;
     procedure FillFilterBox;
-    procedure GenericClearOptionList(AList: TCheckListBox);
-    procedure ClearEnvOptionList;
-    procedure ClearPrjOptionList;
-    procedure SetAllChecks(AList: TCheckListBox; ACheckFlag: Boolean);
     procedure LoadPrjOptionList;
     procedure LoadEnvOptionList;
     procedure LoadOptionSetList;
@@ -150,7 +146,8 @@ uses
   {$IFOPT D+} GX_DbugIntf, Clipbrd, {$ENDIF}
   Variants, SysUtils, Messages, Dialogs,
   GX_GxUtils, GX_GenericUtils, GX_IdeUtils, GX_OtaUtils,
-  GX_VerDepConst, GX_ProjOptMap, GX_SharedImages, GX_XmlUtils, u_dzVclUtils;
+  GX_VerDepConst, GX_ProjOptMap, GX_SharedImages, GX_XmlUtils,
+  u_dzVclUtils, u_dzClassUtils;
 
 resourcestring
   SOptValue = '%s value';
@@ -348,8 +345,7 @@ end;
 destructor TfmProjOptionSets.Destroy;
 begin
   SaveSettings;
-  ClearPrjOptionList;
-
+  TStrings_FreeAllObjects(lstPrjOptions.Items).Clear;
   // Now free our objects
   FDom := nil;
   FreeAndNil(FPrjSetOptions);
@@ -417,20 +413,23 @@ var
   OptionNames: TOTAOptionNameArray;
   tmpObj: TKindObject;
   NameOfOption: string;
+  Items: TStringList;
 {$IFDEF CheckProjectOptionMap}
   OptionIdx: Integer;
   MissingEntries: string;
   OptionNameIndex: TStringList;
 {$ENDIF CheckProjectOptionMap}
 begin
-  ClearPrjOptionList;
+  TStrings_FreeAllObjects(lstPrjOptions.Items).Clear;
   FPrjOptions := GxOtaGetActiveProjectOptions;
   if Assigned(FPrjOptions) then begin
     OptionNames := nil;
+    Items := nil;
 {$IFDEF CheckProjectOptionMap}
     OptionNameIndex := GenerateOptionNameIndex;
 {$ENDIF CheckProjectOptionMap}
     try
+      Items := TStringList.Create;
       OptionNames := FPrjOptions.GetOptionNames;
       for j := Low(OptionNames) to High(OptionNames) do begin
         NameOfOption := OptionNames[j].Name;
@@ -462,23 +461,25 @@ begin
         begin
           tmpObj := TKindObject.Create;
           tmpObj.OptionKind := OptionNames[j].Kind;
-          lstPrjOptions.Items.AddObject(NameOfOption, tmpObj);
+          Items.AddObject(NameOfOption, tmpObj);
         end;
         // Done loading option list
       end;
+      lstPrjOptions.Items := Items;
 
-      {$IFDEF CheckProjectOptionMap}
-        if MissingEntries <> '' then
-        begin
-          Clipboard.AsText := MissingEntries;
-          // Do not localize; this is just test code
-          MessageDlg('There are missing project options in GX_ProjOptMap.pas:' +#13#10+ MissingEntries, mtWarning, [mbOK], 0);
-        end;
-      {$ENDIF CheckProjectOptionMap}
+    {$IFDEF CheckProjectOptionMap}
+      if MissingEntries <> '' then
+      begin
+        Clipboard.AsText := MissingEntries;
+        // Do not localize; this is just test code
+        MessageDlg('There are missing project options in GX_ProjOptMap.pas:' +#13#10+ MissingEntries, mtWarning, [mbOK], 0);
+      end;
+    {$ENDIF CheckProjectOptionMap}
     finally
     {$IFDEF CheckProjectOptionMap}
       FreeAndNil(OptionNameIndex);
     {$ENDIF CheckProjectOptionMap}
+      FreeAndNil(Items);
       FPrjOptions := nil;
     end;
   end;
@@ -487,6 +488,7 @@ end;
 procedure TfmProjOptionSets.LoadEnvOptionList;
 var
   OptionNames: TOTAOptionNameArray;
+  Items: TStringList;
 
   {$IFOPT D+}
     procedure DumpAllOptionNamesToDebugWindow;
@@ -522,7 +524,7 @@ var
         tmpObj := TKindObject.Create;
         try
           tmpObj.OptionKind := EnvOption.Kind;
-          lstEnvOptions.Items.AddObject(EnvOption.Name, tmpObj);
+          Items.AddObject(EnvOption.Name, tmpObj);
         except
           on E: Exception do
           begin
@@ -534,58 +536,63 @@ var
     end;
 
 begin
-  ClearEnvOptionList;
+  TStrings_FreeAllObjects(lstEnvOptions.Items).Clear;
 
   FEnvOptions := GetEnvironmentOptions;
-  if Assigned(FEnvOptions) then
-  try
+  if Assigned(FEnvOptions) then begin
     try
-      OptionNames := FEnvOptions.GetOptionNames;
-    except
-      SetLength(OptionNames, 0); // Delphi 9 does not support these correctly, so ignore them
+      Items := TStringList.Create;
+      try
+        OptionNames := FEnvOptions.GetOptionNames;
+      except
+        SetLength(OptionNames, 0); // Delphi 9 does not support these correctly, so ignore them
+      end;
+      if not Assigned(OptionNames) then
+        Exit;
+
+      {$IFOPT D+}
+        // DumpAllOptionNamesToDebugWindow;
+      {$ENDIF D+}
+
+      // Note: we MANUALLY add to this list
+      // as globally adding with all environment
+      // options would pollute the list substantially
+      // with irrelevant options and hence reduce
+      // the usability of this feature.
+
+      // The goal is to identify options that are
+      // useful for individual project management.
+      // Add when/where necessary
+
+      AddEnvOptionItem('LibraryPath');
+      AddEnvOptionItem('DotNetLibraryPath');
+      AddEnvOptionItem('CppSearchPath');
+
+      AddEnvOptionItem('BrowsingPath');
+      AddEnvOptionItem('DotNetBrowsingPath');
+      AddEnvOptionItem('CppBrowsingPath');
+
+      AddEnvOptionItem('RepositoryDir');
+
+      AddEnvOptionItem('PackageSearchPath');
+      AddEnvOptionItem('PackageDPLOutput');
+      AddEnvOptionItem('PackageDCPOutput');
+
+      AddEnvOptionItem('DeclarationInformation');
+      AddEnvOptionItem('ScopeSort');
+
+      AddEnvOptionItem('WarnOnPackageRebuild');
+
+      AddEnvOptionItem('StepProgramBlock');
+
+      AddEnvOptionItem('DFMAsText');
+      AddEnvOptionItem('AutoCreateForms');
+
+      lstEnvOptions.Items := Items;
+    finally
+      FreeAndNil(Items);
+      FEnvOptions := nil;
     end;
-    if not Assigned(OptionNames) then
-      Exit;
-
-    {$IFOPT D+}
-      // DumpAllOptionNamesToDebugWindow;
-    {$ENDIF D+}
-
-    // Note: we MANUALLY add to this list
-    // as globally adding with all environment
-    // options would pollute the list substantially
-    // with irrelevant options and hence reduce
-    // the usability of this feature.
-
-    // The goal is to identify options that are
-    // useful for individual project management.
-    // Add when/where necessary
-
-    AddEnvOptionItem('LibraryPath');
-    AddEnvOptionItem('DotNetLibraryPath');
-    AddEnvOptionItem('CppSearchPath');
-
-    AddEnvOptionItem('BrowsingPath');
-    AddEnvOptionItem('DotNetBrowsingPath');
-    AddEnvOptionItem('CppBrowsingPath');
-
-    AddEnvOptionItem('RepositoryDir');
-
-    AddEnvOptionItem('PackageSearchPath');
-    AddEnvOptionItem('PackageDPLOutput');
-    AddEnvOptionItem('PackageDCPOutput');
-
-    AddEnvOptionItem('DeclarationInformation');
-    AddEnvOptionItem('ScopeSort');
-
-    AddEnvOptionItem('WarnOnPackageRebuild');
-
-    AddEnvOptionItem('StepProgramBlock');
-
-    AddEnvOptionItem('DFMAsText');
-    AddEnvOptionItem('AutoCreateForms');
-  finally
-    FEnvOptions := nil;
   end;
 end;
 
@@ -645,7 +652,7 @@ begin
   end;
 end;
 
-procedure TfmProjOptionSets.ProcessListboxCheckClick(Listbox: TCheckListBox; Options: TStringList);
+procedure TfmProjOptionSets.ProcessListboxCheckClick(Listbox: TCheckListBoxWithHints; Options: TStringList);
 var
   Index, TheItemIndex: Integer;
   ItemString: string;
@@ -866,43 +873,12 @@ begin
   end;
 end;
 
-procedure TfmProjOptionSets.GenericClearOptionList(AList: TCheckListBox);
-var
-  i: Integer;
-begin
-  if Assigned(AList) then
-  begin
-    for i := 0 to AList.Items.Count - 1 do
-      AList.Items.Objects[i].Free;
-
-    AList.Items.Clear;
-  end;
-end;
-
-procedure TfmProjOptionSets.ClearPrjOptionList;
-begin
-  GenericClearOptionList(lstPrjOptions);
-end;
-
-procedure TfmProjOptionSets.ClearEnvOptionList;
-begin
-  GenericClearOptionList(lstEnvOptions);
-end;
-
-procedure TfmProjOptionSets.SetAllChecks(AList: TCheckListBox; ACheckFlag: Boolean);
-var
-  i: Integer;
-begin
-  for i := 0 to AList.Items.Count - 1 do
-    AList.Checked[i] := ACheckFlag;
-end;
-
 procedure TfmProjOptionSets.mniPrjClearAllClick(Sender: TObject);
 var
   i: Integer;
   Index: Integer;
 begin
-  SetAllChecks(lstPrjOptions, False);
+  TCheckListBox_UncheckAll(lstPrjOptions);
   for i := 0 to lstPrjOptions.Items.Count - 1 do
   begin
     Index := FPrjSetOptions.IndexOfName(lstPrjOptions.Items[i]);
@@ -916,14 +892,16 @@ procedure TfmProjOptionSets.mniPrjCheckAllClick(Sender: TObject);
 var
   i: Integer;
   Index: Integer;
+  s: string;
 begin
-  SetAllChecks(lstPrjOptions, True);
-  for i := 0 to lstPrjOptions.Items.Count - 1 do
+  TCheckListBox_CheckAll(lstPrjOptions);
+  for i := 0 to lstPrjOptions.Count - 1 do
   begin
-    Assert(Trim(lstPrjOptions.Items[i]) <> '', 'Empty option name in mniPrjCheckAllClick');
-    Index := FPrjSetOptions.IndexOfName(lstPrjOptions.Items[i]);
+    s := lstPrjOptions.Items[i];
+    Assert(Trim(s) <> '', 'Empty option name in mniPrjCheckAllClick');
+    Index := FPrjSetOptions.IndexOfName(s);
     if Index = -1 then
-      FPrjSetOptions.Add(lstPrjOptions.Items[i]+'=['+SValUnknown+']');
+      FPrjSetOptions.Add(s + '=['+SValUnknown+']');
   end;
   FSetChanged := True;
 end;
@@ -1330,9 +1308,9 @@ begin
       lstSets.Items.Delete(lstSets.ItemIndex);
       FLastLoadedSet := '';
       // Clear checks from the option lists, since no set is selected
-      SetAllChecks(lstPrjOptions, False);
+      TCheckListBox_UncheckAll(lstPrjOptions);
       FPrjSetOptions.Clear;
-      SetAllChecks(lstEnvOptions, False);
+      TCheckListBox_UncheckAll(lstEnvOptions);
       FEnvSetOptions.Clear;
     end;
   end;
