@@ -5,7 +5,8 @@ unit GX_ProjOptMap;
 interface
 
 uses
-  TypInfo;
+  TypInfo,
+  Classes;
 
 type
   // It is possible to specify a translator that
@@ -2299,11 +2300,28 @@ function CategoryTextToCategory(const CatText: string): TGxOptionCategory;
 
 function OptionIsAppropriateForIde(const OptionCategories: TGxOptionCategorySet): Boolean;
 function OptionCategoryIsAppropriateForIde(const OptionCategory: TGxOptionCategory): Boolean;
+function GenerateOptionNameIndex: TStringList;
 
 implementation
 
 uses
   SysUtils, GX_OtaUtils, GX_IdeUtils;
+
+function GenerateOptionNameIndex: TStringList;
+var
+  i: Integer;
+begin
+  Result := TStringList.Create;
+  try
+    for i := Low(GxOptionsMap) to High(GxOptionsMap) do begin
+      Result.AddObject(LowerCase(GxOptionsMap[i].Name), Pointer(i + 1));
+    end;
+    Result.Sorted := True;
+  except
+    Result.Free;
+    raise;
+  end;
+end;
 
 function GetOptionDescription(const OptionName: string): string;
 var

@@ -416,66 +416,71 @@ var
   j: Integer;
   OptionNames: TOTAOptionNameArray;
   tmpObj: TKindObject;
+  NameOfOption: string;
 {$IFDEF CheckProjectOptionMap}
-  i: Integer;
+  OptionIdx: Integer;
   MissingEntries: string;
+  OptionNameIndex: TStringList;
 {$ENDIF CheckProjectOptionMap}
 begin
-  OptionNames := nil;
   ClearPrjOptionList;
   FPrjOptions := GxOtaGetActiveProjectOptions;
-  if Assigned(FPrjOptions) then
-  try
-    OptionNames := FPrjOptions.GetOptionNames;
-    for j := Low(OptionNames) to High(OptionNames) do
-    begin
-    {$IFDEF CheckProjectOptionMap}
-      i := High(GxOptionsMap);
-      while i >= Low(GxOptionsMap) do
+  if Assigned(FPrjOptions) then begin
+    OptionNames := nil;
+{$IFDEF CheckProjectOptionMap}
+    OptionNameIndex := GenerateOptionNameIndex;
+{$ENDIF CheckProjectOptionMap}
+    try
+      OptionNames := FPrjOptions.GetOptionNames;
+      for j := Low(OptionNames) to High(OptionNames) do begin
+        NameOfOption := OptionNames[j].Name;
+      {$IFDEF CheckProjectOptionMap}
+        if OptionNameIndex.Find(LowerCase(NameOfOption), OptionIdx) then
+          OptionIdx := Integer(OptionNameIndex.Objects[OptionIdx]) - 1
+        else
+          OptionIdx := -1;
+        if OptionIdx < Low(GxOptionsMap) then
         begin
-          if SameText(GxOptionsMap[i].Name, OptionNames[j].Name) then
-            Break;
-          Dec(i);
+          // Add missing project option to list
+          MissingEntries := MissingEntries + Format(MissingEntryFormat,
+            [NameOfOption, GetEnumName(TypeInfo(TTypeKind), Integer(OptionNames[j].Kind)), OptionNames[j].Name]);
+        end
+        else
+        begin
+          // Sanity check: do we handle the IDE's option
+          // with the right type ourselves?
+          if GxOptionsMap[OptionIdx].AssumedTypeKind <> tkUnknown then
+            Assert(GxOptionsMap[OptionIdx].AssumedTypeKind = OptionNames[j].Kind, 'Wrong type kind for option ' + GxOptionsMap[OptionIdx].Name);
         end;
+      {$ENDIF CheckProjectOptionMap}
 
-      if i < Low(GxOptionsMap) then
-      begin
-        // Add missing project option to list
-        MissingEntries := MissingEntries + Format(MissingEntryFormat,
-          [OptionNames[j].Name, GetEnumName(TypeInfo(TTypeKind), Integer(OptionNames[j].Kind)), OptionNames[j].Name]);
-      end
-      else
-      begin
-        // Sanity check: do we handle the IDE's option
-        // with the right type ourselves?
-        if GxOptionsMap[i].AssumedTypeKind <> tkUnknown then
-          Assert(GxOptionsMap[i].AssumedTypeKind = OptionNames[j].Kind, 'Wrong type kind for option ' + GxOptionsMap[i].Name);
+        // Load options honoring filter selection
+        if ((cbFilter.Text = sAllOptions) or
+            (CategoryTextToCategory(cbFilter.Text) in GetOptionCategories(NameOfOption))
+           ) and
+           OptionIsAppropriateForIde(GetOptionCategories(NameOfOption)) then
+        begin
+          tmpObj := TKindObject.Create;
+          tmpObj.OptionKind := OptionNames[j].Kind;
+          lstPrjOptions.Items.AddObject(NameOfOption, tmpObj);
+        end;
+        // Done loading option list
       end;
-    {$ENDIF CheckProjectOptionMap}
 
-      // Load options honoring filter selection
-      if ((cbFilter.Text = sAllOptions) or
-          (CategoryTextToCategory(cbFilter.Text) in GetOptionCategories(OptionNames[j].Name))
-         ) and
-         OptionIsAppropriateForIde(GetOptionCategories(OptionNames[j].Name)) then
-      begin
-        tmpObj := TKindObject.Create;
-        tmpObj.OptionKind := OptionNames[j].Kind;
-        lstPrjOptions.Items.AddObject(OptionNames[j].Name, tmpObj);
-      end;
-      // Done loading option list
-    end;
-
+      {$IFDEF CheckProjectOptionMap}
+        if MissingEntries <> '' then
+        begin
+          Clipboard.AsText := MissingEntries;
+          // Do not localize; this is just test code
+          MessageDlg('There are missing project options in GX_ProjOptMap.pas:' +#13#10+ MissingEntries, mtWarning, [mbOK], 0);
+        end;
+      {$ENDIF CheckProjectOptionMap}
+    finally
     {$IFDEF CheckProjectOptionMap}
-      if MissingEntries <> '' then
-      begin
-        Clipboard.AsText := MissingEntries;
-        // Do not localize; this is just test code
-        MessageDlg('There are missing project options in GX_ProjOptMap.pas:' +#13#10+ MissingEntries, mtWarning, [mbOK], 0);
-      end;
+      FreeAndNil(OptionNameIndex);
     {$ENDIF CheckProjectOptionMap}
-  finally
-    FPrjOptions := nil;
+      FPrjOptions := nil;
+    end;
   end;
 end;
 
@@ -1157,13 +1162,15 @@ end;
 procedure TfmProjOptionSets.RefreshPrjCheckmarks;
 var
   i, j: Integer;
+  Items: TStrings;
 begin
   if not Assigned(FPrjSetOptions) then
     Exit;
   // Now iterate over lstPrjOptions and check any items in FPrjSetOptions
-  for i := 0 to lstPrjOptions.Items.Count - 1 do
+  Items := lstPrjOptions.Items;
+  for i := 0 to Items.Count - 1 do
   begin
-    j := FPrjSetOptions.IndexOfName(lstPrjOptions.Items[i]);
+    j := FPrjSetOptions.IndexOfName(Items[i]);
     lstPrjOptions.Checked[i] := (j > -1);
   end;
   // Resort the list
