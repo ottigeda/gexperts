@@ -138,8 +138,10 @@ begin
   // which is much faster.
   LItems := Items;
   cnt := LItems.Count;
-  if cnt = 0 then Exit;
-    tmpList := TStringList.Create;
+  if cnt = 0 then
+    Exit;
+
+  tmpList := TStringList.Create;
   try
     tmpList.AddStrings(LItems);
     SetLength(ChkArr, cnt);
