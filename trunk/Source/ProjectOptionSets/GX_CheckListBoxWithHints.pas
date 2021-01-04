@@ -18,14 +18,17 @@ type
 
   TCheckListBoxWithHints = class(TCheckListBox)
   private
+    FUpdateCount: Integer;
     FOnGetHint: TGetHintEvent;
     FSortAscend: Boolean;
-    FSortByString: Boolean;
+    FSortCheckedFirst: Boolean;
     FMouseDownIndex: Integer;
+    FNeedsSorting: Boolean;
     procedure CMHintShow(var Message: TMessage); message CM_HINTSHOW;
     procedure SetSortAscend(const Value: Boolean);
-    procedure SetSortByString(const Value: Boolean);
+    procedure SetSortCheckedFirst(const Value: Boolean);
     procedure QuickSort(_TmpList: TStrings; var _ChkArr: TBoolArray; l, R: Integer; SCompare: TJCHListSortCompare);
+    procedure InternalEndUpdate;
   protected
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -37,11 +40,14 @@ type
     function CompareByCheckDescending(_Lst: TStrings; const _ChkArr: TBoolArray; _Idx1, _Idx2: Integer): Integer;
   public
     constructor Create(AOwner: TComponent); override;
+    function BeginUpdate: IInterface;
     procedure SortList(Compare: TJCHListSortCompare);
     procedure Resort;
+    procedure ResortIfNeeded;
     property SortAscending: Boolean read FSortAscend write SetSortAscend;
-    property SortByString: Boolean read FSortByString write SetSortByString;
+    property SortCheckedFirst: Boolean read FSortCheckedFirst write SetSortCheckedFirst;
     property OnGetHint: TGetHintEvent read FOnGetHint write FOnGetHint;
+    property NeedsSorting: Boolean read FNeedsSorting write FNeedsSorting;
   end;
 
 implementation
@@ -84,6 +90,47 @@ begin
   until I >= R;
 end;
 
+type
+  TUpdater = class(TInterfacedObject)
+  private
+    FCheckListBox: TCheckListBoxWithHints;
+  public
+    constructor Create(_CheckListBox: TCheckListBoxWithHints);
+    destructor Destroy; override;
+  end;
+
+{ TUpdater }
+
+constructor TUpdater.Create(_CheckListBox: TCheckListBoxWithHints);
+begin
+  inherited Create;
+  FCheckListBox := _CheckListBox;
+end;
+
+destructor TUpdater.Destroy;
+begin
+  if Assigned(FCheckListBox) then
+    FCheckListBox.InternalEndUpdate;
+  inherited;
+end;
+
+procedure TCheckListBoxWithHints.InternalEndUpdate;
+begin
+  Items.EndUpdate;
+  Dec(FUpdateCount);
+  if FupdateCount <= 0 then
+    Resort;
+end;
+
+function TCheckListBoxWithHints.BeginUpdate: IInterface;
+begin
+  Items.BeginUpdate;
+  Inc(FUpdateCount);
+  if FUpdateCount <= 0 then
+    FUpdateCount := 0;
+  Result := TUpdater.Create(Self);
+end;
+
 procedure TCheckListBoxWithHints.CMHintShow(var Message: TMessage);
 var
   NewHintStr: string;
@@ -98,9 +145,10 @@ constructor TCheckListBoxWithHints.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FSortAscend := True;
-  FSortByString := True;
+  FSortCheckedFirst := True;
   IntegralHeight := True;
   FMouseDownIndex := -1;
+  FNeedsSorting := True;
 end;
 
 procedure TCheckListBoxWithHints.DoOnGetHint(const CursorPos: TPoint; var HintStr: string);
@@ -112,17 +160,21 @@ end;
 procedure TCheckListBoxWithHints.SetSortAscend(const Value: Boolean);
 begin
   if Sorted then
-    Exit;
-  FSortAscend := Value;
-  Resort;
+    Exit; //==>
+  if Value <> FSortAscend then begin
+    FSortAscend := Value;
+    FNeedsSorting := True;
+  end;
 end;
 
-procedure TCheckListBoxWithHints.SetSortByString(const Value: Boolean);
+procedure TCheckListBoxWithHints.SetSortCheckedFirst(const Value: Boolean);
 begin
   if Sorted then
-    Exit;
-  FSortByString := Value;
-  Resort;
+    Exit; //==>
+  if Value <> FSortCheckedFirst then begin
+    FSortCheckedFirst := Value;
+    FNeedsSorting := True;                             
+  end;
 end;
 
 procedure TCheckListBoxWithHints.SortList(Compare: TJCHListSortCompare);
@@ -163,20 +215,27 @@ end;
 
 procedure TCheckListBoxWithHints.Resort;
 begin
-  if SortByString then
-  begin
-    if SortAscending then
-      SortList(CompareByStringAscending)
-    else
-      SortList(CompareByStringDescending);
-  end
-  else
+  if SortCheckedFirst then
   begin
     if SortAscending then
       SortList(CompareByCheckAscending)
     else
       SortList(CompareByCheckDescending);
+  end
+  else
+  begin
+    if SortAscending then
+      SortList(CompareByStringAscending)
+    else
+      SortList(CompareByStringDescending);
   end;
+  FNeedsSorting := False;
+end;
+
+procedure TCheckListBoxWithHints.ResortIfNeeded;
+begin
+  if FNeedsSorting then
+    Resort;
 end;
 
 function TCheckListBoxWithHints.CompareByCheckAscending(_Lst: TStrings; const _ChkArr: TBoolArray;
@@ -193,19 +252,18 @@ begin
     Result := 1;
 end;
 
-// todo: Isn't that simply -doCompareByCeckAscending ?
 function TCheckListBoxWithHints.CompareByCheckDescending(_Lst: TStrings; const _ChkArr: TBoolArray;
   _Idx1, _Idx2: Integer): Integer;
 begin
   Result := 0;
   if _ChkArr[_Idx1] and not _ChkArr[_Idx2] then
-    Result := 1
+    Result := -1
   else if _ChkArr[_Idx1] and _ChkArr[_Idx2] then
     Result := AnsiCompareText(_Lst[_Idx2], _Lst[_Idx1])
   else if not _ChkArr[_Idx1] and not _ChkArr[_Idx2] then
     Result := AnsiCompareText(_Lst[_Idx2], _Lst[_Idx1])
   else if not _ChkArr[_Idx1] and _ChkArr[_Idx2] then
-    Result := -1;
+    Result := 1;
 end;
 
 function TCheckListBoxWithHints.CompareByStringAscending(_Lst: TStrings; const _ChkArr: TBoolArray;

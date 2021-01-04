@@ -17,7 +17,6 @@ inherited fmProjOptionSets: TfmProjOptionSets
     Height = 242
     ActivePage = tabSets
     Align = alClient
-    TabIndex = 0
     TabOrder = 0
     object tabSets: TTabSheet
       Caption = '&Sets'
@@ -195,35 +194,33 @@ inherited fmProjOptionSets: TfmProjOptionSets
     object N1: TMenuItem
       Caption = '-'
     end
-    object mniPrjSortByName: TMenuItem
-      Caption = 'Sort by Name'
-      Checked = True
-      GroupIndex = 1
-      RadioItem = True
-      OnClick = mniPrjSortByCheckmarkClick
-    end
-    object mniPrjSortByCheckmark: TMenuItem
-      Caption = 'Sort by Checkmark'
-      GroupIndex = 1
-      RadioItem = True
-      OnClick = mniPrjSortByCheckmarkClick
-    end
-    object N2: TMenuItem
-      Caption = '-'
-      GroupIndex = 1
-    end
     object mniPrjAscending: TMenuItem
-      Caption = 'Ascending'
+      Caption = 'Sort Ascending'
       Checked = True
       GroupIndex = 2
       RadioItem = True
       OnClick = mniPrjDescendingClick
     end
     object mniPrjDescending: TMenuItem
-      Caption = 'Descending'
+      Caption = 'Sort Descending'
       GroupIndex = 2
       RadioItem = True
       OnClick = mniPrjDescendingClick
+    end
+    object mniPrjSortCheckedFirst: TMenuItem
+      AutoCheck = True
+      Caption = 'Checked first'
+      GroupIndex = 2
+      OnClick = mniPrjSortCheckedFirstClick
+    end
+    object N2: TMenuItem
+      Caption = '-'
+      GroupIndex = 2
+    end
+    object mnuPrjResort: TMenuItem
+      Caption = 'Resort'
+      GroupIndex = 2
+      OnClick = mnuPrjResortClick
     end
   end
   object pmuEnvOptions: TPopupMenu

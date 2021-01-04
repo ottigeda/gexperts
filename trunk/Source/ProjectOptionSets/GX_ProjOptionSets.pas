@@ -20,10 +20,10 @@ type
     pmuPrjOptions: TPopupMenu;
     mniPrjClearAll: TMenuItem;
     mniPrjCheckAll: TMenuItem;
-    mniPrjSortByName: TMenuItem;
-    mniPrjSortByCheckmark: TMenuItem;
     mniPrjAscending: TMenuItem;
     mniPrjDescending: TMenuItem;
+    mniPrjSortCheckedFirst: TMenuItem;
+    mnuPrjResort: TMenuItem;
     N1: TMenuItem;
     N2: TMenuItem;
     N3: TMenuItem;
@@ -68,9 +68,10 @@ type
     procedure FormShow(Sender: TObject);
     procedure mniPrjClearAllClick(Sender: TObject);
     procedure mniPrjCheckAllClick(Sender: TObject);
-    procedure mniPrjSortByCheckmarkClick(Sender: TObject);
     procedure mniPrjDescendingClick(Sender: TObject);
     procedure pmuPrjOptionsPopup(Sender: TObject);
+    procedure mniPrjSortCheckedFirstClick(Sender: TObject);
+    procedure mnuPrjResortClick(Sender: TObject);
     procedure cbFilterChange(Sender: TObject);
     procedure mniModifyEnvOptionValuesClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -94,8 +95,6 @@ type
     FSetChanged: Boolean;
     FLastLoadedSet: string;
     FDom: IXMLDocument;
-    FPrjOptions: IOTAProjectOptions;
-    FEnvOptions: IOTAEnvironmentOptions;
     FProjItemIndex: Integer;
     FEnvItemIndex: Integer;
     procedure lstEnvironmentOptClickCheck(Sender: TObject);
@@ -120,17 +119,14 @@ type
     function  AddSetToDOM(const Name: string): IXMLElement;
     function  GetNodeAttributeValue(Element: IXMLElement; const Name: string): string;
     function GetVariantValueAsString(AValue: Variant; AKind: TTypeKind): string;
-    function GetPrjOptionValue(const AOption: string): string;
-    function GetEnvOptionValue(const AOption: string): string;
-    procedure SetPrjOptionValue(const AOption, AValue: string);
-    procedure SetEnvOptionValue(const AOption, AValue: string);
-    function GetPrjOptionValueAsString(const AOption: string): string;
+    function GetPrjOptionValue(_PrjOptions: IOTAProjectOptions; const _Option: string): string;
+    function GetEnvOptionValue(_EnvOptions: IOTAEnvironmentOptions; const _Option: string): string;
+    procedure SetPrjOptionValue(_PrjOptions: IOTAProjectOptions; const _Option, _Value: string);
     function GetEnvironmentOptions: IOTAEnvironmentOptions;
     function GetCurrentSetName: string;
     procedure LoadSettings;
     procedure SaveSettings;
-    procedure RefreshPrjCheckmarks;
-    procedure RefreshEnvCheckmarks;
+    procedure RefreshCheckmarks(_clb: TCheckListBoxWithHints; _Options: TStringList);
     procedure AddNewOptionSet(const SetName: string);
     function HaveSelectedSet: Boolean;
   public
@@ -307,11 +303,11 @@ begin
   SetupListOptionsControls;
   FillFilterBox;
 
+  lstPrjOptions.SortCheckedFirst := True;
+  lstEnvOptions.SortCheckedFirst := True;
+
   LoadPrjOptionList;
   LoadEnvOptionList;
-
-  lstPrjOptions.SortByString := True;
-  lstEnvOptions.SortByString := True;
 
   FDom := nil; // start with nil DOM
   FPrjSetOptions := TStringList.Create;
@@ -346,6 +342,7 @@ destructor TfmProjOptionSets.Destroy;
 begin
   SaveSettings;
   TStrings_FreeAllObjects(lstPrjOptions.Items).Clear;
+  TStrings_FreeAllObjects(lstEnvOptions.Items).Clear;
   // Now free our objects
   FDom := nil;
   FreeAndNil(FPrjSetOptions);
@@ -414,6 +411,7 @@ var
   tmpObj: TKindObject;
   NameOfOption: string;
   Items: TStringList;
+  PrjOptions: IOTAProjectOptions;
 {$IFDEF CheckProjectOptionMap}
   OptionIdx: Integer;
   MissingEntries: string;
@@ -421,8 +419,8 @@ var
 {$ENDIF CheckProjectOptionMap}
 begin
   TStrings_FreeAllObjects(lstPrjOptions.Items).Clear;
-  FPrjOptions := GxOtaGetActiveProjectOptions;
-  if Assigned(FPrjOptions) then begin
+  PrjOptions := GxOtaGetActiveProjectOptions;
+  if Assigned(PrjOptions) then begin
     OptionNames := nil;
     Items := nil;
 {$IFDEF CheckProjectOptionMap}
@@ -430,7 +428,7 @@ begin
 {$ENDIF CheckProjectOptionMap}
     try
       Items := TStringList.Create;
-      OptionNames := FPrjOptions.GetOptionNames;
+      OptionNames := PrjOptions.GetOptionNames;
       for j := Low(OptionNames) to High(OptionNames) do begin
         NameOfOption := OptionNames[j].Name;
       {$IFDEF CheckProjectOptionMap}
@@ -480,7 +478,7 @@ begin
       FreeAndNil(OptionNameIndex);
     {$ENDIF CheckProjectOptionMap}
       FreeAndNil(Items);
-      FPrjOptions := nil;
+      PrjOptions := nil;
     end;
   end;
 end;
@@ -535,15 +533,17 @@ var
       end;
     end;
 
+var
+  EnvOptions: IOTAEnvironmentOptions;
 begin
   TStrings_FreeAllObjects(lstEnvOptions.Items).Clear;
 
-  FEnvOptions := GetEnvironmentOptions;
-  if Assigned(FEnvOptions) then begin
+  EnvOptions := GetEnvironmentOptions;
+  if Assigned(EnvOptions) then begin
     try
       Items := TStringList.Create;
       try
-        OptionNames := FEnvOptions.GetOptionNames;
+        OptionNames := EnvOptions.GetOptionNames;
       except
         SetLength(OptionNames, 0); // Delphi 9 does not support these correctly, so ignore them
       end;
@@ -591,7 +591,7 @@ begin
       lstEnvOptions.Items := Items;
     finally
       FreeAndNil(Items);
-      FEnvOptions := nil;
+      EnvOptions := nil;
     end;
   end;
 end;
@@ -602,31 +602,25 @@ begin
   if lstSets.Items.Count = 0 then
     AddNewOptionSet('Default');
 
+  // If we (un)dock, sort order is lost and we need to resort
+  lstPrjOptions.BeginUpdate;
+  lstEnvOptions.BeginUpdate;
+
   // Load project options in case they have not
   // been available yet; this takes care of the
   // case where the form is shown when no project
   // is open. Without these two lines, after doing
   // the above, it would be impossible to use the
   // expert, as no options would ever be re-retrieved.
-  if not Assigned(FPrjOptions) then
-    LoadPrjOptionList;
+  LoadPrjOptionList;
+  LoadEnvOptionList;
 
-  if not Assigned(FEnvOptions) then
-    LoadEnvOptionList;
-
-  RefreshPrjCheckmarks;
-  RefreshEnvCheckmarks;
+  RefreshCheckmarks(lstPrjOptions, FPrjSetOptions);
+  RefreshCheckmarks(lstEnvOptions, FEnvSetOptions);
   // Set item index in lstSets
   if lstSets.Items.Count > 0 then
     lstSets.ItemIndex := 0;
   lstSetsClick(lstSets);
-
-  // If we (un)dock, sort order is lost and we need to resort
-  if Assigned(lstPrjOptions) then
-    lstPrjOptions.Resort;
-
-  if Assigned(lstEnvOptions) then
-    lstEnvOptions.Resort;
 end;
 
 procedure TfmProjOptionSets.LoadOptionSetList;
@@ -739,8 +733,8 @@ begin
     LoadTheOptions(FEnvSetOptions, ENV_OPT_NODE);
   end;
 
-  RefreshPrjCheckmarks;
-  RefreshEnvCheckmarks;
+  RefreshCheckmarks(lstPrjOptions, FPrjSetOptions);
+  RefreshCheckmarks(lstEnvOptions, FEnvSetOptions);
   FSetChanged := False;
 end;
 
@@ -748,53 +742,60 @@ procedure TfmProjOptionSets.ApplySetOptions;
 var
   j: Integer;
   OptionName: string;
+  PrjOptions: IOTAProjectOptions;
+  EnvOptions: IOTAEnvironmentOptions;
 begin
   // This method uses FPrjSetOptions and updates the ProjectOptions
-  FPrjOptions := GxOtaGetActiveProjectOptions;
+  PrjOptions := GxOtaGetActiveProjectOptions;
   try
-    if Assigned(FPrjOptions) then
+    if Assigned(PrjOptions) then
     begin
       for j := 0 to FPrjSetOptions.Count - 1 do
       begin
         OptionName := FPrjSetOptions.Names[j];
         Assert(Trim(OptionName) <> '', 'Empty option name in ApplySetOptions: ' + OptionName);
-        SetPrjOptionValue(OptionName, FPrjSetOptions.Values[OptionName]);
+        SetPrjOptionValue(PrjOptions, OptionName, FPrjSetOptions.Values[OptionName]);
       end;
     end;
   finally
-    FPrjOptions := nil;
+    PrjOptions := nil;
   end;
 
   // Now update the environment options also
-  FEnvOptions := GetEnvironmentOptions;
+  EnvOptions := GetEnvironmentOptions;
   try
-    if Assigned(FEnvOptions) then
+    if Assigned(EnvOptions) then
     begin
       for j := 0 to FEnvSetOptions.Count - 1 do
       begin
         OptionName := FEnvSetOptions.Names[j];
-        SetEnvOptionValue(OptionName, FEnvSetOptions.Values[OptionName]);
+        EnvOptions.Values[OptionName] := FEnvSetOptions.Values[OptionName];
       end;
     end;
   finally
-    FEnvOptions := nil;
+    EnvOptions := nil;
   end;
 end;
 
 procedure TfmProjOptionSets.SaveSetOptions;
 var
-  SetNode: IXMLElement;
   Container: IXMLElement;
-  i: Integer;
 
-  function AddOption(const OptionName: string; ValueFunc: TOptionValueFunc): IXMLElement;
+  function AddOption(const OptionName, OptionValue: string): IXMLElement;
   begin
     Result := FDom.CreateElement(OPT_NODE);
-    Result.Text := ValueFunc(OptionName);
+    Result.Text := OptionValue;
     Result.SetAttribute(ATTR_NODE, OptionName);
     Container.AppendChild(Result);
   end;
 
+var
+  SetNode: IXMLElement;
+  i: Integer;
+  PrjOptions: IOTAProjectOptions;
+  EnvOptions: IOTAEnvironmentOptions;
+  OptionName: string;
+  OptionValue: string;
 begin
   // Save the current set to our DOM
   SetNode := FindSetByName(GetCurrentSetName);
@@ -808,37 +809,43 @@ begin
   Container := FDom.CreateElement(PRJ_OPT_NODE);
   SetNode.AppendChild(Container);
 
-  FPrjOptions := GxOtaGetActiveProjectOptions;
+  PrjOptions := GxOtaGetActiveProjectOptions;
   try
-    if Assigned(FPrjOptions) then
+    if Assigned(PrjOptions) then
     begin
       // Iterate over FPrjSetOptions due to filtering
-      for i := 0 to FPrjSetOptions.Count - 1 do
-        AddOption(FPrjSetOptions.Names[i], GetPrjOptionValue);
+      for i := 0 to FPrjSetOptions.Count - 1 do begin
+        OptionName := FPrjSetOptions.Names[i];
+        OptionValue := GetPrjOptionValue(PrjOptions, OptionName);
+        AddOption(OptionName, OptionValue);
+      end;
     end;
   finally
-    FPrjOptions := nil;
+    PrjOptions := nil;
   end;
 
   Container := FDom.CreateElement(ENV_OPT_NODE);
   SetNode.AppendChild(Container);
 
-  FEnvOptions := GetEnvironmentOptions;
+  EnvOptions := GetEnvironmentOptions;
   try
-    if Assigned(FEnvOptions) then
+    if Assigned(EnvOptions) then
     begin
       for i := 0 to lstEnvOptions.Items.Count - 1 do
       begin
-        if lstEnvOptions.Checked[i] then
-          AddOption(lstEnvOptions.Items[i], GetEnvOptionValue);
+        if lstEnvOptions.Checked[i] then begin
+          OptionName := lstEnvOptions.Items[i];
+          OptionValue := GetEnvOptionValue(EnvOptions, OptionName);
+          AddOption(OptionName, OptionValue);
+        end;
       end;
     end;
   finally
-    FEnvOptions := nil;
+    EnvOptions := nil;
   end;
 
-  RefreshPrjCheckmarks;
-  RefreshEnvCheckmarks;
+  RefreshCheckmarks(lstPrjOptions, FPrjSetOptions);
+  RefreshCheckmarks(lstEnvOptions, FEnvSetOptions);
   FSetChanged := False;
 end;
 
@@ -947,24 +954,19 @@ begin
   end;
 end;
 
-function TfmProjOptionSets.GetPrjOptionValue(const AOption: string): string;
-begin
-  Result := GetPrjOptionValueAsString(AOption);
-end;
-
-function TfmProjOptionSets.GetEnvOptionValue(const AOption: string): string;
+function TfmProjOptionSets.GetEnvOptionValue(_EnvOptions: IOTAEnvironmentOptions; const _Option: string): string;
 var
   idx: Integer;
   tmpObj: TKindObject;
 begin
   Result := '';
-  if Assigned(FEnvOptions) then
+  if Assigned(_EnvOptions) then
   begin
-    idx := lstEnvOptions.Items.IndexOf(AOption);
+    idx := lstEnvOptions.Items.IndexOf(_Option);
     if idx <> -1 then
     begin
       tmpObj := TKindObject(lstEnvOptions.Items.Objects[idx]);
-      Result := GetVariantValueAsString(FEnvOptions.Values[AOption], tmpObj.OptionKind);
+      Result := GetVariantValueAsString(_EnvOptions.Values[_Option], tmpObj.OptionKind);
     end;
   end;
 end;
@@ -991,6 +993,7 @@ var
   idx: Integer;
   OptionName: string;
   TranslatedValueString: string;
+  PrjOptions: IOTAProjectOptions;
 begin
   HintStr := '';
   // HintStr := 'ItemIndex = ' + IntToStr(lstPrjOptions.ItemIndex);
@@ -1020,14 +1023,14 @@ begin
     end;
     HintStr := HintStr + sLineBreak;
     // Get current value
-    FPrjOptions := GxOtaGetActiveProjectOptions;
+    PrjOptions := GxOtaGetActiveProjectOptions;
     try
       TranslatedValueString :=
-        TranslatedValue(OptionName, GetPrjOptionValue(OptionName));
+        TranslatedValue(OptionName, GetPrjOptionValue(PrjOptions, OptionName));
       ProcessTranslatedValueForLineBreaks(TranslatedValueString);
       HintStr := HintStr + SOptCurrent + TranslatedValueString;
     finally
-      FPrjOptions := nil;
+      PrjOptions := nil;
     end;
   end;
 end;
@@ -1037,6 +1040,7 @@ var
   idx: Integer;
   OptionName: string;
   TranslatedValueString: string;
+  EnvOptions: IOTAEnvironmentOptions;
 begin
   HintStr := '';
   // HintStr := 'ItemIndex = ' + IntToStr(lstEnvOptions.ItemIndex);
@@ -1074,13 +1078,13 @@ begin
     HintStr := HintStr + sLineBreak;
 
     // Get current value
-    FEnvOptions := GetEnvironmentOptions;
+    EnvOptions := GetEnvironmentOptions;
     try
-      TranslatedValueString := TranslatedValue(OptionName, GetEnvOptionValue(OptionName));
+      TranslatedValueString := TranslatedValue(OptionName, GetEnvOptionValue(EnvOptions, OptionName));
       ProcessTranslatedValueForLineBreaks(TranslatedValueString);
       HintStr := HintStr + SOptCurrent + TranslatedValueString;
     finally
-      FEnvOptions := nil;
+      EnvOptions := nil;
     end;
   end;
 end;
@@ -1103,14 +1107,21 @@ begin
   Settings.LoadForm('Window', Self, [fsSize]);
 end;
 
-procedure TfmProjOptionSets.mniPrjSortByCheckmarkClick(Sender: TObject);
+procedure TfmProjOptionSets.mniPrjSortCheckedFirstClick(Sender: TObject);
 begin
-  lstPrjOptions.SortByString := (Sender = mniPrjSortByName);
+  lstPrjOptions.SortCheckedFirst := TMenuItem(Sender).Checked;
+  lstPrjOptions.Resort;
+end;
+
+procedure TfmProjOptionSets.mnuPrjResortClick(Sender: TObject);
+begin
+  lstPrjOptions.Resort;
 end;
 
 procedure TfmProjOptionSets.mniPrjDescendingClick(Sender: TObject);
 begin
   lstPrjOptions.SortAscending := (Sender = mniPrjAscending);
+  lstPrjOptions.Resort;
 end;
 
 procedure TfmProjOptionSets.pmuPrjOptionsPopup(Sender: TObject);
@@ -1120,39 +1131,36 @@ begin
   else
     mniPrjDescending.Checked := True;
 
-  if lstPrjOptions.SortByString then
-    mniPrjSortByName.Checked := True
-  else
-    mniPrjSortByCheckmark.Checked := True;
+  mniPrjSortCheckedFirst.Checked := lstPrjOptions.SortCheckedFirst
 end;
 
 procedure TfmProjOptionSets.cbFilterChange(Sender: TObject);
 begin
-  lstPrjOptions.Items.BeginUpdate;
-  try
-    LoadPrjOptionList;
-    RefreshPrjCheckmarks;
-  finally
-    lstPrjOptions.Items.EndUpdate;
-  end;
+  lstPrjOptions.BeginUpdate;
+
+  LoadPrjOptionList;
+  RefreshCheckmarks(lstPrjOptions, FPrjSetOptions);
+  lstPrjOptions.Resort;
 end;
 
-procedure TfmProjOptionSets.RefreshPrjCheckmarks;
+procedure TfmProjOptionSets.RefreshCheckmarks(_clb: TCheckListBoxWithHints; _Options: TStringList);
 var
   i, j: Integer;
   Items: TStrings;
 begin
-  if not Assigned(FPrjSetOptions) then
+  if not Assigned(_Options) then
     Exit;
   // Now iterate over lstPrjOptions and check any items in FPrjSetOptions
-  Items := lstPrjOptions.Items;
+  Items := _clb.Items;
   for i := 0 to Items.Count - 1 do
   begin
-    j := FPrjSetOptions.IndexOfName(Items[i]);
-    lstPrjOptions.Checked[i] := (j > -1);
+    j := _Options.IndexOfName(Items[i]);
+    _clb.Checked[i] := (j > -1);
   end;
-  // Resort the list
-  lstPrjOptions.Resort;
+  if _clb.SortCheckedFirst then begin
+    // if checked items should be treated separately, we need to resort
+    _clb.NeedsSorting := True;
+  end;
 end;
 
 procedure TfmProjOptionSets.mniModifyEnvOptionValuesClick(Sender: TObject);
@@ -1164,44 +1172,22 @@ begin
     IEnvironmentOptions.EditOptions;
 end;
 
-procedure TfmProjOptionSets.RefreshEnvCheckmarks;
-var
-  i, j: Integer;
-begin
-  if not Assigned(FEnvSetOptions) then
-    Exit;
-  // Now iterate across FEnvSetOptions and check any items in lstEnvOptions that match
-  for i := 0 to lstEnvOptions.Items.Count - 1 do
-  begin
-    j := FEnvSetOptions.IndexOfName(lstEnvOptions.Items[i]);
-    lstEnvOptions.Checked[i] := (j > -1);
-  end;
-  // Resort the list
-  lstEnvOptions.Resort;
-end;
-
-procedure TfmProjOptionSets.SetEnvOptionValue(const AOption, AValue: string);
-begin
-  if Assigned(FEnvOptions) then
-    FEnvOptions.Values[AOption] := AValue;
-end;
-
-procedure TfmProjOptionSets.SetPrjOptionValue(const AOption, AValue: string);
+procedure TfmProjOptionSets.SetPrjOptionValue(_PrjOptions: IOTAProjectOptions; const _Option, _Value: string);
 var
   VersionKeys: TStrings;
   i: integer;
   s: string;
   c: char;
 begin
-  if Assigned(FPrjOptions) then
+  if Assigned(_PrjOptions) then
   begin
     //{$IFOPT D+} SendDebugFmt('Setting %s to %s (currently %s)', [AOption, AValue, FPrjOptions.Values[AOption]]);  {$ENDIF}
     try
       // BCB 5.01 AVs here on the LibDir setting every time
-      if AOption = 'Keys' then begin
+      if _Option = 'Keys' then begin
         s := '';
-        for i := 1 to Length(AValue) do begin
-          c := AValue[i];
+        for i := 1 to Length(_Value) do begin
+          c := _Value[i];
           if c = #$0A then
             s := s + #$0D;
           s := s + c;
@@ -1214,9 +1200,9 @@ begin
           FreeAndNil(VersionKeys);
         end;
       end else
-        FPrjOptions.Values[AOption] := AValue;
+        _PrjOptions.Values[_Option] := _Value;
     except on E: Exception do
-      raise Exception.Create(Format('Error setting option %s to "%s" (%s).  IDE bug?', [AOption, AValue, E.Message]));
+      raise Exception.Create(Format('Error setting option %s to "%s" (%s).  IDE bug?', [_Option, _Value, E.Message]));
     end;
   end;
 end;
@@ -1424,22 +1410,22 @@ begin
   end;
 end;
 
-function TfmProjOptionSets.GetPrjOptionValueAsString(const AOption: string): string;
+function TfmProjOptionSets.GetPrjOptionValue(_PrjOptions: IOTAProjectOptions; const _Option: string): string;
 var
   idx: Integer;
   tmpObj: TKindObject;
 begin
   Result := '';
-  if Assigned(FPrjOptions) then
+  if Assigned(_PrjOptions) then
   begin
-    idx := lstPrjOptions.Items.IndexOf(AOption);
+    idx := lstPrjOptions.Items.IndexOf(_Option);
     if idx <> -1 then
     begin
       tmpObj := TKindObject(lstPrjOptions.Items.Objects[idx]);
-      if (tmpObj.OptionKind = tkClass) and (AOption = 'Keys') then
+      if (tmpObj.OptionKind = tkClass) and (_Option = 'Keys') then
         Result := GxOtaGetVersionInfoKeysString
       else
-        Result := GetVariantValueAsString(FPrjOptions.Values[AOption], tmpObj.OptionKind);
+        Result := GetVariantValueAsString(_PrjOptions.Values[_Option], tmpObj.OptionKind);
     end;
   end;
 end;
