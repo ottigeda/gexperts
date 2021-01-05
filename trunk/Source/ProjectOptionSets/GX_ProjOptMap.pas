@@ -32,6 +32,7 @@ function GxTasmExpTranslator(const ValueString: string): string;
 function GxVerInfoModuleAttribTranslator(const ValueString: string): string;
 function GxMapFileTranslator(const ValueString: string): string;
 function GxReferenceInfoTranslator(const ValueString: string): string;
+function GxNoOpTranslator(const ValueString: string): string;
 
 type
   // The category into which an option belongs
@@ -91,7 +92,14 @@ const
   StringType = tkLString;
   {$ENDIF}
 
-  GxOptionsMap: array[0..311] of TGxOptionsMap = (
+  GxOptionsMap: array[-1..311] of TGxOptionsMap = (
+    ( // -1
+      Name: 'unkown';
+      AssumedTypeKind: tkUnknown;
+      Description: '';
+      Categories: [];
+      Translator: GxNoOpTranslator;
+    ),
     ( // 0
       Name: 'HostApplication';
       AssumedTypeKind: StringType;
@@ -144,9 +152,9 @@ const
     (
       Name: 'OutputObj';
       AssumedTypeKind: tkSet;
-      Description: '';
+      Description: 'Output directory for obj files';
       Categories: [ocCompiler];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'HintFlag';
@@ -188,7 +196,7 @@ const
       AssumedTypeKind: tkEnumeration;
       Description: ''; // What is this in D5?
       Categories: [ocLinker];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'MapFile';
@@ -216,7 +224,7 @@ const
       AssumedTypeKind: StringType;
       Description: '';
       Categories: [ocCompiler];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'Defines';
@@ -256,23 +264,23 @@ const
     (
       Name: 'ObjDir';
       AssumedTypeKind: StringType;
-      Description: 'Search path?'; // ????? search path in D5
+      Description: 'Obj files search path'; // ????? search path in D5
       Categories: [ocFolders];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'SrcDir';
       AssumedTypeKind: StringType;
       Description: 'Search path?'; // ????? search path in D5
       Categories: [ocFolders];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'ResDir';
       AssumedTypeKind: StringType;
       Description: 'Search path?'; // ???? Search path in D5
       Categories: [ocFolders];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'PkgDllDir';
@@ -286,7 +294,7 @@ const
       AssumedTypeKind: StringType;
       Description: '';
       Categories: [ocUnknown];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'PkgDcpDir';
@@ -440,7 +448,7 @@ const
       AssumedTypeKind: tkEnumeration;
       Description: '';
       Categories: [ocBCB, ocCompiler];
-      Translator: nil;  // Probably None, Automatic, Register keyword
+      Translator: GxNoOpTranslator;  // Probably None, Automatic, Register keyword
     ),
     ( // 50
       Name: 'MergeDupStrs';
@@ -577,7 +585,7 @@ const
       AssumedTypeKind: tkEnumeration;
       Description: 'Language compliance';
       Categories: [ocBCB, ocCompiler];
-      Translator: nil; // Borland, ANSI, Unix V, K&R
+      Translator: GxNoOpTranslator; // Borland, ANSI, Unix V, K&R
     ),
     (
       Name: 'AutoDep';
@@ -640,7 +648,7 @@ const
       AssumedTypeKind: tkEnumeration;
       Description: 'Honor member precision';
       Categories: [ocBCB, ocCompiler];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'ForLoops';
@@ -777,7 +785,7 @@ const
       AssumedTypeKind: tkEnumeration;
       Description: '';
       Categories: [ocBCB, ocATL];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'ATLDebugRefCount';
@@ -806,14 +814,14 @@ const
       AssumedTypeKind: tkEnumeration;
       Description: '';
       Categories: [ocCompiler];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'FloatSupport';
       AssumedTypeKind: tkEnumeration;
       Description: '';
       Categories: [ocCompiler];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'IncludePath';
@@ -862,21 +870,21 @@ const
       AssumedTypeKind: tkEnumeration;
       Description: '';
       Categories: [ocUnknown];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'ClearUnitCache';
       AssumedTypeKind: tkEnumeration;
       Description: '';
       Categories: [ocUnknown];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     ( // 110
       Name: 'MarkModified'; 
       AssumedTypeKind: tkEnumeration;
       Description: '';
       Categories: [ocUnknown];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'CaseSensitive';
@@ -996,7 +1004,7 @@ const
       AssumedTypeKind: tkInteger;
       Description: 'Size of hash table';
       Categories: [ocTasm];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'TasmPasses';
@@ -1024,7 +1032,7 @@ const
       AssumedTypeKind: tkEnumeration;
       Description: '';
       Categories: [ocUnknown];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'Align'; // $A
@@ -1208,7 +1216,7 @@ const
       AssumedTypeKind: tkClass; // (!)
       Description: 'Version Info Keys';
       Categories: [ocDelphi, ocBCB, ocIDE];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'Locale';
@@ -1258,7 +1266,7 @@ const
       AssumedTypeKind: StringType;
       Description: 'AppFileExt';
       Categories: [ocBCB, ocUnknown];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'LibDir';
@@ -1272,7 +1280,7 @@ const
       AssumedTypeKind: tkEnumeration;
       Description: 'Show extended compiler messages';
       Categories: [ocBCB, ocCompiler];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'ZeroClassFunction';
@@ -1286,7 +1294,7 @@ const
       AssumedTypeKind: tkEnumeration;
       Description: 'MultiThreaded';
       Categories: [ocBCB, ocUnknown];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'CGGlobalStackAccesses';
@@ -1356,7 +1364,7 @@ const
       AssumedTypeKind: tkInteger;
       Description: 'User minor version (PE header)';
       Categories: [ocBCB, ocLinker];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'LinkImageComment';
@@ -1384,28 +1392,28 @@ const
       AssumedTypeKind: StringType;
       Description: 'ListFile';
       Categories: [ocTASM, ocUnknown];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'EnvVars';
       AssumedTypeKind: tkClass;
       Description: 'Environment variabes';
       Categories: [ocIde];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'SysVars';
       AssumedTypeKind: tkClass;
       Description: 'System defined variabes';
       Categories: [ocIde];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'Launcher';
       AssumedTypeKind: StringType;
       Description: 'Launcher application to run (console) process (Kylix)';
       Categories: [ocDebugger];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'UseLauncher';
@@ -1419,91 +1427,91 @@ const
       AssumedTypeKind: StringType;
       Description: 'Current working directory for debugged process';
       Categories: [ocDebugger];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'RemoteLauncher';
       AssumedTypeKind: StringType;
       Description: 'Remote launcher (Kylix)';
       Categories: [ocDebugger];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'RemoteCWD';
       AssumedTypeKind: StringType;
       Description: 'Current working directory on remote host for debugged process (Kylix)';
       Categories: [ocDebugger];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'ResourceReserve';
       AssumedTypeKind: tkInteger;
       Description: 'Resource reserve address space (Kylix)';
       Categories: [ocCompiler];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'SOName';
       AssumedTypeKind: StringType;
       Description: 'Shared object name';
       Categories: [ocLinker];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'SOPrefix';
       AssumedTypeKind: StringType;
       Description: 'Shared object prefix';
       Categories: [ocLinker];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'SOPrefixDefined';
       AssumedTypeKind: tkEnumeration;
       Description: 'Shared object prexix is defined';
       Categories: [ocLinker];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'SOSuffix';
       AssumedTypeKind: StringType;
       Description: 'Shared object suffix';
       Categories: [ocLinker];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'SOVersion';
       AssumedTypeKind: StringType;
       Description: 'Shared object version';
       Categories: [ocLinker];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'DynamicLoader';
       AssumedTypeKind: StringType;
       Description: 'Dynamic loader';
       Categories: [ocLinker];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'ForceCppCompile';
       AssumedTypeKind: tkEnumeration;
       Description: 'Force C++ compilation';
       Categories: [ocBCB, ocCompiler];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'PICCodeGen';
       AssumedTypeKind: tkEnumeration;
       Description: 'Position independent code generation';
       Categories: [ocLinker, ocCompiler];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'NamespacePrefix';
       AssumedTypeKind: StringType;
       Description: 'Namespace prefix';
       Categories: [ocCompiler];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'WarnSymbolDeprecated';
@@ -1846,7 +1854,7 @@ const
       AssumedTypeKind: tkEnumeration;
       Description: 'GenDOC';
       Categories: [ocCompiler];
-      Translator: nil;
+      Translator: GxNoOpTranslator;
     ),
     (
       Name: 'WarnSymbolExperimental';
@@ -2295,85 +2303,87 @@ const
 function GetOptionDescription(const OptionName: string): string;
 function GetOptionTranslator(const OptionName: string): TGxOptionValueTranslator;
 function GetOptionCategories(const OptionName: string): TGxOptionCategorySet;
-function TranslatedValue(const OptionName, OptionValue: string): string;
+function TranslatedValue(const OptionName, OptionValue: string): string; overload;
+function TranslatedValue(_OptionIdx: Integer; const _OptionValue: string): string; overload;
 function CategoryTextToCategory(const CatText: string): TGxOptionCategory;
 
 function OptionIsAppropriateForIde(const OptionCategories: TGxOptionCategorySet): Boolean;
 function OptionCategoryIsAppropriateForIde(const OptionCategory: TGxOptionCategory): Boolean;
-function GenerateOptionNameIndex: TStringList;
+function GetOptionNameIndex(const _OptionName: string): integer;
 
 implementation
 
 uses
   SysUtils, GX_OtaUtils, GX_IdeUtils;
 
-function GenerateOptionNameIndex: TStringList;
+var
+  gblOptionNameIndex: TStringList = nil;
+
+function GetOptionNameIndex(const _OptionName: string): integer;
 var
   i: Integer;
 begin
-  Result := TStringList.Create;
-  try
-    for i := Low(GxOptionsMap) to High(GxOptionsMap) do begin
-      Result.AddObject(LowerCase(GxOptionsMap[i].Name), Pointer(i + 1));
+  if not Assigned(gblOptionNameIndex) then begin
+    gblOptionNameIndex := TStringList.Create;
+    try
+      for i := 0 to High(GxOptionsMap) do begin
+        gblOptionNameIndex.AddObject(LowerCase(GxOptionsMap[i].Name), Pointer(i + 1));
+      end;
+      gblOptionNameIndex.Sorted := True;
+    except
+      FreeAndNil(gblOptionNameIndex);
+      raise;
     end;
-    Result.Sorted := True;
-  except
-    Result.Free;
-    raise;
   end;
+  if gblOptionNameIndex.Find(LowerCase(_OptionName), Result) then
+    Result := Integer(gblOptionNameIndex.Objects[Result]) - 1
+  else
+    Result := -1;
 end;
 
 function GetOptionDescription(const OptionName: string): string;
 var
   i: Integer;
 begin
-  Result := '';
-
-  for i := Low(GxOptionsMap) to High(GxOptionsMap) do
-    if SameText(OptionName, GxOptionsMap[i].Name) then
-    begin
-      Result := GxOptionsMap[i].Description;
-      Break;
-    end;
+  i := GetOptionNameIndex(OptionName);
+  Result := GxOptionsMap[i].Description;
 end;
 
 function GetOptionTranslator(const OptionName: string): TGxOptionValueTranslator;
 var
   i: Integer;
 begin
-  Result := nil;
-
-  for i := Low(GxOptionsMap) to High(GxOptionsMap) do
-    if SameText(OptionName, GxOptionsMap[i].Name) then
-    begin
-      Result := GxOptionsMap[i].Translator;
-      Break;
-    end;
+  i := GetOptionNameIndex(OptionName);
+  Result := GxOptionsMap[i].Translator;
 end;
 
 function GetOptionCategories(const OptionName: string): TGxOptionCategorySet;
 var
   i: Integer;
 begin
-  Result := [];
-
-  for i := Low(GxOptionsMap) to High(GxOptionsMap) do
-    if SameText(OptionName, GxOptionsMap[i].Name) then
-    begin
-      Result := GxOptionsMap[i].Categories;
-      Break;
-    end;
+  i := GetOptionNameIndex(OptionName);
+  Result := GxOptionsMap[i].Categories;
 end;
 
 function TranslatedValue(const OptionName, OptionValue: string): string;
 var
+  i: Integer;
+begin
+  i := GetOptionNameIndex(OptionName);
+  Result := TranslatedValue(i, OptionValue);
+end;
+
+function TranslatedValue(_OptionIdx: Integer; const _OptionValue: string): string;
+var
   Xlator: TGxOptionValueTranslator;
 begin
-  Result := OptionValue;
-  Xlator := GetOptionTranslator(OptionName);
-  if Assigned(Xlator) then
-    Result := Xlator(OptionValue);
+  if (_OptionIdx >= Low(GxOptionsMap)) and (_OptionIdx <= High(GxOptionsMap)) then begin
+    Xlator := GxOptionsMap[_OptionIdx].Translator;
+    Result := Xlator(_OptionValue);
+  end else
+    Result := _OptionValue;
 end;
+
 
 function CategoryTextToCategory(const CatText: string): TGxOptionCategory;
 var
@@ -2428,6 +2438,11 @@ end;
 
 resourcestring
   SCannotTranslateAppendix = ' - cannot translate';
+
+function GxNoOpTranslator(const ValueString: string): string;
+begin
+  Result := ValueString;
+end;
 
 function GxBoolOptionTranslator(const ValueString: string): string;
 begin
@@ -2619,5 +2634,8 @@ begin
   // TODO 4 -oAnyone -cFeature: Implement version info attribute translators
 end;
 
+initialization
+finalization
+  FreeAndNIl(gblOptionNameIndex);
 end.
 

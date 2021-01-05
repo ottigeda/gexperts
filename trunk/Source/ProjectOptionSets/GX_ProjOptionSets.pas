@@ -12,8 +12,6 @@ uses
   GX_IdeDock, GX_Experts, GX_ConfigurationInfo, GX_CheckListBoxWithHints;
 
 type
-  TfmProjOptionSets = class;
-
   TOptionValueFunc = function(const AOption: string): string of object;
 
   TfmProjOptionSets = class(TfmIdeDockForm)
@@ -201,12 +199,24 @@ var
   PrjOptSetsExpert: TProjOptionSetsExpert;
 
 type
-  TKindObject = class(TObject)
+  TOptionDesc = class
   private
     FOptionKind: TTypeKind;
+    FOptionIdx: integer;
   public
-    property OptionKind: TTypeKind read FOptionKind write FOptionKind;
+    constructor Create(_OptionKind: TTypeKind; _OptionIdx: Integer = -1);
+    property OptionIdx: Integer read FOptionIdx;
+    property OptionKind: TTypeKind read FOptionKind;
   end;
+
+{ TOptionDesc }
+
+constructor TOptionDesc.Create(_OptionKind: TTypeKind; _OptionIdx: Integer);
+begin
+  inherited Create;
+  FOptionKind := _OptionKind;
+  FOptionIdx := _OptionIdx;
+end;
 
 { TProjOptionSetsExpert }
 
@@ -408,39 +418,32 @@ const
 var
   j: Integer;
   OptionNames: TOTAOptionNameArray;
-  tmpObj: TKindObject;
+  tmpObj: TOptionDesc;
   NameOfOption: string;
   Items: TStringList;
   PrjOptions: IOTAProjectOptions;
 {$IFDEF CheckProjectOptionMap}
-  OptionIdx: Integer;
   MissingEntries: string;
-  OptionNameIndex: TStringList;
 {$ENDIF CheckProjectOptionMap}
+  OptionIdx: Integer;
 begin
   TStrings_FreeAllObjects(lstPrjOptions.Items).Clear;
   PrjOptions := GxOtaGetActiveProjectOptions;
   if Assigned(PrjOptions) then begin
     OptionNames := nil;
     Items := nil;
-{$IFDEF CheckProjectOptionMap}
-    OptionNameIndex := GenerateOptionNameIndex;
-{$ENDIF CheckProjectOptionMap}
     try
       Items := TStringList.Create;
       OptionNames := PrjOptions.GetOptionNames;
       for j := Low(OptionNames) to High(OptionNames) do begin
         NameOfOption := OptionNames[j].Name;
+        OptionIdx := GetOptionNameIndex(NameOfOption);
       {$IFDEF CheckProjectOptionMap}
-        if OptionNameIndex.Find(LowerCase(NameOfOption), OptionIdx) then
-          OptionIdx := Integer(OptionNameIndex.Objects[OptionIdx]) - 1
-        else
-          OptionIdx := -1;
-        if OptionIdx < Low(GxOptionsMap) then
+        if OptionIdx < 0 then
         begin
           // Add missing project option to list
           MissingEntries := MissingEntries + Format(MissingEntryFormat,
-            [NameOfOption, GetEnumName(TypeInfo(TTypeKind), Integer(OptionNames[j].Kind)), OptionNames[j].Name]);
+            [NameOfOption, GetEnumName(TypeInfo(TTypeKind), Integer(OptionNames[j].Kind)), NameOfOption]);
         end
         else
         begin
@@ -457,8 +460,7 @@ begin
            ) and
            OptionIsAppropriateForIde(GetOptionCategories(NameOfOption)) then
         begin
-          tmpObj := TKindObject.Create;
-          tmpObj.OptionKind := OptionNames[j].Kind;
+          tmpObj := TOptionDesc.Create(OptionNames[j].Kind, OptionIdx);
           Items.AddObject(NameOfOption, tmpObj);
         end;
         // Done loading option list
@@ -474,9 +476,6 @@ begin
       end;
     {$ENDIF CheckProjectOptionMap}
     finally
-    {$IFDEF CheckProjectOptionMap}
-      FreeAndNil(OptionNameIndex);
-    {$ENDIF CheckProjectOptionMap}
       FreeAndNil(Items);
       PrjOptions := nil;
     end;
@@ -502,7 +501,7 @@ var
     procedure AddEnvOptionItem(const OptionName: string);
     var
       i: Integer;
-      tmpObj: TKindObject;
+      tmpObj: TOptionDesc;
       EnvOption: TOTAOptionName;
     begin
       i := High(OptionNames);
@@ -519,9 +518,8 @@ var
       //  Assert(i >= Low(OptionNames), 'Could not find environment option ' + OptionName);
       if i >= Low(OptionNames) then
       begin
-        tmpObj := TKindObject.Create;
+        tmpObj := TOptionDesc.Create(EnvOption.Kind);
         try
-          tmpObj.OptionKind := EnvOption.Kind;
           Items.AddObject(EnvOption.Name, tmpObj);
         except
           on E: Exception do
@@ -957,7 +955,7 @@ end;
 function TfmProjOptionSets.GetEnvOptionValue(_EnvOptions: IOTAEnvironmentOptions; const _Option: string): string;
 var
   idx: Integer;
-  tmpObj: TKindObject;
+  tmpObj: TOptionDesc;
 begin
   Result := '';
   if Assigned(_EnvOptions) then
@@ -965,7 +963,7 @@ begin
     idx := lstEnvOptions.Items.IndexOf(_Option);
     if idx <> -1 then
     begin
-      tmpObj := TKindObject(lstEnvOptions.Items.Objects[idx]);
+      tmpObj := TOptionDesc(lstEnvOptions.Items.Objects[idx]);
       Result := GetVariantValueAsString(_EnvOptions.Values[_Option], tmpObj.OptionKind);
     end;
   end;
@@ -994,6 +992,8 @@ var
   OptionName: string;
   TranslatedValueString: string;
   PrjOptions: IOTAProjectOptions;
+  tmpObj: TOptionDesc;
+  OptionIdx: Integer;
 begin
   HintStr := '';
   // HintStr := 'ItemIndex = ' + IntToStr(lstPrjOptions.ItemIndex);
@@ -1004,20 +1004,23 @@ begin
   if not (idx >= 0) then
     idx := lstPrjOptions.ItemIndex;
 
-  if idx <> -1 then
+  if idx >= 0 then
   begin
     OptionName := lstPrjOptions.Items[idx];
-    HintStr := GetOptionDescription(OptionName);
+    tmpObj := TOptionDesc(lstPrjOptions.Items.Objects[Idx]);
+    if Assigned(tmpObj) then
+      OptionIdx := tmpObj.OptionIdx
+    else
+      OptionIdx :=  -1;
+    HintStr := GxOptionsMap[tmpObj.OptionIdx].Description;
     if HintStr <> '' then
       HintStr := HintStr + sLineBreak;
     HintStr := HintStr + Format(SOptValue, [OptionName]);
-    if lstPrjOptions.Checked[idx] and
-      (FPrjSetOptions.IndexOfName(OptionName) <> -1) then
+    if lstPrjOptions.Checked[idx] and (FPrjSetOptions.IndexOfName(OptionName) <> -1) then
     begin
       HintStr := HintStr + sLineBreak;
       // Get the saved value
-      TranslatedValueString :=
-        TranslatedValue(OptionName, FPrjSetOptions.Values[OptionName]);
+      TranslatedValueString := TranslatedValue(OptionIdx, FPrjSetOptions.Values[OptionName]);
       ProcessTranslatedValueForLineBreaks(TranslatedValueString);
       HintStr := HintStr + SOptSaved + TranslatedValueString;
     end;
@@ -1025,8 +1028,7 @@ begin
     // Get current value
     PrjOptions := GxOtaGetActiveProjectOptions;
     try
-      TranslatedValueString :=
-        TranslatedValue(OptionName, GetPrjOptionValue(PrjOptions, OptionName));
+      TranslatedValueString := TranslatedValue(OptionIdx, GetPrjOptionValue(PrjOptions, OptionName));
       ProcessTranslatedValueForLineBreaks(TranslatedValueString);
       HintStr := HintStr + SOptCurrent + TranslatedValueString;
     finally
@@ -1413,7 +1415,7 @@ end;
 function TfmProjOptionSets.GetPrjOptionValue(_PrjOptions: IOTAProjectOptions; const _Option: string): string;
 var
   idx: Integer;
-  tmpObj: TKindObject;
+  tmpObj: TOptionDesc;
 begin
   Result := '';
   if Assigned(_PrjOptions) then
@@ -1421,7 +1423,7 @@ begin
     idx := lstPrjOptions.Items.IndexOf(_Option);
     if idx <> -1 then
     begin
-      tmpObj := TKindObject(lstPrjOptions.Items.Objects[idx]);
+      tmpObj := TOptionDesc(lstPrjOptions.Items.Objects[idx]);
       if (tmpObj.OptionKind = tkClass) and (_Option = 'Keys') then
         Result := GxOtaGetVersionInfoKeysString
       else
