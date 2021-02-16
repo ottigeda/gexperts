@@ -522,6 +522,7 @@ begin
   finally
     FMemo.EndUpdate;
   end;
+  CopyMemoToList;
 end;
 
 function TSearchPathEnhancer.doAddDots(const _s: TGXUnicodeString): TGXUnicodeString;
