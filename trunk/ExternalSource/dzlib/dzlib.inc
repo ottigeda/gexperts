@@ -74,9 +74,14 @@
 {$DEFINE MAXLISTSIZE_IS_DEPRECATED}
 {$ENDIF}
 
-{$IFDEF DELPHIXE3_UP}
-// TMonitor.PixelsPerInch probably didn't exist in Delphi XE3, it does exist in Delphi 10.2 adjust as necessary
+{$IFDEF DELPHIX_SEATTLE}
+// TMonitor.PixelsPerInch was introduced in Delphi 10.0 Seattle
 {$DEFINE HAS_TMONITOR_PIXELSPERINCH}
+{$ENDIF}
+
+{$IFDEF DELPHIX_BERLIN}
+// TMonitor.PixelsPerInch was introduced in Delphi 10.0 Seattle
+{$DEFINE HAS_TFORM_GETDESIGNDPI}
 {$ENDIF}
 
 {$IFDEF DELPHIXE6_UP}
@@ -88,7 +93,9 @@
 {$ENDIF}
 
 {$IFDEF DELPHIX_TOKYO_UP}
-// this function probably already existed in earlier versions, I just run across a compile error for 10.2 Tokyo
+// This is about the IntToHex functions with only one parameter.
+// Delphi 10.2 introduced them for all integer types from 8 bits to 64 bits, signed and usigned
+{$DEFINE HAS_INTTOHEX_FUNCTION_UINT32}
 {$DEFINE HAS_INTTOHEX_FUNCTION_UINT64}
 {$ENDIF}
 
