@@ -28,7 +28,7 @@ begin
     Dll := LoadAnyGExpertsDLL;
     if ParamCount > 0 then begin
       ShowGrepEx := Dll.GetProcAddress('ShowGrepEx');
-      Dir := ParamStr(1);
+      Dir := AnsiString(ParamStr(1));
       ShowGrepEx(0, Dll.ModuleHandle, PAnsiChar(Dir), SW_SHOWNORMAL);
     end else begin
       ShowGrep := Dll.GetProcAddress('ShowGrep');
