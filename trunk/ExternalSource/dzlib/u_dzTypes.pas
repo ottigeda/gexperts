@@ -88,7 +88,13 @@ const
 
 {$IF not declared(MinInt32)}
 const
+{$IFDEF DELPHI2005_UP}
+// Delphi 7 does not like this: "Overflow in conversion or arithmetic operation"
+// Delphi 6 seems to cope, but I wouldn't bet on it, so we leave it out
   MinInt32 = -$80000000;
+{$ELSE}
+  MinInt32 = -$7FFFFFFF;
+{$ENDIF}
 {$IFEND}
 
 {$IF not declared(MaxUInt16)}
