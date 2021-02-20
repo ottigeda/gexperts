@@ -5,7 +5,7 @@ unit GX_SharedImages;
 interface
 
 uses
-  Classes, ImgList, Controls;
+  Classes, ImgList, Controls, ImageList;
 
 type
   TdmSharedImages = class(TDataModule)
