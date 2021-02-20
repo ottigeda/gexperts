@@ -25,6 +25,7 @@ uses
   Messages,
   Menus,
   u_dzVclUtils,
+  u_dzTypes,
   u_dzClassUtils,
   u_dzFileUtils,
   GX_IdeDialogEnhancer,
