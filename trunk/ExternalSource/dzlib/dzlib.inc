@@ -51,8 +51,8 @@
 {$ENDIF}
 {$ENDIF}
 
-{$IFDEF DELPHIX_TOKYO_UP}
-{$DEFINE FILECTRL_DIRECTORYEXISTS_IS_DEPRECATED}
+{$IFDEF DELPHI2007_UP}
+{$DEFINE HAS_INTTOHEX_FUNCTION}
 {$ENDIF}
 
 // The following cond. defines address errors in various Delphi versions regarding the declaration
@@ -62,8 +62,6 @@
 // THandleStream.FHandle is declared as THandle (before that it's an Integer)
 {$DEFINE THANDLESTREAM_HANDLE_IS_THANDLE}
 {$DEFINE HAS_TOBJECT_TOSTRING}
-// TMonitor.PixelsPerInch probably didn't exist in Delphi 2009, it does exist in Delphi 10.2 adjust as necessary 
-{$DEFINE HAS_TMONITOR_PIXELSPERINCH}
 {$ENDIF}
 
 {$IFDEF DELPHIXE_UP}
@@ -76,14 +74,22 @@
 {$DEFINE MAXLISTSIZE_IS_DEPRECATED}
 {$ENDIF}
 
+{$IFDEF DELPHIXE3_UP}
+// TMonitor.PixelsPerInch probably didn't exist in Delphi XE3, it does exist in Delphi 10.2 adjust as necessary
+{$DEFINE HAS_TMONITOR_PIXELSPERINCH}
+{$ENDIF}
+
 {$IFDEF DELPHIXE6_UP}
 {$DEFINE JSONOBJECT_HAS_COUNT}
 {$ENDIF}
 
 {$IFDEF DELPHIX_TOKYO_UP}
+{$DEFINE FILECTRL_DIRECTORYEXISTS_IS_DEPRECATED}
+{$ENDIF}
+
+{$IFDEF DELPHIX_TOKYO_UP}
 // this function probably already existed in earlier versions, I just run across a compile error for 10.2 Tokyo
-{$DEFINE HAS_INTTOHEX_FUNCTION}
-{$DEFINE HAS_INTTOHEX_FUNCTION_64}
+{$DEFINE HAS_INTTOHEX_FUNCTION_UINT64}
 {$ENDIF}
 
 {$IFOPT T+}

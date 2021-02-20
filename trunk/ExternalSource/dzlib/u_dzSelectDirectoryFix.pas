@@ -53,6 +53,7 @@ uses
   Forms,
   Messages,
   Classes,
+  u_dzTypes,
   u_dzVclUtils;
 
 type

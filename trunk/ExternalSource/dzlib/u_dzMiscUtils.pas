@@ -24,7 +24,8 @@ uses
   Windows,
   SysUtils,
   Registry,
-  u_dzTranslator;
+  u_dzTranslator,
+  u_dzTypes;
 
 type
   ///<summary> raised by Max([array of const]) and Min([array of const]) if the passed
@@ -86,11 +87,11 @@ function IntToHex(_Value: Integer): string; overload;
 function IntToHex(_Value: Int64): string; overload;
 {$ENDIF HAS_INTTOHEX_FUNCTION}
 
-{$IFNDEF HAS_INTTOHEX_FUNCTION_64}
 {$IFDEF SUPPORTS_UINT64}
+{$IFNDEF HAS_INTTOHEX_FUNCTION_UINT64}
 function IntToHex(_Value: UInt64): string; overload;
-{$ENDIF SUPPORTS_UINT64}
 {$ENDIF HAS_INTTOHEX_FUNCTION_64}
+{$ENDIF SUPPORTS_UINT64}
 
 function PtrToHex(_Value: Pointer): string;
 
@@ -232,7 +233,6 @@ uses
 {$ENDIF}
 {$ENDIF}
   StrUtils,
-  u_dzTypes,
   u_dzFileUtils,
   u_dzStringUtils,
   u_dzConvertUtils;
@@ -537,8 +537,8 @@ begin
 end;
 {$ENDIF HAS_INTTOHEX_FUNCTION}
 
-{$IFNDEF HAS_INTTOHEX_FUNCTION_64}
 {$IFDEF SUPPORTS_UINT64}
+{$IFNDEF HAS_INTTOHEX_FUNCTION_UINT64}
 function IntToHex(_Value: UInt64): string; overload;
 var
   Buf: PUInt32;
@@ -548,8 +548,8 @@ begin
   Buf := PUInt32(@_Value);
   Result := Result + IntToHex(Buf^, 8);
 end;
+{$ENDIF HAS_INTTOHEX_FUNCTION_UINT64}
 {$ENDIF SUPPORTS_UINT64}
-{$ENDIF HAS_INTTOHEX_FUNCTION_64}
 
 function PtrToHex(_Value: Pointer): string;
 begin

@@ -419,7 +419,7 @@ begin
   szOffset := SizeOf(UInt16) * 3;
   Move(_Buffer[_Offset], _StringTable, szOffset);
   if _StringTable.wValueLength <> 0 then
-    raise EdzException.CreateFmt(_('StringTable.wValueLength must bei 0 but is %d'), [_StringTable.wValueLength]);
+    raise EdzException.CreateFmt(_('StringTable.wValueLength must be 0 but is %d'), [_StringTable.wValueLength]);
 
   _StringTable.szKey := ReadNullTerminatedWideString(_Buffer, _Offset + szOffset);
   // _StringTable.szKey is the language code
@@ -446,11 +446,11 @@ begin
   szOffset := SizeOf(UInt16) * 3;
   Move(_Buffer[_Offset], _StringFileInfo, szOffset);
   if _StringFileInfo.wValueLength <> 0 then
-    raise EdzException.CreateFmt(_('StringFileInfo.wValueLength must bei 0 but is %d'), [_StringFileInfo.wValueLength]);
+    raise EdzException.CreateFmt(_('StringFileInfo.wValueLength must be 0 but is %d'), [_StringFileInfo.wValueLength]);
 
   _StringFileInfo.szKey := ReadNullTerminatedWideString(_Buffer, _Offset + szOffset);
   if _StringFileInfo.szKey <> 'StringFileInfo' then
-    raise EdzException.CreateFmt(_('StringFileInfo.szKey "StringFileInfo" but is "%s"'), [_StringFileInfo.szKey]);
+    raise EdzException.CreateFmt(_('StringFileInfo.szKey must be "StringFileInfo" but is "%s"'), [_StringFileInfo.szKey]);
 
   SetLength(_StringFileInfo.Children, 0);
   Offset := (_Offset + szOffset + (Length(_StringFileInfo.szKey) + 1) * SizeOf(WideChar) + 3) and (not 3);

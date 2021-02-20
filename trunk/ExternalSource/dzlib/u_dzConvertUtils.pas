@@ -150,6 +150,18 @@ function isNumberN(const _s: string; _Base: TBaseN): Integer;
 /// Reduces an Integer to a Byte value by cutting it off at 0 and 255 </summary>
 function ReduceToByte(const _Value: Integer): Byte;
 {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function ReduceToInt8(const _Value: Integer): Int8;
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function ReduceToUInt8(const _Value: Integer): UInt8;
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function ReduceToInt16(const _Value: Integer): Int16;
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function ReduceToUInt16(const _Value: Integer): UInt16;
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function ReduceToInt32(const _Value: Int64): Int32;
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+function ReduceToUInt32(const _Value: Int64): UInt32;
+{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
 
 ///<summary>
 /// Converts a string of the form '-hh:mm:ss', 'hh:mm:ss',
@@ -605,10 +617,65 @@ end;
 
 function ReduceToByte(const _Value: Integer): Byte;
 begin
+  Result := ReduceToUInt8(_Value);
+end;
+
+function ReduceToUInt8(const _Value: Integer): UInt8;
+begin
   if _Value < 0 then
     Result := 0
-  else if _Value > 255 then
-    Result := 255
+  else if _Value > MaxUInt8 then
+    Result := MaxUInt8
+  else
+    Result := _Value;
+end;
+
+function ReduceToInt8(const _Value: Integer): Int8;
+begin
+  if _Value < MinInt8 then
+    Result := MinInt8
+  else if _Value > MaxInt8 then
+    Result := MaxInt8
+  else
+    Result := _Value;
+end;
+
+function ReduceToUInt16(const _Value: Integer): UInt16;
+begin
+  if _Value < 0 then
+    Result := 0
+  else if _Value > MaxUInt16 then
+    Result := MaxUInt16
+  else
+    Result := _Value;
+end;
+
+function ReduceToInt16(const _Value: Integer): Int16;
+begin
+  if _Value < MinInt16 then
+    Result := MinInt16
+  else if _Value > MaxInt16 then
+    Result := MaxInt16
+  else
+    Result := _Value;
+end;
+
+function ReduceToUInt32(const _Value: Int64): UInt32;
+begin
+  if _Value < 0 then
+    Result := 0
+  else if _Value > MaxUInt32 then
+    Result := MaxUInt32
+  else
+    Result := _Value;
+end;
+
+function ReduceToInt32(const _Value: Int64): Int32;
+begin
+  if _Value < MinInt32 then
+    Result := MinInt32
+  else if _Value > MaxInt32 then
+    Result := MaxInt32
   else
     Result := _Value;
 end;

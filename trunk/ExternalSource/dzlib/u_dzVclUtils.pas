@@ -85,6 +85,19 @@ type
   end;
 {$IFEND}
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
+type
+  TDpiScaler = record
+  private
+    FDesignDpi: Integer;
+    FCurrentDpi: Integer;
+  public
+    procedure Init(_frm: TCustomForm); inline;
+    procedure SetCurrentDpi(_frm: TCustomForm); inline;
+    function Calc(_Value: Integer): Integer; inline;
+  end;
+{$ENDIF SUPPORTS_ENHANCED_RECORDS}
+
 type
   ///<summary> This is a copy of the TFileFormatsList class from Graphics which
   ///          is unfortunately only declaread in the implementation section </summary>
@@ -1152,6 +1165,8 @@ function TCheckBox_Autosize(_Chk: TCustomCheckBox; _ParentCanvas: TCanvas = nil)
 ///          Warning: The result might be nil if the form is outside the visible area. </summary>
 function TForm_GetMonitor(_frm: TForm): TMonitor;
 
+function TForm_GetDesignDPI(_frm: TForm): Integer;
+
 ///<summary> centers a form on the given point, but makes sure the form is fully visible </summary>
 procedure TForm_CenterOn(_frm: TForm; _Center: TPoint); overload;
 ///<summary> centers a form on the given component, but makes sure the form is fully visible </summary>
@@ -1496,6 +1511,13 @@ function TPopupMenu_FindSelectedRadioItem(_pm: TPopupMenu; _GroupIndex: Integer;
 function TMenuItem_FindSelectedRadioItem(_mi: TMenuItem; _GroupIndex: Integer; out _miFound: TMenuItem): Boolean;
 
 ///<summary>
+/// Assigns an OnAdvancedDrawItem event for all menu items that forces drawing the accelerator char
+/// @returns a TCompnent which contains the event's implementation. It is added to the menu, so
+///          it will automatically be freed with the menu. It is safe to simply ignore this
+///          result as it is only returned for debugging purposes. </summary>
+function TMainMenu_ForceAcceleratorChar(_mnu: TMainMenu): TComponent;
+
+///<summary>
 /// Sets Screen.Cursor to NewCursor and restores it automatically when the returned interface
 /// goes out of scope </summary>
 function TCursor_TemporaryChange(_NewCursor: TCursor = crHourGlass): IInterface;
@@ -1552,43 +1574,6 @@ type
   end;
 {$ENDIF}
 
-type
-  TRectLTWH = record
-{$IFDEF SUPPORTS_ENHANCED_RECORDS}
-  private
-    function GetTopLeft: TPoint;
-    procedure SetTopLeft(_TopLeft: TPoint);
-    function GetBottomLeft: TPoint;
-    procedure SetBottomLeft(const _BottomLeft: TPoint);
-  public
-{$ENDIF}
-    Left: Integer;
-    Top: Integer;
-    Width: Integer;
-    Height: Integer;
-{$IFDEF SUPPORTS_ENHANCED_RECORDS}
-    procedure Assign(_Left, _Top, _Width, _Height: Integer); overload;
-    procedure Assign(_a: TRect); overload;
-    procedure AssignTLRB(_Left, _Top, _Right, _Bottom: Integer);
-    ///<summary>
-    /// Gets and sets the top left coordinates keeping the size </summary>
-    property TopLeft: TPoint read GetTopLeft write SetTopLeft;
-    ///<summary>
-    /// Gets and sets the bottom left coordinates keeping the size </summary>
-    property BottomLeft: TPoint read GetBottomLeft write SetBottomLeft;
-    function GetCenter: TPoint;
-    function Right: Integer;
-    function Bottom: Integer;
-    class operator Implicit(_a: TRect): TRectLTWH;
-    class operator Implicit(_a: TRectLTWH): TRect;
-    class function FromLTWH(_Left, _Top, _Width, _Height: Integer): TRectLTWH; static;
-{$ENDIF}
-  end;
-
-procedure TRectLTWH_Assign(var _LTWH: TRectLTWH; _Left, _Top, _Width, _Height: Integer); overload;
-procedure TRectLTWH_Assign(var _LTWH: TRectLTWH; _a: TRect); overload;
-procedure TRectLTWH_AssignTLRB(var _LTWH: TRectLTWH; _Left, _Top, _Right, _Bottom: Integer);
-
 ///<summary>
 /// deprecated version of TForm_StorePlacement
 /// @param Bounds is a TRectLTWH whose placement is to be stored
@@ -1637,12 +1622,49 @@ procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; var _Rect: TRect); overl
 procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; var _Rect: TRectLTWH); overload;
 procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; _frm: TForm); overload;
 
+///<summary>
+/// Tries to get the primary monitor.
+/// @param Monitor returns the primary monitor, only valid if Result = True
+/// @returns True, if the primary monitor could be determined
+///          False, if not
+/// @NOTE: It is possible for this function to return False. I have observed this when switching
+///        between Remote Destkop access and local monitors on Windows XP. </summary>
 function TScreen_TryGetPrimaryMonitor(out _Monitor: TMonitor): Boolean;
+///<summary>
+/// Gge the primary monitor.
+/// @returns the primary monitor if there is one
+///          NIL if not
+/// @NOTE: It is possible for this function to return NIL. I have observed this when switching
+///        between Remote Destkop access and local monitors on Windows XP. </summary>
 function TScreen_GetPrimaryMonitor: TMonitor;
+///<summary>
+/// Trys to determine the monitor for the given point or the primary monitor if the point is
+/// outside the visible area of any attached monitor
+/// @param pnt is the point to check
+/// @param Monitor returns the monitor for the given point or the primary monitor
+///                only valid if Result = True
+/// @returns True, Monitor is valid
+///          False, if not
+/// @NOTE: It is possible for this function to return False. I have observed this when switching
+///        between Remote Destkop access and local monitors on Windows XP. </summary>
 function TScreen_TryGetMonitorFromPointOrPrimary(_pnt: TPoint; out _Monitor: TMonitor): Boolean;
+///<summary>
+/// Trys to determine the monitor for the given point
+/// @param pnt is the point to check
+/// @param Monitor returns the monitor for the given point, only valid if Result = True
+/// @returns True, if the monitor could be determined
+///          False, if not (e.g. the point is outside the visible area of any monitor </summary>
 function TScreen_TryGetMonitorFromPoint(_pnt: TPoint; out _Monitor: TMonitor): Boolean;
 
+///<summary>
+/// Gets the monitor for the given point
+/// @param pnt is the point to check
+/// @param Monitor returns the monitor for the given point, only valid if Result = True
+/// @returns the monitor for the given point or NIL if it could not be determined </summary>
 function TScreen_MonitorFromPoint(_pnt: TPoint): TMonitor;
+
+function TScreen_GetDpiForPoint(_pnt: TPoint): Integer;
+function TScreen_GetDpiForForm(_frm: TCustomForm): Integer;
 
 procedure TScreen_MakeFullyVisible(_frm: TForm); overload;
 procedure TScreen_MakeFullyVisible(var _Left, _Top, _Width, _Height: Integer); overload;
@@ -4170,6 +4192,49 @@ begin
     Result := nil;
 end;
 
+function TScreen_GetDpiForPoint(_pnt: TPoint): Integer;
+{$IFDEF HAS_TMONITOR_PIXELSPERINCH}
+var
+  Monitor: TMonitor;
+{$ENDIF}
+begin
+{$IFDEF HAS_TMONITOR_PIXELSPERINCH}
+  if TScreen_TryGetMonitorFromPoint(_pnt, Monitor) then
+    Result := Monitor.PixelsPerInch
+  else
+{$ENDIF}
+    Result := Screen.PixelsPerInch;
+end;
+
+function TScreen_GetDpiForForm(_frm: TCustomForm): Integer;
+{$IFDEF HAS_TMONITOR_PIXELSPERINCH}
+var
+  Monitor: TMonitor;
+{$ENDIF}
+begin
+  Result := Screen.PixelsPerInch;
+{$IFDEF HAS_TMONITOR_PIXELSPERINCH}
+  if _frm is TForm then begin
+    Monitor := TForm_GetMonitor(TForm(_frm));
+    if Assigned(Monitor) then
+      Result := Monitor.PixelsPerInch
+  end;
+{$ENDIF}
+end;
+
+type
+  TFormHack = class(TForm)
+  end;
+
+function TForm_GetDesignDPI(_frm: TForm): Integer;
+begin
+{$IFDEF HAS_TMONITOR_PIXELSPERINCH}
+  Result := TFormHack(_frm).GetDesignDpi;
+{$ELSE}
+  Result := 96;
+{$ENDIF}
+end;
+
 function TForm_GetMonitor(_frm: TForm): TMonitor;
 var
   Center: TPoint;
@@ -5127,6 +5192,80 @@ begin
   Result := False;
 end;
 
+type
+  TMenuItemHack = class(TMenuItem)
+    // to get access to the protected TMenuItem.AdvancedDrawItem method
+  end;
+
+type
+  TForceAcceleratorCharHandlerComponent = class(TComponent)
+  private
+    procedure HandleAdvancedDrawItem(_Sender: TObject; _Canvas: TCanvas; _Rect: TRect;
+      _State: TOwnerDrawState);
+    procedure HandleMeasureItem(_Sender: TObject; _Canvas: TCanvas; var _Width, _Height: Integer);
+  end;
+
+procedure TForceAcceleratorCharHandlerComponent.HandleAdvancedDrawItem(_Sender: TObject;
+  _Canvas: TCanvas; _Rect: TRect; _State: TOwnerDrawState);
+var
+  TopLevel: Boolean;
+begin
+  // force accelerator char to be underlined
+  _State := _State - [odnoAccel];
+  TMenuItem(_Sender).OnAdvancedDrawItem := nil;
+  TopLevel := TMenuItem(_Sender).GetParentComponent is TMainMenu;
+  TMenuItemHack(_Sender).AdvancedDrawItem(_Canvas, _Rect, _State, TopLevel);
+  TMenuItem(_Sender).OnAdvancedDrawItem := HandleAdvancedDrawItem;
+end;
+
+procedure TForceAcceleratorCharHandlerComponent.HandleMeasureItem(_Sender: TObject; _Canvas: TCanvas;
+  var _Width, _Height: Integer);
+begin
+  // the size of the main menu items doesn't really seem right in per Monitor high DPI mode
+  // todo: Fix it here
+end;
+
+function TMainMenu_ForceAcceleratorChar(_mnu: TMainMenu): TComponent;
+
+  function TryFindHandlerCoponent(_Owner: TComponent; out _HandlerCmp: TForceAcceleratorCharHandlerComponent): Boolean;
+  var
+    cmp: TComponent;
+    i: Integer;
+  begin
+    for i := 0 to _Owner.ComponentCount - 1 do begin
+      cmp := _Owner.Components[i];
+      if cmp is TForceAcceleratorCharHandlerComponent then begin
+        _HandlerCmp := TForceAcceleratorCharHandlerComponent(cmp);
+        Result := True;
+        Exit; //==>
+      end;
+    end;
+    Result := False;
+  end;
+
+  procedure AssignDrawingHandler(_mi: TMenuItem; _HandlerCmp: TForceAcceleratorCharHandlerComponent);
+  var
+    i: Integer;
+  begin
+    _mi.OnAdvancedDrawItem := _HandlerCmp.HandleAdvancedDrawItem;
+    _mi.OnMeasureItem := _HandlerCmp.HandleMeasureItem;
+    for i := 0 to _mi.Count - 1 do
+      AssignDrawingHandler(_mi[i], _HandlerCmp);
+  end;
+
+var
+  HandlerCmp: TForceAcceleratorCharHandlerComponent;
+  i: Integer;
+begin
+  if not TryFindHandlerCoponent(_mnu, HandlerCmp) then begin
+    HandlerCmp := TForceAcceleratorCharHandlerComponent.Create(_mnu);
+    HandlerCmp.Name := '';
+  end;
+  for i := 0 to _mnu.Items.Count - 1 do
+    AssignDrawingHandler(_mnu.Items[i], HandlerCmp);
+  Result := HandlerCmp;
+end;
+
 function TPopupMenu_FindSelectedRadioItem(_pm: TPopupMenu; _GroupIndex: Integer; out _miFound: TMenuItem): Boolean;
 begin
   Result := TMenuItem_FindSelectedRadioItem(_pm.Items, _GroupIndex, _miFound);
@@ -5839,7 +5978,7 @@ var
   fn: string;
   i: Integer;
   sl: TStringList;
-  cnt: Cardinal;
+  cnt: Integer;
 begin
   sl := TStringList.Create;
   try
@@ -6353,99 +6492,6 @@ begin
     TMonitor_MakeFullyVisible(Monitor, _Rect);
 end;
 
-{$IFDEF SUPPORTS_ENHANCED_RECORDS}
-{ TRectLTWH }
-
-procedure TRectLTWH.Assign(_Left, _Top, _Width, _Height: Integer);
-begin
-  Left := _Left;
-  Top := _Top;
-  Width := _Width;
-  Height := _Height;
-end;
-
-procedure TRectLTWH.Assign(_a: TRect);
-begin
-  AssignTLRB(_a.Left, _a.Top, _a.Right, _a.Bottom);
-end;
-
-procedure TRectLTWH.AssignTLRB(_Left, _Top, _Right, _Bottom: Integer);
-begin
-  Assign(_Left, _Top, _Right - _Left, _Bottom - _Top);
-end;
-
-class function TRectLTWH.FromLTWH(_Left, _Top, _Width, _Height: Integer): TRectLTWH;
-begin
-  Result.Assign(_Left, _Top, _Width, _Height);
-end;
-
-function TRectLTWH.Right: Integer;
-begin
-  Result := Left + Width;
-end;
-
-function TRectLTWH.Bottom: Integer;
-begin
-  Result := Top + Height;
-end;
-
-function TRectLTWH.GetBottomLeft: TPoint;
-begin
-  Result := Point(Left, Top + Height);
-end;
-
-function TRectLTWH.GetCenter: TPoint;
-begin
-  Result := Point(Left + Width div 2, Top + Height div 2);
-end;
-
-procedure TRectLTWH.SetBottomLeft(const _BottomLeft: TPoint);
-begin
-  Left := _BottomLeft.X;
-  Top := _BottomLeft.Y - Height;
-end;
-
-function TRectLTWH.GetTopLeft: TPoint;
-begin
-  Result.X := Left;
-  Result.Y := Top;
-end;
-
-procedure TRectLTWH.SetTopLeft(_TopLeft: TPoint);
-begin
-  Left := _TopLeft.X;
-  Top := _TopLeft.Y;
-end;
-
-class operator TRectLTWH.Implicit(_a: TRectLTWH): TRect;
-begin
-  Result := Rect(_a.Left, _a.Top, _a.Left + _a.Width, _a.Top + _a.Height);
-end;
-
-class operator TRectLTWH.Implicit(_a: TRect): TRectLTWH;
-begin
-  Result.Assign(_a);
-end;
-{$ENDIF}
-
-procedure TRectLTWH_Assign(var _LTWH: TRectLTWH; _Left, _Top, _Width, _Height: Integer);
-begin
-  _LTWH.Left := _Left;
-  _LTWH.Top := _Top;
-  _LTWH.Width := _Width;
-  _LTWH.Height := _Height;
-end;
-
-procedure TRectLTWH_Assign(var _LTWH: TRectLTWH; _a: TRect);
-begin
-  TRectLTWH_AssignTLRB(_LTWH, _a.Left, _a.Top, _a.Right, _a.Bottom);
-end;
-
-procedure TRectLTWH_AssignTLRB(var _LTWH: TRectLTWH; _Left, _Top, _Right, _Bottom: Integer);
-begin
-  TRectLTWH_Assign(_LTWH, _Left, _Top, _Right - _Left, _Bottom - _Top);
-end;
-
 procedure TForm_MoveTo(_frm: TCustomForm; _Position: TdzWindowPositions);
 
   procedure ToTop(var _Re: TRect; _MinHeight, _MaxHeight: Integer);
@@ -6845,6 +6891,46 @@ begin
   EnumDisplayMonitors(0, nil, TMonitorEnumProc(@EnumMonitorsProc), Windows.LParam(@Result));
 end;
 {$ENDIF}
+
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
+{ TDpiScaler }
+
+function TDpiScaler.Calc(_Value: Integer): Integer;
+begin
+  Result := MulDiv(_Value, FCurrentDpi, FDesignDpi);
+end;
+
+procedure TDpiScaler.Init(_frm: TCustomForm);
+begin
+  if not Assigned(_frm) then begin
+    FDesignDpi := 96;
+    FCurrentDpi := 96;
+  end else begin
+// todo: adjust as needed
+{$IFDEF DELPHIX_TOKYO_UP}
+    FDesignDpi := TForm_GetDesignDPI(TForm(_frm));
+    FCurrentDpi := TScreen_GetDpiForForm(_frm);
+{$ELSE ~DELPHIX_TOKYO_UP}
+    FDesignDpi := TForm(_frm).PixelsPerInch;
+    FCurrentDpi := TForm(_frm).PixelsPerInch;
+{$ENDIF DELPHIX_TOKYO_UP}
+  end;
+end;
+
+procedure TDpiScaler.SetCurrentDpi(_frm: TCustomForm);
+begin
+  if not Assigned(_frm) then begin
+    FCurrentDpi := 96;
+  end else begin
+// todo: adjust as needed
+{$IFDEF DELPHIX_TOKYO_UP}
+    FCurrentDpi := TScreen_GetDpiForForm(_frm)
+{$ELSE ~DELPHIX_TOKYO_UP}
+    FCurrentDpi := TForm(_frm).PixelsPerInch;
+{$ENDIF DELPHIX_TOKYO_UP}
+  end;
+end;
+{$ENDIF SUPPORTS_ENHANCED_RECORDS}
 
 initialization
   InitializeCustomMessages;

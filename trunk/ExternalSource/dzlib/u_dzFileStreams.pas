@@ -13,6 +13,7 @@ uses
   Classes,
   SysUtils,
   Windows,
+  u_dzTypes, // necessary for correcting NativeInt
   u_dzTranslator;
 
 type
@@ -226,7 +227,6 @@ type
 implementation
 
 uses
-  u_dzTypes,
   u_dzFileUtils,
   u_dzMiscUtils;
 
