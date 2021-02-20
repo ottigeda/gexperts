@@ -4228,7 +4228,7 @@ type
 
 function TForm_GetDesignDPI(_frm: TForm): Integer;
 begin
-{$IFDEF HAS_TMONITOR_PIXELSPERINCH}
+{$IFDEF HAS_TFORM_GETDESIGNDPI}
   Result := TFormHack(_frm).GetDesignDpi;
 {$ELSE}
   Result := 96;
