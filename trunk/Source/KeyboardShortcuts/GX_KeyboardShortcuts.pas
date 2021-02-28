@@ -375,7 +375,7 @@ begin
   end;
   cnv.FillRect(_Rect);
 {$IFDEF STRING_GRID_OWNERDRAW_FIX_ENABLED}
-  if GetBorlandIdeVersion in [ideRS104P2, ideRS104U1] then begin
+  if GetBorlandIdeVersion in [ideRS104P2, ideRS104U1, ideRS104U2] then begin
     // Embarcadero managed to bungle the StringGrid redraw fix in patch 2. Now we have to
     // check whether the grid is focused and use a different x offset in that case.
     if _Focused then
