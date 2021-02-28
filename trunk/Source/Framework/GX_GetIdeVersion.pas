@@ -40,6 +40,7 @@ type
      ideRS104,   // Rad Studio 10.4 Sydney
      ideRS104P2, // Rad Studio 10.4 Sydney with Patch2 installed
      ideRS104U1, // Rad Studio 10.4 Sydney Update 1
+     ideRS104U2, // Rad Studio 10.4 Sydney Update 2
      // C# Builder
      ideCSB100,
      // C++Builder
@@ -946,24 +947,34 @@ end;
   coreide270.bpl       27.0.38860.1461
   bds.exe              27.0.38860.1461
   dcldb270.bpl         27.0.38860.1461
+
+  Delphi 10.4.2 Sydney Update 2
+  File                 File Version    Size       Modified Time
+  delphicoreide270.bpl 27.0.40680.4203
+  coreide270.bpl       27.0.40680.4203
+  bds.exe              27.0.40680.4203
+  dcldb270.bpl         27.0.40680.4203
 }
 
 function GetRS104Version: TBorlandIdeVersion;
 const
   RegKey = 'Software\Embarcadero\BDS\21.0\CatalogRepository\Elements\10.4Patch2pro-10';
-  CoreIde2700:     TVersionNumber = (Minor: 27; Major: 0; Build: 37829; Release: 9797);
-  CoreIde2700UPd1: TVersionNumber = (Minor: 27; Major: 0; Build: 38860; Release: 1461);
+  CoreIde2700:     TVersionNumber = (Minor: 27; Major: 0; Build: 9797; Release:  37829);
+  CoreIde2700UPd1: TVersionNumber = (Minor: 27; Major: 0; Build: 1461; Release:  38860);
+  CoreIde2700UPd2: TVersionNumber = (Minor: 27; Major: 0; Build: 4203; Release:  40680);
 var
   RegValue: Integer;
   CoreIdeFileVersion: TVersionNumber;
-  VersionNumber: Integer;
 begin
   CoreIdeFileVersion := GetFileVersionNumber(GetIdeRootDirectory + 'Bin\coreide270.bpl');
 
-  VersionNumber := CompareVersionNumber(CoreIdeFileVersion, CoreIde2700UPd1);
-  if VersionNumber >= 0 then begin
+  if CompareVersionNumber(CoreIdeFileVersion, CoreIde2700UPd2) >= 0 then begin
+    Result := ideRS104U2;
+  end else if CompareVersionNumber(CoreIdeFileVersion, CoreIde2700UPd1) >= 0 then begin
     Result := ideRS104U1;
   end else begin
+    // There was patch 2 for 10.4.0 broke StringGrids in a new way
+    // so we have to detect it.
     RegValue := TRegistry_ReadInteger(RegKey, 'Installed', 0, HKEY_CURRENT_USER);
     if RegValue <> 0 then
       Result := ideRS104P2
@@ -1099,7 +1110,7 @@ begin
 
   {$IFDEF VER340}
     Result := GetRS104Version;
-    Assert(Result in [ideRS104, ideRS104P2, ideRS104U1]);
+    Assert(Result in [ideRS104, ideRS104P2, ideRS104U1, ideRs104U2]);
   {$ENDIF VER340}
 
   if Result = ideUnknown then
