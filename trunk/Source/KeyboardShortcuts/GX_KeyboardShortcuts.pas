@@ -60,7 +60,8 @@ uses
   GX_ConfigurationInfo,
   GX_ActionBroker,
   GX_GenericUtils,
-  GX_GetIdeVersion;
+  GX_GetIdeVersion,
+  GX_StringGridDrawFix;
 
 type
   TKeyboardShortcutsExpert = class(TGX_Expert)
@@ -373,20 +374,7 @@ begin
     cnv.Brush.Color := clYellow;
     cnv.Font.Color := clBlack;
   end;
-  cnv.FillRect(_Rect);
-{$IFDEF STRING_GRID_OWNERDRAW_FIX_ENABLED}
-  if GetBorlandIdeVersion in [ideRS104P2, ideRS104U1, ideRS104U2] then begin
-    // Embarcadero managed to bungle the StringGrid redraw fix in patch 2. Now we have to
-    // check whether the grid is focused and use a different x offset in that case.
-    if _Focused then
-      cnv.TextRect(_Rect, _Rect.Left + 6, _Rect.Top + 2, _Text)
-    else
-      cnv.TextRect(_Rect, _Rect.Left + 2, _Rect.Top + 2, _Text);
-  end else
-    cnv.TextRect(_Rect, _Rect.Left, _Rect.Top, _Text);
-{$ELSE}
-  cnv.TextRect(_Rect, _Rect.Left + 2, _Rect.Top + 2, _Text);
-{$ENDIF}
+  TStringGrid_DrawCellFixed(_sg, _Text, _Rect, _State, _Focused);
 end;
 
 procedure TfmGxKeyboardShortcuts.sg_ActionsDrawCell(Sender: TObject; ACol, ARow: Integer;

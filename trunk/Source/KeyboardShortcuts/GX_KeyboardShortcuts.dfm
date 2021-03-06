@@ -1,4 +1,4 @@
-object fmGxKeyboardShortcuts: TfmGxKeyboardShortcuts
+inherited fmGxKeyboardShortcuts: TfmGxKeyboardShortcuts
   Left = 381
   Top = 212
   Width = 605

@@ -1,4 +1,4 @@
-object fmUsesManager: TfmUsesManager
+inherited fmUsesManager: TfmUsesManager
   Left = 311
   Top = 202
   ActiveControl = edtUnitFilter

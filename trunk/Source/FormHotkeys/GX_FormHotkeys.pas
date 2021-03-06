@@ -19,7 +19,8 @@ uses
   ActnList,
   Actions,
   Menus,
-  u_dzTypes;
+  u_dzTypes,
+  GX_BaseForm;
 
 type
   PComponentRec = ^TComponentRec;
@@ -36,7 +37,7 @@ type
   TComponentRecArr = array of TComponentRec;
 
 type
-  Tf_FormHotkeys = class(TForm)
+  Tf_FormHotkeys = class(TfmBaseForm)
     l_HotAndAcceleratorKeys: TLabel;
     TheGrid: TStringGrid;
     TheActionList: TActionList;
@@ -46,10 +47,14 @@ type
     b_somebutton: TButton;
     procedure TheGridDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect;
       State: TGridDrawState);
+    procedure TheGridMouseWheelDown(Sender: TObject; Shift: TShiftState; MousePos: TPoint;
+      var Handled: Boolean);
+    procedure TheGridMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint;
+      var Handled: Boolean);
   private
     FCompRecs: TComponentRecArr;
-    procedure DrawStringGridCell(_sg: TStringGrid; _Text: string; const _Rect: TRect;
-      _State: TGridDrawState; _Focused: Boolean; _Tag: Integer);
+    function ScrollGrid(_Grid: TStringGrid; _Direction: Integer; _Shift: TShiftState;
+      _MousePos: TPoint): Boolean;
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
@@ -62,10 +67,12 @@ implementation
 uses
   ToolsAPI,
   TypInfo,
+  Math,
   u_dzVclUtils,
   GX_OtaUtils,
   GX_Experts,
-  GX_GetIdeVersion;
+  GX_GetIdeVersion,
+  GX_StringGridDrawFix;
 
 type
   TFormHotkeysExpert = class(TGX_Expert)
@@ -132,7 +139,6 @@ begin
 
   UsedActions := TList.Create;
   try
-
     MaxSecondaryShortcutCount := 0;
     cnt := Root.GetComponentCount;
     SetLength(FCompRecs, Offset + cnt);
@@ -237,39 +243,66 @@ procedure Tf_FormHotkeys.TheGridDrawCell(Sender: TObject; ACol, ARow: Integer; R
   State: TGridDrawState);
 var
   sg: TStringGrid absolute Sender;
-begin
-  DrawStringGridCell(sg, sg.Cells[ACol, ARow], Rect, State, sg.Focused, Integer(sg.Objects[ACol, ARow]));
-end;
-
-procedure Tf_FormHotkeys.DrawStringGridCell(_sg: TStringGrid; _Text: string; const _Rect: TRect;
-  _State: TGridDrawState; _Focused: Boolean; _Tag: Integer);
-var
   cnv: TCanvas;
+  s: string;
 begin
-  cnv := TheGrid.Canvas;
-  if _Text = 'N/A' then begin
-    _Text := '';
-    if not (gdSelected in _State) then
+  cnv := sg.Canvas;
+  cnv.Font := sg.Font;
+  if (gdSelected in State) and (not (gdFocused in State) or
+    ([goDrawFocusSelected, goRowSelect] * sg.Options <> [])) then begin
+    cnv.Brush.Color := clhighlight;
+  end else if gdFixed in State then begin
+    cnv.Brush.Color := clBtnFace
+  end else begin
+    cnv.Brush.Color := sg.Color;
+  end;
+  cnv.FillRect(Rect);
+
+  s := sg.Cells[ACol, ARow];
+  if s = 'N/A' then begin
+    s := '';
+    if not (gdSelected in State) then
       cnv.Brush.Color := clSilver;
   end;
-{$IFDEF DEBUG_GRID_DRAWING}
-//  SendDebugFmt('Drawing grid %s: DefaultRowHeight: %d Rect.Left: %d .Top: %d  .Width: %d .Height: %d',
-//    [_sg.Name, _sg.DefaultRowHeight, _Rect.Left, _Rect.Top, _Rect.Right - _Rect.Left, _Rect.Bottom - _Rect.Top]);
-{$ENDIF}
-  cnv.FillRect(_Rect);
-{$IFDEF STRING_GRID_OWNERDRAW_FIX_ENABLED}
-  if GetBorlandIdeVersion in [ideRS104P2, ideRS104U1, ideRS104U2] then begin
-    // Embarcadero managed to bungle the StringGrid redraw fix in patch 2. Now we have to
-    // check whether the grid is focused and use a different x offset in that case.
-    if _Focused then
-      cnv.TextRect(_Rect, _Rect.Left + 6, _Rect.Top + 2, _Text)
-    else
-      cnv.TextRect(_Rect, _Rect.Left + 2, _Rect.Top + 2, _Text);
+  TStringGrid_DrawCellFixed(sg, s, Rect, State, sg.Focused);
+end;
+
+function Tf_FormHotkeys.ScrollGrid(_Grid: TStringGrid; _Direction: Integer;
+  _Shift: TShiftState; _MousePos: TPoint): Boolean;
+var
+  LScrollLines: Integer;
+  NewRow: Integer;
+begin
+  if SystemParametersInfo(SPI_GETWHEELSCROLLLINES, 0, @LScrollLines, 0) then begin
+    if _Shift = [ssCtrl] then
+      LScrollLines := LScrollLines * 3; // Ctrl = Speed
+    if _Shift = [ssShift] then
+      LScrollLines := 1;
+
+    NewRow := _Grid.Row + (_Direction * LScrollLines);
+    NewRow := Max(_Grid.FixedRows, NewRow); // Limit to top row
+    NewRow := Min(_Grid.RowCount - 1, NewRow); // Limit to bottom row
+
+    _Grid.Row := NewRow;
+    Result := True;
   end else
-    cnv.TextRect(_Rect, _Rect.Left, _Rect.Top, _Text);
-{$ELSE}
-    cnv.TextRect(_Rect, _Rect.Left + 2, _Rect.Top + 2, _Text);
-{$ENDIF}
+    Result := False;
+end;
+
+procedure Tf_FormHotkeys.TheGridMouseWheelDown(Sender: TObject; Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+  if (Sender is TStringGrid) then
+    if ScrollGrid(TStringGrid(Sender), +1, Shift, MousePos) then
+      Handled := True;
+end;
+
+procedure Tf_FormHotkeys.TheGridMouseWheelUp(Sender: TObject; Shift: TShiftState; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+  if Sender is TStringGrid then
+    if ScrollGrid(TStringGrid(Sender), -1, Shift, MousePos) then
+      Handled := True;
 end;
 
 { TFormHotkeysExpert }
@@ -306,3 +339,4 @@ initialization
 finalization
 //  FreeAndNil(TheForm);
 end.
+
