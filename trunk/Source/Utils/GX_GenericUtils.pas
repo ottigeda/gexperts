@@ -1314,7 +1314,8 @@ end;
 
 function IsCharSymbol(C: AnsiChar): Boolean;
 begin
-  Result := CharInSet(C, ['#', '$', '&', #39, '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '@', '[', ']', '^']);
+  Result := CharInSet(C, ['#', '$', '&', #39, '(', ')', '*', '+', ',', '-', '.', '/', ':', ';',
+      '<', '=', '>', '@', '[', ']', '^']);
 end;
 
 function IsCharIdentifierStart(C: AnsiChar): Boolean; overload;
@@ -1498,7 +1499,8 @@ begin
     Result := TCharacter.IsSymbol(C) or TCharacter.IsPunctuation(C);
     {$ENDIF}
   {$ELSE not UNICODE}
-  Result := C in ['#', '$', '&', #39, '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '@', '[', ']', '^'];
+  Result := C in ['#', '$', '&', #39, '(', ')', '*', '+', ',', '-', '.', '/', ':', ';',
+    '<', '=', '>', '@', '[', ']', '^'];
   {$ENDIF}
 end;
 
@@ -2055,7 +2057,8 @@ begin
   else
     dwAttrTo := 0;
   SetLength(APath, MAX_PATH);
-  Result := PathRelativePathTo(PChar(APath), PChar(ExtractFilePath(AFrom)), dwAttrFrom, PChar(ExpandFileName(ATo)), dwAttrTo);
+  Result := PathRelativePathTo(PChar(APath), PChar(ExtractFilePath(AFrom)), dwAttrFrom,
+    PChar(ExpandFileName(ATo)), dwAttrTo);
   if Result then
   begin
     SetLength(APath, StrLen(PChar(APath)));
@@ -4969,6 +4972,18 @@ var
   Ver: TOsVersionInfo;
 
 initialization
+{$IFDEF GX_DELPHI_SYDNEY_UP}
+  // Delphi 10.4.2 calls CoCreateInstance(CLSID_WICImagingFactory, ...) in the
+  // initialization of Vcl.WinXCtrls (through several intermediate calls)
+  // This fails if CoInitialize has not been called, which apparently the VCL doesn't do,
+  // so we call it here which will hopefully be executed before Vcl.WinXCtrls
+  // for details see: https://en.delphipraxis.net/topic/4585-runtime-error-217-when-installing-gexperts/
+  // This is actually only necessary to support installing GExperts via
+  // rundll32.exe GExpertsRS104.dll,InstallGExperts
+  // Lets hope that there will be no side effects for normal operation.
+  CoInitialize(nil);
+{$ENDIF}
+
   Initialize;
 
   // Get the RichEditVersion.  Code modified from JvRichEd.
