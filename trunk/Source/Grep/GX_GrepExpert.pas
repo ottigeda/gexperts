@@ -54,7 +54,6 @@ type
     FContextMatchLineColor: TColor;
     FGrepSaveHistoryListItems: Integer;
     FHistoryList: TGrepHistoryList;
-    FContextSaveFixedHeight: Boolean;
     FGrepOnlySaveParamsAction: Integer;
     FGrepFileListDeleteAfterDays: Boolean;
     FGrepHistoryListDefaultPage: Integer;
@@ -174,8 +173,6 @@ type
     property GrepSaveHistoryListItemsToIni: Boolean index 1 read GetGrepSaveHistoryListItems;
     property GrepSaveHistoryListItemsToReg: Boolean index 2 read GetGrepSaveHistoryListItems;
 
-    property ContextSaveFixedHeight: Boolean read FContextSaveFixedHeight write FContextSaveFixedHeight;
-
     property SearchList: TStrings read FSearchList write SetSearchList;
     property ReplaceList: TStrings read FReplaceList write SetReplaceList;
     property MaskList: TStrings read FMaskList write SetMaskList;
@@ -293,8 +290,6 @@ begin
   FGrepOnlySaveParamsAction := 0;
   FGrepHistoryListDefaultPage := 0;
   FGrepQuickRefresh := False;
-
-  FContextSaveFixedHeight := False;
 
   FHistoryIniVersion := 0;
 
@@ -417,8 +412,6 @@ begin
     Dialog.eHistoryPagesTabWidth.Text := IntToStr(GrepHistoryPagesTabWidth);
     Dialog.chkMouseWheelMoveItemIndex.Checked := GrepMouseWheelPrevNextMatch;
 
-    Dialog.chkSaveContextFixedHeight.Checked := ContextSaveFixedHeight;
-
     if Dialog.ShowModal = mrOk then
     begin
       GrepAdvancedOptions := Dialog.chkAdvanced.Checked;
@@ -473,8 +466,6 @@ begin
       end;
 
       GrepMouseWheelPrevNextMatch := GrepAdvancedOptions and Dialog.chkMouseWheelMoveItemIndex.Checked;
-
-      ContextSaveFixedHeight := GrepAdvancedOptions and Dialog.chkSaveContextFixedHeight.Checked;
 
       AutoHide := DIalog.chkGrepAutoHide.Checked;
       SaveSettings;
@@ -541,7 +532,7 @@ begin
 
   _Settings.WriteInteger('NumContextLines', NumContextLines);
   _Settings.WriteInteger('SaveHistoryListItems', FGrepSaveHistoryListItems);
-  _Settings.WriteBool('ContextSaveFixedHeight', ContextSaveFixedHeight);
+  _settings.DeleteKey('ContextSaveFixedHeight');
 
   _Settings.WriteBool('HistoryPagesTabMultilin', GrepHistoryPagesTabMultiline);
   _Settings.WriteInteger('HistoryPagesTabWidth', GrepHistoryPagesTabWidth);
@@ -814,7 +805,6 @@ begin
     FContextMatchLineColor := FContextMatchColor;
 
   FNumContextLines :=  _Settings.ReadInteger('NumContextLines', FNumContextLines);
-  FContextSaveFixedHeight := _Settings.ReadBool('ContextSaveFixedHeight', FContextSaveFixedHeight);
 
   FGrepHistoryPagesTabMultiline := _Settings.ReadBool('HistoryPagesTabMultilin', GrepHistoryPagesTabMultiline);
   FGrepHistoryPagesTabWidth := _Settings.ReadInteger('HistoryPagesTabWidth', GrepHistoryPagesTabWidth);

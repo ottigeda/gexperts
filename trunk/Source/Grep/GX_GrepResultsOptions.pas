@@ -56,7 +56,6 @@ type
     chkAdvanced: TCheckBox;
     chkQuickRefreshMode: TCheckBox;
     chkEmptyMoveToParams: TCheckBox;
-    chkSaveContextFixedHeight: TCheckBox;
     cbxOpenSaveOptionDefaultValue: TComboBox;
     lblSearchSaveOption: TLabel;
     lblOpenSaveOption: TLabel;
@@ -103,7 +102,6 @@ begin
   eExpandIfMatches.Visible := IsAdvanced;
   eExpandIfFiles.Visible := IsAdvanced;
   eExpandFewLines.Visible := IsAdvanced;
-  chkSaveContextFixedHeight.Visible := IsAdvanced;
   chkHistoryPagesTabMultiLine.Visible := IsAdvanced;
   lblHistoryPagesTabWidth.Visible := IsAdvanced;
   eHistoryPagesTabWidth.Visible := IsAdvanced;

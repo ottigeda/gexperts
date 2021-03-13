@@ -4,7 +4,7 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Grep Results Options'
-  ClientHeight = 542
+  ClientHeight = 529
   ClientWidth = 659
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -154,12 +154,9 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
     Left = 334
     Top = 311
     Width = 317
-    Height = 193
+    Height = 178
     Caption = 'Match Context Display'
     TabOrder = 3
-    DesignSize = (
-      317
-      193)
     object lblContextLines: TLabel
       Left = 48
       Top = 147
@@ -220,19 +217,10 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
       TabOrder = 1
       OnClick = pnlContextMacthLineFontColorClick
     end
-    object chkSaveContextFixedHeight: TCheckBox
-      Left = 8
-      Top = 168
-      Width = 297
-      Height = 17
-      Anchors = [akLeft, akTop, akRight]
-      Caption = 'Save context display (fixed) height'
-      TabOrder = 5
-    end
   end
   object btnOK: TButton
     Left = 496
-    Top = 511
+    Top = 496
     Width = 75
     Height = 25
     Caption = 'OK'
@@ -242,7 +230,7 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
   end
   object btnCancel: TButton
     Left = 576
-    Top = 511
+    Top = 496
     Width = 75
     Height = 25
     Cancel = True
@@ -467,12 +455,12 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
     Left = 8
     Top = 311
     Width = 317
-    Height = 193
+    Height = 178
     Caption = 'List Display'
     TabOrder = 2
     DesignSize = (
       317
-      193)
+      178)
     object pnlListMatchTextColor: TPanel
       Left = 48
       Top = 96
@@ -519,7 +507,7 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
   end
   object chkAdvanced: TCheckBox
     Left = 8
-    Top = 515
+    Top = 504
     Width = 121
     Height = 17
     Caption = 'Advanced mode'
@@ -532,8 +520,6 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = []
-    MinFontSize = 0
-    MaxFontSize = 0
     Left = 271
     Top = 332
   end
@@ -543,31 +529,25 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
     Font.Height = -11
     Font.Name = 'Courier New'
     Font.Style = []
-    MinFontSize = 0
-    MaxFontSize = 0
     Left = 602
     Top = 329
   end
   object dlgContextMatchFontColor: TColorDialog
-    Ctl3D = True
     Options = [cdSolidColor]
     Left = 601
     Top = 409
   end
   object dlgListMatchTextColor: TColorDialog
-    Ctl3D = True
     Options = [cdSolidColor]
     Left = 273
     Top = 401
   end
   object dlgListMatchBackgroundColor: TColorDialog
-    Ctl3D = True
     Options = [cdSolidColor]
     Left = 273
     Top = 441
   end
   object dlgContextMatchLineFontColor: TColorDialog
-    Ctl3D = True
     Options = [cdSolidColor]
     Left = 601
     Top = 369

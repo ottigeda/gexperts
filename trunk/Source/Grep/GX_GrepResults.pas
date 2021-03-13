@@ -309,8 +309,7 @@ type
     FShowFullFilename: Boolean;
     FShowLineIndent: Boolean;
     FShowHistoryList: Boolean;
-    FLoadContextHeight: Integer;
-    FLoadContextHeightPercent: Integer;
+    FLoadedContextHeightRelative: Integer;
     FLoadHistoryListWidth: Integer;
     FLoadHistoryListPage: Integer;
     FContextSearchText: string;
@@ -860,13 +859,13 @@ end;
 
 function ForceBetween(_Min, _Max, _Value: Integer): Integer;
 begin
-  Result := Max(_Min, Max(_Max, _Value));
+  Result := Max(_Min, Min(_Max, _Value));
 end;
 
 procedure TfmGrepResults.InternalSaveSettings(_Settings: IExpertSettings);
 var
   WindowSettings: IExpertSettings;
-  Percent: integer;
+  PerTenThousand: Integer;
   IM: TGrepHistoryListMode;
   IT: TPageIndexType;
 begin
@@ -881,13 +880,14 @@ begin
   WindowSettings.WriteBool('ShowContext', ShowContext);
   WindowSettings.WriteBool('ShowHistoryList', ShowHistoryList);
 
-  if gblGrepExpert.ContextSaveFixedHeight then
-    WindowSettings.WriteInteger('ContextHeight', reContext.Height)
-  else begin
-    Percent := (reContext.Height * 100) div ClientHeight;
-    Percent := ForceBetween(20, 50, Percent);
-    WindowSettings.WriteInteger('ContextHeightPercent', Percent);
-  end;
+  // this used to be a pixel value and later a percent value, now it is a per-10-thousand
+  // value to account for higher resolution monitors and changing resolutions due to multiple
+  // monitors and Remote Desktop
+  PerTenThousand := MulDiv(reContext.Height, 10000, ClientHeight);
+  PerTenThousand := ForceBetween(1000, 5000, PerTenThousand);
+  WindowSettings.WriteInteger('ContextHeightRelative', PerTenThousand);
+  WindowSettings.DeleteKey('ContextHeightPercent');
+  WindowSettings.DeleteKey('ContextHeight');
 
   WindowSettings.WriteInteger('HistoryListWidth', lbHistoryList.Width);
 
@@ -965,17 +965,19 @@ begin
     FLoadHistoryListWidth := WindowSettings.ReadInteger('HistoryListWidth', lbHistoryList.Width);
   end;
 
-  if WindowSettings.ValueExists('ContextHeightPercent') then begin
-    FLoadContextHeightPercent := WindowSettings.ReadInteger('ContextHeightPercent', 20);
-    FLoadContextHeightPercent := ForceBetween(20, 50, FLoadContextHeightPercent);
-  end else
-    FLoadContextHeightPercent := -1;
-
-  if WindowSettings.ValueExists('ContextHeight') then
-    FLoadContextHeight := WindowSettings.ReadInteger('ContextHeight', reContext.Height)
-  else
-    FLoadContextHeight := pnlMain.Height - ToolBar.Height - SplitterContext.Height -
-      WindowSettings.ReadInteger('ResultsHeight', lbResults.Height);
+  // this used to be a pixel value and later a percent value, now it is a per-10-thousand
+  // value to account for higher resolution monitors and changing resolutions due to multiple
+  // monitors and Remote Desktop
+  if WindowSettings.ValueExists('ContextHeightRelative') then begin
+    FLoadedContextHeightRelative := WindowSettings.ReadInteger('ContextHeightRelative', 2000);
+  end else if WindowSettings.ValueExists('ContextHeightPercent') then begin
+    FLoadedContextHeightRelative := WindowSettings.ReadInteger('ContextHeightPercent', 20) * 100;
+  end else if WindowSettings.ValueExists('ContextHeight') then begin
+    FLoadedContextHeightRelative := MulDiv(WindowSettings.ReadInteger('ContextHeight', reContext.Height), 10000, ClientHeight);
+  end else begin
+    FLoadedContextHeightRelative := 2000;
+  end;
+  FLoadedContextHeightRelative := ForceBetween(1000, 5000, FLoadedContextHeightRelative);
 
   ShowFullFilename := WindowSettings.ReadBool('ShowFullFilename', False);
   ShowLineIndent := WindowSettings.ReadBool('ShowLineIndent', False);
@@ -989,10 +991,7 @@ begin
   FEmbeddedGrepSearch.EmbeddedInit(lbResults, DoEmbeddedSearch);
 
   gblGrepExpert.HistoryList.Enabled := ShowHistoryList;
-  if not gblGrepExpert.ContextSaveFixedHeight and (FLoadContextHeightPercent > 0) then
-    reContext.Height := (ClientHeight * FLoadContextHeightPercent) div 100
-  else
-    reContext.Height := FLoadContextHeight;
+  reContext.Height := MulDiv(ClientHeight, FLoadedContextHeightRelative, 10000);
 
   if FShowHistoryList then
   begin
