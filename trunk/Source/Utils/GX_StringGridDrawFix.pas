@@ -38,12 +38,18 @@ procedure TStringGrid_DrawCellFixed(_sg: TStringGrid; const _Text: string; const
       Result := Result + ', gdFocused';
     if gdFixed in _State then
       Result := Result + ', gdFixed';
+{$IF Declared(gdRowSelected)}
     if gdRowSelected in _State then
       Result := Result + ', gdRowSelected';
+{$IFEND}
+{$IF Declared(gdHotTrack)}
     if gdHotTrack in _State then
       Result := Result + ', gdHotTrack';
+{$IFEND}
+{$IF Declared(gdPressed)}
     if gdPressed in _State then
       Result := Result + ', gdPressed';
+{$IFEND}
     if Result <> '' then
       Result := Copy(Result, 3);
   end;
