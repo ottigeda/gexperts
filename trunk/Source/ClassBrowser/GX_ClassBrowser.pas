@@ -185,7 +185,7 @@ type
     FStayInPackage: Boolean;
     FParseRecursing: Boolean;
     FAutomaticallyHideBrowser: Boolean;
-    FLoadProject: Boolean;
+    FProjectNeedsLoading: Boolean;
     FStartingDir: string;
     FCurrentCodePaneFile: string;
     FClassHierarchyFontSize: Integer;
@@ -295,7 +295,7 @@ begin
             if Visible then
               AddProject
             else
-              FLoadProject := True;
+              FProjectNeedsLoading := True;
           end;
         end;
       end;
@@ -1405,12 +1405,14 @@ begin
     LoadAllObjects;
   end;
 
-  StatusBar.SimpleText := SLoadingProject;
-  StatusBar.Repaint;
-  FLoadProject := False;
-  RemoveProject;
-  Application.ProcessMessages;
-  AddProject;
+  if FProjectNeedsLoading then begin
+    StatusBar.SimpleText := SLoadingProject;
+    StatusBar.Repaint;
+    FProjectNeedsLoading := False;
+    RemoveProject;
+    Application.ProcessMessages;
+    AddProject;
+  end;
 end;
 
 procedure TfmClassBrowser.PrintClassDiagramBuiltIn(OInfo: TBrowseClassInfoCollection;
@@ -1540,7 +1542,7 @@ begin
   SetNonModalFormPopupMode(Self);
   FStartingDir := ExtractFilePath(Application.ExeName);
   FIsFirstInvocation := True;
-  FLoadProject := True;
+  FProjectNeedsLoading := True;
   FLastHitTestItemIdx := -1;
 
   SetupEditorControls;
