@@ -166,6 +166,7 @@ begin
     FEditor := TSynMemo.Create(nil);
     FEditor.Gutter.Width := 0;
     FEditor.Options := FEditor.Options - [eoScrollPastEof, eoScrollPastEol, eoTabsToSpaces];
+    FEditor.RightEdge := 0;
     (FEditor.Lines as TSynEditStringList).AppendNewLineAtEOF := False;
 
     FEditor.Parent := Self;
