@@ -23,7 +23,8 @@ implementation
 uses
   Graphics,
   GX_GetIdeVersion,
-  DbugIntf;
+  DbugIntf,
+  u_dzStringUtils;
 
 procedure TStringGrid_DrawCellFixed(_sg: TStringGrid; const _Text: string; const _Rect: TRect;
   _State: TGridDrawState; _Focused: Boolean);
@@ -88,6 +89,3 @@ begin
 end;
 
 end.
-
-
-
