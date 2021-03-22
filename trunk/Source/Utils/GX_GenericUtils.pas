@@ -3803,36 +3803,15 @@ function GetDirectory(const Caption: string; var Dir: string; Parent: TWinContro
 var
   OldErrorMode: UINT;
   BrowseRoot: WideString;
-{$IFDEF GX_VER185_up} // Delphi 2007 (11; BDS 4)
-  fo: TFileOpenDialog;
-{$ENDIF}
 begin
   if Parent = nil then
     Parent := Screen.ActiveCustomForm;
-{$IFDEF GX_VER185_up} // Delphi 2007 (11; BDS 4)
-  if IsWindowsVistaOrLater then begin
-    fo := TFileOpenDialog.Create(Parent);
-    try
-      fo.Options := [fdoPickFolders];
-      fo.Title := Caption;
-      fo.DefaultFolder := Dir;
-      fo.FileName := '';
-      Result := fo.Execute;
-      if Result then
-        Dir := fo.FileName;
-    finally
-      FreeAndNil(fo);
-    end;
-  end else
-{$ENDIF}
-  begin
-    OldErrorMode := SetErrorMode(SEM_FAILCRITICALERRORS);
-    try
-      BrowseRoot := '';
-      Result := dzSelectDirectory(Caption, BrowseRoot, Dir, [sdNewUI], Parent);
-    finally
-      SetErrorMode(OldErrorMode);
-    end;
+  OldErrorMode := SetErrorMode(SEM_FAILCRITICALERRORS);
+  try
+    BrowseRoot := '';
+    Result := dzSelectDirectory(Caption, BrowseRoot, Dir, [sdNewUI], Parent);
+  finally
+    SetErrorMode(OldErrorMode);
   end;
 end;
 
