@@ -56,6 +56,38 @@ uses
   u_dzTypes,
   u_dzVclUtils;
 
+{$IF Declared(TFileOpenDialog)}
+function dzSelectDirectoryVistaAndUp(const Caption: string; const Root: string; var Directory: string;
+  Options: TSelectDirExtOpts; Parent: TWinControl): Boolean;
+var
+  DlgOptions: TFileDialogOptions;
+  Dlg: TFileOpenDialog;
+begin
+  // _Options will be ignored since there is no equivalent in TFileDialogOptions
+  DlgOptions := [fdoPickFolders, fdoForceFileSystem];
+
+  Dlg := TFileOpenDialog.Create(Parent);
+  try
+    Dlg.Options := DlgOptions;
+    if Caption <> '' then
+      Dlg.Title := Caption;
+    if Directory <> '' then
+      Dlg.DefaultFolder := Directory;
+
+    if Assigned(Parent) then
+      Result := Dlg.Execute(Parent.Handle)
+    else
+      Result := Dlg.Execute;
+
+    if Result then begin
+      Directory := Dlg.FileName;
+    end;
+  finally
+    Dlg.Free;
+  end;
+end;
+{$IFEND}
+
 type
   TSelectDirCallback = class(TObject)
   private
@@ -212,7 +244,7 @@ end;
 
 // This is copied from FileCtrl, mostly unchanged. I removed the WITH statement though.
 
-function dzSelectDirectory(const Caption: string; const Root: WideString;
+function dzSelectDirectoryXP(const Caption: string; const Root: WideString;
   var Directory: string; Options: TSelectDirExtOpts = [sdNewUI]; Parent: TWinControl = nil): Boolean;
 {$IF not Declared(BIF_NEWDIALOGSTYLE)}
 const
@@ -311,6 +343,20 @@ begin
       ShellMalloc.Free(Buffer);
     end;
   end;
+end;
+
+function dzSelectDirectory(const Caption: string; const Root: WideString;
+  var Directory: string; Options: TSelectDirExtOpts = [sdNewUI]; Parent: TWinControl = nil): Boolean;
+begin
+{$IF Declared(TFileOpenDialog)}
+  if Win32MajorVersion < 6 then begin
+{$IFEND}
+    Result := dzSelectDirectoryXP(Caption, Root, Directory, Options, Parent);
+{$IF Declared(TFileOpenDialog)}
+  end else begin
+    Result := dzSelectDirectoryVistaAndUp(Caption, Root, Directory, Options, Parent);
+  end;
+{$IFEND}
 end;
 
 end.

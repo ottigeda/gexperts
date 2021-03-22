@@ -86,6 +86,21 @@ const
   MaxInt32 = $7FFFFFFF;
 {$IFEND}
 
+{$IF not declared(MinInt64)}
+const
+{$IFDEF DELPHI2005_UP}
+  MinInt64 = -$8000000000000000;
+{$ELSE}
+  // for Delphi 6 and 7 we need to increment it by one:
+  MinInt64 = -$7FFFFFFFFFFFFFFF;
+{$ENDIF}
+{$IFEND}
+
+{$IF not declared(MaxInt64)}
+const
+  MaxInt64 = $7FFFFFFFFFFFFFFF;
+{$IFEND}
+
 {$IF not declared(MinInt32)}
 const
 {$IFDEF DELPHI2005_UP}

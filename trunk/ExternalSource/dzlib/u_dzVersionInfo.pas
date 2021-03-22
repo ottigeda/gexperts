@@ -182,7 +182,6 @@ implementation
 
 uses
   Windows,
-  Forms,
   u_dzTranslator,
   u_dzOsUtils;
 

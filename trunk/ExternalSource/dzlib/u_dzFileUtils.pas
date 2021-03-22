@@ -1001,6 +1001,14 @@ type
     ///<summary>
     /// Short for ChangeFileExtLast(_Filename, '') </summary>
     class function RemoveFileExtLast(const _Filename: string): string;
+    ///<summary>
+    /// Sets the file's date and time to the given time or to the current time
+    /// @param Fileanme is the name of the file to touch
+    /// @param lpSystemTime is a pointer to a TSystemTime record givng the time,
+    ///                     Defaults to NIL which uses the current system time.
+    /// @raises EFileNotFound if the file does not exist
+    /// @raises EOsError if there calling the Windows API fails </summary>
+    class procedure TouchFileTimes(const _Filename: string; lpSystemTime: PSystemTime = nil);
   end;
 
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
@@ -1690,6 +1698,29 @@ begin
     end;
   finally
     LocalFree(HLOCAL(SecurityDescriptor));
+  end;
+end;
+
+function _TouchFileTimes(FileHandle: THandle; lpSystemTime: PSystemTime):
+  BOOL; stdcall; external 'IMAGEHLP.DLL' Name 'TouchFileTimes';
+
+class procedure TFileSystem.TouchFileTimes(const _Filename: string; lpSystemTime: PSystemTime);
+var
+  Handle: THandle;
+  Res: BOOL;
+  LastError: DWORD;
+begin
+  Handle := CreateFile(PChar(_Filename), GENERIC_WRITE, 0, nil, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+  if Handle = INVALID_HANDLE_VALUE then
+    raise EFileNotFound.CreateFmt(_('File not found: "%s"'), [_Filename]);
+  try
+    Res := _TouchFileTimes(Handle, lpSystemTime);
+    if not Res then begin
+      LastError := GetLastError;
+      RaiseLastOSErrorEx(LastError, Format(_('Error %%1:s (%%0:d) while trying to change the date and time of "%s"'), [_Filename]));
+    end;
+  finally
+    CloseHandle(Handle);
   end;
 end;
 

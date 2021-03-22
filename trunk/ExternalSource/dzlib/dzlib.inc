@@ -74,13 +74,13 @@
 {$DEFINE MAXLISTSIZE_IS_DEPRECATED}
 {$ENDIF}
 
-{$IFDEF DELPHIX_SEATTLE}
+{$IFDEF DELPHIX_SEATTLE_UP}
 // TMonitor.PixelsPerInch was introduced in Delphi 10.0 Seattle
 {$DEFINE HAS_TMONITOR_PIXELSPERINCH}
 {$ENDIF}
 
-{$IFDEF DELPHIX_BERLIN}
-// TMonitor.PixelsPerInch was introduced in Delphi 10.0 Seattle
+{$IFDEF DELPHIX_BERLIN_UP}
+// TMform.GetDesignDpi was introduced in Delphi 10.0 Seattle
 {$DEFINE HAS_TFORM_GETDESIGNDPI}
 {$ENDIF}
 

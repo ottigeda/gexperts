@@ -43,8 +43,6 @@ type
   TBaseN = 2..36;
 
 const
-  MinInt64 = Int64($8000000000000000);
-  MaxInt64 = Int64($7FFFFFFFFFFFFFFF);
   MaxLongWord = $FFFFFFFF;
 
 const
