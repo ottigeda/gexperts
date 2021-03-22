@@ -939,7 +939,7 @@ end;
   dcldb270.bpl         27.0.37889.9797
 
   Patch1 and Patch2 apparently did not change any of these versions and even those files
-  the patches relplaced still have the same version as the original files. WTF?
+  the patches replaced still have the same version as the original files. WTF?
 
   Delphi 10.4.1 Sydney Update 1
   File                 File Version    Size       Modified Time
@@ -973,7 +973,7 @@ begin
   end else if CompareVersionNumber(CoreIdeFileVersion, CoreIde2700UPd1) >= 0 then begin
     Result := ideRS104U1;
   end else begin
-    // There was patch 2 for 10.4.0 broke StringGrids in a new way
+    // There was patch 2 for 10.4.0 which broke StringGrids in a new way
     // so we have to detect it.
     RegValue := TRegistry_ReadInteger(RegKey, 'Installed', 0, HKEY_CURRENT_USER);
     if RegValue <> 0 then
