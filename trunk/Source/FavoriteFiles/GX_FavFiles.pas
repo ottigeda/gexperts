@@ -177,7 +177,7 @@ type
     FOnSettingsChanged: TNotifyEvent;
     function GetFolder(const FolderNode: TTreeNode): TGXFolder;
     function GetFile(const FileItem: TListItem): TGXFile;
-    procedure FileToListItem(const AFile: TGXFile; const AListItem: TListItem);
+    procedure FileToListItem(const AFile: TGXFile; AListItem: TListItem);
     procedure SetupSystemImageLists;
     function AddFolder(const Text: string; FType: TFolderType): TTreeNode;
     procedure DeleteSelectedFiles;
@@ -374,6 +374,82 @@ begin
   Result := Node;
 end;
 
+type
+  TListViewUpdater = class(TInterfacedObject)
+  private
+    FListView: TListView;
+    FColumnWidths: array of integer;
+    FOnChange: TLVChangeEvent;
+    FSortType: TSortType;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+  public
+    constructor Create(_lv: TListView);
+    destructor Destroy; override;
+  end;
+
+{ TListViewUpdater }
+
+constructor TListViewUpdater.Create(_lv: TListView);
+begin
+  inherited Create;
+  FListView := _lv;
+  BeginUpdate;
+end;
+
+destructor TListViewUpdater.Destroy;
+begin
+  EndUpdate;
+  inherited;
+end;
+
+procedure TListViewUpdater.BeginUpdate;
+var
+  cnt: integer;
+  cols: TListColumns;
+  i: Integer;
+begin
+  cols := FListView.Columns;
+  cnt := FListView.Columns.Count;
+
+  cols.BeginUpdate;
+  FListView.Items.BeginUpdate;
+
+  FOnChange := fListView.OnChange;
+  SetLength(FColumnWidths, cnt);
+  for i := 0 to cnt - 1 do
+    FColumnWidths[i] := cols[i].Width;
+  FSortType := FListView.SortType;
+
+  for i := 0 to cnt - 1 do
+    cols[i].Width := 50;
+  FListView.OnChange := nil;
+  FListView.SortType := stNone;
+end;
+
+procedure TListViewUpdater.EndUpdate;
+var
+  cnt: integer;
+  cols: TListColumns;
+  i: Integer;
+begin
+  cols := FListView.Columns;
+  cnt := FListView.Columns.Count;
+
+  for i := 0 to cnt-1 do
+    cols[i].Width := FColumnWidths[i];
+  FListView.OnChange := FOnChange;
+  FListView.SortType := FSortType;
+
+  cols.EndUpdate;
+  FListView.Items.EndUpdate;
+end;
+
+function TListView_BeginUpdate(_lv: TListView): IInterface;
+begin
+  Result := TListViewUpdater.Create(_lv);
+end;
+
 procedure TfmFavFiles.tvFoldersChange(Sender: TObject; Node: TTreeNode);
 resourcestring
   SItems = '%d favorite(s)';
@@ -388,31 +464,29 @@ begin
   if tvFolders.Selected = nil then
     Exit;
 
+
   TCursor_TempHourglass;
-  ListView.Items.BeginUpdate;
-  try
-    ListView.Items.Clear;
-    ListView.SortType := stNone;
-    Folder := GetFolder(tvFolders.Selected);
-    for i := 0 to Folder.FileCount - 1 do
-    begin
-      mFile := Folder.Files[i];
-      LItem := ListView.Items.Add;
-      FileToListItem(mFile, LItem);
-    end;
-    StatusBar.SimpleText := Format(SItems, [ListView.Items.Count]);
-  finally
-    ListView.SortType := stText;
-    ListView.Items.EndUpdate;
-    tvFolders.Selected := tvFolders.Selected; //FI:W503 - Assignment has side effects
+  TListView_BeginUpdate(ListView);
+  ListView.Items.Clear;
+  Folder := GetFolder(tvFolders.Selected);
+  for i := 0 to Folder.FileCount - 1 do
+  begin
+    mFile := Folder.Files[i];
+    LItem := ListView.Items.Add;
+    FileToListItem(mFile, LItem);
   end;
+  StatusBar.SimpleText := Format(SItems, [ListView.Items.Count]);
+  tvFolders.Selected := tvFolders.Selected; //FI:W503 - Assignment has side effects
 end;
 
 procedure TfmFavFiles.DeleteSelectedFiles;
 var
   i: Integer;
 begin
-  if ListView.Selected = nil then Exit;
+  if ListView.Selected = nil then
+    Exit;
+
+  TListView_BeginUpdate(ListView);
   i := 0;
   while i <= ListView.Items.Count - 1 do
   begin
@@ -1033,16 +1107,12 @@ end;
 
 procedure TfmFavFiles.FormShow(Sender: TObject);
 begin
-  FFileDrop := TDropFileTarget.Create(nil);
-  FFileDrop.OnDrop := DropFiles;
-  FFileDrop.DragTypes := [dtCopy, dtMove, dtLink];
-  FFileDrop.ShowImage := True;
   FFileDrop.Register(ListView);
 end;
 
 procedure TfmFavFiles.FormHide(Sender: TObject);
 begin
-  FreeAndNil(FFileDrop);
+  FFileDrop.Unregister;
   SaveEntries;
   SaveSettings;
 end;
@@ -1121,30 +1191,26 @@ begin
   LItem := nil;
   Folder := GetFolder(tvFolders.Selected);
   TCursor_TempHourglass;
-  ListView.Items.BeginUpdate;
-  try
-    for i := 0 to Files.Count - 1 do
-    begin
-      mFile := TGXFile.Create(Folder);
-      try
-        mFile.FileName := MakeFileNameRelative(Files[i]);
-        mFile.Description := MakeFileNameAbsolute(mFile.FileName);
-        mFile.DName := ExtractFileName(mFile.FileName);
-        mFile.ExecType := UpperFileExtToExecType(ExtractUpperFileExt(mFile.FileName));
-        mFile.ExecProg := '';
-        LItem := ListView.Items.Add;
-        FileToListItem(mFile, LItem);
-      except
-        on E: Exception do
-        begin
-          FreeAndNil(mFile);
-          raise;
-        end;
+  TListView_BeginUpdate(ListView);
+  for i := 0 to Files.Count - 1 do
+  begin
+    mFile := TGXFile.Create(Folder);
+    try
+      mFile.FileName := MakeFileNameRelative(Files[i]);
+      mFile.Description := MakeFileNameAbsolute(mFile.FileName);
+      mFile.DName := ExtractFileName(mFile.FileName);
+      mFile.ExecType := UpperFileExtToExecType(ExtractUpperFileExt(mFile.FileName));
+      mFile.ExecProg := '';
+      LItem := ListView.Items.Add;
+      FileToListItem(mFile, LItem);
+    except
+      on E: Exception do
+      begin
+        FreeAndNil(mFile);
+        raise;
       end;
-      FModified := True;
     end;
-  finally
-    ListView.Items.EndUpdate;
+    FModified := True;
   end;
   if Assigned(LItem) then
   begin
@@ -1515,12 +1581,19 @@ begin
   LoadSettings;
   LoadEntries;
 
+  FFileDrop := TDropFileTarget.Create(nil);
+  FFileDrop.OnDrop := DropFiles;
+  FFileDrop.DragTypes := [dtCopy, dtMove, dtLink];
+  FFileDrop.ShowImage := True;
+
   SetShowPreview(FOptions.FShowPreview);
 
+  ListView.Columns.BeginUpdate;
   ListView.Columns[0].Width := ColumnTextWidth;
   ListView.Columns[1].Width := ColumnTextWidth;
   ListView.Columns[2].Width := ColumnTextWidth;
   ListView.Columns[3].Width := ColumnTextWidth;
+  ListView.Columns.EndUpdate;
 end;
 
 destructor TfmFavFiles.Destroy;
@@ -1592,7 +1665,7 @@ begin
     Result := TGXFile(FileItem.Data);
 end;
 
-procedure TfmFavFiles.FileToListItem(const AFile: TGXFile; const AListItem: TListItem);
+procedure TfmFavFiles.FileToListItem(const AFile: TGXFile; AListItem: TListItem);
 begin
   AListItem.Caption := AFile.DName;
   AListItem.SubItems.Clear;
