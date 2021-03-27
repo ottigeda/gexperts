@@ -134,7 +134,6 @@ type
     procedure tvFoldersDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure tvFoldersChanging(Sender: TObject; Node: TTreeNode; var AllowChange: Boolean);
     procedure tvFoldersEndDrag(Sender, Target: TObject; X, Y: Integer);
-    procedure FormShow(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure actFileNewFolderExecute(Sender: TObject);
     procedure actFileExitExecute(Sender: TObject);
@@ -1008,11 +1007,6 @@ end;
 procedure TfmFavFiles.tvFoldersEndDrag(Sender, Target: TObject; X, Y: Integer);
 begin
   tvFolders.EndDrag(False);
-end;
-
-procedure TfmFavFiles.FormShow(Sender: TObject);
-begin
-  //LoadSettings;
 end;
 
 procedure TfmFavFiles.FormHide(Sender: TObject);

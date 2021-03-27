@@ -6,6 +6,7 @@ object fmFavFiles: TfmFavFiles
   ClientHeight = 342
   ClientWidth = 495
   Color = clBtnFace
+  DefaultMonitor = dmDesktop
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
@@ -14,7 +15,7 @@ object fmFavFiles: TfmFavFiles
   KeyPreview = True
   Menu = MainMenu
   OldCreateOrder = True
-  Position = poScreenCenter
+  Position = poDesigned
   Scaled = False
   OnClose = FormClose
   OnHide = FormHide
