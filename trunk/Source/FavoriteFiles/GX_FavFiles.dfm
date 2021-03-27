@@ -20,6 +20,7 @@ object fmFavFiles: TfmFavFiles
   OnClose = FormClose
   OnHide = FormHide
   OnKeyPress = FormKeyPress
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 14
   object splTreeView: TSplitter

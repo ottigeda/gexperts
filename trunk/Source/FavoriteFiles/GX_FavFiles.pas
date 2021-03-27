@@ -18,6 +18,7 @@ type
     FExecHide: Boolean;
     FShowPreview: Boolean;
     FIsFavMenuVisible: Boolean;
+    FFileFilter: string;
     constructor Create;
   end;
 
@@ -165,6 +166,7 @@ type
     procedure actFileMoveDownExecute(Sender: TObject);
     procedure mitFileCollectionsClick(Sender: TObject);
     procedure actAddCurrentFileExecute(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FFileViewer: TFileViewer;
     FEntryFile: string;
@@ -223,14 +225,15 @@ implementation
 
 uses
   Messages, ShellAPI, StrUtils, DropSource,
+  ToolsAPI, Math,
+  u_dzVclUtils,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  ToolsAPI, Math, 
   GX_FavNewFolder, GX_FavFolderProp, GX_FavFileProp, GX_FavOptions,
   {$IFNDEF STANDALONE}
   GX_ConfigurationInfo, GX_Experts, GX_GExperts,
   {$ENDIF STANDALONE}
   GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_SharedImages, OmniXML,
-  GX_XmlUtils, GX_IdeUtils, u_dzVclUtils;
+  GX_XmlUtils, GX_IdeUtils;
 
 type
   EFavFiles = class(Exception);
@@ -796,11 +799,14 @@ begin
     Settings.DeleteKey('EntryFile')
   else
     Settings.WriteString('EntryFile', FEntryFile);
+
   Settings.WriteBool('FolderDelete', FOptions.FFolderDelete);
   Settings.WriteBool('ExpandAll', FOptions.FExpandAll);
   Settings.WriteBool('ExecHide', FOptions.FExecHide);
   Settings.WriteBool('ShowPreview', FOptions.FShowPreview);
   Settings.WriteBool('IsFavMenuVisible', FOptions.FIsFavMenuVisible);
+  Settings.WriteString('FileFilter', FOptions.FFileFilter);
+
   Settings.WriteInteger('Window\ListView', Ord(ListView.ViewStyle));
   Settings.WriteStrings('MRUEntryFiles', MRUEntryFiles, 'EntryFile');
 
@@ -819,11 +825,14 @@ begin
   tvFolders.Width := Settings.ReadInteger('Window\Splitter', tvFolders.Width);
   FFileViewer.Height := Settings.ReadInteger('Window\Splitter2', FFileViewer.Height);
   EntryFile := Settings.ReadString('EntryFile', GetDefaultEntryFileName);
+
   FOptions.FFolderDelete := Settings.ReadBool('FolderDelete', FOptions.FFolderDelete);
   FOptions.FExpandAll := Settings.ReadBool('ExpandAll', FOptions.FExpandAll);
   FOptions.FExecHide := Settings.ReadBool('ExecHide', FOptions.FExecHide);
   FOptions.FShowPreview := Settings.ReadBool('ShowPreview', FOptions.FShowPreview);
   FOptions.FIsFavMenuVisible := Settings.ReadBool('IsFavMenuVisible', FOptions.FIsFavMenuVisible);
+  FOptions.FFileFilter := Settings.ReadString('FileFilter', FOptions.FFileFilter);
+
   ListView.ViewStyle := TViewStyle(Settings.ReadInteger('Window\ListView', Ord(ListView.ViewStyle)));
   Assert(ListView.ViewStyle in [Low(TViewStyle)..High(TViewStyle)]);
   MRUEntryFiles.Clear;
@@ -863,6 +872,18 @@ begin
   if tvFolders.Selected = nil then
     Exit;
 
+  // Source Files (*.dpr;*.bpr;*.dpk;*.bpk;*.bpg;*.bdsproj;*.pas;*.cpp;*.hpp;*.c;*.h)
+  // Project Files (*.dpr;*.bpr;*.dpk;*.bpk;*.bpg;*.bdsproj;*.bdsgroup;*.dproj;*.groupproj)
+  // Pascal Files (*.pas;*.inc)
+  // Help Files (*.chm;*.hlp)
+  // Graphics Files (*.bmp;*.wmf;*.jpg;*.png;*.gif;*.ico)
+  // Text Files (*.txt;*.me;*.asc;*.xml;*.iss)
+  // HTML Files (*.html;*.htm)
+  // Executable Files (*.exe)
+  // SQL Scripts (*.sql)
+  // C/C++ (*.c;*.cpp;*.h;*.hpp)
+  dlgGetFiles.Filter := FOptions.FFileFilter + '|All Files (' + AllFilesWildCard + ')|' + AllFilesWildCard;
+
   Folder := GetFolder(tvFolders.Selected);
   case Folder.FolderType of
     ftNormal: dlgGetFiles.FilterIndex := 11;
@@ -870,7 +891,8 @@ begin
     ftBitmap: dlgGetFiles.FilterIndex := 5;
     ftGlyph: dlgGetFiles.FilterIndex := 5;
     ftDocs: dlgGetFiles.FilterIndex := 4;
-    else      dlgGetFiles.FilterIndex := 10;
+  else
+    dlgGetFiles.FilterIndex := 10;
   end;
 end;
 
@@ -1009,8 +1031,18 @@ begin
   tvFolders.EndDrag(False);
 end;
 
+procedure TfmFavFiles.FormShow(Sender: TObject);
+begin
+  FFileDrop := TDropFileTarget.Create(nil);
+  FFileDrop.OnDrop := DropFiles;
+  FFileDrop.DragTypes := [dtCopy, dtMove, dtLink];
+  FFileDrop.ShowImage := True;
+  FFileDrop.Register(ListView);
+end;
+
 procedure TfmFavFiles.FormHide(Sender: TObject);
 begin
+  FreeAndNil(FFileDrop);
   SaveEntries;
   SaveSettings;
 end;
@@ -1186,7 +1218,7 @@ end;
 procedure TfmFavFiles.actOptionsOptionsExecute(Sender: TObject);
 begin
   if TfmFavOptions.Execute(Self, FOptions.FFolderDelete, FOptions.FExpandAll, FOptions.FExecHide,
-    FOptions.FShowPreview, FOptions.FIsFavMenuVisible) then begin
+    FOptions.FShowPreview, FOptions.FIsFavMenuVisible, FOptions.FFileFilter) then begin
     SetShowPreview(FOptions.FShowPreview);
     doOnSettingsChanged;
   end;
@@ -1458,20 +1490,6 @@ begin
 end;
 
 constructor TfmFavFiles.Create(AOwner: TComponent; _Options: TFavFilesOptions);
-resourcestring
-  SOpenFilter = // Note: Localize only the descriptive text, not the extensions
-    'Source Files (*.dpr;*.bpr;*.dpk;*.bpk;*.bpg;*.pas;*.cpp;*.hpp;*.c;*.h)|*.dpr;*.bpr;*.dpk;*.bpk;*.bpg;*.pas;*.cpp;*.hpp;*.c;*.h' +
-    '|Project Files (*.dpr;*.bpr;*.dpk;*.bpk;*.bpg;*.bdsproj;*.bdsgroup;*.dproj;*.groupproj)|*.dpr;*.bpr;*.dpk;*.bpk;*.bpg;*.bdsproj;*.bdsgroup;*.dproj;*.groupproj' +
-    '|Pascal Files (*.pas;*.inc)|*.pas;*.inc' +
-    '|Help Files (*.chm;*.hlp)|*.chm;*.hlp' +
-    '|Graphics Files (*.bmp;*.wmf;*.jpg;*.png;*.gif;*.ico)|*.bmp;*.wmf;*.jpg;*.png;*.gif;*.ico' +
-    '|Text Files (*.txt;*.me;*.asc;*.xml;*.iss)|*.txt;*.me;*.asc;*.xml;*.iss' +
-    '|HTML Files (*.html;*.htm)|*.html;*.htm' +
-    '|Executable Files (*.exe)|*.exe' +
-    '|SQL Scripts (*.sql)|*.sql' +
-    '|C/C++ (*.c;*.cpp;*.h;*.hpp)|*.c;*.cpp;*.h;*.hpp' +
-    '|All Files (' + AllFilesWildCard + ')|' + AllFilesWildCard;
-    // Update SetFilter when you change these
 begin
   inherited Create(AOwner);
 
@@ -1485,7 +1503,6 @@ begin
   splTreeView.AutoSnap := False;
   splFileView.AutoSnap := False;
 
-  dlgGetFiles.Filter := SOpenFilter;
   FFileViewer := TFileViewer.Create(nil);
   FFileViewer.Parent := pnlFileView;
   FFileViewer.Align := alClient;
@@ -1493,11 +1510,6 @@ begin
   FMRUEntryFiles := TStringList.Create;
 
   SetupSystemImageLists;
-  FFileDrop := TDropFileTarget.Create(nil);
-  FFileDrop.OnDrop := DropFiles;
-  FFileDrop.DragTypes := [dtCopy, dtMove, dtLink];
-  FFileDrop.ShowImage := True;
-  FFileDrop.Register(ListView);
 
   CenterForm(Self);
   LoadSettings;
@@ -1909,7 +1921,7 @@ end;
 procedure TFavoriteFilesExpert.Configure;
 begin
   if TfmFavOptions.Execute(nil, FOptions.FFolderDelete, FOptions.FExpandAll, FOptions.FExecHide,
-    FOptions.FShowPreview, FOptions.FIsFavMenuVisible) then
+    FOptions.FShowPreview, FOptions.FIsFavMenuVisible, FOptions.FFileFilter) then
 {$IFDEF GX_VER150_up}
     HandleOnSettingsChanged(nil);
 {$ENDIF}
@@ -2027,6 +2039,8 @@ begin
   FExecHide := True;
   FShowPreview := True;
   FIsFavMenuVisible := True;
+
+  FFileFilter := TfmFavOptions.GetDefaultFileFilter;
 end;
 
 initialization
