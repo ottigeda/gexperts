@@ -335,7 +335,20 @@ function TStringGrid_IsRowEmpty(_Grid: TStringGrid; _Row: Integer): Boolean;
 ///                 True means that no new row is added if the last row is empty, in that case
 ///                      the index of the last row will be returned.
 ///                 False means that a new row will be added even if the last row is empty </summary>
-function TStringGrid_AppendRow(_Grid: TStringGrid; _UseEmtpy: Boolean = False): Integer;
+function TStringGrid_AppendRow(_Grid: TStringGrid; _UseEmtpy: Boolean = False): Integer; overload;
+
+///<summary>
+/// Appends a row to the string grid, fills it with the given strings and returns the index of the new row
+/// @param UseEmpty determines whether to check if the last row is empty.
+///                 True means that no new row is added if the last row is empty, in that case
+///                      the index of the last row will be returned.
+///                 False means that a new row will be added even if the last row is empty </summary>
+function TStringGrid_AppendRow(_Grid: TStringGrid; const _Columns: array of string;
+  _UseEmtpy: Boolean = False): Integer; overload;
+
+///<summary>
+/// sets the column in a row to the strings given in the columns array </summary>
+procedure TStringGrid_AssignRow(_sg: TStringGrid; _Row: Integer; const _Columns: array of string);
 
 ///<summary> Tries to convert the grid cell to a double, if an error occurs, it raises
 ///          an exception and optionally focuses the cell.
@@ -1740,7 +1753,8 @@ uses
   u_dzLineBuilder,
   u_dzVersionInfo,
   u_dzTypesUtils,
-  u_dzOsUtils;
+  u_dzOsUtils,
+  u_dzStringArrayUtils;
 
 function _(const _s: string): string;
 {$IFDEF SUPPORTS_INLINE}
@@ -2221,6 +2235,26 @@ begin
   end;
   Result := _Grid.RowCount;
   _Grid.RowCount := Result + 1;
+end;
+
+function TStringGrid_AppendRow(_Grid: TStringGrid; const _Columns: array of string;
+  _UseEmtpy: Boolean = False): Integer; overload;
+begin
+  Result := TStringGrid_AppendRow(_Grid, _UseEmtpy);
+  TStringGrid_AssignRow(_Grid, Result, _Columns);
+end;
+
+procedure TStringGrid_AssignRow(_sg: TStringGrid; _Row: Integer; const _Columns: array of string);
+var
+  arr: TStringArray;
+  Len: Integer;
+  i: Integer;
+begin
+  Len := Length(_Columns);
+  SetLength(arr, Len);
+  for i := 0 to Len - 1 do
+    arr[i] := _Columns[i];
+  TStrings_AssignStringArray(_sg.Rows[_Row], arr);
 end;
 
 function TStringGrid_CellToDouble(_Grid: TStringGrid; _Col, _Row: Integer; _FocusCell: Boolean = True): Double;
