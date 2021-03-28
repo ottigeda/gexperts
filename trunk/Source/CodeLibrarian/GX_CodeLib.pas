@@ -132,8 +132,12 @@ type
     actEditPasteToIde: TAction;
     actEditFind: TAction;
     actEditFindNext: TAction;
+    actEditRename: TAction;
     actExpandAll: TAction;
     actContractAll: TAction;
+    actCompactStorage: TAction;
+    actReadOnly: TAction;
+    actOptions: TAction;
     ToolBar: TToolBar;
     tbnNewFolder: TToolButton;
     tbnNewSnippet: TToolButton;
@@ -150,15 +154,14 @@ type
     tbnContractAll: TToolButton;
     tbnSep4: TToolButton;
     tbnFind: TToolButton;
-    actOptions: TAction;
+    tbnSep5: TToolButton;
     actHelpAbout: TAction;
     actHelpContents: TAction;
     actHelpHelp: TAction;
     tbnFindNext: TToolButton;
-    actEditRename: TAction;
+    tb_readonly: TToolButton;
     mitTreeRename: TMenuItem;
     mitFileSep2: TMenuItem;
-    actCompactStorage: TAction;
     CompactStorage1: TMenuItem;
     procedure CodeTextChange(Sender: TObject);
     procedure tvTopicsChanging(Sender: TObject; Node: TTreeNode; var AllowChange: Boolean);
@@ -204,6 +207,7 @@ type
       Data: Integer; var Compare: Integer);
     procedure actCompactStorageExecute(Sender: TObject);
     function GetUniqueTopicName(ParentNode: TTreeNode; Folder: Boolean): TGXUnicodeString;
+    procedure actReadOnlyExecute(Sender: TObject);
   private
     FModified: Boolean;
     FSearch: TSearchRecord;
@@ -529,7 +533,7 @@ begin
       finally
         FCodeText.EndUpdate;
       end;
-      FCodeText.ReadOnly := False;
+      FCodeText.ReadOnly := actReadOnly.Checked;
     end
     else
       FCodeText.Clear;
@@ -1067,10 +1071,23 @@ begin
       (Actions[i] as TCustomAction).Checked := Actions[i].Tag = Ord(FCurrentSyntaxMode);
   end;
   FCodeText.Enabled := SnippetIsSelected;
-  FCodeText.ReadOnly := not SnippetIsSelected;
+  FCodeText.ReadOnly := not SnippetIsSelected or actReadOnly.Checked;
   StatusBar.Panels[2].Text := GXSyntaxInfo[FCurrentSyntaxMode].Name;
 
   Handled := True;
+end;
+
+procedure TfmCodeLib.actReadOnlyExecute(Sender: TObject);
+var
+  b: Boolean;
+begin
+  b := not actReadOnly.Checked;
+  FCodeText.ReadOnly := b;
+  actReadOnly.Checked := b;
+  if b then
+    actReadOnly.ImageIndex := 90
+  else
+    actReadOnly.ImageIndex := 91;
 end;
 
 procedure TfmCodeLib.GenericSyntaxHighlightingExecute(Sender: TObject);

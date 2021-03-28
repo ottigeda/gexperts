@@ -188,6 +188,18 @@ object fmCodeLib: TfmCodeLib
       Top = 0
       Action = actEditFindNext
     end
+    object tbnSep5: TToolButton
+      Left = 308
+      Top = 0
+      Width = 8
+      ImageIndex = 91
+      Style = tbsSeparator
+    end
+    object tb_readonly: TToolButton
+      Left = 316
+      Top = 0
+      Action = actReadOnly
+    end
   end
   object MainMenu: TMainMenu
     Images = dmSharedImages.Images
@@ -532,6 +544,14 @@ object fmCodeLib: TfmCodeLib
       Category = 'File'
       Caption = 'Compact Storage'
       OnExecute = actCompactStorageExecute
+    end
+    object actReadOnly: TAction
+      Category = 'Edit'
+      Caption = 'Read Only'
+      Checked = True
+      Hint = 'Read Only'
+      ImageIndex = 90
+      OnExecute = actReadOnlyExecute
     end
   end
 end
