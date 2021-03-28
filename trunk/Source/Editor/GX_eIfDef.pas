@@ -281,41 +281,54 @@ end;
 { TIfdefTabDefinition }
 
 type
+  PGridEntry = ^TGridEntry;
+  TGridEntry = record
+    Value: string;
+    Desc: string;
+    LineNo: Integer;
+  end;
+
+type
   TIfdefTabDefinition = class
-  private
-    FRow: Integer;
   protected
     FForm: TfmConfigureIfDef;
     FTabSheet: TTabSheet;
+    FFilterEdit: TEdit;
     FStringGrid: TStringGrid;
-    FPanel: TPanel;
-    FEdit: TEdit;
+    FCustomizeEdit: TEdit;
     FSelStart: Integer;
     FSelLen: Integer;
     FTextFormatStr: string;
     FFilename: string;
     FIsIncluded: Boolean;
+    FGridEntries: array of TGridEntry;
+    procedure AddEntryToGrid(const _Entry: TGridEntry);
     procedure UpdateEditText(_Row: Integer);
-    procedure HandleEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure HandleFilterChange(_Sender: TObject);
+    procedure HandleFilterKeyDown(_Sender: TObject; var _Key: Word; _Shift: TShiftState);
+    procedure HandleCustomizeKeyDown(_Sender: TObject; var _Key: Word; _Shift: TShiftState);
     procedure HandleSelectCell(_Sender: TObject; _Col, _Row: Integer; var _CanSelect: Boolean);
-    procedure HandleEditEnter(_Sender: TObject);
-    procedure HandleEditChange(_Sender: TObject);
+    procedure HandleCustomizeEnter(_Sender: TObject);
+    procedure HandleCustomizeChange(_Sender: TObject);
   public
     constructor Create(_Form: TfmConfigureIfDef; _pc: TPageControl; const _Caption: string;
       _SelStart, _SelLen: Integer; const _TextFormatStr: string;
       _IsIncluded: Boolean = True; const _Filename: string = '');
     procedure InitEvents;
-    procedure AddGridRow(const _Value, _Desc: string; _LineNo: Integer = 0);
+    procedure AddEntry(const _Value, _Desc: string; _LineNo: Integer = 0);
     function GetLineNoOfCurrentEntry: Integer;
     property Filename: string read FFilename;
     property StringGrid: TStringGrid read FStringGrid;
-    property Edit: TEdit read FEdit;
+    property Edit: TEdit read FCustomizeEdit;
     property IsIncluded: Boolean read FIsIncluded;
   end;
 
 constructor TIfdefTabDefinition.Create(_Form: TfmConfigureIfDef; _pc: TPageControl;
   const _Caption: string; _SelStart, _SelLen: Integer; const _TextFormatStr: string;
   _IsIncluded: Boolean = True; const _Filename: string = '');
+var
+  lbl: TLabel;
+  pnl: TPanel;
 begin
   FForm := _Form;
   FSelStart := _SelStart;
@@ -323,7 +336,6 @@ begin
   FTextFormatStr := _TextFormatStr;
   FFilename := _Filename;
   FIsIncluded := _IsIncluded;
-  FRow := 0;
 
   FTabSheet := TTabSheet.Create(_Form);
   FTabSheet.Name := '';
@@ -336,6 +348,26 @@ begin
   // this is how the PageControl knows how to deal with this tab
   FTabSheet.Tag := Integer(Self);
 
+  pnl := TPanel.Create(_Form);
+  pnl.Name := '';
+  pnl.Parent := FTabSheet;
+  pnl.Height := 25;
+  pnl.Align := alTop;
+  pnl.Caption := '';
+  pnl.TabOrder := 0;
+
+  lbl := TLabel.Create(_Form);
+  lbl.Name := '';
+  lbl.Parent := pnl;
+  lbl.Caption := '&Filter: ';
+  lbl.Align := alLeft;
+
+  FFilterEdit := TEdit.Create(_Form);
+  FFilterEdit.Name := '';
+  FFilterEdit.Parent := pnl;
+  FFilterEdit.Align := alClient;
+  lbl.FocusControl := FFilterEdit;
+
   FStringGrid := TStringGrid.Create(_Form);
   FStringGrid.Name := '';
   FStringGrid.Parent := FTabSheet;
@@ -344,24 +376,31 @@ begin
   FStringGrid.FixedCols := 0;
   FStringGrid.FixedRows := 0;
   FStringGrid.Options := [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect];
-  FStringGrid.TabOrder := 0;
+  FStringGrid.TabOrder := 1;
   FStringGrid.ColWidths[0] := 50;
   FStringGrid.ColWidths[1] := 200;
   GxOtaGetEditorFont(FStringGrid.Font, 0);
 
-  FPanel := TPanel.Create(_Form);
-  FPanel.Name := '';
-  FPanel.Parent := FTabSheet;
-  FPanel.Align := alBottom;
-  FPanel.BevelOuter := bvNone;
-  FPanel.Height := 25;
-  FPanel.TabOrder := 1;
+  pnl := TPanel.Create(_Form);
+  pnl.Name := '';
+  pnl.Parent := FTabSheet;
+  pnl.Align := alBottom;
+  pnl.BevelOuter := bvNone;
+  pnl.Height := 25;
+  pnl.TabOrder := 2;
 
-  FEdit := TEdit.Create(_Form);
-  FEdit.Name := '';
-  FEdit.Parent := FPanel;
-  FEdit.Align := alClient;
-  FEdit.TabOrder := 0;
+  lbl := TLabel.Create(_Form);
+  lbl.Name := '';
+  lbl.Parent := pnl;
+  lbl.Caption := 'C&ustomize: ';
+  lbl.Align := alLeft;
+
+  FCustomizeEdit := TEdit.Create(_Form);
+  FCustomizeEdit.Name := '';
+  FCustomizeEdit.Parent := pnl;
+  FCustomizeEdit.Align := alClient;
+  FCustomizeEdit.TabOrder := 0;
+  lbl.FocusControl := FCustomizeEdit;
 end;
 
 function TIfdefTabDefinition.GetLineNoOfCurrentEntry: Integer;
@@ -380,20 +419,38 @@ begin
   TStringGrid_AdjustRowHeight(FStringGrid);
   TGrid_Resize(FStringGrid, [roUseGridWidth, roUseAllRows]);
   FStringGrid.OnSelectCell := HandleSelectCell;
-  FEdit.OnChange := HandleEditChange;
-  FEdit.OnEnter := HandleEditEnter;
-  FEdit.OnKeyDown := HandleEditKeyDown;
+
+  FFilterEdit.OnChange := HandleFilterChange;
+  FFilterEdit.OnKeyDown := HandleFilterKeyDown;
+
+  FCustomizeEdit.OnChange := HandleCustomizeChange;
+  FCustomizeEdit.OnEnter := HandleCustomizeEnter;
+  FCustomizeEdit.OnKeyDown := HandleCustomizeKeyDown;
 
   UpdateEditText(FStringGrid.Row);
 end;
 
-procedure TIfdefTabDefinition.AddGridRow(const _Value, _Desc: string; _LineNo: Integer);
+procedure TIfdefTabDefinition.AddEntry(const _Value, _Desc: string; _LineNo: Integer);
+var
+  Idx: Integer;
+  Entry: PGridEntry;
 begin
-  FStringGrid.RowCount := FRow + 1;
-  FStringGrid.Cells[0, FRow] := _Value;
-  FStringGrid.Cells[1, FRow] := _Desc;
-  FStringGrid.Objects[0, FRow] := Pointer(_LineNo);
-  Inc(FRow);
+  Idx := Length(FGridEntries);
+  SetLength(FGridEntries, Idx + 1);
+  Entry := @FGridEntries[Idx];
+  Entry^.Value := _Value;
+  Entry^.Desc := _Desc;
+  Entry^.LineNo := _LineNo;
+
+  AddEntryToGrid(Entry^);
+end;
+
+procedure TIfdefTabDefinition.AddEntryToGrid(const _Entry: TGridEntry);
+var
+  Row: Integer;
+begin
+  Row := TStringGrid_AppendRow(FStringGrid, [_Entry.Value, _Entry.Desc], True);
+  FStringGrid.Objects[0, Row] := Pointer(_Entry.LineNo);
 end;
 
 procedure TIfdefTabDefinition.UpdateEditText(_Row: Integer);
@@ -404,19 +461,19 @@ var
 begin
   CellText := FStringGrid.Cells[0, _Row];
 
-  SelText := FEdit.SelText;
+  SelText := FCustomizeEdit.SelText;
   NewText := Format(FTextFormatStr, [CellText]);
   if FForm.chk_AppendComment.Checked then begin
     CellText := FStringGrid.Cells[1, _Row];
     NewText := NewText + ' // ' + CellText;
   end;
-  FEdit.Text := NewText;
-  FEdit.SelStart := FSelStart;
-  FEdit.SelLength := FSelLen;
+  FCustomizeEdit.Text := NewText;
+  FCustomizeEdit.SelStart := FSelStart;
+  FCustomizeEdit.SelLength := FSelLen;
   if SelText <> '' then begin
-    FEdit.SelText := SelText;
-    FEdit.SelStart := FSelStart;
-    FEdit.SelLength := FSelLen;
+    FCustomizeEdit.SelText := SelText;
+    FCustomizeEdit.SelStart := FSelStart;
+    FCustomizeEdit.SelLength := FSelLen;
   end;
 end;
 
@@ -426,22 +483,50 @@ begin
   UpdateEditText(_Row);
 end;
 
-procedure TIfdefTabDefinition.HandleEditChange(_Sender: TObject);
+procedure TIfdefTabDefinition.HandleCustomizeChange(_Sender: TObject);
 begin
-  FForm.FText := FEdit.Text;
+  FForm.FText := FCustomizeEdit.Text;
 end;
 
-procedure TIfdefTabDefinition.HandleEditEnter(_Sender: TObject);
+procedure TIfdefTabDefinition.HandleFilterChange(_Sender: TObject);
+var
+  Filter: string;
+  i: Integer;
+  Entry: PGridEntry;
 begin
-  FEdit.SelStart := FSelStart;
-  FEdit.SelLength := FSelLen;
+  Filter := FFilterEdit.Text;
+  TStringGrid_Clear(FStringGrid);
+  if Filter = '' then begin
+    for i := 0 to Length(FGridEntries) - 1 do
+      AddEntryToGrid(FGridEntries[i]);
+  end else begin
+    for i := 0 to Length(FGridEntries) - 1 do begin
+      Entry := @FGridEntries[i];
+      if StrContains(Filter, Entry^.Value, False) or StrContains(Filter, Entry.Desc, False) then
+        AddEntryToGrid(Entry^);
+    end;
+  end;
 end;
 
-procedure TIfdefTabDefinition.HandleEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TIfdefTabDefinition.HandleFilterKeyDown(_Sender: TObject; var _Key: Word; _Shift: TShiftState);
 begin
-  if (Key in [VK_DOWN, VK_UP, VK_NEXT, VK_PRIOR]) then begin
-    FStringGrid.Perform(WM_KEYDOWN, Key, 0);
-    Key := 0;
+  if (_Key in [VK_DOWN, VK_UP, VK_NEXT, VK_PRIOR]) then begin
+    FStringGrid.Perform(WM_KEYDOWN, _Key, 0);
+    _Key := 0;
+  end;
+end;
+
+procedure TIfdefTabDefinition.HandleCustomizeEnter(_Sender: TObject);
+begin
+  FCustomizeEdit.SelStart := FSelStart;
+  FCustomizeEdit.SelLength := FSelLen;
+end;
+
+procedure TIfdefTabDefinition.HandleCustomizeKeyDown(_Sender: TObject; var _Key: Word; _Shift: TShiftState);
+begin
+  if (_Key in [VK_DOWN, VK_UP, VK_NEXT, VK_PRIOR]) then begin
+    FStringGrid.Perform(WM_KEYDOWN, _Key, 0);
+    _Key := 0;
   end;
 end;
 
@@ -548,32 +633,32 @@ var
 begin
   def := TIfdefTabDefinition.Create(Self, pc_IfClasses, '&Options', 9, 1, '{$IFOPT %s+}');
   FTabDefinitions.Add(def);
-  def.AddGridRow('A', 'Align');
-  def.AddGridRow('B', 'BoolEval');
-  def.AddGridRow('C', 'Assertions');
-  def.AddGridRow('D', 'DebugInfo');
-  def.AddGridRow('E', '???');
-  def.AddGridRow('F', '???');
-  def.AddGridRow('G', 'ImportedData');
-  def.AddGridRow('H', 'LongStrings');
-  def.AddGridRow('I', 'IoChecks');
-  def.AddGridRow('J', 'WriteableConsts');
-  def.AddGridRow('K', '???');
-  def.AddGridRow('L', 'LocalSymbols');
-  def.AddGridRow('M', 'TypeInfo');
-  def.AddGridRow('N', '???');
-  def.AddGridRow('O', 'Optimization');
-  def.AddGridRow('P', 'OpenStrings');
-  def.AddGridRow('Q', 'OverflowChecks');
-  def.AddGridRow('R', 'RangeChecks');
-  def.AddGridRow('S', '???');
-  def.AddGridRow('T', 'TypedAddress');
-  def.AddGridRow('U', 'SafeDivide');
-  def.AddGridRow('V', 'VarStringChecks');
-  def.AddGridRow('W', 'StackFrames');
-  def.AddGridRow('X', 'ExtendedSyntax');
-  def.AddGridRow('Y', 'ReferenceInfo / DefinitionInfo');
-  def.AddGridRow('Z', '???');
+  def.AddEntry('A', 'Align');
+  def.AddEntry('B', 'BoolEval');
+  def.AddEntry('C', 'Assertions');
+  def.AddEntry('D', 'DebugInfo');
+  def.AddEntry('E', '???');
+  def.AddEntry('F', '???');
+  def.AddEntry('G', 'ImportedData');
+  def.AddEntry('H', 'LongStrings');
+  def.AddEntry('I', 'IoChecks');
+  def.AddEntry('J', 'WriteableConsts');
+  def.AddEntry('K', '???');
+  def.AddEntry('L', 'LocalSymbols');
+  def.AddEntry('M', 'TypeInfo');
+  def.AddEntry('N', '???');
+  def.AddEntry('O', 'Optimization');
+  def.AddEntry('P', 'OpenStrings');
+  def.AddEntry('Q', 'OverflowChecks');
+  def.AddEntry('R', 'RangeChecks');
+  def.AddEntry('S', '???');
+  def.AddEntry('T', 'TypedAddress');
+  def.AddEntry('U', 'SafeDivide');
+  def.AddEntry('V', 'VarStringChecks');
+  def.AddEntry('W', 'StackFrames');
+  def.AddEntry('X', 'ExtendedSyntax');
+  def.AddEntry('Y', 'ReferenceInfo / DefinitionInfo');
+  def.AddEntry('Z', '???');
   def.InitEvents;
 end;
 
@@ -586,34 +671,34 @@ begin
 {$ENDIF}
   def := TIfdefTabDefinition.Create(Self, pc_IfClasses, '&VERxxx', 4, 1, '{$IFNDEF %s}');
   FTabDefinitions.Add(def);
-  def.AddGridRow('VER340', 'Delphi 10.4 Sydney / BDS 21');
-  def.AddGridRow('VER330', 'Delphi 10.3 Rio / BDS 20');
-  def.AddGridRow('VER320', 'Delphi 10.2 Tokyo / BDS 19');
-  def.AddGridRow('VER310', 'Delphi 10.1 Berlin / BDS 18');
-  def.AddGridRow('VER300', 'Delphi 10.0 Seattle / BDS 17');
-  def.AddGridRow('VER290', 'Delphi XE8 / BDS 16');
-  def.AddGridRow('VER280', 'Delphi XE7 / BDS 15');
-  def.AddGridRow('VER270', 'Delphi XE6 / BDS 14');
-  def.AddGridRow('VER265', 'AppMethod');
-  def.AddGridRow('VER260', 'Delphi XE5 / BDS 12');
-  def.AddGridRow('VER250', 'Delphi XE4 / BDS 11');
-  def.AddGridRow('VER240', 'Delphi XE3 / BDS 10');
-  def.AddGridRow('VER230', 'Delphi XE2 / BDS 9');
-  def.AddGridRow('VER220', 'Delphi XE1 / BDS 8');
-  def.AddGridRow('VER210', 'Delphi 2010 / BDS 7');
-  def.AddGridRow('VER200', 'Delphi 2009 / BDS 6');
-  def.AddGridRow('VER190', 'Delphi 2007 .NET');
-  def.AddGridRow('VER185', 'Delphi 2007 / BDS 4');
-  def.AddGridRow('VER180', 'Delphi 2006/2007 / BDS 3');
-  def.AddGridRow('VER170', 'Delphi 2005 / BDS 2');
-  def.AddGridRow('VER160', 'Delphi 8 .NET / BDS 1');
-  def.AddGridRow('VER150', 'Delphi 7');
-  def.AddGridRow('VER140', 'Delphi 6');
-  def.AddGridRow('VER130', 'Delphi 5');
-  def.AddGridRow('VER120', 'Delphi 4');
-  def.AddGridRow('VER100', 'Delphi 3');
-  def.AddGridRow('VER90', 'Delphi 2');
-  def.AddGridRow('VER80', 'Delphi 1');
+  def.AddEntry('VER340', 'Delphi 10.4 Sydney / BDS 21');
+  def.AddEntry('VER330', 'Delphi 10.3 Rio / BDS 20');
+  def.AddEntry('VER320', 'Delphi 10.2 Tokyo / BDS 19');
+  def.AddEntry('VER310', 'Delphi 10.1 Berlin / BDS 18');
+  def.AddEntry('VER300', 'Delphi 10.0 Seattle / BDS 17');
+  def.AddEntry('VER290', 'Delphi XE8 / BDS 16');
+  def.AddEntry('VER280', 'Delphi XE7 / BDS 15');
+  def.AddEntry('VER270', 'Delphi XE6 / BDS 14');
+  def.AddEntry('VER265', 'AppMethod');
+  def.AddEntry('VER260', 'Delphi XE5 / BDS 12');
+  def.AddEntry('VER250', 'Delphi XE4 / BDS 11');
+  def.AddEntry('VER240', 'Delphi XE3 / BDS 10');
+  def.AddEntry('VER230', 'Delphi XE2 / BDS 9');
+  def.AddEntry('VER220', 'Delphi XE1 / BDS 8');
+  def.AddEntry('VER210', 'Delphi 2010 / BDS 7');
+  def.AddEntry('VER200', 'Delphi 2009 / BDS 6');
+  def.AddEntry('VER190', 'Delphi 2007 .NET');
+  def.AddEntry('VER185', 'Delphi 2007 / BDS 4');
+  def.AddEntry('VER180', 'Delphi 2006/2007 / BDS 3');
+  def.AddEntry('VER170', 'Delphi 2005 / BDS 2');
+  def.AddEntry('VER160', 'Delphi 8 .NET / BDS 1');
+  def.AddEntry('VER150', 'Delphi 7');
+  def.AddEntry('VER140', 'Delphi 6');
+  def.AddEntry('VER130', 'Delphi 5');
+  def.AddEntry('VER120', 'Delphi 4');
+  def.AddEntry('VER100', 'Delphi 3');
+  def.AddEntry('VER90', 'Delphi 2');
+  def.AddEntry('VER80', 'Delphi 1');
   def.InitEvents;
 end;
 
@@ -626,29 +711,29 @@ begin
 {$IFEND}
   def := TIfdefTabDefinition.Create(Self, pc_IfClasses, '&RtlVersion', 16, 2, '{$IF RtlVersion >= %s}');
   FTabDefinitions.Add(def);
-  def.AddGridRow(IntToStr(RtlVersionDelphiSydney), 'Delphi 10.4 Sydney / BDS 21');
-  def.AddGridRow(IntToStr(RtlVersionDelphiRio), 'Delphi 10.3 Rio / BDS 20');
-  def.AddGridRow(IntToStr(RtlVersionDelphiTokyo), 'Delphi 10.2 Tokyo / BDS 19');
-  def.AddGridRow(IntToStr(RtlVersionDelphiBerlin), 'Delphi 10.1 Berlin / BDS 18');
-  def.AddGridRow(IntToStr(RtlVersionDelphiSeattle), 'Delphi 10.0 Seattle / BDS 17');
-  def.AddGridRow(IntToStr(RtlVersionDelphixe8), 'Delphi XE8 / BDS 16');
-  def.AddGridRow(IntToStr(RtlVersionDelphiXE7), 'Delphi XE7 / BDS 15');
-  def.AddGridRow(IntToStr(RtlVersionDelphiXE6), 'Delphi XE6 / BDS 14');
-//  def.AddGridRow('26.5', 'AppMethod'); ???
-  def.AddGridRow(IntToStr(RtlVersionDelphiXE5), 'Delphi XE5 / BDS 12');
-  def.AddGridRow(IntToStr(RtlVersionDelphiXE4), 'Delphi XE4 / BDS 11');
-  def.AddGridRow(IntToStr(RtlVersionDelphiXE3), 'Delphi XE3 / BDS 10');
-  def.AddGridRow(IntToStr(RtlVersionDelphiXE2), 'Delphi XE2 / BDS 9');
-  def.AddGridRow(IntToStr(RtlVersionDelphiXE), 'Delphi XE1 / BDS 8');
-  def.AddGridRow(IntToStr(RtlVersionDelphi2010), 'Delphi 2010 / BDS 7');
-  def.AddGridRow(IntToStr(RtlVersionDelphi2009), 'Delphi 2009 / BDS 6');
-//  def.AddGridRow('19', 'Delphi 2007 .NET'); ???
-  def.AddGridRow(IntToStr(RtlVersionDelphi2007), 'Delphi 2007 / BDS 4');
-  def.AddGridRow(IntToStr(RtlVersionDelphi2006), 'Delphi 2006 / BDS 3');
-  def.AddGridRow(IntToStr(RtlVersionDelphi2005), 'Delphi 2005 / BDS 2');
-  def.AddGridRow(IntToStr(RtlVersionDelphi8), 'Delphi 8 .NET / BDS 1');
-  def.AddGridRow(IntToStr(RtlVersionDelphi7), 'Delphi 7');
-  def.AddGridRow(IntToStr(RtlVersionDelphi6), 'Delphi 6');
+  def.AddEntry(IntToStr(RtlVersionDelphiSydney), 'Delphi 10.4 Sydney / BDS 21');
+  def.AddEntry(IntToStr(RtlVersionDelphiRio), 'Delphi 10.3 Rio / BDS 20');
+  def.AddEntry(IntToStr(RtlVersionDelphiTokyo), 'Delphi 10.2 Tokyo / BDS 19');
+  def.AddEntry(IntToStr(RtlVersionDelphiBerlin), 'Delphi 10.1 Berlin / BDS 18');
+  def.AddEntry(IntToStr(RtlVersionDelphiSeattle), 'Delphi 10.0 Seattle / BDS 17');
+  def.AddEntry(IntToStr(RtlVersionDelphixe8), 'Delphi XE8 / BDS 16');
+  def.AddEntry(IntToStr(RtlVersionDelphiXE7), 'Delphi XE7 / BDS 15');
+  def.AddEntry(IntToStr(RtlVersionDelphiXE6), 'Delphi XE6 / BDS 14');
+//  def.AddEntry('26.5', 'AppMethod'); ???
+  def.AddEntry(IntToStr(RtlVersionDelphiXE5), 'Delphi XE5 / BDS 12');
+  def.AddEntry(IntToStr(RtlVersionDelphiXE4), 'Delphi XE4 / BDS 11');
+  def.AddEntry(IntToStr(RtlVersionDelphiXE3), 'Delphi XE3 / BDS 10');
+  def.AddEntry(IntToStr(RtlVersionDelphiXE2), 'Delphi XE2 / BDS 9');
+  def.AddEntry(IntToStr(RtlVersionDelphiXE), 'Delphi XE1 / BDS 8');
+  def.AddEntry(IntToStr(RtlVersionDelphi2010), 'Delphi 2010 / BDS 7');
+  def.AddEntry(IntToStr(RtlVersionDelphi2009), 'Delphi 2009 / BDS 6');
+//  def.AddEntry('19', 'Delphi 2007 .NET'); ???
+  def.AddEntry(IntToStr(RtlVersionDelphi2007), 'Delphi 2007 / BDS 4');
+  def.AddEntry(IntToStr(RtlVersionDelphi2006), 'Delphi 2006 / BDS 3');
+  def.AddEntry(IntToStr(RtlVersionDelphi2005), 'Delphi 2005 / BDS 2');
+  def.AddEntry(IntToStr(RtlVersionDelphi8), 'Delphi 8 .NET / BDS 1');
+  def.AddEntry(IntToStr(RtlVersionDelphi7), 'Delphi 7');
+  def.AddEntry(IntToStr(RtlVersionDelphi6), 'Delphi 6');
   def.InitEvents;
 end;
 
@@ -661,29 +746,29 @@ begin
 {$IF CompilerVersion > CompilerVersionDelphiSydney}
 {$MESSAGE HINT 'Add a new Delphi version here'}
 {$IFEND}
-  def.AddGridRow(IntToStr(CompilerVersionDelphiSydney), 'Delphi 10.4 Sydney / BDS 21');
-  def.AddGridRow(IntToStr(CompilerVersionDelphiRio), 'Delphi 10.3 Rio / BDS 20');
-  def.AddGridRow(IntToStr(CompilerVersionDelphiTokyo), 'Delphi 10.2 Tokyo / BDS 19');
-  def.AddGridRow(IntToStr(CompilerVersionDelphiBerlin), 'Delphi 10.1 Berlin / BDS 18');
-  def.AddGridRow(IntToStr(CompilerVersionDelphiSeattle), 'Delphi 10.0 Seattle / BDS 17');
-  def.AddGridRow(IntToStr(CompilerVersionDelphiXE8), 'Delphi XE8 / BDS 16');
-  def.AddGridRow(IntToStr(CompilerVersionDelphiXE7), 'Delphi XE7 / BDS 15');
-  def.AddGridRow(IntToStr(CompilerVersionDelphiXE6), 'Delphi XE6 / BDS 14');
-  def.AddGridRow('26.5', 'AppMethod');
-  def.AddGridRow(IntToStr(CompilerVersionDelphiXE5), 'Delphi XE5 / BDS 12');
-  def.AddGridRow(IntToStr(CompilerVersionDelphiXE4), 'Delphi XE4 / BDS 11');
-  def.AddGridRow(IntToStr(CompilerVersionDelphiXE3), 'Delphi XE3 / BDS 10');
-  def.AddGridRow(IntToStr(CompilerVersionDelphiXE2), 'Delphi XE2 / BDS 9');
-  def.AddGridRow(IntToStr(CompilerVersionDelphiXE), 'Delphi XE1 / BDS 8');
-  def.AddGridRow(IntToStr(CompilerVersionDelphi2010), 'Delphi 2010 / BDS 7');
-  def.AddGridRow(IntToStr(CompilerVersionDelphi2009), 'Delphi 2009 / BDS 6');
-  def.AddGridRow(Format('%.1f', [CompilerVersionDelphi2007]), 'Delphi 2007 / BDS 4');
-  def.AddGridRow(IntToStr(CompilerVersionDelphi2007Net), 'Delphi 2007.NET');
-  def.AddGridRow(IntToStr(CompilerVersionDelphi2006), 'Delphi 2006 / BDS 3');
-  def.AddGridRow(IntToStr(CompilerVersionDelphi2005), 'Delphi 2005 / BDS 2');
-  def.AddGridRow(IntToStr(CompilerVersionDelphi8), 'Delphi 8 .NET / BDS 1');
-  def.AddGridRow(IntToStr(CompilerVersionDelphi7), 'Delphi 7');
-  def.AddGridRow(IntToStr(CompilerVersionDelphi6), 'Delphi 6');
+  def.AddEntry(IntToStr(CompilerVersionDelphiSydney), 'Delphi 10.4 Sydney / BDS 21');
+  def.AddEntry(IntToStr(CompilerVersionDelphiRio), 'Delphi 10.3 Rio / BDS 20');
+  def.AddEntry(IntToStr(CompilerVersionDelphiTokyo), 'Delphi 10.2 Tokyo / BDS 19');
+  def.AddEntry(IntToStr(CompilerVersionDelphiBerlin), 'Delphi 10.1 Berlin / BDS 18');
+  def.AddEntry(IntToStr(CompilerVersionDelphiSeattle), 'Delphi 10.0 Seattle / BDS 17');
+  def.AddEntry(IntToStr(CompilerVersionDelphiXE8), 'Delphi XE8 / BDS 16');
+  def.AddEntry(IntToStr(CompilerVersionDelphiXE7), 'Delphi XE7 / BDS 15');
+  def.AddEntry(IntToStr(CompilerVersionDelphiXE6), 'Delphi XE6 / BDS 14');
+  def.AddEntry('26.5', 'AppMethod');
+  def.AddEntry(IntToStr(CompilerVersionDelphiXE5), 'Delphi XE5 / BDS 12');
+  def.AddEntry(IntToStr(CompilerVersionDelphiXE4), 'Delphi XE4 / BDS 11');
+  def.AddEntry(IntToStr(CompilerVersionDelphiXE3), 'Delphi XE3 / BDS 10');
+  def.AddEntry(IntToStr(CompilerVersionDelphiXE2), 'Delphi XE2 / BDS 9');
+  def.AddEntry(IntToStr(CompilerVersionDelphiXE), 'Delphi XE1 / BDS 8');
+  def.AddEntry(IntToStr(CompilerVersionDelphi2010), 'Delphi 2010 / BDS 7');
+  def.AddEntry(IntToStr(CompilerVersionDelphi2009), 'Delphi 2009 / BDS 6');
+  def.AddEntry(Format('%.1f', [CompilerVersionDelphi2007]), 'Delphi 2007 / BDS 4');
+  def.AddEntry(IntToStr(CompilerVersionDelphi2007Net), 'Delphi 2007.NET');
+  def.AddEntry(IntToStr(CompilerVersionDelphi2006), 'Delphi 2006 / BDS 3');
+  def.AddEntry(IntToStr(CompilerVersionDelphi2005), 'Delphi 2005 / BDS 2');
+  def.AddEntry(IntToStr(CompilerVersionDelphi8), 'Delphi 8 .NET / BDS 1');
+  def.AddEntry(IntToStr(CompilerVersionDelphi7), 'Delphi 7');
+  def.AddEntry(IntToStr(CompilerVersionDelphi6), 'Delphi 6');
   def.InitEvents;
 end;
 
@@ -767,7 +852,7 @@ begin
       for Idx := 0 to Directives.Count - 1 do begin
         Define := Directives[Idx];
         id := TIncDirective(Directives.Objects[Idx]);
-        def.AddGridRow(Define, id.Comment, id.LineIdx + 1);
+        def.AddEntry(Define, id.Comment, id.LineIdx + 1);
         FreeAndNil(id);
       end;
       def.InitEvents;
