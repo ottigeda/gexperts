@@ -783,16 +783,69 @@ type
     property Comment: string read FComment;
   end;
 
+// handle lines like these:
+// {$IFDEF DELPHI7}  {$DEFINE DELPHI7_UP}  {$ENDIF}
+// {$IFOPT D+}  {$DEFINE DEBUGGING}  {$ENDIF}
+// {$IF CompilerVersion>=15} {$DEFINE DELPHI7_UP} {$IFEND}
+// {$IF ...} {$ENDIF}
+// -> return only the {$DEFINE ...}
+function TryRemoveIfDef(const _Line: string; out _Middle: string): Boolean;
+type
+  TStartEndArr = array[0..3] of
+    record
+    Start: string;
+    End_: string;
+  end;
+const
+  START_END: TStartEndArr = (
+    (Start: '{$IFDEF '; End_: '{$ENDIF}'),
+    (Start: '{$IFOPT '; End_: '{$ENDIF}'),
+    (Start: '{$IF '; End_: '{$ENDIF}'),
+    (Start: '{$IF '; End_: '{$IFEND}'));
+var
+  s: string;
+  UpperCaseS: string;
+  ClosingBracePos: Integer;
+  EndPos: Integer;
+  i: Integer;
+begin
+  Result := False;
+  _Middle := Trim(_Line);
+  for i := Low(START_END) to High(START_END) do begin
+    s := _Middle;
+    UpperCaseS := UpperCase(s);
+    if StartsText(START_END[i].Start, UpperCaseS) then begin
+      s := TailStr(s, 8);
+      ClosingBracePos := Pos('}', s);
+      if ClosingBracePos > 0 then begin
+        s := Trim(TailStr(s, ClosingBracePos + 1));
+        UpperCaseS := UpperCase(s);
+        EndPos := RPosStr(START_END[i].End_, UpperCaseS);
+        if EndPos > 0 then begin
+          _Middle := Trim(LeftStr(s, EndPos - 1));
+          Result := True;
+          Exit; //==>
+        end;
+      end;
+    end;
+  end;
+end;
+
 function IsCompilerDirective(const _Line: string; const _Directive: string;
   out _Value: string; out _Comment: string): Boolean;
 var
   Incl: string;
   s: string;
   p: Integer;
+  Middle: string;
 begin
+  s := Trim(_Line);
+  while TryRemoveIfDef(s, Middle) do begin
+    s := Middle;
+  end;
+
   _Comment := '';
   Incl := '{' + _Directive + ' ';
-  s := Trim(_Line);
   Result := StartsText(Incl, s);
   if Result then begin
     p := Pos('}', s);
