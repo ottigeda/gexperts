@@ -59,14 +59,14 @@ type
   TSynExporterHTML = class(TSynCustomExporter)
   private
     function AttriToCSS(Attri: TSynHighlighterAttributes;
-      const UniqueAttriName: string): string;
+      UniqueAttriName: string): string;
     function AttriToCSSCallback(Highlighter: TSynCustomHighlighter;
       Attri: TSynHighlighterAttributes; UniqueAttriName: string;
       Params: array of Pointer): Boolean;
     function ColorToHTML(AColor: TColor): string;
     function GetStyleName(Highlighter: TSynCustomHighlighter;
       Attri: TSynHighlighterAttributes): string;
-    function MakeValidName(const Name: string): string;
+    function MakeValidName(Name: string): string;
     function StyleNameCallback(Highlighter: TSynCustomHighlighter;
       Attri: TSynHighlighterAttributes; UniqueAttriName: string;
       Params: array of Pointer): Boolean;
@@ -122,7 +122,7 @@ begin
 end;
 
 function TSynExporterHTML.AttriToCSS(Attri: TSynHighlighterAttributes;
-  const UniqueAttriName: string): string;
+  UniqueAttriName: string): string;
 var
   StyleName: string;
 begin
@@ -300,7 +300,7 @@ begin
   EnumHighlighterAttris(Highlighter, False, StyleNameCallback, [Attri, @Result]);
 end;
 
-function TSynExporterHTML.MakeValidName(const Name: string): string;
+function TSynExporterHTML.MakeValidName(Name: string): string;
 var
   i: Integer;
 begin

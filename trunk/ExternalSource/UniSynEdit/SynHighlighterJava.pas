@@ -12,7 +12,7 @@ The Original Code is: SynHighlighterJava.pas, released 2000-04-10.
 The Original Code is based on the DcjSynJava.pas file from the
 mwEdit component suite by Martin Waldenburg and other developers, the Initial
 Author of this file is Michael Trier.
-Unicode translation by Maël Hörz.
+Unicode translation by MaÃ«l HÃ¶rz.
 All Rights Reserved.
 
 Contributors to the SynEdit and mwEdit projects are listed in the
@@ -43,11 +43,9 @@ Known Issues:
 The SynHighlighterJava unit provides SynEdit with a Java source (.java) highlighter.
 }
 
-{$IFNDEF QSYNHIGHLIGHTERJAVA}
 unit SynHighlighterJava;
-{$ENDIF}
 
-{$I SynEdit.Inc}
+{$I SynEdit.inc}
 
 interface
 

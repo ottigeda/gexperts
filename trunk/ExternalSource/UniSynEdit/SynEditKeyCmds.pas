@@ -298,8 +298,8 @@ procedure GetEditorCommandExtended(Proc: TGetStrProc);
 function IdentToEditorCommand(const Ident: string; var Cmd: longint): Boolean;
 function EditorCommandToIdent(Cmd: longint; var Ident: string): Boolean;
 function ConvertCodeStringToExtended(AString: string): string;
-function ConvertExtendedToCodeString(const AString: string): string;
-function ConvertExtendedToCommand(const AString: string): TSynEditorCommand;
+function ConvertExtendedToCodeString(AString: string): string;
+function ConvertExtendedToCommand(AString: string): TSynEditorCommand;
 function ConvertCodeStringToCommand(AString: string): TSynEditorCommand;
 function IndexToEditorCommand(const AIndex: Integer): Integer;
 
@@ -951,7 +951,7 @@ begin
     Result := AString;
 end;
 
-function ConvertExtendedToCodeString(const AString: string): string;
+function ConvertExtendedToCodeString(AString: string): string;
 var
   i: Integer;
   WorkStr: string;
@@ -999,7 +999,7 @@ begin
   Result := EditorCommandStrs[AIndex].Value;
 end;
 
-function ConvertExtendedToCommand(const AString: string): TSynEditorCommand;
+function ConvertExtendedToCommand(AString: string): TSynEditorCommand;
 begin
   Result := ConvertCodeStringToCommand(ConvertExtendedToCodeString(AString));
 end;

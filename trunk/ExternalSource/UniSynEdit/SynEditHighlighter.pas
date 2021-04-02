@@ -27,11 +27,9 @@ located at http://SynEdit.SourceForge.net
 Known Issues:
 -------------------------------------------------------------------------------}
 
-{$IFNDEF QSYNEDITHIGHLIGHTER}
 unit SynEditHighlighter;
-{$ENDIF}
 
-{$I SynEdit.Inc}
+{$I SynEdit.inc}
 
 interface
 
@@ -74,16 +72,17 @@ type
   public
     procedure Assign(Source: TPersistent); override;
     procedure AssignColorAndStyle(Source: TSynHighlighterAttributes);
-    constructor Create(const AName: string); overload;
-    constructor Create(const AName: string; const AFriendlyName: UnicodeString); overload;
+    constructor Create(AName: string); overload;
+    constructor Create(AName: string; AFriendlyName: UnicodeString); overload;
     procedure InternalSaveDefaultValues;
 
-    function LoadFromBorlandRegistry(RootKey: HKEY; const AttrKey, AttrName: string;
+    function LoadFromBorlandRegistry(RootKey: HKEY; AttrKey, AttrName: string;
       OldStyle: Boolean): Boolean; virtual;
     function LoadFromRegistry(Reg: TBetterRegistry): Boolean;
     function SaveToRegistry(Reg: TBetterRegistry): Boolean;
-    function LoadFromFile(Ini: TIniFile): Boolean;
-    function SaveToFile(Ini: TIniFile): Boolean;
+//Fix type changed to TCustomIniFile for use both TMemIniFile and TIniFile
+    function LoadFromFile(Ini: TCustomIniFile): Boolean;
+    function SaveToFile(Ini: TCustomIniFile): Boolean;
   public
     procedure SetColors(Foreground, Background: TColor);
     property FriendlyName: UnicodeString read FFriendlyName;
@@ -165,8 +164,8 @@ type
     function IsFilterStored: Boolean; virtual;
     function IsLineEnd(Run: Integer): Boolean; virtual;
     procedure SetAttributesOnChange(AEvent: TNotifyEvent);
-    procedure SetDefaultFilter(const Value: string); virtual;
-    procedure SetSampleSource(const Value: UnicodeString); virtual;
+    procedure SetDefaultFilter(Value: string); virtual;
+    procedure SetSampleSource(Value: UnicodeString); virtual;
   protected
     function GetCapabilitiesProp: TSynHighlighterCapabilities;
     function GetFriendlyLanguageNameProp: UnicodeString;
@@ -202,10 +201,10 @@ type
     function UseUserSettings(settingIndex: Integer): Boolean; virtual;
     procedure EnumUserSettings(Settings: TStrings); virtual;
 
-    function LoadFromRegistry(RootKey: HKEY; const Key: string): Boolean; virtual;
-    function SaveToRegistry(RootKey: HKEY; const Key: string): Boolean; virtual;
-    function LoadFromFile(const AFileName: string): Boolean;
-    function SaveToFile(const AFileName: string): Boolean;
+    function LoadFromRegistry(RootKey: HKEY; Key: string): Boolean; virtual;
+    function SaveToRegistry(RootKey: HKEY; Key: string): Boolean; virtual;
+    function LoadFromFile(AFileName: string): Boolean;
+    function SaveToFile(AFileName: string): Boolean;
 
     procedure HookAttrChangeEvent(ANotifyEvent: TNotifyEvent);
     procedure UnhookAttrChangeEvent(ANotifyEvent: TNotifyEvent);
@@ -253,8 +252,8 @@ type
     constructor Create;
     destructor Destroy; override;
     function Count: Integer;
-    function FindByFriendlyName(const FriendlyName: string): Integer;
-    function FindByName(const Name: string): Integer;
+    function FindByFriendlyName(FriendlyName: string): Integer;
+    function FindByName(Name: string): Integer;
     function FindByClass(Comp: TComponent): Integer;
     property Items[Index: Integer]: TSynCustomHighlighterClass
       read GetItem; default;
@@ -309,7 +308,7 @@ begin
   end;
 end;
 
-function TSynHighlighterList.FindByFriendlyName(const FriendlyName: string): Integer;
+function TSynHighlighterList.FindByFriendlyName(FriendlyName: string): Integer;
 var
   i: Integer;
 begin
@@ -324,7 +323,7 @@ begin
   end;
 end;
 
-function TSynHighlighterList.FindByName(const Name: string): Integer;
+function TSynHighlighterList.FindByName(Name: string): Integer;
 var
   i: Integer;
 begin
@@ -403,12 +402,12 @@ begin
     FOnChange(Self);
 end;
 
-constructor TSynHighlighterAttributes.Create(const AName: string);
+constructor TSynHighlighterAttributes.Create(AName: string);
 begin
   Create(AName, AName);
 end;
 
-constructor TSynHighlighterAttributes.Create(const AName: string; const AFriendlyName: UnicodeString);
+constructor TSynHighlighterAttributes.Create(AName: string; AFriendlyName: UnicodeString);
 begin
   inherited Create;
   Background := clNone;
@@ -440,7 +439,7 @@ begin
 end;
 
 function TSynHighlighterAttributes.LoadFromBorlandRegistry(RootKey: HKEY;
-  const AttrKey, AttrName: string; OldStyle: Boolean): Boolean;
+  AttrKey, AttrName: string; OldStyle: Boolean): Boolean;
   // How the highlighting information is stored:
   // Delphi 1.0:
   //   I don't know and I don't care.
@@ -706,7 +705,7 @@ begin
     Result := False;
 end;
 
-function TSynHighlighterAttributes.LoadFromFile(Ini : TIniFile): Boolean;
+function TSynHighlighterAttributes.LoadFromFile(Ini : TCustomIniFile): boolean;
 var
   S: TStringList;
 begin
@@ -730,7 +729,7 @@ begin
   end;
 end;
 
-function TSynHighlighterAttributes.SaveToFile(Ini : TIniFile): Boolean;
+function TSynHighlighterAttributes.SaveToFile(Ini : TCustomIniFile): boolean;
 begin
   Ini.WriteInteger(Name, 'Background', Background);
   Ini.WriteInteger(Name, 'Foreground', Foreground);
@@ -853,7 +852,7 @@ begin
 end;
 
 function TSynCustomHighlighter.LoadFromRegistry(RootKey: HKEY;
-  const Key: string): Boolean;
+  Key: string): Boolean;
 var
   r: TBetterRegistry;
   i: Integer;
@@ -875,7 +874,7 @@ begin
 end;
 
 function TSynCustomHighlighter.SaveToRegistry(RootKey: HKEY;
-  const Key: string): Boolean;
+  Key: string): Boolean;
 var
   r: TBetterRegistry;
   i: Integer;
@@ -896,7 +895,7 @@ begin
   end;
 end;
 
-function TSynCustomHighlighter.LoadFromFile(const AFileName : String): Boolean;
+function TSynCustomHighlighter.LoadFromFile(AFileName : String): Boolean;
 var
   AIni: TIniFile;
   i: Integer;
@@ -914,7 +913,7 @@ begin
   end;
 end;
 
-function TSynCustomHighlighter.SaveToFile(const AFileName : String): Boolean;
+function TSynCustomHighlighter.SaveToFile(AFileName : String): Boolean;
 var
   AIni: TIniFile;
   i: Integer;
@@ -1257,12 +1256,12 @@ procedure TSynCustomHighlighter.SetRange(Value: Pointer);
 begin
 end;
 
-procedure TSynCustomHighlighter.SetDefaultFilter(const Value: string);
+procedure TSynCustomHighlighter.SetDefaultFilter(Value: string);
 begin
   FDefaultFilter := Value;
 end;
 
-procedure TSynCustomHighlighter.SetSampleSource(const Value: UnicodeString);
+procedure TSynCustomHighlighter.SetSampleSource(Value: UnicodeString);
 begin
   // TODO: sure this should be empty?
 end;
