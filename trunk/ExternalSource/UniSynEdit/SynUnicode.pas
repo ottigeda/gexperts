@@ -1052,29 +1052,36 @@ begin
         begin
           if WithBOM then
             Stream.WriteBuffer(UTF16BOMLE[0], SizeOf(UTF16BOMLE));
-          Stream.WriteBuffer(SW[1], Length(SW) * SizeOf(WideChar));
+          if Length(SW) > 0 then
+            Stream.WriteBuffer(SW[1], Length(SW) * SizeOf(WideChar));
           FSaved := True;
         end;
       sfUTF16MSB:
         begin
           if WithBOM then
             Stream.WriteBuffer(UTF16BOMBE[0], SizeOf(UTF16BOMBE));
-          StrSwapByteOrder(PWideChar(SW));
-          Stream.WriteBuffer(SW[1], Length(SW) * SizeOf(WideChar));
+          if Length(SW) > 0 then begin
+            StrSwapByteOrder(PWideChar(SW));
+            Stream.WriteBuffer(SW[1], Length(SW) * SizeOf(WideChar));
+          end;
           FSaved := True;
         end;
       sfUTF8:
         begin
           if WithBOM then
             Stream.WriteBuffer(UTF8BOM[0], SizeOf(UTF8BOM));
-          SA := UTF8Encode(SW);
-          Stream.WriteBuffer(SA[1], Length(SA) * SizeOf(AnsiChar));
+          if Length(SW) > 0 then begin
+            SA := UTF8Encode(SW);
+            if Length(SA) > 0 then
+              Stream.WriteBuffer(SA[1], Length(SA) * SizeOf(AnsiChar));
+          end;
           FSaved := True;
         end;
       sfAnsi:
         begin
           SA := SW;
-          Stream.WriteBuffer(SA[1], Length(SA) * SizeOf(AnsiChar));
+          if Length(SA) > 0 then
+            Stream.WriteBuffer(SA[1], Length(SA) * SizeOf(AnsiChar));
           FSaved := True;
         end;
     end;
