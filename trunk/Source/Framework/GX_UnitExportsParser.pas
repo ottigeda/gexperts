@@ -153,7 +153,10 @@ type
     class procedure AddSymbols(_Parser: TUnitExportsParser);
     ///<summary>
     /// @param Files is a list of unit names, without path and extension, which are to be parsed.
-    ///              Can be NIL, in which case all files in the search path will be parsed
+    ///              Can be NIL, in which case all files in the search path will be parsed.
+    ///              We could exclude the System unit here, but that won't save much time or memory
+    ///              and would prevent the user from opening that unit to inspect the identifier
+    ///              declaration.
     /// @param Paths is a list of possible search paths
     /// @param CacheDir is a directory to cache the identifier lists </summary>
     constructor Create(const _Files: TStrings; _Paths: TStrings; const _CacheDir: string);
@@ -1156,9 +1159,6 @@ begin
 end;
 
 procedure TUnitExportParserThread.doExecute;
-var
-  FilesInPath: TStringList;
-  Item: TUnitIdentifier;
 
   function GxTryGetFileAge(const _fn: string; out _DosTime: GXNativeUInt): Boolean;
   var
@@ -1170,22 +1170,23 @@ var
     end;
   end;
 
-  function TryFindPathToFile(const _fn: string; out _FoundFn: string; out _FileAge: GXNativeUInt): Boolean;
+  function TryFindPathToFile(const _fn: string; _FilesInPath: TStringList;
+    out _FoundFn: string; out _FileAge: GXNativeUInt): Boolean;
   var
     i: Integer;
     fno: string;
     fn: string;
   begin
     Result := False;
-    for i := 0 to FilesInPath.Count - 1 do begin
+    for i := 0 to _FilesInPath.Count - 1 do begin
       if Terminated then
         Exit; //==>
-      fn := FilesInPath[i];
+      fn := _FilesInPath[i];
       fno := ExtractFileName(fn);
       if SameText(fno, _fn) then begin
         Result := True;
         _FoundFn := fn;
-        _FileAge := GXNativeUInt(FilesInPath.Objects[i]);
+        _FileAge := GXNativeUInt(_FilesInPath.Objects[i]);
         Exit; //==>
       end;
     end;
@@ -1196,6 +1197,8 @@ var
   fn: string;
   Parser: TUnitExportsParser;
   FilesFound: TStringList;
+  FilesInPath: TStringList;
+  Item: TUnitIdentifier;
   IdentIdx: Integer;
   ParsedIdentifiers: TUnitIdentifierList;
   LoadedIdentifiers: TUnitIdentifierList;
@@ -1243,7 +1246,7 @@ begin
       for FileIdx := 0 to FFiles.Count - 1 do begin
         if Terminated then
           Exit; //==>
-        if TryFindPathToFile(FFiles[FileIdx] + '.pas', fn, UnitTime) then
+        if TryFindPathToFile(FFiles[FileIdx] + '.pas', FilesInPath, fn, UnitTime) then
           FilesFound.AddObject(fn, Pointer(UnitTime));
       end;
       if FilesFound.Count = 0 then
