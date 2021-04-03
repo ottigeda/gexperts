@@ -1516,8 +1516,8 @@ begin
   else
     Result := ehReturnFalse;
 end;
-{$IFNDEF DELPHI7_UP}
-// Delphi 6 does not understand that this cass the non deprecated overload
+{$IFNDEF DELPHI2005_UP}
+// Delphi 6 and 7 do not understand that this calls the non deprecated overload
 // I can't be bothered to add lots of ifdefs, so I turn this warning off for the rest of the unit.
 {$WARN SYMBOL_DEPRECATED OFF}
 {$ENDIF}
