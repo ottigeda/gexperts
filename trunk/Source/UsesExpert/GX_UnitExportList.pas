@@ -11,6 +11,9 @@ uses
   Contnrs,
   u_dzTypes;
 
+const
+  CURRENT_UNIT_CACHE_VERSION = 'Version2';
+
 type
   TUnitIdentifierTypes = (itUnknown, itConst, itType, itVar, itProcedure, itFunction);
 
@@ -58,7 +61,9 @@ type
     function CompareItems(_Idx1, _Idx2: Integer): Integer; override;
   public
     function Add(const _Identifier: string; _LineNo: Integer): Integer;
-    procedure LoadFromFile(const _fn: string);
+    ///<summary>
+    /// @returns true, if the cache file was the latest structure version (currently version2) </summary>
+    function LoadFromFile(const _fn: string; _OnlyIfLatestVersion: Boolean = True): Boolean;
     procedure SaveToFile(const _fn: string);
     property Items[_Idx: Integer]: TUnitIdentifier read GetItems; default;
   end;
@@ -371,7 +376,7 @@ begin
   Result := FItems[_Idx] as TUnitIdentifier;
 end;
 
-procedure TUnitIdentifierList.LoadFromFile(const _fn: string);
+function TUnitIdentifierList.LoadFromFile(const _fn: string; _OnlyIfLatestVersion: Boolean): Boolean;
 var
   StartIdx: Integer;
   i: Integer;
@@ -381,20 +386,24 @@ begin
   sl := TStringList.Create;
   try
     sl.LoadFromFile(_fn);
-    if sl.Count = 0 then
+    if sl.Count = 0 then begin
+      Result := False;
       Exit; //==>
-    if sl[0] = 'Version2' then
+    end;
+    Result := (sl[0] = CURRENT_UNIT_CACHE_VERSION);
+    if Result then
       StartIdx := 1
-    else
+    else begin
+      if _OnlyIfLatestVersion then
+        Exit; //==>
       StartIdx := 0;
+    end;
     for i := StartIdx to sl.Count - 1 do begin
       FItems.Add(TUnitIdentifier.FromString(sl[i]));
     end;
-    sl.SaveToFile(_fn);
   finally
     FreeAndNil(sl);
   end;
-
 end;
 
 procedure TUnitIdentifierList.SaveToFile(const _fn: string);
@@ -404,7 +413,7 @@ var
 begin
   sl := TStringList.Create;
   try
-    sl.Add('Version2');
+    sl.Add(CURRENT_UNIT_CACHE_VERSION);
     for i := 0 to Count - 1 do begin
       sl.Add(Items[i].AsString);
     end;
