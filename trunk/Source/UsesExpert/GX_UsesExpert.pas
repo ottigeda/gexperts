@@ -1884,6 +1884,7 @@ begin
 {$IFOPT D+}
   SendDebug('Filtering identifiers');
 {$ENDIF D+}
+  TWinControl_Lock(pnlIdentifiers);
   Filter := Trim(edtIdentifierFilter.Text);
 
   if FIdentifierMatchGrp.TryGetSelected(Idx) then
@@ -1914,12 +1915,11 @@ begin
       FreeAndNil(MultiFilter);
     end;
     cnt := FilterList.Count;
-    TGrid_SetNonfixedRowCount(sg_Identifiers, cnt);
     if cnt = 0 then
       TStringGrid_Clear(sg_Identifiers)
     else begin
       FixedRows := sg_Identifiers.FixedRows;
-      TGrid_SetNonfixedRowCount(sg_Identifiers, cnt);
+      sg_Identifiers.RowCount := FixedRows + cnt;
       for i := 0 to cnt - 1 do begin
         Item := TObject(FilterList[i]) as TUnitExport;
         Identifier := Item.Identifier;
@@ -1933,6 +1933,7 @@ begin
   finally
     FreeAndNil(FilterList);
   end;
+  ShowSelectedUnitPathInStatusBar(1);
 {$IFOPT D+}
   SendDebug('Done filtering identifiers');
 {$ENDIF D+}
@@ -1950,7 +1951,7 @@ end;
 
 procedure TfmUsesManager.ResizeIdentiferGrid;
 begin
-  TGrid_Resize(sg_Identifiers, [roUseGridWidth, roUseAllRows]);
+  TGrid_Resize(sg_Identifiers, [roUseGridWidth, roUseFirstRows]);
   TGrid_RestrictToGridWdith(sg_Identifiers, [1]);
   pnlIdentifiersProgress.Left := (sg_Identifiers.Width - pnlIdentifiersProgress.Width) div 2;
 end;
