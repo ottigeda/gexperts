@@ -95,6 +95,23 @@ type
     function GetIdentifiers: TStrings;
   public
     ///<summary>
+    /// adds the following symbols to the list as applicable:
+    /// * VERxxx
+    /// * UNICODE
+    /// * NATIVECODE
+    /// * DELPHILANGUAGE
+    /// * BORLAND
+    /// * BCB or DELPHI
+    /// * DELPHIxx
+    /// * DELPHICOMPILERxx
+    /// * COMPILERxx
+    /// * DELPHIxx_UP
+    /// * DELPHICOMPILERxx_UP
+    /// * COMPILERxx_UP
+    /// * RTLxx
+    /// * RTLxx_UP </summary>
+    class procedure AddDefaultSymbols(_Symbols: TStrings);
+    ///<summary>
     /// @returns the name of the given identifier type </summary>
     class function IdentfierTypeNames(_IdType: TUnitIdentifierTypes): string;
     ///<summary>
@@ -144,12 +161,12 @@ type
     FParsedUnitsCount: Integer;
     FLoadedUnitsCount: Integer;
     FFoundUnitsCount: Integer;
+    FSymbols: TStringList;
     procedure GetAllFilesInPath(_sl: TStringList);
     procedure GetAllFilesInDir(_dir: string; _sl: TStringList);
   protected
     procedure doExecute; override;
   public
-    class procedure AddSymbols(_Parser: TUnitExportsParser);
     ///<summary>
     /// @param Files is a list of unit names, without path and extension, which are to be parsed.
     ///              Can be NIL, in which case all files in the search path will be parsed.
@@ -158,7 +175,7 @@ type
     ///              declaration.
     /// @param Paths is a list of possible search paths
     /// @param CacheDir is a directory to cache the identifier lists </summary>
-    constructor Create(const _Files: TStrings; _Paths: TStrings; const _CacheDir: string);
+    constructor Create(const _Files: TStrings; _Paths: TStrings; const _CacheDir: string; const _Symbols: TStrings);
     destructor Destroy; override;
     function DetachIdentifiers: TUnitExportlist;
     ///<summary>
@@ -646,6 +663,100 @@ begin
   FIdentifierList.Add(_Identifier, _LineNo);
 end;
 
+class procedure TUnitExportsParser.AddDefaultSymbols(_Symbols: TStrings);
+var
+  CompVer: Integer;
+  DelphiVer: Integer;
+  RtlVer: Integer;
+begin
+  // the usual VERxxx symbol
+  _Symbols.Add(Format('VER%.0f', [CompilerVersion * 10]));
+  _Symbols.Add('CONDITIONALEXPRESSIONS');
+  _Symbols.Add('NATIVECODE');
+
+  // add commonly used symbols
+  // 1. jedi.inc
+  // todo: Maybe check if jedi.inc is included?
+  _Symbols.Add('DELPHILANGUAGE');
+  _Symbols.Add('BORLAND');
+{$IFDEF BCB}
+  Symbols.Add('BCB');
+{$ELSE}
+  _Symbols.Add('DELPHI');
+{$ENDIF}
+
+  DelphiVer := Round(CompilerVersion) - CompilerVersionDelphi6 + 6;
+  _Symbols.Add(Format('DELPHI%d', [DelphiVer]));
+  _Symbols.Add(Format('DELPHICOMPILER%d', [DelphiVer]));
+  _Symbols.Add(Format('COMPILER%d', [DelphiVer]));
+
+  for CompVer := CompilerVersionDelphi6 to Round(CompilerVersion) do begin
+    DelphiVer := CompVer - CompilerVersionDelphi6 + 6;
+    _Symbols.Add(Format('DELPHI%d_UP', [DelphiVer]));
+    _Symbols.Add(Format('DELPHICOMPILER%d_UP', [DelphiVer]));
+    _Symbols.Add(Format('COMPILER%d_UP', [DelphiVer]));
+  end;
+
+  if (CompilerVersion >= CompilerVersionDelphi2005) and (CompilerVersion <= CompilerVersionDelphi2010) then begin
+    DelphiVer := Round(CompilerVersion) - CompilerVersionDelphi2005 + 2005;
+    _Symbols.Add(Format('DELPHI%d', [DelphiVer]));
+  end;
+  for CompVer := CompilerVersionDelphi2005 to CompilerVersionDelphi2007Net do begin
+    if CompilerVersion >= CompVer then begin
+      DelphiVer := Round(CompVer) - CompilerVersionDelphi2005 + 2005;
+      _Symbols.Add(Format('DELPHI%d_UP', [DelphiVer]));
+    end;
+  end;
+  if CompilerVersion = CompilerVersionDelphi2007 then begin
+    _Symbols.Add('DELPHI2007');
+  end;
+  if CompilerVersion >= CompilerVersionDelphi2007 then begin
+    _Symbols.Add('DELPHI2007_UP');
+  end;
+
+  for CompVer := CompilerVersionDelphi2009 to CompilerVersionDelphi2010 do begin
+    if CompilerVersion >= CompVer then begin
+      DelphiVer := Round(CompVer) - CompilerVersionDelphi2009 + 2009;
+      _Symbols.Add(Format('DELPHI%d_UP', [DelphiVer]));
+    end;
+  end;
+
+  if CompilerVersion = CompilerVersionDelphiXE then begin
+    _Symbols.Add('DELPHIXE');
+  end;
+  if CompilerVersion >= CompilerVersionDelphiXE then begin
+    _Symbols.Add('DELPHIXE_UP');
+  end;
+
+  if (CompilerVersion >= CompilerVersionDelphiXE2) and (CompilerVersion <= CompilerVersionDelphiXE8) then begin
+    DelphiVer := Round(CompilerVersion) - CompilerVersionDelphiXE2 + 2;
+    _Symbols.Add(Format('DELPHIXE%d', [DelphiVer]));
+  end;
+  for CompVer := CompilerVersionDelphiXE2 to CompilerVersionDelphiXE8 do begin
+    if CompilerVersion >= CompVer then begin
+      DelphiVer := Round(CompVer) - CompilerVersionDelphiXE2 + 2;
+      _Symbols.Add(Format('DELPHIXE%d_UP', [DelphiVer]));
+    end;
+  end;
+
+  _Symbols.Add(Format('RTL%d', [Round(RTLVersion)]));
+  for RtlVer := RtlVersionDelphi6 to Round(RTLVersion) do begin
+    _Symbols.Add(Format('RTL%D_UP', [RtlVer]));
+  end;
+
+{$IFDEF UNICODE}
+  // from
+  // http://docwiki.embarcadero.com/RADStudio/Sydney/en/Conditional_compilation_(Delphi)
+  // I gather that all target platforms of Unicode aware versions of Delphi are also Unicode aware
+  _Symbols.Add('UNICODE');
+{$ENDIF}
+  // todo: Handle the symbols defined by the target somehow
+  // {$ifdef WINDOWS}
+  //  _Symbols.Add('WINDOWS');
+  // {$ENDIF}
+  // todo: add symbol WIN32 or WIN64 and possibly MS_WINDOWS or LINUX or IOS, ANDROID
+end;
+
 procedure TUnitExportsParser.AddToConsts(const _Token: string; _LineNo: Integer);
 begin
   FConstants.Add(_Token);
@@ -960,7 +1071,7 @@ end;
 { TUnitExportParserThread }
 
 constructor TUnitExportParserThread.Create(const _Files: TStrings; _Paths: TStrings;
-  const _CacheDir: string);
+  const _CacheDir: string; const _Symbols: TStrings);
 var
   i: Integer;
   s: string;
@@ -993,6 +1104,14 @@ begin
     UniqueString(s);
     FPaths.Add(s);
   end;
+
+  FSymbols := TStringList.Create;
+  for i := 0 to _Symbols.Count - 1 do begin
+    s := _Symbols[i];
+    UniqueString(s);
+    FSymbols.Add(s);
+  end;
+
   inherited Create(False);
 end;
 
@@ -1000,6 +1119,7 @@ destructor TUnitExportParserThread.Destroy;
 begin
   OnTerminate := nil;
   inherited;
+  FreeAndNil(FSymbols);
   FreeAndNil(FPaths);
   FreeAndNil(FFiles);
   FreeAndNil(FIdentifierList);
@@ -1010,99 +1130,6 @@ function TUnitExportParserThread.DetachIdentifiers: TUnitExportlist;
 begin
   Result := FIdentifierList;
   FIdentifierList := nil;
-end;
-
-class procedure TUnitExportParserThread.AddSymbols(_Parser: TUnitExportsParser);
-var
-  Symbols: TStrings;
-  CompVer: Integer;
-  DelphiVer: Integer;
-  RtlVer: Integer;
-begin
-  Symbols := _Parser.Symbols;
-
-  // the usual VERxxx symbol
-  Symbols.Add(Format('VER%.0f', [CompilerVersion * 10]));
-
-  // add commonly used symbols
-  // 1. jedi.inc
-  // todo: Maybe check if jedi.inc is included?
-  Symbols.Add('DELPHILANGUAGE');
-  Symbols.Add('BORLAND');
-{$IFDEF BCB}
-  Symbols.Add('BCB');
-{$ELSE}
-  Symbols.Add('DELPHI');
-{$ENDIF}
-  // todo: add symbol WIN32 or WIN64
-
-  DelphiVer := Round(CompilerVersion) - CompilerVersionDelphi6 + 6;
-  Symbols.Add(Format('DELPHI%d', [DelphiVer]));
-  Symbols.Add(Format('DELPHICOMPILER%d', [DelphiVer]));
-  Symbols.Add(Format('COMPILER%d', [DelphiVer]));
-
-  for CompVer := CompilerVersionDelphi6 to Round(CompilerVersion) do begin
-    DelphiVer := CompVer - CompilerVersionDelphi6 + 6;
-    Symbols.Add(Format('DELPHI%d_UP', [DelphiVer]));
-    Symbols.Add(Format('DELPHICOMPILER%d_UP', [DelphiVer]));
-    Symbols.Add(Format('COMPILER%d_UP', [DelphiVer]));
-  end;
-
-  if (CompilerVersion >= CompilerVersionDelphi2005) and (CompilerVersion <= CompilerVersionDelphi2010) then begin
-    DelphiVer := Round(CompilerVersion) - CompilerVersionDelphi2005 + 2005;
-    Symbols.Add(Format('DELPHI%d', [DelphiVer]));
-  end;
-  for CompVer := CompilerVersionDelphi2005 to CompilerVersionDelphi2007Net do begin
-    if CompilerVersion >= CompVer then begin
-      DelphiVer := Round(CompVer) - CompilerVersionDelphi2005 + 2005;
-      Symbols.Add(Format('DELPHI%d_UP', [DelphiVer]));
-    end;
-  end;
-  if CompilerVersion = CompilerVersionDelphi2007 then begin
-    Symbols.Add('DELPHI2007');
-  end;
-  if CompilerVersion >= CompilerVersionDelphi2007 then begin
-    Symbols.Add('DELPHI2007_UP');
-  end;
-
-  for CompVer := CompilerVersionDelphi2009 to CompilerVersionDelphi2010 do begin
-    if CompilerVersion >= CompVer then begin
-      DelphiVer := Round(CompVer) - CompilerVersionDelphi2009 + 2009;
-      Symbols.Add(Format('DELPHI%d_UP', [DelphiVer]));
-    end;
-  end;
-
-  if CompilerVersion = CompilerVersionDelphiXE then begin
-    Symbols.Add('DELPHIXE');
-  end;
-  if CompilerVersion >= CompilerVersionDelphiXE then begin
-    Symbols.Add('DELPHIXE_UP');
-  end;
-
-  if (CompilerVersion >= CompilerVersionDelphiXE2) and (CompilerVersion <= CompilerVersionDelphiXE8) then begin
-    DelphiVer := Round(CompilerVersion) - CompilerVersionDelphiXE2 + 2;
-    Symbols.Add(Format('DELPHIXE%d', [DelphiVer]));
-  end;
-  for CompVer := CompilerVersionDelphiXE2 to CompilerVersionDelphiXE8 do begin
-    if CompilerVersion >= CompVer then begin
-      DelphiVer := Round(CompVer) - CompilerVersionDelphiXE2 + 2;
-      Symbols.Add(Format('DELPHIXE%d_UP', [DelphiVer]));
-    end;
-  end;
-
-  Symbols.Add(Format('RTL%d', [Round(RTLVersion)]));
-  for RtlVer := RtlVersionDelphi6 to Round(RTLVersion) do begin
-    Symbols.Add(Format('RTL%D_UP', [RtlVer]));
-  end;
-
-  // todo: This might not be correct: Are all targets of Unicode aware Delphi versions also Unicode aware?
-{$IFDEF UNICODE}
-  Symbols.Add('UNICODE');
-{$ENDIF}
-  // todo: Handle the symbols defined by the target somehow
-  // {$ifdef WINDOWS}
-  //  _Parser.Symbols.Add('WINDOWS');
-  // {$ENDIF}
 end;
 
 function FileTimeToDosTime(_ft: _FILETIME): GXNativeUInt;
@@ -1330,7 +1357,7 @@ begin
 {$ENDIF}
       Parser := TUnitExportsParser.Create(fn);
       try
-        AddSymbols(Parser);
+        Parser.Symbols.Assign(FSymbols);
         Parser.Execute;
         if Terminated then
           Exit; //==>

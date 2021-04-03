@@ -515,10 +515,12 @@ end;
 procedure TUsesClauseMgrExpert.StartUnitParserThread;
 var
   Paths: TStrings;
+  Symbols: TStrings;
   CacheDir: string;
   FavoriteUnits: TStringList;
   fn: string;
   sl: TStringList;
+  PlatformName: string;
 begin
   FreeAndNil(FUnitExportParserThread);
 
@@ -527,8 +529,175 @@ begin
   else
     CacheDir := ConfigInfo.CachingPath + 'UsesExpertCache';
 
+  Symbols := nil;
   Paths := TStringList.Create;
   try
+    Symbols := TStringList.Create;
+    TUnitExportsParser.AddDefaultSymbols(Symbols);
+
+
+  // since these symbols are project and configuration specific, we cannot really use them
+  // to generate a generic cache of symbols.
+  // The cache must also be project and configuration specific which would make it rather
+  // cumbersome.
+    // source:
+    // http://docwiki.embarcadero.com/RADStudio/Sydney/en/Conditional_compilation_(Delphi)
+{$IFDEF GX_VER230_up}
+    PlatformName := GxOtaGetProjectPlatform;
+    if SameText(PlatformName, cWin64Platform) then begin
+      Symbols.Add('ASSEMBLER');
+      Symbols.Add('CPU64BITS');
+      Symbols.Add('CPUX64');
+      Symbols.Add('MSWINDOWS');
+      Symbols.Add('WIN64');
+    end else if SameText(PlatformName, cOSX32Platform) then begin
+      Symbols.Add('MACOS');
+      Symbols.Add('MACOS32');
+      Symbols.Add('POSIX');
+      Symbols.Add('POSIX32');
+      Symbols.Add('CPU386');
+      Symbols.Add('CPUX86');
+      Symbols.Add('CPU32BITS');
+      Symbols.Add('ALIGN_STACK');
+      Symbols.Add('ASSEMBLER');
+      Symbols.Add('PC_MAPPED_EXCEPTIONS');
+      Symbols.Add('PIC');
+      Symbols.Add('UNDERSCOREIMPORTNAME');
+    end else if SameText(PlatformName, cOSX64Platform) then begin
+      Symbols.Add('CPU64BITS');
+      Symbols.Add('CPU386');
+      Symbols.Add('CPUX64');
+      Symbols.Add('EXTERNALLINKER');
+      Symbols.Add('MACOS');
+      Symbols.Add('MACOS64');
+      Symbols.Add('PIC');
+      Symbols.Add('POSIX');
+      Symbols.Add('POSIX64');
+      Symbols.Add('WEAKINTFREF');
+      Symbols.Add('WEAKREF');
+{$IFNDEF GX_DELPHI_TOKYO_UP}
+      Symbols.Add('AUTOREFCOUNT'); // only up to 10.3
+      Symbols.Add('NEXTGEN'); // only up to 10.3
+      Symbols.Add('WEAKINSTREF'); // only up to 10.3
+{$ENDIF}
+    end else if SameText(PlatformName, ciOSDevice32Platform) then begin
+      Symbols.Add('CPU32BITS');
+      Symbols.Add('CPUARM');
+      Symbols.Add('CPUARM32');
+      Symbols.Add('EXTERNALLINKER');
+      Symbols.Add('IOS');
+      Symbols.Add('IOS32');
+      Symbols.Add('MACOS');
+      Symbols.Add('MACOS32');
+      Symbols.Add('PIC');
+      Symbols.Add('POSIX');
+      Symbols.Add('POSIX32');
+      Symbols.Add('WEAKINTFREF');
+      Symbols.Add('WEAKREF');
+{$IFNDEF GX_DELPHI_TOKYO_UP}
+      Symbols.Add('AUTOREFCOUNT'); // only up to 10.3
+      Symbols.Add('NEXTGEN'); // only up to 10.3
+      Symbols.Add('WEAKINSTREF'); // only up to 10.3
+{$ENDIF}
+    end else if SameText(PlatformName, ciOSSimulatorPlatform) then begin
+      Symbols.Add('ALIGN_STACK');
+      Symbols.Add('ASSEMBLER');
+      Symbols.Add('CPU32BITS');
+      Symbols.Add('CPU386');
+      Symbols.Add('CPUX86');
+      Symbols.Add('IOS');
+      Symbols.Add('IOS32');
+      Symbols.Add('MACOS');
+      Symbols.Add('MACOS32');
+      Symbols.Add('PIC');
+      Symbols.Add('POSIX');
+      Symbols.Add('POSIX32');
+      Symbols.Add('UNDERSCOREIMPORTNAME');
+      Symbols.Add('WEAKINTFREF');
+      Symbols.Add('WEAKREF');
+{$IFNDEF GX_DELPHI_TOKYO_UP}
+      Symbols.Add('AUTOREFCOUNT'); // only up to 10.3
+      Symbols.Add('NEXTGEN'); // only up to 10.3
+      Symbols.Add('WEAKINSTREF'); // only up to 10.3
+{$ENDIF}
+    end else if SameText(PlatformName, cAndroidPlatform) then begin
+      Symbols.Add('ANDROID');
+      Symbols.Add('ANDROID32');
+      Symbols.Add('CPU32BITS');
+      Symbols.Add('CPUARM');
+      Symbols.Add('CPUARM32');
+      Symbols.Add('EXTERNALLINKER');
+      Symbols.Add('PIC');
+      Symbols.Add('POSIX');
+      Symbols.Add('POSIX32');
+      Symbols.Add('WEAKINTFREF');
+      Symbols.Add('WEAKREF');
+{$IFNDEF GX_DELPHI_TOKYO_UP}
+      Symbols.Add('AUTOREFCOUNT'); // only up to 10.3
+      Symbols.Add('NEXTGEN'); // only up to 10.3
+      Symbols.Add('WEAKINSTREF'); // only up to 10.3
+{$ENDIF}
+    end else if SameText(PlatformName, ciOSDevice64Platform) then begin
+      Symbols.Add('CPU64BITS');
+      Symbols.Add('CPUARM');
+      Symbols.Add('CPUARM64');
+      Symbols.Add('EXTERNALLINKER');
+      Symbols.Add('IOS');
+      Symbols.Add('IOS64');
+      Symbols.Add('MACOS');
+      Symbols.Add('MACOS64');
+      Symbols.Add('PIC');
+      Symbols.Add('POSIX');
+      Symbols.Add('POSIX64');
+      Symbols.Add('WEAKINTFREF');
+      Symbols.Add('WEAKREF');
+{$IFNDEF GX_DELPHI_TOKYO_UP}
+      Symbols.Add('AUTOREFCOUNT'); // only up to 10.3
+      Symbols.Add('NEXTGEN'); // only up to 10.3
+      Symbols.Add('WEAKINSTREF'); // only up to 10.3
+{$ENDIF}
+    end else if SameText(PlatformName, cLinux64Platform) then begin
+      Symbols.Add('LINUX');
+      Symbols.Add('LINUX64');
+      Symbols.Add('POSIX');
+      Symbols.Add('POSIX64');
+      Symbols.Add('ASSEMBLER');
+      Symbols.Add('CPU64BITS');
+      Symbols.Add('CPUX64');
+      Symbols.Add('EXTERNALLINKER');
+      Symbols.Add('ELF');
+      Symbols.Add('PIC');
+      Symbols.Add('WEAKINTFREF');
+      Symbols.Add('WEAKREF');
+{$IFDEF GX_DELPHI_SYDNEY_UP}
+      Symbols.Add('AUTOREFCOUNT'); // only in 10.2
+      Symbols.Add('NEXTGEN'); // only up to 10.2
+      Symbols.Add('WEAKINSTREF'); // only up to 10.
+{$ENDIF}
+    end else if SameText(PlatformName, cAndroid64Platform) then begin
+      Symbols.Add('POSIX');
+      Symbols.Add('POSIX64');
+      Symbols.Add('ANDROID');
+      Symbols.Add('ANDROID64');
+      Symbols.Add('CPU64BITS');
+      Symbols.Add('CPUARM');
+      Symbols.Add('CPUARM64');
+      Symbols.Add('EXTERNALLINKER');
+      Symbols.Add('PIC');
+      Symbols.Add('WEAKINTFREF');
+      Symbols.Add('WEAKREF');
+    end else if SameText(PlatformName, cWin32Platform) or (PlatformName = '') then
+{$ENDIF}begin
+      // CONSOLE?
+      Symbols.Add('ASSEMBLER');
+      Symbols.Add('CPU32BITS');
+      Symbols.Add('CPU386');
+      Symbols.Add('CPUX86');
+      Symbols.Add('DCC');
+      Symbols.Add('MSWINDOWS');
+      Symbols.Add('UNDERSCOREIMPORTNAME');
+      Symbols.Add('WIN32');
+    end;
   // We only take identifiers from units listed in the search path, so one could be tempted
   // to only parse these units. But the effective library path does not contain the browsing
   // path for units for which only dcu files are available in the library path.
@@ -549,7 +718,7 @@ begin
 {$IFOPT D+}
       SendDebug('Running UnitExportParser thread to get identifiers from all units in search path');
 {$ENDIF D+}
-      FUnitExportParserThread := TUnitExportParserThread.Create(nil, Paths, CacheDir);
+      FUnitExportParserThread := TUnitExportParserThread.Create(nil, Paths, CacheDir, Symbols);
     end else begin
 {$IFOPT D+}
       SendDebug('Loading favorites');
@@ -568,10 +737,11 @@ begin
 {$IFOPT D+}
         SendDebug('Running UnitExportParser thread to get identifiers from favorites');
 {$ENDIF D+}
-        FUnitExportParserThread := TUnitExportParserThread.Create(FavoriteUnits, Paths, CacheDir);
+        FUnitExportParserThread := TUnitExportParserThread.Create(FavoriteUnits, Paths, CacheDir, Symbols);
       end;
     end;
   finally
+    FreeAndNil(Symbols);
     FreeAndNil(Paths);
   end;
 end;

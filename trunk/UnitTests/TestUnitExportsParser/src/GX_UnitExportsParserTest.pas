@@ -30,6 +30,7 @@ type
     procedure TestudzBeep;
     procedure TestMagickWand;
     procedure TestIdGlobalProtocols;
+    procedure TestToolsApi;
   end;
 
 implementation
@@ -168,7 +169,7 @@ begin
   fn := IncludeTrailingPathDelimiter(ExtractFileDir(ParamSTr(0))) + 'testcases\IdGlobalProtocols.pas';
   Parser := TUnitExportsParser.Create(fn);
   try
-    TUnitExportParserThread.AddSymbols(Parser);
+    TUnitExportsParser.AddDefaultSymbols(Parser.Symbols);
     Parser.Execute;
 
     CheckEquals(Length(Identifiers), Parser.Identifiers.Count);
@@ -200,7 +201,32 @@ begin
   fn := IncludeTrailingPathDelimiter(ExtractFileDir(ParamSTr(0))) + 'testcases\magick_wand.pas';
   Parser := TUnitExportsParser.Create(fn);
   try
-    TUnitExportParserThread.AddSymbols(Parser);
+    TUnitExportsParser.AddDefaultSymbols(Parser.Symbols);
+    Parser.Execute;
+
+    CheckEquals(Length(Identifiers), Parser.Identifiers.Count);
+    for i := 0 to Parser.Identifiers.Count - 1 do
+      CheckEquals(Identifiers[i], Parser.Identifiers[i]);
+  finally
+    FreeAndNil(Parser);
+  end;
+end;
+
+procedure TTestUnitExportsParser.TestToolsApi;
+const
+  Identifiers: array[0..1] of string = (
+    'IOTAProcess90',
+    'TGetSrcLinesFunc');
+var
+  Parser: TUnitExportsParser;
+  fn: string;
+  i: Integer;
+begin
+  fn := IncludeTrailingPathDelimiter(ExtractFileDir(ParamSTr(0))) + 'testcases\Toolsapi.pas';
+  Parser := TUnitExportsParser.Create(fn);
+  try
+    TUnitExportsParser.AddDefaultSymbols(Parser.Symbols);
+    Parser.Symbols.Add('MSWINDOWS');
     Parser.Execute;
 
     CheckEquals(Length(Identifiers), Parser.Identifiers.Count);
@@ -212,17 +238,12 @@ begin
 end;
 
 procedure TTestUnitExportsParser.TestudzBeep;
-{$IF CompilerVersion >= CompilerVersionDelphi2007}
 const
   Identifiers: array[0..3] of string = (
     'Beeper',
     'TBeeper',
     'TBeepSequenceEntry',
     'TBeepSequenceList');
-{$ELSE}
-const
-  Identifiers: array of string;
-{$ENDIF}
 var
   Parser: TUnitExportsParser;
   fn: string;
@@ -231,7 +252,7 @@ begin
   fn := IncludeTrailingPathDelimiter(ExtractFileDir(ParamSTr(0))) + 'testcases\u_dzBeep.pas';
   Parser := TUnitExportsParser.Create(fn);
   try
-    TUnitExportParserThread.AddSymbols(Parser);
+    TUnitExportsParser.AddDefaultSymbols(Parser.Symbols);
     Parser.Execute;
 
     CheckEquals(Length(Identifiers), Parser.Identifiers.Count);
