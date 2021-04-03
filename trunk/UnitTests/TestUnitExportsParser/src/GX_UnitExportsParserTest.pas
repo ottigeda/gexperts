@@ -171,9 +171,9 @@ begin
     TUnitExportParserThread.AddSymbols(Parser);
     Parser.Execute;
 
-    CheckEquals(Length(Identifiers), Parser.IdentifierCount);
-    for i := 0 to Parser.IdentifierCount - 1 do
-      CheckEquals(Identifiers[i], Parser.Identifier[i].IdName);
+    CheckEquals(Length(Identifiers), Parser.Identifiers.Count);
+    for i := 0 to Parser.Identifiers.Count - 1 do
+      CheckEquals(Identifiers[i], Parser.Identifiers[i]);
   finally
     FreeAndNil(Parser);
   end;
@@ -203,9 +203,9 @@ begin
     TUnitExportParserThread.AddSymbols(Parser);
     Parser.Execute;
 
-    CheckEquals(Length(Identifiers), Parser.IdentifierCount);
-    for i := 0 to Parser.IdentifierCount - 1 do
-      CheckEquals(Identifiers[i], Parser.Identifier[i].IdName);
+    CheckEquals(Length(Identifiers), Parser.Identifiers.Count);
+    for i := 0 to Parser.Identifiers.Count - 1 do
+      CheckEquals(Identifiers[i], Parser.Identifiers[i]);
   finally
     FreeAndNil(Parser);
   end;
@@ -234,9 +234,9 @@ begin
     TUnitExportParserThread.AddSymbols(Parser);
     Parser.Execute;
 
-    CheckEquals(Length(Identifiers), Parser.IdentifierCount);
-    for i := 0 to Parser.IdentifierCount - 1 do
-      CheckEquals(Identifiers[i], Parser.Identifier[i].IdName);
+    CheckEquals(Length(Identifiers), Parser.Identifiers.Count);
+    for i := 0 to Parser.Identifiers.Count - 1 do
+      CheckEquals(Identifiers[i], Parser.Identifiers[i]);
   finally
     FreeAndNil(Parser);
   end;

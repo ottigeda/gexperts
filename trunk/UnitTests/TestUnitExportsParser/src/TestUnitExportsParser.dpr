@@ -20,7 +20,8 @@ uses
   DUnitConsts in '..\..\dunit\DUnitConsts.pas',
   GUITestRunner in '..\..\dunit\GUITestRunner.pas' {GUITestRunner},
   TestFramework in '..\..\dunit\TestFramework.pas',
-  TestFrameworkExt in '..\..\dunit\TestFrameworkExt.pas';
+  TestFrameworkExt in '..\..\dunit\TestFrameworkExt.pas',
+  GX_UnitExportList in '..\..\..\Source\UsesExpert\GX_UnitExportList.pas';
 
 {$R *.RES}
 
