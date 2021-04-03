@@ -87,7 +87,7 @@ var
   FoundBeginAlready: Boolean;
 begin
   Section := sUnknown;
-  FParser.RunPos := 0;
+  FParser.Restart;
   IsProgramOrLibrary := False;
   FoundBeginAlready := False;
 

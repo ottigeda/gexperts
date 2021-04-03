@@ -89,13 +89,32 @@ type
   TCommentState = (csAnsi, csBor, csNo);
   TLexArgList = class;
 
+  ///<summary>
+  /// Used to temporarily store the Lexer's state so it can be reset to that point later </summary>
+  TmwPasLexState = record
+    FComment: TCommentState;
+    Run: Integer;
+    FRoundCount: Integer;
+    FSquareCount: Integer;
+    fStringLen: Integer;
+    fToIdent: PChar;
+    fTokenPos: Integer;
+    fLineNumber: Integer;
+    FTokenID: TTokenKind;
+    fLastIdentPos: Integer;
+    fLastNoSpace: TTokenKind;
+    fLastNoSpacePos: Integer;
+    fLinePos: Integer;
+    fIsInterface: Boolean;
+    fIsClass: Boolean;
+  end;
+
   TmwPasLex = class(TObject)
   private
     fComment: TCommentState;
     fOrigin: PChar;
     fProcTable: array[#0..#255] of procedure of object;
     Run: Integer;
-    Temp: PChar;
     FRoundCount: Integer;
     FSquareCount: Integer;
     fStringLen: Integer;
@@ -187,7 +206,6 @@ type
     procedure InitIdent;
     function IdentKind(MayBe: PChar): TTokenKind;
     procedure SetOrigin(NewValue: PChar);
-    procedure SetRunPos(Value: Integer);
     procedure MakeMethodTables;
     procedure AddressOpProc;
     procedure AsciiCharProc;
@@ -226,6 +244,7 @@ type
     procedure doProcTable(AChar: Char);
     function IsIdentifier(AChar: Char): boolean;
     function CalcHash(AChar: Char): integer;
+    procedure SetLineNumber(const Value: Integer);
   public
     constructor Create;
     destructor Destroy; override;
@@ -245,10 +264,10 @@ type
     property LastIdentPos: Integer read fLastIdentPos;
     property LastNoSpace: TTokenKind read fLastNoSpace;
     property LastNoSpacePos: Integer read fLastNoSpacePos;
-    property LineNumber: Integer read fLineNumber;
+    property LineNumber: Integer read fLineNumber write SetLineNumber;
     property LinePos: Integer read fLinePos;
     property Origin: PChar read fOrigin write SetOrigin;
-    property RunPos: Integer read Run write SetRunPos;
+    property RunPos: Integer read Run;
     property TokenPos: Integer read fTokenPos;
     property Token: string read GetToken;
     property TokenID: TTokenKind read FTokenID;
@@ -258,6 +277,10 @@ type
     procedure GetClassMethodDetailsFromCurrentPosEx(var NestedClasses,
       ClassName, MethodName, Args, ResultType: string;
       ArgList: TLexArgList);
+    procedure GetParsingState(out State: TmwPasLexState);
+    procedure SetParsingState(const State: TmwPasLexState);
+    // replaces setting RunPos to 0 which was used in GX_UnitPositions
+    procedure Restart;
   end;
 
   TLexArgPassMode = (lapmValue, lapmConst, lapmVar, lapmOut);
@@ -417,6 +440,7 @@ end; { KeyHash }
 function TmwPasLex.KeyComp(const aKey: string): Boolean;
 var
   i: Integer;
+  Temp: PChar;
 begin
   Temp := fToIdent;
   if Length(aKey) = fStringLen then
@@ -976,20 +1000,34 @@ begin
   inherited Destroy;
 end; { Destroy }
 
+procedure TmwPasLex.SetLineNumber(const Value: Integer);
+begin
+  fLineNumber := Value;
+end;
+
 procedure TmwPasLex.SetOrigin(NewValue: PChar);
 begin
   fOrigin := NewValue;
-  fComment := csNo;
-  fLineNumber := 0;
-  fLinePos := 0;
-  Run := 0;
-  Next;
+  Restart;
 end; { SetOrigin }
 
-procedure TmwPasLex.SetRunPos(Value: Integer);
+procedure TmwPasLex.SetParsingState(const State: TmwPasLexState);
 begin
-  Run := Value;
-  Next;
+  FComment := State.FComment;
+  Run := State.Run;
+  FRoundCount := State.FRoundCount;
+  FSquareCount := State.FSquareCount;
+  fStringLen := State.fStringLen;
+  fToIdent := State.fToIdent;
+  fTokenPos := State.fTokenPos;
+  fLineNumber := State.fLineNumber;
+  FTokenID := State.FTokenID;
+  fLastIdentPos := State.fLastIdentPos;
+  fLastNoSpace := State.fLastNoSpace;
+  fLastNoSpacePos := State.fLastNoSpacePos;
+  fLinePos := State.fLinePos;
+  fIsInterface := State.fIsInterface;
+  fIsClass := State.fIsClass;
 end;
 
 procedure TmwPasLex.AddressOpProc;
@@ -1154,6 +1192,8 @@ begin
 end;
 
 function TmwPasLex.CharAhead(Count: Integer): Char;
+var
+  Temp: PChar;
 begin
   Temp := fOrigin + Run + Count;
   while CharInSet(Temp^, [#1..#9, #11, #12, #14..#32]) do
@@ -1162,6 +1202,8 @@ begin
 end;
 
 function TmwPasLex.NextChar: Char;
+var
+  Temp:PChar;
 begin
   Temp := fOrigin + Run;
   Result := Temp^;
@@ -1274,6 +1316,27 @@ begin
       fTokenID := tkPoint;
     end;
   end;
+end;
+
+procedure TmwPasLex.Restart;
+begin
+  fComment := csNo;
+  Run := 0;
+  FRoundCount := 0;
+  FSquareCount := 0;
+  fStringLen := 0;
+  fToIdent := nil;
+  fTokenPos := 0;
+  fLineNumber := 0;
+  FTokenID := tkError;
+  fLastIdentPos := 0;
+  fLastNoSpace := tkError;
+  fLastNoSpacePos := 0;
+  fLinePos := 0;
+  fIsInterface := False;
+  fIsClass := False;
+
+  Next;
 end;
 
 procedure TmwPasLex.RoundCloseProc;
@@ -1540,6 +1603,25 @@ begin
       Exit;
     Next;
   end;
+end;
+
+procedure TmwPasLex.GetParsingState(out State: TmwPasLexState);
+begin
+  State.FComment := fComment;
+  State.Run := Run;
+  State.FRoundCount := FRoundCount;
+  State.FSquareCount := FSquareCount;
+  State.fStringLen := fStringLen;
+  State.fToIdent := fToIdent;
+  State.fTokenPos := fTokenPos;
+  State.fLineNumber := fLineNumber;
+  State.FTokenID := FTokenID;
+  State.fLastIdentPos := fLastIdentPos;
+  State.fLastNoSpace := fLastNoSpace;
+  State.fLastNoSpacePos := fLastNoSpacePos;
+  State.fLinePos := fLinePos;
+  State.fIsInterface := fIsInterface;
+  State.fIsClass := fIsClass;
 end;
 
 function TmwPasLex.GoToNextMethodDefinition: Boolean;

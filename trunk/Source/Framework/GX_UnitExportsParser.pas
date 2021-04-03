@@ -75,7 +75,8 @@ type
     FConstants: TStrings;
     FTypes: TStrings;
     FVariables: TStrings;
-    FIdentifiers: TUnitIdentifierList;
+    FIdentifiers: TStrings;
+    FIdentifierList: TUnitIdentifierList;
     FSymbols: TStrings;
     procedure AddToIdentifiers(const _Identifier: string; _IdType: TUnitIdentifierTypes; _LineNo: Integer);
     procedure AddToConsts(const _Token: string; _LineNo: Integer);
@@ -90,8 +91,8 @@ type
     procedure SkipToClosingDelimiter(_OpeningDel, _ClosingDel: TTokenKind);
     procedure HandleTypeDeclaration;
     procedure SkipVarDeclaration;
-    function GetIdentifier(_Idx: Integer): TUnitIdentifier;
     procedure SkipDirectives;
+    function GetIdentifiers: TStrings;
   public
     ///<summary>
     /// @returns the name of the given identifier type </summary>
@@ -120,15 +121,13 @@ type
     /// Sorted list of all exported types </summary>
     property Types: TStrings read FTypes;
     ///<summary>
-    /// Sorted list of all exported identifiers </summary>
-    property Identifiers: TUnitIdentifierList read FIdentifiers;
+    /// Sorted list of all exported identifiers, not containing any duplicates </summary>
+    property Identifiers: TStrings read GetIdentifiers;
     ///<summary>
-    /// Sorted list of all exported identifiers as a TIdentifier record which
-    /// in addition to the name contains the identifiert type </summary>
-    property Identifier[_Idx: Integer]: TUnitIdentifier read GetIdentifier;
-    ///<summary>
-    /// Count of exported identifiers </summary>
-    function IdentifierCount: Integer;
+    /// Unsorted list of all exported identifiers as a TIdentifier record which
+    /// in addition to the name contains the identifiert type. Note that this
+    /// List can contain duplicates e.g. for overloaded functions. </summary>
+    property IdentifierList: TUnitIdentifierList read FIdentifierList;
     ///<summary>
     /// Add any conditional symbols here </summary>
     property Symbols: TStrings read FSymbols;
@@ -139,7 +138,7 @@ type
   private
     FUnitFiles: TStringList;
     FFiles: TStringList;
-    FIdentifiers: TUnitExportlist;
+    FIdentifierList: TUnitExportlist;
     FPaths: TStringList;
     FCacheDirBS: string;
     FParsedUnitsCount: Integer;
@@ -164,7 +163,7 @@ type
     function DetachIdentifiers: TUnitExportlist;
     ///<summary>
     /// After execution Identifiers contains a sorted list of all identfiers. </summary>
-    property Identifiers: TUnitExportlist read FIdentifiers;
+    property Identifiers: TUnitExportlist read FIdentifierList;
     property FoundUnitsCount: Integer read FFoundUnitsCount;
     property ParsedUnitsCount: Integer read FParsedUnitsCount;
     property LoadedUnitsCount: Integer read FLoadedUnitsCount;
@@ -517,28 +516,27 @@ begin
   end;
 end;
 
+procedure CreateSortedStringsNoDuplicates(var _st: TStrings);
+var
+  sl: TStringList;
+begin
+  sl := TStringList.Create;
+  sl.Sorted := True;
+  sl.Duplicates := dupIgnore;
+  _st := sl;
+end;
+
 constructor TUnitExportsParser.Create(const _Filename: string);
-
-  procedure CreateStrings(var _st: TStrings);
-  var
-    sl: TStringList;
-  begin
-    sl := TStringList.Create;
-    sl.Sorted := True;
-    sl.Duplicates := dupIgnore;
-    _st := sl;
-  end;
-
 begin
   inherited Create;
   FFilename := _Filename;
-  CreateStrings(FProcedures);
-  CreateStrings(FFunctions);
-  CreateStrings(FConstants);
-  CreateStrings(FVariables);
-  CreateStrings(FTypes);
-  FIdentifiers := TUnitIdentifierList.Create(500);
-  CreateStrings(FSymbols);
+  CreateSortedStringsNoDuplicates(FProcedures);
+  CreateSortedStringsNoDuplicates(FFunctions);
+  CreateSortedStringsNoDuplicates(FConstants);
+  CreateSortedStringsNoDuplicates(FVariables);
+  CreateSortedStringsNoDuplicates(FTypes);
+  FIdentifierList := TUnitIdentifierList.Create(500);
+  CreateSortedStringsNoDuplicates(FSymbols);
 end;
 
 destructor TUnitExportsParser.Destroy;
@@ -550,6 +548,7 @@ begin
   FreeAndNil(FVariables);
   FreeAndNil(FTypes);
   FreeAndNil(FIdentifiers);
+  FreeAndNil(FIdentifierList);
   inherited;
 end;
 
@@ -630,19 +629,21 @@ begin
   end;
 end;
 
-function TUnitExportsParser.IdentifierCount: Integer;
+function TUnitExportsParser.GetIdentifiers: TStrings;
+var
+  i: Integer;
 begin
-  Result := FIdentifiers.Count;
-end;
-
-function TUnitExportsParser.GetIdentifier(_Idx: Integer): TUnitIdentifier;
-begin
-  Result := FIdentifiers[_Idx];
+  if not Assigned(FIdentifiers) then begin
+    CreateSortedStringsNoDuplicates(FIdentifiers);
+    for i := 0 to FIdentifierList.Count - 1 do
+      FIdentifiers.Add(FIdentifierList[i].Identifier);
+  end;
+  Result := FIdentifiers;
 end;
 
 procedure TUnitExportsParser.AddToIdentifiers(const _Identifier: string; _IdType: TUnitIdentifierTypes; _LineNo: Integer);
 begin
-  FIdentifiers.Add(_Identifier, _LineNo);
+  FIdentifierList.Add(_Identifier, _LineNo);
 end;
 
 procedure TUnitExportsParser.AddToConsts(const _Token: string; _LineNo: Integer);
@@ -894,7 +895,7 @@ procedure TUnitExportsParser.SkipDirectives;
 const
   CallingConventions = [tkRegister, tkPascal, tkCdecl, tkStdcall, tkSafecall];
 var
-  SemicolonPos: Integer;
+  ParserState: TmwPasLexState;
 
   function SkipToSemicolon: Boolean;
   begin
@@ -902,14 +903,14 @@ var
     while FParser.NextNoJunkEx do begin
       Result := (FParser.Tokenid = tkSemiColon);
       if Result then begin
-        SemicolonPos := FParser.RunPos;
+        FParser.GetParsingState(ParserState);
         Exit; //==>
       end;
     end;
   end;
 
 begin
-  SemicolonPos := FParser.RunPos;
+  FParser.GetParsingState(ParserState);
   if not FParser.NextNoJunkEx then begin
     // todo: this is an error -> handle it gracefully somehow
     Exit; //==>
@@ -930,7 +931,7 @@ begin
       Exit; //==>
     end;
   end else begin
-    FParser.RunPos := SemicolonPos;
+    FParser.SetParsingState(ParserState);
     Exit; //==>
   end;
 //  if FParser.TokenID in [tkvarargs] then
@@ -971,7 +972,7 @@ begin
     UniqueString(FCacheDirBS);
   end;
 
-  FIdentifiers := TUnitExportlist.Create(5000);
+  FIdentifierList := TUnitExportlist.Create(5000);
   FUnitFiles := TStringList.Create;
 
   if Assigned(_Files) then begin
@@ -1001,14 +1002,14 @@ begin
   inherited;
   FreeAndNil(FPaths);
   FreeAndNil(FFiles);
-  FreeAndNil(FIdentifiers);
+  FreeAndNil(FIdentifierList);
   FreeAndNil(FUnitFiles);
 end;
 
 function TUnitExportParserThread.DetachIdentifiers: TUnitExportlist;
 begin
-  Result := FIdentifiers;
-  FIdentifiers := nil;
+  Result := FIdentifierList;
+  FIdentifierList := nil;
 end;
 
 class procedure TUnitExportParserThread.AddSymbols(_Parser: TUnitExportsParser);
@@ -1302,14 +1303,14 @@ begin
           // the unit name is also an identifier
           // we save it with line number 1, even if the unit statement maight be further down
           // but personally I want to jump to the fist line of a unit if I open it for the unit name
-          FIdentifiers.Add(UnitName, fn, 1);
+          FIdentifierList.Add(UnitName, fn, 1);
 
 {$IFDEF DO_TIMING}
           Inserting.Start;
 {$ENDIF}
           for IdentIdx := 0 to LoadedIdentifiers.Count - 1 do begin
             Item := LoadedIdentifiers[IdentIdx];
-            FIdentifiers.Add(Item.Identifier, fn, Item.LineNo);
+            FIdentifierList.Add(Item.Identifier, fn, Item.LineNo);
           end;
 {$IFDEF DO_TIMING}
           Inserting.Stop;
@@ -1334,16 +1335,16 @@ begin
         if Terminated then
           Exit; //==>
         FUnitFiles.Add(fn);
-        ParsedIdentifiers := Parser.Identifiers;
+        ParsedIdentifiers := Parser.IdentifierList;
         if CacheFn <> '' then
           ParsedIdentifiers.SaveToFile(CacheFn);
         // the unit name is also an identifier
         // we save it with line number 1, even if the unit statement maight be further down
         // but personally I want to jump to the fist line of a unit if I open it for the unit name
-        FIdentifiers.Add(UnitName, fn, 0);
+        FIdentifierList.Add(UnitName, fn, 0);
         for IdentIdx := 0 to ParsedIdentifiers.Count - 1 do begin
           Item := ParsedIdentifiers[IdentIdx];
-          FIdentifiers.Add(Item.Identifier, fn, Item.LineNo);
+          FIdentifierList.Add(Item.Identifier, fn, Item.LineNo);
         end;
       finally
         FreeAndNil(Parser);
@@ -1361,7 +1362,7 @@ begin
 
   Sorting.Start;
 {$ENDIF}
-  FIdentifiers.Sort;
+  FIdentifierList.Sort;
 {$IFDEF DO_TIMING}
   Sorting.Stop;
 
@@ -1369,7 +1370,7 @@ begin
 {$ENDIF}
 
 {$IF Declared(SendDebug)}
-  SendDebugFmt('UnitExportParser finished, found %d identifiers', [FIdentifiers.Count]);
+  SendDebugFmt('UnitExportParser finished, found %d identifiers', [FIdentifierList.Count]);
   SendDebugFmt('UnitExportParser found %d units', [FFoundUnitsCount]);
   SendDebugFmt('UnitExportParser loaded %d units', [FLoadedUnitsCount]);
   SendDebugFmt('UnitExportParser parsed %d units', [FParsedUnitsCount]);

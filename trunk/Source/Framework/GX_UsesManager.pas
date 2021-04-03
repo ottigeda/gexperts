@@ -331,7 +331,6 @@ begin
     Parser.Origin := @FFileContent[1];
     Section := sInterface;
     InUses := False;
-    Parser.RunPos := 0;
     FBegOfImplUses := 0;
     FImplPosition := 0;
     FIntfPosition := 0;
