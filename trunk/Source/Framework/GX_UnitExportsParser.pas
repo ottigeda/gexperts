@@ -1160,16 +1160,6 @@ var
   FilesInPath: TStringList;
   Item: TUnitIdentifier;
 
-  function MakeFilename(const Path, FileName: string): string;
-  begin
-    if Path = '' then
-      Result := FileName
-    else if Path[Length(Path)] = PathDelim then
-      Result := Path + FileName
-    else
-      Result := Path + PathDelim + FileName;
-  end;
-
   function GxTryGetFileAge(const _fn: string; out _DosTime: GXNativeUInt): Boolean;
   var
     FileInformation: TWin32FileAttributeData;
@@ -1209,6 +1199,7 @@ var
   IdentIdx: Integer;
   ParsedIdentifiers: TUnitIdentifierList;
   LoadedIdentifiers: TUnitIdentifierList;
+  WasLoadedFromCache: Boolean;
   UnitName: string;
   CacheFn: string;
   UnitTime: UInt32;
@@ -1266,14 +1257,14 @@ begin
     FreeAndNil(FilesFound);
     FreeAndNil(FilesInPath);
   end;
-{$IFDEF  DO_TIMING}
+{$IFDEF DO_TIMING}
   Searching.Stop;
 {$ENDIF}
 
   if FCacheDirBS <> '' then
     ForceDirectories(FCacheDirBS);
 
-{$IFDEF  DO_TIMING}
+{$IFDEF DO_TIMING}
   Processing.Start;
 {$ENDIF}
   for FileIdx := 0 to FFiles.Count - 1 do begin
@@ -1292,39 +1283,45 @@ begin
       CacheFn := FCacheDirBS + CacheFn;
     end;
     if (CacheFn <> '') and GxTryGetFileAge(CacheFn, CacheTime) and (UnitTime < CacheTime) then begin
-      Inc(FLoadedUnitsCount);
       LoadedIdentifiers := TUnitIdentifierList.Create(500);
       try
-{$IFDEF  DO_TIMING}
+{$IFDEF DO_TIMING}
         Loading.Start;
 {$ENDIF}
-        LoadedIdentifiers.LoadFromFile(CacheFn);
-{$IFDEF  DO_TIMING}
+        WasLoadedFromCache := LoadedIdentifiers.LoadFromFile(CacheFn);
+{$IFDEF DO_TIMING}
         Loading.Stop;
 {$ENDIF}
+        if WasLoadedFromCache then begin
+          Inc(FLoadedUnitsCount);
 
-        FUnitFiles.Add(fn);
-        // the unit name is also an identifier
-        // we save it with line number 1, even if the unit statement maight be further down
-        // but personally I want to jump to the fist line of a unit if I open it for the unit name
-        FIdentifiers.Add(UnitName, fn, 1);
+          FUnitFiles.Add(fn);
+          // the unit name is also an identifier
+          // we save it with line number 1, even if the unit statement maight be further down
+          // but personally I want to jump to the fist line of a unit if I open it for the unit name
+          FIdentifiers.Add(UnitName, fn, 1);
 
-{$IFDEF  DO_TIMING}
-        Inserting.Start;
+{$IFDEF DO_TIMING}
+          Inserting.Start;
 {$ENDIF}
-        for IdentIdx := 0 to LoadedIdentifiers.Count - 1 do begin
-          Item := LoadedIdentifiers[IdentIdx];
-          FIdentifiers.Add(Item.Identifier, fn, Item.LineNo);
+          for IdentIdx := 0 to LoadedIdentifiers.Count - 1 do begin
+            Item := LoadedIdentifiers[IdentIdx];
+            FIdentifiers.Add(Item.Identifier, fn, Item.LineNo);
+          end;
+{$IFDEF DO_TIMING}
+          Inserting.Stop;
+{$ENDIF}
         end;
-{$IFDEF  DO_TIMING}
-        Inserting.Stop;
-{$ENDIF}
       finally
         FreeAndNil(LoadedIdentifiers);
       end;
     end else begin
+      WasLoadedFromCache := False;
+    end;
+
+    if not WasLoadedFromCache then begin
       Inc(FParsedUnitsCount);
-{$IFDEF  DO_TIMING}
+{$IFDEF DO_TIMING}
       Parsing.Start;
 {$ENDIF}
       Parser := TUnitExportsParser.Create(fn);
@@ -1348,7 +1345,7 @@ begin
       finally
         FreeAndNil(Parser);
       end;
-{$IFDEF  DO_TIMING}
+{$IFDEF DO_TIMING}
       Parsing.Stop;
 {$ENDIF}
     end;
