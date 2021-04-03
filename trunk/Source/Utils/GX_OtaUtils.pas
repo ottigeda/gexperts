@@ -90,6 +90,31 @@ const
   // 'DCC_UnitAlias'
   OPTION_NAME_UNIT_ALIASES = 'UnitAliases';
 
+const
+  // from ToolsApi\PlatormConst.pas
+  { Universal platform ids }
+  // If you add new platform ID, you have to update
+  //  app\delphicore\PasMgr.pas
+  //
+  cWin32Platform = 'Win32';
+  cWinNX32Platform = 'WinNX32';
+  cWinIoT32Platform = 'WinIoT32';
+  cWinARMPlatform = 'WinARM';
+  cOSX32Platform = 'OSX32';
+  cWin64Platform = 'Win64';
+  cLinux32Platform = 'Linux32';
+  cAndroidPlatform = 'Android';
+  ciOSSimulatorPlatform = 'iOSSimulator';
+  ciOSDevice32Platform = 'iOSDevice32';
+  ciOSDevice64Platform = 'iOSDevice64';
+  ciOSDevicePlatform = ciOSDevice32Platform;
+  cLinux64Platform = 'Linux64';
+  cOSX64Platform = 'OSX64';
+  cLinux32ARMPlatform = 'Linux32ARM';
+  cLinux64ARMPlatform = 'Linux64ARM';
+  cAndroid64Platform = 'Android64';
+
+
 // returns an IOTAEditReader for the given or the current IOTASourceEditor if none is specified
 function GxOtaGetEditReaderForSourceEditor(SourceEditor: IOTASourceEditor = nil): IOTAEditReader;
 
