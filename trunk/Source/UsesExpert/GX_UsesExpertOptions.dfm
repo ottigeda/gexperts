@@ -64,7 +64,7 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
     Caption = 'OK'
     Default = True
     ModalResult = 1
-    TabOrder = 5
+    TabOrder = 7
   end
   object btnCancel: TButton
     Left = 240
@@ -74,7 +74,7 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 6
+    TabOrder = 8
   end
   object chkDisableParserCache: TCheckBox
     Left = 24
@@ -105,7 +105,7 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
       'at start first then anywhere')
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 7
+    TabOrder = 6
   end
   object chkSearchPathFavorites: TCheckBox
     Left = 8
@@ -113,6 +113,6 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
     Width = 321
     Height = 17
     Caption = 'Also search the favorites configured for the search path'
-    TabOrder = 8
+    TabOrder = 5
   end
 end
