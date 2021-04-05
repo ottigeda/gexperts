@@ -12,11 +12,10 @@ uses
   mPasLex,
   GX_UnitExportList;
 
-{$IFOPT D+}
-{$IF RTLVersion > RtlVersionDelphiXE}
-// System.Diagnostics, which exports TStopWatch, was added to the RTL in DelphiXE2
-{$DEFINE DO_TIMING}
-{$IFEND}
+{$DEFINE DEBUG_TIMING}
+
+{$IFOPT D-}
+{$UNDEF DEBUG_TIMING}
 {$ENDIF}
 
 type
@@ -189,15 +188,20 @@ type
 implementation
 
 uses
-{$IFDEF DO_TIMING}
-  System.Diagnostics,
-{$ENDIF}
   StrUtils,
   u_dzStringUtils,
+{$IFDEF DEBUG_TIMING}
+  u_dzStopwatch,
+{$ENDIF}
 {$IFOPT D+}
   GX_DbugIntf,
 {$ENDIF}
   GX_GenericUtils;
+
+{$IF not declared(TStopwatch)}
+// TStopwatch requires enhanced records, so it's not available in Delphi < 2007)
+{$UNDEF DEBUG_TIME_IDENTIFIER_TAB}
+{$IFEND}
 
 { TPasLexEx }
 
@@ -1235,7 +1239,7 @@ var
   CacheFn: string;
   UnitTime: UInt32;
   CacheTime: UInt32;
-{$IFDEF  DO_TIMING}
+{$IFDEF  DEBUG_TIMING}
   Loading: TStopwatch;
   Inserting: TStopwatch;
   Sorting: TStopwatch;
@@ -1247,7 +1251,7 @@ var
 begin
   inherited;
 
-{$IFDEF  DO_TIMING}
+{$IFDEF  DEBUG_TIMING}
   Loading := TStopwatch.Create;
   Inserting := TStopwatch.Create;
   Sorting := TStopwatch.Create;
@@ -1288,14 +1292,14 @@ begin
     FreeAndNil(FilesFound);
     FreeAndNil(FilesInPath);
   end;
-{$IFDEF DO_TIMING}
+{$IFDEF DEBUG_TIMING}
   Searching.Stop;
 {$ENDIF}
 
   if FCacheDirBS <> '' then
     ForceDirectories(FCacheDirBS);
 
-{$IFDEF DO_TIMING}
+{$IFDEF DEBUG_TIMING}
   Processing.Start;
 {$ENDIF}
   for FileIdx := 0 to FFiles.Count - 1 do begin
@@ -1316,11 +1320,11 @@ begin
     if (CacheFn <> '') and GxTryGetFileAge(CacheFn, CacheTime) and (UnitTime < CacheTime) then begin
       LoadedIdentifiers := TUnitIdentifierList.Create(500);
       try
-{$IFDEF DO_TIMING}
+{$IFDEF DEBUG_TIMING}
         Loading.Start;
 {$ENDIF}
         WasLoadedFromCache := LoadedIdentifiers.LoadFromFile(CacheFn);
-{$IFDEF DO_TIMING}
+{$IFDEF DEBUG_TIMING}
         Loading.Stop;
 {$ENDIF}
         if WasLoadedFromCache then begin
@@ -1332,14 +1336,14 @@ begin
           // but personally I want to jump to the fist line of a unit if I open it for the unit name
           FIdentifierList.Add(UnitName, fn, 1);
 
-{$IFDEF DO_TIMING}
+{$IFDEF DEBUG_TIMING}
           Inserting.Start;
 {$ENDIF}
           for IdentIdx := 0 to LoadedIdentifiers.Count - 1 do begin
             Item := LoadedIdentifiers[IdentIdx];
             FIdentifierList.Add(Item.Identifier, fn, Item.LineNo);
           end;
-{$IFDEF DO_TIMING}
+{$IFDEF DEBUG_TIMING}
           Inserting.Stop;
 {$ENDIF}
         end;
@@ -1352,7 +1356,7 @@ begin
 
     if not WasLoadedFromCache then begin
       Inc(FParsedUnitsCount);
-{$IFDEF DO_TIMING}
+{$IFDEF DEBUG_TIMING}
       Parsing.Start;
 {$ENDIF}
       Parser := TUnitExportsParser.Create(fn);
@@ -1376,7 +1380,7 @@ begin
       finally
         FreeAndNil(Parser);
       end;
-{$IFDEF DO_TIMING}
+{$IFDEF DEBUG_TIMING}
       Parsing.Stop;
 {$ENDIF}
     end;
@@ -1384,13 +1388,13 @@ begin
   if Terminated then
     Exit; //==>
 
-{$IFDEF DO_TIMING}
+{$IFDEF DEBUG_TIMING}
   Processing.Stop;
 
   Sorting.Start;
 {$ENDIF}
   FIdentifierList.Sort;
-{$IFDEF DO_TIMING}
+{$IFDEF DEBUG_TIMING}
   Sorting.Stop;
 
   Total.Stop;
@@ -1402,7 +1406,7 @@ begin
   SendDebugFmt('UnitExportParser loaded %d units', [FLoadedUnitsCount]);
   SendDebugFmt('UnitExportParser parsed %d units', [FParsedUnitsCount]);
 
-{$IFDEF DO_TIMING}
+{$IFDEF DEBUG_TIMING}
   SendDebugFmt('UnitExportParser searching time %d ms', [Searching.ElapsedMilliseconds]);
   SendDebugFmt('UnitExportParser loading time %d ms', [Loading.ElapsedMilliseconds]);
   SendDebugFmt('UnitExportParser inserting time %d ms', [Inserting.ElapsedMilliseconds]);

@@ -39,7 +39,6 @@ type
     FIsSorted: Boolean;
   protected
     function CompareItems(_Idx1, _Idx2: Integer): Integer; virtual; abstract;
-    procedure SwapItems(_Idx1, _Idx2: Integer);
     function CompareToItem(const _Key; _Idx: Integer): Integer;
   public
     constructor Create(_Capacity: Integer);
@@ -315,12 +314,7 @@ end;
 
 procedure TUnitIdentifierListAbstract.Sort;
 begin
-  QuickSort(0, Count - 1, CompareItems, SwapItems);
-end;
-
-procedure TUnitIdentifierListAbstract.SwapItems(_Idx1, _Idx2: Integer);
-begin
-  FItems.Exchange(_Idx1, _Idx2);
+  QuickSort(0, Count - 1, CompareItems, FItems.Exchange);
 end;
 
 { TUnitExportlist }
@@ -330,11 +324,11 @@ var
   Item1: TUnitExport;
   Item2: TUnitExport;
 begin
-  Item1 := FItems[_Idx1] as TUnitExport;
-  Item2 := FItems[_Idx2] as TUnitExport;
-  Result := AnsiCompareStr(Item1.LCIdentifier, Item2.LCIdentifier);
+  Item1 := TUnitExport(FItems[_Idx1]);
+  Item2 := TUnitExport(FItems[_Idx2]);
+  Result := CompareStr(Item1.LCIdentifier, Item2.LCIdentifier);
   if Result = 0 then begin
-    Result := AnsiCompareStr(Item1.FileName, Item2.FileName);
+    Result := CompareStr(Item1.FileName, Item2.FileName);
     if Result = 0 then
       Result := CompareValue(Item1.LineNo, Item2.LineNo);
   end;

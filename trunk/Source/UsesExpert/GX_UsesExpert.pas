@@ -4,14 +4,27 @@ interface
 
 {$I 'GX_CondDefine.inc'}
 
+{.$DEFINE DEBUG_NOT_FOUND_UNITS}
+{$DEFINE DEBUG_TIME_IDENTIFIER_TAB}
+
+{$IFOPT D-}
+{$UNDEF DEBUG_NOT_FOUND_UNITS}
+{$UNDEF DEBUG_TIME_IDENTIFIER_TAB}
+{$ENDIF}
+
 uses
   Windows, SysUtils,
   Classes, Controls, Forms, Menus, ComCtrls, Buttons, ImgList, ImageList,
   ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types,
-  u_dzSpeedBitBtn,
+  u_dzSpeedBitBtn, u_dzStopwatch,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
   GX_UnitExportsParser, GX_UsesExpertOptions, GX_UnitExportList,
   GX_OtaUtils;
+
+{$IF not declared(TStopwatch)}
+// TStopwatch requires enhanced records, so it's not available in Delphi < 2007)
+{$UNDEF DEBUG_TIME_IDENTIFIER_TAB}
+{$IFEND}
 
 type
   TPageControl = class(ComCtrls.TPageControl)
@@ -40,6 +53,9 @@ type
     FProjectChangedNotifier: TProjectChangedNotifier;
     FUnitExportParserThread: TUnitExportParserThread;
     FSearchPathFavorites: Boolean;
+{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
+    FIdentifierTabTimer: TStopwatch;
+{$ENDIF}
     procedure InternalExecute;
     function FindAction(out _Action: TBasicAction): Boolean;
     procedure HandleProjectChanged(_Sender: TObject);
@@ -781,6 +797,10 @@ procedure TUsesClauseMgrExpert.InternalExecute;
 var
   Form: TfmUsesManager;
 begin
+{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
+  FIdentifierTabTimer := TStopwatch.StartNew;
+{$ENDIF}
+
   AssertIsPasOrInc(GxOtaGetCurrentSourceFile);
   Form := TfmUsesManager.Create(Application, Self);
   try
@@ -827,15 +847,26 @@ end;
 constructor TfmUsesManager.Create(_Owner: TComponent; _UsesExpert: TUsesClauseMgrExpert);
 var
   Bitmap: TBitmap;
+{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
+  StopWatch: TStopwatch;
+{$ENDIF}
 begin
 {$IFOPT D+}
-  SendDebug('Creating UsesManager form');
+  SendDebug('TfmUsesManager.Create Enter');
 {$ENDIF D+}
   FUsesExpert := _UsesExpert;
 
+{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
+  StopWatch := TStopwatch.StartNew;
+{$ENDIF}
   // To ensure we get the latest version of all units, start the thread again
   // it will run fast if everything is already cached.
   FUsesExpert.StartUnitParserThread;
+
+{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
+  StopWatch.Stop;
+  SendDebugFmt('Starting Unit Parser Thread took %d milliseconds', [StopWatch.ElapsedMilliseconds]);
+{$ENDIF}
 
   inherited Create(_Owner);
 
@@ -868,6 +899,10 @@ begin
   TStringGrid_AdjustRowHeight(sg_Common);
   TStringGrid_AdjustRowHeight(sg_Favorite);
   TStringGrid_AdjustRowHeight(sg_Identifiers);
+
+{$IFOPT D+}
+  SendDebug('TfmUsesManager.Create Leave');
+{$ENDIF D+}
 end;
 
 procedure TfmUsesManager.GetProjectUnits;
@@ -2052,7 +2087,7 @@ var
   Item: TUnitExport;
 begin
 {$IFOPT D+}
-  SendDebug('Filtering identifiers');
+  SendDebug('TfmUsesManager.FilterIdentifiers Enter');
 {$ENDIF D+}
   TWinControl_Lock(pnlIdentifiers);
   Filter := Trim(edtIdentifierFilter.Text);
@@ -2104,10 +2139,10 @@ begin
     FreeAndNil(FilterList);
   end;
   ShowSelectedUnitPathInStatusBar(1);
-{$IFOPT D+}
-  SendDebug('Done filtering identifiers');
-{$ENDIF D+}
   ResizeIdentiferGrid;
+{$IFOPT D+}
+  SendDebug('TfmUsesManager.FilterIdentifiers Leave');
+{$ENDIF D+}
 end;
 
 procedure TfmUsesManager.ShowIdentifiersFilterResult(const cnt: Integer);
@@ -2197,12 +2232,12 @@ begin
 end;
 
 procedure TfmUsesManager.tim_ProgressTimer(Sender: TObject);
-{$IF Declared(SendDebug)}
+{$IFDEF DEBUG_NOT_FOUND_UNITS}
 var
   NotFoundUnits: TStringList;
-{$IFEND}
+{$ENDIF}
 
-{$IF Declared(NotFoundUnits)}
+{$IFDEF DEBUG_NOT_FOUND_UNITS}
   procedure SendDebugUnitNotFound(const _Identifier, _UnitName: string);
   var
     Idx: Integer;
@@ -2212,18 +2247,22 @@ var
       NotFoundUnits.Add(_UnitName);
     end;
   end;
-{$IFEND}
+{$ENDIF}
 
 var
+  upt: TUnitExportParserThread;
+{$IFDEF PREPROCESS_UNIT_PATHS}
   IdentIdx: Integer;
-  FixedRows: Integer;
   UnitFile: string;
   PCharUnitFile: PChar;
   UnitName: string;
   Identifier: string;
   Idx: Integer;
-  upt: TUnitExportParserThread;
   Item: TUnitExport;
+{$ENDIF}
+{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
+  StopWatch: TStopwatch;
+{$ENDIF}
 begin
   upt := FUsesExpert.FUnitExportParserThread;
   if Assigned(upt) and not upt.HasFinished then begin
@@ -2232,56 +2271,85 @@ begin
     lblUnitsLoaded.Caption := Format('Units loaded: %d', [upt.LoadedUnitsCount]);
     lblIdentifiers.Caption := Format('Identifiers found: %d', [upt.Identifiers.Count]);
     pnlIdentifiersProgress.Visible := True;
-  end else begin
-    pnlIdentifiersProgress.Visible := False;
-    tim_Progress.Enabled := False;
-    pnlIdentifiersProgress.Visible := False;
-    if not Assigned(upt) then
-      Exit; //==>
-
-    FixedRows := sg_Identifiers.FixedRows;
-    FreeAndNil(FIdentifiers);
-    FIdentifiers := upt.DetachIdentifiers;
-
-{$IF Declared(SendDebug)}
-    SendDebug('Preprocessing identifiers');
-{$IFEND}
-    sg_Identifiers.RowCount := FixedRows + 1;
-    sg_Identifiers.Cells[0, FixedRows] := '';
-    sg_Identifiers.Cells[1, FixedRows] := '';
-{$IF Declared(NotFoundUnits)}
-    NotFoundUnits := TStringList.Create;
-    try
-      NotFoundUnits.Sorted := True;
-{$IFEND}
-      for IdentIdx := 0 to FIdentifiers.Count - 1 do begin
-        Item := FIdentifiers[IdentIdx];
-        Identifier := Item.Identifier;
-        UnitFile := Item.FileName;
-        UnitName := ExtractPureFileName(UnitFile);
-        if FSearchPathUnits.Find(UnitName, Idx) then begin
-          UnitName := FSearchPathUnits[Idx];
-          PCharUnitFile := PChar(FSearchPathUnits.Objects[Idx]);
-          if PCharUnitFile = nil then begin
-            PCharUnitFile := StrNew(PChar(UnitFile));
-            FSearchPathUnits.Objects[Idx] := Pointer(PCharUnitFile);
-          end;
-{$IF Declared(SendDebugUnitNotFound)}
-        end else begin
-          SendDebugUnitNotFound(Identifier, UnitName)
-{$IFEND}
-        end;
-      end;
-{$IF Declared(NotFoundUnits)}
-    finally
-      FreeAndNil(NotFoundUnits);
-    end;
-{$IFEND}
-{$IF Declared(SendDebug)}
-    SendDebug('Done preprocessing identifiers');
-{$IFEND}
-    FilterIdentifiers;
+    Exit; //==>
   end;
+
+{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
+  StopWatch := TStopwatch.StartNew;
+{$ENDIF}
+  tim_Progress.Enabled := False;
+  pnlIdentifiersProgress.Visible := False;
+{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
+  StopWatch.Stop;
+  SendDebugFmt('Hiding Panel an stopping timer took %d milliseconds', [StopWatch.ElapsedMilliseconds]);
+{$ENDIF}
+
+  if not Assigned(upt) then
+    Exit; //==>
+
+{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
+  StopWatch := TStopwatch.StartNew;
+{$ENDIF}
+  TStringGrid_Clear(sg_Identifiers);
+{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
+  StopWatch.Stop;
+  SendDebugFmt('Clearing string grid took %d milliseconds', [StopWatch.ElapsedMilliseconds]);
+{$ENDIF}
+
+  FreeAndNil(FIdentifiers);
+  FIdentifiers := upt.DetachIdentifiers;
+
+{$IFDEF PREPROCESS_UNIT_PATHS}
+{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
+  SendDebug('Preprocessing unit paths');
+  StopWatch := TStopwatch.StartNew;
+{$ENDIF DEBUG_TIME_IDENTIFIER_TAB}
+{$IFDEF DEBUG_NOT_FOUND_UNITS}
+  NotFoundUnits := TStringList.Create;
+  try
+    NotFoundUnits.Sorted := True;
+{$ENDIF DEBUG_NOT_FOUND_UNITS}
+    for IdentIdx := 0 to FIdentifiers.Count - 1 do begin
+      Item := FIdentifiers[IdentIdx];
+      Identifier := Item.Identifier;
+      UnitFile := Item.FileName;
+      UnitName := ExtractPureFileName(UnitFile);
+      if FSearchPathUnits.Find(UnitName, Idx) then begin
+        UnitName := FSearchPathUnits[Idx];
+        PCharUnitFile := PChar(FSearchPathUnits.Objects[Idx]);
+        if PCharUnitFile = nil then begin
+          PCharUnitFile := StrNew(PChar(UnitFile));
+          FSearchPathUnits.Objects[Idx] := Pointer(PCharUnitFile);
+        end;
+{$IFDEF DEBUG_NOT_FOUND_UNITS}
+      end else begin
+        SendDebugUnitNotFound(Identifier, UnitName)
+{$ENDIF DEBUG_NOT_FOUND_UNITS}
+      end;
+    end;
+{$IFDEF DEBUG_NOT_FOUND_UNITS}
+  finally
+    FreeAndNil(NotFoundUnits);
+  end;
+{$ENDIF DEBUG_NOT_FOUND_UNITS}
+{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
+  StopWatch.Stop;
+  SendDebugFmt('Preprocessing identifiers took %d milliseconds', [StopWatch.ElapsedMilliseconds]);
+{$ENDIF DEBUG_TIME_IDENTIFIER_TAB}
+{$ENDIF PREPROCESS_UNIT_PATHS}
+
+{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
+  SendDebug('Filtering identifiers');
+  StopWatch := TStopwatch.StartNew;
+{$ENDIF DEBUG_TIME_IDENTIFIER_TAB}
+  FilterIdentifiers;
+{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
+  StopWatch.Stop;
+  SendDebugFmt('Filtering identifiers took %d milliseconds', [StopWatch.ElapsedMilliseconds]);
+
+  FUsesExpert.FIdentifierTabTimer.Stop;
+  SendDebugFmt('Total time from calling the expert until after filtering: %d milliseconds', [FUsesExpert.FIdentifierTabTimer.ElapsedMilliseconds]);
+{$ENDIF}
 end;
 
 type

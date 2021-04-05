@@ -1084,7 +1084,7 @@ inherited fmUsesManager: TfmUsesManager
   end
   object tim_Progress: TTimer
     Enabled = False
-    Interval = 500
+    Interval = 50
     OnTimer = tim_ProgressTimer
     Left = 376
     Top = 248
