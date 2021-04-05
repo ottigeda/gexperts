@@ -290,6 +290,9 @@ procedure TGrid_SetRowNoClick(_Grid: TCustomGrid; _Row: Integer);
 
 ///<summary> sets the row count to FixedRows + 1 and clears all non-fixed cells </summary>
 procedure TStringGrid_Clear(_Grid: TStringGrid);
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 
 ///<summary> adds a new column to the Grid
 ///          It first searches for an empty column (no caption) and uses that, if
@@ -2059,10 +2062,12 @@ end;
 procedure TStringGrid_Clear(_Grid: TStringGrid);
 var
   c: Integer;
+  FixedRows: integer;
 begin
-  _Grid.RowCount := _Grid.FixedRows + 1;
+  FixedRows := _Grid.FixedRows;
+  _Grid.RowCount := FixedRows + 1;
   for c := _Grid.FixedCols to _Grid.ColCount - 1 do
-    _Grid.Cells[c, _Grid.FixedRows] := '';
+    _Grid.Cells[c, FixedRows] := '';
 end;
 
 procedure TStringGrid_AssignCol(_Grid: TStringGrid; _Col: Integer; _sl: TStrings;
