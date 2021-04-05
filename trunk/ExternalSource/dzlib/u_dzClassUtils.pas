@@ -23,25 +23,61 @@ uses
 // NOTE: The naming convention is <extended-class>_<Methodname>
 
 type
-  /// <summary>
-  /// raised by StringByObj if no matching entry was found
-  /// </summary>
-  EObjectNotFound = class(Exception);
+  ///<summary>
+  /// raised by StringByObj if no matching entry was found </summary>
+  EObjectNotFound = class(EdzException);
+
+type
+  ///<summary>
+  /// defines how sorting is handled in a TStringList created with TStringList_CreateXxxx
+  /// sshNoSorting: Sorted := False;
+  /// all others: Sorted := True wit Duplicates = dupIgnore, dupAccept or DupError </summary>
+  TStringListSortHandling = (sshNoSorting, sshSortIngoreDupes, sshSortAcceptDupes, sshSortErrorDupes);
+
+///<summary>
+/// Deprecated version of TStringList_CreateFrom </summary>
+function StringListOf(const _sa: array of string; out _Guard: IInterface; _Sorted: Boolean = False): TStringList; overload; deprecated; // use one of the TStringList_CreateFrom overloads
+
+///<summary>
+/// Deprecated version of TStringList_CreateFrom </summary>
+function StringListOf(const _sl: TStrings; out _Guard: IInterface; _Sorted: Boolean = False): TStringList; overload; deprecated; // use one of the TStringList_CreateFrom overloads
 
 ///<summary>
 /// Creates a TStringList from the given array of string. In addition it returns a
 /// Guard-Interface that automatically frees the TStringList when it goes out of scope. </summary>
-function StringListOf(const _sa: array of string; out _Guard: IInterface; _Sorted: Boolean = False): TStringList; overload;
+function TStringList_CreateFrom(const _sa: array of string; out _Guard: IInterface;
+  _SortHandling: TStringListSortHandling = sshNoSorting): TStringList; overload;
 
 ///<summary>
 /// Creates a TStringList and assigns the given TStrings to it. In addition it returns a
 /// Guard-Interface that automatically frees the TStringList when it goes out of scope. </summary>
-function StringListOf(const _sl: TStrings; out _Guard: IInterface; _Sorted: Boolean = False): TStringList; overload;
+function TStringList_CreateFrom(const _sl: TStrings; out _Guard: IInterface;
+  _SortHandling: TStringListSortHandling = sshNoSorting): TStringList; overload;
 
 ///<summary>
+/// Creates a TStringList from the given array of string.
+/// @NOTE: This function is deprecated, se the overload with a SortHandling parameter </summary>
+function TStringList_CreateFrom(const _sa: array of string; _Sorted: Boolean = False): TStringList; overload; deprecated;
+///<summary>
 /// Creates a TStringList from the given array of string. </summary>
-function TStringList_CreateFrom(const _sa: array of string; _Sorted: Boolean = False): TStringList;
+function TStringList_CreateFrom(const _sa: array of string;
+  _SortHandling: TStringListSortHandling = sshNoSorting): TStringList; overload;
 
+
+///<summary>
+/// Creates a TStringList
+/// @param SortHandling defines how the properties Sorted and Dupplicates are set </summary>
+function TStringList_Create(_SortHandling: TStringListSortHandling = sshNoSorting): TStringList;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
+
+///<summary>
+/// short for
+/// Result := TStringList.Create;
+/// Result.Sorted := true;
+/// Result.Duplicates := _Duplicates;
+/// @NOTE: Consider using TStringList_Create instead </summary>
 function TStringList_CreateSorted(_Duplicates: TDuplicates = dupError): TStringList;
 
 ///<summary>
@@ -2083,23 +2119,6 @@ begin
   end;
 end;
 
-function TStringList_CreateFrom(const _sa: array of string; _Sorted: Boolean = False): TStringList;
-var
-  i: Integer;
-begin
-  Result := TStringList.Create;
-  for i := Low(_sa) to High(_sa) do
-    Result.Add(_sa[i]);
-  Result.Sorted := _Sorted;
-end;
-
-function TStringList_CreateSorted(_Duplicates: TDuplicates): TStringList;
-begin
-  Result := TStringList.Create;
-  Result.Sorted := True;
-  Result.Duplicates := _Duplicates;
-end;
-
 type
   TObjectGuard = class(TInterfacedObject, IInterface)
   private
@@ -2108,6 +2127,73 @@ type
     constructor Create(_Obj: TObject);
     destructor Destroy; override;
   end;
+
+function TStringList_Create(_SortHandling: TStringListSortHandling = sshNoSorting): TStringList;
+begin
+  Result := TStringList.Create;
+  case _SortHandling of
+    sshSortIngoreDupes: begin
+        Result.Sorted := True;
+        Result.Duplicates := dupIgnore;
+      end;
+    sshSortAcceptDupes: begin
+        Result.Sorted := True;
+        Result.Duplicates := dupAccept;
+      end;
+    sshSortErrorDupes: begin
+        Result.Sorted := True;
+        Result.Duplicates := dupError
+      end;
+  else // sshNoSorting:
+    Result.Sorted := False;
+  end;
+end;
+
+function TStringList_CreateFrom(const _sa: array of string; _Sorted: Boolean = False): TStringList;
+var
+  SortHandling: TStringListSortHandling;
+begin
+  if _Sorted then
+    SortHandling := sshSortIngoreDupes
+  else
+    SortHandling := sshNoSorting;
+  Result := TStringList_CreateFrom(_sa, SortHandling);
+end;
+
+function TStringList_CreateFrom(const _sa: array of string;
+  _SortHandling: TStringListSortHandling = sshNoSorting): TStringList; overload;
+var
+  i: Integer;
+begin
+  Result := TStringList_Create(_SortHandling);
+  for i := Low(_sa) to High(_sa) do
+    Result.Add(_sa[i]);
+end;
+
+function TStringList_CreateFrom(const _sa: array of string; out _Guard: IInterface;
+  _SortHandling: TStringListSortHandling = sshNoSorting): TStringList;
+begin
+  Result := TStringList_CreateFrom(_sa, _SortHandling);
+  _Guard := TObjectGuard.Create(Result);
+end;
+
+function TStringList_CreateFrom(const _sl: TStrings; out _Guard: IInterface;
+  _SortHandling: TStringListSortHandling = sshNoSorting): TStringList;
+var
+  i: Integer;
+begin
+  Result := TStringList_Create(_SortHandling);
+  for i := 0 to _sl.Count - 1 do
+    Result.AddObject(_sl[i], _sl.Objects[i]);
+  _Guard := TObjectGuard.Create(Result);
+end;
+
+function TStringList_CreateSorted(_Duplicates: TDuplicates): TStringList;
+begin
+  Result := TStringList.Create;
+  Result.Sorted := True;
+  Result.Duplicates := _Duplicates;
+end;
 
 function StringListOf(const _sa: array of string; out _Guard: IInterface; _Sorted: Boolean): TStringList;
 begin
