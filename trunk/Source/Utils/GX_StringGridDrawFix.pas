@@ -2,9 +2,9 @@ unit GX_StringGridDrawFix;
 
 {$I 'GX_CondDefine.inc'}
 
-{$IFOPT D+}
-{$DEFINE DEBUG_GRID_DRAWING}
-{$ELSE}
+{.$DEFINE DEBUG_GRID_DRAWING}
+
+{$IFOPT D-}
 {$UNDEF DEBUG_GRID_DRAWING}
 {$ENDIF}
 
