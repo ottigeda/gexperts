@@ -81,6 +81,7 @@ function Long2DecN(_l: ULong; _n: ULong): string;
 ///<summary>
 /// Converts a positive number to its decimal representation </summary>
 function Long2Dec(_l: ULong): string;
+function Long2DecA(_l: ULong): AnsiString;
 
 // Str <-> Hex conversion
 ///<summary>
@@ -771,6 +772,11 @@ var
 begin
   Str(_l, s);
   Result := string(s);
+end;
+
+function Long2DecA(_l: ULong): AnsiString;
+begin
+  Str(_l, Result);
 end;
 
 function Long2Dec2(_l: ULong): string;
