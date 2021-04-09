@@ -485,6 +485,8 @@ inherited fmUsesManager: TfmUsesManager
               Width = 121
               Height = 25
               Action = actAddToInterfaceBtn
+              ParentShowHint = False
+              ShowHint = True
               TabOrder = 0
             end
             object btnIdentifiersAddToImpl: TButton
@@ -493,6 +495,8 @@ inherited fmUsesManager: TfmUsesManager
               Width = 121
               Height = 25
               Action = actAddToImplementationBtn
+              ParentShowHint = False
+              ShowHint = True
               TabOrder = 1
             end
           end
@@ -1074,12 +1078,26 @@ inherited fmUsesManager: TfmUsesManager
     object actAddToInterfaceBtn: TAction
       Category = 'AddBtn'
       Caption = 'Interfa&ce'
+      Hint = 'Add to interface, Ctrl+C to add and close dialog'
       OnExecute = actAddToInterfaceExecute
     end
     object actAddToImplementationBtn: TAction
       Category = 'AddBtn'
       Caption = 'Imp&lementation'
+      Hint = 'Add to implementation, Ctrl+L to add and close dialog'
       OnExecute = actAddToImplementationExecute
+    end
+    object actAddToInterfaceAndClose: TAction
+      Category = 'AddBtn'
+      Caption = 'Add to Interface and close dialog'
+      ShortCut = 16451
+      OnExecute = actAddToInterfaceAndCloseExecute
+    end
+    object actAddToImplemenationAndClose: TAction
+      Category = 'AddBtn'
+      Caption = 'Add to Implementation and close dialog'
+      ShortCut = 16460
+      OnExecute = actAddToImplemenationAndCloseExecute
     end
   end
   object tim_Progress: TTimer

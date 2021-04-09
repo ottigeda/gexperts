@@ -132,7 +132,9 @@ type
     actAddToImplementationMenu: TAction;
     actAddToInterfaceMenu: TAction;
     actAddToInterfaceBtn: TAction;
+    actAddToInterfaceAndClose: TAction;
     actAddToImplementationBtn: TAction;
+    actAddToImplemenationAndClose: TAction;
     b_DeleteFromIntf: TButton;
     b_DeleteFromImpl: TButton;
     b_MoveToImpl: TButton;
@@ -298,6 +300,8 @@ type
     procedure sg_ProjectSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
     procedure sg_SearchPathSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
     procedure mSearchThisOnTheWebClick(Sender: TObject);
+    procedure actAddToInterfaceAndCloseExecute(Sender: TObject);
+    procedure actAddToImplemenationAndCloseExecute(Sender: TObject);
   private
     FLeftRatio: Double;
     FAliases: TStringList;
@@ -1669,6 +1673,22 @@ begin
   edtUnitFilter.Text := '';
   pcUnits.ActivePage := tabFavorite;
   pcUnits.Change;
+end;
+
+procedure TfmUsesManager.actAddToInterfaceAndCloseExecute(Sender: TObject);
+begin
+  if actAddToInterfaceBtn.Enabled then begin
+    actAddToInterfaceBtn.Execute;
+    actOK.Execute;
+  end;
+end;
+
+procedure TfmUsesManager.actAddToImplemenationAndCloseExecute(Sender: TObject);
+begin
+  if actAddToImplementationBtn.Enabled then begin
+    actAddToImplementationBtn.Execute;
+    actOK.Execute;
+  end;
 end;
 
 procedure TfmUsesManager.actAddToInterfaceExecute(Sender: TObject);
