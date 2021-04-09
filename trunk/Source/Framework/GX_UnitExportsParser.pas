@@ -12,12 +12,6 @@ uses
   mPasLex,
   GX_UnitExportList;
 
-{$DEFINE DEBUG_TIMING}
-
-{$IFOPT D-}
-{$UNDEF DEBUG_TIMING}
-{$ENDIF}
-
 type
   TSkipToElseOrEndifResult = (seeElse, seeEndif, seeElseIf, seeNull);
 
@@ -190,9 +184,7 @@ implementation
 uses
   StrUtils,
   u_dzStringUtils,
-{$IFDEF DEBUG_TIMING}
   u_dzStopwatch,
-{$ENDIF}
 {$IFOPT D+}
   GX_DbugIntf,
 {$ENDIF}
@@ -657,14 +649,14 @@ begin
   if not Assigned(FIdentifiers) then begin
     CreateSortedStringsNoDuplicates(FIdentifiers);
     for i := 0 to FIdentifierList.Count - 1 do
-      FIdentifiers.Add(FIdentifierList[i].Identifier);
+      FIdentifiers.Add(string(FIdentifierList[i].Identifier));
   end;
   Result := FIdentifiers;
 end;
 
 procedure TUnitExportsParser.AddToIdentifiers(const _Identifier: string; _IdType: TUnitIdentifierTypes; _LineNo: Integer);
 begin
-  FIdentifierList.Add(_Identifier, _LineNo);
+  FIdentifierList.Add(AnsiString(_Identifier), _LineNo);
 end;
 
 class procedure TUnitExportsParser.AddDefaultSymbols(_Symbols: TStrings);
@@ -1234,12 +1226,12 @@ var
   IdentIdx: Integer;
   ParsedIdentifiers: TUnitIdentifierList;
   LoadedIdentifiers: TUnitIdentifierList;
+  IsCacheAvailable: Boolean;
   WasLoadedFromCache: Boolean;
   UnitName: string;
   CacheFn: string;
-  UnitTime: UInt32;
-  CacheTime: UInt32;
-{$IFDEF  DEBUG_TIMING}
+  UnitTimestamp: UInt32;
+  CacheTimestamp: UInt32;
   Loading: TStopwatch;
   Inserting: TStopwatch;
   Sorting: TStopwatch;
@@ -1247,22 +1239,21 @@ var
   Total: TStopwatch;
   Searching: TStopwatch;
   Parsing: TStopwatch;
-{$ENDIF}
+  CacheChecking: TStopwatch;
 begin
   inherited;
 
-{$IFDEF  DEBUG_TIMING}
-  Loading := TStopwatch.Create;
-  Inserting := TStopwatch.Create;
-  Sorting := TStopwatch.Create;
-  Processing := TStopwatch.Create;
-  Total := TStopwatch.Create;
-  Searching := TStopwatch.Create;
-  Parsing := TStopwatch.Create;
+  Loading := TStopwatch_Create;
+  Inserting := TStopwatch_Create;
+  Sorting := TStopwatch_Create;
+  Processing := TStopwatch_Create;
+  Total := TStopwatch_Create;
+  Searching := TStopwatch_Create;
+  Parsing := TStopwatch_Create;
+  CacheChecking := TStopwatch_Create;
 
-  Total.Start;
-  Searching.Start;
-{$ENDIF}
+  TStopWatch_Start(Total);
+  TStopWatch_Start(Searching);
 
   FilesFound := nil;
   FilesInPath := TStringList.Create;
@@ -1278,8 +1269,8 @@ begin
       for FileIdx := 0 to FFiles.Count - 1 do begin
         if Terminated then
           Exit; //==>
-        if TryFindPathToFile(FFiles[FileIdx] + '.pas', FilesInPath, fn, UnitTime) then
-          FilesFound.AddObject(fn, Pointer(UnitTime));
+        if TryFindPathToFile(FFiles[FileIdx] + '.pas', FilesInPath, fn, UnitTimestamp) then
+          FilesFound.AddObject(fn, Pointer(UnitTimestamp));
       end;
       if FilesFound.Count = 0 then
         Exit; //==>
@@ -1292,21 +1283,18 @@ begin
     FreeAndNil(FilesFound);
     FreeAndNil(FilesInPath);
   end;
-{$IFDEF DEBUG_TIMING}
-  Searching.Stop;
-{$ENDIF}
+  TStopWatch_Stop(Searching);
 
   if FCacheDirBS <> '' then
     ForceDirectories(FCacheDirBS);
 
-{$IFDEF DEBUG_TIMING}
-  Processing.Start;
-{$ENDIF}
+  TStopWatch_Start(Processing);
   for FileIdx := 0 to FFiles.Count - 1 do begin
     if Terminated then
       Exit; //==>
+    TStopWatch_Start(CacheChecking);
     fn := FFiles[FileIdx];
-    UnitTime := UInt32(FFiles.Objects[FileIdx]);
+    UnitTimestamp := UInt32(FFiles.Objects[FileIdx]);
     UnitName := ExtractFileName(fn);
     UnitName := ChangeFileExt(UnitName, '');
     if UnitName = 'u_dzBeep' then
@@ -1317,16 +1305,14 @@ begin
       CacheFn := MangleFilename(fn);
       CacheFn := FCacheDirBS + CacheFn;
     end;
-    if (CacheFn <> '') and GxTryGetFileAge(CacheFn, CacheTime) and (UnitTime < CacheTime) then begin
+    IsCacheAvailable := (CacheFn <> '') and GxTryGetFileAge(CacheFn, CacheTimestamp) and (UnitTimestamp < CacheTimestamp);
+    TStopWatch_Stop(CacheChecking);
+    if IsCacheAvailable then begin
       LoadedIdentifiers := TUnitIdentifierList.Create(500);
       try
-{$IFDEF DEBUG_TIMING}
-        Loading.Start;
-{$ENDIF}
+        TStopWatch_Start(Loading);
         WasLoadedFromCache := LoadedIdentifiers.LoadFromFile(CacheFn);
-{$IFDEF DEBUG_TIMING}
-        Loading.Stop;
-{$ENDIF}
+        TStopWatch_Stop(Loading);
         if WasLoadedFromCache then begin
           Inc(FLoadedUnitsCount);
 
@@ -1334,18 +1320,14 @@ begin
           // the unit name is also an identifier
           // we save it with line number 1, even if the unit statement maight be further down
           // but personally I want to jump to the fist line of a unit if I open it for the unit name
-          FIdentifierList.Add(UnitName, fn, 1);
+          FIdentifierList.Add(AnsiString(UnitName), fn, 1);
 
-{$IFDEF DEBUG_TIMING}
-          Inserting.Start;
-{$ENDIF}
+          TStopWatch_Start(Inserting);
           for IdentIdx := 0 to LoadedIdentifiers.Count - 1 do begin
             Item := LoadedIdentifiers[IdentIdx];
             FIdentifierList.Add(Item.Identifier, fn, Item.LineNo);
           end;
-{$IFDEF DEBUG_TIMING}
-          Inserting.Stop;
-{$ENDIF}
+          TStopWatch_Stop(Inserting);
         end;
       finally
         FreeAndNil(LoadedIdentifiers);
@@ -1356,9 +1338,7 @@ begin
 
     if not WasLoadedFromCache then begin
       Inc(FParsedUnitsCount);
-{$IFDEF DEBUG_TIMING}
-      Parsing.Start;
-{$ENDIF}
+      TStopWatch_Start(Parsing);
       Parser := TUnitExportsParser.Create(fn);
       try
         Parser.Symbols.Assign(FSymbols);
@@ -1372,7 +1352,7 @@ begin
         // the unit name is also an identifier
         // we save it with line number 1, even if the unit statement maight be further down
         // but personally I want to jump to the fist line of a unit if I open it for the unit name
-        FIdentifierList.Add(UnitName, fn, 0);
+        FIdentifierList.Add(AnsiString(UnitName), fn, 0);
         for IdentIdx := 0 to ParsedIdentifiers.Count - 1 do begin
           Item := ParsedIdentifiers[IdentIdx];
           FIdentifierList.Add(Item.Identifier, fn, Item.LineNo);
@@ -1380,25 +1360,19 @@ begin
       finally
         FreeAndNil(Parser);
       end;
-{$IFDEF DEBUG_TIMING}
-      Parsing.Stop;
-{$ENDIF}
+      TStopWatch_Stop(Parsing);
     end;
   end;
   if Terminated then
     Exit; //==>
 
-{$IFDEF DEBUG_TIMING}
-  Processing.Stop;
+  TStopWatch_Stop(Processing);
 
-  Sorting.Start;
-{$ENDIF}
+  TStopWatch_Start(Sorting);
   FIdentifierList.Sort;
-{$IFDEF DEBUG_TIMING}
-  Sorting.Stop;
+  TStopWatch_Stop(Sorting);
 
-  Total.Stop;
-{$ENDIF}
+  TStopWatch_Stop(Total);
 
 {$IF Declared(SendDebug)}
   SendDebugFmt('UnitExportParser finished, found %d identifiers', [FIdentifierList.Count]);
@@ -1406,15 +1380,14 @@ begin
   SendDebugFmt('UnitExportParser loaded %d units', [FLoadedUnitsCount]);
   SendDebugFmt('UnitExportParser parsed %d units', [FParsedUnitsCount]);
 
-{$IFDEF DEBUG_TIMING}
   SendDebugFmt('UnitExportParser searching time %d ms', [Searching.ElapsedMilliseconds]);
+  SendDebugFmt('UnitExportParser checking time %d ms', [CacheChecking.ElapsedMilliseconds]);
   SendDebugFmt('UnitExportParser loading time %d ms', [Loading.ElapsedMilliseconds]);
   SendDebugFmt('UnitExportParser inserting time %d ms', [Inserting.ElapsedMilliseconds]);
   SendDebugFmt('UnitExportParser parsing time %d ms', [Parsing.ElapsedMilliseconds]);
-  SendDebugFmt('UnitExportParser processing time %d ms', [Processing.ElapsedMilliseconds]);
+  SendDebugFmt('UnitExportParser processing time %d ms (consists of searching, checking, loading+inserting and parsing)', [Processing.ElapsedMilliseconds]);
   SendDebugFmt('UnitExportParser sorting time %d ms', [Sorting.ElapsedMilliseconds]);
-  SendDebugFmt('UnitExportParser total time %d ms', [Total.ElapsedMilliseconds]);
-{$ENDIF}
+  SendDebugFmt('UnitExportParser total time %d ms (consists of processing and sorting)', [Total.ElapsedMilliseconds]);
 {$IFEND}
 end;
 

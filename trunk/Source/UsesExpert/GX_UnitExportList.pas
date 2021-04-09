@@ -9,10 +9,14 @@ uses
   SysUtils,
   Classes,
   Contnrs,
+  StrUtils,
+{$IFDEF unicode}
+  AnsiStrings,
+{$ENDIF}
   u_dzTypes;
 
 const
-  CURRENT_UNIT_CACHE_VERSION = 'Version2';
+  CURRENT_UNIT_CACHE_VERSION = 'GExpertsUsesClauseManagerCacheVersion3';
 
 type
   TUnitIdentifierTypes = (itUnknown, itConst, itType, itVar, itProcedure, itFunction);
@@ -20,15 +24,15 @@ type
 type
   TUnitIdentifier = class
   private
-    FIdentifier: string;
-    FLCIdentifier: string;
+    FIdentifier: AnsiString;
+    FLCIdentifier: AnsiString;
     FLineNo: Integer;
   public
-    class function FromString(const _s: string): TUnitIdentifier;
-    constructor Create(const _Identifier: string; _LineNo: Integer);
-    function AsString: string;
-    property Identifier: string read FIdentifier;
-    property LCIdentifier: string read FLCIdentifier;
+    class function FromLine(_s: PAnsiChar): TUnitIdentifier;
+    constructor Create(const _Identifier: AnsiString; _LineNo: Integer);
+    function AsLine: AnsiString;
+    property Identifier: AnsiString read FIdentifier;
+    property LCIdentifier: AnsiString read FLCIdentifier;
     property LineNo: Integer read FLineNo;
   end;
 
@@ -59,10 +63,11 @@ type
   protected
     function CompareItems(_Idx1, _Idx2: Integer): Integer; override;
   public
-    function Add(const _Identifier: string; _LineNo: Integer): Integer;
+    function Add(const _Identifier: AnsiString; _LineNo: Integer): Integer;
     ///<summary>
-    /// @returns true, if the cache file was the latest structure version (currently version2) </summary>
-    function LoadFromFile(const _fn: string; _OnlyIfLatestVersion: Boolean = True): Boolean;
+    /// @returns true, if the cache file has been read. This only happes for the latest
+    ///                structure version (CURRENT_UNIT_CACHE_VERSION) </summary>
+    function LoadFromFile(const _fn: string): Boolean;
     procedure SaveToFile(const _fn: string);
     property Items[_Idx: Integer]: TUnitIdentifier read GetItems; default;
   end;
@@ -72,7 +77,7 @@ type
   private
     FFilename: string;
   public
-    constructor Create(const _Identifier, _Filename: string; _LineNo: Integer);
+    constructor Create(const _Identifier: AnsiString; const _Filename: string; _LineNo: Integer);
     property FileName: string read FFilename;
   end;
 
@@ -83,7 +88,7 @@ type
   protected
     function CompareItems(_Idx1, _Idx2: Integer): Integer; override;
   public
-    function Add(const _Identifier, _Filename: string; _LineNo: Integer): Integer;
+    function Add(const _Identifier: AnsiString; const _Filename: string; _LineNo: Integer): Integer;
     property Items[_Idx: Integer]: TUnitExport read GetItems; default;
   end;
 
@@ -91,13 +96,14 @@ implementation
 
 uses
   Math,
-  StrUtils,
+  u_dzConvertUtils,
   u_dzQuicksort,
-  u_dzStringUtils;
+  u_dzStringUtils,
+  u_dzClassUtils;
 
 { TUnitIdentifier }
 
-constructor TUnitIdentifier.Create(const _Identifier: string; _LineNo: Integer);
+constructor TUnitIdentifier.Create(const _Identifier: AnsiString; _LineNo: Integer);
 begin
   inherited Create;
   FIdentifier := _Identifier;
@@ -111,29 +117,50 @@ const
   UNIT_IDENTIFIER_TYPE_CHARS: TUnitIdentifierTypeChars = (
     'U', 'C', 'T', 'V', 'P', 'F');
 
-function TUnitIdentifier.AsString: string;
+function TUnitIdentifier.AsLine: AnsiString;
 begin
-  Result := UNIT_IDENTIFIER_TYPE_CHARS[itUnknown] + #9 + IntToStr(FLineNo) + #9 + FIdentifier;
+  Result := UNIT_IDENTIFIER_TYPE_CHARS[itUnknown] + AnsiChar(#9) + Long2DecA(FLineNo) + AnsiChar(#9) + FIdentifier;
 end;
 
-class function TUnitIdentifier.FromString(const _s: string): TUnitIdentifier;
+class function TUnitIdentifier.FromLine(_s: PAnsiChar): TUnitIdentifier;
 var
-  Parts: TStringArray;
+  Parts: array of PAnsiChar;
+  Idx: Integer;
+  l: ulong;
   LineNo: Integer;
+  p: PAnsiChar;
+  Start: PAnsiChar;
 begin
-  Parts := u_dzStringUtils.SplitString(_s, [#9]);
-  if Length(Parts) = 3 then begin
-    // todo: also read the type
-    if not TryStrToInt(Parts[1], LineNo) then
-      LineNo := -1;
-    Result := TUnitIdentifier.Create(Parts[2], LineNo);
-  end else
-    Result := TUnitIdentifier.Create(_s, -1);
+  Start := _s;
+  Idx := 0;
+  p := Start;
+  while p^ <> #0 do begin
+    if p^ <> #9 then begin
+      Inc(p);
+    end else begin
+      SetLength(Parts, Idx + 1);
+      Parts[Idx] := Start;
+      Inc(Idx);
+      // change the TAB character to #0 to mark the end of the string
+      p^ := #0;
+      Inc(p);
+      Start := p;
+    end;
+  end;
+  SetLength(Parts, Idx + 1);
+  Parts[Idx] := Start;
+
+  // todo: also use the type
+  if TryDec2Long(Parts[1], l) then
+    LineNo := l
+  else
+    LineNo := -1;
+  Result := TUnitIdentifier.Create(Parts[2], LineNo);
 end;
 
 { TUnitExport }
 
-constructor TUnitExport.Create(const _Identifier, _Filename: string; _LineNo: Integer);
+constructor TUnitExport.Create(const _Identifier: AnsiString; const _Filename: string; _LineNo: Integer);
 begin
   inherited Create(_Identifier, _LineNo);
   FFilename := _Filename;
@@ -156,7 +183,7 @@ end;
 
 function TUnitIdentifierListAbstract.CompareToItem(const _Key; _Idx: Integer): Integer;
 begin
-  Result := AnsiCompareStr(string(_Key), (FItems[_Idx] as TUnitIdentifier).LCIdentifier);
+  Result := CompareStr(AnsiString(_Key), (FItems[_Idx] as TUnitIdentifier).LCIdentifier);
 end;
 
 function TUnitIdentifierListAbstract.Count: Integer;
@@ -164,12 +191,12 @@ begin
   Result := FItems.Count;
 end;
 
-function StrMatchesAll(const _s: string; _Words: TStrings): Boolean;
+function StrMatchesAll(const _s: AnsiString; _Words: TStrings): Boolean;
 var
   i: Integer;
 begin
   for i := 0 to _Words.Count - 1 do begin
-    if not AnsiContainsStr(_s, _Words[i]) then begin
+    if not ContainsStr(_s, AnsiString(_Words[i])) then begin
       Result := False;
       Exit; //==>
     end;
@@ -231,7 +258,7 @@ end;
 
 function TUnitIdentifierListAbstract.SearchStart(const _Words: TStrings; _Found: TList): Boolean;
 
-  function StartsIdentifier(const _LcStart: string; _Idx: Integer; out _Item: TUnitIdentifier): Boolean;
+  function StartsIdentifier(const _LcStart: AnsiString; _Idx: Integer; out _Item: TUnitIdentifier): Boolean;
   begin
     Result := (_Idx < Count);
     if Result then begin
@@ -242,7 +269,7 @@ function TUnitIdentifierListAbstract.SearchStart(const _Words: TStrings; _Found:
 
 var
   ItemIdx: Integer;
-  s: string;
+  s: AnsiString;
   Item: TUnitIdentifier;
 begin
   Assert(Assigned(_Words));
@@ -251,7 +278,7 @@ begin
 
   _Found.Clear;
 
-  s := LowerCase(_Words[0]);
+  s := AnsiString(LowerCase(_Words[0]));
   BinarySearch(0, Count - 1, ItemIdx, s, CompareToItem, True);
   while StartsIdentifier(s, ItemIdx, Item) do begin
     _Found.Add(Item);
@@ -266,7 +293,7 @@ end;
 function TUnitIdentifierListAbstract.SearchStartFirst(const _Words: TStrings; _Found: TList): Boolean;
 var
   ItemIdx: Integer;
-  s: string;
+  s: AnsiString;
   NotAtStart: TList;
   Item: TUnitIdentifier;
   p: Integer;
@@ -276,12 +303,12 @@ begin
   Assert(_Words.Count > 0);
 
   _Found.Clear;
-  s := LowerCase(_Words[0]);
+  s := AnsiString(LowerCase(_Words[0]));
   NotAtStart := TList.Create;
   try
     for ItemIdx := 0 to Count - 1 do begin
       Item := FItems[ItemIdx] as TUnitIdentifier;
-      p := AnsiPos(s, Item.LCIdentifier);
+      p := Pos(s, Item.LCIdentifier);
       if p = 1 then
         _Found.Add(Item)
       else if p > 1 then
@@ -339,7 +366,7 @@ begin
   Result := TUnitExport(FItems[_Idx]);
 end;
 
-function TUnitExportlist.Add(const _Identifier, _Filename: string; _LineNo: Integer): Integer;
+function TUnitExportlist.Add(const _Identifier: AnsiString; const _Filename: string; _LineNo: Integer): Integer;
 begin
   Result := FItems.Add(TUnitExport.Create(_Identifier, _Filename, _LineNo));
   FIsSorted := False;
@@ -347,7 +374,7 @@ end;
 
 { TUnitIdentifierList }
 
-function TUnitIdentifierList.Add(const _Identifier: string; _LineNo: Integer): Integer;
+function TUnitIdentifierList.Add(const _Identifier: AnsiString; _LineNo: Integer): Integer;
 begin
   Result := FItems.Add(TUnitIdentifier.Create(_Identifier, _LineNo));
   FIsSorted := False;
@@ -370,50 +397,87 @@ begin
   Result := FItems[_Idx] as TUnitIdentifier;
 end;
 
-function TUnitIdentifierList.LoadFromFile(const _fn: string; _OnlyIfLatestVersion: Boolean): Boolean;
-var
-  StartIdx: Integer;
-  i: Integer;
-  sl: TStringList;
-begin
-  FItems.Clear;
-  sl := TStringList.Create;
-  try
-    sl.LoadFromFile(_fn);
-    if sl.Count = 0 then begin
+function TUnitIdentifierList.LoadFromFile(const _fn: string): Boolean;
+
+  function TryGetNextLine(const _Buffer: RawByteString; var _Start: PAnsiChar; out _Line: PAnsiChar): Boolean;
+  var
+    p: PAnsiChar;
+  begin
+    if _Start^ = #0 then begin
       Result := False;
       Exit; //==>
     end;
-    Result := (sl[0] = CURRENT_UNIT_CACHE_VERSION);
-    if Result then
-      StartIdx := 1
-    else begin
-      if _OnlyIfLatestVersion then
-        Exit; //==>
-      StartIdx := 0;
+
+    _Line := _Start;
+    p := _Start;
+    while (p^ <> #0) and (p^ <> #13) do
+      Inc(p);
+    if p^ = #0 then begin
+      _Start := p;
+      Result := True;
+      Exit; //==>
     end;
-    for i := StartIdx to sl.Count - 1 do begin
-      FItems.Add(TUnitIdentifier.FromString(sl[i]));
+
+    _Start := p;
+    // overwrite the #13 with #0 as an end  marker for the line
+    p^ := #0;
+    Inc(_Start);
+    if _Start^ = #10 then
+      Inc(_Start);
+    Result := True;
+  end;
+
+var
+  st: TFileStream;
+  Buffer: RawByteString;
+  Len: Integer;
+  Start: PAnsiChar;
+  Line: PAnsiChar;
+begin
+  FItems.Clear;
+  st := TFileStream.Create(_fn, fmOpenRead or fmShareDenyWrite);
+  try
+    Len := st.Size;
+    if Len = 0 then begin
+      Result := False;
+      Exit //==>
+    end;
+
+    SetLength(Buffer, Len);
+    Start := @Buffer[1];
+    st.Read(Start^, Len);
+    if not TryGetNextLine(Buffer, Start, Line) then begin
+      Result := False;
+      Exit; //==>
+    end;
+
+    Result := (Line = CURRENT_UNIT_CACHE_VERSION);
+    if not Result then begin
+      // we don't support older cache files it's not worth the effort
+      Exit; //==>
+    end;
+
+    while TryGetNextLine(Buffer, Start, Line) do begin
+      FItems.Add(TUnitIdentifier.FromLine(Line));
     end;
   finally
-    FreeAndNil(sl);
+    FreeAndNil(st);
   end;
 end;
 
 procedure TUnitIdentifierList.SaveToFile(const _fn: string);
 var
   i: Integer;
-  sl: TStringList;
+  st: TFileStream;
 begin
-  sl := TStringList.Create;
+  st := TFileStream.Create(_fn, fmCreate or fmShareExclusive);
   try
-    sl.Add(CURRENT_UNIT_CACHE_VERSION);
+    TStream_WriteStringLn(st, CURRENT_UNIT_CACHE_VERSION);
     for i := 0 to Count - 1 do begin
-      sl.Add(Items[i].AsString);
+      TStream_WriteStringLn(st, Items[i].AsLine);
     end;
-    sl.SaveToFile(_fn);
   finally
-    FreeAndNil(sl);
+    FreeAndNil(st);
   end;
 end;
 

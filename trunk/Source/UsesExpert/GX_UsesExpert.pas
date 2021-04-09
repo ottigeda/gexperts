@@ -5,11 +5,9 @@ interface
 {$I 'GX_CondDefine.inc'}
 
 {.$DEFINE DEBUG_NOT_FOUND_UNITS}
-{$DEFINE DEBUG_TIME_IDENTIFIER_TAB}
 
 {$IFOPT D-}
 {$UNDEF DEBUG_NOT_FOUND_UNITS}
-{$UNDEF DEBUG_TIME_IDENTIFIER_TAB}
 {$ENDIF}
 
 uses
@@ -20,11 +18,6 @@ uses
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
   GX_UnitExportsParser, GX_UsesExpertOptions, GX_UnitExportList,
   GX_OtaUtils;
-
-{$IF not declared(TStopwatch)}
-// TStopwatch requires enhanced records, so it's not available in Delphi < 2007)
-{$UNDEF DEBUG_TIME_IDENTIFIER_TAB}
-{$IFEND}
 
 type
   TPageControl = class(ComCtrls.TPageControl)
@@ -53,9 +46,7 @@ type
     FProjectChangedNotifier: TProjectChangedNotifier;
     FUnitExportParserThread: TUnitExportParserThread;
     FSearchPathFavorites: Boolean;
-{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
     FIdentifierTabTimer: TStopwatch;
-{$ENDIF}
     procedure InternalExecute;
     function FindAction(out _Action: TBasicAction): Boolean;
     procedure HandleProjectChanged(_Sender: TObject);
@@ -797,9 +788,7 @@ procedure TUsesClauseMgrExpert.InternalExecute;
 var
   Form: TfmUsesManager;
 begin
-{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
-  FIdentifierTabTimer := TStopwatch.StartNew;
-{$ENDIF}
+  FIdentifierTabTimer := TStopwatch_StartNew;
 
   AssertIsPasOrInc(GxOtaGetCurrentSourceFile);
   Form := TfmUsesManager.Create(Application, Self);
@@ -847,26 +836,22 @@ end;
 constructor TfmUsesManager.Create(_Owner: TComponent; _UsesExpert: TUsesClauseMgrExpert);
 var
   Bitmap: TBitmap;
-{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
   StopWatch: TStopwatch;
-{$ENDIF}
 begin
 {$IFOPT D+}
   SendDebug('TfmUsesManager.Create Enter');
 {$ENDIF D+}
   FUsesExpert := _UsesExpert;
 
-{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
-  StopWatch := TStopwatch.StartNew;
-{$ENDIF}
+  StopWatch := TStopwatch_StartNew;
   // To ensure we get the latest version of all units, start the thread again
   // it will run fast if everything is already cached.
   FUsesExpert.StartUnitParserThread;
 
-{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
-  StopWatch.Stop;
-  SendDebugFmt('Starting Unit Parser Thread took %d milliseconds', [StopWatch.ElapsedMilliseconds]);
-{$ENDIF}
+  TStopWatch_Stop(StopWatch);
+{$IFOPT D+}
+  SendDebugFmt('Starting Unit Parser Thread took %d milliseconds', [TStopWatch_ElapsedMilliseconds(StopWatch)]);
+{$ENDIF D+}
 
   inherited Create(_Owner);
 
@@ -1908,7 +1893,7 @@ begin
     Exit; //==>
   end;
 {$IFOPT D+}
-  SendDebug('SarchPath is ready');
+  SendDebug('SearchPath is ready');
 {$ENDIF D+}
   IsDotNet := GxOtaCurrentProjectIsDotNet;
   PathFiles := nil;
@@ -1924,7 +1909,7 @@ begin
       FSearchPathThread.ReleaseResults;
     end;
 {$IFOPT D+}
-  SendDebugFmt('Found %d files in SarchPath', [PathFiles.Count]);
+  SendDebugFmt('Found %d files in SearchPath', [PathFiles.Count]);
 {$ENDIF D+}
     for i := 0 to PathFiles.Count - 1 do
       AddPathUnit(PathFiles[i]);
@@ -2127,7 +2112,7 @@ begin
       sg_Identifiers.RowCount := FixedRows + cnt;
       for i := 0 to cnt - 1 do begin
         Item := TObject(FilterList[i]) as TUnitExport;
-        Identifier := Item.Identifier;
+        Identifier := String(Item.Identifier);
         sg_Identifiers.Cells[0, FixedRows + i] := Identifier;
         UnitName := Item.FileName;
         sg_Identifiers.Cells[1, FixedRows + i] := ExtractPureFileName(UnitName);
@@ -2260,9 +2245,7 @@ var
   Idx: Integer;
   Item: TUnitExport;
 {$ENDIF}
-{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
   StopWatch: TStopwatch;
-{$ENDIF}
 begin
   upt := FUsesExpert.FUnitExportParserThread;
   if Assigned(upt) and not upt.HasFinished then begin
@@ -2274,36 +2257,30 @@ begin
     Exit; //==>
   end;
 
-{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
-  StopWatch := TStopwatch.StartNew;
-{$ENDIF}
+  StopWatch := TStopwatch_StartNew;
   tim_Progress.Enabled := False;
   pnlIdentifiersProgress.Visible := False;
-{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
-  StopWatch.Stop;
-  SendDebugFmt('Hiding Panel an stopping timer took %d milliseconds', [StopWatch.ElapsedMilliseconds]);
-{$ENDIF}
+  TStopWatch_Stop(StopWatch);
+{$IFOPT D+}
+  SendDebugFmt('Hiding Panel and stopping timer took %d milliseconds', [TStopWatch_ElapsedMilliseconds(StopWatch)]);
+{$ENDIF D+}
 
   if not Assigned(upt) then
     Exit; //==>
 
-{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
-  StopWatch := TStopwatch.StartNew;
-{$ENDIF}
+  StopWatch := TStopwatch_StartNew;
   TStringGrid_Clear(sg_Identifiers);
-{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
-  StopWatch.Stop;
-  SendDebugFmt('Clearing string grid took %d milliseconds', [StopWatch.ElapsedMilliseconds]);
-{$ENDIF}
+  TStopWatch_Stop(StopWatch);
+{$IFOPT D+}
+  SendDebugFmt('Clearing string grid took %d milliseconds', [TStopWatch_ElapsedMilliseconds(StopWatch)]);
+{$ENDIF D+}
 
   FreeAndNil(FIdentifiers);
   FIdentifiers := upt.DetachIdentifiers;
 
 {$IFDEF PREPROCESS_UNIT_PATHS}
-{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
   SendDebug('Preprocessing unit paths');
-  StopWatch := TStopwatch.StartNew;
-{$ENDIF DEBUG_TIME_IDENTIFIER_TAB}
+  StopWatch := TStopwatch_StartNew;
 {$IFDEF DEBUG_NOT_FOUND_UNITS}
   NotFoundUnits := TStringList.Create;
   try
@@ -2332,24 +2309,24 @@ begin
     FreeAndNil(NotFoundUnits);
   end;
 {$ENDIF DEBUG_NOT_FOUND_UNITS}
-{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
-  StopWatch.Stop;
-  SendDebugFmt('Preprocessing identifiers took %d milliseconds', [StopWatch.ElapsedMilliseconds]);
-{$ENDIF DEBUG_TIME_IDENTIFIER_TAB}
+  TStopWatch_Stop(StopWatch);
+  SendDebugFmt('Preprocessing identifiers took %d milliseconds', [TStopWatch_ElapsedMilliseconds(StopWatch)]);
 {$ENDIF PREPROCESS_UNIT_PATHS}
 
-{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
+{$IFOPT D+}
   SendDebug('Filtering identifiers');
-  StopWatch := TStopwatch.StartNew;
-{$ENDIF DEBUG_TIME_IDENTIFIER_TAB}
+{$ENDIF D+}
+  StopWatch := TStopwatch_StartNew;
   FilterIdentifiers;
-{$IFDEF DEBUG_TIME_IDENTIFIER_TAB}
-  StopWatch.Stop;
-  SendDebugFmt('Filtering identifiers took %d milliseconds', [StopWatch.ElapsedMilliseconds]);
+  TStopWatch_Stop(StopWatch);
+{$IFOPT D+}
+  SendDebugFmt('Filtering identifiers took %d milliseconds', [TStopWatch_ElapsedMilliseconds(StopWatch)]);
+{$ENDIF D+}
 
   FUsesExpert.FIdentifierTabTimer.Stop;
+{$IFOPT D+}
   SendDebugFmt('Total time from calling the expert until after filtering: %d milliseconds', [FUsesExpert.FIdentifierTabTimer.ElapsedMilliseconds]);
-{$ENDIF}
+{$ENDIF D+}
 end;
 
 type
