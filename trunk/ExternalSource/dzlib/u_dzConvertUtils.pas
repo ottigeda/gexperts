@@ -47,28 +47,44 @@ const
 
 const
   /// <summary>
-  /// String containing all characters that can be used as digits
-  /// </summary>
+  /// Array containing all characters that can be used as digits </summary>
   DIGIT_CHARS: string = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 // Str <-> Decimal conversion
 ///<summary>
 /// Returns true if A is a valid decimal digit </summary>
-function isDecDigit(_a: Char): Boolean;
+function isDecDigit(_a: Char): Boolean; overload;
+{$IFDEF unicode}
+function isDecDigit(_a: AnsiChar): Boolean; overload;
+{$ENDIF}
+
 ///<summary>
 /// Returns true if S is a valid positive decimal number </summary>
 function isDec(const _s: string): Boolean; overload;
 {$IFDEF unicode}
 function isDec(const _s: AnsiString): Boolean; overload;
 {$ENDIF}
+
 ///<summary>
 /// Converts a decimal digit to its number equivalent
 /// @Raises EDigitOutOfRange if there is an invalid digit. </summary>
-function DecDigit2Long(_a: Char): ULong;
+function DecDigit2Long(_a: Char): ULong; overload;
+{$IFDEF unicode}
+function DecDigit2Long(_a: AnsiChar): ULong; overload;
+{$ENDIF}
 ///<summary>
 /// Converts a string representing a positive decimal number to a number
 /// @Raises EDigitOutOfRange if there is an invalid digit. </summary>
-function Dec2Long(const _s: string): ULong;
+function Dec2Long(const _s: string): ULong; overload;
+{$IFDEF unicode}
+function Dec2Long(const _s: AnsiString): ULong; overload;
+{$ENDIF}
+
+function TryDec2Long(const _s: string; out _l: ULong): Boolean; overload;
+{$IFDEF unicode}
+function TryDec2Long(const _s: AnsiString; out _l: ULong): Boolean; overload;
+{$ENDIF}
+
 ///<summary>
 /// Converts a positive number to its 2 digit decimal representation (left pads with '0') </summary>
 function Long2Dec2(_l: ULong): string;
@@ -93,7 +109,7 @@ function isHex(const _s: string): Boolean;
 ///<summary>
 /// Converts a hexadecimal digit to its number equivalent
 /// Raises EDigitOutOfRange if there is an invalid digit. </summary>
-function HexDigit2Long(_a: Char): LongInt;
+function HexDigit2Long(_a: Char): Longint;
 ///<summary>
 /// Converts a string representing a hexadecimal number to a number
 /// @Raises EDigitOutOfRange if there is an invalid digit. </summary>
@@ -121,7 +137,11 @@ function Long2HexN(_l: ULong; _Digits: Byte): string;
 // Str <-> any numeric system conversion up to Base36 (that is digits 0..Z)
 ///<summary>
 /// Returns true if A is a valid digit in the given Base. </summary>
-function isDigit(_a: Char; _Base: TBaseN): Boolean;
+function isDigit(_a: Char; _Base: TBaseN): Boolean; overload;
+{$IFDEF unicode}
+function isDigit(_a: AnsiChar; _Base: TBaseN): Boolean; overload;
+{$ENDIF}
+
 ///<summary>
 /// Returns true if S is a valid number in the given Base. </summary>
 function isNumber(const _s: string; _Base: TBaseN): Boolean;
@@ -133,11 +153,16 @@ function Digit2Long(_a: Char; _Base: TBaseN): ULong;
 /// Converts a string representing a number in Base to a number.
 /// @Raises EDigitOutOfRange if there is an invalid digit.  </summary>
 function Num2Long(const _s: string; _Base: TBaseN): ULong;
+
 ///<summary>
 /// Tries to convert a string representing a number in Base to a number.
 /// @Value contains the converted number, only valid if Result = true
 /// @returns true, if the conversion succeeds, false otherwise. </summary>
-function TryNum2Long(const _s: string; _Base: TBaseN; out _Value: ULong): Boolean;
+function TryNum2Long(const _s: string; _Base: TBaseN; out _Value: ULong): Boolean; overload;
+{$IFDEF unicode}
+function TryNum2Long(const _s: AnsiString; _Base: TBaseN; out _Value: ULong): Boolean; overload;
+{$ENDIF}
+
 ///<summary>
 /// Converts a number to its Base representation. </summary>
 function Long2Num(_l: ULong; _Base: Byte; _MinWidth: Integer = 1): string;
@@ -544,6 +569,13 @@ begin
   Result := (Pos(UpCase(_a), LeftStr(DIGIT_CHARS, _Base)) <> 0);
 end;
 
+{$IFDEF unicode}
+function isDigit(_a: AnsiChar; _Base: TBaseN): Boolean; overload;
+begin
+  Result := (Pos(string(UpCase(_a)), LeftStr(DIGIT_CHARS, _Base)) <> 0);
+end;
+{$ENDIF}
+
 function isNumber(const _s: string; _Base: TBaseN): Boolean;
 var
   i: Integer;
@@ -599,6 +631,24 @@ begin
   end;
   Result := True;
 end;
+
+{$IFDEF unicode}
+function TryNum2Long(const _s: AnsiString; _Base: TBaseN; out _Value: ULong): Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  _Value := 0;
+  for i := 1 to Length(_s) do begin
+    if isDigit(_s[i], _Base) then
+      _Value := (_Value * _Base + ULong(Pos(string(UpCase(_s[i])), DIGIT_CHARS)) - 1)
+    else begin
+      Exit;
+    end;
+  end;
+  Result := True;
+end;
+{$ENDIF}
 
 function Long2Num(_l: ULong; _Base: Byte; _MinWidth: Integer = 1): string;
 var
@@ -689,7 +739,7 @@ begin
   Result := isNumber(_s, 16);
 end;
 
-function HexDigit2Long(_a: Char): LongInt;
+function HexDigit2Long(_a: Char): Longint;
 begin
   Result := Digit2Long(_a, 16);
 end;
@@ -737,6 +787,13 @@ begin
   Result := isDigit(_a, 10);
 end;
 
+{$IFDEF unicode}
+function isDecDigit(_a: AnsiChar): Boolean;
+begin
+  Result := isDigit(Char(_a), 10);
+end;
+{$ENDIF}
+
 function isDec(const _s: string): Boolean;
 begin
   Result := isNumber(_s, 10);
@@ -754,6 +811,13 @@ begin
   Result := Digit2Long(_a, 10);
 end;
 
+{$IFDEF unicode}
+function DecDigit2Long(_a: AnsiChar): ULong;
+begin
+  Result := Digit2Long(Char(_a), 10);
+end;
+{$ENDIF}
+
 function Dec2Long(const _s: string): ULong;
 var
   c: Char;
@@ -765,6 +829,32 @@ begin
     Result := Result * 10 + DecDigit2Long(c);
   end;
 end;
+
+{$IFDEF unicode}
+function Dec2Long(const _s: AnsiString): ULong; overload;
+var
+  c: AnsiChar;
+  i: Integer;
+begin
+  Result := 0;
+  for i := 1 to Length(_s) do begin
+    c := _s[i];
+    Result := Result * 10 + DecDigit2Long(c);
+  end;
+end;
+{$ENDIF}
+
+function TryDec2Long(const _s: string; out _l: ULong): Boolean;
+begin
+  Result := TryNum2Long(_s, 10, _l);
+end;
+
+{$IFDEF unicode}
+function TryDec2Long(const _s: AnsiString; out _l: ULong): Boolean;
+begin
+  Result := TryNum2Long(_s, 10, _l);
+end;
+{$ENDIF}
 
 function Long2Dec(_l: ULong): string;
 var
@@ -1504,3 +1594,4 @@ initialization
   Assert(AssertSwap32);
   Assert(AssertBitReverse32);
 end.
+
