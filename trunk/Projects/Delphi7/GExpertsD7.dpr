@@ -157,6 +157,7 @@ uses
   GX_SharedImages in '..\..\source\Framework\GX_SharedImages.pas' {dmSharedImages: TDataModule},
   GX_SourceExport in '..\..\source\SourceExport\GX_SourceExport.pas' {fmSourceExport},
   GX_SourceExportOptions in '..\..\source\SourceExport\GX_SourceExportOptions.pas' {fmSourceExportOptions},
+  GX_StringList in '..\..\Source\Utils\GX_StringList.pas',
   GX_SynMemoUtils in '..\..\source\Framework\GX_SynMemoUtils.pas',
   GX_TabOrder in '..\..\source\TabOrder\GX_TabOrder.pas' {fmTabOrder},
   GX_ToDo in '..\..\source\ToDoList\GX_ToDo.pas' {fmToDo},
