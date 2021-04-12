@@ -572,7 +572,7 @@ end;
 {$IFDEF unicode}
 function isDigit(_a: AnsiChar; _Base: TBaseN): Boolean; overload;
 begin
-  Result := (Pos(string(UpCase(_a)), LeftStr(DIGIT_CHARS, _Base)) <> 0);
+  Result := (Pos(UnicodeString(UpCase(_a)), UnicodeString(LeftStr(DIGIT_CHARS, _Base))) <> 0);
 end;
 {$ENDIF}
 
