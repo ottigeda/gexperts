@@ -3,8 +3,8 @@ object fmClassParsing: TfmClassParsing
   Top = 253
   BorderStyle = bsDialog
   Caption = 'Parsing classes...'
-  ClientHeight = 94
-  ClientWidth = 382
+  ClientHeight = 97
+  ClientWidth = 505
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -13,7 +13,7 @@ object fmClassParsing: TfmClassParsing
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = True
-  Position = poScreenCenter
+  Position = poOwnerFormCenter
   Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96
@@ -21,8 +21,9 @@ object fmClassParsing: TfmClassParsing
   object lblParsing: TLabel
     Left = 91
     Top = 16
-    Width = 286
+    Width = 406
     Height = 33
+    Anchors = [akLeft, akTop, akRight]
     AutoSize = False
     Caption = 'Parsing classes, please wait...'
     WordWrap = True
@@ -32,17 +33,15 @@ object fmClassParsing: TfmClassParsing
     Top = 8
     Width = 80
     Height = 50
-    Active = False
     CommonAVI = aviFindFolder
     StopFrame = 29
   end
   object Progress: TProgressBar
-    Left = 28
+    Left = 24
     Top = 64
-    Width = 326
+    Width = 457
     Height = 25
-    Min = 0
-    Max = 100
+    Anchors = [akLeft, akTop, akRight]
     TabOrder = 1
   end
 end
