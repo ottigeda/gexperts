@@ -12,6 +12,7 @@ interface
 uses
   Windows,
   SysUtils,
+  Types,
   Classes,
   Contnrs,
   IniFiles,
