@@ -12,9 +12,10 @@ interface
 
 uses
   SysUtils, Classes, Dialogs, SyncObjs, Graphics, Controls, Forms, StdCtrls,
-  UITypes, // if you get a compile error here, add UITypes=Dialogs to the unit aliases 
-  {$IFNDEF UNICODE} SynUnicode, {$ENDIF UNICODE} // UniSynEdit is required for TWideStringList in Delphi 2007 and earlier
-  Types, CheckLst, TypInfo, ExtCtrls, ComCtrls, u_dzErrorThread;
+  UITypes, // if you get a compile error here, add UITypes=Dialogs to the unit aliases
+  Types, CheckLst, TypInfo, ExtCtrls, ComCtrls,
+  u_dzErrorThread,
+  GX_StringList;
 
 const
   AllFilesWildCard = '*.*';
@@ -43,31 +44,6 @@ type
   IDEEditBufferString = UTF8String;
   {$ELSE}
   IDEEditBufferString = AnsiString;
-  {$ENDIF}
-
-type
-  {$IFDEF UNICODE}
-  TGXStringList = class(TStringList)
-  private
-    LoadedEncoding: TEncoding;
-  public
-    procedure LoadFromFile(const FileName: string); override;
-    procedure SaveToFile(const FileName: string); override;
-    procedure SortLogical;
-  end;
-
-  TGXUnicodeChar = Char;
-  PGXUnicodeChar = PChar;
-  TGXUnicodeString = string;
-  TGXUnicodeStringList = TGXStringList;
-  {$ELSE}
-  TGXUnicodeChar = WideChar;
-  PGXUnicodeChar = PWideChar;
-  TGXUnicodeString = WideString;
-  TGXUnicodeStringList = class(TUnicodeStringList)
-    // SynEdit TUnicodeStringList in D2007 and lower
-    procedure SortLogical;
-  end;
   {$ENDIF}
 
   TGXSyntaxHighlighter = (gxpPlaceHolder, gxpNone, gxpPAS, gxpCPP, gxpHTML, gxpSQL, gxpCS, gxpXML);
@@ -242,12 +218,12 @@ function IsCharNumeric(C: AnsiChar): Boolean; overload; {$IFDEF SupportsInline} 
 function IsCharAlphaNumeric(C: AnsiChar): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
 function IsCharLineEndingOrNull(C: AnsiChar): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
 function GetFileEncoding(const FileName: string): TEncoding;
-{$ELSE not UNICODE}
+{$ELSE ~UNICODE}
 function CharInSet(C: Char; CSet: TSysCharSet): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
 function AnsiStrAlloc(Size: Cardinal): PChar; {$IFDEF SupportsInline} inline; {$ENDIF}
 function IsLeadChar(C: Char): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
 function IsCharIdentifier(C: WideChar): Boolean; overload;
-{$ENDIF not UNICODE}
+{$ENDIF UNICODE}
 
 // Transforms all consecutive sequences of #10, #13, #32, and #9 in Str
 // into a single space, and strips off whitespace at the beginning and
@@ -1346,35 +1322,6 @@ begin
   end;
 end;
 
-{ TGXStringList }
-
-function GXCompareStringsLogical(List: TStringList; Index1, Index2: Integer): Integer;
-begin
-  Result := StrCmpLogicalW(PChar(List[Index1]), PChar(List[Index2]));
-end;
-
-procedure TGXStringList.LoadFromFile(const FileName: string);
-begin
-  LoadedEncoding := GetFileEncoding(FileName);
-  inherited LoadFromFile(FileName);
-end;
-
-procedure TGXStringList.SaveToFile(const FileName: string);
-begin
-  if Assigned(LoadedEncoding) then
-    SaveToFile(FileName, LoadedEncoding)
-  else
-    inherited SaveToFile(FileName);
-end;
-
-procedure TGXStringList.SortLogical;
-begin
-  if CheckWin32Version(5, 1) then // Windows XP and up
-    CustomSort(GXCompareStringsLogical)
-  else
-    Self.Sort;
-end;
-
 {$ELSE not UNICODE}
 function CharInSet(C: Char; CSet: TSysCharSet): Boolean;
 begin
@@ -1400,22 +1347,7 @@ begin
   {$ENDIF}
 end;
 
-{ TGXUnicodeStringList }
-
-function GXCompareStringsLogical(AString1, AString2: UnicodeString): Integer;
-begin
-  Result := StrCmpLogicalW(PWideChar(AString1), PWideChar(AString2));
-end;
-
-procedure TGXUnicodeStringList.SortLogical;
-begin
-  if CheckWin32Version(5, 1) then // Windows XP and up
-    CustomSort(GXCompareStringsLogical)
-  else
-    Self.Sort;
-end;
-
-{$ENDIF not UNICODE}
+{$ENDIF UNICODE}
 
 function IsCharWhiteSpace(C: Char): Boolean;
 const

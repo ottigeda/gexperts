@@ -12,8 +12,8 @@ interface
 
 uses
   Classes, Forms, Controls, ExtCtrls, ToolsAPI, ComCtrls, StdCtrls, Dialogs,
-  ActnList, Actions, ImgList, Graphics, Buttons, GX_BaseForm,
-  GX_GenericUtils;
+  ActnList, Actions, ImgList, Graphics, Buttons,
+  GX_BaseForm, GX_StringList;
 
 type
   TComponentInfo = record
@@ -93,7 +93,7 @@ implementation
 uses
   SysUtils, Windows, Messages, TypInfo,
   u_dzStringUtils, u_dzVclUtils,
-  GX_Experts, GX_OtaUtils, GX_SharedImages;
+  GX_Experts, GX_OtaUtils, GX_SharedImages, GX_GenericUtils;
 
 type
   TComponentSelectExpert = class(TGX_Expert)

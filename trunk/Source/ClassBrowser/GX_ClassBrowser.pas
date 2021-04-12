@@ -271,7 +271,7 @@ uses
   u_dzVclUtils,
   GX_VerDepConst, GX_ClassIdentify, GX_ConfigurationInfo,
   GX_ClassProp, GX_GExperts,
-  GX_GxUtils, GX_GenericUtils, GX_SharedImages, GX_IdeUtils;
+  GX_GxUtils, GX_GenericUtils, GX_StringList, GX_SharedImages, GX_IdeUtils;
 
 { TClassProjectNotifier }
 

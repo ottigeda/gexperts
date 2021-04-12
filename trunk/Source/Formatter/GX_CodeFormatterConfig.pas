@@ -26,7 +26,7 @@ uses
   GX_CodeFormatterEngine,
   GX_CodeFormatterSettings,
   GX_EnhancedEditor,
-  GX_GenericUtils,
+  GX_StringList,
   GX_BaseForm;
 
 type
@@ -182,7 +182,9 @@ uses
   GX_CodeFormatterConfigHandler,
   GX_CodeFormatterEditCapitalization,
   GX_CodeFormatterDefaultSettings,
-  GX_CodeFormatterGXConfigWrapper, GX_OtaUtils;
+  GX_CodeFormatterGXConfigWrapper,
+  GX_OtaUtils,
+  GX_GenericUtils;
 
 resourcestring
   str_None = 'None';

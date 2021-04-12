@@ -15,8 +15,7 @@ uses
   ComCtrls,
   GX_EditorExpert,
   GX_ConfigurationInfo,
-  GX_BaseForm,
-  GX_GenericUtils;
+  GX_BaseForm;
 
 type
   ///<summary>
@@ -76,7 +75,8 @@ uses
   SynRegExpr,
   u_dzClassUtils,
   u_dzVclUtils,
-  GX_OtaUtils;
+  GX_OtaUtils,
+  GX_StringList;
 
 { TRemoveMatchingLinesExpert }
 

@@ -11,8 +11,8 @@ unit GX_InsertAutoTodo;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, Dialogs, StdCtrls, Menus,
-  GX_BaseForm, GX_Experts, ExtCtrls,
+  SysUtils, Classes, Controls, Forms, Dialogs, StdCtrls, Menus, ExtCtrls,
+  GX_BaseForm, GX_Experts,
   GX_MemoEscFix;
 
 type
@@ -47,11 +47,11 @@ implementation
 {$R *.dfm}
 
 uses
-  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   Actions, ActnList, ToolsAPI, Types,
   u_dzVclUtils,
+  {$IFOPT D+}GX_DbugIntf, {$ENDIF}
   GX_ConfigurationInfo, GX_uAutoTodoHandler,
-  GX_OtaUtils, GX_GenericUtils, GX_AutoTodoDone;
+  GX_OtaUtils, GX_GenericUtils, GX_StringList, GX_AutoTodoDone;
 
 type
   EAutoTodo = class(Exception);

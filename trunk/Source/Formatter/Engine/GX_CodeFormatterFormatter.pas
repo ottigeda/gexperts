@@ -55,7 +55,8 @@ type
     procedure SetPrevLineIndent(_Additional: Integer); {$IFDEF SupportsInline} inline; {$ENDIF}
     procedure DecPrevLineIndent; {$IFDEF SupportsInline} inline; {$ENDIF}
 
-    {: replaces a TExpression with a TAlignExpression }
+    ///<summary>
+    /// replaces a TExpression with a TAlignExpression </summary>
     function AlignExpression(_Idx: Integer; _Pos: Integer): TPascalToken;
     procedure CheckWrapping;
     function IsRType(_Token: TPascalToken; _rType: TReservedType): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
@@ -121,7 +122,8 @@ uses
   AnsiStrings,
 {$ENDIF}
   u_dzStringUtils,
-  u_dzAssertTrace;
+  u_dzAssertTrace,
+  GX_StringList;
 
 class procedure TCodeFormatterFormatter.Execute(_Tokens: TPascalTokenList; _Settings: TCodeFormatterSettings);
 var

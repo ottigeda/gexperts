@@ -14,7 +14,7 @@ uses
   Classes,
   StrUtils,
   TypInfo,
-  GX_GenericUtils,
+  GX_StringList,
   GX_CodeFormatterTypes;
 
 type

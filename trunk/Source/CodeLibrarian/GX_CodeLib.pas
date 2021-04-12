@@ -7,11 +7,12 @@ unit GX_CodeLib;
 interface
 
 uses
+  Windows, SysUtils, 
   Forms, Controls, StdActns, Classes, ActnList, Actions, UITypes,
   Dialogs, Menus, ComCtrls, ToolWin, ExtCtrls,
   GpStructuredStorage,
   GX_Experts, GX_EnhancedEditor,
-  GX_GenericUtils, GX_BaseForm;
+  GX_GenericUtils, GX_StringList, GX_BaseForm;
 
 type
   TSearchRecord = record
@@ -278,9 +279,9 @@ implementation
 {$UNDEF IdeParserPacifier_NEVERCOMPILED}
 
 uses
-  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, Windows, Clipbrd,
+  Clipbrd,
   u_dzVclUtils, u_dzStringUtils,
+  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_CodeSrch, GX_CodeOpt, GX_GxUtils,
   GX_OtaUtils, GX_IdeUtils,
   GX_GExperts, GX_ConfigurationInfo, GX_MessageBox, GX_SharedImages;

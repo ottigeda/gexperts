@@ -6,7 +6,8 @@ interface
 
 uses
   SysUtils,
-  GX_GenericUtils;
+  GX_GenericUtils,
+  GX_StringList;
 
 function StrLIComp(_Str1: PGXUnicodeChar; const _Str2: string; _MaxLen: Integer): Integer; overload;
 function StrLComp(_Str1: PGXUnicodeChar; const _Str2: string; _MaxLen: Integer): Integer; overload;

@@ -19,7 +19,7 @@ uses
   Menus,
   SynMemo,
   GX_BaseForm,
-  GX_GenericUtils,
+  GX_StringList,
   GX_MemoEscFix;
 
 type
@@ -75,13 +75,14 @@ type
 
 implementation
 
+{$R *.dfm}
+
 uses
   SynEdit,
   u_dzVclUtils,
   GX_MacroLibraryEditEntry,
-  GX_MacroLibrary, GX_EnhancedEditor;
-
-{$R *.dfm}
+  GX_MacroLibrary,
+  GX_EnhancedEditor;
 
 { TTfmMacroLibraryNamePrompt }
 
@@ -130,7 +131,7 @@ begin
   FMemo.Font.Name := 'Courier New';
   FMemo.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
   FMemo.OnEnter := MemoOnEnter;
-  fmemo.OnExit := MemoOnExit;
+  FMemo.OnExit := MemoOnExit;
   FMemo.OnSpecialLineColors := HandleOnSpecialLineColors;
   FMemo.Options := FMemo.Options - [eoScrollPastEol, eoScrollPastEof, eoEnhanceHomeKey, eoEnhanceEndKey];
   FMemo.PopupMenu := pmKeystrokes;

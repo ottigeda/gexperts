@@ -7,7 +7,7 @@ interface
 uses
   SysUtils, Classes, Controls, Contnrs, Forms, ActnList, ImgList, Menus, ToolsAPI,
   Actions, Graphics,
-  GX_GenericUtils, GX_IdeUtils;
+  GX_GenericUtils, GX_StringList, GX_IdeUtils;
 
 // Returns the TObject represented by an IOTAComponent, if possible
 function GxOtaGetNativeObject(const AComponent: IOTAComponent): TObject;

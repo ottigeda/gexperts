@@ -6,17 +6,16 @@ uses
   Windows,
   Messages,
   SysUtils,
-  Variants,
   Classes,
   Graphics,
   Controls,
   Forms,
   Dialogs,
-  GX_BaseForm,
   StdCtrls,
   ExtCtrls,
-  GX_GenericUtils,
   SynEdit,
+  GX_StringList,
+  GX_BaseForm,
   GX_MacroLibrary;
 
 type

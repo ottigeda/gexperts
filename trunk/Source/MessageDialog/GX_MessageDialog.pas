@@ -5,8 +5,9 @@ unit GX_MessageDialog;
 interface
 
 uses
-  Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ComCtrls, GX_BaseForm,
-  GX_MemoEscFix, SynEdit, GX_GenericUtils;
+  Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ComCtrls,
+  SynEdit,
+  GX_BaseForm, GX_MemoEscFix, GX_StringList;
 
 type
   TMemo = class(TMemoEscFix)
@@ -276,10 +277,11 @@ implementation
 
 uses
   SysUtils, Windows, TypInfo, Menus, ActnList, ClipBrd, Dialogs, StrUtils,
+  u_dzVclUtils, u_dzStringUtils, 
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_GxUtils, GX_OtaUtils, GX_UsesManager,
   GX_MessageOptions, GX_ConfigurationInfo, GX_Experts, GX_SynMemoUtils,
-  u_dzVclUtils, u_dzStringUtils;
+  GX_GenericUtils;
 
 type
   TMessageDialogExpert = class(TGX_Expert)

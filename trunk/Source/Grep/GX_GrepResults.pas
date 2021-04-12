@@ -8,7 +8,8 @@ interface
 
 uses
   Windows, Classes, Graphics, Controls, Forms, ActnList, Dialogs, StdCtrls, ExtCtrls, ToolWin,
-  ComCtrls, Menus, Actions, DropSource, UITypes,
+  ComCtrls, Menus, Actions, UITypes,
+  DropSource,
   GX_GrepBackend, GX_GrepExpert, GX_ConfigurationInfo, GX_IdeDock, GX_GrepSearch, GX_SharedImages;
 
 type
@@ -406,10 +407,10 @@ implementation
 {$R *.dfm}
 
 uses
-  {$IFOPT D+} GX_DbugIntf, {$ENDIF D+}
   SysUtils, Messages, Math, StrUtils, IniFiles, TypInfo, Contnrs, Clipbrd, DateUtils,
+  {$IFOPT D+} GX_DbugIntf, {$ENDIF D+}
   u_dzVclUtils,
-  GX_GExperts, GX_GenericUtils, GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_MessageBox,
+  GX_GExperts, GX_GenericUtils, GX_StringList, GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_MessageBox,
   GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect, GX_GrepProgress;
 
 resourcestring

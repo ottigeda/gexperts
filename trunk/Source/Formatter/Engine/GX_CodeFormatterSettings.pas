@@ -14,7 +14,7 @@ uses
   Classes,
   GX_CodeFormatterTypes,
   GX_CodeFormatterTokens,
-  GX_GenericUtils;
+  GX_StringList;
 
 type
   TFeedBegin = (Unchanged, Hanging, NewLine);

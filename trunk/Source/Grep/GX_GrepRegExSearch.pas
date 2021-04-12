@@ -5,7 +5,7 @@ interface
 {$I GX_CondDefine.inc}
 
 uses
-  SysUtils, Classes, SynRegExpr, GX_GenericUtils, GX_CodeFormatterUnicode, GX_OtaUtils;
+  SysUtils, Classes, SynRegExpr, GX_StringList, GX_CodeFormatterUnicode, GX_OtaUtils;
 
 type
   TFoundEvent = procedure(LineNo, StartCol, EndCol: Integer; const Line: TGXUnicodeString) of object;
@@ -63,7 +63,7 @@ type
 implementation
 
 uses
-  u_dzStringUtils;
+  u_dzStringUtils, GX_GenericUtils;
 
 const
   CReplacementChar: TGXUnicodeChar = #1; // don't match false-positives when searcing for spaces

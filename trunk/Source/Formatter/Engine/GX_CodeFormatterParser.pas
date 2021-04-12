@@ -12,7 +12,7 @@ interface
 uses
   SysUtils,
   Classes,
-  GX_GenericUtils,
+  GX_StringList,
   GX_CodeFormatterTokenList,
   GX_CodeFormatterTypes,
   GX_CodeFormatterSettings,
@@ -63,6 +63,9 @@ type
 implementation
 
 uses
+  // todo: The order of these units is important because they both declare CharInSet
+  //       This unit needs the one from GX_CodeFormatterUnicode, so it must be listed last
+  GX_GenericUtils,
   GX_CodeFormatterUnicode;
 
 class function TCodeFormatterParser.Execute(_Text: TGXUnicodeStringList; _Settings: TCodeFormatterSettings): TPascalTokenList;
@@ -274,7 +277,7 @@ var
             Exit;
           end;
 
-        #39: {// '} begin // we found either a quoted single quote or the end quote
+        #39: begin // we found either a quoted single quote or the end quote
             Inc(p);
 
             case p^ of

@@ -12,7 +12,7 @@ interface
 uses
   Classes,
   SysUtils,
-  GX_GenericUtils,
+  GX_StringList,
   GX_ConfigurationInfo,
   GX_CodeFormatterEngine;
 
@@ -56,7 +56,8 @@ uses
   GX_CodeFormatterDefaultSettings,
   GX_CodeFormatterConfigHandler,
   GX_CodeFormatterSettings,
-  GX_MessageBox;
+  GX_MessageBox,
+  GX_GenericUtils;
 
 procedure XSendDebug(const Msg: string);
 begin //FI:W519

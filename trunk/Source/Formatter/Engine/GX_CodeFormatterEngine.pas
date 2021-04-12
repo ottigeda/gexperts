@@ -10,13 +10,10 @@ unit GX_CodeFormatterEngine;
 interface
 
 uses
-{$IFDEF debug}
-  // NOTE: including DbugIntf adds around 300 k to the dll
-  GX_DbugIntf,
-{$ENDIF}
   SysUtils,
   Classes,
   GX_GenericUtils,
+  GX_StringList,
   GX_CodeFormatterTokenList,
   GX_CodeFormatterTypes,
   GX_CodeFormatterTokens,

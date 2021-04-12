@@ -2,15 +2,13 @@ unit GX_ExpertManager;
 
 {$I GX_CondDefine.inc}
 
-// Main menu item accelerators are not drawn under W2K because
-// this form is modal.  TMenuToolBar might fix this.
-
 interface
 
 uses
+  Windows, SysUtils, Classes, ImgList, Controls, Forms, Dialogs,
+  Menus, ComCtrls, Actions, ActnList, ToolWin,
   DropTarget, DropSource,
-  Windows, Classes, ImgList, Controls, Forms, Dialogs,
-  Menus, ComCtrls, ActnList, ToolWin, GX_Experts, GX_BaseForm, Actions;
+  GX_Experts, GX_BaseForm;
 
 type
   TExpertManagerExpert = class;
@@ -125,8 +123,8 @@ implementation
 {$R *.dfm}
 
 uses
+  CommCtrl,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, CommCtrl,
   GX_GExperts, GX_GxUtils, GX_GenericUtils, GX_OtaUtils,
   GX_ConfigurationInfo, GX_MessageBox, GX_SharedImages, GX_IdeUtils,
   GX_VerDepConst, u_dzVclUtils;

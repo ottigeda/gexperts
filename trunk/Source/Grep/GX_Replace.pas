@@ -2,7 +2,7 @@ unit GX_Replace;
 
 interface
 
-uses Classes, GX_GrepBackend;
+uses SysUtils, Classes, GX_GrepBackend;
 
 // Replace all matches in all files
 function ReplaceAll(ResultList: TStrings; GrepSettings: TGrepSettings): Integer;
@@ -13,7 +13,10 @@ function ReplaceLine(LineResult: TLineResult; GrepSettings: TGrepSettings): Inte
 
 implementation
 
-uses SysUtils, Controls, Dialogs, ToolsAPI, GX_OtaUtils, GX_GenericUtils, SynRegExpr;
+uses
+  Controls, Dialogs, ToolsAPI,
+  SynRegExpr,
+  GX_OtaUtils, GX_GenericUtils, GX_StringList;
 
 type
   ESkipFileReplaceException = class(Exception);

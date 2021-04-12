@@ -23,7 +23,7 @@ uses
   Buttons,
   ExtCtrls,
   GX_EnhancedEditor,
-  GX_GenericUtils,
+  GX_StringList,
   GX_BaseForm;
 
 type
@@ -78,7 +78,8 @@ implementation
 
 uses
   u_dzVclUtils,
-  u_dzStringUtils;
+  u_dzStringUtils,
+  GX_GenericUtils;
 
 { TfmCodeFormatterCapitalization }
 

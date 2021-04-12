@@ -106,7 +106,7 @@ uses
   SysUtils, Windows, Clipbrd,
   SynEditExport, SynExportHtml, SynExportRtf, SynEditPrint,
   u_dzVclUtils,
-  GX_GenericUtils, GX_GxUtils, GX_OtaUtils, GX_IdeUtils,
+  GX_GenericUtils, GX_StringList, GX_GxUtils, GX_OtaUtils, GX_IdeUtils,
   GX_SynMemoUtils, GX_SourceExportOptions, GX_SharedImages;
 
 const

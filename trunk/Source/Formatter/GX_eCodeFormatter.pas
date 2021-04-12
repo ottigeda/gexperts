@@ -12,7 +12,7 @@ uses
   GX_EditorExpert,
   GX_CodeFormatterExpert,
   GX_ConfigurationInfo,
-  GX_GenericUtils;
+  GX_StringList;
 
 type
   TeCodeFormatterExpert = class(TEditorExpert)
@@ -41,14 +41,15 @@ var
 implementation
 
 uses
+  Menus,
 {$IFOPT D+}GX_DbugIntf,
 {$ENDIF}
-  Menus,
   GX_IdeUtils,
   GX_GExperts,
   GX_About,
   GX_CodeFormatterConfigHandler,
-  GX_CodeFormatterSettings;
+  GX_CodeFormatterSettings,
+  GX_GenericUtils;
 
 { TeCodeFormatterExpert }
 

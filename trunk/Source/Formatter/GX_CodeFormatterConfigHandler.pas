@@ -14,7 +14,7 @@ uses
   IniFiles,
   GX_CodeFormatterSettings,
   GX_CodeFormatterTypes,
-  GX_GenericUtils;
+  GX_StringList;
 
 const
   FORMATTER_CONFIG_PREFIX = 'FormatterSettings-';

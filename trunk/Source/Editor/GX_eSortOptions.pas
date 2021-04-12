@@ -6,7 +6,6 @@ uses
   Windows,
   Messages,
   SysUtils,
-  Variants,
   Classes,
   Graphics,
   Controls,
@@ -15,7 +14,7 @@ uses
   StdCtrls,
   Buttons,
   GX_BaseForm,
-  GX_GenericUtils;
+  GX_StringList;
 
 type
   TfrmSortOptions = class(TfmBaseForm)
@@ -41,6 +40,8 @@ implementation
 
 {$R *.dfm}
 
+uses
+  GX_GenericUtils;
 
 { TfrmSortOptions }
 

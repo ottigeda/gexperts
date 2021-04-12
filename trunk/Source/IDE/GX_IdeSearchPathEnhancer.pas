@@ -11,7 +11,8 @@ uses
   Forms,
   SynEdit,
   SynMemo,
-  SynEditKeyCmds;
+  SynEditKeyCmds,
+  GX_StringList;
 
 type
   TGxIdeSearchPathEnhancer = class

@@ -8,10 +8,10 @@ uses
   Windows, SysUtils, Classes, Consts,
   Controls, Forms, Dialogs, Graphics,
   ComCtrls, StdCtrls, ExtCtrls, Menus,
+  Actions, ActnList, ImageList, ImgList, ToolWin, ToolsAPI,
   OmniXML,
-  GX_Experts, GX_ConfigurationInfo, GX_KbdShortCutBroker, GX_GenericUtils,
-  GX_IdeDock, Actions, ActnList, ImageList, ImgList, ToolWin, ToolsAPI, 
-  GX_MemoEscFix;
+  GX_Experts, GX_ConfigurationInfo, GX_KbdShortCutBroker,
+  GX_IdeDock, GX_MemoEscFix, GX_StringList;
 
 type
   TMemo = class(TMemoEscFix)
@@ -265,7 +265,7 @@ uses
   GX_GxUtils, GX_OtaUtils,
   GX_SharedImages, GX_XmlUtils,
   GX_MacroLibraryNamePrompt, GX_MacroLibraryConfig, GX_IdeUtils,
-  GX_MessageBox, u_dzVclUtils;
+  GX_MessageBox, u_dzVclUtils, GX_GenericUtils;
 
 type
   TIDEMacroBugMessage = class(TGxMsgBoxAdaptor)

@@ -19,7 +19,7 @@ uses
   ComCtrls,
   SynRegExpr,
   GX_BaseForm,
-  GX_GenericUtils;
+  GX_StringList;
 
 type
   TfmTestRegEx = class(TfmBaseForm)

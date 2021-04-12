@@ -93,7 +93,8 @@ uses
   GX_BaseExpert,
   GX_EditorExpert,
   GX_ConfigurationInfo,
-  GX_OtaUtils;
+  GX_OtaUtils,
+  GX_StringList;
 
 { TIfDefExpert }
 

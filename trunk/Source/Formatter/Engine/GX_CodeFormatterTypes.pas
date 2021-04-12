@@ -12,7 +12,7 @@ interface
 uses
   SysUtils,
   Classes,
-  GX_GenericUtils,
+  GX_StringList,
   GX_CodeFormatterUnicode;
 
 type
@@ -112,6 +112,9 @@ type
 function AdjustCase(const _str: TGXUnicodeString; _Case: TCase): TGXUnicodeString;{$IFDEF SupportsInline} inline; {$ENDIF}
 
 implementation
+
+uses
+  GX_GenericUtils;
 
 function AdjustCase(const _str: TGXUnicodeString; _Case: TCase): TGXUnicodeString;
 var

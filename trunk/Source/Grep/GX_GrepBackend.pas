@@ -40,11 +40,12 @@ INI file name:
 interface
 
 uses
+  SysUtils,
   Classes,
-  ToolsAPI,
   IniFiles,
+  ToolsAPI,
   SynRegExpr,
-  GX_GrepRegExSearch, GX_GenericUtils;
+  GX_GrepRegExSearch, GX_StringList;
 
 type
   TGrepAction = (gaProjGrep, gaCurrentOnlyGrep, gaOpenFilesGrep, gaDirGrep, gaProjGroupGrep, gaResults);
@@ -418,10 +419,10 @@ function SaveOptionText(ASaveOption: TGrepSaveOption): String;
 implementation
 
 uses
-  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, Forms, Dialogs, Controls, DateUtils, StrUtils, Math,
+  Forms, Dialogs, Controls, DateUtils, StrUtils, Math,
   u_dzClassUtils, u_dzMapFileReader, u_dzStringUtils,
-  GX_OtaUtils, GX_IdeUtils, GX_GrepProgress;
+  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
+  GX_OtaUtils, GX_IdeUtils, GX_GrepProgress, GX_GenericUtils;
 
 const
   cIniSubKeyCount = 'Count';

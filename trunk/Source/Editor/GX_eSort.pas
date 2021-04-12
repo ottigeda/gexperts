@@ -6,7 +6,6 @@ uses
   Windows,
   Messages,
   SysUtils,
-  Variants,
   Classes,
   Graphics,
   Controls,
@@ -14,7 +13,7 @@ uses
   Dialogs,
   StdCtrls,
   GX_BaseForm,
-  GX_GenericUtils;
+  GX_StringList;
 
 type
   TeSortOrder = (esoAscending, esoDescending, esoReverse, esoCustom);
@@ -41,11 +40,20 @@ implementation
 {$R *.dfm}
 
 uses
-  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  StrUtils, Math,
-  {$IFNDEF UNICODE} SynUnicode, {$ENDIF UNICODE}
-  GX_EditorExpert, GX_eSelectionEditorExpert, GX_ConfigurationInfo,
-  GX_eSortOptions, u_dzQuicksort, u_dzStringUtils;
+  StrUtils,
+  Math,
+{$IFNDEF UNICODE}
+  SynUnicode,
+{$ENDIF UNICODE}
+  u_dzQuicksort,
+  u_dzStringUtils,
+{$IFOPT D+}GX_DbugIntf,
+{$ENDIF}
+  GX_EditorExpert,
+  GX_eSelectionEditorExpert,
+  GX_ConfigurationInfo,
+  GX_eSortOptions,
+  GX_GenericUtils;
 
 { TfmeSortConfig }
 
