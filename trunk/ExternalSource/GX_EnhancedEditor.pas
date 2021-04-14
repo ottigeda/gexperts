@@ -9,7 +9,7 @@ interface
 uses
   Windows, Classes, Graphics, Controls,
   SynEdit, SynMemo, SynEditTypes, SynEditTextBuffer, GX_SynMemoUtils,
-  GX_GenericUtils, SynEditKeyCmds;
+  GX_GenericUtils, GX_StringList, SynEditKeyCmds;
 
 type
   TGxEnhancedEditor = class(TWinControl)

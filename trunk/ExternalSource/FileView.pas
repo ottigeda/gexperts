@@ -36,7 +36,7 @@ procedure Register;
 implementation
 
 uses
-  Controls, Forms, Graphics, StdCtrls, SysUtils, GX_OtaUtils;
+  Controls, Forms, Graphics, StdCtrls, SysUtils, GX_OtaUtils, GX_StringList;
 
 constructor TFileViewer.Create(AOwner: TComponent);
 begin
