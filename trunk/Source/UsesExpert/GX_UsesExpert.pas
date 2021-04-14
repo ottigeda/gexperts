@@ -531,7 +531,9 @@ var
   FavoriteUnits: TStringList;
   fn: string;
   sl: TStringList;
+{$IFDEF GX_DELPHIXE2_UP}
   PlatformName: string;
+{$ENDIF}
 begin
   FreeAndNil(FUnitExportParserThread);
 
@@ -553,7 +555,7 @@ begin
   // cumbersome.
     // source:
     // http://docwiki.embarcadero.com/RADStudio/Sydney/en/Conditional_compilation_(Delphi)
-{$IFDEF GX_VER230_up}
+{$IFDEF GX_DELPHIXE2_UP}
     PlatformName := GxOtaGetProjectPlatform;
     if SameText(PlatformName, cWin64Platform) then begin
       Symbols.Add('ASSEMBLER');
@@ -2343,7 +2345,7 @@ begin
   SendDebugFmt('Filtering identifiers took %d milliseconds', [TStopWatch_ElapsedMilliseconds(StopWatch)]);
 {$ENDIF D+}
 
-  FUsesExpert.FIdentifierTabTimer.Stop;
+  TStopWatch_Stop(FUsesExpert.FIdentifierTabTimer);
 {$IFOPT D+}
   SendDebugFmt('Total time from calling the expert until after filtering: %d milliseconds', [FUsesExpert.FIdentifierTabTimer.ElapsedMilliseconds]);
 {$ENDIF D+}
