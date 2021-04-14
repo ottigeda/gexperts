@@ -823,7 +823,7 @@ implementation
 uses
   Windows, Messages,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  GX_Debug,
+//  GX_Debug,
   {$IFDEF UNICODE} Character, {$ENDIF}
   ShLwApi,
   ShellAPI, ShlObj, ActiveX, StrUtils, Math, Clipbrd, FileCtrl,
