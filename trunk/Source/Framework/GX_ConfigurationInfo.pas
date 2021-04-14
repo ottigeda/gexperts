@@ -251,7 +251,8 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Math,
   u_dzVclUtils,
-  GX_EditorEnhancements, GX_MessageBox,
+  GX_EditorEnhancements,
+  GX_MessageBox, // todo: remove UI from the configuration
   GX_GenericUtils, GX_GenericClasses, GX_IdeUtils, GX_OtaUtils, GX_VerDepConst,
   GX_BaseForm, GX_IdeDock, GX_GxUtils;
 
