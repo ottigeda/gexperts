@@ -5,7 +5,7 @@ unit GX_ExpertManager;
 interface
 
 uses
-  Windows, SysUtils, Classes, ImgList, Controls, Forms, Dialogs,
+  Windows, SysUtils, Classes, ImgList, ImageList, Controls, Forms, Dialogs,
   Menus, ComCtrls, Actions, ActnList, ToolWin,
   DropTarget, DropSource,
   GX_Experts, GX_BaseForm;
