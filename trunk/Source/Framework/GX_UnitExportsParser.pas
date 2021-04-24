@@ -1342,6 +1342,11 @@ begin
       Parser := TUnitExportsParser.Create(fn);
       try
         Parser.Symbols.Assign(FSymbols);
+        if SameText(UnitName, 'ToolsApi') then begin
+          // ToolsApi does not compile (and gets parsed wrongly) unless either LINUX or MSWINDOWS
+          // is declared, so we make sure that MSWINDOWS is declared. (Fix for bug #242)
+          Parser.Symbols.Add('MSWINDOWS');
+        end;
         Parser.Execute;
         if Terminated then
           Exit; //==>
