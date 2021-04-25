@@ -354,10 +354,10 @@ end;
 
 function TGotoPrevModificationExpert.GetHelpString: string;
 resourcestring
-  SSampleEditorExpertHelp =
+  SGotoPrevModificationExpertHelp =
     'Navigates to the previous modification in the editor window.';
 begin
-  Result := SSampleEditorExpertHelp;
+  Result := SGotoPrevModificationExpertHelp;
 end;
 
 function TGotoPrevModificationExpert.HasConfigOptions: Boolean;
@@ -394,10 +394,10 @@ end;
 
 function TGotoNextModificationExpert.GetHelpString: string;
 resourcestring
-  SSampleEditorExpertHelp =
+  SGotoNextModificationExpertHelp =
     'Navigates to the next modification in the editor window.';
 begin
-  Result := SSampleEditorExpertHelp;
+  Result := SGotoNextModificationExpertHelp;
 end;
 
 function TGotoNextModificationExpert.HasConfigOptions: Boolean;
