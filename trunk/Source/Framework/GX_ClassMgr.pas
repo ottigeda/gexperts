@@ -87,7 +87,7 @@ type
     constructor Create(ObjectType: TClassInterfaceEnum);
     procedure LoadMethods;
     function Add: TBrowseMethodInfoItem;
-    function SetParser(Parser: TmPasParser): Boolean; // Sets parser on interface line
+    function SetParserToDeclaration(Parser: TmPasParser): Boolean;
     function RefreshLineNo: Integer;
     property Items[Index: Integer]: TBrowseMethodInfoItem read GetItem; default;
     property ClassList: TClassList read FClassList write SetClassList;
@@ -757,22 +757,26 @@ begin
   FClassList := AClassList;
 end;
 
-function TBrowseClassInfoCollection.SetParser(Parser: TmPasParser): Boolean;
+function TBrowseClassInfoCollection.SetParserToDeclaration(Parser: TmPasParser): Boolean;
 
-      function GetInfo: TmInfoKind;
-      begin
-        Parser.NextNonSpace;
-        case Parser.Token.ID of
-          tkNull:      Result := ikUnknown;
-          tkSemiColon: Result := ikClForward;
-          tkOf:        Result := ikClReference;
-        else
-                       Result := ikClass;
-        end;
-      end;
+  function GetInfo: TmInfoKind;
+  begin
+    Parser.NextNonSpace;
+    case Parser.Token.ID of
+      tkNull:      Result := ikUnknown;
+      tkSemiColon: Result := ikClForward;
+      tkOf:        Result := ikClReference;
+    else
+                   Result := ikClass;
+    end;
+  end;
 
+var
+  IdentPos: Integer;
+  IdentLine: Integer;
 begin
   Result := False;
+  Parser.NextToken;
   while Parser.Token.ID <> tkNull do
   begin
     // todo: This will only find lines of the form
@@ -781,15 +785,15 @@ begin
     //       identifier<T:bla> = class | interface | DispInterface
     //       because the identifier is not directly in front of the equal sign.
     //       That's why the LineNo is always 0 for Generics.
-    Parser.NextObjectLine;
+    Parser.NextObjectLine(IdentPos, IdentLine);
     if GetInfo = ikClass then
     begin
-      Parser.RunPos := Parser.LastIdentPos;
+      Parser.RunPos := IdentPos;
       if SameText(Parser.Token.Data, Name) then
       begin
-        FLineNo := Parser.Token.LineNumber; // Update LineNumber
+        FLineNo := IdentLine;
         Result := True;
-        Exit;
+        Exit; //==>
       end
       else
         Parser.NextNonJunk;
@@ -814,10 +818,10 @@ begin
   Parser := TmPasParser.Create;
   try
     Parser.Origin := @FileContent[1];
-    if SetParser(Parser) then
+    if SetParserToDeclaration(Parser) then
     begin
-      Result := Parser.Token.LineNumber;
-      FLineNo := Result;
+      // SetParserToDeclaration has updated FLineNo
+      Result := FLineNo;
     end;
   finally
     FreeAndNil(Parser);
@@ -843,7 +847,7 @@ begin
   Parser := TmPasParser.Create;
   try
     Parser.Origin := @FileContent[1];
-    if SetParser(Parser) then
+    if SetParserToDeclaration(Parser) then
     begin
       while not (Parser.Token.ID in [tkNull, tkClass, tkInterface]) do
         Parser.NextNonJunk;
@@ -1144,7 +1148,7 @@ begin
   Parser := TmPasParser.Create;
   try
     Parser.Origin := @FileContent[1];
-    if Collection.SetParser(Parser) then
+    if Collection.SetParserToDeclaration(Parser) then
     begin
       // Temporarily set the line number in case we don't find a perfect match
       Result := Parser.Token.LineNumber;
@@ -1159,7 +1163,7 @@ begin
         if SameText(Parser.Token.Data, Self.RName) and TokenMatchesMethodType(LastTokenType, Self.FMethodType) then
         begin
           FLineNo := Parser.Token.LineNumber; // Might as well update line number in object
-          Result := Parser.Token.LineNumber;
+          Result := FLineNo;
           Exit;
         end;
         LastTokenType := Parser.Token.ID;
