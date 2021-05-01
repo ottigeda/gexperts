@@ -954,6 +954,14 @@ end;
   coreide270.bpl       27.0.40680.4203
   bds.exe              27.0.40680.4203
   dcldb270.bpl         27.0.40680.4203
+
+  Delphi 10.4.2 Sydney Update 2 + Patches released on 2021-05-01 (we currently don't use this this)
+  File                 File Version    Size       Modified Time
+  delphicoreide270.bpl 27.0.41310.5003                           <-- Only this one was changed
+  coreide270.bpl       27.0.40680.4203
+  bds.exe              27.0.40680.4203
+  dcldb270.bpl         27.0.40680.4203
+
 }
 
 function GetRS104Version: TBorlandIdeVersion;
