@@ -849,15 +849,23 @@ begin
     Parser.Origin := @FileContent[1];
     if SetParserToDeclaration(Parser) then
     begin
-      while not (Parser.Token.ID in [tkNull, tkClass, tkInterface]) do
+      while not (Parser.Token.ID in [tkNull, tkClass, tkInterface, tkDispInterface]) do
         Parser.NextNonJunk;
-      if Parser.Token.ID in [tkClass, tkInterface] then
+      if Parser.Token.ID in [tkClass, tkInterface, tkDispInterface] then
         Parser.NextNonJunk;
+
       if Parser.Token.ID = tkRoundOpen then
         while not (Parser.Token.ID in [tkNull, tkRoundClose]) do
           Parser.NextNonJunk;
       if Parser.Token.ID = tkRoundClose then
         Parser.NextNonJunk;
+
+      if Parser.Token.ID = tkSquareOpen then
+        while not (Parser.Token.ID in [tkNull, tkSquareClose]) do
+          Parser.NextNonJunk;
+      if Parser.Token.ID = tkSquareClose then
+        Parser.NextNonJunk;
+
       if Parser.Token.ID <> tkSemiColon then
         GetMethods(Parser);
     end;
@@ -1051,6 +1059,8 @@ var
   end;
 
   procedure LoadProperty;
+  const
+    ModifierSet = [tkDefault, tkStored, tkRead, tkWrite, tkReadOnly, tkDispId];
   var
     SquareOpen, RoundOpen: Integer;
     MInfo: TBrowseMethodInfoItem;
@@ -1067,25 +1077,27 @@ var
     begin
       MInfo.FDName := MInfo.FDName + Parser.Token.Data;
       if BuildRName then
-        if not (Parser.Token.ID in [tkSpace, tkCRLF, tkColon, tkSquareOpen, tkDefault, tkStored, tkRead, tkWrite]) then
+        if not (Parser.Token.ID in [tkSpace, tkCRLF, tkColon, tkSquareOpen] + ModifierSet) then
           MInfo.FRName := MInfo.FRName + Parser.Token.Data;
-      case Parser.Token.ID of
-        tkRoundOpen:   Inc(RoundOpen);
-        tkRoundClose:  Dec(RoundOpen);
-        // Stop building RName when encountering a '['
-        tkSquareOpen:
-          begin
-            Inc(SquareOpen);
-            BuildRName := False;
-          end;
-        tkSquareClose: Dec(SquareOpen);
-        tkProperty:    BuildRName := True;
-        tkColon:       BuildRName := False;
-        // Stop building RName when encountering default/stored/read/write
-        tkDefault:     BuildRName := False;
-        tkStored:      BuildRName := False;
-        tkRead:        BuildRName := False;
-        tkWrite:       BuildRName := False;
+      if Parser.Token.Id in ModifierSet then begin
+        // Stop building RName when encountering default/stored/read/write/readonly/DispId
+        // todo: Why test for this twice (here and in the if statement in BuildRName)?
+        //       Simply moving this before testing for BuildRName should have the same effect.
+        BuildRName := False;
+      end
+      else begin
+        case Parser.Token.ID of
+          tkRoundOpen: Inc(RoundOpen);
+          tkRoundClose: Dec(RoundOpen);
+          // Stop building RName when encountering a '['
+          tkSquareOpen: begin
+              Inc(SquareOpen);
+              BuildRName := False;
+            end;
+          tkSquareClose: Dec(SquareOpen);
+          tkProperty: BuildRName := True;
+          tkColon: BuildRName := False;
+        end;
       end;
       Parser.NextToken;
     end;
