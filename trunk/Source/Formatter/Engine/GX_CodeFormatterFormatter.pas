@@ -163,6 +163,32 @@ begin
   OldExpr.Free;
 end;
 
+// Inlined method must be before it is used
+function TCodeFormatterFormatter.IsWType(_Token: TPascalToken; _wType: TWordType): Boolean;
+begin
+  Result := Assigned(_Token) and (_Token.WordType = _wType);
+end;
+
+// Inlined method must be before it is used
+function TCodeFormatterFormatter.TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean;
+begin
+  _Offset := 0;
+
+  repeat
+    Inc(_Offset);
+    Result := TryGetToken(_StartPos + _Offset, _Token);
+  until not Result or (_Token.ReservedType <> rtComment);
+end;
+
+// Inlined method must be before it is used
+function TCodeFormatterFormatter.TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken): Boolean;
+var
+  Offset: Integer;
+begin
+  Result := TryGetNextNoComment(_StartPos, _Token, Offset);
+end;
+
+
 function TCodeFormatterFormatter.DetectGenericStart(_TokenIdx: Integer): Boolean;
 var
   Next: TPascalToken;
@@ -249,6 +275,20 @@ begin
     end;
   end;
 end;
+
+// Inlined method must become before it is used
+function TCodeFormatterFormatter.IsRType(_Token: TPascalToken; _rType: TReservedType): Boolean;
+begin
+  Result := Assigned(_Token) and (_Token.ReservedType = _rType);
+end;
+
+// Inlined method must become before it is used
+function TCodeFormatterFormatter.IsRType(_Token: TPascalToken;
+  _rTypeSet: TReservedTypeSet): Boolean;
+begin
+  Result := Assigned(_Token) and (_Token.ReservedType in _rTypeSet);
+end;
+
 
 procedure TCodeFormatterFormatter.AdjustSpacing(_CurrentToken, _PrevToken: TPascalToken; _TokenIdx: Integer);
 var
@@ -445,6 +485,17 @@ begin
   end;
 end;
 
+// Inlined routine must become before it is used
+function TCodeFormatterFormatter.TryGetToken(_Idx: Integer; out _Token: TPascalToken): Boolean;
+begin
+  Result := (_Idx >= 0) and (_Idx < FTokens.Count);
+  if Result then
+    _Token := FTokens[_Idx]
+  else
+    _Token := nil;
+end;
+
+
 function TCodeFormatterFormatter.TokenAtIs(_Idx: Integer; _rType: TReservedType): Boolean;
 var
   Token: TPascalToken;
@@ -468,36 +519,10 @@ begin
   TryGetToken(_Idx, Result);
 end;
 
-function TCodeFormatterFormatter.TryGetToken(_Idx: Integer; out _Token: TPascalToken): Boolean;
-begin
-  Result := (_Idx >= 0) and (_Idx < FTokens.Count);
-  if Result then
-    _Token := FTokens[_Idx]
-  else
-    _Token := nil;
-end;
-
 function TCodeFormatterFormatter.GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken;
 begin
   if not TryGetNextNoComment(_StartPos, Result, _Offset) then
     Result := nil;
-end;
-
-function TCodeFormatterFormatter.TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean;
-begin
-  _Offset := 0;
-
-  repeat
-    Inc(_Offset);
-    Result := TryGetToken(_StartPos + _Offset, _Token);
-  until not Result or (_Token.ReservedType <> rtComment);
-end;
-
-function TCodeFormatterFormatter.TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken): Boolean;
-var
-  Offset: Integer;
-begin
-  Result := TryGetNextNoComment(_StartPos, _Token, Offset);
 end;
 
 function TCodeFormatterFormatter.InsertBlankLines(_AtIndex, _NLines: Integer): TLineFeed;
@@ -638,22 +663,6 @@ begin
   end;
 
   _Token.SetExpression(s);
-end;
-
-function TCodeFormatterFormatter.IsRType(_Token: TPascalToken; _rType: TReservedType): Boolean;
-begin
-  Result := Assigned(_Token) and (_Token.ReservedType = _rType);
-end;
-
-function TCodeFormatterFormatter.IsRType(_Token: TPascalToken;
-  _rTypeSet: TReservedTypeSet): Boolean;
-begin
-  Result := Assigned(_Token) and (_Token.ReservedType in _rTypeSet);
-end;
-
-function TCodeFormatterFormatter.IsWType(_Token: TPascalToken; _wType: TWordType): Boolean;
-begin
-  Result := Assigned(_Token) and (_Token.WordType = _wType);
 end;
 
 procedure TCodeFormatterFormatter.CheckBlankLinesAroundProc;

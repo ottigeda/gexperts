@@ -154,6 +154,12 @@ end;
 
 { TReservedWordList }
 
+// Inlined method must be before it is used
+procedure TReservedWordList.Add(const _s: string; _ReservedType: TReservedType);
+begin
+  FWords.AddObject(LowerCase(_s), Pointer(Ord(_ReservedType)));
+end;
+
 constructor TReservedWordList.Create;
 begin
   inherited Create;
@@ -284,11 +290,6 @@ destructor TReservedWordList.Destroy;
 begin
   FreeAndNil(FWords);
   inherited;
-end;
-
-procedure TReservedWordList.Add(const _s: string; _ReservedType: TReservedType);
-begin
-  FWords.AddObject(LowerCase(_s), Pointer(Ord(_ReservedType)));
 end;
 
 function TReservedWordList.FindWord(const _s: string; out _ReservedType: TReservedType): Boolean;
