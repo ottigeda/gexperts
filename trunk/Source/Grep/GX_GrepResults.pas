@@ -1929,7 +1929,7 @@ end;
 procedure TfmGrepResults.ForceRedraw;
 begin
   pnlMain.Visible := False;
-  pnlMain.Visible := True;
+  pnlMain.Visible := True; //FI:W508 Assigned twice successively
 //  Repaint;
 end;
 

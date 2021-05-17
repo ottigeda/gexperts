@@ -2308,9 +2308,9 @@ begin
       try
         Control.SetFocus;
         Result := True;
-      except //FI:W501
+      except
         // Ignore focus errors
-      end;
+      end;//FI:W501
     end;
   end;
 end;
@@ -2523,7 +2523,7 @@ begin
 end;
 
 procedure SetToolBarGradient(ToolBar: TToolBar; Enabled: Boolean);
-begin //FI:W519
+begin {$IFNDEF GX_VER180_up} {FI:W519} {$ENDIF}
   {$IFDEF GX_VER180_up}
   if Enabled then
     Toolbar.DrawingStyle := dsGradient
@@ -2603,7 +2603,7 @@ begin
 end;
 
 procedure SetParentBackgroundValue(Panel: TCustomPanel; Value: Boolean);
-begin //FI:W519
+begin {$IFNDEF GX_VER150_up} {FI:W519} {$ENDIF}
   {$IFDEF GX_VER150_up} // Delphi 7+
   Assert(Assigned(Panel));
   Panel.ParentBackground := Value;
@@ -2611,7 +2611,7 @@ begin //FI:W519
 end;
 
 procedure SetParentBackgroundValue(GroupBox: TGroupBox; Value: Boolean);
-begin //FI:W519
+begin {$IFNDEF GX_VER150_up} {FI:W519} {$ENDIF}
   {$IFDEF GX_VER150_up} // Delphi 7+
   Assert(Assigned(GroupBox));
   GroupBox.ParentBackground := Value;
@@ -2675,9 +2675,9 @@ procedure OutputComponentList(const StartComponent: TComponent; Owned: Boolean);
           {$IFOPT D+} SendDebugFmt('%s: %s  Top: %d  Left: %d  Height: %d  Width: %d  Visible: %d  ParentClass: %s  ParentParent: %s  Properties: %s', [AControl.Name, AControl.ClassName, AControl.Top, AControl.Left, AControl.Height, AControl.Width, Ord(AControl.Visible), AControl.ClassType.ClassParent.ClassName, AControl.ClassType.ClassParent.ClassParent.ClassName, GetComponentProperties(AControl)]); {$ENDIF}
           OutputChildren(AControl);
         end;
-      finally //FI:W502
+      finally
         {$IFOPT D+} SendUnIndent; {$ENDIF}
-      end;
+      end; //FI:W502
     end;
   end;
 
@@ -4568,8 +4568,8 @@ begin
   Result := Default;
   try
     Result := IsoStringToDateTime(DateTime);
-  except //FI:W501
-  end;
+  except
+  end; //FI:W501
 end;
 
 function GetFirstCharPos(const AText: String; AChars: TSysCharSet; SearchThis: Boolean): Integer;

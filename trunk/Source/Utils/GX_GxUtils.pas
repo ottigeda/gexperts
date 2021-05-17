@@ -103,9 +103,9 @@ begin
     TargetBitmap := Graphics.TBitmap.Create;
     TargetBitmap.LoadFromResourceName(HInstance, ResName);
     Result := True;
-  except //FI:W501
+  except
     // Swallow exceptions and report the failure
-  end;
+  end;  //FI:W501 Empty except block
 end;
 
 function GxLoadBitmapFromFile(FileName: string; var TargetBitmap: Graphics.TBitmap): Boolean;
@@ -127,9 +127,9 @@ begin
 
       Result := True;
     end;
-  except //FI:W501
+  except
     // Swallow exceptions and report the failure
-  end;
+  end;  //FI:W501 Empty except block
 end;
 
 procedure CallWinHelp(const Command, ContextID: Integer; const HelpOwner: TWinControl);

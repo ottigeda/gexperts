@@ -281,7 +281,7 @@ procedure TSetComponentPropsNotifier.AfterCompile(Succeeded: Boolean; IsCodeInsi
 var
   sFileName, sMessage: string;
 begin
-  if (IsCodeInsight = False) and TSetComponentPropsSettings.GetInstance.Verbose then
+  if (not IsCodeInsight) and TSetComponentPropsSettings.GetInstance.Verbose then
   begin
     if FOutputMessages.Count > 0 then
     begin
