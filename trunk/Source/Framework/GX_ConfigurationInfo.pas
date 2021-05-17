@@ -17,6 +17,7 @@ type
 
 type
   IExpertSettings = interface(IUnknown)
+    ['{69BE5567-2FA6-4041-B75D-8E740E404786}']
     function ReadBool(const Ident: string; Default: Boolean): Boolean;
     procedure WriteBool(const Ident: string; Value: Boolean);
     function ReadBounds(const Default: TRect): TRect;
