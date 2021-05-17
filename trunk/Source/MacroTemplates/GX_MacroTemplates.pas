@@ -691,19 +691,19 @@ end;
 
 procedure TfmMacroTemplates.LoadFormLayout;
 var
-  Settings: IExpertSettings;
+  LSettings: IExpertSettings;
 begin
   // do not localize
-  Settings := TMacroTemplatesExpert.GetSettings;
-  Settings.LoadForm(WindowPosKey, Self);
-  Settings := Settings.Subkey(WindowPosKey);
-  pnlList.Height := Settings.ReadInteger('ListSplitter', pnlList.Height);
-  pnlUses.Width := Settings.ReadInteger('UsesSplitter', pnlUses.Width);
-  pnlUsesImplementation.Height := Settings.ReadInteger('UsesSecSplitter', pnlUsesImplementation.Height);
-  lvTemplates.Columns[0].Width := Settings.ReadInteger('NameWidth', lvTemplates.Columns[0].Width);
-  lvTemplates.Columns[1].Width := Settings.ReadInteger('DescriptionWidth', lvTemplates.Columns[1].Width);
-  lvTemplates.Columns[2].Width := Settings.ReadInteger('ShortCutWidth', lvTemplates.Columns[2].Width);
-  CurrentSyntaxMode := TGXSyntaxHighlighter(Settings.ReadEnumerated('SyntaxHighlighter',
+  LSettings := TMacroTemplatesExpert.GetSettings;
+  LSettings.LoadForm(WindowPosKey, Self);
+  LSettings := LSettings.Subkey(WindowPosKey);
+  pnlList.Height := LSettings.ReadInteger('ListSplitter', pnlList.Height);
+  pnlUses.Width := LSettings.ReadInteger('UsesSplitter', pnlUses.Width);
+  pnlUsesImplementation.Height := LSettings.ReadInteger('UsesSecSplitter', pnlUsesImplementation.Height);
+  lvTemplates.Columns[0].Width := LSettings.ReadInteger('NameWidth', lvTemplates.Columns[0].Width);
+  lvTemplates.Columns[1].Width := LSettings.ReadInteger('DescriptionWidth', lvTemplates.Columns[1].Width);
+  lvTemplates.Columns[2].Width := LSettings.ReadInteger('ShortCutWidth', lvTemplates.Columns[2].Width);
+  CurrentSyntaxMode := TGXSyntaxHighlighter(LSettings.ReadEnumerated('SyntaxHighlighter',
     TypeInfo(TGXSyntaxHighlighter), Ord(FCurrentSyntaxMode)));
 
   EnsureFormVisible(Self);
@@ -711,21 +711,21 @@ end;
 
 procedure TfmMacroTemplates.SaveFormLayout;
 var
-  Settings: IExpertSettings;
+  LSettings: IExpertSettings;
 begin
   if WindowState = wsNormal then begin
     // Save only if not maximized/minimized
-    Settings := TMacroTemplatesExpert.GetSettings;
+    LSettings := TMacroTemplatesExpert.GetSettings;
     // do not localize
-    Settings.SaveForm(WindowPosKey, Self);
-    Settings := Settings.Subkey(WindowPosKey);
-    Settings.WriteInteger('ListSplitter', pnlList.Height);
-    Settings.WriteInteger('UsesSplitter', pnlUses.Width);
-    Settings.WriteInteger('UsesSecSplitter', pnlUsesImplementation.Height);
-    Settings.WriteInteger('NameWidth', lvTemplates.Columns[0].Width);
-    Settings.WriteInteger('DescriptionWidth', lvTemplates.Columns[1].Width);
-    Settings.WriteInteger('ShortCutWidth', lvTemplates.Columns[2].Width);
-    Settings.WriteInteger('SyntaxHighlighter', Ord(FCurrentSyntaxMode));
+    LSettings.SaveForm(WindowPosKey, Self);
+    LSettings := LSettings.Subkey(WindowPosKey);
+    LSettings.WriteInteger('ListSplitter', pnlList.Height);
+    LSettings.WriteInteger('UsesSplitter', pnlUses.Width);
+    LSettings.WriteInteger('UsesSecSplitter', pnlUsesImplementation.Height);
+    LSettings.WriteInteger('NameWidth', lvTemplates.Columns[0].Width);
+    LSettings.WriteInteger('DescriptionWidth', lvTemplates.Columns[1].Width);
+    LSettings.WriteInteger('ShortCutWidth', lvTemplates.Columns[2].Width);
+    LSettings.WriteInteger('SyntaxHighlighter', Ord(FCurrentSyntaxMode));
   end;
 end;
 
