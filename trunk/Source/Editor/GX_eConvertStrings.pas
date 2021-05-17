@@ -159,7 +159,8 @@ begin
     SaveSettings;
   except
     // we are being called in the destructor -> ignore any exceptions
-  end;
+  end;// FI:W501 Empty EXCEPT block
+
   inherited;
 end;
 

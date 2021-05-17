@@ -215,7 +215,7 @@ begin
       end;
     except
       // ignore
-    end;
+    end; // FI:W501 Empty EXCEPT block
     re_Test.SelStart := 0;
     re_Test.SelLength := 0;
   finally
