@@ -247,8 +247,11 @@ begin
   finally
     FreeAndNil(Handlers);
   end;
+
   Exit;
 
+  (*
+  Unreachable code
   begin
     Changes.MakeResizable := Changes.MakeResizable and AllowResize;
     Changes.RememberSize := Changes.RememberSize and AllowResize;
@@ -260,6 +263,7 @@ begin
     Enhancer := Changes.FormEnhancer.Create(_Form);
     Enhancer.Init(Changes);
   end;
+  *)
 end;
 
 { TIDEFormEnhancements }
