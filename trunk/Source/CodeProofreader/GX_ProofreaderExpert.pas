@@ -64,13 +64,13 @@ var
   FileName: string;
 begin
   CreatedDataToConfigure := False;
-  try
-    if FProofreaderData = nil then
-    begin
-      FProofreaderData := TProofreaderData.Create;
-      CreatedDataToConfigure := True;
-    end;
 
+  if FProofreaderData = nil then
+  begin
+    FProofreaderData := TProofreaderData.Create;
+    CreatedDataToConfigure := True;
+  end;
+  try
     FileName := FProofreaderData.XmlFileName;
 
     if (not FileExists(FileName)) and
