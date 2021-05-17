@@ -227,10 +227,9 @@ begin
   ShowGXAboutForm;
 end;
 
-constructor TfmExpertManager.Create(AOwner: TComponent);
+constructor TfmExpertManager.Create(AOwner: TComponent); // FI:W525 Missing INHERITED call in constructor
 begin
   raise Exception.Create('Call constructor CreateWithManager');
-  inherited;
 end;
 
 constructor TfmExpertManager.CreateWithManager(AOwner: TComponent; Manager: TExpertManagerExpert);
