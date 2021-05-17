@@ -140,7 +140,6 @@ resourcestring
   SCodeReadNotImp = 'Object code reader not implemented';
 begin
   raise Exception.Create(SCodeReadNotImp);
-  Result := '';
 end;
 
 function TGxObjectDictionary.IndexOf(const ACode: string): Integer;
