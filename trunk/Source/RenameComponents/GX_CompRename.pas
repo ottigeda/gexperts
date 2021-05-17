@@ -362,15 +362,15 @@ end;
 
 procedure TfmCompRename.edtNewNameChange(Sender: TObject);
 var
-  OldName: WideString;
-  NewName: WideString;
+  LOldName: WideString;
+  LNewName: WideString;
   Reason: WideString;
 begin
   if Assigned(FIsValidComponentName) then
   begin
-    OldName := edtOldName.Text;
-    NewName := edtNewName.Text;
-    btnOK.Enabled := FIsValidComponentName(OldName, NewName, Reason);
+    LOldName := edtOldName.Text;
+    LNewName := edtNewName.Text;
+    btnOK.Enabled := FIsValidComponentName(LOldName, LNewName, Reason);
     if btnOK.Enabled then
       lblReason.Visible := False
     else

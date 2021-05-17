@@ -1,4 +1,4 @@
-unit GX_OpenFile;
+﻿unit GX_OpenFile;
 
 {$I GX_CondDefine.inc}
 
@@ -1193,13 +1193,13 @@ end;
 
 procedure TfmOpenFile.LoadSettings;
 var
-  Settings: IExpertSettings;
+  LSettings: IExpertSettings;
 begin
   // do not localize
-  Settings := TOpenFileExpert.GetSettings;
-  Settings.LoadForm('Window', Self);
-  FFileColumnWidth := Settings.ReadInteger('FileColumnWidth', lvSearchPath.Columns[0].Width);
-  MapTabVisible := Settings.ReadBool('ShowMapTab', False);
+  LSettings := TOpenFileExpert.GetSettings;
+  LSettings.LoadForm('Window', Self);
+  FFileColumnWidth := LSettings.ReadInteger('FileColumnWidth', lvSearchPath.Columns[0].Width);
+  MapTabVisible := LSettings.ReadBool('ShowMapTab', False);
   EnsureFormVisible(Self);
 end;
 
