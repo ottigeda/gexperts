@@ -1205,14 +1205,14 @@ end;
 
 procedure TfmOpenFile.SaveSettings;
 var
-  Settings: IExpertSettings;
+  LSettings: IExpertSettings;
 begin
   // do not localize
-  Settings := TOpenFileExpert.GetSettings;
-  Settings.SaveForm('Window', Self);
+  LSettings := TOpenFileExpert.GetSettings;
+  LSettings.SaveForm('Window', Self);
   if Assigned(CurrentListView) then
-    Settings.WriteInteger('FileColumnWidth', CurrentListView.Columns[0].Width);
-  Settings.WriteBool('ShowMapTab', MapTabVisible);
+    LSettings.WriteInteger('FileColumnWidth', CurrentListView.Columns[0].Width);
+  LSettings.WriteBool('ShowMapTab', MapTabVisible);
 end;
 
 procedure TfmOpenFile.InitializeFileTypes(const SelectType: string);
