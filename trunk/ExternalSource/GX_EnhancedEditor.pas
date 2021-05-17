@@ -408,17 +408,17 @@ end;
 
 procedure TGxEnhancedEditor.SelectLines(_StartIdx, _EndIdx: Integer);
 var
-  SelStart: Integer;
+  LSelStart: Integer;
   SelEnd: Integer;
   Line: TGXUnicodeString;
 begin
-  SelStart := FEditor.RowColToCharIndex(BufferCoord(1, _StartIdx + 1));
+  LSelStart := FEditor.RowColToCharIndex(BufferCoord(1, _StartIdx + 1));
   if _EndIdx + 1 = LineCount then begin
     Line := GetLine(_EndIdx);
     SelEnd := FEditor.RowColToCharIndex(BufferCoord(Length(Line) + 1, _EndIdx + 1));
   end else
     SelEnd := FEditor.RowColToCharIndex(BufferCoord(1, _EndIdx + 2));
-  FEditor.SelStart := SelStart;
+  FEditor.SelStart := LSelStart;
   FEditor.SelEnd := SelEnd;
 end;
 
