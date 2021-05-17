@@ -563,7 +563,8 @@ begin
     VText := ReplaceStrings(VText, DoParseSource);
   finally
     //SetNewCursorPos(ACurrentPos);
-  end;
+    // TODO: Should remove the try finally
+  end; 
 
   if ReplaceSelection and GxOtaGetSelection(nil, BlockStart, BlockEnd, SelStart, SelLen) then
   begin
