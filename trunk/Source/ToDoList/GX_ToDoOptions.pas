@@ -169,6 +169,8 @@ begin
        Assigned(Items.Objects[ItemIndex]) then
     begin
       Items[ItemIndex] := TokenText;
+
+      // TODO: Remove nested With
       with TTokeninfo(Items.Objects[ItemIndex]) do
       begin
         Token := TokenText;

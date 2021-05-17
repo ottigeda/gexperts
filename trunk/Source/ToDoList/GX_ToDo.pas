@@ -885,6 +885,7 @@ begin
     begin
       with TToDoInfo(FDataList.Items[i]) do
       begin
+        // TODO: Remove nested With
         with RichEdit.SelAttributes do
         begin
         (*
