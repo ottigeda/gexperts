@@ -169,6 +169,16 @@ begin
   Result := Assigned(_Token) and (_Token.WordType = _wType);
 end;
 
+// Inlined routine must become before it is used
+function TCodeFormatterFormatter.TryGetToken(_Idx: Integer; out _Token: TPascalToken): Boolean;
+begin
+  Result := (_Idx >= 0) and (_Idx < FTokens.Count);
+  if Result then
+    _Token := FTokens[_Idx]
+  else
+    _Token := nil;
+end;
+
 // Inlined method must be before it is used
 function TCodeFormatterFormatter.TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean;
 begin
@@ -484,17 +494,6 @@ begin
     _PrevToken.SetSpace([spAfter], False); { avoid double spaces }
   end;
 end;
-
-// Inlined routine must become before it is used
-function TCodeFormatterFormatter.TryGetToken(_Idx: Integer; out _Token: TPascalToken): Boolean;
-begin
-  Result := (_Idx >= 0) and (_Idx < FTokens.Count);
-  if Result then
-    _Token := FTokens[_Idx]
-  else
-    _Token := nil;
-end;
-
 
 function TCodeFormatterFormatter.TokenAtIs(_Idx: Integer; _rType: TReservedType): Boolean;
 var
