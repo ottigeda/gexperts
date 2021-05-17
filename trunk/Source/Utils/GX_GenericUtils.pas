@@ -1371,6 +1371,21 @@ begin
   Result := (C = #0) or IsCharWhiteSpace(C);
 end;
 
+// Inlined method must be implemented before it is used
+function IsCharControl(C: Char): Boolean;
+begin
+  {$IFDEF UNICODE}
+    {$IFDEF GX_VER250_up} // XE4+
+    Result := C.IsControl;
+    {$ELSE} // 2009 - XE3
+    Result := TCharacter.IsControl(C);
+    {$ENDIF}
+  {$ELSE not UNICODE}
+  Result := C in [#0..#8, #14..#31];
+  {$ENDIF}
+end;
+
+
 function IsCharWhiteSpaceOrControl(C: Char): Boolean;
 begin
   Result := IsCharWhiteSpace(C) or IsCharControl(C);
@@ -1433,19 +1448,6 @@ begin
   {$ELSE not UNICODE}
   Result := C in ['#', '$', '&', #39, '(', ')', '*', '+', ',', '-', '.', '/', ':', ';',
     '<', '=', '>', '@', '[', ']', '^'];
-  {$ENDIF}
-end;
-
-function IsCharControl(C: Char): Boolean;
-begin
-  {$IFDEF UNICODE}
-    {$IFDEF GX_VER250_up} // XE4+
-    Result := C.IsControl;
-    {$ELSE} // 2009 - XE3
-    Result := TCharacter.IsControl(C);
-    {$ENDIF}
-  {$ELSE not UNICODE}
-  Result := C in [#0..#8, #14..#31];
   {$ENDIF}
 end;
 
