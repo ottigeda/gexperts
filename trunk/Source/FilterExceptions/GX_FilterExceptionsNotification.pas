@@ -29,7 +29,7 @@ type
     var _Action: TExceptionFilterAction) of object;
 
 procedure InstallHook(_OnCheckException, _OnFilterButtonClick: TOnCheckExceptionEx;
-  _ConfigurationKey: string);
+  const _ConfigurationKey: string);
 procedure UninstallHook();
 
 type
@@ -61,12 +61,12 @@ type
     m_Additional: TMemo;
     procedure SetData(_OnAddException: TOnCheckExceptionEx;
       const _Project, _Exception, _Message: string; _AdditionalData: TStrings;
-      _ConfigurationKey: string);
+      const _ConfigurationKey: string);
     procedure ToggleAdditionalInfo;
   public
     class function Execute(_Owner: TWinControl; _OnAddException: TOnCheckExceptionEx;
       const _Project, _Exception, _Message: string; _AdditionalData: TStrings;
-      _ConfigurationKey: string): Boolean;
+      const _ConfigurationKey: string): Boolean;
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -97,7 +97,7 @@ var
 
 class function TfmExceptionNotification.Execute(_Owner: TWinControl; _OnAddException: TOnCheckExceptionEx;
   const _Project, _Exception, _Message: string; _AdditionalData: TStrings;
-  _ConfigurationKey: string): Boolean;
+  const _ConfigurationKey: string): Boolean;
 var
   frm: TfmExceptionNotification;
 begin
@@ -131,7 +131,7 @@ end;
 
 procedure TfmExceptionNotification.SetData(_OnAddException: TOnCheckExceptionEx;
   const _Project, _Exception, _Message: string; _AdditionalData: TStrings;
-  _ConfigurationKey: string);
+  const _ConfigurationKey: string);
 var
   Settings: IExpertSettings;
 begin
@@ -984,7 +984,7 @@ const
   ParseThreadOsInfoName = '@Win32debug@TNativeThread@ParseThreadOsInfo$qqrrx19Dbk@DbkThreadOsInfor31Win32debug@TExceptionRecordInfo';
 
 procedure InstallHook(_OnCheckException, _OnFilterButtonClick: TOnCheckExceptionEx;
-  _ConfigurationKey: string);
+  const _ConfigurationKey: string);
 var
   Win32DebugHandle: HMODULE;
   DbkDebugIdeHandle: HMODULE;
