@@ -63,14 +63,15 @@ var
   Dlg: TfmProofreaderConfig;
   FileName: string;
 begin
+  // todo: This looks fishy. Why is FProofReaderData sometimes created and freed?
   CreatedDataToConfigure := False;
-
-  if FProofreaderData = nil then
-  begin
-    FProofreaderData := TProofreaderData.Create;
-    CreatedDataToConfigure := True;
-  end;
   try
+    if FProofreaderData = nil then
+    begin
+      FProofreaderData := TProofreaderData.Create;
+      CreatedDataToConfigure := True;
+    end;
+
     FileName := FProofreaderData.XmlFileName;
 
     if (not FileExists(FileName)) and
