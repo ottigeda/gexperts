@@ -163,13 +163,13 @@ begin
   OldExpr.Free;
 end;
 
-// Inlined method must be before it is used
+// inlined method must be implemented before it is used
 function TCodeFormatterFormatter.IsWType(_Token: TPascalToken; _wType: TWordType): Boolean;
 begin
   Result := Assigned(_Token) and (_Token.WordType = _wType);
 end;
 
-// Inlined routine must become before it is used
+// inlined method must be implemented before it is used
 function TCodeFormatterFormatter.TryGetToken(_Idx: Integer; out _Token: TPascalToken): Boolean;
 begin
   Result := (_Idx >= 0) and (_Idx < FTokens.Count);
@@ -179,7 +179,7 @@ begin
     _Token := nil;
 end;
 
-// Inlined method must be before it is used
+// inlined method must be implemented before it is used
 function TCodeFormatterFormatter.TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean;
 begin
   _Offset := 0;
@@ -190,7 +190,7 @@ begin
   until not Result or (_Token.ReservedType <> rtComment);
 end;
 
-// Inlined method must be before it is used
+// inlined method must be implemented before it is used
 function TCodeFormatterFormatter.TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken): Boolean;
 var
   Offset: Integer;
@@ -286,13 +286,13 @@ begin
   end;
 end;
 
-// Inlined method must become before it is used
+// inlined method must be implemented before it is used
 function TCodeFormatterFormatter.IsRType(_Token: TPascalToken; _rType: TReservedType): Boolean;
 begin
   Result := Assigned(_Token) and (_Token.ReservedType = _rType);
 end;
 
-// Inlined method must become before it is used
+// inlined method must be implemented before it is used
 function TCodeFormatterFormatter.IsRType(_Token: TPascalToken;
   _rTypeSet: TReservedTypeSet): Boolean;
 begin
