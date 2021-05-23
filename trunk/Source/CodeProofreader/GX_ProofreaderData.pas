@@ -41,7 +41,6 @@ type
       const RulesNode: IXMLElement; ReplacementSource: TReplacementSource);
     procedure SaveDictionary(const Doc: IXMLDocument;
       const RulesNode: IXMLElement; ReplacementSource: TReplacementSource);
-    function GetXmlFileName: string;
     procedure LoadError(const E: Exception);
     function GetDictionary(Dictionary: TReplacementSource): TStringList;
     procedure ValidateDictionaryIndex(Dict: TStringList; Index: Integer);
@@ -80,7 +79,7 @@ type
     property History: TCorrectionHistory read FHistory;
 
     property DefaultLanguage: TReplacementSource read FDefaultLanguage write FDefaultLanguage;
-    property XmlFileName: string read GetXmlFileName;
+    function GetXmlFileName: string;
     function AddToDictionary(Dictionary: TReplacementSource; const Word: string; Resort: Boolean = True): Integer;
     procedure ResortDictionary(Dictionary: TReplacementSource);
     procedure SetDictionaryEntry(Dictionary: TReplacementSource; Index: Integer; const OldWord, NewWord: string);
