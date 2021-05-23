@@ -143,8 +143,8 @@ procedure GxOtaReplaceEditorTextWithUnicodeString(SourceEditor: IOTASourceEditor
 
 // Returns current line from edit buffer
 // StartOffset is the start offset of line (zero-based)
-// ColumnNo is the current column number (zero-based, can be > then number of chars in line)
-// LineNo is the current line number
+// ColumnNo is the current column number (zero-based, can be > than number of chars in line)
+// LineNo is the current line number (1 based, yes, that's inconsistent)
 function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; ByteBased: Boolean = False): string;
 // Calls GxOtaGetCurrentLineData but only returns the line as a string
 function GxOtaGetCurrentLine: string;
