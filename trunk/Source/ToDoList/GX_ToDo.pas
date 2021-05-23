@@ -851,6 +851,7 @@ resourcestring
 var
   RichEdit: TRichEdit;
   i: Integer;
+  tdi: TToDoInfo;
 begin
   inherited;
 
@@ -883,24 +884,21 @@ begin
 
     for i := 0 to FDataList.Count - 1 do
     begin
-      with TToDoInfo(FDataList.Items[i]) do
+      tdi := FDataList.Items[i];
+      with RichEdit.SelAttributes do
       begin
-        // TODO: Remove nested With
-        with RichEdit.SelAttributes do
-        begin
-        (*
-          case Priority of
-            tpHigh   : Style := [fsBold];
-            tpMed : Style := [];
-            tpLow    : Style := [fsItalic];
-          end;
-        *)
-          Style := [];
-          Size := 10;
+      (*
+        case Priority of
+          tpHigh   : Style := [fsBold];
+          tpMed : Style := [];
+          tpLow    : Style := [fsItalic];
         end;
-        RichEdit.Lines.Add(ExtractFileName(FileName) + ' (' + IntToStr(LineNo) + ')' +
-          #09 + PriorityText[Priority] + #9 + Display);
+      *)
+        Style := [];
+        Size := 10;
       end;
+      RichEdit.Lines.Add(ExtractFileName(tdi.FileName) + ' (' + IntToStr(tdi.LineNo) + ')' +
+        #09 + PriorityText[tdi.Priority] + #9 + tdi.Display);
     end;
     RichEdit.Print(SToDoItems);
   finally

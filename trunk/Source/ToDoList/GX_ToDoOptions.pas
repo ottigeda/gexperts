@@ -160,22 +160,20 @@ end;
 procedure TfmToDoOptions.btnApplyClick(Sender: TObject);
 var
   TokenText: string;
+  ti: TTokenInfo;
 begin
   with lstTokens do
   begin
     TokenText := edToken.Text;
 
-    if (ItemIndex > -1) and (TokenText <> '') and
-       Assigned(Items.Objects[ItemIndex]) then
+    if (ItemIndex > -1) and (TokenText <> '')
+      and Assigned(Items.Objects[ItemIndex]) then
     begin
       Items[ItemIndex] := TokenText;
 
-      // TODO: Remove nested With
-      with TTokeninfo(Items.Objects[ItemIndex]) do
-      begin
-        Token := TokenText;
-        Priority := TToDoPriority(cboPriority.ItemIndex);
-      end;
+      ti := TTokenInfo(Items.Objects[ItemIndex]);
+      ti.Token := TokenText;
+      ti.Priority := TTodoPriority(cboPriority.ItemIndex);
     end;
   end;
   UpdateButtonState;
