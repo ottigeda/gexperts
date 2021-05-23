@@ -1,4 +1,4 @@
-﻿unit GX_OpenFile;
+unit GX_OpenFile;
 
 {$I GX_CondDefine.inc}
 
