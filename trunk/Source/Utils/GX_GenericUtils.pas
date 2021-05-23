@@ -731,7 +731,7 @@ function FindTextIdent(Id: string; const Source: string;
 ///<symmary>
 /// Converts a line position (X/Y) into a character position, so that
 /// StringList[LinePos.Y - 1][LinePos.X] = StringList.Text[CharPos]
-/// LinPos is a 1-based X/Y position
+/// LinePos is a 1-based X/Y position
 /// Examples:
 ///   LinePosToCharPos(Point(5, 1), '12345') = 5
 ///   LinePosToCharPos(Point(1, 2), '12345'#13#10'6789') = 8
