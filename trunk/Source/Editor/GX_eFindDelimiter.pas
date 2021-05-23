@@ -93,7 +93,7 @@ var
 begin
   FileContent := GxOtaReadEditorTextToString(GxOtaGetEditReaderForSourceEditor(SourceEditor));
   GxOtaGetCurrentLineData(StartOffset, ColumnNo, LineNo);
-  Result := LinePosToCharPos(Point(ColumnNo + 1, LineNo), FileContent);
+  Result := StartOffset + ColumnNo;
 end;
 
 { TODO 4 -oAnyone -cCleanup:
@@ -309,6 +309,16 @@ var
               Backward := True;
               Break;
             end;
+
+// todo: support single quotes for a string
+//       unfortunately we don't know whether the current positionis the start or end of a string
+//       so the following won't work:
+//            tkString:
+//              begin
+//                EndTokens := [tkString];
+//                Backward := False;
+//                Break;
+//              end
           else
             if i = 0 then begin
               TextToken := Parser.RunToken;
