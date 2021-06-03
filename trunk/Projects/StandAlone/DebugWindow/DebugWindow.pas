@@ -106,7 +106,7 @@ implementation
 
 uses
   Clipbrd, Registry,
-  DebugOptions, GX_GenericUtils;
+  DebugOptions, GX_GenericUtils, GX_StringList;
 
 type
   TDebugType = (dtAnsiMessage, dtUnicodeMessage, dtSQL, dtCommand);
