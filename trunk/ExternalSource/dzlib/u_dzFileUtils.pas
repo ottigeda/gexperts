@@ -71,6 +71,9 @@ const
     SYNCHRONIZE;
 
 type
+  TOnFileEnumCallback = procedure(_Sender: TObject; const _Filename: string) of object;
+
+type
   /// <summary>
   /// a simple wrapper around FindFirst/FindNext which allows to search for
   /// specified attributes only (e.g. only directories), it automatically
@@ -89,9 +92,6 @@ type
     FActive: Boolean;
     /// number of matching files found
     FMatchCount: Integer;
-  public
-    type
-      TOnEnumCallback = procedure(_Sender: TObject; const _Filename: string) of object;
   public
     /// <summary>
     /// Creates a TSimpleDirEnumerator, sets the Mask, MayHaveAttr and MustHaveAttr
@@ -128,7 +128,7 @@ type
       _IncludePath: Boolean = False; _Sort: Boolean = True): TStringArray; overload;
     ///<summary>
     /// Calls the given callback for all files matching the mask. To Abort, raise EAbort. </summary>
-    class procedure EnumFilesOnly(const _Mask: string; _Callback: TOnEnumCallback;
+    class procedure EnumFilesOnly(const _Mask: string; _Callback: TOnFileEnumCallback;
       _IncludePath: Boolean = False; _Sort: Boolean = True); overload;
     /// <summary>
     /// creates a TSimpleDirEnumerator, calls its FindAll method and frees it
@@ -1312,7 +1312,7 @@ begin
   end;
 end;
 
-class procedure TSimpleDirEnumerator.EnumFilesOnly(const _Mask: string; _Callback: TOnEnumCallback;
+class procedure TSimpleDirEnumerator.EnumFilesOnly(const _Mask: string; _Callback: TOnFileEnumCallback;
   _IncludePath: Boolean = False; _Sort: Boolean = True);
 var
   enum: TSimpleDirEnumerator;
