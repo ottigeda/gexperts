@@ -1385,14 +1385,14 @@ begin
   SendDebugFmt('UnitExportParser loaded %d units', [FLoadedUnitsCount]);
   SendDebugFmt('UnitExportParser parsed %d units', [FParsedUnitsCount]);
 
-  SendDebugFmt('UnitExportParser searching time %d ms', [Searching.ElapsedMilliseconds]);
-  SendDebugFmt('UnitExportParser checking time %d ms', [CacheChecking.ElapsedMilliseconds]);
-  SendDebugFmt('UnitExportParser loading time %d ms', [Loading.ElapsedMilliseconds]);
-  SendDebugFmt('UnitExportParser inserting time %d ms', [Inserting.ElapsedMilliseconds]);
-  SendDebugFmt('UnitExportParser parsing time %d ms', [Parsing.ElapsedMilliseconds]);
-  SendDebugFmt('UnitExportParser processing time %d ms (consists of searching, checking, loading+inserting and parsing)', [Processing.ElapsedMilliseconds]);
-  SendDebugFmt('UnitExportParser sorting time %d ms', [Sorting.ElapsedMilliseconds]);
-  SendDebugFmt('UnitExportParser total time %d ms (consists of processing and sorting)', [Total.ElapsedMilliseconds]);
+  SendDebugFmt('UnitExportParser searching time %d ms', [TStopWatch_ElapsedMilliseconds(Searching)]);
+  SendDebugFmt('UnitExportParser checking time %d ms', [TStopWatch_ElapsedMilliseconds(CacheChecking)]);
+  SendDebugFmt('UnitExportParser loading time %d ms', [TStopWatch_ElapsedMilliseconds(Loading)]);
+  SendDebugFmt('UnitExportParser inserting time %d ms', [TStopWatch_ElapsedMilliseconds(Inserting)]);
+  SendDebugFmt('UnitExportParser parsing time %d ms', [TStopWatch_ElapsedMilliseconds(Parsing)]);
+  SendDebugFmt('UnitExportParser processing time %d ms (consists of searching, checking, loading+inserting and parsing)', [TStopWatch_ElapsedMilliseconds(Processing)]);
+  SendDebugFmt('UnitExportParser sorting time %d ms', [TStopWatch_ElapsedMilliseconds(Sorting)]);
+  SendDebugFmt('UnitExportParser total time %d ms (consists of processing and sorting)', [TStopWatch_ElapsedMilliseconds(Total)]);
 {$IFEND}
 end;
 

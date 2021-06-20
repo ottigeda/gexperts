@@ -2347,7 +2347,7 @@ begin
 
   TStopWatch_Stop(FUsesExpert.FIdentifierTabTimer);
 {$IFOPT D+}
-  SendDebugFmt('Total time from calling the expert until after filtering: %d milliseconds', [FUsesExpert.FIdentifierTabTimer.ElapsedMilliseconds]);
+  SendDebugFmt('Total time from calling the expert until after filtering: %d milliseconds', [TStopWatch_ElapsedMilliseconds(FUsesExpert.FIdentifierTabTimer)]);
 {$ENDIF D+}
 end;
 
