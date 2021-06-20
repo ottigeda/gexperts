@@ -1594,4 +1594,3 @@ initialization
   Assert(AssertSwap32);
   Assert(AssertBitReverse32);
 end.
-
