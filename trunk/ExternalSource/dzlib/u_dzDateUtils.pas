@@ -126,6 +126,7 @@ function TryIso2DateTime(const _s: string; out _DateTime: TDateTime): Boolean;
 /// (I had to decide between the sane UK format or the brain dead US format, i chose the UK format.)
 ///  </summary>
 function TryStr2DateTime(const _s: string; out _DateTime: TDateTime): Boolean;
+function Str2DateTime(const _s: string): TDateTime;
 {$IFEND}
 
 {$IF Declared(TFormatSettings)}
@@ -447,6 +448,12 @@ begin
           // nothing worked, give up
         Result := False;
       end;
+end;
+
+function Str2DateTime(const _s: string): TDateTime;
+begin
+  if not TryStr2DateTime(_s, Result) then
+    raise EdzDateUtilsException.CreateFmt(_('Cannot interpret "%s" as a date and time value'), [_s]);
 end;
 {$IFEND}
 

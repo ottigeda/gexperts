@@ -1516,17 +1516,28 @@ begin
 end;
 
 procedure TBitmap_AssignBgr8(_Buffer: PByte; _bmp: TBitmap; _YIsReversed: Boolean);
+const
+  BytesPerPixel = 3;
 var
   y: Integer;
   ScanLine: PdzRgbTripleArray;
-  BytesPerLine: Integer;
+  BufferBytesPerLine: Integer;
+  BitmapBytesPerLine: Integer;
+  h: Integer;
+  w: Integer;
 //  ms: TMemoryStream;
 //  bfh: TBitmapFileHeader;
 //  bih: TBitmapInfoHeader;
 begin
   Assert(_bmp.PixelFormat = pf24bit, 'unexpected PixelFormat (expected pf24bit)');
 
-  BytesPerLine := 3 * _bmp.Width;
+  h := _bmp.Height;
+  w := _bmp.Width;
+
+  BufferBytesPerLine := BytesPerPixel * w;
+
+  BitmapBytesPerLine := ((w * 8 * BytesPerPixel + 31) and not 31) div 8;
+  Assert(BitmapBytesPerLine = Graphics.BytesPerScanline(w, BytesPerPixel * 8, 32));
 
 //  bfh.bfType := $4D42; // 'BM'
 //  bfh.bfSize := BytesPerLine * _Bmp.Height;
@@ -1554,14 +1565,15 @@ begin
   // So we can only copy the whole picture in one go, if the buffer is also upside down
   // (many cameras have this feature). If not, we have to copy it one line at a time.
   if _YIsReversed then begin
-    ScanLine := _bmp.ScanLine[_bmp.Height - 1];
-    Move(_Buffer^, ScanLine^, _bmp.Height * BytesPerLine);
+    ScanLine := _bmp.ScanLine[h - 1];
+    Move(_Buffer^, ScanLine^, h * BufferBytesPerLine);
   end else begin
     // At least with GBR8 the bytes have the right order so we can copy the whole line in one go
-    for y := 0 to _bmp.Height - 1 do begin
-      ScanLine := _bmp.ScanLine[y];
-      Move(_Buffer^, ScanLine^, BytesPerLine);
-      Inc(_Buffer, BytesPerLine);
+    ScanLine := _bmp.ScanLine[0];
+    for y := 0 to h - 1 do begin
+      Move(_Buffer^, ScanLine^, BufferBytesPerLine);
+      Inc(_Buffer, BufferBytesPerLine);
+      Dec(PByte(ScanLine), BitmapBytesPerLine);
     end;
   end;
 end;

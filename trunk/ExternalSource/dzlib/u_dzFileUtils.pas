@@ -90,6 +90,9 @@ type
     /// number of matching files found
     FMatchCount: Integer;
   public
+    type
+      TOnEnumCallback = procedure(_Sender: TObject; const _Filename: string) of object;
+  public
     /// <summary>
     /// Creates a TSimpleDirEnumerator, sets the Mask, MayHaveAttr and MustHaveAttr
     /// properties.
@@ -123,6 +126,10 @@ type
       _IncludePath: Boolean = False; _Sort: Boolean = True): Integer; overload;
     class function EnumFilesOnly(const _Mask: string;
       _IncludePath: Boolean = False; _Sort: Boolean = True): TStringArray; overload;
+    ///<summary>
+    /// Calls the given callback for all files matching the mask. To Abort, raise EAbort. </summary>
+    class procedure EnumFilesOnly(const _Mask: string; _Callback: TOnEnumCallback;
+      _IncludePath: Boolean = False; _Sort: Boolean = True); overload;
     /// <summary>
     /// creates a TSimpleDirEnumerator, calls its FindAll method and frees it
     /// @param List is a string list to which the files will be appended, may be nil
@@ -1060,10 +1067,20 @@ type
     ///<summary>
     /// Replaces filename, but not extension(s) with the given filename </summary>
     procedure ReplaceFilenameOnly(const _FilenameOnly: string);
+    ///<summary>
+    /// Replaces the full extension with the given one.
+    /// @param Extension is the new extension including the leading dot e.g. '.txt' </summary>
     procedure ReplaceExtension(const _Extension: string);
     ///<summary>
-    /// Replaces the whole extension with the given array of textensions </summary>
+    /// Replaces the whole extension with the given array of extensions
+    /// Example: ['.bla', '.blub', '.tmp'] will change the extension to '.bla.blub.tmp' </summary>
     procedure ReplaceExtensions(const _Extensions: TStringArray);
+    ///<summary>
+    /// Replaces the last extension of the filename with the given one
+    /// @param Extension is the new extension including the leading dot e.g. '.txt'
+    /// Example:
+    /// Given the file name 'c:\bla\file.bla.txt'
+    /// ReplaceLastExtension('.doc') will change the file name to 'c:\bla\file.bla.doc' </summary>
     procedure ReplaceLastExtension(const _Extension: string);
     ///<summary>
     /// @returns true, if the filename contains either a drive letter or is a UNC, false otherwise
@@ -1081,7 +1098,7 @@ type
     ///          Parts(-2) = 'c:'
     ///          Parts(<=-3) = ''
     /// Note that every call will parse the filename again, so you should buffer this
-    /// value if you need it multpile times. If you need all parts, consider using GetParts </summary>
+    /// value if you need it multiple times. If you need all parts, consider using Split </summary>
     function Parts(_Depth: Integer): string;
     ///<summary>
     /// Returns the number of parts separated by PathDelim characters.
@@ -1103,6 +1120,8 @@ type
     ///<summary>
     /// Same as Full </summary>
     class operator Implicit(_a: TFilename): string;
+    class operator Add(const _a: TFilename; const _b: string): string;
+    class operator Add(const _a: string; const _b: TFilename): string;
   end;
 
 type
@@ -1285,6 +1304,30 @@ begin
       if _Sort then
         List.Sort;
       _List.AddStrings(List);
+    finally
+      FreeAndNil(List);
+    end;
+  finally
+    FreeAndNil(enum);
+  end;
+end;
+
+class procedure TSimpleDirEnumerator.EnumFilesOnly(const _Mask: string; _Callback: TOnEnumCallback;
+  _IncludePath: Boolean = False; _Sort: Boolean = True);
+var
+  enum: TSimpleDirEnumerator;
+  List: TStringList;
+  i: Integer;
+begin
+  enum := TSimpleDirEnumerator.CreateForFilesOnly(_Mask);
+  try
+    List := TStringList.Create;
+    try
+      enum.FindAll(List, _IncludePath);
+      if _Sort then
+        List.Sort;
+      for i := 0 to List.Count - 1 do
+        _Callback(enum, List[i]);
     finally
       FreeAndNil(List);
     end;
@@ -1521,6 +1564,7 @@ end;
 // I can't be bothered to add lots of ifdefs, so I turn this warning off for the rest of the unit.
 {$WARN SYMBOL_DEPRECATED OFF}
 {$ENDIF}
+
 class function TFileSystem.CreateDir(const _DirectoryName: string; _RaiseException: Boolean): Boolean;
 begin
   Result := Self.CreateDir(_DirectoryName, re2ehe(_RaiseException));
@@ -3251,6 +3295,16 @@ end;
 
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
 { TFilename }
+
+class operator TFilename.Add(const _a: TFilename; const _b: string): string;
+begin
+  Result := _a.Full + _b;
+end;
+
+class operator TFilename.Add(const _a: string; const _b: TFilename): string;
+begin
+  Result := _a + _b.Full;
+end;
 
 class operator TFilename.Implicit(const _s: string): TFilename;
 begin
