@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="$(var.PRODUCT_ID)" Language="1033" Manufacturer="GExperts Development Team" Name="GExperts for RAD Studio $(var.IDE_VERSION) [$(var.VERSION)]" UpgradeCode="{DA13477E-CE2B-4E3F-B558-606F2EEA33AB}" Version="$(var.VERSION)">
+        <Package Comments="Erik Berry" Compressed="yes" Description="GExperts for RAD Studio $(var.IDE_VERSION)" InstallerVersion="200" Languages="1033" Manufacturer="GExperts Development Team" Platform="x86" />
+        <Media Id="1" Cabinet="GExperts.cab" EmbedCab="yes" />
+
+        <!-- icon definition -->
+        <Property Id="ARPPRODUCTICON" Value="setup.ico" />
+        <Icon Id="setup.ico" SourceFile="Projects\StandAlone\ExpertManager\ExpertManager.ico" />
+
+        <!-- usergroup name -->
+        <PropertyRef Id="WIX_ACCOUNT_USERS" />
+
+        <!-- installation steps sequence -->
+        <InstallExecuteSequence>
+            <LaunchConditions Sequence="50" />
+            <FindRelatedProducts Sequence="100" />
+            <AppSearch Sequence="48" />
+            <ValidateProductID Sequence="300" />
+            <CostInitialize Sequence="350" />
+            <FileCost Sequence="400" />
+            <IsolateComponents Sequence="450" />
+            <CostFinalize Sequence="500" />
+            <MigrateFeatureStates Sequence="600" />
+            <InstallValidate Sequence="650" />
+            <InstallInitialize Sequence="700" />
+            <ProcessComponents Sequence="800" />
+            <UnpublishComponents Sequence="850" />
+            <UnpublishFeatures Sequence="900" />
+            <RemoveRegistryValues Sequence="1300" />
+            <UnregisterProgIdInfo Sequence="1450" />
+            <RemoveShortcuts Sequence="1600" />
+            <RemoveDuplicateFiles Sequence="1700" />
+            <RemoveFiles Sequence="1750" />
+            <RemoveFolders Sequence="1800" />
+            <CreateFolders Sequence="1850" />
+            <MoveFiles Sequence="1900" />
+            <InstallFiles Sequence="1950" />
+            <DuplicateFiles Sequence="2000" />
+            <CreateShortcuts Sequence="2150" />
+            <RegisterProgIdInfo Sequence="2300" />
+            <WriteRegistryValues Sequence="2400" />
+            <RegisterUser Sequence="2900" />
+            <RegisterProduct Sequence="2950" />
+            <PublishComponents Sequence="3000" />
+            <PublishFeatures Sequence="3050" />
+            <PublishProduct Sequence="3100" />
+            <InstallFinalize Sequence="3150" />
+            <RemoveExistingProducts Sequence="675" />
+        </InstallExecuteSequence>
+
+        <!-- main feature - contains all components -->
+        <Feature Id="feaGexperts" Level="1" Title="Always Install">
+            <ComponentRef Id="compWindows" />
+            <ComponentRef Id="compGexperts" />
+            <ComponentRef Id="compHKCURegistryEntries" />
+            <ComponentRef Id="compHKLMRegistryEntries" />
+        </Feature>
+
+        <!-- installation structure and files -->
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Component Id="compHKCURegistryEntries" Guid="{09E5946D-0D2E-4C74-986B-BFB2960221DC}">
+                <RegistryValue Id="regE91EE9915711DEE1B50697A29E282FAF" Root="HKCU" Key="Software\Embarcadero\BDS\$(var.IDE_NUMBER)\Experts" Name="GExperts" Value="[dirGExperts]GExpertsRS$(var.IDE_VERSION).dll" Type="string" KeyPath="yes" />
+                <RegistryValue Id="regF37A82157D6C300237A30691DD2F509C" Root="HKCU" Key="Software\GExperts\Debug" Name="FilePath" Value="[dirGExperts]GExpertsDebugWindow.exe" Type="string" />
+            </Component>
+            <Component Id="compHKLMRegistryEntries" Guid="{E1DB528F-7773-4C2C-9DE7-BC81B4D189FA}">
+                <RegistryValue Id="reg26E430BB8D185C0BAD980BFF7E9F5433" Root="HKLM" Key="Software\Microsoft\MyApplicationName" Name="GExperts" Value="[dirGExperts]GExpertsRS$(var.IDE_VERSION).dll" Type="string" KeyPath="yes" />
+            </Component>
+            <Directory Id="ProgramFilesFolder" Name="ProgramFiles">
+                <Directory Id="WindowsFolder" SourceName="Windows">
+                    <Component Id="compWindows" Guid="{13B2A031-5D44-4CAE-A2C9-4E08BCAA193F}">
+                        <RegistryValue Id="unityreg1" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]" Name="DisplayIcon" Value="[WindowsFolder]Installer\[ProductCode]\setup.ico,0" Type="string" KeyPath="yes" />
+                    </Component>
+                </Directory>
+                <Directory Id="dirGExperts" Name="GExperts for RAD Studio $(var.IDE_VERSION)">
+                    <Component Id="compGexperts" Guid="{12A8D04B-4A7E-4271-A9C2-0590E8B676E1}">
+                        <CreateFolder Directory="dirGExperts">
+                            <Permission User="[WIX_ACCOUNT_USERS]" GenericAll="yes" />
+                        </CreateFolder>
+                        <File Id="GExpertsRS$(var.IDE_VERSION).dll"  Name="GExpertsRS$(var.IDE_VERSION).dll" DiskId="1" Source="binaries\GExpertsRS$(var.IDE_VERSION).dll" KeyPath="yes"/>
+                        <File Id="CodeLibrarian.exe"                 Name="CodeLibrarian.exe"                DiskId="1" Source="binaries\CodeLibrarian.exe"                             />
+                        <File Id="ExpertManager.exe"                 Name="ExpertManager.exe"                DiskId="1" Source="binaries\ExpertManager.exe"                             />
+                        <File Id="GExpertsDebugWindow.exe"           Name="GExpertsDebugWindow.exe"          DiskId="1" Source="binaries\GExpertsDebugWindow.exe"                       />
+                        <File Id="GExpertsGrep.exe"                  Name="GExpertsGrep.exe"                 DiskId="1" Source="binaries\GExpertsGrep.exe"                              />
+                        <File Id="GExpertsPeInformation.exe"         Name="GExpertsPeInformation.exe"        DiskId="1" Source="binaries\GExpertsPeInformation.exe"                     />
+                        <File Id="GExperts.chm"                      Name="GExperts.chm"                     DiskId="1" Source="Documentation\GExperts.chm"                             />
+                        <File Id="DbugIntf.pas"                      Name="DbugIntf.pas"                     DiskId="1" Source="ExternalSource\DbugIntf.pas"                            />
+                        <File Id="Readme.txt"                        Name="Readme.txt"                       DiskId="1" Source="Documentation\Readme.txt"                               />
+                    </Component>
+                </Directory>
+            </Directory>
+        </Directory>
+    </Product>
+</Wix>

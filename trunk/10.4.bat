@@ -1,0 +1,2 @@
+candle -dPRODUCT_ID={5AA11EE6-4436-4F59-9703-D061D2E65F71} -dID= -dIDE_VERSION=104 -dIDE_NUMBER=21.0 -dVERSION=1.3.18 GExperts.wxs -out GExpertsRS104.wixobj
+light -ext WiXUtilExtension GExpertsRS104.wixobj 
