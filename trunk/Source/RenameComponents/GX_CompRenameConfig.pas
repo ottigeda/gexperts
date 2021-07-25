@@ -308,7 +308,7 @@ resourcestring
     Result.Name := _Name;
     Result.Parent := _Parent;
     // Delphi < 2006 does not support Margins, so we have to do it the hard way
-    Result.SetBounds(GridPad, GridPad, pnlNames.Width - (GridPad * 2), pnlNames.Height - (GridPad * 2));
+    Result.SetBounds(GridPad, GridPad, _Parent.Width - (GridPad * 2), _Parent.Height - (GridPad * 2));
     Result.Anchors := [akLeft, akTop, akRight, akBottom];
     Result.ColCount := 2;
     Result.DefaultColWidth := 150;
