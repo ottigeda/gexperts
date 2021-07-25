@@ -651,8 +651,9 @@ procedure TRenameComponentsExpert.Configure(const _Selected: string);
 begin
 //    SetFormIcon(Dialog);
   FRenameRuleListVcl.Sort;
+  FRenameRuleListFmx.Sort;
   if TfmCompRenameConfig.Execute(nil, HandleOnImport, HandleOnExport,
-    FRenameRuleListVcl, FShowDialog, FAutoAddClasses,
+    FRenameRuleListVcl, FRenameRuleListFmx, FShowDialog, FAutoAddClasses,
     FFormWidth, FFormHeight, _Selected) then
     SaveSettings;
 end;
@@ -682,7 +683,8 @@ begin
     FreeAndNil(GXSettings);
     FreeAndNil(ini);
   end;
-  (_Sender as TfmCompRenameConfig).SetData(FRenameRuleListVcl, FShowDialog, FAutoAddClasses, FFormWidth, FFormHeight, '');
+  (_Sender as TfmCompRenameConfig).SetData(FRenameRuleListVcl, FRenameRuleListFmx,
+    FShowDialog, FAutoAddClasses, FFormWidth, FFormHeight, '');
 end;
 
 procedure TRenameComponentsExpert.HandleOnExport(_Sender: TObject);
@@ -712,12 +714,15 @@ end;
 
 procedure TRenameComponentsExpert.ComponentRenamed(const FormEditor: IOTAFormEditor;
     Component: IOTAComponent; const OldName, NewName: WideString);
+var
+  RenameRuleList: TStringList;
 begin
   // Bug: Delphi 8 can not set string properties on components
   if RunningDelphi8 then
     Exit;
 
-  if (not Assigned(FRenameRuleListVcl)) or (FRenameRuleListVcl.Count < 1) then
+  RenameRuleList := GetActiveRenameRuleList;
+  if (not Assigned(RenameRuleList)) or (RenameRuleList.Count < 1) then
     Exit;
   if Active and Assigned(FormEditor) and (OldName = '') and (NewName > '') then
   begin
@@ -783,6 +788,7 @@ var
   ShowDialog: Boolean;
   OtherProps: TStringList;
   Index: Integer;
+  RenameRuleList: TStringList;
 begin
   Assert(Assigned(Component));
   Assert(Assigned(FFormEditor));
@@ -826,6 +832,7 @@ begin
     UseRules := IsDefaultComponentName(Component, CompName);
   end;
 
+  RenameRuleList := GetActiveRenameRuleList;
   if not UseRules or (Length(RenameRule) > 0) then
   begin
     if ShowDialog or not UseRules then
@@ -837,10 +844,10 @@ begin
 
         Dialog.SetComponent(Component);
 
-        Index := FRenameRuleListVcl.IndexOfName(Component.GetComponentType);
+        Index := RenameRuleList.IndexOfName(Component.GetComponentType);
         if Index <> -1 then
         begin
-          OtherProps := FRenameRuleListVcl.Objects[Index] as TStringList;
+          OtherProps := RenameRuleList.Objects[Index] as TStringList;
           if Assigned(OtherProps) then
           begin
             for i := 0 to OtherProps.Count - 1 do
@@ -944,10 +951,10 @@ begin
 
       if UseRules then
       begin
-        Index := FRenameRuleListVcl.IndexOfName(Component.GetComponentType);
+        Index := RenameRuleList.IndexOfName(Component.GetComponentType);
         if Index <> -1 then
         begin
-          OtherProps := FRenameRuleListVcl.Objects[Index] as TStringList;
+          OtherProps := RenameRuleList.Objects[Index] as TStringList;
           if Assigned(OtherProps) then
           begin
             for i := 0 to OtherProps.Count - 1 do
@@ -1054,13 +1061,28 @@ begin
 end;
 
 procedure TRenameComponentsExpert.InternalLoadSettings(_Settings: IExpertSettings);
-var
-  OtherProps: TStringList;
-  i: Integer;
-  OtherPropsSection: string;
-  Sections: TStringList;
-  Rule: string;
-  VclSettings: IExpertSettings;
+
+  procedure ReadOtherProps(const _Section: string; _RulesList: TStringList);
+  var
+    OtherProps: TStringList;
+    i: Integer;
+  begin
+    OtherProps := nil;
+    try
+      for i := 0 to _RulesList.Count - 1 do begin
+        if not Assigned(OtherProps) then
+          OtherProps := TStringList.Create;
+        _Settings.ReadStrings(_Section + _RulesList.Names[i], OtherProps);
+        if OtherProps.Count > 0 then begin
+          _RulesList.Objects[i] := OtherProps;
+          OtherProps := nil;
+        end;
+      end;
+    finally
+      FreeAndNil(OtherProps);
+    end;
+  end;
+
 begin
   inherited InternalLoadSettings(_Settings);
   FShowDialog := _Settings.ReadBool('ShowDialog', False);
@@ -1074,70 +1096,76 @@ begin
   FRenameRuleListVcl := TStringList.Create;
   FRenameRuleListFmx := TStringList.Create;
 
-  if _Settings.SectionExists('vcla') then begin
-    Sections := TStringList.Create;
-    try
-      VclSettings := _Settings.Subkey('vcl');
-      rule:=      VclSettings.ReadString('dummy', '');
-//      VclSettings.ReadSections(Sections);
-      for i := 0 to Sections.Count - 1 do begin
-        Rule := _Settings.ReadString('vcl\' + Sections[i] + '\Name', Sections[i]);
-        FRenameRuleListVcl.Values[Sections[i]] := Rule;
-      end;
-//    _Settings.ReadStrings('vcl', FRenameRuleListVcl)
-    finally
-      FreeAndNil(Sections);
-    end;
-  end else if _Settings.SectionExists('Items') then
-    _Settings.ReadStrings('Items', FRenameRuleListVcl)
-  else
+  // Older versions only supported one list for all types.
+  // now we have separate lists for vcl and fmx
+  if _Settings.SectionExists('vcl') then begin
+    // new configuration under .\vcl
+    _Settings.ReadStrings('vcl', FRenameRuleListVcl);
+  end else if _Settings.SectionExists('Items') then begin
+    // old configuration with the configuration under .\Items
+    _Settings.ReadStrings('Items', FRenameRuleListVcl);
+  end  else begin
+    // in some ancient version the data was stored inside the root key of this expert
     _Settings.ReadStrings('', FRenameRuleListVcl);
-  FRenameRuleListVcl.Sort;
-
-  if _Settings.SectionExists('fmx') then
-    _Settings.ReadStrings('fmx', FRenameRuleListFmx);
-  FRenameRuleListFmx.Sort;
-
-  if _Settings.SectionExists('vcl') then
-    OtherPropsSection := 'vcl\'
-  else
-    OtherPropsSection := '';
-  OtherProps := nil;
-  for i := 0 to FRenameRuleListVcl.Count - 1 do
-  begin
-    if not Assigned(OtherProps) then
-      OtherProps := TStringList.Create;
-    _Settings.ReadStrings(OtherPropsSection + FRenameRuleListVcl.Names[i], OtherProps);
-    if OtherProps.Count > 0 then
-    begin
-      FRenameRuleListVcl.Objects[i] := OtherProps;
-      OtherProps := nil;
-    end;
   end;
-  FreeAndNil(OtherProps);
+  FRenameRuleListVcl.Sort;
+  if _Settings.SectionExists('vcl') then
+    ReadOtherProps('vcl\', FRenameRuleListVcl)
+  else
+    ReadOtherProps('', FRenameRuleListVcl);
+
+  if _Settings.SectionExists('fmx') then begin
+    _Settings.ReadStrings('fmx', FRenameRuleListFmx);
+    FRenameRuleListFmx.Sort;
+    ReadOtherProps('fmx\', FRenameRuleListFmx);
+  end;
 end;
 
 procedure TRenameComponentsExpert.InternalSaveSettings(_Settings: IExpertSettings);
+
+  procedure SaveRules(const _Section: string; _RulesList: TStringList);
+  var
+    i: Integer;
+    SubSection: string;
+    OtherProps: TStringList;
+  begin
+    _Settings.WriteStrings(_Section, _RulesList);
+
+    for i := 0 to _RulesList.Count - 1 do begin
+      SubSection := AddSlash(_Section) + _RulesList.Names[i];
+      OtherProps := _RulesList.Objects[i] as TStringList;
+      if Assigned(OtherProps) then
+        _Settings.WriteStrings(SubSection, OtherProps)
+      else begin
+        if _Settings.SectionExists(SubSection) then
+          _Settings.EraseSection(SubSection);
+      end;
+    end;
+  end;
+
 var
   i: Integer;
-  OtherProps: TStringList;
   cnt: integer;
-  LSection: string;
 begin
   inherited InternalSaveSettings(_Settings);
   Assert(Assigned(FRenameRuleListVcl));
+  Assert(Assigned(FRenameRuleListFmx));
 
   if _Settings.ValueExists('Count') then begin
     // clean up old entries that were directly in the section, we now write
     // to a subsection
     cnt := _Settings.ReadInteger('Count', 0);
-    for i := 0 to cnt - 1  do begin
+    for i := 0 to cnt - 1 do begin
       _Settings.DeleteKey(Format('Item%d', [i]));
     end;
     _Settings.DeleteKey('Count');
   end;
 
-  _Settings.WriteStrings('Items', FRenameRuleListVcl);
+  if _settings.SectionExists('Items') then begin
+    // we now distinguish between vcl and fmx, so we put items in different subsections and
+    // need to delete the items subsection
+    _settings.EraseSection('Items');
+  end;
 
   _Settings.WriteInteger('Width', FFormWidth);
   _Settings.WriteInteger('Height', FFormHeight);
@@ -1145,17 +1173,8 @@ begin
   _Settings.WriteBool('ShowDialog', FShowDialog);
   _Settings.WriteBool('AutoAdd', FAutoAddClasses);
 
-  for i := 0 to FRenameRuleListVcl.Count - 1 do
-  begin
-    LSection := FRenameRuleListVcl.Names[i];
-    OtherProps := FRenameRuleListVcl.Objects[i] as TStringList;
-    if Assigned(OtherProps) then
-      _Settings.WriteStrings(LSection, OtherProps)
-    else begin
-      if _Settings.SectionExists(LSection) then
-        _Settings.EraseSection(LSection);
-    end;
-  end;
+  SaveRules('vcl', FRenameRuleListVcl);
+  SaveRules('fmx', FRenameRuleListFmx);
 end;
 
 function TRenameComponentsExpert.IsValidComponentName(const OldName, NewName: WideString; var Reason: WideString): Boolean;

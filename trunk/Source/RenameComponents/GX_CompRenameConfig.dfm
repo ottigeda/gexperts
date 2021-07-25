@@ -183,6 +183,22 @@ object fmCompRenameConfig: TfmCompRenameConfig
           Height = 236
           Align = alClient
           TabOrder = 1
+          object pc_Names: TPageControl
+            Left = 1
+            Top = 1
+            Width = 258
+            Height = 234
+            ActivePage = ts_NamesVcl
+            Align = alClient
+            TabOrder = 0
+            OnChange = pc_NamesChange
+            object ts_NamesVcl: TTabSheet
+              Caption = 'VCL'
+            end
+            object ts_NamesFmx: TTabSheet
+              Caption = 'FMX'
+            end
+          end
         end
       end
       object pnlRight: TPanel
