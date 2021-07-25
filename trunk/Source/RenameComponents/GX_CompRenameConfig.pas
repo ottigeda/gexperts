@@ -9,6 +9,9 @@ uses
   ExtCtrls, GX_BaseForm, Graphics, Mask, Actions, ComCtrls;
 
 const
+  COMP_RENAME_NAME = 'RenameComponents';
+
+const
   UM_SHOW_CONTROL = WM_USER + 133;
 
 resourcestring
@@ -18,7 +21,7 @@ type
   TEditMode = (emRead, emEdit, emInsert);
 
   TOnExportLists = procedure(_Sender: TObject; _RulesListVcl, _RulesListFmx: TStringList) of object;
-  TOnImportLists = procedure(_Sender: TObject; _RulesListVcl, _RulesListFmx: TStringList) of object;
+  TOnImportLists = procedure(_Sender: TObject; const _fn: string; _RulesListVcl, _RulesListFmx: TStringList) of object;
 
   TOnRowHeaderClick = procedure(Sender: TObject; Col: Integer) of object;
 
@@ -72,7 +75,6 @@ type
     mnuSortByClass: TMenuItem;
     mnuSortByRule: TMenuItem;
     FindDialog: TFindDialog;
-    btnDefaults: TButton;
     pnlFooter: TPanel;
     pnlTop: TPanel;
     btnOtherProperties: TButton;
@@ -82,8 +84,12 @@ type
     btnOK: TButton;
     btnClose: TButton;
     btnHelp: TButton;
-    b_Import: TButton;
-    b_Export: TButton;
+    b_Tools: TButton;
+    pm_Extra: TPopupMenu;
+    mi_ResetTo: TMenuItem;
+    mi_ResetToDefault: TMenuItem;
+    mi_Import: TMenuItem;
+    mi_Export: TMenuItem;
     lbxOtherProps: TListBox;
     pc_Names: TPageControl;
     ts_NamesVcl: TTabSheet;
@@ -104,14 +110,15 @@ type
     procedure GridSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
     procedure GridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure FindDialogFind(Sender: TObject);
-    procedure btnDefaultsClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
     procedure btnClearClick(Sender: TObject);
     procedure edtFindChange(Sender: TObject);
     procedure edtFindKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure b_ImportClick(Sender: TObject);
-    procedure b_ExportClick(Sender: TObject);
+    procedure b_ToolsClick(Sender: TObject);
+    procedure mi_ImportClick(Sender: TObject);
+    procedure mi_ExportClick(Sender: TObject);
     procedure pc_NamesChange(Sender: TObject);
+    procedure mi_ResetToDefaultClick(Sender: TObject);
   private
     FOnImport: TOnImportLists;
     FOnExport: TOnExportLists;
@@ -141,6 +148,9 @@ type
     procedure UpdateOtherProps;
     procedure UpdateGridEvents;
     procedure ResizeGrids;
+    class procedure GetDefaultsList(_Defaults: TStrings); static;
+    procedure SetDefault(_Which: string);
+    procedure Import(const _fn: string);
   public
     class function Execute(_Owner: TComponent; _OnImport: TOnImportLists; _OnExport: TOnExportLists;
       _ValueListVcl, _ValueListFmx: TStringList; var _AutoShow: Boolean;
@@ -295,6 +305,31 @@ begin
   CopyValueList(FValueListFmx, _ValueListFmx);
 end;
 
+function GetModulePath: string;
+begin
+  Result := ExtractFilePath(GetModuleName(HInstance));
+end;
+
+class procedure TfmCompRenameConfig.GetDefaultsList(_Defaults: TStrings);
+var
+  Path: string;
+  sr: TSearchRec;
+  s: string;
+begin
+  Path := GetModulePath;
+  if 0 = FindFirst(Path + COMP_RENAME_NAME + '-*.ini', faAnyFile, sr) then begin
+    try
+      repeat
+        s := ChangeFileExt(sr.Name, '');
+        Delete(s, 1, Length(COMP_RENAME_NAME) + 1);
+        _Defaults.Add(s);
+      until 0 <> FindNext(sr);
+    finally
+      FindClose(sr);
+    end;
+  end;
+end;
+
 procedure TfmCompRenameConfig.FormCreate(Sender: TObject);
 const
   GridPad = 8;
@@ -322,6 +357,10 @@ resourcestring
     Result.Cells[0, 0] := ClassCaption;
     Result.Cells[1, 0] := RenameRuleCaption;
   end;
+var
+  st: TStringList;
+  i: Integer;
+  mi: TMenuItem;
 
 begin
   TControl_SetMinConstraints(Self);
@@ -343,6 +382,21 @@ begin
   FValueListFmx := TStringList.Create;
   UpdateGridEvents;
   ResizeGrids;
+
+  FreeAndNil(mi_ResetToDefault);
+  st := TStringList.Create;
+  try
+    GetDefaultsList(st);
+    for i := 0 to st.Count - 1 do begin
+      mi := TMenuItem.Create(Self);
+      mi.Caption := st[i];
+      mi.OnClick := mi_ResetToDefaultClick;
+      mi_ResetTo.Add(mi);
+    end;
+  finally
+    st.Free;
+  end;
+
 end;
 
 procedure TfmCompRenameConfig.FormDestroy(Sender: TObject);
@@ -801,87 +855,69 @@ begin
   edtFind.SetFocus;
 end;
 
-procedure TfmCompRenameConfig.btnDefaultsClick(Sender: TObject);
-
-  function CreateStringlist(const _Entries: array of string): TStringList;
-  var
-    i: Integer;
-  begin
-    if Length(_Entries) = 0 then
-      Result := nil
-    else begin
-      Result := TStringList.Create;
-      for i := 0 to Length(_Entries) - 1 do
-        Result.Add(_Entries[i]);
-    end;
-  end;
-
-var
-  Grid: TRenameStringGrid;
-  ValueList: TStringList;
-begin
-  Grid := GetActiveGrid;
-  ValueList := GetActiveValueList;
-  if ValueList.Count > 0 then
-    if ShowGxMessageBox(TDefaultRenameComponentsMessage) <> mrYes then
-      Exit; //==>
-
-  TStrings_FreeAllObjects(ValueList);
-  ValueList.Clear;
-  ValueList.AddObject('TAction=act', CreateStringlist(['Caption']));
-  ValueList.AddObject('TBitBtn=btn', CreateStringlist(['Caption', 'Enabled']));
-  ValueList.AddObject('TButton=btn', CreateStringlist(['Caption', 'Enabled']));
-  ValueList.AddObject('TCheckBox=chk', CreateStringlist(['Caption']));
-  ValueList.Add('TCheckListBox=lbx');
-  ValueList.AddObject('TComboBox=cbx', CreateStringlist(['Text=''''']));
-  ValueList.Add('TDrawGrid=grd');
-  ValueList.AddObject('TEdit=edt', CreateStringlist(['Text=''''']));
-  ValueList.AddObject('TGroupBox=gbx', CreateStringlist(['Caption']));
-  ValueList.Add('TImage=img');
-  ValueList.AddObject('TLabel=lbl', CreateStringlist(['Caption']));
-  ValueList.Add('TListBox=lbx');
-  ValueList.Add('TMaskEdit=edt');
-  ValueList.Add('TMemo=mmo');
-  ValueList.AddObject('TMenuItem=mnu', CreateStringlist(['Caption']));
-  ValueList.Add('TPageControl=pag');
-  ValueList.AddObject('TPanel=pnl', CreateStringlist(['Caption=''''']));
-  ValueList.AddObject('TRadioButton=rdo', CreateStringlist(['Caption=''''']));
-  ValueList.AddObject('TRadioGroup=rgp', CreateStringlist(['Caption=''''']));
-  ValueList.AddObject('TSpeedButton=btn', CreateStringlist(['Caption=''''']));
-  ValueList.Add('TStaticText=txt');
-  ValueList.AddObject('TStatusBar=|TheStatusBar|', CreateStringlist(['SimplePanel=True', 'SimpleText=']));
-  ValueList.Add('TStringGrid=grd');
-  ValueList.AddObject('TTabSheet=tab', CreateStringlist(['Caption=''''']));
-
-  CopyValuesToGrid(ValueList, Grid);
-  chkShowDialog.Checked := False;
-  chkAutoAdd.Checked := True;
-end;
-
 procedure TfmCompRenameConfig.btnHelpClick(Sender: TObject);
 begin
   GxContextHelp(Self, 42);
 end;
 
-procedure TfmCompRenameConfig.b_ExportClick(Sender: TObject);
+procedure TfmCompRenameConfig.mi_ExportClick(Sender: TObject);
 begin
   FOnExport(Self, FValueListVcl,FValueListFmx);
 end;
 
-procedure TfmCompRenameConfig.b_ImportClick(Sender: TObject);
+
+procedure TfmCompRenameConfig.mi_ImportClick(Sender: TObject);
+var
+  fn: string;
+begin
+  fn := 'GExperts_' + COMP_RENAME_NAME + '.ini';
+  if not ShowOpenDialog('Select file to import', 'ini', fn, 'INI files (*.ini)|*.ini') then
+    Exit; //==>
+  Import(fn);
+end;
+
+procedure TfmCompRenameConfig.Import(const _fn: string);
 var
   RulesListVcl: TStringList;
   RulesListFmx: TStringList;
 begin
+  if not FileExists(_fn) then
+    Exit; //==>
   InitializeNil(RulesListVcl, RulesListFmx);
   try
     RulesListVcl := TStringList.Create;
     RulesListFmx := TStringList.Create;
-    FOnImport(Self, RulesListVcl, RulesListFmx);
+    FOnImport(Self, _fn, RulesListVcl, RulesListFmx);
     SetLists(RulesListVcl, RulesListFmx);
   finally
     FreeAndNil(RulesListVcl, RulesListFmx);
   end;
+end;
+
+procedure TfmCompRenameConfig.SetDefault(_Which: string);
+begin
+  if (FValueListVcl.Count > 0) or (FValueListFmx.Count > 0) then begin
+    if ShowGxMessageBox(TDefaultRenameComponentsMessage) <> mrYes then
+      Exit; //==>
+  end;
+
+  _Which := StringReplace(_Which, '&', '', [rfReplaceAll]);
+  Import(COMP_RENAME_NAME + '-' + _Which + '.ini');
+end;
+
+procedure TfmCompRenameConfig.mi_ResetToDefaultClick(Sender: TObject);
+begin
+  SetDefault(TMenuItem(Sender).Caption);
+end;
+
+procedure TfmCompRenameConfig.b_ToolsClick(Sender: TObject);
+var
+  Point: TPoint;
+begin
+  Point.X := b_Tools.Width;
+  Point.Y := 0;
+  Point := b_Tools.ClientToScreen(Point);
+  pm_Extra.Popup(Point.X, Point.Y);
 end;
 
 procedure TfmCompRenameConfig.acOtherPropertiesExecute(Sender: TObject);
