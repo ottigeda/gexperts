@@ -17,6 +17,9 @@ resourcestring
 type
   TEditMode = (emRead, emEdit, emInsert);
 
+  TOnExportLists = procedure(_Sender: TObject; _RulesListVcl, _RulesListFmx: TStringList) of object;
+  TOnImportLists = procedure(_Sender: TObject; _RulesListVcl, _RulesListFmx: TStringList) of object;
+
   TOnRowHeaderClick = procedure(Sender: TObject; Col: Integer) of object;
 
   TRenameStringGrid = class(TStringGrid)
@@ -110,8 +113,8 @@ type
     procedure b_ExportClick(Sender: TObject);
     procedure pc_NamesChange(Sender: TObject);
   private
-    FOnImport: TNotifyEvent;
-    FOnExport: TNotifyEvent;
+    FOnImport: TOnImportLists;
+    FOnExport: TOnExportLists;
     FValueListVcl: TStringList;
     FValueListFmx: TStringList;
     FGridVcl: TRenameStringGrid;
@@ -131,16 +134,17 @@ type
     procedure SortByRule;
     procedure GetData(_ValueListVcl, _ValueListFmx: TStringList; out _AutoShow, _AutoAdd: Boolean;
       out _FormWidth, _FormHeight: Integer);
+    procedure SetData(_ValueListVcl, _ValueListFmx: TStringList; _AutoShow, _AutoAdd: Boolean;
+      _FormWidth, _FormHeight: Integer; const _Selected: string);
+    procedure SetLists(_ValueListVcl, _ValueListFmx: TStringList);
     procedure HandleOnGridClick(_Sender: TObject);
     procedure UpdateOtherProps;
     procedure UpdateGridEvents;
     procedure ResizeGrids;
   public
-    class function Execute(_Owner: TComponent; _OnImport, _OnExport: TNotifyEvent;
+    class function Execute(_Owner: TComponent; _OnImport: TOnImportLists; _OnExport: TOnExportLists;
       _ValueListVcl, _ValueListFmx: TStringList; var _AutoShow: Boolean;
       var _AutoAdd: Boolean; var _FormWidth, _FormHeight: Integer; const _Selected: string): Boolean;
-    procedure SetData(_ValueListVcl, _ValueListFmx: TStringList; _AutoShow, _AutoAdd: Boolean;
-      _FormWidth, _FormHeight: Integer; const _Selected: string);
   end;
 
 implementation
@@ -149,7 +153,7 @@ implementation
 
 uses
   Windows, SysUtils, Math, StrUtils,
-  u_dzClassUtils, u_dzVclUtils, u_dzStringUtils,
+  u_dzClassUtils, u_dzVclUtils, u_dzStringUtils, u_dzMiscUtils,
   GX_GenericUtils, GX_OtaUtils, GX_SharedImages, GX_GxUtils, GX_CompRenameAdvanced,
   GX_MessageBox;
 
@@ -175,7 +179,7 @@ end;
 
 { TfmCompRenameConfig }
 
-class function TfmCompRenameConfig.Execute(_Owner: TComponent; _OnImport, _OnExport: TNotifyEvent;
+class function TfmCompRenameConfig.Execute(_Owner: TComponent; _OnImport: TOnImportLists; _OnExport: TOnExportLists;
   _ValueListVcl, _ValueListFmx: TStringList; var _AutoShow: Boolean;
   var _AutoAdd: Boolean; var _FormWidth, _FormHeight: Integer; const _Selected: string): Boolean;
 var
@@ -217,13 +221,8 @@ begin
   end;
 end;
 
-procedure TfmCompRenameConfig.SetData(_ValueListVcl, _ValueListFmx: TStringList;
-  _AutoShow, _AutoAdd: Boolean; _FormWidth, _FormHeight: Integer; const _Selected: string);
+procedure TfmCompRenameConfig.SetLists(_ValueListVcl, _ValueListFmx: TStringList);
 begin
-  Width := _FormWidth;
-  Height := _FormHeight;
-  chkShowDialog.Checked := _AutoShow;
-  chkAutoAdd.Checked := _AutoAdd;
   CopyValueList(_ValueListVcl, FValueListVcl);
   CopyValueList(_ValueListFmx, FValueListFmx);
   CopyValuesToGrid(FValueListVcl, FGridVcl);
@@ -237,9 +236,21 @@ begin
     pc_Names.ActivePage := ts_NamesVcl;
   end;
   UpdateGridEvents;
+  edtFind.Text := '';
+  UpdateOtherProps;
+end;
+
+procedure TfmCompRenameConfig.SetData(_ValueListVcl, _ValueListFmx: TStringList;
+  _AutoShow, _AutoAdd: Boolean; _FormWidth, _FormHeight: Integer; const _Selected: string);
+begin
+  Width := _FormWidth;
+  Height := _FormHeight;
+  chkShowDialog.Checked := _AutoShow;
+  chkAutoAdd.Checked := _AutoAdd;
+
+  SetLists(_ValueListVcl, _ValueListFmx);
 
   edtFind.Text := _Selected;
-  UpdateOtherProps;
 end;
 
 procedure TfmCompRenameConfig.UpdateGridEvents;
@@ -854,12 +865,23 @@ end;
 
 procedure TfmCompRenameConfig.b_ExportClick(Sender: TObject);
 begin
-  FOnExport(Self);
+  FOnExport(Self, FValueListVcl,FValueListFmx);
 end;
 
 procedure TfmCompRenameConfig.b_ImportClick(Sender: TObject);
+var
+  RulesListVcl: TStringList;
+  RulesListFmx: TStringList;
 begin
-  FOnImport(Self);
+  InitializeNil(RulesListVcl, RulesListFmx);
+  try
+    RulesListVcl := TStringList.Create;
+    RulesListFmx := TStringList.Create;
+    FOnImport(Self, RulesListVcl, RulesListFmx);
+    SetLists(RulesListVcl, RulesListFmx);
+  finally
+    FreeAndNil(RulesListVcl, RulesListFmx);
+  end;
 end;
 
 procedure TfmCompRenameConfig.acOtherPropertiesExecute(Sender: TObject);
