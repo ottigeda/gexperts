@@ -126,6 +126,7 @@ type
     FValueListFmx: TStringList;
     FGridVcl: TRenameStringGrid;
     FGridFmx: TRenameStringGrid;
+    class procedure GetDefaultsList(_Defaults: TStrings);
     function GetActiveGrid: TRenameStringGrid;
     function GetActiveValueList: TStringList;
     procedure CopyValuesToGrid(_Values: TStringList; _Grid: TRenameStringGrid);
@@ -148,7 +149,6 @@ type
     procedure UpdateOtherProps;
     procedure UpdateGridEvents;
     procedure ResizeGrids;
-    class procedure GetDefaultsList(_Defaults: TStrings); static;
     procedure SetDefault(_Which: string);
     procedure Import(const _fn: string);
   public
@@ -895,6 +895,8 @@ begin
 end;
 
 procedure TfmCompRenameConfig.SetDefault(_Which: string);
+var
+  Path: string;
 begin
   if (FValueListVcl.Count > 0) or (FValueListFmx.Count > 0) then begin
     if ShowGxMessageBox(TDefaultRenameComponentsMessage) <> mrYes then
@@ -902,7 +904,8 @@ begin
   end;
 
   _Which := StringReplace(_Which, '&', '', [rfReplaceAll]);
-  Import(COMP_RENAME_NAME + '-' + _Which + '.ini');
+  Path := GetModulePath;
+  Import(Path + COMP_RENAME_NAME + '-' + _Which + '.ini');
 end;
 
 procedure TfmCompRenameConfig.mi_ResetToDefaultClick(Sender: TObject);

@@ -108,6 +108,7 @@ implementation
 uses
   SysUtils, Windows, Menus, StrUtils, IniFiles, Graphics, TypInfo,
   u_dzClassUtils, u_dzVclUtils, u_dzStringUtils,
+  {$IFOPT D+}GX_DbugIntf, {$ENDIF}
   GX_CompRenameConfig, GX_OtaUtils, GX_GenericUtils, GX_IdeUtils;
 
 type
@@ -150,7 +151,8 @@ type
     FFormHeight: Integer;
     function DoRename(const Component: IOTAComponent; UseRules: Boolean): TModalResult;
     procedure HandleOnExport(_Sender: TObject; _RulesListVcl, _RulesListFmx: TStringList);
-    procedure HandleOnImport(_Sender: TObject; _RulesListVcl, _RulesListFmx: TStringList);
+    procedure HandleOnImport(_Sender: TObject; const _fn: string;
+      _RulesListVcl, _RulesListFmx: TStringList);
     function GetActiveRenameRuleList: TStringList;
     class function TryLoadRules(_Settings: IExpertSettings; const _Section: string;
       _RulesList: TStringList): Boolean;
@@ -662,21 +664,22 @@ begin
     SaveSettings;
 end;
 
-procedure TRenameComponentsExpert.HandleOnImport(_Sender: TObject; _RulesListVcl, _RulesListFmx: TStringList);
+procedure TRenameComponentsExpert.HandleOnImport(_Sender: TObject; const _fn: string;
+  _RulesListVcl, _RulesListFmx: TStringList);
 var
   GXSettings: TGExpertsSettings;
   Settings: IExpertSettings;
   ini: TMemIniFile;
-  fn: string;
 begin
-  fn := 'GExperts_' + Self.GetName + '.ini';
-  if not ShowOpenDialog('Select file to import', 'ini', fn, 'INI files (*.ini)|*.ini') then
+  {$IFOPT D+} SendDebugFmt('RenameComponents importing from file %s', [_fn]); {$ENDIF}
+  if not FileExists(_fn) then begin
+    {$IFOPT D+} SendDebug('File does not exist'); {$ENDIF}
     Exit; //==>
-  if not FileExists(fn) then
-    Exit; //==>
+    end;
+
 
   GXSettings := nil;
-  ini := TMemInifile.Create(fn);
+  ini := TMemInifile.Create(_fn);
   try
     GXSettings := TGExpertsSettings.Create(ini, True);
     Ini := nil;
@@ -685,6 +688,7 @@ begin
     if not TryLoadRules(Settings, 'vcl', _RulesListVcl) then
       TryLoadRules(Settings, 'Items', _RulesListVcl);
     TryLoadRules(Settings, 'fmx', _RulesListFmx);
+{$IFOPT D+}SendDebugFmt('RenameComponents imported %d vcl and %d fmx rules', [_RulesListVcl.Count, _RulesListFmx.Count]); {$ENDIF}
   finally
     FreeAndNil(GXSettings);
     FreeAndNil(ini);
@@ -1052,7 +1056,7 @@ end;
 
 class function TRenameComponentsExpert.GetName: string;
 begin
-  Result := 'RenameComponents';
+  Result := COMP_RENAME_NAME;
 end;
 
 function TRenameComponentsExpert.HasConfigOptions: Boolean;
