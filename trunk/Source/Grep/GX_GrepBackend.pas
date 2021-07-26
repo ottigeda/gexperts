@@ -1880,14 +1880,20 @@ end;
 function TGrepHistoryList.SearchHistoryItem(AGrepSettings: TGrepSettings; var AHistoryItem: TGrepHistoryListItem): Integer;
 begin
   AHistoryItem := nil;
-  for Result := 0 to HistoryList.Count - 1 do
+
+  Result := 0;
+  while Result <= HistoryList.Count - 1 do
   begin
     AHistoryItem := HistoryItems[Result];
+
     if not FEnabled and (Result = 0) then
       Break;
+
     if AnsiSameText(AHistoryItem.SearchText, AGrepSettings.Pattern) then
       Break;
+
     AHistoryItem := nil;
+    Inc(Result);
   end;
 end;
 
