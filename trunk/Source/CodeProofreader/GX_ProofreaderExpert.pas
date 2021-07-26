@@ -63,13 +63,12 @@ var
   Dlg: TfmProofreaderConfig;
   FileName: string;
 begin
+  Data := FProofreaderData;
+  if Data = nil then begin
+    // the expert is not active, crate a local instance of the data just for configuring it
+    Data := TProofreaderData.Create;
+  end;
   try
-    Data := FProofreaderData;
-    if Data = nil then begin
-      // the expert is not active, crate a local instance of the data just for configuring it
-      Data := TProofreaderData.Create;
-    end;
-
     FileName := Data.GetXmlFileName;
     if (not FileExists(FileName)) and
       (ShowGxMessageBox(TCreateDefaultTablesMessage, FileName) = mrYes) then
