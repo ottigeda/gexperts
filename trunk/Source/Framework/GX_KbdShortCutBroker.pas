@@ -239,7 +239,7 @@ begin
   // themselves. Hence we must guarantee that the
   // internal list to keep their references does
   // not destroy them, too.
-  Assert(AShortCutList.OwnsObjects = False);
+  Assert(not AShortCutList.OwnsObjects);
   Assert(AShortCutList.Remove(AGxKeyboardShortCut) <> -1);
 
   if not Updating then
