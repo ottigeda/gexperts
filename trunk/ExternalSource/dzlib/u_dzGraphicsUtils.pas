@@ -1119,6 +1119,12 @@ begin
   _Canvas.Polygon([_Tip, Point(BaselineLeft, BaselineY), Point(BaselineRight, BaselineY)]);
 end;
 
+// Inlined method must be iomplemented before it is called
+function GetFastLuminance(_Red, _Green, _Blue: Byte): Byte;
+begin
+  Result := Round(0.299 * _Red + 0.587 * _Green + 0.114 * _Blue);
+end;
+
 function TdzRgbTriple_GetFastLuminance(const _Triple: TdzRgbTriple): Byte;
 begin
   Result := GetFastLuminance(_Triple.Red, _Triple.Green, _Triple.Blue);
@@ -1130,11 +1136,6 @@ begin
   _Triple.Red := GetRValue(_Color);
   _Triple.Green := GetGValue(_Color);
   _Triple.Blue := GetBValue(_Color);
-end;
-
-function GetFastLuminance(_Red, _Green, _Blue: Byte): Byte;
-begin
-  Result := Round(0.299 * _Red + 0.587 * _Green + 0.114 * _Blue);
 end;
 
 procedure GetRgbHls(_Red, _Green, _Blue: Byte; out _Hls: THlsRec);
@@ -1173,6 +1174,12 @@ end;
 
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
 { TdzRgbTriple }
+
+// Inlined method must be iomplemented before it is called
+function TdzRgbTriple.GetFastLuminance: Byte;
+begin
+  Result := Round(0.299 * Red + 0.587 * Green + 0.114 * Blue);
+end;
 
 function TdzRgbTriple.GetBrightness(_Channel: TRgbBrightnessChannelEnum): Byte;
 begin
@@ -1219,11 +1226,6 @@ begin
   Red := _Value;
   Green := _Value;
   Blue := _Value;
-end;
-
-function TdzRgbTriple.GetFastLuminance: Byte;
-begin
-  Result := Round(0.299 * Red + 0.587 * Green + 0.114 * Blue);
 end;
 
 class function TdzRgbTriple.GetFastLuminance(_Red, _Green, _Blue: Byte): Byte;
@@ -1411,6 +1413,8 @@ var
   Hue: Word;
   Saturation: Word;
 begin
+  Result := 0;
+
   GetHls(Hue, Result, Saturation)
 end;
 
@@ -1897,6 +1901,18 @@ begin
   end;
 end;
 
+// Inlined method muist be implemented before it is used
+function TryCalcEllipsePoints(_x0, _y0, _a, _b, _x: Extended; out _y1, _y2: Extended): Boolean;
+var
+  y: Extended;
+begin
+  Result := TryCalcEllipsePoint(_a, _b, _x - _x0, y);
+  if Result then begin
+    _y1 := -y + _y0;
+    _y2 := y + _y0;
+  end;
+end;
+
 procedure TBitmap_BlurEllipse(_bmp: TBitmap; _Left, _Top, _Right, _Bottom: Integer; _Passes: Integer);
 var
   x, y: Integer;
@@ -2013,17 +2029,6 @@ begin
   Result := (CompareValue(sq, 0) = GreaterThanValue);
   if Result then
     _y := _b * Sqrt(sq);
-end;
-
-function TryCalcEllipsePoints(_x0, _y0, _a, _b, _x: Extended; out _y1, _y2: Extended): Boolean;
-var
-  y: Extended;
-begin
-  Result := TryCalcEllipsePoint(_a, _b, _x - _x0, y);
-  if Result then begin
-    _y1 := -y + _y0;
-    _y2 := y + _y0;
-  end;
 end;
 
 procedure TBitmap24_FilterPixels(_SrcBmp, _DstBmp: TBitmap; _Callback: TPixel24FilterCallback);
@@ -2640,6 +2645,18 @@ begin
   end;
 end;
 
+// Inlined method must be iomplemented before it is called
+function AddToPtr(const _Ptr: Pointer; _Offset: NativeInt): Pointer;
+begin
+  Result := Pointer(NativeInt(_Ptr) + _Offset);
+end;
+
+// Inlined method must be iomplemented before it is called
+function PtrDiff(const _Ptr1, _Ptr2: Pointer): NativeInt;
+begin
+  Result := NativeInt(_Ptr1) - NativeInt(_Ptr2);
+end;
+
 procedure TBitmap8_Sharpen(_SrcBmp, _DstBmp: TBitmap; const _AlphaMap: TSingleMatrix);
 type
   PPixel = PByte;
@@ -2963,16 +2980,6 @@ begin
     _Src,
     Point(0, 0),
     _Rop);
-end;
-
-function AddToPtr(const _Ptr: Pointer; _Offset: NativeInt): Pointer;
-begin
-  Result := Pointer(NativeInt(_Ptr) + _Offset);
-end;
-
-function PtrDiff(const _Ptr1, _Ptr2: Pointer): NativeInt;
-begin
-  Result := NativeInt(_Ptr1) - NativeInt(_Ptr2);
 end;
 
 function TBitmap8_TryCalcAverage(_bmp: TBitmap; _LowCutoff, _HighCutoff: Byte;

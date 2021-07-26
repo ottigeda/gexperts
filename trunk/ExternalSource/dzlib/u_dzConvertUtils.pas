@@ -664,11 +664,7 @@ begin
     Result := '0' + Result;
 end;
 
-function ReduceToByte(const _Value: Integer): Byte;
-begin
-  Result := ReduceToUInt8(_Value);
-end;
-
+// Inlined method must be implemented before it is called
 function ReduceToUInt8(const _Value: Integer): UInt8;
 begin
   if _Value < 0 then
@@ -677,6 +673,11 @@ begin
     Result := MaxUInt8
   else
     Result := _Value;
+end;
+
+function ReduceToByte(const _Value: Integer): Byte;
+begin
+  Result := ReduceToUInt8(_Value);
 end;
 
 function ReduceToInt8(const _Value: Integer): Int8;

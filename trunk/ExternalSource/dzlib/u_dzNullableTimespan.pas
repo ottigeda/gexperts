@@ -161,6 +161,14 @@ end;
 
 { TNullableTimespan }
 
+// Inlined method must be implemented before called
+procedure TNullableTimespan.SetDaysAndMicroseconds(_FullDays: Int64; _MicroSeconds: Int64);
+begin
+  FFullDays := _FullDays;
+  FMicroSeconds := _MicroSeconds;
+  FIsValid := GetNullableTypesFlagInterface;
+end;
+
 procedure TNullableTimespan.AssignDays(_Days: Double);
 begin
   SetDaysAndMicroseconds(Trunc(_Days), Round(Frac(_Days) / OneMicrosecond));
@@ -636,13 +644,6 @@ procedure TNullableTimespan.CheckIsValid;
 begin
   if not IsValid then
     raise EInvalidValue.Create(_('NullableTimespan value is invalid'));
-end;
-
-procedure TNullableTimespan.SetDaysAndMicroseconds(_FullDays: Int64; _MicroSeconds: Int64);
-begin
-  FFullDays := _FullDays;
-  FMicroSeconds := _MicroSeconds;
-  FIsValid := GetNullableTypesFlagInterface;
 end;
 
 function TNullableTimespan.InDays: Double;
