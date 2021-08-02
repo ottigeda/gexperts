@@ -23,7 +23,7 @@ implementation
 uses
   Graphics,
   GX_GetIdeVersion,
-  DbugIntf,
+  GX_DbugIntf,
   u_dzStringUtils;
 
 procedure TStringGrid_DrawCellFixed(_sg: TStringGrid; const _Text: string; const _Rect: TRect;
