@@ -1879,22 +1879,22 @@ end;
 
 function TGrepHistoryList.SearchHistoryItem(AGrepSettings: TGrepSettings; var AHistoryItem: TGrepHistoryListItem): Integer;
 begin
-  AHistoryItem := nil;
-
   Result := 0;
-  while Result <= HistoryList.Count - 1 do
-  begin
+  while Result < HistoryList.Count do begin
     AHistoryItem := HistoryItems[Result];
 
-    if not FEnabled and (Result = 0) then
-      Break;
+    if not FEnabled and (Result = 0) then begin
+      // if the history is disabled, we have a max of one entry which will be changned every time
+      // todo: Refactor this to make it obvious
+      Exit; //==>
+    end;
 
     if AnsiSameText(AHistoryItem.SearchText, AGrepSettings.Pattern) then
-      Break;
+      Exit; //==>
 
-    AHistoryItem := nil;
     Inc(Result);
   end;
+  AHistoryItem := nil;
 end;
 
 function TGrepHistoryList.AddItem(AGrepSettings: TGrepSettings; AResultList: TStrings; ASearchTime: TDateTime): Integer;
