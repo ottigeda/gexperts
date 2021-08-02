@@ -742,7 +742,9 @@ type
     /// @param Mask is the filename mask to match
     /// @param Filename is the name of the file which has been found, only valid if result <> mfNotFound
     /// @returns mfNotFound, if no file was found, or mfDirectory, mfFile or mfSpecial
-    ///          describing the type of the file which has been found </summary>
+    ///          describing the type of the file which has been found.
+    /// @NOTE: If there are multiple matches, the file name returned is not deterministic.
+    ///        On an NTFS volume it is the last one in the NTFS sort order but that's not guaranteed. </summary>
     class function FindMatchingFile(const _Mask: string; out _Filename: string): TMatchingFileResult; overload;
     class function FindMatchingFile(const _Mask: string): TMatchingFileResult; overload;
 
@@ -1059,7 +1061,7 @@ type
     /// replaces the drive part of the path with the given NewDrive. </summary>
     procedure ReplaceDrive(const _NewDrive: string);
     ///<summary>
-    /// Replaces the directory part with the given NewDir </summary>
+    /// Replaces the directory part (including the drive) with the given NewDir </summary>
     procedure ReplaceDirectory(const _NewDir: string);
     ///<summary>
     /// Replaces filename and extension(s) with the given filename </summary>

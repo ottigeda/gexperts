@@ -12,14 +12,13 @@ uses
 
 type
   TStopwatch = record
-{$IFDEF DELPHI2007_UP}
-// enhanced record support in Delphi 2006 was not stable
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
   private
 {$ENDIF}
     FElapsedTicks: Int64;
     FIsRunning: Boolean;
     FStartTicks: Int64;
-{$IFDEF DELPHI2007_UP}
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
     function GetElapsedDateTimeTicks: Int64;
   public
     class function Create: TStopwatch; static;
@@ -67,7 +66,7 @@ var
   gblIsHighResolution: Boolean;
   gblTickFrequency: Double;
 
-{$IFDEF DELPHI2007_UP}
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 { TStopwatch }
 
 class function TStopwatch.Create: TStopwatch;
@@ -248,7 +247,7 @@ begin
   end;
 end;
 
-{$IFDEF DELPHI2007_UP}
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 procedure Test;
 var
   Stopwatch: TStopwatch;

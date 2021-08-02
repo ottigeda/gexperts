@@ -1413,8 +1413,6 @@ var
   Hue: Word;
   Saturation: Word;
 begin
-  Result := 0;
-
   GetHls(Hue, Result, Saturation)
 end;
 
