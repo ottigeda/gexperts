@@ -537,17 +537,11 @@ var
 begin
   FreeAndNil(FUnitExportParserThread);
 
-  if FDisableCache then
-    CacheDir := ''
-  else
-    CacheDir := ConfigInfo.CachingPath + 'UsesExpertCache';
-
   Symbols := nil;
   Paths := TStringList.Create;
   try
     Symbols := TStringList.Create;
     TUnitExportsParser.AddDefaultSymbols(Symbols);
-
 
   // since these symbols are project and configuration specific, we cannot really use them
   // to generate a generic cache of symbols.
@@ -558,12 +552,14 @@ begin
 {$IFDEF GX_DELPHIXE2_UP}
     PlatformName := GxOtaGetProjectPlatform;
     if SameText(PlatformName, cWin64Platform) then begin
+      CacheDir := PlatformName;
       Symbols.Add('ASSEMBLER');
       Symbols.Add('CPU64BITS');
       Symbols.Add('CPUX64');
       Symbols.Add('MSWINDOWS');
       Symbols.Add('WIN64');
     end else if SameText(PlatformName, cOSX32Platform) then begin
+      CacheDir := PlatformName;
       Symbols.Add('MACOS');
       Symbols.Add('MACOS32');
       Symbols.Add('POSIX');
@@ -577,6 +573,7 @@ begin
       Symbols.Add('PIC');
       Symbols.Add('UNDERSCOREIMPORTNAME');
     end else if SameText(PlatformName, cOSX64Platform) then begin
+      CacheDir := PlatformName;
       Symbols.Add('CPU64BITS');
       Symbols.Add('CPU386');
       Symbols.Add('CPUX64');
@@ -594,6 +591,7 @@ begin
       Symbols.Add('WEAKINSTREF'); // only up to 10.3
 {$ENDIF}
     end else if SameText(PlatformName, ciOSDevice32Platform) then begin
+      CacheDir := PlatformName;
       Symbols.Add('CPU32BITS');
       Symbols.Add('CPUARM');
       Symbols.Add('CPUARM32');
@@ -613,6 +611,7 @@ begin
       Symbols.Add('WEAKINSTREF'); // only up to 10.3
 {$ENDIF}
     end else if SameText(PlatformName, ciOSSimulatorPlatform) then begin
+      CacheDir := PlatformName;
       Symbols.Add('ALIGN_STACK');
       Symbols.Add('ASSEMBLER');
       Symbols.Add('CPU32BITS');
@@ -634,6 +633,7 @@ begin
       Symbols.Add('WEAKINSTREF'); // only up to 10.3
 {$ENDIF}
     end else if SameText(PlatformName, cAndroidPlatform) then begin
+      CacheDir := PlatformName;
       Symbols.Add('ANDROID');
       Symbols.Add('ANDROID32');
       Symbols.Add('CPU32BITS');
@@ -651,6 +651,7 @@ begin
       Symbols.Add('WEAKINSTREF'); // only up to 10.3
 {$ENDIF}
     end else if SameText(PlatformName, ciOSDevice64Platform) then begin
+      CacheDir := PlatformName;
       Symbols.Add('CPU64BITS');
       Symbols.Add('CPUARM');
       Symbols.Add('CPUARM64');
@@ -670,6 +671,7 @@ begin
       Symbols.Add('WEAKINSTREF'); // only up to 10.3
 {$ENDIF}
     end else if SameText(PlatformName, cLinux64Platform) then begin
+      CacheDir := PlatformName;
       Symbols.Add('LINUX');
       Symbols.Add('LINUX64');
       Symbols.Add('POSIX');
@@ -688,6 +690,7 @@ begin
       Symbols.Add('WEAKINSTREF'); // only up to 10.
 {$ENDIF}
     end else if SameText(PlatformName, cAndroid64Platform) then begin
+      CacheDir := PlatformName;
       Symbols.Add('POSIX');
       Symbols.Add('POSIX64');
       Symbols.Add('ANDROID');
@@ -702,6 +705,7 @@ begin
     end else if SameText(PlatformName, cWin32Platform) or (PlatformName = '') then
 {$ENDIF}begin
       // CONSOLE?
+      CacheDir := '';
       Symbols.Add('ASSEMBLER');
       Symbols.Add('CPU32BITS');
       Symbols.Add('CPU386');
@@ -711,6 +715,12 @@ begin
       Symbols.Add('UNDERSCOREIMPORTNAME');
       Symbols.Add('WIN32');
     end;
+
+    if FDisableCache then
+      CacheDir := ''
+    else
+      CacheDir := ConfigInfo.CachingPath + 'UsesExpertCache\' + CacheDir;
+
   // We only take identifiers from units listed in the search path, so one could be tempted
   // to only parse these units. But the effective library path does not contain the browsing
   // path for units for which only dcu files are available in the library path.
@@ -723,10 +733,6 @@ begin
       FreeAndNil(sl);
     end;
 
-    if FDisableCache then
-      CacheDir := ''
-    else
-      CacheDir := ConfigInfo.CachingPath + 'UsesExpertCache';
     if FParseAll then begin
 {$IFOPT D+}
       SendDebug('Running UnitExportParser thread to get identifiers from all units in search path');
