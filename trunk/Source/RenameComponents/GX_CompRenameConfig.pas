@@ -129,6 +129,7 @@ type
     class procedure GetDefaultsList(_Defaults: TStrings);
     function GetActiveGrid: TRenameStringGrid;
     function GetActiveValueList: TStringList;
+    procedure SetActiveValueList(_ValueList: TStringList);
     procedure CopyValuesToGrid(_Values: TStringList; _Grid: TRenameStringGrid);
     procedure CopyGridToValues(_Grid: TRenameStringGrid; var _Values: TStringList);
     function IsEmptyRow(aGrid: TStringGrid; ARow: Integer): Boolean;
@@ -290,6 +291,14 @@ begin
     Result := FValueListVcl
   else
     Result := FValueListFmx;
+end;
+
+procedure TfmCompRenameConfig.SetActiveValueList(_ValueList: TStringList);
+begin
+  if pc_Names.ActivePage = ts_NamesVcl then
+    FValueListVcl := _ValueList
+  else
+    FValueListFmx := _ValueList;
 end;
 
 procedure TfmCompRenameConfig.GetData(_ValueListVcl, _ValueListFmx: TStringList;
@@ -633,9 +642,11 @@ var
 begin
   Grid := GetActiveGrid;
   ValueList := GetActiveValueList;
-  CopyGridToValues(Grid,ValueList);
+  CopyGridToValues(Grid, ValueList);
+  // we just created a new ValueList and freed the old one so we need to assign it to the field
+  SetActiveValueList(ValueList);
   ValueList.CustomSort(CompareClassFunc);
-  CopyValuesToGrid(ValueList,Grid);
+  CopyValuesToGrid(ValueList, Grid);
 end;
 
 procedure TfmCompRenameConfig.acSortByClassExecute(Sender: TObject);
@@ -651,6 +662,8 @@ begin
   Grid := GetActiveGrid;
   ValueList := GetActiveValueList;
   CopyGridToValues(Grid, ValueList);
+  // we just created a new ValueList and freed the old one so we need to assign it to the field
+  SetActiveValueList(ValueList);
   ValueList.CustomSort(CompareRuleFunc);
   CopyValuesToGrid(ValueList, Grid);
 end;
