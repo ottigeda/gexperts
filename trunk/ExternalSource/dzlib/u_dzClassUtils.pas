@@ -1680,7 +1680,7 @@ var
   Len: Integer;
   s: string;
 begin
-  _Ini.ReadSections(_Section, _Sections);
+  _Ini.ReadSections(_Sections);
   Len := Length(_Section);
   if Len = 0 then begin
     // we only want top level sections, that is those that do not contain a '\'
@@ -1690,11 +1690,16 @@ begin
     end;
   end else begin
     for i := _Sections.Count - 1 downto 0 do begin
-      s := TailStr(_Sections[i], Len + 2);
-      if (s = '') or (Pos('\', s) > 0) then
+     s := _Sections[i];
+      if not SameText(Copy(s, 1, Len), _Section) or (Copy(s, Len + 1, 1) <> '\') then
         _Sections.Delete(i)
-      else begin
-        _Sections[i] := s;
+        else begin
+        s := TailStr(s, Len + 2);
+        if (s = '') or (Pos('\', s) > 0) then
+          _Sections.Delete(i)
+        else begin
+          _Sections[i] := s;
+        end;
       end;
     end;
   end;
