@@ -155,7 +155,7 @@ type
       _RulesListVcl, _RulesListFmx: TStringList);
     function GetActiveRenameRuleList: TStringList;
     class function TryLoadRules(_Settings: IExpertSettings; const _Section: string;
-      _RulesList: TStringList): Boolean;
+      _TryRoot: Boolean; _RulesList: TStringList): Boolean;
     class procedure SaveRules(_Settings: IExpertSettings; const _Section: string;
       _RulesList: TStringList);
   protected
@@ -685,9 +685,9 @@ begin
     Ini := nil;
     Settings :=TExpertSettingsEx.Create(GXSettings, ConfigurationKey);
     GXSettings := nil;
-    if not TryLoadRules(Settings, 'vcl', _RulesListVcl) then
-      TryLoadRules(Settings, 'Items', _RulesListVcl);
-    TryLoadRules(Settings, 'fmx', _RulesListFmx);
+    if not TryLoadRules(Settings, 'vcl', False, _RulesListVcl) then
+      TryLoadRules(Settings, 'Items', False, _RulesListVcl);
+    TryLoadRules(Settings, 'fmx', False, _RulesListFmx);
 {$IFOPT D+}SendDebugFmt('RenameComponents imported %d vcl and %d fmx rules', [_RulesListVcl.Count, _RulesListFmx.Count]); {$ENDIF}
   finally
     FreeAndNil(GXSettings);
@@ -1070,9 +1070,10 @@ begin
 end;
 
 class function TRenameComponentsExpert.TryLoadRules(_Settings: IExpertSettings; const _Section: string;
-  _RulesList: TStringList): Boolean;
+  _TryRoot: Boolean; _RulesList: TStringList): Boolean;
 
-  procedure ReadOtherProps(_Settings: IExpertSettings; const _Section: string; _RulesList: TStringList);
+  procedure ReadOtherProps(_Settings: IExpertSettings; const _Section: string; _TryRoot: Boolean;
+    _RulesList: TStringList);
   var
     OtherProps: TStringList;
     i: Integer;
@@ -1083,6 +1084,9 @@ class function TRenameComponentsExpert.TryLoadRules(_Settings: IExpertSettings; 
         if not Assigned(OtherProps) then
           OtherProps := TStringList.Create;
         _Settings.ReadStrings(_Section + _RulesList.Names[i], OtherProps);
+        if _TryRoot and (OtherProps.Count = 0) then begin
+          _Settings.ReadStrings(_RulesList.Names[i], OtherProps);
+        end;
         if OtherProps.Count > 0 then begin
           _RulesList.Objects[i] := OtherProps;
           OtherProps := nil;
@@ -1099,7 +1103,7 @@ begin
   if Result then begin
     _Settings.ReadStrings(_Section, _RulesList);
     _RulesList.Sort;
-    ReadOtherProps(_Settings, AddSlash(_Section), _RulesList);
+    ReadOtherProps(_Settings, AddSlash(_Section), _TryRoot, _RulesList);
   end;
 end;
 
@@ -1113,12 +1117,12 @@ begin
   FFormHeight := _Settings.ReadInteger('Height', 0);
 
   // new configuration under .\vcl
-  if not TryLoadRules(_Settings, 'vcl', FRenameRuleListVcl) then begin
+  if not TryLoadRules(_Settings, 'vcl', True, FRenameRuleListVcl) then begin
     // older configuration under .\Items
-    TryLoadRules(_Settings, 'Items', FRenameRuleListVcl);
+    TryLoadRules(_Settings, 'Items', True, FRenameRuleListVcl);
   end;
 
-  TryLoadRules(_Settings, 'fmx', FRenameRuleListFmx);
+  TryLoadRules(_Settings, 'fmx', False, FRenameRuleListFmx);
 end;
 
 class procedure TRenameComponentsExpert.SaveRules(_Settings: IExpertSettings; const _Section: string; _RulesList: TStringList);
@@ -1145,10 +1149,25 @@ procedure TRenameComponentsExpert.InternalSaveSettings(_Settings: IExpertSetting
 var
   i: Integer;
   cnt: integer;
+  Sections: TStringList;
+  s: string;
 begin
   inherited InternalSaveSettings(_Settings);
   Assert(Assigned(FRenameRuleListVcl));
   Assert(Assigned(FRenameRuleListFmx));
+
+  // clean up older sub sections which were directly in the section.
+  Sections := TStringList.Create;
+  try
+    _Settings.ReadSections(Sections);
+    for i := 0 to Sections.Count - 1 do begin
+     s := sections[i];
+      if not SameText(s, 'vcl') and not SameText(s, 'fmx') then
+        _Settings.EraseSection(s);
+    end;
+  finally
+    FreeAndNil(Sections);
+  end;
 
   if _Settings.ValueExists('Count') then begin
     // clean up old entries that were directly in the section, we now write
@@ -1158,12 +1177,6 @@ begin
       _Settings.DeleteKey(Format('Item%d', [i]));
     end;
     _Settings.DeleteKey('Count');
-  end;
-
-  if _settings.SectionExists('Items') then begin
-    // we now distinguish between vcl and fmx, so we put items in different subsections and
-    // need to delete the Items subsection
-    _settings.EraseSection('Items');
   end;
 
   _Settings.WriteInteger('Width', FFormWidth);
