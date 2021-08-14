@@ -53,6 +53,9 @@
 
 {$IFDEF DELPHI2007_UP}
 {$DEFINE HAS_INTTOHEX_FUNCTION}
+{$ELSE}
+// Support for enhanced records didn't work very well in Delphi 2006
+{$UNDEF SUPPORTS_ENHANCED_RECORDS}
 {$ENDIF}
 
 // The following cond. defines address errors in various Delphi versions regarding the declaration
@@ -99,8 +102,7 @@
 {$DEFINE HAS_INTTOHEX_FUNCTION_UINT64}
 {$ENDIF}
 
-{$IFDEF DELPHI2009_UP}
-  {.I know that it exists in $IFDEF GX_DELPHI_TOKYO_UP}
+{$IFDEF DELPHI2010_UP}
   {$DEFINE CUSTOMINIFILE_HAS_READSUBSECTIONS}
 {$ENDIF}
 
