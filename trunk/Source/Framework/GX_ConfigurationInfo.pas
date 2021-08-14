@@ -32,6 +32,7 @@ type
     procedure WriteEnumerated(const Ident: string; TypeInfo: PTypeInfo; Value: Longint);
     procedure EraseSection(const Section: string);
     procedure ReadSection(const Section: string; Strings: TStrings);
+    procedure ReadSections(Strings: TStrings);
     procedure LoadFont(const FontName: string; const Font: TFont; Flags: TGXFontFlags = []);
     procedure SaveFont(const FontName: string; const Font: TFont; Flags: TGXFontFlags = []);
     procedure LoadForm(const Section: string; Form: TCustomForm; FormSaveFlags: TFormSaveFlags = [fsSize, fsPosition]);
@@ -146,6 +147,7 @@ type
     procedure ReadSection(const Section: string; Strings: TStrings); override;
     procedure ReadSections(Strings: TStrings); overload; override;
     procedure ReadSectionValues(const Section: string; Strings: TStrings); override;
+    procedure ReadSubSections(const Section: string; Strings: TStrings; Recurse: Boolean = False); override;
     procedure EraseSection(const Section: string); override;
     procedure DeleteKey(const Section, Ident: String); override;
     procedure UpdateFile; override;
@@ -175,6 +177,7 @@ type
     procedure WriteEnumerated(const Ident: string; TypeInfo: PTypeInfo; Value: Longint);
     procedure EraseSection(const Section: string);
     procedure ReadSection(const Section: string; Strings: TStrings);
+    procedure ReadSections(Strings: TStrings);
     procedure LoadFont(const FontName: string; const Font: TFont; Flags: TGXFontFlags = []);
     procedure SaveFont(const FontName: string; const Font: TFont; Flags: TGXFontFlags = []);
     procedure LoadForm(const Section: string; Form: TCustomForm; FormSaveFlags: TFormSaveFlags = [fsSize, fsPosition]);
@@ -1125,6 +1128,11 @@ begin
   FGExpertsSettings.ReadSection(FSection + '\' + Section, Strings);
 end;
 
+procedure TExpertSettings.ReadSections(Strings: TStrings);
+begin
+  FGExpertsSettings.ReadSubSections(FSection, Strings);
+end;
+
 procedure TExpertSettings.ReadSectionValues(const SubSection: string; Strings: TStrings);
 var
   s: string;
@@ -1295,6 +1303,12 @@ end;
 function TGExpertsBaseSettings.ReadString(const Section, Ident, Default: string): string;
 begin
   Result := FIniFile.ReadString(Section, Ident, default);
+end;
+
+procedure TGExpertsBaseSettings.ReadSubSections(const Section: string; Strings: TStrings;
+  Recurse: Boolean);
+begin
+  FIniFile.ReadSubSections(Section, Strings, Recurse);
 end;
 
 function TGExpertsBaseSettings.ReadTime(const Section, Name: string; Default: TDateTime): TDateTime;
