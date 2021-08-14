@@ -267,7 +267,7 @@ function GetCurrentLocaleName: string;
 begin
 {$IFDEF gnugettext}
   Result := gnugettext.GetCurrentLocaleName;
-{$ESLE}
+{$ELSE}
   Result := '';
 {$ENDIF}
 end;

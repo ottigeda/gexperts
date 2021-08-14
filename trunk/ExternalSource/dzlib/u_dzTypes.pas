@@ -68,6 +68,13 @@ type
 {$IF not declared(NativeUInt) or (SizeOf(Pointer) <> SizeOf(NativeUInt))}
   NativeUInt = UInt32;
 {$IFEND}
+{$IF not declared(IntPtr))}
+{$IF SizeOf(Pointer)=4}
+  IntPtr = Int32;
+{$ELSE}
+  IntPtr = Int64;
+{$IFEND}
+{$IFEND}
 {$IF not declared(UIntPtr)}
 {$IF SizeOf(Pointer)=4}
   UIntPtr = UInt32;

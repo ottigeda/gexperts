@@ -64,7 +64,6 @@ function TStringList_CreateFrom(const _sa: array of string; _Sorted: Boolean = F
 function TStringList_CreateFrom(const _sa: array of string;
   _SortHandling: TStringListSortHandling = sshNoSorting): TStringList; overload;
 
-
 ///<summary>
 /// Creates a TStringList
 /// @param SortHandling defines how the properties Sorted and Dupplicates are set </summary>
@@ -455,6 +454,20 @@ inline;
 ///          False if not
 /// Note: Also returns false if the file does not exist. </summary>
 function TIniFile_TryReadSectionValues(const _Filename, _Section: string; _sl: TStrings): Boolean;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
+
+procedure TMemIniFile_ReadSubSections(_Ini: TMemIniFile; const _Section: string; _Sections: TStrings);
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
+procedure TRegistryIniFile_ReadSubSections(_Ini: TRegistryIniFile; const _Section: string; _Sections: TStrings);
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
+
+procedure TCustomIniFile_ReadSubSections(_Ini: TCustomIniFile; const _Section: string; _Sections: TStrings);
 {$IFDEF SUPPORTS_INLINE}
 inline;
 {$ENDIF}
@@ -1655,6 +1668,77 @@ begin
   end;
 end;
 
+{$IFDEF CUSTOMINIFILE_HAS_READSUBSECTIONS}
+procedure TMemIniFile_ReadSubSections(_Ini: TMemIniFile; const _Section: string; _Sections: TStrings);
+begin
+  _Ini.ReadSubSections(_Section, _Sections, False);
+end;
+{$ELSE}
+procedure TMemIniFile_ReadSubSections(_Ini: TMemIniFile; const _Section: string; _Sections: TStrings);
+var
+  i: Integer;
+  Len: Integer;
+  s: string;
+begin
+  _Ini.ReadSections(_Section, _Sections);
+  Len := Length(_Section);
+  if Len = 0 then begin
+    // we only want top level sections, that is those that do not contain a '\'
+    for i := _Sections.Count - 1 downto 0 do begin
+      if Pos('\', _Sections[i]) > 0 then
+        _Sections.Delete(i);
+    end;
+  end else begin
+    for i := _Sections.Count - 1 downto 0 do begin
+      s := TailStr(_Sections[i], Len + 2);
+      if (s = '') or (Pos('\', s) > 0) then
+        _Sections.Delete(i)
+      else begin
+        _Sections[i] := s;
+      end;
+    end;
+  end;
+end;
+{$ENDIF}
+
+{$IFDEF CUSTOMINIFILE_HAS_READSUBSECTIONS}
+procedure TRegistryIniFile_ReadSubSections(_Ini: TRegistryIniFile; const _Section: string; _Sections: TStrings);
+begin
+  _Ini.ReadSubSections(_Section, _Sections, False);
+end;
+{$ELSE}
+procedure TRegistryIniFile_ReadSubSections(_Ini: TRegistryIniFile; const _Section: string; _Sections: TStrings);
+var
+  Reg: TRegistry;
+begin
+  if _Section = '' then begin
+    _Ini.ReadSections(_Sections);
+    Exit; //==>
+  end;
+
+  _Sections.Clear;
+  Reg := TRegistry.Create;
+  try
+    Reg.RootKey := _Ini.RegIniFile.RootKey;
+    if not Reg.OpenKeyReadOnly(_Ini.Filename + '\' + _Section) then
+      Exit; //==>
+
+    Reg.GetKeyNames(_Sections);
+  finally
+    FreeAndNil(Reg);
+  end;
+end;
+{$ENDIF}
+
+procedure TCustomIniFile_ReadSubSections(_Ini: TCustomIniFile; const _Section: string; _Sections: TStrings);
+begin
+  if _Ini is TMemIniFile then
+    TMemIniFile_ReadSubSections(TMemIniFile(_Ini), _Section, _Sections)
+  else if _Ini is TRegistryIniFile then
+    TRegistryIniFile_ReadSubSections(TRegistryIniFile(_Ini), _Section, _Sections)
+  else
+    raise EdzException.CreateFmt(_('Only implemented for TMemIniFile and TRegistryIniFile but not %s'), [_Ini.ClassName]);
+end;
 { TStringsUpdateInt }
 
 constructor TStringsUpdateInt.Create(_Strings: TStrings);
