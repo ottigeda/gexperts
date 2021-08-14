@@ -5,8 +5,14 @@ unit GX_ConfigurationInfo;
 interface
 
 uses
+  Windows,
   Registry,
-  Graphics, Classes, TypInfo, Forms, ComCtrls, Types, IniFiles;
+  Graphics, Classes, TypInfo, Forms, ComCtrls, Types, IniFiles,
+  u_dzClassUtils, // these other u_dzXxx units are necessary for inlining
+  u_dzTypes,
+  u_dzTranslator,
+  u_dzStringUtils,
+  u_dzMiscUtils;
 
 type
   TGXFontFlag = (ffColor);
@@ -147,7 +153,11 @@ type
     procedure ReadSection(const Section: string; Strings: TStrings); override;
     procedure ReadSections(Strings: TStrings); overload; override;
     procedure ReadSectionValues(const Section: string; Strings: TStrings); override;
+{$IFDEF CUSTOMINIFILE_HAS_READSUBSECTIONS}
     procedure ReadSubSections(const Section: string; Strings: TStrings; Recurse: Boolean = False); override;
+{$ELSE}
+    procedure ReadSubSections(const Section: string; Strings: TStrings; Recurse: Boolean = False);
+{$ENDIF}
     procedure EraseSection(const Section: string); override;
     procedure DeleteKey(const Section, Ident: String); override;
     procedure UpdateFile; override;
@@ -159,7 +169,7 @@ type
   /// handles the settings of a particular expert, stored under the section given in the constructor </summary>
   TExpertSettings = class
   private
-    FGExpertsSettings: TGExpertsSettings;
+    FGExpertsSettings: TGExpertsSettings;              
     FSection: string;
   public
     constructor Create(GExpertsSettings: TGExpertsSettings; const Section: string);
@@ -1308,7 +1318,7 @@ end;
 procedure TGExpertsBaseSettings.ReadSubSections(const Section: string; Strings: TStrings;
   Recurse: Boolean);
 begin
-  FIniFile.ReadSubSections(Section, Strings, Recurse);
+  TCustomIniFile_ReadSubSections(FIniFile, Section, Strings);
 end;
 
 function TGExpertsBaseSettings.ReadTime(const Section, Name: string; Default: TDateTime): TDateTime;

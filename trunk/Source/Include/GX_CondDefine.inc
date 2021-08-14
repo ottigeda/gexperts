@@ -217,6 +217,10 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$DEFINE STRING_GRID_OWNERDRAW_FIX_ENABLED}
 {$ENDIF GX_DELPHI_SYDNEY_UP}
 
+{$IFDEF GX_DELPHI2010_UP}
+  {$DEFINE CUSTOMINIFILE_HAS_READSUBSECTIONS}
+{$ENDIF}
+
 // Define UniSynEdit if SynEdit is available
 {$IFDEF SYNEDIT}
   {$DEFINE UniSynEdit}
