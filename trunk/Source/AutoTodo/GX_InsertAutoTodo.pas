@@ -236,18 +236,27 @@ end;
 
 procedure TInsertAutoTodoExpert.Configure;
 var
-  Dialog: tfmInsertAutoTodoForm;
+  frm: tfmInsertAutoTodoForm;
+  Int: IInterface;
 begin
-  Dialog := tfmInsertAutoTodoForm.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := tfmInsertAutoTodoForm.Create(nil);
   try
-    Dialog.SetData(FUsername, FTextToInsert, FDoneDialogEnabled);
-    if Dialog.ShowModal = mrOk then
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.SetData(FUsername, FTextToInsert, FDoneDialogEnabled);
+    if frm.ShowModal = mrOk then
     begin
-     Dialog.GetData(FUsername, FTextToInsert, FDoneDialogEnabled);
+     frm.GetData(FUsername, FTextToInsert, FDoneDialogEnabled);
      SaveSettings;
     end;
   finally
-    FreeAndNil(Dialog);
+    FreeAndNil(frm);
   end;
 end;
 

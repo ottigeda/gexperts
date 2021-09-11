@@ -48,7 +48,7 @@ uses
   GX_OtaUtils,
   GX_Experts,
   GX_IdeUtils,
-  GX_GotoConfig;
+  GX_GotoConfig, u_dzVclUtils;
 
 const
   SEARCH_GOTO_COMMAND = 'SearchGotoCommand';
@@ -136,7 +136,9 @@ end;
 class function Tf_Goto.Execute(var _Row: Integer): Boolean;
 var
   frm: Tf_Goto;
+  Int: IInterface;
 begin
+  int := TemporarilyDisableHighDpi;
   frm := Tf_Goto.Create(nil);
   try
     frm.SetData(_Row);

@@ -31,7 +31,6 @@ type
   private
     procedure FillStats;
   public
-    class procedure Execute(_Owner: TWinControl);
     constructor Create(_Owner: TComponent); override;
   end;
 
@@ -46,18 +45,6 @@ uses
   GX_BaseExpert;
 
 { TfmUsageStatistics }
-
-class procedure TfmUsageStatistics.Execute(_Owner: TWinControl);
-var
-  frm: TfmUsageStatistics;
-begin
-  frm := TfmUsageStatistics.Create(_Owner);
-  try
-    frm.ShowModal;
-  finally
-    FreeAndNil(frm);
-  end;
-end;
 
 constructor TfmUsageStatistics.Create(_Owner: TComponent);
 begin

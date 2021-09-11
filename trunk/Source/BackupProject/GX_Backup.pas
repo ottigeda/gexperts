@@ -1228,56 +1228,74 @@ end;
 
 procedure TBackupProjectExpert.Execute(Sender: TObject);
 var
-  Dlg: TfmBackup;
+  frm: TfmBackup;
+  Int: IInterface;
 begin
-  Dlg := TfmBackup.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmBackup.Create(nil);
   try
-    SetFormIcon(Dlg);
-    Dlg.FBackupExpert := Self;
-    Dlg.FCurrentBackupScope := BackupScope;
-    Dlg.ShowModal;
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    SetFormIcon(frm);
+    frm.FBackupExpert := Self;
+    frm.FCurrentBackupScope := BackupScope;
+    frm.ShowModal;
     IncCallCount;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 
 procedure TBackupProjectExpert.Configure;
 var
-  Dlg: TfmBackupConfig;
+  frm: TfmBackupConfig;
+  Int: IInterface;
 begin
-  Dlg := TfmBackupConfig.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmBackupConfig.Create(nil);
   try
-    Dlg.cbBackupInc.Checked := FBackupInc;
-    Dlg.cbIncludeDir.Checked := FIncludeDir;
-    Dlg.rbBackupAskForFile.Checked := (FBackupType = btFile);
-    Dlg.rbBackupToDirectory.Checked := (FBackupType = btDir);
-    Dlg.edBackupDir.Text := FBackupDir;
-    Dlg.rgDefaultScope.ItemIndex := Ord(FBackupScope);
-    Dlg.cbSearchOnLibraryPath.Checked := FFollowLibraryPath;
-    Dlg.cbAddRecursively.Checked := FAddDirsRecursively;
-    Dlg.cbIgnoreHistoryDir.Checked := FIgnoreHistoryDir;
-    Dlg.cbIgnoreScmDirs.Checked := FIgnoreScmDirs;
-    Dlg.cbIgnoreBackupFiles.Checked := FIgnoreBackupFiles;
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.cbBackupInc.Checked := FBackupInc;
+    frm.cbIncludeDir.Checked := FIncludeDir;
+    frm.rbBackupAskForFile.Checked := (FBackupType = btFile);
+    frm.rbBackupToDirectory.Checked := (FBackupType = btDir);
+    frm.edBackupDir.Text := FBackupDir;
+    frm.rgDefaultScope.ItemIndex := Ord(FBackupScope);
+    frm.cbSearchOnLibraryPath.Checked := FFollowLibraryPath;
+    frm.cbAddRecursively.Checked := FAddDirsRecursively;
+    frm.cbIgnoreHistoryDir.Checked := FIgnoreHistoryDir;
+    frm.cbIgnoreScmDirs.Checked := FIgnoreScmDirs;
+    frm.cbIgnoreBackupFiles.Checked := FIgnoreBackupFiles;
 
-    if Dlg.ShowModal = mrOk then
+    if frm.ShowModal = mrOk then
     begin
-      if Dlg.rbBackupAskForFile.Checked then
+      if frm.rbBackupAskForFile.Checked then
         FBackupType := btFile
       else
         FBackupType := btDir;
-      FBackupDir := Dlg.edBackupDir.Text;
-      FBackupInc := Dlg.cbBackupInc.Checked;
-      FIncludeDir := Dlg.cbIncludeDir.Checked;
-      FBackupScope := TBackupScope(Dlg.rgDefaultScope.ItemIndex);
-      FFollowLibraryPath := Dlg.cbSearchOnLibraryPath.Checked;
-      FAddDirsRecursively := Dlg.cbAddRecursively.Checked;
-      FIgnoreHistoryDir := Dlg.cbIgnoreHistoryDir.Checked;
-      FIgnoreScmDirs := Dlg.cbIgnoreScmDirs.Checked;
-      FIgnoreBackupFiles := Dlg.cbIgnoreBackupFiles.Checked;
+      FBackupDir := frm.edBackupDir.Text;
+      FBackupInc := frm.cbBackupInc.Checked;
+      FIncludeDir := frm.cbIncludeDir.Checked;
+      FBackupScope := TBackupScope(frm.rgDefaultScope.ItemIndex);
+      FFollowLibraryPath := frm.cbSearchOnLibraryPath.Checked;
+      FAddDirsRecursively := frm.cbAddRecursively.Checked;
+      FIgnoreHistoryDir := frm.cbIgnoreHistoryDir.Checked;
+      FIgnoreScmDirs := frm.cbIgnoreScmDirs.Checked;
+      FIgnoreBackupFiles := frm.cbIgnoreBackupFiles.Checked;
     end;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 

@@ -5,7 +5,13 @@ unit GX_BaseForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Windows,
+  Messages,
+  SysUtils,
+  Classes,
+  Graphics,
+  Controls,
+  Forms,
   Dialogs;
 
 type
@@ -13,9 +19,12 @@ type
   // Changes here must also be made to TfmIdeDockForm, since it must descend
   // from the IDE-internal TDockableForm class.
   TfmBaseForm = class(TForm)
-  private
-    class procedure ExecuteNonDpiAware(_Owner: TComponent); overload; virtual;
+  protected
   public
+    // This field allows descendant forms to set the DPI awareness back to normal
+    // by simply assigning NIL. If not explicitly done it's set to NIL automatically
+    // in the destructor.
+    TemporarilyDisableHighDpiInterface: IInterface;
     class procedure Execute(_Owner: TComponent); overload; virtual;
     constructor Create(AOwner: TComponent); override;
   end;
@@ -25,40 +34,28 @@ implementation
 {$R *.dfm}
 
 uses
-  GX_GxUtils;
+  GX_GxUtils,
+  u_dzVclUtils;
 
 class procedure TfmBaseForm.Execute(_Owner: TComponent);
-begin
-  ExecuteNonDpiAware(_Owner);
-end;
-
-class procedure TfmBaseForm.ExecuteNonDpiAware(_Owner: TComponent);
 var
-  frm: TForm;
-{$IFDEF IDE_IS_HIDPI_AWARE}
-  previousDpiContext: DPI_AWARENESS_CONTEXT;
-{$ENDIF}
+  frm: TfmBaseForm;
+  Int: IInterface;
 begin
-{$IFDEF IDE_IS_HIDPI_AWARE}
-  // See
-  // https://www.uweraabe.de/Blog/2021/08/28/delphi-vcl-applications-with-mixed-dpi/
-  // why we do this, and
-  // https://en.delphipraxis.net/topic/5516-the-state-of-gexperts-support-for-delphi-11/?do=findComment&comment=47733
-  // for the modified trick.
-  previousDpiContext := SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := Self.Create(_Owner);
   try
-{$ENDIF}
-    frm := Self.Create(nil);
-    try
-      frm.ShowModal;
-    finally
-      frm.Free;
-    end;
-{$IFDEF IDE_IS_HIDPI_AWARE}
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.ShowModal;
   finally
-    SetThreadDpiAwarenessContext(previousDpiContext);
+    frm.Free;
   end;
-{$ENDIF}
 end;
 
 constructor TfmBaseForm.Create(AOwner: TComponent);
@@ -68,3 +65,4 @@ begin
 end;
 
 end.
+
