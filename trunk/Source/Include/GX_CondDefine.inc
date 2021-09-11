@@ -111,7 +111,7 @@
                                             {$DEFINE GX_DELPHI_SYDNEY_UP}
                                             {$IF CompilerVersion >= 35}
                                               {$DEFINE GX_VER350_up}  // RAD Studio 11 Alexandria (28; BDS 22)
-                                              {$DEFINE GX_DELPHI_ALEXANDRIA_UP}
+                                              {$DEFINE GX_DELPHI_11_UP}
                                               {$IF CompilerVersion >= 36}
     unsupported Delphi version
     If you get here, you are probably trying to compile GExperts with a new Delphi release.
@@ -222,6 +222,10 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 
 {$IFDEF GX_DELPHI2010_UP}
   {$DEFINE CUSTOMINIFILE_HAS_READSUBSECTIONS}
+{$ENDIF}
+
+{$IFDEF GX_DELPHI_11_UP}
+  {$DEFINE IDE_IS_HIDPI_AWARE}
 {$ENDIF}
 
 // Define UniSynEdit if SynEdit is available
