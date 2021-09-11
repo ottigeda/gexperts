@@ -194,6 +194,14 @@
   #define IDERegName   "BDS"
   #define IDERegVer    "21"
 #endif
+#ifdef RS110
+  #define IDEShortName "RADStudio"
+  #define IDELongName  "RAD Studio"
+  #define IDEVer       "11"
+  #define DLLSuffix    "RS110"
+  #define IDERegName   "BDS"
+  #define IDERegVer    "22"
+#endif
 
 #ifndef IDEShortName
   #error Usage: "isppcc.exe GExperts.iss /dDelphi7 /dVersion=1.38"
@@ -227,21 +235,23 @@ SolidCompression=yes
 ;OutputBaseFilename=Setup{#DLLSuffix}
 
 [Files]
-Source: ..\Binaries\GExpertsPeInformation.exe; DestDir: {app}; Flags: ignoreversion
-Source: ..\Binaries\ExpertManager.exe; DestDir: {app}; Flags: ignoreversion
-Source: ..\Binaries\GExpertsDebugWindow.exe; DestDir: {app}; Flags: ignoreversion
-Source: ..\Binaries\GExpertsGrep.exe; DestDir: {app}; Flags: ignoreversion
-Source: ..\Binaries\GExpertsFormatter.exe; DestDir: {app}; Flags: ignoreversion
-Source: ..\Documentation\GExperts.chm; DestDir: {app}; Flags: ignoreversion
-Source: ..\Binaries\{#DLLName}; DestDir: {app}; Flags: ignoreversion
-Source: ..\ExternalSource\DbugIntf.pas; DestDir: {app}; Flags: ignoreversion
-Source: ..\Documentation\Readme.txt; DestDir: {app}; Flags: isreadme ignoreversion
-Source: ..\Binaries\FormatterSettings-Borland.ini; DestDir: {app}; Flags: ignoreversion
-Source: ..\Binaries\FormatterSettings-DelForEx.ini; DestDir: {app}; Flags: ignoreversion
-Source: ..\Binaries\FormatterSettings-headwork.ini; DestDir: {app}; Flags: ignoreversion
-Source: ..\Binaries\FormatterSettings-twm.ini; DestDir: {app}; Flags: ignoreversion
-Source: ..\Binaries\preview.pas; DestDir: {app}; Flags: ignoreversion
-Source: ..\Binaries\proofreader.wav; DestDir: {app}; Flags: ignoreversion
+Source: "..\Binaries\GExpertsPeInformation.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\ExpertManager.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\GExpertsDebugWindow.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\GExpertsGrep.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\GExpertsFormatter.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Documentation\GExperts.chm"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\{#DLLName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\ExternalSource\DbugIntf.pas"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Documentation\Readme.txt"; DestDir: "{app}"; Flags: isreadme ignoreversion
+Source: "..\Binaries\FormatterSettings-Borland.ini"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\FormatterSettings-DelForEx.ini"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\FormatterSettings-headwork.ini"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\FormatterSettings-twm.ini"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\preview.pas"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\RenameComponents-Default.ini"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\RenameComponents-twm.ini"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\proofreader.wav"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: {group}\Debug Window; Filename: {app}\GExpertsDebugWindow.exe
