@@ -4,9 +4,10 @@ inherited fmConfigureIfDef: TfmConfigureIfDef
   Caption = 'Insert IFDEF / IFNDEF'
   ClientHeight = 393
   ClientWidth = 699
-  OldCreateOrder = True
+  ExplicitWidth = 715
+  ExplicitHeight = 432
   PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 15
   object pc_IfClasses: TPageControl
     Left = 0
     Top = 0
