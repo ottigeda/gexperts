@@ -127,7 +127,7 @@ var
   Parts: array of PAnsiChar;
   Idx: Integer;
   l: ulong;
-  LineNo: Integer;
+  LLineNo: Integer;
   p: PAnsiChar;
   Start: PAnsiChar;
 begin
@@ -152,10 +152,10 @@ begin
 
   // todo: also use the type
   if TryDec2Long(Parts[1], l) then
-    LineNo := l
+    LLineNo := l
   else
-    LineNo := -1;
-  Result := TUnitIdentifier.Create(Parts[2], LineNo);
+    LLineNo := -1;
+  Result := TUnitIdentifier.Create(Parts[2], LLineNo);
 end;
 
 { TUnitExport }

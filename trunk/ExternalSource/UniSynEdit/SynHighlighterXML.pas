@@ -848,6 +848,13 @@ begin
       Continue;
     end;
 
+{$IFNDEF SYN_DELPHI_10_2_UP}
+    // Older Delphi versions throw a warning that IsClosing might not be initialized, if this
+    // assigment is missing.
+    // Newer Delphi versions hint that that the value assigned here is never used.
+    // So unfortunately we need this IFNDEF.
+    IsClosing := False;
+{$ENDIF}
     CurLevel := 0;
     while RunPos <= Length(CurLine) do
     begin

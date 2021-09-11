@@ -59,28 +59,25 @@ end;
 
 procedure TCodeProofreaderExpert.Configure;
 var
-  CreatedDataToConfigure: Boolean;
+  Data: TProofreaderData;
   Dlg: TfmProofreaderConfig;
   FileName: string;
 begin
-  CreatedDataToConfigure := False;
+  Data := FProofreaderData;
+  if Data = nil then begin
+    // the expert is not active, crate a local instance of the data just for configuring it
+    Data := TProofreaderData.Create;
+  end;
   try
-    if FProofreaderData = nil then
-    begin
-      FProofreaderData := TProofreaderData.Create;
-      CreatedDataToConfigure := True;
-    end;
-
-    FileName := FProofreaderData.XmlFileName;
-
+    FileName := Data.GetXmlFileName;
     if (not FileExists(FileName)) and
       (ShowGxMessageBox(TCreateDefaultTablesMessage, FileName) = mrYes) then
     begin
       CopyDefaultsFromResource(FileName);
-      FProofreaderData.ReloadData;
     end;
+    Data.ReloadData;
 
-    Dlg := TfmProofreaderConfig.Create(nil, Self, FProofreaderData);
+    Dlg := TfmProofreaderConfig.Create(nil, Self, Data);
     try
       SetFormIcon(Dlg);
       Dlg.ShowModal;
@@ -88,10 +85,12 @@ begin
       FreeAndNil(Dlg);
     end;
     SaveSettings;
-
   finally
-    if CreatedDataToConfigure then
-      FreeAndNil(FProofreaderData);
+    if not Assigned(FProofreaderData) then begin
+      // We created a local instance just for configuring the expert, but since it is not active
+      // we no longer need it.
+      FreeAndNil(Data);
+    end;
   end;
 end;
 

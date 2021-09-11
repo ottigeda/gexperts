@@ -5,7 +5,7 @@ unit GX_ExpertManager;
 interface
 
 uses
-  Windows, SysUtils, Classes, ImgList, Controls, Forms, Dialogs,
+  Windows, SysUtils, Classes, ImgList, ImageList, Controls, Forms, Dialogs,
   Menus, ComCtrls, Actions, ActnList, ToolWin,
   DropTarget, DropSource,
   GX_Experts, GX_BaseForm;
@@ -227,10 +227,9 @@ begin
   ShowGXAboutForm;
 end;
 
-constructor TfmExpertManager.Create(AOwner: TComponent);
+constructor TfmExpertManager.Create(AOwner: TComponent); // FI:W525 Missing INHERITED call in constructor
 begin
   raise Exception.Create('Call constructor CreateWithManager');
-  inherited;
 end;
 
 constructor TfmExpertManager.CreateWithManager(AOwner: TComponent; Manager: TExpertManagerExpert);

@@ -60,7 +60,7 @@ end;
 procedure TTimedCallback.Reset;
 begin
   FTimer.Enabled := False;
-  FTimer.Enabled := True;
+  FTimer.Enabled := True; // FI:W508 Variable is assigned twice successively
 end;
 
 end.

@@ -224,8 +224,8 @@ end;
 procedure TIDEFormEnhancer.HandleFormChanged(_Sender: TObject; _Form: TCustomForm);
 var
   i: Integer;
-  Changes: TFormChanges;
-  Enhancer: TManagedForm;
+//   Changes: TFormChanges;
+//  Enhancer: TManagedForm;
   Handlers: TList;
   ClsName: string;
   Handler: TManagedFormHandler;
@@ -240,15 +240,19 @@ begin
   Handlers := TList.Create;
   try
     TManagedFormHandlerFactory.GetHandlers(_Form, Handlers);
-    for i := 0 to Handlers.Count - 1 do begin
+    for i := 0 to Handlers.Count - 1 do
+    begin
       Handler := TManagedFormHandler(Handlers[i]);
       Handler.Execute(_Form);
     end;
   finally
     FreeAndNil(Handlers);
   end;
+
   Exit;
 
+  (*
+  Unreachable code
   begin
     Changes.MakeResizable := Changes.MakeResizable and AllowResize;
     Changes.RememberSize := Changes.RememberSize and AllowResize;
@@ -260,6 +264,7 @@ begin
     Enhancer := Changes.FormEnhancer.Create(_Form);
     Enhancer.Init(Changes);
   end;
+  *)
 end;
 
 { TIDEFormEnhancements }

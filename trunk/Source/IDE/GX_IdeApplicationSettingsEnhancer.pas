@@ -33,7 +33,13 @@ uses
 type
   TIdeAppSettingsEnhancer = class(TIdeDialogEnhancer)
   private
+{$IFDEF GX_DELPHI_SYDNEY_UP}
+    // from Delphi 10.4 onwards this is a TComboBox
+    FSuffixCmb: TComboBox;
+{$ELSE}
+    // in older versions is was a TEdit
     FSuffixEdit: TEdit;
+{$ENDIF}
     procedure btnSetSuffixClick(_Sender: TObject);
   protected
     procedure EnhanceForm(_Form: TForm); override;
@@ -53,30 +59,46 @@ var
   Cmp: TComponent;
   btn: TButton;
   s: string;
+  WinCtrl: TWinControl;
 begin
   if TComponent_FindComponent(_Form, SuffixBtnName, True, Cmp) then
-    Exit;
-  if not TComponent_FindComponent(_Form, 'ecSOSuffix', True, Cmp) or not (Cmp is TEdit) then
-    Exit;
+    Exit; //==>
+  if not TComponent_FindComponent(_Form, 'ecSOSuffix', True, Cmp) then
+    Exit; //==>
+
+{$IFDEF GX_DELPHI_SYDNEY_UP}
+  if not (Cmp is TComboBox) then
+    Exit; //==>
+  FSuffixCmb := TComboBox(Cmp);
+{$ELSE}
+  if not (Cmp is TEdit) then
+    Exit; //==>
   FSuffixEdit := TEdit(Cmp);
+{$ENDIF}
+  WinCtrl := TWinControl(Cmp);
+
   btn := TButton.Create(_Form);
-  btn.Parent := FSuffixEdit.Parent;
+  btn.Parent := WinCtrl.Parent;
   btn.Name := SuffixBtnName;
-  btn.Top := FSuffixEdit.Top;
-  btn.Height := FSuffixEdit.Height;
+  btn.Top := WinCtrl.Top;
+  btn.Height := WinCtrl.Height;
   s := MajorVersionNumberChar + '0';
   btn.Width := _Form.Canvas.TextWidth(s) + 8;
-  FSuffixEdit.Width := FSuffixEdit.Width - btn.Width;
-  btn.Left := FSuffixEdit.Left + FSuffixEdit.Width;
+  WinCtrl.Width := WinCtrl.Width - btn.Width;
+  btn.Left := WinCtrl.Left + WinCtrl.Width;
   btn.Anchors := [akTop, akRight];
   btn.Caption := s;
   btn.OnClick := btnSetSuffixClick;
-  btn.TabOrder := FSuffixEdit.TabOrder + 1;
+  btn.TabOrder := WinCtrl.TabOrder + 1;
 end;
 
 procedure TIdeAppSettingsEnhancer.btnSetSuffixClick(_Sender: TObject);
 begin
+{$IFDEF GX_DELPHI_SYDNEY_UP}
+  FSuffixCmb.Text := (_Sender as TButton).Caption;
+{$ELSE}
   FSuffixEdit.Text := (_Sender as TButton).Caption;
+{$ENDIF}
 end;
 
 function TIdeAppSettingsEnhancer.IsDesiredForm(_Form: TCustomForm): Boolean;
@@ -112,3 +134,4 @@ initialization
 finalization
   TGxIdeApplicationSettingsEnhancer.SetEnabled(False);
 end.
+

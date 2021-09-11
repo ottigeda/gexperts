@@ -114,7 +114,7 @@ type
     procedure LoadSettings;
     procedure SaveSettings;
     procedure OpenUnit(const UnitName: string);
-    function LoadFileDepend(FileName: string; const UnitName, FormName: string): Boolean;
+    function LoadFileDepend(const FileName: string; const UnitName, FormName: string): Boolean;
     procedure LoadFileDependencies;
     procedure BuildUses;
     procedure ClearFileList;
@@ -229,8 +229,9 @@ begin
   end;
 end;
 
-function TfmProjDepend.LoadFileDepend(FileName: string; const UnitName, FormName: string): Boolean;
+function TfmProjDepend.LoadFileDepend(const FileName: string; const UnitName, FormName: string): Boolean;
 var
+  LFileName: string;
   FileContent: string;
   Parser: TmwPasLex;
   nUses: Integer;
@@ -240,8 +241,9 @@ var
   UInfo: TUnitInfo;
   UnitIdentifier: string;
 begin
+  LFileName := FileName;
   Result := True;
-  if FileName = GxOtaGetCurrentProjectFileName then
+  if LFileName = GxOtaGetCurrentProjectFileName then
     Exit;
 
   UpdateFormActions;
@@ -259,8 +261,8 @@ begin
   StatusBar.SimpleText := FileName;
   StatusBar.Repaint;
 
-  if (FileName = '') and Assigned(FSearchPaths) then begin
-    if not FindFileInSearchPath(Unitname+ '.pas', FSearchPaths, FileName) then
+  if (LFileName = '') and Assigned(FSearchPaths) then begin
+    if not FindFileInSearchPath(Unitname+ '.pas', FSearchPaths, LFileName) then
       Exit; //==>
   end;
 

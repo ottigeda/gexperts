@@ -52,7 +52,7 @@ type
     chkBiDirEnabled: TCheckBox;
     chkDisabled: TCheckBox;
     chkUseConstValue: TCheckBox;
-    edtConstValue: TEdit;
+    m_ConstValue: TMemo;
     chkLogValues: TCheckBox;
     chkLogNonDef: TCheckBox;
     procedure FormCreate(Sender: TObject);
@@ -199,7 +199,7 @@ begin
   SetComboColor(cbxDestClassName, Color);
   SetComboColor(cbxSourcePropName, Color);
   SetComboColor(cbxDestPropName, Color);
-  edtConstValue.Color := Color;
+  m_ConstValue.Color := Color;
 end;
 
 procedure TfmReplaceCompMapDets.UpdateItemStatus;
@@ -223,8 +223,8 @@ begin
     lblPosition.Caption := IntToStr(Idx)+' / '+IntToStr(ItemCnt);
     SetEditsColor(GetEditColor(True));
     pnlEdits.Enabled := True;
-    edtConstValue.Color := GetEditColor(chkUseConstValue.Checked);
-    edtConstValue.ReadOnly := not chkUseConstValue.Checked;
+    m_ConstValue.Color := GetEditColor(chkUseConstValue.Checked);
+    m_ConstValue.ReadOnly := not chkUseConstValue.Checked;
     chkLogNonDef.Enabled := chkLogValues.Checked;
     cbxSourcePropName.Enabled := not chkUseConstValue.Checked;
     cbxSourcePropName.Color := GetEditColor(cbxSourcePropName.Enabled);
@@ -252,7 +252,7 @@ begin
     chkDisabled.Checked := FItem.Disabled;
     chkBiDirEnabled.Checked := FItem.BiDirEnabled;
     chkUseConstValue.Checked := FItem.UseConstValue;
-    edtConstValue.Text := FItem.ConstValue;
+    m_ConstValue.Lines.Text := FItem.ConstValue;
     chkLogValues.Checked := FItem.LogValuesEnabled;
     chkLogNonDef.Checked := FItem.LogOnlyDefValuesEnabled;
   end
@@ -268,7 +268,7 @@ begin
     chkDisabled.Checked := CompRepDefDisabled;
     chkBiDirEnabled.Checked := CompRepDefBiDirEnabled;
     chkUseConstValue.Checked := CompRepDefUseConstValue;
-    edtConstValue.Text := '';
+    m_ConstValue.Lines.Text := '';
     chkLogValues.Checked := CompRepDefLogValuesEnabled;
     chkLogNonDef.Checked := CompRepDefLogOnlyDefValuesEnabled;
   end;
@@ -406,7 +406,7 @@ begin
   FItem.Disabled := chkDisabled.Checked;
   FItem.BiDirEnabled := chkBiDirEnabled.Checked;
   FItem.UseConstValue := chkUseConstValue.Checked;
-  FItem.ConstValue := edtConstValue.Text;
+  FItem.ConstValue := m_ConstValue.Lines.Text;
   FItem.LogValuesEnabled := chkLogValues.Checked;
   FItem.LogOnlyDefValuesEnabled := chkLogNonDef.Checked;
 end;
@@ -674,7 +674,7 @@ end;
 procedure TfmReplaceCompMapDets.chkUseConstValueClick(Sender: TObject);
 begin
   if not chkUseConstValue.Checked then
-    edtConstValue.Text := ''
+    m_ConstValue.Lines.Text := ''
   else // const
   begin
     cbxSourcePropName.Text := '';

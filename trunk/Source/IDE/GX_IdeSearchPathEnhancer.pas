@@ -128,6 +128,7 @@ type
       var _Command: TSynEditorCommand; var _Char: WideChar; _Data: Pointer);
     procedure HandleMemoClick(_Sender: TObject);
     procedure HandleListboxClick(_Sender: TObject);
+    procedure SetFocusTo(_Ctrl: TWinControl);
 {$IFDEF LISTBOX_OWNERDRAW_FIX_ENABLED}
     procedure HandleListboxDrawItem(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
 {$ENDIF}
@@ -212,6 +213,17 @@ begin
   // do not localize any of the below items
   ExpSettings := ConfigInfo.GetExpertSettings(ConfigurationKey);
   ExpSettings.WriteStrings('SearchPathFavorites', FFavorites);
+end;
+
+procedure TSearchPathEnhancer.SetFocusTo(_Ctrl: TWinControl);
+begin
+{$IFNDEF GX_DELPHI2010_UP}
+  // Unfortunately setting the focus to the ListBox or Memo no longer works correctly in newer
+  // Delphi versions. No idea what causes it, but when I do that, clicking on the edit field
+  // does not change the focus to it and any keyboard input still goes to the ListBox / Memo.
+  // In contrast, when using the tab key to switch the focus to the edit field, everything works fine.
+  TWinControl_SetFocus(_Ctrl);
+{$ENDIF}
 end;
 
 procedure TSearchPathEnhancer.HandleFilesDropped(_Sender: TObject; _Files: TStrings);
@@ -301,172 +313,176 @@ var
   l: Integer;
 begin
   if not TryGetElementEdit(_Form, FEdit) then
-    Exit;
+    Exit; //==>
 
-  if _Form.FindComponent('GXTheActionList') = nil then begin
-    FForm := _Form;
-    TEdit_ActivateAutoComplete(FEdit, [acsFileSystem], [actSuggest]);
-    TWinControl_ActivateDropFiles(FEdit, HandleFilesDropped);
+  if _Form.FindComponent('GXTheActionList') <> nil then begin
+    // the component already exist, so the form was already enhanced
+    Exit; //==>
+  end;
 
-    cmp := _Form.FindComponent('CreationList');
-    if Assigned(cmp) and (cmp is TListBox) then begin
-      FListbox := TListBox(cmp);
+  cmp := _Form.FindComponent('CreationList');
+  if not Assigned(cmp) or not (cmp is TListBox) then begin
+    // something is very wrong, we better not touch the controls
+    Exit; //==>
+  end;
+  FListbox := TListBox(cmp);
 
-      TheActionList := TActionList.Create(_Form);
-      TheActionList.Name := 'GXTheActionList';
+  FForm := _Form;
+  TEdit_ActivateAutoComplete(FEdit, [acsFileSystem], [actSuggest]);
+  TWinControl_ActivateDropFiles(FEdit, HandleFilesDropped);
 
-        // Assign shortcuts to the Up/Down buttons via actions
-      AssignActionToButton('UpButton', 'Move Up', UpBtnClick, ShortCut(VK_UP, [ssCtrl]), FUpBtn, FUpClick);
-      AssignActionToButton('DownButton', 'Move Down', DownBtnClick, ShortCut(VK_DOWN, [ssCtrl]), FDownBtn, FDownClick);
+  TheActionList := TActionList.Create(_Form);
+  TheActionList.Name := 'GXTheActionList';
+
+  // Assign shortcuts to the Up/Down buttons via actions
+  AssignActionToButton('UpButton', 'Move Up', UpBtnClick, ShortCut(VK_UP, [ssCtrl]), FUpBtn, FUpClick);
+  AssignActionToButton('DownButton', 'Move Down', DownBtnClick, ShortCut(VK_DOWN, [ssCtrl]), FDownBtn, FDownClick);
 {$IFNDEF GX_VER300_up} // RAD Studio 10 Seattle (24; BDS 17)
       // Delphi 10 and later no longer uses SelectDirectory, so we don't need to fix it.
-      AssignActionToButton('BrowseButton', 'Browse', BrowseBtnClick, ShortCut(VK_DOWN, [ssAlt]), FBrowseBtn, FBrowseClick);
+  AssignActionToButton('BrowseButton', 'Browse', BrowseBtnClick, ShortCut(VK_DOWN, [ssAlt]), FBrowseBtn, FBrowseClick);
 {$ENDIF GX_VER300_up}
 
-      TWinControl_ActivateDropFiles(FListbox, HandleFilesDropped);
+  TWinControl_ActivateDropFiles(FListbox, HandleFilesDropped);
 
-      FPageControl := TPageControl.Create(_Form);
-      FTabSheetList := TTabSheet.Create(_Form);
-      FTabSheetMemo := TTabSheet.Create(_Form);
-      FPageControl.Name := 'pc_PathList';
-      FPageControl.Parent := _Form;
-      FPageControl.BoundsRect := FListbox.BoundsRect;
-      FPageControl.Anchors := [akLeft, akTop, akRight, akBottom];
-      FPageControl.TabPosition := tpBottom;
-      FPageControl.ActivePage := FTabSheetList;
-      FPageControl.OnChange := PageControlChange;
-      FPageControl.OnChanging := PageControlChanging;
+  FPageControl := TPageControl.Create(_Form);
+  FTabSheetList := TTabSheet.Create(_Form);
+  FTabSheetMemo := TTabSheet.Create(_Form);
+  FPageControl.Name := 'pc_PathList';
+  FPageControl.Parent := _Form;
+  FPageControl.BoundsRect := FListbox.BoundsRect;
+  FPageControl.Anchors := [akLeft, akTop, akRight, akBottom];
+  FPageControl.TabPosition := tpBottom;
+  FPageControl.ActivePage := FTabSheetList;
+  FPageControl.OnChange := PageControlChange;
+  FPageControl.OnChanging := PageControlChanging;
 
-      FTabSheetList.Name := 'ts_List';
-      FTabSheetList.Parent := FPageControl;
-      FTabSheetList.PageControl := FPageControl;
-      FTabSheetList.Caption := '&List';
+  FTabSheetList.Name := 'ts_List';
+  FTabSheetList.Parent := FPageControl;
+  FTabSheetList.PageControl := FPageControl;
+  FTabSheetList.Caption := '&List';
 
-      FTabSheetMemo.Name := 'ts_Memo';
-      FTabSheetMemo.Parent := FPageControl;
-      FTabSheetMemo.PageControl := FPageControl;
-      FTabSheetMemo.Caption := '&Memo';
+  FTabSheetMemo.Name := 'ts_Memo';
+  FTabSheetMemo.Parent := FPageControl;
+  FTabSheetMemo.PageControl := FPageControl;
+  FTabSheetMemo.Caption := '&Memo';
 
-      FMemo := TSynMemo.Create(_Form);
-      FMemo.Parent := FTabSheetMemo;
-      FMemo.Align := alClient;
-      FMemo.HideSelection := False;
-      FMemo.OnChange := Self.HandleMemoChange;
-      FMemo.OnCommandProcessed := Self.HandleMemoCommandProcessed;
-      FMemo.OnClick := Self.HandleMemoClick;
-      FMemo.WordWrap := False;
-      FMemo.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
-      FMemo.RightEdge := 0;
-      FMemo.Gutter.Width := 0;
-      FMemo.Options := FMemo.Options - [eoScrollPastEol, eoTabsToSpaces] + [eoHideShowScrollbars];
-      GxOtaGetEditorFont(FMemo.Font, -1); // Editor font, size reduced by 1 pt.
+  FMemo := TSynMemo.Create(_Form);
+  FMemo.Parent := FTabSheetMemo;
+  FMemo.Align := alClient;
+  FMemo.HideSelection := False;
+  FMemo.OnChange := Self.HandleMemoChange;
+  FMemo.OnCommandProcessed := Self.HandleMemoCommandProcessed;
+  FMemo.OnClick := Self.HandleMemoClick;
+  FMemo.WordWrap := False;
+  FMemo.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
+  FMemo.RightEdge := 0;
+  FMemo.Gutter.Width := 0;
+  FMemo.Options := FMemo.Options - [eoScrollPastEol, eoTabsToSpaces] + [eoHideShowScrollbars];
+  GxOtaGetEditorFont(FMemo.Font, -1); // Editor font, size reduced by 1 pt.
 
-      FListbox.Parent := FTabSheetList;
-      FListbox.Align := alClient;
-      FListboxOnClick := FListbox.OnClick;
-      FListbox.OnClick := HandleListboxClick;
+  FListbox.Parent := FTabSheetList;
+  FListbox.Align := alClient;
+  FListboxOnClick := FListbox.OnClick;
+  FListbox.OnClick := HandleListboxClick;
 {$IFDEF LISTBOX_OWNERDRAW_FIX_ENABLED}
-      FListbox.ItemHeight := MulDiv(18, FTabSheetList.CurrentPPI, USER_DEFAULT_SCREEN_DPI);
-      FListboxOnDrawItem := FListbox.OnDrawItem;
-      FListbox.OnDrawItem := HandleListboxDrawItem;
+  FListbox.ItemHeight := MulDiv(18, FTabSheetList.CurrentPPI, USER_DEFAULT_SCREEN_DPI);
+  FListboxOnDrawItem := FListbox.OnDrawItem;
+  FListbox.OnDrawItem := HandleListboxDrawItem;
 {$ENDIF}
 
-      FDelDotsBtn := TButton.Create(_Form);
-      h := FDelDotsBtn.Height - 4;
-      w := FDelDotsBtn.Width;
-      t := FPageControl.Top - h;
-      l := FPageControl.Left + FPageControl.Width - 2 * w - 8;
-      FDelDotsBtn.Name := 'DelDotsBtn';
-      FDelDotsBtn.Parent := _Form;
-      FDelDotsBtn.Height := h;
-      FDelDotsBtn.Top := t;
-      FDelDotsBtn.Left := l;
-      FDelDotsBtn.Anchors := [akRight, akTop];
-      FDelDotsBtn.Caption := 'Del ..\';
-      FDelDotsBtn.OnClick := DelDotsBtnClick;
-      FDelDotsBtn.TabOrder := FPageControl.TabOrder + 1;
-      FDelDotsBtn.Visible := False;
+  FDelDotsBtn := TButton.Create(_Form);
+  h := FDelDotsBtn.Height - 4;
+  w := FDelDotsBtn.Width;
+  t := FPageControl.Top - h;
+  l := FPageControl.Left + FPageControl.Width - 2 * w - 8;
+  FDelDotsBtn.Name := 'DelDotsBtn';
+  FDelDotsBtn.Parent := _Form;
+  FDelDotsBtn.Height := h;
+  FDelDotsBtn.Top := t;
+  FDelDotsBtn.Left := l;
+  FDelDotsBtn.Anchors := [akRight, akTop];
+  FDelDotsBtn.Caption := 'Del ..\';
+  FDelDotsBtn.OnClick := DelDotsBtnClick;
+  FDelDotsBtn.TabOrder := FPageControl.TabOrder + 1;
+  FDelDotsBtn.Visible := False;
 
-      l := l + 8 + w;
+  l := l + 8 + w;
 
-      FAddDotsBtn := TButton.Create(_Form);
-      FAddDotsBtn.Name := 'AddDotsBtn';
-      FAddDotsBtn.Parent := _Form;
-      FAddDotsBtn.Height := h;
-      FAddDotsBtn.Top := t;
-      FAddDotsBtn.Left := l;
-      FAddDotsBtn.Height := h;
-      FAddDotsBtn.Anchors := [akRight, akTop];
-      FAddDotsBtn.Caption := 'Add ..\';
-      FAddDotsBtn.OnClick := AddDotsBtnClick;
-      FAddDotsBtn.TabOrder := FDelDotsBtn.TabOrder + 1;
-      FAddDotsBtn.Visible := False;
+  FAddDotsBtn := TButton.Create(_Form);
+  FAddDotsBtn.Name := 'AddDotsBtn';
+  FAddDotsBtn.Parent := _Form;
+  FAddDotsBtn.Height := h;
+  FAddDotsBtn.Top := t;
+  FAddDotsBtn.Left := l;
+  FAddDotsBtn.Height := h;
+  FAddDotsBtn.Anchors := [akRight, akTop];
+  FAddDotsBtn.Caption := 'Add ..\';
+  FAddDotsBtn.OnClick := AddDotsBtnClick;
+  FAddDotsBtn.TabOrder := FDelDotsBtn.TabOrder + 1;
+  FAddDotsBtn.Visible := False;
 
-      if Assigned(FUpBtn) then begin
-        FFavoritesBtn := TButton.Create(_Form);
-        FFavoritesBtn.Parent := _Form;
-        FFavoritesBtn.Left := FUpBtn.Left;
-        FFavoritesBtn.Top := FPageControl.Top;
-        FFavoritesBtn.Width := FUpBtn.Width;
-        FFavoritesBtn.Height := FUpBtn.Height;
-        FFavoritesBtn.Anchors := [akRight, akTop];
-        FFavoritesBtn.Caption := '&Fav';
-        FFavoritesBtn.OnClick := FavoritesBtnClick;
-        FFavoritesBtn.TabOrder := FAddDotsBtn.TabOrder + 1;
-        FFavoritesBtn.Visible := False;
-        FFavoritesPm := TPopupMenu.Create(_Form);
-        InitFavoritesMenu;
-      end;
-
-      TWinControl_ActivateDropFiles(FMemo, HandleFilesDropped);
-
-      if TryFindButton('AddButton', FAddBtn) then begin
-        TCustomButtonHack(FAddBtn).OnClick := AddBtnClick;
-      end;
-      if TryFindButton('ReplaceButton', FReplaceBtn) then begin
-        FMakeRelativeBtn := TButton.Create(_Form);
-        FMakeRelativeBtn.Name := 'MakeRelativeBtn';
-        FMakeRelativeBtn.Parent := FReplaceBtn.Parent;
-        FMakeRelativeBtn.BoundsRect := FReplaceBtn.BoundsRect;
-        FMakeRelativeBtn.Anchors := [akRight, akBottom];
-        FMakeRelativeBtn.Caption := 'Make Relative';
-        FMakeRelativeBtn.Visible := False;
-        FMakeRelativeBtn.OnClick := MakeRelativeBtnClick;
-        FMakeRelativeBtn.TabOrder := FReplaceBtn.TabOrder + 1;
-      end;
-      if TryFindButton('DeleteButton', FDeleteBtn) then begin
-        FMakeAbsoluteBtn := TButton.Create(_Form);
-        FMakeAbsoluteBtn.Name := 'MakeAbsoluteBtn';
-        FMakeAbsoluteBtn.Parent := FDeleteBtn.Parent;
-        FMakeAbsoluteBtn.BoundsRect := FDeleteBtn.BoundsRect;
-        FMakeAbsoluteBtn.Anchors := [akRight, akBottom];
-        FMakeAbsoluteBtn.Caption := 'Make Absolute';
-        FMakeAbsoluteBtn.Visible := False;
-        FMakeAbsoluteBtn.OnClick := MakeAbsoluteBtnClick;
-        FMakeAbsoluteBtn.TabOrder := FDeleteBtn.TabOrder + 1;
-      end;
-      if TryFindButton('DeleteInvalidBtn', FDeleteInvalidBtn) then begin
-        FAddRecursiveBtn := TButton.Create(_Form);
-        FAddRecursiveBtn.Name := 'AddRecursiveBtn';
-        FAddRecursiveBtn.Parent := FDeleteInvalidBtn.Parent;
-        FAddRecursiveBtn.BoundsRect := FDeleteInvalidBtn.BoundsRect;
-        FAddRecursiveBtn.Anchors := [akRight, akBottom];
-        FAddRecursiveBtn.Caption := 'Add Recursive';
-        FAddRecursiveBtn.Visible := False;
-        FAddRecursiveBtn.OnClick := AddRecursiveBtnClick;
-        FAddRecursiveBtn.TabOrder := FDeleteInvalidBtn.TabOrder + 1;
-      end;
-
-      if TryFindButton('OkButton', btn) then
-        TCustomButtonHack(btn).Caption := '&OK';
-
-      cmp := _Form.FindComponent('InvalidPathLbl');
-      if cmp is TLabel then
-        TLabel(cmp).Caption := TLabel(cmp).Caption + ' Drag and drop is enabled.';
-
-      TWinControl_SetFocus(FListbox);
-    end;
+  if Assigned(FUpBtn) then begin
+    FFavoritesBtn := TButton.Create(_Form);
+    FFavoritesBtn.Parent := _Form;
+    FFavoritesBtn.Left := FUpBtn.Left;
+    FFavoritesBtn.Top := FPageControl.Top;
+    FFavoritesBtn.Width := FUpBtn.Width;
+    FFavoritesBtn.Height := FUpBtn.Height;
+    FFavoritesBtn.Anchors := [akRight, akTop];
+    FFavoritesBtn.Caption := '&Fav';
+    FFavoritesBtn.OnClick := FavoritesBtnClick;
+    FFavoritesBtn.TabOrder := FAddDotsBtn.TabOrder + 1;
+    FFavoritesBtn.Visible := False;
+    FFavoritesPm := TPopupMenu.Create(_Form);
+    InitFavoritesMenu;
   end;
+
+  TWinControl_ActivateDropFiles(FMemo, HandleFilesDropped);
+
+  if TryFindButton('AddButton', FAddBtn) then begin
+    TCustomButtonHack(FAddBtn).OnClick := AddBtnClick;
+  end;
+  if TryFindButton('ReplaceButton', FReplaceBtn) then begin
+    FMakeRelativeBtn := TButton.Create(_Form);
+    FMakeRelativeBtn.Name := 'MakeRelativeBtn';
+    FMakeRelativeBtn.Parent := FReplaceBtn.Parent;
+    FMakeRelativeBtn.BoundsRect := FReplaceBtn.BoundsRect;
+    FMakeRelativeBtn.Anchors := [akRight, akBottom];
+    FMakeRelativeBtn.Caption := 'Make Relative';
+    FMakeRelativeBtn.Visible := False;
+    FMakeRelativeBtn.OnClick := MakeRelativeBtnClick;
+    FMakeRelativeBtn.TabOrder := FReplaceBtn.TabOrder + 1;
+  end;
+  if TryFindButton('DeleteButton', FDeleteBtn) then begin
+    FMakeAbsoluteBtn := TButton.Create(_Form);
+    FMakeAbsoluteBtn.Name := 'MakeAbsoluteBtn';
+    FMakeAbsoluteBtn.Parent := FDeleteBtn.Parent;
+    FMakeAbsoluteBtn.BoundsRect := FDeleteBtn.BoundsRect;
+    FMakeAbsoluteBtn.Anchors := [akRight, akBottom];
+    FMakeAbsoluteBtn.Caption := 'Make Absolute';
+    FMakeAbsoluteBtn.Visible := False;
+    FMakeAbsoluteBtn.OnClick := MakeAbsoluteBtnClick;
+    FMakeAbsoluteBtn.TabOrder := FDeleteBtn.TabOrder + 1;
+  end;
+  if TryFindButton('DeleteInvalidBtn', FDeleteInvalidBtn) then begin
+    FAddRecursiveBtn := TButton.Create(_Form);
+    FAddRecursiveBtn.Name := 'AddRecursiveBtn';
+    FAddRecursiveBtn.Parent := FDeleteInvalidBtn.Parent;
+    FAddRecursiveBtn.BoundsRect := FDeleteInvalidBtn.BoundsRect;
+    FAddRecursiveBtn.Anchors := [akRight, akBottom];
+    FAddRecursiveBtn.Caption := 'Add Recursive';
+    FAddRecursiveBtn.Visible := False;
+    FAddRecursiveBtn.OnClick := AddRecursiveBtnClick;
+    FAddRecursiveBtn.TabOrder := FDeleteInvalidBtn.TabOrder + 1;
+  end;
+
+  if TryFindButton('OkButton', btn) then
+    TCustomButtonHack(btn).Caption := '&OK';
+
+  cmp := _Form.FindComponent('InvalidPathLbl');
+  if cmp is TLabel then
+    TLabel(cmp).Caption := TLabel(cmp).Caption + ' (Drag and drop is enabled.)';
+  SetFocusTo(FListbox);
 end;
 
 procedure TSearchPathEnhancer.ProcessSelectedMemoLines(_ProcessMethod: TLineProcessMethod);
@@ -734,9 +750,9 @@ begin
   TrySetButtonVisibility(FAddDotsBtn, SwitchedToMemo);
 
   if SwitchedToMemo then
-    TWinControl_SetFocus(FMemo)
+    SetFocusTo(FMemo)
   else
-    TWinControl_SetFocus(FListbox);
+    SetFocusTo(FListbox);
 end;
 
 procedure TSearchPathEnhancer.UpBtnClick(_Sender: TObject);
@@ -762,7 +778,7 @@ begin
     finally
       FMemo.EndUpdate;
     end;
-    TWinControl_SetFocus(FMemo);
+    SetFocusTo(FMemo);
   end else begin
     LSelected := FListbox.Selected[FListbox.ItemIndex];
     FUpClick(FUpBtn);
@@ -794,7 +810,7 @@ begin
     finally
       FMemo.EndUpdate;
     end;
-    TWinControl_SetFocus(FMemo);
+    SetFocusTo(FMemo);
   end else begin
     LSelected := FListbox.Selected[FListbox.ItemIndex];
     FDownClick(FDownBtn);

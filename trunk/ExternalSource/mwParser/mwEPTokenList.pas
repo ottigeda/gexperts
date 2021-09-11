@@ -442,7 +442,8 @@ begin
           FInfo.ID := ikIntEmpty;
           Next;
         end;
-      tkSquareOpen: FInfo.ID := ikInterface;
+      tkSquareOpen:
+        FInfo.ID := ikInterface;
       tkSemiColon:
         begin
           FInfo.ID := ikIntForward;
@@ -477,6 +478,9 @@ begin
               FInfo.Data := FInfo.Data + RunToken + ';';
               Next;
             end;
+        end;
+      tkProcedure: begin
+        FInfo.Id := ikInterface;
         end;
     end;
     Result := FInfo.ID;

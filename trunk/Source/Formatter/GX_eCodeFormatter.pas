@@ -280,18 +280,11 @@ end;
 procedure AboutFormatter();
 {$IFNDEF GX_BCB} export;
 {$ENDIF GX_BCB}
-var
-  frm: TfmAbout;
 begin
   InitSharedResources;
   try
     try
-      frm := gblAboutFormClass.Create(nil);
-      try
-        frm.ShowModal;
-      finally
-        frm.Free;
-      end;
+      gblAboutFormClass.Execute(nil);
     except
       on E: Exception do begin
         GxLogAndShowException(E, E.Message);

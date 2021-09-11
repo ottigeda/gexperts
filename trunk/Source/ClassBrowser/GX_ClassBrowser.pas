@@ -839,7 +839,7 @@ end;
 procedure TfmClassBrowser.edtClassFilterChange(Sender: TObject);
 begin
   timKeyDelay.Enabled := False;
-  timKeyDelay.Enabled := True;
+  timKeyDelay.Enabled := True; // FI:W508 Variable is assigned twice successively
 end;
 
 procedure TfmClassBrowser.edtClassFilterKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);

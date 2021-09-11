@@ -731,7 +731,7 @@ function FindTextIdent(Id: string; const Source: string;
 ///<symmary>
 /// Converts a line position (X/Y) into a character position, so that
 /// StringList[LinePos.Y - 1][LinePos.X] = StringList.Text[CharPos]
-/// LinPos is a 1-based X/Y position
+/// LinePos is a 1-based X/Y position
 /// Examples:
 ///   LinePosToCharPos(Point(5, 1), '12345') = 5
 ///   LinePosToCharPos(Point(1, 2), '12345'#13#10'6789') = 8
@@ -1371,6 +1371,21 @@ begin
   Result := (C = #0) or IsCharWhiteSpace(C);
 end;
 
+// Inlined method must be implemented before it is used
+function IsCharControl(C: Char): Boolean;
+begin
+  {$IFDEF UNICODE}
+    {$IFDEF GX_VER250_up} // XE4+
+    Result := C.IsControl;
+    {$ELSE} // 2009 - XE3
+    Result := TCharacter.IsControl(C);
+    {$ENDIF}
+  {$ELSE not UNICODE}
+  Result := C in [#0..#8, #14..#31];
+  {$ENDIF}
+end;
+
+
 function IsCharWhiteSpaceOrControl(C: Char): Boolean;
 begin
   Result := IsCharWhiteSpace(C) or IsCharControl(C);
@@ -1433,19 +1448,6 @@ begin
   {$ELSE not UNICODE}
   Result := C in ['#', '$', '&', #39, '(', ')', '*', '+', ',', '-', '.', '/', ':', ';',
     '<', '=', '>', '@', '[', ']', '^'];
-  {$ENDIF}
-end;
-
-function IsCharControl(C: Char): Boolean;
-begin
-  {$IFDEF UNICODE}
-    {$IFDEF GX_VER250_up} // XE4+
-    Result := C.IsControl;
-    {$ELSE} // 2009 - XE3
-    Result := TCharacter.IsControl(C);
-    {$ENDIF}
-  {$ELSE not UNICODE}
-  Result := C in [#0..#8, #14..#31];
   {$ENDIF}
 end;
 
@@ -2308,9 +2310,9 @@ begin
       try
         Control.SetFocus;
         Result := True;
-      except //FI:W501
+      except
         // Ignore focus errors
-      end;
+      end;//FI:W501
     end;
   end;
 end;
@@ -2523,7 +2525,7 @@ begin
 end;
 
 procedure SetToolBarGradient(ToolBar: TToolBar; Enabled: Boolean);
-begin //FI:W519
+begin {$IFNDEF GX_VER180_up} {FI:W519} {$ENDIF}
   {$IFDEF GX_VER180_up}
   if Enabled then
     Toolbar.DrawingStyle := dsGradient
@@ -2603,7 +2605,7 @@ begin
 end;
 
 procedure SetParentBackgroundValue(Panel: TCustomPanel; Value: Boolean);
-begin //FI:W519
+begin {$IFNDEF GX_VER150_up} {FI:W519} {$ENDIF}
   {$IFDEF GX_VER150_up} // Delphi 7+
   Assert(Assigned(Panel));
   Panel.ParentBackground := Value;
@@ -2611,7 +2613,7 @@ begin //FI:W519
 end;
 
 procedure SetParentBackgroundValue(GroupBox: TGroupBox; Value: Boolean);
-begin //FI:W519
+begin {$IFNDEF GX_VER150_up} {FI:W519} {$ENDIF}
   {$IFDEF GX_VER150_up} // Delphi 7+
   Assert(Assigned(GroupBox));
   GroupBox.ParentBackground := Value;
@@ -2675,9 +2677,9 @@ procedure OutputComponentList(const StartComponent: TComponent; Owned: Boolean);
           {$IFOPT D+} SendDebugFmt('%s: %s  Top: %d  Left: %d  Height: %d  Width: %d  Visible: %d  ParentClass: %s  ParentParent: %s  Properties: %s', [AControl.Name, AControl.ClassName, AControl.Top, AControl.Left, AControl.Height, AControl.Width, Ord(AControl.Visible), AControl.ClassType.ClassParent.ClassName, AControl.ClassType.ClassParent.ClassParent.ClassName, GetComponentProperties(AControl)]); {$ENDIF}
           OutputChildren(AControl);
         end;
-      finally //FI:W502
+      finally
         {$IFOPT D+} SendUnIndent; {$ENDIF}
-      end;
+      end; //FI:W502
     end;
   end;
 
@@ -4568,8 +4570,8 @@ begin
   Result := Default;
   try
     Result := IsoStringToDateTime(DateTime);
-  except //FI:W501
-  end;
+  except
+  end; //FI:W501
 end;
 
 function GetFirstCharPos(const AText: String; AChars: TSysCharSet; SearchThis: Boolean): Integer;

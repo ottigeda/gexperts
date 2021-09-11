@@ -87,7 +87,7 @@ type
     constructor Create(ObjectType: TClassInterfaceEnum);
     procedure LoadMethods;
     function Add: TBrowseMethodInfoItem;
-    function SetParser(Parser: TmPasParser): Boolean; // Sets parser on interface line
+    function SetParserToDeclaration(Parser: TmPasParser): Boolean;
     function RefreshLineNo: Integer;
     property Items[Index: Integer]: TBrowseMethodInfoItem read GetItem; default;
     property ClassList: TClassList read FClassList write SetClassList;
@@ -757,22 +757,26 @@ begin
   FClassList := AClassList;
 end;
 
-function TBrowseClassInfoCollection.SetParser(Parser: TmPasParser): Boolean;
+function TBrowseClassInfoCollection.SetParserToDeclaration(Parser: TmPasParser): Boolean;
 
-      function GetInfo: TmInfoKind;
-      begin
-        Parser.NextNonSpace;
-        case Parser.Token.ID of
-          tkNull:      Result := ikUnknown;
-          tkSemiColon: Result := ikClForward;
-          tkOf:        Result := ikClReference;
-        else
-                       Result := ikClass;
-        end;
-      end;
+  function GetInfo: TmInfoKind;
+  begin
+    Parser.NextNonSpace;
+    case Parser.Token.ID of
+      tkNull:      Result := ikUnknown;
+      tkSemiColon: Result := ikClForward;
+      tkOf:        Result := ikClReference;
+    else
+                   Result := ikClass;
+    end;
+  end;
 
+var
+  IdentPos: Integer;
+  IdentLine: Integer;
 begin
   Result := False;
+  Parser.NextToken;
   while Parser.Token.ID <> tkNull do
   begin
     // todo: This will only find lines of the form
@@ -781,15 +785,15 @@ begin
     //       identifier<T:bla> = class | interface | DispInterface
     //       because the identifier is not directly in front of the equal sign.
     //       That's why the LineNo is always 0 for Generics.
-    Parser.NextObjectLine;
+    Parser.NextObjectLine(IdentPos, IdentLine);
     if GetInfo = ikClass then
     begin
-      Parser.RunPos := Parser.LastIdentPos;
+      Parser.RunPos := IdentPos;
       if SameText(Parser.Token.Data, Name) then
       begin
-        FLineNo := Parser.Token.LineNumber; // Update LineNumber
+        FLineNo := IdentLine;
         Result := True;
-        Exit;
+        Exit; //==>
       end
       else
         Parser.NextNonJunk;
@@ -814,10 +818,10 @@ begin
   Parser := TmPasParser.Create;
   try
     Parser.Origin := @FileContent[1];
-    if SetParser(Parser) then
+    if SetParserToDeclaration(Parser) then
     begin
-      Result := Parser.Token.LineNumber;
-      FLineNo := Result;
+      // SetParserToDeclaration has updated FLineNo
+      Result := FLineNo;
     end;
   finally
     FreeAndNil(Parser);
@@ -843,17 +847,25 @@ begin
   Parser := TmPasParser.Create;
   try
     Parser.Origin := @FileContent[1];
-    if SetParser(Parser) then
+    if SetParserToDeclaration(Parser) then
     begin
-      while not (Parser.Token.ID in [tkNull, tkClass, tkInterface]) do
+      while not (Parser.Token.ID in [tkNull, tkClass, tkInterface, tkDispInterface]) do
         Parser.NextNonJunk;
-      if Parser.Token.ID in [tkClass, tkInterface] then
+      if Parser.Token.ID in [tkClass, tkInterface, tkDispInterface] then
         Parser.NextNonJunk;
+
       if Parser.Token.ID = tkRoundOpen then
         while not (Parser.Token.ID in [tkNull, tkRoundClose]) do
           Parser.NextNonJunk;
       if Parser.Token.ID = tkRoundClose then
         Parser.NextNonJunk;
+
+      if Parser.Token.ID = tkSquareOpen then
+        while not (Parser.Token.ID in [tkNull, tkSquareClose]) do
+          Parser.NextNonJunk;
+      if Parser.Token.ID = tkSquareClose then
+        Parser.NextNonJunk;
+
       if Parser.Token.ID <> tkSemiColon then
         GetMethods(Parser);
     end;
@@ -1047,6 +1059,8 @@ var
   end;
 
   procedure LoadProperty;
+  const
+    ModifierSet = [tkDefault, tkStored, tkRead, tkWrite, tkReadOnly, tkDispId];
   var
     SquareOpen, RoundOpen: Integer;
     MInfo: TBrowseMethodInfoItem;
@@ -1063,25 +1077,27 @@ var
     begin
       MInfo.FDName := MInfo.FDName + Parser.Token.Data;
       if BuildRName then
-        if not (Parser.Token.ID in [tkSpace, tkCRLF, tkColon, tkSquareOpen, tkDefault, tkStored, tkRead, tkWrite]) then
+        if not (Parser.Token.ID in [tkSpace, tkCRLF, tkColon, tkSquareOpen] + ModifierSet) then
           MInfo.FRName := MInfo.FRName + Parser.Token.Data;
-      case Parser.Token.ID of
-        tkRoundOpen:   Inc(RoundOpen);
-        tkRoundClose:  Dec(RoundOpen);
-        // Stop building RName when encountering a '['
-        tkSquareOpen:
-          begin
-            Inc(SquareOpen);
-            BuildRName := False;
-          end;
-        tkSquareClose: Dec(SquareOpen);
-        tkProperty:    BuildRName := True;
-        tkColon:       BuildRName := False;
-        // Stop building RName when encountering default/stored/read/write
-        tkDefault:     BuildRName := False;
-        tkStored:      BuildRName := False;
-        tkRead:        BuildRName := False;
-        tkWrite:       BuildRName := False;
+      if Parser.Token.Id in ModifierSet then begin
+        // Stop building RName when encountering default/stored/read/write/readonly/DispId
+        // todo: Why test for this twice (here and in the if statement in BuildRName)?
+        //       Simply moving this before testing for BuildRName should have the same effect.
+        BuildRName := False;
+      end
+      else begin
+        case Parser.Token.ID of
+          tkRoundOpen: Inc(RoundOpen);
+          tkRoundClose: Dec(RoundOpen);
+          // Stop building RName when encountering a '['
+          tkSquareOpen: begin
+              Inc(SquareOpen);
+              BuildRName := False;
+            end;
+          tkSquareClose: Dec(SquareOpen);
+          tkProperty: BuildRName := True;
+          tkColon: BuildRName := False;
+        end;
       end;
       Parser.NextToken;
     end;
@@ -1144,7 +1160,7 @@ begin
   Parser := TmPasParser.Create;
   try
     Parser.Origin := @FileContent[1];
-    if Collection.SetParser(Parser) then
+    if Collection.SetParserToDeclaration(Parser) then
     begin
       // Temporarily set the line number in case we don't find a perfect match
       Result := Parser.Token.LineNumber;
@@ -1159,7 +1175,7 @@ begin
         if SameText(Parser.Token.Data, Self.RName) and TokenMatchesMethodType(LastTokenType, Self.FMethodType) then
         begin
           FLineNo := Parser.Token.LineNumber; // Might as well update line number in object
-          Result := Parser.Token.LineNumber;
+          Result := FLineNo;
           Exit;
         end;
         LastTokenType := Parser.Token.ID;

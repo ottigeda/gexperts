@@ -4,7 +4,7 @@ object fmReplaceCompMapDets: TfmReplaceCompMapDets
   AutoScroll = False
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'Replace Components - Mapping Details'
-  ClientHeight = 330
+  ClientHeight = 362
   ClientWidth = 364
   Color = clBtnFace
   Constraints.MinHeight = 360
@@ -26,7 +26,7 @@ object fmReplaceCompMapDets: TfmReplaceCompMapDets
     Left = 0
     Top = 42
     Width = 364
-    Height = 254
+    Height = 286
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 6
@@ -35,7 +35,7 @@ object fmReplaceCompMapDets: TfmReplaceCompMapDets
       Left = 6
       Top = 6
       Width = 352
-      Height = 242
+      Height = 274
       Align = alClient
       Caption = 'Property Mapping Details'
       TabOrder = 0
@@ -43,7 +43,7 @@ object fmReplaceCompMapDets: TfmReplaceCompMapDets
         Left = 7
         Top = 18
         Width = 338
-        Height = 217
+        Height = 247
         Anchors = [akLeft, akTop, akRight]
         BevelOuter = bvNone
         TabOrder = 0
@@ -170,11 +170,11 @@ object fmReplaceCompMapDets: TfmReplaceCompMapDets
           TabOrder = 7
           OnClick = chkUseConstValueClick
         end
-        object edtConstValue: TEdit
+        object m_ConstValue: TMemo
           Left = 0
           Top = 192
           Width = 145
-          Height = 22
+          Height = 57
           TabOrder = 9
         end
         object chkLogValues: TCheckBox
@@ -199,7 +199,7 @@ object fmReplaceCompMapDets: TfmReplaceCompMapDets
   end
   object pnlButtons: TPanel
     Left = 0
-    Top = 296
+    Top = 328
     Width = 364
     Height = 34
     Align = alBottom

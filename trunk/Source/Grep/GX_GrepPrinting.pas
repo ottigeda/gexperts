@@ -44,9 +44,10 @@ begin
   end;
 end;
 
-procedure SaveResults(RichEdit: TRichEdit; AFileName: string; DoSaveDialog: Boolean);
+procedure SaveResults(RichEdit: TRichEdit; AFileName: string; DoSaveDialog: Boolean); //FI:O801 CONST missing ... Used as var-parameter
 begin
   RichEdit.PlainText := True;
+
   if not DoSaveDialog or OpenSaveDialog(AFileName) then
     RichEdit.Lines.SaveToFile(AFileName);
 end;

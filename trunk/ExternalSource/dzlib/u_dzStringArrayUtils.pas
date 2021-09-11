@@ -34,6 +34,16 @@ function TStrings_AsStringArray(_st: TStrings): TStringArray;
 procedure TStrings_AssignStringArray(_st: TStrings; _arr: TStringArray);
 procedure TStrings_AppendStringArray(_st: TStrings; _arr: TStringArray);
 
+///<summary>
+/// Concatenate strings from index FromIdx to ToIdx in the array to a string, using the given separator
+/// @param arr is the source array
+/// @param Separator is a string which will used to separate the array items
+/// @param FromIdx is the starting index, default is 0
+/// @param ToIdx is the end index, can be negative meaning Length - ToIdx, so -1 means Length-1
+/// @returns the concatenated string </summary>
+//function TStringArray_ToString(const _arr: TStringArray; const _Separator: string;
+//  _FromIdx: Integer = 0; _ToIdx: Integer = -1): string;
+
 implementation
 
 uses
@@ -45,7 +55,7 @@ var
   len: Integer;
 begin
   len := Length(_arr);
-  Setlength(Result, len);
+  SetLength(Result, len);
   for i := 0 to len - 1 do
     Result[i] := _arr[i];
 end;
@@ -72,7 +82,7 @@ var
   i: Integer;
 begin
   cnt := _st.Count;
-  Setlength(Result, cnt);
+  SetLength(Result, cnt);
   for i := 0 to cnt - 1 do
     Result[i] := _st[i];
 end;
@@ -128,14 +138,14 @@ begin
 
   if _Index >= len - _Count then begin
     // delete from the end
-    Setlength(_arr, _Index);
+    SetLength(_arr, _Index);
     Exit; //==>
   end;
 
   for i := _Index to len - _Count - 1 do begin
     _arr[i] := _arr[i + _Count];
   end;
-  Setlength(_arr, len - _Count);
+  SetLength(_arr, len - _Count);
 end;
 
 function TStringArray_Contains(const _arr: TStringArray; const _s: string; out _Idx: Integer): Boolean;
@@ -166,7 +176,7 @@ var
 begin
   Len1 := Length(_Arr1);
   Len2 := Length(_Arr2);
-  Setlength(Result, Len1 + Len2);
+  SetLength(Result, Len1 + Len2);
   for i := 0 to Len1 - 1 do
     Result[i] := _Arr1[i];
   for i := 0 to Len2 - 1 do
@@ -178,7 +188,7 @@ var
   len: Integer;
 begin
   len := Length(_arr);
-  Setlength(_arr, len + 1);
+  SetLength(_arr, len + 1);
   _arr[len] := _Value;
 end;
 

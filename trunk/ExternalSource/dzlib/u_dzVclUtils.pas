@@ -164,9 +164,13 @@ type
 ///          False, if all columns fit without scrolling
 /// @note that the default is to use the first 10 rows. </summary>
 function TGrid_Resize(_Grid: TCustomGrid): Boolean; overload;
+function TGrid_Resize(_Grid: TCustomGrid; out _RequiredSize: Integer): Boolean; overload;
 function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet; _RowOffset: Integer = -1): Boolean; overload;
+function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet; _RowOffset: Integer; out _RequiredSize: Integer): Boolean; overload;
 function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet;
   const _ConstantCols: array of Integer; _RowOffset: Integer = -1): Boolean; overload;
+function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet;
+  const _ConstantCols: array of Integer; _RowOffset: Integer; out _RequiredSize: Integer): Boolean; overload;
 
 ///<summary> Resizes the columns of a TDbGrid to fit their contents
 ///          @param Grid is the TCustomDbGrid to work on
@@ -2691,13 +2695,31 @@ begin
   Result := TGrid_Resize(_Grid, [roUseFirstRows], [], -1);
 end;
 
+function TGrid_Resize(_Grid: TCustomGrid; out _RequiredSize: Integer): Boolean;
+begin
+  Result := TGrid_Resize(_Grid, [roUseFirstRows], [], -1, _RequiredSize);
+end;
+
 function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet; _RowOffset: Integer): Boolean;
 begin
   Result := TGrid_Resize(_Grid, _Options, [], _RowOffset);
 end;
 
+function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet; _RowOffset: Integer; out _RequiredSize: Integer): Boolean;
+begin
+  Result := TGrid_Resize(_Grid, _Options, [], _RowOffset, _RequiredSize);
+end;
+
 function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet;
   const _ConstantCols: array of Integer; _RowOffset: Integer): Boolean;
+var
+  RequiredSize: Integer;
+begin
+  Result := TGrid_Resize(_Grid, _Options, _ConstantCols, _RowOffset, RequiredSize);
+end;
+
+function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet;
+  const _ConstantCols: array of Integer; _RowOffset: Integer; out _RequiredSize: Integer): Boolean;
 var
   Col, Row: Integer;
   Grid: TGridHack;
@@ -2707,7 +2729,6 @@ var
   MaxRow: Integer;
   ColWidths: array of Integer;
   FirstRow: Integer;
-  SumWidths: Integer;
   Additional: Integer;
 begin
   Grid := TGridHack(_Grid);
@@ -2729,9 +2750,9 @@ begin
       FirstRow := MaxRow - 10;
   end;
 
-  SumWidths := MaxCol; // one spare pixel per column
+  _RequiredSize := MaxCol; // one spare pixel per column
   if goVertLine in Grid.Options then
-    Inc(SumWidths, Grid.GridLineWidth);
+    Inc(_RequiredSize, Grid.GridLineWidth);
 
   for Col := MinCol to MaxCol do begin
     if ArrayContains(Col, _ConstantCols) then
@@ -2774,26 +2795,26 @@ begin
       ColWidths[Col] := MinWidth;
     end;
 
-    Inc(SumWidths, MinWidth);
+    Inc(_RequiredSize, MinWidth);
   end;
 
-  if SumWidths >= Grid.ClientWidth then begin
+  if _RequiredSize >= Grid.ClientWidth then begin
     Result := True;
   end else begin
     Result := False;
     if (roUseGridWidth in _Options) and (Length(_ConstantCols) < MaxCol + 1) then begin
-      Additional := (Grid.ClientWidth - SumWidths) div (MaxCol + 1 - Length(_ConstantCols));
+      Additional := (Grid.ClientWidth - _RequiredSize) div (MaxCol + 1 - Length(_ConstantCols));
       for Col := MinCol to MaxCol do begin
         if not ArrayContains(Col, _ConstantCols) then begin
           Inc(ColWidths[Col], Additional);
-          Inc(SumWidths, Additional);
+          Inc(_RequiredSize, Additional);
         end;
       end;
-      if SumWidths < Grid.ClientWidth then begin
+      if _RequiredSize < Grid.ClientWidth then begin
         Col := MaxCol;
         while ArrayContains(Col, _ConstantCols) do
           Dec(Col);
-        Inc(ColWidths[Col], Grid.ClientWidth - SumWidths);
+        Inc(ColWidths[Col], Grid.ClientWidth - _RequiredSize);
       end;
     end;
   end;

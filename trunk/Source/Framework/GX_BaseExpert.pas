@@ -128,7 +128,8 @@ begin
     SetTotalCallCount(GetTotalCallCount + FCallCount);
   except
     // ignore exceptions in the destructor
-  end;
+  end; // FI:W501 Empty EXCEPT block
+
   inherited;
 end;
 

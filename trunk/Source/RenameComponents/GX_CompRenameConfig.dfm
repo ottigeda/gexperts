@@ -88,23 +88,14 @@ object fmCompRenameConfig: TfmCompRenameConfig
       Caption = 'Show rename dialog for new components'
       TabOrder = 0
     end
-    object b_Import: TButton
+    object b_Tools: TButton
       Left = 8
       Top = 48
       Width = 75
       Height = 25
-      Caption = 'Import ...'
+      Caption = 'Tools >'
       TabOrder = 3
-      OnClick = b_ImportClick
-    end
-    object b_Export: TButton
-      Left = 88
-      Top = 48
-      Width = 75
-      Height = 25
-      Caption = 'Export ...'
-      TabOrder = 4
-      OnClick = b_ExportClick
+      OnClick = b_ToolsClick
     end
   end
   object pnlTop: TPanel
@@ -183,6 +174,22 @@ object fmCompRenameConfig: TfmCompRenameConfig
           Height = 236
           Align = alClient
           TabOrder = 1
+          object pc_Names: TPageControl
+            Left = 1
+            Top = 1
+            Width = 258
+            Height = 234
+            ActivePage = ts_NamesVcl
+            Align = alClient
+            TabOrder = 0
+            OnChange = pc_NamesChange
+            object ts_NamesVcl: TTabSheet
+              Caption = 'VCL'
+            end
+            object ts_NamesFmx: TTabSheet
+              Caption = 'FMX'
+            end
+          end
         end
       end
       object pnlRight: TPanel
@@ -202,16 +209,6 @@ object fmCompRenameConfig: TfmCompRenameConfig
           Height = 26
           Action = acAdd
           TabOrder = 0
-        end
-        object btnDefaults: TButton
-          Left = 8
-          Top = 227
-          Width = 117
-          Height = 26
-          Anchors = [akLeft, akBottom]
-          Caption = '&Defaults'
-          TabOrder = 4
-          OnClick = btnDefaultsClick
         end
         object btnDelete: TButton
           Left = 8
@@ -233,7 +230,7 @@ object fmCompRenameConfig: TfmCompRenameConfig
           Left = 8
           Top = 112
           Width = 121
-          Height = 109
+          Height = 145
           Anchors = [akLeft, akTop, akBottom]
           ItemHeight = 14
           TabOrder = 3
@@ -322,5 +319,24 @@ object fmCompRenameConfig: TfmCompRenameConfig
     OnFind = FindDialogFind
     Left = 64
     Top = 112
+  end
+  object pm_Extra: TPopupMenu
+    Left = 120
+    Top = 232
+    object mi_ResetTo: TMenuItem
+      Caption = 'Reset to'
+      object mi_ResetToDefault: TMenuItem
+        Caption = '<default>'
+        OnClick = mi_ResetToDefaultClick
+      end
+    end
+    object mi_Import: TMenuItem
+      Caption = 'Import ...'
+      OnClick = mi_ImportClick
+    end
+    object mi_Export: TMenuItem
+      Caption = 'Export ...'
+      OnClick = mi_ExportClick
+    end
   end
 end

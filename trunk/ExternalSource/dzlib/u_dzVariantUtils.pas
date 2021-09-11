@@ -171,7 +171,7 @@ function Var2ExtEx(const _v: Variant; const _Source: string): Extended;
 ///          @returns the extended value of v or the Default if v can not be converted </summary>
 function Var2Ext(const _v: Variant; const _Default: Extended): Extended;
 
-{$IF Declared(TryStrToDateTime)}
+{$IF Declared(TryStr2DateTime)}
 ///<summary> Converts a variant to a TDateTime.
 ///          Raises an exception if v can not be converted.
 ///          @param v Variant value to convert
@@ -427,17 +427,17 @@ begin
     Result := _NullValue;
 end;
 
-{$IF Declared(TryStrToDateTime)}
+{$IF Declared(TryStr2DateTime)}
 function Var2DateTimeEx(const _v: Variant; const _Source: string): TDateTime;
 const
-  EXPECTED = 'Date'; // do not translate
+  EXPECTED = 'DateTime'; // do not translate
 begin
   if VarIsNull(_v) then
     raise EVarIsNull.CreateFmt(_('Variant is Null, should be %s: %s'), [EXPECTED, _Source]);
   if VarIsEmpty(_v) then
     raise EVarIsEmpty.CreateFmt(_('Variant is Empty, should be %s: %s'), [EXPECTED, _Source]);
   if VarIsStr(_v) then begin
-    if not TryStrToDateTime(_v, Result) then
+    if not TryStr2DateTime(_v, Result) then
       raise EVariantConvertError.CreateFmt(_('Variant can not be converted to %s: %s'), [EXPECTED, _Source]);
   end else begin
     try

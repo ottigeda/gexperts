@@ -456,7 +456,7 @@ begin
         end;
       end;
     except
-    end;
+    end; //FI:W501 Empty EXCEPT block
   finally
     FIsActivaingForm := False;
   end;

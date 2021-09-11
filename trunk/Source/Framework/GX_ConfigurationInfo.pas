@@ -5,8 +5,14 @@ unit GX_ConfigurationInfo;
 interface
 
 uses
+  Windows,
   Registry,
-  Graphics, Classes, TypInfo, Forms, ComCtrls, Types, IniFiles;
+  Graphics, Classes, TypInfo, Forms, ComCtrls, Types, IniFiles,
+  u_dzClassUtils, // these other u_dzXxx units are necessary for inlining
+  u_dzTypes,
+  u_dzTranslator,
+  u_dzStringUtils,
+  u_dzMiscUtils;
 
 type
   TGXFontFlag = (ffColor);
@@ -17,6 +23,7 @@ type
 
 type
   IExpertSettings = interface(IUnknown)
+    ['{69BE5567-2FA6-4041-B75D-8E740E404786}']
     function ReadBool(const Ident: string; Default: Boolean): Boolean;
     procedure WriteBool(const Ident: string; Value: Boolean);
     function ReadBounds(const Default: TRect): TRect;
@@ -31,6 +38,7 @@ type
     procedure WriteEnumerated(const Ident: string; TypeInfo: PTypeInfo; Value: Longint);
     procedure EraseSection(const Section: string);
     procedure ReadSection(const Section: string; Strings: TStrings);
+    procedure ReadSections(Strings: TStrings);
     procedure LoadFont(const FontName: string; const Font: TFont; Flags: TGXFontFlags = []);
     procedure SaveFont(const FontName: string; const Font: TFont; Flags: TGXFontFlags = []);
     procedure LoadForm(const Section: string; Form: TCustomForm; FormSaveFlags: TFormSaveFlags = [fsSize, fsPosition]);
@@ -145,6 +153,11 @@ type
     procedure ReadSection(const Section: string; Strings: TStrings); override;
     procedure ReadSections(Strings: TStrings); overload; override;
     procedure ReadSectionValues(const Section: string; Strings: TStrings); override;
+{$IFDEF CUSTOMINIFILE_HAS_READSUBSECTIONS}
+    procedure ReadSubSections(const Section: string; Strings: TStrings; Recurse: Boolean = False); override;
+{$ELSE}
+    procedure ReadSubSections(const Section: string; Strings: TStrings; Recurse: Boolean = False);
+{$ENDIF}
     procedure EraseSection(const Section: string); override;
     procedure DeleteKey(const Section, Ident: String); override;
     procedure UpdateFile; override;
@@ -156,7 +169,7 @@ type
   /// handles the settings of a particular expert, stored under the section given in the constructor </summary>
   TExpertSettings = class
   private
-    FGExpertsSettings: TGExpertsSettings;
+    FGExpertsSettings: TGExpertsSettings;              
     FSection: string;
   public
     constructor Create(GExpertsSettings: TGExpertsSettings; const Section: string);
@@ -174,6 +187,7 @@ type
     procedure WriteEnumerated(const Ident: string; TypeInfo: PTypeInfo; Value: Longint);
     procedure EraseSection(const Section: string);
     procedure ReadSection(const Section: string; Strings: TStrings);
+    procedure ReadSections(Strings: TStrings);
     procedure LoadFont(const FontName: string; const Font: TFont; Flags: TGXFontFlags = []);
     procedure SaveFont(const FontName: string; const Font: TFont; Flags: TGXFontFlags = []);
     procedure LoadForm(const Section: string; Form: TCustomForm; FormSaveFlags: TFormSaveFlags = [fsSize, fsPosition]);
@@ -1124,6 +1138,11 @@ begin
   FGExpertsSettings.ReadSection(FSection + '\' + Section, Strings);
 end;
 
+procedure TExpertSettings.ReadSections(Strings: TStrings);
+begin
+  FGExpertsSettings.ReadSubSections(FSection, Strings);
+end;
+
 procedure TExpertSettings.ReadSectionValues(const SubSection: string; Strings: TStrings);
 var
   s: string;
@@ -1294,6 +1313,12 @@ end;
 function TGExpertsBaseSettings.ReadString(const Section, Ident, Default: string): string;
 begin
   Result := FIniFile.ReadString(Section, Ident, default);
+end;
+
+procedure TGExpertsBaseSettings.ReadSubSections(const Section: string; Strings: TStrings;
+  Recurse: Boolean);
+begin
+  TCustomIniFile_ReadSubSections(FIniFile, Section, Strings);
 end;
 
 function TGExpertsBaseSettings.ReadTime(const Section, Name: string; Default: TDateTime): TDateTime;

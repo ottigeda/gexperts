@@ -4,7 +4,7 @@ unit u_dzNullableTimespan;
 
 interface
 
-{$IFNDEF DELPHI2007_UP}
+{$IFNDEF SUPPORTS_ENHANCED_RECORDS}
 {$IFNDEF NO_DELPHI2007UP_HINT}
 {$MESSAGE HINT 'Delphi <2007 not supported'}
 {$ENDIF}
@@ -141,11 +141,11 @@ type
 type
   TdzNullableTimespan = TNullableTimespan deprecated;
 
-{$ENDIF DELPHI2007_UP}
+{$ENDIF SUPPORTS_ENHANCED_RECORDS}
 
 implementation
 
-{$IFDEF DELPHI2007_UP}
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 
 uses
   Math,
@@ -160,6 +160,14 @@ begin
 end;
 
 { TNullableTimespan }
+
+// Inlined method must be implemented before called
+procedure TNullableTimespan.SetDaysAndMicroseconds(_FullDays: Int64; _MicroSeconds: Int64);
+begin
+  FFullDays := _FullDays;
+  FMicroSeconds := _MicroSeconds;
+  FIsValid := GetNullableTypesFlagInterface;
+end;
 
 procedure TNullableTimespan.AssignDays(_Days: Double);
 begin
@@ -638,13 +646,6 @@ begin
     raise EInvalidValue.Create(_('NullableTimespan value is invalid'));
 end;
 
-procedure TNullableTimespan.SetDaysAndMicroseconds(_FullDays: Int64; _MicroSeconds: Int64);
-begin
-  FFullDays := _FullDays;
-  FMicroSeconds := _MicroSeconds;
-  FIsValid := GetNullableTypesFlagInterface;
-end;
-
 function TNullableTimespan.InDays: Double;
 begin
   if not TryGetDays(Result) then
@@ -717,6 +718,6 @@ begin
   Result := FFullDays * MicrosecondsPerDay + FMicroSeconds;
 end;
 
-{$ENDIF DELPHI2007_UP}
+{$ENDIF SUPPORTS_ENHANCED_RECORDS}
 
 end.

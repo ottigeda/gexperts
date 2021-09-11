@@ -42,6 +42,7 @@ type
     FImplementationsPos: Integer;
     FLastComment: Integer;
     FLastIdentPos: Integer;
+    FLastIdentLine: Integer;
     FLastSemiColon: Integer;
     fOrigin: PChar;
     Run: Integer;
@@ -58,7 +59,7 @@ type
     destructor Destroy; override;
     function GetSubString(StartPos, EndPos: Integer): string;
     procedure NextClassLine;
-    procedure NextObjectLine;
+    procedure NextObjectLine(out _IdentPos, _IdentLine: integer);
     procedure NextID(ID: TTokenKind);
     procedure NextNonComment;
     procedure NextNonJunk;
@@ -72,6 +73,7 @@ type
     property IsJunk: Boolean read GetIsJunk;
     property LastComment: Integer read FLastComment;
     property LastIdentPos: Integer read FLastIdentPos;
+    property LastIdentLine: Integer read FLastIdentLine;
     property LastSemiColon: Integer read FLastSemiColon;
     property Origin: PChar read fOrigin write SetOrigin;
     property RunPos: Integer read Run write SetRunPos;
@@ -417,7 +419,10 @@ begin
       end;
   end;
   Case Result of
-    tkIdentifier: FLastIdentPos := FToken.Position;
+    tkIdentifier: begin
+      FLastIdentPos := FToken.Position;
+      FLastIdentLine := FToken.LineNumber;
+    end;
     tkImplementation: FImplementationsPos := FToken.Position;
     tkCase: Inc(FEndCount);
     tkClass: FEndCount := 1;
@@ -739,33 +744,39 @@ begin
     if FToken.ID in BigIdentDirect then
     begin
       FLastIdentPos := FToken.Position;
+      FLastIdentLine := FToken.LineNumber;
       NextNonJunk;
       if FToken.ID = tkEqual then
       begin
         NextNonJunk;
-        if FToken.ID = tkClass then Break;
+        if FToken.ID = tkClass then
+          Break; //==v
       end;
     end;
     NextNonJunk;
   end;
 end; { NextClassLine }
 
-procedure TmPasParser.NextObjectLine;
+procedure TmPasParser.NextObjectLine(out _IdentPos, _IdentLine: integer);
 begin
   while FToken.ID <> tkNull do
   begin
     if FToken.ID in BigIdentDirect then
     begin
       FLastIdentPos := FToken.Position;
+      FLastIdentLine := FToken.LineNumber;
       NextNonJunk;
       if FToken.ID = tkEqual then
       begin
         NextNonJunk;
-        if FToken.ID in [tkClass, tkDispInterface, tkInterface] then Break;
+        if FToken.ID in [tkClass, tkDispInterface, tkInterface] then
+          Break; //==v
       end;
     end;
     NextNonJunk;
   end;
+  _IdentPos := FLastIdentPos;
+  _IdentLine := FLastIdentLine;
 end; { NextObjectLine }
 
 function TmPasParser.GetMethodImpLine(const ClassName, MethodName: string): Integer;

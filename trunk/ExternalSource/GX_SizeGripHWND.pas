@@ -71,12 +71,12 @@ type
 
 function GET_X_LPARAM(lParam: LPARAM): Integer; inline;
 begin
-  Result := Smallint(LoWord(lParam));
+  Result := Smallint(LoWord(DWord(lParam)));
 end;
 
 function GET_Y_LPARAM(lParam: LPARAM): Integer; inline;
 begin
-  Result := Smallint(HiWord(lParam));
+  Result := Smallint(HiWord(DWord(lParam)));
 end;
 
 procedure GetGripRect(hWndControl: HWND; var Rect: TRect);

@@ -77,7 +77,7 @@ begin
     RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord), Pointer(@ThreadNameInfo));
   except
     // ignore
-  end;
+  end; //FI:W501 Empty EXCEPT block
 end;
 
 { TNamedThread }

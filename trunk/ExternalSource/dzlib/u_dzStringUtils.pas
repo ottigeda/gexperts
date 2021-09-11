@@ -527,6 +527,12 @@ begin
   Result := RemoveSuffixIfMatching(_s, _Suffix);
 end;
 
+// Inlined functions must be implemented before it is used.
+function UEndsWith(const _End, _s: string): Boolean;
+begin
+  Result := AnsiEndsText(_End, _s);
+end;
+
 function RemoveSuffixIfMatching(const _s, _Suffix: string): string;
 begin
   if UEndsWith(_Suffix, _s) then
@@ -1404,11 +1410,6 @@ end;
 function EndsWith(const _End, _s: string): Boolean;
 begin
   Result := AnsiEndsStr(_End, RightStr(_s, Length(_End)));
-end;
-
-function UEndsWith(const _End, _s: string): Boolean;
-begin
-  Result := AnsiEndsText(_End, _s);
 end;
 
 function UnquoteString(const _s: string; _Quote: Char): string;

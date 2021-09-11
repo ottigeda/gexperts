@@ -94,22 +94,12 @@ end;
 
 procedure ShowGXAboutForm;
 begin
-  with gblAboutFormClass.Create(nil) do
-  try
-    ShowModal;
-  finally
-    Free;
-  end;
+  gblAboutFormClass.Execute(nil);
 end;
 
 procedure ShowGXConfigurationForm;
 begin
-  with TfmConfiguration.Create(nil) do
-  try
-    ShowModal;
-  finally
-    Free;
-  end;
+  TfmConfiguration.Execute(nil);
 end;
 
 procedure InitSharedResources;
@@ -382,12 +372,7 @@ end;
 
 procedure TGExperts.ShowConfigurationForm;
 begin
-  with TfmConfiguration.Create(nil) do
-  try
-    ShowModal;
-  finally
-    Free;
-  end;
+  TfmConfiguration.Execute(nil);
 end;
 
 procedure TGExperts.DoAfterIDEInitialized(Sender: TObject);

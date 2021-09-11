@@ -6,7 +6,10 @@ interface
 
 uses
   Forms, StdCtrls, Classes, Controls, Messages, Grids, Menus, Dialogs, ActnList,
-  ExtCtrls, GX_BaseForm, Graphics, Mask, Actions;
+  ExtCtrls, GX_BaseForm, Graphics, Mask, Actions, ComCtrls;
+
+const
+  COMP_RENAME_NAME = 'RenameComponents';
 
 const
   UM_SHOW_CONTROL = WM_USER + 133;
@@ -16,6 +19,9 @@ resourcestring
 
 type
   TEditMode = (emRead, emEdit, emInsert);
+
+  TOnExportLists = procedure(_Sender: TObject; _RulesListVcl, _RulesListFmx: TStringList) of object;
+  TOnImportLists = procedure(_Sender: TObject; const _fn: string; _RulesListVcl, _RulesListFmx: TStringList) of object;
 
   TOnRowHeaderClick = procedure(Sender: TObject; Col: Integer) of object;
 
@@ -69,7 +75,6 @@ type
     mnuSortByClass: TMenuItem;
     mnuSortByRule: TMenuItem;
     FindDialog: TFindDialog;
-    btnDefaults: TButton;
     pnlFooter: TPanel;
     pnlTop: TPanel;
     btnOtherProperties: TButton;
@@ -79,9 +84,16 @@ type
     btnOK: TButton;
     btnClose: TButton;
     btnHelp: TButton;
-    b_Import: TButton;
-    b_Export: TButton;
+    b_Tools: TButton;
+    pm_Extra: TPopupMenu;
+    mi_ResetTo: TMenuItem;
+    mi_ResetToDefault: TMenuItem;
+    mi_Import: TMenuItem;
+    mi_Export: TMenuItem;
     lbxOtherProps: TListBox;
+    pc_Names: TPageControl;
+    ts_NamesVcl: TTabSheet;
+    ts_NamesFmx: TTabSheet;
     procedure acOtherPropertiesExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -98,20 +110,28 @@ type
     procedure GridSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
     procedure GridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure FindDialogFind(Sender: TObject);
-    procedure btnDefaultsClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
     procedure btnClearClick(Sender: TObject);
     procedure edtFindChange(Sender: TObject);
     procedure edtFindKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure b_ImportClick(Sender: TObject);
-    procedure b_ExportClick(Sender: TObject);
+    procedure b_ToolsClick(Sender: TObject);
+    procedure mi_ImportClick(Sender: TObject);
+    procedure mi_ExportClick(Sender: TObject);
+    procedure pc_NamesChange(Sender: TObject);
+    procedure mi_ResetToDefaultClick(Sender: TObject);
   private
-    FOnImport: TNotifyEvent;
-    FOnExport: TNotifyEvent;
-    FValueList: TStringList;
-    Grid: TRenameStringGrid;
-    procedure CopyValuesToGrid(Values: TStringList);
-    procedure CopyGridToValues(var Values: TStringList);
+    FOnImport: TOnImportLists;
+    FOnExport: TOnExportLists;
+    FValueListVcl: TStringList;
+    FValueListFmx: TStringList;
+    FGridVcl: TRenameStringGrid;
+    FGridFmx: TRenameStringGrid;
+    class procedure GetDefaultsList(_Defaults: TStrings);
+    function GetActiveGrid: TRenameStringGrid;
+    function GetActiveValueList: TStringList;
+    procedure SetActiveValueList(_ValueList: TStringList);
+    procedure CopyValuesToGrid(_Values: TStringList; _Grid: TRenameStringGrid);
+    procedure CopyGridToValues(_Grid: TRenameStringGrid; var _Values: TStringList);
     function IsEmptyRow(aGrid: TStringGrid; ARow: Integer): Boolean;
     function IsValidRule(ARow: Integer): Boolean;
     procedure GridDeleteRow(ARow: Integer);
@@ -121,16 +141,21 @@ type
     procedure HandleOnRowHeaderClick(Sender: TObject; Col: Integer);
     procedure SortByClass;
     procedure SortByRule;
-    procedure GetData(_ValueList: TStringList; out _AutoShow, _AutoAdd: Boolean;
+    procedure GetData(_ValueListVcl, _ValueListFmx: TStringList; out _AutoShow, _AutoAdd: Boolean;
       out _FormWidth, _FormHeight: Integer);
+    procedure SetData(_ValueListVcl, _ValueListFmx: TStringList; _AutoShow, _AutoAdd: Boolean;
+      _FormWidth, _FormHeight: Integer; const _Selected: string);
+    procedure SetLists(_ValueListVcl, _ValueListFmx: TStringList);
     procedure HandleOnGridClick(_Sender: TObject);
     procedure UpdateOtherProps;
+    procedure UpdateGridEvents;
+    procedure ResizeGrids;
+    procedure SetDefault(_Which: string);
+    procedure Import(const _fn: string);
   public
-    class function Execute(_Owner: TComponent; _OnImport, _OnExport: TNotifyEvent;
-      _ValueList: TStringList; var _AutoShow: Boolean;
+    class function Execute(_Owner: TComponent; _OnImport: TOnImportLists; _OnExport: TOnExportLists;
+      _ValueListVcl, _ValueListFmx: TStringList; var _AutoShow: Boolean;
       var _AutoAdd: Boolean; var _FormWidth, _FormHeight: Integer; const _Selected: string): Boolean;
-    procedure SetData(_ValueList: TStringList; _AutoShow, _AutoAdd: Boolean;
-      _FormWidth, _FormHeight: Integer; const _Selected: string);
   end;
 
 implementation
@@ -139,7 +164,7 @@ implementation
 
 uses
   Windows, SysUtils, Math, StrUtils,
-  u_dzClassUtils, u_dzVclUtils, u_dzStringUtils,
+  u_dzClassUtils, u_dzVclUtils, u_dzStringUtils, u_dzMiscUtils,
   GX_GenericUtils, GX_OtaUtils, GX_SharedImages, GX_GxUtils, GX_CompRenameAdvanced,
   GX_MessageBox;
 
@@ -165,8 +190,8 @@ end;
 
 { TfmCompRenameConfig }
 
-class function TfmCompRenameConfig.Execute(_Owner: TComponent; _OnImport, _OnExport: TNotifyEvent;
-  _ValueList: TStringList; var _AutoShow: Boolean;
+class function TfmCompRenameConfig.Execute(_Owner: TComponent; _OnImport: TOnImportLists; _OnExport: TOnExportLists;
+  _ValueListVcl, _ValueListFmx: TStringList; var _AutoShow: Boolean;
   var _AutoAdd: Boolean; var _FormWidth, _FormHeight: Integer; const _Selected: string): Boolean;
 var
   frm: TfmCompRenameConfig;
@@ -175,17 +200,17 @@ begin
   try
     frm.FOnImport := _OnImport;
     frm.FOnExport := _OnExport;
-    frm.SetData(_ValueList, _AutoShow, _AutoAdd, _FormWidth, _FormHeight, _Selected);
+    frm.SetData(_ValueListVcl, _ValueListFmx, _AutoShow, _AutoAdd, _FormWidth, _FormHeight, _Selected);
 
     Result := (frm.ShowModal = mrOK);
     if Result then
-      frm.GetData(_ValueList, _AutoShow, _AutoAdd, _FormWidth, _FormHeight);
+      frm.GetData(_ValueListVcl, _ValueListFmx, _AutoShow, _AutoAdd, _FormWidth, _FormHeight);
   finally
     FreeAndNil(frm);
   end;
 end;
 
-procedure CopyValueList(_Src: TStringList; _Dest: TStringList);
+procedure CopyValueList(_Src, _Dest: TStringList);
 var
   i: Integer;
   Additional: TStringList;
@@ -194,8 +219,7 @@ begin
   Assert(Assigned(_Src));
   Assert(Assigned(_Dest));
 
-  TStrings_FreeAllObjects(_Dest);
-  _Dest.Clear;
+  TStrings_FreeAllObjects(_Dest).Clear;
 
   for i := 0 to _Src.Count - 1 do begin
     Additional := _Src.Objects[i] as TStringList;
@@ -208,36 +232,145 @@ begin
   end;
 end;
 
-procedure TfmCompRenameConfig.SetData(_ValueList: TStringList; _AutoShow, _AutoAdd: Boolean;
-      _FormWidth, _FormHeight: Integer; const _Selected: string);
+procedure TfmCompRenameConfig.SetLists(_ValueListVcl, _ValueListFmx: TStringList);
+begin
+  CopyValueList(_ValueListVcl, FValueListVcl);
+  CopyValueList(_ValueListFmx, FValueListFmx);
+  CopyValuesToGrid(FValueListVcl, FGridVcl);
+  FGridVcl.Row := FGridVcl.FixedRows; // Go to the top of the grid
+  CopyValuesToGrid(FValueListFmx, FGridFmx);
+  FGridFmx.Row := FGridFmx.FixedRows; // Go to the top of the grid
+
+  if GxOtaActiveDesignerIsFMX then begin
+    pc_Names.ActivePage := ts_NamesFmx
+  end else begin
+    pc_Names.ActivePage := ts_NamesVcl;
+  end;
+  UpdateGridEvents;
+  edtFind.Text := '';
+  UpdateOtherProps;
+end;
+
+procedure TfmCompRenameConfig.SetData(_ValueListVcl, _ValueListFmx: TStringList;
+  _AutoShow, _AutoAdd: Boolean; _FormWidth, _FormHeight: Integer; const _Selected: string);
 begin
   Width := _FormWidth;
   Height := _FormHeight;
   chkShowDialog.Checked := _AutoShow;
   chkAutoAdd.Checked := _AutoAdd;
-  CopyValueList(_ValueList, FValueList);
-  CopyValuesToGrid(FValueList);
-  Grid.Row := Grid.FixedRows; // Go to the top of the grid
+
+  SetLists(_ValueListVcl, _ValueListFmx);
+
   edtFind.Text := _Selected;
 end;
 
-procedure TfmCompRenameConfig.GetData(_ValueList: TStringList;
+procedure TfmCompRenameConfig.UpdateGridEvents;
+var
+  Grid: TRenameStringGrid;
+begin
+  FGridVcl.OnRowHeaderClick := nil;
+  FGridVcl.OnClick := nil;
+  FGridFmx.OnRowHeaderClick := nil;
+  FGridFmx.OnClick := nil;
+  Grid := GetActiveGrid;
+  Grid.OnRowHeaderClick := HandleOnRowHeaderClick;
+  Grid.OnClick := HandleOnGridClick;
+end;
+
+function TfmCompRenameConfig.GetActiveGrid: TRenameStringGrid;
+begin
+  if pc_Names.ActivePage = ts_NamesVcl then
+    Result := FGridVcl
+  else
+    Result := FGridFmx;
+end;
+
+function TfmCompRenameConfig.GetActiveValueList: TStringList;
+begin
+  if pc_Names.ActivePage = ts_NamesVcl then
+    Result := FValueListVcl
+  else
+    Result := FValueListFmx;
+end;
+
+procedure TfmCompRenameConfig.SetActiveValueList(_ValueList: TStringList);
+begin
+  if pc_Names.ActivePage = ts_NamesVcl then
+    FValueListVcl := _ValueList
+  else
+    FValueListFmx := _ValueList;
+end;
+
+procedure TfmCompRenameConfig.GetData(_ValueListVcl, _ValueListFmx: TStringList;
   out _AutoShow: Boolean; out _AutoAdd: Boolean; out _FormWidth, _FormHeight: Integer);
 begin
-  CopyGridToValues(FValueList);
+  CopyGridToValues(FGridVcl, FValueListVcl);
+  CopyGridToValues(FGridFmx, FValueListFmx);
   _FormWidth := Width;
   _FormHeight := Height;
   _AutoShow := chkShowDialog.Checked;
   _AutoAdd := chkAutoAdd.Checked;
-  CopyValueList(FValueList, _ValueList);
+  CopyValueList(FValueListVcl, _ValueListVcl);
+  CopyValueList(FValueListFmx, _ValueListFmx);
+end;
+
+function GetModulePath: string;
+begin
+  Result := ExtractFilePath(GetModuleName(HInstance));
+end;
+
+class procedure TfmCompRenameConfig.GetDefaultsList(_Defaults: TStrings);
+var
+  Path: string;
+  sr: TSearchRec;
+  s: string;
+begin
+  Path := GetModulePath;
+  if 0 = FindFirst(Path + COMP_RENAME_NAME + '-*.ini', faAnyFile, sr) then begin
+    try
+      repeat
+        s := ChangeFileExt(sr.Name, '');
+        Delete(s, 1, Length(COMP_RENAME_NAME) + 1);
+        _Defaults.Add(s);
+      until 0 <> FindNext(sr);
+    finally
+      FindClose(sr);
+    end;
+  end;
 end;
 
 procedure TfmCompRenameConfig.FormCreate(Sender: TObject);
+const
+  GridPad = 8;
 resourcestring
   ClassCaption = 'Class';
   RenameRuleCaption = 'Rename Rule';
-const
-  GridPad = 8;
+
+  function CreateGrid(_Parent: TWinControl; const _Name: string): TRenameStringGrid;
+  begin
+    Result := TRenameStringGrid.Create(Self);
+    Result.Name := _Name;
+    Result.Parent := _Parent;
+    // Delphi < 2006 does not support Margins, so we have to do it the hard way
+    Result.SetBounds(GridPad, GridPad, _Parent.Width - (GridPad * 2), _Parent.Height - (GridPad * 2));
+    Result.Anchors := [akLeft, akTop, akRight, akBottom];
+    Result.ColCount := 2;
+    Result.DefaultColWidth := 150;
+    Result.DefaultRowHeight := 17;
+    Result.FixedCols := 0;
+    Result.RowCount := 2;
+    Result.Options := [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goEditing, goTabs, goAlwaysShowEditor, goThumbTracking];
+    Result.PopupMenu := pmGrid;
+    Result.ScrollBars := ssVertical;
+    Result.TabOrder := 0;
+    Result.Cells[0, 0] := ClassCaption;
+    Result.Cells[1, 0] := RenameRuleCaption;
+  end;
+var
+  st: TStringList;
+  i: Integer;
+  mi: TMenuItem;
+
 begin
   TControl_SetMinConstraints(Self);
 
@@ -246,37 +379,39 @@ begin
   pnlIncSearch.BevelOuter := bvNone;
   pnlNames.BevelOuter := bvNone;
 
-  Grid := TRenameStringGrid.Create(Self);
-  Grid.Name := 'Grid';
-  Grid.Parent := pnlNames;
-  // Delphi < 2006 does not support Margins, so we have to do it the hard way
-  Grid.SetBounds(GridPad, GridPad, pnlNames.Width - (GridPad * 2), pnlNames.Height - (GridPad * 2));
-  Grid.Anchors := [akLeft, akTop, akRight, akBottom];
-  Grid.ColCount := 2;
-  Grid.DefaultColWidth := 150;
-  Grid.DefaultRowHeight := 17;
-  Grid.FixedCols := 0;
-  Grid.RowCount := 2;
-  Grid.Options := [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goEditing, goTabs, goAlwaysShowEditor, goThumbTracking];
-  Grid.PopupMenu := pmGrid;
-  Grid.ScrollBars := ssVertical;
-  Grid.TabOrder := 0;
-  Grid.OnRowHeaderClick := HandleOnRowHeaderClick;
-  Grid.OnClick := HandleOnGridClick;
+  FGridVcl := CreateGrid(ts_NamesVcl, 'GridVcl');
+  FGridFmx := CreateGrid(ts_NamesFmx, 'GridFmx');
 
   l_Find.Left := GridPad;
   btnClear.Left := pnlIncSearch.Width - btnClear.Width - GridPad;
   edtFind.Left := GridPad + l_Find.Width + 8;
   edtFind.Width := btnClear.Left - edtFind.Left;
 
-  FValueList := TStringList.Create;
-  Grid.Cells[0, 0] := ClassCaption;
-  Grid.Cells[1, 0] := RenameRuleCaption;
+  FValueListVcl := TStringList.Create;
+  FValueListFmx := TStringList.Create;
+  UpdateGridEvents;
+  ResizeGrids;
+
+  FreeAndNil(mi_ResetToDefault);
+  st := TStringList.Create;
+  try
+    GetDefaultsList(st);
+    for i := 0 to st.Count - 1 do begin
+      mi := TMenuItem.Create(Self);
+      mi.Caption := st[i];
+      mi.OnClick := mi_ResetToDefaultClick;
+      mi_ResetTo.Add(mi);
+    end;
+  finally
+    st.Free;
+  end;
+
 end;
 
 procedure TfmCompRenameConfig.FormDestroy(Sender: TObject);
 begin
-  TStrings_FreeWithObjects(FValueList);
+  TStrings_FreeWithObjects(FValueListVcl);
+  TStrings_FreeWithObjects(FValueListFmx);
 end;
 
 procedure TfmCompRenameConfig.UpdateOtherProps;
@@ -284,14 +419,18 @@ var
   CompType: WideString;
   Index: Integer;
   Additional: TStringList;
+  Grid: TRenameStringGrid;
+  ValueList: TStringList;
 begin
-  CompType := Grid.Cells[0, Grid.Row];
+  Grid := GetActiveGrid;
+  ValueList := GetActiveValueList;
+  CompType := Trim(Grid.Cells[0, Grid.Row]);
 
-  Index := FValueList.IndexOfName(CompType);
+  Index := ValueList.IndexOfName(CompType);
   if Index = -1 then begin
     lbxOtherProps.Items.Clear;
   end else begin
-    Additional := FValueList.Objects[Index] as TStringList;
+    Additional := ValueList.Objects[Index] as TStringList;
     if Assigned(Additional) then
       lbxOtherProps.Items.Assign(Additional)
     else
@@ -314,94 +453,123 @@ end;
 
 procedure TfmCompRenameConfig.FormResize(Sender: TObject);
 begin
-  if Assigned(Grid) then // Or Delphi 2009 crashes here...
-  begin
-    Grid.ColWidths[0] := (Grid.ClientWidth div 2) - 1;
-    Grid.ColWidths[1] := Grid.ColWidths[0];
-  end;
+  ResizeGrids;
 end;
 
-procedure TfmCompRenameConfig.CopyValuesToGrid(Values: TStringList);
+procedure TfmCompRenameConfig.ResizeGrids;
+
+  procedure ResizeGrid(_Grid: TRenameStringGrid);
+  begin
+    if Assigned(_Grid) then begin
+      _Grid.ColWidths[0] := (_Grid.ClientWidth div 2) - 1;
+      _Grid.ColWidths[1] := _Grid.ColWidths[0];
+    end;
+  end;
+
+begin
+  ResizeGrid(FGridVcl);
+  ResizeGrid(FGridFmx);
+end;
+
+procedure TfmCompRenameConfig.CopyValuesToGrid(_Values: TStringList; _Grid: TRenameStringGrid);
 var
   i: Integer;
   YOffset: Integer;
   SavedRow: Integer;
   s: string;
 begin
-  SavedRow := Grid.Row;
-  YOffset := Grid.FixedRows;
-  if Assigned(Values) then
+  SavedRow := _Grid.Row;
+  YOffset := _Grid.FixedRows;
+  if Assigned(_Values) then
   begin
     // Having only one row makes the fixed row paint wrong
-    Grid.RowCount := Max(YOffset + Values.Count, 2);
-    for i := 0 to Values.Count - 1 do
+    _Grid.RowCount := Max(YOffset + _Values.Count, 2);
+    for i := 0 to _Values.Count - 1 do
     begin
-      s := Values.Names[i];
-      Grid.Cells[0, YOffset + i] := s;
-      Grid.Cells[1, YOffset + i] := Values.Values[s];
+      s := _Values.Names[i];
+      _Grid.Cells[0, YOffset + i] := s;
+      _Grid.Cells[1, YOffset + i] := _Values.Values[s];
     end;
-    if SavedRow < Grid.RowCount then
-      Grid.Row := SavedRow;
+    if SavedRow < _Grid.RowCount then
+      _Grid.Row := SavedRow;
   end;
   FormResize(Self);
 end;
 
-procedure TfmCompRenameConfig.CopyGridToValues(var Values: TStringList);
+procedure TfmCompRenameConfig.CopyGridToValues(_Grid: TRenameStringGrid; var _Values: TStringList);
 var
   i: Integer;
   OrgValuelist: TStringList;
   Index: Integer;
+  CompType: WideString;
+  Rule: string;
 begin
-  if Assigned(Values) then
+  if Assigned(_Values) then
   begin
     // We need to keep the objects that are assigned to Values, so this is a bit more complicated
-    OrgValueList := Values;
+    OrgValueList := _Values;
     OrgValuelist.Sorted := True;
-    Values := TStringList.Create;
-    for i := Grid.FixedRows to Grid.RowCount - 1 do
-      if Trim(Grid.Cells[0, i]) <> '' then
-        Values.Add(Grid.Cells[0, i] + '=' + Grid.Cells[1, i]);
-    for i := 0 to Values.Count - 1 do
-    begin
-      Index := OrgValuelist.IndexOfName(Values.Names[i]);
+    // in particular, we create a new string list, so the Values parameter must be a var parameter
+    _Values := TStringList.Create;
+    for i := _Grid.FixedRows to _Grid.RowCount - 1 do begin
+      CompType := Trim(_Grid.Cells[0, i]);
+      Rule := Trim(_Grid.Cells[1, i]);
+      if CompType <> '' then begin
+        _Values.Add(CompType + '=' + Rule);
+      end;
+    end;
+    // Now that we have copied the rules, we also need to copy the addtional properties
+    // from the Objects.
+    for i := 0 to _Values.Count - 1 do begin
+      CompType := _Values.Names[i];
+      Index := OrgValuelist.IndexOfName(CompType);
       if Index <> -1 then
       begin
-        Values.Objects[i] := OrgValuelist.Objects[Index];
+        _Values.Objects[i] := OrgValuelist.Objects[Index];
+        // Assign NIL to the original so it won't be freed
         OrgValuelist.Objects[Index] := nil;
       end;
     end;
-    for i := 0 to OrgValuelist.Count - 1 do
-      OrgValuelist.Objects[i].Free;
-    FreeAndNil(OrgValuelist);
+    TStrings_FreeWithObjects(OrgValuelist);
   end;
 end;
 
 procedure TfmCompRenameConfig.edtFindChange(Sender: TObject);
+
+  procedure FilterGrid(_Grid: TRenameStringGrid; const _Filter: string);
+  var
+    sl: TStringList;
+    i: Integer;
+  begin
+    sl := TStringList.Create;
+    try
+      TStringGrid_GetCol(_Grid, 0, sl);
+      for i := 0 to sl.Count - 1 do begin
+        if StartsText(_Filter, sl[i]) then begin
+          _Grid.Row := _Grid.FixedRows + i;
+          Exit; //==>
+        end;
+      end;
+    finally
+      FreeAndNil(sl);
+    end;
+  end;
+
 var
-  sl: TStringList;
   s: string;
-  i: Integer;
 begin
   s := edtFind.Text;
-  if s = '' then
-    Exit; //==>
-
-  sl := TStringList.Create;
-  try
-    TStringGrid_GetCol(Grid, 0, sl);
-    for i := 0 to sl.Count - 1 do begin
-      if StartsText(s, sl[i]) then begin
-        Grid.Row := Grid.FixedRows + i;
-        Exit; //==>
-      end;
-    end;
-  finally
-    FreeAndNil(sl);
+  if s <> '' then begin
+    FilterGrid(FGridVcl, s);
+    FilterGrid(FGridFmx, s);
   end;
 end;
 
 procedure TfmCompRenameConfig.edtFindKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+var
+  Grid: TRenameStringGrid;
 begin
+  Grid := GetActiveGrid;
   case Key of
     VK_DOWN: begin
         Grid.SetFocus;
@@ -416,21 +584,30 @@ begin
 end;
 
 procedure TfmCompRenameConfig.ActionListUpdate(Action: TBasicAction; var Handled: Boolean);
+var
+  Grid: TRenameStringGrid;
 begin
+  Grid := GetActiveGrid;
   acAdd.Enabled := IsValidRule(Grid.Row) and not IsEmptyRow(Grid, Grid.RowCount - 1);
   acDelete.Enabled := ((Grid.Row >= Grid.FixedRows) and (Grid.Row < Grid.RowCount));
   acOtherProperties.Enabled := RowHasComponent(Grid, Grid.Row);
 end;
 
 procedure TfmCompRenameConfig.acAddExecute(Sender: TObject);
+var
+  Grid: TRenameStringGrid;
 begin
+  Grid := GetActiveGrid;
   TryFocusControl(Grid);
   GridAddRow;
   FormResize(Self);
 end;
 
 procedure TfmCompRenameConfig.acDeleteExecute(Sender: TObject);
+var
+  Grid: TRenameStringGrid;
 begin
+  Grid := GetActiveGrid;
   TryFocusControl(Grid);
   GridDeleteRow(Grid.Row);
   if Grid.RowCount <= Grid.FixedRows then
@@ -459,10 +636,17 @@ begin
 end;
 
 procedure TfmCompRenameConfig.SortByClass;
+var
+  Grid: TRenameStringGrid;
+  ValueList: TStringList;
 begin
-  CopyGridToValues(FValueList);
-  FValueList.CustomSort(CompareClassFunc);
-  CopyValuesToGrid(FValueList);
+  Grid := GetActiveGrid;
+  ValueList := GetActiveValueList;
+  CopyGridToValues(Grid, ValueList);
+  // we just created a new ValueList and freed the old one so we need to assign it to the field
+  SetActiveValueList(ValueList);
+  ValueList.CustomSort(CompareClassFunc);
+  CopyValuesToGrid(ValueList, Grid);
 end;
 
 procedure TfmCompRenameConfig.acSortByClassExecute(Sender: TObject);
@@ -471,10 +655,17 @@ begin
 end;
 
 procedure TfmCompRenameConfig.SortByRule;
+var
+  Grid: TRenameStringGrid;
+  ValueList: TStringList;
 begin
-  CopyGridToValues(FValueList);
-  FValueList.CustomSort(CompareRuleFunc);
-  CopyValuesToGrid(FValueList);
+  Grid := GetActiveGrid;
+  ValueList := GetActiveValueList;
+  CopyGridToValues(Grid, ValueList);
+  // we just created a new ValueList and freed the old one so we need to assign it to the field
+  SetActiveValueList(ValueList);
+  ValueList.CustomSort(CompareRuleFunc);
+  CopyValuesToGrid(ValueList, Grid);
 end;
 
 procedure TfmCompRenameConfig.acSortByRuleExecute(Sender: TObject);
@@ -483,7 +674,10 @@ begin
 end;
 
 procedure TfmCompRenameConfig.GridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+var
+  Grid: TRenameStringGrid;
 begin
+  Grid := GetActiveGrid;
   if Shift = [] then
   begin
     case Key of
@@ -510,18 +704,33 @@ begin
 end;
 
 function TfmCompRenameConfig.RowHasComponent(aGrid: TStringGrid; ARow: Integer): Boolean;
+var
+  Grid: TRenameStringGrid;
 begin
+  Grid := GetActiveGrid;
   Result := (Trim(Grid.Cells[0, ARow]) > '');
 end;
 
 function TfmCompRenameConfig.IsValidRule(ARow: Integer): Boolean;
+var
+  Grid: TRenameStringGrid;
 begin
+  Grid := GetActiveGrid;
   Result := (Trim(Grid.Cells[0, ARow]) > '') and
             (Trim(Grid.Cells[1, ARow]) > '');
 end;
 
-function TfmCompRenameConfig.RemoveEmptyBottomRow: Boolean;
+procedure TfmCompRenameConfig.pc_NamesChange(Sender: TObject);
 begin
+  UpdateGridEvents;
+  UpdateOtherProps;
+end;
+
+function TfmCompRenameConfig.RemoveEmptyBottomRow: Boolean;
+var
+  Grid: TRenameStringGrid;
+begin
+  Grid := GetActiveGrid;
   if IsEmptyRow(Grid, Grid.RowCount - 1) and (Grid.RowCount > Grid.FixedRows) then
   begin
     Grid.RowCount := Grid.RowCount - 1;
@@ -532,7 +741,10 @@ begin
 end;
 
 procedure TfmCompRenameConfig.GridAddRow;
+var
+  Grid: TRenameStringGrid;
 begin
+  Grid := GetActiveGrid;
   Grid.RowCount := Grid.RowCount + 1;
   Application.ProcessMessages;
   Grid.Col := Grid.FixedCols;
@@ -542,7 +754,9 @@ end;
 procedure TfmCompRenameConfig.GridDeleteRow(ARow: Integer);
 var
   i, j: Integer;
+  Grid: TRenameStringGrid;
 begin
+  Grid := GetActiveGrid;
   if ARow > Grid.FixedRows - 1 then
   begin
     if ARow < Grid.RowCount - 1 then
@@ -561,7 +775,10 @@ end;
 
 procedure TfmCompRenameConfig.GridSelectCell(Sender: TObject; ACol,
   ARow: Integer; var CanSelect: Boolean);
+var
+  Grid: TRenameStringGrid;
 begin
+  Grid := GetActiveGrid;
   if (ARow < Grid.Row) and IsEmptyRow(Grid, Grid.Row) then
     RemoveEmptyBottomRow;
   if (ACol > 0) and (Grid.Cells[0, ARow]='') then
@@ -572,7 +789,9 @@ procedure TfmCompRenameConfig.GridMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   CellCoord: TGridCoord;
+  Grid: TRenameStringGrid;
 begin
+  Grid := GetActiveGrid;
   CellCoord := Grid.MouseCoord(X, Y);
   if CellCoord.Y = 0 then
   begin
@@ -589,7 +808,9 @@ var
   FoundRow: Integer;
   FoundCol: Integer;
   FindMsg: string;
+  Grid: TRenameStringGrid;
 begin
+  Grid := GetActiveGrid;
   Index := Grid.Row + 1;
   FoundRow := -1;
   FoundCol := 0;
@@ -647,89 +868,95 @@ begin
   edtFind.SetFocus;
 end;
 
-procedure TfmCompRenameConfig.btnDefaultsClick(Sender: TObject);
-
-  function CreateStringlist(const _Entries: array of string): TStringList;
-  var
-    i: Integer;
-  begin
-    if Length(_Entries) = 0 then
-      Result := nil
-    else begin
-      Result := TStringList.Create;
-      for i := 0 to Length(_Entries) - 1 do
-        Result.Add(_Entries[i]);
-    end;
-  end;
-
-begin
-  if FValueList.Count > 0 then
-    if ShowGxMessageBox(TDefaultRenameComponentsMessage) <> mrYes then
-      Exit; //==>
-
-  TStrings_FreeAllObjects(FValueList);
-  FValueList.Clear;
-  FValueList.AddObject('TAction=act', CreateStringlist(['Caption']));
-  FValueList.AddObject('TBitBtn=btn', CreateStringlist(['Caption', 'Enabled']));
-  FValueList.AddObject('TButton=btn', CreateStringlist(['Caption', 'Enabled']));
-  FValueList.AddObject('TCheckBox=chk', CreateStringlist(['Caption']));
-  FValueList.Add('TCheckListBox=lbx');
-  FValueList.AddObject('TComboBox=cbx', CreateStringlist(['Text=''''']));
-  FValueList.Add('TDrawGrid=grd');
-  FValueList.AddObject('TEdit=edt', CreateStringlist(['Text=''''']));
-  FValueList.AddObject('TGroupBox=gbx', CreateStringlist(['Caption']));
-  FValueList.Add('TImage=img');
-  FValueList.AddObject('TLabel=lbl', CreateStringlist(['Caption']));
-  FValueList.Add('TListBox=lbx');
-  FValueList.Add('TMaskEdit=edt');
-  FValueList.Add('TMemo=mmo');
-  FValueList.AddObject('TMenuItem=mnu', CreateStringlist(['Caption']));
-  FValueList.Add('TPageControl=pag');
-  FValueList.AddObject('TPanel=pnl', CreateStringlist(['Caption=''''']));
-  FValueList.AddObject('TRadioButton=rdo', CreateStringlist(['Caption=''''']));
-  FValueList.AddObject('TRadioGroup=rgp', CreateStringlist(['Caption=''''']));
-  FValueList.AddObject('TSpeedButton=btn', CreateStringlist(['Caption=''''']));
-  FValueList.Add('TStaticText=txt');
-  FValueList.AddObject('TStatusBar=|TheStatusBar|', CreateStringlist(['SimplePanel=True', 'SimpleText=']));
-  FValueList.Add('TStringGrid=grd');
-  FValueList.AddObject('TTabSheet=tab', CreateStringlist(['Caption=''''']));
-
-  CopyValuesToGrid(FValueList);
-  chkShowDialog.Checked := False;
-  chkAutoAdd.Checked := True;
-end;
-
 procedure TfmCompRenameConfig.btnHelpClick(Sender: TObject);
 begin
   GxContextHelp(Self, 42);
 end;
 
-procedure TfmCompRenameConfig.b_ExportClick(Sender: TObject);
+procedure TfmCompRenameConfig.mi_ExportClick(Sender: TObject);
 begin
-  FOnExport(Self);
+  FOnExport(Self, FValueListVcl,FValueListFmx);
 end;
 
-procedure TfmCompRenameConfig.b_ImportClick(Sender: TObject);
+
+procedure TfmCompRenameConfig.mi_ImportClick(Sender: TObject);
+var
+  fn: string;
 begin
-  FOnImport(Self);
+  fn := 'GExperts_' + COMP_RENAME_NAME + '.ini';
+  if not ShowOpenDialog('Select file to import', 'ini', fn, 'INI files (*.ini)|*.ini') then
+    Exit; //==>
+  Import(fn);
+end;
+
+procedure TfmCompRenameConfig.Import(const _fn: string);
+var
+  RulesListVcl: TStringList;
+  RulesListFmx: TStringList;
+begin
+  if not FileExists(_fn) then
+    Exit; //==>
+  InitializeNil(RulesListVcl, RulesListFmx);
+  try
+    RulesListVcl := TStringList.Create;
+    RulesListFmx := TStringList.Create;
+    FOnImport(Self, _fn, RulesListVcl, RulesListFmx);
+    SetLists(RulesListVcl, RulesListFmx);
+  finally
+    FreeAndNil(RulesListVcl, RulesListFmx);
+  end;
+end;
+
+procedure TfmCompRenameConfig.SetDefault(_Which: string);
+var
+  Path: string;
+begin
+  if (FValueListVcl.Count > 0) or (FValueListFmx.Count > 0) then begin
+    if ShowGxMessageBox(TDefaultRenameComponentsMessage) <> mrYes then
+      Exit; //==>
+  end;
+
+  _Which := StringReplace(_Which, '&', '', [rfReplaceAll]);
+  Path := GetModulePath;
+  Import(Path + COMP_RENAME_NAME + '-' + _Which + '.ini');
+end;
+
+procedure TfmCompRenameConfig.mi_ResetToDefaultClick(Sender: TObject);
+begin
+  SetDefault(TMenuItem(Sender).Caption);
+end;
+
+procedure TfmCompRenameConfig.b_ToolsClick(Sender: TObject);
+var
+  Point: TPoint;
+begin
+  Point.X := b_Tools.Width;
+  Point.Y := 0;
+  Point := b_Tools.ClientToScreen(Point);
+  pm_Extra.Popup(Point.X, Point.Y);
 end;
 
 procedure TfmCompRenameConfig.acOtherPropertiesExecute(Sender: TObject);
 var
   CompType: WideString;
+  Rule: WideString;
   Index: Integer;
   Additional: TStringList;
+  Grid: TRenameStringGrid;
+  ValueList: TStringList;
 begin
-  CompType := Grid.Cells[0, Grid.Row];
-
-  Index := FValueList.IndexOfName(CompType);
+  Grid := GetActiveGrid;
+  ValueList := GetActiveValueList;
+  CompType := Trim(Grid.Cells[0, Grid.Row]);
+  Rule := Trim(Grid.Cells[1, Grid.Row]);
+  Index := ValueList.IndexOfName(CompType);
   if Index = -1 then
-    Index := FValueList.Add(Grid.Cells[0, Grid.Row] + '=' + Grid.Cells[1, Grid.Row]);
+    Index := ValueList.Add(CompType + '=' + Rule);
   if Index <> -1 then
     begin
-      Additional := FValueList.Objects[Index] as TStringList;
+      Additional := ValueList.Objects[Index] as TStringList;
       if TfmCompRenameAdvanced.Execute(Self, CompType, Additional) then
-        FValueList.Objects[Index] := Additional;
+        ValueList.Objects[Index] := Additional;
     end;
   UpdateOtherProps;
   if Grid.CanFocus then

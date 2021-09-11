@@ -44,7 +44,7 @@
       </AutoCorrectRule>
       <AutoCorrectRule Where="WholeWord">
         <ReplaceWhat>raisenie</ReplaceWhat>
-        <ReplaceWith>raise Exception.Create(&apos;&quot;|&quot; - Not Implemplemented Yet&apos;);</ReplaceWith>
+        <ReplaceWith>raise Exception.Create(&apos;&quot;|&quot; - Not Implemented Yet&apos;);</ReplaceWith>
       </AutoCorrectRule>
       <AutoCorrectRule Where="WholeWord">
         <ReplaceWhat>selse</ReplaceWhat>

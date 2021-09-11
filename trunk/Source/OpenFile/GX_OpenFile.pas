@@ -1193,26 +1193,26 @@ end;
 
 procedure TfmOpenFile.LoadSettings;
 var
-  Settings: IExpertSettings;
+  LSettings: IExpertSettings;
 begin
   // do not localize
-  Settings := TOpenFileExpert.GetSettings;
-  Settings.LoadForm('Window', Self);
-  FFileColumnWidth := Settings.ReadInteger('FileColumnWidth', lvSearchPath.Columns[0].Width);
-  MapTabVisible := Settings.ReadBool('ShowMapTab', False);
+  LSettings := TOpenFileExpert.GetSettings;
+  LSettings.LoadForm('Window', Self);
+  FFileColumnWidth := LSettings.ReadInteger('FileColumnWidth', lvSearchPath.Columns[0].Width);
+  MapTabVisible := LSettings.ReadBool('ShowMapTab', False);
   EnsureFormVisible(Self);
 end;
 
 procedure TfmOpenFile.SaveSettings;
 var
-  Settings: IExpertSettings;
+  LSettings: IExpertSettings;
 begin
   // do not localize
-  Settings := TOpenFileExpert.GetSettings;
-  Settings.SaveForm('Window', Self);
+  LSettings := TOpenFileExpert.GetSettings;
+  LSettings.SaveForm('Window', Self);
   if Assigned(CurrentListView) then
-    Settings.WriteInteger('FileColumnWidth', CurrentListView.Columns[0].Width);
-  Settings.WriteBool('ShowMapTab', MapTabVisible);
+    LSettings.WriteInteger('FileColumnWidth', CurrentListView.Columns[0].Width);
+  LSettings.WriteBool('ShowMapTab', MapTabVisible);
 end;
 
 procedure TfmOpenFile.InitializeFileTypes(const SelectType: string);

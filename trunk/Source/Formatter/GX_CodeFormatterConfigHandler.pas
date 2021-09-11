@@ -340,12 +340,12 @@ begin
 
   try
     _List.SaveToFile(_fn);
-  except //FI:W501
+  except
 {$IF declared(SendDebugError)}
     on e: Exception do
       SendDebugError(e.Message + ' while saving the capitalization file');
 {$IFEND}
-  end;
+  end; {$IF NOT Declared(SendDebugError)} {FI:W501} {$IFEND}
   FileAge(_fn, _LastRead);
 end;
 

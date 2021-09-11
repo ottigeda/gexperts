@@ -65,8 +65,7 @@ begin
   TWinControl_ActivateDropFiles(FCmb, HandleFilesDropped);
 end;
 
-procedure TComboboxDropHandler.HandleFilesDropped(_Sender: TObject; _Files:
-  TStrings);
+procedure TComboboxDropHandler.HandleFilesDropped(_Sender: TObject; _Files: TStrings);
 // Since in Delphi 8-2007 FCmb is not a TCustomCombobBox, we cannot just typecast it
 // but must send it the appropriate messages ourself. Just to complicate matters,
 // we must pass the filename as a WideString.

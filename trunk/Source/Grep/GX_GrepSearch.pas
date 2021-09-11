@@ -104,7 +104,6 @@ type
     procedure CheckEnabledWhereControls;
     procedure CheckContentTypeSelection(ClickedOption: TCheckBox);
     procedure CheckSectionSelection(ClickedOption: TCheckBox);
-    procedure ShowControlHint(ctrl: TWinControl; const HintText: string);
   public
     constructor Create(AOwner: TComponent); override;
     procedure EmbeddedInit(AHolderControl: TWinControl; ASearchEvent: TNotifyEvent);
@@ -230,29 +229,7 @@ begin
   SizeComboDropdownToItems(cbExcludedDirs);
 end;
 
-procedure TfmGrepSearch.ShowControlHint(ctrl: TWinControl; const HintText: string);
-var
-  r: TRect;
-  Size: TSize;
-begin
-  timHintTimer.Enabled := False;
-  if Assigned(FTheHintWindow) then begin
-    FTheHintWindow.ReleaseHandle;
-    FTheHintWindow.Free;
-  end;
-  FTheHintWindow := THintWindow.Create(Self);
-  FTheHintWindow.Color := clInfoBk;
-  r.TopLeft := ctrl.ClientToScreen(Point(0, ctrl.Height));
-  Size := FTheHintWindow.Canvas.TextExtent(HintText);
-  r.Right := r.Left + Size.cx + 8;
-  r.Bottom := r.Top + Size.cy;
-  FTheHintWindow.ActivateHint(r, HintText);
-  timHintTimer.Enabled := True;
-end;
-
 procedure TfmGrepSearch.CheckContentTypeSelection(ClickedOption: TCheckBox);
-resourcestring
-  SCannotDisableAllContentTypes = 'You cannot disable all content types.';
 begin
   if FLoadingSettings then
     Exit;
@@ -260,10 +237,10 @@ begin
   if cbGrepCode.Checked or cbGrepStrings.Checked or cbGrepComments.Checked then begin
     // at least one option is selected -> OK
   end else begin
+    // we can't search with no option checked -> try to correct intelligently
     if Assigned(ClickedOption) then begin
-      // unchecked interactively -> check the last unchecked option again
-      ClickedOption.Checked := True;
-      ShowControlHint(ClickedOption, SCannotDisableAllContentTypes);
+      // unchecked interactively -> default to code
+      cbGrepCode.Checked := True;
     end else begin
       // not interactively -> check them all
       cbGrepCode.Checked := True;
@@ -299,8 +276,6 @@ begin
 end;
 
 procedure TfmGrepSearch.CheckSectionSelection(ClickedOption: TCheckBox);
-resourcestring
-  SCannotDisableAllContentTypes = 'You cannot disable all unit sections.';
 begin
   if FLoadingSettings then
     Exit;
@@ -309,10 +284,20 @@ begin
     or cbSectionInitialization.Checked or cbSectionFinalization.Checked then begin
     // at least one option is selected -> OK
   end else begin
+    // we can't search no section
     if Assigned(ClickedOption) then begin
-      // unchecked interactively -> check the last unchecked option again
-      ClickedOption.Checked := True;
-      ShowControlHint(ClickedOption, SCannotDisableAllContentTypes);
+      // unchecked interactively -> try to guess what the user wants
+      if ClickedOption = cbSectionInterface then begin
+        // he unchecked Interface, so he probably only wants Implementation
+        cbSectionImplementation.Checked := True;
+      end else if ClickedOption = cbSectionImplementation then begin
+        // he unchecked Implementation, so he probably only wants Interface
+        cbSectionInterface.Checked := True;
+      end else begin
+        // he unchecked Initialization or Finalization, so he might only want Interface and Implementation
+        cbSectionInterface.Checked := True;
+        cbSectionImplementation.Checked := True;
+      end;
     end else begin
       // not interactively -> check them all
       cbSectionInterface.Checked := True;
