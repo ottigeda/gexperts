@@ -40,7 +40,6 @@ type
     class function GetAboutIcon: HBITMAP; virtual;
     class function GetSplashIcon: HBITMAP; virtual;
   public
-    class procedure Execute(_Owner: TComponent); virtual;
     constructor Create(AOwner: TComponent); override;
     // If you release an experimental GExperts, either
     // set gblAboutFormClass to your own descentant of this form or
@@ -76,35 +75,6 @@ var
   BuildDetails: string = '';
   BugEmail: string = DefaultBugEmail;
   SuggestionEmail: string = DefaultSuggestionEmail;
-
-class procedure TfmAbout.Execute(_Owner: TComponent);
-var
-  frm: TForm;
-{$IFDEF IDE_IS_HIDPI_AWARE}
-  previousDpiContext: DPI_AWARENESS_CONTEXT;
-{$ENDIF}
-begin
-{$IFDEF IDE_IS_HIDPI_AWARE}
-  // See
-  // https://www.uweraabe.de/Blog/2021/08/28/delphi-vcl-applications-with-mixed-dpi/
-  // why we do this, and
-  // https://en.delphipraxis.net/topic/5516-the-state-of-gexperts-support-for-delphi-11/?do=findComment&comment=47733
-  // for the modified trick.
-  previousDpiContext := SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
-  try
-{$ENDIF}
-    frm := Self.Create(nil);
-    try
-      frm.ShowModal;
-    finally
-      frm.Free;
-    end;
-{$IFDEF IDE_IS_HIDPI_AWARE}
-  finally
-    SetThreadDpiAwarenessContext(previousDpiContext);
-  end;
-{$ENDIF}
-end;
 
 procedure TfmAbout.btnEmailClick(Sender: TObject);
 begin
