@@ -210,9 +210,18 @@ class function TfmConfigureIfDef.Execute(_bmp: TBitmap; var _AppendComment: Bool
   out _Text: string; out _IncludeFile: string): Boolean;
 var
   frm: TfmConfigureIfDef;
+  Int: IInterface;
 begin
-  frm := TfmConfigureIfDef.Create(Application);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  Int := TemporarilyDisableHighDpi;
+  frm := Self.Create(Application);
   try
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
     ConvertBitmapToIcon(_bmp, frm.Icon);
     frm.chk_AppendComment.Checked := _AppendComment;
     Result := frm.ShowModal = mrOk;
@@ -667,11 +676,12 @@ procedure TfmConfigureIfDef.InitVerXxx;
 var
   def: TIfdefTabDefinition;
 begin
-{$IFDEF VER350}
+{$IFDEF VER360}
 {$MESSAGE HINT 'Add a new Delphi version here'}
 {$ENDIF}
   def := TIfdefTabDefinition.Create(Self, pc_IfClasses, '&VERxxx', 4, 1, '{$IFNDEF %s}');
   FTabDefinitions.Add(def);
+  def.AddEntry('VER350', 'Delphi 11 Alexandria / BDS 22');
   def.AddEntry('VER340', 'Delphi 10.4 Sydney / BDS 21');
   def.AddEntry('VER330', 'Delphi 10.3 Rio / BDS 20');
   def.AddEntry('VER320', 'Delphi 10.2 Tokyo / BDS 19');
@@ -707,16 +717,17 @@ procedure TfmConfigureIfDef.InitRtlVersion;
 var
   def: TIfdefTabDefinition;
 begin
-{$IF RTLVersion > RtlVersionDelphiSydney}
+{$IF RTLVersion > RtlVersionDelphiX110}
 {$MESSAGE HINT 'Add a new Delphi version here'}
 {$IFEND}
   def := TIfdefTabDefinition.Create(Self, pc_IfClasses, '&RtlVersion', 16, 2, '{$IF RtlVersion >= %s}');
   FTabDefinitions.Add(def);
-  def.AddEntry(IntToStr(RtlVersionDelphiSydney), 'Delphi 10.4 Sydney / BDS 21');
-  def.AddEntry(IntToStr(RtlVersionDelphiRio), 'Delphi 10.3 Rio / BDS 20');
-  def.AddEntry(IntToStr(RtlVersionDelphiTokyo), 'Delphi 10.2 Tokyo / BDS 19');
-  def.AddEntry(IntToStr(RtlVersionDelphiBerlin), 'Delphi 10.1 Berlin / BDS 18');
-  def.AddEntry(IntToStr(RtlVersionDelphiSeattle), 'Delphi 10.0 Seattle / BDS 17');
+  def.AddEntry(IntToStr(RtlVersionDelphiX110), 'Delphi 11 Alexandria / BDS 22');
+  def.AddEntry(IntToStr(RtlVersionDelphiX104), 'Delphi 10.4 Sydney / BDS 21');
+  def.AddEntry(IntToStr(RtlVersionDelphiX103), 'Delphi 10.3 Rio / BDS 20');
+  def.AddEntry(IntToStr(RtlVersionDelphiX102), 'Delphi 10.2 Tokyo / BDS 19');
+  def.AddEntry(IntToStr(RtlVersionDelphiX101), 'Delphi 10.1 Berlin / BDS 18');
+  def.AddEntry(IntToStr(RtlVersionDelphiX100), 'Delphi 10.0 Seattle / BDS 17');
   def.AddEntry(IntToStr(RtlVersionDelphixe8), 'Delphi XE8 / BDS 16');
   def.AddEntry(IntToStr(RtlVersionDelphiXE7), 'Delphi XE7 / BDS 15');
   def.AddEntry(IntToStr(RtlVersionDelphiXE6), 'Delphi XE6 / BDS 14');
@@ -744,14 +755,15 @@ var
 begin
   def := TIfdefTabDefinition.Create(Self, pc_IfClasses, '&CompilerVersion', 21, 2, '{$IF CompilerVersion >= %s}');
   FTabDefinitions.Add(def);
-{$IF CompilerVersion > CompilerVersionDelphiSydney}
+{$IF CompilerVersion > CompilerVersionDelphiX110}
 {$MESSAGE HINT 'Add a new Delphi version here'}
 {$IFEND}
-  def.AddEntry(IntToStr(CompilerVersionDelphiSydney), 'Delphi 10.4 Sydney / BDS 21');
-  def.AddEntry(IntToStr(CompilerVersionDelphiRio), 'Delphi 10.3 Rio / BDS 20');
-  def.AddEntry(IntToStr(CompilerVersionDelphiTokyo), 'Delphi 10.2 Tokyo / BDS 19');
-  def.AddEntry(IntToStr(CompilerVersionDelphiBerlin), 'Delphi 10.1 Berlin / BDS 18');
-  def.AddEntry(IntToStr(CompilerVersionDelphiSeattle), 'Delphi 10.0 Seattle / BDS 17');
+  def.AddEntry(IntToStr(CompilerVersionDelphiX110), 'Delphi 11 Alexandria/ BDS 22');
+  def.AddEntry(IntToStr(CompilerVersionDelphiX104), 'Delphi 10.4 Sydney / BDS 21');
+  def.AddEntry(IntToStr(CompilerVersionDelphiX103), 'Delphi 10.3 Rio / BDS 20');
+  def.AddEntry(IntToStr(CompilerVersionDelphiX102), 'Delphi 10.2 Tokyo / BDS 19');
+  def.AddEntry(IntToStr(CompilerVersionDelphiX101), 'Delphi 10.1 Berlin / BDS 18');
+  def.AddEntry(IntToStr(CompilerVersionDelphiX100), 'Delphi 10.0 Seattle / BDS 17');
   def.AddEntry(IntToStr(CompilerVersionDelphiXE8), 'Delphi XE8 / BDS 16');
   def.AddEntry(IntToStr(CompilerVersionDelphiXE7), 'Delphi XE7 / BDS 15');
   def.AddEntry(IntToStr(CompilerVersionDelphiXE6), 'Delphi XE6 / BDS 14');
