@@ -41,6 +41,7 @@ type
      ideRS104P2, // Rad Studio 10.4 Sydney with Patch2 installed
      ideRS104U1, // Rad Studio 10.4 Sydney Update 1
      ideRS104U2, // Rad Studio 10.4 Sydney Update 2
+     ideRS11,   // Rad Studio 11 Alexandria
      // C# Builder
      ideCSB100,
      // C++Builder
@@ -932,7 +933,7 @@ end;
 
 {
   Delphi 10.4 Sydney
-  File                 File Version    Size       Modified Time
+  File                 File Version
   delphicoreide270.bpl 27.0.37889.9797
   coreide270.bpl       27.0.37889.9797
   bds.exe              27.0.37889.9797
@@ -942,22 +943,22 @@ end;
   the patches replaced still have the same version as the original files. WTF?
 
   Delphi 10.4.1 Sydney Update 1
-  File                 File Version    Size       Modified Time
+  File                 File Version
   delphicoreide270.bpl 27.0.38860.1461
   coreide270.bpl       27.0.38860.1461
   bds.exe              27.0.38860.1461
   dcldb270.bpl         27.0.38860.1461
 
   Delphi 10.4.2 Sydney Update 2
-  File                 File Version    Size       Modified Time
+  File                 File Version
   delphicoreide270.bpl 27.0.40680.4203
   coreide270.bpl       27.0.40680.4203
   bds.exe              27.0.40680.4203
   dcldb270.bpl         27.0.40680.4203
 
   Delphi 10.4.2 Sydney Update 2 + Patches released on 2021-05-01 (we currently don't use this this)
-  File                 File Version    Size       Modified Time
-  delphicoreide270.bpl 27.0.41310.5003                           <-- Only this one was changed
+  File                 File Version
+  delphicoreide270.bpl 27.0.41310.5003 <-- Only this one was changed
   coreide270.bpl       27.0.40680.4203
   bds.exe              27.0.40680.4203
   dcldb270.bpl         27.0.40680.4203
@@ -990,6 +991,22 @@ begin
       Result := ideRS104;
   end;
 end;
+
+{
+  Delphi 11 Alexandria
+  File                 File Version
+  delphicoreide280.bpl 27.0.42600.6491
+  coreide280.bpl       28.0.42600.6491
+  bds.exe              28.0.42600.6491
+  dcldb280.bpl         28.0.42600.6491
+}
+function GetRS11Version: TBorlandIdeVersion;
+const
+  CoreIde2800:     TVersionNumber = (Minor: 28; Major: 0; Build: 6491; Release:  42600);
+begin
+  Result := ideRS11;
+end;
+
 
 function GetBorlandIdeVersion: TBorlandIdeVersion;
 begin
@@ -1121,13 +1138,18 @@ begin
     Assert(Result in [ideRS104, ideRS104P2, ideRS104U1, ideRs104U2]);
   {$ENDIF VER340}
 
+  {$IFDEF VER350}
+    Result := GetRS11Version;
+    Assert(Result in [ideRS11]);
+  {$ENDIF VER350}
+
   if Result = ideUnknown then
     MessageDlg('Unknown IDE major version detected.  Please update GX_GetIdeVersion.pas.', mtError, [mbOK], 0);
 
   DetectedVersion := Result;
 end;
 
-{$IF CompilerVersion > 34} // new Delphi version
+{$IF CompilerVersion > 35} // new Delphi version
   'Add the information for the new Delphi version above and increase the CompilerVersion in this conditional'
 {$IFEND}
 

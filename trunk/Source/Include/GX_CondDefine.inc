@@ -109,8 +109,10 @@
                                           {$IF CompilerVersion >= 34}
                                             {$DEFINE GX_VER340_up}  // RAD Studio 10.4 Sydney (27; BDS 21)
                                             {$DEFINE GX_DELPHI_SYDNEY_UP}
-
                                             {$IF CompilerVersion >= 35}
+                                              {$DEFINE GX_VER350_up}  // RAD Studio 11 Alexandria (28; BDS 22)
+                                              {$DEFINE GX_DELPHI_ALEXANDRIA_UP}
+                                              {$IF CompilerVersion >= 36}
     unsupported Delphi version
     If you get here, you are probably trying to compile GExperts with a new Delphi release.
     In addition to define a new GX_VERxxx_UP symbol, you should also have a look at
@@ -124,6 +126,7 @@
     * SynEditJedi.inc (That is a copy of jedi.inc from Project JEDI)
     * dzlibjedi.Inc (That is a copy of jedi.inc from Project JEDI)
     todo: List the other units that might need to be adapted.
+                                              {$IFEND}
                                             {$IFEND}
                                           {$IFEND}
                                         {$IFEND}
