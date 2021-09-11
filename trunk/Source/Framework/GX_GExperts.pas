@@ -94,12 +94,7 @@ end;
 
 procedure ShowGXAboutForm;
 begin
-  with gblAboutFormClass.Create(nil) do
-  try
-    ShowModal;
-  finally
-    Free;
-  end;
+  gblAboutFormClass.Execute(nil);
 end;
 
 procedure ShowGXConfigurationForm;

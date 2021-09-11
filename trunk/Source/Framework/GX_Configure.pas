@@ -223,7 +223,7 @@ end;
 
 class procedure TfmConfiguration.Execute(_Owner: TComponent);
 var
-  frm: TfmConfiguration;
+  frm: TForm;
 {$IFDEF IDE_IS_HIDPI_AWARE}
   previousDpiContext: DPI_AWARENESS_CONTEXT;
 {$ENDIF}
@@ -237,7 +237,7 @@ begin
   previousDpiContext := SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
   try
 {$ENDIF}
-    frm := TfmConfiguration.Create(nil);
+    frm := Self.Create(nil);
     try
       frm.ShowModal;
     finally
