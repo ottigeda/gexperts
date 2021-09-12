@@ -63,8 +63,8 @@ type
     procedure lvHistoryListCompare(Sender: TObject; Item1, Item2: TListItem; Data: Integer;
       var Compare: Integer);
     procedure SortButtonClick(Sender: TObject);
-    procedure lvHistoryListMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,
-      Y: Integer);
+    procedure lvHistoryListMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer);
     procedure cbSaveSplitToMoreFilesClick(Sender: TObject);
     procedure SortButtonsClick(Sender: TObject);
     procedure cbOpenClearClick(Sender: TObject);
@@ -106,10 +106,10 @@ type
 
 implementation
 
+{$R *.dfm}
+
 uses
   Math, DateUtils, StrUtils, u_dzVclUtils;
-
-{$R *.dfm}
 
 { TfmGrepSelect }
 

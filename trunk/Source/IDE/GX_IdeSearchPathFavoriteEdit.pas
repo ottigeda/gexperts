@@ -47,9 +47,18 @@ uses
 class function Tf_IdeSearchPathFavoriteEdit.Execute(_Owner: TComponent; var _Name, _Path: string): Boolean;
 var
   frm: Tf_IdeSearchPathFavoriteEdit;
+  Int: IInterface;
 begin
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
   frm := Tf_IdeSearchPathFavoriteEdit.Create(_Owner);
   try
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
     frm.SetData(_Name, _Path);
     Result := (frm.ShowModal = mrok);
     if Result then

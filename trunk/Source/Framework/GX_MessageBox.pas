@@ -67,7 +67,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Consts,
-  GX_ConfigurationInfo;
+  GX_ConfigurationInfo, u_dzVclUtils;
 
 const
   MsgDlgResults: array[TMsgDlgBtn] of Integer = (
@@ -81,7 +81,7 @@ const
 function ShowGxMessageBox(AdaptorClass: TGxMsgBoxAdaptorClass; const Data: string): TModalResult;
 var
   Adaptor: TGxMsgBoxAdaptor;
-  Dlg: TfmGxMessageBox;
+  frm: TfmGxMessageBox;
 
   procedure CreateButtons;
   const
@@ -102,8 +102,8 @@ var
       if BtnType in DialogButtons then
         Inc(ButtonRowWidth, SingleButtonWidth + ButtonHorizSpacing);
     Dec(ButtonRowWidth, ButtonHorizSpacing);
-    if ButtonRowWidth > Dlg.ClientWidth then
-      Dlg.ClientWidth := ButtonRowWidth;
+    if ButtonRowWidth > frm.ClientWidth then
+      frm.ClientWidth := ButtonRowWidth;
 
     DefaultBtn := Adaptor.GetDefaultButton;
 
@@ -114,24 +114,24 @@ var
     else
       CancelBtn := mbOK;
 
-    NextButonXPos := (Dlg.ClientWidth - ButtonRowWidth) div 2;
+    NextButonXPos := (frm.ClientWidth - ButtonRowWidth) div 2;
 
     for BtnType := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
     begin
       if BtnType in DialogButtons then
       begin
-        CurrentButton := TButton.Create(Dlg);
+        CurrentButton := TButton.Create(frm);
         with CurrentButton do
         begin
           Caption := MsgDlgButtonCaptions[BtnType];
           ModalResult := MsgDlgResults[BtnType];
-          Parent := Dlg;
+          Parent := frm;
           TabOrder := 999;
           SetBounds(NextButonXPos, ButtonYPos, SingleButtonWidth, SingleButtonHeight);
           if BtnType = DefaultBtn then
           begin
             Default := True;
-            Dlg.ActiveControl := CurrentButton;
+            frm.ActiveControl := CurrentButton;
           end;
           if BtnType = CancelBtn then
             Cancel := True;
@@ -141,6 +141,8 @@ var
     end;
   end;
 
+var
+  Int: IInterface;
 begin
   Adaptor := AdaptorClass.Create;
   Adaptor.FData := Data;
@@ -150,17 +152,25 @@ begin
       Exit;
     if Adaptor.ShouldShow then
     begin
-      Dlg := TfmGxMessageBox.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+      Int := TemporarilyDisableHighDpi;
+      frm := TfmGxMessageBox.Create(nil);
       try
-        Dlg.Caption := Adaptor.GetCaption;
-        Dlg.chkNeverShowAgain.Enabled := Adaptor.AllowSuppress;
-        Dlg.mmoMessage.Lines.Text := Adaptor.GetMessage;
+        frm.TemporarilyDisableHighDpiInterface := Int;
+        Int := nil;
+        frm.Caption := Adaptor.GetCaption;
+        frm.chkNeverShowAgain.Enabled := Adaptor.AllowSuppress;
+        frm.mmoMessage.Lines.Text := Adaptor.GetMessage;
         CreateButtons;
-        Result := Dlg.ShowModal;
-        if Adaptor.AllowSuppress and Dlg.chkNeverShowAgain.Checked then
+        Result := frm.ShowModal;
+        if Adaptor.AllowSuppress and frm.chkNeverShowAgain.Checked then
           Adaptor.DoPermanentlySuppress;
       finally
-        FreeAndNil(Dlg);
+        FreeAndNil(frm);
       end;
     end;
   finally

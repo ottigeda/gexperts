@@ -32,19 +32,28 @@ uses
 class function TfmEditorShortcut.Execute(Owner: TWinControl; const Expert: string;
   var ShortCut: TShortCut; const Default: TShortCut): Boolean;
 var
-  Dlg: TfmEditorShortcut;
+  frm: TfmEditorShortcut;
+  Int: IInterface;
 begin
-  Dlg := TfmEditorShortcut.Create(Owner);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmEditorShortcut.Create(Owner);
   try
-    Dlg.FDefault := Default;
-    Dlg.gbxShortCut.Caption := Expert;
-    THotkey_SetHotkey(Dlg.hkyShortCut, ShortCut);
-    Dlg.btnDefault.Caption := ShortCutToText(Default);
-    Result := (Dlg.ShowModal = mrOk);
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.FDefault := Default;
+    frm.gbxShortCut.Caption := Expert;
+    THotkey_SetHotkey(frm.hkyShortCut, ShortCut);
+    frm.btnDefault.Caption := ShortCutToText(Default);
+    Result := (frm.ShowModal = mrOk);
     if Result then
-      ShortCut := THotkey_GetHotkey(Dlg.hkyShortCut);
+      ShortCut := THotkey_GetHotkey(frm.hkyShortCut);
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 

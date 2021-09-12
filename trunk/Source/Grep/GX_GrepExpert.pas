@@ -230,6 +230,7 @@ implementation
 
 uses
   SysUtils, Menus, Controls, ComCtrls,
+  u_dzVclUtils,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF D+}
   GX_OtaUtils, GX_GenericUtils,
   GX_GrepResults, GX_GrepResultsOptions,
@@ -362,116 +363,125 @@ end;
 
 procedure TGrepExpert.Configure;
 var
-  Dialog: TfmGrepResultsOptions;
+  frm: TfmGrepResultsOptions;
+  Int: IInterface;
 begin
-  Dialog := TfmGrepResultsOptions.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmGrepResultsOptions.Create(nil);
   try
-    Dialog.chkAdvanced.Checked := GrepAdvancedOptions;
-    Dialog.chkAdvancedClick(nil);
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.chkAdvanced.Checked := GrepAdvancedOptions;
+    frm.chkAdvancedClick(nil);
 
-    Dialog.chkGrepMiddle.Checked := GrepMiddle;
-    Dialog.chkGrepExpandAll.Checked := GrepExpandAll;
-    Dialog.chkGrepExpandIf.Checked := GrepExpandIf;
-    Dialog.eExpandIfFiles.Text := IntToStr(GrepExpandIfFiles);
-    Dialog.eExpandIfMatches.Text := IntToStr(GrepExpandIfMatches);
-    Dialog.chkGrepExpandFew.Checked := GrepExpandFew;
-    Dialog.eExpandFewLines.Text := IntToStr(GrepExpandFewLines);
+    frm.chkGrepMiddle.Checked := GrepMiddle;
+    frm.chkGrepExpandAll.Checked := GrepExpandAll;
+    frm.chkGrepExpandIf.Checked := GrepExpandIf;
+    frm.eExpandIfFiles.Text := IntToStr(GrepExpandIfFiles);
+    frm.eExpandIfMatches.Text := IntToStr(GrepExpandIfMatches);
+    frm.chkGrepExpandFew.Checked := GrepExpandFew;
+    frm.eExpandFewLines.Text := IntToStr(GrepExpandFewLines);
 
-    Dialog.chkDefaultListColors.Checked := ListUseDefaultColors;
-    Dialog.pnlListFont.Font.Assign(ListFont);
-    Dialog.pnlListMatchTextColor.Font.Assign(ListFont);
-    Dialog.pnlListMatchTextColor.Font.Color := ListMatchTextColor;
-    Dialog.pnlListMatchTextColor.Color := ListMatchBrushColor;
-    Dialog.pnlListMatchBackgroundColor.Font.Assign(ListFont);
-    Dialog.pnlListMatchBackgroundColor.Font.Color := ListMatchTextColor;
-    Dialog.pnlListMatchBackgroundColor.Color := ListMatchBrushColor;
+    frm.chkDefaultListColors.Checked := ListUseDefaultColors;
+    frm.pnlListFont.Font.Assign(ListFont);
+    frm.pnlListMatchTextColor.Font.Assign(ListFont);
+    frm.pnlListMatchTextColor.Font.Color := ListMatchTextColor;
+    frm.pnlListMatchTextColor.Color := ListMatchBrushColor;
+    frm.pnlListMatchBackgroundColor.Font.Assign(ListFont);
+    frm.pnlListMatchBackgroundColor.Font.Color := ListMatchTextColor;
+    frm.pnlListMatchBackgroundColor.Color := ListMatchBrushColor;
 
-    Dialog.pnlContextFont.Font.Assign(ContextFont);
-    Dialog.pnlContextMacthLineFontColor.Font.Assign(ContextFont);
-    Dialog.pnlContextMacthLineFontColor.Font.Color := ContextMatchLineColor;
-    Dialog.pnlContextMatchFontColor.Font.Assign(ContextFont);
-    Dialog.pnlContextMatchFontColor.Font.Color := ContextMatchColor;
+    frm.pnlContextFont.Font.Assign(ContextFont);
+    frm.pnlContextMacthLineFontColor.Font.Assign(ContextFont);
+    frm.pnlContextMacthLineFontColor.Font.Color := ContextMatchLineColor;
+    frm.pnlContextMatchFontColor.Font.Assign(ContextFont);
+    frm.pnlContextMatchFontColor.Font.Color := ContextMatchColor;
 
-    Dialog.udContextLines.Position := NumContextLines;
-    Dialog.chkGrepSaveHistoryListItems.Checked := GrepSaveHistoryListItems;
-    Dialog.rbSaveToIniFile.Checked := GrepSaveHistoryListItemsToIni;
-    Dialog.rbSaveToRegistry.Checked := GrepSaveHistoryListItemsToReg;
+    frm.udContextLines.Position := NumContextLines;
+    frm.chkGrepSaveHistoryListItems.Checked := GrepSaveHistoryListItems;
+    frm.rbSaveToIniFile.Checked := GrepSaveHistoryListItemsToIni;
+    frm.rbSaveToRegistry.Checked := GrepSaveHistoryListItemsToReg;
 
-    Dialog.chkGrepAutoHide.Checked := AutoHide;
+    frm.chkGrepAutoHide.Checked := AutoHide;
 
-    Dialog.chkFileListDeleteAfterDays.Checked := GrepFileListDeleteAfterDays;
-    Dialog.eDeleteAfterDays.Text := IntToStr(GrepDeleteAfterDays);
-    Dialog.chkEmptyMoveToParams.Checked := GrepEmptyMoveToOnlySaveParams;
-    Dialog.cbxSearchSaveOptionDefaultValue.ItemIndex := GrepSaveOptionDefaultValue;
-    Dialog.cbxOpenSaveOptionDefaultValue.ItemIndex := GrepOpenSaveOptionDefaultValue;
-    Dialog.cbxOnlySaveParamsAction.ItemIndex := GrepOnlySaveParamsAction;
-    Dialog.cbxHistoryListDefaultPage.ItemIndex := GrepHistoryListDefaultPage;
-    Dialog.chkQuickRefreshMode.Checked := GrepQuickRefresh;
+    frm.chkFileListDeleteAfterDays.Checked := GrepFileListDeleteAfterDays;
+    frm.eDeleteAfterDays.Text := IntToStr(GrepDeleteAfterDays);
+    frm.chkEmptyMoveToParams.Checked := GrepEmptyMoveToOnlySaveParams;
+    frm.cbxSearchSaveOptionDefaultValue.ItemIndex := GrepSaveOptionDefaultValue;
+    frm.cbxOpenSaveOptionDefaultValue.ItemIndex := GrepOpenSaveOptionDefaultValue;
+    frm.cbxOnlySaveParamsAction.ItemIndex := GrepOnlySaveParamsAction;
+    frm.cbxHistoryListDefaultPage.ItemIndex := GrepHistoryListDefaultPage;
+    frm.chkQuickRefreshMode.Checked := GrepQuickRefresh;
 
-    Dialog.chkHistoryPagesTabMultiLine.Checked := GrepHistoryPagesTabMultiline;
-    Dialog.eHistoryPagesTabWidth.Text := IntToStr(GrepHistoryPagesTabWidth);
-    Dialog.chkMouseWheelMoveItemIndex.Checked := GrepMouseWheelPrevNextMatch;
+    frm.chkHistoryPagesTabMultiLine.Checked := GrepHistoryPagesTabMultiline;
+    frm.eHistoryPagesTabWidth.Text := IntToStr(GrepHistoryPagesTabWidth);
+    frm.chkMouseWheelMoveItemIndex.Checked := GrepMouseWheelPrevNextMatch;
 
-    if Dialog.ShowModal = mrOk then
+    if frm.ShowModal = mrOk then
     begin
-      GrepAdvancedOptions := Dialog.chkAdvanced.Checked;
+      GrepAdvancedOptions := frm.chkAdvanced.Checked;
 
-      GrepMiddle := Dialog.chkGrepMiddle.Checked;
-      GrepExpandAll := Dialog.chkGrepExpandAll.Checked;
-      GrepExpandIf := GrepAdvancedOptions and Dialog.chkGrepExpandIf.Checked;
-      GrepExpandIfFiles := StrToIntDef(Dialog.eExpandIfFiles.Text, 25);
-      GrepExpandIfMatches := StrToIntDef(Dialog.eExpandIfMatches.Text, 150);
-      GrepExpandFew := GrepAdvancedOptions and Dialog.chkGrepExpandFew.Checked;
-      GrepExpandFewLines := StrToIntDef(Dialog.eExpandFewLines.Text, 20);
+      GrepMiddle := frm.chkGrepMiddle.Checked;
+      GrepExpandAll := frm.chkGrepExpandAll.Checked;
+      GrepExpandIf := GrepAdvancedOptions and frm.chkGrepExpandIf.Checked;
+      GrepExpandIfFiles := StrToIntDef(frm.eExpandIfFiles.Text, 25);
+      GrepExpandIfMatches := StrToIntDef(frm.eExpandIfMatches.Text, 150);
+      GrepExpandFew := GrepAdvancedOptions and frm.chkGrepExpandFew.Checked;
+      GrepExpandFewLines := StrToIntDef(frm.eExpandFewLines.Text, 20);
 
-      ListUseDefaultColors := Dialog.chkDefaultListColors.Checked;
-      FListFont.Assign(Dialog.pnlListFont.Font);
-      FContextFont.Assign(Dialog.pnlContextFont.Font);
-      ListMatchTextColor := Dialog.pnlListMatchTextColor.Font.Color;
-      ListMatchBrushColor := Dialog.pnlListMatchBackgroundColor.Color;
-      ContextMatchLineColor := Dialog.pnlContextMacthLineFontColor.Font.Color;
-      ContextMatchColor := Dialog.pnlContextMatchFontColor.Font.Color;
+      ListUseDefaultColors := frm.chkDefaultListColors.Checked;
+      FListFont.Assign(frm.pnlListFont.Font);
+      FContextFont.Assign(frm.pnlContextFont.Font);
+      ListMatchTextColor := frm.pnlListMatchTextColor.Font.Color;
+      ListMatchBrushColor := frm.pnlListMatchBackgroundColor.Color;
+      ContextMatchLineColor := frm.pnlContextMacthLineFontColor.Font.Color;
+      ContextMatchColor := frm.pnlContextMatchFontColor.Font.Color;
 
-      NumContextLines := Dialog.udContextLines.Position;
+      NumContextLines := frm.udContextLines.Position;
       if GrepAdvancedOptions then
       begin
-        if not Dialog.chkGrepSaveHistoryListItems.Checked then
+        if not frm.chkGrepSaveHistoryListItems.Checked then
           FGrepSaveHistoryListItems := 0
-        else if Dialog.rbSaveToIniFile.Checked then
+        else if frm.rbSaveToIniFile.Checked then
           FGrepSaveHistoryListItems := 1
-        else if Dialog.rbSaveToRegistry.Checked then
+        else if frm.rbSaveToRegistry.Checked then
           FGrepSaveHistoryListItems := 2;
       end
       else
       begin
-        if not Dialog.chkGrepSaveHistoryListItems.Checked then
+        if not frm.chkGrepSaveHistoryListItems.Checked then
           FGrepSaveHistoryListItems := 0
         else
           FGrepSaveHistoryListItems := 1;
       end;
 
-      GrepFileListDeleteAfterDays := Dialog.chkFileListDeleteAfterDays.Checked;
-      GrepDeleteAfterDays := StrToIntDef(Dialog.eDeleteAfterDays.Text, 30);
-      GrepSaveOptionDefaultValue := Dialog.cbxSearchSaveOptionDefaultValue.ItemIndex;
-      GrepOpenSaveOptionDefaultValue := Dialog.cbxOpenSaveOptionDefaultValue.ItemIndex;
-      GrepEmptyMoveToOnlySaveParams := GrepAdvancedOptions and Dialog.chkEmptyMoveToParams.Checked;
-      GrepOnlySaveParamsAction := Dialog.cbxOnlySaveParamsAction.ItemIndex;
-      GrepHistoryListDefaultPage := Dialog.cbxHistoryListDefaultPage.ItemIndex;
-      GrepQuickRefresh := Dialog.chkQuickRefreshMode.Checked;
+      GrepFileListDeleteAfterDays := frm.chkFileListDeleteAfterDays.Checked;
+      GrepDeleteAfterDays := StrToIntDef(frm.eDeleteAfterDays.Text, 30);
+      GrepSaveOptionDefaultValue := frm.cbxSearchSaveOptionDefaultValue.ItemIndex;
+      GrepOpenSaveOptionDefaultValue := frm.cbxOpenSaveOptionDefaultValue.ItemIndex;
+      GrepEmptyMoveToOnlySaveParams := GrepAdvancedOptions and frm.chkEmptyMoveToParams.Checked;
+      GrepOnlySaveParamsAction := frm.cbxOnlySaveParamsAction.ItemIndex;
+      GrepHistoryListDefaultPage := frm.cbxHistoryListDefaultPage.ItemIndex;
+      GrepQuickRefresh := frm.chkQuickRefreshMode.Checked;
 
       if GrepAdvancedOptions then
       begin
-        GrepHistoryPagesTabMultiline := Dialog.chkHistoryPagesTabMultiLine.Checked;
-        GrepHistoryPagesTabWidth := StrToIntDef(Dialog.eHistoryPagesTabWidth.Text, GrepHistoryPagesTabWidth);
+        GrepHistoryPagesTabMultiline := frm.chkHistoryPagesTabMultiLine.Checked;
+        GrepHistoryPagesTabWidth := StrToIntDef(frm.eHistoryPagesTabWidth.Text, GrepHistoryPagesTabWidth);
       end;
 
-      GrepMouseWheelPrevNextMatch := GrepAdvancedOptions and Dialog.chkMouseWheelMoveItemIndex.Checked;
+      GrepMouseWheelPrevNextMatch := GrepAdvancedOptions and frm.chkMouseWheelMoveItemIndex.Checked;
 
-      AutoHide := DIalog.chkGrepAutoHide.Checked;
+      AutoHide := frm.chkGrepAutoHide.Checked;
       SaveSettings;
     end;
   finally
-    FreeAndNil(Dialog);
+    FreeAndNil(frm);
   end;
 end;
 

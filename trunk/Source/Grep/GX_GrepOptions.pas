@@ -84,24 +84,33 @@ uses
 class function TfmGrepOptions.Execute(var _UseCurrentIdent: Boolean;
   var _Editor, _Params: string): Boolean;
 var
-  Dlg: TfmGrepOptions;
+  frm: TfmGrepOptions;
+  Int: IInterface;
 begin
-  Dlg := TfmGrepOptions.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmGrepOptions.Create(nil);
   try
-    Dlg.chkUseCurrentIdent.Checked := _UseCurrentIdent;
-    Dlg.ed_ExternalEditor.Text := _Editor;
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.chkUseCurrentIdent.Checked := _UseCurrentIdent;
+    frm.ed_ExternalEditor.Text := _Editor;
     if _Params = '' then
-      Dlg.ed_Parameters.Text := '{FILE}'
+      frm.ed_Parameters.Text := '{FILE}'
     else
-      Dlg.ed_Parameters.Text := _Params;
-    Result := (Dlg.ShowModal = mrOk);
+      frm.ed_Parameters.Text := _Params;
+    Result := (frm.ShowModal = mrOk);
     if Result then begin
-      _UseCurrentIdent := Dlg.chkUseCurrentIdent.Checked;
-      _Editor := Dlg.ed_ExternalEditor.Text;
-      _Params := Dlg.ed_Parameters.Text;
+      _UseCurrentIdent := frm.chkUseCurrentIdent.Checked;
+      _Editor := frm.ed_ExternalEditor.Text;
+      _Params := frm.ed_Parameters.Text;
     end;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 

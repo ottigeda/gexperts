@@ -1509,10 +1509,11 @@ resourcestring
 var
   ASelResult: TGrepSelectResult;
   AIni: TGrepIniFile;
-  frmSelect: TfmGrepSelect;
+  frm: TfmGrepSelect;
   AOpenHistoryList: TGrepHistoryList;
   AItemIndex: Integer;
   AClearList, AOverwriteItem, AOnlyIfNewer: Boolean;
+  Int: IInterface;
 begin
   if not OpenDialog.Execute then
     Exit;
@@ -1541,15 +1542,23 @@ begin
       Exit;
     end;
 
-    frmSelect := TfmGrepSelect.Create(Self);
+    // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+    // High DPI awareness. Works only for forms that are shown modally and don't
+    // call into the IDE before closing.
+    // All this is only necessary for Delphi 11 and later.
+    // It does nothing for older Delphi versions.
+    Int := TemporarilyDisableHighDpi;
+    frm := TfmGrepSelect.Create(Self);
     try
-      frmSelect.Init(AOpenHistoryList, gstOpen, rsOpenCaption);
-      ASelResult := frmSelect.Execute;
-      AClearList := frmSelect.cbOpenClear.Checked;
-      AOverwriteItem := frmSelect.cbOpenOverwrite.Checked;
-      AOnlyIfNewer := frmSelect.cbOpenOnlyIfNewer.Checked;
+      frm.TemporarilyDisableHighDpiInterface := Int;
+      Int := nil;
+      frm.Init(AOpenHistoryList, gstOpen, rsOpenCaption);
+      ASelResult := frm.Execute;
+      AClearList := frm.cbOpenClear.Checked;
+      AOverwriteItem := frm.cbOpenOverwrite.Checked;
+      AOnlyIfNewer := frm.cbOpenOnlyIfNewer.Checked;
     finally
-      frmSelect.Free;
+      frm.Free;
     end;
 
     if ASelResult = gsrNoSelection then
@@ -2038,48 +2047,68 @@ resourcestring
   rsSearchAgainCaption = 'Grep Search Again';
   rsModifySearchSettingsCaption = 'Grep Modify Search Parameters';
 var
-  Dlg: TfmGrepSearch;
+  frm: TfmGrepSearch;
+  Int: IInterface;
 begin
   Result := False;
-  Dlg := TfmGrepSearch.Create(nil);
+
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmGrepSearch.Create(nil);
   try
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
     case AState of
-      gssSearchAgain: Dlg.Caption := rsSearchAgainCaption;
-      gssModifySearchSettings: Dlg.Caption := rsModifySearchSettingsCaption;
+      gssSearchAgain: frm.Caption := rsSearchAgainCaption;
+      gssModifySearchSettings: frm.Caption := rsModifySearchSettingsCaption;
     end;
     if AState in [gssSearchAgain, gssModifySearchSettings] then
-      Dlg.AdjustSettings(FGrepSettings);
-    if ShowModalForm(Dlg) <> mrOk then
+      frm.AdjustSettings(FGrepSettings);
+    if ShowModalForm(frm) <> mrOk then
       Exit;
     FGrepSettings.CanRefresh := True;
     SetMatchString('');
-    Dlg.RetrieveSettings(FGrepSettings);
+    frm.RetrieveSettings(FGrepSettings);
     if AState <> gssModifySearchSettings then
       gblGrepExpert.SaveSettings;
     Result := True;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 
 function TfmGrepResults.QueryUserForReplaceOptions(const ReplaceInString: string): Boolean;
 var
-  Dlg: TfmGrepReplace;
+  frm: TfmGrepReplace;
+  Int: IInterface;
 begin
   ShowGxMessageBox(TShowUnicodeReplaceMessage);
 
   Result := False;
-  Dlg := TfmGrepReplace.Create(nil);
+
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmGrepReplace.Create(nil);
   try
-    Dlg.ReplaceInString := ReplaceInString;
-    Dlg.SearchString := FGrepSettings.Pattern;
-    if ShowModalForm(Dlg) <> mrOk then
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.ReplaceInString := ReplaceInString;
+    frm.SearchString := FGrepSettings.Pattern;
+    if ShowModalForm(frm) <> mrOk then
       Exit;
     SetMatchString('');
-    Dlg.RetrieveSettings(FGrepSettings);
+    frm.RetrieveSettings(FGrepSettings);
     Result := True;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 
