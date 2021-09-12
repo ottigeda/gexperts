@@ -1563,8 +1563,8 @@ inherited fmUsesManager: TfmUsesManager
   object pmUCMStatusBar: TPopupMenu
     Images = il_MenuIcons
     OnPopup = pmUCMStatusBarPopup
-    Left = 424
-    Top = 432
+    Left = 432
+    Top = 408
     object mCopyThisTextToTheClipboard: TMenuItem
       Caption = 'Copy this TEXT to the clipboard'
       Default = True

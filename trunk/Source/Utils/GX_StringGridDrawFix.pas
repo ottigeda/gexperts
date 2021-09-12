@@ -69,7 +69,7 @@ begin
   cnv := _sg.Canvas;
   cnv.FillRect(_Rect);
 {$IFDEF STRING_GRID_OWNERDRAW_FIX_ENABLED}
-  if GetBorlandIdeVersion in [ideRS104U1, ideRS104U2] then begin
+  if GetBorlandIdeVersion in [ideRS104U1, ideRS104U2, ideRS11] then begin
     // in Update 1 they apparently fixed the fix (or at least made it consistently wrong again)
     cnv.TextRect(_Rect, _Rect.Left + 6, _Rect.Top + 2, _Text)
   end else if GetBorlandIdeVersion in [ideRS104P2] then begin

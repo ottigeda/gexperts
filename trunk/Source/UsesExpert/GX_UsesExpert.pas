@@ -798,26 +798,36 @@ end;
 
 procedure TUsesClauseMgrExpert.InternalExecute;
 var
-  Form: TfmUsesManager;
+  frm: TfmUsesManager;
+  Int: IInterface;
 begin
   FIdentifierTabTimer := TStopwatch_StartNew;
 
   AssertIsPasOrInc(GxOtaGetCurrentSourceFile);
-  Form := TfmUsesManager.Create(Application, Self);
+
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  Int := TemporarilyDisableHighDpi;
+  frm := TfmUsesManager.Create(Application, Self);
   try
-    if (FAvailTabIndex >= 0) and (FAvailTabIndex < Form.pcUnits.PageCount) then begin
-      Form.pcUnits.ActivePageIndex := FAvailTabIndex;
-      Form.pcUnits.Change;
+    frm.TemporarilyDisableHighDpiInterface := Int;
+    Int := nil;
+    if (FAvailTabIndex >= 0) and (FAvailTabIndex < frm.pcUnits.PageCount) then begin
+      frm.pcUnits.ActivePageIndex := FAvailTabIndex;
+      frm.pcUnits.Change;
     end;
 
-    if Form.ShowModal = mrOk then
+    if frm.ShowModal = mrOk then
     begin
-      FAvailTabIndex := Form.pcUnits.ActivePageIndex;
+      FAvailTabIndex := frm.pcUnits.ActivePageIndex;
 
       IncCallCount;
     end;
   finally
-    FreeAndNil(Form);
+    FreeAndNil(frm);
   end;
 end;
 
@@ -1841,6 +1851,8 @@ var
   Obj: TObject;
   Item: TUnitExport;
 begin
+  TemporarilyDisableHighDpiInterface := nil;
+
   Assert(Assigned(List));
 
   col := List.ColCount - 1;
