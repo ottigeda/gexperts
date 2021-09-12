@@ -854,32 +854,41 @@ end;
 
 procedure TfmBackup.btnOptionsClick(Sender: TObject);
 var
-  Dlg: TfmBackupOptions;
+  frm: TfmBackupOptions;
   RefreshRequired: Boolean;
+  Int: IInterface;
 begin
-  Dlg := TfmBackupOptions.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmBackupOptions.Create(nil);
   try
-    Dlg.cbPassword.Checked := FZipEncrypted;
-    Dlg.edPassword.Text := FZipPassword;
-    Dlg.cbSearchLibraryPath.Checked := FBackupExpert.FollowLibraryPath;
-    Dlg.rgScope.ItemIndex := Ord(FCurrentBackupScope);
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.cbPassword.Checked := FZipEncrypted;
+    frm.edPassword.Text := FZipPassword;
+    frm.cbSearchLibraryPath.Checked := FBackupExpert.FollowLibraryPath;
+    frm.rgScope.ItemIndex := Ord(FCurrentBackupScope);
     pnlButtons.Enabled := False;
     pnlFiles.Enabled := False;
-    if Dlg.ShowModal = mrOk then
+    if frm.ShowModal = mrOk then
     begin
-      FZipPassword := Dlg.edPassword.Text;
-      FZipEncrypted := Dlg.cbPassword.Checked;
-      RefreshRequired := not (FCurrentBackupScope = TBackupScope(Dlg.rgScope.ItemIndex));
-      FCurrentBackupScope := TBackupScope(Dlg.rgScope.ItemIndex);
-      RefreshRequired := RefreshRequired or (not (FBackupExpert.FFollowLibraryPath = Dlg.cbSearchLibraryPath.Checked));
-      FBackupExpert.FFollowLibraryPath := Dlg.cbSearchLibraryPath.Checked;
+      FZipPassword := frm.edPassword.Text;
+      FZipEncrypted := frm.cbPassword.Checked;
+      RefreshRequired := not (FCurrentBackupScope = TBackupScope(frm.rgScope.ItemIndex));
+      FCurrentBackupScope := TBackupScope(frm.rgScope.ItemIndex);
+      RefreshRequired := RefreshRequired or (not (FBackupExpert.FFollowLibraryPath = frm.cbSearchLibraryPath.Checked));
+      FBackupExpert.FFollowLibraryPath := frm.cbSearchLibraryPath.Checked;
       if RefreshRequired then
         CollectFilesForBackup;
     end;
   finally
     pnlButtons.Enabled := True;
     pnlFiles.Enabled := True;
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 

@@ -637,19 +637,29 @@ begin
 end;
 
 procedure TfmCodeLib.FindExecute(Sender: TObject);
+var
+  frm: TfmCodeSearch;
+  Int: IInterface;
 begin
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  Int := TemporarilyDisableHighDpi;
+  frm := TfmCodeSearch.Create(nil);
   try
-    with TfmCodeSearch.Create(nil) do
     try
-      if ShowModal = mrOk then
-      begin
-        FSearch.Text := edSearch.Text;
-        FSearch.CaseSensitive := cbCaseSensitive.Checked;
-        FSearch.WholeWord := cbWholeWord.Checked;
+      frm.TemporarilyDisableHighDpiInterface := Int;
+      Int := nil;
+      if frm.ShowModal = mrOk then begin
+        FSearch.Text := frm.edSearch.Text;
+        FSearch.CaseSensitive := frm.cbCaseSensitive.Checked;
+        FSearch.WholeWord := frm.cbWholeWord.Checked;
         DoSearch(True);
       end;
     finally
-      Free;
+      frm.Free;
     end;
   except
     on E: Exception do
@@ -930,28 +940,34 @@ end;
 
 procedure TfmCodeLib.OptionsExecute(Sender: TObject);
 var
-  Dlg: TfmCodeOptions;
+  frm: TfmCodeOptions;
+  Int: IInterface;
 begin
-  Dlg := TfmCodeOptions.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmCodeOptions.Create(nil);
   try
-    with Dlg do
-    begin
-      edPath.Text := StoragePath;
-      if Layout = clSide then
-        rbSide.Checked := True
-      else
-        rbTop.Checked := True;
-      {$IFOPT D+}SendDebug('Setting fcTreeView.Text to ' + tvTopics.Font.Name);{$ENDIF}
-      fcTreeView.ItemIndex := fcTreeView.Items.IndexOf(tvTopics.Font.Name);
-      {$IFOPT D+}SendDebug('fcTreeView.Text is ' + fcTreeView.Text);{$ENDIF}
-      udTreeView.Position := tvTopics.Font.Size;
-      fcEditor.ItemIndex := fcEditor.Items.IndexOf(FCodeText.Font.Name);
-      udEditor.Position := FCodeText.Font.Size;
-    end;
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.edPath.Text := StoragePath;
+    if Layout = clSide then
+      frm.rbSide.Checked := True
+    else
+      frm.rbTop.Checked := True;
+{$IFOPT D+}SendDebug('Setting fcTreeView.Text to ' + tvTopics.Font.Name); {$ENDIF}
+    frm.fcTreeView.ItemIndex := frm.fcTreeView.Items.IndexOf(tvTopics.Font.Name);
+{$IFOPT D+}SendDebug('fcTreeView.Text is ' + frm.fcTreeView.Text);{$ENDIF}
+    frm.udTreeView.Position := tvTopics.Font.Size;
+    frm.fcEditor.ItemIndex := frm.fcEditor.Items.IndexOf(FCodeText.Font.Name);
+    frm.udEditor.Position := FCodeText.Font.Size;
 
-    if Dlg.ShowModal = mrOk then
+    if frm.ShowModal = mrOk then
     begin
-      if (StoragePath <> Dlg.edPath.Text) then
+      if (StoragePath <> frm.edPath.Text) then
       begin
         if CodeDB <> nil then
           CloseDB(True);
@@ -959,7 +975,7 @@ begin
         FreeAndNil(CodeDB);
         tvTopics.Items.Clear;
         FCodeText.Clear;
-        StoragePath := AddSlash(Dlg.edPath.Text);
+        StoragePath := AddSlash(frm.edPath.Text);
         CodeDB := OpenStorage(StoragePath + DefaultFileName);
         if CodeDB = nil then
         begin
@@ -968,24 +984,24 @@ begin
         end;
         InitializeTreeView;
       end;
-      if Dlg.rbSide.Checked then
+      if frm.rbSide.Checked then
         Layout := clSide
       else
         Layout := clTop;
 
       with tvTopics.Font do
       begin
-        Name := Dlg.fcTreeView.Text;
-        Size := Trunc(StrToInt(Dlg.eTreeView.Text));
+        Name := frm.fcTreeView.Text;
+        Size := Trunc(StrToInt(frm.eTreeView.Text));
       end;
       with FCodeText.Font do
       begin
-        Name := Dlg.fcEditor.Text;
-        Size := Trunc(StrToInt(Dlg.eEditor.Text));
+        Name := frm.fcEditor.Text;
+        Size := Trunc(StrToInt(frm.eEditor.Text));
       end;
     end;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 

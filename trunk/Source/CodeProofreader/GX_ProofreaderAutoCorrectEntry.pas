@@ -27,10 +27,11 @@ type
 
 implementation
 
-uses
-  SysUtils;
-
 {$R *.dfm}
+
+uses
+  SysUtils,
+  u_dzVclUtils;
 
 { TfmProofreaderDictionaryEntry }
 
@@ -40,39 +41,48 @@ resourcestring
   SDlgCaptionAdd = 'Add AutoCorrect Entry';
   SDlgCaptionEdit = 'Edit AutoCorrect Entry';
 var
-  Dialog: TfmProofreaderAutoCorrectEntry;
+  frm: TfmProofreaderAutoCorrectEntry;
+  Int: IInterface;
 begin
-  Dialog := TfmProofreaderAutoCorrectEntry.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmProofreaderAutoCorrectEntry.Create(nil);
   try
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
     if Add then
     begin
-      Dialog.Caption := SDlgCaptionAdd;
-      Dialog.edtReplaceWhat.Text := '';
-      Dialog.cbxLocation.ItemIndex := Ord(wrAnywhere);
-      Dialog.edtReplaceWith.Text := '';
+      frm.Caption := SDlgCaptionAdd;
+      frm.edtReplaceWhat.Text := '';
+      frm.cbxLocation.ItemIndex := Ord(wrAnywhere);
+      frm.edtReplaceWith.Text := '';
     end
     else
     begin
-      Dialog.Caption := SDlgCaptionEdit;
-      Dialog.edtReplaceWhat.Text := TypedString;
-      Dialog.cbxLocation.ItemIndex := Ord(ReplaceWhere);
-      Dialog.edtReplaceWith.Text := ReplaceWithString;
+      frm.Caption := SDlgCaptionEdit;
+      frm.edtReplaceWhat.Text := TypedString;
+      frm.cbxLocation.ItemIndex := Ord(ReplaceWhere);
+      frm.edtReplaceWith.Text := ReplaceWithString;
     end;
 
-    Dialog.UpdateButtons;
-    Result := Dialog.ShowModal = mrOk;
+    frm.UpdateButtons;
+    Result := frm.ShowModal = mrOk;
     if Result then
     begin
-      Result := Trim(Dialog.edtReplaceWhat.Text) <> '';
+      Result := Trim(frm.edtReplaceWhat.Text) <> '';
       if Result then
       begin
-        TypedString := Dialog.edtReplaceWhat.Text;
-        ReplaceWhere := TGXWhereReplace(Dialog.cbxLocation.ItemIndex);
-        ReplaceWithString := Dialog.edtReplaceWith.Text;
+        TypedString := frm.edtReplaceWhat.Text;
+        ReplaceWhere := TGXWhereReplace(frm.cbxLocation.ItemIndex);
+        ReplaceWithString := frm.edtReplaceWith.Text;
       end;
     end;
   finally
-    FreeAndNil(Dialog);
+    FreeAndNil(frm);
   end;
 end;
 

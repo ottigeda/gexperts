@@ -183,14 +183,23 @@ end;
 
 procedure TComponentGridExpert.Execute(Sender: TObject);
 var
-  Dlg: TfmComponentGrid;
+  frm: TfmComponentGrid;
+  Int: IInterface;
 begin
-  Dlg := TfmComponentGrid.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmComponentGrid.Create(nil);
   try
-    SetFormIcon(Dlg);
-    Dlg.ShowModal;
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    SetFormIcon(frm);
+    frm.ShowModal;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
   IncCallCount;
 end;

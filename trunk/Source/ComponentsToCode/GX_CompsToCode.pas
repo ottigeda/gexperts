@@ -90,7 +90,7 @@ implementation
 uses
   SysUtils, Clipbrd, ComCtrls, ToolsAPI, TypInfo, Menus, StrUtils,
   GX_GenericUtils, GX_GxUtils, GX_OtaUtils, GX_MessageBox, GX_IdeUtils,
-  u_dzStringUtils;
+  u_dzStringUtils, u_dzVclUtils;
 
 type
   TCCOptions = (ccBinaryRemove, ccBinaryComment, ccBinaryUncomment,
@@ -408,18 +408,27 @@ end;
 
 procedure TComponentsToCodeExpert.Configure;
 var
-  Dlg: TfmCompsToCode;
+  frm: TfmCompsToCode;
+  Int: IInterface;
 begin
-  Dlg := TfmCompsToCode.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmCompsToCode.Create(nil);
   try
-    Dlg.InitSettings(FSettings);
-    if Dlg.ShowModal = mrOk then
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.InitSettings(FSettings);
+    if frm.ShowModal = mrOk then
     begin
-      FSettings := Dlg.Settings;
+      FSettings := frm.Settings;
       SaveSettings;
     end;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 

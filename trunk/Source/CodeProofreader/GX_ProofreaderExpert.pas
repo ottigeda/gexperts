@@ -31,7 +31,7 @@ implementation
 
 uses
   SysUtils, Dialogs, Controls,
-  GX_ProofreaderConfig, GX_MessageBox;
+  GX_ProofreaderConfig, GX_MessageBox, u_dzVclUtils;
 
 type
   TCreateDefaultTablesMessage = class(TGxQuestionBoxAdaptor)
@@ -60,8 +60,9 @@ end;
 procedure TCodeProofreaderExpert.Configure;
 var
   Data: TProofreaderData;
-  Dlg: TfmProofreaderConfig;
+  frm: TfmProofreaderConfig;
   FileName: string;
+  Int: IInterface;
 begin
   Data := FProofreaderData;
   if Data = nil then begin
@@ -77,12 +78,20 @@ begin
     end;
     Data.ReloadData;
 
-    Dlg := TfmProofreaderConfig.Create(nil, Self, Data);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+    frm := TfmProofreaderConfig.Create(nil, Self, Data);
     try
-      SetFormIcon(Dlg);
-      Dlg.ShowModal;
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+      SetFormIcon(frm);
+      frm.ShowModal;
     finally
-      FreeAndNil(Dlg);
+      FreeAndNil(frm);
     end;
     SaveSettings;
   finally

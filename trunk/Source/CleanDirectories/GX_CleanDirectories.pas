@@ -658,17 +658,26 @@ end;
 
 procedure TCleanDirectoriesExpert.Execute(Sender: TObject);
 var
-  Dlg: TfmCleanDirectories;
+  frm: TfmCleanDirectories;
+  Int: IInterface;
 begin
-  Dlg := TfmCleanDirectories.CreateParametrized(Self);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmCleanDirectories.CreateParametrized(Self);
   try
-    SetFormIcon(Dlg);
-    Dlg.chkReportErrors.Checked := FReportErrors;
-    if Dlg.ShowModal = mrOk then
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    SetFormIcon(frm);
+    frm.chkReportErrors.Checked := FReportErrors;
+    if frm.ShowModal = mrOk then
       IncCallCount;
-    FReportErrors := Dlg.chkReportErrors.Checked;
+    FReportErrors := frm.chkReportErrors.Checked;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 

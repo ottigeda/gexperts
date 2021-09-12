@@ -27,15 +27,27 @@ implementation
 
 {$R *.dfm}
 
+uses
+  u_dzVclUtils;
+
 { TfmClassIdentify }
 
 class function TfmClassIdentify.Execute(Owner: TWinControl; var Identifier: string;
   var Recursive: Boolean): Boolean;
 var
   frm: TfmClassIdentify;
+  Int: IInterface;
 begin
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
   frm := TfmClassIdentify.Create(Owner);
   try
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
     frm.SetData(Identifier, Recursive);
     Result := (frm.ShowModal = mrOk);
     if Result then
