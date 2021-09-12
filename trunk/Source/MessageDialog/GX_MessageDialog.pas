@@ -1047,10 +1047,11 @@ procedure TMessageDialogExpert.Execute(Sender: TObject);
 resourcestring
   SWrongFileType = 'This expert is for use in pas, dpr, inc, and cpp files only.';
 var
-  Dlg: TfmMessageDialog;
+  frm: TfmMessageDialog;
   FileName: string;
   SourceType: TSourceType;
   DefaultMsg: string;
+  Int: IInterface;
 begin
   FileName := GxOtaGetCurrentSourceFile;
   if IsCpp(FileName) then
@@ -1062,37 +1063,45 @@ begin
 
   FSettings.SourceType := SourceType;
 
-  Dlg := TfmMessageDialog.Create(nil, FSettings);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmMessageDialog.Create(nil, FSettings);
   try
-    SetFormIcon(Dlg);
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    SetFormIcon(frm);
     DefaultMsg := Trim(GxOtaGetCurrentSelection(False));
     if DefaultMsg <> '' then
-      Dlg.mmoMessage.Text := DefaultMsg;
-    if Dlg.ShowModal = mrOk then
+      frm.mmoMessage.Text := DefaultMsg;
+    if frm.ShowModal = mrOk then
     begin
-      if StrContains(#10, Dlg.GeneratedCode) then
-        GxOtaInsertTextIntoEditor(Dlg.GeneratedCode)
+      if StrContains(#10, frm.GeneratedCode) then
+        GxOtaInsertTextIntoEditor(frm.GeneratedCode)
       else
-        GxOtaInsertLineIntoEditor(Dlg.GeneratedCode);
+        GxOtaInsertLineIntoEditor(frm.GeneratedCode);
 
       if FSettings.FSourceType = stPascal then
       begin
         if not IsDpr(GxOtaGetCurrentSourceFile) then
         begin
           if GxOtaActiveDesignerIsVCL or GxOtaActiveDesignerIsNFM then
-            UseUnitInImplementation(Dlg.UsesUnit)
+            UseUnitInImplementation(frm.UsesUnit)
           else if GxOtaActiveDesignerIsCLX then
-            UseUnitInImplementation(Dlg.UsesUnitCLX);
+            UseUnitInImplementation(frm.UsesUnitCLX);
         end;
       end;
-      if Dlg.chkDefaults.Checked then
-        Dlg.SaveSettings;
+      if frm.chkDefaults.Checked then
+        frm.SaveSettings;
       GxOtaFocusCurrentIDEEditControl;
 
       IncCallCount;
     end;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 

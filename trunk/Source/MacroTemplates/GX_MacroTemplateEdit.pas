@@ -3,8 +3,8 @@ unit GX_MacroTemplateEdit;
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, ComCtrls, GX_MacroFile,
-  GX_BaseForm;
+  SysUtils, Classes, Dialogs, Controls, Forms, StdCtrls, ComCtrls,
+  GX_MacroFile, GX_BaseForm;
 
 type
   TMacroTemplate = record
@@ -33,55 +33,77 @@ function EditMacroObject(AMacroObject: TMacroObject): Boolean;
 
 implementation
 
-uses
-  SysUtils, Dialogs;
-
 {$R *.dfm}
 
+uses
+  u_dzVclUtils;
+
 function GetMacroTemplate(var VMacroTemplate: TMacroTemplate): Boolean;
+var
+  frm :TfmMacroTemplateEdit;
+  Int: IInterface;
 begin
   Result := False;
-  with TfmMacroTemplateEdit.Create(Application) do
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmMacroTemplateEdit.Create(Application);
   try
-    edtName.Text := VMacroTemplate.Name;
-    edtDescription.Text := VMacroTemplate.Description;
-    edtShortCut.HotKey := VMacroTemplate.ShortCut;
-    cbxInsertPos.ItemIndex := Ord(VMacroTemplate.InsertPos);
-    ShowModal;
-    if ModalResult = mrOk then
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.edtName.Text := VMacroTemplate.Name;
+    frm.edtDescription.Text := VMacroTemplate.Description;
+    frm.edtShortCut.HotKey := VMacroTemplate.ShortCut;
+    frm.cbxInsertPos.ItemIndex := Ord(VMacroTemplate.InsertPos);
+    frm.ShowModal;
+    if frm.ModalResult = mrOk then
     begin
       Result := True;
-      VMacroTemplate.Name := edtName.Text;
-      VMacroTemplate.Description := edtDescription.Text;
-      VMacroTemplate.ShortCut := edtShortCut.HotKey;
-      VMacroTemplate.InsertPos := TTemplateInsertPos(cbxInsertPos.ItemIndex);
+      VMacroTemplate.Name := frm.edtName.Text;
+      VMacroTemplate.Description := frm.edtDescription.Text;
+      VMacroTemplate.ShortCut := frm.edtShortCut.HotKey;
+      VMacroTemplate.InsertPos := TTemplateInsertPos(frm.cbxInsertPos.ItemIndex);
     end;
   finally
-    Free;
+    FreeAndNil(frm);
   end;
 end;
 
 function EditMacroObject(AMacroObject: TMacroObject): Boolean;
+var
+  frm :TfmMacroTemplateEdit;
+  Int: IInterface;
 begin
   Result := False;
-  with TfmMacroTemplateEdit.Create(Application) do
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmMacroTemplateEdit.Create(Application);
   try
-    edtName.Text := AMacroObject.Name;
-    edtDescription.Text := AMacroObject.Desc;
-    edtShortCut.HotKey := AMacroObject.ShortCut;
-    cbxInsertPos.ItemIndex := Ord(AMacroObject.InsertPos);
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.Text := AMacroObject.Name;
+    frm.Text := AMacroObject.Desc;
+    frm.edtShortCut.HotKey := AMacroObject.ShortCut;
+    frm.cbxInsertPos.ItemIndex := Ord(AMacroObject.InsertPos);
 
-    ShowModal;
-    if ModalResult = mrOk then
+    frm.ShowModal;
+    if frm.ModalResult = mrOk then
     begin
       Result := True;
-      AMacroObject.Name := edtName.Text;
-      AMacroObject.Desc := edtDescription.Text;
-      AMacroObject.ShortCut := edtShortCut.HotKey;
-      AMacroObject.InsertPos := TTemplateInsertPos(cbxInsertPos.ItemIndex);
+      AMacroObject.Name := frm.edtName.Text;
+      AMacroObject.Desc := frm.edtDescription.Text;
+      AMacroObject.ShortCut := frm.edtShortCut.HotKey;
+      AMacroObject.InsertPos := TTemplateInsertPos(frm.cbxInsertPos.ItemIndex);
     end;
   finally
-    Free;
+    FreeAndNil(frm);
   end;
 end;
 

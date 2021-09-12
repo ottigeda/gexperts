@@ -411,22 +411,31 @@ end;
 
 procedure TIDEMenuShortCutsExpert.Execute(Sender: TObject);
 var
-  Dlg: TfmIdeShortCuts;
+  frm: TfmIdeShortCuts;
+  Int: IInterface;
 begin
-  Dlg := TfmIdeShortCuts.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmIdeShortCuts.Create(nil);
   try
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
     // Restore old shortcuts - to show "original" settings.
     ResetShortCuts;
-    SetFormIcon(Dlg);
+    SetFormIcon(frm);
 
-    if Dlg.ShowModal = mrOk then
+    if frm.ShowModal = mrOk then
     begin
       // Apply new shortcut settings.  The form writes to the registry itself.
       ReadFromRegistryIDE;
       IncCallCount;
     end;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 

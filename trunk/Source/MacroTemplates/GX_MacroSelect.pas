@@ -3,8 +3,9 @@ unit GX_MacroSelect;
 
 interface
 uses
-  Classes, Controls, Forms, ExtCtrls, StdCtrls, ComCtrls, CommCtrl, GX_MacroFile,
-  GX_BaseForm;
+  Windows, Messages, SysUtils, Classes,
+  Controls, Forms, ExtCtrls, StdCtrls, ComCtrls, CommCtrl,
+  GX_MacroFile, GX_BaseForm;
 
 type
   TfmMacroSelect = class(TfmBaseForm)
@@ -43,24 +44,36 @@ implementation
 {$R *.dfm}
 
 uses
-  Messages, Windows,
+  u_dzVclUtils,
   GX_MacroTemplatesExpert, GX_ConfigurationInfo, GX_GenericUtils;
 
 function GetTemplateFromUser(const ATemplateName: string; MacroFile: TMacroFile): Integer;
+var
+  Int: IInterface;
+  frm: TfmMacroSelect;
 begin
   Assert(Assigned(MacroFile));
 
-  with TfmMacroSelect.Create(Application) do
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  Int := TemporarilyDisableHighDpi;
+  frm := TfmMacroSelect.Create(Application);
   try
-    LoadTemplates(MacroFile);
-    tbEnter.Text := ATemplateName;
-    tbEnter.SelectAll;
-    if ShowModal = mrOk then
-      Result := GetSelectedMacroCode
+    frm.TemporarilyDisableHighDpiInterface := Int;
+    Int := nil;
+
+    frm.LoadTemplates(MacroFile);
+    frm.tbEnter.Text := ATemplateName;
+    frm.tbEnter.SelectAll;
+    if frm.ShowModal = mrOk then
+      Result := frm.GetSelectedMacroCode
     else
       Result := -1;
   finally
-    Free;
+    FreeAndNil(frm);
   end;
 end;
 
