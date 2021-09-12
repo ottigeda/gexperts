@@ -124,7 +124,7 @@ uses
   GX_OpenFile in '..\..\source\OpenFile\GX_OpenFile.pas' {fmOpenFile},
   GX_OpenFileConfig in '..\..\source\OpenFile\GX_OpenFileConfig.pas' {fmOpenFileConfig},
   GX_OtaUtils in '..\..\source\Utils\GX_OtaUtils.pas',
-  GX_PeInformation in '..\..\source\PeInfo\GX_PeInformation.pas',
+  GX_PeInformation in '..\..\source\PeInfo\GX_PeInformation.pas' {fmPeInformation},
   GX_ProcedureList in '..\..\source\ProcedureList\GX_ProcedureList.pas' {fmProcedureList},
   GX_ProcedureListOptions in '..\..\source\ProcedureList\GX_ProcedureListOptions.pas' {fmProcedureListOptions},
   GX_Progress in '..\..\source\Framework\GX_Progress.pas' {fmProgress},
