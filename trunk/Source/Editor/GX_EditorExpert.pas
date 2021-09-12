@@ -3,7 +3,7 @@ unit GX_EditorExpert;
 interface
 
 uses
-  Classes, Graphics,
+  Classes, Graphics, Forms,
   GX_ConfigurationInfo, GX_BaseExpert;
 
 type
@@ -16,6 +16,7 @@ type
     // you usually don't need to override this
     procedure SaveActiveAndShortCut(Settings: TGExpertsSettings); override;
     procedure ActionOnUpdate(Sender: TObject);
+    procedure SetFormIcon(Form: TForm);
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -123,6 +124,16 @@ begin
   inherited;
   Settings.WriteInteger(ConfigurationKey, 'ShortCut', ShortCut);
   Settings.WriteBool(ConfigurationKey, 'Active', Active);
+end;
+
+procedure TEditorExpert.SetFormIcon(Form: TForm);
+var
+  bmp: TBitmap;
+begin
+  Assert(Assigned(Form));
+  bmp := GetBitmap;
+  if Assigned(bmp) then
+    ConvertBitmapToIcon(bmp, Form.Icon);
 end;
 
 function TEditorExpert.CanHaveShortCut: boolean;

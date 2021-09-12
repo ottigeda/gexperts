@@ -395,7 +395,7 @@ begin
   begin
     fmMacroTemplates := TfmMacroTemplates.Create(nil);
     try
-      ConvertBitmapToIcon(GetBitmap, fmMacroTemplates.Icon);
+      SetFormIcon(fmMacroTemplates);
       fmMacroTemplates.Settings := FSettings;
       fmMacroTemplates.ShowModal;
     except // Free only on error (we free on close otherwise)

@@ -857,7 +857,6 @@ end;
 
 constructor TfmUsesManager.Create(_Owner: TComponent; _UsesExpert: TUsesClauseMgrExpert);
 var
-  Bitmap: TBitmap;
   StopWatch: TStopwatch;
 begin
 {$IFOPT D+}
@@ -890,11 +889,9 @@ begin
   FIdentifierMatchGrp.SetDown(Ord(FUsesExpert.FFilterIdentifiers));
   FIdentifierMatchGrp.OnClick := sb_MatchWhereClick;
 
-  FLeftRatio :=  pnlUses.Width / ClientWidth;
+  FLeftRatio := pnlUses.Width / ClientWidth;
 
-  Bitmap := FUsesExpert.GetBitmap;
-  if Assigned(Bitmap) then
-    ConvertBitmapToIcon(Bitmap, Icon);
+  FUsesExpert.SetFormIcon(Self);
 
   sg_Identifiers.Cells[0, 0] := 'Identifier';
   sg_Identifiers.Cells[1, 0] := 'Unit';
