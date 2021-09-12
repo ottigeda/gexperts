@@ -16,18 +16,6 @@ uses
   GX_BaseExpert;
 
 type
-  TWarnExpert = class(TEditorExpert)
-  private
-  public
-    class function GetName: string; override;
-    constructor Create; override;
-    function GetDisplayName: string; override;
-    procedure Execute(Sender: TObject); override;
-    function GetHelpString: string; override;
-    function HasConfigOptions: Boolean; override;
-  end;
-
-type
   TWarnStatusEnum = (wseON, wseOFF, wseDEFAULT
 {$IF CompilerVersion >= CompilerVersionDelphi2009}
     , wseERROR
@@ -73,6 +61,18 @@ uses
   u_dzVclUtils,
   GX_OtaUtils,
   GX_GenericUtils;
+
+type
+  TWarnExpert = class(TEditorExpert)
+  private
+  public
+    class function GetName: string; override;
+    constructor Create; override;
+    function GetDisplayName: string; override;
+    procedure Execute(Sender: TObject); override;
+    function GetHelpString: string; override;
+    function HasConfigOptions: Boolean; override;
+  end;
 
 { TWarnExpert }
 
@@ -138,9 +138,18 @@ class function TfmConfigureWarning.Execute(_bmp: TBitmap;
   out _Message: string; out _Status: TWarnStatusEnum): Boolean;
 var
   frm: TfmConfigureWarning;
+  Int: IInterface;
 begin
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
   frm := TfmConfigureWarning.Create(Application);
   try
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
     ConvertBitmapToIcon(_bmp, frm.Icon);
     Result := frm.ShowModal = mrOk;
     if Result then begin

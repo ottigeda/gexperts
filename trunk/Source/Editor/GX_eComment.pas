@@ -5,8 +5,8 @@ unit GX_eComment;
 interface
 
 uses
-  GX_eSelectionEditorExpert, GX_ConfigurationInfo,
-  Classes, StdCtrls, Controls, Forms, GX_BaseForm, ExtCtrls, ComCtrls;
+  SysUtils, Classes, StdCtrls, Controls, Forms, GX_BaseForm, ExtCtrls, ComCtrls,
+  GX_eSelectionEditorExpert, GX_ConfigurationInfo;
 
 type
 //  //        ctSlash
@@ -40,32 +40,6 @@ type
     procedure Clear; override;
     function  GetStyle(const AFileName: String): TExtensionStyle;
     procedure CopyStyles(AFromStyles: TCommentStyles);
-  end;
-
-  TCommentExpert = class(TSelectionEditorExpert)
-  protected
-    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
-    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
-    function ProcessSelected(Lines: TStrings): Boolean; override;
-  public
-    class function GetName: string; override;
-    constructor Create; override;
-    function GetDefaultShortCut: TShortCut; override;
-    function GetDisplayName: string; override;
-    procedure Configure; override;
-    function GetHelpString: string; override;
-  end;
-
-  TUnCommentExpert = class(TSelectionEditorExpert)
-  protected
-    function ProcessSelected(Lines: TStrings): Boolean; override;
-  public
-    class function GetName: string; override;
-    constructor Create; override;
-    function GetDefaultShortCut: TShortCut; override;
-    function GetDisplayName: string; override;
-    function GetHelpString: string; override;
-    function HasConfigOptions: Boolean; override;
   end;
 
   TfmCommentConfig = class(TfmBaseForm)
@@ -104,8 +78,8 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, StrUtils, Math,
-  u_dzStringUtils,
+  StrUtils, Math,
+  u_dzStringUtils, u_dzVclUtils,
   GX_EditorExpert, GX_OtaUtils;
 
 var
@@ -120,24 +94,61 @@ const
   cIniCommentType = 'CommentType';
   cIniInsertRemoveSpace = 'InsertRemoveSpace';
 
+type
+  TCommentExpert = class(TSelectionEditorExpert)
+  protected
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    function ProcessSelected(Lines: TStrings): Boolean; override;
+  public
+    class function GetName: string; override;
+    constructor Create; override;
+    function GetDefaultShortCut: TShortCut; override;
+    function GetDisplayName: string; override;
+    procedure Configure; override;
+    function GetHelpString: string; override;
+  end;
+
+type
+  TUnCommentExpert = class(TSelectionEditorExpert)
+  protected
+    function ProcessSelected(Lines: TStrings): Boolean; override;
+  public
+    class function GetName: string; override;
+    constructor Create; override;
+    function GetDefaultShortCut: TShortCut; override;
+    function GetDisplayName: string; override;
+    function GetHelpString: string; override;
+    function HasConfigOptions: Boolean; override;
+  end;
+
 { TCommentExpert }
 
 procedure TCommentExpert.Configure;
 var
-  Dlg: TfmCommentConfig;
+  frm: TfmCommentConfig;
+  Int: IInterface;
 begin
-  Dlg := TfmCommentConfig.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmCommentConfig.Create(nil);
   try
-    Dlg.Initialize;
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.Initialize;
 
-    if Dlg.ShowModal = mrOk then
+    if frm.ShowModal = mrOk then
     begin
-      Styles.CopyStyles(Dlg.FStyles);
+      Styles.CopyStyles(frm.FStyles);
 
       SaveSettings;
     end;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 

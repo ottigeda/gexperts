@@ -47,6 +47,7 @@ uses
 {$ENDIF UNICODE}
   u_dzQuicksort,
   u_dzStringUtils,
+  u_dzVclUtils,
 {$IFOPT D+}GX_DbugIntf,
 {$ENDIF}
   GX_EditorExpert,
@@ -62,13 +63,22 @@ begin
   TfrmSortOptions.Execute(Self, FCustomPrefixOrder);
 end;
 
-class function TfmeSortConfig.Execute(_CustomPrefixOrder: TGXUnicodeStringList; out _SortOrder: TeSortOrder;
-  out _Ignore: Boolean): Boolean;
+class function TfmeSortConfig.Execute(_CustomPrefixOrder: TGXUnicodeStringList;
+  out _SortOrder: TeSortOrder; out _Ignore: Boolean): Boolean;
 var
   frm: TfmeSortConfig;
+  Int: IInterface;
 begin
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
   frm := TfmeSortConfig.Create(nil);
   try
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
     frm.FCustomPrefixOrder := _CustomPrefixOrder;
     Result := True;
     case frm.ShowModal of

@@ -41,6 +41,7 @@ implementation
 {$R *.dfm}
 
 uses
+  u_dzVclUtils,
   GX_GenericUtils;
 
 { TfrmSortOptions }
@@ -48,9 +49,18 @@ uses
 class function TfrmSortOptions.Execute(_Owner: TWinControl; _CustomPrefixOrder: TGXUnicodeStringList): Boolean;
 var
   frm: TfrmSortOptions;
+  Int: IInterface;
 begin
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  Int := TemporarilyDisableHighDpi;
   frm := TfrmSortOptions.Create(_Owner);
   try
+    frm.TemporarilyDisableHighDpiInterface := Int;
+    Int := nil;
     frm.SetData(_CustomPrefixOrder);
     Result := (frm.ShowModal = mrOk);
     if Result then
@@ -112,3 +122,4 @@ begin
 end;
 
 end.
+

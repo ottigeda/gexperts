@@ -5,8 +5,23 @@ interface
 {$I GX_CondDefine.inc}
 
 uses
-  Classes, Controls, Forms, StdCtrls,
+  SysUtils, Classes, Controls, Forms, StdCtrls,
   GX_EditorExpert, GX_ConfigurationInfo, GX_BaseForm;
+
+type
+  TfmDateFormat = class(TfmBaseForm)
+    lblFormat: TLabel;
+    cbFormat: TComboBox;
+    btnOK: TButton;
+    btnCancel: TButton;
+  end;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  GX_OtaUtils, u_dzVclUtils;
 
 type
   TDateTimeExpert = class(TEditorExpert)
@@ -26,32 +41,28 @@ type
     property DateFormat: string read FDateFormat write FDateFormat;
   end;
 
-type
-  TfmDateFormat = class(TfmBaseForm)
-    lblFormat: TLabel;
-    cbFormat: TComboBox;
-    btnOK: TButton;
-    btnCancel: TButton;
-  end;
-
-implementation
-
-uses
-  SysUtils, GX_OtaUtils;
-
-{$R *.dfm}
-
 { TDateTimeExpert }
 
 procedure TDateTimeExpert.Configure;
+var
+  frm: TfmDateFormat;
+  Int: IInterface;
 begin
-  with TfmDateFormat.Create(nil) do
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmDateFormat.Create(nil);
   try
-    cbFormat.Text := DateFormat;
-    if ShowModal = mrOk then
-      DateFormat := cbFormat.Text;
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.cbFormat.Text := DateFormat;
+    if frm.ShowModal = mrOk then
+      DateFormat := frm.cbFormat.Text;
   finally
-    Free;
+    FreeAndNil(frm);
   end;
 end;
 

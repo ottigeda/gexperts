@@ -7,6 +7,28 @@ uses
   GX_BaseForm, GX_eSelectionEditorExpert, GX_EditorExpert, GX_ConfigurationInfo;
 
 type
+  TfmPasteAsConfig = class(TfmBaseForm)
+    gbxPasteAsOptions: TGroupBox;
+    lblMaxEntries: TLabel;
+    chkCreateQuotedStrings: TCheckBox;
+    btnOK: TButton;
+    btnCancel: TButton;
+    cbPasteAsType: TComboBox;
+    chkAddExtraSpaceAtTheEnd: TCheckBox;
+    chkShowOptions: TCheckBox;
+    procedure FormCreate(Sender: TObject);
+  private
+  public
+  end;
+
+implementation
+
+{$R *.dfm}
+
+uses
+  GX_PasteAs, Clipbrd, Dialogs;
+
+type
   TPasteAsExpert = class(TEditorExpert)
   protected
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
@@ -44,26 +66,6 @@ type
     function HasConfigOptions: Boolean; override;
   end;
 
-  TfmPasteAsConfig = class(TfmBaseForm)
-    gbxPasteAsOptions: TGroupBox;
-    lblMaxEntries: TLabel;
-    chkCreateQuotedStrings: TCheckBox;
-    btnOK: TButton;
-    btnCancel: TButton;
-    cbPasteAsType: TComboBox;
-    chkAddExtraSpaceAtTheEnd: TCheckBox;
-    chkShowOptions: TCheckBox;
-    procedure FormCreate(Sender: TObject);
-  private
-  public
-  end;
-
-implementation
-
-uses
-  GX_PasteAs, Clipbrd, Dialogs;
-
-{$R *.dfm}
 
 { TPasteAsExpert }
 

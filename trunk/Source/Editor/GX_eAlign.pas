@@ -90,23 +90,32 @@ end;
 
 procedure TAlignLinesExpert.Configure;
 var
-  Dlg: TfmAlignOptions;
+  frm: TfmAlignOptions;
+  Int: IInterface;
 begin
-  Dlg := TfmAlignOptions.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmAlignOptions.Create(nil);
   try
-    Dlg.edtWhitespace.Text := IntToStr(FWhitespace);
-    Dlg.mmoTokens.Lines.Assign(FTokens);
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.edtWhitespace.Text := IntToStr(FWhitespace);
+    frm.mmoTokens.Lines.Assign(FTokens);
 
-    if Dlg.ShowModal = mrOk then
+    if frm.ShowModal = mrOk then
     begin
-      FWhitespace := Min(StrToIntDef(Dlg.edtWhitespace.Text, 1), 100);
+      FWhitespace := Min(StrToIntDef(frm.edtWhitespace.Text, 1), 100);
       FWhitespace := Max(FWhitespace, 0);
-      FTokens.Assign(Dlg.mmoTokens.Lines);
+      FTokens.Assign(frm.mmoTokens.Lines);
 
       SaveSettings;
     end;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 
@@ -273,19 +282,28 @@ end;
 
 function TAlignLinesExpert.QueryUserForAlignToken(var Token: string; var Mode: TGXAlignMode): Boolean;
 var
-  Dialog: TfmAlign;
+  frm: TfmAlign;
+  Int: IInterface;
 begin
   Result := False;
   Mode := gamRightmost;
 
-  Dialog := TfmAlign.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmAlign.Create(nil);
   try
-    LoadConfiguration(Dialog);
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    LoadConfiguration(frm);
 
-    if Dialog.ShowModal = mrOk then
+    if frm.ShowModal = mrOk then
     begin
-      Token := Dialog.lstTokens.Items[Dialog.lstTokens.ItemIndex];
-      if Dialog.cbxMode.ItemIndex > 0 then
+      Token := frm.lstTokens.Items[frm.lstTokens.ItemIndex];
+      if frm.cbxMode.ItemIndex > 0 then
         Mode := gamFirstToken;
       FLastToken := Token;
       FLastMode := Mode;
@@ -293,7 +311,7 @@ begin
       Result := True;
     end;
   finally
-    FreeAndNil(Dialog);
+    FreeAndNil(frm);
   end;
 end;
 

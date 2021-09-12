@@ -18,34 +18,6 @@ uses
   GX_BaseForm;
 
 type
-  ///<summary>
-  /// This editor expert removes lines from the current editor that consist only
-  /// of the configured text, optionally padded with spaces, or alternatively those
-  /// which match a set of regular expressions.
-  /// e.g. those pesky comments the IDE adds automatically
-  ///    TForm1 = class(TForm)
-  ///    private
-  ///    { Private declarations }
-  ///  public
-  ///    { Public declarations }
-  ///  end;
-  TRemoveMatchingLinesExpert = class(TEditorExpert)
-  private
-    FMatches: TStringList;
-    FRegEx: Boolean;
-  public
-    constructor Create; override;
-    // optional if HasConfigOptions returns false
-    procedure Configure; override;
-    procedure Execute(Sender: TObject); override;
-    function GetDisplayName: string; override;
-    // optional, but recommended
-    function GetHelpString: string; override;
-    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
-    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
-  end;
-
-type
   TfmRemoveMatchingLinesExpertConfig = class(TfmBaseForm)
     m_Lines: TMemo;
     b_Ok: TButton;
@@ -77,6 +49,34 @@ uses
   u_dzVclUtils,
   GX_OtaUtils,
   GX_StringList;
+
+type
+  ///<summary>
+  /// This editor expert removes lines from the current editor that consist only
+  /// of the configured text, optionally padded with spaces, or alternatively those
+  /// which match a set of regular expressions.
+  /// e.g. those pesky comments the IDE adds automatically
+  ///    TForm1 = class(TForm)
+  ///    private
+  ///    { Private declarations }
+  ///  public
+  ///    { Public declarations }
+  ///  end;
+  TRemoveMatchingLinesExpert = class(TEditorExpert)
+  private
+    FMatches: TStringList;
+    FRegEx: Boolean;
+  public
+    constructor Create; override;
+    // optional if HasConfigOptions returns false
+    procedure Configure; override;
+    procedure Execute(Sender: TObject); override;
+    function GetDisplayName: string; override;
+    // optional, but recommended
+    function GetHelpString: string; override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
+  end;
 
 { TRemoveMatchingLinesExpert }
 
@@ -311,9 +311,18 @@ class function TfmRemoveMatchingLinesExpertConfig.Execute(_Owner: TComponent; _M
   var _RegEx: Boolean): Boolean;
 var
   frm: TfmRemoveMatchingLinesExpertConfig;
+  Int: IInterface;
 begin
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
   frm := TfmRemoveMatchingLinesExpertConfig.Create(nil);
   try
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
     frm.SetData(_Matches, _RegEx);
     Result := (frm.ShowModal = mrOk);
     if Result then begin

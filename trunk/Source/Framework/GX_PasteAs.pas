@@ -3,7 +3,7 @@ unit GX_PasteAs;
 interface
 
 uses
-  Classes, GX_ConfigurationInfo, GX_EditorExpert;
+  Windows, SysUtils, Classes, GX_ConfigurationInfo, GX_EditorExpert;
 
 type
   TPasteAsType = (paStringArray, paAdd, paSLineBreak,
@@ -37,8 +37,8 @@ var
 implementation
 
 uses
-  Windows, SysUtils, StrUtils, Controls, GX_OtaUtils, GX_ePasteAs,
-  GX_GenericUtils, u_dzStringUtils;
+  StrUtils, Controls, GX_OtaUtils, GX_ePasteAs,
+  GX_GenericUtils, u_dzStringUtils, u_dzVclUtils;
 
 const
   cPasteAsTypeText: array[TPasteAsType] of String = (
@@ -188,33 +188,42 @@ end;
 
 function TPasteAsHandler.ExecuteConfig(AConfigExpert: TEditorExpert; ForceShow: Boolean): Boolean;
 var
-  Dlg: TfmPasteAsConfig;
+  frm: TfmPasteAsConfig;
+  Int: IInterface;
 begin
   Result := True;
   if not FShowOptions and not ForceShow then
-    Exit;
+    Exit; //==>
 
-  Dlg := TfmPasteAsConfig.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmPasteAsConfig.Create(nil);
   try
-    GetTypeText(Dlg.cbPasteAsType.Items);
-    Dlg.cbPasteAsType.ItemIndex := Integer(PasteAsType);
-    Dlg.chkCreateQuotedStrings.Checked := CreateQuotedString;
-    Dlg.chkAddExtraSpaceAtTheEnd.Checked := AddExtraSpaceAtTheEnd;
-    Dlg.chkShowOptions.Checked := ShowOptions;
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    GetTypeText(frm.cbPasteAsType.Items);
+    frm.cbPasteAsType.ItemIndex := Integer(PasteAsType);
+    frm.chkCreateQuotedStrings.Checked := CreateQuotedString;
+    frm.chkAddExtraSpaceAtTheEnd.Checked := AddExtraSpaceAtTheEnd;
+    frm.chkShowOptions.Checked := ShowOptions;
 
-    Result := Dlg.ShowModal = mrOk;
+    Result := frm.ShowModal = mrOk;
     if Result then
     begin
-      PasteAsType := TPasteAsType(Dlg.cbPasteAsType.ItemIndex);
-      CreateQuotedString := Dlg.chkCreateQuotedStrings.Checked;
-      AddExtraSpaceAtTheEnd := Dlg.chkAddExtraSpaceAtTheEnd.Checked;
-      ShowOptions := Dlg.chkShowOptions.Checked;
+      PasteAsType := TPasteAsType(frm.cbPasteAsType.ItemIndex);
+      CreateQuotedString := frm.chkCreateQuotedStrings.Checked;
+      AddExtraSpaceAtTheEnd := frm.chkAddExtraSpaceAtTheEnd.Checked;
+      ShowOptions := frm.chkShowOptions.Checked;
 
       if Assigned(AConfigExpert) then
         AConfigExpert.SaveSettings;
     end;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 
