@@ -441,19 +441,28 @@ end;
 
 procedure TExpertManagerExpert.Execute;
 var
-  Dlg: TfmExpertManager;
+  frm: TfmExpertManager;
+  Int: IInterface;
 begin
-  Dlg := TfmExpertManager.CreateWithManager(nil, Self);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmExpertManager.CreateWithManager(nil, Self);
   try
-    SetFormIcon(Dlg);
-    if Dlg.lvExperts.Items.Count > 0 then
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    SetFormIcon(frm);
+    if frm.lvExperts.Items.Count > 0 then
     begin
-      Dlg.lvExperts.Selected := Dlg.lvExperts.Items[0];
-      Dlg.lvExperts.ItemFocused := Dlg.lvExperts.Items[0];
+      frm.lvExperts.Selected := frm.lvExperts.Items[0];
+      frm.lvExperts.ItemFocused := frm.lvExperts.Items[0];
     end;
-    Dlg.ShowModal;
+    frm.ShowModal;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
   IncCallCount;
 end;

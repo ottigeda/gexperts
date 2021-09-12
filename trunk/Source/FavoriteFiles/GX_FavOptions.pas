@@ -64,9 +64,18 @@ class function TfmFavOptions.Execute(_Owner: TWinControl; var _FolderDelete, _Ex
   var _FileFilter: string): Boolean;
 var
   frm: TfmFavOptions;
+  Int: IInterface;
 begin
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
   frm := TfmFavOptions.Create(nil);
   try
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
     frm.SetData(_FolderDelete, _ExpandAll, _ExecHide, _ShowPreview, _InsertFavMenu, _FileFilter);
     Result := (frm.ShowModal = mrOk);
     if Result then begin

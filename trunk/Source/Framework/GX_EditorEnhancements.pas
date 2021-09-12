@@ -80,7 +80,7 @@ uses
   {$IFOPT D+} GX_DbugIntf, GX_ActionBroker, {$ENDIF}
   SysUtils, ExtCtrls, ComCtrls, Forms,
   GX_GenericUtils, GX_OtaUtils, GX_Configure, GX_Toolbar, GX_ToolbarConfig,
-  GX_ToolBarDropDown, GX_GxUtils, GX_IdeUtils;
+  GX_ToolBarDropDown, GX_GxUtils, GX_IdeUtils, u_dzVclUtils;
 
 const
   ToolBarActionsKey = 'EditorEnhancements' +PathDelim+ 'ToolBarActions';
@@ -473,16 +473,25 @@ end;
 
 function TEditorEnhancements.ShowToolBarConfigurationDialog: TModalResult;
 var
-  Dialog: TfmToolbarConfig;
+  frm: TfmToolbarConfig;
+  Int: IInterface;
 begin
-  Dialog := TfmToolbarConfig.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmToolbarConfig.Create(nil);
   try
-    Dialog.ToolBarActions := FToolBarActionsList;
-    Result := Dialog.ShowModal;
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.ToolBarActions := FToolBarActionsList;
+    Result := frm.ShowModal;
     if Result = mrOk then
-      FToolBarActionsList.Assign(Dialog.ToolBarActions);
+      FToolBarActionsList.Assign(frm.ToolBarActions);
   finally
-    FreeAndNil(Dialog);
+    FreeAndNil(frm);
   end;
 
   if Result = mrOk then

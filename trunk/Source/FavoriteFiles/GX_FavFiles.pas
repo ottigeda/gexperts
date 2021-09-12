@@ -756,65 +756,81 @@ end;
 
 procedure TfmFavFiles.EditFolder;
 var
-  Dlg: TfmFavFolderProperties;
+  frm: TfmFavFolderProperties;
   Folder: TGXFolder;
+  Int: IInterface;
 begin
   if tvFolders.Selected = nil then
     Exit;
 
   Folder := GetFolder(tvFolders.Selected);
-  Dlg := TfmFavFolderProperties.Create(nil);
+
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmFavFolderProperties.Create(nil);
   try
-    Dlg.FavoriteFilesForm := Self;
-    Dlg.edtFolderName.Text := Folder.FolderName;
-    Dlg.cbxFolderType.ItemIndex := Ord(Folder.FolderType);
-    if Dlg.ShowModal = mrOk then
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.FavoriteFilesForm := Self;
+    frm.edtFolderName.Text := Folder.FolderName;
+    frm.cbxFolderType.ItemIndex := Ord(Folder.FolderType);
+    if frm.ShowModal = mrOk then
     begin
       FModified := True;
-      Folder.FolderName := Dlg.edtFolderName.Text;
-      Folder.FolderType := TFolderType(Dlg.cbxFolderType.ItemIndex);
+      Folder.FolderName := frm.edtFolderName.Text;
+      Folder.FolderType := TFolderType(frm.cbxFolderType.ItemIndex);
       tvFolders.Selected.Text := Folder.FolderName;
       tvFolders.Selected.ImageIndex := Ord(Folder.FolderType) * 2;
       tvFolders.Selected.SelectedIndex := (Ord(Folder.FolderType) * 2) + 1;
     end;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 
 procedure TfmFavFiles.EditFile;
 var
   mFile: TGXFile;
-  Dlg: TfmFavFileProp;
+  frm: TfmFavFileProp;
+  Int: IInterface;
 begin
   mFile := GetFile(ListView.Selected);
   if mFile = nil then
     Exit;
 
-  Dlg := TfmFavFileProp.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmFavFileProp.Create(nil);
   try
-    with Dlg do
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.FavoriteFilesForm := Self;
+    frm.edtFilename.Text := mFile.FileName;
+    frm.edtName.Text := mFile.DName;
+    frm.edtDescription.Text := mFile.Description;
+    frm.cbxExecuteType.ItemIndex := Ord(mFile.ExecType);
+    frm.edtExecuteUsing.Text := mFile.ExecProg;
+    AssignIconImage(frm.imgFileIcon, MakeFileNameAbsolute(mFile.FileName));
+    if frm.ShowModal = mrOk then
     begin
-      FavoriteFilesForm := Self;
-      edtFilename.Text := mFile.FileName;
-      edtName.Text := mFile.DName;
-      edtDescription.Text := mFile.Description;
-      cbxExecuteType.ItemIndex := Ord(mFile.ExecType);
-      edtExecuteUsing.Text := mFile.ExecProg;
-      AssignIconImage(imgFileIcon, MakeFileNameAbsolute(mFile.FileName));
-      if ShowModal = mrOk then
-      begin
-        FModified := True;
-        mFile.FileName := edtFilename.Text;
-        mFile.Description := edtDescription.Text;
-        mFile.DName := edtName.Text;
-        mFile.ExecType := TExecType(cbxExecuteType.ItemIndex);
-        mFile.ExecProg := edtExecuteUsing.Text;
-        FileToListItem(mFile, ListView.Selected);
-      end;
+      FModified := True;
+      mFile.FileName := frm.edtFilename.Text;
+      mFile.Description := frm.edtDescription.Text;
+      mFile.DName := frm.edtName.Text;
+      mFile.ExecType := TExecType(frm.cbxExecuteType.ItemIndex);
+      mFile.ExecProg := frm.edtExecuteUsing.Text;
+      FileToListItem(mFile, ListView.Selected);
     end;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 
@@ -1411,15 +1427,26 @@ begin
 end;
 
 procedure TfmFavFiles.CreateNewFolder;
+var
+  frm: TfmFavNewFolder;
+  Int: IInterface;
 begin
-  with TfmFavNewFolder.Create(nil) do
-    try
-      FavoriteFilesForm := Self;
-      if ShowModal = mrOk then
-        tvFolders.Selected := AddFolder(edtFolderName.Text, TFolderType(cbxFolderType.ItemIndex));
-    finally
-      Free;
-    end;
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmFavNewFolder.Create(nil);
+  try
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.FavoriteFilesForm := Self;
+    if frm.ShowModal = mrOk then
+      tvFolders.Selected := AddFolder(frm.edtFolderName.Text, TFolderType(frm.cbxFolderType.ItemIndex));
+  finally
+    FreeAndNil(frm);
+  end;
 end;
 
 procedure TfmFavFiles.CreateNewFile;
