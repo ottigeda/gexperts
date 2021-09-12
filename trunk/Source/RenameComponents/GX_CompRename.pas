@@ -793,7 +793,7 @@ var
   UsePropValue: Boolean;
   SearchName: WideString;
   Reason: WideString;
-  Dialog: TfmCompRename;
+  frm: TfmCompRename;
   ShowDialog: Boolean;
   OtherProps: TStringList;
   Index: Integer;
@@ -846,12 +846,12 @@ begin
   begin
     if ShowDialog or not UseRules then
     begin
-      Dialog := TfmCompRename.Create(nil);
+      frm := TfmCompRename.Create(nil);
       try
-        Dialog.OnIsValidComponentName := IsValidComponentName;
-        Dialog.OldName := CompName;
+        frm.OnIsValidComponentName := IsValidComponentName;
+        frm.OldName := CompName;
 
-        Dialog.SetComponent(Component);
+        frm.SetComponent(Component);
 
         Index := RenameRuleList.IndexOfName(Component.GetComponentType);
         if Index <> -1 then
@@ -880,13 +880,13 @@ begin
                   end;
                 end;
                 if UsePropValue then
-                  Dialog.AddComponentProperty(PropName, PropValue)
+                  frm.AddComponentProperty(PropName, PropValue)
                 else
-                  Dialog.AddComponentProperty(PropName,
+                  frm.AddComponentProperty(PropName,
                     GxOtaGetComponentPropertyAsString(Component, PropName, True));
               end
               else
-                Dialog.AddComponentProperty(PropName, SPropertyNotFound);
+                frm.AddComponentProperty(PropName, SPropertyNotFound);
             end;
           end
         end
@@ -895,26 +895,26 @@ begin
 
         if UseRules then
         begin
-          Dialog.NewName := RenameRule;
+          frm.NewName := RenameRule;
           if Pipe1Pos > 0 then
-            Dialog.SetRuleSelection(Pipe1Pos - 1, Pipe2Pos - 1)
+            frm.SetRuleSelection(Pipe1Pos - 1, Pipe2Pos - 1)
           else
-            Dialog.SetRuleSelection(Length(RenameRule), Length(RenameRule));
+            frm.SetRuleSelection(Length(RenameRule), Length(RenameRule));
         end
         else
         begin
-          Dialog.NewName := CompName;
-          Dialog.SetRuleSelection(0, Length(CompName));
+          frm.NewName := CompName;
+          frm.SetRuleSelection(0, Length(CompName));
         end;
 
-        Result := Dialog.Execute;
+        Result := frm.Execute;
         if Result = mrOk then
         begin
-          CompName := Dialog.NewName;
+          CompName := frm.NewName;
           GxOtaSetComponentName(Component, CompName);
 
-          Dialog.GetAlign(Component);
-          Dialog.GetAnchors(Component);
+          frm.GetAlign(Component);
+          frm.GetAnchors(Component);
 
           if Assigned(OtherProps) then
           begin
@@ -925,12 +925,12 @@ begin
                 PropName := OtherProps[i];
               if GxOtaPropertyExists(Component, PropName) then
                 GxOtaSetComponentPropertyAsString(Component, PropName,
-                  Dialog.GetComponentProperty(i));
+                  frm.GetComponentProperty(i));
             end;
           end;
         end;
       finally
-        FreeAndNil(Dialog);
+        FreeAndNil(frm);
       end;
     end
     else

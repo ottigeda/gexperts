@@ -1272,73 +1272,83 @@ var
   end;
 
 var
-  Dlg: TfmToDoOptions;
+  frm: TfmToDoOptions;
   OldScanType: TToDoScanType;
+  Int: IInterface;
 begin
   TodoListOptionsUnchanged := True;
 
-  Dlg := TfmToDoOptions.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  Int := TemporarilyDisableHighDpi;
+  frm := TfmToDoOptions.Create(nil);
   try
+    frm.TemporarilyDisableHighDpiInterface := Int;
+    Int := nil;
+
     FTokenList.Sort;
-    Dlg.lstTokens.Items.Assign(FTokenList);
-    Dlg.cbShowTokens.Checked := FShowTokens;
-    Dlg.cbAddMessage.Checked := FAddMessage;
-    Dlg.cbHideOnGoto.Checked := FHideOnGoto;
-    Dlg.cboDirectories.Items.Assign(FDirectoryHistoryList);
+    frm.lstTokens.Items.Assign(FTokenList);
+    frm.cbShowTokens.Checked := FShowTokens;
+    frm.cbAddMessage.Checked := FAddMessage;
+    frm.cbHideOnGoto.Checked := FHideOnGoto;
+    frm.cboDirectories.Items.Assign(FDirectoryHistoryList);
     case FScanType of
       tstProject:
-        Dlg.radScanProj.Checked := True;
+        frm.radScanProj.Checked := True;
       tstProjectGroup:
-        Dlg.radScanProjGroup.Checked := True;
+        frm.radScanProjGroup.Checked := True;
       tstOpenFiles:
-        Dlg.radScanOpen.Checked := True;
+        frm.radScanOpen.Checked := True;
       tstDirectory:
-        Dlg.radScanDir.Checked := True;
+        frm.radScanDir.Checked := True;
     end;
-    Dlg.chkInclude.Checked := FRecurseDirScan;
-    Dlg.cboDirectories.Text := FDirsToScan;
-    Dlg.btnFont.Font := FFont;
+    frm.chkInclude.Checked := FRecurseDirScan;
+    frm.cboDirectories.Text := FDirsToScan;
+    frm.btnFont.Font := FFont;
 
-    if Dlg.ShowModal = mrOk then
+    if frm.ShowModal = mrOk then
     begin
       // Add directory to FDirectoryHistoryList
-      AddMRUString(Dlg.cboDirectories.Text, FDirectoryHistoryList, True);
+      AddMRUString(frm.cboDirectories.Text, FDirectoryHistoryList, True);
 
-      if HasChanged(FTokenList.Equals(Dlg.lstTokens.Items)) then
-        FTokenList.Assign(Dlg.lstTokens.Items);
-      if HasChanged(FShowTokens = Dlg.cbShowTokens.Checked) then
-        FShowTokens := Dlg.cbShowTokens.Checked;
-      if HasChanged(FAddMessage = Dlg.cbAddMessage.Checked) then
-        FAddMessage := Dlg.cbAddMessage.Checked;
-      if HasChanged(FHideOnGoto = Dlg.cbHideOnGoto.Checked) then
-        FHideOnGoto := Dlg.cbHideOnGoto.Checked;
+      if HasChanged(FTokenList.Equals(frm.lstTokens.Items)) then
+        FTokenList.Assign(frm.lstTokens.Items);
+      if HasChanged(FShowTokens = frm.cbShowTokens.Checked) then
+        FShowTokens := frm.cbShowTokens.Checked;
+      if HasChanged(FAddMessage = frm.cbAddMessage.Checked) then
+        FAddMessage := frm.cbAddMessage.Checked;
+      if HasChanged(FHideOnGoto = frm.cbHideOnGoto.Checked) then
+        FHideOnGoto := frm.cbHideOnGoto.Checked;
 
       OldScanType := FScanType;
-      if Dlg.radScanProj.Checked then
+      if frm.radScanProj.Checked then
         FScanType := tstProject
-      else if Dlg.radScanProjGroup.Checked then
+      else if frm.radScanProjGroup.Checked then
         FScanType := tstProjectGroup
       else
-      if Dlg.radScanOpen.Checked then
+      if frm.radScanOpen.Checked then
         FScanType := tstOpenFiles
       else
-      if Dlg.radScanDir.Checked then
+      if frm.radScanDir.Checked then
         FScanType := tstDirectory;
       HasChanged(FScanType = OldScanType);
 
-      if HasChanged(FRecurseDirScan = Dlg.chkInclude.Checked) then
-        FRecurseDirScan := Dlg.chkInclude.Checked;
-      if HasChanged(SameFileName(FDirsToScan, Dlg.cboDirectories.Text)) then
-        FDirsToScan := Dlg.cboDirectories.Text;
+      if HasChanged(FRecurseDirScan = frm.chkInclude.Checked) then
+        FRecurseDirScan := frm.chkInclude.Checked;
+      if HasChanged(SameFileName(FDirsToScan, frm.cboDirectories.Text)) then
+        FDirsToScan := frm.cboDirectories.Text;
 
-      FFont.Assign(Dlg.btnFont.Font);
+      FFont.Assign(frm.btnFont.Font);
       if Assigned(fmTodo) then
         fmTodo.lvTodo.Font := FFont;
 
       SaveSettings;
     end;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 
   if not TodoListOptionsUnchanged then

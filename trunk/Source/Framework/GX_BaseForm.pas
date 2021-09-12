@@ -25,7 +25,7 @@ type
     // by simply assigning NIL. If not explicitly done it's set to NIL automatically
     // in the destructor.
     TemporarilyDisableHighDpiInterface: IInterface;
-    class procedure Execute(_Owner: TComponent); overload; virtual;
+    class function Execute(_Owner: TComponent): Boolean; overload; virtual;
     constructor Create(AOwner: TComponent); override;
   end;
 
@@ -37,7 +37,7 @@ uses
   GX_GxUtils,
   u_dzVclUtils;
 
-class procedure TfmBaseForm.Execute(_Owner: TComponent);
+class function TfmBaseForm.Execute(_Owner: TComponent): Boolean;
 var
   frm: TfmBaseForm;
   Int: IInterface;
@@ -47,12 +47,12 @@ begin
   // call into the IDE before closing.
   // All this is only necessary for Delphi 11 and later.
   // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
+  Int := TemporarilyDisableHighDpi;
   frm := Self.Create(_Owner);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
+    frm.TemporarilyDisableHighDpiInterface := Int;
     Int := nil;
-    frm.ShowModal;
+    Result := (frm.ShowModal = mrOk);
   finally
     frm.Free;
   end;
@@ -65,4 +65,6 @@ begin
 end;
 
 end.
+
+
 

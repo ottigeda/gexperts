@@ -283,18 +283,27 @@ end;
 
 procedure TfmReplaceComp.ShowLogWin(const SourceClassName, DestClassName: string; LogEvents: TCompRepEventList);
 var
-  Dlg: TfmReplaceCompLog;
+  frm: TfmReplaceCompLog;
+  Int: IInterface;
 begin
   Assert(Assigned(ReplaceCompExpert));
 
   ReplaceCompExpert.PrepareConfigData;
 
-  Dlg := TfmReplaceCompLog.Create(nil, ReplaceCompExpert.FConfigData, SourceClassName, DestClassName, LogEvents);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  Int := TemporarilyDisableHighDpi;
+  frm := TfmReplaceCompLog.Create(nil, ReplaceCompExpert.FConfigData, SourceClassName, DestClassName, LogEvents);
   try
-    Dlg.Icon := Self.Icon;
-    Dlg.ShowModal;
+    frm.TemporarilyDisableHighDpiInterface := Int;
+    Int := nil;
+    frm.Icon := Self.Icon;
+    frm.ShowModal;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 
@@ -539,13 +548,9 @@ begin
   // Replace components requires IOTAComponent interfaces and access to native TPersistent objects
   if GxOtaActiveDesignerIsNFM then
     raise Exception.Create(NoSupportError);
-  with TfmReplaceComp.Create(nil) do
-  try
-    if ShowModal = mrOk then
-      IncCallCount;
-  finally
-    Free;
-  end;
+
+  if TfmReplaceComp.Execute(nil) then
+    IncCallCount;
 end;
 
 function TReplaceCompExpert.GetActionCaption: string;

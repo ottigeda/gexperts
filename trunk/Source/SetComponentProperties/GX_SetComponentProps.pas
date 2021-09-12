@@ -55,8 +55,9 @@ implementation
 
 uses
   SysUtils, TypInfo,
+  u_dzStringUtils, u_dzVclUtils,
   GX_Experts, Gx_GenericUtils, GX_ConfigurationInfo,
-  GX_SetComponentPropsConfig, GX_SetComponentPropsStatus, u_dzStringUtils;
+  GX_SetComponentPropsConfig, GX_SetComponentPropsStatus;
 
 type
   TSetComponentPropertiesExpert = class(TGX_Expert)
@@ -109,16 +110,25 @@ end;
 
 // Action taken when user clicks the Configure button on the Experts tab of menu item GExperts/GExperts Configuration...
 procedure TSetComponentPropertiesExpert.Configure;
+var
+  frm: TfmSetComponentPropsConfig;
+  Int: IInterface;
 begin
-  with TfmSetComponentPropsConfig.Create(nil) do
-  begin
-    try
-      SetSettings;
-      if ShowModal = mrOK then
-        GetSettings;
-    finally
-      Release;
-    end;
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  Int := TemporarilyDisableHighDpi;
+  frm := TfmSetComponentPropsConfig.Create(nil);
+  try
+    frm.TemporarilyDisableHighDpiInterface := Int;
+    Int := nil;
+    frm.SetSettings;
+    if frm.ShowModal = mrOk then
+      frm.GetSettings;
+  finally
+    FreeAndnil(frm);
   end;
 end;
 

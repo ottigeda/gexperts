@@ -694,16 +694,27 @@ end;
 procedure TProcedureListExpert.Configure;
 var
   lclOptions: TProcedureListOptions;
+  frm: TfmProcedureListOptions;
+  Int: IInterface;
 begin
+  frm := nil;
   lclOptions := TProcedureListOptions.Create;
-  lclOptions.LoadSettings(GetSettings);
-  with TfmProcedureListOptions.Create(nil) do
   try
-    Options := lclOptions;
-    if ShowModal = mrOK then
+    lclOptions.LoadSettings(GetSettings);
+    // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+    // High DPI awareness. Works only for forms that are shown modally and don't
+    // call into the IDE before closing.
+    // All this is only necessary for Delphi 11 and later.
+    // It does nothing for older Delphi versions.
+    Int := TemporarilyDisableHighDpi;
+    frm := TfmProcedureListOptions.Create(nil);
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
+    frm.Options := lclOptions;
+    if frm.ShowModal = mrOK then
       lclOptions.SaveSettings(GetSettings);
   finally
-    Free;
+    FreeAndNil(frm);
     FreeAndNil(lclOptions);
   end;
 end;
@@ -717,22 +728,33 @@ begin
 end;
 
 procedure TfmProcedureList.actOptionsExecute(Sender: TObject);
+var
+  frm: TfmProcedureListOptions;
+  Int: IInterface;
 begin
-  with TfmProcedureListOptions.Create(nil) do
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  int := TemporarilyDisableHighDpi;
+  frm := TfmProcedureListOptions.Create(nil);
   try
+    frm.TemporarilyDisableHighDpiInterface := int;
+    Int := nil;
     // These are adjustable in window, so update settings
     FOptions.DialogFont.Assign(lvProcs.Font);
     FOptions.CodeViewVisible := pnlFunctionBody.Visible;
 
     // Assign and show modal dialog, then adjust options if necessary
-    Options := FOptions;
-    if ShowModal = mrOK then
+    frm.Options := FOptions;
+    if frm.ShowModal = mrOK then
     begin
       ApplyOptions(False);
       FillListBox;
     end;
   finally
-    Free;
+    frm.Free;
   end;
 end;
 

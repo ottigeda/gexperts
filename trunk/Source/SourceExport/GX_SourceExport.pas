@@ -376,16 +376,25 @@ end;
 
 procedure TSourceExportExpert.Execute(Sender: TObject);
 var
-  Dlg: TfmSourceExport;
+  frm: TfmSourceExport;
+  Int: IInterface;
 begin
-  Dlg := TfmSourceExport.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  Int := TemporarilyDisableHighDpi;
+  frm := TfmSourceExport.Create(nil);
   try
-    SetFormIcon(Dlg);
-    Dlg.ShowModal;
-    if Dlg.HasBeenUsed then
+    frm.TemporarilyDisableHighDpiInterface := Int;
+    Int := nil;
+    SetFormIcon(frm);
+    frm.ShowModal;
+    if frm.HasBeenUsed then
       IncCallCount;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 
@@ -415,31 +424,40 @@ end;
 
 procedure TSourceExportExpert.Configure;
 var
-  Dlg: TfmSourceExportOptions;
+  frm: TfmSourceExportOptions;
   HighlighterRegKey: string;
   NewCopyFormat: TGXCopyFormat;
+  Int: IInterface;
 begin
-  Dlg := TfmSourceExportOptions.Create(nil);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  Int := TemporarilyDisableHighDpi;
+  frm := TfmSourceExportOptions.Create(nil);
   try
+    frm.TemporarilyDisableHighDpiInterface := Int;
+    Int := nil;
     HighlighterRegKey := ConfigInfo.GExpertsIdeRootRegistryKey + HighlighterDefaultRegKey
-        + Dlg.SynSampleEditor.Highlighter.LanguageName;
+        + frm.SynSampleEditor.Highlighter.LanguageName;
 
-    Dlg.rbxCopySettings.ItemIndex := Ord(FDefaultCopyFormat);
-    Dlg.SynSampleEditor.Highlighter.LoadFromRegistry(HKEY_CURRENT_USER, HighlighterRegKey);
-    Dlg.BackgroundColor := FBackgroundColor;
-    if Dlg.ShowModal = mrOk then
+    frm.rbxCopySettings.ItemIndex := Ord(FDefaultCopyFormat);
+    frm.SynSampleEditor.Highlighter.LoadFromRegistry(HKEY_CURRENT_USER, HighlighterRegKey);
+    frm.BackgroundColor := FBackgroundColor;
+    if frm.ShowModal = mrOk then
     begin
-      Dlg.SynSampleEditor.Highlighter.SaveToRegistry(HKEY_CURRENT_USER, HighlighterRegKey);
+      frm.SynSampleEditor.Highlighter.SaveToRegistry(HKEY_CURRENT_USER, HighlighterRegKey);
 
-      NewCopyFormat := TGXCopyFormat(Dlg.rbxCopySettings.ItemIndex);
+      NewCopyFormat := TGXCopyFormat(frm.rbxCopySettings.ItemIndex);
       Assert(NewCopyFormat in [Low(TGXCopyFormat)..High(TGXCopyFormat)]);
       FDefaultCopyFormat := NewCopyFormat;
-      FBackgroundColor := Dlg.BackgroundColor;
+      FBackgroundColor := frm.BackgroundColor;
 
       SaveSettings;
     end;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 

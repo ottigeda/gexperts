@@ -9,7 +9,7 @@ interface
 
 uses
   Classes, Controls, Forms, ActnList, Menus, StdCtrls, ComCtrls, ExtCtrls,
-  GX_BaseForm;
+  GX_BaseForm, System.Actions;
 
 type
   TfmSetComponentPropsConfig = class(TfmBaseForm)

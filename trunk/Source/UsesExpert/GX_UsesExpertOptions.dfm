@@ -1,4 +1,4 @@
-object fmUsesExpertOptions: TfmUsesExpertOptions
+inherited fmUsesExpertOptions: TfmUsesExpertOptions
   Left = 338
   Top = 241
   BorderIcons = [biSystemMenu]
@@ -6,18 +6,15 @@ object fmUsesExpertOptions: TfmUsesExpertOptions
   Caption = 'Uses Clause Manager Options'
   ClientHeight = 297
   ClientWidth = 329
-  Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
+  ParentFont = False
   Font.Height = -11
   Font.Name = 'Tahoma'
-  Font.Style = []
-  OldCreateOrder = False
-  Position = poScreenCenter
+  ExplicitWidth = 345
+  ExplicitHeight = 336
+  PixelsPerInch = 96
   DesignSize = (
     329
     297)
-  PixelsPerInch = 96
   TextHeight = 13
   object chkReadMap: TCheckBox
     Left = 8

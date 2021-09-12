@@ -73,8 +73,7 @@ resourcestring
 
 { TfmReplaceCompMapGrpList }
 
-constructor TfmReplaceCompMapGrpList.Create(Owner: TComponent;
-  ConfigData: TReplaceCompData);
+constructor TfmReplaceCompMapGrpList.Create(Owner: TComponent; ConfigData: TReplaceCompData);
 begin
   inherited Create(Owner);
   FConfigData := ConfigData;

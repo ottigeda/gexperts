@@ -367,18 +367,27 @@ end;
 
 procedure TfmReplaceCompMapList.btnOpenGroupListClick(Sender: TObject);
 var
-  Dlg: TfmReplaceCompMapGrpList;
+  frm: TfmReplaceCompMapGrpList;
+  Int: IInterface;
 begin
-  Dlg := TfmReplaceCompMapGrpList.Create(nil, FConfigData);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  Int := TemporarilyDisableHighDpi;
+  frm := TfmReplaceCompMapGrpList.Create(nil, FConfigData);
   try
-    Dlg.Icon := Self.Icon;
-    if Dlg.ShowModal = mrOK then
+    frm.TemporarilyDisableHighDpiInterface := Int;
+    Int := nil;
+    frm.Icon := Self.Icon;
+    if frm.ShowModal = mrOK then
       FConfigData.SaveData
     else
       FConfigData.ReloadData;
     RefreshAll;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 
@@ -397,19 +406,28 @@ end;
 
 function TfmReplaceCompMapList.ExecDets(Item: TCompRepMapItem; DataAction: TDataAction): Boolean;
 var
-  Dlg: TfmReplaceCompMapDets;
+  frm: TfmReplaceCompMapDets;
+  Int: IInterface;
 begin
-  Dlg := TfmReplaceCompMapDets.Create(nil, FConfigData, Item, DataAction);
+  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
+  // High DPI awareness. Works only for forms that are shown modally and don't
+  // call into the IDE before closing.
+  // All this is only necessary for Delphi 11 and later.
+  // It does nothing for older Delphi versions.
+  Int := TemporarilyDisableHighDpi;
+  frm := TfmReplaceCompMapDets.Create(nil, FConfigData, Item, DataAction);
   try
-    Dlg.Icon := Self.Icon;
-    Result := Dlg.Execute;
+    frm.TemporarilyDisableHighDpiInterface := Int;
+    Int := nil;
+    frm.Icon := Self.Icon;
+    Result := frm.Execute;
     if Result then
     begin
       FConfigData.SaveData;
       RefreshAll;
     end;  
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
 end;
 
