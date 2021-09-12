@@ -7,16 +7,16 @@ uses
   Windows,
   Messages,
   SysUtils,
-  Variants,
   Classes,
   Graphics,
   Controls,
   Forms,
   Dialogs,
-  StdCtrls;
+  StdCtrls,
+  GX_BaseForm;
 
 type
-  TfmIdxPackageRenameDlg = class(TForm)
+  TfmIdxPackageRenameDlg = class(TfmBaseForm)
     l_PackageFn: TLabel;
     l_Description: TLabel;
     ed_Description: TEdit;
@@ -50,10 +50,10 @@ begin
   // call into the IDE before closing.
   // All this is only necessary for Delphi 11 and later.
   // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
+  Int := TemporarilyDisableHighDpi;
   frm := TfmIdxPackageRenameDlg.Create(_Owner);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
+    frm.TemporarilyDisableHighDpiInterface := Int;
     Int := nil;
     frm.SetData(_fn, _Description);
     Result := (frm.ShowModal = mrok);
@@ -83,3 +83,4 @@ begin
 end;
 
 end.
+

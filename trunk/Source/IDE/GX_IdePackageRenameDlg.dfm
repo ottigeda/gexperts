@@ -1,4 +1,4 @@
-object fmIdxPackageRenameDlg: TfmIdxPackageRenameDlg
+inherited fmIdxPackageRenameDlg: TfmIdxPackageRenameDlg
   Left = 333
   Top = 237
   ActiveControl = ed_Description
