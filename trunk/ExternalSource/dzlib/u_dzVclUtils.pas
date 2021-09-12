@@ -13,8 +13,8 @@ unit u_dzVclUtils;
 interface
 
 uses
-  Classes,
   Windows,
+  Classes,
   SysUtils,
   Graphics,
   Forms,
@@ -489,6 +489,12 @@ function TEdit_ActivateAutoComplete(_ed: TCustomEdit; _Source: TAutoCompleteSour
 
 function TEdit_AutoComplete(_ed: TCustomEdit; _Source: TAutoCompleteSourceEnumSet = [acsFileSystem];
   _Type: TAutoCompleteTypeEnumSet = []): TObject; deprecated; // use TEdit_ActivateAutoComplete instead
+
+///<summary>
+/// Temporarily changes the current thread's DPI awarenes context.
+/// @returns an IInterface that, when it goes out of scope, resets the DpiAwarenessContext to
+///          its previous value. </summar>
+function TemporarilyDisableHighDpi: IInterface;
 
 ///<summary>
 /// Enables positioning the form with the given modifier keys + the numeric keypad (regardless of
@@ -6716,6 +6722,40 @@ end;
 function TForm_ActivatePositioning(_Form: TForm; _Modifier: TShiftState = [ssCtrl, ssAlt]): TObject;
 begin
   Result := TFormPositioningActivator.Create(_Form, _Modifier);
+end;
+
+type
+  THighDpiContextHelper = class(TInterfacedObject)
+  private
+{$if declared(DPI_AWARENESS_CONTEXT)}
+  FPreviousDpiContext: DPI_AWARENESS_CONTEXT;
+{$ifend}
+  public
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+{ THighDpiContextHelper }
+
+constructor THighDpiContextHelper.Create;
+begin
+  inherited Create;
+{$if declared(DPI_AWARENESS_CONTEXT)}
+  FPreviousDpiContext := SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
+{$ifend}
+end;
+
+destructor THighDpiContextHelper.Destroy;
+begin
+{$if declared(DPI_AWARENESS_CONTEXT)}
+  SetThreadDpiAwarenessContext(FPreviousDpiContext);
+{$ifend}
+  inherited;
+end;
+
+function TemporarilyDisableHighDpi: IInterface;
+begin
+  Result := THighDpiContextHelper.Create;
 end;
 
 { TTrackBarHelper }
