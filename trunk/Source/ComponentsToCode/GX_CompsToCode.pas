@@ -23,8 +23,6 @@ uses
   Classes, Controls, Forms, StdCtrls, ExtCtrls, ActnList, Buttons, GX_BaseForm;
 
 type
-  TComponentArray = array of TComponent;
-
   TBinProps = (bpSkip, bpComment, bpUncomment);
   TCToCLanguage = (lPascal, lCpp);
 
@@ -34,23 +32,6 @@ type
     UseDelphiWith: Boolean;
     CreateFreeCode: Boolean;
     Language: TCToCLanguage;
-  end;
-
-  TComponentsToCodeExpert = class(TGX_Expert)
-  protected
-    procedure UpdateAction(Action: TCustomAction); override;
-    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
-    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
-  private
-    FSettings: TCToCSettings;
-    function GetDesignerComps: TComponentArray;
-  public
-    constructor Create; override;
-    function GetActionCaption: string; override;
-    class function GetName: string; override;
-    procedure Configure; override;
-    procedure Execute(Sender: TObject); override;
-    function HasDesignerMenuItem: Boolean; override;
   end;
 
   TfmCompsToCode = class(TfmBaseForm)
@@ -93,9 +74,29 @@ uses
   u_dzStringUtils, u_dzVclUtils;
 
 type
+  TComponentArray = array of TComponent;
   TCCOptions = (ccBinaryRemove, ccBinaryComment, ccBinaryUncomment,
     ccIncludeObjectText, ccUseWith, ccUseFree);
   TCCOptionSet = set of TCCOptions;
+
+type
+  TComponentsToCodeExpert = class(TGX_Expert)
+  protected
+    procedure UpdateAction(Action: TCustomAction); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
+  private
+    FSettings: TCToCSettings;
+    function GetDesignerComps: TComponentArray;
+  public
+    constructor Create; override;
+    function GetActionCaption: string; override;
+    class function GetName: string; override;
+    procedure Configure; override;
+    procedure Execute(Sender: TObject); override;
+    function HasDesignerMenuItem: Boolean; override;
+  end;
+
 
   TComponentCreate = class(TObject)
   private
