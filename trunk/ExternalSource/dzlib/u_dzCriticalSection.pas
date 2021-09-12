@@ -126,7 +126,7 @@ class function TdzCriticalSection.NewInstance: TObject;
 // see
 // http://delphitools.info/2011/11/30/fixing-tcriticalsection/
 // for an explanation why this could speed up execution on multi core systems
-// NOTE: I can't see see any positive effect in my tests (see tests\SpinLockTest).
+// NOTE: I can't see any positive effect in my tests (see tests\SpinLockTest).
 //       On the contrary there seems to be a negative effect on some CPUs.
 //       It's probably not worth it.
 var
