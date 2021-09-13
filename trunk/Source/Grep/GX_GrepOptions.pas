@@ -85,18 +85,9 @@ class function TfmGrepOptions.Execute(var _UseCurrentIdent: Boolean;
   var _Editor, _Params: string): Boolean;
 var
   frm: TfmGrepOptions;
-  Int: IInterface;
 begin
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmGrepOptions.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.chkUseCurrentIdent.Checked := _UseCurrentIdent;
     frm.ed_ExternalEditor.Text := _Editor;
     if _Params = '' then

@@ -284,22 +284,13 @@ end;
 procedure TfmReplaceComp.ShowLogWin(const SourceClassName, DestClassName: string; LogEvents: TCompRepEventList);
 var
   frm: TfmReplaceCompLog;
-  Int: IInterface;
 begin
   Assert(Assigned(ReplaceCompExpert));
 
   ReplaceCompExpert.PrepareConfigData;
 
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  Int := TemporarilyDisableHighDpi;
   frm := TfmReplaceCompLog.Create(nil, ReplaceCompExpert.FConfigData, SourceClassName, DestClassName, LogEvents);
   try
-    frm.TemporarilyDisableHighDpiInterface := Int;
-    Int := nil;
     frm.Icon := Self.Icon;
     frm.ShowModal;
   finally

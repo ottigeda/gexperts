@@ -41,19 +41,10 @@ uses
 function GetMacroTemplate(var VMacroTemplate: TMacroTemplate): Boolean;
 var
   frm :TfmMacroTemplateEdit;
-  Int: IInterface;
 begin
   Result := False;
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmMacroTemplateEdit.Create(Application);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.edtName.Text := VMacroTemplate.Name;
     frm.edtDescription.Text := VMacroTemplate.Description;
     frm.edtShortCut.HotKey := VMacroTemplate.ShortCut;
@@ -75,19 +66,10 @@ end;
 function EditMacroObject(AMacroObject: TMacroObject): Boolean;
 var
   frm :TfmMacroTemplateEdit;
-  Int: IInterface;
 begin
   Result := False;
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmMacroTemplateEdit.Create(Application);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.Text := AMacroObject.Name;
     frm.Text := AMacroObject.Desc;
     frm.edtShortCut.HotKey := AMacroObject.ShortCut;

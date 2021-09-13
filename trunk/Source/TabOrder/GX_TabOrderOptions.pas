@@ -71,18 +71,9 @@ end;
 class function TfmTabOrderOptions.Execute(_Owner: TWinControl; var _AutoSort: TTabAutoSortEnum): Boolean;
 var
   frm: TfmTabOrderOptions;
-  Int: IInterface;
 begin
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  Int := TemporarilyDisableHighDpi;
   frm := TfmTabOrderOptions.Create(_Owner);
   try
-    frm.TemporarilyDisableHighDpiInterface := Int;
-    Int := nil;
     TForm_CenterOn(frm, _Owner);
     frm.SetData(_AutoSort);
     Result := (frm.ShowModal = mrOK);

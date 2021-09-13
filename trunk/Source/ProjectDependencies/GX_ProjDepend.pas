@@ -863,21 +863,12 @@ end;
 procedure TfmProjDepend.actViewIndirectUnitPropertiesExecute(Sender: TObject);
 var
   frm: TfmProjDependProp;
-  Int: IInterface;
 begin
   if lvIndirect.Selected = nil then
     Exit; //==>
 
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmProjDependProp.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.laFileName.Caption := lvIndirect.Selected.Caption;
     frm.lbxSource.Items.CommaText := lvIndirect.Selected.SubItems[0];
     frm.ShowModal;
@@ -931,18 +922,9 @@ end;
 procedure TfmProjDepend.actFileFilterExecute(Sender: TObject);
 var
   frm: TfmProjDependFilter;
-  Int: IInterface;
 begin
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmProjDependFilter.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.UnitList := FFilterList;
     if frm.ShowModal = mrOk then
     begin

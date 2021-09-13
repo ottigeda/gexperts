@@ -639,19 +639,10 @@ end;
 procedure TfmCodeLib.FindExecute(Sender: TObject);
 var
   frm: TfmCodeSearch;
-  Int: IInterface;
 begin
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  Int := TemporarilyDisableHighDpi;
   frm := TfmCodeSearch.Create(nil);
   try
     try
-      frm.TemporarilyDisableHighDpiInterface := Int;
-      Int := nil;
       if frm.ShowModal = mrOk then begin
         FSearch.Text := frm.edSearch.Text;
         FSearch.CaseSensitive := frm.cbCaseSensitive.Checked;
@@ -941,18 +932,9 @@ end;
 procedure TfmCodeLib.OptionsExecute(Sender: TObject);
 var
   frm: TfmCodeOptions;
-  Int: IInterface;
 begin
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmCodeOptions.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.edPath.Text := StoragePath;
     if Layout = clSide then
       frm.rbSide.Checked := True

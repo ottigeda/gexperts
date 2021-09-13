@@ -91,18 +91,9 @@ end;
 procedure TAlignLinesExpert.Configure;
 var
   frm: TfmAlignOptions;
-  Int: IInterface;
 begin
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmAlignOptions.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.edtWhitespace.Text := IntToStr(FWhitespace);
     frm.mmoTokens.Lines.Assign(FTokens);
 
@@ -283,21 +274,12 @@ end;
 function TAlignLinesExpert.QueryUserForAlignToken(var Token: string; var Mode: TGXAlignMode): Boolean;
 var
   frm: TfmAlign;
-  Int: IInterface;
 begin
   Result := False;
   Mode := gamRightmost;
 
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmAlign.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     LoadConfiguration(frm);
 
     if frm.ShowModal = mrOk then

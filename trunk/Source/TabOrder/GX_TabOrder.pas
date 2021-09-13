@@ -405,7 +405,6 @@ var
   i: Integer;
   ComponentData: TComponentData;
   FirstTabOrder: Integer;
-  Int: IInterface;
 
   procedure UseRootComponent;
   begin
@@ -445,16 +444,8 @@ begin
   else
     UseRootComponent;
 
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  Int := TemporarilyDisableHighDpi;
   TabOrderForm := TfmTabOrder.Create(nil);
   try
-    TabOrderForm.TemporarilyDisableHighDpiInterface := Int;
-    Int := nil;
     TabOrderForm.AutoSort := FAutoSort;
     TabOrderForm.grp_ByPosition.Visible := False;
     TabOrderForm.FormEditor := FormEditor;

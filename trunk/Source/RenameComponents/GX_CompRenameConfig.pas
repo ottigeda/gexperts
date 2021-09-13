@@ -195,18 +195,9 @@ class function TfmCompRenameConfig.Execute(_Owner: TComponent; _OnImport: TOnImp
   var _AutoAdd: Boolean; var _FormWidth, _FormHeight: Integer; const _Selected: string): Boolean;
 var
   frm: TfmCompRenameConfig;
-  Int: IInterface;
 begin
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmCompRenameConfig.Create(_Owner);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.FOnImport := _OnImport;
     frm.FOnExport := _OnExport;
     frm.SetData(_ValueListVcl, _ValueListFmx, _AutoShow, _AutoAdd, _FormWidth, _FormHeight, _Selected);

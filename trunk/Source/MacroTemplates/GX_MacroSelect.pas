@@ -49,21 +49,12 @@ uses
 
 function GetTemplateFromUser(const ATemplateName: string; MacroFile: TMacroFile): Integer;
 var
-  Int: IInterface;
   frm: TfmMacroSelect;
 begin
   Assert(Assigned(MacroFile));
 
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  Int := TemporarilyDisableHighDpi;
   frm := TfmMacroSelect.Create(Application);
   try
-    frm.TemporarilyDisableHighDpiInterface := Int;
-    Int := nil;
 
     frm.LoadTemplates(MacroFile);
     frm.tbEnter.Text := ATemplateName;

@@ -856,18 +856,9 @@ procedure TfmBackup.btnOptionsClick(Sender: TObject);
 var
   frm: TfmBackupOptions;
   RefreshRequired: Boolean;
-  Int: IInterface;
 begin
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmBackupOptions.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.cbPassword.Checked := FZipEncrypted;
     frm.edPassword.Text := FZipPassword;
     frm.cbSearchLibraryPath.Checked := FBackupExpert.FollowLibraryPath;
@@ -1238,18 +1229,9 @@ end;
 procedure TBackupProjectExpert.Execute(Sender: TObject);
 var
   frm: TfmBackup;
-  Int: IInterface;
 begin
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmBackup.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     SetFormIcon(frm);
     frm.FBackupExpert := Self;
     frm.FCurrentBackupScope := BackupScope;
@@ -1263,18 +1245,9 @@ end;
 procedure TBackupProjectExpert.Configure;
 var
   frm: TfmBackupConfig;
-  Int: IInterface;
 begin
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmBackupConfig.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.cbBackupInc.Checked := FBackupInc;
     frm.cbIncludeDir.Checked := FIncludeDir;
     frm.rbBackupAskForFile.Checked := (FBackupType = btFile);

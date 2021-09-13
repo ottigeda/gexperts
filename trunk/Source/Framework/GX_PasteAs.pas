@@ -189,22 +189,13 @@ end;
 function TPasteAsHandler.ExecuteConfig(AConfigExpert: TEditorExpert; ForceShow: Boolean): Boolean;
 var
   frm: TfmPasteAsConfig;
-  Int: IInterface;
 begin
   Result := True;
   if not FShowOptions and not ForceShow then
     Exit; //==>
 
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmPasteAsConfig.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     GetTypeText(frm.cbPasteAsType.Items);
     frm.cbPasteAsType.ItemIndex := Integer(PasteAsType);
     frm.chkCreateQuotedStrings.Checked := CreateQuotedString;

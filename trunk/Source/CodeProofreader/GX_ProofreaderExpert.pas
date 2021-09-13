@@ -62,7 +62,6 @@ var
   Data: TProofreaderData;
   frm: TfmProofreaderConfig;
   FileName: string;
-  Int: IInterface;
 begin
   Data := FProofreaderData;
   if Data = nil then begin
@@ -78,16 +77,8 @@ begin
     end;
     Data.ReloadData;
 
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
     frm := TfmProofreaderConfig.Create(nil, Self, Data);
     try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
       SetFormIcon(frm);
       frm.ShowModal;
     finally

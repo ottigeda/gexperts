@@ -758,23 +758,14 @@ procedure TfmFavFiles.EditFolder;
 var
   frm: TfmFavFolderProperties;
   Folder: TGXFolder;
-  Int: IInterface;
 begin
   if tvFolders.Selected = nil then
     Exit;
 
   Folder := GetFolder(tvFolders.Selected);
 
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmFavFolderProperties.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.FavoriteFilesForm := Self;
     frm.edtFolderName.Text := Folder.FolderName;
     frm.cbxFolderType.ItemIndex := Ord(Folder.FolderType);
@@ -796,22 +787,13 @@ procedure TfmFavFiles.EditFile;
 var
   mFile: TGXFile;
   frm: TfmFavFileProp;
-  Int: IInterface;
 begin
   mFile := GetFile(ListView.Selected);
   if mFile = nil then
     Exit;
 
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmFavFileProp.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.FavoriteFilesForm := Self;
     frm.edtFilename.Text := mFile.FileName;
     frm.edtName.Text := mFile.DName;
@@ -1429,18 +1411,9 @@ end;
 procedure TfmFavFiles.CreateNewFolder;
 var
   frm: TfmFavNewFolder;
-  Int: IInterface;
 begin
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmFavNewFolder.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.FavoriteFilesForm := Self;
     if frm.ShowModal = mrOk then
       tvFolders.Selected := AddFolder(frm.edtFolderName.Text, TFolderType(frm.cbxFolderType.ItemIndex));

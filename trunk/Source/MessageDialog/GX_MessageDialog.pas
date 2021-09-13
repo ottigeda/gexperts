@@ -1051,7 +1051,6 @@ var
   FileName: string;
   SourceType: TSourceType;
   DefaultMsg: string;
-  Int: IInterface;
 begin
   FileName := GxOtaGetCurrentSourceFile;
   if IsCpp(FileName) then
@@ -1063,16 +1062,8 @@ begin
 
   FSettings.SourceType := SourceType;
 
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmMessageDialog.Create(nil, FSettings);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     SetFormIcon(frm);
     DefaultMsg := Trim(GxOtaGetCurrentSelection(False));
     if DefaultMsg <> '' then

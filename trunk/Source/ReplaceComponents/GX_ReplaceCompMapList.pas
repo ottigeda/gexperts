@@ -368,18 +368,9 @@ end;
 procedure TfmReplaceCompMapList.btnOpenGroupListClick(Sender: TObject);
 var
   frm: TfmReplaceCompMapGrpList;
-  Int: IInterface;
 begin
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  Int := TemporarilyDisableHighDpi;
   frm := TfmReplaceCompMapGrpList.Create(nil, FConfigData);
   try
-    frm.TemporarilyDisableHighDpiInterface := Int;
-    Int := nil;
     frm.Icon := Self.Icon;
     if frm.ShowModal = mrOK then
       FConfigData.SaveData
@@ -407,18 +398,9 @@ end;
 function TfmReplaceCompMapList.ExecDets(Item: TCompRepMapItem; DataAction: TDataAction): Boolean;
 var
   frm: TfmReplaceCompMapDets;
-  Int: IInterface;
 begin
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  Int := TemporarilyDisableHighDpi;
   frm := TfmReplaceCompMapDets.Create(nil, FConfigData, Item, DataAction);
   try
-    frm.TemporarilyDisableHighDpiInterface := Int;
-    Int := nil;
     frm.Icon := Self.Icon;
     Result := frm.Execute;
     if Result then

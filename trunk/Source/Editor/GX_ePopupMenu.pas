@@ -113,18 +113,9 @@ type
 procedure TEditorPopupMenuExpert.Configure;
 var
   frm: TfmEditorPopupMenuExpertConfig;
-  Int: IInterface;
 begin
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmEditorPopupMenuExpertConfig.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.SetData(FShortcuts, FForceEditorActive);
     frm.Height := FFormHeight;
     if frm.ShowModal <> mrOk then

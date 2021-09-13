@@ -1513,7 +1513,6 @@ var
   AOpenHistoryList: TGrepHistoryList;
   AItemIndex: Integer;
   AClearList, AOverwriteItem, AOnlyIfNewer: Boolean;
-  Int: IInterface;
 begin
   if not OpenDialog.Execute then
     Exit;
@@ -1542,16 +1541,8 @@ begin
       Exit;
     end;
 
-    // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-    // High DPI awareness. Works only for forms that are shown modally and don't
-    // call into the IDE before closing.
-    // All this is only necessary for Delphi 11 and later.
-    // It does nothing for older Delphi versions.
-    Int := TemporarilyDisableHighDpi;
     frm := TfmGrepSelect.Create(Self);
     try
-      frm.TemporarilyDisableHighDpiInterface := Int;
-      Int := nil;
       frm.Init(AOpenHistoryList, gstOpen, rsOpenCaption);
       ASelResult := frm.Execute;
       AClearList := frm.cbOpenClear.Checked;
@@ -2048,20 +2039,11 @@ resourcestring
   rsModifySearchSettingsCaption = 'Grep Modify Search Parameters';
 var
   frm: TfmGrepSearch;
-  Int: IInterface;
 begin
   Result := False;
 
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmGrepSearch.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     case AState of
       gssSearchAgain: frm.Caption := rsSearchAgainCaption;
       gssModifySearchSettings: frm.Caption := rsModifySearchSettingsCaption;
@@ -2084,22 +2066,13 @@ end;
 function TfmGrepResults.QueryUserForReplaceOptions(const ReplaceInString: string): Boolean;
 var
   frm: TfmGrepReplace;
-  Int: IInterface;
 begin
   ShowGxMessageBox(TShowUnicodeReplaceMessage);
 
   Result := False;
 
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmGrepReplace.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.ReplaceInString := ReplaceInString;
     frm.SearchString := FGrepSettings.Pattern;
     if ShowModalForm(frm) <> mrOk then

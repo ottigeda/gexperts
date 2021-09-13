@@ -722,18 +722,9 @@ end;
 class function TfmCodeFormatterConfig.Execute(_Settings: TCodeFormatterSettings): TModalResult;
 var
   frm: TfmCodeFormatterConfig;
-  Int: IInterface;
 begin
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmCodeFormatterConfig.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.SettingsToForm(_Settings);
     Result := frm.ShowModal;
     if Result = mrOk then

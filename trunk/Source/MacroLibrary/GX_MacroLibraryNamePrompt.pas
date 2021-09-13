@@ -91,18 +91,9 @@ class function TfmMacroLibraryNamePrompt.Execute(AOwner: TComponent; AShowCheckb
   var APromptForName: Boolean): Boolean;
 var
   frm: TfmMacroLibraryNamePrompt;
-  Int: IInterface;
 begin
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmMacroLibraryNamePrompt.Create(AOwner);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.SetData(AMacroName, AMacroDesc, AMacro, AShowCheckbox);
     Result := (frm.ShowModal = mrOk);
     if Result then begin

@@ -578,20 +578,11 @@ end;
 class function TfmOpenFileConfig.ExecuteWithSettings(Settings: TOpenFileSettings): Boolean;
 var
   frm: TfmOpenFileConfig;
-  Int: IInterface;
 begin
   Assert(Assigned(Settings));
 
-  // This buys (me) some time with adapting forms for High DPI by temporarily turning off
-  // High DPI awareness. Works only for forms that are shown modally and don't
-  // call into the IDE before closing.
-  // All this is only necessary for Delphi 11 and later.
-  // It does nothing for older Delphi versions.
-  int := TemporarilyDisableHighDpi;
   frm := TfmOpenFileConfig.Create(nil);
   try
-    frm.TemporarilyDisableHighDpiInterface := int;
-    Int := nil;
     frm.UseSettings(Settings);
     Result := frm.ShowModal = mrOK;
     if Result then
