@@ -95,19 +95,6 @@ resourcestring
   SConfigureButtonCaption = 'Configure...';
   SDefaultButtonCaption = 'Default';
 
-function IsThemesEnabled: Boolean;
-begin
-{$IF CompilerVersion >= 23}
-  Result := StyleServices.Enabled;
-{$ELSE}
-{$IF CompilerVersion >= 18}
-  Result := ThemeServices.ThemesEnabled;
-{$ELSE}
-  Result := False;
-{$IFEND}
-{$IFEND}
-end;
-
 type
   THintImage = class(TImage)
     procedure CMHintShow(var _Msg: TCMHintShow); message CM_HINTSHOW;
@@ -131,14 +118,6 @@ constructor TfrConfigureExperts.Create(_Owner: TComponent);
 begin
   inherited;
   FExperts := TList.Create;
-
-  if IsThemesEnabled then begin
-    btnClear.Top := edtFilter.Top - 1;
-    btnClear.Height := edtFilter.Height + 2;
-  end else begin
-    btnClear.Top := edtFilter.Top;
-    btnClear.Height := edtFilter.Height;
-  end;
 
   pnlExpertsFilter.FullRepaint := False;
 
@@ -495,15 +474,19 @@ var
 begin
   FExperts.Assign(_Experts);
 
-  if IsThemesEnabled then begin
-    btnDefault.Top := edtExpert.Top - 1;
-    btnDefault.Height := edtExpert.Height + 2;
-  end else begin
-    btnDefault.Top := edtExpert.Top;
-    btnDefault.Height := edtExpert.Height;
-  end;
-  btnExpert.Top := btnDefault.Top;
-  btnExpert.Height := btnDefault.Height;
+  // align all buttons vertically to the edit field
+  TButton_AlignVerticallyTo(btnClear, edtFilter);
+  TButton_AlignVerticallyTo(btnEnableAll, btnClear);
+  TButton_AlignVerticallyTo(btnDisableAll, btnClear);
+  TButton_AlignVerticallyTo(btnClearAll, btnClear);
+  TButton_AlignVerticallyTo(btnSetAllDefault, btnClear);
+
+  // THotkey apparently doesn't get scaled correctly, so we need to set the height
+  edtExpert.Height := edtFilter.Height;
+  // and align the buttons to it afterwards
+  TButton_AlignVerticallyTo(btnDefault, edtExpert);
+  TButton_AlignVerticallyTo(btnExpert, btnDefault);
+  TCheckBox_AlignVerticallyTo(chkExpert, edtExpert);
 
   RowWidth := sbxExperts.Width + 3;
   RowHeight := pnlExpertLayout.Height;

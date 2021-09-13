@@ -16,43 +16,43 @@ object frConfigureExperts: TfrConfigureExperts
     BevelOuter = bvNone
     TabOrder = 0
     object lblFilter: TLabel
-      Left = 13
+      Left = 19
       Top = 14
-      Width = 22
+      Width = 24
       Height = 13
       Alignment = taRightJustify
       Caption = '&Filter'
       FocusControl = edtFilter
     end
     object edtFilter: TEdit
-      Left = 42
+      Left = 50
       Top = 10
-      Width = 143
+      Width = 111
       Height = 21
       TabOrder = 0
       OnChange = edtFilterChange
       OnKeyDown = edtFilterKeyDown
     end
     object btnEnableAll: TButton
-      Left = 406
+      Left = 190
       Top = 7
-      Width = 86
+      Width = 102
       Height = 25
       Caption = 'Enable All'
-      TabOrder = 4
+      TabOrder = 2
       OnClick = btnEnableAllClick
     end
     object btnDisableAll: TButton
-      Left = 499
+      Left = 299
       Top = 7
-      Width = 86
+      Width = 102
       Height = 25
       Caption = 'Disable All'
-      TabOrder = 5
+      TabOrder = 3
       OnClick = btnDisableAllClick
     end
     object btnClear: TButton
-      Left = 185
+      Left = 161
       Top = 9
       Width = 21
       Height = 21
@@ -67,28 +67,34 @@ object frConfigureExperts: TfrConfigureExperts
       OnClick = btnClearClick
     end
     object btnClearAll: TButton
-      Left = 222
+      Left = 406
       Top = 7
-      Width = 86
+      Width = 80
       Height = 25
+      Hint = 'Clears all keyboard shortcuts'
       Caption = 'Clear All'
-      TabOrder = 2
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 4
       OnClick = btnClearAllClick
     end
     object btnSetAllDefault: TButton
-      Left = 314
+      Left = 488
       Top = 7
-      Width = 86
+      Width = 118
       Height = 25
+      Hint = 'Sets all keyboard shortcuts to the default'
       Caption = 'Load Defaults'
-      TabOrder = 3
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 5
       OnClick = btnSetAllDefaultClick
     end
   end
   object sbxExperts: TScrollBox
     Left = 0
     Top = 41
-    Width = 640
+    Width = 607
     Height = 182
     VertScrollBar.Increment = 40
     VertScrollBar.Range = 920
@@ -99,7 +105,7 @@ object frConfigureExperts: TfrConfigureExperts
     object pnlExpertLayout: TPanel
       Left = 0
       Top = 0
-      Width = 613
+      Width = 585
       Height = 40
       TabOrder = 0
       object imgExpert: TImage
@@ -122,25 +128,23 @@ object frConfigureExperts: TfrConfigureExperts
       object edtExpert: THotKey
         Left = 267
         Top = 10
-        Width = 190
+        Width = 126
         Height = 22
         HotKey = 32833
-        InvalidKeys = [hcNone, hcShift]
-        Modifiers = [hkAlt]
         TabOrder = 1
       end
       object btnExpert: TButton
-        Left = 519
+        Left = 479
         Top = 8
-        Width = 84
+        Width = 102
         Height = 25
         Caption = 'Configure...'
         TabOrder = 3
       end
       object btnDefault: TButton
-        Left = 457
+        Left = 403
         Top = 8
-        Width = 55
+        Width = 72
         Height = 25
         Caption = 'Default'
         TabOrder = 2
