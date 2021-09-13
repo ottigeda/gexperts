@@ -29,6 +29,7 @@ uses
   DBGrids,
   Buttons,
   Menus,
+  Themes,
   MultiMon, // this unit doesn't exist in older Delphi versions, use a unit alias like Multimon=Windows in that case
 {$IFDEF HAS_UNIT_SYSTEM_ACTIONS}
   Actions,
@@ -116,6 +117,13 @@ type
 
 ///<summary> returns the global file formats list </summary>
 function GetFileFormats: TFileFormatsList;
+
+function IsThemesEnabled: Boolean;
+
+procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TEdit); overload;
+procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: THotKey); overload;
+procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TButton); overload;
+procedure TCheckBox_AlignVerticallyTo(_Chk: TCheckBox; _Template: TControl);
 
 ///<summary> Assigns the TBitBtn's glyph from the hex string (e.g. copied from .dfm)
 ///          if ContainsLength is true, the first 4 bytes (8 characters) contain the length of the
@@ -2072,7 +2080,7 @@ end;
 procedure TStringGrid_Clear(_Grid: TStringGrid);
 var
   c: Integer;
-  FixedRows: integer;
+  FixedRows: Integer;
 begin
   FixedRows := _Grid.FixedRows;
   _Grid.RowCount := FixedRows + 1;
@@ -4936,6 +4944,52 @@ begin
   Result := FileFormats;
 end;
 
+function IsThemesEnabled: Boolean;
+begin
+{$IF CompilerVersion >= 23}
+  Result := StyleServices.Enabled;
+{$ELSE}
+{$IF CompilerVersion >= 18}
+  Result := ThemeServices.ThemesEnabled;
+{$ELSE}
+  Result := False;
+{$IFEND}
+{$IFEND}
+end;
+
+procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TEdit); overload;
+begin
+  if IsThemesEnabled then begin
+    _btn.Top := _Template.Top - 1;
+    _btn.Height := _Template.Height + 2;
+  end else begin
+    _btn.Top := _Template.Top;
+    _btn.Height := _Template.Height;
+  end;
+end;
+
+procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: THotKey); overload;
+begin
+  if IsThemesEnabled then begin
+    _btn.Top := _Template.Top - 1;
+    _btn.Height := _Template.Height + 2;
+  end else begin
+    _btn.Top := _Template.Top;
+    _btn.Height := _Template.Height;
+  end;
+end;
+
+procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TButton); overload;
+begin
+  _btn.Top := _Template.Top;
+  _btn.Height := _Template.Height;
+end;
+
+procedure TCheckBox_AlignVerticallyTo(_Chk: TCheckBox; _Template: TControl);
+begin
+  _Chk.Top := _Template.Top + (_Template.Height - _Chk.Height) div 2;
+end;
+
 function TMemo_GetFirstVisibleLine(_Memo: TMemo): Integer;
 begin
   Result := SendMessage(_Memo.Handle, EM_GETFIRSTVISIBLELINE, 0, 0);
@@ -6727,9 +6781,9 @@ end;
 type
   THighDpiContextHelper = class(TInterfacedObject)
   private
-{$if declared(DPI_AWARENESS_CONTEXT)}
-  FPreviousDpiContext: DPI_AWARENESS_CONTEXT;
-{$ifend}
+{$IF declared(DPI_AWARENESS_CONTEXT)}
+    FPreviousDpiContext: DPI_AWARENESS_CONTEXT;
+{$IFEND}
   public
     constructor Create;
     destructor Destroy; override;
@@ -6740,16 +6794,16 @@ type
 constructor THighDpiContextHelper.Create;
 begin
   inherited Create;
-{$if declared(DPI_AWARENESS_CONTEXT)}
+{$IF declared(DPI_AWARENESS_CONTEXT)}
   FPreviousDpiContext := SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED);
-{$ifend}
+{$IFEND}
 end;
 
 destructor THighDpiContextHelper.Destroy;
 begin
-{$if declared(DPI_AWARENESS_CONTEXT)}
+{$IF declared(DPI_AWARENESS_CONTEXT)}
   SetThreadDpiAwarenessContext(FPreviousDpiContext);
-{$ifend}
+{$IFEND}
   inherited;
 end;
 
