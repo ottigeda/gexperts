@@ -6,18 +6,18 @@ uses
   Windows,
   Messages,
   SysUtils,
-  Variants,
   Classes,
   Graphics,
   Controls,
   Forms,
   Dialogs,
-  GX_BaseForm,
   StdCtrls,
   ExtCtrls,
-  GX_TabOrder,
   Buttons,
-  ActnList, System.Actions;
+  ActnList,
+  Actions,
+  GX_BaseForm,
+  GX_TabOrder;
 
 type
   TfmTabOrderOptions = class(TfmBaseForm)

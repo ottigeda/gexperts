@@ -8,8 +8,8 @@ unit GX_SetComponentPropsConfig;
 interface
 
 uses
-  Classes, Controls, Forms, ActnList, Menus, StdCtrls, ComCtrls, ExtCtrls,
-  GX_BaseForm, System.Actions;
+  Classes, Controls, Forms, ActnList, Actions, Menus, StdCtrls, ComCtrls, ExtCtrls,
+  GX_BaseForm;
 
 type
   TfmSetComponentPropsConfig = class(TfmBaseForm)

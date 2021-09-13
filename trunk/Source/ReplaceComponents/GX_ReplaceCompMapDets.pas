@@ -5,8 +5,8 @@ unit GX_ReplaceCompMapDets;
 interface
 
 uses
-  Classes, Graphics, Controls, Forms, ExtCtrls, StdCtrls, ActnList, ImgList,
-  ComCtrls, ToolWin, GX_SharedImages, GX_ReplaceCompData, GX_BaseForm, System.Actions;
+  Classes, Graphics, Controls, Forms, ExtCtrls, StdCtrls, ActnList, Actions, ImgList,
+  ComCtrls, ToolWin, GX_SharedImages, GX_ReplaceCompData, GX_BaseForm;
 
 type
   TDataAction = (daUnknown, daInsert, daEdit, daDelete);
