@@ -235,6 +235,7 @@ var
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
   Desktops: TStrings;
 {$ENDIF}
+  Monitor: TMonitor;
 
   procedure AdjustMinSize(_ctrl: TControl);
   begin
@@ -247,16 +248,21 @@ var
 begin
   inherited Create(AOwner);
 
-  {$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF IDE_IS_HIDPI_AWARE}
   self.OnAfterMonitorDpiChanged := HandleOnAfterMonitorDpiChanged;
   ArrangeGeneralTab;
-  {$ENDIF}
-
-  Width := 640;
-  Height := 569;
-
+{$ENDIF}
   MinWidth := pcConfig.ClientWidth;
   MinHeight := pcConfig.ClientHeight;
+
+  Monitor := TForm_GetMonitor(self);
+  if (Monitor.Width >= 800) and (Monitor.Height > 700) then begin
+    Width := 720;
+    Height := 600;
+  end else begin
+    Width := 640;
+    Height := 569;
+  end;
 
   FOIFont := TFont.Create;
   FCPFont := TFont.Create;
@@ -295,7 +301,6 @@ begin
   if TryGetIdeDesktops(Desktops) then
     cbxDesktop.Items.Assign(Desktops);
 {$ENDIF}
-
 
 {$IFOPT D+} // DebugInfo
   FConfigFormEnhancementsFrame := TfrConfigureFormEnhancements.Create(Self);

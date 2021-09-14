@@ -31,6 +31,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Loaded; override;
     {$IFDEF EnableIdeDockingSupport}
     {$ENDIF EnableIdeDockingSupport}
   end;
@@ -156,6 +157,12 @@ begin
   SaveStateNecessary := True;
   {$ENDIF EnableIdeDockingSupport}
   inherited Destroy;
+end;
+
+procedure TfmIdeDockForm.Loaded;
+begin
+  inherited;
+  Scaled := True;
 end;
 
 {$IFDEF EnableIdeDockingSupport}
