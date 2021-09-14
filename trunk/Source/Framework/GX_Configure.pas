@@ -182,6 +182,10 @@ type
     procedure UpdateIdeDialogCheckboxes;
     procedure SaveAllSettings;
     procedure edCachingPathDropFiles(_Sender: TObject; _Files: TStrings);
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ArrangeGeneralTab;
+    procedure HandleOnAfterMonitorDpiChanged(_Sender: TObject; _OldDPI, _NewDPI: Integer);
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -242,6 +246,11 @@ var
 
 begin
   inherited Create(AOwner);
+
+  {$IFDEF IDE_IS_HIDPI_AWARE}
+  self.OnAfterMonitorDpiChanged := HandleOnAfterMonitorDpiChanged;
+  ArrangeGeneralTab;
+  {$ENDIF}
 
   Width := 640;
   Height := 569;
@@ -346,6 +355,34 @@ begin
 
   inherited Destroy;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmConfiguration.ArrangeGeneralTab;
+var
+  t: Integer;
+begin
+  t := TEdit_AlignBelowLabel(edVCLPath, lblVCL);
+  TButton_AlignVerticallyTo(sbVCLDir, edVCLPath);
+  lblConfig.Top := t + 8;
+  t := TEdit_AlignBelowLabel(edConfigPath, lblConfig);
+  TButton_AlignVerticallyTo(sbConfigDir, edConfigPath);
+  lblCachingPath.Top := t + 8;
+  t := TEdit_AlignBelowLabel(edCachingPath, lblCachingPath);
+  TButton_AlignVerticallyTo(bCachingPath, edCachingPath);
+  lblHelp.Top := t + 8;
+  t := TEdit_AlignBelowLabel(edHelpFile, lblHelp);
+  TButton_AlignVerticallyTo(sbHelpFile, edHelpFile);
+  gbxLocations.ClientHeight := t + edHelpFile.Height + 8;
+  gbxCustomFont.Top := gbxLocations.Top + gbxLocations.Height + 8;
+  TButton_AlignVerticallyTo(btnCustomFont, chkUseCustomFont);
+  btnCustomFont.Left := chkUseCustomFont.Left + chkUseCustomFont.Width + 8;
+end;
+
+procedure TfmConfiguration.HandleOnAfterMonitorDpiChanged(_Sender: TObject; _OldDPI: Integer; _NewDPI: Integer);
+begin
+  ArrangeGeneralTab;
+end;
+{$ENDIF}
 
 procedure TfmConfiguration.edVCLPathOnDropFiles(_Sender: TObject; _Files: TStrings);
 begin
