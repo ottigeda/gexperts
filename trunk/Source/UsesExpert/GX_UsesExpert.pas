@@ -159,7 +159,7 @@ type
     actImplAddToFavorites: TAction;
     m_IntfAddToFavorites: TMenuItem;
     m_ImplAddToFavorites: TMenuItem;
-    lblUnits: TPanel;
+    pnlUnitsCaption: TPanel;
     lblUses: TPanel;
     pnlButtonsRight: TPanel;
     btnCancel: TButton;
@@ -359,6 +359,10 @@ type
     procedure ShowIdentifiersFilterResult(const cnt: Integer);
     procedure ShowSelectedUnitPathInStatusBar(const ARow: Integer);
     procedure sb_MatchWhereClick(Sender: TObject);
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ArrangeControls(_OldDPI, _NewDPI: Integer);
+    procedure HandleOnAfterMonitorDpiChanged(_Sender: TObject; _OldDPI, _NewDPI: Integer);
+{$ENDIF}
   protected
     FProjectUnits: TStringList;
     FCommonUnits: TStringList;
@@ -867,6 +871,11 @@ begin
 
   inherited Create(_Owner);
 
+{$IFDEF IDE_IS_HIDPI_AWARE}
+  Self.OnAfterMonitorDpiChanged := HandleOnAfterMonitorDpiChanged;
+  ArrangeControls(TForm_GetDesignDPI(Self), TScreen_GetDpiForForm(Self));
+{$ENDIF}
+
   DoubleBuffered := True;
   pnlUnits.DoubleBuffered := True;
   pnlUses.DoubleBuffered := True;
@@ -1307,10 +1316,6 @@ begin
   b_MoveToIntf.Left := 2 * (w + 8);
   b_DeleteFromImpl.Width := w;
   b_DeleteFromImpl.Left := 3 * (w + 8);
-
-  btnAddDots.Width := 2 * w + 8;
-  btnRemoveDots.Width := 2 * w + 8;
-  btnRemoveDots.Left := 2 * (w + 8);
 end;
 
 procedure TfmUsesManager.pnlUsesResize(Sender: TObject);
@@ -1562,6 +1567,75 @@ begin
 
   actOpenUnit.Enabled := HaveSelectedItem(GetListForOpen);
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmUsesManager.HandleOnAfterMonitorDpiChanged(_Sender: TObject;
+  _OldDPI, _NewDPI: Integer);
+begin
+  ArrangeControls(_OldDPI, _NewDPI);
+end;
+
+procedure TfmUsesManager.ArrangeControls(_OldDPI, _NewDPI: Integer);
+
+  procedure AdjustTop(_ctrl: TControl);
+  begin
+    _Ctrl.Top := MulDiv(_Ctrl.Top, _NewDPI, _OldDPI);
+  end;
+
+  procedure AdjustHeight(_ctrl: TControl);
+  begin
+    _Ctrl.Height := MulDiv(_Ctrl.Height, _NewDPI, _OldDPI);
+  end;
+
+  procedure ArrangeButtonsInGroup(const _Buttons: array of TWinControl; _grp: TGroupBox);
+  var
+    i: Integer;
+    Offset: Integer;
+    btn: TWinControl;
+  begin
+    Assert(Length(_Buttons) > 1);
+    btn := _Buttons[0];
+    Offset := _grp.ClientHeight - btn.Top - btn.Height;
+    for i := 0 to Length(_Buttons) - 1 do
+      AdjustTop(_Buttons[i]);
+    _grp.ClientHeight := btn.Top + btn.Height + Offset;
+  end;
+
+  procedure ArrangeAddControls(_btnAddIntf, _btnAddImpl: TButton; _grp: TGroupBox; _pnl: TPanel);
+  begin
+    ArrangeButtonsInGroup([_btnAddIntf, _btnAddImpl], _grp);
+    _pnl.ClientHeight := _grp.Height;
+  end;
+
+begin
+  lblFilter.Top := 0;
+  pnlUnitsCaption.ClientHeight := lblFilter.Height+1;
+  edtUnitFilter.Top := pnlUnitsCaption.Height;
+  edtIdentifierFilter.Top := edtUnitFilter.Top;
+  pnlAvailableHeader.ClientHeight := edtUnitFilter.Top + edtUnitFilter.Height;
+
+  ArrangeAddControls(btnSearchPathAddToIntf, btnSearchPathAddToImpl, grp_SearchPathAdd, pnlSearchPathFooter);
+  AdjustTop(btnAddSearchPathlToFavorites);
+
+  ArrangeAddControls(btnProjectAddToInterface, btnProjectAddToImplementation, grp_ProjectAdd, pnlProjFooter);
+  AdjustTop(btnAddProjectToFavorites);
+  AdjustTop(btnCopySaveCurrentList);
+  AdjustTop(btnCopySaveProjectListMenu);
+
+  ArrangeAddControls(btnCommonAddToInterface, btnCommonAddToImplementation, grp_CommonAdd, pnlCommonFooter);
+  AdjustTop(btnAddRtlToFavorites);
+
+  ArrangeAddControls(btnFavoriteAddToInterface, btnFavoriteAddToImplementation, grp_FavoriteAdd, pnlFavFooter);
+  AdjustTop(btnFavoriteAddToFavorites);
+  AdjustTop(btnFavoriteDeleteFromFavorites);
+
+  ArrangeAddControls(btnIdentifiersAddToIntf, btnIdentifiersAddToImpl, grp_IdentifiersAdd, pnlIdentifiersFooter);
+//  AdjustTop(b_IdentifierMatchStart);
+//  AdjustTop(b_IdentifierMatchAnywhere);
+//  AdjustTop(b_IdentifierMatchSort);
+  ArrangeButtonsInGroup([b_IdentifierMatchStart, b_IdentifierMatchAnywhere, b_IdentifierMatchSort], grp_IdentifiersMatch);
+end;
+{$ENDIF}
 
 function TfmUsesManager.HaveSelectedItem(sg: TStringGrid): Boolean;
 begin
