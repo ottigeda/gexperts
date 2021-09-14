@@ -185,13 +185,13 @@ object fmConfiguration: TfmConfiguration
             object chkUseCustomFont: TCheckBox
               Left = 16
               Top = 27
-              Width = 153
+              Width = 217
               Height = 21
               Caption = 'Use custom UI font'
               TabOrder = 0
             end
             object btnCustomFont: TButton
-              Left = 174
+              Left = 238
               Top = 24
               Width = 79
               Height = 25
