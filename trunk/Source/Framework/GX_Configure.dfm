@@ -547,22 +547,23 @@ object fmConfiguration: TfmConfiguration
       object tshEditor: TTabSheet
         Caption = 'Code Editor'
         object lblHideNavBar: TLabel
-          Left = 8
-          Top = 320
-          Width = 297
-          Height = 49
+          Left = 248
+          Top = 40
+          Width = 353
+          Height = 113
+          Anchors = [akLeft, akTop, akRight]
           AutoSize = False
           Caption = 
-            'You can hide the navigation bar in the Tools -> Options dialog. ' +
+            'You can hide the navigation bar in the Tools -> Options dialog'#13#10 +
             'See Editor Options -> Display -> Show Navigation Toolbar'
           Visible = False
           WordWrap = True
         end
         object gbxEditorTabs: TGroupBox
           Left = 8
-          Top = 192
+          Top = 208
           Width = 225
-          Height = 121
+          Height = 153
           Caption = 'Editor T&abs (Delphi 6 and 7)'
           TabOrder = 1
           object chkMultiLine: TCheckBox
@@ -575,7 +576,7 @@ object fmConfiguration: TfmConfiguration
           end
           object chkHotTrack: TCheckBox
             Left = 8
-            Top = 59
+            Top = 75
             Width = 210
             Height = 17
             Caption = 'Hot tracking'
@@ -583,7 +584,7 @@ object fmConfiguration: TfmConfiguration
           end
           object chkButtons: TCheckBox
             Left = 8
-            Top = 78
+            Top = 102
             Width = 210
             Height = 17
             Caption = 'Button style'
@@ -592,7 +593,7 @@ object fmConfiguration: TfmConfiguration
           end
           object chkEditTabButtonsFlat: TCheckBox
             Left = 24
-            Top = 97
+            Top = 129
             Width = 194
             Height = 17
             Caption = 'Flat buttons'
@@ -601,7 +602,7 @@ object fmConfiguration: TfmConfiguration
           end
           object chkMiddleButtonClose: TCheckBox
             Left = 8
-            Top = 40
+            Top = 48
             Width = 210
             Height = 17
             Caption = 'Middle mouse button closes tab'
@@ -612,7 +613,7 @@ object fmConfiguration: TfmConfiguration
           Left = 8
           Top = 10
           Width = 225
-          Height = 172
+          Height = 191
           Caption = 'Editor &Toolbar'
           TabOrder = 0
           object chkEditorToolBar: TCheckBox
@@ -628,7 +629,7 @@ object fmConfiguration: TfmConfiguration
             Left = 24
             Top = 40
             Width = 177
-            Height = 93
+            Height = 105
             Caption = 'Align'
             Items.Strings = (
               'Top'
@@ -638,9 +639,9 @@ object fmConfiguration: TfmConfiguration
             TabOrder = 1
           end
           object btnConfigureToolBar: TButton
-            Left = 36
-            Top = 138
-            Width = 145
+            Left = 24
+            Top = 154
+            Width = 177
             Height = 25
             Caption = 'Configure Toolbar...'
             TabOrder = 2
@@ -648,19 +649,21 @@ object fmConfiguration: TfmConfiguration
           end
         end
         object chkDisableEDTEnhancements: TCheckBox
-          Left = 244
-          Top = 12
-          Width = 238
+          Left = 248
+          Top = 16
+          Width = 353
           Height = 17
+          Anchors = [akLeft, akTop, akRight]
           Caption = '&Disable all editor enhancements'
           TabOrder = 3
           OnClick = chkDisableEDTEnhancementsClick
         end
         object chkHideNavbar: TCheckBox
-          Left = 8
-          Top = 320
-          Width = 305
+          Left = 248
+          Top = 40
+          Width = 353
           Height = 17
+          Anchors = [akLeft, akTop, akRight]
           Caption = 'Hide Navigation Bar (Delphi 10 and 10.1)'
           TabOrder = 2
         end
