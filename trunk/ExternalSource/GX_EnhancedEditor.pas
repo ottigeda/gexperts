@@ -142,7 +142,7 @@ procedure Register;
 implementation
 
 uses
- SysUtils, SynUnicode, Math;
+ SysUtils, SynUnicode, Math, SynEditPrint;
 
 procedure Register;
 begin
@@ -324,19 +324,17 @@ begin
 end;
 
 procedure TGxEnhancedEditor.Print(const ATitle: string);
-//var
-//  PrintBuf: TextFile;
-//  i: Integer;
+var
+  Printer: TSynEditPrint;
 begin
-// TODO: Implement SynEdit printing
-//    AssignPrn(PrintBuf);
-//    Rewrite(PrintBuf);
-//    try
-//      for i := 0 to FEditor.Lines.Count-1 do
-//        WriteLn(PrintBuf, FEditor.Lines[i]);
-//    finally
-//      CloseFile(PrintBuf);
-//    end;
+  Printer := TSynEditPrint.Create(Self);
+  try
+    Printer.SynEdit := FEditor;
+    Printer.Title := ATitle;
+    Printer.Print;
+  finally
+    FreeAndNil(Printer);
+  end;
 end;
 
 function TGxEnhancedEditor.GetActiveLineColor: TColor;
