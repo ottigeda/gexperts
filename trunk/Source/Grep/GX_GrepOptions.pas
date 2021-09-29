@@ -1,5 +1,7 @@
 unit GX_GrepOptions;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -42,6 +44,10 @@ type
     procedure mi_ColumnClick(Sender: TObject);
   private
     procedure HandleDropFiles(_Sender: TObject; _Files: TStrings);
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ArrangeControls;
+    procedure HandleOnAfterMonitorDpiChanged(_Sender: TObject; _OldDPI, _NewDPI: Integer);
+{$ENDIF}
   public
     class function Execute(var _UseCurrentIdent: Boolean; var _Editor, _Params: string): Boolean;
     constructor Create(_Owner: TComponent); override;
@@ -120,7 +126,34 @@ begin
   TWinControl_ActivateDropFiles(Self, HandleDropFiles);
 
   TButton_AddDropdownMenu(b_Parameters, pm_Parameters);
+{$IFDEF IDE_IS_HIDPI_AWARE}
+  self.OnAfterMonitorDpiChanged := HandleOnAfterMonitorDpiChanged;
+  ArrangeControls;
+{$ENDIF}
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmGrepOptions.ArrangeControls;
+var
+  t: Integer;
+begin
+  t := TEdit_AlignBelowLabel(ed_ExternalEditor, l_ExternalEditor);
+  TButton_AlignVerticallyTo(b_Select, ed_ExternalEditor);
+  l_Parameters.Top := t + 8;
+  t := TEdit_AlignBelowLabel(ed_Parameters, l_Parameters);
+  Inc(t, 8);
+  btnOK.top := t;
+  btnCancel.top := t;
+  b_Parameters.top := t;
+  self.ClientHeight := t + b_Parameters.Height + 8;
+end;
+
+procedure TfmGrepOptions.HandleOnAfterMonitorDpiChanged(_Sender: TObject;
+  _OldDPI, _NewDPI: Integer);
+begin
+  ArrangeControls;
+end;
+{$ENDIF}
 
 procedure TfmGrepOptions.HandleDropFiles(_Sender: TObject; _Files: TStrings);
 begin
@@ -337,4 +370,3 @@ end;
 initialization
   RegisterGX_Expert(TGrepMenuEntryExpert);
 end.
-

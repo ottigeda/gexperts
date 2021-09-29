@@ -29,7 +29,7 @@ object fmGrepOptions: TfmGrepOptions
   end
   object l_Parameters: TLabel
     Left = 8
-    Top = 80
+    Top = 96
     Width = 61
     Height = 14
     Caption = 'Parameters'
@@ -66,7 +66,7 @@ object fmGrepOptions: TfmGrepOptions
   object ed_ExternalEditor: TEdit
     Left = 8
     Top = 64
-    Width = 361
+    Width = 353
     Height = 22
     TabOrder = 1
   end
@@ -89,7 +89,7 @@ object fmGrepOptions: TfmGrepOptions
   object b_Parameters: TButton
     Left = 8
     Top = 144
-    Width = 75
+    Width = 113
     Height = 25
     Caption = 'Parameters'
     TabOrder = 6
