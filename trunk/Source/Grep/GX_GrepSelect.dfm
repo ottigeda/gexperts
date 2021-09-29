@@ -215,7 +215,7 @@ inherited fmGrepSelect: TfmGrepSelect
     object btnCheckItems: TButton
       Left = 2
       Top = 2
-      Width = 100
+      Width = 124
       Height = 25
       Hint = 'Check first found items or all items'
       Caption = 'Check All'
@@ -229,9 +229,9 @@ inherited fmGrepSelect: TfmGrepSelect
       OnClick = btnSelectClick
     end
     object btnUnCheckItems: TButton
-      Left = 106
+      Left = 130
       Top = 2
-      Width = 100
+      Width = 124
       Height = 25
       Hint = 'Uncheck first found items or all items'
       Caption = 'Uncheck All'
@@ -286,9 +286,9 @@ inherited fmGrepSelect: TfmGrepSelect
       end
     end
     object btnUnsorted: TButton
-      Left = 485
+      Left = 517
       Top = 2
-      Width = 90
+      Width = 124
       Height = 25
       Caption = 'Unsorted'
       TabOrder = 3
@@ -333,7 +333,7 @@ inherited fmGrepSelect: TfmGrepSelect
       Tag = 1
       Left = 388
       Top = 2
-      Width = 90
+      Width = 124
       Height = 25
       Caption = 'Sort Keyindex'
       TabOrder = 2
@@ -342,38 +342,40 @@ inherited fmGrepSelect: TfmGrepSelect
     object pnlSearch: TPanel
       Left = 0
       Top = 30
-      Width = 670
+      Width = 697
       Height = 60
       Anchors = [akLeft, akRight, akBottom]
       BevelOuter = bvNone
       BorderStyle = bsSingle
       TabOrder = 4
       object lblSearch: TLabel
-        Left = 8
+        Left = 32
         Top = 8
         Width = 37
         Height = 13
+        Alignment = taRightJustify
         Caption = 'Search:'
         FocusControl = eSearch
       end
       object lblSearchSaveOption: TLabel
-        Left = 8
+        Left = 24
         Top = 33
         Width = 113
         Height = 13
+        Alignment = taRightJustify
         Caption = 'Save option for search:'
       end
       object eSearch: TEdit
-        Left = 73
-        Top = 5
-        Width = 261
+        Left = 72
+        Top = 4
+        Width = 265
         Height = 21
         TabOrder = 0
         OnChange = eSearchChange
       end
       object cbSearchSaveOption: TComboBox
-        Left = 140
-        Top = 30
+        Left = 144
+        Top = 29
         Width = 194
         Height = 21
         Style = csDropDownList
@@ -391,7 +393,7 @@ inherited fmGrepSelect: TfmGrepSelect
       object cbCheckedMoveToTop: TCheckBox
         Left = 414
         Top = 2
-        Width = 163
+        Width = 275
         Height = 17
         Caption = 'Checked move to top'
         Checked = True
@@ -402,7 +404,7 @@ inherited fmGrepSelect: TfmGrepSelect
       object cbSearchInChecked: TCheckBox
         Left = 414
         Top = 20
-        Width = 163
+        Width = 275
         Height = 17
         Caption = 'Search in checked items'
         TabOrder = 5
@@ -411,7 +413,7 @@ inherited fmGrepSelect: TfmGrepSelect
       object cbShowNotFound: TCheckBox
         Left = 414
         Top = 37
-        Width = 163
+        Width = 275
         Height = 17
         Caption = 'Show "not found"'
         TabOrder = 6
@@ -419,7 +421,7 @@ inherited fmGrepSelect: TfmGrepSelect
       end
       object btnClearSearch: TBitBtn
         Left = 344
-        Top = 3
+        Top = 2
         Width = 26
         Height = 25
         Cancel = True
@@ -446,7 +448,7 @@ inherited fmGrepSelect: TfmGrepSelect
       end
       object btnRefreshSearch: TBitBtn
         Left = 372
-        Top = 3
+        Top = 2
         Width = 26
         Height = 25
         TabOrder = 2
