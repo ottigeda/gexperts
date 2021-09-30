@@ -197,7 +197,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, UITypes,
-{$IFDEF GX_DELPHI_TOKYO_UP}
+{$IFDEF GX_DELPHI2007_UP}
   GX_SizeGripHWND,
 {$ENDIF}
   GX_GxUtils, GX_EditorEnhancements, GX_IdeEnhance,
@@ -234,7 +234,6 @@ var
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
   Desktops: TStrings;
 {$ENDIF}
-  Monitor: TMonitor;
 
   procedure AdjustMinSize(_ctrl: TControl);
   begin
@@ -253,15 +252,6 @@ begin
 
   MinWidth := pcConfig.ClientWidth;
   MinHeight := pcConfig.ClientHeight;
-
-  Monitor := TForm_GetMonitor(self);
-  if (Monitor.Width >= 1200) and (Monitor.Height > 1040) then begin
-    Width := 1000;
-    Height := 1000;
-  end else begin
-    Width := 660;
-    Height := 660;
-  end;
 
   FOIFont := TFont.Create;
   FCPFont := TFont.Create;
@@ -313,8 +303,18 @@ begin
 
   ActiveControl := FConfigExpertsFrame.edtFilter;
 
-  Width := MinWidth + (Width - pcConfig.ClientWidth);
-  Height := MinHeight+ (Height - pcConfig.ClientHeight);
+  MinWidth := MinWidth + (Width - pcConfig.ClientWidth);
+  MinHeight := MinHeight+ (Height - pcConfig.ClientHeight);
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+  if MinWidth < 1000 then
+    MinWidth := 1000;
+  if MinHeight < 1000 then
+    MinHeight := 1000;
+{$ENDIF}
+
+  Width := MinWidth;
+  Height := MinHeight;
   TControl_SetMinConstraints(Self);
 
   LoadGeneral;
@@ -1001,7 +1001,7 @@ end;
 procedure TfmConfiguration.FormShow(Sender: TObject);
 begin
   inherited;
-{$IFDEF GX_DELPHI_TOKYO_UP}
+{$IFDEF GX_DELPHI2007_UP}
   if pnlButtons.HandleAllocated then
     GxSetWindowSizeGrip(pnlButtonsRight.Handle, True);
 {$ENDIF}
