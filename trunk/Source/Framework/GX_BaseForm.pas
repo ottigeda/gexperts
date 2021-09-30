@@ -21,6 +21,10 @@ type
   TfmBaseForm = class(TForm)
   protected
     procedure Loaded; override;
+  private
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
+{$ENDIF}
   public
     class function Execute(_Owner: TComponent): Boolean; overload; virtual;
     constructor Create(AOwner: TComponent); override;
@@ -45,10 +49,19 @@ begin
   end;
 end;
 
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmBaseForm.WMDpiChanged(var _Msg: TWMDpi);
+begin
+  inherited;
+  ChangeScale(CurrentPPI, _Msg.YDpi, True);
+  _Msg.Result := 0;
+end;
+{$ENDIF}
+
 procedure TfmBaseForm.Loaded;
 begin
   inherited;
-  Scaled := true;
+  Scaled := False;
 end;
 
 constructor TfmBaseForm.Create(AOwner: TComponent);
