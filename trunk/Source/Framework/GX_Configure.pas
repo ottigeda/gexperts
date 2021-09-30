@@ -184,7 +184,6 @@ type
     procedure edCachingPathDropFiles(_Sender: TObject; _Files: TStrings);
 {$IFDEF IDE_IS_HIDPI_AWARE}
     procedure ArrangeGeneralTab;
-    procedure HandleOnAfterMonitorDpiChanged(_Sender: TObject; _OldDPI, _NewDPI: Integer);
 {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
@@ -249,19 +248,19 @@ begin
   inherited Create(AOwner);
 
 {$IFDEF IDE_IS_HIDPI_AWARE}
-  self.OnAfterMonitorDpiChanged := HandleOnAfterMonitorDpiChanged;
   ArrangeGeneralTab;
 {$ENDIF}
+
   MinWidth := pcConfig.ClientWidth;
   MinHeight := pcConfig.ClientHeight;
 
   Monitor := TForm_GetMonitor(self);
-  if (Monitor.Width >= 800) and (Monitor.Height > 700) then begin
-    Width := 720;
-    Height := 600;
+  if (Monitor.Width >= 1200) and (Monitor.Height > 1040) then begin
+    Width := 1000;
+    Height := 1000;
   end else begin
-    Width := 640;
-    Height := 569;
+    Width := 660;
+    Height := 660;
   end;
 
   FOIFont := TFont.Create;
@@ -381,11 +380,6 @@ begin
   gbxCustomFont.Top := gbxLocations.Top + gbxLocations.Height + 8;
   TButton_AlignVerticallyTo(btnCustomFont, chkUseCustomFont);
   btnCustomFont.Left := chkUseCustomFont.Left + chkUseCustomFont.Width + 8;
-end;
-
-procedure TfmConfiguration.HandleOnAfterMonitorDpiChanged(_Sender: TObject; _OldDPI: Integer; _NewDPI: Integer);
-begin
-  ArrangeGeneralTab;
 end;
 {$ENDIF}
 

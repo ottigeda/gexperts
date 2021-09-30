@@ -1,10 +1,10 @@
 object fmConfiguration: TfmConfiguration
   Left = 411
   Top = 164
-  Width = 640
-  Height = 569
   BorderIcons = [biSystemMenu]
   Caption = 'GExperts Configuration'
+  ClientHeight = 621
+  ClientWidth = 624
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -22,7 +22,7 @@ object fmConfiguration: TfmConfiguration
     Left = 0
     Top = 0
     Width = 624
-    Height = 580
+    Height = 587
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 7
@@ -32,7 +32,7 @@ object fmConfiguration: TfmConfiguration
       Left = 7
       Top = 7
       Width = 610
-      Height = 566
+      Height = 573
       ActivePage = tshExperts
       Align = alClient
       HotTrack = True
@@ -52,7 +52,7 @@ object fmConfiguration: TfmConfiguration
           Left = 0
           Top = 0
           Width = 602
-          Height = 537
+          Height = 544
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 8
@@ -216,12 +216,12 @@ object fmConfiguration: TfmConfiguration
           Left = 8
           Top = 8
           Width = 289
-          Height = 121
+          Height = 129
           Caption = '&Menu'
           TabOrder = 0
           object chkAlphabetizeMenu: TCheckBox
             Left = 8
-            Top = 16
+            Top = 24
             Width = 279
             Height = 24
             Caption = 'Alphabetize the GExperts menu items'
@@ -229,7 +229,7 @@ object fmConfiguration: TfmConfiguration
           end
           object chkPlaceGxMainMenuInToolsMenu: TCheckBox
             Left = 8
-            Top = 40
+            Top = 48
             Width = 279
             Height = 24
             Caption = 'Place GExperts menu under Tools'
@@ -237,7 +237,7 @@ object fmConfiguration: TfmConfiguration
           end
           object chkHideWindowMenu: TCheckBox
             Left = 8
-            Top = 64
+            Top = 72
             Width = 279
             Height = 24
             Caption = 'Hide Window menu'
@@ -245,7 +245,7 @@ object fmConfiguration: TfmConfiguration
           end
           object chkMoveComponentMenu: TCheckBox
             Left = 8
-            Top = 88
+            Top = 96
             Width = 279
             Height = 24
             Caption = 'Move the Component menu to Tools'
@@ -254,7 +254,7 @@ object fmConfiguration: TfmConfiguration
         end
         object gbxIDEForms: TGroupBox
           Left = 8
-          Top = 131
+          Top = 139
           Width = 585
           Height = 398
           Caption = 'IDE'
@@ -418,12 +418,12 @@ object fmConfiguration: TfmConfiguration
           Left = 304
           Top = 8
           Width = 289
-          Height = 121
+          Height = 129
           Caption = 'Object Inspector'
           TabOrder = 1
           object chkOIFontNames: TCheckBox
             Left = 8
-            Top = 16
+            Top = 24
             Width = 279
             Height = 24
             Caption = 'Show font names using the font'
@@ -431,7 +431,7 @@ object fmConfiguration: TfmConfiguration
           end
           object chkOIHideHotCmds: TCheckBox
             Left = 8
-            Top = 40
+            Top = 48
             Width = 279
             Height = 24
             Caption = 'Hide Quick Action Panel'
@@ -439,7 +439,7 @@ object fmConfiguration: TfmConfiguration
           end
           object chkOIHideDescPane: TCheckBox
             Left = 8
-            Top = 64
+            Top = 72
             Width = 279
             Height = 24
             Caption = 'Hide Description Panel'
@@ -675,23 +675,23 @@ object fmConfiguration: TfmConfiguration
         ImageIndex = 6
         DesignSize = (
           602
-          537)
+          544)
         object gbSuppressedMessages: TGroupBox
           Left = 8
           Top = 8
           Width = 433
-          Height = 517
+          Height = 608
           Anchors = [akLeft, akTop, akBottom]
           Caption = 'Suppressed Messages'
           TabOrder = 0
           DesignSize = (
             433
-            517)
+            608)
           object lbSuppressedMesages: TListBox
             Left = 8
             Top = 24
             Width = 321
-            Height = 485
+            Height = 576
             Anchors = [akLeft, akTop, akBottom]
             ItemHeight = 14
             TabOrder = 0
@@ -875,7 +875,7 @@ object fmConfiguration: TfmConfiguration
   end
   object pnlButtons: TPanel
     Left = 0
-    Top = 580
+    Top = 587
     Width = 624
     Height = 34
     Align = alBottom
