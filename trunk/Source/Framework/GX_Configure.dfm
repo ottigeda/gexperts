@@ -22,7 +22,7 @@ object fmConfiguration: TfmConfiguration
     Left = 0
     Top = 0
     Width = 624
-    Height = 496
+    Height = 580
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 7
@@ -32,12 +32,11 @@ object fmConfiguration: TfmConfiguration
       Left = 7
       Top = 7
       Width = 610
-      Height = 482
+      Height = 566
       ActivePage = tshExperts
       Align = alClient
       HotTrack = True
       MultiLine = True
-      TabIndex = 3
       TabOrder = 0
       OnChange = pcConfigChange
       object tshExperts: TTabSheet
@@ -53,7 +52,7 @@ object fmConfiguration: TfmConfiguration
           Left = 0
           Top = 0
           Width = 602
-          Height = 453
+          Height = 537
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 8
@@ -217,52 +216,52 @@ object fmConfiguration: TfmConfiguration
           Left = 8
           Top = 8
           Width = 289
-          Height = 105
+          Height = 121
           Caption = '&Menu'
           TabOrder = 0
           object chkAlphabetizeMenu: TCheckBox
             Left = 8
-            Top = 22
+            Top = 16
             Width = 279
-            Height = 17
+            Height = 24
             Caption = 'Alphabetize the GExperts menu items'
             TabOrder = 0
           end
           object chkPlaceGxMainMenuInToolsMenu: TCheckBox
             Left = 8
-            Top = 41
+            Top = 40
             Width = 279
-            Height = 17
+            Height = 24
             Caption = 'Place GExperts menu under Tools'
             TabOrder = 1
           end
           object chkHideWindowMenu: TCheckBox
             Left = 8
-            Top = 60
+            Top = 64
             Width = 279
-            Height = 17
+            Height = 24
             Caption = 'Hide Window menu'
             TabOrder = 2
           end
           object chkMoveComponentMenu: TCheckBox
             Left = 8
-            Top = 81
+            Top = 88
             Width = 279
-            Height = 17
+            Height = 24
             Caption = 'Move the Component menu to Tools'
             TabOrder = 3
           end
         end
         object gbxIDEForms: TGroupBox
           Left = 8
-          Top = 115
+          Top = 131
           Width = 585
-          Height = 326
+          Height = 398
           Caption = 'IDE'
           TabOrder = 2
           object l_ForceDestkopAV: TLabel
-            Left = 192
-            Top = 253
+            Left = 176
+            Top = 316
             Width = 288
             Height = 14
             Caption = 'Warning: Can cause Access Violations on IDE startup'
@@ -275,9 +274,9 @@ object fmConfiguration: TfmConfiguration
           end
           object chkEnhanceDialogs: TCheckBox
             Left = 8
-            Top = 22
+            Top = 24
             Width = 575
-            Height = 17
+            Height = 24
             Hint = 
               'Enhance IDE options dialogs to allow resizing, remember position' +
               's, increase'#13'combobox DropDownCounts, resizable picture open dial' +
@@ -290,123 +289,123 @@ object fmConfiguration: TfmConfiguration
             OnClick = chkEnhanceDialogsClick
           end
           object chkEnhanceSearchPaths: TCheckBox
-            Left = 24
-            Top = 76
+            Left = 8
+            Top = 96
             Width = 559
-            Height = 17
+            Height = 24
             Caption = 
               'Enable drag && drop, autocomplete and other enhancement for sear' +
               'ch paths'
             TabOrder = 3
           end
           object chkEnhanceToolProperties: TCheckBox
-            Left = 24
-            Top = 95
+            Left = 8
+            Top = 120
             Width = 559
-            Height = 17
+            Height = 24
             Caption = 'Enhance Tools menu Tool Properties dialog'
             TabOrder = 4
           end
           object chkAllowResize: TCheckBox
             Left = 24
-            Top = 41
+            Top = 48
             Width = 559
-            Height = 17
+            Height = 24
             Caption = 'Allow resize and remember size'
             TabOrder = 1
           end
           object chkRememberPosition: TCheckBox
             Left = 48
-            Top = 57
+            Top = 72
             Width = 535
-            Height = 17
+            Height = 24
             Caption = 'Also remember position'
             TabOrder = 2
           end
           object chkEnhanceInstallPackages: TCheckBox
-            Left = 24
-            Top = 114
+            Left = 8
+            Top = 144
             Width = 559
-            Height = 17
+            Height = 24
             Caption = 'Enhance Install Packages dialog with ... Explorer button'
             TabOrder = 5
           end
           object chkEnhanceBuildEventsDialog: TCheckBox
-            Left = 24
-            Top = 170
+            Left = 8
+            Top = 216
             Width = 559
-            Height = 18
+            Height = 24
             Caption = 'Enhance Build Events dialog with Favourites'
             TabOrder = 8
           end
           object chkEnhanceApplicationSettingsDialog: TCheckBox
-            Left = 24
-            Top = 132
+            Left = 8
+            Top = 168
             Width = 559
-            Height = 18
+            Height = 24
             Caption = 'Enhance Application Settings dialog with version button'
             TabOrder = 6
           end
           object chkAutoCloseMessage: TCheckBox
-            Left = 24
-            Top = 189
+            Left = 8
+            Top = 240
             Width = 559
-            Height = 18
+            Height = 24
             Caption = 'Automatically close message window after successful compile'
             TabOrder = 9
           end
           object chkAutoCloseIgnoreHints: TCheckBox
-            Left = 48
-            Top = 208
+            Left = 32
+            Top = 264
             Width = 233
-            Height = 17
+            Height = 24
             Caption = 'Even if there are hints'
             TabOrder = 10
           end
           object chkAutoCloseIgnoreWarnings: TCheckBox
-            Left = 280
-            Top = 208
+            Left = 264
+            Top = 264
             Width = 233
-            Height = 17
+            Height = 24
             Caption = 'Even if there are warnings'
             TabOrder = 11
           end
           object chkForceStartupDesktop: TCheckBox
-            Left = 24
-            Top = 232
+            Left = 8
+            Top = 288
             Width = 559
-            Height = 18
+            Height = 24
             Caption = 'Force desktop on startup (leave empty for last selected)'
             TabOrder = 12
           end
           object cbxDesktop: TComboBox
-            Left = 40
-            Top = 249
+            Left = 24
+            Top = 312
             Width = 145
             Height = 22
             ItemHeight = 14
             TabOrder = 13
           end
           object chkEnhanceDockForms: TCheckBox
-            Left = 24
-            Top = 151
+            Left = 8
+            Top = 192
             Width = 559
-            Height = 18
+            Height = 24
             Caption = 'Enhance Dock Forms to allow minimize and Win+arrow positioning'
             TabOrder = 7
           end
           object chk_FontForNewForms: TCheckBox
-            Left = 24
-            Top = 280
+            Left = 8
+            Top = 344
             Width = 559
-            Height = 17
+            Height = 24
             Caption = 'Custom Font for new forms (sets DefFontData)'
             TabOrder = 14
             Visible = False
           end
           object b_CustomFontForNewForms: TButton
-            Left = 38
-            Top = 296
+            Left = 24
+            Top = 360
             Width = 79
             Height = 25
             Caption = 'Font...'
@@ -419,30 +418,30 @@ object fmConfiguration: TfmConfiguration
           Left = 304
           Top = 8
           Width = 289
-          Height = 105
+          Height = 121
           Caption = 'Object Inspector'
           TabOrder = 1
           object chkOIFontNames: TCheckBox
             Left = 8
-            Top = 22
+            Top = 16
             Width = 279
-            Height = 17
+            Height = 24
             Caption = 'Show font names using the font'
             TabOrder = 0
           end
           object chkOIHideHotCmds: TCheckBox
             Left = 8
-            Top = 41
+            Top = 40
             Width = 279
-            Height = 17
+            Height = 24
             Caption = 'Hide Quick Action Panel'
             TabOrder = 1
           end
           object chkOIHideDescPane: TCheckBox
             Left = 8
-            Top = 60
+            Top = 64
             Width = 279
-            Height = 17
+            Height = 24
             Caption = 'Hide Description Panel'
             TabOrder = 2
           end
@@ -676,23 +675,23 @@ object fmConfiguration: TfmConfiguration
         ImageIndex = 6
         DesignSize = (
           602
-          453)
+          537)
         object gbSuppressedMessages: TGroupBox
           Left = 8
           Top = 8
           Width = 433
-          Height = 433
+          Height = 517
           Anchors = [akLeft, akTop, akBottom]
           Caption = 'Suppressed Messages'
           TabOrder = 0
           DesignSize = (
             433
-            433)
+            517)
           object lbSuppressedMesages: TListBox
             Left = 8
             Top = 24
             Width = 321
-            Height = 401
+            Height = 485
             Anchors = [akLeft, akTop, akBottom]
             ItemHeight = 14
             TabOrder = 0
@@ -876,7 +875,7 @@ object fmConfiguration: TfmConfiguration
   end
   object pnlButtons: TPanel
     Left = 0
-    Top = 496
+    Top = 580
     Width = 624
     Height = 34
     Align = alBottom
@@ -966,8 +965,8 @@ object fmConfiguration: TfmConfiguration
     MinFontSize = 6
     MaxFontSize = 24
     Options = []
-    Left = 420
-    Top = 332
+    Left = 476
+    Top = 356
   end
   object dlgFont: TFontDialog
     Font.Charset = ANSI_CHARSET
@@ -978,7 +977,7 @@ object fmConfiguration: TfmConfiguration
     MinFontSize = 6
     MaxFontSize = 24
     Options = []
-    Left = 420
-    Top = 364
+    Left = 476
+    Top = 388
   end
 end
