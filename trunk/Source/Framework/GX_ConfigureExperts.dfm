@@ -119,9 +119,9 @@ object frConfigureExperts: TfrConfigureExperts
       end
       object chkExpert: TCheckBox
         Left = 40
-        Top = 12
+        Top = 8
         Width = 222
-        Height = 17
+        Height = 24
         Caption = 'Set Component Properties'
         TabOrder = 0
       end
