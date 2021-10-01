@@ -27,7 +27,7 @@ type
     procedure Loaded; override;
   private
 {$IFDEF IDE_IS_HIDPI_AWARE}
-    Fscaler: TFormDpiScaler;
+    FScaler: TFormDpiScaler;
     procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
   protected
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
@@ -62,7 +62,7 @@ end;
 procedure TfmBaseForm.InitDpiScaler;
 begin
 {$IFDEF IDE_IS_HIDPI_AWARE}
-  Fscaler := TFormDpiScaler.Create(Self);
+  FScaler := TFormDpiScaler.Create(Self);
   ApplyDpi(TScreen_GetDpiForForm(Self), nil);
 {$ENDIF}
 end;
@@ -77,8 +77,8 @@ end;
 
 procedure TfmBaseForm.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 begin
-  if Assigned(Fscaler) then
-    Fscaler.ApplyDpi(_NewDpi, _NewBounds);
+  if Assigned(FScaler) then
+    FScaler.ApplyDpi(_NewDpi, _NewBounds);
   ArrangeControls;
 end;
 
