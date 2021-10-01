@@ -1,7 +1,7 @@
 unit GX_BaseForm;
 
 {$I GX_CondDefine.inc}
-
+{$D+}
 interface
 
 uses
@@ -12,7 +12,11 @@ uses
   Graphics,
   Controls,
   Forms,
-  Dialogs;
+  Dialogs,
+{$IFDEF IDE_IS_HIDPI_AWARE}
+  u_dzDpiScaleUtils,
+{$ENDIF}
+  u_dzVclUtils;
 
 type
   // All forms except docking forms must descend from this class.
@@ -23,8 +27,14 @@ type
     procedure Loaded; override;
   private
 {$IFDEF IDE_IS_HIDPI_AWARE}
+    Fscaler: TFormDpiScaler;
     procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
+  protected
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+    procedure ArrangeControls; virtual;
 {$ENDIF}
+  protected
+    procedure InitDpiScaler;
   public
     class function Execute(_Owner: TComponent): Boolean; overload; virtual;
     constructor Create(AOwner: TComponent); override;
@@ -49,12 +59,31 @@ begin
   end;
 end;
 
+procedure TfmBaseForm.InitDpiScaler;
+begin
+{$IFDEF IDE_IS_HIDPI_AWARE}
+  Fscaler := TFormDpiScaler.Create(Self);
+  ApplyDpi(TScreen_GetDpiForForm(Self), nil);
+{$ENDIF}
+end;
+
 {$IFDEF IDE_IS_HIDPI_AWARE}
 procedure TfmBaseForm.WMDpiChanged(var _Msg: TWMDpi);
 begin
   inherited;
-  ChangeScale(CurrentPPI, _Msg.YDpi, True);
+  ApplyDpi(_Msg.YDpi, _Msg.ScaledRect);
   _Msg.Result := 0;
+end;
+
+procedure TfmBaseForm.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+begin
+  if Assigned(Fscaler) then
+    Fscaler.ApplyDpi(_NewDpi, _NewBounds);
+  ArrangeControls;
+end;
+
+procedure TfmBaseForm.ArrangeControls;
+begin
 end;
 {$ENDIF}
 
@@ -71,4 +100,3 @@ begin
 end;
 
 end.
-

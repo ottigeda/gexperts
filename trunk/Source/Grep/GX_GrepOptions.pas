@@ -44,12 +44,13 @@ type
     procedure mi_ColumnClick(Sender: TObject);
   private
     procedure HandleDropFiles(_Sender: TObject; _Files: TStrings);
+  protected
 {$IFDEF IDE_IS_HIDPI_AWARE}
-    procedure ArrangeControls;
-    procedure HandleOnAfterMonitorDpiChanged(_Sender: TObject; _OldDPI, _NewDPI: Integer);
+    procedure ArrangeControls; override;
 {$ENDIF}
   public
-    class function Execute(var _UseCurrentIdent: Boolean; var _Editor, _Params: string): Boolean;
+    class function Execute(_Owner: TWinControl;
+      var _UseCurrentIdent: Boolean; var _Editor, _Params: string): Boolean;
     constructor Create(_Owner: TComponent); override;
   end;
 
@@ -82,17 +83,17 @@ implementation
 
 uses
   ComCtrls, Types,
-  u_dzVclUtils, 
+  u_dzVclUtils,
   GX_GenericUtils, GX_IdeUtils, GX_GExperts, GX_ActionBroker, GX_OtaUtils;
 
 { TfmGrepOptions }
 
-class function TfmGrepOptions.Execute(var _UseCurrentIdent: Boolean;
-  var _Editor, _Params: string): Boolean;
+class function TfmGrepOptions.Execute(_Owner: TWinControl;
+  var _UseCurrentIdent: Boolean; var _Editor, _Params: string): Boolean;
 var
   frm: TfmGrepOptions;
 begin
-  frm := TfmGrepOptions.Create(nil);
+  frm := TfmGrepOptions.Create(_Owner);
   try
     frm.chkUseCurrentIdent.Checked := _UseCurrentIdent;
     frm.ed_ExternalEditor.Text := _Editor;
@@ -123,13 +124,12 @@ end;
 constructor TfmGrepOptions.Create(_Owner: TComponent);
 begin
   inherited;
+
   TWinControl_ActivateDropFiles(Self, HandleDropFiles);
 
   TButton_AddDropdownMenu(b_Parameters, pm_Parameters);
-{$IFDEF IDE_IS_HIDPI_AWARE}
-  self.OnAfterMonitorDpiChanged := HandleOnAfterMonitorDpiChanged;
-  ArrangeControls;
-{$ENDIF}
+
+  InitDpiScaler;
 end;
 
 {$IFDEF IDE_IS_HIDPI_AWARE}
@@ -142,16 +142,10 @@ begin
   l_Parameters.Top := t + 8;
   t := TEdit_AlignBelowLabel(ed_Parameters, l_Parameters);
   Inc(t, 8);
-  btnOK.top := t;
-  btnCancel.top := t;
-  b_Parameters.top := t;
-  self.ClientHeight := t + b_Parameters.Height + 8;
-end;
-
-procedure TfmGrepOptions.HandleOnAfterMonitorDpiChanged(_Sender: TObject;
-  _OldDPI, _NewDPI: Integer);
-begin
-  ArrangeControls;
+  btnOK.Top := t;
+  btnCancel.Top := t;
+  b_Parameters.Top := t;
+  Self.ClientHeight := t + b_Parameters.Height + 8;
 end;
 {$ENDIF}
 

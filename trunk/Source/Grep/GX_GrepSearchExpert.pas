@@ -111,7 +111,7 @@ begin
   UseCurrentIdent := gblGrepExpert.GrepUseCurrentIdent;
   ExternalEditor := gblGrepExpert.ExternalEditor;
   Params := gblGrepExpert.ExternalEditorParams;
-  if TfmGrepOptions.Execute(UseCurrentIdent, ExternalEditor, Params) then begin
+  if TfmGrepOptions.Execute(nil, UseCurrentIdent, ExternalEditor, Params) then begin
     gblGrepExpert.GrepUseCurrentIdent := UseCurrentIdent;
     gblGrepExpert.ExternalEditor := ExternalEditor;
     gblGrepExpert.ExternalEditorParams := Params;
