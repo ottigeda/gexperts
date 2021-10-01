@@ -334,6 +334,8 @@ begin
   TButton_AddDropdownMenu(btnInsertPlaceholder, pmuPlaceholders);
   mmoTextToInsert.Lines.Text := TAutoTodoHandler.GetDefaultTextToInsert;
 
+  InitDpiScaler;
+
   TControl_SetConstraints(Self, [ccMinWidth, ccMinHeight, ccMaxHeight]);
 end;
 
