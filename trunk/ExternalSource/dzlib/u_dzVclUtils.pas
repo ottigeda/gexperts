@@ -86,19 +86,6 @@ type
   end;
 {$IFEND}
 
-{$IFDEF SUPPORTS_ENHANCED_RECORDS}
-type
-  TDpiScaler = record
-  private
-    FDesignDpi: Integer;
-    FCurrentDpi: Integer;
-  public
-    procedure Init(_frm: TCustomForm); inline;
-    procedure SetCurrentDpi(_frm: TCustomForm); inline;
-    function Calc(_Value: Integer): Integer; inline;
-  end;
-{$ENDIF SUPPORTS_ENHANCED_RECORDS}
-
 type
   ///<summary> This is a copy of the TFileFormatsList class from Graphics which
   ///          is unfortunately only declaread in the implementation section </summary>
@@ -7062,46 +7049,6 @@ begin
   EnumDisplayMonitors(0, nil, TMonitorEnumProc(@EnumMonitorsProc), Windows.LParam(@Result));
 end;
 {$ENDIF}
-
-{$IFDEF SUPPORTS_ENHANCED_RECORDS}
-{ TDpiScaler }
-
-function TDpiScaler.Calc(_Value: Integer): Integer;
-begin
-  Result := MulDiv(_Value, FCurrentDpi, FDesignDpi);
-end;
-
-procedure TDpiScaler.Init(_frm: TCustomForm);
-begin
-  if not Assigned(_frm) then begin
-    FDesignDpi := 96;
-    FCurrentDpi := 96;
-  end else begin
-// todo: adjust as needed
-{$IFDEF DELPHIX_TOKYO_UP}
-    FDesignDpi := TForm_GetDesignDPI(TForm(_frm));
-    FCurrentDpi := TScreen_GetDpiForForm(_frm);
-{$ELSE ~DELPHIX_TOKYO_UP}
-    FDesignDpi := TForm(_frm).PixelsPerInch;
-    FCurrentDpi := TForm(_frm).PixelsPerInch;
-{$ENDIF DELPHIX_TOKYO_UP}
-  end;
-end;
-
-procedure TDpiScaler.SetCurrentDpi(_frm: TCustomForm);
-begin
-  if not Assigned(_frm) then begin
-    FCurrentDpi := 96;
-  end else begin
-// todo: adjust as needed
-{$IFDEF DELPHIX_TOKYO_UP}
-    FCurrentDpi := TScreen_GetDpiForForm(_frm)
-{$ELSE ~DELPHIX_TOKYO_UP}
-    FCurrentDpi := TForm(_frm).PixelsPerInch;
-{$ENDIF DELPHIX_TOKYO_UP}
-  end;
-end;
-{$ENDIF SUPPORTS_ENHANCED_RECORDS}
 
 initialization
   InitializeCustomMessages;

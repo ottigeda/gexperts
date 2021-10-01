@@ -58,7 +58,7 @@ function TStringList_CreateFrom(const _sl: TStrings; out _Guard: IInterface;
 ///<summary>
 /// Creates a TStringList from the given array of string.
 /// @NOTE: This function is deprecated, se the overload with a SortHandling parameter </summary>
-function TStringList_CreateFrom(const _sa: array of string; _Sorted: Boolean = False): TStringList; overload; deprecated;
+function TStringList_CreateFrom(const _sa: array of string; _Sorted: Boolean): TStringList; overload; deprecated;
 ///<summary>
 /// Creates a TStringList from the given array of string. </summary>
 function TStringList_CreateFrom(const _sa: array of string;
@@ -431,6 +431,15 @@ procedure TIniFile_ClearSection(_Ini: TCustomIniFile; const _Section: string);
 /// Clears all entries in the given section and writes the values from the TStrings to it
 /// </summary>
 procedure TIniFile_WriteSectionValues(_Ini: TCustomIniFile; const _Section: string; _sl: TStrings);
+
+/// <summary>
+/// Reads the given section from the given .INI file and returns all its keys as a TStrings
+/// (This is short for opening the file, calling Ini.ReadSection and closing it.)
+/// @returns false, if the section does not exist. </summary>
+function TIniFile_TryReadSectionKeys(const _Filename, _Section: string; _sl: TStrings): Boolean;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 
 /// <summary>
 /// Reads the given section from the given .INI file and returns all its keys as a TStrings
@@ -1625,21 +1634,29 @@ begin
   end;
 end;
 
-procedure TIniFile_ReadSectionKeys(const _Filename, _Section: string; _sl: TStrings);
+function TIniFile_TryReadSectionKeys(const _Filename, _Section: string; _sl: TStrings): Boolean;
 var
   Ini: TMemIniFile;
-  ErrStr: string;
 begin
   Ini := TMemIniFile.Create(_Filename);
   try
-    if not Ini.SectionExists(_Section) then begin
-      ErrStr := Format(_('Section "%s" does not exist in ini file'), [_Section])
-        + ' ' + _Filename;
-      raise Exception.Create(ErrStr);
+    Result := Ini.SectionExists(_Section);
+    if Result then begin
+      Ini.ReadSection(_Section, _sl);
     end;
-    Ini.ReadSection(_Section, _sl);
   finally
     FreeAndNil(Ini);
+  end;
+end;
+
+procedure TIniFile_ReadSectionKeys(const _Filename, _Section: string; _sl: TStrings);
+var
+  ErrStr: string;
+begin
+  if not TIniFile_TryReadSectionKeys(_Filename, _Section, _sl) then begin
+    ErrStr := Format(_('Section "%s" does not exist in ini file'), [_Section])
+      + ' ' + _Filename;
+    raise Exception.Create(ErrStr);
   end;
 end;
 
@@ -1690,10 +1707,10 @@ begin
     end;
   end else begin
     for i := _Sections.Count - 1 downto 0 do begin
-     s := _Sections[i];
+      s := _Sections[i];
       if not SameText(Copy(s, 1, Len), _Section) or (Copy(s, Len + 1, 1) <> '\') then
         _Sections.Delete(i)
-        else begin
+      else begin
         s := TailStr(s, Len + 2);
         if (s = '') or (Pos('\', s) > 0) then
           _Sections.Delete(i)
@@ -2239,7 +2256,7 @@ begin
   end;
 end;
 
-function TStringList_CreateFrom(const _sa: array of string; _Sorted: Boolean = False): TStringList;
+function TStringList_CreateFrom(const _sa: array of string; _Sorted: Boolean): TStringList;
 var
   SortHandling: TStringListSortHandling;
 begin

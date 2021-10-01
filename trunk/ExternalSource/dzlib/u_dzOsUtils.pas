@@ -16,6 +16,7 @@ type
   EOsFunc = class(EdzException);
   EOFNoFileinfo = class(EOsFunc);
   EPowerRequestFailed = class(EOsFunc)
+  public
     ErrorCode: Word;
   end;
 
