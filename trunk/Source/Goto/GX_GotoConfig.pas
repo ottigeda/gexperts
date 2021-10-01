@@ -22,6 +22,7 @@ type
   private
   public
     class function Execute(var _ReplaceSearchGoto: Boolean): Boolean;
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
@@ -46,6 +47,13 @@ begin
   finally
     FreeAndNil(frm);
   end;
+end;
+
+constructor Tf_GotoConfig.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
 end;
 
 end.

@@ -97,6 +97,8 @@ begin
     Items.EndUpdate;
   end;
 
+  InitDpiScaler;
+
   lb_UnitPositions.ClientHeight := (FUnitPositions.Count + 1) * lb_UnitPositions.ItemHeight;
   b_Ok.Top := lb_UnitPositions.Top + lb_UnitPositions.Height + 8;
   b_Cancel.Top := b_Ok.Top;
