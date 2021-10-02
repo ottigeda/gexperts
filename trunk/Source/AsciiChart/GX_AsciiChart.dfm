@@ -1,7 +1,6 @@
 object fmAsciiChart: TfmAsciiChart
   Left = 422
   Top = 177
-  AutoScroll = False
   Caption = 'ASCII Chart'
   ClientHeight = 395
   ClientWidth = 542
@@ -20,69 +19,70 @@ object fmAsciiChart: TfmAsciiChart
   OnConstrainedResize = FormConstrainedResize
   OnDeactivate = FormDeactivate
   OnKeyDown = FormKeyDown
-  OnMouseMove = FormMouseMove
-  OnMouseUp = FormMouseUp
-  OnPaint = FormPaint
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 14
-  object ToolBar: TToolBar
+  object pb_Grid: TPaintBox
+    Left = 0
+    Top = 24
+    Width = 542
+    Height = 371
+    Align = alClient
+    OnMouseMove = pb_GridMouseMove
+    OnMouseUp = pb_GridMouseUp
+    OnPaint = pb_GridPaint
+  end
+  object p_ToolBar: TPanel
     Left = 0
     Top = 0
     Width = 542
-    Height = 22
-    AutoSize = True
-    ButtonWidth = 31
-    EdgeBorders = []
-    Flat = True
-    ShowCaptions = True
+    Height = 24
+    Align = alTop
     TabOrder = 0
-    Wrapable = False
-    OnResize = ToolBarResize
-    object tbnCharLow: TToolButton
+    object sb_Low: TSpeedButton
       Left = 0
-      Top = 0
-      Action = actCharLow
+      Top = 1
+      Width = 41
+      Height = 22
+      GroupIndex = 1
+      Down = True
       Caption = 'Low'
-      Grouped = True
+      Flat = True
+      OnClick = actCharLowExecute
     end
-    object tbnCharHigh: TToolButton
-      Left = 31
-      Top = 0
-      Action = actCharHigh
+    object sb_High: TSpeedButton
+      Left = 42
+      Top = 2
+      Width = 41
+      Height = 22
+      GroupIndex = 1
       Caption = 'High'
-      Grouped = True
+      Flat = True
+      OnClick = actCharHighExecute
     end
-    object tbnSep1: TToolButton
-      Left = 62
-      Top = 0
-      Width = 8
-      ImageIndex = 2
-      Style = tbsSeparator
-    end
-    object tbnCharDec: TToolButton
-      Left = 70
-      Top = 0
-      Action = actCharDec
+    object sb_Dec: TSpeedButton
+      Left = 90
+      Top = 2
+      Width = 41
+      Height = 22
+      GroupIndex = 2
+      Down = True
       Caption = 'Dec'
-      Grouped = True
+      Flat = True
+      OnClick = actCharDecExecute
     end
-    object tbnCharHex: TToolButton
-      Left = 101
-      Top = 0
-      Action = actCharHex
+    object sb_Hex: TSpeedButton
+      Left = 130
+      Top = 2
+      Width = 41
+      Height = 22
+      GroupIndex = 2
       Caption = 'Hex'
-      Grouped = True
-    end
-    object tbnSep2: TToolButton
-      Left = 132
-      Top = 0
-      Width = 8
-      ImageIndex = 2
-      Style = tbsSeparator
+      Flat = True
+      OnClick = actCharHexExecute
     end
     object cbxFontName: TComboBox
-      Left = 140
+      Left = 176
       Top = 0
       Width = 175
       Height = 22
@@ -97,9 +97,9 @@ object fmAsciiChart: TfmAsciiChart
       OnEnter = cbxFontNameEnter
     end
     object edFontSize: TEdit
-      Left = 315
+      Left = 352
       Top = 0
-      Width = 25
+      Width = 57
       Height = 22
       MaxLength = 2
       TabOrder = 1
@@ -107,27 +107,26 @@ object fmAsciiChart: TfmAsciiChart
       OnChange = edFontSizeChange
     end
     object updFontSize: TUpDown
-      Left = 340
+      Left = 409
       Top = 0
-      Width = 15
+      Width = 16
       Height = 22
       Associate = edFontSize
       Min = 6
       Max = 20
       Position = 9
       TabOrder = 2
-      Wrap = False
       OnClick = updFontSizeClick
     end
     object eChars: TEdit
-      Left = 355
+      Left = 432
       Top = 0
-      Width = 157
+      Width = 85
       Height = 22
       TabOrder = 3
     end
     object btnClear: TButton
-      Left = 520
+      Left = 517
       Top = 0
       Width = 22
       Height = 22
@@ -219,6 +218,7 @@ object fmAsciiChart: TfmAsciiChart
     object actCharLow: TAction
       Category = 'HighLow'
       Caption = 'Show Characters &0-127'
+      GroupIndex = 1
       ImageIndex = 3
       ShortCut = 16460
       OnExecute = actCharLowExecute
@@ -227,6 +227,7 @@ object fmAsciiChart: TfmAsciiChart
     object actCharHigh: TAction
       Category = 'HighLow'
       Caption = 'Show Characters &128-255'
+      GroupIndex = 1
       ImageIndex = 2
       ShortCut = 16456
       OnExecute = actCharHighExecute
@@ -235,6 +236,7 @@ object fmAsciiChart: TfmAsciiChart
     object actCharDec: TAction
       Category = 'HexDec'
       Caption = 'Character Values as &Decimal'
+      GroupIndex = 2
       ImageIndex = 0
       ShortCut = 24644
       OnExecute = actCharDecExecute
@@ -243,6 +245,7 @@ object fmAsciiChart: TfmAsciiChart
     object actCharHex: TAction
       Category = 'HexDec'
       Caption = 'Character Values as &Hexadecimal'
+      GroupIndex = 2
       ImageIndex = 1
       ShortCut = 24648
       OnExecute = actCharHexExecute

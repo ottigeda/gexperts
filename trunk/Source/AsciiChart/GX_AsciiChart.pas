@@ -9,7 +9,7 @@ interface
 
 uses
   Forms, ExtCtrls, Controls, Classes, StdCtrls, Menus, ComCtrls, ActnList,
-  ToolWin, ImgList, GX_BaseForm, Actions;
+  ToolWin, ImgList, GX_BaseForm, Actions, Buttons, Graphics;
 
 type
   TfmAsciiChart = class(TfmBaseForm)
@@ -30,11 +30,11 @@ type
     mitShowHints: TMenuItem;
     mitHelp: TMenuItem;
     Actions: TActionList;
-    ToolBar: TToolBar;
-    tbnCharLow: TToolButton;
-    tbnCharHigh: TToolButton;
-    tbnCharDec: TToolButton;
-    tbnCharHex: TToolButton;
+    p_ToolBar: TPanel;
+    sb_Low: TSpeedButton;
+    sb_High: TSpeedButton;
+    sb_Dec: TSpeedButton;
+    sb_Hex: TSpeedButton;
     cbxFontName: TComboBox;
     edFontSize: TEdit;
     updFontSize: TUpDown;
@@ -47,18 +47,16 @@ type
     actFontSize10: TAction;
     actFontSize12: TAction;
     actShowHints: TAction;
-    tbnSep1: TToolButton;
-    tbnSep2: TToolButton;
     actHelpHelp: TAction;
     actHelpAbout: TAction;
     btnClear: TButton;
-    procedure FormPaint(Sender: TObject);
+    pb_Grid: TPaintBox;
     procedure cbxFontNameChange(Sender: TObject);
-    procedure FormMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
+    procedure pb_GridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormResize(Sender: TObject);
-    procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure pb_GridMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure HintTimerTimer(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure updFontSizeClick(Sender: TObject; Button: TUDBtnType);
@@ -85,6 +83,7 @@ type
     procedure actShowHintsUpdate(Sender: TObject);
     procedure ToolBarResize(Sender: TObject);
     procedure btnClearClick(Sender: TObject);
+    procedure pb_GridPaint(Sender: TObject);
   private
     FStartCharacter: Integer;
     FDisplayFontSize: Integer;
@@ -99,7 +98,7 @@ type
     function TryGetCharPos(MouseX, MouseY: Integer; out CharPos: Integer): Boolean; overload;
     function TryGetCharPos(MouseX, MouseY: Integer; out CharPos: Integer;
       out XPos, YPos, HorizMult, VertMult: Integer): Boolean; overload;
-    procedure DrawCharacter(const CharValue: Integer; const CharText: string;
+    procedure DrawCharacter(cnv: TCanvas; const CharValue: Integer; const CharText: string;
       const HorizMult, VertMult: Integer);
     procedure GetFonts;
     procedure SetFontName(const NewFontName: string);
@@ -109,6 +108,11 @@ type
     procedure KillHint;
     procedure DoHint(Sender: TObject);
     procedure DoDeactivate(Sender: TObject);
+    procedure doArrangeControls;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ArrangeControls; override;
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -122,7 +126,7 @@ implementation
 {$R *.dfm}
 
 uses
-  Windows, Messages, SysUtils, Graphics, GX_Experts,
+  Windows, Messages, SysUtils, GX_Experts,
   GX_GExperts, GX_ConfigurationInfo, GX_GxUtils, GX_GenericUtils, GX_IdeUtils;
 
 type
@@ -172,7 +176,7 @@ begin
   Settings.SaveForm('Window', Self);
 end;
 
-procedure TfmAsciiChart.FormPaint(Sender: TObject);
+procedure TfmAsciiChart.pb_GridPaint(Sender: TObject);
 { It's much quicker to draw the characters in one style, change
   styles then draw all the others in the other style than do each draw
   one after another changing styles as I go along }
@@ -181,100 +185,99 @@ var
   X, Y: Integer; { screen pixel locations }
   HorizMult, VertMult: Integer; { logical screen width/height segments }
   Start: Integer; { low charnum for character rendering }
+  cnv: TCanvas;
 begin
-  if FStartCharacter = 0 then Start := 32 else Start := 0;
-  HorizMult := Self.ClientWidth div 8;
-  VertMult := (Self.ClientHeight - ToolBar.Height) div 16;
-  Canvas.Brush.Style := bsClear;
-  { draw the character value as Int or Hex on screen }
-  Canvas.Font.Name := 'Tahoma';  // do not localize
-  Canvas.Font.Size := 9;
-  Canvas.Font.Color := clGrayText;
-  { Only do the if check once for improved speed rather than every iteration }
-  if FShowHex then
-  begin
-    for i := 0 to 127 do
-    begin
-      X := i div 16;
-      Y := i mod 16;
-      Canvas.TextOut(X * HorizMult + 2, Y * VertMult + 28, IntToHex(FStartCharacter + i, 2));
-    end;
-  end
+  if FStartCharacter = 0 then
+    Start := 32
   else
-  begin
-    for i := 0 to 127 do
-    begin
+    Start := 0;
+  HorizMult := pb_Grid.Width div 8;
+  VertMult := pb_Grid.Height div 16;
+  cnv := pb_Grid.Canvas;
+  cnv.Brush.Style := bsClear;
+  { draw the character value as Int or Hex on screen }
+  cnv.Font.Name := 'Tahoma';  // do not localize
+  cnv.Font.Size := 9;
+  cnv.Font.Color := clGrayText;
+  { Only do the if check once for improved speed rather than every iteration }
+  if FShowHex then begin
+    for i := 0 to 127 do begin
       X := i div 16;
       Y := i mod 16;
-      Canvas.TextOut(X * HorizMult + 2, Y * VertMult + 28, IntToStr(FStartCharacter + i));
+      cnv.TextOut(X * HorizMult + 2, Y * VertMult + 2, IntToHex(FStartCharacter + i, 2));
+    end;
+  end else begin
+    for i := 0 to 127 do begin
+      X := i div 16;
+      Y := i mod 16;
+      cnv.TextOut(X * HorizMult + 2, Y * VertMult + 2, IntToStr(FStartCharacter + i));
     end;
   end;
   { Draw in the characters 0-31 if required }
-  Canvas.Font.Color := clWindowText;
-  if FStartCharacter = 0 then
-  begin
-    DrawCharacter(0,  'NUL', HorizMult, VertMult); // Ctrl @, NULL
-    DrawCharacter(1,  'SOH', HorizMult, VertMult); // Ctrl A, Start of Header
-    DrawCharacter(2,  'STX', HorizMult, VertMult); // Ctrl B, Start of Text
-    DrawCharacter(3,  'ETX', HorizMult, VertMult); // Ctrl C, End of Text
-    DrawCharacter(4,  'EOT', HorizMult, VertMult); // Ctrl D, End of Transmission
-    DrawCharacter(5,  'ENQ', HorizMult, VertMult); // Ctrl E, Enquiry
-    DrawCharacter(6,  'ACK', HorizMult, VertMult); // Ctrl F, Acknowlodge
-    DrawCharacter(7,  'BEL', HorizMult, VertMult); // Ctrl G, Bell
-    DrawCharacter(8,  'BS',  HorizMult, VertMult); // Ctrl H, Backspace
-    DrawCharacter(9,  'TAB', HorizMult, VertMult); // Ctrl I, Horizontal Tab
-    DrawCharacter(10, 'LF',  HorizMult, VertMult); // Ctrl J, Linefeed
-    DrawCharacter(11, 'VT',  HorizMult, VertMult); // Ctrl K, Vertical Tab
-    DrawCharacter(12, 'FF',  HorizMult, VertMult); // Ctrl L, Form Feed
-    DrawCharacter(13, 'CR',  HorizMult, VertMult); // Ctrl M, Carridge Return
-    DrawCharacter(14, 'SO',  HorizMult, VertMult); // Ctrl N, Shift Out
-    DrawCharacter(15, 'SI',  HorizMult, VertMult); // Ctrl O, Shift in
-    DrawCharacter(16, 'DLE', HorizMult, VertMult); // Ctrl P, Delete
-    DrawCharacter(17, 'DC1', HorizMult, VertMult); // Ctrl Q, Device Control 1
-    DrawCharacter(18, 'DC2', HorizMult, VertMult); // Ctrl R, Device Control 2
-    DrawCharacter(19, 'DC3', HorizMult, VertMult); // Ctrl S, Device Control 3
-    DrawCharacter(20, 'DC4', HorizMult, VertMult); // Ctrl T, Device Control 4
-    DrawCharacter(21, 'NAK', HorizMult, VertMult); // Ctrl U, Negative Acknowledge
-    DrawCharacter(22, 'SYN', HorizMult, VertMult); // Ctrl V, Synchronise
-    DrawCharacter(23, 'ETB', HorizMult, VertMult); // Ctrl W, End Block ??
-    DrawCharacter(24, 'CAN', HorizMult, VertMult); // Ctrl X, Cancel
-    DrawCharacter(25, 'EM',  HorizMult, VertMult); // Ctrl Y, End Message
-    DrawCharacter(26, 'SUB', HorizMult, VertMult); // Ctrl Z, Sub
-    DrawCharacter(27, 'ESC', HorizMult, VertMult); // Ctrl [, Escape
-    DrawCharacter(28, 'FS',  HorizMult, VertMult); // Ctrl \, Form Separator
-    DrawCharacter(29, 'GS',  HorizMult, VertMult); // Ctrl ], Group Separator
-    DrawCharacter(30, 'RS',  HorizMult, VertMult); // Ctrl ^, Record Separator
-    DrawCharacter(31, 'US',  HorizMult, VertMult); // Ctrl _, Unit Separator
+  cnv.Font.Color := clWindowText;
+  if FStartCharacter = 0 then begin
+    DrawCharacter(cnv, 0,  'NUL', HorizMult, VertMult); // Ctrl @, NULL
+    DrawCharacter(cnv, 1,  'SOH', HorizMult, VertMult); // Ctrl A, Start of Header
+    DrawCharacter(cnv, 2,  'STX', HorizMult, VertMult); // Ctrl B, Start of Text
+    DrawCharacter(cnv, 3,  'ETX', HorizMult, VertMult); // Ctrl C, End of Text
+    DrawCharacter(cnv, 4,  'EOT', HorizMult, VertMult); // Ctrl D, End of Transmission
+    DrawCharacter(cnv, 5,  'ENQ', HorizMult, VertMult); // Ctrl E, Enquiry
+    DrawCharacter(cnv, 6,  'ACK', HorizMult, VertMult); // Ctrl F, Acknowlodge
+    DrawCharacter(cnv, 7,  'BEL', HorizMult, VertMult); // Ctrl G, Bell
+    DrawCharacter(cnv, 8,  'BS',  HorizMult, VertMult); // Ctrl H, Backspace
+    DrawCharacter(cnv, 9,  'TAB', HorizMult, VertMult); // Ctrl I, Horizontal Tab
+    DrawCharacter(cnv, 10, 'LF',  HorizMult, VertMult); // Ctrl J, Linefeed
+    DrawCharacter(cnv, 11, 'VT',  HorizMult, VertMult); // Ctrl K, Vertical Tab
+    DrawCharacter(cnv, 12, 'FF',  HorizMult, VertMult); // Ctrl L, Form Feed
+    DrawCharacter(cnv, 13, 'CR',  HorizMult, VertMult); // Ctrl M, Carridge Return
+    DrawCharacter(cnv, 14, 'SO',  HorizMult, VertMult); // Ctrl N, Shift Out
+    DrawCharacter(cnv, 15, 'SI',  HorizMult, VertMult); // Ctrl O, Shift in
+    DrawCharacter(cnv, 16, 'DLE', HorizMult, VertMult); // Ctrl P, Delete
+    DrawCharacter(cnv, 17, 'DC1', HorizMult, VertMult); // Ctrl Q, Device Control 1
+    DrawCharacter(cnv, 18, 'DC2', HorizMult, VertMult); // Ctrl R, Device Control 2
+    DrawCharacter(cnv, 19, 'DC3', HorizMult, VertMult); // Ctrl S, Device Control 3
+    DrawCharacter(cnv, 20, 'DC4', HorizMult, VertMult); // Ctrl T, Device Control 4
+    DrawCharacter(cnv, 21, 'NAK', HorizMult, VertMult); // Ctrl U, Negative Acknowledge
+    DrawCharacter(cnv, 22, 'SYN', HorizMult, VertMult); // Ctrl V, Synchronise
+    DrawCharacter(cnv, 23, 'ETB', HorizMult, VertMult); // Ctrl W, End Block ??
+    DrawCharacter(cnv, 24, 'CAN', HorizMult, VertMult); // Ctrl X, Cancel
+    DrawCharacter(cnv, 25, 'EM',  HorizMult, VertMult); // Ctrl Y, End Message
+    DrawCharacter(cnv, 26, 'SUB', HorizMult, VertMult); // Ctrl Z, Sub
+    DrawCharacter(cnv, 27, 'ESC', HorizMult, VertMult); // Ctrl [, Escape
+    DrawCharacter(cnv, 28, 'FS',  HorizMult, VertMult); // Ctrl \, Form Separator
+    DrawCharacter(cnv, 29, 'GS',  HorizMult, VertMult); // Ctrl ], Group Separator
+    DrawCharacter(cnv, 30, 'RS',  HorizMult, VertMult); // Ctrl ^, Record Separator
+    DrawCharacter(cnv, 31, 'US',  HorizMult, VertMult); // Ctrl _, Unit Separator
   end;
 
   { draw the character of that number on screen }
-  Canvas.Font.Size := FDisplayFontSize;
-  Canvas.Font.Name := FFontName;
+  cnv.Font.Size := FDisplayFontSize;
+  cnv.Font.Name := FFontName;
 
   for i := Start to 127 do
-    DrawCharacter(i, Char(FStartCharacter + i), HorizMult, VertMult);
+    DrawCharacter(cnv, i, Char(FStartCharacter + i), HorizMult, VertMult);
 
   { Draw the boxes on the screen }
-  { Only two colour assignments to canvas speeds things up }
-  Canvas.Pen.Width := 1;
-  Canvas.Pen.Style := psSolid;
+  { Only two colour assignments to cnv speeds things up }
+  cnv.Pen.Width := 1;
+  cnv.Pen.Style := psSolid;
   { 1) draw left and top sides }
-  Canvas.Pen.Color := clBtnHighlight;
+  cnv.Pen.Color := clBtnHighlight;
   for i := 0 to 7 do
     for j := 0 to 15 do
-      Canvas.PolyLine([Point(i * HorizMult, (j + 1) * VertMult + 24),
-        Point(i * HorizMult, j * VertMult + 25),
-          Point((i + 1) * HorizMult - 1, j * VertMult + 25)]);
+      cnv.PolyLine([Point(i * HorizMult, (j + 1) * VertMult - 2),
+          Point(i * HorizMult, j * VertMult - 1),
+          Point((i + 1) * HorizMult - 1, j * VertMult + -1)]);
   { 2) draw right and bottom sides }
-  Canvas.Pen.Color := clBtnShadow;
+  cnv.Pen.Color := clBtnShadow;
   for i := 0 to 7 do
     for j := 0 to 15 do
-      Canvas.PolyLine([Point((i + 1) * HorizMult - 1, j * VertMult + 25),
-        Point((i + 1) * HorizMult - 1, (j + 1) * VertMult + 24),
-          Point(i * HorizMult - 1, (j + 1) * VertMult + 24)]);
+      cnv.PolyLine([Point((i + 1) * HorizMult - 1, j * VertMult - 1),
+          Point((i + 1) * HorizMult - 1, (j + 1) * VertMult - 2),
+          Point(i * HorizMult - 1, (j + 1) * VertMult - 2)]);
 end;
 
-procedure TfmAsciiChart.DrawCharacter(const CharValue: Integer; const CharText: string;
+procedure TfmAsciiChart.DrawCharacter(cnv: TCanvas; const CharValue: Integer; const CharText: string;
   const HorizMult, VertMult: Integer);
 { This draws the text on the screen at the relevant location }
 var
@@ -284,26 +287,25 @@ var
 begin
   X := CharValue div 16;
   Y := CharValue mod 16;
-  VOffset := (VertMult - Canvas.TextHeight(CharText)) div 2;
-  HOffset := (HorizMult - 24 - Canvas.TextWidth(CharText)) div 2;
+  HOffset := (HorizMult - 24 - cnv.TextWidth(CharText)) div 2;
+  VOffset := (VertMult - cnv.TextHeight(CharText)) div 2;
   MyRect.Left := X * HorizMult + 24;
   MyRect.Right := (X + 1) * HorizMult;
-  MyRect.Top := Y * VertMult + 26;
-  MyRect.Bottom := (Y + 1) * VertMult + 26;
-  Canvas.TextRect(MyRect, MyRect.Left + HOffset, MyRect.Top + VOffset, CharText);
+  MyRect.Top := Y * VertMult;
+  MyRect.Bottom := (Y + 1) * VertMult;
+  cnv.TextRect(MyRect, MyRect.Left + HOffset, MyRect.Top + VOffset, CharText);
 end;
 
 procedure TfmAsciiChart.FormResize(Sender: TObject);
 var
   HorizMult, VertMult: Integer; { logical screen width/height segments }
 begin
-  HorizMult := Self.ClientWidth div 8;
-  VertMult := (Self.ClientHeight - ToolBar.Height) div 16;
-  if (HorizMult <> FOldHorizMult) or (VertMult <> FOldVertMult) then
-  begin
+  HorizMult := pb_Grid.Width div 8;
+  VertMult := pb_Grid.Height div 16;
+  if (HorizMult <> FOldHorizMult) or (VertMult <> FOldVertMult) then begin
     FOldHorizMult := HorizMult;
     FOldVertMult := VertMult;
-    Self.Refresh;
+    pb_Grid.Invalidate;
   end;
   KillHint;
 end;
@@ -311,10 +313,10 @@ end;
 function TfmAsciiChart.TryGetCharPos(MouseX, MouseY: Integer; out CharPos: Integer;
   out XPos, YPos, HorizMult, VertMult: Integer): Boolean; 
 begin
-  HorizMult := Self.ClientWidth div 8;
-  VertMult := (Self.ClientHeight - ToolBar.Height) div 16;
+  HorizMult := pb_Grid.Width div 8;
+  VertMult := pb_Grid.Height div 16;
   XPos := MouseX div HorizMult;
-  YPos := (MouseY - 25) div VertMult;
+  YPos := MouseY div VertMult;
   { only generate charpos if clicking inside the boundaries of the cells
     avoids the clicking beyond the right/bottom extents of the cells }
   Result := (XPos < 8) and (YPos < 16);
@@ -332,7 +334,7 @@ begin
   Result := TryGetCharPos(MouseX, MouseY, CharPos, XPos, YPos, HorizMult, VertMult);
 end;
 
-procedure TfmAsciiChart.FormMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
+procedure TfmAsciiChart.pb_GridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   Charpos: Integer;
@@ -353,7 +355,7 @@ begin
   // Update the font used for drawing characters.
   FFontName := cbxFontName.Text;
   eChars.Font.Name := FFontName;
-  Self.Refresh;
+  pb_Grid.Invalidate;
 end;
 
 function EnumFontsProc(var LogFont: TLogFont; var TextMetric: TTextMetric;
@@ -423,7 +425,7 @@ begin
   end;
 end;
 
-procedure TfmAsciiChart.FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+procedure TfmAsciiChart.pb_GridMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 { Charpos is the ordinal value of the cell clicked on }
 var
   HorizMult, VertMult: Integer; { logical screen width/height segments }
@@ -501,7 +503,7 @@ procedure TfmAsciiChart.updFontSizeClick(Sender: TObject;
   Button: TUDBtnType);
 begin
   FDisplayFontSize := updFontSize.Position;
-  Self.Refresh;
+  pb_Grid.Invalidate;
 end;
 
 procedure TfmAsciiChart.edFontSizeChange(Sender: TObject);
@@ -518,7 +520,7 @@ begin
   end;
 
   FDisplayFontSize := NewFontSize;
-  Self.Refresh;
+  pb_Grid.Invalidate;
 end;
 
 procedure TfmAsciiChart.FormKeyDown(Sender: TObject; var Key: Word;
@@ -594,7 +596,7 @@ begin
 
   FDisplayFontSize := Size;
   edFontSize.Text := IntToStr(Size);
-  Self.Refresh;
+  pb_Grid.Invalidate;
 end;
 
 procedure TfmAsciiChart.FormConstrainedResize(Sender: TObject;
@@ -627,11 +629,13 @@ end;
 procedure TfmAsciiChart.actCharDecExecute(Sender: TObject);
 begin
   SetShowHex(False);
+  sb_Dec.Down := True;
 end;
 
 procedure TfmAsciiChart.actCharHexExecute(Sender: TObject);
 begin
   SetShowHex(True);
+  sb_Hex.Down := True;
 end;
 
 procedure TfmAsciiChart.SetShowHex(const Value: Boolean);
@@ -640,7 +644,7 @@ begin
   begin
     FShowHex := Value;
 
-    Self.Refresh;
+    pb_Grid.Invalidate;
   end;
 end;
 
@@ -683,6 +687,7 @@ end;
 procedure TfmAsciiChart.actCharHighExecute(Sender: TObject);
 begin
   SetStartCharacter(128);
+  sb_High.Down := True;
 end;
 
 procedure TfmAsciiChart.SetStartCharacter(const Value: Integer);
@@ -690,13 +695,14 @@ begin
   if Value <> FStartCharacter then
   begin
     FStartCharacter := Value;
-    Self.Refresh;
+    pb_Grid.Invalidate;
   end;
 end;
 
 procedure TfmAsciiChart.actCharLowExecute(Sender: TObject);
 begin
   SetStartCharacter(0);
+  sb_Low.Down := True;
 end;
 
 procedure TfmAsciiChart.actCharLowUpdate(Sender: TObject);
@@ -726,12 +732,12 @@ var
 begin
   inherited;
 
-  SetToolbarGradient(ToolBar);
   SetNonModalFormPopupMode(Self);
   GetFonts;
-  CenterForm(Self);
   updFontSize.Max := MaximumDisplayFontSize;
   updFontSize.Min := MinimumDisplayFontSize;
+
+  doArrangeControls;
 
   Settings := TAsciiChartExpert.GetSettings;
   // Do not localize any of the following items.
@@ -743,6 +749,10 @@ begin
   eChars.Text := Settings.ReadString('Edit Display Text', '');
   eChars.SelStart := Length(eChars.Text);
   FShowHints := Settings.ReadBool('Show Hint', True);
+
+  InitDpiScaler;
+
+  CenterForm(Self);
   Settings.LoadForm('Window', Self);
 
   updFontSize.Position := FDisplayFontSize;
@@ -760,6 +770,24 @@ begin
 
   fmAsciiChart := nil;
 end;
+
+procedure TfmAsciiChart.doArrangeControls;
+begin
+  sb_Low.Left := 0;
+  sb_High.Left := sb_Low.Left + sb_Low.Width + 1;
+  sb_Dec.Left := sb_High.Left + sb_High.Width + 8;
+  sb_Hex.Left := sb_Dec.Left + sb_Dec.Width + 1;
+
+  edFontSize.Left := cbxFontName.Left + cbxFontName.Width + 8;
+  eChars.Left := edFontSize.Left + edFontSize.Width + 16;
+end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmAsciiChart.ArrangeControls;
+begin
+  doArrangeControls;
+end;
+{$ENDIF}
 
 procedure TfmAsciiChart.ToolBarResize(Sender: TObject);
 begin
