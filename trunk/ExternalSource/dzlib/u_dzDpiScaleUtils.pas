@@ -40,6 +40,8 @@ type
   private
     DesignDPI: Integer;
     Width, Height: Integer;
+    MinWidth, MinHeight: Integer;
+    MaxWidth, MaxHeight: Integer;
     FontSize: Integer;
     FFrm: TForm;
     CtrlParams: array of TCtrlDpiScaler;
@@ -53,6 +55,7 @@ type
 implementation
 
 uses
+  StdCtrls,
   u_dzAdvancedObject,
   u_dzVclUtils;
 
@@ -138,6 +141,12 @@ var
   br: TRect;
 begin
   br := _Scaler.Calc(BoundsRect);
+  if (Ctrl is TLabel) and TLabel(Ctrl).AutoSize then begin
+    br.Width := Ctrl.Width;
+    br.Height := Ctrl.Height;
+  end else if (Ctrl is TEdit) and TEdit(Ctrl).AutoSize then begin
+    br.Height := Ctrl.Height;
+  end;
   Ctrl.BoundsRect := br;
   ResizeFont(_Scaler);
 end;
@@ -201,6 +210,11 @@ begin
   RedrawLock := TWinControl_Lock(FFrm);
   try
     Scaler.Init(DesignDPI, _NewDpi);
+    // Disable constraints to assure the new size can be set
+    FFrm.Constraints.MinWidth := 0;
+    FFrm.Constraints.MinHeight := 0;
+    FFrm.Constraints.MaxWidth := 0;
+    FFrm.Constraints.MaxHeight := 0;
     if Assigned(_NewBounds) then begin
       FFrm.BoundsRect := _NewBounds^;
     end else begin
@@ -225,16 +239,26 @@ begin
   for i := 0 to cnt - 1 do begin
     CtrlParams[i].ApplyScale(_Scaler);
   end;
+  FFrm.Constraints.MinWidth := _Scaler.Calc(MinWidth);
+  FFrm.Constraints.MinHeight := _Scaler.Calc(MinHeight);
+  FFrm.Constraints.MaxWidth := _Scaler.Calc(MaxWidth);
+  FFrm.Constraints.MaxHeight := _Scaler.Calc(MaxHeight);
 end;
 
 constructor TFormDpiScaler.Create(_frm: TForm);
 var
   Scaler: TDpiScaler;
+  cnstr: TSizeConstraints;
 begin
   inherited Create;
   FFrm := _frm;
   Width := _frm.ClientWidth;
   Height := _frm.ClientHeight;
+  cnstr := _frm.Constraints;
+  MinWidth := cnstr.MinWidth;
+  MinHeight := cnstr.MinHeight;
+  MaxWidth := cnstr.MaxWidth;
+  MaxHeight := cnstr.MaxHeight;
   FontSize := GetFontSize(_frm.Font);
   DesignDPI := TForm_GetDesignDPI(_frm);
   Scaler.Init(_frm.Font.PixelsPerInch, DesignDPI);
@@ -243,3 +267,6 @@ begin
 end;
 
 end.
+
+
+
