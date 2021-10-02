@@ -69,12 +69,14 @@ begin
   cnv := _sg.Canvas;
   cnv.FillRect(_Rect);
 {$IFDEF STRING_GRID_OWNERDRAW_FIX_ENABLED}
+  // todo: Make a special cond. define for Delphi 11 (and possibly later)
+  //       so we don't need to call GetBorlandIdeVersion
   if GetBorlandIdeVersion in [ideRS104U1, ideRS104U2, ideRS11] then begin
-    // in Update 1 they apparently fixed the fix (or at least made it consistently wrong again)
+    // in RS 10.4 Update 1 they apparently fixed the fix (or at least made it consistently wrong again)
     cnv.TextRect(_Rect, _Rect.Left + 6, _Rect.Top + 2, _Text)
   end else if GetBorlandIdeVersion in [ideRS104P2] then begin
-    // Embarcadero managed to bungle the StringGrid redraw fix in patch 2. Now we have to
-    // check whether the grid is focused and use a different x offset in that case.
+    // Embarcadero managed to bungle the StringGrid redraw fix in RS 10.4 patch 2.
+    // Now we have to check whether the grid is focused and use a different x offset in that case.
     if _Focused then
       cnv.TextRect(_Rect, _Rect.Left + 6, _Rect.Top + 2, _Text)
     else
