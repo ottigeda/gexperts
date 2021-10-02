@@ -359,10 +359,6 @@ type
     procedure ShowIdentifiersFilterResult(const cnt: Integer);
     procedure ShowSelectedUnitPathInStatusBar(const ARow: Integer);
     procedure sb_MatchWhereClick(Sender: TObject);
-{$IFDEF IDE_IS_HIDPI_AWARE}
-    procedure ArrangeControls(_OldDPI, _NewDPI: Integer);
-    procedure HandleOnAfterMonitorDpiChanged(_Sender: TObject; _OldDPI, _NewDPI: Integer);
-{$ENDIF}
   protected
     FProjectUnits: TStringList;
     FCommonUnits: TStringList;
@@ -370,6 +366,10 @@ type
     FSearchPathUnits: TStringList;
     FIdentifiers: TUnitExportlist;
     FUsesExpert: TUsesClauseMgrExpert;
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    FOldDPI: Integer;
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     constructor Create(_Owner: TComponent; _UsesExpert: TUsesClauseMgrExpert); reintroduce;
   end;
@@ -871,11 +871,6 @@ begin
 
   inherited Create(_Owner);
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
-  Self.OnAfterMonitorDpiChanged := HandleOnAfterMonitorDpiChanged;
-  ArrangeControls(TForm_GetDesignDPI(Self), TScreen_GetDpiForForm(Self));
-{$ENDIF}
-
   DoubleBuffered := True;
   pnlUnits.DoubleBuffered := True;
   pnlUses.DoubleBuffered := True;
@@ -896,13 +891,10 @@ begin
   sg_Identifiers.Cells[0, 0] := 'Identifier';
   sg_Identifiers.Cells[1, 0] := 'Unit';
 
-  TStringGrid_AdjustRowHeight(sg_Interface);
-  TStringGrid_AdjustRowHeight(sg_Implementation);
-  TStringGrid_AdjustRowHeight(sg_SearchPath);
-  TStringGrid_AdjustRowHeight(sg_Project);
-  TStringGrid_AdjustRowHeight(sg_Common);
-  TStringGrid_AdjustRowHeight(sg_Favorite);
-  TStringGrid_AdjustRowHeight(sg_Identifiers);
+  TControl_SetMinConstraints(Self);
+  pnlUses.Constraints.MinWidth := pnlUses.Width;
+
+  InitDpiScaler;
 
 {$IFOPT D+}
   SendDebug('TfmUsesManager.Create Leave');
@@ -1027,9 +1019,6 @@ var
 begin
   FCaption_lblFilter := lblFilter.Caption; // for showing Filter results
   lblFilter.Tag := -1; // Initialize
-
-  TControl_SetMinConstraints(Self);
-  pnlUses.Constraints.MinWidth := pnlUses.Width;
 
   FProjectUnits := TStringList.Create;
   sg_Project.AssociatedList := FProjectUnits;
@@ -1527,8 +1516,8 @@ var
   AvailableSourceList: TStringGrid;
   ActiveLBHasSelection: Boolean;
 begin
-  HasSelectedItem :=     HaveSelectedItem(sg_Interface);
-  actIntfMove.Enabled :=HasSelectedItem;
+  HasSelectedItem := HaveSelectedItem(sg_Interface);
+  actIntfMove.Enabled := HasSelectedItem;
   actIntfDelete.Enabled := HasSelectedItem;
   actIntfAddToFavorites.Enabled := HasSelectedItem;
 
@@ -1569,22 +1558,18 @@ begin
 end;
 
 {$IFDEF IDE_IS_HIDPI_AWARE}
-procedure TfmUsesManager.HandleOnAfterMonitorDpiChanged(_Sender: TObject;
-  _OldDPI, _NewDPI: Integer);
-begin
-  ArrangeControls(_OldDPI, _NewDPI);
-end;
-
-procedure TfmUsesManager.ArrangeControls(_OldDPI, _NewDPI: Integer);
+procedure TfmUsesManager.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); 
 
   procedure AdjustTop(_ctrl: TControl);
   begin
-    _Ctrl.Top := MulDiv(_Ctrl.Top, _NewDPI, _OldDPI);
+    // todo: Is this still necessary?
+    _Ctrl.Top := MulDiv(_Ctrl.Top, _NewDPI, FOldDPI);
   end;
 
   procedure AdjustHeight(_ctrl: TControl);
   begin
-    _Ctrl.Height := MulDiv(_Ctrl.Height, _NewDPI, _OldDPI);
+    // todo: Is this still necessary?
+    _Ctrl.Height := MulDiv(_Ctrl.Height, _NewDPI, FOldDPI);
   end;
 
   procedure ArrangeButtonsInGroup(const _Buttons: array of TWinControl; _grp: TGroupBox);
@@ -1608,6 +1593,19 @@ procedure TfmUsesManager.ArrangeControls(_OldDPI, _NewDPI: Integer);
   end;
 
 begin
+  if FOldDPI = 0 then
+    FOldDPI := CurrentPPI;
+  if Assigned(FScaler) then
+    FScaler.ApplyDpi(_NewDpi, _NewBounds);
+
+  TStringGrid_AdjustRowHeight(sg_Interface);
+  TStringGrid_AdjustRowHeight(sg_Implementation);
+  TStringGrid_AdjustRowHeight(sg_SearchPath);
+  TStringGrid_AdjustRowHeight(sg_Project);
+  TStringGrid_AdjustRowHeight(sg_Common);
+  TStringGrid_AdjustRowHeight(sg_Favorite);
+  TStringGrid_AdjustRowHeight(sg_Identifiers);
+
   lblFilter.Top := 0;
   pnlUnitsCaption.ClientHeight := lblFilter.Height+1;
   edtUnitFilter.Top := pnlUnitsCaption.Height;
@@ -1634,6 +1632,12 @@ begin
 //  AdjustTop(b_IdentifierMatchAnywhere);
 //  AdjustTop(b_IdentifierMatchSort);
   ArrangeButtonsInGroup([b_IdentifierMatchStart, b_IdentifierMatchAnywhere, b_IdentifierMatchSort], grp_IdentifiersMatch);
+
+  // the status bar gets moved up above the lower panel for whatever reason
+  // so we need to move it back where it belongs
+  sbUCM.Top := Self.Height;
+
+  FOldDpi := _NewDpi;
 end;
 {$ENDIF}
 

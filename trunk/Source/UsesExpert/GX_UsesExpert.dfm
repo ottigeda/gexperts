@@ -6,16 +6,12 @@ inherited fmUsesManager: TfmUsesManager
   Caption = 'Uses Clause Manager'
   ClientHeight = 490
   ClientWidth = 1008
-  Color = clBtnFace
+  ParentFont = False
   Font.Charset = ANSI_CHARSET
-  Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
-  Position = poScreenCenter
-  Scaled = False
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -69,7 +65,7 @@ inherited fmUsesManager: TfmUsesManager
             TabOrder = 0
             object btnSearchPathAddToIntf: TButton
               Left = 8
-              Top = 16
+              Top = 20
               Width = 145
               Height = 25
               Action = actAddToInterfaceBtn
@@ -77,7 +73,7 @@ inherited fmUsesManager: TfmUsesManager
             end
             object btnSearchPathAddToImpl: TButton
               Left = 160
-              Top = 16
+              Top = 20
               Width = 145
               Height = 25
               Action = actAddToImplementationBtn
@@ -86,7 +82,7 @@ inherited fmUsesManager: TfmUsesManager
           end
           object btnAddSearchPathlToFavorites: TButton
             Left = 320
-            Top = 16
+            Top = 20
             Width = 169
             Height = 25
             Action = actAvailAddAllToFav
@@ -208,7 +204,7 @@ inherited fmUsesManager: TfmUsesManager
           TabOrder = 1
           object btnCopySaveProjectListMenu: TSpeedButton
             Left = 632
-            Top = 16
+            Top = 20
             Width = 25
             Height = 25
             Glyph.Data = {
@@ -232,7 +228,7 @@ inherited fmUsesManager: TfmUsesManager
             TabOrder = 0
             object btnProjectAddToInterface: TButton
               Left = 8
-              Top = 16
+              Top = 20
               Width = 145
               Height = 25
               Action = actAddToInterfaceBtn
@@ -240,7 +236,7 @@ inherited fmUsesManager: TfmUsesManager
             end
             object btnProjectAddToImplementation: TButton
               Left = 160
-              Top = 16
+              Top = 20
               Width = 145
               Height = 25
               Action = actAddToImplementationBtn
@@ -249,7 +245,7 @@ inherited fmUsesManager: TfmUsesManager
           end
           object btnAddProjectToFavorites: TButton
             Left = 320
-            Top = 16
+            Top = 20
             Width = 169
             Height = 25
             Action = actAvailAddAllToFav
@@ -257,7 +253,7 @@ inherited fmUsesManager: TfmUsesManager
           end
           object btnCopySaveCurrentList: TButton
             Left = 496
-            Top = 16
+            Top = 20
             Width = 137
             Height = 25
             Hint = 'Copy the list of Project units to the clipboard.'
@@ -320,7 +316,7 @@ inherited fmUsesManager: TfmUsesManager
             TabOrder = 0
             object btnCommonAddToInterface: TButton
               Left = 8
-              Top = 16
+              Top = 20
               Width = 145
               Height = 25
               Action = actAddToInterfaceBtn
@@ -328,7 +324,7 @@ inherited fmUsesManager: TfmUsesManager
             end
             object btnCommonAddToImplementation: TButton
               Left = 160
-              Top = 16
+              Top = 20
               Width = 145
               Height = 25
               Action = actAddToImplementationBtn
@@ -337,7 +333,7 @@ inherited fmUsesManager: TfmUsesManager
           end
           object btnAddRtlToFavorites: TButton
             Left = 320
-            Top = 16
+            Top = 20
             Width = 169
             Height = 25
             Action = actAvailAddAllToFav
@@ -398,7 +394,7 @@ inherited fmUsesManager: TfmUsesManager
             TabOrder = 0
             object btnFavoriteAddToInterface: TButton
               Left = 8
-              Top = 16
+              Top = 20
               Width = 145
               Height = 25
               Action = actAddToInterfaceBtn
@@ -406,7 +402,7 @@ inherited fmUsesManager: TfmUsesManager
             end
             object btnFavoriteAddToImplementation: TButton
               Left = 160
-              Top = 16
+              Top = 20
               Width = 145
               Height = 25
               Action = actAddToImplementationBtn
@@ -415,7 +411,7 @@ inherited fmUsesManager: TfmUsesManager
           end
           object btnFavoriteAddToFavorites: TButton
             Left = 320
-            Top = 16
+            Top = 20
             Width = 169
             Height = 25
             Action = actFavAddUnit
@@ -423,7 +419,7 @@ inherited fmUsesManager: TfmUsesManager
           end
           object btnFavoriteDeleteFromFavorites: TButton
             Left = 496
-            Top = 16
+            Top = 20
             Width = 161
             Height = 25
             Action = actFavDelUnit
@@ -481,7 +477,7 @@ inherited fmUsesManager: TfmUsesManager
             TabOrder = 0
             object btnIdentifiersAddToIntf: TButton
               Left = 8
-              Top = 16
+              Top = 20
               Width = 145
               Height = 25
               Action = actAddToInterfaceBtn
@@ -491,7 +487,7 @@ inherited fmUsesManager: TfmUsesManager
             end
             object btnIdentifiersAddToImpl: TButton
               Left = 160
-              Top = 16
+              Top = 20
               Width = 145
               Height = 25
               Action = actAddToImplementationBtn
@@ -509,7 +505,7 @@ inherited fmUsesManager: TfmUsesManager
             TabOrder = 1
             object b_IdentifierMatchAnywhere: TBitBtn
               Left = 112
-              Top = 17
+              Top = 20
               Width = 97
               Height = 25
               Caption = '&Anywhere'
@@ -517,7 +513,7 @@ inherited fmUsesManager: TfmUsesManager
             end
             object b_IdentifierMatchStart: TBitBtn
               Left = 8
-              Top = 17
+              Top = 20
               Width = 97
               Height = 25
               Caption = 'S&tart'
@@ -525,7 +521,7 @@ inherited fmUsesManager: TfmUsesManager
             end
             object b_IdentifierMatchSort: TBitBtn
               Left = 216
-              Top = 17
+              Top = 20
               Width = 97
               Height = 25
               Caption = 'Start First'
@@ -747,7 +743,7 @@ inherited fmUsesManager: TfmUsesManager
       OnResize = pnlUsesBottomResize
       object b_DeleteFromIntf: TButton
         Left = 0
-        Top = 8
+        Top = 12
         Width = 73
         Height = 25
         Action = actIntfDelete
@@ -757,7 +753,7 @@ inherited fmUsesManager: TfmUsesManager
       end
       object b_DeleteFromImpl: TButton
         Left = 240
-        Top = 8
+        Top = 12
         Width = 73
         Height = 25
         Action = actImplDelete
@@ -767,7 +763,7 @@ inherited fmUsesManager: TfmUsesManager
       end
       object b_MoveToImpl: TButton
         Left = 80
-        Top = 8
+        Top = 12
         Width = 73
         Height = 25
         Action = actIntfMove
@@ -777,7 +773,7 @@ inherited fmUsesManager: TfmUsesManager
       end
       object b_MoveToIntf: TButton
         Left = 160
-        Top = 8
+        Top = 12
         Width = 73
         Height = 25
         Action = actImplMove
