@@ -38,6 +38,7 @@ object fmAsciiChart: TfmAsciiChart
     Width = 542
     Height = 24
     Align = alTop
+    BevelOuter = bvNone
     TabOrder = 0
     object sb_Low: TSpeedButton
       Left = 0

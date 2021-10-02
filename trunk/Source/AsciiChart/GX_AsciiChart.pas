@@ -63,8 +63,8 @@ type
     procedure edFontSizeChange(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure cbxFontNameEnter(Sender: TObject);
-    procedure FormConstrainedResize(Sender: TObject; var MinWidth,
-      MinHeight, MaxWidth, MaxHeight: Integer);
+    procedure FormConstrainedResize(Sender: TObject;
+      var MinWidth, MinHeight, MaxWidth, MaxHeight: Integer);
     procedure actShowHintsExecute(Sender: TObject);
     procedure actFontSize8Execute(Sender: TObject);
     procedure actFontSize10Execute(Sender: TObject);
@@ -602,8 +602,18 @@ end;
 procedure TfmAsciiChart.FormConstrainedResize(Sender: TObject;
   var MinWidth, MinHeight, MaxWidth, MaxHeight: Integer);
 begin
-  MinWidth := 400 + 2 * GetSystemMetrics(SM_CXFRAME);
+  MinWidth := btnClear.Left + btnClear.Width + 2 * GetSystemMetrics(SM_CXFRAME);
+// alternatively:
+//  MinWidth := btnClear.ClientToParent(Point(btnClear.Width, 0), Self).X + 2 * GetSystemMetrics(SM_CXFRAME);
   MinHeight := 331 + 2 * GetSystemMetrics(SM_CYFRAME) + GetSystemMetrics(SM_CYCAPTION);
+{$IFDEF IDE_IS_HIDPI_AWARE}
+  // No idea why we need to add some more pixels here but without this, the button is not fully visible
+  // or the drawing is larger than the grid
+  // The exact values also probably depend on scaling
+  // todo: Find a way to calculate these values.
+  Inc(MinWidth, 11);
+  Inc(MinHeight, 50);
+{$endif}
 end;
 
 procedure TfmAsciiChart.actShowHintsExecute(Sender: TObject);
@@ -780,6 +790,7 @@ begin
 
   edFontSize.Left := cbxFontName.Left + cbxFontName.Width + 8;
   eChars.Left := edFontSize.Left + edFontSize.Width + 16;
+  btnClear.Left := eChars.Left + eChars.Width + 1;
 end;
 
 {$IFDEF IDE_IS_HIDPI_AWARE}
