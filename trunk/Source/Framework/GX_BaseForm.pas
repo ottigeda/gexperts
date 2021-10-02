@@ -25,12 +25,11 @@ type
   TfmBaseForm = class(TForm)
   protected
     procedure Loaded; override;
-  private
+  protected
 {$IFDEF IDE_IS_HIDPI_AWARE}
     FScaler: TFormDpiScaler;
     procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
-  protected
-    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); virtual;
     procedure ArrangeControls; virtual;
 {$ENDIF}
   protected
