@@ -31,6 +31,18 @@ type
   end;
 
 type
+  PExpertControlsRec = ^TExpertControlsRec;
+  TExpertControlsRec = record
+    magic: DWord;
+    pnl: TPanel;
+    img: TImage;
+    chk: TCheckBox;
+    hk: THotKey;
+    btnDefault: TButton;
+    btnConfig: TButton;
+  end;
+
+type
   TfrConfigureExperts = class(TFrame)
     pnlExpertsFilter: TPanel;
     lblFilter: TLabel;
@@ -39,14 +51,15 @@ type
     pnlExpertLayout: TPanel;
     imgExpert: TImage;
     chkExpert: TCheckBox;
-    edtExpert: THotKey;
-    btnExpert: TButton;
+    edtHotkey: THotKey;
+    btnConfigure: TButton;
     btnEnableAll: TButton;
     btnDisableAll: TButton;
     btnClear: TButton;
     btnClearAll: TButton;
     btnSetAllDefault: TButton;
     btnDefault: TButton;
+    tim_Resize: TTimer;
     procedure edtFilterChange(Sender: TObject);
     procedure btnEnableAllClick(Sender: TObject);
     procedure btnDisableAllClick(Sender: TObject);
@@ -59,10 +72,13 @@ type
     procedure btnSetAllDefaultClick(Sender: TObject);
     procedure edtFilterKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FrameResize(Sender: TObject);
+    procedure tim_ResizeTimer(Sender: TObject);
   private
     FThumbSize: Integer;
     FExperts: TList;
+    FExpertControls: array of TExpertControlsRec;
     FVisibleExpertsCount: Integer;
+    FIsInitializing: Boolean;
     procedure ConfigureExpertClick(_Sender: TObject);
     procedure FilterVisibleExperts;
     procedure SetAllEnabled(_Value: Boolean);
@@ -86,10 +102,10 @@ implementation
 uses
   Menus,
   Themes,
+  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_GenericUtils,
   GX_BaseExpert,
-  u_dzVclUtils,
-  GX_DbugIntf;
+  u_dzVclUtils;
 
 resourcestring
   SConfigureButtonCaption = 'Configure...';
@@ -167,8 +183,8 @@ var
   ctrl: TControl;
 begin
   Result := False;
-  for i := 0 to _Pnl.ComponentCount - 1 do begin
-    ctrl := _Pnl.Components[i] as TControl;
+  for i := 0 to _pnl.ComponentCount - 1 do begin
+    ctrl := _pnl.Components[i] as TControl;
     if ctrl is TButton then begin
       if StripHotkey(TButton(ctrl).Caption) = _Caption then begin
         _btn := TButton(ctrl);
@@ -179,14 +195,9 @@ begin
   end;
 end;
 
-function TryGetConfigButton(_Pnl: TPanel; out _btn: TButton): Boolean;
+function TryGetConfigButton(_pnl: TPanel; out _btn: TButton): Boolean;
 begin
-  Result := TryGetButton(_Pnl, SConfigureButtonCaption, _btn);
-end;
-
-function TryGetDefaultButton(_Pnl: TPanel; out _btn: TButton): Boolean;
-begin
-  Result := TryGetButton(_Pnl, SDefaultButtonCaption, _btn);
+  Result := TryGetButton(_pnl, SConfigureButtonCaption, _btn);
 end;
 
 function TryGetHotkeyEdit(_pnl: TPanel; out _edt: THotKey): Boolean;
@@ -195,8 +206,8 @@ var
   ctrl: TControl;
 begin
   Result := False;
-  for i := 0 to _Pnl.ComponentCount - 1 do begin
-    ctrl := _Pnl.Components[i] as TControl;
+  for i := 0 to _pnl.ComponentCount - 1 do begin
+    ctrl := _pnl.Components[i] as TControl;
     if ctrl is THotKey then begin
       _edt := THotKey(ctrl);
       Result := True;
@@ -248,19 +259,19 @@ begin
   end;
 end;
 
-function GetCheckbox(_Pnl: TPanel): TCheckBox;
+function GetCheckbox(_pnl: TPanel): TCheckBox;
 resourcestring
   STR_NO_CHECKBOX = 'No checkbox found.';
 begin
-  if not TryGetControl(_Pnl, TCheckBox, TControl(Result)) then
+  if not TryGetControl(_pnl, TCheckBox, TControl(Result)) then
     raise Exception.Create(STR_NO_CHECKBOX);
 end;
 
-function GetHotkeyCtrl(_Pnl: TPanel): THotKey;
+function GetHotkeyCtrl(_pnl: TPanel): THotKey;
 resourcestring
   STR_NO_HOTKEY = 'No hotkey control found.';
 begin
-  if not TryGetControl(_Pnl, THotKey, TControl(Result)) then
+  if not TryGetControl(_pnl, THotKey, TControl(Result)) then
     raise Exception.Create(STR_NO_HOTKEY);
 end;
 
@@ -466,98 +477,114 @@ var
   AnExpert: TGX_BaseExpert;
   RowWidth: Integer;
   RowHeight: Integer;
+  Ctrls: PExpertControlsRec;
+  DefShortCut: TShortCut;
   pnl: TPanel;
-  img: TImage;
+  img: THintImage;
   chk: TCheckBox;
-  hk: THotKey;
+  hk: THotKeyHack;
   btn: TButton;
 begin
-  FExperts.Assign(_Experts);
+  FIsInitializing := True;
+  try
+    FExperts.Assign(_Experts);
 
-  // align all buttons vertically to the edit field
-  TButton_AlignVerticallyTo(btnClear, edtFilter);
-  TButton_AlignVerticallyTo(btnEnableAll, btnClear);
-  TButton_AlignVerticallyTo(btnDisableAll, btnClear);
-  TButton_AlignVerticallyTo(btnClearAll, btnClear);
-  TButton_AlignVerticallyTo(btnSetAllDefault, btnClear);
+    // align all buttons vertically to the edit field
+    TButton_AlignVerticallyTo(btnClear, edtFilter);
+    TButton_AlignVerticallyTo(btnEnableAll, btnClear);
+    TButton_AlignVerticallyTo(btnDisableAll, btnClear);
+    TButton_AlignVerticallyTo(btnClearAll, btnClear);
+    TButton_AlignVerticallyTo(btnSetAllDefault, btnClear);
 
-  // THotkey apparently doesn't get scaled correctly, so we need to set the height
-  edtExpert.Height := edtFilter.Height;
-  // and align the buttons to it afterwards
-  TButton_AlignVerticallyTo(btnDefault, edtExpert);
-  TButton_AlignVerticallyTo(btnExpert, btnDefault);
-  TCheckBox_AlignVerticallyTo(chkExpert, edtExpert);
+    // THotkey apparently doesn't get scaled correctly, so we need to set the height
+    edtHotkey.Height := edtFilter.Height;
+    // and align the buttons to it afterwards
+    TButton_AlignVerticallyTo(btnDefault, edtHotkey);
+    TButton_AlignVerticallyTo(btnConfigure, btnDefault);
+    TCheckBox_AlignVerticallyTo(chkExpert, edtHotkey);
 
-  RowWidth := sbxExperts.Width + 3;
-  RowHeight := pnlExpertLayout.Height;
-  FThumbSize := RowHeight;
-  for i := 0 to FExperts.Count - 1 do begin
-    AnExpert := FExperts[i];
+    RowWidth := sbxExperts.Width + 3;
+    RowHeight := pnlExpertLayout.Height;
+    FThumbSize := RowHeight;
+    SetLength(FExpertControls, FExperts.Count);
+    for i := 0 to FExperts.Count - 1 do begin
+      AnExpert := FExperts[i];
 
-    pnl := TPanel.Create(sbxExperts);
-    pnl.Parent := sbxExperts;
-    pnl.SetBounds(0, i * RowHeight, RowWidth, RowHeight);
-    pnl.Anchors := pnlExpertLayout.Anchors;
-    pnl.Tag := i;
-    pnl.FullRepaint := False;
+      Ctrls := @(FExpertControls[i]);
+      Ctrls^.magic := 4711;
+      pnl := TPanel.Create(sbxExperts);
+      Ctrls^.pnl := pnl;
+      pnl.Parent := sbxExperts;
+      pnl.SetBounds(0, i * RowHeight, RowWidth, RowHeight);
+      pnl.Anchors := pnlExpertLayout.Anchors;
+      pnl.Tag := i;
+      pnl.FullRepaint := False;
 
-    img := THintImage.Create(pnl);
-    img.Parent := pnl;
-    img.BoundsRect := imgExpert.BoundsRect;
-    img.Picture.Bitmap.Assign(AnExpert.GetBitmap);
-    img.Transparent := True;
-    img.Center := True;
-    img.Stretch := False;
-    img.Hint := AnExpert.GetHelpString;
-    img.ShowHint := True;
-    img.Tag := i;
+      img := THintImage.Create(pnl);
+      Ctrls^.img := img;
+      img.Parent := pnl;
+      img.BoundsRect := imgExpert.BoundsRect;
+      img.Picture.Bitmap.Assign(AnExpert.GetBitmap);
+      img.Transparent := True;
+      img.Center := True;
+      img.Stretch := False;
+      img.Hint := AnExpert.GetHelpString;
+      img.ShowHint := True;
+      img.Tag := i;
 
-    chk := TCheckBox.Create(pnl);
-    chk.Parent := pnl;
-    chk.BoundsRect := chkExpert.BoundsRect;
-    chk.Caption := AnExpert.GetDisplayName;
-    chk.Checked := AnExpert.Active;
-    chk.Tag := i;
+      chk := TCheckBox.Create(pnl);
+      Ctrls^.chk := chk;
+      chk.Parent := pnl;
+      chk.BoundsRect := chkExpert.BoundsRect;
+      chk.Caption := AnExpert.GetDisplayName;
+      chk.Checked := AnExpert.Active;
+      chk.Tag := i;
 
-    hk := THotKeyHack.Create(pnl);
-    hk.Parent := pnl;
-    hk.BoundsRect := edtExpert.BoundsRect;
-    hk.Anchors := edtExpert.Anchors;
-    hk.DoubleBuffered := False;
-    hk.InvalidKeys := [hcNone, hcShift];
-    hk.Modifiers := [hkAlt];
-    THotkey_SetHotkey(hk, AnExpert.ShortCut);
-    hk.Visible := AnExpert.CanHaveShortCut;
-    hk.Tag := i;
+      hk := THotKeyHack.Create(pnl);
+      Ctrls^.hk := hk;
+      hk.Parent := pnl;
+      hk.BoundsRect := edtHotkey.BoundsRect;
+      hk.Anchors := edtHotkey.Anchors;
+      hk.DoubleBuffered := False;
+      hk.InvalidKeys := [hcNone, hcShift];
+      hk.Modifiers := [hkAlt];
+      THotkey_SetHotkey(hk, AnExpert.ShortCut);
+      hk.Visible := AnExpert.CanHaveShortCut;
+      hk.Tag := i;
 
-    btn := TButton.Create(pnl);
-    btn.Parent := pnl;
-    btn.BoundsRect := btnDefault.BoundsRect;
-    btn.Anchors := btnDefault.Anchors;
-    btn.Caption := SDefaultButtonCaption;
-    if AnExpert.GetDefaultShortCut <> 0 then begin
-      btn.Hint := ShortCutToText(AnExpert.GetDefaultShortCut);
-      btn.ShowHint := True;
-      btn.OnClick := SetDefaultShortcutClick;
-    end else
-      btn.Enabled := False;
-    btn.Tag := i;
-
-    hk.Width := btn.Left - hk.Left;
-
-    if AnExpert.HasConfigOptions then begin
       btn := TButton.Create(pnl);
+      Ctrls^.btnDefault := btn;
+      btn.Parent := pnl;
+      btn.BoundsRect := btnDefault.BoundsRect;
+      btn.Anchors := btnDefault.Anchors;
+      btn.Caption := SDefaultButtonCaption;
+      DefShortCut := AnExpert.GetDefaultShortCut;
+      if DefShortCut <> 0 then begin
+        btn.Hint := ShortCutToText(DefShortCut);
+        btn.ShowHint := True;
+        btn.OnClick := SetDefaultShortcutClick;
+      end else
+        btn.Visible := False;
+      btn.Tag := i;
+
+      hk.Width := btn.Left - hk.Left;
+
+      btn := TButton.Create(pnl);
+      Ctrls^.btnConfig := btn;
       btn.Parent := pnl;
       btn.Caption := SConfigureButtonCaption;
-      btn.BoundsRect := btnExpert.BoundsRect;
-      btn.Anchors := btnExpert.Anchors;
+      btn.BoundsRect := btnConfigure.BoundsRect;
+      btn.Anchors := btnConfigure.Anchors;
       btn.OnClick := ConfigureExpertClick;
       btn.Tag := i;
+      btn.Visible := AnExpert.HasConfigOptions;
     end;
-  end;
-  pnlExpertLayout.Visible := False;
+    pnlExpertLayout.Visible := False;
 
-  FVisibleExpertsCount := FExperts.Count;
+    FVisibleExpertsCount := FExperts.Count;
+  finally
+    FIsInitializing := False;
+  end;
 
   PositionControls;
   AdjustScrollRange;
@@ -644,30 +671,58 @@ const
   GAP_WIDTH = 8;
 var
   w: Integer;
+  pnlWidth: Integer;
+  btnConfigureWidth: integer;
+  btnDefaultWidth: Integer;
+  edHotkeyWidth: Integer;
+  btnConfigLeft: Integer;
+  btnDefaultLeft: Integer;
+  edHotkeyLeft: Integer;
+  chkWidth: Integer;
   i: Integer;
   Panel: TPanel;
-  btn: TButton;
-  ed: THotKey;
+  Ctrls: PExpertControlsRec;
 begin
+  if FIsInitializing then
+    Exit; //==>
+
+  {$IFOPT D+} SendDebug('start positioning controls'); {$ENDIF}
   // For whatever reason the automatic alignment via anchors does not work correctly
   // so we just do it in code.
   w := sbxExperts.ClientWidth;
-  for i := 0 to sbxExperts.ControlCount - 1 do begin
-    Panel := sbxExperts.Controls[i] as TPanel;
-    Panel.Width := w - Panel.Left;
-    if TryGetConfigButton(Panel, btn) then
-      btn.Left := w - btnExpert.Width - GAP_WIDTH;
-    if TryGetDefaultButton(Panel, btn) then
-      btn.Left := w - btnExpert.Width - btnDefault.Width - 2 * GAP_WIDTH;
-    if TryGetHotkeyEdit(Panel, ed) then
-      ed.Width := w - ed.Left - btnExpert.Width - btnDefault.Width - 2 * GAP_WIDTH;
+  pnlWidth := w - pnlExpertLayout.Left;
+  btnConfigureWidth := btnConfigure.Width;
+  btnDefaultWidth := btnDefault.Width;
+  btnConfigLeft := w - btnConfigureWidth - GAP_WIDTH;
+  btnDefaultLeft := btnConfigLeft - btnDefaultWidth - GAP_WIDTH;
+  w := btnDefaultLeft - chkExpert.Left - GAP_WIDTH;
+  edHotkeyWidth := w div 2;
+  edHotkeyLeft := btnDefaultLeft - edHotkeyWidth;
+  chkWidth := edHotkeyLeft - chkExpert.Left - GAP_WIDTH;
+  for i := 0 to Length(FExpertControls) - 1 do begin
+    Ctrls := @(FExpertControls[i]);
+    Panel := Ctrls^.pnl;
+    Panel.Width := pnlWidth;
+    Ctrls^.btnConfig.Left := btnConfigLeft;
+    Ctrls^.btnDefault.Left := btnDefaultLeft;
+    Ctrls^.hk.Left := edHotkeyLeft;
+    Ctrls^.hk.Width := edHotkeyWidth;
+    Ctrls^.chk.Width := chkWidth;
   end;
+  {$IFOPT D+} SendDebug('done positioning controls'); {$ENDIF}
+end;
+
+procedure TfrConfigureExperts.tim_ResizeTimer(Sender: TObject);
+begin
+  tim_Resize.Enabled := False;
+  PositionControls;
+  AdjustScrollRange;
 end;
 
 procedure TfrConfigureExperts.FrameResize(Sender: TObject);
 begin
-  PositionControls;
-  AdjustScrollRange;
+  tim_Resize.Enabled := False;
+  tim_Resize.Enabled := True;
 end;
 
 { TScrollBox }

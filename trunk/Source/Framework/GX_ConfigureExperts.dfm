@@ -94,7 +94,7 @@ object frConfigureExperts: TfrConfigureExperts
   object sbxExperts: TScrollBox
     Left = 0
     Top = 41
-    Width = 607
+    Width = 640
     Height = 182
     VertScrollBar.Increment = 40
     VertScrollBar.Range = 920
@@ -125,7 +125,7 @@ object frConfigureExperts: TfrConfigureExperts
         Caption = 'Set Component Properties'
         TabOrder = 0
       end
-      object edtExpert: THotKey
+      object edtHotkey: THotKey
         Left = 267
         Top = 10
         Width = 126
@@ -133,7 +133,7 @@ object frConfigureExperts: TfrConfigureExperts
         HotKey = 32833
         TabOrder = 1
       end
-      object btnExpert: TButton
+      object btnConfigure: TButton
         Left = 479
         Top = 8
         Width = 102
@@ -150,5 +150,12 @@ object frConfigureExperts: TfrConfigureExperts
         TabOrder = 2
       end
     end
+  end
+  object tim_Resize: TTimer
+    Enabled = False
+    Interval = 50
+    OnTimer = tim_ResizeTimer
+    Left = 304
+    Top = 96
   end
 end
