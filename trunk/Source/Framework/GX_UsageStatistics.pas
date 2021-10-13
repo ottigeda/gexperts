@@ -1,21 +1,22 @@
 unit GX_UsageStatistics;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
   Windows,
   Messages,
   SysUtils,
-  Variants,
   Classes,
   Graphics,
   Controls,
-  Forms,
-  Dialogs,
-  GX_BaseForm,
   ComCtrls,
   StdCtrls,
-  ExtCtrls;
+  ExtCtrls,
+  Forms,
+  Dialogs,
+  GX_BaseForm;
 
 type
   TfmUsageStatistics = class(TfmBaseForm)
@@ -30,6 +31,10 @@ type
     procedure b_ClearClick(Sender: TObject);
   private
     procedure FillStats;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ArrangeControls; override;
+{$ENDIF}
   public
     constructor Create(_Owner: TComponent); override;
   end;
@@ -53,8 +58,20 @@ begin
   TControl_SetMinConstraints(Self);
 
   p_Bottom.BevelOuter := bvNone;
+
+  InitDpiScaler;
+
   FillStats;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmUsageStatistics.ArrangeControls;
+begin
+  lv_Experts.Width := ClientWidth div 2;
+  TListView_Resize(lv_Experts);
+  TListView_Resize(lv_EditorExperts);
+end;
+{$ENDIF}
 
 procedure TfmUsageStatistics.FormResize(Sender: TObject);
 begin
