@@ -21,6 +21,7 @@ type
     procedure SetData(const Identifier: string; Recursive: Boolean);
   public
     class function Execute(Owner: TWinControl; var Identifier: string; var Recursive: Boolean): Boolean;
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
@@ -46,6 +47,12 @@ begin
   finally
     FreeAndNil(frm);
   end;
+end;
+
+constructor TfmClassIdentify.Create(_Owner: TComponent);
+begin
+  inherited;
+  InitDpiScaler;
 end;
 
 procedure TfmClassIdentify.GetData(out Identifier: string; out Recursive: Boolean);
