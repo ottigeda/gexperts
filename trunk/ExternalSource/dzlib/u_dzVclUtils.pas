@@ -112,6 +112,7 @@ procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: THotKey); overload
 procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TButton); overload;
 procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TCheckbox); overload;
 procedure TCheckBox_AlignVerticallyTo(_Chk: TCheckbox; _Template: TControl);
+procedure TLabel_AlignVerticallyTo(_lbl: TLabel; _Template: TEdit);
 
 ///<summary>
 /// moves the edit field below the label and returns its new bottom position </summary>
@@ -4985,6 +4986,11 @@ end;
 procedure TCheckBox_AlignVerticallyTo(_Chk: TCheckbox; _Template: TControl);
 begin
   _Chk.Top := _Template.Top + (_Template.Height - _Chk.Height) div 2;
+end;
+
+procedure TLabel_AlignVerticallyTo(_lbl: TLabel; _Template: TEdit);
+begin
+  _lbl.Top := _Template.Top + (_Template.Height - _lbl.Height) div 2;
 end;
 
 function TEdit_AlignBelowLabel(_ed: TEdit; _lbl: TLabel): Integer;
