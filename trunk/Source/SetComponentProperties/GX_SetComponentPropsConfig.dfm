@@ -14,11 +14,8 @@ object fmSetComponentPropsConfig: TfmSetComponentPropsConfig
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
-  OnCreate = FormCreate
-  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 14
   object pnlContent: TPanel

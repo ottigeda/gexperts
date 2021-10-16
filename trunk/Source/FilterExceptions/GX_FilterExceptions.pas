@@ -542,6 +542,8 @@ begin
   sg_Exceptions.Cells[COL_EXCEPTION, 0] := 'Exception';
   sg_Exceptions.Cells[COL_MESSAGE, 0] := 'Message (RegEx)';
   sg_Exceptions.Cells[COL_ACTION, 0] := 'Action';
+
+  InitDpiScaler;
 end;
 
 procedure TfmGxFilterExceptionsExpert.GetData(_Notifications: TObjectList);

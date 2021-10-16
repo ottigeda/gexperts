@@ -23,10 +23,10 @@ type
 
 implementation
 
+{$R *.dfm}
+
 uses
   u_dzVclUtils;
-
-{$R *.dfm}
 
 { TfmProjDependProp }
 
@@ -34,6 +34,8 @@ constructor TfmProjDependProp.Create(_Owner: TComponent);
 begin
   inherited;
   TControl_SetMinConstraints(Self);
+
+  InitDpiScaler;
 end;
 
 end.

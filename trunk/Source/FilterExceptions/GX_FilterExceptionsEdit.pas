@@ -101,6 +101,8 @@ begin
   inherited;
   TControl_SetMinConstraints(self);
   FRegEx := TRegExpr.Create;
+
+  InitDpiScaler;
 end;
 
 destructor TfmGxFilterExceptionsEdit.Destroy;

@@ -15,6 +15,7 @@ type
     lblProgressText: TLabel;
   private
   public
+    constructor Create(_Owner: TComponent); override;
     procedure Init(const ACaption: String; AMax, ADetailMax: Integer);
     class procedure Start;
     class procedure Progressing(const AStepText: String);
@@ -31,6 +32,13 @@ implementation
 {$R *.dfm}
 
 { TfmGrepProgress }
+
+constructor TfmGrepProgress.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
+end;
 
 procedure TfmGrepProgress.Init(const ACaption: String; AMax, ADetailMax: Integer);
 begin

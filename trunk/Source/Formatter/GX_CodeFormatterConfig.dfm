@@ -7,7 +7,6 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
   ClientWidth = 478
   Color = clBtnFace
   ParentFont = True
-  OldCreateOrder = True
   PopupMenu = pm_Extra
   OnShow = FormShow
   PixelsPerInch = 96

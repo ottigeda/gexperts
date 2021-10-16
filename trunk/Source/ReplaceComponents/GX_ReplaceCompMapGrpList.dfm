@@ -14,7 +14,6 @@ object fmReplaceCompMapGrpList: TfmReplaceCompMapGrpList
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnClose = FormClose

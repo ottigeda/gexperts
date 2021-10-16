@@ -449,6 +449,8 @@ begin
   inherited Create(AOwner);
   LoadFormSettings;
   SetupControls;
+
+  InitDpiScaler;
 end;
 
 procedure TfmReplaceComp.SetupControls;

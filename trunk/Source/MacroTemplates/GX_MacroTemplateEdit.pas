@@ -26,6 +26,8 @@ type
     cbxInsertPos: TComboBox;
     edtShortCut: THotKey;
     procedure btnOKClick(Sender: TObject);
+  public
+    constructor Create(_Owner: TComponent); override;
   end;
 
 function GetMacroTemplate(var VMacroTemplate: TMacroTemplate): Boolean;
@@ -87,6 +89,15 @@ begin
   finally
     FreeAndNil(frm);
   end;
+end;
+
+{ TfmMacroTemplateEdit }
+
+constructor TfmMacroTemplateEdit.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
 end;
 
 procedure TfmMacroTemplateEdit.btnOKClick(Sender: TObject);

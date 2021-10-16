@@ -124,6 +124,8 @@ begin
   FWords.WantTabs := False;
 
   SetDefaultFont(Self);
+
+  InitDpiScaler;
 end;
 
 procedure TfmCodeFormatterEditCapitalization.ListToForm(_Words: TGXUnicodeStringList);

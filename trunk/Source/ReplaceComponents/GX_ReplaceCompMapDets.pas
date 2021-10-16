@@ -149,6 +149,9 @@ begin
   FItem := Item;
   FGroup := Item.Group;
   FDataAction := DataAction;
+
+  InitDpiScaler;
+
   LoadSettings;
 end;
 

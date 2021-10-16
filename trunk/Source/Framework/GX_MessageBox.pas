@@ -156,6 +156,7 @@ begin
         frm.chkNeverShowAgain.Enabled := Adaptor.AllowSuppress;
         frm.mmoMessage.Lines.Text := Adaptor.GetMessage;
         CreateButtons;
+        frm.InitDpiScaler;
         Result := frm.ShowModal;
         if Adaptor.AllowSuppress and frm.chkNeverShowAgain.Checked then
           Adaptor.DoPermanentlySuppress;

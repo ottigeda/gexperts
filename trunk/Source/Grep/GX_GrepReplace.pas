@@ -45,6 +45,8 @@ constructor TfmGrepReplace.Create(AOwner: TComponent);
 begin
   inherited;
   LoadFormSettings;
+
+  InitDpiScaler;
 end;
 
 destructor TfmGrepReplace.Destroy;

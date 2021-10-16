@@ -330,6 +330,8 @@ begin
   TControl_SetMinConstraints(Self);
 
   GxOtaGetEditorFont(m_Lines.Font);
+
+  InitDpiScaler;
 end;
 
 procedure TfmRemoveMatchingLinesExpertConfig.b_DefaultsClick(Sender: TObject);

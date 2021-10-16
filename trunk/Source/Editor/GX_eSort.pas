@@ -33,6 +33,7 @@ type
     FCustomPrefixOrder: TGXUnicodeStringList;
   public
     class function Execute(_CustomPrefixOrder: TGXUnicodeStringList; out _SortOrder: TeSortOrder; out _Ignore: Boolean): Boolean;
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
@@ -61,6 +62,13 @@ uses
 procedure TfmeSortConfig.btnConfigCustomClick(Sender: TObject);
 begin
   TfrmSortOptions.Execute(Self, FCustomPrefixOrder);
+end;
+
+constructor TfmeSortConfig.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
 end;
 
 class function TfmeSortConfig.Execute(_CustomPrefixOrder: TGXUnicodeStringList;

@@ -13,11 +13,8 @@ object fmCompRenameConfig: TfmCompRenameConfig
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
-  OnCreate = FormCreate
-  OnDestroy = FormDestroy
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 14

@@ -91,6 +91,8 @@ begin
   Items.Clear;
   for mks := Succ(Low(TMacroSpecialKey)) to High(TMacroSpecialKey) do
     Items.AddObject(MacroSpecialKeyStrings[mks], Pointer(mks));
+
+  InitDpiScaler;
 end;
 
 procedure TfmEditMacroItem.EditKeyUpDown(Sender: TObject; var Key: Word; Shift: TShiftState);

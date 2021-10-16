@@ -1119,6 +1119,8 @@ begin
   SetToolbarGradient(ToolBar);
   SetupSyntaxHighlightingControl;
 
+  InitDpiScaler;
+
   TCursor_TempHourglass;
 
   CodeDB := nil;

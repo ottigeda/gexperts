@@ -84,6 +84,8 @@ begin
   inherited Create(AOwner);
   for WhereReplace := Low(TGXWhereReplace) to High(TGXWhereReplace) do
     cbxLocation.Items.Add(GXWhereReplaceStrings[WhereReplace]);
+
+  InitDpiScaler;
 end;
 
 procedure TfmProofreaderAutoCorrectEntry.UpdateButtons;

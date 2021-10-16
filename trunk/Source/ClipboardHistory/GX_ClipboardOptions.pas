@@ -14,10 +14,20 @@ type
     btnCancel: TButton;
     chkAutoStart: TCheckBox;
     chkAutoClose: TCheckBox;
+  public
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
 
 {$R *.dfm}
+
+{ TfmClipboardOptions }
+
+constructor TfmClipboardOptions.Create(_Owner: TComponent);
+begin
+  inherited;
+  InitDpiScaler;
+end;
 
 end.

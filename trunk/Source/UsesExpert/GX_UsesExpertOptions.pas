@@ -42,6 +42,7 @@ type
       const _CacheDir: string;
       var _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache, _SearchPathFavorites: Boolean;
       var _FilterIdentifiers: TFilterIdentifiersEnum): Boolean;
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
@@ -73,6 +74,13 @@ begin
   finally
     FreeAndNil(frm);
   end;
+end;
+
+constructor TfmUsesExpertOptions.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
 end;
 
 procedure TfmUsesExpertOptions.GetData(out _ReadMapFile, _ReplaceFileUseUnit, _ParseAll: Boolean;
@@ -151,5 +159,3 @@ begin
 end;
 
 end.
-
-

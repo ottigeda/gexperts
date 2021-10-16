@@ -35,6 +35,7 @@ type
     chk_WriteExplicitHeight: TCheckBox;
   private
   public
+    constructor Create(_Owner: TComponent); override;
     procedure SetData(_Value: TExplicitPropertiesSet);
     procedure GetData(out _Value: TExplicitPropertiesSet);
   end;
@@ -358,6 +359,15 @@ begin
         FinalizeControlExplicitFix;
     end;
   end;
+end;
+
+{ TfmGxExplicitFilter }
+
+constructor TfmGxExplicitFilter.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
 end;
 
 procedure TfmGxExplicitFilter.GetData(out _Value: TExplicitPropertiesSet);

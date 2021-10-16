@@ -16,9 +16,9 @@ type
     cbPasteAsType: TComboBox;
     chkAddExtraSpaceAtTheEnd: TCheckBox;
     chkShowOptions: TCheckBox;
-    procedure FormCreate(Sender: TObject);
   private
   public
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
@@ -243,10 +243,12 @@ end;
 
 { TfmPasteAsConfig }
 
-procedure TfmPasteAsConfig.FormCreate(Sender: TObject);
+constructor TfmPasteAsConfig.Create(_Owner: TComponent);
 begin
   inherited;
   cbPasteAsType.DropDownCount := Integer(High(TPasteAsType)) + 1;
+
+  InitDpiScaler;
 end;
 
 initialization

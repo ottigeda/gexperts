@@ -7,7 +7,6 @@ object fmBaseForm: TfmBaseForm
   ClientWidth = 653
   Color = clBtnFace
   ParentFont = True
-  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   PixelsPerInch = 96

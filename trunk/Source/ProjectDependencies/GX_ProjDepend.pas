@@ -778,6 +778,8 @@ begin
 
   CenterForm(Self);
 
+  InitDpiScaler;
+
   LoadSettings;
 
   ProjectNotifier := TProjectNotifier.Create(Self);

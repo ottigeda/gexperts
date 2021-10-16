@@ -257,7 +257,10 @@ begin
   lb_Precedence.Items.AddObject(str_PrecedenceIniFile, Pointer(cpIniFile));
   lb_Precedence.Items.AddObject(str_PrecedenceMySettings, Pointer(cpMyConfig));
 
+  // todo: Is that necessary? It's already called in TfmBaseForm.Loaded
   SetDefaultFont(Self);
+
+  InitDpiScaler;
 end;
 
 destructor TfmCodeFormatterConfig.Destroy;

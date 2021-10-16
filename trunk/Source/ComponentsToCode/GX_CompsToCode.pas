@@ -299,6 +299,8 @@ begin
   FCodeText.WantTabs := True;
   FCodeText.TabWidth := GxOtaGetTabWidth;
   GxOtaGetEditorFont(FCodeText.Font, 0);
+
+  InitDpiScaler;
 end;
 
 procedure TfmCompsToCode.btnHelpClick(Sender: TObject);

@@ -332,6 +332,8 @@ begin
 
   TControl_SetMinConstraints(Self);
 
+  InitDpiScaler;
+
   FComponentList := TInterfaceList.Create;
   FModified := False;
 

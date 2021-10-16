@@ -248,6 +248,8 @@ begin
   FFileDrop.ShowImage := True;
   FFileDrop.Register(lvExperts);
 
+  InitDpiScaler;
+
   LoadSettings;
   RefreshExpertListControl;
 end;

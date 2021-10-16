@@ -70,6 +70,7 @@ type
     procedure SetCodeViewAlignment(Value: TAlign);
     function GetCodeViewAlignment: TAlign;
   public
+    constructor Create(_Owner: TComponent); override;
     property Options: TProcedureListOptions read FOptions write FOptions;
   end;
 
@@ -165,6 +166,15 @@ end;
 procedure TProcedureListOptions.SetBoundsRect(const AValue: TRect);
 begin
   FBoundsRect := AValue;
+end;
+
+{ TfmProcedureListOptions}
+
+constructor TfmProcedureListOptions.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
 end;
 
 procedure TfmProcedureListOptions.btnChgDialogFontClick(Sender: TObject);

@@ -14,7 +14,6 @@ object fmToolbarConfig: TfmToolbarConfig
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   PixelsPerInch = 96

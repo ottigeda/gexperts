@@ -78,13 +78,22 @@ type
     procedure chkHistoryPagesTabMultiLineClick(Sender: TObject);
   private
     FExpandsChanging: Boolean;
+  public
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
 
+{$R *.dfm}
+
 uses Graphics;
 
-{$R *.dfm}
+constructor TfmGrepResultsOptions.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
+end;
 
 procedure TfmGrepResultsOptions.chkAdvancedClick(Sender: TObject);
 var

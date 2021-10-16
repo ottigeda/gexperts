@@ -1,9 +1,9 @@
 object fmCompsToCode: TfmCompsToCode
   Left = 298
   Top = 212
-  Width = 694
-  Height = 611
   Caption = 'Components to Code'
+  ClientHeight = 572
+  ClientWidth = 678
   Color = clBtnFace
   Constraints.MinHeight = 350
   Constraints.MinWidth = 450
@@ -13,7 +13,6 @@ object fmCompsToCode: TfmCompsToCode
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
   PixelsPerInch = 96

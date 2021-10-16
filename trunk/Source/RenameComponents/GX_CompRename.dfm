@@ -12,7 +12,6 @@ object fmCompRename: TfmCompRename
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate

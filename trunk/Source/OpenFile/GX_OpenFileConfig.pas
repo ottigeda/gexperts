@@ -131,7 +131,6 @@ type
     procedure btnDirectoryReplaceClick(Sender: TObject);
     procedure lbxDirectoryListClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
   private
     FCurrentFileType: TFileType;
     FSettings: TOpenFileSettings;
@@ -144,6 +143,7 @@ type
     procedure lbxDirectoryListFilesDropped(Sender: TObject; Files: TStrings);
   public
     class function ExecuteWithSettings(Settings: TOpenFileSettings): Boolean;
+    constructor Create(_Owner: TComponent); override;
     property FileTypes: TFileTypes read GetFileTypes;
   end;
 
@@ -595,14 +595,18 @@ begin
   end;
 end;
 
-procedure TfmOpenFileConfig.FormCreate(Sender: TObject);
+constructor TfmOpenFileConfig.Create(_Owner: TComponent);
 begin
+  inherited;
+
   TControl_SetMinConstraints(Self);
 
   SetParentBackgroundValue(gbxCustomDirectory, True);
   SetParentBackgroundValue(gbxGeneralSettings, True);
   SetParentBackgroundValue(gbxIDEMenuItems, True);
-  TWinControl_ActivateDropFiles(lbxDirectoryList, lbxDirectoryListFilesDropped)
+  TWinControl_ActivateDropFiles(lbxDirectoryList, lbxDirectoryListFilesDropped);
+
+  InitDpiScaler;
 end;
 
 procedure TfmOpenFileConfig.SaveSettings(Settings: TOpenFileSettings);

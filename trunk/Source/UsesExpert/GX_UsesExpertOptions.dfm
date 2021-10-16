@@ -9,8 +9,6 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   ParentFont = False
   Font.Height = -11
   Font.Name = 'Tahoma'
-  ExplicitWidth = 345
-  ExplicitHeight = 336
   PixelsPerInch = 96
   DesignSize = (
     329

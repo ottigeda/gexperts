@@ -77,6 +77,8 @@ begin
 
   m_Path.Lines.Delimiter := ';';
   TWinControl_ActivateDropFiles(m_Path, HandleFilesDropped);
+
+  InitDpiScaler;
 end;
 
 procedure Tf_IdeSearchPathFavoriteEdit.HandleFilesDropped(_Sender: TObject; _Files: TStrings);

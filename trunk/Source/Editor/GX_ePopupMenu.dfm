@@ -5,7 +5,6 @@ inherited fmEditorPopupMenuExpertConfig: TfmEditorPopupMenuExpertConfig
   ClientHeight = 313
   ClientWidth = 577
   ParentFont = False
-  OldCreateOrder = True
   PixelsPerInch = 96
   TextHeight = 13
   object l_DuplicateShortcuts: TLabel

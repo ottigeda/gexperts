@@ -264,6 +264,8 @@ begin
   b_Add.Top := r.Top;
   b_Add.Left := pc_IfClasses.Width - b_Add.Width;
 
+  InitDpiScaler;
+
   pc_IfClassesChange(pc_IfClasses);
 end;
 

@@ -13,7 +13,6 @@ object fmTabOrder: TfmTabOrder
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
   PixelsPerInch = 96

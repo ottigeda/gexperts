@@ -415,6 +415,8 @@ begin
   GxOtaGetEditorFont(FEditor.Font);
   SetSynEditHighlighter(FEditor, GetGXHighlighterForCurrentSourceEditor);
 
+  InitDpiScaler;
+
   UpdatePreview;
 end;
 

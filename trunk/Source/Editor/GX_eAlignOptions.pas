@@ -21,10 +21,21 @@ type
     lblWhitespace: TLabel;
     edtWhitespace: TEdit;
     mmoTokens: TMemo;
+  public
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
 
 {$R *.dfm}
+
+{ TfmAlignOptions }
+
+constructor TfmAlignOptions.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
+end;
 
 end.

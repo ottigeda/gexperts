@@ -12,7 +12,6 @@ object fmReplaceComp: TfmReplaceComp
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
   DesignSize = (

@@ -142,6 +142,8 @@ begin
   inherited Create(AOwner);
 
   FToolbarActionNames := TStringList.Create;
+
+  InitDpiScaler;
 end;
 
 destructor TfmToolbarConfig.Destroy;

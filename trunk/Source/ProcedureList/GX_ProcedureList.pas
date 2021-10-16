@@ -608,6 +608,8 @@ begin
   SetToolbarGradient(ToolBar);
   lvProcs.DoubleBuffered := True;
   InitializeForm;
+
+  InitDpiScaler;
 end;
 
 destructor TfmProcedureList.Destroy;

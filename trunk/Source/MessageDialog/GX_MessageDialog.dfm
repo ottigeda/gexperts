@@ -1,19 +1,18 @@
 object fmMessageDialog: TfmMessageDialog
   Left = 339
   Top = 215
-  Width = 669
-  Height = 580
   ActiveControl = mmoMessage
   Anchors = [akLeft, akBottom]
   BorderIcons = [biSystemMenu]
   Caption = 'Message Dialog'
+  ClientHeight = 541
+  ClientWidth = 653
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = True
   Position = poOwnerFormCenter
   Scaled = False
   PixelsPerInch = 96

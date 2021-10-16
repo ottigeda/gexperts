@@ -71,6 +71,8 @@ type
     function  ConvertViewedTypeToStyleType(AViewedType: Integer): TCommentType;
   protected
     procedure Initialize;
+  public
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
@@ -557,6 +559,13 @@ const
   cViewedArray: array[0..Integer(High(TCommentType))] of TCommentType = (ctSlash, ctPascal, ctSQL, ctCpp, ctC);
 begin
   Result := cViewedArray[AViewedType];
+end;
+
+constructor TfmCommentConfig.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
 end;
 
 procedure TfmCommentConfig.lvStylesData(Sender: TObject; Item: TListItem);

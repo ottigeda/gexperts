@@ -62,12 +62,12 @@ type
 
 implementation
 
+{$R *.dfm}
+
 uses
   SysUtils, Clipbrd,
   u_dzVclUtils,
   Gx_GenericUtils, GX_ReplaceCompUtils, GX_ConfigurationInfo;
-  
-{$R *.dfm}
 
 { TfmReplaceCompLog }
 
@@ -82,6 +82,9 @@ begin
   FLogEvents := LogEvents;
   edtSourceClassName.Text := SourceClassName;
   edtDestClassName.Text := DestClassName;
+
+  InitDpiScaler;
+
   LoadSettings;
 end;
 

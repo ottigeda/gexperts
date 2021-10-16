@@ -38,6 +38,7 @@ begin
   frm := Self.Create(nil);
   try
     frm.lblMesssage.Caption := Format(DoneMessage, [ATodoCount]);
+    frm.InitDpiScaler;
     frm.ShowModal;
     Result := frm.chkDontShowAgain.Checked;
   finally

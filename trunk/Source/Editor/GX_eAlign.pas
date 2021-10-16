@@ -264,6 +264,8 @@ constructor TfmAlign.Create(_Owner: TComponent);
 begin
   inherited;
   TControl_SetMinConstraints(Self);
+
+  InitDpiScaler;
 end;
 
 procedure TfmAlign.lstTokensDblClick(Sender: TObject);

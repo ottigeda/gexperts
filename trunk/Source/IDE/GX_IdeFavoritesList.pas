@@ -71,6 +71,8 @@ constructor Tf_GxIdeFavoritesList.Create(_Owner: TComponent);
 begin
   inherited;
   TControl_SetMinConstraints(Self);
+
+  InitDpiScaler;
 end;
 
 procedure Tf_GxIdeFavoritesList.b_AddClick(Sender: TObject);

@@ -11,7 +11,6 @@ inherited fmGxKeyboardShortcuts: TfmGxKeyboardShortcuts
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = True
   OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 14

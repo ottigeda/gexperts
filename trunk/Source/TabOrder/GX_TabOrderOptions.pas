@@ -38,6 +38,7 @@ type
     procedure SetData(_AutoSort: TTabAutoSortEnum);
     procedure GetData(out _AutoSort: TTabAutoSortEnum);
   public
+    constructor Create(_Owner: TComponent); override;
     class function Execute(_Owner: TWinControl; var _AutoSort: TTabAutoSortEnum): Boolean;
   end;
 
@@ -49,6 +50,13 @@ uses
   u_dzVclUtils;
 
 { TfmTabOrderOptions }
+
+constructor TfmTabOrderOptions.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
+end;
 
 procedure TfmTabOrderOptions.act_DoNotSortExecute(Sender: TObject);
 begin

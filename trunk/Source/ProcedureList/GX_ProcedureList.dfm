@@ -14,7 +14,6 @@ object fmProcedureList: TfmProcedureList
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
   OnClose = FormClose

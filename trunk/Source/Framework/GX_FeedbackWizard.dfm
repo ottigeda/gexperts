@@ -14,11 +14,9 @@ object fmFeedbackWizard: TfmFeedbackWizard
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnClose = FormClose
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 14
   object pnlTop: TPanel

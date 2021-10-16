@@ -12,7 +12,6 @@ object fmProgress: TfmProgress
   Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsStayOnTop
-  OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
   PixelsPerInch = 96

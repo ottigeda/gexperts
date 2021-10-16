@@ -86,7 +86,8 @@ end;
 constructor TfrmSortOptions.Create(_Owner: TComponent);
 begin
   inherited;
-  SetDefaultFont(Self);
+
+  InitDpiScaler;
 end;
 
 procedure TfrmSortOptions.EnableButtons;

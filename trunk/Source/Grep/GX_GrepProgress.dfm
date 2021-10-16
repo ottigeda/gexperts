@@ -3,7 +3,6 @@ inherited fmGrepProgress: TfmGrepProgress
   ClientHeight = 102
   ClientWidth = 340
   FormStyle = fsStayOnTop
-  OldCreateOrder = True
   PixelsPerInch = 96
   TextHeight = 13
   object lblProgressDetailText: TLabel

@@ -6,7 +6,6 @@ inherited f_IdeSearchPathFavoriteEdit: Tf_IdeSearchPathFavoriteEdit
   ClientHeight = 209
   ClientWidth = 417
   ParentFont = False
-  OldCreateOrder = True
   Position = poOwnerFormCenter
   PixelsPerInch = 96
   TextHeight = 13

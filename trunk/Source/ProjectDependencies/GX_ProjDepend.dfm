@@ -13,7 +13,6 @@ object fmProjDepend: TfmProjDepend
   Font.Style = []
   KeyPreview = True
   Menu = MainMenu
-  OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
   OnActivate = FormActivate

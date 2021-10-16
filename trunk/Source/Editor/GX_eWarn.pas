@@ -287,6 +287,8 @@ begin
   InitWarnings;
   GxOtaGetEditorFont(lb_Warn.Font, 0);
   lb_Warn.Items.Assign(FAvailable);
+
+  InitDpiScaler;
 end;
 
 destructor TfmConfigureWarning.Destroy;

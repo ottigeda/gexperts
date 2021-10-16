@@ -150,6 +150,8 @@ begin
   TabIndex := FProofreaderData.ActiveTab;
   if (TabIndex > -1) and (TabIndex < Pages.PageCount) then
     Pages.ActivePageIndex := TabIndex;
+
+  InitDpiScaler;
 end;
 
 function TfmProofreaderConfig.GetReplacementSource: TReplacementSource;

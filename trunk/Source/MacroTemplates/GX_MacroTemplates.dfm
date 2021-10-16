@@ -15,11 +15,9 @@ object fmMacroTemplates: TfmMacroTemplates
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
   OnClose = FormClose
-  OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96

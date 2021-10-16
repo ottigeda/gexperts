@@ -201,7 +201,6 @@ type
     tbExpandDelay: TTrackBar;
     lbl1Sec: TLabel;
     l_MacroError: TLabel;
-    procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure TemplateCodeEnter(Sender: TObject);
@@ -284,6 +283,7 @@ type
     procedure TemplateTextChanged(Sender: TObject);
     procedure Loaded; override;
   public
+    constructor Create(_Owner: TComponent); override;
     property Settings: TTemplateSettings read FSettings write SetSettings;
     property CurrentSyntaxMode: TGXSyntaxHighlighter read FCurrentSyntaxMode write SetCurrentSyntaxMode;
   end;
@@ -471,14 +471,18 @@ end;
 
 { TfmMacroTemplates }
 
-procedure TfmMacroTemplates.FormCreate(Sender: TObject);
+constructor TfmMacroTemplates.Create(_Owner: TComponent);
 begin
+  inherited;
+
   SetupTemplateMemo;
   pnlMacroText.Caption := ''; // hide design-time text
   PageControl.ActivePage := PageControl.Pages[0];
   LoadSettings;
   pmMacros.AutoHotKeys := maManual;
   pnlUsesResize(pnlUses);
+
+  InitDpiScaler;
 end;
 
 procedure TfmMacroTemplates.FormDestroy(Sender: TObject);

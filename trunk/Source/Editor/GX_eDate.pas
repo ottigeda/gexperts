@@ -14,6 +14,8 @@ type
     cbFormat: TComboBox;
     btnOK: TButton;
     btnCancel: TButton;
+  public
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
@@ -117,6 +119,15 @@ procedure TDateTimeExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited InternalSaveSettings(_Settings);
   _Settings.WriteString('Format', DateFormat); // Do not localize
+end;
+
+{ TfmDateFormat }
+
+constructor TfmDateFormat.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
 end;
 
 initialization

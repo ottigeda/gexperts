@@ -43,7 +43,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure lstTokensClick(Sender: TObject);
     procedure cboPriorityChange(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure radScanDirClick(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
     procedure btnFontClick(Sender: TObject);
@@ -51,6 +50,8 @@ type
     procedure UpdateButtonState;
     procedure DirEnable(New: Boolean);
     procedure HandleDirectoriesDropped(_Sender: TObject; _Files: TStrings);
+  public
+    constructor Create(_Owner: TComponent); override;
   end;
 
 // #ToDo:4 Test2
@@ -208,15 +209,19 @@ begin
   UpdateButtonState;
 end;
 
-procedure TfmToDoOptions.FormCreate(Sender: TObject);
+constructor TfmToDoOptions.Create(_Owner: TComponent);
 var
   i: TToDoPriority;
 begin
+  inherited;
+
   TWinControl_ActivateDropFiles(cboDirectories, HandleDirectoriesDropped);
 
   DirEnable(radScanDir.Checked);
   for i := Low(PriorityText) to High(PriorityText) do
     cboPriority.Items.Add(PriorityText[i]);
+
+  InitDpiScaler;
 end;
 
 procedure TfmToDoOptions.HandleDirectoriesDropped(_Sender: TObject; _Files: TStrings);

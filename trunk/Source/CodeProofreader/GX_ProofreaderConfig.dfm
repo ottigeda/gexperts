@@ -12,7 +12,6 @@ object fmProofreaderConfig: TfmProofreaderConfig
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
   ShowHint = True

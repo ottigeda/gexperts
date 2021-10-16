@@ -128,6 +128,8 @@ constructor TfmProjDependFilter.Create(_Owner: TComponent);
 begin
   inherited;
   TControl_SetMinConstraints(Self);
+
+  InitDpiScaler;
 end;
 
 procedure TfmProjDependFilter.edtUnitNameChange(Sender: TObject);

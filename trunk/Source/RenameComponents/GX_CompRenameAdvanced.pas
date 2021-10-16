@@ -26,6 +26,7 @@ type
     procedure SetData(const _CompClass: string; _Additional: TStrings);
     procedure GetData(var _Additional: TStringList);
   public
+    constructor Create(_Owner: TComponent); override;
     class function Execute(_Owner: TWinControl; const _CompClass: string; var _Additional: TStringList): Boolean;
   end;
 
@@ -53,6 +54,13 @@ begin
   finally
     FreeAndNil(frm);
   end;
+end;
+
+constructor TfmCompRenameAdvanced.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
 end;
 
 procedure TfmCompRenameAdvanced.GetData(var _Additional: TStringList);

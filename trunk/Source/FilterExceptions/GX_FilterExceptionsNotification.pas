@@ -115,6 +115,8 @@ constructor TfmExceptionNotification.Create(_Owner: TComponent);
 begin
   inherited Create(_Owner);
   TControl_SetMinConstraints(Self);
+
+  InitDpiScaler;
 end;
 
 destructor TfmExceptionNotification.Destroy;

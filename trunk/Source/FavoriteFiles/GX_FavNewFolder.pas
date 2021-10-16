@@ -23,6 +23,7 @@ type
   private
     FFavoriteFilesForm: TForm;
   public
+    constructor Create(_Owner: TComponent); override;
     property FavoriteFilesForm: TForm write FFavoriteFilesForm;
   end;
 
@@ -32,6 +33,15 @@ implementation
 
 uses
   SysUtils, Graphics, GX_FavUtil, GX_FavFiles;
+
+{ TfmFavNewFolder }
+
+constructor TfmFavNewFolder.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
+end;
 
 procedure TfmFavNewFolder.edtFolderNameChange(Sender: TObject);
 begin

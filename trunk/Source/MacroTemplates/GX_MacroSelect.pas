@@ -20,7 +20,6 @@ type
     procedure lstMacrosDblClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure tbEnterKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormResize(Sender: TObject);
     procedure btnConfigurationClick(Sender: TObject);
@@ -32,6 +31,7 @@ type
     procedure SizeColumns;
     function WindowPosKey: string;
   public
+    constructor Create(_Owner: TComponent); override;
     function GetSelectedMacroCode: Integer;
     procedure LoadTemplates(AMacroFile: TMacroFile; const Filter: string = '');
   end;
@@ -66,6 +66,16 @@ begin
   finally
     FreeAndNil(frm);
   end;
+end;
+
+{ TfmMacroSelect }
+
+constructor TfmMacroSelect.Create(_Owner: TComponent);
+begin
+  inherited;
+  LoadFormLayout;
+
+  InitDpiScaler;
 end;
 
 procedure TfmMacroSelect.SelectTemplate(Index: Integer);
@@ -174,11 +184,6 @@ begin
     Settings.SaveForm(WindowPosKey, Self, [fsSize]);
   Settings := Settings.Subkey(WindowPosKey);
   Settings.WriteInteger('NameWidth', lvMacros.Columns[0].Width);
-end;
-
-procedure TfmMacroSelect.FormCreate(Sender: TObject);
-begin
-  LoadFormLayout;
 end;
 
 procedure TfmMacroSelect.FormClose(Sender: TObject; var Action: TCloseAction);

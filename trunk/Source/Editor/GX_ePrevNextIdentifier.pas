@@ -18,6 +18,8 @@ type
     btnCancel: TButton;
     chkCenterMatch: TCheckBox;
     chk_Unfold: TCheckBox;
+  public
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
@@ -334,6 +336,15 @@ end;
 class function TNextIdentExpert.GetName: string;
 begin
   Result := 'NextIdent';
+end;
+
+{ TfmPrevNextConfig }
+
+constructor TfmPrevNextConfig.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
 end;
 
 initialization

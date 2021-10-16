@@ -116,6 +116,8 @@ begin
       btnEmail.Visible := True;
     mmoBuildDetails.Visible := False;
   end;
+
+  InitDpiScaler;
 end;
 
 procedure TfmAbout.InitVersionInfoControls;

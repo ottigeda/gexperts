@@ -14,10 +14,20 @@ type
     cbWholeWord: TCheckBox;
     btnOK: TButton;
     btnCancel: TButton;
+  public
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
 
 {$R *.dfm}
+
+{ TfmCodeSearch }
+
+constructor TfmCodeSearch.Create(_Owner: TComponent);
+begin
+  inherited;
+  InitDpiScaler;
+end;
 
 end.

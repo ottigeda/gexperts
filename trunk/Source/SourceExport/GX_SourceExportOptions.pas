@@ -28,7 +28,6 @@ type
     btnLoadIde: TButton;
     lblElement: TLabel;
     procedure AttributeChange(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure cbxAttributesChange(Sender: TObject);
     procedure btnLoadIdeClick(Sender: TObject);
     procedure btnBackgroundColorClick(Sender: TObject);
@@ -41,10 +40,13 @@ type
     procedure SynEditSelectionChange(Sender: TObject; Changes: TSynStatusChanges);
   public
     BackgroundColor: TColor;
+    constructor Create(_Owner: TComponent); override;
     property SynSampleEditor: TSynEdit read FSampleEditor write FSampleEditor;
   end;
 
 implementation
+
+{$R *.dfm}
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
@@ -54,13 +56,13 @@ uses
   GX_OtaUtils,
   GX_SynMemoUtils, GX_GenericUtils, GX_IdeUtils;
 
-{$R *.dfm}
-
-procedure TfmSourceExportOptions.FormCreate(Sender: TObject);
+constructor TfmSourceExportOptions.Create(_Owner: TComponent);
 var
   i: Integer;
   GXHighlighter: TGXSyntaxHighlighter;
 begin
+  inherited;
+
   // Destroyed with form
   ColorGrid := TColorGrid.Create(Self);
   HiddenGrid := TColorGrid.Create(Self);
@@ -102,11 +104,13 @@ begin
   BorderStyle := bsSizeable;
   TControl_SetMinConstraints(Self);
 
-  btnLoadIdeClick(Sender);
+  btnLoadIdeClick(btnLoadIde);
   for i := 0 to FSampleEditor.Highlighter.AttrCount - 1 do
     cbxAttributes.Items.Add(FSampleEditor.Highlighter.Attribute[i].Name);
   cbxAttributes.ItemIndex := 0;
   cbxAttributesChange(Self);
+
+  InitDpiScaler;
 end;
 
 procedure TfmSourceExportOptions.AttributeChange(Sender: TObject);

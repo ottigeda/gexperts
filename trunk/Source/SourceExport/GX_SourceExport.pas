@@ -363,6 +363,8 @@ begin
   end;
 
   dlgSave.Options := dlgSave.Options + [ofEnableSizing];
+
+  InitDpiScaler;
 end;
 
 { TSourceExportExpert }

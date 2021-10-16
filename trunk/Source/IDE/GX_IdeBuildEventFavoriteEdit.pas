@@ -61,6 +61,8 @@ begin
 
   TControl_SetConstraints(Self, [ccMinWidth, ccMinHeight, ccMaxHeight]);
   TWinControl_ActivateDropFiles(ed_Command, HandleFilesDropped);
+
+  InitDpiScaler;
 end;
 
 procedure Tf_IdeBuildEventFavoriteEdit.HandleFilesDropped(_Sender: TObject; _Files: TStrings);

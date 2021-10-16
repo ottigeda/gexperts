@@ -13,7 +13,6 @@ object fmProjDependFilter: TfmProjDependFilter
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnShow = FormShow

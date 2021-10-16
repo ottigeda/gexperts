@@ -1594,6 +1594,8 @@ begin
   ListView.Columns[2].Width := ColumnTextWidth;
   ListView.Columns[3].Width := ColumnTextWidth;
   ListView.Columns.EndUpdate;
+
+  InitDpiScaler;
 end;
 
 destructor TfmFavFiles.Destroy;

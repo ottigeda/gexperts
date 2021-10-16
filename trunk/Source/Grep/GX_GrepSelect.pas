@@ -5,7 +5,7 @@ unit GX_GrepSelect;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, Dialogs, ComCtrls,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ComCtrls,
   Buttons, ExtCtrls, StdCtrls,
   GX_BaseForm, GX_GrepBackend;
 
@@ -117,6 +117,9 @@ constructor TfmGrepSelect.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   TControl_SetMinConstraints(Self);
+
+  InitDpiScaler;
+
   FSortOrderList := TList.Create;
 end;
 

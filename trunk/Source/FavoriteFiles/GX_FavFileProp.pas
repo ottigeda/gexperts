@@ -34,6 +34,7 @@ type
   private
     FFavoriteFilesForm: TForm;
   public
+    constructor Create(_Owner: TComponent); override;
     property FavoriteFilesForm: TForm write FFavoriteFilesForm;
   end;
 
@@ -43,6 +44,15 @@ implementation
 
 uses
   SysUtils, Graphics, Dialogs, GX_FavFiles, GX_FavUtil;
+
+{ TfmFavFileProp }
+
+constructor TfmFavFileProp.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
+end;
 
 procedure TfmFavFileProp.sbnFileClick(Sender: TObject);
 var

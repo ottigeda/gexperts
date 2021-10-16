@@ -1,11 +1,11 @@
 object fmMacroSelect: TfmMacroSelect
   Left = 366
   Top = 321
-  Width = 439
-  Height = 367
   ActiveControl = tbEnter
   BorderStyle = bsSizeToolWin
   Caption = 'Select Macro Template'
+  ClientHeight = 328
+  ClientWidth = 423
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -13,7 +13,6 @@ object fmMacroSelect: TfmMacroSelect
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnClose = FormClose

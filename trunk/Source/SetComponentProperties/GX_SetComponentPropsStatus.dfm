@@ -13,7 +13,6 @@ object fmSetComponentPropsStatus: TfmSetComponentPropsStatus
   Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsStayOnTop
-  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnClose = FormClose

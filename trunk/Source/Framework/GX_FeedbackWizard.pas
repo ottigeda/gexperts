@@ -78,7 +78,6 @@ type
     procedure actNextUpdate(Sender: TObject);
     procedure actPrevExecute(Sender: TObject);
     procedure actNextExecute(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure chkReproducibleClick(Sender: TObject);
     procedure rgpFeedbackTypeClick(Sender: TObject);
     procedure btnEmailClick(Sender: TObject);
@@ -126,6 +125,7 @@ type
     procedure Init(const ABugEmail, AFeatureEmail: string);
   public
     class procedure Execute(AOwner: TComponent; const ABugEmail, AFeatureEmail: string);
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
@@ -355,10 +355,12 @@ begin
   end;
 end;
 
-procedure TfmFeedbackWizard.FormCreate(Sender: TObject);
+constructor TfmFeedbackWizard.Create(_Owner: TComponent);
 var
   i: Integer;
 begin
+  inherited;
+
   TLabel_MakeUrlLabel(l_URL);
 
   for i := 0 to pgeMain.PageCount - 1 do
@@ -375,6 +377,8 @@ begin
   pgeMain.Style := tsButtons;
   FIDEName := GxOtaGetIDEProductIdentifier;
   SetParentBackgroundValue(pnlHeader, False);
+
+  InitDpiScaler;
 end;
 
 procedure TfmFeedbackWizard.chkReproducibleClick(Sender: TObject);

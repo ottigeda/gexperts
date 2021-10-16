@@ -11,7 +11,6 @@ object fmGxFilterExceptionsExpert: TfmGxFilterExceptionsExpert
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = True
   OnDblClick = FormDblClick
   OnResize = FormResize
   DesignSize = (

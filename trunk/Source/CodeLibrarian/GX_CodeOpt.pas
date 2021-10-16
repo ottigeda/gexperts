@@ -71,6 +71,8 @@ begin
   TControl_SetConstraints(Self, [ccMinWidth, ccMinHeight, ccMaxHeight]);
   TWinControl_ActivateDropFiles(edPath, edPathOnFilesDropped);
   TEdit_ActivateAutoComplete(edPath, [acsFileSystem], [actSuggest]);
+
+  InitDpiScaler;
 end;
 
 procedure TfmCodeOptions.eNumericKeyPress(Sender: TObject; var Key: Char);

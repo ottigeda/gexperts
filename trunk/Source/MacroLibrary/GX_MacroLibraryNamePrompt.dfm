@@ -11,7 +11,6 @@ object fmMacroLibraryNamePrompt: TfmMacroLibraryNamePrompt
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poOwnerFormCenter
   Scaled = False
   PixelsPerInch = 96

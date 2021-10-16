@@ -12,8 +12,6 @@ object fmPasteAsConfig: TfmPasteAsConfig
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
-  OnCreate = FormCreate
   DesignSize = (
     313
     190)

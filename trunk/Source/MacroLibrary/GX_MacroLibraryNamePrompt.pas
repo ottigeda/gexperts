@@ -135,6 +135,8 @@ begin
   FMemo.OnSpecialLineColors := HandleOnSpecialLineColors;
   FMemo.Options := FMemo.Options - [eoScrollPastEol, eoScrollPastEof, eoEnhanceHomeKey, eoEnhanceEndKey];
   FMemo.PopupMenu := pmKeystrokes;
+
+  InitDpiScaler;
 end;
 
 procedure TfmMacroLibraryNamePrompt.MemoOnEnter(Sender: TObject);

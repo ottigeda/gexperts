@@ -18,6 +18,7 @@ type
   public
     class function GetInstance: TfmSetComponentPropsStatus;
     class procedure ReleaseMe;
+    constructor Create(_Owner: TComponent); override;
     property ProcessedFile: string write SetProcessedFile;
   end;
 
@@ -27,6 +28,14 @@ implementation
 
 var
   myfmSetComponentPropsStatus: TfmSetComponentPropsStatus = nil;
+
+constructor TfmSetComponentPropsStatus.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  InitDpiScaler;
+end;
+
 
 // Hide the form when closing it
 procedure TfmSetComponentPropsStatus.FormClose(Sender: TObject; var Action: TCloseAction);

@@ -12,7 +12,6 @@ object fmCommentConfig: TfmCommentConfig
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate

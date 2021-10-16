@@ -138,6 +138,8 @@ constructor TSelectComponentsForm.Create(_Owner: TComponent);
 begin
   inherited;
   FMatchingNodes := TList.Create;
+
+  InitDpiScaler;
 end;
 
 destructor TSelectComponentsForm.Destroy;

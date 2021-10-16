@@ -350,6 +350,8 @@ begin
       Inc(UsageCount, Expert.CallCount);
   end;
   btnUsage.Caption := Format('Usage (%d) ...', [UsageCount]);
+
+  InitDpiScaler;
 end;
 
 destructor TfmConfiguration.Destroy;

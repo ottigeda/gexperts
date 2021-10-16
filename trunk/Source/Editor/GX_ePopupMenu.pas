@@ -332,6 +332,8 @@ begin
   mi := TPopupMenu_AppendMenuItem(pm_Selected, 'Edit Hotkey', mi_EditHotkey);
   mi.ShortCut := ShortCut(VK_F2, []);
 
+  InitDpiScaler;
+
   FOldlvSelectWindowProc := lv_Selected.WindowProc;
   lv_Selected.WindowProc := ListViewWndProc;
 end;

@@ -32,6 +32,7 @@ begin
   frm := TfmGxMacroLibraryConfig.Create(nil);
   try
     frm.chk_AutoPrompt.Checked := APromptForName;
+    frm.InitDpiScaler;
     Result := mrOk = frm.ShowModal;
     if Result then
       APromptForName := frm.chk_AutoPrompt.Checked;

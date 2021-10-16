@@ -13,7 +13,6 @@ object fmCodeLib: TfmCodeLib
   Font.Style = []
   KeyPreview = True
   Menu = MainMenu
-  OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
   OnHide = FormHide

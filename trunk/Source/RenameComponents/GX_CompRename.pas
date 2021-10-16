@@ -466,6 +466,8 @@ begin
   FAnchorButtons[akLeft] := TdzSpeedBitBtn.Create(b_AnchorLeft);
   FAnchorButtons[akRight] := TdzSpeedBitBtn.Create(b_AnchorRight);
   FAnchorButtons[akBottom] := TdzSpeedBitBtn.Create(b_AnchorBottom);
+
+  InitDpiScaler;
 end;
 
 destructor TfmCompRename.Destroy;

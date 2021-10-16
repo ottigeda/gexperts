@@ -1,12 +1,12 @@
 object SelectComponentsForm: TSelectComponentsForm
   Left = 376
   Top = 207
-  Width = 404
-  Height = 388
   ActiveControl = StayOnTopCheckBox
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSizeToolWin
   Caption = 'Select Components'
+  ClientHeight = 349
+  ClientWidth = 388
   Color = clBtnFace
   Constraints.MinHeight = 175
   Constraints.MinWidth = 190
@@ -16,7 +16,6 @@ object SelectComponentsForm: TSelectComponentsForm
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = True
   Scaled = False
   OnActivate = FormActivate
   OnKeyPress = FormKeyPress

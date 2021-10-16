@@ -60,6 +60,8 @@ constructor TfmIdxPackageRenameDlg.Create(_Owner: TComponent);
 begin
   inherited;
   TControl_SetMinConstraints(Self);
+
+  InitDpiScaler;
 end;
 
 procedure TfmIdxPackageRenameDlg.GetData(out _Description: string);

@@ -266,6 +266,8 @@ begin
 
   TStringGrid_AdjustRowHeight(sg_Actions);
   TGrid_Resize(sg_Actions, [roUseGridWidth, roUseAllRows, roReduceMinWidth]);
+
+  InitDpiScaler;
 end;
 
 function TfmGxKeyboardShortcuts.GetShortcut(_Idx: Integer): TShortCut;

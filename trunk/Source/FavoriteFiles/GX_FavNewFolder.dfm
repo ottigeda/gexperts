@@ -12,7 +12,6 @@ object fmFavNewFolder: TfmFavNewFolder
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate

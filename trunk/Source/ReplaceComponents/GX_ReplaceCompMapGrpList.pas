@@ -77,6 +77,9 @@ constructor TfmReplaceCompMapGrpList.Create(Owner: TComponent; ConfigData: TRepl
 begin
   inherited Create(Owner);
   FConfigData := ConfigData;
+
+  InitDpiScaler;
+
   LoadSettings;
 end;
 

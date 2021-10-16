@@ -105,6 +105,8 @@ begin
       end
     end;
   end;
+
+  InitDpiScaler;
 end;
 
 destructor TfmTestRegEx.Destroy;

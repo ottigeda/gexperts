@@ -94,6 +94,9 @@ begin
   inherited Create(Owner);
   FConfigData := ConfigData;
   FSortOnColumn := 1;
+
+  InitDpiScaler;
+
   LoadSettings;
 end;
 

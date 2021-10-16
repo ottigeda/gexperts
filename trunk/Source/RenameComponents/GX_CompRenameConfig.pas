@@ -95,8 +95,6 @@ type
     ts_NamesVcl: TTabSheet;
     ts_NamesFmx: TTabSheet;
     procedure acOtherPropertiesExecute(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure ActionListUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure acAddExecute(Sender: TObject);
@@ -153,6 +151,8 @@ type
     procedure SetDefault(_Which: string);
     procedure Import(const _fn: string);
   public
+    constructor Create(_Owner: TComponent); override;
+    destructor Destroy; override;
     class function Execute(_Owner: TComponent; _OnImport: TOnImportLists; _OnExport: TOnExportLists;
       _ValueListVcl, _ValueListFmx: TStringList; var _AutoShow: Boolean;
       var _AutoAdd: Boolean; var _FormWidth, _FormHeight: Integer; const _Selected: string): Boolean;
@@ -339,7 +339,7 @@ begin
   end;
 end;
 
-procedure TfmCompRenameConfig.FormCreate(Sender: TObject);
+constructor TfmCompRenameConfig.Create(_Owner: TComponent);
 const
   GridPad = 8;
 resourcestring
@@ -351,9 +351,17 @@ resourcestring
     Result := TRenameStringGrid.Create(Self);
     Result.Name := _Name;
     Result.Parent := _Parent;
-    // Delphi < 2006 does not support Margins, so we have to do it the hard way
+{$IFDEF GX_HAS_ALIGN_WITH_MARGINS}
+    Result.AlignWithMargins := True;
+    Result.Margins.Top := GridPad;
+    Result.Margins.Left := GridPad;
+    Result.Margins.Right := GridPad;
+    Result.Margins.Bottom := GridPad;
+    result.Align := alClient;
+{$ELSE}
     Result.SetBounds(GridPad, GridPad, _Parent.Width - (GridPad * 2), _Parent.Height - (GridPad * 2));
     Result.Anchors := [akLeft, akTop, akRight, akBottom];
+{$ENDIF}
     Result.ColCount := 2;
     Result.DefaultColWidth := 150;
     Result.DefaultRowHeight := 17;
@@ -372,12 +380,11 @@ var
   mi: TMenuItem;
 
 begin
+  inherited;
+
   TControl_SetMinConstraints(Self);
 
-  pnlRules.BevelOuter := bvNone;
-  pnlRight.BevelOuter := bvNone;
-  pnlIncSearch.BevelOuter := bvNone;
-  pnlNames.BevelOuter := bvNone;
+  TPanel_BevelNone([pnlRules, pnlRight, pnlIncSearch, pnlNames]);
 
   FGridVcl := CreateGrid(ts_NamesVcl, 'GridVcl');
   FGridFmx := CreateGrid(ts_NamesFmx, 'GridFmx');
@@ -406,12 +413,15 @@ begin
     st.Free;
   end;
 
+  InitDpiScaler;
 end;
 
-procedure TfmCompRenameConfig.FormDestroy(Sender: TObject);
+destructor TfmCompRenameConfig.Destroy;
 begin
   TStrings_FreeWithObjects(FValueListVcl);
   TStrings_FreeWithObjects(FValueListFmx);
+
+  inherited;
 end;
 
 procedure TfmCompRenameConfig.UpdateOtherProps;

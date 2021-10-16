@@ -6,7 +6,6 @@ inherited f_IdeBuildEventFavoriteEdit: Tf_IdeBuildEventFavoriteEdit
   ClientHeight = 137
   ClientWidth = 417
   ParentFont = False
-  OldCreateOrder = True
   Position = poOwnerFormCenter
   PixelsPerInch = 96
   TextHeight = 13

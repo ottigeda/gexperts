@@ -112,13 +112,15 @@ begin
   inherited;
   TControl_SetMinConstraints(Self);
 
-{$IF rtlversion > RtlVersionDelphi2005 }
+{$IFDEF GX_HAS_ALIGN_WITH_MARGINS}
   tvComps.AlignWithMargins := True;
   tvComps.Margins.Left := 4;
   tvComps.Margins.Top := 4;
   tvComps.Margins.Right := 4;
   tvComps.Margins.Bottom := 4;
 {$IFEND}
+
+  InitDpiScaler;
 end;
 
 procedure TfmTabOrder.act_MoveDownExecute(Sender: TObject);

@@ -11,7 +11,6 @@ object fmRemoveMatchingLinesExpertConfig: TfmRemoveMatchingLinesExpertConfig
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poOwnerFormCenter
   DesignSize = (
     377

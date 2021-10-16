@@ -230,7 +230,9 @@ begin
     end;
   end;
 
-  TGrid_Resize(TheGrid, [roUseGridWidth, roUseAllRows])
+  TGrid_Resize(TheGrid, [roUseGridWidth, roUseAllRows]);
+
+  InitDpiScaler;
 end;
 
 destructor Tf_FormHotkeys.Destroy;

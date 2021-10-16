@@ -130,7 +130,6 @@ type
     btnMapAddToFavs: TButton;
     procedure tmrFilterTimer(Sender: TObject);
     procedure actHelpExecute(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure edtFilterKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure edtFilterChange(Sender: TObject);
@@ -191,6 +190,7 @@ type
     function GetMapTabVisible: Boolean;
     property CurrentListView: TListView read FCurrentListView write SetCurrentListView;
   public
+    constructor Create(_Owner: TComponent); override;
     property ActivePageIndex: Integer read GetActivePageIndex write SetActivePageIndex;
     property AvailableFiles: TAvailableFiles read FAvailableFiles write FAvailableFiles;
     property InitialFileType: string read FInitialFileType write FInitialFileType;
@@ -669,8 +669,10 @@ end;
 
 { TfmOpenFile }
 
-procedure TfmOpenFile.FormCreate(Sender: TObject);
+constructor TfmOpenFile.Create(_Owner: TComponent);
 begin
+  inherited;
+
   TControl_SetMinConstraints(Self);
 
   SetToolbarGradient(ToolBar);
@@ -687,6 +689,8 @@ begin
   lvRecent.DoubleBuffered := True;
 
   TWinControl_ActivateDropFiles(lvFavorite, lvFavoriteFilesDropped);
+
+  InitDpiScaler;
 end;
 
 procedure TfmOpenFile.lvFavoriteFilesDropped(Sender: TObject; Files: TStrings);

@@ -171,6 +171,7 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 
 {$IFDEF GX_DELPHI2005_UP}
   {$DEFINE GX_SUPPORTS_FOLDING}
+  {$DEFINE GX_HAS_ALIGN_WITH_MARGINS}
 {$ENDIF GX_DELPHI2005_UP}
 
 {$IFDEF GX_VER320_up}

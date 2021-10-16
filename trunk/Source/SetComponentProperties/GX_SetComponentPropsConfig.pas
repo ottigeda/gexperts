@@ -73,8 +73,6 @@ type
     procedure chkSimulateClick(Sender: TObject);
     procedure chkVerboseClick(Sender: TObject);
     procedure cbxPropertyEnter(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure lvPropertiesChange(Sender: TObject; Item: TListItem; Change: TItemChange);
     procedure chkOnlyOpenFilesClick(Sender: TObject);
   private
@@ -92,6 +90,8 @@ type
     procedure SetVerbose(const Value: Boolean);
     procedure SetOnlyOpenFiles(const Value: Boolean);
   public
+    constructor Create(_Owner: TComponent); override;
+    destructor Destroy; override;
     procedure GetSettings;
     procedure SetSettings;
     property SimulateOnly: Boolean read FSimulateOnly write SetSimulateOnly;
@@ -290,18 +290,25 @@ begin
   cbxProperty.Text := OldSelectedProperty;
 end;
 
-procedure TfmSetComponentPropsConfig.FormCreate(Sender: TObject);
+constructor TfmSetComponentPropsConfig.Create(_Owner: TComponent);
 begin
+  inherited;
+
   GxOtaGetInstalledComponentList(cbxComponents.Items, False);
+
+  InitDpiScaler;
+
   FActualComponent := '';
   FActualPropertyNames := TStringList.Create;
   FActualPropertyTypes := TStringList.Create;
 end;
 
-procedure TfmSetComponentPropsConfig.FormDestroy(Sender: TObject);
+destructor TfmSetComponentPropsConfig.Destroy;
 begin
   FreeAndNil(FActualPropertyNames);
   FreeAndNil(FActualPropertyTypes);
+
+  inherited;
 end;
 
 // Look for a given ComponentName and ComponentProperty in the listview and give back the RowIndex

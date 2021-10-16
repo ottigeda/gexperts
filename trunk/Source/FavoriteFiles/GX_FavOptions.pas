@@ -111,6 +111,8 @@ begin
   chk_InsertFavMenu.Enabled := False;
   chk_InsertFavMenu.Caption := chk_InsertFavMenu.Caption + ' (not available in Delphi 6)';
 {$ENDIF}
+
+  InitDpiScaler;
 end;
 
 procedure TfmFavOptions.b_DefaultClick(Sender: TObject);

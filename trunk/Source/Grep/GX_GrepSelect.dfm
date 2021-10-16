@@ -5,7 +5,6 @@ inherited fmGrepSelect: TfmGrepSelect
   ClientWidth = 790
   ParentFont = False
   Font.Charset = ANSI_CHARSET
-  OldCreateOrder = True
   ShowHint = True
   OnCreate = FormCreate
   PixelsPerInch = 96
