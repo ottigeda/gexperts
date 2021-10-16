@@ -128,6 +128,8 @@ begin
   cbListView.Items.Assign(Screen.Fonts);
   cbEditor.Items.Assign(Screen.Fonts);
   cbReportFont.Items.assign(Screen.Fonts);
+
+  InitDpiScaler;
 end;
 
 destructor TfmClassOptions.Destroy;

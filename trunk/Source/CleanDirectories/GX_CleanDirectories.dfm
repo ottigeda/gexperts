@@ -13,7 +13,6 @@ object fmCleanDirectories: TfmCleanDirectories
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
   OnCreate = FormCreate

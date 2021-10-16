@@ -26,6 +26,9 @@ begin
   Result.Progress.Position := 0;
   Result.Progress.Min := 0;
   Result.Progress.Max := FileCount;
+
+  Result.InitDpiScaler;
+
   Result.Show;
 end;
 

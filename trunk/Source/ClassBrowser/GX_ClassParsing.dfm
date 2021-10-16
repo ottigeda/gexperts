@@ -12,7 +12,6 @@ object fmClassParsing: TfmClassParsing
   Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsStayOnTop
-  OldCreateOrder = True
   Position = poOwnerFormCenter
   Scaled = False
   OnShow = FormShow

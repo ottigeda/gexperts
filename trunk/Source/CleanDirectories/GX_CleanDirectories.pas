@@ -310,6 +310,8 @@ begin
   TControl_SetMinConstraints(Self);
   TWinControl_ActivateDropFiles(clbDirs, clbDirsOnFilesDropped);
   TWinControl_ActivateDropFiles(clbExtensions, clbExtensionsOnFilesDropped);
+
+  InitDpiScaler;
 end;
 
 procedure TfmCleanDirectories.clbDirsOnFilesDropped(_Sender: TObject; _Files: TStrings);

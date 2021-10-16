@@ -1,11 +1,11 @@
 object fmClassProp: TfmClassProp
   Left = 311
   Top = 225
-  Width = 479
-  Height = 303
   ActiveControl = btnOK
   BorderIcons = [biSystemMenu]
   Caption = 'Class Properties'
+  ClientHeight = 264
+  ClientWidth = 463
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -55,7 +55,7 @@ object fmClassProp: TfmClassProp
       end
       object lblFileName: TLabel
         Left = 34
-        Top = 104
+        Top = 108
         Width = 51
         Height = 14
         Alignment = taRightJustify
