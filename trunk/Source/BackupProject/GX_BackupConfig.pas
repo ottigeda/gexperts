@@ -97,6 +97,8 @@ begin
     FreeAndNil(Variables);
   end;
   TButton_AddDropdownMenu(btnVariables, pmuVariables);
+
+  InitDpiScaler;
 end;
 
 procedure TfmBackupConfig.InsertPlaceholderClick(Sender: TObject);

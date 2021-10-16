@@ -116,6 +116,8 @@ begin
   for i := 0 to 19 do begin
     TComboBox_AddIntObject(cmb_BmIndex, IntToStr(i), i);
   end;
+
+  InitDpiScaler;
 end;
 
 destructor TfmEditBookmarks.Destroy;

@@ -1547,6 +1547,8 @@ begin
 
   SetupEditorControls;
 
+  InitDpiScaler;
+
   FPrimitiveTop := False;
   FStayInPackage := False;
   FParseRecursing := False;

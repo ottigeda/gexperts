@@ -25,6 +25,7 @@ type
   private
   public
     class procedure Execute(_Owner: TWinControl; _NotFound: TStrings; _FollowLibraryPath: Boolean);
+    constructor Create(_Owner: TComponent); override;
   end;
 
 var
@@ -43,6 +44,13 @@ begin
   Close;
 end;
 
+constructor TfmBackupNotFound.Create(_Owner: TComponent);
+begin
+  inherited;
+  TControl_SetMinConstraints(Self);
+  InitDpiScaler;
+end;
+
 class procedure TfmBackupNotFound.Execute(_Owner: TWinControl; _NotFound: TStrings; _FollowLibraryPath: Boolean);
 var
   frm: TfmBackupNotFound;
@@ -50,7 +58,6 @@ begin
   frm := TfmBackupNotFound.Create(_Owner);
   try
     TForm_CenterOn(frm, _Owner);
-    TControl_SetMinConstraints(frm);
     frm.m_NotFound.Lines := _NotFound;
     frm.l_NotFound.Visible := not _FollowLibraryPath;
     frm.ShowModal;

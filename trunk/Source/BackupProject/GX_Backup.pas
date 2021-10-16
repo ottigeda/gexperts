@@ -433,6 +433,8 @@ begin
 
   TWinControl_ActivateDropFiles(lbFiles, lbFilesOnFilesDropped);
 
+  InitDpiScaler;
+
   LoadSettings;
 end;
 

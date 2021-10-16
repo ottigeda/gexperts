@@ -18,6 +18,8 @@ type
     rgScope: TRadioGroup;
     cbSearchLibraryPath: TCheckBox;
     procedure cbPasswordClick(Sender: TObject);
+    public
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
@@ -37,6 +39,12 @@ begin
   else
     edPassword.Color := clBtnface;
   edPassword.Refresh;
+end;
+
+constructor TfmBackupOptions.Create(_Owner: TComponent);
+begin
+  inherited;
+  InitDpiScaler;
 end;
 
 end.
