@@ -97,12 +97,12 @@ begin
     Items.EndUpdate;
   end;
 
-  InitDpiScaler;
-
   lb_UnitPositions.ClientHeight := (FUnitPositions.Count + 1) * lb_UnitPositions.ItemHeight;
   b_Ok.Top := lb_UnitPositions.Top + lb_UnitPositions.Height + 8;
   b_Cancel.Top := b_Ok.Top;
   Self.ClientHeight := b_Ok.Top + b_Ok.Height + 8;
+
+  InitDpiScaler;
 
   // Unfortunately the IDE only updates the registry when it closes down so this list will be
   // outdated if the user switched from the IDE's goto dialog to the GExperts one.
