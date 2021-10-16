@@ -178,6 +178,8 @@ begin
 
   TControl_SetMinConstraints(Self);
 
+  InitDpiScaler;
+
   LoadSettings;
 end;
 
