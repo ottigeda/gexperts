@@ -1,5 +1,7 @@
 unit GX_FavNewFolder;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -32,7 +34,7 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Graphics, GX_FavUtil, GX_FavFiles;
+  SysUtils, Graphics, u_dzVclUtils, u_dzDpiScaleUtils, GX_FavUtil, GX_FavFiles;
 
 { TfmFavNewFolder }
 
@@ -83,7 +85,11 @@ end;
 procedure TfmFavNewFolder.cbxFolderTypeMeasureItem(Control: TWinControl;
   Index: Integer; var Height: Integer);
 begin
+{$IFDEF IDE_IS_HIDPI_AWARE}
+  Height := FScaler.Calc(18);
+{$ELSE}
   Height := 18;
+{$ENDIF}
 end;
 
 end.
