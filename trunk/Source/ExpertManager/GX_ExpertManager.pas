@@ -80,6 +80,10 @@ type
     function ConfirmIfGExperts(const FileName: string): Boolean;
     procedure LoadSettings;
     procedure SaveSettings;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ArrangeControls; override;
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateWithManager(AOwner: TComponent; Manager: TExpertManagerExpert);
@@ -253,6 +257,14 @@ begin
   LoadSettings;
   RefreshExpertListControl;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmExpertManager.ArrangeControls;
+begin
+  inherited;
+  TListView_Resize(lvExperts);
+end;
+{$ENDIF}
 
 destructor TfmExpertManager.Destroy;
 begin
