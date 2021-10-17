@@ -120,6 +120,10 @@
 (* SYN_DELPHI_10_2_UP   : Delphi RX 10.2 or higher is being used.             *)
 (* SYN_DELPHI_10_3      : Delphi RX 10.3 (Rio) is being used.                 *)
 (* SYN_DELPHI_10_3_UP   : Delphi RX 10.3 or higher is being used.             *)
+(* SYN_DELPHI_10_4      : Delphi RX 10.4 (Sydney) is being used.              *)
+(* SYN_DELPHI_10_4_UP   : Delphi RX 10.4 or higher is being used.             *)
+(* SYN_DELPHI_11        : Delphi RX 11 (Alexandrai) is being used.            *)
+(* SYN_DELPHI_11_UP     : Delphi RX 11 or higher is being used.               *)
 (* SYN_KYLIX            : Kylix 1.0 is being using.                           *)
 (******************************************************************************)
 
