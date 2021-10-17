@@ -300,7 +300,11 @@ begin
     LogFmt('TFormDpiScaler.ApplyDpi(%s, NewDpi: %d, NewBounds: (nil))',
       [FFrm.Name, _NewDpi]);
 
-  RedrawLock := TWinControl_Lock(FFrm);
+// locking redraws seemed like a good idea but had undesireable side effects:
+// https://en.delphipraxis.net/topic/5516-the-state-of-gexperts-support-for-delphi-11/?do=findComment&comment=49633
+// https://en.delphipraxis.net/topic/5516-the-state-of-gexperts-support-for-delphi-11/?do=findComment&comment=49626
+// both effects were gone after I removed this call:
+//  RedrawLock := TWinControl_Lock(FFrm);
   try
     Scaler.Init(DesignDPI, _NewDpi);
     // Disable constraints to assure the new size can be set
