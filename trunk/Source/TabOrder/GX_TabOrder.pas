@@ -118,7 +118,7 @@ begin
   tvComps.Margins.Top := 4;
   tvComps.Margins.Right := 4;
   tvComps.Margins.Bottom := 4;
-{$IFEND}
+{$ENDIF}
 
   InitDpiScaler;
 end;
