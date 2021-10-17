@@ -24,6 +24,7 @@ type
       var Height: Integer);
   private
     FFavoriteFilesForm: TForm;
+    function DpiScaleValue(_Value: Integer): Integer;
   public
     constructor Create(_Owner: TComponent); override;
     property FavoriteFilesForm: TForm write FFavoriteFilesForm;
@@ -34,7 +35,7 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Graphics, u_dzVclUtils, u_dzDpiScaleUtils, GX_FavUtil, GX_FavFiles;
+  SysUtils, Graphics, GX_FavUtil, GX_FavFiles, u_dzVclUtils, u_dzDpiScaleUtils,u_dzTypesUtils;
 
 { TfmFavNewFolder }
 
@@ -59,21 +60,35 @@ begin
   cbxFolderType.ItemIndex := 0;
 end;
 
+function TfmFavNewFolder.DpiScaleValue(_Value: Integer): Integer;
+begin
+{$IFDEF IDE_IS_HIDPI_AWARE}
+  Result := FScaler.Calc(_Value);
+{$ELSE}
+  Result := _Value;
+{$ENDIF}
+end;
+
 procedure TfmFavNewFolder.cbxFolderTypeDrawItem(Control: TWinControl; Index: Integer;
   Rect: TRect; State: TOwnerDrawState);
+var
+  cnv: TCanvas;
+  il: TImageList;
+  ImageHeight: Integer;
+  YOffset: Integer;
 begin
   try
-    with cbxFolderType.Canvas do
-    begin
-      if odSelected in State then
-        Brush.Color := clHighlight
-      else
-        Brush.Color := clWindow;
-      FillRect(Rect);
-      (FFavoriteFilesForm as TfmFavFiles).ilFolders.Draw(cbxFolderType.Canvas,
-        Rect.Left+3, Rect.Top+1, Index*2);
-      TextOut(Rect.Left+22, Rect.Top+3, cbxFolderType.Items[Index]);
-    end;
+    cnv := cbxFolderType.Canvas;
+    if odSelected in State then
+      cnv.Brush.Color := clHighlight
+    else
+      cnv.Brush.Color := clWindow;
+    cnv.FillRect(Rect);
+    il := (FFavoriteFilesForm as TfmFavFiles).ilFolders;
+    YOffset := (TRect_Height(Rect) - il.Height) div 2;
+    il.Draw(cnv, Rect.Left + DpiScaleValue(3), Rect.Top + YOffset, Index * 2);
+    YOffset := (TRect_Height(Rect) - cnv.TextHeight('Mg')) div 2;
+    cnv.TextOut(Rect.Left + DpiScaleValue(22), Rect.Top + YOffset, cbxFolderType.Items[Index]);
   except
     on E: Exception do
     begin
@@ -85,11 +100,7 @@ end;
 procedure TfmFavNewFolder.cbxFolderTypeMeasureItem(Control: TWinControl;
   Index: Integer; var Height: Integer);
 begin
-{$IFDEF IDE_IS_HIDPI_AWARE}
-  Height := FScaler.Calc(18);
-{$ELSE}
-  Height := 18;
-{$ENDIF}
+  Height := DpiScaleValue(18);
 end;
 
 end.
