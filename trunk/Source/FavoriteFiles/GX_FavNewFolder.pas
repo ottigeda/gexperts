@@ -5,7 +5,7 @@ unit GX_FavNewFolder;
 interface
 
 uses
-  Windows, Classes, Controls, Forms, StdCtrls, GX_BaseForm;
+  Windows, SysUtils, Types, Classes, Controls, Forms, StdCtrls, GX_BaseForm;
 
 type
   TfmFavNewFolder = class(TfmBaseForm)
@@ -35,7 +35,13 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Graphics, GX_FavUtil, GX_FavFiles, u_dzVclUtils, u_dzDpiScaleUtils,u_dzTypesUtils;
+  Graphics,
+  u_dzTypesUtils,
+{$IFDEF IDE_IS_HIDPI_AWARE}
+  u_dzVclUtils,
+  u_dzDpiScaleUtils,
+{$ENDIF}
+  GX_FavUtil, GX_FavFiles;
 
 { TfmFavNewFolder }
 
@@ -74,7 +80,6 @@ procedure TfmFavNewFolder.cbxFolderTypeDrawItem(Control: TWinControl; Index: Int
 var
   cnv: TCanvas;
   il: TImageList;
-  ImageHeight: Integer;
   YOffset: Integer;
 begin
   try
