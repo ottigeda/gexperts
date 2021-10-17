@@ -1,7 +1,9 @@
 unit GX_BaseForm;
 
 {$I GX_CondDefine.inc}
+
 {$D+}
+
 interface
 
 uses
