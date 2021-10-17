@@ -1,5 +1,14 @@
 unit u_dzDpiScaleUtils;
 
+{$INCLUDE dzlib.inc}
+
+{.$DEFINE DPI_SCALER_LOGGING}
+
+{$IFOPT d-}
+{$UNDEF DPI_SCALER_LOGGING}
+{$UNDEF SUPPORTS_INLINE}
+{$ENDIF}
+
 interface
 
 uses
@@ -17,13 +26,13 @@ type
     FDesignDpi: Integer;
     FCurrentDpi: Integer;
   public
-    procedure Init(_frm: TCustomForm); overload; inline;
-    procedure Init(_Dpi: Integer); overload; inline;
-    procedure Init(_DesignDpi, _CurrentDpi: Integer); overload; inline;
-    procedure SetCurrentDpi(_frm: TCustomForm); overload; inline;
-    procedure SetCurrentDpi(_Dpi: Integer); overload; inline;
-    function Calc(_Value: Integer): Integer; overload; inline;
-    function Calc(const _Value: TRect): TRect; overload; inline;
+    procedure Init(_frm: TCustomForm); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure Init(_Dpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure Init(_DesignDpi, _CurrentDpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure SetCurrentDpi(_frm: TCustomForm); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure SetCurrentDpi(_Dpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function Calc(_Value: Integer): Integer; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function Calc(const _Value: TRect): TRect; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     function ScaleFactorPercent: Integer;
   end;
 
@@ -39,18 +48,21 @@ type
 
   TFormDpiScaler = class
   private
-    DesignDPI: Integer;
-    ClientWidth, ClientHeight: Integer;
-    MinWidth, MinHeight: Integer;
-    MaxWidth, MaxHeight: Integer;
-    FontSize: Integer;
+    FDesignDpi: Integer;
+    FClientWidth, FClientHeight: Integer;
+    FMinWidth, FMinHeight: Integer;
+    FMaxWidth, FMaxHeight: Integer;
+    FFontSize: Integer;
     FFrm: TForm;
-    CtrlParams: array of TCtrlDpiScaler;
+    FCtrlParams: array of TCtrlDpiScaler;
+    FDesigDpi: Integer;
     procedure AddControls(_Ctrl: TWinControl);
   public
     constructor Create(_frm: TForm);
     procedure ApplyScale(const _Scaler: TDpiScaler);
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+    function Calc(_Value: Integer): Integer;
+    property DesignDPI: Integer read FDesigDpi;
   end;
 
 implementation
@@ -58,16 +70,17 @@ implementation
 uses
   StdCtrls,
   u_dzAdvancedObject,
-  u_dzVclUtils;
+  u_dzVclUtils,
+  u_dzTypesUtils;
 
-{$IFOPT D+}
+{$IFDEF DPI_SCALER_LOGGING}
 var
   LogFile: Textfile;
 {$ENDIF}
 
 procedure LogStr(const _s: string);
 begin
-{$IFOPT D+}
+{$IFDEF DPI_SCALER_LOGGING}
   WriteLn(LogFile, _s);
   Flush(LogFile);
 {$ENDIF}
@@ -81,7 +94,7 @@ end;
 procedure LogRect(const _Prefix: string; const _Rect: TRect);
 begin
   LogFmt('%s: (Left: %d, Top: %d, Right: %d, Bottom: %d, (Width: %d, Height: %d))',
-    [_Prefix, _Rect.Left, _Rect.Top, _Rect.Right, _Rect.Bottom, _Rect.Width, _Rect.Height]);
+    [_Prefix, _Rect.Left, _Rect.Top, _Rect.Right, _Rect.Bottom, TRect_Width(_Rect), TRect_Height(_Rect)]);
 end;
 
 procedure LogConstraints(const _Prefix: string; _Cstr: TSizeConstraints);
@@ -144,6 +157,8 @@ begin
 // todo: adjust as needed
 {$IFDEF DELPHIX_TOKYO_UP}
     FDesignDpi := TForm_GetDesignDPI(TForm(_frm));
+    // I don't remember why I didn't use TForm(_frm).PixelsPerInch here
+    // there possibly was a bug in some Delphi versions.
     FCurrentDpi := TScreen_GetDpiForForm(_frm);
 {$ELSE ~DELPHIX_TOKYO_UP}
     FDesignDpi := TForm(_frm).PixelsPerInch;
@@ -201,18 +216,18 @@ begin
     case TLabel(Ctrl).Alignment of
       taRightJustify: begin
           LogStr('  Alignment: taRightJustify');
-          br.Left := _Scaler.Calc(BoundsRect.Left + BoundsRect.Width) - br.Width;
-          LogFmt('  br: (Left: %d, Top: %d, Width: %d, Height: %d)', [br.Left, br.Top, br.Width, br.Height]);
+          br.Left := _Scaler.Calc(BoundsRect.Left + TRect_Width(BoundsRect) - TRect_Width(br));
+          LogFmt('  br: (Left: %d, Top: %d, Width: %d, Height: %d)', [br.Left, br.Top, TRect_Width(br), TRect_Height(br)]);
         end;
       taCenter: begin
           LogStr('  Alignment: taCenter');
-          br.Left := _Scaler.Calc(BoundsRect.Left + BoundsRect.Width div 2) - br.Width div 2;
+          br.Left := _Scaler.Calc(BoundsRect.Left + TRect_Width(BoundsRect) div 2) - TRect_Width(br) div 2;
           LogRect('  br', br);
         end;
     end;
   end else if (Ctrl is TEdit) and TEdit(Ctrl).AutoSize then begin
-    LogStr('  Ctrl is TEdit Autosie: True');
-    br.Height := Ctrl.Height;
+    LogStr('  Ctrl is TEdit Autosize: True');
+    TRect_SetHeight(br, Ctrl.Height);
     LogRect('  br', br);
   end;
 
@@ -271,11 +286,11 @@ var
   Ctrl: TControl;
 begin
   cnt := _Ctrl.ControlCount;
-  Offset := Length(CtrlParams);
-  SetLength(CtrlParams, Offset + cnt);
+  Offset := Length(FCtrlParams);
+  SetLength(FCtrlParams, Offset + cnt);
   for i := 0 to cnt - 1 do begin
     Ctrl := _Ctrl.Controls[i];
-    CtrlParams[Offset + i].Assign(Ctrl);
+    FCtrlParams[Offset + i].Assign(Ctrl);
     if Ctrl is TWinControl then
       AddControls(TWinControl(Ctrl));
   end;
@@ -295,7 +310,7 @@ begin
 
   if Assigned(_NewBounds) then
     LogFmt('TFormDpiScaler.ApplyDpi(%s, NewDpi: %d, NewBounds: (Left: %d, Top: %d, Width: %d, Height: %d))',
-      [FFrm.Name, _NewDpi, _NewBounds.Left, _NewBounds.Top, _NewBounds.Width, _NewBounds.Height])
+      [FFrm.Name, _NewDpi, _NewBounds.Left, _NewBounds.Top, TRect_Width(_NewBounds^),TRect_Height(_NewBounds^)])
   else
     LogFmt('TFormDpiScaler.ApplyDpi(%s, NewDpi: %d, NewBounds: (nil))',
       [FFrm.Name, _NewDpi]);
@@ -306,7 +321,7 @@ begin
 // both effects were gone after I removed this call:
 //  RedrawLock := TWinControl_Lock(FFrm);
   try
-    Scaler.Init(DesignDPI, _NewDpi);
+    Scaler.Init(FDesignDpi, _NewDpi);
     // Disable constraints to assure the new size can be set
     FFrm.Constraints.MinWidth := 0;
     FFrm.Constraints.MinHeight := 0;
@@ -317,13 +332,13 @@ begin
       FFrm.BoundsRect := _NewBounds^;
     end else begin
       ClientRect := FFrm.ClientRect;
-      NewWidth := Scaler.Calc(ClientRect.Width);
-      NewHeight := Scaler.Calc(ClientRect.Height);
+      NewWidth := Scaler.Calc(TRect_Width(ClientRect));
+      NewHeight := Scaler.Calc(TRect_Height(ClientRect));
       FFrm.ClientWidth := NewWidth;
       FFrm.ClientHeight := NewHeight;
 
       BoundsRect := FFrm.BoundsRect;
-      BoundsRect.Offset(-BoundsRect.Width div 2, -BoundsRect.Height div 2);
+      TRect_SetOffset(BoundsRect, -TRect_Width(BoundsRect) div 2, -TRect_Height(BoundsRect) div 2);
       FFrm.BoundsRect := BoundsRect;
     end;
     LogForm('  FFrm', FFrm);
@@ -343,19 +358,27 @@ begin
   LogFmt('TFormDpiScaler.ApplyScale(%s, %d %%)', [FFrm.Name, _Scaler.ScaleFactorPercent]);
 
   OldFontSize := GetFontSize(FFrm.Font);
-  SetFontSize(FFrm.Font, _Scaler.Calc(FontSize));
+  SetFontSize(FFrm.Font, _Scaler.Calc(FFontSize));
   LogFmt('  OldFontSize: %d, NewFontSize: %d', [OldFontSize, GetFontSize(FFrm.Font)]);
 
-  cnt := Length(CtrlParams);
+  cnt := Length(FCtrlParams);
   for i := 0 to cnt - 1 do begin
-    CtrlParams[i].ApplyScale(_Scaler);
+    FCtrlParams[i].ApplyScale(_Scaler);
   end;
-  FFrm.Constraints.MinWidth := _Scaler.Calc(MinWidth);
-  FFrm.Constraints.MinHeight := _Scaler.Calc(MinHeight);
-  FFrm.Constraints.MaxWidth := _Scaler.Calc(MaxWidth);
-  FFrm.Constraints.MaxHeight := _Scaler.Calc(MaxHeight);
+  FFrm.Constraints.MinWidth := _Scaler.Calc(FMinWidth);
+  FFrm.Constraints.MinHeight := _Scaler.Calc(FMinHeight);
+  FFrm.Constraints.MaxWidth := _Scaler.Calc(FMaxWidth);
+  FFrm.Constraints.MaxHeight := _Scaler.Calc(FMaxHeight);
 
   LogConstraints('  FFrm.Constraints', FFrm.Constraints);
+end;
+
+function TFormDpiScaler.Calc(_Value: Integer): Integer;
+var
+  Scaler: TDpiScaler;
+begin
+  Scaler.Init(FFrm);
+  Result := Scaler.Calc(_Value);
 end;
 
 constructor TFormDpiScaler.Create(_frm: TForm);
@@ -366,31 +389,31 @@ var
 begin
   inherited Create;
   FFrm := _frm;
-  ClientWidth := _frm.ClientWidth;
-  ClientHeight := _frm.ClientHeight;
+  FClientWidth := _frm.ClientWidth;
+  FClientHeight := _frm.ClientHeight;
   cnstr := _frm.Constraints;
-  MinWidth := cnstr.MinWidth;
-  MinHeight := cnstr.MinHeight;
-  MaxWidth := cnstr.MaxWidth;
-  MaxHeight := cnstr.MaxHeight;
+  FMinWidth := cnstr.MinWidth;
+  FMinHeight := cnstr.MinHeight;
+  FMaxWidth := cnstr.MaxWidth;
+  FMaxHeight := cnstr.MaxHeight;
   CurrFontSize := GetFontSize(_frm.Font);
-  DesignDPI := TForm_GetDesignDPI(_frm);
+  FDesignDpi := TForm_GetDesignDPI(_frm);
 
   LogFmt('TFormDpiScaler.Create(%s)', [FFrm.Name]);
   LogFmt('  ClientWidth: %d, ClientHeight: %d, MinWidth: %d, MinHeight: %d, MaxWdidth: %d MaxHeight: %d CurrFontSize: %d DesignDpi: %d',
-    [ClientWidth, ClientHeight, MinWidth, MinHeight, MaxWidth, MaxHeight, CurrFontSize, DesignDPI]);
+    [FClientWidth, FClientHeight, FMinWidth, FMinHeight, FMaxWidth, FMaxHeight, CurrFontSize, FDesignDpi]);
 
   // FontSize has already been changed by the VCL, but we need the design font size
-  Scaler.Init(_frm.Font.PixelsPerInch, DesignDPI);
-  FontSize := Scaler.Calc(CurrFontSize);
+  Scaler.Init(_frm.Font.PixelsPerInch, FDesignDpi);
+  FFontSize := Scaler.Calc(CurrFontSize);
 
   LogFmt('  (FontPixelsPerInc: %d, FontSize: %d',
-    [_frm.Font.PixelsPerInch, FontSize]);
+    [_frm.Font.PixelsPerInch, FFontSize]);
 
   AddControls(FFrm);
 end;
 
-{$IFOPT D+}
+{$IFDEF DPI_SCALER_LOGGING}
 initialization
   Assignfile(LogFile, 'd:\DpiScaling.log');
   Rewrite(LogFile);
