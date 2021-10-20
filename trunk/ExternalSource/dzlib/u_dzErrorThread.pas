@@ -17,7 +17,7 @@ type
   /// Do not override Execute, override doExecute instead. </summary>
   TErrorThread = class(TNamedThread)
   private
-    FExceptionClass: TClass;
+    FExceptionClass: ExceptClass;
     FErrorMessage: string;
     FHasFinished: Boolean;
 {$IF not Declared(SyncEvent)}
@@ -45,6 +45,11 @@ type
     function WaitFor(_TimeoutMsecs: DWORD; out _ReturnValue: DWORD): Boolean; overload;
     function WaitFor(_TimeoutMsecs: DWORD): Boolean; overload;
     ///<summary>
+    /// Checks whether the thread has terminated and if yes, checks whether an exception was the cause
+    /// for this and raises this exception. This method is meant to be called from the main thread
+    /// To make sure that an exception in a background thread does not go unnoticed. </summary>
+    procedure RaiseErrorException;
+    ///<summary>
     /// Calls Windows.TerminateThread to kill the thread without freeing resources.
     /// Read the documentation first!
     /// https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminatethread
@@ -63,7 +68,7 @@ type
     property ErrorMessage: string read FErrorMessage;
     ///<summary>
     /// Class of exception whose message was stored in ErrorMessage </summary>
-    property ExceptionClass: TClass read FExceptionClass;
+    property ExceptionClass: ExceptClass read FExceptionClass;
   end;
 
 implementation
@@ -100,7 +105,7 @@ begin
       doExecute;
     except
       on e: Exception do begin
-        FExceptionClass := e.ClassType;
+        FExceptionClass := ExceptClass(e.ClassType);
         FErrorMessage := e.Message;
         UniqueString(FErrorMessage);
       end;
@@ -115,6 +120,14 @@ begin
   Result := not FHasFinished and (Handle <> 0);
   if Result then begin
     Win32Check(Windows.TerminateThread(Handle, 5));
+  end;
+end;
+
+procedure TErrorThread.RaiseErrorException;
+begin
+  if HasFinished then begin
+    if Assigned(FExceptionClass) then
+      raise FExceptionClass.Create(Self.FErrorMessage + ' in ' + Self.Classname);
   end;
 end;
 

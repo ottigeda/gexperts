@@ -417,7 +417,7 @@ function ExtractFirstN(var _s: string; _n: Integer): string;
 ///<summary>
 /// Split string s into the list of substrings delimited by any of the given delimiters
 /// NOTE: Duplicate delimiters are ignored, so 'abc  def' will be split into two strings (which you
-///       would expect), but also 'abc'#9#9'def' is two words (which you might not expect)
+///       would expect), but also 'abc'#9#9'def' is two strings (which you might not expect)
 /// @param sl is the stringlist in which to return the result. If it is not empty, the
 ///           new strings will be appended to the existing content.
 /// @param s is the string to split
@@ -429,7 +429,7 @@ function SplitString(_sl: TStrings; _s: string; const _Delimiters: array of Char
 ///<summary>
 /// Split string s into the array of substrings delimited by any of the given delimiters
 /// NOTE: Duplicate delimiters are ignored, so 'abc  def' will be split into two strings (which you
-///       would expect), but also 'abc'#9#9'def' is two words (which you might not expect)
+///       would expect), but also 'abc'#9#9'def' is two strings (which you might not expect)
 /// @param s is the string to split
 /// @param Delimiters is a string/array of char containing all delimiter characters
 /// @returns a TStringArray with the parts </summary>

@@ -41,7 +41,8 @@ uses
   ComObj,
   u_dzTranslator,
   u_dzDateUtils, // we need this for $IF Declared(TryIso2Time)
-  u_dzTypes;
+  u_dzTypes,
+  u_dzVersionInfo;
 
 var
   WM_WINDOW_PROC_HOOK_HELPER: Word = 0; // initialized on startup using RegisterWindowMessage
@@ -1384,6 +1385,10 @@ function TApplication_HasVersionInfo: Boolean;
 ///<summary> gets the file version from the executable's version information </summary>
 function TApplication_GetFileVersion: string;
 
+///<summary> gets the file version from the executable's version information
+/// Information can be limited to a certain level of detail </summary>
+function TApplication_GetFileVersionStr(_Parts: TVersionParts = vpMajorMinorRevision): string;
+
 ///<summary> Returns the ini-file with the application name </summary>
 function TApplication_GetDefaultIniFileName: string;
 
@@ -1765,7 +1770,6 @@ uses
 {$ENDIF dzMESSAGEDEBUG}
   u_dzSortProvider,
   u_dzLineBuilder,
-  u_dzVersionInfo,
   u_dzTypesUtils,
   u_dzOsUtils,
   u_dzStringArrayUtils;
@@ -4752,6 +4756,16 @@ begin
   VersionInfo := TApplicationInfo.Create;
   if VersionInfo.HasVersionInfo then
     Result := VersionInfo.FileVersion;
+end;
+
+function TApplication_GetFileVersionStr(_Parts: TVersionParts = vpMajorMinorRevision): string;
+var
+  VersionInfo: IFileInfo;
+begin
+  Result := '';
+  VersionInfo := TApplicationInfo.Create;
+  if VersionInfo.HasVersionInfo then
+    Result := VersionInfo.FileVersionStr(_Parts);
 end;
 
 procedure TControl_SetConstraints(_Control: TControl; _Which: TControlConstraintsSet);
