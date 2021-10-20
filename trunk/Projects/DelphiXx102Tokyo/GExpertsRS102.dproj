@@ -232,9 +232,6 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Editor\GX_EditorExpert.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_EditorExpertManager.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditorFormServices.pas"/>
-        <DCCReference Include="..\..\source\Framework\GX_EditorShortcut.pas">
-            <Form>fmEditorShortcut</Form>
-        </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_EditReader.pas"/>
         <DCCReference Include="..\..\source\ExpertManager\GX_ExpertManager.pas">
             <Form>fmExpertManager</Form>

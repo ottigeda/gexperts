@@ -61,7 +61,6 @@ uses
   GX_EditorExpert in '..\..\source\Editor\GX_EditorExpert.pas',
   GX_EditorExpertManager in '..\..\source\Editor\GX_EditorExpertManager.pas',
   GX_EditorFormServices in '..\..\source\Framework\GX_EditorFormServices.pas',
-  GX_EditorShortcut in '..\..\source\Framework\GX_EditorShortcut.pas' {fmEditorShortcut},
   GX_EditReader in '..\..\source\Framework\GX_EditReader.pas',
   GX_ExpertManager in '..\..\source\ExpertManager\GX_ExpertManager.pas' {fmExpertManager},
   GX_Experts in '..\..\source\Framework\GX_Experts.pas',
