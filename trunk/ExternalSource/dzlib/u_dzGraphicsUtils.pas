@@ -128,6 +128,7 @@ function TdzRgbTriple_GetFastLuminance(const _Triple: TdzRgbTriple): Byte;
 {$IFDEF SUPPORTS_INLINE}
 inline;
 {$ENDIF}
+
 procedure TdzRgbTriple_SetColor(var _Triple: TdzRgbTriple; _Color: TColor);
 {$IFDEF SUPPORTS_INLINE}
 inline;
@@ -447,6 +448,14 @@ procedure TBitmap_MakeMono8(_bmp: TBitmap);
 {$IFDEF SUPPORTS_INLINE}
 inline;
 {$ENDIF}
+
+///<summary>
+/// Create an empty Mono8 TBitmap </summary>
+function TBitmap_CreateMono8: TBitmap;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
+
 
 ///<summary>
 /// Calculates the positive y coordinate for the given x coordinate for an ellipse
@@ -1718,6 +1727,13 @@ procedure TBitmap_MakeMono8(_bmp: TBitmap);
 begin
   _bmp.PixelFormat := pf8bit;
   _bmp.Palette := MakeGrayPalette();
+end;
+
+function TBitmap_CreateMono8: TBitmap;
+begin
+  Result := TBitmap.Create;
+  Result.PixelFormat := pf8bit;
+  Result.Palette := MakeGrayPalette();
 end;
 
 // original source: http://www.delphigeist.com/2009/09/blur-bitmap-algorithm.html

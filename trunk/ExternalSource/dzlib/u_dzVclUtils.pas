@@ -1919,7 +1919,7 @@ begin
   AssignFile(t, _Filename);
   Rewrite(t);
   try
-    write(t, s);
+    Write(t, s);
   finally
     CloseFile(t);
   end;
@@ -4152,7 +4152,7 @@ end;
 
 procedure TControl_SetHint(_Ctrl: TControl; const _Hint: string);
 begin
-  _Ctrl.hint := _Hint;
+  _Ctrl.Hint := _Hint;
   _Ctrl.ShowHint := True;
 end;
 
@@ -5799,12 +5799,12 @@ constructor TWinControlLocker.Create(_Ctrl: TWinControl);
 begin
   inherited Create;
   FCtrl := _Ctrl;
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(False)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(False)), 0);
 end;
 
 destructor TWinControlLocker.Destroy;
 begin
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(True)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(True)), 0);
   RedrawWindow(FCtrl.Handle, nil, 0, RDW_ERASE or RDW_INVALIDATE or RDW_ALLCHILDREN);
   inherited;
 end;
@@ -5860,8 +5860,8 @@ end;
 procedure TdzButtonedEdit.Loaded;
 begin
   inherited;
-  if RightButton.Visible and (RightButton.hint = '') then begin
-    RightButton.hint := _('Ctrl+Return to ''click'' right button.');
+  if RightButton.Visible and (RightButton.Hint = '') then begin
+    RightButton.Hint := _('Ctrl+Return to ''click'' right button.');
     ShowHint := True;
   end;
 end;
@@ -6849,7 +6849,7 @@ var
   tb: TTrackBar;
 begin
   tb := TrackBar;
-  tb.hint := IntToStr(tb.Position);
+  tb.Hint := IntToStr(tb.Position);
   Application.ActivateHint(Mouse.CursorPos);
   doOnChange(_Sender);
 end;
@@ -7064,4 +7064,3 @@ initialization
 finalization
   FreeAndNil(gblCheckListBoxHelper);
 end.
-
