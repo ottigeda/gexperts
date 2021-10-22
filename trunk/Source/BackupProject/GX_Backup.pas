@@ -1134,7 +1134,7 @@ var
 begin
   Settings := TBackupProjectExpert.GetSettings;
   // Do not localize.
-  Settings.SaveForm('Window', Self);
+  Settings.SaveForm('Window', Self, [fsSize]);
   Settings.WriteString('LastZipDir', ExtractFilePath(FLastZipFile));
 end;
 
