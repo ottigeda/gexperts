@@ -1143,9 +1143,10 @@ var
   Settings: IExpertSettings;
   fn: string;
 begin
-  Settings :=TBackupProjectExpert.GetSettings;
+  Settings := TBackupProjectExpert.GetSettings;
   // Do not localize.
-  Settings.LoadForm('Window', Self);
+  // Also loading the position would break per monitor DPI awareness (no idea why)
+  Settings.LoadForm('Window', Self, [fsSize]);
 
   if FCurrentBackupScope = bsActiveProject then
     fn := ChangeFileExt(ExtractFileName(GxOtaGetCurrentProjectFileName), '')

@@ -15,8 +15,6 @@ object fmBackup: TfmBackup
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = True
-  Position = poScreenCenter
   Scaled = False
   OnActivate = FormActivate
   OnDestroy = FormDestroy
