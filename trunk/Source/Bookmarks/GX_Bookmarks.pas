@@ -21,6 +21,7 @@ uses
   ExtCtrls,
   Menus,
   Types,
+  u_dzDpiScaleUtils,
   GX_Experts,
   GX_BaseForm,
   GX_IdeDock,
@@ -52,6 +53,10 @@ type
     procedure DeleteBookmark(const _ModuleName: string; _BmIdx: Integer);
     procedure AddBookmarks(const _ModuleName: string; _EditView: IOTAEditView; _Bookmarks: TBookmarkList);
     function HasChanged(_NewBookmarks: TBookmarkList): Boolean;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ArrangeControls; override;
+{$ENDIF}
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
@@ -129,7 +134,7 @@ begin
   end;
 {$ENDIF}
 
-  BookmarksExpert :=  Self;
+  BookmarksExpert := Self;
 end;
 
 destructor TBookmarksExpert.Destroy;
@@ -201,6 +206,10 @@ begin
   inherited;
 
   TControl_SetMinConstraints(Self);
+
+  lb_Bookmarks.ItemHeight := (lb_Bookmarks.Canvas.TextHeight('Mg') + 1) * 4;
+
+  InitDpiScaler;
 
   if Assigned(BookmarksExpert) then
     BookmarksExpert.SetFormIcon(Self);
@@ -439,10 +448,10 @@ end;
 
 procedure TfmGxBookmarksForm.mi_DeleteAllClick(Sender: TObject);
 var
-  i: integer;
+  i: Integer;
   bm: TBookmark;
 begin
-  for i := lb_bookmarks.Items.Count - 1 downto 0 do begin
+  for i := lb_Bookmarks.Items.Count - 1 downto 0 do begin
     bm := TBookmark(lb_Bookmarks.Items.Objects[i]);
     DeleteBookmark(bm.Module, bm.Number);
   end;
@@ -476,9 +485,12 @@ resourcestring
 var
   LbCanvas: TCanvas;
   bm: TBookmark;
+  LineHeight: Integer;
+  TopOffset: Integer;
 
   procedure PaintFileHeader(_Rect: TRect);
   var
+    TextTop: Integer;
     TopColor: TColor;
     BottomColor: TColor;
     i: Integer;
@@ -486,6 +498,7 @@ var
     FileString: string;
     LineText: string;
   begin
+    TextTop := _Rect.top + TopOffset;
     TopColor := clBtnHighlight;
     BottomColor := clBtnShadow;
 
@@ -501,15 +514,15 @@ var
 
     i := LbCanvas.TextWidth('00');
     FileString := ExtractFileName(bm.Module);
-    LbCanvas.TextOut(_Rect.Left + i + 8, _Rect.Top, FileString);
+    LbCanvas.TextOut(_Rect.Left + i + FScaler.Calc(8), TextTop, FileString);
 
-    LbCanvas.TextOut(_Rect.Left + 3, _Rect.Top, IntToStr(bm.Number));
+    LbCanvas.TextOut(_Rect.Left + FScaler.Calc(3), TextTop, IntToStr(bm.Number));
 
     LineText := Format(SLine, [bm.Line]);
 
-    FileNameWidth := LbCanvas.TextWidth(LineText) + 10;
-    if (LbCanvas.TextWidth(FileString) + i + 10) <= _Rect.Right - FileNameWidth then
-      LbCanvas.TextOut(lb_Bookmarks.ClientWidth - FileNameWidth, _Rect.Top, LineText);
+    FileNameWidth := LbCanvas.TextWidth(LineText) + FScaler.Calc(10);
+    if (LbCanvas.TextWidth(FileString) + i + FScaler.Calc(10)) <= _Rect.Right - FileNameWidth then
+      LbCanvas.TextOut(lb_Bookmarks.ClientWidth - FileNameWidth, TextTop, LineText);
   end;
 
   procedure PaintLines(_Rect: TRect);
@@ -534,7 +547,7 @@ var
     LbCanvas.Brush.Color := BGNormal;
     LbCanvas.FillRect(_Rect);
 
-    TextTop := _Rect.Top + 1;
+    TextTop := _Rect.top + TopOffset;
     sl := TStringList.Create;
     try
       sl.Text := bm.Text;
@@ -544,11 +557,11 @@ var
         s := Copy(s, 1, 1);
         if s = '>' then begin
           LbCanvas.Brush.Color := BGBookmark;
-          LbCanvas.FillRect(Rect(_Rect.Left, TextTop, _Rect.Right, TextTop + 16));
+          LbCanvas.FillRect(Rect(_Rect.Left, TextTop, _Rect.Right, TextTop + LineHeight));
         end else
           LbCanvas.Brush.Color := BGNormal;
         LbCanvas.TextOut(_Rect.Left, TextTop, LineText);
-        Inc(TextTop, 16);
+        Inc(TextTop, LineHeight);
       end;
     finally
       sl.Free;
@@ -556,11 +569,14 @@ var
   end;
 
 begin
-  LbCanvas := lb_Bookmarks.Canvas;
-  if Assigned(lb_Bookmarks.Items.Objects[Index]) then begin
-    bm := TBookmark(lb_Bookmarks.Items.Objects[Index]);
-    PaintFileHeader(Rect(_Rect.Left, _Rect.Top, _Rect.Right, _Rect.Top + 16));
-    PaintLines(Rect(_Rect.Left, _Rect.Top + 16, _Rect.Right, _Rect.Bottom));
+  bm := TBookmark(lb_Bookmarks.Items.Objects[Index]);
+  if Assigned(bm) then begin
+    LbCanvas := lb_Bookmarks.Canvas;
+    LineHeight := LbCanvas.TextHeight('Mg');
+    TopOffset := LbCanvas.TextHeight('g');
+    TopOffset := LineHeight - TopOffset;
+    PaintFileHeader(Rect(_Rect.Left, _Rect.top, _Rect.Right, _Rect.top + LineHeight + 2));
+    PaintLines(Rect(_Rect.Left, _Rect.top + LineHeight + 2, _Rect.Right, _Rect.Bottom));
   end;
 end;
 
@@ -578,6 +594,14 @@ procedure TEditServiceNotifier.EditorViewActivated(const EditWindow: INTAEditWin
 begin
   if Assigned(FOnEditorViewActivated) then
     FOnEditorViewActivated(Self, EditView);
+end;
+{$ENDIF}
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmGxBookmarksForm.ArrangeControls;
+begin
+  inherited;
+  lb_Bookmarks.ItemHeight := lb_Bookmarks.Canvas.TextHeight('Mg') * 4;
 end;
 {$ENDIF}
 

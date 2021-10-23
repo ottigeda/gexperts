@@ -5,8 +5,10 @@ unit GX_IdeDock;
 interface
 
 uses
+  Windows,
   SysUtils, Classes, Forms, Controls,
   MenuBar, Menus, Messages,
+  u_dzDpiScaleUtils,
   // You must link to the DesignIde package to compile this unit
   DockForm;
 
@@ -20,6 +22,13 @@ type
   end;
 {$ENDIF EnableIdeDockingSupport}
 
+{$IFNDEF IDE_IS_HIDPI_AWARE}
+  TDummyDpiScaler = class
+  public
+    function Calc(_Value: integer): integer;
+  end;
+{$ENDIF}
+
 {$UNDEF TrickTheIdeAncestorForm}  // this must always be undefined, so that
 {$IFDEF TrickTheIdeAncestorForm}  // <--- this define is always false
   TfmIdeDockForm = class(TDummyIdeDockForm);
@@ -28,6 +37,16 @@ type
 {$ENDIF TrickTheIdeAncestorForm}
   protected
     FMenuBar: TMenuBar;
+{$IFNDEF IDE_IS_HIDPI_AWARE}
+    FScaler: TDummyDpiScaler;
+{$ELSE}
+    FScaler: TFormDpiScaler;
+    procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); virtual;
+    procedure ArrangeControls; virtual;
+{$ENDIF}
+  protected
+    procedure InitDpiScaler;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -57,10 +76,12 @@ function IdeDockManager: IIdeDockManager;
 
 implementation
 
-uses
-  Windows, DeskForm, DeskUtil, GX_GenericClasses, GX_GxUtils;
-
 {$R *.dfm}
+
+uses
+  DeskForm, DeskUtil,
+  u_dzVclUtils,
+  GX_GenericClasses, GX_GxUtils;
 
 type
   TIdeDockManager = class(TSingletonInterfacedObject, IIdeDockManager)
@@ -159,10 +180,46 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmIdeDockForm.WMDpiChanged(var _Msg: TWMDpi);
+begin
+  inherited;
+  ApplyDpi(_Msg.YDpi, _Msg.ScaledRect);
+  _Msg.Result := 0;
+end;
+
+procedure TfmIdeDockForm.ApplyDpi(_NewDpi: integer; _NewBounds: PRect);
+begin
+  if Assigned(FScaler) then
+    FScaler.ApplyDpi(_NewDpi, _NewBounds);
+  ArrangeControls;
+end;
+
+procedure TfmIdeDockForm.ArrangeControls;
+begin
+  // do nothing
+end;
+{$ELSE}
+function TDummyDpiScaler.Calc(_Value: integer): integer;
+begin
+  Result := _Value;
+end;
+{$ENDIF}
+
+procedure TfmIdeDockForm.InitDpiScaler;
+begin
+{$IFNDEF IDE_IS_HIDPI_AWARE}
+  FScaler := TDummyDpiScaler.Create;
+{$ELSE}
+  FScaler := TFormDpiScaler.Create(Self);
+  ApplyDpi(TScreen_GetDpiForForm(Self), nil);
+{$ENDIF}
+end;
+
 procedure TfmIdeDockForm.Loaded;
 begin
   inherited;
-  Scaled := True;
+  Scaled := False;
 end;
 
 {$IFDEF EnableIdeDockingSupport}
