@@ -41,6 +41,7 @@ type
     Ctrl: TControl;
     BoundsRect: TRect;
     FontSize: Integer;
+    ItemHeight: Integer;
     procedure Assign(_Ctrl: TControl);
     procedure ApplyScale(const _Scaler: TDpiScaler);
     procedure ResizeFont(const _Scaler: TDpiScaler);
@@ -233,6 +234,10 @@ begin
 
   Ctrl.BoundsRect := br;
 
+  if ItemHeight <> 0 then begin
+    TAdvancedObject.SetIntProperty(Ctrl, 'ItemHeight', _Scaler.Calc(ItemHeight));
+  end;
+
   // if we don't do this, the text is truncated on the left
   if LabelWasAutoSize then begin
     TLabel(Ctrl).AutoSize := False;
@@ -250,6 +255,10 @@ begin
     FontSize := 0;
   end else begin
     FontSize := GetFontSize(fnt);
+  end;
+
+  if not TAdvancedObject.TryGetIntProperty(_Ctrl, 'ItemHeight', ItemHeight) then begin
+    ItemHeight := 0;
   end;
 
   LogFmt('TCtrlDpiScaler.Assign(%s):', [_Ctrl.Name]);
@@ -310,7 +319,7 @@ begin
 
   if Assigned(_NewBounds) then
     LogFmt('TFormDpiScaler.ApplyDpi(%s, NewDpi: %d, NewBounds: (Left: %d, Top: %d, Width: %d, Height: %d))',
-      [FFrm.Name, _NewDpi, _NewBounds.Left, _NewBounds.Top, TRect_Width(_NewBounds^),TRect_Height(_NewBounds^)])
+      [FFrm.Name, _NewDpi, _NewBounds.Left, _NewBounds.Top, TRect_Width(_NewBounds^), TRect_Height(_NewBounds^)])
   else
     LogFmt('TFormDpiScaler.ApplyDpi(%s, NewDpi: %d, NewBounds: (nil))',
       [FFrm.Name, _NewDpi]);
