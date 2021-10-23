@@ -1146,6 +1146,10 @@ end;
 
 procedure TfmToDo.lvTodoCustomDrawItem(Sender: TCustomListView; Item: TListItem;
   State: TCustomDrawState; var DefaultDraw: Boolean);
+{$IFNDEF GX_DELPHI2005_UP}
+const
+  clWebOrangeRed = $0045FF;
+{$ENDIF}
 var
   cnv: TCanvas;
 begin
@@ -1165,7 +1169,7 @@ begin
         cnv.Font.Color := clRed;
       end;
     tpHigh: begin
-        cnv.Font.Color := $0045FF; // clWebOrangeRed (Delphi 6 and 7 don't know this) 
+        cnv.Font.Color := clWebOrangeRed;
       end;
     tpNormal: begin
         cnv.Font.Color := clBlue;
