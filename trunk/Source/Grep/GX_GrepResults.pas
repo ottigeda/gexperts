@@ -381,7 +381,10 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure AssignSettingsToForm;
     function ConfigurationKey: string;
-  public
+{$IFNDEF IDE_IS_HIDPI_AWARE}
+    procedure ArrangeControls; override;
+{$ENDIF}
+public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
@@ -1769,6 +1772,9 @@ begin
   FSearchInProgress := False;
   lbResults.DoubleBuffered := True;
   CenterForm(Self);
+
+  InitDpiScaler;
+
   LoadSettings;
   ResizeListBox;
   SetMatchString('');
@@ -1932,6 +1938,14 @@ begin
   pnlMain.Visible := True; //FI:W508 Assigned twice successively
 //  Repaint;
 end;
+
+{$IFNDEF IDE_IS_HIDPI_AWARE}
+procedure TfmGrepResults.ArrangeControls;
+begin
+  inherited;
+  ResizeListBox;
+end;
+{$ENDIF}
 
 procedure TfmGrepResults.AssignSettingsToForm;
 begin
@@ -2185,44 +2199,48 @@ end;
 
 procedure TfmGrepResults.lbHistoryListDrawItem(Control: TWinControl; Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
-const
-  c2ndRowTop: Integer = 13;
-  cMatchesLeft: Integer = 10;
 var
+  c2ndRowTop: Integer;
+  cMatchesLeft: Integer;
   AItem: TGrepHistoryListItem;
+  cnv: TCanvas;
 begin
   AItem := gblGrepExpert.HistoryList.Items[Index];
   if not Assigned(AItem) or not (AItem is TGrepHistoryListItem) then
     Exit;
 
+  cnv := lbHistoryList.Canvas;
   if not gblGrepExpert.ListUseDefaultColors then
   begin
     if odSelected in State then
     begin
-      lbHistoryList.Canvas.Font.Color := gblGrepExpert.ListMatchTextColor;
-      lbHistoryList.Canvas.Brush.Color := gblGrepExpert.ListMatchBrushColor;
+      cnv.Font.Color := gblGrepExpert.ListMatchTextColor;
+      cnv.Brush.Color := gblGrepExpert.ListMatchBrushColor;
     end
     else
     begin
-      lbHistoryList.Canvas.Font.Color := gblGrepExpert.ListFont.Color;
-      lbHistoryList.Canvas.Brush.Color := clWindow;
+      cnv.Font.Color := gblGrepExpert.ListFont.Color;
+      cnv.Brush.Color := clWindow;
     end;
   end;
 
-  lbHistoryList.Canvas.FillRect(Rect);
+  cnv.FillRect(Rect);
 
-  lbHistoryList.Canvas.TextOut(Rect.Left + 1, Rect.Top + 1, lbHistoryList.Items[Index]);
+  cnv.TextOut(Rect.Left + 1, Rect.Top + 1, lbHistoryList.Items[Index]);
+
+  c2ndRowTop := cnv.TextHeight(SAllAlphaNumericChars);
+  cMatchesLeft := FScaler.Calc(10);
 
   if AItem.GrepSettings.SaveOption = gsoNoSave then
-    lbHistoryList.Canvas.TextOut(Rect.Left + 1, Rect.Top + c2ndRowTop, '!!')
+    cnv.TextOut(Rect.Left + 1, Rect.Top + c2ndRowTop, '!!')
   else if AItem.GrepSettings.SaveOption = gsoOnlySaveSettings then
-    lbHistoryList.Canvas.TextOut(Rect.Left + 1, Rect.Top + c2ndRowTop, '*');
+    cnv.TextOut(Rect.Left + 1, Rect.Top + c2ndRowTop, '*');
 
   if AItem.IsOnlySaveSettings then
-    lbHistoryList.Canvas.TextOut(Rect.Left + cMatchesLeft, Rect.Top + c2ndRowTop,
+    cnv.TextOut(Rect.Left + cMatchesLeft, Rect.Top + c2ndRowTop,
       Format('(%d in %d)', [AItem.TotalMatchCount, AItem.FileCount]))
   else
-    lbHistoryList.Canvas.TextOut(Rect.Left + cMatchesLeft, Rect.Top + c2ndRowTop,
+    cnv.TextOut(Rect.Left + cMatchesLeft, Rect.Top + c2ndRowTop,
       Format('%d in %d', [AItem.TotalMatchCount, AItem.ResultList.Count]));
 end;
 
