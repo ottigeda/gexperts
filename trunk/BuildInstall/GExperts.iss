@@ -11,7 +11,7 @@
 #else
 ; IDE compiler
   #define RS101
-  #define Version "1.3.10"
+  #define Version "1.3.19"
 #endif
 
 #define Product "GExperts"
