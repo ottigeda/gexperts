@@ -91,6 +91,9 @@ type
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ArrangeControls;
+{$ENDIF}
     procedure Init(_Experts: TList);
     procedure SaveExperts;
   end;
@@ -489,13 +492,6 @@ begin
   try
     FExperts.Assign(_Experts);
 
-    // align all buttons vertically to the edit field
-    TButton_AlignVerticallyTo(btnClear, edtFilter);
-    TButton_AlignVerticallyTo(btnEnableAll, btnClear);
-    TButton_AlignVerticallyTo(btnDisableAll, btnClear);
-    TButton_AlignVerticallyTo(btnClearAll, btnClear);
-    TButton_AlignVerticallyTo(btnSetAllDefault, btnClear);
-
     // THotkey apparently doesn't get scaled correctly, so we need to set the height
     edtHotkey.Height := edtFilter.Height;
     // and align the buttons to it afterwards
@@ -672,12 +668,15 @@ const
 var
   w: Integer;
   pnlWidth: Integer;
-  btnConfigureWidth: integer;
+  pnlHeight: Integer;
+  btnConfigureWidth: Integer;
   btnDefaultWidth: Integer;
+  edHotkeyLeft: Integer;
+  edHotKeyTop: Integer;
   edHotkeyWidth: Integer;
+  edHotkeyHeight: Integer;
   btnConfigLeft: Integer;
   btnDefaultLeft: Integer;
-  edHotkeyLeft: Integer;
   chkWidth: Integer;
   i: Integer;
   Panel: TPanel;
@@ -686,11 +685,23 @@ begin
   if FIsInitializing then
     Exit; //==>
 
-  {$IFOPT D+} SendDebug('start positioning controls'); {$ENDIF}
+{$IFOPT D+}SendDebug('start positioning controls');{$ENDIF}
+
+  // align the label and all buttons vertically to the edit field
+  TLabel_AlignVerticallyTo(lblFilter, edtFilter);
+  TButton_AlignVerticallyTo(btnClear, edtFilter);
+  TButton_AlignVerticallyTo(btnEnableAll, btnClear);
+  TButton_AlignVerticallyTo(btnDisableAll, btnClear);
+  TButton_AlignVerticallyTo(btnClearAll, btnClear);
+  TButton_AlignVerticallyTo(btnSetAllDefault, btnClear);
+
   // For whatever reason the automatic alignment via anchors does not work correctly
   // so we just do it in code.
   w := sbxExperts.ClientWidth;
   pnlWidth := w - pnlExpertLayout.Left;
+  edHotkeyHeight := edtFilter.Height;
+  pnlHeight := 2 * edHotkeyHeight;
+  edHotKeyTop := edHotkeyHeight div 2;
   btnConfigureWidth := btnConfigure.Width;
   btnDefaultWidth := btnDefault.Width;
   btnConfigLeft := w - btnConfigureWidth - GAP_WIDTH;
@@ -703,14 +714,31 @@ begin
     Ctrls := @(FExpertControls[i]);
     Panel := Ctrls^.pnl;
     Panel.Width := pnlWidth;
+    Panel.Height := pnlHeight;
+    Ctrls^.img.Top := edHotKeyTop + (edHotkeyHeight - Ctrls^.img.Height) div 2;
     Ctrls^.btnConfig.Left := btnConfigLeft;
     Ctrls^.btnDefault.Left := btnDefaultLeft;
-    Ctrls^.hk.Left := edHotkeyLeft;
-    Ctrls^.hk.Width := edHotkeyWidth;
+    Ctrls^.hk.SetBounds(edHotkeyLeft, edHotKeyTop, edHotkeyWidth, edHotkeyHeight);
+    TButton_AlignVerticallyTo(Ctrls^.btnDefault, Ctrls^.hk);
+    TButton_AlignVerticallyTo(Ctrls^.btnConfig, Ctrls^.hk);
     Ctrls^.chk.Width := chkWidth;
+    Ctrls^.chk.Height := edHotkeyHeight;
+    Ctrls^.chk.Top := edHotKeyTop;
   end;
-  {$IFOPT D+} SendDebug('done positioning controls'); {$ENDIF}
+  FilterVisibleExperts;
+  sbxExperts.Invalidate;
+{$IFOPT D+}SendDebug('done positioning controls');{$ENDIF}
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfrConfigureExperts.ArrangeControls;
+begin
+  if Name = 'frmConfigureEditorExperts' then
+    asm nop end;
+  tim_Resize.Enabled := False;
+  tim_Resize.Enabled := True;
+end;
+{$ENDIF}
 
 procedure TfrConfigureExperts.tim_ResizeTimer(Sender: TObject);
 begin

@@ -12,7 +12,6 @@ object fmConfiguration: TfmConfiguration
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = True
   Scaled = False
   OnKeyDown = FormKeyDown
   OnShow = FormShow

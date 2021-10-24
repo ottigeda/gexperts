@@ -184,6 +184,8 @@ type
     procedure edCachingPathDropFiles(_Sender: TObject; _Files: TStrings);
 {$IFDEF IDE_IS_HIDPI_AWARE}
     procedure ArrangeGeneralTab;
+  protected
+    procedure ArrangeControls; override;
 {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
@@ -272,7 +274,7 @@ begin
   pcConfig.ActivePage := tshExperts;
 
   FConfigEditorExpertsFrame := TfrConfigureExperts.Create(Self);
-  FConfigEditorExpertsFrame.Name := '';
+  FConfigEditorExpertsFrame.Name := 'frmConfigureEditorExperts';
   FConfigEditorExpertsFrame.Parent := tshEditorExperts;
   FConfigEditorExpertsFrame.Align := alClient;
   AdjustMinSize(FConfigEditorExpertsFrame);
@@ -280,7 +282,7 @@ begin
   FConfigEditorExpertsFrame.Init(GExpertsInst.EditorExpertManager.GetExpertList);
 
   FConfigExpertsFrame := TfrConfigureExperts.Create(Self);
-  FConfigExpertsFrame.Name := '';
+  FConfigExpertsFrame.Name := 'frmConfigureExperts';
   FConfigExpertsFrame.Parent := tshExperts;
   FConfigExpertsFrame.Align := alClient;
   AdjustMinSize(FConfigExpertsFrame);
@@ -383,6 +385,15 @@ begin
   TButton_AlignVerticallyTo(btnCustomFont, chkUseCustomFont);
   btnCustomFont.Left := chkUseCustomFont.Left + chkUseCustomFont.Width + 8;
 end;
+
+procedure TfmConfiguration.ArrangeControls;
+begin
+  inherited;
+  ArrangeGeneralTab;
+  FConfigExpertsFrame.ArrangeControls;
+  FConfigEditorExpertsFrame.ArrangeControls;
+end;
+
 {$ENDIF}
 
 procedure TfmConfiguration.edVCLPathOnDropFiles(_Sender: TObject; _Files: TStrings);
