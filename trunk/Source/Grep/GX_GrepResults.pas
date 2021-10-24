@@ -381,7 +381,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure AssignSettingsToForm;
     function ConfigurationKey: string;
-{$IFNDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
 {$ENDIF}
 public
@@ -1939,7 +1939,7 @@ begin
 //  Repaint;
 end;
 
-{$IFNDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF IDE_IS_HIDPI_AWARE}
 procedure TfmGrepResults.ArrangeControls;
 begin
   inherited;
