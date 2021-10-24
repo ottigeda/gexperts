@@ -39,6 +39,7 @@ type
   public
     class function Execute(_Owner: TComponent): Boolean; overload; virtual;
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   end;
 
 implementation
@@ -98,6 +99,14 @@ constructor TfmBaseForm.Create(AOwner: TComponent);
 begin
   inherited;
   GxSetDefaultFont(Self);
+end;
+
+destructor TfmBaseForm.Destroy;
+begin
+{$IFDEF IDE_IS_HIDPI_AWARE}
+  FreeAndNil(FScaler);
+{$ENDIF}
+  inherited;
 end;
 
 end.

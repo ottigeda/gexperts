@@ -177,7 +177,8 @@ begin
   {$IFDEF EnableIdeDockingSupport}
   SaveStateNecessary := True;
   {$ENDIF EnableIdeDockingSupport}
-  inherited Destroy;
+  FreeAndNil(FScaler);
+  inherited;
 end;
 
 {$IFDEF IDE_IS_HIDPI_AWARE}
