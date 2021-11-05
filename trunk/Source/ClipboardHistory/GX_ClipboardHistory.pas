@@ -500,7 +500,6 @@ begin
   SplitterRatio := 0.50;
   LoadSettings;
 
-  CenterForm(Self);
   IgnoreClip := False;
 
   // With large fonts, the TMenuToolBar ends up below the ToolBar, this fixes it
@@ -509,6 +508,9 @@ begin
   ToolBar.Align := alTop;
 
   pnlPasteAsOptions.Top := ToolBar.Top + ToolBar.Height;
+
+  InitDpiScaler;
+  CenterForm(Self);
 
   HookClipboard;
 

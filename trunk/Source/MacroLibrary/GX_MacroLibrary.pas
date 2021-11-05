@@ -781,6 +781,9 @@ begin
   LoadSettings;
   FSBWidth := GetSystemMetrics(SM_CXVSCROLL);
   ResizeColumns;
+
+  InitDpiScaler;
+
   CenterForm(Self);
 
   InstallKeyboardBindings;
