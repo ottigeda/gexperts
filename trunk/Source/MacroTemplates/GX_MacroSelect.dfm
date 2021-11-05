@@ -16,7 +16,6 @@ object fmMacroSelect: TfmMacroSelect
   Position = poScreenCenter
   Scaled = False
   OnClose = FormClose
-  OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnResize = FormResize
   PixelsPerInch = 96
