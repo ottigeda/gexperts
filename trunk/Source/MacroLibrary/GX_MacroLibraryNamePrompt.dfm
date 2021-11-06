@@ -13,6 +13,7 @@ object fmMacroLibraryNamePrompt: TfmMacroLibraryNamePrompt
   Font.Style = []
   Position = poOwnerFormCenter
   Scaled = False
+  OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
   object lblMacroName: TLabel
@@ -43,15 +44,13 @@ object fmMacroLibraryNamePrompt: TfmMacroLibraryNamePrompt
     Top = 24
     Width = 409
     Height = 21
-    Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
   end
   object chkDoNotShowAgain: TCheckBox
     Left = 8
-    Top = 355
+    Top = 352
     Width = 249
     Height = 25
-    Anchors = [akLeft, akBottom]
     Caption = 'Do not show this dialog again'
     TabOrder = 7
   end
@@ -60,7 +59,6 @@ object fmMacroLibraryNamePrompt: TfmMacroLibraryNamePrompt
     Top = 352
     Width = 75
     Height = 25
-    Anchors = [akRight, akBottom]
     Caption = 'OK'
     Default = True
     ModalResult = 1
@@ -71,7 +69,6 @@ object fmMacroLibraryNamePrompt: TfmMacroLibraryNamePrompt
     Top = 352
     Width = 75
     Height = 25
-    Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -82,7 +79,6 @@ object fmMacroLibraryNamePrompt: TfmMacroLibraryNamePrompt
     Top = 72
     Width = 409
     Height = 57
-    Anchors = [akLeft, akTop, akRight]
     BevelEdges = [beLeft, beTop, beBottom]
     ScrollBars = ssVertical
     TabOrder = 1
@@ -92,7 +88,6 @@ object fmMacroLibraryNamePrompt: TfmMacroLibraryNamePrompt
     Top = 160
     Width = 329
     Height = 185
-    Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 'Macro content goes here'
     Color = clWindow
     TabOrder = 2
@@ -102,7 +97,6 @@ object fmMacroLibraryNamePrompt: TfmMacroLibraryNamePrompt
     Top = 224
     Width = 75
     Height = 25
-    Anchors = [akTop, akRight]
     Caption = 'Delete'
     TabOrder = 5
     OnClick = actDeleteExecute
@@ -112,7 +106,6 @@ object fmMacroLibraryNamePrompt: TfmMacroLibraryNamePrompt
     Top = 160
     Width = 75
     Height = 25
-    Anchors = [akTop, akRight]
     Caption = 'Edit'
     TabOrder = 3
     OnClick = actEditExecute
@@ -122,7 +115,6 @@ object fmMacroLibraryNamePrompt: TfmMacroLibraryNamePrompt
     Top = 192
     Width = 75
     Height = 25
-    Anchors = [akTop, akRight]
     Caption = 'Insert'
     TabOrder = 4
     OnClick = actInsertExecute
@@ -132,7 +124,6 @@ object fmMacroLibraryNamePrompt: TfmMacroLibraryNamePrompt
     Top = 256
     Width = 75
     Height = 25
-    Anchors = [akTop, akRight]
     Caption = 'Append'
     TabOrder = 6
     OnClick = actAppendExecute

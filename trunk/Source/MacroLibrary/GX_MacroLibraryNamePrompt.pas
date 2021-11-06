@@ -6,7 +6,7 @@ uses
   Windows,
   Messages,
   SysUtils,
-  Variants,
+  Types,
   Classes,
   Graphics,
   Controls,
@@ -55,6 +55,7 @@ type
     procedure actInsertExecute(Sender: TObject);
     procedure actDeleteExecute(Sender: TObject);
     procedure actAppendExecute(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   private
     FMemo: TSynMemo;
     procedure SetData(const AMacroName, AMacroDesc: string; AMacro: TGXUnicodeStringList;
@@ -79,6 +80,7 @@ implementation
 
 uses
   SynEdit,
+  u_dzTypesUtils,
   u_dzVclUtils,
   GX_MacroLibraryEditEntry,
   GX_MacroLibrary,
@@ -137,6 +139,49 @@ begin
   FMemo.PopupMenu := pmKeystrokes;
 
   InitDpiScaler;
+end;
+
+procedure TfmMacroLibraryNamePrompt.FormResize(Sender: TObject);
+var
+  Space: Integer;
+  cr: TRect;
+  clw: Integer;
+  w: Integer;
+  bLeft: Integer;
+  bWidth: Integer;
+  clh: Integer;
+  bHeight: Integer;
+  bTop: Integer;
+begin
+  inherited;
+  if not Assigned(FScaler) then
+    Exit; //==>
+  cr := ClientRect;
+  clw := TRect_Width(cr);
+  clh := trect_height(cr);
+  Space := FScaler.Calc(8);
+  w := clw - edtMacroName.Left - Space;
+  bWidth := btnEdit.Width;
+  bHeight := btnEdit.Height;
+  bLeft := w - bWidth;
+
+  edtMacroName.Width := w;
+  mmoMacroDescription.Width := w;
+
+  btnEdit.Left := bLeft;
+  btnInsert.Left := bLeft;
+  btnDelete.Left := bLeft;
+  btnAppend.Left := bLeft;
+  btnCancel.Left := bLeft;
+  btnOK.Left := bLeft - btnOK.Width - Space;
+
+  pnlMacro.Width := bLeft - 2 * Space;
+  pnlMacro.Height := clh - bHeight - pnlMacro.Top - 2 * Space;
+
+  bTop := pnlMacro.Top + pnlMacro.Height + Space;
+  btnCancel.Top := bTop;
+  btnOK.Top := bTop;
+  chkDoNotShowAgain.Top := bTop;
 end;
 
 procedure TfmMacroLibraryNamePrompt.MemoOnEnter(Sender: TObject);
