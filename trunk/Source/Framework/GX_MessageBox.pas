@@ -51,9 +51,14 @@ type
   end;
 
   TfmGxMessageBox = class(TfmBaseForm)
-    chkNeverShowAgain: TCheckBox;
-    bvlFrame: TBevel;
+    p_Buttons: TPanel;
+    p_Top: TPanel;
     mmoMessage: TMemo;
+    p_Chkbox: TPanel;
+    chkNeverShowAgain: TCheckBox;
+    p_ChkLeft: TPanel;
+  public
+    constructor Create(_Owner: TComponent); override;
   end;
 
   TGxMsgBoxAdaptorClass = class of TGxMsgBoxAdaptor;
@@ -87,8 +92,7 @@ var
   const
     SingleButtonWidth = 75;
     SingleButtonHeight = 25;
-    ButtonHorizSpacing = 8;
-    ButtonYPos = 208;
+    Spacing = 8;
   var
     BtnType, DefaultBtn, CancelBtn: TMsgDlgBtn;
     DialogButtons: TMsgDlgButtons;
@@ -100,8 +104,8 @@ var
     DialogButtons := Adaptor.GetButtons;
     for BtnType := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
       if BtnType in DialogButtons then
-        Inc(ButtonRowWidth, SingleButtonWidth + ButtonHorizSpacing);
-    Dec(ButtonRowWidth, ButtonHorizSpacing);
+        Inc(ButtonRowWidth, SingleButtonWidth + Spacing);
+    Dec(ButtonRowWidth, Spacing);
     if ButtonRowWidth > frm.ClientWidth then
       frm.ClientWidth := ButtonRowWidth;
 
@@ -114,29 +118,23 @@ var
     else
       CancelBtn := mbOK;
 
-    NextButonXPos := (frm.ClientWidth - ButtonRowWidth) div 2;
+    NextButonXPos := (frm.p_Buttons.ClientWidth - ButtonRowWidth) div 2;
 
-    for BtnType := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
-    begin
-      if BtnType in DialogButtons then
-      begin
+    for BtnType := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do begin
+      if BtnType in DialogButtons then begin
         CurrentButton := TButton.Create(frm);
-        with CurrentButton do
-        begin
-          Caption := MsgDlgButtonCaptions[BtnType];
-          ModalResult := MsgDlgResults[BtnType];
-          Parent := frm;
-          TabOrder := 999;
-          SetBounds(NextButonXPos, ButtonYPos, SingleButtonWidth, SingleButtonHeight);
-          if BtnType = DefaultBtn then
-          begin
-            Default := True;
-            frm.ActiveControl := CurrentButton;
-          end;
-          if BtnType = CancelBtn then
-            Cancel := True;
+        CurrentButton.Caption := MsgDlgButtonCaptions[BtnType];
+        CurrentButton.ModalResult := MsgDlgResults[BtnType];
+        CurrentButton.Parent := frm.p_Buttons;
+        CurrentButton.TabOrder := 999;
+        CurrentButton.SetBounds(NextButonXPos, Spacing, SingleButtonWidth, SingleButtonHeight);
+        if BtnType = DefaultBtn then begin
+          CurrentButton.Default := True;
+          frm.ActiveControl := CurrentButton;
         end;
-        Inc(NextButonXPos, SingleButtonWidth + ButtonHorizSpacing);
+        if BtnType = CancelBtn then
+          CurrentButton.Cancel := True;
+        Inc(NextButonXPos, SingleButtonWidth + Spacing);
       end;
     end;
   end;
@@ -148,8 +146,7 @@ begin
     Result := MsgDlgResults[Adaptor.GetDefaultButton];
     if Adaptor.IsPermanentlySuppressed then
       Exit;
-    if Adaptor.ShouldShow then
-    begin
+    if Adaptor.ShouldShow then begin
       frm := TfmGxMessageBox.Create(nil);
       try
         frm.Caption := Adaptor.GetCaption;
@@ -241,6 +238,14 @@ end;
 function TGxQuestionBoxAdaptor.GetDefaultButton: TMsgDlgBtn;
 begin
   Result := mbYes;
+end;
+
+{ TfmGxMessageBox }
+
+constructor TfmGxMessageBox.Create(_Owner: TComponent);
+begin
+  inherited;
+  TPanel_BevelNone([p_Buttons, p_Top, p_Chkbox, p_ChkLeft]);
 end;
 
 end.

@@ -13,37 +13,60 @@ object fmGxMessageBox: TfmGxMessageBox
   Font.Style = []
   Position = poScreenCenter
   Scaled = False
-  DesignSize = (
-    409
-    244)
   PixelsPerInch = 96
   TextHeight = 14
-  object bvlFrame: TBevel
-    Left = 8
-    Top = 8
-    Width = 391
-    Height = 189
-    Anchors = [akLeft, akTop, akRight, akBottom]
-  end
-  object chkNeverShowAgain: TCheckBox
-    Left = 16
-    Top = 172
-    Width = 337
-    Height = 17
-    Anchors = [akLeft, akBottom]
-    Caption = '&Never show this message again'
-    TabOrder = 1
-  end
-  object mmoMessage: TMemo
-    Left = 16
-    Top = 16
-    Width = 375
-    Height = 149
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    Lines.Strings = (
-      '')
-    ReadOnly = True
-    ScrollBars = ssVertical
+  object p_Buttons: TPanel
+    Left = 0
+    Top = 203
+    Width = 409
+    Height = 41
+    Align = alBottom
     TabOrder = 0
+  end
+  object p_Top: TPanel
+    Left = 0
+    Top = 0
+    Width = 409
+    Height = 203
+    Align = alClient
+    TabOrder = 1
+    object mmoMessage: TMemo
+      Left = 1
+      Top = 1
+      Width = 407
+      Height = 167
+      Align = alClient
+      Lines.Strings = (
+        '')
+      ReadOnly = True
+      ScrollBars = ssVertical
+      TabOrder = 0
+    end
+    object p_Chkbox: TPanel
+      Left = 1
+      Top = 168
+      Width = 407
+      Height = 34
+      Align = alBottom
+      TabOrder = 1
+      object chkNeverShowAgain: TCheckBox
+        Left = 9
+        Top = 1
+        Width = 397
+        Height = 32
+        Align = alClient
+        Anchors = [akLeft, akRight, akBottom]
+        Caption = '&Never show this message again'
+        TabOrder = 0
+      end
+      object p_ChkLeft: TPanel
+        Left = 1
+        Top = 1
+        Width = 8
+        Height = 32
+        Align = alLeft
+        TabOrder = 1
+      end
+    end
   end
 end
