@@ -4,6 +4,8 @@ unit GX_BaseForm;
 
 {$D+}
 
+{.$DEFINE IDE_IS_HIDPI_AWARE}
+
 interface
 
 uses
@@ -20,6 +22,14 @@ uses
 {$ENDIF}
   u_dzVclUtils;
 
+{$IFNDEF IDE_IS_HIDPI_AWARE}
+type
+  TDummyDpiScaler = class
+  public
+    function Calc(_Value: integer): integer;
+  end;
+{$ENDIF}
+
 type
   // All forms except docking forms must descend from this class.
   // Changes here must also be made to TfmIdeDockForm, since it must descend
@@ -28,7 +38,9 @@ type
   protected
     procedure Loaded; override;
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFNDEF IDE_IS_HIDPI_AWARE}
+    FScaler: TDummyDpiScaler;
+{$ELSE}
     FScaler: TFormDpiScaler;
     procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); virtual;
@@ -63,7 +75,9 @@ end;
 
 procedure TfmBaseForm.InitDpiScaler;
 begin
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFNDEF IDE_IS_HIDPI_AWARE}
+  FScaler := TDummyDpiScaler.Create;
+{$ELSE}
   FScaler := TFormDpiScaler.Create(Self);
   ApplyDpi(TScreen_GetDpiForForm(Self), nil);
 {$ENDIF}
@@ -86,6 +100,11 @@ end;
 
 procedure TfmBaseForm.ArrangeControls;
 begin
+end;
+{$ELSE}
+function TDummyDpiScaler.Calc(_Value: integer): integer;
+begin
+  Result := _Value;
 end;
 {$ENDIF}
 
