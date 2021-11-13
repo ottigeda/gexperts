@@ -149,7 +149,7 @@ var
   ExternalEditor: string;
   Params: string;
 begin
-  Assert(Assigned(gblGrepMenuEntryExpert));
+  Assert(Assigned(gblGrepExpert), 'gblGrepExpert not assigned');
   UseCurrentIdent := gblGrepExpert.GrepUseCurrentIdent;
   ExternalEditor := gblGrepExpert.ExternalEditor;
   Params := gblGrepExpert.ExternalEditorParams;
