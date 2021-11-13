@@ -26,7 +26,7 @@ type
     ed_RegEx: TEdit;
     l_RegEx: TLabel;
     l_Matches: TLabel;
-    b_OK: TButton;
+    b_Ok: TButton;
     b_Cancel: TButton;
     tim_InputDelay: TTimer;
     re_Test: TRichEdit;
@@ -51,9 +51,9 @@ implementation
 {$R *.dfm}
 
 uses
+  ToolsAPI,
   u_dzVclUtils,
   GX_OtaUtils;
-
 
 { TfmTestRegEx }
 
@@ -97,7 +97,7 @@ begin
   FRegEx := TRegExpr.Create;
 
   FCurrentCode := TGxUnicodeStringList.Create;
-  if not GxOtaGetActiveEditorText(FCurrentCode, False) then begin
+  if not Assigned(BorlandIDEServices) or not GxOtaGetActiveEditorText(FCurrentCode, False) then begin
     begin
       s := IncludeTrailingPathDelimiter(GetModuleDir) + 'preview.pas';
       if FileExists(s) then begin
