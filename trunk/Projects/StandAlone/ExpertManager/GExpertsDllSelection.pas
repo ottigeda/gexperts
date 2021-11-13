@@ -53,6 +53,7 @@ var
   Path: string;
   sl: TStringList;
 begin
+  Application.Initialize;
   if ParamCount > 0 then
     GExpertsDLLName := ParamStr(1)
   else begin
@@ -74,7 +75,7 @@ begin
         GExpertsDLLName := sl[0]
       else begin
         Execute(Path, sl);
-        exit;
+        Exit; //==>
       end;
     finally
       FreeAndNil(sl);
