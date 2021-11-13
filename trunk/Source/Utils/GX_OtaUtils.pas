@@ -3484,7 +3484,7 @@ end;
 function GxOtaGetEditorServices: IOTAEditorServices;
 begin
   Result := (BorlandIDEServices as IOTAEditorServices);
-  Assert(Assigned(Result));
+  Assert(Assigned(Result), 'BorlandIDEServices is not assigned');
 end;
 
 procedure GxOtaGetEditorFont(const AFont: TFont; ASizeAdjust: Integer = 0);
