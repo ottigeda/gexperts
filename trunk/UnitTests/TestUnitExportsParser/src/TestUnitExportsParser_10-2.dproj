@@ -127,7 +127,7 @@
             <Deployment Version="3">
                 <DeployFile LocalName="..\TestUnitExportsParser.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>TestUnitExportsParser.exe</RemoteName>
+                        <RemoteName>TestUnitExportsParser_10-2.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
