@@ -2,10 +2,6 @@ unit GX_BaseForm;
 
 {$I GX_CondDefine.inc}
 
-{$D+}
-
-{.$DEFINE IDE_IS_HIDPI_AWARE}
-
 interface
 
 uses
@@ -26,7 +22,7 @@ uses
 type
   TDummyDpiScaler = class
   public
-    function Calc(_Value: integer): integer;
+    function Calc(_Value: Integer): Integer;
   end;
 {$ENDIF}
 
@@ -102,7 +98,7 @@ procedure TfmBaseForm.ArrangeControls;
 begin
 end;
 {$ELSE}
-function TDummyDpiScaler.Calc(_Value: integer): integer;
+function TDummyDpiScaler.Calc(_Value: Integer): Integer;
 begin
   Result := _Value;
 end;

@@ -220,7 +220,11 @@ end;
 procedure TfmIdeDockForm.Loaded;
 begin
   inherited;
+{$IFDEF IDE_IS_HIDPI_AWARE}
   Scaled := False;
+{$ELSE}
+  Scaled := True;
+{$ENDIF}
 end;
 
 {$IFDEF EnableIdeDockingSupport}
