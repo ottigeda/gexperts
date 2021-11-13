@@ -309,10 +309,12 @@ begin
   MinHeight := MinHeight+ (Height - pcConfig.ClientHeight);
 
 {$IFDEF IDE_IS_HIDPI_AWARE}
-  if MinWidth < 1000 then
-    MinWidth := 1000;
-  if MinHeight < 1000 then
-    MinHeight := 1000;
+  if TScreen_GetDpiForForm(Self) > 96 then begin
+    if MinWidth < 1000 then
+      MinWidth := 1000;
+    if MinHeight < 1000 then
+      MinHeight := 1000;
+  end;
 {$ENDIF}
 
   Width := MinWidth;
