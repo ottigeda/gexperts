@@ -77,6 +77,8 @@ const
   // (see unit DCCStrs in the ToolsApi directory),
   // but the old names still work so we keep using them until they break or we
   // drop support for older IDEs.
+  // Also: at east 'DCC_UnitSearchPath' doesn't seem to work, I tried Delphi 2007 and 10.2
+  // -- 2021-11-19 twm
   // 'DCC_BplOutput'
   OPTION_NAME_PKG_DLL_DIR = 'PkgDllDir';
   // 'DCC_ExeOutput'
@@ -403,6 +405,13 @@ procedure GxOtaGetProjectFileNames(Project: IOTAProject; Files: TStrings);
 // string is returned.
 function GxOtaGetFileNameOfCurrentModule: string;
 
+///<summary>
+/// tries to get the options of the given or the active project
+/// @param ProjectOptions will contain the options, only valid if Result is True
+/// @param Project is the project whose options to get, it nil the current project will be used
+/// @returns True, if the options could be retrieved, False otherwise (e.g. if there is no active project) </summary>
+function GxOtaTryGetProjectOptions(out _ProjectOptions: IOTAProjectOptions; _Project: IOTAProject = nil): Boolean;
+
 // Get the IOTAProjectOptions interface for the active project
 function GxOtaGetActiveProjectOptions: IOTAProjectOptions;
 // Get the value of a specific project option for the active project
@@ -506,6 +515,20 @@ procedure GxOtaGetProjectNamespaces(var DefaultNamespace: string; SearchPath: TS
 ///                         paths removed. </summary>
 procedure GxOtaGetProjectSourcePathStrings(Paths: TStrings;
   Project: IOTAProject = nil; DoProcessing: Boolean = True);
+
+///<summary>
+/// Tries to get the project's unit search path
+/// @param Path is the contents of the unit search path, only valid if Result is True
+/// @param Project is the project whose search path to get, if nil, the current project is used
+/// @returns True, if it could be retrieved, False otherwise (e.g. there is no active project)
+function GxOtaTryGetProjectSearchPath(out _Path: string; _Project: IOTAProject = nil): Boolean;
+///<summary>
+/// Tries to set the project's unit search path
+/// @param Path is the new contents of the unit search path
+/// @param Project is the project whose search path to set, if nil, the current project is used
+/// @returns True, if it could be set, False otherwise (e.g. there is no active project)
+function GxOtaTrySetProjectSearchPath(const _Path: string; _Project: IOTAProject = nil): Boolean;
+
 ///<summary>
 /// Return the global IDE library path (without the project specific paths).
 /// @params if DoProcessing is true, the paths are macro expanded and non-existing
@@ -1733,14 +1756,19 @@ begin
     Result := Module.FileName;
 end;
 
-function GxOtaGetActiveProjectOptions: IOTAProjectOptions;
-var
-  Project: IOTAProject;
+function GxOtaTryGetProjectOptions(out _ProjectOptions: IOTAProjectOptions; _Project: IOTAProject = nil): Boolean;
 begin
-  Result := nil;
-  Project := GxOtaGetCurrentProject;
-  if Assigned(Project) then
-    Result := Project.ProjectOptions;
+  if not Assigned(_Project) then
+    _Project := GxOtaGetCurrentProject;
+  if Assigned(_Project) then
+    _ProjectOptions := _Project.GetProjectOptions;
+  Result := Assigned(_ProjectOptions);
+end;
+
+function GxOtaGetActiveProjectOptions: IOTAProjectOptions;
+begin
+  if not GxOtaTryGetProjectOptions(Result) then
+    Result := nil;
 end;
 
 function GxOtaGetActiveProjectOption(const Option: string; var Value: Variant): Boolean;
@@ -1786,8 +1814,7 @@ var
 begin
   Result := False;
   Value := '';
-  ProjectOptions := GxOtaGetActiveProjectOptions;
-  if Assigned(ProjectOptions) then begin
+  if GxOtaTryGetProjectOptions(ProjectOptions) then begin
     if HandleDelphiXEUpVersionInfo(Option, Value) then begin
       Result := True;
     end else begin
@@ -1848,15 +1875,14 @@ var
 begin
   // This has been changed to support Delphi XE2 and up which stores
   // version information in the configuration sets. Strings can no longer
-  // be simply assigned but needs to be passed into this function to be
+  // be simply assigned but need to be passed into this function to be
   // set.
   Assert(Assigned(Strings));
 
   Result := False;
 
 {$IFDEF GX_VER230_up} // Delphi XE2 and up.
-  ProjectOptions := GxOtaGetActiveProjectOptions;
-  if Assigned(ProjectOptions) then
+  if  GxOtaTryGetProjectOptions(ProjectOptions) then
   begin
     if ProjectOptions.QueryInterface(IOTAProjectOptionsConfigurations, Configurations) = S_OK then
     begin
@@ -3036,8 +3062,7 @@ begin
       EnsureStringInList(SearchPath, ProjectName);
     end;
     // Then the project search path
-    ProjectOptions := Project.GetProjectOptions;
-    if Assigned(ProjectOptions) then begin
+    if GxOtaTryGetProjectOptions(ProjectOptions, Project) then begin
 
 //      OptionNames := ProjectOptions.GetOptionNames;
 //      for i := Low(OptionNames) to High(OptionNames) - 1 do
@@ -3076,12 +3101,10 @@ begin
     // Add the current project directory first
     Paths.Add(ProjectDir);
     // Then the project search path
-    ProjectOptions := Project.GetProjectOptions;
-    if Assigned(ProjectOptions) then
+    if GxOtaTryGetProjectOptions(ProjectOptions, Project) then
     begin
       IdePathString := ProjectOptions.Values[OPTION_NAME_UNIT_SEARCH_PATH];
       // it is also possible to set the search path using the same property:
-      // ProjectOptions.Values['DCC_UnitSearchPath'] := 'bla;blub';
       SplitIdePath(Paths, IdePathString);
     end;
     if DoProcessing then begin
@@ -3091,6 +3114,26 @@ begin
     for i := 0 to Paths.Count - 1 do begin
       Paths[i] := AddSlash(Paths[i]);
     end;
+  end;
+end;
+
+function GxOtaTryGetProjectSearchPath(out _Path: string; _Project: IOTAProject = nil): Boolean;
+var
+  ProjectOptions: IOTAProjectOptions;
+begin
+  Result := GxOtaTryGetProjectOptions(ProjectOptions, _Project);
+  if Result then begin
+    _Path := ProjectOptions.Values[OPTION_NAME_UNIT_SEARCH_PATH];
+  end;
+end;
+
+function GxOtaTrySetProjectSearchPath(const _Path: string; _Project: IOTAProject = nil): Boolean;
+var
+  ProjectOptions: IOTAProjectOptions;
+begin
+  Result := GxOtaTryGetProjectOptions(ProjectOptions, _Project);
+  if Result then begin
+    ProjectOptions.Values[OPTION_NAME_UNIT_SEARCH_PATH] := _Path;
   end;
 end;
 
