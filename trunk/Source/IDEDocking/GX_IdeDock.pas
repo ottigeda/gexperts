@@ -8,7 +8,9 @@ uses
   Windows,
   SysUtils, Classes, Forms, Controls,
   MenuBar, Menus, Messages,
+{$IFDEF IDE_IS_HIDPI_AWARE}
   u_dzDpiScaleUtils,
+{$ENDIF}
   // You must link to the DesignIde package to compile this unit
   DockForm;
 

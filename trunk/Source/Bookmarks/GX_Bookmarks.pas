@@ -21,7 +21,9 @@ uses
   ExtCtrls,
   Menus,
   Types,
+{$IFDEF IDE_IS_HIDPI_AWARE}
   u_dzDpiScaleUtils,
+{$ENDIF}
   GX_Experts,
   GX_BaseForm,
   GX_IdeDock,
