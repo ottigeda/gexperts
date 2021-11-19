@@ -819,22 +819,22 @@ begin
   end
   else if StVar = '%VERMAJOR%' then
   begin
-    if GxOtaGetActiveProjectOption('MajorVersion', OptionValue) then
+    if GxOtaTryGetProjectOption('MajorVersion', OptionValue) then
       Result := OptionValue;
   end
   else if StVar = '%VERMINOR%' then
   begin
-    if GxOtaGetActiveProjectOption('MinorVersion', OptionValue) then
+    if GxOtaTryGetProjectOption('MinorVersion', OptionValue) then
       Result := OptionValue;
   end
   else if StVar = '%VERRELEASE%' then
   begin
-    if GxOtaGetActiveProjectOption('Release', OptionValue) then
+    if GxOtaTryGetProjectOption('Release', OptionValue) then
       Result := OptionValue;
   end
   else if StVar = '%VERBUILD%' then
   begin
-    if GxOtaGetActiveProjectOption('Build', OptionValue) then
+    if GxOtaTryGetProjectOption('Build', OptionValue) then
       Result := OptionValue;
   end
   else if StVar = '%VERPRODUCTNAME%' then

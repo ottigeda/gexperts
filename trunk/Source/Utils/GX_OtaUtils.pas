@@ -9,6 +9,28 @@ uses
   Actions, Graphics,
   GX_GenericUtils, GX_StringList, GX_IdeUtils;
 
+// Idea: These functions could be encapsulated as class functions which would reduce the
+// pollution of the namespace and also make for better code completion.
+// and with a short class name that would not mean more typing.
+// E.g.:
+//type
+//  // no T-prefix since this is only a container for class methods
+//  Ota = class
+//    class function GetNativeObject(const AComponent: IOTAComponent): TObject;
+//  end;
+//
+// instead of
+//   x := GxOtaGetNativeObject(bla);
+// we'd type
+//   x := Ota.GetNativeObject(bla);
+// which would even save one character. ;-)
+// It would also improve readability because it's easier to ignore a prefix which
+// is separated by a '.'.
+// On top of that
+//   Ota.TryGetWhatever()
+// is a lot more readable than
+//   GxOtaTryGetWhatever()
+
 // Returns the TObject represented by an IOTAComponent, if possible
 function GxOtaGetNativeObject(const AComponent: IOTAComponent): TObject;
 // Returns the TPersistent represented by an IOTAComponent, if possible
@@ -387,7 +409,7 @@ function GxOtaGetProjectOutputDir(Project: IOTAProject): string;
 /// Tries to find the current project's map file
 /// @param MapFile will contain full path name of the map file, only valid if result is true
 /// @returns true, if a current project exists and the map file could be found </summary>
-function GxOtaGetCurrentMapFileName(out MapFile: string): boolean;
+function GxOtaGetCurrentMapFileName(out MapFile: string): Boolean;
 
 // Returns reference to the IDE's project group;
 // returns Nil if there is no project group.
@@ -406,7 +428,7 @@ procedure GxOtaGetProjectFileNames(Project: IOTAProject; Files: TStrings);
 function GxOtaGetFileNameOfCurrentModule: string;
 
 ///<summary>
-/// tries to get the options of the given or the active project
+/// Tries to get the options of the given or the active project
 /// @param ProjectOptions will contain the options, only valid if Result is True
 /// @param Project is the project whose options to get, it nil the current project will be used
 /// @returns True, if the options could be retrieved, False otherwise (e.g. if there is no active project) </summary>
@@ -414,8 +436,13 @@ function GxOtaTryGetProjectOptions(out _ProjectOptions: IOTAProjectOptions; _Pro
 
 // Get the IOTAProjectOptions interface for the active project
 function GxOtaGetActiveProjectOptions: IOTAProjectOptions;
-// Get the value of a specific project option for the active project
-function GxOtaGetActiveProjectOption(const Option: string; var Value: Variant): Boolean;
+///<summary>
+/// Tries to get a configuration option from the active configuration of the given project
+/// @param Option is the name of the option to retrieve
+/// @param Value will return the value of the given option, only valid if Result is True
+/// @param Project is the project for which to get the option, if nil the current project will be used
+/// @returns True, if the option could be retrieved, False otherwise (e.g. if there is no active project) </summary>
+function GxOtaTryGetProjectOption(const Option: string; var Value: Variant; _Project: IOTAProject = nil): Boolean;
 // Get the value of a version info keys string
 function GxOtaGetVersionInfoKeysOption(const Option: string; var Value: Variant): Boolean;
 // Get the first value of a list of version info keys strings
@@ -1771,7 +1798,7 @@ begin
     Result := nil;
 end;
 
-function GxOtaGetActiveProjectOption(const Option: string; var Value: Variant): Boolean;
+function GxOtaTryGetProjectOption(const Option: string; var Value: Variant; _Project: IOTAProject = nil): Boolean;
 var
   ProjectOptions: IOTAProjectOptions;
 
@@ -1814,7 +1841,7 @@ var
 begin
   Result := False;
   Value := '';
-  if GxOtaTryGetProjectOptions(ProjectOptions) then begin
+  if GxOtaTryGetProjectOptions(ProjectOptions, _Project) then begin
     if HandleDelphiXEUpVersionInfo(Option, Value) then begin
       Result := True;
     end else begin
@@ -3360,7 +3387,7 @@ var
 begin
   Assert(Assigned(Aliases));
   Aliases.Clear;
-  FoundAliases := GxOtaGetActiveProjectOption(OPTION_NAME_UNIT_ALIASES, VarAliases);
+  FoundAliases := GxOtaTryGetProjectOption(OPTION_NAME_UNIT_ALIASES, VarAliases);
   if FoundAliases then
   begin
     AliasString := VarAliases;
