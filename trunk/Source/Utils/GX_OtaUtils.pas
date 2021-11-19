@@ -1935,7 +1935,7 @@ begin
     end;
   end;
 {$ELSE}
-  if GxOtaGetActiveProjectOption('Keys', KeysValue) then
+  if GxOtaTryGetProjectOption('Keys', KeysValue) then
   begin
     if (not VarIsNull(KeysValue)) and (VarType(KeysValue) = varInteger) then
     begin
@@ -2006,7 +2006,7 @@ begin
     end;
   end;
 {$ELSE}
-  if GxOtaGetActiveProjectOption('Keys', KeysValue) then
+  if GxOtaTryGetProjectOption('Keys', KeysValue) then
   begin
     if (not VarIsNull(KeysValue)) and (VarType(KeysValue) = varInteger) then
     begin
