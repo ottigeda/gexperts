@@ -242,7 +242,8 @@ uses
   GX_BackupNotFound in '..\..\Source\BackupProject\GX_BackupNotFound.pas' {fmBackupNotFound},
   GX_FormHotkeys in '..\..\Source\FormHotkeys\GX_FormHotkeys.pas' {f_FormHotkeys},
   GX_ExplicitFilterExpert in '..\..\Source\ExplicitFilter\GX_ExplicitFilterExpert.pas' {fmGxExplicitFilter},
-  GX_StringGridDrawFix in '..\..\Source\Utils\GX_StringGridDrawFix.pas';
+  GX_StringGridDrawFix in '..\..\Source\Utils\GX_StringGridDrawFix.pas',
+  GX_EditPath in '..\..\Source\GX_EditPath.pas' {f_EditPath};
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
