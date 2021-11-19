@@ -48,7 +48,8 @@ uses
   GX_OtaUtils,
   GX_Experts,
   GX_IdeUtils,
-  GX_GotoConfig, u_dzVclUtils;
+  GX_GotoConfig,
+  u_dzVclUtils;
 
 const
   SEARCH_GOTO_COMMAND = 'SearchGotoCommand';
@@ -191,7 +192,7 @@ end;
 procedure Tf_Goto.lb_UnitPositionsClick(Sender: TObject);
 var
   Idx: Integer;
-  Line:Integer;
+  Line: Integer;
 begin
   Idx := lb_UnitPositions.ItemIndex;
   if Idx = -1 then
