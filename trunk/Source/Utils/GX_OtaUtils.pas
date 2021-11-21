@@ -99,8 +99,9 @@ const
   // (see unit DCCStrs in the ToolsApi directory),
   // but the old names still work so we keep using them until they break or we
   // drop support for older IDEs.
-  // Also: at east 'DCC_UnitSearchPath' doesn't seem to work, I tried Delphi 2007 and 10.2
-  // -- 2021-11-19 twm
+  // It's more complicated: The old names seem to work for IOTAProjectOptions.Values[], but not for
+  // IOTABuildConfiguration.Values[] and vice versa (tested with Delphi 2007 and 10.2)
+  // -- 2021-11-21 twm
   // 'DCC_BplOutput'
   OPTION_NAME_PKG_DLL_DIR = 'PkgDllDir';
   // 'DCC_ExeOutput'
@@ -138,6 +139,19 @@ const
   cLinux64ARMPlatform = 'Linux64ARM';
   cAndroid64Platform = 'Android64';
 
+const
+  // from ToolsApi\DesignConst.pas
+  sAllConfigurations = 'All configurations';
+  sAllPlatforms = 'All platforms';
+  sPlatform = ' platform';
+  sConfiguration = ' configuration';
+
+///<summary>
+/// Returns the full name of the given platform, e.g.
+/// '32-bit Windows platform' for 'Win32'
+/// for en empty string the result is 'All platforms'
+/// for an unknown platform the result is Platform + ' platform' </summary>
+function GxOtaGetPlatformCaption(const _Platform: string): string;
 
 // returns an IOTAEditReader for the given or the current IOTASourceEditor if none is specified
 function GxOtaGetEditReaderForSourceEditor(SourceEditor: IOTASourceEditor = nil): IOTAEditReader;
@@ -376,6 +390,7 @@ function GxOtaFocusCurrentIDEEditControl: Boolean;
 // Returns reference to currently active project;
 // returns nil if there is no (active) project.
 function GxOtaGetCurrentProject: IOTAProject;
+function GxOtaTryGetCurrentProject(out _Project: IOTAProject): Boolean;
 
 // See if there is an active project
 function GxOtaHaveCurrentProject: Boolean;
@@ -1481,14 +1496,14 @@ begin
   end;
 end;
 
-function GxOtaGetCurrentProject: IOTAProject;
+function GxOtaTryGetCurrentProject(out _Project: IOTAProject): Boolean;
 var
   IProjectGroup: IOTAProjectGroup;
   IModuleServices: IOTAModuleServices;
   IModule: IOTAModule;
   i: Integer;
 begin
-  Result := nil;
+  Result := False;
 
   IProjectGroup := GxOtaGetProjectGroup;
   if not Assigned(IProjectGroup) then
@@ -1500,18 +1515,27 @@ begin
     for i := 0 to IModuleServices.ModuleCount - 1 do
     begin
       IModule := IModuleServices.Modules[i];
-      if Supports(IModule, IOTAProject, Result) then
+      Result := Supports(IModule, IOTAProject, _Project);
+      if Result then
         Break;
     end;
   end;
 
   try
     // This raises exceptions in D5 with .bat projects active
-    if Assigned(IProjectGroup) and (not Assigned(Result)) then
-      Result := IProjectGroup.ActiveProject;
+    if Assigned(IProjectGroup) and (not Result) then begin
+      _Project := IProjectGroup.ActiveProject;
+      Result := True;
+    end;
   except
-    Result := nil;
+    // ignore
   end;
+end;
+
+function GxOtaGetCurrentProject: IOTAProject;
+begin
+  if not GxOtaTryGetCurrentProject(Result) then
+    Result := nil;
 end;
 
 function GxOtaHaveCurrentProject: Boolean;
@@ -3007,37 +3031,78 @@ begin
     EnsureStringInList(Strings, IdePathString);
 end;
 
+function GxOtaGetPlatformCaption(const _Platform: string): string;
+begin
+  if _Platform = '' then
+    Result := sAllPlatforms
+  else begin
+    if _Platform = cWin32Platform then
+      Result := '32-bit Windows'
+    else if _Platform = cWin64Platform then
+      Result := '64-bit Windows'
+    else if _Platform = cWinIoT32Platform then
+      Result := '32-bit Windows IoT'
+    else if _Platform = cWinARMPlatform then
+      Result := 'Windows on ARM'
+    else if _Platform = cOSX32Platform then
+      Result := '32-bit OSX'
+    else if _Platform = cOSX64Platform then
+      Result := '64-bit OSX'
+    else if _Platform = cLinux32Platform then
+      Result := '32-bit Linux'
+    else if _Platform = cLinux64Platform then
+      Result := '64-bit Linux'
+    else if _Platform = cLinux32ARMPlatform then
+      Result := '32-bit Linux on ARM'
+    else if _Platform = cLinux64ARMPlatform then
+      Result := '64-bit Linux on ARM'
+    else if _Platform = ciOSSimulatorPlatform then
+      Result := 'iOS Simulator'
+    else if _Platform = ciOSDevice32Platform then
+      Result := '32-bit iOS'
+    else if _Platform = ciOSDevice64Platform then
+      Result := '64-bit iOS'
+    else if _Platform = cAndroidPlatform then
+      Result := '32-bit Android'
+    else if _Platform = cAndroid64Platform then
+      Result := '64-bit Android'
+    else
+      Result := _Platform;
+    Result := Result + sPlatform;
+  end;
+end;
+
 function GxOtaGetProjectPlatform(Project: IOTAProject = nil): string;
 begin
   Result := '';
-{$ifdef GX_VER230_up}
+{$IFDEF GX_VER230_up} // RAD Studio XE 2 (16; BDS 9)
   if Project = nil then
     Project := GxOtaGetCurrentProject;
   if Project <> nil then
     Result := Project.CurrentPlatform;
-{$endif GX_VER230_up}
+{$ENDIF GX_VER230_up}
 end;
 
 function GxOtaGetProjectConfig(Project: IOTAProject = nil): string;
 begin
   Result := '';
-{$ifdef GX_VER230_up}
+{$IFDEF GX_VER230_up} // RAD Studio XE 2 (16; BDS 9)
   if Project = nil then
     Project := GxOtaGetCurrentProject;
   if Project <> nil then
     Result := Project.CurrentConfiguration;
-{$endif GX_VER230_up}
+{$ENDIF GX_VER230_up}
 end;
 
 function GxOtaGetProjectFrameworkType(Project: IOTAProject = nil): string;
 begin
-{$ifdef GX_VER230_up}
+{$IFDEF GX_VER230_up} // RAD Studio XE 2 (16; BDS 9)
   if Project = nil then
     Project := GxOtaGetCurrentProject;
   Result := Project.FrameworkType;
-{$else ~ GX_VER230_up}
+{$ELSE ~ GX_VER230_up}
   Result := '';
-{$endif GX_VER230_up}
+{$ENDIF GX_VER230_up}
 end;
 
 procedure ProcessPaths(Paths: TStrings; const Prefix: string; const PlatformName: string);
