@@ -244,7 +244,7 @@ uses
   GX_FilterExceptionsNotification in '..\..\Source\FilterExceptions\GX_FilterExceptionsNotification.pas' {fmExceptionNotification},
   GX_ExplicitFilterExpert in '..\..\Source\ExplicitFilter\GX_ExplicitFilterExpert.pas' {fmGxExplicitFilter},
   GX_StringGridDrawFix in '..\..\Source\Utils\GX_StringGridDrawFix.pas',
-  GX_EditPath in '..\..\Source\GX_EditPath.pas' {f_EditPath};
+  GX_EditPath in '..\..\Source\EditPath\GX_EditPath.pas' {f_EditPath};
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}

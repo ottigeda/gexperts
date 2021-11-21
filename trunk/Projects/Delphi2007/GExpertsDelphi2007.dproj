@@ -263,6 +263,9 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
             <Form>fmConfigureWarning</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_MenusForEditorExpert.pas"/>
+        <DCCReference Include="..\..\Source\EditPath\GX_EditPath.pas">
+            <Form>f_EditPath</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\ExpertManager\GX_ExpertManager.pas">
             <Form>fmExpertManager</Form>
         </DCCReference>
