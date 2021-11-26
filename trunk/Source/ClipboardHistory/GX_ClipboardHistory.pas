@@ -5,7 +5,7 @@ unit GX_ClipboardHistory;
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, ExtCtrls, Menus,
+  Windows, SysUtils, Classes, Types, Controls, Forms, StdCtrls, ExtCtrls, Menus,
   ComCtrls, ActnList, Actions, ToolWin, GX_SharedImages, 
   GX_Experts, GX_ConfigurationInfo, GX_IdeDock;
 
@@ -130,12 +130,12 @@ type
     procedure actEditPasteToIdeExecute(Sender: TObject);
     procedure ActionsUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure actViewToolBarExecute(Sender: TObject);
+    procedure actViewPasteAsOptionsExecute(Sender: TObject);
     procedure actViewOptionsExecute(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure actFileRehookClipboardExecute(Sender: TObject);
     procedure actDeleteExecute(Sender: TObject);
     procedure actEditPasteAsPascalStringExecute(Sender: TObject);
-    procedure actViewPasteAsOptionsExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure lvClipResize(Sender: TObject);
     procedure actHamburgerMenuExecute(Sender: TObject);
@@ -156,6 +156,12 @@ type
     function GetSelectedItemsText: string;
     procedure WmDrawClipBoard;
     procedure AddClipItem(const AClipText: string);
+    procedure ArrangeToolbarAndPanel;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+    procedure ArrangeControls;  override;
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -196,7 +202,7 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  Windows, Messages, SysUtils, Clipbrd, Dialogs, Math, StrUtils, OmniXML,
+  Messages, Clipbrd, Dialogs, Math, StrUtils, OmniXML,
   GX_GxUtils, GX_GenericUtils, GX_OtaUtils, u_dzVclUtils,
   GX_GExperts, GX_ClipboardOptions, GX_XmlUtils,
   GX_PasteAs;
@@ -508,11 +514,7 @@ begin
   IgnoreClip := False;
 
   // With large fonts, the TMenuToolBar ends up below the ToolBar, this fixes it
-  ToolBar.Align := alNone;
-  ToolBar.Top := 200;
-  ToolBar.Align := alTop;
-
-  pnlPasteAsOptions.Top := ToolBar.Top + ToolBar.Height;
+  ArrangeToolbarAndPanel;
 
   InitDpiScaler;
   CenterForm(Self);
@@ -546,6 +548,31 @@ begin
   inherited Destroy;
   fmClipboardHistory := nil;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmClipboardHistory.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+begin
+  inherited;;
+  ToolBar.DisabledImages := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  ToolBar.Images := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  MainMenu.Images := ToolBar.Images;
+end;
+
+procedure TfmClipboardHistory.ArrangeControls;
+begin
+  ArrangeToolbarAndPanel;
+end;
+{$ENDIF}
+
+procedure TfmClipboardHistory.ArrangeToolbarAndPanel;
+begin
+  ToolBar.Align := alNone;
+  ToolBar.Top := 200;
+  ToolBar.Align := alTop;
+
+  pnlPasteAsOptions.Top := ToolBar.Top + ToolBar.Height;
+end;
+
 
 procedure TfmClipboardHistory.AddClipItem(const AClipText: string);
 var
@@ -727,9 +754,16 @@ begin
   actViewPasteAsOptions.Checked := pnlPasteAsOptions.Visible;
 end;
 
+procedure TfmClipboardHistory.actViewPasteAsOptionsExecute(Sender: TObject);
+begin
+  pnlPasteAsOptions.Visible := not pnlPasteAsOptions.Visible;
+  ArrangeToolbarAndPanel;
+end;
+
 procedure TfmClipboardHistory.actViewToolBarExecute(Sender: TObject);
 begin
   ToolBar.Visible := not ToolBar.Visible;
+  ArrangeToolbarAndPanel;
 end;
 
 procedure TfmClipboardHistory.actViewOptionsExecute(Sender: TObject);
@@ -828,13 +862,6 @@ begin
       Result := Result + ClipInfoForItem(ClipItem).ClipString;
     end;
   end;
-end;
-
-procedure TfmClipboardHistory.actViewPasteAsOptionsExecute(Sender: TObject);
-begin
-  pnlPasteAsOptions.Visible := not pnlPasteAsOptions.Visible;
-  if pnlPasteAsOptions.Visible then
-    pnlPasteAsOptions.Top := ToolBar.Top + ToolBar.Height;
 end;
 
 procedure TfmClipboardHistory.actEditPasteAsPascalStringExecute(Sender: TObject);

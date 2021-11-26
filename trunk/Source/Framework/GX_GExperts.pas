@@ -51,6 +51,8 @@ type
     procedure ShowConfigurationForm;
     procedure DoAfterIDEInitialized(Sender: TObject);
 
+    function GetScaledSharedImages(_Dpi: Integer): TImageList;
+    function GetScaledSharedDisabledImages(_Dpi: Integer): TImageList;
     function GetSharedImages: TImageList;
     function GetExpertList: TList;
     procedure TimedCloseMessageView;
@@ -299,6 +301,20 @@ begin
   Result := nil;
   if Assigned(SharedImages) then
     Result := SharedImages.Images;
+end;
+
+function TGExperts.GetScaledSharedImages(_Dpi: Integer): TImageList;
+begin
+  Result := nil;
+  if Assigned(SharedImages) then
+    Result := SharedImages.GetScaledImages(_Dpi);
+end;
+
+function TGExperts.GetScaledSharedDisabledImages(_Dpi: Integer): TImageList;
+begin
+  Result := nil;
+  if Assigned(SharedImages) then
+    Result := SharedImages.GetScaledDisabledImageas(_Dpi);
 end;
 
 function TGExperts.GetState: TWizardState;

@@ -937,6 +937,7 @@ inherited fmGrepResults: TfmGrepResults
     Top = 32
   end
   object pmHamburgerMenu: TPopupMenu
+    Images = dmSharedImages.Images
     Left = 248
     Top = 88
     object miFile: TMenuItem

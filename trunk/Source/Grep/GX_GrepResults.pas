@@ -382,7 +382,8 @@ type
     procedure AssignSettingsToForm;
     function ConfigurationKey: string;
 {$IFDEF IDE_IS_HIDPI_AWARE}
-    procedure ArrangeControls; override;
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+    procedure ArrangeControls;  override;
 {$ENDIF}
 public
     constructor Create(AOwner: TComponent); override;
@@ -1766,7 +1767,7 @@ begin
 
   if IsStandAlone then begin
     actHamburgerMenu.Visible := False;
-    menu := MainMenu;
+    Menu := MainMenu;
   end;
 
   FSearchInProgress := False;
@@ -1940,6 +1941,14 @@ begin
 end;
 
 {$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmGrepResults.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+begin
+  inherited;
+  ToolBar.DisabledImages := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  ToolBar.Images := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  MainMenu.Images := ToolBar.Images;
+end;
+
 procedure TfmGrepResults.ArrangeControls;
 begin
   inherited;
