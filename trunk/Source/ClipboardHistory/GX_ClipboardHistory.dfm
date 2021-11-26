@@ -6,6 +6,7 @@ inherited fmClipboardHistory: TfmClipboardHistory
   ClientHeight = 428
   ClientWidth = 550
   KeyPreview = True
+  PopupMenu = pmHamburgerMenu
   Position = poScreenCenter
   OnClose = FormClose
   OnCreate = FormCreate
@@ -408,64 +409,79 @@ inherited fmClipboardHistory: TfmClipboardHistory
     object mitListDelete: TMenuItem
       Action = actDelete
     end
+    object N3: TMenuItem
+      Caption = '-'
+    end
+    object miListViewView: TMenuItem
+      Caption = 'View'
+      object miListViewShowToolbar: TMenuItem
+        Action = actViewToolBar
+      end
+      object miListViewShowPasteAsOptions: TMenuItem
+        Action = actViewPasteAsOptions
+      end
+      object miListViewOptions: TMenuItem
+        Action = actViewOptions
+      end
+    end
   end
   object pmHamburgerMenu: TPopupMenu
     Left = 144
     Top = 120
-    object File1: TMenuItem
+    object mi_HambugerFile: TMenuItem
       Caption = '&File'
-      object RehookClipboard1: TMenuItem
+      object mi_HambugerFileRehookClipboard: TMenuItem
         Action = actFileRehookClipboard
       end
     end
-    object Edit1: TMenuItem
+    object mi_HambugerEdit: TMenuItem
       Caption = '&Edit'
-      object Delete1: TMenuItem
+      object mi_HambugerEditDelete: TMenuItem
         Action = actDelete
       end
-      object Clear1: TMenuItem
+      object mi_HambugerEditClear: TMenuItem
         Action = actEditClear
       end
       object N1: TMenuItem
         Caption = '-'
       end
-      object Copy1: TMenuItem
+      object mi_HambugerEditCopy: TMenuItem
         Action = actEditCopy
       end
-      object CopyfromPascalString1: TMenuItem
+      object mi_HambugerEditCopyFromPascalString: TMenuItem
         Action = actEditCopyFromPascalString
       end
       object N2: TMenuItem
         Caption = '-'
       end
-      object PasteasPascalString1: TMenuItem
+      object mi_HambugerEditPasteIntoIde: TMenuItem
         Action = actEditPasteToIde
       end
-      object PasteasPascalString2: TMenuItem
+      object mi_HambugerEditPasteAsPascalString: TMenuItem
         Action = actEditPasteAsPascalString
       end
-      object ReplaceasPascalString1: TMenuItem
+      object mi_HambugerEditReplaceAsPascalString: TMenuItem
         Action = actEditReplaceAsPascalString
       end
     end
-    object View1: TMenuItem
+    object mi_HambugerView: TMenuItem
       Caption = '&View'
-      object ShowToolbar1: TMenuItem
+      object mi_HamburgerViewShowToolbar: TMenuItem
         Action = actViewToolBar
       end
-      object ShowPasteAsOptions2: TMenuItem
+      object mi_HamburgerViewShowPasteAsOptions: TMenuItem
         Action = actViewPasteAsOptions
       end
-      object Options1: TMenuItem
+      object mi_HamburberViewOptions: TMenuItem
         Action = actViewOptions
       end
     end
-    object Help1: TMenuItem
+    object mi_HambuergerHelp: TMenuItem
       Caption = '&Help'
-      object Help2: TMenuItem
+      object mi_HambuergerHelpHelp: TMenuItem
         Action = actHelpHelp
       end
-      object Contents1: TMenuItem
+      object mi_HamburgerHelpContents: TMenuItem
         Action = actHelpContents
       end
     end

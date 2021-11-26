@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Controls, Forms, StdCtrls, ExtCtrls, Menus,
-  ComCtrls, ActnList, Actions, ToolWin,
+  ComCtrls, ActnList, Actions, ToolWin, GX_SharedImages, 
   GX_Experts, GX_ConfigurationInfo, GX_IdeDock;
 
 type
@@ -91,25 +91,30 @@ type
     actHamburgerMenu: TAction;
     tbnHamburgerMenu: TToolButton;
     pmHamburgerMenu: TPopupMenu;
-    File1: TMenuItem;
-    Edit1: TMenuItem;
-    View1: TMenuItem;
-    Help1: TMenuItem;
-    RehookClipboard1: TMenuItem;
-    Clear1: TMenuItem;
-    Delete1: TMenuItem;
+    mi_HambugerFile: TMenuItem;
+    mi_HambugerEdit: TMenuItem;
+    mi_HambugerView: TMenuItem;
+    mi_HambuergerHelp: TMenuItem;
+    mi_HambugerFileRehookClipboard: TMenuItem;
+    mi_HambugerEditClear: TMenuItem;
+    mi_HambugerEditDelete: TMenuItem;
     N1: TMenuItem;
-    Copy1: TMenuItem;
-    CopyfromPascalString1: TMenuItem;
-    PasteasPascalString1: TMenuItem;
+    mi_HambugerEditCopy: TMenuItem;
+    mi_HambugerEditCopyFromPascalString: TMenuItem;
+    mi_HambugerEditPasteIntoIde: TMenuItem;
     N2: TMenuItem;
-    PasteasPascalString2: TMenuItem;
-    ReplaceasPascalString1: TMenuItem;
-    ShowToolbar1: TMenuItem;
-    ShowPasteAsOptions2: TMenuItem;
-    Options1: TMenuItem;
-    Help2: TMenuItem;
-    Contents1: TMenuItem;
+    mi_HambugerEditPasteAsPascalString: TMenuItem;
+    mi_HambugerEditReplaceAsPascalString: TMenuItem;
+    mi_HamburgerViewShowToolbar: TMenuItem;
+    mi_HamburgerViewShowPasteAsOptions: TMenuItem;
+    mi_HamburberViewOptions: TMenuItem;
+    mi_HambuergerHelpHelp: TMenuItem;
+    mi_HamburgerHelpContents: TMenuItem;
+    N3: TMenuItem;
+    miListViewView: TMenuItem;
+    miListViewShowToolbar: TMenuItem;
+    miListViewShowPasteAsOptions: TMenuItem;
+    miListViewOptions: TMenuItem;
     procedure FormResize(Sender: TObject);
     procedure SplitterMoved(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -193,7 +198,7 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   Windows, Messages, SysUtils, Clipbrd, Dialogs, Math, StrUtils, OmniXML,
   GX_GxUtils, GX_GenericUtils, GX_OtaUtils, u_dzVclUtils,
-  GX_GExperts, GX_ClipboardOptions, GX_SharedImages, GX_XmlUtils,
+  GX_GExperts, GX_ClipboardOptions, GX_XmlUtils,
   GX_PasteAs;
 
 const
