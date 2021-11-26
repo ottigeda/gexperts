@@ -18,7 +18,8 @@ uses
   Graphics,
   Forms,
   Controls,
-  Types;
+  Types,
+  ExtCtrls;
 
 type
   TDpiScaler = record
@@ -57,6 +58,7 @@ type
     FFrm: TForm;
     FCtrlParams: array of TCtrlDpiScaler;
     FDesigDpi: Integer;
+    FPnlMaster: TPanel;
     procedure AddControls(_Ctrl: TWinControl);
   public
     constructor Create(_frm: TForm);
@@ -308,7 +310,7 @@ end;
 procedure TFormDpiScaler.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   Scaler: TDpiScaler;
-  RedrawLock: IInterface;
+//  RedrawLock: IInterface;
   ClientRect: TRect;
   NewWidth: Integer;
   NewHeight: Integer;
@@ -328,7 +330,8 @@ begin
 // https://en.delphipraxis.net/topic/5516-the-state-of-gexperts-support-for-delphi-11/?do=findComment&comment=49633
 // https://en.delphipraxis.net/topic/5516-the-state-of-gexperts-support-for-delphi-11/?do=findComment&comment=49626
 // both effects were gone after I removed this call:
-//  RedrawLock := TWinControl_Lock(FFrm);
+//  RedrawLock := TWinControl_Lock(FPnlMaster);
+  FPnlMaster.Visible := False;
   try
     Scaler.Init(FDesignDpi, _NewDpi);
     // Disable constraints to assure the new size can be set
@@ -341,20 +344,17 @@ begin
       FFrm.BoundsRect := _NewBounds^;
     end else begin
       ClientRect := FFrm.ClientRect;
-      NewWidth := Scaler.Calc(TRect_Width(ClientRect));
-      NewHeight := Scaler.Calc(TRect_Height(ClientRect));
+      NewWidth := Scaler.Calc(FClientWidth);
+      NewHeight := Scaler.Calc(FClientHeight);
       FFrm.ClientWidth := NewWidth;
       FFrm.ClientHeight := NewHeight;
-
-      BoundsRect := FFrm.BoundsRect;
-      TRect_SetOffset(BoundsRect, -TRect_Width(BoundsRect) div 2, -TRect_Height(BoundsRect) div 2);
-      FFrm.BoundsRect := BoundsRect;
     end;
     LogForm('  FFrm', FFrm);
 
     ApplyScale(Scaler);
   finally
-    RedrawLock := nil;
+    FPnlMaster.Visible := True;
+//    RedrawLock := nil;
   end;
 end;
 
@@ -395,6 +395,7 @@ var
   Scaler: TDpiScaler;
   cnstr: TSizeConstraints;
   CurrFontSize: Integer;
+  Ctrl: TControl;
 begin
   inherited Create;
   FFrm := _frm;
@@ -408,6 +409,19 @@ begin
   CurrFontSize := GetFontSize(_frm.Font);
   FDesignDpi := TForm_GetDesignDPI(_frm);
 
+  FPnlMaster := TPanel.Create(FFrm);
+  FPnlMaster.Parent := FFrm;
+  FPnlMaster.Width := FClientWidth;
+  FPnlMaster.Height := FClientHeight;
+  FPnlMaster.Caption := '';
+  FPnlMaster.Name := '';
+  while FFrm.ControlCount > 1 do begin
+    Ctrl := FFrm.Controls[0];
+    Assert(Ctrl <> FPnlMaster);
+    Ctrl.Parent := FPnlMaster;
+  end;
+  FPnlMaster.Align := alClient;
+
   LogFmt('TFormDpiScaler.Create(%s)', [FFrm.Name]);
   LogFmt('  ClientWidth: %d, ClientHeight: %d, MinWidth: %d, MinHeight: %d, MaxWdidth: %d MaxHeight: %d CurrFontSize: %d DesignDpi: %d',
     [FClientWidth, FClientHeight, FMinWidth, FMinHeight, FMaxWidth, FMaxHeight, CurrFontSize, FDesignDpi]);
@@ -415,9 +429,7 @@ begin
   // FontSize has already been changed by the VCL, but we need the design font size
   Scaler.Init(_frm.Font.PixelsPerInch, FDesignDpi);
   FFontSize := Scaler.Calc(CurrFontSize);
-
-  LogFmt('  (FontPixelsPerInc: %d, FontSize: %d',
-    [_frm.Font.PixelsPerInch, FFontSize]);
+  LogFmt('  (FontPixelsPerInc: %d, FontSize: %d', [_frm.Font.PixelsPerInch, FFontSize]);
 
   AddControls(FFrm);
 end;
@@ -430,6 +442,3 @@ finalization
   CloseFile(LogFile);
 {$ENDIF}
 end.
-
-
-
