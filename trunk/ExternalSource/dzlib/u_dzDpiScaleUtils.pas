@@ -314,7 +314,6 @@ var
   ClientRect: TRect;
   NewWidth: Integer;
   NewHeight: Integer;
-  BoundsRect: TRect;
 begin
   if not Assigned(FFrm) then
     Exit; //==>
