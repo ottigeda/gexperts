@@ -6,10 +6,10 @@ unit GX_ProjOptionSets;
 interface
 
 uses
-  Windows, ToolsAPI, TypInfo, Classes, Controls, Forms, StdCtrls, ExtCtrls, CheckLst, Menus,
-  ComCtrls, ToolWin, ActnList, Actions, UITypes,
+  Windows, SysUtils, Types, ToolsAPI, TypInfo, Classes, Controls, Forms, StdCtrls, ExtCtrls,
+  CheckLst, Menus, ComCtrls, ToolWin, ActnList, Actions, UITypes,
   OmniXml,
-  GX_IdeDock, GX_Experts, GX_ConfigurationInfo, GX_CheckListBoxWithHints;
+  GX_SharedImages, GX_IdeDock, GX_Experts, GX_ConfigurationInfo, GX_CheckListBoxWithHints;
 
 type
   TOptionValueFunc = function(const AOption: string): string of object;
@@ -127,6 +127,10 @@ type
     procedure RefreshCheckmarks(_clb: TCheckListBoxWithHints; _Options: TStringList);
     procedure AddNewOptionSet(const SetName: string);
     function HaveSelectedSet: Boolean;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -138,10 +142,10 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, Clipbrd, {$ENDIF}
-  Variants, SysUtils, Messages, Dialogs,
+  Variants, Messages, Dialogs,
   GX_GxUtils, GX_GenericUtils, GX_IdeUtils, GX_OtaUtils,
-  GX_VerDepConst, GX_ProjOptMap, GX_SharedImages, GX_XmlUtils,
-  u_dzVclUtils, u_dzClassUtils;
+  GX_VerDepConst, GX_ProjOptMap, GX_XmlUtils,
+  u_dzVclUtils, u_dzClassUtils, GX_GExperts;
 
 resourcestring
   SOptValue = '%s value';
@@ -362,6 +366,24 @@ begin
 
   fmProjOptionSets := nil;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmProjOptionSets.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  ToolBar.DisabledImages := il;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  ToolBar.Images := il;
+  Actions.Images := il;
+  pmuPrjOptions.Images := il;
+  pmuEnvOptions.Images := il;
+  pmuSets.Images := il;
+end;
+{$ENDIF}
 
 procedure TfmProjOptionSets.lstSetsClick(Sender: TObject);
 begin

@@ -10,7 +10,7 @@ uses
   ComCtrls, StdCtrls, ExtCtrls, Menus,
   Actions, ActnList, ImageList, ImgList, ToolWin, ToolsAPI,
   OmniXML,
-  GX_Experts, GX_ConfigurationInfo, GX_KbdShortCutBroker,
+  GX_SharedImages, GX_Experts, GX_ConfigurationInfo, GX_KbdShortCutBroker,
   GX_IdeDock, GX_MemoEscFix, GX_StringList;
 
 type
@@ -197,6 +197,9 @@ type
     property DescriptionVisible: Boolean read GetDescriptionVisible write SetDescriptionVisible;
     procedure RecordShortcutCallback(Sender: TObject);
   protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
     procedure AddToMacroLibrary(CR: IOTARecord);
   public
     constructor Create(AOwner: TComponent); override;
@@ -263,9 +266,9 @@ implementation
 uses
   ActiveX, Math,
   GX_GxUtils, GX_OtaUtils,
-  GX_SharedImages, GX_XmlUtils,
+  GX_XmlUtils,
   GX_MacroLibraryNamePrompt, GX_MacroLibraryConfig, GX_IdeUtils,
-  GX_MessageBox, u_dzVclUtils, GX_GenericUtils;
+  GX_MessageBox, u_dzVclUtils, GX_GenericUtils, GX_GExperts;
 
 type
   TIDEMacroBugMessage = class(TGxMsgBoxAdaptor)
@@ -698,7 +701,7 @@ begin
   Settings.LoadForm('Window', Self);
   Settings := Settings.Subkey('Window');
   Toolbar.Visible := Settings.ReadBool('ViewToolbar', True);
-  pnlDescription.Height := Settings.ReadInteger('DescriptionSize', pnlDescription.Height);
+  pnlDescription.Height := Min(Self.ClientHeight - Toolbar.Height - 100, Settings.ReadInteger('DescriptionSize', pnlDescription.Height));
   EnsureFormVisible(Self);
 end;
 
@@ -814,6 +817,21 @@ begin
   fmMacroLibrary := nil;
 end;
 
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmMacroLibrary.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  ToolBar.DisabledImages := il;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  ToolBar.Images := il;
+  Actions.Images := il;
+end;
+{$ENDIF}
+
 procedure TfmMacroLibrary.actEditCopyExecute(Sender: TObject);
 begin
   CopyMacroToPlayback;
@@ -852,8 +870,12 @@ begin
 end;
 
 procedure TfmMacroLibrary.actViewToolbarExecute(Sender: TObject);
+var
+  b: boolean;
 begin
-  Toolbar.Visible := not Toolbar.Visible;
+  b := not actViewToolbar.Checked;
+  actViewToolbar.Checked := b;
+  Toolbar.Visible := b
 end;
 
 procedure TfmMacroLibrary.CopyMacroToPlayback;
@@ -963,8 +985,12 @@ begin
 end;
 
 procedure TfmMacroLibrary.actViewDescriptionExecute(Sender: TObject);
+var
+  b: Boolean;
 begin
-  DescriptionVisible := not DescriptionVisible;
+  b := not actViewDescription.Checked;
+  actViewDescription.Checked := b;
+  DescriptionVisible := b;
 end;
 
 procedure TfmMacroLibrary.FormResize(Sender: TObject);
@@ -1118,7 +1144,8 @@ end;
 
 procedure TfmMacroLibrary.actPromptForNameExecute(Sender: TObject);
 begin
-  FPromptForName := not FPromptForName;
+  FPromptForName := not actPromptForName.Checked;
+  actPromptForName.Checked := FPromptForName
 end;
 
 procedure TfmMacroLibrary.AddToMacroLibrary(CR: IOTARecord);

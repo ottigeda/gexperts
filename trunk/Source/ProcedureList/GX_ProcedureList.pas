@@ -5,9 +5,10 @@ unit GX_ProcedureList;
 interface
 
 uses
-  SysUtils, Classes, ActnList, Actions, Dialogs, ComCtrls, ToolWin, StdCtrls,
+  Windows, SysUtils, Classes, Types, ActnList, Actions, Dialogs, ComCtrls, ToolWin, StdCtrls,
   Controls, ExtCtrls, Messages, Forms, UITypes,
-  GX_EnhancedEditor, GX_ProcedureListOptions, GX_FileScanner, GX_EditReader, GX_BaseForm;
+  GX_SharedImages, GX_EnhancedEditor, GX_ProcedureListOptions, GX_FileScanner,
+  GX_EditReader, GX_BaseForm;
 
 const
   UM_RESIZECOLS = WM_USER + 523;
@@ -106,6 +107,10 @@ type
     procedure ApplyOptions(const bLoading: Boolean);
     procedure UpdateCodeView(ProcInfo: TProcedure);
     function CurrentProcInfo: TProcedure;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     constructor CreateWithFileName(AOwner: TComponent; const FileName: string);
     constructor Create(AOwner: TComponent); override;
@@ -119,9 +124,9 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  Windows, Clipbrd, Menus, StrUtils, Math,
+  Clipbrd, Menus, StrUtils, Math,
   GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_IdeUtils,
-  GX_SharedImages, GX_Experts, u_dzVclUtils, u_dzStringUtils;
+  GX_Experts, u_dzVclUtils, u_dzStringUtils, GX_GExperts;
 
 resourcestring
   SAllString = '<All>';
@@ -620,6 +625,21 @@ begin
   FreeAndNil(FEditReader);
   inherited;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmProcedureList.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  ToolBar.DisabledImages := il;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  ToolBar.Images := il;
+  Actions.Images := il;
+end;
+{$ENDIF}
 
 procedure TfmProcedureList.InitializeForm;
 begin

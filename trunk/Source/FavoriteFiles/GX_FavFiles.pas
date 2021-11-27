@@ -8,7 +8,7 @@ uses
   Windows, SysUtils, Classes, Controls, Forms, UITypes,
   ComCtrls, Menus, ExtCtrls, ImgList, ImageList, ActnList, ToolWin, Dialogs, Actions,
   DropTarget, FileView,
-  GX_FavUtil, GX_BaseForm;
+  GX_FavUtil, GX_SharedImages, GX_BaseForm;
 
 type
   TFavFilesOptions = class
@@ -208,6 +208,10 @@ type
     function ConfigurationKey: string;
     function ExecuteFile(AFile: TGXFile): Boolean;
     function ExecuteFileItem(AListItem: TListItem): Boolean;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent; _Options: TFavFilesOptions); reintroduce;
     destructor Destroy; override;
@@ -232,7 +236,7 @@ uses
   {$IFNDEF STANDALONE}
   GX_ConfigurationInfo, GX_Experts, GX_GExperts,
   {$ENDIF STANDALONE}
-  GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_SharedImages, OmniXML,
+  GX_GxUtils, GX_GenericUtils, GX_OtaUtils, OmniXML,
   GX_XmlUtils, GX_IdeUtils;
 
 type
@@ -1609,6 +1613,23 @@ begin
 
   inherited;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmFavFiles.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  ToolBar.DisabledImages := il;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  ToolBar.Images := il;
+  Actions.Images := il;
+  MainMenu.Images := il;
+  // todo: scale the other image lists in this dialog
+end;
+{$ENDIF}
 
 procedure TfmFavFiles.actHelpAboutExecute(Sender: TObject);
 begin

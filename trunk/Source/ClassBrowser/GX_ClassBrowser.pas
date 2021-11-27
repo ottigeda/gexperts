@@ -3,18 +3,18 @@ unit GX_ClassBrowser;
 // This unit is NOT fully compatible with C++Builder (we don't parse C++ code)
 // Is there an easy way to add visual display of multiple interface inheritance?
 
-interface
-
 {$I GX_CondDefine.inc}
 
 {$DEFINE DoShowProgressForm}
+
+interface
 
 uses
   Windows,
   Classes, Controls, Buttons, StdCtrls, Forms, Dialogs, ActnList, ToolWin, ToolsAPI,
   Actions, Graphics, Menus, ExtCtrls, ComCtrls, ImgList, UITypes,
   GX_BaseForm, GX_ClassOptions, GX_ClassMgr, GX_ClassParsing, GX_Experts,
-  GX_OtaUtils, GX_EnhancedEditor;
+  GX_OtaUtils, GX_EnhancedEditor, GX_SharedImages;
 
 type
   TInfoViewMode = (vmList, vmTree);
@@ -233,6 +233,10 @@ type
     procedure SetupEditorControls;
     function Images: TImageList;
     procedure UpdateListFilter;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -271,7 +275,7 @@ uses
   u_dzVclUtils,
   GX_VerDepConst, GX_ClassIdentify, GX_ConfigurationInfo,
   GX_ClassProp, GX_GExperts,
-  GX_GxUtils, GX_GenericUtils, GX_StringList, GX_SharedImages, GX_IdeUtils;
+  GX_GxUtils, GX_GenericUtils, GX_StringList, GX_IdeUtils;
 
 { TClassProjectNotifier }
 
@@ -1576,6 +1580,24 @@ begin
 
   inherited Destroy;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmClassBrowser.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  tbBrowse.DisabledImages := il;
+  tbInfo.DisabledImages := il;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  tbBrowse.Images := il;
+  tbInfo.Images := il;
+  Actions.Images := il;
+  MainMenu.Images := il;
+end;
+{$ENDIF}
 
 procedure TfmClassBrowser.FindFromNode(const Text: string; Node: TTreeNode);
 begin

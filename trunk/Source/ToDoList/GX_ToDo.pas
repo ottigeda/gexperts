@@ -4,9 +4,10 @@ unit GX_ToDo;
 
 interface
 
-uses Forms, Messages, Classes, ActnList, Actions, Menus, ImgList,
+uses
+  Windows, SysUtils, Classes, Types, Forms, Messages, ActnList, Actions, Menus, ImgList,
   Controls, ComCtrls, ToolWin, ToolsAPI, UITypes, Graphics,
-  GX_IdeDock, GX_Experts, GX_OtaUtils, GX_ConfigurationInfo;
+  GX_IdeDock, GX_SharedImages, GX_Experts, GX_OtaUtils, GX_ConfigurationInfo;
 
 const
   UM_RESIZECOLS = WM_USER + 523;
@@ -137,6 +138,10 @@ type
     function NumericPriorityToGXPriority(const PriorityStr: string): TToDoPriority;
     procedure ParsePasFile(const _Filename: string; const _Content: string; _Callback: TParsePasFileCallback);
     procedure ParseCFile(const _Filename, _Content: string; _Callback: TParsePasFileCallback);
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -176,11 +181,11 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, Dialogs, Clipbrd, Windows, StrUtils, Math,
+  Dialogs, Clipbrd, StrUtils, Math,
   mPasLex, mwBCBTokenList, mwPasParserTypes,
   u_dzVclUtils,
   GX_GxUtils, GX_GenericUtils, GX_EditReader,
-  GX_ToDoOptions, GX_SharedImages, u_dzStringUtils;
+  GX_ToDoOptions, u_dzStringUtils, GX_GExperts;
 
 resourcestring
   SParsingError = 'A parsing error occurred in file %s.' + sLineBreak;
@@ -991,6 +996,22 @@ begin
 
   fmToDo := nil;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmToDo.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  ToolBar.DisabledImages := il;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  ToolBar.Images := il;
+  Actions.Images := il;
+  Popup.Images := il;
+end;
+{$ENDIF}
 
 function TfmToDo.GetSelectedItem: TToDoInfo;
 begin

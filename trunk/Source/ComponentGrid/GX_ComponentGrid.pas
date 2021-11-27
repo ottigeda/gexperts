@@ -5,8 +5,8 @@ unit GX_ComponentGrid;
 interface
 
 uses
-  GX_Experts, Classes, Controls, Forms, Grids, SortGrid,
-  StdCtrls, ComCtrls, ActnList, Actions, ToolWin, GX_BaseForm;
+  SysUtils, Classes, Types, Controls, Forms, Grids, StdCtrls, ComCtrls, ActnList, Actions, ToolWin,
+  SortGrid, GX_BaseForm, GX_Experts, GX_SharedImages;
 
 type
   TfmComponentGrid = class(TfmBaseForm)
@@ -48,6 +48,10 @@ type
     procedure ClearComponentList;
     procedure PopulateGrid;
     procedure PrintComponentGrid;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -69,9 +73,9 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Graphics, Printers, Windows, Dialogs, ToolsAPI,
-  GX_Consts, GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_SharedImages,
-  u_dzVclUtils;
+  Graphics, Printers, Windows, Dialogs, ToolsAPI,
+  GX_Consts, GX_GxUtils, GX_GenericUtils, GX_OtaUtils,
+  u_dzVclUtils, GX_GExperts;
 
 type
   TGridProperty = record
@@ -348,6 +352,21 @@ begin
 
   inherited Destroy;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmComponentGrid.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  ToolBar.DisabledImages := il;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  ToolBar.Images := il;
+  Actions.Images := il;
+end;
+{$ENDIF}
 
 procedure TfmComponentGrid.StringGridResize(Sender: TObject);
 const

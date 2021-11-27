@@ -5,8 +5,9 @@ unit GX_ProjDepend;
 interface
 
 uses
-  Classes, Controls, ComCtrls, ActnList, Menus, ToolWin, ExtCtrls, Actions, UITypes, Forms,
-  GX_Experts, GX_OtaUtils, GX_ConfigurationInfo, Dialogs, GX_BaseForm;
+  Windows, SysUtils, Classes, Controls, ComCtrls, ActnList, Menus, ToolWin, ExtCtrls,
+  Actions, UITypes, Forms,
+  GX_SharedImages, GX_Experts, GX_OtaUtils, GX_ConfigurationInfo, Dialogs, GX_BaseForm;
 
 type
   TfmProjDepend = class(TfmBaseForm)
@@ -128,6 +129,10 @@ type
     /// a StringList of the units they are used by in the objects property. The latter
     /// StringLists must be freed by the caller </summary>
     procedure GetIndirectDependencies(_SelectedNode: TTreeNode; _ProcessedUnitsList: TStringList);
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -159,10 +164,10 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Windows, ToolsAPI, Math,
+  ToolsAPI, Math,
   mPasLex, mwPasParserTypes,
   GX_EditReader, GX_ProjDependProp, GX_GExperts, GX_ProjDependFilter,
-  GX_GenericUtils, GX_GxUtils, GX_SharedImages, GX_IdeUtils,
+  GX_GenericUtils, GX_GxUtils, GX_IdeUtils,
   u_dzClassUtils, u_dzVclUtils, GX_ProjDependOptions;
 
 var
@@ -804,6 +809,25 @@ begin
 
   fmProjDepend := nil;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmProjDepend.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  ToolBar.DisabledImages := il;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  ToolBar.Images := il;
+  Actions.Images := il;
+  MainMenu.Images := il;
+  pmTreeview.Images := il;
+  pmList.Images := il;
+  pmIndirect.Images := il;
+end;
+{$ENDIF}
 
 procedure TfmProjDepend.actFileRefreshExecute(Sender: TObject);
 begin

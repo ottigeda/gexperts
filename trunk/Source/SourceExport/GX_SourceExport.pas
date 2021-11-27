@@ -7,10 +7,10 @@ unit GX_SourceExport;
 interface
 
 uses
-  Classes, Graphics, Controls, Forms, Dialogs, ActnList, Actions, ComCtrls,
-  Menus, StdCtrls, ExtCtrls, ToolWin, UITypes,
+  Windows, SysUtils, Classes, Types, Graphics, Controls, Forms, Dialogs, ActnList, Actions,
+  ComCtrls, Menus, StdCtrls, ExtCtrls, ToolWin, UITypes,
   SynEdit, // This expert requires SynEdit from http://synedit.sf.net/
-  GX_Experts, GX_ConfigurationInfo, GX_BaseForm;
+  GX_Experts, GX_SharedImages, GX_ConfigurationInfo, GX_BaseForm;
 
 type
   TGXCopyFormat = (cfText, cfHTMLFragment, cfRTFFragment);
@@ -73,6 +73,10 @@ type
     procedure LoadSettings;
     procedure CopyToClipboard(CopyFormat: TGXCopyFormat);
     function FillEditControlWithIdeData: Boolean;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     property HasBeenUsed: Boolean read FHasBeenUsed;
@@ -103,11 +107,11 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Windows, Clipbrd,
+  Clipbrd,
   SynEditExport, SynExportHtml, SynExportRtf, SynEditPrint,
   u_dzVclUtils,
   GX_GenericUtils, GX_StringList, GX_GxUtils, GX_OtaUtils, GX_IdeUtils,
-  GX_SynMemoUtils, GX_SourceExportOptions, GX_SharedImages;
+  GX_SynMemoUtils, GX_SourceExportOptions, GX_GExperts;
 
 const
   HighlighterDefaultRegKey = '\SourceExport\Highlighters\';
@@ -366,6 +370,22 @@ begin
 
   InitDpiScaler;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmSourceExport.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  ToolBar.DisabledImages := il;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  ToolBar.Images := il;
+  Actions.Images := il;
+  pmuCopy.Images := il;
+end;
+{$ENDIF}
 
 { TSourceExportExpert }
 

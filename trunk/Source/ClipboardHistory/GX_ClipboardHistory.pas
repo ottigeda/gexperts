@@ -551,11 +551,15 @@ end;
 
 {$IFDEF IDE_IS_HIDPI_AWARE}
 procedure TfmClipboardHistory.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
 begin
-  inherited;;
+  inherited;
   ToolBar.DisabledImages := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
-  ToolBar.Images := GExpertsInst.GetScaledSharedImages(_NewDpi);
-  MainMenu.Images := ToolBar.Images;
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  ToolBar.Images := il;
+  Actions.Images := il;
+  MainMenu.Images := il;
 end;
 
 procedure TfmClipboardHistory.ArrangeControls;

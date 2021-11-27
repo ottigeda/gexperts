@@ -12,7 +12,7 @@ uses
   Dialogs, Menus, ComCtrls, ToolWin, ExtCtrls,
   GpStructuredStorage,
   GX_Experts, GX_EnhancedEditor,
-  GX_GenericUtils, GX_StringList, GX_BaseForm;
+  GX_GenericUtils, GX_StringList, GX_SharedImages, GX_BaseForm;
 
 type
   TSearchRecord = record
@@ -247,6 +247,10 @@ type
     procedure InitializeSyntaxLanguages;
     function GetIdentifierForCurrentSyntaxMode: string;
     procedure SetCurrentSyntaxModeFromIdentifier(const LangIdent: string);
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -284,7 +288,7 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_CodeSrch, GX_CodeOpt, GX_GxUtils,
   GX_OtaUtils, GX_IdeUtils,
-  GX_GExperts, GX_ConfigurationInfo, GX_MessageBox, GX_SharedImages;
+  GX_GExperts, GX_ConfigurationInfo, GX_MessageBox;
 
 const
   DefaultFileName = 'CodeLibrarian.fs';
@@ -1160,6 +1164,22 @@ begin
 
   inherited;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmCodeLib.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  ToolBar.DisabledImages := il;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  ToolBar.Images := il;
+  Actions.Images := il;
+  MainMenu.Images := il;
+end;
+{$ENDIF}
 
 procedure TfmCodeLib.tvTopicsDblClick(Sender: TObject);
 begin

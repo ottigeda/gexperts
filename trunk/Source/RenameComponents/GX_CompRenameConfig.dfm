@@ -235,9 +235,9 @@ object fmCompRenameConfig: TfmCompRenameConfig
       end
     end
   end
-  object ActionList: TActionList
+  object TheActionList: TActionList
     Images = dmSharedImages.Images
-    OnUpdate = ActionListUpdate
+    OnUpdate = TheActionListUpdate
     Left = 152
     Top = 112
     object acAdd: TAction

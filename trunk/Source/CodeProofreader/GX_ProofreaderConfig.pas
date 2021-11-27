@@ -118,6 +118,10 @@ type
     function ActiveTab: TTabSheet;
     procedure UpdateDisplayedData;
     procedure UpdateColumnWidths;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent; ProofreaderExpert: TCodeProofreaderExpert; ProofreaderData: TProofreaderData); reintroduce;
   end;
@@ -127,7 +131,8 @@ implementation
 uses
   SysUtils, MMSystem,
   GX_ProofreaderAutoCorrectEntry, GX_KibitzComp,
-  GX_GxUtils, GX_GenericUtils, GX_OtaUtils, u_dzVclUtils, GX_ConfigurationInfo;
+  GX_GxUtils, GX_GenericUtils, GX_OtaUtils, u_dzVclUtils, GX_ConfigurationInfo,
+  GX_GExperts;
 
 {$R *.dfm}
 
@@ -153,6 +158,24 @@ begin
 
   InitDpiScaler;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmProofreaderConfig.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  tbrReplacement.DisabledImages := il;
+  tbrDictionary.DisabledImages := il;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  tbrReplacement.Images := il;
+  tbrDictionary.Images := il;
+  Actions.Images := il;
+  pmList.Images := il;
+end;
+{$ENDIF}
 
 function TfmProofreaderConfig.GetReplacementSource: TReplacementSource;
 begin

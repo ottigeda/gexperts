@@ -2,10 +2,12 @@
 // Replace Components mapping list window
 unit GX_ReplaceCompMapList;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
-  Messages, Classes, Controls, Forms, ComCtrls, StdCtrls,
+  Windows, SysUtils, Classes, Types, Messages, Controls, Forms, ComCtrls, StdCtrls,
   ExtCtrls, Contnrs, ToolWin, ImgList, ActnList, Actions, UITypes,
   GX_ReplaceCompData, GX_SharedImages, GX_ReplaceCompMapDets, GX_BaseForm;
 
@@ -24,7 +26,7 @@ type
     actAdd: TAction;
     actEdit: TAction;
     actDelete: TAction;
-    tbrReplacement: TToolBar;
+    ToolBar: TToolBar;
     tbnAdd: TToolButton;
     tbnEdit: TToolButton;
     tbnDelete: TToolButton;
@@ -72,6 +74,10 @@ type
     procedure SortItems(ItemList: TObjectList; SortOnColumn: Integer);
     procedure AddItems(Group: TCompRepMapGroupItem; ItemList: TObjectList);
     procedure LoadItems(ItemList: TObjectList);
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     constructor Create(Owner: TComponent; ConfigData: TReplaceCompData); reintroduce;
   end;
@@ -81,8 +87,8 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Windows, Dialogs, Gx_GenericUtils, GX_ConfigurationInfo,
-  GX_ReplaceCompMapGrpList, u_dzVclUtils;
+  Dialogs, Gx_GenericUtils, GX_ConfigurationInfo,
+  GX_ReplaceCompMapGrpList, u_dzVclUtils, GX_GExperts;
 
 resourcestring
   SAllItemsGroup = '< All groups >';
@@ -100,6 +106,20 @@ begin
   LoadSettings;
 end;
 
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmReplaceCompMapList.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  ToolBar.DisabledImages := il;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  ToolBar.Images := il;
+  Actions.Images := il;
+end;
+{$ENDIF}
 function TfmReplaceCompMapList.ConfigurationKey: string;
 begin
   Result := FConfigData.RootConfigurationKey + PathDelim + Self.ClassName + '\Window';
@@ -163,10 +183,10 @@ procedure TfmReplaceCompMapList.FormCreate(Sender: TObject);
 begin
   TControl_SetMinConstraints(Self);
 
-  SetToolbarGradient(tbrReplacement);
-  SetToolbarGradient(tbrGroups);
-  tbrGroups.Left := comGroupName.Left + comGroupName.Width + 4;
-  tbrGroups.Top := comGroupName.Top;
+  SetToolbarGradient(ToolBar);
+  SetToolbarGradient(ToolBar);
+  ToolBar.Left := comGroupName.Left + comGroupName.Width + 4;
+  ToolBar.Top := comGroupName.Top;
 end;
 
 function TfmReplaceCompMapList.SelectedGroupName: string;

@@ -8,10 +8,10 @@ unit GX_MacroTemplates;
 interface
 
 uses
-  Classes, Controls, Forms, ComCtrls, ExtCtrls,
-  StdCtrls, Menus, Dialogs, ActnList, StdActns,
+  SysUtils, Classes, Types, Controls, Forms, ComCtrls, ExtCtrls,
+  StdCtrls, Menus, Dialogs, ActnList, Actions, StdActns,
   GX_ConfigurationInfo, GX_MacroFile, GX_EnhancedEditor, GX_GenericUtils,
-  GX_BaseForm, Actions;
+  GX_SharedImages, GX_BaseForm;
 
 const
   DefaultMacroFileName = 'MacroTemplates.xml';
@@ -267,6 +267,9 @@ type
     procedure ClearModified;
     procedure MarkTextModified;
   protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
     procedure SaveSettings;
     procedure LoadSettings;
     procedure SaveMacroFile(const AFilename: string);
@@ -301,9 +304,9 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Windows, Graphics, Clipbrd, TypInfo, Math, GX_SharedImages,
+  Windows, Graphics, Clipbrd, TypInfo, Math,
   GX_GxUtils, GX_MacroParser, GX_MacroTemplateEdit, GX_OtaUtils, GX_IdeUtils,
-  GX_MacroTemplatesExpert;
+  GX_MacroTemplatesExpert, GX_GExperts;
 
 var
   ProgInfoProc: TGetProgrammerInfo;
@@ -490,6 +493,20 @@ begin
   FreeAndNil(FMacroFile);
   inherited;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmMacroTemplates.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  Actions.Images := il;
+  pmUses.Images := il;
+  pmMacros.Images := il;
+end;
+{$ENDIF}
 
 procedure TfmMacroTemplates.AddMacroToControls(AMacroObject: TMacroObject);
 var

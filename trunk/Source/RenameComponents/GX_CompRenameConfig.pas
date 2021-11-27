@@ -5,8 +5,9 @@ unit GX_CompRenameConfig;
 interface
 
 uses
-  Forms, StdCtrls, Classes, Controls, Messages, Grids, Menus, Dialogs, ActnList,
-  ExtCtrls, GX_BaseForm, Graphics, Mask, Actions, ComCtrls;
+  Windows, SysUtils, Classes, Types, Forms, Controls, StdCtrls, Messages, Grids, Menus, Dialogs,
+  ActnList, ExtCtrls, Graphics, Mask, Actions, ComCtrls,
+  GX_SharedImages, GX_BaseForm;
 
 const
   COMP_RENAME_NAME = 'RenameComponents';
@@ -57,7 +58,7 @@ type
     l_Find: TLabel;
     btnAdd: TButton;
     btnDelete: TButton;
-    ActionList: TActionList;
+    TheActionList: TActionList;
     acAdd: TAction;
     acDelete: TAction;
     acFind: TAction;
@@ -96,7 +97,7 @@ type
     ts_NamesFmx: TTabSheet;
     procedure acOtherPropertiesExecute(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure ActionListUpdate(Action: TBasicAction; var Handled: Boolean);
+    procedure TheActionListUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure acAddExecute(Sender: TObject);
     procedure acDeleteExecute(Sender: TObject);
     procedure acFindExecute(Sender: TObject);
@@ -150,6 +151,10 @@ type
     procedure ResizeGrids;
     procedure SetDefault(_Which: string);
     procedure Import(const _fn: string);
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
@@ -163,10 +168,10 @@ implementation
 {$R *.dfm}
 
 uses
-  Windows, SysUtils, Math, StrUtils,
+  Math, StrUtils,
   u_dzClassUtils, u_dzVclUtils, u_dzStringUtils, u_dzMiscUtils,
-  GX_GenericUtils, GX_OtaUtils, GX_SharedImages, GX_GxUtils, GX_CompRenameAdvanced,
-  GX_MessageBox;
+  GX_GenericUtils, GX_OtaUtils, GX_GxUtils, GX_CompRenameAdvanced,
+  GX_MessageBox, GX_GExperts;
 
 function CompareClassFunc(List: TStringList; Index1, Index2: Integer): Integer;
 var
@@ -424,6 +429,19 @@ begin
   inherited;
 end;
 
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmCompRenameConfig.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  TheActionList.Images := il;
+  pmGrid.Images := il;
+end;
+{$ENDIF}
+
 procedure TfmCompRenameConfig.UpdateOtherProps;
 var
   CompType: WideString;
@@ -593,7 +611,7 @@ begin
   end;
 end;
 
-procedure TfmCompRenameConfig.ActionListUpdate(Action: TBasicAction; var Handled: Boolean);
+procedure TfmCompRenameConfig.TheActionListUpdate(Action: TBasicAction; var Handled: Boolean);
 var
   Grid: TRenameStringGrid;
 begin

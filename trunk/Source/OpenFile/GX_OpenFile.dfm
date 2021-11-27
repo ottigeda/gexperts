@@ -540,7 +540,7 @@ object fmOpenFile: TfmOpenFile
     Left = 32
     Top = 120
   end
-  object ActionList: TActionList
+  object TheActionList: TActionList
     Images = dmSharedImages.Images
     Left = 32
     Top = 168

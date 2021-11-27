@@ -115,7 +115,7 @@ object fmReplaceCompMapList: TfmReplaceCompMapList
         OnDblClick = lvMapItemsDblClick
       end
     end
-    object tbrReplacement: TToolBar
+    object ToolBar: TToolBar
       Left = 3
       Top = 3
       Width = 455

@@ -82,13 +82,13 @@ object fmComponentGrid: TfmComponentGrid
     object edtStart: TEdit
       Left = 274
       Top = 0
-      Width = 50
+      Width = 66
       Height = 22
       TabOrder = 0
       Text = '0'
     end
     object udStart: TUpDown
-      Left = 324
+      Left = 340
       Top = 0
       Width = 12
       Height = 22
@@ -100,7 +100,7 @@ object fmComponentGrid: TfmComponentGrid
       Wrap = False
     end
     object lblSkipBy: TLabel
-      Left = 336
+      Left = 352
       Top = 0
       Width = 55
       Height = 22
@@ -110,7 +110,7 @@ object fmComponentGrid: TfmComponentGrid
       Layout = tlCenter
     end
     object edtSkipBy: TEdit
-      Left = 391
+      Left = 407
       Top = 0
       Width = 50
       Height = 22
@@ -118,7 +118,7 @@ object fmComponentGrid: TfmComponentGrid
       Text = '1'
     end
     object udSkipBy: TUpDown
-      Left = 441
+      Left = 473
       Top = 0
       Width = 12
       Height = 22
@@ -130,14 +130,14 @@ object fmComponentGrid: TfmComponentGrid
       Wrap = False
     end
     object tbnSep4: TToolButton
-      Left = 453
+      Left = 485
       Top = 0
       Width = 8
       ImageIndex = 6
       Style = tbsSeparator
     end
     object tbnRenumber: TToolButton
-      Left = 461
+      Left = 493
       Top = 0
       Action = actFileRenumber
     end

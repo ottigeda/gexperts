@@ -82,6 +82,7 @@ type
     procedure SaveSettings;
   protected
 {$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
     procedure ArrangeControls; override;
 {$ENDIF}
   public
@@ -259,6 +260,22 @@ begin
 end;
 
 {$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmExpertManager.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  ToolBar.DisabledImages := il;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  ToolBar.Images := il;
+  Actions.Images := il;
+  MainMenu.Images := il;
+
+  // todo: Also scale ilStateImages
+end;
+
 procedure TfmExpertManager.ArrangeControls;
 begin
   inherited;

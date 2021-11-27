@@ -5,9 +5,9 @@ unit GX_OpenFile;
 interface
 
 uses
-  Classes, Controls, Forms, Actions, ActnList, Dialogs, StdCtrls,
+  Windows, SysUtils, Classes, Types, Controls, Forms, Actions, ActnList, Dialogs, StdCtrls,
   ToolWin, Messages, UITypes, ComCtrls, ExtCtrls,
-  GX_GenericUtils, GX_OpenFileConfig, GX_BaseForm, GX_ReadMapFileThread;
+  GX_SharedImages, GX_GenericUtils, GX_OpenFileConfig, GX_BaseForm, GX_ReadMapFileThread;
 
 const
   UM_REFRESHLIST = WM_USER + 746;
@@ -109,7 +109,7 @@ type
     btnFavoriteAddToFavorites: TButton;
     OpenDialog: TOpenDialog;
     btnRecentAddToFavorites: TButton;
-    ActionList: TActionList;
+    TheActionList: TActionList;
     actAddToFavorites: TAction;
     actMatchPrefix: TAction;
     actMatchAnywhere: TAction;
@@ -189,6 +189,10 @@ type
     procedure SetMapTabVisible(const Value: Boolean);
     function GetMapTabVisible: Boolean;
     property CurrentListView: TListView read FCurrentListView write SetCurrentListView;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     constructor Create(_Owner: TComponent); override;
     property ActivePageIndex: Integer read GetActivePageIndex write SetActivePageIndex;
@@ -203,10 +207,10 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Menus, Graphics, Windows, ToolsAPI, StrUtils,
+  Menus, Graphics, ToolsAPI, StrUtils,
   u_dzVclUtils, u_dzStringUtils,
-  GX_IdeUtils, GX_SharedImages, GX_Experts, GX_ConfigurationInfo, GX_OtaUtils,
-  GX_GxUtils;
+  GX_IdeUtils, GX_Experts, GX_ConfigurationInfo, GX_OtaUtils,
+  GX_GxUtils, GX_GExperts;
 
 resourcestring
   SOpenUnitMenuName = 'OpenFile';
@@ -692,6 +696,21 @@ begin
 
   InitDpiScaler;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmOpenFile.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  ToolBar.DisabledImages := il;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  ToolBar.Images := il;
+  TheActionList.Images := il;
+end;
+{$ENDIF}
 
 procedure TfmOpenFile.lvFavoriteFilesDropped(Sender: TObject; Files: TStrings);
 var

@@ -2,11 +2,14 @@
 // Replace Components dialog with details of a single property mapping
 unit GX_ReplaceCompMapDets;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
-  Classes, Graphics, Controls, Forms, ExtCtrls, StdCtrls, ActnList, Actions, ImgList,
-  ComCtrls, ToolWin, GX_SharedImages, GX_ReplaceCompData, GX_BaseForm;
+  Windows, SysUtils, Classes, Types, Graphics, Controls, Forms, ExtCtrls, StdCtrls,
+  ActnList, Actions, ImgList, ComCtrls, ToolWin,
+  GX_SharedImages, GX_ReplaceCompData, GX_BaseForm;
 
 type
   TDataAction = (daUnknown, daInsert, daEdit, daDelete);
@@ -112,6 +115,10 @@ type
     procedure SaveSettings;
     function ConfigurationKey: string;
     procedure SetModified;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     constructor Create(Owner: TComponent; ConfigData: TReplaceCompData;
       Item: TCompRepMapItem; DataAction: TDataAction); reintroduce;
@@ -121,9 +128,9 @@ type
 implementation
 
 uses
-  SysUtils, Dialogs,
+  Dialogs,
   GX_OtaUtils, GX_GenericUtils, GX_ReplaceCompUtils, GX_ConfigurationInfo,
-  u_dzVclUtils;
+  u_dzVclUtils, GX_GExperts;
 
 {$R *.dfm}
 
@@ -154,6 +161,21 @@ begin
 
   LoadSettings;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmReplaceCompMapDets.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  ToolBar.DisabledImages := il;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  ToolBar.Images := il;
+  Actions.Images := il;
+end;
+{$ENDIF}
 
 procedure TfmReplaceCompMapDets.FormShow(Sender: TObject);
 begin
