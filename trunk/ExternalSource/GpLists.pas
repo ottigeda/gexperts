@@ -1311,7 +1311,7 @@ end; { TGpIntegerList.Destroy }
 function TGpIntegerList.Add(item: integer): integer;
 begin
   if not Sorted then begin
-    Result := ilList.Add(pointer(item));
+    Result := ilList.Add(pointer(item)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
     Notify(Result, loInsert);
   end
   else begin
@@ -1556,7 +1556,7 @@ begin
       Result := -1
   end
   else
-    Result := ilList.IndexOf(pointer(item));
+    Result := ilList.IndexOf(pointer(item)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end; { TGpIntegerList.IndexOf }
 
 procedure TGpIntegerList.Insert(idx, item: integer);
@@ -1568,7 +1568,7 @@ end; { TGpIntegerList.Insert }
 
 procedure TGpIntegerList.InsertItem(idx, item: integer);
 begin
-  ilList.Insert(idx, pointer(item));
+  ilList.Insert(idx, pointer(item)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
   Notify(idx, loInsert);
 end; { TGpIntegerList.InsertItem }
 
@@ -1699,7 +1699,7 @@ end; { TGpIntegerList.SetCount }
 
 procedure TGpIntegerList.SetItems(idx: integer; const value: integer);
 begin
-  ilList.Items[idx] := pointer(value);
+  ilList.Items[idx] := pointer(value); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end; { TGpIntegerList.SetItems }
 
 procedure TGpIntegerList.SetSorted(const value: boolean);
@@ -3209,7 +3209,7 @@ end; { CompareDescending_CSL }
 
 function TGpCountedStringList.Add(const s: string; count: integer): integer;
 begin
-  Result := inherited AddObject(s, pointer(count));
+  Result := inherited AddObject(s, pointer(count)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end; { TGpCountedStringList.Add }
 
 function TGpCountedStringList.Contains(const s: string): boolean;
@@ -3234,7 +3234,7 @@ end; { TGpCountedStringList.GetItemCount }
 
 procedure TGpCountedStringList.SetItemCount(idx: integer; const value: integer);
 begin
-  Objects[idx] := pointer(value);
+  Objects[idx] := pointer(value); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end; { TGpCountedStringList.SetItemCount }
 
 procedure TGpCountedStringList.SortByCounter(descending: boolean);

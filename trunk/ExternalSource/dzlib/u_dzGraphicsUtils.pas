@@ -134,7 +134,7 @@ procedure TdzRgbTriple_SetColor(var _Triple: TdzRgbTriple; _Color: TColor);
 inline;
 {$ENDIF}
 
-function GetFastLuminance(_Red, _Green, _Blue: Byte): Byte;
+function GetFastLuminance(const _Red, _Green, _Blue: Byte): Byte;
 {$IFDEF SUPPORTS_INLINE}
 inline;
 {$ENDIF}
@@ -1129,7 +1129,7 @@ begin
 end;
 
 // Inlined method must be iomplemented before it is called
-function GetFastLuminance(_Red, _Green, _Blue: Byte): Byte;
+function GetFastLuminance(const _Red, _Green, _Blue: Byte): Byte;
 begin
   Result := Round(0.299 * _Red + 0.587 * _Green + 0.114 * _Blue);
 end;
@@ -1422,7 +1422,9 @@ var
   Hue: Word;
   Saturation: Word;
 begin
-  GetHls(Hue, Result, Saturation)
+  Result := 0;
+
+  GetHls(Hue, Result, Saturation);
 end;
 
 procedure TdzRgbQuad.SetBrightness(_Value: Byte);
@@ -1915,7 +1917,18 @@ begin
   end;
 end;
 
-// Inlined method muist be implemented before it is used
+// Inlined method must be implemented before it is used
+function TryCalcEllipsePoint(_a, _b, _x: Extended; out _y: Extended): Boolean;
+var
+  sq: Extended;
+begin
+  sq := 1 - Sqr(_x / _a);
+  Result := (CompareValue(sq, 0) = GreaterThanValue);
+  if Result then
+    _y := _b * Sqrt(sq);
+end;
+
+// Inlined method must be implemented before it is used
 function TryCalcEllipsePoints(_x0, _y0, _a, _b, _x: Extended; out _y1, _y2: Extended): Boolean;
 var
   y: Extended;
@@ -2033,16 +2046,6 @@ begin
     for x := _Left to _Right do
       Line^[x].Green := Buffer1[y - _Top][x - _Left];
   end;
-end;
-
-function TryCalcEllipsePoint(_a, _b, _x: Extended; out _y: Extended): Boolean;
-var
-  sq: Extended;
-begin
-  sq := 1 - Sqr(_x / _a);
-  Result := (CompareValue(sq, 0) = GreaterThanValue);
-  if Result then
-    _y := _b * Sqrt(sq);
 end;
 
 procedure TBitmap24_FilterPixels(_SrcBmp, _DstBmp: TBitmap; _Callback: TPixel24FilterCallback);

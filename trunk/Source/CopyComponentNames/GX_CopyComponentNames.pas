@@ -79,7 +79,7 @@ begin
         if LTypeKind = tkInteger then
           CurrentComponent.GetPropValueByName('TabOrder', LTabOrder);
 
-        Names.AddObject(ComponentName, Pointer(LTabOrder));
+        Names.AddObject(ComponentName, Pointer(LTabOrder)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
       end;
     end;
     Names.CustomSort(InternalComponentSort);

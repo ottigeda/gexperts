@@ -450,10 +450,10 @@ begin
     if (CurrScheme < 0) then
     begin
       if DefaultHighlighter <> nil then
-        DefaultHighlighter.SetRange(Pointer(iSchemeRange));
+        DefaultHighlighter.SetRange(Pointer(iSchemeRange)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
     end
     else
-      Schemes[CurrScheme].Highlighter.SetRange(Pointer(iSchemeRange));
+      Schemes[CurrScheme].Highlighter.SetRange(Pointer(iSchemeRange)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
   end;
 end;
 

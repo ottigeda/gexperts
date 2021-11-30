@@ -173,7 +173,7 @@ begin
       if (aWeights[i] <> 0) then begin
         Node := NodeMgr.AllocNode;
         Node^.pnLeft := nil;           { this will indicate a leaf}
-        Node^.pnRight := pointer(i);   { the index of the weight}
+        Node^.pnRight := pointer(i);  //FI:W541 Casting from Integer to Pointer type (or vice versa)  { the index of the weight}
         Node^.pnWeight := aWeights[i]; { the weight itself}
         Node^.pnCount := 1;            { how many times used}
         OrigList^[OrigListCount] := Node;

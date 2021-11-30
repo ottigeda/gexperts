@@ -217,7 +217,7 @@ begin
       DesktopFolder.BindToObject(PathPidl, nil, IID_IShellFolder, Pointer(Result));
     ShellMalloc.Free(PathPidl);
   except
-  end;
+  end; //FI:W501 Empty EXCEPT block
 end;
 // -----------------------------------------------------------------------------
 
@@ -233,7 +233,7 @@ begin
     if (SHGetDesktopFolder(DeskTopFolder) = NOERROR) then
       DesktopFolder.ParseDisplayName(0, nil, OlePath, dummy1, Result, dummy2);
   except
-  end;
+  end; //FI:W501 Empty EXCEPT block
 end;
 // -----------------------------------------------------------------------------
 
@@ -247,7 +247,7 @@ begin
     StringToWideChar(Sub, OleFile, MAX_PATH);
     Folder.ParseDisplayName(0, nil, OleFile, dummy1, Result, dummy2);
   except
-  end;
+  end; //FI:W501 Empty EXCEPT block
 end;
 // -----------------------------------------------------------------------------
 

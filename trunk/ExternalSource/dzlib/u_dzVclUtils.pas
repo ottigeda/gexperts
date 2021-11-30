@@ -2124,7 +2124,7 @@ end;
 procedure TStringGrid_SetNonfixedCell(_Grid: TStringGrid; _Col, _Row: Integer; const _Text: string;
   _Data: Integer);
 begin
-  TStringGrid_SetNonfixedCell(_Grid, _Col, _Row, _Text, TObject(Pointer(_Data)));
+  TStringGrid_SetNonfixedCell(_Grid, _Col, _Row, _Text, TObject(Pointer(_Data))); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end;
 
 procedure TStringGrid_SetNonfixedCell(_Grid: TStringGrid; _Col, _Row: Integer; const _Text: string;
@@ -3345,7 +3345,7 @@ end;
 
 function TComboBox_SelectByObject(_cmb: TCustomComboBox; _Value: Integer): Boolean;
 begin
-  Result := TComboBox_SelectByObject(_cmb, Pointer(_Value));
+  Result := TComboBox_SelectByObject(_cmb, Pointer(_Value)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end;
 
 function TComboBox_GetObjectCaption(_cmb: TCustomComboBox; _Obj: Pointer; out _s: string): Boolean;
@@ -3375,7 +3375,7 @@ var
 begin
   Result := TComboBox_GetSelectedObject(_cmb, Obj, _FocusControl);
   if Result then
-    _ObjAsInt := Integer(Obj);
+    _ObjAsInt := Integer(Obj); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end;
 
 function TComboBox_GetSelectedIdx(_cmb: TComboBoxHack): Integer;
@@ -3418,7 +3418,7 @@ var
 begin
   Result := TComboBox_GetSelectedObject(_cmb, _Item, Obj, _FocusControl);
   if Result then
-    _ObjAsInt := Integer(Obj);
+    _ObjAsInt := Integer(Obj); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end;
 
 function TComboBox_GetSelected(_cmb: TCustomComboBox; out _Idx: Integer;
@@ -3534,7 +3534,7 @@ end;
 function TListBox_GetSelectedObject(_lst: TCustomListbox;
   out _ObjAsInt: Integer): Boolean;
 begin
-  Result := TListBox_GetSelectedObject(_lst, Pointer(_ObjAsInt));
+  Result := TListBox_GetSelectedObject(_lst, Pointer(_ObjAsInt)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end;
 
 function TListBox_DeleteSelected(_lst: TCustomListbox; out _Idx: Integer): Boolean;
@@ -3846,7 +3846,7 @@ end;
 
 procedure TComboBox_AddIntObject(_cmb: TCustomComboBox; const _Item: string; _Value: Integer);
 begin
-  _cmb.Items.AddObject(_Item, Pointer(_Value));
+  _cmb.Items.AddObject(_Item, Pointer(_Value)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end;
 
 procedure TColorBox_SelectWithoutChangeEvent(_cmb: TColorBox; _Color: TColor);
@@ -3980,7 +3980,7 @@ var
 begin
   Result := TRadioGroup_GetSelectedObject(_rg, Obj);
   if Result then
-    _ObjAsInt := Integer(Obj);
+    _ObjAsInt := Integer(Obj); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end;
 
 function TRichEdit_WriteToString(_Re: TRichEdit): string;
@@ -5044,7 +5044,7 @@ begin
   if (Offset < 0) or (cnt = 0) then
     Offset := SendMessage(_Memo.Handle, EM_LINELENGTH, 0, 0);
   SendMessage(_Memo.Handle, EM_SETSEL, 0, Offset);
-  SendMessage(_Memo.Handle, EM_REPLACESEL, 0, LongInt(EmptyStr));
+  SendMessage(_Memo.Handle, EM_REPLACESEL, 0, LongInt(EmptyStr)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end;
 
 function TMemo_GetCursorPos(_Memo: TMemo): Integer;

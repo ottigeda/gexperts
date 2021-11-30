@@ -320,7 +320,7 @@ begin
     StringGrid.RowCount := StringGrid.RowCount + 1;
     StringGrid.Cells[0, CurrentRow] := AComponentName;
     StringGrid.Cells[1, CurrentRow] := ParentName(AComponent);
-    StringGrid.Objects[0, CurrentRow] := Pointer(i);
+    StringGrid.Objects[0, CurrentRow] := Pointer(i); //FI:W541 Casting from Integer to Pointer type (or vice versa)
     for j := Low(GridProperties) to High(GridProperties) do
       StringGrid.Cells[FixedColumns + j, CurrentRow] := ComponentProperty(GridProperties[j].PropertyName, AComponent)
   end;

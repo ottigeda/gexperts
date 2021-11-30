@@ -1543,11 +1543,11 @@ begin
     if not _HdOnly or (DriveType = dtFixed) then begin
       s := GetVolumeName(DriveChar);
       if s <> '' then begin
-        _sl.AddObject(s, Pointer(DriveNum));
+        _sl.AddObject(s, Pointer(DriveNum)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
       end else begin
         if not _IgnoreEmpty then begin
           s := _('<no volume name>');
-          _sl.AddObject(s, Pointer(DriveNum));
+          _sl.AddObject(s, Pointer(DriveNum)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
         end;
       end;
     end;
@@ -3367,6 +3367,8 @@ var
   len: Integer;
   i: Integer;
 begin
+  Result := [];
+
   Ext := Extension;
   len := 0;
   p := RPosStr('.', Ext);

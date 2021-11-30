@@ -214,7 +214,7 @@ begin
     for i := 0 to FUnitList.Count - 1 do
     begin
       UnitInfo := TObject(FUnitList[i]) as TUnitInfo;
-      ProcessUnitInfo(List, UnitInfo, Pointer(i));
+      ProcessUnitInfo(List, UnitInfo, Pointer(i)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
     end;
 
     List.Sorted := True;

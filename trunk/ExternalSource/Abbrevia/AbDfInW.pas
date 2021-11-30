@@ -719,7 +719,7 @@ begin
   dec(FLookAheadEnd, ByteCount);
 
   {patch up the hash table: the head pointers}
-  Buffer := longint(FBuffer);
+  Buffer := longint(FBuffer); //FI:W541 Casting from Integer to Pointer type (or vice versa)
   ListItem := PLongint(@FHashHeads^[0]);
   for i := 0 to pred(c_HashCount) do begin
     dec(ListItem^, ByteCount);

@@ -437,7 +437,7 @@ end;
 
 function TdzSpeedBitBtnGroup.Add(_btn: TBitBtn; _Data: Integer): TdzSpeedBitBtn;
 begin
-  Result := Add(_btn, Pointer(_Data));
+  Result := Add(_btn, Pointer(_Data)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end;
 
 procedure TdzSpeedBitBtnGroup.doOnClick;

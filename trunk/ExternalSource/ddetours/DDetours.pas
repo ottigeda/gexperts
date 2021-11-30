@@ -492,7 +492,7 @@ begin
           if not CallBack(te.th32ThreadID, Param) then
             break;
         except
-        end;
+        end; //FI:W501 Empty EXCEPT block
       end;
       Next := Thread32Next(hSnap, te);
     end;
@@ -2464,7 +2464,7 @@ begin
     PUInt32(NativeInt(Q) + 4)^ := UInt32(DstAddr);
 {$ENDIF CPUX64}
   finally
-  end;
+  end; //FI:W502 Empty FINALLY block
 end;
 
 function UnPatchVt(const TrampoLine: Pointer): Boolean;
@@ -2488,7 +2488,7 @@ begin
     end;
     Result := InternalFuncs.VirtualFree(TrampoLine, 0, MEM_RELEASE);
   finally
-  end;
+  end; //FI:W502 Empty FINALLY block
 end;
 
 { ======================================= Trampoline misc =================================== }

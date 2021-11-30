@@ -1945,7 +1945,7 @@ begin
     Result := Windows.CharUpperW(lpsz)
   else
   begin
-    if HiWord(Cardinal(lpsz)) = 0 then
+    if HiWord(Cardinal(lpsz)) = 0 then  //FI:W541 Casting from Integer to Pointer type (or vice versa)
     begin
       // literal char mode
       Result := lpsz;
@@ -1997,7 +1997,7 @@ begin
     Result := Windows.CharLowerW(lpsz)
   else
   begin
-    if HiWord(Cardinal(lpsz)) = 0 then
+    if HiWord(Cardinal(lpsz)) = 0 then //FI:W541 Casting from Integer to Pointer type (or vice versa)
     begin
       // literal char mode
       Result := lpsz;
@@ -2421,7 +2421,7 @@ var
   CSI: TCharsetInfo;
 begin
   CP:= CodePageFromLocale(Language);
-  TranslateCharsetInfoEx(Pointer(CP), CSI, TCI_SRCCODEPAGE);
+  TranslateCharsetInfoEx(Pointer(CP), CSI, TCI_SRCCODEPAGE);  //FI:W541 Casting from Integer to Pointer type (or vice versa)
   Result:= CSI.ciCharset;
 end;
 

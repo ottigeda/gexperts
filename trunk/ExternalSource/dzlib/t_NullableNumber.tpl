@@ -40,11 +40,11 @@ type
     procedure AssignStr(const _s: string); overload;
     ///<summary>
     /// @returns the number converted to a string if it is valid, or the Default if it is not valid </summary>
-    function ToString(_Default: string = ''): string;
+    function ToString(const _Default: string = ''): string;
     function Dump: string;
     function Abs: _NULLABLE_TYPE_BASE_;
-    function Format(_FormatStr: string): string; overload;
-    function Format(_FormatStr: string; _Settings: TFormatSettings): string; overload;
+    function Format(const _FormatStr: string): string; overload;
+    function Format(const _FormatStr: string; const _Settings: TFormatSettings): string; overload;
     class operator Negative(_a: _NULLABLE_NUMBER_): _NULLABLE_NUMBER_;
     class operator Positive(_a: _NULLABLE_NUMBER_): _NULLABLE_NUMBER_;
     class operator Inc(_a: _NULLABLE_NUMBER_): _NULLABLE_NUMBER_;
@@ -323,7 +323,7 @@ begin
   Result := ToString('<invalid>'); // do not translate
 end;
 
-function _NULLABLE_NUMBER_.ToString(_Default: string): string;
+function _NULLABLE_NUMBER_.ToString(const _Default: string): string;
 begin
   if IsValid then
     Result := NumberToStr(FValue)
@@ -336,12 +336,12 @@ begin
   Result := System.Abs(Value);
 end;
 
-function _NULLABLE_NUMBER_.Format(_FormatStr: string): string;
+function _NULLABLE_NUMBER_.Format(const _FormatStr: string): string;
 begin
   Result := SysUtils.Format(_FormatStr, [Value]);
 end;
 
-function _NULLABLE_NUMBER_.Format(_FormatStr: string; _Settings: TFormatSettings): string;
+function _NULLABLE_NUMBER_.Format(const _FormatStr: string; const _Settings: TFormatSettings): string;
 begin
   Result := SysUtils.Format(_FormatStr, [Value], _Settings);
 end;

@@ -1529,7 +1529,7 @@ begin
     end;
   except
     // ignore
-  end;
+  end; //FI:W501 Empty except block
 end;
 
 function GxOtaGetCurrentProject: IOTAProject;

@@ -652,7 +652,7 @@ begin
   _s := TailStr(_s, _n + 1);
 end;
 
-function SplitString(_sl: TStrings; _s: string; const _Delimiters: string): TStrings;
+function SplitString(_sl: TStrings; _s: string; const _Delimiters: string): TStrings; //FI:O801
 // Note: _s cannot be const, because it is passed to ExtractFirstWord which needs a var parameter
 var
   s: string;
@@ -664,7 +664,7 @@ begin
   end;
 end;
 
-function SplitString(_sl: TStrings; _s: string; const _Delimiters: array of Char): TStrings;
+function SplitString(_sl: TStrings; _s: string; const _Delimiters: array of Char): TStrings; //FI:O801
 // Note: _s cannot be const, because it is passed to ExtractFirstWord which needs a var parameter
 // Note: The code is the same as in the overloaded version, but Delimiters is an array of char
 //       here.
@@ -678,7 +678,7 @@ begin
   end;
 end;
 
-function SplitString(_s: string; const _Delimiters: string): TStringArray;
+function SplitString(_s: string; const _Delimiters: string): TStringArray; //FI:O801
 // Note: _s cannot be const, because it is passed to ExtractFirstWord which needs a var parameter
 var
   s: string;
@@ -696,7 +696,7 @@ begin
   SetLength(Result, Idx);
 end;
 
-function SplitString(_s: string; const _Delimiters: array of Char): TStringArray;
+function SplitString(_s: string; const _Delimiters: array of Char): TStringArray; //FI:O801
 // Note: _s cannot be const, because it is passed to ExtractFirstWord which needs a var parameter
 // Note: The code is the same as in the overloaded version, but Delimiters is an array of char
 //       here.

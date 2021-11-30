@@ -199,7 +199,7 @@ begin
               PatchPos := GXNativeInt(Patches.Objects[i]);
               cp := OffsToCP.CalcCursorPos(PatchPos);
               Offset := EditView.CharPosToPos(PointToCharPos(cp));
-              Patches.Objects[i] := Pointer(Offset);
+              Patches.Objects[i] := Pointer(Offset); //FI:W541 Casting from Integer to Pointer type (or vice versa)
             end;
           finally
             FreeAndNil(OffsToCP);

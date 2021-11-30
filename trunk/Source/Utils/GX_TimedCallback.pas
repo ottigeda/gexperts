@@ -54,7 +54,7 @@ begin
   if Assigned(FCallback) then
     FCallback(Self);
   if FFreeAfterCallback then
-    Free;
+    Free; //FI:W515 Suspicious FREE call
 end;
 
 procedure TTimedCallback.Reset;

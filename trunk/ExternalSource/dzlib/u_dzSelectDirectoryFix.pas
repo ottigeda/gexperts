@@ -216,7 +216,7 @@ begin
     SelectDirectory;
   end else if (_uMsg = BFFM_VALIDATEFAILEDW) or (_uMsg = BFFM_VALIDATEFAILEDA) then begin
     // default code copied from FileCtrl
-    MessageDlg(Format(SInvalidPath, [PChar(_lParam)]), mtError, [mbOK], 0);
+    MessageDlg(Format(SInvalidPath, [PChar(_lParam)]), mtError, [mbOK], 0); //FI:W541 Casting from Integer to Pointer type (or vice versa)
     Result := 1;
   end else if _uMsg = BFFM_SELCHANGED then begin
     if FInitialized and not FPositioned then begin

@@ -1270,7 +1270,7 @@ begin
         if Terminated then
           Exit; //==>
         if TryFindPathToFile(FFiles[FileIdx] + '.pas', FilesInPath, fn, UnitTimestamp) then
-          FilesFound.AddObject(fn, Pointer(UnitTimestamp));
+          FilesFound.AddObject(fn, Pointer(UnitTimestamp)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
       end;
       if FilesFound.Count = 0 then
         Exit; //==>

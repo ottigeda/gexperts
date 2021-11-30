@@ -196,12 +196,13 @@ begin
   lvHistory.Column[0].Caption := SReplacementInfoHeader;
   lvHistory.Column[1].Caption := SReplacementTime;
   lvHistory.Items.Clear;
+
   for i := 0 to CorrectionHistory.Count - 1 do
   begin
     Item := lvHistory.Items.Add;
     Item.Caption := CorrectionHistory[i].InfoString;
     Item.SubItems.Add(FormatDateTime('hh:nn:ss', CorrectionHistory[i].Time));
-    Item.Data := Pointer(i);
+    Item.Data := Pointer(i);  //FI:W541 Casting from Integer to Pointer type (or vice versa)
   end;
 end;
 
