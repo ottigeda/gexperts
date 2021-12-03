@@ -3367,7 +3367,7 @@ var
   len: Integer;
   i: Integer;
 begin
-  Result := [];
+  SetLength(Result, 0);
 
   Ext := Extension;
   len := 0;
