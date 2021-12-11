@@ -1,4 +1,4 @@
-GExpertsD6;
+library GExpertsD6;
 
 {$E dll}
 
