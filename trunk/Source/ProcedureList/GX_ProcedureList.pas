@@ -215,83 +215,90 @@ end;
 
 procedure TfmProcedureList.FillListBox;
 var
-  i: Integer;
-  ProcInfo: TProcedure;
-  IsObject: Boolean;
+  ListItems: TListItems;
 
   procedure AddListItem(ProcInfo: TProcedure);
   var
-    ListItem: TListItem;
+    li: TListItem;
   begin
-    ListItem := lvProcs.Items.Add;
-    ListItem.Caption := '';
+    li := ListItems.Add;
+    // set Caption to empty because we display only the icon in the first column
+    li.Caption := '';
     if FOptions.ObjectNameVisible then
     begin
       if ProcInfo.ProcClass <> '' then
-        ListItem.SubItems.Add(ProcInfo.ProcClass + ProcInfo.ObjectSeparator + ProcInfo.ProcName)
+        li.SubItems.Add(ProcInfo.ProcClass + ProcInfo.ObjectSeparator + ProcInfo.ProcName)
       else
-        ListItem.SubItems.Add(ProcInfo.ProcName)
+        li.SubItems.Add(ProcInfo.ProcName)
     end
     else
-      ListItem.SubItems.Add(ProcInfo.ProcName);
-    ListItem.SubItems.Add(ProcInfo.ProcedureType);
-    ListItem.SubItems.Add(IntToStr(ProcInfo.LineNo));
-    ListItem.ImageIndex := GetImageIndex(ProcInfo.ProcedureType, ProcInfo.ProcClass);
-    ListItem.Data := ProcInfo;
+      li.SubItems.Add(ProcInfo.ProcName);
+    li.SubItems.Add(ProcInfo.ProcedureType);
+    li.SubItems.Add(IntToStr(ProcInfo.LineNo));
+    li.ImageIndex := GetImageIndex(ProcInfo.ProcedureType, ProcInfo.ProcClass);
+    li.Data := ProcInfo;
   end;
 
   procedure FocusAndSelectFirstItem;
   begin
-    if lvProcs.Items.Count > 0 then
+    if ListItems.Count > 0 then
     begin
-      lvProcs.Selected := lvProcs.Items[0];
+      lvProcs.Selected := ListItems[0];
       lvProcs.ItemFocused := lvProcs.Selected;
     end;
   end;
 
+var
+  i: Integer;
+  ProcInfo: TProcedure;
+  IsObject: Boolean;
+  NameFilter: string;
+  ObjFilter: string;
 begin
-  lvProcs.Items.BeginUpdate;
+  ListItems := lvProcs.Items;
+  ListItems.BeginUpdate;
   try
-    lvProcs.Items.Clear;
-    if (Length(edtMethods.Text) = 0) and (cbxObjects.Text = SAllString) then
+    ListItems.Clear;
+    NameFilter := edtMethods.Text;
+    ObjFilter := cbxObjects.Text;
+    if (NameFilter = '') and (ObjFilter = SAllString) then
     begin
       for i := 0 to FFileScanner.Procedures.Count - 1 do
         AddListItem(FFileScanner.Procedures.Items[i]);
-      Exit;
+      Exit; //==>
     end;
 
     for i := 0 to FFileScanner.Procedures.Count - 1 do
     begin
       ProcInfo := FFileScanner.Procedures.Items[i];
-      IsObject := Length(ProcInfo.ProcClass) > 0;
+      IsObject := (ProcInfo.ProcClass <> '');
 
       // Is it the object we want?
-      if (cbxObjects.Text = SNoneString) then
+      if ObjFilter = SNoneString then
       begin
         if IsObject then
           Continue
-      end
-      else if (cbxObjects.Text <> SAllString) and
-        (not SameText(cbxObjects.Text, ProcInfo.ProcClass)) then
+      end else if (ObjFilter <> SAllString) and (not SameText(ObjFilter, ProcInfo.ProcClass)) then
         Continue;
 
-      if Length(edtMethods.Text) = 0 then
+      if NameFilter = '' then
         AddListItem(ProcInfo)
-      else if not FOptions.SearchAll and StartsText(edtMethods.Text, ProcInfo.ProcName) then
+      else if not FOptions.SearchAll and StartsText(NameFilter, ProcInfo.ProcName) then
         AddListItem(ProcInfo)
-      else if not FOptions.SearchAll and FOptions.SearchClassName and StartsText(edtMethods.Text, ProcInfo.ProcClass) then
+      else if not FOptions.SearchAll and FOptions.SearchClassName and StartsText(NameFilter, ProcInfo.ProcClass) then
         AddListItem(ProcInfo)
-      else if FOptions.SearchAll and StrContains(edtMethods.Text, ProcInfo.ProcName, False) then
+      else if FOptions.SearchAll and StrContains(NameFilter, ProcInfo.ProcName, False) then
         AddListItem(ProcInfo)
-      else if FOptions.SearchAll and FOptions.SearchClassName and SameText(cbxObjects.Text, SAllString) and StrContains(edtMethods.Text, ProcInfo.ProcClass, False) then
+      else if FOptions.SearchAll and FOptions.SearchClassName and SameText(ObjFilter, SAllString)
+        and StrContains(NameFilter, ProcInfo.ProcClass, False) then
         AddListItem(ProcInfo);
     end;
-    if lvProcs.Items.Count = 0 then
+    if ListItems.Count = 0 then
       UpdateCodeView(nil);
   finally
     if RunningRS2009OrGreater then
       lvProcs.AlphaSort; // This no longer happens automatically?
-    lvProcs.Items.EndUpdate;
+    ListItems.EndUpdate;
     FocusAndSelectFirstItem;
   end;
   ResizeCols;
