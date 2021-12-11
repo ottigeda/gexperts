@@ -383,7 +383,7 @@ object fmProcedureList: TfmProcedureList
   end
   object tmrFilter: TTimer
     Enabled = False
-    Interval = 10
+    Interval = 200
     OnTimer = tmrFilterTimer
     Left = 136
     Top = 88

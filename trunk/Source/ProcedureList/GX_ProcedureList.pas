@@ -125,8 +125,9 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   Clipbrd, Menus, StrUtils, Math,
+  u_dzVclUtils, u_dzStringUtils, u_dzTypes,
   GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_IdeUtils,
-  GX_Experts, u_dzVclUtils, u_dzStringUtils, GX_GExperts;
+  GX_Experts, GX_GExperts;
 
 resourcestring
   SAllString = '<All>';
@@ -258,6 +259,7 @@ var
   ProcName: string;
   ProcClass: string;
   ClassFilterType: TClassFilterEnum;
+  Parts: TStringArray;
 begin
   ListItems := lvProcs.Items;
   ListItems.BeginUpdate;
@@ -291,21 +293,34 @@ begin
           if NameFilter = '' then
             AddListItem(ProcInfo)
           else begin
-            if FOptions.SearchAll then begin
-              if StrContains(NameFilter, ProcName, False) then
-                AddListItem(ProcInfo)
-              else if FOptions.SearchClassName and (ClassFilterType = cfeAll) then begin
-                // only match name filter to class if there is no class filter
-                if StrContains(NameFilter, ProcClass, False) then
-                  AddListItem(ProcInfo)
+            Parts := SplitString(NameFilter, ['.']);
+            if Length(Parts) = 2 then begin
+              // name filter contains a '.', match the first part with the class and the second
+              // part with the method name
+              if FOptions.SearchAll then begin
+                if StrContains(Parts[0], ProcClass, False) and StrContains(Parts[1], ProcName, False) then
+                  AddListItem(ProcInfo);
+              end else begin
+                if SameText(Parts[0], ProcClass) and StartsText(Parts[1], ProcName) then
+                  AddListItem(ProcInfo);
               end;
             end else begin
-              if StartsText(NameFilter, ProcInfo.ProcName) then
-                AddListItem(ProcInfo)
-              else if FOptions.SearchClassName and (ClassFilterType = cfeAll) then begin
-                // only match name filter to class if there is no class filter
-                if StartsText(NameFilter, ProcClass) then
-                  AddListItem(ProcInfo);
+              if FOptions.SearchAll then begin
+                if StrContains(NameFilter, ProcName, False) then
+                  AddListItem(ProcInfo)
+                else if FOptions.SearchClassName and (ClassFilterType = cfeAll) then begin
+                  // only match name filter to class if there is no class filter
+                  if StrContains(NameFilter, ProcClass, False) then
+                    AddListItem(ProcInfo)
+                end;
+              end else begin
+                if StartsText(NameFilter, ProcInfo.ProcName) then
+                  AddListItem(ProcInfo)
+                else if FOptions.SearchClassName and (ClassFilterType = cfeAll) then begin
+                  // only match name filter to class if there is no class filter
+                  if StartsText(NameFilter, ProcClass) then
+                    AddListItem(ProcInfo);
+                end;
               end;
             end;
           end;
