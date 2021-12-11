@@ -26,6 +26,7 @@ type
     b_Cancel: TButton;
     procedure lb_UnitPositionsClick(Sender: TObject);
     procedure lb_UnitPositionsDblClick(Sender: TObject);
+    procedure lb_UnitPositionsEnter(Sender: TObject);
     procedure cmb_LineNumberKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure cmb_LineNumberChange(Sender: TObject);
   private
@@ -152,8 +153,17 @@ begin
 end;
 
 procedure Tf_Goto.GetData(out _Row: Integer);
+var
+  LText: string;
+  ndx: Integer;
 begin
-  _Row := StrToInt(Trim(cmb_LineNumber.Text));
+  LText := Trim(cmb_LineNumber.Text);
+  if not TryStrToInt(LText, _Row) then begin
+    ndx := lb_UnitPositions.ItemIndex;
+    if ndx >= 0 then begin
+      _Row := FUnitPositions.Positions[ndx].LineNo;
+    end;
+  end;
 end;
 
 procedure Tf_Goto.SetData(_Row: Integer);
@@ -164,8 +174,28 @@ end;
 procedure Tf_Goto.cmb_LineNumberChange(Sender: TObject);
 var
   Line: Integer;
+  LText: string;
+  i: Integer;
 begin
-  b_Ok.Enabled := TryStrToInt(Trim(cmb_LineNumber.Text), Line);
+  LText := Trim(cmb_LineNumber.Text);
+
+  // If user types a number, enable the OK button
+  if TryStrToInt(LText, Line) then begin
+    b_Ok.Enabled := True;
+    Exit; //==>
+  end;
+
+  // not a number. Try to match the text in listbox.
+  if not cmb_LineNumber.DroppedDown then begin
+    for i := 0 to lb_UnitPositions.Items.Count - 1 do begin
+      if Pos(LText, lb_UnitPositions.Items[i]) > 0 then begin
+        lb_UnitPositions.ItemIndex := i;
+        b_Ok.Enabled := True;
+        Exit; //==>
+      end;
+    end; // for i
+  end;
+  b_Ok.Enabled := False;
 end;
 
 procedure Tf_Goto.cmb_LineNumberKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -208,6 +238,16 @@ procedure Tf_Goto.lb_UnitPositionsDblClick(Sender: TObject);
 begin
   lb_UnitPositionsClick(Sender);
   ModalResult := mrOk;
+end;
+
+procedure Tf_Goto.lb_UnitPositionsEnter(Sender: TObject);
+var
+  nValue: Integer;
+begin
+  inherited;
+  if (lb_UnitPositions.ItemIndex > 0)
+    and (not TryStrToInt(cmb_LineNumber.Text, nValue)) then
+    lb_UnitPositionsClick(Sender);
 end;
 
 { TGotoExpert }
