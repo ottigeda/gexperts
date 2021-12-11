@@ -29,16 +29,16 @@ object fmCompsToCode: TfmCompsToCode
       678
       38)
     object pnlCenterButtons: TPanel
-      Left = 162
-      Top = 2
-      Width = 353
-      Height = 33
-      Anchors = [akTop]
+      Left = 424
+      Top = 0
+      Width = 254
+      Height = 38
+      Align = alRight
       BevelOuter = bvNone
       TabOrder = 0
       object btnHelp: TButton
-        Left = 228
-        Top = 5
+        Left = 168
+        Top = 8
         Width = 75
         Height = 25
         Caption = 'Help'
@@ -46,8 +46,8 @@ object fmCompsToCode: TfmCompsToCode
         OnClick = btnHelpClick
       end
       object btnCancel: TButton
-        Left = 141
-        Top = 5
+        Left = 88
+        Top = 8
         Width = 75
         Height = 25
         Cancel = True
@@ -56,8 +56,8 @@ object fmCompsToCode: TfmCompsToCode
         TabOrder = 1
       end
       object btnOK: TButton
-        Left = 55
-        Top = 5
+        Left = 8
+        Top = 8
         Width = 75
         Height = 25
         Caption = 'OK'
