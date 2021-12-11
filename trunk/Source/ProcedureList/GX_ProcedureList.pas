@@ -248,53 +248,72 @@ var
     end;
   end;
 
+type
+  TClassFilterEnum = (cfeAll, cfeNone, cfeName);
 var
   i: Integer;
   ProcInfo: TProcedure;
-  IsObject: Boolean;
   NameFilter: string;
-  ObjFilter: string;
+  ClassFilter: string;
+  ProcName: string;
+  ProcClass: string;
+  ClassFilterType: TClassFilterEnum;
 begin
   ListItems := lvProcs.Items;
   ListItems.BeginUpdate;
   try
     ListItems.Clear;
     NameFilter := edtMethods.Text;
-    ObjFilter := cbxObjects.Text;
-    if (NameFilter = '') and (ObjFilter = SAllString) then
-    begin
+    ClassFilter := cbxObjects.Text;
+    if ClassFilter = SAllString then begin
+      ClassFilterType := cfeAll
+    end else if ClassFilter = SNoneString then
+      ClassFilterType := cfeNone
+    else
+      ClassFilterType := cfeName;
+
+    if (ClassFilterType = cfeAll) and (NameFilter = '') then begin
+      // no filtering, add all entries
       for i := 0 to FFileScanner.Procedures.Count - 1 do
         AddListItem(FFileScanner.Procedures.Items[i]);
-      Exit; //==>
+    end else begin
+      for i := 0 to FFileScanner.Procedures.Count - 1 do begin
+        ProcInfo := FFileScanner.Procedures.Items[i];
+        ProcName := ProcInfo.ProcName;
+        ProcClass := ProcInfo.ProcClass;
+
+        if (ClassFilterType = cfeNone) and (ProcClass <> '') then begin
+          // class filter does not allow methods
+        end else if (ClassFilterType = cfeName) and not SameText(ClassFilter, ProcClass) then begin
+          // method class does not match class filter
+        end else begin
+          // no class filter or class filter matches
+          if NameFilter = '' then
+            AddListItem(ProcInfo)
+          else begin
+            if FOptions.SearchAll then begin
+              if StrContains(NameFilter, ProcName, False) then
+                AddListItem(ProcInfo)
+              else if FOptions.SearchClassName and (ClassFilterType = cfeAll) then begin
+                // only match name filter to class if there is no class filter
+                if StrContains(NameFilter, ProcClass, False) then
+                  AddListItem(ProcInfo)
+              end;
+            end else begin
+              if StartsText(NameFilter, ProcInfo.ProcName) then
+                AddListItem(ProcInfo)
+              else if FOptions.SearchClassName and (ClassFilterType = cfeAll) then begin
+                // only match name filter to class if there is no class filter
+                if StartsText(NameFilter, ProcClass) then
+                  AddListItem(ProcInfo);
+              end;
+            end;
+          end;
+        end;
+      end;
+      if ListItems.Count = 0 then
+        UpdateCodeView(nil);
     end;
-
-    for i := 0 to FFileScanner.Procedures.Count - 1 do
-    begin
-      ProcInfo := FFileScanner.Procedures.Items[i];
-      IsObject := (ProcInfo.ProcClass <> '');
-
-      // Is it the object we want?
-      if ObjFilter = SNoneString then
-      begin
-        if IsObject then
-          Continue
-      end else if (ObjFilter <> SAllString) and (not SameText(ObjFilter, ProcInfo.ProcClass)) then
-        Continue;
-
-      if NameFilter = '' then
-        AddListItem(ProcInfo)
-      else if not FOptions.SearchAll and StartsText(NameFilter, ProcInfo.ProcName) then
-        AddListItem(ProcInfo)
-      else if not FOptions.SearchAll and FOptions.SearchClassName and StartsText(NameFilter, ProcInfo.ProcClass) then
-        AddListItem(ProcInfo)
-      else if FOptions.SearchAll and StrContains(NameFilter, ProcInfo.ProcName, False) then
-        AddListItem(ProcInfo)
-      else if FOptions.SearchAll and FOptions.SearchClassName and SameText(ObjFilter, SAllString)
-        and StrContains(NameFilter, ProcInfo.ProcClass, False) then
-        AddListItem(ProcInfo);
-    end;
-    if ListItems.Count = 0 then
-      UpdateCodeView(nil);
   finally
     if RunningRS2009OrGreater then
       lvProcs.AlphaSort; // This no longer happens automatically?
