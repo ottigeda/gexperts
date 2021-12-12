@@ -6,6 +6,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Types, Forms, Messages, ActnList, Actions, Menus, ImgList,
+  StdCtrls, ExtCtrls,
   Controls, ComCtrls, ToolWin, ToolsAPI, UITypes, Graphics,
   GX_IdeDock, GX_SharedImages, GX_Experts, GX_OtaUtils, GX_ConfigurationInfo;
 
@@ -63,6 +64,9 @@ type
     FileName: string;
     LineNo: Integer;
     function NumericPriority: Integer;
+    ///<summary>
+    /// check whether the text occurs in any of the strings </summary>
+    function MatchesFilter(const _Filter: string): Boolean;
   end;
 
   TToDoScanType = (tstProject, tstOpenFiles, tstDirectory, tstProjectGroup);
@@ -97,6 +101,8 @@ type
     mitSep2: TMenuItem;
     mitSep1: TMenuItem;
     actEditCopy: TAction;
+    edtFilterTodoList: TEdit;
+    tim_Filter: TTimer;
     procedure FormActivate(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure lvToDoChange(Sender: TObject; Item: TListItem; Change: TItemChange);
@@ -114,7 +120,12 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure lvTodoCustomDrawItem(Sender: TCustomListView; Item: TListItem;
       State: TCustomDrawState; var DefaultDraw: Boolean);
+    procedure tim_FilterTimer(Sender: TObject);
+    procedure edtFilterTodoListChange(Sender: TObject);
+    procedure edtFilterTodoListKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure edtFilterTodoListKeyPress(Sender: TObject; var Key: Char);
   private
+    FfmToDoCaption: string;
     FIsFirstActivation: Boolean;
     FDataList: TList;
     FNotifier: TBaseIdeNotifier;
@@ -132,12 +143,15 @@ type
     procedure EnumerateFilesByDirectory;
     procedure EnumerateProjectFiles(Project: IOTAProject);
     procedure EnumerateProjects;
+    procedure FilterTodoList;
     procedure SaveSettings;
     procedure LoadSettings;
     function PriorityToImageIndex(Priority: TToDoPriority): Integer;
     function NumericPriorityToGXPriority(const PriorityStr: string): TToDoPriority;
     procedure ParsePasFile(const _Filename: string; const _Content: string; _Callback: TParsePasFileCallback);
     procedure ParseCFile(const _Filename, _Content: string; _Callback: TParsePasFileCallback);
+    procedure ShowNumberOfUnfilteredTodoItems;
+    procedure GotoSelectedItem;
   protected
 {$IFDEF IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
@@ -183,9 +197,9 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   Dialogs, Clipbrd, StrUtils, Math,
   mPasLex, mwBCBTokenList, mwPasParserTypes,
-  u_dzVclUtils,
+  u_dzVclUtils, u_dzStringUtils,
   GX_GxUtils, GX_GenericUtils, GX_EditReader,
-  GX_ToDoOptions, u_dzStringUtils, GX_GExperts;
+  GX_ToDoOptions, GX_GExperts;
 
 resourcestring
   SParsingError = 'A parsing error occurred in file %s.' + sLineBreak;
@@ -386,12 +400,14 @@ begin
     FProjectFileName := GxOtaGetCurrentProjectFileName;
 
   ScanFile(GxOtaGetProjectFileName(Project, True));
-  for i := 0 to Project.GetModuleCount-1 do
+  for i := 0 to Project.GetModuleCount - 1 do
   begin
     ModuleInfo := Project.GetModule(i);
     Assert(Assigned(ModuleInfo));
     ScanFile(ModuleInfo.FileName);
   end;
+
+  FilterTodoList;
 end;
 
 {#todo2 test this carefully}
@@ -409,7 +425,6 @@ var
   Info: TToDoInfo;
   ParsingString: string;
   OptionChar: Char;
-  CListItem: TListItem;
 begin
   for i := 0 to ToDoExpert.FTokenList.Count - 1 do
   begin
@@ -571,14 +586,6 @@ begin
       Info.LineNo := LineNumber;
       Info.FileName := FileName;
       FDataList.Add(Info);
-      CListItem := lvToDo.Items.Add;
-      ClistItem.SubItems.Add(Info.ToDoClass);
-      ClistItem.SubItems.Add(Info.Owner);
-      ClistItem.SubItems.Add(Info.Display);
-      ClistItem.SubItems.Add(ExtractFileName(Info.FileName));
-      ClistItem.SubItems.Add(IntToStr(Info.LineNo));
-      CListItem.Data := Info;
-      CListItem.ImageIndex := PriorityToImageIndex(Info.Priority);
 
       Assert(Assigned(ToDoExpert));
       if ToDoExpert.FAddMessage then
@@ -708,8 +715,10 @@ begin
   begin
     FIsFirstActivation := False;
     RefreshTodoList;
+    ShowNumberOfUnfilteredTodoItems;
   end;
   PostMessage(Self.Handle, UM_RESIZECOLS, 0, 0);
+  edtFilterTodoList.Height := fmToDo.ToolBar.Height; // avoid auto-resetting of edtFilterTodoList.Height / does not work?
 end;
 
 procedure TfmToDo.RefreshTodoList;
@@ -800,6 +809,11 @@ begin
 end;
 
 procedure TfmToDo.actEditGotoExecute(Sender: TObject);
+begin
+  GotoSelectedItem;
+end;
+
+procedure TfmToDo.GotoSelectedItem;
 var
   FileContent: string;
   SelectedItem: TToDoInfo;
@@ -808,8 +822,6 @@ var
   IsCPPModule: Boolean;
   MatchChecker: TMatchChecker;
 begin
-  inherited;
-
   SelectedItem := GetSelectedItem;
   if SelectedItem = nil then
     Exit; //==>
@@ -951,6 +963,59 @@ begin
   GxContextHelp(Self, 24);
 end;
 
+procedure TfmToDo.FilterTodoList;
+var
+  cnt: Integer;
+  i: Integer;
+  FilterText: string;
+  FilteredItems: Integer;
+  Items: TListItems;
+  li: TListItem;
+  Info: TToDoInfo;
+begin
+  FilteredItems := 0;
+
+  Items := lvToDo.Items;
+  Items.BeginUpdate;
+  try
+    Items.Clear;
+    FilterText := Trim(edtFilterTodoList.Text);
+    cnt := FDataList.Count;
+    for i := 0 to cnt - 1 do begin
+      Info := TToDoInfo(FDataList[i]);
+      if Info.MatchesFilter(FilterText) then begin
+        li := Items.Add;
+        li.SubItems.Add(Info.ToDoClass);
+        li.SubItems.Add(Info.Owner);
+        li.SubItems.Add(Info.Display);
+        li.SubItems.Add(ExtractFileName(Info.FileName));
+        li.SubItems.Add(IntToStr(Info.LineNo));
+        li.Data := Info;
+        li.ImageIndex := PriorityToImageIndex(Info.Priority);
+        Inc(FilteredItems);
+      end;
+    end;
+  finally
+    Items.EndUpdate;
+  end;
+
+  if FilteredItems < cnt then
+    fmToDo.Caption := FfmToDoCaption + ' (' + IntToStr(FilteredItems) + '/' + IntToStr(cnt) + ' ToDo items)'
+  else
+    ShowNumberOfUnfilteredTodoItems;
+end;
+
+procedure TfmToDo.ShowNumberOfUnfilteredTodoItems;
+begin
+  fmToDo.Caption := FfmToDoCaption + ' (' + IntToStr(lvTodo.Items.Count) + ' ToDo items)';
+end;
+
+procedure TfmToDo.tim_FilterTimer(Sender: TObject);
+begin
+  tim_Filter.Enabled := False;
+  FilterTodoList;
+end;
+
 procedure TfmToDo.actOptionsConfigureExecute(Sender: TObject);
 begin
   inherited;
@@ -964,6 +1029,8 @@ begin
   TControl_SetMinConstraints(Self);
 
   SetToolbarGradient(ToolBar);
+
+  FfmToDoCaption := Caption;
 
   if Assigned(ToDoExpert) then
     ToDoExpert.SetFormIcon(Self);
@@ -1102,26 +1169,26 @@ begin
     if CharInSet(FileMask[i], [';', ',']) then
       FileMask[i] := #13;
 
+  Dirs := nil;
   FileMaskList := TStringList.Create;
   try
     FileMaskList.Text := FileMask;
 
     Dirs := TStringList.Create;
-    try
-      AnsiStrTok(ToDoExpert.FDirsToScan, ';', Dirs);
-      for i := 0 to Dirs.Count - 1 do
-      begin
-        Dirs[i] := ExpandFileName(Dirs[i]);
-        if not DirectoryExists(Dirs[i]) then
-          raise Exception.CreateFmt(SSpecifiedDirectoryDoesNotExist, [Dirs[i]]);
-        DirScan(Dirs[i]);
-      end;
-    finally
-      FreeAndNil(Dirs);
+    AnsiStrTok(ToDoExpert.FDirsToScan, ';', Dirs);
+    for i := 0 to Dirs.Count - 1 do
+    begin
+      Dirs[i] := ExpandFileName(Dirs[i]);
+      if not DirectoryExists(Dirs[i]) then
+        raise Exception.CreateFmt(SSpecifiedDirectoryDoesNotExist, [Dirs[i]]);
+      DirScan(Dirs[i]);
     end;
   finally
+    FreeAndNil(Dirs);
     FreeAndNil(FileMaskList);
   end;
+
+  FilterTodoList;
 end;
 
 procedure TfmToDo.lvToDoEditing(Sender: TObject; Item: TListItem;
@@ -1480,6 +1547,38 @@ begin
     ListSettings.WriteString(Self[i], '');
 end;
 
+procedure TfmToDo.edtFilterTodoListChange(Sender: TObject);
+begin
+  tim_Filter.Enabled := False;
+  tim_Filter.Enabled := True;
+end;
+
+procedure TfmToDo.edtFilterTodoListKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if not (((Key = VK_F4) and (ssAlt in Shift)) or
+    (Key in [VK_DELETE, VK_LEFT, VK_RIGHT]) or
+    ((Key in [VK_INSERT]) and ((ssShift in Shift) or (ssCtrl in Shift))) or
+    ((Key in [VK_HOME, VK_END]) and (ssShift in Shift))) then
+  begin
+    SendMessage(lvToDo.Handle, WM_KEYDOWN, Key, 0);
+    Key := 0;
+  end;
+end;
+
+procedure TfmToDo.edtFilterTodoListKeyPress(Sender: TObject; var Key: Char);
+begin
+  case Key of
+    #13: begin
+        GotoSelectedItem;
+        Key := #0;
+      end;
+    #27: begin
+        Close;
+        Key := #0;
+      end;
+  end;
+end;
+
 function TfmToDo.PriorityToImageIndex(Priority: TToDoPriority): Integer;
 begin
   if Priority = tpInfo then
@@ -1509,6 +1608,16 @@ begin
 end;
 
 { TToDoInfo }
+
+function TToDoInfo.MatchesFilter(const _Filter: string): Boolean;
+begin
+  Result := (_Filter = '')
+    or StrContains(_Filter, ToDoClass, False)
+    or StrContains(_Filter, Owner, False)
+    or StrContains(_Filter, Display, False)
+    or StrContains(_Filter, FileName, False)
+    or StrContains(_Filter, IntToStr(LineNo), False);
+end;
 
 function TToDoInfo.NumericPriority: Integer;
 begin

@@ -1,7 +1,7 @@
 object fmToDo: TfmToDo
   Left = 268
   Top = 191
-  ActiveControl = lvTodo
+  ActiveControl = edtFilterTodoList
   AutoScroll = False
   Caption = 'To Do List'
   ClientHeight = 229
@@ -143,6 +143,30 @@ object fmToDo: TfmToDo
       Top = 0
       Action = actHelpHelp
     end
+    object tbnSep5: TToolButton
+      Left = 147
+      Top = 0
+      Width = 8
+      Caption = 'tbnSep5'
+      ImageIndex = 1
+      Style = tbsSeparator
+    end
+    object edtFilterTodoList: TEdit
+      Left = 155
+      Top = 0
+      Width = 121
+      Height = 22
+      Hint = 'Enter a filter text and then press the Return/Enter key.'
+      Margins.Left = 0
+      Margins.Top = 2
+      Margins.Right = 0
+      Margins.Bottom = 2
+      Constraints.MinHeight = 22
+      TabOrder = 0
+      OnChange = edtFilterTodoListChange
+      OnKeyDown = edtFilterTodoListKeyDown
+      OnKeyPress = edtFilterTodoListKeyPress
+    end
   end
   object Popup: TPopupMenu
     Images = dmSharedImages.Images
@@ -222,5 +246,12 @@ object fmToDo: TfmToDo
       ShortCut = 16451
       OnExecute = actEditCopyExecute
     end
+  end
+  object tim_Filter: TTimer
+    Enabled = False
+    Interval = 200
+    OnTimer = tim_FilterTimer
+    Left = 328
+    Top = 120
   end
 end
