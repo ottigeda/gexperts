@@ -684,7 +684,7 @@ begin
 
   if not IsRType(Prev2, rtLineFeed) then begin
     // no line feed at all -> add two for an empty line
-    // todo --fixme: This doesn't work. At least not for ...
+    // todo -cfixme : This doesn't work. At least not for ...
     //
     // {bla}procedure blub;
     //
