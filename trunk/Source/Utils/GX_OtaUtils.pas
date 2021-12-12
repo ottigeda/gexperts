@@ -728,6 +728,12 @@ function GxOtaGetEditActions: IOTAEditActions;
 // Returns False if there is more than one component selected
 // or if the currently selected component is not the root.
 function GxOtaSelectedComponentIsRoot(const FormEditor: IOTAFormEditor): Boolean;
+
+///<summary>
+/// Retrieves the name of the current selected component on FormEditor.
+// @returns an emptry string if no or more than 1 component is selected. </summary>
+function GxOtaSelectedComponentName: string;
+
 //  Get the BiDiMode property for a VCL form
 function GxOtaGetFormBiDiMode(Form: IOTAFormEditor): TBiDiMode;
 
@@ -4444,6 +4450,21 @@ begin
 
     Result := SameText(RootComponent.GetComponentType, CurrentComponent.GetComponentType);
   end
+end;
+
+function GxOtaSelectedComponentName: string;
+var
+  FormEditor: IOTAFormEditor;
+  CurrentComponent: IOTAComponent;
+begin
+  Result := '';
+  if GxOtaTryGetCurrentFormEditor(FormEditor) then begin
+    if FormEditor.GetSelCount = 1 then begin
+      CurrentComponent := FormEditor.GetSelComponent(0);
+      if Assigned(CurrentComponent) then
+        Result := GxOtaGetComponentName(CurrentComponent);
+    end;
+  end;
 end;
 
 function GxOtaGetFormBiDiMode(Form: IOTAFormEditor): TBiDiMode;

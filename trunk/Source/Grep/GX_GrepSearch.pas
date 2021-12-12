@@ -519,8 +519,14 @@ procedure TfmGrepSearch.LoadFormSettings;
     Selection: string;
   begin
     Selection := fmGrepResults.ContextSearchText;
-    if Trim(Selection) = '' then
-      Selection := RetrieveEditorBlockSelection;
+    if Trim(Selection) = '' then begin
+      if RunningInsideIDE
+        and (GxOtaGetCurrentEditorAsSourceEditor = nil)
+        and gblGrepExpert.GrepUseCurrentIdent then
+        Selection := GxOtaSelectedComponentName
+      else
+        Selection := RetrieveEditorBlockSelection;
+    end;
     if (Trim(Selection) = '') and gblGrepExpert.GrepUseCurrentIdent then
       try
         Selection := GxOtaGetCurrentIdent;  //if access violation created
