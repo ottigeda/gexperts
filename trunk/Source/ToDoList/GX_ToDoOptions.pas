@@ -69,20 +69,21 @@ var
   TokenTextInList: Boolean;
   IsListItemSelected: Boolean;
   TextIsCurrentListItem: Boolean;
+  Idx: Integer;
 begin
   HasTokenText := (edToken.Text <> '');
   TokenTextInList := (lstTokens.Items.IndexOf(edToken.Text) > -1);
   IsListItemSelected := (lstTokens.ItemIndex > -1);
 
-  with lstTokens do
-    TextIsCurrentListItem := IsListItemSelected and (edToken.Text = Items[ItemIndex]);
+  Idx := lstTokens.ItemIndex;
+  TextIsCurrentListItem := IsListItemSelected and (edToken.Text = lstTokens.Items[Idx]);
 
   btnInsert.Enabled := HasTokenText and not TokenTextInList;
   btnRemove.Enabled := IsListItemSelected;
   btnApply.Enabled := HasTokenText and IsListItemSelected and TokenTextInList;
 
   if TextIsCurrentListItem then
-    if (cboPriority.ItemIndex = Ord(TTokenInfo(lstTokens.Items.Objects[lstTokens.ItemIndex]).Priority)) then
+    if (cboPriority.ItemIndex = Ord(TTokenInfo(lstTokens.Items.Objects[Idx]).Priority)) then
       btnApply.Enabled := False;
 end;
 
@@ -141,13 +142,14 @@ begin
 end;
 
 procedure TfmToDoOptions.btnRemoveClick(Sender: TObject);
+var
+  idx: Integer;
 begin
-  with lstTokens do
-    if ItemIndex <> -1 then
-    begin
-      Items.Objects[ItemIndex].Free;
-      Items.Delete(ItemIndex);
-    end;
+  idx := lstTokens.ItemIndex;
+  if Idx > -1 then begin
+    lstTokens.Items.Objects[Idx].Free;
+    lstTokens.Items.Delete(Idx);
+  end;
   UpdateButtonState;
 end;
 
@@ -162,20 +164,16 @@ procedure TfmToDoOptions.btnApplyClick(Sender: TObject);
 var
   TokenText: string;
   ti: TTokenInfo;
+  Idx: Integer;
 begin
-  with lstTokens do
-  begin
-    TokenText := edToken.Text;
-
-    if (ItemIndex > -1) and (TokenText <> '')
-      and Assigned(Items.Objects[ItemIndex]) then
-    begin
-      Items[ItemIndex] := TokenText;
-
-      ti := TTokenInfo(Items.Objects[ItemIndex]);
-      ti.Token := TokenText;
-      ti.Priority := TTodoPriority(cboPriority.ItemIndex);
-    end;
+  TokenText := edToken.Text;
+  Idx := lstTokens.ItemIndex;
+  if (Idx > -1) and (TokenText <> '')
+    and Assigned(lstTokens.Items.Objects[Idx]) then begin
+    lstTokens.Items[Idx] := TokenText;
+    ti := TTokenInfo(lstTokens.Items.Objects[Idx]);
+    ti.Token := TokenText;
+    ti.Priority := TTodoPriority(cboPriority.ItemIndex);
   end;
   UpdateButtonState;
 end;
@@ -192,15 +190,14 @@ begin
 end;
 
 procedure TfmToDoOptions.lstTokensClick(Sender: TObject);
+var
+  Idx: Integer;
 begin
   UpdateButtonState;
-  if lstTokens.ItemIndex > -1 then
-  begin
-    with lstTokens do
-    begin
-      cboPriority.ItemIndex := Ord(TTokenInfo(Items.Objects[ItemIndex]).Priority);
-      edToken.Text := Items[ItemIndex]
-    end;
+  Idx := lstTokens.ItemIndex;
+  if Idx > -1 then begin
+    cboPriority.ItemIndex := Ord(TTokenInfo(lstTokens.Items.Objects[Idx]).Priority);
+    edToken.Text := lstTokens.Items[Idx]
   end;
 end;
 

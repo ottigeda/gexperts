@@ -881,11 +881,8 @@ begin
     RichEdit.Parent := Self;
     RichEdit.Clear;
     RichEdit.Lines.Add('');
-    with RichEdit.SelAttributes do
-    begin
-      Style := [fsBold];
-      Size := 14;
-    end;
+    RichEdit.SelAttributes.Style := [fsBold];
+    RichEdit.SelAttributes.Size := 14;
 
     case ToDoExpert.FScanType of
       tstProject,
