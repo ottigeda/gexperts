@@ -22,18 +22,51 @@ uses
   ExtCtrls;
 
 type
+  PScaledImagesRec = ^TScaledImagesRec;
+  TScaledImagesRec = record
+    FDpi: Integer;
+    FImages: TImageList;
+  end;
+
+type
+  TImageListScaler = class(TComponent)
+  private
+    FScaledImages: array of TScaledImagesRec;
+    FOriginal: TImageList;
+    function ResizeImagesforHighDPI(_DPI: Integer): TImageList;
+  public
+    constructor Create(_Owner: TComponent; _Original: TImageList); reintroduce;
+    destructor Destroy; override;
+    function GetScaledList(_DPI: Integer): TImageList;
+  end;
+
+type
   TDpiScaler = record
   private
     FDesignDpi: Integer;
     FCurrentDpi: Integer;
   public
-    procedure Init(_frm: TCustomForm); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    procedure Init(_Dpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    procedure Init(_DesignDpi, _CurrentDpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    procedure SetCurrentDpi(_frm: TCustomForm); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    procedure SetCurrentDpi(_Dpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    function Calc(_Value: Integer): Integer; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    function Calc(const _Value: TRect): TRect; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure Init(_frm: TCustomForm); overload;
+{$IFDEF SUPPORTS_INLINE} inline;
+{$ENDIF}
+    procedure Init(_DPI: Integer); overload;
+{$IFDEF SUPPORTS_INLINE} inline;
+{$ENDIF}
+    procedure Init(_DesignDpi, _CurrentDpi: Integer); overload;
+{$IFDEF SUPPORTS_INLINE} inline;
+{$ENDIF}
+    procedure SetCurrentDpi(_frm: TCustomForm); overload;
+{$IFDEF SUPPORTS_INLINE} inline;
+{$ENDIF}
+    procedure SetCurrentDpi(_DPI: Integer); overload;
+{$IFDEF SUPPORTS_INLINE} inline;
+{$ENDIF}
+    function Calc(_Value: Integer): Integer; overload;
+{$IFDEF SUPPORTS_INLINE} inline;
+{$ENDIF}
+    function Calc(const _Value: TRect): TRect; overload;
+{$IFDEF SUPPORTS_INLINE} inline;
+{$ENDIF}
     function ScaleFactorPercent: Integer;
   end;
 
@@ -72,9 +105,11 @@ implementation
 
 uses
   StdCtrls,
+  CommCtrl,
   u_dzAdvancedObject,
   u_dzVclUtils,
-  u_dzTypesUtils;
+  u_dzTypesUtils,
+  u_dzMiscUtils;
 
 {$IFDEF DPI_SCALER_LOGGING}
 var
@@ -127,10 +162,10 @@ begin
   Result.Bottom := Calc(_Value.Bottom);
 end;
 
-procedure TDpiScaler.Init(_Dpi: Integer);
+procedure TDpiScaler.Init(_DPI: Integer);
 begin
-  FDesignDpi := _Dpi;
-  FCurrentDpi := _Dpi;
+  FDesignDpi := _DPI;
+  FCurrentDpi := _DPI;
 end;
 
 procedure TDpiScaler.Init(_DesignDpi, _CurrentDpi: Integer);
@@ -175,9 +210,9 @@ begin
   Result := MulDiv(100, FCurrentDpi, FDesignDpi);
 end;
 
-procedure TDpiScaler.SetCurrentDpi(_Dpi: Integer);
+procedure TDpiScaler.SetCurrentDpi(_DPI: Integer);
 begin
-  FCurrentDpi := _Dpi;
+  FCurrentDpi := _DPI;
 end;
 
 procedure TDpiScaler.SetCurrentDpi(_frm: TCustomForm);
@@ -433,6 +468,106 @@ begin
   AddControls(FFrm);
 end;
 
+{ TImageListScaler }
+
+constructor TImageListScaler.Create(_Owner: TComponent; _Original: TImageList);
+begin
+  inherited Create(_Owner);
+  FOriginal := _Original;
+end;
+
+destructor TImageListScaler.Destroy;
+var
+  i: Integer;
+begin
+  // do not FOriginal.Free
+  for i := 0 to High(FScaledImages) do
+    FreeAndNil(FScaledImages[i].FImages);
+  inherited;
+end;
+
+function TImageListScaler.GetScaledList(_DPI: Integer): TImageList;
+var
+  i: Integer;
+  NewRec: PScaledImagesRec;
+begin
+  if _DPI = 96 then begin
+    Result := FOriginal;
+    Exit; //==>
+  end;
+  for i := Low(FScaledImages) to High(FScaledImages) do begin
+    if _DPI = FScaledImages[i].FDpi then begin
+      Result := FScaledImages[i].FImages;
+      Exit; //==>
+    end;
+  end;
+  i := Length(FScaledImages);
+  SetLength(FScaledImages, i + 1);
+  NewRec := @(FScaledImages[i]);
+  NewRec.FDpi := _DPI;
+  Result := ResizeImagesforHighDPI(_DPI);
+  NewRec.FImages := Result;
+end;
+
+procedure ClearBmp(_cnv: TCanvas); inline;
+begin
+  _cnv.FillRect(_cnv.ClipRect);
+end;
+
+// taken from
+// http://zarko-gajic.iz.hr/resizing-delphis-timagelist-bitmaps-to-fit-high-dpi-scaling-size-for-menus-toolbars-trees-etc/
+// but heavily modified for readability and performance
+function TImageListScaler.ResizeImagesforHighDPI(_DPI: Integer): TImageList;
+var
+  i: Integer;
+  OrigBmp, OrigMask: TBitmap;
+  ScaledBmp, ScaledMask: TBitmap;
+  OrigWidth: Integer;
+  OrigHeight: Integer;
+  ScaledWidth: Integer;
+  ScaledHeight: Integer;
+begin
+  Result := TImageList.Create(Self);
+
+  //set size to match DPI size (like 250% of 16px = 40px)
+  OrigWidth := FOriginal.Width;
+  OrigHeight := FOriginal.Height;
+  ScaledWidth := MulDiv(OrigWidth, _DPI, 96);
+  ScaledHeight := MulDiv(OrigHeight, _DPI, 96);
+
+  Result.SetSize(ScaledWidth, ScaledHeight);
+
+  InitializeNil(OrigMask, OrigBmp, ScaledBmp, ScaledMask);
+  try
+    OrigBmp := TBitmap.Create;
+    OrigMask := TBitmap.Create;
+    OrigBmp.SetSize(OrigWidth, OrigHeight);
+    OrigMask.SetSize(OrigWidth, OrigHeight);
+
+    ScaledBmp := TBitmap.Create;
+    ScaledMask := TBitmap.Create;
+    ScaledBmp.SetSize(ScaledWidth, ScaledHeight);
+    ScaledMask.SetSize(ScaledWidth, ScaledHeight);
+
+    // add images stretched
+    for i := 0 to FOriginal.Count - 1 do begin
+      ClearBmp(ScaledBmp.Canvas);
+      ClearBmp(ScaledMask.Canvas);
+      ClearBmp(OrigBmp.Canvas);
+      ClearBmp(OrigMask.Canvas);
+
+      ImageList_DrawEx(FOriginal.Handle, i, OrigBmp.Canvas.Handle, 0, 0, OrigBmp.Width, OrigBmp.Height, CLR_NONE, CLR_NONE, ILD_NORMAL);
+      ImageList_DrawEx(FOriginal.Handle, i, OrigMask.Canvas.Handle, 0, 0, OrigMask.Width, OrigMask.Height, CLR_NONE, CLR_NONE, ILD_MASK);
+
+      ScaledBmp.Canvas.StretchDraw(Rect(0, 0, ScaledBmp.Width, ScaledBmp.Width), OrigBmp);
+      ScaledMask.Canvas.StretchDraw(Rect(0, 0, ScaledMask.Width, ScaledMask.Width), OrigMask);
+      Result.Add(ScaledBmp, ScaledMask);
+    end;
+  finally
+    FreeAndNil(OrigMask, OrigBmp, ScaledBmp, ScaledMask);
+  end;
+end;
+
 {$IFDEF DPI_SCALER_LOGGING}
 initialization
   Assignfile(LogFile, 'd:\DpiScaling.log');
@@ -441,3 +576,4 @@ finalization
   CloseFile(LogFile);
 {$ENDIF}
 end.
+

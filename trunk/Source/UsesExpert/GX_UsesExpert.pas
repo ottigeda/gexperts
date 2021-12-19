@@ -15,6 +15,9 @@ uses
   Classes, Controls, Forms, Menus, ComCtrls, Buttons, ImgList, ImageList,
   ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types,
   u_dzSpeedBitBtn, u_dzStopwatch,
+{$IFDEF IDE_IS_HIDPI_AWARE}
+  u_dzDpiScaleUtils,
+{$ENDIF}
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
   GX_UnitExportsParser, GX_UsesExpertOptions, GX_UnitExportList,
   GX_OtaUtils;
@@ -368,6 +371,8 @@ type
     FUsesExpert: TUsesClauseMgrExpert;
 {$IFDEF IDE_IS_HIDPI_AWARE}
     FOldDPI: Integer;
+    // FImageScaler descends from TComponents and gets freed automatically
+    FImageScaler: TImageListScaler;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
   public
@@ -1592,11 +1597,20 @@ procedure TfmUsesManager.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
     _pnl.ClientHeight := _grp.Height;
   end;
 
+var
+  il: TImageList;
 begin
   if FOldDPI = 0 then
-    FOldDPI := CurrentPPI;
+    FOldDPI := TForm_CurrentPPI(Self);
   if Assigned(FScaler) then
     FScaler.ApplyDpi(_NewDpi, _NewBounds);
+
+  if not Assigned(FImageScaler) then
+    FImageScaler := TImageListScaler.Create(Self, il_MenuIcons);
+  il := FImageScaler.GetScaledList(_NewDpi);
+  pmuAvail.Images := il;
+  pmCopySaveProjectList.Images := il;
+  pmUCMStatusBar.Images := il;
 
   TStringGrid_AdjustRowHeight(sg_Interface);
   TStringGrid_AdjustRowHeight(sg_Implementation);

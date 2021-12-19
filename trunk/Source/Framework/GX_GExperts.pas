@@ -314,7 +314,7 @@ function TGExperts.GetScaledSharedDisabledImages(_Dpi: Integer): TImageList;
 begin
   Result := nil;
   if Assigned(SharedImages) then
-    Result := SharedImages.GetScaledDisabledImageas(_Dpi);
+    Result := SharedImages.GetScaledDisabledImages(_Dpi);
 end;
 
 function TGExperts.GetState: TWizardState;

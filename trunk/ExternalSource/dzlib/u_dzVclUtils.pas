@@ -517,6 +517,8 @@ type
 
 procedure TForm_MoveTo(_frm: TCustomForm; _Position: TdzWindowPositions);
 
+function TForm_CurrentPPI(_frm: TForm): Integer;
+
 ///<summary> Tries to convert the edit control text to a double, if an error occurs, it raises
 ///          an exception and optionally focuses the control.
 ///          @param ed is the edit control
@@ -4156,7 +4158,7 @@ end;
 
 procedure TControl_SetHint(_Ctrl: TControl; const _Hint: string);
 begin
-  _Ctrl.Hint := _Hint;
+  _Ctrl.hint := _Hint;
   _Ctrl.ShowHint := True;
 end;
 
@@ -4574,7 +4576,7 @@ function TForm_ReadPlacement(out _Bounds: TRectLTWH; const _RegEntry: TRegistryE
 var
   s: string;
   PosStr: string;
-  L, t, w, h: Integer;
+  l, t, w, h: Integer;
 begin
   if u_dzOsUtils.IsShiftDown then begin
     // if the user holds shift, do not restore the form's placement
@@ -4586,7 +4588,7 @@ begin
     Result := TRegistry_TryReadString(_RegEntry.KeyName, _RegEntry.ValueName, PosStr, _HKEY);
     if Result then begin
       s := ExtractStr(PosStr, ',');
-      if not TryStrToInt(s, L) then
+      if not TryStrToInt(s, l) then
         Exit; //==>
       s := ExtractStr(PosStr, ',');
       if not TryStrToInt(s, t) then
@@ -4598,7 +4600,7 @@ begin
       if not TryStrToInt(s, h) then
         Exit; //==>
 
-      _Bounds.Left := L;
+      _Bounds.Left := l;
       _Bounds.Top := t;
       _Bounds.Width := w;
       _Bounds.Height := h;
@@ -5044,7 +5046,7 @@ begin
   if (Offset < 0) or (cnt = 0) then
     Offset := SendMessage(_Memo.Handle, EM_LINELENGTH, 0, 0);
   SendMessage(_Memo.Handle, EM_SETSEL, 0, Offset);
-  SendMessage(_Memo.Handle, EM_REPLACESEL, 0, LongInt(EmptyStr)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
+  SendMessage(_Memo.Handle, EM_REPLACESEL, 0, Longint(EmptyStr)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end;
 
 function TMemo_GetCursorPos(_Memo: TMemo): Integer;
@@ -5813,12 +5815,12 @@ constructor TWinControlLocker.Create(_Ctrl: TWinControl);
 begin
   inherited Create;
   FCtrl := _Ctrl;
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(False)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(False)), 0);
 end;
 
 destructor TWinControlLocker.Destroy;
 begin
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(True)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(True)), 0);
   RedrawWindow(FCtrl.Handle, nil, 0, RDW_ERASE or RDW_INVALIDATE or RDW_ALLCHILDREN);
   inherited;
 end;
@@ -5874,8 +5876,8 @@ end;
 procedure TdzButtonedEdit.Loaded;
 begin
   inherited;
-  if RightButton.Visible and (RightButton.Hint = '') then begin
-    RightButton.Hint := _('Ctrl+Return to ''click'' right button.');
+  if RightButton.Visible and (RightButton.hint = '') then begin
+    RightButton.hint := _('Ctrl+Return to ''click'' right button.');
     ShowHint := True;
   end;
 end;
@@ -6757,6 +6759,15 @@ begin
   _frm.BoundsRect := re;
 end;
 
+function TForm_CurrentPPI(_frm: TForm): Integer;
+begin
+{$IFDEF HAS_TFORM_CURRENTPPI}
+  Result := _frm.CurrentPPI;
+{$ELSE}
+  Result := Screen.PixelsPerInch;
+{$ENDIF}
+end;
+
 { TFormCtrlAltPositioningActivator }
 
 constructor TFormPositioningActivator.Create(_Form: TForm; _Modifier: TShiftState);
@@ -6863,7 +6874,7 @@ var
   tb: TTrackBar;
 begin
   tb := TrackBar;
-  tb.Hint := IntToStr(tb.Position);
+  tb.hint := IntToStr(tb.Position);
   Application.ActivateHint(Mouse.CursorPos);
   doOnChange(_Sender);
 end;
@@ -7078,3 +7089,4 @@ initialization
 finalization
   FreeAndNil(gblCheckListBoxHelper);
 end.
+
