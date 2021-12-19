@@ -975,6 +975,7 @@ inherited fmUsesManager: TfmUsesManager
     Top = 80
   end
   object ActionList: TActionList
+    Images = il_MenuIcons
     OnUpdate = ActionListUpdate
     Left = 42
     Top = 56
@@ -1011,34 +1012,38 @@ inherited fmUsesManager: TfmUsesManager
     object actAvailAddToFav: TAction
       Category = 'Avail'
       Caption = '&Add to Favorites...'
-      ImageIndex = 41
+      ImageIndex = 5
       OnExecute = actAvailAddToFavExecute
     end
     object actAddToInterfaceMenu: TAction
       Category = 'AddMenu'
       Caption = 'Add to Interfa&ce'
+      ImageIndex = 7
       OnExecute = actAddToInterfaceExecute
     end
     object actAddToImplementationMenu: TAction
       Category = 'AddMenu'
       Caption = 'Add to Imp&lementation'
+      ImageIndex = 6
       OnExecute = actAddToImplementationExecute
     end
     object actOpenUnit: TAction
       Caption = 'Open Unit'
       Hint = 'Open selected unit (Ctrl+Double Click)'
-      ImageIndex = 1
+      ImageIndex = 4
       ShortCut = 16463
       OnExecute = actOpenUnitExecute
     end
     object actIntfAddToFavorites: TAction
       Category = 'Intf'
       Caption = 'Add to Favorites'
+      ImageIndex = 5
       OnExecute = actIntfAddToFavoritesExecute
     end
     object actImplAddToFavorites: TAction
       Category = 'Impl'
       Caption = 'Add to Favorites'
+      ImageIndex = 5
       OnExecute = actImplAddToFavoritesExecute
     end
     object actUnAlias: TAction
@@ -1064,6 +1069,7 @@ inherited fmUsesManager: TfmUsesManager
     object actFavAddUnit: TAction
       Category = 'Fav'
       Caption = 'Add Unit ...'
+      ImageIndex = 5
       OnExecute = actFavAddUnitExecute
     end
     object actAvailAddAllToFav: TAction
@@ -1104,6 +1110,7 @@ inherited fmUsesManager: TfmUsesManager
     Top = 248
   end
   object pm_Favorite: TPopupMenu
+    Images = il_MenuIcons
     OnPopup = pm_FavoritePopup
     Left = 560
     Top = 112

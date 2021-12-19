@@ -362,6 +362,7 @@ type
     procedure ShowIdentifiersFilterResult(const cnt: Integer);
     procedure ShowSelectedUnitPathInStatusBar(const ARow: Integer);
     procedure sb_MatchWhereClick(Sender: TObject);
+    procedure AssignMenuIcons(_il: TImageList);
   protected
     FProjectUnits: TStringList;
     FCommonUnits: TStringList;
@@ -858,6 +859,7 @@ end;
 constructor TfmUsesManager.Create(_Owner: TComponent; _UsesExpert: TUsesClauseMgrExpert);
 var
   StopWatch: TStopwatch;
+  il: TImageList;
 begin
 {$IFOPT D+}
   SendDebug('TfmUsesManager.Create Enter');
@@ -899,11 +901,26 @@ begin
   TControl_SetMinConstraints(Self);
   pnlUses.Constraints.MinWidth := pnlUses.Width;
 
+  // The image list assignments tend to get lost in the designer, so we assign them in code
+  il := il_MenuIcons;
+  AssignMenuIcons(il);
+
   InitDpiScaler;
 
 {$IFOPT D+}
   SendDebug('TfmUsesManager.Create Leave');
 {$ENDIF D+}
+end;
+
+procedure TfmUsesManager.AssignMenuIcons(_il: TImageList);
+begin
+  ActionList.Images := _il;
+  pmuAvail.Images := _il;
+  pmCopySaveProjectList.Images := _il;
+  pmUCMStatusBar.Images := _il;
+  pm_Favorite.Images := _il;
+  pm_Intf.Images := _il;
+  pm_Impl.Images := _il;
 end;
 
 procedure TfmUsesManager.GetProjectUnits;
@@ -1608,9 +1625,7 @@ begin
   if not Assigned(FImageScaler) then
     FImageScaler := TImageListScaler.Create(Self, il_MenuIcons);
   il := FImageScaler.GetScaledList(_NewDpi);
-  pmuAvail.Images := il;
-  pmCopySaveProjectList.Images := il;
-  pmUCMStatusBar.Images := il;
+  AssignMenuIcons(il);
 
   TStringGrid_AdjustRowHeight(sg_Interface);
   TStringGrid_AdjustRowHeight(sg_Implementation);
