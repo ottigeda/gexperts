@@ -2772,6 +2772,8 @@ begin
 end;
 
 procedure ConvertBitmapToIcon(const Bitmap: Graphics.TBitmap; Icon: TIcon);
+var
+  il: TImageList;
 begin
   if (not Assigned(Bitmap)) or (not Assigned(Icon)) then
   begin
@@ -2782,12 +2784,12 @@ begin
   Assert(Assigned(Bitmap));
   Assert(Assigned(Icon));
 
-  with TImageList.CreateSize(Bitmap.Width, Bitmap.Height) do
+  il := TImageList.CreateSize(Bitmap.Width, Bitmap.Height);
   try
-    AddMasked(Bitmap, Bitmap.TransparentColor);
-    GetIcon(0, Icon);
+    il.AddMasked(Bitmap, Bitmap.TransparentColor);
+    il.GetIcon(0, Icon);
   finally
-    Free;
+    il.Free;
   end;
 end;
 
@@ -4913,11 +4915,9 @@ initialization
       RichEditVersion := 2;
       Ver.dwOSVersionInfoSize := SizeOf(Ver);
       GetVersionEx(Ver);
-      with Ver do begin
-        if (dwPlatformId = VER_PLATFORM_WIN32_NT) and
-          (dwMajorVersion >= 5) then
-          RichEditVersion := 3;
-      end;
+      if (Ver.dwPlatformId = VER_PLATFORM_WIN32_NT) and
+        (Ver.dwMajorVersion >= 5) then
+        RichEditVersion := 3;
     end;
   finally
     SetErrorMode(OldError);
