@@ -133,7 +133,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Windows, Registry, StrUtils,
-  u_dzCompilerAndRtlVersions, u_dzStringUtils,
+  u_dzCompilerAndRtlVersions, u_dzClassUtils, u_dzStringUtils,
   GX_GenericUtils, GX_OtaUtils, GX_GxUtils;
 
 function GetIdeMainForm: TCustomForm;
@@ -370,51 +370,25 @@ function GetIdeRootDirectory: string;
 const
   BinDirPostfix = PathDelim + 'Bin';
 begin
-  Result := '';
-
-  try
-    with TRegistry.Create do
-    try
-      RootKey := HKEY_LOCAL_MACHINE;
-      if OpenKeyReadOnly(GxOtaGetIdeBaseRegistryKey) then
-      begin
-        Result := ReadString('RootDir');
-        CloseKey;
-      end;
-    finally
-      Free;
+  if TRegistry_TryReadString(GxOtaGetIdeBaseRegistryKey, 'RootDir', Result, HKEY_LOCAL_MACHINE) then begin
+    if DirectoryExists(Result) then begin
+      Result := AddSlash(Result);
+      Exit; //==>
     end;
-  except
-    on E: Exception do
-      GxLogException(E, 'Error in GetIdeRootDirectory');
   end;
 
-  if not DirectoryExists(Result) then
-  begin
-    Result := RemoveSlash(ExtractFilePath(Application.ExeName));
-    if SameText(RightStr(Result, Length(BinDirPostfix)), BinDirPostfix) then
-      Result := DeleteRight(Result, Length(BinDirPostfix))
-    else
-      Result := '';
-  end;
-  Result := AddSlash(Result);
+  // There is no entry in the registry or it is invalid -> use the application's exename
+  Result := RemoveSlash(ExtractFilePath(Application.ExeName));
+  if SameText(RightStr(Result, Length(BinDirPostfix)), BinDirPostfix) then begin
+    Result := DeleteRight(Result, Length(BinDirPostfix));
+    Result := AddSlash(Result);
+  end else
+    Result := '';
 end;
 
 function GetIdeEdition: string;
 begin
-  Result := '';
-
-  with TRegistry.Create do
-  try
-    RootKey := HKEY_LOCAL_MACHINE;
-    if OpenKeyReadOnly(GxOtaGetIdeBaseRegistryKey) then
-    begin
-      Result := ReadString('Version');
-      CloseKey;
-    end;
-  finally
-    Free;
-  end;
+  Result := TRegistry_ReadString(GxOtaGetIdeBaseRegistryKey, 'Version', '', HKEY_LOCAL_MACHINE);
 end;
 
 
