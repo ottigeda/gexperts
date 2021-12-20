@@ -1574,18 +1574,18 @@ inherited fmUsesManager: TfmUsesManager
     Left = 432
     Top = 408
     object mCopyThisTextToTheClipboard: TMenuItem
-      Caption = 'Copy this TEXT to the clipboard'
+      Caption = 'Copy this text to the clipboard'
       Default = True
       ImageIndex = 0
       OnClick = mCopyThisTextToTheClipboardClick
     end
     object mCopyThisFileToTheClipboard: TMenuItem
-      Caption = 'Copy this FILE to the clipboard'
+      Caption = 'Copy this file to the clipboard'
       ImageIndex = 2
       OnClick = mCopyThisFileToTheClipboardClick
     end
     object mShowThisFileInWindowsExplorer: TMenuItem
-      Caption = 'Open Location of this File'
+      Caption = 'Open location of this file'
       ImageIndex = 3
       OnClick = mShowThisFileInWindowsExplorerClick
     end
