@@ -13,8 +13,6 @@ inherited fmUsesManager: TfmUsesManager
   Font.Style = []
   KeyPreview = True
   OnClose = FormClose
-  OnCreate = FormCreate
-  OnDestroy = FormDestroy
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
@@ -864,12 +862,19 @@ inherited fmUsesManager: TfmUsesManager
       'DOUBLE-click on this Status Bar to copy the text displayed on th' +
       'e Status Bar to the Clipboard.'#13#10'Or RIGHT-click on the Status Bar' +
       ' to show a popup menu with more options.'
-    Panels = <>
+    Panels = <
+      item
+        Text = 'filename goes here'
+        Width = 250
+      end
+      item
+        Text = 'line number goes here'
+        Width = 50
+      end>
     ParentFont = True
     ParentShowHint = False
     PopupMenu = pmUCMStatusBar
     ShowHint = True
-    SimplePanel = True
     UseSystemFont = False
     OnDblClick = sbUCMDblClick
   end

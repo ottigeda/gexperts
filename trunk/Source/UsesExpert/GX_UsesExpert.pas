@@ -225,8 +225,6 @@ type
     mitAvailSep3: TMenuItem;
     mCopyThisIdentifierToTheClipboard: TMenuItem;
     mSearchThisOnTheWeb: TMenuItem;
-    procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure sg_ImplementationDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure sg_InterfaceDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -363,6 +361,8 @@ type
     procedure ShowSelectedUnitPathInStatusBar(const ARow: Integer);
     procedure sb_MatchWhereClick(Sender: TObject);
     procedure AssignMenuIcons(_il: TImageList);
+    procedure InitializeForm;
+    procedure FinalizeForm;
   protected
     FProjectUnits: TStringList;
     FCommonUnits: TStringList;
@@ -378,6 +378,7 @@ type
 {$ENDIF}
   public
     constructor Create(_Owner: TComponent; _UsesExpert: TUsesClauseMgrExpert); reintroduce;
+    destructor Destroy; override;
   end;
 
 implementation
@@ -385,7 +386,7 @@ implementation
 {$R *.dfm}
 
 uses
-  Messages, Graphics, StrUtils, Math, ToolsAPI, Clipbrd,
+  CommCtrl, Messages, Graphics, StrUtils, Math, ToolsAPI, Clipbrd, FileCtrl,
   u_dzVclUtils, u_dzMapFileReader, u_dzFileUtils, u_dzOsUtils, u_dzClassUtils, u_dzStringUtils,
   GX_IdeUtils, GX_UsesManager, GX_GetIdeVersion,
 {$IFOPT D+}
@@ -907,9 +908,20 @@ begin
 
   InitDpiScaler;
 
+  // call the code that previously was in the FormCreate event
+  InitializeForm;
+
 {$IFOPT D+}
   SendDebug('TfmUsesManager.Create Leave');
 {$ENDIF D+}
+end;
+
+destructor TfmUsesManager.Destroy;
+begin
+  // call the code that previously was in the FormDestroy event
+  FinalizeForm;
+
+  inherited;
 end;
 
 procedure TfmUsesManager.AssignMenuIcons(_il: TImageList);
@@ -1016,7 +1028,8 @@ begin
     SaveFavorites;
 end;
 
-procedure TfmUsesManager.FormCreate(Sender: TObject);
+// this used to be the FormCreate event
+procedure TfmUsesManager.InitializeForm;
 
   function RetrieveEditorBlockSelection: string;
   var
@@ -1125,7 +1138,8 @@ begin
   end;
 end;
 
-procedure TfmUsesManager.FormDestroy(Sender: TObject);
+// this used to be the FormDestroy event
+procedure TfmUsesManager.FinalizeForm;
 begin
   tim_Progress.Enabled := False;
 
@@ -1266,7 +1280,8 @@ end;
 
 procedure TfmUsesManager.pcUnitsChange(Sender: TObject);
 begin
-  sbUCM.SimpleText := ''; // keep it consistent
+  sbUCM.Panels[0].Text := '';
+  sbUCM.Panels[1].Text := '';
 
   if pcUnits.ActivePage = tabIdentifiers then
   begin
@@ -2982,7 +2997,7 @@ end;
 
 procedure TfmUsesManager.sbUCMDblClick(Sender: TObject);
 begin
-  if sbUCM.SimpleText <> '' then
+  if sbUCM.Panels[0].Text <> '' then
   begin
     // Todo: if IsCtrlDown then show and select the file in Windows Explorer
     CopyStatusBarTextToClipboard;
@@ -2990,13 +3005,18 @@ begin
 end;
 
 procedure TfmUsesManager.CopyStatusBarTextToClipboard;
+var
+  s: string;
 begin
-  Clipboard.AsText := sbUCM.SimpleText;
+  s := sbUCM.Panels[0].Text;
+  if sbUCM.Panels[1].Text <> '' then
+    s := s + ':' + sbUCM.Panels[1].Text;
+  Clipboard.AsText := s;
 end;
 
 procedure TfmUsesManager.mCopyThisFileToTheClipboardClick(Sender: TObject);
 begin
-  CopyFileToClipboard(sbUCM.SimpleText);
+  CopyFileToClipboard(sbUCM.Panels[0].Text);
 end;
 
 procedure TfmUsesManager.mCopyThisIdentifierToTheClipboardClick(Sender: TObject);
@@ -3019,7 +3039,7 @@ end;
 
 procedure TfmUsesManager.mShowThisFileInWindowsExplorerClick(Sender: TObject);
 begin
-  OpenExplorerAndSelectFile(sbUCM.SimpleText);
+  OpenExplorerAndSelectFile(sbUCM.Panels[0].Text);
 end;
 
 procedure TfmUsesManager.pmuAvailPopup(Sender: TObject);
@@ -3037,11 +3057,12 @@ end;
 procedure TfmUsesManager.pmUCMStatusBarPopup(Sender: TObject);
 var
   StatusBarFileExists: Boolean;
+  fn: string;
 begin
-  if sbUCM.SimpleText = '' then
+  fn := sbUCM.Panels[0].Text;
+  if fn = '' then
     Abort;
-
-  StatusBarFileExists := FileExists(sbUCM.SimpleText);
+  StatusBarFileExists := FileExists(fn);
   mCopyThisFileToTheClipboard.Enabled := StatusBarFileExists;
   mShowThisFileInWindowsExplorer.Enabled := StatusBarFileExists;
 end;
@@ -3092,6 +3113,40 @@ begin
   ShowSelectedUnitPathInStatusBar(ARow);
 end;
 
+procedure TStatusBar_SetFilenamePanel(_sb: TStatusBar; _PanelIdx: Integer; const _Text: string);
+var
+  Borders: array[0..2] of Integer;
+  PanelWidth: Integer;
+  MaxWidth: Integer;
+  txt: string;
+  i: Integer;
+begin
+  // calculate a little indent on both sides of the text (credit @TLama)
+  SendMessage(_sb.Handle, SB_GETBORDERS, 0, LPARAM(@Borders));
+
+  _sb.Canvas.Font := _sb.Font;
+
+  // Metermine the maximum allowed width for this panel, based on the width of the status bar
+  // and the width of the other panels.
+  MaxWidth := _sb.Width;
+  for i := 0 to _sb.Panels.Count - 1 do begin
+    if i <> _PanelIdx then begin
+      MaxWidth := MaxWidth - 2 * Borders[1] - 2 - _sb.Panels[i].Width;
+    end;
+  end;
+
+  txt := _Text;
+  PanelWidth := _sb.Canvas.TextWidth(txt) + 2 * Borders[1] + 2;
+  if PanelWidth > MaxWidth then begin
+    // if the text is too long, reduce it
+    txt := MinimizeName(TFileName(txt), _sb.Canvas, MaxWidth);
+    // and recalculate the required width
+    PanelWidth := _sb.Canvas.TextWidth(txt) + 2 * Borders[1] + 2;
+  end;
+  _sb.Panels[_PanelIdx].Text := txt;
+  _sb.Panels[_PanelIdx].Width := PanelWidth;
+end;
+
 procedure TfmUsesManager.ShowSelectedUnitPathInStatusBar(const ARow: Integer);
 var
   ThisSrc: TStringGrid;
@@ -3111,12 +3166,17 @@ begin
     Obj := ThisSrc.Objects[ThisUnitCol, ARow];
     if Assigned(Obj) then begin
       Item := obj as TUnitExport;
-      sbUCM.SimpleText := Format('%s:%d', [Item.FileName, Item.LineNo]);
+      TStatusBar_SetFilenamePanel(sbUCM, 0, Item.FileName);
+      sbUCM.Hint := Item.FileName + #13#10
+        + 'Double click on this Status Bar to copy the text displayed on the Status Bar to the Clipboard.'#13#10
+        + 'Or right click on the Status Bar to show a popup menu with more options.';
+      sbUCM.Panels[1].Text := IntToStr(Item.LineNo);
     end;
   end else begin
     ThisUnitName := ThisSrc.Cells[ThisUnitCol, ARow];
     if ThisUnitName = '' then begin
-      sbUCM.SimpleText := '';
+      sbUCM.Panels[0].Text := '';
+      sbUCM.Panels[1].Text := '';
     end else begin
       if FSearchPathUnits.Find(ThisUnitName, Idx) then
         ThisUnitNamePtr := PChar(FSearchPathUnits.Objects[Idx])
@@ -3126,10 +3186,12 @@ begin
       end;
       if Assigned(ThisUnitNamePtr) then begin
         ThisFullFileName := ThisUnitNamePtr;
-        sbUCM.SimpleText := ThisFullFileName;
+      sbUCM.Panels[0].Text := ThisFullFileName;
+      sbUCM.Panels[1].Text := '';
       end else if GxOtaTryFindPathToFile(ThisUnitName + '.pas', ThisFullFileName)
         or GxOtaTryFindPathToFile(ThisUnitName + '.dcu', ThisFullFileName) then begin
-        sbUCM.SimpleText := ThisFullFileName;
+        sbUCM.Panels[0].Text := ThisFullFileName;
+        sbUCM.Panels[1].Text := '';
         if Idx = -1 then begin
 {$IFOPT D+}SendDebugFmt('Unit %s not found in SearchPathUnits', [ThisUnitName]);
 {$ENDIF}
@@ -3139,8 +3201,10 @@ begin
           ThisUnitNamePtr := StrNew(PChar(ThisFullFileName));
           FSearchPathUnits.Objects[Idx] := Pointer(ThisUnitNamePtr);
         end;
-      end else
-        sbUCM.SimpleText := '';
+      end else begin
+        sbUCM.Panels[0].Text := '';
+        sbUCM.Panels[1].Text := '';
+      end;
     end;
   end;
 end;
