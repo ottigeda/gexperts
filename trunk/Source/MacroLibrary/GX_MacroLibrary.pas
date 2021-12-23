@@ -106,8 +106,6 @@ type
     mitShowToolbar: TMenuItem;
     actViewDescription: TAction;
     mitShowDescription: TMenuItem;
-    ilLarge: TImageList;
-    ilSmall: TImageList;
     actFileSave: TAction;
     actFileLoad: TAction;
     tbnSep3: TToolButton;
