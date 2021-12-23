@@ -157,6 +157,7 @@ uses
   GX_SharedImages in '..\..\source\Framework\GX_SharedImages.pas' {dmSharedImages: TDataModule},
   GX_SourceExport in '..\..\source\SourceExport\GX_SourceExport.pas' {fmSourceExport},
   GX_SourceExportOptions in '..\..\source\SourceExport\GX_SourceExportOptions.pas' {fmSourceExportOptions},
+  GX_StringList in '..\..\Source\Utils\GX_StringList.pas',
   GX_SynMemoUtils in '..\..\source\Framework\GX_SynMemoUtils.pas',
   GX_TabOrder in '..\..\source\TabOrder\GX_TabOrder.pas' {fmTabOrder},
   GX_ToDo in '..\..\source\ToDoList\GX_ToDo.pas' {fmToDo},
@@ -219,7 +220,6 @@ uses
   GX_IdeManagedForm in '..\..\Source\IDE\GX_IdeManagedForm.pas',
   GX_IdeFormChangeManager in '..\..\Source\IDE\GX_IdeFormChangeManager.pas',
   GX_IdeManagedFormHandler in '..\..\Source\IDE\GX_IdeManagedFormHandler.pas',
-  GX_ConfigureFormEnhancements in '..\..\Source\Framework\GX_ConfigureFormEnhancements.pas' {frConfigureFormEnhancements: TFrame},
   GX_UsageStatistics in '..\..\Source\Framework\GX_UsageStatistics.pas' {fmUsageStatistics},
   GX_UnitExportsParser in '..\..\Source\Framework\GX_UnitExportsParser.pas',
   GX_DummyWizard in '..\..\Source\Framework\GX_DummyWizard.pas',
@@ -244,7 +244,7 @@ uses
   GX_FilterExceptionsNotification in '..\..\Source\FilterExceptions\GX_FilterExceptionsNotification.pas' {fmExceptionNotification},
   GX_ExplicitFilterExpert in '..\..\Source\ExplicitFilter\GX_ExplicitFilterExpert.pas' {fmGxExplicitFilter},
   GX_StringGridDrawFix in '..\..\Source\Utils\GX_StringGridDrawFix.pas',
-  GX_StringList in '..\..\Source\Utils\GX_StringList.pas';
+  GX_EditPath in '..\..\Source\EditPath\GX_EditPath.pas' {f_EditPath};
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}

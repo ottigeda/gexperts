@@ -7,7 +7,7 @@ interface
 uses
   Windows, Classes, Graphics, Controls, Forms, Dialogs, Menus,
   StdCtrls, ComCtrls, ExtCtrls, GX_BaseForm,
-  GX_ConfigureExperts, GX_ConfigureFormEnhancements;
+  GX_ConfigureExperts;
 
 type
   TfmConfiguration = class(TfmBaseForm)
@@ -107,7 +107,6 @@ type
     chkEnhanceBuildEventsDialog: TCheckBox;
     chkEnhanceApplicationSettingsDialog: TCheckBox;
     lblHideNavBar: TLabel;
-    tshFormEnhancements: TTabSheet;
     btnUsage: TButton;
     chkAutoCloseMessage: TCheckBox;
     tshOldIdes: TTabSheet;
@@ -161,7 +160,6 @@ type
     FCPFont: TFont;
     FConfigEditorExpertsFrame: TfrConfigureExperts;
     FConfigExpertsFrame: TfrConfigureExperts;
-    FConfigFormEnhancementsFrame: TfrConfigureFormEnhancements;
     procedure HideUnsupportedIdeItems;
     procedure HideUnsupportedEditorItems;
 
@@ -291,16 +289,6 @@ begin
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
   if TryGetIdeDesktops(Desktops) then
     cbxDesktop.Items.Assign(Desktops);
-{$ENDIF}
-
-{$IFOPT D+} // DebugInfo
-  FConfigFormEnhancementsFrame := TfrConfigureFormEnhancements.Create(Self);
-  FConfigFormEnhancementsFrame.Parent := tshFormEnhancements;
-  FConfigFormEnhancementsFrame.Align := alClient;
-  AdjustMinSize(FConfigFormEnhancementsFrame);
-  FConfigFormEnhancementsFrame.InitGrid;
-{$ELSE}
-  tshFormEnhancements.TabVisible := False;
 {$ENDIF}
 
   ActiveControl := FConfigExpertsFrame.edtFilter;
@@ -489,8 +477,6 @@ begin
     FConfigExpertsFrame.SaveExperts;
     FConfigEditorExpertsFrame.SaveExperts;
     SaveIdeEnhancements;
-    if Assigned(FConfigFormEnhancementsFrame) then
-      FConfigFormEnhancementsFrame.ApplyGrid;
     SaveEditorEnhancements;
     ConfigInfo.SaveSettings;
     GXMenuActionManager.ArrangeMenuItems;

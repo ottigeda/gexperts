@@ -67,7 +67,7 @@ uses
   GX_Experts in '..\..\source\Framework\GX_Experts.pas',
   GX_FavFileProp in '..\..\source\FavoriteFiles\GX_FavFileProp.pas' {fmFavFileProp},
   GX_FavFiles in '..\..\source\FavoriteFiles\GX_FavFiles.pas' {fmFavFiles},
-  GX_FavFolderProp in '..\..\source\FavoriteFiles\GX_FavFolderProp.pas',
+  GX_FavFolderProp in '..\..\source\FavoriteFiles\GX_FavFolderProp.pas' {fmFavFolderProperties},
   GX_FavNewFolder in '..\..\source\FavoriteFiles\GX_FavNewFolder.pas' {fmFavNewFolder},
   GX_FavOptions in '..\..\source\FavoriteFiles\GX_FavOptions.pas' {fmFavOptions},
   GX_FavUtil in '..\..\source\FavoriteFiles\GX_FavUtil.pas',
@@ -124,7 +124,7 @@ uses
   GX_OpenFile in '..\..\source\OpenFile\GX_OpenFile.pas' {fmOpenFile},
   GX_OpenFileConfig in '..\..\source\OpenFile\GX_OpenFileConfig.pas' {fmOpenFileConfig},
   GX_OtaUtils in '..\..\source\Utils\GX_OtaUtils.pas',
-  GX_PeInformation in '..\..\source\PeInfo\GX_PeInformation.pas' {fmPeInformation},
+  GX_PeInformation in '..\..\source\PeInfo\GX_PeInformation.pas',
   GX_ProcedureList in '..\..\source\ProcedureList\GX_ProcedureList.pas' {fmProcedureList},
   GX_ProcedureListOptions in '..\..\source\ProcedureList\GX_ProcedureListOptions.pas' {fmProcedureListOptions},
   GX_Progress in '..\..\source\Framework\GX_Progress.pas' {fmProgress},
@@ -157,6 +157,7 @@ uses
   GX_SharedImages in '..\..\source\Framework\GX_SharedImages.pas' {dmSharedImages: TDataModule},
   GX_SourceExport in '..\..\source\SourceExport\GX_SourceExport.pas' {fmSourceExport},
   GX_SourceExportOptions in '..\..\source\SourceExport\GX_SourceExportOptions.pas' {fmSourceExportOptions},
+  GX_StringList in '..\..\Source\Utils\GX_StringList.pas',
   GX_SynMemoUtils in '..\..\source\Framework\GX_SynMemoUtils.pas',
   GX_TabOrder in '..\..\source\TabOrder\GX_TabOrder.pas' {fmTabOrder},
   GX_ToDo in '..\..\source\ToDoList\GX_ToDo.pas' {fmToDo},
@@ -219,7 +220,6 @@ uses
   GX_IdeManagedForm in '..\..\Source\IDE\GX_IdeManagedForm.pas',
   GX_IdeFormChangeManager in '..\..\Source\IDE\GX_IdeFormChangeManager.pas',
   GX_IdeManagedFormHandler in '..\..\Source\IDE\GX_IdeManagedFormHandler.pas',
-  GX_ConfigureFormEnhancements in '..\..\Source\Framework\GX_ConfigureFormEnhancements.pas' {frConfigureFormEnhancements: TFrame},
   GX_UsageStatistics in '..\..\Source\Framework\GX_UsageStatistics.pas' {fmUsageStatistics},
   GX_UnitExportsParser in '..\..\Source\Framework\GX_UnitExportsParser.pas',
   GX_DummyWizard in '..\..\Source\Framework\GX_DummyWizard.pas',
@@ -244,7 +244,6 @@ uses
   GX_FilterExceptionsNotification in '..\..\Source\FilterExceptions\GX_FilterExceptionsNotification.pas' {fmExceptionNotification},
   GX_ExplicitFilterExpert in '..\..\Source\ExplicitFilter\GX_ExplicitFilterExpert.pas' {fmGxExplicitFilter},
   GX_StringGridDrawFix in '..\..\Source\Utils\GX_StringGridDrawFix.pas',
-  GX_StringList in '..\..\Source\Utils\GX_StringList.pas',
   GX_EditPath in '..\..\Source\EditPath\GX_EditPath.pas' {f_EditPath};
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}

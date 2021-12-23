@@ -66,7 +66,7 @@ uses
   GX_Experts in '..\..\source\Framework\GX_Experts.pas',
   GX_FavFileProp in '..\..\source\FavoriteFiles\GX_FavFileProp.pas' {fmFavFileProp},
   GX_FavFiles in '..\..\source\FavoriteFiles\GX_FavFiles.pas' {fmFavFiles},
-  GX_FavFolderProp in '..\..\source\FavoriteFiles\GX_FavFolderProp.pas',
+  GX_FavFolderProp in '..\..\source\FavoriteFiles\GX_FavFolderProp.pas' {fmFavFolderProperties},
   GX_FavNewFolder in '..\..\source\FavoriteFiles\GX_FavNewFolder.pas' {fmFavNewFolder},
   GX_FavOptions in '..\..\source\FavoriteFiles\GX_FavOptions.pas' {fmFavOptions},
   GX_FavUtil in '..\..\source\FavoriteFiles\GX_FavUtil.pas',
@@ -219,7 +219,6 @@ uses
   GX_IdeManagedForm in '..\..\Source\IDE\GX_IdeManagedForm.pas',
   GX_IdeFormChangeManager in '..\..\Source\IDE\GX_IdeFormChangeManager.pas',
   GX_IdeManagedFormHandler in '..\..\Source\IDE\GX_IdeManagedFormHandler.pas',
-  GX_ConfigureFormEnhancements in '..\..\Source\Framework\GX_ConfigureFormEnhancements.pas' {frConfigureFormEnhancements: TFrame},
   GX_UsageStatistics in '..\..\Source\Framework\GX_UsageStatistics.pas' {fmUsageStatistics},
   GX_UnitExportsParser in '..\..\Source\Framework\GX_UnitExportsParser.pas',
   GX_DummyWizard in '..\..\Source\Framework\GX_DummyWizard.pas',
@@ -244,7 +243,7 @@ uses
   GX_FilterExceptionsNotification in '..\..\Source\FilterExceptions\GX_FilterExceptionsNotification.pas' {fmExceptionNotification},
   GX_ExplicitFilterExpert in '..\..\Source\ExplicitFilter\GX_ExplicitFilterExpert.pas' {fmGxExplicitFilter},
   GX_StringGridDrawFix in '..\..\Source\Utils\GX_StringGridDrawFix.pas',
-  GX_EditPath in '..\..\Source\editpath\GX_EditPath.pas' {f_EditPath};
+  GX_EditPath in '..\..\Source\EditPath\GX_EditPath.pas' {f_EditPath};
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}

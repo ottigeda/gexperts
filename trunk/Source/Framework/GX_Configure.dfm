@@ -666,9 +666,6 @@ object fmConfiguration: TfmConfiguration
           TabOrder = 2
         end
       end
-      object tshFormEnhancements: TTabSheet
-        Caption = 'Forms'
-      end
       object tshSuppressedMessages: TTabSheet
         Caption = 'Suppressed Messages'
         ImageIndex = 6
