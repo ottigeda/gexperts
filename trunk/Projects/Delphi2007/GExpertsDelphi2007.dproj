@@ -281,7 +281,9 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\FavoriteFiles\GX_FavFiles.pas">
             <Form>fmFavFiles</Form>
         </DCCReference>
-        <DCCReference Include="..\..\source\FavoriteFiles\GX_FavFolderProp.pas"/>
+        <DCCReference Include="..\..\source\FavoriteFiles\GX_FavFolderProp.pas">
+            <Form>fmFavFolderProperties</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\FavoriteFiles\GX_FavNewFolder.pas">
             <Form>fmFavNewFolder</Form>
         </DCCReference>
@@ -346,10 +348,6 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         </DCCReference>
         <DCCReference Include="..\..\Source\Framework\GX_ConfigureExperts.pas">
             <Form>frConfigureExperts</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="..\..\Source\Framework\GX_ConfigureFormEnhancements.pas">
-            <Form>frConfigureFormEnhancements</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_Consts.pas"/>
