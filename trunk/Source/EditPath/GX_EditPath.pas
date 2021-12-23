@@ -269,7 +269,7 @@ var
   BuildCfg: IOTABuildConfiguration;
 {$ENDIF}
 {$IFDEF GX_DELPHIXE2_UP}
-  PrjPlatforms: TArray<string>;
+//  PrjPlatforms: TArray<string>;
   PlatformCfg: IOTABuildConfiguration;
 {$ENDIF}
 begin
