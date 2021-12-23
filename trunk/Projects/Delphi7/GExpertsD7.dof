@@ -1,6 +1,5 @@
 [FileVersion]
 Version=7.0
-
 [Compiler]
 A=8
 B=0
@@ -80,7 +79,6 @@ PrivatePropAccessor=1
 UnsafeType=0
 UnsafeCode=0
 UnsafeCast=0
-
 [Linker]
 MapFile=0
 OutputObjs=0
@@ -91,7 +89,6 @@ MinStackSize=16384
 MaxStackSize=1048576
 ImageBase=5242880
 ExeDescription=
-
 [Directories]
 OutputDir=..\..\Binaries
 UnitOutputDir=dcu
@@ -102,14 +99,12 @@ Packages=rtl;vcl;vclx;vclsmp;designide;vcljpg
 Conditionals=NO_TRANSLATION;NO_TRANSLATION_HINT
 DebugSourceDirs=
 UsePackages=1
-
 [Parameters]
 RunParams=-ns -np
 HostApplication=C:\Delphi\Delphi7\Bin\delphi32.exe
 Launcher=
 UseLauncher=0
 DebugCWD=
-
 [Version Info]
 IncludeVerInfo=0
 AutoIncBuild=0
@@ -124,7 +119,6 @@ Private=0
 DLL=1
 Locale=1033
 CodePage=1252
-
 [Version Info Keys]
 CompanyName=Erik Berry and the GExperts Development Team
 FileDescription=GExperts for Delphi 7
