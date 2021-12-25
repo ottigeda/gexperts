@@ -125,7 +125,7 @@
 			<Directories Name="PackageDCPOutputDir" Type="String"></Directories>
 			<Directories Name="SearchPath" Type="String">..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\source\Include;..\..\externalsource\ddetours</Directories>
 			<Directories Name="Packages" Type="String">vcl;rtl;vclx;designide</Directories>
-			<Directories Name="Conditionals" Type="String">NO_TRANSLATION;NO_TRANSLATION_HINT;OPTIMIZE_DZ_GRAPHIC_UTILS</Directories>
+			<Directories Name="Conditionals" Type="String">NO_TRANSLATION;NO_TRANSLATION_HINT;OPTIMIZE_DZ_GRAPHIC_UTILS;NO_DELPHI2007UP_HINT</Directories>
 			<Directories Name="DebugSourceDirs" Type="String"></Directories>
 			<Directories Name="UsePackages" Type="Boolean">True</Directories>
 		</Directories>

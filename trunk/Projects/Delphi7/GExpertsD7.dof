@@ -1,5 +1,6 @@
 [FileVersion]
 Version=7.0
+
 [Compiler]
 A=8
 B=0
@@ -79,8 +80,9 @@ PrivatePropAccessor=1
 UnsafeType=0
 UnsafeCode=0
 UnsafeCast=0
+
 [Linker]
-MapFile=0
+MapFile=3
 OutputObjs=0
 ConsoleApp=1
 DebugInfo=0
@@ -96,15 +98,17 @@ PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=..\..\source\Framework;..\..\ExternalSource;..\..\ExternalSource\mwParser;..\..\ExternalSource\Abbrevia;..\..\ExternalSource\UniSynEdit;..\..\ExternalSource\dzlib;..\..\source\Include
 Packages=rtl;vcl;vclx;vclsmp;designide;vcljpg
-Conditionals=NO_TRANSLATION;NO_TRANSLATION_HINT
+Conditionals=NO_TRANSLATION;NO_TRANSLATION_HINT;NO_DELPHI2007UP_HINT
 DebugSourceDirs=
 UsePackages=1
+
 [Parameters]
 RunParams=-ns -np
 HostApplication=C:\Delphi\Delphi7\Bin\delphi32.exe
 Launcher=
 UseLauncher=0
 DebugCWD=
+
 [Version Info]
 IncludeVerInfo=0
 AutoIncBuild=0
@@ -119,6 +123,7 @@ Private=0
 DLL=1
 Locale=1033
 CodePage=1252
+
 [Version Info Keys]
 CompanyName=Erik Berry and the GExperts Development Team
 FileDescription=GExperts for Delphi 7
@@ -130,3 +135,4 @@ OriginalFilename=GExpertsD7.dll
 ProductName=GExperts for Delphi
 ProductVersion=1.38
 Comments=Open Source
+

@@ -1,12 +1,11 @@
-﻿unit GX_FilterExceptions;
+unit GX_FilterExceptions;
 
 {$I GX_CondDefine.inc}
 
-{$IFNDEF GX_DELPHI2005_UP}
-'This only works for Delphi 2005 and newer'
-{$ENDIF}
 
 interface
+
+{$IFDEF GX_DELPHI2005_UP}
 
 uses
   SysUtils,
@@ -48,7 +47,11 @@ type
     constructor Create(_Owner: TComponent); override;
   end;
 
+{$ENDIF GX_DELPHI2005_UP}
+
 implementation
+
+{$IFDEF GX_DELPHI2005_UP}
 
 {$R *.dfm}
 
@@ -609,4 +612,6 @@ end;
 
 initialization
   RegisterGX_Expert(TGxFilterExceptionsExpert);
+
+{$ENDIF GX_DELPHI2005_UP}
 end.

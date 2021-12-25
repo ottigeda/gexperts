@@ -2,12 +2,9 @@ unit GX_FilterExceptionsNotification;
 
 {$I GX_CondDefine.inc}
 
-{$IFNDEF GX_DELPHI2005_UP}
-// Delphi 6 and 7 don't have the packages we hook here, the debugger is probably part of the Delphi32.exe,
-'This only works for Delphi 2005 and newer'
-{$ENDIF}
-
 interface
+
+{$IFDEF GX_DELPHI2005_UP}
 
 uses
   Windows,
@@ -71,7 +68,12 @@ type
     destructor Destroy; override;
   end;
 
+{$ENDIF GX_DELPHI2005_UP}
+
 implementation
+
+{$IFDEF GX_DELPHI2005_UP}
+
 
 {$R *.dfm}
 
@@ -1077,4 +1079,5 @@ initialization
   FDebugEventCritSect := TdzCriticalSection.Create;
 finalization
   FreeAndNil(FDebugEventCritSect);
+{$ENDIF GX_DELPHI2005_UP}
 end.

@@ -1,6 +1,9 @@
 unit GX_ShLwApi;
-// used in Delphi 6 and 7 because the do not have the shlwapi unit
+// used in Delphi 6 and 7 by defining a unit alias "ShLwApi=GX_ShLwAp"
+// because the do not have the shlwapi unit
 interface
+
+{$IFNDEF HAS_SHLWAPI}
 
 uses
   Windows;
@@ -8,7 +11,6 @@ uses
 const
   shlwapi32 = 'shlwapi.dll';
 
-{$IFNDEF HAS_SHLWAPI}
 // Manually import ShLwApi routines in Delphi 7 and earlier (supported in W2K or later)
 function PathCombine(szDest: PChar; lpszDir, lpszFile: PChar): PChar; stdcall;
   external shlwapi32 name 'PathCombineA';

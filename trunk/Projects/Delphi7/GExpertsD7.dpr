@@ -105,6 +105,9 @@ uses
   GX_FavUtil in '..\..\source\FavoriteFiles\GX_FavUtil.pas',
   GX_FeedbackWizard in '..\..\source\Framework\GX_FeedbackWizard.pas' {fmFeedbackWizard},
   GX_FileScanner in '..\..\source\Framework\GX_FileScanner.pas',
+  GX_FilterExceptions in '..\..\Source\FilterExceptions\GX_FilterExceptions.pas' {fmGxFilterExceptionsExpert},
+  GX_FilterExceptionsEdit in '..\..\Source\FilterExceptions\GX_FilterExceptionsEdit.pas' {fmGxFilterExceptionsEdit},
+  GX_FilterExceptionsNotification in '..\..\Source\FilterExceptions\GX_FilterExceptionsNotification.pas' {fmExceptionNotification},
   GX_FindComponentRef in '..\..\source\FindComponentReference\GX_FindComponentRef.pas',
   GX_FocusCodeEditor in '..\..\Source\FocusCodeEditor\GX_FocusCodeEditor.pas',
   GX_FormHotkeys in '..\..\Source\FormHotkeys\GX_FormHotkeys.pas' {f_FormHotkeys},
@@ -249,5 +252,6 @@ uses
 {$R '..\..\Binaries\ConvertStrings.res' '..\..\Binaries\ConvertStrings.rc'}
 {$R *_version.res}
 
+begin
 end.
 

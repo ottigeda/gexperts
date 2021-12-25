@@ -2,11 +2,9 @@ unit GX_FilterExceptionsEdit;
 
 {$I GX_CondDefine.inc}
 
-{$IFNDEF GX_DELPHI2005_UP}
-'This only works for Delphi 2005 and newer'
-{$ENDIF}
-
 interface
+
+{$IFDEF GX_DELPHI2005_UP}
 
 uses
   Windows,
@@ -70,8 +68,11 @@ type
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
   end;
+{$ENDIF GX_DELPHI2005_UP}
 
 implementation
+
+{$IFDEF GX_DELPHI2005_UP}
 
 {$R *.dfm}
 
@@ -224,5 +225,7 @@ begin
     re_Test.Lines.EndUpdate;
   end;
 end;
+
+{$ENDIF GX_DELPHI2005_UP}
 
 end.

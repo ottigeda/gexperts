@@ -4,6 +4,9 @@ unit GX_PerfectLayout;
 
 interface
 
+{$IFNDEF GX_DELPHI2005_UP}
+// this only works for the old IDEs
+
 uses Forms, StdCtrls, Controls, ExtCtrls, Classes, GX_BaseForm;
 
 type
@@ -37,8 +40,11 @@ type
     procedure btnCustomClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
   end;
+{$ENDIF GX_DELPHI2005_UP}
 
 implementation
+
+{$IFNDEF GX_DELPHI2005_UP}
 
 {$R *.dfm}
 
@@ -336,6 +342,6 @@ end;
 
 initialization
   RegisterGX_Expert(TPerfectLayoutExpert);
-
+{$ENDIF GX_DELPHI2005_UP}
 end.
 
