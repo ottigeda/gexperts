@@ -1,7 +1,5 @@
 program GExpertsGrep;
 
-
-
 uses
   GX_StandAloneLoadDLL in '..\..\..\Source\Framework\GX_StandAloneLoadDLL.pas',
   GrepMain in 'GrepMain.pas',
