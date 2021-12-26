@@ -3,7 +3,7 @@ object fmCompRenameAdvanced: TfmCompRenameAdvanced
   Top = 238
   AutoScroll = False
   BorderIcons = [biSystemMenu, biMaximize]
-  Caption = 'Additional Properties'
+  Caption = 'Other Properties'
   ClientHeight = 319
   ClientWidth = 313
   Color = clBtnFace
@@ -14,6 +14,7 @@ object fmCompRenameAdvanced: TfmCompRenameAdvanced
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  OldCreateOrder = False
   Position = poOwnerFormCenter
   Scaled = False
   DesignSize = (
@@ -40,9 +41,9 @@ object fmCompRenameAdvanced: TfmCompRenameAdvanced
     WordWrap = True
   end
   object btnOk: TButton
-    Left = 146
-    Top = 286
-    Width = 75
+    Left = 152
+    Top = 288
+    Width = 73
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = '&OK'
@@ -51,9 +52,9 @@ object fmCompRenameAdvanced: TfmCompRenameAdvanced
     TabOrder = 1
   end
   object btnCancel: TButton
-    Left = 230
-    Top = 286
-    Width = 75
+    Left = 232
+    Top = 288
+    Width = 73
     Height = 25
     Anchors = [akRight, akBottom]
     Cancel = True
