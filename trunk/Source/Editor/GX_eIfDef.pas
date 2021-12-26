@@ -654,7 +654,7 @@ begin
   def.AddEntry('P', 'OpenStrings');
   def.AddEntry('Q', 'OverflowChecks');
   def.AddEntry('R', 'RangeChecks');
-  def.AddEntry('S', '???');
+  def.AddEntry('S', 'StackChecking (ignored by compiler)');
   def.AddEntry('T', 'TypedAddress');
   def.AddEntry('U', 'SafeDivide');
   def.AddEntry('V', 'VarStringChecks');
