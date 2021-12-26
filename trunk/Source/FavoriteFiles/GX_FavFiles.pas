@@ -1776,6 +1776,14 @@ begin
   end;
 end;
 
+const
+{$IFDEF GX_DELPHI_11_UP}
+  // the Recent menu item got a new name in Delphi 11 Alexandria
+  FileOpenRecentItemName = 'FileOpenRecentItem';
+{$ELSE}
+  FileOpenRecentItemName = 'FileClosedFilesItem';
+{$endif}
+
 function TFavoriteFilesExpert.FindRecentMenuItem(out _MenuItem: TMenuItem): Boolean;
 var
   MainMenu: TMainMenu;
@@ -1784,7 +1792,7 @@ begin
   MainMenu := GxOtaGetIdeMainMenu;
   if not Assigned(MainMenu) then
     Exit;
-  Result := TMainMenu_FindMenuItem(MainMenu, 'FileClosedFilesItem', _MenuItem);
+  Result := TMainMenu_FindMenuItem(MainMenu, FileOpenRecentItemName, _MenuItem);
 end;
 
 procedure TFavoriteFilesExpert.InsertFavMenuItem;
@@ -1793,15 +1801,21 @@ var
   Parent: TMenuItem;
   Idx: Integer;
 begin
-  if not FindRecentMenuItem(mi) then
+  if not FindRecentMenuItem(mi) then begin
+    {$IFOPT D+}SendDebugFmt('%s not found', [FileOpenRecentItemName]); {$ENDIF}
     Exit; //==>
+  end;
   Parent := mi.Parent;
-  if not Assigned(Parent) then
+  if not Assigned(Parent) then begin
+    {$IFOPT D+}SendDebugFmt('%s menu item has no parent not found', [FileOpenRecentItemName]); {$ENDIF}
     Exit; //==>
+  end;
   Idx := Parent.IndexOf(mi);
-  if Idx = -1 then
+  if Idx = -1 then begin
+    {$IFOPT D+}SendDebugFmt('Index of %s menu item is -1', [FileOpenRecentItemName]); {$ENDIF}
     Exit; //==>
-  FFavMenuItem := TMenuItem_InsertSubmenuItem(Parent, Idx + 1, 'Favorites', OnFavoritesClicked);
+  end;
+  FFavMenuItem := TMenuItem_InsertSubmenuItem(Parent, Idx + 1, 'GExperts Favorites', OnFavoritesClicked);
   FFavMenuItem.Name := 'GX_FavoritesMenu';
   TMenuItem_AppendSubmenuItem(FFavMenuItem, 'dummy entry', OnFavDummyClick);
 end;
