@@ -7,6 +7,9 @@ interface
 uses
   Windows, SysUtils, Classes, Controls, Forms, UITypes,
   ComCtrls, Menus, ExtCtrls, ImgList, ImageList, ActnList, ToolWin, Dialogs, Actions,
+{$IFDEF IDE_IS_HIDPI_AWARE}
+  u_dzDpiScaleUtils,
+{$ENDIF}
   DropTarget, FileView,
   GX_FavUtil, GX_SharedImages, GX_BaseForm;
 
@@ -210,6 +213,10 @@ type
     function ExecuteFileItem(AListItem: TListItem): Boolean;
   protected
 {$IFDEF IDE_IS_HIDPI_AWARE}
+    // TImageListScaler descends from TComponents and gets freed automatically
+    FISFolders: TImageListScaler;
+    FISSystem: TImageListScaler;
+    FISSysLarge: TImageListScaler;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
   public
@@ -1627,7 +1634,21 @@ begin
   ToolBar.Images := il;
   Actions.Images := il;
   MainMenu.Images := il;
-  // todo: scale the other image lists in this dialog
+
+  if not Assigned(FISFolders) then
+    FISFolders := TImageListScaler.Create(Self, ilFolders);
+  il := FISFolders.GetScaledList(_NewDpi);
+  tvFolders.Images := il;
+
+  if not Assigned(FISSystem) then
+    FISSystem := TImageListScaler.Create(Self, ilSystem);
+  il := FISSystem.GetScaledList(_NewDpi);
+  ListView.SmallImages := il;
+
+  if not Assigned(FISSysLarge) then
+    FISSysLarge := TImageListScaler.Create(Self, ilSysLarge);
+  il := FISSysLarge.GetScaledList(_NewDpi);
+  ListView.LargeImages := il;
 end;
 {$ENDIF}
 
