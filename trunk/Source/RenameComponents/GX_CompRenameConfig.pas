@@ -38,9 +38,11 @@ type
     procedure OnGetComponentList(ACol, ARow: Integer; Items: TStrings);
     procedure WMLButtonUp(var Msg: TWMLButtonUp); message WM_LBUTTONUP;
     procedure doRowHeaderClick(Col: Integer);
+    procedure Resize; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure ResizeColumns;
   published
     property OnRowHeaderClick: TOnRowHeaderClick read FOnRowHeaderClick write FOnRowHeaderClick;
   end;
@@ -485,18 +487,9 @@ begin
 end;
 
 procedure TfmCompRenameConfig.ResizeGrids;
-
-  procedure ResizeGrid(_Grid: TRenameStringGrid);
-  begin
-    if Assigned(_Grid) then begin
-      _Grid.ColWidths[0] := (_Grid.ClientWidth div 2) - 1;
-      _Grid.ColWidths[1] := _Grid.ColWidths[0];
-    end;
-  end;
-
 begin
-  ResizeGrid(FGridVcl);
-  ResizeGrid(FGridFmx);
+  FGridVcl.ResizeColumns;
+  FGridFmx.ResizeColumns;
 end;
 
 procedure TfmCompRenameConfig.CopyValuesToGrid(_Values: TStringList; _Grid: TRenameStringGrid);
@@ -1039,15 +1032,24 @@ begin
     doRowHeaderClick(ACol);
 end;
 
+type
+  TGxInplaceEditList = class(TInplaceEditList)
+  public
+    property Color;
+  end;
+
 function TRenameStringGrid.CreateEditor: TInplaceEdit;
+var
+  cmb: TGxInplaceEditList;
 begin
-  Result := TInplaceEditList.Create(Self);
-  (Result as TInplaceEditList).OnGetPickListitems := OnGetComponentList;
-  (Result as TInplaceEditList).DropDownRows := 15;
+  cmb := TGxInplaceEditList.Create(Self);
+  cmb.OnGetPickListitems := OnGetComponentList;
+  cmb.DropDownRows := 15;
   if Focused then
-    TMaskEdit(Result).Color := clEditFocused
+    cmb.Color := clEditFocused
   else
-    TMaskEdit(Result).Color := clEditUnfocused;
+    cmb.Color := clEditUnfocused;
+  Result := cmb;
 end;
 
 function TRenameStringGrid.GetEditStyle(ACol, ARow: Integer): TEditStyle;
@@ -1061,6 +1063,18 @@ end;
 procedure TRenameStringGrid.OnGetComponentList(ACol, ARow: Integer; Items: TStrings);
 begin
   Items.Assign(FComponents);
+end;
+
+procedure TRenameStringGrid.ResizeColumns;
+begin
+  ColWidths[0] := (ClientWidth div 2) - 1;
+  ColWidths[1] := ColWidths[0];
+end;
+
+procedure TRenameStringGrid.Resize;
+begin
+  ResizeColumns;
+  inherited;
 end;
 
 end.
