@@ -641,7 +641,7 @@ begin
   def.AddEntry('C', 'Assertions');
   def.AddEntry('D', 'DebugInfo');
   def.AddEntry('E', '???');
-  def.AddEntry('F', '???');
+  def.AddEntry('F', 'Far/near functions (ignored by compiler)');
   def.AddEntry('G', 'ImportedData');
   def.AddEntry('H', 'LongStrings');
   def.AddEntry('I', 'IoChecks');
