@@ -14,6 +14,7 @@ object fmFavFiles: TfmFavFiles
   Font.Style = []
   KeyPreview = True
   Menu = MainMenu
+  OldCreateOrder = False
   Position = poDesigned
   Scaled = False
   OnClose = FormClose

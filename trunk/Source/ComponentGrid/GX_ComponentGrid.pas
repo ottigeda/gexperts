@@ -39,11 +39,11 @@ type
     procedure actFileRenumberExecute(Sender: TObject);
     procedure actHelpHelpExecute(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FormCreate(Sender: TObject);
   private
     FComponentList: TInterfaceList;
     FModified: Boolean;
     StringGrid: TSortGrid;
+    procedure InitializeForm;
     procedure FillComponentList;
     procedure ClearComponentList;
     procedure PopulateGrid;
@@ -338,6 +338,8 @@ begin
 
   InitDpiScaler;
 
+  InitializeForm;
+
   FComponentList := TInterfaceList.Create;
   FModified := False;
 
@@ -457,7 +459,7 @@ begin
   end;
 end;
 
-procedure TfmComponentGrid.FormCreate(Sender: TObject);
+procedure TfmComponentGrid.InitializeForm;
 begin
   SetToolbarGradient(ToolBar);
   StringGrid := TSortGrid.Create(Self);

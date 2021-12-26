@@ -72,7 +72,6 @@ type
     procedure mnuPrjResortClick(Sender: TObject);
     procedure cbFilterChange(Sender: TObject);
     procedure mniModifyEnvOptionValuesClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure actNewSetExecute(Sender: TObject);
     procedure ActionsUpdate(Action: TBasicAction; var Handled: Boolean);
@@ -95,6 +94,7 @@ type
     FDom: IXMLDocument;
     FProjItemIndex: Integer;
     FEnvItemIndex: Integer;
+    procedure InitializeForm;
     procedure lstEnvironmentOptClickCheck(Sender: TObject);
     procedure lstProjectOptClickCheck(Sender: TObject);
     procedure lstEnvironmentOptMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -319,6 +319,8 @@ begin
 
   lstPrjOptions.SortCheckedFirst := True;
   lstEnvOptions.SortCheckedFirst := True;
+
+  InitializeForm;
 
   LoadPrjOptionList;
   LoadEnvOptionList;
@@ -1231,9 +1233,8 @@ begin
   end;
 end;
 
-procedure TfmProjOptionSets.FormCreate(Sender: TObject);
+procedure TfmProjOptionSets.InitializeForm;
 begin
-  inherited;
   SetToolbarGradient(ToolBar);
   pcSettings.ActivePage := tabSets;
 end;

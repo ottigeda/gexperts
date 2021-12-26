@@ -57,7 +57,6 @@ type
     btnMoveDown: TButton;
     pnlSortMoves: TPanel;
     lblQuickSortButtons: TLabel;
-    procedure FormCreate(Sender: TObject);
     procedure btnSelectClick(Sender: TObject);
     procedure lvHistoryListColumnClick(Sender: TObject; Column: TListColumn);
     procedure lvHistoryListCompare(Sender: TObject; Item1, Item2: TListItem; Data: Integer;
@@ -89,6 +88,7 @@ type
     FSelectedCount: Integer;
     FSortMode: TGrepHistorySort;
     FSortDesc: Boolean;
+    procedure InitializeForm;
     procedure SetAllSelectState(ABIOnlyAll, AState: Boolean; AOnlyHasResults: Boolean = False);
     procedure AddItemTo(AItem: TGrepHistoryListItem; AUseItemChecked: Boolean; AChecked, ADoSelected, ASelected: Boolean);
     procedure SearchInFillHistoryList(AClearAll: Boolean);
@@ -121,6 +121,8 @@ begin
   InitDpiScaler;
 
   FSortOrderList := TList.Create;
+
+  InitializeForm;
 end;
 
 destructor TfmGrepSelect.Destroy;
@@ -129,7 +131,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TfmGrepSelect.FormCreate(Sender: TObject);
+procedure TfmGrepSelect.InitializeForm;
 begin
   btnCheckItems.Tag := Integer(True);
   btnUnCheckItems.Tag := Integer(False);

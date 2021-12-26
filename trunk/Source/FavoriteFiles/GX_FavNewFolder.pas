@@ -17,13 +17,13 @@ type
     btnCancel: TButton;
     btnOK: TButton;
     procedure edtFolderNameChange(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure cbxFolderTypeDrawItem(Control: TWinControl; Index: Integer;
       Rect: TRect; State: TOwnerDrawState);
     procedure cbxFolderTypeMeasureItem(Control: TWinControl; Index: Integer;
       var Height: Integer);
   private
     FFavoriteFilesForm: TForm;
+    procedure InitializeForm;
     function DpiScaleValue(_Value: Integer): Integer;
   public
     constructor Create(_Owner: TComponent); override;
@@ -50,6 +50,8 @@ begin
   inherited;
 
   InitDpiScaler;
+
+  InitializeForm;
 end;
 
 procedure TfmFavNewFolder.edtFolderNameChange(Sender: TObject);
@@ -57,7 +59,7 @@ begin
   btnOK.Enabled := (Length(edtFolderName.Text) > 0);
 end;
 
-procedure TfmFavNewFolder.FormCreate(Sender: TObject);
+procedure TfmFavNewFolder.InitializeForm;
 var
   i: TFolderType;
 begin

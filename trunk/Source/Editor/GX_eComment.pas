@@ -58,7 +58,6 @@ type
     procedure lvStylesSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure btnAddClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure eExtensionsChange(Sender: TObject);
     procedure rgStyleClick(Sender: TObject);
@@ -67,6 +66,7 @@ type
     FStyles: TCommentStyles;
     FCurrStyle: TExtensionStyle;
     FCurrIndex: Integer;
+    procedure InitializeForm;
     function  ConvertStyleTypeToViewedType(AStyleType: TCommentType): Integer;
     function  ConvertViewedTypeToStyleType(AViewedType: Integer): TCommentType;
   protected
@@ -520,7 +520,7 @@ end;
 
 { TfmCommentConfig }
 
-procedure TfmCommentConfig.FormCreate(Sender: TObject);
+procedure TfmCommentConfig.InitializeForm;
 begin
   FStyles := TCommentStyles.Create;
   FCurrIndex := -1;
@@ -566,6 +566,8 @@ begin
   inherited;
 
   InitDpiScaler;
+
+  InitializeForm;
 end;
 
 procedure TfmCommentConfig.lvStylesData(Sender: TObject; Item: TListItem);

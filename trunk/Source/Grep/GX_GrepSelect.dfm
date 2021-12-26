@@ -6,7 +6,6 @@ inherited fmGrepSelect: TfmGrepSelect
   ParentFont = False
   Font.Charset = ANSI_CHARSET
   ShowHint = True
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object lvHistoryList: TListView

@@ -136,7 +136,6 @@ type
     procedure actFileRehookClipboardExecute(Sender: TObject);
     procedure actDeleteExecute(Sender: TObject);
     procedure actEditPasteAsPascalStringExecute(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure lvClipResize(Sender: TObject);
     procedure actHamburgerMenuExecute(Sender: TObject);
   private
@@ -145,6 +144,7 @@ type
     FDataList: TList;
     FLoading: Boolean;
     SplitterRatio: Double;
+    procedure InitializeForm;
     procedure ClearDataList;
     procedure LoadClips;
     procedure SaveClips;
@@ -304,7 +304,7 @@ end;
 
 { TfmClipboardHistory }
 
-procedure TfmClipboardHistory.FormCreate(Sender: TObject);
+procedure TfmClipboardHistory.InitializeForm;
 begin
   inherited;
   PasteAsHandler.GetTypeText(cbPasteAsType.Items);
@@ -517,6 +517,9 @@ begin
   ArrangeToolbarAndPanel;
 
   InitDpiScaler;
+
+  InitializeForm;
+
   CenterForm(Self);
 
   HookClipboard;

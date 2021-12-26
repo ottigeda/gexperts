@@ -56,7 +56,6 @@ type
     b_Margins3: TButton;
     b_Margins6: TButton;
     b_Margins8: TButton;
-    procedure FormCreate(Sender: TObject);
     procedure edtNewNameChange(Sender: TObject);
     procedure btnSettingsClick(Sender: TObject);
     procedure pc_AdditionalChange(Sender: TObject);
@@ -77,6 +76,7 @@ type
     FAnchorButtons: array[TAnchorKind] of TdzSpeedBitBtn;
     FAlignButtons: array[TAlign] of TdzSpeedBitBtn;
     FComponentClassName: WideString;
+    procedure InitializeForm;
     function GetNewName: WideString;
     function GetOldName: WideString;
     procedure SetNewName(const Value: WideString);
@@ -468,6 +468,8 @@ begin
   FAnchorButtons[akBottom] := TdzSpeedBitBtn.Create(b_AnchorBottom);
 
   InitDpiScaler;
+
+  InitializeForm;
 end;
 
 destructor TfmCompRename.Destroy;
@@ -1265,7 +1267,7 @@ begin
   Result := not RunningDelphi8;
 end;
 
-procedure TfmCompRename.FormCreate(Sender: TObject);
+procedure TfmCompRename.InitializeForm;
 begin
   SetModalFormPopupMode(Self);
   lblReason.Font.Color := clRed;

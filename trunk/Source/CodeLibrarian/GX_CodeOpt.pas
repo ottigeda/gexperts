@@ -34,9 +34,9 @@ type
     eTreeview: TEdit;
     eEditor: TEdit;
     procedure sbBrowseClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure eNumericKeyPress(Sender: TObject; var Key: Char);
   private
+    procedure InitializeForm;
     procedure edPathOnFilesDropped(_Sender: TObject; _Files: TStrings);
   public
     constructor Create(_Owner: TComponent); override;
@@ -58,7 +58,7 @@ begin
     edPath.Text := Temp;
 end;
 
-procedure TfmCodeOptions.FormCreate(Sender: TObject);
+procedure TfmCodeOptions.InitializeForm;
 begin
   fcTreeview.Items.Assign(Screen.Fonts);
   fcEditor.Items.Assign(Screen.Fonts);
@@ -73,6 +73,8 @@ begin
   TEdit_ActivateAutoComplete(edPath, [acsFileSystem], [actSuggest]);
 
   InitDpiScaler;
+
+  InitializeForm;
 end;
 
 procedure TfmCodeOptions.eNumericKeyPress(Sender: TObject; var Key: Char);

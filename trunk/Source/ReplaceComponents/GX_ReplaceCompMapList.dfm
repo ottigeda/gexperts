@@ -12,10 +12,10 @@ object fmReplaceCompMapList: TfmReplaceCompMapList
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
+  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnClose = FormClose
-  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 14

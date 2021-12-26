@@ -12,10 +12,10 @@ object fmFavFileProp: TfmFavFileProp
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
+  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnActivate = FormActivate
-  OnCreate = FormCreate
   DesignSize = (
     464
     249)

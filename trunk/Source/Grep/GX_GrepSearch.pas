@@ -71,7 +71,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure ComboKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormCreate(Sender: TObject);
     procedure btnOptionsClick(Sender: TObject);
     procedure cbGrepCodeClick(Sender: TObject);
     procedure cbGrepStringsClick(Sender: TObject);
@@ -96,6 +95,7 @@ type
     FOriginalWhereGroupWidth: Integer;
     FLoadingSettings: Boolean;
     FTheHintWindow: THintWindow;
+    procedure InitializeForm;
     procedure EnableDirectoryControls(New: Boolean);
     procedure LoadFormSettings;
     procedure SaveFormSettings;
@@ -396,6 +396,8 @@ begin
 
   InitDpiScaler;
 
+  InitializeForm;
+
   LoadFormSettings;
   FCheckedWhere := True;
 end;
@@ -409,7 +411,7 @@ begin
     ed_MinDepth.Color := clWindow;
 end;
 
-procedure TfmGrepSearch.FormCreate(Sender: TObject);
+procedure TfmGrepSearch.InitializeForm;
 begin
   FOriginalWidth := Width;
   FOriginalOptionsGroupWidth := gbxOptions.Width;

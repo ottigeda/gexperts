@@ -12,9 +12,9 @@ object fmFavNewFolder: TfmFavNewFolder
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
+  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 14
   object gbxNewFolder: TGroupBox

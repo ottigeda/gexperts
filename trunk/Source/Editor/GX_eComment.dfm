@@ -12,9 +12,9 @@ object fmCommentConfig: TfmCommentConfig
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
+  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
-  OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignSize = (
     355

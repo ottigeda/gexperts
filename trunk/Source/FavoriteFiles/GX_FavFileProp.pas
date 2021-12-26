@@ -30,9 +30,9 @@ type
     procedure sbnExecuteClick(Sender: TObject);
     procedure cbxExecuteTypeClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
   private
     FFavoriteFilesForm: TForm;
+    procedure InitializeForm;
   public
     constructor Create(_Owner: TComponent); override;
     property FavoriteFilesForm: TForm write FFavoriteFilesForm;
@@ -52,6 +52,8 @@ begin
   inherited;
 
   InitDpiScaler;
+
+  InitializeForm;
 end;
 
 procedure TfmFavFileProp.sbnFileClick(Sender: TObject);
@@ -118,7 +120,7 @@ begin
   cbxExecuteTypeClick(cbxExecuteType);
 end;
 
-procedure TfmFavFileProp.FormCreate(Sender: TObject);
+procedure TfmFavFileProp.InitializeForm;
 var
   ExecType: TExecType;
 begin

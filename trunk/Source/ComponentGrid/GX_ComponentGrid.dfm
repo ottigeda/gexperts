@@ -13,10 +13,10 @@ object fmComponentGrid: TfmComponentGrid
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
+  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnClose = FormClose
-  OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 14

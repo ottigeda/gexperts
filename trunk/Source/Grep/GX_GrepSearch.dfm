@@ -12,12 +12,11 @@ object fmGrepSearch: TfmGrepSearch
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = True
+  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   ShowHint = True
   OnClose = FormClose
-  OnCreate = FormCreate
   DesignSize = (
     681
     588)

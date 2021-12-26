@@ -9,7 +9,6 @@ inherited fmClipboardHistory: TfmClipboardHistory
   PopupMenu = pmHamburgerMenu
   Position = poScreenCenter
   OnClose = FormClose
-  OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnResize = FormResize
   PixelsPerInch = 96

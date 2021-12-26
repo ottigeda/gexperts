@@ -58,7 +58,6 @@ type
     pnlDirMessage: TPanel;
     lblDirMessage: TLabel;
     clbDirs: TCheckListBox;
-    procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btnAddClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
@@ -77,6 +76,7 @@ type
     CleanExtList: TStringList;
     FTotalBytesCleaned: Integer;
     FTotalFilesCleaned: Integer;
+    procedure InitializeForm;
     procedure FillProjectDirectoriesList;
     procedure AddHorizontalScrollbar;
     procedure PerformCleaning;
@@ -312,6 +312,8 @@ begin
   TWinControl_ActivateDropFiles(clbExtensions, clbExtensionsOnFilesDropped);
 
   InitDpiScaler;
+
+  InitializeForm;
 end;
 
 procedure TfmCleanDirectories.clbDirsOnFilesDropped(_Sender: TObject; _Files: TStrings);
@@ -462,7 +464,7 @@ begin
   AddHorizontalScrollbar;
 end;
 
-procedure TfmCleanDirectories.FormCreate(Sender: TObject);
+procedure TfmCleanDirectories.InitializeForm;
 const // We will never localize these strings.
   SDefaultCleanExts =
     '.~bpg'+ sLineBreak + '.~cpp'+ sLineBreak + '.~dfm'+ sLineBreak + '.~dpk'+ sLineBreak +

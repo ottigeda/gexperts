@@ -34,7 +34,6 @@ type
     pnlToolSep: TPanel;
     tbrGroups: TToolBar;
     tbnGroups: TToolButton;
-    procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure comGroupNameChange(Sender: TObject);
@@ -49,6 +48,7 @@ type
     FConfigData: TReplaceCompData;
     FSelectedGroup: string;
     FSortOnColumn: Integer; // counter from 1 (-1 means DESC)
+    procedure InitializeForm;
     function ConfigurationKey: string;
     procedure LoadSettings;
     procedure SaveSettings;
@@ -102,6 +102,8 @@ begin
   FSortOnColumn := 1;
 
   InitDpiScaler;
+
+  InitializeForm;
 
   LoadSettings;
 end;
@@ -179,7 +181,7 @@ begin
   SaveSettings;
 end;
 
-procedure TfmReplaceCompMapList.FormCreate(Sender: TObject);
+procedure TfmReplaceCompMapList.InitializeForm;
 begin
   TControl_SetMinConstraints(Self);
 

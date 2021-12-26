@@ -163,7 +163,6 @@ type
     procedure actRecordExecute(Sender: TObject);
     procedure actPlaybackExecute(Sender: TObject);
     procedure actEditRenameExecute(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure actHelpExecute(Sender: TObject);
     procedure lvMacrosInfoTip(Sender: TObject; Item: TListItem; var InfoTip: String);
     procedure actPromptForNameExecute(Sender: TObject);
@@ -175,6 +174,7 @@ type
     FSuspended: Boolean;
     FShortCut: IGxKeyboardShortCut;
     FPromptForName: Boolean;
+    procedure InitializeForm;
     procedure InsertMacro(Index: Integer; Info: TMacroInfo);
     procedure ClearDataList;
     procedure LoadMacros;
@@ -785,6 +785,8 @@ begin
 
   InitDpiScaler;
 
+  InitializeForm;
+
   CenterForm(Self);
 
   InstallKeyboardBindings;
@@ -1188,7 +1190,7 @@ begin
   MacroLibExpert.IncCallCount;
 end;
 
-procedure TfmMacroLibrary.FormCreate(Sender: TObject);
+procedure TfmMacroLibrary.InitializeForm;
 begin
   inherited;
   SetToolbarGradient(ToolBar);

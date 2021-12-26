@@ -7,6 +7,7 @@ inherited fmGrepResults: TfmGrepResults
   ClientWidth = 396
   DefaultMonitor = dmDesktop
   KeyPreview = True
+  OldCreateOrder = False
   Position = poScreenCenter
   ShowHint = True
   OnKeyPress = FormKeyPress

@@ -58,7 +58,6 @@ type
     m_ConstValue: TMemo;
     chkLogValues: TCheckBox;
     chkLogNonDef: TCheckBox;
-    procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
@@ -79,6 +78,7 @@ type
     FConfigData: TReplaceCompData;
     FGroup: TCompRepMapGroupItem;
     FModified: Boolean;
+    procedure InitializeForm;
     procedure LoadGroupList;
     procedure LoadItem;
     procedure UpdateBtns;
@@ -158,6 +158,8 @@ begin
   FDataAction := DataAction;
 
   InitDpiScaler;
+
+  InitializeForm;
 
   LoadSettings;
 end;
@@ -466,7 +468,7 @@ begin
   SaveSettings;
 end;
 
-procedure TfmReplaceCompMapDets.FormCreate(Sender: TObject);
+procedure TfmReplaceCompMapDets.InitializeForm;
 begin
   SetToolbarGradient(ToolBar);
 end;
