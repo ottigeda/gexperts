@@ -7,6 +7,9 @@ interface
 uses
   Windows, SysUtils, Classes, ImgList, ImageList, Controls, Forms, Dialogs,
   Menus, ComCtrls, Actions, ActnList, ToolWin,
+{$IFDEF IDE_IS_HIDPI_AWARE}
+  u_dzDpiScaleUtils,
+{$ENDIF}
   DropTarget, DropSource,
   GX_Experts, GX_BaseForm;
 
@@ -82,6 +85,8 @@ type
     procedure SaveSettings;
   protected
 {$IFDEF IDE_IS_HIDPI_AWARE}
+    // FImageScaler descends from TComponents and gets freed automatically
+    FImageScaler: TImageListScaler;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
     procedure ArrangeControls; override;
 {$ENDIF}
@@ -273,7 +278,11 @@ begin
   Actions.Images := il;
   MainMenu.Images := il;
 
-  // todo: Also scale ilStateImages
+  if not Assigned(FImageScaler) then
+    FImageScaler := TImageListScaler.Create(Self, ilStateImages);
+  il := FImageScaler.GetScaledList(_NewDpi);
+  lvExperts.StateImages := il;
+  lvExperts.LargeImages := il;
 end;
 
 procedure TfmExpertManager.ArrangeControls;
