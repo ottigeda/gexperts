@@ -298,6 +298,8 @@ type
     procedure actListSelectNextExecute(Sender: TObject);
     procedure actListSelectPreviousExecute(Sender: TObject);
     procedure actHamburgerMenuExecute(Sender: TObject);
+    procedure SplitterContextCanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
+    procedure SplitterContextMoved(Sender: TObject);
   private
     FLastRepaintTick: DWORD;
     FSearchInProgress: Boolean;
@@ -382,6 +384,7 @@ type
     /// and the factor 10000 into account. </summary>
     function GetLoadedContextHeight: integer;
     procedure SetLoadedContextHeight(_Value: integer);
+    procedure UpdateContextPanelHeight;
     property lbHistoryListIndexForHistoryMenuActions: Integer
       read FlbHistoryListIndexForHistoryMenuActions write FlbHistoryListIndexForHistoryMenuActions;
   protected
@@ -858,6 +861,7 @@ end;
 procedure TfmGrepResults.FormResize(Sender: TObject);
 begin
   ResizeStatusBar;
+  UpdateContextPanelHeight;
   if Assigned(FEmbeddedGrepSearch) then
     FEmbeddedGrepSearch.EmbeddedUpdatePos;
   ForceRedraw;
@@ -895,9 +899,9 @@ begin
   // this used to be a pixel value and later a percent value, now it is a per-10-thousand
   // value to account for higher resolution monitors and changing resolutions due to multiple
   // monitors and Remote Desktop
-  if ShowContext then
-    PerTenThousand := MulDiv(pnBottom.Height, 10000, ClientHeight)
-  else begin
+  if ShowContext then begin
+    PerTenThousand := MulDiv(pnBottom.Height, 10000, pnlMain.ClientHeight);
+  end else begin
     // if the context is not visible, the bottom panel has the height of the status bar
     // but FLoadedContextHeightRelative contains its former height
     PerTenThousand := FLoadedContextHeightRelative;
@@ -1053,17 +1057,24 @@ end;
 
 procedure TfmGrepResults.SetShowContext(Value: Boolean);
 begin
+  if (FShowContext = True) and (Value = False) then
+    SetLoadedContextHeight(pnBottom.Height);
   FShowContext := Value;
   reContext.Visible := Value;
   SplitterContext.Visible := Value;
-  if Value then
-    pnBottom.Height := GetLoadedContextHeight
-  else begin
-    SetLoadedContextHeight(pnBottom.Height);
-    pnBottom.ClientHeight := StatusBar.Height;
-  end;
+
+  UpdateContextPanelHeight;
 
   RefreshContextLines;
+end;
+
+procedure TfmGrepResults.UpdateContextPanelHeight;
+begin
+  if ShowContext then
+    pnBottom.Height := GetLoadedContextHeight
+  else begin
+    pnBottom.ClientHeight := StatusBar.Height;
+  end;
 end;
 
 procedure TfmGrepResults.RefreshContextLines;
@@ -1870,12 +1881,12 @@ end;
 
 function TfmGrepResults.GetLoadedContextHeight: integer;
 begin
-  Result := MulDiv(ClientHeight, FLoadedContextHeightRelative, 10000)
+  Result := MulDiv(pnlMain.ClientHeight, FLoadedContextHeightRelative, 10000)
 end;
 
 procedure TfmGrepResults.SetLoadedContextHeight(_Value: Integer);
 begin
-  FLoadedContextHeightRelative := MulDiv(_Value, 10000, ClientHeight);
+  FLoadedContextHeightRelative := MulDiv(_Value, 10000, pnlMain.ClientHeight);
 end;
 
 procedure TfmGrepResults.TheActionListUpdate(Action: TBasicAction; var Handled: Boolean);
@@ -1995,6 +2006,8 @@ procedure TfmGrepResults.ArrangeControls;
 begin
   inherited;
   ResizeListBox;
+  ResizeStatusBar;
+  UpdateContextPanelHeight;
 end;
 {$ENDIF}
 
@@ -2840,6 +2853,23 @@ begin
   finally
     frmSelect.Free;
   end;
+end;
+
+procedure TfmGrepResults.SplitterContextCanResize(Sender: TObject; var NewSize: Integer;
+  var Accept: Boolean);
+var
+  PerTenThousand: integer;
+  cw: integer;
+begin
+  cw := pnlMain.ClientHeight;
+  PerTenThousand := MulDiv(NewSize, 10000, cw);
+  PerTenThousand:=ForceBetween(1000, 5000, PerTenThousand);
+  NewSize := muldiv(PerTenThousand, cw, 10000);
+end;
+
+procedure TfmGrepResults.SplitterContextMoved(Sender: TObject);
+begin
+  SetLoadedContextHeight(pnBottom.Height);
 end;
 
 procedure TfmGrepResults.SplitterHistoryListMoved(Sender: TObject);

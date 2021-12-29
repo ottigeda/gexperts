@@ -34,6 +34,8 @@ inherited fmGrepResults: TfmGrepResults
       AutoSnap = False
       Beveled = True
       MinSize = 20
+      OnCanResize = SplitterContextCanResize
+      OnMoved = SplitterContextMoved
     end
     object SplitterHistoryList: TSplitter
       Left = 147
@@ -279,11 +281,11 @@ inherited fmGrepResults: TfmGrepResults
         SimplePanel = False
         UseSystemFont = False
       end
-    object reContext: TRichEdit
+      object reContext: TRichEdit
         Left = 0
-        Top = 230
+        Top = 0
         Width = 396
-        Height = 88
+        Height = 78
         Align = alClient
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
@@ -294,7 +296,7 @@ inherited fmGrepResults: TfmGrepResults
         PopupMenu = pmContextMenu
         ReadOnly = True
         ScrollBars = ssBoth
-        TabOrder = 3
+        TabOrder = 1
         WordWrap = False
         OnContextPopup = reContextContextPopup
       end
