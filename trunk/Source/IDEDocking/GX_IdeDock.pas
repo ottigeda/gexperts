@@ -222,10 +222,12 @@ end;
 procedure TfmIdeDockForm.Loaded;
 begin
   inherited;
-{$IFDEF IDE_IS_HIDPI_AWARE}
   Scaled := False;
-{$ELSE}
-  Scaled := True;
+{$IFDEF HAS_PROPERTY_OLDCREATEORDER}
+  // Delphi 11 removes this property from all dfm files, but unfortunately its default value
+  // is True, so older Delphi versions will add it again as True which will break several
+  // forms that rely on it to be False.
+  OldCreateOrder := False;
 {$ENDIF}
 end;
 
