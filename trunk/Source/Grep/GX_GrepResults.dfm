@@ -216,25 +216,6 @@ inherited fmGrepResults: TfmGrepResults
         Action = actHelpHelp
       end
     end
-    object reContext: TRichEdit
-      Left = 0
-      Top = 230
-      Width = 396
-      Height = 88
-      Align = alBottom
-      Font.Charset = ANSI_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      ParentFont = False
-      PopupMenu = pmContextMenu
-      ReadOnly = True
-      ScrollBars = ssBoth
-      TabOrder = 3
-      WordWrap = False
-      OnContextPopup = reContextContextPopup
-    end
     object tcHistoryListPage: TTabControl
       Left = 0
       Top = 22
@@ -274,22 +255,50 @@ inherited fmGrepResults: TfmGrepResults
         OnMouseUp = lbHistoryListMouseUp
       end
     end
-  end
-  object StatusBar: TStatusBar
-    Left = 0
-    Top = 318
-    Width = 396
-    Height = 19
-    Panels = <
-      item
-        Width = 250
+    object pnBottom: TPanel
+      Left = 0
+      Top = 240
+      Width = 396
+      Height = 97
+      Align = alBottom
+      BevelOuter = bvNone
+      TabOrder = 3
+      object StatusBar: TStatusBar
+        Left = 0
+        Top = 78
+        Width = 396
+        Height = 19
+        Panels = <
+          item
+            Width = 250
+          end
+          item
+            Width = 60
+          end>
+        ParentFont = True
+        SimplePanel = False
+        UseSystemFont = False
       end
-      item
-        Width = 60
-      end>
-    ParentFont = True
-    SimplePanel = False
-    UseSystemFont = False
+    object reContext: TRichEdit
+        Left = 0
+        Top = 230
+        Width = 396
+        Height = 88
+        Align = alClient
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        PopupMenu = pmContextMenu
+        ReadOnly = True
+        ScrollBars = ssBoth
+        TabOrder = 3
+        WordWrap = False
+        OnContextPopup = reContextContextPopup
+      end
+    end
   end
   object MainMenu: TMainMenu
     Images = dmSharedImages.Images

@@ -69,6 +69,7 @@ type
     tbnHelp: TToolButton;
     mitListSep1: TMenuItem;
     mitFileSep1: TMenuItem;
+    pnBottom: TPanel;
     reContext: TRichEdit;
     SplitterContext: TSplitter;
     mitViewSep1: TMenuItem;
@@ -376,7 +377,13 @@ type
     procedure GoToMatchLine(MatchLine: TLineResult);
     procedure ForceRedraw;
     procedure GetEnabledFlags(out _IsOnlySaveSettings, _HaveItems, _Processing: Boolean);
-    property lbHistoryListIndexForHistoryMenuActions: Integer read FlbHistoryListIndexForHistoryMenuActions write FlbHistoryListIndexForHistoryMenuActions;
+    ///<summary>
+    /// Gets and sets the value of FLoadedContextHeightRelative taking the current height and
+    /// and the factor 10000 into account. </summary>
+    function GetLoadedContextHeight: integer;
+    procedure SetLoadedContextHeight(_Value: integer);
+    property lbHistoryListIndexForHistoryMenuActions: Integer
+      read FlbHistoryListIndexForHistoryMenuActions write FlbHistoryListIndexForHistoryMenuActions;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure AssignSettingsToForm;
@@ -888,7 +895,13 @@ begin
   // this used to be a pixel value and later a percent value, now it is a per-10-thousand
   // value to account for higher resolution monitors and changing resolutions due to multiple
   // monitors and Remote Desktop
-  PerTenThousand := MulDiv(reContext.Height, 10000, ClientHeight);
+  if ShowContext then
+    PerTenThousand := MulDiv(pnBottom.Height, 10000, ClientHeight)
+  else begin
+    // if the context is not visible, the bottom panel has the height of the status bar
+    // but FLoadedContextHeightRelative contains its former height
+    PerTenThousand := FLoadedContextHeightRelative;
+  end;
   PerTenThousand := ForceBetween(1000, 5000, PerTenThousand);
   WindowSettings.WriteInteger('ContextHeightRelative', PerTenThousand);
   WindowSettings.DeleteKey('ContextHeightPercent');
@@ -978,7 +991,7 @@ begin
   end else if WindowSettings.ValueExists('ContextHeightPercent') then begin
     FLoadedContextHeightRelative := WindowSettings.ReadInteger('ContextHeightPercent', 20) * 100;
   end else if WindowSettings.ValueExists('ContextHeight') then begin
-    FLoadedContextHeightRelative := MulDiv(WindowSettings.ReadInteger('ContextHeight', reContext.Height), 10000, ClientHeight);
+    FLoadedContextHeightRelative := MulDiv(WindowSettings.ReadInteger('ContextHeight', pnBottom.Height), 10000, ClientHeight);
   end else begin
     FLoadedContextHeightRelative := 2000;
   end;
@@ -996,7 +1009,10 @@ begin
   FEmbeddedGrepSearch.EmbeddedInit(lbResults, DoEmbeddedSearch);
 
   gblGrepExpert.HistoryList.Enabled := ShowHistoryList;
-  reContext.Height := MulDiv(ClientHeight, FLoadedContextHeightRelative, 10000);
+  if ShowContext then
+    pnBottom.Height := GetLoadedContextHeight
+  else
+    pnBottom.ClientHeight := StatusBar.Height;
 
   if FShowHistoryList then
   begin
@@ -1038,8 +1054,15 @@ end;
 procedure TfmGrepResults.SetShowContext(Value: Boolean);
 begin
   FShowContext := Value;
-  reContext.Visible := ShowContext;
-  SplitterContext.Visible := ShowContext;
+  reContext.Visible := Value;
+  SplitterContext.Visible := Value;
+  if Value then
+    pnBottom.Height := GetLoadedContextHeight
+  else begin
+    SetLoadedContextHeight(pnBottom.Height);
+    pnBottom.ClientHeight := StatusBar.Height;
+  end;
+
   RefreshContextLines;
 end;
 
@@ -1805,17 +1828,21 @@ begin
   tbnSep6.Visible := actViewStayOnTop.Visible;
 
 {$IFNDEF ICONS_IN_POPUP_MENUS_ARE_BROKEN}
-  pmHamburgerMenu.Images := GetSharedImageList;
+  if not IsStandAlone then
+    pmHamburgerMenu.Images := GetSharedImageList;
 {$ENDIF}
 end;
 
 destructor TfmGrepResults.Destroy;
 begin
-  // XE used to crash here with a "Component already destroyed" error due to the listbox handle being 0 and then recreated in a destructor
-  if lbResults.HandleAllocated then
-    ClearResultsListbox;
-
   Self.Abort;
+
+  if lbResults.HandleAllocated then begin
+    // XE used to crash here with a "Component already destroyed" error due to the listbox handle
+    // being 0 and then recreated in a destructor
+    ClearResultsListbox;
+  end;
+
   SaveSettings;
 
   FreeAndNil(FDragSource);
@@ -1839,6 +1866,16 @@ begin
 
   _HaveItems := not _IsOnlySaveSettings and (lbResults.Items.Count > 0);
   _Processing := DoingSearchOrReplace;
+end;
+
+function TfmGrepResults.GetLoadedContextHeight: integer;
+begin
+  Result := MulDiv(ClientHeight, FLoadedContextHeightRelative, 10000)
+end;
+
+procedure TfmGrepResults.SetLoadedContextHeight(_Value: Integer);
+begin
+  FLoadedContextHeightRelative := MulDiv(_Value, 10000, ClientHeight);
 end;
 
 procedure TfmGrepResults.TheActionListUpdate(Action: TBasicAction; var Handled: Boolean);
@@ -1930,6 +1967,7 @@ procedure TfmGrepResults.FormShow(Sender: TObject);
 begin
   AssignSettingsToForm;
   ResizeListBox;
+  ResizeStatusBar;
   ForceRedraw;
 end;
 
@@ -2047,16 +2085,16 @@ end;
 
 procedure TfmGrepResults.SetStatusString(const StatusStr: string);
 begin
-  StatusBar.Panels.Items[0].Text := StatusStr;
+  StatusBar.Panels[0].Text := StatusStr;
 end;
 
 procedure TfmGrepResults.SetMatchString(const MatchStr: string);
 begin
-  StatusBar.Panels.Items[1].Text := MatchStr;
+  StatusBar.Panels[1].Text := MatchStr;
   if IsEmpty(MatchStr) then
-    StatusBar.Panels.Items[1].Width := 0
+    StatusBar.Panels[1].Width := 0
   else
-    StatusBar.Panels.Items[1].Width := StatusBar.Canvas.TextWidth(MatchStr) + 50;
+    StatusBar.Panels[1].Width := StatusBar.Canvas.TextWidth(MatchStr) + 50;
   ResizeStatusBar;
 end;
 
@@ -2119,7 +2157,11 @@ end;
 
 procedure TfmGrepResults.ResizeStatusBar;
 begin
-  StatusBar.Panels.Items[0].Width := StatusBar.ClientWidth - StatusBar.Panels.Items[1].Width;
+  StatusBar.Panels[0].Width := StatusBar.ClientWidth - StatusBar.Panels[1].Width;
+  if StatusBar.Panels[0].Text = '' then begin
+    // for debugging, set some unobstrusive text
+    StatusBar.Panels[0].Text := '.';
+  end;
 end;
 
 function TfmGrepResults.ResultListItemIsFileResult(ListBoxIndex: Integer): boolean;
