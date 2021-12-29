@@ -228,9 +228,14 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$DEFINE CUSTOMINIFILE_HAS_READSUBSECTIONS}
 {$ENDIF}
 
+{$IFNDEF GX_DELPHI_11_UP}
+  {$DEFINE HAS_PROPERTY_OLDCREATEORDER}
+{$ENDIF}
+
 {$IFDEF GX_DELPHI_11_UP}
   {$DEFINE IDE_IS_HIDPI_AWARE}
 {$ENDIF}
+{.$DEFINE IDE_IS_HIDPI_AWARE}
 
 // Define UniSynEdit if SynEdit is available
 {$IFDEF SYNEDIT}
