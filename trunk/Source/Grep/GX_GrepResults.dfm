@@ -46,6 +46,7 @@ inherited fmGrepResults: TfmGrepResults
       AutoSnap = False
       Beveled = True
       MinSize = 20
+      OnCanResize = SplitterHistoryListCanResize
       OnMoved = SplitterHistoryListMoved
     end
     object lbResults: TListBox
@@ -257,7 +258,7 @@ inherited fmGrepResults: TfmGrepResults
         OnMouseUp = lbHistoryListMouseUp
       end
     end
-    object pnBottom: TPanel
+    object pnlBottom: TPanel
       Left = 0
       Top = 240
       Width = 396

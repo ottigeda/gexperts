@@ -69,7 +69,7 @@ type
     tbnHelp: TToolButton;
     mitListSep1: TMenuItem;
     mitFileSep1: TMenuItem;
-    pnBottom: TPanel;
+    pnlBottom: TPanel;
     reContext: TRichEdit;
     SplitterContext: TSplitter;
     mitViewSep1: TMenuItem;
@@ -300,6 +300,7 @@ type
     procedure actHamburgerMenuExecute(Sender: TObject);
     procedure SplitterContextCanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
     procedure SplitterContextMoved(Sender: TObject);
+    procedure SplitterHistoryListCanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
   private
     FLastRepaintTick: DWORD;
     FSearchInProgress: Boolean;
@@ -314,7 +315,7 @@ type
     FShowLineIndent: Boolean;
     FShowHistoryList: Boolean;
     FLoadedContextHeightRelative: Integer;
-    FLoadHistoryListWidth: Integer;
+    FLoadedHistoryListWidthRelative: Integer;
     FLoadHistoryListPage: Integer;
     FContextSearchText: string;
     FPageIndexes: array[TGrepHistoryListMode] of TPageIndexes;
@@ -900,7 +901,7 @@ begin
   // value to account for higher resolution monitors and changing resolutions due to multiple
   // monitors and Remote Desktop
   if ShowContext then begin
-    PerTenThousand := MulDiv(pnBottom.Height, 10000, pnlMain.ClientHeight);
+    PerTenThousand := MulDiv(pnlBottom.Height, 10000, pnlMain.ClientHeight);
   end else begin
     // if the context is not visible, the bottom panel has the height of the status bar
     // but FLoadedContextHeightRelative contains its former height
@@ -911,7 +912,14 @@ begin
   WindowSettings.DeleteKey('ContextHeightPercent');
   WindowSettings.DeleteKey('ContextHeight');
 
-  WindowSettings.WriteInteger('HistoryListWidth', lbHistoryList.Width);
+  if ShowHistoryList then begin
+    PerTenThousand := MulDiv(tcHistoryListPage.Width, 10000, pnlMain.ClientWidth);
+  end else begin
+    PerTenThousand := FLoadedHistoryListWidthRelative;
+  end;
+  PerTenThousand := ForceBetween(1000, 5000, PerTenThousand);
+  WindowSettings.WriteInteger('HistoryListWidthRelative', PerTenThousand);
+  WindowSettings.DeleteKey('HistoryListWidth');
 
   WindowSettings.WriteBool('ShowFullFilename', ShowFullFilename);
   WindowSettings.WriteBool('ShowLineIndent', ShowLineIndent);
@@ -976,16 +984,20 @@ begin
     for IT := Low(TPageSavedIndexType) to High(TPageSavedIndexType) do
       FPageIndexes[IM, IT] := WindowSettings.ReadInteger(cKeyPageIndexType[IT] + cKeyPageIndexMode[IM], FPageIndexes[IM, IT]);
 
-  if AHistoryIniVersion = 0 then
-  begin
+  if AHistoryIniVersion = 0 then begin
     ShowHistoryList := WindowSettings.ReadBool('ShowFoundList', True);
-    FLoadHistoryListWidth := WindowSettings.ReadInteger('FoundListWidth', lbHistoryList.Width)
-  end
-  else
-  begin
+    FLoadedHistoryListWidthRelative := WindowSettings.ReadInteger('FoundListWidth', tcHistoryListPage.Width);
+    FLoadedHistoryListWidthRelative := MulDiv(FLoadedHistoryListWidthRelative, 10000, pnlMain.ClientWidth);
+  end else begin
     ShowHistoryList := WindowSettings.ReadBool('ShowHistoryList', True);
-    FLoadHistoryListWidth := WindowSettings.ReadInteger('HistoryListWidth', lbHistoryList.Width);
+    if WindowSettings.ValueExists('HistoryListWidthRelative') then
+      FLoadedHistoryListWidthRelative := WindowSettings.ReadInteger('HistoryListWidthRelative', 2000)
+    else begin
+      FLoadedHistoryListWidthRelative := WindowSettings.ReadInteger('HistoryListWidth', tcHistoryListPage.Width);
+      FLoadedHistoryListWidthRelative := MulDiv(FLoadedHistoryListWidthRelative, 10000, pnlMain.ClientWidth);
+    end;
   end;
+  FLoadedHistoryListWidthRelative := ForceBetween(1000, 5000, FLoadedHistoryListWidthRelative);
 
   // this used to be a pixel value and later a percent value, now it is a per-10-thousand
   // value to account for higher resolution monitors and changing resolutions due to multiple
@@ -995,7 +1007,8 @@ begin
   end else if WindowSettings.ValueExists('ContextHeightPercent') then begin
     FLoadedContextHeightRelative := WindowSettings.ReadInteger('ContextHeightPercent', 20) * 100;
   end else if WindowSettings.ValueExists('ContextHeight') then begin
-    FLoadedContextHeightRelative := MulDiv(WindowSettings.ReadInteger('ContextHeight', pnBottom.Height), 10000, ClientHeight);
+    FLoadedContextHeightRelative := WindowSettings.ReadInteger('ContextHeight', pnlBottom.Height);
+    FLoadedContextHeightRelative := MulDiv(FLoadedContextHeightRelative, 10000, pnlMain.ClientHeight);
   end else begin
     FLoadedContextHeightRelative := 2000;
   end;
@@ -1014,16 +1027,16 @@ begin
 
   gblGrepExpert.HistoryList.Enabled := ShowHistoryList;
   if ShowContext then
-    pnBottom.Height := GetLoadedContextHeight
+    pnlBottom.Height := GetLoadedContextHeight
   else
-    pnBottom.ClientHeight := StatusBar.Height;
+    pnlBottom.ClientHeight := StatusBar.Height;
 
   if FShowHistoryList then
   begin
     UpdateHistoryPagesOptions;
     if gblGrepExpert.GrepSaveHistoryListItems then
     begin
-      lbHistoryList.Width := FLoadHistoryListWidth;
+      tcHistoryListPage.Width := MulDiv(FLoadedHistoryListWidthRelative, pnlMain.ClientWidth, 10000);
       if gblGrepExpert.GrepHistoryListDefaultPage < tcHistoryListPage.Tabs.Count then
         FLoadHistoryListPage := gblGrepExpert.GrepHistoryListDefaultPage;
       SetHistoryListMode(TGrepHistoryListMode(FLoadHistoryListPage), True, False, True);
@@ -1058,7 +1071,7 @@ end;
 procedure TfmGrepResults.SetShowContext(Value: Boolean);
 begin
   if (FShowContext = True) and (Value = False) then
-    SetLoadedContextHeight(pnBottom.Height);
+    SetLoadedContextHeight(pnlBottom.Height);
   FShowContext := Value;
   reContext.Visible := Value;
   SplitterContext.Visible := Value;
@@ -1071,9 +1084,9 @@ end;
 procedure TfmGrepResults.UpdateContextPanelHeight;
 begin
   if ShowContext then
-    pnBottom.Height := GetLoadedContextHeight
+    pnlBottom.Height := GetLoadedContextHeight
   else begin
-    pnBottom.ClientHeight := StatusBar.Height;
+    pnlBottom.ClientHeight := StatusBar.Height;
   end;
 end;
 
@@ -2186,13 +2199,15 @@ procedure TfmGrepResults.SetShowHistoryList(const Value: Boolean);
 begin
   if FShowHistoryList <> Value then
   begin
+    if FShowHistoryList then
+      FLoadedHistoryListWidthRelative := MulDiv(tcHistoryListPage.Width, 10000, pnlMain.ClientWidth);
     FShowHistoryList := Value;
     if Assigned(gblGrepExpert) then
-      gblGrepExpert.HistoryList.Enabled := ShowHistoryList;
-    tcHistoryListPage.Visible := ShowHistoryList;
+      gblGrepExpert.HistoryList.Enabled := Value;
+    tcHistoryListPage.Visible := Value;
     if Value then
       SplitterHistoryList.Left := tcHistoryListPage.Left + tcHistoryListPage.Width;
-    SplitterHistoryList.Visible := ShowHistoryList;
+    SplitterHistoryList.Visible := Value;
     if lbHistoryList.Items.Count > 0 then
     begin
       lbHistoryList.ItemIndex := 0;
@@ -2859,17 +2874,29 @@ procedure TfmGrepResults.SplitterContextCanResize(Sender: TObject; var NewSize: 
   var Accept: Boolean);
 var
   PerTenThousand: integer;
-  cw: integer;
+  h: integer;
 begin
-  cw := pnlMain.ClientHeight;
-  PerTenThousand := MulDiv(NewSize, 10000, cw);
-  PerTenThousand:=ForceBetween(1000, 5000, PerTenThousand);
-  NewSize := muldiv(PerTenThousand, cw, 10000);
+  h := pnlMain.ClientHeight;
+  PerTenThousand := MulDiv(NewSize, 10000, h);
+  PerTenThousand := ForceBetween(1000, 5000, PerTenThousand);
+  NewSize := MulDiv(PerTenThousand, h, 10000);
 end;
 
 procedure TfmGrepResults.SplitterContextMoved(Sender: TObject);
 begin
-  SetLoadedContextHeight(pnBottom.Height);
+  SetLoadedContextHeight(pnlBottom.Height);
+end;
+
+procedure TfmGrepResults.SplitterHistoryListCanResize(Sender: TObject; var NewSize: Integer;
+  var Accept: Boolean);
+var
+  w: Integer;
+  PerTenThousand: Integer;
+begin
+  w := pnlMain.ClientWidth;
+  PerTenThousand := MulDiv(NewSize, 10000, w);
+  PerTenThousand := ForceBetween(1000, 5000, PerTenThousand);
+  NewSize := MulDiv(PerTenThousand, w, 10000);
 end;
 
 procedure TfmGrepResults.SplitterHistoryListMoved(Sender: TObject);
