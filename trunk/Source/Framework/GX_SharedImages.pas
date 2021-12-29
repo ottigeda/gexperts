@@ -71,7 +71,7 @@ uses
 
 function GetSharedImageList: TImageList;
 begin
-  Result := GExpertsInst.GetSharedImages;
+  Result := GExpertsInst(True).GetSharedImages;
 end;
 
 { TdmSharedImages }
