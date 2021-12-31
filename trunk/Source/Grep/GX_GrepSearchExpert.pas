@@ -1,5 +1,7 @@
 unit GX_GrepSearchExpert;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -41,11 +43,14 @@ uses
 constructor TGrepSearchExpert.Create;
 begin
   inherited Create;
+
+{$IFNDEF GX_STANDALONE}
   // since we no longer have a menu entry in the GExperts menu
   // we need to create an action here
   FActionInt := GxActionBroker.RequestAction(GetActionName, GetBitmap);
   FActionInt.OnExecute := Self.Execute;
   FActionInt.Caption := GetActionCaption;
+{$ENDIF GX_STANDALONE}
 end;
 
 function TGrepSearchExpert.GetActionCaption: string;
