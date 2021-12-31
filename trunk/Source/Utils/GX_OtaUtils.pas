@@ -668,7 +668,7 @@ function GxOtaGetSourceEditor(const FileName: string): IOTASourceEditor;
 
 // Returns a fully qualified name of the current file,
 // which could either be a form or unit (.pas/.cpp/.dfm/.xfm etc.).
-// Returns a blank string if no file is currently selected.
+// Returns an empty string if no file is currently selected.
 function GxOtaGetCurrentSourceFile: string;
 
 // Returns the syntax highlighting enumeration constant that
@@ -731,7 +731,7 @@ function GxOtaSelectedComponentIsRoot(const FormEditor: IOTAFormEditor): Boolean
 
 ///<summary>
 /// Retrieves the name of the current selected component on FormEditor.
-// @returns an emptry string if no or more than 1 component is selected. </summary>
+/// @returns an emptry string if no or more than 1 component is selected. </summary>
 function GxOtaSelectedComponentName: string;
 
 //  Get the BiDiMode property for a VCL form
