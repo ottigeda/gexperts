@@ -44,6 +44,7 @@
         <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
         <DCC_TypedAtParameter>true</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
+        <DCC_UnitAlias>GX_IdeDockStandAlone=GX_IdeDock;$(DCC_UnitAlias)</DCC_UnitAlias>
         <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\ExternalSource\ddetours;..\..\source\Include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_UsePackage>rtl;vcl;vclx;vclactnband;xmlrtl;designide;$(DCC_UsePackage)</DCC_UsePackage>
         <GenDll>true</GenDll>

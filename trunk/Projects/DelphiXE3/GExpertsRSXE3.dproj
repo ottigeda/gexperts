@@ -42,7 +42,7 @@
         <DCC_MapFile>3</DCC_MapFile>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Winapi;System.Win;$(DCC_Namespace)</DCC_Namespace>
         <DCC_TypedAtParameter>true</DCC_TypedAtParameter>
-        <DCC_UnitAlias>ImageList=ImgList;$(DCC_UnitAlias)</DCC_UnitAlias>
+        <DCC_UnitAlias>ImageList=ImgList;GX_IdeDockStandAlone=GX_IdeDock;$(DCC_UnitAlias)</DCC_UnitAlias>
         <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_UsePackage>rtl;vcl;designide;$(DCC_UsePackage)</DCC_UsePackage>
         <GenDll>true</GenDll>

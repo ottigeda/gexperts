@@ -30,7 +30,7 @@ Y=1
 Z=1
 ShowHints=1
 ShowWarnings=1
-UnitAliases=Actions=Actnlist;ImageList=Controls;ShLwApi=GX_ShLwApi;UiTypes=Types
+UnitAliases=Actions=Actnlist;ImageList=Controls;ShLwApi=GX_ShLwApi;UiTypes=Types;GX_IdeDockStandAlone=GX_IdeDock
 NamespacePrefix=
 SymbolDeprecated=1
 SymbolLibrary=1

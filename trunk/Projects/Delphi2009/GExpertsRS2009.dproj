@@ -30,7 +30,7 @@
         <DCC_StringChecks>off</DCC_StringChecks>
         <DCC_TypedAtParameter>true</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
-        <DCC_UnitAlias>Actions=Actnlist;ImageList=ImgList;UiTypes=Types;$(DCC_UnitAlias)</DCC_UnitAlias>
+        <DCC_UnitAlias>Actions=Actnlist;ImageList=ImgList;UiTypes=Types;GX_IdeDockStandAlone=GX_IdeDock;$(DCC_UnitAlias)</DCC_UnitAlias>
         <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_UsePackage>rtl;vcl;vclx;designide</DCC_UsePackage>
         <GenDll>true</GenDll>
