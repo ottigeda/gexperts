@@ -98,10 +98,10 @@ var
       SourceEditor := GxOtaGetSourceEditorFromModule(Module, MatchFile);
       if not Assigned(SourceEditor) then
         raise Exception.Create(SUnableToOpen + MatchFile);
-      GxOtaLoadFileToUnicodeStrings(SourceEditor.FileName, TempFile, WasBinary);
+      GxOtaLoadFileToUnicodeStrings(SourceEditor.FileName, TempFile);
     end
     else
-      GxOtaLoadFileToUnicodeStrings(MatchFile, TempFile, WasBinary);
+      GxOtaLoadFileToUnicodeStrings(MatchFile, TempFile);
   end;
 
   procedure DoReplacement;
