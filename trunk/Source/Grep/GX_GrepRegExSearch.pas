@@ -91,6 +91,7 @@ end;
 
 constructor TSearcher.Create;
 begin
+  inherited Create;
   FRegEx := TRegExpr.Create;
 end;
 
