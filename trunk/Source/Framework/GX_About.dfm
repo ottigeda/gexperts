@@ -12,6 +12,7 @@ object fmAbout: TfmAbout
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
+  OldCreateOrder = False
   Scaled = False
   PixelsPerInch = 96
   TextHeight = 14
