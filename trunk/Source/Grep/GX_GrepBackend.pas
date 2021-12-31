@@ -40,6 +40,7 @@ INI file name:
 interface
 
 uses
+  Windows,
   SysUtils,
   Classes,
   IniFiles,
@@ -396,8 +397,7 @@ type
     procedure GrepProjectFile(const FileName: string; Context: TGrepSearchContext);
     procedure GrepMapFile(const _MapFile: string; _Context: TGrepSearchContext);
   protected
-    procedure DoHitMatch(LineNo: Integer; const Line: string;
-      SPos, EPos: Integer); virtual;
+    procedure DoHitMatch(LineNo: Integer; const Line: string; SPos, EPos: Integer); virtual;
     procedure GrepCurrentSourceEditor;
     procedure GrepProjectGroup;
     procedure GrepProject(Project: IOTAProject);
@@ -537,7 +537,7 @@ begin
   try
 // This does not find units, that are actually part of the project
 // but not in the search path, and also does not find
-// units that are in the library part but only as .dcu files.
+// units that are in the library path but only as .dcu files.
 //    GxOtaGetEffectiveLibraryPath(SearchPath);
 // This finds everything, but it might be too much. You usually don't
 // want to search RTL / VCL / FMX units.
@@ -562,7 +562,6 @@ begin
   end;
 end;
 
-
 procedure TGrepSearchRunner.GrepCurrentSourceEditor;
 resourcestring
   SNoFileOpen = 'No file is currently open';
@@ -570,7 +569,8 @@ var
   CurrentFile: string;
   Context: TGrepSearchContext;
 begin
-  if IsStandAlone then Exit;
+  if IsStandAlone then
+    Exit;
 
   CurrentFile := GxOtaGetBaseModuleFileName(GxOtaGetCurrentSourceFile);
 
@@ -812,8 +812,9 @@ begin
                   else
                     GrepDirectories(FGrepSettings.Directories, '*.pas;*.dpr;*.inc')
                 end
-                else
-                  GrepDirectories(FGrepSettings.Directories, AnsiUpperCase(FGrepSettings.Mask));
+                else begin
+                  GrepDirectories(FGrepSettings.Directories, AnsiLowerCase(FGrepSettings.Mask));
+                end;
               end;
             gaResults:
               GrepResults;
