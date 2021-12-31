@@ -6500,6 +6500,8 @@ end;
 
 procedure TMonitor_MakeFullyVisible(_MonitorRect: TRect; var _Left, _Top, _Width, _Height: Integer);
 begin
+  _Width := Min(_Width, TRect_Width(_MonitorRect));
+  _Height := Min(_Height, TRect_Height(_MonitorRect));
   if _Left + _Width > _MonitorRect.Right then
     _Left := _MonitorRect.Right - _Width;
   if _Left < _MonitorRect.Left then
