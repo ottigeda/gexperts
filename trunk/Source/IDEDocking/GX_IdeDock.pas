@@ -10,6 +10,8 @@ uses
   MenuBar, Menus, Messages,
 {$IFDEF IDE_IS_HIDPI_AWARE}
   u_dzDpiScaleUtils,
+{$ELSE}
+  u_dzDpiScaleUtilsDummy,
 {$ENDIF}
   // You must link to the DesignIde package to compile this unit
   DockForm;
@@ -23,13 +25,6 @@ type
     function IsShortCut(var Message: TWMKey): Boolean; override;
   end;
 {$ENDIF EnableIdeDockingSupport}
-
-{$IFNDEF IDE_IS_HIDPI_AWARE}
-  TDummyDpiScaler = class
-  public
-    function Calc(_Value: integer): integer;
-  end;
-{$ENDIF}
 
 {$UNDEF TrickTheIdeAncestorForm}  // this must always be undefined, so that
 {$IFDEF TrickTheIdeAncestorForm}  // <--- this define is always false
@@ -201,11 +196,6 @@ end;
 procedure TfmIdeDockForm.ArrangeControls;
 begin
   // do nothing
-end;
-{$ELSE}
-function TDummyDpiScaler.Calc(_Value: integer): integer;
-begin
-  Result := _Value;
 end;
 {$ENDIF}
 

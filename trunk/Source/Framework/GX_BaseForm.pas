@@ -15,16 +15,10 @@ uses
   Dialogs,
 {$IFDEF IDE_IS_HIDPI_AWARE}
   u_dzDpiScaleUtils,
+{$ELSE}
+  u_dzDpiScaleUtilsDummy,
 {$ENDIF}
   u_dzVclUtils;
-
-{$IFNDEF IDE_IS_HIDPI_AWARE}
-type
-  TDummyDpiScaler = class
-  public
-    function Calc(_Value: Integer): Integer;
-  end;
-{$ENDIF}
 
 type
   // All forms except docking forms must descend from this class.
@@ -96,11 +90,6 @@ end;
 
 procedure TfmBaseForm.ArrangeControls;
 begin
-end;
-{$ELSE}
-function TDummyDpiScaler.Calc(_Value: Integer): Integer;
-begin
-  Result := _Value;
 end;
 {$ENDIF}
 
