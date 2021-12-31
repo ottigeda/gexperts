@@ -5,6 +5,7 @@ interface
 {$I GX_CondDefine.inc}
 
 uses
+  Windows, SysUtils,
   Classes, Controls, GX_GrepBackend;
 
 type
@@ -19,7 +20,7 @@ implementation
 
 uses
   GX_GenericUtils,
-  SysUtils, Graphics, ComCtrls, Dialogs, IniFiles, StrUtils, GX_GrepProgress;
+  Graphics, ComCtrls, Dialogs, IniFiles, StrUtils, GX_GrepProgress;
 
 function OpenSaveDialog(var AFileName: String): Boolean;
 var
