@@ -2,12 +2,18 @@ unit GX_ConfigurationInfo;
 
 {$I GX_CondDefine.inc}
 
+// If GX_STANDALONE is defined, several of the methods are not available.
+// This is to make this unit compatible with a stand alone version of Grep,
+// that does not load the GExperts DLL and therefore does not need runtime
+// packages. (Do not define it here, define it in the project options!)
+{.$DEFINE GX_STANDALONE}
+
 interface
 
 uses
   Windows,
   Registry,
-  Graphics, Classes, TypInfo, Forms, ComCtrls, Types, IniFiles,
+  Graphics, Classes, TypInfo, Forms, ComCtrls, Types, IniFiles, StrUtils,
   u_dzClassUtils, // these other u_dzXxx units are necessary for inlining
   u_dzTypes,
   u_dzTranslator,
@@ -62,29 +68,14 @@ type
 type
   IConfigInfo = interface(IUnknown) //FI:W523 - we don't need a GUID
     procedure SaveSettings;
-    procedure SetAlphabetizeMenu(const Value: Boolean);
     procedure SetCachingPath(const Value: string);
     procedure SetConfigPath(const Value: string);
-    procedure SetEditorExpertsEnabled(const Value: Boolean);
     procedure SetHelpFileLocation(const Value: string);
     procedure SetVclPath(const Value: string);
-    procedure SetPlaceGxMainMenuInToolsMenu(const Value: Boolean);
-    procedure SetHideWindowMenu(const Value: Boolean);
-    procedure SetMoveComponentMenu(const Value: Boolean);
-    function GetAlphabetizeMenu: Boolean;
     function GetCachingPath: string;
     function GetConfigPath: string;
-    function GetEditorExpertsEnabled: Boolean;
     function GetHelpFileLocation: string;
     function GetVclPath: string;
-    function GetPlaceGxMainMenuInToolsMenu: Boolean;
-    function GetHideWindowMenu: Boolean;
-    function GetMoveComponentMenu: Boolean;
-    function GetEnableKeyboardShortcuts: Boolean;
-    function GetEnableCustomFont: Boolean;
-    procedure SetEnableCustomFont(const Value: Boolean);
-    procedure UpdateScreenForms;
-
     // Return the IDE's base registry key without a
     // trailing backslash, e.g.
     //    SOFTWARE\Borland\Delphi\6.0
@@ -104,6 +95,23 @@ type
     // Return the path to the configuration files;
     // is guaranteed to have a trailing backslash.
     property ConfigPath: string read GetConfigPath write SetConfigPath;
+    function GExpertsPath: string;
+    function GetExpertSettings(const _Section: string; const _BaseKey: string = ''): IExpertSettings;
+{$IFNDEF GX_STANDALONE}
+    procedure SetAlphabetizeMenu(const Value: Boolean);
+    procedure SetEditorExpertsEnabled(const Value: Boolean);
+    procedure SetPlaceGxMainMenuInToolsMenu(const Value: Boolean);
+    procedure SetHideWindowMenu(const Value: Boolean);
+    procedure SetMoveComponentMenu(const Value: Boolean);
+    function GetAlphabetizeMenu: Boolean;
+    function GetEditorExpertsEnabled: Boolean;
+    function GetPlaceGxMainMenuInToolsMenu: Boolean;
+    function GetHideWindowMenu: Boolean;
+    function GetMoveComponentMenu: Boolean;
+    function GetEnableKeyboardShortcuts: Boolean;
+    function GetEnableCustomFont: Boolean;
+    procedure SetEnableCustomFont(const Value: Boolean);
+    procedure UpdateScreenForms;
     // Return whether the editor experts are enabled.
     property EditorExpertsEnabled: Boolean read GetEditorExpertsEnabled write SetEditorExpertsEnabled;
     // Determines whether the entries in the GExperts top level menu
@@ -115,16 +123,15 @@ type
     property PlaceGxMainMenuInToolsMenu: Boolean read GetPlaceGxMainMenuInToolsMenu write SetPlaceGxMainMenuInToolsMenu;
     property HideWindowMenu: Boolean read GetHideWindowMenu write SetHideWindowMenu;
     property MoveComponentMenu: Boolean read GetMoveComponentMenu write SetMoveComponentMenu;
-    function GExpertsPath: string;
     property EnableKeyboardShortcuts: Boolean read GetEnableKeyboardShortcuts;
     property EnableCustomFont: Boolean read GetEnableCustomFont write SetEnableCustomFont;
     function CustomFont: TFont;
-    function GetExpertSettings(const _Section: string; const _BaseKey: string = ''): IExpertSettings;
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
     function GetForceDesktopOnStartup: Boolean;
     procedure SetForceDesktopOnStartup(const _Value: Boolean);
     function GetForcedStartupDesktop: string;
     procedure SetForcedStartupDesktop(const _Value: string);
+{$ENDIF}
 {$ENDIF}
   end;
 
@@ -273,12 +280,13 @@ uses
 type
   TConfigInfo = class(TSingletonInterfacedObject, IConfigInfo)
   private
+    FIdeRootRegistryKey: string;
     FVclPath: string;
     FGExpertsPath: string;
     FConfigPath: string;
     FCachingPath: string;
     FHelpFileLocation: string;
-    FIdeRootRegistryKey: string;
+{$IFNDEF GX_STANDALONE}
     FEditorExpertsEnabled: Boolean;
     FAlphabetizeMenu: Boolean;
     FPlaceGxMainMenuInToolsMenu: Boolean;
@@ -291,46 +299,49 @@ type
     FForceDesktopOnStartup: Boolean;
     FForcedStartupDesktop: string;
 {$ENDIF}
+{$ENDIF}
     procedure LoadSettings;
     function DefaultConfigPath: string;
     function DefaultCachingPath: string;
   protected
     // IConfigInfo
     procedure SaveSettings;
-    procedure SetAlphabetizeMenu(const Value: Boolean);
     procedure SetCachingPath(const Value: string);
     procedure SetConfigPath(const Value: string);
     procedure SetGExpertsPath(const Value: string);
-    procedure SetEditorExpertsEnabled(const Value: Boolean);
     procedure SetHelpFileLocation(const Value: string);
     procedure SetVclPath(const Value: string);
-    procedure SetPlaceGxMainMenuInToolsMenu(const Value: Boolean);
-    procedure SetHideWindowMenu(const Value: Boolean);
-    procedure SetMoveComponentMenu(const Value: Boolean);
-    function GetAlphabetizeMenu: Boolean;
     function GetConfigPath: string;
     function GetCachingPath: string;
-    function GetEditorExpertsEnabled: Boolean;
     function GExpertsIdeRootRegistryKey: string;
     function GetHelpFileLocation: string;
     function IdeRootRegistryKey: string;
     function GetVclPath: string;
     function GExpertsPath: string;
+    function ConfigurationKey: string;
+    function GetExpertSettings(const _Section: string; const _BaseKey: string = ''): IExpertSettings;
+{$IFNDEF GX_STANDALONE}
+    procedure SetAlphabetizeMenu(const Value: Boolean);
+    procedure SetEditorExpertsEnabled(const Value: Boolean);
+    procedure SetPlaceGxMainMenuInToolsMenu(const Value: Boolean);
+    procedure SetHideWindowMenu(const Value: Boolean);
+    procedure SetMoveComponentMenu(const Value: Boolean);
+    function GetAlphabetizeMenu: Boolean;
+    function GetEditorExpertsEnabled: Boolean;
     function GetPlaceGxMainMenuInToolsMenu: Boolean;
     function GetHideWindowMenu: Boolean;
     function GetMoveComponentMenu: Boolean;
-    function ConfigurationKey: string;
     function GetEnableKeyboardShortcuts: Boolean;
     function GetEnableCustomFont: Boolean;
     procedure SetEnableCustomFont(const Value: Boolean);
     function CustomFont: TFont;
     procedure UpdateScreenForms;
-    function GetExpertSettings(const _Section: string; const _BaseKey: string = ''): IExpertSettings;
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
     function GetForceDesktopOnStartup: Boolean;
     procedure SetForceDesktopOnStartup(const _Value: Boolean);
     function GetForcedStartupDesktop: string;
     procedure SetForcedStartupDesktop(const _Value: string);
+{$ENDIF}
 {$ENDIF}
   public
     constructor Create;
@@ -528,9 +539,10 @@ begin
   {$IFOPT D+} SendDebug('Creating configuration info'); {$ENDIF D+}
   inherited Create;
   FPrivateConfigurationInfo := Self;
+{$IFNDEF GX_STANDALONE}
   FCustomFont := TFont.Create;
-
-  FIdeRootRegistryKey := GxOtaGetIdeBaseRegistryKey;
+{$ENDIF}
+  FIdeRootRegistryKey := GXOtaGetIdeBaseRegistryKey;
   FVclPath := AddSlash(GetIdeRootDirectory) +
               AddSlash('Source') +
               {$IFNDEF GX_VER230_up} {$IFDEF GX_VER170_up} AddSlash('Win32') + {$ENDIF} {$ENDIF}
@@ -540,7 +552,9 @@ begin
   FConfigPath := DefaultConfigPath;
   FCachingPath := DefaultCachingPath;
 
+{$IFNDEF GX_STANDALONE}
   EditorEnhancements.Enabled := False;
+{$ENDIF}
 
   LoadSettings;
   ShowGxMessageBox(TShowBadDirectoryMessage, FConfigPath);
@@ -560,8 +574,10 @@ destructor TConfigInfo.Destroy;
 begin
   {$IFOPT D+} SendDebug('TConfigInfo.Destroy'); {$ENDIF D+}
   //SaveSettings; // Call this below to prevent re-creating TConfigInfo
+{$IFNDEF GX_STANDALONE}
   FreeEditorEnhancements;
   FreeAndNil(FCustomFont);
+{$ENDIF}
 
   inherited Destroy;
 end;
@@ -569,7 +585,9 @@ end;
 procedure TConfigInfo.LoadSettings;
 var
   Settings: TGExpertsSettings;
+{$IFNDEF GX_STANDALONE}
   Setting: Boolean;
+{$ENDIF}
 begin
   {$IFOPT D+} SendDebug('Loading configuration info settings'); {$ENDIF D+}
 
@@ -582,6 +600,7 @@ begin
     FHelpFileLocation := Settings.ReadString(ConfigurationKey, 'HelpFile', FGExpertsPath + 'GExperts.chm');
     if SameText(ExtractFileExt(FHelpFileLocation), '.hlp') then
       FHelpFileLocation := ChangeFileExt(FHelpFileLocation, '.chm');
+{$IFNDEF GX_STANDALONE}
     FAlphabetizeMenu := Settings.ReadBool(ConfigurationKey, 'AlphabetizeMenu', True);
     FEditorExpertsEnabled := Settings.ReadBool(ConfigurationKey, 'EditorExpertsEnabled', True);
     FPlaceGxMainMenuInToolsMenu := Settings.ReadBool(ConfigurationKey, 'PlaceGxMainMenuInToolsMenu', False);
@@ -590,19 +609,22 @@ begin
     FEnableKeyboardShortcuts := Settings.ReadBool(ConfigurationKey, 'EnableKeyboardShortcuts', True);
     FEnableCustomFont := Settings.ReadBool(ConfigurationKey, 'EnableCustomFont', False);
     Settings.LoadFont(AddSlash(ConfigurationKey) + 'CustomFont', FCustomFont);
+{$ENDIF}
 
+{$IFNDEF GX_STANDALONE}
     Setting := Settings.ReadBool(ConfigurationKey, 'EditorEnhancementsEnabled', False);
     EditorEnhancements.Enabled := Setting and not IsStandAlone;
-
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
     FForceDesktopOnStartup := Settings.ReadBool(ConfigurationKey, 'ForceDesktopOnStartup', False);
     FForcedStartupDesktop := Settings.ReadString(ConfigurationKey, 'ForcedStartupDestkop', '');
+{$ENDIF}
 {$ENDIF}
   finally
     FreeAndNil(Settings);
   end;
 end;
 
+{$IFNDEF GX_STANDALONE}
 procedure TConfigInfo.SaveSettings;
 var
   Settings: TGExpertsSettings;
@@ -633,6 +655,11 @@ begin
     FreeAndNil(Settings);
   end;
 end;
+{$ELSE}
+procedure TConfigInfo.SaveSettings;
+begin
+end;
+{$ENDIF}
 
 procedure TConfigInfo.SetVclPath(const Value: string);
 begin
@@ -648,7 +675,7 @@ end;
 
 procedure TConfigInfo.SetCachingPath(const Value: string);
 begin
- FCachingPath := AddSlash(Value);
+  FCachingPath := AddSlash(Value);
 end;
 
 procedure TConfigInfo.SetConfigPath(const Value: string);
@@ -656,12 +683,15 @@ begin
   FConfigPath := AddSlash(Value);
 end;
 
+{$IFNDEF GX_STANDALONE}
 function TConfigInfo.GetAlphabetizeMenu: Boolean;
 begin
+  // todo: does this assertion make any sense?
   Assert(not IsStandAlone);
 
   Result := FAlphabetizeMenu;
 end;
+{$ENDIF}
 
 function TConfigInfo.GetCachingPath: string;
 begin
@@ -673,12 +703,15 @@ begin
   Result := FConfigPath;
 end;
 
+{$IFNDEF GX_STANDALONE}
 function TConfigInfo.GetEditorExpertsEnabled: Boolean;
 begin
+  // todo: does this assertion make any sense?
   Assert(not IsStandAlone);
 
   Result := FEditorExpertsEnabled;
 end;
+{$ENDIF}
 
 function TConfigInfo.GetHelpFileLocation: string;
 begin
@@ -690,6 +723,7 @@ begin
   Result := FIdeRootRegistryKey;
 end;
 
+{$IFNDEF GX_STANDALONE}
 function TConfigInfo.GetMoveComponentMenu: Boolean;
 begin
   Result := FMoveComponentMenu;
@@ -699,14 +733,17 @@ procedure TConfigInfo.SetMoveComponentMenu(const Value: Boolean);
 begin
   FMoveComponentMenu := Value;
 end;
+{$ENDIF}
 
 function TConfigInfo.GetVclPath: string;
 begin
   Result := FVclPath;
 end;
 
+{$IFNDEF GX_STANDALONE}
 procedure TConfigInfo.SetAlphabetizeMenu(const Value: Boolean);
 begin
+  // todo: does this assertion make any sense?
   Assert(not IsStandAlone);
 
   FAlphabetizeMenu := Value;
@@ -714,16 +751,19 @@ end;
 
 procedure TConfigInfo.SetEditorExpertsEnabled(const Value: Boolean);
 begin
+  // todo: does this assertion make any sense?
   Assert(not IsStandAlone);
 
   FEditorExpertsEnabled := Value;
 end;
+{$ENDIF}
 
 procedure TConfigInfo.SetHelpFileLocation(const Value: string);
 begin
   FHelpFileLocation := Value;
 end;
 
+{$IFNDEF GX_STANDALONE}
 function TConfigInfo.GetPlaceGxMainMenuInToolsMenu: Boolean;
 begin
   Result := FPlaceGxMainMenuInToolsMenu;
@@ -743,6 +783,7 @@ procedure TConfigInfo.SetHideWindowMenu(const Value: Boolean);
 begin
   FHideWindowMenu := Value;
 end;
+{$ENDIF}
 
 function TConfigInfo.GExpertsPath: string;
 begin
@@ -759,16 +800,19 @@ begin
   Result := 'Misc';
 end;
 
+{$IFNDEF GX_STANDALONE}
 function TConfigInfo.GetEnableKeyboardShortcuts: Boolean;
 begin
   Result := FEnableKeyboardShortcuts;
 end;
+{$ENDIF}
 
 function TConfigInfo.GetExpertSettings(const _Section: string; const _BaseKey: string = ''): IExpertSettings;
 begin
   Result := TExpertSettingsEx.Create(TGExpertsSettings.Create(_BaseKey), _Section);
 end;
 
+{$IFNDEF GX_STANDALONE}
 {$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
 function TConfigInfo.GetForceDesktopOnStartup: Boolean;
 begin
@@ -826,6 +870,7 @@ begin
   FForcedStartupDesktop := _Value;
 end;
 {$ENDIF STARTUP_LAYOUT_FIX_ENABLED}
+{$ENDIF GX_STANDALONE}
 
 { TShowBadDirectoryMessage }
 
