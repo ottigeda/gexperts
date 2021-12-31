@@ -10,7 +10,11 @@ uses
   Windows, Classes, Graphics, Controls, Forms, ActnList, Dialogs, StdCtrls, ExtCtrls, ToolWin,
   ComCtrls, Menus, Actions, UITypes,
   DropSource,
-  GX_GrepBackend, GX_GrepExpert, GX_ConfigurationInfo, GX_IdeDock, GX_GrepSearch, GX_SharedImages;
+  GX_GrepBackend, GX_GrepExpert, GX_ConfigurationInfo, GX_IdeDock, GX_GrepSearch, GX_SharedImages,
+  // if you get a compile error in the next line, add 'GX_IdeDockStandAlone=GX_IdeDock' to unit aliases
+  // This entry gets added by the Delphi IDE every time this form is edited as part of the
+  // stand alone Grep project, I got tired of removing it every time.
+  GX_IdeDockStandAlone;
 
 type
   TPageIndexType = (pitClickedEntryKeyIndex, pitTopKeyIndex, pitClickedEntryItemIndex, pitTopItemIndex);
@@ -1929,6 +1933,7 @@ begin
   actViewShowHistoryList.Checked := ShowHistoryList;
   actViewShowFullFilename.Checked := ShowFullFilename;
   actViewShowIndent.Checked := ShowLineIndent;
+  Handled := True;
 end;
 
 function TfmGrepResults.ShowModalForm(Dlg: TCustomForm): TModalResult;
