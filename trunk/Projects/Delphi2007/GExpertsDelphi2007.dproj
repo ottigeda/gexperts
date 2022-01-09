@@ -25,7 +25,7 @@
         <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
         <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-        <DCC_UnitAlias>Actions=ActnList;ImageList=ImgList;UITypes=Types;GX_IdeDockStandAlone=GX_IdeDock</DCC_UnitAlias>
+        <DCC_UnitAlias>Actions=ActnList;ImageList=ImgList;UITypes=Types;GX_IdeDockStandAlone=GX_IdeDock;u_dzDpiScaleUtils=u_dzDpiScaleUtilsDummy</DCC_UnitAlias>
         <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include</DCC_UnitSearchPath>
         <Version>7.0</Version>
     </PropertyGroup>
@@ -47,7 +47,7 @@
         <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
         <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-        <DCC_UnitAlias>Actions=ActnList;ImageList=ImgList;UITypes=Types;GX_IdeDockStandAlone=GX_IdeDock</DCC_UnitAlias>
+        <DCC_UnitAlias>Actions=ActnList;ImageList=ImgList;UITypes=Types;GX_IdeDockStandAlone=GX_IdeDock;u_dzDpiScaleUtils=u_dzDpiScaleUtilsDummy</DCC_UnitAlias>
         <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include</DCC_UnitSearchPath>
         <Version>7.0</Version>
     </PropertyGroup>
