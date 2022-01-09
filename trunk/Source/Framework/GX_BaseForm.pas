@@ -13,11 +13,7 @@ uses
   Controls,
   Forms,
   Dialogs,
-{$IFDEF IDE_IS_HIDPI_AWARE}
   u_dzDpiScaleUtils,
-{$ELSE}
-  u_dzDpiScaleUtilsDummy,
-{$ENDIF}
   u_dzVclUtils;
 
 type
@@ -28,10 +24,8 @@ type
   protected
     procedure Loaded; override;
   protected
-{$IFNDEF IDE_IS_HIDPI_AWARE}
-    FScaler: TDummyDpiScaler;
-{$ELSE}
     FScaler: TFormDpiScaler;
+{$IFDEF IDE_IS_HIDPI_AWARE}
     procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); virtual;
     procedure ArrangeControls; virtual;
@@ -65,10 +59,8 @@ end;
 
 procedure TfmBaseForm.InitDpiScaler;
 begin
-{$IFNDEF IDE_IS_HIDPI_AWARE}
-  FScaler := TDummyDpiScaler.Create;
-{$ELSE}
   FScaler := TFormDpiScaler.Create(Self);
+{$IFDEF IDE_IS_HIDPI_AWARE}
   ApplyDpi(TScreen_GetDpiForForm(Self), nil);
 {$ENDIF}
 end;
