@@ -6,6 +6,9 @@ unit GX_GetIdeVersion;
 
 interface
 
+uses
+  UITypes; // for inlining
+
 type
   TBorlandIdeVersion =
     (ideUndetected, ideUnknown,

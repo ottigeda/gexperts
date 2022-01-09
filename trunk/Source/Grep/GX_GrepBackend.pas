@@ -43,6 +43,7 @@ uses
   Windows,
   SysUtils,
   Classes,
+  UITypes, // for inlining
   IniFiles,
   ToolsAPI,
   SynRegExpr,

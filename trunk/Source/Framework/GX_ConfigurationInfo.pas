@@ -14,6 +14,7 @@ uses
   Windows,
   Registry,
   Graphics, Classes, TypInfo, Forms, ComCtrls, Types, IniFiles, StrUtils,
+  UITypes, // for inlining
   u_dzClassUtils, // these other u_dzXxx units are necessary for inlining
   u_dzTypes,
   u_dzTranslator,

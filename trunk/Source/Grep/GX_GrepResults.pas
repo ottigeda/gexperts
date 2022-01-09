@@ -8,6 +8,7 @@ interface
 
 uses
   Windows, Classes, Graphics, Controls, Forms, ActnList, Dialogs, StdCtrls, ExtCtrls, ToolWin,
+  Types, // for inlining
   ComCtrls, Menus, Actions, UITypes,
   DropSource,
   GX_GrepBackend, GX_GrepExpert, GX_ConfigurationInfo, GX_IdeDock, GX_GrepSearch, GX_SharedImages,
