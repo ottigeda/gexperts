@@ -2,17 +2,27 @@ unit u_dzDpiScaleUtilsDummy;
 
 interface
 
+uses
+  SysUtils,
+  Forms;
+
 type
-  TDummyDpiScaler = class
+  TFormDpiScaler = class
   public
+    constructor Create(_Form: TForm);
     function Calc(_Value: Integer): Integer;
   end;
 
 implementation
 
-{ TDummyDpiScaler }
+{ TFormDpiScaler }
 
-function TDummyDpiScaler.Calc(_Value: Integer): Integer;
+constructor TFormDpiScaler.Create(_Form: TForm);
+begin
+  inherited Create;
+end;
+
+function TFormDpiScaler.Calc(_Value: Integer): Integer;
 begin
   Result := _Value;
 end;
