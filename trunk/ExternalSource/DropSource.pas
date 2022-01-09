@@ -35,7 +35,10 @@ unit DropSource;
 interface
 
 uses
-  Controls, Windows, ActiveX, Classes;
+  Windows,
+  Types, // for inlining
+  Classes,
+  Controls, ActiveX;
 
 const
   MAXFORMATS = 20;
