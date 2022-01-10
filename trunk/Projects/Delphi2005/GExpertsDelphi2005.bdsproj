@@ -44,7 +44,7 @@
 			<Compiler Name="Z" Type="Integer">1</Compiler>
 			<Compiler Name="ShowHints" Type="Boolean">True</Compiler>
 			<Compiler Name="ShowWarnings" Type="Boolean">True</Compiler>
-			<Compiler Name="UnitAliases" Type="String">Actions=Actnlist;ImageList=Controls;UITypes=Types;GX_IdeDockStandAlone=GX_IdeDock</Compiler>
+			<Compiler Name="UnitAliases" Type="String">Actions=Actnlist;ImageList=Controls;UITypes=Types;GX_IdeDockStandAlone=GX_IdeDock;u_dzDpiScaleUtils=u_dzDpiScaleUtilsDummy</Compiler>
 			<Compiler Name="NamespacePrefix" Type="String"></Compiler>
 			<Compiler Name="GenerateDocumentation" Type="Boolean">False</Compiler>
 			<Compiler Name="DefaultNamespace" Type="String"></Compiler>

@@ -36,51 +36,51 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <SanitizedProjectName>GExpertsRS103</SanitizedProjectName>
-        <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
+        <DCC_DcuOutput>.\dcu\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_Define>NO_TRANSLATION;NO_TRANSLATION_HINT;$(DCC_Define)</DCC_Define>
         <DCC_ExeOutput>..\..\Binaries</DCC_ExeOutput>
         <DCC_ImageBase>00400000</DCC_ImageBase>
+        <DCC_MapFile>3</DCC_MapFile>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Winapi;Vcl;System.Win;Vcl.Imaging;$(DCC_Namespace)</DCC_Namespace>
         <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
         <DCC_TypedAtParameter>true</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
-        <DCC_UnitAlias>GX_IdeDockStandAlone=GX_IdeDock;$(DCC_UnitAlias)</DCC_UnitAlias>
-        <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\ExternalSource\ddetours;..\..\source\Include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <DCC_UsePackage>rtl;vcl;vclx;vclactnband;xmlrtl;designide;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_UnitAlias>GX_IdeDockStandAlone=GX_IdeDock;u_dzDpiScaleUtils=u_dzDpiScaleUtilsDummy;$(DCC_UnitAlias)</DCC_UnitAlias>
+        <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UsePackage>rtl;vcl;designide;$(DCC_UsePackage)</DCC_UsePackage>
         <GenDll>true</GenDll>
-        <Manifest_File>None</Manifest_File>
-        <UsePackages>true</UsePackages>
-        <VerInfo_DLL>true</VerInfo_DLL>
-        <VerInfo_Keys>CompanyName=Erik Berry and the GExperts Development Team;FileDescription=GExperts for RAD Studio 10;FileVersion=1.3.8.0;InternalName=GExperts for RAD Studio 10;LegalCopyright=;LegalTrademarks=;OriginalFilename=GExpertsRS10.dll;ProductName=GExperts for RAD Studio;ProductVersion=1.38;Comments=Open Source;CFBundleName=</VerInfo_Keys>
-        <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_MinorVer>3</VerInfo_MinorVer>
-        <VerInfo_Release>8</VerInfo_Release>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Base_Win32)'!=''">
-        <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+        <Manifest_File>(None)</Manifest_File>
         <PreBuildEvent>
             <![CDATA[call ..\..\images\_CreateGXIconsRc.cmd
 call ..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"
 call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"
 $(PreBuildEvent)]]>
         </PreBuildEvent>
+        <UsePackages>True</UsePackages>
+        <VerInfo_Keys>FileVersion=1.0.0.0</VerInfo_Keys>
+        <VerInfo_Locale>2057</VerInfo_Locale>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+        <Manifest_File>(None)</Manifest_File>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_DebugInformation>0</DCC_DebugInformation>
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
-        <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+        <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Define>DEBUG;NO_OPTIMIZE_DZ_GRAPHIC_UTILS_HINT;$(DCC_Define)</DCC_Define>
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
+        <DCC_Inlining>off</DCC_Inlining>
         <DCC_IntegerOverflowCheck>true</DCC_IntegerOverflowCheck>
         <DCC_Optimize>False</DCC_Optimize>
         <DCC_RangeChecking>true</DCC_RangeChecking>
-        <DCC_UnitSearchPath>$(BDS)\lib\Debug;$(BDS)\Lib\Debug\Indy10;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <Manifest_File>None</Manifest_File>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
-        <Debugger_HostApplication>C:\Delphi\Delphi_10_3\bin\bds.exe</Debugger_HostApplication>
+        <Debugger_HostApplication>$(BDS)\bin\bds.exe</Debugger_HostApplication>
+        <Debugger_RunParams>-ns -np</Debugger_RunParams>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -324,6 +324,9 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Grep\GX_GrepOptions.pas">
             <Form>fmGrepOptions</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Grep\GX_GrepMenuEntry.pas"/>
+        <DCCReference Include="..\..\Source\Grep\GX_GrepNextItemExpert.pas"/>
+        <DCCReference Include="..\..\Source\Grep\GX_GrepPrevItemExpert.pas"/>
         <DCCReference Include="..\..\source\Grep\GX_GrepPrinting.pas"/>
         <DCCReference Include="..\..\Source\Grep\GX_GrepProgress.pas">
             <Form>fmGrepProgress</Form>
@@ -442,6 +445,9 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Utils\GX_OtaUtils.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_PasteAs.pas"/>
         <DCCReference Include="..\..\source\PeInfo\GX_PeInformation.pas"/>
+        <DCCReference Include="..\..\Source\Legacy\GX_PerfectLayout.pas">
+            <Form>fmPerfectLayout</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\ProcedureList\GX_ProcedureList.pas">
             <Form>fmProcedureList</Form>
         </DCCReference>
@@ -513,6 +519,7 @@ $(PreBuildEvent)]]>
             <Form>dmSharedImages</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Utils\GX_ShLwApi.pas"/>
         <DCCReference Include="..\..\source\SourceExport\GX_SourceExport.pas">
             <Form>fmSourceExport</Form>
         </DCCReference>
@@ -562,7 +569,7 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas"/>
         <DCCReference Include="..\..\source\BackupProject\GX_Zipper.pas"/>
         <RcCompile Include="..\..\images\GXIcons.rc">
-            <Form>..\..\images\GXIcons.res</Form>
+            <Form>GXIcons.res</Form>
         </RcCompile>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
@@ -599,7 +606,10 @@ $(PreBuildEvent)]]>
     <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win32'">
         <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
-        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;</PreBuildEvent>
+        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd
+&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;
+&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;
+</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
@@ -607,7 +617,10 @@ $(PreBuildEvent)]]>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win32'">
         <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
-        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;</PreBuildEvent>
+        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd
+&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;
+&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;
+</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
