@@ -938,25 +938,21 @@ inherited fmUsesManager: TfmUsesManager
     object mitAvailAddToUses: TMenuItem
       Action = actAddToImplementationMenu
       Default = True
-      ImageIndex = 6
     end
     object mi_AvailAddToIntf: TMenuItem
       Action = actAddToInterfaceMenu
-      ImageIndex = 7
     end
     object mitAvailSep1: TMenuItem
       Caption = '-'
     end
     object mitAvailOpenUnit: TMenuItem
       Action = actOpenUnit
-      ImageIndex = 4
     end
     object mitAvailSep2: TMenuItem
       Caption = '-'
     end
     object mitAvailAddToFav: TMenuItem
       Action = actAvailAddToFav
-      ImageIndex = 5
     end
     object mitAvailSep3: TMenuItem
       Caption = '-'
