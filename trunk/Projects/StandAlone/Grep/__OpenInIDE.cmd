@@ -3,8 +3,13 @@
 @if not defined gx_cmd_debug (echo off)
 @endlocal
 setlocal
+pushd src
 call :FindInParents %0% buildtools
 call "%result%\doOpenInIde.cmd" 2007
+popd
+@setlocal enableextensions
+@if defined gx_cmd_debug (pause)
+@endlocal
 goto :eof
 
 :FindInParents

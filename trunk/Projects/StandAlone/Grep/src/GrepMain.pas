@@ -11,27 +11,20 @@ uses
   SysUtils,
   Classes,
   Forms,
-  GX_StandAloneLoadDLL;
+  GX_GrepExpert;
 
 procedure Main;
-type
-  TShowGrep = procedure;
-  TShowGrepEx = procedure(_HWnd: HWND; _HInst: HINST; _CmdLine: PAnsiChar; nCmdShow: Integer); stdcall;
 var
-  ShowGrep: TShowGrep;
-  ShowGrepEx: TShowGrepEx;
-  Dll: IGExpertsDll;
   Dir: AnsiString;
 begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
   try
     SetErrorMode(SEM_FAILCRITICALERRORS);
-    Dll := LoadAnyGExpertsDLL;
     if ParamCount > 0 then begin
-      ShowGrepEx := Dll.GetProcAddress('ShowGrepEx');
       Dir := AnsiString(ParamStr(1));
-      ShowGrepEx(0, Dll.ModuleHandle, PAnsiChar(Dir), SW_SHOWNORMAL);
+      ShowGrepEx(0, 0, PAnsiChar(Dir), SW_SHOWNORMAL);
     end else begin
-      ShowGrep := Dll.GetProcAddress('ShowGrep');
       ShowGrep;
     end;
     // it worked, halt the program

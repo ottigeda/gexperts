@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>..\..\..\..\binaries\GExpertsGrep.exe</DCC_DependencyCheckOutputName>
+    <DCC_UsePackage>vcl;vclx</DCC_UsePackage>
+    <MainSource>GExpertsGrep.dpr</MainSource>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0bbdde7e-378f-4816-b0dc-2ff18052d95a}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DCC_DcuOutput>..\dcu\2007\release</DCC_DcuOutput>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+    <DCC_Define>RELEASE;NO_TRANSLATION;NO_TRANSLATION_HINT;GX_STANDALONE</DCC_Define>
+    <DCC_Description>GExperts Grep</DCC_Description>
+    <DCC_ExeOutput>..\..\..\..\binaries</DCC_ExeOutput>
+    <DCC_HppOutput>..\dcu\2007\release</DCC_HppOutput>
+    <DCC_ImageBase>500000</DCC_ImageBase>
+    <DCC_IncludePath>..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib</DCC_IncludePath>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_MapFile>3</DCC_MapFile>
+    <DCC_ObjOutput>..\dcu\2007\release</DCC_ObjOutput>
+    <DCC_ObjPath>..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib</DCC_ObjPath>
+    <DCC_ResourcePath>..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib</DCC_ResourcePath>
+    <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
+    <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
+    <DCC_UnitAlias>UiTypes=Dialogs;Actions=ActnList;GX_IdeDock=GX_IdeDockStandAlone;GX_Experts=GX_ExpertsStandAlone;GX_OtaUtils=GX_OtaUtilsStandAlone;ImageList=ImgList;GX_GExperts=GX_GExpertsStandAlone;GX_IdeUtils=GX_IdeUtilsStandAlone;ToolsAPI=ToolsAPIStandAlone;GX_EditorEnhancements=GX_EditorEnhancementsStandAlone;GX_ActionBroker=GX_ActionBrokerStandAlone;GX_GrepMenuEntry=GX_GrepMenuEntryStandAlone;GX_LibrarySource=GX_LibrarySourceStandAlone</DCC_UnitAlias>
+    <DCC_UnitSearchPath>..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib</DCC_UnitSearchPath>
+    <DCC_WriteableConstants>True</DCC_WriteableConstants>
+    <Version>7.0</Version>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DCC_DcuOutput>..\dcu\2007\debug</DCC_DcuOutput>
+    <DCC_Define>DEBUG;NO_TRANSLATION;NO_TRANSLATION_HINT;GX_STANDALONE</DCC_Define>
+    <DCC_Description>GExperts Grep</DCC_Description>
+    <DCC_ExeOutput>..\..\..\..\binaries</DCC_ExeOutput>
+    <DCC_GenerateStackFrames>True</DCC_GenerateStackFrames>
+    <DCC_HppOutput>..\dcu\2007\debug</DCC_HppOutput>
+    <DCC_ImageBase>500000</DCC_ImageBase>
+    <DCC_IncludePath>$(BDS)\lib\Debug;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib</DCC_IncludePath>
+    <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
+    <DCC_MapFile>3</DCC_MapFile>
+    <DCC_ObjOutput>..\dcu\2007\debug</DCC_ObjOutput>
+    <DCC_ObjPath>$(BDS)\lib\Debug;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib</DCC_ObjPath>
+    <DCC_Optimize>False</DCC_Optimize>
+    <DCC_RangeChecking>True</DCC_RangeChecking>
+    <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib</DCC_ResourcePath>
+    <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
+    <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
+    <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
+    <DCC_UnitAlias>UiTypes=Dialogs;Actions=ActnList;GX_IdeDock=GX_IdeDockStandAlone;GX_Experts=GX_ExpertsStandAlone;GX_OtaUtils=GX_OtaUtilsStandAlone;ImageList=ImgList;GX_GExperts=GX_GExpertsStandAlone;GX_IdeUtils=GX_IdeUtilsStandAlone;ToolsAPI=ToolsAPIStandAlone;GX_EditorEnhancements=GX_EditorEnhancementsStandAlone;GX_ActionBroker=GX_ActionBrokerStandAlone;GX_GrepMenuEntry=GX_GrepMenuEntryStandAlone;GX_LibrarySource=GX_LibrarySourceStandAlone;u_dzDpiScaleUtils=u_dzDpiScaleUtilsDummy</DCC_UnitAlias>
+    <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib</DCC_UnitSearchPath>
+    <DCC_WriteableConstants>True</DCC_WriteableConstants>
+    <Version>7.0</Version>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">False</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">1</VersionInfo><VersionInfo Name="Release">1</VersionInfo><VersionInfo Name="Build">0</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">True</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1033</VersionInfo><VersionInfo Name="CodePage">1252</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.1.1.0</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright"></VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName"></VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">GExpertsGrep.dpr</Source></Source><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dcltee7100.bpl">TeeChart Components</Excluded_Packages>
+    </Excluded_Packages></Delphi.Personality></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>call ..\..\..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"</PreBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <DelphiCompile Include="GExpertsGrep.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="..\..\..\..\ExternalSource\DropSource.pas" />
+    <DCCReference Include="..\..\..\..\Source\Formatter\Engine\GX_CodeFormatterUnicode.pas" />
+    <DCCReference Include="..\..\..\..\Source\Formatter\GX_AboutExperimental.pas">
+      <Form>fmAboutExperimental</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\..\Source\Framework\GX_About.pas">
+      <Form>fmAbout</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\..\Source\Framework\GX_BaseForm.pas">
+      <Form>fmBaseForm</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\..\Source\Framework\GX_ConfigurationInfo.pas" />
+    <DCCReference Include="..\..\..\..\Source\Framework\GX_FeedbackWizard.pas">
+      <Form>fmFeedbackWizard</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\..\Source\Framework\GX_GetIdeVersion.pas" />
+    <DCCReference Include="..\..\..\..\Source\Framework\GX_MessageBox.pas">
+      <Form>fmGxMessageBox</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\..\Source\Framework\GX_SharedImages.pas">
+      <Form>dmSharedImages</Form>
+      <DesignClass>TDataModule</DesignClass>
+    </DCCReference>
+    <DCCReference Include="..\..\..\..\Source\Framework\GX_VerDepConst.pas" />
+    <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepBackend.pas" />
+    <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepExpert.pas" />
+    <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepOptions.pas">
+      <Form>fmGrepOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepPrinting.pas" />
+    <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepProgress.pas">
+      <Form>fmGrepProgress</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepRegExSearch.pas" />
+    <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepReplace.pas">
+      <Form>fmGrepReplace</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepResults.pas">
+      <Form>fmGrepResults</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepResultsOptions.pas">
+      <Form>fmGrepResultsOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepSearch.pas">
+      <Form>fmGrepSearch</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepSearchExpert.pas" />
+    <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepSelect.pas">
+      <Form>fmGrepSelect</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\..\Source\Grep\GX_Replace.pas" />
+    <DCCReference Include="..\..\..\..\Source\Grep\GX_TestRegEx.pas">
+      <Form>fmTestRegEx</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\..\..\Source\Utils\GX_DbugIntf.pas" />
+    <DCCReference Include="..\..\..\..\Source\Utils\GX_GenericClasses.pas" />
+    <DCCReference Include="..\..\..\..\Source\Utils\GX_GenericUtils.pas" />
+    <DCCReference Include="..\..\..\..\Source\Utils\GX_GxUtils.pas" />
+    <DCCReference Include="..\..\..\..\Source\Utils\GX_MemoEscFix.pas" />
+    <DCCReference Include="..\..\..\..\Source\Utils\GX_StringList.pas" />
+    <DCCReference Include="GrepMain.pas" />
+    <DCCReference Include="GX_ActionBrokerStandAlone.pas" />
+    <DCCReference Include="GX_EditorEnhancementsStandAlone.pas" />
+    <DCCReference Include="GX_ExpertsStandAlone.pas" />
+    <DCCReference Include="GX_GExpertsStandAlone.pas" />
+    <DCCReference Include="GX_GrepMenuEntryStandAlone.pas" />
+    <DCCReference Include="GX_IdeDockStandAlone.pas">
+      <Form>fmIdeDockForm</Form>
+    </DCCReference>
+    <DCCReference Include="GX_IdeUtilsStandAlone.pas" />
+    <DCCReference Include="GX_LibrarySourceStandAlone.pas" />
+    <DCCReference Include="GX_OtaUtilsStandAlone.pas" />
+    <DCCReference Include="ToolsAPIStandAlone.pas" />
+  </ItemGroup>
+</Project>

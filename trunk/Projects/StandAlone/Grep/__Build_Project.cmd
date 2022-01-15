@@ -3,8 +3,10 @@
 @if not defined gx_cmd_debug (echo off)
 @endlocal
 setlocal
+pushd src
 call :FindInParents %0% buildtools
 call "%result%\doBuildProject.cmd" 2007
+popd
 pause
 goto :eof
 
