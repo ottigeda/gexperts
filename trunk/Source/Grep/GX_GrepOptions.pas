@@ -124,10 +124,12 @@ begin
   l_ExternalEditorParameters.Top := t + 8;
   t := TEdit_AlignBelowLabel(ed_ExternalEditorParameters, l_ExternalEditorParameters);
   Inc(t, 8);
+  b_ExternalEditorParameters.Top := t;
+  grp_ExternalEditor.ClientHeight := t + b_ExternalEditorParameters.Height + 8;
+  grp_WindowsExplorer.Top := grp_ExternalEditor.Top + grp_ExternalEditor.Height + 16;
+  t := grp_StandAlone.Top + grp_StandAlone.Height + 16;
   btnOK.Top := t;
   btnCancel.Top := t;
-  b_ExternalEditorParameters.Top := t;
-  Self.ClientHeight := t + b_ExternalEditorParameters.Height + 8;
 end;
 {$ENDIF}
 
