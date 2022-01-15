@@ -568,12 +568,16 @@ begin
   end;
 end;
 
-{$IFDEF DPI_SCALER_LOGGING}
 initialization
+// Uwe Raabe suggested this might help to improve performance on rescaling:
+//  TStyleManager.UseParentPaintBuffers := True;
+// It didn't make any noticable difference though, probably because GExperts doens't use VCL styles.
+{$IFDEF DPI_SCALER_LOGGING}
   Assignfile(LogFile, 'd:\DpiScaling.log');
   Rewrite(LogFile);
 finalization
   CloseFile(LogFile);
 {$ENDIF}
 end.
+
 
