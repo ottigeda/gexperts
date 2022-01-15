@@ -175,7 +175,7 @@ var
   Version: TVersionNumber;
 begin
   Version.IsValid := False;
-    Version := GetFileVersionNumber(ThisDllName, False, False);
+  Version := GetFileVersionNumber(ThisDllName, False, False);
   if Version.IsValid then
     Result := Format('%d.%d.%d build %d', [Version.Major, Version.Minor, Version.Release, Version.Build])
   else
