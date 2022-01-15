@@ -1,4 +1,4 @@
-unit GX_GExpertsStandAlone;
+unit GX_GExperts;
 
 {$I GX_CondDefine.inc}
 

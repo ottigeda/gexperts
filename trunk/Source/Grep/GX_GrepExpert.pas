@@ -72,6 +72,8 @@ type
     FExcludedDirsIsRegEx: Boolean;
     FExternalEditor: string;
     FExternalEditorParams: string;
+    FExplorerAddToFolders: Boolean;
+    FExplorerAddToBackground: Boolean;
     function  GetGrepSaveHistoryListItems(AIndex: Integer): Boolean;
     procedure SetSearchList(New: TStrings);
     procedure SetReplaceList(New: TStrings);
@@ -156,6 +158,9 @@ type
 
     property ExternalEditor: string read FExternalEditor write FExternalEditor;
     property ExternalEditorParams: string read FExternalEditorParams write FExternalEditorParams;
+
+    property ExplorerAddToBackground: Boolean read FExplorerAddToBackground write FExplorerAddToBackground;
+    property ExplorerAddToFolders: Boolean read FExplorerAddToFolders write FExplorerAddToFolders;
 
     property SaveOption: TGrepSaveOption read GetSaveOption;
     property OpenSaveOption: TGrepSaveOption read GetOpenSaveOption;

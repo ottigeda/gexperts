@@ -1,6 +1,6 @@
 ///<summary>
 /// This is a replacement for the GExperts IdeDockForm for stand alone experts </summary>
-unit GX_IdeDockStandAlone;
+unit GX_IdeDock;
 
 {$I GX_CondDefine.inc}
 

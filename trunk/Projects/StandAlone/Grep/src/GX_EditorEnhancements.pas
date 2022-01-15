@@ -1,4 +1,4 @@
-unit GX_EditorEnhancementsStandAlone;
+unit GX_EditorEnhancements;
 
 interface
 

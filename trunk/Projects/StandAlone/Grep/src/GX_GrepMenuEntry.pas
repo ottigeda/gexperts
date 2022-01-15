@@ -1,4 +1,4 @@
-unit GX_GrepMenuEntryStandAlone;
+unit GX_GrepMenuEntry;
 
 interface
 

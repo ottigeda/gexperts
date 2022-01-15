@@ -148,15 +148,21 @@ var
   UseCurrentIdent: Boolean;
   ExternalEditor: string;
   Params: string;
+  AddToBackground: Boolean;
+  AddToFolders: Boolean;
 begin
   Assert(Assigned(gblGrepExpert), 'gblGrepExpert not assigned');
   UseCurrentIdent := gblGrepExpert.GrepUseCurrentIdent;
   ExternalEditor := gblGrepExpert.ExternalEditor;
   Params := gblGrepExpert.ExternalEditorParams;
-  if TfmGrepOptions.Execute(Self, UseCurrentIdent, ExternalEditor, Params) then begin
+  AddToBackground := gblGrepExpert.ExplorerAddToBackground;
+  AddToFolders := gblGrepExpert.ExplorerAddToFolders;
+  if TfmGrepOptions.Execute(Self, UseCurrentIdent, ExternalEditor, Params, AddToBackground, AddToFolders) then begin
     gblGrepExpert.GrepUseCurrentIdent := UseCurrentIdent;
     gblGrepExpert.ExternalEditor := ExternalEditor;
     gblGrepExpert.ExternalEditorParams := Params;
+    gblGrepExpert.ExplorerAddToBackground := AddToBackground;
+    gblGrepExpert.ExplorerAddToFolders := AddToFolders;
   end;
 end;
 

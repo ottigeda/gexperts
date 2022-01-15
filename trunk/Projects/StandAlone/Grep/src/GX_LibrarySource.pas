@@ -1,4 +1,4 @@
-unit GX_LibrarySourceStandAlone;
+unit GX_LibrarySource;
 
 interface
 

@@ -2,14 +2,14 @@
 /// Declares dummies for functions from GX_OtaUtils that return values appropriate for
 /// failure (e.g. empty strings, Nil, False) so there are no compile errors for
 /// stand alone tools that do not have access to the OTAPI </summary>
-unit GX_OtaUtilsStandAlone;
+unit GX_OtaUtils;
 
 interface
 
 uses
   SysUtils,
   Classes,
-  ToolsAPIStandAlone,
+  ToolsAPI,
   GX_StringList;
 
 ///<summary>

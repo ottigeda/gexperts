@@ -11,11 +11,7 @@ uses
   Types, // for inlining
   ComCtrls, Menus, Actions, UITypes,
   DropSource,
-  GX_GrepBackend, GX_GrepExpert, GX_ConfigurationInfo, GX_IdeDock, GX_GrepSearch, GX_SharedImages,
-  // if you get a compile error in the next line, add 'GX_IdeDockStandAlone=GX_IdeDock' to unit aliases
-  // This entry gets added by the Delphi IDE every time this form is edited as part of the
-  // stand alone Grep project, I got tired of removing it every time.
-  GX_IdeDockStandAlone;
+  GX_GrepBackend, GX_GrepExpert, GX_ConfigurationInfo, GX_IdeDock, GX_GrepSearch, GX_SharedImages;
 
 type
   TPageIndexType = (pitClickedEntryKeyIndex, pitTopKeyIndex, pitClickedEntryItemIndex, pitTopItemIndex);
@@ -2014,8 +2010,8 @@ var
   il: TImageList;
 begin
   inherited;
-  ToolBar.DisabledImages := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
-  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  ToolBar.DisabledImages := GExpertsInst(True).GetScaledSharedDisabledImages(_NewDpi);
+  il := GExpertsInst(True).GetScaledSharedImages(_NewDpi);
   ToolBar.Images := il;
   TheActionList.Images := il;
   MainMenu.Images := il;

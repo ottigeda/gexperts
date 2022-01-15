@@ -1,4 +1,4 @@
-unit GX_ExpertsStandAlone;
+unit GX_Experts;
 
 interface
 

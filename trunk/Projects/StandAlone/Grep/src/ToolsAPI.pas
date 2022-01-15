@@ -1,4 +1,4 @@
-unit ToolsAPIStandAlone;
+unit ToolsAPI;
 
 interface
 

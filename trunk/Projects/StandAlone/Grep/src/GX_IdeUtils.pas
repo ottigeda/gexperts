@@ -1,4 +1,4 @@
-unit GX_IdeUtilsStandAlone;
+unit GX_IdeUtils;
 
 interface
 
@@ -24,7 +24,7 @@ uses
   StrUtils,
   Forms,
   u_dzClassUtils,
-  GX_OtaUtilsStandAlone,
+  GX_OtaUtils,
   GX_GenericUtils;
 
 function GetIdeRootDirectory: string;

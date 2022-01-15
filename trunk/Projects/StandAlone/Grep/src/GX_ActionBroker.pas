@@ -1,4 +1,4 @@
-unit GX_ActionBrokerStandAlone;
+unit GX_ActionBroker;
 
 interface
 
