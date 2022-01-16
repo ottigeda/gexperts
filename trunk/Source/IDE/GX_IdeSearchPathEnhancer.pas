@@ -77,6 +77,7 @@ type
     FDeleteBtn: TCustomButton;
     FDeleteInvalidBtn: TCustomButton;
     FReplaceBtn: TCustomButton;
+    FTasksBtn: TCustomButton;
     FAddBtn: TCustomButton;
     FMakeRelativeBtn: TButton;
     FMakeAbsoluteBtn: TButton;
@@ -338,7 +339,7 @@ begin
   AssignActionToButton('UpButton', 'Move Up', UpBtnClick, ShortCut(VK_UP, [ssCtrl]), FUpBtn, FUpClick);
   AssignActionToButton('DownButton', 'Move Down', DownBtnClick, ShortCut(VK_DOWN, [ssCtrl]), FDownBtn, FDownClick);
 {$IFNDEF GX_VER300_up} // RAD Studio 10 Seattle (24; BDS 17)
-      // Delphi 10 and later no longer uses SelectDirectory, so we don't need to fix it.
+  // Delphi 10 and later no longer uses SelectDirectory, so we don't need to fix it.
   AssignActionToButton('BrowseButton', 'Browse', BrowseBtnClick, ShortCut(VK_DOWN, [ssAlt]), FBrowseBtn, FBrowseClick);
 {$ENDIF GX_VER300_up}
 
@@ -442,7 +443,23 @@ begin
   if TryFindButton('AddButton', FAddBtn) then begin
     TCustomButtonHack(FAddBtn).OnClick := AddBtnClick;
   end;
+  if TryFindButton('TasksButton', FTasksBtn) then begin
+{$IFDEF GX_WRONG_BUTTON_PARENTS_IN_PATH_EDIT_FIX_ENABLED}
+    if Assigned(FAddBtn) then begin
+      // fix for a bug in Delphi 11
+      FTasksBtn.Parent := FAddBtn.Parent;
+      FTasksBtn.Top := FAddBtn.Top;
+    end;
+{$ENDIF}
+  end;
   if TryFindButton('ReplaceButton', FReplaceBtn) then begin
+{$IFDEF GX_WRONG_BUTTON_PARENTS_IN_PATH_EDIT_FIX_ENABLED}
+    if Assigned(FAddBtn) then begin
+      // fix for a bug in Delphi 11
+      FReplaceBtn.Parent := FAddBtn.Parent;
+      FReplaceBtn.Top := FAddBtn.Top;
+    end;
+{$ENDIF}
     FMakeRelativeBtn := TButton.Create(_Form);
     FMakeRelativeBtn.Name := 'MakeRelativeBtn';
     FMakeRelativeBtn.Parent := FReplaceBtn.Parent;

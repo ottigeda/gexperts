@@ -234,8 +234,14 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 
 {$IFDEF GX_DELPHI_11_UP}
   {$DEFINE IDE_IS_HIDPI_AWARE}
+  {$IFNDEF GX_DELPHI_12_UP}
+    // we hope this gets fixed in Delphi 12 and later ...
+    {$DEFINE GX_WRONG_BUTTON_PARENTS_IN_PATH_EDIT_FIX_ENABLED}
+  {$ENDIF}
 {$ENDIF}
 {.$DEFINE IDE_IS_HIDPI_AWARE}
+
+
 
 // Define UniSynEdit if SynEdit is available
 {$IFDEF SYNEDIT}
