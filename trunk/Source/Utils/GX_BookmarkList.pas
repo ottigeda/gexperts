@@ -111,10 +111,15 @@ var
   idx: Integer;
 begin
   bm := TBookmark.Create(_Number, _Line, _CharIdx, _Module);
-  if BinarySearch(0, FList.Count - 1, idx, bm, CompareBookmarks) then begin
+
+  //TODO: Seems that BinarySearch expects ICompareToKey, but TBookmark instance passed as parameter?
+  if BinarySearch(0, FList.Count - 1, idx, bm, CompareBookmarks) then
+  begin
     bm.Free;
     Result := False;
-  end else begin
+  end
+  else
+  begin
     FList.Insert(idx, bm);
     Result := True;
   end;
