@@ -326,7 +326,8 @@ begin
     TreeView.Items.EndUpdate;
   end;
 
-  CurrentNode := CurrentNode;
+  // Changed record needs to  be assigned back (AFAIK)
+  CurrentNode := CurrentNode //FI:W503 Assignment right hand side is equal to its left hand side
 end;
 
 procedure TSelectComponentsForm.SearchEditChange(aSender: TObject);
