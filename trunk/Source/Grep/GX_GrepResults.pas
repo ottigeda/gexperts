@@ -1071,8 +1071,9 @@ end;
 
 procedure TfmGrepResults.SetShowContext(Value: Boolean);
 begin
-  if (FShowContext = True) and (Value = False) then
+  if FShowContext and not Value then
     SetLoadedContextHeight(pnlBottom.Height);
+
   FShowContext := Value;
   reContext.Visible := Value;
   SplitterContext.Visible := Value;
