@@ -1210,6 +1210,14 @@ procedure TForm_CenterOn(_frmHwnd: HWND; _Center: TWinControl); overload;
 /// @returns the center of the form as a TPoint </summary>
 function TForm_GetCenter(_frm: TForm): TPoint;
 
+///<summary>
+/// Starts a background thread that waits for a new window to be activated and then centers it
+/// on the current active window. It also makes sure that the new windows is fully visible.
+/// @NOTE: This procedure must be called *before* opening the window to be centered.
+/// @NOTE: This should work with any kind of window, not just common dialogs, but has
+/// not been tested </summary>
+procedure TCommonDialog_CenterWithBackgroundThread;
+
 type
   TFormPlacementEnum = (fpePositionOnly, fpeSizeOnly, fpePosAndSize);
 
@@ -1333,9 +1341,11 @@ function TForm_GetConfigRegistryKey(const _FrmName: string): string; overload;
 
 function TForm_ReadConfigValue(_frm: TForm; const _Name: string; const _Default: string = ''): string; overload;
 function TForm_ReadConfigValue(_frm: TForm; const _Name: string; _Default: Integer): Integer; overload;
+function TForm_ReadConfigValue(_frm: TForm; const _Name: string; _Default: Boolean): Boolean; overload;
 
 function TForm_WriteConfigValue(_frm: TForm; const _Name, _Value: string): Boolean; overload;
 function TForm_WriteConfigValue(_frm: TForm; const _Name: string; _Value: Integer): Boolean; overload;
+function TForm_WriteConfigValue(_frm: TForm; const _Name: string; _Value: Boolean): Boolean; overload;
 
 ///<summary> Sets the form's Constraints.MinWidth and .MinHeight to the form's current size. </summary>
 procedure TForm_SetMinConstraints(_frm: TForm); deprecated; // use TControl_SetMinConstraints instead
@@ -1577,6 +1587,12 @@ function TAction_SetCheckedExecute(_act: TCustomAction; _Checked: Boolean): Bool
 procedure TActionList_SetAllVisible(_al: TActionList; _Visible: Boolean);
 
 ///<summary>
+/// (Tries to) set the Enabled property of all actions in the action list.
+/// This only works for Actions that are derived from TCustomAction (TActionList.Actions contains
+/// TBasicAction items, so this is not necessarily true for all actions).
+procedure TActionList_SetAllEnabled(_al: TActionList; _Enabled: Boolean);
+
+///<summary>
 /// Sets the Enabled property of all actions that match the given category. </summary>
 procedure TActionList_SetCategoryEnabled(_al: TActionList; const _Category: string; _Enabled: Boolean);
 
@@ -1651,10 +1667,14 @@ function TForm_ReadPlacement(out _Bounds: TRectLTWH; const _RegEntry: TRegistryE
 procedure TMonitor_MakeFullyVisible(_MonitorRect: TRect; var _Left, _Top, _Width, _Height: Integer); overload;
 procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; var _Left, _Top, _Width, _Height: Integer); overload;
 procedure TMonitor_MakeFullyVisible(_MonitorRect: TRect; var _Rect: TRect; out _Width, _Height: Integer); overload;
+procedure TMonitor_MakeFullyVisible(_MonitorRect: TRect; var _Rect: TRect); overload;
+procedure TMonitor_MakeFullyVisible(_MonitorRect: TRect; var _Rect: TRectLTWH); overload;
 procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; var _Rect: TRect; out _Width, _Height: Integer); overload;
 procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; var _Rect: TRect); overload;
 procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; var _Rect: TRectLTWH); overload;
 procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; _frm: TForm); overload;
+procedure TMonitor_MakeFullyVisible(_MonitorHandle: HMonitor; var _Rect: TRect); overload;
+procedure TMonitor_MakeFullyVisible(_MonitorHandle: HMonitor; var _Rect: TRectLTWH); overload;
 
 ///<summary>
 /// Tries to get the primary monitor.
@@ -1774,7 +1794,8 @@ uses
   u_dzLineBuilder,
   u_dzTypesUtils,
   u_dzOsUtils,
-  u_dzStringArrayUtils;
+  u_dzStringArrayUtils,
+  u_dzNamedThread;
 
 function _(const _s: string): string;
 {$IFDEF SUPPORTS_INLINE}
@@ -2575,8 +2596,8 @@ begin
   FLbl.Font.Style := FLbl.Font.Style + [fsUnderline];
   FLbl.Font.Color := clBlue;
   FLbl.Cursor := crHandPoint;
-  if (FLbl.hint = '') and (Menus.StripHotkey(FLbl.Caption) <> FUrl) then begin
-    FLbl.hint := FUrl;
+  if (FLbl.Hint = '') and (Menus.StripHotkey(FLbl.Caption) <> FUrl) then begin
+    FLbl.Hint := FUrl;
     FLbl.ShowHint := True;
   end;
 end;
@@ -4158,7 +4179,7 @@ end;
 
 procedure TControl_SetHint(_Ctrl: TControl; const _Hint: string);
 begin
-  _Ctrl.hint := _Hint;
+  _Ctrl.Hint := _Hint;
   _Ctrl.ShowHint := True;
 end;
 
@@ -4332,13 +4353,18 @@ end;
 
 procedure TForm_CenterOn(_frmHwnd: HWND; _Center: TPoint);
 var
-  Position: TRect;
+  FrmRect: TRect;
+  FrmCenter: TPoint;
+  MonitorHandle: HMonitor;
 begin
-  GetWindowRect(_frmHwnd, Position);
+  GetWindowRect(_frmHwnd, FrmRect);
+  FrmCenter := TRect_Center(FrmRect);
+  TRect_SetOffset(FrmRect, _Center.X - FrmCenter.X, _Center.Y - FrmCenter.Y);
+  MonitorHandle := MonitorFromRect(@FrmRect, MONITOR_DEFAULTTONEAREST);
+  TMonitor_MakeFullyVisible(MonitorHandle, FrmRect);
   SetWindowPos(_frmHwnd, HWND_TOPMOST,
-    _Center.X - (Position.Right - Position.Left) div 2,
-    _Center.Y - (Position.Bottom - Position.Top) div 2,
-    0, 0, SWP_SHOWWINDOW or SWP_NOSIZE);
+    FrmRect.Left, FrmRect.Top, 0, 0,
+    SWP_SHOWWINDOW or SWP_NOSIZE);
 end;
 
 procedure TForm_CenterOn(_frm: TForm; _Center: TWinControl);
@@ -4470,6 +4496,11 @@ begin
   Result := TRegistry_ReadInteger(TForm_GetConfigRegistryKey(_frm), _Name, _Default);
 end;
 
+function TForm_ReadConfigValue(_frm: TForm; const _Name: string; _Default: Boolean): Boolean;
+begin
+  Result := TRegistry_ReadBool(TForm_GetConfigRegistryKey(_frm), _Name, _Default);
+end;
+
 function TForm_WriteConfigValue(_frm: TForm; const _Name, _Value: string): Boolean;
 begin
   try
@@ -4484,6 +4515,16 @@ function TForm_WriteConfigValue(_frm: TForm; const _Name: string; _Value: Intege
 begin
   try
     TRegistry_WriteInteger(TForm_GetConfigRegistryKey(_frm), _Name, _Value);
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+
+function TForm_WriteConfigValue(_frm: TForm; const _Name: string; _Value: Boolean): Boolean;
+begin
+  try
+    TRegistry_WriteBool(TForm_GetConfigRegistryKey(_frm), _Name, _Value);
     Result := True;
   except
     Result := False;
@@ -4576,7 +4617,7 @@ function TForm_ReadPlacement(out _Bounds: TRectLTWH; const _RegEntry: TRegistryE
 var
   s: string;
   PosStr: string;
-  l, t, w, h: Integer;
+  L, t, w, h: Integer;
 begin
   if u_dzOsUtils.IsShiftDown then begin
     // if the user holds shift, do not restore the form's placement
@@ -4588,7 +4629,7 @@ begin
     Result := TRegistry_TryReadString(_RegEntry.KeyName, _RegEntry.ValueName, PosStr, _HKEY);
     if Result then begin
       s := ExtractStr(PosStr, ',');
-      if not TryStrToInt(s, l) then
+      if not TryStrToInt(s, L) then
         Exit; //==>
       s := ExtractStr(PosStr, ',');
       if not TryStrToInt(s, t) then
@@ -4600,7 +4641,7 @@ begin
       if not TryStrToInt(s, h) then
         Exit; //==>
 
-      _Bounds.Left := l;
+      _Bounds.Left := L;
       _Bounds.Top := t;
       _Bounds.Width := w;
       _Bounds.Height := h;
@@ -5698,6 +5739,18 @@ begin
   end;
 end;
 
+procedure TActionList_SetAllEnabled(_al: TActionList; _Enabled: Boolean);
+var
+  i: Integer;
+  act: TBasicAction;
+begin
+  for i := 0 to _al.ActionCount - 1 do begin
+    act := _al[i];
+    if act is TCustomAction then
+      TCustomAction(act).Enabled := _Enabled;
+  end;
+end;
+
 type
   THackGroupBox = class(TCustomGroupBox)
   end;
@@ -5815,12 +5868,12 @@ constructor TWinControlLocker.Create(_Ctrl: TWinControl);
 begin
   inherited Create;
   FCtrl := _Ctrl;
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(False)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(False)), 0);
 end;
 
 destructor TWinControlLocker.Destroy;
 begin
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(True)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(True)), 0);
   RedrawWindow(FCtrl.Handle, nil, 0, RDW_ERASE or RDW_INVALIDATE or RDW_ALLCHILDREN);
   inherited;
 end;
@@ -5876,8 +5929,8 @@ end;
 procedure TdzButtonedEdit.Loaded;
 begin
   inherited;
-  if RightButton.Visible and (RightButton.hint = '') then begin
-    RightButton.hint := _('Ctrl+Return to ''click'' right button.');
+  if RightButton.Visible and (RightButton.Hint = '') then begin
+    RightButton.Hint := _('Ctrl+Return to ''click'' right button.');
     ShowHint := True;
   end;
 end;
@@ -6536,6 +6589,19 @@ begin
   _Rect.Bottom := Top + _Height;
 end;
 
+procedure TMonitor_MakeFullyVisible(_MonitorRect: TRect; var _Rect: TRect);
+var
+  Width: Integer;
+  Height: Integer;
+begin
+  TMonitor_MakeFullyVisible(_MonitorRect, _Rect, Width, Height);
+end;
+
+procedure TMonitor_MakeFullyVisible(_MonitorRect: TRect; var _Rect: TRectLTWH);
+begin
+  TMonitor_MakeFullyVisible(_MonitorRect, _Rect.Left, _Rect.Top, _Rect.Width, _Rect.Height);
+end;
+
 procedure TMonitor_MakeFullyVisible(_Monitor: TMonitor; var _Rect: TRect; out _Width, _Height: Integer);
 var
   Left: Integer;
@@ -6577,6 +6643,30 @@ begin
   re := _frm.BoundsRect;
   TMonitor_MakeFullyVisible(_Monitor, re);
   _frm.BoundsRect := re;
+end;
+
+procedure TMonitor_MakeFullyVisible(_MonitorHandle: HMonitor; var _Rect: TRect);
+var
+  MonitorInfo: TMonitorInfo;
+begin
+  MonitorInfo.cbSize := SizeOf(MonitorInfo);
+  if not GetMonitorInfo(_MonitorHandle, @MonitorInfo) then begin
+    // no monitor info available, we can't do anything
+    Exit; //==>
+  end;
+  TMonitor_MakeFullyVisible(MonitorInfo.rcWork, _Rect);
+end;
+
+procedure TMonitor_MakeFullyVisible(_MonitorHandle: HMonitor; var _Rect: TRectLTWH);
+var
+  MonitorInfo: TMonitorInfo;
+begin
+  MonitorInfo.cbSize := SizeOf(MonitorInfo);
+  if not GetMonitorInfo(_MonitorHandle, @MonitorInfo) then begin
+    // no monitor infor available, we can't do anything
+    Exit; //==>
+  end;
+  TMonitor_MakeFullyVisible(MonitorInfo.rcWork, _Rect);
 end;
 
 function TScreen_GetPrimaryMonitor: TMonitor;
@@ -6876,7 +6966,7 @@ var
   tb: TTrackBar;
 begin
   tb := TrackBar;
-  tb.hint := IntToStr(tb.Position);
+  tb.Hint := IntToStr(tb.Position);
   Application.ActivateHint(Mouse.CursorPos);
   doOnChange(_Sender);
 end;
@@ -7033,6 +7123,64 @@ begin
   WM_WINDOW_PROC_HOOK_HELPER := RegisterWindowMessage('WM_WINDOW_PROC_HOOK_HELPER');
 end;
 
+type
+  TCenterWindowThread = class(TNamedThread)
+  private
+    FParentHandle: HWND;
+  protected
+    procedure Execute; override;
+  public
+    constructor Create(_ParentHandle: HWND);
+  end;
+
+{ TCenterWindowThread }
+
+constructor TCenterWindowThread.Create(_ParentHandle: HWND);
+begin
+  FreeOnTerminate := True;
+  FParentHandle := _ParentHandle;
+  inherited Create(False);
+end;
+
+procedure TCenterWindowThread.Execute;
+var
+  MaxTickCount: DWORD;
+  ThreadInfo: TGUIThreadinfo;
+  ParentRect: TRect;
+  ParentCenter: TPoint;
+begin
+  inherited;
+
+  GetWindowRect(FParentHandle, ParentRect);
+  ParentCenter := TRect_Center(ParentRect);
+
+  ThreadInfo.cbSize := SizeOf(ThreadInfo);
+  MaxTickCount := GetTickCount + 10000; // 10 Seconds should be plenty
+  while MaxTickCount > GetTickCount do begin
+    Sleep(50);
+    if GetGUIThreadInfo(MainThreadID, ThreadInfo) then begin
+      if ThreadInfo.hwndActive <> FParentHandle then begin
+        // After the first call to TForm_CenterOn the window sometimes doesn't get moved,
+        // at other times it gets shown outside the visible area. Calling it twice with a 50 ms
+        // delay always seems to work. Only sleeping for 50 ms before the call didn't work either.
+        TForm_CenterOn(ThreadInfo.hwndActive, ParentCenter);
+        Sleep(50);
+        TForm_CenterOn(ThreadInfo.hwndActive, ParentCenter);
+        Exit; //==>
+      end;
+    end;
+  end;
+end;
+
+procedure TCommonDialog_CenterWithBackgroundThread;
+var
+  ThreadInfo: TGUIThreadinfo;
+begin
+  ThreadInfo.cbSize := SizeOf(ThreadInfo);
+  GetGUIThreadInfo(MainThreadID, ThreadInfo);
+  TCenterWindowThread.Create(ThreadInfo.hwndActive);
+end;
+
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
 { TRegistryEntry }
 
@@ -7091,4 +7239,3 @@ initialization
 finalization
   FreeAndNil(gblCheckListBoxHelper);
 end.
-

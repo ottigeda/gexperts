@@ -46,27 +46,13 @@ type
     FDesignDpi: Integer;
     FCurrentDpi: Integer;
   public
-    procedure Init(_frm: TCustomForm); overload;
-{$IFDEF SUPPORTS_INLINE} inline;
-{$ENDIF}
-    procedure Init(_DPI: Integer); overload;
-{$IFDEF SUPPORTS_INLINE} inline;
-{$ENDIF}
-    procedure Init(_DesignDpi, _CurrentDpi: Integer); overload;
-{$IFDEF SUPPORTS_INLINE} inline;
-{$ENDIF}
-    procedure SetCurrentDpi(_frm: TCustomForm); overload;
-{$IFDEF SUPPORTS_INLINE} inline;
-{$ENDIF}
-    procedure SetCurrentDpi(_DPI: Integer); overload;
-{$IFDEF SUPPORTS_INLINE} inline;
-{$ENDIF}
-    function Calc(_Value: Integer): Integer; overload;
-{$IFDEF SUPPORTS_INLINE} inline;
-{$ENDIF}
-    function Calc(const _Value: TRect): TRect; overload;
-{$IFDEF SUPPORTS_INLINE} inline;
-{$ENDIF}
+    procedure Init(_frm: TCustomForm); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure Init(_Dpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure Init(_DesignDpi, _CurrentDpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure SetCurrentDpi(_frm: TCustomForm); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure SetCurrentDpi(_Dpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function Calc(_Value: Integer): Integer; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function Calc(const _Value: TRect): TRect; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     function ScaleFactorPercent: Integer;
   end;
 
@@ -162,10 +148,10 @@ begin
   Result.Bottom := Calc(_Value.Bottom);
 end;
 
-procedure TDpiScaler.Init(_DPI: Integer);
+procedure TDpiScaler.Init(_Dpi: Integer);
 begin
-  FDesignDpi := _DPI;
-  FCurrentDpi := _DPI;
+  FDesignDpi := _Dpi;
+  FCurrentDpi := _Dpi;
 end;
 
 procedure TDpiScaler.Init(_DesignDpi, _CurrentDpi: Integer);
@@ -210,9 +196,9 @@ begin
   Result := MulDiv(100, FCurrentDpi, FDesignDpi);
 end;
 
-procedure TDpiScaler.SetCurrentDpi(_DPI: Integer);
+procedure TDpiScaler.SetCurrentDpi(_Dpi: Integer);
 begin
-  FCurrentDpi := _DPI;
+  FCurrentDpi := _Dpi;
 end;
 
 procedure TDpiScaler.SetCurrentDpi(_frm: TCustomForm);
@@ -579,5 +565,3 @@ finalization
   CloseFile(LogFile);
 {$ENDIF}
 end.
-
-

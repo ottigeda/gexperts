@@ -43,6 +43,7 @@ uses
   Windows,
   Types,
   SysUtils,
+  Classes,
   Graphics,
 {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   System.UITypes,
@@ -704,12 +705,20 @@ function RainbowColor(_MinHue, _MaxHue, _Hue: Integer): TColor; overload;
 
 function TryStr2Color(const _s: string; out _Color: TColor): Boolean;
 
+function TPicture_TryLoadMatchingFile(_pic: TPicture; const _FileMask: string): Boolean;
+
+function TPicture_TryLoadFromResource(_pic: TPicture; const _ResName: string): Boolean;
+
 implementation
 
 uses
   Math,
   jpeg, // if you get a compile error here you might need to add Vcl.Imaging to the unit scope names
-  GraphUtil;
+{$IFDEF HAS_UNIT_PNGIMAGE}
+  pngimage, // support for TImage.LoadGraphics for PNG files
+{$ENDIF}
+  GraphUtil,
+  u_dzFileUtils;
 
 function _(const _s: string): string;
 {$IFDEF SUPPORTS_INLINE}
@@ -1128,7 +1137,7 @@ begin
   _Canvas.Polygon([_Tip, Point(BaselineLeft, BaselineY), Point(BaselineRight, BaselineY)]);
 end;
 
-// Inlined method must be iomplemented before it is called
+// Inlined method must be implemented before it is called
 function GetFastLuminance(const _Red, _Green, _Blue: Byte): Byte;
 begin
   Result := Round(0.299 * _Red + 0.587 * _Green + 0.114 * _Blue);
@@ -3468,6 +3477,77 @@ begin
       Inc(Pixel, BytesPerPixel);
     end;
     Dec(ScanLine, BytesPerLine);
+  end;
+end;
+
+function TPicture_TryLoadMatchingFile(_pic: TPicture; const _FileMask: string): Boolean;
+var
+  fn: string;
+begin
+  Result := False;
+  if TFileSystem.FindMatchingFile(_FileMask, fn) = mfFile then begin
+    try
+      _pic.LoadFromFile(fn);
+      Result := True;
+    except
+    end;
+  end;
+end;
+
+{$IFNDEF PICTURE_HAS_PUBLIC_LOADFROMSTREAM}
+function TPicture_TryLoadFromJpgStream(_pic: TPicture; _st: TStream): Boolean;
+var
+  jpg: TJPEGImage;
+begin
+  jpg := TJPEGImage.Create;
+  try
+    try
+      _st.Position := 0;
+      jpg.LoadFromStream(_st);
+      _pic.Bitmap.Assign(jpg);
+      Result := True;
+    except
+      Result := False;
+    end;
+  finally
+    FreeAndNil(jpg);
+  end;
+end;
+
+function TPicture_TryLoadFromBmpStream(_pic: TPicture; _st: TStream): Boolean;
+begin
+  try
+    _st.Position := 0;
+    _pic.Bitmap.LoadFromStream(_st);
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+{$ENDIF}
+
+function TPicture_TryLoadFromResource(_pic: TPicture; const _ResName: string): Boolean;
+var
+  ResStream: TResourceStream;
+begin
+  Assert(Assigned(_pic));
+  try
+    ResStream := TResourceStream.Create(HInstance, _ResName, RT_rcdata);
+    try
+      ResStream.Position := 0;
+{$IFDEF PICTURE_HAS_PUBLIC_LOADFROMSTREAM}
+      _pic.LoadFromStream(ResStream);
+      Result := True;
+{$ELSE}
+      Result := TPicture_TryLoadFromJpgStream(_pic, ResStream);
+      if not Result then
+        Result := TPicture_TryLoadFromBmpStream(_pic, ResStream);
+{$ENDIF}
+    finally
+      FreeAndNil(ResStream);
+    end;
+  except
+    Result := False;
   end;
 end;
 
