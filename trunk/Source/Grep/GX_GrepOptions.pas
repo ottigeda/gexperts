@@ -50,7 +50,7 @@ type
       out _Editor, _Params: string;
       out _AddToBackground, _AddToFolders: Boolean);
     class procedure ApplyExplorerIntegration(_AddToBackground, _AddToFolders: Boolean);
-    class procedure SetExplorerIntegration(const _BaseKey: string; _IsEnabled: boolean); static;
+    class procedure SetExplorerIntegration(const _BaseKey: string; _IsEnabled: boolean);
   protected
 {$IFDEF IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
