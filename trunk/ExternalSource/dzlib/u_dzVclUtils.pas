@@ -1001,6 +1001,16 @@ function TListBox_DeleteSelected(_lst: TCustomListbox; out _Idx: Integer): Boole
 function TListBox_DeleteSelected(_lst: TCustomListbox): Boolean; overload;
 function TListBox_DeleteSelected(_lst: TCustomListbox; out _s: string): Boolean; overload;
 
+///<summary>
+/// Sets the listbox's ItemIndex to the given Idx
+/// @param lb is the listbox to change
+/// @param Idx is the desired ItemIndex value. if Idx not valid (<0 or >= Items.Count),
+///            this function does nothing
+/// @param WithClick determines whether the listbox's Click method is being called afterward
+///                  defautls to False
+/// @returns the new ItemIndex </summary>
+function TListBox_SetItemIndex(_lb: TCustomListbox; _Idx: Integer; _WithClick: Boolean = False): Integer;
+
 procedure TListBox_UnselectAll(_lb: TCustomListbox);
 
 ///<summary> Frees all objects assigned to the list and then clears the list </summary>
@@ -1739,7 +1749,7 @@ type
       PdzMonitor = ^TdzMonitor;
       TdzMonitor = record
       public
-        Handle: HMONITOR;
+        Handle: HMonitor;
         MonitorNum: Integer;
         BoundsRect: TRectLTWH;
         WorkArea: TRectLTWH;
@@ -3932,6 +3942,16 @@ begin
   _lb.ItemIndex := Result;
 end;
 
+function TListBox_SetItemIndex(_lb: TCustomListbox; _Idx: Integer; _WithClick: Boolean = False): Integer;
+begin
+  if (_Idx >= 0) and (_Idx < _lb.Items.Count) then begin
+    _lb.ItemIndex := _Idx;
+    if _WithClick then
+      TControlHack(_lb).click
+  end;
+  Result := _lb.ItemIndex;
+end;
+
 type
   TRadioGroupHack = class(TCustomRadioGroup);
 
@@ -4617,7 +4637,7 @@ function TForm_ReadPlacement(out _Bounds: TRectLTWH; const _RegEntry: TRegistryE
 var
   s: string;
   PosStr: string;
-  L, t, w, h: Integer;
+  l, t, w, h: Integer;
 begin
   if u_dzOsUtils.IsShiftDown then begin
     // if the user holds shift, do not restore the form's placement
@@ -4629,7 +4649,7 @@ begin
     Result := TRegistry_TryReadString(_RegEntry.KeyName, _RegEntry.ValueName, PosStr, _HKEY);
     if Result then begin
       s := ExtractStr(PosStr, ',');
-      if not TryStrToInt(s, L) then
+      if not TryStrToInt(s, l) then
         Exit; //==>
       s := ExtractStr(PosStr, ',');
       if not TryStrToInt(s, t) then
@@ -4641,7 +4661,7 @@ begin
       if not TryStrToInt(s, h) then
         Exit; //==>
 
-      _Bounds.Left := L;
+      _Bounds.Left := l;
       _Bounds.Top := t;
       _Bounds.Width := w;
       _Bounds.Height := h;
@@ -5868,12 +5888,12 @@ constructor TWinControlLocker.Create(_Ctrl: TWinControl);
 begin
   inherited Create;
   FCtrl := _Ctrl;
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(False)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(False)), 0);
 end;
 
 destructor TWinControlLocker.Destroy;
 begin
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(True)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(True)), 0);
   RedrawWindow(FCtrl.Handle, nil, 0, RDW_ERASE or RDW_INVALIDATE or RDW_ALLCHILDREN);
   inherited;
 end;
@@ -7201,7 +7221,7 @@ end;
 
 { TdzScreen }
 
-function EnumMonitorsProc(hm: HMONITOR; dc: HDC; r: PRECT; Data: Pointer): Boolean; stdcall;
+function EnumMonitorsProc(hm: HMonitor; dc: HDC; r: PRECT; Data: Pointer): Boolean; stdcall;
 var
   Info: TMonitorInfoEx;
   M: TdzScreen.PdzMonitor;
@@ -7239,3 +7259,4 @@ initialization
 finalization
   FreeAndNil(gblCheckListBoxHelper);
 end.
+
