@@ -94,9 +94,13 @@ goto DelphiEndCase
 :DelphiXX104Sydney
   call :ReadReg Embarcadero\BDS\21.0
   goto :DelphiEndCase
+:Delphi11
 :Delphi110
-:DelphiXX110
+:Delphi11Alexandria
 :Delphi110Alexandria
+:DelphiXX11
+:DelphiXX110
+:DelphiXX110Alexandria
 :DelphiXX110Alexandria
   call :ReadReg Embarcadero\BDS\22.0
   goto :DelphiEndCase
