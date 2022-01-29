@@ -4,6 +4,8 @@ unit GX_EditPath;
 
 interface
 
+{$IFDEF GX_DELPHI2009_UP}
+// Only Delphi 2009 and up provide the necessary ToolsAPI funtionality
 uses
   Windows,
   Messages,
@@ -60,8 +62,11 @@ type
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
   end;
+{$ENDIF GX_DELPHI2009_UP}
 
 implementation
+
+{$IFDEF GX_DELPHI2009_UP}
 
 {$R *.dfm}
 
@@ -509,4 +514,5 @@ end;
 
 initialization
   RegisterGX_Expert(TEditPathExpert);
+{$ENDIF GX_DELPHI2009_UP}
 end.
