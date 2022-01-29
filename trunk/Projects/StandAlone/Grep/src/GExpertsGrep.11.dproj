@@ -94,13 +94,16 @@ $(PreBuildEvent)]]>
         <DCCReference Include="GrepMain.pas"/>
         <DCCReference Include="..\..\..\..\Source\Framework\GX_About.pas">
             <Form>fmAbout</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\..\..\Source\Formatter\GX_AboutExperimental.pas">
             <Form>fmAboutExperimental</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="GX_ActionBroker.pas"/>
         <DCCReference Include="..\..\..\..\Source\Framework\GX_BaseForm.pas">
             <Form>fmBaseForm</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\..\..\Source\Formatter\Engine\GX_CodeFormatterUnicode.pas"/>
         <DCCReference Include="..\..\..\..\Source\Framework\GX_ConfigurationInfo.pas"/>
@@ -109,6 +112,7 @@ $(PreBuildEvent)]]>
         <DCCReference Include="GX_Experts.pas"/>
         <DCCReference Include="..\..\..\..\Source\Framework\GX_FeedbackWizard.pas">
             <Form>fmFeedbackWizard</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\..\..\Source\Utils\GX_GenericClasses.pas"/>
         <DCCReference Include="..\..\..\..\Source\Utils\GX_GenericUtils.pas"/>
@@ -119,47 +123,58 @@ $(PreBuildEvent)]]>
         <DCCReference Include="GX_GrepMenuEntry.pas"/>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepOptions.pas">
             <Form>fmGrepOptions</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepPrinting.pas"/>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepProgress.pas">
             <Form>fmGrepProgress</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepRegExSearch.pas"/>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepReplace.pas">
             <Form>fmGrepReplace</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepResults.pas">
             <Form>fmGrepResults</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepResultsOptions.pas">
             <Form>fmGrepResultsOptions</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepSearch.pas">
             <Form>fmGrepSearch</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepSearchExpert.pas"/>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepSelect.pas">
             <Form>fmGrepSelect</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\..\..\Source\Utils\GX_GxUtils.pas"/>
         <DCCReference Include="GX_IdeDock.pas">
             <Form>fmIdeDockForm</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="GX_IdeUtils.pas"/>
         <DCCReference Include="GX_LibrarySource.pas"/>
         <DCCReference Include="..\..\..\..\Source\Utils\GX_MemoEscFix.pas"/>
         <DCCReference Include="..\..\..\..\Source\Framework\GX_MessageBox.pas">
             <Form>fmGxMessageBox</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="GX_OtaUtils.pas"/>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_Replace.pas"/>
         <DCCReference Include="..\..\..\..\Source\Framework\GX_SharedImages.pas">
             <Form>dmSharedImages</Form>
+            <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="..\..\..\..\Source\Utils\GX_StringList.pas"/>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_TestRegEx.pas">
             <Form>fmTestRegEx</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\..\..\Source\Framework\GX_VerDepConst.pas"/>
         <DCCReference Include="ToolsAPI.pas"/>
