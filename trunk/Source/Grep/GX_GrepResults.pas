@@ -887,9 +887,6 @@ var
   IM: TGrepHistoryListMode;
   IT: TPageIndexType;
 begin
-  if not Assigned(gblGrepExpert) then
-    Exit; //==>
-
   _Settings.SaveForm('Window', Self);
   WindowSettings := _Settings.Subkey('Window');
   WindowSettings.WriteBool('OnTop', StayOnTop);
@@ -2182,6 +2179,9 @@ end;
 function TfmGrepResults.ConfigurationKey: string;
 begin
   Result := TGrepExpert.ConfigurationKey;
+  if not Assigned(gblGrepExpert) then begin
+    Result := Result + 'StandAlone';
+  end;
 end;
 
 procedure TfmGrepResults.ResizeStatusBar;
