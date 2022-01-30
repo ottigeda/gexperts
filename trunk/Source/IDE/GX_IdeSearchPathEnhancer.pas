@@ -19,7 +19,8 @@ type
   public
     class function GetEnabled: Boolean;
     class procedure SetEnabled(_Value: Boolean);
-    class function TryGetSearchPathFavorites(_Favorites: TStrings): Boolean;
+    class procedure GetSearchPathFavorites(_Favorites: TStrings);
+    class procedure SetSearchPathFavorites(_Favorites: TStrings);
   end;
 
 implementation
@@ -111,9 +112,9 @@ type
     procedure FavoritesPmConfigureClick(_Sender: TObject);
     procedure InitFavoritesMenu;
     procedure FavoritesPmHandleFavoriteClick(_Sender: TObject);
-    procedure LoadSettings;
-    procedure SaveSettings;
-    function ConfigurationKey: string;
+    class procedure LoadFavorites(_Favorites: TStrings);
+    class procedure SaveFavorites(_Favorites: TStrings);
+    class function ConfigurationKey: string;
     procedure PageControlChange(_Sender: TObject);
     procedure EditEntry(_Sender: TWinControl; var _Name, _Value: string; var _OK: Boolean);
     procedure AddDotsBtnClick(_Sender: TObject);
@@ -164,15 +165,25 @@ begin
   end;
 end;
 
-class function TGxIdeSearchPathEnhancer.TryGetSearchPathFavorites(_Favorites: TStrings): Boolean;
+class procedure TGxIdeSearchPathEnhancer.GetSearchPathFavorites(_Favorites: TStrings);
 begin
   Assert(Assigned(_Favorites));
-  Result := GetEnabled;
-  if Result then begin
+  if GetEnabled then begin
     Assert(Assigned(TheSearchPathEnhancer));
     _Favorites.Assign(TheSearchPathEnhancer.FFavorites);
-  end else
-    _Favorites.Clear;
+  end else begin
+    TSearchPathEnhancer.LoadFavorites(_Favorites);
+  end;
+end;
+
+class procedure TGxIdeSearchPathEnhancer.SetSearchPathFavorites(_Favorites: TStrings);
+begin
+  Assert(Assigned(_Favorites));
+  if GetEnabled then begin
+    Assert(Assigned(TheSearchPathEnhancer));
+    TheSearchPathEnhancer.FFavorites.Assign(_Favorites);
+  end;
+  TSearchPathEnhancer.SaveFavorites(_Favorites);
 end;
 
 { TSearchPathEnhancer }
@@ -181,7 +192,7 @@ constructor TSearchPathEnhancer.Create;
 begin
   inherited Create;
   FFavorites := TStringList.Create;
-  LoadSettings;
+  LoadFavorites(FFavorites);
 //  FFavorites.Values['jvcl'] := '..\libs\jvcl\common;..\libs\jvcl\run;..\libs\jvcl\resources';
 //  FFavorites.Values['jcl'] := '..\libs\jcl\source\include;..\libs\jcl\source\include\jedi;..\libs\jcl\source\common;..\libs\jcl\source\windows;..\libs\jcl\source\vcl';
 end;
@@ -192,20 +203,20 @@ begin
   inherited;
 end;
 
-function TSearchPathEnhancer.ConfigurationKey: string;
+class function TSearchPathEnhancer.ConfigurationKey: string;
 begin
   Result := 'IDEEnhancements';
 end;
 
-procedure TSearchPathEnhancer.LoadSettings;
+class procedure TSearchPathEnhancer.LoadFavorites(_Favorites: TStrings);
 var
   ExpSettings: IExpertSettings;
 begin
   ExpSettings := ConfigInfo.GetExpertSettings(ConfigurationKey);
-  ExpSettings.ReadStrings('SearchPathFavorites', FFavorites);
+  ExpSettings.ReadStrings('SearchPathFavorites', _Favorites);
 end;
 
-procedure TSearchPathEnhancer.SaveSettings;
+class procedure TSearchPathEnhancer.SaveFavorites(_Favorites: TStrings);
 var
   ExpSettings: IExpertSettings;
 begin
@@ -213,7 +224,7 @@ begin
 
   // do not localize any of the below items
   ExpSettings := ConfigInfo.GetExpertSettings(ConfigurationKey);
-  ExpSettings.WriteStrings('SearchPathFavorites', FFavorites);
+  ExpSettings.WriteStrings('SearchPathFavorites', _Favorites);
 end;
 
 procedure TSearchPathEnhancer.SetFocusTo(_Ctrl: TWinControl);
@@ -610,7 +621,7 @@ resourcestring
   SFavSearchPaths = 'Favorite Search Paths';
 begin
   Tf_GxIdeFavoritesList.Execute(FForm, SFavSearchPaths, EditEntry, FFavorites);
-  SaveSettings;
+  SaveFavorites(FFavorites);
   InitFavoritesMenu;
 end;
 

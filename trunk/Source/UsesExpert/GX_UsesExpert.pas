@@ -523,13 +523,12 @@ begin
   end else begin
     SearchPathFavorites := TStringList.Create;
     try
-      if TGxIdeSearchPathEnhancer.TryGetSearchPathFavorites(SearchPathFavorites) then begin
-        for i := 0 to SearchPathFavorites.Count - 1 do begin
-          TStrings_AppendStringArray(_sl, SplitString(Trim(TailStrOf(SearchPathFavorites[i], '=')), ';'));
-        end;
-        for i := 0 to _sl.Count - 1 do begin
-          _sl[i] := AddSlash(_sl[i]);
-        end;
+      TGxIdeSearchPathEnhancer.GetSearchPathFavorites(SearchPathFavorites);
+      for i := 0 to SearchPathFavorites.Count - 1 do begin
+        TStrings_AppendStringArray(_sl, SplitString(Trim(TailStrOf(SearchPathFavorites[i], '=')), ';'));
+      end;
+      for i := 0 to _sl.Count - 1 do begin
+        _sl[i] := AddSlash(_sl[i]);
       end;
     finally
       FreeAndNil(SearchPathFavorites);

@@ -4,7 +4,7 @@ unit GX_EditPath;
 
 interface
 
-{.$IFDEF GX_DELPHI2009_UP}
+{$IFDEF GX_DELPHI2009_UP}
 // Only Delphi 2009 and up provide the necessary ToolsAPI funtionality
 uses
   Windows,
@@ -22,6 +22,7 @@ uses
   Buttons,
   Actions, // if you get a compile error here, add Actions=ActnList to unit aliases
   ActnList,
+  Menus,
   GX_BaseForm,
   GX_SharedImages;
 
@@ -84,6 +85,8 @@ type
     b_MakeAbsolute: TButton;
     b_PrependDots: TButton;
     b_RemoveDots: TButton;
+    b_Favorites: TButton;
+    pm_Favorites: TPopupMenu;
     procedure cmb_TargetChange(Sender: TObject);
     procedure lb_TargetClick(Sender: TObject);
     procedure act_MoveUpExecute(Sender: TObject);
@@ -97,23 +100,28 @@ type
     procedure b_PrependDotsClick(Sender: TObject);
     procedure b_RemoveDotsClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure b_FavoritesClick(Sender: TObject);
   private
     FConfigs: TObjectList;
     FMemo: TSynMemo;
     FActiveItem: TConfigEntry;
     FProjectDir: string;
+    FFavorites: TStringList;
     procedure SetData(const _Path, _InheritedPath: string);
     procedure GetData(out _Path: string);
     procedure HandleDropFiles(_Sender: TObject; _Files: TStrings);
     procedure HandleTargetChange(_NewCfg: TConfigEntry);
     procedure MemoKeyDown(_Sender: TObject; var _Key: Word; _Shift: TShiftState);
-    procedure HandleFilesDropped(_Sender: TObject; _Files: TStrings);
     function doMakeRelative(const _s: string): string;
     procedure ProcessSelectedMemoLines(_ProcessMethod: TLineProcessMethod);
     procedure ProcessAllMemoLines(_ProcessMethod: TLineProcessMethod);
     function doMakeAbsolute(const _s: string): string;
     function doAddDots(const _s: string): string;
     function doDelDots(const _s: string): string;
+    procedure InitFavoritesMenu;
+    procedure FavoritesPmConfigureClick(_Sender: TObject);
+    procedure FavoritesPmHandleFavoriteClick(_Sender: TObject);
+    procedure FavoritesEditEntry(_Sender: TWinControl; var _Name, _Value: string; var _OK: Boolean);
   protected
 {$IFDEF IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
@@ -122,11 +130,11 @@ type
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
   end;
-{.$ENDIF GX_DELPHI2009_UP}
+{$ENDIF GX_DELPHI2009_UP}
 
 implementation
 
-{.$IFDEF GX_DELPHI2009_UP}
+{$IFDEF GX_DELPHI2009_UP}
 
 {$R *.dfm}
 
@@ -148,7 +156,10 @@ uses
   GX_EnhancedEditor,
   GX_GExperts,
   GX_GenericUtils,
-  GX_ConfigurationInfo;
+  GX_ConfigurationInfo,
+  GX_IdeSearchPathEnhancer,
+  GX_IdeFavoritesList,
+  GX_IdeSearchPathFavoriteEdit;
 
 type
   TEditPathExpert = class(TGX_Expert)
@@ -189,7 +200,7 @@ end;
 procedure Tf_EditPath.GetData(out _Path: string);
 var
   i: Integer;
-  Lines: TUnicodeStrings;
+  Lines: TStrings;
   s: string;
 begin
   Lines := FMemo.Lines;
@@ -205,7 +216,7 @@ end;
 procedure Tf_EditPath.HandleDropFiles(_Sender: TObject; _Files: TStrings);
 var
   i: Integer;
-  Lines: TUnicodeStrings;
+  Lines: TStrings;
   fn: string;
 begin
   Lines := FMemo.Lines;
@@ -218,28 +229,11 @@ begin
   end;
 end;
 
-procedure Tf_EditPath.HandleFilesDropped(_Sender: TObject; _Files: TStrings);
-var
-  i: Integer;
-  s: string;
-begin
-  for i := 0 to _Files.Count do begin
-    s := _Files[i];
-    if DirectoryExists(s) then begin
-      FMemo.Lines.Add(s);
-    end else begin
-      s := ExtractFileDir(s);
-      if DirectoryExists(s) then
-        FMemo.Lines.Add(s);
-    end;
-  end;
-end;
-
 procedure Tf_EditPath.SetData(const _Path, _InheritedPath: string);
 var
   Dirs: TStringArray;
   i: Integer;
-  Lines: TUnicodeStrings;
+  Lines: TStrings;
 begin
   Dirs := SplitString(_Path, [';']);
   Lines := FMemo.Lines;
@@ -398,6 +392,29 @@ begin
     Result := _s;
 end;
 
+procedure Tf_EditPath.b_FavoritesClick(Sender: TObject);
+var
+  pnt: TPoint;
+begin
+  pnt := b_Favorites.ClientToScreen(Point(0, b_Favorites.Height));
+  pm_Favorites.Popup(pnt.X, pnt.Y);
+end;
+
+procedure Tf_EditPath.InitFavoritesMenu;
+var
+  i: Integer;
+  mi: TMenuItem;
+  FavName: string;
+begin
+  pm_Favorites.Items.Clear;
+  for i := 0 to FFavorites.Count - 1 do begin
+    FavName := FFavorites.Names[i];
+    mi := TPopupMenu_AppendMenuItem(pm_Favorites, FavName, FavoritesPmHandleFavoriteClick);
+    mi.Tag := i + 1;
+  end;
+  TPopupMenu_AppendMenuItem(pm_Favorites, 'Configure ...', FavoritesPmConfigureClick);
+end;
+
 procedure Tf_EditPath.b_MakeAbsoluteClick(Sender: TObject);
 var
   ProjectFile: string;
@@ -542,6 +559,39 @@ begin
   end;
 end;
 
+procedure Tf_EditPath.FavoritesEditEntry(_Sender: TWinControl; var _Name, _Value: string;
+  var _OK: Boolean);
+begin
+  _OK := Tf_IdeSearchPathFavoriteEdit.Execute(_Sender, _Name, _Value)
+end;
+
+procedure Tf_EditPath.FavoritesPmConfigureClick(_Sender: TObject);
+resourcestring
+  SFavSearchPaths = 'Favorite Search Paths';
+begin
+  Tf_GxIdeFavoritesList.Execute(Self, SFavSearchPaths, FavoritesEditEntry, FFavorites);
+  TGxIdeSearchPathEnhancer.SetSearchPathFavorites(FFavorites);
+  InitFavoritesMenu;
+end;
+
+procedure Tf_EditPath.FavoritesPmHandleFavoriteClick(_Sender: TObject);
+var
+  mi: TMenuItem;
+  sl: TStringList;
+  FavName: string;
+begin
+  mi := _Sender as TMenuItem;
+  sl := TStringList.Create;
+  try
+    FavName := FFavorites.Names[mi.Tag - 1];
+    sl.Delimiter := ';';
+    sl.DelimitedText := FFavorites.Values[FavName];
+    FMemo.Lines.AddStrings(sl);
+  finally
+    FreeAndNil(sl);
+  end;
+end;
+
 procedure Tf_EditPath.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   Settings: IExpertSettings;
@@ -606,7 +656,7 @@ begin
 
   FConfigs := TObjectList.Create;
 
-  TForm_SetMinConstraints(Self);
+  TControl_SetMinConstraints(Self);
 
   TPanel_BevelNone([p_Top, p_Memo, p_Bottom, p_Left, p_Right, p_RightBottomCaption, p_RightCaption]);
 
@@ -620,6 +670,8 @@ begin
   FMemo.Gutter.Width := 0;
   FMemo.Options := FMemo.Options - [eoScrollPastEol, eoTabsToSpaces] + [eoHideShowScrollbars];
   FMemo.OnKeyDown := MemoKeyDown;
+
+  l_UniitSearchPath.FocusControl := FMemo;
 
   GxOtaGetEditorFont(FMemo.Font, -1); // Editor font, size reduced by 1 pt.
   TWinControl_SetFocus(FMemo);
@@ -654,6 +706,10 @@ begin
   end else
     raise Exception.Create('no project available');
 
+  FFavorites := TStringList.Create;
+  TGxIdeSearchPathEnhancer.GetSearchPathFavorites(FFavorites);
+  InitFavoritesMenu;
+
   Settings := TEditPathExpert.GetSettings;
   CenterForm(Self);
   Settings.LoadForm('Window', Self);
@@ -661,6 +717,7 @@ end;
 
 destructor Tf_EditPath.Destroy;
 begin
+  FreeAndNil(FFavorites);
   FreeAndNil(FConfigs);
   inherited;
 end;
@@ -769,6 +826,6 @@ end;
 
 initialization
   RegisterGX_Expert(TEditPathExpert);
-{.$ENDIF GX_DELPHI2009_UP}
+{$ENDIF GX_DELPHI2009_UP}
 end.
 

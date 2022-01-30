@@ -42,38 +42,42 @@ inherited f_EditPath: Tf_EditPath
       TabOrder = 4
     end
     object b_MakeRelative: TButton
-      Left = 8
+      Left = 64
       Top = 8
-      Width = 113
+      Width = 97
       Height = 25
-      Caption = 'Make Relative'
+      Anchors = [akTop, akRight]
+      Caption = 'Make &Relative'
       TabOrder = 0
       OnClick = b_MakeRelativeClick
     end
     object b_MakeAbsolute: TButton
-      Left = 128
+      Left = 168
       Top = 8
-      Width = 113
+      Width = 97
       Height = 25
-      Caption = 'Make Absolute'
+      Anchors = [akTop, akRight]
+      Caption = 'Make &Absolute'
       TabOrder = 1
       OnClick = b_MakeAbsoluteClick
     end
     object b_PrependDots: TButton
-      Left = 264
+      Left = 280
       Top = 8
       Width = 81
       Height = 25
-      Caption = 'Prepend ..\'
+      Anchors = [akTop, akRight]
+      Caption = '&Prepend ..\'
       TabOrder = 2
       OnClick = b_PrependDotsClick
     end
     object b_RemoveDots: TButton
-      Left = 352
+      Left = 368
       Top = 8
       Width = 81
       Height = 25
-      Caption = 'Remove ..\'
+      Anchors = [akTop, akRight]
+      Caption = 'Re&move ..\'
       TabOrder = 3
       OnClick = b_RemoveDotsClick
     end
@@ -108,12 +112,16 @@ inherited f_EditPath: Tf_EditPath
         Height = 194
         Align = alRight
         TabOrder = 0
+        DesignSize = (
+          41
+          194)
         object sb_MoveUp: TSpeedButton
           Left = 8
-          Top = 112
+          Top = 128
           Width = 23
           Height = 22
           Action = act_MoveUp
+          Anchors = [akLeft, akBottom]
           Glyph.Data = {
             B6080000424DB608000000000000360400002800000030000000180000000100
             0800000000008004000000000000000000000001000000000000000000000000
@@ -192,10 +200,11 @@ inherited f_EditPath: Tf_EditPath
         end
         object sb_MoveDown: TSpeedButton
           Left = 8
-          Top = 144
+          Top = 160
           Width = 23
           Height = 22
           Action = act_MoveDown
+          Anchors = [akLeft, akBottom]
           Glyph.Data = {
             B6080000424DB608000000000000360400002800000030000000180000000100
             0800000000008004000000000000000000000001000000000000000000000000
@@ -272,6 +281,16 @@ inherited f_EditPath: Tf_EditPath
           ShowHint = True
           Spacing = 0
         end
+        object b_Favorites: TButton
+          Left = 8
+          Top = 8
+          Width = 23
+          Height = 22
+          Caption = '&Fav'
+          PopupMenu = pm_Favorites
+          TabOrder = 0
+          OnClick = b_FavoritesClick
+        end
       end
       object p_RightCaption: TPanel
         Left = 1
@@ -285,7 +304,7 @@ inherited f_EditPath: Tf_EditPath
           Top = 0
           Width = 266
           Height = 13
-          Caption = 'Unit Search Path (drop a directory or file here to add it)'
+          Caption = 'Unit &Search Path (drop a directory or file here to add it)'
         end
       end
     end
@@ -332,12 +351,15 @@ inherited f_EditPath: Tf_EditPath
     TabOrder = 2
     object lb_Target: TListBox
       Left = 1
-      Top = 25
+      Top = 17
       Width = 215
-      Height = 290
+      Height = 298
+      Hint = 'Alt+Up/Down to move between entries'
       Align = alClient
       ExtendedSelect = False
       ItemHeight = 13
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       OnClick = lb_TargetClick
     end
@@ -345,15 +367,15 @@ inherited f_EditPath: Tf_EditPath
       Left = 1
       Top = 1
       Width = 215
-      Height = 24
+      Height = 16
       Align = alTop
       TabOrder = 1
       object l_Target: TLabel
         Left = 8
-        Top = 4
-        Width = 188
+        Top = 0
+        Width = 32
         Height = 13
-        Caption = '&Target (Alt+Up/Down switches entries)'
+        Caption = '&Target'
       end
     end
   end
@@ -390,5 +412,9 @@ inherited f_EditPath: Tf_EditPath
       ShortCut = 27
       OnExecute = act_CancelExecute
     end
+  end
+  object pm_Favorites: TPopupMenu
+    Left = 520
+    Top = 32
   end
 end
