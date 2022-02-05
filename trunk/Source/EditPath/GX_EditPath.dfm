@@ -46,40 +46,36 @@ inherited f_EditPath: Tf_EditPath
       Top = 8
       Width = 97
       Height = 25
+      Action = act_MakeRelative
       Anchors = [akTop, akRight]
-      Caption = 'Make &Relative'
       TabOrder = 0
-      OnClick = b_MakeRelativeClick
     end
     object b_MakeAbsolute: TButton
       Left = 168
       Top = 8
       Width = 97
       Height = 25
+      Action = act_MakeAbsolute
       Anchors = [akTop, akRight]
-      Caption = 'Make &Absolute'
       TabOrder = 1
-      OnClick = b_MakeAbsoluteClick
     end
     object b_PrependDots: TButton
       Left = 280
       Top = 8
       Width = 81
       Height = 25
+      Action = act_PrependDots
       Anchors = [akTop, akRight]
-      Caption = '&Prepend ..\'
       TabOrder = 2
-      OnClick = b_PrependDotsClick
     end
     object b_RemoveDots: TButton
       Left = 368
       Top = 8
       Width = 81
       Height = 25
+      Action = act_RemoveDots
       Anchors = [akTop, akRight]
-      Caption = 'Re&move ..\'
       TabOrder = 3
-      OnClick = b_RemoveDotsClick
     end
   end
   object p_Main: TPanel
@@ -286,8 +282,11 @@ inherited f_EditPath: Tf_EditPath
           Top = 8
           Width = 23
           Height = 22
+          Hint = 'Favorites'
           Caption = '&Fav'
+          ParentShowHint = False
           PopupMenu = pm_Favorites
+          ShowHint = True
           TabOrder = 0
           OnClick = b_FavoritesClick
         end
@@ -392,6 +391,10 @@ inherited f_EditPath: Tf_EditPath
       ShortCut = 16424
       OnExecute = act_MoveDownExecute
     end
+    object act_MoveToBase: TAction
+      Caption = 'Move to base target'
+      OnExecute = act_MoveToBaseExecute
+    end
     object act_PrevTarget: TAction
       Caption = 'Previous Target'
       ShortCut = 32806
@@ -412,9 +415,65 @@ inherited f_EditPath: Tf_EditPath
       ShortCut = 27
       OnExecute = act_CancelExecute
     end
+    object act_MakeRelative: TAction
+      Caption = 'Make &Relative'
+      OnExecute = act_MakeRelativeExecute
+    end
+    object act_MakeAbsolute: TAction
+      Caption = 'Make &Absolute'
+      OnExecute = act_MakeAbsoluteExecute
+    end
+    object act_PrependDots: TAction
+      Caption = '&Prepend ..\'
+      OnExecute = act_PrependDotsExecute
+    end
+    object act_RemoveDots: TAction
+      Caption = 'Remove ..\'
+      OnExecute = act_RemoveDotsExecute
+    end
   end
   object pm_Favorites: TPopupMenu
     Left = 520
     Top = 32
+  end
+  object pm_Memo: TPopupMenu
+    Left = 376
+    Top = 152
+    object mi_MemoMoveUp: TMenuItem
+      Action = act_MoveUp
+      Caption = 'Move Up'
+    end
+    object mi_MemoMoveDown: TMenuItem
+      Action = act_MoveDown
+      Caption = 'Move Down'
+    end
+    object mi_MemoMovetobasetarget: TMenuItem
+      Action = act_MoveToBase
+      ShortCut = 49218
+    end
+    object N3: TMenuItem
+      Caption = '-'
+    end
+    object mi_MemoPrependDots: TMenuItem
+      Action = act_PrependDots
+    end
+    object mi_MemoRemoveDots: TMenuItem
+      Action = act_RemoveDots
+    end
+    object mi_MemoMakeRelative: TMenuItem
+      Action = act_MakeRelative
+    end
+    object mi_MemoMakeAbsolute: TMenuItem
+      Action = act_MakeAbsolute
+    end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object mi_MemoPrevoiusTarget: TMenuItem
+      Action = act_PrevTarget
+    end
+    object mi_MemoNextTarget: TMenuItem
+      Action = act_NextTarget
+    end
   end
 end

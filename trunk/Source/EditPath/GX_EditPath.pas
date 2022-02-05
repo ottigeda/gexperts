@@ -4,6 +4,8 @@ unit GX_EditPath;
 
 interface
 
+{.$DEFINE GX_DELPHI2009_UP}
+
 {$IFDEF GX_DELPHI2009_UP}
 // Only Delphi 2009 and up provide the necessary ToolsAPI funtionality
 uses
@@ -79,6 +81,10 @@ type
     act_NextTarget: TAction;
     act_OK: TAction;
     act_Cancel: TAction;
+    act_MakeRelative: TAction;
+    act_MakeAbsolute: TAction;
+    act_PrependDots: TAction;
+    act_RemoveDots: TAction;
     p_RightCaption: TPanel;
     l_UniitSearchPath: TLabel;
     b_MakeRelative: TButton;
@@ -87,6 +93,19 @@ type
     b_RemoveDots: TButton;
     b_Favorites: TButton;
     pm_Favorites: TPopupMenu;
+    pm_Memo: TPopupMenu;
+    mi_MemoMoveUp: TMenuItem;
+    mi_MemoMoveDown: TMenuItem;
+    mi_MemoPrevoiusTarget: TMenuItem;
+    mi_MemoNextTarget: TMenuItem;
+    N2: TMenuItem;
+    act_MoveToBase: TAction;
+    mi_MemoMovetobasetarget: TMenuItem;
+    N3: TMenuItem;
+    mi_MemoPrependDots: TMenuItem;
+    mi_MemoRemoveDots: TMenuItem;
+    mi_MemoMakeRelative: TMenuItem;
+    mi_MemoMakeAbsolute: TMenuItem;
     procedure cmb_TargetChange(Sender: TObject);
     procedure lb_TargetClick(Sender: TObject);
     procedure act_MoveUpExecute(Sender: TObject);
@@ -95,10 +114,11 @@ type
     procedure act_NextTargetExecute(Sender: TObject);
     procedure act_OKExecute(Sender: TObject);
     procedure act_CancelExecute(Sender: TObject);
-    procedure b_MakeRelativeClick(Sender: TObject);
-    procedure b_MakeAbsoluteClick(Sender: TObject);
-    procedure b_PrependDotsClick(Sender: TObject);
-    procedure b_RemoveDotsClick(Sender: TObject);
+    procedure act_MakeRelativeExecute(Sender: TObject);
+    procedure act_MakeAbsoluteExecute(Sender: TObject);
+    procedure act_PrependDotsExecute(Sender: TObject);
+    procedure act_RemoveDotsExecute(Sender: TObject);
+    procedure act_MoveToBaseExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure b_FavoritesClick(Sender: TObject);
   private
@@ -122,6 +142,7 @@ type
     procedure FavoritesPmConfigureClick(_Sender: TObject);
     procedure FavoritesPmHandleFavoriteClick(_Sender: TObject);
     procedure FavoritesEditEntry(_Sender: TWinControl; var _Name, _Value: string; var _OK: Boolean);
+    procedure GetSelectedLines(out _StartIdx, _EndIdx: Integer);
   protected
 {$IFDEF IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
@@ -335,6 +356,40 @@ begin
   TWinControl_SetFocus(FMemo);
 end;
 
+procedure Tf_EditPath.act_MoveToBaseExecute(Sender: TObject);
+var
+  StartIdx: Integer;
+  EndIdx: Integer;
+  i: Integer;
+  sl: TStringList;
+  BaseCfg: TConfigEntry;
+begin
+  inherited;
+
+  if lb_Target.Items.Count = 0 then
+    Exit; //==>
+  BaseCfg := TConfigEntry(lb_Target.Items.Objects[0]);
+  if not Assigned(BaseCfg) then
+    Exit; //==>
+
+  GetSelectedLines(StartIdx, EndIdx);
+  sl := TStringList.Create;
+  try
+    sl.StrictDelimiter := True;
+    sl.Delimiter := ';';
+    sl.DelimitedText := BaseCfg.FPath;
+    for i := StartIdx to EndIdx do begin
+      sl.Add(FMemo.Lines[i]);
+    end;
+    BaseCfg.FPath := sl.DelimitedText;
+  finally
+    FreeAndNil(sl);
+  end;
+  for i := EndIdx downto StartIdx do begin
+    FMemo.Lines.Delete(i);
+  end;
+end;
+
 procedure Tf_EditPath.act_MoveUpExecute(Sender: TObject);
 var
   YPos: Integer;
@@ -415,7 +470,7 @@ begin
   TPopupMenu_AppendMenuItem(pm_Favorites, 'Configure ...', FavoritesPmConfigureClick);
 end;
 
-procedure Tf_EditPath.b_MakeAbsoluteClick(Sender: TObject);
+procedure Tf_EditPath.act_MakeAbsoluteExecute(Sender: TObject);
 var
   ProjectFile: string;
 begin
@@ -435,7 +490,7 @@ begin
     Result := _s;
 end;
 
-procedure Tf_EditPath.b_MakeRelativeClick(Sender: TObject);
+procedure Tf_EditPath.act_MakeRelativeExecute(Sender: TObject);
 var
   ProjectFile: string;
 begin
@@ -445,6 +500,16 @@ begin
 
   FProjectDir := ExtractFilePath(ProjectFile);
   ProcessAllMemoLines(doMakeRelative);
+end;
+
+procedure Tf_EditPath.GetSelectedLines(out _StartIdx, _EndIdx: Integer);
+begin
+  _StartIdx := FMemo.BlockBegin.Line - 1;
+  _EndIdx := FMemo.BlockEnd.Line - 1;
+  if FMemo.BlockEnd.Char = 1 then
+    Dec(_EndIdx);
+  if _EndIdx < _StartIdx then
+    _EndIdx := _StartIdx;
 end;
 
 procedure Tf_EditPath.ProcessSelectedMemoLines(_ProcessMethod: TLineProcessMethod);
@@ -460,15 +525,9 @@ begin
   if FMemo.Lines.Count = 0 then
     Exit; //==>
 
+  GetSelectedLines(StartIdx, EndIdx);
   sl := TStringList.Create;
   try
-    StartIdx := FMemo.BlockBegin.Line - 1;
-    EndIdx := FMemo.BlockEnd.Line - 1;
-    if FMemo.BlockEnd.Char = 1 then
-      Dec(EndIdx);
-    if EndIdx < StartIdx then
-      EndIdx := StartIdx;
-
     sl.Assign(FMemo.Lines);
     for i := StartIdx to EndIdx do begin
       sl[i] := _ProcessMethod(sl[i]);
@@ -493,7 +552,7 @@ begin
   Result := '..\' + _s;
 end;
 
-procedure Tf_EditPath.b_PrependDotsClick(Sender: TObject);
+procedure Tf_EditPath.act_PrependDotsExecute(Sender: TObject);
 begin
   ProcessSelectedMemoLines(doAddDots);
 end;
@@ -506,7 +565,7 @@ begin
     Result := _s;
 end;
 
-procedure Tf_EditPath.b_RemoveDotsClick(Sender: TObject);
+procedure Tf_EditPath.act_RemoveDotsExecute(Sender: TObject);
 begin
   ProcessSelectedMemoLines(doDelDots);
 end;
@@ -670,6 +729,7 @@ begin
   FMemo.Gutter.Width := 0;
   FMemo.Options := FMemo.Options - [eoScrollPastEol, eoTabsToSpaces] + [eoHideShowScrollbars];
   FMemo.OnKeyDown := MemoKeyDown;
+  FMemo.PopupMenu := pm_Memo;
 
   l_UniitSearchPath.FocusControl := FMemo;
 
@@ -680,9 +740,9 @@ begin
 
   if GxOtaTryGetCurrentProject(Project) then begin
     ProjectOptions := Project.ProjectOptions;
-  // IOTAProjectOptionsConfigurations is only declared for Delphi 2009 and up even though build
-  // configurations were already introduced in Delphi 2007. I tried to simply copy the interface
-  // declarations from Delphi 2009 but it didn't work, Supports returned false.
+    // IOTAProjectOptionsConfigurations is only declared for Delphi 2009 and up even though build
+    // configurations were already introduced in Delphi 2007. I tried to simply copy the interface
+    // declarations from Delphi 2009 but it didn't work, Supports returned false.
     if Supports(ProjectOptions, IOTAProjectOptionsConfigurations, ProjectOptionsConfigurations) then begin
       ActiveIndex := 0;
       ActiveCfg := ProjectOptionsConfigurations.ActiveConfiguration;
