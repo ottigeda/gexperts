@@ -204,6 +204,8 @@ type
     procedure Assign(_Left, _Top, _Width, _Height: Integer); overload;
     procedure Assign(_a: TRect); overload;
     procedure AssignTLRB(_Left, _Top, _Right, _Bottom: Integer);
+    procedure AssignTo(out _Left, _Top, _Width, _Height: Integer); overload;
+    procedure AssignTo(out _a: TRect); overload;
     ///<summary>
     /// Gets and sets the top left coordinates keeping the size </summary>
     property TopLeft: TPoint read GetTopLeft write SetTopLeft;
@@ -244,6 +246,19 @@ end;
 procedure TRectLTWH.AssignTLRB(_Left, _Top, _Right, _Bottom: Integer);
 begin
   Assign(_Left, _Top, _Right - _Left, _Bottom - _Top);
+end;
+
+procedure TRectLTWH.AssignTo(out _Left, _Top, _Width, _Height: Integer);
+begin
+  _Left := Left;
+  _Top := Top;
+  _Width := Width;
+  _Height := Height;
+end;
+
+procedure TRectLTWH.AssignTo(out _a: TRect);
+begin
+  _a := Rect(Left, Top, Left + Width, Top + Height);
 end;
 
 class function TRectLTWH.FromLTWH(_Left, _Top, _Width, _Height: Integer): TRectLTWH;

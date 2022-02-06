@@ -1749,7 +1749,7 @@ type
       PdzMonitor = ^TdzMonitor;
       TdzMonitor = record
       public
-        Handle: HMonitor;
+        Handle: HMONITOR;
         MonitorNum: Integer;
         BoundsRect: TRectLTWH;
         WorkArea: TRectLTWH;
@@ -4637,7 +4637,7 @@ function TForm_ReadPlacement(out _Bounds: TRectLTWH; const _RegEntry: TRegistryE
 var
   s: string;
   PosStr: string;
-  l, t, w, h: Integer;
+  L, t, w, h: Integer;
 begin
   if u_dzOsUtils.IsShiftDown then begin
     // if the user holds shift, do not restore the form's placement
@@ -4649,7 +4649,7 @@ begin
     Result := TRegistry_TryReadString(_RegEntry.KeyName, _RegEntry.ValueName, PosStr, _HKEY);
     if Result then begin
       s := ExtractStr(PosStr, ',');
-      if not TryStrToInt(s, l) then
+      if not TryStrToInt(s, L) then
         Exit; //==>
       s := ExtractStr(PosStr, ',');
       if not TryStrToInt(s, t) then
@@ -4661,7 +4661,7 @@ begin
       if not TryStrToInt(s, h) then
         Exit; //==>
 
-      _Bounds.Left := l;
+      _Bounds.Left := L;
       _Bounds.Top := t;
       _Bounds.Width := w;
       _Bounds.Height := h;
@@ -5888,12 +5888,12 @@ constructor TWinControlLocker.Create(_Ctrl: TWinControl);
 begin
   inherited Create;
   FCtrl := _Ctrl;
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(False)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(False)), 0);
 end;
 
 destructor TWinControlLocker.Destroy;
 begin
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(True)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(True)), 0);
   RedrawWindow(FCtrl.Handle, nil, 0, RDW_ERASE or RDW_INVALIDATE or RDW_ALLCHILDREN);
   inherited;
 end;
@@ -7221,7 +7221,7 @@ end;
 
 { TdzScreen }
 
-function EnumMonitorsProc(hm: HMonitor; dc: HDC; r: PRECT; Data: Pointer): Boolean; stdcall;
+function EnumMonitorsProc(hm: HMONITOR; dc: HDC; r: PRECT; Data: Pointer): Boolean; stdcall;
 var
   Info: TMonitorInfoEx;
   M: TdzScreen.PdzMonitor;
@@ -7259,4 +7259,3 @@ initialization
 finalization
   FreeAndNil(gblCheckListBoxHelper);
 end.
-
