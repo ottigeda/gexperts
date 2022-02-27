@@ -2654,11 +2654,15 @@ end;
 function GxOtaOpenFile(const FileName: string): Boolean;
 var
   ActionServices: IOTAActionServices;
+  hWndSaved: HWND;
 begin
   ActionServices := BorlandIDEServices as IOTAActionServices;
   Assert(Assigned(ActionServices));
 
+  hWndSaved := GetForegroundWindow;
   Result := ActionServices.OpenFile(FileName);
+  if hWndSaved <> 0 then
+    SetForegroundWindow(hWndSaved);
 end;
 
 function GxOtaOpenFileOrForm(const FileName: string): Boolean;
