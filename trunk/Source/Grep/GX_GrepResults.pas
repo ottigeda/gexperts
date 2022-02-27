@@ -2179,7 +2179,7 @@ end;
 function TfmGrepResults.ConfigurationKey: string;
 begin
   Result := TGrepExpert.ConfigurationKey;
-  if not Assigned(gblGrepExpert) then begin
+  if IsStandAlone then begin
     Result := Result + 'StandAlone';
   end;
 end;
