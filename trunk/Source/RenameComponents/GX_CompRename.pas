@@ -198,6 +198,7 @@ function TfmCompRename.Execute: TModalResult;
 begin
   ActiveControl := edtNewName;
 //  lblReason.Top := btnOK.Top + Round((btnOK.Height / 2) - (lblReason.Height / 2));
+  InitDpiScaler;
   Result := ShowModal;
 end;
 
@@ -466,8 +467,6 @@ begin
   FAnchorButtons[akLeft] := TdzSpeedBitBtn.Create(b_AnchorLeft);
   FAnchorButtons[akRight] := TdzSpeedBitBtn.Create(b_AnchorRight);
   FAnchorButtons[akBottom] := TdzSpeedBitBtn.Create(b_AnchorBottom);
-
-  InitDpiScaler;
 
   InitializeForm;
 end;
