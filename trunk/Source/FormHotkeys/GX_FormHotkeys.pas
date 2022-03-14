@@ -55,6 +55,11 @@ type
     FCompRecs: TComponentRecArr;
     function ScrollGrid(_Grid: TStringGrid; _Direction: Integer; _Shift: TShiftState;
       _MousePos: TPoint): Boolean;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    FOldDPI: Integer;
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
@@ -241,6 +246,17 @@ begin
   inherited;
 end;
 
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure Tf_FormHotkeys.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+begin
+  if FOldDPI = 0 then
+    FOldDPI := TForm_CurrentPPI(Self);
+  if Assigned(FScaler) then
+    FScaler.ApplyDpi(_NewDpi, _NewBounds);
+  TStringGrid_AdjustRowHeight(TheGrid);
+end;
+{$ENDIF}
+
 procedure Tf_FormHotkeys.TheGridDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect;
   State: TGridDrawState);
 var
@@ -252,7 +268,7 @@ begin
   cnv.Font := sg.Font;
   if (gdSelected in State) and (not (gdFocused in State) or
     ([goDrawFocusSelected, goRowSelect] * sg.Options <> [])) then begin
-    cnv.Brush.Color := clhighlight;
+    cnv.Brush.Color := clHighlight;
   end else if gdFixed in State then begin
     cnv.Brush.Color := clBtnFace
   end else begin
