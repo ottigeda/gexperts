@@ -38,6 +38,11 @@ type
     function ScrollGrid(_Grid: TStringGrid; _Direction: Integer; _Shift: TShiftState;
       _MousePos: TPoint): Boolean;
     function GetShortcut(_Idx: Integer): TShortCut;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    FOldDPI: Integer;
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     class procedure Execute(_bmp: TBitmap);
     constructor Create(_Owner: TComponent); override;
@@ -314,6 +319,17 @@ begin
   ShortCutToKey(_Shortcut, Key, Shift);
   Result := KeyToStr(Key) + ShiftToStr(Shift);
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmGxKeyboardShortcuts.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+begin
+  if FOldDPI = 0 then
+    FOldDPI := TForm_CurrentPPI(Self);
+  if Assigned(FScaler) then
+    FScaler.ApplyDpi(_NewDpi, _NewBounds);
+  TStringGrid_AdjustRowHeight(sg_Actions);
+end;
+{$ENDIF}
 
 function TfmGxKeyboardShortcuts.CompareEntries(_Idx1, _Idx2: Integer): Integer;
 var
