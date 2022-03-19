@@ -97,21 +97,26 @@
                                   {$IF CompilerVersion >= 30}
                                     {$DEFINE GX_VER300_up}  // RAD Studio 10 Seattle (23; BDS 17)
                                     {$DEFINE GX_DELPHI_SEATTLE_UP}
+                                      {$DEFINE GX_DELPHI10_UP}
                                     {$IF CompilerVersion >= 31}
                                       {$DEFINE GX_VER310_up}  // RAD Studio 10.1 Berlin (24; BDS 18)
                                       {$DEFINE GX_DELPHI_BERLIN_UP}
+                                      {$DEFINE GX_DELPHI10_1_UP}
                                       {$IF CompilerVersion >= 32}
                                         {$DEFINE GX_VER320_up}  // RAD Studio 10.2 Tokyo (25; BDS 19)
                                         {$DEFINE GX_DELPHI_TOKYO_UP}
+                                          {$DEFINE GX_DELPHI10_2_UP}
                                         {$IF CompilerVersion >= 33}
                                           {$DEFINE GX_VER330_up}  // RAD Studio 10.3 Rio (26; BDS 20)
                                           {$DEFINE GX_DELPHI_RIO_UP}
+                                          {$DEFINE GX_DELPHI10_3_UP}
                                           {$IF CompilerVersion >= 34}
                                             {$DEFINE GX_VER340_up}  // RAD Studio 10.4 Sydney (27; BDS 21)
                                             {$DEFINE GX_DELPHI_SYDNEY_UP}
+                                            {$DEFINE GX_DELPHI10_4_UP}
                                             {$IF CompilerVersion >= 35}
                                               {$DEFINE GX_VER350_up}  // RAD Studio 11 Alexandria (28; BDS 22)
-                                              {$DEFINE GX_DELPHI_11_UP}
+                                              {$DEFINE GX_DELPHI11_UP}
                                               {$IF CompilerVersion >= 36}
     unsupported Delphi version
     If you get here, you are probably trying to compile GExperts with a new Delphi release.
@@ -177,52 +182,52 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$DEFINE GX_HAS_ALIGN_WITH_MARGINS}
 {$ENDIF GX_DELPHI2005_UP}
 
-{$IFDEF GX_VER320_up}
-{$IFNDEF GX_VER333_up}
+{$IFDEF GX_DELPHI10_2_UP}
+{$IFNDEF GX_DELPHI10_3_UP}
 // only for Delphi 10.2
   {$DEFINE STARTUP_LAYOUT_FIX_ENABLED}
-{$ENDIF GX_VER333_up}
-{$ENDIF GX_VER320_up}
+{$ENDIF GX_DELPHI10_3_UP}
+{$ENDIF GX_DELPHI10_2_UP}
 
-{$IFDEF GX_VER320_up}
+{$IFDEF GX_DELPHI10_2_UP}
   // That problem still exists in Delphi 10.3 Rio, but let's hope it won't in later versions
-  {$IFNDEF GX_VER340_up}
+  {$IFNDEF GX_DELPHI10_4_UP}
     {$DEFINE SEARCH_PATH_REDRAW_FIX_ENABLED}
-  {$ENDIF GX_VER340_up}
-{$ENDIF GX_VER320_up}
+  {$ENDIF GX_DELPHI10_4_UP}
+{$ENDIF GX_DELPHI10_2_UP}
 
-{$IFDEF GX_VER330_up}
+{$IFDEF GX_DELPHI10_3_UP}
   // That problem was introduced in Delphi 10.3 Rio, and still exists in 10.4 Sydney.
   // Let's hope it will be fixed in later versions
-  {$IFNDEF GX_VER350_up}
+  {$IFNDEF GX_DELPHI11_UP}
     {$DEFINE KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
-  {$ENDIF GX_VER340_up}
+  {$ENDIF GX_DELPHI10_4_UP}
   // Starting with Delphi 10.3 Rio, the popup menu for the editor window gets recreated
   // every time in its OnPopup event.
   {$DEFINE EDITOR_POPUP_MENU_GETS_RECREATED}
-{$ENDIF GX_VER330_up}
+{$ENDIF GX_DELPHI10_3_UP}
 
-{$IFNDEF GX_VER320_up}
-  {$IFNDEF GX_VER340_UP
+{$IFDEF GX_DELPHI10_2_UP}
+  {$IFNDEF GX_DELPHI10_4_UP
     // Assigninig icons has redraw problems in the early themed IDEs (Delphi 10.2 and 10.3)
     // This was fixed in Delphi 10.4.
     {$DEFINE ICONS_IN_POPUP_MENUS_ARE_BROKEN}
   {$ENDIF}
-{$ENDIF}
+{$ENDIF GX_DELPHI10_2_UP}
 
-{$IFDEF GX_VER330_up}
+{$IFDEF GX_DELPHI10_3_UP}
   // Fix for https://quality.embarcadero.com/browse/RSP-28064
-  {$IFNDEF GX_VER340_up} // Fixed in 10.4
+  {$IFNDEF GX_DELPHI10_4_UP} // Fixed in 10.4
     {$DEFINE LISTBOX_OWNERDRAW_FIX_ENABLED}
-  {$ENDIF GX_VER340_up}
-{$ENDIF GX_VER330_up}
+  {$ENDIF GX_DELPHI10_4_UP}
+{$ENDIF GX_DELPHI10_3_UP}
 
-{$IFDEF GX_DELPHI_SYDNEY_UP}
+{$IFDEF GX_DELPHI10_4_UP}
   // up to patch 2 owner drawn StringGrids were broken (e.g. in the Uses Clause Manager)
   // In the code we check for patch 2 and only apply this
   // fix if it has not been installed.
   {$DEFINE STRING_GRID_OWNERDRAW_FIX_ENABLED}
-{$ENDIF GX_DELPHI_SYDNEY_UP}
+{$ENDIF GX_DELPHI10_4_UP}
 
 {$IFDEF GX_DELPHI2010_UP}
   {$DEFINE CUSTOMINIFILE_HAS_READSUBSECTIONS}
