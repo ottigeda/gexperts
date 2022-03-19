@@ -1777,7 +1777,7 @@ begin
 end;
 
 const
-{$IFDEF GX_DELPHI_11_UP}
+{$IFDEF GX_DELPHI11_UP}
   // the Recent menu item got a new name in Delphi 11 Alexandria
   FileOpenRecentItemName = 'FileOpenRecentItem';
 {$ELSE}
