@@ -1,22 +1,17 @@
 inherited fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
   Left = 317
   Top = 211
-  Width = 377
-  Height = 368
   ActiveControl = ed_Search
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'Capitalization'
-  Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -11
-  Font.Name = 'Tahoma'
-  Font.Style = []
+  ClientHeight = 329
+  ClientWidth = 369
+  ParentFont = False
   Position = poOwnerFormCenter
   OnCloseQuery = FormCloseQuery
   DesignSize = (
-    361
-    330)
+    369
+    329)
   PixelsPerInch = 96
   TextHeight = 13
   object b_Clear: TSpeedButton
@@ -32,7 +27,7 @@ inherited fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
   object b_UpperCase: TSpeedButton
     Left = 200
     Top = 8
-    Width = 153
+    Width = 161
     Height = 25
     Action = act_AllUpperCase
     Anchors = [akTop, akRight]
@@ -42,7 +37,7 @@ inherited fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
   object b_LowerCase: TSpeedButton
     Left = 200
     Top = 72
-    Width = 153
+    Width = 161
     Height = 25
     Action = act_AllLowerCase
     Anchors = [akTop, akRight]
@@ -52,7 +47,7 @@ inherited fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
   object b_FirstCharUp: TSpeedButton
     Left = 200
     Top = 40
-    Width = 153
+    Width = 161
     Height = 25
     Action = act_FirstCharUp
     Anchors = [akTop, akRight]
@@ -62,7 +57,7 @@ inherited fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
   object b_ToggleComment: TSpeedButton
     Left = 200
     Top = 112
-    Width = 153
+    Width = 161
     Height = 25
     Action = act_ToggleComment
     Anchors = [akTop, akRight]
@@ -89,16 +84,16 @@ inherited fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
   end
   object p_Buttons: TPanel
     Left = 0
-    Top = 289
-    Width = 361
+    Top = 288
+    Width = 369
     Height = 41
     Align = alBottom
     TabOrder = 2
     DesignSize = (
-      361
+      369
       41)
     object b_OK: TButton
-      Left = 200
+      Left = 208
       Top = 8
       Width = 75
       Height = 25
@@ -109,7 +104,7 @@ inherited fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
       TabOrder = 2
     end
     object b_Cancel: TButton
-      Left = 280
+      Left = 288
       Top = 8
       Width = 75
       Height = 25
