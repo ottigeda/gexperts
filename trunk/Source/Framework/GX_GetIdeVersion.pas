@@ -45,6 +45,7 @@ type
      ideRS104U1, // Rad Studio 10.4 Sydney Update 1
      ideRS104U2, // Rad Studio 10.4 Sydney Update 2
      ideRS11,   // Rad Studio 11 Alexandria
+     ideRS11U1, // Rad Studio 11 Alexandria Update 1 (aka version 11.1)
      // C# Builder
      ideCSB100,
      // C++Builder
@@ -431,7 +432,7 @@ end;
   Delphi 2007:
 
   File                 File Version   Size       Modified Time
-  delphicoreide110.bpl 
+  delphicoreide110.bpl
   vclide110.bpl
   designide110.bpl
   coreide110.bpl
@@ -998,18 +999,32 @@ end;
 {
   Delphi 11 Alexandria
   File                 File Version
-  delphicoreide280.bpl 27.0.42600.6491
+  delphicoreide280.bpl 28.0.42600.6491
   coreide280.bpl       28.0.42600.6491
   bds.exe              28.0.42600.6491
   dcldb280.bpl         28.0.42600.6491
+
+  Delphi 11.1 (Update 1)
+  File                 File Version
+  delphicoreide280.bpl 28.0.44500.8973
+  coreide280.bpl       28.0.44500.8973
+  bds.exe              28.0.44500.8973
+  dcldb280.bpl         28.0.44500.8973
 }
 function GetRS11Version: TBorlandIdeVersion;
 const
-  CoreIde2800:     TVersionNumber = (Minor: 28; Major: 0; Build: 6491; Release:  42600);
+  CoreIde2800: TVersionNumber = (Minor: 28; Major: 0; Build: 6491; Release: 42600);
+  CoreIde2800Upd1: TVersionNumber = (Minor: 28; Major: 0; Build: 8973; Release: 44500);
+var
+  CoreIdeFileVersion: TVersionNumber;
 begin
-  Result := ideRS11;
+  CoreIdeFileVersion := GetFileVersionNumber(GetIdeRootDirectory + 'Bin\coreide280.bpl');
+  if CompareVersionNumber(CoreIdeFileVersion, CoreIde2800Upd1) >= 0 then begin
+    Result := ideRS11U1
+  end else begin
+    Result := ideRS11;
+  end;
 end;
-
 
 function GetBorlandIdeVersion: TBorlandIdeVersion;
 begin
@@ -1143,7 +1158,7 @@ begin
 
   {$IFDEF VER350}
     Result := GetRS11Version;
-    Assert(Result in [ideRS11]);
+    Assert(Result in [ideRS11, ideRS11U1]);
   {$ENDIF VER350}
 
   if Result = ideUnknown then
