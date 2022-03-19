@@ -222,22 +222,17 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$ENDIF GX_DELPHI10_4_UP}
 {$ENDIF GX_DELPHI10_3_UP}
 
-{$IFDEF GX_DELPHI10_4_UP}
-  // up to patch 2 owner drawn StringGrids were broken (e.g. in the Uses Clause Manager)
-  // In the code we check for patch 2 and only apply this
-  // fix if it has not been installed.
-  {$DEFINE STRING_GRID_OWNERDRAW_FIX_ENABLED}
-{$ENDIF GX_DELPHI10_4_UP}
-
 {$IFDEF GX_DELPHI2010_UP}
   {$DEFINE CUSTOMINIFILE_HAS_READSUBSECTIONS}
 {$ENDIF}
 
-{$IFNDEF GX_DELPHI_11_UP}
+{$IFNDEF GX_DELPHI11_UP}
+  // Delphi 11 removed the property OldCreateOrder from TForm which breaks compatiblity
+  // of dfm files for older Delphi versions.
   {$DEFINE HAS_PROPERTY_OLDCREATEORDER}
 {$ENDIF}
 
-{$IFDEF GX_DELPHI_11_UP}
+{$IFDEF GX_DELPHI11_UP}
   {$DEFINE IDE_IS_HIDPI_AWARE}
   {$IFNDEF GX_DELPHI_12_UP}
     // we hope this gets fixed in Delphi 12 and later ...
