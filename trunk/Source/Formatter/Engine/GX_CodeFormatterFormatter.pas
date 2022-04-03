@@ -1033,6 +1033,7 @@ var
   FeedRound: TFeedBegin;
   wType: TWordType;
   exp: TGXUnicodeString;
+  LFeed: TLineFeed;
 begin
   if FCurrentToken = nil then
     Exit;
@@ -1275,12 +1276,27 @@ begin
         if FStack.GetTopType = rtUses then begin
           if (FSettings.NoIndentUsesComma) and (FPrevToken is TLineFeed) then
             SetPrevLineIndent(-1)
-            { TODO -cfixme : The options NoIndentUsesComma and FeedEachUnit don't work well
-              with each other so for now we ignore FeedEachUnit if NoIndentUsesComma is true. }
           else if FSettings.FeedEachUnit then begin
-            Next := GetNextNoComment(FTokenIdx, RemoveMe);
-            if Next.ReservedType <> rtLineFeed then
-              AssertLineFeedAfter(FTokenIdx);
+            if FSettings.FeedEachUnitBeforeComma then begin
+              // linefeed before comma
+              if (not (FPrevToken is TLineFeed)) then begin
+                LFeed := AssertLineFeedAfter(FTokenIdx-1);
+                if (FSettings.NoIndentUsesComma) then
+                  LFeed.SetIndent(0);
+
+                // If we have a break after the comma, remove that
+                Next := GetNextNoComment(FTokenIdx, RemoveMe);
+                while Next.ReservedType = rtLineFeed do begin
+                  FTokens.Extract(FTokenIdx + RemoveMe);
+                  Next := GetNextNoComment(FTokenIdx, RemoveMe);
+                end;
+              end;
+            end else begin
+              // FeedEachUnitBeforeComma
+              Next := GetNextNoComment(FTokenIdx, RemoveMe);
+              if Next.ReservedType <> rtLineFeed then
+                AssertLineFeedAfter(FTokenIdx);
+            end;
           end;
         end;
       end;
@@ -1296,6 +1312,10 @@ begin
           FStack.Clear;
           FStack.Push(FCurrentRType, 1);
           FWrapIndent := False;
+
+          // break after uses
+          if (FCurrentRType = rtUses) and (FSettings.FeedAfterUses) then
+            AssertLineFeedAfter(FTokenIdx);
         end;
       end;
 
@@ -1685,8 +1705,15 @@ begin
         if not (FStack.GetTopType in [rtLeftBr, rtLeftHook]) then begin
           Assert(False, '.CheckIndent: Not (LeftBr or LeftHook)');
           if FStack.GetTopType = rtUses then begin
-            if (FSettings.NoIndentUsesComma) and (FPrevToken is TLineFeed) then
-              SetPrevLineIndent(-1);
+            if (FPrevToken is TLineFeed) then begin
+              if (FSettings.NoIndentUsesComma) then
+                SetPrevLineIndent(-1);
+            end else if (FSettings.FeedEachUnitBeforeComma) then begin
+              // if we break before the comma, also break before the semicolon
+              LFeed := AssertLineFeedAfter(FTokenIdx-1);
+              if (FSettings.NoIndentUsesComma) then
+                LFeed.SetIndent(0);
+            end;
           end;
 
           while (FStack.GetTopType in

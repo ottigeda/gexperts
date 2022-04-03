@@ -100,7 +100,9 @@ type
     l_Before: TLabel;
     l_After: TLabel;
     grid_Spacing: TStringGrid;
+    chk_FeedAfterUses: TCheckBox;
     chk_FeedEachUnit: TCheckBox;
+    chk_FeedEachUnitBeforeComma: TCheckBox;
     chk_ExceptSingle: TCheckBox;
     p_Botton: TPanel;
     b_Help: TButton;
@@ -140,6 +142,7 @@ type
     procedure HandleOnStatusChange(Sender: TObject; Changes: TSynStatusChanges);
     procedure FormShow(Sender: TObject);
     procedure chk_FeedAfterThenClick(Sender: TObject);
+    procedure chk_FeedEachUnitClick(Sender: TObject);
     procedure ts_PreviewResize(Sender: TObject);
     procedure b_ToolsClick(Sender: TObject);
     procedure mi_ResetToDefaultClick(Sender: TObject);
@@ -404,7 +407,9 @@ begin
   _Settings.SpaceRightHook := GetSpaceItem(9);
   _Settings.FeedAfterThen := chk_FeedAfterThen.Checked;
   _Settings.ExceptSingle := chk_ExceptSingle.Checked;
+  _Settings.FeedAfterUses := chk_FeedAfterUses.Checked;
   _Settings.FeedEachUnit := chk_FeedEachUnit.Checked;
+  _Settings.FeedEachUnitBeforeComma := chk_FeedEachUnitBeforeComma.Checked;
   _Settings.NoFeedBeforeThen := chk_NoFeedBeforeThen.Checked;
   _Settings.FeedAfterVar := chk_FeedAfterVar.Checked;
   _Settings.FeedElseIf := chk_FeedElseIf.Checked;
@@ -487,7 +492,9 @@ begin
     AddSpaceRow(9, str_RightBracket, ']', _Settings.SpaceRightHook);
   end;
   chk_FeedAfterSemiColon.Checked := _Settings.FeedAfterSemiColon;
+  chk_FeedAfterUses.Checked := _Settings.FeedAfterUses;
   chk_FeedEachUnit.Checked := _Settings.FeedEachUnit;
+  chk_FeedEachUnitBeforeComma.Checked := _Settings.FeedEachUnitBeforeComma;
   chk_FeedAfterThen.Checked := _Settings.FeedAfterThen;
   chk_ExceptSingle.Checked := _Settings.ExceptSingle;
   chk_NoFeedBeforeThen.Checked := _Settings.NoFeedBeforeThen;
@@ -513,7 +520,8 @@ begin
   ud_WrapPosition.Associate := ed_WrapPosition;
   ud_AlignCommentPos.Associate := ed_AlignCommentPos;
   ud_AlignVarPos.Associate := ed_AlignVarPos;
-  chk_FeedAfterThenClick(nil)
+  chk_FeedAfterThenClick(nil);
+  chk_FeedEachUnitClick(nil);
 end;
 
 procedure TfmCodeFormatterConfig.SettingsToForm(const _Settings: TCodeFormatterSettings);
@@ -645,6 +653,11 @@ end;
 procedure TfmCodeFormatterConfig.chk_FeedAfterThenClick(Sender: TObject);
 begin
   chk_ExceptSingle.Enabled := chk_FeedAfterThen.Checked;
+end;
+
+procedure TfmCodeFormatterConfig.chk_FeedEachUnitClick(Sender: TObject);
+begin
+  chk_FeedEachUnitBeforeComma.Enabled := chk_FeedEachUnit.Checked;
 end;
 
 procedure TfmCodeFormatterConfig.ts_PreviewResize(Sender: TObject);

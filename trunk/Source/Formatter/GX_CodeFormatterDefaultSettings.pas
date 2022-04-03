@@ -31,10 +31,12 @@ begin
   Result.ExceptSingle := False;
   Result.FeedAfterSemiColon := False;
   Result.FeedAfterThen := False;
+  Result.FeedAfterUses:= False;
   Result.FeedAfterVar := False;
   Result.FeedBeforeElse := False;
   Result.FeedBeforeEnd := False;
   Result.FeedEachUnit := False;
+  Result.FeedEachUnitBeforeComma := False;
   Result.FeedElseIf := False;
   Result.FeedRoundBegin := Unchanged;
   Result.FeedRoundTry := Unchanged;
@@ -83,10 +85,12 @@ begin
   Result.ExceptSingle := False;
   Result.FeedAfterSemiColon := True;
   Result.FeedAfterThen := True;
+  Result.FeedAfterUses:= False;
   Result.FeedAfterVar := True;
   Result.FeedBeforeElse := False;
   Result.FeedBeforeEnd := True;
   Result.FeedEachUnit := False;
+  Result.FeedEachUnitBeforeComma := False;
   Result.FeedElseIf := False;
   Result.FeedRoundBegin := NewLine;
   Result.FeedRoundTry := NewLine;

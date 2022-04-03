@@ -74,7 +74,9 @@ type
     FeedAfterThen: Boolean;
     ExceptSingle: Boolean;
     FeedAfterVar: Boolean;
-    FeedEachUnit: Boolean;
+    FeedAfterUses: Boolean; {: line feed after "uses" }
+    FeedEachUnit: Boolean; {: line feed after each unit }
+    FeedEachUnitBeforeComma: Boolean; {: inserts the feed before, not after the comma }
     NoFeedBeforeThen: Boolean;
     FeedElseIf: Boolean; {: line feed between else and if }
     FillNewWords: TCapfileModeSet; {: how to use the capitalization file }
@@ -155,7 +157,9 @@ type
     property FeedAfterThen: Boolean read FSettings.FeedAfterThen;
     property ExceptSingle: Boolean read FSettings.ExceptSingle;
     property FeedAfterVar: Boolean read FSettings.FeedAfterVar;
+    property FeedAfterUses: Boolean read FSettings.FeedAfterUses;
     property FeedEachUnit: Boolean read FSettings.FeedEachUnit;
+    property FeedEachUnitBeforeComma: Boolean read FSettings.FeedEachUnitBeforeComma;
     property NoFeedBeforeThen: Boolean read FSettings.NoFeedBeforeThen;
     property FeedElseIf: Boolean read FSettings.FeedElseIf;
     property FillNewWords: TCapfileModeSet read FSettings.FillNewWords;

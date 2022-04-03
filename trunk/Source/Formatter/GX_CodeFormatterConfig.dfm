@@ -3,7 +3,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
   Top = 220
   HelpContext = 100
   Caption = 'Delphi Code Formatter Configuration'
-  ClientHeight = 374
+  ClientHeight = 422
   ClientWidth = 478
   Color = clBtnFace
   ParentFont = True
@@ -15,7 +15,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
     Left = 0
     Top = 0
     Width = 478
-    Height = 340
+    Height = 388
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 7
@@ -24,8 +24,8 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
       Left = 7
       Top = 7
       Width = 464
-      Height = 326
-    ActivePage = ts_Indent
+      Height = 374
+      ActivePage = ts_Indent
       Align = alClient
       TabIndex = 0
       TabOrder = 0
@@ -237,7 +237,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 8
           Top = 8
           Width = 217
-          Height = 266
+          Height = 314
           Caption = 'Always Break Line'
           TabOrder = 0
           object chk_FeedAfterVar: TCheckBox
@@ -297,21 +297,39 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Caption = 'Never before "then", "do"'
             TabOrder = 7
           end
-          object chk_FeedEachUnit: TCheckBox
+          object chk_FeedAfterUses: TCheckBox
             Left = 8
             Top = 216
             Width = 201
             Height = 13
-            Caption = 'Between every unit in "uses"'
+            Caption = 'After "uses"'
             TabOrder = 8
+            OnClick = chk_FeedEachUnitClick
           end
-          object chk_RemoveDoubleBlank: TCheckBox
+          object chk_FeedEachUnit: TCheckBox
             Left = 8
             Top = 240
             Width = 201
+            Height = 13
+            Caption = 'Between every unit in "uses"'
+            TabOrder = 9
+            OnClick = chk_FeedEachUnitClick
+          end
+          object chk_FeedEachUnitBeforeComma: TCheckBox
+            Left = 16
+            Top = 264
+            Width = 168
+            Height = 13
+            Caption = 'Before the comma'
+            TabOrder = 10
+          end
+          object chk_RemoveDoubleBlank: TCheckBox
+            Left = 8
+            Top = 288
+            Width = 201
             Height = 14
             Caption = 'Remove double blank lines'
-            TabOrder = 9
+            TabOrder = 11
           end
           object chk_FeedBeforeElse: TCheckBox
             Left = 8
@@ -676,7 +694,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
   end
   object p_Botton: TPanel
     Left = 0
-    Top = 340
+    Top = 388
     Width = 478
     Height = 34
     Align = alBottom
