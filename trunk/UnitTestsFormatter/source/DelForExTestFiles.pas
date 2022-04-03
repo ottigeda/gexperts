@@ -13,7 +13,8 @@ uses
   GX_CodeFormatterSettings,
   GX_CodeFormatterDefaultSettings,
   GX_CodeFormatterEngine,
-  GX_GenericUtils;
+  GX_GenericUtils,
+  GX_StringList;
 
 type
   TAdjustSettings = procedure(var _cfg: TCodeFormatterEngineSettings) of object;

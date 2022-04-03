@@ -13,7 +13,8 @@ uses
   GX_CodeFormatterSettings,
   GX_CodeFormatterDefaultSettings,
   GX_CodeFormatterEngine,
-  GX_GenericUtils;
+  GX_GenericUtils,
+  GX_StringList;
 
 type
   {Tests that compare the output of the original dll with the output of the current compile.}
