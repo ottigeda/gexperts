@@ -2560,7 +2560,7 @@ begin
   if Assigned(UseView) then
   begin
     Block := UseView.Block;
-    if Assigned(Block) then
+    if Assigned(Block) and (Block.Size > 0) then
     begin
       BlockStart.Col := Block.StartingColumn;
       BlockStart.Line := Block.StartingRow;
