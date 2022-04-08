@@ -4,9 +4,8 @@ inherited f_GotoConfig: Tf_GotoConfig
   Caption = 'Go to configuration'
   ClientHeight = 65
   ClientWidth = 329
+  OldCreateOrder = False
   Position = poOwnerFormCenter
-  ExplicitWidth = 335
-  ExplicitHeight = 90
   PixelsPerInch = 96
   TextHeight = 13
   object chk_ReplaceSearchGoto: TCheckBox

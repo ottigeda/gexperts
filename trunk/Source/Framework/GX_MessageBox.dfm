@@ -11,6 +11,7 @@ object fmGxMessageBox: TfmGxMessageBox
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
+  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   PixelsPerInch = 96
@@ -54,7 +55,6 @@ object fmGxMessageBox: TfmGxMessageBox
         Top = 1
         Width = 397
         Height = 32
-        Align = alClient
         Anchors = [akLeft, akRight, akBottom]
         Caption = '&Never show this message again'
         TabOrder = 0

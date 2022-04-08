@@ -157,10 +157,6 @@ object fmToDo: TfmToDo
       Width = 121
       Height = 22
       Hint = 'Enter a filter text and then press the Return/Enter key.'
-      Margins.Left = 0
-      Margins.Top = 2
-      Margins.Right = 0
-      Margins.Bottom = 2
       Constraints.MinHeight = 22
       TabOrder = 0
       OnChange = edtFilterTodoListChange
