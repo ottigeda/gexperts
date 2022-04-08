@@ -289,6 +289,7 @@ begin
   ES.FeedBeforeEnd := _Reader.ReadBool('FeedBeforeEnd', ES.FeedBeforeEnd); //: Boolean;
   ES.FeedAfterThen := _Reader.ReadBool('FeedAfterThen', ES.FeedAfterThen); //: Boolean;
   ES.ExceptSingle := _Reader.ReadBool('ExceptSingle', ES.ExceptSingle); //: Boolean;
+  ES.FeedAfterUses := _Reader.ReadBool('FeedAfterUses', ES.FeedAfterUses); //: Boolean;
   ES.FeedAfterVar := _Reader.ReadBool('FeedAfterVar', ES.FeedAfterVar); //: Boolean;
   ES.FeedEachUnit := _Reader.ReadBool('FeedEachUnit', ES.FeedEachUnit); //: Boolean;
   ES.NoFeedBeforeThen := _Reader.ReadBool('NoFeedBeforeThen', ES.NoFeedBeforeThen); //: Boolean;
@@ -393,6 +394,7 @@ begin
   _Writer.WriteBool('FeedBeforeEnd', _Settings.FeedBeforeEnd); //: Boolean;
   _Writer.WriteBool('FeedAfterThen', _Settings.FeedAfterThen); //: Boolean;
   _Writer.WriteBool('ExceptSingle', _Settings.ExceptSingle); //: Boolean;
+  _Writer.WriteBool('FeedAfterUses', _Settings.FeedAfterUses); //: Boolean;
   _Writer.WriteBool('FeedAfterVar', _Settings.FeedAfterVar); //: Boolean;
   _Writer.WriteBool('FeedEachUnit', _Settings.FeedEachUnit); //: Boolean;
   _Writer.WriteBool('NoFeedBeforeThen', _Settings.NoFeedBeforeThen); //: Boolean;
