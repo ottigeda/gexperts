@@ -351,8 +351,9 @@ begin
 // https://en.delphipraxis.net/topic/5516-the-state-of-gexperts-support-for-delphi-11/?do=findComment&comment=49626
 // both effects were gone after I removed this call:
 //  RedrawLock := TWinControl_Lock(FPnlMaster);
-  FPnlMaster.Visible := False;
+  FFrm.DisableAlign;
   try
+    FPnlMaster.Visible := False;
     Scaler.Init(FDesignDpi, _NewDpi);
     // Disable constraints to assure the new size can be set
     FFrm.Constraints.MinWidth := 0;
@@ -374,6 +375,7 @@ begin
     ApplyScale(Scaler);
   finally
     FPnlMaster.Visible := True;
+    FFrm.EnableAlign;
 //    RedrawLock := nil;
   end;
 end;
