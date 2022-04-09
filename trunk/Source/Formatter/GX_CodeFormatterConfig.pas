@@ -96,7 +96,7 @@ type
     chk_IndentCaseElse: TCheckBox;
     chk_RemoveDoubleBlank: TCheckBox;
     b_EditCapitalization: TButton;
-    ts_Preview: TTabSheet;
+    p_Preview: TPanel;
     l_Before: TLabel;
     l_After: TLabel;
     grid_Spacing: TStringGrid;
@@ -138,12 +138,12 @@ type
     p_Main: TPanel;
     procedure b_HelpClick(Sender: TObject);
     procedure b_EditCapitalizationClick(Sender: TObject);
-    procedure ts_PreviewShow(Sender: TObject);
+    procedure UpdatePreview(Sender: TObject);
     procedure HandleOnStatusChange(Sender: TObject; Changes: TSynStatusChanges);
     procedure FormShow(Sender: TObject);
     procedure chk_FeedAfterThenClick(Sender: TObject);
     procedure chk_FeedEachUnitClick(Sender: TObject);
-    procedure ts_PreviewResize(Sender: TObject);
+    procedure p_PreviewResize(Sender: TObject);
     procedure b_ToolsClick(Sender: TObject);
     procedure mi_ResetToDefaultClick(Sender: TObject);
     procedure mi_ImportClick(Sender: TObject);
@@ -167,7 +167,6 @@ type
     procedure SetDefault(_Which: string);
     procedure HandleCaptitalizationFileDropped(_Sender: TObject; _Files: TStrings);
     procedure m_PreviewFileDropped(_Sender: TObject; _Files: TStrings);
-    procedure UpdatePreview;
     procedure ChangeCapitalizationFile(const _fn: string);
   public
     constructor Create(_Owner: TComponent); override;
@@ -228,27 +227,27 @@ begin
 
   m_PreviewBefore := TGxEnhancedEditor.Create(Self);
   m_PreviewBefore.Name := 'm_PreviewBefore';
-  m_PreviewBefore.Parent := ts_Preview;
+  m_PreviewBefore.Parent := p_Preview;
   m_PreviewBefore.Left := 0;
   m_PreviewBefore.Top := 16;
   m_PreviewBefore.Width := 241;
   m_PreviewBefore.Height := 337;
   m_PreviewBefore.TabOrder := 0;
-  GxOtaGetEditorFont(m_PreviewBefore.Font);
-  m_PreviewBefore.OnChange := ts_PreviewShow;
+  GxOtaGetEditorFont(m_PreviewBefore.Font, -1);
+  m_PreviewBefore.OnChange := UpdatePreview;
   m_PreviewBefore.OnStatusChange := HandleOnStatusChange;
   m_PreviewBefore.Highlighter := gxpPas;
 
   m_PreviewAfter := TGxEnhancedEditor.Create(Self);
   m_PreviewAfter.Name := 'm_PreviewAfter';
-  m_PreviewAfter.Parent := ts_Preview;
+  m_PreviewAfter.Parent := p_Preview;
   m_PreviewAfter.Left := 248;
   m_PreviewAfter.Top := 16;
   m_PreviewAfter.Width := 214;
   m_PreviewAfter.Height := 337;
   m_PreviewAfter.Anchors := [akLeft, akTop, akRight];
   m_PreviewAfter.TabOrder := 1;
-  GxOtaGetEditorFont(m_PreviewAfter.Font);
+  GxOtaGetEditorFont(m_PreviewAfter.Font, -1);
   m_PreviewAfter.Highlighter := gxpPas;
 
   TWinControl_ActivateDropFiles(m_PreviewBefore, m_PreviewFileDropped);
@@ -280,7 +279,7 @@ end;
 procedure TfmCodeFormatterConfig.m_PreviewFileDropped(_Sender: TObject; _Files: TStrings);
 begin
   m_PreviewBefore.LoadFromFile(_Files[0]);
-  UpdatePreview;
+  UpdatePreview(_Sender);
 end;
 
 function TfmCodeFormatterConfig.GetSpaceItem(_Idx: Integer): TSpaceSet;
@@ -582,8 +581,7 @@ begin
   finally
     Defaults.Free;
   end;
-  if pc_Main.ActivePage = ts_Preview then
-    ts_PreviewShow(nil);
+  UpdatePreview(nil);
 end;
 
 procedure TfmCodeFormatterConfig.ChangeCapitalizationFile(const _fn: string);
@@ -633,11 +631,6 @@ begin
   TfmCodeFormatterEditCapitalization.Execute(Self, FCapitalization);
 end;
 
-procedure TfmCodeFormatterConfig.ts_PreviewShow(Sender: TObject);
-begin
-  UpdatePreview;
-end;
-
 procedure TfmCodeFormatterConfig.HandleOnStatusChange(Sender: TObject; Changes: TSynStatusChanges);
 begin
   if m_PreviewAfter.TopLine <> m_PreviewBefore.TopLine then
@@ -647,32 +640,35 @@ end;
 procedure TfmCodeFormatterConfig.FormShow(Sender: TObject);
 begin
   FillPreview;
+  UpdatePreview(Sender);
   pc_Main.ActivePage := ts_Indent;
 end;
 
 procedure TfmCodeFormatterConfig.chk_FeedAfterThenClick(Sender: TObject);
 begin
   chk_ExceptSingle.Enabled := chk_FeedAfterThen.Checked;
+  UpdatePreview(Sender);
 end;
 
 procedure TfmCodeFormatterConfig.chk_FeedEachUnitClick(Sender: TObject);
 begin
   chk_FeedEachUnitBeforeComma.Enabled := chk_FeedEachUnit.Checked;
+  UpdatePreview(Sender);
 end;
 
-procedure TfmCodeFormatterConfig.ts_PreviewResize(Sender: TObject);
+procedure TfmCodeFormatterConfig.p_PreviewResize(Sender: TObject);
 var
   w: Integer;
 begin
-  w := (ts_Preview.ClientWidth - 16) div 2;
+  w := (p_Preview.ClientWidth - 16) div 2;
   m_PreviewBefore.Left := 8;
   l_Before.Left := 8;
   m_PreviewBefore.Width := w;
-  m_PreviewBefore.Height := ts_Preview.ClientHeight - m_PreviewBefore.Top - 8;
+  m_PreviewBefore.Height := p_Preview.ClientHeight - m_PreviewBefore.Top - 8;
   l_After.Left := w + 9;
   m_PreviewAfter.Left := w + 9;
   m_PreviewAfter.Width := w;
-  m_PreviewAfter.Height := ts_Preview.ClientHeight - m_PreviewAfter.Top - 8;
+  m_PreviewAfter.Height := p_Preview.ClientHeight - m_PreviewAfter.Top - 8;
 end;
 
 procedure TfmCodeFormatterConfig.b_ToolsClick(Sender: TObject);
@@ -711,8 +707,7 @@ begin
     Settings.Free;
   end;
 
-  if pc_Main.ActivePage = ts_Preview then
-    ts_PreviewShow(nil);
+  UpdatePreview(nil);
 end;
 
 procedure TfmCodeFormatterConfig.mi_ExportClick(Sender: TObject);
@@ -750,7 +745,7 @@ begin
   end;
 end;
 
-procedure TfmCodeFormatterConfig.UpdatePreview;
+procedure TfmCodeFormatterConfig.UpdatePreview(Sender: TObject);
 var
   sl: TGXUnicodeStringList;
   Formatter: TCodeFormatterEngine;
