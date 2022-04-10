@@ -2,11 +2,11 @@
 @rem the Delphi version must be passed as parameter in one of
 @rem forms given as labels below.
 @rem They follow the form:
-@rem * Delphi<number> for Delphi 6 to 2010
-@rem * DelphiXE<number) for Delphi XE1 to XE8
-@rem * DelphiXx<number> for Delphi 10
-@rem * DelphiXx<number+decimal> for Delphi 10.1 (DelphiXx101) to 10.4 (DelphiXx104)
-@rem * DelphiXx<number> for Delphi 11
+@rem * <number> for Delphi 6 to 2010
+@rem * XE<number) for Delphi XE1 to XE8
+@rem * Xx<number> for Delphi 10
+@rem * Xx<number+decimal> for Delphi 10.1 (Xx101) to 10.4 (Xx104)
+@rem * Xx<number> for Delphi 11
 @rem There are some alternative forms, but since these are even more inconsistent,
 @rem their use is discouraged.
 
