@@ -733,29 +733,40 @@ begin
 end;
 
 constructor TGxModuleNotifier.Create(AssociatedModule: IOTAModule; Client: TGxIdeNotifier);
+{$IFOPT D+}
+  function GetModuleName: string;
+  begin
+    if Assigned(AssociatedModule) then
+      Result := AssociatedModule.FileName
+    else
+      Result := '<Error: AssociatedModule is nil>';
+  end;
+{$ENDIF}
 begin
   {$IFOPT D+} Inc(TGxModuleNotifierCount); {$ENDIF}
-  {$IFOPT D+} SendDebug('Creating TGxModuleNotifier for ' + AssociatedModule.FileName); {$ENDIF}
+  {$IFOPT D+} SendDebug('Creating TGxModuleNotifier for '+ GetModuleName); {$ENDIF}
   inherited Create;
-  FFileName := AssociatedModule.FileName;
 
   SetLength(FCachedSourceEditors, 0);
   FSelfNotifierIndex := InvalidNotifierIndex;
 
+  Assert(Assigned(AssociatedModule), 'AssociatedModule not assigned');
   Assert(Assigned(Client));
   FIdeClient := Client;
 
   FInstalledEditorNotifiers := TInterfaceList.Create;
 
-  FSelfNotifierIndex := AssociatedModule.AddNotifier(Self);
-
   // Keep a copy of the associated module around
   // without any reference-counting.
   NoRefCount(FAssociatedModule) := NoRefCount(AssociatedModule);
 
+  FFileName := AssociatedModule.FileName;
+
+  FSelfNotifierIndex := AssociatedModule.AddNotifier(Self);
+
   InstallEditorNotifiers;
 
-  {$IFOPT D+} SendDebug('Created TGxModuleNotifier for ' + AssociatedModule.FileName); {$ENDIF}
+  {$IFOPT D+} SendDebug('Created TGxModuleNotifier for ' + FFileName); {$ENDIF}
 end;
 
 destructor TGxModuleNotifier.Destroy;
@@ -940,23 +951,33 @@ begin
 end;
 
 constructor TGxEditorNotifier.Create(const Client: TGxModuleNotifier; const ISourceEditor: IOTASourceEditor);
+{$IFOPT D+}
+  function GetEditorName: string;
+  begin
+    if Assigned(ISourceEditor) then
+      Result := ISourceEditor.FileName
+    else
+      Result := '<Error: ISourceEditor is nil>';
+  end;
+{$ENDIF}
 begin
   {$IFOPT D+} Inc(TGxEditorNotifierCount); {$ENDIF}
-  {$IFOPT D+} SendDebug('Creating TGxEditorNotifier for ' + ISourceEditor.FileName); {$ENDIF}
+  {$IFOPT D+} SendDebug('Creating TGxEditorNotifier for '+ GetEditorName); {$ENDIF}
   inherited Create;
   FSelfNotifierIndex := InvalidNotifierIndex;
-  FFileName := ISourceEditor.FileName;
 
   FModuleClient := Client;
 
-  Assert(Assigned(ISourceEditor));
+  Assert(Assigned(ISourceEditor), 'ISourceEditor not assigned');
   NoRefCount(FAssociatedSourceEditor) := NoRefCount(ISourceEditor);
+
+  FFileName := ISourceEditor.FileName;
 
   FSelfNotifierIndex := ISourceEditor.AddNotifier(Self);
   if False then
     HookEditorWndProc;
 
-  {$IFOPT D+} SendDebug('Created TGxEditorNotifier for ' + ISourceEditor.FileName); {$ENDIF}
+  {$IFOPT D+} SendDebug('Created TGxEditorNotifier for ' + FFileName); {$ENDIF}
 end;
 
 destructor TGxEditorNotifier.Destroy;
@@ -967,6 +988,7 @@ begin
 
   NoRefCount(FAssociatedSourceEditor) := nil;
   inherited;
+  {$IFOPT D+} SendDebug('TGxEditorNotifier destroyed for ' + FFileName); {$ENDIF}
   {$IFOPT D+} Dec(TGxEditorNotifierCount); {$ENDIF}
 end;
 
@@ -1174,29 +1196,41 @@ begin
 end;
 
 constructor TGxFormNotifier.Create(const Client: TGxModuleNotifier; const IFormEditor: IOTAFormEditor);
+{$IFOPT D+}
+  function GetEditorName: string;
+  begin
+    if Assigned(IFormEditor) then
+      Result := IFormEditor.FileName
+    else
+      Result := '<Error: IFormEditor is nil>';
+  end;
+{$ENDIF}
 begin
   {$IFOPT D+} Inc(TGxFormNotifierCount); {$ENDIF}
-  {$IFOPT D+} SendDebug('Creating TGxFormNotifier'); {$ENDIF}
+  {$IFOPT D+}SendDebug('Creating TGxFormNotifier for ' + GetEditorName);{$ENDIF}
+
   inherited Create;
 
   FModuleClient := Client;
 
-  Assert(Assigned(IFormEditor));
+  Assert(Assigned(IFormEditor), 'IFormEditor not assigned');
   NoRefCount(FAssociatedFormEditor) := NoRefCount(IFormEditor);
+
+  FFileName := IFormEditor.FileName;
 
   FSelfNotifierIndex := IFormEditor.AddNotifier(Self);
 
-  {$IFOPT D+} SendDebug('Created TGxFormNotifier'); {$ENDIF}
+  {$IFOPT D+} SendDebug('Created TGxFormNotifier for ' + FFileName); {$ENDIF}
 end;
 
 destructor TGxFormNotifier.Destroy;
 begin
-  {$IFOPT D+} SendDebug('Destroying TGxFormNotifier'); {$ENDIF}
+  {$IFOPT D+} SendDebug('Destroying TGxFormNotifier for ' + FFileName); {$ENDIF}
   NoRefCount(FAssociatedFormEditor) := nil;
   FModuleClient := nil;
 
   inherited Destroy;
-  {$IFOPT D+} SendDebug('TGxFormNotifier destroyed'); {$ENDIF}
+  {$IFOPT D+} SendDebug('TGxFormNotifier destroyed for ' + FFileName); {$ENDIF}
   {$IFOPT D+} Dec(TGxFormNotifierCount); {$ENDIF}
 end;
 
@@ -1305,8 +1339,11 @@ finalization
     Finalize;
   {$ENDIF UseInternalTestClient}
 
+{$IFOPT D+}
+  if Assigned(PrivateEditorChangeServices) then
+    MessageBox(0, 'PrivateEditorChangeServices is not nil during finalization', 'GExperts warning', MB_ICONHAND or MB_OK);
+{$ENDIF D+}
   ReleaseEditorChangeServices;
-
 {$IFOPT D+}
   if TEditorChangeServicesCount <> 0 then
     SendDebug(Format('Dangling references to TEditorChangeServicesCount: %d', [TEditorChangeServicesCount]));

@@ -621,10 +621,17 @@ end;
 initialization
 
 finalization
+{$IFOPT D+}
   // When Delphi itself crashes just before shutdown (common in D5-D7 when
   // writing the DSK and DOF files), this assertion just compounds problems.
-  {$IFOPT D+}Assert(PrivateGXMenuActionManager = nil, 'PrivateGXMenuActionManager is not nil during finalization');{$ENDIF}
-
+  // Assert(PrivateGXMenuActionManager = nil, 'PrivateGXMenuActionManager is not nil during finalization');
+  // so instead we show a message box.
+  if Assigned(PrivateGXMenuActionManager) then
+    MessageBox(0, 'PrivateGXMenuActionManager is not nil during finalization', 'GExperts warning', MB_ICONHAND or MB_OK);
+{$ENDIF D+}
+  // todo: Maybe free it ? Not sure about the consequences. This object holds some interface
+  //       references. These might cause trouble now, if free'd here, or later if not.
+  //FreeAndNil(PrivateGXMenuActionManager);
 end.
 
 

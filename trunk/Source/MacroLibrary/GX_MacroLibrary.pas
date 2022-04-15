@@ -1439,5 +1439,13 @@ initialization
   RegisterGX_Expert(TMacroLibRecordExpert);
   RegisterGX_Expert(TMacroLibPlaybackExpert);
 
+finalization
+{$IFOPT D+}
+  if Assigned(fmMacroLibrary) then
+    MessageBox(0, 'fmMacroLibrary is not nil during finalization', 'GExperts warning', MB_ICONHAND or MB_OK);
+{$ENDIF D+}
+  // todo: Maybe free it ? Not sure about the consequences. This object holds some interface
+  //       references. These might cause trouble now, if free'd here, or later if not.
+  // FreeAndNil(fmMacroLibrary);
 end.
 
