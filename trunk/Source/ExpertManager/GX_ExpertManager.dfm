@@ -15,6 +15,7 @@ object fmExpertManager: TfmExpertManager
   Font.Style = []
   KeyPreview = True
   Menu = MainMenu
+  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnKeyDown = FormKeyDown

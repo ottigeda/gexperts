@@ -797,9 +797,13 @@ begin
 end;
 
 procedure TfmExpertManager.FormShow(Sender: TObject);
+var
+  GxInst : TGExperts;
 begin
   // Works around a bug in Delphi 5 under XP where the menu paints white
-  MainMenu.Images := GetSharedImageList;
+  GxInst := GExpertsInst(False);
+  if Assigned(GxInst) then
+    MainMenu.Images := GxInst.GetSharedImages;
 end;
 
 initialization
