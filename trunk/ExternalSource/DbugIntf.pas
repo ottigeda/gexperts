@@ -133,13 +133,6 @@ var
     Inc(ByteIndex);
   end;
 
-{$IFDEF UNICODE}
-  procedure AddStringBytes(const Str: string); overload;
-  begin
-    AddStringBytes(AnsiString(Str));
-  end;
-{$ENDIF}
-
   procedure AddStringBytes(const Str: AnsiString); overload;
   var
     i: Integer;
@@ -147,6 +140,13 @@ var
     for i := 0 to ((Length(Str)) * SizeOf(Char)) - 1 do
       AddByte(Byte(Str[i+1]));
   end;
+
+{$IFDEF UNICODE}
+  procedure AddStringBytes(const Str: string); overload;
+  begin
+    AddStringBytes(AnsiString(Str));
+  end;
+{$ENDIF}
 
 {$IFDEF NEEDMTYPESTR}
 const
