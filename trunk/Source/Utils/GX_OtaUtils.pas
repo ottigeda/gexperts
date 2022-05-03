@@ -2146,6 +2146,7 @@ begin
   end;
 end;
 
+{$IFDEF GX_DELPHI8_UP}
 // taken from http://stackoverflow.com/a/10388131/49925
 function UTF8PosToCharIndex(const S: UTF8String; Index: Integer): Integer;
 var
@@ -2178,6 +2179,7 @@ begin
   if Index <> 0 then
     Result:= 0;  // char index not found
 end;
+{$ENDIF}
 
 function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; ByteBased: Boolean): string;
 
@@ -2188,7 +2190,9 @@ function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; Byt
     EditView: IOTAEditView;
     EditPos: TOTAEditPos;
     CharPos: TOTACharPos;
+{$IFDEF GX_DELPHI8_UP}
     IdeString: UTF8String;
+{$ENDIF}
   begin
     Result := '';
     CursorPosition := 0;
@@ -2207,10 +2211,12 @@ function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; Byt
       EditView.ConvertPos(True, EditPos, CharPos);
       CursorLine := CharPos.Line;
       CursorPosition := EditView.CharPosToPos(CharPos);
+{$IFDEF GX_DELPHI8_UP}
       if not ByteBased then begin
         IdeString := ConvertToIDEEditorString(Result);
         CursorPosition := UTF8PosToCharIndex(IdeString, CursorPosition);
       end;
+{$ENDIF}
     end;
   end;
 
@@ -4788,22 +4794,25 @@ procedure GxOtaInsertTextIntoEditorAtCharPos(const Text: string; Position: Longi
   SourceEditor: IOTASourceEditor);
 var
   EditWriter: IOTAEditWriter;
+{$IFDEF GX_DELPHI8_UP}
   Buffer: string;
+{$ENDIF}
   IdeString: UTF8String;
-  UTF8Pos: Integer;
 begin
   if Text = '' then
     Exit;
 
+{$IFDEF GX_DELPHI8_UP}
   // Position is a character position in a (possibly unicode) string
   // the EditWriter needs a byte position in a UTF-8 string (for Delphi >=8)
   // or in an ansistring (for Delphi <8)
   Buffer := GxOtaReadEditorTextToString(GxOtaGetEditReaderForSourceEditor(SourceEditor));
   IdeString := ConvertToIDEEditorString(Buffer);
-  UTF8Pos := CharIndexToUTF8Pos(IdeString, Position);
+  Position := CharIndexToUTF8Pos(IdeString, Position);
+{$ENDIF}
   IdeString :=  ConvertToIDEEditorString(Text);
   EditWriter := GxOtaGetEditWriterForSourceEditor(SourceEditor);
-  EditWriter.CopyTo(UTF8Pos);
+  EditWriter.CopyTo(Position);
   EditWriter.Insert(PAnsiChar(IdeString));
 end;
 
@@ -4900,20 +4909,23 @@ end;
 procedure GxOtaDeleteTextFromPos(StartPos, Count: Longint; SourceEditor: IOTASourceEditor = nil);
 var
   EditWriter: IOTAEditWriter;
+{$IFDEF GX_DELPHI8_UP}
   Buffer: string;
+{$ENDIF}
   IdeString: UTF8String;
-  UTF8Pos: Integer;
 begin
+{$IFDEF GX_DELPHI8_UP}
   // "StartPos" is a character position in a (possibly unicode) string
   // the EditWriter needs a byte position in a UTF-8 string (for Delphi >=8)
   // or in an ansistring (for Delphi <8)
   Buffer := GxOtaReadEditorTextToString(GxOtaGetEditReaderForSourceEditor(SourceEditor));
   IdeString := ConvertToIDEEditorString(Buffer);
-  UTF8Pos := CharIndexToUTF8Pos(IdeString, StartPos);
+  StartPos := CharIndexToUTF8Pos(IdeString, StartPos);
+{$ENDIF}
 
   EditWriter := GxOtaGetEditWriterForSourceEditor(SourceEditor);
-  EditWriter.CopyTo(UTF8Pos);
-  EditWriter.DeleteTo(UTF8Pos + Count);
+  EditWriter.CopyTo(StartPos);
+  EditWriter.DeleteTo(StartPos + Count);
 end;
 
 {$DEFINE GX_WorkAroundFirstCharInLineSelectionBug}
@@ -5202,12 +5214,15 @@ var
   EditView: IOTAEditView;
   CharPos: TOTACharPos;
   EditPos: TOTAEditPos;
+{$IFDEF GX_DELPHI8_UP}
   Buffer: string;
   IdeString: UTF8String;
+{$ENDIF}
 begin
   EditView := GxOtaGetTopMostEditView;
   if Assigned(EditView) then
   begin
+{$IFDEF GX_DELPHI8_UP}
     // Convert Position from character postion in the unicode/ansi string to
     // character position in UTF-8 encoded buffer.
     // todo: This should really be a function as well as the reverse.
@@ -5215,6 +5230,7 @@ begin
       IdeString := ConvertToIDEEditorString(Buffer);
       Position := CharIndexToUTF8Pos(IdeString, Position);
     end;
+{$ENDIF}
     CharPos := GxOtaGetCharPosFromPos(Position - 1, EditView);
     EditView.ConvertPos(False, EditPos, CharPos);
     EditView.CursorPos := EditPos;
