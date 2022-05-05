@@ -1,4 +1,4 @@
-﻿unit regexpr;
+unit regexpr;
 
 {
   TRegExpr class library
@@ -81,6 +81,12 @@ interface
 { off $DEFINE UseWordChars} // Use WordChars property, otherwise fixed list 'a'..'z','A'..'Z','0'..'9','_' 
 { off $DEFINE UseSpaceChars} // Use SpaceChars property, otherwise fixed list
 { off $DEFINE UseLineSep} // Use LineSeparators property, otherwise fixed line-break chars
+
+{$IFDEF UNICODE}
+  {$IFNDEF UnicodeRE}
+  {$MESSAGE ERROR 'You cannot undefine UnicodeRE for Unicode Delphi versions'}
+  {$ENDIF}
+{$ENDIF}
 {$IFDEF FPC}
   {$DEFINE FastUnicodeData} // Use arrays for UpperCase/LowerCase/IsWordChar, they take 320K more memory
 {$ENDIF}
@@ -148,9 +154,9 @@ type
   {$ENDIF}
   REChar = WideChar;
   {$ELSE}
-  PRegExprChar = PChar;
+  PRegExprChar = PAnsiChar;
   RegExprString = AnsiString;
-  REChar = Char;
+  REChar = AnsiChar;
   {$ENDIF}
   TREOp = REChar; // internal opcode type
   PREOp = ^TREOp;
