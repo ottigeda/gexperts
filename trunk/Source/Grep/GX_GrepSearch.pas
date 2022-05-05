@@ -120,10 +120,9 @@ implementation
 
 uses
   SysUtils, Windows, Messages, Graphics, StrUtils, Menus, Math,
-  SynRegExpr,
   u_dzVclUtils, u_dzOsUtils, u_dzStringUtils,
   GX_GenericUtils, GX_GxUtils, GX_OtaUtils, GX_GrepResults, GX_GrepOptions,
-  GX_TestRegEx;
+  GX_RegExpr, GX_TestRegEx;
 
 { TfmGrepSearch }
 

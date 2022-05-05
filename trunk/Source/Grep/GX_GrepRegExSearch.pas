@@ -5,7 +5,8 @@ interface
 {$I GX_CondDefine.inc}
 
 uses
-  SysUtils, Classes, SynRegExpr, GX_StringList, GX_CodeFormatterUnicode, GX_OtaUtils;
+  SysUtils, Classes, GX_StringList, GX_CodeFormatterUnicode, GX_OtaUtils,
+  GX_RegExpr;
 
 type
   TFoundEvent = procedure(LineNo, StartCol, EndCol: Integer; const Line: TGXUnicodeString) of object;

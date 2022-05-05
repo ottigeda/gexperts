@@ -46,7 +46,7 @@ uses
   UITypes, // for inlining
   IniFiles,
   ToolsAPI,
-  SynRegExpr,
+  GX_RegExpr,
   GX_GrepRegExSearch, GX_StringList;
 
 type

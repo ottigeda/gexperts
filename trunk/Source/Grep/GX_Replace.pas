@@ -18,7 +18,7 @@ implementation
 
 uses
   Controls, Dialogs, ToolsAPI,
-  SynRegExpr,
+  GX_RegExpr,
   GX_OtaUtils, GX_GenericUtils, GX_StringList;
 
 type

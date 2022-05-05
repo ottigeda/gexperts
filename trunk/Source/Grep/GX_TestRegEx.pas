@@ -17,8 +17,8 @@ uses
   StdCtrls,
   ExtCtrls,
   ComCtrls,
-  SynRegExpr,
   GX_BaseForm,
+  GX_RegExpr,
   GX_StringList;
 
 type

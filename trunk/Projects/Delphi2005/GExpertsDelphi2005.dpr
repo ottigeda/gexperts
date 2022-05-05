@@ -209,6 +209,7 @@ uses
   GX_ProofreaderKeyboard in '..\..\source\CodeProofreader\GX_ProofreaderKeyboard.pas',
   GX_ProofreaderUtils in '..\..\source\CodeProofreader\GX_ProofreaderUtils.pas',
   GX_ReadMapFileThread in '..\..\Source\Utils\GX_ReadMapFileThread.pas',
+  GX_RegExpr in '..\..\Source\Utils\GX_RegExpr.pas',
   GX_Replace in '..\..\source\Grep\GX_Replace.pas',
   GX_ReplaceComp in '..\..\source\ReplaceComponents\GX_ReplaceComp.pas' {fmReplaceComp},
   GX_ReplaceCompData in '..\..\source\ReplaceComponents\GX_ReplaceCompData.pas',
