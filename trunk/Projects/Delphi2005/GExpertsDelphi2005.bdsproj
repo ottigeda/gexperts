@@ -44,7 +44,7 @@
 			<Compiler Name="Z" Type="Integer">1</Compiler>
 			<Compiler Name="ShowHints" Type="Boolean">True</Compiler>
 			<Compiler Name="ShowWarnings" Type="Boolean">True</Compiler>
-			<Compiler Name="UnitAliases" Type="String">Actions=Actnlist;ImageList=Controls;UITypes=Types;GX_IdeDockStandAlone=GX_IdeDock;u_dzDpiScaleUtils=u_dzDpiScaleUtilsDummy</Compiler>
+			<Compiler Name="UnitAliases" Type="String">Actions=Actnlist;ImageList=Controls;UITypes=Types;GX_IdeDockStandAlone=GX_IdeDock;u_dzDpiScaleUtils=u_dzDpiScaleUtilsDummy;SynRegExpr=RegExpr</Compiler>
 			<Compiler Name="NamespacePrefix" Type="String"></Compiler>
 			<Compiler Name="GenerateDocumentation" Type="Boolean">False</Compiler>
 			<Compiler Name="DefaultNamespace" Type="String"></Compiler>
@@ -119,7 +119,7 @@
 			<Directories Name="UnitOutputDir" Type="String">.\dcu</Directories>
 			<Directories Name="PackageDLLOutputDir" Type="String"></Directories>
 			<Directories Name="PackageDCPOutputDir" Type="String"></Directories>
-			<Directories Name="SearchPath" Type="String">..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\ExternalSource\ddetours;..\..\source\Include</Directories>
+			<Directories Name="SearchPath" Type="String">..\..\source\framework;..\..\externalsource;..\..\externalsource\regexpr;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\ExternalSource\ddetours;..\..\source\Include</Directories>
 			<Directories Name="Packages" Type="String">vcl;rtl;vclx;designide</Directories>
 			<Directories Name="Conditionals" Type="String">NO_TRANSLATION;NO_TRANSLATION_HINT;OPTIMIZE_DZ_GRAPHIC_UTILS;NO_DELPHI2007UP_HINT;UnicodeRE</Directories>
 			<Directories Name="DebugSourceDirs" Type="String"></Directories>
