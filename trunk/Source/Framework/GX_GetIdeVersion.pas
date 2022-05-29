@@ -1004,7 +1004,7 @@ end;
   bds.exe              28.0.42600.6491
   dcldb280.bpl         28.0.42600.6491
 
-  Delphi 11.1 (Update 1)
+  Delphi 11.1 (Update 1) (with and without patch 1 2022-04)
   File                 File Version
   delphicoreide280.bpl 28.0.44500.8973
   coreide280.bpl       28.0.44500.8973
