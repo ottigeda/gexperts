@@ -1,4 +1,4 @@
-unit regexpr;
+﻿unit regexpr;
 
 {
   TRegExpr class library
@@ -120,7 +120,7 @@ interface
 uses
   SysUtils, // Exception
   {$IFDEF D2009}
-    {$IFDEF D_XE}
+    {$IFDEF D_XE2}
     System.Character,
     {$ELSE}
     Character,
