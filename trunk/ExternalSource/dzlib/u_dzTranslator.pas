@@ -328,29 +328,49 @@ initialization
 {$ELSE}{$IFDEF DELPHIXE}
   AddDomainForResourceString('delphi2011');
 {$ELSE}{$IFDEF DELPHIXE2}
-  AddDomainForResourceString('delphi2012');
+  // Delphi 2011 is the last Delphi version for which dxGetText translations exist
+  AddDomainForResourceString('delphi2011');
+//  AddDomainForResourceString('delphi2012');
 {$ELSE}{$IFDEF DELPHIXE3}
-  AddDomainForResourceString('delphiXE3');
+  AddDomainForResourceString('delphi2011');
+//  AddDomainForResourceString('delphiXE3');
 {$ELSE}{$IFDEF DELPHIXE4}
-  AddDomainForResourceString('delphiXE4');
+  AddDomainForResourceString('delphi2011');
+//  AddDomainForResourceString('delphiXE4');
 {$ELSE}{$IFDEF DELPHIXE5}
-  AddDomainForResourceString('delphiXE5');
+  AddDomainForResourceString('delphi2011');
+//  AddDomainForResourceString('delphiXE5');
 {$ELSE}{$IFDEF DELPHIXE6}
-  AddDomainForResourceString('delphiXE6');
+  AddDomainForResourceString('delphi2011');
+//  AddDomainForResourceString('delphiXE6');
 {$ELSE}{$IFDEF DELPHIXE7}
-  AddDomainForResourceString('delphiXE7');
+  AddDomainForResourceString('delphi2011');
+//  AddDomainForResourceString('delphiXE7');
 {$ELSE}{$IFDEF DELPHIXE8}
-  AddDomainForResourceString('delphiXE8');
+  AddDomainForResourceString('delphi2011');
+//  AddDomainForResourceString('delphiXE8');
 {$ELSE}{$IFDEF DELPHIX_SEATTLE}
-  AddDomainForResourceString('delphi100');
+  AddDomainForResourceString('delphi2011');
+//  AddDomainForResourceString('delphi100');
 {$ELSE}{$IFDEF DELPHIX_BERLIN}
-  AddDomainForResourceString('delphi101');
+  AddDomainForResourceString('delphi2011');
+//  AddDomainForResourceString('delphi101');
 {$ELSE}{$IFDEF DELPHIX_TOKYO}
-  AddDomainForResourceString('delphi102');
+  AddDomainForResourceString('delphi2011');
+//  AddDomainForResourceString('delphi102');
 {$ELSE}{$IFDEF DELPHIX_RIO}
-  AddDomainForResourceString('delphi103');
+  AddDomainForResourceString('delphi2011');
+//  AddDomainForResourceString('delphi103');
+{$ELSE}{$IFDEF DELPHIX_SYDNEY}
+  AddDomainForResourceString('delphi2011');
+//  AddDomainForResourceString('delphi104');
+{$ELSE}{$IFDEF DELPHIX_ALEXANDRIA}
+  AddDomainForResourceString('delphi2011');
+//  AddDomainForResourceString('delphi110');
 {$ELSE}
   'unknown Delphi version!';
+{$ENDIF}
+{$ENDIF}
 {$ENDIF}
 {$ENDIF}
 {$ENDIF}

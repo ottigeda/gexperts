@@ -24,9 +24,9 @@ type
     class function Create: TStopwatch; static;
     class function GetTimeStamp: Int64; static;
     procedure Reset;
-    procedure Start;
+    procedure Start; inline;
     class function StartNew: TStopwatch; static;
-    procedure Stop;
+    procedure Stop; inline;
     function Elapsed: TNullableTimespan;
     function ElapsedMilliseconds: Int64;
     ///<summary>
@@ -190,7 +190,7 @@ end;
 
 function TStopWatch_StartNew: TStopwatch;
 begin
-  Result := TStopwatch_Create;
+  Result := TStopWatch_Create;
   TStopWatch_Start(Result);
 end;
 

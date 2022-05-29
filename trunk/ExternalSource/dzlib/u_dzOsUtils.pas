@@ -300,6 +300,14 @@ function GetWindowsVersionStringFromRegistry: string;
 /// is lying, we might as well directly call GetKernel32Version instead. </summary>
 function GetKernel32Version(out _Major, _Minor, _Revision, _Build: Integer): Boolean;
 
+///<summary>
+/// Uses the GetLogicalProcessorInformation WinAPI function to get the size of the processor's cache line </summary>
+function GetCpuCacheLineSize: Integer;
+
+///<summary>
+/// Uses the GetSystemInfo WinAPI function to get number of logical processors </summary>
+function GetCpuLogicalProcessorCount: Integer;
+
 implementation
 
 uses
@@ -848,7 +856,7 @@ begin
     Exit; //==>
   end;
 
-  while Extractfilename(fn) <> '' do begin
+  while ExtractFileName(fn) <> '' do begin
     fn := ExtractFileDir(fn);
     if (fn <> '') and DirectoryExists(fn) then begin
       ShellExecEx(fn, '', '', SW_SHOWNORMAL);
@@ -1341,5 +1349,104 @@ begin
   if Values.CSDVersion <> '' then
     Result := Result + ' ' + Values.CSDVersion;
 end;
+
+{$IF not declared(PSystemLogicalProcessorInformation)}
+{$ALIGN ON}
+{$MINENUMSIZE 4}
+
+{$IF not declared(ULONG_PTR)}
+type
+  ULONG_PTR = LongWord;
+{$IFEND}
+
+{$IF not declared(ULONGLONG)}
+  ULONGLONG = UInt64;
+{$IFEND}
+
+type
+  _PROCESSOR_CACHE_TYPE = (CacheUnified { = 0}, CacheInstruction { = 1}, CacheData { = 2}, CacheTrace { = 3});
+  PROCESSOR_CACHE_TYPE = _PROCESSOR_CACHE_TYPE;
+  TProcessorCacheType = PROCESSOR_CACHE_TYPE;
+type
+  TCacheDescriptor = record
+    Level: Byte;
+    Associativity: Byte;
+    LineSize: Word;
+    Size: DWORD;
+    _Type: PROCESSOR_CACHE_TYPE;
+  end;
+
+type
+  TLogicalProcessorRelationship = (RelationProcessorCore { = 0},
+    RelationNumaNode { = 1},
+    RelationCache { = 2},
+    RelationProcessorPackage { = 3},
+    RelationGroup { = 4}, RelationAll = $FFFF);
+
+type
+  TSystemLogicalProcessorInformation = record
+    ProcessorMask: ULONG_PTR;
+    Relationship: TLogicalProcessorRelationship;
+    case Integer of
+      0: (Flags: Byte); // ProcessorCore
+      1: (NodeNumber: DWORD); // NumaNode
+      2: (Cache: TCacheDescriptor); //Cache
+      3: (Reserved: array[0..1] of ULONGLONG);
+  end;
+  PSystemLogicalProcessorInformation = ^TSystemLogicalProcessorInformation;
+
+function GetLogicalProcessorInformation(Buffer: PSystemLogicalProcessorInformation; var ReturnedLength: DWORD): BOOL; stdcall;
+  external kernel32 Name 'GetLogicalProcessorInformation';
+{$IFEND}
+
+function GetCpuCacheLineSize: Integer;
+var
+  ProcInfo: PSystemLogicalProcessorInformation;
+  CurInfo: PSystemLogicalProcessorInformation;
+  Len: DWORD;
+  Err: DWORD;
+begin
+  Result := 64;
+
+  Len := 0;
+  if not GetLogicalProcessorInformation(nil, Len) then begin
+    Err := GetLastError;
+    if Err = ERROR_INSUFFICIENT_BUFFER then begin
+      GetMem(ProcInfo, Len);
+      try
+        if GetLogicalProcessorInformation(ProcInfo, Len) then begin
+          // it should not be possible that the second call still returns false, but ...
+          CurInfo := ProcInfo;
+          while Len > 0 do begin
+            if (CurInfo.Relationship = RelationCache) and (CurInfo.Cache.Level = 1) then begin
+              Result := CurInfo.Cache.LineSize;
+              Exit;
+            end;
+            Inc(CurInfo);
+            Dec(Len, SizeOf(CurInfo^));
+          end;
+        end;
+      finally
+        FreeMem(ProcInfo);
+      end;
+    end;
+  end;
+end;
+
+{$IF Declared(CpuCount)}
+function GetCpuLogicalProcessorCount: Integer;
+begin
+  Result := CPUCount;
+end;
+
+{$ELSE}
+function GetCpuLogicalProcessorCount: Integer;
+var
+  SysInfo: TSystemInfo;
+begin
+  GetSystemInfo(SysInfo);
+  Result := SysInfo.dwNumberOfProcessors;
+end;
+{$IFEND}
 
 end.

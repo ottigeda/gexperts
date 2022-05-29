@@ -115,6 +115,7 @@ implementation
 
 uses
   u_dzMiscUtils,
+  u_dzOsUtils,
   u_dzTypes;
 
 var
@@ -154,89 +155,6 @@ begin
     Assert(FLockCount < 10);
 end;
 {$ENDIF DEBUG_CRIT_SECT}
-
-{$IF not declared(PSystemLogicalProcessorInformation)}
-{$ALIGN ON}
-{$MINENUMSIZE 4}
-
-{$IF not declared(ULONG_PTR)}
-type
-  ULONG_PTR = LongWord;
-{$IFEND}
-
-{$IF not declared(ULONGLONG)}
-  ULONGLONG = UInt64;
-{$IFEND}
-
-type
-  _PROCESSOR_CACHE_TYPE = (CacheUnified { = 0}, CacheInstruction { = 1}, CacheData { = 2}, CacheTrace { = 3});
-  PROCESSOR_CACHE_TYPE = _PROCESSOR_CACHE_TYPE;
-  TProcessorCacheType = PROCESSOR_CACHE_TYPE;
-type
-  TCacheDescriptor = record
-    Level: BYTE;
-    Associativity: BYTE;
-    LineSize: Word;
-    Size: DWORD;
-    _Type: PROCESSOR_CACHE_TYPE;
-  end;
-
-type
-  TLogicalProcessorRelationship = (RelationProcessorCore { = 0},
-    RelationNumaNode { = 1},
-    RelationCache { = 2},
-    RelationProcessorPackage { = 3},
-    RelationGroup { = 4}, RelationAll = $FFFF);
-
-type
-  TSystemLogicalProcessorInformation = record
-    ProcessorMask: ULONG_PTR;
-    Relationship: TLogicalProcessorRelationship;
-    case Integer of
-      0: (Flags: BYTE); // ProcessorCore
-      1: (NodeNumber: DWORD); // NumaNode
-      2: (Cache: TCacheDescriptor); //Cache
-      3: (Reserved: array[0..1] of ULONGLONG);
-  end;
-  PSystemLogicalProcessorInformation = ^TSystemLogicalProcessorInformation;
-
-function GetLogicalProcessorInformation(Buffer: PSystemLogicalProcessorInformation; var ReturnedLength: DWORD): BOOL; stdcall;
-  external kernel32 Name 'GetLogicalProcessorInformation';
-{$IFEND}
-
-function GetCacheLineSize: Integer;
-var
-  ProcInfo: PSystemLogicalProcessorInformation;
-  CurInfo: PSystemLogicalProcessorInformation;
-  Len: DWORD;
-  Err: DWORD;
-begin
-  Result := 64;
-
-  Len := 0;
-  if not GetLogicalProcessorInformation(nil, Len) then begin
-    Err := GetLastError;
-    if Err = ERROR_INSUFFICIENT_BUFFER then begin
-      GetMem(ProcInfo, Len);
-      try
-        if GetLogicalProcessorInformation(ProcInfo, Len) then begin
-          // it should not be possible that the second call still returns, but ...
-          CurInfo := ProcInfo;
-          while Len > 0 do begin
-            if (CurInfo.Relationship = RelationCache) and (CurInfo.Cache.Level = 1) then begin
-              Result := CurInfo.Cache.LineSize;
-              Exit;
-            end;
-            Inc(CurInfo);
-            Dec(Len, SizeOf(CurInfo^));
-          end;
-        end;
-      finally
-        FreeMem(ProcInfo);
-      end;
-    end;
-  end;
-end;
 
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
 { TdzRTLCriticalSection }
@@ -432,7 +350,7 @@ end;
 {$ENDIF SUPPORTS_ENHANCED_RECORDS}
 
 initialization
-  CacheLineSize := GetCacheLineSize;
+  CacheLineSize := GetCpuCacheLineSize;
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
   Assert(SizeOf(TdzRTLCriticalSection) = SizeOf(TRTLCriticalSection));
   TryInitInitializeCriticalSectionEx;

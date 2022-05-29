@@ -297,13 +297,8 @@ end;
 
 class function TAdvancedObject.SetIntProperty(_Instance: TObject; const _Name: string;
   _Value: Integer): Boolean;
-var
-  PropInfo: PPropInfo;
 begin
-  PropInfo := GetPropInfo(_Instance.ClassInfo, _Name);
-  Result := Assigned(PropInfo) and (PropInfo.PropType^.Kind = tkInteger);
-  if Result then
-    TypInfo.SetOrdProp(_Instance, PropInfo, _Value);
+  Result  := u_dzTypInfo.TrySetIntProperty(_Instance, _Name, _Value);
 end;
 
 {$IFDEF SUPPORTS_EXTENDED}

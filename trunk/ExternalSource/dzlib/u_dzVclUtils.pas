@@ -935,8 +935,9 @@ procedure TComboBox_SelectWithoutChangeEvent(_cmb: TCustomComboBox; _Idx: Intege
 procedure TComboBox_AssignItems(_cmb: TCustomComboBox; _Items: TStrings);
 
 ///<summary>
-/// Add a new item with Object = Pointer(Value) </summary>
-procedure TComboBox_AddIntObject(_cmb: TCustomComboBox; const _Item: string; _Value: Integer);
+/// Add a new item with Object = Pointer(Value)
+/// @returns the index of the new item. </summary>
+function TComboBox_AddIntObject(_cmb: TCustomComboBox; const _Item: string; _Value: Integer): Integer;
 
 ///<summary> Selects an item without triggering an OnChange event
 ///          (I am not even sure whether setting the item index always triggers an OnChange event.) </summary>
@@ -1155,7 +1156,10 @@ procedure TControl_SetHint(_Ctrl: TControl; const _Hint: string);
 procedure TSpeedButton_SetDownNoClick(_sb: TSpeedButton; _Down: Boolean);
 
 ///<summary> sets the Checked property without firing an OnClick event </summary>
-procedure TCheckBox_SetCheckedNoOnClick(_Chk: TCustomCheckBox; _Checked: Boolean);
+procedure TCheckBox_SetCheckedNoOnClick(_Chk: TButtonControl; _Checked: Boolean);
+
+///<summary> sets the Checked property without firing an OnClick event </summary>
+procedure TRadioButton_SetCheckedNoOnClick(_Ctrl: TButtonControl; _Checked: Boolean);
 
 ///<summary>
 /// Append a new action to the given action list, assign Caption
@@ -1181,23 +1185,53 @@ function TCheckBox_GetCheckWidth(_Chk: TCustomCheckBox): Integer;
 ///       be wrong too. </summary>
 function TCheckBox_GetTextWidth(_Chk: TCustomCheckBox): Integer;
 
-///<summary> Calculates the required width for the checkbox to accomodate the caption text.
-///          @param chk is the checkbox to autosize
-///          @param ParentCanvas is the TCanvas to use for getting the text width
-///                              can be nil in which case the function tries the Checkbox's
-///                              parent controls until it finds either a TCustomControl or TForm.
-///          @returns the required width or -1 if the calculation failed.
-/// Note: Does not always work, especially since it does not take the WordWrap property into account </summary>
+///<summary>
+/// Calculates the required width for the checkbox to accomodate the caption text.
+/// @param chk is the checkbox to autosize
+/// @param ParentCanvas is the TCanvas to use for getting the text width
+///                     can be nil in which case the function tries the checkbox's
+///                     parent controls until it finds either a TCustomControl or TForm.
+/// @returns the required width or -1 if the calculation failed.
+/// @Note: Does not always work, especially since it does not take the WordWrap property into account </summary>
 function TCheckBox_CalcAutoWidth(_Chk: TCustomCheckBox; _ParentCanvas: TCanvas = nil): Integer;
 
-///<summary> Tries to set the checkbox's width to accomodate the text.
-///          @param chk is the checkbox to autosize
-///          @param ParentCanvas is the TCanvas to use for getting the text width
-///                              can be nil in which case the function tries the Checkbox's
-///                              parent controls until it finds either a TCustomControl or TForm.
-///          @returns the new width or -1 if resizing failed.
-/// Note: Does not always work, especially since it does not take the WordWrap property into account </summary>
+///<summary>
+/// Tries to set the checkbox's width to accomodate the text.
+/// @param chk is the checkbox to autosize
+/// @param ParentCanvas is the TCanvas to use for getting the text width
+///                     can be nil in which case the function tries the checkbox's
+///                     parent controls until it finds either a TCustomControl or TForm.
+/// @returns the new width or -1 if resizing failed.
+/// @Note: Does not always work, especially since it does not take the WordWrap property into account </summary>
 function TCheckBox_Autosize(_Chk: TCustomCheckBox; _ParentCanvas: TCanvas = nil): Integer;
+
+///<summary>
+/// @returns the width of the checkbox in the given TRadioButton
+/// Note: This is done by calling GetSystemMetrics(SM_CXMENUCHECK) which might not be correct. </summary>
+function TRadioButton_GetCheckWidth(_Chk: TButtonControl): Integer;
+
+///<summary>
+/// @returns the width of the radiobutton's text
+/// Note: This is done by calling GetSystemMetrics(SM_CXMENUCHECK) which might not be correct,
+///       also it adds 8 pixels for the gap between the checkbox and the text which might
+///       be wrong too. </summary>
+function TRadioButton_CalcAutoWidth(_Ctrl: TButtonControl; _ParentCanvas: TCanvas = nil): Integer;
+
+///<summary>
+/// Tries to set the radiobutton's width to accomodate the text.
+/// @param chk is the radiobutton to autosize
+/// @param ParentCanvas is the TCanvas to use for getting the text width
+///                     can be nil in which case the function tries the radiobutton's
+///                     parent controls until it finds either a TCustomControl or TForm.
+/// @returns the new width or -1 if resizing failed.
+/// @Note: Does not always work, especially since it does not take the WordWrap property into account </summary>
+function TRadioButton_Autosize(_Ctrl: TButtonControl; _ParentCanvas: TCanvas = nil): Integer;
+
+///<sumamry>
+/// Creates a new TRadioButton, sets the given properties and calls TRadioButton_Autosize on it
+/// @returns the created TRadioButton </summary>
+function TRadioButton_Create(_Parent: TWinControl; const _Caption: string; _Left, _Top: Integer;
+  _OnClick: TNotifyEvent): TRadioButton;
 
 ///<summary>
 /// The same as TForm.Monitor, but it works.
@@ -1360,17 +1394,21 @@ function TForm_WriteConfigValue(_frm: TForm; const _Name: string; _Value: Boolea
 ///<summary> Sets the form's Constraints.MinWidth and .MinHeight to the form's current size. </summary>
 procedure TForm_SetMinConstraints(_frm: TForm); deprecated; // use TControl_SetMinConstraints instead
 
-///<summary> appends ' - [fileversion projectversion] to the form's caption
-///          @param Caption is used instead of the original caption, if not empty </summary>
-procedure TForm_AppendVersion(_frm: TForm; _Caption: string = '');
+///<summary>
+/// Appends ' - [fileversion projectversion] to the form's caption
+/// @param Caption is used instead of the original caption, if not empty
+/// @returns the new caption </summary>
+function TForm_AppendVersion(_frm: TForm; const _Caption: string = ''): string;
 
-///<summary> inserts <fileversion> <projectversion> into the form's caption using
-///          the given Mask. The mask must contain one or two %s format specifiers
-///          the first one will be replaced with <fileversion> the second one with
-///          <productversion>. To change the order, use an index in the specifier:
-///          'Product version: %1:s, File version: %0:s'.
-///          If no Mask is given, the form's caption + ' - [%s %s]' is assumed. </summary>
-procedure TForm_InsertVersion(_frm: TForm; _Mask: string = '');
+///<summary>
+/// Inserts <fileversion> <projectversion> into the form's caption using the given Mask.
+/// @param mask must contain one or two %s format specifiers, the first one will be replaced
+///             with <fileversion> the second one with <productversion>.
+///             To change the order, use an index in the specifier:
+///             'Product version: %1:s, File version: %0:s'.
+///             If no Mask is given, the form's caption + ' - [%s %s]' is assumed.
+/// @returns the new caption. </summary>
+function TForm_InsertVersion(_frm: TForm; const _Mask: string = ''): string;
 
 type
   ///<summary>
@@ -1391,6 +1429,9 @@ function TWinControl_ActivateDropFiles(_WinCtrl: TWinControl; _Callback: TOnFile
 
 ///<summary> tries to focus the given control, returns false if that's not possible </summary>
 function TWinControl_SetFocus(_Ctrl: TWinControl): Boolean;
+
+procedure TWinControl_Enter(_Ctrl: TWinControl);
+procedure TWinControl_Exit(_Ctrl: TWinControl);
 
 ///<summary>
 /// @returns the full path of the executable (without the filename but including a backslash) </summary>
@@ -1749,7 +1790,7 @@ type
       PdzMonitor = ^TdzMonitor;
       TdzMonitor = record
       public
-        Handle: HMONITOR;
+        Handle: HMonitor;
         MonitorNum: Integer;
         BoundsRect: TRectLTWH;
         WorkArea: TRectLTWH;
@@ -3877,9 +3918,9 @@ begin
   end;
 end;
 
-procedure TComboBox_AddIntObject(_cmb: TCustomComboBox; const _Item: string; _Value: Integer);
+function TComboBox_AddIntObject(_cmb: TCustomComboBox; const _Item: string; _Value: Integer): Integer;
 begin
-  _cmb.Items.AddObject(_Item, Pointer(_Value)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
+  Result := _cmb.Items.AddObject(_Item, Pointer(_Value)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end;
 
 procedure TColorBox_SelectWithoutChangeEvent(_cmb: TColorBox; _Color: TColor);
@@ -4217,14 +4258,13 @@ begin
 end;
 
 type
-  THackCheckBox = class(TCustomCheckBox)
-  end;
+  TButtonControlHack = class(TButtonControl);
 
-procedure TCheckBox_SetCheckedNoOnClick(_Chk: TCustomCheckBox; _Checked: Boolean);
+procedure TCheckBox_SetCheckedNoOnClick(_Chk: TButtonControl; _Checked: Boolean);
 var
-  Chk: THackCheckBox;
+  Chk: TButtonControlHack;
 begin
-  Chk := THackCheckBox(_Chk);
+  Chk := TButtonControlHack(_Chk);
   Chk.ClicksDisabled := True;
   try
     Chk.Checked := _Checked;
@@ -4233,8 +4273,76 @@ begin
   end;
 end;
 
+procedure TRadioButton_SetCheckedNoOnClick(_Ctrl: TButtonControl; _Checked: Boolean);
+var
+  ctrl: TButtonControlHack;
+begin
+  ctrl := TButtonControlHack(_Ctrl);
+  ctrl.ClicksDisabled := True;
+  try
+    ctrl.Checked := _Checked;
+  finally
+    ctrl.ClicksDisabled := False;
+  end;
+end;
+
 const
   CHECKBOX_GAP = 8;
+
+type
+  TCustomControlHack = class(TCustomControl)
+    // for accessing the Canvas and Caption properties
+  end;
+
+function TRadioButton_GetCheckWidth(_Chk: TButtonControl): Integer;
+begin
+  // not sure this is correct, but it seems to work
+  Result := GetSystemMetrics(SM_CXMENUCHECK);
+end;
+
+function TRadioButton_CalcAutoWidth(_Ctrl: TButtonControl; _ParentCanvas: TCanvas = nil): Integer;
+var
+  Parent: TWinControl;
+  s: string;
+  w: Integer;
+begin
+  if _ParentCanvas = nil then begin
+    Parent := _Ctrl.Parent;
+    while (Parent <> nil) and (_ParentCanvas = nil) do begin
+      if Parent is TCustomForm then
+        _ParentCanvas := TCustomForm(Parent).Canvas
+      else if Parent is TCustomControl then
+        _ParentCanvas := TCustomControlHack(Parent).Canvas;
+      Parent := Parent.Parent;
+    end;
+  end;
+
+  if _ParentCanvas <> nil then begin
+    s := TCustomControlHack(_Ctrl).Caption;
+    w := _ParentCanvas.TextWidth(s);
+    Result := TRadioButton_GetCheckWidth(_Ctrl) + CHECKBOX_GAP + w;
+  end else
+    Result := -1;
+end;
+
+function TRadioButton_Autosize(_Ctrl: TButtonControl; _ParentCanvas: TCanvas = nil): Integer;
+begin
+  Result := TRadioButton_CalcAutoWidth(_Ctrl, _ParentCanvas);
+  if Result <> -1 then
+    _Ctrl.Width := Result;
+end;
+
+function TRadioButton_Create(_Parent: TWinControl; const _Caption: string; _Left, _Top: Integer;
+  _OnClick: TNotifyEvent): TRadioButton;
+begin
+  Result := TRadioButton.Create(_Parent);
+  Result.Parent := _Parent;
+  Result.Top := _Top;
+  Result.Left := _Left;
+  Result.Caption := _Caption;
+  Result.OnClick := _OnClick;
+  TRadioButton_Autosize(Result);
+end;
 
 function TCheckBox_GetCheckWidth(_Chk: TCustomCheckBox): Integer;
 begin
@@ -4246,11 +4354,6 @@ function TCheckBox_GetTextWidth(_Chk: TCustomCheckBox): Integer;
 begin
   Result := _Chk.Width - TCheckBox_GetCheckWidth(_Chk) - CHECKBOX_GAP;
 end;
-
-type
-  TCustomControlHack = class(TCustomControl)
-    // for accessing the Canvas property
-  end;
 
 function TCheckBox_CalcAutoWidth(_Chk: TCustomCheckBox; _ParentCanvas: TCanvas = nil): Integer;
 var
@@ -4270,7 +4373,7 @@ begin
   end;
 
   if _ParentCanvas <> nil then begin
-    s := THackCheckBox(_Chk).Caption;
+    s := TCustomControlHack(_Chk).Caption;
     w := _ParentCanvas.TextWidth(s);
     Result := TCheckBox_GetCheckWidth(_Chk) + CHECKBOX_GAP + w;
   end else
@@ -4789,26 +4892,30 @@ begin
   TControl_SetMinConstraints(_frm);
 end;
 
-procedure TForm_AppendVersion(_frm: TForm; _Caption: string = '');
+function TForm_AppendVersion(_frm: TForm; const _Caption: string = ''): string;
 var
   VersionInfo: IFileInfo;
 begin
   VersionInfo := TApplicationInfo.Create;
   if _Caption = '' then
-    _Caption := _frm.Caption;
-
-  _frm.Caption := _Caption
-    + ' - [' + VersionInfo.FileVersion + ' ' + VersionInfo.ProductVersion + ']';
+    Result := _frm.Caption
+  else
+    Result := _Caption;
+  Result := Result + ' - [' + VersionInfo.FileVersion + ' ' + VersionInfo.ProductVersion + ']';
+  _frm.Caption := Result
 end;
 
-procedure TForm_InsertVersion(_frm: TForm; _Mask: string = '');
+function TForm_InsertVersion(_frm: TForm; const _Mask: string = ''): string;
 var
   VersionInfo: IFileInfo;
 begin
-  if _Mask = '' then
-    _Mask := _frm.Caption + ' - [%s %s]';
   VersionInfo := TApplicationInfo.Create;
-  _frm.Caption := Format(_Mask, [VersionInfo.FileVersion, VersionInfo.ProductVersion]);
+  if _Mask = '' then
+    Result := _frm.Caption + ' - [%s %s]'
+  else
+    Result := _Mask;
+  Result := Format(Result, [VersionInfo.FileVersion, VersionInfo.ProductVersion]);
+  _frm.Caption := Result;
 end;
 
 function TApplication_GetFileVersion: string;
@@ -4868,6 +4975,20 @@ begin
       // can be focused so we need to handle the exception
     end;
   end;
+end;
+
+type
+  TWinControlHack = class(TWinControl)
+  end;
+
+procedure TWinControl_Enter(_Ctrl: TWinControl);
+begin
+  TWinControlHack(_Ctrl).DoEnter;
+end;
+
+procedure TWinControl_Exit(_Ctrl: TWinControl);
+begin
+  TWinControlHack(_Ctrl).DoExit;
 end;
 
 procedure DisableProcessWindowsGhosting;
@@ -5888,12 +6009,12 @@ constructor TWinControlLocker.Create(_Ctrl: TWinControl);
 begin
   inherited Create;
   FCtrl := _Ctrl;
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(False)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(False)), 0);
 end;
 
 destructor TWinControlLocker.Destroy;
 begin
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(True)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(True)), 0);
   RedrawWindow(FCtrl.Handle, nil, 0, RDW_ERASE or RDW_INVALIDATE or RDW_ALLCHILDREN);
   inherited;
 end;
@@ -7221,7 +7342,7 @@ end;
 
 { TdzScreen }
 
-function EnumMonitorsProc(hm: HMONITOR; dc: HDC; r: PRECT; Data: Pointer): Boolean; stdcall;
+function EnumMonitorsProc(hm: HMonitor; dc: HDC; r: PRECT; Data: Pointer): Boolean; stdcall;
 var
   Info: TMonitorInfoEx;
   M: TdzScreen.PdzMonitor;

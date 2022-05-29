@@ -1095,18 +1095,17 @@ function TStream_WriteString(_Stream: TStream; const _s: RawByteString): Integer
 var
   Len: Integer;
   ErrCode: DWORD;
+  s: AnsiString;
 begin
-  Len := Length(_s);
-  if Len > 0 then begin
-    Result := _Stream.Write(_s[1], Len);
-    if Result <> Len then begin
-      ErrCode := GetLastError;
-      RaiseLastOSErrorEx(ErrCode,
-        Format(_('Error writing string of length %d to stream, wrote only %d bytes: %%1:s (%%0:d)'),
-        [Len, Result]));
-    end;
-  end else
-    Result := 0;
+  s := AnsiString(_s);
+  Len := Length(s);
+  Result := _Stream.Write(PAnsiChar(s)^, Len);
+  if Result <> Len then begin
+    ErrCode := GetLastError;
+    RaiseLastOSErrorEx(ErrCode,
+      Format(_('Error writing string of length %d to stream, wrote only %d bytes: %%1:s (%%0:d)'),
+      [Len, Result]));
+  end;
 end;
 
 {$IFDEF UNICODE}

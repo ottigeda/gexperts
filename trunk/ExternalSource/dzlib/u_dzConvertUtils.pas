@@ -667,6 +667,8 @@ end;
 // Inlined method must be implemented before it is called
 function ReduceToUInt8(const _Value: Integer): UInt8;
 begin
+  // this could call EnsureRange(0, MaxUIn8) in Math, but I am not sure which Delphi
+  // versions support these functions.
   if _Value < 0 then
     Result := 0
   else if _Value > MaxUInt8 then
@@ -682,6 +684,8 @@ end;
 
 function ReduceToInt8(const _Value: Integer): Int8;
 begin
+  // this could call EnsureRange(MinInt8, MaxIn8) in Math, but I am not sure which Delphi
+  // versions support these functions.
   if _Value < MinInt8 then
     Result := MinInt8
   else if _Value > MaxInt8 then
@@ -692,6 +696,8 @@ end;
 
 function ReduceToUInt16(const _Value: Integer): UInt16;
 begin
+  // this could call EnsureRange(0, MaxUIn16) in Math, but I am not sure which Delphi
+  // versions support these functions.
   if _Value < 0 then
     Result := 0
   else if _Value > MaxUInt16 then
@@ -702,6 +708,8 @@ end;
 
 function ReduceToInt16(const _Value: Integer): Int16;
 begin
+  // this could call EnsureRange(MinInt16, MaxIn16) in Math, but I am not sure which Delphi
+  // versions support these functions.
   if _Value < MinInt16 then
     Result := MinInt16
   else if _Value > MaxInt16 then

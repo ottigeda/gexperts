@@ -92,10 +92,47 @@ implementation
 uses
   StdCtrls,
   CommCtrl,
-  u_dzAdvancedObject,
-  u_dzVclUtils,
+  u_dzTypInfo,
   u_dzTypesUtils,
   u_dzMiscUtils;
+
+type
+  TFormHack = class(TForm)
+  end;
+
+function TForm_GetDesignDPI(_Frm: TForm): UINT;
+begin
+{$IFDEF HAS_TFORM_GETDESIGNDPI}
+  Result := TFormHack(_Frm).GetDesignDpi;
+{$ELSE}
+  Result := 96;
+{$ENDIF}
+end;
+
+type
+  TGetDpiForWindow = function(_HWnd: HWND): UINT; stdcall;
+var
+  GetDpiForWindow: TGetDpiForWindow = nil;
+
+procedure InitApiCalls;
+var
+  Handle: Cardinal;
+begin
+  Handle := LoadLibrary('user32.dll');
+  if Handle <> 0 then begin
+    GetDpiForWindow := GetProcAddress(Handle, 'GetDpiForWindow');
+  end;
+end;
+
+function TScreen_GetDpiForForm(_Frm: TCustomForm): UINT;
+begin
+  Result := Screen.PixelsPerInch;
+  if _Frm is TForm then begin
+    if Assigned(GetDpiForWindow) then
+      Result := GetDpiForWindow(_Frm.Handle);
+  end;
+end;
+
 
 {$IFDEF DPI_SCALER_LOGGING}
 var
@@ -258,7 +295,7 @@ begin
   Ctrl.BoundsRect := br;
 
   if ItemHeight <> 0 then begin
-    TAdvancedObject.SetIntProperty(Ctrl, 'ItemHeight', _Scaler.Calc(ItemHeight));
+    TrySetIntProperty(Ctrl, 'ItemHeight', _Scaler.Calc(ItemHeight));
   end;
 
   // if we don't do this, the text is truncated on the left
@@ -274,13 +311,13 @@ var
 begin
   Ctrl := _Ctrl;
   BoundsRect := Ctrl.BoundsRect;
-  if not TAdvancedObject.TryGetObjectProperty(_Ctrl, 'Font', TObject(fnt)) then begin
+  if not TryGetObjectProperty(_Ctrl, 'Font', TObject(fnt)) then begin
     FontSize := 0;
   end else begin
     FontSize := GetFontSize(fnt);
   end;
 
-  if not TAdvancedObject.TryGetIntProperty(_Ctrl, 'ItemHeight', ItemHeight) then begin
+  if not TryGetIntProperty(_Ctrl, 'ItemHeight', ItemHeight) then begin
     ItemHeight := 0;
   end;
 
@@ -294,8 +331,8 @@ var
   ParentFontValue: Boolean;
   OldFontSize: Integer;
 begin
-  if TAdvancedObject.TryGetObjectProperty(Ctrl, 'Font', TObject(fnt)) then begin
-    if not TAdvancedObject.TryGetBoolProperty(Ctrl, 'ParentFont', ParentFontValue)
+  if TryGetObjectProperty(Ctrl, 'Font', TObject(fnt)) then begin
+    if not TryGetBoolProperty(Ctrl, 'ParentFont', ParentFontValue)
       or not ParentFontValue then begin
       Assert(FontSize <> 0);
 
