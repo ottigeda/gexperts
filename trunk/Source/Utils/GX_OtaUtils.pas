@@ -4911,8 +4911,8 @@ var
   EditWriter: IOTAEditWriter;
 {$IFDEF GX_DELPHI8_UP}
   Buffer: string;
-{$ENDIF}
   IdeString: UTF8String;
+{$ENDIF}
 begin
 {$IFDEF GX_DELPHI8_UP}
   // "StartPos" is a character position in a (possibly unicode) string
