@@ -293,6 +293,7 @@ begin
   ES.FeedAfterVar := _Reader.ReadBool('FeedAfterVar', ES.FeedAfterVar); //: Boolean;
   ES.FeedEachUnit := _Reader.ReadBool('FeedEachUnit', ES.FeedEachUnit); //: Boolean;
   ES.NoFeedBeforeThen := _Reader.ReadBool('NoFeedBeforeThen', ES.NoFeedBeforeThen); //: Boolean;
+  ES.FeedEachUnitBeforeComma := _Reader.ReadBool('FeedEachUnitBeforeComma', ES.FeedEachUnitBeforeComma); //: Boolean;
   ES.FeedElseIf := _Reader.ReadBool('FeedElseIf', ES.FeedElseIf); //: Boolean;
   ES.FillNewWords := IntToCapfileMode(_Reader.ReadInteger('FillNewWords', CapfileModeToInt(ES.FillNewWords)));
   ES.FeedAfterSemiColon := _Reader.ReadBool('FeedAfterSemiColon', ES.FeedAfterSemiColon); //: Boolean;
@@ -398,6 +399,7 @@ begin
   _Writer.WriteBool('FeedAfterVar', _Settings.FeedAfterVar); //: Boolean;
   _Writer.WriteBool('FeedEachUnit', _Settings.FeedEachUnit); //: Boolean;
   _Writer.WriteBool('NoFeedBeforeThen', _Settings.NoFeedBeforeThen); //: Boolean;
+  _Writer.WriteBool('FeedEachUnitBeforeComma', _Settings.FeedEachUnitBeforeComma); //: Boolean;
   _Writer.WriteBool('FeedElseIf', _Settings.FeedElseIf); //: Boolean;
   _Writer.WriteInteger('FillNewWords', CapfileModeToInt(_Settings.FillNewWords));
   _Writer.WriteBool('FeedAfterSemiColon', _Settings.FeedAfterSemiColon); //: Boolean;
