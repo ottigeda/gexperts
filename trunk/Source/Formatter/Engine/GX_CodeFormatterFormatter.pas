@@ -224,7 +224,7 @@ begin
     Inc(Idx);
     rType := FStack.GetType(Idx);
   end;
-  if rType in [rtClass, rtType, rtVar, rtProcedure, rtProcDeclare] then begin
+  if rType in [rtClass, rtType, rtVar, rtConst, rtProcedure, rtProcDeclare] then begin
     Result := True;
     Exit; //==>
   end;
@@ -768,7 +768,7 @@ end;
 procedure TCodeFormatterFormatter.FormatAsm(_NTmp: Integer);
 begin
   // remove var / type stuff
-  while FStack.GetTopType in [rtVar, rtType] do
+  while FStack.GetTopType in [rtVar, rtConst, rtType] do
     FStack.Pop;
 
   // no additional indentation for
@@ -951,7 +951,11 @@ begin
       end;
 
     rtVar:
-      if FSettings.AlignVar then
+      if FSettings.ShouldAlignVar then
+        FCurrentToken := AlignExpression(FTokenIdx, FSettings.AlignVarPos);
+
+    rtConst:
+      if FSettings.ShouldAlignConst then
         FCurrentToken := AlignExpression(FTokenIdx, FSettings.AlignVarPos);
 
     rtProcedure, rtProcDeclare:
@@ -1044,7 +1048,7 @@ begin
   // This handles the case where a reserved word was used as the name of a class member.
   // (Is that even allowed?)
   if (FCurrentRType in [rtWhile, rtEnd, rtRepeat, rtBegin, rtUses, rtTry,
-      rtProgram, rtType, rtVar, rtIf, rtThen, rtElse] + StandardDirectives)
+      rtProgram, rtType, rtVar, rtConst, rtIf, rtThen, rtElse] + StandardDirectives)
     and IsRType(FPrevToken, rtDot) then begin
     Assert(False, '.CheckIndent: SetReservedType to rtNothing');
     FCurrentToken.SetReservedType(rtNothing);
@@ -1072,7 +1076,7 @@ begin
 
     rtClass: begin
         if not (TryGetNextNoComment(FTokenIdx, Next)
-          and (Next.ReservedType in [rtProcedure, rtProcDeclare, rtOf, rtVar])) then begin
+          and (Next.ReservedType in [rtProcedure, rtProcDeclare, rtOf, rtVar, rtConst])) then begin
           // not a "class function" or "class of" declaration
           FWrapIndent := False;
           FStack.Push(rtClassDecl, 1);
@@ -1194,7 +1198,7 @@ begin
           DecPrevLineIndent;
           FWrapIndent := False;
         end;
-      end else if (FStack.GetTopType in [rtVar, rtType]) and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
+      end else if (FStack.GetTopType in [rtVar, rtConst, rtType]) and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
         FStack.Pop;
         DecPrevLineIndent;
         DecPrevLineIndent;
@@ -1320,7 +1324,7 @@ begin
       end;
 
     rtAbsolute:
-      if not (FStack.GetTopType in [rtVar, rtType]) then begin
+      if not (FStack.GetTopType in [rtVar, rtConst, rtType]) then begin
         // We are not in a type or var declaration, so it's an identifier
         // todo: is rtType really correct here?
         FCurrentToken.SetReservedType(rtNothing);
@@ -1367,7 +1371,7 @@ begin
           Assert(False, '.CheckIndent: Top type is Class or Record');
           FStack.Pop;
           FStack.Push(rtClass, 1);
-        end else if (FStack.GetTopType in [rtVar, rtType])
+        end else if (FStack.GetTopType in [rtVar, rtConst, rtType])
           and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord])
           and (FPrevToken.ReservedType <> rtEquals) then begin
           // There was a nested class/record declaration that ended
@@ -1514,7 +1518,7 @@ begin
       end;
 
     rtBegin, rtTry: begin
-        while FStack.GetTopType in [rtVar, rtType] do
+        while FStack.GetTopType in [rtVar, rtConst, rtType] do
           FStack.Pop;
 
         if FStack.GetTopType in [rtProcedure, rtProgram] then
@@ -1570,15 +1574,16 @@ begin
       end;
 
     rtEquals:
-      if FSettings.AlignVar and (FStack.GetTopType = rtVar) then
+      if (FSettings.ShouldAlignVar and (FStack.GetTopType = rtVar))
+        or (FSettings.ShouldAlignConst and (FStack.GetTopType = rtConst)) then
         FCurrentToken := AlignExpression(FTokenIdx, FSettings.AlignVarPos);
 
-    rtVar, rtType:
+    rtVar, rtConst, rtType:
       if not (FStack.GetTopType in [rtLeftBr, rtLeftHook]) then begin
         FWrapIndent := False;
         if FStack.nIndent < 1 then
           FStack.nIndent := 1;
-        if (FStack.GetTopType in [rtVar, rtType]) then begin
+        if (FStack.GetTopType in [rtVar, rtConst, rtType]) then begin
           if (FCurrentRType = rtType) and IsRType(FPrevToken, rtEquals) then begin
             // in classes.pas I found
             // t = type AnsiString

@@ -304,7 +304,7 @@ begin
   ES.AlignCommentPos := _Reader.ReadInteger('AlignCommentPos', ES.AlignCommentPos); //: Byte;
   ES.AlignComments := _Reader.ReadBool('AlignComments', ES.AlignComments); //: Boolean;
   ES.AlignVarPos := _Reader.ReadInteger('AlignVarPos', ES.AlignVarPos); //: Byte;
-  ES.AlignVar := _Reader.ReadBool('AlignVar', ES.AlignVar); //: Boolean;
+  ES.AlignVar := _Reader.ReadInteger('AlignVar', ES.AlignVar); //: Byte;
   _Settings.Settings := ES;
 end;
 
@@ -410,7 +410,7 @@ begin
   _Writer.WriteInteger('AlignCommentPos', _Settings.AlignCommentPos); //: Byte;
   _Writer.WriteBool('AlignComments', _Settings.AlignComments); //: Boolean;
   _Writer.WriteInteger('AlignVarPos', _Settings.AlignVarPos); //: Byte;
-  _Writer.WriteBool('AlignVar', _Settings.AlignVar); //: Boolean;
+  _Writer.WriteInteger('AlignVar', _Settings.AlignVar); //: Byte;
 
   _Writer.WriteInteger('Precedence1', Ord(_Settings.ConfigPrecedence[1]));
   _Writer.WriteInteger('Precedence2', Ord(_Settings.ConfigPrecedence[2]));

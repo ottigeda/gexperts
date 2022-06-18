@@ -88,7 +88,7 @@ type
     AlignCommentPos: Byte; {: position to align comments }
     AlignComments: Boolean; {: turn on comment alignment }
     AlignVarPos: Byte; {: position to align variant/constant declarations (the colon) }
-    AlignVar: Boolean; {: turn on variable/constant alignment }
+    AlignVar: Byte; {: turn on variable/constant alignment }
   end;
 
 type
@@ -112,6 +112,8 @@ type
     function GetConfigPrecedence(_Idx: TOneToThree): TConfigPrecedenceEnum;
     procedure SetConfigPrecedence(_Idx: TOneToThree; const _Value: TConfigPrecedenceEnum);
     procedure SetSettings(const _Value: TCodeFormatterEngineSettings);
+    function GetShouldAlignVar: Boolean;
+    function GetShouldAlignConst: Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -171,7 +173,9 @@ type
     property AlignCommentPos: Byte read FSettings.AlignCommentPos;
     property AlignComments: Boolean read FSettings.AlignComments;
     property AlignVarPos: Byte read FSettings.AlignVarPos;
-    property AlignVar: Boolean read FSettings.AlignVar;
+    property AlignVar: Byte read FSettings.AlignVar;
+    property ShouldAlignVar: Boolean read GetShouldAlignVar;
+    property ShouldAlignConst: Boolean read GetShouldAlignConst;
     // settings for the wizard
     property CapFileTimestamp: TDateTime read FCapFileTimestamp write FCapFileTimestamp;
     property CapitalizationFile: string read FCapFile write FCapFile;
@@ -213,6 +217,16 @@ end;
 function TCodeFormatterSettings.GetConfigPrecedence(_Idx: TOneToThree): TConfigPrecedenceEnum;
 begin
   Result := FConfigPrecedence[_Idx];
+end;
+
+function TCodeFormatterSettings.GetShouldAlignVar: Boolean;
+begin
+  Result := AlignVar in [1, 2];
+end;
+
+function TCodeFormatterSettings.GetShouldAlignConst: Boolean;
+begin
+  Result := AlignVar in [1, 3];
 end;
 
 procedure TCodeFormatterSettings.HandleCapitalization(_Word: TPascalToken);

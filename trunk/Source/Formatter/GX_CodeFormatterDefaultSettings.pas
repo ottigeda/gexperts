@@ -23,7 +23,7 @@ function DelForExDefaults: TCodeFormatterEngineSettings;
 begin
   Result.AlignCommentPos := 40;
   Result.AlignComments := False;
-  Result.AlignVar := False;
+  Result.AlignVar := 0;
   Result.AlignVarPos := 20;
   Result.BlankProc := True;
   Result.BlankSubProc := False;
@@ -77,7 +77,7 @@ function BorlandDefaults: TCodeFormatterEngineSettings;
 begin
   Result.AlignCommentPos := 40;
   Result.AlignComments := False;
-  Result.AlignVar := False;
+  Result.AlignVar := 0;
   Result.AlignVarPos := 20;
   Result.BlankProc := True;
   Result.BlankSubProc := False;

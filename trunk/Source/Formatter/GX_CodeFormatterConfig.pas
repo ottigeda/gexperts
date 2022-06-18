@@ -86,6 +86,7 @@ type
     l_AlignComentsAtPosition: TLabel;
     ed_AlignCommentPos: TEdit;
     ud_AlignCommentPos: TUpDown;
+    chk_AlignConst: TCheckBox;
     chk_AlignVar: TCheckBox;
     l_AlignVarAtPosition: TLabel;
     ed_AlignVarPos: TEdit;
@@ -393,7 +394,14 @@ begin
   _Settings.WrapPosition := ud_WrapPosition.Position;
   _Settings.AlignComments := chk_AlignComments.Checked;
   _Settings.AlignCommentPos := ud_AlignCommentPos.Position;
-  _Settings.AlignVar := chk_AlignVar.Checked;
+  if chk_AlignVar.Checked and chk_AlignConst.Checked then
+    _Settings.AlignVar := 1
+  else if chk_AlignVar.Checked then
+    _Settings.AlignVar := 2
+  else if chk_AlignConst.Checked then
+    _Settings.AlignVar := 3
+  else
+    _Settings.AlignVar := 0;
   _Settings.AlignVarPos := ud_AlignVarPos.Position;
   _Settings.SpaceEqualOper := GetSpaceItem(1);
   _Settings.SpaceOperators := GetSpaceItem(2);
@@ -508,7 +516,8 @@ begin
   ud_WrapPosition.Position := _Settings.WrapPosition;
   chk_AlignComments.Checked := _Settings.AlignComments;
   ud_AlignCommentPos.Position := _Settings.AlignCommentPos;
-  chk_AlignVar.Checked := _Settings.AlignVar;
+  chk_AlignVar.Checked := _Settings.AlignVar in [1, 2];
+  chk_AlignConst.Checked := _Settings.AlignVar in [1, 3];
   ud_AlignVarPos.Position := _Settings.AlignVarPos;
   rg_Capitalization.ItemIndex := CapfileModeToInt(_Settings.FillNewWords);
   ed_StartComment.Text := string(_Settings.StartCommentOut);

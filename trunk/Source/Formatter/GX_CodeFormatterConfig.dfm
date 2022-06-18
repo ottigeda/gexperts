@@ -551,14 +551,14 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         Caption = 'Align'
         object l_AlignComentsAtPosition: TLabel
           Left = 40
-          Top = 32
+          Top = 40
           Width = 51
           Height = 13
           Caption = 'At position'
         end
         object l_AlignVarAtPosition: TLabel
           Left = 40
-          Top = 96
+          Top = 136
           Width = 51
           Height = 13
           Caption = 'At position'
@@ -574,7 +574,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object ed_AlignCommentPos: TEdit
           Left = 40
-          Top = 48
+          Top = 56
           Width = 51
           Height = 21
           TabOrder = 1
@@ -589,31 +589,40 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Associate = ed_AlignCommentPos
           TabOrder = 2
         end
-        object chk_AlignVar: TCheckBox
+        object chk_AlignConst: TCheckBox
           Left = 16
-          Top = 80
+          Top = 88
           Width = 275
           Height = 14
-          Caption = 'Align var/const statements'
+          Caption = 'Align const statements and resource strings'
           TabOrder = 3
+          OnClick = UpdatePreview
+        end
+        object chk_AlignVar: TCheckBox
+          Left = 16
+          Top = 112
+          Width = 275
+          Height = 14
+          Caption = 'Align var statements'
+          TabOrder = 4
           OnClick = UpdatePreview
         end
         object ed_AlignVarPos: TEdit
           Left = 40
-          Top = 112
+          Top = 152
           Width = 51
           Height = 21
-          TabOrder = 4
+          TabOrder = 5
           Text = '0'
           OnChange = UpdatePreview
         end
         object ud_AlignVarPos: TUpDown
           Left = 91
-          Top = 112
+          Top = 168
           Width = 13
           Height = 21
           Associate = ed_AlignVarPos
-          TabOrder = 5
+          TabOrder = 6
         end
       end
       object ts_Misc: TTabSheet

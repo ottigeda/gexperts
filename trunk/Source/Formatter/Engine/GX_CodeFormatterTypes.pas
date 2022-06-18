@@ -70,7 +70,8 @@ type
     rtUses, rtProcDeclare, rtFuncDirective, rtPropertyAccess, rtAbsolute, rtComment, rtRecCase, rtDot,
     rtCompIf, rtDotDot,
     rtCompElse, rtCompEndif,
-    rtGenericStart);
+    rtGenericStart,
+    rtConst);
 
 type
   TReservedTypeSet = set of TReservedType;
@@ -183,7 +184,7 @@ begin
   Add('case', rtCase);
   Add('cdecl', rtFuncDirective);
   Add('class', rtClass);
-  Add('const', rtVar);
+  Add('const', rtConst);
   Add('constructor', rtProcedure);
   Add('contains', rtUses);
   Add('default', rtDefault);
@@ -258,7 +259,7 @@ begin
   Add('repeat', rtRepeat);
   Add('requires', rtUses);
   Add('resident', rtFuncDirective);
-  Add('resourcestring', rtVar);
+  Add('resourcestring', rtConst);
   Add('safecall', rtFuncDirective);
   Add('set', rtReserved);
   Add('shl', rtOper);
