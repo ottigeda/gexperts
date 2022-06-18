@@ -29,19 +29,21 @@ type
     btnClearCache: TButton;
     rg_FilterIdentifiers: TRadioGroup;
     chkSearchPathFavorites: TCheckBox;
+    chk_FastAdd: TCheckBox;
     procedure btnClearCacheClick(Sender: TObject);
   private
     FCacheDir: string;
     procedure SetData(const _CanReplaceFindUseUnit: Boolean; const _CacheDir: string;
       const _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache, _SearchPathFavorites: Boolean;
-      _FilterIdentifiers: TFilterIdentifiersEnum);
+      _FilterIdentifiers: TFilterIdentifiersEnum; _FastAdd: Boolean);
     procedure GetData(out _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache, _SearchPathFavorites: Boolean;
-      out _FilterIdentifiers: TFilterIdentifiersEnum);
+      out _FilterIdentifiers: TFilterIdentifiersEnum; out _FastAdd: Boolean);
   public
     class function Execute(_Owner: TComponent; _CanReplaceFindUseUnit: Boolean;
       const _CacheDir: string;
       var _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache, _SearchPathFavorites: Boolean;
-      var _FilterIdentifiers: TFilterIdentifiersEnum): Boolean;
+      var _FilterIdentifiers: TFilterIdentifiersEnum;
+      var _FastAdd: Boolean): Boolean;
     constructor Create(_Owner: TComponent); override;
   end;
 
@@ -59,18 +61,19 @@ uses
 class function TfmUsesExpertOptions.Execute(_Owner: TComponent; _CanReplaceFindUseUnit: Boolean;
   const _CacheDir: string;
   var _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache, _SearchPathFavorites: Boolean;
-  var _FilterIdentifiers: TFilterIdentifiersEnum): Boolean;
+  var _FilterIdentifiers: TFilterIdentifiersEnum;
+  var _FastAdd: Boolean): Boolean;
 var
   frm: TfmUsesExpertOptions;
 begin
   frm := TfmUsesExpertOptions.Create(_Owner);
   try
     frm.SetData(_CanReplaceFindUseUnit, _CacheDir, _ReadMapFile, _ReplaceFileUseUnit, _ParseAll,
-      _DisableCache, _SearchPathFavorites, _FilterIdentifiers);
+      _DisableCache, _SearchPathFavorites, _FilterIdentifiers, _FastAdd);
     Result := (frm.ShowModal = mrOk);
     if Result then
       frm.GetData(_ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache, _SearchPathFavorites,
-        _FilterIdentifiers);
+        _FilterIdentifiers, _FastAdd);
   finally
     FreeAndNil(frm);
   end;
@@ -84,7 +87,8 @@ begin
 end;
 
 procedure TfmUsesExpertOptions.GetData(out _ReadMapFile, _ReplaceFileUseUnit, _ParseAll: Boolean;
-  out _DisableCache, _SearchPathFavorites: Boolean; out _FilterIdentifiers: TFilterIdentifiersEnum);
+  out _DisableCache, _SearchPathFavorites: Boolean; out _FilterIdentifiers: TFilterIdentifiersEnum;
+  out _FastAdd: Boolean);
 begin
   _ReadMapFile := chkReadMap.Checked;
   _ReplaceFileUseUnit := chkReplaceFileUnit.Checked;
@@ -92,11 +96,12 @@ begin
   _DisableCache := chkDisableParserCache.Checked;
   _SearchPathFavorites := chkSearchPathFavorites.Checked;
   _FilterIdentifiers := TFilterIdentifiersEnum(rg_FilterIdentifiers.ItemIndex);
+  _FastAdd := chk_FastAdd.Checked;
 end;
 
 procedure TfmUsesExpertOptions.SetData(const _CanReplaceFindUseUnit: Boolean; const _CacheDir: string;
   const _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache, _SearchPathFavorites: Boolean;
-  _FilterIdentifiers: TFilterIdentifiersEnum);
+  _FilterIdentifiers: TFilterIdentifiersEnum; _FastAdd: Boolean);
 begin
   chkReplaceFileUnit.Enabled := _CanReplaceFindUseUnit;
   FCacheDir := _CacheDir;
@@ -109,6 +114,7 @@ begin
   chkDisableParserCache.Checked := _DisableCache;
   chkSearchPathFavorites.Checked := _SearchPathFavorites;
   rg_FilterIdentifiers.ItemIndex := Ord(_FilterIdentifiers);
+  chk_FastAdd.Checked := _FastAdd;
 end;
 
 { TClearCacheMessage }

@@ -49,6 +49,7 @@ type
     FProjectChangedNotifier: TProjectChangedNotifier;
     FUnitExportParserThread: TUnitExportParserThread;
     FSearchPathFavorites: Boolean;
+    FFastAdd: Boolean;
     FIdentifierTabTimer: TStopwatch;
     procedure InternalExecute;
     function FindAction(out _Action: TBasicAction): Boolean;
@@ -172,6 +173,7 @@ type
     pnlUsesBottom: TPanel;
     btnAddDots: TButton;
     btnRemoveDots: TButton;
+    chk_FastAdd: TCheckBox;
     actUnAlias: TAction;
     m_IntfUnalias: TMenuItem;
     m_ImplUnAlias: TMenuItem;
@@ -303,6 +305,7 @@ type
     procedure mSearchThisOnTheWebClick(Sender: TObject);
     procedure actAddToInterfaceAndCloseExecute(Sender: TObject);
     procedure actAddToImplemenationAndCloseExecute(Sender: TObject);
+    procedure chk_FastAddClick(Sender: TObject);
   private
     FLeftRatio: Double;
     FAliases: TStringList;
@@ -316,6 +319,7 @@ type
     FIdentifierMatchGrp: TdzSpeedBitBtnGroup;
     FSelectedUnitLineNo: Integer;
     FSelectedUnitFn: string;
+    FDefaultToInterfaceList: Boolean;
     procedure GetCommonUnits;
     procedure GetProjectUnits;
     function TryGetMapFileUnits: Boolean;
@@ -366,6 +370,7 @@ type
     procedure InitializeForm;
     procedure FinalizeForm;
     procedure SetSelectedFile(const _fn: string; _LineNo: Integer = -1);
+    procedure UpdateDefaultButton;
   protected
     FProjectUnits: TStringList;
     FCommonUnits: TStringList;
@@ -793,7 +798,7 @@ begin
   CacheDir := ConfigInfo.CachingPath + 'UsesExpertCache';
 
   if TfmUsesExpertOptions.Execute(Application, Found, CacheDir, FReadMap, FReplaceFileUseUnit,
-    FParseAll, FDisableCache, FSearchPathFavorites, FFilterIdentifiers) then begin
+    FParseAll, FDisableCache, FSearchPathFavorites, FFilterIdentifiers, FFastAdd) then begin
     SaveSettings;
     if Found then begin
       if FReplaceFileUseUnit then begin
@@ -844,6 +849,7 @@ begin
   FParseAll := _Settings.ReadBool('ParseAll', True);
   FDisableCache := _Settings.ReadBool('DisableCache', False);
   FSearchPathFavorites := _Settings.ReadBool('SearchPathFavorites', False);
+  FFastAdd := _Settings.ReadBool('FastAdd', False);
 end;
 
 procedure TUsesClauseMgrExpert.InternalSaveSettings(_Settings: IExpertSettings);
@@ -855,6 +861,7 @@ begin
   _Settings.WriteBool('ParseAll', FParseAll);
   _Settings.WriteBool('DisableCache', FDisableCache);
   _Settings.WriteBool('SearchPathFavorites', FSearchPathFavorites);
+  _Settings.WriteBool('FastAdd', FFastAdd);
 end;
 
 { TfmUsesManager }
@@ -893,6 +900,8 @@ begin
   // this only works if the order the buttons are added is the same as the order of the enums
   FIdentifierMatchGrp.SetDown(Ord(FUsesExpert.FFilterIdentifiers));
   FIdentifierMatchGrp.OnClick := sb_MatchWhereClick;
+
+  chk_FastAdd.Checked := _UsesExpert.FFastAdd;
 
   FLeftRatio := pnlUses.Width / ClientWidth;
 
@@ -1307,6 +1316,7 @@ begin
     edtIdentifierFilter.Visible := False;
     lblFilter.FocusControl := edtUnitFilter;
   end;
+  UpdateDefaultButton;
 end;
 
 procedure TfmUsesManager.pcUnitsResize(Sender: TObject);
@@ -1449,6 +1459,15 @@ begin
       sl[i] := ApplyAlias(sl[i]);
     TStringGrid_AssignCol(sg_Implementation, 0, sl);
     TGrid_Resize(sg_Implementation, [roUseGridWidth, roUseAllRows]);
+    FDefaultToInterfaceList :=
+      UsesManager.IsPositionBeforeImplementation(GxOtaGetCurrentEditBufferPos);
+    if FDefaultToInterfaceList then begin
+      chk_FastAdd.Caption := 'Add fast (to Interface)';
+      chk_FastAdd.Hint := 'Enter adds to Interface and closes dialog';
+    end else begin
+      chk_FastAdd.Caption := 'Add fast (to Implementation)';
+      chk_FastAdd.Hint := 'Enter adds to Implementation and closes dialog';
+    end;
   finally
     FreeAndNil(sl);
     FreeAndNil(UsesManager);
@@ -1834,6 +1853,8 @@ begin
     Row := AddToIntfSection(Src.Cells[Col, i]);
   if Row <> -1 then
     sg_Interface.Row := Row;
+  if chk_FastAdd.Checked then
+    actOK.Execute;
 end;
 
 procedure TfmUsesManager.actAddToImplementationExecute(Sender: TObject);
@@ -1851,6 +1872,8 @@ begin
   end;
   if Row <> -1 then
     sg_Implementation.Row := Row;
+  if chk_FastAdd.Checked then
+    actOK.Execute;
 end;
 
 function TfmUsesManager.GetAvailableSourceList: TStringGrid;
@@ -2628,6 +2651,57 @@ procedure TfmUsesManager.b_NoMapFileCloseClick(Sender: TObject);
 begin
   inherited;
   p_NoMapFile.Visible := False;
+end;
+
+procedure TfmUsesManager.chk_FastAddClick(Sender: TObject);
+begin
+  UpdateDefaultButton;
+end;
+
+procedure TfmUsesManager.UpdateDefaultButton;
+begin
+  btnSearchPathAddToIntf.Default := False;
+  btnSearchPathAddToIntf.Default := False;
+  btnProjectAddToInterface.Default := False;
+  btnProjectAddToImplementation.Default := False;
+  btnCommonAddToInterface.Default := False;
+  btnCommonAddToImplementation.Default := False;
+  btnFavoriteAddToInterface.Default := False;
+  btnFavoriteAddToImplementation.Default := False;
+  btnIdentifiersAddToIntf.Default := False;
+  btnIdentifiersAddToImpl.Default := False;
+  btnOK.Default := False;
+
+  if chk_FastAdd.Checked then begin
+    if pcUnits.ActivePage = tabSearchPath then begin
+      if FDefaultToInterfaceList then
+        btnSearchPathAddToIntf.Default := FDefaultToInterfaceList
+      else
+        btnSearchPathAddToImpl.Default := True;
+    end else if pcUnits.ActivePage = tabProject then begin
+      if FDefaultToInterfaceList then
+        btnProjectAddToInterface.Default := True
+      else
+        btnProjectAddToImplementation.Default := True;
+    end else if pcUnits.ActivePage = tabCommon then begin
+      if FDefaultToInterfaceList then
+        btnCommonAddToInterface.Default := True
+      else
+        btnCommonAddToImplementation.Default := True;
+    end else if pcUnits.ActivePage = tabFavorite then begin
+      if FDefaultToInterfaceList then
+        btnFavoriteAddToInterface.Default := True
+      else
+        btnFavoriteAddToImplementation.Default := True;
+    end else if pcUnits.ActivePage = tabIdentifiers then begin
+      if FDefaultToInterfaceList then
+        btnIdentifiersAddToIntf.Default := True
+      else
+        btnIdentifiersAddToImpl.Default := True;
+    end else
+      btnOK.Default := True;
+  end else
+    btnOK.Default := True;
 end;
 
 procedure TfmUsesManager.SaveChanges;

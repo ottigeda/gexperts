@@ -852,6 +852,18 @@ inherited fmUsesManager: TfmUsesManager
       TabOrder = 2
       OnClick = btnRemoveDotsClick
     end
+    object chk_FastAdd: TCheckBox
+      Left = 376
+      Top = 8
+      Width = 273
+      Height = 17
+      Hint = 'Enter adds to Interface and closes dialog'
+      Caption = 'Fast Add'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+      OnClick = chk_FastAddClick
+    end
   end
   object sbUCM: TStatusBar
     Left = 0
@@ -1568,7 +1580,7 @@ inherited fmUsesManager: TfmUsesManager
     Images = il_MenuIcons
     OnPopup = pmUCMStatusBarPopup
     Left = 432
-    Top = 408
+    Top = 384
     object mCopyThisTextToTheClipboard: TMenuItem
       Caption = 'Copy this text to the clipboard'
       Default = True

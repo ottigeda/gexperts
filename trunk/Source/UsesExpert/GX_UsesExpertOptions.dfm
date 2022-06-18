@@ -4,7 +4,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Uses Clause Manager Options'
-  ClientHeight = 297
+  ClientHeight = 330
   ClientWidth = 329
   ParentFont = False
   Font.Height = -11
@@ -12,7 +12,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   PixelsPerInch = 96
   DesignSize = (
     329
-    297)
+    330)
   TextHeight = 13
   object chkReadMap: TCheckBox
     Left = 8
@@ -52,24 +52,24 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   end
   object btnOK: TButton
     Left = 160
-    Top = 264
+    Top = 296
     Width = 75
     Height = 25
     Cancel = True
     Caption = 'OK'
     Default = True
     ModalResult = 1
-    TabOrder = 7
+    TabOrder = 8
   end
   object btnCancel: TButton
     Left = 240
-    Top = 264
+    Top = 296
     Width = 75
     Height = 25
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 8
+    TabOrder = 9
   end
   object chkDisableParserCache: TCheckBox
     Left = 24
@@ -109,5 +109,16 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
     Height = 17
     Caption = 'Also search the favorites configured for the search path'
     TabOrder = 5
+  end
+  object chk_FastAdd: TCheckBox
+    Left = 8
+    Top = 264
+    Width = 313
+    Height = 17
+    Hint = 'Pressing Enter adds to current uses list and exits the dialog.'
+    Caption = 'Default to Fast Add'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 7
   end
 end
