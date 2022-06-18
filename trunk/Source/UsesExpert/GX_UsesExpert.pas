@@ -361,7 +361,7 @@ type
     procedure DeleteFromStringGrid(sg: TStringGrid; const UnitName: string);
     function IndexInStringGrid(sg: TStringGrid; const UnitName: string): integer;
     procedure DrawStringGridCell(_sg: TStringGrid; const _Text: string; const _Rect: TRect;
-      _State: TGridDrawState; _Focused: Boolean; _Tag: integer);
+      _State: TGridDrawState; _Focused: Boolean; _Tag: Integer; _StrikeThrough: Boolean);
     procedure SaveProjectListToDisk;
     procedure ShowIdentifiersFilterResult(const cnt: Integer);
     procedure ShowSelectedUnitPathInStatusBar(const ARow: Integer);
@@ -1502,7 +1502,7 @@ begin
 end;
 
 procedure TfmUsesManager.DrawStringGridCell(_sg: TStringGrid; const _Text: string; const _Rect: TRect;
-  _State: TGridDrawState; _Focused: Boolean; _Tag: Integer);
+  _State: TGridDrawState; _Focused: Boolean; _Tag: Integer; _StrikeThrough: Boolean);
 var
   cnv: TCanvas;
 begin
@@ -1510,6 +1510,9 @@ begin
   if _Text = '' then
     cnv.Brush.Color := _sg.Color
   else begin
+    if _StrikeThrough then begin
+        cnv.Font.Style := [fsStrikeOut];
+    end;
     if gdSelected in _State then begin
       if not _Focused then begin
         cnv.Brush.Color := clDkGray;
@@ -1530,7 +1533,7 @@ procedure TfmUsesManager.sg_UsedDrawCell(Sender: TObject; ACol, ARow: Integer; R
 var
   sg: TStringGrid absolute Sender;
 begin
-  DrawStringGridCell(sg, sg.Cells[ACol, ARow], Rect, State, sg.Focused, Integer(sg.Objects[ACol, ARow]));
+  DrawStringGridCell(sg, sg.Cells[ACol, ARow], Rect, State, sg.Focused, Integer(sg.Objects[ACol, ARow]), False);
 end;
 
 procedure TfmUsesManager.sg_MouseDownForDragging(Sender: TObject; Button: TMouseButton;
@@ -1905,9 +1908,20 @@ procedure TfmUsesManager.sg_AvailDrawCell(Sender: TObject; ACol, ARow: Integer; 
 var
   sg: TStringGrid absolute Sender;
   GridFocused: Boolean;
+  IsAlreadyUsed: Boolean;
+  CellText: string;
 begin
+  CellText := sg.Cells[ACol, ARow];
+  if ACol = sg.ColCount - 1 then begin
+    IsAlreadyUsed := SameText(CellText, 'System') or SameText(CellText, 'SysInit')
+      or (IndexInStringGrid(sg_Interface, CellText) <> -1)
+      or (not FDefaultToInterfaceList and (IndexInStringGrid(sg_Implementation, CellText) <> -1));
+  end else
+    IsAlreadyUsed := False;
+
   GridFocused := sg.Focused or edtUnitFilter.Focused or edtIdentifierFilter.Focused;
-  DrawStringGridCell(sg, sg.Cells[ACol, ARow], Rect, State, GridFocused, 0);
+
+  DrawStringGridCell(sg, CellText, Rect, State, GridFocused, 0, IsAlreadyUsed);
 end;
 
 procedure TfmUsesManager.sg_ImplementationDblClick(Sender: TObject);
