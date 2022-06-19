@@ -382,6 +382,7 @@ begin
     else
       Node := Node.GetNextSibling;
   end;
+  tvBrowseChange(tvBrowse, nil);
 end;
 
 procedure TfmClassBrowser.LoadAllObjects;
