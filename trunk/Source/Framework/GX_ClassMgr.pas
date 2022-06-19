@@ -788,7 +788,9 @@ begin
     Parser.NextObjectLine(IdentPos, IdentLine);
     if GetInfo = ikClass then
     begin
-      Parser.RunPos := IdentPos;
+      // This makes several of the Parser's property unreliable. See todo at SetRunPos
+      // for details.
+      Parser.SetRunPos(IdentPos);
       if SameText(Parser.Token.Data, Name) then
       begin
         FLineNo := IdentLine;
@@ -1014,7 +1016,11 @@ var
             end;
         end; // case
       end; // while
-      if SavePos <> 0 then Parser.RunPos := SavePos;
+      if SavePos <> 0 then begin
+        // This makes several of the Parser's property unreliable. See todo at SetRunPos
+        // for details.
+        Parser.SetRunPos(SavePos);
+      end;
       RenamedEqualPosition := Pos('=', MInfo.RName);
       // For renamed/redirected methods, RName should jump to the renamed method
       if RenamedEqualPosition > 0 then

@@ -48,11 +48,9 @@ type
     Run: Integer;
     FRoundCount: ShortInt;
     FSquareCount: ShortInt;
-    FVisibility: TTokenKind;
     function GetIsJunk: Boolean;
     function IdentKind: TTokenKind;
     procedure SetOrigin(Value: PChar);
-    procedure SetRunPos(NewPos: Integer);
     procedure HandleComments;
   public
     constructor Create;
@@ -67,24 +65,43 @@ type
     procedure NextToken;
     procedure ToLineStart;
     function GetMethodImpLine(const ClassName, MethodName: string): Integer;
-    property Comments: TCommentState read FComment write FComment;
-    property EndCount: Integer read FEndCount write FEndCount;
+    ///<summary>
+    /// @WARNING: Setting the parser's RunPos is a hack, because it should also reset its internal
+    //            state, but can't do that. The only proper way to do that would be restart the
+    //            parser until it reaches the desired RunPos. So, maybe RunPos should be read only
+    //            and any callers that try to set it should be forced to restart it.
+    //            Use this method only if you think you know what you are doing. </summary>
+    procedure SetRunPos(NewPos: Integer);
+    property Comments: TCommentState read FComment;
+    ///<summary>
+    /// The number of "end" tokens to expect after the current position.
+    /// This is only valid if RunPos has not been set explicitly. </summary>
+    property EndCount: Integer read FEndCount;
+    /// </summary>
+    /// Position of the "implementation" section, if it has already been encountered, 0 otherwise </summary>
     property ImplementationsPos: Integer read FImplementationsPos;
     property IsJunk: Boolean read GetIsJunk;
+    /// </summary>
+    /// The position of the start of the last comment that was encountered </summary>
     property LastComment: Integer read FLastComment;
+    ///<summary>
+    /// The position of the last identifier that was encountered, -1 otherwise </summary>
     property LastIdentPos: Integer read FLastIdentPos;
+    ///<summary>
+    /// The line number of the last identifier that was encountered, only valid if LastIdentPos <> -1 </summary>
     property LastIdentLine: Integer read FLastIdentLine;
+    ///<summary>
+    /// The position of the last semicolon that was encountered, -1 otherwise </summary>
     property LastSemiColon: Integer read FLastSemiColon;
     property Origin: PChar read fOrigin write SetOrigin;
-    // todo: Setting the parser's RunPos is a hack, because it should also reset its internal
-    //       state, but can't do that. The only proper way to do that would be restart the
-    //       parser until it reacees the desired RunPos. So, maybe RunPos should be read only
-    //       and any callers that try to set it should be forced to restart it.
-    property RunPos: Integer read Run write SetRunPos;
-    property RoundCount: ShortInt read FRoundCount write FRoundCount;
-    property SquareCount: ShortInt read FSquareCount write FSquareCount;
+    //<summary>
+    /// The current position of the parser.
+    /// @NOTE: It is readonly because setting it has side effects.
+    ///        Call the SetRunPos method if you think you know what you are doing. </summary>
+    property RunPos: Integer read Run;
+    property RoundCount: ShortInt read FRoundCount;
+    property SquareCount: ShortInt read FSquareCount;
     property Token: TmPasToken read FToken;
-    property Visibility: TTokenKind read FVisibility write FVisibility;
   end;
 
 implementation
@@ -120,9 +137,10 @@ begin
   inherited Create;
   FComment := csNo;
   FEndCount := 0;
+  FLastIdentPos := -1;
   FImplementationsPos := 0;
+  FLastSemiColon := -1;
   FToken := TmPasToken.Create;
-  Visibility := tkUnknown;
 end; { Create }
 
 function TmPasParser.GetSubString(StartPos, EndPos: Integer): string;
@@ -138,12 +156,36 @@ procedure TmPasParser.SetOrigin(Value: PChar);
 begin
   FOrigin := Value;
   Run := 0;
+  FComment := csNo;
+  FEndCount := 0;
+  FRoundCount := 0;
+  FSquareCount := 0;
+  FImplementationsPos := 0;
   FToken.Origin := Value;
 end; { SetOrigin }
 
 procedure TmPasParser.SetRunPos(NewPos: Integer);
 begin
   Run := NewPos;
+
+  // We are assuming that SetRunPos will not be called for any position inside a comment,
+  // so we set FComment to csNo. This assumption may be wrong.
+  FComment := csNo;
+
+  // The following properties will now possibly be wrong, but we can't do anything about that:
+  // * EndCount
+  // * RoundCount
+  // * SquareCount
+  // Fortunately they are not used internally.
+  // Any code that wants to use them, should not set the RunPos property.
+
+  // LastIdentPos might still be valid, but we can't know that
+  FLastIdentPos := -1;
+  // the same goes for LastSemiColon
+  FLastSemiColon := -1;
+
+  // lets hope that before somebody tries to use these properties, they are set correctly
+
   NextToken;
 end; { SetRunPos }
 
@@ -429,6 +471,7 @@ begin
     end;
     tkImplementation: FImplementationsPos := FToken.Position;
     tkCase: Inc(FEndCount);
+    // todo: Is this correct? Whe have got nested classes nowadays
     tkClass: FEndCount := 1;
     tkBegin: Inc(FEndCount);
     tkEnd: Dec(FEndCount);
