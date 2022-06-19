@@ -76,6 +76,10 @@ type
     property LastIdentLine: Integer read FLastIdentLine;
     property LastSemiColon: Integer read FLastSemiColon;
     property Origin: PChar read fOrigin write SetOrigin;
+    // todo: Setting the parser's RunPos is a hack, because it should also reset its internal
+    //       state, but can't do that. The only proper way to do that would be restart the
+    //       parser until it reacees the desired RunPos. So, maybe RunPos should be read only
+    //       and any callers that try to set it should be forced to restart it.
     property RunPos: Integer read Run write SetRunPos;
     property RoundCount: ShortInt read FRoundCount write FRoundCount;
     property SquareCount: ShortInt read FSquareCount write FSquareCount;
