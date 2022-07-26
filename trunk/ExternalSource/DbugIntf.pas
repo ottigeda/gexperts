@@ -137,7 +137,7 @@ var
   var
     i: Integer;
   begin
-    for i := 0 to ((Length(Str)) * SizeOf(Char)) - 1 do
+    for i := 0 to ((Length(Str)) * SizeOf(AnsiChar)) - 1 do
       AddByte(Byte(Str[i+1]));
   end;
 
