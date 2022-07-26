@@ -75,7 +75,7 @@ function GxEditorFormServices: IGxEditorFormServices;
 implementation
 
 uses
-  {$IFOPT D+} GX_DbugIntf, TypInfo, {$ENDIF}
+  {$IFOPT D+} GX_DbugIntf, GX_Debug, TypInfo, {$ENDIF}
   Windows, SysUtils, Classes, Contnrs,
   GX_GenericUtils, GX_IdeUtils;
 
@@ -378,8 +378,7 @@ begin
     {$IFOPT D+}
       if FHostComponents.Count > 0 then
       begin
-        MessageBox(0, PChar(Format('EditorFormServices has %d dangling host components', [FHostComponents.Count])),
-                      'Warning', MB_OK or MB_ICONHAND);
+        GxDebugShowWarning(Format('EditorFormServices has %d dangling host components', [FHostComponents.Count]));
       end;
     {$ENDIF D+}
 
@@ -420,8 +419,7 @@ begin
     {$IFOPT D+}
       if FListeners.Count > 0 then
       begin
-        MessageBox(0, PChar(Format('EditorFormServices has %d dangling listeners', [FListeners.Count])),
-                      'Warning', MB_OK or MB_ICONHAND);
+        GxDebugShowWarning(Format('EditorFormServices has %d dangling listeners', [FListeners.Count]));
       end;
     {$ENDIF D+}
     for i := 0 to FListeners.Count-1 do

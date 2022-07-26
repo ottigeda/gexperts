@@ -62,7 +62,7 @@ procedure ReleaseEditorChangeServices;
 implementation
 
 uses
-  {$IFOPT D+} GX_DbugIntf, TypInfo, {$ENDIF}
+  {$IFOPT D+} GX_DbugIntf, TypInfo, GX_Debug, {$ENDIF}
   SysUtils, Windows, Classes, Messages, Controls, Forms,
   StdCtrls, // needed only for STARTUP_LAYOUT_FIX_ENABLED
   GX_GenericUtils, GX_GenericClasses, GX_IdeUtils, GX_OtaUtils;
@@ -311,10 +311,8 @@ begin
 
   {$IFOPT D+}
     if FNotifiers.Count > 0 then
-    begin
-      MessageBox(0, PChar(Format('TEditorChangeServices has %d dangling notifiers',
-                 [FNotifiers.Count])), 'GExperts warning', MB_ICONHAND or MB_OK);
-    end;
+      GxDebugShowWarning(Format('TEditorChangeServices has %d dangling notifiers',
+                 [FNotifiers.Count]));
   {$ENDIF D+}
 
   FNotifiers.Clear;
@@ -472,9 +470,8 @@ begin
         with FInstalledModuleNotifiers[i] as IGxModuleNotifier do
           UnaccountedModules := UnaccountedModules + AssociatedModule.FileName + '; ';
       end;
-      MessageBox(0, PChar(Format('TGxIdeNotifier has %d unaccounted modules (%s)',
-                 [FInstalledModuleNotifiers.Count, UnaccountedModules])),
-                 'GExperts warning', MB_ICONHAND or MB_OK);
+      GxDebugShowWarning(Format('TGxIdeNotifier has %d unaccounted modules (%s)',
+        [FInstalledModuleNotifiers.Count, UnaccountedModules]));
     end;
   {$ENDIF D+}
 
@@ -1341,7 +1338,7 @@ finalization
 
 {$IFOPT D+}
   if Assigned(PrivateEditorChangeServices) then
-    MessageBox(0, 'PrivateEditorChangeServices is not nil during finalization', 'GExperts warning', MB_ICONHAND or MB_OK);
+    GxDebugShowWarning('PrivateEditorChangeServices is not nil during finalization');
 {$ENDIF D+}
   ReleaseEditorChangeServices;
 {$IFOPT D+}

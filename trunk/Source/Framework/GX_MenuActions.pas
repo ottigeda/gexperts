@@ -34,7 +34,7 @@ procedure FreeGXMenuActionManager;
 implementation
 
 uses
-  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
+  {$IFOPT D+} GX_DbugIntf, GX_Debug, {$ENDIF}
   SysUtils, Windows, Classes, Graphics, Controls, ActnList, Menus, Forms, Math,
   GX_GenericClasses, GX_ActionBroker, GX_ConfigurationInfo,
   GX_GExperts, GX_GenericUtils, GX_IdeUtils, GX_OtaUtils;
@@ -627,7 +627,7 @@ finalization
   // Assert(PrivateGXMenuActionManager = nil, 'PrivateGXMenuActionManager is not nil during finalization');
   // so instead we show a message box.
   if Assigned(PrivateGXMenuActionManager) then
-    MessageBox(0, 'PrivateGXMenuActionManager is not nil during finalization', 'GExperts warning', MB_ICONHAND or MB_OK);
+    GxDebugShowWarning('PrivateGXMenuActionManager is not nil during finalization');
 {$ENDIF D+}
   // todo: Maybe free it ? Not sure about the consequences. This object holds some interface
   //       references. These might cause trouble now, if free'd here, or later if not.

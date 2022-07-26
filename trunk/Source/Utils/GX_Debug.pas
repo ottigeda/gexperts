@@ -2,19 +2,39 @@ unit GX_Debug;
 
 {$I GX_CondDefine.inc}
 
-// if GX_DEBUGLOG is not defined (which is the default), this unit appears empty to the comiler
-{$IFDEF GX_DEBUGLOG}
+// if GX_DEBUGLOG is not defined (which is the default), this unit only
+// exports GxDebugShowWarning
+
+// GxDebugShowWarning will do nothing if GX_DEBUG_NO_WARNINGS is defined
 
 interface
 
 uses SysUtils;
 
+{$IFDEF GX_DEBUGLOG}
 procedure GxAddToDebugLog(const Msg: string);
 procedure GxAddExceptionToLog(const E: Exception; const Msg: string);
+{$ENDIF}
+
+procedure GxDebugShowWarning(const _Msg: string);
 
 implementation
 
-uses Classes, Windows,
+uses
+  Windows
+{$IFNDEF GX_DEBUGLOG}
+;
+
+procedure GxDebugShowWarning(const _Msg: string);
+begin
+{$IFNDEF GX_DEBUG_NO_WARNINGS}
+  MessageBox(0, PChar(_msg), 'GExperts Debug Warning', MB_OK or MB_ICONHAND);
+{$ENDIF}
+end;
+
+
+{$ELSE}
+, Classes,
   // This requires the JCL 1.11: http://delphi-jedi.org/CODELIBJCL
   // And a detailed map file (see the linker options in the IDE)
   JclDebug, JclHookExcept;
@@ -91,10 +111,6 @@ initialization
 
 finalization
   JclStopExceptionTracking;
-
-{$ELSE not GX_DEBUGLOG}
-interface
-implementation
-{$ENDIF not GX_DEBUGLOG}
+{$ENDIF}
 
 end.
