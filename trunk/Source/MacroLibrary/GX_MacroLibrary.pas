@@ -225,34 +225,6 @@ type
     function IsDefaultActive: Boolean; override;
   end;
 
-  TMacroLibRecordExpert = class(TGX_Expert)
-  protected
-    procedure SetShortCut(Value: TShortCut); override;
-  public
-    procedure Execute(Sender: TObject); override;
-    function HasConfigOptions: Boolean; override;
-    function GetDefaultShortCut: TShortCut; override;
-    function GetActionCaption: string; override;
-    class function ConfigurationKey: string; override;
-    class function GetName: string; override;
-    function GetHelpString: string; override;
-    function IsDefaultActive: Boolean; override;
-  end;
-
-  TMacroLibPlaybackExpert = class(TGX_Expert)
-  protected
-    procedure SetShortCut(Value: TShortCut); override;
-  public
-    procedure Execute(Sender: TObject); override;
-    function HasConfigOptions: Boolean; override;
-    function GetDefaultShortCut: TShortCut; override;
-    function GetActionCaption: string; override;
-    class function ConfigurationKey: string; override;
-    class function GetName: string; override;
-    function GetHelpString: string; override;
-    function IsDefaultActive: Boolean; override;
-  end;
-
 var
   fmMacroLibrary: TfmMacroLibrary = nil;
   MacroLibExpert: TMacroLibraryExpert = nil;
@@ -1316,116 +1288,6 @@ begin
   Result := not RunningRS2009;
 end;
 
-{ TMacroLibRecordExpert }
-
-class function TMacroLibRecordExpert.ConfigurationKey: string;
-begin
-  Result := 'MacroLibRecord';
-end;
-
-function TMacroLibRecordExpert.HasConfigOptions: Boolean;
-begin
-  Result := False;
-end;
-
-function TMacroLibRecordExpert.IsDefaultActive: Boolean;
-begin
-  Result := False;
-end;
-
-procedure TMacroLibRecordExpert.Execute(Sender: TObject);
-begin
-  GetMacroLibraryForm.actRecord.Execute;
-end;
-
-function TMacroLibRecordExpert.GetActionCaption: string;
-resourcestring
-  SMenuCaption = 'Keyboard Macro Record Start/Stop';
-begin
-  Result := SMenuCaption;
-end;
-
-function TMacroLibRecordExpert.GetDefaultShortCut: TShortCut;
-begin
-  Result := Menus.ShortCut(Ord('R'), [ssCtrl, ssShift]);
-end;
-
-function TMacroLibRecordExpert.GetHelpString: string;
-resourcestring
-  SHelpString =
-  '  Start or stop keyboard macro recording.';
-begin
-  Result := SHelpString;
-end;
-
-class function TMacroLibRecordExpert.GetName: string;
-begin
-  Result := 'MacroLibRecord';
-end;
-
-procedure TMacroLibRecordExpert.SetShortCut(Value: TShortCut);
-begin
-  inherited;
-  if (GetMacroLibraryForm = nil) then
-    Exit; //==>
-  GetMacroLibraryForm.actRecord.ShortCut := Value;
-end;
-
-{ TMacroLibPlaybackExpert }
-
-class function TMacroLibPlaybackExpert.ConfigurationKey: string;
-begin
-  Result := 'MacroLibPlayback';
-end;
-
-function TMacroLibPlaybackExpert.HasConfigOptions: Boolean;
-begin
-  Result := False;
-end;
-
-function TMacroLibPlaybackExpert.IsDefaultActive: Boolean;
-begin
-  Result := False;
-end;
-
-procedure TMacroLibPlaybackExpert.Execute(Sender: TObject);
-begin
-  GetMacroLibraryForm.actPlayback.Execute;
-end;
-
-function TMacroLibPlaybackExpert.GetActionCaption: string;
-resourcestring
-  SMenuCaption = 'Keyboard Macro Playback';
-begin
-  Result := SMenuCaption;
-end;
-
-function TMacroLibPlaybackExpert.GetDefaultShortCut: TShortCut;
-begin
-  Result := Menus.ShortCut(Ord('P'), [ssCtrl, ssShift]);
-end;
-
-function TMacroLibPlaybackExpert.GetHelpString: string;
-resourcestring
-  SHelpString =
-  '  Playback recorded keyboard macro.';
-begin
-  Result := SHelpString;
-end;
-
-class function TMacroLibPlaybackExpert.GetName: string;
-begin
-  Result := 'MacroLibPlayback';
-end;
-
-procedure TMacroLibPlaybackExpert.SetShortCut(Value: TShortCut);
-begin
-  inherited;
-  if (GetMacroLibraryForm = nil) then
-    Exit; //==>
-  GetMacroLibraryForm.actPlayback.ShortCut := Value;
-end;
-
 { TIDEMacroBugMessage }
 
 function TIDEMacroBugMessage.GetMessage: string;
@@ -1437,8 +1299,6 @@ end;
 
 initialization
   RegisterGX_Expert(TMacroLibraryExpert);
-  RegisterGX_Expert(TMacroLibRecordExpert);
-  RegisterGX_Expert(TMacroLibPlaybackExpert);
 
 finalization
 {$IFOPT D+}
