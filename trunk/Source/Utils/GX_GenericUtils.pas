@@ -2912,6 +2912,7 @@ begin
     or IsBdsgroup(FileName)
     or IsBdsproj(FileName)
     or IsDproj(FileName)
+    or IsGroupproj(FileName)
     or IsPackage(FileName)
     or IsCsproj(FileName);
 end;
