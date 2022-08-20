@@ -172,6 +172,7 @@ var
   i: Integer;
   ExpName : string;
   Expert: TGX_Expert;
+  IgnoreDestructionErrors: Boolean;
 begin
   try
     {$IFOPT D+} SendDebug('Destroying GExperts'); {$ENDIF}
@@ -183,6 +184,7 @@ begin
         {$IFOPT D+} SendDebug('Destroying Experts'); {$ENDIF}
         if FExpertList <> nil then
         begin
+          IgnoreDestructionErrors := False;
           for i := 0 to FExpertList.Count - 1 do
           begin
             Expert := ExpertList[i];
@@ -197,7 +199,11 @@ begin
                 on E: Exception do
                 begin
                   // Report the exception and continue to destroy the other experts
-                  MessageDlg(Format('GExperts error destroying expert %d - %s: %s', [i, ExpName, E.Message]), mtError, [mbOK], 0);
+                  if not IgnoreDestructionErrors then begin
+                    if mrIgnore = MessageDlg(Format('GExperts error destroying expert %d - %s: %s', [i, ExpName, E.Message]) + #13#10
+                      + 'Press Ignore to ignore any further errors while destroying experts.', mtError, [mbOK, mbIgnore], 0) then
+                      IgnoreDestructionErrors := True;
+                  end;
                   {$IFOPT D+} SendDebugError(Format('Error destroying expert %d - %s: %s', [i, ExpName, E.Message])); {$ENDIF}
                 end;
               end;
