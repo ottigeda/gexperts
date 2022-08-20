@@ -14,7 +14,7 @@ uses
 const
   // do not translate
   GrepSearchName = 'GrepSearch';
-  GrepResultsName = 'GrepResuls';
+  GrepResultsName = 'GrepResults';
   GrepNextItemName = 'GrepNextItem';
   GrepPrevItemName = 'GrepPrevItem';
 
