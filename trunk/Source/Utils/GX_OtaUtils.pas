@@ -2786,6 +2786,9 @@ begin
     if IsForm(FileName) then
       Exit;
     {$ENDIF VER160}
+    // If it's a project file, then the opened file is most likely a source file and not the project file
+    if IsBdsProjectFile(FileName) then
+      Exit;
     Module := GxOtaGetModule(BaseFileName);
     if Module = nil then
       Module := GxOtaGetModule(FileName);
