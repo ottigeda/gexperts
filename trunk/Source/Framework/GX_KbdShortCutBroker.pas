@@ -376,6 +376,7 @@ type
     FKeyboardBindingIndex: Integer;
     FUpdateCount: Integer;
     FInstallingKeyboardBinding: Boolean;
+    FShuttingDown: Boolean;
 {$IFDEF KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
     // This fixes a problem where pressing Insert causes a noticable delay (Bug #147)
     // because it results in multiple uninstalling and installing the GExperts keyboard binding.
@@ -447,6 +448,7 @@ end;
 
 destructor TGxNativeKeyboardShortCutBroker.Destroy;
 begin
+  FShuttingDown := True;
 {$IFDEF KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
   FreeAndNil(FDoInstallCallback);
 {$ENDIF}
@@ -480,7 +482,8 @@ begin
   // todo: This is a hack and there should be a better way to handle this.
   if _Immediate then begin
     FreeAndNil(FDoInstallCallback);
-    InstallKeyboardBindings;
+    if not FShuttingDown then
+      InstallKeyboardBindings;
   end else begin
     if not Assigned(FDoInstallCallback) then
       FDoInstallCallback := TTimedCallback.Create(DelayedInstallKeyboardBindings, 500, False)
@@ -488,7 +491,8 @@ begin
       FDoInstallCallback.Reset;
   end;
 {$ELSE}
-  InstallKeyboardBindings;
+  if not FShuttingDown then
+    InstallKeyboardBindings;
 {$ENDIF}
 end;
 
