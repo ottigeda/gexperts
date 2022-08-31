@@ -124,6 +124,8 @@ type
     mitOptionsCollectionOpen: TMenuItem;
     mitOptionsCollectionReopen: TMenuItem;
     mitOptionsCollectionSaveAs: TMenuItem;
+    mitImportwuppdi: TMenuItem;
+    actOptionsCollectionImportWuppdiConfig: TAction;
     mitFileSep3: TMenuItem;
     mitFileCollections: TMenuItem;
     mitCollectionsSep1: TMenuItem;
@@ -170,6 +172,7 @@ type
     procedure mitFileCollectionsClick(Sender: TObject);
     procedure actAddCurrentFileExecute(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure actOptionsCollectionImportWuppdiConfigExecute(Sender: TObject);
   private
     FFileViewer: TFileViewer;
     FEntryFile: string;
@@ -236,10 +239,10 @@ implementation
 
 uses
   Messages, ShellAPI, StrUtils, DropSource,
-  ToolsAPI, Math,
+  ToolsAPI, Math, IniFiles,
   u_dzVclUtils,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  GX_FavNewFolder, GX_FavFolderProp, GX_FavFileProp, GX_FavOptions,
+  GX_FavNewFolder, GX_FavFolderProp, GX_FavFileProp, GX_FavOptions, GX_FavWuppdiWPImport,
   {$IFNDEF STANDALONE}
   GX_ConfigurationInfo, GX_Experts, GX_GExperts,
   {$ENDIF STANDALONE}
@@ -1297,6 +1300,216 @@ begin
     SetShowPreview(FOptions.FShowPreview);
     doOnSettingsChanged;
   end;
+end;
+
+procedure TfmFavFiles.actOptionsCollectionImportWuppdiConfigExecute(Sender: TObject);
+resourcestring
+  SFileNotExists = 'The selected file does not exist!';
+  SOverwriteFavorites = 'You did not select a subfolder, are you sure that you want to override your favorites?';
+  SSubfolderExists = 'The selected sub-folder (%s) already exists!'#13#10'Do you want to continue and clear the sub-folder?';
+const
+  WuppdiWPFavorite = 'favorite'; // Do not localize.
+  WuppdiWPSectionName = 'name'; // Do not localize.
+  WuppdiWPSectionItemCount = 'itemcount'; // Do not localize.
+  WuppdiWPSectionItem = 'item%d'; // Do not localize.
+var
+  Filename: string;
+  IniFile: TIniFile;
+  Sections: TStringList;
+  CurrentSection: string;
+  I: Integer;
+  Node: TTreeNode;
+  SectionName: string;
+  SubFolder: TGXFolder;
+  SubFile: TGXFile;
+  K: Integer;
+  ItemCount: Integer;
+  FavoriteFilename: string;
+
+  fmFavWuppdiWPImport: TfmFavWuppdiWPImport;
+  FavSubfolder: string;
+  FavFolder: TGXFolder;
+  FavNode: TTreeNode;
+  BaseFolder: TGXFolder;
+begin
+  FavSubfolder := '';
+  Filename := '';
+
+  fmFavWuppdiWPImport := TfmFavWuppdiWPImport.Create(nil);
+  try
+    TForm_CenterOn(fmFavWuppdiWPImport, Self);
+    if (fmFavWuppdiWPImport.ShowModal <> mrOk) then
+      Exit;
+
+    Filename := fmFavWuppdiWPImport.edtWuppdiWPFilename.Text;
+    FavSubfolder := fmFavWuppdiWPImport.edtSubfolderName.Text;
+  finally
+    FreeAndNil(fmFavWuppdiWPImport);
+  end;
+
+  // Check the existence of the file, shouldn't be necessary, but who knows...
+  if not FileExists(Filename) then
+  begin
+    MessageDlg(SFileNotExists, mtError, [mbOk], 0);
+    Exit;
+  end;
+
+  // Empty sub-folder means overwriting the favorites
+  if (Trim(FavSubfolder) = '') then
+  begin
+    if (MessageDlg(SOverwriteFavorites
+              , mtConfirmation
+              , [mbYes, mbCancel]
+              , 0) <> mrYes) then
+    begin
+      Exit;
+    end;
+  end;
+
+  if (Trim(FavSubfolder) = '') then
+  begin
+    // Clear the current configuration, overwrite with wuppdiWP-settings
+    BaseFolder := Root;
+    tvFolders.Items.Clear;
+
+    FavNode := CreateEmptyRootNode;
+  end
+  else
+  begin
+    // Check if folder already exists!
+    FavFolder := nil;
+    for I := 0 to Root.FolderCount - 1 do
+    begin
+      if (Root.Folders[I].FolderName = FavSubfolder) then
+      begin
+        FavFolder := Root.Folders[I];
+        Break;
+      end;
+    end;
+
+    FavNode := nil;
+    if (Assigned(FavFolder)) then
+    begin
+      if (MessageDlg(Format(SSubfolderExists, [FavSubfolder])
+               , mtWarning, [mbYes, mbCancel], 0) <> mrYes) then
+        Exit;
+
+      BaseFolder := FavFolder;
+
+      // Find the corresponding entry in the treeview
+      Node:= tvFolders.Items.GetFirstNode.getFirstChild;
+      while Assigned(Node) do
+      begin
+        if (Node.Text = FavSubfolder) then
+        begin
+          FavNode := Node;
+
+          Break;
+        end;
+
+        Node := Node.getNextSibling;
+      end;
+    end;
+
+    if (not Assigned(FavNode)) then
+    begin
+      // This shouldn't happen as it would mean we have a GXFolder without an entry in the treeview
+      if Assigned(BaseFolder) then
+        FreeAndNil(BaseFolder);
+
+      // Create a new subfolder
+      BaseFolder := TGXFolder.Create(Root);
+      BaseFolder.FolderName := FavSubfolder;
+
+      FavNode := tvFolders.Items.AddChildObject(tvFolders.Items.GetFirstNode, FavSubfolder, BaseFolder);
+    end;
+  end;
+
+  // Clear the folders
+  BaseFolder.Clear;
+  FavNode.DeleteChildren;
+
+  // Parse the WuppdiWP configuration file
+  // The format is
+  // [general]
+  // <general configuratio settings>
+  // favoritecount=<number of entries>
+  //
+  // [favorite0]
+  // name=<name of the entry>
+  // itemcount=<numer of items>
+  // item0=<path to first item>
+  // item1=<path to second item>
+  //
+  // [favorite1]
+  // ...
+  //
+  // All options in the "general" section are ignored, including "favoritecount".
+  // We just read all sections starting with "favorite".
+  // Each favorite is then created as a sub-folder in the menu below the favorite
+  // folder and includes all items from that section.
+
+  Sections := TStringList.Create;
+  try
+    IniFile := TIniFile.Create(Filename);
+    try
+      IniFile.ReadSections(Sections);
+
+      for I := 0 to Sections.Count - 1 do
+      begin
+        CurrentSection := Sections[I];
+
+        // Not a favorite section
+        if (not StrBeginsWith(WuppdiWPFavorite, CurrentSection, False)) then
+          Continue;
+
+        // Get the name of the current section, continue if no name is set
+        SectionName := IniFile.ReadString(CurrentSection, WuppdiWPSectionName, '');
+        if (SectionName = '') then
+          Continue;
+
+        // Create a subfolder for the current section
+        SubFolder := TGXFolder.Create(BaseFolder);
+        SubFolder.FolderName := SectionName;
+
+        // Get the itemcount for the current section
+        ItemCount := IniFile.ReadInteger(CurrentSection, WuppdiWPSectionItemCount, 0);
+
+        for K := 0 to ItemCount - 1 do
+        begin
+          // Try to get the filename for the favorite entry
+          FavoriteFilename := IniFile.ReadString(CurrentSection, Format(WuppdiWPSectionItem, [K]), '');
+          if (Trim(FavoriteFilename) = '') then
+            Continue;
+
+          // If the filename is specified, create a new file in the tree
+          SubFile := TGXFile.Create(SubFolder);
+          SubFile.FileName := FavoriteFilename;
+          SubFile.DName := ExtractFileName(FavoriteFilename);
+          SubFile.Description := ExtractFilePath(FavoriteFilename);
+
+          // Open the file in the IDE
+          SubFile.ExecType := etLoadInIDE;
+          // Special casing for project files
+          if IsBdsProjectFile(FavoriteFilename) then
+            SubFile.ExecType := etProject;
+        end;
+      end;
+    finally
+      FreeAndNil(IniFile);
+    end;
+  finally
+    FreeAndNil(Sections);
+  end;
+
+  FavNode.ImageIndex := 0;
+  FavNode.SelectedIndex := 1;
+  CreateFolders(BaseFolder, FavNode);
+  FavNode.Expand(FOptions.FExpandAll);
+  FavNode.Selected := True;
+
+  // mark as dirty
+  FModified := True;
 end;
 
 procedure TfmFavFiles.actOptionsCollectionOpenDefaultExecute(Sender: TObject);

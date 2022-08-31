@@ -105,6 +105,7 @@ uses
   GX_FavNewFolder in '..\..\source\FavoriteFiles\GX_FavNewFolder.pas' {fmFavNewFolder},
   GX_FavOptions in '..\..\source\FavoriteFiles\GX_FavOptions.pas' {fmFavOptions},
   GX_FavUtil in '..\..\source\FavoriteFiles\GX_FavUtil.pas',
+  GX_FavWuppdiWPImport in '..\..\Source\FavoriteFiles\GX_FavWuppdiWPImport.pas' {fmFavWuppdiWPImport},
   GX_FeedbackWizard in '..\..\source\Framework\GX_FeedbackWizard.pas' {fmFeedbackWizard},
   GX_FileScanner in '..\..\source\Framework\GX_FileScanner.pas',
   GX_FilterExceptions in '..\..\Source\FilterExceptions\GX_FilterExceptions.pas' {fmGxFilterExceptionsExpert},

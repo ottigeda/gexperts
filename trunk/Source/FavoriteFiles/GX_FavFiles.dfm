@@ -250,6 +250,9 @@ object fmFavFiles: TfmFavFiles
         object mitOptionsCollectionOpenDefault: TMenuItem
           Action = actOptionsCollectionOpenDefault
         end
+        object mitImportwuppdi: TMenuItem
+          Action = actOptionsCollectionImportWuppdiConfig
+        end
         object mitCollectionsSep1: TMenuItem
           Caption = '-'
         end
@@ -858,6 +861,12 @@ object fmFavFiles: TfmFavFiles
       Caption = 'Move Down'
       ShortCut = 16424
       OnExecute = actFileMoveDownExecute
+    end
+    object actOptionsCollectionImportWuppdiConfig: TAction
+      Category = 'Options'
+      Caption = 'Import &Wuppdi Configuration ...'
+      Hint = 'Import Wuppdi Configuration'
+      OnExecute = actOptionsCollectionImportWuppdiConfigExecute
     end
   end
 end
