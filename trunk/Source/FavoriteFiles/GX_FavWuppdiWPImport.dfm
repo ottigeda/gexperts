@@ -22,19 +22,19 @@ object fmFavWuppdiWPImport: TfmFavWuppdiWPImport
   object lblWuppdiWPFilename: TLabel
     Left = 8
     Top = 8
-    Width = 155
+    Width = 158
     Height = 14
     Alignment = taRightJustify
-    Caption = 'WuppdiWP &configuration file'
+    Caption = 'WuppdiWP &Configuration File'
     FocusControl = edtWuppdiWPFilename
   end
   object lblSubfolderName: TLabel
     Left = 8
     Top = 56
-    Width = 110
+    Width = 113
     Height = 14
     Alignment = taRightJustify
-    Caption = 'Fav. &subfolder name'
+    Caption = 'Fav. &Subfolder Name'
     FocusControl = edtWuppdiWPFilename
   end
   object btnCancel: TButton
