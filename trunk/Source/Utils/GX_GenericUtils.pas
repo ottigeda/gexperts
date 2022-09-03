@@ -3774,9 +3774,14 @@ begin
       Dlg.Filter := Format('%s|All Files (%s)|%s', [Filter, AllFilesWildCard, AllFilesWildCard]);
     Dlg.Options := Dlg.Options + [ofPathMustExist, ofFileMustExist, ofAllowMultiSelect, ofDontAddToRecent];
     Dlg.Title := Title;
-    dir := ExtractFilePath(fn);
-    if dir <> '' then
-      Dlg.InitialDir := dir;
+    if fn <> '' then begin
+      if DirectoryExists(fn) then
+        Dir := fn
+      else
+        Dir := ExtractFilePath(fn);
+      if Dir <> '' then
+        Dlg.InitialDir := Dir;
+    end;
     Result := GetOpenSaveDialogExecute(Dlg);
     if Result then
       Files.Assign(Dlg.Files);
@@ -3801,9 +3806,14 @@ begin
       Dlg.Filter := Format('%s|All Files (%s)|%s', [Filter, AllFilesWildCard, AllFilesWildCard]);
     Dlg.Options := Dlg.Options + [ofPathMustExist, ofFileMustExist];
     Dlg.Title := Title;
-    dir := ExtractFilePath(Filename);
-    if dir <> '' then
-      Dlg.InitialDir := dir;
+    if FileName <> '' then begin
+      if DirectoryExists(FileName) then
+        Dir := FileName
+      else
+        Dir := ExtractFilePath(FileName);
+      if Dir <> '' then
+        Dlg.InitialDir := Dir;
+    end;
     Result := GetOpenSaveDialogExecute(Dlg);
     if Result then
       Filename := Dlg.FileName;
