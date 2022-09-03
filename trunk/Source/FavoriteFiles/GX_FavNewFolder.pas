@@ -5,7 +5,8 @@ unit GX_FavNewFolder;
 interface
 
 uses
-  Windows, SysUtils, Types, Classes, Controls, Forms, StdCtrls, GX_BaseForm;
+  Windows, SysUtils, Types, Classes, Controls, Forms, StdCtrls, GX_BaseForm,
+  GX_FavUtil;
 
 type
   TfmFavNewFolder = class(TfmBaseForm)
@@ -22,12 +23,14 @@ type
     procedure cbxFolderTypeMeasureItem(Control: TWinControl; Index: Integer;
       var Height: Integer);
   private
-    FFavoriteFilesForm: TForm;
     procedure InitializeForm;
     function DpiScaleValue(_Value: Integer): Integer;
+    procedure GetData(out _FolderName: string; out _FolderType: TFolderType);
+  protected
+    FFavoriteFilesForm: TForm;
   public
+    class function Execute(_Owner: TWinControl; out _FolderName: string; out _FolderType: TFolderType): Boolean;
     constructor Create(_Owner: TComponent); override;
-    property FavoriteFilesForm: TForm write FFavoriteFilesForm;
   end;
 
 implementation
@@ -38,12 +41,27 @@ uses
   Graphics,
   u_dzTypesUtils,
 {$IFDEF IDE_IS_HIDPI_AWARE}
-  u_dzVclUtils,
   u_dzDpiScaleUtils,
 {$ENDIF}
-  GX_FavUtil, GX_FavFiles;
+  u_dzVclUtils,
+  GX_FavFiles;
 
 { TfmFavNewFolder }
+
+class function TfmFavNewFolder.Execute(_Owner: TWinControl; out _FolderName: string; out _FolderType: TFolderType): Boolean;
+var
+  frm: TfmFavNewFolder;
+begin
+  frm := Self.Create(_Owner);
+  try
+   TForm_CenterOn(frm, _Owner);
+    Result := (frm.ShowModal = mrOk);
+    if Result then
+      frm.GetData(_FolderName, _FolderType);
+  finally
+    FreeAndNil(frm);
+  end;
+end;
 
 constructor TfmFavNewFolder.Create(_Owner: TComponent);
 begin
@@ -77,12 +95,19 @@ begin
 {$ENDIF}
 end;
 
+procedure TfmFavNewFolder.GetData(out _FolderName: string; out _FolderType: TFolderType);
+begin
+  _FolderName := edtFolderName.Text;
+  _FolderType := TFolderType(cbxFolderType.ItemIndex);
+end;
+
 procedure TfmFavNewFolder.cbxFolderTypeDrawItem(Control: TWinControl; Index: Integer;
   Rect: TRect; State: TOwnerDrawState);
 var
   cnv: TCanvas;
   il: TImageList;
   YOffset: Integer;
+  TheForm: TfmFavFiles;
 begin
   try
     cnv := cbxFolderType.Canvas;
@@ -91,7 +116,8 @@ begin
     else
       cnv.Brush.Color := clWindow;
     cnv.FillRect(Rect);
-    il := (FFavoriteFilesForm as TfmFavFiles).ilFolders;
+    TheForm := (FFavoriteFilesForm as TfmFavFiles);
+    il := TheForm.ilFolders;
     YOffset := (TRect_Height(Rect) - il.Height) div 2;
     il.Draw(cnv, Rect.Left + DpiScaleValue(3), Rect.Top + YOffset, Index * 2);
     YOffset := (TRect_Height(Rect) - cnv.TextHeight('Mg')) div 2;

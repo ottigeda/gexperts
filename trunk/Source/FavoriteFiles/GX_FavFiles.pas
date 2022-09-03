@@ -750,7 +750,6 @@ end;
 
 procedure TfmFavFiles.EditFolder;
 var
-  frm: TfmFavFolderProperties;
   Folder: TGXFolder;
 begin
   if tvFolders.Selected = nil then
@@ -758,22 +757,11 @@ begin
 
   Folder := GetFolder(tvFolders.Selected);
 
-  frm := TfmFavFolderProperties.Create(nil);
-  try
-    frm.FavoriteFilesForm := Self;
-    frm.edtFolderName.Text := Folder.FolderName;
-    frm.cbxFolderType.ItemIndex := Ord(Folder.FolderType);
-    if frm.ShowModal = mrOk then
-    begin
-      FModified := True;
-      Folder.FolderName := frm.edtFolderName.Text;
-      Folder.FolderType := TFolderType(frm.cbxFolderType.ItemIndex);
-      tvFolders.Selected.Text := Folder.FolderName;
-      tvFolders.Selected.ImageIndex := Ord(Folder.FolderType) * 2;
-      tvFolders.Selected.SelectedIndex := (Ord(Folder.FolderType) * 2) + 1;
-    end;
-  finally
-    FreeAndNil(frm);
+  if TfmFavFolderProperties.Execute(Self, Folder) then begin
+    FModified := True;
+    tvFolders.Selected.Text := Folder.FolderName;
+    tvFolders.Selected.ImageIndex := Ord(Folder.FolderType) * 2;
+    tvFolders.Selected.SelectedIndex := (Ord(Folder.FolderType) * 2) + 1;
   end;
 end;
 
@@ -1595,16 +1583,11 @@ end;
 
 procedure TfmFavFiles.CreateNewFolder;
 var
-  frm: TfmFavNewFolder;
+  FolderName: string;
+  FolderType: TFolderType;
 begin
-  frm := TfmFavNewFolder.Create(nil);
-  try
-    frm.FavoriteFilesForm := Self;
-    if frm.ShowModal = mrOk then
-      tvFolders.Selected := AddFolder(frm.edtFolderName.Text, TFolderType(frm.cbxFolderType.ItemIndex));
-  finally
-    FreeAndNil(frm);
-  end;
+  if TfmFavNewFolder.Execute(Self, FolderName, FolderType) then
+    tvFolders.Selected := AddFolder(FolderName, FolderType);
 end;
 
 procedure TfmFavFiles.CreateNewFile;
