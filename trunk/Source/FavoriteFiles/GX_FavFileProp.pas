@@ -3,7 +3,8 @@ unit GX_FavFileProp;
 interface
 
 uses
-  Classes, Controls, Forms, ExtCtrls, StdCtrls, ComCtrls, GX_BaseForm;
+  SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, StdCtrls, ComCtrls,
+  GX_BaseForm, GX_FavUtil;
 
 type
   TfmFavFileProp = class(TfmBaseForm)
@@ -31,11 +32,15 @@ type
     procedure cbxExecuteTypeClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
   private
+    // We need this to call TfmFavFiles.MakeFileNameAbsolute, .MakeFilenameRelative and .SetFilter
+    // and also to access .dlgGetFiles. All that is far from ideal
     FFavoriteFilesForm: TForm;
     procedure InitializeForm;
+    procedure SetData(_FavoriteFilesForm: TForm; _File: TGXFile);
+    procedure GetData(_File: TGXFile);
   public
+    class function Execute(_Owner: TWinControl; _File: TGXFile): boolean;
     constructor Create(_Owner: TComponent); override;
-    property FavoriteFilesForm: TForm write FFavoriteFilesForm;
   end;
 
 implementation
@@ -43,9 +48,26 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Graphics, Dialogs, GX_FavFiles, GX_FavUtil;
+  GX_FavFiles, GX_GenericUtils, u_dzVclUtils;
 
 { TfmFavFileProp }
+
+class function TfmFavFileProp.Execute(_Owner: TWinControl; _File: TGXFile): boolean;
+var
+  frm: TfmFavFileProp;
+begin
+  frm := TfmFavFileProp.Create(_Owner);
+  try
+    TForm_CenterOn(frm, _Owner);
+    frm.SetData(_Owner as TForm, _File);
+    Result := ( frm.ShowModal = mrOk );
+    if Result then begin
+      frm.GetData(_File);
+    end;
+  finally
+    FreeAndNil(frm);
+  end;
+end;
 
 constructor TfmFavFileProp.Create(_Owner: TComponent);
 begin
@@ -75,8 +97,9 @@ begin
 
   if TheForm.dlgGetFiles.Execute then
   begin
-    edtFilename.Text := TheForm.MakeFileNameRelative(TheForm.dlgGetFiles.FileName);
-    TheForm.AssignIconImage(imgFileIcon, TheForm.dlgGetFiles.FileName);
+    FileName := TheForm.dlgGetFiles.FileName;
+    edtFilename.Text := TheForm.MakeFileNameRelative(FileName);
+    AssignIconToImage(FileName, imgFileIcon);
   end;
 end;
 
@@ -85,20 +108,16 @@ var
   TheForm: TfmFavFiles;
 begin
   TheForm := (FFavoriteFilesForm as TfmFavFiles);
-  TheForm.AssignIconImage(imgFileIcon, TheForm.MakeFileNameAbsolute(edtFileName.Text));
+  AssignIconToImage(TheForm.MakeFileNameAbsolute(edtFilename.Text), imgFileIcon);
 end;
 
 procedure TfmFavFileProp.sbnExecuteClick(Sender: TObject);
 var
-  TheForm: TfmFavFiles;
+  fn: string;
 begin
-  TheForm := FFavoriteFilesForm as TfmFavFiles;
-
-  TheForm.dlgGetFiles.FilterIndex := 7;
-  if FileExists(edtExecuteUsing.Text) then
-    TheForm.dlgGetFiles.FileName := edtExecuteUsing.Text;
-  if TheForm.dlgGetFiles.Execute then
-    edtExecuteUsing.Text := TheForm.dlgGetFiles.FileName;
+  fn := edtExecuteUsing.Text;
+  if ShowOpenDialog('Select application', '.exe', fn, 'Executable Files (*.exe)|*.exe') then
+    edtExecuteUsing.Text := fn;
 end;
 
 procedure TfmFavFileProp.cbxExecuteTypeClick(Sender: TObject);
@@ -118,6 +137,29 @@ end;
 procedure TfmFavFileProp.FormActivate(Sender: TObject);
 begin
   cbxExecuteTypeClick(cbxExecuteType);
+end;
+
+procedure TfmFavFileProp.GetData(_File: TGXFile);
+begin
+  _File.FileName := edtFilename.Text;
+  _File.Description := edtDescription.Text;
+  _File.DName := edtName.Text;
+  _File.ExecType := TExecType(cbxExecuteType.ItemIndex);
+  _File.ExecProg := edtExecuteUsing.Text;
+end;
+
+procedure TfmFavFileProp.SetData(_FavoriteFilesForm: TForm; _File: TGXFile);
+var
+  TheForm: TfmFavFiles;
+begin
+  FFavoriteFilesForm := _FavoriteFilesForm;
+  TheForm := (FFavoriteFilesForm as TfmFavFiles);
+  edtFilename.Text := _File.FileName;
+  edtName.Text := _File.DName;
+  edtDescription.Text := _File.Description;
+  cbxExecuteType.ItemIndex := Ord(_File.ExecType);
+  edtExecuteUsing.Text := _File.ExecProg;
+  AssignIconToImage(TheForm.MakeFileNameAbsolute(_File.FileName), imgFileIcon);
 end;
 
 procedure TfmFavFileProp.InitializeForm;

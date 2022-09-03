@@ -225,7 +225,6 @@ type
   public
     constructor Create(AOwner: TComponent; _Options: TFavFilesOptions); reintroduce;
     destructor Destroy; override;
-    procedure AssignIconImage(Image: TImage; const ContainerFileName: string);
     procedure SetFilter;
     function MakeFileNameAbsolute(const FileName: string): string;
     function MakeFileNameRelative(const FileName: string): string;
@@ -331,25 +330,6 @@ end;
 
 resourcestring
   SFavorites = 'Favorites';
-
-procedure TfmFavFiles.AssignIconImage(Image: TImage; const ContainerFileName: string);
-var
-  Icon: HIcon;
-  ID: Word;
-begin
-  if not FileExists(ContainerFileName) then
-    Exit;
-
-  Icon := ExtractAssociatedIcon(HInstance, PChar(ContainerFileName), ID);
-  if Icon <> 0 then
-  begin
-    Image.Picture.Icon.Handle := Icon;
-    Image.Visible := True;
-    Image.Refresh;
-  end
-  else
-    Image.Visible := False;
-end;
 
 procedure TfmFavFiles.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
@@ -800,33 +780,14 @@ end;
 procedure TfmFavFiles.EditFile;
 var
   mFile: TGXFile;
-  frm: TfmFavFileProp;
 begin
   mFile := GetFile(ListView.Selected);
   if mFile = nil then
     Exit;
 
-  frm := TfmFavFileProp.Create(nil);
-  try
-    frm.FavoriteFilesForm := Self;
-    frm.edtFilename.Text := mFile.FileName;
-    frm.edtName.Text := mFile.DName;
-    frm.edtDescription.Text := mFile.Description;
-    frm.cbxExecuteType.ItemIndex := Ord(mFile.ExecType);
-    frm.edtExecuteUsing.Text := mFile.ExecProg;
-    AssignIconImage(frm.imgFileIcon, MakeFileNameAbsolute(mFile.FileName));
-    if frm.ShowModal = mrOk then
-    begin
-      FModified := True;
-      mFile.FileName := frm.edtFilename.Text;
-      mFile.Description := frm.edtDescription.Text;
-      mFile.DName := frm.edtName.Text;
-      mFile.ExecType := TExecType(frm.cbxExecuteType.ItemIndex);
-      mFile.ExecProg := frm.edtExecuteUsing.Text;
-      FileToListItem(mFile, ListView.Selected);
-    end;
-  finally
-    FreeAndNil(frm);
+  if TfmFavFileProp.Execute(Self, mFile) then begin
+    FModified := True;
+    FileToListItem(mFile, ListView.Selected);
   end;
 end;
 
