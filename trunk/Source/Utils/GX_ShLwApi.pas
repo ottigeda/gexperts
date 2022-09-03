@@ -1,6 +1,6 @@
 unit GX_ShLwApi;
 // used in Delphi 6 and 7 by defining a unit alias "ShLwApi=GX_ShLwAp"
-// because the do not have the shlwapi unit
+// because they do not have the shlwapi unit
 interface
 
 {$IFNDEF HAS_SHLWAPI}
