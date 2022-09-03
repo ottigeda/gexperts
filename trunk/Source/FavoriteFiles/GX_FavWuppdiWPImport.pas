@@ -115,6 +115,8 @@ procedure TfmFavWuppdiWPImport.InitializeForm;
 var
   Filename: string;
 begin
+  TControl_SetMinConstraints(Self);
+
   // Try to get the filename in the directory of the current running Delphi version
   // If it does not exist leave it empty
   Filename := GetUserApplicationDataFolder + '\' + CompilerDefinedProductRegistryKey + '\wuppdiwp.ini';
