@@ -617,7 +617,7 @@ function CanCreateFile(const FileName: string): Boolean;
 ///<summary>
 /// Copies a single file to the Clipboard.
 /// @raises Exception if anything goes wrong, in particular if the filename is empty
-///                   or  the file does not exist. </summary>
+///                   or the file does not exist. </summary>
 procedure CopyFileToClipboard(const _Filename: string);
 
 // Displays a directory selection box.
@@ -778,6 +778,8 @@ function IDEEditorStringToString(const S: string): string; overload;
 function IDEEditorStringToString(const S: IDEEditBufferString): string; overload;
 {$ENDIF GX_VER200_up}
 {$ENDIF GX_VER160_up}
+
+procedure AssignIconToImage(const ContainerFileName: string; Image: TImage);
 
 procedure AddSCMDirsToIgnore(_List: TGXUnicodeStringList); overload;
 procedure AddSCMDirsToIgnore(_List: TStringList); overload;
@@ -4693,6 +4695,25 @@ begin
   except
     GlobalFree(hGlobal);
   end;
+end;
+
+procedure AssignIconToImage(const ContainerFileName: string; Image: TImage);
+var
+  Icon: HIcon;
+  ID: Word;
+begin
+  if not FileExists(ContainerFileName) then
+    Exit;
+
+  Icon := ExtractAssociatedIcon(HInstance, PChar(ContainerFileName), ID);
+  if Icon <> 0 then
+  begin
+    Image.Picture.Icon.Handle := Icon;
+    Image.Visible := True;
+    Image.Refresh;
+  end
+  else
+    Image.Visible := False;
 end;
 
 procedure AddDelphiDirsToIgnore(_List: TGXUnicodeStringList);
