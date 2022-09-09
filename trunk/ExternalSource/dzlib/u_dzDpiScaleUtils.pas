@@ -545,16 +545,19 @@ end;
 function TImageListScaler.ResizeImagesforHighDPI(_DPI: Integer): TImageList;
 var
   i: Integer;
-  OrigBmp, OrigMask: TBitmap;
+  OrigBmp: TBitmap;
   ScaledBmp, ScaledMask: TBitmap;
   OrigWidth: Integer;
   OrigHeight: Integer;
+  OrigBmpCanvas: TCanvas;
+  OrigBmpHandle: HDC;
   ScaledWidth: Integer;
   ScaledHeight: Integer;
+  ScaledBmpCanvas, ScaledMaskCanvas: TCanvas;
 begin
   Result := TImageList.Create(Self);
 
-  //set size to match DPI size (like 250% of 16px = 40px)
+  // set size to match DPI size (like 250% of 16px = 40px)
   OrigWidth := FOriginal.Width;
   OrigHeight := FOriginal.Height;
   ScaledWidth := MulDiv(OrigWidth, _DPI, 96);
@@ -562,34 +565,40 @@ begin
 
   Result.SetSize(ScaledWidth, ScaledHeight);
 
-  InitializeNil(OrigMask, OrigBmp, ScaledBmp, ScaledMask);
+  InitializeNil(OrigBmp, ScaledBmp, ScaledMask);
   try
     OrigBmp := TBitmap.Create;
-    OrigMask := TBitmap.Create;
     OrigBmp.SetSize(OrigWidth, OrigHeight);
-    OrigMask.SetSize(OrigWidth, OrigHeight);
 
     ScaledBmp := TBitmap.Create;
     ScaledMask := TBitmap.Create;
     ScaledBmp.SetSize(ScaledWidth, ScaledHeight);
     ScaledMask.SetSize(ScaledWidth, ScaledHeight);
 
+    OrigBmpCanvas := OrigBmp.Canvas;
+    OrigBmpHandle :=  OrigBmpCanvas.Handle;
+
+    ScaledBmpCanvas := ScaledBmp.Canvas;
+    ScaledMaskCanvas := ScaledMask.Canvas;
+
     // add images stretched
     for i := 0 to FOriginal.Count - 1 do begin
-      ClearBmp(ScaledBmp.Canvas);
-      ClearBmp(ScaledMask.Canvas);
-      ClearBmp(OrigBmp.Canvas);
-      ClearBmp(OrigMask.Canvas);
+      ClearBmp(OrigBmpCanvas);
+      ImageList_DrawEx(FOriginal.Handle, i, OrigBmpHandle, 0, 0, OrigWidth, OrigHeight, CLR_NONE, CLR_NONE, ILD_NORMAL);
 
-      ImageList_DrawEx(FOriginal.Handle, i, OrigBmp.Canvas.Handle, 0, 0, OrigBmp.Width, OrigBmp.Height, CLR_NONE, CLR_NONE, ILD_NORMAL);
-      ImageList_DrawEx(FOriginal.Handle, i, OrigMask.Canvas.Handle, 0, 0, OrigMask.Width, OrigMask.Height, CLR_NONE, CLR_NONE, ILD_MASK);
+      ClearBmp(ScaledBmpCanvas);
+      ScaledBmpCanvas.StretchDraw(Rect(0, 0, ScaledWidth, ScaledHeight), OrigBmp);
 
-      ScaledBmp.Canvas.StretchDraw(Rect(0, 0, ScaledBmp.Width, ScaledBmp.Width), OrigBmp);
-      ScaledMask.Canvas.StretchDraw(Rect(0, 0, ScaledMask.Width, ScaledMask.Width), OrigMask);
+      ClearBmp(OrigBmpCanvas);
+      ImageList_DrawEx(FOriginal.Handle, i, OrigBmpHandle, 0, 0, OrigWidth, OrigHeight, CLR_NONE, CLR_NONE, ILD_MASK);
+
+      ClearBmp(ScaledMaskCanvas);
+      ScaledMaskCanvas.StretchDraw(Rect(0, 0, ScaledWidth, ScaledHeight), OrigBmp);
+
       Result.Add(ScaledBmp, ScaledMask);
     end;
   finally
-    FreeAndNil(OrigMask, OrigBmp, ScaledBmp, ScaledMask);
+    FreeAndNil(OrigBmp, ScaledBmp, ScaledMask);
   end;
 end;
 
