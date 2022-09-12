@@ -133,18 +133,25 @@ var
     Inc(ByteIndex);
   end;
 
+{$IFNDEF UNICODE}
   procedure AddStringBytes(const Str: AnsiString); overload;
   var
     i: Integer;
   begin
-    for i := 0 to ((Length(Str)) * SizeOf(AnsiChar)) - 1 do
-      AddByte(Byte(Str[i+1]));
+    for i := 1 to Length(Str) do
+      AddByte(Byte(Str[i]));
   end;
-
-{$IFDEF UNICODE}
+{$ELSE}
   procedure AddStringBytes(const Str: string); overload;
+  var
+    i: Integer;
+    c: WideChar;
   begin
-    AddStringBytes(AnsiString(Str));
+    for i := 1 to Length(Str) do begin
+      c := Str[i];
+      AddByte(Word(c) and $FF);
+      AddByte(Word(c) shr 8);
+    end;
   end;
 {$ENDIF}
 
