@@ -29,7 +29,7 @@ type
   protected
     FFavoriteFilesForm: TForm;
   public
-    class function Execute(_Owner: TWinControl; out _FolderName: string; out _FolderType: TFolderType): Boolean;
+    class function Execute(_Owner: TForm; out _FolderName: string; out _FolderType: TFolderType): Boolean;
     constructor Create(_Owner: TComponent); override;
   end;
 
@@ -48,13 +48,14 @@ uses
 
 { TfmFavNewFolder }
 
-class function TfmFavNewFolder.Execute(_Owner: TWinControl; out _FolderName: string; out _FolderType: TFolderType): Boolean;
+class function TfmFavNewFolder.Execute(_Owner: TForm; out _FolderName: string; out _FolderType: TFolderType): Boolean;
 var
   frm: TfmFavNewFolder;
 begin
   frm := Self.Create(_Owner);
   try
-   TForm_CenterOn(frm, _Owner);
+    TForm_CenterOn(frm, _Owner);
+    frm.FFavoriteFilesForm := _Owner;
     Result := (frm.ShowModal = mrOk);
     if Result then
       frm.GetData(_FolderName, _FolderType);
