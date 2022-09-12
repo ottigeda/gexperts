@@ -31,7 +31,9 @@ type
 
     procedure FileDropWuppdiWPFile(_Sender: TObject; _Files: TStrings);
  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
+{$ENDIF}
   public
     constructor Create(_Owner: TComponent); override;
   end;
@@ -64,12 +66,14 @@ begin
   InitializeForm;
 end;
 
+{$IFDEF IDE_IS_HIDPI_AWARE}
 procedure TfmFavWuppdiWPImport.ArrangeControls;
 begin
   inherited;
   lblSubfolderName.Left := edtSubfolderName.Left;
   lblWuppdiWPFilename.Left := edtWuppdiWPFilename.Left;
 end;
+{$endif}
 
 procedure TfmFavWuppdiWPImport.btWuppdiWPFilenameSelectClick(Sender: TObject);
 var
