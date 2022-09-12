@@ -377,8 +377,15 @@ begin
 end;
 
 procedure TfmConfiguration.ArrangeControls;
+var
+  WorkAreaHeight: Integer;
 begin
   inherited;
+  WorkAreaHeight := Monitor.WorkareaRect.Height;
+  if Constraints.MinHeight > WorkAreaHeight then
+    Constraints.MinHeight := WorkAreaHeight;
+  if Height > WorkAreaHeight then
+    Height := WorkAreaHeight;
   ArrangeGeneralTab;
   FConfigExpertsFrame.ArrangeControls;
   FConfigEditorExpertsFrame.ArrangeControls;
