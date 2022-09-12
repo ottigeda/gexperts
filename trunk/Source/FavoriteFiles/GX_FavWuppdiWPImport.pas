@@ -30,6 +30,8 @@ type
     procedure InitializeForm;
 
     procedure FileDropWuppdiWPFile(_Sender: TObject; _Files: TStrings);
+ protected
+    procedure ArrangeControls; override;
   public
     constructor Create(_Owner: TComponent); override;
   end;
@@ -60,6 +62,13 @@ begin
   InitDpiScaler;
 
   InitializeForm;
+end;
+
+procedure TfmFavWuppdiWPImport.ArrangeControls;
+begin
+  inherited;
+  lblSubfolderName.Left := edtSubfolderName.Left;
+  lblWuppdiWPFilename.Left := edtWuppdiWPFilename.Left;
 end;
 
 procedure TfmFavWuppdiWPImport.btWuppdiWPFilenameSelectClick(Sender: TObject);
