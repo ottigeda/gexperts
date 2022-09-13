@@ -118,9 +118,11 @@ begin
       cnv.Brush.Color := clWindow;
     cnv.FillRect(Rect);
     TheForm := (FFavoriteFilesForm as TfmFavFiles);
-    il := TheForm.ilFolders;
-    YOffset := (TRect_Height(Rect) - il.Height) div 2;
-    il.Draw(cnv, Rect.Left + DpiScaleValue(3), Rect.Top + YOffset, Index * 2);
+    if Assigned(TheForm) then begin
+      il := TheForm.ilFolders;
+      YOffset := (TRect_Height(Rect) - il.Height) div 2;
+      il.Draw(cnv, Rect.Left + DpiScaleValue(3), Rect.Top + YOffset, Index * 2);
+    end;
     YOffset := (TRect_Height(Rect) - cnv.TextHeight('Mg')) div 2;
     cnv.TextOut(Rect.Left + DpiScaleValue(22), Rect.Top + YOffset, cbxFolderType.Items[Index]);
   except

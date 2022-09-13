@@ -514,9 +514,14 @@ end;
 function TImageListScaler.GetScaledList(_DPI: Integer): TImageList;
 var
   i: Integer;
+  OrigDPI: Integer;
   NewRec: PScaledImagesRec;
 begin
-  if _DPI = 96 then begin
+  OrigDPI := FOriginal.Tag;
+  if OrigDPI = 0 then
+    OrigDPI := USER_DEFAULT_SCREEN_DPI; // Fallback
+
+  if _DPI = OrigDPI then begin
     Result := FOriginal;
     Exit; //==>
   end;
@@ -545,6 +550,7 @@ end;
 function TImageListScaler.ResizeImagesforHighDPI(_DPI: Integer): TImageList;
 var
   i: Integer;
+  OrigDPI: Integer;
   OrigBmp: TBitmap;
   ScaledBmp, ScaledMask: TBitmap;
   OrigWidth: Integer;
@@ -558,10 +564,14 @@ begin
   Result := TImageList.Create(Self);
 
   // set size to match DPI size (like 250% of 16px = 40px)
+  OrigDPI := FOriginal.Tag;
+  if OrigDPI = 0 then
+    OrigDPI := USER_DEFAULT_SCREEN_DPI;
+
   OrigWidth := FOriginal.Width;
   OrigHeight := FOriginal.Height;
-  ScaledWidth := MulDiv(OrigWidth, _DPI, 96);
-  ScaledHeight := MulDiv(OrigHeight, _DPI, 96);
+  ScaledWidth := MulDiv(OrigWidth, _DPI, OrigDPI);
+  ScaledHeight := MulDiv(OrigHeight, _DPI, OrigDPI);
 
   Result.SetSize(ScaledWidth, ScaledHeight);
 
@@ -584,13 +594,15 @@ begin
     // add images stretched
     for i := 0 to FOriginal.Count - 1 do begin
       ClearBmp(OrigBmpCanvas);
-      ImageList_DrawEx(FOriginal.Handle, i, OrigBmpHandle, 0, 0, OrigWidth, OrigHeight, CLR_NONE, CLR_NONE, ILD_NORMAL);
+      ImageList_DrawEx(FOriginal.Handle, i, OrigBmpHandle, 0, 0, OrigWidth, OrigHeight,
+        CLR_NONE, CLR_NONE, ILD_NORMAL or ILD_ASYNC);
 
       ClearBmp(ScaledBmpCanvas);
       ScaledBmpCanvas.StretchDraw(Rect(0, 0, ScaledWidth, ScaledHeight), OrigBmp);
 
       ClearBmp(OrigBmpCanvas);
-      ImageList_DrawEx(FOriginal.Handle, i, OrigBmpHandle, 0, 0, OrigWidth, OrigHeight, CLR_NONE, CLR_NONE, ILD_MASK);
+      ImageList_DrawEx(FOriginal.Handle, i, OrigBmpHandle, 0, 0, OrigWidth, OrigHeight,
+        CLR_NONE, CLR_NONE, ILD_MASK or ILD_ASYNC);
 
       ClearBmp(ScaledMaskCanvas);
       ScaledMaskCanvas.StretchDraw(Rect(0, 0, ScaledWidth, ScaledHeight), OrigBmp);

@@ -7,9 +7,7 @@ interface
 uses
   Windows, SysUtils, Classes, Controls, Forms, UITypes,
   ComCtrls, Menus, ExtCtrls, ImgList, ImageList, ActnList, ToolWin, Dialogs, Actions,
-{$IFDEF IDE_IS_HIDPI_AWARE}
   u_dzDpiScaleUtils,
-{$ENDIF}
   DropTarget, FileView,
   GX_FavUtil, GX_SharedImages, GX_BaseForm;
 
@@ -890,6 +888,9 @@ begin
   begin
     ilSystem.Handle := AHandle;
     ilSystem.ShareImages := True;
+
+    // calculate the DPI of the ImageList and store it in "Tag"
+    ilSystem.Tag := MulDiv(ilSystem.Width, USER_DEFAULT_SCREEN_DPI, 16);
   end;
 
   AHandle := SHGetFileInfo('', 0, FileInfo, SizeOf(FileInfo), SHGFI_ICON or SHGFI_SYSICONINDEX);
@@ -897,6 +898,9 @@ begin
   begin
     ilSysLarge.Handle := AHandle;
     ilSysLarge.ShareImages := True;
+
+    // calculate the DPI of the ImageList and store it in "Tag"
+    ilSysLarge.Tag := MulDiv(ilSysLarge.Width, USER_DEFAULT_SCREEN_DPI, 32);
   end;
 end;
 
@@ -1792,8 +1796,11 @@ begin
   Actions.Images := il;
   MainMenu.Images := il;
 
-  if not Assigned(FISFolders) then
+  if not Assigned(FISFolders) then begin
+    if ilFolders.Tag = 0 then
+      ilFolders.Tag := TForm_CurrentPPI(Self);
     FISFolders := TImageListScaler.Create(Self, ilFolders);
+  end;
   il := FISFolders.GetScaledList(_NewDpi);
   tvFolders.Images := il;
 
