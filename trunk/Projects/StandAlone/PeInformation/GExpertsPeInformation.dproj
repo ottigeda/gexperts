@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <DCC_DependencyCheckOutputName>..\..\..\binaries\GExpertsPeInformation.exe</DCC_DependencyCheckOutputName>
         <DCC_UsePackage>vcl;vclx</DCC_UsePackage>
@@ -17,17 +17,17 @@
         <DCC_ExeOutput>..\..\..\binaries</DCC_ExeOutput>
         <DCC_HppOutput>.\dcu</DCC_HppOutput>
         <DCC_ImageBase>500000</DCC_ImageBase>
-        <DCC_IncludePath>..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_IncludePath>
+        <DCC_IncludePath>..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\RegExpr;..\..\..\ExternalSource\UniSynEdit</DCC_IncludePath>
         <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
         <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
-        <DCC_ObjPath>..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_ObjPath>
-        <DCC_ResourcePath>..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_ResourcePath>
+        <DCC_ObjPath>..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\RegExpr;..\..\..\ExternalSource\UniSynEdit</DCC_ObjPath>
+        <DCC_ResourcePath>..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\RegExpr;..\..\..\ExternalSource\UniSynEdit</DCC_ResourcePath>
         <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-        <DCC_UnitAlias>UITypes=Dialogs;Actions=ActnList</DCC_UnitAlias>
-        <DCC_UnitSearchPath>..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_UnitSearchPath>
+        <DCC_UnitAlias>UITypes=Dialogs;Actions=ActnList;SynRegExpr=regexpr</DCC_UnitAlias>
+        <DCC_UnitSearchPath>..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\RegExpr;..\..\..\ExternalSource\UniSynEdit</DCC_UnitSearchPath>
         <DCC_WriteableConstants>True</DCC_WriteableConstants>
         <Version>7.0</Version>
     </PropertyGroup>
@@ -39,20 +39,20 @@
         <DCC_GenerateStackFrames>True</DCC_GenerateStackFrames>
         <DCC_HppOutput>.\dcu</DCC_HppOutput>
         <DCC_ImageBase>500000</DCC_ImageBase>
-        <DCC_IncludePath>$(BDS)\lib\Debug;..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_IncludePath>
+        <DCC_IncludePath>$(BDS)\lib\Debug;..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\RegExpr;..\..\..\ExternalSource\UniSynEdit</DCC_IncludePath>
         <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
         <DCC_MapFile>3</DCC_MapFile>
         <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
-        <DCC_ObjPath>$(BDS)\lib\Debug;..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_ObjPath>
+        <DCC_ObjPath>$(BDS)\lib\Debug;..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\RegExpr;..\..\..\ExternalSource\UniSynEdit</DCC_ObjPath>
         <DCC_Optimize>False</DCC_Optimize>
         <DCC_RangeChecking>True</DCC_RangeChecking>
-        <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_ResourcePath>
+        <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\RegExpr;..\..\..\ExternalSource\UniSynEdit</DCC_ResourcePath>
         <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
         <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
         <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-        <DCC_UnitAlias>UITypes=Dialogs;Actions=ActnList</DCC_UnitAlias>
-        <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\UniSynEdit</DCC_UnitSearchPath>
+        <DCC_UnitAlias>UITypes=Dialogs;Actions=ActnList;SynRegExpr=regexpr</DCC_UnitAlias>
+        <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\..\Source\Include;..\..\..\ExternalSource;..\..\..\Source\Utils;..\..\..\ExternalSource\RegExpr;..\..\..\ExternalSource\UniSynEdit</DCC_UnitSearchPath>
         <DCC_WriteableConstants>True</DCC_WriteableConstants>
         <Version>7.0</Version>
     </PropertyGroup>
