@@ -42,6 +42,7 @@ object fmFavWuppdiWPImport: TfmFavWuppdiWPImport
     Top = 104
     Width = 75
     Height = 25
+    Anchors = [akTop, akRight]
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -52,6 +53,7 @@ object fmFavWuppdiWPImport: TfmFavWuppdiWPImport
     Top = 104
     Width = 75
     Height = 25
+    Anchors = [akTop, akRight]
     Caption = 'OK'
     Default = True
     Enabled = False
