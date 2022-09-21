@@ -161,6 +161,9 @@ type
     procedure ReadSection(const Section: string; Strings: TStrings); override;
     procedure ReadSections(Strings: TStrings); overload; override;
     procedure ReadSectionValues(const Section: string; Strings: TStrings); override;
+    ///<summary>
+    /// Delete all values in the section and write the strings to it </summary>
+    procedure WriteSectionValues(const Section: string; Strings: TStrings);
 {$IFDEF CUSTOMINIFILE_HAS_READSUBSECTIONS}
     procedure ReadSubSections(const Section: string; Strings: TStrings; Recurse: Boolean = False); override;
 {$ELSE}
@@ -177,7 +180,7 @@ type
   /// handles the settings of a particular expert, stored under the section given in the constructor </summary>
   TExpertSettings = class
   private
-    FGExpertsSettings: TGExpertsSettings;              
+    FGExpertsSettings: TGExpertsSettings;
     FSection: string;
   public
     constructor Create(GExpertsSettings: TGExpertsSettings; const Section: string);
@@ -1400,6 +1403,18 @@ end;
 procedure TGExpertsBaseSettings.WriteInteger(const Section, Ident: string; Value: Integer);
 begin
   FIniFile.WriteInteger(Section, Ident, Value);
+end;
+
+procedure TGExpertsBaseSettings.WriteSectionValues(const Section: string; Strings: TStrings);
+var
+  i: Integer;
+  ItemName: string;
+begin
+  FIniFile.EraseSection(Section);
+  for i := 0 to Strings.Count - 1 do begin
+    ItemName := Strings.Names[i];
+    FIniFile.WriteString(Section, ItemName, Strings.Values[ItemName]);
+  end;
 end;
 
 procedure TGExpertsBaseSettings.WriteString(const Section, Ident, Value: String);
