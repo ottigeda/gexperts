@@ -74,59 +74,72 @@ object fmExpertManager: TfmExpertManager
     ShowHint = True
     TabOrder = 2
     Wrapable = False
-    object tbnEnable: TToolButton
+    object tbnSave: TToolButton
       Left = 0
       Top = 0
-      Action = actExpertEnable
+      Action = actFileSave
     end
-    object tbnDisable: TToolButton
+    object tbnRevert: TToolButton
       Left = 23
       Top = 0
-      Action = actExpertDisable
+      Action = actFileRevert
     end
     object tbnSep1: TToolButton
       Left = 46
       Top = 0
       Width = 8
-      ImageIndex = 2
       Style = tbsSeparator
     end
-    object tbnAdd: TToolButton
+    object tbnEnable: TToolButton
       Left = 54
       Top = 0
-      Action = actExpertAdd
+      Action = actExpertEnable
     end
-    object tbnRemove: TToolButton
+    object tbnDisable: TToolButton
       Left = 77
       Top = 0
-      Action = actExpertRemove
+      Action = actExpertDisable
     end
     object tbnSep2: TToolButton
       Left = 100
       Top = 0
       Width = 8
-      ImageIndex = 1
       Style = tbsSeparator
     end
-    object tb_MoveUp: TToolButton
+    object tbnAdd: TToolButton
       Left = 108
       Top = 0
-      Action = actExpertMoveUp
+      Action = actExpertAdd
     end
-    object tb_MoveDown: TToolButton
+    object tbnRemove: TToolButton
       Left = 131
       Top = 0
-      Action = actExpertMoveDown
+      Action = actExpertRemove
     end
     object tbnSep3: TToolButton
       Left = 154
       Top = 0
       Width = 8
-      ImageIndex = 4
+      Style = tbsSeparator
+    end
+    object tb_MoveUp: TToolButton
+      Left = 162
+      Top = 0
+      Action = actExpertMoveUp
+    end
+    object tb_MoveDown: TToolButton
+      Left = 185
+      Top = 0
+      Action = actExpertMoveDown
+    end
+    object tbnSep4: TToolButton
+      Left = 208
+      Top = 0
+      Width = 8
       Style = tbsSeparator
     end
     object tbnHelp: TToolButton
-      Left = 162
+      Left = 216
       Top = 0
       Action = actHelpHelp
     end
@@ -199,19 +212,35 @@ object fmExpertManager: TfmExpertManager
     end
     object actExpertMoveUp: TAction
       Category = 'Experts'
-      Caption = 'Move Up'
+      Caption = 'Move &up'
+      Hint = 'Move expert up'
       ImageIndex = 93
       ShortCut = 16422
-      Visible = False
       OnExecute = actExpertMoveUpExecute
     end
     object actExpertMoveDown: TAction
       Category = 'Experts'
-      Caption = 'Move Down'
+      Caption = 'Move &down'
+      Hint = 'Move expert down'
       ImageIndex = 92
       ShortCut = 16424
-      Visible = False
       OnExecute = actExpertMoveDownExecute
+    end
+    object actFileSave: TAction
+      Category = 'File'
+      Caption = '&Save to registry'
+      Hint = 'Save experts to registry'
+      ImageIndex = 31
+      ShortCut = 16467
+      OnExecute = actFileSaveExecute
+    end
+    object actFileRevert: TAction
+      Category = 'File'
+      Caption = '&Revert changes'
+      Hint = 'Revert changes'
+      ImageIndex = 2
+      ShortCut = 16474
+      OnExecute = actFileRevertExecute
     end
     object actFileExit: TAction
       Category = 'File'
@@ -524,6 +553,15 @@ object fmExpertManager: TfmExpertManager
     Top = 48
     object mitFile: TMenuItem
       Caption = '&File'
+      object mitFileSavetoregistry: TMenuItem
+        Action = actFileSave
+      end
+      object mitFileRevertchanges: TMenuItem
+        Action = actFileRevert
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
       object mitFileExit: TMenuItem
         Action = actFileExit
       end

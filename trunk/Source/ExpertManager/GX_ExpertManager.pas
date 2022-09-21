@@ -31,15 +31,18 @@ type
     StatusBar: TStatusBar;
     Actions: TActionList;
     ToolBar: TToolBar;
+    tbnSave: TToolButton;
+    tbnRevert: TToolButton;
+    tbnSep1: TToolButton;
     tbnEnable: TToolButton;
     tbnDisable: TToolButton;
-    tbnSep1: TToolButton;
+    tbnSep2: TToolButton;
     tbnAdd: TToolButton;
     tbnRemove: TToolButton;
-    tbnSep2: TToolButton;
+    tbnSep3: TToolButton;
     tb_MoveUp: TToolButton;
     tb_MoveDown: TToolButton;
-    tbnSep3: TToolButton;
+    tbnSep4: TToolButton;
     tbnHelp: TToolButton;
     actExpertEnable: TAction;
     actExpertDisable: TAction;
@@ -47,6 +50,8 @@ type
     actExpertRemove: TAction;
     actExpertMoveUp: TAction;
     actExpertMoveDown: TAction;
+    actFileSave: TAction;
+    actFileRevert: TAction;
     actFileExit: TAction;
     actHelpHelp: TAction;
     actHelpContents: TAction;
@@ -55,6 +60,9 @@ type
     MainMenu: TMainMenu;
     mitFile: TMenuItem;
     mitHelp: TMenuItem;
+    mitFileRevertchanges: TMenuItem;
+    mitFileSavetoregistry: TMenuItem;
+    N1: TMenuItem;
     mitFileExit: TMenuItem;
     mitExpert: TMenuItem;
     mitExpertEnable: TMenuItem;
@@ -74,6 +82,8 @@ type
     procedure actExpertDisableExecute(Sender: TObject);
     procedure actExpertAddExecute(Sender: TObject);
     procedure actExpertRemoveExecute(Sender: TObject);
+    procedure actFileSaveExecute(Sender: TObject);
+    procedure actFileRevertExecute(Sender: TObject);
     procedure actFileExitExecute(Sender: TObject);
     procedure actHelpHelpExecute(Sender: TObject);
     procedure actHelpContentsExecute(Sender: TObject);
@@ -96,6 +106,7 @@ type
     function ConfirmIfGExperts(const FileName: string): Boolean;
     procedure LoadSettings;
     procedure SaveSettings;
+    function TryGetSelected(out _Item: TListItem): boolean;
   protected
 {$IFDEF IDE_IS_HIDPI_AWARE}
     // FImageScaler descends from TComponents and gets freed automatically
@@ -112,20 +123,19 @@ type
   TExpertManagerExpert = class(TGX_Expert)
   private
     FInitialExperts: TStrings;
-
+    FCurrentExperts: TStrings;
     class function GetExpertsRegKeyName(IsEnabled: Boolean; var Section: string): string;
-    class procedure GetExperts(Experts: TStrings; IsEnabled: Boolean);
+    class procedure ReadExpertsFromRegistry(Experts: TStrings; IsEnabled: Boolean);
+    class procedure WriteExpertsToRegistry(Experts: TStrings; IsEnabled: Boolean);
 
-    class procedure MoveExpertRegistryKey(const ExpertName, FromBase, FromSection: string;
-      const ToBase, ToSection: string);
-
-    class function AddExpertToRegistry(const ExpertName, FileName: string): TAddExpertToRegistryResult;
-    class procedure EnableExpertInRegistry(const ExpertName: string);
-    class procedure DisableExpertInRegistry(const ExpertName: string);
-    class procedure RemoveExpertFromRegistry(const ExpertName: string; IsEnabled: Boolean);
-
+    class function IsExpertEnabledInList(_Experts: TStrings; _ExpertName: string): Boolean;
+  private
+    function FindExpert(const _ExpertName: string; out _Idx: integer): boolean;
   public
     class function GetName: string; override;
+    class function AddExpertToRegistry(const ExpertName, FileName: string): TAddExpertToRegistryResult;
+    class procedure RemoveExpertFromRegistry(const ExpertName: string; IsEnabled: Boolean);
+
     constructor Create; override;
     destructor Destroy; override;
     procedure Execute(Sender: TObject); override;
@@ -133,7 +143,14 @@ type
     function HasConfigOptions: Boolean; override;
 
     function WasExpertEnabled(const _ExpertName: string): Boolean;
+    function IsExpertEnabled(const _ExpertName: string): Boolean;
+    function AddExpert(const _ExpertName, _ExpertDll: string): TAddExpertToRegistryResult;
+    procedure RemoveExpert(const _ExpertName: string);
+    procedure EnableExpert(const _ExpertName: string);
+    procedure DisableExpert(const _ExpertName: string);
+
     property InitialExperts: TStrings read FInitialExperts;
+    property CurrentExperts: TStrings read FCurrentExperts;
   end;
 
 procedure ShowExpertManager; {$IFNDEF GX_BCB} export; {$ENDIF GX_BCB}
@@ -162,6 +179,10 @@ type
     function GetMessage: string; override;
   end;
 
+const
+  FalsePtr = nil;
+  TruePtr = Pointer(1);
+
 function GetListItemState(ListItem: TListItem): TGxExpertState;
 begin
   if (ListItem <> nil) and (ListItem.StateIndex in [0..3]) then
@@ -175,25 +196,30 @@ end;
 procedure TfmExpertManager.actExpertEnableExecute(Sender: TObject);
 var
   GxExpertState: TGxExpertState;
+  Item: TListItem;
 begin
-  Assert(lvExperts.Selected <> nil);
+  if not TryGetSelected(Item) then
+    Exit; //==>
 
-  GxExpertState := GetListItemState(lvExperts.Selected);
+  GxExpertState := GetListItemState(Item);
   if (GxExpertState in [gesCurrentlyEnabled, gesNextTimeEnabled]) then
-    FExpertManager.DisableExpertInRegistry(lvExperts.Selected.Caption)
+    FExpertManager.DisableExpert(Item.Caption)
   else
-    FExpertManager.EnableExpertInRegistry(lvExperts.Selected.Caption);
+    FExpertManager.EnableExpert(Item.Caption);
   UpdateControlsState;
 end;
 
 procedure TfmExpertManager.actExpertDisableExecute(Sender: TObject);
+var
+  Item: TListItem;
 begin
-  Assert(lvExperts.Selected <> nil);
+  if not TryGetSelected(Item) then
+    Exit; //==>
 
-  if not ConfirmIfGExperts(lvExperts.Selected.SubItems[0]) then
-    Exit;
+  if not ConfirmIfGExperts(Item.SubItems[0]) then
+    Exit; //==>
 
-  FExpertManager.DisableExpertInRegistry(lvExperts.Selected.Caption);
+  FExpertManager.DisableExpert(Item.Caption);
   UpdateControlsState;
 end;
 
@@ -214,17 +240,17 @@ procedure TfmExpertManager.actExpertRemoveExecute(Sender: TObject);
 resourcestring
   SConfirmRemoval = 'Are you sure you want to remove the selected expert?';
 var
-  ItemIsEnabled: Boolean;
+  Item: TListItem;
 begin
-  Assert(lvExperts.Selected <> nil);
+  if not TryGetSelected(Item) then
+    Exit; //==>
 
   if MessageDlg(SConfirmRemoval, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
   begin
-    if not ConfirmIfGExperts(lvExperts.Selected.SubItems[0]) then
-      Exit;
+    if not ConfirmIfGExperts(Item.SubItems[0]) then
+      Exit; //==>
 
-    ItemIsEnabled := GetListItemState(lvExperts.Selected) in [gesCurrentlyEnabled, gesNextTimeEnabled];
-    FExpertManager.RemoveExpertFromRegistry(lvExperts.Selected.Caption, ItemIsEnabled);
+    FExpertManager.RemoveExpert(Item.Caption);
     UpdateControlsState;
   end;
 end;
@@ -232,6 +258,19 @@ end;
 procedure TfmExpertManager.actFileExitExecute(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TfmExpertManager.actFileRevertExecute(Sender: TObject);
+begin
+  FExpertManager.CurrentExperts.Assign(FExpertManager.InitialExperts);
+  RefreshExpertListControl;
+end;
+
+procedure TfmExpertManager.actFileSaveExecute(Sender: TObject);
+begin
+  FExpertManager.WriteExpertsToRegistry(FExpertManager.CurrentExperts, True);
+  FExpertManager.WriteExpertsToRegistry(FExpertManager.CurrentExperts, False);
+  FExpertManager.InitialExperts.Assign(FExpertManager.CurrentExperts);
 end;
 
 procedure TfmExpertManager.actHelpHelpExecute(Sender: TObject);
@@ -319,52 +358,48 @@ procedure TfmExpertManager.RefreshExpertListControl;
 var
   i: Integer;
   ListItem: TListItem;
-  ExpertList: TStringList;
+  ExpertList: TStrings;
   Items: TListItems;
   ExpertName: string;
   ExpertDll: string;
+  SelectedItem: TListItem;
+  SelectedIdx: Integer;
 begin
+  if TryGetSelected(SelectedItem) then
+    SelectedIdx := SelectedItem.Index
+  else
+    SelectedIdx := -1;
+
   Items := lvExperts.Items;
   Items.BeginUpdate;
   try
     Items.Clear;
-    ExpertList := TStringList.Create;
-    try
-      FExpertManager.GetExperts(ExpertList, True); // Get enabled experts
-      for i := 0 to ExpertList.Count-1 do
-      begin
-        ExpertName := ExpertList.Names[i];
-        ExpertDll := ExpertList.Values[ExpertName];
-        ListItem := Items.Add;
-        ListItem.Caption := ExpertName;
-        ListItem.SubItems.Add(ExpertDll);
+
+    ExpertList := FExpertManager.CurrentExperts;
+    for i := 0 to ExpertList.Count - 1 do begin
+      ExpertName := ExpertList.Names[i];
+      ExpertDll := ExpertList.Values[ExpertName];
+      ListItem := Items.Add;
+      ListItem.Caption := ExpertName;
+      ListItem.SubItems.Add(ExpertDll);
+      if FExpertManager.IsExpertEnabled(ExpertName) then begin
         if FExpertManager.WasExpertEnabled(ExpertName) then
           ListItem.StateIndex := Ord(gesCurrentlyEnabled)
         else
           ListItem.StateIndex := Ord(gesNextTimeEnabled);
-      end;
-
-      ExpertList.Clear;
-
-      FExpertManager.GetExperts(ExpertList, False); // Get disabled experts
-      for i := 0 to ExpertList.Count-1 do
-      begin
-        ExpertName := ExpertList.Names[i];
-        ExpertDll := ExpertList.Values[ExpertName];
-        ListItem := Items.Add;
-        ListItem.Caption := ExpertName;
-        ListItem.SubItems.Add(ExpertDll);
+      end else begin
         if not FExpertManager.WasExpertEnabled(ExpertName) then
           ListItem.StateIndex := Ord(gesCurrentlyDisabled)
         else
           ListItem.StateIndex := Ord(gesNextTimeDisabled);
       end;
-    finally
-      FreeAndNil(ExpertList);
+
     end;
   finally
     Items.EndUpdate;
   end;
+  if SelectedIdx <> -1 then
+    lvExperts.Selected := Items[SelectedIdx];
 end;
 
 function TfmExpertManager.ConfirmIfGExperts(const FileName: string): Boolean;
@@ -380,9 +415,11 @@ var
   CurrentItemCaption: string;
   Item: TListItem;
 begin
-  CurrentItemCaption := '';
-  if lvExperts.Selected <> nil then
-    CurrentItemCaption := lvExperts.Selected.Caption;
+  if TryGetSelected(Item) then
+    CurrentItemCaption := Item.Caption
+  else
+    CurrentItemCaption := '';
+
   try
     RefreshExpertListControl;
   finally
@@ -416,7 +453,7 @@ begin
     ExpertEntry := ExpertList[i];
 
     ExpertName := ChangeFileExt(ExtractFileName(ExpertEntry), '');
-    case FExpertManager.AddExpertToRegistry(ExpertName, ExpertEntry) of
+    case FExpertManager.AddExpert(ExpertName, ExpertEntry) of
       aerOK:
         UpdateControlsState;
       aerDuplicate:
@@ -471,15 +508,18 @@ begin
   inherited Create;
 
   FInitialExperts := TStringList.Create;
-  GetExperts(FInitialExperts, True);
+  ReadExpertsFromRegistry(FInitialExperts, True);
 
   DisabledExperts := TStringList.Create;
   try
-    GetExperts(DisabledExperts, False);
+    ReadExpertsFromRegistry(DisabledExperts, False);
     FInitialExperts.AddStrings(DisabledExperts);
   finally
     FreeAndNil(DisabledExperts);
   end;
+
+  FCurrentExperts := TStringList.Create;
+  FCurrentExperts.AddStrings(FInitialExperts);
 end;
 
 destructor TExpertManagerExpert.Destroy;
@@ -487,6 +527,7 @@ begin
   // Nothing has been added to the ancestor's SaveSettings
   //SaveSettings;
 
+  FreeAndNil(FCurrentExperts);
   FreeAndNil(FInitialExperts);
 
   inherited Destroy;
@@ -523,6 +564,14 @@ begin
   IncCallCount;
 end;
 
+procedure TExpertManagerExpert.RemoveExpert(const _ExpertName: string);
+var
+  Idx: Integer;
+begin
+  if FindExpert(_ExpertName, Idx) then
+    FCurrentExperts.Delete(Idx);
+end;
+
 class procedure TExpertManagerExpert.RemoveExpertFromRegistry(const ExpertName: string; IsEnabled: Boolean);
 var
   SectionName: string;
@@ -534,6 +583,34 @@ begin
   finally
     FreeAndNil(ExpertSetting);
   end;
+end;
+
+function TExpertManagerExpert.AddExpert(const _ExpertName, _ExpertDll: string): TAddExpertToRegistryResult;
+var
+  i: Integer;
+  ThisExpertName: string;
+begin
+  {$IFOPT D+} SendDebug('Adding Expert: '+_ExpertDll); {$ENDIF}
+
+  // set Result here because otherwise Delphi 7 complains (wrongly) that it might not be set
+  Result := aerOK;
+
+  for i := 0 to FCurrentExperts.Count - 1 do begin
+    ThisExpertName := FCurrentExperts.Names[i];
+    if SameText(FCurrentExperts.Values[ThisExpertName], _ExpertDll) then begin
+      Result := aerDuplicate;
+      Exit; //==>
+    end;
+  end;
+
+  if not IsValidExpertDll(_ExpertDll) then begin
+    Result := aerNoExpert;
+    Exit;
+  end;
+
+  FCurrentExperts.Values[_ExpertName] := _ExpertDll;
+  if FindExpert(_ExpertName, i) then
+    FCurrentExperts.Objects[i] := TruePtr;
 end;
 
 class function TExpertManagerExpert.AddExpertToRegistry(const ExpertName, FileName: string): TAddExpertToRegistryResult;
@@ -550,7 +627,7 @@ begin
   // Make sure that this particular expert is not already loaded.
   ExpertList := TStringList.Create;
   try
-    GetExperts(ExpertList, True); // Get enabled experts
+    ReadExpertsFromRegistry(ExpertList, True); // Get enabled experts
     for i := 0 to ExpertList.Count - 1 do
     begin
       if ExpertList.Values[ExpertList.Names[i]] = FileName then
@@ -576,59 +653,26 @@ begin
   end;
 end;
 
-// Function to move a value from one registry key to another
-class procedure TExpertManagerExpert.MoveExpertRegistryKey(const ExpertName,
-  FromBase, FromSection: string; const ToBase, ToSection: string);
-var
-  SettingFrom: TGExpertsSettings;
-  SettingTo: TGExpertsSettings;
-
-  ExpertPath: string;
+function TExpertManagerExpert.FindExpert(const _ExpertName: string; out _Idx: integer): boolean;
 begin
-  SettingTo := nil;
-  SettingFrom := TGExpertsSettings.Create(FromBase);
-  try
-    SettingTo := TGExpertsSettings.Create(ToBase);
-
-    ExpertPath := SettingFrom.ReadString(FromSection, ExpertName, '');
-    if ExpertPath <> '' then
-      SettingTo.WriteString(ToSection, ExpertName, ExpertPath);
-
-    SettingFrom.DeleteKey(FromSection, ExpertName);
-  finally
-    FreeAndNil(SettingTo);
-    FreeAndNil(SettingFrom);
-  end;
+  _Idx := FCurrentExperts.IndexOfName(_ExpertName);
+  Result := (_Idx >= 0);
 end;
 
-class procedure TExpertManagerExpert.EnableExpertInRegistry(const ExpertName: string);
+procedure TExpertManagerExpert.EnableExpert(const _ExpertName: string);
 var
-  BasePathEnabled: string;
-  BasePathDisabled: string;
-
-  SectionNameEnabled: string;
-  SectionNameDisabled: string;
+  Idx: Integer;
 begin
-  BasePathEnabled := GetExpertsRegKeyName(True, SectionNameEnabled);
-  BasePathDisabled := GetExpertsRegKeyName(False, SectionNameDisabled);
-
-  MoveExpertRegistryKey(ExpertName, BasePathDisabled, SectionNameDisabled,
-    BasePathEnabled, SectionNameEnabled);
+  if FindExpert(_ExpertName, Idx) then
+    FCurrentExperts.Objects[Idx] := TruePtr;
 end;
 
-class procedure TExpertManagerExpert.DisableExpertInRegistry(const ExpertName: string);
+procedure TExpertManagerExpert.DisableExpert(const _ExpertName: string);
 var
-  BasePathEnabled: string;
-  BasePathDisabled: string;
-
-  SectionNameEnabled: string;
-  SectionNameDisabled: string;
+  Idx: Integer;
 begin
-  BasePathEnabled := GetExpertsRegKeyName(True, SectionNameEnabled);
-  BasePathDisabled := GetExpertsRegKeyName(False, SectionNameDisabled);
-
-  MoveExpertRegistryKey(ExpertName, BasePathEnabled, SectionNameEnabled,
-    BasePathDisabled, SectionNameDisabled);
+  if FindExpert(_ExpertName, Idx) then
+    FCurrentExperts.Objects[Idx] := FalsePtr;
 end;
 
 class function TExpertManagerExpert.GetExpertsRegKeyName(IsEnabled: Boolean; var Section: string): string;
@@ -649,24 +693,54 @@ begin
   end;
 end;
 
-class procedure TExpertManagerExpert.GetExperts(Experts: TStrings; IsEnabled: Boolean);
+class procedure TExpertManagerExpert.ReadExpertsFromRegistry(Experts: TStrings; IsEnabled: Boolean);
 var
   SectionName: string;
   Obj: Pointer;
   i: Integer;
+  Settings: TGExpertsSettings;
 begin
-  with TGExpertsSettings.Create(GetExpertsRegKeyName(IsEnabled, SectionName)) do
+  Settings := TGExpertsSettings.Create(GetExpertsRegKeyName(IsEnabled, SectionName));
   try
-    ReadSectionValues(SectionName, Experts);
+    Settings.ReadSectionValues(SectionName, Experts);
   finally
-    Free;
+    Settings.Free;
   end;
   if IsEnabled then
-    Obj := Pointer(1)
+    Obj := TruePtr
   else
-    Obj := nil;
+    Obj := FalsePtr;
   for i := 0 to Experts.Count - 1 do
     Experts.Objects[i] := Obj;
+end;
+
+class procedure TExpertManagerExpert.WriteExpertsToRegistry(Experts: TStrings; IsEnabled: Boolean);
+var
+  SectionName: string;
+  Obj: Pointer;
+  i: Integer;
+  Settings: TGExpertsSettings;
+  sl: TStringList;
+begin
+  if IsEnabled then
+    Obj := TruePtr
+  else
+    Obj := FalsePtr;
+  sl := TStringList.Create;
+  try
+    for i := 0 to Experts.Count - 1 do begin
+      if Experts.Objects[i] = Obj then
+        sl.Add(Experts[i]);
+    end;
+    Settings := TGExpertsSettings.Create(GetExpertsRegKeyName(IsEnabled, SectionName));
+    try
+      Settings.WriteSectionValues(SectionName, sl);
+    finally
+      Settings.Free;
+    end;
+  finally
+    FreeAndNil(sl);
+  end;
 end;
 
 procedure InstallGExperts(Handle: HWND; InstHandle: HINST; CmdLine: PAnsiChar; CmdShow: Integer);
@@ -730,14 +804,25 @@ begin
   Result := False;
 end;
 
-function TExpertManagerExpert.WasExpertEnabled(const _ExpertName: string): Boolean;
+function TExpertManagerExpert.IsExpertEnabled(const _ExpertName: string): Boolean;
+begin
+  Result := IsExpertEnabledInList(FCurrentExperts, _ExpertName);
+end;
+
+class function TExpertManagerExpert.IsExpertEnabledInList(_Experts: TStrings;
+  _ExpertName: string): Boolean;
 var
   Idx: Integer;
 begin
-  Idx :=  FInitialExperts.IndexOfName(_ExpertName);
+  Idx :=  _Experts.IndexOfName(_ExpertName);
   Result := (Idx >= 0);
   if Result then
-    Result := (FInitialExperts.Objects[Idx] <> nil);
+    Result := (_Experts.Objects[Idx] <> nil);
+end;
+
+function TExpertManagerExpert.WasExpertEnabled(const _ExpertName: string): Boolean;
+begin
+  Result := IsExpertEnabledInList(FInitialExperts, _ExpertName);
 end;
 
 { TShowDisableCurrentMessage }
@@ -760,12 +845,13 @@ procedure TfmExpertManager.actExpertDisableUpdate(Sender: TObject);
 var
   GxExpertState: TGxExpertState;
   ActionIsEnabled: Boolean;
+  Item: TListItem;
 begin
   ActionIsEnabled := False;
 
-  if lvExperts.Selected <> nil then
+  if TryGetSelected(Item) then
   begin
-    GxExpertState := GetListItemState(lvExperts.Selected);
+    GxExpertState := GetListItemState(Item);
     if (GxExpertState in [gesCurrentlyEnabled, gesNextTimeEnabled]) then
       ActionIsEnabled := True;
   end;
@@ -777,12 +863,13 @@ procedure TfmExpertManager.actExpertEnableUpdate(Sender: TObject);
 var
   GxExpertState: TGxExpertState;
   ActionIsEnabled: Boolean;
+  Item: TListItem;
 begin
   ActionIsEnabled := False;
 
-  if lvExperts.Selected <> nil then
+  if TryGetSelected(Item) then
   begin
-    GxExpertState := GetListItemState(lvExperts.Selected);
+    GxExpertState := GetListItemState(Item);
     if (GxExpertState in [gesCurrentlyDisabled, gesNextTimeDisabled]) then
       ActionIsEnabled := True;
   end;
@@ -791,13 +878,39 @@ begin
 end;
 
 procedure TfmExpertManager.actExpertMoveDownExecute(Sender: TObject);
+var
+  Item: TListItem;
+  Idx: Integer;
 begin
-//
+  if not TryGetSelected(Item) then
+    Exit; //==>
+  Idx := Item.Index;
+  if Idx >= lvExperts.Items.Count - 1 then
+    Exit; //==>
+  FExpertManager.CurrentExperts.Exchange(Idx, Idx + 1);
+  lvExperts.Selected := lvExperts.Items[Idx + 1];
+  RefreshExpertListControl;
 end;
 
 procedure TfmExpertManager.actExpertMoveUpExecute(Sender: TObject);
+var
+  Item: TListItem;
+  Idx: Integer;
 begin
-//
+  if not TryGetSelected(Item) then
+    Exit; //==>
+  Idx := Item.Index;
+  if Idx <= 0 then
+    Exit; //==>
+  FExpertManager.CurrentExperts.Exchange(Idx, Idx - 1);
+  lvExperts.Selected := lvExperts.Items[Idx - 1];
+  RefreshExpertListControl;
+end;
+
+function TfmExpertManager.TryGetSelected(out   _Item: TListItem): boolean;
+begin
+  _Item := lvExperts.Selected;
+  Result := Assigned(_Item);
 end;
 
 procedure TfmExpertManager.actExpertRemoveUpdate(Sender: TObject);
