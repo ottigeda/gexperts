@@ -270,7 +270,6 @@ procedure TfmExpertManager.actFileSaveExecute(Sender: TObject);
 begin
   FExpertManager.WriteExpertsToRegistry(FExpertManager.CurrentExperts, True);
   FExpertManager.WriteExpertsToRegistry(FExpertManager.CurrentExperts, False);
-  FExpertManager.InitialExperts.Assign(FExpertManager.CurrentExperts);
 end;
 
 procedure TfmExpertManager.actHelpHelpExecute(Sender: TObject);
@@ -907,7 +906,7 @@ begin
   RefreshExpertListControl;
 end;
 
-function TfmExpertManager.TryGetSelected(out   _Item: TListItem): boolean;
+function TfmExpertManager.TryGetSelected(out _Item: TListItem): Boolean;
 begin
   _Item := lvExperts.Selected;
   Result := Assigned(_Item);
