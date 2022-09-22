@@ -96,6 +96,7 @@ type
     procedure ActionsUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
     FExpertManager: TExpertManagerExpert;
     FFileDrop: TDropFileTarget;
@@ -124,12 +125,13 @@ type
   private
     FInitialExperts: TStrings;
     FCurrentExperts: TStrings;
+    FChanged: boolean;
     class function GetExpertsRegKeyName(IsEnabled: Boolean; var Section: string): string;
-    class procedure ReadExpertsFromRegistry(Experts: TStrings; IsEnabled: Boolean);
-    class procedure WriteExpertsToRegistry(Experts: TStrings; IsEnabled: Boolean);
-
     class function IsExpertEnabledInList(_Experts: TStrings; _ExpertName: string): Boolean;
-  private
+    class procedure ReadExpertsFromRegistry(Experts: TStrings; IsEnabled: Boolean);
+    class procedure WriteExpertsToRegistry(Experts: TStrings; IsEnabled: Boolean); overload;
+    procedure WriteExpertsToRegistry; overload;
+    procedure ResetExperts;
     function FindExpert(const _ExpertName: string; out _Idx: integer): boolean;
   public
     class function GetName: string; override;
@@ -144,13 +146,18 @@ type
 
     function WasExpertEnabled(const _ExpertName: string): Boolean;
     function IsExpertEnabled(const _ExpertName: string): Boolean;
+
     function AddExpert(const _ExpertName, _ExpertDll: string): TAddExpertToRegistryResult;
     procedure RemoveExpert(const _ExpertName: string);
     procedure EnableExpert(const _ExpertName: string);
     procedure DisableExpert(const _ExpertName: string);
 
+    procedure MoveDown(_Idx: Integer);
+    procedure MoveUp(_Idx: Integer);
+
     property InitialExperts: TStrings read FInitialExperts;
     property CurrentExperts: TStrings read FCurrentExperts;
+    property Changed: boolean read FChanged;
   end;
 
 procedure ShowExpertManager; {$IFNDEF GX_BCB} export; {$ENDIF GX_BCB}
@@ -262,14 +269,13 @@ end;
 
 procedure TfmExpertManager.actFileRevertExecute(Sender: TObject);
 begin
-  FExpertManager.CurrentExperts.Assign(FExpertManager.InitialExperts);
+  FExpertManager.ResetExperts;
   RefreshExpertListControl;
 end;
 
 procedure TfmExpertManager.actFileSaveExecute(Sender: TObject);
 begin
-  FExpertManager.WriteExpertsToRegistry(FExpertManager.CurrentExperts, True);
-  FExpertManager.WriteExpertsToRegistry(FExpertManager.CurrentExperts, False);
+  FExpertManager.WriteExpertsToRegistry;
 end;
 
 procedure TfmExpertManager.actHelpHelpExecute(Sender: TObject);
@@ -567,8 +573,10 @@ procedure TExpertManagerExpert.RemoveExpert(const _ExpertName: string);
 var
   Idx: Integer;
 begin
-  if FindExpert(_ExpertName, Idx) then
+  if FindExpert(_ExpertName, Idx) then begin
     FCurrentExperts.Delete(Idx);
+    FChanged := True;
+  end;
 end;
 
 class procedure TExpertManagerExpert.RemoveExpertFromRegistry(const ExpertName: string; IsEnabled: Boolean);
@@ -582,6 +590,12 @@ begin
   finally
     FreeAndNil(ExpertSetting);
   end;
+end;
+
+procedure TExpertManagerExpert.ResetExperts;
+begin
+  FCurrentExperts.Assign(FInitialExperts);
+  FChanged := False;
 end;
 
 function TExpertManagerExpert.AddExpert(const _ExpertName, _ExpertDll: string): TAddExpertToRegistryResult;
@@ -610,6 +624,7 @@ begin
   FCurrentExperts.Values[_ExpertName] := _ExpertDll;
   if FindExpert(_ExpertName, i) then
     FCurrentExperts.Objects[i] := TruePtr;
+  FChanged := True;
 end;
 
 class function TExpertManagerExpert.AddExpertToRegistry(const ExpertName, FileName: string): TAddExpertToRegistryResult;
@@ -662,16 +677,20 @@ procedure TExpertManagerExpert.EnableExpert(const _ExpertName: string);
 var
   Idx: Integer;
 begin
-  if FindExpert(_ExpertName, Idx) then
+  if FindExpert(_ExpertName, Idx) then begin
     FCurrentExperts.Objects[Idx] := TruePtr;
+    FChanged := True;
+  end;
 end;
 
 procedure TExpertManagerExpert.DisableExpert(const _ExpertName: string);
 var
   Idx: Integer;
 begin
-  if FindExpert(_ExpertName, Idx) then
+  if FindExpert(_ExpertName, Idx) then begin
     FCurrentExperts.Objects[Idx] := FalsePtr;
+    FChanged := True;
+  end;
 end;
 
 class function TExpertManagerExpert.GetExpertsRegKeyName(IsEnabled: Boolean; var Section: string): string;
@@ -711,6 +730,13 @@ begin
     Obj := FalsePtr;
   for i := 0 to Experts.Count - 1 do
     Experts.Objects[i] := Obj;
+end;
+
+procedure TExpertManagerExpert.WriteExpertsToRegistry;
+begin
+  WriteExpertsToRegistry(FCurrentExperts, True);
+  WriteExpertsToRegistry(FCurrentExperts, False);
+  FChanged := False;
 end;
 
 class procedure TExpertManagerExpert.WriteExpertsToRegistry(Experts: TStrings; IsEnabled: Boolean);
@@ -819,6 +845,20 @@ begin
     Result := (_Experts.Objects[Idx] <> nil);
 end;
 
+procedure TExpertManagerExpert.MoveDown(_Idx: Integer);
+begin
+  Assert(_Idx < FCurrentExperts.Count - 1);
+  FCurrentExperts.Exchange(_Idx, _Idx + 1);
+  FChanged := True;
+end;
+
+procedure TExpertManagerExpert.MoveUp(_Idx: Integer);
+begin
+  Assert(_Idx > 1);
+  FCurrentExperts.Exchange(_Idx, _Idx - 1);
+  FChanged := True;
+end;
+
 function TExpertManagerExpert.WasExpertEnabled(const _ExpertName: string): Boolean;
 begin
   Result := IsExpertEnabledInList(FInitialExperts, _ExpertName);
@@ -886,7 +926,7 @@ begin
   Idx := Item.Index;
   if Idx >= lvExperts.Items.Count - 1 then
     Exit; //==>
-  FExpertManager.CurrentExperts.Exchange(Idx, Idx + 1);
+  FExpertManager.MoveDown(Idx);
   lvExperts.Selected := lvExperts.Items[Idx + 1];
   RefreshExpertListControl;
 end;
@@ -901,7 +941,7 @@ begin
   Idx := Item.Index;
   if Idx <= 0 then
     Exit; //==>
-  FExpertManager.CurrentExperts.Exchange(Idx, Idx - 1);
+  FExpertManager.MoveUp(Idx);
   lvExperts.Selected := lvExperts.Items[Idx - 1];
   RefreshExpertListControl;
 end;
@@ -957,9 +997,20 @@ begin
   Handled := False;
 end;
 
+procedure TfmExpertManager.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  if FExpertManager.Changed then begin
+    case MessageDlg('You have unsaved changes. Do you want to save them?', mtWarning, [mbYes, mbNo, mbCancel], 0) of
+      mrYes: FExpertManager.WriteExpertsToRegistry;
+      mrNo: ;
+    else
+      CanClose := False;
+    end;
+  end;
+end;
+
 procedure TfmExpertManager.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  // TODO 3 -oAnyone -cIssue: Closing with ESC doesn't undo any changes the user made
   if Key = VK_ESCAPE then
   begin
     actFileExit.Execute;
