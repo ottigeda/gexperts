@@ -791,6 +791,8 @@ var
   W: Integer;
   ShapeLeft: Integer;
   L: Integer;
+  pnl: TPanel;
+  shp: TShape;
 begin
   // todo: This could use GX_dzVclUtils.TWinControl_Lock
   SendMessage(scInherit.Handle, WM_SETREDRAW, WPARAM(False), 0);
@@ -804,13 +806,13 @@ begin
     L := (scInherit.Width - W) div 2;
     ShapeLeft := L + (W div 2) - 2;
     for i := 0 to scInherit.ControlCount - 1 do
-      if scInherit.Controls[i] is TPanel then
-        with TPanel(scInherit.Controls[i]) do
-          SetBounds(L, Top, W, Height)
-      else
-        if scInherit.Controls[i] is TShape then
-          with TShape(scInherit.Controls[i]) do
-            SetBounds(ShapeLeft, Top, 2, 20);
+      if scInherit.Controls[i] is TPanel then begin
+        pnl := TPanel(scInherit.Controls[i]);
+        pnl.SetBounds(L, pnl.Top, W, pnl.Height)
+      end else if scInherit.Controls[i] is TShape then begin
+        shp := TShape(scInherit.Controls[i]);
+        shp.SetBounds(ShapeLeft, shp.Top, 2, 20);
+      end;
   finally
     SendMessage(scInherit.Handle, WM_SETREDRAW, WPARAM(True), 0);
     for i := 0 to scInherit.ControlCount - 1 do
@@ -1245,22 +1247,13 @@ begin
 end;
 
 procedure TfmClassBrowser.PrintClassBuiltIn(OInfo: TBrowseClassInfoCollection; ACanvas: TCanvas);
-resourcestring
-  SName = 'Name';
 const
   PR_OffsetX = 30;
   PR_OffsetY = 20;
-var
-  Row: Integer;
-  i: Integer;
-  List: TStrings;
-  MInfo: TBrowseMethodInfoItem;
-  FontHeight: Integer;
-  ColumnWidth: Integer;
-  BitmapSize: Integer;
-  Bitmap: Graphics.TBitmap;
 
-  procedure PrintHeader;
+  procedure PrintHeader(ACanvas: TCanvas; var Row: Integer; ColumnWidth: Integer; FontHeight: Integer);
+  resourcestring
+    SName = 'Name';
   begin
     ACanvas.Font.Style := [fsBold];
     ACanvas.TextOut(PR_OffsetX, Row, 'Vi');
@@ -1305,86 +1298,91 @@ var
     end;
   end;
 
+var
+  i: Integer;
+  Row: Integer;
+  ColumnWidth: Integer;
+  FontHeight: Integer;
+  List: TStrings;
+  MInfo: TBrowseMethodInfoItem;
+  BitmapSize: Integer;
+  Bitmap: Graphics.TBitmap;
 resourcestring
   SClass = 'Class: ';
   SAncestor = 'Ancestor: ';
   SUnit = 'Unit: ';
 begin
   Row := PR_OffSetY;
-  // todo: Get rid of this with statement
-  with ACanvas do
-  begin
-    Font.Name := 'Arial';
-    Font.Size := 12;
-    Font.Style := [fsBold];
-    TextOut(PR_OffsetX, Row, SClass + OInfo.Name);
-    Row := Row + ACanvas.TextHeight(SAllAlphaNumericChars) + 5;
-    Font.Size := 10;
-    FontHeight := ACanvas.TextHeight(SAllAlphaNumericChars);
-    ColumnWidth:= ACanvas.TextWidth('WW');
-    BitmapSize := FontHeight - 1;
-    TextOut(PR_OffsetX, Row, SAncestor + OInfo.DerivedFrom);
-    Row := Row + FontHeight + 5;
-    TextOut(PR_OffsetX, Row, SUnit + OInfo.SourceName);
-    Row := Row + FontHeight + 10;
-    PrintHeader;
-    Font.Style := [];
-    List := TStringList.Create;
+  ACanvas.Font.Name := 'Arial';
+  ACanvas.Font.Size := 12;
+  ACanvas.Font.Style := [fsBold];
+  ACanvas.TextOut(PR_OffsetX, Row, SClass + OInfo.Name);
+  Row := Row + ACanvas.TextHeight(SAllAlphaNumericChars) + 5;
+  ACanvas.Font.Size := 10;
+  FontHeight := ACanvas.TextHeight(SAllAlphaNumericChars);
+  ColumnWidth := ACanvas.TextWidth('WW');
+  BitmapSize := FontHeight - 1;
+  ACanvas.TextOut(PR_OffsetX, Row, SAncestor + OInfo.DerivedFrom);
+  Row := Row + FontHeight + 5;
+  ACanvas.TextOut(PR_OffsetX, Row, SUnit + OInfo.SourceName);
+  Row := Row + FontHeight + 10;
+  PrintHeader(ACanvas, Row, ColumnWidth, FontHeight);
+  ACanvas.Font.Style := [];
+  List := TStringList.Create;
+  try
+    Bitmap := Graphics.TBitmap.Create;
     try
-      Bitmap := Graphics.TBitmap.Create;
-      try
-        for i := 0 to OInfo.Count - 1 do
-          List.AddObject(GetMethodString(OInfo.Items[i]), OInfo.Items[i]);
-        for i := 0 to List.Count - 1 do
+      for i := 0 to OInfo.Count - 1 do
+        List.AddObject(GetMethodString(OInfo.Items[i]), OInfo.Items[i]);
+      for i := 0 to List.Count - 1 do
+      begin
+        MInfo := TBrowseMethodInfoItem(List.Objects[i]);
+        ClearBitmap(Bitmap);
+        Images.GetBitmap(Ord(MInfo.MethodDeclare) + ImageIndexVisibility, Bitmap);
+        PrintBitmap(ACanvas, Rect(PR_OffsetX, Row, PR_OffsetX + BitmapSize, Row + BitmapSize), Bitmap);
+        ClearBitmap(Bitmap);
+        Images.GetBitmap(Ord(MInfo.MethodType) + ImageIndexMemberType, Bitmap);
+        PrintBitmap(ACanvas, Rect(PR_OffsetX + ColumnWidth, Row, PR_OffsetX + ColumnWidth + BitmapSize, Row + BitmapSize), Bitmap);
+
+        if MInfo.cVirtual then
+          Images.GetBitmap(ImageIndexVirtual, Bitmap)
+        else if MInfo.cDynamic then
+          Images.GetBitmap(ImageIndexDynamic, Bitmap)
+        else if MInfo.cMessage then
+          Images.GetBitmap(ImageIndexMessage, Bitmap)
+        else if MInfo.cOverride then
+          Images.GetBitmap(ImageIndexOverride, Bitmap)
+        else
+          ClearBitmap(Bitmap);
+        PrintBitmap(ACanvas, Rect(PR_OffsetX + ColumnWidth * 2, Row, PR_OffsetX + ColumnWidth * 2 + BitmapSize, Row + BitmapSize), Bitmap);
+
+        if MInfo.cAbstract then
         begin
-          MInfo := TBrowseMethodInfoItem(List.Objects[i]);
           ClearBitmap(Bitmap);
-          Images.GetBitmap(Ord(MInfo.MethodDeclare) + ImageIndexVisibility, Bitmap);
-          PrintBitmap(ACanvas, Rect(PR_OffsetX, Row, PR_OffsetX + BitmapSize, Row + BitmapSize), Bitmap);
-          ClearBitmap(Bitmap);
-          Images.GetBitmap(Ord(MInfo.MethodType) + ImageIndexMemberType, Bitmap);
-          PrintBitmap(ACanvas, Rect(PR_OffsetX + ColumnWidth, Row, PR_OffsetX + ColumnWidth + BitmapSize, Row + BitmapSize), Bitmap);
-
-          if MInfo.cVirtual then
-            Images.GetBitmap(ImageIndexVirtual, Bitmap)
-          else if MInfo.cDynamic then
-            Images.GetBitmap(ImageIndexDynamic, Bitmap)
-          else if MInfo.cMessage then
-            Images.GetBitmap(ImageIndexMessage, Bitmap)
-          else if MInfo.cOverride then
-            Images.GetBitmap(ImageIndexOverride, Bitmap)
-          else
-            ClearBitmap(Bitmap);
-          PrintBitmap(ACanvas, Rect(PR_OffsetX + ColumnWidth*2, Row, PR_OffsetX + ColumnWidth*2 + BitmapSize, Row + BitmapSize), Bitmap);
-
-          if MInfo.cAbstract then
-          begin
-            ClearBitmap(Bitmap);
-            Images.GetBitmap(ImageIndexCheck, Bitmap);
-            PrintBitmap(ACanvas, Rect(PR_OffsetX + ColumnWidth*3, Row, PR_OffsetX + ColumnWidth*3 + BitmapSize, row + BitmapSize), Bitmap);
-          end;
-          if MInfo.cOverload then
-          begin
-            ClearBitmap(Bitmap);
-            Images.GetBitmap(ImageIndexCheck, Bitmap);
-            PrintBitmap(ACanvas, Rect(PR_OffsetX + ColumnWidth*4, Row, PR_OffsetX + ColumnWidth*4 + BitmapSize, row + BitmapSize), Bitmap);
-          end;
-
-          TextOut(PR_OffsetX + ColumnWidth*6, Row, FilterTab(MInfo.DName));
-          Row := Row + FontHeight + 1;
-          if Row + ((FontHeight + 1) * 3) > Printer.PageHeight then
-          begin
-            Printer.NewPage;
-            Row := PR_OffsetY;
-            PrintHeader;
-          end;
+          Images.GetBitmap(ImageIndexCheck, Bitmap);
+          PrintBitmap(ACanvas, Rect(PR_OffsetX + ColumnWidth * 3, Row, PR_OffsetX + ColumnWidth * 3 + BitmapSize, Row + BitmapSize), Bitmap);
         end;
-      finally
-        FreeAndNil(Bitmap);
+        if MInfo.cOverload then
+        begin
+          ClearBitmap(Bitmap);
+          Images.GetBitmap(ImageIndexCheck, Bitmap);
+          PrintBitmap(ACanvas, Rect(PR_OffsetX + ColumnWidth * 4, Row, PR_OffsetX + ColumnWidth * 4 + BitmapSize, Row + BitmapSize), Bitmap);
+        end;
+
+        ACanvas.TextOut(PR_OffsetX + ColumnWidth * 6, Row, FilterTab(MInfo.DName));
+        Row := Row + FontHeight + 1;
+        if Row + ((FontHeight + 1) * 3) > Printer.PageHeight then
+        begin
+          Printer.NewPage;
+          Row := PR_OffsetY;
+          PrintHeader(ACanvas, Row, ColumnWidth, FontHeight);
+        end;
       end;
     finally
-      FreeAndNil(List);
+      FreeAndNil(Bitmap);
     end;
+  finally
+    FreeAndNil(List);
   end;
 end;
 
