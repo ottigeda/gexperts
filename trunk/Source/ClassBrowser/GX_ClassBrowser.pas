@@ -226,6 +226,7 @@ type
     procedure SetInfoViewMode(const Value: TInfoViewMode);
     procedure FindFromNode(const Text: string; Node: TTreeNode);
     procedure FiltersToActions;
+    procedure FileNotification(NotifyCode: TOTAFileNotification; const FileName: string; var Cancel: Boolean);
   private
     FMethodText: TGxEnhancedEditor;
     FCodeText: TGxEnhancedEditor;
@@ -241,15 +242,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property ClassList: TClassList read FClassList;
-  end;
-
-  TClassProjectNotifier = class(TBaseIdeNotifier)
-  private
-    fmClassBrowser: TfmClassBrowser;
-  public
-    constructor Create(Form: TfmClassBrowser);
-    procedure FileNotification(NotifyCode: TOTAFileNotification;
-      const FileName: string; var Cancel: Boolean); override;
   end;
 
   TClassBrowserExpert = class(TGX_Expert)
@@ -277,6 +269,16 @@ uses
   GX_ClassProp, GX_GExperts,
   GX_GxUtils, GX_GenericUtils, GX_StringList, GX_IdeUtils;
 
+type
+  TClassProjectNotifier = class(TBaseIdeNotifier)
+  private
+    fmClassBrowser: TfmClassBrowser;
+  public
+    constructor Create(Form: TfmClassBrowser);
+    procedure FileNotification(NotifyCode: TOTAFileNotification;
+      const FileName: string; var Cancel: Boolean); override;
+  end;
+
 { TClassProjectNotifier }
 
 constructor TClassProjectNotifier.Create(Form: TfmClassBrowser);
@@ -288,25 +290,7 @@ end;
 procedure TClassProjectNotifier.FileNotification(NotifyCode: TOTAFileNotification;
   const FileName: string; var Cancel: Boolean);
 begin
-  case NotifyCode of
-    ofnActiveProjectChanged:
-      begin
-        with Self.fmClassBrowser do
-        begin
-          if not SameText(FileName, FLastProject) then
-          begin
-            RemoveProject;
-            if Visible then
-              AddProject
-            else
-              FProjectNeedsLoading := True;
-          end;
-        end;
-      end;
-    ofnFileClosing:
-      if AnsiCompareText(FileName, fmClassBrowser.FLastProject) = 0 then
-        fmClassBrowser.RemoveProject;
-  end;
+  fmClassBrowser.FileNotification(NotifyCode,FileName, Cancel);
 end;
 
 procedure ClearBitmap(Bitmap: Graphics.TBitmap);
@@ -1076,13 +1060,13 @@ var
   end;
 
   procedure AddShape(LeftPos: Integer; Index: Integer);
+  var
+    shp: TShape;
   begin
-    with TShape.Create(scInherit) do
-    begin
-      Visible := True;
-      Parent := scInherit;
-      SetBounds(LeftPos, ((Index - 1) * 50) + 40, 2, 20);
-    end;
+    shp := TShape.Create(scInherit);
+    shp.Visible := True;
+    shp.Parent := scInherit;
+    shp.SetBounds(LeftPos, ((Index - 1) * 50) + 40, 2, 20);
   end;
 
 var
@@ -1213,6 +1197,25 @@ begin
   FiltersToActions;
 end;
 
+procedure TfmClassBrowser.FileNotification(NotifyCode: TOTAFileNotification; const FileName: string;
+  var Cancel: Boolean);
+begin
+  case NotifyCode of
+    ofnActiveProjectChanged: begin
+        if not SameText(FileName, FLastProject) then begin
+          RemoveProject;
+          if Visible then
+            AddProject
+          else
+            FProjectNeedsLoading := True;
+        end;
+      end;
+    ofnFileClosing:
+      if SameText(FileName, FLastProject) then
+        RemoveProject;
+  end;
+end;
+
 procedure TfmClassBrowser.FiltersToActions;
 begin
   actViewConstants.Checked := FFilters[0];
@@ -1264,20 +1267,17 @@ var
 
   procedure PrintHeader;
   begin
-    with ACanvas do
-    begin
-      Font.Style := [fsBold];
-      TextOut(PR_OffsetX, Row, 'Vi');
-      TextOut(PR_OffsetX + ColumnWidth, Row, 'Ty');
-      TextOut(PR_OffsetX + ColumnWidth * 2, Row, 'Di');
-      TextOut(PR_OffsetX + ColumnWidth * 3, Row, 'Ab');
-      TextOut(PR_OffsetX + ColumnWidth * 4, Row, 'Ol');
-      TextOut(PR_OffsetX + ColumnWidth * 6, Row, SName);
-      MoveTo(PR_OffsetX, Row + FontHeight + 1);
-      LineTo(PR_OffsetX + Printer.PageWidth - (2 * PR_OffsetX), Row + FontHeight + 1);
-      Row := Row + FontHeight + 4;
-      Font.Style := [];
-    end;
+    ACanvas.Font.Style := [fsBold];
+    ACanvas.TextOut(PR_OffsetX, Row, 'Vi');
+    ACanvas.TextOut(PR_OffsetX + ColumnWidth, Row, 'Ty');
+    ACanvas.TextOut(PR_OffsetX + ColumnWidth * 2, Row, 'Di');
+    ACanvas.TextOut(PR_OffsetX + ColumnWidth * 3, Row, 'Ab');
+    ACanvas.TextOut(PR_OffsetX + ColumnWidth * 4, Row, 'Ol');
+    ACanvas.TextOut(PR_OffsetX + ColumnWidth * 6, Row, SName);
+    ACanvas.MoveTo(PR_OffsetX, Row + FontHeight + 1);
+    ACanvas.LineTo(PR_OffsetX + Printer.PageWidth - (2 * PR_OffsetX), Row + FontHeight + 1);
+    Row := Row + FontHeight + 4;
+    ACanvas.Font.Style := [];
   end;
 
   procedure PrintBitmap(Canvas: TCanvas; DestRect: TRect; Bitmap: Graphics.TBitmap);
@@ -1316,6 +1316,7 @@ resourcestring
   SUnit = 'Unit: ';
 begin
   Row := PR_OffSetY;
+  // todo: Get rid of this with statement
   with ACanvas do
   begin
     Font.Name := 'Arial';
@@ -1418,6 +1419,7 @@ begin
     Application.ProcessMessages;
     AddProject;
   end;
+  StatusBar.SimpleText := '';
 end;
 
 procedure TfmClassBrowser.PrintClassDiagramBuiltIn(OInfo: TBrowseClassInfoCollection;
@@ -1455,13 +1457,11 @@ var
     ACanvas.Brush.Color := OldBrushColor;
     np := Rect.Bottom;
     op := PageNum;
-    if Level > 0 then
-      with ACanvas do
-      begin
-        MoveTo(Rect.Left, Rect.Top + (BoxH div 2));
-        LineTo(Rect.Left - (IndentX div 2), Rect.Top + (BoxH div 2));
-        LineTo(Rect.Left - (IndentX div 2), Py);
-      end;
+    if Level > 0 then begin
+      ACanvas.MoveTo(Rect.Left, Rect.Top + (BoxH div 2));
+      ACanvas.LineTo(Rect.Left - (IndentX div 2), Rect.Top + (BoxH div 2));
+      ACanvas.LineTo(Rect.Left - (IndentX div 2), Py);
+    end;
     Inc(Rect.Left, 1);
     Inc(Rect.Top, 1);
     Dec(Rect.Bottom, 1);
@@ -1516,11 +1516,9 @@ begin
   Printer.Title := SClassReport;
   Printer.BeginDoc;
   try
-    with Printer.Canvas do begin
-      Font.Name := FClassHierarchyFont;
-      Font.Size := FClassHierarchyFontSize;
-      Font.Style := [];
-    end;
+    Printer.Canvas.Font.Name := FClassHierarchyFont;
+    Printer.Canvas.Font.Size := FClassHierarchyFontSize;
+    Printer.Canvas.Font.Style := [];
     PrintClassDiagramBuiltIn(OInfo, Printer.Canvas, FClassHierarchyBoxWidth,
       FClassHierarchyBoxSpace);
   finally
@@ -1822,6 +1820,7 @@ begin
   if tvBrowse.Selected = nil then Exit;
   if tvBrowse.Selected.Level = 0 then Exit;
   OInfo := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
+  // todo: Get rid of this with statement by adding an TfmClassProp.Execute class method
   with TfmClassProp.Create(Self) do
   try
     edtClassName.Text := OInfo.Name;
