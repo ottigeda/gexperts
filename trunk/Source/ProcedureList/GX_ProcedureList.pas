@@ -164,6 +164,8 @@ begin
   FFileScanner := TFileScanner.CreateWithFileName(Self, FileName);
   FLastProcLineNo := -1;
 
+  InitDpiScaler;
+
   LoadTime := GetTickCount;
   InitializeForm;
   LoadTime := GetTickCount - LoadTime;
