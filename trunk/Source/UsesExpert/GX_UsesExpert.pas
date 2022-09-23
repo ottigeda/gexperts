@@ -15,9 +15,7 @@ uses
   Classes, Controls, Forms, Menus, ComCtrls, Buttons, ImgList, ImageList,
   ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types,
   u_dzSpeedBitBtn, u_dzStopwatch,
-{$IFDEF IDE_IS_HIDPI_AWARE}
   u_dzDpiScaleUtils,
-{$ENDIF}
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
   GX_UnitExportsParser, GX_UsesExpertOptions, GX_UnitExportList,
   GX_OtaUtils;
