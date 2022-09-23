@@ -234,6 +234,7 @@ type
     procedure SetupEditorControls;
     function Images: TImageList;
     procedure UpdateListFilter;
+    function TryGetClassInfo(out _Info: TBrowseClassInfoCollection): Boolean;
   protected
 {$IFDEF IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
@@ -717,33 +718,26 @@ begin
       actFileRemove.Enabled := False
     else
       actFileRemove.Enabled := (Node.Level = 0);
-    if Assigned(tvBrowse.Selected) and Assigned(tvBrowse.Selected.Data) then
-    begin
-      if tvBrowse.Selected.Level > 0 then
-      begin
-        TCursor_TempHourglass;
+    if TryGetClassInfo(OInfo) then begin
+      TCursor_TempHourglass;
 
-        OInfo := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
-        if not OInfo.IsLoaded then
-          OInfo.LoadMethods;
-        TimeSpent := GetTickCount;
-        if pcMain.ActivePage = tshCode then
-          LoadCode;
-        if pcMain.ActivePage = tshInherit then
-          DrawInheritance;
-        TimeSpent := GetTickCount - TimeSpent;
-        LoadList(OInfo);
-        StatusBar.SimpleText := Format(SSourceModule, [OInfo.SourceName, TimeSpent]);
-      end
-      else
-      begin
-        StatusBar.SimpleText := '';
-        FMethodText.Clear;
-        FCodeText.Clear;
-        FCurrentCodePaneFile := '';
-        while scInherit.ControlCount > 0 do
-          scInherit.Controls[0].Free;
-      end;
+      if not OInfo.IsLoaded then
+        OInfo.LoadMethods;
+      TimeSpent := GetTickCount;
+      if pcMain.ActivePage = tshCode then
+        LoadCode;
+      if pcMain.ActivePage = tshInherit then
+        DrawInheritance;
+      TimeSpent := GetTickCount - TimeSpent;
+      LoadList(OInfo);
+      StatusBar.SimpleText := Format(SSourceModule, [OInfo.SourceName, TimeSpent]);
+    end else begin
+      StatusBar.SimpleText := '';
+      FMethodText.Clear;
+      FCodeText.Clear;
+      FCurrentCodePaneFile := '';
+      while scInherit.ControlCount > 0 do
+        scInherit.Controls[0].Free;
     end;
   finally
     lvInfo.Items.EndUpdate;
@@ -902,17 +896,18 @@ var
   LineNumber: Integer;
   SourceFileName: string;
   MInfo: TBrowseMethodInfoItem;
+  OInfo: TBrowseClassInfoCollection;
 begin
   TCursor_TempHourglass;
 
   FCodeText.BeginUpdate;
   try
-    if tvBrowse.Selected = nil then Exit;
-    if tvBrowse.Selected.Level = 0 then Exit;
-    SourceFileName := TBrowseClassInfoCollection(tvBrowse.Selected.Data).FileName;
+    if not TryGetClassInfo(OInfo) then
+      Exit; //==>
+    SourceFileName := OInfo.FileName;
     LineNumber := -1;
     if lvInfo.Selected = nil then
-      LineNumber := TBrowseClassInfoCollection(tvBrowse.Selected.Data).RefreshLineNo
+      LineNumber := OInfo.RefreshLineNo
     else
     begin
       MInfo := TBrowseMethodInfoItem(lvInfo.Selected.Data);
@@ -1070,6 +1065,7 @@ var
   end;
 
 var
+  OInfo: TBrowseClassInfoCollection;
   InheritList: TStrings;
   ClassIndex: Integer;
   ShapeLeft: Integer;
@@ -1077,7 +1073,7 @@ var
   i: Integer;
   EntryCount: Integer;
 begin
-  if (tvBrowse.Selected = nil) or (tvBrowse.Selected.Level = 0) then
+  if not TryGetClassInfo(OInfo) then
     Exit; //==>
 
   TCursor_TempHourglass;
@@ -1085,7 +1081,7 @@ begin
   // Get the list of ancestor classes.
   InheritList := TStringList.Create;
   try
-    DrawClassName := (TObject(tvBrowse.Selected.Data) as TBrowseClassInfoCollection).Name;
+    DrawClassName := OInfo.Name;
     InheritList.Add(DrawClassName);
     GetInheritedList(Inheritlist, DrawClassName);
 
@@ -1236,9 +1232,8 @@ resourcestring
 var
   OInfo: TBrowseClassInfoCollection;
 begin
-  if (tvBrowse.Selected = nil) or (tvBrowse.Selected.Level = 0) then
-    Exit;
-  OInfo := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
+  if not TryGetClassInfo(OInfo) then
+    Exit; //==>
   TCursor_TempHourglass;
   Printer.Title := SClassReport;
   Printer.BeginDoc;
@@ -1506,10 +1501,8 @@ var
 resourcestring
   SClassReport = 'Class Hierarchy Report';
 begin
-  if (tvBrowse.Selected = nil) or (tvBrowse.Selected.Level = 0) then
+  if not TryGetClassInfo(OInfo) then
     raise Exception.Create(SSelectClassFirst);
-
-  OInfo := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
 
   TCursor_TempHourglass;
 
@@ -1728,15 +1721,17 @@ end;
 
 procedure TfmClassBrowser.actFileRemoveExecute(Sender: TObject);
 var
+  Selected: TTreeNode;
   Item: TClassItem;
 begin
-  if tvBrowse.Selected = nil then
+  Selected := tvBrowse.Selected;
+  if Selected = nil then
   begin
     actFileRemove.Enabled := False;
     Exit;
   end;
-  Item := TClassItem(tvBrowse.Selected.Data);
-  tvBrowse.Selected.Free;
+  Item := TClassItem(Selected.Data);
+  Selected.Free;
   FreeAndNil(Item);
   ClassList.SaveToFile(False);
   if tvBrowse.Selected = nil then
@@ -1744,15 +1739,19 @@ begin
 end;
 
 procedure TfmClassBrowser.actFileRefreshExecute(Sender: TObject);
+var
+  Selected: TTreeNode;
 begin
-  if tvBrowse.Selected = nil then
-    Exit;
-  if tvBrowse.Selected.Level = 0 then
+  Selected := tvBrowse.Selected;
+  if Selected = nil then
+    Exit; //==>
+
+  if Selected.Level = 0 then
     RefreshNode
   else
   begin
-    TBrowseClassInfoCollection(tvBrowse.Selected.Data).LoadMethods;
-    tvBrowseChange(tvBrowse, tvBrowse.Selected);
+    TBrowseClassInfoCollection(Selected.Data).LoadMethods;
+    tvBrowseChange(tvBrowse, Selected);
   end;
   ClassList.SaveToFile(False);
 end;
@@ -1764,9 +1763,13 @@ resourcestring
 var
   Find: string;
 begin
-  if tvBrowse.Items.Count = 0 then Exit;
-  Find := InputBox(SFindClass, SEnterClassName, '');
-  if Find = '' then Exit;
+  if tvBrowse.Items.Count = 0 then
+    Exit; //==>
+
+  Find := InputBox(SFindClass, SEnterClassName, FLastFind);
+  if Find = '' then
+    Exit; //==>
+
   FLastFind := Find;
   FindFromNode(FLastFind, tvBrowse.Items[0]);
 end;
@@ -1782,15 +1785,23 @@ begin
   UpdateListFilter;
 end;
 
+function TfmClassBrowser.TryGetClassInfo(out _Info: TBrowseClassInfoCollection): Boolean;
+var
+  Selected: TTreeNode;
+begin
+  Selected := tvBrowse.Selected;
+  Result := (Selected <> nil) and (Selected.Level > 0) and (Selected.Data <> nil);
+  if Result then
+    _Info := TBrowseClassInfoCollection(Selected.Data);
+end;
+
 procedure TfmClassBrowser.UpdateListFilter;
 var
   OInfo: TBrowseClassInfoCollection;
 begin
-  if (tvBrowse.Selected = nil) or (tvBrowse.Selected.Level = 0) then
-    Exit;
+  if not TryGetClassInfo(Oinfo) then
+    Exit; //==>
   TCursor_TempHourglass;
-
-  OInfo := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
   LoadList(OInfo);
   StatusBar.SimpleText := OInfo.SourceName + ': ' + IntToStr(OInfo.LineNo);
 end;
@@ -1817,12 +1828,8 @@ procedure TfmClassBrowser.ViewBrowserDetails;
 var
   OInfo: TBrowseClassInfoCollection;
 begin
-  if tvBrowse.Selected = nil then
+  if not TryGetClassInfo(Oinfo) then
     Exit; //==>
-  if tvBrowse.Selected.Level = 0 then
-    Exit; //==>
-
-  OInfo := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
   TfmClassProp.Execute(Self, OInfo);
 end;
 
@@ -1938,9 +1945,9 @@ procedure TfmClassBrowser.actEditGotoClassExecute(Sender: TObject);
 var
   ClassInfos: TBrowseClassInfoCollection;
 begin
-  if tvBrowse.Selected = nil then
-    Exit;
-  ClassInfos := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
+  if not TryGetClassInfo(ClassInfos) then
+    Exit; //==>
+
   GxOtaGoToFileLine(ClassInfos.FileName, ClassInfos.RefreshLineNo + 1);
   if FAutomaticallyHideBrowser then
     Self.Hide;
