@@ -1817,21 +1817,13 @@ procedure TfmClassBrowser.ViewBrowserDetails;
 var
   OInfo: TBrowseClassInfoCollection;
 begin
-  if tvBrowse.Selected = nil then Exit;
-  if tvBrowse.Selected.Level = 0 then Exit;
+  if tvBrowse.Selected = nil then
+    Exit; //==>
+  if tvBrowse.Selected.Level = 0 then
+    Exit; //==>
+
   OInfo := TBrowseClassInfoCollection(tvBrowse.Selected.Data);
-  // todo: Get rid of this with statement by adding an TfmClassProp.Execute class method
-  with TfmClassProp.Create(Self) do
-  try
-    edtClassName.Text := OInfo.Name;
-    edtDerivedFrom.Text := OInfo.DerivedFrom;
-    mmoFileName.Text := OInfo.FileName;
-    edtLineNo.Text := IntToStr(OInfo.LineNo);
-    edtUnit.Text := OInfo.SourceName;
-    ShowModal;
-  finally
-    Free;
-  end;
+  TfmClassProp.Execute(Self, OInfo);
 end;
 
 procedure TfmClassBrowser.actViewClassPropertiesExecute(Sender: TObject);
