@@ -18,6 +18,7 @@ object fmExpertManager: TfmExpertManager
   OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
+  OnCloseQuery = FormCloseQuery
   OnKeyDown = FormKeyDown
   OnResize = FormResize
   OnShow = FormShow
