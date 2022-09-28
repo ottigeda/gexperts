@@ -3754,6 +3754,15 @@ begin
   end;
 end;
 
+{$IFDEF GX_DELPHIXE_UP}
+// Delphi XE and up has got DirectoryExists in SysUtils and a deprecated version in FileCtrl.
+// So we either must change the order in the uses list or explicitly call it from SysUtils
+function DirectoryExists(const Name: string): Boolean; inline;
+begin
+  Result := SysUtils.DirectoryExists(Name);
+end;
+{$ENDIF}
+
 function ShowOpenDialog(const Title: string; const Extension: string; Files: TStrings;
   const Filter: string = ''): boolean;
 var
