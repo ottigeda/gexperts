@@ -1707,7 +1707,7 @@ begin
 
     rtSemiColon: begin
         Assert(False, '.CheckIndent: rtSemiColon');
-        if not (FStack.GetTopType in [rtLeftBr, rtLeftHook]) then begin
+        if not (FStack.GetTopType in [rtLeftBr, rtLeftHook, rtGenericStart]) then begin
           Assert(False, '.CheckIndent: Not (LeftBr or LeftHook)');
           if FStack.GetTopType = rtUses then begin
             if (FPrevToken is TLineFeed) then begin
@@ -1744,9 +1744,10 @@ begin
               and (Next.ReservedType in [rtFuncDirective, rtForward])
               and (FStack.ProcLevel = 0)) then
               FWrapIndent := True
-            else if FSettings.FeedAfterSemiColon
-              and not (Next.ReservedType in [rtForward, rtFuncDirective, rtDefault]) then
-              AssertLineFeedAfter(FTokenIdx);
+            else if FSettings.FeedAfterSemiColon then begin
+              if not (Next.ReservedType in [rtForward, rtFuncDirective, rtDefault]) then
+                AssertLineFeedAfter(FTokenIdx);
+            end;
           end;
         end;
       end;
