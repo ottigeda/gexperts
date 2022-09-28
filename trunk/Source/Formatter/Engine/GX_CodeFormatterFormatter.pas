@@ -235,8 +235,8 @@ begin
   if not TryGetNextNoComment(_TokenIdx, Next, Offset) then
     Exit; //==>
 
-  // the next token must be an identifier (= rtNothing) (correct?)
-  if (Next.ReservedType <> rtNothing) or (Next.WordType <> wtWord) then
+  // the next token must be an identifier (= rtNothing or rtReserved in the special case of 'string') (correct?)
+  if not (Next.ReservedType in [rtNothing, rtReserved]) or (Next.WordType <> wtWord) then
     Exit; //==>
 
   Idx := _TokenIdx + Offset;
