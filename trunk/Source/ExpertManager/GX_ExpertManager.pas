@@ -854,7 +854,7 @@ end;
 
 procedure TExpertManagerExpert.MoveUp(_Idx: Integer);
 begin
-  Assert(_Idx > 1);
+  Assert(_Idx > 0);
   FCurrentExperts.Exchange(_Idx, _Idx - 1);
   FChanged := True;
 end;
