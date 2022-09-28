@@ -1135,7 +1135,7 @@ begin
     rtLeftHook: begin
         // left hook = '['
         Assert(False, '.CheckIndent: LeftHook');
-        if IsWType(FPrevToken, wtWord) and not IsRType(FPrevToken, rtOper) then begin
+        if IsRType(FPrevToken, rtRightBr) or (IsWType(FPrevToken, wtWord) and not IsRType(FPrevToken, rtOper)) then begin
           Assert(False, '.CheckIndent');
           FStack.Push(FCurrentRType, 0);
         end else begin
@@ -1822,7 +1822,7 @@ begin
 //          gblAssertTraceOn := True;
 //        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'constructor') then
 //          gblAssertTraceOn := False;
-        Assert(False, '**** .doExecute: CurrentToken: ' + FCurrentToken.GetForDebug);
+        Assert(False, '**** .doExecute: CurrentToken(' + IntToStr(FTokenIdx) + '): ' + FCurrentToken.GetForDebug);
         Assert(False, '.doExecute: Stack.Depth: ' + IntToStr(FStack.Depth) + ' .TopType: ' + GetEnumname(TypeInfo(TReservedType), Ord(FStack.GetTopType)) + ' .TopIndent: ' + IntToStr(FStack.GetTopIndent));
         Assert(False, '.doExecute: WrapIndent: ' + Ifthen(FWrapIndent, 'True', 'False'));
         Assert(False, '.doExecute: before CheckIndent: NTmp: ' + IntToStr(NTmp) + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
