@@ -34,7 +34,7 @@ type
     procedure ArrangeControls; override;
 {$ENDIF}
   public
-    class procedure Execute(_Owner: TWinControl; _Info: TBrowseClassInfoCollection); static;
+    class procedure Execute(_Owner: TWinControl; _Info: TBrowseClassInfoCollection);
     constructor Create(_Owner: TComponent); override;
   end;
 
