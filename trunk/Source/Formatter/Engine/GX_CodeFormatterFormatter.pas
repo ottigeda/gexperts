@@ -462,7 +462,7 @@ begin
 
     if IsRType(Prev2, [rtOper,
         rtMathOper, rtPlus, rtMinus, rtSemiColon, rtOf,
-        rtMinus, rtLogOper, rtEquals, rtAssignOper, rtLeftBr,
+        rtMinus, rtLogOper, rtEquals, rtAssignOper, rtLeftBr, rtColon,
         rtLeftHook, rtComma, rtDefault]) then begin
       Assert(False, '.AdjustSpacing');
       _CurrentToken.SetSpace([spAfter], False); { sign operator }
