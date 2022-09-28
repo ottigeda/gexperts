@@ -232,7 +232,7 @@ begin
     try
       TrimTrailingCrLf(ExpectedText);
       TrimTrailingCrLf(st);
-// uncomment if you want to use e.g. BeyondCompare do the comparison
+// uncomment if you want to use e.g. BeyondCompare to do the comparison
 //      st.SaveToFile('testcases\output\' + GetResultDir + '\' + Filename);
       WriteTrace('d:\' + Filename + '.Log');
       ClearTrace;
