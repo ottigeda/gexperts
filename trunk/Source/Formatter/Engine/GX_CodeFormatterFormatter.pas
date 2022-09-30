@@ -104,7 +104,7 @@ type
     procedure HandleColon(_RemoveMe: Integer);
     procedure HandleElse(_NTmp: Integer);
     function DetectGenericStart(_TokenIdx: Integer): Boolean;
-    procedure CheckIndent(var _NTmp: Integer; var _PrevOldNspaces: Integer);
+    procedure CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed);
     procedure HandleCapitalization(_CurrentToken: TPascalToken);
     function TryGetPrevLineFeed(var _TokenIdx: Integer; out _LineFeed: TLineFeed): Boolean;
   public
@@ -1027,7 +1027,7 @@ begin
   FWrapIndent := False;
 end;
 
-procedure TCodeFormatterFormatter.CheckIndent(var _NTmp: Integer; var _PrevOldNspaces: Integer);
+procedure TCodeFormatterFormatter.CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed);
 var
   RemoveMe: Integer;
   Next: TPascalToken;
@@ -1693,11 +1693,11 @@ begin
             or (FCurrentToken.WordType in [wtFullOutComment, wtHalfOutComment]) then
             FPrevLine.NoOfSpaces := FPrevLine.OldNoOfSpaces
           else begin
-            if _PrevOldNspaces >= 0 then
-              FPrevLine.NoOfSpaces := FPrevLine.NoOfSpaces +
-                (FPrevLine.OldNoOfSpaces - _PrevOldNspaces)
+            if Assigned(_PrevCommentLine) then
+              FPrevLine.NoOfSpaces := FPrevLine.OldNoOfSpaces +
+                (_PrevCommentLine.NoOfSpaces - _PrevCommentLine.OldNoOfSpaces)
             else
-              _PrevOldNspaces := FPrevLine.OldNoOfSpaces;
+              _PrevCommentLine := FPrevLine;
           end;
         end else if FSettings.AlignComments and (FCurrentToken.WordType = wtFullComment) then begin
           if TryGetToken(FTokenIdx + 1, Next) and (Next.ReservedType = rtLineFeed) then
@@ -1775,9 +1775,12 @@ begin
 
   if not (FCurrentRType in [rtLineFeed, rtComment]) then begin
     Assert(False, '.CheckIndent: rtLineFeed or rtComment');
-    _PrevOldNspaces := -1;
+    _PrevCommentLine := nil;
+    Assert(False, '.CheckIndent: _PrevCommentLine=nil');
+  end else begin
+    Assert(False, Format('.CheckIndent: _PrevCommentLine.NoOfSpaces=%d .OldNoOfSpaces=%d',
+      [_PrevCommentLine.NoOfSpaces, _PrevCommentLine.OldNoOfSpaces]));
   end;
-  Assert(False, Format('.CheckIndent: PrevOldNSpaces=%d', [_PrevOldNspaces]));
 
   if wType = wtCompDirective then begin
     Assert(False, '.CheckIndent: compiler directive');
@@ -1801,7 +1804,7 @@ end;
 procedure TCodeFormatterFormatter.doExecute(_Tokens: TPascalTokenList);
 var
   NTmp: Integer;
-  PrevOldNspaces: Integer;
+  PrevCommentLine: TLineFeed;
 begin
   FTokens := _Tokens;
 
@@ -1812,7 +1815,7 @@ begin
     FWrapIndent := True;
     FIsInInterfacePart := False;
     NTmp := 0;
-    PrevOldNspaces := -1;
+    PrevCommentLine := nil;
     // the StackStack is used to preserve indenting over IFDEF/ELSE/ENDIF statements
     FStackStack := TCodeFormatterStack.Create;
     try
@@ -1825,9 +1828,21 @@ begin
         Assert(False, '**** .doExecute: CurrentToken(' + IntToStr(FTokenIdx) + '): ' + FCurrentToken.GetForDebug);
         Assert(False, '.doExecute: Stack.Depth: ' + IntToStr(FStack.Depth) + ' .TopType: ' + GetEnumname(TypeInfo(TReservedType), Ord(FStack.GetTopType)) + ' .TopIndent: ' + IntToStr(FStack.GetTopIndent));
         Assert(False, '.doExecute: WrapIndent: ' + Ifthen(FWrapIndent, 'True', 'False'));
-        Assert(False, '.doExecute: before CheckIndent: NTmp: ' + IntToStr(NTmp) + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
-        CheckIndent(NTmp, PrevOldNspaces);
-        Assert(False, '.doExecute: after CheckIndent:  NTmp: ' + IntToStr(NTmp) + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
+        Assert(False, '.doExecute: before CheckIndent: NTmp: ' + IntToStr(NTmp));
+        if Assigned(PrevCommentLine) then begin
+          Assert(False, '.doExecute: before CheckIndent: PrevCommentLine=nil');
+        end else begin
+          Assert(False, Format('.doExecute: before CheckIndent: PrevCommentLine.NoOfSpaces=%d .OldNoOfSpaces=%d',
+            [PrevCommentLine.NoOfSpaces, PrevCommentLine.OldNoOfSpaces]));
+        end;
+        CheckIndent(NTmp, PrevCommentLine);
+        Assert(False, '.doExecute: after CheckIndent:  NTmp: ' + IntToStr(NTmp));
+        if Assigned(PrevCommentLine) then begin
+          Assert(False, '.doExecute: after CheckIndent: PrevCommentLine=nil');
+        end else begin
+          Assert(False, Format('.doExecute: after CheckIndent: PrevCommentLine.NoOfSpaces=%d .OldNoOfSpaces=%d',
+            [PrevCommentLine.NoOfSpaces, PrevCommentLine.OldNoOfSpaces]));
+        end;
         Inc(FTokenIdx);
       end;
     finally
