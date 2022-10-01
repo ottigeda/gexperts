@@ -135,16 +135,19 @@ begin
     ReadAsm(_Buff);
 
   while (_Buff^ <> #0) do begin
-    if FPrevType in [wtHalfComment, wtHalfStarComment, wtHalfOutComment] then
-      FPrevType := ReadHalfComment(s, _Buff)
-    else
+    if FPrevType in [wtHalfComment, wtHalfStarComment, wtHalfOutComment] then begin
+      FPrevType := ReadHalfComment(s, _Buff);
+      if FPrevType = wtFullComment then
+        FPrevLine := nil;
+    end else
       FPrevType := ReadWord(s, _Buff);
 
     if FPrevType = wtSpaces then begin
       if (FPrevLine <> nil) and (FPrevLine.NoOfSpaces = 0) then begin
         FPrevLine.NoOfSpaces := Length(s);
         FPrevLine.OldNoOfSpaces := FPrevLine.NoOfSpaces;
-      end;
+      end else if FPrevLine = nil then
+        FTokens.Add(TExpression.Create(FPrevType, s));
     end else begin
       FTokens.Add(TExpression.Create(FPrevType, s));
 
@@ -513,6 +516,7 @@ begin
 
   // This is for changing the casing of identifiers without adding them to
   // the global list.
+  // todo: Shouldn't this also check for Result <> wtSpaces?
   if (Result <> wtString) and (not FReadingAsm) then
     _Dest := FIdentifiers.AddIdentifier(_Dest);
 
@@ -547,7 +551,7 @@ begin
 
   if (FPrevLine <> nil) and (FPrevLine.NoOfSpaces = 0) then begin
     FPrevLine.NoOfSpaces := PCharDiff(P, _Source);
-    FPrevLine.OldNoOfSpaces := PCharDiff(P, _Source);
+    FPrevLine.OldNoOfSpaces := FPrevLine.NoOfSpaces; 
     FirstNonSpace := p;
   end;
 
@@ -585,7 +589,14 @@ begin
 
   SetString(_Dest, FirstNonSpace, PCharDiff(P, FirstNonSpace));
 
-  _Source := P;
+  if (P^ = #0) then
+    _Source := P
+  else begin
+    if CharInSet(P^, [Tab, Space]) then
+      Inc(P);
+
+    _Source := P;
+  end;
 end;
 
 { TIdentifiersList }
