@@ -372,6 +372,7 @@ var
   ClientRect: TRect;
   NewWidth: Integer;
   NewHeight: Integer;
+  FormActiveControl: TWinControl;
 begin
   if not Assigned(FFrm) then
     Exit; //==>
@@ -388,6 +389,7 @@ begin
 // https://en.delphipraxis.net/topic/5516-the-state-of-gexperts-support-for-delphi-11/?do=findComment&comment=49626
 // both effects were gone after I removed this call:
 //  RedrawLock := TWinControl_Lock(FPnlMaster);
+  FormActiveControl := FFrm.ActiveControl;
   FFrm.DisableAlign;
   try
     FPnlMaster.Visible := False;
@@ -412,6 +414,7 @@ begin
     ApplyScale(Scaler);
   finally
     FPnlMaster.Visible := True;
+    FFrm.ActiveControl := FormActiveControl;
     FFrm.EnableAlign;
 //    RedrawLock := nil;
   end;
@@ -455,9 +458,11 @@ var
   cnstr: TSizeConstraints;
   CurrFontSize: Integer;
   Ctrl: TControl;
+  FormActiveControl: TWinControl;
 begin
   inherited Create;
   FFrm := _frm;
+  FormActiveControl := FFrm.ActiveControl;
   FClientWidth := _frm.ClientWidth;
   FClientHeight := _frm.ClientHeight;
   cnstr := _frm.Constraints;
@@ -480,6 +485,7 @@ begin
     Ctrl.Parent := FPnlMaster;
   end;
   FPnlMaster.Align := alClient;
+  FFrm.ActiveControl := FormActiveControl;
 
   LogFmt('TFormDpiScaler.Create(%s)', [FFrm.Name]);
   LogFmt('  ClientWidth: %d, ClientHeight: %d, MinWidth: %d, MinHeight: %d, MaxWdidth: %d MaxHeight: %d CurrFontSize: %d DesignDpi: %d',
