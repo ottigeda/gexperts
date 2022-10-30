@@ -22,7 +22,7 @@ inherited fmExceptionNotification: TfmExceptionNotification
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
-    Caption = 'Break'
+    Caption = '&Break'
     Default = True
     ModalResult = 1
     TabOrder = 0
@@ -34,7 +34,7 @@ inherited fmExceptionNotification: TfmExceptionNotification
     Height = 25
     Anchors = [akRight, akBottom]
     Cancel = True
-    Caption = 'Continue'
+    Caption = '&Continue'
     ModalResult = 5
     TabOrder = 1
   end
