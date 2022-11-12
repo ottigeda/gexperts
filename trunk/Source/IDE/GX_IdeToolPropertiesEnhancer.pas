@@ -5,6 +5,7 @@ unit GX_IdeToolPropertiesEnhancer;
 interface
 
 uses
+  Windows,
   SysUtils,
   Classes,
   IniFiles;
@@ -21,6 +22,7 @@ implementation
 uses
   Controls,
   StdCtrls,
+  ExtCtrls,
   Forms,
   Messages,
   Menus,
@@ -224,11 +226,14 @@ var
   Monitor: TMonitor;
   WorkArea: TRectLTWH;
   DesiredHeight: Integer;
+  MacroPanel: TComponent;
+  CurrentDPI: Integer;
 begin
   MacroList := FForm.FindComponent('MacroList') as TListBox;
   FOrigMacroOnClick(_Sender);
   if FForm.Height > FOrigFormHeight then begin
-    DesiredHeight := 540;
+    CurrentDPI :=    TScreen_GetDpiForForm(FForm);
+    DesiredHeight := MulDiv(540, CurrentDPI, 96);
     Monitor := TForm_GetMonitor(FForm);
     if not Assigned(Monitor) then
       Exit; //==>
@@ -237,6 +242,9 @@ begin
       DesiredHeight := WorkArea.Height;
     Diff := DesiredHeight - FForm.Height;
     FForm.Height := DesiredHeight;
+    MacroPanel := FForm.FindComponent('pnMacro');
+    if Assigned(MacroPanel) and (MacroPanel is TPanel) then
+      TPanel(MacroPanel).Height := TPanel(MacroPanel).Height + Diff;
     MacroList.Height := MacroList.Height + Diff;
     TMonitor_MakeFullyVisible(Monitor, FForm);
   end else begin
