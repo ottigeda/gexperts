@@ -973,61 +973,61 @@ inherited fmGrepResults: TfmGrepResults
     Images = dmSharedImages.Images
     Left = 248
     Top = 88
-    object miFile: TMenuItem
+    object miHamburgerFile: TMenuItem
       Caption = '&File'
       ImageIndex = 14
-      object Search1: TMenuItem
+      object miHamburgerFileSearch: TMenuItem
         Action = actFileSearch
       end
-      object Refresh1: TMenuItem
+      object miHamburgerFileRefresh: TMenuItem
         Action = actFileRefresh
       end
-      object Abort1: TMenuItem
+      object miHamburgerFileAbort: TMenuItem
         Action = actFileAbort
       end
       object N1: TMenuItem
         Caption = '-'
       end
-      object Print1: TMenuItem
+      object miHamburgerFilePrint: TMenuItem
         Action = actFilePrint
       end
       object N2: TMenuItem
         Caption = '-'
       end
-      object Open1: TMenuItem
+      object miHamburgerFileOpen: TMenuItem
         Action = actFileOpen
       end
       object N3: TMenuItem
         Caption = '-'
       end
-      object Save1: TMenuItem
+      object miHamburgerFileSave: TMenuItem
         Action = actFileSave
       end
-      object PrinttoFile1: TMenuItem
+      object miHamburgerFilePrintToFile: TMenuItem
         Action = actFilePrintToFile
       end
-      object SavePrint1: TMenuItem
+      object miHamburgerFileSavePrint: TMenuItem
         Action = actFileSavePrint
       end
       object N4: TMenuItem
         Caption = '-'
       end
-      object Refresh2: TMenuItem
+      object miHamburgerFileRefreshSelected: TMenuItem
         Action = actHistoryRefreshSelected
       end
       object N5: TMenuItem
         Caption = '-'
       end
-      object Delete1: TMenuItem
+      object miHamburgerFileDeleteSelected: TMenuItem
         Action = actHistoryDeleteSelected
       end
       object N6: TMenuItem
         Caption = '-'
       end
-      object ModifySaveOptions1: TMenuItem
+      object miHamburgerFileModifySaveOptions: TMenuItem
         Action = actHistoryModifySaveOptions
       end
-      object Search2: TMenuItem
+      object miHamburgerFileSearchInHistory: TMenuItem
         Action = actHistorySearchInHistory
       end
     end
@@ -1052,48 +1052,48 @@ inherited fmGrepResults: TfmGrepResults
         Action = actHistorySort
       end
     end
-    object List1: TMenuItem
+    object miHamburgerList: TMenuItem
       Caption = '&List'
-      object GotoSelected1: TMenuItem
+      object miHamburgerGotoSelected: TMenuItem
         Action = actListGotoSelected
       end
-      object GotoSelectedandClose2: TMenuItem
+      object miHamburgerGotoSelectedandClose: TMenuItem
         Action = actListGotoSelectedAndClose
       end
-      object SelectNext1: TMenuItem
+      object miHamburgerSelectNext: TMenuItem
         Action = actListSelectNext
       end
-      object SelectPrevious1: TMenuItem
+      object miHamburgerSelectPrevious: TMenuItem
         Action = actListSelectPrevious
       end
       object N7: TMenuItem
         Caption = '-'
       end
-      object Copy1: TMenuItem
+      object miHamburgerCopy: TMenuItem
         Action = actListCopy
       end
       object N8: TMenuItem
         Caption = '-'
       end
-      object Contract1: TMenuItem
+      object miHamburgerContract: TMenuItem
         Action = actListContract
       end
-      object Expand1: TMenuItem
+      object miHamburgerExpand: TMenuItem
         Action = actListExpand
       end
     end
-    object View1: TMenuItem
+    object miHamburgerView: TMenuItem
       Caption = '&View'
-      object Options1: TMenuItem
+      object miHamburgerOptions: TMenuItem
         Action = actViewOptions
       end
       object N9: TMenuItem
         Caption = '-'
       end
-      object ShowMatchContext1: TMenuItem
+      object miHamburgerShowMatchContext: TMenuItem
         Action = actViewShowContext
       end
-      object ShowHistoryList1: TMenuItem
+      object miHamburgerShowHistoryList: TMenuItem
         Action = actViewShowHistoryList
       end
       object N10: TMenuItem
@@ -1102,31 +1102,31 @@ inherited fmGrepResults: TfmGrepResults
       object ShowFullFilename1: TMenuItem
         Action = actViewShowFullFilename
       end
-      object ShowIndent1: TMenuItem
+      object miHamburgerShowIndent: TMenuItem
         Action = actViewShowIndent
       end
       object N11: TMenuItem
         Caption = '-'
       end
-      object StayonTop1: TMenuItem
+      object miHamburgerStayonTop: TMenuItem
         Action = actViewStayOnTop
       end
     end
-    object Replace1: TMenuItem
+    object miHamburgerReplace: TMenuItem
       Caption = '&Replace'
-      object ReplaceAllItems1: TMenuItem
+      object miHamburgerReplaceAllItems: TMenuItem
         Action = actReplaceAll
       end
-      object ReplaceSelectedItem1: TMenuItem
+      object miHamburgerReplaceSelectedItem: TMenuItem
         Action = actReplaceSelected
       end
     end
-    object Help1: TMenuItem
+    object miHamburgerHelp: TMenuItem
       Caption = '&Help'
-      object Help2: TMenuItem
+      object miHamburgerHelpHelp: TMenuItem
         Action = actHelpHelp
       end
-      object Contents1: TMenuItem
+      object miHamburgerHelpContents: TMenuItem
         Action = actHelpContents
       end
     end
