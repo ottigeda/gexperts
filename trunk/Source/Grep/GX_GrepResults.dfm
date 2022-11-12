@@ -381,6 +381,27 @@ inherited fmGrepResults: TfmGrepResults
         Top = 421
       end
     end
+    object miMainHistory: TMenuItem
+      Caption = 'H&istory'
+      object miMainHistoryView: TMenuItem
+        Action = actHistoryView
+      end
+      object miMainHistoryRefresh: TMenuItem
+        Action = actHistoryRefresh
+      end
+      object miMainHistorySearch: TMenuItem
+        Action = actHistorySearch
+      end
+      object miMainHistoryModifySearchParameters: TMenuItem
+        Action = actHistoryModifySearchSettings
+      end
+      object miMainHistoryDelete: TMenuItem
+        Action = actHistoryDelete
+      end
+      object miMainHistorySort: TMenuItem
+        Action = actHistorySort
+      end
+    end
     object mitList: TMenuItem
       Caption = '&List'
       Left = 602
@@ -669,13 +690,13 @@ inherited fmGrepResults: TfmGrepResults
       OnExecute = actHistoryViewExecute
       OnUpdate = actHistoryUpdate
     end
-    object actHistoryDelete: TAction
+    object actHistoryRefreshSelected: TAction
       Tag = 1
       Category = 'History'
-      Caption = 'Delete'
-      ImageIndex = 11
-      ShortCut = 46
-      OnExecute = actHistoryDeleteExecute
+      Caption = 'Refresh Items'
+      ImageIndex = 34
+      Visible = False
+      OnExecute = actHistoryRefreshSelectedExecute
       OnUpdate = actHistoryUpdate
     end
     object actHistoryRefresh: TAction
@@ -697,6 +718,15 @@ inherited fmGrepResults: TfmGrepResults
       Category = 'History'
       Caption = 'Modify Search Parameters...'
       OnExecute = actHistoryRefreshExecute
+      OnUpdate = actHistoryUpdate
+    end
+    object actHistoryDelete: TAction
+      Tag = 1
+      Category = 'History'
+      Caption = 'Delete'
+      ImageIndex = 11
+      ShortCut = 46
+      OnExecute = actHistoryDeleteExecute
       OnUpdate = actHistoryUpdate
     end
     object actViewShowHistoryList: TAction
@@ -732,15 +762,6 @@ inherited fmGrepResults: TfmGrepResults
       Hint = 'Open a saved result'
       ImageIndex = 1
       OnExecute = actFileOpenExecute
-    end
-    object actHistoryRefreshSelected: TAction
-      Tag = 1
-      Category = 'History'
-      Caption = 'Refresh Items'
-      ImageIndex = 34
-      Visible = False
-      OnExecute = actHistoryRefreshSelectedExecute
-      OnUpdate = actHistoryUpdate
     end
     object actHistoryModifySaveOptions: TAction
       Category = 'History'
@@ -998,7 +1019,7 @@ inherited fmGrepResults: TfmGrepResults
         Caption = '-'
       end
       object Delete1: TMenuItem
-        Action = actHistoryDelete
+        Action = actHistoryDeleteSelected
       end
       object N6: TMenuItem
         Caption = '-'
@@ -1007,7 +1028,28 @@ inherited fmGrepResults: TfmGrepResults
         Action = actHistoryModifySaveOptions
       end
       object Search2: TMenuItem
+        Action = actHistorySearchInHistory
+      end
+    end
+    object miHamburgerHistory: TMenuItem
+      Caption = 'History'
+      object miHamburgerHistoryView: TMenuItem
+        Action = actHistoryView
+      end
+      object miHamburgerHistoryRefresh: TMenuItem
+        Action = actHistoryRefresh
+      end
+      object miHamburgerHistorySearch: TMenuItem
         Action = actHistorySearch
+      end
+      object miHamburgerHistoryModifySearchParameters: TMenuItem
+        Action = actHistoryModifySearchSettings
+      end
+      object miHamburgerHistoryDelete: TMenuItem
+        Action = actHistoryDelete
+      end
+      object miHamburgerHistorySort: TMenuItem
+        Action = actHistorySort
       end
     end
     object List1: TMenuItem
