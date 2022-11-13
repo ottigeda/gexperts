@@ -5,6 +5,6 @@ interface
 implementation
 
 begin
-   { testcomment
-   }s := '';
+  { testcomment
+  }s := '';
 end;
