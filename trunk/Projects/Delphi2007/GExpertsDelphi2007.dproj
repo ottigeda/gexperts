@@ -291,6 +291,9 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
             <Form>fmFavOptions</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\FavoriteFiles\GX_FavUtil.pas"/>
+        <DCCReference Include="..\..\Source\FavoriteFiles\GX_FavWuppdiWPImport.pas">
+            <Form>fmFavWuppdiWPImport</Form>
+        </DCCReference>
         <DCCReference Include="..\..\Source\FilterExceptions\GX_FilterExceptions.pas">
             <Form>fmGxFilterExceptionsExpert</Form>
         </DCCReference>

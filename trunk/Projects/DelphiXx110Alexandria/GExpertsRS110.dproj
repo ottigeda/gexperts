@@ -7,7 +7,7 @@
         <MainSource>GExpertsRS110.dpr</MainSource>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <ProjectGuid>{BB29661E-3FA2-4EA6-96EB-0768940BAAB6}</ProjectGuid>
-        <ProjectVersion>19.4</ProjectVersion>
+        <ProjectVersion>19.5</ProjectVersion>
         <TargetedPlatforms>1</TargetedPlatforms>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
@@ -342,6 +342,9 @@ $(PreBuildEvent)]]>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\FavoriteFiles\GX_FavUtil.pas"/>
+        <DCCReference Include="..\..\Source\FavoriteFiles\GX_FavWuppdiWPImport.pas">
+            <Form>fmFavWuppdiWPImport</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_FeedbackWizard.pas">
             <Form>fmFeedbackWizard</Form>
             <FormType>dfm</FormType>
@@ -584,6 +587,7 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\CodeProofreader\GX_ProofreaderKeyboard.pas"/>
         <DCCReference Include="..\..\source\CodeProofreader\GX_ProofreaderUtils.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_ReadMapFileThread.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_RegExpr.pas"/>
         <DCCReference Include="..\..\source\Grep\GX_Replace.pas"/>
         <DCCReference Include="..\..\source\ReplaceComponents\GX_ReplaceComp.pas">
             <Form>fmReplaceComp</Form>
@@ -715,7 +719,6 @@ $(PreBuildEvent)]]>
             <ModelSupport>False</ModelSupport>
             <Platforms>
                 <Platform value="Win32">True</Platform>
-                <Platform value="Win64">False</Platform>
             </Platforms>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>
