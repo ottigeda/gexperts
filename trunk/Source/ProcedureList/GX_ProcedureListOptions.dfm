@@ -43,7 +43,7 @@ object fmProcedureListOptions: TfmProcedureListOptions
     Top = 8
     Width = 273
     Height = 145
-    Caption = 'Code View'
+    Caption = 'Code &View'
     TabOrder = 1
     object lblDock: TLabel
       Left = 16
@@ -96,7 +96,7 @@ object fmProcedureListOptions: TfmProcedureListOptions
     object chkShowCodeView: TCheckBox
       Left = 16
       Top = 22
-      Width = 113
+      Width = 249
       Height = 17
       Caption = 'Show code view'
       TabOrder = 0
@@ -107,7 +107,7 @@ object fmProcedureListOptions: TfmProcedureListOptions
     Top = 8
     Width = 273
     Height = 145
-    Caption = 'Procedure List'
+    Caption = 'Procedure &List'
     TabOrder = 0
     object grp_ListFont: TGroupBox
       Left = 8
