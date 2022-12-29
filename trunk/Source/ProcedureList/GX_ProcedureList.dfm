@@ -21,255 +21,278 @@ object fmProcedureList: TfmProcedureList
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 14
-  object splSeparator: TSplitter
-    Left = 517
-    Top = 0
-    Width = 3
-    Height = 268
-    Cursor = crHSplit
-    Align = alRight
-    OnCanResize = splSeparatorCanResize
-  end
-  object pnlFuncHolder: TPanel
+  object p_AllButStatusBar: TPanel
     Left = 0
     Top = 0
-    Width = 517
+    Width = 742
     Height = 268
+    Margins.Left = 4
+    Margins.Top = 4
+    Margins.Right = 4
+    Margins.Bottom = 4
     Align = alClient
     BevelOuter = bvNone
     FullRepaint = False
     TabOrder = 0
-    object pnHolder: TPanel
+    object splSeparator: TSplitter
+      Left = 517
+      Top = 0
+      Width = 3
+      Height = 268
+      Cursor = crHSplit
+      Align = alRight
+      OnCanResize = splSeparatorCanResize
+    end
+    object pnlFuncHolder: TPanel
       Left = 0
-      Top = 58
+      Top = 0
       Width = 517
-      Height = 210
+      Height = 268
       Align = alClient
       BevelOuter = bvNone
       FullRepaint = False
       TabOrder = 0
-      object lvProcs: TListView
+      object pnHolder: TPanel
         Left = 0
-        Top = 0
+        Top = 58
         Width = 517
         Height = 210
         Align = alClient
-        Columns = <
-          item
-            Width = 20
-          end
-          item
-            Caption = 'Procedure'
-            Width = 313
-          end
-          item
-            Caption = 'Type'
-            Width = 110
-          end
-          item
-            Caption = 'Line'
-            Width = 68
-          end>
-        HideSelection = False
-        ReadOnly = True
-        RowSelect = True
-        SmallImages = dmSharedImages.Images
-        SortType = stData
+        BevelOuter = bvNone
+        FullRepaint = False
         TabOrder = 0
-        ViewStyle = vsReport
-        OnChange = lvProcsChange
-        OnColumnClick = lvProcsColumnClick
-        OnCompare = lvProcsCompare
-        OnDblClick = actViewGotoExecute
-        OnResize = lvProcsResize
+        object lvProcs: TListView
+          Left = 0
+          Top = 0
+          Width = 517
+          Height = 210
+          Align = alClient
+          Columns = <
+            item
+              Width = 20
+            end
+            item
+              Caption = 'Procedure'
+              Width = 313
+            end
+            item
+              Caption = 'Type'
+              Width = 110
+            end
+            item
+              Caption = 'Line'
+              Width = 68
+            end>
+          HideSelection = False
+          ReadOnly = True
+          RowSelect = True
+          SmallImages = dmSharedImages.Images
+          SortType = stData
+          TabOrder = 0
+          ViewStyle = vsReport
+          OnChange = lvProcsChange
+          OnColumnClick = lvProcsColumnClick
+          OnCompare = lvProcsCompare
+          OnDblClick = actViewGotoExecute
+          OnResize = lvProcsResize
+        end
       end
-    end
-    object pnlHeader: TPanel
-      Left = 0
-      Top = 22
-      Width = 517
-      Height = 36
-      Align = alTop
-      BevelOuter = bvNone
-      FullRepaint = False
-      ParentColor = True
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 2
-      OnResize = pnlHeaderResize
-      object pnlHeaderLeft: TPanel
+      object pnlHeader: TPanel
+        Left = 0
+        Top = 22
+        Width = 517
+        Height = 36
+        Align = alTop
+        BevelOuter = bvNone
+        FullRepaint = False
+        ParentColor = True
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 2
+        OnResize = pnlHeaderResize
+        object pnlHeaderLeft: TPanel
+          Left = 0
+          Top = 0
+          Width = 252
+          Height = 36
+          Align = alLeft
+          BevelOuter = bvNone
+          FullRepaint = False
+          TabOrder = 0
+          object lblMethods: TLabel
+            Left = 14
+            Top = 10
+            Width = 37
+            Height = 14
+            Alignment = taRightJustify
+            Caption = '&Search'
+            FocusControl = edtMethods
+          end
+          object edtMethods: TEdit
+            Left = 56
+            Top = 6
+            Width = 194
+            Height = 22
+            TabOrder = 0
+            OnChange = edtMethodsChange
+            OnKeyDown = edtMethodsKeyDown
+            OnKeyPress = edtMethodsKeyPress
+          end
+        end
+        object pnlHeaderRight: TPanel
+          Left = 252
+          Top = 0
+          Width = 265
+          Height = 36
+          Align = alClient
+          BevelOuter = bvNone
+          FullRepaint = False
+          TabOrder = 1
+          object lblObjects: TLabel
+            Left = 14
+            Top = 8
+            Width = 42
+            Height = 14
+            Alignment = taRightJustify
+            Caption = '&Objects'
+            FocusControl = cbxObjects
+          end
+          object cbxObjects: TComboBox
+            Left = 62
+            Top = 4
+            Width = 198
+            Height = 22
+            Style = csDropDownList
+            DropDownCount = 16
+            ItemHeight = 14
+            Sorted = True
+            TabOrder = 0
+            OnChange = cbxObjectsChange
+            OnKeyPress = edtMethodsKeyPress
+          end
+        end
+      end
+      object ToolBar: TToolBar
         Left = 0
         Top = 0
-        Width = 252
-        Height = 36
-        Align = alLeft
-        BevelOuter = bvNone
-        FullRepaint = False
-        TabOrder = 0
-        object lblMethods: TLabel
-          Left = 14
-          Top = 10
-          Width = 37
-          Height = 14
-          Alignment = taRightJustify
-          Caption = '&Search'
-          FocusControl = edtMethods
-        end
-        object edtMethods: TEdit
-          Left = 56
-          Top = 6
-          Width = 194
-          Height = 22
-          TabOrder = 0
-          OnChange = edtMethodsChange
-          OnKeyDown = edtMethodsKeyDown
-          OnKeyPress = edtMethodsKeyPress
-        end
-      end
-      object pnlHeaderRight: TPanel
-        Left = 252
-        Top = 0
-        Width = 265
-        Height = 36
-        Align = alClient
-        BevelOuter = bvNone
-        FullRepaint = False
+        Width = 517
+        Height = 22
+        AutoSize = True
+        DisabledImages = dmSharedImages.DisabledImages
+        Flat = True
+        Images = dmSharedImages.Images
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 1
-        object lblObjects: TLabel
-          Left = 14
-          Top = 8
-          Width = 42
-          Height = 14
-          Alignment = taRightJustify
-          Caption = '&Objects'
-          FocusControl = cbxObjects
+        Wrapable = False
+        object tbnCopy: TToolButton
+          Left = 0
+          Top = 0
+          Action = actEditCopy
         end
-        object cbxObjects: TComboBox
-          Left = 62
-          Top = 4
-          Width = 198
-          Height = 22
-          Style = csDropDownList
-          DropDownCount = 16
-          ItemHeight = 14
-          Sorted = True
-          TabOrder = 0
-          OnChange = cbxObjectsChange
-          OnKeyPress = edtMethodsKeyPress
+        object tbnSep1: TToolButton
+          Left = 23
+          Top = 0
+          Width = 8
+          ImageIndex = 47
+          Style = tbsSeparator
+        end
+        object tbnMatchClass: TToolButton
+          Left = 31
+          Top = 0
+          Action = actMatchClass
+          Grouped = True
+          Style = tbsCheck
+        end
+        object tbnMatchProc: TToolButton
+          Left = 54
+          Top = 0
+          Action = actMatchMethod
+          Grouped = True
+          Style = tbsCheck
+        end
+        object tbnSep2: TToolButton
+          Left = 77
+          Top = 0
+          Width = 8
+          ImageIndex = 1
+          Style = tbsSeparator
+        end
+        object tbnStart: TToolButton
+          Left = 85
+          Top = 0
+          Action = actViewStart
+          Grouped = True
+          Style = tbsCheck
+        end
+        object tbnAny: TToolButton
+          Left = 108
+          Top = 0
+          Action = actViewAny
+          Grouped = True
+          Style = tbsCheck
+        end
+        object tbnSep3: TToolButton
+          Left = 131
+          Top = 0
+          Width = 8
+          ImageIndex = 4
+          Style = tbsSeparator
+        end
+        object tbnGoto: TToolButton
+          Left = 139
+          Top = 0
+          Action = actViewGoto
+        end
+        object tbnSep4: TToolButton
+          Left = 162
+          Top = 0
+          Width = 8
+          ImageIndex = 5
+          Style = tbsSeparator
+        end
+        object tbnShowFunctionCode: TToolButton
+          Left = 170
+          Top = 0
+          Action = actViewShowCode
+        end
+        object tbnSep5: TToolButton
+          Left = 193
+          Top = 0
+          Width = 8
+          ImageIndex = 1
+          Style = tbsSeparator
+        end
+        object tbnOptions: TToolButton
+          Left = 201
+          Top = 0
+          Hint = 'Options'
+          Action = actOptions
+        end
+        object tbnSep6: TToolButton
+          Left = 224
+          Top = 0
+          Width = 8
+          ImageIndex = 1
+          Style = tbsSeparator
+        end
+        object tbnHelp: TToolButton
+          Left = 232
+          Top = 0
+          Action = actHelpHelp
         end
       end
     end
-    object ToolBar: TToolBar
-      Left = 0
+    object pnlFunctionBody: TPanel
+      Left = 520
       Top = 0
-      Width = 517
-      Height = 22
-      AutoSize = True
-      DisabledImages = dmSharedImages.DisabledImages
-      Flat = True
-      Images = dmSharedImages.Images
-      ParentShowHint = False
-      ShowHint = True
+      Width = 222
+      Height = 268
+      Align = alRight
+      BevelOuter = bvLowered
+      Caption = 'Editor Created at Runtime'
       TabOrder = 1
-      Wrapable = False
-      object tbnCopy: TToolButton
-        Left = 0
-        Top = 0
-        Action = actEditCopy
-      end
-      object tbnSep1: TToolButton
-        Left = 23
-        Top = 0
-        Width = 8
-        ImageIndex = 47
-        Style = tbsSeparator
-      end
-      object tbnMatchClass: TToolButton
-        Left = 31
-        Top = 0
-        Action = actMatchClass
-        Grouped = True
-        Style = tbsCheck
-      end
-      object tbnMatchProc: TToolButton
-        Left = 54
-        Top = 0
-        Action = actMatchMethod
-        Grouped = True
-        Style = tbsCheck
-      end
-      object tbnSep2: TToolButton
-        Left = 77
-        Top = 0
-        Width = 8
-        ImageIndex = 1
-        Style = tbsSeparator
-      end
-      object tbnStart: TToolButton
-        Left = 85
-        Top = 0
-        Action = actViewStart
-        Grouped = True
-        Style = tbsCheck
-      end
-      object tbnAny: TToolButton
-        Left = 108
-        Top = 0
-        Action = actViewAny
-        Grouped = True
-        Style = tbsCheck
-      end
-      object tbnSep3: TToolButton
-        Left = 131
-        Top = 0
-        Width = 8
-        ImageIndex = 4
-        Style = tbsSeparator
-      end
-      object tbnGoto: TToolButton
-        Left = 139
-        Top = 0
-        Action = actViewGoto
-      end
-      object tbnSep4: TToolButton
-        Left = 162
-        Top = 0
-        Width = 8
-        ImageIndex = 5
-        Style = tbsSeparator
-      end
-      object tbnShowFunctionCode: TToolButton
-        Left = 170
-        Top = 0
-        Hint = 'Show procedure code'
-        ImageIndex = 58
-        OnClick = tbnShowFunctionCodeClick
-      end
-      object tbnSep5: TToolButton
-        Left = 193
-        Top = 0
-        Width = 8
-        ImageIndex = 1
-        Style = tbsSeparator
-      end
-      object tbnOptions: TToolButton
-        Left = 201
-        Top = 0
-        Hint = 'Options'
-        Action = actOptions
-      end
-      object tbnSep6: TToolButton
-        Left = 224
-        Top = 0
-        Width = 8
-        ImageIndex = 1
-        Style = tbsSeparator
-      end
-      object tbnHelp: TToolButton
-        Left = 232
-        Top = 0
-        Action = actHelpHelp
-      end
+      Visible = False
     end
   end
   object StatusBar: TStatusBar
@@ -289,17 +312,6 @@ object fmProcedureList: TfmProcedureList
     SimplePanel = False
     UseSystemFont = False
   end
-  object pnlFunctionBody: TPanel
-    Left = 520
-    Top = 0
-    Width = 222
-    Height = 268
-    Align = alRight
-    BevelOuter = bvLowered
-    Caption = 'Editor Created at Runtime'
-    TabOrder = 1
-    Visible = False
-  end
   object dlgProcFont: TFontDialog
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
@@ -318,7 +330,7 @@ object fmProcedureList: TfmProcedureList
     Top = 88
     object actEditCopy: TAction
       Category = 'Edit'
-      Caption = '&Edit'
+      Caption = 'Copy'
       Hint = 'Copy procedures to clipboard'
       ImageIndex = 6
       ShortCut = 16451
@@ -329,6 +341,7 @@ object fmProcedureList: TfmProcedureList
       Caption = '&Font..'
       Hint = 'Configure font'
       ImageIndex = 26
+      ShortCut = 16454
       OnExecute = actOptionsFontExecute
     end
     object actViewStart: TAction
@@ -336,6 +349,7 @@ object fmProcedureList: TfmProcedureList
       Caption = 'S&tart'
       Hint = 'Match only from the start'
       ImageIndex = 24
+      ShortCut = 16467
       OnExecute = actViewStartExecute
     end
     object actViewAny: TAction
@@ -343,6 +357,7 @@ object fmProcedureList: TfmProcedureList
       Caption = '&Any'
       Hint = 'Match anywhere'
       ImageIndex = 25
+      ShortCut = 16449
       OnExecute = actViewAnyExecute
     end
     object actViewGoto: TAction
@@ -362,23 +377,32 @@ object fmProcedureList: TfmProcedureList
     end
     object actOptions: TAction
       Category = 'Options'
-      Caption = 'Options'
+      Caption = '&Options'
       ImageIndex = 17
+      ShortCut = 16463
       OnExecute = actOptionsExecute
     end
     object actMatchClass: TAction
       Category = 'Match'
-      Caption = 'Class'
+      Caption = '&Class'
       Hint = 'Match class and method names'
       ImageIndex = 70
       OnExecute = actMatchClassExecute
     end
     object actMatchMethod: TAction
       Category = 'Match'
-      Caption = 'Method'
+      Caption = '&Method'
       Hint = 'Match method names only'
       ImageIndex = 69
       OnExecute = actMatchMethodExecute
+    end
+    object actViewShowCode: TAction
+      Category = 'View'
+      Caption = 'Show &procedure code'
+      Hint = 'Show procedure code'
+      ImageIndex = 58
+      ShortCut = 16464
+      OnExecute = actViewShowCodeExecute
     end
   end
   object tmrFilter: TTimer

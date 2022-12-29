@@ -56,6 +56,8 @@ type
     tbnMatchProc: TToolButton;
     actMatchClass: TAction;
     actMatchMethod: TAction;
+    p_AllButStatusBar: TPanel;
+    actViewShowCode: TAction;
     procedure actMatchMethodExecute(Sender: TObject);
     procedure actMatchClassExecute(Sender: TObject);
     procedure tmrFilterTimer(Sender: TObject);
@@ -75,7 +77,7 @@ type
     procedure actViewAnyExecute(Sender: TObject);
     procedure actViewGotoExecute(Sender: TObject);
     procedure ActionsUpdate(Action: TBasicAction; var Handled: Boolean);
-    procedure tbnShowFunctionCodeClick(Sender: TObject);
+    procedure actViewShowCodeExecute(Sender: TObject);
     procedure actOptionsExecute(Sender: TObject);
     procedure lvProcsCompare(Sender: TObject; Item1, Item2: TListItem; Data: Integer; var Compare: Integer);
     procedure splSeparatorCanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
@@ -374,8 +376,8 @@ procedure TfmProcedureList.SaveSettings;
 begin
   // Things that might have changed on the procedure list dialog box
   FOptions.BoundsRect := BoundsRect;
-  FOptions.CodeViewWidth := pnlFunctionBody.Width;
-  FOptions.CodeViewHeight := pnlFunctionBody.Height;
+  FOptions.CodeViewWidthRelative := (10000 * pnlFunctionBody.Width) div Self.ClientWidth;
+  FOptions.CodeViewHeightRelative := (10000 * pnlFunctionBody.Height) div Self.clientHeight;
   FOptions.DialogFont.Assign(lvProcs.Font);
   FOptions.SaveSettings(TProcedureListExpert.GetSettings);
 end;
@@ -713,9 +715,10 @@ begin
   actViewAny.Checked := FOptions.SearchAll;
   actMatchClass.Checked := FOptions.SearchClassName;
   actMatchMethod.Checked := not FOptions.SearchClassName;
+  actViewShowCode.Checked := FOptions.CodeViewVisible;
 end;
 
-procedure TfmProcedureList.tbnShowFunctionCodeClick(Sender: TObject);
+procedure TfmProcedureList.actViewShowCodeExecute(Sender: TObject);
 begin
   FOptions.CodeViewVisible := not (pnlFunctionBody.Visible);
   ApplyOptions(False);
@@ -813,7 +816,10 @@ procedure TfmProcedureList.ApplyOptions(const bLoading: Boolean);
     splSeparator.Visible := bVisible;
     tbnShowFunctionCode.Down := bVisible;
   end;
-
+var
+  Offset: integer;
+  h: integer;
+  w: integer;
 begin
   SetCodeViewVisibility(FOptions.CodeViewVisible);
   FCodeText.Font.Assign(FOptions.CodeViewFont);
@@ -821,21 +827,40 @@ begin
 
   if FOptions.AlignmentChanged or bLoading then
   begin
+    if FOptions.AlignmentChanged then begin
+      w := (ClientWidth * 5000) div 10000;
+      h := (ClientHeight * 3000) div 10000;
+      FOptions.AlignmentChanged := False;
+    end else begin
+      w := (FOptions.CodeViewWidthRelative * ClientWidth) div 10000;
+      h := (FOptions.CodeViewHeightRelative * ClientHeight) div 10000;
+    end;
     pnlFunctionBody.Align := FOptions.CodeViewAlignment;
     splSeparator.Align := FOptions.CodeViewAlignment;
-    if FOptions.AlignmentChanged then
-    begin
-      case pnlFunctionBody.Align of
-        alTop, alBottom: pnlFunctionBody.Height := Round(Self.Height / 2);
-        alLeft, alRight: pnlFunctionBody.Width := Round(Self.Width / 2);
-      end;
-      FOptions.AlignmentChanged := False;
-    end
-    else
-      case pnlFunctionBody.Align of
-        alTop, alBottom: pnlFunctionBody.Height := FOptions.CodeViewHeight;
-        alLeft, alRight: pnlFunctionBody.Width := FOptions.CodeViewWidth;
-      end;
+    case pnlFunctionBody.Align of
+      alTop: begin
+          pnlFunctionBody.Height := h;
+          pnlFunctionBody.Top := 0;
+          splSeparator.Top := h + 10;
+        end;
+      alBottom: begin
+          pnlFunctionBody.Height := h;
+          Offset := pnlFuncHolder.Height;
+          splSeparator.Top := Offset + 10;
+          pnlFunctionBody.Top := Offset + 10;
+        end;
+      alLeft: begin
+          pnlFunctionBody.Width := w;
+          pnlFunctionBody.Left := 0;
+          splSeparator.Left := w + 10;
+        end;
+      alRight: begin
+          pnlFunctionBody.Width := w;
+          Offset := pnlFuncHolder.Width;
+          splSeparator.Left := offset + 10;
+          pnlFunctionBody.Left := Offset + 10;
+        end;
+    end;
   end;
 end;
 

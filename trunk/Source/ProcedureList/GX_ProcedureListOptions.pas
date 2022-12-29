@@ -17,7 +17,8 @@ type
     FSortOnColumn: Integer;
     FCodeViewVisible: Boolean;
     FSearchAll: Boolean;
-    FCodeViewWidth, FCodeViewHeight: Integer;
+    FCodeViewWidthRelative: Integer;
+    FCodeViewHeightRelative: Integer;
     FOptions: TProcedureListOptions;
     FObjectNameVisible: Boolean;
     FSearchClassName: Boolean;
@@ -28,8 +29,8 @@ type
     property CodeViewFont: TFont read FCodeViewFont write FCodeViewFont;
     property CodeViewAlignment: TAlign read FCodeViewAlignment write FCodeViewAlignment;
     property CodeViewVisible: Boolean read FCodeViewVisible write FCodeViewVisible;
-    property CodeViewHeight: Integer read FCodeViewHeight write FCodeViewHeight;
-    property CodeViewWidth: Integer read FCodeViewWidth write FCodeViewWidth;
+    property CodeViewHeightRelative: Integer read FCodeViewHeightRelative write FCodeViewHeightRelative;
+    property CodeViewWidthRelative: Integer read FCodeViewWidthRelative write FCodeViewWidthRelative;
     property BoundsRect: TRect read FBoundsRect write SetBoundsRect;
     property SortOnColumn: Integer read FSortOnColumn write FSortOnColumn;
     property SearchAll: Boolean read FSearchAll write FSearchAll;
@@ -121,8 +122,8 @@ begin
   // Do not localize any of the following lines
   FBoundsRect := _Settings.ReadBounds(Bounds(317, 279, 550, 500));
   FCodeViewVisible := _Settings.ReadBool('ShowProcedureBody', False);
-  FCodeViewWidth := _Settings.ReadInteger('ProcedureWidth', 292);
-  FCodeViewHeight := _Settings.ReadInteger('ProcedureHeight', 100);
+  FCodeViewWidthRelative := _Settings.ReadInteger('CodeViewWidthRelative', 5000);
+  FCodeViewHeightRelative := _Settings.ReadInteger('CodeViewHeightRelative', 3000);
   FCodeViewAlignment := GetCodeViewAlignment(_Settings.ReadString('ProcedureAlignment', 'Right'));
   FSortOnColumn := _Settings.ReadInteger('SortColumn', FSortOnColumn);
   _Settings.LoadFont(DialogFontKey, FDialogFont);
@@ -152,8 +153,8 @@ begin
   _Settings.WriteBool('SearchClassName', FSearchClassName);
   _Settings.WriteBounds(BoundsRect);
   _Settings.WriteInteger('SortColumn', FSortOnColumn);
-  _Settings.WriteInteger('ProcedureWidth', FCodeViewWidth);
-  _Settings.WriteInteger('ProcedureHeight', FCodeViewHeight);
+  _Settings.WriteInteger('CodeViewWidthRelative', FCodeViewWidthRelative);
+  _Settings.WriteInteger('CodeViewHeightRelative', FCodeViewHeightRelative);
   _Settings.WriteString('ProcedureAlignment', GetAlignmentString(FCodeViewAlignment));
   _Settings.SaveFont(DialogFontKey, FDialogFont);
   _Settings.SaveFont(CodeViewFontKey, FCodeViewFont);
