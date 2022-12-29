@@ -124,7 +124,6 @@ begin
   FCodeViewWidth := _Settings.ReadInteger('ProcedureWidth', 292);
   FCodeViewHeight := _Settings.ReadInteger('ProcedureHeight', 100);
   FCodeViewAlignment := GetCodeViewAlignment(_Settings.ReadString('ProcedureAlignment', 'Right'));
-  FAlignmentChanged := _Settings.ReadBool('AlignmentChanged', False);
   FSortOnColumn := _Settings.ReadInteger('SortColumn', FSortOnColumn);
   _Settings.LoadFont(DialogFontKey, FDialogFont);
   _Settings.LoadFont(CodeViewFontKey, FCodeViewFont);
@@ -159,7 +158,6 @@ begin
   _Settings.SaveFont(DialogFontKey, FDialogFont);
   _Settings.SaveFont(CodeViewFontKey, FCodeViewFont);
   _Settings.WriteBool('ShowProcedureBody', FCodeViewVisible);
-  _Settings.WriteBool('AlignmentChanged', FAlignmentChanged);
   _Settings.WriteBool('ShowObjectName', FObjectNameVisible);
 end;
 
