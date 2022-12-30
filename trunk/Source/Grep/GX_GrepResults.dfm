@@ -56,6 +56,7 @@ inherited fmGrepResults: TfmGrepResults
       Style = lbOwnerDrawFixed
       Align = alClient
       ItemHeight = 17
+      PopupMenu = pmResultList
       TabOrder = 2
       OnClick = lbResultsClick
       OnDblClick = actListGotoSelectedExecute
@@ -961,6 +962,9 @@ inherited fmGrepResults: TfmGrepResults
     object miContextSearchSelectedText: TMenuItem
       Action = actContextSelSearch
     end
+    object miContextCopySelectedText: TMenuItem
+      Action = actListCopy
+    end
   end
   object OpenDialog: TOpenDialog
     DefaultExt = 'txt'
@@ -1129,6 +1133,13 @@ inherited fmGrepResults: TfmGrepResults
       object miHamburgerHelpContents: TMenuItem
         Action = actHelpContents
       end
+    end
+  end
+  object pmResultList: TPopupMenu
+    Left = 192
+    Top = 176
+    object miListCopyToClipboard: TMenuItem
+      Action = actListCopy
     end
   end
 end

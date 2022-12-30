@@ -119,6 +119,7 @@ type
     pmContextMenu: TPopupMenu;
     actContextSelSearch: TAction;
     miContextSearchSelectedText: TMenuItem;
+    miContextCopySelectedText: TMenuItem;
     actHistorySearch: TAction;
     miHistorySearch: TMenuItem;
     mitFileSep2: TMenuItem;
@@ -254,6 +255,8 @@ type
     miHamburgerHistoryModifySearchParameters: TMenuItem;
     miHamburgerHistoryDelete: TMenuItem;
     miHamburgerHistorySort: TMenuItem;
+    pmResultList: TPopupMenu;
+    miListCopyToClipboard: TMenuItem;
     procedure FormResize(Sender: TObject);
     procedure lbResultsMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure lbResultsKeyPress(Sender: TObject; var Key: Char);
@@ -1546,10 +1549,13 @@ procedure TfmGrepResults.actListCopyExecute(Sender: TObject);
 var
   AItem: TGrepHistoryListItem;
 begin
-  if reContext.Focused and (reContext.SelLength > 0) then
-  begin
-    reContext.CopyToClipboard;
-    Exit;
+  if reContext.Focused then begin
+    if reContext.SelLength > 0 then begin
+      reContext.CopyToClipboard;
+    end else begin
+      Clipboard.AsText := reContext.Lines.Text;
+    end;
+    Exit; //==>
   end;
 
   if (lbHistoryList.ItemIndex = -1) or (lbHistoryList.Count = 0) then
