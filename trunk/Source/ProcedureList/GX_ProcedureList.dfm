@@ -26,10 +26,6 @@ object fmProcedureList: TfmProcedureList
     Top = 0
     Width = 742
     Height = 268
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
     Align = alClient
     BevelOuter = bvNone
     FullRepaint = False
