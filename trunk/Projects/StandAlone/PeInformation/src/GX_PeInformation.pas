@@ -903,9 +903,31 @@ begin
   Close;
 end;
 
+procedure CallWinHelp(const Command, ContextID: Integer; const HelpOwner: TWinControl);
+var
+  HelpFn: string;
+begin
+  HelpFn := TApplication_GetExePathBS + 'GExperts.chm';
+  if FileExists(HelpFn) then
+    // The 0 allows the help to drop behind the IDE
+    HtmlHelp(0, PChar(HelpFn), Command, ContextID)
+  else
+    raise Exception.Create('The configured help file is missing: ' + HelpFn);
+end;
+
+procedure GxContextHelpContents(const HelpOwner: TWinControl);
+begin
+  CallWinHelp(HH_DISPLAY_INDEX, 0, HelpOwner);
+end;
+
+procedure GxContextHelp(const HelpOwner: TWinControl; const ContextID: Integer);
+begin
+  CallWinHelp(HH_HELP_CONTEXT, ContextID, HelpOwner);
+end;
+
 procedure TfmPeInformation.actHelpHelpExecute(Sender: TObject);
 begin
-//  GxContextHelp(Self, 16);
+  GxContextHelp(Self, 16);
 end;
 
 procedure TfmPeInformation.actHelpAboutExecute(Sender: TObject);
@@ -966,7 +988,7 @@ end;
 
 procedure TfmPeInformation.actHelpContentsExecute(Sender: TObject);
 begin
-//  GxContextHelpContents(Self);
+  GxContextHelpContents(Self);
 end;
 
 procedure TfmPeInformation.ActionsUpdate(Action: TBasicAction; var Handled: Boolean);
