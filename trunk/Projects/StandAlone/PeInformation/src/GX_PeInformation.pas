@@ -6,15 +6,14 @@ interface
 
 uses
   Windows, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, GX_PeInfo, ComCtrls, Menus,
-  GX_SharedImages,
-  ActnList, ToolWin, StdCtrls, SysUtils, Messages;
+  ComCtrls, Menus, ActnList, ToolWin, StdCtrls, SysUtils, Messages, ExtCtrls,
+  GX_BaseForm, GX_SharedImages, GX_PeInfo;
 
 const
   WM_CheckParams = WM_USER + 4711;
 
 type
-  TfmPeInformation = class(TForm)
+  TfmPeInformation = class(TfmBaseForm)
     pcMain: TPageControl;
     tshMSDOS: TTabSheet;
     tshImport: TTabSheet;
@@ -139,7 +138,8 @@ uses
   u_dzVclUtils,
   GX_GenericUtils,
   GX_DbugIntf,
-  GX_PeInfoPrint;
+  GX_PeInfoPrint,
+  GX_About;
 
 procedure SetListViewItem(AItem: TListItem; AValue: string);
 var
@@ -930,9 +930,14 @@ begin
   GxContextHelp(Self, 16);
 end;
 
+procedure ShowGXAboutForm;
+begin
+  gblAboutFormClass.Execute(nil);
+end;
+
 procedure TfmPeInformation.actHelpAboutExecute(Sender: TObject);
 begin
-//  ShowGXAboutForm;
+  ShowGXAboutForm;
 end;
 
 procedure TfmPeInformation.actOptionsDecimalExecute(Sender: TObject);

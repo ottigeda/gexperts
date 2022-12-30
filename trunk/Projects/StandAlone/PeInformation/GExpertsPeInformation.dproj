@@ -116,6 +116,7 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzClassUtils.pas"/>
+        <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzCompilerAndRtlVersions.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzConvertUtils.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzDateUtils.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzErrorThread.pas"/>
@@ -138,9 +139,24 @@
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzVariantUtils.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzVclUtils.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzVersionInfo.pas"/>
+        <DCCReference Include="..\..\..\Source\Formatter\GX_AboutExperimental.pas">
+            <Form>fmAboutExperimental</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\..\Source\Framework\GX_About.pas">
+            <Form>fmAbout</Form>
+        </DCCReference>
         <DCCReference Include="..\..\..\Source\Utils\GX_DbugIntf.pas"/>
         <DCCReference Include="..\..\..\Source\Utils\GX_Debug.pas"/>
         <DCCReference Include="..\..\..\Source\Utils\GX_GenericUtils.pas"/>
+        <DCCReference Include="src\GX_BaseForm.pas">
+            <Form>fmBaseForm</Form>
+        </DCCReference>
+        <DCCReference Include="src\GX_ConfigurationInfo.pas"/>
+        <DCCReference Include="src\GX_FeedbackWizard.pas"/>
+        <DCCReference Include="src\GX_GxUtils.pas"/>
+        <DCCReference Include="src\GX_IdeUtils.pas"/>
+        <DCCReference Include="src\GX_LibrarySource.pas"/>
+        <DCCReference Include="src\GX_OtaUtils.pas"/>
         <DCCReference Include="src\GX_PeInfo.pas"/>
         <DCCReference Include="src\GX_PeInfoPrint.pas">
             <Form>f_PeInfoPrint</Form>
@@ -152,5 +168,6 @@
             <Form>dmSharedImages</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
+        <DCCReference Include="src\ToolsApi.pas"/>
     </ItemGroup>
 </Project>

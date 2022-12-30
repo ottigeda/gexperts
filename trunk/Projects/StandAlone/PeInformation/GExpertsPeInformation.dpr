@@ -31,7 +31,18 @@ uses
   u_dzVariantUtils in '..\..\..\ExternalSource\dzlib\u_dzVariantUtils.pas',
   u_dzTypesUtils in '..\..\..\ExternalSource\dzlib\u_dzTypesUtils.pas',
   u_dzErrorThread in '..\..\..\ExternalSource\dzlib\u_dzErrorThread.pas',
-  u_dzStringArrayUtils in '..\..\..\ExternalSource\dzlib\u_dzStringArrayUtils.pas';
+  u_dzStringArrayUtils in '..\..\..\ExternalSource\dzlib\u_dzStringArrayUtils.pas',
+  GX_About in '..\..\..\Source\Framework\GX_About.pas' {fmAbout},
+  GX_AboutExperimental in '..\..\..\Source\Formatter\GX_AboutExperimental.pas' {fmAboutExperimental},
+  GX_BaseForm in 'src\GX_BaseForm.pas' {fmBaseForm},
+  GX_ConfigurationInfo in 'src\GX_ConfigurationInfo.pas',
+  u_dzCompilerAndRtlVersions in '..\..\..\ExternalSource\dzlib\u_dzCompilerAndRtlVersions.pas',
+  GX_OtaUtils in 'src\GX_OtaUtils.pas',
+  GX_IdeUtils in 'src\GX_IdeUtils.pas',
+  GX_GxUtils in 'src\GX_GxUtils.pas',
+  ToolsApi in 'src\ToolsApi.pas',
+  GX_FeedbackWizard in 'src\GX_FeedbackWizard.pas',
+  GX_LibrarySource in 'src\GX_LibrarySource.pas';
 
 {$R *_version.res}
 {$R *_icon.res}
