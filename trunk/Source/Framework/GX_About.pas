@@ -5,7 +5,8 @@ unit GX_About;
 interface
 
 uses
-  Windows, Classes, Controls, Forms, StdCtrls, ExtCtrls, GX_BaseForm,
+  Windows, Classes, Controls, Forms, StdCtrls, ExtCtrls,
+  GX_BaseForm,
   GX_MemoEscFix;
 
 type
@@ -78,8 +79,10 @@ var
 
 procedure TfmAbout.btnEmailClick(Sender: TObject);
 begin
+{$IF DECLARED(TfmFeedbackWizard)}
   TfmFeedbackWizard.Execute(Application, BugEmail, SuggestionEmail);
   Close;
+{$IFEND}
 end;
 
 constructor TfmAbout.Create(AOwner: TComponent);
@@ -99,6 +102,12 @@ begin
   SetFontColor(mmoBuildDetails, clRed);
 
   TLabel_MakeUrlLabel(lblWebPage);
+
+{$IF DECLARED(TfmFeedbackWizard)}
+  btnEmail.Visible := True;
+{$ELSE}
+  btnEmail.Visible := False;
+{$IFEND}
 
   imgLogo.Picture.Bitmap.LoadFromResourceName(HInstance, 'ABOUT_WIZ');
   InitVersionInfoControls;
