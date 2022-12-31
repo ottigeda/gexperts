@@ -175,11 +175,9 @@ type
 
 procedure GxSetDefaultFont(Control: TControl);
 begin
-{$IFNDEF GX_STANDALONE}
   if ConfigInfo.EnableCustomFont then
     TControlCracker(Control).Font.Assign(ConfigInfo.CustomFont)
   else
-{$ENDIF}
     SetDefaultFont(Control);
 end;
 

@@ -17,18 +17,18 @@
         <DCC_ExeOutput>..\..\..\..\binaries</DCC_ExeOutput>
         <DCC_HppOutput>..\dcu\2007\release</DCC_HppOutput>
         <DCC_ImageBase>500000</DCC_ImageBase>
-        <DCC_IncludePath>..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib</DCC_IncludePath>
+        <DCC_IncludePath>..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib;..\..\..\..\ExternalSource\RegExpr</DCC_IncludePath>
         <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
         <DCC_MapFile>3</DCC_MapFile>
         <DCC_ObjOutput>..\dcu\2007\release</DCC_ObjOutput>
-        <DCC_ObjPath>..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib</DCC_ObjPath>
-        <DCC_ResourcePath>..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib</DCC_ResourcePath>
+        <DCC_ObjPath>..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib;..\..\..\..\ExternalSource\RegExpr</DCC_ObjPath>
+        <DCC_ResourcePath>..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib;..\..\..\..\ExternalSource\RegExpr</DCC_ResourcePath>
         <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-        <DCC_UnitAlias>UiTypes=Dialogs;Actions=ActnList;ImageList=ImgList;u_dzDpiScaleUtils=u_dzDpiScaleUtilsDummy</DCC_UnitAlias>
-        <DCC_UnitSearchPath>..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib</DCC_UnitSearchPath>
+        <DCC_UnitAlias>UiTypes=Dialogs;Actions=ActnList;ImageList=ImgList;u_dzDpiScaleUtils=u_dzDpiScaleUtilsDummy;SynRegExpr=regexpr</DCC_UnitAlias>
+        <DCC_UnitSearchPath>..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib;..\..\..\..\ExternalSource\RegExpr</DCC_UnitSearchPath>
         <DCC_WriteableConstants>True</DCC_WriteableConstants>
         <Version>7.0</Version>
     </PropertyGroup>
@@ -40,19 +40,19 @@
         <DCC_GenerateStackFrames>True</DCC_GenerateStackFrames>
         <DCC_HppOutput>..\dcu\2007\debug</DCC_HppOutput>
         <DCC_ImageBase>500000</DCC_ImageBase>
-        <DCC_IncludePath>$(BDS)\lib\Debug;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib</DCC_IncludePath>
+        <DCC_IncludePath>$(BDS)\lib\Debug;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib;..\..\..\..\ExternalSource\RegExpr</DCC_IncludePath>
         <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
         <DCC_MapFile>3</DCC_MapFile>
         <DCC_ObjOutput>..\dcu\2007\debug</DCC_ObjOutput>
-        <DCC_ObjPath>$(BDS)\lib\Debug;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib</DCC_ObjPath>
+        <DCC_ObjPath>$(BDS)\lib\Debug;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib;..\..\..\..\ExternalSource\RegExpr</DCC_ObjPath>
         <DCC_Optimize>False</DCC_Optimize>
         <DCC_RangeChecking>True</DCC_RangeChecking>
-        <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib</DCC_ResourcePath>
+        <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib;..\..\..\..\ExternalSource\RegExpr</DCC_ResourcePath>
         <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
         <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-        <DCC_UnitAlias>UiTypes=Dialogs;Actions=ActnList;ImageList=ImgList;u_dzDpiScaleUtils=u_dzDpiScaleUtilsDummy</DCC_UnitAlias>
-        <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib</DCC_UnitSearchPath>
+        <DCC_UnitAlias>UiTypes=Dialogs;Actions=ActnList;ImageList=ImgList;u_dzDpiScaleUtils=u_dzDpiScaleUtilsDummy;SynRegExpr=regexpr</DCC_UnitAlias>
+        <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\dzlib;..\..\..\..\ExternalSource\RegExpr</DCC_UnitSearchPath>
         <DCC_WriteableConstants>True</DCC_WriteableConstants>
         <Version>7.0</Version>
     </PropertyGroup>
@@ -171,9 +171,10 @@
         <DCCReference Include="..\..\..\..\Source\Utils\GX_DbugIntf.pas"/>
         <DCCReference Include="..\..\..\..\Source\Utils\GX_GenericClasses.pas"/>
         <DCCReference Include="..\..\..\..\Source\Utils\GX_GenericUtils.pas"/>
-        <DCCReference Include="..\..\..\..\Source\Utils\GX_GxUtils.pas"/>
         <DCCReference Include="..\..\..\..\Source\Utils\GX_MemoEscFix.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Utils\GX_RegExpr.pas"/>
         <DCCReference Include="..\..\..\..\Source\Utils\GX_StringList.pas"/>
+        <DCCReference Include="..\..\common\GX_GxUtils.pas"/>
         <DCCReference Include="GrepMain.pas"/>
         <DCCReference Include="GX_ActionBroker.pas"/>
         <DCCReference Include="GX_EditorEnhancements.pas"/>

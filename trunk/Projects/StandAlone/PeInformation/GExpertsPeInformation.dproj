@@ -148,12 +148,12 @@
         <DCCReference Include="..\..\..\Source\Utils\GX_DbugIntf.pas"/>
         <DCCReference Include="..\..\..\Source\Utils\GX_Debug.pas"/>
         <DCCReference Include="..\..\..\Source\Utils\GX_GenericUtils.pas"/>
+        <DCCReference Include="..\common\GX_GxUtils.pas"/>
         <DCCReference Include="src\GX_BaseForm.pas">
             <Form>fmBaseForm</Form>
         </DCCReference>
         <DCCReference Include="src\GX_ConfigurationInfo.pas"/>
         <DCCReference Include="src\GX_FeedbackWizard.pas"/>
-        <DCCReference Include="src\GX_GxUtils.pas"/>
         <DCCReference Include="src\GX_IdeUtils.pas"/>
         <DCCReference Include="src\GX_LibrarySource.pas"/>
         <DCCReference Include="src\GX_OtaUtils.pas"/>

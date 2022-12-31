@@ -39,7 +39,7 @@ uses
   u_dzCompilerAndRtlVersions in '..\..\..\ExternalSource\dzlib\u_dzCompilerAndRtlVersions.pas',
   GX_OtaUtils in 'src\GX_OtaUtils.pas',
   GX_IdeUtils in 'src\GX_IdeUtils.pas',
-  GX_GxUtils in 'src\GX_GxUtils.pas',
+  GX_GxUtils in '..\common\GX_GxUtils.pas',
   ToolsApi in 'src\ToolsApi.pas',
   GX_FeedbackWizard in 'src\GX_FeedbackWizard.pas',
   GX_LibrarySource in 'src\GX_LibrarySource.pas';
