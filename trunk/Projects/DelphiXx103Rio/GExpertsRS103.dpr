@@ -112,6 +112,7 @@ uses
   GX_FindComponentRef in '..\..\source\FindComponentReference\GX_FindComponentRef.pas',
   GX_FocusCodeEditor in '..\..\Source\FocusCodeEditor\GX_FocusCodeEditor.pas',
   GX_FormHotkeys in '..\..\Source\FormHotkeys\GX_FormHotkeys.pas' {f_FormHotkeys},
+  GX_FormHotkeysSelect in '..\..\Source\FormHotkeys\GX_FormHotkeysSelect.pas' {fmFormHotkeysSelect},
   GX_GenericClasses in '..\..\source\Utils\GX_GenericClasses.pas',
   GX_GenericUtils in '..\..\source\Utils\GX_GenericUtils.pas',
   GX_GetIdeVersion in '..\..\source\Framework\GX_GetIdeVersion.pas',
