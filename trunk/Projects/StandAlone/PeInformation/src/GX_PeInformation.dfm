@@ -296,7 +296,6 @@ object fmPeInformation: TfmPeInformation
     Top = 76
     object mitFile: TMenuItem
       Caption = '&File'
-      ShortCut = 16467
       object mitFileOpen: TMenuItem
         Action = actFileOpen
       end
