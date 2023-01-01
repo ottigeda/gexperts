@@ -780,6 +780,8 @@ begin
 
 {$IFNDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
   chkAutoCloseMessage.Visible := False;
+  chkAutoCloseIgnoreHints.Visible := False;
+  chkAutoCloseIgnoreWarnings.Visible := False;
 {$ENDIF}
 
 {$IFNDEF GX_VER185_up} // Delphi 2007 (11; BDS 4)
