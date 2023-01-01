@@ -334,6 +334,9 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\Source\FormHotkeys\GX_FormHotkeys.pas">
             <Form>f_FormHotkeys</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\FormHotkeys\GX_FormHotkeysSelect.pas">
+            <Form>fmFormHotkeysSelect</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_About.pas">
             <Form>fmAbout</Form>
         </DCCReference>
