@@ -37,9 +37,6 @@ object f_FormHotkeys: Tf_FormHotkeys
     object act_AssignShortcut: TAction
       Caption = '&Assign Shortcut'
       ShortCut = 16449
-      SecondaryShortCuts.Strings = (
-        'Alt+Ctrl+X'
-        'Shift+Alt+Ctrl+B')
       OnExecute = act_AssignShortcutExecute
     end
     object act_GotoAction: TAction
