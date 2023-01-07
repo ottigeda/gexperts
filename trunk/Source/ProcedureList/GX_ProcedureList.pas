@@ -135,6 +135,10 @@ resourcestring
   SAllString = '<All>';
   SNoneString = '<None>';
 
+const
+  MIN_LIST_WIDTH = 500;
+  MIN_LIST_HEIGHT = 200;
+
 type
   TProcedureListExpert = class(TGX_Expert)
   public
@@ -157,8 +161,8 @@ begin
   inherited Create(AOwner);
   TControl_SetMinConstraints(Self);
 
-  FMinListWidth := 500;
-  FMinListHeight := 200;
+  FMinListWidth := MIN_LIST_WIDTH;
+  FMinListHeight := MIN_LIST_HEIGHT;
 
   SetNonModalFormPopupMode(Self);
 
@@ -346,6 +350,25 @@ procedure TfmProcedureList.FormResize(Sender: TObject);
 var
   w: Integer;
 begin
+  case splSeparator.Align of
+    alTop: begin
+        if ClientHeight - splSeparator.Top < FMinListHeight then
+          pnlFunctionBody.Height := ClientHeight - FMinListHeight;
+      end;
+  alBottom: begin
+    if splSeparator.Top < FMinListHeight then
+      pnlFunctionBody.Height := ClientHeight - FMinListHeight;
+  end;
+    alLeft: begin
+        if ClientWidth - splSeparator.Left < FMinListWidth then
+          pnlFunctionBody.Width := ClientWidth - FMinListWidth;
+      end;
+    alRight: begin
+        if splSeparator.Left < FMinListWidth then
+          pnlFunctionBody.Width := ClientWidth - FMinListWidth;
+      end;
+  end;
+
   w := StatusBar.Width;
   if w > 80 then begin
     StatusBar.Panels[1].Width := 80;
@@ -652,8 +675,8 @@ begin
   inherited;
   TControl_SetMinConstraints(Self);
 
-  FMinListWidth := 500;
-  FMinListHeight := 200;
+  FMinListWidth := MIN_LIST_WIDTH;
+  FMinListHeight := MIN_LIST_HEIGHT;
 
   SetToolbarGradient(ToolBar);
   lvProcs.DoubleBuffered := True;
@@ -683,6 +706,9 @@ begin
   il := GExpertsInst.GetScaledSharedImages(_NewDpi);
   ToolBar.Images := il;
   Actions.Images := il;
+
+  FMinListWidth := FScaler.Calc(MIN_LIST_WIDTH);
+  FMinListHeight := FScaler.Calc(MIN_LIST_HEIGHT);
 end;
 {$ENDIF}
 
