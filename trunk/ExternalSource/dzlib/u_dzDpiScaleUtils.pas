@@ -621,6 +621,7 @@ begin
 end;
 
 initialization
+  InitApiCalls;
 // Uwe Raabe suggested this might help to improve performance on rescaling:
 //  TStyleManager.UseParentPaintBuffers := True;
 // It didn't make any noticable difference though, probably because GExperts doens't use VCL styles.
