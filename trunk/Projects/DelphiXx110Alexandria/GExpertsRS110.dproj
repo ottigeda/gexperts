@@ -14,25 +14,25 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
-        <Base>true</Base>
-        <CfgParent>Base</CfgParent>
         <Base_Win32>true</Base_Win32>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
-        <Base>true</Base>
-        <CfgParent>Base</CfgParent>
         <Cfg_1>true</Cfg_1>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
-        <Base>true</Base>
-        <CfgParent>Base</CfgParent>
         <Cfg_2>true</Cfg_2>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
-        <Base>true</Base>
+        <Cfg_2_Win32>true</Cfg_2_Win32>
         <CfgParent>Cfg_2</CfgParent>
         <Cfg_2>true</Cfg_2>
-        <Cfg_2_Win32>true</Cfg_2_Win32>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <SanitizedProjectName>GExpertsRS110</SanitizedProjectName>
@@ -50,12 +50,10 @@
         <DCC_UsePackage>rtl;vcl;designide;$(DCC_UsePackage)</DCC_UsePackage>
         <GenDll>true</GenDll>
         <Manifest_File>(None)</Manifest_File>
-        <PreBuildEvent>
-            <![CDATA[call ..\..\images\_CreateGXIconsRc.cmd
+        <PreBuildEvent><![CDATA[call ..\..\images\_CreateGXIconsRc.cmd
 call ..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"
 call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"
-$(PreBuildEvent)]]>
-        </PreBuildEvent>
+$(PreBuildEvent)]]></PreBuildEvent>
         <UsePackages>True</UsePackages>
         <VerInfo_Keys>FileVersion=1.0.0.0</VerInfo_Keys>
         <VerInfo_Locale>2057</VerInfo_Locale>
@@ -367,6 +365,9 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\Source\FormHotkeys\GX_FormHotkeys.pas">
             <Form>f_FormHotkeys</Form>
             <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\FormHotkeys\GX_FormHotkeysSelect.pas">
+            <Form>fmFormHotkeysSelect</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_GenericClasses.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_GenericUtils.pas"/>
@@ -727,19 +728,19 @@ $(PreBuildEvent)]]>
     <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
     <Import Project="$(MSBuildProjectName).deployproj" Condition="Exists('$(MSBuildProjectName).deployproj')"/>
     <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win32'">
-        <PostBuildEvent/>
-        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
         <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent/>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win32'">
-        <PostBuildEvent/>
-        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
         <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent/>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
 </Project>
