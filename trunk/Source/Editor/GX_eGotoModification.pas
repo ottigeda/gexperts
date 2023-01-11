@@ -3,6 +3,8 @@ unit GX_eGotoModification;
 {$I GX_CondDefine.inc}
 
 interface
+(* These experts cause more poblems than they are worth so I have disabled them for now
+   -- 2023-01-11 twm
 {$IFDEF GX_VER220_up} // RAD Studio XE 1 (16; BDS 8)
 uses
   Windows,
@@ -90,7 +92,9 @@ type
     function HasConfigOptions: Boolean; override;
   end;
 {$ENDIF}
+*)
 implementation
+(*
 {$IFDEF GX_VER220_up} // RAD Studio XE 1 (16; BDS 8)
 
 uses
@@ -409,7 +413,7 @@ initialization
   RegisterEditorExpert(TGotoPrevModificationExpert);
   RegisterEditorExpert(TGotoNextModificationExpert);
 {$ENDIF}
-
+*)
 end.
 
 
