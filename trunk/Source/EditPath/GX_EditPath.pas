@@ -26,21 +26,8 @@ uses
   ActnList,
   Menus,
   GX_BaseForm,
-  GX_SharedImages;
-
-type
-  TConfigEntry = class
-  private
-    FConfigName: string;
-    FPlatform: string;
-    FPath: string;
-    function GetConfigCaption: string;
-    function GetPlatformCaption: string;
-  public
-    constructor Create(const _ConfigName, _Platform, _Path: string);
-    function TextCaption: string;
-    function ListCaption: string;
-  end;
+  GX_SharedImages,
+  GX_EditPathConfig;
 
 type
   TLineProcessMethod = function(const _s: string): string of object;
@@ -143,6 +130,7 @@ type
     procedure FavoritesPmHandleFavoriteClick(_Sender: TObject);
     procedure FavoritesEditEntry(_Sender: TWinControl; var _Name, _Value: string; var _OK: Boolean);
     procedure GetSelectedLines(out _StartIdx, _EndIdx: Integer);
+    class function TryGetProjectConfigurations(_Configs: TObjectList; out _ActiveIndex: Integer): Boolean;
   protected
 {$IFDEF IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
@@ -150,6 +138,7 @@ type
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
+    procedure SelectConfig(const _Platform, _Config: string);
   end;
 {$ENDIF GX_DELPHI2009_UP}
 
@@ -184,20 +173,21 @@ uses
 
 type
   TEditPathExpert = class(TGX_Expert)
+  private
+    FSelectedConfig: string;
+    FSelectedPlatform: string;
   public
     constructor Create; override;
     destructor Destroy; override;
     function GetActionCaption: string; override;
     // optional, but recommended
     function GetHelpString: string; override;
-    // optional, defaults to true
-    function HasConfigOptions: Boolean; override;
-//    // optional if HasConfigOptions returns false
-//    procedure Configure; override;
-//    // Override to load any configuration settings
-//    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
-//    // Override to save any configuration settings
-//    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
+    // Show config dialog
+    procedure Configure; override;
+    // Override to load any configuration settings
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    // Override to save any configuration settings
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
     procedure Execute(Sender: TObject); override;
   end;
 
@@ -211,7 +201,7 @@ procedure Tf_EditPath.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;
 begin
-  inherited;
+  inherited ApplyDpi(_NewDpi, _NewBounds);
 
   il := GExpertsInst.GetScaledSharedImages(_NewDpi);
   TheActionList.Images := il;
@@ -247,6 +237,20 @@ begin
       fn := ExtractFileDir(fn);
     if DirectoryExists(fn) then
       Lines.Add(fn);
+  end;
+end;
+
+procedure Tf_EditPath.SelectConfig(const _Platform, _Config: string);
+var
+  i: Integer;
+  cfg: TConfigEntry;
+begin
+  for i := 0 to FConfigs.Count - 1 do begin
+    cfg := FConfigs[i] as TConfigEntry;
+    if (cfg.Platform = _Platform) and (cfg.ConfigName = _Config) then begin
+      lb_Target.ItemIndex := i;
+      Exit; //==>
+    end;
   end;
 end;
 
@@ -310,7 +314,7 @@ begin
 
   if Assigned(FActiveItem) then begin
     GetData(Path);
-    FActiveItem.FPath := Path;
+    FActiveItem.Path := Path;
   end;
   FActiveItem := _NewCfg;
   InheritedPath := '';
@@ -318,12 +322,12 @@ begin
     cfg := FConfigs[i] as TConfigEntry;
     if cfg = FActiveItem then
       Break; //==v
-    if ((cfg.FConfigName = 'Base') or (cfg.FConfigName = FActiveItem.FConfigName))
-      and ((cfg.FPlatform = FActiveItem.FPlatform) or (cfg.FPlatform = '')) then
-      InheritedPath := InheritedPath + ';' + cfg.FPath;
+    if ((cfg.ConfigName = 'Base') or (cfg.ConfigName = FActiveItem.ConfigName))
+      and ((cfg.Platform = FActiveItem.Platform) or (cfg.Platform = '')) then
+      InheritedPath := InheritedPath + ';' + cfg.Path;
   end;
   InheritedPath := Copy(InheritedPath, 2);
-  SetData(FActiveItem.FPath, InheritedPath);
+  SetData(FActiveItem.Path, InheritedPath);
 end;
 
 procedure Tf_EditPath.act_CancelExecute(Sender: TObject);
@@ -377,11 +381,11 @@ begin
   try
     sl.StrictDelimiter := True;
     sl.Delimiter := ';';
-    sl.DelimitedText := BaseCfg.FPath;
+    sl.DelimitedText := BaseCfg.Path;
     for i := StartIdx to EndIdx do begin
       sl.Add(FMemo.Lines[i]);
     end;
-    BaseCfg.FPath := sl.DelimitedText;
+    BaseCfg.Path := sl.DelimitedText;
   finally
     FreeAndNil(sl);
   end;
@@ -588,8 +592,10 @@ begin
   if not GxOtaTryGetCurrentProject(Project) then
     Exit; //==>
 
-  if Assigned(FActiveItem) then
-    GetData(FActiveItem.FPath);
+  if Assigned(FActiveItem) then begin
+    GetData(Path);
+    FActiveItem.Path := Path;
+  end;
 
   ProjectOptions := Project.ProjectOptions;
   if Supports(ProjectOptions, IOTAProjectOptionsConfigurations, ProjectOptionsConfigurations)
@@ -598,14 +604,14 @@ begin
       cfg := FConfigs[i] as TConfigEntry;
       for CfgIdx := 0 to ProjectOptionsConfigurations.ConfigurationCount - 1 do begin
         BuildCfg := ProjectOptionsConfigurations.Configurations[CfgIdx];
-        if BuildCfg.Name = cfg.FConfigName then begin
+        if BuildCfg.Name = cfg.ConfigName then begin
 {$IFDEF GX_DELPHIXE2_UP}
-          if (cfg.FPlatform <> '') then begin
-            PlatformCfg := BuildCfg.PlatformConfiguration[cfg.FPlatform];
-            PlatformCfg.Value[DCC_UnitSearchPath] := cfg.FPath;
+          if (cfg.Platform <> '') then begin
+            PlatformCfg := BuildCfg.PlatformConfiguration[cfg.Platform];
+            PlatformCfg.Value[DCC_UnitSearchPath] := cfg.Path;
           end else
 {$ENDIF}begin
-            BuildCfg.Value[DCC_UnitSearchPath] := cfg.FPath;
+            BuildCfg.Value[DCC_UnitSearchPath] := cfg.Path;
           end;
         end;
       end;
@@ -659,19 +665,10 @@ begin
   Settings.SaveForm('Window', Self);
 end;
 
-constructor Tf_EditPath.Create(_Owner: TComponent);
+class function Tf_EditPath.TryGetProjectConfigurations(_Configs: TObjectList; out _ActiveIndex: Integer): Boolean;
 var
-  Project: IOTAProject;
-  ProjectOptions: IOTAProjectOptions;
   ActiveConfig: string;
-{$IFDEF GX_DELPHIXE2_UP}
   ActivePlatform: string;
-{$ENDIF}
-  ActiveIndex: Integer;
-  ProjectOptionsConfigurations: IOTAProjectOptionsConfigurations;
-  BaseConfig: IOTABuildConfiguration;
-  ActiveCfg: IOTABuildConfiguration;
-  Settings: IExpertSettings;
 
   procedure HandleConfiguration(_BuildConfig: IOTABuildConfiguration);
   {$IFDEF GX_DELPHIXE2_UP}
@@ -688,20 +685,18 @@ var
   begin
     Path := _BuildConfig.GetValue(DCC_UnitSearchPath, False);
     cfg := TConfigEntry.Create(_BuildConfig.Name, '', Path);
-    FConfigs.Add(cfg);
-    ThisIndex := lb_Target.Items.AddObject(cfg.ListCaption, cfg);
+    ThisIndex := _Configs.Add(cfg);
     if _BuildConfig.Name = ActiveConfig then
-      ActiveIndex := ThisIndex;
+      _ActiveIndex := ThisIndex;
 {$IFDEF GX_DELPHIXE2_UP}
     PrjPlatforms := _BuildConfig.Platforms;
     for i := Low(PrjPlatforms) to High(PrjPlatforms) do begin
       PlatformCfg := _BuildConfig.PlatformConfiguration[PrjPlatforms[i]];
       Path := PlatformCfg.GetValue(DCC_UnitSearchPath, False);
       cfg := TConfigEntry.Create(_BuildConfig.Name, PrjPlatforms[i], Path);
-      FConfigs.Add(cfg);
-      ThisIndex := lb_Target.Items.AddObject(cfg.ListCaption, cfg);
+      ThisIndex := _Configs.Add(cfg);
       if PrjPlatforms[i] = ActivePlatform then
-        ActiveIndex := ThisIndex;
+        _ActiveIndex := ThisIndex;
     end;
 {$ENDIF}
     for i := 0 to _BuildConfig.ChildCount - 1 do begin
@@ -709,7 +704,46 @@ var
       HandleConfiguration(Child);
     end;
   end;
+var
+  Project: IOTAProject;
+  ProjectOptions: IOTAProjectOptions;
+  ProjectOptionsConfigurations: IOTAProjectOptionsConfigurations;
+  ActiveCfg: IOTABuildConfiguration;
+  BaseConfig: IOTABuildConfiguration;
+begin
+  if GxOtaTryGetCurrentProject(Project) then begin
+    ProjectOptions := Project.ProjectOptions;
+    // IOTAProjectOptionsConfigurations is only declared for Delphi 2009 and up even though build
+    // configurations were already introduced in Delphi 2007. I tried to simply copy the interface
+    // declarations from Delphi 2009 but it didn't work, Supports returned false.
+    if Supports(ProjectOptions, IOTAProjectOptionsConfigurations, ProjectOptionsConfigurations) then begin
+      _ActiveIndex := 0;
+      ActiveCfg := ProjectOptionsConfigurations.ActiveConfiguration;
+      if Assigned(ActiveCfg) then
+        ActiveConfig := ActiveCfg.Name
+      else
+        ActiveConfig := '';
+{$IFDEF GX_DELPHIXE2_UP}
+      ActivePlatform := ProjectOptionsConfigurations.ActivePlatformName;
+{$ELSE}
+      ActivePlatform := '';
+{$ENDIF}
+      BaseConfig := ProjectOptionsConfigurations.BaseConfiguration;
+      HandleConfiguration(BaseConfig);
+      Result := True;
+    end else begin
+      Result := False;
+    end;
+  end else
+    raise Exception.Create('no project available');
+end;
 
+constructor Tf_EditPath.Create(_Owner: TComponent);
+var
+  ActiveIndex: Integer;
+  Settings: IExpertSettings;
+  i: Integer;
+  cfg: TConfigEntry;
 begin
   inherited;
 
@@ -738,33 +772,16 @@ begin
 
   TWinControl_ActivateDropFiles(FMemo, HandleDropFiles);
 
-  if GxOtaTryGetCurrentProject(Project) then begin
-    ProjectOptions := Project.ProjectOptions;
-    // IOTAProjectOptionsConfigurations is only declared for Delphi 2009 and up even though build
-    // configurations were already introduced in Delphi 2007. I tried to simply copy the interface
-    // declarations from Delphi 2009 but it didn't work, Supports returned false.
-    if Supports(ProjectOptions, IOTAProjectOptionsConfigurations, ProjectOptionsConfigurations) then begin
-      ActiveIndex := 0;
-      ActiveCfg := ProjectOptionsConfigurations.ActiveConfiguration;
-      if Assigned(ActiveCfg) then
-        ActiveConfig := ActiveCfg.Name
-      else
-        ActiveConfig := '';
-{$IFDEF GX_DELPHIXE2_UP}
-      ActivePlatform := ProjectOptionsConfigurations.ActivePlatformName;
-{$ENDIF}
-      BaseConfig := ProjectOptionsConfigurations.BaseConfiguration;
-      HandleConfiguration(BaseConfig);
-      lb_Target.ItemIndex := ActiveIndex;
-      lb_TargetClick(lb_Target);
-    end else begin
-      p_Top.Visible := False;
-      lb_Inherited.Visible := False;
-      spl_Vertical.Visible := False;
-      SetData(ProjectOptions.Values[OPTION_NAME_UNIT_SEARCH_PATH], '');
-    end;
-  end else
-    raise Exception.Create('no project available');
+  lb_Target.Items.Clear;
+  if not TryGetProjectConfigurations(FConfigs, ActiveIndex) then
+    raise Exception.Create('This version of Delphi does not support the IOTAProjectOptionsConfigurations interface');
+
+  for i := 0 to FConfigs.Count - 1 do begin
+    cfg := FConfigs[i] as TConfigEntry;
+    lb_Target.Items.AddObject(cfg.ListCaption, cfg);
+  end;
+  lb_Target.ItemIndex := ActiveIndex;
+  lb_TargetClick(lb_Target);
 
   FFavorites := TStringList.Create;
   TGxIdeSearchPathEnhancer.GetSearchPathFavorites(FFavorites);
@@ -784,10 +801,25 @@ end;
 
 { TEditPathExpert }
 
+procedure TEditPathExpert.Configure;
+var
+  Configs: TObjectList;
+  ActiveIndex: Integer;
+begin
+  Configs := TObjectList.Create;
+  try
+    if Tf_EditPath.TryGetProjectConfigurations(Configs, ActiveIndex) then
+      if Tf_EditPathConfig.Execute(nil, Configs, FSelectedPlatform, FSelectedConfig) then
+        SaveSettings;
+  finally
+    FreeAndNil(Configs);
+  end;
+end;
+
 constructor TEditPathExpert.Create;
 begin
   inherited;
-
+  FSelectedConfig := '';
 end;
 
 destructor TEditPathExpert.Destroy;
@@ -803,6 +835,7 @@ begin
   frm := Tf_EditPath.Create(Application);
   try
     SetFormIcon(frm);
+    frm.SelectConfig(FSelectedPlatform, FSelectedConfig);
     frm.ShowModal;
   finally
     frm.Free;
@@ -819,47 +852,18 @@ begin
   Result := 'Needs a help string';
 end;
 
-function TEditPathExpert.HasConfigOptions: Boolean;
+procedure TEditPathExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
-  Result := False;
+  inherited InternalLoadSettings(_Settings);
+  FSelectedConfig := _Settings.ReadString('SelectedConfig', '');
+  FSelectedPlatform := _Settings.ReadString('SelectedPlatform', '');
 end;
 
-constructor TConfigEntry.Create(const _ConfigName, _Platform, _Path: string);
+procedure TEditPathExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
-  inherited Create;
-  FConfigName := _ConfigName;
-  FPlatform := _Platform;
-  FPath := _Path;
-end;
-
-function TConfigEntry.GetConfigCaption: string;
-begin
-  if FConfigName = 'Base' then
-    Result := sAllConfigurations
-  else
-    Result := FConfigName + sConfiguration;
-end;
-
-function TConfigEntry.GetPlatformCaption: string;
-begin
-  Result := GxOtaGetPlatformCaption(FPlatform);
-end;
-
-function TConfigEntry.TextCaption: string;
-begin
-{$IFDEF GX_DELPHIXE2_UP}
-  Result := GetConfigCaption + ' - ' + GetPlatformCaption;
-{$ELSE}
-  Result := GetConfigCaption;
-{$ENDIF}
-end;
-
-function TConfigEntry.ListCaption: string;
-begin
-  if FPlatform <> '' then
-    Result := '    ' + GetPlatformCaption
-  else
-    Result := GetConfigCaption;
+  inherited InternalSaveSettings(_Settings);
+  _Settings.WriteString('SelectedConfig', FSelectedConfig);
+  _Settings.ReadString('SelectedPlatform', FSelectedPlatform);
 end;
 
 { TListBox }

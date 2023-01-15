@@ -79,6 +79,7 @@ uses
   GX_EditorExpertManager in '..\..\source\Editor\GX_EditorExpertManager.pas',
   GX_EditorFormServices in '..\..\source\Framework\GX_EditorFormServices.pas',
   GX_EditPath in '..\..\Source\EditPath\GX_EditPath.pas' {f_EditPath},
+  GX_EditPathConfig in '..\..\Source\EditPath\GX_EditPathConfig.pas',
   GX_EditReader in '..\..\source\Framework\GX_EditReader.pas',
   GX_eFindDelimiter in '..\..\source\Editor\GX_eFindDelimiter.pas',
   GX_eGotoModification in '..\..\Source\Editor\GX_eGotoModification.pas',
