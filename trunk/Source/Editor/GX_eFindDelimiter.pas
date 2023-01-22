@@ -311,7 +311,7 @@ var
             end;
 
 // todo: support single quotes for a string
-//       unfortunately we don't know whether the current positionis the start or end of a string
+//       unfortunately we don't know whether the current position is the start or end of a string
 //       so the following won't work:
 //            tkString:
 //              begin
