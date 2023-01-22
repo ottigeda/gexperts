@@ -1713,7 +1713,7 @@ begin
             if (FPrevToken is TLineFeed) then begin
               if (FSettings.NoIndentUsesComma) then
                 SetPrevLineIndent(-1);
-            end else if (FSettings.FeedEachUnitBeforeComma) then begin
+            end else if (FSettings.FeedEachUnit and FSettings.FeedEachUnitBeforeComma) then begin
               // if we break before the comma, also break before the semicolon
               LFeed := AssertLineFeedAfter(FTokenIdx-1);
               if (FSettings.NoIndentUsesComma) then
