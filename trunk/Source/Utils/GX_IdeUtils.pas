@@ -120,6 +120,9 @@ function RunningRS2009OrGreater: Boolean;
 function RunningRS2010OrGreater: Boolean;
 function RunningRSXE: Boolean;
 function RunningRSXEOrGreater: Boolean;
+function RunningRSXE7: Boolean;
+function RunningRSXE7OrGreater: Boolean;
+function RunningRSXE8OrGreater: Boolean;
 
 function RunningCPPBuilder: Boolean;
 function IDEHasWelcomePage: Boolean;
@@ -724,6 +727,29 @@ end;
 function RunningRSXEOrGreater: Boolean;
 begin
   {$IFDEF GX_VER220_up}
+  Result := True;
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
+end;
+
+function RunningRSXE7: Boolean;
+begin
+  Result := RunningRSXE7OrGreater and not RunningRSXE8OrGreater;
+end;
+
+function RunningRSXE7OrGreater: Boolean;
+begin
+  {$IFDEF GX_VER280_up}
+  Result := True;
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
+end;
+
+function RunningRSXE8OrGreater: Boolean;
+begin
+  {$IFDEF GX_VER290_up}
   Result := True;
   {$ELSE}
   Result := False;
