@@ -559,12 +559,7 @@ begin
   DoParseSource := GxOtaGetCurrentSyntaxHighlighter = gxpPAS;
   // Cursor moving is disabled for now, since it clears %SELECTION% in Delphi 7
   //SetNewCursorPos(PosAfter);
-  // try
     VText := ReplaceStrings(VText, DoParseSource);
-  // finally
-    //SetNewCursorPos(ACurrentPos);
-    // TODO: Should remove the try finally
-  // end;
 
   if ReplaceSelection and GxOtaGetSelection(nil, BlockStart, BlockEnd, SelStart, SelLen) then
   begin
