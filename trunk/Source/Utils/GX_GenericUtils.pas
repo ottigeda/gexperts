@@ -360,8 +360,8 @@ function HasTrailingEOL(const S: string): Boolean;
 // Remove the last EOL character from a string
 // EOL can be one or two characters long
 // Useful for processing strings read from memo controls
-procedure RemoveLastEOL(var S: string);
-function RemoveTrailingEOL(const S: string): string;
+procedure RemoveLastEOL(var S: TGXUnicodeString);
+function RemoveTrailingEOL(const S: TGXUnicodeString): TGXUnicodeString;
 
 // Return the last line of a multiline string (embedded CR or LF)
 function LastLineOf(const S: string): string;
@@ -2127,7 +2127,7 @@ begin
   Result := (EOLSizeAtPos(S, Length(S)) > 0);
 end;
 
-procedure RemoveLastEOL(var S: string);
+procedure RemoveLastEOL(var S: TGXUnicodeString);
 var
   CurrLen: Integer;
   EOLSize: Integer;
@@ -2147,7 +2147,7 @@ begin
   end;
 end;
 
-function RemoveTrailingEOL(const S: string): string;
+function RemoveTrailingEOL(const S: TGXUnicodeString): TGXUnicodeString;
 begin
   Result := S;
   RemoveLastEOL(Result);

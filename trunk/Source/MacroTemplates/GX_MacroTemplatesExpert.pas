@@ -7,7 +7,8 @@ interface
 
 uses
   Classes, ToolsAPI, GX_EditorExpert, GX_MacroTemplates,
-  GX_MacroFile, GX_ConfigurationInfo, GX_Actions, GX_MacroExpandNotifier;
+  GX_MacroFile, GX_ConfigurationInfo, GX_Actions, GX_MacroExpandNotifier,
+  GX_StringList;
 
 type
   TMacroTemplatesExpert = class;
@@ -45,17 +46,17 @@ type
     FShortCuts: TList;
     FExpandNotifier: IMacroExpandNotifier;
     procedure AddUsesToUnit(ATemplateObject: TMacroObject);
-    function AddLeadingSpaces(const AString: string;
-      ASpacesCount: Integer; AInsertCol: Integer): string;
-    function PrefixLines(const Lines, Prefix: string; AStartLine: Integer = 1): string;
+    function AddLeadingSpaces(const AString: TGXUnicodeString;
+      ASpacesCount: Integer; AInsertCol: Integer): TGXUnicodeString;
+    function PrefixLines(const Lines, Prefix: string; AStartLine: Integer = 1): TGXUnicodeString;
     function PrepareWhitePrefix(AInsertCol: Integer): string;
-    procedure PrepareNewCursorPos(var VTemplateText: string;
+    procedure PrepareNewCursorPos(var VTemplateText: TGXUnicodeString;
       AInsertPos: TOTAEditPos; var VNewPos: TOTAEditPos; ConsiderPipe: Boolean);
     procedure ClearTemplShortCuts;
     procedure AddTemplShortCut(const AName: string; AShortCut: TShortCut);
     procedure TemplateActionExecute(Sender: TObject; const ACode: string);
     function OffsetToEditPos(AOffset: Integer): TOTAEditPos;
-    procedure PrepareTemplateText(var VText: string;
+    procedure PrepareTemplateText(var VText: TGXUnicodeString;
       ACurrentPos: TOTAEditPos; AAfterLen: Integer;
       var InsertOffset: Integer; var InsertPos: TOTAEditPos);
     procedure HandleExpandTemplate(const AName, AText: string; var Accepted: Boolean);
@@ -487,10 +488,10 @@ begin
       Result[Idx] := ' ';
 end;
 
-function TMacroTemplatesExpert.AddLeadingSpaces(const AString: string;
-  ASpacesCount: Integer; AInsertCol: Integer): string;
+function TMacroTemplatesExpert.AddLeadingSpaces(const AString: TGXUnicodeString;
+  ASpacesCount: Integer; AInsertCol: Integer): TGXUnicodeString;
 var
-  WhiteString: string;
+  WhiteString: TGXUnicodeString;
 begin
   if ASpacesCount < 1 then
   begin
@@ -502,7 +503,7 @@ begin
   Result := PrefixLines(AString, WhiteString);
 end;
 
-function TMacroTemplatesExpert.PrefixLines(const Lines, Prefix: string; AStartLine: Integer): string;
+function TMacroTemplatesExpert.PrefixLines(const Lines, Prefix: string; AStartLine: Integer): TGXUnicodeString;
 var
   LastEOLFound: Boolean;
   i: Integer;
@@ -526,7 +527,7 @@ begin
 end;
 
 // Expand the macros in the template text, embed/delete selection, etc.
-procedure TMacroTemplatesExpert.PrepareTemplateText(var VText: string;
+procedure TMacroTemplatesExpert.PrepareTemplateText(var VText: TGXUnicodeString;
   ACurrentPos: TOTAEditPos; AAfterLen: Integer; var InsertOffset: Integer;
   var InsertPos: TOTAEditPos);
 var
@@ -625,7 +626,7 @@ end;
 procedure TMacroTemplatesExpert.ExpandTemplate(const AForcedCode: string);
 var
   TemplateName: string;
-  TemplateText: string;
+  TemplateText: TGXUnicodeString;
   TemplateIdx: Integer;
   InsertOffset: Integer;
   IdentOffset: Integer;
@@ -824,7 +825,7 @@ end;
 
 // Prepare the new cursor position after insertion of a template
 // Fix the template's text if a cursor indicator was found
-procedure TMacroTemplatesExpert.PrepareNewCursorPos(var VTemplateText: string;
+procedure TMacroTemplatesExpert.PrepareNewCursorPos(var VTemplateText: TGXUnicodeString;
   AInsertPos: TOTAEditPos; var VNewPos: TOTAEditPos; ConsiderPipe: Boolean);
 var
   CursorMarkIndex: Integer;

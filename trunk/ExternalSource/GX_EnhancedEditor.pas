@@ -46,7 +46,7 @@ type
     procedure SetOnChange(const Value: TNotifyEvent);
     procedure SetWantTabs(const Value: Boolean);
     function  GetWantTabs: Boolean;
-    function  GetNormalizedText: string;
+    function  GetNormalizedText: TGXUnicodeString;
     function GetTabWidth: Integer;
     procedure SetTabWidth(const Value: Integer);
     function GetLineCount: Integer;
@@ -109,7 +109,7 @@ type
     property SelStart: Integer read GetSelStart;
     property TopLine: Integer read GetTopLine write SetTopLine;
     property WantTabs: Boolean read GetWantTabs write SetWantTabs;
-    property NormalizedText: string read GetNormalizedText;
+    property NormalizedText: TGXUnicodeString read GetNormalizedText;
     property TabWidth: Integer read GetTabWidth write SetTabWidth;
     property LineCount: Integer read GetLineCount;
     property ActiveLineColor: TColor read GetActiveLineColor write SetActiveLineColor;
@@ -567,7 +567,7 @@ begin
   DoOnChange;
 end;
 
-function TGxEnhancedEditor.GetNormalizedText: string;
+function TGxEnhancedEditor.GetNormalizedText: TGXUnicodeString;
 begin
   Result := FEditor.Lines.Text;
   RemoveLastEOL(Result);

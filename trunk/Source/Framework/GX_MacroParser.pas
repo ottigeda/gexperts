@@ -38,7 +38,8 @@ implementation
 
 uses
   Classes, SysUtils, Dialogs, Windows, Clipbrd,
-  mwPasParserTypes, mPasLex, GX_GenericUtils, GX_OtaUtils, GX_EditReader;
+  mwPasParserTypes, mPasLex, GX_GenericUtils, GX_OtaUtils, GX_EditReader,
+  GX_StringList;
 
 resourcestring
   SUnknownNameResult = 'Not available';
@@ -103,12 +104,12 @@ type
   TMacroReplacer = class(TBasicMacroReplacer)
   private
     function AddIndent(const AText: string; const AIndentText: string;
-      AIncFirstLine: Boolean): string;
+      AIncFirstLine: Boolean): TGXUnicodeString;
     function CalcLineIndent(const AText: string): Integer;
     function FormatParamList(const ASingleTemplate: string): string;
     procedure GetArgList(ArgList: TLexArgList);
     function FormatParamItem(const ATemplate: string; AItem: TLexArgItem): string;
-    function ReformatMultiLineBlock(const AText, AIndentText: string): string;
+    function ReformatMultiLineBlock(const AText, AIndentText: string): TGXUnicodeString;
   protected
     FParser: TMacroSourceParser;
     FDictionary: TStringList;
@@ -610,7 +611,7 @@ end;
 // Add "indent text" before each line of specified text
 // AIncFirstLine - including first line
 function TMacroReplacer.AddIndent(const AText: string; const AIndentText: string;
-  AIncFirstLine: Boolean): string;
+  AIncFirstLine: Boolean): TGXUnicodeString;
 var
   Lines: TStringList;
   IndentText: string;
@@ -648,7 +649,7 @@ end;
 //  2. Trim the text as a whole
 //  3. Add indent text before each line (skipping the first one)
 function TMacroReplacer.ReformatMultiLineBlock(const AText: string;
-  const AIndentText: string): string;
+  const AIndentText: string): TGXUnicodeString;
 var
   i: Integer;
   Lines: TStringList;
