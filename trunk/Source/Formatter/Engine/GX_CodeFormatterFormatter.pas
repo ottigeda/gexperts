@@ -1291,7 +1291,7 @@ begin
                 // If we have a break after the comma, remove that
                 Next := GetNextNoComment(FTokenIdx, RemoveMe);
                 while Next.ReservedType = rtLineFeed do begin
-                  FTokens.Extract(FTokenIdx + RemoveMe);
+                  FTokens.Extract(FTokenIdx + RemoveMe).Free;
                   Next := GetNextNoComment(FTokenIdx, RemoveMe);
                 end;
               end;
