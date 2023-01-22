@@ -470,7 +470,7 @@ function GxOtaGetVersionInfoKeysString: string;
 function GxOtaSetVersionInfoKeysStrings(Strings: TStrings): Boolean;
 
 // Get the selected text in the top edit view, if any
-function GxOtaGetCurrentSelection(IncludeTrailingCRLF: Boolean = True): string;
+function GxOtaGetCurrentSelection(IncludeTrailingCRLF: Boolean = True): TGXUnicodeString;
 
 function GxOtaMoveEditCursorColumn(EditView: IOTAEditView; RelativePos: Integer): Boolean;
 
@@ -2052,7 +2052,7 @@ begin
 {$ENDIF}
 end;
 
-function GxOtaGetCurrentSelection(IncludeTrailingCRLF: Boolean): string;
+function GxOtaGetCurrentSelection(IncludeTrailingCRLF: Boolean): TGXUnicodeString;
 var
   EditView: IOTAEditView;
   EditBlock: IOTAEditBlock;
@@ -2894,7 +2894,8 @@ begin
 
   GxOtaFocusCurrentIDEEditControl;
 
-  if RunningDelphi8OrGreater then
+  // XE7 matches contains the correct block parameters in CharPos (not BytePos) (IVK)
+  if RunningDelphi8OrGreater and not RunningRSXE7 then
   begin
     LineData := GxOtaGetEditorLine(EditView, Line);
     StartColumn := GxOtaConvertColumnCharsToBytes(LineData, StartColumn, False);
@@ -3216,6 +3217,7 @@ begin
     begin
       IdePathString := ProjectOptions.Values[OPTION_NAME_UNIT_SEARCH_PATH];
       // it is also possible to set the search path using the same property:
+      // ProjectOptions.Values['DCC_UnitSearchPath'] := 'bla;blub';
       SplitIdePath(Paths, IdePathString);
     end;
     if DoProcessing then begin
