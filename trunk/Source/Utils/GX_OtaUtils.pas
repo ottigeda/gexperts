@@ -2158,9 +2158,72 @@ begin
   I:= 1;
   P:= PAnsiChar(S);
   while I <= Index do begin
-    if Ord(P^) and $C0 <> $80 then Inc(Result);
-    Inc(I);
-    Inc(P);
+    if (Ord(P^) and $80 = 0) then begin
+      Inc(Result);
+      Inc(I);
+      Inc(P);
+    end else if (Ord(P^) and $E0 = $C0) then begin
+      Inc(Result);
+      Inc(I, 2);
+      Inc(P, 2);
+    end else if (Ord(P^) and $F0 = $E0) then begin
+      Inc(Result);
+      Inc(I, 3);
+      Inc(P, 3);
+    end else begin
+      //Inc(Result);
+      Inc(I);
+      Inc(P);
+    end;
+  end;
+end;
+
+function UTF8CharPosToByteIndex(const S: string; CursorPosition, Index: Integer): Integer;
+var
+  I, eol: Integer;
+  P: PAnsiChar;
+  st: string;
+  ut: UTF8String;
+begin
+  Result := CursorPosition;
+  if (Index <= 0) or ((CursorPosition + Index) > Length(S)) then
+    Exit;
+
+  eol := PosEx(#13, S, CursorPosition + 2);
+  if (eol <= 0) then begin
+    eol := PosEx(#10, S, CursorPosition + 2);
+    if (eol <= 0) then begin
+      eol := 512;
+    end;
+  end;
+  if (S[eol - 1] = #13) or (S[eol - 1] = #10) then begin
+    Dec(eol);
+  end;
+  st := Copy(s, CursorPosition + 1, eol - (CursorPosition + 1));
+  ut := PAnsiChar(PUTF8String(AnsiString(st)));
+
+  I:= 1;
+  P:= PAnsiChar(ut);
+  while I <= Index do begin
+    if (P^ in [#0, #13, #10]) then begin
+      Break
+    end else if (Ord(P^) and $80 = 0) then begin
+      Inc(Result);
+      Inc(I);
+      Inc(P);
+    end else if (Ord(P^) and $E0 = $C0) then begin
+      Inc(Result, 2);
+      Inc(I);
+      Inc(P, 2);
+    end else if (Ord(P^) and $F0 = $E0) then begin
+      Inc(Result, 3);
+      Inc(I);
+      Inc(P, 3);
+    end else begin
+      Inc(Result);
+      Inc(I);
+      Inc(P);
+    end;
   end;
 end;
 
@@ -2193,6 +2256,7 @@ function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; Byt
 {$IFDEF GX_DELPHI8_UP}
     IdeString: UTF8String;
 {$ENDIF}
+    ChPos: Integer;
   begin
     Result := '';
     CursorPosition := 0;
@@ -2210,11 +2274,19 @@ function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; Byt
       EditPos := EditView.CursorPos;
       EditView.ConvertPos(True, EditPos, CharPos);
       CursorLine := CharPos.Line;
-      CursorPosition := EditView.CharPosToPos(CharPos);
 {$IFDEF GX_DELPHI8_UP}
       if not ByteBased then begin
+        ChPos := CharPos.CharIndex;
+        CharPos.CharIndex := 0;
+        CursorPosition := EditView.CharPosToPos(CharPos);
         IdeString := ConvertToIDEEditorString(Result);
         CursorPosition := UTF8PosToCharIndex(IdeString, CursorPosition);
+        CursorPosition := CursorPosition + ChPos;
+      end else begin
+        ChPos := CharPos.CharIndex;
+        CharPos.CharIndex := 0;
+        CursorPosition := EditView.CharPosToPos(CharPos);
+        CursorPosition := UTF8CharPosToByteIndex(Result, CursorPosition, ChPos);
       end;
 {$ENDIF}
     end;
@@ -2895,6 +2967,8 @@ begin
   GxOtaFocusCurrentIDEEditControl;
 
   // XE7 matches contains the correct block parameters in CharPos (not BytePos) (IVK)
+  // todo: If this is a workaround for a bug and that bug was fixed in XE7, shouldn't it also be
+  //       fixed in XE8 and later? So this should possibly be "not RunningRSXE7OrGreater". -- twm
   if RunningDelphi8OrGreater and not RunningRSXE7 then
   begin
     LineData := GxOtaGetEditorLine(EditView, Line);
@@ -4607,6 +4681,7 @@ begin
   try
     Result := GxOtaGetActiveEditorText(Lines, UseSelection);
     Text := Lines.Text;
+    RemoveLastEOL(Text);
   finally
     FreeAndNil(Lines);
   end;

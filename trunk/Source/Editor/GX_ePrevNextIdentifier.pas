@@ -151,7 +151,10 @@ begin
   CharPos.Line := LinePos.Y;
   CharPos.CharIndex := LinePos.X - 1;
   EditView := GxOtaGetTopMostEditView;
-  EditView.ConvertPos(False, EditPos, CharPos);
+
+  EditPos.Col := CharPos.CharIndex + 1;
+  EditPos.Line := CharPos.Line;
+  //EditView.ConvertPos(False, EditPos, CharPos);
 
   case FViewChangeType of
     vctScrollCenter: GxOtaGotoEditPos(EditPos);

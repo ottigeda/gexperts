@@ -746,7 +746,8 @@ function LinePosToCharPos(LinePos: TPoint; const Text: string): Integer;
 ///   CharPosToLinePos(5, '12345') = Point(5, 1)
 ///   CharPosToLinePos(8, '12345'#13#10'6789') = Point(1, 2)
 /// </summary>
-function CharPosToLinePos(CharPos: Integer; const Text: string): TPoint;
+function CharPosToLinePos(CharPos: Integer; const Text: string): TPoint; overload;
+function CharPosToLinePos(CharPos: Integer; const Text: string; ByteRow: Boolean): TPoint; overload;
 
 // Convert a Windows message number into a string description
 function MessageName(Msg: Longint): string;
@@ -1386,7 +1387,6 @@ begin
   Result := C in [#0..#8, #14..#31];
   {$ENDIF}
 end;
-
 
 function IsCharWhiteSpaceOrControl(C: Char): Boolean;
 begin
@@ -4303,6 +4303,10 @@ begin
 end;
 
 function CharPosToLinePos(CharPos: Integer; const Text: string): TPoint;
+begin
+  Result := CharPosToLinePos(CharPos, Text, False);
+end;
+function CharPosToLinePos(CharPos: Integer; const Text: string; ByteRow: Boolean): TPoint;
 var
   sl: TStringList;
   LineIdx: Integer;
@@ -4324,8 +4328,10 @@ begin
         Result.Y := LineIdx + 1;
         Result.X := CharPos - Offset;
         LeftLinePart := Copy(sl[LineIdx], 1, Result.X - 1);
-        ColumnError := Length(ConvertToIDEEditorString(LeftLinePart)) - Length(LeftLinePart);
-        Result.X := Result.X + ColumnError;
+        if ByteRow then begin
+          ColumnError := Length(ConvertToIDEEditorString(LeftLinePart)) - Length(LeftLinePart);
+          Result.X := Result.X + ColumnError;
+        end;
         Exit; //==>
       end else begin
         Inc(LineIdx);

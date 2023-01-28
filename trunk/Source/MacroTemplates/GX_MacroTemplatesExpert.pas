@@ -631,7 +631,7 @@ var
   InsertOffset: Integer;
   IdentOffset: Integer;
   AfterLen: Integer;
-  InsertPos, IdentPos, CaretPos: TOTAEditPos; // In characters
+  InsertPos, IdentPos, CaretPos, IdentCursorPos: TOTAEditPos; // In characters
   NewCursorPos: TOTAEditPos; // Standard cursor position
   CharPos: TOTACharPos;
   TemplateObject: TMacroObject;
@@ -645,13 +645,15 @@ var
   SelLength: Integer;
 begin
   // Retrieve the template name from the editor window
-  if GxOtaGetSelection(nil, BlockStart, BlockEnd, SelStart, SelLength) and (SelLength > 0) then begin
+  if GxOtaGetSelection(nil, BlockStart, BlockEnd, SelStart, SelLength)
+    and (SelLength > 0) and (SelLength <= 5) then begin
     IdentOffset := SelStart;
     IdentPos := BlockStart;
     AfterLen := 0;
     GxOtaGetActiveEditorTextAsString(TemplateName, True);
     CursorPos := GxOtaGetCurrentEditPos();
   end else begin
+    GxOtaGetCurrentIdentEx(TemplateName, IdentOffset, IdentCursorPos, CaretPos, AfterLen, False);
     GxOtaGetCurrentIdentEx(TemplateName, IdentOffset, IdentPos, CaretPos, AfterLen, True);
   end;
 
@@ -671,6 +673,8 @@ begin
   else
     CodeForced := False;
   // TODO 3 -oAnyone -cBug: Fix when pressing Shift+Alt+T or the template's shortcut with a non-template identifier under the cursor, but choosing another template to insert inserts the text before the identifier
+
+  TemplateName := TrimRight(TemplateName);
 
 // If cond. define ForceTestTemplate is set, the template with the name "test" is automatically selected
 // so debugging is more convenient.
@@ -710,7 +714,8 @@ begin
     //InsertPos.Col := InsertPos.Col + 1;
   end;
 
-  if GxOtaGetSelection(nil, BlockStart, BlockEnd, SelStart, SelLength) and (SelLength > 0) then begin
+  if GxOtaGetSelection(nil, BlockStart, BlockEnd, SelStart, SelLength)
+     and (SelLength > 0) and (SelLength <= 5) then begin
     InsertOffset := SelStart;
     InsertPos := BlockStart;
   end else begin
@@ -740,7 +745,7 @@ begin
     end;
   end;
 
-  PrepareNewCursorPos(TemplateText, InsertPos, NewCursorPos, TemplateContainsPipe);
+  PrepareNewCursorPos(TemplateText, IdentCursorPos, NewCursorPos, TemplateContainsPipe);
 
   if CodeForced or (not SameText(TemplateName, TemplateObject.Name)) then
     InsertTemplateIntoEditor('', TemplateText, IdentOffset, InsertOffset)
