@@ -74,6 +74,7 @@ const
 constructor Tf_EditPathConfig.Create(_Owner: TComponent);
 begin
   inherited Create(_Owner);
+  TControl_SetMinConstraints(Self);
 end;
 
 class function Tf_EditPathConfig.Execute(_Owner: TWinControl; _ConfigList: TObjectList;

@@ -18,6 +18,7 @@ inherited f_EditPathConfig: Tf_EditPathConfig
     Top = 336
     Width = 81
     Height = 25
+    Anchors = [akRight, akBottom]
     Caption = 'OK'
     Default = True
     ModalResult = 1
@@ -28,6 +29,7 @@ inherited f_EditPathConfig: Tf_EditPathConfig
     Top = 336
     Width = 81
     Height = 25
+    Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -39,6 +41,7 @@ inherited f_EditPathConfig: Tf_EditPathConfig
     Width = 265
     Height = 298
     Hint = 'Alt+Up/Down to move between entries'
+    Anchors = [akLeft, akTop, akRight, akBottom]
     ExtendedSelect = False
     ItemHeight = 13
     ParentShowHint = False
