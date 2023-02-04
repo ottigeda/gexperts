@@ -822,8 +822,7 @@ begin
           end; // end case
           if FExceptionList.Count > 0 then
           begin
-            if MessageDlg(FExceptionList.Text, mtError, [mbOK, mbCancel], 0) = mrCancel then
-              Abort;
+            MessageDlg(FExceptionList.Text, mtError, [mbOK], 0);
           end;
         finally
           FreeAndNil(FExceptionList);
@@ -899,7 +898,7 @@ begin
         else
           FExceptionList.Add(Format('Exception %s while searching "%s" in context "%s"; Message %s', [E.ClassName, FileName, ContextString, E.Message]));
         if not (E is EGXFileNotFound) then
-          if MessageDlg(E.Message, mtError, [mbOK, mbCancel], 0) = mrCancel then
+          if mrAbort = MessageDlg(E.Message + #13#10 + 'Do you want to continue?', mtError, [mbYes, mbAbort], 0) then
             Abort;
       end;
     end;
