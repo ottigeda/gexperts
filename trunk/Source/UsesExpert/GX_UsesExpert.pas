@@ -1642,6 +1642,8 @@ procedure TfmUsesManager.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
     for i := 0 to Length(_Buttons) - 1 do
       AdjustTop(_Buttons[i]);
     _grp.ClientHeight := btn.Top + btn.Height + Offset;
+    for i := 0 to Length(_Buttons) - 1 do
+      PostMessage(_Buttons[i].Handle, WM_DPICHANGED_AFTERPARENT, 0, 0);
   end;
 
   procedure ArrangeAddControls(_btnAddIntf, _btnAddImpl: TButton; _grp: TGroupBox; _pnl: TPanel);
