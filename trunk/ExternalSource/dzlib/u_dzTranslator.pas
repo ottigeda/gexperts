@@ -12,6 +12,9 @@ unit u_dzTranslator;
 {$ENDIF}
 {$ENDIF}
 
+// if defined, any code requiring VCL units is omited below, use this for WinAPI only programs
+{.$define NoVCL}
+
 interface
 
 uses
@@ -75,14 +78,16 @@ function GenerateTranslator(const _LanguageCode: string): IdzTranslator;
 
 implementation
 
-{$IFNDEF console}
+{$IFNDEF CONSOLE}
+{$IFNDEF NoVCL}
 uses
   Windows,
   Controls,
   ActnList,
   Graphics,
   ExtCtrls;
-{$ENDIF console}
+{$ENDIF NoVCL}
+{$ENDIF CONSOLE}
 
 function _(const _s: string): string;
 begin
@@ -390,14 +395,16 @@ initialization
 {$ENDIF}
 {$ENDIF}
 
-{$IFNDEF console}
+{$IFNDEF CONSOLE}
+{$IFNDEF NoVCL}
   // ignore these VCL properties / classes
   TP_GlobalIgnoreClassProperty(TAction, 'Category');
   TP_GlobalIgnoreClassProperty(TControl, 'ImeName');
   TP_GlobalIgnoreClassProperty(TControl, 'HelpKeyword');
   TP_TryGlobalIgnoreClass(TFont);
   TP_GlobalIgnoreClassProperty(TNotebook, 'Pages');
-{$ENDIF console}
+{$ENDIF NoVCL}
+{$ENDIF CONSOLE}
 // for more ignores, see u_dzTranslatorDB, u_dzTranslatorADO and other u_dzTranslatorXxx units
 
 {$IFDEF DXGETTEXTDEBUG}

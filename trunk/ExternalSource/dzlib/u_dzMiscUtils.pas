@@ -249,9 +249,7 @@ end;
 
 procedure NotImplemented;
 begin
-{$IFNDEF console}
-  if mrAbort = MessageDlg('Function not implemented!', mtWarning, [mbAbort, mbIgnore], 0) then
-{$ENDIF}
+  if ID_YES <> Windows.MessageBox(0, 'Function not implemented! Continue anyway?', 'Warning', MB_YESNO + MB_ICONWARNING) then
     raise ENotImplemented.Create('Function not implemented');
 end;
 {$ENDIF debug}

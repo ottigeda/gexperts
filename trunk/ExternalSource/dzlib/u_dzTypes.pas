@@ -171,6 +171,7 @@ type
   TSingleArray = array of Single;
   TDoubleArray = array of Double;
   TExtendedArray = array of Extended;
+  TExtendedDynArray = TExtendedArray;
 {$IF not Declared(TBytes)}
   TBytes = array of Byte;
 {$IFEND}

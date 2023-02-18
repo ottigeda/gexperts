@@ -135,7 +135,8 @@ type
     /// @param List is a string list to which the files will be appended, may be nil
     /// @param IncludePath determines whether the List of filenames includes the full path or not </summary>
     class function EnumDirsOnly(const _Mask: string; _List: TStrings;
-      _IncludePath: Boolean = False; _Sort: Boolean = True): Integer;
+      _IncludePath: Boolean = False; _Sort: Boolean = True): Integer; overload;
+    class function EnumDirsOnly(const _Mask: string; _IncludePath: Boolean = False; _Sort: Boolean = True): TStringArray; overload;
     /// <summary>
     /// Calls SysUtils.FindFirst on first call and SysUtls.FindNext in later
     /// calls.
@@ -735,7 +736,9 @@ type
     ///                    the full paths.
     /// @returns the number of matching files </summary>
     class function FindMatchingFiles(const _Mask: string; _sl: TStrings; _IncludePath: Boolean = False;
-      _Sort: Boolean = True): Integer;
+      _Sort: Boolean = True): Integer; overload;
+    class function FindMatchingFiles(const _Mask: string;
+      _IncludePath: Boolean = False; _Sort: Boolean = True): TStringArray; overload;
 
     /// <summary>
     /// tries to find a matching file
@@ -757,9 +760,10 @@ type
     class function FileExists(const _Filename: string; _RaiseException: Boolean): Boolean; overload; deprecated; // use AssertFileExists instead
     ///<summary>
     /// Checks if the given file exists. Note that wildcards are not supported! If you
-    /// need wildcards, use FindMatchingFile.
+    /// need wildcards, use AssertMatchingFileExists.
     /// @raises EFileNotFound if the file does not exist. </summary>
     class procedure AssertFileExists(const _Filename: string);
+    class procedure AssertMatchingFileExists(const _Mask: string);
 
     ///<summary>
     /// @param RaiseException determines whether an exception should be raised if the directory does not exist
@@ -773,8 +777,8 @@ type
 
     ///<summary>
     /// @param DirNames is a TStrings object containing a list of directory names to check.
-    /// @retursn true, if all directories in the list exist, false otherwise
-    /// Note: Passing an empty list, result in true. </summary>
+    /// @returns true, if all directories in the list exist, false otherwise
+    /// @NOTE: Passing an empty list will return True. </summary>
     class function AllDirsExist(_DirNames: TStrings): Boolean;
 
     /// <summary>
@@ -788,7 +792,7 @@ type
     /// @param Force is a boolean which controls whether this function will try to delete
     ///              readonly directories, If true, it will use SetFileAttr to reset the
     ///              readonly attribut and try to delete the directory again.
-    /// @returns true, if the directory could be deleted, false otherwise.
+    /// @returns True, if the directory could be deleted, false otherwise.
     /// @raises EOSError if there was an error and RaiseException was true </summary>
     class function RemoveDir(const _DirName: string; _RaiseException: Boolean = True;
       _Force: Boolean = False): Boolean;
@@ -808,7 +812,7 @@ type
     ///                      if it fails. If false, it will not raise an exception
     ///                      but just return false if deleting the directory fails.
     /// @param Force specifies whether it should also delete readonly files
-    /// @returns true, if the directory could be deleted, false otherwise.
+    /// @returns True, if the directory could be deleted, false otherwise.
     /// @raises EOSError if there was an error and RaiseException was true </summary>
     class function DelDirTree(const _DirName: string; _RaiseException: Boolean = True;
       _Force: Boolean = False): Boolean;
@@ -1010,6 +1014,20 @@ type
     ///<summary>
     /// Short for ChangeFileExtLast(_Filename, '') </summary>
     class function RemoveFileExtLast(const _Filename: string): string;
+
+    ///<summary>
+    /// @param Ext is the full file extension to check for, including the leading dot.
+    /// @returns True, if the full extension of Filename matches the given extension.
+    ///                Comparison is case insensitive
+    ///          False if the extensions don't machch. </summary>
+    class function HasFileExtFull(const _Filename: string; const _Ext: string): Boolean;
+    ///<summary>
+    /// @param Ext is the last file extension to check for, including the leading dot.
+    /// @returns True, if the last extension of Filename matches the given extension.
+    ///                Comparison is case insensitive
+    ///          False if the extensions don't machch. </summary>
+    class function HasFileExtLast(const _Filename: string; const _Ext: string): Boolean;
+
     ///<summary>
     /// Sets the file's date and time to the given time or to the current time
     /// @param Fileanme is the name of the file to touch
@@ -1314,6 +1332,19 @@ begin
   end;
 end;
 
+class function TSimpleDirEnumerator.EnumDirsOnly(const _Mask: string; _IncludePath, _Sort: Boolean): TStringArray;
+var
+  dirs: TStringList;
+begin
+  dirs := TStringList.Create;
+  try
+    EnumDirsOnly(_Mask, dirs, _IncludePath, _Sort);
+    Result := TStringArray_FromStrings(dirs);
+  finally
+    FreeAndNil(dirs);
+  end;
+end;
+
 class procedure TSimpleDirEnumerator.EnumFilesOnly(const _Mask: string; _Callback: TOnFileEnumCallback;
   _IncludePath: Boolean = False; _Sort: Boolean = True);
 var
@@ -1510,6 +1541,16 @@ function GetVolumeInformation(lpRootPathName: PChar;
 class function TFileSystem.GetVolumeName(_DriveLetter: Char): string;
 begin
   Result := GetRemoteVolumeName(_DriveLetter + ':\');
+end;
+
+class function TFileSystem.HasFileExtFull(const _Filename, _Ext: string): Boolean;
+begin
+  Result := SameText(_Ext, ExtractFileExtFull(_Filename));
+end;
+
+class function TFileSystem.HasFileExtLast(const _Filename, _Ext: string): Boolean;
+begin
+  Result := SameText(_Ext, ExtractFileExtLast(_Filename));
 end;
 
 class function TFileSystem.GetRemoteVolumeName(const _Share: string): string;
@@ -2477,6 +2518,12 @@ begin
     raise EFileNotFound.CreateFmt(_('File not found: %s'), [_Filename]);
 end;
 
+class procedure TFileSystem.AssertMatchingFileExists(const _Mask: string);
+begin
+  if FindMatchingFile(_Mask) <> mfFile then
+    raise EFileNotFound.CreateFmt(_('Matching file not found: %s'), [_Mask]);
+end;
+
 class function TFileSystem.DirExists(const _DirName: string): Boolean;
 begin
   Result := SysUtils.DirectoryExists(_DirName);
@@ -2543,6 +2590,24 @@ var
   fn: string;
 begin
   Result := FindMatchingFile(_Mask, fn);
+end;
+
+class function TFileSystem.FindMatchingFiles(const _Mask: string;
+  _IncludePath: Boolean; _Sort: Boolean): TStringArray;
+var
+  Cnt: Integer;
+  sl: TStringList;
+  i: Integer;
+begin
+  sl := TStringList.Create;
+  try
+    Cnt := FindMatchingFiles(_Mask, sl, _IncludePath, _Sort);
+    SetLength(Result, Cnt);
+    for i := 0 to Cnt - 1 do
+      Result[i] := sl[i];
+  finally
+    FreeAndNil(sl);
+  end;
 end;
 
 class function TFileSystem.FindMatchingFiles(const _Mask: string; _sl: TStrings;

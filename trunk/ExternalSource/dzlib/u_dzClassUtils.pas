@@ -19,6 +19,7 @@ uses
   Registry,
   u_dzTranslator,
   u_dzTypes,
+  u_dzMiscUtils, // for inlining
   u_dzDateUtils; // we need this for the $IF Declared() directives
 
 // NOTE: The naming convention is <extended-class>_<Methodname>
@@ -711,7 +712,6 @@ implementation
 uses
   StrUtils,
   u_dzConvertUtils,
-  u_dzMiscUtils,
   u_dzStringUtils;
 
 function _(const _s: string): string;

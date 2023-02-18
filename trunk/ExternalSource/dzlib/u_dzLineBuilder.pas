@@ -69,6 +69,7 @@ type
     function Length: Integer;
     ///<summary> allows read access to the content that has been built </summary>
     property Content: string read FContent;
+    ///<summary> Number of columns that have been added to this line </summary>
     property ColumnCount: Integer read FColumnCount;
     property DecimalSeparator: Char read GetDecimalSeparator write SetDecimalSeparator default '.';
     property ListSeparator: string read FListSeparator write FListSeparator;

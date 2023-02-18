@@ -1030,6 +1030,8 @@ procedure TCheckListBox_CheckAll(_clb: TCheckListBox; _IncludeDisabled: Boolean 
 ///          @param IncludeDisabled determines whether the disabled items should also be returned if they are checked
 ///          @returns the number of Items in Checked </summary>
 function TCheckListBox_GetChecked(_clb: TCheckListBox; _Checked: TStrings = nil; _IncludeDisabled: Boolean = False): Integer; overload;
+/// todo: Why did I ever think it a good idea to return a string? A TStringArray would have been
+///       a much better choice.
 function TCheckListBox_GetChecked(_clb: TCheckListBox; _IncludeDisabled: Boolean = False): string; overload;
 ///<summary> Returns the objects associated with the checked items
 ///          @param clb is the TCheckListBox

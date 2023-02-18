@@ -185,6 +185,11 @@ uses
   u_dzTranslator,
   u_dzOsUtils;
 
+function _(const _s: string): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  Result := dzlibGetText(_s);
+end;
+
 { TCustomFileInfo }
 
 constructor TCustomFileInfo.Create;

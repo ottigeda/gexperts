@@ -56,6 +56,12 @@ function CharInSet(_c: Char; const _CharSet: TSysCharSet): Boolean;
 {$ENDIF SUPPORTS_UNICODE}
 
 ///<summary>
+/// Cuts off the string at the first #0 and returns the new length </summary>
+function StrTrimNul(var _s: AnsiString): Integer;
+///<summary> use StrTrimNul </summary>
+function StrTrimZero(var _s: AnsiString): integer; deprecated; // use StrTrimNul
+
+///<summary>
 /// Converts an array of byte to a string, interpreting the bytes as AnsiString </summary>
 function ByteArrayToString(const _buf: array of Byte): string;
 ///<summary>
@@ -1521,6 +1527,25 @@ var
 begin
   s := PAnsiChar(@_buf[0]);
   Result := string(s);
+end;
+
+function StrTrimNul(var _s: AnsiString): Integer;
+var
+  i: Integer;
+begin
+  Result := Length(_s);
+  for i := 1 to Result do begin
+    if _s[i] = #0 then begin
+      Result := i - 1;
+      SetLength(_s, Result);
+      Exit; //==>
+    end;
+  end;
+end;
+
+function StrTrimZero(var _s: AnsiString): Integer;
+begin
+  Result := StrTrimNul(_s);
 end;
 
 function IsStringIn(const _s: string; const _Arr: array of string; out _Idx: Integer): Boolean;

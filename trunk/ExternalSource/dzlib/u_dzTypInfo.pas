@@ -61,14 +61,17 @@ function TryGetEnumProperty(_Instance: TObject; const _Name: string;
 {$IFDEF SUPPORTS_EXTENDED}
 function GetFloatProperty(_Instance: TObject; const _Name: string; const _Default: Extended): Extended; overload;
 function GetFloatProperty(_Instance: TObject; const _Name: string): Extended; overload;
+function TrySetFloatProperty(_Instance: TObject; const _Name: string; const _Value: Extended): Boolean; overload;
 {$ELSE}
 function GetFloatProperty(_Instance: TObject; const _Name: string; const _Default: Double): Double; overload;
 function GetFloatProperty(_Instance: TObject; const _Name: string): Double; overload;
+function TrySetFloatProperty(_Instance: TObject; const _Name: string; const _Value: Double): Boolean; overload;
 {$ENDIF SUPPORTS_EXTENDED}
 
 function TryGetObjectProperty(_Instance: TObject; const _Name: string; out _Value: TObject): Boolean;
 function GetObjectProperty(_Instance: TObject; const _Name: string; _Default: TObject): TObject; overload;
 function GetObjectProperty(_Instance: TObject; const _Name: string): TObject; overload;
+function TrySetObjectProperty(_Instance: TObject; const _Name: string; _Value: TObject): Boolean;
 
 function TryGetEventProperty(_Instance: TObject; const _Name: string; out _Value: TMethod): Boolean;
 function GetEventProperty(_Instance: TObject; const _Name: string; _Default: TMethod): TMethod; overload;
@@ -156,6 +159,17 @@ begin
   if not TryGetFloatProperty(_Instance, _Name, Result) then
     raise EPropertyError.CreateFmt(_('Float property %s not found.'), [_Name]);
 end;
+
+function TrySetFloatProperty(_Instance: TObject; const _Name: string; const _Value: Extended): Boolean;
+var
+  PropInfo: PPropInfo;
+begin
+  PropInfo := GetPropInfo(_Instance.ClassInfo, _Name);
+  Result := Assigned(PropInfo) and (PropInfo.PropType^.Kind in FLOAT_PROPERTY_TYPES);
+  if Result then
+    SetPropValue(_Instance, PropInfo, _Value);
+end;
+
 {$ELSE}
 function GetFloatProperty(_Instance: TObject; const _Name: string; const _Default: Double): Double;
 begin
@@ -167,6 +181,16 @@ function GetFloatProperty(_Instance: TObject; const _Name: string): Double;
 begin
   if not TryGetFloatProperty(_Instance, _Name, Result) then
     raise EPropertyError.CreateFmt(_('Float property %s not found.'), [_Name]);
+end;
+
+function TrySetFloatProperty(_Instance: TObject; const _Name: string; const _Value: Double): Boolean;
+var
+  PropInfo: PPropInfo;
+begin
+  PropInfo := GetPropInfo(_Instance.ClassInfo, _Name);
+  Result := Assigned(PropInfo) and (PropInfo.PropType^.Kind in FLOAT_PROPERTY_TYPES);
+  if Result then
+    SetPropValue(_Instance, PropInfo, _Value);
 end;
 {$ENDIF}
 
@@ -243,6 +267,17 @@ function GetObjectProperty(_Instance: TObject; const _Name: string): TObject;
 begin
   if not TryGetObjectProperty(_Instance, _Name, Result) then
     raise EPropertyError.CreateFmt(_('Object property %s not found.'), [_Name]);
+end;
+
+function TrySetObjectProperty(_Instance: TObject; const _Name: string; _Value: TObject): Boolean;
+var
+  PropInfo: PPropInfo;
+begin
+  PropInfo := GetPropInfo(_Instance.ClassInfo, _Name);
+  Result := Assigned(PropInfo) and (PropInfo.PropType^.Kind = tkClass);
+  if Result then begin
+    SetObjectProp(_Instance, PropInfo, _Value);
+  end;
 end;
 
 function TryGetEventProperty(_Instance: TObject; const _Name: string; out _Value: TMethod): Boolean;
