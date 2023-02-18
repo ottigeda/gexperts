@@ -558,14 +558,16 @@ var
   i: Integer;
   OrigDPI: Integer;
   OrigBmp: TBitmap;
-  ScaledBmp, ScaledMask: TBitmap;
+  ScaledBmp: TBitmap;
+  ScaledMask: TBitmap;
   OrigWidth: Integer;
   OrigHeight: Integer;
   OrigBmpCanvas: TCanvas;
   OrigBmpHandle: HDC;
   ScaledWidth: Integer;
   ScaledHeight: Integer;
-  ScaledBmpCanvas, ScaledMaskCanvas: TCanvas;
+  ScaledBmpCanvas: TCanvas;
+  ScaledMaskCanvas: TCanvas;
 begin
   Result := TImageList.Create(Self);
 
