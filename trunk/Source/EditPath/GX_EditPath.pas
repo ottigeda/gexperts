@@ -249,6 +249,7 @@ begin
     cfg := FConfigs[i] as TConfigEntry;
     if (cfg.Platform = _Platform) and (cfg.ConfigName = _Config) then begin
       lb_Target.ItemIndex := i;
+      lb_TargetClick(lb_Target);
       Exit; //==>
     end;
   end;
