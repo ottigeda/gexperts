@@ -802,6 +802,8 @@ begin
   TGxIdeSearchPathEnhancer.GetSearchPathFavorites(FFavorites);
   InitFavoritesMenu;
 
+  InitDpiScaler;
+
   Settings := TEditPathExpert.GetSettings;
   CenterForm(Self);
   Settings.LoadForm('Window', Self);
