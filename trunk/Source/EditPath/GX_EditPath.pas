@@ -73,7 +73,7 @@ type
     act_PrependDots: TAction;
     act_RemoveDots: TAction;
     p_MemoCaption: TPanel;
-    l_UniitSearchPath: TLabel;
+    l_UnitSearchPath: TLabel;
     b_MakeRelative: TButton;
     b_MakeAbsolute: TButton;
     b_PrependDots: TButton;
@@ -108,12 +108,20 @@ type
     procedure act_MoveToBaseExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure b_FavoritesClick(Sender: TObject);
+    procedure p_LeftCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
+      var Resize: Boolean);
+    procedure p_ClientBottomCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
+      var Resize: Boolean);
   private
     FConfigs: TObjectList;
     FMemo: TSynMemo;
     FActiveItem: TConfigEntry;
     FProjectDir: string;
     FFavorites: TStringList;
+    FMinTargetListWidth: Integer;
+    FMinSearchPathWidth: Integer;
+    FMinHistoryHeight: Integer;
+    FMinSearchPathHeight: Integer;
     procedure SetData(const _Path, _InheritedPath: string);
     procedure GetData(out _Path: string);
     procedure HandleDropFiles(_Sender: TObject; _Files: TStrings);
@@ -552,6 +560,28 @@ begin
   end;
 end;
 
+procedure Tf_EditPath.p_ClientBottomCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
+  var Resize: Boolean);
+var
+  MinValue: Integer;
+  MaxValue: Integer;
+begin
+  MinValue := FScaler.Calc(FMinHistoryHeight);
+  MaxValue := p_Client.Height - FScaler.Calc(FMinSearchPathHeight);
+  NewHeight := Min(MaxValue, Max(MinValue, NewHeight));
+end;
+
+procedure Tf_EditPath.p_LeftCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
+  var Resize: Boolean);
+var
+  MinValue: Integer;
+  MaxValue: Integer;
+begin
+  MinValue := FScaler.Calc(FMinTargetListWidth);
+  MaxValue := ClientWidth - FScaler.Calc(FMinSearchPathWidth);
+  NewWidth := Min(MaxValue, Max(MinValue, NewWidth));
+end;
+
 function Tf_EditPath.doAddDots(const _s: string): string;
 begin
   Result := '..\' + _s;
@@ -661,9 +691,14 @@ end;
 procedure Tf_EditPath.FormClose(Sender: TObject; var Action: TCloseAction);
 var
   Settings: IExpertSettings;
+  Value: Integer;
 begin
   Settings := TEditPathExpert.GetSettings;
   Settings.SaveForm('Window', Self);
+  Value := MulDiv(p_Left.Width, 10000, Self.ClientWidth);
+  Settings.WriteInteger('TargetListWidthRelative', Value);
+  Value := MulDiv(p_ClientBottom.Height, 10000, Self.ClientHeight);
+  Settings.WriteInteger('HistoryHeightRelative', Value);
 end;
 
 class function Tf_EditPath.TryGetProjectConfigurations(_Configs: TObjectList; out _ActiveIndex: Integer): Boolean;
@@ -753,12 +788,18 @@ var
   Settings: IExpertSettings;
   i: Integer;
   cfg: TConfigEntry;
+  Value: Integer;
 begin
   inherited;
 
   FConfigs := TObjectList.Create;
 
   TControl_SetMinConstraints(Self);
+
+  FMinTargetListWidth := p_Left.Width;
+  FMinSearchPathWidth := p_Client.Width;
+  FMinHistoryHeight := p_ClientBottom.Height;
+  FMinSearchPathHeight := p_ClientClient.Height;
 
   TPanel_BevelNone([p_BottomButtons, p_TargetCaption, p_InheritedCaption, p_MemoCaption, p_RightButtons]);
 
@@ -780,7 +821,7 @@ begin
   FMemo.OnKeyDown := MemoKeyDown;
   FMemo.PopupMenu := pm_Memo;
 
-  l_UniitSearchPath.FocusControl := FMemo;
+  l_UnitSearchPath.FocusControl := FMemo;
 
   GxOtaGetEditorFont(FMemo.Font, -1); // Editor font, size reduced by 1 pt.
   TWinControl_SetFocus(FMemo);
@@ -807,6 +848,10 @@ begin
   Settings := TEditPathExpert.GetSettings;
   CenterForm(Self);
   Settings.LoadForm('Window', Self);
+  Value := MulDiv(Settings.ReadInteger('TargetListWidthRelative', 3000), ClientWidth, 10000);
+  p_Left.Width := Value;
+  Value := MulDiv(Settings.ReadInteger('HistoryHeightRelative', 3000), ClientHeight, 10000);
+  p_ClientBottom.Height := Value;
 end;
 
 destructor Tf_EditPath.Destroy;
