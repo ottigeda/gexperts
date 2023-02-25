@@ -31,7 +31,7 @@ type
 
     procedure FileDropWuppdiWPFile(_Sender: TObject; _Files: TStrings);
  protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
 {$ENDIF}
   public
@@ -47,7 +47,7 @@ uses
   Dialogs,
   u_dzTypesUtils,
   u_dzVclUtils,
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
   u_dzDpiScaleUtils,
 {$ENDIF}
   GX_FavUtil,
@@ -66,7 +66,7 @@ begin
   InitializeForm;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmFavWuppdiWPImport.ArrangeControls;
 begin
   inherited;

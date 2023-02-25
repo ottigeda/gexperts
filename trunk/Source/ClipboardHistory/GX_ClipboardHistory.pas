@@ -158,7 +158,7 @@ type
     procedure AddClipItem(const AClipText: string);
     procedure ArrangeToolbarAndPanel;
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
     procedure ArrangeControls;  override;
 {$ENDIF}
@@ -552,7 +552,7 @@ begin
   fmClipboardHistory := nil;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmClipboardHistory.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;

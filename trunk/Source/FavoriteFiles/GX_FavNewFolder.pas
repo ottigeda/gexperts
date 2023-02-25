@@ -40,7 +40,7 @@ implementation
 uses
   Graphics,
   u_dzTypesUtils,
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
   u_dzDpiScaleUtils,
 {$ENDIF}
   u_dzVclUtils,
@@ -89,7 +89,7 @@ end;
 
 function TfmFavNewFolder.DpiScaleValue(_Value: Integer): Integer;
 begin
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
   Result := FScaler.Calc(_Value);
 {$ELSE}
   Result := _Value;

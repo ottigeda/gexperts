@@ -48,24 +48,24 @@ type
     ///<summary>
     /// @returns the topmost item from the stack without removing it
     ///          if the stack is empty, it returns rtNothing. </summary>
-    function GetTopType: TReservedType;{$IFDEF SupportsInline} inline; {$ENDIF}
-    function GetTopIndent: Integer;{$IFDEF SupportsInline} inline; {$ENDIF}
+    function GetTopType: TReservedType;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function GetTopIndent: Integer;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
     ///<summary>
     /// like GetTopType, but takes an index, Idx = 0 is equivalent to GetTopType,
     /// Idx=1 returns the next etc. </summary>
-    function GetType(_Idx: Integer): TReservedType;{$IFDEF SupportsInline} inline; {$ENDIF}
+    function GetType(_Idx: Integer): TReservedType;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
     ///<summary>
     /// Check whether _Type is somewhere on the stack </summary>
-    function HasType(_Type: TReservedType): Boolean;{$IFDEF SupportsInline} inline; {$ENDIF}
+    function HasType(_Type: TReservedType): Boolean;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
     function Pop: TReservedType;
     procedure Push(_Type: TReservedType; _IncIndent: Integer);
     ///<summary>
     /// @returns True if the stack is empty </summary>
-    function IsEmpty: Boolean;{$IFDEF SupportsInline} inline; {$ENDIF}
+    function IsEmpty: Boolean;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
     ///<summary>
     /// clears the stack and returns the number of items that were left </summary>
-    function Clear: Integer;{$IFDEF SupportsInline} inline; {$ENDIF}
-    function Depth: Integer;{$IFDEF SupportsInline} inline; {$ENDIF}
+    function Clear: Integer;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function Depth: Integer;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
     ///<sumamry>
     /// Creates a new stack and copies all elements to it </summary>
     function Clone: TCodeFormatterSegment;

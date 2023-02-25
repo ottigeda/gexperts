@@ -14,10 +14,10 @@ type
     FEditorExpertsManager: TGxEditorExpertManager;
     FExpertList: TList;
     FStartingUp: Boolean;
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
     FLastDesktopName: string;
     procedure ForceStartupDesktop(Sender: TObject);
-{$ENDIF}
+{$ENDIF GX_STARTUP_LAYOUT_FIX_ENABLED}
     procedure InstallAddIn;
     function GetExpert(const Index: Integer): TGX_Expert;
     function GetExpertCount: Integer;
@@ -130,7 +130,7 @@ begin
   TTimedCallback.Create(DoAfterIDEInitialized, 1200, True);
 
   gblAboutFormClass.AddToAboutDialog;
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
   FLastDesktopName := GetIdeDesktopName;
   {$IFOPT D+} SendDebug('LastDesktopName:' + FLastDesktopName);  {$ENDIF}
 {$ENDIF}
@@ -408,7 +408,7 @@ begin
     GxKeyboardShortCutBroker.DoUpdateKeyBindings(True);
 
   GXMenuActionManager.MoveMainMenuItems;
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
   if ConfigInfo.GetForceDesktopOnStartup then begin
     // Unfortunatly the 1200 ms delay used to call DoAfterIDEInitialized are not always
     // enough to also set the startup desktop, resulting in an access violation.
@@ -418,7 +418,7 @@ begin
 {$ENDIF}
 end;
 
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
 procedure TGExperts.ForceStartupDesktop(Sender: TObject);
 var
   s: string;

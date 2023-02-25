@@ -675,7 +675,7 @@ begin
   inherited Notification(AComponent, Operation);
 end;
 
-function SameMethod(_Method1, _Method2: TEditFormNotifier): Boolean; {$IFDEF SupportsInline}inline;{$ENDIF}
+function SameMethod(_Method1, _Method2: TEditFormNotifier): Boolean; {$IFDEF GX_SupportsInline}inline;{$ENDIF}
 begin
   Result := (TMethod(_Method1).Code = TMethod(_Method2).Code) and (TMethod(_Method1).Data = TMethod(_Method2).Data);
 end;

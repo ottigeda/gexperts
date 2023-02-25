@@ -39,7 +39,7 @@ type
       _MousePos: TPoint): Boolean;
     function GetShortcut(_Idx: Integer): TShortCut;
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     FOldDPI: Integer;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
@@ -320,7 +320,7 @@ begin
   Result := KeyToStr(Key) + ShiftToStr(Shift);
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmGxKeyboardShortcuts.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 begin
   if FOldDPI = 0 then

@@ -52,7 +52,7 @@ type
     class procedure ApplyExplorerIntegration(_AddToBackground, _AddToFolders: Boolean);
     class procedure SetExplorerIntegration(const _BaseKey: string; _IsEnabled: boolean);
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
 {$ENDIF}
   public
@@ -114,7 +114,7 @@ begin
   InitDpiScaler;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmGrepOptions.ArrangeControls;
 var
   t: Integer;

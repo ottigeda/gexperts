@@ -195,7 +195,7 @@ type
     property DescriptionVisible: Boolean read GetDescriptionVisible write SetDescriptionVisible;
     procedure RecordShortcutCallback(Sender: TObject);
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
     procedure AddToMacroLibrary(CR: IOTARecord);
@@ -790,7 +790,7 @@ begin
   fmMacroLibrary := nil;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmMacroLibrary.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;

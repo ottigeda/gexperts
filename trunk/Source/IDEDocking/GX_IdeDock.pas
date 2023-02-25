@@ -8,7 +8,7 @@ uses
   Windows,
   SysUtils, Classes, Forms, Controls,
   MenuBar, Menus, Messages,
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
   u_dzDpiScaleUtils,
 {$ELSE}
   u_dzDpiScaleUtilsDummy,
@@ -17,14 +17,14 @@ uses
   DockForm;
 
 type
-{$IFDEF EnableIdeDockingSupport}
+{$IFDEF GX_EnableIdeDockingSupport}
   TDummyPopupMenu = class(TPopupMenu)
   private
     OwnerMenu: TMenu;
   public
     function IsShortCut(var Message: TWMKey): Boolean; override;
   end;
-{$ENDIF EnableIdeDockingSupport}
+{$ENDIF GX_EnableIdeDockingSupport}
 
 {$UNDEF TrickTheIdeAncestorForm}  // this must always be undefined, so that
 {$IFDEF TrickTheIdeAncestorForm}  // <--- this define is always false
@@ -35,7 +35,7 @@ type
   protected
     FMenuBar: TMenuBar;
     FScaler: TFormDpiScaler;
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); virtual;
     procedure ArrangeControls; virtual;
@@ -46,8 +46,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
-    {$IFDEF EnableIdeDockingSupport}
-    {$ENDIF EnableIdeDockingSupport}
+    {$IFDEF GX_EnableIdeDockingSupport}
+    {$ENDIF GX_EnableIdeDockingSupport}
   end;
 
 type
@@ -94,7 +94,7 @@ type
 
 procedure TIdeDockManager.ShowForm(Form: TForm);
 begin
-  {$IFDEF EnableIdeDockingSupport}
+  {$IFDEF GX_EnableIdeDockingSupport}
   with Form as TDockableForm do
   begin
     if not Floating then
@@ -107,28 +107,28 @@ begin
   end;
   {$ELSE}
     Form.Show;
-  {$ENDIF EnableIdeDockingSupport}
+  {$ENDIF GX_EnableIdeDockingSupport}
 end;
 
 procedure TIdeDockManager.RegisterDockableForm(IdeDockFormClass: TIdeDockFormClass;
        var IdeDockFormVar; const IdeDockFormName: string);
 begin
-  {$IFDEF EnableIdeDockingSupport}
+  {$IFDEF GX_EnableIdeDockingSupport}
   if Assigned(RegisterFieldAddress) then
     RegisterFieldAddress(IdeDockFormName, @IdeDockFormVar);
 
   RegisterDesktopFormClass(IdeDockFormClass, IdeDockFormName, IdeDockFormName);
-  {$ENDIF EnableIdeDockingSupport}
+  {$ENDIF GX_EnableIdeDockingSupport}
 end;
 
 procedure TIdeDockManager.UnRegisterDockableForm(var IdeDockFormVar; const IdeDockFormName: string);
-{$IFDEF EnableIdeDockingSupport}
-{$ENDIF EnableIdeDockingSupport}
+{$IFDEF GX_EnableIdeDockingSupport}
+{$ENDIF GX_EnableIdeDockingSupport}
 begin
-  {$IFDEF EnableIdeDockingSupport}
+  {$IFDEF GX_EnableIdeDockingSupport}
   if Assigned(UnregisterFieldAddress) then
     UnregisterFieldAddress(@IdeDockFormVar);
-  {$ENDIF EnableIdeDockingSupport}
+  {$ENDIF GX_EnableIdeDockingSupport}
 end;
 
 var
@@ -146,7 +146,7 @@ begin
   inherited;
   GxSetDefaultFont(Self);
 
-  {$IFDEF EnableIdeDockingSupport}
+  {$IFDEF GX_EnableIdeDockingSupport}
   if Menu <> nil then
   begin
     FMenuBar := TMenuBar.Create(Self);
@@ -164,19 +164,19 @@ begin
   DeskSection := Name;
   AutoSave := True;
   SaveStateNecessary := True;
-  {$ENDIF EnableIdeDockingSupport}
+  {$ENDIF GX_EnableIdeDockingSupport}
 end;
 
 destructor TfmIdeDockForm.Destroy;
 begin
-  {$IFDEF EnableIdeDockingSupport}
+  {$IFDEF GX_EnableIdeDockingSupport}
   SaveStateNecessary := True;
-  {$ENDIF EnableIdeDockingSupport}
+  {$ENDIF GX_EnableIdeDockingSupport}
   FreeAndNil(FScaler);
   inherited;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmIdeDockForm.WMDpiChanged(var _Msg: TWMDpi);
 begin
   inherited;
@@ -200,7 +200,7 @@ end;
 procedure TfmIdeDockForm.InitDpiScaler;
 begin
   FScaler := TFormDpiScaler.Create(Self);
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
   ApplyDpi(TScreen_GetDpiForForm(Self), nil);
 {$ENDIF}
 end;
@@ -209,7 +209,7 @@ procedure TfmIdeDockForm.Loaded;
 begin
   inherited;
   Scaled := False;
-{$IFDEF HAS_PROPERTY_OLDCREATEORDER}
+{$IFDEF GX_HAS_PROPERTY_OLDCREATEORDER}
   // Delphi 11 removes this property from all dfm files, but unfortunately its default value
   // is True, so older Delphi versions will add it again as True which will break several
   // forms that rely on it to be False.
@@ -217,7 +217,7 @@ begin
 {$ENDIF}
 end;
 
-{$IFDEF EnableIdeDockingSupport}
+{$IFDEF GX_EnableIdeDockingSupport}
 
 { TDummyPopupMenu }
 
@@ -226,7 +226,7 @@ begin
   // Call the form's IsShortCut so docked forms can use main menu shortcuts
   Result := (OwnerMenu <> nil) and OwnerMenu.IsShortCut(Message);
 end;
-{$ENDIF EnableIdeDockingSupport}
+{$ENDIF GX_EnableIdeDockingSupport}
 
 initialization
   PrivateIdeDockManager := TIdeDockManager.Create;

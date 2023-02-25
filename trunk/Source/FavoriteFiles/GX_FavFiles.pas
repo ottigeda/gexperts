@@ -213,7 +213,7 @@ type
     function ExecuteFile(AFile: TGXFile): Boolean;
     function ExecuteFileItem(AListItem: TListItem): Boolean;
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     // TImageListScaler descends from TComponents and gets freed automatically
     FISFolders: TImageListScaler;
     FISSystem: TImageListScaler;
@@ -1782,7 +1782,7 @@ begin
   inherited;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmFavFiles.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;

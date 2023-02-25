@@ -6,13 +6,13 @@ unit GX_RegExpr;
 
 {$I GX_CondDefine.inc}
 
-{$UNDEF HAS_UNIT_REGULAREXPRESSIONS}
+{$UNDEF GX_HAS_UNIT_REGULAREXPRESSIONS}
 
 interface
 
 uses
   SysUtils,
-{$IFDEF HAS_UNIT_REGULAREXPRESSIONS}
+{$IFDEF GX_HAS_UNIT_REGULAREXPRESSIONS}
   RegularExpressionsAPI,
   RegularExpressionsCore,
   RegularExpressions,
@@ -21,7 +21,7 @@ uses
 {$ENDIF}
   Classes;
 
-{$IFDEF HAS_UNIT_REGULAREXPRESSIONS}
+{$IFDEF GX_HAS_UNIT_REGULAREXPRESSIONS}
 
 type
   ERegExpr = class(Exception)
@@ -63,7 +63,7 @@ function QuoteRegExprMetaChars(const _Str: string): string;
 function ExecRegExpr(const _RegExpr, _InputStr: string): Boolean;
 
 implementation
-{$IFDEF HAS_UNIT_REGULAREXPRESSIONS}
+{$IFDEF GX_HAS_UNIT_REGULAREXPRESSIONS}
 
 type
   TPerlRegExHelper = class helper for TPerlRegEx

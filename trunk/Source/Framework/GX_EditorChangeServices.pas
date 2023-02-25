@@ -22,7 +22,7 @@ interface
 
 uses
   ToolsAPI,
-  GX_ConfigurationInfo; // needed only for STARTUP_LAYOUT_FIX_ENABLED
+  GX_ConfigurationInfo; // needed only for GX_STARTUP_LAYOUT_FIX_ENABLED
 
 type
   { Implement the IGxEditorNotification interface to learn of
@@ -64,7 +64,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, TypInfo, GX_Debug, {$ENDIF}
   SysUtils, Windows, Classes, Messages, Controls, Forms,
-  StdCtrls, // needed only for STARTUP_LAYOUT_FIX_ENABLED
+  StdCtrls, // needed only for GX_STARTUP_LAYOUT_FIX_ENABLED
   GX_GenericUtils, GX_GenericClasses, GX_IdeUtils, GX_OtaUtils;
 
 type
@@ -115,11 +115,11 @@ type
     function HasNotifierBeenInstalled(const FileName: string): Boolean;
     procedure NotifyClientNewModule(const Module: IOTAModule);
     function ValidModuleFileName(const FileName: string): Boolean;
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
     // Fix for the IDE always switching to the Startup Layout
     procedure SaveUserDesktop;
     procedure RestoreUserDesktop;
-{$ENDIF STARTUP_LAYOUT_FIX_ENABLED}
+{$ENDIF GX_STARTUP_LAYOUT_FIX_ENABLED}
   protected
     // IOTAIdeNotifier
     procedure FileNotification(NotifyCode: TOTAFileNotification;
@@ -535,13 +535,13 @@ begin
   case NotifyCode of
     ofnFileOpened:
       InstallModuleNotifier(FileName);
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
     ofnProjectDesktopSave:
       SaveUserDesktop;
 
     ofnActiveProjectChanged:
       RestoreUserDesktop;
-{$ENDIF STARTUP_LAYOUT_FIX_ENABLED}
+{$ENDIF GX_STARTUP_LAYOUT_FIX_ENABLED}
   else // case  // FI:W506
     // Do nothing
   end;
@@ -652,7 +652,7 @@ begin
   end;
 end;
 
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
 procedure TGxIdeNotifier.RestoreUserDesktop;
 var
   Settings     : TGExpertsSettings;
@@ -705,7 +705,7 @@ begin
     end;
   end;
 end;
-{$ENDIF STARTUP_LAYOUT_FIX_ENABLED}
+{$ENDIF GX_STARTUP_LAYOUT_FIX_ENABLED}
 
 function TGxIdeNotifier.ValidModuleFileName(const FileName: string): Boolean;
 begin

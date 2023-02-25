@@ -130,7 +130,7 @@ type
     /// StringLists must be freed by the caller </summary>
     procedure GetIndirectDependencies(_SelectedNode: TTreeNode; _ProcessedUnitsList: TStringList);
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
   public
@@ -810,7 +810,7 @@ begin
   fmProjDepend := nil;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmProjDepend.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;

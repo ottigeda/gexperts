@@ -180,7 +180,7 @@ type
     procedure UpdateIdeDialogCheckboxes;
     procedure SaveAllSettings;
     procedure edCachingPathDropFiles(_Sender: TObject; _Files: TStrings);
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeGeneralTab;
   protected
     procedure ArrangeControls; override;
@@ -231,7 +231,7 @@ var
   i: Integer;
   UsageCount: Integer;
   Expert: TGX_BaseExpert;
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
   Desktops: TStrings;
 {$ENDIF}
 
@@ -246,7 +246,7 @@ var
 begin
   inherited Create(AOwner);
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
   ArrangeGeneralTab;
 {$ENDIF}
 
@@ -286,7 +286,7 @@ begin
   AdjustMinSize(FConfigExpertsFrame);
   FConfigExpertsFrame.Init(GExpertsInst.GetExpertList);
 
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
   if TryGetIdeDesktops(Desktops) then
     cbxDesktop.Items.Assign(Desktops);
 {$ENDIF}
@@ -345,7 +345,7 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmConfiguration.ArrangeGeneralTab;
 var
   t: Integer;
@@ -579,7 +579,7 @@ begin
   chkAutoCloseMessage.Checked := IdeEnhancements.AutoCloseMessageWindow;
 {$ENDIF GX_VER170_up} // Delphi 9/2005 (BDS 2)
 
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
   chkForceStartupDesktop.Checked := ConfigInfo.GetForceDesktopOnStartup;
   cbxDesktop.Text := ConfigInfo.GetForcedStartupDesktop;
 {$ENDIF}
@@ -696,7 +696,7 @@ begin
   IdeEnhancements.AutoCloseMessageWindow := chkAutoCloseMessage.Checked;
 {$ENDIF GX_VER170_up} // Delphi 9/2005 (BDS 2)
 
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
   ConfigInfo.SetForceDesktopOnStartup(chkForceStartupDesktop.Checked);
   ConfigInfo.SetForcedStartupDesktop(cbxDesktop.Text);
 {$ENDIF}
@@ -799,7 +799,7 @@ begin
   chkOIHideDescPane.Visible := False;
 {$ENDIF}
 
-{$IFNDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFNDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
   chkForceStartupDesktop.Visible := False;
   cbxDesktop.Visible := False;
   l_ForceDestkopAV.Visible := False;
@@ -1085,7 +1085,7 @@ begin
 {$IFDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
   chkAutoCloseMessage.Enabled := EnableState;
 {$ENDIF}
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
   chkForceStartupDesktop.Enabled := EnableState;
 {$ENDIF}
 end;

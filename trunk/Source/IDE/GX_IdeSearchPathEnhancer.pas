@@ -36,7 +36,7 @@ uses
   ActnList,
   StrUtils,
   ComCtrls,
-{$IFDEF LISTBOX_OWNERDRAW_FIX_ENABLED}
+{$IFDEF GX_LISTBOX_OWNERDRAW_FIX_ENABLED}
   Graphics,
   Themes,
 {$ENDIF}
@@ -90,9 +90,9 @@ type
     FAddDotsBtn: TButton;
     FDelDotsBtn: TButton;
     FProjectDir: string;
-{$IFDEF LISTBOX_OWNERDRAW_FIX_ENABLED}
+{$IFDEF GX_LISTBOX_OWNERDRAW_FIX_ENABLED}
     FListboxOnDrawItem: TDrawItemEvent;
-{$ENDIF LISTBOX_OWNERDRAW_FIX_ENABLED}
+{$ENDIF GX_LISTBOX_OWNERDRAW_FIX_ENABLED}
 {$IFNDEF GX_VER300_up} // RAD Studio 10 Seattle (24; BDS 17)
     FBrowseBtn: TCustomButton;
     FBrowseClick: TNotifyEvent;
@@ -131,7 +131,7 @@ type
     procedure HandleMemoClick(_Sender: TObject);
     procedure HandleListboxClick(_Sender: TObject);
     procedure SetFocusTo(_Ctrl: TWinControl);
-{$IFDEF LISTBOX_OWNERDRAW_FIX_ENABLED}
+{$IFDEF GX_LISTBOX_OWNERDRAW_FIX_ENABLED}
     procedure HandleListboxDrawItem(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
 {$ENDIF}
   protected
@@ -396,7 +396,7 @@ begin
   FListbox.Align := alClient;
   FListboxOnClick := FListbox.OnClick;
   FListbox.OnClick := HandleListboxClick;
-{$IFDEF LISTBOX_OWNERDRAW_FIX_ENABLED}
+{$IFDEF GX_LISTBOX_OWNERDRAW_FIX_ENABLED}
   FListbox.ItemHeight := MulDiv(18, FTabSheetList.CurrentPPI, USER_DEFAULT_SCREEN_DPI);
   FListboxOnDrawItem := FListbox.OnDrawItem;
   FListbox.OnDrawItem := HandleListboxDrawItem;
@@ -922,7 +922,7 @@ begin
     FListboxOnClick(_Sender);
 end;
 
-{$IFDEF LISTBOX_OWNERDRAW_FIX_ENABLED}
+{$IFDEF GX_LISTBOX_OWNERDRAW_FIX_ENABLED}
 
 procedure TSearchPathEnhancer.HandleListboxDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
@@ -958,7 +958,7 @@ begin
   end else
     FListboxOnDrawItem(Control, Index, Rect, State); // call original code.
 end;
-{$ENDIF LISTBOX_OWNERDRAW_FIX_ENABLED}
+{$ENDIF GX_LISTBOX_OWNERDRAW_FIX_ENABLED}
 
 { TListBox }
 

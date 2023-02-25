@@ -45,13 +45,8 @@ type
   TSpace = (spBefore, spAfter);
   TSpaceSet = set of TSpace;
 
-// The following functions only work in Delpi 2005 if they are not inlined
-// (or optimization is turned off) otherwise we get an
-// "external exception C000001D" (Illegal Instruction)
-function SpaceSetToInt(_SpaceSet: TSpaceSet): Integer;
-{$IFDEF SupportsInline}{$IFDEF GX_DELPHI2006_UP}inline;{$ENDIF}{$ENDIF}
-function IntToSpaceSet(_Value: Integer): TSpaceSet;
-{$IFDEF SupportsInline}{$IFDEF GX_DELPHI2006_UP}inline;{$ENDIF}{$ENDIF}
+function SpaceSetToInt(_SpaceSet: TSpaceSet): Integer;{$IFDEF GX_SupportsInline}inline;{$ENDIF}
+function IntToSpaceSet(_Value: Integer): TSpaceSet;{$IFDEF GX_SupportsInline}inline;{$ENDIF}
 
 const
   spBoth = [spBefore, spAfter];
@@ -93,8 +88,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function FindWord(const _s: string; out _ReservedType: TReservedType): Boolean;{$IFDEF SupportsInline} inline; {$ENDIF}
-    procedure Add(const _s: string; _ReservedType: TReservedType);{$IFDEF SupportsInline} inline; {$ENDIF}
+    function FindWord(const _s: string; out _ReservedType: TReservedType): Boolean;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    procedure Add(const _s: string; _ReservedType: TReservedType);{$IFDEF GX_SupportsInline} inline; {$ENDIF}
   end;
 
 var
@@ -110,7 +105,7 @@ type
 /// @param Str is the input string
 /// @param Case is a TCase specifying the desired case
 /// @returns the modified string </summary>
-function AdjustCase(const _str: TGXUnicodeString; _Case: TCase): TGXUnicodeString;{$IFDEF SupportsInline} inline; {$ENDIF}
+function AdjustCase(const _str: TGXUnicodeString; _Case: TCase): TGXUnicodeString;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
 implementation
 

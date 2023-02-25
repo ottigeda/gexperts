@@ -49,7 +49,7 @@ type
     procedure PopulateGrid;
     procedure PrintComponentGrid;
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
   public
@@ -355,7 +355,7 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmComponentGrid.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;

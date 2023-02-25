@@ -267,7 +267,7 @@ type
     procedure ClearModified;
     procedure MarkTextModified;
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
     procedure SaveSettings;
@@ -494,7 +494,7 @@ begin
   inherited;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmMacroTemplates.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;

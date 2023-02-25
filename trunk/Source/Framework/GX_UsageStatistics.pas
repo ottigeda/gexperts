@@ -32,7 +32,7 @@ type
   private
     procedure FillStats;
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
 {$ENDIF}
   public
@@ -64,7 +64,7 @@ begin
   FillStats;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmUsageStatistics.ArrangeControls;
 begin
   lv_Experts.Width := ClientWidth div 2;

@@ -127,7 +127,7 @@ type
     property EnableKeyboardShortcuts: Boolean read GetEnableKeyboardShortcuts;
     property EnableCustomFont: Boolean read GetEnableCustomFont write SetEnableCustomFont;
     function CustomFont: TFont;
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
     function GetForceDesktopOnStartup: Boolean;
     procedure SetForceDesktopOnStartup(const _Value: Boolean);
     function GetForcedStartupDesktop: string;
@@ -164,7 +164,7 @@ type
     ///<summary>
     /// Delete all values in the section and write the strings to it </summary>
     procedure WriteSectionValues(const Section: string; Strings: TStrings);
-{$IFDEF CUSTOMINIFILE_HAS_READSUBSECTIONS}
+{$IFDEF GX_CUSTOMINIFILE_HAS_READSUBSECTIONS}
     procedure ReadSubSections(const Section: string; Strings: TStrings; Recurse: Boolean = False); override;
 {$ELSE}
     procedure ReadSubSections(const Section: string; Strings: TStrings; Recurse: Boolean = False);
@@ -299,7 +299,7 @@ type
     FCustomFont: TFont;
     FHideWindowMenu: Boolean;
     FMoveComponentMenu: Boolean;
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
     FForceDesktopOnStartup: Boolean;
     FForcedStartupDesktop: string;
 {$ENDIF}
@@ -340,7 +340,7 @@ type
     procedure SetEnableCustomFont(const Value: Boolean);
     function CustomFont: TFont;
     procedure UpdateScreenForms;
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
     function GetForceDesktopOnStartup: Boolean;
     procedure SetForceDesktopOnStartup(const _Value: Boolean);
     function GetForcedStartupDesktop: string;
@@ -618,7 +618,7 @@ begin
 {$IFNDEF GX_STANDALONE}
     Setting := Settings.ReadBool(ConfigurationKey, 'EditorEnhancementsEnabled', False);
     EditorEnhancements.Enabled := Setting and not IsStandAlone;
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
     FForceDesktopOnStartup := Settings.ReadBool(ConfigurationKey, 'ForceDesktopOnStartup', False);
     FForcedStartupDesktop := Settings.ReadString(ConfigurationKey, 'ForcedStartupDestkop', '');
 {$ENDIF}
@@ -651,7 +651,7 @@ begin
     Settings.WriteBool(ConfigurationKey, 'EditorEnhancementsEnabled', EditorEnhancements.Enabled);
     Settings.WriteBool(ConfigurationKey, 'EnableCustomFont', FEnableCustomFont);
     Settings.SaveFont(AddSlash(ConfigurationKey) + 'CustomFont', FCustomFont);
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
     Settings.WriteBool(ConfigurationKey, 'ForceDesktopOnStartup', FForceDesktopOnStartup);
     Settings.WriteString(ConfigurationKey, 'ForcedStartupDestkop', FForcedStartupDesktop);
 {$ENDIF}
@@ -817,7 +817,7 @@ begin
 end;
 
 {$IFNDEF GX_STANDALONE}
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
 function TConfigInfo.GetForceDesktopOnStartup: Boolean;
 begin
   Result := FForceDesktopOnStartup;
@@ -862,7 +862,7 @@ begin
   FEnableCustomFont := Value;
 end;
 
-{$IFDEF STARTUP_LAYOUT_FIX_ENABLED}
+{$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
 
 procedure TConfigInfo.SetForceDesktopOnStartup(const _Value: Boolean);
 begin
@@ -873,7 +873,7 @@ procedure TConfigInfo.SetForcedStartupDesktop(const _Value: string);
 begin
   FForcedStartupDesktop := _Value;
 end;
-{$ENDIF STARTUP_LAYOUT_FIX_ENABLED}
+{$ENDIF GX_STARTUP_LAYOUT_FIX_ENABLED}
 {$ENDIF GX_STANDALONE}
 
 { TShowBadDirectoryMessage }

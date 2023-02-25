@@ -110,7 +110,7 @@ type
     procedure DoDeactivate(Sender: TObject);
     procedure doArrangeControls;
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
 {$ENDIF}
   public
@@ -606,7 +606,7 @@ begin
 // alternatively:
 //  MinWidth := btnClear.ClientToParent(Point(btnClear.Width, 0), Self).X + 2 * GetSystemMetrics(SM_CXFRAME);
   MinHeight := 331 + 2 * GetSystemMetrics(SM_CYFRAME) + GetSystemMetrics(SM_CYCAPTION);
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
   // No idea why we need to add some more pixels here but without this, the button is not fully visible
   // or the drawing is larger than the grid
   // The exact values also probably depend on scaling
@@ -793,7 +793,7 @@ begin
   btnClear.Left := eChars.Left + eChars.Width + 1;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmAsciiChart.ArrangeControls;
 begin
   doArrangeControls;

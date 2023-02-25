@@ -376,7 +376,7 @@ type
     FSearchPathUnits: TStringList;
     FIdentifiers: TUnitExportlist;
     FUsesExpert: TUsesClauseMgrExpert;
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     FOldDPI: Integer;
     // FImageScaler descends from TComponents and gets freed automatically
     FImageScaler: TImageListScaler;
@@ -1615,7 +1615,7 @@ begin
   actOpenUnit.Enabled := HaveSelectedItem(GetListForOpen);
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmUsesManager.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); 
 
   procedure AdjustTop(_ctrl: TControl);

@@ -63,7 +63,7 @@ type
     function ScrollGrid(_Grid: TStringGrid; _Direction: Integer; _Shift: TShiftState;
       _MousePos: TPoint): Boolean;
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     FOldDPI: Integer;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
@@ -287,7 +287,7 @@ begin
   TGrid_Resize(TheGrid, [roUseGridWidth, roUseAllRows]);
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure Tf_FormHotkeys.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 begin
   if FOldDPI = 0 then

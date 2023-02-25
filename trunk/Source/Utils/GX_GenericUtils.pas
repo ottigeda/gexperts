@@ -197,31 +197,31 @@ const
 
 // Determine if a character represents white space
 function IsCharWhiteSpace(C: Char): Boolean;
-function IsCharWhiteSpaceOrNull(C: Char): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
-function IsCharWhiteSpaceOrControl(C: Char): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
-function IsCharLineEnding(C: Char): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
-function IsCharLineEndingOrNull(C: Char): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
+function IsCharWhiteSpaceOrNull(C: Char): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+function IsCharWhiteSpaceOrControl(C: Char): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+function IsCharLineEnding(C: Char): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+function IsCharLineEndingOrNull(C: Char): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 function IsCharAlphaNumeric(C: Char): Boolean; overload;
 function IsCharNumeric(C: Char): Boolean; overload;
-function IsCharHexDigit(C: Char): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
-function IsCharTab(C: Char): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
-function IsCharSymbol(C: Char): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
-function IsCharControl(C: Char): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
+function IsCharHexDigit(C: Char): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+function IsCharTab(C: Char): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+function IsCharSymbol(C: Char): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+function IsCharControl(C: Char): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 // See if a character is a valid locale identifier character, _, or 0..9
 function IsCharIdentifier(C: Char): Boolean; overload;
 function IsCharIdentifierStart(C: Char): Boolean; overload;
 {$IFDEF UNICODE}
 function IsCharIdentifierStart(C: AnsiChar): Boolean; overload;
 function IsCharIdentifier(C: AnsiChar): Boolean; overload;
-function IsCharSymbol(C: AnsiChar): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
-function IsCharNumeric(C: AnsiChar): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
-function IsCharAlphaNumeric(C: AnsiChar): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
-function IsCharLineEndingOrNull(C: AnsiChar): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
+function IsCharSymbol(C: AnsiChar): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+function IsCharNumeric(C: AnsiChar): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+function IsCharAlphaNumeric(C: AnsiChar): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+function IsCharLineEndingOrNull(C: AnsiChar): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 function GetFileEncoding(const FileName: string): TEncoding;
 {$ELSE ~UNICODE}
-function CharInSet(C: Char; CSet: TSysCharSet): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
-function AnsiStrAlloc(Size: Cardinal): PChar; {$IFDEF SupportsInline} inline; {$ENDIF}
-function IsLeadChar(C: Char): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
+function CharInSet(C: Char; CSet: TSysCharSet): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+function AnsiStrAlloc(Size: Cardinal): PChar; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+function IsLeadChar(C: Char): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 function IsCharIdentifier(C: WideChar): Boolean; overload;
 {$ENDIF UNICODE}
 

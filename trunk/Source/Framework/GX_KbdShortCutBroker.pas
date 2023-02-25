@@ -377,7 +377,7 @@ type
     FUpdateCount: Integer;
     FInstallingKeyboardBinding: Boolean;
     FShuttingDown: Boolean;
-{$IFDEF KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
+{$IFDEF GX_KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
     // This fixes a problem where pressing Insert causes a noticable delay (Bug #147)
     // because it results in multiple uninstalling and installing the GExperts keyboard binding.
     FDoInstallCallback: TTimedCallback;
@@ -392,7 +392,7 @@ type
     procedure DoUpdateKeyBindings(_Immediate: boolean); override;
 
     procedure AssertNoDuplicateShortCut(const Value: TShortCut); override;
-{$IFDEF KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
+{$IFDEF GX_KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
     procedure DelayedInstallKeyboardBindings(_Sender: TObject);
 {$ENDIF}
   public
@@ -449,7 +449,7 @@ end;
 destructor TGxNativeKeyboardShortCutBroker.Destroy;
 begin
   FShuttingDown := True;
-{$IFDEF KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
+{$IFDEF GX_KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
   FreeAndNil(FDoInstallCallback);
 {$ENDIF}
 
@@ -463,7 +463,7 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
+{$IFDEF GX_KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
 procedure TGxNativeKeyboardShortCutBroker.DelayedInstallKeyboardBindings(_Sender: TObject);
 begin
   InstallKeyboardBindings;
@@ -473,7 +473,7 @@ end;
 procedure TGxNativeKeyboardShortCutBroker.DoUpdateKeyBindings(_Immediate: boolean);
 begin
   RemoveKeyboardBindings;
-{$IFDEF KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
+{$IFDEF GX_KEYBOARD_SHORTCUT_BROKER_FIX_ENABLED}
   // In Delphi 10.3 Rio the IDE restarts the keyboard services every time the user presses Insert
   // which causes multiple calls to this method. Since this means that the GExperts keyboard
   // binding was removed and installed every single time this caused a noticable delay (bug #147).

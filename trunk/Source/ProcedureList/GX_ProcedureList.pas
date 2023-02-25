@@ -110,7 +110,7 @@ type
     procedure UpdateCodeView(ProcInfo: TProcedure);
     function CurrentProcInfo: TProcedure;
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
   public
@@ -694,7 +694,7 @@ begin
   inherited;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmProcedureList.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;

@@ -49,19 +49,19 @@ type
     FWrapIndent: Boolean;
     // stores WrapIndent from before an opening bracket until the closing one
     FOldWrapIndent: Boolean;
-    procedure UppercaseCompilerDirective(_Token: TPascalToken); {$IFDEF SupportsInline} inline; {$ENDIF}
-    function NoBeginTryIndent(_rType: TReservedType): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
+    procedure UppercaseCompilerDirective(_Token: TPascalToken); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function NoBeginTryIndent(_rType: TReservedType): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure IndentProcedureComment;
-    procedure SetPrevLineIndent(_Additional: Integer); {$IFDEF SupportsInline} inline; {$ENDIF}
-    procedure DecPrevLineIndent; {$IFDEF SupportsInline} inline; {$ENDIF}
+    procedure SetPrevLineIndent(_Additional: Integer); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    procedure DecPrevLineIndent; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
     ///<summary>
     /// replaces a TExpression with a TAlignExpression </summary>
     function AlignExpression(_Idx: Integer; _Pos: Integer): TPascalToken;
     procedure CheckWrapping;
-    function IsRType(_Token: TPascalToken; _rType: TReservedType): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
-    function IsRType(_Token: TPascalToken; _rTypeSet: TReservedTypeSet): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
-    function IsWType(_Token: TPascalToken; _wType: TWordType): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
+    function IsRType(_Token: TPascalToken; _rType: TReservedType): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function IsRType(_Token: TPascalToken; _rTypeSet: TReservedTypeSet): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function IsWType(_Token: TPascalToken; _wType: TWordType): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     ///<summary>
     /// Checks and corrects the number of blank lines before a procedure / function declaration </summary>
     procedure CheckBlankLinesAroundProc;
@@ -71,27 +71,27 @@ type
 
     ///<summary>
     /// @returns the token at index Idx or nil if out of bounds </summary>
-    function GetToken(_Idx: Integer): TPascalToken; {$IFDEF SupportsInline} inline; {$ENDIF}
+    function GetToken(_Idx: Integer): TPascalToken; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     ///<summary>
     /// Get token at index Idx,
     /// @returns True and the Token if there is one
     ///          False and Token=nil if index is out of bounds </summary>
-    function TryGetToken(_Idx: Integer; out _Token: TPascalToken): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
+    function TryGetToken(_Idx: Integer; out _Token: TPascalToken): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     ///<summary>
     /// Check whether the token at index Idx has the reserved type RType
     /// @param Idx is the index of the token to check
     /// @param RType is the queried reserverd type
     /// @returns True, if the token has the queried type, False otherwise
     ///          also False, if the index is out of bounds. </summary>
-    function TokenAtIs(_Idx: Integer; _rType: TReservedType): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
-    function TokenAtIs(_Idx: Integer; _rTypes: TReservedTypeSet): Boolean; overload;{$IFDEF SupportsInline} inline; {$ENDIF}
+    function TokenAtIs(_Idx: Integer; _rType: TReservedType): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function TokenAtIs(_Idx: Integer; _rTypes: TReservedTypeSet): Boolean; overload;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
-    function GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken; {$IFDEF SupportsInline} inline; {$ENDIF}
-    function TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
-    function TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
+    function GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
     function InsertBlankLines(_AtIndex, _NLines: Integer): TLineFeed;
-    function AssertLineFeedAfter(_StartPos: Integer): TLineFeed; {$IFDEF SupportsInline} inline; {$ENDIF}
+    function AssertLineFeedAfter(_StartPos: Integer): TLineFeed; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure CheckSlashComment;
     procedure ComplexIfElse(_NTmp: Integer);
     procedure CheckShortLine;

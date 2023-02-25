@@ -41,8 +41,8 @@ type
     function GetExpressionCase: TCase; virtual;
     procedure SetOptions(_Options: TTokenOptions); virtual;
     function GetOptions: TTokenOptions; virtual;
-    procedure AddOption(_Option: TTokenOption);{$IFDEF SupportsInline} inline; {$ENDIF}
-    function HasOption(_Option: TTokenOption): Boolean;{$IFDEF SupportsInline} inline; {$ENDIF}
+    procedure AddOption(_Option: TTokenOption);{$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function HasOption(_Option: TTokenOption): Boolean;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
     function GetForDebug: TGXUnicodeString; virtual;
 
@@ -62,8 +62,8 @@ type
   public
     constructor Create(_OldnSpaces: Integer; _SpacePerIndent: Integer);
     function GetWordType: TWordType; override;
-    procedure SetIndent(_Value: Integer);{$IFDEF SupportsInline} inline; {$ENDIF}
-    procedure IncIndent(_Value: Integer);{$IFDEF SupportsInline} inline; {$ENDIF}
+    procedure SetIndent(_Value: Integer);{$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    procedure IncIndent(_Value: Integer);{$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure GetLength(var _Length: Integer); override;
     function GetReservedType: TReservedType; override;
 

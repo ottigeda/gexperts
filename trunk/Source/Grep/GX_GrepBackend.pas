@@ -614,10 +614,7 @@ end;
 
 {$WARN SYMBOL_PLATFORM OFF}
 
-function IsDirectory(_Attr: Integer): Boolean;
-{$IFDEF SupportsInline}
-inline;
-{$ENDIF}
+function IsDirectory(_Attr: Integer): Boolean;{$IFDEF GX_SupportsInline}inline;{$ENDIF}
 begin
   Result := ((_Attr and faDirectory) <> 0);
 {$IFDEF GX_VER150_up}

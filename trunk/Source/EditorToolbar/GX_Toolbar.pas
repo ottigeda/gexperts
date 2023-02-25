@@ -434,7 +434,7 @@ begin
   EdgeBorders := [AlignToEdgeMap[Self.Align]];
 end;
 
-function SameMethod(_Method1, _Method2: TMouseEvent): Boolean; {$IFDEF SupportsInline}inline;{$ENDIF}
+function SameMethod(_Method1, _Method2: TMouseEvent): Boolean; {$IFDEF GX_SupportsInline}inline;{$ENDIF}
 begin
   Result := (TMethod(_Method1).Code = TMethod(_method2).Code) and (TMethod(_Method1).Data= TMethod(_method2).Data);
 end;

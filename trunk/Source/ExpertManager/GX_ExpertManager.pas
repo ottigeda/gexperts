@@ -7,7 +7,7 @@ interface
 uses
   Windows, SysUtils, Classes, ImgList, ImageList, Controls, Forms, Dialogs,
   Menus, ComCtrls, Actions, ActnList, ToolWin,
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
   u_dzDpiScaleUtils,
 {$ENDIF}
   DropTarget, DropSource,
@@ -109,7 +109,7 @@ type
     procedure SaveSettings;
     function TryGetSelected(out _Item: TListItem): boolean;
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     // FImageScaler descends from TComponents and gets freed automatically
     FImageScaler: TImageListScaler;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
@@ -320,7 +320,7 @@ begin
   RefreshExpertListControl;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmExpertManager.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;

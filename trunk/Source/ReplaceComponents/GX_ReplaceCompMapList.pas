@@ -75,7 +75,7 @@ type
     procedure AddItems(Group: TCompRepMapGroupItem; ItemList: TObjectList);
     procedure LoadItems(ItemList: TObjectList);
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
   public
@@ -108,7 +108,7 @@ begin
   LoadSettings;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmReplaceCompMapList.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;

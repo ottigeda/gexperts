@@ -30,7 +30,7 @@ type
   private
     procedure SetData(_Info: TBrowseClassInfoCollection);
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
 {$ENDIF}
   public
@@ -76,7 +76,7 @@ begin
   edtUnit.Text := _Info.SourceName;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmClassProp.ArrangeControls;
 begin
   inherited;

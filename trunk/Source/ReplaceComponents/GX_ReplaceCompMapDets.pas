@@ -116,7 +116,7 @@ type
     function ConfigurationKey: string;
     procedure SetModified;
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
   public
@@ -164,7 +164,7 @@ begin
   LoadSettings;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmReplaceCompMapDets.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;

@@ -21,7 +21,7 @@ uses
   ExtCtrls,
   Menus,
   Types,
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
   u_dzDpiScaleUtils,
 {$ENDIF}
   GX_Experts,
@@ -56,7 +56,7 @@ type
     procedure AddBookmarks(const _ModuleName: string; _EditView: IOTAEditView; _Bookmarks: TBookmarkList);
     function HasChanged(_NewBookmarks: TBookmarkList): Boolean;
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
 {$ENDIF}
   public
@@ -599,7 +599,7 @@ begin
 end;
 {$ENDIF}
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmGxBookmarksForm.ArrangeControls;
 begin
   inherited;

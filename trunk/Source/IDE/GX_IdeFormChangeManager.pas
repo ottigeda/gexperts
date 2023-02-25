@@ -154,19 +154,19 @@ begin
 
 end;
 
-{$IFDEF SEARCH_PATH_REDRAW_FIX_ENABLED}
+{$IFDEF GX_SEARCH_PATH_REDRAW_FIX_ENABLED}
 
 function HasRedrawProblems(_Form: TCustomForm): Boolean;
 begin
   Result := IsSarchPathForm(_Form) and IsThemingEnabled;
 end;
-{$ELSE ~SEARCH_PATH_REDRAW_FIX_ENABLED}
+{$ELSE ~GX_SEARCH_PATH_REDRAW_FIX_ENABLED}
 
 function HasRedrawProblems(_Form: TCustomForm): Boolean;
 begin
   Result := False;
 end;
-{$ENDIF SEARCH_PATH_REDRAW_FIX_ENABLED}
+{$ENDIF GX_SEARCH_PATH_REDRAW_FIX_ENABLED}
 
 procedure TFormChangeManagerInternal.ProcessActivatedForm(Form: TCustomForm);
 var

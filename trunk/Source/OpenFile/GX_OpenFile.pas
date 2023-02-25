@@ -190,7 +190,7 @@ type
     function GetMapTabVisible: Boolean;
     property CurrentListView: TListView read FCurrentListView write SetCurrentListView;
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
   public
@@ -697,7 +697,7 @@ begin
   InitDpiScaler;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmOpenFile.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;

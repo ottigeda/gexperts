@@ -248,7 +248,7 @@ type
     function GetIdentifierForCurrentSyntaxMode: string;
     procedure SetCurrentSyntaxModeFromIdentifier(const LangIdent: string);
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
   public
@@ -1165,7 +1165,7 @@ begin
   inherited;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmCodeLib.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;

@@ -236,7 +236,7 @@ type
     procedure UpdateListFilter;
     function TryGetClassInfo(out _Info: TBrowseClassInfoCollection): Boolean;
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
   public
@@ -1571,7 +1571,7 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmClassBrowser.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;

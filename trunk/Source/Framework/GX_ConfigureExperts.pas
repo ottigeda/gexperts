@@ -91,7 +91,7 @@ type
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls;
 {$ENDIF}
     procedure Init(_Experts: TList);
@@ -730,7 +730,7 @@ begin
 {$IFOPT D+}SendDebug('done positioning controls');{$ENDIF}
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfrConfigureExperts.ArrangeControls;
 begin
   if Name = 'frmConfigureEditorExperts' then

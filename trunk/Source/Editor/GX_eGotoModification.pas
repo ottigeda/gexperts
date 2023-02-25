@@ -56,7 +56,7 @@ type
   TGotoModificationBaseExpert = class(TEditorExpert)
   private
     FNotifier: Integer;
-{$IFDEF EDITOR_POPUP_MENU_GETS_RECREATED}
+{$IFDEF GX_EDITOR_POPUP_MENU_GETS_RECREATED}
     FOrigPopupEvent: TNotifyEvent;
     procedure InstallPopupHook(_pm: TPopupMenu);
     procedure HandleOnMenuPopup(_Sender: TObject);
@@ -203,7 +203,7 @@ begin
   CreateMenuItem(_EditWindow.GetForm);
 end;
 
-{$IFDEF EDITOR_POPUP_MENU_GETS_RECREATED}
+{$IFDEF GX_EDITOR_POPUP_MENU_GETS_RECREATED}
 
 procedure TGotoModificationBaseExpert.InstallPopupHook(_pm: TPopupMenu);
 begin
@@ -269,7 +269,7 @@ end;
 
 procedure TGotoModificationBaseExpert.CreateMenuItem(_EditForm: TCustomForm);
 
-{$IFNDEF EDITOR_POPUP_MENU_GETS_RECREATED}
+{$IFNDEF GX_EDITOR_POPUP_MENU_GETS_RECREATED}
 
   procedure AppendMenuItem(_pm: TPopupMenu);
   var
@@ -307,7 +307,7 @@ begin
     Exit; //==>
   pm := TPopupMenu(cmp);
 
-{$IFDEF EDITOR_POPUP_MENU_GETS_RECREATED}
+{$IFDEF GX_EDITOR_POPUP_MENU_GETS_RECREATED}
   // Adding an entry to the editor popup menu does not work with Delphi 10.3 and later.
   // The menu seems to be created dynamically and that fails if we add to it.
   InstallPopupHook(pm);

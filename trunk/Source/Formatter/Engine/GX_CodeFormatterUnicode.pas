@@ -13,10 +13,10 @@ function StrLIComp(_Str1: PGXUnicodeChar; const _Str2: string; _MaxLen: Integer)
 function StrLComp(_Str1: PGXUnicodeChar; const _Str2: string; _MaxLen: Integer): Integer; overload;
 
 {$IFNDEF GX_VER200_up}
-function CharInSet(c: TGXUnicodeChar; _Set: TSysCharSet): boolean; overload;{$IFDEF SupportsInline} inline; {$ENDIF}
-function StrLen(_p: PGXUnicodeChar): Integer; overload;{$IFDEF SupportsInline} inline; {$ENDIF}
-procedure SetString(var _s: TGXUnicodeString; _p: PGXUnicodeChar; _Len: integer); overload;{$IFDEF SupportsInline} inline; {$ENDIF}
-function UpCase(_c: TGXUnicodeChar): TGXUnicodeChar; overload;{$IFDEF SupportsInline} inline; {$ENDIF}
+function CharInSet(c: TGXUnicodeChar; _Set: TSysCharSet): boolean; overload;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
+function StrLen(_p: PGXUnicodeChar): Integer; overload;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
+procedure SetString(var _s: TGXUnicodeString; _p: PGXUnicodeChar; _Len: integer); overload;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
+function UpCase(_c: TGXUnicodeChar): TGXUnicodeChar; overload;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
 {$ENDIF GX_VER200_up}
 

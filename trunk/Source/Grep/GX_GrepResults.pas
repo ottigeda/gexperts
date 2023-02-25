@@ -408,7 +408,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure AssignSettingsToForm;
     function ConfigurationKey: string;
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
     procedure ArrangeControls;  override;
 {$ENDIF}
@@ -1868,7 +1868,7 @@ begin
   actViewStayOnTop.Visible := IsStandAlone;
   tbnSep6.Visible := actViewStayOnTop.Visible;
 
-{$IFNDEF ICONS_IN_POPUP_MENUS_ARE_BROKEN}
+{$IFNDEF GX_ICONS_IN_POPUP_MENUS_ARE_BROKEN}
   if not IsStandAlone then
     pmHamburgerMenu.Images := GetSharedImageList;
 {$ENDIF}
@@ -2020,7 +2020,7 @@ begin
 //  Repaint;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmGrepResults.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;
