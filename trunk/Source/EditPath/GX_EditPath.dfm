@@ -9,9 +9,10 @@ inherited f_EditPath: Tf_EditPath
   object spl_Horizontal: TSplitter
     Left = 217
     Top = 0
+    Width = 5
     Height = 316
   end
-  object p_Bottom: TPanel
+  object p_BottomButtons: TPanel
     Left = 0
     Top = 316
     Width = 624
@@ -78,42 +79,42 @@ inherited f_EditPath: Tf_EditPath
       TabOrder = 3
     end
   end
-  object p_Main: TPanel
-    Left = 220
+  object p_Client: TPanel
+    Left = 222
     Top = 0
-    Width = 404
+    Width = 402
     Height = 316
     Align = alClient
     TabOrder = 0
     object spl_Vertical: TSplitter
       Left = 1
-      Top = 213
-      Width = 402
-      Height = 3
+      Top = 211
+      Width = 400
+      Height = 5
       Cursor = crVSplit
       Align = alBottom
     end
-    object p_Memo: TPanel
+    object p_ClientClient: TPanel
       Left = 1
       Top = 1
-      Width = 402
-      Height = 212
+      Width = 400
+      Height = 210
       Align = alClient
       Caption = 'Memo goes here'
       TabOrder = 0
-      object p_Right: TPanel
-        Left = 360
+      object p_RightButtons: TPanel
+        Left = 358
         Top = 17
         Width = 41
-        Height = 194
+        Height = 192
         Align = alRight
         TabOrder = 0
         DesignSize = (
           41
-          194)
+          192)
         object sb_MoveUp: TSpeedButton
           Left = 8
-          Top = 128
+          Top = 126
           Width = 23
           Height = 22
           Action = act_MoveUp
@@ -196,7 +197,7 @@ inherited f_EditPath: Tf_EditPath
         end
         object sb_MoveDown: TSpeedButton
           Left = 8
-          Top = 160
+          Top = 158
           Width = 23
           Height = 22
           Action = act_MoveDown
@@ -291,10 +292,10 @@ inherited f_EditPath: Tf_EditPath
           OnClick = b_FavoritesClick
         end
       end
-      object p_RightCaption: TPanel
+      object p_MemoCaption: TPanel
         Left = 1
         Top = 1
-        Width = 400
+        Width = 398
         Height = 16
         Align = alTop
         TabOrder = 1
@@ -307,27 +308,27 @@ inherited f_EditPath: Tf_EditPath
         end
       end
     end
-    object p_Inherited: TPanel
+    object p_ClientBottom: TPanel
       Left = 1
       Top = 216
-      Width = 402
+      Width = 400
       Height = 99
       Align = alBottom
       TabOrder = 1
       object lb_Inherited: TListBox
         Left = 1
         Top = 17
-        Width = 400
+        Width = 398
         Height = 81
         Align = alClient
         Anchors = [akLeft, akRight, akBottom]
         ItemHeight = 13
         TabOrder = 0
       end
-      object p_RightBottomCaption: TPanel
+      object p_InheritedCaption: TPanel
         Left = 1
         Top = 1
-        Width = 400
+        Width = 398
         Height = 16
         Align = alTop
         TabOrder = 1
@@ -362,7 +363,7 @@ inherited f_EditPath: Tf_EditPath
       TabOrder = 0
       OnClick = lb_TargetClick
     end
-    object p_Top: TPanel
+    object p_TargetCaption: TPanel
       Left = 1
       Top = 1
       Width = 215

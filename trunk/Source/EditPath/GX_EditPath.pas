@@ -43,22 +43,22 @@ type
 
 type
   Tf_EditPath = class(TfmBaseForm)
-    p_Bottom: TPanel;
+    p_BottomButtons: TPanel;
     b_Cancel: TButton;
     b_Ok: TButton;
-    p_Main: TPanel;
-    p_Memo: TPanel;
+    p_Client: TPanel;
+    p_ClientClient: TPanel;
     spl_Vertical: TSplitter;
     p_Left: TPanel;
     lb_Target: TListBox;
-    p_Top: TPanel;
+    p_TargetCaption: TPanel;
     l_Target: TLabel;
     spl_Horizontal: TSplitter;
-    p_Inherited: TPanel;
+    p_ClientBottom: TPanel;
     lb_Inherited: TListBox;
-    p_RightBottomCaption: TPanel;
+    p_InheritedCaption: TPanel;
     l_Inherited: TLabel;
-    p_Right: TPanel;
+    p_RightButtons: TPanel;
     sb_MoveUp: TSpeedButton;
     sb_MoveDown: TSpeedButton;
     TheActionList: TActionList;
@@ -72,7 +72,7 @@ type
     act_MakeAbsolute: TAction;
     act_PrependDots: TAction;
     act_RemoveDots: TAction;
-    p_RightCaption: TPanel;
+    p_MemoCaption: TPanel;
     l_UniitSearchPath: TLabel;
     b_MakeRelative: TButton;
     b_MakeAbsolute: TButton;
@@ -132,7 +132,7 @@ type
     procedure GetSelectedLines(out _StartIdx, _EndIdx: Integer);
     class function TryGetProjectConfigurations(_Configs: TObjectList; out _ActiveIndex: Integer): Boolean;
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
   public
@@ -196,7 +196,7 @@ type
 const
   DCC_UnitSearchPath = 'DCC_UnitSearchPath';
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure Tf_EditPath.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;
@@ -739,6 +739,14 @@ begin
     raise Exception.Create('no project available');
 end;
 
+procedure TPanel_SetBevelEdges(_pnl: TPanel; _Bevels: TBevelEdges);
+begin
+  _pnl.BevelInner := bvNone;
+  _pnl.BevelOuter := bvNone;
+  _pnl.BevelEdges := _Bevels;
+  _pnl.BevelKind := bkSoft;
+end;
+
 constructor Tf_EditPath.Create(_Owner: TComponent);
 var
   ActiveIndex: Integer;
@@ -752,10 +760,16 @@ begin
 
   TControl_SetMinConstraints(Self);
 
-  TPanel_BevelNone([p_Top, p_Memo, p_Bottom, p_Left, p_Right, p_RightBottomCaption, p_RightCaption]);
+  TPanel_BevelNone([p_BottomButtons, p_TargetCaption, p_InheritedCaption, p_MemoCaption, p_RightButtons]);
+
+  // only show bevels where the splitters are
+  TPanel_SetBevelEdges(p_Left, [beRight]);
+  TPanel_SetBevelEdges(p_Client, [beleft]);
+  TPanel_SetBevelEdges(p_ClientBottom, [beTop]);
+  TPanel_SetBevelEdges(p_ClientClient, [bebottom]);
 
   FMemo := TSynMemo.Create(Self);
-  FMemo.Parent := p_Memo;
+  FMemo.Parent := p_ClientClient;
   FMemo.Align := alClient;
   FMemo.HideSelection := False;
   FMemo.WordWrap := False;
