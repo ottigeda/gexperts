@@ -385,6 +385,8 @@ begin
 
   FMessageType := nil;
 
+  TPanel_BevelNone([pnlTop, pnlEditor]);
+
   pgeMessageDialogChange(Self);
   FSettings := Settings;
   LoadEmbedList;
