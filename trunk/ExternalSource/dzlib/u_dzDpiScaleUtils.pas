@@ -46,10 +46,10 @@ type
     FDesignDpi: Integer;
     FCurrentDpi: Integer;
   public
-    procedure Init(_frm: TCustomForm); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure Init(_Frm: TCustomForm); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     procedure Init(_Dpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     procedure Init(_DesignDpi, _CurrentDpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    procedure SetCurrentDpi(_frm: TCustomForm); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure SetCurrentDpi(_Frm: TCustomForm); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     procedure SetCurrentDpi(_Dpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     function Calc(_Value: Integer): Integer; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     function Calc(const _Value: TRect): TRect; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
@@ -80,7 +80,7 @@ type
     FPnlMaster: TPanel;
     procedure AddControls(_Ctrl: TWinControl);
   public
-    constructor Create(_frm: TForm);
+    constructor Create(_Frm: TForm);
     procedure ApplyScale(const _Scaler: TDpiScaler);
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
     function Calc(_Value: Integer): Integer;
@@ -133,7 +133,6 @@ begin
   end;
 end;
 
-
 {$IFDEF DPI_SCALER_LOGGING}
 var
   LogFile: Textfile;
@@ -166,8 +165,8 @@ end;
 
 procedure LogForm(const _Prefix: string; _frm: TForm);
 begin
-  LogFmt('%s: ClientWidth: %d, ClientHeight: %d',
-    [_Prefix, _frm.ClientWidth, _frm.ClientHeight]);
+  LogFmt('%s: Left: %d, Top: %d, Width: %d, Height: %d, ClientWidth: %d, ClientHeight: %d',
+    [_Prefix, _frm.Left, _frm.Top, _frm.Width, _frm.Height, _frm.ClientWidth, _frm.ClientHeight]);
 end;
 
 { TDpiScaler }
@@ -185,10 +184,10 @@ begin
   Result.Bottom := Calc(_Value.Bottom);
 end;
 
-procedure TDpiScaler.Init(_Dpi: Integer);
+procedure TDpiScaler.Init(_DPI: Integer);
 begin
-  FDesignDpi := _Dpi;
-  FCurrentDpi := _Dpi;
+  FDesignDpi := _DPI;
+  FCurrentDpi := _DPI;
 end;
 
 procedure TDpiScaler.Init(_DesignDpi, _CurrentDpi: Integer);
@@ -233,9 +232,9 @@ begin
   Result := MulDiv(100, FCurrentDpi, FDesignDpi);
 end;
 
-procedure TDpiScaler.SetCurrentDpi(_Dpi: Integer);
+procedure TDpiScaler.SetCurrentDpi(_DPI: Integer);
 begin
-  FCurrentDpi := _Dpi;
+  FCurrentDpi := _DPI;
 end;
 
 procedure TDpiScaler.SetCurrentDpi(_frm: TCustomForm);
@@ -383,6 +382,7 @@ begin
   else
     LogFmt('TFormDpiScaler.ApplyDpi(%s, NewDpi: %d, NewBounds: (nil))',
       [FFrm.Name, _NewDpi]);
+  LogForm('  FFrm(before)', FFrm);
 
 // locking redraws seemed like a good idea but had undesireable side effects:
 // https://en.delphipraxis.net/topic/5516-the-state-of-gexperts-support-for-delphi-11/?do=findComment&comment=49633
@@ -409,7 +409,7 @@ begin
       FFrm.ClientWidth := NewWidth;
       FFrm.ClientHeight := NewHeight;
     end;
-    LogForm('  FFrm', FFrm);
+    LogForm('  FFrm(after)', FFrm);
 
     ApplyScale(Scaler);
   finally
@@ -595,7 +595,7 @@ begin
     ScaledMask.SetSize(ScaledWidth, ScaledHeight);
 
     OrigBmpCanvas := OrigBmp.Canvas;
-    OrigBmpHandle :=  OrigBmpCanvas.Handle;
+    OrigBmpHandle := OrigBmpCanvas.Handle;
 
     ScaledBmpCanvas := ScaledBmp.Canvas;
     ScaledMaskCanvas := ScaledMask.Canvas;
@@ -627,7 +627,7 @@ initialization
   InitApiCalls;
 // Uwe Raabe suggested this might help to improve performance on rescaling:
 //  TStyleManager.UseParentPaintBuffers := True;
-// It didn't make any noticable difference though, probably because GExperts doens't use VCL styles.
+// It didn't make any noticable difference though, probably because GExperts doesn't use VCL styles.
 {$IFDEF DPI_SCALER_LOGGING}
   Assignfile(LogFile, 'd:\DpiScaling.log');
   Rewrite(LogFile);
