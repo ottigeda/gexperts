@@ -479,6 +479,7 @@ begin
   FPnlMaster.Height := FClientHeight;
   FPnlMaster.Caption := '';
   FPnlMaster.Name := '';
+  FPnlMaster.BevelOuter := bvNone;
   while FFrm.ControlCount > 1 do begin
     Ctrl := FFrm.Controls[0];
     Assert(Ctrl <> FPnlMaster);
