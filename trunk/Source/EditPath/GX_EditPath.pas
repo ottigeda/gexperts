@@ -801,6 +801,8 @@ begin
   FMinHistoryHeight := p_ClientBottom.Height;
   FMinSearchPathHeight := p_ClientClient.Height;
 
+  InitDpiScaler;
+
   TPanel_BevelNone([p_BottomButtons, p_TargetCaption, p_InheritedCaption, p_MemoCaption, p_RightButtons]);
 
   // only show bevels where the splitters are
@@ -842,8 +844,6 @@ begin
   FFavorites := TStringList.Create;
   TGxIdeSearchPathEnhancer.GetSearchPathFavorites(FFavorites);
   InitFavoritesMenu;
-
-  InitDpiScaler;
 
   Settings := TEditPathExpert.GetSettings;
   CenterForm(Self);
