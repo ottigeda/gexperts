@@ -1026,8 +1026,14 @@ var
   SizeChanged   : Boolean;
   R             : TRect;
   Rect: TRect;
-  w: Integer;
-  h: Integer;
+  OrigLeft: Integer;
+  OrigTop: Integer;
+  OrigWidth: Integer;
+  OrigHeight: Integer;
+  NewLeft: Integer;
+  NewTop: Integer;
+  NewWidth: Integer;
+  NewHeight: Integer;
 begin
   if Section = '' then
     StorageSection := Form.ClassName
@@ -1035,37 +1041,59 @@ begin
     StorageSection := Section;
 
   R := Form.BoundsRect;
-  w := Form.Width;
-  h := Form.Height;
+  OrigLeft := R.Left;
+  OrigTop := R.Top;
+  OrigWidth := R.Right - OrigLeft;
+  OrigHeight := R.Bottom - OrigTop;
+  // we assign NewXxx to OrigXxx which will 1. prevent a compiler warning and 2. save some checks
+  // below
+  NewLeft := OrigLeft;
+  NewTop := OrigTop;
+  NewWidth := OrigWidth;
+  NewHeight := OrigHeight;
+
   PosChanged := False;
   SizeChanged := False;
 
   if (fsPosition in FormSaveFlags) and ValueExists(StorageSection, 'Left') then
   begin
-    R.Left := ReadInteger(StorageSection, 'Left', Form.Left);
-    R.Top := ReadInteger(StorageSection, 'Top', Form.Top);
+    NewLeft := ReadInteger(StorageSection, 'Left', OrigLeft);
+    NewTop := ReadInteger(StorageSection, 'Top', OrigTop);
     PosChanged := True;
   end;
 
   if (fsSize in FormSaveFlags) and ValueExists(StorageSection, 'Width') then
   begin
-    R.Right := R.Left + ReadInteger(StorageSection, 'Width', Form.Width);
-    R.Bottom := R.Top + ReadInteger(StorageSection, 'Height', Form.Height);
+    NewWidth := ReadInteger(StorageSection, 'Width', OrigWidth);
+    NewHeight := ReadInteger(StorageSection, 'Height', OrigHeight);
     SizeChanged := True;
   end;
 
   if PosChanged then begin
-    if not SizeChanged then begin
-      R.Right := R.Left + w;
-      R.Bottom := R.Top + h;
-    end;
+    R.Left := NewLeft;
+    R.Top := NewTop;
+    R.Right := NewLeft + NewWidth;
+    R.Bottom := NewTop + NewHeight;
     TScreen_MakeFullyVisible(R);
     Form.BoundsRect := R;
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+    // Setting the bounds possibly calls WMDpiChanged which will rescale the form
+    // and change the size. So we call it again which will hopefully correct this.
+    Form.BoundsRect := R;
+{$ENDIF}
   end else if SizeChanged then begin
     // center with the given size
     Rect := GetScreenWorkArea(Form);
-    Form.SetBounds(Rect.Left + (Rect.Right - Rect.Left - (R.Right - R.Left)) div 2,
-      Rect.Top + (Rect.Bottom - Rect.Top - (R.Bottom - R.Top)) div 2, R.Right - R.Left, R.Bottom - R.Top);
+    R.Left := Rect.Left + (Rect.Right - Rect.Left - NewWidth) div 2;
+    R.Top := Rect.Top + (Rect.Bottom - Rect.Top - NewHeight) div 2;
+    R.Right := R.Left + NewWidth;
+    R.Bottom := R.Top + NewHeight;
+    Form.BoundsRect := R;
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+    // Setting the bounds possibly calls WMDpiChanged which will rescale the form
+    // and change the size. So we call it again which will hopefully correct this.
+    Form.BoundsRect := R;
+{$ENDIF}
   end else
     CenterForm(Form);
 end;
