@@ -32,7 +32,7 @@ uses
   Themes,
   MultiMon, // this unit doesn't exist in older Delphi versions, use a unit alias like Multimon=Windows in that case
 {$IFDEF HAS_UNIT_SYSTEM_ACTIONS}
-  Actions,
+  System.Actions,
 {$ENDIF}
 {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   UITypes,

@@ -11,9 +11,7 @@ object fmPeInformation: TfmPeInformation
   Font.Name = 'Tahoma'
   Font.Style = []
   Menu = MainMenu
-  OldCreateOrder = True
   OnResize = FormResize
-  PixelsPerInch = 96
   TextHeight = 13
   object pcMain: TPageControl
     Left = 0

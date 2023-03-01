@@ -8,7 +8,7 @@ uses
   Windows, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, GX_PeInfo, ComCtrls, Menus,
   GX_SharedImages,
-  ActnList, ToolWin, StdCtrls, SysUtils, Messages;
+  ActnList, ToolWin, StdCtrls, SysUtils, Messages, System.Actions;
 
 const
   WM_CheckParams = WM_USER + 4711;
