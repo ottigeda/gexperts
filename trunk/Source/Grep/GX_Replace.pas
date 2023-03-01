@@ -2,7 +2,10 @@ unit GX_Replace;
 
 interface
 
-uses SysUtils, Classes, GX_GrepBackend;
+uses
+  SysUtils, Classes,
+  UITypes, // for inlining
+  GX_GrepBackend;
 
 // Replace all matches in all files
 function ReplaceAll(ResultList: TStrings; GrepSettings: TGrepSettings): Integer;
@@ -15,7 +18,7 @@ implementation
 
 uses
   Controls, Dialogs, ToolsAPI,
-  SynRegExpr,
+  GX_RegExpr,
   GX_OtaUtils, GX_GenericUtils, GX_StringList;
 
 type

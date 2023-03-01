@@ -7,6 +7,9 @@ interface
 uses
   Windows, SysUtils, Classes, ImgList, ImageList, Controls, Forms, Dialogs,
   Menus, ComCtrls, Actions, ActnList, ToolWin,
+{$IFDEF IDE_IS_HIDPI_AWARE}
+  u_dzDpiScaleUtils,
+{$ENDIF}
   DropTarget, DropSource,
   GX_Experts, GX_BaseForm;
 
@@ -80,6 +83,13 @@ type
     function ConfirmIfGExperts(const FileName: string): Boolean;
     procedure LoadSettings;
     procedure SaveSettings;
+  protected
+{$IFDEF IDE_IS_HIDPI_AWARE}
+    // FImageScaler descends from TComponents and gets freed automatically
+    FImageScaler: TImageListScaler;
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+    procedure ArrangeControls; override;
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateWithManager(AOwner: TComponent; Manager: TExpertManagerExpert);
@@ -248,9 +258,39 @@ begin
   FFileDrop.ShowImage := True;
   FFileDrop.Register(lvExperts);
 
+  InitDpiScaler;
+
   LoadSettings;
   RefreshExpertListControl;
 end;
+
+{$IFDEF IDE_IS_HIDPI_AWARE}
+procedure TfmExpertManager.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
+  ToolBar.DisabledImages := il;
+
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  ToolBar.Images := il;
+  Actions.Images := il;
+  MainMenu.Images := il;
+
+  if not Assigned(FImageScaler) then
+    FImageScaler := TImageListScaler.Create(Self, ilStateImages);
+  il := FImageScaler.GetScaledList(_NewDpi);
+  lvExperts.StateImages := il;
+  lvExperts.LargeImages := il;
+end;
+
+procedure TfmExpertManager.ArrangeControls;
+begin
+  inherited;
+  TListView_Resize(lvExperts);
+end;
+{$ENDIF}
 
 destructor TfmExpertManager.Destroy;
 begin
@@ -441,19 +481,19 @@ end;
 
 procedure TExpertManagerExpert.Execute;
 var
-  Dlg: TfmExpertManager;
+  frm: TfmExpertManager;
 begin
-  Dlg := TfmExpertManager.CreateWithManager(nil, Self);
+  frm := TfmExpertManager.CreateWithManager(nil, Self);
   try
-    SetFormIcon(Dlg);
-    if Dlg.lvExperts.Items.Count > 0 then
+    SetFormIcon(frm);
+    if frm.lvExperts.Items.Count > 0 then
     begin
-      Dlg.lvExperts.Selected := Dlg.lvExperts.Items[0];
-      Dlg.lvExperts.ItemFocused := Dlg.lvExperts.Items[0];
+      frm.lvExperts.Selected := frm.lvExperts.Items[0];
+      frm.lvExperts.ItemFocused := frm.lvExperts.Items[0];
     end;
-    Dlg.ShowModal;
+    frm.ShowModal;
   finally
-    FreeAndNil(Dlg);
+    FreeAndNil(frm);
   end;
   IncCallCount;
 end;
@@ -757,9 +797,13 @@ begin
 end;
 
 procedure TfmExpertManager.FormShow(Sender: TObject);
+var
+  GxInst : TGExperts;
 begin
   // Works around a bug in Delphi 5 under XP where the menu paints white
-  MainMenu.Images := GetSharedImageList;
+  GxInst := GExpertsInst(False);
+  if Assigned(GxInst) then
+    MainMenu.Images := GxInst.GetSharedImages;
 end;
 
 initialization

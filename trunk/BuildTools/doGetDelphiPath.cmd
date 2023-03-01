@@ -1,4 +1,14 @@
 @rem set the DelphiPath variable for various Delphi versions
+@rem the Delphi version must be passed as parameter in one of
+@rem forms given as labels below.
+@rem They follow the form:
+@rem * <number> for Delphi 6 to 2010
+@rem * XE<number) for Delphi XE1 to XE8
+@rem * Xx<number> for Delphi 10
+@rem * Xx<number+decimal> for Delphi 10.1 (Xx101) to 10.4 (Xx104)
+@rem * Xx<number> for Delphi 11
+@rem There are some alternative forms, but since these are even more inconsistent,
+@rem their use is discouraged.
 
 setlocal
 
@@ -65,9 +75,13 @@ goto DelphiEndCase
   call :ReadReg Embarcadero\BDS\16.0
   goto :DelphiEndCase
 :Delphi10
+:Delphi100
 :DelphiXX10
+:DelphiXX100
 :Delphi10Seattle
+:Delphi100Seattle
 :DelphiXX10Seattle
+:DelphiXX100Seattle
   call :ReadReg Embarcadero\BDS\17.0
   goto :DelphiEndCase
 :Delphi101
@@ -94,9 +108,13 @@ goto DelphiEndCase
 :DelphiXX104Sydney
   call :ReadReg Embarcadero\BDS\21.0
   goto :DelphiEndCase
+:Delphi11
 :Delphi110
-:DelphiXX110
+:Delphi11Alexandria
 :Delphi110Alexandria
+:DelphiXX11
+:DelphiXX110
+:DelphiXX11Alexandria
 :DelphiXX110Alexandria
   call :ReadReg Embarcadero\BDS\22.0
   goto :DelphiEndCase

@@ -13,42 +13,42 @@
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <DCC_DcuOutput>.\dcu\release</DCC_DcuOutput>
         <DCC_DebugInformation>False</DCC_DebugInformation>
-        <DCC_Define>RELEASE;NO_TRANSLATION;NO_TRANSLATION_HINT;OPTIMIZE_DZ_GRAPHIC_UTILS</DCC_Define>
+        <DCC_Define>RELEASE;NO_TRANSLATION;NO_TRANSLATION_HINT;OPTIMIZE_DZ_GRAPHIC_UTILS;UnicodeRE</DCC_Define>
         <DCC_ExeOutput>..\..\Binaries</DCC_ExeOutput>
         <DCC_HppOutput>.\dcu\release</DCC_HppOutput>
-        <DCC_IncludePath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include</DCC_IncludePath>
+        <DCC_IncludePath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include;..\..\externalsource\RegExpr</DCC_IncludePath>
         <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
         <DCC_ObjOutput>.\dcu\release</DCC_ObjOutput>
-        <DCC_ObjPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include</DCC_ObjPath>
-        <DCC_ResourcePath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include</DCC_ResourcePath>
+        <DCC_ObjPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include;..\..\externalsource\RegExpr</DCC_ObjPath>
+        <DCC_ResourcePath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include;..\..\externalsource\RegExpr</DCC_ResourcePath>
         <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
         <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
         <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-        <DCC_UnitAlias>Actions=ActnList;ImageList=ImgList;UITypes=Types</DCC_UnitAlias>
-        <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include</DCC_UnitSearchPath>
+        <DCC_UnitAlias>Actions=ActnList;ImageList=ImgList;UITypes=Types;GX_IdeDockStandAlone=GX_IdeDock;u_dzDpiScaleUtils=u_dzDpiScaleUtilsDummy;SynRegExpr=RegExpr</DCC_UnitAlias>
+        <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include;..\..\externalsource\RegExpr</DCC_UnitSearchPath>
         <Version>7.0</Version>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DCC_DcuOutput>.\dcu\debug</DCC_DcuOutput>
-        <DCC_Define>DEBUG;NO_TRANSLATION;NO_TRANSLATION_HINT;NO_OPTIMIZE_DZ_GRAPHIC_UTILS_HINT</DCC_Define>
+        <DCC_Define>DEBUG;NO_TRANSLATION;NO_TRANSLATION_HINT;NO_OPTIMIZE_DZ_GRAPHIC_UTILS_HINT;UnicodeRE</DCC_Define>
         <DCC_ExeOutput>..\..\Binaries</DCC_ExeOutput>
         <DCC_GenerateStackFrames>True</DCC_GenerateStackFrames>
         <DCC_HppOutput>.\dcu\debug</DCC_HppOutput>
-        <DCC_IncludePath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include</DCC_IncludePath>
+        <DCC_IncludePath>..\..\source\framework;..\..\externalsource;..\..\externalsource\RegExpr;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include</DCC_IncludePath>
         <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
         <DCC_MapFile>3</DCC_MapFile>
         <DCC_ObjOutput>.\dcu\debug</DCC_ObjOutput>
-        <DCC_ObjPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include</DCC_ObjPath>
+        <DCC_ObjPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\RegExpr;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include</DCC_ObjPath>
         <DCC_Optimize>False</DCC_Optimize>
         <DCC_RangeChecking>True</DCC_RangeChecking>
-        <DCC_ResourcePath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include</DCC_ResourcePath>
+        <DCC_ResourcePath>..\..\source\framework;..\..\externalsource;..\..\externalsource\RegExpr;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include</DCC_ResourcePath>
         <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
         <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
         <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-        <DCC_UnitAlias>Actions=ActnList;ImageList=ImgList;UITypes=Types</DCC_UnitAlias>
-        <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include</DCC_UnitSearchPath>
+        <DCC_UnitAlias>Actions=ActnList;ImageList=ImgList;UITypes=Types;GX_IdeDockStandAlone=GX_IdeDock;u_dzDpiScaleUtils=u_dzDpiScaleUtilsDummy;SynRegExpr=RegExpr</DCC_UnitAlias>
+        <DCC_UnitSearchPath>..\..\source\framework;..\..\externalsource;..\..\externalsource\RegExpr;..\..\externalsource\mwParser;..\..\externalsource\abbrevia;..\..\externalsource\UniSynEdit;..\..\externalsource\dzlib;..\..\externalsource\ddetours;..\..\source\Include</DCC_UnitSearchPath>
         <Version>7.0</Version>
     </PropertyGroup>
     <ProjectExtensions>
@@ -263,11 +263,17 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
             <Form>fmConfigureWarning</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_MenusForEditorExpert.pas"/>
+        <DCCReference Include="..\..\Source\EditPath\GX_EditPath.pas">
+            <Form>f_EditPath</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\ExpertManager\GX_ExpertManager.pas">
             <Form>fmExpertManager</Form>
         </DCCReference>
         <DCCReference Include="..\..\Source\Experts\GX_SelectComponents.pas">
             <Form>SelectComponentsForm</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\ExplicitFilter\GX_ExplicitFilterExpert.pas">
+            <Form>fmGxExplicitFilter</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\FavoriteFiles\GX_FavFileProp.pas">
             <Form>fmFavFileProp</Form>
@@ -275,7 +281,9 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\FavoriteFiles\GX_FavFiles.pas">
             <Form>fmFavFiles</Form>
         </DCCReference>
-        <DCCReference Include="..\..\source\FavoriteFiles\GX_FavFolderProp.pas"/>
+        <DCCReference Include="..\..\source\FavoriteFiles\GX_FavFolderProp.pas">
+            <Form>fmFavFolderProperties</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\FavoriteFiles\GX_FavNewFolder.pas">
             <Form>fmFavNewFolder</Form>
         </DCCReference>
@@ -342,10 +350,6 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
             <Form>frConfigureExperts</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="..\..\Source\Framework\GX_ConfigureFormEnhancements.pas">
-            <Form>frConfigureFormEnhancements</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_Consts.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_CustomClipboard.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_DesignerMenu.pas"/>
@@ -353,9 +357,6 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\Framework\GX_EditorChangeServices.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditorEnhancements.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditorFormServices.pas"/>
-        <DCCReference Include="..\..\source\Framework\GX_EditorShortcut.pas">
-            <Form>fmEditorShortcut</Form>
-        </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_EditReader.pas"/>
         <DCCReference Include="..\..\source\framework\GX_EventHook.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_Experts.pas"/>
@@ -398,9 +399,12 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         </DCCReference>
         <DCCReference Include="..\..\source\Grep\GX_GrepBackend.pas"/>
         <DCCReference Include="..\..\source\Grep\GX_GrepExpert.pas"/>
+        <DCCReference Include="..\..\Source\Grep\GX_GrepMenuEntry.pas"/>
+        <DCCReference Include="..\..\Source\Grep\GX_GrepNextItemExpert.pas"/>
         <DCCReference Include="..\..\source\Grep\GX_GrepOptions.pas">
             <Form>fmGrepOptions</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Grep\GX_GrepPrevItemExpert.pas"/>
         <DCCReference Include="..\..\source\Grep\GX_GrepPrinting.pas"/>
         <DCCReference Include="..\..\Source\Grep\GX_GrepProgress.pas">
             <Form>fmGrepProgress</Form>
@@ -467,6 +471,9 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\Source\KeyboardShortcuts\GX_KeyboardShortcuts.pas">
             <Form>fmGxKeyboardShortcuts</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Legacy\GX_PerfectLayout.pas">
+            <Form>fmPerfectLayout</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\MacroLibrary\GX_MacroLibrary.pas">
             <Form>fmMacroLibrary</Form>
         </DCCReference>
@@ -522,6 +529,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\ProjectDependencies\GX_ProjDependProp.pas">
             <Form>fmProjDependProp</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\ProjectOptionSets\GX_CheckListBoxWithHints.pas"/>
         <DCCReference Include="..\..\source\ProjectOptionSets\GX_ProjOptionSets.pas">
             <Form>fmProjOptionSets</Form>
         </DCCReference>
@@ -579,6 +587,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\ToDoList\GX_ToDoOptions.pas">
             <Form>fmToDoOptions</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\UsesExpert\GX_UnitExportList.pas"/>
         <DCCReference Include="..\..\Source\UsesExpert\GX_UsesExpert.pas">
             <Form>fmUsesManager</Form>
         </DCCReference>
@@ -596,6 +605,10 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\Utils\GX_NTAEditServiceNotifier.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_OtaUtils.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_ReadMapFileThread.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_RegExpr.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_ShLwApi.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_StringGridDrawFix.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_StringList.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_TimedCallback.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_VCLFixPack.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas"/>

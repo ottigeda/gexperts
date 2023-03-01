@@ -9,6 +9,28 @@ uses
   Actions, Graphics,
   GX_GenericUtils, GX_StringList, GX_IdeUtils;
 
+// Idea: These functions could be encapsulated as class functions which would reduce the
+// pollution of the namespace and also make for better code completion.
+// and with a short class name that would not mean more typing.
+// E.g.:
+//type
+//  // no T-prefix since this is only a container for class methods
+//  Ota = class
+//    class function GetNativeObject(const AComponent: IOTAComponent): TObject;
+//  end;
+//
+// instead of
+//   x := GxOtaGetNativeObject(bla);
+// we'd type
+//   x := Ota.GetNativeObject(bla);
+// which would even save one character. ;-)
+// It would also improve readability because it's easier to ignore a prefix which
+// is separated by a '.'.
+// On top of that
+//   Ota.TryGetWhatever()
+// is a lot more readable than
+//   GxOtaTryGetWhatever()
+
 // Returns the TObject represented by an IOTAComponent, if possible
 function GxOtaGetNativeObject(const AComponent: IOTAComponent): TObject;
 // Returns the TPersistent represented by an IOTAComponent, if possible
@@ -77,6 +99,9 @@ const
   // (see unit DCCStrs in the ToolsApi directory),
   // but the old names still work so we keep using them until they break or we
   // drop support for older IDEs.
+  // It's more complicated: The old names seem to work for IOTAProjectOptions.Values[], but not for
+  // IOTABuildConfiguration.Values[] and vice versa (tested with Delphi 2007 and 10.2)
+  // -- 2021-11-21 twm
   // 'DCC_BplOutput'
   OPTION_NAME_PKG_DLL_DIR = 'PkgDllDir';
   // 'DCC_ExeOutput'
@@ -114,6 +139,19 @@ const
   cLinux64ARMPlatform = 'Linux64ARM';
   cAndroid64Platform = 'Android64';
 
+const
+  // from ToolsApi\DesignConst.pas
+  sAllConfigurations = 'All configurations';
+  sAllPlatforms = 'All platforms';
+  sPlatform = ' platform';
+  sConfiguration = ' configuration';
+
+///<summary>
+/// Returns the full name of the given platform, e.g.
+/// '32-bit Windows platform' for 'Win32'
+/// for en empty string the result is 'All platforms'
+/// for an unknown platform the result is Platform + ' platform' </summary>
+function GxOtaGetPlatformCaption(const _Platform: string): string;
 
 // returns an IOTAEditReader for the given or the current IOTASourceEditor if none is specified
 function GxOtaGetEditReaderForSourceEditor(SourceEditor: IOTASourceEditor = nil): IOTAEditReader;
@@ -352,6 +390,7 @@ function GxOtaFocusCurrentIDEEditControl: Boolean;
 // Returns reference to currently active project;
 // returns nil if there is no (active) project.
 function GxOtaGetCurrentProject: IOTAProject;
+function GxOtaTryGetCurrentProject(out _Project: IOTAProject): Boolean;
 
 // See if there is an active project
 function GxOtaHaveCurrentProject: Boolean;
@@ -385,7 +424,7 @@ function GxOtaGetProjectOutputDir(Project: IOTAProject): string;
 /// Tries to find the current project's map file
 /// @param MapFile will contain full path name of the map file, only valid if result is true
 /// @returns true, if a current project exists and the map file could be found </summary>
-function GxOtaGetCurrentMapFileName(out MapFile: string): boolean;
+function GxOtaGetCurrentMapFileName(out MapFile: string): Boolean;
 
 // Returns reference to the IDE's project group;
 // returns Nil if there is no project group.
@@ -403,10 +442,22 @@ procedure GxOtaGetProjectFileNames(Project: IOTAProject; Files: TStrings);
 // string is returned.
 function GxOtaGetFileNameOfCurrentModule: string;
 
+///<summary>
+/// Tries to get the options of the given or the active project
+/// @param ProjectOptions will contain the options, only valid if Result is True
+/// @param Project is the project whose options to get, it nil the current project will be used
+/// @returns True, if the options could be retrieved, False otherwise (e.g. if there is no active project) </summary>
+function GxOtaTryGetProjectOptions(out _ProjectOptions: IOTAProjectOptions; _Project: IOTAProject = nil): Boolean;
+
 // Get the IOTAProjectOptions interface for the active project
 function GxOtaGetActiveProjectOptions: IOTAProjectOptions;
-// Get the value of a specific project option for the active project
-function GxOtaGetActiveProjectOption(const Option: string; var Value: Variant): Boolean;
+///<summary>
+/// Tries to get a configuration option from the active configuration of the given project
+/// @param Option is the name of the option to retrieve
+/// @param Value will return the value of the given option, only valid if Result is True
+/// @param Project is the project for which to get the option, if nil the current project will be used
+/// @returns True, if the option could be retrieved, False otherwise (e.g. if there is no active project) </summary>
+function GxOtaTryGetProjectOption(const Option: string; var Value: Variant; _Project: IOTAProject = nil): Boolean;
 // Get the value of a version info keys string
 function GxOtaGetVersionInfoKeysOption(const Option: string; var Value: Variant): Boolean;
 // Get the first value of a list of version info keys strings
@@ -506,6 +557,20 @@ procedure GxOtaGetProjectNamespaces(var DefaultNamespace: string; SearchPath: TS
 ///                         paths removed. </summary>
 procedure GxOtaGetProjectSourcePathStrings(Paths: TStrings;
   Project: IOTAProject = nil; DoProcessing: Boolean = True);
+
+///<summary>
+/// Tries to get the project's unit search path
+/// @param Path is the contents of the unit search path, only valid if Result is True
+/// @param Project is the project whose search path to get, if nil, the current project is used
+/// @returns True, if it could be retrieved, False otherwise (e.g. there is no active project)
+function GxOtaTryGetProjectSearchPath(out _Path: string; _Project: IOTAProject = nil): Boolean;
+///<summary>
+/// Tries to set the project's unit search path
+/// @param Path is the new contents of the unit search path
+/// @param Project is the project whose search path to set, if nil, the current project is used
+/// @returns True, if it could be set, False otherwise (e.g. there is no active project)
+function GxOtaTrySetProjectSearchPath(const _Path: string; _Project: IOTAProject = nil): Boolean;
+
 ///<summary>
 /// Return the global IDE library path (without the project specific paths).
 /// @params if DoProcessing is true, the paths are macro expanded and non-existing
@@ -603,7 +668,7 @@ function GxOtaGetSourceEditor(const FileName: string): IOTASourceEditor;
 
 // Returns a fully qualified name of the current file,
 // which could either be a form or unit (.pas/.cpp/.dfm/.xfm etc.).
-// Returns a blank string if no file is currently selected.
+// Returns an empty string if no file is currently selected.
 function GxOtaGetCurrentSourceFile: string;
 
 // Returns the syntax highlighting enumeration constant that
@@ -663,6 +728,12 @@ function GxOtaGetEditActions: IOTAEditActions;
 // Returns False if there is more than one component selected
 // or if the currently selected component is not the root.
 function GxOtaSelectedComponentIsRoot(const FormEditor: IOTAFormEditor): Boolean;
+
+///<summary>
+/// Retrieves the name of the current selected component on FormEditor.
+/// @returns an emptry string if no or more than 1 component is selected. </summary>
+function GxOtaSelectedComponentName: string;
+
 //  Get the BiDiMode property for a VCL form
 function GxOtaGetFormBiDiMode(Form: IOTAFormEditor): TBiDiMode;
 
@@ -1431,14 +1502,14 @@ begin
   end;
 end;
 
-function GxOtaGetCurrentProject: IOTAProject;
+function GxOtaTryGetCurrentProject(out _Project: IOTAProject): Boolean;
 var
   IProjectGroup: IOTAProjectGroup;
   IModuleServices: IOTAModuleServices;
   IModule: IOTAModule;
   i: Integer;
 begin
-  Result := nil;
+  Result := False;
 
   IProjectGroup := GxOtaGetProjectGroup;
   if not Assigned(IProjectGroup) then
@@ -1450,18 +1521,27 @@ begin
     for i := 0 to IModuleServices.ModuleCount - 1 do
     begin
       IModule := IModuleServices.Modules[i];
-      if Supports(IModule, IOTAProject, Result) then
+      Result := Supports(IModule, IOTAProject, _Project);
+      if Result then
         Break;
     end;
   end;
 
   try
     // This raises exceptions in D5 with .bat projects active
-    if Assigned(IProjectGroup) and (not Assigned(Result)) then
-      Result := IProjectGroup.ActiveProject;
+    if Assigned(IProjectGroup) and (not Result) then begin
+      _Project := IProjectGroup.ActiveProject;
+      Result := True;
+    end;
   except
+    // ignore
+  end; //FI:W501 Empty except block
+end;
+
+function GxOtaGetCurrentProject: IOTAProject;
+begin
+  if not GxOtaTryGetCurrentProject(Result) then
     Result := nil;
-  end;
 end;
 
 function GxOtaHaveCurrentProject: Boolean;
@@ -1733,17 +1813,22 @@ begin
     Result := Module.FileName;
 end;
 
-function GxOtaGetActiveProjectOptions: IOTAProjectOptions;
-var
-  Project: IOTAProject;
+function GxOtaTryGetProjectOptions(out _ProjectOptions: IOTAProjectOptions; _Project: IOTAProject = nil): Boolean;
 begin
-  Result := nil;
-  Project := GxOtaGetCurrentProject;
-  if Assigned(Project) then
-    Result := Project.ProjectOptions;
+  if not Assigned(_Project) then
+    _Project := GxOtaGetCurrentProject;
+  if Assigned(_Project) then
+    _ProjectOptions := _Project.GetProjectOptions;
+  Result := Assigned(_ProjectOptions);
 end;
 
-function GxOtaGetActiveProjectOption(const Option: string; var Value: Variant): Boolean;
+function GxOtaGetActiveProjectOptions: IOTAProjectOptions;
+begin
+  if not GxOtaTryGetProjectOptions(Result) then
+    Result := nil;
+end;
+
+function GxOtaTryGetProjectOption(const Option: string; var Value: Variant; _Project: IOTAProject = nil): Boolean;
 var
   ProjectOptions: IOTAProjectOptions;
 
@@ -1786,8 +1871,7 @@ var
 begin
   Result := False;
   Value := '';
-  ProjectOptions := GxOtaGetActiveProjectOptions;
-  if Assigned(ProjectOptions) then begin
+  if GxOtaTryGetProjectOptions(ProjectOptions, _Project) then begin
     if HandleDelphiXEUpVersionInfo(Option, Value) then begin
       Result := True;
     end else begin
@@ -1848,15 +1932,14 @@ var
 begin
   // This has been changed to support Delphi XE2 and up which stores
   // version information in the configuration sets. Strings can no longer
-  // be simply assigned but needs to be passed into this function to be
+  // be simply assigned but need to be passed into this function to be
   // set.
   Assert(Assigned(Strings));
 
   Result := False;
 
 {$IFDEF GX_VER230_up} // Delphi XE2 and up.
-  ProjectOptions := GxOtaGetActiveProjectOptions;
-  if Assigned(ProjectOptions) then
+  if  GxOtaTryGetProjectOptions(ProjectOptions) then
   begin
     if ProjectOptions.QueryInterface(IOTAProjectOptionsConfigurations, Configurations) = S_OK then
     begin
@@ -1882,7 +1965,7 @@ begin
     end;
   end;
 {$ELSE}
-  if GxOtaGetActiveProjectOption('Keys', KeysValue) then
+  if GxOtaTryGetProjectOption('Keys', KeysValue) then
   begin
     if (not VarIsNull(KeysValue)) and (VarType(KeysValue) = varInteger) then
     begin
@@ -1953,7 +2036,7 @@ begin
     end;
   end;
 {$ELSE}
-  if GxOtaGetActiveProjectOption('Keys', KeysValue) then
+  if GxOtaTryGetProjectOption('Keys', KeysValue) then
   begin
     if (not VarIsNull(KeysValue)) and (VarType(KeysValue) = varInteger) then
     begin
@@ -2063,6 +2146,7 @@ begin
   end;
 end;
 
+{$IFDEF GX_DELPHI8_UP}
 // taken from http://stackoverflow.com/a/10388131/49925
 function UTF8PosToCharIndex(const S: UTF8String; Index: Integer): Integer;
 var
@@ -2095,6 +2179,7 @@ begin
   if Index <> 0 then
     Result:= 0;  // char index not found
 end;
+{$ENDIF}
 
 function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; ByteBased: Boolean): string;
 
@@ -2105,7 +2190,9 @@ function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; Byt
     EditView: IOTAEditView;
     EditPos: TOTAEditPos;
     CharPos: TOTACharPos;
+{$IFDEF GX_DELPHI8_UP}
     IdeString: UTF8String;
+{$ENDIF}
   begin
     Result := '';
     CursorPosition := 0;
@@ -2124,10 +2211,12 @@ function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; Byt
       EditView.ConvertPos(True, EditPos, CharPos);
       CursorLine := CharPos.Line;
       CursorPosition := EditView.CharPosToPos(CharPos);
+{$IFDEF GX_DELPHI8_UP}
       if not ByteBased then begin
         IdeString := ConvertToIDEEditorString(Result);
         CursorPosition := UTF8PosToCharIndex(IdeString, CursorPosition);
       end;
+{$ENDIF}
     end;
   end;
 
@@ -2477,7 +2566,7 @@ begin
   if Assigned(UseView) then
   begin
     Block := UseView.Block;
-    if Assigned(Block) then
+    if Assigned(Block) and (Block.Size > 0) then
     begin
       BlockStart.Col := Block.StartingColumn;
       BlockStart.Line := Block.StartingRow;
@@ -2571,11 +2660,15 @@ end;
 function GxOtaOpenFile(const FileName: string): Boolean;
 var
   ActionServices: IOTAActionServices;
+  hWndSaved: HWND;
 begin
   ActionServices := BorlandIDEServices as IOTAActionServices;
   Assert(Assigned(ActionServices));
 
+  hWndSaved := GetForegroundWindow;
   Result := ActionServices.OpenFile(FileName);
+  if hWndSaved <> 0 then
+    SetForegroundWindow(hWndSaved);
 end;
 
 function GxOtaOpenFileOrForm(const FileName: string): Boolean;
@@ -2954,37 +3047,78 @@ begin
     EnsureStringInList(Strings, IdePathString);
 end;
 
+function GxOtaGetPlatformCaption(const _Platform: string): string;
+begin
+  if _Platform = '' then
+    Result := sAllPlatforms
+  else begin
+    if _Platform = cWin32Platform then
+      Result := '32-bit Windows'
+    else if _Platform = cWin64Platform then
+      Result := '64-bit Windows'
+    else if _Platform = cWinIoT32Platform then
+      Result := '32-bit Windows IoT'
+    else if _Platform = cWinARMPlatform then
+      Result := 'Windows on ARM'
+    else if _Platform = cOSX32Platform then
+      Result := '32-bit OSX'
+    else if _Platform = cOSX64Platform then
+      Result := '64-bit OSX'
+    else if _Platform = cLinux32Platform then
+      Result := '32-bit Linux'
+    else if _Platform = cLinux64Platform then
+      Result := '64-bit Linux'
+    else if _Platform = cLinux32ARMPlatform then
+      Result := '32-bit Linux on ARM'
+    else if _Platform = cLinux64ARMPlatform then
+      Result := '64-bit Linux on ARM'
+    else if _Platform = ciOSSimulatorPlatform then
+      Result := 'iOS Simulator'
+    else if _Platform = ciOSDevice32Platform then
+      Result := '32-bit iOS'
+    else if _Platform = ciOSDevice64Platform then
+      Result := '64-bit iOS'
+    else if _Platform = cAndroidPlatform then
+      Result := '32-bit Android'
+    else if _Platform = cAndroid64Platform then
+      Result := '64-bit Android'
+    else
+      Result := _Platform;
+    Result := Result + sPlatform;
+  end;
+end;
+
 function GxOtaGetProjectPlatform(Project: IOTAProject = nil): string;
 begin
   Result := '';
-{$ifdef GX_VER230_up}
+{$IFDEF GX_VER230_up} // RAD Studio XE 2 (16; BDS 9)
   if Project = nil then
     Project := GxOtaGetCurrentProject;
   if Project <> nil then
     Result := Project.CurrentPlatform;
-{$endif GX_VER230_up}
+{$ENDIF GX_VER230_up}
 end;
 
 function GxOtaGetProjectConfig(Project: IOTAProject = nil): string;
 begin
   Result := '';
-{$ifdef GX_VER230_up}
+{$IFDEF GX_VER230_up} // RAD Studio XE 2 (16; BDS 9)
   if Project = nil then
     Project := GxOtaGetCurrentProject;
   if Project <> nil then
     Result := Project.CurrentConfiguration;
-{$endif GX_VER230_up}
+{$ENDIF GX_VER230_up}
 end;
 
 function GxOtaGetProjectFrameworkType(Project: IOTAProject = nil): string;
 begin
-{$ifdef GX_VER230_up}
+{$IFDEF GX_VER230_up} // RAD Studio XE 2 (16; BDS 9)
   if Project = nil then
     Project := GxOtaGetCurrentProject;
   Result := Project.FrameworkType;
-{$else ~ GX_VER230_up}
+{$ELSE ~ GX_VER230_up}
   Result := '';
-{$endif GX_VER230_up}
+{$ENDIF GX_VER230_up}
 end;
 
 procedure ProcessPaths(Paths: TStrings; const Prefix: string; const PlatformName: string);
@@ -3036,8 +3170,7 @@ begin
       EnsureStringInList(SearchPath, ProjectName);
     end;
     // Then the project search path
-    ProjectOptions := Project.GetProjectOptions;
-    if Assigned(ProjectOptions) then begin
+    if GxOtaTryGetProjectOptions(ProjectOptions, Project) then begin
 
 //      OptionNames := ProjectOptions.GetOptionNames;
 //      for i := Low(OptionNames) to High(OptionNames) - 1 do
@@ -3076,12 +3209,10 @@ begin
     // Add the current project directory first
     Paths.Add(ProjectDir);
     // Then the project search path
-    ProjectOptions := Project.GetProjectOptions;
-    if Assigned(ProjectOptions) then
+    if GxOtaTryGetProjectOptions(ProjectOptions, Project) then
     begin
       IdePathString := ProjectOptions.Values[OPTION_NAME_UNIT_SEARCH_PATH];
       // it is also possible to set the search path using the same property:
-      // ProjectOptions.Values['DCC_UnitSearchPath'] := 'bla;blub';
       SplitIdePath(Paths, IdePathString);
     end;
     if DoProcessing then begin
@@ -3091,6 +3222,26 @@ begin
     for i := 0 to Paths.Count - 1 do begin
       Paths[i] := AddSlash(Paths[i]);
     end;
+  end;
+end;
+
+function GxOtaTryGetProjectSearchPath(out _Path: string; _Project: IOTAProject = nil): Boolean;
+var
+  ProjectOptions: IOTAProjectOptions;
+begin
+  Result := GxOtaTryGetProjectOptions(ProjectOptions, _Project);
+  if Result then begin
+    _Path := ProjectOptions.Values[OPTION_NAME_UNIT_SEARCH_PATH];
+  end;
+end;
+
+function GxOtaTrySetProjectSearchPath(const _Path: string; _Project: IOTAProject = nil): Boolean;
+var
+  ProjectOptions: IOTAProjectOptions;
+begin
+  Result := GxOtaTryGetProjectOptions(ProjectOptions, _Project);
+  if Result then begin
+    ProjectOptions.Values[OPTION_NAME_UNIT_SEARCH_PATH] := _Path;
   end;
 end;
 
@@ -3317,7 +3468,7 @@ var
 begin
   Assert(Assigned(Aliases));
   Aliases.Clear;
-  FoundAliases := GxOtaGetActiveProjectOption(OPTION_NAME_UNIT_ALIASES, VarAliases);
+  FoundAliases := GxOtaTryGetProjectOption(OPTION_NAME_UNIT_ALIASES, VarAliases);
   if FoundAliases then
   begin
     AliasString := VarAliases;
@@ -3484,7 +3635,7 @@ end;
 function GxOtaGetEditorServices: IOTAEditorServices;
 begin
   Result := (BorlandIDEServices as IOTAEditorServices);
-  Assert(Assigned(Result));
+  Assert(Assigned(Result), 'BorlandIDEServices is not assigned');
 end;
 
 procedure GxOtaGetEditorFont(const AFont: TFont; ASizeAdjust: Integer = 0);
@@ -4311,6 +4462,21 @@ begin
   end
 end;
 
+function GxOtaSelectedComponentName: string;
+var
+  FormEditor: IOTAFormEditor;
+  CurrentComponent: IOTAComponent;
+begin
+  Result := '';
+  if GxOtaTryGetCurrentFormEditor(FormEditor) then begin
+    if FormEditor.GetSelCount = 1 then begin
+      CurrentComponent := FormEditor.GetSelComponent(0);
+      if Assigned(CurrentComponent) then
+        Result := GxOtaGetComponentName(CurrentComponent);
+    end;
+  end;
+end;
+
 function GxOtaGetFormBiDiMode(Form: IOTAFormEditor): TBiDiMode;
 var
   FormComponent: IOTAComponent;
@@ -4628,22 +4794,25 @@ procedure GxOtaInsertTextIntoEditorAtCharPos(const Text: string; Position: Longi
   SourceEditor: IOTASourceEditor);
 var
   EditWriter: IOTAEditWriter;
+{$IFDEF GX_DELPHI8_UP}
   Buffer: string;
+{$ENDIF}
   IdeString: UTF8String;
-  UTF8Pos: Integer;
 begin
   if Text = '' then
     Exit;
 
+{$IFDEF GX_DELPHI8_UP}
   // Position is a character position in a (possibly unicode) string
   // the EditWriter needs a byte position in a UTF-8 string (for Delphi >=8)
   // or in an ansistring (for Delphi <8)
   Buffer := GxOtaReadEditorTextToString(GxOtaGetEditReaderForSourceEditor(SourceEditor));
   IdeString := ConvertToIDEEditorString(Buffer);
-  UTF8Pos := CharIndexToUTF8Pos(IdeString, Position);
+  Position := CharIndexToUTF8Pos(IdeString, Position);
+{$ENDIF}
   IdeString :=  ConvertToIDEEditorString(Text);
   EditWriter := GxOtaGetEditWriterForSourceEditor(SourceEditor);
-  EditWriter.CopyTo(UTF8Pos);
+  EditWriter.CopyTo(Position);
   EditWriter.Insert(PAnsiChar(IdeString));
 end;
 
@@ -4740,20 +4909,23 @@ end;
 procedure GxOtaDeleteTextFromPos(StartPos, Count: Longint; SourceEditor: IOTASourceEditor = nil);
 var
   EditWriter: IOTAEditWriter;
+{$IFDEF GX_DELPHI8_UP}
   Buffer: string;
+{$ENDIF}
   IdeString: UTF8String;
-  UTF8Pos: Integer;
 begin
+{$IFDEF GX_DELPHI8_UP}
   // "StartPos" is a character position in a (possibly unicode) string
   // the EditWriter needs a byte position in a UTF-8 string (for Delphi >=8)
   // or in an ansistring (for Delphi <8)
   Buffer := GxOtaReadEditorTextToString(GxOtaGetEditReaderForSourceEditor(SourceEditor));
   IdeString := ConvertToIDEEditorString(Buffer);
-  UTF8Pos := CharIndexToUTF8Pos(IdeString, StartPos);
+  StartPos := CharIndexToUTF8Pos(IdeString, StartPos);
+{$ENDIF}
 
   EditWriter := GxOtaGetEditWriterForSourceEditor(SourceEditor);
-  EditWriter.CopyTo(UTF8Pos);
-  EditWriter.DeleteTo(UTF8Pos + Count);
+  EditWriter.CopyTo(StartPos);
+  EditWriter.DeleteTo(StartPos + Count);
 end;
 
 {$DEFINE GX_WorkAroundFirstCharInLineSelectionBug}
@@ -5042,12 +5214,15 @@ var
   EditView: IOTAEditView;
   CharPos: TOTACharPos;
   EditPos: TOTAEditPos;
+{$IFDEF GX_DELPHI8_UP}
   Buffer: string;
   IdeString: UTF8String;
+{$ENDIF}
 begin
   EditView := GxOtaGetTopMostEditView;
   if Assigned(EditView) then
   begin
+{$IFDEF GX_DELPHI8_UP}
     // Convert Position from character postion in the unicode/ansi string to
     // character position in UTF-8 encoded buffer.
     // todo: This should really be a function as well as the reverse.
@@ -5055,6 +5230,7 @@ begin
       IdeString := ConvertToIDEEditorString(Buffer);
       Position := CharIndexToUTF8Pos(IdeString, Position);
     end;
+{$ENDIF}
     CharPos := GxOtaGetCharPosFromPos(Position - 1, EditView);
     EditView.ConvertPos(False, EditPos, CharPos);
     EditView.CursorPos := EditPos;

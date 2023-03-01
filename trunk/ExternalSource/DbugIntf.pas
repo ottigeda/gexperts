@@ -133,15 +133,20 @@ var
     Inc(ByteIndex);
   end;
 
-  procedure AddStringBytes(Str: string);
+  procedure AddStringBytes(const Str: AnsiString); overload;
   var
-    BPointer: {$IFDEF UNICODE} PByte {$ELSE} PAnsiChar {$ENDIF};
     i: Integer;
   begin
-    BPointer := Pointer(Str);
     for i := 0 to ((Length(Str)) * SizeOf(Char)) - 1 do
-      AddByte(Byte(BPointer[i]));
+      AddByte(Byte(Str[i+1]));
   end;
+
+{$IFDEF UNICODE}
+  procedure AddStringBytes(const Str: string); overload;
+  begin
+    AddStringBytes(AnsiString(Str));
+  end;
+{$ENDIF}
 
 {$IFDEF NEEDMTYPESTR}
 const

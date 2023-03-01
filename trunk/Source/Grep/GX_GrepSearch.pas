@@ -71,7 +71,6 @@ type
     procedure FormShow(Sender: TObject);
     procedure ComboKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormCreate(Sender: TObject);
     procedure btnOptionsClick(Sender: TObject);
     procedure cbGrepCodeClick(Sender: TObject);
     procedure cbGrepStringsClick(Sender: TObject);
@@ -96,6 +95,7 @@ type
     FOriginalWhereGroupWidth: Integer;
     FLoadingSettings: Boolean;
     FTheHintWindow: THintWindow;
+    procedure InitializeForm;
     procedure EnableDirectoryControls(New: Boolean);
     procedure LoadFormSettings;
     procedure SaveFormSettings;
@@ -120,10 +120,9 @@ implementation
 
 uses
   SysUtils, Windows, Messages, Graphics, StrUtils, Menus, Math,
-  SynRegExpr,
   u_dzVclUtils, u_dzOsUtils, u_dzStringUtils,
   GX_GenericUtils, GX_GxUtils, GX_OtaUtils, GX_GrepResults, GX_GrepOptions,
-  GX_TestRegEx;
+  GX_RegExpr, GX_TestRegEx;
 
 { TfmGrepSearch }
 
@@ -148,15 +147,21 @@ var
   UseCurrentIdent: Boolean;
   ExternalEditor: string;
   Params: string;
+  AddToBackground: Boolean;
+  AddToFolders: Boolean;
 begin
-  Assert(Assigned(gblGrepMenuEntryExpert));
+  Assert(Assigned(gblGrepExpert), 'gblGrepExpert not assigned');
   UseCurrentIdent := gblGrepExpert.GrepUseCurrentIdent;
   ExternalEditor := gblGrepExpert.ExternalEditor;
   Params := gblGrepExpert.ExternalEditorParams;
-  if TfmGrepOptions.Execute(UseCurrentIdent, ExternalEditor, Params) then begin
+  AddToBackground := gblGrepExpert.ExplorerAddToBackground;
+  AddToFolders := gblGrepExpert.ExplorerAddToFolders;
+  if TfmGrepOptions.Execute(Self, UseCurrentIdent, ExternalEditor, Params, AddToBackground, AddToFolders) then begin
     gblGrepExpert.GrepUseCurrentIdent := UseCurrentIdent;
     gblGrepExpert.ExternalEditor := ExternalEditor;
     gblGrepExpert.ExternalEditorParams := Params;
+    gblGrepExpert.ExplorerAddToBackground := AddToBackground;
+    gblGrepExpert.ExplorerAddToFolders := AddToFolders;
   end;
 end;
 
@@ -394,6 +399,10 @@ begin
 
   pnlBottom.BevelOuter := bvNone;
 
+  InitDpiScaler;
+
+  InitializeForm;
+
   LoadFormSettings;
   FCheckedWhere := True;
 end;
@@ -407,7 +416,7 @@ begin
     ed_MinDepth.Color := clWindow;
 end;
 
-procedure TfmGrepSearch.FormCreate(Sender: TObject);
+procedure TfmGrepSearch.InitializeForm;
 begin
   FOriginalWidth := Width;
   FOriginalOptionsGroupWidth := gbxOptions.Width;
@@ -517,8 +526,14 @@ procedure TfmGrepSearch.LoadFormSettings;
     Selection: string;
   begin
     Selection := fmGrepResults.ContextSearchText;
-    if Trim(Selection) = '' then
-      Selection := RetrieveEditorBlockSelection;
+    if Trim(Selection) = '' then begin
+      if RunningInsideIDE
+        and (GxOtaGetCurrentEditorAsSourceEditor = nil)
+        and gblGrepExpert.GrepUseCurrentIdent then
+        Selection := GxOtaSelectedComponentName
+      else
+        Selection := RetrieveEditorBlockSelection;
+    end;
     if (Trim(Selection) = '') and gblGrepExpert.GrepUseCurrentIdent then
       try
         Selection := GxOtaGetCurrentIdent;  //if access violation created
