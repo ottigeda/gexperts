@@ -1020,17 +1020,27 @@ end;
   bds.exe              28.0.46141.0937
   dcldb280.bpl         28.0.46141.0937
 
+  Delphi 11.3 (Update 3)
+  File                 File Version
+  delphicoreide280.bpl 28.0.47991.2819
+  coreide280.bpl       28.0.47991.2819
+  bds.exe              28.0.47991.2819
+  dcldb280.bpl         28.0.47991.2819
+
 }
 function GetRS11Version: TBorlandIdeVersion;
 const
   CoreIde2800: TVersionNumber =     (Minor: 28; Major: 0; Build: 6491; Release: 42600);
   CoreIde2800Upd1: TVersionNumber = (Minor: 28; Major: 0; Build: 8973; Release: 44500);
   CoreIde2800Upd2: TVersionNumber = (Minor: 28; Major: 0; Build: 0937; Release: 46141);
+  CoreIde2800Upd3: TVersionNumber = (Minor: 28; Major: 0; Build: 2819; Release: 47991);
 var
   CoreIdeFileVersion: TVersionNumber;
 begin
   CoreIdeFileVersion := GetFileVersionNumber(GetIdeRootDirectory + 'Bin\coreide280.bpl');
-  if CompareVersionNumber(CoreIdeFileVersion, CoreIde2800Upd2) >= 0 then begin
+  if CompareVersionNumber(CoreIdeFileVersion, CoreIde2800Upd3) >= 0 then begin
+    Result := ideRS11U3
+  end else if CompareVersionNumber(CoreIdeFileVersion, CoreIde2800Upd2) >= 0 then begin
     Result := ideRS11U2
   end else if CompareVersionNumber(CoreIdeFileVersion, CoreIde2800Upd1) >= 0 then begin
     Result := ideRS11U1
