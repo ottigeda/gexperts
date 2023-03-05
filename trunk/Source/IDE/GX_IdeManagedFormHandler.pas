@@ -54,7 +54,7 @@ type
     /// Note: It is possible that the form has already been changed, so check this first by
     ///       calling TManagedForm.AlreadyExists! </summary>
     procedure Execute(_Form: TCustomForm);
-    procedure SetCangeEnabled(_Change: TStandardFormChanges; _Status: Boolean);
+    procedure SetChangeEnabled(_Change: TStandardFormChanges; _Status: Boolean);
     ///<summary>
     /// The subset of SupportedChanges that are enabled </summary>
     property EnabledChanges: TStandardFormChangesSet read FEnabledChanges write FEnabledChanges;
@@ -298,7 +298,7 @@ begin
   Result := SameText(_Form.ClassName, FFormClassName);
 end;
 
-procedure TManagedFormHandler.SetCangeEnabled(_Change: TStandardFormChanges; _Status: Boolean);
+procedure TManagedFormHandler.SetChangeEnabled(_Change: TStandardFormChanges; _Status: Boolean);
 begin
   if _Status and (_Change in FSupportedChanges) then begin
     Include(FEnabledChanges, _Change);
