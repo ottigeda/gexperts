@@ -54,6 +54,7 @@ type
     /// Note: It is possible that the form has already been changed, so check this first by
     ///       calling TManagedForm.AlreadyExists! </summary>
     procedure Execute(_Form: TCustomForm);
+    procedure SetCangeEnabled(_Change: TStandardFormChanges; _Status: Boolean);
     ///<summary>
     /// The subset of SupportedChanges that are enabled </summary>
     property EnabledChanges: TStandardFormChangesSet read FEnabledChanges write FEnabledChanges;
@@ -295,6 +296,15 @@ end;
 function TManagedFormHandler.IsDesiredForm(_Form: TCustomForm): Boolean;
 begin
   Result := SameText(_Form.ClassName, FFormClassName);
+end;
+
+procedure TManagedFormHandler.SetCangeEnabled(_Change: TStandardFormChanges; _Status: Boolean);
+begin
+  if _Status and (_Change in FSupportedChanges) then begin
+    Include(FEnabledChanges, _Change);
+  end else begin
+    Exclude(FEnabledChanges, _Change);
+  end;
 end;
 
 function TManagedFormHandler.SupportedChanges: TStandardFormChangesSet;
@@ -570,6 +580,9 @@ begin
   // Delphi 6/7/?: TMainMenu / TPopupMenu -> Menu Designer
   Reg(TManagedFormHandler.Create(
     'TMenuBuilder', 'Menu Designer', [sfcStoreSize, sfcStorePosition]));
+
+  Reg(TManagedFormHandler.Create(
+    'TDebugInspector', 'Debug Inspector', [sfcStoreSize, sfcStorePosition]));
 
   // ** Help menu **
 
