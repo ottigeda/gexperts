@@ -439,6 +439,12 @@ var
   Flags: TFormSaveFlags;
 begin
   Assert(Assigned(FForm));
+
+  if FForm.Parent <> nil then begin
+    // form is docked
+    Exit; //==>
+  end;
+
   Settings := TGExpertsSettings.Create(GetRegistryKey);
   try
     Section := FForm.ClassName;
@@ -1130,13 +1136,20 @@ begin
   Settings := TGExpertsSettings.Create(GetRegistryKey);
   try
     Section := FForm.ClassName;
-    if FFormChanges.RememberSize then begin
-      Settings.WriteInteger(Section, WidthIdent, FForm.Width);
-      Settings.WriteInteger(Section, HeightIdent, FForm.Height);
-    end;
-    if FFormChanges.RememberPosition then begin
-      Settings.WriteInteger(Section, TopIdent, FForm.Top);
-      Settings.WriteInteger(Section, LeftIdent, FForm.Left);
+    if not Assigned(FForm.Parent) then begin
+      // only if the form is not docked
+      if FFormChanges.RememberSize then begin
+        Settings.WriteInteger(Section, WidthIdent, FForm.Width);
+        Settings.WriteInteger(Section, HeightIdent, FForm.Height);
+      end else begin
+        if FFormChanges.RememberWidth then begin
+          Settings.WriteInteger(Section, WidthIdent, FForm.Width);
+        end;
+      end;
+      if FFormChanges.RememberPosition then begin
+        Settings.WriteInteger(Section, TopIdent, FForm.Top);
+        Settings.WriteInteger(Section, LeftIdent, FForm.Left);
+      end;
     end;
     if FFormChanges.RememberSplitterPosition then begin
       Panel := FindSplitPanel;
@@ -1145,8 +1158,6 @@ begin
       else
         Settings.DeleteKey(Section, SplitPosIdent);
     end;
-    if FFormChanges.RememberWidth and (not FFormChanges.RememberSize) then
-      Settings.WriteInteger(Section, WidthIdent, FForm.Width);
   finally
     FreeAndNil(Settings);
   end;
