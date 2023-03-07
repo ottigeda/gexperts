@@ -231,18 +231,22 @@ var
   Handler: TManagedFormHandler;
 begin
   if not Assigned(_Form) then
-    Exit;
+    Exit; //==>
+
+  if csDesigning in _Form.ComponentState then
+    Exit; //==>
+
   ClsName := _Form.ClassName;
-  if (csDesigning in _Form.ComponentState)
-    or StringInArray(ClsName, ['TAppBuilder', 'TMessageForm', 'TPropertyInspector', 'TObjectTreeView', 'TEditWindow']) then
+  if StringInArray(ClsName, ['TAppBuilder', 'TMessageForm', 'TPropertyInspector', 'TObjectTreeView', 'TEditWindow']) then
     Exit;
 
   Handlers := TList.Create;
   try
     TManagedFormHandlerFactory.GetHandlers(_Form, Handlers);
-    for i := 0 to Handlers.Count - 1 do
-    begin
+    for i := 0 to Handlers.Count - 1 do begin
       Handler := TManagedFormHandler(Handlers[i]);
+      Handler.SetChangeEnabled(sfcStorePosition, RememberPosition);
+      Handler.SetChangeEnabled(sfcStoreSize, AllowResize);
       Handler.Execute(_Form);
     end;
   finally
