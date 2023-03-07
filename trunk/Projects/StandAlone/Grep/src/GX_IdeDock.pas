@@ -22,7 +22,7 @@ type
   private
   protected
     FScaler: TFormDpiScaler;
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); virtual;
     procedure ArrangeControls; virtual;
@@ -70,12 +70,12 @@ end;
 procedure TfmIdeDockForm.InitDpiScaler;
 begin
   FScaler := TFormDpiScaler.Create(Self);
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
   ApplyDpi(TScreen_GetDpiForForm(Self), nil);
 {$ENDIF}
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmIdeDockForm.WMDpiChanged(var _Msg: TWMDpi);
 begin
   inherited;
