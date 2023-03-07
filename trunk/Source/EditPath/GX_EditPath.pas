@@ -894,6 +894,7 @@ procedure TEditPathExpert.Execute(Sender: TObject);
 var
   frm: Tf_EditPath;
 begin
+  IncCallCount;
   frm := Tf_EditPath.Create(Application);
   try
     SetFormIcon(frm);
