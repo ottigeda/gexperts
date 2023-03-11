@@ -242,6 +242,8 @@ var
   FormattedBlockStart: string;
   FormattedBlockEnd: string;
 begin
+  XSendDebug('TCodeFormatterExpert.Execute:Entered');
+
   Result := False;
 
   if not GxOtaTryGetCurrentSourceEditor(SourceEditor) then
@@ -260,12 +262,14 @@ begin
       Exit;
     FullText.Text := FullTextStr;
 
+    XSendDebug('TCodeFormatterExpert.Execute:Save Breakpoints and bookmarks');
     Breakpoints := nil;
     Bookmarks := TBookmarkHandler.Create;
     try
       Breakpoints := TBreakpointHandler.Create;
       Breakpoints.SaveItems;
       Bookmarks.SaveItems;
+      XSendDebug('TCodeFormatterExpert.Execute:Determine settings');
       SettingsName := Trim(GetSettingsName(FileName, FullText));
       if SettingsName <> '-' then begin
         if SettingsName <> '' then begin
@@ -280,10 +284,12 @@ begin
         end else
           XSendDebug('Use default settings');
 
+        XSendDebug('TCodeFormatterExpert.Execute:Format selection ?');
         FormatSelection := False;
         if GxOtaGetSelection(GxOtaGetTopMostEditView(SourceEditor), BlockStart, BlockEnd, SelStart, SelLength) then begin
           FormatSelection := (SelLength > 0) and (BlockStart.Line < BlockEnd.Line);
           if FormatSelection then begin
+            XSendDebug('TCodeFormatterExpert.Execute:Prepare to format selection');
             FormattedBlockStart := FORMATTED_BLOCK_START;
             FormattedBlockEnd := FORMATTED_BLOCK_END;
             while Pos(FormattedBlockStart, FullTextStr) <> 0 do
@@ -305,8 +311,10 @@ begin
           end;
         end;
         FullTextStr := ''; // might save some memory
+        XSendDebug('TCodeFormatterExpert.Execute:Executing formatter');
         if FEngine.Execute(FullText) then begin
           if FormatSelection then begin
+            XSendDebug('TCodeFormatterExpert.Execute:Replace selection only');
             FullTextStr := FullText.Text;
             Position := Pos(FormattedBlockEnd, FullTextStr);
             FullTextStr := Copy(FullTextStr, 1, Position - 1);
@@ -316,10 +324,14 @@ begin
               FullTextStr := Copy(FullTextStr, 3);
             GxOtaSelectBlock(SourceEditor, BlockStart, BlockEnd);
             GxOtaReplaceSelection(SourceEditor, 0, FullTextStr);
-          end else
+          end else begin
+            XSendDebug('TCodeFormatterExpert.Execute:Replace full text');
             GxOtaReplaceEditorTextWithUnicodeString(SourceEditor, FullText.Text);
+          end;
+          XSendDebug('TCodeFormatterExpert.Execute:Restore breakpoints and bookmarks');
           Breakpoints.RestoreItems;
           Bookmarks.RestoreItems;
+          XSendDebug('TCodeFormatterExpert.Execute:Force repaints');
           for i := 0 to SourceEditor.EditViewCount - 1 do
             SourceEditor.EditViews[i].Paint;
           ShowGxMessageBox(TCodeFormatterDone);
@@ -327,11 +339,11 @@ begin
         end;
       end else
         XSendDebug('Ignoring request, no settings name available');
+    XSendDebug('TCodeFormatterExpert.Execute:Cleanup');
     finally
       FreeAndNil(Breakpoints);
       FreeAndNil(Bookmarks);
     end;
-
   finally
     FreeAndNil(FullText);
     if Assigned(TempSettings) then begin
@@ -339,6 +351,7 @@ begin
       FEngine.Settings.Settings := OrigSettings;
     end;
   end;
+  XSendDebug('TCodeFormatterExpert.Execute:Done');
 end;
 
 procedure TCodeFormatterExpert.InternalLoadSettings(_Settings: IExpertSettings);
