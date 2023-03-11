@@ -425,6 +425,20 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_OtaUtils, GX_IdeUtils, GX_GrepProgress, GX_GenericUtils;
 
+procedure XSendDebug(const Msg: string);
+begin //FI:W519
+{$IF Declared(SendDebug)}
+  SendDebug('GXGrepBackend: ' + Msg);
+{$IFEND}
+end;
+
+procedure XSendDebugError(const Msg: string);
+begin //FI:W519
+{$IF Declared(SendDebug)}
+  SendDebugError('GXGrepBackend: ' + Msg);
+{$IFEND}
+end;
+
 const
   cIniSubKeyCount = 'Count';
 
@@ -450,7 +464,8 @@ begin
       FFileResult := nil;
 
       if (FGrepSettings.GrepAction = gaOpenFilesGrep) and (not GxOtaIsFileOpen(FileName)) then
-        Exit;
+        Exit; //==>
+
       ExecuteSearchOnFile(FileName, Context, True);
       if IsCpp(FileName) and (FGrepSettings.GrepAction in [gaProjGrep, gaOpenFilesGrep, gaProjGroupGrep]) then
         if GxOtaFileOrModuleExists(ChangeFileExt(FileName, '.h')) then
@@ -459,7 +474,7 @@ begin
     end;
   except
     on E: Exception do
-      {$IFOPT D+} SendDebugError('GrepFile: ' + E.Message); {$ENDIF}
+      XSendDebugError('GrepFile: ' + E.Message);
   end;
 end;
 
@@ -571,7 +586,7 @@ var
   Context: TGrepSearchContext;
 begin
   if IsStandAlone then
-    Exit;
+    Exit; //==>
 
   CurrentFile := GxOtaGetBaseModuleFileName(GxOtaGetCurrentSourceFile);
 
@@ -614,12 +629,13 @@ end;
 
 {$WARN SYMBOL_PLATFORM OFF}
 
-function IsDirectory(_Attr: Integer): Boolean;{$IFDEF GX_SupportsInline}inline;{$ENDIF}
+function IsDirectory(const _Search: TSearchRec): Boolean;{$IFDEF GX_SupportsInline}inline;{$ENDIF}
 begin
-  Result := ((_Attr and faDirectory) <> 0);
+  Result := ((_Search.Attr and faDirectory) <> 0);
 {$IFDEF GX_VER150_up}
-  Result := Result and ((_Attr and faSymLink) = 0);
+  Result := Result and ((_Search.Attr and faSymLink) = 0);
 {$ENDIF}
+  Result := Result and (_Search.Name <> '.') and (_Search.Name <> '..')
 end;
 
 procedure TGrepSearchRunner.GrepDirectory(Dir, Mask: string; _Depth: integer);
@@ -633,10 +649,13 @@ var
   SearchFile: string;
   Context: TGrepSearchContext;
 begin
-  {$IFOPT D+}SendDebug('DirGrep on: ' + Dir + '; Mask: ' + ReplaceStr(Mask, #13, ';')); {$ENDIF}
+  XSendDebug('DirGrep on: ' + Dir + '; Mask: ' + ReplaceStr(Mask, #13, ';'));
   Dir := AddSlash(Dir);
-  if not DirectoryExists(Dir) then
-    raise Exception.CreateFmt(SSpecifiedDirectoryDoesNotExist, [Dir]);
+
+  if not DirectoryExists(Dir) then begin
+    FExceptionList.Add(Format(SSpecifiedDirectoryDoesNotExist, [Dir]));
+    Exit; //==>
+  end;
 
   Masks := TStringList.Create;
   try
@@ -654,12 +673,12 @@ begin
       StartDirectorySearch(Dir);
       try
         while Result = 0 do begin
-          if IsDirectory(Search.Attr) and (Search.Name <> '.') and (Search.Name <> '..') then begin
+          if IsDirectory(Search) then begin
             if not Assigned(FExcludedDirsRegEx) or (not FExcludedDirsRegEx.Exec(Search.Name)) then
               GrepDirectory(Dir + Search.Name, Mask, _Depth + 1);
           end;
           if FAbortSignalled then
-            Exit;
+            Exit; //==>
           Result := FindNext(Search);
         end;
       finally
@@ -723,7 +742,7 @@ begin
     begin
       if GxOtaFileOrModuleExists(FFilesInResults[i]) then
       begin
-        {$IFOPT D+} SendDebug('ResultsGrep on ' + FFilesInResults[i]); {$ENDIF}
+        XSendDebug('ResultsGrep on ' + FFilesInResults[i]);
         ExecuteSearchOnFile(FFilesInResults[i], Context);
       end;
     end;
@@ -893,8 +912,9 @@ begin
         if ContextString = '' then
           FExceptionList.Add(Format('Exception %s while searching "%s"; Message %s', [E.ClassName, FileName, E.Message]))
         else
-          FExceptionList.Add(Format('Exception %s while searching "%s" in context "%s"; Message %s', [E.ClassName, FileName, ContextString, E.Message]));
-        if not (E is EGXFileNotFound) then
+          FExceptionList.Add(Format('Exception %s while searching "%s" in context "%s"; Message %s',
+            [E.ClassName, FileName, ContextString, E.Message]));
+        if not (E is EGXFileNotFound) and not (e is EFOpenError) then
           if mrAbort = MessageDlg(E.Message + #13#10 + 'Do you want to continue?', mtError, [mbYes, mbAbort], 0) then
             Abort;
       end;
