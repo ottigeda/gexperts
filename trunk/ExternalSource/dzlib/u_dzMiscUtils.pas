@@ -222,16 +222,6 @@ procedure NotImplemented;
 implementation
 
 uses
-{$IFDEF debug}
-{$IFNDEF console}
-  Controls,
-  Dialogs,
-  FileCtrl,
-{$IFDEF HAS_UNIT_SYSTEM_UITYPES}
-  System.UITypes,
-{$ENDIF}
-{$ENDIF}
-{$ENDIF}
   StrUtils,
   u_dzFileUtils,
   u_dzStringUtils,
