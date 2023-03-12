@@ -44,9 +44,6 @@ uses
   u_dzTypes,
   u_dzVersionInfo;
 
-var
-  WM_WINDOW_PROC_HOOK_HELPER: Word = 0; // initialized on startup using RegisterWindowMessage
-
 type
   ///<summary> Ancestor to all exceptions raised in this unit. </summary>
   EdzVclUtils = class(EdzException);
@@ -1567,6 +1564,10 @@ procedure TButton_AddDropdownMenu(_btn: TCustomButton; _pm: TPopupMenu);
 ///<summary>
 /// Appends a new menu item with the given Caption to the popup menu and returns it </summary>
 function TPopupMenu_AppendMenuItem(_pm: TPopupMenu; const _Caption: string; _OnClick: TNotifyEvent): TMenuItem; overload;
+
+///<summary>
+/// Appends a new menu item with the given Caption to the popup menu and returns it </summary>
+function TPopupMenu_AppendMenuItem(_pm: TPopupMenu; const _Caption: string): TMenuItem; overload;
 
 ///<summary>
 /// Appends a new menu item with the given Action to the popup menu and returns it </summary>
@@ -4458,6 +4459,12 @@ function TForm_GetMonitor(_frm: TForm): TMonitor;
 var
   Center: TPoint;
 begin
+   // Workaround for a bug in the VCL:
+   // This calls TCustomForm.GetMonitor which updates Screen.Monitors if the monitor configuration
+   // has changed.
+   // https://blog.dummzeuch.de/2023/02/19/when-screen-monitorx-workarearect-contains-garbage/
+  _frm.Monitor;
+
   Center.X := _frm.Left + _frm.Width div 2;
   Center.Y := _frm.Top + _frm.Height div 2;
   Result := TScreen_MonitorFromPoint(Center);
@@ -4467,11 +4474,16 @@ procedure TForm_CenterOn(_frm: TForm; _Center: TPoint);
 var
   Monitor: TMonitor;
 begin
+   // Workaround for a bug in the VCL:
+   // This calls TCustomForm.GetMonitor which updates Screen.Monitors if the monitor configuration
+   // has changed.
+   // https://blog.dummzeuch.de/2023/02/19/when-screen-monitorx-workarearect-contains-garbage/
+  _frm.Monitor;
+
   _frm.Position := poDesigned;
   _frm.DefaultMonitor := dmDesktop;
   _frm.Left := _Center.X - _frm.Width div 2;
   _frm.Top := _Center.Y - _frm.Height div 2;
-
   Monitor := TScreen_MonitorFromPoint(_Center);
   TMonitor_MakeFullyVisible(Monitor, _frm);
 end;
@@ -5488,6 +5500,11 @@ begin
   Result.Caption := _Caption;
   Result.OnClick := _OnClick;
   _pm.Items.Add(Result);
+end;
+
+function TPopupMenu_AppendMenuItem(_pm: TPopupMenu; const _Caption: string): TMenuItem; overload;
+begin
+  Result := TPopupMenu_AppendMenuItem(_pm, _Caption, TNotifyEvent(nil));
 end;
 
 function TPopupMenu_AppendMenuItem(_pm: TPopupMenu; _Action: TBasicAction): TMenuItem;
@@ -7261,10 +7278,70 @@ begin
     TTrackBar_VerticalAddLabels(_trk)
 end;
 
-procedure InitializeCustomMessages;
+{$IFDEF DELPHI2007}
+type
+  TScreenMonitorCacheFix = class(TWindowProcHook)
+  private
+    procedure HandleActiveFormChangedOnce(_Sender: TObject);
+    class function TryInitialize: Boolean; static;
+  protected
+    procedure NewWindowProc(var _Msg: TMessage); override;
+  public
+    class procedure Initialize;
+  end;
+
+{ TScreenMontorCacheFix }
+
+procedure TScreenMonitorCacheFix.NewWindowProc(var _Msg: TMessage);
+var
+  mf: TForm;
 begin
-  WM_WINDOW_PROC_HOOK_HELPER := RegisterWindowMessage('WM_WINDOW_PROC_HOOK_HELPER');
+  if _Msg.Msg = WM_SETTINGCHANGE then begin
+    if _Msg.wParam = SPI_SETWORKAREA then begin
+      if Assigned(Application) then begin
+        mf := Application.MainForm;
+        if Assigned(mf) then
+          mf.Monitor;
+      end;
+    end;
+  end;
+
+  inherited;
 end;
+
+procedure TScreenMonitorCacheFix.HandleActiveFormChangedOnce(_Sender: TObject);
+begin
+  // we must not access self here as this event handler is assigned without instantiating the class
+  if TryInitialize then begin
+    Screen.OnActiveFormChange := nil;
+  end;
+end;
+
+class function TScreenMonitorCacheFix.TryInitialize: Boolean;
+var
+  mf: TForm;
+begin
+  Result := False;
+  if Assigned(Application) then begin
+    mf := Application.MainForm;
+    if Assigned(mf) then begin
+      TScreenMonitorCacheFix.Create(mf);
+      Result := True;
+    end;
+  end;
+end;
+
+class procedure TScreenMonitorCacheFix.Initialize;
+var
+  DummyInstance: TScreenMonitorCacheFix;
+begin
+  if not TryInitialize then begin
+    Assert(Assigned(Screen), 'Programmer error: Screen is not yet assigned');
+    DummyInstance := nil;
+    Screen.OnActiveFormChange := DummyInstance.HandleActiveFormChangedOnce;
+  end;
+end;
+{$ENDIF}
 
 type
   TCenterWindowThread = class(TNamedThread)
@@ -7378,7 +7455,9 @@ end;
 {$ENDIF}
 
 initialization
-  InitializeCustomMessages;
+{$IFDEF DELPHI2007}
+  TScreenMonitorCacheFix.Initialize;
+{$ENDIF}
 finalization
   FreeAndNil(gblCheckListBoxHelper);
 end.
