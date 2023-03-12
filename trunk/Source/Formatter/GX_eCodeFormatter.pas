@@ -95,7 +95,7 @@ end;
 
 procedure TeCodeFormatterExpert.Execute(Sender: TObject);
 begin
-  SendDebug('TeCodeFormatterExpert.Execute');
+{$IFOPT D+}SendDebug('TeCodeFormatterExpert.Execute');{$ENDIF}
   if FExpert.Execute then
     IncCallCount;
 end;
