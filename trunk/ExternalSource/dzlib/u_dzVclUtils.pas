@@ -5503,8 +5503,10 @@ begin
 end;
 
 function TPopupMenu_AppendMenuItem(_pm: TPopupMenu; const _Caption: string): TMenuItem; overload;
+const
+  NilEvent: TMethod = (code: nil; data: nil);
 begin
-  Result := TPopupMenu_AppendMenuItem(_pm, _Caption, TNotifyEvent(nil));
+  Result := TPopupMenu_AppendMenuItem(_pm, _Caption, TNotifyEvent(NilEvent));
 end;
 
 function TPopupMenu_AppendMenuItem(_pm: TPopupMenu; _Action: TBasicAction): TMenuItem;
