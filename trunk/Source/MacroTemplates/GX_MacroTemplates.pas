@@ -1272,7 +1272,7 @@ begin
     MacroFound := False;
 {$ENDIF}
     repeat
-      if not EditMacroObject(NewMacro) then
+      if not TfmMacroTemplateEdit.Execute(NewMacro) then
         Break;
       MacroFound := (FMacroFile.IndexOf(NewMacro.Name) > -1);
       if MacroFound then
@@ -1304,7 +1304,7 @@ begin
   MacroObject := TMacroObject(lvTemplates.Items[MacroIdx].Data);
   if MacroObject = nil then
     Exit;
-  if EditMacroObject(MacroObject) then begin
+  if TfmMacroTemplateEdit.Execute(MacroObject) then begin
     UpdateMacroListValues(MacroIdx, MacroObject);
     MarkModified;
   end;

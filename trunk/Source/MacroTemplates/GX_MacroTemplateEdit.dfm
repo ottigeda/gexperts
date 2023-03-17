@@ -3,8 +3,8 @@ object fmMacroTemplateEdit: TfmMacroTemplateEdit
   Top = 371
   BorderStyle = bsDialog
   Caption = 'Macro Template'
-  ClientHeight = 172
-  ClientWidth = 466
+  ClientHeight = 193
+  ClientWidth = 329
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -16,8 +16,8 @@ object fmMacroTemplateEdit: TfmMacroTemplateEdit
   PixelsPerInch = 96
   TextHeight = 14
   object lblName: TLabel
-    Left = 38
-    Top = 15
+    Left = 8
+    Top = 8
     Width = 84
     Height = 14
     Alignment = taRightJustify
@@ -25,8 +25,8 @@ object fmMacroTemplateEdit: TfmMacroTemplateEdit
     FocusControl = edtName
   end
   object lblDescription: TLabel
-    Left = 62
-    Top = 44
+    Left = 8
+    Top = 56
     Width = 60
     Height = 14
     Alignment = taRightJustify
@@ -34,8 +34,8 @@ object fmMacroTemplateEdit: TfmMacroTemplateEdit
     FocusControl = edtDescription
   end
   object lblShortcut: TLabel
-    Left = 74
-    Top = 76
+    Left = 168
+    Top = 104
     Width = 48
     Height = 14
     Alignment = taRightJustify
@@ -43,8 +43,8 @@ object fmMacroTemplateEdit: TfmMacroTemplateEdit
     FocusControl = edtShortCut
   end
   object lblInsertPos: TLabel
-    Left = 44
-    Top = 108
+    Left = 8
+    Top = 104
     Width = 78
     Height = 14
     Alignment = taRightJustify
@@ -52,23 +52,23 @@ object fmMacroTemplateEdit: TfmMacroTemplateEdit
     FocusControl = cbxInsertPos
   end
   object edtName: TEdit
-    Left = 132
-    Top = 11
-    Width = 135
+    Left = 8
+    Top = 24
+    Width = 153
     Height = 22
     TabOrder = 0
   end
   object edtDescription: TEdit
-    Left = 132
-    Top = 40
-    Width = 309
+    Left = 8
+    Top = 72
+    Width = 313
     Height = 22
     TabOrder = 1
   end
   object btnOK: TButton
-    Left = 154
-    Top = 138
-    Width = 70
+    Left = 168
+    Top = 160
+    Width = 75
     Height = 25
     Caption = 'OK'
     Default = True
@@ -76,9 +76,9 @@ object fmMacroTemplateEdit: TfmMacroTemplateEdit
     OnClick = btnOKClick
   end
   object btnCancel: TButton
-    Left = 242
-    Top = 138
-    Width = 70
+    Left = 248
+    Top = 160
+    Width = 75
     Height = 25
     Cancel = True
     Caption = 'Cancel'
@@ -86,26 +86,26 @@ object fmMacroTemplateEdit: TfmMacroTemplateEdit
     TabOrder = 5
   end
   object cbxInsertPos: TComboBox
-    Left = 132
-    Top = 104
-    Width = 135
+    Left = 8
+    Top = 120
+    Width = 153
     Height = 22
     Style = csDropDownList
     ItemHeight = 14
-    TabOrder = 3
+    TabOrder = 2
     Items.Strings = (
       'Cursor Position'
       'Beginning of File'
       'Beginning of Line')
   end
   object edtShortCut: THotKey
-    Left = 132
-    Top = 72
-    Width = 135
+    Left = 168
+    Top = 120
+    Width = 153
     Height = 22
     HotKey = 32833
     InvalidKeys = [hcNone, hcShift]
     Modifiers = [hkAlt]
-    TabOrder = 2
+    TabOrder = 3
   end
 end

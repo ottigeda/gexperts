@@ -26,12 +26,12 @@ type
     cbxInsertPos: TComboBox;
     edtShortCut: THotKey;
     procedure btnOKClick(Sender: TObject);
+    procedure GetData(_MacroObject: TMacroObject);
+    procedure SetData(_MacroObject: TMacroObject);
   public
+    class function Execute(_MacroObject: TMacroObject): Boolean; static;
     constructor Create(_Owner: TComponent); override;
   end;
-
-function GetMacroTemplate(var VMacroTemplate: TMacroTemplate): Boolean;
-function EditMacroObject(AMacroObject: TMacroObject): Boolean;
 
 implementation
 
@@ -40,64 +40,44 @@ implementation
 uses
   u_dzVclUtils;
 
-function GetMacroTemplate(var VMacroTemplate: TMacroTemplate): Boolean;
-var
-  frm :TfmMacroTemplateEdit;
-begin
-  Result := False;
-  frm := TfmMacroTemplateEdit.Create(Application);
-  try
-    frm.edtName.Text := VMacroTemplate.Name;
-    frm.edtDescription.Text := VMacroTemplate.Description;
-    frm.edtShortCut.HotKey := VMacroTemplate.ShortCut;
-    frm.cbxInsertPos.ItemIndex := Ord(VMacroTemplate.InsertPos);
-    frm.ShowModal;
-    if frm.ModalResult = mrOk then
-    begin
-      Result := True;
-      VMacroTemplate.Name := frm.edtName.Text;
-      VMacroTemplate.Description := frm.edtDescription.Text;
-      VMacroTemplate.ShortCut := frm.edtShortCut.HotKey;
-      VMacroTemplate.InsertPos := TTemplateInsertPos(frm.cbxInsertPos.ItemIndex);
-    end;
-  finally
-    FreeAndNil(frm);
-  end;
-end;
-
-function EditMacroObject(AMacroObject: TMacroObject): Boolean;
-var
-  frm :TfmMacroTemplateEdit;
-begin
-  Result := False;
-  frm := TfmMacroTemplateEdit.Create(Application);
-  try
-    frm.Text := AMacroObject.Name;
-    frm.Text := AMacroObject.Desc;
-    frm.edtShortCut.HotKey := AMacroObject.ShortCut;
-    frm.cbxInsertPos.ItemIndex := Ord(AMacroObject.InsertPos);
-
-    frm.ShowModal;
-    if frm.ModalResult = mrOk then
-    begin
-      Result := True;
-      AMacroObject.Name := frm.edtName.Text;
-      AMacroObject.Desc := frm.edtDescription.Text;
-      AMacroObject.ShortCut := frm.edtShortCut.HotKey;
-      AMacroObject.InsertPos := TTemplateInsertPos(frm.cbxInsertPos.ItemIndex);
-    end;
-  finally
-    FreeAndNil(frm);
-  end;
-end;
-
 { TfmMacroTemplateEdit }
+
+class function TfmMacroTemplateEdit.Execute(_MacroObject: TMacroObject): Boolean;
+var
+  frm: TfmMacroTemplateEdit;
+begin
+  frm := TfmMacroTemplateEdit.Create(Application);
+  try
+    frm.SetData(_MacroObject);
+    Result := (frm.ShowModal = mrOk);
+    if Result then
+      frm.GetData(_MacroObject);
+  finally
+    FreeAndNil(frm);
+  end;
+end;
 
 constructor TfmMacroTemplateEdit.Create(_Owner: TComponent);
 begin
   inherited;
 
   InitDpiScaler;
+end;
+
+procedure TfmMacroTemplateEdit.GetData(_MacroObject: TMacroObject);
+begin
+  _MacroObject.Name := edtName.Text;
+  _MacroObject.Desc := edtDescription.Text;
+  _MacroObject.ShortCut := edtShortCut.HotKey;
+  _MacroObject.InsertPos := TTemplateInsertPos(cbxInsertPos.ItemIndex);
+end;
+
+procedure TfmMacroTemplateEdit.SetData(_MacroObject: TMacroObject);
+begin
+  edtName.Text := _MacroObject.Name;
+  edtDescription.Text := _MacroObject.Desc;
+  edtShortCut.HotKey := _MacroObject.ShortCut;
+  cbxInsertPos.ItemIndex := Ord(_MacroObject.InsertPos);
 end;
 
 procedure TfmMacroTemplateEdit.btnOKClick(Sender: TObject);
