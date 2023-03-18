@@ -51,7 +51,7 @@ end;
 
 class function TfmAboutExperimental.GetVersionStr: string;
 begin
-  Result := inherited GetVersionStr + ' experimental';
+  Result := inherited GetVersionStr;
 end;
 
 class function TfmAboutExperimental.DoAddToAboutDialog: Integer;

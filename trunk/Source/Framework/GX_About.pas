@@ -189,7 +189,11 @@ begin
     Result := Format('%d.%d.%d build %d', [Version.Major, Version.Minor, Version.Release, Version.Build])
   else
     Result := SUnknown;
+{$IFOPT D+}
+  Result := SVersion + ' ' + Result + ' - Debug';
+{$ELSE}
   Result := SVersion + ' ' + Result;
+{$ENDIF}
 end;
 
 {$IFOPT D+}

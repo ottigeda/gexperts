@@ -61,10 +61,10 @@ object fmAbout: TfmAbout
   object lblErik: TLabel
     Left = 368
     Top = 91
-    Width = 189
+    Width = 85
     Height = 14
     Cursor = crHandPoint
-    Caption = 'Erik Berry <eberry@gexperts.org>'
+    Caption = 'Thomas Mueller'
     OnClick = btnEmailClick
   end
   object lblWebSite: TLabel
@@ -161,6 +161,7 @@ object fmAbout: TfmAbout
     Ctl3D = False
     Lines.Strings = (
       'ArentJan Banck'
+      'Erik Berry'
       'Jim Campbell'
       'Primoz Gabrijelcic'
       'Ulrich Gerhardt'
@@ -172,7 +173,6 @@ object fmAbout: TfmAbout
       'Per-Eric Larsson'
       'Piotr Likus'
       'Ray Lischner'
-      'Thomas Mueller'
       'Gerald Nunn'
       'Alex Petrov'
       'Puthoon'
