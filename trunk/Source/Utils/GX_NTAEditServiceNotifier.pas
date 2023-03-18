@@ -5,7 +5,7 @@ unit GX_NTAEditServiceNotifier;
 interface
 
 uses
-  Classes, ToolsAPI, DockForm;
+  Classes, ToolsAPI, DockForm, GX_Logging;
 
 {$IFDEF GX_VER160_up}
 
@@ -14,6 +14,8 @@ type
   /// This is a dummy implementation of INTAEditServicesNotifier that does nothing.
   /// Descendants override some methods to get the notifications they are interested in. </summary>
   TGxNTAEditServiceNotifier = class(TNotifierObject)
+  private
+    Logger: IGxLogger;
   protected // INTAEditServicesNotifier
     procedure WindowShow(const EditWindow: INTAEditWindow; Show, LoadedFromDesktop: Boolean); virtual;
     procedure WindowNotification(const EditWindow: INTAEditWindow; Operation: TOperation); virtual;
@@ -31,6 +33,8 @@ type
     procedure Destroyed; virtual;
     procedure Modified; virtual;
 {$ENDIF}
+   public
+     constructor Create;
   end;
 {$ENDIF}
 
@@ -45,93 +49,81 @@ uses
 
 { TGxNTAEditServiceNotifier }
 
+constructor TGxNTAEditServiceNotifier.Create;
+begin
+  inherited Create;
+  Logger := CreateModuleLogger('TGxNTAEditServiceNotifier');
+end;
+
 {$IFOPT D+}
 procedure TGxNTAEditServiceNotifier.AfterSave;
 begin
-  SendDebug('AfterSave');
+  Logger.Info('AfterSave');
 end;
 
 procedure TGxNTAEditServiceNotifier.BeforeSave;
 begin
-  SendDebug('BeforeSave');
+  Logger.Info('BeforeSave');
 end;
 
 procedure TGxNTAEditServiceNotifier.Destroyed;
 begin
-  SendDebug('Destroyed');
+  Logger.Info('Destroyed');
 end;
 
 procedure TGxNTAEditServiceNotifier.Modified;
 begin
-  SendDebug('Modified');
+   Logger.Info('Modified');
 end;
 {$ENDIF}
 
 
 procedure TGxNTAEditServiceNotifier.DockFormRefresh(const EditWindow: INTAEditWindow; DockForm: TDockableForm);
 begin
-{$IFOPT D+}
-  SendDebugFmt('DockFormRefresh(%s, %s)', [EditWindow.Form.Caption, DockForm.Caption]);
-{$ENDIF}
+  Logger.InfoFmt('DockFormRefresh(%s, %s)', [EditWindow.Form.Caption, DockForm.Caption]);
 end;
 
 procedure TGxNTAEditServiceNotifier.DockFormUpdated(const EditWindow: INTAEditWindow; DockForm: TDockableForm);
 begin
-{$IFOPT D+}
-  SendDebugFmt('DockFormUpdated(%s, %s)', [EditWindow.Form.Caption, DockForm.Caption]);
-{$ENDIF}
+  Logger.InfoFmt('DockFormUpdated(%s, %s)', [EditWindow.Form.Caption, DockForm.Caption]);
 end;
 
 procedure TGxNTAEditServiceNotifier.DockFormVisibleChanged(const EditWindow: INTAEditWindow; DockForm: TDockableForm);
 begin
-{$IFOPT D+}
-  SendDebugFmt('DockFormVisibleChanged(%s, %s)', [EditWindow.Form.Caption, DockForm.Caption]);
-{$ENDIF}
+  Logger.InfoFmt('DockFormVisibleChanged(%s, %s)', [EditWindow.Form.Caption, DockForm.Caption]);
 end;
 
 procedure TGxNTAEditServiceNotifier.EditorViewActivated(const EditWindow: INTAEditWindow; const EditView: IOTAEditView);
 begin
-{$IFOPT D+}
-  SendDebugFmt('EditorViewActivated(%s)', [EditWindow.Form.Caption]);
-{$ENDIF}
+  Logger.InfoFmt('EditorViewActivated(%s)', [EditWindow.Form.Caption]);
 end;
 
 procedure TGxNTAEditServiceNotifier.EditorViewModified(const EditWindow: INTAEditWindow; const EditView: IOTAEditView);
 begin
-{$IFOPT D+}
-  SendDebugFmt('EditorViewModified(%s)', [EditWindow.Form.Caption]);
-{$ENDIF}
+  Logger.InfoFmt('EditorViewModified(%s)', [EditWindow.Form.Caption]);
 end;
 
 procedure TGxNTAEditServiceNotifier.WindowActivated(const EditWindow: INTAEditWindow);
 begin
-{$IFOPT D+}
-  SendDebugFmt('WindowActivated(%s)', [EditWindow.Form.Caption]);
-{$ENDIF}
+  Logger.InfoFmt('WindowActivated(%s)', [EditWindow.Form.Caption]);
 end;
 
 procedure TGxNTAEditServiceNotifier.WindowCommand(const EditWindow: INTAEditWindow;
   Command, Param: Integer; var Handled: Boolean);
 begin
-{$IFOPT D+}
-  SendDebugFmt('WindowActivated(%s, %d, %d)', [EditWindow.Form.Caption, Command, Param]);
-{$ENDIF}
+  Logger.InfoFmt('WindowActivated(%s, %d, %d)', [EditWindow.Form.Caption, Command, Param]);
 end;
 
 procedure TGxNTAEditServiceNotifier.WindowNotification(const EditWindow: INTAEditWindow;
   Operation: TOperation);
 begin
-{$IFOPT D+}
-  SendDebugFmt('WindowNotification(%s, %d)', [EditWindow.Form.Caption, Ord(Operation)]);
-{$ENDIF}
+  Logger.InfoFmt('WindowNotification(%s, %d)', [EditWindow.Form.Caption, Ord(Operation)]);
 end;
 
 procedure TGxNTAEditServiceNotifier.WindowShow(const EditWindow: INTAEditWindow; Show,
   LoadedFromDesktop: Boolean);
 begin
-{$IFOPT D+}
-  SendDebugFmt('WindowShow(%s)', [EditWindow.Form.Caption]);
-{$ENDIF}
+  Logger.InfoFmt('WindowShow(%s)', [EditWindow.Form.Caption]);
 end;
 {$ENDIF}
 

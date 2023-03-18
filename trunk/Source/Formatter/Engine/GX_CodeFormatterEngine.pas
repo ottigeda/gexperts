@@ -14,6 +14,7 @@ uses
   Classes,
   GX_GenericUtils,
   GX_StringList,
+  GX_Logging,
   GX_CodeFormatterTokenList,
   GX_CodeFormatterTypes,
   GX_CodeFormatterTokens,
@@ -22,6 +23,7 @@ uses
 type
   TCodeFormatterEngine = class(TObject)
   private
+    Logger: IGxLogger;
     FSettings: TCodeFormatterSettings;
     function GetLine(_Tokens: TPascalTokenList; var _TokenNo: Integer): TGXUnicodeString;
   public
@@ -42,12 +44,15 @@ uses
 constructor TCodeFormatterEngine.Create;
 begin
   inherited;
+
   FSettings := TCodeFormatterSettings.Create;
+  Logger := CreateModuleLogger('Formatter');
 end;
 
 destructor TCodeFormatterEngine.Destroy;
 begin
   FreeAndNil(FSettings);
+
   inherited;
 end;
 
@@ -59,36 +64,48 @@ var
   Tokens: TPascalTokenList;
   NewSource: TGXUnicodeString;
 begin
+  Logger.MethodEnter('TCodeFormatterEngine.Execute', [_SourceCode.Count]);
+  _SourceCode.BeginUpdate;
   try
-    _SourceCode.BeginUpdate;
-    OrigSource := _SourceCode.Text;
-
-    Tokens := TCodeFormatterParser.Execute(_SourceCode, FSettings);
     try
-      TCodeFormatterFormatter.Execute(Tokens, FSettings);
+      OrigSource := _SourceCode.Text;
 
-      _SourceCode.Clear;
-      if Assigned(Tokens) then begin
-        TokenNo := 0;
-        while TokenNo < Tokens.Count do begin
-          Line := GetLine(Tokens, TokenNo);
-          _SourceCode.Add(Line);
+//      Logger.Info('Calling TCodeFormatterParser.Execute');
+      Tokens := TCodeFormatterParser.Execute(_SourceCode, FSettings);
+      try
+//        Logger.Info('Calling TCodeFormatterFormatter.Execute');
+        TCodeFormatterFormatter.Execute(Tokens, FSettings);
+
+//        Logger.Info('Calling _SourceCode.Clear');
+        _SourceCode.Clear;
+        if Assigned(Tokens) then begin
+//          Logger.InfoFmt('processing %d tokens', [Tokens.Count]);
+          TokenNo := 0;
+          while TokenNo < Tokens.Count do begin
+//            Logger.Info('Calling GetLine');
+            Line := GetLine(Tokens, TokenNo);
+//            Logger.Info('Adding line to sourcecode');
+            _SourceCode.Add(Line);
+          end;
+        end else begin
+//          Logger.Info('Tokens not assigned');
         end;
+      finally
+        Tokens.Free;
       end;
-    finally
-      Tokens.Free;
-    end;
 
-    NewSource := _SourceCode.Text;
-    Result := SourceDifferentApartFromTrailingLineBreak(OrigSource, NewSource);
-  except
-    on E: Exception do begin
-      Result := False;
-      { ShowMessage('Error occurred, cannot format'); }
+      NewSource := _SourceCode.Text;
+      Result := SourceDifferentApartFromTrailingLineBreak(OrigSource, NewSource);
+    except
+      on E: Exception do begin
+        Logger.Error(E.ClassName + ': ' + E.Message);
+        Result := False;
+      end;
     end;
+  finally
+    _SourceCode.EndUpdate;
   end;
 
-  _SourceCode.EndUpdate;
 end;
 
 function TCodeFormatterEngine.GetLine(_Tokens: TPascalTokenList; var _TokenNo: Integer): TGXUnicodeString;
@@ -111,7 +128,7 @@ begin
     Inc(_TokenNo);
 
     if _TokenNo >= _Tokens.Count then
-      break;
+      Break;
 
     Token := _Tokens[_TokenNo];
   until Token.ReservedType = rtLineFeed;
@@ -125,5 +142,4 @@ begin
 end;
 
 end.
-
 
