@@ -1,12 +1,19 @@
 unit GX_Logging;
 
+{$I GX_CondDefine.inc}
+
+{$IFOPT D+}
+{$DEFINE GX_LOGGING}
+{$ENDIF}
+{$DEFINE GX_LOGGING}
+
 interface
 
 uses
   Windows,
   SysUtils,
   Classes,
-  Dialogs;  // We need "Dialogs" for TMsgDlgType
+  Dialogs; // We need "Dialogs" for TMsgDlgType
 
 type
   ///<summary>
@@ -21,9 +28,10 @@ type
     procedure WarningFmt(const Msg: string; const Args: array of const);
     procedure Clear;
     procedure SendInteger(const Identifier: string; const Value: Integer);
-    procedure MethodEnter(const MethodName: string);
-    procedure MethodEnterFmt(const MethodName: string; const Args: array of const);
-    procedure MethodExit(const MethodName: string);
+    ///<summary>
+    /// @returns an interface which will automatically add a method exit entry when it goes out of scope </summary>
+    function MethodEnter(const MethodName: string): IInterface; overload;
+    function MethodEnter(const MethodName: string; const Args: array of const): IInterface; overload;
     procedure Indent;
     procedure UnIndent;
     procedure Separator;
@@ -49,25 +57,6 @@ uses
 
 type
   ///<summary>
-  /// prefixes all messages with the module name given in the constructor </summary>
-  TGxModuleLogger = class(TInterfacedObject, IGxLogger)
-  private
-    FModule: string;
-    function GetTheLogger: IGxLogger;
-    property TheLogger: IGxLogger read GetTheLogger implements IGxLogger;
-  protected
-    procedure doSend(const Msg: string; MType: TMsgDlgType);
-  public
-    constructor Create(const _Module: string);
-  end;
-
-function CreateModuleLogger(const _Module: string): IGxLogger;
-begin
-  Result := TGxModuleLogger.Create(_Module);
-end;
-
-type
-  ///<summary>
   /// Implements most methods with the exception of actually sending data or starting the GExperts
   /// Debug window </summary>
   TGxBaseLogger = class(TInterfacedObject)
@@ -88,15 +77,44 @@ type
     procedure Warning(const Msg: string);
     procedure WarningFmt(const Msg: string; const Args: array of const);
     procedure Clear;
-    procedure MethodEnter(const MethodName: string);
-    procedure MethodEnterFmt(const MethodName: string; const Args: array of const);
-    procedure MethodExit(const MethodName: string);
+    ///<summary>
+    /// @returns an interface which will automatically add a method exit entry when it goes out of scope </summary>
+    function MethodEnter(const MethodName: string): IInterface; overload;
+    function MethodEnter(const MethodName: string; const Args: array of const): IInterface; overload;
     procedure Indent;
     procedure UnIndent;
     procedure Separator;
     procedure SendFmtEx(const Msg: string; const Args: array of const; MType: TMsgDlgType);
     procedure Pause;
     procedure Resume;
+  end;
+
+type
+  ///<summary>
+  /// prefixes all messages with the module name given in the constructor </summary>
+  TGxModuleLogger = class(TGxBaseLogger, IGxLogger)
+  private
+    FModule: string;
+  protected
+    procedure doSend(const Msg: string; MType: TMsgDlgType); override;
+  public
+    constructor Create(const _Module: string);
+  end;
+
+function CreateModuleLogger(const _Module: string): IGxLogger;
+begin
+  Result := TGxModuleLogger.Create(_Module);
+end;
+
+
+type
+  TGXMethodExitIntfImplementer = class(TInterfacedObject, IInterface)
+  private
+    FLogger: TGxBaseLogger;
+    FMethodName: string;
+  public
+    constructor Create(_Logger: TGxBaseLogger; const _MethodName: string);
+    destructor Destroy; override;
   end;
 
 // This needs to be a threadvar since otherwise the class is not thread safe.
@@ -173,26 +191,36 @@ begin
   doSend(Format('%s = %d', [Identifier, Value]), mtInformation);
 end;
 
-procedure TGxBaseLogger.MethodEnter(const MethodName: string);
+function TGxBaseLogger.MethodEnter(const MethodName: string): IInterface;
 begin
   doSend('Entering ' + MethodName, mtInformation);
   Indent;
+  Result := TGXMethodExitIntfImplementer.Create(Self, MethodName);
 end;
 
-procedure TGxBaseLogger.MethodEnterFmt(const MethodName: string; const Args: array of const);
+function TGxBaseLogger.MethodEnter(const MethodName: string; const Args: array of const): IInterface;
 var
   s: string;
 begin
   s := ArrayOfConst2String(Args);
   if s <> '' then
     s := '(' + s + ')';
-  MethodEnter(MethodName + s);
+  doSend('Entering ' + MethodName + s, mtInformation);
+  Indent;
+  Result := TGXMethodExitIntfImplementer.Create(Self, MethodName);
 end;
 
-procedure TGxBaseLogger.MethodExit(const MethodName: string);
+constructor TGXMethodExitIntfImplementer.Create(_Logger: TGxBaseLogger; const _MethodName: string);
 begin
-  UnIndent;
-  doSend('Exiting ' + MethodName, mtInformation);
+  inherited Create;
+  FMethodName := _MethodName;
+  FLogger := _Logger;
+end;
+
+destructor TGXMethodExitIntfImplementer.Destroy;
+begin
+  FLogger.UnIndent;
+  FLogger.Info('Leaving ' + FMethodName);
 end;
 
 procedure TGxBaseLogger.Pause;
@@ -395,17 +423,12 @@ end;
 
 procedure TGxModuleLogger.doSend(const Msg: string; MType: TMsgDlgType);
 begin
-  TheLogger.doSend(FModule + ': ' + Msg, MType);
-end;
-
-function TGxModuleLogger.GetTheLogger: IGxLogger;
-begin
-  Result := Logger;
+  Logger.doSend(FModule + ': ' + Msg, MType);
 end;
 
 initialization
 
-{$IFOPT D+}
+{$IFDEF GX_LOGGING}
   Logger := TGxActualLogger.Create;
 {$ELSE}
   Logger := TGxNullLogger.Create;
