@@ -42,8 +42,6 @@ implementation
 
 uses
   Menus,
-{$IFOPT D+}GX_DbugIntf,
-{$ENDIF}
   GX_IdeUtils,
   GX_GExperts,
   GX_About,
@@ -95,7 +93,6 @@ end;
 
 procedure TeCodeFormatterExpert.Execute(Sender: TObject);
 begin
-{$IFOPT D+}SendDebug('TeCodeFormatterExpert.Execute');{$ENDIF}
   if FExpert.Execute then
     IncCallCount;
 end;
