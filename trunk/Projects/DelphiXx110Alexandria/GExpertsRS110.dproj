@@ -697,6 +697,7 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Framework\GX_VerDepConst.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas"/>
         <DCCReference Include="..\..\source\BackupProject\GX_Zipper.pas"/>
+        <DCCReference Include="..\..\source\framework\GX_Logging.pas"/>
         <RcCompile Include="..\..\images\GXIcons.rc">
             <Form>GXIcons.res</Form>
         </RcCompile>

@@ -29,7 +29,7 @@ type
     procedure GetData(_MacroObject: TMacroObject);
     procedure SetData(_MacroObject: TMacroObject);
   public
-    class function Execute(_MacroObject: TMacroObject): Boolean; static;
+    class function Execute(_MacroObject: TMacroObject): Boolean;
     constructor Create(_Owner: TComponent); override;
   end;
 

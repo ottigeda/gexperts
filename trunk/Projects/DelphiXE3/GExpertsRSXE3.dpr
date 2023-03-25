@@ -167,6 +167,7 @@ uses
   GX_KeyboardShortcuts in '..\..\Source\KeyboardShortcuts\GX_KeyboardShortcuts.pas' {fmGxKeyboardShortcuts},
   GX_KibitzComp in '..\..\source\Framework\GX_KibitzComp.pas',
   GX_LibrarySource in '..\..\source\Framework\GX_LibrarySource.pas',
+  GX_Logging in '..\..\Source\Framework\GX_Logging.pas',
   GX_MacroExpandNotifier in '..\..\source\MacroTemplates\GX_MacroExpandNotifier.pas',
   GX_MacroFile in '..\..\source\MacroTemplates\GX_MacroFile.pas',
   GX_MacroLibrary in '..\..\source\MacroLibrary\GX_MacroLibrary.pas' {fmMacroLibrary},

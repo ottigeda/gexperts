@@ -379,6 +379,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\Framework\GX_KbdShortCutBroker.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_KibitzComp.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_LibrarySource.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_Logging.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_MacroParser.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_MenuActions.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_MessageBox.pas">
