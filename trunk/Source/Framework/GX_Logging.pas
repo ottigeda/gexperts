@@ -103,11 +103,6 @@ type
     constructor Create(const _Module: string);
   end;
 
-function CreateModuleLogger(const _Module: string): IGxLogger;
-begin
-  Result := TGxModuleLogger.Create(_Module);
-end;
-
 type
   TGXMethodExitIntfImplementer = class(TInterfacedObject, IInterface)
   private
@@ -124,7 +119,6 @@ threadvar
 
 const
   chrStringCommand: AnsiChar = {$IFDEF UNICODE}#4{$ELSE}#1{$ENDIF};
-  chrSQLCommand: AnsiChar = #2; // Old, unused type
   chrClearCommand: AnsiChar = #3;
   chrNull: AnsiChar = #0;
 
@@ -430,6 +424,16 @@ end;
 procedure TGxModuleLogger.doSend(const Msg: string; MType: TMsgDlgType);
 begin
   Logger.doSend(FModule + ': ' + Msg, MType);
+end;
+
+function CreateModuleLogger(const _Module: string): IGxLogger;
+begin
+{$IFDEF GX_LOGGING}
+  Result := TGxModuleLogger.Create(_Module);
+{$ELSE}
+  // if logging is turned off, return the global TGxNullLogger instance
+  Result := Logger;
+{$ENDIF}
 end;
 
 initialization
