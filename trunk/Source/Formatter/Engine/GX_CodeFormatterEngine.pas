@@ -70,21 +70,15 @@ begin
     try
       OrigSource := _SourceCode.Text;
 
-//      Logger.Info('Calling TCodeFormatterParser.Execute');
       Tokens := TCodeFormatterParser.Execute(_SourceCode, FSettings);
       try
-//        Logger.Info('Calling TCodeFormatterFormatter.Execute');
         TCodeFormatterFormatter.Execute(Tokens, FSettings);
 
-//        Logger.Info('Calling _SourceCode.Clear');
         _SourceCode.Clear;
         if Assigned(Tokens) then begin
-//          Logger.InfoFmt('processing %d tokens', [Tokens.Count]);
           TokenNo := 0;
           while TokenNo < Tokens.Count do begin
-//            Logger.Info('Calling GetLine');
             Line := GetLine(Tokens, TokenNo);
-//            Logger.Info('Adding line to sourcecode');
             _SourceCode.Add(Line);
           end;
         end else begin
@@ -98,7 +92,7 @@ begin
       Result := SourceDifferentApartFromTrailingLineBreak(OrigSource, NewSource);
     except
       on E: Exception do begin
-        Logger.Error(E.ClassName + ': ' + E.Message);
+        Logger.Exception(E);
         Result := False;
       end;
     end;
@@ -142,4 +136,3 @@ begin
 end;
 
 end.
-
