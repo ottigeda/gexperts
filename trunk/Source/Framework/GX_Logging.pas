@@ -5,7 +5,7 @@ unit GX_Logging;
 {$IFOPT D+}
 {$DEFINE GX_LOGGING}
 {$ENDIF}
-{$DEFINE GX_LOGGING}
+{.$DEFINE GX_LOGGING}
 
 interface
 
@@ -24,6 +24,7 @@ type
     procedure doSend(const Msg: string; MType: TMsgDlgType);
     procedure Error(const Msg: string);
     procedure ErrorFmt(const Msg: string; const Args: array of const);
+    procedure Exception(_e: Exception);
     procedure Warning(const Msg: string);
     procedure WarningFmt(const Msg: string; const Args: array of const);
     procedure Clear;
@@ -74,6 +75,7 @@ type
     procedure InfoFmt(const Msg: string; const Args: array of const);
     procedure Error(const Msg: string);
     procedure ErrorFmt(const Msg: string; const Args: array of const);
+    procedure Exception(_e: Exception);
     procedure Warning(const Msg: string);
     procedure WarningFmt(const Msg: string; const Args: array of const);
     procedure Clear;
@@ -105,7 +107,6 @@ function CreateModuleLogger(const _Module: string): IGxLogger;
 begin
   Result := TGxModuleLogger.Create(_Module);
 end;
-
 
 type
   TGXMethodExitIntfImplementer = class(TInterfacedObject, IInterface)
@@ -169,6 +170,11 @@ end;
 procedure TGxBaseLogger.ErrorFmt(const Msg: string; const Args: array of const);
 begin
   doSendFmt(Msg, Args, mtError);
+end;
+
+procedure TGxBaseLogger.Exception(_e: Exception);
+begin
+  Error(_e.ClassName + ': ' + _e.Message);
 end;
 
 procedure TGxBaseLogger.InfoFmt(const Msg: string; const Args: array of const);
@@ -436,4 +442,3 @@ initialization
 finalization
   Logger := nil;
 end.
-

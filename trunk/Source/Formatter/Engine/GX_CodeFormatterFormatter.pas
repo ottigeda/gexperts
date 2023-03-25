@@ -7,6 +7,18 @@ unit GX_CodeFormatterFormatter;
 
 {$I GX_CondDefine.inc}
 
+{$IFDEF GX_AV_IN_CODE_FORMATTER_FIX_ENABLED}
+// This is a workaround for bug #314 Random operation of Formatter
+// (https://sourceforge.net/p/gexperts/bugs/314/)
+// The Delphi 11 compiler seems to have a bug that causes the code in the last while loop of
+// of TCodeFormatterFormatter.doExecute to sometimes raise an access violation.
+// On my computer I have only seen this happen once. On the computer of Ian (who created
+// the bug report) it happens frequently, but not always.
+// We have not been able to reliably reproduce the problem nor found the conditions which causes it.
+// Turning optimization off solved the issue for him.
+{$OPTIMIZATION OFF}
+{$ENDIF}
+
 // This unit uses Assert(False, 'some text') for trace logging (for the line numbers)
 // Therefore we must turn off Assertions by default.
 {$C-}
@@ -198,7 +210,6 @@ begin
   Result := TryGetNextNoComment(_StartPos, _Token, Offset);
 end;
 
-
 function TCodeFormatterFormatter.DetectGenericStart(_TokenIdx: Integer): Boolean;
 var
   Next: TPascalToken;
@@ -298,7 +309,6 @@ function TCodeFormatterFormatter.IsRType(_Token: TPascalToken;
 begin
   Result := Assigned(_Token) and (_Token.ReservedType in _rTypeSet);
 end;
-
 
 procedure TCodeFormatterFormatter.AdjustSpacing(_CurrentToken, _PrevToken: TPascalToken; _TokenIdx: Integer);
 var
@@ -1284,7 +1294,7 @@ begin
             if FSettings.FeedEachUnitBeforeComma then begin
               // linefeed before comma
               if (not (FPrevToken is TLineFeed)) then begin
-                LFeed := AssertLineFeedAfter(FTokenIdx-1);
+                LFeed := AssertLineFeedAfter(FTokenIdx - 1);
                 if (FSettings.NoIndentUsesComma) then
                   LFeed.SetIndent(0);
 
@@ -1715,7 +1725,7 @@ begin
                 SetPrevLineIndent(-1);
             end else if (FSettings.FeedEachUnit and FSettings.FeedEachUnitBeforeComma) then begin
               // if we break before the comma, also break before the semicolon
-              LFeed := AssertLineFeedAfter(FTokenIdx-1);
+              LFeed := AssertLineFeedAfter(FTokenIdx - 1);
               if (FSettings.NoIndentUsesComma) then
                 LFeed.SetIndent(0);
             end;
