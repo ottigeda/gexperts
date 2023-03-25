@@ -240,6 +240,7 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$IFNDEF GX_DELPHI_12_UP}
     // we hope this gets fixed in Delphi 12 and later ...
     {$DEFINE GX_WRONG_BUTTON_PARENTS_IN_PATH_EDIT_FIX_ENABLED}
+    {$DEFINE GX_AV_IN_CODE_FORMATTER_FIX_ENABLED}
   {$ENDIF}
 {$ENDIF}
 {.$DEFINE GX_IDE_IS_HIDPI_AWARE}
