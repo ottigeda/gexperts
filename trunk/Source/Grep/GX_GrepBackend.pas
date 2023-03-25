@@ -422,21 +422,17 @@ implementation
 uses
   Forms, Dialogs, Controls, DateUtils, StrUtils, Math,
   u_dzClassUtils, u_dzMapFileReader, u_dzStringUtils,
-  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
+  GX_Logging,
   GX_OtaUtils, GX_IdeUtils, GX_GrepProgress, GX_GenericUtils;
 
-procedure XSendDebug(const Msg: string);
-begin //FI:W519
-{$IF Declared(SendDebug)}
-  SendDebug('GXGrepBackend: ' + Msg);
-{$IFEND}
-end;
+var
+  TheModuleLogger: IGxLogger = nil;
 
-procedure XSendDebugError(const Msg: string);
-begin //FI:W519
-{$IF Declared(SendDebug)}
-  SendDebugError('GXGrepBackend: ' + Msg);
-{$IFEND}
+function Logger: IGxLogger;
+begin
+  if not Assigned(TheModuleLogger) then
+    TheModuleLogger := CreateModuleLogger('GrepBackend');
+  Result := TheModuleLogger;
 end;
 
 const
@@ -474,7 +470,7 @@ begin
     end;
   except
     on E: Exception do
-      XSendDebugError('GrepFile: ' + E.Message);
+      Logger.Error('GrepFile: ' + E.Message);
   end;
 end;
 
@@ -649,7 +645,7 @@ var
   SearchFile: string;
   Context: TGrepSearchContext;
 begin
-  XSendDebug('DirGrep on: ' + Dir + '; Mask: ' + ReplaceStr(Mask, #13, ';'));
+  Logger.Info('DirGrep on: ' + Dir + '; Mask: ' + ReplaceStr(Mask, #13, ';'));
   Dir := AddSlash(Dir);
 
   if not DirectoryExists(Dir) then begin
@@ -742,7 +738,7 @@ begin
     begin
       if GxOtaFileOrModuleExists(FFilesInResults[i]) then
       begin
-        XSendDebug('ResultsGrep on ' + FFilesInResults[i]);
+        Logger.Info('ResultsGrep on ' + FFilesInResults[i]);
         ExecuteSearchOnFile(FFilesInResults[i], Context);
       end;
     end;

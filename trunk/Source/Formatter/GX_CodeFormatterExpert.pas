@@ -45,9 +45,7 @@ uses
   ToolsAPI,
   u_dzStringUtils,
   GX_OtaUtils,
-{$IFOPT D+}
-  GX_DbugIntf,
-{$ENDIF}
+  GX_Logging,
   GX_CodeFormatterGXConfigWrapper,
   GX_CodeFormatterTypes,
   GX_CodeFormatterConfig,
@@ -59,11 +57,14 @@ uses
   GX_MessageBox,
   GX_GenericUtils;
 
-procedure XSendDebug(const Msg: string);
-begin //FI:W519
-{$IF Declared(SendDebug)}
-  SendDebug('GXFormatter: ' + Msg);
-{$IFEND}
+var
+  TheModuleLogger: IgxLogger = nil;
+
+function Logger: IgxLogger;
+begin
+  if not Assigned(TheModuleLogger) then
+    TheModuleLogger := CreateModuleLogger('Formatter');
+  Result := TheModuleLogger;
 end;
 
 { TCodeFormatterExpert }
@@ -144,7 +145,7 @@ function TCodeFormatterExpert.GetSettingsName(const AFileName: string; FullText:
           ConfiguredFileName := ConfiguredFileNames[i];
           if FileNameMatches(ExtractFileName(AFileName), Path + ConfiguredFileName) then begin
             Result := IniFile.ReadString('FileSettings', ConfiguredFileName, '');
-            XSendDebug(Format('Settings "%s" from rule %s in %s', [Result, ConfiguredFileName, ConfigFileName]));
+            Logger.InfoFmt('Settings "%s" from rule %s in %s', [Result, ConfiguredFileName, ConfigFileName]);
             Break;
           end;
         end;
@@ -166,7 +167,7 @@ function TCodeFormatterExpert.GetSettingsName(const AFileName: string; FullText:
     if SameText(Copy(FirstLine, 1, Length(cConfigDirective)), cConfigDirective) and
       (FirstLine[Length(FirstLine)] = '}') then begin
       Result := Trim(Copy(FirstLine, Length(cConfigDirective) + 1, Length(FirstLine) - Length(cConfigDirective) - 1));
-      XSendDebug(Format('Settings "%s" from in-source directive', [Result]));
+      Logger.InfoFmt('Settings "%s" from in-source directive', [Result]);
     end else
       Result := '';
   end;
@@ -241,8 +242,10 @@ var
   Position: Integer;
   FormattedBlockStart: string;
   FormattedBlockEnd: string;
+  Logger: IgxLogger;
 begin
-  XSendDebug('TCodeFormatterExpert.Execute:Entered');
+  Logger := CreateModuleLogger('CodeFormatter');
+  Logger.MethodEnter('TCodeFormatterExpert.Execute');
 
   Result := False;
 
@@ -252,7 +255,7 @@ begin
   if not (IsPascalSourceFile(FileName) or IsDelphiPackage(FileName) or FileMatchesExtension(FileName, '.tpl')) then
     raise ECodeFormatter.CreateFmt(str_UnsupportedFileTypeS, [ExtractFileName(FileName)]);
 
-  XSendDebug(Format('Formatting requested for "%s"', [FileName]));
+  Logger.InfoFmt('Formatting requested for "%s"', [FileName]);
   TempSettings := nil;
   FullText := TGXUnicodeStringList.Create;
   try
@@ -262,18 +265,18 @@ begin
       Exit;
     FullText.Text := FullTextStr;
 
-    XSendDebug('TCodeFormatterExpert.Execute:Save Breakpoints and bookmarks');
+    Logger.Info('TCodeFormatterExpert.Execute:Save Breakpoints and bookmarks');
     Breakpoints := nil;
     Bookmarks := TBookmarkHandler.Create;
     try
       Breakpoints := TBreakpointHandler.Create;
       Breakpoints.SaveItems;
       Bookmarks.SaveItems;
-      XSendDebug('TCodeFormatterExpert.Execute:Determine settings');
+      Logger.Info('TCodeFormatterExpert.Execute:Determine settings');
       SettingsName := Trim(GetSettingsName(FileName, FullText));
       if SettingsName <> '-' then begin
         if SettingsName <> '' then begin
-          XSendDebug(Format('Use settings "%s"', [SettingsName]));
+          Logger.InfoFmt('Use settings "%s"', [SettingsName]);
           TempSettings := TCodeFormatterSettings.Create;
           if TCodeFormatterConfigHandler.GetDefaultConfig(SettingsName, TempSettings,
             GetDefaultCapitalizationFilename) then begin
@@ -282,14 +285,14 @@ begin
           end else
             FreeAndNil(TempSettings);
         end else
-          XSendDebug('Use default settings');
+          Logger.Info('Use default settings');
 
-        XSendDebug('TCodeFormatterExpert.Execute:Format selection ?');
+        Logger.Info('TCodeFormatterExpert.Execute:Format selection ?');
         FormatSelection := False;
         if GxOtaGetSelection(GxOtaGetTopMostEditView(SourceEditor), BlockStart, BlockEnd, SelStart, SelLength) then begin
           FormatSelection := (SelLength > 0) and (BlockStart.Line < BlockEnd.Line);
           if FormatSelection then begin
-            XSendDebug('TCodeFormatterExpert.Execute:Prepare to format selection');
+            Logger.Info('TCodeFormatterExpert.Execute:Prepare to format selection');
             FormattedBlockStart := FORMATTED_BLOCK_START;
             FormattedBlockEnd := FORMATTED_BLOCK_END;
             while Pos(FormattedBlockStart, FullTextStr) <> 0 do
@@ -311,10 +314,10 @@ begin
           end;
         end;
         FullTextStr := ''; // might save some memory
-        XSendDebug('TCodeFormatterExpert.Execute:Executing formatter');
+        Logger.Info('TCodeFormatterExpert.Execute:Executing formatter');
         if FEngine.Execute(FullText) then begin
           if FormatSelection then begin
-            XSendDebug('TCodeFormatterExpert.Execute:Replace selection only');
+            Logger.Info('TCodeFormatterExpert.Execute:Replace selection only');
             FullTextStr := FullText.Text;
             Position := Pos(FormattedBlockEnd, FullTextStr);
             FullTextStr := Copy(FullTextStr, 1, Position - 1);
@@ -325,21 +328,23 @@ begin
             GxOtaSelectBlock(SourceEditor, BlockStart, BlockEnd);
             GxOtaReplaceSelection(SourceEditor, 0, FullTextStr);
           end else begin
-            XSendDebug('TCodeFormatterExpert.Execute:Replace full text');
+            Logger.Info('TCodeFormatterExpert.Execute:Replace full text');
             GxOtaReplaceEditorTextWithUnicodeString(SourceEditor, FullText.Text);
           end;
-          XSendDebug('TCodeFormatterExpert.Execute:Restore breakpoints and bookmarks');
+          Logger.Info('TCodeFormatterExpert.Execute:Restore breakpoints and bookmarks');
           Breakpoints.RestoreItems;
           Bookmarks.RestoreItems;
-          XSendDebug('TCodeFormatterExpert.Execute:Force repaints');
+          Logger.Info('TCodeFormatterExpert.Execute:Force repaints');
           for i := 0 to SourceEditor.EditViewCount - 1 do
             SourceEditor.EditViews[i].Paint;
           ShowGxMessageBox(TCodeFormatterDone);
           Result := True;
+        end else begin
+          Logger.Info('FEngine.Exeucte returned false, not changing anything');
         end;
       end else
-        XSendDebug('Ignoring request, no settings name available');
-    XSendDebug('TCodeFormatterExpert.Execute:Cleanup');
+        Logger.Info('Ignoring request, no settings name available');
+      Logger.Info('TCodeFormatterExpert.Execute:Cleanup');
     finally
       FreeAndNil(Breakpoints);
       FreeAndNil(Bookmarks);
@@ -351,7 +356,6 @@ begin
       FEngine.Settings.Settings := OrigSettings;
     end;
   end;
-  XSendDebug('TCodeFormatterExpert.Execute:Done');
 end;
 
 procedure TCodeFormatterExpert.InternalLoadSettings(_Settings: IExpertSettings);
@@ -384,7 +388,7 @@ begin
   if not (IsPascalSourceFile(_FileName) or IsDelphiPackage(_FileName) or FileMatchesExtension(_FileName, '.tpl')) then
     raise ECodeFormatter.CreateFmt(str_UnsupportedFileTypeS, [ExtractFileName(_FileName)]);
 
-  XSendDebug(Format('Formatting requested for "%s"', [_FileName]));
+  Logger.InfoFmt('Formatting requested for "%s"', [_FileName]);
   TempSettings := nil;
   FullText := TGXUnicodeStringList.Create;
   try
@@ -393,7 +397,7 @@ begin
     SettingsName := Trim(GetSettingsName(_FileName, FullText));
     if SettingsName <> '-' then begin
       if SettingsName <> '' then begin
-        XSendDebug(Format('Use settings "%s"', [SettingsName]));
+        Logger.InfoFmt('Use settings "%s"', [SettingsName]);
         TempSettings := TCodeFormatterSettings.Create;
         if TCodeFormatterConfigHandler.GetDefaultConfig(SettingsName, TempSettings,
           GetDefaultCapitalizationFilename) then begin
@@ -402,20 +406,20 @@ begin
         end else
           FreeAndNil(TempSettings);
       end else
-        XSendDebug('Use default settings');
+        Logger.Info('Use default settings');
 
       Result := FEngine.Execute(FullText);
       if Result then begin
-        XSendDebug('Saving changed file');
+        Logger.Info('Saving changed file');
         // add an empty line to be compatible with running in the IDE
         FullText.Add('');
         FullText.SaveToFile(_FileName);
         ShowGxMessageBox(TCodeFormatterDone);
       end else begin
-        XSendDebug('Nothing changed');
+        Logger.Info('Nothing changed');
       end;
     end else
-      XSendDebug('Ignoring request, no settings name available');
+      Logger.Info('Ignoring request, no settings name available');
   finally
     FreeAndNil(FullText);
     if Assigned(TempSettings) then begin
@@ -426,3 +430,4 @@ begin
 end;
 
 end.
+
