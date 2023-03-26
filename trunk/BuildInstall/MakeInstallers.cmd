@@ -12,7 +12,7 @@ set version=%result%
 rem set instver=13D
 set instver=%version%
 call :getdate
-set special=experimental-twm_%dateYYYYMMDD%
+set special=%dateYYYYMMDD%
 
 rem call :makeinst RS103 RS10.3
 rem pause
@@ -45,7 +45,7 @@ goto :eof
 set Delphi=%1
 set Prefix=%2
 if "%prefix%" == "" set Prefix=%Delphi%
-%iscc% GExperts.iss /d%Delphi% /dVersion=%version% /fGX%Prefix%_%instver%_%special%
+%iscc% GExperts.iss /d%Delphi% /dVersion=%version% /fGExperts_%Prefix%_%instver%_%special%
 rem %iscc% GExperts.iss /dDelphi2010 /dVersion=%version% /fGXRS2010-%instver%-experimental-twm-%date%.exe
 goto :eof
 
