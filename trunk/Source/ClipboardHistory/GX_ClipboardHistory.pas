@@ -6,7 +6,7 @@ interface
 
 uses
   Windows, SysUtils, Classes, Types, Controls, Forms, StdCtrls, ExtCtrls, Menus,
-  ComCtrls, ActnList, Actions, ToolWin, GX_SharedImages, 
+  ComCtrls, ActnList, Actions, ToolWin, Graphics, GX_SharedImages,
   GX_Experts, GX_ConfigurationInfo, GX_IdeDock;
 
 type
@@ -176,6 +176,7 @@ type
     FAutoStart: Boolean;
     FAutoClose: Boolean;
     FStoragePath: string;
+    FPreviewFont: TFont;
     function GetStorageFile: string;
   protected
     procedure SetActive(New: Boolean); override;
@@ -209,8 +210,6 @@ uses
 
 const
   ClipStorageFileName = 'ClipboardHistory.xml';
-  MAX_CLIP_MIN = 20;
-  MAX_CLIP_MAX = 1000;
 
 type
   THelperWinControl = class(TWinControl)
@@ -975,7 +974,8 @@ begin
   inherited Create;
   FStoragePath := ConfigInfo.ConfigPath;
 
-  FMaxClip := MAX_CLIP_MIN;
+  FMaxClip := CLIPBOARD_VIEWER_ENTRIES_MIN;
+  FPreviewFont := TFont.Create;
 
   FreeAndNil(ClipExpert);
   ClipExpert := Self;
@@ -985,6 +985,8 @@ destructor TClipboardHistoryExpert.Destroy;
 begin
   FreeAndNil(fmClipboardHistory);
   ClipExpert := nil;
+
+  FreeAndnil(FPreviewFont);
 
   inherited Destroy;
 end;
@@ -1008,6 +1010,7 @@ begin
   begin
     fmClipboardHistory := TfmClipboardHistory.Create(nil);
     SetFormIcon(fmClipboardHistory);
+    fmClipboardHistory.mmoClipText.Font := FPreviewFont;
   end;
   IdeDockManager.ShowForm(fmClipboardHistory);
   fmClipboardHistory.lvClip.SetFocus;
@@ -1018,17 +1021,21 @@ procedure TClipboardHistoryExpert.InternalLoadSettings(_Settings: IExpertSetting
 begin
   inherited InternalLoadSettings(_Settings);
   // Do not localize.
-  FMaxClip := Min(_Settings.ReadInteger('Maximum', MAX_CLIP_MIN), MAX_CLIP_MAX);
+  FMaxClip := _Settings.ReadInteger('Maximum', CLIPBOARD_VIEWER_ENTRIES_MIN);
+  FMaxClip := Max(Min(FMaxClip, CLIPBOARD_VIEWER_ENTRIES_MAX), CLIPBOARD_VIEWER_ENTRIES_MIN);
   FAutoStart := _Settings.ReadBool('AutoStart', False);
   FAutoClose := _Settings.ReadBool('AutoClose', False);
+  _Settings.LoadFont('PreviewFont', FPreviewFont);
 
   // This procedure is only called once, so it is safe to
   // register the form for docking here.
   if Active then begin
     IdeDockManager.RegisterDockableForm(TfmClipboardHistory, fmClipboardHistory, 'fmClipboardHistory');
 
-    if FAutoStart and (fmClipboardHistory = nil) then
+    if FAutoStart and (fmClipboardHistory = nil) then begin
       fmClipboardHistory := TfmClipboardHistory.Create(nil);
+      fmClipboardHistory.mmoClipText.Font := FPreviewFont;
+    end;
   end;
 end;
 
@@ -1039,26 +1046,15 @@ begin
   _Settings.WriteInteger('Maximum', FMaxClip);
   _Settings.WriteBool('AutoStart', FAutoStart);
   _Settings.WriteBool('AutoClose', FAutoClose);
+  _Settings.SaveFont('PreviewFont', FPreviewFont);
 end;
 
 procedure TClipboardHistoryExpert.Configure;
-var
-  Dlg: TfmClipboardOptions;
 begin
-  Dlg := TfmClipboardOptions.Create(nil);
-  try
-    Dlg.edtMaxClip.Text := IntToStr(FMaxClip);
-    Dlg.chkAutoStart.Checked := FAutoStart;
-    Dlg.chkAutoClose.Checked := FAutoClose;
-    if Dlg.ShowModal = mrOk then
-    begin
-      FAutoStart := Dlg.chkAutoStart.Checked;
-      FAutoClose := Dlg.chkAutoClose.Checked;
-      FMaxClip := Min(StrToIntDef(Dlg.edtMaxClip.Text, MAX_CLIP_MIN), MAX_CLIP_MAX);
-      SaveSettings;
-    end;
-  finally
-    FreeAndNil(Dlg);
+  if TfmClipboardOptions.Execute(nil, FMaxClip, FAutoStart, FAutoClose, FPreviewFont) then begin
+    SaveSettings;
+    if Assigned(fmClipboardHistory) then
+      fmClipboardHistory.mmoClipText.Font := FPreviewFont;
   end;
 end;
 

@@ -35,9 +35,9 @@ inherited fmClipboardHistory: TfmClipboardHistory
   end
   object lvClip: TListView
     Left = 0
-    Top = 61
+    Top = 59
     Width = 550
-    Height = 217
+    Height = 219
     Align = alClient
     Columns = <
       item
@@ -67,7 +67,7 @@ inherited fmClipboardHistory: TfmClipboardHistory
     Left = 0
     Top = 0
     Width = 550
-    Height = 24
+    Height = 22
     AutoSize = True
     DisabledImages = dmSharedImages.DisabledImages
     Flat = True
@@ -162,12 +162,12 @@ inherited fmClipboardHistory: TfmClipboardHistory
     BevelOuter = bvLowered
     TabOrder = 3
     object lblMaxEntries: TLabel
-      Left = 19
+      Left = 12
       Top = 11
-      Width = 78
+      Width = 85
       Height = 14
       Alignment = taRightJustify
-      Caption = 'Paste as type:'
+      Caption = 'Paste Pascal as:'
     end
     object cbPasteAsType: TComboBox
       Left = 105
@@ -179,16 +179,16 @@ inherited fmClipboardHistory: TfmClipboardHistory
       TabOrder = 0
     end
     object chkCreateQuotedStrings: TCheckBox
-      Left = 292
-      Top = 1
+      Left = 296
+      Top = 0
       Width = 250
-      Height = 25
+      Height = 17
       Caption = 'Create quoted strings'
       TabOrder = 1
     end
     object chkAddExtraSpaceAtTheEnd: TCheckBox
-      Left = 292
-      Top = 20
+      Left = 296
+      Top = 16
       Width = 250
       Height = 17
       Caption = 'Add extra space at the end'
