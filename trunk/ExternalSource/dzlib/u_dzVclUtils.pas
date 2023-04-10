@@ -703,6 +703,12 @@ procedure TStatusBar_EnableLongSimpleText(_StatusBar: TStatusBar);
 ///<summary> Set the SimpleText of the StatusBar and invalidate it to enforce a redraw </summary>
 procedure TStatusBar_SetLongSimpleText(_StatusBar: TStatusBar; const _Text: string);
 
+///<sumamry>
+/// Resize one panel a StatusBar to take up all the space the others don't need
+/// @param sb is the TStatusBar to work on
+/// @param PanelIdxToChange is the index of the panel whose size should be changed </summary>
+procedure TStatusBar_Resize(_sb: TStatusBar; _PanelIdxToChange: integer);
+
 ///<summary>
 /// Sets the text of a status bar panel and optionally adjusts its width to fit.
 /// @param Resize determines whether the panel's width is adjusted, default: True
@@ -3238,6 +3244,19 @@ begin
   pnl.Style := psOwnerDraw;
   Painter := nil;
   _StatusBar.OnDrawPanel := Painter.DrawPanel;
+end;
+
+procedure TStatusBar_Resize(_sb: TStatusBar; _PanelIdxToChange: integer);
+var
+  w: Integer;
+  i: Integer;
+begin
+  w := _sb.Width;
+  for i := 0 to _sb.Panels.Count - 1 do begin
+    if i <> _PanelIdxToChange then
+      Dec(w, _sb.Panels[i].Width);
+  end;
+  _sb.Panels[_PanelIdxToChange].Width := w;
 end;
 
 procedure TStatusBar_SetLongSimpleText(_StatusBar: TStatusBar; const _Text: string);
