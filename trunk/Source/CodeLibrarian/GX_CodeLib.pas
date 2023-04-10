@@ -417,6 +417,9 @@ var
   NewFolder: TGXUnicodeString;
   NewTopic: TGXUnicodeString;
 begin
+  if Assigned(ParentNode) and IsCodeSnippet(ParentNode) then
+    ParentNode := ParentNode.Parent;
+
   NewTopic := GetUniqueTopicName(ParentNode, True);
   NewFolder := AddSlash(GetNodePath(ParentNode)) + NewTopic;
   CodeDB.AssertValidFolderName(NewFolder);
@@ -453,8 +456,11 @@ begin
   if not TryGetSelected(SelectedNode) then
     Exit; //==>
 
+  if IsCodeSnippet(SelectedNode) then
+    SelectedNode := SelectedNode.Parent;
+
   TopicName := GetUniqueTopicName(SelectedNode, False);
-  NewFileName := AddSlash(SelectedNodeFullName) + TopicName;
+  NewFileName := AddSlash(GetNodePath(SelectedNode)) + TopicName;
   CodeDB.OpenFile(NewFileName);
   Assert(CodeDB.FileExists(NewFileName));
   CodeDB.SetAttribute(AttrTopic, TopicName);
@@ -1078,14 +1084,14 @@ begin
 
   if not lHaveSelectedNode then
   begin
-    actMakeRoot.Enabled := False;
+    actMakeRoot.Enabled := True;
     actNewSnippet.Enabled := False;
   end
   else
   begin
-    actMakeRoot.Enabled := (not (SelectedNode.Level = 0)) and (not SnippetIsSelected);
-    actNewSnippet.Enabled := not SnippetIsSelected;
-    actNewFolder.Enabled := not SnippetIsSelected;
+    actMakeRoot.Enabled := True;
+    actNewSnippet.Enabled := True;
+    actMakeRoot.Enabled := True;
   end;
 
   for i := 0 to Actions.ActionCount - 1 do begin
