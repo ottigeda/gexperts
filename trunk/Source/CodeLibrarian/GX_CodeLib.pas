@@ -232,7 +232,6 @@ type
     procedure SetupSyntaxHighlightingControl;
     function IsCodeSnippet(Node: TTreeNode): Boolean;
     function IsFolder(Node: TTreeNode): Boolean;
-    procedure AddNewNode(Folder: Boolean);
     function GetNodePath(Node: TTreeNode): TGXUnicodeString;
     function GetNodeParentPath(Node: TTreeNode): TGXUnicodeString;
     procedure AssertValidFileName(const FileName: TGXUnicodeString);
@@ -471,6 +470,8 @@ begin
   SortNodes;
   tvTopics.Selected := NewNode;
   NewNode.EditText;
+  actEditReadOnly.Checked := False;
+  FCodeText.ReadOnly := False;
 end;
 
 procedure TfmCodeLib.CodeTextChange(Sender: TObject);
@@ -543,6 +544,7 @@ begin
         LangType := CodeDB.AttributeAsString(AttrLanguage, 'P');
         SetCurrentSyntaxModeFromIdentifier(LangType);
         FCodeText.AsUnicodeString := CodeDB.FileText;
+        FCodeText.Modified := False;
       finally
         FCodeText.EndUpdate;
       end;
@@ -638,6 +640,8 @@ begin
     raise Exception.Create(SNotForFormFiles);
 
   FCodeText.SelText := GxOtaGetCurrentSelection;
+  FCodeText.ReadOnly := False;
+  actEditReadOnly.Checked := False;
 end;
 
 procedure TfmCodeLib.PasteToIdeExecute(Sender: TObject);
@@ -933,20 +937,12 @@ end;
 
 procedure TfmCodeLib.NewSnippetExecute(Sender: TObject);
 begin
-  AddNewNode(False);
+  AddCode;
 end;
 
 procedure TfmCodeLib.NewFolderExecute(Sender: TObject);
 begin
-  AddNewNode(True);
-end;
-
-procedure TfmCodeLib.AddNewNode(Folder: Boolean);
-begin
-  if Folder then
-    AddFolder(tvTopics.Selected)
-  else
-    AddCode;
+  AddFolder(tvTopics.Selected)
 end;
 
 procedure TfmCodeLib.OptionsExecute(Sender: TObject);
@@ -1075,6 +1071,10 @@ begin
   actDelete.Enabled := lHaveSelectedNode;
   actEditRename.Enabled := lHaveSelectedNode;
   actEditReadOnly.Enabled := SnippetIsSelected;
+  if actEditReadOnly.Checked then
+    actEditReadOnly.ImageIndex := 90
+  else
+    actEditReadOnly.ImageIndex := 91;
 
   if not lHaveSelectedNode then
   begin
@@ -1106,10 +1106,6 @@ begin
   b := not actEditReadOnly.Checked;
   FCodeText.ReadOnly := b;
   actEditReadOnly.Checked := b;
-  if b then
-    actEditReadOnly.ImageIndex := 90
-  else
-    actEditReadOnly.ImageIndex := 91;
 
   Modified := FCodeText.Modified;
 
