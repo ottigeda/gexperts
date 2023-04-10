@@ -1,7 +1,7 @@
 object fmCodeLib: TfmCodeLib
   Left = 344
   Top = 191
-  AutoScroll = False
+  ActiveControl = tvTopics
   Caption = 'Code Librarian'
   ClientHeight = 369
   ClientWidth = 536
@@ -13,6 +13,7 @@ object fmCodeLib: TfmCodeLib
   Font.Style = []
   KeyPreview = True
   Menu = MainMenu
+  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnHide = FormHide
@@ -45,6 +46,7 @@ object fmCodeLib: TfmCodeLib
     ParentFont = True
     SimplePanel = False
     UseSystemFont = False
+    OnDblClick = StatusBarDblClick
     OnResize = StatusBarResize
   end
   object pnlView: TPanel
@@ -81,7 +83,6 @@ object fmCodeLib: TfmCodeLib
     OnDragOver = tvTopicsDragOver
     OnEdited = tvTopicsEdited
     OnEndDrag = tvTopicsEndDrag
-    OnKeyUp = tvTopicsKeyUp
     OnMouseDown = tvTopicsMouseDown
     OnStartDrag = tvTopicsStartDrag
   end
@@ -197,7 +198,7 @@ object fmCodeLib: TfmCodeLib
     object tb_readonly: TToolButton
       Left = 316
       Top = 0
-      Action = actReadOnly
+      Action = actEditReadOnly
     end
   end
   object MainMenu: TMainMenu
@@ -280,6 +281,12 @@ object fmCodeLib: TfmCodeLib
       end
       object mitEditContractAll: TMenuItem
         Action = actContractAll
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object mi_EditReadonly: TMenuItem
+        Action = actEditReadOnly
       end
     end
     object mitOptions: TMenuItem
@@ -544,13 +551,14 @@ object fmCodeLib: TfmCodeLib
       Caption = 'Compact Storage'
       OnExecute = actCompactStorageExecute
     end
-    object actReadOnly: TAction
+    object actEditReadOnly: TAction
       Category = 'Edit'
       Caption = 'Read Only'
       Checked = True
       Hint = 'Read Only'
       ImageIndex = 90
-      OnExecute = actReadOnlyExecute
+      ShortCut = 8305
+      OnExecute = actEditReadOnlyExecute
     end
   end
 end

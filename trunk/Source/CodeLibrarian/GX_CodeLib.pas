@@ -137,7 +137,7 @@ type
     actExpandAll: TAction;
     actContractAll: TAction;
     actCompactStorage: TAction;
-    actReadOnly: TAction;
+    actEditReadOnly: TAction;
     actOptions: TAction;
     ToolBar: TToolBar;
     tbnNewFolder: TToolButton;
@@ -164,6 +164,8 @@ type
     mitTreeRename: TMenuItem;
     mitFileSep2: TMenuItem;
     CompactStorage1: TMenuItem;
+    N1: TMenuItem;
+    mi_EditReadonly: TMenuItem;
     procedure CodeTextChange(Sender: TObject);
     procedure tvTopicsChanging(Sender: TObject; Node: TTreeNode; var AllowChange: Boolean);
     procedure tvTopicsEdited(Sender: TObject; Node: TTreeNode; var S: string);
@@ -190,7 +192,6 @@ type
     procedure NewSnippetExecute(Sender: TObject);
     procedure NewRootFolderExecute(Sender: TObject);
     procedure NewFolderExecute(Sender: TObject);
-    procedure tvTopicsKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OptionsExecute(Sender: TObject);
     procedure tvTopicsStartDrag(Sender: TObject; var DragObject: TDragObject);
     procedure tvTopicsEndDrag(Sender, Target: TObject; X, Y: Integer);
@@ -208,7 +209,8 @@ type
       Data: Integer; var Compare: Integer);
     procedure actCompactStorageExecute(Sender: TObject);
     function GetUniqueTopicName(ParentNode: TTreeNode; Folder: Boolean): TGXUnicodeString;
-    procedure actReadOnlyExecute(Sender: TObject);
+    procedure actEditReadOnlyExecute(Sender: TObject);
+    procedure StatusBarDblClick(Sender: TObject);
   private
     FModified: Boolean;
     FSearch: TSearchRecord;
@@ -234,10 +236,10 @@ type
     function GetNodePath(Node: TTreeNode): TGXUnicodeString;
     function GetNodeParentPath(Node: TTreeNode): TGXUnicodeString;
     procedure AssertValidFileName(const FileName: TGXUnicodeString);
-    function HaveSelectedNode: Boolean;
+    function TryGetSelected(out _Node: TTreeNode): Boolean;
     function SelectedNodeFullName: TGXUnicodeString;
     function SelectedCaption: TGXUnicodeString;
-    procedure AssertSelectedNode;
+    procedure AssertNodeSelected(out _SelectedNode: TTreeNode);
     function FolderSelected: Boolean;
     procedure AddFolder(ParentNode: TTreeNode);
     procedure AddCode;
@@ -296,6 +298,9 @@ const
   AttrTopic = 'Topic';
   AttrLanguage = 'Language';
   SyntaxCategory = 'Syntax';
+  STATUS_PANEL_PATH = 0;
+  STATUS_PANEL_STATUS = 1;
+  STATUS_PANEL_LANGUAGE = 2;
 
 resourcestring
   SCouldNotCreateStorage = 'Could not create Code Librarian storage file.';
@@ -424,30 +429,32 @@ begin
   NewNode.SelectedIndex := ImageIndexOpenFolder;
   SortNodes;
   tvTopics.Selected := NewNode;
-  tvTopics.Selected.EditText;
+  NewNode.EditText;
 end;
 
 procedure TfmCodeLib.SetModified(New: Boolean);
-resourcestring
-  SModified = 'Modified';
 begin
   FModified := New;
   if FModified then
-    StatusBar.Panels[1].Text := SModified
+    StatusBar.Panels[STATUS_PANEL_STATUS].Text := 'Modified'
+  else if actEditReadOnly.Checked then
+    StatusBar.Panels[STATUS_PANEL_STATUS].Text := 'Readonly'
   else
-    StatusBar.Panels[1].Text := ''; // No need to localize.
+    StatusBar.Panels[STATUS_PANEL_STATUS].Text := 'Editable';
 end;
 
 procedure TfmCodeLib.AddCode;
 var
-  Node: TTreeNode;
+  NewNode: TTreeNode;
   NewFileName: TGXUnicodeString;
   TopicName: TGXUnicodeString;
   LangType: string;
+  SelectedNode: TTreeNode;
 begin
-  if not HaveSelectedNode then
-    Exit;
-  TopicName := GetUniqueTopicName(tvTopics.Selected, False);
+  if not TryGetSelected(SelectedNode) then
+    Exit; //==>
+
+  TopicName := GetUniqueTopicName(SelectedNode, False);
   NewFileName := AddSlash(SelectedNodeFullName) + TopicName;
   CodeDB.OpenFile(NewFileName);
   Assert(CodeDB.FileExists(NewFileName));
@@ -457,13 +464,13 @@ begin
   CodeDB.SetAttribute(AttrLanguage, LangType);
   CodeDB.SaveStorage;
 
-  Node := tvTopics.Items.AddChild(tvTopics.Selected, TopicName);
-  Node.ImageIndex := ImageIndexDocument;
-  Node.SelectedIndex := ImageIndexDocument;
+  NewNode := tvTopics.Items.AddChild(SelectedNode, TopicName);
+  NewNode.ImageIndex := ImageIndexDocument;
+  NewNode.SelectedIndex := ImageIndexDocument;
 
   SortNodes;
-  tvTopics.Selected := Node;
-  tvTopics.Selected.EditText;
+  tvTopics.Selected := NewNode;
+  NewNode.EditText;
 end;
 
 procedure TfmCodeLib.CodeTextChange(Sender: TObject);
@@ -482,21 +489,22 @@ end;
 procedure TfmCodeLib.SaveRecord;
 var
   LangType: TGXUnicodeString;
+  SelectedNode: TTreeNode;
 begin
   // This is called from the destructor where
   // we may be in a forced clean-up state due
   // to an exception in the constructor.
   if ExceptObject <> nil then
-    Exit;
+    Exit; //==>
 
   Modified := False;
-  if not HaveSelectedNode then
-    Exit;
+  if not TryGetSelected(SelectedNode) then
+    Exit; //==>
 
-  SetNodeAttribute(tvTopics.Selected, AttrTopic, SelectedCaption);
+  SetNodeAttribute(SelectedNode, AttrTopic, SelectedCaption);
   if FolderSelected then
   begin
-    Assert(CodeDB.FolderExists(GetNodePath(tvTopics.Selected)));
+    Assert(CodeDB.FolderExists(GetNodePath(SelectedNode)));
   end
   else
   begin
@@ -538,14 +546,14 @@ begin
       finally
         FCodeText.EndUpdate;
       end;
-      FCodeText.ReadOnly := actReadOnly.Checked;
+      FCodeText.ReadOnly := actEditReadOnly.Checked;
     end
     else
       FCodeText.Clear;
 
     Modified := False;
     if Node <> nil then
-      StatusBar.Panels[0].Text := GetNodePath(Node);
+      StatusBar.Panels[STATUS_PANEL_PATH].Text := GetNodePath(Node);
   except
     on E: Exception do
       GxLogAndShowException(E);
@@ -559,17 +567,19 @@ resourcestring
   SConfirmDelete = 'Delete %s "%s"?';
 var
   NodeType: TGXUnicodeString;
+  SelectedNode: TTreeNode;
 begin
-  if not HaveSelectedNode then
-    Exit;
+  if not TryGetSelected(SelectedNode) then
+    Exit; //==>
+
   if FolderSelected then
     NodeType := SFolder
   else
     NodeType := SSnippet;
-  if MessageDlg(Format(SConfirmDelete, [NodeType, tvTopics.Selected.Text]), mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  if MessageDlg(Format(SConfirmDelete, [NodeType, SelectedNode.Text]), mtConfirmation, [mbYes, mbNo], 0) = mrYes then
   begin
     CodeDB.Delete(SelectedNodeFullName);
-    tvTopics.Selected.Delete;
+    SelectedNode.Delete;
   end;
 end;
 
@@ -581,9 +591,11 @@ end;
 procedure TfmCodeLib.PrintExecute(Sender: TObject);
 resourcestring
   RS_PRINTTITLE = 'GExperts';
+var
+  Node: TTreeNode;
 begin
-  if tvTopics.Selected <> nil then
-    FCodeText.Print(tvTopics.Selected.Text)
+  if TryGetSelected(Node) then
+    FCodeText.Print(Node.Text)
   else
     FCodeText.Print(RS_PRINTTITLE);
 end;
@@ -789,18 +801,22 @@ end;
 procedure TfmCodeLib.tvTopicsDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
   DestNode: TTreeNode;
+  SelectedNode: TTreeNode;
 begin
   try
-    if tvTopics.Selected = nil then
-      Exit;
+    if not TryGetSelected(SelectedNode) then
+      Exit; //==>
+
     DestNode := tvTopics.GetNodeAt(X, Y);
-    if (DestNode = nil) or (DestNode = tvTopics.Selected) then
-      Exit;
-    if IsCodeSnippet(DestNode) or DestNode.HasAsParent(tvTopics.Selected) then
-      Exit;
+    if (DestNode = nil) or (DestNode = SelectedNode) then
+      Exit; //==>
+
+    if IsCodeSnippet(DestNode) or DestNode.HasAsParent(SelectedNode) then
+      Exit; //==>
+
     CodeDB.Move(SelectedNodeFullName, AddSlash(GetNodePath(DestNode)) + SelectedCaption);
     CodeDB.SaveStorage;
-    tvTopics.Selected.MoveTo(DestNode, naAddChild);
+    SelectedNode.MoveTo(DestNode, naAddChild);
     DestNode.AlphaSort;
   except
     on E: Exception do
@@ -829,9 +845,10 @@ end;
 procedure TfmCodeLib.ContractAllExecute(Sender: TObject);
 var
   Node: TTreeNode;
+  SelectedNode: TTreeNode;
 begin
   // OnChanging doesn't fire under Delphi 5 when calling Collapse below
-  if (tvTopics.Selected <> nil) and Modified then
+  if TryGetSelected(SelectedNode) and Modified then
     SaveRecord;
 
   Node := tvTopics.Items.GetFirstNode;
@@ -842,7 +859,7 @@ begin
   end;
 
   // OnChange doesn't fire under Delphi 5 when calling Collapse above
-  tvTopicsChange(tvTopics, tvTopics.Selected);
+  tvTopicsChange(tvTopics, SelectedNode);
 end;
 
 procedure TfmCodeLib.SaveSettings;
@@ -897,10 +914,16 @@ begin
 {$ENDIF STANDALONE}
 end;
 
+procedure TfmCodeLib.StatusBarDblClick(Sender: TObject);
+begin
+  inherited;
+  if TStatusBar_GetClickedPanel(StatusBar) = STATUS_PANEL_STATUS then
+    actEditReadOnly.Execute;
+end;
+
 procedure TfmCodeLib.StatusBarResize(Sender: TObject);
 begin
-  with StatusBar do
-    Panels[0].Width := Width - Panels[1].Width - Panels[2].Width;
+  TStatusBar_Resize(StatusBar, STATUS_PANEL_PATH);
 end;
 
 procedure TfmCodeLib.NewRootFolderExecute(Sender: TObject);
@@ -924,13 +947,6 @@ begin
     AddFolder(tvTopics.Selected)
   else
     AddCode;
-end;
-
-procedure TfmCodeLib.tvTopicsKeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if (Key = VK_F2) and (tvTopics.Selected <> nil) then
-    tvTopics.Selected.EditText;
 end;
 
 procedure TfmCodeLib.OptionsExecute(Sender: TObject);
@@ -1003,13 +1019,15 @@ end;
 
 procedure TfmCodeLib.MakeRootExecute(Sender: TObject);
 var
-  Sel: TTreeNode;
+  SelectedNode: TTreeNode;
 begin
-  Sel := tvTopics.Selected;
-  if ((Sel <> nil) and (Sel.Level > 0) and (not IsCodeSnippet(Sel))) then
+  if not TryGetSelected(SelectedNode) then
+    Exit; //==>
+
+  if (SelectedNode.Level > 0) and (not IsCodeSnippet(SelectedNode)) then
   begin
     CodeDB.Move(SelectedNodeFullName, CodeLibPathSep + SelectedCaption);
-    tvTopics.Selected.MoveTo(nil, naAdd);
+    SelectedNode.MoveTo(nil, naAdd);
     Modified := True;
     SortNodes;
   end;
@@ -1027,8 +1045,7 @@ var
   Node: TTreeNode;
 begin
   CodeDB.OpenStorage(StoragePath + DefaultFileName);
-  Node := tvTopics.Selected;
-  if (Node <> nil) and (IsCodeSnippet(Node)) then
+  if TryGetSelected(Node) and (IsCodeSnippet(Node)) then
     CodeDB.OpenFile(GetNodePath(Node));
 end;
 
@@ -1043,19 +1060,21 @@ var
   lHaveSelectedNode: Boolean;
   SnippetIsSelected: Boolean;
   i: Integer;
+  SelectedNode: TTreeNode;
 begin
   HaveEditorSelection := Length(FCodeText.SelText) > 0;
   actEditCut.Enabled := HaveEditorSelection;
   actEditCopy.Enabled := HaveEditorSelection;
   actEditPaste.Enabled := (Clipboard.HasFormat(CF_TEXT) and (not FCodeText.ReadOnly));
 
-  lHaveSelectedNode  := HaveSelectedNode;
-  SnippetIsSelected := lHaveSelectedNode and IsCodeSnippet(tvTopics.Selected);
+  lHaveSelectedNode  := TryGetSelected(SelectedNode);
+  SnippetIsSelected := lHaveSelectedNode and IsCodeSnippet(SelectedNode);
 
   actEditPasteToIde.Enabled := SnippetIsSelected and not IsStandalone;
   actEditCopyFromIde.Enabled := SnippetIsSelected and not IsStandalone;
   actDelete.Enabled := lHaveSelectedNode;
   actEditRename.Enabled := lHaveSelectedNode;
+  actEditReadOnly.Enabled := SnippetIsSelected;
 
   if not lHaveSelectedNode then
   begin
@@ -1064,7 +1083,7 @@ begin
   end
   else
   begin
-    actMakeRoot.Enabled := (not (tvTopics.Selected.Level = 0)) and (not SnippetIsSelected);
+    actMakeRoot.Enabled := (not (SelectedNode.Level = 0)) and (not SnippetIsSelected);
     actNewSnippet.Enabled := not SnippetIsSelected;
     actNewFolder.Enabled := not SnippetIsSelected;
   end;
@@ -1074,23 +1093,30 @@ begin
       (Actions[i] as TCustomAction).Checked := Actions[i].Tag = Ord(FCurrentSyntaxMode);
   end;
   FCodeText.Enabled := SnippetIsSelected;
-  FCodeText.ReadOnly := not SnippetIsSelected or actReadOnly.Checked;
+  FCodeText.ReadOnly := not SnippetIsSelected or actEditReadOnly.Checked;
   StatusBar.Panels[2].Text := GXSyntaxInfo[FCurrentSyntaxMode].Name;
 
   Handled := True;
 end;
 
-procedure TfmCodeLib.actReadOnlyExecute(Sender: TObject);
+procedure TfmCodeLib.actEditReadOnlyExecute(Sender: TObject);
 var
   b: Boolean;
 begin
-  b := not actReadOnly.Checked;
+  b := not actEditReadOnly.Checked;
   FCodeText.ReadOnly := b;
-  actReadOnly.Checked := b;
+  actEditReadOnly.Checked := b;
   if b then
-    actReadOnly.ImageIndex := 90
+    actEditReadOnly.ImageIndex := 90
   else
-    actReadOnly.ImageIndex := 91;
+    actEditReadOnly.ImageIndex := 91;
+
+  Modified := FCodeText.Modified;
+
+  if not b and FCodeText.CanFocus then
+    TWinControl_SetFocus(FCodeText)
+  else
+    TWinControl_SetFocus(tvTopics);
 end;
 
 procedure TfmCodeLib.GenericSyntaxHighlightingExecute(Sender: TObject);
@@ -1182,18 +1208,21 @@ end;
 {$ENDIF}
 
 procedure TfmCodeLib.tvTopicsDblClick(Sender: TObject);
+var
+  Node: TTreeNode;
 begin
-  if tvTopics.Selected <> nil then
-  begin
-    if IsCodeSnippet(tvTopics.Selected) then
+  if TryGetSelected(Node) then begin
+    if IsCodeSnippet(Node) then
       actEditPasteToIde.Execute;
   end;
 end;
 
 procedure TfmCodeLib.actEditRenameExecute(Sender: TObject);
+var
+  Node: TTreeNode;
 begin
-  if tvTopics.Selected <> nil then
-    tvTopics.Selected.EditText
+  if TryGetSelected(Node) then
+    Node.EditText;
 end;
 
 procedure TfmCodeLib.tvTopicsMouseDown(Sender: TObject;
@@ -1282,33 +1311,40 @@ begin
   Result := GetPath(Result, Node);
 end;
 
-function TfmCodeLib.HaveSelectedNode: Boolean;
+function TfmCodeLib.TryGetSelected(out _Node: TTreeNode): Boolean;
 begin
-  Result := Assigned(tvTopics.Selected);
+  _Node := tvTopics.Selected;
+  Result := Assigned(_Node);
 end;
 
 function TfmCodeLib.SelectedNodeFullName: TGXUnicodeString;
+var
+  Node: TTreeNode;
 begin
-  AssertSelectedNode;
-  Result := GetNodePath(tvTopics.Selected);
+  AssertNodeSelected(Node);
+  Result := GetNodePath(Node);
 end;
 
 function TfmCodeLib.SelectedCaption: TGXUnicodeString;
+var
+  SelectedNode: TTreeNode;
 begin
-  AssertSelectedNode;
-  Result := tvTopics.Selected.Text;
+  AssertNodeSelected(SelectedNode);
+  Result := SelectedNode.Text;
 end;
 
-procedure TfmCodeLib.AssertSelectedNode;
+procedure TfmCodeLib.AssertNodeSelected(out _SelectedNode: TTreeNode);
 begin
-  if not HaveSelectedNode then
-    raise Exception.Create('No selected node');
+  if not TryGetSelected(_SelectedNode) then
+    raise Exception.Create('No node selected');
 end;
 
 function TfmCodeLib.FolderSelected: Boolean;
+var
+  SelectedNode: TTreeNode;
 begin
-  AssertSelectedNode;
-  Result := IsFolder(tvTopics.Selected);
+  AssertNodeSelected(SelectedNode);
+  Result := IsFolder(SelectedNode);
 end;
 
 function TfmCodeLib.IsFolder(Node: TTreeNode): Boolean;
