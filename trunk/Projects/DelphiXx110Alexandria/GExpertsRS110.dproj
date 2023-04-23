@@ -279,6 +279,7 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\Source\EditPath\GX_EditPathConfig.pas">
             <Form>f_EditPathConfig</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_EditReader.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_eFindDelimiter.pas"/>
@@ -348,6 +349,7 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\FavoriteFiles\GX_FavUtil.pas"/>
         <DCCReference Include="..\..\Source\FavoriteFiles\GX_FavWuppdiWPImport.pas">
             <Form>fmFavWuppdiWPImport</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_FeedbackWizard.pas">
             <Form>fmFeedbackWizard</Form>
@@ -374,6 +376,7 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\Source\FormHotkeys\GX_FormHotkeysSelect.pas">
             <Form>fmFormHotkeysSelect</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_GenericClasses.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_GenericUtils.pas"/>
