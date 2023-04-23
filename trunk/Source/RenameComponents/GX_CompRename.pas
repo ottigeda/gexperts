@@ -24,6 +24,7 @@ type
     edtOldName: TEdit;
     lblNewName: TLabel;
     edtNewName: TEdit;
+    p_Buttons: TPanel;
     btnCancel: TButton;
     btnOK: TButton;
     lblReason: TLabel;
@@ -398,12 +399,6 @@ begin
 end;
 
 procedure TfmCompRename.AddComponentProperty(PropertyName: WideString; const Value: WideString);
-
-  procedure VerticallyMove(_cntrl: Tcontrol; _by: Integer);
-  begin
-    _cntrl.Top := _cntrl.Top + _by;
-  end;
-
 var
   Lbl: TLabel;
   Edit: TEdit;
@@ -414,17 +409,20 @@ begin
     Exit; //==>
 
   Lbl := TLabel.Create(Self);
+  Lbl.Name := 'lblProperty_' + PropertyName;
   Lbl.Parent := Self;
   Lbl.Top := (FProperties.Count + 1) * (lblNewName.Top - lblOldName.Top) + lblNewName.Top;
   Lbl.Left := lblNewName.Left;
   Lbl.Caption := PropertyName;
+
   Edit := TEdit.Create(Self);
+  Edit.Name := 'edtProperty_' + PropertyName;
   Edit.Parent := Self;
   Edit.Top := (FProperties.Count + 1) * (edtNewName.Top - edtOldName.Top) + edtNewName.Top;
   Edit.Left := edtNewName.Left;
   Edit.Width := edtNewName.Width;
   Edit.Text := Value;
-  Edit.TabOrder := FProperties.Count + 2;
+  Edit.TabOrder := FProperties.Count + 1 + edtNewName.TabOrder;
   FProperties.Add(Edit);
 
   if Edit.Text = SPropertyNotFound then begin
@@ -436,10 +434,6 @@ begin
 
   diff := edtNewName.Top - edtOldName.Top;
   Height := Height + diff;
-  VerticallyMove(btnOK, diff);
-  VerticallyMove(btnCancel, diff);
-  VerticallyMove(btnSettings, diff);
-  VerticallyMove(lblReason, diff);
 end;
 
 function TfmCompRename.GetComponentProperty(Index: Integer): WideString;
@@ -467,6 +461,7 @@ begin
   FAnchorButtons[akLeft] := TdzSpeedBitBtn.Create(b_AnchorLeft);
   FAnchorButtons[akRight] := TdzSpeedBitBtn.Create(b_AnchorRight);
   FAnchorButtons[akBottom] := TdzSpeedBitBtn.Create(b_AnchorBottom);
+  p_Buttons.BevelOuter := bvNone;
 
   InitializeForm;
 end;
@@ -1010,7 +1005,7 @@ begin
       SearchName := FComponentNames[i];
       if (FormName = '') or (SearchName = '') then
         Break;
-      FFormEditor :=  GxOtaGetFormEditorForFileName(FormName);
+      FFormEditor := GxOtaGetFormEditorForFileName(FormName);
       if not Assigned(FFormEditor) then
         Break;
 
