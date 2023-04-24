@@ -78,6 +78,7 @@ type
     Splitter: TSplitter;
     pm_Intf: TPopupMenu;
     pm_Impl: TPopupMenu;
+    lblDprWarning: TLabel;
     m_IntfDelete: TMenuItem;
     m_ImplDelete: TMenuItem;
     m_IntfMove: TMenuItem;
@@ -318,6 +319,7 @@ type
     FSelectedUnitLineNo: Integer;
     FSelectedUnitFn: string;
     FDefaultToInterfaceList: Boolean;
+    IsInDprMode: Boolean;
     procedure GetCommonUnits;
     procedure GetProjectUnits;
     function TryGetMapFileUnits: Boolean;
@@ -818,7 +820,7 @@ var
 begin
   FIdentifierTabTimer := TStopwatch_StartNew;
 
-  AssertIsPasOrInc(GxOtaGetCurrentSourceFile);
+  AssertIsDprOrPasOrInc(GxOtaGetCurrentSourceFile);
 
   frm := TfmUsesManager.Create(Application, Self);
   try
@@ -860,6 +862,14 @@ begin
   _Settings.WriteBool('DisableCache', FDisableCache);
   _Settings.WriteBool('SearchPathFavorites', FSearchPathFavorites);
   _Settings.WriteBool('FastAdd', FFastAdd);
+end;
+
+procedure TAction_SetEnabled(const _Actions: array of TCustomAction; _Value: Boolean);
+var
+  i: Integer;
+begin
+  for i := 0 to High(_Actions) do
+    _Actions[i].Enabled := _Value;
 end;
 
 { TfmUsesManager }
@@ -919,6 +929,32 @@ begin
 
   // call the code that previously was in the FormCreate event
   InitializeForm;
+
+  IsInDprMode := IsDpr(GxOtaGetCurrentSourceFile);
+  if IsInDprMode then begin
+    sg_Implementation.Visible := False;
+    lblDprWarning.Visible := True;
+{$IFDEF GX_HAS_ALIGN_WITH_MARGINS}
+    lblDprWarning.Margins.Left := 8;
+    lblDprWarning.Margins.Right := 8;
+    lblDprWarning.Margins.Top := 0;
+    lblDprWarning.Margins.Bottom := 8;
+    lblDprWarning.AlignWithMargins := True;
+{$ENDIF}
+    p_ImplementationTitle.Visible := False;
+    b_MoveToIntf.Visible := False;
+    b_DeleteFromImpl.Visible := False;
+    chk_FastAdd.Visible := False;
+    btnAddDots.Enabled := False;
+    btnRemoveDots.Enabled := False;
+    TAction_SetEnabled([actOK,
+        actImplDelete, actImplMove,
+        actIntfDelete, actIntfMove,
+        actUnAlias,
+        actAddToInterfaceMenu, actAddToInterfaceBtn, actAddToInterfaceAndClose,
+        actAddToImplementationBtn, actAddToImplementationMenu, actAddToImplemenationAndClose],
+      False);
+  end;
 
 {$IFOPT D+}
   SendDebug('TfmUsesManager.Create Leave');
@@ -1575,22 +1611,22 @@ var
   ActiveLBHasSelection: Boolean;
 begin
   HasSelectedItem := HaveSelectedItem(sg_Interface);
-  actIntfMove.Enabled := HasSelectedItem;
-  actIntfDelete.Enabled := HasSelectedItem;
+  actIntfMove.Enabled := HasSelectedItem and not IsInDprMode;
+  actIntfDelete.Enabled := HasSelectedItem and not IsInDprMode;
   actIntfAddToFavorites.Enabled := HasSelectedItem;
 
   HasSelectedItem := HaveSelectedItem(sg_Implementation);
-  actImplMove.Enabled := HasSelectedItem;
-  actImplDelete.Enabled := HasSelectedItem;
+  actImplMove.Enabled := HasSelectedItem and not IsInDprMode;
+  actImplDelete.Enabled := HasSelectedItem and not IsInDprMode;
   actImplAddToFavorites.Enabled := HasSelectedItem;
 
   AvailableSourceList := GetAvailableSourceList;
   ActiveLBHasSelection := HaveSelectedItem(AvailableSourceList);
 
-  actAddToImplementationBtn.Enabled := ActiveLBHasSelection;
-  actAddToImplementationMenu.Enabled := ActiveLBHasSelection;
-  actAddToInterfaceBtn.Enabled := ActiveLBHasSelection;
-  actAddToInterfaceMenu.Enabled := ActiveLBHasSelection;
+  actAddToImplementationBtn.Enabled := ActiveLBHasSelection and not IsInDprMode;
+  actAddToImplementationMenu.Enabled := ActiveLBHasSelection and not IsInDprMode;
+  actAddToInterfaceBtn.Enabled := ActiveLBHasSelection and not IsInDprMode;
+  actAddToInterfaceMenu.Enabled := ActiveLBHasSelection and not IsInDprMode;
   actAvailAddToFav.Enabled := ActiveLBHasSelection;
   actFavDelUnit.Enabled := HaveSelectedItem(sg_Favorite);
 

@@ -686,6 +686,25 @@ inherited fmUsesManager: TfmUsesManager
       BevelOuter = bvNone
       TabOrder = 3
       OnResize = pcUsesResize
+      object lblDprWarning: TLabel
+        Left = 0
+        Top = 288
+        Width = 158
+        Height = 75
+        Align = alBottom
+        AutoSize = False
+        Caption = 
+          'Modifications of the uses clauses are not suported for .dpr file' +
+          's.'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clRed
+        Font.Height = -12
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+        Visible = False
+        WordWrap = True
+      end
       object p_ImplementationTitle: TPanel
         Left = 0
         Top = 0
@@ -701,7 +720,7 @@ inherited fmUsesManager: TfmUsesManager
         Left = 0
         Top = 15
         Width = 158
-        Height = 348
+        Height = 273
         Align = alClient
         ColCount = 1
         DefaultColWidth = 100
