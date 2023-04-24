@@ -116,6 +116,7 @@ type
     mitViewSep2: TMenuItem;
     miViewShowFullFilename: TMenuItem;
     actHistoryDeleteSelected: TAction;
+    actHistoryClear: TAction;
     pmContextMenu: TPopupMenu;
     actContextSelSearch: TAction;
     miContextSearchSelectedText: TMenuItem;
@@ -142,6 +143,8 @@ type
     mitFileDeleteSelected: TMenuItem;
     mitFileSep7: TMenuItem;
     miHistorySettings: TMenuItem;
+    miHistoryClear: TMenuItem;
+    miHistoryDeleteItems: TMenuItem;
     miSettingsCurrentFile: TMenuItem;
     miSettingsAllFilesInProjectGroup: TMenuItem;
     miSettingsAllFilesInProject: TMenuItem;
@@ -319,6 +322,7 @@ type
     procedure SplitterContextCanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
     procedure SplitterContextMoved(Sender: TObject);
     procedure SplitterHistoryListCanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
+    procedure actHistoryClearExecute(Sender: TObject);
   private
     FLastRepaintTick: DWORD;
     FSearchInProgress: Boolean;
@@ -2701,6 +2705,15 @@ begin
   SetStatusString('');
   SetMatchString('');
   ClearResultsListbox;
+end;
+
+procedure TfmGrepResults.actHistoryClearExecute(Sender: TObject);
+begin
+  gblGrepExpert.HistoryListDeleteFromSettings(delAll);
+  gblGrepExpert.HistoryList.Clear;
+  lbHistoryList.Count := 0;
+  lbHistoryList.ItemIndex := -1;
+  ViewHistoryListItems(-1, False);
 end;
 
 procedure TfmGrepResults.actHistoryDeleteExecute(Sender: TObject);

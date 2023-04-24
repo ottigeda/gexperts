@@ -514,7 +514,7 @@ inherited fmGrepResults: TfmGrepResults
     Top = 32
     object actReplaceSelected: TAction
       Category = 'Replace'
-      Caption = 'Replace Selected Item...'
+      Caption = 'Replace Selected Item ...'
       Hint = 'Replace selected item...'
       ImageIndex = 60
       ShortCut = 24659
@@ -522,7 +522,7 @@ inherited fmGrepResults: TfmGrepResults
     end
     object actFileSearch: TAction
       Category = 'File'
-      Caption = '&Search...'
+      Caption = '&Search ...'
       Hint = 'New search...'
       ImageIndex = 14
       ShortCut = 16467
@@ -609,7 +609,7 @@ inherited fmGrepResults: TfmGrepResults
     end
     object actHelpAbout: TAction
       Category = 'Help'
-      Caption = '&About...'
+      Caption = '&About ...'
       Hint = 'About...'
       ImageIndex = 16
       OnExecute = actHelpAboutExecute
@@ -625,7 +625,7 @@ inherited fmGrepResults: TfmGrepResults
     object actFileSave: TAction
       Tag = 1
       Category = 'File'
-      Caption = '&Save...'
+      Caption = '&Save ...'
       Hint = 'Save loadable results to file...'
       ImageIndex = 31
       ShortCut = 49235
@@ -634,7 +634,7 @@ inherited fmGrepResults: TfmGrepResults
     end
     object actFilePrintToFile: TAction
       Category = 'File'
-      Caption = 'Print to File...'
+      Caption = 'Print to File ...'
       Hint = 'Print results to file...'
       ImageIndex = 31
       OnExecute = actFileSaveExecute
@@ -642,7 +642,7 @@ inherited fmGrepResults: TfmGrepResults
     end
     object actFileSavePrint: TAction
       Category = 'File'
-      Caption = 'Save && Print...'
+      Caption = 'Save && Print ...'
       Hint = 'Print results + Save loadable results to file...'
       ImageIndex = 31
       OnExecute = actFileSaveExecute
@@ -664,14 +664,14 @@ inherited fmGrepResults: TfmGrepResults
     end
     object actViewOptions: TAction
       Category = 'View'
-      Caption = 'Options...'
+      Caption = 'Options ...'
       ImageIndex = 17
       ShortCut = 16460
       OnExecute = actViewOptionsExecute
     end
     object actReplaceAll: TAction
       Category = 'Replace'
-      Caption = 'Replace All Items...'
+      Caption = 'Replace All Items ...'
       Hint = 'Replace all items...'
       ImageIndex = 61
       ShortCut = 24641
@@ -711,13 +711,13 @@ inherited fmGrepResults: TfmGrepResults
     object actHistorySearch: TAction
       Tag = 1
       Category = 'History'
-      Caption = 'Search...'
+      Caption = 'Search ...'
       OnExecute = actHistoryRefreshExecute
       OnUpdate = actHistoryUpdate
     end
     object actHistoryModifySearchSettings: TAction
       Category = 'History'
-      Caption = 'Modify Search Parameters...'
+      Caption = 'Modify Search Parameters ...'
       OnExecute = actHistoryRefreshExecute
       OnUpdate = actHistoryUpdate
     end
@@ -746,23 +746,29 @@ inherited fmGrepResults: TfmGrepResults
     object actHistoryDeleteSelected: TAction
       Tag = 1
       Category = 'History'
-      Caption = 'Delete Items'
+      Caption = 'Delete Items ...'
       ImageIndex = 11
       OnExecute = actHistoryDeleteSelectedExecute
       OnUpdate = actHistoryUpdate
     end
     object actContextSelSearch: TAction
       Category = 'Context'
-      Caption = 'Search Selected Text...'
+      Caption = 'Search Selected Text ...'
       ImageIndex = 34
       OnExecute = actContextSelSearchExecute
     end
     object actFileOpen: TAction
       Category = 'File'
-      Caption = 'Open...'
+      Caption = 'Open ...'
       Hint = 'Open a saved result'
       ImageIndex = 1
       OnExecute = actFileOpenExecute
+    end
+    object actHistoryClear: TAction
+      Category = 'History'
+      Caption = 'Clear History'
+      ImageIndex = 30
+      OnExecute = actHistoryClearExecute
     end
     object actHistoryModifySaveOptions: TAction
       Category = 'History'
@@ -947,6 +953,12 @@ inherited fmGrepResults: TfmGrepResults
     end
     object miHistoryDelete: TMenuItem
       Action = actHistoryDelete
+    end
+    object miHistoryDeleteItems: TMenuItem
+      Action = actHistoryDeleteSelected
+    end
+    object miHistoryClear: TMenuItem
+      Action = actHistoryClear
     end
     object mitHistorySep3: TMenuItem
       Caption = '-'
