@@ -1372,6 +1372,7 @@ resourcestring
   procedure PaintLineMatch;
   var
     i: Integer;
+    obj: TObject;
     ALineResult: TLineResult;
     LineNoWidth: Integer;
     PaintText: string;
@@ -1387,7 +1388,11 @@ resourcestring
     LineMatches: TLineMatches;
   begin
     // Paint a search match line number and highlighted match
-    ALineResult := lbResults.Items.Objects[Index] as TLineResult;
+    obj := lbResults.Items.Objects[Index];
+    if not Assigned(obj) then
+      Exit; //==>
+
+    ALineResult := obj as TLineResult;
 
     if odSelected in State then
     begin
