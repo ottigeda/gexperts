@@ -2714,6 +2714,7 @@ end;
 
 procedure TfmGrepResults.actHistoryClearExecute(Sender: TObject);
 begin
+  ClearResultsData;
   gblGrepExpert.HistoryListDeleteFromSettings(delAll);
   gblGrepExpert.HistoryList.Clear;
   lbHistoryList.Count := 0;
