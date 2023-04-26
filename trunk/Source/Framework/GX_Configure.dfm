@@ -259,7 +259,7 @@ object fmConfiguration: TfmConfiguration
           Caption = 'IDE'
           TabOrder = 2
           object l_ForceDestkopAV: TLabel
-            Left = 176
+            Left = 192
             Top = 316
             Width = 288
             Height = 14
@@ -288,9 +288,9 @@ object fmConfiguration: TfmConfiguration
             OnClick = chkEnhanceDialogsClick
           end
           object chkEnhanceSearchPaths: TCheckBox
-            Left = 8
+            Left = 24
             Top = 96
-            Width = 729
+            Width = 713
             Height = 24
             Caption = 
               'Enable drag && drop, autocomplete and other enhancement for sear' +
@@ -298,9 +298,9 @@ object fmConfiguration: TfmConfiguration
             TabOrder = 3
           end
           object chkEnhanceToolProperties: TCheckBox
-            Left = 8
+            Left = 24
             Top = 120
-            Width = 729
+            Width = 713
             Height = 24
             Caption = 'Enhance Tools menu Tool Properties dialog'
             TabOrder = 4
@@ -322,39 +322,39 @@ object fmConfiguration: TfmConfiguration
             TabOrder = 2
           end
           object chkEnhanceInstallPackages: TCheckBox
-            Left = 8
+            Left = 24
             Top = 144
-            Width = 729
+            Width = 713
             Height = 24
             Caption = 'Enhance Install Packages dialog with ... Explorer button'
             TabOrder = 5
           end
           object chkEnhanceBuildEventsDialog: TCheckBox
-            Left = 8
+            Left = 24
             Top = 216
-            Width = 729
+            Width = 713
             Height = 24
             Caption = 'Enhance Build Events dialog with Favourites'
             TabOrder = 8
           end
           object chkEnhanceApplicationSettingsDialog: TCheckBox
-            Left = 8
+            Left = 24
             Top = 168
-            Width = 729
+            Width = 713
             Height = 24
             Caption = 'Enhance Application Settings dialog with version button'
             TabOrder = 6
           end
           object chkAutoCloseMessage: TCheckBox
-            Left = 8
+            Left = 24
             Top = 240
-            Width = 729
+            Width = 713
             Height = 24
             Caption = 'Automatically close message window after successful compile'
             TabOrder = 9
           end
           object chkAutoCloseIgnoreHints: TCheckBox
-            Left = 32
+            Left = 40
             Top = 264
             Width = 281
             Height = 24
@@ -362,23 +362,23 @@ object fmConfiguration: TfmConfiguration
             TabOrder = 10
           end
           object chkAutoCloseIgnoreWarnings: TCheckBox
-            Left = 312
+            Left = 320
             Top = 264
-            Width = 425
+            Width = 417
             Height = 24
             Caption = 'Even if there are warnings'
             TabOrder = 11
           end
           object chkForceStartupDesktop: TCheckBox
-            Left = 8
+            Left = 24
             Top = 288
-            Width = 729
+            Width = 713
             Height = 24
             Caption = 'Force desktop on startup (leave empty for last selected)'
             TabOrder = 12
           end
           object cbxDesktop: TComboBox
-            Left = 24
+            Left = 40
             Top = 312
             Width = 145
             Height = 22
@@ -386,25 +386,25 @@ object fmConfiguration: TfmConfiguration
             TabOrder = 13
           end
           object chkEnhanceDockForms: TCheckBox
-            Left = 8
+            Left = 24
             Top = 192
-            Width = 729
+            Width = 713
             Height = 24
             Caption = 'Enhance Dock Forms to allow minimize and Win+arrow positioning'
             TabOrder = 7
           end
           object chk_FontForNewForms: TCheckBox
-            Left = 8
+            Left = 24
             Top = 344
-            Width = 729
+            Width = 713
             Height = 24
             Caption = 'Custom Font for new forms (sets DefFontData)'
             TabOrder = 14
             Visible = False
           end
           object b_CustomFontForNewForms: TButton
-            Left = 24
-            Top = 360
+            Left = 40
+            Top = 368
             Width = 79
             Height = 25
             Caption = 'Font...'
