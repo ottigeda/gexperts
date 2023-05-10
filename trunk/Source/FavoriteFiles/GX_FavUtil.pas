@@ -76,9 +76,6 @@ const
   FolderNames: array[TFolderType] of string = ('Normal', 'Source', 'Bitmaps', 'Glyphs', 'Documentation');
   ExecTypeNames: array[TExecType] of string = ('Load In IDE', 'Shell Execute', 'Custom', 'Project');
 
-var
-  Root: TGXFolder;
-
 implementation
 
 uses
@@ -194,12 +191,6 @@ function TGXFile.GetContainingList: TList;
 begin
   Result := Owner.FFileList;
 end;
-
-initialization
-  Root := TGXFolder.Create(nil);
-
-finalization
-  FreeAndNil(Root);
 
 end.
 

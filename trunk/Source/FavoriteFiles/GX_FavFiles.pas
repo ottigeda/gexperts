@@ -179,6 +179,7 @@ type
     FModified: Boolean;
     FFileDrop: TDropFileTarget;
     FOnSettingsChanged: TNotifyEvent;
+    FRootFolder: TGXFolder;
     function GetFolder(const FolderNode: TTreeNode): TGXFolder;
     function GetFile(const FileItem: TListItem): TGXFile;
     procedure FileToListItem(const AFile: TGXFile; AListItem: TListItem);
@@ -343,7 +344,7 @@ begin
   try
     if tvFolders.Selected = nil then
     begin
-      Folder := TGXFolder.Create(Root);
+      Folder := TGXFolder.Create(FRootFolder);
       Node := tvFolders.Items.AddObject(nil, Text, Folder);
     end
     else
@@ -552,7 +553,7 @@ begin
 
     RootNode := Doc.CreateElement(XmlNodeRoot);
     Doc.DocumentElement := RootNode;
-    SaveFolder(Root, Doc, RootNode);
+    SaveFolder(FRootFolder, Doc, RootNode);
 
     Doc.Save(FEntryFile, ofIndent);
   except
@@ -722,15 +723,15 @@ begin
         Abort;
     end
     else begin
-      Root.Clear;
-      LoadFolder(Root, RootFolderNode);
-      Node := tvFolders.Items.AddObject(nil, Root.FolderName, Root);
+      FRootFolder.Clear;
+      LoadFolder(FRootFolder, RootFolderNode);
+      Node := tvFolders.Items.AddObject(nil, FRootFolder.FolderName, FRootFolder);
     end;
   end;
 
   Node.ImageIndex := 0;
   Node.SelectedIndex := 1;
-  CreateFolders(Root, Node);
+  CreateFolders(FRootFolder, Node);
   Node.Expand(FOptions.FExpandAll);
   if (tvFolders.Selected = nil) and (tvFolders.Items.Count > 0) then
     tvFolders.Selected := tvFolders.Items[0];
@@ -1322,7 +1323,7 @@ begin
   if (Trim(FavSubfolder) = '') then
   begin
     // Clear the current configuration, overwrite with wuppdiWP-settings
-    BaseFolder := Root;
+    BaseFolder := FRootFolder;
     tvFolders.Items.Clear;
 
     FavNode := CreateEmptyRootNode;
@@ -1331,11 +1332,11 @@ begin
   begin
     // Check if folder already exists!
     FavFolder := nil;
-    for I := 0 to Root.FolderCount - 1 do
+    for I := 0 to FRootFolder.FolderCount - 1 do
     begin
-      if (Root.Folders[I].FolderName = FavSubfolder) then
+      if (FRootFolder.Folders[I].FolderName = FavSubfolder) then
       begin
-        FavFolder := Root.Folders[I];
+        FavFolder := FRootFolder.Folders[I];
         Break;
       end;
     end;
@@ -1371,7 +1372,7 @@ begin
         FreeAndNil(BaseFolder);
 
       // Create a new subfolder
-      BaseFolder := TGXFolder.Create(Root);
+      BaseFolder := TGXFolder.Create(FRootFolder);
       BaseFolder.FolderName := FavSubfolder;
 
       FavNode := tvFolders.Items.AddChildObject(tvFolders.Items.GetFirstNode, FavSubfolder, BaseFolder);
@@ -1731,6 +1732,7 @@ constructor TfmFavFiles.Create(AOwner: TComponent; _Options: TFavFilesOptions);
 begin
   inherited Create(AOwner);
 
+  FRootFolder := TGXFolder.Create(nil);
   FOptions := _Options;
 
   TControl_SetMinConstraints(Self);
@@ -1778,6 +1780,8 @@ begin
 
   FFileDrop.Unregister;
   FreeAndNil(FFileDrop);
+
+  FreeAndNil(FRootFolder);
 
   inherited;
 end;
@@ -1846,10 +1850,10 @@ end;
 
 function TfmFavFiles.CreateEmptyRootNode: TTreeNode;
 begin
-  Assert(Assigned(Root));
-  Result := tvFolders.Items.AddObject(nil, SFavorites, Root);
-  Root.FolderName := SFavorites;
-  Root.FolderType := GX_FavUtil.ftNormal;
+  Assert(Assigned(FRootFolder));
+  Result := tvFolders.Items.AddObject(nil, SFavorites, FRootFolder);
+  FRootFolder.FolderName := SFavorites;
+  FRootFolder.FolderType := GX_FavUtil.ftNormal;
 end;
 
 function TfmFavFiles.ConfigurationKey: string;
