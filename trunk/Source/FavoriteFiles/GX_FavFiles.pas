@@ -1971,7 +1971,7 @@ begin
   end;
   Parent := mi.Parent;
   if not Assigned(Parent) then begin
-    {$IFOPT D+}SendDebugFmt('%s menu item has no parent not found', [FileOpenRecentItemName]); {$ENDIF}
+    {$IFOPT D+}SendDebugFmt('%s menu item has no parent', [FileOpenRecentItemName]); {$ENDIF}
     Exit; //==>
   end;
   Idx := Parent.IndexOf(mi);
