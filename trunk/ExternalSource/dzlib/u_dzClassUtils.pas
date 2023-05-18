@@ -1099,13 +1099,16 @@ var
 begin
   s := AnsiString(_s);
   Len := Length(s);
-  Result := _Stream.Write(PAnsiChar(s)^, Len);
-  if Result <> Len then begin
-    ErrCode := GetLastError;
-    RaiseLastOSErrorEx(ErrCode,
-      Format(_('Error writing string of length %d to stream, wrote only %d bytes: %%1:s (%%0:d)'),
-      [Len, Result]));
-  end;
+  if Len > 0 then begin
+    Result := _Stream.Write(PAnsiChar(s)^, Len);
+    if Result <> Len then begin
+      ErrCode := GetLastError;
+      RaiseLastOSErrorEx(ErrCode,
+        Format(_('Error writing string of length %d to stream, wrote only %d bytes: %%1:s (%%0:d)'),
+        [Len, Result]));
+    end;
+  end else
+   Result := 0;
 end;
 
 {$IFDEF UNICODE}
