@@ -13,16 +13,18 @@ type
     lvMacros: TListView;
     pnlHeader: TPanel;
     lblFilter: TLabel;
-    tbEnter: TEdit;
+    edtFilter: TEdit;
+    btnClear: TButton;
     pnlButtonsRight: TPanel;
     btnConfiguration: TButton;
-    procedure tbEnterChange(Sender: TObject);
+    procedure edtFilterChange(Sender: TObject);
     procedure lstMacrosDblClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure tbEnterKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure edtFilterKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormResize(Sender: TObject);
     procedure btnConfigurationClick(Sender: TObject);
+    procedure btnClearClick(Sender: TObject);
   private
     FMacroFile: TMacroFile;
     procedure SelectTemplate(Index: Integer);
@@ -31,13 +33,14 @@ type
     procedure SizeColumns;
     function WindowPosKey: string;
   public
+    ///<summary>
+    /// Shows the dialog to select a macro template
+    /// @Returns the index of the selected macro or -1 if the dialog was cancelled </summary>
+    class function Execute(const ATemplateName: string; MacroFile: TMacroFile): Integer;
     constructor Create(_Owner: TComponent); override;
     function GetSelectedMacroCode: Integer;
     procedure LoadTemplates(AMacroFile: TMacroFile; const Filter: string = '');
   end;
-
-// Returns the index of the selected macro
-function GetTemplateFromUser(const ATemplateName: string; MacroFile: TMacroFile): Integer;
 
 implementation
 
@@ -47,7 +50,9 @@ uses
   u_dzVclUtils,
   GX_MacroTemplatesExpert, GX_ConfigurationInfo, GX_GenericUtils;
 
-function GetTemplateFromUser(const ATemplateName: string; MacroFile: TMacroFile): Integer;
+{ TfmMacroSelect }
+
+class function TfmMacroSelect.Execute(const ATemplateName: string; MacroFile: TMacroFile): Integer;
 var
   frm: TfmMacroSelect;
 begin
@@ -55,10 +60,9 @@ begin
 
   frm := TfmMacroSelect.Create(Application);
   try
-
     frm.LoadTemplates(MacroFile);
-    frm.tbEnter.Text := ATemplateName;
-    frm.tbEnter.SelectAll;
+    frm.edtFilter.Text := ATemplateName;
+    frm.edtFilter.SelectAll;
     if frm.ShowModal = mrOk then
       Result := frm.GetSelectedMacroCode
     else
@@ -67,8 +71,6 @@ begin
     FreeAndNil(frm);
   end;
 end;
-
-{ TfmMacroSelect }
 
 constructor TfmMacroSelect.Create(_Owner: TComponent);
 begin
@@ -85,9 +87,9 @@ begin
   lvMacros.Selected.MakeVisible(False);
 end;
 
-procedure TfmMacroSelect.tbEnterChange(Sender: TObject);
+procedure TfmMacroSelect.edtFilterChange(Sender: TObject);
 begin
-  LoadTemplates(GetExpandMacroExpert.MacroFile, tbEnter.Text);
+  LoadTemplates(GetExpandMacroExpert.MacroFile, edtFilter.Text);
 end;
 
 procedure TfmMacroSelect.lstMacrosDblClick(Sender: TObject);
@@ -153,7 +155,7 @@ begin
   end;
 end;
 
-procedure TfmMacroSelect.tbEnterKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TfmMacroSelect.edtFilterKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if (Key = VK_DOWN) or (Key = VK_UP) or
     (Key = VK_NEXT) or (Key = VK_PRIOR) then
@@ -202,6 +204,12 @@ begin
     ListView_SetColumnWidth(lvMacros.Handle, 1, ColumnTextWidth)
   else
     lvMacros.Columns[1].Width := 200;
+end;
+
+procedure TfmMacroSelect.btnClearClick(Sender: TObject);
+begin
+  edtFilter.Text := '';
+  edtFilter.SetFocus;
 end;
 
 procedure TfmMacroSelect.btnConfigurationClick(Sender: TObject);

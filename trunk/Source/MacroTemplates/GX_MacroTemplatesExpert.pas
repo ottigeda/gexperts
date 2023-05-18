@@ -778,7 +778,7 @@ function TMacroTemplatesExpert.GetTemplate(const ATemplateName: string;
 begin
   Result := FMacroFile.IndexOf(ATemplateName);
   if (Result < 0) and APromptForUnknown then
-    Result := GetTemplateFromUser(ATemplateName, FMacroFile);
+    Result := TfmMacroSelect.Execute(ATemplateName, FMacroFile);
 end;
 
 function TMacroTemplatesExpert.GetHelpString: string;

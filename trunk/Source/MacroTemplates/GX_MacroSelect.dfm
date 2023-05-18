@@ -1,7 +1,7 @@
 object fmMacroSelect: TfmMacroSelect
   Left = 366
   Top = 321
-  ActiveControl = tbEnter
+  ActiveControl = edtFilter
   BorderStyle = bsSizeToolWin
   Caption = 'Select Macro Template'
   ClientHeight = 328
@@ -72,18 +72,18 @@ object fmMacroSelect: TfmMacroSelect
       Top = 7
       Width = 26
       Height = 14
-      Caption = 'Filte&r'
-      FocusControl = tbEnter
+      Caption = '&Filter'
+      FocusControl = edtFilter
     end
-    object tbEnter: TEdit
+    object edtFilter: TEdit
       Left = 48
       Top = 4
-      Width = 249
-      Height = 22
+      Width = 240
+      Height = 21
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
-      OnChange = tbEnterChange
-      OnKeyDown = tbEnterKeyDown
+      OnChange = edtFilterChange
+      OnKeyDown = edtFilterKeyDown
     end
     object pnlButtonsRight: TPanel
       Left = 298
@@ -92,7 +92,7 @@ object fmMacroSelect: TfmMacroSelect
       Height = 26
       Align = alRight
       BevelOuter = bvNone
-      TabOrder = 1
+      TabOrder = 2
       object btnConfiguration: TButton
         Left = 15
         Top = 1
@@ -102,6 +102,22 @@ object fmMacroSelect: TfmMacroSelect
         TabOrder = 0
         OnClick = btnConfigurationClick
       end
+    end
+    object btnClear: TButton
+      Left = 288
+      Top = 3
+      Width = 21
+      Height = 21
+      Anchors = [akTop, akRight]
+      Caption = 'X'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBtnText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 1
+      OnClick = btnClearClick
     end
   end
 end
