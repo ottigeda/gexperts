@@ -703,7 +703,7 @@ procedure TStatusBar_EnableLongSimpleText(_StatusBar: TStatusBar);
 ///<summary> Set the SimpleText of the StatusBar and invalidate it to enforce a redraw </summary>
 procedure TStatusBar_SetLongSimpleText(_StatusBar: TStatusBar; const _Text: string);
 
-///<sumamry>
+///<summary>
 /// Resize one panel a StatusBar to take up all the space the others don't need
 /// @param sb is the TStatusBar to work on
 /// @param PanelIdxToChange is the index of the panel whose size should be changed </summary>
