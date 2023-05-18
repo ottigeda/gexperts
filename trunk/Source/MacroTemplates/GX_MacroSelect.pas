@@ -2,6 +2,7 @@
 unit GX_MacroSelect;
 
 interface
+
 uses
   Windows, Messages, SysUtils, Classes,
   Controls, Forms, ExtCtrls, StdCtrls, ComCtrls, CommCtrl,
@@ -47,7 +48,8 @@ implementation
 {$R *.dfm}
 
 uses
-  u_dzVclUtils,
+  StrUtils,
+  u_dzVclUtils, u_dzStringUtils,
   GX_MacroTemplatesExpert, GX_ConfigurationInfo, GX_GenericUtils;
 
 { TfmMacroSelect }
@@ -119,24 +121,28 @@ begin
 end;
 
 procedure TfmMacroSelect.LoadTemplates(AMacroFile: TMacroFile; const Filter: string = '');
+var
+  FirstMatch: Integer;
 
   procedure AddMacroToList(const AMacroName, AMacroDesc: string);
   var
     ListItem: TListItem;
   begin
-    if (Filter = '')
-      or StrContains(Filter, AMacroName, False) or StrContains(Filter, AMacroDesc, False)  then
-    begin
-      ListItem := lvMacros.Items.Add;
-      ListItem.Caption := AMacroName;
-      ListItem.SubItems.Add(AMacroDesc);
+    if (Filter = '') then begin
+      FirstMatch := 0;
+    end else if StrContains(Filter, AMacroName, False) or StrContains(Filter, AMacroDesc, False) then begin
+      if StartsText(Filter, AMacroName) then begin
+        if (FirstMatch = -1) or SameText(Filter, AMacroName) then begin
+          FirstMatch := lvMacros.Items.Count;
+        end;
+      end;
+    end else begin
+      // no match, don't add
+      Exit; //==>
     end;
-  end;
-
-  procedure FocusAndSelectFirstItem;
-  begin
-    if lvMacros.Items.Count > 0 then
-      SelectTemplate(0);
+    ListItem := lvMacros.Items.Add;
+    ListItem.Caption := AMacroName;
+    ListItem.SubItems.Add(AMacroDesc);
   end;
 
 var
@@ -146,9 +152,11 @@ begin
   lvMacros.Items.BeginUpdate;
   try
     lvMacros.Items.Clear;
+    FirstMatch := -1;
     for i := 0 to AMacroFile.MacroCount - 1 do
       AddMacroToList(AMacroFile.MacroItems[i].Name, AMacroFile.MacroItems[i].Desc);
-    FocusAndSelectFirstItem;
+    if FirstMatch <> -1 then
+      SelectTemplate(FirstMatch);
     SizeColumns;
   finally
     lvMacros.Items.EndUpdate;
