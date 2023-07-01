@@ -1,8 +1,10 @@
 program GExpertsGrep;
 
 uses
+  ToolsAPI in 'ToolsAPI.pas',
   DropSource in '..\..\..\..\ExternalSource\DropSource.pas',
   GrepMain in 'GrepMain.pas',
+  GX_Logging in '..\..\..\..\Source\Framework\GX_Logging.pas',
   GX_About in '..\..\..\..\Source\Framework\GX_About.pas' {fmAbout},
   GX_AboutExperimental in '..\..\..\..\Source\Formatter\GX_AboutExperimental.pas' {fmAboutExperimental},
   GX_ActionBroker in 'GX_ActionBroker.pas',
@@ -22,6 +24,7 @@ uses
   GX_GrepExpert in '..\..\..\..\Source\Grep\GX_GrepExpert.pas',
   GX_GrepMenuEntry in 'GX_GrepMenuEntry.pas',
   GX_GrepOptions in '..\..\..\..\Source\Grep\GX_GrepOptions.pas' {fmGrepOptions},
+  GX_GrepOptionsStandAlone in 'GX_GrepOptionsStandAlone.pas' {fmGrepGrepOptionsStandAlone},
   GX_GrepPrinting in '..\..\..\..\Source\Grep\GX_GrepPrinting.pas',
   GX_GrepProgress in '..\..\..\..\Source\Grep\GX_GrepProgress.pas' {fmGrepProgress},
   GX_GrepRegExSearch in '..\..\..\..\Source\Grep\GX_GrepRegExSearch.pas',
@@ -42,8 +45,7 @@ uses
   GX_SharedImages in '..\..\..\..\Source\Framework\GX_SharedImages.pas' {dmSharedImages: TDataModule},
   GX_StringList in '..\..\..\..\Source\Utils\GX_StringList.pas',
   GX_TestRegEx in '..\..\..\..\Source\Grep\GX_TestRegEx.pas' {fmTestRegEx},
-  GX_VerDepConst in '..\..\..\..\Source\Framework\GX_VerDepConst.pas',
-  ToolsAPI in 'ToolsAPI.pas';
+  GX_VerDepConst in '..\..\..\..\Source\Framework\GX_VerDepConst.pas';
 
 {$R *_icon.res}
 {$R *_version.res}

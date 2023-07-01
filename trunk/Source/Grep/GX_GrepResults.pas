@@ -128,9 +128,11 @@ type
     actFilePrintToFile: TAction;
     actFileSavePrint: TAction;
     actFileOpen: TAction;
+    actFileOptionsStandAlone: TAction;
     miFilePrintToFile: TMenuItem;
     miFileSavePrint: TMenuItem;
     mitFileOpen: TMenuItem;
+    miFileExplorerIntegration: TMenuItem;
     mitFileSep3: TMenuItem;
     OpenDialog: TOpenDialog;
     actHistoryRefreshSelected: TAction;
@@ -323,6 +325,7 @@ type
     procedure SplitterContextMoved(Sender: TObject);
     procedure SplitterHistoryListCanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
     procedure actHistoryClearExecute(Sender: TObject);
+    procedure actFileOptionsStandAloneExecute(Sender: TObject);
   private
     FLastRepaintTick: DWORD;
     FSearchInProgress: Boolean;
@@ -445,6 +448,9 @@ uses
   SysUtils, Messages, Math, StrUtils, IniFiles, TypInfo, Contnrs, Clipbrd, DateUtils,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF D+}
   u_dzVclUtils,
+{$IFDEF GX_STANDALONE}
+  GX_GrepOptionsStandAlone,
+{$ENDIF GX_STANDALONE}
   GX_GExperts, GX_GenericUtils, GX_StringList, GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_MessageBox,
   GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect, GX_GrepProgress;
 
@@ -1661,6 +1667,25 @@ begin
   else
     Hide;
 end;
+
+procedure TfmGrepResults.actFileOptionsStandAloneExecute(Sender: TObject);
+{$IFDEF GX_STANDALONE}
+var
+  ExternalEditor: string;
+  Params: string;
+begin
+  ExternalEditor := gblGrepExpert.ExternalEditor;
+  Params := gblGrepExpert.ExternalEditorParams;
+  if TfmGrepGrepOptionsStandAlone.Execute(Self, ExternalEditor, Params) then begin
+    gblGrepExpert.ExternalEditor := ExternalEditor;
+    gblGrepExpert.ExternalEditorParams := Params;
+    gblGrepExpert.SaveSettings;
+  end;
+end;
+{$ELSE}
+begin
+end;
+{$ENDIF GX_STANDALONE}
 
 procedure TfmGrepResults.actHelpHelpExecute(Sender: TObject);
 begin

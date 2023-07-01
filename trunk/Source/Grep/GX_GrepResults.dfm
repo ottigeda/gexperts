@@ -367,6 +367,9 @@ inherited fmGrepResults: TfmGrepResults
       object mitFileSep6: TMenuItem
         Caption = '-'
       end
+      object miFileExplorerIntegration: TMenuItem
+        Action = actFileOptionsStandAlone
+      end
       object mitFileModifySaveOptions: TMenuItem
         Action = actHistoryModifySaveOptions
       end
@@ -819,6 +822,12 @@ inherited fmGrepResults: TfmGrepResults
       ImageIndex = 89
       ShortCut = 121
       OnExecute = actHamburgerMenuExecute
+    end
+    object actFileOptionsStandAlone: TAction
+      Category = 'File'
+      Caption = 'Options'
+      ImageIndex = 17
+      OnExecute = actFileOptionsStandAloneExecute
     end
   end
   object pmHistoryMenu: TPopupMenu
