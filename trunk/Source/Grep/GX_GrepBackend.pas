@@ -858,7 +858,7 @@ var
   FormFile: string;
 begin
   FormEditor := nil;
-  if RunningInsideIDE then
+  if not IsStandAlone then
   begin
     Module := GxOtaGetModule(FileName);
     FormEditor := GxOtaGetFormEditorFromModule(Module);

@@ -515,7 +515,7 @@ procedure TfmGrepSearch.LoadFormSettings;
   begin
     Selection := fmGrepResults.ContextSearchText;
     if Trim(Selection) = '' then begin
-      if RunningInsideIDE
+      if not IsStandAlone
         and (GxOtaGetCurrentEditorAsSourceEditor = nil)
         and gblGrepExpert.GrepUseCurrentIdent then
         Selection := GxOtaSelectedComponentName

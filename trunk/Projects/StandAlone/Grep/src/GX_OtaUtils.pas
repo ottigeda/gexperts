@@ -17,10 +17,6 @@ uses
 function IsStandAlone: Boolean;
 
 ///<summary>
-/// @returns False </summary>
-function RunningInsideIDE: Boolean;
-
-///<summary>
 /// Fake function, always returs nil </summary>
 function GxOtaGetModule(const _Filename: string): IOTAModule;
 
@@ -120,11 +116,6 @@ uses
 function IsStandAlone: Boolean;
 begin
   Result := True;
-end;
-
-function RunningInsideIDE: Boolean;
-begin
-  Result := False;
 end;
 
 function GxOtaGetModule(const _Filename: string): IOTAModule;

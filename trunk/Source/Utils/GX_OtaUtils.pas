@@ -745,7 +745,6 @@ function GxOtaGetFormBiDiMode(Form: IOTAFormEditor): TBiDiMode;
 function IsValidExpertDll(const FileName: string): Boolean;
 
 function IsStandAlone: Boolean;
-function RunningInsideIDE: Boolean;
 
 // Consolidate with GxOtaGotoPosition?
 procedure GxOtaSetCurrentSourcePosition(Position: Integer);
@@ -4610,11 +4609,6 @@ begin
   Result := (BorlandIDEServices = nil);
 end;
 
-function RunningInsideIDE: Boolean;
-begin
-  Result := not IsStandAlone;
-end;
-
 procedure GxOtaSaveReaderToStream(EditReader: IOTAEditReader; Stream: TStream; TrailingNull: Boolean);
 const
   // Leave typed constant as is - needed for streaming code.
@@ -5244,7 +5238,7 @@ begin
     raise Exception.Create('Blank filenames are not allowed');
   WasBinary := False;
 
-  if RunningInsideIDE and GxOtaIsFileOpen(FileName, True) then
+  if not IsStandAlone and GxOtaIsFileOpen(FileName, True) then
     GxOtaLoadIDEFileToUnicodeStrings(FileName, Data, WasBinary)
   else
     LoadDiskFileToUnicodeStrings(FileName, Data, WasBinary)
