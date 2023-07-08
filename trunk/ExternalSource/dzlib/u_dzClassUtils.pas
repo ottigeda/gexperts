@@ -1977,6 +1977,11 @@ begin
     FReg.WriteString(_Item, _Value);
 end;
 
+{$IF not defined(KEY_WOW64_64KEY)}
+const
+  KEY_WOW64_64KEY = $0100;
+{$IFEND}
+
 function TRegistry_TryOpenKeyReadonly(const _Key: string; _HKEY: HKEY = HKEY_CURRENT_USER;
   _ReadWow64: Boolean = False): IRegistryGuard;
 var
