@@ -50,7 +50,7 @@ uses
   GX_GrepRegExSearch, GX_StringList;
 
 type
-  TGrepAction = (gaProjGrep, gaCurrentOnlyGrep, gaOpenFilesGrep, gaDirGrep, gaProjGroupGrep, gaResults);
+  TGrepAction = (gaCurrentOnlyGrep, gaProjGrep, gaOpenFilesGrep, gaDirGrep, gaProjGroupGrep, gaResults);
 
   TGrepSearchState = (gssNormal, gssRefresh, gssRefreshAll, gssRefreshSelected,
     gssSearchAgain, gssModifySearchSettings, gssSearchEmbedded);

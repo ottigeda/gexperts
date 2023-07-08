@@ -448,17 +448,19 @@ begin
   gblGrepExpert.GrepSaveOption := TGrepSaveOption(rgSaveOption.ItemIndex);
 
   if rbCurrentOnly.Checked then
-    gblGrepExpert.GrepSearch := 0
-  else if rbAllProjFiles.Checked then
-    gblGrepExpert.GrepSearch := 1
+    gblGrepExpert.GrepAction := gaCurrentOnlyGrep
   else if rbOpenFiles.Checked then
-    gblGrepExpert.GrepSearch := 2
+    gblGrepExpert.GrepAction := gaOpenFilesGrep
   else if rbDirectories.Checked then
-    gblGrepExpert.GrepSearch := 3
+    gblGrepExpert.GrepAction := gaDirGrep
   else if rbAllProjGroupFiles.Checked then
-    gblGrepExpert.GrepSearch := 4
+    gblGrepExpert.GrepAction := gaProjGroupGrep
   else if rbResults.Checked then
-    gblGrepExpert.GrepSearch := 5;
+    gblGrepExpert.GrepAction := gaResults
+  else begin
+    // default
+    gblGrepExpert.GrepAction := gaProjGrep;
+  end;
 
   gblGrepExpert.GrepMinDepth := StrToIntDef(ed_MinDepth.Text, 0);
   gblGrepExpert.GrepMaxDepth := StrToIntDef(ed_MaxDepth.Text, -1);
@@ -579,13 +581,12 @@ begin
 
     rgSaveOption.ItemIndex := Integer(gblGrepExpert.SaveOption);
 
-    case gblGrepExpert.GrepSearch of
-      0: rbCurrentOnly.Checked := True;
-      1: rbAllProjFiles.Checked := True;
-      2: rbOpenFiles.Checked := True;
-      3: rbDirectories.Checked := True;
-      4: rbAllProjGroupFiles.Checked := True;
-      5: begin
+    case gblGrepExpert.GrepAction of
+      gaCurrentOnlyGrep: rbCurrentOnly.Checked := True;
+      gaOpenFilesGrep: rbOpenFiles.Checked := True;
+      gaDirGrep: rbDirectories.Checked := True;
+      gaProjGroupGrep: rbAllProjGroupFiles.Checked := True;
+      gaResults: begin
           if rbResults.Enabled then
             rbResults.Checked := True
           else

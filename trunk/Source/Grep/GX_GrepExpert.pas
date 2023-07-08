@@ -37,7 +37,7 @@ type
     FGrepFormsSpecialChars: Boolean;
     FGrepFormsMultiline: Boolean;
     FGrepSQLFiles: Boolean;
-    FGrepSearch: Integer;
+    FGrepAction: TGrepAction;
     FGrepSub: Boolean;
     FGrepWholeWord: Boolean;
     FGrepRegEx: Boolean;
@@ -130,7 +130,7 @@ type
     property GrepFormsMultiline: Boolean read FGrepFormsMultiline write FGrepFormsMultiline;
     property GrepFormsSpecialChars: Boolean read FGrepFormsSpecialChars write FGrepFormsSpecialChars;
     property GrepSQLFiles: Boolean read FGrepSQLFiles write FGrepSQLFiles;
-    property GrepSearch: Integer read FGrepSearch write FGrepSearch;
+    property GrepAction: TGrepAction read FGrepAction write FGrepAction;
     property GrepSub: Boolean read FGrepSub write FGrepSub;
     property GrepWholeWord: Boolean read FGrepWholeWord write FGrepWholeWord;
     property GrepRegEx: Boolean read FGrepRegEx write FGrepRegEx;
@@ -464,7 +464,7 @@ begin
   _Settings.WriteBool('FormsSpecialChars', GrepFormsSpecialChars);
   _Settings.WriteBool('FormsMultiline', GrepFormsMultiline);
   _Settings.WriteBool('SQLFiles', GrepSQLFiles);
-  _Settings.WriteInteger('Search', GrepSearch);
+  _Settings.WriteInteger('Search', Ord(GrepAction));
   _Settings.WriteBool('SubDirectories', GrepSub);
   _Settings.WriteBool('ExpandAll', GrepExpandAll);
   _Settings.WriteBool('ExpandIf', GrepExpandIf);
@@ -547,23 +547,14 @@ begin
   Result.SectionInitialization := GrepInitialization;
   Result.SectionFinalization := GrepFinalization;
 
-  case GrepSearch of
-    0: Result.GrepAction := gaCurrentOnlyGrep;
-    1: Result.GrepAction := gaProjGrep;
-    2: Result.GrepAction := gaOpenFilesGrep;
-    3: begin
-      Result.GrepAction := gaDirGrep;
-      if MaskList.Count > 0 then
-        Result.Mask := MaskList[0];
-      if DirList.Count > 0 then
-        Result.Directories := DirList[0];
-      if ExcludedDirsList.Count > 0 then
-        Result.ExcludedDirs := ExcludedDirsList[0];
-    end;
-    4: Result.GrepAction := gaProjGroupGrep;
-    5: Result.GrepAction := gaResults;
-  else
-    Result.GrepAction := gaProjGrep;
+  Result.GrepAction := GrepAction;
+  if GrepAction = gaDirGrep then begin
+    if MaskList.Count > 0 then
+      Result.Mask := MaskList[0];
+    if DirList.Count > 0 then
+      Result.Directories := DirList[0];
+    if ExcludedDirsList.Count > 0 then
+      Result.ExcludedDirs := ExcludedDirsList[0];
   end;
 end;
 
@@ -716,6 +707,7 @@ procedure TGrepExpert.InternalLoadSettings(_Settings: IExpertSettings);
 
 var
   TempPath: string;
+  GrepActionInt: Integer;
 begin
   inherited InternalLoadSettings(_Settings);
   // Do not localize any of the following lines
@@ -735,7 +727,13 @@ begin
   FGrepFormsMultiline := _Settings.ReadBool('FormsMultiline', False);
 
   FGrepSQLFiles := _Settings.ReadBool('SQLFiles', False);
-  FGrepSearch := _Settings.ReadInteger('Search', 1);
+
+  GrepActionInt := _Settings.ReadInteger('Search', Ord(gaProjGrep));
+  if (GrepActionInt < 0) or (GrepActionInt > Ord(High(TGrepAction))) then
+    GrepAction := gaProjGrep
+  else
+    GrepAction := TGrepAction(GrepActionInt);
+
   FGrepSub := _Settings.ReadBool('SubDirectories', True);
   FGrepExpandAll := _Settings.ReadBool('ExpandAll', False);
   FGrepExpandIf := _Settings.ReadBool('ExpandIf', False);
