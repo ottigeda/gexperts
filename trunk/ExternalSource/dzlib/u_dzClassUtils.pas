@@ -533,7 +533,8 @@ type
 ///          when it goes out of scope. </summary>
 function TRegistry_OpenKeyReadonly(const _Key: string; _HKEY: HKEY = HKEY_CURRENT_USER): IRegistryGuard;
 
-function TRegistry_TryOpenKeyReadonly(const _Key: string; _HKEY: HKEY = HKEY_CURRENT_USER): IRegistryGuard;
+function TRegistry_TryOpenKeyReadonly(const _Key: string; _HKEY: HKEY = HKEY_CURRENT_USER;
+  _ReadWow64: Boolean = False): IRegistryGuard;
 
 ///<summary>
 /// Opens a registry key for writing
@@ -568,7 +569,7 @@ function TRegistry_TryReadString(const _Path: string; out _Value: string;
 /// @raises any exception that TRegistry raises if something goes wrong reading the value,
 ///         e.g. the value exists, but is not a string </summary>
 function TRegistry_TryReadString(const _Key: string; const _Entry: string; out _Value: string;
-  _HKEY: HKEY = HKEY_CURRENT_USER): Boolean; overload;
+  _HKEY: HKEY = HKEY_CURRENT_USER; _ReadWow64: Boolean = False): Boolean; overload;
 
 ///<summary>
 /// Tries to read a string value from the given (open) TRegistry instance.
@@ -1108,7 +1109,7 @@ begin
         [Len, Result]));
     end;
   end else
-   Result := 0;
+    Result := 0;
 end;
 
 {$IFDEF UNICODE}
@@ -1976,11 +1977,12 @@ begin
     FReg.WriteString(_Item, _Value);
 end;
 
-function TRegistry_TryOpenKeyReadonly(const _Key: string; _HKEY: HKEY = HKEY_CURRENT_USER): IRegistryGuard;
+function TRegistry_TryOpenKeyReadonly(const _Key: string; _HKEY: HKEY = HKEY_CURRENT_USER;
+  _ReadWow64: Boolean = False): IRegistryGuard;
 var
   Reg: TRegistry;
 begin
-  Reg := TRegistry.Create;
+  Reg := TRegistry.Create(key_Read or KEY_WOW64_64KEY);
   Reg.RootKey := _HKEY;
   if not Reg.OpenKeyReadOnly(_Key) then
     FreeAndNil(Reg);
@@ -2051,11 +2053,11 @@ begin
 end;
 
 function TRegistry_TryReadString(const _Key: string; const _Entry: string; out _Value: string;
-  _HKEY: HKEY = HKEY_CURRENT_USER): Boolean;
+  _HKEY: HKEY = HKEY_CURRENT_USER; _ReadWow64: Boolean = False): Boolean;
 var
   Guard: IRegistryGuard;
 begin
-  Guard := TRegistry_TryOpenKeyReadonly(_Key, _HKEY);
+  Guard := TRegistry_TryOpenKeyReadonly(_Key, _HKEY, _ReadWow64);
   Result := Guard.IsValid and TRegistry_TryReadString(Guard.Reg, _Entry, _Value);
 end;
 
