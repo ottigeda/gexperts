@@ -248,7 +248,7 @@ type
     procedure Execute(Sender: TObject); override;
     function GetActionCaption: string; override;
     class function GetName: string; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure AfterIDEInitialized; override;
   end;
 
@@ -356,9 +356,9 @@ begin
   OpenExpert(otOpenProject);
 end;
 
-procedure TOpenFileExpert.Configure;
+procedure TOpenFileExpert.Configure(_Owner: TWinControl);
 begin
-  TfmOpenFileConfig.ExecuteWithSettings(Settings);
+  TfmOpenFileConfig.ExecuteWithSettings(_Owner, Settings);
 end;
 
 procedure TOpenFileExpert.HijackIDEActions;
@@ -1031,7 +1031,7 @@ end;
 
 procedure TfmOpenFile.actConfigExecute(Sender: TObject);
 begin
-  if TfmOpenFileConfig.ExecuteWithSettings(Settings) then
+  if TfmOpenFileConfig.ExecuteWithSettings( Self, Settings) then
     InitializeFromSettings;
 end;
 

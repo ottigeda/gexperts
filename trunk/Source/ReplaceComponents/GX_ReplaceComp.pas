@@ -148,7 +148,7 @@ type
     class function ConfigurationKey: string; override;
     procedure Execute(Sender: TObject); override;
     function HasConfigOptions: Boolean; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure SetActive(New: Boolean); override;
     function HasDesignerMenuItem: Boolean; override;
 
@@ -622,13 +622,14 @@ begin
   FreeAndNil(FConfigData);
 end;
 
-procedure TReplaceCompExpert.Configure;
+procedure TReplaceCompExpert.Configure(_Owner: TWinControl);
 var
   Dlg: TfmReplaceCompMapList;
 begin
   PrepareConfigData;
-  Dlg := TfmReplaceCompMapList.Create(nil, FConfigData);
+  Dlg := TfmReplaceCompMapList.Create(_Owner, FConfigData);
   try
+    TForm_CenterOn(Dlg, _Owner);
     SetFormIcon(Dlg);
     Dlg.ShowModal;
   finally
@@ -1060,7 +1061,7 @@ end;
 
 procedure TfmReplaceComp.btnSettingsClick(Sender: TObject);
 begin
-  ReplaceCompExpert.Configure;
+  ReplaceCompExpert.Configure(Self);
 end;
 
 initialization

@@ -62,6 +62,7 @@ var
 begin
   frm := TfmClipboardOptions.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.SetData(_MaxEntries, _AutoStart, _AutoClose, _Font);
     Result := (frm.ShowModal = mrOk);
     if Result then

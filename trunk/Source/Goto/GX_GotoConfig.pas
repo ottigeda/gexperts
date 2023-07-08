@@ -17,11 +17,11 @@ uses
 type
   Tf_GotoConfig = class(TfmBaseForm)
     chk_ReplaceSearchGoto: TCheckBox;
-    b_OK: TButton;
+    b_Ok: TButton;
     b_Cancel: TButton;
   private
   public
-    class function Execute(var _ReplaceSearchGoto: Boolean): Boolean;
+    class function Execute(_Owner: TWinControl; var _ReplaceSearchGoto: Boolean): Boolean;
     constructor Create(_Owner: TComponent); override;
   end;
 
@@ -34,12 +34,13 @@ uses
 
 { Tf_GotoConfig }
 
-class function Tf_GotoConfig.Execute(var _ReplaceSearchGoto: Boolean): Boolean;
+class function Tf_GotoConfig.Execute(_Owner: TWinControl; var _ReplaceSearchGoto: Boolean): Boolean;
 var
   frm: Tf_GotoConfig;
 begin
-  frm := Tf_GotoConfig.Create(nil);
+  frm := Tf_GotoConfig.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.chk_ReplaceSearchGoto.Checked := _ReplaceSearchGoto;
     Result := (frm.ShowModal = mrOk);
     if Result then

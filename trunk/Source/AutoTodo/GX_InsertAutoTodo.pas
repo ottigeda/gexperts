@@ -73,7 +73,7 @@ type
     function GetActionCaption: string; override;
     class function GetName: string; override;
     function HasConfigOptions: Boolean; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure Execute(Sender: TObject); override;
   end;
 
@@ -234,12 +234,13 @@ begin
     end;
 end;
 
-procedure TInsertAutoTodoExpert.Configure;
+procedure TInsertAutoTodoExpert.Configure(_Owner: TWinControl);
 var
   frm: tfmInsertAutoTodoForm;
 begin
-  frm := tfmInsertAutoTodoForm.Create(nil);
+  frm := tfmInsertAutoTodoForm.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.SetData(FUsername, FTextToInsert, FDoneDialogEnabled);
     if frm.ShowModal = mrOk then
     begin

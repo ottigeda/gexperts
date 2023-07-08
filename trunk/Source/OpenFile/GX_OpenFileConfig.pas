@@ -142,7 +142,7 @@ type
     function IDEOverride: TIDEOverride;
     procedure lbxDirectoryListFilesDropped(Sender: TObject; Files: TStrings);
   public
-    class function ExecuteWithSettings(Settings: TOpenFileSettings): Boolean;
+    class function ExecuteWithSettings(_Owner: TWinControl;Settings: TOpenFileSettings): Boolean;
     constructor Create(_Owner: TComponent); override;
     property FileTypes: TFileTypes read GetFileTypes;
   end;
@@ -575,14 +575,15 @@ begin
     edtDirectory.Text := AddSlash(NewDirectory);
 end;
 
-class function TfmOpenFileConfig.ExecuteWithSettings(Settings: TOpenFileSettings): Boolean;
+class function TfmOpenFileConfig.ExecuteWithSettings(_Owner: TWinControl; Settings: TOpenFileSettings): Boolean;
 var
   frm: TfmOpenFileConfig;
 begin
   Assert(Assigned(Settings));
 
-  frm := TfmOpenFileConfig.Create(nil);
+  frm := TfmOpenFileConfig.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.UseSettings(Settings);
     Result := frm.ShowModal = mrOK;
     if Result then

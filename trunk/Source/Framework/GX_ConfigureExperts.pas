@@ -365,7 +365,7 @@ var
 begin
   Idx := (_Sender as TButton).Tag;
   AnExpert := FExperts[Idx];
-  AnExpert.Configure;
+  AnExpert.Configure(Self);
 end;
 
 procedure TfrConfigureExperts.SetDefaultShortcutClick(_Sender: TObject);

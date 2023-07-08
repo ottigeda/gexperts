@@ -92,7 +92,7 @@ type
     constructor Create; override;
     function GetActionCaption: string; override;
     class function GetName: string; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure Execute(Sender: TObject); override;
     function HasDesignerMenuItem: Boolean; override;
   end;
@@ -409,12 +409,13 @@ begin
   _Settings.WriteEnumerated('Language', TypeInfo(TCToCLanguage), Ord(FSettings.Language));
 end;
 
-procedure TComponentsToCodeExpert.Configure;
+procedure TComponentsToCodeExpert.Configure(_Owner: TWinControl);
 var
   frm: TfmCompsToCode;
 begin
-  frm := TfmCompsToCode.Create(nil);
+  frm := TfmCompsToCode.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.InitSettings(FSettings);
     if frm.ShowModal = mrOk then
     begin

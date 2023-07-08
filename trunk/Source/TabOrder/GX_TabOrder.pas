@@ -90,7 +90,7 @@ type
     procedure ShowTabOrderForm;
   protected
     procedure UpdateAction(Action: TCustomAction); override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   public
@@ -283,9 +283,9 @@ begin
   Action.Enabled := GxOtaCurrentlyEditingForm;
 end;
 
-procedure TTabExpert.Configure;
+procedure TTabExpert.Configure(_Owner: TWinControl);
 begin
-  TfmTabOrderOptions.Execute(nil, FAutoSort);
+  TfmTabOrderOptions.Execute(_Owner, FAutoSort);
 end;
 
 procedure TTabExpert.Execute(Sender: TObject);

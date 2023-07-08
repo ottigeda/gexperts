@@ -97,7 +97,7 @@ type
     destructor Destroy; override;
     function GetActionCaption: string; override;
     class function GetName: string; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure Execute(Sender: TObject); override;
     procedure UpdateAction(Action: TCustomAction); override;
   end;
@@ -321,7 +321,7 @@ procedure TfmSourceExport.actConfigureExecute(Sender: TObject);
 begin
   Assert(Assigned(SourceExportExpert));
 
-  SourceExportExpert.Configure;
+  SourceExportExpert.Configure(Self);
   LoadSettings;
 end;
 
@@ -435,14 +435,15 @@ begin
   _Settings.WriteInteger('Background', FBackgroundColor);
 end;
 
-procedure TSourceExportExpert.Configure;
+procedure TSourceExportExpert.Configure(_Owner: TWinControl);
 var
   frm: TfmSourceExportOptions;
   HighlighterRegKey: string;
   NewCopyFormat: TGXCopyFormat;
 begin
-  frm := TfmSourceExportOptions.Create(nil);
+  frm := TfmSourceExportOptions.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     HighlighterRegKey := ConfigInfo.GExpertsIdeRootRegistryKey + HighlighterDefaultRegKey
         + frm.SynSampleEditor.Highlighter.LanguageName;
 

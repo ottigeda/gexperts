@@ -107,7 +107,7 @@ type
     class function GetName: string; override;
     procedure Execute(Sender: TObject); override;
     function HasConfigOptions: Boolean; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     property ExtensionList: TStrings read FExtensionList;
     property CleanList: TStrings read FCleanList;
   end;
@@ -701,7 +701,7 @@ begin
   Result := True;
 end;
 
-procedure TCleanDirectoriesExpert.Configure;
+procedure TCleanDirectoriesExpert.Configure(_Owner: TWinControl);
 resourcestring
   SAddExeDcuDirsToCleanList =
     'Would you like the project''s unit output and executable' + sLineBreak +

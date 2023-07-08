@@ -252,7 +252,7 @@ type
     function CanHaveShortCut: Boolean; override;
     constructor Create; override;
     destructor Destroy; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     function GetDisplayName: string; override;
     function GetHelpString: string; override;
     function HasMenuItem: Boolean; override;
@@ -275,12 +275,13 @@ begin
   Result := False;
 end;
 
-procedure TExplicitFilterExpert.Configure;
+procedure TExplicitFilterExpert.Configure(_Owner: TWinControl);
 var
   frm: TfmGxExplicitFilter;
 begin
-  frm := TfmGxExplicitFilter.Create(nil);
+  frm := TfmGxExplicitFilter.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.SetData(gblWriteExplicitPropSet);
     if frm.ShowModal = mrOk then begin
       frm.GetData(gblWriteExplicitPropSet);

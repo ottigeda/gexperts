@@ -32,7 +32,7 @@ type
     procedure GetData(_Matches: TStrings; out _RegEx: Boolean);
   public
     constructor Create(_Owner: TComponent); override;
-    class function Execute(_Owner: TComponent; _Matches: TStrings; var _RegEx: Boolean): Boolean;
+    class function Execute(_Owner: TWinControl; _Matches: TStrings; var _RegEx: Boolean): Boolean;
   end;
 
 implementation
@@ -69,7 +69,7 @@ type
   public
     constructor Create; override;
     // optional if HasConfigOptions returns false
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure Execute(Sender: TObject); override;
     function GetDisplayName: string; override;
     // optional, but recommended
@@ -80,9 +80,9 @@ type
 
 { TRemoveMatchingLinesExpert }
 
-procedure TRemoveMatchingLinesExpert.Configure;
+procedure TRemoveMatchingLinesExpert.Configure(_Owner: TWinControl);
 begin
-  if TfmRemoveMatchingLinesExpertConfig.Execute(nil, FMatches, FRegEx) then
+  if TfmRemoveMatchingLinesExpertConfig.Execute(_Owner, FMatches, FRegEx) then
     SaveSettings;
 end;
 
@@ -307,13 +307,14 @@ begin
   end;
 end;
 
-class function TfmRemoveMatchingLinesExpertConfig.Execute(_Owner: TComponent; _Matches: TStrings;
+class function TfmRemoveMatchingLinesExpertConfig.Execute(_Owner: TWinControl; _Matches: TStrings;
   var _RegEx: Boolean): Boolean;
 var
   frm: TfmRemoveMatchingLinesExpertConfig;
 begin
-  frm := TfmRemoveMatchingLinesExpertConfig.Create(nil);
+  frm := TfmRemoveMatchingLinesExpertConfig.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.SetData(_Matches, _RegEx);
     Result := (frm.ShowModal = mrOk);
     if Result then begin

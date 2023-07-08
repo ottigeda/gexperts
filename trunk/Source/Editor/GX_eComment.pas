@@ -107,7 +107,7 @@ type
     constructor Create; override;
     function GetDefaultShortCut: TShortCut; override;
     function GetDisplayName: string; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     function GetHelpString: string; override;
   end;
 
@@ -126,12 +126,13 @@ type
 
 { TCommentExpert }
 
-procedure TCommentExpert.Configure;
+procedure TCommentExpert.Configure(_Owner: TWinControl);
 var
   frm: TfmCommentConfig;
 begin
-  frm := TfmCommentConfig.Create(nil);
+  frm := TfmCommentConfig.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.Initialize;
 
     if frm.ShowModal = mrOk then

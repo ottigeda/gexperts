@@ -154,7 +154,7 @@ type
     destructor Destroy; override;
     function GetActionCaption: string; override;
     class function GetName: string; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure Execute(Sender: TObject); override;
     function IsDefaultActive: Boolean; override;
   end;
@@ -1112,9 +1112,9 @@ begin
   Result := 'ProjectDependencies';
 end;
 
-procedure TProjectDependenciesExpert.Configure;
+procedure TProjectDependenciesExpert.Configure(_Owner: TWinControl);
 begin
-  TfmProjDependOptions.Execute(nil, FScanEntireUnit, FSearchLibraryPath, FSearchBrowsingPath);
+  TfmProjDependOptions.Execute(_Owner, FScanEntireUnit, FSearchLibraryPath, FSearchBrowsingPath);
 end;
 
 procedure TProjectDependenciesExpert.InternalSaveSettings(_Settings: IExpertSettings);

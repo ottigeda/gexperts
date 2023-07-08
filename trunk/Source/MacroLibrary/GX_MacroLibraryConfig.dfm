@@ -12,7 +12,7 @@ object fmGxMacroLibraryConfig: TfmGxMacroLibraryConfig
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  Position = poScreenCenter
+  Position = poDesigned
   Scaled = False
   PixelsPerInch = 96
   TextHeight = 14

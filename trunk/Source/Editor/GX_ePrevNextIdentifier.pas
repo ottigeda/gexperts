@@ -28,6 +28,7 @@ implementation
 
 uses
   SysUtils, Windows, ToolsAPI,
+  u_dzVclUtils,
   GX_GenericUtils, GX_OtaUtils, GX_EditReader, GX_EditorExpert, GX_ConfigurationInfo;
 
 type
@@ -52,7 +53,7 @@ type
     constructor Create; override;
     procedure Execute(Sender: TObject); override;
     function HasConfigOptions: Boolean; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
   end;
 
   TPreviousIdentExpert = class(TBaseIdentExpert)
@@ -225,12 +226,13 @@ begin
   Result := True;
 end;
 
-procedure TBaseIdentExpert.Configure;
+procedure TBaseIdentExpert.Configure(_Owner: TWinControl);
 var
   Dlg: TfmPrevNextConfig;
 begin
-  Dlg := TfmPrevNextConfig.Create(nil);
+  Dlg := TfmPrevNextConfig.Create(_Owner);
   try
+    TForm_CenterOn(Dlg, _Owner);
     Dlg.chkCenterMatch.Checked := FViewChangeType = vctScrollCenter;
 {$IFDEF GX_SUPPORTS_FOLDING}
     dlg.chk_Unfold.Checked := FUnfoldNearest;

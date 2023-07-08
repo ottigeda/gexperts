@@ -176,8 +176,8 @@ type
     constructor Create; override;
     destructor Destroy; override;
     procedure Execute(Sender: TObject); override;
-    procedure Configure; overload; override;
-    procedure Configure(const _Selected: string); reintroduce; overload;
+    procedure Configure(_Owner: TWinControl); overload; override;
+    procedure Configure(_Owner: TWinControl; const _Selected: string); reintroduce; overload;
     function GetActionCaption: string; override;
     function GetDefaultShortCut: TShortCut; override;
     class function GetName: string; override;
@@ -626,7 +626,7 @@ var
   i: Integer;
 begin
   if not GxOtaFormEditorHasSelectedComponent then
-    Configure
+    Configure(nil)
   else
   begin
     if not GxOtaTryGetCurrentFormEditor(FFormEditor) then
@@ -646,17 +646,17 @@ begin
   IncCallCount;
 end;
 
-procedure TRenameComponentsExpert.Configure;
+procedure TRenameComponentsExpert.Configure(_Owner: TWinControl);
 begin
-  Configure('');
+  Configure(_Owner, '');
 end;
 
-procedure TRenameComponentsExpert.Configure(const _Selected: string);
+procedure TRenameComponentsExpert.Configure(_Owner: TWinControl; const _Selected: string);
 begin
 //    SetFormIcon(Dialog);
   FRenameRuleListVcl.Sort;
   FRenameRuleListFmx.Sort;
-  if TfmCompRenameConfig.Execute(nil, HandleOnImport, HandleOnExport,
+  if TfmCompRenameConfig.Execute(_Owner, HandleOnImport, HandleOnExport,
     FRenameRuleListVcl, FRenameRuleListFmx, FShowDialog, FAutoAddClasses,
     FFormWidth, FFormHeight, _Selected) then
     SaveSettings;
@@ -1270,7 +1270,7 @@ end;
 procedure TfmCompRename.btnSettingsClick(Sender: TObject);
 begin
   Assert(Assigned(PrivateCompRenameExpert));
-  PrivateCompRenameExpert.Configure(FComponentClassName);
+  PrivateCompRenameExpert.Configure(Self, FComponentClassName);
 end;
 
 procedure TfmCompRename.HandleAlignButtons(_Align: TAlign);

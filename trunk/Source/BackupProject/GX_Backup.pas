@@ -92,7 +92,7 @@ type
     constructor Create; override;
 
     procedure Execute(Sender: TObject); override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     function GetActionCaption: string; override;
     class function GetName: string; override;
 
@@ -1245,12 +1245,13 @@ begin
   end;
 end;
 
-procedure TBackupProjectExpert.Configure;
+procedure TBackupProjectExpert.Configure(_Owner: TWinControl);
 var
   frm: TfmBackupConfig;
 begin
-  frm := TfmBackupConfig.Create(nil);
+  frm := TfmBackupConfig.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.cbBackupInc.Checked := FBackupInc;
     frm.cbIncludeDir.Checked := FIncludeDir;
     frm.rbBackupAskForFile.Checked := (FBackupType = btFile);

@@ -99,7 +99,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure Execute(Sender: TObject); override;
     function GetDefaultShortCut: TShortCut; override;
     function GetHelpString: string; override;
@@ -110,12 +110,13 @@ type
 
 { TEditorPopupMenuExpert }
 
-procedure TEditorPopupMenuExpert.Configure;
+procedure TEditorPopupMenuExpert.Configure(_Owner: TWinControl);
 var
   frm: TfmEditorPopupMenuExpertConfig;
 begin
-  frm := TfmEditorPopupMenuExpertConfig.Create(nil);
+  frm := TfmEditorPopupMenuExpertConfig.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.SetData(FShortcuts, FForceEditorActive);
     frm.Height := FFormHeight;
     if frm.ShowModal <> mrOk then

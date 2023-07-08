@@ -6,7 +6,7 @@ unit GX_MacroTemplatesExpert;
 interface
 
 uses
-  Classes, ToolsAPI, GX_EditorExpert, GX_MacroTemplates,
+  Classes, Controls, ToolsAPI, GX_EditorExpert, GX_MacroTemplates,
   GX_MacroFile, GX_ConfigurationInfo, GX_Actions, GX_MacroExpandNotifier,
   GX_StringList;
 
@@ -79,7 +79,7 @@ type
     constructor Create; override;
     destructor Destroy; override;
     procedure Execute(Sender: TObject); override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     function GetDefaultShortCut: TShortCut; override;
     function GetDisplayName: string; override;
     class function GetName: string; override;
@@ -100,6 +100,7 @@ implementation
 
 uses
   SysUtils, Forms, Dialogs,
+  u_dzVclUtils,
   GX_GenericUtils, GX_MacroParser, GX_OtaUtils,
   GX_ActionBroker, GX_MacroSelect, GX_UsesManager;
 
@@ -386,7 +387,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TMacroTemplatesExpert.Configure;
+procedure TMacroTemplatesExpert.Configure(_Owner: TWinControl);
 var
   fmMacroTemplates: TfmMacroTemplates;
 begin
@@ -394,8 +395,9 @@ begin
     MessageDlg(SFormOpenError, mtInformation, [mbOk], 0)
   else
   begin
-    fmMacroTemplates := TfmMacroTemplates.Create(nil);
+    fmMacroTemplates := TfmMacroTemplates.Create(_Owner);
     try
+      TForm_CenterOn(fmMacroTemplates, _Owner);
       SetFormIcon(fmMacroTemplates);
       fmMacroTemplates.Settings := FSettings;
       fmMacroTemplates.ShowModal;

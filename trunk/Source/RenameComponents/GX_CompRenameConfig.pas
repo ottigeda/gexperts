@@ -160,7 +160,7 @@ type
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
-    class function Execute(_Owner: TComponent; _OnImport: TOnImportLists; _OnExport: TOnExportLists;
+    class function Execute(_Owner: TWinControl; _OnImport: TOnImportLists; _OnExport: TOnExportLists;
       _ValueListVcl, _ValueListFmx: TStringList; var _AutoShow: Boolean;
       var _AutoAdd: Boolean; var _FormWidth, _FormHeight: Integer; const _Selected: string): Boolean;
   end;
@@ -197,7 +197,7 @@ end;
 
 { TfmCompRenameConfig }
 
-class function TfmCompRenameConfig.Execute(_Owner: TComponent; _OnImport: TOnImportLists; _OnExport: TOnExportLists;
+class function TfmCompRenameConfig.Execute(_Owner: TWinControl; _OnImport: TOnImportLists; _OnExport: TOnExportLists;
   _ValueListVcl, _ValueListFmx: TStringList; var _AutoShow: Boolean;
   var _AutoAdd: Boolean; var _FormWidth, _FormHeight: Integer; const _Selected: string): Boolean;
 var
@@ -205,6 +205,7 @@ var
 begin
   frm := TfmCompRenameConfig.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.FOnImport := _OnImport;
     frm.FOnExport := _OnExport;
     frm.SetData(_ValueListVcl, _ValueListFmx, _AutoShow, _AutoAdd, _FormWidth, _FormHeight, _Selected);

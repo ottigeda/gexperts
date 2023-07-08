@@ -182,7 +182,7 @@ type
     function GetActionCaption: string; override;
     class function GetName: string; override;
     procedure Execute(Sender: TObject); override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
   end;
 
 var
@@ -1017,7 +1017,7 @@ procedure TfmToDo.actOptionsConfigureExecute(Sender: TObject);
 begin
   inherited;
 
-  ToDoExpert.Configure;
+  ToDoExpert.Configure(Self);
 end;
 
 constructor TfmToDo.Create(AOwner: TComponent);
@@ -1349,7 +1349,7 @@ end;
 { TODO 3 -cIssue -oAnyone: This process needs to be cleaned up.  Why store the configuration
  settings in the expert and the form?  It only makes updating both
  copies harder. }
-procedure TToDoExpert.Configure;
+procedure TToDoExpert.Configure(_Owner: TWinControl);
 var
   TodoListOptionsUnchanged: Boolean;
 
@@ -1366,8 +1366,9 @@ var
 begin
   TodoListOptionsUnchanged := True;
 
-  frm := TfmToDoOptions.Create(nil);
+  frm := TfmToDoOptions.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     FTokenList.Sort;
     frm.lstTokens.Items.Assign(FTokenList);
     frm.cbShowTokens.Checked := FShowTokens;

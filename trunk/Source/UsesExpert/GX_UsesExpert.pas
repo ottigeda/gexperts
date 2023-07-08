@@ -61,11 +61,8 @@ type
     class function GetName: string; override;
     constructor Create; override;
     destructor Destroy; override;
-    // Do any delayed setup after the IDE is done initializing
     procedure AfterIDEInitialized; override;
-    // Various methods that will be called
-    // at appropriate times
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     function GetDefaultShortCut: TShortCut; override;
     function GetActionCaption: string; override;
     function HasConfigOptions: Boolean; override;
@@ -788,7 +785,7 @@ begin
   Result := True;
 end;
 
-procedure TUsesClauseMgrExpert.Configure;
+procedure TUsesClauseMgrExpert.Configure(_Owner: TWinControl);
 var
   act: TBasicAction;
   Found: Boolean;
@@ -797,7 +794,7 @@ begin
   Found := FindAction(act);
   CacheDir := ConfigInfo.CachingPath + 'UsesExpertCache';
 
-  if TfmUsesExpertOptions.Execute(Application, Found, CacheDir, FReadMap, FReplaceFileUseUnit,
+  if TfmUsesExpertOptions.Execute(_Owner, Found, CacheDir, FReadMap, FReplaceFileUseUnit,
     FParseAll, FDisableCache, FSearchPathFavorites, FFilterIdentifiers, FFastAdd) then begin
     SaveSettings;
     if Found then begin

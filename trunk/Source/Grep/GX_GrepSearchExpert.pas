@@ -7,6 +7,7 @@ interface
 uses
   SysUtils,
   Classes,
+  Controls,
   GX_Experts,
   GX_GrepOptions,
   GX_GrepExpert;
@@ -24,7 +25,7 @@ type
     function CanHaveShortCut: boolean; override;
     function GetHelpString: string; override;
     procedure Execute(Sender: TObject); override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     // The call count of the Grep Search expert is included with the Grep Results expert
     // so we return false here.
     function HasCallCount: Boolean; override;
@@ -105,14 +106,14 @@ begin
   Result := True;
 end;
 
-procedure TGrepSearchExpert.Configure;
+procedure TGrepSearchExpert.Configure(_Owner: TWinControl);
 var
   UseCurrentIdent: Boolean;
 begin
   Assert(Assigned(gblGrepExpert), 'gblGrepExpert is not assigned');
 
   UseCurrentIdent := gblGrepExpert.GrepUseCurrentIdent;
-  if TfmGrepOptions.Execute(nil, UseCurrentIdent) then begin
+  if TfmGrepOptions.Execute(_Owner, UseCurrentIdent) then begin
     gblGrepExpert.GrepUseCurrentIdent := UseCurrentIdent;
   end;
 end;

@@ -39,7 +39,7 @@ type
     procedure GetData(out _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache, _SearchPathFavorites: Boolean;
       out _FilterIdentifiers: TFilterIdentifiersEnum; out _FastAdd: Boolean);
   public
-    class function Execute(_Owner: TComponent; _CanReplaceFindUseUnit: Boolean;
+    class function Execute(_Owner: TWinControl; _CanReplaceFindUseUnit: Boolean;
       const _CacheDir: string;
       var _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache, _SearchPathFavorites: Boolean;
       var _FilterIdentifiers: TFilterIdentifiersEnum;
@@ -58,7 +58,7 @@ uses
 
 { TfmUsesExpertOptions }
 
-class function TfmUsesExpertOptions.Execute(_Owner: TComponent; _CanReplaceFindUseUnit: Boolean;
+class function TfmUsesExpertOptions.Execute(_Owner: TWinControl; _CanReplaceFindUseUnit: Boolean;
   const _CacheDir: string;
   var _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache, _SearchPathFavorites: Boolean;
   var _FilterIdentifiers: TFilterIdentifiersEnum;
@@ -68,6 +68,7 @@ var
 begin
   frm := TfmUsesExpertOptions.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.SetData(_CanReplaceFindUseUnit, _CacheDir, _ReadMapFile, _ReplaceFileUseUnit, _ParseAll,
       _DisableCache, _SearchPathFavorites, _FilterIdentifiers, _FastAdd);
     Result := (frm.ShowModal = mrOk);

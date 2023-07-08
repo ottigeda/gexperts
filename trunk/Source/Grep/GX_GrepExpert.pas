@@ -6,7 +6,7 @@ interface
 
 uses
   Windows,
-  Classes, Graphics, IniFiles,
+  Classes, Graphics, IniFiles, Controls,
   GX_Experts, GX_ConfigurationInfo, GX_GrepBackend;
 
 type
@@ -106,7 +106,7 @@ type
     function  GrepHistorySettingsFileName: String;
 
     procedure Execute(Sender: TObject); override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure HistoryListSaveSettings(AItemIndex: Integer = -1); //if -1 then all
     procedure HistoryListSaveSearchListSettings;
     procedure HistoryListDeleteFromSettings(ADelMode: TGrepDeleteMode; AItemIndex: Integer = -1); //if -1 then all
@@ -197,7 +197,7 @@ procedure ShowGrepEx(_HWnd: HWND; _HInst: HINST; _CmdLine: PAnsiChar; nCmdShow: 
 implementation
 
 uses
-  SysUtils, Menus, Controls, ComCtrls,
+  SysUtils, Menus, ComCtrls,
   u_dzVclUtils,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF D+}
   GX_OtaUtils, GX_GenericUtils,
@@ -331,12 +331,13 @@ begin
   fmGrepResults.ShowModal;
 end;
 
-procedure TGrepExpert.Configure;
+procedure TGrepExpert.Configure(_Owner: TWinControl);
 var
   frm: TfmGrepResultsOptions;
 begin
-  frm := TfmGrepResultsOptions.Create(nil);
+  frm := TfmGrepResultsOptions.Create(_Owner);
   try
+    Tform_CenterOn(frm, _Owner);
     frm.chkAdvanced.Checked := GrepAdvancedOptions;
     frm.chkAdvancedClick(nil);
 

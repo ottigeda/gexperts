@@ -58,7 +58,7 @@ type
     // optional, defaults to true
     function HasConfigOptions: Boolean; override;
     // optional if HasConfigOptions returns false
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     procedure InternalSaveSettings(_Settings: IExpertSettings); override;
     procedure Execute(Sender: TObject); override;
@@ -76,7 +76,7 @@ begin
   Result := True;
 end;
 
-procedure TAddDockWindowExpert.Configure;
+procedure TAddDockWindowExpert.Configure(_Owner: TWinControl);
 resourcestring
   SYouClickedConfigure = 'You clicked the Configuration button!';
 begin

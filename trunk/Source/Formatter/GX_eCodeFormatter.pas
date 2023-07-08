@@ -9,6 +9,7 @@ interface
 uses
   SysUtils,
   Classes,
+  Controls,
   GX_EditorExpert,
   GX_CodeFormatterExpert,
   GX_ConfigurationInfo,
@@ -27,7 +28,7 @@ type
     destructor Destroy; override;
     function GetDefaultShortCut: TShortCut; override;
     function GetDisplayName: string; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure Execute(Sender: TObject); override;
     function GetHelpString: string; override;
     function HasConfigOptions: Boolean; override;
@@ -66,9 +67,9 @@ begin
   end;
 end;
 
-procedure TeCodeFormatterExpert.Configure;
+procedure TeCodeFormatterExpert.Configure(_Owner: TWinControl);
 begin
-  FExpert.Configure;
+  FExpert.Configure(_Owner);
 end;
 
 constructor TeCodeFormatterExpert.Create;
@@ -260,7 +261,7 @@ begin
       FormatterStandAlone := TeCodeFormatterExpert.Create;
       try
         FormatterStandAlone.LoadSettings;
-        FormatterStandAlone.Configure;
+        FormatterStandAlone.Configure(nil);
         FormatterStandAlone.SaveSettings;
       finally
         FormatterStandAlone.Free;

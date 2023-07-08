@@ -223,7 +223,7 @@ end;
 procedure TfmMacroSelect.btnConfigurationClick(Sender: TObject);
 begin
   Assert(Assigned(FMacroFile));
-  GetExpandMacroExpertReq.Configure;
+  GetExpandMacroExpertReq.Configure(Self);
   LoadTemplates(GetExpandMacroExpertReq.MacroFile);
 end;
 

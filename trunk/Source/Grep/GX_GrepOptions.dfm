@@ -1,4 +1,4 @@
-object fmGrepOptions: TfmGrepOptions
+inherited fmGrepOptions: TfmGrepOptions
   Left = 294
   Top = 263
   BorderIcons = [biSystemMenu]
@@ -6,15 +6,10 @@ object fmGrepOptions: TfmGrepOptions
   Caption = 'Grep Search Options'
   ClientHeight = 75
   ClientWidth = 377
-  Color = clBtnFace
+  ParentFont = False
   Font.Charset = ANSI_CHARSET
-  Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = 'Tahoma'
-  Font.Style = []
-  OldCreateOrder = False
   Position = poOwnerFormCenter
-  Scaled = False
   DesignSize = (
     377
     75)

@@ -188,7 +188,7 @@ type
     function GetActionCaption: string; override;
     class function GetName: string; override;
     procedure Execute(Sender: TObject); override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     property MaxClip: Integer read FMaxClip write FMaxClip;
     property StorageFile: string read GetStorageFile;
   end;
@@ -774,7 +774,7 @@ end;
 
 procedure TfmClipboardHistory.actViewOptionsExecute(Sender: TObject);
 begin
-  ClipExpert.Configure;
+  ClipExpert.Configure(Self);
 end;
 
 procedure TfmClipboardHistory.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -1049,9 +1049,9 @@ begin
   _Settings.SaveFont('PreviewFont', FPreviewFont);
 end;
 
-procedure TClipboardHistoryExpert.Configure;
+procedure TClipboardHistoryExpert.Configure(_Owner: TWinControl);
 begin
-  if TfmClipboardOptions.Execute(nil, FMaxClip, FAutoStart, FAutoClose, FPreviewFont) then begin
+  if TfmClipboardOptions.Execute(_Owner, FMaxClip, FAutoStart, FAutoClose, FPreviewFont) then begin
     SaveSettings;
     if Assigned(fmClipboardHistory) then
       fmClipboardHistory.mmoClipText.Font := FPreviewFont;

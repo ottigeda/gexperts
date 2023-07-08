@@ -64,7 +64,7 @@ type
     procedure ResetIdeActions;
   protected
     procedure SetActive(New: Boolean); override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   public
@@ -295,9 +295,9 @@ begin
   Result := True;
 end;
 
-procedure TGotoExpert.Configure;
+procedure TGotoExpert.Configure(_Owner: TWinControl);
 begin
-  if Tf_GotoConfig.Execute(FOverrideSearchGoto) then begin
+  if Tf_GotoConfig.Execute(_Owner, FOverrideSearchGoto) then begin
     ResetIdeActions;
     HijackIdeActions;
   end;

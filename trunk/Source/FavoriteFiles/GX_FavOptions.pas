@@ -65,8 +65,9 @@ class function TfmFavOptions.Execute(_Owner: TWinControl; var _FolderDelete, _Ex
 var
   frm: TfmFavOptions;
 begin
-  frm := TfmFavOptions.Create(nil);
+  frm := TfmFavOptions.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.SetData(_FolderDelete, _ExpandAll, _ExecHide, _ShowPreview, _InsertFavMenu, _FileFilter);
     Result := (frm.ShowModal = mrOk);
     if Result then begin

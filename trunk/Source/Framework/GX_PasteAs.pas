@@ -3,7 +3,8 @@ unit GX_PasteAs;
 interface
 
 uses
-  Windows, SysUtils, Classes, GX_ConfigurationInfo, GX_EditorExpert;
+  Windows, SysUtils, Classes, Controls,
+  GX_ConfigurationInfo, GX_EditorExpert;
 
 type
   TPasteAsType = (paStringArray, paAdd, paSLineBreak,
@@ -23,7 +24,7 @@ type
     procedure SaveSettings(_Settings: iExpertSettings);
     procedure ConvertToCode(ALines: TStrings; AOnlyUpdateLines: Boolean);
     procedure ExtractRawStrings(ALines: TStrings; ADoAddBaseIndent: Boolean);
-    function  ExecuteConfig(AConfigExpert: TEditorExpert; ForceShow: Boolean): Boolean;
+    function  ExecuteConfig(AConfigExpert: TEditorExpert; _Owner: TWinControl; ForceShow: Boolean): Boolean;
     class procedure GetTypeText(AList: TStrings);
     property CreateQuotedString: Boolean read FCreateQuotedString write FCreateQuotedString default True;
     property PasteAsType: TPasteAsType read FPasteAsType write FPasteAsType default paStringArray;
@@ -37,8 +38,9 @@ var
 implementation
 
 uses
-  StrUtils, Controls, GX_OtaUtils, GX_ePasteAs,
-  GX_GenericUtils, u_dzStringUtils, u_dzVclUtils;
+  StrUtils,
+  u_dzStringUtils, u_dzVclUtils,
+  GX_OtaUtils, GX_ePasteAs, GX_GenericUtils;
 
 const
   cPasteAsTypeText: array[TPasteAsType] of String = (
@@ -186,7 +188,7 @@ begin
   end;
 end;
 
-function TPasteAsHandler.ExecuteConfig(AConfigExpert: TEditorExpert; ForceShow: Boolean): Boolean;
+function TPasteAsHandler.ExecuteConfig(AConfigExpert: TEditorExpert; _Owner: TWinControl; ForceShow: Boolean): Boolean;
 var
   frm: TfmPasteAsConfig;
 begin
@@ -194,8 +196,9 @@ begin
   if not FShowOptions and not ForceShow then
     Exit; //==>
 
-  frm := TfmPasteAsConfig.Create(nil);
+  frm := TfmPasteAsConfig.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     GetTypeText(frm.cbPasteAsType.Items);
     frm.cbPasteAsType.ItemIndex := Integer(PasteAsType);
     frm.chkCreateQuotedStrings.Checked := CreateQuotedString;

@@ -11,7 +11,7 @@ object fmRemoveMatchingLinesExpertConfig: TfmRemoveMatchingLinesExpertConfig
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  Position = poOwnerFormCenter
+  Position = poDesigned
   DesignSize = (
     377
     257)
@@ -40,6 +40,7 @@ object fmRemoveMatchingLinesExpertConfig: TfmRemoveMatchingLinesExpertConfig
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'OK'
+    Default = True
     ModalResult = 1
     TabOrder = 3
   end
@@ -49,6 +50,7 @@ object fmRemoveMatchingLinesExpertConfig: TfmRemoveMatchingLinesExpertConfig
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
+    Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 4

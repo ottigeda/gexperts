@@ -62,7 +62,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     function GetDefaultShortCut: TShortCut; override;
     function GetHelpString: string; override;
     function HasConfigOptions: Boolean; override;
@@ -88,12 +88,13 @@ begin
   inherited;
 end;
 
-procedure TAlignLinesExpert.Configure;
+procedure TAlignLinesExpert.Configure(_Owner: TWinControl);
 var
   frm: TfmAlignOptions;
 begin
-  frm := TfmAlignOptions.Create(nil);
+  frm := TfmAlignOptions.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.edtWhitespace.Text := IntToStr(FWhitespace);
     frm.mmoTokens.Lines.Assign(FTokens);
 
@@ -301,7 +302,7 @@ end;
 
 procedure TfmAlign.btnConfigClick(Sender: TObject);
 begin
-  AlignExpertInst.Configure;
+  AlignExpertInst.Configure(Self);
   AlignExpertInst.LoadConfiguration(Self);
 end;
 

@@ -37,7 +37,7 @@ type
     class function GetName: string; override;
     constructor Create; override;
     function GetDisplayName: string; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure Execute(Sender: TObject); override;
     function GetHelpString: string; override;
   end;
@@ -62,7 +62,7 @@ type
     constructor Create; override;
     function GetDisplayName: string; override;
     function GetHelpString: string; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     function HasConfigOptions: Boolean; override;
   end;
 
@@ -100,9 +100,9 @@ begin
   PasteAsHandler.SaveSettings(_Settings);
 end;
 
-procedure TPasteAsExpert.Configure;
+procedure TPasteAsExpert.Configure(_Owner: TWinControl);
 begin
-  PasteAsHandler.ExecuteConfig(Self, True);
+  PasteAsHandler.ExecuteConfig(Self, _Owner, True);
 end;
 
 function TPasteAsExpert.GetHelpString: string;
@@ -128,7 +128,7 @@ begin
   ALines := TStringList.Create;
   try
     ALines.Text := Clipboard.AsText;
-    if PasteAsHandler.ExecuteConfig(Self, False) then begin
+    if PasteAsHandler.ExecuteConfig(Self, nil, False) then begin
       PasteAsHandler.ConvertToCode(ALines, False);
       IncCallCount;
     end;
@@ -221,9 +221,9 @@ begin
   Result := SConvertRawStringsHelp;
 end;
 
-procedure TConvertRawStringsExpert.Configure;
+procedure TConvertRawStringsExpert.Configure(_Owner: TWinControl);
 begin
-  PasteAsHandler.ExecuteConfig(Self, True);
+  PasteAsHandler.ExecuteConfig(Self, _Owner, True);
 end;
 
 function TConvertRawStringsExpert.HasConfigOptions: Boolean;
@@ -233,7 +233,7 @@ end;
 
 function TConvertRawStringsExpert.ProcessSelected(Lines: TStrings): Boolean;
 begin
-  Result := PasteAsHandler.ExecuteConfig(Self, False);
+  Result := PasteAsHandler.ExecuteConfig(Self, nil, False);
   if Result then
   begin
     PasteAsHandler.ExtractRawStrings(Lines, True);

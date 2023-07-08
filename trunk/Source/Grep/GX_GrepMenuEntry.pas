@@ -9,6 +9,7 @@ uses
   Classes,
   Menus,
   ActnList,
+  Controls,
   GX_Experts;
 
 const
@@ -31,6 +32,7 @@ type
     destructor Destroy; override;
     function GetActionCaption: string; override;
     function HasConfigOptions: Boolean; override;
+    procedure Configure(_Owner: TWinControl); override;
     function HasSubmenuItems: Boolean; override;
     function HasCallCount: Boolean; override;
     procedure CreateSubMenuItems(MenuItem: TMenuItem); override;
@@ -45,13 +47,13 @@ implementation
 
 uses
   Types,
-  Controls,
   ComCtrls,
   Forms,
   GX_OtaUtils,
   GX_GExperts,
   GX_ActionBroker,
-  GX_IdeUtils;
+  GX_IdeUtils,
+  GX_GrepMenuConfig;
 
 { TGrepMenuEntryExpert }
 
@@ -75,6 +77,14 @@ end;
 procedure ReleaseInternalPopupMenu;
 begin
   FreeAndNil(InternalPopupMenu);
+end;
+
+procedure TGrepMenuEntryExpert.Configure(_Owner: TWinControl);
+var
+  LReplaceFind: Boolean;
+  LReplaceFindInFile: Boolean;
+begin
+  if Tf_GrepMenuConfig.Execute(_Owner, LReplaceFind, LReplaceFindInFile) then
 end;
 
 constructor TGrepMenuEntryExpert.Create;
@@ -157,7 +167,7 @@ end;
 
 function TGrepMenuEntryExpert.HasConfigOptions: Boolean;
 begin
-  Result := False;
+  Result := True;
 end;
 
 function TGrepMenuEntryExpert.HasSubmenuItems: Boolean;

@@ -298,7 +298,7 @@ type
     function GetDefaultShortCut: TShortCut; override;
     class function GetName: string; override;
     procedure Execute(Sender: TObject); override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
   end;
 
   TMessageBoxType = class(TAbstractMessageType)
@@ -1121,9 +1121,9 @@ begin
   inherited InternalSaveSettings(_Settings);
 end;
 
-procedure TMessageDialogExpert.Configure;
+procedure TMessageDialogExpert.Configure(_Owner: TWinControl);
 begin
-  if TfmMessageOptions.Execute(nil,
+  if TfmMessageOptions.Execute(_Owner,
     FSettings.FConcatenationString, FSettings.FCppConcatenationString,
     FSettings.FGnuGetTextFunction, FSettings.FGnuGetTextIndividual) then begin
   end;

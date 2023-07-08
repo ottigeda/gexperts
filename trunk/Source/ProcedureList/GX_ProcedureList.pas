@@ -148,7 +148,7 @@ type
     class function GetName: string; override;
     procedure Execute(Sender: TObject); override;
     function HasConfigOptions: Boolean; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure UpdateAction(Action: TCustomAction); override;
   end;
 
@@ -785,7 +785,7 @@ begin
   Result := 'ProcedureList'; // Do not localize.
 end;
 
-procedure TProcedureListExpert.Configure;
+procedure TProcedureListExpert.Configure(_Owner: TWinControl);
 var
   lclOptions: TProcedureListOptions;
   frm: TfmProcedureListOptions;
@@ -794,7 +794,8 @@ begin
   lclOptions := TProcedureListOptions.Create;
   try
     lclOptions.LoadSettings(GetSettings);
-    frm := TfmProcedureListOptions.Create(nil);
+    frm := TfmProcedureListOptions.Create(_Owner);
+    TForm_CenterOn(frm, _Owner);
     frm.Options := lclOptions;
     if frm.ShowModal = mrOK then
       lclOptions.SaveSettings(GetSettings);

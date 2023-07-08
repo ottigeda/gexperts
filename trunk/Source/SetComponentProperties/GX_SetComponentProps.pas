@@ -67,7 +67,7 @@ type
     constructor Create; override;
     destructor Destroy; override;
     procedure Execute(Sender: TObject); override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     function GetActionCaption: string; override;
     class function GetName: string; override;
     function HasConfigOptions: Boolean; override;
@@ -105,16 +105,17 @@ end;
 // When the menu item is clicked, open the configuration dialog
 procedure TSetComponentPropertiesExpert.Execute(Sender: TObject);
 begin
-  Configure;
+  Configure(nil);
 end;
 
 // Action taken when user clicks the Configure button on the Experts tab of menu item GExperts/GExperts Configuration...
-procedure TSetComponentPropertiesExpert.Configure;
+procedure TSetComponentPropertiesExpert.Configure(_Owner: TWinControl);
 var
   frm: TfmSetComponentPropsConfig;
 begin
-  frm := TfmSetComponentPropsConfig.Create(nil);
+  frm := TfmSetComponentPropsConfig.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.SetSettings;
     if frm.ShowModal = mrOk then
       frm.GetSettings;

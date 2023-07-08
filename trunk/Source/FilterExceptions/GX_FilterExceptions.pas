@@ -1,4 +1,4 @@
-unit GX_FilterExceptions;
+﻿unit GX_FilterExceptions;
 
 {$I GX_CondDefine.inc}
 
@@ -43,7 +43,7 @@ type
     procedure SetData(_Notifications: TObjectList);
     procedure GetData(_Notifications: TObjectList);
   public
-    class function Execute(_Owner: TComponent; _Notifications: TObjectList): Boolean;
+    class function Execute(_Owner: TWinControl; _Notifications: TObjectList): Boolean;
     constructor Create(_Owner: TComponent); override;
   end;
 
@@ -125,7 +125,7 @@ type
     class function GetName: string; override;
     function GetDisplayName: string; override;
     function GetHelpString: string; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     procedure InternalSaveSettings(_Settings: IExpertSettings); override;
     procedure Execute(Sender: TObject); override;
@@ -137,12 +137,12 @@ procedure TGxFilterExceptionsExpert.Execute(Sender: TObject);
 begin
   // This expert does not have a menu item, so this should never be called, but in case I overlooked
   // something, call the configuration.
-  Configure;
+  Configure(nil);
 end;
 
-procedure TGxFilterExceptionsExpert.Configure;
+procedure TGxFilterExceptionsExpert.Configure(_Owner: TWinControl);
 begin
-  if TfmGxFilterExceptionsExpert.Execute(nil, FNotifications) then begin
+  if TfmGxFilterExceptionsExpert.Execute(_Owner, FNotifications) then begin
     SaveSettings;
   end;
 end;
@@ -418,13 +418,14 @@ end;
 
 { TfmGxFilterExceptionsExpert }
 
-class function TfmGxFilterExceptionsExpert.Execute(_Owner: TComponent;
+class function TfmGxFilterExceptionsExpert.Execute(_Owner: TWinControl;
   _Notifications: TObjectList): Boolean;
 var
   frm: TfmGxFilterExceptionsExpert;
 begin
   frm := TfmGxFilterExceptionsExpert.Create(_Owner);
   try
+    TForm_CenterOn(Frm, _Owner);
     frm.SetData(_Notifications);
     Result := (frm.ShowModal = mrOk);
     if Result then

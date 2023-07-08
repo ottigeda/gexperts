@@ -4,6 +4,7 @@ inherited fmeSortConfig: TfmeSortConfig
   Caption = 'Sort Selected Lines Expert'
   ClientHeight = 233
   ClientWidth = 241
+  Position = poDesigned
   PixelsPerInch = 96
   TextHeight = 13
   object grpSort: TGroupBox

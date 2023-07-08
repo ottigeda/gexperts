@@ -191,7 +191,7 @@ type
     // optional, but recommended
     function GetHelpString: string; override;
     // Show config dialog
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     // Override to load any configuration settings
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     // Override to save any configuration settings
@@ -863,7 +863,7 @@ end;
 
 { TEditPathExpert }
 
-procedure TEditPathExpert.Configure;
+procedure TEditPathExpert.Configure(_Owner: TWinControl);
 var
   Configs: TObjectList;
   ActiveIndex: Integer;
@@ -871,7 +871,7 @@ begin
   Configs := TObjectList.Create;
   try
     if Tf_EditPath.TryGetProjectConfigurations(Configs, ActiveIndex) then
-      if Tf_EditPathConfig.Execute(nil, Configs, FSelectedPlatform, FSelectedConfig) then
+      if Tf_EditPathConfig.Execute(_Owner, Configs, FSelectedPlatform, FSelectedConfig) then
         SaveSettings;
   finally
     FreeAndNil(Configs);

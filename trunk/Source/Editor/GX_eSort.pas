@@ -32,7 +32,7 @@ type
   private
     FCustomPrefixOrder: TGXUnicodeStringList;
   public
-    class function Execute(_CustomPrefixOrder: TGXUnicodeStringList; out _SortOrder: TeSortOrder; out _Ignore: Boolean): Boolean;
+    class function Execute(_Owner: TWinControl; _CustomPrefixOrder: TGXUnicodeStringList; out _SortOrder: TeSortOrder; out _Ignore: Boolean): Boolean;
     constructor Create(_Owner: TComponent); override;
   end;
 
@@ -71,13 +71,14 @@ begin
   InitDpiScaler;
 end;
 
-class function TfmeSortConfig.Execute(_CustomPrefixOrder: TGXUnicodeStringList;
+class function TfmeSortConfig.Execute(_Owner: TWinControl; _CustomPrefixOrder: TGXUnicodeStringList;
   out _SortOrder: TeSortOrder; out _Ignore: Boolean): Boolean;
 var
   frm: TfmeSortConfig;
 begin
   frm := TfmeSortConfig.Create(nil);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.FCustomPrefixOrder := _CustomPrefixOrder;
     Result := True;
     case frm.ShowModal of
@@ -114,7 +115,7 @@ type
     function GetDisplayName: string; override;
     function GetHelpString: string; override;
     function HasConfigOptions: boolean; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     procedure InternalSaveSettings(_Settings: IExpertSettings); override;
   end;
@@ -271,7 +272,7 @@ begin
   if Lines.Count < 1 then
     Exit; //==>
 
-  if not TfmeSortConfig.Execute(FCustomPrefixOrder, SortOrder, IgnoreFunction) then
+  if not TfmeSortConfig.Execute(nil, FCustomPrefixOrder, SortOrder, IgnoreFunction) then
     exit;
 
   if not (SortOrder in [esoAscending, esoDescending]) then

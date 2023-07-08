@@ -11,7 +11,7 @@ object fmPrevNextConfig: TfmPrevNextConfig
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  Position = poScreenCenter
+  Position = poDesigned
   Scaled = False
   DesignSize = (
     312

@@ -3,7 +3,7 @@ unit GX_BaseExpert;
 interface
 
 uses
-  Classes, Graphics,
+  Classes, Graphics, Controls,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_ConfigurationInfo, GX_Actions;
 
@@ -56,7 +56,7 @@ type
     function CanHaveShortCut: boolean; virtual; abstract;
     // displays a dialog saying there are no configuration options
     // see also HasConfigOptions
-    procedure Configure; virtual;
+    procedure Configure(_Owner: TWinControl); virtual;
     // @returns true, if the expert maintains a call count. Most experts return true, with
     // the notable exception of the Grep Search expert because its calls are counted
     // by the Grep Results expert.
@@ -144,7 +144,7 @@ begin
   Result := GetName;
 end;
 
-procedure TGX_BaseExpert.Configure;
+procedure TGX_BaseExpert.Configure(_Owner: TWinControl);
 resourcestring
   SNoConfigurationOptions = 'There are no configuration options for this expert.';
 begin

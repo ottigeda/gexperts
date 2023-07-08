@@ -276,7 +276,7 @@ type
     destructor Destroy; override;
     function GetActionCaption: string; override;
     class function GetName: string; override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure Execute(Sender: TObject); override;
     function HasConfigOptions: Boolean; override;
 {$IFDEF GX_VER150_up}
@@ -2217,9 +2217,9 @@ begin
 end;
 {$ENDIF}
 
-procedure TFavoriteFilesExpert.Configure;
+procedure TFavoriteFilesExpert.Configure(_Owner: TWinControl);
 begin
-  if TfmFavOptions.Execute(nil, FOptions.FFolderDelete, FOptions.FExpandAll, FOptions.FExecHide,
+  if TfmFavOptions.Execute(_Owner, FOptions.FFolderDelete, FOptions.FExpandAll, FOptions.FExecHide,
     FOptions.FShowPreview, FOptions.FIsFavMenuVisible, FOptions.FFileFilter) then
 {$IFDEF GX_VER150_up}
     HandleOnSettingsChanged(nil);

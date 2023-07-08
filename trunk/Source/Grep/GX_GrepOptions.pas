@@ -53,6 +53,7 @@ var
 begin
   frm := TfmGrepOptions.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.SetData(_UseCurrentIdent);
     Result := (frm.ShowModal = mrOk);
     if Result then begin

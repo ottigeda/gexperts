@@ -219,7 +219,7 @@ type
     class function GetName: string; override;
     function GetHelpString: string; override;
     procedure Execute(Sender: TObject); override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     function HasConfigOptions: Boolean; override;
     property StorageFile: string read GetStorageFile;
     function IsDefaultActive: Boolean; override;
@@ -1277,9 +1277,9 @@ begin
   Result := True;
 end;
 
-procedure TMacroLibraryExpert.Configure;
+procedure TMacroLibraryExpert.Configure(_Owner: TWinControl);
 begin
-  if TfmGxMacroLibraryConfig.Execute(fmMacroLibrary.FPromptForName) then
+  if TfmGxMacroLibraryConfig.Execute(_Owner, fmMacroLibrary.FPromptForName) then
     fmMacroLibrary.SaveSettings;
 end;
 

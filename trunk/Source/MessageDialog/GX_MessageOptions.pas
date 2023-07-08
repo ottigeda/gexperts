@@ -50,6 +50,7 @@ var
 begin
   frm := TfmMessageOptions.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.InitDpiScaler;
     frm.SetData(_CrLfPascal, _CrLfCPP, _GunGetTextFunction, _GnuGetTextIndividual);
     Result := (frm.ShowModal = mrOk);

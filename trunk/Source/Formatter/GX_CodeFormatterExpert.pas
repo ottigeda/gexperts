@@ -12,6 +12,7 @@ interface
 uses
   Classes,
   SysUtils,
+  Controls,
   GX_StringList,
   GX_ConfigurationInfo,
   GX_CodeFormatterEngine;
@@ -25,7 +26,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Configure;
+    procedure Configure(_Owner: TWinControl);
     ///<summary>
     /// @returns true if formatting was actually done </summary>
     function Execute: Boolean;
@@ -85,9 +86,9 @@ begin
   sl.Add(_Identifier);
 end;
 
-procedure TCodeFormatterExpert.Configure;
+procedure TCodeFormatterExpert.Configure(_Owner: TWinControl);
 begin
-  TfmCodeFormatterConfig.Execute(FEngine.Settings);
+  TfmCodeFormatterConfig.Execute(_Owner, FEngine.Settings);
 end;
 
 constructor TCodeFormatterExpert.Create;

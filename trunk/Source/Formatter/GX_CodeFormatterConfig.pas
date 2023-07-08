@@ -172,7 +172,7 @@ type
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
-    class function Execute(_Settings: TCodeFormatterSettings): TModalResult;
+    class function Execute(_Owner: TWinControl; _Settings: TCodeFormatterSettings): TModalResult;
   end;
 
 implementation
@@ -739,12 +739,13 @@ begin
   end;
 end;
 
-class function TfmCodeFormatterConfig.Execute(_Settings: TCodeFormatterSettings): TModalResult;
+class function TfmCodeFormatterConfig.Execute(_Owner: TWinControl; _Settings: TCodeFormatterSettings): TModalResult;
 var
   frm: TfmCodeFormatterConfig;
 begin
-  frm := TfmCodeFormatterConfig.Create(nil);
+  frm := TfmCodeFormatterConfig.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.SettingsToForm(_Settings);
     Result := frm.ShowModal;
     if Result = mrOk then

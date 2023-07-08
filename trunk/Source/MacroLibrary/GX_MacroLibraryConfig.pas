@@ -13,7 +13,7 @@ type
     b_Cancel: TButton;
   private
   public
-    class function Execute(var APromptForName: Boolean): Boolean;
+    class function Execute(_Owner: TWinControl; var APromptForName: Boolean): Boolean;
   end;
 
 implementation
@@ -25,12 +25,13 @@ uses
 
 { TfmGxMacroLibraryConfig }
 
-class function TfmGxMacroLibraryConfig.Execute(var APromptForName: Boolean): Boolean;
+class function TfmGxMacroLibraryConfig.Execute(_Owner: TWinControl; var APromptForName: Boolean): Boolean;
 var
   frm: TfmGxMacroLibraryConfig;
 begin
-  frm := TfmGxMacroLibraryConfig.Create(nil);
+  frm := TfmGxMacroLibraryConfig.Create(_Owner);
   try
+    TForm_CenterOn(frm, _Owner);
     frm.chk_AutoPrompt.Checked := APromptForName;
     frm.InitDpiScaler;
     Result := mrOk = frm.ShowModal;

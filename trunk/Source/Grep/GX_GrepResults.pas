@@ -2031,7 +2031,7 @@ end;
 
 procedure TfmGrepResults.actViewOptionsExecute(Sender: TObject);
 begin
-  gblGrepExpert.Configure;
+  gblGrepExpert.Configure(Self);
   AssignSettingsToForm;
   ResizeListBox;
   RefreshContextLines;

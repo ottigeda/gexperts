@@ -5,7 +5,8 @@ unit GX_ProofreaderExpert;
 interface
 
 uses
-  GX_ProofreaderData, GX_ConfigurationInfo, GX_Experts, Classes, Types;
+  Classes, Types,  Controls,
+  GX_ProofreaderData, GX_ConfigurationInfo, GX_Experts;
 
 type
   TCodeProofreaderExpert = class(TGX_Expert)
@@ -21,7 +22,7 @@ type
     function GetActionCaption: string; override;
     class function GetName: string; override;
     procedure Execute(Sender: TObject); override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
   end;
 
 var
@@ -30,7 +31,7 @@ var
 implementation
 
 uses
-  SysUtils, Dialogs, Controls,
+  SysUtils, Dialogs,
   GX_ProofreaderConfig, GX_MessageBox, u_dzVclUtils;
 
 type
@@ -54,10 +55,10 @@ end;
 
 procedure TCodeProofreaderExpert.Execute(Sender: TObject);
 begin
-  Configure;
+  Configure(nil);
 end;
 
-procedure TCodeProofreaderExpert.Configure;
+procedure TCodeProofreaderExpert.Configure(_Owner: TWinControl);
 var
   Data: TProofreaderData;
   frm: TfmProofreaderConfig;
@@ -77,8 +78,9 @@ begin
     end;
     Data.ReloadData;
 
-    frm := TfmProofreaderConfig.Create(nil, Self, Data);
+    frm := TfmProofreaderConfig.Create(_Owner, Self, Data);
     try
+      TForm_CenterOn(frm, _Owner);
       SetFormIcon(frm);
       frm.ShowModal;
     finally
