@@ -10,7 +10,9 @@ uses
   Menus,
   ActnList,
   Controls,
-  GX_Experts;
+  GX_Experts,
+  GX_EventHook,
+  GX_Logging;
 
 const
   // do not translate
@@ -22,7 +24,13 @@ const
 type
   TGrepMenuEntryExpert = class(TGX_Expert)
   private
+    FReplaceFind: Boolean;
+    FLogger: IGxLogger;
+    FSearchFindHook: TNotifyEventHookAbstract;
+    FSearchAgainHook: TNotifyEventHookAbstract;
     procedure PopulatePopupMenu(const PopupMenu: TPopupMenu);
+    procedure HandleSearchFindExecute(_Sender: TObject);
+    procedure HandleSearchAgainExecute(_Sender: TObject);
   protected
     procedure UpdateAction(Action: TCustomAction); override;
     function SupportsSubmenu: Boolean;
@@ -53,7 +61,8 @@ uses
   GX_GExperts,
   GX_ActionBroker,
   GX_IdeUtils,
-  GX_GrepMenuConfig;
+  GX_GrepMenuConfig,
+  GX_GrepAsFind;
 
 { TGrepMenuEntryExpert }
 
@@ -80,24 +89,61 @@ begin
 end;
 
 procedure TGrepMenuEntryExpert.Configure(_Owner: TWinControl);
-var
-  LReplaceFind: Boolean;
-  LReplaceFindInFile: Boolean;
 begin
-  if Tf_GrepMenuConfig.Execute(_Owner, LReplaceFind, LReplaceFindInFile) then
+  if not Tf_GrepMenuConfig.Execute(_Owner, FReplaceFind) then
+    Exit; //==>
+
+  if FReplaceFind then begin
+    if not Assigned(FSearchFindHook) then begin
+      FLogger.Info('Configure: Installing Find hook');
+      FSearchFindHook := TSearchFindComandExecuteHook.Install(Self.HandleSearchFindExecute);
+    end;
+    if not Assigned(FSearchAgainHook) then begin
+      FLogger.Info('Configure: Installing FindAgain hook');
+      FSearchAgainHook := TSearchAgainComandExecuteHook.Install(Self.HandleSearchAgainExecute)
+    end;
+  end else begin
+    if Assigned(FSearchFindHook) then begin
+      FLogger.Info('Configure: Removing Find hook');
+      TSearchFindComandExecuteHook.Remove(FSearchFindHook);
+    end;
+    if Assigned(FSearchAgainHook) then begin
+      FLogger.Info('Configure: Removing FindAgain hook');
+      TSearchAgainComandExecuteHook.Remove(FSearchAgainHook);
+    end;
+  end;
 end;
 
 constructor TGrepMenuEntryExpert.Create;
 begin
   inherited;
   gblGrepMenuEntryExpert := Self;
+  FLogger := CreateModuleLogger('GrepMenuExpert');
 end;
 
 destructor TGrepMenuEntryExpert.Destroy;
 begin
+  if Assigned(FSearchFindHook) then
+    TSearchFindComandExecuteHook.Remove(FSearchFindHook);
+  if Assigned(FSearchAgainHook) then
+    TSearchAgainComandExecuteHook.Remove(FSearchFindHook);
+
   gblGrepMenuEntryExpert := nil;
   ReleaseInternalPopupMenu;
   inherited;
+end;
+
+procedure TGrepMenuEntryExpert.HandleSearchFindExecute(_Sender: TObject);
+begin
+  FLogger.Info('HandleSearchFindExecute');
+  TfmGrepAsFind.ExecuteFindFile(nil);
+//  TNotifyEvent(FSearchFindHook.OrigEvent)(_Sender);
+end;
+
+procedure TGrepMenuEntryExpert.HandleSearchAgainExecute(_Sender: TObject);
+begin
+  FLogger.Info('HandleSearchAgainExecute');
+  TNotifyEvent(FSearchAgainHook.OrigEvent)(_Sender);
 end;
 
 procedure TGrepMenuEntryExpert.CreateSubMenuItems(MenuItem: TMenuItem);

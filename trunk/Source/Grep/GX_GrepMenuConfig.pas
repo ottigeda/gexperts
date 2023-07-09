@@ -17,14 +17,13 @@ uses
 type
   Tf_GrepMenuConfig = class(TfmBaseForm)
     chk_ReplaceFind: TCheckBox;
-    chk_ReplaceFindInFiles: TCheckBox;
     b_Ok: TButton;
     b_Cancel: TButton;
   private
-    procedure SetData(_ReplaceFind, _ReplaceFindInFiles: Boolean);
-    procedure GetData(out _ReplaceFind, _ReplaceFindInFiles: Boolean);
+    procedure SetData(_ReplaceFind: Boolean);
+    procedure GetData(out _ReplaceFind: Boolean);
   public
-    class function Execute(_Owner: TWinControl; var _ReplaceFind, _ReplaceFindInFiles: Boolean): Boolean;
+    class function Execute(_Owner: TWinControl; var _ReplaceFind: Boolean): Boolean;
     constructor Create(_Owner: TComponent); override;
   end;
 
@@ -37,18 +36,17 @@ uses
 
 { Tf_GrepMenuConfig }
 
-class function Tf_GrepMenuConfig.Execute(_Owner: TWinControl; var _ReplaceFind,
-  _ReplaceFindInFiles: Boolean): Boolean;
+class function Tf_GrepMenuConfig.Execute(_Owner: TWinControl; var _ReplaceFind: Boolean): Boolean;
 var
   frm: Tf_GrepMenuConfig;
 begin
   frm := Tf_GrepMenuConfig.Create(_Owner);
   try
     TForm_CenterOn(frm, _Owner);
-    frm.SetData(_ReplaceFind, _ReplaceFindInFiles);
+    frm.SetData(_ReplaceFind);
     Result := (mrOk = frm.ShowModal);
     if Result then
-      frm.GetData(_ReplaceFind, _ReplaceFindInFiles);
+      frm.GetData(_ReplaceFind);
   finally
     FreeAndNil(frm);
   end;
@@ -60,16 +58,14 @@ begin
 
 end;
 
-procedure Tf_GrepMenuConfig.GetData(out _ReplaceFind, _ReplaceFindInFiles: Boolean);
+procedure Tf_GrepMenuConfig.GetData(out _ReplaceFind: Boolean);
 begin
   _ReplaceFind := chk_ReplaceFind.Checked;
-  _ReplaceFindInFiles := chk_ReplaceFindInFiles.Checked;
 end;
 
-procedure Tf_GrepMenuConfig.SetData(_ReplaceFind, _ReplaceFindInFiles: Boolean);
+procedure Tf_GrepMenuConfig.SetData(_ReplaceFind: Boolean);
 begin
   chk_ReplaceFind.Checked := _ReplaceFind;
-  chk_ReplaceFindInFiles.Checked := _ReplaceFindInFiles;
 end;
 
 end.
