@@ -68,7 +68,7 @@ type
     function GetActionCaption: string; override;
     class function GetName: string; override;
     procedure Execute(Sender: TObject); override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     function IsDefaultActive: Boolean; override;
     property LayoutType: TLayoutType read FLayoutType write FLayoutType;
   end;
@@ -305,7 +305,7 @@ begin
   _Settings.WriteEnumerated('Layout', TypeInfo(TLayoutType), Ord(FLayoutType));
 end;
 
-procedure TPerfectLayoutExpert.Configure;
+procedure TPerfectLayoutExpert.Configure(_Owner: TWinControl);
 var
   Dlg: TfmPerfectLayout;
 begin
