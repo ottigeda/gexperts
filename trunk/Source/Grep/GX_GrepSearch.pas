@@ -361,16 +361,23 @@ begin
 
   SaveFormSettings;
 
-  if cbRegEx.Checked then
-  try
-    ExecRegExpr(cbText.Text, '');
-  except
-    on E: ERegExpr do begin
-      ShowError(E.Message);
-      TryFocusControl(cbText);
-      cbText.SelStart := E.CompilerErrorPos;
-      cbText.SelLength := 0;
-      Abort;
+  if cbRegEx.Checked then begin
+    // todo: The regular expression could be tested on the fly when
+    //       the user types it (with a short delay so it doesn't
+    //       necessarly check every typed characater). Any error
+    //       messages should then be displayed on a label on the
+    //       form, not a dialog. If it's not valid, the OK button
+    //       should be disabled.
+    try
+      ExecRegExpr(cbText.Text, '');
+    except
+      on E: ERegExpr do begin
+        ShowError(E.Message);
+        TryFocusControl(cbText);
+        cbText.SelStart := E.CompilerErrorPos;
+        cbText.SelLength := 0;
+        Abort;
+      end;
     end;
   end;
 
