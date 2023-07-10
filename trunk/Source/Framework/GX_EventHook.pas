@@ -9,7 +9,12 @@ uses
   Forms;
 
 type
-  TNotifyEventHookAbstract = class
+  ///<summary>
+  /// This class is meant to be used as the destination of a TNotifyEvent.
+  /// It is kept very simple on purpose. Use it as is, do *not* add to it or derive from it, do
+  /// *not* rename the class.
+  /// See the procedure below on how to use it.
+  TNotifyEventHook = class
   public
     ///<summary>
     /// Store the original event here. </summary>
@@ -17,30 +22,8 @@ type
     ///<summary>
     /// Store the event you want to call here. </summary>
     HookEvent: TMethod;
-    procedure HandleEvent(_Sender: TObject); virtual; abstract;
+    procedure HandleEvent(_Sender: TObject); virtual;
     constructor Create(_OrigEvent: TMethod; _HookEvent: TMethod);
-  end;
-
-type
-  ///<summary>
-  /// This class is meant to be used as the destination of a TNotifyEvent.
-  /// It is kept very simple on purpose. Use it as is, do *not* add to it or derive from it, do
-  /// *not* rename the class.
-  /// See the procedure below on how to use it.
-  TNotifyEventHook = class(TNotifyEventHookAbstract)
-  public
-    procedure HandleEvent(_Sender: TObject); override;
-  end;
-
-type
-  ///<summary>
-  /// This class is meant to be used as the destination of a TNotifyEvent.
-  /// It is kept very simple on purpose. Use it as is, do *not* add to it or derive from it, do
-  /// *not* rename the class.
-  /// See the procedure below on how to use it.
-  TNotifyEventHookNoChaining = class(TNotifyEventHookAbstract)
-  public
-    procedure HandleEvent(_Sender: TObject); override;
   end;
 
 type
@@ -83,8 +66,8 @@ type
   /// that implements them. </summary>
   TSecureNotifyEventHook = class(TSecureEventHook)
   public
-    class function Install(_HookEvent: TNotifyEvent; _ChainEvents: Boolean = False): TNotifyEventHookAbstract;
-    class procedure Remove(var _Hook: TNotifyEventHookAbstract);
+    class function Install(_HookEvent: TNotifyEvent): TNotifyEventHook;
+    class procedure Remove(var _Hook: TNotifyEventHook);
   end;
 
 type
@@ -126,16 +109,14 @@ type
 
 implementation
 
-{ TNotifyEventHookAbstract }
+{ TNotifyEventHook }
 
-constructor TNotifyEventHookAbstract.Create(_OrigEvent, _HookEvent: TMethod);
+constructor TNotifyEventHook.Create(_OrigEvent, _HookEvent: TMethod);
 begin
   inherited Create;
   OrigEvent := _OrigEvent;
   HookEvent := _HookEvent;
 end;
-
-{ TNotifyEventHook }
 
 procedure TNotifyEventHook.HandleEvent(_Sender: TObject);
 begin
@@ -143,16 +124,6 @@ begin
     TNotifyEvent(HookEvent)(_Sender);
   if Assigned(OrigEvent.Data) and Assigned(OrigEvent.Code) then
     TNotifyEvent(OrigEvent)(_Sender);
-end;
-
-{ TNotifyEventHookNoChaining }
-
-procedure TNotifyEventHookNoChaining.HandleEvent(_Sender: TObject);
-begin
-  if Assigned(HookEvent.Data) and Assigned(HookEvent.Code) then
-    TNotifyEvent(HookEvent)(_Sender);
-//  if Assigned(OrigEvent.Data) and Assigned(OrigEvent.Code) then
-//    TNotifyEvent(OrigEvent)(_Sender);
 end;
 
 { TMessageEventHook }
@@ -174,20 +145,16 @@ end;
 
 { TSecureNotifyEventHook }
 
-class function TSecureNotifyEventHook.Install(_HookEvent: TNotifyEvent; _ChainEvents: Boolean = False): TNotifyEventHookAbstract;
+class function TSecureNotifyEventHook.Install(_HookEvent: TNotifyEvent): TNotifyEventHook;
 var
   evt: TNotifyEvent;
 begin
-  if _ChainEvents then begin
-    Result := TNotifyEventHook.Create(GetEvent, TMethod(_HookEvent));
-  end else begin
-    Result := TNotifyEventHookNoChaining.Create(GetEvent, TMethod(_HookEvent));
-  end;
+  Result := TNotifyEventHook.Create(GetEvent, TMethod(_HookEvent));
   evt := Result.HandleEvent;
   SetEvent(TMethod(evt));
 end;
 
-class procedure TSecureNotifyEventHook.Remove(var _Hook: TNotifyEventHookAbstract);
+class procedure TSecureNotifyEventHook.Remove(var _Hook: TNotifyEventHook);
 var
   Ptr: TMethod;
 begin
@@ -206,8 +173,7 @@ begin
     Exit; //==>
   end;
 
-  while TObject(Ptr.Data).ClassNameIs('TNotifyEventHook')
-  or TObject(Ptr.Data).ClassNameIs('TNotifyEventHookNoChaining') do begin
+  while TObject(Ptr.Data).ClassNameIs('TNotifyEventHook') do begin
     // Somebody who knows about this standard has hooked the event.
     // (Remember: Do not change the class name or the class structure. Otherwise this
     //  check will fail!)
@@ -220,7 +186,7 @@ begin
       Exit; //==>
     end;
     // check the next event in the chain
-    Ptr := TMethod(TNotifyEventHookAbstract(Ptr.Data).OrigEvent);
+    Ptr := TMethod(TNotifyEventHook(Ptr.Data).OrigEvent);
   end;
 
   // If we get here, somebody who does not adhere to this standard has changed the event.

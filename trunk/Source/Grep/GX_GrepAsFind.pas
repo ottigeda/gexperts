@@ -65,33 +65,6 @@ type
     class function ExecuteFindFile(_Owner: TWinControl): Boolean;
   end;
 
-type
-  ///<summary>
-  /// Implements the GetEvent/SetEvent methods to access SearchFindCommand.OnExecute </summary>
-  TSearchFindComandExecuteHook = class(TSecureNotifyEventHook)
-  protected
-    class function GetEvent: TMethod; override;
-    class procedure SetEvent(_Value: TMethod); override;
-  end;
-
-type
-  ///<summary>
-  /// Implements the GetEvent/SetEvent methods to access SearchAgainCommand.OnExecute </summary>
-  TSearchAgainComandExecuteHook = class(TSecureNotifyEventHook)
-  protected
-    class function GetEvent: TMethod; override;
-    class procedure SetEvent(_Value: TMethod); override;
-  end;
-
-type
-  ///<summary>
-  /// Implements the GetEvent/SetEvent methods to access SearchFileFindCommand.OnExecute </summary>
-  TSearchFileFindComandExecuteHook = class(TSecureNotifyEventHook)
-  protected
-    class function GetEvent: TMethod; override;
-    class procedure SetEvent(_Value: TMethod); override;
-  end;
-
 implementation
 
 {$R *.dfm}
@@ -186,81 +159,6 @@ procedure TfmGrepAsFind.HandleDropFiles(_Sender: TObject; _Files: TStrings);
 begin
   if _Files.Count > 0 then
     cmb_FifFileMask.Text := _Files[0];
-end;
-
-{ TSearchFindComandExecuteHook }
-
-const
-  NilMethod: TMethod = (
-    Code: nil;
-    Data: nil;
-    );
-
-function FindAction(const _Name: string): TAction;
-var
-  AppBuilder: TForm;
-begin
-  AppBuilder := TForm(Application.FindComponent('AppBuilder'));
-  if not Assigned(AppBuilder) then
-    Result := nil
-  else begin
-    Result := TAction(AppBuilder.FindComponent('SearchFindCommand'));
-  end;
-end;
-
-function GetActionOnExecute(const _ActionName: string): TMethod;
-var
-  Action: TAction;
-begin
-  Action := FindAction(_ActionName);
-  if not Assigned(Action) then
-    Result := NilMethod
-  else begin
-    Result := TMethod(Action.OnExecute);
-  end;
-end;
-
-procedure SetActionOnExecute(const _ActionName: string; _Value: TMethod);
-var
-  Action: TAction;
-begin
-  Action := FindAction(_ActionName);
-  if Assigned(Action) then
-    Action.OnExecute := TNotifyEvent(_Value);
-end;
-
-class function TSearchFindComandExecuteHook.GetEvent: TMethod;
-begin
-  Result := GetActionOnExecute('SearchFindCommand');
-end;
-
-class procedure TSearchFindComandExecuteHook.SetEvent(_Value: TMethod);
-begin
-  SetActionOnExecute('SearchFindCommand', _Value);
-end;
-
-{ TSearchAgainComandExecuteHook }
-
-class function TSearchAgainComandExecuteHook.GetEvent: TMethod;
-begin
-  Result := GetActionOnExecute('SearchAgainCommand');
-end;
-
-class procedure TSearchAgainComandExecuteHook.SetEvent(_Value: TMethod);
-begin
-  SetActionOnExecute('SearchAgainCommand', _Value);
-end;
-
-{ TSearchFileFindComandExecuteHook }
-
-class function TSearchFileFindComandExecuteHook.GetEvent: TMethod;
-begin
-  Result := GetActionOnExecute('SearchFileFindCommand');
-end;
-
-class procedure TSearchFileFindComandExecuteHook.SetEvent(_Value: TMethod);
-begin
-  SetActionOnExecute('SearchFileFindCommand', _Value);
 end;
 
 end.

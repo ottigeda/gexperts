@@ -59,8 +59,8 @@ type
 
   TFormChangeManagerInternal = class
   private
-    FScreenActiveFormChangeHook: TNotifyEventHookAbstract;
-    FScreenActiveControlChangeHook: TNotifyEventHookAbstract;
+    FScreenActiveFormChangeHook: TNotifyEventHook;
+    FScreenActiveControlChangeHook: TNotifyEventHook;
     FFormChangeCallbacks: TList;
     FIsInFormChangeCallback: Boolean;
     FControlChangeCallbacks: TList;
