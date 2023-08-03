@@ -100,7 +100,8 @@ type
     Red: Byte;
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
     function GetValues(_Idx: TValueIdxTriple): Byte; inline;
-    procedure SetValues(_Idx: TValueIdxTriple; _Value: Byte); inline;
+    procedure SetValues(_Idx: TValueIdxTriple; _Value: Byte); overload; inline;
+    procedure SetValues(_Red, _Green, _Blue: Byte); overload;
     function GetColor: TColor;
     ///<summary>
     /// Sets Blue, Green and Red for the given Color, supporting system colors in addition to RGB colors
@@ -498,8 +499,32 @@ procedure TBitmap_AssignRgb8(_Buffer: PByte; _bmp: TBitmap; _YIsReversed: Boolea
 procedure TBitmap_AssignMono824(_Buffer: PByte; _bmp: TBitmap; _YIsReversed: Boolean);
 
 ///<summary>
-/// Assign a buffer containg a bitmap in Mono 8 format to a 8 bit gray scale TBitmap </summary>
-procedure TBitmap_AssignMono8(_Buffer: PByte; _bmp: TBitmap; _YIsReversed: Boolean);
+/// Assign a buffer containing a bitmap in Mono 8 format to a 8 bit gray scale TBitmap </summary>
+procedure TBitmap_AssignMono8(_Buffer: PByte; _bmp: TBitmap; _YIsReversed: Boolean); overload;
+procedure TBitmap_AssignMono8(_Buffer: PByte; _bmp: TBitmap; _YIsReversed: Boolean; _RowStride: Int64); overload;
+
+type
+  ///<summary>
+  /// Converts the value at the given position to a Byte and increments BufPtr to point to the
+  /// next value </summary>
+  TBufferBitsToMono8Func = function(var _BufPtr: Pointer): Byte;
+  TBufferBitsToMono8Meth = function(var _BufPtr: Pointer): Byte of object;
+
+///<summary>
+/// Converts a 12 bit value at the given position to a Byte and increments BufPtr by 2 </summary>
+function BufferBits12ToMono8(var _BufPtr: Pointer): Byte;
+
+///<summary>
+/// Assign a buffer containing a bitmap in Monochrome format to a 8 bit gray scale TBitmap
+/// @param BufferBitsToMono8Func is a callback function that converts the value at a given
+///                              position to a Byte and increments the position to point to
+///                              the next value.
+/// @param RowStride (optional) is the number of bytes in Buffer for one row. If 0 it is assumed
+///                  that BufferBitsToMono8 will increment Buffer correctly </summary>
+procedure TBitmap_AssignToMono8(_BufferBitsToMono8Func: TBufferBitsToMono8Func;
+  _Buffer: Pointer; _bmp: TBitmap; _YIsReversed: Boolean; _RowStride: Int64 = 0); overload;
+procedure TBitmap_AssignToMono8(_BufferBitsToMono8Meth: TBufferBitsToMono8Meth;
+  _Buffer: Pointer; _bmp: TBitmap; _YIsReversed: Boolean; _RowStride: Int64 = 0); overload;
 
 ///<summary>
 /// converts a pf24bit or pf32bit monochrome bitmap to a pf8bit monochrome bitmap </summary>
@@ -794,6 +819,15 @@ function BestForegroundForColor(_Color: TColor): TColor; overload;
 function RainbowColor(_Hue: Double): TColor; overload;
 {$IFDEF SUPPORTS_INLINE}
 inline;
+{$ENDIF}
+
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
+///<summary>
+/// @param Hue is a value between 0 and 1 </summary>
+procedure RainbowColor(_Hue: Double; out _Color: TdzRgbTriple); overload;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
 {$ENDIF}
 ///<summary>
 /// @param Brightness is a grayscale value </summary>
@@ -1429,6 +1463,13 @@ begin
   TdzRgbTripleValues(Self)[_Idx] := _Value;
 end;
 
+procedure TdzRgbTriple.SetValues(_Red, _Green, _Blue: Byte);
+begin
+  Red := _Red;
+  Green := _Green;
+  Blue := _Blue;
+end;
+
 procedure TdzRgbTriple.SetBrightness(_Value: Byte);
 begin
   Red := _Value;
@@ -1916,22 +1957,117 @@ end;
 
 procedure TBitmap_AssignMono8(_Buffer: PByte; _bmp: TBitmap; _YIsReversed: Boolean);
 var
+  w: Integer;
+begin
+  Assert(AssertPixelFormat(_bmp, pf8bit));
+  w := _bmp.Width;
+  TBitmap_AssignMono8(_Buffer, _bmp, _YIsReversed, w);
+end;
+
+procedure TBitmap_AssignMono8(_Buffer: PByte; _bmp: TBitmap; _YIsReversed: Boolean; _RowStride: Int64);
+var
+  w: Integer;
+  h: Integer;
   y: Integer;
   ScanLine: PByte;
 begin
   Assert(AssertPixelFormat(_bmp, pf8bit));
+  w := _bmp.Width;
+  h := _bmp.Height;
+
+  Assert(_RowStride >= w);
 
   // Unfortunately the y coordinates of TBitmap are reversed (the picture is upside down).
   // So we can only copy the whole picture in one go, if the buffer is also upside down
   // (many cameras have this feature). If not, we have to copy it one line at a time.
-  if _YIsReversed then begin
-    ScanLine := _bmp.ScanLine[_bmp.Height - 1];
-    Move(_Buffer^, ScanLine^, _bmp.Height * _bmp.Width);
+  if _YIsReversed and (_RowStride = w) then begin
+    ScanLine := _bmp.ScanLine[h - 1];
+    Move(_Buffer^, ScanLine^, h * w);
   end else begin
-    for y := 0 to _bmp.Height - 1 do begin
+    for y := 0 to h - 1 do begin
       ScanLine := _bmp.ScanLine[y];
-      Move(_Buffer^, ScanLine^, _bmp.Width);
-      Inc(_Buffer, _bmp.Width);
+      Move(_Buffer^, ScanLine^, w);
+      Inc(_Buffer, _RowStride);
+    end;
+  end;
+end;
+
+function BufferBits12ToMono8(var _BufPtr: Pointer): Byte;
+begin
+  Result := MulDiv(PUInt16(_BufPtr)^, 255, 1 shl 12 - 1);
+  IncPtr(_BufPtr, 2);
+end;
+
+procedure TBitmap_AssignToMono8(_BufferBitsToMono8Func: TBufferBitsToMono8Func;
+  _Buffer: Pointer; _bmp: TBitmap; _YIsReversed: Boolean; _RowStride: Int64); overload;
+var
+  y: Integer;
+  x: Integer;
+  w: Integer;
+  h: Integer;
+  ScanLine: PByte;
+  Buf: Pointer;
+begin
+  Assert(AssertPixelFormat(_bmp, pf8bit));
+
+  w := _bmp.Width;
+  h := _bmp.Height;
+
+  Assert((_RowStride = 0) or (_RowStride >= w));
+
+  for y := 0 to _bmp.Height - 1 do begin
+    if _YIsReversed then begin
+      ScanLine := _bmp.ScanLine[h - 1];
+    end else begin
+      ScanLine := _bmp.ScanLine[y];
+    end;
+    Buf := _Buffer;
+    for x := 0 to w - 1 do begin
+      ScanLine^ := _BufferBitsToMono8Func(Buf);
+      Inc(ScanLine);
+    end;
+    if _RowStride > 0 then begin
+      IncPtr(_Buffer, _RowStride);
+    end else begin
+      // we assume that BufferBitsToMono8Func inrements the buffer correctly
+      _Buffer := Buf;
+    end;
+  end;
+end;
+
+procedure TBitmap_AssignToMono8(_BufferBitsToMono8Meth: TBufferBitsToMono8Meth;
+  _Buffer: Pointer; _bmp: TBitmap; _YIsReversed: Boolean; _RowStride: Int64 = 0); overload;
+var
+  y: Integer;
+  x: Integer;
+  w: Integer;
+  h: Integer;
+  ScanLine: PByte;
+  Buf: Pointer;
+begin
+  Assert(AssertPixelFormat(_bmp, pf8bit));
+
+  w := _bmp.Width;
+  h := _bmp.Height;
+
+  Assert((_RowStride = 0) or (_RowStride >= w));
+
+  for y := 0 to _bmp.Height - 1 do begin
+    if _YIsReversed then begin
+      ScanLine := _bmp.ScanLine[h - 1];
+    end else begin
+      ScanLine := _bmp.ScanLine[y];
+    end;
+    Buf := _Buffer;
+    for x := 0 to w - 1 do begin
+      ScanLine^ := _BufferBitsToMono8Meth(Buf);
+      Inc(ScanLine);
+    end;
+    if _RowStride > 0 then begin
+      IncPtr(_Buffer, _RowStride);
+    end else begin
+      // we assume that _BufferBitsToMono8Meth inrements the buffer correctly
+      _Buffer := Buf;
     end;
   end;
 end;
@@ -3896,6 +4032,26 @@ begin
   end;
 end;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
+procedure RainbowColor(_Hue: Double; out _Color: TdzRgbTriple);
+var
+  Value: Double;
+  IntValue: Integer;
+begin
+  Value := EnsureRange(_Hue, 0, 1) * 6;
+  IntValue := Round(Frac(Value) * 255);
+  case Trunc(Value) of
+    0: _Color.SetValues(255, IntValue, 0);
+    1: _Color.SetValues(255 - IntValue, 255, 0);
+    2: _Color.SetValues(0, 255, IntValue);
+    3: _Color.SetValues(0, 255 - IntValue, 255);
+    4: _Color.SetValues(IntValue, 0, 255);
+  else // 5
+    _Color.SetValues(255, 0, 255 - IntValue);
+  end;
+end;
+{$ENDIF}
+
 procedure RainbowColor(_Brightness: Byte; out _Red, _Green, _Blue: Byte);
 var
   Brightness: Integer;
@@ -4250,4 +4406,7 @@ begin
 end;
 
 end.
+// Here, Delphi 2007 sometimes throws a [DCC Error] F2084 Internal Error: AV06FA6FD9-R00000D1A-0
+// Usually it helps to do a full rebuild or delete the DCU output directory contents
+// In one case the problem went away when I changed the order of units in the project file
 

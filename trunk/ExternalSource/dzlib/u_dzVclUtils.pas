@@ -693,6 +693,10 @@ procedure TTabControl_AdjustTabWidth(_TabControl: TTabControl; _Form: TForm; _Mi
 function TTabControl_GetSelectedObject(_TabControl: TTabControl; out _Obj: Pointer): Boolean; overload;
 function TTabControl_GetSelectedObject(_TabControl: TTabControl; out _Idx: Integer; out _Obj: Pointer): Boolean; overload;
 
+///<sumamry>
+/// disables and re-enables the timer so it starts again </summary>
+procedure TTimer_Restart(_tim: TTimer);
+
 ///<summary> Enables longer SimpleText (longer than 127 characters)
 ///          Call once to enable. Works, by adding a single panel with owner drawing and
 ///          setting the StatusBar's OnDrawPanel to a custom drawing method.
@@ -707,7 +711,7 @@ procedure TStatusBar_SetLongSimpleText(_StatusBar: TStatusBar; const _Text: stri
 /// Resize one panel a StatusBar to take up all the space the others don't need
 /// @param sb is the TStatusBar to work on
 /// @param PanelIdxToChange is the index of the panel whose size should be changed </summary>
-procedure TStatusBar_Resize(_sb: TStatusBar; _PanelIdxToChange: integer);
+procedure TStatusBar_Resize(_sb: TStatusBar; _PanelIdxToChange: Integer);
 
 ///<summary>
 /// Sets the text of a status bar panel and optionally adjusts its width to fit.
@@ -3213,6 +3217,12 @@ begin
     _Obj := _TabControl.Tabs.Objects[_Idx];
 end;
 
+procedure TTimer_Restart(_tim: TTimer);
+begin
+  _tim.Enabled := False;
+  _tim.Enabled := True;
+end;
+
 type
   // Note: This class is never instantiated, only the DrawPanel method will be used
   //       without ever referencing the self pointer (which is NIL), so it should work
@@ -3246,7 +3256,7 @@ begin
   _StatusBar.OnDrawPanel := Painter.DrawPanel;
 end;
 
-procedure TStatusBar_Resize(_sb: TStatusBar; _PanelIdxToChange: integer);
+procedure TStatusBar_Resize(_sb: TStatusBar; _PanelIdxToChange: Integer);
 var
   w: Integer;
   i: Integer;
@@ -5523,7 +5533,7 @@ end;
 
 function TPopupMenu_AppendMenuItem(_pm: TPopupMenu; const _Caption: string): TMenuItem; overload;
 const
-  NilEvent: TMethod = (code: nil; data: nil);
+  NilEvent: TMethod = (Code: nil; Data: nil);
 begin
   Result := TPopupMenu_AppendMenuItem(_pm, _Caption, TNotifyEvent(NilEvent));
 end;

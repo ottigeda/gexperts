@@ -37,7 +37,11 @@ type
   EStringConvertError = class(EdzConvert);
 
 type
-  ULong = LongWord;
+{$IFDEF DELPHI2005_UP}
+  ULong = LongWord deprecated; // use UInt32
+{$ELSE}
+  ULong = LongWord; // use UInt32
+{$ENDIF}
 
 type
   TBaseN = 2..36;
@@ -68,36 +72,36 @@ function isDec(const _s: AnsiString): Boolean; overload;
 ///<summary>
 /// Converts a decimal digit to its number equivalent
 /// @Raises EDigitOutOfRange if there is an invalid digit. </summary>
-function DecDigit2Long(_a: Char): ULong; overload;
+function DecDigit2Long(_a: Char): UInt32; overload;
 {$IFDEF unicode}
-function DecDigit2Long(_a: AnsiChar): ULong; overload;
+function DecDigit2Long(_a: AnsiChar): UInt32; overload;
 {$ENDIF}
 ///<summary>
 /// Converts a string representing a positive decimal number to a number
 /// @Raises EDigitOutOfRange if there is an invalid digit. </summary>
-function Dec2Long(const _s: string): ULong; overload;
+function Dec2Long(const _s: string): UInt32; overload;
 {$IFDEF unicode}
-function Dec2Long(const _s: AnsiString): ULong; overload;
+function Dec2Long(const _s: AnsiString): UInt32; overload;
 {$ENDIF}
 
-function TryDec2Long(const _s: string; out _l: ULong): Boolean; overload;
+function TryDec2Long(const _s: string; out _l: UInt32): Boolean; overload;
 {$IFDEF unicode}
-function TryDec2Long(const _s: AnsiString; out _l: ULong): Boolean; overload;
+function TryDec2Long(const _s: AnsiString; out _l: UInt32): Boolean; overload;
 {$ENDIF}
 
 ///<summary>
 /// Converts a positive number to its 2 digit decimal representation (left pads with '0') </summary>
-function Long2Dec2(_l: ULong): string;
+function Long2Dec2(_l: UInt32): string;
 ///<summary>
 /// Converts a positive number to its 4 digit decimal representation (left pads with '0') </summary>
-function Long2Dec4(_l: ULong): string;
+function Long2Dec4(_l: UInt32): string;
 ///<summary>
 /// Converts a positive number to its N digit decimal representation (left pads with '0') </summary>
-function Long2DecN(_l: ULong; _n: ULong): string;
+function Long2DecN(_l: UInt32; _n: UInt32): string;
 ///<summary>
 /// Converts a positive number to its decimal representation </summary>
-function Long2Dec(_l: ULong): string;
-function Long2DecA(_l: ULong): AnsiString;
+function Long2Dec(_l: UInt32): string;
+function Long2DecA(_l: UInt32): AnsiString;
 
 // Str <-> Hex conversion
 ///<summary>
@@ -113,26 +117,26 @@ function HexDigit2Long(_a: Char): Longint;
 ///<summary>
 /// Converts a string representing a hexadecimal number to a number
 /// @Raises EDigitOutOfRange if there is an invalid digit. </summary>
-function Hex2Long(const _s: string): ULong;
+function Hex2Long(const _s: string): UInt32;
 ///<summary>
 /// Tries to interpret the string as the hexadecimal interpretation of a number and
 /// returns the value.
 /// @value is the converted value, only valid it result = true
 /// @returns true, if the string could be converted, false otherwise </summary>
-function TryHex2Long(const _s: string; out _Value: ULong): Boolean;
+function TryHex2Long(const _s: string; out _Value: UInt32): Boolean;
 ///<summary>
 /// Converts a number to its hexadecimal representation </summary>
-function Long2Hex(_l: ULong): string;
+function Long2Hex(_l: UInt32): string;
 ///<summary>
 /// converts a number to its hexadecimal representation left padding with 0 to a length of 2 </summary>
-function Long2Hex2(_l: ULong): string;
+function Long2Hex2(_l: UInt32): string;
 ///<summary>
 /// converts a number to its hexadecimal representation left padding with 0 to a length of 4 </summary>
-function Long2Hex4(_l: ULong): string;
+function Long2Hex4(_l: UInt32): string;
 
 ///<summary>
 /// converts a number to its hexadecimal representation left padding with 0 to a length of Digits </summary>
-function Long2HexN(_l: ULong; _Digits: Byte): string;
+function Long2HexN(_l: UInt32; _Digits: Byte): string;
 
 // Str <-> any numeric system conversion up to Base36 (that is digits 0..Z)
 ///<summary>
@@ -148,24 +152,24 @@ function isNumber(const _s: string; _Base: TBaseN): Boolean;
 ///<summary>
 /// Converts a Base digit to its number equivalent.
 /// @Raises EDigitOutOfRange if there is an invalid digit. </summary>
-function Digit2Long(_a: Char; _Base: TBaseN): ULong;
+function Digit2Long(_a: Char; _Base: TBaseN): UInt32;
 ///<summary>
 /// Converts a string representing a number in Base to a number.
 /// @Raises EDigitOutOfRange if there is an invalid digit.  </summary>
-function Num2Long(const _s: string; _Base: TBaseN): ULong;
+function Num2Long(const _s: string; _Base: TBaseN): UInt32;
 
 ///<summary>
 /// Tries to convert a string representing a number in Base to a number.
 /// @Value contains the converted number, only valid if Result = true
 /// @returns true, if the conversion succeeds, false otherwise. </summary>
-function TryNum2Long(const _s: string; _Base: TBaseN; out _Value: ULong): Boolean; overload;
+function TryNum2Long(const _s: string; _Base: TBaseN; out _Value: UInt32): Boolean; overload;
 {$IFDEF unicode}
-function TryNum2Long(const _s: AnsiString; _Base: TBaseN; out _Value: ULong): Boolean; overload;
+function TryNum2Long(const _s: AnsiString; _Base: TBaseN; out _Value: UInt32): Boolean; overload;
 {$ENDIF}
 
 ///<summary>
 /// Converts a number to its Base representation. </summary>
-function Long2Num(_l: ULong; _Base: Byte; _MinWidth: Integer = 1): string;
+function Long2Num(_l: UInt32; _Base: Byte; _MinWidth: Integer = 1): string;
 ///<summary>
 /// Returns the number of characters in S that are valid digits in the given Base. </summary>
 function isNumberN(const _s: string; _Base: TBaseN): Integer;
@@ -222,7 +226,10 @@ function Str2Int(const _s: string; const _Source: string): Integer; overload;
 
 ///<summary>
 /// Does the same as TryStrToInt but does not change Value if the string cannot be converted. </summary>
-function TryStr2Int(const _s: string; var _Value: Integer): Boolean;
+function TryStr2Int(const _s: string; var _Value: Integer): Boolean; overload;
+{$IFDEF SUPPORTS_UNICODE}
+function TryStr2Int(const _s: AnsiString; var _Value: Integer): Boolean; overload;
+{$ENDIF SUPPORTS_UNICODE}
 
 ///<summary>
 /// Converts a string to an int64.
@@ -440,7 +447,56 @@ type
 function Bool2Str(_b: Boolean): string;
 
 type
+  TBitNumber64 = 0..63;
+  TByteNumber64 = 0..7;
+
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
+type
+  ///<summary>
+  /// Stores up to 64 bits similar to the Delphi TBits class but
+  /// as a record, so it does not need a destructor </summary>
+  TBits64 = record
+  public
+    type
+      TBitNumber = TBitNumber64;
+      TByteNumber = TByteNumber64;
+      TValue = UInt64;
+    const
+      Low = 0;
+      Bits = 64;
+      High = Bits - 1;
+  private
+    // unfortunately Delphi 2007 does not allow us to use TValue here
+    FValue: UInt64;
+  public
+    class function Create(_Value: TValue): TBits64; static;
+    class function AllSet: TBits64; static;
+    class function NoneSet: TBits64; static;
+    procedure Init(_Value: TValue);
+    function IsBitSet(_BitNo: TBitNumber): Boolean;
+    procedure SetBit(_BitNo: TBitNumber; _BitValue: Boolean);
+    ///<summary>
+    /// interpret the given bit range as an integer and return it </summary>
+    function Extract(_BitFirst, _BitLast: TBitNumber): TValue;
+    ///<summary>
+    /// Overwrite the given bit range with the given value (reverse of Extract) </summary>
+    procedure Overwrite(_BitFirst, _BitLast: TBitNumber; _Value: TValue);
+    function Value: TValue;
+    function GetByte(_ByteNo: TByteNumber): Byte;
+    procedure SetByte(_ByteNo: TByteNumber; _Value: Byte);
+    function AsString: string;
+    class operator BitwiseAnd(_a, _b: TBits64): TBits64;
+    class operator BitwiseOr(_a, _b: TBits64): TBits64;
+    class operator BitwiseXor(_a, _b: TBits64): TBits64;
+    // There is no BitwiseNot operator, but the LogicalNot also works
+    class operator LogicalNot(_a: TBits64): TBits64;
+    class operator Equal(_a, _b: TBits64): Boolean;
+  end;
+{$ENDIF}
+
+type
   TBitNumber32 = 0..31;
+  TByteNumber32 = 0..3;
 
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
 type
@@ -448,26 +504,47 @@ type
   /// Stores up to 32 bits similar to the Delphi TBits class but
   /// as a record, so it does not need a destructor </summary>
   TBits32 = record
-  private
-    FValue: LongWord;
   public
-    class function Create(_Value: LongWord): TBits32; static;
-    procedure Init(_Value: LongWord);
-    function IsBitSet(_BitNo: TBitNumber32): Boolean;
-    procedure SetBit(_BitNo: TBitNumber32; _BitValue: Boolean);
+    type
+      TBitNumber = TBitNumber32;
+      TByteNumber = TByteNumber32;
+      TValue = UInt32;
+    const
+      Low = 0;
+      Bits = 32;
+      High = Bits - 1;
+  private
+    // unfortunately Delphi 2007 does not allow us to use TValue here
+    FValue: UInt32;
+  public
+    class function Create(_Value: TValue): TBits32; static;
+    class function AllSet: TBits32; static;
+    class function NoneSet: TBits32; static;
+    procedure Init(_Value: TValue);
+    function IsBitSet(_BitNo: TBitNumber): Boolean;
+    procedure SetBit(_BitNo: TBitNumber; _BitValue: Boolean);
     ///<summary>
     /// interpret the given bit range as an integer and return it </summary>
-    function Extract(_BitFirst, _BitLast: TBitNumber32): LongWord;
+    function Extract(_BitFirst, _BitLast: TBitNumber): TValue;
     ///<summary>
     /// Overwrite the given bit range with the given value (reverse of Extract) </summary>
-    procedure Overwrite(_BitFirst, _BitLast: TBitNumber32; _Value: LongWord);
-    function Value: Cardinal;
+    procedure Overwrite(_BitFirst, _BitLast: TBitNumber; _Value: TValue);
+    function Value: TValue;
+    function GetByte(_ByteNo: TByteNumber): Byte;
+    procedure SetByte(_ByteNo: TByteNumber; _Value: Byte);
     function AsString: string;
+    class operator BitwiseAnd(_a, _b: TBits32): TBits32;
+    class operator BitwiseOr(_a, _b: TBits32): TBits32;
+    class operator BitwiseXor(_a, _b: TBits32): TBits32;
+    // There is no BitwiseNot operator, but the LogicalNot also works
+    class operator LogicalNot(_a: TBits32): TBits32;
+    class operator Equal(_a, _b: TBits32): Boolean;
   end;
 {$ENDIF}
 
 type
   TBitNumber16 = 0..15;
+  TByteNumber16 = 0..1;
 
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
 type
@@ -475,47 +552,82 @@ type
   /// Stores up to 16 bits similar to the Delphi TBits class but
   /// as a record, so it does not need a destructor </summary>
   TBits16 = record
-  private
-    FValue: Word;
   public
-    class function Create(_Value: Word): TBits16; static;
-    procedure Init(_Value: Word);
-    function IsBitSet(_BitNo: TBitNumber16): Boolean;
+    type
+      TBitNumber = TBitNumber16;
+      TByteNumber = TByteNumber16;
+      TValue = UInt16;
+    const
+      Low = 0;
+      Bits = 16;
+      High = Bits - 1;
+  private
+    // unfortunately Delphi 2007 does not allow us to use TValue here
+    FValue: UInt16;
+  public
+    class function Create(_Value: TValue): TBits16; static;
+    class function AllSet: TBits16; static;
+    class function NoneSet: TBits16; static;
+    procedure Init(_Value: TValue);
+    function IsBitSet(_BitNo: TBitNumber): Boolean;
     function IsAnyBitSet: Boolean;
-    procedure SetBit(_BitNo: TBitNumber16; _BitValue: Boolean);
+    procedure SetBit(_BitNo: TBitNumber; _BitValue: Boolean);
     ///<summary>
     /// interpret the given bit range as an integer and return it </summary>
-    function Extract(_BitFirst, _BitLast: TBitNumber16): Word;
+    function Extract(_BitFirst, _BitLast: TBitNumber): TValue;
     ///<summary>
     /// Overwrite the given bit range with the given value (reverse of Extract) </summary>
-    procedure Overwrite(_BitFirst, _BitLast: TBitNumber16; _Value: Word);
-    function Value: Word;
+    procedure Overwrite(_BitFirst, _BitLast: TBitNumber; _Value: TValue);
+    function Value: TValue;
+    function GetByte(_ByteNo: TByteNumber): Byte;
+    procedure SetByte(_ByteNo: TByteNumber; _Value: Byte);
     function AsString: string;
     class operator BitwiseAnd(_a, _b: TBits16): TBits16;
     class operator BitwiseOr(_a, _b: TBits16): TBits16;
     class operator BitwiseXor(_a, _b: TBits16): TBits16;
     // There is no BitwiseNot operator, but the LogicalNot also works
     class operator LogicalNot(_a: TBits16): TBits16;
+    class operator Equal(_a, _b: TBits16): Boolean;
   end;
 {$ENDIF}
 
 type
-  TBitNumber8 = 0..8;
+  TBitNumber8 = 0..7;
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
 type
   ///<summary>
   /// Stores up to 8 bits similar to the Delphi TBits class but
   /// as a record, so it does not need a destructor </summary>
   TBits8 = record
-  private
-    FValue: Byte;
   public
-    class function Create(_Value: Byte): TBits8; static;
-    procedure Init(_Value: Byte);
-    function IsBitSet(_BitNo: TBitNumber8): Boolean;
+    type
+      TBitNumber = TBitNumber8;
+      TByteNumber = 0..0;
+      TValue = UInt8;
+    const
+      Low = 0;
+      Bits = 8;
+      High = Bits - 1;
+  private
+    // unfortunately Delphi 2007 does not allow us to use TValue here
+    FValue: UInt8;
+  public
+    class function Create(_Value: TValue): TBits8; static;
+    class function AllSet: TBits8; static;
+    class function NoneSet: TBits8; static;
+    procedure Init(_Value: TValue);
+    function IsBitSet(_BitNo: TBitNumber): Boolean;
     function IsAnyBitSet: Boolean;
-    procedure SetBit(_BitNo: TBitNumber8; _BitValue: Boolean);
-    function Value: Byte;
+    procedure SetBit(_BitNo: TBitNumber; _BitValue: Boolean);
+    ///<summary>
+    /// interpret the given bit range as an integer and return it </summary>
+    function Extract(_BitFirst, _BitLast: TBitNumber): TValue;
+    ///<summary>
+    /// Overwrite the given bit range with the given value (reverse of Extract) </summary>
+    procedure Overwrite(_BitFirst, _BitLast: TBitNumber; _Value: TValue);
+    function Value: TValue;
+    function GetByte(_ByteNo: TByteNumber): Byte;
+    procedure SetByte(_ByteNo: TByteNumber; _Value: Byte);
     function AsString: string;
     // according to the documentation:
     // > For a logical operator and a bitwise operator using the same symbol,
@@ -530,6 +642,7 @@ type
     class operator BitwiseXor(_a, _b: TBits8): TBits8;
     // There is no BitwiseNot operator, but the LogicalNot also works
     class operator LogicalNot(_a: TBits8): TBits8;
+    class operator Equal(_a, _b: TBits8): Boolean;
   end;
 {$ENDIF}
   { TODO -otwm :
@@ -596,7 +709,7 @@ begin
     Inc(Result);
 end;
 
-function Digit2Long(_a: Char; _Base: TBaseN): ULong;
+function Digit2Long(_a: Char; _Base: TBaseN): UInt32;
 begin
   Result := Pos(UpCase(_a), LeftStr(DIGIT_CHARS, _Base));
   if Result = 0 then
@@ -604,19 +717,19 @@ begin
   Dec(Result);
 end;
 
-function Num2Long(const _s: string; _Base: TBaseN): ULong;
+function Num2Long(const _s: string; _Base: TBaseN): UInt32;
 var
   i: Integer;
 begin
   Result := 0;
   for i := 1 to Length(_s) do
     if isDigit(_s[i], _Base) then
-      Result := (Result * _Base + ULong(Pos(UpCase(_s[i]), DIGIT_CHARS)) - 1)
+      Result := (Result * _Base + UInt32(Pos(UpCase(_s[i]), DIGIT_CHARS)) - 1)
     else
       raise EDigitOutOfRange.CreateFmt(_('Digit #%d (%s) out of range'), [i, _s[i]]);
 end;
 
-function TryNum2Long(const _s: string; _Base: TBaseN; out _Value: ULong): Boolean;
+function TryNum2Long(const _s: string; _Base: TBaseN; out _Value: UInt32): Boolean;
 var
   i: Integer;
 begin
@@ -624,7 +737,7 @@ begin
   _Value := 0;
   for i := 1 to Length(_s) do begin
     if isDigit(_s[i], _Base) then
-      _Value := (_Value * _Base + ULong(Pos(UpCase(_s[i]), DIGIT_CHARS)) - 1)
+      _Value := (_Value * _Base + UInt32(Pos(UpCase(_s[i]), DIGIT_CHARS)) - 1)
     else begin
       Exit;
     end;
@@ -633,7 +746,7 @@ begin
 end;
 
 {$IFDEF unicode}
-function TryNum2Long(const _s: AnsiString; _Base: TBaseN; out _Value: ULong): Boolean;
+function TryNum2Long(const _s: AnsiString; _Base: TBaseN; out _Value: UInt32): Boolean;
 var
   i: Integer;
 begin
@@ -641,7 +754,7 @@ begin
   _Value := 0;
   for i := 1 to Length(_s) do begin
     if isDigit(_s[i], _Base) then
-      _Value := (_Value * _Base + ULong(Pos(string(UpCase(_s[i])), DIGIT_CHARS)) - 1)
+      _Value := (_Value * _Base + UInt32(Pos(string(UpCase(_s[i])), DIGIT_CHARS)) - 1)
     else begin
       Exit;
     end;
@@ -650,7 +763,7 @@ begin
 end;
 {$ENDIF}
 
-function Long2Num(_l: ULong; _Base: Byte; _MinWidth: Integer = 1): string;
+function Long2Num(_l: UInt32; _Base: Byte; _MinWidth: Integer = 1): string;
 var
   m: Byte;
 begin
@@ -753,35 +866,35 @@ begin
   Result := Digit2Long(_a, 16);
 end;
 
-function Hex2Long(const _s: string): ULong;
+function Hex2Long(const _s: string): UInt32;
 begin
   Result := Num2Long(_s, 16);
 end;
 
-function TryHex2Long(const _s: string; out _Value: ULong): Boolean;
+function TryHex2Long(const _s: string; out _Value: UInt32): Boolean;
 begin
   Result := TryNum2Long(_s, 16, _Value);
 end;
 
-function Long2Hex(_l: ULong): string;
+function Long2Hex(_l: UInt32): string;
 begin
   Result := Long2Num(_l, 16);
 end;
 
-function Long2HexN(_l: ULong; _Digits: Byte): string;
+function Long2HexN(_l: UInt32; _Digits: Byte): string;
 begin
   Result := Long2Hex(_l);
   Result := StringOfChar('0', _Digits - Length(Result)) + Result;
 end;
 
-function Long2Hex2(_l: ULong): string;
+function Long2Hex2(_l: UInt32): string;
 begin
   Result := Long2Hex(_l);
   if Length(Result) < 2 then
     Result := '0' + Result;
 end;
 
-function Long2Hex4(_l: ULong): string;
+function Long2Hex4(_l: UInt32): string;
 var
   Len: Integer;
 begin
@@ -815,19 +928,19 @@ begin
 end;
 {$ENDIF}
 
-function DecDigit2Long(_a: Char): ULong;
+function DecDigit2Long(_a: Char): UInt32;
 begin
   Result := Digit2Long(_a, 10);
 end;
 
 {$IFDEF unicode}
-function DecDigit2Long(_a: AnsiChar): ULong;
+function DecDigit2Long(_a: AnsiChar): UInt32;
 begin
   Result := Digit2Long(Char(_a), 10);
 end;
 {$ENDIF}
 
-function Dec2Long(const _s: string): ULong;
+function Dec2Long(const _s: string): UInt32;
 var
   c: Char;
   i: Integer;
@@ -840,7 +953,7 @@ begin
 end;
 
 {$IFDEF unicode}
-function Dec2Long(const _s: AnsiString): ULong; overload;
+function Dec2Long(const _s: AnsiString): UInt32; overload;
 var
   c: AnsiChar;
   i: Integer;
@@ -853,19 +966,19 @@ begin
 end;
 {$ENDIF}
 
-function TryDec2Long(const _s: string; out _l: ULong): Boolean;
+function TryDec2Long(const _s: string; out _l: UInt32): Boolean;
 begin
   Result := TryNum2Long(_s, 10, _l);
 end;
 
 {$IFDEF unicode}
-function TryDec2Long(const _s: AnsiString; out _l: ULong): Boolean;
+function TryDec2Long(const _s: AnsiString; out _l: UInt32): Boolean;
 begin
   Result := TryNum2Long(_s, 10, _l);
 end;
 {$ENDIF}
 
-function Long2Dec(_l: ULong): string;
+function Long2Dec(_l: UInt32): string;
 var
   s: AnsiString;
 begin
@@ -873,26 +986,26 @@ begin
   Result := string(s);
 end;
 
-function Long2DecA(_l: ULong): AnsiString;
+function Long2DecA(_l: UInt32): AnsiString;
 begin
   Str(_l, Result);
 end;
 
-function Long2Dec2(_l: ULong): string;
+function Long2Dec2(_l: UInt32): string;
 begin
   Result := Long2DecN(_l, 2);
 end;
 
-function Long2Dec4(_l: ULong): string;
+function Long2Dec4(_l: UInt32): string;
 begin
   Result := Long2DecN(_l, 4);
 end;
 
-function Long2DecN(_l: ULong; _n: ULong): string;
+function Long2DecN(_l: UInt32; _n: UInt32): string;
 begin
   Result := Long2Dec(_l);
-  if ULong(Length(Result)) < _n then
-    Insert(DupeString('0', _n - ULong(Length(Result))), Result, 1);
+  if UInt32(Length(Result)) < _n then
+    Insert(DupeString('0', _n - UInt32(Length(Result))), Result, 1);
 end;
 
 function TimeToSeconds(_Zeit: TDateTime): Integer;
@@ -1045,6 +1158,13 @@ begin
   if Result then
     _Value := v;
 end;
+
+{$IFDEF SUPPORTS_UNICODE}
+function TryStr2Int(const _s: AnsiString; var _Value: Integer): Boolean;
+begin
+  Result := TryStr2Int(string(_s), _Value);
+end;
+{$ENDIF SUPPORTS_UNICODE}
 
 function Str2Int64(const _s: string; _Default: Int64): Int64;
 var
@@ -1274,26 +1394,68 @@ begin
 end;
 
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
-{ TBits32 }
 
-function TBits32.AsString: string;
-var
-  i: Integer;
-begin
-  Result := DupeString('0', 32);
-  for i := 31 downto 0 do
-    if IsBitSet(i) then
-      Result[32 - i] := '1';
-end;
+{ TBits64 }
 
-class function TBits32.Create(_Value: LongWord): TBits32;
+class function TBits64.Create(_Value: TValue): TBits64;
 begin
   Result.Init(_Value);
 end;
 
-function TBits32.Extract(_BitFirst, _BitLast: TBitNumber32): LongWord;
+class function TBits64.AllSet: TBits64;
+begin
+  Result.Init($FFFFFFFFFFFFFFFF);
+end;
+
+class function TBits64.NoneSet: TBits64;
+begin
+  Result.Init(0);
+end;
+
+procedure TBits64.Init(_Value: TValue);
+begin
+  FValue := _Value;
+end;
+
+type
+  TLoHi64 = packed record
+    Lo: UInt32;
+    Hi: UInt32;
+  end;
+
+function TBits64.IsBitSet(_BitNo: TBitNumber): Boolean;
 var
-  i: TBitNumber32;
+  LoHi: TLoHi64 absolute FValue;
+begin
+  // shl only supports 32 bits
+  if _BitNo > 31 then begin
+    Result := ((LoHi.Hi and (1 shl (_BitNo - 32))) <> 0);
+  end else begin
+    Result := ((LoHi.Lo and (1 shl _BitNo)) <> 0);
+  end;
+end;
+
+procedure TBits64.SetBit(_BitNo: TBitNumber; _BitValue: Boolean);
+var
+  LoHi: TLoHi64 absolute FValue;
+begin
+  // shl only supports 32 bits
+  if _BitNo > 31 then begin
+    if _BitValue then
+      LoHi.Hi := LoHi.Hi or (1 shl (_BitNo - 32))
+    else
+      LoHi.Hi := LoHi.Hi and not (1 shl (_BitNo - 32));
+  end else begin
+    if _BitValue then
+      LoHi.Lo := LoHi.Lo or (1 shl _BitNo)
+    else
+      LoHi.Lo := LoHi.Lo and not (1 shl _BitNo);
+  end;
+end;
+
+function TBits64.Extract(_BitFirst, _BitLast: TBitNumber): TValue;
+var
+  i: TBitNumber;
 begin
   Result := 0;
   for i := _BitLast downto _BitFirst do begin
@@ -1303,9 +1465,115 @@ begin
   end;
 end;
 
-procedure TBits32.Overwrite(_BitFirst, _BitLast: TBitNumber32; _Value: LongWord);
+procedure TBits64.Overwrite(_BitFirst, _BitLast: TBitNumber; _Value: TValue);
 var
-  i: TBitNumber32;
+  i: TBitNumber;
+begin
+  for i := _BitFirst to _BitLast do begin
+    SetBit(i, (_Value and TValue(1)) <> 0);
+    _Value := _Value shr 1;
+  end;
+end;
+
+function TBits64.Value: TValue;
+begin
+  Result := FValue;
+end;
+
+type
+  TByteArr8 = array[TByteNumber64] of Byte;
+
+function TBits64.GetByte(_ByteNo: TByteNumber): Byte;
+var
+  Bytes: TByteArr8 absolute FValue;
+begin
+  Result := Bytes[_byteNo];
+end;
+
+procedure TBits64.SetByte(_ByteNo: TByteNumber; _Value: Byte);
+var
+  Bytes: TByteArr8 absolute FValue;
+begin
+  Bytes[_ByteNo] := _Value;
+end;
+
+function TBits64.AsString: string;
+var
+  i: Integer;
+begin
+  Result := DupeString('0', Bits);
+  for i := High downto Low do
+    if IsBitSet(i) then
+      Result[Bits - i] := '1';
+end;
+
+class operator TBits64.BitwiseAnd(_a, _b: TBits64): TBits64;
+begin
+  Result.Init(_a.Value and _b.Value);
+end;
+
+class operator TBits64.LogicalNot(_a: TBits64): TBits64;
+begin
+  Result.Init(_a.Value xor $FF);
+end;
+
+class operator TBits64.BitwiseOr(_a, _b: TBits64): TBits64;
+begin
+  Result.Init(_a.Value or _b.Value);
+end;
+
+class operator TBits64.BitwiseXor(_a, _b: TBits64): TBits64;
+begin
+  Result.Init(_a.Value xor _b.Value);
+end;
+
+class operator TBits64.Equal(_a, _b: TBits64): Boolean;
+begin
+  Result := _a.Value = _b.Value;
+end;
+
+{ TBits32 }
+
+class function TBits32.AllSet: TBits32;
+begin
+  Result.Init($FFFFFFFF);
+end;
+
+function TBits32.AsString: string;
+var
+  i: Integer;
+begin
+  Result := DupeString('0', Bits);
+  for i := High downto Low do
+    if IsBitSet(i) then
+      Result[Bits - i] := '1';
+end;
+
+class function TBits32.Create(_Value: TValue): TBits32;
+begin
+  Result.Init(_Value);
+end;
+
+function TBits32.Extract(_BitFirst, _BitLast: TBitNumber): TValue;
+var
+  i: TBitNumber;
+begin
+  Result := 0;
+  for i := _BitLast downto _BitFirst do begin
+    Result := Result shl 1;
+    if IsBitSet(i) then
+      Result := Result + 1;
+  end;
+end;
+
+class function TBits32.NoneSet: TBits32;
+begin
+  Result.Init(0);
+end;
+
+procedure TBits32.Overwrite(_BitFirst, _BitLast: TBitNumber; _Value: TValue);
+var
+  i: TBitNumber;
 begin
   for i := _BitFirst to _BitLast do begin
     SetBit(i, (_Value and $00000001) <> 0);
@@ -1313,17 +1581,28 @@ begin
   end;
 end;
 
-procedure TBits32.Init(_Value: LongWord);
+function TBits32.GetByte(_ByteNo: TByteNumber): Byte;
+begin
+  Result := (FValue shr (_ByteNo * 8)) and $FF;
+end;
+
+procedure TBits32.SetByte(_ByteNo: TByteNumber; _Value: Byte);
+begin
+  _ByteNo := _ByteNo * 8;
+  FValue := FValue and ($FFFFFFFF xor ($FF shl _ByteNo)) or (_Value shl _ByteNo);
+end;
+
+procedure TBits32.Init(_Value: TValue);
 begin
   FValue := _Value;
 end;
 
-function TBits32.IsBitSet(_BitNo: TBitNumber32): Boolean;
+function TBits32.IsBitSet(_BitNo: TBitNumber): Boolean;
 begin
   Result := ((FValue and (1 shl _BitNo)) <> 0);
 end;
 
-procedure TBits32.SetBit(_BitNo: TBitNumber32; _BitValue: Boolean);
+procedure TBits32.SetBit(_BitNo: TBitNumber; _BitValue: Boolean);
 begin
   if _BitValue then
     FValue := FValue or (1 shl _BitNo)
@@ -1331,29 +1610,59 @@ begin
     FValue := FValue and not (1 shl _BitNo);
 end;
 
-function TBits32.Value: LongWord;
+function TBits32.Value: TValue;
 begin
   Result := FValue;
 end;
 
+class operator TBits32.BitwiseAnd(_a, _b: TBits32): TBits32;
+begin
+  Result.Init(_a.Value and _b.Value);
+end;
+
+class operator TBits32.LogicalNot(_a: TBits32): TBits32;
+begin
+  Result.Init(_a.Value xor $FF);
+end;
+
+class operator TBits32.BitwiseOr(_a, _b: TBits32): TBits32;
+begin
+  Result.Init(_a.Value or _b.Value);
+end;
+
+class operator TBits32.BitwiseXor(_a, _b: TBits32): TBits32;
+begin
+  Result.Init(_a.Value xor _b.Value);
+end;
+
+class operator TBits32.Equal(_a, _b: TBits32): Boolean;
+begin
+  Result := _a.Value = _b.Value;
+end;
+
 { TBits16 }
+
+class function TBits16.AllSet: TBits16;
+begin
+  Result.Init($FFFF);
+end;
 
 function TBits16.AsString: string;
 var
   i: Integer;
 begin
-  Result := DupeString('0', 8);
-  for i := 7 downto 0 do
+  Result := DupeString('0', Bits);
+  for i := High downto Low do
     if IsBitSet(i) then
-      Result[8 - i] := '1';
+      Result[Bits - i] := '1';
 end;
 
-class function TBits16.Create(_Value: Word): TBits16;
+class function TBits16.Create(_Value: TValue): TBits16;
 begin
   Result.Init(_Value);
 end;
 
-procedure TBits16.Init(_Value: Word);
+procedure TBits16.Init(_Value: TValue);
 begin
   FValue := _Value;
 end;
@@ -1363,7 +1672,7 @@ begin
   Result := FValue <> 0;
 end;
 
-function TBits16.IsBitSet(_BitNo: TBitNumber16): Boolean;
+function TBits16.IsBitSet(_BitNo: TBitNumber): Boolean;
 begin
   Result := ((FValue and (1 shl _BitNo)) <> 0);
 end;
@@ -1388,9 +1697,9 @@ begin
   Result.Init(_a.Value xor _b.Value);
 end;
 
-function TBits16.Extract(_BitFirst, _BitLast: TBitNumber16): Word;
+function TBits16.Extract(_BitFirst, _BitLast: TBitNumber): TValue;
 var
-  i: TBitNumber16;
+  i: TBitNumber;
 begin
   Result := 0;
   for i := _BitLast downto _BitFirst do begin
@@ -1400,17 +1709,22 @@ begin
   end;
 end;
 
-procedure TBits16.Overwrite(_BitFirst, _BitLast: TBitNumber16; _Value: Word);
+class function TBits16.NoneSet: TBits16;
+begin
+  Result.Init(0);
+end;
+
+procedure TBits16.Overwrite(_BitFirst, _BitLast: TBitNumber; _Value: TValue);
 var
-  i: TBitNumber16;
+  i: TBitNumber;
 begin
   for i := _BitFirst to _BitLast do begin
-    SetBit(i, (_Value and $00000001) <> 0);
+    SetBit(i, (_Value and TValue(1)) <> 0);
     _Value := _Value shr 1;
   end;
 end;
 
-procedure TBits16.SetBit(_BitNo: TBitNumber16; _BitValue: Boolean);
+procedure TBits16.SetBit(_BitNo: TBitNumber; _BitValue: Boolean);
 begin
   if _BitValue then
     FValue := FValue or (1 shl _BitNo)
@@ -1418,9 +1732,25 @@ begin
     FValue := FValue and not (1 shl _BitNo);
 end;
 
-function TBits16.Value: Word;
+function TBits16.Value: TValue;
 begin
   Result := FValue;
+end;
+
+function TBits16.GetByte(_ByteNo: TByteNumber): Byte;
+begin
+  Result := (FValue shr (_ByteNo * 8)) and $FF;
+end;
+
+procedure TBits16.SetByte(_ByteNo: TByteNumber; _Value: Byte);
+begin
+  _ByteNo := _ByteNo * 8;
+  FValue := FValue and ($FFFF xor ($FF shl _ByteNo)) or (_Value shl _ByteNo);
+end;
+
+class operator TBits16.Equal(_a, _b: TBits16): Boolean;
+begin
+  Result := _a.Value = _b.Value;
 end;
 
 { TBits8 }
@@ -1429,18 +1759,33 @@ function TBits8.AsString: string;
 var
   i: Integer;
 begin
-  Result := DupeString('0', 8);
-  for i := 7 downto 0 do
+  Result := DupeString('0', Bits);
+  for i := High downto Low do
     if IsBitSet(i) then
-      Result[8 - i] := '1';
+      Result[Bits - i] := '1';
 end;
 
-class function TBits8.Create(_Value: Byte): TBits8;
+class function TBits8.AllSet: TBits8;
+begin
+  Result.Init($FF);
+end;
+
+class function TBits8.Create(_Value: TValue): TBits8;
 begin
   Result.Init(_Value);
 end;
 
-procedure TBits8.Init(_Value: Byte);
+function TBits8.GetByte(_ByteNo: TByteNumber): Byte;
+begin
+  Result := FValue;
+end;
+
+procedure TBits8.SetByte(_ByteNo: TByteNumber; _Value: Byte);
+begin
+  FValue := _Value;
+end;
+
+procedure TBits8.Init(_Value: TValue);
 begin
   FValue := _Value;
 end;
@@ -1450,7 +1795,7 @@ begin
   Result := FValue <> 0;
 end;
 
-function TBits8.IsBitSet(_BitNo: TBitNumber8): Boolean;
+function TBits8.IsBitSet(_BitNo: TBitNumber): Boolean;
 begin
   Result := ((FValue and (1 shl _BitNo)) <> 0);
 end;
@@ -1475,7 +1820,12 @@ begin
   Result.Init(_a.Value xor _b.Value);
 end;
 
-procedure TBits8.SetBit(_BitNo: TBitNumber8; _BitValue: Boolean);
+class function TBits8.NoneSet: TBits8;
+begin
+  Result.Init(0);
+end;
+
+procedure TBits8.SetBit(_BitNo: TBitNumber; _BitValue: Boolean);
 begin
   if _BitValue then
     FValue := FValue or (1 shl _BitNo)
@@ -1483,10 +1833,38 @@ begin
     FValue := FValue and not (1 shl _BitNo);
 end;
 
-function TBits8.Value: Byte;
+function TBits8.Extract(_BitFirst, _BitLast: TBitNumber): TValue;
+var
+  i: Integer;
+begin
+  Result := 0;
+  for i := _BitLast downto _BitFirst do begin
+    Result := Result shl 1;
+    if IsBitSet(i) then
+      Result := Result + 1;
+  end;
+end;
+
+procedure TBits8.Overwrite(_BitFirst, _BitLast: TBitNumber; _Value: TValue);
+var
+  i: TBitNumber;
+begin
+  for i := _BitFirst to _BitLast do begin
+    SetBit(i, (_Value and TValue(1)) <> 0);
+    _Value := _Value shr 1;
+  end;
+end;
+
+function TBits8.Value: TValue;
 begin
   Result := FValue;
 end;
+
+class operator TBits8.Equal(_a, _b: TBits8): Boolean;
+begin
+  Result := _a.Value = _b.Value;
+end;
+
 {$ENDIF}
 
 function Bool2Str(_b: Boolean): string;

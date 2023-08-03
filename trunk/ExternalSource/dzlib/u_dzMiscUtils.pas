@@ -74,7 +74,10 @@ function HexDumpExtended(const _ext: Extended): string;
 function HexDumpString(const _s: AnsiString): string;
 
 ///<summary> converts a hexdump of a double back to a double value </summary>
-procedure HexDumpToDbl(const _s: string; var _Value: Double);
+procedure HexDumpToDbl(const _s: string; var _Value: Double); overload;
+{$IFDEF SUPPORTS_UNICODE}
+procedure HexDumpToDbl(const _s: AnsiString; var _Value: Double); overload;
+{$ENDIF SUPPORTS_UNICODE}
 
 ///<summary> converts a hexdump of an extended back to an extended value </summary>
 procedure HexDumpToExtended(const _s: string; var _Value: Extended);
@@ -496,6 +499,13 @@ begin
     p^[i] := Dec;
   end;
 end;
+
+{$IFDEF SUPPORTS_UNICODE}
+procedure HexDumpToDbl(const _s: AnsiString; var _Value: Double);
+begin
+  HexDumpToDbl(string(_s), _Value);
+end;
+{$ENDIF SUPPORTS_UNICODE}
 
 procedure HexDumpToExtended(const _s: string; var _Value: Extended);
 type

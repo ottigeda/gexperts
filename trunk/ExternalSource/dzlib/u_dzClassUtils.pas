@@ -333,6 +333,9 @@ function TIniFile_ReadString(const _Filename: string; const _Section, _Ident: st
 ///<summary>
 /// Reads a string from the ini-file, raises an exception if the value is empty </summary>
 function TIniFile_ReadString(_Ini: TCustomIniFile; const _Section, _Ident: string): string; overload;
+///<summary>
+/// Reads a string from the ini-file, raises an exception if the value is empty </summary>
+function TIniFile_ReadString(const _Filename: string; const _Section, _Ident: string): string; overload;
 
 ///<summary>
 /// Writes a string to the ini-file. </summary>
@@ -1272,6 +1275,18 @@ begin
     ErrStr := Format(_('String value for [%s]%s must not be empty in ini file'), [_Section, _Ident])
       + ' ' + _Ini.Filename;
     raise Exception.Create(ErrStr);
+  end;
+end;
+
+function TIniFile_ReadString(const _Filename: string; const _Section, _Ident: string): string;
+var
+  Ini: TMemIniFile;
+begin
+  Ini := TMemIniFile.Create(_Filename);
+  try
+    Result := TIniFile_ReadString(Ini, _Section, _Ident);
+  finally
+    FreeAndNil(Ini);
   end;
 end;
 

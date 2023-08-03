@@ -1072,8 +1072,8 @@ type
     ///          Note that this treats only the text after the last '.' as extension(s). </summary>
     function LastExtension: string;
     ///<summary>
-    /// Returns the filename without extension.
-    /// Note that this treats everything after the first '.' as extension(s) </summary>
+    /// @Returns the filename including the full path but without extension(s).
+    /// @NOTE: This treats everything after the first '.' as extension(s) </summary>
     function BaseName: string;
     ///<summary>
     /// replaces the drive part of the path with the given NewDrive. </summary>
@@ -1133,6 +1133,14 @@ type
     /// Splits all parts of the file name in a TStringArray
     /// @returns the number of parts </summary>
     function Split: TStringArray;
+    ///<summary>
+    /// @returns True, if the last extension matches the given one (case insensitively)
+    ///          Fales otherwise </summary>
+    function HasExtensionLast(const _Ext: string): Boolean;
+    ///<summary>
+    /// @returns True, if the full extension matches the given one (case insensitively)
+    ///          Fales otherwise </summary>
+    function HasExtensionFull(const _Ext: string): Boolean;
     class function Combine(_Parts: TStringArray): TFilename; static;
     ///<summary>
     /// Same as Init </summary>
@@ -2706,7 +2714,7 @@ begin
     try
       repeat
         if (Sr.Name = '.') or (Sr.Name = '..') then begin
-            // ignore
+          // ignore
         end else begin
           Filename := IncludeTrailingPathDelimiter(_DirName) + Sr.Name;
           if (Sr.Attr and SysUtils.faDirectory) <> 0 then begin
@@ -3554,6 +3562,16 @@ end;
 function TFilename.Depth: Integer;
 begin
   Result := Length(Split);
+end;
+
+function TFilename.HasExtensionFull(const _Ext: string): Boolean;
+begin
+  Result := TFileSystem.HasFileExtFull(FFull, _Ext);
+end;
+
+function TFilename.HasExtensionLast(const _Ext: string): Boolean;
+begin
+  Result := TFileSystem.HasFileExtLast(FFull, _Ext);
 end;
 
 function TFilename.Parts(_Depth: Integer): string;
