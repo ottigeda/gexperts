@@ -1413,9 +1413,8 @@ function GxOtaFocusCurrentIDEEditControl: Boolean;
 var
   EditControl: TWinControl;
 begin
-  Result := False;
   EditControl := GxOtaGetCurrentIDEEditControl;
-  TryFocusControl(EditControl)
+  Result := TryFocusControl(EditControl)
 end;
 
 function GxOtaGetProjectFileName(Project: IOTAProject; NormalizeBdsProj: Boolean = False): string;
