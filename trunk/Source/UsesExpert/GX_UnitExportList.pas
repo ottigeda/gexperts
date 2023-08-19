@@ -126,7 +126,7 @@ class function TUnitIdentifier.FromLine(_s: PAnsiChar): TUnitIdentifier;
 var
   Parts: array of PAnsiChar;
   Idx: Integer;
-  l: ulong;
+  l: UInt32;
   LLineNo: Integer;
   p: PAnsiChar;
   Start: PAnsiChar;
