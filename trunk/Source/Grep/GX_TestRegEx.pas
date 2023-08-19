@@ -118,8 +118,7 @@ end;
 
 procedure TfmTestRegEx.ed_RegExChange(Sender: TObject);
 begin
-  tim_InputDelay.Enabled := False;
-  tim_InputDelay.Enabled := True; //FI:W508 Variable is assigned twice successively
+  TTimer_Restart(tim_InputDelay);
 end;
 
 procedure TfmTestRegEx.tim_InputDelayTimer(Sender: TObject);
