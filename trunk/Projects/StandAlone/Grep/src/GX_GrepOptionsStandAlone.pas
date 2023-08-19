@@ -35,11 +35,21 @@ type
     grp_WindowsExplorer: TGroupBox;
     chk_ExplorerMenuBackground: TCheckBox;
     chk_ExplorerMenuFolder: TCheckBox;
+    grp_Presets: TGroupBox;
+    b_Notepad: TButton;
+    b_NotepadPP: TButton;
+    b_Notepad2: TButton;
+    b_Associated: TButton;
+    b_ProgrammersNotepad: TButton;
     procedure b_ExternalEditorExeClick(Sender: TObject);
     procedure mi_FileClick(Sender: TObject);
     procedure mi_LineClick(Sender: TObject);
     procedure mi_ColumnClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
+    procedure b_NotepadPPClick(Sender: TObject);
+    procedure b_Notepad2Click(Sender: TObject);
+    procedure b_NotepadClick(Sender: TObject);
+    procedure b_ProgrammersNotepadClick(Sender: TObject);
   private
     procedure HandleDropFiles(_Sender: TObject; _Files: TStrings);
     procedure SetData(const _Editor, _Params: string);
@@ -48,6 +58,8 @@ type
     procedure ApplyExplorerIntegration(_AddToBackground, _AddToFolders: Boolean);
     procedure SetExplorerIntegration(const _BaseKey: string; _IsEnabled: Boolean);
     procedure GetExplorerIntegration(const _BaseKey: string; out _IsEnabled: Boolean);
+    function FindNotepadPP(out _ExePath: string): Boolean;
+    function FindNotepad2(out _ExePath: string): Boolean;
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
@@ -63,7 +75,7 @@ implementation
 
 uses
   ComCtrls, Types, Registry,
-  u_dzVclUtils, u_dzOsUtils,
+  u_dzVclUtils, u_dzOsUtils, u_dzClassUtils, u_dzFileUtils,
   GX_GenericUtils, GX_IdeUtils, GX_GExperts, GX_ActionBroker, GX_OtaUtils;
 
 { TfmGrepGrepOptionsStandAlone }
@@ -85,9 +97,23 @@ begin
   end;
 end;
 
+function TfmGrepGrepOptionsStandAlone.FindNotepadPP(out _ExePath: string): Boolean;
+begin
+  Result := TRegistry_TryReadString('SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\notepad++.exe',
+    '', _ExePath, HKEY_LOCAL_MACHINE, True)
+end;
+
+function TfmGrepGrepOptionsStandAlone.FindNotepad2(out _ExePath: string): Boolean;
+begin
+  Result := TRegistry_TryReadString('SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Notepad2',
+    'InstallLocation', _ExePath, HKEY_LOCAL_MACHINE);
+  if Result then
+    _ExePath := itpd(_ExePath) + 'Notepad2.exe'
+end;
+
+
 procedure TfmGrepGrepOptionsStandAlone.btnOKClick(Sender: TObject);
 begin
-  inherited;
   ApplyExplorerIntegration(chk_ExplorerMenuBackground.Checked, chk_ExplorerMenuFolder.Checked);
 end;
 
@@ -100,6 +126,38 @@ begin
     ed_ExternalEditorExe.Text := fn;
 end;
 
+procedure TfmGrepGrepOptionsStandAlone.b_Notepad2Click(Sender: TObject);
+var
+  Executable: string;
+begin
+  if not FindNotepad2(Executable) then
+    Executable := 'path\to\Notepad2.exe';
+  ed_ExternalEditorExe.Text := Executable;
+  ed_ExternalEditorParameters.Text := '/g{LINE},{COLUMN} {FILE}';
+end;
+
+procedure TfmGrepGrepOptionsStandAlone.b_NotepadClick(Sender: TObject);
+begin
+  ed_ExternalEditorExe.text := 'c:\windows\notepad.exe';
+  ed_ExternalEditorParameters.Text := '{FILE}';
+end;
+
+procedure TfmGrepGrepOptionsStandAlone.b_NotepadPPClick(Sender: TObject);
+var
+  Executable: string;
+begin
+  if not FindNotepadPP(Executable) then
+    Executable := 'path\to\Notepad++.exe';
+  ed_ExternalEditorExe.Text := Executable;
+  ed_ExternalEditorParameters.Text := '-n{LINE} -c{COLUMN} {FILE}';
+end;
+
+procedure TfmGrepGrepOptionsStandAlone.b_ProgrammersNotepadClick(Sender: TObject);
+begin
+  ed_ExternalEditorExe.Text := 'C:\Program Files (x86)\Programmer''s Notepad\pn.exe';
+  ed_ExternalEditorParameters.Text := '--line {LINE} --col {COLUMN} {FILE}';
+end;
+
 constructor TfmGrepGrepOptionsStandAlone.Create(_Owner: TComponent);
 var
   AddToBackground: Boolean;
@@ -108,6 +166,7 @@ begin
   inherited;
 
   TWinControl_ActivateDropFiles(Self, HandleDropFiles);
+  TEdit_ActivateAutoComplete(ed_ExternalEditorExe);
 
   TButton_AddDropdownMenu(b_ExternalEditorParameters, pm_Parameters);
 
