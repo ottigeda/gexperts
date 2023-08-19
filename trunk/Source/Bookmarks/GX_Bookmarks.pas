@@ -43,8 +43,8 @@ type
     procedure mi_DeleteClick(Sender: TObject);
     procedure mi_AddClick(Sender: TObject);
     procedure mi_EditClick(Sender: TObject);
-    procedure lb_BookmarksDrawItem(Control: TWinControl; Index: Integer; _Rect: TRect;
-      State: TOwnerDrawState);
+    procedure lb_BookmarksDrawItem(_Control: TWinControl; _Index: Integer; _Rect: TRect;
+      _State: TOwnerDrawState);
     procedure mi_DeleteAllClick(Sender: TObject);
   private
     FBookmarks: TBookmarkList;
@@ -480,11 +480,12 @@ begin
   end;
 end;
 
-procedure TfmGxBookmarksForm.lb_BookmarksDrawItem(Control: TWinControl; Index: Integer; _Rect: TRect;
-  State: TOwnerDrawState);
+procedure TfmGxBookmarksForm.lb_BookmarksDrawItem(_Control: TWinControl; _Index: Integer; _Rect: TRect;
+  _State: TOwnerDrawState);
 resourcestring
   SLine = 'Line %d';
 var
+  ListBox: TListBox absolute _Control;
   LbCanvas: TCanvas;
   bm: TBookmark;
   LineHeight: Integer;
@@ -509,7 +510,7 @@ var
     LbCanvas.FillRect(_Rect);
 
     _Rect.Right := _Rect.Right + 2;
-    if odSelected in State then
+    if odSelected in _State then
       Frame3D(LbCanvas, _Rect, BottomColor, TopColor, 1)
     else
       Frame3D(LbCanvas, _Rect, TopColor, BottomColor, 1);
@@ -524,7 +525,7 @@ var
 
     FileNameWidth := LbCanvas.TextWidth(LineText) + FScaler.Calc(10);
     if (LbCanvas.TextWidth(FileString) + i + FScaler.Calc(10)) <= _Rect.Right - FileNameWidth then
-      LbCanvas.TextOut(lb_Bookmarks.ClientWidth - FileNameWidth, TextTop, LineText);
+      LbCanvas.TextOut(ListBox.ClientWidth - FileNameWidth, TextTop, LineText);
   end;
 
   procedure PaintLines(_Rect: TRect);
@@ -537,7 +538,7 @@ var
     BGNormal: TColor;
     BGBookmark: TColor;
   begin
-    if [odSelected, odFocused] * State = [odSelected, odFocused] then begin
+    if [odSelected, odFocused] * _State = [odSelected, odFocused] then begin
       BGNormal := clHighLight;
       LbCanvas.Font.Color := clHighLightText;
       BGBookmark := BGNormal;
@@ -571,9 +572,9 @@ var
   end;
 
 begin
-  bm := TBookmark(lb_Bookmarks.Items.Objects[Index]);
+  bm := TBookmark(ListBox.Items.Objects[_Index]);
   if Assigned(bm) then begin
-    LbCanvas := lb_Bookmarks.Canvas;
+    LbCanvas := ListBox.Canvas;
     LineHeight := LbCanvas.TextHeight('Mg');
     TopOffset := LbCanvas.TextHeight('g');
     TopOffset := LineHeight - TopOffset;
