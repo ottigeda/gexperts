@@ -20,6 +20,7 @@ const
   GrepResultsName = 'GrepResults';
   GrepNextItemName = 'GrepNextItem';
   GrepPrevItemName = 'GrepPrevItem';
+  GrepFastSearchName = 'GrepFastSearch';
 
 type
   TGrepMenuEntryExpert = class(TGX_Expert)
@@ -61,8 +62,7 @@ uses
   GX_GExperts,
   GX_ActionBroker,
   GX_IdeUtils,
-  GX_GrepMenuConfig,
-  GX_GrepAsFind;
+  GX_GrepMenuConfig;
 
 { TGrepMenuEntryExpert }
 
@@ -181,8 +181,8 @@ end;
 
 procedure TGrepMenuEntryExpert.HandleSearchFindExecute(_Sender: TObject);
 begin
-  FLogger.Info('HandleSearchFindExecute');
-  TfmGrepAsFind.ExecuteFindFile(nil);
+//  FLogger.Info('HandleSearchFindExecute');
+//  TfmGrepAsFind.ExecuteFindFile(nil);
 //  TNotifyEvent(FSearchFindHook.OrigEvent)(_Sender);
 end;
 
@@ -227,6 +227,7 @@ begin
   HandleExpert(GrepResultsName);
   HandleExpert(GrepPrevItemName);
   HandleExpert(GrepNextItemName);
+  HandleExpert(GrepFastSearchName);
 end;
 
 procedure TGrepMenuEntryExpert.Execute(Sender: TObject);
@@ -299,6 +300,7 @@ begin
   HandleExpert(GrepResultsName);
   HandleExpert(GrepPrevItemName);
   HandleExpert(GrepNextItemName);
+  HandleExpert(GrepFastSearchName);
 end;
 
 procedure TGrepMenuEntryExpert.ShowPopup(Sender: TObject);
@@ -332,14 +334,17 @@ var
 begin
   GExpertsInstance := GExpertsInst(True);
   b := False;
-  if GExpertsInstance.IsExpertActive(GrepSearchName) then
+  if GExpertsInstance.IsExpertActive(GrepSearchName) then begin
     b := True;
-  if GExpertsInstance.IsExpertActive(GrepResultsName) then
+  end else if GExpertsInstance.IsExpertActive(GrepResultsName) then begin
     b := True;
-  if GExpertsInstance.IsExpertActive(GrepNextItemName) then
+  end else if GExpertsInstance.IsExpertActive(GrepNextItemName) then begin
     b := True;
-  if GExpertsInstance.IsExpertActive(GrepPrevItemName) then
+  end else if GExpertsInstance.IsExpertActive(GrepPrevItemName) then begin
     b := True;
+  end else if GExpertsInstance.IsExpertActive(GrepFastSearchName) then begin
+    b := True;
+  end;
 
   Action.Enabled := b;
   // todo: Is this a good idea? Shouldn't the action always be visible?

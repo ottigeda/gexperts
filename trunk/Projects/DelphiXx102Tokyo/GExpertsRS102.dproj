@@ -389,10 +389,18 @@ $(PreBuildEvent)]]>
             <Form>f_GotoConfig</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Grep\GX_GrepFastGrep.pas">
+            <Form>fmFastGrep</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <DCCReference Include="..\..\source\Grep\GX_GrepBackend.pas"/>
         <DCCReference Include="..\..\source\Grep\GX_GrepExpert.pas"/>
         <DCCReference Include="..\..\source\Grep\GX_GrepOptions.pas">
             <Form>fmGrepOptions</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Grep\GX_GrepMenuConfig.pas">
+            <Form>f_GrepMenuConfig</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\Grep\GX_GrepMenuEntry.pas"/>
@@ -698,14 +706,6 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Framework\GX_VerDepConst.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas"/>
         <DCCReference Include="..\..\source\BackupProject\GX_Zipper.pas"/>
-        <DCCReference Include="..\..\Source\Grep\GX_GrepAsFind.pas">
-            <Form>fmGrepAsFind</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="..\..\Source\Grep\GX_GrepMenuConfig.pas">
-            <Form>f_GrepMenuConfig</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <RcCompile Include="..\..\images\GXIcons.rc">
             <Form>GXIcons.res</Form>
         </RcCompile>
