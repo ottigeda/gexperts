@@ -203,10 +203,10 @@ type
     procedure EditFolder;
     procedure EditFile;
     function GetDefaultEntryFileName: string;
-    procedure SetEntryFile(const Value: string);
+    procedure UpdateCaption;
     procedure AddFileToCurrentFolder(const AFileName: string);
     procedure doOnSettingsChanged;
-    property EntryFile: string read FEntryFile write SetEntryFile;
+    property EntryFile: string read FEntryFile write FEntryFile;
     property MRUEntryFiles: TStrings read FMRUEntryFiles;
     procedure SetShowPreview(Value: Boolean);
     function CreateEmptyRootNode: TTreeNode;
@@ -556,6 +556,7 @@ begin
     SaveFolder(FRootFolder, Doc, RootNode);
 
     Doc.Save(FEntryFile, ofIndent);
+    UpdateCaption;
   except
     on E: Exception do
     begin
@@ -563,6 +564,14 @@ begin
       MessageDlg(Format(SSaveError, [E.Message]), mtError, [mbOK], 0);
     end;
   end;
+end;
+
+procedure TfmFavFiles.UpdateCaption;
+begin
+  if FEntryFile = GetDefaultEntryFileName then
+    Caption := 'Favorite Files'
+  else
+    Caption := 'Favorite Files - ' + FEntryFile;
 end;
 
 procedure TfmFavFiles.CreateFolders(Folder: TGXFolder; Node: TTreeNode);
@@ -685,9 +694,10 @@ procedure TfmFavFiles.LoadEntries;
   end;
 
 resourcestring
-  SSaveWarning = 'The storage directory defined in the GExperts configuration ' +
-    'dialog is not valid.  Make sure that you have selected a valid folder ' +
-    'or your favorite files will not be saved.';
+  SSaveWarning = 'The file for storing the list of your favorite files does not exist:'#13#10
+    + '"%s"'#13#10
+    + 'Resetting it to the default:'#13#10
+    + '"%s"';
   SMissingRootFolder =
     'Error: Missing root folder in file "%s"!' + sLineBreak + sLineBreak +
     'Overwrite existing file with a new empty favorites file?';
@@ -700,13 +710,18 @@ begin
   FModified := False;
   tvFolders.Items.Clear;
   Node := nil;
-  if not FileExists(FEntryFile) then
-  begin
+  if not FileExists(FEntryFile) then begin
+    ErrorMsg := Format(SSaveWarning, [FEntryFile, GetDefaultEntryFileName]);
+    MessageDlg(ErrorMsg, mtError, [mbOK], 0);
+    FEntryFile := GetDefaultEntryFileName;
+  end;
+
+  UpdateCaption;
+
+  if not FileExists(FEntryFile) then begin
+    // even the default file does not exist, create an empty list
     Node := CreateEmptyRootNode;
-    if not DirectoryExists(ExtractFilePath(FEntryFile)) then
-      MessageDlg(SSaveWarning, mtWarning, [mbOK], 0);
-  end
-  else begin
+  end else begin
     Doc := CreateXMLDoc;
     Doc.Load(FEntryFile);
     RootFolderNode := Doc.DocumentElement.SelectSingleNode(XmlNodeFolder);
@@ -1196,15 +1211,6 @@ begin
     Result := ConfigInfo.ConfigPath + FaveFavFile
   else
     Result := ExpandFileName(AddSlash(ConfigInfo.ConfigPath) + FaveFavFile);
-end;
-
-procedure TfmFavFiles.SetEntryFile(const Value: string);
-begin
-  FEntryFile := Value;
-  if FEntryFile = GetDefaultEntryFileName then
-    Caption := 'Favorite Files'
-  else
-    Caption := 'Favorite Files - ' + FEntryFile;
 end;
 
 procedure TfmFavFiles.SetShowPreview(Value: Boolean);
