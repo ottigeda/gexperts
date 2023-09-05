@@ -721,6 +721,9 @@ begin
   if not FileExists(FEntryFile) then begin
     // even the default file does not exist, create an empty list
     Node := CreateEmptyRootNode;
+    CreateFolders(FRootFolder, Node);
+    FModified := True;
+    SaveEntries;
   end else begin
     Doc := CreateXMLDoc;
     Doc.Load(FEntryFile);
