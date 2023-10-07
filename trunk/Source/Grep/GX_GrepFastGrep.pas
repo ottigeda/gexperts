@@ -119,7 +119,7 @@ begin
 
   InitDpiScaler;
 
-  lb_Results.ItemHeight := (lb_Results.Canvas.TextHeight('Mg') + 2) * 4;
+  lb_Results.ItemHeight := (lb_Results.Canvas.TextHeight('Mg') + 4) * 4;
 end;
 
 destructor TfmFastGrep.Destroy;
