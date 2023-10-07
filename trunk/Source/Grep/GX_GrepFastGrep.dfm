@@ -2,7 +2,6 @@ inherited fmFastGrep: TfmFastGrep
   Left = 0
   Top = 0
   ActiveControl = ed_RegEx
-  BorderStyle = bsDialog
   Caption = 'Fast Grep - GExperts'
   ClientHeight = 405
   ClientWidth = 433
@@ -13,7 +12,8 @@ inherited fmFastGrep: TfmFastGrep
     Top = 9
     Width = 101
     Height = 14
-    Caption = 'Regular Expression'
+    Caption = 'Regular &Expression'
+    FocusControl = ed_RegEx
   end
   object ed_RegEx: TEdit
     Left = 8
@@ -31,7 +31,7 @@ inherited fmFastGrep: TfmFastGrep
     Top = 56
     Width = 145
     Height = 17
-    Caption = 'Case sensitive'
+    Caption = '&Case sensitive'
     TabOrder = 1
   end
   object lb_Results: TListBox

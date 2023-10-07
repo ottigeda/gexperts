@@ -1,5 +1,7 @@
 unit GX_GrepFastGrep;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -45,6 +47,11 @@ type
     function TryGetSelectedEditorPos(out _EditPos: TOTAEditPos): Boolean;
     procedure GoBackAndClose();
     procedure GoToCurrentAndClose;
+    procedure SetListboxItemHeight;
+  protected
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+    procedure ArrangeControls; override;
+{$ENDIF}
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
@@ -116,10 +123,9 @@ begin
     FOriginalEditPos.Col := -1;
     FOriginalEditPos.Line := -1;
   end;
+  SetListboxItemHeight;
 
   InitDpiScaler;
-
-  lb_Results.ItemHeight := (lb_Results.Canvas.TextHeight('Mg') + 4) * 4;
 end;
 
 destructor TfmFastGrep.Destroy;
@@ -198,12 +204,13 @@ procedure TfmFastGrep.lb_ResultsDrawItem(_Control: TWinControl; _Index: Integer;
   _State: TOwnerDrawState);
 resourcestring
   SLine = 'Line %d';
+const
+  TopOffset = 1;
 var
   ListBox: TListBox absolute _Control;
   LbCanvas: TCanvas;
   Res: TFileResult;
   LineHeight: Integer;
-  TopOffset: Integer;
 
   procedure PaintFileHeader(_Rect: TRect);
   var
@@ -244,11 +251,11 @@ var
   procedure PaintLines(_Rect: TRect);
   var
     TextTop: Integer;
-    sl: TStringList;
     i: Integer;
     LineText: string;
     BGNormal: TColor;
     BGMatch: TColor;
+    Idx: Integer;
   begin
     if odSelected in _State then begin
       BGNormal := clHighLight;
@@ -263,42 +270,44 @@ var
     LbCanvas.FillRect(_Rect);
 
     TextTop := _Rect.Top + TopOffset;
-    sl := TStringList.Create;
-    try
-      for i := Res.Idx - 1 to Res.Idx + 1 do
-        if (i >= 0) and (i < FCurrentCode.Count) then
-          sl.Add(FCurrentCode[i])
-        else
-          sl.Add('');
-      for i := 0 to sl.Count - 1 do begin
-        LineText := sl[i];
-        if i = 1 then begin
-          // line containing the match
-          LbCanvas.Brush.Color := BGMatch;
-          LbCanvas.FillRect(Rect(_Rect.Left, TextTop, _Rect.Right, TextTop + LineHeight));
-        end else begin
-          // line above or below the match
-          LbCanvas.Brush.Color := BGNormal;
-          // we already filled the whole area before the for loop
-        end;
-        LbCanvas.TextOut(_Rect.Left, TextTop, LineText);
-        Inc(TextTop, LineHeight);
+    for i := -1 to 1 do begin
+      Idx := Res.Idx + i;
+      if (Idx >= 0) and (Idx < FCurrentCode.Count) then
+        LineText := FCurrentCode[Idx]
+      else
+        LineText := '';
+      if i = 0 then begin
+        // line containing the match
+        LbCanvas.Brush.Color := BGMatch;
+        LbCanvas.FillRect(Rect(_Rect.Left, TextTop, _Rect.Right, TextTop + LineHeight));
+      end else begin
+        // line above or below the match
+        LbCanvas.Brush.Color := BGNormal;
+        // we already filled the whole area before the for loop
       end;
-    finally
-      sl.Free;
+      LbCanvas.TextOut(_Rect.Left, TextTop, LineText);
+      Inc(TextTop, LineHeight);
     end;
   end;
 
-begin
+begin // TfmFastGrep.lb_ResultsDrawItem
   Res := TFileResult(ListBox.Items.Objects[_Index]);
   if Assigned(Res) then begin
     LbCanvas := ListBox.Canvas;
-    LineHeight := FScaler.Calc(LbCanvas.TextHeight('Mg') + 1);
-    TopOffset := LbCanvas.TextHeight('g');
-    TopOffset := LineHeight - TopOffset;
-    PaintFileHeader(Rect(_Rect.Left, _Rect.Top, _Rect.Right, FScaler.Calc(_Rect.Top + LineHeight + 2)));
-    PaintLines(Rect(_Rect.Left, FScaler.Calc(_Rect.Top + LineHeight + 2), _Rect.Right, _Rect.Bottom));
+    LbCanvas.Font := ListBox.Font;
+    LineHeight := LbCanvas.TextHeight('Mg');
+    PaintFileHeader(Rect(_Rect.Left, _Rect.Top, _Rect.Right, _Rect.Top + LineHeight + 2));
+    PaintLines(Rect(_Rect.Left, _Rect.Top + LineHeight + 2, _Rect.Right, _Rect.Bottom));
   end;
+end;
+
+procedure TfmFastGrep.SetListboxItemHeight;
+var
+  cnv: TCanvas;
+begin
+  cnv := lb_Results.Canvas;
+  cnv.Font := lb_Results.Font;
+  lb_Results.ItemHeight := (cnv.TextHeight('Mg') + 2) * 4;
 end;
 
 procedure TfmFastGrep.ed_RegExChange(Sender: TObject);
@@ -308,7 +317,7 @@ end;
 
 procedure TfmFastGrep.ed_RegExKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  if (Key in [VK_UP, VK_DOWN]) and (Shift = []) then begin
+  if (Key in [VK_UP, VK_DOWN, VK_PRIOR, VK_NEXT]) and (Shift = []) then begin
     SendMessage(lb_Results.Handle, WM_KEYDOWN, Key, 0);
     Key := 0;
   end;
@@ -360,6 +369,14 @@ begin
     Items.EndUpdate;
   end;
 end;
+
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+procedure TfmFastGrep.ArrangeControls;
+begin
+  inherited;
+  SetListboxItemHeight;
+end;
+{$ENDIF}
 
 type
   TGrepFastSearchExpert = class(TGX_Expert)
