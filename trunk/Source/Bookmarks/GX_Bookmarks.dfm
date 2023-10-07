@@ -14,6 +14,7 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
     TabOrder = 0
     OnDblClick = lb_BookmarksDblClick
     OnDrawItem = lb_BookmarksDrawItem
+    OnKeyPress = lb_BookmarksKeyPress
   end
   object tim_Update: TTimer
     OnTimer = tim_UpdateTimer

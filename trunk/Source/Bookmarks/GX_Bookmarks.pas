@@ -46,6 +46,7 @@ type
     procedure lb_BookmarksDrawItem(_Control: TWinControl; _Index: Integer; _Rect: TRect;
       _State: TOwnerDrawState);
     procedure mi_DeleteAllClick(Sender: TObject);
+    procedure lb_BookmarksKeyPress(Sender: TObject; var Key: Char);
   private
     FBookmarks: TBookmarkList;
     function GetEditView(var _SourceEditor: IOTASourceEditor;
@@ -55,6 +56,8 @@ type
     procedure DeleteBookmark(const _ModuleName: string; _BmIdx: Integer);
     procedure AddBookmarks(const _ModuleName: string; _EditView: IOTAEditView; _Bookmarks: TBookmarkList);
     function HasChanged(_NewBookmarks: TBookmarkList): Boolean;
+    procedure SetListboxItemHeight;
+    procedure GotoCurrentAndClose;
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
@@ -209,7 +212,7 @@ begin
 
   TControl_SetMinConstraints(Self);
 
-  lb_Bookmarks.ItemHeight := (lb_Bookmarks.Canvas.TextHeight('Mg') + 1) * 4;
+  SetListboxItemHeight;
 
   InitDpiScaler;
 
@@ -318,6 +321,11 @@ begin
 end;
 
 procedure TfmGxBookmarksForm.lb_BookmarksDblClick(Sender: TObject);
+begin
+  GotoCurrentAndClose;
+end;
+
+procedure TfmGxBookmarksForm.GotoCurrentAndClose;
 resourcestring
   SCouldNotOpenFile = 'Could not open file %s';
 var
@@ -400,7 +408,7 @@ begin
     for i := 0 to 19 do begin
       if EditView.BookmarkPos[i].Line = 0 then begin
         _BmIdx := i;
-        break;
+        Break;
       end;
     end;
     if _BmIdx < 0 then
@@ -484,12 +492,13 @@ procedure TfmGxBookmarksForm.lb_BookmarksDrawItem(_Control: TWinControl; _Index:
   _State: TOwnerDrawState);
 resourcestring
   SLine = 'Line %d';
+const
+  TopOffset = 1;
 var
   ListBox: TListBox absolute _Control;
   LbCanvas: TCanvas;
   bm: TBookmark;
   LineHeight: Integer;
-  TopOffset: Integer;
 
   procedure PaintFileHeader(_Rect: TRect);
   var
@@ -501,7 +510,7 @@ var
     FileString: string;
     LineText: string;
   begin
-    TextTop := _Rect.top + TopOffset;
+    TextTop := _Rect.Top + TopOffset;
     TopColor := clBtnHighlight;
     BottomColor := clBtnShadow;
 
@@ -550,7 +559,7 @@ var
     LbCanvas.Brush.Color := BGNormal;
     LbCanvas.FillRect(_Rect);
 
-    TextTop := _Rect.top + TopOffset;
+    TextTop := _Rect.Top + TopOffset;
     sl := TStringList.Create;
     try
       sl.Text := bm.Text;
@@ -576,12 +585,33 @@ begin
   if Assigned(bm) then begin
     LbCanvas := ListBox.Canvas;
     LineHeight := LbCanvas.TextHeight('Mg');
-    TopOffset := LbCanvas.TextHeight('g');
-    TopOffset := LineHeight - TopOffset;
-    PaintFileHeader(Rect(_Rect.Left, _Rect.top, _Rect.Right, _Rect.top + LineHeight + 2));
-    PaintLines(Rect(_Rect.Left, _Rect.top + LineHeight + 2, _Rect.Right, _Rect.Bottom));
+    PaintFileHeader(Rect(_Rect.Left, _Rect.Top, _Rect.Right, _Rect.Top + LineHeight + 2));
+    PaintLines(Rect(_Rect.Left, _Rect.Top + LineHeight + 2, _Rect.Right, _Rect.Bottom));
   end;
 end;
+
+procedure TfmGxBookmarksForm.SetListboxItemHeight;
+var
+  cnv: TCanvas;
+begin
+  cnv := lb_Bookmarks.Canvas;
+  cnv.Font := lb_Bookmarks.Font;
+  lb_Bookmarks.ItemHeight := (cnv.TextHeight('Mg') + 2) * 4;
+end;
+
+procedure TfmGxBookmarksForm.lb_BookmarksKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then
+    GotoCurrentAndClose();
+end;
+
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+procedure TfmGxBookmarksForm.ArrangeControls;
+begin
+  inherited;
+  SetListboxItemHeight;
+end;
+{$ENDIF}
 
 {$IFDEF GX_VER170_up}
 { TEditServiceNotifier }
@@ -597,14 +627,6 @@ procedure TEditServiceNotifier.EditorViewActivated(const EditWindow: INTAEditWin
 begin
   if Assigned(FOnEditorViewActivated) then
     FOnEditorViewActivated(Self, EditView);
-end;
-{$ENDIF}
-
-{$IFDEF GX_IDE_IS_HIDPI_AWARE}
-procedure TfmGxBookmarksForm.ArrangeControls;
-begin
-  inherited;
-  lb_Bookmarks.ItemHeight := lb_Bookmarks.Canvas.TextHeight('Mg') * 4;
 end;
 {$ENDIF}
 
