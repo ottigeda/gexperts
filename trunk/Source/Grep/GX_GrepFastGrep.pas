@@ -23,7 +23,7 @@ uses
   GX_IdeDock;
 
 type
-  TfmFastGrep = class(TfmIdeDockForm)
+  TfmGxFastGrepForm = class(TfmIdeDockForm)
     l_RegEx: TLabel;
     ed_RegEx: TEdit;
     tim_InputDelay: TTimer;
@@ -38,6 +38,7 @@ type
     procedure lb_ResultsClick(Sender: TObject);
     procedure lb_ResultsKeyPress(Sender: TObject; var Key: Char);
     procedure ed_RegExKeyPress(Sender: TObject; var Key: Char);
+    procedure FormActivate(Sender: TObject);
   private
     FRegEx: TRegExpr;
     FCurrentCode: TGXUnicodeStringList;
@@ -45,9 +46,10 @@ type
     FOriginalEditPos: TOTAEditPos;
     procedure UpdateOutput;
     function TryGetSelectedEditorPos(out _EditPos: TOTAEditPos): Boolean;
-    procedure GoBackAndClose();
-    procedure GoToCurrentAndClose;
+    procedure GoBack();
+    procedure GoToCurrent;
     procedure SetListboxItemHeight;
+    procedure LoadCurrentCode;
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
@@ -66,28 +68,27 @@ uses
   u_dzClassUtils,
   GX_OtaUtils,
   GX_Experts,
-  GX_GrepMenuEntry;
+  GX_GrepMenuEntry,
+  GX_GenericUtils;
 
 var
-  fmFastGrep: TfmFastGrep = nil;
+  fmGxFastGrepForm: TfmGxFastGrepForm = nil;
 
 type
   TFileResult = class
   private
-    Module: string;
     Idx: Integer;
     MatchStart: Integer;
     MatchLen: Integer;
   public
-    constructor Create(const _Module: string; _Index, _Start, _Len: Integer);
+    constructor Create(_Index, _Start, _Len: Integer);
   end;
 
 { TFileResult }
 
-constructor TFileResult.Create(const _Module: string; _Index, _Start, _Len: Integer);
+constructor TFileResult.Create(_Index, _Start, _Len: Integer);
 begin
   inherited Create;
-  Module := _Module;
   Idx := _Index;
   MatchStart := _Start;
   MatchLen := _Len;
@@ -95,7 +96,27 @@ end;
 
 { TfmFastGrep }
 
-constructor TfmFastGrep.Create(_Owner: TComponent);
+constructor TfmGxFastGrepForm.Create(_Owner: TComponent);
+begin
+  inherited;
+
+  FRegEx := TRegExpr.Create;
+  FCurrentCode := TGXUnicodeStringList.Create;
+
+  LoadCurrentCode;
+  SetListboxItemHeight;
+
+  InitDpiScaler;
+end;
+
+destructor TfmGxFastGrepForm.Destroy;
+begin
+  TStrings_FreeAllObjects(lb_Results.Items);
+  FreeAndNil(FCurrentCode);
+  inherited;
+end;
+
+procedure TfmGxFastGrepForm.LoadCurrentCode;
 
   function GetModuleDir: string;
   begin
@@ -105,11 +126,6 @@ constructor TfmFastGrep.Create(_Owner: TComponent);
 var
   ISourceEditor: IOTASourceEditor;
 begin
-  inherited;
-
-  FRegEx := TRegExpr.Create;
-  FCurrentCode := TGXUnicodeStringList.Create;
-
   if Assigned(BorlandIDEServices)
     and GxOtaTryGetCurrentSourceEditor(ISourceEditor)
     and GxOtaGetActiveEditorText(FCurrentCode, False) then begin
@@ -123,41 +139,27 @@ begin
     FOriginalEditPos.Col := -1;
     FOriginalEditPos.Line := -1;
   end;
-  SetListboxItemHeight;
-
-  InitDpiScaler;
 end;
 
-destructor TfmFastGrep.Destroy;
-begin
-  TStrings_FreeAllObjects(lb_Results.Items);
-  FreeAndNil(FCurrentCode);
-  inherited;
-end;
-
-procedure TfmFastGrep.GoBackAndClose();
+procedure TfmGxFastGrepForm.GoBack();
 begin
   if FOriginalEditPos.Col >= 0 then begin
-    GxOtaGotoEditPos(FOriginalEditPos);
+    GxOtaTryGotoEditPos(FOriginalEditPos);
   end;
   GxOtaFocusCurrentIDEEditControl;
-  fmFastGrep := nil;
-  Release;
 end;
 
-procedure TfmFastGrep.GoToCurrentAndClose();
+procedure TfmGxFastGrepForm.GoToCurrent();
 var
   EditPos: TOTAEditPos;
 begin
   if TryGetSelectedEditorPos(EditPos) then begin
-    GxOtaGotoEditPos(EditPos);
+    GxOtaTryGotoEditPos(EditPos);
   end;
   GxOtaFocusCurrentIDEEditControl;
-  fmFastGrep := nil;
-  Release;
 end;
 
-function TfmFastGrep.TryGetSelectedEditorPos(out _EditPos: TOTAEditPos): Boolean;
+function TfmGxFastGrepForm.TryGetSelectedEditorPos(out _EditPos: TOTAEditPos): Boolean;
 var
   Idx: Integer;
   Items: TStrings;
@@ -179,28 +181,28 @@ begin
   Result := True;
 end;
 
-procedure TfmFastGrep.lb_ResultsClick(Sender: TObject);
+procedure TfmGxFastGrepForm.lb_ResultsClick(Sender: TObject);
 var
   EditPos: TOTAEditPos;
 begin
   if TryGetSelectedEditorPos(EditPos) then
-    GxOtaGotoEditPos(EditPos);
+    GxOtaTryGotoEditPos(EditPos);
 end;
 
-procedure TfmFastGrep.lb_ResultsDblClick(Sender: TObject);
+procedure TfmGxFastGrepForm.lb_ResultsDblClick(Sender: TObject);
 begin
-  GoToCurrentAndClose();
+  GoToCurrent();
 end;
 
-procedure TfmFastGrep.lb_ResultsKeyPress(Sender: TObject; var Key: Char);
+procedure TfmGxFastGrepForm.lb_ResultsKeyPress(Sender: TObject; var Key: Char);
 begin
   if Key = #27 then
-    GoBackAndClose()
+    GoBack()
   else if Key = #13 then
-    GoToCurrentAndClose();
+    GoToCurrent();
 end;
 
-procedure TfmFastGrep.lb_ResultsDrawItem(_Control: TWinControl; _Index: Integer; _Rect: TRect;
+procedure TfmGxFastGrepForm.lb_ResultsDrawItem(_Control: TWinControl; _Index: Integer; _Rect: TRect;
   _State: TOwnerDrawState);
 resourcestring
   SLine = 'Line %d';
@@ -209,6 +211,7 @@ const
 var
   ListBox: TListBox absolute _Control;
   LbCanvas: TCanvas;
+  Module: string;
   Res: TFileResult;
   LineHeight: Integer;
 
@@ -237,7 +240,7 @@ var
       Frame3D(LbCanvas, _Rect, TopColor, BottomColor, 1);
 
     i := LbCanvas.TextWidth('00');
-    FileString := ExtractFileName(Res.Module);
+    FileString := ExtractFileName(Module);
     LbCanvas.TextOut(_Rect.Left, TextTop, FileString);
 //    LbCanvas.TextOut(_Rect.Left + i + FScaler.Calc(8), TextTop, FileString);
 
@@ -290,9 +293,14 @@ var
     end;
   end;
 
+var
+  Items: TStrings;
+
 begin // TfmFastGrep.lb_ResultsDrawItem
-  Res := TFileResult(ListBox.Items.Objects[_Index]);
+  Items := ListBox.Items;
+  Res := TFileResult(Items.Objects[_Index]);
   if Assigned(Res) then begin
+    Module := Items[_Index];
     LbCanvas := ListBox.Canvas;
     LbCanvas.Font := ListBox.Font;
     LineHeight := LbCanvas.TextHeight('Mg');
@@ -301,7 +309,7 @@ begin // TfmFastGrep.lb_ResultsDrawItem
   end;
 end;
 
-procedure TfmFastGrep.SetListboxItemHeight;
+procedure TfmGxFastGrepForm.SetListboxItemHeight;
 var
   cnv: TCanvas;
 begin
@@ -310,12 +318,12 @@ begin
   lb_Results.ItemHeight := (cnv.TextHeight('Mg') + 2) * 4;
 end;
 
-procedure TfmFastGrep.ed_RegExChange(Sender: TObject);
+procedure TfmGxFastGrepForm.ed_RegExChange(Sender: TObject);
 begin
   TTimer_Restart(tim_InputDelay);
 end;
 
-procedure TfmFastGrep.ed_RegExKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TfmGxFastGrepForm.ed_RegExKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if (Key in [VK_UP, VK_DOWN, VK_PRIOR, VK_NEXT]) and (Shift = []) then begin
     SendMessage(lb_Results.Handle, WM_KEYDOWN, Key, 0);
@@ -323,39 +331,52 @@ begin
   end;
 end;
 
-procedure TfmFastGrep.ed_RegExKeyPress(Sender: TObject; var Key: Char);
+procedure TfmGxFastGrepForm.ed_RegExKeyPress(Sender: TObject; var Key: Char);
 begin
   if Key = #27 then
-    GoBackAndClose()
+    GoBack()
   else if Key = #13 then
-    GoToCurrentAndClose();
+    GoToCurrent();
 end;
 
-procedure TfmFastGrep.tim_InputDelayTimer(Sender: TObject);
+procedure TfmGxFastGrepForm.FormActivate(Sender: TObject);
+begin
+  inherited;
+  LoadCurrentCode;
+  UpdateOutput;
+end;
+
+procedure TfmGxFastGrepForm.tim_InputDelayTimer(Sender: TObject);
 begin
   UpdateOutput;
   tim_InputDelay.Enabled := False;
 end;
 
-procedure TfmFastGrep.UpdateOutput;
+procedure TfmGxFastGrepForm.UpdateOutput;
 var
   Res: Boolean;
   i: Integer;
   Items: TStrings;
+  RegEx: string;
 begin
+  RegEx := ed_RegEx.Text;
+  if RegEx = '' then
+    Exit; //==>
+
   Items := lb_Results.Items;
   Items.BeginUpdate;
   try
     FRegEx.ModifierI := not chk_CaseSensitive.Checked;
-    FRegEx.Expression := ed_RegEx.Text;
+    FRegEx.Expression := RegEx;
     try
       TStrings_FreeAllObjects(Items);
       Items.Clear;
+      Items.AddObject('Original Position', TFileResult.Create(FOriginalEditPos.Line - 1, 0, 0));
       FRegEx.Compile;
       for i := 0 to FCurrentCode.Count - 1 do begin
         Res := FRegEx.Exec(FCurrentCode[i]);
         if Res then begin
-          Items.AddObject(FCurrentCode[i], TFileResult.Create(FCurrentFile, i, FRegEx.MatchPos[0], FRegEx.MatchLen[0]));
+          Items.AddObject(FCurrentFile, TFileResult.Create(i, FRegEx.MatchPos[0], FRegEx.MatchLen[0]));
         end;
       end;
       if Items.Count > 0 then
@@ -380,8 +401,11 @@ end;
 
 type
   TGrepFastSearchExpert = class(TGX_Expert)
+  protected
+    procedure SetActive(New: Boolean); override;
   public
     class function GetName: string; override;
+    constructor Create; override;
     function GetActionCaption: string; override;
     // optional, but recommended
     function GetHelpString: string; override;
@@ -398,11 +422,24 @@ type
 
 { TGrepFastSearchExpert }
 
+constructor TGrepFastSearchExpert.Create;
+begin
+  inherited;
+
+  fmGxFastGrepForm := TfmGxFastGrepForm.Create(nil);
+  SetFormIcon(fmGxFastGrepForm);
+  IdeDockManager.RegisterDockableForm(TfmGxFastGrepForm, fmGxFastGrepForm, 'fmGxFastGrepForm');
+end;
+
 procedure TGrepFastSearchExpert.Execute(Sender: TObject);
 begin
-  if not Assigned(fmFastGrep) then
-    fmFastGrep := TfmFastGrep.Create(Application);
-  fmFastGrep.Show;
+  if not Assigned(fmGxFastGrepForm) then begin
+    fmGxFastGrepForm := TfmGxFastGrepForm.Create(Application);
+    SetFormIcon(fmGxFastGrepForm);
+  end;
+  IdeDockManager.ShowForm(fmGxFastGrepForm);
+  EnsureFormVisible(fmGxFastGrepForm);
+  IncCallCount;
 end;
 
 function TGrepFastSearchExpert.GetActionCaption: string;
@@ -426,6 +463,18 @@ begin
   Result := False;
 end;
 
+procedure TGrepFastSearchExpert.SetActive(New: Boolean);
+begin
+  if New <> Active then begin
+    inherited SetActive(New);
+    if New then begin
+      IdeDockManager.RegisterDockableForm(TfmGxFastGrepForm, fmGxFastGrepForm, 'fmGxFastGrepForm');
+    end else begin
+      IdeDockManager.UnRegisterDockableForm(fmGxFastGrepForm, 'fmGxFastGrepForm');
+      FreeAndNil(fmGxFastGrepForm);
+    end;
+  end;
+end;
 initialization
   RegisterGX_Expert(TGrepFastSearchExpert);
 end.

@@ -1,10 +1,11 @@
-inherited fmFastGrep: TfmFastGrep
+inherited fmGxFastGrepForm: TfmGxFastGrepForm
   Left = 0
   Top = 0
   ActiveControl = ed_RegEx
   Caption = 'Fast Grep - GExperts'
   ClientHeight = 405
   ClientWidth = 433
+  OnActivate = FormActivate
   PixelsPerInch = 96
   TextHeight = 14
   object l_RegEx: TLabel
