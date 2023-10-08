@@ -29,6 +29,8 @@ type
     tim_InputDelay: TTimer;
     chk_CaseSensitive: TCheckBox;
     lb_Results: TListBox;
+    l_PressEsc: TLabel;
+    tim_EditorChanged: TTimer;
     procedure tim_InputDelayTimer(Sender: TObject);
     procedure ed_RegExChange(Sender: TObject);
     procedure lb_ResultsDrawItem(_Control: TWinControl; _Index: Integer; _Rect: TRect;
@@ -38,7 +40,7 @@ type
     procedure lb_ResultsClick(Sender: TObject);
     procedure lb_ResultsKeyPress(Sender: TObject; var Key: Char);
     procedure ed_RegExKeyPress(Sender: TObject; var Key: Char);
-    procedure FormActivate(Sender: TObject);
+    procedure tim_EditorChangedTimer(Sender: TObject);
   private
     FRegEx: TRegExpr;
     FCurrentCode: TGXUnicodeStringList;
@@ -69,7 +71,8 @@ uses
   GX_OtaUtils,
   GX_Experts,
   GX_GrepMenuEntry,
-  GX_GenericUtils;
+  GX_GenericUtils,
+  GX_NTAEditServiceNotifier;
 
 var
   fmGxFastGrepForm: TfmGxFastGrepForm = nil;
@@ -339,17 +342,17 @@ begin
     GoToCurrent();
 end;
 
-procedure TfmGxFastGrepForm.FormActivate(Sender: TObject);
+procedure TfmGxFastGrepForm.tim_EditorChangedTimer(Sender: TObject);
 begin
-  inherited;
+  tim_EditorChanged.Enabled := False;
   LoadCurrentCode;
   UpdateOutput;
 end;
 
 procedure TfmGxFastGrepForm.tim_InputDelayTimer(Sender: TObject);
 begin
-  UpdateOutput;
   tim_InputDelay.Enabled := False;
+  UpdateOutput;
 end;
 
 procedure TfmGxFastGrepForm.UpdateOutput;
@@ -380,7 +383,7 @@ begin
         end;
       end;
       if Items.Count > 0 then
-        TListBox_SetItemIndex(lb_Results, 0, True)
+        TListBox_SetItemIndex(lb_Results, 0, False)
       else
         lb_Results.ItemIndex := -1;
     except
@@ -401,6 +404,9 @@ end;
 
 type
   TGrepFastSearchExpert = class(TGX_Expert)
+  private
+    FNotifierIdx: Integer;
+    procedure EditorViewActivated(_Sender: TObject; _EditView: IOTAEditView);
   protected
     procedure SetActive(New: Boolean); override;
   public
@@ -429,6 +435,18 @@ begin
   fmGxFastGrepForm := TfmGxFastGrepForm.Create(nil);
   SetFormIcon(fmGxFastGrepForm);
   IdeDockManager.RegisterDockableForm(TfmGxFastGrepForm, fmGxFastGrepForm, 'fmGxFastGrepForm');
+
+  if Assigned(BorlandIDEServices) then begin
+    FNotifierIdx := (BorlandIDEServices as IOTAEditorServices).AddNotifier(
+      TGxNTAEditServiceNotifierActivate.Create(EditorViewActivated));
+  end;
+end;
+
+procedure TGrepFastSearchExpert.EditorViewActivated(_Sender: TObject; _EditView: IOTAEditView);
+begin
+  if Assigned(fmGxFastGrepForm) then begin
+    TTimer_Restart(fmGxFastGrepForm.tim_EditorChanged);
+  end;
 end;
 
 procedure TGrepFastSearchExpert.Execute(Sender: TObject);

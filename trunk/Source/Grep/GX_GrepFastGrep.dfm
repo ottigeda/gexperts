@@ -2,10 +2,9 @@ inherited fmGxFastGrepForm: TfmGxFastGrepForm
   Left = 0
   Top = 0
   ActiveControl = ed_RegEx
-  Caption = 'Fast Grep - GExperts'
+  Caption = 'Fast Grep'
   ClientHeight = 405
   ClientWidth = 433
-  OnActivate = FormActivate
   PixelsPerInch = 96
   TextHeight = 14
   object l_RegEx: TLabel
@@ -15,6 +14,16 @@ inherited fmGxFastGrepForm: TfmGxFastGrepForm
     Height = 14
     Caption = 'Regular &Expression'
     FocusControl = ed_RegEx
+  end
+  object l_PressEsc: TLabel
+    Left = 160
+    Top = 48
+    Width = 273
+    Height = 33
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    AutoSize = False
+    Caption = 'Press Esc to return to the original position.'
+    WordWrap = True
   end
   object ed_RegEx: TEdit
     Left = 8
@@ -55,5 +64,12 @@ inherited fmGxFastGrepForm: TfmGxFastGrepForm
     OnTimer = tim_InputDelayTimer
     Left = 264
     Top = 200
+  end
+  object tim_EditorChanged: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = tim_EditorChangedTimer
+    Left = 176
+    Top = 216
   end
 end
