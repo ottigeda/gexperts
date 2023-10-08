@@ -139,6 +139,10 @@ begin
   end;
 {$ENDIF}
 
+  fmBookmarks := TfmGxBookmarksForm.Create(nil);
+  SetFormIcon(fmBookmarks);
+  IdeDockManager.RegisterDockableForm(TfmGxBookmarksForm, fmBookmarks, 'fmGxBookmarksForm');
+
   BookmarksExpert := Self;
 end;
 
@@ -172,6 +176,7 @@ procedure TBookmarksExpert.Execute(Sender: TObject);
 begin
   if fmBookmarks = nil then begin
     fmBookmarks := TfmGxBookmarksForm.Create(nil);
+    SetFormIcon(fmBookmarks);
   end;
   fmBookmarks.Init;
   IdeDockManager.ShowForm(fmBookmarks);
