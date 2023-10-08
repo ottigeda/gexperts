@@ -43,24 +43,6 @@ uses
   GX_DbugIntf,
   GX_NTAEditServiceNotifier;
 
-{$IFDEF GX_HIDE_NAVBAR_NECESSARY}
-type
-  ///<summary>
-  /// We implement INTAEditServicesNotifier only to get a notification when the EditViewActivated
-  /// method is called. This in turn calls the OnEditorViewActivated event. </summary>
-  TEditServiceNotifier = class(TGxNTAEditServiceNotifier, INTAEditServicesNotifier)
-  private
-    type
-      TOnEditorViewActivatedEvent = procedure(_Sender: TObject; _EditView: IOTAEditView) of object;
-    var
-      FOnEditorViewActivated: TOnEditorViewActivatedEvent;
-  protected // INTAEditServicesNotifier
-    procedure EditorViewActivated(const EditWindow: INTAEditWindow; const EditView: IOTAEditView); override;
-  public
-    constructor Create(_OnEditorViewActivated: TOnEditorViewActivatedEvent);
-  end;
-{$ENDIF GX_HIDE_NAVBAR_NECESSARY}
-
 type
   THideNavigationToolbarExpert = class(TInterfacedObject, IHideNavigationToolbarExpert)
 {$IFDEF GX_HIDE_NAVBAR_NECESSARY}
@@ -112,7 +94,7 @@ begin
   inherited;
   if Assigned(BorlandIDEServices) then begin
     FNotifierIdx := (BorlandIDEServices as IOTAEditorServices).AddNotifier(
-      TEditServiceNotifier.Create(EditorViewActivated));
+      TGxNTAEditServiceNotifierActivate.Create(EditorViewActivated));
   end;
 end;
 
@@ -205,21 +187,6 @@ begin
     Result := True;
   end;
 end;
-
-{ TEditServiceNotifier }
-
-constructor TEditServiceNotifier.Create(_OnEditorViewActivated: TOnEditorViewActivatedEvent);
-begin
-  FOnEditorViewActivated := _OnEditorViewActivated;
-  inherited Create;
-end;
-
-procedure TEditServiceNotifier.EditorViewActivated(const EditWindow: INTAEditWindow; const EditView: IOTAEditView);
-begin
-  if Assigned(FOnEditorViewActivated) then
-    FOnEditorViewActivated(Self, EditView);
-end;
-
 {$ENDIF GX_HIDE_NAVBAR_NECESSARY}
 
 end.

@@ -38,6 +38,24 @@ type
   end;
 {$ENDIF}
 
+{$IFDEF GX_VER170_up}
+type
+  ///<summary>
+  /// We implement INTAEditServicesNotifier only to get a notification when the EditViewActivated
+  /// method is called. This in turn calls the OnEditorViewActivated event. </summary>
+  TGxNTAEditServiceNotifierActivate = class(TGxNTAEditServiceNotifier, INTAEditServicesNotifier)
+  private
+    type
+      TOnEditorViewActivatedEvent = procedure(_Sender: TObject; _EditView: IOTAEditView) of object;
+    var
+      FOnEditorViewActivated: TOnEditorViewActivatedEvent;
+  protected // INTAEditServicesNotifier
+    procedure EditorViewActivated(const EditWindow: INTAEditWindow; const EditView: IOTAEditView); override;
+  public
+    constructor Create(_OnEditorViewActivated: TOnEditorViewActivatedEvent);
+  end;
+{$ENDIF}
+
 implementation
 
 uses
@@ -126,5 +144,23 @@ begin
   Logger.InfoFmt('WindowShow(%s)', [EditWindow.Form.Caption]);
 end;
 {$ENDIF}
+
+{$IFDEF GX_VER170_up}
+
+{ TGxNTAEditServiceNotifierActivate }
+
+constructor TGxNTAEditServiceNotifierActivate.Create(_OnEditorViewActivated: TOnEditorViewActivatedEvent);
+begin
+  FOnEditorViewActivated := _OnEditorViewActivated;
+  inherited Create;
+end;
+
+procedure TGxNTAEditServiceNotifierActivate.EditorViewActivated(const EditWindow: INTAEditWindow; const EditView: IOTAEditView);
+begin
+  if Assigned(FOnEditorViewActivated) then
+    FOnEditorViewActivated(Self, EditView);
+end;
+{$ENDIF}
+
 
 end.

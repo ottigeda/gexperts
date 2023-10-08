@@ -85,25 +85,6 @@ uses
   GX_NTAEditServiceNotifier,
   GX_EditBookmark;
 
-{$IFDEF GX_VER170_up}
-type
-  ///<summary>
-  /// We implement INTAEditServicesNotifier only to get a notification when the EditViewActivated
-  /// method is called. This in turn calls the OnEditorViewActivated event. </summary>
-  // todo -otwm -cCleanup: Merge this code with the duplicate in GX_HideNavbar
-  TEditServiceNotifier = class(TGxNTAEditServiceNotifier, INTAEditServicesNotifier)
-  private
-    type
-      TOnEditorViewActivatedEvent = procedure(_Sender: TObject; _EditView: IOTAEditView) of object;
-    var
-      FOnEditorViewActivated: TOnEditorViewActivatedEvent;
-  protected // INTAEditServicesNotifier
-    procedure EditorViewActivated(const EditWindow: INTAEditWindow; const EditView: IOTAEditView); override;
-  public
-    constructor Create(_OnEditorViewActivated: TOnEditorViewActivatedEvent);
-  end;
-{$ENDIF}
-
 type
   TBookmarksExpert = class(TGX_Expert)
   private
@@ -135,7 +116,7 @@ begin
 {$IFDEF GX_VER170_up}
   if Assigned(BorlandIDEServices) then begin
     FNotifierIdx := (BorlandIDEServices as IOTAEditorServices).AddNotifier(
-      TEditServiceNotifier.Create(EditorViewActivated));
+      TGxNTAEditServiceNotifierActivate.Create(EditorViewActivated));
   end;
 {$ENDIF}
 
@@ -615,23 +596,6 @@ procedure TfmGxBookmarksForm.ArrangeControls;
 begin
   inherited;
   SetListboxItemHeight;
-end;
-{$ENDIF}
-
-{$IFDEF GX_VER170_up}
-{ TEditServiceNotifier }
-
-constructor TEditServiceNotifier.Create(_OnEditorViewActivated: TOnEditorViewActivatedEvent);
-begin
-  inherited Create;
-  FOnEditorViewActivated := _OnEditorViewActivated;
-end;
-
-procedure TEditServiceNotifier.EditorViewActivated(const EditWindow: INTAEditWindow;
-  const EditView: IOTAEditView);
-begin
-  if Assigned(FOnEditorViewActivated) then
-    FOnEditorViewActivated(Self, EditView);
 end;
 {$ENDIF}
 
