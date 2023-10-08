@@ -57,7 +57,7 @@ type
     procedure AddBookmarks(const _ModuleName: string; _EditView: IOTAEditView; _Bookmarks: TBookmarkList);
     function HasChanged(_NewBookmarks: TBookmarkList): Boolean;
     procedure SetListboxItemHeight;
-    procedure GotoCurrentAndClose;
+    procedure GotoCurrent;
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
@@ -308,10 +308,10 @@ end;
 
 procedure TfmGxBookmarksForm.lb_BookmarksDblClick(Sender: TObject);
 begin
-  GotoCurrentAndClose;
+  GotoCurrent;
 end;
 
-procedure TfmGxBookmarksForm.GotoCurrentAndClose;
+procedure TfmGxBookmarksForm.GotoCurrent;
 resourcestring
   SCouldNotOpenFile = 'Could not open file %s';
 var
@@ -588,7 +588,7 @@ end;
 procedure TfmGxBookmarksForm.lb_BookmarksKeyPress(Sender: TObject; var Key: Char);
 begin
   if Key = #13 then
-    GotoCurrentAndClose();
+    GotoCurrent();
 end;
 
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
