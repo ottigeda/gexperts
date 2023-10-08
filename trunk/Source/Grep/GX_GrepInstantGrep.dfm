@@ -1,8 +1,8 @@
-inherited fmGxFastGrepForm: TfmGxFastGrepForm
+inherited fmGxInstantGrepForm: TfmGxInstantGrepForm
   Left = 0
   Top = 0
   ActiveControl = ed_RegEx
-  Caption = 'Fast Grep'
+  Caption = 'Instant Grep'
   ClientHeight = 405
   ClientWidth = 433
   PixelsPerInch = 96

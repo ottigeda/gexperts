@@ -1,4 +1,4 @@
-unit GX_GrepFastGrep;
+unit GX_GrepInstantGrep;
 
 {$I GX_CondDefine.inc}
 
@@ -23,7 +23,7 @@ uses
   GX_IdeDock;
 
 type
-  TfmGxFastGrepForm = class(TfmIdeDockForm)
+  TfmGxInstantGrepForm = class(TfmIdeDockForm)
     l_RegEx: TLabel;
     ed_RegEx: TEdit;
     tim_InputDelay: TTimer;
@@ -75,7 +75,7 @@ uses
   GX_NTAEditServiceNotifier;
 
 var
-  fmGxFastGrepForm: TfmGxFastGrepForm = nil;
+  fmGxInstantGrepForm: TfmGxInstantGrepForm = nil;
 
 type
   TFileResult = class
@@ -99,7 +99,7 @@ end;
 
 { TfmFastGrep }
 
-constructor TfmGxFastGrepForm.Create(_Owner: TComponent);
+constructor TfmGxInstantGrepForm.Create(_Owner: TComponent);
 begin
   inherited;
 
@@ -112,14 +112,14 @@ begin
   InitDpiScaler;
 end;
 
-destructor TfmGxFastGrepForm.Destroy;
+destructor TfmGxInstantGrepForm.Destroy;
 begin
   TStrings_FreeAllObjects(lb_Results.Items);
   FreeAndNil(FCurrentCode);
   inherited;
 end;
 
-procedure TfmGxFastGrepForm.LoadCurrentCode;
+procedure TfmGxInstantGrepForm.LoadCurrentCode;
 
   function GetModuleDir: string;
   begin
@@ -144,7 +144,7 @@ begin
   end;
 end;
 
-procedure TfmGxFastGrepForm.GoBack();
+procedure TfmGxInstantGrepForm.GoBack();
 begin
   if FOriginalEditPos.Col >= 0 then begin
     GxOtaTryGotoEditPos(FOriginalEditPos);
@@ -152,7 +152,7 @@ begin
   GxOtaFocusCurrentIDEEditControl;
 end;
 
-procedure TfmGxFastGrepForm.GoToCurrent();
+procedure TfmGxInstantGrepForm.GoToCurrent();
 var
   EditPos: TOTAEditPos;
 begin
@@ -162,7 +162,7 @@ begin
   GxOtaFocusCurrentIDEEditControl;
 end;
 
-function TfmGxFastGrepForm.TryGetSelectedEditorPos(out _EditPos: TOTAEditPos): Boolean;
+function TfmGxInstantGrepForm.TryGetSelectedEditorPos(out _EditPos: TOTAEditPos): Boolean;
 var
   Idx: Integer;
   Items: TStrings;
@@ -184,7 +184,7 @@ begin
   Result := True;
 end;
 
-procedure TfmGxFastGrepForm.lb_ResultsClick(Sender: TObject);
+procedure TfmGxInstantGrepForm.lb_ResultsClick(Sender: TObject);
 var
   EditPos: TOTAEditPos;
 begin
@@ -192,12 +192,12 @@ begin
     GxOtaTryGotoEditPos(EditPos);
 end;
 
-procedure TfmGxFastGrepForm.lb_ResultsDblClick(Sender: TObject);
+procedure TfmGxInstantGrepForm.lb_ResultsDblClick(Sender: TObject);
 begin
   GoToCurrent();
 end;
 
-procedure TfmGxFastGrepForm.lb_ResultsKeyPress(Sender: TObject; var Key: Char);
+procedure TfmGxInstantGrepForm.lb_ResultsKeyPress(Sender: TObject; var Key: Char);
 begin
   if Key = #27 then
     GoBack()
@@ -205,7 +205,7 @@ begin
     GoToCurrent();
 end;
 
-procedure TfmGxFastGrepForm.lb_ResultsDrawItem(_Control: TWinControl; _Index: Integer; _Rect: TRect;
+procedure TfmGxInstantGrepForm.lb_ResultsDrawItem(_Control: TWinControl; _Index: Integer; _Rect: TRect;
   _State: TOwnerDrawState);
 resourcestring
   SLine = 'Line %d';
@@ -312,7 +312,7 @@ begin // TfmFastGrep.lb_ResultsDrawItem
   end;
 end;
 
-procedure TfmGxFastGrepForm.SetListboxItemHeight;
+procedure TfmGxInstantGrepForm.SetListboxItemHeight;
 var
   cnv: TCanvas;
 begin
@@ -321,12 +321,12 @@ begin
   lb_Results.ItemHeight := (cnv.TextHeight('Mg') + 2) * 4;
 end;
 
-procedure TfmGxFastGrepForm.ed_RegExChange(Sender: TObject);
+procedure TfmGxInstantGrepForm.ed_RegExChange(Sender: TObject);
 begin
   TTimer_Restart(tim_InputDelay);
 end;
 
-procedure TfmGxFastGrepForm.ed_RegExKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TfmGxInstantGrepForm.ed_RegExKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if (Key in [VK_UP, VK_DOWN, VK_PRIOR, VK_NEXT]) and (Shift = []) then begin
     SendMessage(lb_Results.Handle, WM_KEYDOWN, Key, 0);
@@ -334,7 +334,7 @@ begin
   end;
 end;
 
-procedure TfmGxFastGrepForm.ed_RegExKeyPress(Sender: TObject; var Key: Char);
+procedure TfmGxInstantGrepForm.ed_RegExKeyPress(Sender: TObject; var Key: Char);
 begin
   if Key = #27 then
     GoBack()
@@ -342,20 +342,20 @@ begin
     GoToCurrent();
 end;
 
-procedure TfmGxFastGrepForm.tim_EditorChangedTimer(Sender: TObject);
+procedure TfmGxInstantGrepForm.tim_EditorChangedTimer(Sender: TObject);
 begin
   tim_EditorChanged.Enabled := False;
   LoadCurrentCode;
   UpdateOutput;
 end;
 
-procedure TfmGxFastGrepForm.tim_InputDelayTimer(Sender: TObject);
+procedure TfmGxInstantGrepForm.tim_InputDelayTimer(Sender: TObject);
 begin
   tim_InputDelay.Enabled := False;
   UpdateOutput;
 end;
 
-procedure TfmGxFastGrepForm.UpdateOutput;
+procedure TfmGxInstantGrepForm.UpdateOutput;
 var
   Res: Boolean;
   i: Integer;
@@ -395,7 +395,7 @@ begin
 end;
 
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
-procedure TfmFastGrep.ArrangeControls;
+procedure TfmGxInstantGrepForm.ArrangeControls;
 begin
   inherited;
   SetListboxItemHeight;
@@ -403,10 +403,12 @@ end;
 {$ENDIF}
 
 type
-  TGrepFastSearchExpert = class(TGX_Expert)
+  TGrepInstantSearchExpert = class(TGX_Expert)
   private
+{$IFDEF GX_VER170_up}
     FNotifierIdx: Integer;
     procedure EditorViewActivated(_Sender: TObject; _EditView: IOTAEditView);
+{$ENDIF}
   protected
     procedure SetActive(New: Boolean); override;
   public
@@ -426,74 +428,78 @@ type
     procedure Execute(Sender: TObject); override;
   end;
 
-{ TGrepFastSearchExpert }
+{ TGrepInstantSearchExpert }
 
-constructor TGrepFastSearchExpert.Create;
+constructor TGrepInstantSearchExpert.Create;
 begin
   inherited;
 
-  fmGxFastGrepForm := TfmGxFastGrepForm.Create(nil);
-  SetFormIcon(fmGxFastGrepForm);
-  IdeDockManager.RegisterDockableForm(TfmGxFastGrepForm, fmGxFastGrepForm, 'fmGxFastGrepForm');
+  fmGxInstantGrepForm := TfmGxInstantGrepForm.Create(nil);
+  SetFormIcon(fmGxInstantGrepForm);
+  IdeDockManager.RegisterDockableForm(TfmGxInstantGrepForm, fmGxInstantGrepForm, 'fmGxInstantGrepForm');
 
+{$IFDEF GX_VER170_up}
   if Assigned(BorlandIDEServices) then begin
     FNotifierIdx := (BorlandIDEServices as IOTAEditorServices).AddNotifier(
       TGxNTAEditServiceNotifierActivate.Create(EditorViewActivated));
   end;
+{$endif}
 end;
 
-procedure TGrepFastSearchExpert.EditorViewActivated(_Sender: TObject; _EditView: IOTAEditView);
+{$IFDEF GX_VER170_up}
+procedure TGrepInstantSearchExpert.EditorViewActivated(_Sender: TObject; _EditView: IOTAEditView);
 begin
-  if Assigned(fmGxFastGrepForm) then begin
-    TTimer_Restart(fmGxFastGrepForm.tim_EditorChanged);
+  if Assigned(fmGxInstantGrepForm) then begin
+    TTimer_Restart(fmGxInstantGrepForm.tim_EditorChanged);
   end;
 end;
+{$ENDIF}
 
-procedure TGrepFastSearchExpert.Execute(Sender: TObject);
+procedure TGrepInstantSearchExpert.Execute(Sender: TObject);
 begin
-  if not Assigned(fmGxFastGrepForm) then begin
-    fmGxFastGrepForm := TfmGxFastGrepForm.Create(Application);
-    SetFormIcon(fmGxFastGrepForm);
+  if not Assigned(fmGxInstantGrepForm) then begin
+    fmGxInstantGrepForm := TfmGxInstantGrepForm.Create(Application);
+    SetFormIcon(fmGxInstantGrepForm);
   end;
-  IdeDockManager.ShowForm(fmGxFastGrepForm);
-  EnsureFormVisible(fmGxFastGrepForm);
+  IdeDockManager.ShowForm(fmGxInstantGrepForm);
+  EnsureFormVisible(fmGxInstantGrepForm);
   IncCallCount;
 end;
 
-function TGrepFastSearchExpert.GetActionCaption: string;
+function TGrepInstantSearchExpert.GetActionCaption: string;
 begin
-  Result := 'Fast Grep';
+  Result := 'Instant Grep';
 end;
 
-function TGrepFastSearchExpert.GetHelpString: string;
+function TGrepInstantSearchExpert.GetHelpString: string;
 begin
   Result := 'Does a Grep search for the current editor file and gives a list of matches.'#13#10
     + 'Which can then be selected to position the cursor.';
 end;
 
-class function TGrepFastSearchExpert.GetName: string;
+class function TGrepInstantSearchExpert.GetName: string;
 begin
   Result := GrepFastSearchName;
 end;
 
-function TGrepFastSearchExpert.HasConfigOptions: Boolean;
+function TGrepInstantSearchExpert.HasConfigOptions: Boolean;
 begin
   Result := False;
 end;
 
-procedure TGrepFastSearchExpert.SetActive(New: Boolean);
+procedure TGrepInstantSearchExpert.SetActive(New: Boolean);
 begin
   if New <> Active then begin
     inherited SetActive(New);
     if New then begin
-      IdeDockManager.RegisterDockableForm(TfmGxFastGrepForm, fmGxFastGrepForm, 'fmGxFastGrepForm');
+      IdeDockManager.RegisterDockableForm(TfmGxInstantGrepForm, fmGxInstantGrepForm, 'fmGxInstantGrepForm');
     end else begin
-      IdeDockManager.UnRegisterDockableForm(fmGxFastGrepForm, 'fmGxFastGrepForm');
-      FreeAndNil(fmGxFastGrepForm);
+      IdeDockManager.UnRegisterDockableForm(fmGxInstantGrepForm, 'fmGxInstantGrepForm');
+      FreeAndNil(fmGxInstantGrepForm);
     end;
   end;
 end;
 initialization
-  RegisterGX_Expert(TGrepFastSearchExpert);
+  RegisterGX_Expert(TGrepInstantSearchExpert);
 end.
 

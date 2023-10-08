@@ -122,7 +122,7 @@ uses
   GX_GotoConfig in '..\..\Source\Goto\GX_GotoConfig.pas' {f_GotoConfig},
   GX_GrepBackend in '..\..\source\Grep\GX_GrepBackend.pas',
   GX_GrepExpert in '..\..\source\Grep\GX_GrepExpert.pas',
-  GX_GrepFastGrep in '..\..\Source\Grep\GX_GrepFastGrep.pas' {fmFastGrep},
+  GX_GrepInstantGrep in '..\..\Source\Grep\GX_GrepInstantGrep.pas' {fmGxInstantGrepForm},
   GX_GrepMenuConfig in '..\..\Source\Grep\GX_GrepMenuConfig.pas' {f_GrepMenuConfig},
   GX_GrepMenuEntry in '..\..\Source\Grep\GX_GrepMenuEntry.pas',
   GX_GrepOptions in '..\..\source\Grep\GX_GrepOptions.pas' {fmGrepOptions},
