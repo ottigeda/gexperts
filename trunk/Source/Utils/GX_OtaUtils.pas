@@ -240,6 +240,8 @@ procedure GxOtaInsertTextIntoEditorAtBufferPos(const Text: string; Position: Lon
 // TOTAEditPos.  Uses the topmost EditView if none is specified
 procedure GxOtaGotoPosition(Position: Longint; EditView: IOTAEditView = nil;
   Middle: Boolean = True);
+function GxOtaTryGotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView = nil;
+  Middle: Boolean = True): Boolean;
 procedure GxOtaGotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView = nil;
   Middle: Boolean = True);
 
@@ -4904,13 +4906,15 @@ begin
   GxOtaGotoEditPos(CurPos, EditView, Middle);
 end;
 
-procedure GxOtaGotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView; Middle: Boolean);
+function GxOtaTryGotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView; Middle: Boolean): Boolean;
 var
   TopRow: TOTAEditPos;
 begin
   if not Assigned(EditView) then
     EditView := GxOtaGetTopMostEditView;
-  Assert(Assigned(EditView));
+  Result := Assigned(EditView);
+  if not Result then
+    Exit; //==>
 
   if EditPos.Line < 1 then
     EditPos.Line := 1;
@@ -4925,6 +4929,12 @@ begin
   EditView.CursorPos := EditPos;
   Application.ProcessMessages;
   EditView.Paint;
+end;
+
+procedure GxOtaGotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView; Middle: Boolean);
+begin
+  if not GxOtaTryGotoEditPos(EditPos, EditView, Middle) then
+    raise Exception.Create('Not EditView available');
 end;
 
 function GxOtaGetCharPosFromPos(Position: Longint; EditView: IOTAEditView): TOTACharPos;
