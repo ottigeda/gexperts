@@ -5,6 +5,8 @@ inherited fmGxInstantGrepForm: TfmGxInstantGrepForm
   Caption = 'Instant Grep'
   ClientHeight = 405
   ClientWidth = 433
+  OnActivate = FormActivate
+  OnDeactivate = FormDeactivate
   PixelsPerInch = 96
   TextHeight = 14
   object l_RegEx: TLabel
@@ -12,7 +14,7 @@ inherited fmGxInstantGrepForm: TfmGxInstantGrepForm
     Top = 9
     Width = 101
     Height = 14
-    Caption = 'Regular &Expression'
+    Caption = 'Regular Expression'
     FocusControl = ed_RegEx
   end
   object l_PressEsc: TLabel
@@ -41,7 +43,7 @@ inherited fmGxInstantGrepForm: TfmGxInstantGrepForm
     Top = 56
     Width = 145
     Height = 17
-    Caption = '&Case sensitive'
+    Caption = 'Case sensitive'
     TabOrder = 1
     OnClick = chk_CaseSensitiveClick
   end

@@ -43,6 +43,8 @@ type
     procedure ed_RegExKeyPress(Sender: TObject; var Key: Char);
     procedure tim_EditorChangedTimer(Sender: TObject);
     procedure chk_CaseSensitiveClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure FormDeactivate(Sender: TObject);
   private
     FRegEx: TRegExpr;
     FCurrentCode: TGXUnicodeStringList;
@@ -361,6 +363,20 @@ begin
     GoToCurrent();
 end;
 
+procedure TfmGxInstantGrepForm.FormActivate(Sender: TObject);
+begin
+  inherited;
+  l_RegEx.Caption := 'Regular &Expression';
+  chk_CaseSensitive.Caption := '&Case sensitive';
+end;
+
+procedure TfmGxInstantGrepForm.FormDeactivate(Sender: TObject);
+begin
+  inherited;
+  l_RegEx.Caption := 'Regular Expression';
+  chk_CaseSensitive.Caption := 'Case sensitive';
+end;
+
 procedure TfmGxInstantGrepForm.tim_EditorChangedTimer(Sender: TObject);
 begin
   tim_EditorChanged.Enabled := False;
@@ -393,7 +409,6 @@ begin
     try
       TStrings_FreeAllObjects(Items);
       Items.Clear;
-      Items.AddObject('Original Position', TFileResult.Create(FOriginalEditPos.Line - 1, 0, 0));
       FRegEx.Compile;
       for i := 0 to FCurrentCode.Count - 1 do begin
         Res := FRegEx.Exec(FCurrentCode[i]);
@@ -401,9 +416,10 @@ begin
           Items.AddObject(FCurrentFile, TFileResult.Create(i, FRegEx.MatchPos[0], FRegEx.MatchLen[0]));
         end;
       end;
-      if Items.Count > 0 then
-        TListBox_SetItemIndex(lb_Results, 0, False)
-      else
+      if Items.Count > 0 then begin
+        Items.InsertObject(0, 'Original Position', TFileResult.Create(FOriginalEditPos.Line - 1, 0, 0));
+        TListBox_SetItemIndex(lb_Results, 0, False);
+      end else
         lb_Results.ItemIndex := -1;
     except
       // ignore
