@@ -41,6 +41,7 @@ type
     procedure lb_ResultsKeyPress(Sender: TObject; var Key: Char);
     procedure ed_RegExKeyPress(Sender: TObject; var Key: Char);
     procedure tim_EditorChangedTimer(Sender: TObject);
+    procedure chk_CaseSensitiveClick(Sender: TObject);
   private
     FRegEx: TRegExpr;
     FCurrentCode: TGXUnicodeStringList;
@@ -182,6 +183,13 @@ begin
   _EditPos.Col := Res.MatchStart;
   _EditPos.Line := Res.Idx + 1;
   Result := True;
+end;
+
+procedure TfmGxInstantGrepForm.chk_CaseSensitiveClick(Sender: TObject);
+begin
+  inherited;
+  tim_InputDelay.Enabled := False;
+  UpdateOutput;
 end;
 
 procedure TfmGxInstantGrepForm.lb_ResultsClick(Sender: TObject);

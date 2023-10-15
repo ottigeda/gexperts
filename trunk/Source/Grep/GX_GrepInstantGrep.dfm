@@ -43,6 +43,7 @@ inherited fmGxInstantGrepForm: TfmGxInstantGrepForm
     Height = 17
     Caption = '&Case sensitive'
     TabOrder = 1
+    OnClick = chk_CaseSensitiveClick
   end
   object lb_Results: TListBox
     Left = 8
