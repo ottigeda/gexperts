@@ -28,6 +28,7 @@ type
     ed_RegEx: TEdit;
     tim_InputDelay: TTimer;
     chk_CaseSensitive: TCheckBox;
+    p_Results: TPanel;
     lb_Results: TListBox;
     l_PressEsc: TLabel;
     tim_EditorChanged: TTimer;
@@ -103,6 +104,10 @@ end;
 constructor TfmGxInstantGrepForm.Create(_Owner: TComponent);
 begin
   inherited;
+
+  p_Results.BevelOuter := bvNone;
+
+  TControl_SetMinConstraints(Self);
 
   FRegEx := TRegExpr.Create;
   FCurrentCode := TGXUnicodeStringList.Create;
@@ -451,7 +456,7 @@ begin
     FNotifierIdx := (BorlandIDEServices as IOTAEditorServices).AddNotifier(
       TGxNTAEditServiceNotifierActivate.Create(EditorViewActivated));
   end;
-{$endif}
+{$ENDIF}
 end;
 
 {$IFDEF GX_VER170_up}

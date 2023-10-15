@@ -31,6 +31,7 @@ uses
 
 type
   TfmGxBookmarksForm = class(TfmIdeDockForm)
+    p_Bookmarks: TPanel;
     lb_Bookmarks: TListBox;
     tim_Update: TTimer;
     pm_Bookmarks: TPopupMenu;
@@ -195,6 +196,8 @@ end;
 constructor TfmGxBookmarksForm.Create(_Owner: TComponent);
 begin
   inherited;
+
+  p_Bookmarks.BevelOuter := bvNone;
 
   TControl_SetMinConstraints(Self);
 

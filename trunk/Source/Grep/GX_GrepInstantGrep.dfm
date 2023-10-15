@@ -45,19 +45,31 @@ inherited fmGxInstantGrepForm: TfmGxInstantGrepForm
     TabOrder = 1
     OnClick = chk_CaseSensitiveClick
   end
-  object lb_Results: TListBox
+  object p_Results: TPanel
     Left = 8
     Top = 80
     Width = 417
     Height = 321
-    Style = lbOwnerDrawFixed
+    Margins.Left = 4
+    Margins.Top = 4
+    Margins.Right = 4
+    Margins.Bottom = 4
     Anchors = [akLeft, akTop, akRight, akBottom]
-    ItemHeight = 64
     TabOrder = 2
-    OnClick = lb_ResultsClick
-    OnDblClick = lb_ResultsDblClick
-    OnDrawItem = lb_ResultsDrawItem
-    OnKeyPress = lb_ResultsKeyPress
+    object lb_Results: TListBox
+      Left = 1
+      Top = 1
+      Width = 415
+      Height = 319
+      Style = lbOwnerDrawFixed
+      Align = alClient
+      ItemHeight = 64
+      TabOrder = 0
+      OnClick = lb_ResultsClick
+      OnDblClick = lb_ResultsDblClick
+      OnDrawItem = lb_ResultsDrawItem
+      OnKeyPress = lb_ResultsKeyPress
+    end
   end
   object tim_InputDelay: TTimer
     Enabled = False
