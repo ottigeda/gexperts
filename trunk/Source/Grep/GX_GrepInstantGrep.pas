@@ -134,12 +134,18 @@ procedure TfmGxInstantGrepForm.LoadCurrentCode;
 
 var
   ISourceEditor: IOTASourceEditor;
+  EditView: IOTAEditView;
 begin
   if Assigned(BorlandIDEServices)
     and GxOtaTryGetCurrentSourceEditor(ISourceEditor)
     and GxOtaGetActiveEditorText(FCurrentCode, False) then begin
     FCurrentFile := ISourceEditor.FileName;
-    FOriginalEditPos := GxOtaGetTopMostEditView.CursorPos;
+    if GxOtaTryGetTopMostEditView(ISourceEditor, EditView) then begin
+      FOriginalEditPos := EditView.CursorPos;
+    end else begin
+      FOriginalEditPos.Col := -1;
+      FOriginalEditPos.Line := -1;
+    end;
   end else begin
     FCurrentFile := IncludeTrailingPathDelimiter(GetModuleDir) + 'preview.pas';
     if FileExists(FCurrentFile) then begin
