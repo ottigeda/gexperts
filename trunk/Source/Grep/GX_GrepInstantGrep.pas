@@ -134,6 +134,8 @@ procedure TfmGxInstantGrepForm.LoadCurrentCode;
     Result := ExtractFilePath(GetModuleName(HInstance));
   end;
 
+resourcestring
+  SCaption = '%s - Instant Grep';
 var
   ISourceEditor: IOTASourceEditor;
   EditView: IOTAEditView;
@@ -156,6 +158,9 @@ begin
     FOriginalEditPos.Col := -1;
     FOriginalEditPos.Line := -1;
   end;
+
+  // modify caption to show current module name
+  Caption := Format(SCaption, [ExtractFileName(FCurrentFile)]);
 end;
 
 procedure TfmGxInstantGrepForm.GoBack();
@@ -244,10 +249,8 @@ var
     TextTop: Integer;
     TopColor: TColor;
     BottomColor: TColor;
-    i: Integer;
-    FileNameWidth: Integer;
-    FileString: string;
     LineText: string;
+    LineTextWidth: Integer;
   begin
     TextTop := _Rect.Top + TopOffset;
     TopColor := clBtnHighlight;
@@ -263,16 +266,15 @@ var
     else
       Frame3D(LbCanvas, _Rect, TopColor, BottomColor, 1);
 
-    i := LbCanvas.TextWidth('00');
-    FileString := ExtractFileName(Module);
-    LbCanvas.TextOut(_Rect.Left, TextTop, FileString);
-//    LbCanvas.TextOut(_Rect.Left + i + FScaler.Calc(8), TextTop, FileString);
-
     LineText := Format(SLine, [Res.Idx + 1]);
-
-    FileNameWidth := LbCanvas.TextWidth(LineText) + FScaler.Calc(10);
-    if (LbCanvas.TextWidth(FileString) + i + FScaler.Calc(10)) <= _Rect.Right - FileNameWidth then
-      LbCanvas.TextOut(ListBox.ClientWidth - FileNameWidth, TextTop, LineText);
+    LbCanvas.Font.Style := LbCanvas.Font.Style + [fsItalic];
+    try
+      LineTextWidth := LbCanvas.TextWidth(LineText) + FScaler.Calc(10);
+      if FScaler.Calc(12) <= _Rect.Right - LineTextWidth then  // UKO
+        LbCanvas.TextOut(_Rect.Left + FScaler.Calc(2), TextTop, LineText);  
+    finally
+      LbCanvas.Font.Style := LbCanvas.Font.Style - [fsItalic]; 
+    end;
   end;
 
   procedure PaintLines(_Rect: TRect);
