@@ -230,7 +230,7 @@ const
     IDEEnglishName = 'RAD Studio 11';
     CompilerDefinedProductRegistryKey = CompanyRegPrefix + 'BDS\22.0';
     ClassBrowserStorageFolder = 'Classes.RADStudio11.0';
-  {$ENDIF VER340}
+  {$ENDIF VER350}
 
 {$IF CompilerVersion > 35} // new Delphi version
   'Add the information for the new Delphi version above and increase the CompilerVersion in this conditional'
