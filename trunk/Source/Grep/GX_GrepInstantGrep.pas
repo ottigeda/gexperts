@@ -16,14 +16,20 @@ uses
   ExtCtrls,
   StdCtrls,
   ComCtrls,
+  Buttons,
+  ActnList,
   ToolsAPI,
   regexpr,
   GX_EventHook,
   GX_StringList,
+  GX_SharedImages,
   GX_IdeDock;
 
 type
   TfmGxInstantGrepForm = class(TfmIdeDockForm)
+    TheActionList: TActionList;
+    act_Refresh: TAction;
+    act_Clear: TAction;
     l_RegEx: TLabel;
     ed_RegEx: TEdit;
     tim_InputDelay: TTimer;
@@ -32,6 +38,8 @@ type
     lb_Results: TListBox;
     l_PressEsc: TLabel;
     tim_EditorChanged: TTimer;
+    sb_Refresh: TSpeedButton;
+    sb_Clear: TSpeedButton;
     procedure tim_InputDelayTimer(Sender: TObject);
     procedure ed_RegExChange(Sender: TObject);
     procedure lb_ResultsDrawItem(_Control: TWinControl; _Index: Integer; _Rect: TRect;
@@ -45,11 +53,14 @@ type
     procedure chk_CaseSensitiveClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
+    procedure act_RefreshExecute(Sender: TObject);
+    procedure act_ClearExecute(Sender: TObject);
   private
     FRegEx: TRegExpr;
     FCurrentCode: TGXUnicodeStringList;
     FCurrentFile: string;
     FOriginalEditPos: TOTAEditPos;
+    procedure Clear;
     procedure UpdateOutput;
     function TryGetSelectedEditorPos(out _EditPos: TOTAEditPos): Boolean;
     procedure GoBack();
@@ -59,6 +70,7 @@ type
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
   public
     constructor Create(_Owner: TComponent); override;
@@ -70,13 +82,16 @@ implementation
 {$R *.dfm}
 
 uses
+  StrUtils,
+  Math,
   u_dzVclUtils,
   u_dzClassUtils,
   GX_OtaUtils,
   GX_Experts,
   GX_GrepMenuEntry,
   GX_GenericUtils,
-  GX_NTAEditServiceNotifier;
+  GX_NTAEditServiceNotifier,
+  GX_GExperts;
 
 var
   fmGxInstantGrepForm: TfmGxInstantGrepForm = nil;
@@ -125,6 +140,35 @@ begin
   TStrings_FreeAllObjects(lb_Results.Items);
   FreeAndNil(FCurrentCode);
   inherited;
+end;
+
+procedure TfmGxInstantGrepForm.act_ClearExecute(Sender: TObject);
+begin
+  Clear;
+end;
+
+procedure TfmGxInstantGrepForm.act_RefreshExecute(Sender: TObject);
+begin
+  UpdateOutput;
+end;
+
+procedure TfmGxInstantGrepForm.Clear;
+var
+  Items: TStrings;
+begin
+  // clear results and RegEx phrase
+  tim_EditorChanged.Enabled := False;
+  tim_InputDelay.Enabled := False;
+  ed_RegEx.Text := '';
+
+  Items := lb_Results.Items;
+  Items.BeginUpdate;
+  try
+    TStrings_FreeAllObjects(Items);
+    Items.Clear;
+  finally
+    Items.EndUpdate;
+  end;
 end;
 
 procedure TfmGxInstantGrepForm.LoadCurrentCode;
@@ -244,37 +288,39 @@ var
   Res: TFileResult;
   LineHeight: Integer;
 
-  procedure PaintFileHeader(_Rect: TRect);
-  var
-    TextTop: Integer;
-    TopColor: TColor;
-    BottomColor: TColor;
-    LineText: string;
-    LineTextWidth: Integer;
+  procedure PaintFrame(_Rect: TRect);
   begin
-    TextTop := _Rect.Top + TopOffset;
-    TopColor := clBtnHighlight;
-    BottomColor := clBtnShadow;
+    // all but the very first line should draw the upperframe line one pixel above to avoid thick horizontal lines
+    if _Index > 0 then
+      _Rect.Top := _Rect.Top - 1;
 
+    LbCanvas.Brush.Color := clBtnShadow;
+    LbCanvas.FrameRect(_Rect);
+  end;
+
+  procedure PaintGutter(_Rect: TRect);
+  var
+    i: Integer;
+    Line: string;
+    TextTop: Integer;
+  begin
     LbCanvas.Brush.Color := clBtnFace;
-    LbCanvas.Font.Color := clBtnText;
     LbCanvas.FillRect(_Rect);
 
-    _Rect.Right := _Rect.Right + 2;
-    if odSelected in _State then
-      Frame3D(LbCanvas, _Rect, BottomColor, TopColor, 1)
-    else
-      Frame3D(LbCanvas, _Rect, TopColor, BottomColor, 1);
-
-    LineText := Format(SLine, [Res.Idx + 1]);
-    LbCanvas.Font.Style := LbCanvas.Font.Style + [fsItalic];
-    try
-      LineTextWidth := LbCanvas.TextWidth(LineText) + FScaler.Calc(10);
-      if FScaler.Calc(12) <= _Rect.Right - LineTextWidth then  // UKO
-        LbCanvas.TextOut(_Rect.Left + FScaler.Calc(2), TextTop, LineText);  
-    finally
-      LbCanvas.Font.Style := LbCanvas.Font.Style - [fsItalic]; 
+    TextTop := _Rect.Top + TopOffset;
+    for i := -1 to 1 do begin
+      if i = 0 then
+        LbCanvas.Font.Color := clBtnText
+      else
+        LbCanvas.Font.Color := clGrayText;
+      Line := Format('%d', [Res.Idx + 1 + i]);
+      LbCanvas.TextOut(_Rect.Right - 1 - LbCanvas.TextWidth(Line) - FScaler.Calc(5), TextTop, Line);
+      Inc(TextTop, LineHeight);
     end;
+
+    LbCanvas.Pen.Color := clBtnShadow;
+    LbCanvas.MoveTo(_Rect.Right - 1, _Rect.Top);
+    LbCanvas.LineTo(_Rect.Right - 1, _Rect.Bottom);
   end;
 
   procedure PaintLines(_Rect: TRect);
@@ -289,6 +335,10 @@ var
     if odSelected in _State then begin
       BGNormal := clHighLight;
       LbCanvas.Font.Color := clHighLightText;
+      BGMatch := BGNormal;
+    end else if _Index = 0 then begin
+      BGNormal := clBtnFace;
+      LbCanvas.Font.Color := clWindowText;
       BGMatch := BGNormal;
     end else begin
       BGNormal := clWindow;
@@ -312,16 +362,17 @@ var
       end else begin
         // line above or below the match
         LbCanvas.Brush.Color := BGNormal;
-        // we already filled the whole area before the for loop
       end;
-      LbCanvas.TextOut(_Rect.Left, TextTop, LineText);
+
+      LbCanvas.TextOut(_Rect.Left + 1, TextTop, LineText);
+
       Inc(TextTop, LineHeight);
     end;
   end;
 
 var
   Items: TStrings;
-
+  GutterWidth: Integer;
 begin // TfmFastGrep.lb_ResultsDrawItem
   Items := ListBox.Items;
   Res := TFileResult(Items.Objects[_Index]);
@@ -330,8 +381,12 @@ begin // TfmFastGrep.lb_ResultsDrawItem
     LbCanvas := ListBox.Canvas;
     LbCanvas.Font := ListBox.Font;
     LineHeight := LbCanvas.TextHeight('Mg');
-    PaintFileHeader(Rect(_Rect.Left, _Rect.Top, _Rect.Right, _Rect.Top + LineHeight + 2));
-    PaintLines(Rect(_Rect.Left, _Rect.Top + LineHeight + 2, _Rect.Right, _Rect.Bottom));
+    GutterWidth := LbCanvas.TextWidth(DupeString('9', Length(Format('%d', [FCurrentCode.Count])))) + FScaler.Calc(10);
+
+    // draw surrounding frame
+    PaintFrame(_Rect);
+    PaintGutter(Rect(_Rect.Left + 1, _Rect.Top + 1, _Rect.Left + GutterWidth + 1, _Rect.Bottom - 1));
+    PaintLines(Rect(_Rect.Left + GutterWidth + 2, _Rect.Top + 1, _Rect.Right - 1, _Rect.Bottom - 1));
   end;
 end;
 
@@ -341,7 +396,7 @@ var
 begin
   cnv := lb_Results.Canvas;
   cnv.Font := lb_Results.Font;
-  lb_Results.ItemHeight := (cnv.TextHeight('Mg') + 2) * 4;
+  lb_Results.ItemHeight := (cnv.TextHeight('Mg') + 2) * 3;
 end;
 
 procedure TfmGxInstantGrepForm.ed_RegExChange(Sender: TObject);
@@ -432,6 +487,15 @@ begin
 end;
 
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
+procedure TfmGxInstantGrepForm.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  il: TImageList;
+begin
+  inherited;
+  il := GExpertsInst.GetScaledSharedImages(_NewDpi);
+  TheActionList.Images := il;
+end;
+
 procedure TfmGxInstantGrepForm.ArrangeControls;
 begin
   inherited;
