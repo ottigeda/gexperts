@@ -40,7 +40,6 @@
         <DCC_Define>NO_TRANSLATION;NO_TRANSLATION_HINT;NO_OPTIMIZE_DZ_GRAPHIC_UTILS_HINT;UnicodeRE;$(DCC_Define)</DCC_Define>
         <DCC_ExeOutput>..\..\Binaries</DCC_ExeOutput>
         <DCC_ImageBase>00400000</DCC_ImageBase>
-        <DCC_MapFile>3</DCC_MapFile>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Winapi;Vcl;System.Win;Vcl.Imaging;$(DCC_Namespace)</DCC_Namespace>
         <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
         <DCC_TypedAtParameter>true</DCC_TypedAtParameter>
@@ -392,18 +391,20 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\source\Grep\GX_GrepBackend.pas"/>
         <DCCReference Include="..\..\source\Grep\GX_GrepExpert.pas"/>
-        <DCCReference Include="..\..\Source\Grep\GX_GrepFastGrep.pas">
-            <Form>fmFastGrep</Form>
+        <DCCReference Include="..\..\Source\Grep\GX_GrepInstantGrep.pas">
+            <Form>fmGxInstantGrepForm</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\Grep\GX_GrepMenuConfig.pas">
             <Form>f_GrepMenuConfig</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\Grep\GX_GrepMenuEntry.pas"/>
-        <DCCReference Include="..\..\Source\Grep\GX_GrepNextItemExpert.pas"/>
         <DCCReference Include="..\..\source\Grep\GX_GrepOptions.pas">
             <Form>fmGrepOptions</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Grep\GX_GrepNextItemExpert.pas"/>
         <DCCReference Include="..\..\Source\Grep\GX_GrepPrevItemExpert.pas"/>
         <DCCReference Include="..\..\source\Grep\GX_GrepPrinting.pas"/>
         <DCCReference Include="..\..\Source\Grep\GX_GrepProgress.pas">
@@ -708,9 +709,6 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Framework\GX_VerDepConst.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas"/>
         <DCCReference Include="..\..\source\BackupProject\GX_Zipper.pas"/>
-        <RcCompile Include="..\..\images\GXIcons.rc">
-            <Form>GXIcons.res</Form>
-        </RcCompile>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
