@@ -631,9 +631,6 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <RcCompile Include="..\..\Binaries\CodeProofreaderDefault.rc">
             <Form>..\..\Binaries\CodeProofreaderDefault.res</Form>
         </RcCompile>
-        <RcCompile Include="..\..\images\GXIcons.rc">
-            <Form>..\..\images\GXIcons.res</Form>
-        </RcCompile>
         <None Include="..\..\source\Include\GX_CondDefine.inc"/>
     </ItemGroup>
 </Project>

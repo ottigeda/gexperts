@@ -275,6 +275,9 @@ $(PreBuildEvent)]]>
             <Form>f_EditPath</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\EditPath\GX_EditPathConfig.pas">
+            <Form>f_EditPathConfig</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_EditReader.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_eFindDelimiter.pas"/>
         <DCCReference Include="..\..\Source\Editor\GX_eGotoModification.pas"/>
@@ -341,6 +344,9 @@ $(PreBuildEvent)]]>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\FavoriteFiles\GX_FavUtil.pas"/>
+        <DCCReference Include="..\..\Source\FavoriteFiles\GX_FavWuppdiWPImport.pas">
+            <Form>fmFavWuppdiWPImport</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_FeedbackWizard.pas">
             <Form>fmFeedbackWizard</Form>
             <FormType>dfm</FormType>
@@ -364,6 +370,9 @@ $(PreBuildEvent)]]>
             <Form>f_FormHotkeys</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\FormHotkeys\GX_FormHotkeysSelect.pas">
+            <Form>fmFormHotkeysSelect</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_GenericClasses.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_GenericUtils.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_GetIdeVersion.pas"/>
@@ -378,11 +387,17 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\source\Grep\GX_GrepBackend.pas"/>
         <DCCReference Include="..\..\source\Grep\GX_GrepExpert.pas"/>
+        <DCCReference Include="..\..\Source\Grep\GX_GrepInstantGrep.pas">
+            <Form>fmGxInstantGrepForm</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Grep\GX_GrepMenuConfig.pas">
+            <Form>f_GrepMenuConfig</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Grep\GX_GrepMenuEntry.pas"/>
         <DCCReference Include="..\..\source\Grep\GX_GrepOptions.pas">
             <Form>fmGrepOptions</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\..\Source\Grep\GX_GrepMenuEntry.pas"/>
         <DCCReference Include="..\..\Source\Grep\GX_GrepNextItemExpert.pas"/>
         <DCCReference Include="..\..\Source\Grep\GX_GrepPrevItemExpert.pas"/>
         <DCCReference Include="..\..\source\Grep\GX_GrepPrinting.pas"/>
@@ -468,6 +483,7 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_KibitzComp.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_LibrarySource.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_Logging.pas"/>
         <DCCReference Include="..\..\source\MacroTemplates\GX_MacroExpandNotifier.pas"/>
         <DCCReference Include="..\..\source\MacroTemplates\GX_MacroFile.pas"/>
         <DCCReference Include="..\..\source\MacroLibrary\GX_MacroLibrary.pas">
@@ -580,6 +596,7 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\CodeProofreader\GX_ProofreaderKeyboard.pas"/>
         <DCCReference Include="..\..\source\CodeProofreader\GX_ProofreaderUtils.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_ReadMapFileThread.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_RegExpr.pas"/>
         <DCCReference Include="..\..\source\Grep\GX_Replace.pas"/>
         <DCCReference Include="..\..\source\ReplaceComponents\GX_ReplaceComp.pas">
             <Form>fmReplaceComp</Form>
@@ -683,9 +700,6 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Framework\GX_VerDepConst.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas"/>
         <DCCReference Include="..\..\source\BackupProject\GX_Zipper.pas"/>
-        <RcCompile Include="..\..\images\GXIcons.rc">
-            <Form>GXIcons.res</Form>
-        </RcCompile>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
