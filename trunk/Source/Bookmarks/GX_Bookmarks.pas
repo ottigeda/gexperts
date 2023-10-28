@@ -73,8 +73,7 @@ implementation
 {$R *.dfm}
 
 uses
-{$IFOPT D+}GX_DbugIntf,
-{$ENDIF}
+{{*}{$IFOPT D+}GX_DbugIntf,{$ENDIF}{*)}
   Windows,
   Graphics,
   u_dzStringUtils,
