@@ -140,10 +140,6 @@ inherited fmGxInstantGrepForm: TfmGxInstantGrepForm
     Top = 80
     Width = 417
     Height = 321
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 2
     object lb_Results: TListBox

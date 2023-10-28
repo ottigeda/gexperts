@@ -7,10 +7,6 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
     Top = 0
     Width = 304
     Height = 204
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
     Align = alClient
     TabOrder = 0
     object lb_Bookmarks: TListBox
