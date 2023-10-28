@@ -186,6 +186,8 @@ type
 
 type
   TMethodPointer = procedure of object;
+const
+  NilEvent: TMethod = (Code: nil; Data: nil);
 
 type
   TRectLTWH = record

@@ -238,6 +238,44 @@ function TObjectList_Extract(_lst: TObjectList; _Idx: Integer): TObject;
 function TComponent_FindComponent(_Owner: TComponent; const _Name: string; _Recursive: Boolean;
   out _Found: TComponent; _CmpClass: TComponentClass = nil): Boolean;
 
+{$IFDEF DELPHIX_TOKYO_UP}
+///<summary>
+/// Reads a maximum of Count bytes from the stream into the buffer and returns true if at least
+/// one byte could be read. </summary>
+function TStream_TryRead(_st: TStream; _Buffer: TBytes; _Offset, _Count: Int32;
+  out _BytesRead: Int32): Boolean; overload;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
+
+///<summary>
+/// Reads a maximum of Count bytes from the stream into the buffer and returns true if at least
+/// one byte could be read. </summary>
+function TStream_TryRead(_st: TStream; _Buffer: TBytes; _Offset, _Count: Int64;
+  out _BytesRead: Int64): Boolean; overload;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
+{$ENDIF}
+
+///<summary>
+/// Reads a maximum of Count bytes from the stream into the buffer and returns true if at least
+/// one byte could be read. </summary>
+function TStream_TryRead(_st: TStream; var _Buffer; _Count: Int32;
+  out _BytesRead: Int32): Boolean; overload;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
+
+///<summary>
+/// Reads a maximum of Count bytes from the stream into the buffer and returns true if at least
+/// one byte could be read. </summary>
+function TStream_TryRead(_st: TStream; var _Buffer: TBytes; _Count: Int32;
+  out _BytesRead: Int32): Boolean; overload;
+{$IFDEF SUPPORTS_INLINE}
+inline;
+{$ENDIF}
+
 /// <summary>
 /// Write a string to the stream
 /// @param Stream is the TStream to write to.
@@ -1094,6 +1132,36 @@ begin
   Name := _st.Names[_Idx];
   Result := _st.Values[Name];
 end;
+
+function TStream_TryRead(_st: TStream; var _Buffer: TBytes; _Count: Int32;
+  out _BytesRead: Int32): Boolean; overload;
+begin
+  _BytesRead := _st.Read(_Buffer, _Count);
+  Result := (_BytesRead > 0);
+end;
+
+function TStream_TryRead(_st: TStream; var _Buffer; _Count: Int32;
+  out _BytesRead: Int32): Boolean; overload;
+begin
+  _BytesRead := _st.Read(_Buffer, _Count);
+  Result := (_BytesRead > 0);
+end;
+
+{$IFDEF DELPHIX_TOKYO_UP}
+function TStream_TryRead(_st: TStream; _Buffer: TBytes; _Offset, _Count: Int32;
+  out _BytesRead: Int32): Boolean; overload;
+begin
+  _BytesRead := _st.Read(_Buffer, _Offset, _Count);
+  Result := (_BytesRead > 0);
+end;
+
+function TStream_TryRead(_st: TStream; _Buffer: TBytes; _Offset, _Count: Int64;
+  out _BytesRead: Int64): Boolean; overload;
+begin
+  _BytesRead := _st.Read64(_Buffer, _Offset, _Count);
+  Result := (_BytesRead > 0);
+end;
+{$ENDIF}
 
 function TStream_WriteString(_Stream: TStream; const _s: RawByteString): Integer;
 var

@@ -89,6 +89,8 @@ type
     /// <summary> invalid values are considered smaller than any valid values
     /// and equal to each other </summary>
     class function Compare(_a, _b: _NULLABLE_NUMBER_): Integer; static;
+    /// <summary> invalid values are considered equal to each other </summary>
+    class function IsSame(_a, _b: _NULLABLE_NUMBER_): Boolean; static;
     class function Invalid: _NULLABLE_NUMBER_; static;
     class function FromVariant(_a: Variant): _NULLABLE_NUMBER_; static;
     class function FromStr(const _s: string): _NULLABLE_NUMBER_; static;
@@ -316,6 +318,21 @@ begin
     Result := 0
   else
     Result := -1;
+end;
+
+class function _NULLABLE_NUMBER_.IsSame(_a, _b: _NULLABLE_NUMBER_): Boolean;
+begin
+  if _a.IsValid then begin
+    if _b.IsValid then
+      Result := (_a.FValue = _b.FValue)
+    else
+      Result := False
+  end else begin
+    if _b.IsValid then
+      Result := False
+    else
+      Result := True;
+  end;
 end;
 
 function _NULLABLE_NUMBER_.Dump: string;

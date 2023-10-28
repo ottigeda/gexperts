@@ -117,15 +117,16 @@ type
     /// @param List is a string list to which the files will be appended, may be nil
     /// @param IncludePath determines whether the List of filenames includes the full path or not </summary>
     class function Execute(const _Mask: string; _List: TStrings;
-      _MayHaveAttr: TFileAttributeSet = ALL_FILES_ATTRIB_SET; _IncludePath: Boolean = False; _Sort: Boolean = True): Integer;
+      _MayHaveAttr: TFileAttributeSet = ALL_FILES_ATTRIB_SET; _IncludePath: Boolean = False;
+      _Sort: Boolean = True; _Recursive: Boolean = False): Integer;
     /// <summary>
     /// creates a TSimpleDirEnumerator, calls its FindAll method and frees it
     /// @param List is a string list to which the files will be appended, may be nil
     /// @param IncludePath determines whether the List of filenames includes the full path or not </summary>
     class function EnumFilesOnly(const _Mask: string; _List: TStrings;
-      _IncludePath: Boolean = False; _Sort: Boolean = True): Integer; overload;
+      _IncludePath: Boolean = False; _Sort: Boolean = True; _Recursive: Boolean = False): Integer; overload;
     class function EnumFilesOnly(const _Mask: string;
-      _IncludePath: Boolean = False; _Sort: Boolean = True): TStringArray; overload;
+      _IncludePath: Boolean = False; _Sort: Boolean = True; _Recursive: Boolean = False): TStringArray; overload;
     ///<summary>
     /// Calls the given callback for all files matching the mask. To Abort, raise EAbort. </summary>
     class procedure EnumFilesOnly(const _Mask: string; _Callback: TOnFileEnumCallback;
@@ -1026,7 +1027,8 @@ type
     /// @returns True, if the last extension of Filename matches the given extension.
     ///                Comparison is case insensitive
     ///          False if the extensions don't machch. </summary>
-    class function HasFileExtLast(const _Filename: string; const _Ext: string): Boolean;
+    class function HasFileExtLast(const _Filename: string; const _Ext: string): Boolean; overload;
+    class function HasFileExtLast(const _Filename: string; const _Ext: TStringArray): Boolean; overload;
 
     ///<summary>
     /// Sets the file's date and time to the given time or to the current time
@@ -1377,14 +1379,14 @@ begin
   end;
 end;
 
-class function TSimpleDirEnumerator.EnumFilesOnly(const _Mask: string; _IncludePath,
-  _Sort: Boolean): TStringArray;
+class function TSimpleDirEnumerator.EnumFilesOnly(const _Mask: string; _IncludePath: Boolean;
+  _Sort: Boolean; _Recursive: Boolean): TStringArray;
 var
   sl: TStringList;
 begin
   sl := TStringList.Create;
   try
-    EnumFilesOnly(_Mask, sl, _IncludePath, _Sort);
+    EnumFilesOnly(_Mask, sl, _IncludePath, _Sort, _Recursive);
     Result := TStringArray_FromStrings(sl);
   finally
     FreeAndNil(sl);
@@ -1392,17 +1394,22 @@ begin
 end;
 
 class function TSimpleDirEnumerator.EnumFilesOnly(const _Mask: string; _List: TStrings;
-  _IncludePath, _Sort: Boolean): Integer;
+  _IncludePath, _Sort: Boolean; _Recursive: Boolean): Integer;
 begin
-  Result := Execute(_Mask, _List, [dfaArchive], _IncludePath, _Sort);
+  Result := Execute(_Mask, _List, [dfaArchive], _IncludePath, _Sort, _Recursive);
 end;
 
 class function TSimpleDirEnumerator.Execute(const _Mask: string; _List: TStrings;
   _MayHaveAttr: TFileAttributeSet = ALL_FILES_ATTRIB_SET;
-  _IncludePath: Boolean = False; _Sort: Boolean = True): Integer;
+  _IncludePath: Boolean = False; _Sort: Boolean = True; _Recursive: Boolean = False): Integer;
 var
   enum: TSimpleDirEnumerator;
   List: TStringList;
+  dirs: TStringArray;
+  BaseDirBS: string;
+  DirIdx: Integer;
+  MaskOnly: string;
+  SubDirBS: string;
 begin
   enum := TSimpleDirEnumerator.Create(_Mask, _MayHaveAttr);
   try
@@ -1419,6 +1426,23 @@ begin
     end;
   finally
     FreeAndNil(enum);
+  end;
+  if _Recursive then begin
+    BaseDirBS := itpd(ExtractFileDir(_Mask));
+    MaskOnly := ExtractFileName(_Mask);
+    dirs := EnumDirsOnly(BaseDirBS + '*', True);
+    for DirIdx := Low(dirs) to High(dirs) do begin
+      SubDirBS := itpd(dirs[DirIdx]);
+      List := TStringList.Create;
+      try
+        TSimpleDirEnumerator.EnumFilesOnly(SubDirBS + MaskOnly, List, _IncludePath, _Sort, True);
+        if _Sort then
+          List.Sort;
+        _List.AddStrings(List);
+      finally
+        FreeAndNil(List);
+      end;
+    end;
   end;
 end;
 
@@ -1554,6 +1578,20 @@ end;
 class function TFileSystem.HasFileExtFull(const _Filename, _Ext: string): Boolean;
 begin
   Result := SameText(_Ext, ExtractFileExtFull(_Filename));
+end;
+
+class function TFileSystem.HasFileExtLast(const _Filename: string;
+  const _Ext: TStringArray): Boolean;
+var
+  i: Integer;
+begin
+  for i := Low(_Ext) to High(_Ext) do begin
+    if HasFileExtLast(_Filename, _Ext[i]) then begin
+      Result := True;
+      Exit; //==>
+    end;
+  end;
+  Result := False;
 end;
 
 class function TFileSystem.HasFileExtLast(const _Filename, _Ext: string): Boolean;

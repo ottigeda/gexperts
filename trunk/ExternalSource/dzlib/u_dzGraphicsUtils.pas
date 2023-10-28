@@ -21,6 +21,8 @@ unit u_dzGraphicsUtils;
 {$IFNDEF NO_OPTIMIZE_DZ_GRAPHIC_UTILS_HINT}
 {$MESSAGE HINT 'optimization is off, consider turning it on for significantly better performance'}
 {$ENDIF}
+// if optimization is turned off, we also turn off inlining
+{$UNDEF SUPPORTS_INLINE}
 {$ELSE}
 // If optimization is on, we turn off assertions, just in case the programmer forgot.
 // The reason for this is that we have some assertions below that might significantly impact
@@ -257,8 +259,13 @@ type
   TDrawTextFlagSetNoAlign = set of TDrawTextFlagsNoAlign;
 
 ///<summary>
-/// Calculates the Rect necessary for drawing the text.
-/// @returns the calculated height </summary>
+/// Uses WinApi.DrawText to draw the given text on the canvas.
+/// @param Flags determines how the text is drawn. if it contains dtfCalcRect, this function
+///              does not draw the text but only calculates the Rect necessary for drawing it.
+/// @returns 0, if the call to WinApi.DrawText fails
+///          the calculated height of the text in logical units.
+///          If dtfBottomSingle or dtfVCenterSingle is specified, the return value is the offset
+///          from Rect.top to the bottom of the drawn text. </summary>
 function TCanvas_DrawText(_Canvas: TCanvas; const _Text: string; var _Rect: TRect; _Flags: TDrawTextFlagSet): Integer;
 {$IFDEF SUPPORTS_INLINE}
 inline;
@@ -499,7 +506,8 @@ procedure TBitmap_AssignRgb8(_Buffer: PByte; _bmp: TBitmap; _YIsReversed: Boolea
 procedure TBitmap_AssignMono824(_Buffer: PByte; _bmp: TBitmap; _YIsReversed: Boolean);
 
 ///<summary>
-/// Assign a buffer containing a bitmap in Mono 8 format to a 8 bit gray scale TBitmap </summary>
+/// Assign a buffer containing a bitmap in Mono 8 format to a 8 bit gray scale TBitmap
+/// @NOTE: The bitmap is assumed to already have the correct size and pixel format </summary>
 procedure TBitmap_AssignMono8(_Buffer: PByte; _bmp: TBitmap; _YIsReversed: Boolean); overload;
 procedure TBitmap_AssignMono8(_Buffer: PByte; _bmp: TBitmap; _YIsReversed: Boolean; _RowStride: Int64); overload;
 
@@ -509,10 +517,15 @@ type
   /// next value </summary>
   TBufferBitsToMono8Func = function(var _BufPtr: Pointer): Byte;
   TBufferBitsToMono8Meth = function(var _BufPtr: Pointer): Byte of object;
+  TBufferBitsToRgb8Func = function(var _BufPtr: Pointer): TdzRgbTriple;
+  TBufferBitsToRgb8Meth = function(var _BufPtr: Pointer): TdzRgbTriple of object;
 
 ///<summary>
 /// Converts a 12 bit value at the given position to a Byte and increments BufPtr by 2 </summary>
 function BufferBits12ToMono8(var _BufPtr: Pointer): Byte;
+///<summary>
+/// Converts a 12 bit value at the given position to a rainbow color and increments BufPtr by 2 </summary>
+function BufferBits12ToRgb8(var _BufPtr: Pointer): TdzRgbTriple;
 
 ///<summary>
 /// Assign a buffer containing a bitmap in Monochrome format to a 8 bit gray scale TBitmap
@@ -524,6 +537,11 @@ function BufferBits12ToMono8(var _BufPtr: Pointer): Byte;
 procedure TBitmap_AssignToMono8(_BufferBitsToMono8Func: TBufferBitsToMono8Func;
   _Buffer: Pointer; _bmp: TBitmap; _YIsReversed: Boolean; _RowStride: Int64 = 0); overload;
 procedure TBitmap_AssignToMono8(_BufferBitsToMono8Meth: TBufferBitsToMono8Meth;
+  _Buffer: Pointer; _bmp: TBitmap; _YIsReversed: Boolean; _RowStride: Int64 = 0); overload;
+
+procedure TBitmap_AssignToRgb8(_BufferBitsToRgb8Func: TBufferBitsToRgb8Func;
+  _Buffer: Pointer; _bmp: TBitmap; _YIsReversed: Boolean; _RowStride: Int64 = 0); overload;
+procedure TBitmap_AssignToRgb8(_BufferBitsToRgb8Meth: TBufferBitsToRgb8Meth;
   _Buffer: Pointer; _bmp: TBitmap; _YIsReversed: Boolean; _RowStride: Int64 = 0); overload;
 
 ///<summary>
@@ -817,36 +835,27 @@ function BestForegroundForColor(_Color: TColor): TColor; overload;
 ///<summary>
 /// @param Hue is a value between 0 and 1 </summary>
 function RainbowColor(_Hue: Double): TColor; overload;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{{*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
 
-{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 ///<summary>
 /// @param Hue is a value between 0 and 1 </summary>
 procedure RainbowColor(_Hue: Double; out _Color: TdzRgbTriple); overload;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
-{$ENDIF}
+// Note: Cannot be declared as inline
+
 ///<summary>
 /// @param Brightness is a grayscale value </summary>
 function RainbowColor(_Brightness: Byte): TColor; overload;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{{*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
 procedure RainbowColor(_Brightness: Byte; out _Red, _Green, _Blue: Byte); overload;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{{*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
 procedure RainbowColor(_Brightness: Byte; out _Pixel: TdzRgbTriple); overload;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{{*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
 function RainbowColor(_MinHue, _MaxHue, _Hue: Integer): TColor; overload;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{{*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
 
 function TryStr2Color(const _s: string; out _Color: TColor): Boolean;
 
@@ -1998,6 +2007,15 @@ begin
   IncPtr(_BufPtr, 2);
 end;
 
+function BufferBits12ToRgb8(var _BufPtr: Pointer): TdzRgbTriple;
+var
+  Value: Double;
+begin
+  Value := PUInt16(_BufPtr)^ / (1 shl 12 - 1);
+  RainbowColor(Value, Result);
+  IncPtr(_BufPtr, 2);
+end;
+
 procedure TBitmap_AssignToMono8(_BufferBitsToMono8Func: TBufferBitsToMono8Func;
   _Buffer: Pointer; _bmp: TBitmap; _YIsReversed: Boolean; _RowStride: Int64); overload;
 var
@@ -2067,6 +2085,80 @@ begin
       IncPtr(_Buffer, _RowStride);
     end else begin
       // we assume that _BufferBitsToMono8Meth inrements the buffer correctly
+      _Buffer := Buf;
+    end;
+  end;
+end;
+
+procedure TBitmap_AssignToRgb8(_BufferBitsToRgb8Func: TBufferBitsToRgb8Func;
+  _Buffer: Pointer; _bmp: TBitmap; _YIsReversed: Boolean; _RowStride: Int64 = 0);
+var
+  y: Integer;
+  x: Integer;
+  w: Integer;
+  h: Integer;
+  ScanLine: PdzRgbTriple;
+  Buf: Pointer;
+begin
+  Assert(AssertPixelFormat(_bmp, pf24bit));
+
+  w := _bmp.Width;
+  h := _bmp.Height;
+
+  Assert((_RowStride = 0) or (_RowStride >= w));
+
+  for y := 0 to _bmp.Height - 1 do begin
+    if _YIsReversed then begin
+      ScanLine := _bmp.ScanLine[h - 1];
+    end else begin
+      ScanLine := _bmp.ScanLine[y];
+    end;
+    Buf := _Buffer;
+    for x := 0 to w - 1 do begin
+      ScanLine^ := _BufferBitsToRgb8Func(Buf);
+      Inc(ScanLine);
+    end;
+    if _RowStride > 0 then begin
+      IncPtr(_Buffer, _RowStride);
+    end else begin
+      // we assume that _BufferBitsToRgb8Func inrements the buffer correctly
+      _Buffer := Buf;
+    end;
+  end;
+end;
+
+procedure TBitmap_AssignToRgb8(_BufferBitsToRgb8Meth: TBufferBitsToRgb8Meth;
+  _Buffer: Pointer; _bmp: TBitmap; _YIsReversed: Boolean; _RowStride: Int64 = 0);
+var
+  y: Integer;
+  x: Integer;
+  w: Integer;
+  h: Integer;
+  ScanLine: PdzRgbTriple;
+  Buf: Pointer;
+begin
+  Assert(AssertPixelFormat(_bmp, pf24bit));
+
+  w := _bmp.Width;
+  h := _bmp.Height;
+
+  Assert((_RowStride = 0) or (_RowStride >= w));
+
+  for y := 0 to _bmp.Height - 1 do begin
+    if _YIsReversed then begin
+      ScanLine := _bmp.ScanLine[h - 1];
+    end else begin
+      ScanLine := _bmp.ScanLine[y];
+    end;
+    Buf := _Buffer;
+    for x := 0 to w - 1 do begin
+      ScanLine^ := _BufferBitsToRgb8Meth(Buf);
+      Inc(ScanLine);
+    end;
+    if _RowStride > 0 then begin
+      IncPtr(_Buffer, _RowStride);
+    end else begin
+      // we assume that _BufferBitsToRgb8Meth inrements the buffer correctly
       _Buffer := Buf;
     end;
   end;
@@ -4032,7 +4124,13 @@ begin
   end;
 end;
 
-{$IFDEF SUPPORTS_ENHANCED_RECORDS}
+procedure TdzRgbTriple_SetValues(_Triple: TdzRgbTriple; _Red, _Green, _Blue: Byte);
+begin
+  _Triple.Red := _Red;
+  _Triple.Green := _Green;
+  _Triple.Blue := _Blue;
+end;
+
 procedure RainbowColor(_Hue: Double; out _Color: TdzRgbTriple);
 var
   Value: Double;
@@ -4041,16 +4139,15 @@ begin
   Value := EnsureRange(_Hue, 0, 1) * 6;
   IntValue := Round(Frac(Value) * 255);
   case Trunc(Value) of
-    0: _Color.SetValues(255, IntValue, 0);
-    1: _Color.SetValues(255 - IntValue, 255, 0);
-    2: _Color.SetValues(0, 255, IntValue);
-    3: _Color.SetValues(0, 255 - IntValue, 255);
-    4: _Color.SetValues(IntValue, 0, 255);
+    0: TdzRgbTriple_SetValues(_Color, 255, IntValue, 0);
+    1: TdzRgbTriple_SetValues(_Color, 255 - IntValue, 255, 0);
+    2: TdzRgbTriple_SetValues(_Color, 0, 255, IntValue);
+    3: TdzRgbTriple_SetValues(_Color, 0, 255 - IntValue, 255);
+    4: TdzRgbTriple_SetValues(_Color, IntValue, 0, 255);
   else // 5
-    _Color.SetValues(255, 0, 255 - IntValue);
+    TdzRgbTriple_SetValues(_Color, 255, 0, 255 - IntValue);
   end;
 end;
-{$ENDIF}
 
 procedure RainbowColor(_Brightness: Byte; out _Red, _Green, _Blue: Byte);
 var

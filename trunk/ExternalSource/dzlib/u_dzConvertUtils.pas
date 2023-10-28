@@ -177,19 +177,25 @@ function isNumberN(const _s: string; _Base: TBaseN): Integer;
 ///<summary>
 /// Reduces an Integer to a Byte value by cutting it off at 0 and 255 </summary>
 function ReduceToByte(const _Value: Integer): Byte;
-{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
 function ReduceToInt8(const _Value: Integer): Int8;
-{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
 function ReduceToUInt8(const _Value: Integer): UInt8;
-{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
 function ReduceToInt16(const _Value: Integer): Int16;
-{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
 function ReduceToUInt16(const _Value: Integer): UInt16;
-{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
 function ReduceToInt32(const _Value: Int64): Int32;
-{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
 function ReduceToUInt32(const _Value: Int64): UInt32;
-{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
 
 ///<summary>
 /// Converts a string of the form '-hh:mm:ss', 'hh:mm:ss',
@@ -282,9 +288,9 @@ function Str2Float(const _s: string; const _Source: string; _DecSeparator: Char 
 /// @returns true, if s could be converted, false otherwise
 /// NOTE: This is not thread safe in Delphi 6 because there it changes the global
 ///       variable DecimalSeparator in SysUtils. </summary>
-{$IFNDEF Win64}
 function TryStr2Float(const _s: string; out _flt: Extended; _DecSeparator: Char = '.'): Boolean; overload;
-{$ENDIF}
+
+{$IF SizeOf(Extended) <> SizeOf(Double)}
 ///<summary>
 /// tries to convert a string to a float, returns false if it fails
 /// @param s is the string to convert
@@ -295,6 +301,7 @@ function TryStr2Float(const _s: string; out _flt: Extended; _DecSeparator: Char 
 /// NOTE: This is not thread safe in Delphi 6 because there it changes the global
 ///       variable DecimalSeparator in SysUtils. </summary>
 function TryStr2Float(const _s: string; out _flt: Double; _DecSeparator: Char = '.'): Boolean; overload;
+{$IFEND}
 function TryStr2Float(const _s: string; out _flt: Single; _DecSeparator: Char = '.'): Boolean; overload;
 
 ///<summary>
@@ -386,17 +393,17 @@ function GetSystemDefaultLocaleSettings: TFormatSettings; deprecated; // use u_d
 
 ///<summary>
 /// returns the long word split into an array of byte
-/// @param Value is the LongWord value to split
+/// @param Value is the UInt32 value to split
 /// @param MsbFirst, if true the most significant byte is the first in the array (Motorola format)
 ///                  if false the least significatn byte is the first in the array (Intel format) </summary>
-function LongWord2ByteArr(_Value: LongWord; _MsbFirst: Boolean = False): TBytes;
+function LongWord2ByteArr(_Value: UInt32; _MsbFirst: Boolean = False): TBytes;
 
 ///<summary>
-/// returns the the array of byte combined into a LongWord
+/// returns the the array of byte combined into a UInt32
 /// @param Value is the array to combine
 /// @param MsbFirst, if true the most significant byte is the first in the array (Motorola format)
 ///                  if false the least significatn byte is the first in the array (Intel format) </summary>
-function ByteArr2LongWord(const _Arr: array of Byte; _MsbFirst: Boolean = False): LongWord;
+function ByteArr2LongWord(const _Arr: array of Byte; _MsbFirst: Boolean = False): UInt32;
 
 ///<summary>
 /// returns a 16 bit in reversed byte order, e.g. $1234 => $3412)
@@ -404,19 +411,20 @@ function ByteArr2LongWord(const _Arr: array of Byte; _MsbFirst: Boolean = False)
 /// (This is just an alias for system.swap for consistency with Swap32.)
 ///</summary
 function Swap16(_Value: Word): Word;
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
 
 ///<summary>
 /// returns a 32 bit value in reversed byte order e.g. $12345678 -> $78563412
 /// aka converts intel (little endian) to motorola (big endian) byte order format </summary>
-function Swap32(_Value: LongWord): LongWord;
-function Swap32pas(_Value: LongWord): LongWord;
+function Swap32(_Value: UInt32): UInt32;
+function Swap32pas(_Value: UInt32): UInt32;
 
 ///<summary>
 /// returns a 64 bit value in reversed byte order e.g. $123456789ABCDEF0 -> $F0DEBC9A78563412
 /// aka converts intel (little endian) to motorola (big endian) byte order format </summary>
 function Swap64(_Value: UInt64): UInt64;
 
-function BitReverse32(v: LongWord): LongWord;
+function BitReverse32(v: UInt32): UInt32;
 
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
 type
@@ -670,9 +678,7 @@ uses
   u_dzStringUtils;
 
 function _(const _s: string): string;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
 begin
   Result := dzDGetText(_s, 'dzlib');
 end;
@@ -1210,7 +1216,6 @@ begin
   Result := '.';
 end;
 
-{$IFNDEF Win64}
 function TryStr2Float(const _s: string; out _flt: Extended; _DecSeparator: Char = '.'): Boolean;
 var
 {$IF Declared(TFormatSettings)}
@@ -1235,8 +1240,8 @@ begin
   end;
 {$IFEND}
 end;
-{$ENDIF}
 
+{$IF SizeOf(Extended) <> SizeOf(Double)}
 function TryStr2Float(const _s: string; out _flt: Double; _DecSeparator: Char = '.'): Boolean;
 var
   flt: Extended;
@@ -1245,6 +1250,7 @@ begin
   if Result then
     _flt := flt;
 end;
+{$IFEND}
 
 function TryStr2Float(const _s: string; out _flt: Single; _DecSeparator: Char = '.'): Boolean;
 var
@@ -1319,7 +1325,7 @@ begin
 end;
 {$IFEND}
 
-function LongWord2ByteArr(_Value: LongWord; _MsbFirst: Boolean = False): TBytes;
+function LongWord2ByteArr(_Value: UInt32; _MsbFirst: Boolean = False): TBytes;
 begin
   SetLength(Result, SizeOf(_Value));
   if _MsbFirst then begin
@@ -1335,10 +1341,10 @@ begin
   end;
 end;
 
-function ByteArr2LongWord(const _Arr: array of Byte; _MsbFirst: Boolean = False): LongWord;
+function ByteArr2LongWord(const _Arr: array of Byte; _MsbFirst: Boolean = False): UInt32;
 begin
   if Length(_Arr) <> SizeOf(Result) then
-    raise Exception.CreateFmt(_('Length of byte array (%d) does not match size of a LongWord (%d)'), [Length(_Arr), SizeOf(Result)]);
+    raise Exception.CreateFmt(_('Length of byte array (%d) does not match size of a UInt32 (%d)'), [Length(_Arr), SizeOf(Result)]);
   if _MsbFirst then begin
     Result := _Arr[0] shl 24 + _Arr[1] shl 16 + _Arr[2] shl 8 + _Arr[3];
   end else begin
@@ -1347,9 +1353,6 @@ begin
 end;
 
 function Swap16(_Value: Word): Word;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
 begin
   Result := swap(_Value);
 end;
@@ -1359,15 +1362,22 @@ end;
 //  rol   ax, 8
 //end;
 
-function Swap32(_Value: LongWord): LongWord;
-asm
-  bswap eax
-end;
-
-function Swap32pas(_Value: LongWord): LongWord;
+function Swap32pas(_Value: UInt32): UInt32;
 begin
   Result := ((_Value shr 24) and $FF) + (((_Value shr 16) and $FF) shl 8) + (((_Value shr 8) and $FF) shl 16) + ((_Value and $FF) shl 24);
 end;
+
+{$IFDEF CPU64}
+function Swap32(_Value: UInt32): UInt32;
+begin
+  Result := Swap32pas(_Value);
+end;
+{$ELSE}
+function Swap32(_Value: UInt32): UInt32;
+asm
+  bswap eax
+end;
+{$ENDIF}
 
 function Swap64(_Value: UInt64): UInt64;
 asm
@@ -1377,7 +1387,7 @@ asm
   BSWAP   EAX
 end;
 
-function BitReverse32(v: LongWord): LongWord;
+function BitReverse32(v: UInt32): UInt32;
 // source (C code):
 // https://apps.topcoder.com/forums/?module=Thread&threadID=514884&start=2
 begin
@@ -1487,7 +1497,7 @@ function TBits64.GetByte(_ByteNo: TByteNumber): Byte;
 var
   Bytes: TByteArr8 absolute FValue;
 begin
-  Result := Bytes[_byteNo];
+  Result := Bytes[_ByteNo];
 end;
 
 procedure TBits64.SetByte(_ByteNo: TByteNumber; _Value: Byte);
@@ -1582,14 +1592,19 @@ begin
 end;
 
 function TBits32.GetByte(_ByteNo: TByteNumber): Byte;
+var
+  BitNo: TBitNumber;
 begin
-  Result := (FValue shr (_ByteNo * 8)) and $FF;
+  BitNo := _ByteNo * 8;
+  Result := (FValue shr BitNo) and $FF;
 end;
 
 procedure TBits32.SetByte(_ByteNo: TByteNumber; _Value: Byte);
+var
+  BitNo: TBitNumber;
 begin
-  _ByteNo := _ByteNo * 8;
-  FValue := FValue and ($FFFFFFFF xor ($FF shl _ByteNo)) or (_Value shl _ByteNo);
+  BitNo := _ByteNo * 8;
+  FValue := FValue and ($FFFFFFFF xor ($FF shl BitNo)) or (_Value shl BitNo);
 end;
 
 procedure TBits32.Init(_Value: TValue);
@@ -1738,14 +1753,19 @@ begin
 end;
 
 function TBits16.GetByte(_ByteNo: TByteNumber): Byte;
+var
+  BitNo: TBitNumber;
 begin
-  Result := (FValue shr (_ByteNo * 8)) and $FF;
+  BitNo := _ByteNo * 8;
+  Result := (FValue shr BitNo) and $FF;
 end;
 
 procedure TBits16.SetByte(_ByteNo: TByteNumber; _Value: Byte);
+var
+  BitNo: TBitNumber;
 begin
-  _ByteNo := _ByteNo * 8;
-  FValue := FValue and ($FFFF xor ($FF shl _ByteNo)) or (_Value shl _ByteNo);
+  BitNo := _ByteNo * 8;
+  FValue := FValue and ($FFFF xor ($FF shl BitNo)) or (_Value shl BitNo);
 end;
 
 class operator TBits16.Equal(_a, _b: TBits16): Boolean;

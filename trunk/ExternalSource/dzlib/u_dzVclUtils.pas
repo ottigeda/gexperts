@@ -763,11 +763,20 @@ type
   end;
 {$ENDIF DELPHI2009_UP}
 
-///<summary> sets the control and all its child controls Enabled property and changes their
-///          caption to reflect this
-///          @param Control is the TControl to change
-///          @param Enabled is a boolean with the new value for the Enabled property. </summary>
+///<summary>
+/// sets the control and all its child controls Enabled property and changes their
+/// caption to reflect this
+/// @param Control is the TControl to change
+/// @param Enabled is a boolean with the new value for the Enabled property. </summary>
 procedure TControl_SetEnabled(_Control: TControl; _Enabled: Boolean);
+
+///<summary>
+/// Sets the Enabled property for all controls in the given array.
+/// @param Controls is the array of controls to process
+/// @param Enabled is the value to set the Enabled property to
+/// @param Recursive determines if also controls that are placed on the given controls should be
+///                  processed. Defaults to False. </summary>
+procedure TControls_SetEnabled(_Controls: array of TControl; _Enabled: Boolean; _Recursive: Boolean = False);
 
 ///<summary> Calls protected TControl.Resize (which calls TControl.OnResize if assigned) </summary>
 procedure TControl_Resize(_Control: TControl);
@@ -1523,7 +1532,7 @@ type
 ///                lvrCaptions means resize so the captions fit
 ///                lvrContent menas resize so the contents fit
 ///                both can be combined. </summary>
-procedure TListView_ResizeColumn(_lc: TListColumn; _Options: TLIstViewResizeOptionSet);
+procedure TListView_ResizeColumn(_lc: TListColumn; _Options: TLIstViewResizeOptionSet = [lvrCaptions, lvrContent]);
 ///<summary>
 /// Resize all columns of a TListView in vsReport ViewStyle
 /// @param lc is the TListColumn to resize
@@ -1854,7 +1863,6 @@ uses
 {$IFDEF dzMESSAGEDEBUG}
   u_dzWmMessageToString,
 {$ENDIF dzMESSAGEDEBUG}
-  u_dzSortProvider,
   u_dzLineBuilder,
   u_dzTypesUtils,
   u_dzOsUtils,
@@ -2774,6 +2782,11 @@ begin
   end;
 end;
 
+const
+  // 2 pixels right and left, like in TStringGrid.DrawCell
+  // plus 1 additional pixel that seems to be necessary since Windows 10
+  DrawCellAdditionalPixels = 3;
+
 procedure HandleRow(_Grid: TGridHack; _Col, _Row: Integer; var _MinWidth: Integer);
 var
   ColWidth: Integer;
@@ -2884,7 +2897,7 @@ begin
 
       if goVertLine in Grid.Options then
         Inc(MinWidth, Grid.GridLineWidth);
-      Inc(MinWidth, 4); // 2 pixels to the left and right, as in TStringGrid.DrawCell
+      Inc(MinWidth, DrawCellAdditionalPixels * 2);
 
       if not (roReduceMinWidth in _Options) then begin
         if MinWidth < Grid.DefaultColWidth then
@@ -3003,8 +3016,12 @@ begin
   if dgColLines in Grid.Options then
     // there is one more grid line than there are columns
     Inc(Result, Grid.GridLineWidth);
-  if dgIndicator in Grid.Options then
-    Inc(Result, 21); // ColWidht[0] does not work :-(
+  if dgIndicator in Grid.Options then begin
+    Inc(Result, 21);
+    if dgColLines in Grid.Options then
+      // an additional line for the indicator
+      Inc(Result, Grid.GridLineWidth);
+  end;
 end;
 
 procedure TDbGrid_Resize(_Grid: TCustomDbGrid; _Options: TResizeOptionSet = [];
@@ -3014,7 +3031,8 @@ var
   Grid: TDbGridHack;
   i: Integer;
   TotalWidth: Integer;
-  sp: TdzIntegerArraySortProvider;
+  GridClientWidth: Integer;
+  MaxWidth: Integer;
   WidestIdx: Integer;
   Additional: Integer;
 begin
@@ -3022,7 +3040,11 @@ begin
   SetLength(MinWidths, Grid.Columns.Count);
   TotalWidth := 0;
   for i := 0 to Grid.Columns.Count - 1 do begin
-    MinWidths[i] := Grid.Columns[i].DefaultWidth;
+    // Unfortunately DefaultWidth reads Width which we set later in this procedure
+    // and therefore DefaultWidth will increase every time this procedure is called.
+    // So we can only set MinWidths[] to _MinWidth.
+//    MinWidths[i] := Grid.Columns[i].DefaultWidth;
+    MinWidths[i] := _MinWidth;
     Inc(TotalWidth, MinWidths[i]);
   end;
 
@@ -3030,24 +3052,35 @@ begin
     Additional := TDbGrid_CalcAdditionalWidth(_Grid);
     if dgColLines in Grid.Options then
       Inc(Additional, Grid.GridLineWidth * Grid.Columns.Count);
-    Inc(Additional, 4 * Grid.Columns.Count); // 2 pixels right and left, like in TStringGrid.DrawCell
+    Inc(Additional, DrawCellAdditionalPixels * 2 * Grid.Columns.Count);
     Inc(TotalWidth, Additional);
-    sp := TdzIntegerArraySortProvider.Create(MinWidths);
-    try
-      while TotalWidth > _Grid.ClientWidth do begin
-        WidestIdx := sp.GetRealPos(High(MinWidths));
-        if MinWidths[WidestIdx] <= _MinWidth then
-          Break;
-        Dec(TotalWidth, MinWidths[WidestIdx] - _MinWidth);
-        MinWidths[WidestIdx] := _MinWidth;
-        if TotalWidth < _Grid.ClientWidth then begin
-          MinWidths[WidestIdx] := MinWidths[WidestIdx] + (_Grid.ClientWidth - TotalWidth);
+    GridClientWidth := _Grid.ClientWidth;
+    if TotalWidth > GridClientWidth then begin
+      while TotalWidth > GridClientWidth do begin
+        // Get the widest column and reduce its size to the _MinWidth value.
+        // Repeat this until that widest column has reached _MinWidht or
+        // until all columns fit into the grid's ClientWidth
+        MaxWidth := MinWidths[0];
+        WidestIdx := 0;
+        for i := 1 to High(MinWidths) do begin
+          if MinWidths[i] > MaxWidth then begin
+            MaxWidth := MinWidths[i];
+            WidestIdx := i;
+          end;
+        end;
+        if MaxWidth <= _MinWidth then begin
+          // The widest column already has the minimum width
           Break;
         end;
-        sp.Update;
+        Dec(TotalWidth, MaxWidth - _MinWidth);
+        MinWidths[WidestIdx] := _MinWidth;
+        if TotalWidth < GridClientWidth then begin
+          // All columns now fit into the ClientWidth
+          // -> add any slack to the widest one and exit the loop
+          MinWidths[WidestIdx] := MinWidths[WidestIdx] + (GridClientWidth - TotalWidth);
+          Break;
+        end;
       end;
-    finally
-      FreeAndNil(sp);
     end;
   end;
   TDbGrid_Resize(_Grid, _Options, MinWidths);
@@ -3057,6 +3090,7 @@ procedure TDbGrid_Resize(_Grid: TCustomDbGrid; _Options: TResizeOptionSet; _MinW
 var
   Col, Row: Integer;
   Grid: TDbGridHack;
+  GridCanvas: TCanvas;
   MinWidth: Integer;
   ColWidth: Integer;
   ColText: string;
@@ -3071,6 +3105,7 @@ var
   cw: Integer;
 begin
   Grid := TDbGridHack(_Grid);
+  GridCanvas := Grid.Canvas;
   MaxCol := Grid.ColCount - 1 - Grid.IndicatorOffset;
   MinCol := 0;
   SetLength(ColWidths, MaxCol + 1);
@@ -3084,26 +3119,30 @@ begin
     MinWidth := _MinWidths[Col];
     if not (roIgnoreHeader in _Options) then begin
       ColText := DBColumn.Title.Caption;
-      ColWidth := Grid.Canvas.TextWidth(ColText);
+      GridCanvas.Font := Grid.TitleFont;
+      ColWidth := GridCanvas.TextWidth(ColText);
       if ColWidth > MinWidth then
         MinWidth := ColWidth;
     end;
     for Row := FirstRow to MaxRow do begin
       ColText := Grid.GetEditText(Col + Grid.IndicatorOffset, Row);
-      ColWidth := Grid.Canvas.TextWidth(ColText);
+      GridCanvas.Font := Grid.Font;
+      ColWidth := GridCanvas.TextWidth(ColText);
       if ColWidth > MinWidth then
         MinWidth := ColWidth;
     end;
     if dgColLines in Grid.Options then
       Inc(MinWidth, Grid.GridLineWidth);
-    Inc(MinWidth, 4); // 2 pixels right and left, like in TStringGrid.DrawCell
+    Inc(MinWidth, DrawCellAdditionalPixels * 2);
     ColWidths[Col] := MinWidth;
     Inc(SumWidths, MinWidth);
   end;
   if roUseGridWidth in _Options then begin
     cw := Grid.ClientWidth;
-    if Grid.ScrollBars in [ssBoth, ssVertical] then
-      Dec(cw, GetSystemMetrics(SM_CXVSCROLL));
+    // Apparently for a DbGrid the visibility of the vertical scroll bar is not reflected in
+    // the grid's Scrollbars property, so to be on the safe side, we assume that it is visible
+    // if Grid.ScrollBars in [ssBoth, ssVertical] then
+    Dec(cw, GetSystemMetrics(SM_CXVSCROLL));
     if SumWidths < cw then begin
       Additional := (cw - SumWidths) div (MaxCol + 1);
       for Col := MinCol to MaxCol do begin
@@ -3322,9 +3361,19 @@ begin
     raise EdzStatusBarNoMatchingPanel.CreateFmt(_('Could not find status bar panel with text "%s"'), [_Text]);
 end;
 
-procedure SetControlEnabled(_Control: TControl; _Enabled: Boolean);
+procedure TControls_SetEnabled(_Controls: array of TControl; _Enabled: Boolean; _Recursive: Boolean = False);
+var
+  i: Integer;
+  ctrl: TControl;
 begin
-  TControl_SetEnabled(_Control, _Enabled);
+  for i := Low(_Controls) to High(_Controls) do begin
+    ctrl := _Controls[i];
+    if _Recursive and (ctrl is TWinControl) then begin
+      TControl_SetEnabled(ctrl, _Enabled);
+    end else begin
+      ctrl.Enabled := _Enabled;
+    end;
+  end;
 end;
 
 procedure TControl_SetEnabled(_Control: TControl; _Enabled: Boolean);
@@ -5532,8 +5581,6 @@ begin
 end;
 
 function TPopupMenu_AppendMenuItem(_pm: TPopupMenu; const _Caption: string): TMenuItem; overload;
-const
-  NilEvent: TMethod = (Code: nil; Data: nil);
 begin
   Result := TPopupMenu_AppendMenuItem(_pm, _Caption, TNotifyEvent(NilEvent));
 end;
