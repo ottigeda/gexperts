@@ -18,6 +18,7 @@ uses
   ComCtrls,
   Buttons,
   ActnList,
+  Actions,
   ToolsAPI,
   regexpr,
   GX_EventHook,
@@ -515,6 +516,7 @@ type
   public
     class function GetName: string; override;
     constructor Create; override;
+    destructor Destroy; override;
     function GetActionCaption: string; override;
     // optional, but recommended
     function GetHelpString: string; override;
@@ -545,6 +547,15 @@ begin
       TGxNTAEditServiceNotifierActivate.Create(EditorViewActivated));
   end;
 {$ENDIF}
+end;
+
+destructor TGrepInstantSearchExpert.Destroy;
+begin
+{$IFDEF GX_VER170_up}
+  if FNotifierIdx <> 0 then
+    (BorlandIDEServices as IOTAEditorServices).RemoveNotifier(FNotifierIdx);
+{$ENDIF}
+  inherited;
 end;
 
 {$IFDEF GX_VER170_up}
