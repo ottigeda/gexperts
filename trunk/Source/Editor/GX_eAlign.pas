@@ -285,6 +285,9 @@ begin
   try
     LoadConfiguration(frm);
 
+    if frm.lstTokens.Items.Count > 0 then
+      frm.ActiveControl := frm.lstTokens;
+
     if frm.ShowModal = mrOk then
     begin
       Token := frm.lstTokens.Items[frm.lstTokens.ItemIndex];
