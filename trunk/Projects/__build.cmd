@@ -28,6 +28,7 @@ call :dobuild Xx102Tokyo
 call :dobuild Xx103Rio
 call :dobuild Xx104Sydney
 call :dobuild Xx110Alexandria
+call :dobuild Xx120
 
 goto :eof
 

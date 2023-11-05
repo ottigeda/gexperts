@@ -669,11 +669,12 @@ procedure TfmConfigureIfDef.InitVerXxx;
 var
   def: TIfdefTabDefinition;
 begin
-{$IFDEF VER360}
+{$IFDEF VER370}
 {$MESSAGE HINT 'Add a new Delphi version here'}
 {$ENDIF}
   def := TIfdefTabDefinition.Create(Self, pc_IfClasses, '&VERxxx', 4, 1, '{$IFNDEF %s}');
   FTabDefinitions.Add(def);
+  def.AddEntry('VER360', 'Delphi 12 / BDS 23');
   def.AddEntry('VER350', 'Delphi 11 Alexandria / BDS 22');
   def.AddEntry('VER340', 'Delphi 10.4 Sydney / BDS 21');
   def.AddEntry('VER330', 'Delphi 10.3 Rio / BDS 20');
@@ -710,11 +711,12 @@ procedure TfmConfigureIfDef.InitRtlVersion;
 var
   def: TIfdefTabDefinition;
 begin
-{$IF RTLVersion > RtlVersionDelphiX110}
+{$IF RTLVersion > RtlVersionDelphiX120}
 {$MESSAGE HINT 'Add a new Delphi version here'}
 {$IFEND}
   def := TIfdefTabDefinition.Create(Self, pc_IfClasses, '&RtlVersion', 16, 2, '{$IF RtlVersion >= %s}');
   FTabDefinitions.Add(def);
+  def.AddEntry(IntToStr(RtlVersionDelphiX120), 'Delphi 12 / BDS 23');
   def.AddEntry(IntToStr(RtlVersionDelphiX110), 'Delphi 11 Alexandria / BDS 22');
   def.AddEntry(IntToStr(RtlVersionDelphiX104), 'Delphi 10.4 Sydney / BDS 21');
   def.AddEntry(IntToStr(RtlVersionDelphiX103), 'Delphi 10.3 Rio / BDS 20');
@@ -748,9 +750,10 @@ var
 begin
   def := TIfdefTabDefinition.Create(Self, pc_IfClasses, '&CompilerVersion', 21, 2, '{$IF CompilerVersion >= %s}');
   FTabDefinitions.Add(def);
-{$IF CompilerVersion > CompilerVersionDelphiX110}
+{$IF CompilerVersion > CompilerVersionDelphiX120}
 {$MESSAGE HINT 'Add a new Delphi version here'}
 {$IFEND}
+  def.AddEntry(IntToStr(CompilerVersionDelphiX120), 'Delphi 12 / BDS 23');
   def.AddEntry(IntToStr(CompilerVersionDelphiX110), 'Delphi 11 Alexandria/ BDS 22');
   def.AddEntry(IntToStr(CompilerVersionDelphiX104), 'Delphi 10.4 Sydney / BDS 21');
   def.AddEntry(IntToStr(CompilerVersionDelphiX103), 'Delphi 10.3 Rio / BDS 20');

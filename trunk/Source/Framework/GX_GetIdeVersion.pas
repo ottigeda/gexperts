@@ -48,6 +48,7 @@ type
      ideRS11U1, // Rad Studio 11 Alexandria Update 1 (aka version 11.1)
      ideRS11U2, // Rad Studio 11 Alexandria Update 2 (aka version 11.2)
      ideRS11U3, // Rad Studio 11 Alexandria Update 3 (aka version 11.3)
+     ideRS12,   // Rad Studio 12
      // C# Builder
      ideCSB100,
      // C++Builder
@@ -1049,6 +1050,20 @@ begin
   end;
 end;
 
+function GetRS12Version: TBorlandIdeVersion;
+const
+  BdsIde2900: TVersionNumber =     (Minor: 29; Major: 0; Build: 5667; Release: 50371);
+var
+  BdsIdeFileVersion: TVersionNumber;
+begin
+  BdsIdeFileVersion := GetFileVersionNumber(GetIdeRootDirectory + 'Bin\bds.exe');
+  if CompareVersionNumber(BdsIdeFileVersion, BdsIde2900) >= 0 then begin
+    Result := ideRS12
+  end else begin
+    Result := ideUnknown;
+  end;
+end;
+
 function GetBorlandIdeVersion: TBorlandIdeVersion;
 begin
   // We only actually detect the version once per session.
@@ -1184,13 +1199,18 @@ begin
     Assert(Result in [ideRS11, ideRS11U1, ideRS11U2, ideRS11U3]);
   {$ENDIF VER350}
 
+  {$IFDEF VER360}
+    Result := GetRS12Version;
+    Assert(Result in [ideRS12]);
+  {$ENDIF VER360}
+
   if Result = ideUnknown then
     MessageDlg('Unknown IDE major version detected.  Please update GX_GetIdeVersion.pas.', mtError, [mbOK], 0);
 
   DetectedVersion := Result;
 end;
 
-{$IF CompilerVersion > 35} // new Delphi version
+{$IF CompilerVersion > 36} // new Delphi version
   'Add the information for the new Delphi version above and increase the CompilerVersion in this conditional'
 {$IFEND}
 

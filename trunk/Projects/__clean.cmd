@@ -26,6 +26,8 @@ call :doItem Xx101Berlin
 call :doItem Xx102
 call :doItem Xx103
 call :doItem Xx104
+call :doItem Xx110Alexandria
+call :doItem Xx120
 goto :eof
 
 :doItem
