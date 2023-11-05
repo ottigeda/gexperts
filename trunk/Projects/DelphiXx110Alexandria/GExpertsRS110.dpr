@@ -260,6 +260,8 @@ uses
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
 {$R '..\..\Binaries\ConvertStrings.res' '..\..\Binaries\ConvertStrings.rc'}
+{$R 'GExperts_manifest.res' '..\..\Source\GExperts_manifest.rc'}
+
 {$R *_version.res}
 
 begin
