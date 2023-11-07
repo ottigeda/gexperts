@@ -1,7 +1,6 @@
 library GExpertsRS120;
 
 {$E dll}
-{$R 'GExperts_manifest.res' '..\..\Source\GExperts_manifest.rc'}
 uses
   GX_About in '..\..\source\Framework\GX_About.pas' {fmAbout},
   GX_AboutExperimental in '..\..\source\Formatter\GX_AboutExperimental.pas' {fmAboutExperimental},
@@ -257,6 +256,7 @@ uses
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
   GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas';
 
+{$R 'GExperts_manifest.res' '..\..\Source\GExperts_manifest.rc'}
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
 {$R '..\..\Binaries\ConvertStrings.res' '..\..\Binaries\ConvertStrings.rc'}
