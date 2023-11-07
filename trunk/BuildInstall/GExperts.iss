@@ -202,6 +202,14 @@
   #define IDERegName   "BDS"
   #define IDERegVer    "22"
 #endif
+#ifdef RS120
+  #define IDEShortName "RADStudio"
+  #define IDELongName  "RAD Studio"
+  #define IDEVer       "12"
+  #define DLLSuffix    "RS120"
+  #define IDERegName   "BDS"
+  #define IDERegVer    "23"
+#endif
 
 #ifndef IDEShortName
   #error Usage: "isppcc.exe GExperts.iss /dDelphi7 /dVersion=1.38"
