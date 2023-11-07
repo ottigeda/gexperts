@@ -48,7 +48,7 @@ type
      ideRS11U1, // Rad Studio 11 Alexandria Update 1 (aka version 11.1)
      ideRS11U2, // Rad Studio 11 Alexandria Update 2 (aka version 11.2)
      ideRS11U3, // Rad Studio 11 Alexandria Update 3 (aka version 11.3)
-     ideRS12,   // Rad Studio 12
+     ideRS12,   // Rad Studio 12 Athens
      // C# Builder
      ideCSB100,
      // C++Builder
@@ -845,9 +845,9 @@ end;
 }
 function GetRS101Version: TBorlandIdeVersion;
 const
-  CoreIde2400: TVersionNumber = (Minor: 24; Major: 0; Build: 6822; Release: 22858);
-  CoreIde2400Upd1: TVersionNumber = (Minor: 24; Major: 0; Build: 8770; Release: 24468);
-  CoreIde2400Upd2: TVersionNumber = (Minor: 24; Major: 0; Build: 9432; Release: 25048);
+  CoreIde2400: TVersionNumber = (Minor: 0; Major: 24; Build: 6822; Release: 22858);
+  CoreIde2400Upd1: TVersionNumber = (Minor: 0; Major: 24; Build: 8770; Release: 24468);
+  CoreIde2400Upd2: TVersionNumber = (Minor: 0; Major: 24; Build: 9432; Release: 25048);
 var
   CoreIdeFileVersion: TVersionNumber;
   VersionNumber: Integer;
@@ -875,7 +875,7 @@ end;
 }
 function GetRS102Version: TBorlandIdeVersion;
 const
-  CoreIde2500: TVersionNumber = (Minor: 25; Major: 0; Build: 314; Release: 26309);
+  CoreIde2500: TVersionNumber = (Minor: 0; Major: 25; Build: 314; Release: 26309);
 begin
   Result := ideRS102;
 end;
@@ -911,10 +911,10 @@ end;
 }
 function GetRS103Version: TBorlandIdeVersion;
 const
-  CoreIde2600: TVersionNumber = (Minor: 26; Major: 0; Build: 4364; Release: 32429);
-  CoreIde2600Upd1: TVersionNumber = (Minor: 26; Major: 0; Build: 4899; Release: 33219);
-  CoreIde2600Upd2: TVersionNumber = (Minor: 26; Major: 0; Build: 6593; Release: 34749);
-  CoreIde2600Upd3: TVersionNumber = (Minor: 26; Major: 0; Build: 7899; Release: 36039);
+  CoreIde2600: TVersionNumber = (Minor: 0; Major: 26; Build: 4364; Release: 32429);
+  CoreIde2600Upd1: TVersionNumber = (Minor: 0; Major: 26; Build: 4899; Release: 33219);
+  CoreIde2600Upd2: TVersionNumber = (Minor: 0; Major: 26; Build: 6593; Release: 34749);
+  CoreIde2600Upd3: TVersionNumber = (Minor: 0; Major: 26; Build: 7899; Release: 36039);
 var
   CoreIdeFileVersion: TVersionNumber;
   VersionNumber: Integer;
@@ -975,9 +975,9 @@ end;
 function GetRS104Version: TBorlandIdeVersion;
 const
   RegKey = 'Software\Embarcadero\BDS\21.0\CatalogRepository\Elements\10.4Patch2pro-10';
-  CoreIde2700:     TVersionNumber = (Minor: 27; Major: 0; Build: 9797; Release:  37829);
-  CoreIde2700UPd1: TVersionNumber = (Minor: 27; Major: 0; Build: 1461; Release:  38860);
-  CoreIde2700UPd2: TVersionNumber = (Minor: 27; Major: 0; Build: 4203; Release:  40680);
+  CoreIde2700:     TVersionNumber = (Minor: 0; Major: 27; Build: 9797; Release:  37829);
+  CoreIde2700UPd1: TVersionNumber = (Minor: 0; Major: 27; Build: 1461; Release:  38860);
+  CoreIde2700UPd2: TVersionNumber = (Minor: 0; Major: 27; Build: 4203; Release:  40680);
 var
   RegValue: Integer;
   CoreIdeFileVersion: TVersionNumber;
@@ -1031,10 +1031,10 @@ end;
 }
 function GetRS11Version: TBorlandIdeVersion;
 const
-  CoreIde2800: TVersionNumber =     (Minor: 28; Major: 0; Build: 6491; Release: 42600);
-  CoreIde2800Upd1: TVersionNumber = (Minor: 28; Major: 0; Build: 8973; Release: 44500);
-  CoreIde2800Upd2: TVersionNumber = (Minor: 28; Major: 0; Build: 0937; Release: 46141);
-  CoreIde2800Upd3: TVersionNumber = (Minor: 28; Major: 0; Build: 2819; Release: 47991);
+  CoreIde2800: TVersionNumber =     (Minor: 0; Major: 28; Build: 6491; Release: 42600);
+  CoreIde2800Upd1: TVersionNumber = (Minor: 0; Major: 28; Build: 8973; Release: 44500);
+  CoreIde2800Upd2: TVersionNumber = (Minor: 0; Major: 28; Build: 0937; Release: 46141);
+  CoreIde2800Upd3: TVersionNumber = (Minor: 0; Major: 28; Build: 2819; Release: 47991);
 var
   CoreIdeFileVersion: TVersionNumber;
 begin
@@ -1052,7 +1052,7 @@ end;
 
 function GetRS12Version: TBorlandIdeVersion;
 const
-  BdsIde2900: TVersionNumber =     (Minor: 29; Major: 0; Build: 5667; Release: 50371);
+  BdsIde2900: TVersionNumber =     (Minor: 0; Major: 29; Build: 5718; Release: 50491);
 var
   BdsIdeFileVersion: TVersionNumber;
 begin

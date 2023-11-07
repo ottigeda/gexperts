@@ -45,9 +45,9 @@ const
   CompilerVersionDelphiRio = 33;
   CompilerVersionDelphiSydney = 34;
   CompilerVersionDelphiAlexandria = 35;
-  CompilerVersionDelphiYukon = 36; // don't know release name yet; maybe "Athens"
+  CompilerVersionDelphiAthens = 36;
 
-{$IF CompilerVersion > CompilerVersionDelphiYukon}
+{$IF CompilerVersion > CompilerVersionDelphiAthens}
 {$MESSAGE HINT 'Add new CompilerVersion(s) here'}
 {$IFEND}
 
@@ -90,9 +90,9 @@ const
   RtlVersionDelphiRio = 33;
   RtlVersionDelphiSydney = 34;
   RtlVersionDelphiAlexandria = 35;
-  RtlVersionDelphiYukon = 36;
+  RtlVersionDelphiAthens= 36;
 
-{$IF RtlVersion > RtlVersionDelphiYukon}
+{$IF RtlVersion > RtlVersionDelphiAthens}
 {$MESSAGE HINT 'Add new RtlVersion(s) here'}
 {$IFEND}
 
