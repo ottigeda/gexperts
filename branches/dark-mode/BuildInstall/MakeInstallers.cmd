@@ -14,7 +14,7 @@ set instver=%version%
 call :getdate
 set special=%dateYYYYMMDD%
 
-rem call :makeinst RS103 RS10.3
+rem call :makeinst RS120 RS12
 rem pause
 rem goto :eof
 
@@ -39,6 +39,7 @@ call :makeinst RS102 RS10.2
 call :makeinst RS103 RS10.3
 call :makeinst RS104 RS10.4
 call :makeinst RS110 RS11
+call :makeinst RS120 RS12
 goto :eof
 
 :makeinst

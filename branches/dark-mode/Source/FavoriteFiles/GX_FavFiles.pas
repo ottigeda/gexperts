@@ -696,7 +696,10 @@ procedure TfmFavFiles.LoadEntries;
 resourcestring
   SSaveWarning = 'The file for storing the list of your favorite files does not exist:'#13#10
     + '"%s"'#13#10
-    + 'Resetting it to the default:'#13#10
+    + #13#10
+    + 'This is normal on first run after installation. '#13#10
+    + #13#10
+    + 'A new empty favorites file list will be created:'#13#10
     + '"%s"';
   SMissingRootFolder =
     'Error: Missing root folder in file "%s"!' + sLineBreak + sLineBreak +
@@ -712,7 +715,7 @@ begin
   Node := nil;
   if not FileExists(FEntryFile) then begin
     ErrorMsg := Format(SSaveWarning, [FEntryFile, GetDefaultEntryFileName]);
-    MessageDlg(ErrorMsg, mtError, [mbOK], 0);
+    MessageDlg(ErrorMsg, mtInformation, [mbOK], 0);
     FEntryFile := GetDefaultEntryFileName;
   end;
 

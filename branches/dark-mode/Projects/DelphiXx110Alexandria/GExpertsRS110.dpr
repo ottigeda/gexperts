@@ -1,6 +1,7 @@
 library GExpertsRS110;
 
 {$E dll}
+{$R 'GExperts_manifest.res' '..\..\Source\GExperts_manifest.rc'}
 
 uses
   GX_About in '..\..\source\Framework\GX_About.pas' {fmAbout},
@@ -260,7 +261,6 @@ uses
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
 {$R '..\..\Binaries\ConvertStrings.res' '..\..\Binaries\ConvertStrings.rc'}
-{$R 'GExperts_manifest.res' '..\..\Source\GExperts_manifest.rc'}
 
 {$R *_version.res}
 
