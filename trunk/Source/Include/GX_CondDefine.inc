@@ -250,6 +250,10 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 {$ENDIF}
 {.$DEFINE GX_IDE_IS_HIDPI_AWARE}
 
+{$IFDEF GX_DELPHI2006_UP}
+  {$DEFINE GX_HAS_STRICT_DELIMITER}
+{$ENDIF}
+
 // Define UniSynEdit if SynEdit is available
 {$IFDEF SYNEDIT}
   {$DEFINE UniSynEdit}

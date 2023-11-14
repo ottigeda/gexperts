@@ -3204,18 +3204,39 @@ var
   i: Integer;
   PathItem: string;
   PathProcessor: TPathProcessor;
+  Output: TStringList;
+  Temp: TStringList;
 begin
+  Output := nil;
+  Temp := nil;
   PathProcessor := TPathProcessor.Create(Prefix);
   try
+    Output := TStringList.Create();
+    Temp := TStringList.Create();
+    Temp.Delimiter := ';';
+{$IFDEF GX_HAS_STRICT_DELIMITER}
+    Temp.StrictDelimiter := True;
+{$ENDIF GX_HAS_STRICT_DELIMITER}
     // todo: What about ConfigName?
     PathProcessor.PlatformName := PlatformName;
     for i := 0 to Paths.Count - 1 do begin
       PathItem := Paths[i];
       PathItem := PathProcessor.Process(PathItem);
-      Paths[i] := PathItem;
+
+      // check if this item contains multiple paths seperated by ; (could come from environment variable)
+      if Pos(';', PathItem) = 0 then
+        Output.Add(PathItem)
+      else begin
+        Temp.DelimitedText := PathItem;
+        Output.AddStrings(Temp);
+      end;
     end;
+
+    Paths.Assign(Output);
   finally
     FreeAndNil(PathProcessor);
+    FreeAndNil(Output);
+    FreeAndNil(Temp);
   end;
 end;
 
