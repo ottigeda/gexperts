@@ -256,7 +256,7 @@ uses
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
   GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas';
 
-{$R 'GExperts_manifest.res' '..\..\Source\GExperts_manifest.rc'}
+{$R '..\..\Source\GExperts_manifest.res'}
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
 {$R '..\..\Binaries\ConvertStrings.res' '..\..\Binaries\ConvertStrings.rc'}
