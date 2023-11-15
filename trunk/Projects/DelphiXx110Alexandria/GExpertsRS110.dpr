@@ -258,7 +258,7 @@ uses
   GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas';
 
 {$R '..\..\Source\GExperts_manifest.res'}
-{$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
+{$R '..\..\images\GXIcons.res''}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
 {$R '..\..\Binaries\ConvertStrings.res' '..\..\Binaries\ConvertStrings.rc'}
 {$R *_version.res}
