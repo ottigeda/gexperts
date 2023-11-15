@@ -945,6 +945,7 @@ begin
       Exit;
     TfmMacroLibraryNamePrompt.Execute(Self, mi.FName, mi.FDescription, sl);
     mi.Encode(sl);
+    Item.Caption := mi.Name;
   finally
     FreeAndNil(sl);
   end;
