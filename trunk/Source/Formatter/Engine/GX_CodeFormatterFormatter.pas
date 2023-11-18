@@ -611,7 +611,7 @@ begin
     Exit; //==>
   end;
 
-  // todo: This can be implemented more efficiently because we know that
+  // done: This can be implemented more efficiently because we know that
   //       Idx-2n-1 is a comment and Idx-2n must be the line feed in front of that comment
   //       until we hit a non-comment at Idx-2n-1.
   //       -> No, we don't know that. There can be single line feeds in between that break
@@ -628,13 +628,23 @@ begin
     CommentLFs[Len] := LineFeed;
   end;
 
-  // We assume that the comments have already been arranged correctly to match
-  // the first comment. So we determine the adjustment for that first comment
-  // and apply it to all comment lines.
+  Len := Length(CommentLFs);
+  if Len = 0 then begin
+    // Fix for bug #318: Formatter fails with comment after function declaration in implementation
+    // for the case:
+    {
+    procedure bla; // <== this is the comment before the procedure blub in the next line
+    procedure blub;
+    }
+    // There is no other comment before that, so the array is empty.
+    Exit; //==>
+  end;
+
+  // We assume that the previous comments have already been arranged correctly
+  // to match the first comment. So we determine the adjustment for that first
+  // comment and apply it to all comment lines.
 
   DesiredNoOfSpaces := ThisLineStart.NoOfSpaces;
-  Len := Length(CommentLFs);
-  Assert(Len > 0);
   LineFeed := CommentLFs[Len - 1];
   Diff := LineFeed.NoOfSpaces - DesiredNoOfSpaces;
   LineFeed.NoOfSpaces := DesiredNoOfSpaces;
