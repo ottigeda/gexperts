@@ -79,6 +79,7 @@ uses
   GX_EditorExpertManager in '..\..\source\Editor\GX_EditorExpertManager.pas',
   GX_EditorFormServices in '..\..\source\Framework\GX_EditorFormServices.pas',
   GX_EditPath in '..\..\Source\EditPath\GX_EditPath.pas' {f_EditPath},
+  GX_EditPathConfig in '..\..\Source\EditPath\GX_EditPathConfig.pas' {f_EditPathConfig},
   GX_EditReader in '..\..\source\Framework\GX_EditReader.pas',
   GX_eFindDelimiter in '..\..\source\Editor\GX_eFindDelimiter.pas',
   GX_eGotoModification in '..\..\Source\Editor\GX_eGotoModification.pas',
@@ -103,6 +104,7 @@ uses
   GX_FavNewFolder in '..\..\source\FavoriteFiles\GX_FavNewFolder.pas' {fmFavNewFolder},
   GX_FavOptions in '..\..\source\FavoriteFiles\GX_FavOptions.pas' {fmFavOptions},
   GX_FavUtil in '..\..\source\FavoriteFiles\GX_FavUtil.pas',
+  GX_FavWuppdiWPImport in '..\..\Source\FavoriteFiles\GX_FavWuppdiWPImport.pas' {fmFavWuppdiWPImport},
   GX_FeedbackWizard in '..\..\source\Framework\GX_FeedbackWizard.pas' {fmFeedbackWizard},
   GX_FileScanner in '..\..\source\Framework\GX_FileScanner.pas',
   GX_FilterExceptions in '..\..\Source\FilterExceptions\GX_FilterExceptions.pas' {fmGxFilterExceptionsExpert},
@@ -111,6 +113,7 @@ uses
   GX_FindComponentRef in '..\..\source\FindComponentReference\GX_FindComponentRef.pas',
   GX_FocusCodeEditor in '..\..\Source\FocusCodeEditor\GX_FocusCodeEditor.pas',
   GX_FormHotkeys in '..\..\Source\FormHotkeys\GX_FormHotkeys.pas' {f_FormHotkeys},
+  GX_FormHotkeysSelect in '..\..\Source\FormHotkeys\GX_FormHotkeysSelect.pas' {fmFormHotkeysSelect},
   GX_GenericClasses in '..\..\source\Utils\GX_GenericClasses.pas',
   GX_GenericUtils in '..\..\source\Utils\GX_GenericUtils.pas',
   GX_GetIdeVersion in '..\..\source\Framework\GX_GetIdeVersion.pas',
@@ -119,8 +122,10 @@ uses
   GX_GotoConfig in '..\..\Source\Goto\GX_GotoConfig.pas' {f_GotoConfig},
   GX_GrepBackend in '..\..\source\Grep\GX_GrepBackend.pas',
   GX_GrepExpert in '..\..\source\Grep\GX_GrepExpert.pas',
-  GX_GrepOptions in '..\..\source\Grep\GX_GrepOptions.pas' {fmGrepOptions},
+  GX_GrepInstantGrep in '..\..\Source\Grep\GX_GrepInstantGrep.pas' {fmGxInstantGrepForm},
+  GX_GrepMenuConfig in '..\..\Source\Grep\GX_GrepMenuConfig.pas' {f_GrepMenuConfig},
   GX_GrepMenuEntry in '..\..\Source\Grep\GX_GrepMenuEntry.pas',
+  GX_GrepOptions in '..\..\source\Grep\GX_GrepOptions.pas' {fmGrepOptions},
   GX_GrepNextItemExpert in '..\..\Source\Grep\GX_GrepNextItemExpert.pas',
   GX_GrepPrevItemExpert in '..\..\Source\Grep\GX_GrepPrevItemExpert.pas',
   GX_GrepPrinting in '..\..\source\Grep\GX_GrepPrinting.pas',
@@ -164,6 +169,7 @@ uses
   GX_KeyboardShortcuts in '..\..\Source\KeyboardShortcuts\GX_KeyboardShortcuts.pas' {fmGxKeyboardShortcuts},
   GX_KibitzComp in '..\..\source\Framework\GX_KibitzComp.pas',
   GX_LibrarySource in '..\..\source\Framework\GX_LibrarySource.pas',
+  GX_Logging in '..\..\Source\Framework\GX_Logging.pas',
   GX_MacroExpandNotifier in '..\..\source\MacroTemplates\GX_MacroExpandNotifier.pas',
   GX_MacroFile in '..\..\source\MacroTemplates\GX_MacroFile.pas',
   GX_MacroLibrary in '..\..\source\MacroLibrary\GX_MacroLibrary.pas' {fmMacroLibrary},
@@ -251,7 +257,8 @@ uses
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
   GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas';
 
-{$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
+{$R '..\..\Source\GExperts_manifest.res'}
+{$R '..\..\images\GXIcons.res''}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
 {$R '..\..\Binaries\ConvertStrings.res' '..\..\Binaries\ConvertStrings.rc'}
 {$R *_version.res}

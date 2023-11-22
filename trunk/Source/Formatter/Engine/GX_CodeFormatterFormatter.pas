@@ -7,6 +7,18 @@ unit GX_CodeFormatterFormatter;
 
 {$I GX_CondDefine.inc}
 
+{$IFDEF GX_AV_IN_CODE_FORMATTER_FIX_ENABLED}
+// This is a workaround for bug #314 Random operation of Formatter
+// (https://sourceforge.net/p/gexperts/bugs/314/)
+// The Delphi 11 compiler seems to have a bug that causes the code in the last while loop of
+// of TCodeFormatterFormatter.doExecute to sometimes raise an access violation.
+// On my computer I have only seen this happen once. On the computer of Ian (who created
+// the bug report) it happens frequently, but not always.
+// We have not been able to reliably reproduce the problem nor found the conditions which causes it.
+// Turning optimization off solved the issue for him.
+{$OPTIMIZATION OFF}
+{$ENDIF}
+
 // This unit uses Assert(False, 'some text') for trace logging (for the line numbers)
 // Therefore we must turn off Assertions by default.
 {$C-}
@@ -49,19 +61,19 @@ type
     FWrapIndent: Boolean;
     // stores WrapIndent from before an opening bracket until the closing one
     FOldWrapIndent: Boolean;
-    procedure UppercaseCompilerDirective(_Token: TPascalToken); {$IFDEF SupportsInline} inline; {$ENDIF}
-    function NoBeginTryIndent(_rType: TReservedType): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
+    procedure UppercaseCompilerDirective(_Token: TPascalToken); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function NoBeginTryIndent(_rType: TReservedType): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure IndentProcedureComment;
-    procedure SetPrevLineIndent(_Additional: Integer); {$IFDEF SupportsInline} inline; {$ENDIF}
-    procedure DecPrevLineIndent; {$IFDEF SupportsInline} inline; {$ENDIF}
+    procedure SetPrevLineIndent(_Additional: Integer); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    procedure DecPrevLineIndent; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
     ///<summary>
     /// replaces a TExpression with a TAlignExpression </summary>
     function AlignExpression(_Idx: Integer; _Pos: Integer): TPascalToken;
     procedure CheckWrapping;
-    function IsRType(_Token: TPascalToken; _rType: TReservedType): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
-    function IsRType(_Token: TPascalToken; _rTypeSet: TReservedTypeSet): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
-    function IsWType(_Token: TPascalToken; _wType: TWordType): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
+    function IsRType(_Token: TPascalToken; _rType: TReservedType): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function IsRType(_Token: TPascalToken; _rTypeSet: TReservedTypeSet): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function IsWType(_Token: TPascalToken; _wType: TWordType): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     ///<summary>
     /// Checks and corrects the number of blank lines before a procedure / function declaration </summary>
     procedure CheckBlankLinesAroundProc;
@@ -71,27 +83,27 @@ type
 
     ///<summary>
     /// @returns the token at index Idx or nil if out of bounds </summary>
-    function GetToken(_Idx: Integer): TPascalToken; {$IFDEF SupportsInline} inline; {$ENDIF}
+    function GetToken(_Idx: Integer): TPascalToken; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     ///<summary>
     /// Get token at index Idx,
     /// @returns True and the Token if there is one
     ///          False and Token=nil if index is out of bounds </summary>
-    function TryGetToken(_Idx: Integer; out _Token: TPascalToken): Boolean; {$IFDEF SupportsInline} inline; {$ENDIF}
+    function TryGetToken(_Idx: Integer; out _Token: TPascalToken): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     ///<summary>
     /// Check whether the token at index Idx has the reserved type RType
     /// @param Idx is the index of the token to check
     /// @param RType is the queried reserverd type
     /// @returns True, if the token has the queried type, False otherwise
     ///          also False, if the index is out of bounds. </summary>
-    function TokenAtIs(_Idx: Integer; _rType: TReservedType): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
-    function TokenAtIs(_Idx: Integer; _rTypes: TReservedTypeSet): Boolean; overload;{$IFDEF SupportsInline} inline; {$ENDIF}
+    function TokenAtIs(_Idx: Integer; _rType: TReservedType): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function TokenAtIs(_Idx: Integer; _rTypes: TReservedTypeSet): Boolean; overload;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
-    function GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken; {$IFDEF SupportsInline} inline; {$ENDIF}
-    function TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
-    function TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken): Boolean; overload; {$IFDEF SupportsInline} inline; {$ENDIF}
+    function GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
     function InsertBlankLines(_AtIndex, _NLines: Integer): TLineFeed;
-    function AssertLineFeedAfter(_StartPos: Integer): TLineFeed; {$IFDEF SupportsInline} inline; {$ENDIF}
+    function AssertLineFeedAfter(_StartPos: Integer): TLineFeed; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure CheckSlashComment;
     procedure ComplexIfElse(_NTmp: Integer);
     procedure CheckShortLine;
@@ -104,7 +116,7 @@ type
     procedure HandleColon(_RemoveMe: Integer);
     procedure HandleElse(_NTmp: Integer);
     function DetectGenericStart(_TokenIdx: Integer): Boolean;
-    procedure CheckIndent(var _NTmp: Integer; var _PrevOldNspaces: Integer);
+    procedure CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed);
     procedure HandleCapitalization(_CurrentToken: TPascalToken);
     function TryGetPrevLineFeed(var _TokenIdx: Integer; out _LineFeed: TLineFeed): Boolean;
   public
@@ -198,7 +210,6 @@ begin
   Result := TryGetNextNoComment(_StartPos, _Token, Offset);
 end;
 
-
 function TCodeFormatterFormatter.DetectGenericStart(_TokenIdx: Integer): Boolean;
 var
   Next: TPascalToken;
@@ -224,7 +235,7 @@ begin
     Inc(Idx);
     rType := FStack.GetType(Idx);
   end;
-  if rType in [rtClass, rtType, rtVar, rtProcedure, rtProcDeclare] then begin
+  if rType in [rtClass, rtType, rtVar, rtConst, rtProcedure, rtProcDeclare] then begin
     Result := True;
     Exit; //==>
   end;
@@ -235,8 +246,8 @@ begin
   if not TryGetNextNoComment(_TokenIdx, Next, Offset) then
     Exit; //==>
 
-  // the next token must be an identifier (= rtNothing) (correct?)
-  if (Next.ReservedType <> rtNothing) or (Next.WordType <> wtWord) then
+  // the next token must be an identifier (= rtNothing or rtReserved in the special case of 'string') (correct?)
+  if not (Next.ReservedType in [rtNothing, rtReserved]) or (Next.WordType <> wtWord) then
     Exit; //==>
 
   Idx := _TokenIdx + Offset;
@@ -298,7 +309,6 @@ function TCodeFormatterFormatter.IsRType(_Token: TPascalToken;
 begin
   Result := Assigned(_Token) and (_Token.ReservedType in _rTypeSet);
 end;
-
 
 procedure TCodeFormatterFormatter.AdjustSpacing(_CurrentToken, _PrevToken: TPascalToken; _TokenIdx: Integer);
 var
@@ -462,7 +472,7 @@ begin
 
     if IsRType(Prev2, [rtOper,
         rtMathOper, rtPlus, rtMinus, rtSemiColon, rtOf,
-        rtMinus, rtLogOper, rtEquals, rtAssignOper, rtLeftBr,
+        rtMinus, rtLogOper, rtEquals, rtAssignOper, rtLeftBr, rtColon,
         rtLeftHook, rtComma, rtDefault]) then begin
       Assert(False, '.AdjustSpacing');
       _CurrentToken.SetSpace([spAfter], False); { sign operator }
@@ -601,7 +611,7 @@ begin
     Exit; //==>
   end;
 
-  // todo: This can be implemented more efficiently because we know that
+  // done: This can be implemented more efficiently because we know that
   //       Idx-2n-1 is a comment and Idx-2n must be the line feed in front of that comment
   //       until we hit a non-comment at Idx-2n-1.
   //       -> No, we don't know that. There can be single line feeds in between that break
@@ -618,13 +628,23 @@ begin
     CommentLFs[Len] := LineFeed;
   end;
 
-  // We assume that the comments have already been arranged correctly to match
-  // the first comment. So we determine the adjustment for that first comment
-  // and apply it to all comment lines.
+  Len := Length(CommentLFs);
+  if Len = 0 then begin
+    // Fix for bug #318: Formatter fails with comment after function declaration in implementation
+    // for the case:
+    {
+    procedure bla; // <== this is the comment before the procedure blub in the next line
+    procedure blub;
+    }
+    // There is no other comment before that, so the array is empty.
+    Exit; //==>
+  end;
+
+  // We assume that the previous comments have already been arranged correctly
+  // to match the first comment. So we determine the adjustment for that first
+  // comment and apply it to all comment lines.
 
   DesiredNoOfSpaces := ThisLineStart.NoOfSpaces;
-  Len := Length(CommentLFs);
-  Assert(Len > 0);
   LineFeed := CommentLFs[Len - 1];
   Diff := LineFeed.NoOfSpaces - DesiredNoOfSpaces;
   LineFeed.NoOfSpaces := DesiredNoOfSpaces;
@@ -768,7 +788,7 @@ end;
 procedure TCodeFormatterFormatter.FormatAsm(_NTmp: Integer);
 begin
   // remove var / type stuff
-  while FStack.GetTopType in [rtVar, rtType] do
+  while FStack.GetTopType in [rtVar, rtConst, rtType] do
     FStack.Pop;
 
   // no additional indentation for
@@ -951,7 +971,11 @@ begin
       end;
 
     rtVar:
-      if FSettings.AlignVar then
+      if FSettings.ShouldAlignVar then
+        FCurrentToken := AlignExpression(FTokenIdx, FSettings.AlignVarPos);
+
+    rtConst:
+      if FSettings.ShouldAlignConst then
         FCurrentToken := AlignExpression(FTokenIdx, FSettings.AlignVarPos);
 
     rtProcedure, rtProcDeclare:
@@ -1023,7 +1047,7 @@ begin
   FWrapIndent := False;
 end;
 
-procedure TCodeFormatterFormatter.CheckIndent(var _NTmp: Integer; var _PrevOldNspaces: Integer);
+procedure TCodeFormatterFormatter.CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed);
 var
   RemoveMe: Integer;
   Next: TPascalToken;
@@ -1044,7 +1068,7 @@ begin
   // This handles the case where a reserved word was used as the name of a class member.
   // (Is that even allowed?)
   if (FCurrentRType in [rtWhile, rtEnd, rtRepeat, rtBegin, rtUses, rtTry,
-      rtProgram, rtType, rtVar, rtIf, rtThen, rtElse] + StandardDirectives)
+      rtProgram, rtType, rtVar, rtConst, rtIf, rtThen, rtElse] + StandardDirectives)
     and IsRType(FPrevToken, rtDot) then begin
     Assert(False, '.CheckIndent: SetReservedType to rtNothing');
     FCurrentToken.SetReservedType(rtNothing);
@@ -1072,7 +1096,7 @@ begin
 
     rtClass: begin
         if not (TryGetNextNoComment(FTokenIdx, Next)
-          and (Next.ReservedType in [rtProcedure, rtProcDeclare, rtOf, rtVar])) then begin
+          and (Next.ReservedType in [rtProcedure, rtProcDeclare, rtOf, rtVar, rtConst])) then begin
           // not a "class function" or "class of" declaration
           FWrapIndent := False;
           FStack.Push(rtClassDecl, 1);
@@ -1131,7 +1155,7 @@ begin
     rtLeftHook: begin
         // left hook = '['
         Assert(False, '.CheckIndent: LeftHook');
-        if IsWType(FPrevToken, wtWord) and not IsRType(FPrevToken, rtOper) then begin
+        if IsRType(FPrevToken, rtRightBr) or (IsWType(FPrevToken, wtWord) and not IsRType(FPrevToken, rtOper)) then begin
           Assert(False, '.CheckIndent');
           FStack.Push(FCurrentRType, 0);
         end else begin
@@ -1194,7 +1218,7 @@ begin
           DecPrevLineIndent;
           FWrapIndent := False;
         end;
-      end else if (FStack.GetTopType in [rtVar, rtType]) and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
+      end else if (FStack.GetTopType in [rtVar, rtConst, rtType]) and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
         FStack.Pop;
         DecPrevLineIndent;
         DecPrevLineIndent;
@@ -1280,14 +1304,14 @@ begin
             if FSettings.FeedEachUnitBeforeComma then begin
               // linefeed before comma
               if (not (FPrevToken is TLineFeed)) then begin
-                LFeed := AssertLineFeedAfter(FTokenIdx-1);
+                LFeed := AssertLineFeedAfter(FTokenIdx - 1);
                 if (FSettings.NoIndentUsesComma) then
                   LFeed.SetIndent(0);
 
                 // If we have a break after the comma, remove that
                 Next := GetNextNoComment(FTokenIdx, RemoveMe);
                 while Next.ReservedType = rtLineFeed do begin
-                  FTokens.Extract(FTokenIdx + RemoveMe);
+                  FTokens.Extract(FTokenIdx + RemoveMe).Free;
                   Next := GetNextNoComment(FTokenIdx, RemoveMe);
                 end;
               end;
@@ -1320,7 +1344,7 @@ begin
       end;
 
     rtAbsolute:
-      if not (FStack.GetTopType in [rtVar, rtType]) then begin
+      if not (FStack.GetTopType in [rtVar, rtConst, rtType]) then begin
         // We are not in a type or var declaration, so it's an identifier
         // todo: is rtType really correct here?
         FCurrentToken.SetReservedType(rtNothing);
@@ -1367,7 +1391,7 @@ begin
           Assert(False, '.CheckIndent: Top type is Class or Record');
           FStack.Pop;
           FStack.Push(rtClass, 1);
-        end else if (FStack.GetTopType in [rtVar, rtType])
+        end else if (FStack.GetTopType in [rtVar, rtConst, rtType])
           and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord])
           and (FPrevToken.ReservedType <> rtEquals) then begin
           // There was a nested class/record declaration that ended
@@ -1514,7 +1538,7 @@ begin
       end;
 
     rtBegin, rtTry: begin
-        while FStack.GetTopType in [rtVar, rtType] do
+        while FStack.GetTopType in [rtVar, rtConst, rtType] do
           FStack.Pop;
 
         if FStack.GetTopType in [rtProcedure, rtProgram] then
@@ -1570,15 +1594,16 @@ begin
       end;
 
     rtEquals:
-      if FSettings.AlignVar and (FStack.GetTopType = rtVar) then
+      if (FSettings.ShouldAlignVar and (FStack.GetTopType = rtVar))
+        or (FSettings.ShouldAlignConst and (FStack.GetTopType = rtConst)) then
         FCurrentToken := AlignExpression(FTokenIdx, FSettings.AlignVarPos);
 
-    rtVar, rtType:
+    rtVar, rtConst, rtType:
       if not (FStack.GetTopType in [rtLeftBr, rtLeftHook]) then begin
         FWrapIndent := False;
         if FStack.nIndent < 1 then
           FStack.nIndent := 1;
-        if (FStack.GetTopType in [rtVar, rtType]) then begin
+        if (FStack.GetTopType in [rtVar, rtConst, rtType]) then begin
           if (FCurrentRType = rtType) and IsRType(FPrevToken, rtEquals) then begin
             // in classes.pas I found
             // t = type AnsiString
@@ -1688,11 +1713,11 @@ begin
             or (FCurrentToken.WordType in [wtFullOutComment, wtHalfOutComment]) then
             FPrevLine.NoOfSpaces := FPrevLine.OldNoOfSpaces
           else begin
-            if _PrevOldNspaces >= 0 then
-              FPrevLine.NoOfSpaces := FPrevLine.NoOfSpaces +
-                (FPrevLine.OldNoOfSpaces - _PrevOldNspaces)
+            if Assigned(_PrevCommentLine) then
+              FPrevLine.NoOfSpaces := FPrevLine.OldNoOfSpaces +
+                (_PrevCommentLine.NoOfSpaces - _PrevCommentLine.OldNoOfSpaces)
             else
-              _PrevOldNspaces := FPrevLine.OldNoOfSpaces;
+              _PrevCommentLine := FPrevLine;
           end;
         end else if FSettings.AlignComments and (FCurrentToken.WordType = wtFullComment) then begin
           if TryGetToken(FTokenIdx + 1, Next) and (Next.ReservedType = rtLineFeed) then
@@ -1702,15 +1727,15 @@ begin
 
     rtSemiColon: begin
         Assert(False, '.CheckIndent: rtSemiColon');
-        if not (FStack.GetTopType in [rtLeftBr, rtLeftHook]) then begin
+        if not (FStack.GetTopType in [rtLeftBr, rtLeftHook, rtGenericStart]) then begin
           Assert(False, '.CheckIndent: Not (LeftBr or LeftHook)');
           if FStack.GetTopType = rtUses then begin
             if (FPrevToken is TLineFeed) then begin
               if (FSettings.NoIndentUsesComma) then
                 SetPrevLineIndent(-1);
-            end else if (FSettings.FeedEachUnitBeforeComma) then begin
+            end else if (FSettings.FeedEachUnit and FSettings.FeedEachUnitBeforeComma) then begin
               // if we break before the comma, also break before the semicolon
-              LFeed := AssertLineFeedAfter(FTokenIdx-1);
+              LFeed := AssertLineFeedAfter(FTokenIdx - 1);
               if (FSettings.NoIndentUsesComma) then
                 LFeed.SetIndent(0);
             end;
@@ -1739,9 +1764,10 @@ begin
               and (Next.ReservedType in [rtFuncDirective, rtForward])
               and (FStack.ProcLevel = 0)) then
               FWrapIndent := True
-            else if FSettings.FeedAfterSemiColon
-              and not (Next.ReservedType in [rtForward, rtFuncDirective, rtDefault]) then
-              AssertLineFeedAfter(FTokenIdx);
+            else if FSettings.FeedAfterSemiColon then begin
+              if not (Next.ReservedType in [rtForward, rtFuncDirective, rtDefault]) then
+                AssertLineFeedAfter(FTokenIdx);
+            end;
           end;
         end;
       end;
@@ -1769,9 +1795,12 @@ begin
 
   if not (FCurrentRType in [rtLineFeed, rtComment]) then begin
     Assert(False, '.CheckIndent: rtLineFeed or rtComment');
-    _PrevOldNspaces := -1;
+    _PrevCommentLine := nil;
+    Assert(False, '.CheckIndent: _PrevCommentLine=nil');
+  end else begin
+    Assert(False, Format('.CheckIndent: _PrevCommentLine.NoOfSpaces=%d .OldNoOfSpaces=%d',
+      [_PrevCommentLine.NoOfSpaces, _PrevCommentLine.OldNoOfSpaces]));
   end;
-  Assert(False, Format('.CheckIndent: PrevOldNSpaces=%d', [_PrevOldNspaces]));
 
   if wType = wtCompDirective then begin
     Assert(False, '.CheckIndent: compiler directive');
@@ -1795,7 +1824,7 @@ end;
 procedure TCodeFormatterFormatter.doExecute(_Tokens: TPascalTokenList);
 var
   NTmp: Integer;
-  PrevOldNspaces: Integer;
+  PrevCommentLine: TLineFeed;
 begin
   FTokens := _Tokens;
 
@@ -1806,7 +1835,7 @@ begin
     FWrapIndent := True;
     FIsInInterfacePart := False;
     NTmp := 0;
-    PrevOldNspaces := -1;
+    PrevCommentLine := nil;
     // the StackStack is used to preserve indenting over IFDEF/ELSE/ENDIF statements
     FStackStack := TCodeFormatterStack.Create;
     try
@@ -1816,12 +1845,24 @@ begin
 //          gblAssertTraceOn := True;
 //        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'constructor') then
 //          gblAssertTraceOn := False;
-        Assert(False, '**** .doExecute: CurrentToken: ' + FCurrentToken.GetForDebug);
+        Assert(False, '**** .doExecute: CurrentToken(' + IntToStr(FTokenIdx) + '): ' + FCurrentToken.GetForDebug);
         Assert(False, '.doExecute: Stack.Depth: ' + IntToStr(FStack.Depth) + ' .TopType: ' + GetEnumname(TypeInfo(TReservedType), Ord(FStack.GetTopType)) + ' .TopIndent: ' + IntToStr(FStack.GetTopIndent));
         Assert(False, '.doExecute: WrapIndent: ' + Ifthen(FWrapIndent, 'True', 'False'));
-        Assert(False, '.doExecute: before CheckIndent: NTmp: ' + IntToStr(NTmp) + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
-        CheckIndent(NTmp, PrevOldNspaces);
-        Assert(False, '.doExecute: after CheckIndent:  NTmp: ' + IntToStr(NTmp) + ' PrevOldNspaces: ' + IntToStr(PrevOldNspaces));
+        Assert(False, '.doExecute: before CheckIndent: NTmp: ' + IntToStr(NTmp));
+        if Assigned(PrevCommentLine) then begin
+          Assert(False, '.doExecute: before CheckIndent: PrevCommentLine=nil');
+        end else begin
+          Assert(False, Format('.doExecute: before CheckIndent: PrevCommentLine.NoOfSpaces=%d .OldNoOfSpaces=%d',
+            [PrevCommentLine.NoOfSpaces, PrevCommentLine.OldNoOfSpaces]));
+        end;
+        CheckIndent(NTmp, PrevCommentLine);
+        Assert(False, '.doExecute: after CheckIndent:  NTmp: ' + IntToStr(NTmp));
+        if Assigned(PrevCommentLine) then begin
+          Assert(False, '.doExecute: after CheckIndent: PrevCommentLine=nil');
+        end else begin
+          Assert(False, Format('.doExecute: after CheckIndent: PrevCommentLine.NoOfSpaces=%d .OldNoOfSpaces=%d',
+            [PrevCommentLine.NoOfSpaces, PrevCommentLine.OldNoOfSpaces]));
+        end;
         Inc(FTokenIdx);
       end;
     finally

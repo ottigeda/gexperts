@@ -195,7 +195,7 @@ type
     property DescriptionVisible: Boolean read GetDescriptionVisible write SetDescriptionVisible;
     procedure RecordShortcutCallback(Sender: TObject);
   protected
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
     procedure AddToMacroLibrary(CR: IOTARecord);
@@ -219,37 +219,9 @@ type
     class function GetName: string; override;
     function GetHelpString: string; override;
     procedure Execute(Sender: TObject); override;
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     function HasConfigOptions: Boolean; override;
     property StorageFile: string read GetStorageFile;
-    function IsDefaultActive: Boolean; override;
-  end;
-
-  TMacroLibRecordExpert = class(TGX_Expert)
-  protected
-    procedure SetShortCut(Value: TShortCut); override;
-  public
-    procedure Execute(Sender: TObject); override;
-    function HasConfigOptions: Boolean; override;
-    function GetDefaultShortCut: TShortCut; override;
-    function GetActionCaption: string; override;
-    class function ConfigurationKey: string; override;
-    class function GetName: string; override;
-    function GetHelpString: string; override;
-    function IsDefaultActive: Boolean; override;
-  end;
-
-  TMacroLibPlaybackExpert = class(TGX_Expert)
-  protected
-    procedure SetShortCut(Value: TShortCut); override;
-  public
-    procedure Execute(Sender: TObject); override;
-    function HasConfigOptions: Boolean; override;
-    function GetDefaultShortCut: TShortCut; override;
-    function GetActionCaption: string; override;
-    class function ConfigurationKey: string; override;
-    class function GetName: string; override;
-    function GetHelpString: string; override;
     function IsDefaultActive: Boolean; override;
   end;
 
@@ -262,6 +234,7 @@ implementation
 {$R *.dfm}
 
 uses
+{$IFOPT D+} GX_Debug, {$ENDIF}
   ActiveX, Math,
   GX_GxUtils, GX_OtaUtils,
   GX_XmlUtils,
@@ -817,7 +790,7 @@ begin
   fmMacroLibrary := nil;
 end;
 
-{$IFDEF IDE_IS_HIDPI_AWARE}
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmMacroLibrary.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;
@@ -972,6 +945,7 @@ begin
       Exit;
     TfmMacroLibraryNamePrompt.Execute(Self, mi.FName, mi.FDescription, sl);
     mi.Encode(sl);
+    Item.Caption := mi.Name;
   finally
     FreeAndNil(sl);
   end;
@@ -1304,125 +1278,15 @@ begin
   Result := True;
 end;
 
-procedure TMacroLibraryExpert.Configure;
+procedure TMacroLibraryExpert.Configure(_Owner: TWinControl);
 begin
-  if TfmGxMacroLibraryConfig.Execute(fmMacroLibrary.FPromptForName) then
+  if TfmGxMacroLibraryConfig.Execute(_Owner, fmMacroLibrary.FPromptForName) then
     fmMacroLibrary.SaveSettings;
 end;
 
 function TMacroLibraryExpert.IsDefaultActive: Boolean;
 begin
   Result := not RunningRS2009;
-end;
-
-{ TMacroLibRecordExpert }
-
-class function TMacroLibRecordExpert.ConfigurationKey: string;
-begin
-  Result := 'MacroLibRecord';
-end;
-
-function TMacroLibRecordExpert.HasConfigOptions: Boolean;
-begin
-  Result := False;
-end;
-
-function TMacroLibRecordExpert.IsDefaultActive: Boolean;
-begin
-  Result := False;
-end;
-
-procedure TMacroLibRecordExpert.Execute(Sender: TObject);
-begin
-  GetMacroLibraryForm.actRecord.Execute;
-end;
-
-function TMacroLibRecordExpert.GetActionCaption: string;
-resourcestring
-  SMenuCaption = 'Keyboard Macro Record Start/Stop';
-begin
-  Result := SMenuCaption;
-end;
-
-function TMacroLibRecordExpert.GetDefaultShortCut: TShortCut;
-begin
-  Result := Menus.ShortCut(Ord('R'), [ssCtrl, ssShift]);
-end;
-
-function TMacroLibRecordExpert.GetHelpString: string;
-resourcestring
-  SHelpString =
-  '  Start or stop keyboard macro recording.';
-begin
-  Result := SHelpString;
-end;
-
-class function TMacroLibRecordExpert.GetName: string;
-begin
-  Result := 'MacroLibRecord';
-end;
-
-procedure TMacroLibRecordExpert.SetShortCut(Value: TShortCut);
-begin
-  inherited;
-  if (GetMacroLibraryForm = nil) then
-    Exit; //==>
-  GetMacroLibraryForm.actRecord.ShortCut := Value;
-end;
-
-{ TMacroLibPlaybackExpert }
-
-class function TMacroLibPlaybackExpert.ConfigurationKey: string;
-begin
-  Result := 'MacroLibPlayback';
-end;
-
-function TMacroLibPlaybackExpert.HasConfigOptions: Boolean;
-begin
-  Result := False;
-end;
-
-function TMacroLibPlaybackExpert.IsDefaultActive: Boolean;
-begin
-  Result := False;
-end;
-
-procedure TMacroLibPlaybackExpert.Execute(Sender: TObject);
-begin
-  GetMacroLibraryForm.actPlayback.Execute;
-end;
-
-function TMacroLibPlaybackExpert.GetActionCaption: string;
-resourcestring
-  SMenuCaption = 'Keyboard Macro Playback';
-begin
-  Result := SMenuCaption;
-end;
-
-function TMacroLibPlaybackExpert.GetDefaultShortCut: TShortCut;
-begin
-  Result := Menus.ShortCut(Ord('P'), [ssCtrl, ssShift]);
-end;
-
-function TMacroLibPlaybackExpert.GetHelpString: string;
-resourcestring
-  SHelpString =
-  '  Playback recorded keyboard macro.';
-begin
-  Result := SHelpString;
-end;
-
-class function TMacroLibPlaybackExpert.GetName: string;
-begin
-  Result := 'MacroLibPlayback';
-end;
-
-procedure TMacroLibPlaybackExpert.SetShortCut(Value: TShortCut);
-begin
-  inherited;
-  if (GetMacroLibraryForm = nil) then
-    Exit; //==>
-  GetMacroLibraryForm.actPlayback.ShortCut := Value;
 end;
 
 { TIDEMacroBugMessage }
@@ -1436,13 +1300,11 @@ end;
 
 initialization
   RegisterGX_Expert(TMacroLibraryExpert);
-  RegisterGX_Expert(TMacroLibRecordExpert);
-  RegisterGX_Expert(TMacroLibPlaybackExpert);
 
 finalization
 {$IFOPT D+}
   if Assigned(fmMacroLibrary) then
-    MessageBox(0, 'fmMacroLibrary is not nil during finalization', 'GExperts warning', MB_ICONHAND or MB_OK);
+    GxDebugShowWarning('fmMacroLibrary is not nil during finalization');
 {$ENDIF D+}
   // todo: Maybe free it ? Not sure about the consequences. This object holds some interface
   //       references. These might cause trouble now, if free'd here, or later if not.

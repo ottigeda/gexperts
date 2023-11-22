@@ -240,6 +240,8 @@ procedure GxOtaInsertTextIntoEditorAtBufferPos(const Text: string; Position: Lon
 // TOTAEditPos.  Uses the topmost EditView if none is specified
 procedure GxOtaGotoPosition(Position: Longint; EditView: IOTAEditView = nil;
   Middle: Boolean = True);
+function GxOtaTryGotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView = nil;
+  Middle: Boolean = True): Boolean;
 procedure GxOtaGotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView = nil;
   Middle: Boolean = True);
 
@@ -470,7 +472,7 @@ function GxOtaGetVersionInfoKeysString: string;
 function GxOtaSetVersionInfoKeysStrings(Strings: TStrings): Boolean;
 
 // Get the selected text in the top edit view, if any
-function GxOtaGetCurrentSelection(IncludeTrailingCRLF: Boolean = True): string;
+function GxOtaGetCurrentSelection(IncludeTrailingCRLF: Boolean = True): TGXUnicodeString;
 
 function GxOtaMoveEditCursorColumn(EditView: IOTAEditView; RelativePos: Integer): Boolean;
 
@@ -745,7 +747,6 @@ function GxOtaGetFormBiDiMode(Form: IOTAFormEditor): TBiDiMode;
 function IsValidExpertDll(const FileName: string): Boolean;
 
 function IsStandAlone: Boolean;
-function RunningInsideIDE: Boolean;
 
 // Consolidate with GxOtaGotoPosition?
 procedure GxOtaSetCurrentSourcePosition(Position: Integer);
@@ -1414,9 +1415,8 @@ function GxOtaFocusCurrentIDEEditControl: Boolean;
 var
   EditControl: TWinControl;
 begin
-  Result := False;
   EditControl := GxOtaGetCurrentIDEEditControl;
-  TryFocusControl(EditControl)
+  Result := TryFocusControl(EditControl)
 end;
 
 function GxOtaGetProjectFileName(Project: IOTAProject; NormalizeBdsProj: Boolean = False): string;
@@ -2052,7 +2052,7 @@ begin
 {$ENDIF}
 end;
 
-function GxOtaGetCurrentSelection(IncludeTrailingCRLF: Boolean): string;
+function GxOtaGetCurrentSelection(IncludeTrailingCRLF: Boolean): TGXUnicodeString;
 var
   EditView: IOTAEditView;
   EditBlock: IOTAEditBlock;
@@ -2158,9 +2158,72 @@ begin
   I:= 1;
   P:= PAnsiChar(S);
   while I <= Index do begin
-    if Ord(P^) and $C0 <> $80 then Inc(Result);
-    Inc(I);
-    Inc(P);
+    if (Ord(P^) and $80 = 0) then begin
+      Inc(Result);
+      Inc(I);
+      Inc(P);
+    end else if (Ord(P^) and $E0 = $C0) then begin
+      Inc(Result);
+      Inc(I, 2);
+      Inc(P, 2);
+    end else if (Ord(P^) and $F0 = $E0) then begin
+      Inc(Result);
+      Inc(I, 3);
+      Inc(P, 3);
+    end else begin
+      //Inc(Result);
+      Inc(I);
+      Inc(P);
+    end;
+  end;
+end;
+
+function UTF8CharPosToByteIndex(const S: string; CursorPosition, Index: Integer): Integer;
+var
+  I, eol: Integer;
+  P: PAnsiChar;
+  st: string;
+  ut: UTF8String;
+begin
+  Result := CursorPosition;
+  if (Index <= 0) or ((CursorPosition + Index) > Length(S)) then
+    Exit;
+
+  eol := PosEx(#13, S, CursorPosition + 2);
+  if (eol <= 0) then begin
+    eol := PosEx(#10, S, CursorPosition + 2);
+    if (eol <= 0) then begin
+      eol := 512;
+    end;
+  end;
+  if (S[eol - 1] = #13) or (S[eol - 1] = #10) then begin
+    Dec(eol);
+  end;
+  st := Copy(s, CursorPosition + 1, eol - (CursorPosition + 1));
+  ut := PAnsiChar(PUTF8String(AnsiString(st)));
+
+  I:= 1;
+  P:= PAnsiChar(ut);
+  while I <= Index do begin
+    if (P^ in [#0, #13, #10]) then begin
+      Break
+    end else if (Ord(P^) and $80 = 0) then begin
+      Inc(Result);
+      Inc(I);
+      Inc(P);
+    end else if (Ord(P^) and $E0 = $C0) then begin
+      Inc(Result, 2);
+      Inc(I);
+      Inc(P, 2);
+    end else if (Ord(P^) and $F0 = $E0) then begin
+      Inc(Result, 3);
+      Inc(I);
+      Inc(P, 3);
+    end else begin
+      Inc(Result);
+      Inc(I);
+      Inc(P);
+    end;
   end;
 end;
 
@@ -2193,6 +2256,7 @@ function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; Byt
 {$IFDEF GX_DELPHI8_UP}
     IdeString: UTF8String;
 {$ENDIF}
+    ChPos: Integer;
   begin
     Result := '';
     CursorPosition := 0;
@@ -2210,11 +2274,19 @@ function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; Byt
       EditPos := EditView.CursorPos;
       EditView.ConvertPos(True, EditPos, CharPos);
       CursorLine := CharPos.Line;
-      CursorPosition := EditView.CharPosToPos(CharPos);
 {$IFDEF GX_DELPHI8_UP}
       if not ByteBased then begin
+        ChPos := CharPos.CharIndex;
+        CharPos.CharIndex := 0;
+        CursorPosition := EditView.CharPosToPos(CharPos);
         IdeString := ConvertToIDEEditorString(Result);
         CursorPosition := UTF8PosToCharIndex(IdeString, CursorPosition);
+        CursorPosition := CursorPosition + ChPos;
+      end else begin
+        ChPos := CharPos.CharIndex;
+        CharPos.CharIndex := 0;
+        CursorPosition := EditView.CharPosToPos(CharPos);
+        CursorPosition := UTF8CharPosToByteIndex(Result, CursorPosition, ChPos);
       end;
 {$ENDIF}
     end;
@@ -2786,6 +2858,9 @@ begin
     if IsForm(FileName) then
       Exit;
     {$ENDIF VER160}
+    // If it's a project file, then the opened file is most likely a source file and not the project file
+    if IsBdsProjectFile(FileName) then
+      Exit;
     Module := GxOtaGetModule(BaseFileName);
     if Module = nil then
       Module := GxOtaGetModule(FileName);
@@ -2891,7 +2966,10 @@ begin
 
   GxOtaFocusCurrentIDEEditControl;
 
-  if RunningDelphi8OrGreater then
+  // XE7 matches contains the correct block parameters in CharPos (not BytePos) (IVK)
+  // todo: If this is a workaround for a bug and that bug was fixed in XE7, shouldn't it also be
+  //       fixed in XE8 and later? So this should possibly be "not RunningRSXE7OrGreater". -- twm
+  if RunningDelphi8OrGreater and not RunningRSXE7 then
   begin
     LineData := GxOtaGetEditorLine(EditView, Line);
     StartColumn := GxOtaConvertColumnCharsToBytes(LineData, StartColumn, False);
@@ -3126,18 +3204,39 @@ var
   i: Integer;
   PathItem: string;
   PathProcessor: TPathProcessor;
+  Output: TStringList;
+  Temp: TStringList;
 begin
+  Output := nil;
+  Temp := nil;
   PathProcessor := TPathProcessor.Create(Prefix);
   try
+    Output := TStringList.Create();
+    Temp := TStringList.Create();
+    Temp.Delimiter := ';';
+{$IFDEF GX_HAS_STRICT_DELIMITER}
+    Temp.StrictDelimiter := True;
+{$ENDIF GX_HAS_STRICT_DELIMITER}
     // todo: What about ConfigName?
     PathProcessor.PlatformName := PlatformName;
     for i := 0 to Paths.Count - 1 do begin
       PathItem := Paths[i];
       PathItem := PathProcessor.Process(PathItem);
-      Paths[i] := PathItem;
+
+      // check if this item contains multiple paths seperated by ; (could come from environment variable)
+      if Pos(';', PathItem) = 0 then
+        Output.Add(PathItem)
+      else begin
+        Temp.DelimitedText := PathItem;
+        Output.AddStrings(Temp);
+      end;
     end;
+
+    Paths.Assign(Output);
   finally
     FreeAndNil(PathProcessor);
+    FreeAndNil(Output);
+    FreeAndNil(Temp);
   end;
 end;
 
@@ -3213,6 +3312,7 @@ begin
     begin
       IdePathString := ProjectOptions.Values[OPTION_NAME_UNIT_SEARCH_PATH];
       // it is also possible to set the search path using the same property:
+      // ProjectOptions.Values['DCC_UnitSearchPath'] := 'bla;blub';
       SplitIdePath(Paths, IdePathString);
     end;
     if DoProcessing then begin
@@ -4531,11 +4631,6 @@ begin
   Result := (BorlandIDEServices = nil);
 end;
 
-function RunningInsideIDE: Boolean;
-begin
-  Result := not IsStandAlone;
-end;
-
 procedure GxOtaSaveReaderToStream(EditReader: IOTAEditReader; Stream: TStream; TrailingNull: Boolean);
 const
   // Leave typed constant as is - needed for streaming code.
@@ -4602,6 +4697,7 @@ begin
   try
     Result := GxOtaGetActiveEditorText(Lines, UseSelection);
     Text := Lines.Text;
+    RemoveLastEOL(Text);
   finally
     FreeAndNil(Lines);
   end;
@@ -4831,13 +4927,15 @@ begin
   GxOtaGotoEditPos(CurPos, EditView, Middle);
 end;
 
-procedure GxOtaGotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView; Middle: Boolean);
+function GxOtaTryGotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView; Middle: Boolean): Boolean;
 var
   TopRow: TOTAEditPos;
 begin
   if not Assigned(EditView) then
     EditView := GxOtaGetTopMostEditView;
-  Assert(Assigned(EditView));
+  Result := Assigned(EditView);
+  if not Result then
+    Exit; //==>
 
   if EditPos.Line < 1 then
     EditPos.Line := 1;
@@ -4852,6 +4950,12 @@ begin
   EditView.CursorPos := EditPos;
   Application.ProcessMessages;
   EditView.Paint;
+end;
+
+procedure GxOtaGotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView; Middle: Boolean);
+begin
+  if not GxOtaTryGotoEditPos(EditPos, EditView, Middle) then
+    raise Exception.Create('Not EditView available');
 end;
 
 function GxOtaGetCharPosFromPos(Position: Longint; EditView: IOTAEditView): TOTACharPos;
@@ -4911,8 +5015,8 @@ var
   EditWriter: IOTAEditWriter;
 {$IFDEF GX_DELPHI8_UP}
   Buffer: string;
-{$ENDIF}
   IdeString: UTF8String;
+{$ENDIF}
 begin
 {$IFDEF GX_DELPHI8_UP}
   // "StartPos" is a character position in a (possibly unicode) string
@@ -5164,7 +5268,7 @@ begin
     raise Exception.Create('Blank filenames are not allowed');
   WasBinary := False;
 
-  if RunningInsideIDE and GxOtaIsFileOpen(FileName, True) then
+  if not IsStandAlone and GxOtaIsFileOpen(FileName, True) then
     GxOtaLoadIDEFileToUnicodeStrings(FileName, Data, WasBinary)
   else
     LoadDiskFileToUnicodeStrings(FileName, Data, WasBinary)

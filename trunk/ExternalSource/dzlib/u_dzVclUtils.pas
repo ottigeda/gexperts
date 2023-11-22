@@ -44,9 +44,6 @@ uses
   u_dzTypes,
   u_dzVersionInfo;
 
-var
-  WM_WINDOW_PROC_HOOK_HELPER: Word = 0; // initialized on startup using RegisterWindowMessage
-
 type
   ///<summary> Ancestor to all exceptions raised in this unit. </summary>
   EdzVclUtils = class(EdzException);
@@ -696,6 +693,10 @@ procedure TTabControl_AdjustTabWidth(_TabControl: TTabControl; _Form: TForm; _Mi
 function TTabControl_GetSelectedObject(_TabControl: TTabControl; out _Obj: Pointer): Boolean; overload;
 function TTabControl_GetSelectedObject(_TabControl: TTabControl; out _Idx: Integer; out _Obj: Pointer): Boolean; overload;
 
+///<sumamry>
+/// disables and re-enables the timer so it starts again </summary>
+procedure TTimer_Restart(_tim: TTimer);
+
 ///<summary> Enables longer SimpleText (longer than 127 characters)
 ///          Call once to enable. Works, by adding a single panel with owner drawing and
 ///          setting the StatusBar's OnDrawPanel to a custom drawing method.
@@ -705,6 +706,12 @@ procedure TStatusBar_EnableLongSimpleText(_StatusBar: TStatusBar);
 
 ///<summary> Set the SimpleText of the StatusBar and invalidate it to enforce a redraw </summary>
 procedure TStatusBar_SetLongSimpleText(_StatusBar: TStatusBar; const _Text: string);
+
+///<summary>
+/// Resize one panel a StatusBar to take up all the space the others don't need
+/// @param sb is the TStatusBar to work on
+/// @param PanelIdxToChange is the index of the panel whose size should be changed </summary>
+procedure TStatusBar_Resize(_sb: TStatusBar; _PanelIdxToChange: Integer);
 
 ///<summary>
 /// Sets the text of a status bar panel and optionally adjusts its width to fit.
@@ -756,11 +763,20 @@ type
   end;
 {$ENDIF DELPHI2009_UP}
 
-///<summary> sets the control and all its child controls Enabled property and changes their
-///          caption to reflect this
-///          @param Control is the TControl to change
-///          @param Enabled is a boolean with the new value for the Enabled property. </summary>
+///<summary>
+/// sets the control and all its child controls Enabled property and changes their
+/// caption to reflect this
+/// @param Control is the TControl to change
+/// @param Enabled is a boolean with the new value for the Enabled property. </summary>
 procedure TControl_SetEnabled(_Control: TControl; _Enabled: Boolean);
+
+///<summary>
+/// Sets the Enabled property for all controls in the given array.
+/// @param Controls is the array of controls to process
+/// @param Enabled is the value to set the Enabled property to
+/// @param Recursive determines if also controls that are placed on the given controls should be
+///                  processed. Defaults to False. </summary>
+procedure TControls_SetEnabled(_Controls: array of TControl; _Enabled: Boolean; _Recursive: Boolean = False);
 
 ///<summary> Calls protected TControl.Resize (which calls TControl.OnResize if assigned) </summary>
 procedure TControl_Resize(_Control: TControl);
@@ -935,8 +951,9 @@ procedure TComboBox_SelectWithoutChangeEvent(_cmb: TCustomComboBox; _Idx: Intege
 procedure TComboBox_AssignItems(_cmb: TCustomComboBox; _Items: TStrings);
 
 ///<summary>
-/// Add a new item with Object = Pointer(Value) </summary>
-procedure TComboBox_AddIntObject(_cmb: TCustomComboBox; const _Item: string; _Value: Integer);
+/// Add a new item with Object = Pointer(Value)
+/// @returns the index of the new item. </summary>
+function TComboBox_AddIntObject(_cmb: TCustomComboBox; const _Item: string; _Value: Integer): Integer;
 
 ///<summary> Selects an item without triggering an OnChange event
 ///          (I am not even sure whether setting the item index always triggers an OnChange event.) </summary>
@@ -1029,6 +1046,8 @@ procedure TCheckListBox_CheckAll(_clb: TCheckListBox; _IncludeDisabled: Boolean 
 ///          @param IncludeDisabled determines whether the disabled items should also be returned if they are checked
 ///          @returns the number of Items in Checked </summary>
 function TCheckListBox_GetChecked(_clb: TCheckListBox; _Checked: TStrings = nil; _IncludeDisabled: Boolean = False): Integer; overload;
+/// todo: Why did I ever think it a good idea to return a string? A TStringArray would have been
+///       a much better choice.
 function TCheckListBox_GetChecked(_clb: TCheckListBox; _IncludeDisabled: Boolean = False): string; overload;
 ///<summary> Returns the objects associated with the checked items
 ///          @param clb is the TCheckListBox
@@ -1155,7 +1174,10 @@ procedure TControl_SetHint(_Ctrl: TControl; const _Hint: string);
 procedure TSpeedButton_SetDownNoClick(_sb: TSpeedButton; _Down: Boolean);
 
 ///<summary> sets the Checked property without firing an OnClick event </summary>
-procedure TCheckBox_SetCheckedNoOnClick(_Chk: TCustomCheckBox; _Checked: Boolean);
+procedure TCheckBox_SetCheckedNoOnClick(_Chk: TButtonControl; _Checked: Boolean);
+
+///<summary> sets the Checked property without firing an OnClick event </summary>
+procedure TRadioButton_SetCheckedNoOnClick(_Ctrl: TButtonControl; _Checked: Boolean);
 
 ///<summary>
 /// Append a new action to the given action list, assign Caption
@@ -1181,23 +1203,53 @@ function TCheckBox_GetCheckWidth(_Chk: TCustomCheckBox): Integer;
 ///       be wrong too. </summary>
 function TCheckBox_GetTextWidth(_Chk: TCustomCheckBox): Integer;
 
-///<summary> Calculates the required width for the checkbox to accomodate the caption text.
-///          @param chk is the checkbox to autosize
-///          @param ParentCanvas is the TCanvas to use for getting the text width
-///                              can be nil in which case the function tries the Checkbox's
-///                              parent controls until it finds either a TCustomControl or TForm.
-///          @returns the required width or -1 if the calculation failed.
-/// Note: Does not always work, especially since it does not take the WordWrap property into account </summary>
+///<summary>
+/// Calculates the required width for the checkbox to accomodate the caption text.
+/// @param chk is the checkbox to autosize
+/// @param ParentCanvas is the TCanvas to use for getting the text width
+///                     can be nil in which case the function tries the checkbox's
+///                     parent controls until it finds either a TCustomControl or TForm.
+/// @returns the required width or -1 if the calculation failed.
+/// @Note: Does not always work, especially since it does not take the WordWrap property into account </summary>
 function TCheckBox_CalcAutoWidth(_Chk: TCustomCheckBox; _ParentCanvas: TCanvas = nil): Integer;
 
-///<summary> Tries to set the checkbox's width to accomodate the text.
-///          @param chk is the checkbox to autosize
-///          @param ParentCanvas is the TCanvas to use for getting the text width
-///                              can be nil in which case the function tries the Checkbox's
-///                              parent controls until it finds either a TCustomControl or TForm.
-///          @returns the new width or -1 if resizing failed.
-/// Note: Does not always work, especially since it does not take the WordWrap property into account </summary>
+///<summary>
+/// Tries to set the checkbox's width to accomodate the text.
+/// @param chk is the checkbox to autosize
+/// @param ParentCanvas is the TCanvas to use for getting the text width
+///                     can be nil in which case the function tries the checkbox's
+///                     parent controls until it finds either a TCustomControl or TForm.
+/// @returns the new width or -1 if resizing failed.
+/// @Note: Does not always work, especially since it does not take the WordWrap property into account </summary>
 function TCheckBox_Autosize(_Chk: TCustomCheckBox; _ParentCanvas: TCanvas = nil): Integer;
+
+///<summary>
+/// @returns the width of the checkbox in the given TRadioButton
+/// Note: This is done by calling GetSystemMetrics(SM_CXMENUCHECK) which might not be correct. </summary>
+function TRadioButton_GetCheckWidth(_Chk: TButtonControl): Integer;
+
+///<summary>
+/// @returns the width of the radiobutton's text
+/// Note: This is done by calling GetSystemMetrics(SM_CXMENUCHECK) which might not be correct,
+///       also it adds 8 pixels for the gap between the checkbox and the text which might
+///       be wrong too. </summary>
+function TRadioButton_CalcAutoWidth(_Ctrl: TButtonControl; _ParentCanvas: TCanvas = nil): Integer;
+
+///<summary>
+/// Tries to set the radiobutton's width to accomodate the text.
+/// @param chk is the radiobutton to autosize
+/// @param ParentCanvas is the TCanvas to use for getting the text width
+///                     can be nil in which case the function tries the radiobutton's
+///                     parent controls until it finds either a TCustomControl or TForm.
+/// @returns the new width or -1 if resizing failed.
+/// @Note: Does not always work, especially since it does not take the WordWrap property into account </summary>
+function TRadioButton_Autosize(_Ctrl: TButtonControl; _ParentCanvas: TCanvas = nil): Integer;
+
+///<sumamry>
+/// Creates a new TRadioButton, sets the given properties and calls TRadioButton_Autosize on it
+/// @returns the created TRadioButton </summary>
+function TRadioButton_Create(_Parent: TWinControl; const _Caption: string; _Left, _Top: Integer;
+  _OnClick: TNotifyEvent): TRadioButton;
 
 ///<summary>
 /// The same as TForm.Monitor, but it works.
@@ -1360,17 +1412,21 @@ function TForm_WriteConfigValue(_frm: TForm; const _Name: string; _Value: Boolea
 ///<summary> Sets the form's Constraints.MinWidth and .MinHeight to the form's current size. </summary>
 procedure TForm_SetMinConstraints(_frm: TForm); deprecated; // use TControl_SetMinConstraints instead
 
-///<summary> appends ' - [fileversion projectversion] to the form's caption
-///          @param Caption is used instead of the original caption, if not empty </summary>
-procedure TForm_AppendVersion(_frm: TForm; _Caption: string = '');
+///<summary>
+/// Appends ' - [fileversion projectversion] to the form's caption
+/// @param Caption is used instead of the original caption, if not empty
+/// @returns the new caption </summary>
+function TForm_AppendVersion(_frm: TForm; const _Caption: string = ''): string;
 
-///<summary> inserts <fileversion> <projectversion> into the form's caption using
-///          the given Mask. The mask must contain one or two %s format specifiers
-///          the first one will be replaced with <fileversion> the second one with
-///          <productversion>. To change the order, use an index in the specifier:
-///          'Product version: %1:s, File version: %0:s'.
-///          If no Mask is given, the form's caption + ' - [%s %s]' is assumed. </summary>
-procedure TForm_InsertVersion(_frm: TForm; _Mask: string = '');
+///<summary>
+/// Inserts <fileversion> <projectversion> into the form's caption using the given Mask.
+/// @param mask must contain one or two %s format specifiers, the first one will be replaced
+///             with <fileversion> the second one with <productversion>.
+///             To change the order, use an index in the specifier:
+///             'Product version: %1:s, File version: %0:s'.
+///             If no Mask is given, the form's caption + ' - [%s %s]' is assumed.
+/// @returns the new caption. </summary>
+function TForm_InsertVersion(_frm: TForm; const _Mask: string = ''): string;
 
 type
   ///<summary>
@@ -1391,6 +1447,9 @@ function TWinControl_ActivateDropFiles(_WinCtrl: TWinControl; _Callback: TOnFile
 
 ///<summary> tries to focus the given control, returns false if that's not possible </summary>
 function TWinControl_SetFocus(_Ctrl: TWinControl): Boolean;
+
+procedure TWinControl_Enter(_Ctrl: TWinControl);
+procedure TWinControl_Exit(_Ctrl: TWinControl);
 
 ///<summary>
 /// @returns the full path of the executable (without the filename but including a backslash) </summary>
@@ -1473,7 +1532,7 @@ type
 ///                lvrCaptions means resize so the captions fit
 ///                lvrContent menas resize so the contents fit
 ///                both can be combined. </summary>
-procedure TListView_ResizeColumn(_lc: TListColumn; _Options: TLIstViewResizeOptionSet);
+procedure TListView_ResizeColumn(_lc: TListColumn; _Options: TLIstViewResizeOptionSet = [lvrCaptions, lvrContent]);
 ///<summary>
 /// Resize all columns of a TListView in vsReport ViewStyle
 /// @param lc is the TListColumn to resize
@@ -1524,6 +1583,10 @@ procedure TButton_AddDropdownMenu(_btn: TCustomButton; _pm: TPopupMenu);
 ///<summary>
 /// Appends a new menu item with the given Caption to the popup menu and returns it </summary>
 function TPopupMenu_AppendMenuItem(_pm: TPopupMenu; const _Caption: string; _OnClick: TNotifyEvent): TMenuItem; overload;
+
+///<summary>
+/// Appends a new menu item with the given Caption to the popup menu and returns it </summary>
+function TPopupMenu_AppendMenuItem(_pm: TPopupMenu; const _Caption: string): TMenuItem; overload;
 
 ///<summary>
 /// Appends a new menu item with the given Action to the popup menu and returns it </summary>
@@ -1749,7 +1812,7 @@ type
       PdzMonitor = ^TdzMonitor;
       TdzMonitor = record
       public
-        Handle: HMONITOR;
+        Handle: HMonitor;
         MonitorNum: Integer;
         BoundsRect: TRectLTWH;
         WorkArea: TRectLTWH;
@@ -1800,7 +1863,6 @@ uses
 {$IFDEF dzMESSAGEDEBUG}
   u_dzWmMessageToString,
 {$ENDIF dzMESSAGEDEBUG}
-  u_dzSortProvider,
   u_dzLineBuilder,
   u_dzTypesUtils,
   u_dzOsUtils,
@@ -2720,6 +2782,11 @@ begin
   end;
 end;
 
+const
+  // 2 pixels right and left, like in TStringGrid.DrawCell
+  // plus 1 additional pixel that seems to be necessary since Windows 10
+  DrawCellAdditionalPixels = 3;
+
 procedure HandleRow(_Grid: TGridHack; _Col, _Row: Integer; var _MinWidth: Integer);
 var
   ColWidth: Integer;
@@ -2830,7 +2897,7 @@ begin
 
       if goVertLine in Grid.Options then
         Inc(MinWidth, Grid.GridLineWidth);
-      Inc(MinWidth, 4); // 2 pixels to the left and right, as in TStringGrid.DrawCell
+      Inc(MinWidth, DrawCellAdditionalPixels * 2);
 
       if not (roReduceMinWidth in _Options) then begin
         if MinWidth < Grid.DefaultColWidth then
@@ -2949,8 +3016,12 @@ begin
   if dgColLines in Grid.Options then
     // there is one more grid line than there are columns
     Inc(Result, Grid.GridLineWidth);
-  if dgIndicator in Grid.Options then
-    Inc(Result, 21); // ColWidht[0] does not work :-(
+  if dgIndicator in Grid.Options then begin
+    Inc(Result, 21);
+    if dgColLines in Grid.Options then
+      // an additional line for the indicator
+      Inc(Result, Grid.GridLineWidth);
+  end;
 end;
 
 procedure TDbGrid_Resize(_Grid: TCustomDbGrid; _Options: TResizeOptionSet = [];
@@ -2960,7 +3031,8 @@ var
   Grid: TDbGridHack;
   i: Integer;
   TotalWidth: Integer;
-  sp: TdzIntegerArraySortProvider;
+  GridClientWidth: Integer;
+  MaxWidth: Integer;
   WidestIdx: Integer;
   Additional: Integer;
 begin
@@ -2968,7 +3040,11 @@ begin
   SetLength(MinWidths, Grid.Columns.Count);
   TotalWidth := 0;
   for i := 0 to Grid.Columns.Count - 1 do begin
-    MinWidths[i] := Grid.Columns[i].DefaultWidth;
+    // Unfortunately DefaultWidth reads Width which we set later in this procedure
+    // and therefore DefaultWidth will increase every time this procedure is called.
+    // So we can only set MinWidths[] to _MinWidth.
+//    MinWidths[i] := Grid.Columns[i].DefaultWidth;
+    MinWidths[i] := _MinWidth;
     Inc(TotalWidth, MinWidths[i]);
   end;
 
@@ -2976,24 +3052,35 @@ begin
     Additional := TDbGrid_CalcAdditionalWidth(_Grid);
     if dgColLines in Grid.Options then
       Inc(Additional, Grid.GridLineWidth * Grid.Columns.Count);
-    Inc(Additional, 4 * Grid.Columns.Count); // 2 pixels right and left, like in TStringGrid.DrawCell
+    Inc(Additional, DrawCellAdditionalPixels * 2 * Grid.Columns.Count);
     Inc(TotalWidth, Additional);
-    sp := TdzIntegerArraySortProvider.Create(MinWidths);
-    try
-      while TotalWidth > _Grid.ClientWidth do begin
-        WidestIdx := sp.GetRealPos(High(MinWidths));
-        if MinWidths[WidestIdx] <= _MinWidth then
-          Break;
-        Dec(TotalWidth, MinWidths[WidestIdx] - _MinWidth);
-        MinWidths[WidestIdx] := _MinWidth;
-        if TotalWidth < _Grid.ClientWidth then begin
-          MinWidths[WidestIdx] := MinWidths[WidestIdx] + (_Grid.ClientWidth - TotalWidth);
+    GridClientWidth := _Grid.ClientWidth;
+    if TotalWidth > GridClientWidth then begin
+      while TotalWidth > GridClientWidth do begin
+        // Get the widest column and reduce its size to the _MinWidth value.
+        // Repeat this until that widest column has reached _MinWidht or
+        // until all columns fit into the grid's ClientWidth
+        MaxWidth := MinWidths[0];
+        WidestIdx := 0;
+        for i := 1 to High(MinWidths) do begin
+          if MinWidths[i] > MaxWidth then begin
+            MaxWidth := MinWidths[i];
+            WidestIdx := i;
+          end;
+        end;
+        if MaxWidth <= _MinWidth then begin
+          // The widest column already has the minimum width
           Break;
         end;
-        sp.Update;
+        Dec(TotalWidth, MaxWidth - _MinWidth);
+        MinWidths[WidestIdx] := _MinWidth;
+        if TotalWidth < GridClientWidth then begin
+          // All columns now fit into the ClientWidth
+          // -> add any slack to the widest one and exit the loop
+          MinWidths[WidestIdx] := MinWidths[WidestIdx] + (GridClientWidth - TotalWidth);
+          Break;
+        end;
       end;
-    finally
-      FreeAndNil(sp);
     end;
   end;
   TDbGrid_Resize(_Grid, _Options, MinWidths);
@@ -3003,6 +3090,7 @@ procedure TDbGrid_Resize(_Grid: TCustomDbGrid; _Options: TResizeOptionSet; _MinW
 var
   Col, Row: Integer;
   Grid: TDbGridHack;
+  GridCanvas: TCanvas;
   MinWidth: Integer;
   ColWidth: Integer;
   ColText: string;
@@ -3017,6 +3105,7 @@ var
   cw: Integer;
 begin
   Grid := TDbGridHack(_Grid);
+  GridCanvas := Grid.Canvas;
   MaxCol := Grid.ColCount - 1 - Grid.IndicatorOffset;
   MinCol := 0;
   SetLength(ColWidths, MaxCol + 1);
@@ -3030,26 +3119,30 @@ begin
     MinWidth := _MinWidths[Col];
     if not (roIgnoreHeader in _Options) then begin
       ColText := DBColumn.Title.Caption;
-      ColWidth := Grid.Canvas.TextWidth(ColText);
+      GridCanvas.Font := Grid.TitleFont;
+      ColWidth := GridCanvas.TextWidth(ColText);
       if ColWidth > MinWidth then
         MinWidth := ColWidth;
     end;
     for Row := FirstRow to MaxRow do begin
       ColText := Grid.GetEditText(Col + Grid.IndicatorOffset, Row);
-      ColWidth := Grid.Canvas.TextWidth(ColText);
+      GridCanvas.Font := Grid.Font;
+      ColWidth := GridCanvas.TextWidth(ColText);
       if ColWidth > MinWidth then
         MinWidth := ColWidth;
     end;
     if dgColLines in Grid.Options then
       Inc(MinWidth, Grid.GridLineWidth);
-    Inc(MinWidth, 4); // 2 pixels right and left, like in TStringGrid.DrawCell
+    Inc(MinWidth, DrawCellAdditionalPixels * 2);
     ColWidths[Col] := MinWidth;
     Inc(SumWidths, MinWidth);
   end;
   if roUseGridWidth in _Options then begin
     cw := Grid.ClientWidth;
-    if Grid.ScrollBars in [ssBoth, ssVertical] then
-      Dec(cw, GetSystemMetrics(SM_CXVSCROLL));
+    // Apparently for a DbGrid the visibility of the vertical scroll bar is not reflected in
+    // the grid's Scrollbars property, so to be on the safe side, we assume that it is visible
+    // if Grid.ScrollBars in [ssBoth, ssVertical] then
+    Dec(cw, GetSystemMetrics(SM_CXVSCROLL));
     if SumWidths < cw then begin
       Additional := (cw - SumWidths) div (MaxCol + 1);
       for Col := MinCol to MaxCol do begin
@@ -3163,6 +3256,12 @@ begin
     _Obj := _TabControl.Tabs.Objects[_Idx];
 end;
 
+procedure TTimer_Restart(_tim: TTimer);
+begin
+  _tim.Enabled := False;
+  _tim.Enabled := True;
+end;
+
 type
   // Note: This class is never instantiated, only the DrawPanel method will be used
   //       without ever referencing the self pointer (which is NIL), so it should work
@@ -3194,6 +3293,19 @@ begin
   pnl.Style := psOwnerDraw;
   Painter := nil;
   _StatusBar.OnDrawPanel := Painter.DrawPanel;
+end;
+
+procedure TStatusBar_Resize(_sb: TStatusBar; _PanelIdxToChange: Integer);
+var
+  w: Integer;
+  i: Integer;
+begin
+  w := _sb.Width;
+  for i := 0 to _sb.Panels.Count - 1 do begin
+    if i <> _PanelIdxToChange then
+      Dec(w, _sb.Panels[i].Width);
+  end;
+  _sb.Panels[_PanelIdxToChange].Width := w;
 end;
 
 procedure TStatusBar_SetLongSimpleText(_StatusBar: TStatusBar; const _Text: string);
@@ -3249,9 +3361,19 @@ begin
     raise EdzStatusBarNoMatchingPanel.CreateFmt(_('Could not find status bar panel with text "%s"'), [_Text]);
 end;
 
-procedure SetControlEnabled(_Control: TControl; _Enabled: Boolean);
+procedure TControls_SetEnabled(_Controls: array of TControl; _Enabled: Boolean; _Recursive: Boolean = False);
+var
+  i: Integer;
+  ctrl: TControl;
 begin
-  TControl_SetEnabled(_Control, _Enabled);
+  for i := Low(_Controls) to High(_Controls) do begin
+    ctrl := _Controls[i];
+    if _Recursive and (ctrl is TWinControl) then begin
+      TControl_SetEnabled(ctrl, _Enabled);
+    end else begin
+      ctrl.Enabled := _Enabled;
+    end;
+  end;
 end;
 
 procedure TControl_SetEnabled(_Control: TControl; _Enabled: Boolean);
@@ -3877,9 +3999,9 @@ begin
   end;
 end;
 
-procedure TComboBox_AddIntObject(_cmb: TCustomComboBox; const _Item: string; _Value: Integer);
+function TComboBox_AddIntObject(_cmb: TCustomComboBox; const _Item: string; _Value: Integer): Integer;
 begin
-  _cmb.Items.AddObject(_Item, Pointer(_Value)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
+  Result := _cmb.Items.AddObject(_Item, Pointer(_Value)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end;
 
 procedure TColorBox_SelectWithoutChangeEvent(_cmb: TColorBox; _Color: TColor);
@@ -4217,14 +4339,13 @@ begin
 end;
 
 type
-  THackCheckBox = class(TCustomCheckBox)
-  end;
+  TButtonControlHack = class(TButtonControl);
 
-procedure TCheckBox_SetCheckedNoOnClick(_Chk: TCustomCheckBox; _Checked: Boolean);
+procedure TCheckBox_SetCheckedNoOnClick(_Chk: TButtonControl; _Checked: Boolean);
 var
-  Chk: THackCheckBox;
+  Chk: TButtonControlHack;
 begin
-  Chk := THackCheckBox(_Chk);
+  Chk := TButtonControlHack(_Chk);
   Chk.ClicksDisabled := True;
   try
     Chk.Checked := _Checked;
@@ -4233,8 +4354,76 @@ begin
   end;
 end;
 
+procedure TRadioButton_SetCheckedNoOnClick(_Ctrl: TButtonControl; _Checked: Boolean);
+var
+  ctrl: TButtonControlHack;
+begin
+  ctrl := TButtonControlHack(_Ctrl);
+  ctrl.ClicksDisabled := True;
+  try
+    ctrl.Checked := _Checked;
+  finally
+    ctrl.ClicksDisabled := False;
+  end;
+end;
+
 const
   CHECKBOX_GAP = 8;
+
+type
+  TCustomControlHack = class(TCustomControl)
+    // for accessing the Canvas and Caption properties
+  end;
+
+function TRadioButton_GetCheckWidth(_Chk: TButtonControl): Integer;
+begin
+  // not sure this is correct, but it seems to work
+  Result := GetSystemMetrics(SM_CXMENUCHECK);
+end;
+
+function TRadioButton_CalcAutoWidth(_Ctrl: TButtonControl; _ParentCanvas: TCanvas = nil): Integer;
+var
+  Parent: TWinControl;
+  s: string;
+  w: Integer;
+begin
+  if _ParentCanvas = nil then begin
+    Parent := _Ctrl.Parent;
+    while (Parent <> nil) and (_ParentCanvas = nil) do begin
+      if Parent is TCustomForm then
+        _ParentCanvas := TCustomForm(Parent).Canvas
+      else if Parent is TCustomControl then
+        _ParentCanvas := TCustomControlHack(Parent).Canvas;
+      Parent := Parent.Parent;
+    end;
+  end;
+
+  if _ParentCanvas <> nil then begin
+    s := TCustomControlHack(_Ctrl).Caption;
+    w := _ParentCanvas.TextWidth(s);
+    Result := TRadioButton_GetCheckWidth(_Ctrl) + CHECKBOX_GAP + w;
+  end else
+    Result := -1;
+end;
+
+function TRadioButton_Autosize(_Ctrl: TButtonControl; _ParentCanvas: TCanvas = nil): Integer;
+begin
+  Result := TRadioButton_CalcAutoWidth(_Ctrl, _ParentCanvas);
+  if Result <> -1 then
+    _Ctrl.Width := Result;
+end;
+
+function TRadioButton_Create(_Parent: TWinControl; const _Caption: string; _Left, _Top: Integer;
+  _OnClick: TNotifyEvent): TRadioButton;
+begin
+  Result := TRadioButton.Create(_Parent);
+  Result.Parent := _Parent;
+  Result.Top := _Top;
+  Result.Left := _Left;
+  Result.Caption := _Caption;
+  Result.OnClick := _OnClick;
+  TRadioButton_Autosize(Result);
+end;
 
 function TCheckBox_GetCheckWidth(_Chk: TCustomCheckBox): Integer;
 begin
@@ -4246,11 +4435,6 @@ function TCheckBox_GetTextWidth(_Chk: TCustomCheckBox): Integer;
 begin
   Result := _Chk.Width - TCheckBox_GetCheckWidth(_Chk) - CHECKBOX_GAP;
 end;
-
-type
-  TCustomControlHack = class(TCustomControl)
-    // for accessing the Canvas property
-  end;
 
 function TCheckBox_CalcAutoWidth(_Chk: TCustomCheckBox; _ParentCanvas: TCanvas = nil): Integer;
 var
@@ -4270,7 +4454,7 @@ begin
   end;
 
   if _ParentCanvas <> nil then begin
-    s := THackCheckBox(_Chk).Caption;
+    s := TCustomControlHack(_Chk).Caption;
     w := _ParentCanvas.TextWidth(s);
     Result := TCheckBox_GetCheckWidth(_Chk) + CHECKBOX_GAP + w;
   end else
@@ -4353,6 +4537,12 @@ function TForm_GetMonitor(_frm: TForm): TMonitor;
 var
   Center: TPoint;
 begin
+   // Workaround for a bug in the VCL:
+   // This calls TCustomForm.GetMonitor which updates Screen.Monitors if the monitor configuration
+   // has changed.
+   // https://blog.dummzeuch.de/2023/02/19/when-screen-monitorx-workarearect-contains-garbage/
+  _frm.Monitor;
+
   Center.X := _frm.Left + _frm.Width div 2;
   Center.Y := _frm.Top + _frm.Height div 2;
   Result := TScreen_MonitorFromPoint(Center);
@@ -4362,11 +4552,16 @@ procedure TForm_CenterOn(_frm: TForm; _Center: TPoint);
 var
   Monitor: TMonitor;
 begin
+   // Workaround for a bug in the VCL:
+   // This calls TCustomForm.GetMonitor which updates Screen.Monitors if the monitor configuration
+   // has changed.
+   // https://blog.dummzeuch.de/2023/02/19/when-screen-monitorx-workarearect-contains-garbage/
+  _frm.Monitor;
+
   _frm.Position := poDesigned;
   _frm.DefaultMonitor := dmDesktop;
   _frm.Left := _Center.X - _frm.Width div 2;
   _frm.Top := _Center.Y - _frm.Height div 2;
-
   Monitor := TScreen_MonitorFromPoint(_Center);
   TMonitor_MakeFullyVisible(Monitor, _frm);
 end;
@@ -4789,26 +4984,30 @@ begin
   TControl_SetMinConstraints(_frm);
 end;
 
-procedure TForm_AppendVersion(_frm: TForm; _Caption: string = '');
+function TForm_AppendVersion(_frm: TForm; const _Caption: string = ''): string;
 var
   VersionInfo: IFileInfo;
 begin
   VersionInfo := TApplicationInfo.Create;
   if _Caption = '' then
-    _Caption := _frm.Caption;
-
-  _frm.Caption := _Caption
-    + ' - [' + VersionInfo.FileVersion + ' ' + VersionInfo.ProductVersion + ']';
+    Result := _frm.Caption
+  else
+    Result := _Caption;
+  Result := Result + ' - [' + VersionInfo.FileVersion + ' ' + VersionInfo.ProductVersion + ']';
+  _frm.Caption := Result
 end;
 
-procedure TForm_InsertVersion(_frm: TForm; _Mask: string = '');
+function TForm_InsertVersion(_frm: TForm; const _Mask: string = ''): string;
 var
   VersionInfo: IFileInfo;
 begin
-  if _Mask = '' then
-    _Mask := _frm.Caption + ' - [%s %s]';
   VersionInfo := TApplicationInfo.Create;
-  _frm.Caption := Format(_Mask, [VersionInfo.FileVersion, VersionInfo.ProductVersion]);
+  if _Mask = '' then
+    Result := _frm.Caption + ' - [%s %s]'
+  else
+    Result := _Mask;
+  Result := Format(Result, [VersionInfo.FileVersion, VersionInfo.ProductVersion]);
+  _frm.Caption := Result;
 end;
 
 function TApplication_GetFileVersion: string;
@@ -4868,6 +5067,20 @@ begin
       // can be focused so we need to handle the exception
     end;
   end;
+end;
+
+type
+  TWinControlHack = class(TWinControl)
+  end;
+
+procedure TWinControl_Enter(_Ctrl: TWinControl);
+begin
+  TWinControlHack(_Ctrl).DoEnter;
+end;
+
+procedure TWinControl_Exit(_Ctrl: TWinControl);
+begin
+  TWinControlHack(_Ctrl).DoExit;
 end;
 
 procedure DisableProcessWindowsGhosting;
@@ -5365,6 +5578,11 @@ begin
   Result.Caption := _Caption;
   Result.OnClick := _OnClick;
   _pm.Items.Add(Result);
+end;
+
+function TPopupMenu_AppendMenuItem(_pm: TPopupMenu; const _Caption: string): TMenuItem; overload;
+begin
+  Result := TPopupMenu_AppendMenuItem(_pm, _Caption, TNotifyEvent(NilEvent));
 end;
 
 function TPopupMenu_AppendMenuItem(_pm: TPopupMenu; _Action: TBasicAction): TMenuItem;
@@ -5888,12 +6106,12 @@ constructor TWinControlLocker.Create(_Ctrl: TWinControl);
 begin
   inherited Create;
   FCtrl := _Ctrl;
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(False)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(False)), 0);
 end;
 
 destructor TWinControlLocker.Destroy;
 begin
-  SendMessage(FCtrl.Handle, WM_SETREDRAW, WPARAM(LongBool(True)), 0);
+  SendMessage(FCtrl.Handle, WM_SETREDRAW, wParam(LongBool(True)), 0);
   RedrawWindow(FCtrl.Handle, nil, 0, RDW_ERASE or RDW_INVALIDATE or RDW_ALLCHILDREN);
   inherited;
 end;
@@ -7138,10 +7356,70 @@ begin
     TTrackBar_VerticalAddLabels(_trk)
 end;
 
-procedure InitializeCustomMessages;
+{$IFDEF DELPHI2007}
+type
+  TScreenMonitorCacheFix = class(TWindowProcHook)
+  private
+    procedure HandleActiveFormChangedOnce(_Sender: TObject);
+    class function TryInitialize: Boolean; static;
+  protected
+    procedure NewWindowProc(var _Msg: TMessage); override;
+  public
+    class procedure Initialize;
+  end;
+
+{ TScreenMontorCacheFix }
+
+procedure TScreenMonitorCacheFix.NewWindowProc(var _Msg: TMessage);
+var
+  mf: TForm;
 begin
-  WM_WINDOW_PROC_HOOK_HELPER := RegisterWindowMessage('WM_WINDOW_PROC_HOOK_HELPER');
+  if _Msg.Msg = WM_SETTINGCHANGE then begin
+    if _Msg.wParam = SPI_SETWORKAREA then begin
+      if Assigned(Application) then begin
+        mf := Application.MainForm;
+        if Assigned(mf) then
+          mf.Monitor;
+      end;
+    end;
+  end;
+
+  inherited;
 end;
+
+procedure TScreenMonitorCacheFix.HandleActiveFormChangedOnce(_Sender: TObject);
+begin
+  // we must not access self here as this event handler is assigned without instantiating the class
+  if TryInitialize then begin
+    Screen.OnActiveFormChange := nil;
+  end;
+end;
+
+class function TScreenMonitorCacheFix.TryInitialize: Boolean;
+var
+  mf: TForm;
+begin
+  Result := False;
+  if Assigned(Application) then begin
+    mf := Application.MainForm;
+    if Assigned(mf) then begin
+      TScreenMonitorCacheFix.Create(mf);
+      Result := True;
+    end;
+  end;
+end;
+
+class procedure TScreenMonitorCacheFix.Initialize;
+var
+  DummyInstance: TScreenMonitorCacheFix;
+begin
+  if not TryInitialize then begin
+    Assert(Assigned(Screen), 'Programmer error: Screen is not yet assigned');
+    DummyInstance := nil;
+    Screen.OnActiveFormChange := DummyInstance.HandleActiveFormChangedOnce;
+  end;
+end;
+{$ENDIF}
 
 type
   TCenterWindowThread = class(TNamedThread)
@@ -7221,7 +7499,7 @@ end;
 
 { TdzScreen }
 
-function EnumMonitorsProc(hm: HMONITOR; dc: HDC; r: PRECT; Data: Pointer): Boolean; stdcall;
+function EnumMonitorsProc(hm: HMonitor; dc: HDC; r: PRECT; Data: Pointer): Boolean; stdcall;
 var
   Info: TMonitorInfoEx;
   M: TdzScreen.PdzMonitor;
@@ -7255,7 +7533,9 @@ end;
 {$ENDIF}
 
 initialization
-  InitializeCustomMessages;
+{$IFDEF DELPHI2007}
+  TScreenMonitorCacheFix.Initialize;
+{$ENDIF}
 finalization
   FreeAndNil(gblCheckListBoxHelper);
 end.
