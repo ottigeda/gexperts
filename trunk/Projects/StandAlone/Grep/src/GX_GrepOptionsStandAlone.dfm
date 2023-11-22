@@ -12,10 +12,8 @@ object fmGrepGrepOptionsStandAlone: TfmGrepGrepOptionsStandAlone
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poOwnerFormCenter
   Scaled = False
-  PixelsPerInch = 96
   TextHeight = 14
   object btnOK: TButton
     Left = 336
