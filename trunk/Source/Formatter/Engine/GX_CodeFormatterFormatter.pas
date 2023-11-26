@@ -1625,7 +1625,7 @@ begin
                 AssertLineFeedAfter(FTokenIdx);
             end;
           end else begin
-            if ((FPrevToken is TLineFeed) and (FStack.GetTopType = rtBegin)) then begin
+            if ((FPrevToken is TLineFeed) and (FStack.GetTopType in [rtBegin, rtTry])) then begin
               // inline var declaration
             end else if (FPrevToken.GetExpression(exp) and SameText(exp, 'for')) then begin
               // for with inline var declaration
