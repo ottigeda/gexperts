@@ -1065,6 +1065,11 @@ begin
   FCurrentRType := FCurrentToken.ReservedType;
   wType := FCurrentToken.WordType;
 
+  if wtype in [wtMultilineStringStart, wtMultilineString, wtMultilineStringEnd] then begin
+    // we do not indent those
+    Exit; //==>
+  end;
+
   // This handles the case where a reserved word was used as the name of a class member.
   // (Is that even allowed?)
   if (FCurrentRType in [rtWhile, rtEnd, rtRepeat, rtBegin, rtUses, rtTry,

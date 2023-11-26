@@ -38,15 +38,35 @@ type
   private
     FTokens: TPascalTokenList;
     FReadingAsm: Boolean;
+    FReadingMultilineString: boolean;
     FAsmComment: TWordType;
     FPrevLine: TLineFeed;
     FPrevType: TWordType;
     FLeftPointBracket: Integer;
     FIdentifiers: TIdentifiersList;
-    {: ReadAsm does very simple parsing only to find comments because this
-       influences finding the matching "end". No formatting is done
-       later to asm code }
+    ///<summary>
+    /// ReadAsm does very simple parsing only to find comments because this
+    /// influences finding the matching "end". No formatting is done
+    /// later to asm code </summary>
     procedure ReadAsm(var _Buff: PGXUnicodeChar);
+    ///<summary>
+    /// A multi line string literal
+    /// * starts with a line ending in a triple of single quotes, optionally followed by space characters
+    ///   No comment is allowed between the triple quotes and the end of the line.
+    /// * Ends with a line starting with a triple of single quotes, optionally preceded by space characters
+    ///   The number of space characters determines how many spaces are ignored as prefix in the lines
+    ///   of the string.
+    ///   A comment or any other code is allowed after these tripe quotes.
+    /// Example:
+    /// ------------------
+    /// a := '''
+    ///      first line
+    ///         indented second line
+    ///      third line (must be at least as far idented as the closing triple quote)
+    ///
+    ///      fifth line, the fourth line above is emtpy
+    ///      '''; // a comment is allowed here or even code
+    procedure ReadMultilineString(var _Buff: PGXUnicodeChar);
     function ReadHalfComment(out _Dest: TGXUnicodeString; var _Source: PGXUnicodeChar): TWordType;
     function ReadWord(out _Dest: TGXUnicodeString; var _Source: PGXUnicodeChar): TWordType;
     {: Adds a single line of text to the parse tree }
@@ -89,6 +109,7 @@ begin
   FEndCommentOut := _Settings.EndCommentOut;
   FLeftPointBracket := 0;
   FReadingAsm := False;
+  FReadingMultilineString := False;
   FPrevLine := nil;
   FPrevType := wtNothing;
   FTokens := TPascalTokenList.Create;
@@ -134,6 +155,9 @@ begin
   if FReadingAsm then
     ReadAsm(_Buff);
 
+  if FReadingMultilineString then
+    ReadMultilineString(_Buff);
+
   while (_Buff^ <> #0) do begin
     if FPrevType in [wtHalfComment, wtHalfStarComment, wtHalfOutComment] then begin
       FPrevType := ReadHalfComment(s, _Buff);
@@ -173,9 +197,9 @@ begin
   end;
 end;
 
-function PCharDiff(_p, _q: PGXUnicodeChar): integer;
+function PCharDiff(_Higher, _Lower: PGXUnicodeChar): integer;
 begin
-  Result := (GXNativeInt(_p) - GXNativeInt(_q)) div SizeOf(_p^);
+  Result := (GXNativeInt(_Higher) - GXNativeInt(_Lower)) div SizeOf(_Higher^);
 end;
 
 procedure TCodeFormatterParser.ReadAsm(var _Buff: PGXUnicodeChar);
@@ -252,6 +276,46 @@ begin
   _Buff := P;
 end;
 
+procedure TCodeFormatterParser.ReadMultilineString(var _Buff: PGXUnicodeChar);
+var
+  P: PGXUnicodeChar;
+  s: TGXUnicodeString;
+begin
+  // This is a line in a multi line string.
+  // It can contain anything.
+  // We only check for the end marker which consists of white space, followed by a triplet of single quotes
+  P := _Buff;
+  while P^ <> #0 do begin
+    case P^ of
+      #39: begin
+          if (PCharPlus(P, 1)^ = #39) and (PCharPlus(P, 2)^ = #39) then begin
+            // this is the end marker for the multi line string
+            SetString(s, _Buff, PCharDiff(P, _Buff) + 3);
+            FTokens.Add(TExpression.Create(wtMultilineStringEnd, s));
+            _Buff := PCharPlus(P, 3);
+            FReadingMultilineString := False;
+            Exit; //==>
+          end;
+        end;
+      ' ', Tab: begin
+          // might be white space before the end marker
+        end;
+    else
+      // this is simply a line in the multi line string
+      while P^ <> #0 do
+        Inc(P);
+      SetString(s, _Buff, PCharDiff(P, _Buff));
+      FTokens.Add(TExpression.Create(wtMultilineString, s));
+      _Buff := P;
+      Exit; //==>
+    end;
+    Inc(P);
+  end; // while
+  SetString(s, _Buff, StrLen(_Buff));
+  FTokens.Add(TExpression.Create(wtMultilineString, s));
+  _Buff := P;
+end;
+
 function TCodeFormatterParser.ReadWord(out _Dest: TGXUnicodeString; var _Source: PGXUnicodeChar): TWordType;
 const
   IdentifierTerminators = [
@@ -265,9 +329,9 @@ const
 var
   P: PGXUnicodeChar;
 
-  {: Reads a string literal, on exit p points behind the last character of the string
-     @returns either wtString or wtErrorString }
-
+  ///<summary>
+  /// Reads a string literal, on exit P points behind the last character of the string
+  /// @returns either wtString or wtErrorString </summary>
   function ReadString: TWordType;
   begin
     Result := wtString;
@@ -282,7 +346,6 @@ var
 
         #39: begin // we found either a quoted single quote or the end quote
             Inc(p);
-
             case p^ of
               #39: begin // skip quoted single quote
                   ; // do nothing, we just skipped it
@@ -310,8 +373,8 @@ var
     // we never get here, exiting the function is done via several Exit statements
   end;
 
-  {: Reads an identifier, on exit p points behind the last character of the identifier }
-
+  ///<summary>
+  /// Reads an identifier, on exit p points behind the last character of the identifier </summary>
   procedure ReadIdentifier;
   begin
     Result := wtWord;
@@ -381,7 +444,18 @@ begin
 
       #39: begin
           // single quote '
-          Result := ReadString;
+          if (PCharPlus(p, 1)^ =#39) and (PCharPlus(p, 2) = #39) then begin
+            // two additional single quotes -> This is the start of a multi line string
+            Result := wtMultilineStringStart;
+            FReadingMultilineString := True;
+            // In theory it may only be followed by spaces and then a newline, but we
+            /// allow for anything at all here and increment P until it points to the end of line
+            while p^ <> #0 do
+              Inc(p);
+          end else begin
+            // no triple quote -> It is the start of a regular string
+            Result := ReadString;
+          end;
         end;
 
       '^': begin // string starting with ^A or so or the ^ operator
@@ -517,7 +591,8 @@ begin
   // This is for changing the casing of identifiers without adding them to
   // the global list.
   // todo: Shouldn't this also check for Result <> wtSpaces?
-  if (Result <> wtString) and (not FReadingAsm) then
+  if not (Result in [wtString, wtMultilineStringStart, wtMultilineString, wtMultilineStringEnd])
+    and not FReadingAsm and not FReadingMultilineString then
     _Dest := FIdentifiers.AddIdentifier(_Dest);
 
   if SameText(_Dest, AnsiString('asm')) then begin

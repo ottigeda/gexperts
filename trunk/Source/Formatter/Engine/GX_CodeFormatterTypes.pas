@@ -21,6 +21,7 @@ type
 type
   TWordType = (wtLineFeed, wtSpaces, wtHalfComment, wtHalfStarComment,
     wtHalfOutComment, wtFullComment, wtFullOutComment, wtString, wtErrorString,
+    wtMultilineStringStart, wtMultilineString, wtMultilineStringEnd,
     wtOperator, wtWord, wtNumber, wtHexNumber, wtNothing, wtAsm, wtCompDirective);
 
   EFormatException = class(Exception);

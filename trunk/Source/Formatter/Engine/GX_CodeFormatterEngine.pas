@@ -116,9 +116,11 @@ begin
     Exit;
 
   Token := _Tokens[_TokenNo];
-
   repeat
-    Result := Result + Token.GetContent;
+    if Token.GetWordType in [wtMultilineString, wtMultilineStringEnd] then
+      Result := Token.GetContent
+    else
+      Result := Result + Token.GetContent;
     Inc(_TokenNo);
 
     if _TokenNo >= _Tokens.Count then
