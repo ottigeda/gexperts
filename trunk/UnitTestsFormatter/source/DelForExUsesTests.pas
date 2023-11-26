@@ -494,7 +494,7 @@ procedure TFormatterUsesTests.TestIndentUses;
 var
   ActualText: TGxUnicodeStringList;
   ExpectedText: TGxUnicodeStringList;
-  Settings: TCodeFormatterEngineSettings;
+//  Settings: TCodeFormatterEngineSettings;
 begin
   ExpectedText := TGxUnicodeStringList.Create;
   try
