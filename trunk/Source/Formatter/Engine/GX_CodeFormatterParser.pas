@@ -444,7 +444,7 @@ begin
 
       #39: begin
           // single quote '
-          if (PCharPlus(p, 1)^ =#39) and (PCharPlus(p, 2) = #39) then begin
+          if (PCharPlus(p, 1)^ =#39) and (PCharPlus(p, 2)^ = #39) then begin
             // two additional single quotes -> This is the start of a multi line string
             Result := wtMultilineStringStart;
             FReadingMultilineString := True;
