@@ -145,6 +145,9 @@ end;
 procedure TCodeFormatterParser.AddLine(_Buff: PGXUnicodeChar);
 var
   s: TGXUnicodeString;
+  Expression: TExpression;
+  PrevIdx: integer;
+  PrevToken: TPascalToken;
 begin
   FPrevLine := TLineFeed.Create(0, FSpacePerIndent);
   FTokens.Add(FPrevLine);
@@ -173,7 +176,33 @@ begin
       end else if FPrevLine = nil then
         FTokens.Add(TExpression.Create(FPrevType, s));
     end else begin
-      FTokens.Add(TExpression.Create(FPrevType, s));
+      Expression := TExpression.Create(FPrevType, s);
+      if (Expression.ReservedType = rtOper) and SameText(s, 'in') then begin
+        PrevIdx := FTokens.Count - 1;
+        if PrevIdx >= 0 then begin
+          PrevToken := FTokens[PrevIdx];
+          case PrevToken.ReservedType of
+            rtProcedure: begin
+                if PrevToken.GetExpression(s) and SameText(s, 'operator') then begin
+                  // special case: class operator in(...)
+                  // 'in' is not a reserved word in this case
+                  Expression.ReservedType := rtNothing;
+                end;
+              end;
+            rtDot: begin
+                if PrevIdx > 1 then begin
+                  PrevToken := FTokens[PrevIdx - 2];
+                  if PrevToken.GetExpression(s) and SameText(s, 'operator') then begin
+                    // special case: class operator TSomeClass.in(...)
+                    // 'in' is not a reserved word in this case
+                    Expression.ReservedType := rtNothing;
+                  end;
+                end;
+              end;
+          end;
+        end;
+      end;
+      FTokens.Add(Expression);
 
       if FReadingAsm and (_Buff^ <> #0) then
         ReadAsm(_Buff);
