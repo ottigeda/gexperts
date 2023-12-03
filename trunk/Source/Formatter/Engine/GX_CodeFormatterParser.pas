@@ -177,6 +177,10 @@ begin
         FTokens.Add(TExpression.Create(FPrevType, s));
     end else begin
       Expression := TExpression.Create(FPrevType, s);
+      // The following handles the case of 'in' being used as the name in operator overloading
+      // We set ReservedType to rtNothing in this case.
+      // todo: Should this go here? It's not really a parsing issue, but OTOT ReservedType
+      //       has been set incorrectly.
       if (Expression.ReservedType = rtOper) and SameText(s, 'in') then begin
         PrevIdx := FTokens.Count - 1;
         if PrevIdx >= 0 then begin
@@ -473,16 +477,15 @@ begin
 
       #39: begin
           // single quote '
-          if (PCharPlus(p, 1)^ =#39) and (PCharPlus(p, 2)^ = #39) then begin
-            // two additional single quotes -> This is the start of a multi line string
+          if (PCharPlus(P, 1)^ = #39) and (PCharPlus(P, 2)^ = #39) and (PCharPlus(P, 3)^ in [' ', #0]) then begin
+            // two additional single quotes and then a space or EOL -> This is the start of a multi line string
             Result := wtMultilineStringStart;
             FReadingMultilineString := True;
-            // In theory it may only be followed by spaces and then a newline, but we
-            /// allow for anything at all here and increment P until it points to the end of line
-            while p^ <> #0 do
-              Inc(p);
+            /// increment P until it points to the end of line
+            while P^ <> #0 do
+              Inc(P);
           end else begin
-            // no triple quote -> It is the start of a regular string
+            // no triple quote -> This is the start of a regular string
             Result := ReadString;
           end;
         end;
