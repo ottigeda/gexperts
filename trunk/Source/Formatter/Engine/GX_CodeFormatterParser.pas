@@ -450,6 +450,38 @@ var
     end;
   end;
 
+  function IsStartOfMultilineString(var _P: PWideChar): Boolean;
+  var
+    p1: PWideChar;
+  begin
+    Result := False;
+    // when we get here, we already know that _P^ is a single quote
+    p1 := _P;
+    Inc(p1);
+    if p1^ <> #39 then begin
+      // no second quote
+      Exit; //==>
+    end;
+    Inc(p1);
+    if p1^ <> #39 then begin
+      // no third quote
+      Exit; //==>
+    end;
+    Inc(p1);
+    while p1^ = ' ' do begin
+      // spaces are allowed after the initial ''', but nothing else
+      Inc(p1);
+    end;
+    if p1^ <> #0 then begin
+      // no more spaces, but not the end of line
+      Exit; //==>
+    end;
+    // OK, this is the start of a multi line string
+    Result := True;
+    /// set _P to the end of line so we continue with the next line
+    _P := p1;
+  end;
+
 begin
   P := _Source;
 
@@ -477,13 +509,9 @@ begin
 
       #39: begin
           // single quote '
-          if (PCharPlus(P, 1)^ = #39) and (PCharPlus(P, 2)^ = #39) and (PCharPlus(P, 3)^ in [' ', #0]) then begin
-            // two additional single quotes and then a space or EOL -> This is the start of a multi line string
+          if IsStartOfMultilineString(P) then begin
             Result := wtMultilineStringStart;
             FReadingMultilineString := True;
-            /// increment P until it points to the end of line
-            while P^ <> #0 do
-              Inc(P);
           end else begin
             // no triple quote -> This is the start of a regular string
             Result := ReadString;
