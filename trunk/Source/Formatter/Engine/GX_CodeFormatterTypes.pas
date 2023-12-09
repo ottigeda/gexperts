@@ -184,6 +184,8 @@ begin
   Add('constructor', rtProcedure);
   Add('contains', rtUses);
   Add('default', rtDefault);
+  Add('delayed', rtFuncDirective);
+  Add('dependency', rtFuncDirective);
   Add('deprecated', rtFuncDirective);
   Add('destructor', rtProcedure);
   Add('dispid', rtFuncDirective);
@@ -206,6 +208,7 @@ begin
   Add('finally', rtExcept);
   Add('for', rtWhile);
   Add('forward', rtForward);
+  Add('framework', rtFuncDirective);
   Add('function', rtProcedure);
   Add('goto', rtReserved);
   Add('helper', rtReserved);
@@ -228,6 +231,11 @@ begin
   Add('nil', rtReserved);
   Add('nodefault', rtFuncDirective);
   Add('not', rtOper);
+  // todo: "object" can also be a function directive:
+  //   of object
+  // and
+  //   procedure FunctionName; cdecl; external object 'ObjectFile.o' name '_FunctionName';
+  // The use of "object" for class declaration has been deprecated for years.
   Add('object', rtClass);
   Add('of', rtOf);
   Add('on', rtOn);
@@ -276,6 +284,7 @@ begin
   Add('until', rtUntil);
   Add('uses', rtUses);
   Add('var', rtVar);
+  Add('varargs', rtFuncDirective);
   Add('virtual', rtFuncDirective);
   Add('while', rtWhile);
   Add('with', rtWhile);
