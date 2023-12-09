@@ -195,6 +195,7 @@ begin
   Add('else', rtElse);
   Add('end', rtEnd);
   Add('except', rtExcept);
+  Add('experimental', rtFuncDirective);
   Add('export', rtFuncDirective);
   Add('exports', rtUses);
   Add('external', rtForward);
