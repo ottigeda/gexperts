@@ -5,7 +5,7 @@ object f_GExpertsFormatterAbout: Tf_GExpertsFormatterAbout
   BorderStyle = bsDialog
   Caption = 'About GExperts Source Code Formatter'
   ClientHeight = 113
-  ClientWidth = 401
+  ClientWidth = 562
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,23 +14,28 @@ object f_GExpertsFormatterAbout: Tf_GExpertsFormatterAbout
   Font.Style = []
   OldCreateOrder = False
   Position = poOwnerFormCenter
+  DesignSize = (
+    562
+    113)
   PixelsPerInch = 96
   TextHeight = 13
   object l_StandAloneAbout: TLabel
     Left = 8
     Top = 8
-    Width = 319
+    Width = 509
     Height = 13
-    Caption = 'StandAlone version by Ulrich Gerhardt <ulrich.gerhardt@gmx.de>'
+    Caption = 
+      'StandAlone version originally by Ulrich Gerhardt <ulrich.gerhard' +
+      't@gmx.de>, extended by Thomas Mueller'
   end
   object l_ExperimentalAbout: TLabel
     Left = 8
     Top = 32
-    Width = 383
+    Width = 398
     Height = 13
     Caption = 
-      'Experimental GExperts version by Thomas Mueller <gexperts@dummze' +
-      'uch.de>'
+      'Experimental GExperts version by Thomas Mueller https://gexperts' +
+      '.dummzeuch.de'
   end
   object l_DelForExp: TLabel
     Left = 8
@@ -50,10 +55,11 @@ object f_GExpertsFormatterAbout: Tf_GExpertsFormatterAbout
     OnClick = b_AboutGExpertsClick
   end
   object b_Close: TButton
-    Left = 320
+    Left = 480
     Top = 80
     Width = 75
     Height = 25
+    Anchors = [akTop, akRight]
     Cancel = True
     Caption = 'Close'
     TabOrder = 1

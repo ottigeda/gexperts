@@ -22,8 +22,7 @@ uses
 
 type
   Tf_GExpertsFormatterMain = class(TForm)
-    ed_FileToFormat: TEdit;
-    l_: TLabel;
+    l_FilesToFormat: TLabel;
     od_File: TOpenDialog;
     b_SelectFile: TButton;
     b_Format: TButton;
@@ -31,18 +30,15 @@ type
     b_Settings: TButton;
     b_About: TButton;
     TheStatusBar: TStatusBar;
+    m_FilesToFormat: TMemo;
     procedure b_ExitClick(Sender: TObject);
-    procedure ed_FileToFormatChange(Sender: TObject);
+    procedure m_FilesToFormatChange(Sender: TObject);
     procedure b_SelectFileClick(Sender: TObject);
     procedure b_FormatClick(Sender: TObject);
     procedure b_SettingsClick(Sender: TObject);
     procedure b_AboutClick(Sender: TObject);
   private
-    FOldLBWindowProc: TWndMethod;
-    procedure NewWindowProc(var Message: TMessage);
-    procedure InstallWindowProc;
-    procedure UninstallWindowProc;
-    procedure WMDROPFILES(var Msg: TMessage);
+    procedure HandleFilesDropped(_Sender: TObject; _Files: TStrings);
   public
     constructor Create(_Onwer: TComponent); override;
     destructor Destroy; override;
@@ -55,126 +51,153 @@ implementation
 {$R *.dfm}
 
 uses
-  GX_StandAloneLoadDLL;
+  IniFiles,
+  u_dzVclUtils,
+  u_dzFileUtils,
+  GX_CodeFormatterFormatter,
+  GX_CodeFormatterEngine,
+  GX_StringList,
+  GX_CodeFormatterConfigHandler,
+  GX_GenericUtils,
+  GX_CodeFormatterConfig,
+  GX_CodeFormatterGXConfigWrapper;
 
-type
-  TFormatFileFunc = function(_FileName: PWideChar): Boolean;
-  TFormatFilesFunc = function(_FileNames: PWideChar): Boolean;
-  TConfigureFormatterProc = procedure;
-
-const
-  EntryPoint_FormatFile = 'FormatFile';
-  EntryPoint_FormatFiles = 'FormatFiles';
-  EntryPoint_ConfigureFormatter = 'ConfigureFormatter';
-  EntryPoint_AboutFormatter = 'AboutFormatter';
-
-var
-  FormatFile: TFormatFileFunc = nil;
-  FormatFiles: TFormatFilesFunc = nil;
-  ConfigureFormatter: TConfigureFormatterProc = nil;
-  AboutFormatter: TAboutFormatterProc = nil;
-  Dll: IGExpertsDll;
-
-function LoadGExperts(out _DllName: string): Boolean;
-begin
-  try
-    Dll := LoadAnyGExpertsDLL;
-  except
-    on e: exception do begin
-      Application.ShowException(e);
-      Result := False;
-      Exit; //==>
-    end;
-  end;
-
-  _DllName := Dll.DllName;
-  Result := True;
-
-  FormatFile := Dll.GetProcAddress(EntryPoint_FormatFile);
-  FormatFiles := Dll.GetProcAddress(EntryPoint_FormatFiles);
-  ConfigureFormatter := Dll.GetProcAddress(EntryPoint_ConfigureFormatter);
-  AboutFormatter := Dll.GetProcAddress(EntryPoint_AboutFormatter);
-end;
-
-procedure Interactive(const _DllName: string);
+procedure Interactive;
 var
   frm: Tf_GExpertsFormatterMain;
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(Tf_GExpertsFormatterMain, frm);
-  frm.TheStatusBar.SimpleText := _DllName + ' loaded.';
   Application.Run;
 end;
 
-procedure doFormatFile(FileName: string);
+function CreateAndConfigureEngine: TCodeFormatterEngine;
+var
+  Ini: TCustomIniFile;
+  ConfigReader: IConfigReader;
 begin
-  FileName := ExpandFileName(FileName);
-  FormatFile(PWideChar(FileName));
+  Ini := nil;
+  try
+    Result := TCodeFormatterEngine.Create;
+    Ini := TMemIniFile.Create(GetConfigFilename);
+    ConfigReader := TIniFileWrapper.Create(Ini);
+    TCodeFormatterConfigHandler.ReadSettings(ConfigReader, Result.Settings,
+      GetCapitalizationFilename);
+  finally
+    FreeAndNil(Ini);
+  end;
+end;
+
+function doFormatFile(_Engine: TCodeFormatterEngine; _FileName: string): Boolean;
+var
+  Source: TGXUnicodeStringList;
+begin
+  _FileName := ExpandFileName(_FileName);
+  Source := TGXUnicodeStringList.Create;
+  try
+    Source.LoadFromFile(_FileName);
+    Result := _Engine.Execute(Source);
+    if Result then begin
+      Source.SaveToFile(_FileName);
+    end;
+  finally
+    FreeAndNil(Source);
+  end;
+end;
+
+function FormatFile(const _FileName: string): Boolean;
+var
+  Engine: TCodeFormatterEngine;
+begin
+  Engine := CreateAndConfigureEngine;
+  try
+    Result := doFormatFile(Engine, _FileName);
+  finally
+    FreeAndNil(Engine);
+  end;
 end;
 
 procedure Batch;
 var
-  FileName: string;
-  FileList: TStringList;
+  Engine: TCodeFormatterEngine;
+  fn: string;
   i: Integer;
 begin
-  FileList := TStringList.Create;
+  Engine := CreateAndConfigureEngine;
   try
     for i := 1 to ParamCount do begin
-      FileName := ParamStr(i);
-      FileName := ExpandFileName(FileName);
-      FileList.Add(FileName);
+      fn := ParamStr(i);
+      doFormatFile(Engine, fn);
     end;
-    FileList.StrictDelimiter := True;
-    FileList.Delimiter := ';';
-    FormatFiles(PWideChar(FileList.DelimitedText));
   finally
-    FileList.Free;
+    FreeAndNil(Engine);
   end;
 end;
 
 procedure Main;
-var
-  DllName: string;
 begin
-  if LoadGExperts(DllName) then begin
-    if ParamCount = 0 then begin
-      Interactive(DllName);
-    end else begin
-      Batch;
-    end;
+  if ParamCount = 0 then begin
+    Interactive;
+  end else begin
+    Batch;
   end;
 end;
 
 constructor Tf_GExpertsFormatterMain.Create(_Onwer: TComponent);
 begin
   inherited;
-  InstallWindowProc;
-  b_Settings.Visible := Assigned(@ConfigureFormatter);
-  b_About.Visible := Assigned(@AboutFormatter);
+  TWinControl_ActivateDropFiles(Self, HandleFilesDropped)
 end;
 
 destructor Tf_GExpertsFormatterMain.Destroy;
 begin
-  UninstallWindowProc;
   inherited;
+end;
+
+procedure Tf_GExpertsFormatterMain.HandleFilesDropped(_Sender: TObject; _Files: TStrings);
+var
+  i: Integer;
+  Lines: TStrings;
+begin
+  Lines := m_FilesToFormat.Lines;
+  Lines.BeginUpdate;
+  try
+    for i := 0 to _Files.Count - 1 do
+      Lines.Add(_Files[i]);
+  finally
+    Lines.EndUpdate;
+  end;
 end;
 
 procedure Tf_GExpertsFormatterMain.b_SelectFileClick(Sender: TObject);
 begin
   if od_File.Execute then
-    ed_FileToFormat.Text := od_File.FileName;
+    m_FilesToFormat.Lines.Add(od_File.FileName);
 end;
 
 procedure Tf_GExpertsFormatterMain.b_SettingsClick(Sender: TObject);
+var
+  Engine: TCodeFormatterEngine;
+  Ini: TMemIniFile;
+  ConfigWriter: IConfigWriter;
 begin
-  ConfigureFormatter;
+  Engine := CreateAndConfigureEngine;
+  try
+    if TfmCodeFormatterConfig.Execute(Self, Engine.Settings) = mrOk then begin
+      Ini := TMemIniFile.Create(GetConfigFilename);
+      ConfigWriter := TIniFileWrapper.Create(Ini);
+      TCodeFormatterConfigHandler.WriteSettings(ConfigWriter, Engine.Settings);
+      Ini.UpdateFile;
+    end;
+  finally
+    FreeAndNil(Engine);
+  end;
 end;
 
 procedure Tf_GExpertsFormatterMain.b_AboutClick(Sender: TObject);
 begin
-  Tf_GExpertsFormatterAbout.Execute(Self, @AboutFormatter);
+  Tf_GExpertsFormatterAbout.Execute(Self, nil);
 end;
 
 procedure Tf_GExpertsFormatterMain.b_ExitClick(Sender: TObject);
@@ -183,60 +206,46 @@ begin
 end;
 
 procedure Tf_GExpertsFormatterMain.b_FormatClick(Sender: TObject);
-begin
-  doFormatFile(ed_FileToFormat.Text);
-end;
-
-procedure Tf_GExpertsFormatterMain.ed_FileToFormatChange(Sender: TObject);
 var
   fn: string;
+  i: Integer;
+  Formatted: Integer;
 begin
-  fn := ed_FileToFormat.Text;
-  b_Format.Enabled := FileExists(fn);
-end;
-
-procedure Tf_GExpertsFormatterMain.InstallWindowProc;
-var
-  frm: TForm;
-begin
-  frm := Self as TForm;
-  FOldLBWindowProc := frm.WindowProc;
-  frm.WindowProc := NewWindowProc;
-  DragAcceptFiles(frm.Handle, True);
-end;
-
-procedure Tf_GExpertsFormatterMain.UninstallWindowProc;
-var
-  frm: TForm;
-begin
-  frm := Self as TForm;
-  DragAcceptFiles(frm.Handle, False);
-  frm.WindowProc := FOldLBWindowProc;
-end;
-
-procedure Tf_GExpertsFormatterMain.NewWindowProc(var Message: TMessage);
-begin
-  if Message.Msg = WM_DROPFILES then
-    WMDROPFILES(Message);
-  FOldLBWindowProc(Message);
-end;
-
-procedure Tf_GExpertsFormatterMain.WMDROPFILES(var Msg: TMessage);
-var
-  pcFileName: array[0..255] of Char;
-  fn: string;
-  i, iSize, iFileCount: Integer;
-begin
-  iFileCount := DragQueryFile(Msg.wParam, $FFFFFFFF, nil, 255);
-  for i := 0 to iFileCount - 1 do begin
-    iSize := DragQueryFile(Msg.wParam, i, nil, 0) + 1;
-    DragQueryFile(Msg.wParam, i, pcFileName, iSize);
-    fn := pcFileName;
-    fn := PChar(fn);
-    if FileExists(fn) then
-      ed_FileToFormat.Text := fn;
+  Formatted := 0;
+  for i := 0 to m_FilesToFormat.Lines.Count do begin
+    fn := m_FilesToFormat.Lines[i];
+    if fn <> '' then begin
+      TStatusBar_SetLongSimpleText(TheStatusBar, 'Formatting file ...');
+      Application.ProcessMessages;
+      if FormatFile(fn) then begin
+        Inc(Formatted);
+        TStatusBar_SetLongSimpleText(TheStatusBar, 'File formatted successfully.');
+      end else begin
+        TStatusBar_SetLongSimpleText(TheStatusBar, 'File remained unchanged.');
+      end;
+      Application.ProcessMessages;
+    end;
   end;
-  DragFinish(Msg.wParam);
+  TStatusBar_SetLongSimpleText(TheStatusBar,
+    Format('%d files have been changed during formatting..', [Formatted]));
+end;
+
+procedure Tf_GExpertsFormatterMain.m_FilesToFormatChange(Sender: TObject);
+var
+  fn: string;
+  i: Integer;
+  Lines: TStrings;
+begin
+  Lines := m_FilesToFormat.Lines;
+  for i := 0 to Lines.Count - 1 do begin
+    fn := m_FilesToFormat.Lines[i];
+    if not FileExists(fn) then begin
+      TStatusBar_SetLongSimpleText(TheStatusBar, 'File does not exist: ' + fn);
+      b_Format.Enabled := False;
+      Exit; //==>
+    end;
+  end;
+  b_Format.Enabled := (Lines.Count > 0);
 end;
 
 end.
