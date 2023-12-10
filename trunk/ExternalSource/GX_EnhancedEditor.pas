@@ -7,7 +7,7 @@ interface
 // This is implemented as a TWinControl to ease design-time usage
 
 uses
-  Windows, Classes, Graphics, Controls,
+  Windows, Classes, Graphics, Controls, Types,
   SynEdit, SynMemo, SynEditTypes, SynEditTextBuffer, SynEditKeyCmds,
   GX_SynMemoUtils,
   GX_GenericUtils, GX_StringList;
