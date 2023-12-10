@@ -257,7 +257,8 @@ uses
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
   GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas';
 
-{$R '..\..\Source\GExperts_manifest.res'}
+// using this resouce results in an Access Violiation on closing the IDE
+{.$R '..\..\Source\GExperts_manifest.res'}
 {$R '..\..\images\GXIcons.res''}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
 {$R '..\..\Binaries\ConvertStrings.res' '..\..\Binaries\ConvertStrings.rc'}
