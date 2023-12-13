@@ -37,7 +37,7 @@ inherited fmAboutExperimental: TfmAboutExperimental
     Left = 224
     Top = 64
     Width = 385
-    Height = 13
+    Height = 20
     Alignment = taCenter
     AutoSize = False
     Caption = 'Experimental version created by Thomas M'#252'ller'
@@ -46,7 +46,7 @@ inherited fmAboutExperimental: TfmAboutExperimental
     Left = 224
     Top = 88
     Width = 385
-    Height = 14
+    Height = 20
     Alignment = taCenter
     AutoSize = False
     Caption = 'https://gexperts.dummzeuch.de'
@@ -55,7 +55,7 @@ inherited fmAboutExperimental: TfmAboutExperimental
     Left = 224
     Top = 112
     Width = 385
-    Height = 14
+    Height = 20
     Cursor = crHandPoint
     Alignment = taCenter
     AutoSize = False

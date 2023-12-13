@@ -68,6 +68,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Graphics, ToolsApi, Messages,
+  GX_GxUtils,
   GX_GenericUtils, GX_FeedbackWizard, GX_LibrarySource, u_dzVclUtils;
 
 const
@@ -89,7 +90,7 @@ end;
 constructor TfmAbout.Create(AOwner: TComponent);
 begin
   inherited;
-  SetDefaultFont(Self);
+  GxSetDefaultFont(Self);
 
   TLabel_MakeUrlLabel(lblWebPage);
 
