@@ -336,6 +336,7 @@ begin
 
   TControl_SetMinConstraints(Self);
 
+  GxSetDefaultFont(Self);
   InitDpiScaler;
 
   InitializeForm;
@@ -372,16 +373,17 @@ end;
 
 procedure TfmComponentGrid.StringGridResize(Sender: TObject);
 const
-  MinimumLastColWidth = 100;
+  MINIMUM_LAST_COLWIDTH = 100; // @96 dpi
 var
   SendingGrid: TSortGrid;
   i: Integer;
   WidthDelta: Integer;
   LastColWidth: Integer;
+  MinimumLastColWidth: Integer;
 begin
   SendingGrid := Sender as TSortGrid;
   Assert(Assigned(SendingGrid));
-
+  MinimumLastColWidth := FScaler.Calc(MINIMUM_LAST_COLWIDTH);
   WidthDelta := SendingGrid.ClientWidth;
   for i := 0 to SendingGrid.ColCount - 1 do
     Dec(WidthDelta, SendingGrid.ColWidths[i]);
@@ -460,6 +462,11 @@ begin
 end;
 
 procedure TfmComponentGrid.InitializeForm;
+var
+  ALeft  : Integer;
+  ATop   : Integer;
+  AWidth : Integer; // TRect doesn't support .Width and .Height in older versions.
+  AHeight: Integer;
 begin
   SetToolbarGradient(ToolBar);
   StringGrid := TSortGrid.Create(Self);
@@ -467,14 +474,21 @@ begin
   begin
     Name := 'StringGrid';
     Parent := Self;
-    Left := 0;
-    Top := 22;
-    Width := 449;
-    Height := 218;
-    Align := alClient;
+    Align := alBottom; // Align = alClient
+    
+    ALeft   := 0;
+    ATop    := ToolBar.Top + ToolBar.Height;
+    AWidth  := FScaler.Calc(449);
+    AHeight := Self.ClientHeight - Toolbar.Height - Toolbar.Top;
+    SetBounds(ALeft, ATop, AWidth, AHeight);
+
     ColCount := FixedColumns + Length(GridProperties);
-    DefaultRowHeight := 18;
-    DefaultColWidth := 130;
+{$IFDEF GX_VER200_up}
+    DrawingStyle := gdsClassic;
+    FixedColor   := clBtnFace;
+{$ENDIF}
+    DefaultRowHeight := FScaler.Calc(DEFAULT_GRID_ROWHEIGHT);
+    DefaultColWidth := FScaler.Calc(130);
     FixedCols := FixedColumns;
     RowCount := 2;
     Options := [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goEditing, goTabs, goColSizing];
