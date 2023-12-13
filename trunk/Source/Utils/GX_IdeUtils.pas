@@ -64,6 +64,12 @@ function TryFindMessageView(out _Form: TForm): Boolean;
 /// @returns True, if the form could be found and was closed, False otherwise </summary>
 function TryCloseMessageView: Boolean;
 
+// Return the IDE's registry key
+function GetIdeBaseRegistryKey: string;
+
+// Return the IDE's font setting
+function GetIdeFontData(var FontName: string; var FontSize: Integer): Boolean;
+
 // Return the IDE's root directory (the installation directory).
 // Returns an empty string if the information could not be retrieved.
 function GetIdeRootDirectory: string;
@@ -367,6 +373,33 @@ begin
   Result := TryGetDesktopCombo(cbDesktop);
   if Result then
     _Items := cbDesktop.Items;
+end;
+
+function GetIdeBaseRegistryKey: string;
+begin
+  if IsStandAlone then
+    Result := ''
+  else
+    Result := GxOtaGetIdeBaseRegistryKey;
+end;
+
+function GetIdeFontData(var FontName: string; var FontSize: Integer): Boolean;
+var
+  BaseKey     : string;
+  RegKeyTheme : string;
+begin
+  Result := False;
+  BaseKey := GetIdeBaseRegistryKey;
+  if Length(BaseKey)=0 then Exit;
+
+  RegKeyTheme := BaseKey +  '\Theme';
+  if TRegistry_TryReadString(RegKeyTheme, 'FontName', FontName, HKEY_CURRENT_USER) then
+  begin
+    if TRegistry_TryReadInteger(RegKeyTheme, 'FontSize', FontSize, HKEY_CURRENT_USER) then
+    begin
+      Result := True;
+    end;
+  end;
 end;
 
 function GetIdeRootDirectory: string;

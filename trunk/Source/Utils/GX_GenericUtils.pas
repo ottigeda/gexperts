@@ -2557,7 +2557,10 @@ function SetDefaultFont(Control: TControl): string;
 begin
   Result := '';
   if Assigned(Control) then begin
-    if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 5) then
+    if IsWindowsVistaOrLater then begin
+      TControlCracker(Control).Font.Name := 'Segoe UI';
+    end
+    else if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 5) then
       TControlCracker(Control).Font.Name := 'MS Shell Dlg 2'
     else
       TControlCracker(Control).Font.Name := 'MS Shell Dlg';

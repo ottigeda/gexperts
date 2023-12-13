@@ -16,6 +16,9 @@ uses
   u_dzDpiScaleUtils,
   u_dzVclUtils;
 
+const
+  DEFAULT_GRID_ROWHEIGHT = 18; // @96 dpi
+
 type
   // All forms except docking forms must descend from this class.
   // Changes here must also be made to TfmIdeDockForm, since it must descend

@@ -174,11 +174,23 @@ type
   TControlCracker = class(TControl);
 
 procedure GxSetDefaultFont(Control: TControl);
+var
+  LFontName : string;
+  LFontSize : Integer;
 begin
+  if not Assigned(Control) then Exit;
+
   if ConfigInfo.EnableCustomFont then
     TControlCracker(Control).Font.Assign(ConfigInfo.CustomFont)
-  else
-    SetDefaultFont(Control);
+  else begin
+    if GX_IdeUtils.GetIdeFontData(LFontName, LFontSize) then
+    begin
+      TControlCracker(Control).Font.Name := LFontName;
+      TControlCracker(Control).Font.Size := LFontSize;
+    end
+    else
+      SetDefaultFont(Control);
+  end;
 end;
 
 end.
