@@ -483,7 +483,7 @@ begin
     SetBounds(ALeft, ATop, AWidth, AHeight);
 
     ColCount := FixedColumns + Length(GridProperties);
-{$IFDEF GX_VER200_up}
+{$IFDEF GX_VER210_up}
     DrawingStyle := gdsClassic;
     FixedColor   := clBtnFace;
 {$ENDIF}
