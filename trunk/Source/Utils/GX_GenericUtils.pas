@@ -24,6 +24,9 @@ const
   MaxSmallInt = 32767;
   MaxEditorCol = {$IFDEF GX_VER160_up} MaxSmallInt {$ELSE} 1023 {$ENDIF};
 
+const
+  DEFAULT_GRID_ROWHEIGHT = 18; // @96 dpi
+
 resourcestring
   SAllAlphaNumericChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
 
