@@ -48,6 +48,7 @@ uses
   ToolsAPI,
   GX_OtaUtils,
   GX_Experts,
+  GX_GxUtils,
   GX_IdeUtils,
   GX_GotoConfig,
   u_dzVclUtils;
@@ -84,6 +85,7 @@ var
   i: Integer;
   reg: TRegistry;
   cnt: Integer;
+  Spacer: Integer;
   s: string;
 begin
   inherited;
@@ -99,12 +101,16 @@ begin
     Items.EndUpdate;
   end;
 
-  lb_UnitPositions.ClientHeight := (FUnitPositions.Count + 1) * lb_UnitPositions.ItemHeight;
-  b_Ok.Top := lb_UnitPositions.Top + lb_UnitPositions.Height + 8;
-  b_Cancel.Top := b_Ok.Top;
-  Self.ClientHeight := b_Ok.Top + b_Ok.Height + 8;
-
   InitDpiScaler;
+  GxSetDefaultFont(Self);
+
+  Spacer := lb_UnitPositions.Left;
+  lb_UnitPositions.ClientHeight := (FUnitPositions.Count + 1) * lb_UnitPositions.ItemHeight;
+  b_Ok.Top := lb_UnitPositions.Top + lb_UnitPositions.Height + Spacer;
+  b_Cancel.Top := b_Ok.Top;
+  b_Cancel.Left := lb_UnitPositions.Left + lb_UnitPositions.Width - b_Cancel.Width;
+  Self.ClientHeight := b_Ok.Top + b_Ok.Height + Spacer;
+  Self.ClientWidth  := lb_UnitPositions.Left + lb_UnitPositions.Width + Spacer;
 
   // Unfortunately the IDE only updates the registry when it closes down so this list will be
   // outdated if the user switched from the IDE's goto dialog to the GExperts one.
