@@ -168,6 +168,7 @@ type
     procedure actPromptForNameExecute(Sender: TObject);
     procedure actEditMacroExecute(Sender: TObject);
     procedure actFileCloseExecute(Sender: TObject);
+    procedure SplitterMoved(Sender: TObject);
   private
     FDataList: TList;
     FSBWidth: Integer;
@@ -192,6 +193,7 @@ type
     procedure SelectFirstMacro;
     procedure SetDescriptionVisible(const Value: Boolean);
     function GetDescriptionVisible: Boolean;
+    procedure CheckLvMacrosHeight;
     property DescriptionVisible: Boolean read GetDescriptionVisible write SetDescriptionVisible;
     procedure RecordShortcutCallback(Sender: TObject);
   protected
@@ -750,13 +752,13 @@ begin
 
   TControl_SetMinConstraints(Self);
 
+  InitDpiScaler;
+
   FSuspended := False;
   FDataList := TList.Create;
   LoadSettings;
   FSBWidth := GetSystemMetrics(SM_CXVSCROLL);
   ResizeColumns;
-
-  InitDpiScaler;
 
   InitializeForm;
 
@@ -967,9 +969,20 @@ begin
   DescriptionVisible := b;
 end;
 
+procedure TfmMacroLibrary.CheckLvMacrosHeight;
+var
+  LvMinHeight: Integer;
+begin
+  LvMinHeight := FScaler.Calc(5 * DEFAULT_GRID_ROWHEIGHT);
+  if lvMacros.Height < LvMinHeight then begin
+    pnlDescription.Height := ClientHeight - Toolbar.Height - LvMinHeight;
+  end;
+end;
+
 procedure TfmMacroLibrary.FormResize(Sender: TObject);
 begin
   inherited;
+  CheckLvMacrosHeight;
   ResizeColumns;
   lvMacros.Invalidate;
 end;
@@ -1202,6 +1215,11 @@ procedure TfmMacroLibrary.SetDescriptionVisible(const Value: Boolean);
 begin
   pnlDescription.Visible := Value;
   Splitter.Visible := Value;
+end;
+
+procedure TfmMacroLibrary.SplitterMoved(Sender: TObject);
+begin
+  CheckLvMacrosHeight
 end;
 
 function TfmMacroLibrary.GetDescriptionVisible: Boolean;
