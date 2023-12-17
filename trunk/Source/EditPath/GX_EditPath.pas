@@ -26,6 +26,7 @@ uses
   ActnList,
   Menus,
   GX_BaseForm,
+  GX_GxUtils,
   GX_SharedImages,
   GX_EditPathConfig;
 
@@ -578,7 +579,7 @@ var
   MaxValue: Integer;
 begin
   MinValue := FScaler.Calc(FMinTargetListWidth);
-  MaxValue := ClientWidth - FScaler.Calc(FMinSearchPathWidth);
+  MaxValue := ClientWidth - FMinSearchPathWidth;
   NewWidth := Min(MaxValue, Max(MinValue, NewWidth));
 end;
 
@@ -794,14 +795,15 @@ begin
 
   FConfigs := TObjectList.Create;
 
+  InitDpiScaler;
+  GxSetDefaultFont(Self);
+
   TControl_SetMinConstraints(Self);
 
   FMinTargetListWidth := p_Left.Width;
   FMinSearchPathWidth := p_Client.Width;
   FMinHistoryHeight := p_ClientBottom.Height;
   FMinSearchPathHeight := p_ClientClient.Height;
-
-  InitDpiScaler;
 
   TPanel_BevelNone([p_BottomButtons, p_TargetCaption, p_InheritedCaption, p_MemoCaption, p_RightButtons]);
 
