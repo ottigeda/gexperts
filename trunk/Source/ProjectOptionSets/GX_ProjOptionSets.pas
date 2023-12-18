@@ -311,6 +311,9 @@ var
 begin
   inherited Create(AOwner);
 
+  InitDpiScaler;
+  GxSetDefaultFont(Self);
+
   TControl_SetMinConstraints(Self);
 
   FLastLoadedSet := '';
