@@ -1747,6 +1747,10 @@ begin
   FRootFolder := TGXFolder.Create(nil);
   FOptions := _Options;
 
+  SetupSystemImageLists;
+  InitDpiScaler;
+  GxSetDefaultFont(Self);
+
   TControl_SetMinConstraints(Self);
 
   SetToolbarGradient(ToolBar);
@@ -1760,8 +1764,6 @@ begin
   FFileViewer.Align := alClient;
 
   FMRUEntryFiles := TStringList.Create;
-
-  SetupSystemImageLists;
 
   CenterForm(Self);
   LoadSettings;
@@ -1780,8 +1782,6 @@ begin
   ListView.Columns[2].Width := ColumnTextWidth;
   ListView.Columns[3].Width := ColumnTextWidth;
   ListView.Columns.EndUpdate;
-
-  InitDpiScaler;
 end;
 
 destructor TfmFavFiles.Destroy;
@@ -1814,7 +1814,7 @@ begin
 
   if not Assigned(FISFolders) then begin
     if ilFolders.Tag = 0 then
-      ilFolders.Tag := TForm_CurrentPPI(Self);
+      ilFolders.Tag := _NewDpi; // TForm_CurrentPPI(Self);
     FISFolders := TImageListScaler.Create(Self, ilFolders);
   end;
   il := FISFolders.GetScaledList(_NewDpi);
