@@ -2,11 +2,10 @@ unit u_dzDpiScaleUtils;
 
 {$INCLUDE dzlib.inc}
 
-{.$DEFINE DPI_SCALER_LOGGING}
+{$DEFINE DPI_SCALER_LOGGING}
 
 {$IFOPT d-}
 {$UNDEF DPI_SCALER_LOGGING}
-{$UNDEF SUPPORTS_INLINE}
 {$ENDIF}
 
 interface
@@ -46,13 +45,13 @@ type
     FDesignDpi: Integer;
     FCurrentDpi: Integer;
   public
-    procedure Init(_Frm: TCustomForm); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    procedure Init(_Dpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    procedure Init(_DesignDpi, _CurrentDpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    procedure SetCurrentDpi(_Frm: TCustomForm); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    procedure SetCurrentDpi(_Dpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    function Calc(_Value: Integer): Integer; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    function Calc(const _Value: TRect): TRect; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure Init(_Frm: TCustomForm); overload;
+    procedure Init(_DPI: Integer); overload;
+    procedure Init(_DesignDpi, _CurrentDpi: Integer); overload;
+    procedure SetCurrentDpi(_Frm: TCustomForm); overload;
+    procedure SetCurrentDpi(_DPI: Integer); overload;
+    function Calc(_Value: Integer): Integer; overload;
+    function Calc(const _Value: TRect): TRect; overload;
     function ScaleFactorPercent: Integer;
   end;
 
@@ -96,43 +95,6 @@ uses
   u_dzTypesUtils,
   u_dzMiscUtils;
 
-type
-  TFormHack = class(TForm)
-  end;
-
-function TForm_GetDesignDPI(_Frm: TForm): UINT;
-begin
-{$IFDEF HAS_TFORM_GETDESIGNDPI}
-  Result := TFormHack(_Frm).GetDesignDpi;
-{$ELSE}
-  Result := 96;
-{$ENDIF}
-end;
-
-type
-  TGetDpiForWindow = function(_HWnd: HWND): UINT; stdcall;
-var
-  GetDpiForWindow: TGetDpiForWindow = nil;
-
-procedure InitApiCalls;
-var
-  Handle: Cardinal;
-begin
-  Handle := LoadLibrary('user32.dll');
-  if Handle <> 0 then begin
-    GetDpiForWindow := GetProcAddress(Handle, 'GetDpiForWindow');
-  end;
-end;
-
-function TScreen_GetDpiForForm(_Frm: TCustomForm): UINT;
-begin
-  Result := Screen.PixelsPerInch;
-  if _Frm is TForm then begin
-    if Assigned(GetDpiForWindow) then
-      Result := GetDpiForWindow(_Frm.Handle);
-  end;
-end;
-
 {$IFDEF DPI_SCALER_LOGGING}
 var
   LogFile: Textfile;
@@ -163,10 +125,56 @@ begin
     [_Prefix, _Cstr.MinWidth, _Cstr.MinHeight, _Cstr.MaxWidth, _Cstr.MaxHeight]);
 end;
 
-procedure LogForm(const _Prefix: string; _frm: TForm);
+procedure LogForm(const _Prefix: string; _Frm: TForm);
 begin
   LogFmt('%s: Left: %d, Top: %d, Width: %d, Height: %d, ClientWidth: %d, ClientHeight: %d',
-    [_Prefix, _frm.Left, _frm.Top, _frm.Width, _frm.Height, _frm.ClientWidth, _frm.ClientHeight]);
+    [_Prefix, _Frm.Left, _Frm.Top, _Frm.Width, _Frm.Height, _Frm.ClientWidth, _Frm.ClientHeight]);
+end;
+
+type
+  TFormHack = class(TForm)
+  end;
+
+function TForm_GetDesignDPI(_Frm: TForm): UINT;
+begin
+{$IFDEF HAS_TFORM_GETDESIGNDPI}
+  if Assigned(_Frm) then begin
+    Result := TFormHack(_Frm).GetDesignDpi;
+    LogFmt('TForm_GetDesignDPI(%s): Result: %d', [_Frm.Name, Result]);
+  end else
+    Result := 96;
+{$ELSE}
+  Result := 96;
+{$ENDIF}
+end;
+
+type
+  TGetDpiForWindow = function(_HWnd: HWND): UINT; stdcall;
+var
+  GetDpiForWindow: TGetDpiForWindow = nil;
+
+procedure InitApiCalls;
+var
+  Handle: Cardinal;
+begin
+  Handle := LoadLibrary('user32.dll');
+  if Handle <> 0 then begin
+    GetDpiForWindow := GetProcAddress(Handle, 'GetDpiForWindow');
+  end;
+end;
+
+function TScreen_GetDpiForForm(_Frm: TCustomForm): UINT;
+var
+  DpiForWindow: UINT;
+begin
+  Result := Screen.PixelsPerInch;
+  if _Frm is TForm then begin
+    if Assigned(GetDpiForWindow) then begin
+      DpiForWindow := GetDpiForWindow(_Frm.Handle);
+      LogFmt('TScreen_GetDpiForForm(%s): Screen.PixelsPerInch: %d DpiForWindow: %d', [_Frm.Name, Result, DpiForWindow]);
+      Result := DpiForWindow;
+    end;
+  end;
 end;
 
 { TDpiScaler }
@@ -208,21 +216,21 @@ begin
   _fnt.Height := _Size;
 end;
 
-procedure TDpiScaler.Init(_frm: TCustomForm);
+procedure TDpiScaler.Init(_Frm: TCustomForm);
 begin
-  if not Assigned(_frm) then begin
+  if not Assigned(_Frm) then begin
     FDesignDpi := 96;
     FCurrentDpi := 96;
   end else begin
 // todo: adjust as needed
 {$IFDEF DELPHIX_TOKYO_UP}
-    FDesignDpi := TForm_GetDesignDPI(TForm(_frm));
+    FDesignDpi := TForm_GetDesignDPI(TForm(_Frm));
     // I don't remember why I didn't use TForm(_frm).PixelsPerInch here
     // there possibly was a bug in some Delphi versions.
-    FCurrentDpi := TScreen_GetDpiForForm(_frm);
+    FCurrentDpi := TScreen_GetDpiForForm(_Frm);
 {$ELSE ~DELPHIX_TOKYO_UP}
-    FDesignDpi := TForm(_frm).PixelsPerInch;
-    FCurrentDpi := TForm(_frm).PixelsPerInch;
+    FDesignDpi := TForm(_Frm).PixelsPerInch;
+    FCurrentDpi := TForm(_Frm).PixelsPerInch;
 {$ENDIF DELPHIX_TOKYO_UP}
   end;
 end;
@@ -237,16 +245,16 @@ begin
   FCurrentDpi := _DPI;
 end;
 
-procedure TDpiScaler.SetCurrentDpi(_frm: TCustomForm);
+procedure TDpiScaler.SetCurrentDpi(_Frm: TCustomForm);
 begin
-  if not Assigned(_frm) then begin
+  if not Assigned(_Frm) then begin
     FCurrentDpi := 96;
   end else begin
 // todo: adjust as needed
 {$IFDEF DELPHIX_TOKYO_UP}
-    FCurrentDpi := TScreen_GetDpiForForm(_frm)
+    FCurrentDpi := TScreen_GetDpiForForm(_Frm)
 {$ELSE ~DELPHIX_TOKYO_UP}
-    FCurrentDpi := TForm(_frm).PixelsPerInch;
+    FCurrentDpi := TForm(_Frm).PixelsPerInch;
 {$ENDIF DELPHIX_TOKYO_UP}
   end;
 end;
@@ -452,26 +460,27 @@ begin
   Result := Scaler.Calc(_Value);
 end;
 
-constructor TFormDpiScaler.Create(_frm: TForm);
+constructor TFormDpiScaler.Create(_Frm: TForm);
 var
   Scaler: TDpiScaler;
   cnstr: TSizeConstraints;
   CurrFontSize: Integer;
   Ctrl: TControl;
   FormActiveControl: TWinControl;
+  DpiForForm: Cardinal;
 begin
   inherited Create;
-  FFrm := _frm;
+  FFrm := _Frm;
   FormActiveControl := FFrm.ActiveControl;
-  FClientWidth := _frm.ClientWidth;
-  FClientHeight := _frm.ClientHeight;
-  cnstr := _frm.Constraints;
+  FClientWidth := _Frm.ClientWidth;
+  FClientHeight := _Frm.ClientHeight;
+  cnstr := _Frm.Constraints;
   FMinWidth := cnstr.MinWidth;
   FMinHeight := cnstr.MinHeight;
   FMaxWidth := cnstr.MaxWidth;
   FMaxHeight := cnstr.MaxHeight;
-  CurrFontSize := GetFontSize(_frm.Font);
-  FDesignDpi := TForm_GetDesignDPI(_frm);
+  CurrFontSize := GetFontSize(_Frm.Font);
+  FDesignDpi := TForm_GetDesignDPI(_Frm);
 
   FPnlMaster := TPanel.Create(FFrm);
   FPnlMaster.Parent := FFrm;
@@ -493,11 +502,15 @@ begin
     [FClientWidth, FClientHeight, FMinWidth, FMinHeight, FMaxWidth, FMaxHeight, CurrFontSize, FDesignDpi]);
 
   // FontSize has already been changed by the VCL, but we need the design font size
-  Scaler.Init(_frm.Font.PixelsPerInch, FDesignDpi);
+  Scaler.Init(_Frm.Font.PixelsPerInch, FDesignDpi);
   FFontSize := Scaler.Calc(CurrFontSize);
-  LogFmt('  (FontPixelsPerInc: %d, FontSize: %d', [_frm.Font.PixelsPerInch, FFontSize]);
+  LogFmt('  (FontPixelsPerInc: %d, FontSize: %d', [_Frm.Font.PixelsPerInch, FFontSize]);
 
   AddControls(FFrm);
+
+  DpiForForm := TScreen_GetDpiForForm(FFrm);
+  LogStr(' Calling ApplyDpi from TFormDpiScaler.Create');
+  ApplyDpi(DpiForForm, nil);
 end;
 
 { TImageListScaler }
@@ -635,3 +648,4 @@ finalization
   CloseFile(LogFile);
 {$ENDIF}
 end.
+
