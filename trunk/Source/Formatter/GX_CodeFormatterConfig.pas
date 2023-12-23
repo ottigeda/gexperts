@@ -170,6 +170,8 @@ type
     procedure HandleCaptitalizationFileDropped(_Sender: TObject; _Files: TStrings);
     procedure m_PreviewFileDropped(_Sender: TObject; _Files: TStrings);
     procedure ChangeCapitalizationFile(const _fn: string);
+  protected
+    procedure ArrangeControls; override;
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
@@ -255,8 +257,6 @@ begin
   TWinControl_ActivateDropFiles(m_PreviewBefore, m_PreviewFileDropped);
   TWinControl_ActivateDropFiles(m_PreviewAfter, m_PreviewFileDropped);
 
-  grid_Spacing.DefaultRowHeight := grid_Spacing.Canvas.TextHeight('Mg') + 4;
-
   lb_Precedence.Items.AddObject(str_PrecedenceDirective, Pointer(cpDirective));
   lb_Precedence.Items.AddObject(str_PrecedenceIniFile, Pointer(cpIniFile));
   lb_Precedence.Items.AddObject(str_PrecedenceMySettings, Pointer(cpMyConfig));
@@ -271,6 +271,15 @@ destructor TfmCodeFormatterConfig.Destroy;
 begin
   FCapitalization.Free;
   inherited;
+end;
+
+procedure TfmCodeFormatterConfig.ArrangeControls;
+var
+  h: Integer;
+begin
+  inherited;
+  h := grid_Spacing.Canvas.TextHeight('Mg') + 4;
+  grid_Spacing.DefaultRowHeight := FScaler.Calc(h);
 end;
 
 procedure TfmCodeFormatterConfig.HandleCaptitalizationFileDropped(_Sender: TObject; _Files: TStrings);
@@ -649,6 +658,7 @@ end;
 
 procedure TfmCodeFormatterConfig.FormShow(Sender: TObject);
 begin
+  ApplyDpi(TScreen_GetDpiForForm(Self), nil);
   FillPreview;
   UpdatePreview(Sender);
   pc_Main.ActivePage := ts_Indent;
