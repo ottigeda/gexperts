@@ -234,12 +234,6 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$DEFINE GX_CUSTOMINIFILE_HAS_READSUBSECTIONS}
 {$ENDIF}
 
-{$IFNDEF GX_DELPHI11_UP}
-  // Delphi 11 removed the property OldCreateOrder from TForm which breaks compatiblity
-  // of dfm files for older Delphi versions.
-  {$DEFINE GX_HAS_PROPERTY_OLDCREATEORDER}
-{$ENDIF}
-
 {$IFDEF GX_DELPHI11_UP}
   {$DEFINE GX_IDE_IS_HIDPI_AWARE}
   {$IFNDEF GX_DELPHI_12_UP}

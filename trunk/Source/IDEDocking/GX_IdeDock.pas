@@ -8,11 +8,8 @@ uses
   Windows,
   SysUtils, Classes, Forms, Controls,
   MenuBar, Menus, Messages,
-{$IFDEF GX_IDE_IS_HIDPI_AWARE}
   u_dzDpiScaleUtils,
-{$ELSE}
-  u_dzDpiScaleUtilsDummy,
-{$ENDIF}
+  u_dzVclUtils,
   // You must link to the DesignIde package to compile this unit
   DockForm;
 
@@ -35,11 +32,9 @@ type
   protected
     FMenuBar: TMenuBar;
     FScaler: TFormDpiScaler;
-{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); virtual;
     procedure ArrangeControls; virtual;
-{$ENDIF}
   protected
     procedure InitDpiScaler;
   public
@@ -75,7 +70,6 @@ implementation
 
 uses
   DeskForm, DeskUtil,
-  u_dzVclUtils,
   GX_GenericClasses, GX_GxUtils;
 
 type
@@ -176,7 +170,6 @@ begin
   inherited;
 end;
 
-{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmIdeDockForm.WMDpiChanged(var _Msg: TWMDpi);
 begin
   inherited;
@@ -195,26 +188,17 @@ procedure TfmIdeDockForm.ArrangeControls;
 begin
   // do nothing
 end;
-{$ENDIF}
 
 procedure TfmIdeDockForm.InitDpiScaler;
 begin
   FScaler := TFormDpiScaler.Create(Self);
-{$IFDEF GX_IDE_IS_HIDPI_AWARE}
-  ApplyDpi(TScreen_GetDpiForForm(Self), nil);
-{$ENDIF}
+  ArrangeControls;
 end;
 
 procedure TfmIdeDockForm.Loaded;
 begin
   inherited;
   Scaled := False;
-{$IFDEF GX_HAS_PROPERTY_OLDCREATEORDER}
-  // Delphi 11 removes this property from all dfm files, but unfortunately its default value
-  // is True, so older Delphi versions will add it again as True which will break several
-  // forms that rely on it to be False.
-  OldCreateOrder := False;
-{$ENDIF}
 end;
 
 {$IFDEF GX_EnableIdeDockingSupport}
