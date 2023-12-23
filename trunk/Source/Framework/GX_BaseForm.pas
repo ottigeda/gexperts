@@ -99,9 +99,7 @@ end;
 
 destructor TfmBaseForm.Destroy;
 begin
-{$IFDEF GX_IDE_IS_HIDPI_AWARE}
   FreeAndNil(FScaler);
-{$ENDIF}
   inherited;
 end;
 
