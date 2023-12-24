@@ -9,6 +9,7 @@ inherited fmCodeFormatterEditCapitalization: TfmCodeFormatterEditCapitalization
   ParentFont = False
   Position = poOwnerFormCenter
   OnCloseQuery = FormCloseQuery
+  OnShow = FormShow
   DesignSize = (
     369
     329)
