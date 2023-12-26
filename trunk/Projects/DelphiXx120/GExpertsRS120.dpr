@@ -255,7 +255,8 @@ uses
   GX_VCLFixPack in '..\..\Source\Utils\GX_VCLFixPack.pas',
   GX_VerDepConst in '..\..\source\Framework\GX_VerDepConst.pas',
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
-  GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas';
+  GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas',
+  GX_HintWindow in '..\..\Source\Framework\GX_HintWindow.pas';
 
 // using this resouce results in an Access Violiation on closing the IDE
 {.$R '..\..\Source\GExperts_manifest.res'}
