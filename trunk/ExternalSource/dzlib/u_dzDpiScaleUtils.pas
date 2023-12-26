@@ -97,14 +97,17 @@ uses
 
 {$IFDEF DPI_SCALER_LOGGING}
 var
+  LogIsOpen: Boolean = False;
   LogFile: Textfile;
 {$ENDIF}
 
 procedure LogStr(const _s: string);
 begin
 {$IFDEF DPI_SCALER_LOGGING}
-  WriteLn(LogFile, _s);
-  Flush(LogFile);
+  if LogIsOpen then begin
+    WriteLn(LogFile, _s);
+    Flush(LogFile);
+  end;
 {$ENDIF}
 end;
 
@@ -643,9 +646,15 @@ initialization
 // It didn't make any noticable difference though, probably because GExperts doesn't use VCL styles.
 {$IFDEF DPI_SCALER_LOGGING}
   Assignfile(LogFile, 'd:\DpiScaling.log');
-  Rewrite(LogFile);
+  try
+    Rewrite(LogFile);
+    LogIsOpen := True;
+  except
+    LogIsOpen := False;
+  end;
 finalization
-  CloseFile(LogFile);
+  if LogIsOpen then
+    CloseFile(LogFile);
 {$ENDIF}
 end.
 
