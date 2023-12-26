@@ -7,7 +7,7 @@ interface
 
 uses
   Windows, SysUtils, Types, ToolsAPI, TypInfo, Classes, Controls, Forms, StdCtrls, ExtCtrls,
-  CheckLst, Menus, ComCtrls, ToolWin, ActnList, Actions, UITypes,
+  CheckLst, Menus, ComCtrls, ToolWin, ActnList, Actions, UITypes, AppEvnts,
   OmniXml,
   GX_SharedImages, GX_IdeDock, GX_Experts, GX_ConfigurationInfo, GX_CheckListBoxWithHints;
 
@@ -623,6 +623,8 @@ end;
 
 procedure TfmProjOptionSets.FormShow(Sender: TObject);
 begin
+  inherited;
+
   // Add a default, empty set if none exist
   if lstSets.Items.Count = 0 then
     AddNewOptionSet('Default');

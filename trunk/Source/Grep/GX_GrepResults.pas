@@ -9,7 +9,7 @@ interface
 uses
   Windows, Classes, Graphics, Controls, Forms, ActnList, Dialogs, StdCtrls, ExtCtrls, ToolWin,
   Types, // for inlining
-  ComCtrls, Menus, Actions, UITypes,
+  ComCtrls, Menus, Actions, UITypes, AppEvnts,
   DropSource,
   GX_GrepBackend, GX_GrepExpert, GX_ConfigurationInfo, GX_IdeDock, GX_GrepSearch, GX_SharedImages;
 
@@ -2041,6 +2041,8 @@ end;
 
 procedure TfmGrepResults.FormShow(Sender: TObject);
 begin
+  inherited;
+
   AssignSettingsToForm;
   ResizeListBox;
   ResizeStatusBar;

@@ -7,11 +7,12 @@ interface
 uses
   Windows,
   SysUtils, Classes, Forms, Controls,
-  MenuBar, Menus, Messages,
+  MenuBar, Menus, Messages, AppEvnts,
   u_dzDpiScaleUtils,
   u_dzVclUtils,
   // You must link to the DesignIde package to compile this unit
-  DockForm;
+  DockForm,
+  GX_HintWindow;
 
 type
 {$IFDEF GX_EnableIdeDockingSupport}
@@ -28,9 +29,13 @@ type
   TfmIdeDockForm = class(TDummyIdeDockForm);
 {$ELSE}
   TfmIdeDockForm = class(TDockableForm)
+    TheApplicationEvents: TApplicationEvents;
+    procedure TheApplicationEventsShowHint(var HintStr: string; var CanShow: Boolean;
+      var HintInfo: THintInfo);
 {$ENDIF TrickTheIdeAncestorForm}
   protected
     FMenuBar: TMenuBar;
+    FGxHintCustomDataRec: TGxHintCustomDataRec;
     FScaler: TFormDpiScaler;
     procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); virtual;
@@ -41,6 +46,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
+    procedure ScaleHint(_HintWindow: TGxHintWindow);
     {$IFDEF GX_EnableIdeDockingSupport}
     {$ENDIF GX_EnableIdeDockingSupport}
   end;
@@ -138,6 +144,9 @@ end;
 constructor TfmIdeDockForm.Create(AOwner: TComponent);
 begin
   inherited;
+  FGxHintCustomDataRec.ScaleHint := Self.ScaleHint;
+  CopyMemory(@(FGxHintCustomDataRec.ID), @GxHintCustomDataId, SizeOf(FGxHintCustomDataRec.ID));
+
   GxSetDefaultFont(Self);
 
   {$IFDEF GX_EnableIdeDockingSupport}
@@ -182,11 +191,19 @@ begin
   if Assigned(FScaler) then
     FScaler.ApplyDpi(_NewDpi, _NewBounds);
   ArrangeControls;
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+  FCurrentPPI := _NewDpi;
+{$ENDIF}
 end;
 
 procedure TfmIdeDockForm.ArrangeControls;
 begin
   // do nothing
+end;
+
+procedure TfmIdeDockForm.ScaleHint(_HintWindow: TGxHintWindow);
+begin
+  _HintWindow.Canvas.Font.Size := FScaler.Calc(Screen.HintFont.Size);
 end;
 
 procedure TfmIdeDockForm.InitDpiScaler;
@@ -199,6 +216,13 @@ procedure TfmIdeDockForm.Loaded;
 begin
   inherited;
   Scaled := False;
+end;
+
+procedure TfmIdeDockForm.TheApplicationEventsShowHint(var HintStr: string; var CanShow: Boolean;
+  var HintInfo: THintInfo);
+begin
+  TGxHintWindow.HandleShowHintEvent(TheApplicationEvents, @FGxHintCustomDataRec,
+    HintStr, CanShow, HintInfo);
 end;
 
 {$IFDEF GX_EnableIdeDockingSupport}

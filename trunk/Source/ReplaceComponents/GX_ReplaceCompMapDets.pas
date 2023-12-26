@@ -181,6 +181,8 @@ end;
 
 procedure TfmReplaceCompMapDets.FormShow(Sender: TObject);
 begin
+  inherited;
+
   cbxGroupName.Text := '';
   LoadGroupList;
   FillClassList(cbxSourceClassName.Items);

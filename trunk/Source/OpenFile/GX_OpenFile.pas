@@ -986,6 +986,8 @@ end;
 
 procedure TfmOpenFile.FormShow(Sender: TObject);
 begin
+  inherited;
+
   lvSearchPath.Columns[0].Width := FFileColumnWidth;
   CopyColumns(lvSearchPath);
   ResizeListViewColumns;

@@ -550,10 +550,4 @@ object fmGrepSearch: TfmGrepSearch
     ShowHint = False
     TabOrder = 6
   end
-  object timHintTimer: TTimer
-    Interval = 5000
-    OnTimer = timHintTimerTimer
-    Left = 168
-    Top = 64
-  end
 end

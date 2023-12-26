@@ -1046,6 +1046,7 @@ procedure TfmCodeLib.FormShow(Sender: TObject);
 var
   Node: TTreeNode;
 begin
+  inherited;
   CodeDB.OpenStorage(StoragePath + DefaultFileName);
   if TryGetSelected(Node) and (IsCodeSnippet(Node)) then
     CodeDB.OpenFile(GetNodePath(Node));

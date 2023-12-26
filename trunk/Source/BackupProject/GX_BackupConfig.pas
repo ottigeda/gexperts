@@ -135,6 +135,7 @@ end;
 
 procedure TfmBackupConfig.FormShow(Sender: TObject);
 begin
+  inherited;
   cbBackupIncClick(nil);
 end;
 

@@ -144,6 +144,8 @@ end;
 
 procedure TfmReplaceCompLog.FormShow(Sender: TObject);
 begin
+  inherited;
+
   LoadAll;
 end;
 

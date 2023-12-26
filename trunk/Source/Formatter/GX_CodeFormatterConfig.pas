@@ -22,6 +22,7 @@ uses
   Dialogs,
   Grids,
   Menus,
+  AppEvnts,
   SynEdit,
   GX_CodeFormatterTypes,
   GX_CodeFormatterEngine,
@@ -658,7 +659,7 @@ end;
 
 procedure TfmCodeFormatterConfig.FormShow(Sender: TObject);
 begin
-  ApplyDpi(TScreen_GetDpiForForm(Self), nil);
+  inherited;
   FillPreview;
   UpdatePreview(Sender);
   pc_Main.ActivePage := ts_Indent;

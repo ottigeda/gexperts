@@ -13,7 +13,7 @@ interface
 uses
   Windows, SysUtils,
   Classes, Controls, Forms, Menus, ComCtrls, Buttons, ImgList, ImageList,
-  ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types,
+  ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types, AppEvnts,
   u_dzSpeedBitBtn, u_dzStopwatch,
   u_dzDpiScaleUtils,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
@@ -2932,6 +2932,8 @@ procedure SelectInGrid(_sg: TStringGrid; const _Unit: string);
 var
   s: string;
 begin
+  inherited;
+
   FilterVisibleUnits;
 
   s := edtIdentifierFilter.Text;

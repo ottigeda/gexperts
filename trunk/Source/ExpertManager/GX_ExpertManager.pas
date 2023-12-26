@@ -1022,6 +1022,7 @@ procedure TfmExpertManager.FormShow(Sender: TObject);
 var
   GxInst : TGExperts;
 begin
+  inherited;
   // Works around a bug in Delphi 5 under XP where the menu paints white
   GxInst := GExpertsInst(False);
   if Assigned(GxInst) then

@@ -24,6 +24,7 @@ uses
   ActnList,
   Buttons,
   ExtCtrls,
+  AppEvnts,
   GX_EnhancedEditor,
   GX_StringList,
   GX_BaseForm;
@@ -59,7 +60,6 @@ type
     procedure act_ImportExecute(Sender: TObject);
     procedure act_ExportExecute(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure FormShow(Sender: TObject);
   private
     FOrigList: TGXUnicodeString;
     FWords: TGxEnhancedEditor;
@@ -264,12 +264,6 @@ begin
       [mbYes, mbNo], 0) = ID_No) then
       CanClose := False;
   end;
-end;
-
-procedure TfmCodeFormatterEditCapitalization.FormShow(Sender: TObject);
-begin
-  inherited;
-  ApplyDpi(TScreen_GetDpiForForm(Self), nil);
 end;
 
 procedure TfmCodeFormatterEditCapitalization.act_ClearSearchExecute(Sender: TObject);

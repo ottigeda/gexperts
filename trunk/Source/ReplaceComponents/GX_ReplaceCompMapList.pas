@@ -201,6 +201,8 @@ end;
 
 procedure TfmReplaceCompMapList.FormShow(Sender: TObject);
 begin
+  inherited;
+
   comGroupName.ItemIndex := -1;
   LoadAll;
 end;

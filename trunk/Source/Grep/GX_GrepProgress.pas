@@ -5,7 +5,8 @@ unit GX_GrepProgress;
 interface
 
 uses
-  SysUtils, Classes, Controls, ComCtrls, StdCtrls, Forms, GX_BaseForm;
+  SysUtils, Classes, Controls, ComCtrls, StdCtrls, Forms, AppEvnts,
+  GX_BaseForm;
 
 type
   TfmGrepProgress = class(TfmBaseForm)

@@ -85,6 +85,8 @@ end;
 
 procedure TfmReplaceCompMapGrpList.FormShow(Sender: TObject);
 begin
+  inherited;
+
   LoadGroupList;
   UpdateBtns;
 end;

@@ -52,7 +52,6 @@ type
     btnOptions: TButton;
     rgSaveOption: TRadioGroup;
     btnSearch: TButton;
-    timHintTimer: TTimer;
     btnGrepAll: TButton;
     btnSectionAll: TButton;
     chk_UseMapFile: TCheckBox;
@@ -79,7 +78,6 @@ type
     procedure cbSectionImplementationClick(Sender: TObject);
     procedure cbSectionInitializationClick(Sender: TObject);
     procedure cbSectionFinalizationClick(Sender: TObject);
-    procedure timHintTimerTimer(Sender: TObject);
     procedure btnGrepAllClick(Sender: TObject);
     procedure btnSectionAllClick(Sender: TObject);
     procedure cbIncludeClick(Sender: TObject);
@@ -94,7 +92,6 @@ type
     FOriginalOptionsGroupWidth: Integer;
     FOriginalWhereGroupWidth: Integer;
     FLoadingSettings: Boolean;
-    FTheHintWindow: THintWindow;
     procedure InitializeForm;
     procedure EnableDirectoryControls(New: Boolean);
     procedure LoadFormSettings;
@@ -476,15 +473,6 @@ begin
   gblGrepExpert.GrepUseMapFile := chk_UseMapFile.Checked;
 end;
 
-procedure TfmGrepSearch.timHintTimerTimer(Sender: TObject);
-begin
-  timHintTimer.Enabled := False;
-  if Assigned(FTheHintWindow) then begin
-    FTheHintWindow.ReleaseHandle;
-    FreeAndNil(FTheHintWindow);
-  end;
-end;
-
 procedure TfmGrepSearch.LoadFormSettings;
 
   function RetrieveEditorBlockSelection: string;
@@ -777,6 +765,7 @@ end;
 
 procedure TfmGrepSearch.FormShow(Sender: TObject);
 begin
+  inherited;
   TControl_SetConstraints(Self, [ccMinWidth, ccMinHeight, ccMaxHeight]);
 end;
 
