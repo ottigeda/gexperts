@@ -2255,8 +2255,8 @@ function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; Byt
     CharPos: TOTACharPos;
 {$IFDEF GX_DELPHI8_UP}
     IdeString: UTF8String;
-{$ENDIF}
     ChPos: Integer;
+{$ENDIF}
   begin
     Result := '';
     CursorPosition := 0;
