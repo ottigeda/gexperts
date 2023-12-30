@@ -82,7 +82,6 @@ function GxActionBroker: IGxActionBroker;
 
 const  // Do not localize.
   GxGenericActionQualifier = 'Tools';
-  GExpertsActionCategory = 'GExperts';
 
 resourcestring
   SNoButtonCategory = '(None)';
@@ -104,6 +103,8 @@ type
     procedure SetShortCut(Value: TShortCut); {$ifdef GX_VER240_up} override; {$endif}
   protected
     function GetAssociatedMenuItem: TMenuItem;
+  public
+    constructor Create(_Owner: TComponent; const _Name: string); reintroduce;
   end;
 
 type
@@ -334,12 +335,9 @@ function TGxActionBroker.RequestAction(const ActionName: string; Bitmap: Graphic
 var
   GxToolsAction: TGxToolsAction;
 begin
-  Assert(Length(ActionName) > 0);
   Assert(IsValidIdent(ActionName));
 
-  GxToolsAction := TGxToolsAction.Create(GetActionOwner);
-  GxToolsAction.Category := GExpertsActionCategory;
-  GxToolsAction.Name := GenerateActionName(ActionName);
+  GxToolsAction := TGxToolsAction.Create(GetActionOwner, GenerateActionName(ActionName));
 
   RegisterActionWithIde(GxToolsAction, Bitmap);
 
@@ -347,20 +345,12 @@ begin
 end;
 
 function TGxActionBroker.RequestMenuAction(const ActionName: string; Bitmap: Graphics.TBitmap): IGxMenuAction;
-const
-  MenuItemAppendix = '_MenuItem'; // Do not localize.
 var
   GxMenuAction: TGxMenuAction;
 begin
-  Assert(Length(ActionName) > 0);
+  Assert(IsValidIdent(ActionName));
 
-  GxMenuAction := TGxMenuAction.Create(GetActionOwner);
-  GxMenuAction.Category := GExpertsActionCategory;
-  GxMenuAction.Name := GenerateMenuActionName(ActionName);
-
-  GxMenuAction.FAssociatedMenuItem := TMenuItem.Create(GxMenuAction);
-  GxMenuAction.FAssociatedMenuItem.Name := GxMenuAction.Name + MenuItemAppendix;
-  GxMenuAction.FAssociatedMenuItem.Action := GxMenuAction;
+  GxMenuAction := TGxMenuAction.Create(GetActionOwner, GenerateMenuActionName(ActionName));
 
   RegisterActionWithIde(GxMenuAction, Bitmap);
 
@@ -384,6 +374,17 @@ begin
 end;
 
 { TGxMenuAction }
+
+constructor TGxMenuAction.Create(_Owner: TComponent; const _Name: string);
+const
+  MenuItemAppendix = '_MenuItem'; // Do not localize.
+begin
+  inherited Create(_Owner, _Name);
+
+  FAssociatedMenuItem := TMenuItem.Create(Self);
+  FAssociatedMenuItem.Name := _Name + MenuItemAppendix;
+  FAssociatedMenuItem.Action := Self;
+end;
 
 function TGxMenuAction.GetAssociatedMenuItem: TMenuItem;
 begin

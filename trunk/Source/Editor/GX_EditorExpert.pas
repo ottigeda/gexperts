@@ -41,7 +41,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Dialogs, ActnList, ToolsAPI,
-  GX_ActionBroker, GX_OtaUtils, GX_GenericUtils;
+  GX_ActionBroker, GX_OtaUtils, GX_GenericUtils, GX_Actions;
 
 { Global utility functions }
 
