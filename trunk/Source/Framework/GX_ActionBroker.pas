@@ -41,13 +41,6 @@ type
     /// FindAction(GenerateMenuActionName(ActionName)) </summary>
     function FindGExpertsMenuAction(const ActionName: string): TContainedAction;
     ///<summary>
-    /// Register an existing action with the action broker.
-    /// The action will be added to the IDE's action list,
-    /// making it available to every interested party.
-    /// Note that the registered action needs to implement
-    /// the IGxAction interface. </summary>
-    function RegisterAction(Action: TContainedAction): IGxAction;
-    ///<summary>
     /// Request and register a newly created action interface
     /// instance that represents an activity that does not live in
     /// the GExperts menu.
@@ -135,7 +128,6 @@ type
     function FindAction(const Name: string): TContainedAction;
     function FindGExpertsAction(const ActionName: string): TContainedAction;
     function FindGExpertsMenuAction(const ActionName: string): TContainedAction;
-    function RegisterAction(Action: TContainedAction): IGxAction;
     function RequestAction(const ActionName: string; Bitmap: Graphics.TBitmap = nil): IGxAction;
     function RequestMenuAction(const ActionName: string; Bitmap: Graphics.TBitmap): IGxMenuAction;
     procedure GetCategories(Categories: TStrings);
@@ -262,12 +254,6 @@ begin
   Result := NTAServices.ActionList;
 
   Assert(Assigned(Result));
-end;
-
-function TGxActionBroker.RegisterAction(Action: TContainedAction): IGxAction;
-begin
-  Result := nil;
-  Assert(False, 'Unimplemented function: TGxActionBroker.RegisterAction');
 end;
 
 function CreateScaledBitmap(Bitmap: Graphics.TBitmap): Graphics.TBitmap;
