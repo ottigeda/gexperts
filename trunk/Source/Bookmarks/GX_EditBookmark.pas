@@ -13,6 +13,7 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
+  AppEvnts,
   GX_BaseForm;
 
 type

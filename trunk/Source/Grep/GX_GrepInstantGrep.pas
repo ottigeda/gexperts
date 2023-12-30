@@ -19,6 +19,7 @@ uses
   Buttons,
   ActnList,
   Actions,
+  AppEvnts,
   ToolsAPI,
   regexpr,
   GX_EventHook,
