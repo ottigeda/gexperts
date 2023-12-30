@@ -40,24 +40,28 @@ type
     /// Finds a GExperts tools action. This is short for calling
     /// FindAction(GenerateMenuActionName(ActionName)) </summary>
     function FindGExpertsMenuAction(const ActionName: string): TContainedAction;
-    // Register an existing action with the action broker.
-    // The action will be added to the IDE's action list,
-    // making it available to every interested party.
-    // Note that the registered action needs to implement
-    // the IGxAction interface.
+    ///<summary>
+    /// Register an existing action with the action broker.
+    /// The action will be added to the IDE's action list,
+    /// making it available to every interested party.
+    /// Note that the registered action needs to implement
+    /// the IGxAction interface. </summary>
     function RegisterAction(Action: TContainedAction): IGxAction;
-    // Request and register a newly created action interface
-    // instance that represents an activity that does not live in
-    // the GExperts menu.
-    // After requesting, in particular Caption and OnExecute
-    // need to be set to make the Action "useful"
+    ///<summary>
+    /// Request and register a newly created action interface
+    /// instance that represents an activity that does not live in
+    /// the GExperts menu.
+    /// After requesting, in particular Caption and OnExecute
+    /// need to be set to make the Action "useful" </summary>
     function RequestAction(const ActionName: string; Bitmap: Graphics.TBitmap = nil): IGxAction;
-    // Request and register an action interface instance
-    // that represents an activity that lives in the GExperts menu.
-    // After requesting, in particular Caption and OnExecute
-    // need to be set to make the Action "useful"
+    ///<summary>
+    /// Request and register an action interface instance
+    /// that represents an activity that lives in the GExperts menu.
+    /// After requesting, in particular Caption and OnExecute
+    /// need to be set to make the Action "useful" </summary>
     function RequestMenuAction(const ActionName: string; Bitmap: Graphics.TBitmap): IGxMenuAction;
-    // Fill Categories with the all of the action categories
+    ///<summary>
+    /// Fill Categories with the all of the action categories </summary>
     procedure GetCategories(Categories: TStrings);
 
     ///<summary>
@@ -70,10 +74,11 @@ type
     /// (by prefixing GExpertsActionCategory ('GExperts') + GxGenericActionQualifier ('Tools') </summary>
     function GenerateActionName(const AActionName: string): string;
 
-    // Access to all actions available to the broker; this
-    // includes GExperts's own actions as well as the IDE's
-    // actions. Do not hold on to an action instance for
-    // any prolonged period of time.
+    ///<summary>
+    /// Access to all actions available to the broker; this
+    /// includes GExperts's own actions as well as the IDE's
+    /// actions. Do not hold on to an action instance for
+    /// any prolonged period of time. </summary>
     property Actions[Index: Integer]: TContainedAction read GetActions;
     property ActionCount: Integer read GetActionCount;
   end;
