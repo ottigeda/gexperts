@@ -842,9 +842,10 @@ var
   UnitInfo: TUnitInfo;
 begin
   Assert(Assigned(List));
-  Assert(Assigned(_Project));
 
   TList_ClearAndFreeAllItems(List);
+  if not Assigned(_Project) then
+    Exit; //==>
 
   for i := 0 to _Project.GetModuleCount - 1 do
   begin
