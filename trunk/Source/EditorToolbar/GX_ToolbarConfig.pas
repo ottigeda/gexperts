@@ -234,10 +234,21 @@ begin
     for i := 0 to GxActionBroker.GetActionCount - 1 do begin
       TheAction := GxActionBroker.GetActions(i);
       ActionName := TheAction.Name;
+      if ActionName = '' then begin
+        // Some actions (mainly 3d party actions) don't have a name.
+        // We can't handle these, so we skip them
+        Continue; //==^
+      end;
+      if TheAction.ImageIndex = -1 then begin
+        // Also skip actions that don't have an icon associated with them because they
+        // obviously are not meant to be shown on a tool bar.
+        Continue; //==^
+      end;
+      if StartsStr('FileClose', ActionName) or StrContains('GExpertsMoreAction', ActionName, False) then begin
+        // Close All causes AVs, so we don't allow it.  More/Editor Experts are not useful.
+        Continue; //==^
+      end;
       ActionCategory := TheAction.Category;
-      // Close All causes AVs, so we don't allow it.  More/Editor Experts are not useful.
-      if StartsStr('FileClose', ActionName) or StrContains('GExpertsMoreAction', ActionName, False) then
-        Continue;
       if Category = SAllButtonsCategory then
         AddActionToListbox(TheAction, lbAvailable, False)
       else if SameText(Category, ActionCategory) then
@@ -288,12 +299,11 @@ var
   Action: TContainedAction;
 begin
   FToolbarActionNames.Clear;
-  for i := 0 to lbToolbar.Items.Count - 1 do
-  begin
+  for i := 0 to lbToolbar.Items.Count - 1 do begin
     Action := TContainedAction(lbToolbar.Items.Objects[i]);
     if Action = nil then
       FToolbarActionNames.Add(SeparatorMenuItemString)
-    else
+    else if Action.Name <> '' then
       FToolbarActionNames.Add(Action.Name);
   end;
 end;

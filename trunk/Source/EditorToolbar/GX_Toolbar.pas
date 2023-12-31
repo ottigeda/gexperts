@@ -346,7 +346,7 @@ begin
   for i := Actions.Count-1 downto 0 do
   begin
     ActionName := Actions[i];
-    if Length(ActionName) = 0 then
+    if ActionName = '' then
       Continue;
 
     if ActionName = SeparatorMenuItemString then
