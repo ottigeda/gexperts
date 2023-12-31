@@ -90,7 +90,7 @@ resourcestring
 implementation
 
 uses
-  Forms, Menus, Contnrs,
+  Forms, Menus,
   ToolsAPI,
   Rescaler,
   GX_GxUtils, GX_IdeUtils, GX_OtaUtils, GX_KbdShortCutBroker,
@@ -118,8 +118,6 @@ type
 type
   TGxActionBroker = class(TSingletonInterfacedObject, IGxActionBroker)
   private
-    FGxActionList: TObjectList;
-    procedure ClearGxActionList;
     function GetIdeActionList: TCustomActionList;
     function GetActionOwner: TCustomForm;
     procedure RegisterActionWithIde(const AAction: TCustomAction; Bitmap: Graphics.TBitmap);
@@ -158,31 +156,13 @@ end;
 
 { TGxActionBroker }
 
-procedure TGxActionBroker.ClearGxActionList;
-var
-  i: Integer;
-begin
-  if Assigned(FGxActionList) then
-  begin
-    for i := 0 to FGxActionList.Count-1 do
-      FGxActionList[i].Free;
-
-    FGxActionList.Clear;
-  end;
-end;
-
 constructor TGxActionBroker.Create;
 begin
   inherited Create;
-
-  FGxActionList := TObjectList.Create(False);
 end;
 
 destructor TGxActionBroker.Destroy;
 begin
-  ClearGxActionList;
-  FreeAndNil(FGxActionList);
-
   inherited Destroy;
 end;
 
