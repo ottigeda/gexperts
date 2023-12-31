@@ -14,6 +14,7 @@ uses
   Forms,
   Dialogs,
   Graphics,
+  AppEvnts,
   GX_Experts,
   GX_BaseForm;
 
@@ -230,8 +231,8 @@ begin
 
   TabStr := ShortCutToText(ShortCut(VK_TAB, []));
   Row := sg_Actions.FixedRows;
-  for i := 0 to GxActionBroker.ActionCount - 1 do begin
-    ContAct := GxActionBroker.Actions[i];
+  for i := 0 to GxActionBroker.GetActionCount - 1 do begin
+    ContAct := GxActionBroker.GetActions(i);
     if ContAct is TCustomAction then begin
       act := TCustomAction(ContAct);
       if act.ShortCut <> 0 then begin

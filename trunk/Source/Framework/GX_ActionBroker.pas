@@ -19,9 +19,13 @@ uses
 type
   IGxActionBroker = interface(IUnknown)
     ['{EC7632E1-D1A3-11D3-A944-DA3A65000000}']
+    ///<summary>
+    /// Access to all actions available to the broker; this
+    /// includes GExperts's own actions as well as the IDE's
+    /// actions. Do not hold on to an action instance for
+    /// any prolonged period of time. </summary>
     function GetActions(Index: Integer): TContainedAction;
     function GetActionCount: Integer;
-
     ///<summary>
     /// Finds an action in the list of available actions
     /// Includes all actions registered / requested via
@@ -56,24 +60,14 @@ type
     ///<summary>
     /// Fill Categories with the all of the action categories </summary>
     procedure GetCategories(Categories: TStrings);
-
     ///<summary>
     /// Generates the name for a menu action as set by RequestMenuAction
     /// by prefixing GExpertsActionCategory ('GExperts')  </summary>
     function GenerateMenuActionName(const AActionName: string): string;
-
     ///<summary>
     /// Generates the name for a menu action as set by RequestAction
     /// (by prefixing GExpertsActionCategory ('GExperts') + GxGenericActionQualifier ('Tools') </summary>
     function GenerateActionName(const AActionName: string): string;
-
-    ///<summary>
-    /// Access to all actions available to the broker; this
-    /// includes GExperts's own actions as well as the IDE's
-    /// actions. Do not hold on to an action instance for
-    /// any prolonged period of time. </summary>
-    property Actions[Index: Integer]: TContainedAction read GetActions;
-    property ActionCount: Integer read GetActionCount;
   end;
 
 
@@ -345,9 +339,9 @@ var
 begin
   Assert(Assigned(Categories));
   Categories.Clear;
-  for i := 0 to GxActionBroker.ActionCount - 1 do
+  for i := 0 to GxActionBroker.GetActionCount - 1 do
   begin
-    Category := GxActionBroker.Actions[i].Category;
+    Category := GxActionBroker.GetActions(i).Category;
     if Trim(Category) = '' then
       Category := SNoButtonCategory;
     EnsureStringInList(Categories, Category);

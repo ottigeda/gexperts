@@ -221,7 +221,9 @@ procedure TfmToolbarConfig.lbCategoriesClick(Sender: TObject);
 var
   i: Integer;
   Category: string;
+  TheAction: TContainedAction;
   ActionName: string;
+  ActionCategory: string;
 begin
   lbAvailable.Items.BeginUpdate;
   try
@@ -229,18 +231,19 @@ begin
     if lbCategories.ItemIndex = -1 then
       Exit;
     Category := lbCategories.Items[lbCategories.ItemIndex];
-    for i := 0 to GxActionBroker.ActionCount - 1 do
-    begin
-      ActionName := GxActionBroker.Actions[i].Name;
+    for i := 0 to GxActionBroker.GetActionCount - 1 do begin
+      TheAction := GxActionBroker.GetActions(i);
+      ActionName := TheAction.Name;
+      ActionCategory := TheAction.Category;
       // Close All causes AVs, so we don't allow it.  More/Editor Experts are not useful.
       if StartsStr('FileClose', ActionName) or StrContains('GExpertsMoreAction', ActionName, False) then
         Continue;
       if Category = SAllButtonsCategory then
-        AddActionToListbox(GxActionBroker.Actions[i], lbAvailable, False)
-      else if SameText(Category, GxActionBroker.Actions[i].Category) then
-        AddActionToListbox(GxActionBroker.Actions[i], lbAvailable, False)
-      else if (Category = SNoButtonCategory) and (Trim(GxActionBroker.Actions[i].Category) = '') then
-        AddActionToListbox(GxActionBroker.Actions[i], lbAvailable, False);
+        AddActionToListbox(TheAction, lbAvailable, False)
+      else if SameText(Category, ActionCategory) then
+        AddActionToListbox(TheAction, lbAvailable, False)
+      else if (Category = SNoButtonCategory) and (Trim(ActionCategory) = '') then
+        AddActionToListbox(TheAction, lbAvailable, False);
     end;
     lbAvailable.Sorted := True;
   finally
