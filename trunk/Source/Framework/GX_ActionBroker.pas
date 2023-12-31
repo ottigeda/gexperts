@@ -13,7 +13,7 @@ interface
 {$I GX_CondDefine.inc}
 
 uses
-  Classes, ActnList, Graphics, Actions,
+  Windows, SysUtils, Classes, ActnList, Graphics, Actions,
   GX_Actions;
 
 type
@@ -90,10 +90,11 @@ resourcestring
 implementation
 
 uses
-  Windows, SysUtils, Forms, Menus, Rescaler,
+  Forms, Menus, Contnrs,
   ToolsAPI,
+  Rescaler,
   GX_GxUtils, GX_IdeUtils, GX_OtaUtils, GX_KbdShortCutBroker,
-  GX_GenericClasses, GX_GenericUtils, Contnrs, GX_DbugIntf;
+  GX_GenericClasses, GX_GenericUtils, GX_DbugIntf;
 
 type
   // Special action that implements menu actions.
