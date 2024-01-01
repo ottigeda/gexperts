@@ -239,34 +239,36 @@ const
 var
   R: TRect;
   TempBitmap: Graphics.TBitmap;
+  w, h: Integer;
 begin
+  w := Bitmap.Width;
+  h := Bitmap.Height;
   Result := Graphics.TBitmap.Create;
-  if (Bitmap.Width = RequiredWidth) and (Bitmap.Height = RequiredHeight) then
-    Result.Assign(Bitmap)
-  else
-  begin
-    // TempBitmap stores a copy of the bitmap but with a transparent color
-    // of clBtnFace.  This prevents the rescaling of the image edges
-    // from being discolored by the (usually odd) transparent color.
-    TempBitmap := Graphics.TBitmap.Create;
-    try
-      TempBitmap.Height := Bitmap.Height;
-      TempBitmap.Width := Bitmap.Width;
-      TempBitmap.Canvas.Brush.Color := clBtnFace;
-      TempBitmap.Transparent := True;
-      R.TopLeft := Point(0, 0);
-      R.BottomRight := Point(Bitmap.Height+1, Bitmap.Width+1);
-      TempBitmap.Canvas.FillRect(R);
-      Bitmap.Transparent := True;
-      TempBitmap.Canvas.Draw(0, 0, Bitmap);
-      Result.Width := RequiredWidth;
-      Result.Height := RequiredHeight;
-      Result.Transparent := True;
-      if not Rescaler.Rescale(TempBitmap, Result, False) then
-        Result.Canvas.StretchDraw(Rect(0, 0, Result.Width, Result.Height), TempBitmap);
-    finally
-      FreeAndNil(TempBitmap);
-    end;
+  if (w = RequiredWidth) and (h = RequiredHeight) then begin
+    Result.Assign(Bitmap);
+    Exit; //==>
+  end;
+
+  // TempBitmap stores a copy of the bitmap but with a transparent color
+  // of clBtnFace.  This prevents the rescaling of the image edges
+  // from being discolored by the (usually odd) transparent color.
+  TempBitmap := Graphics.TBitmap.Create;
+  try
+    TempBitmap.Height := h;
+    TempBitmap.Width := w;
+    TempBitmap.Canvas.Brush.Color := clBtnFace;
+    TempBitmap.Transparent := True;
+    R := Rect(0, 0, w + 1, h + 1);
+    TempBitmap.Canvas.FillRect(R);
+    Bitmap.Transparent := True;
+    TempBitmap.Canvas.Draw(0, 0, Bitmap);
+    Result.Width := RequiredWidth;
+    Result.Height := RequiredHeight;
+    Result.Transparent := True;
+    if not Rescaler.Rescale(TempBitmap, Result, False) then
+      Result.Canvas.StretchDraw(Rect(0, 0, Result.Width, Result.Height), TempBitmap);
+  finally
+    FreeAndNil(TempBitmap);
   end;
 end;
 
