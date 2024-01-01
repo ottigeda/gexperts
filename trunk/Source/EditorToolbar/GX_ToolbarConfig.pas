@@ -239,7 +239,11 @@ begin
         // We can't handle these, so we skip them
         Continue; //==^
       end;
-      if TheAction.ImageIndex = -1 then begin
+      if not (TheAction is TCustomAction) then begin
+        // TContainedAction does not have ImageIndex (at least in older Delphi versions)
+        Continue; //==^
+      end;
+      if TCustomAction(TheAction).ImageIndex = -1 then begin
         // Also skip actions that don't have an icon associated with them because they
         // obviously are not meant to be shown on a tool bar.
         Continue; //==^
