@@ -25,15 +25,15 @@ type
   // Changes here must also be made to TfmIdeDockForm, since it must descend
   // from the IDE-internal TDockableForm class.
   TfmBaseForm = class(TForm)
-    TheApplicationEvents: TApplicationEvents;
-    procedure TheApplicationEventsShowHint(var HintStr: string; var CanShow: Boolean;
-      var HintInfo: THintInfo);
     procedure FormShow(Sender: TObject);
   protected
     procedure Loaded; override;
   protected
     FGxHintCustomDataRec: TGxHintCustomDataRec;
     FScaler: TFormDpiScaler;
+    FApplicationEvents: TApplicationEvents;
+    procedure HandleApplicationEventsShowHint(var HintStr: string; var CanShow: Boolean;
+      var HintInfo: THintInfo);
     procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); virtual;
     procedure ArrangeControls; virtual;
@@ -83,10 +83,10 @@ begin
   _Msg.Result := 0;
 end;
 
-procedure TfmBaseForm.TheApplicationEventsShowHint(var HintStr: string; var CanShow: Boolean;
+procedure TfmBaseForm.HandleApplicationEventsShowHint(var HintStr: string; var CanShow: Boolean;
   var HintInfo: THintInfo);
 begin
-  TGxHintWindow.HandleShowHintEvent(TheApplicationEvents, @FGxHintCustomDataRec,
+  TGxHintWindow.HandleShowHintEvent(FApplicationEvents, @FGxHintCustomDataRec,
     HintStr, CanShow, HintInfo);
 end;
 
@@ -119,6 +119,10 @@ end;
 constructor TfmBaseForm.Create(AOwner: TComponent);
 begin
   inherited;
+
+  FApplicationEvents := TApplicationEvents.Create(Self);
+  FApplicationEvents.OnShowHint := HandleApplicationEventsShowHint;
+
   FGxHintCustomDataRec.ScaleHint := Self.ScaleHint;
   CopyMemory(@(FGxHintCustomDataRec.ID), @GxHintCustomDataId, SizeOf(FGxHintCustomDataRec.ID));
   GxSetDefaultFont(Self);

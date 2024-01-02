@@ -12,9 +12,4 @@ object fmBaseForm: TfmBaseForm
   Scaled = False
   OnShow = FormShow
   TextHeight = 13
-  object TheApplicationEvents: TApplicationEvents
-    OnShowHint = TheApplicationEventsShowHint
-    Left = 72
-    Top = 88
-  end
 end

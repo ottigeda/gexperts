@@ -7,7 +7,7 @@ interface
 
 uses
   Windows, SysUtils, Types, ToolsAPI, TypInfo, Classes, Controls, Forms, StdCtrls, ExtCtrls,
-  CheckLst, Menus, ComCtrls, ToolWin, ActnList, Actions, UITypes, AppEvnts,
+  CheckLst, Menus, ComCtrls, ToolWin, ActnList, Actions, UITypes,
   OmniXml,
   GX_SharedImages, GX_IdeDock, GX_Experts, GX_ConfigurationInfo, GX_CheckListBoxWithHints;
 

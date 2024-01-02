@@ -14,7 +14,6 @@ uses
   Forms,
   Dialogs,
   Graphics,
-  AppEvnts,
   GX_Experts,
   GX_BaseForm;
 

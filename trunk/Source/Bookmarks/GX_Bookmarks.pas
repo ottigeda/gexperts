@@ -20,7 +20,6 @@ uses
   ToolsAPI,
   ExtCtrls,
   Menus,
-  AppEvnts,
   Types,
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
   u_dzDpiScaleUtils,

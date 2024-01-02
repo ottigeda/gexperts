@@ -5,7 +5,7 @@ unit GX_GrepProgress;
 interface
 
 uses
-  SysUtils, Classes, Controls, ComCtrls, StdCtrls, Forms, AppEvnts,
+  SysUtils, Classes, Controls, ComCtrls, StdCtrls, Forms,
   GX_BaseForm;
 
 type

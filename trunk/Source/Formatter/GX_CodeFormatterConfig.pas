@@ -22,7 +22,6 @@ uses
   Dialogs,
   Grids,
   Menus,
-  AppEvnts,
   SynEdit,
   GX_CodeFormatterTypes,
   GX_CodeFormatterEngine,

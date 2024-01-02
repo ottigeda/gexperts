@@ -13,9 +13,4 @@ object fmIdeDockForm: TfmIdeDockForm
   Scaled = False
   PixelsPerInch = 96
   TextHeight = 14
-  object TheApplicationEvents: TApplicationEvents
-    OnShowHint = TheApplicationEventsShowHint
-    Left = 72
-    Top = 88
-  end
 end

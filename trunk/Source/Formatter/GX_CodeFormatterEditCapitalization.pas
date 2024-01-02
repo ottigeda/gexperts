@@ -24,7 +24,6 @@ uses
   ActnList,
   Buttons,
   ExtCtrls,
-  AppEvnts,
   GX_EnhancedEditor,
   GX_StringList,
   GX_BaseForm;
