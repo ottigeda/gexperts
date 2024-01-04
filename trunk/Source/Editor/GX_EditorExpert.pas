@@ -8,8 +8,6 @@ uses
 
 type
   TEditorExpert = class(TGX_BaseExpert)
-  private
-    FActionName: string;
   protected
     // you usually don't need to override this
     procedure LoadActiveAndShortCut(Settings: TGExpertsSettings); override;
@@ -23,7 +21,6 @@ type
     // returns true
     function CanHaveShortCut: boolean; override;
     procedure DoExecute(Sender: TObject);
-    function GetActionName: string;
     // you usually don't need to override this
     class function GetOptionsBaseRegistryKey: string; override;
   end;
@@ -92,11 +89,9 @@ begin
   Assert(IsValidIdent(GetName),
     Format('%s needs to specify a valid name; currently it is "%s"', [Self.ClassName, GetName]));
 
-  FActionName := EditorExpertPrefix + GetName;
-
-  FActionInt := GxActionBroker.RequestAction(FActionName, GetBitmap);
+  FActionInt := GxActionBroker.RequestAction(GetActionName, GetBitmap);
   FActionInt.OnExecute := Self.DoExecute;
-  FActionInt.Caption := GetDisplayName;
+  FActionInt.Caption := GetActionCaption;
   FActionInt.OnUpdate := ActionOnUpdate;
 
   ShortCut := GetDefaultShortCut;
@@ -147,11 +142,6 @@ var
 function EditorExpertClassList: TList;
 begin
   Result := PrivateEditorExpertClassList;
-end;
-
-function TEditorExpert.GetActionName: string;
-begin
-  Result := GExpertsActionCategory + GxGenericActionQualifier + FActionName;
 end;
 
 procedure TEditorExpert.ActionOnUpdate(Sender: TObject);

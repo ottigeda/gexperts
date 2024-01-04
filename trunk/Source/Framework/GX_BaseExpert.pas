@@ -61,7 +61,16 @@ type
     /// or NIL if the bitmap could not be loaded.
     /// @NOTE: The caller is responsible for freeing that bitmap /// </summary>
     class function LoadBitmap: TBitmap; virtual;
-    constructor Create;
+    ///<summary>
+    /// Name of action to be created for expert; by default,
+    /// the action name is constructed from the expert's name. </summary>
+    class function GetActionName: string;
+    ///<summary>
+    /// Caption of a menu item entry.
+    /// Defaults to GetName (we don't want any abstract methods),
+    /// but descendants should override this method. </summary>
+    function GetActionCaption: string; virtual;
+  constructor Create;
     destructor Destroy; override;
     function CanHaveShortCut: boolean; virtual; abstract;
     // displays a dialog saying there are no configuration options
@@ -169,21 +178,29 @@ begin
   BitmapFile := GetBitmapFileName;
   if BitmapFile <> '' then begin
     if not GxLoadBitmapForExpert(BitmapFile, Result) then begin
-      Result := nil;
+{$IF Declared(SendDebugError)}
+      SendDebugError('Missing bitmap ' + GetBitmapFileName + ' for ' + Self.ClassName);
+{$IFEND}
+      GxLoadBitmapForExpert('NoIcon', Result);
     end;
   end;
+end;
+
+function TGX_BaseExpert.GetActionCaption: string;
+begin
+  Result := GetName;
+end;
+
+class function TGX_BaseExpert.GetActionName: string;
+begin
+  // Default action name from expert name; do not localize.
+  Result := 'GX_' + GetName + 'Action';
 end;
 
 function TGX_BaseExpert.GetBitmap: Graphics.TBitmap;
 begin
   if not Assigned(FBitmap) then begin
     FBitmap := LoadBitmap;
-    if not Assigned(FBitmap) then begin
-{$IF Declared(SendDebugError)}
-      SendDebugError('Missing bitmap ' + GetBitmapFileName + ' for ' + Self.ClassName);
-{$IFEND}
-      GxLoadBitmapForExpert('NoIcon', FBitmap);
-    end;
   end;
   Result := FBitmap;
 end;
