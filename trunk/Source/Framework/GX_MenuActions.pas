@@ -437,7 +437,7 @@ var
     j: Integer;
     FullActName: string;
   begin
-    FullActName := GxActionBroker.GenerateMenuActionName(ActName);
+    FullActName := GxActionBroker.GenerateActionName(ActName);
     Result := nil;
     for j := 0 to Length(MenuItems) - 1 do
     begin

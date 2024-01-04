@@ -122,7 +122,7 @@ begin
     if AEditorExpert.Active then
     begin
       ExpertMenuEntry := TMenuItem.Create(MenuItem);
-      ExpertMenuEntry.Action := GxActionBroker.FindAction(AEditorExpert.GetActionName);
+      ExpertMenuEntry.Action := GxActionBroker.FindGExpertsAction(AEditorExpert.GetActionName);
 
       MenuItem.Add(ExpertMenuEntry);
     end;
