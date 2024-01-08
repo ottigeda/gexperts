@@ -79,7 +79,11 @@ end;
 procedure TfmBaseForm.WMDpiChanged(var _Msg: TWMDpi);
 begin
   inherited;
+{$IFDEF GX_TWMDPI_HAS_SCALLEDRECT_TYPO}
+  ApplyDpi(_Msg.YDpi, _Msg.ScalledRect);
+{$ELSE}
   ApplyDpi(_Msg.YDpi, _Msg.ScaledRect);
+{$ENDIF}
   _Msg.Result := 0;
 end;
 

@@ -186,7 +186,15 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 {$IFDEF GX_DELPHI2006_UP}
   {$DEFINE GX_SupportsInline}
   {$DEFINE GX_HAS_ALIGN_WITH_MARGINS}
+  {$DEFINE GX_HAS_STRICT_DELIMITER}
 {$ENDIF GX_DELPHI2005_UP}
+
+{$IFDEF GX_DELPHI10_UP}
+{$IFNDEF GX_DELPHI10_1_UP}
+{$DEFINE GX_TWMDPI_HAS_SCALLEDRECT_TYPO}
+{$ENDIF GX_DELPHI10_1_UP}
+{$ENDIF GX_DELPHI10_UP}
+
 
 {$IFDEF GX_DELPHI10_2_UP}
 {$IFNDEF GX_DELPHI10_3_UP}
@@ -240,13 +248,10 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
     // we hope this gets fixed in Delphi 12 and later ...
     {$DEFINE GX_WRONG_BUTTON_PARENTS_IN_PATH_EDIT_FIX_ENABLED}
     {$DEFINE GX_AV_IN_CODE_FORMATTER_FIX_ENABLED}
+    {$DEFINE GX_ACTION_BROKER_IMAGELIST_FIX_ENABLED}
   {$ENDIF}
 {$ENDIF}
 {.$DEFINE GX_IDE_IS_HIDPI_AWARE}
-
-{$IFDEF GX_DELPHI2006_UP}
-  {$DEFINE GX_HAS_STRICT_DELIMITER}
-{$ENDIF}
 
 // Define UniSynEdit if SynEdit is available
 {$IFDEF SYNEDIT}
