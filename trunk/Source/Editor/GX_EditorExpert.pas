@@ -30,8 +30,7 @@ type
 function EditorExpertClassList: TList;
 
 procedure RegisterEditorExpert(AClass: TEditorExpertClass);
-function GetExpertClass(const ClassName: string): TEditorExpertClass;
-function GetExpertClassByIndex(const Index: Integer): TEditorExpertClass;
+function GetEditorExpertClassByIndex(const Index: Integer): TEditorExpertClass;
 
 implementation
 
@@ -41,20 +40,6 @@ uses
   GX_ActionBroker, GX_OtaUtils, GX_GenericUtils, GX_Actions;
 
 { Global utility functions }
-
-procedure RegisterEditorExpert(AClass: TEditorExpertClass);
-var
-  ClassName: string;
-begin
-  Assert(Assigned(AClass));
-  ClassName := AClass.ClassName;
-  if GetExpertClass(ClassName) <> nil then
-  begin
-    {raise EFilerError.CreateFmt(SDuplicateClass, [ClassName]);}
-    Exit;
-  end;
-  EditorExpertClassList.Add(AClass);
-end;
 
 function GetExpertClass(const ClassName: string): TEditorExpertClass;
 var
@@ -71,7 +56,21 @@ begin
   Result := nil;
 end;
 
-function GetExpertClassByIndex(const Index: Integer): TEditorExpertClass;
+procedure RegisterEditorExpert(AClass: TEditorExpertClass);
+var
+  ClassName: string;
+begin
+  Assert(Assigned(AClass));
+  ClassName := AClass.ClassName;
+  if GetExpertClass(ClassName) <> nil then
+  begin
+    {raise EFilerError.CreateFmt(SDuplicateClass, [ClassName]);}
+    Exit;
+  end;
+  EditorExpertClassList.Add(AClass);
+end;
+
+function GetEditorExpertClassByIndex(const Index: Integer): TEditorExpertClass;
 begin
   Assert((Index >= 0) and (Index <= EditorExpertClassList.Count - 1));
 
