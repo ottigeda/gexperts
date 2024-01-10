@@ -41,10 +41,6 @@ type
     /// FindAction(GenerateActionName(ActionName)) </summary>
     function FindGExpertsAction(const ActionName: string): TContainedAction;
     ///<summary>
-    /// Finds a GExperts tools action. This is short for calling
-    /// FindAction(GenerateMenuActionName(ActionName)) </summary>
-    function FindGExpertsMenuAction(const ActionName: string): TContainedAction;
-    ///<summary>
     /// Request and register a newly created action interface
     /// instance that represents an activity that does not live in
     /// the GExperts menu.
@@ -61,21 +57,20 @@ type
     /// Fill Categories with the all of the action categories </summary>
     procedure GetCategories(Categories: TStrings);
     ///<summary>
-    /// Generates the name for a menu action as set by RequestMenuAction
-    /// by prefixing GExpertsActionCategory ('GExperts')  </summary>
-    function GenerateMenuActionName(const AActionName: string): string;
-    ///<summary>
     /// Generates the name for a menu action as set by RequestAction
-    /// (by prefixing GExpertsActionCategory ('GExperts') + GxGenericActionQualifier ('Tools') </summary>
+    /// (by prefixing GExpertsActionCategory ('GExperts') </summary>
     function GenerateActionName(const AActionName: string): string;
+    ///<summary>
+    /// Goes through the list of experts and editor experts and adds all their icons to the
+    /// IDEs image list. Must only be called once on startup.
+    /// This a workaround for a bug in the Delphi 12 INTAServices.AddMasked OTAPI.
+    /// It does nothing if GX_ACTION_BROKER_IMAGELIST_FIX_ENABLED is not defined. </summary>
+    procedure AddExpertImagesToIde;
   end;
 
 
 // Get an instance to the GExperts action broker.
 function GxActionBroker: IGxActionBroker;
-
-const  // Do not localize.
-  GxGenericActionQualifier = 'Tools';
 
 resourcestring
   SNoButtonCategory = '(None)';
@@ -84,11 +79,13 @@ resourcestring
 implementation
 
 uses
-  Forms, Menus,
+  Forms, Menus, Dialogs,
   ToolsAPI,
   Rescaler,
+  {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_GxUtils, GX_IdeUtils, GX_OtaUtils, GX_KbdShortCutBroker,
-  GX_GenericClasses, GX_GenericUtils, GX_DbugIntf;
+  GX_GenericClasses, GX_GenericUtils, Controls, GX_Experts,
+  GX_EditorExpert, GX_BaseExpert;
 
 type
   // Special action that implements menu actions.
@@ -112,6 +109,11 @@ type
 type
   TGxActionBroker = class(TSingletonInterfacedObject, IGxActionBroker)
   private
+{$IFDEF GX_ACTION_BROKER_IMAGELIST_FIX_ENABLED}
+    FBitmapNames: TStringList;
+    FImageIndexBase: Integer;
+{$ENDIF GX_ACTION_BROKER_IMAGELIST_FIX_ENABLED}
+    procedure AddExpertImagesToIde;
     function GetIdeActionList: TCustomActionList;
     function GetActionOwner: TCustomForm;
     procedure RegisterActionWithIde(const AAction: TCustomAction; Bitmap: Graphics.TBitmap);
@@ -121,11 +123,9 @@ type
     function GetActionCount: Integer;
     function FindAction(const Name: string): TContainedAction;
     function FindGExpertsAction(const ActionName: string): TContainedAction;
-    function FindGExpertsMenuAction(const ActionName: string): TContainedAction;
     function RequestAction(const ActionName: string; Bitmap: Graphics.TBitmap = nil): IGxAction;
     function RequestMenuAction(const ActionName: string; Bitmap: Graphics.TBitmap): IGxMenuAction;
     procedure GetCategories(Categories: TStrings);
-    function GenerateMenuActionName(const AActionName: string): string;
     function GenerateActionName(const AActionName: string): string;
   public
     constructor Create;
@@ -153,10 +153,16 @@ end;
 constructor TGxActionBroker.Create;
 begin
   inherited Create;
+{$IFDEF GX_ACTION_BROKER_IMAGELIST_FIX_ENABLED}
+  FBitmapNames := TStringList.Create;
+{$ENDIF}
 end;
 
 destructor TGxActionBroker.Destroy;
 begin
+{$IFDEF GX_ACTION_BROKER_IMAGELIST_FIX_ENABLED}
+  FreeAndNil(FBitmapNames);
+{$ENDIF}
   inherited Destroy;
 end;
 
@@ -189,17 +195,7 @@ begin
   Result := FindAction(GenerateActionName(ActionName));
 end;
 
-function TGxActionBroker.FindGExpertsMenuAction(const ActionName: string): TContainedAction;
-begin
-  Result := FindAction(GenerateMenuActionName(ActionName));
-end;
-
 function TGxActionBroker.GenerateActionName(const AActionName: string): string;
-begin
-  Result := GExpertsActionCategory + GxGenericActionQualifier + AActionName;
-end;
-
-function TGxActionBroker.GenerateMenuActionName(const AActionName: string): string;
 begin
   Result := GExpertsActionCategory + AActionName;
 end;
@@ -272,14 +268,111 @@ begin
   end;
 end;
 
-procedure TGxActionBroker.RegisterActionWithIde(const AAction: TCustomAction; Bitmap: Graphics.TBitmap);
+procedure ScaleBitmap(var _bmp: Graphics.TBitmap);
+var
+  TmpBmp: Graphics.TBitmap;
+begin
+  TmpBmp := _bmp;
+  _bmp := CreateScaledBitmap(TmpBmp);
+  TmpBmp.Free;
+end;
+
 const
   GxBitmapSuffix = 'GxImage'; // Do not localize.
+
+procedure TGxActionBroker.AddExpertImagesToIde;
+{$IFNDEF GX_ACTION_BROKER_IMAGELIST_FIX_ENABLED}
+begin
+  // do nothing
+end;
+{$ELSE}
+
+  procedure HandleBitmap(_il: TImageList; var _bmp: TBitmap; _ActionName: string);
+var
+    BitmapName: string;
+  begin
+    if Assigned(_bmp) then begin
+      BitmapName := GenerateActionName(_ActionName) + GxBitmapSuffix;
+      ScaleBitmap(_bmp);
+{$IFDEF GX_VER170_up}
+        // Prevent invisible enabled icons in XE6 (disabled ones might still be invisible/ghosted)
+      _bmp.Transparent := False;
+{$ENDIF}
+      if _bmp.Transparent then
+        _il.AddMasked(_bmp, _bmp.TransparentColor)
+      else
+        _il.AddMasked(_bmp, GXTransparencyColor);
+      FBitmapNames.Add(BitmapName);
+    end;
+  end;
+
+  procedure HandleExpert(_il: Timagelist; ExpertClass: TGX_BaseExpertClass);
+  var
+    bmp: Graphics.TBitmap;
+  begin
+    bmp := ExpertClass.LoadBitmap;
+    try
+      HandleBitmap(_il, bmp, ExpertClass.GetActionName);
+    finally
+      FreeAndNil(bmp);
+    end;
+  end;
+
+  procedure HandleAdditinoalBitmap(_il: TImageList; const _ActionName: string);
+  var
+    bmp: Graphics.TBitmap;
+  begin
+    bmp := TBitmap.Create;
+    if GxLoadBitmapForExpert(_ActionName, bmp) then begin
+      try
+        HandleBitmap(_il, bmp, _ActionName);
+      finally
+        FreeAndNil(bmp);
+      end;
+    end;
+  end;
+
+var
+  NTAServices: INTAServices;
+  il: TImageList;
+  i: Integer;
+  ExpertClass: TGX_BaseExpertClass;
+begin
+  Assert(FImageIndexBase = 0);
+
+  il := TImageList.Create(nil);
+  try
+    for i := 0 to GX_ExpertList.Count - 1 do begin
+      ExpertClass := GetGX_ExpertClassByIndex(i);
+      HandleExpert(il, ExpertClass);
+    end;
+    for i := 0 to EditorExpertClassList.Count - 1 do begin
+      ExpertClass := GetEditorExpertClassByIndex(i);
+      HandleExpert(il, ExpertClass);
+    end;
+
+    // these are actions only available for a toolbar
+    HandleAdditinoalBitmap(il, 'UnitDropDown');
+    HandleAdditinoalBitmap(il, 'FormDropDown');
+    HandleAdditinoalBitmap(il, 'ComponentDropDown');
+    HandleAdditinoalBitmap(il, 'UsesDropDown');
+    HandleAdditinoalBitmap(il, 'PositionDropDown');
+
+    NTAServices := BorlandIDEServices as INTAServices;
+    Assert(Assigned(NTAServices));
+    FImageIndexBase := NTAServices.AddImages(il, 'GExperts');
+  finally
+    FreeAndNil(il);
+  end;
+end;
+{$ENDIF GX_ACTION_BROKER_IMAGELIST_FIX_ENABLED}
+
+procedure TGxActionBroker.RegisterActionWithIde(const AAction: TCustomAction; Bitmap: Graphics.TBitmap);
 var
   NTAServices: INTAServices;
   ReadyBitmap: Graphics.TBitmap;
-
   BitmapName: string;
+  Idx: Integer;
 begin
   if IsStandAlone then
     Exit;
@@ -287,21 +380,35 @@ begin
   Assert(Assigned(AAction));
   AAction.ActionList := GetIdeActionList;
 
-  if Assigned(Bitmap) then
-  begin
+  if Assigned(Bitmap) then begin
+    BitmapName := AAction.Name + GxBitmapSuffix;
+{$IFDEF GX_ACTION_BROKER_IMAGELIST_FIX_ENABLED}
+    Idx := FBitmapNames.IndexOf(BitmapName);
+    if Idx <> -1 then begin
+      AAction.ImageIndex := FImageIndexBase + Idx;
+      Exit; //==>
+    end;
+
+{$IFOPT D+}
+    SendDebugFmtEx('TGxActionBroker.RegisterActionWithIde call which would have call INTAServices.AddMasked for action %s (%s)',
+      [AAction.Name, BitmapName], mtError);
+{$ENDIF}
+    Exit;
+{$ENDIF GX_ACTION_BROKER_IMAGELIST_FIX_ENABLED}
+
     NTAServices := BorlandIDEServices as INTAServices;
     Assert(Assigned(NTAServices));
 
     ReadyBitmap := CreateScaledBitmap(Bitmap);
     try
-      BitmapName := AAction.Name + GxBitmapSuffix;
       {$IFDEF GX_VER170_up}
       ReadyBitmap.Transparent := False; // Prevent invisible enabled icons in XE6 (disabled ones might still be invisible/ghosted)
       {$ENDIF}
       if ReadyBitmap.Transparent then
-        AAction.ImageIndex := NTAServices.AddMasked(ReadyBitmap, ReadyBitmap.TransparentColor, BitmapName)
+        Idx := NTAServices.AddMasked(ReadyBitmap, ReadyBitmap.TransparentColor, BitmapName)
       else
-        AAction.ImageIndex := NTAServices.AddMasked(ReadyBitmap, GXTransparencyColor, BitmapName);
+        Idx := NTAServices.AddMasked(ReadyBitmap, GXTransparencyColor, BitmapName);
+      AAction.ImageIndex := Idx;
     finally
       FreeAndNil(ReadyBitmap);
     end;
@@ -310,28 +417,28 @@ end;
 
 function TGxActionBroker.RequestAction(const ActionName: string; Bitmap: Graphics.TBitmap = nil): IGxAction;
 var
-  GxToolsAction: TGxToolsAction;
+  Action: TGxToolsAction;
 begin
   Assert(IsValidIdent(ActionName));
 
-  GxToolsAction := TGxToolsAction.Create(GetActionOwner, GenerateActionName(ActionName));
+  Action := TGxToolsAction.Create(GetActionOwner, GenerateActionName(ActionName));
 
-  RegisterActionWithIde(GxToolsAction, Bitmap);
+  RegisterActionWithIde(Action, Bitmap);
 
-  Result := GxToolsAction;
+  Result := Action;
 end;
 
 function TGxActionBroker.RequestMenuAction(const ActionName: string; Bitmap: Graphics.TBitmap): IGxMenuAction;
 var
-  GxMenuAction: TGxMenuAction;
+  Action: TGxMenuAction;
 begin
   Assert(IsValidIdent(ActionName));
 
-  GxMenuAction := TGxMenuAction.Create(GetActionOwner, GenerateMenuActionName(ActionName));
+  Action := TGxMenuAction.Create(GetActionOwner, GenerateActionName(ActionName));
 
-  RegisterActionWithIde(GxMenuAction, Bitmap);
+  RegisterActionWithIde(Action, Bitmap);
 
-  Result := GxMenuAction;
+  Result := Action;
 end;
 
 procedure TGxActionBroker.GetCategories(Categories: TStrings);

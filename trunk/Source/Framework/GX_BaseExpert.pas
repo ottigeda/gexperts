@@ -124,6 +124,9 @@ type
     property TotalCallCount: Integer read GetTotalCallCount;
   end;
 
+type
+  TGX_BaseExpertClass = class of TGX_BaseExpert;
+
 implementation
 
 uses

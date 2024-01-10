@@ -74,7 +74,7 @@ uses
   GX_GenericUtils, GX_GetIdeVersion, GX_About, GX_MenuActions, GX_MessageBox,
   GX_ConfigurationInfo, GX_Configure, GX_KbdShortCutBroker, GX_SharedImages,
   GX_IdeUtils, GX_IdeEnhance, GX_EditorChangeServices, GX_ToolbarDropDown,
-  GX_TimedCallback;
+  GX_TimedCallback, GX_ActionBroker;
 
 type
   TUnsupportedIDEMessage = class(TGxMsgBoxAdaptor)
@@ -144,6 +144,8 @@ begin
 
   FPrivateGExpertsInst := Self;
   InitSharedResources;
+
+  GxActionBroker.AddExpertImagesToIde;
 
   // Create the action manager.
   {$IFOPT D+} SendDebug('Creating GXActionManager'); {$ENDIF}
