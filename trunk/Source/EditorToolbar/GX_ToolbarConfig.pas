@@ -63,16 +63,15 @@ type
     FSavedToolbarItemIndex: Integer;
     FTextOffset: Integer;
     procedure SetupActionListBoxes;
-    function GetToolBarActions: TStrings;
-    procedure SetToolBarActions(const Value: TStrings);
+    procedure SetData(_Actions: TStrings);
+    procedure GetData(_Actions: TStrings);
   public
+    ///<sumamry>
+    /// @param Actions is The list of actions names which are already present on the toolbar. </summary>
+    class function Execute(_Owner: TWinControl; _Actions: TStrings): Boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function ShowModal: Integer; override;
-    // The list of actions names which are already
-    // present on the toolbar. This property is
-    // queried for the new list of action names.
-    property ToolBarActions: TStrings read GetToolBarActions write SetToolBarActions;
   end;
 
 implementation
@@ -81,7 +80,7 @@ implementation
 
 uses
   SysUtils, Graphics, Menus, Messages, StrUtils,
-  u_dzStringUtils,
+  u_dzStringUtils, u_dzVclUtils,
   GX_ActionBroker, GX_GenericUtils, GX_GxUtils, GX_Toolbar;
 
 procedure AddActionToListbox(Action: TContainedAction; Listbox: TCustomListbox; Select: Boolean);
@@ -96,6 +95,22 @@ begin
     NewIndex := Listbox.Items.AddObject(Action.Name, Action);
   if Select then
     Listbox.ItemIndex := NewIndex;
+end;
+
+class function TfmToolbarConfig.Execute(_Owner: TWinControl; _Actions: TStrings): Boolean;
+var
+  frm: TfmToolbarConfig;
+begin
+  frm := TfmToolbarConfig.Create(_Owner);
+  try
+    TForm_CenterOn(frm, _Owner);
+    frm.SetData(_Actions);
+    Result := (mrOk = frm.ShowModal);
+    if Result then
+      frm.GetData(_Actions);
+  finally
+    FreeAndNil(frm);
+  end;
 end;
 
 procedure TfmToolbarConfig.SetupActionListBoxes;
@@ -131,10 +146,10 @@ begin
   end;
 end;
 
-procedure TfmToolbarConfig.SetToolBarActions(const Value: TStrings);
+procedure TfmToolbarConfig.SetData(_Actions: TStrings);
 begin
   Assert(Assigned(FToolbarActionNames));
-  FToolbarActionNames.Assign(Value);
+  FToolbarActionNames.Assign(_Actions);
 end;
 
 constructor TfmToolbarConfig.Create(AOwner: TComponent);
@@ -266,9 +281,9 @@ begin
   end;
 end;
 
-function TfmToolbarConfig.GetToolBarActions: TStrings;
+procedure TfmToolbarConfig.GetData(_Actions: TStrings);
 begin
-  Result := FToolbarActionNames;
+  _Actions.Assign(FToolbarActionNames);
 end;
 
 function TfmToolbarConfig.ShowModal: Integer;

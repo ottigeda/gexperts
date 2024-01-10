@@ -43,6 +43,9 @@ uses
   GX_DbugIntf,
   GX_NTAEditServiceNotifier;
 
+// todo: Since this is no longer an (IDE) expert, don't call it an expert and maybe even move
+// it to the GX_EditorEnhancements unit.
+
 type
   THideNavigationToolbarExpert = class(TInterfacedObject, IHideNavigationToolbarExpert)
 {$IFDEF GX_HIDE_NAVBAR_NECESSARY}

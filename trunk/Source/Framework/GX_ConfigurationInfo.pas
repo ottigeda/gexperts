@@ -276,7 +276,6 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Math,
   u_dzVclUtils,
-  GX_EditorEnhancements,
   GX_MessageBox, // todo: remove UI from the configuration
   GX_GenericUtils, GX_GenericClasses, GX_IdeUtils, GX_OtaUtils, GX_VerDepConst,
   GX_BaseForm, GX_IdeDock, GX_GxUtils;
@@ -556,10 +555,6 @@ begin
   FConfigPath := DefaultConfigPath;
   FCachingPath := DefaultCachingPath;
 
-{$IFNDEF GX_STANDALONE}
-  EditorEnhancements.Enabled := False;
-{$ENDIF}
-
   LoadSettings;
   ShowGxMessageBox(TShowBadDirectoryMessage, FConfigPath);
 end;
@@ -579,7 +574,6 @@ begin
   {$IFOPT D+} SendDebug('TConfigInfo.Destroy'); {$ENDIF D+}
   //SaveSettings; // Call this below to prevent re-creating TConfigInfo
 {$IFNDEF GX_STANDALONE}
-  FreeEditorEnhancements;
   FreeAndNil(FCustomFont);
 {$ENDIF}
 
@@ -589,9 +583,6 @@ end;
 procedure TConfigInfo.LoadSettings;
 var
   Settings: TGExpertsSettings;
-{$IFNDEF GX_STANDALONE}
-  Setting: Boolean;
-{$ENDIF}
 begin
   {$IFOPT D+} SendDebug('Loading configuration info settings'); {$ENDIF D+}
 
@@ -616,8 +607,6 @@ begin
 {$ENDIF}
 
 {$IFNDEF GX_STANDALONE}
-    Setting := Settings.ReadBool(ConfigurationKey, 'EditorEnhancementsEnabled', False);
-    EditorEnhancements.Enabled := Setting and not IsStandAlone;
 {$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
     FForceDesktopOnStartup := Settings.ReadBool(ConfigurationKey, 'ForceDesktopOnStartup', False);
     FForcedStartupDesktop := Settings.ReadString(ConfigurationKey, 'ForcedStartupDestkop', '');
@@ -648,7 +637,6 @@ begin
     Settings.WriteBool(ConfigurationKey, 'PlaceGxMainMenuInToolsMenu', FPlaceGxMainMenuInToolsMenu);
     Settings.WriteBool(ConfigurationKey, 'HideWindowMenu', FHideWindowMenu);
     Settings.WriteBool(ConfigurationKey, 'MoveComponentMenu', FMoveComponentMenu);
-    Settings.WriteBool(ConfigurationKey, 'EditorEnhancementsEnabled', EditorEnhancements.Enabled);
     Settings.WriteBool(ConfigurationKey, 'EnableCustomFont', FEnableCustomFont);
     Settings.SaveFont(AddSlash(ConfigurationKey) + 'CustomFont', FCustomFont);
 {$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}

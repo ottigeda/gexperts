@@ -23,6 +23,7 @@ type
     FBToolBar: TToolBar;
     FCodePanel: TPanel;
     FOldMouseUp: TMouseEvent;
+    FOnConfigureToolbar: TNotifyEvent;
 
     procedure AddMiddleButtonClose;
     procedure RemoveMiddleButtonClose;
@@ -30,10 +31,10 @@ type
 
     // OnClick handler for the toolbar configuration menu item
     procedure ConfigureToolBarButtonsClick(Sender: TObject);
-    procedure CreateToolBarButtons;
+    procedure CreateToolBarButtons(_ToolBarActionsList: TStrings);
     procedure FreeToolBarButtons;
 
-    procedure ApplyEditorTabControlStyles;
+    procedure ApplyEditorTabControlStyles(_MultiLine, _MiddleButtonClose, _HotTrack, _Buttons, _ButtonsFlat: Boolean);
     procedure ClearEditorTabControlStyles;
     procedure MultiLineTabResize(Sender: TObject);
     procedure GetEditorComponents;
@@ -48,11 +49,12 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure RecreateToolBarButtons;
+    procedure RecreateToolBarButtons(_ToolBarActionsList: TStrings);
     procedure SetupToolBarButtons;
-    procedure SetEditorControls;
+    procedure SetEditorControls(_MultiLine, _MiddleButtonClose, _HotTrack, _Buttons, _ButtonsFlat: Boolean);
 
     property Name: TComponentName read GetName write SetName;
+    property OnConfigureToolbar: TNotifyEvent read FOnConfigureToolbar write FOnConfigureToolbar;
   end;
 
 implementation
@@ -60,7 +62,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Menus, ToolWin, ActnList, Graphics, ToolsAPI, Actions,
-  GX_OtaUtils, GX_EditorEnhancements, GX_GxUtils, GX_IdeUtils, GX_GenericUtils;
+  GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_GenericUtils;
 
 const
   SGxEditorDockToolBar = 'GxEditorDockToolBar';
@@ -158,7 +160,8 @@ end;
 
 procedure TGXToolBar.ConfigureToolBarButtonsClick(Sender: TObject);
 begin
-  EditorEnhancements.ShowToolBarConfigurationDialog;
+  if Assigned(FOnConfigureToolbar) then
+    FOnConfigureToolbar(Self);
 end;
 
 procedure TGXToolBar.SetName(const Value: TComponentName);
@@ -172,14 +175,15 @@ begin
   Result := inherited Name;
 end;
 
-procedure TGXToolBar.SetEditorControls;
+procedure TGXToolBar.SetEditorControls(_MultiLine, _MiddleButtonClose, _HotTrack : Boolean;
+  _Buttons, _ButtonsFlat: Boolean);
 begin
   {$IFOPT D+} SendDebug('ToolBar: SetEditorControls'); {$ENDIF}
 
   // All these items need to be called from this
   // method, since they potentially cover multiple
   // editor windows.
-  ApplyEditorTabControlStyles;
+  ApplyEditorTabControlStyles(_MultiLine, _MiddleButtonClose, _HotTrack, _Buttons, _ButtonsFlat);
 end;
 
 // Get the components of the editor that need resizing.
@@ -272,22 +276,19 @@ begin
   end;
 end;
 
-procedure TGXToolBar.ApplyEditorTabControlStyles;
-var
-  LocalEditorEnhancements: TEditorEnhancements;
+procedure TGXToolBar.ApplyEditorTabControlStyles(_MultiLine, _MiddleButtonClose, _HotTrack: Boolean;
+  _Buttons, _ButtonsFlat: Boolean);
 begin
   if IsStandAlone then
     Exit;
   {$IFOPT D+} SendDebug('Applying editor tab control settings'); {$ENDIF}
-  LocalEditorEnhancements := EditorEnhancements;
-
   GetEditorComponents;
   if Assigned(FTabControl) then
   begin
-    //Turn MultiLine tabs on and off based on EditorEnhancements MultiLine
-    FTabControl.MultiLine := LocalEditorEnhancements.MultiLine;
+    // Turn MultiLine tabs on and off based on EditorEnhancements MultiLine
+    FTabControl.MultiLine := _MultiLine;
 
-    if LocalEditorEnhancements.MiddleButtonClose then
+    if _MiddleButtonClose then
       AddMiddleButtonClose
     else
       RemoveMiddleButtonClose;
@@ -297,11 +298,11 @@ begin
     else
       RemoveMultiLineTabs;
 
-    FTabControl.HotTrack := LocalEditorEnhancements.HotTrack;
+    FTabControl.HotTrack := _HotTrack;
 
-    if LocalEditorEnhancements.Buttons then
+    if _Buttons then
     begin
-      if LocalEditorEnhancements.ButtonsFlat then
+      if _ButtonsFlat then
         FTabControl.Style := tsFlatButtons
       else
         FTabControl.Style := tsButtons;
@@ -332,7 +333,7 @@ begin
     Components[0].Free;
 end;
 
-procedure TGXToolBar.CreateToolBarButtons;
+procedure TGXToolBar.CreateToolBarButtons(_ToolBarActionsList: TStrings);
 var
   ToolButton: TToolButton;
   IdeAction: TContainedAction;
@@ -340,7 +341,7 @@ var
   Actions: TStrings;
   i: Integer;
 begin
-  Actions := EditorEnhancements.ToolBarActionsList;
+  Actions := _ToolBarActionsList;
   Assert(Assigned(Actions));
 
   for i := Actions.Count-1 downto 0 do
@@ -393,11 +394,11 @@ begin
   CreateToolBarConfigurationMenu;
 end;
 
-procedure TGXToolBar.RecreateToolBarButtons;
+procedure TGXToolBar.RecreateToolBarButtons(_ToolBarActionsList: TStrings);
 begin
   Visible := False;
   FreeToolBarButtons;
-  CreateToolBarButtons;
+  CreateToolBarButtons(_ToolBarActionsList);
   SetupToolBarButtons;
   UpdateToolBarEdges;
 end;
@@ -448,7 +449,7 @@ begin
   begin
     TabMouseUp := FTabControl.OnMouseUp;
     SelfMouseUp := OnMouseUp;
-    if SameMethod(TabMouseUp, SelfMouseUp) then
+    if not SameMethod(TabMouseUp, SelfMouseUp) then
     begin
       FOldMouseUp := FTabControl.OnMouseUp;
       FTabControl.OnMouseUp := OnMouseUp;
