@@ -18,18 +18,8 @@ type
     tshGeneral: TTabSheet;
     tshIDE: TTabSheet;
     tshEditorExperts: TTabSheet;
-    tshEditor: TTabSheet;
-    gbxEditorTabs: TGroupBox;
-    chkMultiLine: TCheckBox;
-    chkHotTrack: TCheckBox;
-    chkButtons: TCheckBox;
-    gbxEditorToolBar: TGroupBox;
-    chkEditorToolBar: TCheckBox;
     gbxIDEMenu: TGroupBox;
     dlgUIFont: TFontDialog;
-    chkDisableEDTEnhancements: TCheckBox;
-    chkEditTabButtonsFlat: TCheckBox;
-    rgAlign: TRadioGroup;
     gbxTabDockHost: TGroupBox;
     chkMultiLineTabDockHost: TCheckBox;
     chkDefaultMultiLineTabDockHost: TCheckBox;
@@ -44,9 +34,7 @@ type
     chkAlphabetizeMenu: TCheckBox;
     chkHideWindowMenu: TCheckBox;
     chkMoveComponentMenu: TCheckBox;
-    btnConfigureToolBar: TButton;
     chkPlaceGxMainMenuInToolsMenu: TCheckBox;
-    chkMiddleButtonClose: TCheckBox;
     tshDebug: TTabSheet;
     chkEditorKeyTracing: TCheckBox;
     btnEnumerateModules: TButton;
@@ -87,7 +75,6 @@ type
     chkUseCustomFont: TCheckBox;
     btnCustomFont: TButton;
     pnlGeneralSpacer: TPanel;
-    chkHideNavbar: TCheckBox;
     chkEnhanceSearchPaths: TCheckBox;
     chkEnhanceToolProperties: TCheckBox;
     chkAllowResize: TCheckBox;
@@ -106,7 +93,6 @@ type
     chkOIHideDescPane: TCheckBox;
     chkEnhanceBuildEventsDialog: TCheckBox;
     chkEnhanceApplicationSettingsDialog: TCheckBox;
-    lblHideNavBar: TLabel;
     btnUsage: TButton;
     chkAutoCloseMessage: TCheckBox;
     tshOldIdes: TTabSheet;
@@ -131,16 +117,11 @@ type
     procedure btnHelpClick(Sender: TObject);
     procedure chkFontEnabledClick(Sender: TObject);
     procedure btnFontClick(Sender: TObject);
-    procedure chkDisableEDTEnhancementsClick(Sender: TObject);
     procedure chkAutoSaveClick(Sender: TObject);
     procedure chkCPAsButtonsClick(Sender: TObject);
     procedure chkCPTabsInPopupClick(Sender: TObject);
     procedure chkCPMultiLineClick(Sender: TObject);
-    procedure chkButtonsClick(Sender: TObject);
-    procedure chkEditorToolBarClick(Sender: TObject);
     procedure chkMultiLineTabDockHostClick(Sender: TObject);
-    procedure btnConfigureToolBarClick(Sender: TObject);
-    procedure pcConfigChange(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btnEumerateActionsClick(Sender: TObject);
     procedure btnGetFontsClick(Sender: TObject);
@@ -161,16 +142,12 @@ type
     FConfigEditorExpertsFrame: TfrConfigureExperts;
     FConfigExpertsFrame: TfrConfigureExperts;
     procedure HideUnsupportedIdeItems;
-    procedure HideUnsupportedEditorItems;
 
     procedure LoadGeneral;
     procedure SaveGeneral;
 
     procedure LoadIdeEnhancements;
     procedure SaveIdeEnhancements;
-
-    procedure LoadEditorEnhancements;
-    procedure SaveEditorEnhancements;
 
     procedure LoadSuppressedMessages;
 
@@ -200,18 +177,11 @@ uses
 {$IFDEF GX_DELPHI2007_UP}
   GX_SizeGripHWND,
 {$ENDIF}
-  GX_GxUtils, GX_EditorEnhancements, GX_IdeEnhance,
+  GX_GxUtils, GX_IdeEnhance,
   GX_ConfigurationInfo, GX_EditorExpertManager, GX_MessageBox,
   GX_GExperts, GX_MenuActions, GX_GenericUtils, GX_IdeUtils,
   GX_OtaUtils, u_dzVclUtils, GX_KbdShortCutBroker, GX_UsageStatistics,
   GX_BaseExpert;
-
-type
-  TShowOldComCtrlVersionMessage = class(TGxMsgBoxAdaptor)
-  protected
-    function GetMessage: string; override;
-    function ShouldShow: Boolean; override;
-  end;
 
 procedure SetupGroupBox(Box: TGroupBox; Enable: Boolean);
 var
@@ -309,12 +279,10 @@ begin
   chkHideWindowMenu.Checked := ConfigInfo.HideWindowMenu;
   chkMoveComponentMenu.Checked := ConfigInfo.MoveComponentMenu;
 
-  LoadEditorEnhancements;
+  // debug option:
   chkEditorKeyTracing.Checked := GxOtaGetEditorKeyTracingEnabled;
-  chkDisableEDTEnhancements.Checked := not EditorEnhancements.Enabled;
-  HideUnsupportedIdeItems;
 
-  HideUnsupportedEditorItems;
+  HideUnsupportedIdeItems;
 
   LoadSuppressedMessages;
 
@@ -475,7 +443,6 @@ begin
     FConfigExpertsFrame.SaveExperts;
     FConfigEditorExpertsFrame.SaveExperts;
     SaveIdeEnhancements;
-    SaveEditorEnhancements;
     ConfigInfo.SaveSettings;
     GXMenuActionManager.ArrangeMenuItems;
   finally
@@ -527,8 +494,6 @@ begin
     GxContextHelp(Self, 29)
   else if ActivePage = tshIDE then
     GxContextHelp(Self, 30)
-  else if ActivePage = tshEditor then
-    GxContextHelp(Self, 35)
   else
     GxContextHelp(Self, 12);
 end;
@@ -609,32 +574,6 @@ begin
   chkCPMultiLineClick(chkCPMultiLine);
   chkMultiLineTabDockHostClick(chkMultiLineTabDockHost);
   chkCPMultiLineClick(chkCPMultiLine);
-
-  chkDisableEDTEnhancementsClick(chkDisableEDTEnhancements);
-end;
-
-procedure TfmConfiguration.LoadEditorEnhancements;
-begin
-  Assert(EditorEnhancements <> nil);
-
-  chkDisableEDTEnhancements.Checked := not EditorEnhancements.Enabled;
-
-  Assert(EditorEnhancements.ToolbarActionsList <> nil);
-
-  chkEditorToolBar.Checked := EditorEnhancements.ToolBarVisible;
-
-  chkHotTrack.Checked := EditorEnhancements.HotTrack;
-  chkMultiLine.Checked := EditorEnhancements.MultiLine;
-  chkMiddleButtonClose.Checked := EditorEnhancements.MiddleButtonClose;
-  chkButtons.Checked := EditorEnhancements.Buttons;
-  chkEditTabButtonsFlat.Checked := EditorEnhancements.ButtonsFlat;
-
-  chkHideNavbar.Checked := EditorEnhancements.HideNavbar;
-
-  Assert(EditorEnhancements.ToolBarAlign in [alTop..alRight]);
-  rgAlign.ItemIndex := Ord(EditorEnhancements.ToolBarAlign) - 1;
-
-  chkDisableEDTEnhancementsClick(chkDisableEDTEnhancements);
 end;
 
 procedure TfmConfiguration.LoadSuppressedMessages;
@@ -724,53 +663,6 @@ begin
   IdeEnhancements.SaveSettings;
 end;
 
-procedure TfmConfiguration.SaveEditorEnhancements;
-begin
-  Assert(EditorEnhancements <> nil);
-
-  Assert(EditorEnhancements.ToolbarActionsList <> nil);
-  {$IFOPT D+} SendDebug('Clearing the toolbar actions'); {$ENDIF}
-
-  {$IFOPT D+} SendDebug('Setting ToolBarVisible to ' + BooleanText(chkEditorToolBar.Checked)); {$ENDIF}
-  EditorEnhancements.ToolBarVisible := chkEditorToolBar.Checked;
-  {$IFOPT D+} SendDebug('Setting MultiLine Editor Tabs to ' + BooleanText(chkMultiLine.Checked)); {$ENDIF}
-  EditorEnhancements.MultiLine := chkMultiLine.Checked;
-  {$IFOPT D+} SendDebug('Setting Middle Button Close to ' + BooleanText(chkMiddleButtonClose.Checked)); {$ENDIF}
-  EditorEnhancements.MiddleButtonClose := chkMiddleButtonClose.Checked;
-  {$IFOPT D+} SendDebug('Setting HotTrack to ' + BooleanText(chkHotTrack.Checked)); {$ENDIF}
-  EditorEnhancements.HotTrack := chkHotTrack.Checked;
-  {$IFOPT D+} SendDebug('Setting Buttons to ' + BooleanText(chkButtons.Checked)); {$ENDIF}
-  EditorEnhancements.Buttons := chkButtons.Checked;
-  {$IFOPT D+} SendDebug('Setting ButtonsFlat to ' + BooleanText(chkEditTabButtonsFlat.Checked)); {$ENDIF}
-  EditorEnhancements.ButtonsFlat := chkEditTabButtonsFlat.Checked;
-
-  {$IFOPT D+} SendDebug('Setting ToolBarAlign to ' + IntToStr(rgAlign.ItemIndex)); {$ENDIF}
-  Assert(rgAlign.ItemIndex >= 0);
-  EditorEnhancements.ToolBarAlign := TAlign(rgAlign.ItemIndex + 1);
-
-  {$IFOPT D+} SendDebug('Setting HideNabar to ' + BooleanText(chkHideNavbar.Checked)); {$ENDIF}
-  EditorEnhancements.HideNavbar := chkHideNavbar.Checked;
-
-  {$IFOPT D+} SendDebug('Setting EditorEnhancements.Enabled to ' + BooleanText(not chkDisableEDTEnhancements.Checked)); {$ENDIF}
-  EditorEnhancements.Enabled := not chkDisableEDTEnhancements.Checked;
-
-  {$IFOPT D+} SendDebug('Saving editor enhancements settings'); {$ENDIF}
-  EditorEnhancements.SaveSettings;
-
-  EditorEnhancements.ApplyToolbarSettings;
-end;
-
-procedure TfmConfiguration.chkDisableEDTEnhancementsClick(Sender: TObject);
-var
-  EnableState: Boolean;
-begin
-  EnableState := not chkDisableEDTEnhancements.Checked;
-  SetupGroupBox(gbxEditorTabs, EnableState);
-  SetupGroupBox(gbxEditorToolBar, EnableState);
-  chkEditorToolBarClick(chkEditorToolBar);
-  chkButtonsClick(chkButtons);
-end;
-
 procedure TfmConfiguration.HideUnsupportedIdeItems;
 begin
 {$IFDEF GX_VER160_up} // Delphi 8 (BDS 1)
@@ -810,19 +702,6 @@ begin
   btnCPFont.Visible := False;
   chkCPFontEnabled.Visible := False;
 {$ENDIF}
-end;
-
-procedure TfmConfiguration.HideUnsupportedEditorItems;
-begin
-  tshEditor.TabVisible := EditorEnhancementsPossible;
-  gbxEditorTabs.Visible := RunningDelphi7OrLess;
-{$IFNDEF GX_VER300_up} // RAD Studio 10 Seattle (24; BDS 17)
-  chkHideNavbar.Visible := False;
-{$endif}
-{$IFDEF GX_VER320_up} // RAD Studio 10.2 Tokyo (26; BDS 19)
-  chkHideNavbar.Visible := False;
-  lblHideNavBar.Visible := true;
-{$endif}
 end;
 
 procedure TfmConfiguration.chkFontEnabledClick(Sender: TObject);
@@ -892,29 +771,6 @@ begin
   end;
 end;
 
-procedure TfmConfiguration.chkButtonsClick(Sender: TObject);
-var
-  EnableState: Boolean;
-begin
-  EnableState := (Sender as TCheckBox).Checked and
-                 (Sender as TCheckBox).Enabled and
-                 not chkDisableEDTEnhancements.Checked;
-
-  chkEditTabButtonsFlat.Enabled := EnableState;
-end;
-
-procedure TfmConfiguration.chkEditorToolBarClick(Sender: TObject);
-var
-  EnableState: Boolean;
-begin
-  EnableState := (Sender as TCheckBox).Checked and
-                 (Sender as TCheckBox).Enabled and
-                 not chkDisableEDTEnhancements.Checked;
-
-  rgAlign.Enabled := EnableState;
-  btnConfigureToolBar.Enabled := EnableState;
-end;
-
 procedure TfmConfiguration.chkMultiLineTabDockHostClick(Sender: TObject);
 var
   EnableState: Boolean;
@@ -932,11 +788,6 @@ begin
   end else begin
     GxSetDefaultFont(Self);
   end;
-end;
-
-procedure TfmConfiguration.btnConfigureToolBarClick(Sender: TObject);
-begin
-  EditorEnhancements.ShowToolBarConfigurationDialog;
 end;
 
 procedure TfmConfiguration.btnEnumerateModulesClick(Sender: TObject);
@@ -964,29 +815,6 @@ begin
 //  fn := dlgHelpFile.FileName;
 //  SaveAllSettings;
 //  ConfigInfo.SaveToFile(fn);
-end;
-
-procedure TfmConfiguration.pcConfigChange(Sender: TObject);
-begin
-  // Warn if the user has an old common controls DLL
-  if pcConfig.ActivePage = tshEditor then
-    ShowGxMessageBox(TShowOldComCtrlVersionMessage);
-end;
-
-{ TShowOldComCtrlVersionMessage }
-
-function TShowOldComCtrlVersionMessage.GetMessage: string;
-resourcestring
-  SOldComCtrlVersion = 'Your system has an old version of the Windows comctl32.dll.  ' +
-    'The GExperts editor toolbar might not work correctly without upgrading to version 5 here: ' +
-    'http://www.microsoft.com/msdownload/ieplatform/ie/comctrlx86.asp';
-begin
-  Result := SOldComCtrlVersion;
-end;
-
-function TShowOldComCtrlVersionMessage.ShouldShow: Boolean;
-begin
-  Result := GetComCtlVersion <= ComCtlVersionIE401;
 end;
 
 procedure TfmConfiguration.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
