@@ -206,6 +206,7 @@ type
     procedure UpdateCaption;
     procedure AddFileToCurrentFolder(const AFileName: string);
     procedure doOnSettingsChanged;
+    procedure SaveEntryFilename;
     property EntryFile: string read FEntryFile write FEntryFile;
     property MRUEntryFiles: TStrings read FMRUEntryFiles;
     procedure SetShowPreview(Value: Boolean);
@@ -252,7 +253,7 @@ type
 
   TFavoriteFilesExpert = class(TGX_Expert)
   private
-    FFavoriteFiles: TfmFavFiles;
+    FFavFilesForm: TfmFavFiles;
     FOptions: TFavFilesOptions;
 {$IFDEF GX_VER150_up}
     FFavMenuItem: TMenuItem;
@@ -717,6 +718,7 @@ begin
     ErrorMsg := Format(SSaveWarning, [FEntryFile, GetDefaultEntryFileName]);
     MessageDlg(ErrorMsg, mtInformation, [mbOK], 0);
     FEntryFile := GetDefaultEntryFileName;
+    SaveEntryFilename;
   end;
 
   UpdateCaption;
@@ -838,6 +840,18 @@ begin
         Key := 0;
       end;
   end;
+end;
+
+procedure TfmFavFiles.SaveEntryFilename;
+var
+  Settings: IExpertSettings;
+begin
+  // Do not localize.
+  Settings := TFavoriteFilesExpert.GetSettings;
+  if FEntryFile = GetDefaultEntryFileName then
+    Settings.DeleteKey('EntryFile')
+  else
+    Settings.WriteString('EntryFile', FEntryFile);
 end;
 
 procedure TfmFavFiles.SaveSettings;
@@ -1913,21 +1927,21 @@ begin
     inherited SetActive(New);
     if not New then
     begin
-      if Assigned(FFavoriteFiles) then
+      if Assigned(FFavFilesForm) then
       begin
-        if FFavoriteFiles.Visible then
-          FFavoriteFiles.Close;
+        if FFavFilesForm.Visible then
+          FFavFilesForm.Close;
 
-        FreeAndNil(FFavoriteFiles);
+        FreeAndNil(FFavFilesForm);
       end;
 {$IFDEF GX_VER150_up}
       if Assigned(FFavMenuItem) then
         FreeAndNil(FFavMenuItem);
 {$ENDIF}
     end else begin
-      FFavoriteFiles := TfmFavFiles.Create(nil, FOptions);
+      FFavFilesForm := TfmFavFiles.Create(nil, FOptions);
 {$IFDEF GX_VER150_up}
-      FFavoriteFiles.OnSettingsChanged := HandleOnSettingsChanged;
+      FFavFilesForm.OnSettingsChanged := HandleOnSettingsChanged;
 {$ENDIF}
     end;
   end;
@@ -2007,10 +2021,10 @@ begin
   // todo: This is far from optimal. We should not need to create the form just to load the
   //       configuration. But since originally there was no configuration for the expert but
   //       only for the form the code is rather messy.
-  if FFavoriteFiles = nil then begin
-    FFavoriteFiles := TfmFavFiles.Create(nil, FOptions);
-    SetFormIcon(FFavoriteFiles);
-    FFavoriteFiles.OnSettingsChanged := HandleOnSettingsChanged;
+  if FFavFilesForm = nil then begin
+    FFavFilesForm := TfmFavFiles.Create(nil, FOptions);
+    SetFormIcon(FFavFilesForm);
+    FFavFilesForm.OnSettingsChanged := HandleOnSettingsChanged;
   end;
   if FOptions.FIsFavMenuVisible then
     InsertFavMenuItem;
@@ -2018,12 +2032,12 @@ end;
 
 function TFavoriteFilesExpert.TryGetRootFolder(out _Folder: TGXFolder): Boolean;
 begin
-  if FFavoriteFiles = nil then begin
-    FFavoriteFiles := TfmFavFiles.Create(nil, FOptions);
-    SetFormIcon(FFavoriteFiles);
-    FFavoriteFiles.OnSettingsChanged := HandleOnSettingsChanged;
+  if FFavFilesForm = nil then begin
+    FFavFilesForm := TfmFavFiles.Create(nil, FOptions);
+    SetFormIcon(FFavFilesForm);
+    FFavFilesForm.OnSettingsChanged := HandleOnSettingsChanged;
   end;
-  Result := FFavoriteFiles.TryGetRootFolder(_Folder);
+  Result := FFavFilesForm.TryGetRootFolder(_Folder);
 end;
 
 type
@@ -2220,13 +2234,13 @@ var
   FavMi: TMenuItem;
   FavFile: TGXFile;
 begin
-  if not Assigned(FFavoriteFiles) then
+  if not Assigned(FFavFilesForm) then
     Exit; //==>
   if not TryGetMenuItem(_Sender, FavMi) then
     Exit; //==>
 
   FavFile := TGXFile(FavMi.Tag);
-  FFavoriteFiles.ExecuteFile(FavFile);
+  FFavFilesForm.ExecuteFile(FavFile);
 end;
 {$ENDIF}
 
@@ -2248,23 +2262,23 @@ end;
 destructor TFavoriteFilesExpert.Destroy;
 begin
   FreeAndNil(FOptions);
-  FreeAndNil(FFavoriteFiles);
+  FreeAndNil(FFavFilesForm);
   inherited;
 end;
 
 procedure TFavoriteFilesExpert.Execute(Sender: TObject);
 begin
-  if FFavoriteFiles = nil then
+  if FFavFilesForm = nil then
   begin
-    FFavoriteFiles := TfmFavFiles.Create(nil, FOptions);
-    SetFormIcon(FFavoriteFiles);
+    FFavFilesForm := TfmFavFiles.Create(nil, FOptions);
+    SetFormIcon(FFavFilesForm);
 {$IFDEF GX_VER150_up}
-    FFavoriteFiles.OnSettingsChanged := HandleOnSettingsChanged;
+    FFavFilesForm.OnSettingsChanged := HandleOnSettingsChanged;
 {$ENDIF}
   end;
-  if FFavoriteFiles.WindowState = wsMinimized then
-    FFavoriteFiles.WindowState := wsNormal;
-  FFavoriteFiles.Show;
+  if FFavFilesForm.WindowState = wsMinimized then
+    FFavFilesForm.WindowState := wsNormal;
+  FFavFilesForm.Show;
 
   IncCallCount;
 end;
@@ -2277,15 +2291,15 @@ end;
 procedure TFavoriteFilesExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
-  if Assigned(FFavoriteFiles) then
-    FFavoriteFiles.LoadSettings;
+  if Assigned(FFavFilesForm) then
+    FFavFilesForm.LoadSettings;
 end;
 
 procedure TFavoriteFilesExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited;
-  if Assigned(FFavoriteFiles) then
-    FFavoriteFiles.SaveSettings;
+  if Assigned(FFavFilesForm) then
+    FFavFilesForm.SaveSettings;
 end;
 
 procedure TfmFavFiles.actFileSelectAllExecute(Sender: TObject);
