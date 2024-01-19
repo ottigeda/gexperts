@@ -7534,7 +7534,11 @@ end;
 
 initialization
 {$IFDEF DELPHI2007}
-  TScreenMonitorCacheFix.Initialize;
+  if ContainsText(ParamStr(0), '\bds.exe') then begin
+    // The TScreenMonitorCacheFix crashes when exiting the Delphi 2007 IDE.
+    // Since we don't need it in the IDE we simply don't initialize it.
+  end else
+    TScreenMonitorCacheFix.Initialize;
 {$ENDIF}
 finalization
   FreeAndNil(gblCheckListBoxHelper);
