@@ -718,7 +718,7 @@ begin
     ShowNumberOfUnfilteredTodoItems;
   end;
   PostMessage(Self.Handle, UM_RESIZECOLS, 0, 0);
-  edtFilterTodoList.Height := fmToDo.ToolBar.Height; // avoid auto-resetting of edtFilterTodoList.Height / does not work?
+  edtFilterTodoList.Height := ToolBar.Height; // avoid auto-resetting of edtFilterTodoList.Height / does not work?
 end;
 
 procedure TfmToDo.RefreshTodoList;
@@ -997,14 +997,14 @@ begin
   end;
 
   if FilteredItems < cnt then
-    fmToDo.Caption := FfmToDoCaption + ' (' + IntToStr(FilteredItems) + '/' + IntToStr(cnt) + ' ToDo items)'
+    Caption := FfmToDoCaption + ' (' + IntToStr(FilteredItems) + '/' + IntToStr(cnt) + ' ToDo items)'
   else
     ShowNumberOfUnfilteredTodoItems;
 end;
 
 procedure TfmToDo.ShowNumberOfUnfilteredTodoItems;
 begin
-  fmToDo.Caption := FfmToDoCaption + ' (' + IntToStr(lvTodo.Items.Count) + ' ToDo items)';
+  Caption := FfmToDoCaption + ' (' + IntToStr(lvTodo.Items.Count) + ' ToDo items)';
 end;
 
 procedure TfmToDo.tim_FilterTimer(Sender: TObject);
