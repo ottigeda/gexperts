@@ -120,11 +120,10 @@ begin
   end;
 {$ENDIF}
 
-  fmBookmarks := TfmGxBookmarksForm.Create(nil);
-  SetFormIcon(fmBookmarks);
-  IdeDockManager.RegisterDockableForm(TfmGxBookmarksForm, fmBookmarks, 'fmGxBookmarksForm');
-
   BookmarksExpert := Self;
+
+//  SetFormIcon(fmBookmarks);
+  IdeDockManager.RegisterDockableForm(TfmGxBookmarksForm, fmBookmarks, 'fmGxBookmarksForm');
 end;
 
 destructor TBookmarksExpert.Destroy;
