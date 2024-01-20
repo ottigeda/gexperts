@@ -84,11 +84,13 @@ var
   Section: (sUnknown, sInterface, sImplementation);
   EndPos: Integer;
   IsProgramOrLibrary: Boolean;
+  IsPackage: Boolean;
   FoundBeginAlready: Boolean;
 begin
   Section := sUnknown;
   FParser.Restart;
   IsProgramOrLibrary := False;
+  IsPackage := False;
   FoundBeginAlready := False;
 
   EndPos := -1;
@@ -119,6 +121,7 @@ begin
         begin
           FPosList.AddObject(SPackageName, TObject(FParser.LineNumber + 1));
           IsProgramOrLibrary := True;
+          IsPackage := True;
         end;
       tkUnit:
         FPosList.AddObject(SUnitName, TObject(FParser.LineNumber + 1));
@@ -141,11 +144,13 @@ begin
         end;
       tkContains:
         begin
-          FPosList.AddObject(SContainsName, TObject(FParser.LineNumber + 1));
+          if IsPackage and not FoundBeginAlready and (Section = sUnknown) and (FParser.LastNoSpace = tkCRLF) then
+            FPosList.AddObject(SContainsName, TObject(FParser.LineNumber + 1));
         end;
       tkRequires:
         begin
-          FPosList.AddObject(SRequiresName, TObject(FParser.LineNumber + 1));
+          if IsPackage and not FoundBeginAlready and (Section = sUnknown) and (FParser.LastNoSpace = tkCRLF) then
+            FPosList.AddObject(SRequiresName, TObject(FParser.LineNumber + 1));
         end;
       tkUses:
         begin
