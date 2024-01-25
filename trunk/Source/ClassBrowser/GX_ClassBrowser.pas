@@ -251,6 +251,7 @@ type
   protected
     procedure SetActive(New: Boolean); override;
   public
+    constructor Create; override;
     destructor Destroy; override;
     function GetActionCaption: string; override;
     class function GetName: string; override;
@@ -268,7 +269,10 @@ uses
   u_dzVclUtils,
   GX_VerDepConst, GX_ClassIdentify, GX_ConfigurationInfo,
   GX_ClassProp, GX_GExperts,
-  GX_GxUtils, GX_GenericUtils, GX_StringList, GX_IdeUtils;
+  GX_GxUtils, GX_GenericUtils, GX_StringList, GX_IdeUtils, GX_Logging;
+
+var
+  Logger: IGxLogger;
 
 type
   TClassProjectNotifier = class(TBaseIdeNotifier)
@@ -514,7 +518,13 @@ begin
         Dec(i);
     end;
 
-    Assert(TempClassList.Count = 0, 'Bad algorithm building tree');
+    if TempClassList.Count > 0 then begin
+      Logger.WarningFmt('%d items left in TempClassList, possibly due to an interposer class', [TempClassList.Count]);
+      Logger.Indent;
+      for i := 0 to TempClassList.Count - 1 do
+        Logger.WarningFmt('%d: %s (%s)', [i, TempClassList[i], TBrowseClassInfoCollection(TempClassList.Objects[i]).DerivedFrom]);
+      Logger.UnIndent;
+    end;
 
   finally
     FreeAndNil(TempClassList);
@@ -1631,11 +1641,18 @@ begin
   end;
 end;
 
+constructor TClassBrowserExpert.Create;
+begin
+  inherited;
+  Logger := CreateModuleLogger(GetName);
+end;
+
 destructor TClassBrowserExpert.Destroy;
 begin
   FreeAndNil(fmClassBrowser);
 
   inherited Destroy;
+  Logger := nil;
 end;
 
 function TClassBrowserExpert.GetActionCaption: string;
