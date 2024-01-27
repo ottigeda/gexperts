@@ -716,7 +716,7 @@ end;
 
 procedure TfmClassBrowser.tvBrowseChange(Sender: TObject; Node: TTreeNode);
 resourcestring
-  SSourceModule = 'Source module: %s  (%d ms)';
+  SSourceModule = 'Source module: %s line: %d  (%d ms)';
 var
   OInfo: TBrowseClassInfoCollection;
   TimeSpent: DWORD;
@@ -740,7 +740,7 @@ begin
         DrawInheritance;
       TimeSpent := GetTickCount - TimeSpent;
       LoadList(OInfo);
-      StatusBar.SimpleText := Format(SSourceModule, [OInfo.SourceName, TimeSpent]);
+      StatusBar.SimpleText := Format(SSourceModule, [OInfo.SourceName, oinfo.LineNo, TimeSpent]);
     end else begin
       StatusBar.SimpleText := '';
       FMethodText.Clear;
@@ -993,9 +993,9 @@ var
     begin
       if Node.Level > LastVisitedLevel then
       begin
-        if SameText(TBrowseClassInfoCollection(Node.Data).Name, Comp) then
+        OInfo := TBrowseClassInfoCollection(Node.Data);
+        if SameText(OInfo.Name, Comp) then
         begin
-          OInfo := TBrowseClassInfoCollection(Node.Data);
           Result := OInfo.DerivedFrom;
           if SameText(Result, Comp) then begin
             // prevent infinite loop for IInterface and TObject
