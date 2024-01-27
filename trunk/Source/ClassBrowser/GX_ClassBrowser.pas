@@ -838,11 +838,14 @@ begin
 end;
 
 procedure TfmClassBrowser.edtClassFilterKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+var
+  cnt: Integer;
 begin
   if (Key in [VK_DOWN, VK_UP, VK_NEXT, VK_PRIOR]) then begin
-    if tvBrowse.Items.Count > 1 then
+    cnt := tvBrowse.Items.Count;
+    if cnt > 1 then
       tvBrowse.Perform(WM_KEYDOWN, Key, 0)
-    else if tvBrowse.Items.Count = 1 then
+    else if cnt = 1 then
       tvBrowse.Items[0].Selected := True;
     Key := 0;
   end;
@@ -1558,6 +1561,7 @@ begin
   FParseRecursing := False;
   FAutomaticallyHideBrowser := True;
   FInfoViewMode := vmTree;
+  edtClassFilter.Visible := (FInfoViewMode = vmList);
 
   FClassList := TClassList.Create;
   FClassList.OnParseFile := ParseFile;
@@ -1904,6 +1908,8 @@ begin
     Exit;
 
   FInfoViewMode := Value;
+  edtClassFilter.Visible := (FInfoViewMode = vmList);
+  tbBrowse.Invalidate;
   LoadAllObjects;
 end;
 
