@@ -510,10 +510,6 @@ begin
   LogFmt('  (FontPixelsPerInc: %d, FontSize: %d', [_Frm.Font.PixelsPerInch, FFontSize]);
 
   AddControls(FFrm);
-
-  DpiForForm := TScreen_GetDpiForForm(FFrm);
-  LogStr(' Calling ApplyDpi from TFormDpiScaler.Create');
-  ApplyDpi(DpiForForm, nil);
 end;
 
 { TImageListScaler }

@@ -973,10 +973,7 @@ procedure TfmMacroLibrary.CheckLvMacrosHeight;
 var
   LvMinHeight: Integer;
 begin
-  if Assigned(FScaler) then
-    LvMinHeight := FScaler.Calc(5 * DEFAULT_GRID_ROWHEIGHT)
-  else
-    LvMinHeight := 5 * DEFAULT_GRID_ROWHEIGHT;
+    LvMinHeight := FScaler.Calc(5 * DEFAULT_GRID_ROWHEIGHT);
 
   if lvMacros.Height < LvMinHeight then begin
     pnlDescription.Height := ClientHeight - Toolbar.Height - LvMinHeight;

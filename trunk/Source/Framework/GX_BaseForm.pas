@@ -71,8 +71,12 @@ begin
 end;
 
 procedure TfmBaseForm.InitDpiScaler;
+var
+  DpiForForm: Integer;
 begin
   FScaler := TFormDpiScaler.Create(Self);
+  DpiForForm := TScreen_GetDpiForForm(Self);
+  FScaler.ApplyDpi(DpiForForm, nil);
   ArrangeControls;
 end;
 
