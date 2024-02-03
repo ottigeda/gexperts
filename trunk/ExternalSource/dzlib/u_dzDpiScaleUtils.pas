@@ -470,7 +470,6 @@ var
   CurrFontSize: Integer;
   Ctrl: TControl;
   FormActiveControl: TWinControl;
-  DpiForForm: Cardinal;
 begin
   inherited Create;
   FFrm := _Frm;
