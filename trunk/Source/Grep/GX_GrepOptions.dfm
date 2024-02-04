@@ -3,7 +3,7 @@ inherited fmGrepOptions: TfmGrepOptions
   Top = 263
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'Grep Search Options'
+  Caption = 'Grep Search Configuration'
   ClientHeight = 75
   ClientWidth = 377
   ParentFont = False

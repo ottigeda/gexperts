@@ -2,7 +2,7 @@ object fmMessageOptions: TfmMessageOptions
   Left = 274
   Top = 207
   BorderStyle = bsDialog
-  Caption = 'Message Dialog Options'
+  Caption = 'Message Dialog Configuration'
   ClientHeight = 289
   ClientWidth = 369
   Color = clBtnFace

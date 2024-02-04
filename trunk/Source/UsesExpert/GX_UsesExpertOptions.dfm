@@ -3,7 +3,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   Top = 241
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'Uses Clause Manager Options'
+  Caption = 'Uses Clause Manager Configuration'
   ClientHeight = 330
   ClientWidth = 329
   ParentFont = False

@@ -3,7 +3,7 @@ object fmPasteAsConfig: TfmPasteAsConfig
   Top = 292
   ActiveControl = cbPasteAsType
   BorderStyle = bsDialog
-  Caption = 'PasteAs Options'
+  Caption = 'PasteAs Configuration'
   ClientHeight = 190
   ClientWidth = 313
   Color = clBtnFace

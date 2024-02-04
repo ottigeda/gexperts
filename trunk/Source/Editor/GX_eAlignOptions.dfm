@@ -2,7 +2,7 @@ object fmAlignOptions: TfmAlignOptions
   Left = 268
   Top = 200
   BorderStyle = bsDialog
-  Caption = 'Align Options'
+  Caption = 'Align Lines Configuration'
   ClientHeight = 353
   ClientWidth = 245
   Color = clBtnFace

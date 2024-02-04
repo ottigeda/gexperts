@@ -3,7 +3,7 @@ object fmGxMacroLibraryConfig: TfmGxMacroLibraryConfig
   Top = 227
   BorderIcons = []
   BorderStyle = bsDialog
-  Caption = 'Configure Macro Library'
+  Caption = 'Macro Library Configuration'
   ClientHeight = 73
   ClientWidth = 218
   Color = clBtnFace

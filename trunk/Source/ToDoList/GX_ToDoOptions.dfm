@@ -3,7 +3,7 @@ object fmToDoOptions: TfmToDoOptions
   Top = 241
   ActiveControl = lstTokens
   BorderStyle = bsDialog
-  Caption = 'To Do Options'
+  Caption = 'To Do List Configuration'
   ClientHeight = 329
   ClientWidth = 542
   Color = clBtnFace

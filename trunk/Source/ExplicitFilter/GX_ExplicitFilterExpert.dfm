@@ -3,7 +3,7 @@ object fmGxExplicitFilter: TfmGxExplicitFilter
   Top = 212
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'Filter Explicit Properties'
+  Caption = 'Filter Explicit Properties Configuration'
   ClientHeight = 145
   ClientWidth = 281
   Color = clBtnFace

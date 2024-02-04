@@ -1,6 +1,6 @@
 inherited frmSortOptions: TfrmSortOptions
   BorderStyle = bsDialog
-  Caption = 'Sort Options'
+  Caption = 'Sort Selected Lines Configuration'
   ClientHeight = 249
   ClientWidth = 217
   PixelsPerInch = 96

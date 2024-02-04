@@ -3,7 +3,7 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
   Top = 227
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'Grep Results Options'
+  Caption = 'Grep Results Configuration'
   ClientHeight = 545
   ClientWidth = 729
   Color = clBtnFace

@@ -2,7 +2,7 @@ object fmDateFormat: TfmDateFormat
   Left = 285
   Top = 201
   BorderStyle = bsDialog
-  Caption = 'Date/Time Format'
+  Caption = 'Insert Date/Time Configuration'
   ClientHeight = 74
   ClientWidth = 337
   Color = clBtnFace
