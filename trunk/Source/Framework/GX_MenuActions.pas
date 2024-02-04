@@ -146,6 +146,11 @@ begin
   FGExpertsTopLevelMenu := TMenuItem.Create(nil);
   FGExpertsTopLevelMenu.OnClick := TopLevelMenuClick;
 
+  // todo: The "more" menu item doesn't need an action. That it has one has the side effect that it
+  //       can be selected as a button for a tool bar in the IDE. And since it does not have an
+  //       icon this looks awkward.
+  //       The same goes for the Configuration and About dialogs. These might be useful as buttons
+  //       on a tool bar but they don't have an icon either.
   FMoreAction := GxActionBroker.RequestAction('GExpertsMoreAction', nil); // Do not localize.
   FMoreAction.Caption := 'More';
   FMoreAction.OnExecute := MoreActionExecute;
