@@ -112,6 +112,7 @@ type
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+    procedure ArrangeControls; override;
 {$ENDIF}
   public
     constructor CreateWithFileName(AOwner: TComponent; const FileName: string);
@@ -170,10 +171,11 @@ begin
   FFileScanner := TFileScanner.CreateWithFileName(Self, FileName);
   FLastProcLineNo := -1;
 
+  InitializeForm;
+
   InitDpiScaler;
 
   LoadTime := GetTickCount;
-  InitializeForm;
   LoadTime := GetTickCount - LoadTime;
   StatusBar.Panels[0].Text := Format(SParseStatistics, [LoadTime / 1000]);
 end;
@@ -709,6 +711,12 @@ begin
 
   FMinListWidth := FScaler.Calc(MIN_LIST_WIDTH);
   FMinListHeight := FScaler.Calc(MIN_LIST_HEIGHT);
+end;
+
+procedure TfmProcedureList.ArrangeControls;
+begin
+  inherited;
+  ApplyOptions(false);
 end;
 {$ENDIF}
 
