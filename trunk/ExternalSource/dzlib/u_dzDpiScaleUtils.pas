@@ -61,7 +61,7 @@ type
     BoundsRect: TRect;
     FontSize: Integer;
     ItemHeight: Integer;
-    procedure Assign(_Ctrl: TControl);
+    procedure Assign(_Ctrl: TControl; _DesignDpi: Integer);
     procedure ApplyScale(const _Scaler: TDpiScaler);
     procedure ResizeFont(const _Scaler: TDpiScaler);
   end;
@@ -72,7 +72,7 @@ type
     FClientWidth, FClientHeight: Integer;
     FMinWidth, FMinHeight: Integer;
     FMaxWidth, FMaxHeight: Integer;
-    FFontSize: Integer;
+    FFormDesignFontSize: Integer;
     FFrm: TForm;
     FCtrlParams: array of TCtrlDpiScaler;
     FDesigDpi: Integer;
@@ -143,7 +143,7 @@ begin
 {$IFDEF HAS_TFORM_GETDESIGNDPI}
   if Assigned(_Frm) then begin
     Result := TFormHack(_Frm).GetDesignDpi;
-    LogFmt('TForm_GetDesignDPI(%s): Result: %d', [_Frm.Name, Result]);
+    LogFmt('TForm_GetDesignDPI(%s: %s): Result: %d', [_Frm.Name, _Frm.ClassName, Result]);
   end else
     Result := 96;
 {$ELSE}
@@ -269,7 +269,7 @@ var
   br: TRect;
   LabelWasAutoSize: Boolean;
 begin
-  LogFmt('TCtrlDpiScaler.ApplyScale(%s, %d %%)', [Ctrl.Name, _Scaler.ScaleFactorPercent]);
+  LogFmt('TCtrlDpiScaler.ApplyScale(%s: %s, %d %%)', [Ctrl.Name, Ctrl.ClassName, _Scaler.ScaleFactorPercent]);
 
   ResizeFont(_Scaler);
 
@@ -310,14 +310,18 @@ begin
 
   // if we don't do this, the text is truncated on the left
   if LabelWasAutoSize then begin
+    // LabelWasAutoSize is only True, if
+    // 1. the control is a label and
+    // 2. its AutoSize property was True
     TLabel(Ctrl).AutoSize := False;
     TLabel(Ctrl).AutoSize := True;
   end;
 end;
 
-procedure TCtrlDpiScaler.Assign(_Ctrl: TControl);
+procedure TCtrlDpiScaler.Assign(_Ctrl: TControl; _DesignDpi: Integer);
 var
   fnt: TFont;
+  Scaler: TDpiScaler;
 begin
   Ctrl := _Ctrl;
   BoundsRect := Ctrl.BoundsRect;
@@ -325,13 +329,19 @@ begin
     FontSize := 0;
   end else begin
     FontSize := GetFontSize(fnt);
+    Scaler.Init(fnt.PixelsPerInch, _DesignDpi);
+    FontSize := Scaler.Calc(FontSize);
   end;
 
   if not TryGetIntProperty(_Ctrl, 'ItemHeight', ItemHeight) then begin
     ItemHeight := 0;
   end;
 
-  LogFmt('TCtrlDpiScaler.Assign(%s):', [_Ctrl.Name]);
+  LogFmt('TCtrlDpiScaler.Assign(%s: %s):', [Ctrl.Name, Ctrl.ClassName]);
+  if FontSize <> 0 then
+    LogFmt('  FontSize: %d', [FontSize]);
+  if ItemHeight <> 0 then
+    LogFmt('  ItemHeight: %d', [ItemHeight]);
   LogRect('  BoundsRect', BoundsRect);
 end;
 
@@ -340,19 +350,30 @@ var
   fnt: TFont;
   ParentFontValue: Boolean;
   OldFontSize: Integer;
+  ParentFont: TFont;
 begin
-  if TryGetObjectProperty(Ctrl, 'Font', TObject(fnt)) then begin
-    if not TryGetBoolProperty(Ctrl, 'ParentFont', ParentFontValue)
-      or not ParentFontValue then begin
-      Assert(FontSize <> 0);
+  if not TryGetObjectProperty(Ctrl, 'Font', TObject(fnt)) then
+    Exit; //==>
 
-      LogFmt('TCtrlDpiScaler.ResizeFont(%d %%)', [_Scaler.ScaleFactorPercent]);
-      OldFontSize := GetFontSize(fnt);
-      SetFontSize(fnt, _Scaler.Calc(FontSize));
-
-      LogFmt('  OldFontSize: %d, NewFontSize: %d', [OldFontSize, GetFontSize(fnt)]);
+  if TryGetBoolProperty(Ctrl, 'ParentFont', ParentFontValue) then begin
+    if ParentFontValue then begin
+      if TryGetObjectProperty(Ctrl.Parent, 'Font', TObject(ParentFont)) then begin
+        LogFmt('TCtrlDpiScaler.ResizeFont(%d %%)', [_Scaler.ScaleFactorPercent]);
+        OldFontSize := GetFontSize(fnt);
+        SetFontSize(fnt, GetFontSize(ParentFont));
+        LogFmt('  OldFontSize: %d, NewFontSize: %d', [OldFontSize, GetFontSize(fnt)]);
+        Exit; //==>
+      end;
     end;
   end;
+
+  Assert(FontSize <> 0);
+
+  LogFmt('TCtrlDpiScaler.ResizeFont(%d %%)', [_Scaler.ScaleFactorPercent]);
+  OldFontSize := GetFontSize(fnt);
+  SetFontSize(fnt, _Scaler.Calc(FontSize));
+
+  LogFmt('  OldFontSize: %d, NewFontSize: %d', [OldFontSize, GetFontSize(fnt)]);
 end;
 
 { TFormDpiScaler }
@@ -369,7 +390,7 @@ begin
   SetLength(FCtrlParams, Offset + cnt);
   for i := 0 to cnt - 1 do begin
     Ctrl := _Ctrl.Controls[i];
-    FCtrlParams[Offset + i].Assign(Ctrl);
+    FCtrlParams[Offset + i].Assign(Ctrl, FDesignDpi);
     if Ctrl is TWinControl then
       AddControls(TWinControl(Ctrl));
   end;
@@ -440,7 +461,7 @@ begin
   LogFmt('TFormDpiScaler.ApplyScale(%s, %d %%)', [FFrm.Name, _Scaler.ScaleFactorPercent]);
 
   OldFontSize := GetFontSize(FFrm.Font);
-  SetFontSize(FFrm.Font, _Scaler.Calc(FFontSize));
+  SetFontSize(FFrm.Font, _Scaler.Calc(FFormDesignFontSize));
   LogFmt('  OldFontSize: %d, NewFontSize: %d', [OldFontSize, GetFontSize(FFrm.Font)]);
 
   cnt := Length(FCtrlParams);
@@ -499,14 +520,16 @@ begin
   FPnlMaster.Align := alClient;
   FFrm.ActiveControl := FormActiveControl;
 
-  LogFmt('TFormDpiScaler.Create(%s)', [FFrm.Name]);
-  LogFmt('  ClientWidth: %d, ClientHeight: %d, MinWidth: %d, MinHeight: %d, MaxWdidth: %d MaxHeight: %d CurrFontSize: %d DesignDpi: %d',
+  LogFmt('TFormDpiScaler.Create(%s: %s)', [FFrm.Name, FFrm.ClassName]);
+  LogFmt('  ClientWidth: %d, ClientHeight: %d,'
+    + ' MinWidth: %d, MinHeight: %d, MaxWdidth: %d MaxHeight: %d,'
+    + ' CurrFontSize: %d DesignDpi: %d',
     [FClientWidth, FClientHeight, FMinWidth, FMinHeight, FMaxWidth, FMaxHeight, CurrFontSize, FDesignDpi]);
 
   // FontSize has already been changed by the VCL, but we need the design font size
   Scaler.Init(_Frm.Font.PixelsPerInch, FDesignDpi);
-  FFontSize := Scaler.Calc(CurrFontSize);
-  LogFmt('  (FontPixelsPerInc: %d, FontSize: %d', [_Frm.Font.PixelsPerInch, FFontSize]);
+  FFormDesignFontSize := Scaler.Calc(CurrFontSize);
+  LogFmt('  Frm.Font.PixelsPerInch: %d, FormDesignFontSize: %d', [_Frm.Font.PixelsPerInch, FFormDesignFontSize]);
 
   AddControls(FFrm);
 end;
