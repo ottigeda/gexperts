@@ -25,10 +25,6 @@ type
   private
     procedure SetData(_UseCurrentIdent: Boolean);
     procedure GetData(out _UseCurrentIdent: Boolean);
-  protected
-{$IFDEF GX_IDE_IS_HIDPI_AWARE}
-    procedure ArrangeControls; override;
-{$ENDIF}
   public
     class function Execute(_Owner: TWinControl;
       var _UseCurrentIdent: Boolean): Boolean;
@@ -70,12 +66,6 @@ begin
 
   InitDpiScaler;
 end;
-
-{$IFDEF GX_IDE_IS_HIDPI_AWARE}
-procedure TfmGrepOptions.ArrangeControls;
-begin
-end;
-{$ENDIF}
 
 procedure TfmGrepOptions.GetData(out _UseCurrentIdent: Boolean);
 begin
