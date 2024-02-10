@@ -28,6 +28,8 @@ type
     procedure FormDockDrop(Sender: TObject; Source: TDragDockObject; X, Y: Integer);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
+  public
+    constructor Create(_Oner: TComponent); override;
   end;
 
 implementation
@@ -35,8 +37,7 @@ implementation
 {$R *.dfm}
 
 uses
-{$IFOPT D+}GX_DbugIntf,
-{$ENDIF}
+{(*}{$IFOPT D+}GX_DbugIntf,{$ENDIF}{*)}
   Windows,
   Registry,
   Menus,
@@ -140,7 +141,13 @@ begin
   end;
 end;
 
-{ TfmGxSampleExpertForm }
+{ TfmGxDockForm }
+
+constructor TfmGxDockForm.Create(_Oner: TComponent);
+begin
+  inherited;
+  InitDpiScaler;
+end;
 
 procedure TfmGxDockForm.CreateParams(var Params: TCreateParams);
 begin
