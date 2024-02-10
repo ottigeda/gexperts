@@ -35,6 +35,7 @@ uses
   GX_GrepSearchExpert in '..\..\..\..\Source\Grep\GX_GrepSearchExpert.pas',
   GX_GrepSelect in '..\..\..\..\Source\Grep\GX_GrepSelect.pas' {fmGrepSelect},
   GX_GxUtils in '..\..\common\GX_GxUtils.pas',
+  GX_HintWindow in '..\..\..\..\Source\Framework\GX_HintWindow.pas',
   GX_IdeDock in 'GX_IdeDock.pas' {fmIdeDockForm},
   GX_IdeUtils in 'GX_IdeUtils.pas',
   GX_LibrarySource in 'GX_LibrarySource.pas',

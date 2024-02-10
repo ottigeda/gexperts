@@ -178,7 +178,7 @@ begin
 end;
 
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
-procedure TfmGrepOptions.ArrangeControls;
+procedure TfmGrepGrepOptionsStandAlone.ArrangeControls;
 var
   t: Integer;
 begin
@@ -190,7 +190,7 @@ begin
   b_ExternalEditorParameters.Top := t;
   grp_ExternalEditor.ClientHeight := t + b_ExternalEditorParameters.Height + 8;
   grp_WindowsExplorer.Top := grp_ExternalEditor.Top + grp_ExternalEditor.Height + 16;
-  t := grp_StandAlone.Top + grp_StandAlone.Height + 16;
+  t := grp_WindowsExplorer.Top + grp_WindowsExplorer.Height + 16;
   btnOK.Top := t;
   btnCancel.Top := t;
 end;

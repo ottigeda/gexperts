@@ -5,6 +5,7 @@ interface
 uses
   SysUtils,
   Classes,
+  Controls,
   ActnList,
   Menus,
   Forms,
@@ -34,7 +35,7 @@ type
     function GetHelpString: string; virtual;
     function HasMenuItem: Boolean; virtual;
     procedure Execute(Sender: TObject); virtual;
-    procedure Configure; virtual;
+    procedure Configure(_Owner: TWinControl); virtual;
     function HasConfigOptions: Boolean; virtual;
     procedure IncCallCount;
     procedure LoadSettings;
