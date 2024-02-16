@@ -102,6 +102,7 @@ type
     procedure UMResizeCols(var Msg: TMessage); message UM_RESIZECOLS;
     procedure ClearObjectStrings;
     procedure LoadObjectCombobox;
+    procedure CreateControls;
     procedure InitializeForm;
     procedure LoadSettings;
     procedure SaveSettings;
@@ -171,9 +172,11 @@ begin
   FFileScanner := TFileScanner.CreateWithFileName(Self, FileName);
   FLastProcLineNo := -1;
 
-  InitializeForm;
+  CreateControls;
 
   InitDpiScaler;
+
+  InitializeForm;
 
   LoadTime := GetTickCount;
   LoadTime := GetTickCount - LoadTime;
@@ -720,7 +723,7 @@ begin
 end;
 {$ENDIF}
 
-procedure TfmProcedureList.InitializeForm;
+procedure TfmProcedureList.CreateControls;
 begin
   SetupSyntaxHighlightingControl;
 
@@ -731,6 +734,10 @@ begin
 
   FOptions := TProcedureListOptions.Create;
   FOptions.SortOnColumn := 1;
+end;
+
+procedure TfmProcedureList.InitializeForm;
+begin
 
   FEditReader := TEditReader.Create(FFileName);
   FEditReader.FreeFileData;
