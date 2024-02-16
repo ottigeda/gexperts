@@ -355,6 +355,9 @@ function ReplaceChars(const _s: string; _Search: TCharSet; const _Replace: strin
 /// If RemoveDuplicates is true, a sequence of control characters is replaced by a single ReplaceChar. </summary>
 function ReplaceCtrlChars(const _s: string; _ReplaceChar: Char; _RemoveDuplicates: Boolean = True): string; overload;
 {$IFDEF SUPPORTS_UNICODE}
+///<summary>
+/// Replaces all control characters (ord(c) < ord(' ')) with ReplaceChar.
+/// If RemoveDuplicates is true, a sequence of control characters is replaced by a single ReplaceChar. </summary>
 function ReplaceCtrlChars(const _s: AnsiString; _ReplaceChar: AnsiChar; _RemoveDuplicates: Boolean = True): AnsiString; overload;
 {$ENDIF SUPPORTS_UNICODE}
 

@@ -4124,7 +4124,7 @@ begin
   end;
 end;
 
-procedure TdzRgbTriple_SetValues(_Triple: TdzRgbTriple; _Red, _Green, _Blue: Byte);
+procedure TdzRgbTriple_SetValues(var _Triple: TdzRgbTriple; _Red, _Green, _Blue: Byte);
 begin
   _Triple.Red := _Red;
   _Triple.Green := _Green;

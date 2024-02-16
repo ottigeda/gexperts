@@ -168,10 +168,15 @@ type
   TStringArray = TStringDynArray;
   TRawByteStringArray = array of RawByteString;
   TIntegerArray = array of Integer;
+  PIntegerArray = ^TIntegerArray;
   TSingleArray = array of Single;
+  PSingleArray = ^TSingleArray;
   TDoubleArray = array of Double;
+  PDoubleArray = ^TDoubleArray;
   TExtendedArray = array of Extended;
+  PExtendedArray = ^TExtendedArray;
   TExtendedDynArray = TExtendedArray;
+  PExtendedDynArray = ^TExtendedDynArray;
 {$IF not Declared(TBytes)}
   TBytes = array of Byte;
 {$IFEND}

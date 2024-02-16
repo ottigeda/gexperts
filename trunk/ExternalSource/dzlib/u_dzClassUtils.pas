@@ -7,6 +7,10 @@ unit u_dzClassUtils;
 
 {$INCLUDE 'dzlib.inc'}
 
+{$IFDEF DEBUG}
+{.$UNDEF SUPPORTS_INLINE}
+{$ENDIF}
+
 interface
 
 uses
@@ -137,6 +141,10 @@ procedure TStrings_RemoveEmptyLines(_Strings: TStrings; _TrimFirst: Boolean = Tr
 /// Removes empty lines from the end of the TStrings
 /// @returns the number of lines that have been removed </summary>
 function TStrings_RemoveEmptyLinesFromEnd(_Strings: TStrings): Integer;
+
+///<summary>
+/// Same as TStrings.Text but without the line break after the last entry </summary>
+function TStrings_Text(_Strings: TStrings): string;
 
 /// <summary>
 /// Free a TStrings object including all it's Object[n]s </summary>
@@ -465,9 +473,11 @@ procedure TIniFile_WriteDate(const _Filename: string; const _Section, _Ident: st
 function TIniFile_SectionExists(const _Filename: string; const _Section: string): Boolean;
 
 ///<summary>
-/// Clears all entries in the given section but does not delete the section header.
-///</summary>
-procedure TIniFile_ClearSection(_Ini: TCustomIniFile; const _Section: string);
+/// Clears all entries in the given section but does not delete the section header.</summary>
+procedure TIniFile_ClearSection(const _Filename, _Section: string); overload;
+///<summary>
+/// Clears all entries in the given section but does not delete the section header.</summary>
+procedure TIniFile_ClearSection(_Ini: TCustomIniFile; const _Section: string); overload;
 
 ///<summary>
 /// Clears all entries in the given section and writes the values from the TStrings to it
@@ -479,49 +489,41 @@ procedure TIniFile_WriteSectionValues(_Ini: TCustomIniFile; const _Section: stri
 /// (This is short for opening the file, calling Ini.ReadSection and closing it.)
 /// @returns false, if the section does not exist. </summary>
 function TIniFile_TryReadSectionKeys(const _Filename, _Section: string; _sl: TStrings): Boolean;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
 
 /// <summary>
 /// Reads the given section from the given .INI file and returns all its keys as a TStrings
 /// (This is short for opening the file, calling Ini.ReadSection and closing it.)
 /// @raises Exception if the section does not exist. </summary>
 procedure TIniFile_ReadSectionKeys(const _Filename, _Section: string; _sl: TStrings);
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
 
 ///<summary>
 /// Reads the given section from the given .INI file and returns it as Name=Value pairs.
 /// (This is short for opening the file, calling Ini.ReadSectionValues and closing it.)
 /// @raises Exception if the section does not exist. </summary>
 procedure TIniFile_ReadSectionValues(const _Filename, _Section: string; _sl: TStrings);
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
 ///<summary>
 /// @returns True, if the section exists
 ///          False if not
 /// Note: Also returns false if the file does not exist. </summary>
 function TIniFile_TryReadSectionValues(const _Filename, _Section: string; _sl: TStrings): Boolean;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
+///<summary>
+/// Dumps the contents of MemIniFile as a string </summary>
+function TMemIniFile_Dump(_Ini: TMemIniFile): string;
 
 procedure TMemIniFile_ReadSubSections(_Ini: TMemIniFile; const _Section: string; _Sections: TStrings);
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
 procedure TRegistryIniFile_ReadSubSections(_Ini: TRegistryIniFile; const _Section: string; _Sections: TStrings);
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
 
 procedure TCustomIniFile_ReadSubSections(_Ini: TCustomIniFile; const _Section: string; _Sections: TStrings);
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
 
 type
   TIniSection = class
@@ -927,6 +929,22 @@ begin
       // we found the last non-empty line -> we are done
       Exit; //==>
     end;
+  end;
+end;
+
+function TStrings_Text(_Strings: TStrings): string;
+var
+  i: Integer;
+  IsFirst: Boolean;
+begin
+  Result := '';
+  IsFirst := True;
+  for i := 0 to _Strings.Count - 1 do begin
+    if IsFirst then begin
+      Result := _Strings[i];
+      IsFirst := False;
+    end else
+      Result := Result + #13#10 + _Strings[i];
   end;
 end;
 
@@ -1707,6 +1725,19 @@ begin
   end;
 end;
 
+procedure TIniFile_ClearSection(const _Filename, _Section: string);
+var
+  Ini: TMemIniFile;
+begin
+  Ini := TMemIniFile.Create(_Filename);
+  try
+    TIniFile_ClearSection(Ini, _Section);
+    Ini.UpdateFile;
+  finally
+    FreeAndNil(Ini);
+  end;
+end;
+
 procedure TIniFile_WriteSectionValues(_Ini: TCustomIniFile; const _Section: string; _sl: TStrings);
 var
   i: Integer;
@@ -1769,6 +1800,23 @@ begin
     ErrStr := Format(_('Section "%s" does not exist in ini file'), [_Section])
       + ' ' + _Filename;
     raise Exception.Create(ErrStr);
+  end;
+end;
+
+function TMemIniFile_Dump(_Ini: TMemIniFile): string;
+var
+  sl: TStringList;
+begin
+  if _Ini = nil then
+    Result := ''
+  else begin
+    sl := TStringList.Create;
+    try
+      _Ini.GetStrings(sl);
+      Result := sl.Text;
+    finally
+      FreeAndNil(sl);
+    end;
   end;
 end;
 
@@ -2493,4 +2541,8 @@ begin
   FIni.WriteString(FSection, _Ident, _Value);
 end;
 
+{$IFDEF DEBUG}
+initialization
+  TMemIniFile_Dump(nil);
+{$ENDIF}
 end.

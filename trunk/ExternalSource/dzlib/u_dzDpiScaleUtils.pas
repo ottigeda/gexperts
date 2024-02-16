@@ -2,10 +2,11 @@ unit u_dzDpiScaleUtils;
 
 {$INCLUDE dzlib.inc}
 
-{$DEFINE DPI_SCALER_LOGGING}
+{.$DEFINE DPI_SCALER_LOGGING}
 
 {$IFOPT d-}
 {$UNDEF DPI_SCALER_LOGGING}
+{$UNDEF SUPPORTS_INLINE}
 {$ENDIF}
 
 interface
@@ -45,13 +46,13 @@ type
     FDesignDpi: Integer;
     FCurrentDpi: Integer;
   public
-    procedure Init(_Frm: TCustomForm); overload;
-    procedure Init(_DPI: Integer); overload;
-    procedure Init(_DesignDpi, _CurrentDpi: Integer); overload;
-    procedure SetCurrentDpi(_Frm: TCustomForm); overload;
-    procedure SetCurrentDpi(_DPI: Integer); overload;
-    function Calc(_Value: Integer): Integer; overload;
-    function Calc(const _Value: TRect): TRect; overload;
+    procedure Init(_Frm: TCustomForm); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure Init(_Dpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure Init(_DesignDpi, _CurrentDpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure SetCurrentDpi(_Frm: TCustomForm); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure SetCurrentDpi(_Dpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function Calc(_Value: Integer): Integer; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    function Calc(const _Value: TRect): TRect; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     function ScaleFactorPercent: Integer;
   end;
 
@@ -675,4 +676,3 @@ finalization
     CloseFile(LogFile);
 {$ENDIF}
 end.
-

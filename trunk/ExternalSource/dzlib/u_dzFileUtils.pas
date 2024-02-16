@@ -634,8 +634,19 @@ type
     ///                      If ehReturnFalse, it will not raise an exception
     ///                      but just return false if copying the file fails.
     /// @returns true, if the directory was created
-    /// @raises EOSError if there was an error and RaiseException was true </summary>
+    /// @raises EOSError if there was an error and ErrorHandling was ehRaiseException </summary>
     class function ForceDir(const _DirectoryPath: string;
+      _ErrorHandling: TErrorHandlingEnum = ehRaiseException): Boolean;
+    ///<summary>
+    /// Creates the directory for storing the given filename
+    /// @param _FullFilename is the full name of the file to save
+    /// @param ErrorHandling is a TErrorHandlingEnum which controls whether the function retrieves
+    ///                      the Windows error and raises an exception if it fails.
+    ///                      If ehReturnFalse, it will not raise an exception
+    ///                      but just return false if copying the file fails.
+    /// @returns true, if the directory was created
+    /// @raises EOSError if there was an error and ErrorHandling was ehRaiseException </summary>
+    class function ForceDirFor(const _FullFilename: string;
       _ErrorHandling: TErrorHandlingEnum = ehRaiseException): Boolean;
 
     ///<summary> See also CopyMatchingFiles </summary>
@@ -760,10 +771,13 @@ type
     class function FileExists(const _Filename: string): Boolean; overload;
     class function FileExists(const _Filename: string; _RaiseException: Boolean): Boolean; overload; deprecated; // use AssertFileExists instead
     ///<summary>
-    /// Checks if the given file exists. Note that wildcards are not supported! If you
-    /// need wildcards, use AssertMatchingFileExists.
-    /// @raises EFileNotFound if the file does not exist. </summary>
+    /// Checks if the given file exists.
+    /// @raises EFileNotFound if the file does not exist.
+    /// @NOTE: Wildcards are not supported. If you need wildcards, use AssertMatchingFileExists. </summary>
     class procedure AssertFileExists(const _Filename: string);
+    ///<summary>
+    /// Checks if a file matching the given mask exists.
+    /// @raises EFileNotFound if such a file file does not exist. </summary>
     class procedure AssertMatchingFileExists(const _Mask: string);
 
     ///<summary>
@@ -2710,6 +2724,15 @@ begin
     // duplicate % so they get passed through the format function
     RaiseLastOSErrorEx(LastError, Format(_('Error %%1:s (%%0:d) creating directory "%s"'), [_DirectoryPath]));
   end;
+end;
+
+class function TFileSystem.ForceDirFor(const _FullFilename: string;
+  _ErrorHandling: TErrorHandlingEnum): Boolean;
+var
+  dir: string;
+begin
+  dir := ExtractFileDir(_FullFilename);
+  Result := ForceDir(dir, _ErrorHandling);
 end;
 
 class function TFileSystem.RemoveDir(const _DirName: string; _RaiseException: Boolean = True; _Force: Boolean = False): Boolean;

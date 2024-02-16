@@ -120,7 +120,12 @@ function TEdit_AlignBelowLabel(_ed: TEdit; _lbl: TLabel): Integer;
 ///          if ContainsLength is true, the first 4 bytes (8 characters) contain the length of the
 ///          data (as is the case with the strings stored in the .dfm file) </summary>
 procedure TBitBtn_GlyphFromString(_btn: TBitBtn; const _GlyphStr: AnsiString; _ContainsLength: Boolean = True);
+
+procedure TBitBtn_GlyphFromImagelist(_btn: TBitBtn; _ImageList: TImageList; _Idx: Integer);
+
 procedure TBitmap_LoadFromString(_bmp: TBitmap; const _Content: AnsiString; _ContainsLength: Boolean = True);
+
+procedure TBitmap_FromImagelist(_bmp: TBitmap; _ImageList: TImageList; _Idx: Integer);
 
 ///<summary> This is meant as a replacement to the LockWindowUpate function which shouldn't really be used
 ///          any more.
@@ -720,11 +725,13 @@ procedure TStatusBar_Resize(_sb: TStatusBar; _PanelIdxToChange: Integer);
 procedure TStatusBar_SetPanelText(_StatusBar: TStatusBar; _PanelIdx: Integer; const _Text: string;
   _Resize: Boolean = True; _AllowShrink: Boolean = False);
 
-///<summary> call this function to determine which panel of a TStatusBar has been clicked
-//           Note: This assumes, that the status bar actually was clicked, so only call it
-//           from the status bar's OnClick, OnMouseDown or OnMouseUp event handlers
-//           If the status bar does not have any panels (e.g. SimplePanel=true), this function
-//           will return 0.
+///<summary>
+/// Call this function to determine which panel of a TStatusBar has been clicked
+/// @returns the index of the panel
+/// @NOTE: This assumes, that the status bar actually was clicked, so only call it
+///        from the status bar's OnClick, OnMouseDown or OnMouseUp event handlers.
+///        If the status bar does not have any panels (e.g. SimplePanel=true), this function
+///        will return 0. </summary>
 function TStatusBar_GetClickedPanel(_sb: TStatusBar): Integer;
 
 ///<summary>
@@ -941,9 +948,16 @@ function TCombobox_SelectAny(_cmb: TCustomComboBox; const _Items: array of strin
 ///<summary> Calls the protected Change method of the combobox </summary>
 procedure TComboBox_Change(_cmb: TCustomCombo);
 
-///<summary> Selects an item (or no Item, if Idx = -1) without triggering an OnChange event
-///          (I am not even sure whether setting the item index always triggers an OnChange event.) </summary>
-procedure TComboBox_SelectWithoutChangeEvent(_cmb: TCustomComboBox; _Idx: Integer);
+///<summary>
+/// Selects an item (or no Item, if Idx = -1) without triggering an OnChange event
+/// (I am not even sure whether setting the item index always triggers an OnChange event.) </summary>
+procedure TComboBox_SelectWithoutChangeEvent(_cmb: TCustomComboBox; _Idx: Integer); overload;
+
+///<summary>
+/// Same as TCombobox_Select(), but without triggering an OnChange event.
+/// (I am not even sure whether setting the item index always triggers an OnChange event.) </summary>
+function TComboBox_SelectWithoutChangeEvent(_cmb: TCustomComboBox; const _Item: string;
+  _DefaultIdx: Integer = -1; _AllowPartialMatch: Boolean = False): Integer; overload;
 
 ///<summary> Assign the Items without affecting the Text
 ///          @param cmb is the TCustomCombobox (descendant) to use
@@ -1460,22 +1474,30 @@ function TApplication_GetExePathBS: string;
 /// @returns the filename of the executable without path and extension </summary>
 function TApplication_GetFilenameOnly: string;
 
-///<summary> returns true, if the application's executable contains version information </summary>
+///<summary>
+/// @returns true, if the application's executable contains version information </summary>
 function TApplication_HasVersionInfo: Boolean;
 
-///<summary> gets the file version from the executable's version information </summary>
+///<summary>
+/// @returns the file version string from the executable's version information </summary>
 function TApplication_GetFileVersion: string;
 
-///<summary> gets the file version from the executable's version information
-/// Information can be limited to a certain level of detail </summary>
+///<summary>
+/// @returns the product version string from the executable's version information </summary>
+function TApplication_GetProductVersion: string;
+
+///<summary>
+/// @returns the file version from the executable's version information
+///          Information can be limited to a certain level of detail </summary>
 function TApplication_GetFileVersionStr(_Parts: TVersionParts = vpMajorMinorRevision): string;
 
-///<summary> Returns the ini-file with the application name </summary>
+///<summary>
+/// @returns the ini-file with the application name </summary>
 function TApplication_GetDefaultIniFileName: string;
 
 ///<summary>
-/// Returns the registry path SOFTWARE\[company\]Application
-/// if the application does not have version information, the company part is omitted.
+/// @returns the registry path SOFTWARE\[company\]Application
+///          if the application does not have version information, the company part is omitted.
 /// @param Company can be used to force a company name, default: '' means: Take it from version info. </summary>
 function TApplication_GetRegistryPath(const _Company: string = ''): string;
 ///<summary>
@@ -1484,31 +1506,38 @@ function TApplication_GetRegistryPath(const _Company: string = ''): string;
 /// @param Company can be used to force a company name, default: '' means: Take it from version info. </summary>
 function TApplication_GetConfigRegistryPath(const _Company: string = ''): string;
 
-///<summary> switches off "Windows Ghosting" in Win 2000 and XP
-///          This is a workaround for the bug that modal forms sometimes aren't modal in W2K and XP.
-///          Call in application startup. </summary>
+///<summary>
+/// switches off "Windows Ghosting" in Win 2000 and XP
+/// This is a workaround for the bug that modal forms sometimes aren't modal in W2K and XP.
+/// Call in application startup. </summary>
 procedure DisableProcessWindowsGhosting;
 
 procedure MergeForm(AControl: TWinControl; AForm: TForm; Align: TAlign; Show: Boolean); deprecated; // use a frame instead
-///<summary> Reverses a VclUtils.MergeForm (rxlib)
-///          @param Form is the TForm to unmerge </summary>
+///<summary>
+/// Reverses a VclUtils.MergeForm (rxlib)
+/// @param Form is the TForm to unmerge </summary>
 procedure UnMergeForm(_Form: TCustomForm); deprecated; // use a frame instead
 
-///<summary> Calls lv.Items.BeginUpdate and returns an interface which, when released calls
-///          lv.Items.EndUpdate. </summary>
+///<summary>
+/// Calls lv.Items.BeginUpdate and returns an interface which, when released calls
+/// lv.Items.EndUpdate. </summary>
 function TListView_BeginUpdate(_lv: TListView): IInterface;
 
-///<summary> free all lv.Items[n].Data objects and then clear the items </summary>
+///<summary>
+/// Frees all lv.Items[n].Data objects and then clears the items </summary>
 procedure TListView_ClearWithObjects(_lv: TListView);
 
-///<summary> free all li[n].Data objects and then clear the items </summary>
+///<summary>
+/// Frees all li[n].Data objects and then clears the items </summary>
 procedure TListItems_ClearWithObjects(_li: TListItems);
 
-///<summary> Unselect all items, if WithSelectEvents is false, OnSelectItem events will be temporarily
-///          disabled. </summary>
+///<summary>
+/// Unselects all items, if WithSelectEvents is false, OnSelectItem events will be temporarily
+/// disabled. </summary>
 procedure TListView_UnselectAll(_lv: TListView; _WithSelectEvents: Boolean = True);
 
-///<summary> Returns the number of selected items in the ListView </summary>
+///<summary>
+/// Returns the number of selected items in the ListView </summary>
 function TListView_GetSelectedCount(_lv: TListView): Integer;
 
 function TListView_GetSelected(_lv: TListView; out _Idx: Integer): Boolean; overload;
@@ -1624,6 +1653,8 @@ function TMainMenu_FindMenuItem(_mnu: TMainMenu; const _Name: string; out _miFou
 function TMenuItem_FindMenuItem(_mi: TMenuItem; const _Name: string; out _miFound: TMenuItem): Boolean;
 
 function TPopupMenu_FindSelectedRadioItem(_pm: TPopupMenu; _GroupIndex: Integer; out _miFound: TMenuItem): Boolean;
+
+procedure TMainMenu_HideEmptyMenus(_mnu: TMainMenu);
 
 function TMenuItem_FindSelectedRadioItem(_mi: TMenuItem; _GroupIndex: Integer; out _miFound: TMenuItem): Boolean;
 
@@ -1902,6 +1933,26 @@ begin
   finally
     FreeAndNil(st);
   end;
+end;
+
+procedure TBitBtn_GlyphFromImagelist(_btn: TBitBtn; _ImageList: TImageList; _Idx: Integer);
+var
+  bmp: TBitmap;
+begin
+  bmp := TBitmap.Create;
+  try
+    TBitmap_FromImagelist(bmp, _ImageList, _Idx);
+    _btn.Glyph := bmp;
+  finally
+    FreeAndNil(bmp);
+  end;
+end;
+
+procedure TBitmap_FromImagelist(_bmp: TBitmap; _ImageList: TImageList; _Idx: Integer);
+begin
+  _bmp.Width := _ImageList.Width;
+  _bmp.Height := _ImageList.Height;
+  _ImageList.GetBitmap(_Idx, _bmp);
 end;
 
 procedure TBitmap_LoadFromString(_bmp: TBitmap; const _Content: AnsiString; _ContainsLength: Boolean = True);
@@ -3971,6 +4022,20 @@ begin
   end;
 end;
 
+function TComboBox_SelectWithoutChangeEvent(_cmb: TCustomComboBox; const _Item: string;
+  _DefaultIdx: Integer = -1; _AllowPartialMatch: Boolean = False): Integer;
+var
+  Event: TNotifyEvent;
+begin
+  Event := TComboHack(_cmb).OnChange;
+  try
+    TComboHack(_cmb).OnChange := nil;
+    Result := TComboBox_Select(_cmb, _Item, _DefaultIdx, _AllowPartialMatch);
+  finally
+    TComboHack(_cmb).OnChange := Event;
+  end;
+end;
+
 procedure TComboBox_AssignItemsList(_cmb: TCustomComboBox; _Items: TStrings);
 var
   Idx: Integer;
@@ -5020,6 +5085,16 @@ begin
     Result := VersionInfo.FileVersion;
 end;
 
+function TApplication_GetProductVersion: string;
+var
+  VersionInfo: IFileInfo;
+begin
+  Result := '';
+  VersionInfo := TApplicationInfo.Create;
+  if VersionInfo.HasVersionInfo then
+    Result := VersionInfo.ProductVersion;
+end;
+
 function TApplication_GetFileVersionStr(_Parts: TVersionParts = vpMajorMinorRevision): string;
 var
   VersionInfo: IFileInfo;
@@ -5063,7 +5138,7 @@ begin
   except
     on e: EInvalidOperation do begin
       // ignore any EInvalidOperation here
-      // the VCL does not allow us to relly check if a control
+      // the VCL does not allow us to really check if a control
       // can be focused so we need to handle the exception
     end;
   end;
@@ -5760,6 +5835,55 @@ begin
   _mi.Insert(_Idx, Result);
 end;
 
+procedure TMainMenu_HideEmptyMenus(_mnu: TMainMenu);
+
+  function ConditionallyMakeInvisible(_mi: TMenuItem): Boolean;
+  const
+    // This is a special menu item that serves as header for items below it (see c_dzMenuHeader unit).
+    // It should be hidden, if there are no regular items below it.
+    HeaderMenuItemClassName = 'THeaderMenuItem';
+  var
+    i: Integer;
+    mi: TMenuItem;
+    b: Boolean;
+    PreviousHeaderItem: TMenuItem;
+  begin
+    PreviousHeaderItem := nil;
+    b := False;
+    if Assigned(_mi.Action) then begin
+      b := (_mi.Action as TAction).Visible;
+    end else if _mi.ClassNameIs(HeaderMenuItemClassName) then begin
+      b := True
+    end else begin
+      for i := 0 to _mi.Count - 1 do begin
+        mi := _mi[i];
+        if mi.ClassNameIs(HeaderMenuItemClassName) then begin
+          PreviousHeaderItem := mi;
+          mi.Visible := False;
+          // will be set to True, if there is another visible non-header item after this
+        end else if not mi.IsLine then begin
+          if ConditionallyMakeInvisible(mi) then begin
+            b := True;
+            if Assigned(PreviousHeaderItem) then begin
+              PreviousHeaderItem.Visible := True;
+              PreviousHeaderItem := nil;
+            end;
+            // no break, we want to process all submenus
+          end;
+        end;
+      end;
+    end;
+    _mi.Visible := b;
+    Result := b;
+  end;
+
+var
+  i: Integer;
+begin
+  for i := 0 to _mnu.Items.Count - 1 do
+    ConditionallyMakeInvisible(_mnu.Items[i]);
+end;
+
 procedure TPopupMenu_AppendAllMenuItems(_Dest: TPopupMenu; _Src: TPopupMenu; _InsertDivider: Boolean = True);
 var
   i: Integer;
@@ -6005,11 +6129,6 @@ begin
 end;
 
 function TStatusBar_GetClickedPanel(_sb: TStatusBar): Integer;
-// call this to determine which panel of a TStatusBar has been clicked
-// Note: This assumes, that the status bar actually was clicked, so only call it
-//       from the status bar's OnClick, OnMouseDown or OnMouseUp event handlers
-// If the status bar does not have any panels (e.g. SimplePanel=true), this function
-// will return 0.
 var
   mpt: TPoint;
   X: Integer;
