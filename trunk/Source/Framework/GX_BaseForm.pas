@@ -76,8 +76,7 @@ var
 begin
   FScaler := TFormDpiScaler.Create(Self);
   DpiForForm := TScreen_GetDpiForForm(Self);
-  FScaler.ApplyDpi(DpiForForm, nil);
-  ArrangeControls;
+  ApplyDpi(DpiForForm, nil);
 end;
 
 procedure TfmBaseForm.WMDpiChanged(var _Msg: TWMDpi);
