@@ -2062,6 +2062,7 @@ var
   dil: TImageList;
   il: TImageList;
   i: Integer;
+  tbbtn: TToolButton;
 begin
   dil := GExpertsInst(True).GetScaledSharedDisabledImages(_NewDpi);
   il := GExpertsInst(True).GetScaledSharedImages(_NewDpi);
@@ -2078,7 +2079,9 @@ begin
   ToolBar.Images := nil;
   ToolBar.AutoSize := False;
   for i := 0 to ToolBar.ButtonCount - 1 do begin
-    ToolBar.Buttons[i].AutoSize := False;
+    tbbtn := ToolBar.Buttons[i];
+    if tbbtn.Style <> tbsSeparator then
+      tbbtn.AutoSize := False;
   end;
   ToolBar.ButtonWidth := 0;
   ToolBar.ButtonHeight := 0;
@@ -2091,7 +2094,9 @@ begin
   ToolBar.ButtonHeight := 0;
 
   for i := 0 to ToolBar.ButtonCount - 1 do begin
-    ToolBar.Buttons[i].AutoSize := True;
+    tbbtn := ToolBar.Buttons[i];
+    if tbbtn.Style <> tbsSeparator then
+      tbbtn.AutoSize := True;
   end;
   ToolBar.AutoSize := True;
 end;
