@@ -95,15 +95,17 @@ const
 
   function TryReadScooter(out _ExePath: string): Boolean;
   const
-    REG_KEY = 'Software\Scooter Software\Beyond Compare';
+    REG_KEY = '\Software\Scooter Software\Beyond Compare';
     REG_VALUE = 'ExePath';
   begin
-    Result := TryReadFromReg(HKEY_LOCAL_MACHINE, REG_KEY, REG_VALUE, _ExePath)
+    Result := TryReadFromReg(HKEY_LOCAL_MACHINE, REG_KEY, REG_VALUE, _ExePath);
+    if not result then
+      Result := TryReadFromReg(HKEY_CURRENT_USER, REG_KEY, REG_VALUE, _ExePath);
   end;
 
   function TryReadIntelliPoint(out _ExePath: string): Boolean;
   const
-    REG_KEY = 'Software\Microsoft\IntelliPoint\AppSpecific\BCompareLite.exe';
+    REG_KEY = '\Software\Microsoft\IntelliPoint\AppSpecific\BCompareLite.exe';
     REG_VALUE = 'Path';
   begin
     Result := TryReadFromReg(HKEY_CURRENT_USER, REG_KEY, REG_VALUE, _ExePath)
@@ -123,7 +125,7 @@ begin
   Params := Format('"%s" "%s"', [ExpectedFile, OutputFile]);
   if not TryReadScooter(ExePath) then
     if not TryReadIntelliPoint(ExePath) then
-      ExePath := 'C:\Program Files (x86)\Beyond Compare 3\bcompare.exe';
+      ExePath := 'C:\Program Files (x86)\Beyond Compare 2\bc2.exe';
   ShellExecute(0, '', PChar(ExePath), PChar(Params), '', SW_NORMAL);
 end;
 
@@ -273,3 +275,4 @@ end;
 initialization
   RegisterTest(TTestTestfiles.Suite);
 end.
+
