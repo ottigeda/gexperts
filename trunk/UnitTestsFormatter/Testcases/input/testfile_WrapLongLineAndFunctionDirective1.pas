@@ -1,4 +1,4 @@
-unit bla;
+unit testfile_WrapLongLineAndFunctionDirective1;
 
 interface
 

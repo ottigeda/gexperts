@@ -1058,6 +1058,7 @@ var
   wType: TWordType;
   exp: TGXUnicodeString;
   LFeed: TLineFeed;
+  AllowPop: Boolean;
 begin
   if FCurrentToken = nil then
     Exit;
@@ -1242,6 +1243,7 @@ begin
           rtRecord:
             FWrapIndent := False;
         end;
+        // todo: handle procedure/function 'of object' type declaration
       end;
 
     rtLineFeed: begin
@@ -1431,13 +1433,19 @@ begin
           RemoveMe := 0;
           repeat
             Assert(False, '.CheckIndent: in repeat');
+            // search for the first token after the function name or the closing bracket
+            // procedure bla or procedure bla(...)
+			//              ^-- here              ^-- here
             Inc(RemoveMe);
             if TryGetToken(FTokenIdx + RemoveMe, Next) then
-              if Next.ReservedType = rtLeftBr then
+              if Next.ReservedType = rtLeftBr then begin
+                // procedure bla( -> there is an opening bracket after the function name -> search for the closing bracket
                 repeat
                   Inc(RemoveMe);
                 until not TryGetToken(FTokenIdx + RemoveMe, Next) or (Next.ReservedType = rtRightBr);
+              end;
           until (Next = nil) or (Next.ReservedType in [rtSemiColon, rtBegin]);
+          // we found either a semicolon or a Begin (or the end of the file)
 
           if Next <> nil then begin
             if Next.ReservedType = rtBegin then begin
@@ -1447,6 +1455,9 @@ begin
               Next.AddOption(toFeedNewLine); // Force NewLine Feed!
             end;
 
+            // todo: If it was a begin, should the following still be executed?
+            //       A delegate cannot be declared as forward after all
+            //       So maybe this should go into an else branch
             Assert(False, '.CheckIndent: Next <> nil');
             repeat
               Assert(False, '.CheckIndent: in repeat');
@@ -1746,15 +1757,35 @@ begin
             end;
           end;
 
-          while (FStack.GetTopType in
-            [rtDo, rtWhile, rtProcDeclare, rtThen, rtProgram, rtUses, rtColon, rtClassDecl, rtIfElse]) do begin
-            Assert(False, '.CheckIndent: in while');
-            FStack.Pop;
+          AllowPop := True;
+          if FStack.GetTopType = rtProcDeclare then begin
+            // this checks for function declarations with function directives in the next line like this:
+            // procedure bla;
+            //   cdecl;
+            // It does not yet solve the problem with multi line function directives like this:
+            // procedure bla;
+            //   cdecl;
+            //   overload;
+            RemoveMe := 1;
+            while TryGetToken(FTokenIdx + RemoveMe, Next) and Assigned(Next) and (Next.ReservedType in [rtSemiColon, rtLineFeed, rtComment, rtFuncDirective]) do begin
+              if Next.ReservedType = rtFuncDirective then begin
+                AllowPop := False;
+                Break; //==v
+              end;
+              Inc(RemoveMe);
+            end
           end;
+          if AllowPop then begin
+            while (FStack.GetTopType in
+              [rtDo, rtWhile, rtProcDeclare, rtThen, rtProgram, rtUses, rtColon, rtClassDecl, rtIfElse]) do begin
+              Assert(False, '.CheckIndent: in while');
+              FStack.Pop;
+		    end;
+		  end;
 
+          // Look for 'absolute' or a function directive before the next line feed
           // todo: This only works, if 'absolute' or any of the function directives ('overload',
           // 'stdcall' etc). are on the same line as the function / procedure declaration:
-          // Look for 'absolute' or a function directive before the next line feed
           FWrapIndent := False;
           RemoveMe := 0;
           repeat
