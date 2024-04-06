@@ -410,7 +410,7 @@ function TIniFile_TryReadFloat(_Ini: TCustomIniFile; const _Section, _Ident: str
 function TIniFile_TryReadFloat(const _Filename: string; const _Section, _Ident: string; out _Value: Extended): Boolean; overload;
 function TIniFile_TryReadFloat(const _Filename: string; const _Section, _Ident: string; out _Value: Double): Boolean; overload;
 function TIniFile_TryReadFloat(const _Filename: string; const _Section, _Ident: string; out _Value: Single): Boolean; overload;
-function TIniFile_ReadFloat(_Ini: TCustomIniFile; const _Section, _Ident: string; out _Value: Extended): Boolean; overload deprecated; // use TryReadFloat instead
+function TIniFile_ReadFloat(_Ini: TCustomIniFile; const _Section, _Ident: string; out _Value: Extended): Boolean; overload; deprecated; // use TryReadFloat instead
 function TIniFile_ReadFloat(_Ini: TCustomIniFile; const _Section, _Ident: string): Extended; overload;
 function TIniFile_ReadFloat(const _Filename: string; const _Section, _Ident: string): Extended; overload;
 

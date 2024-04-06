@@ -184,8 +184,8 @@ procedure TDbGrid_Resize(_Grid: TCustomDbGrid; _Options: TResizeOptionSet = []; 
 procedure TDbGrid_Resize(_Grid: TCustomDbGrid; _Options: TResizeOptionSet; _MinWidths: array of Integer); overload;
 
 ///<summary>
-/// Reduce the width of grid columns so there is now horizontal scroll bar.
-/// @param ConstantCols is an array containg the indexes of columns that should keep their
+/// Reduce the width of grid columns so there is no horizontal scroll bar.
+/// @param ConstantCols is an array contaning the indexes of columns that should keep their
 ///                     width. </summary>
 procedure TGrid_RestrictToGridWdith(_Grid: TCustomGrid); overload;
 procedure TGrid_RestrictToGridWdith(_Grid: TCustomGrid; _ConstantCols: array of Integer); overload;
@@ -462,7 +462,6 @@ type
     procedure WmNcCreate; virtual;
     procedure WmNcDestroy; virtual;
     procedure NewWindowProc(var _Msg: TMessage); virtual;
-    function IsAutoSuggestDropdownVisible: Boolean;
   public
     constructor Create(_WinControl: TWinControl); reintroduce;
     destructor Destroy; override;
@@ -946,7 +945,7 @@ function TCombobox_SelectAny(_cmb: TCustomComboBox; const _Items: array of strin
   _DefaultIdx: Integer = -1): Integer;
 
 ///<summary> Calls the protected Change method of the combobox </summary>
-procedure TComboBox_Change(_cmb: TCustomCombo);
+procedure TComboBox_Change(_cmb: TCustomComboBox);
 
 ///<summary>
 /// Selects an item (or no Item, if Idx = -1) without triggering an OnChange event
@@ -997,8 +996,7 @@ function TListBox_GetSelectedObject(_lst: TCustomListbox; out _Obj: Pointer): Bo
 ///          @param ObjAsInt is the value of the object pointer of the selected item type casted
 ///                          to integer, only valid if the function returns true
 ///          @returns true, if these out parameters are valid </summary>
-function TListBox_GetSelectedObject(_lst: TCustomListbox;
-  out _ObjAsInt: Integer): Boolean; overload;
+function TListBox_GetSelectedObject(_lst: TCustomListbox; out _ObjAsInt: IntPtr): Boolean; overload;
 
 ///<summary> Gets the caption of the selected listbox item
 ///          @param cmb is the TCustomListbox (descendant) to read from
@@ -1060,9 +1058,10 @@ procedure TCheckListBox_CheckAll(_clb: TCheckListBox; _IncludeDisabled: Boolean 
 ///          @param IncludeDisabled determines whether the disabled items should also be returned if they are checked
 ///          @returns the number of Items in Checked </summary>
 function TCheckListBox_GetChecked(_clb: TCheckListBox; _Checked: TStrings = nil; _IncludeDisabled: Boolean = False): Integer; overload;
+function TCheckListBox_GetCheckedArr(_clb: TCheckListBox; _IncludeDisabled: Boolean = False): TStringArray;
 /// todo: Why did I ever think it a good idea to return a string? A TStringArray would have been
 ///       a much better choice.
-function TCheckListBox_GetChecked(_clb: TCheckListBox; _IncludeDisabled: Boolean = False): string; overload;
+function TCheckListBox_GetChecked(_clb: TCheckListBox; _IncludeDisabled: Boolean = False): string; overload; deprecated; // use TCheckListBox_GetCheckedArr
 ///<summary> Returns the objects associated with the checked items
 ///          @param clb is the TCheckListBox
 ///          @param Objects is a TList to which the selected objects are to be added
@@ -1088,6 +1087,16 @@ function TCheckListBox_SetChecked(_clb: TCheckListBox; const _Checked: array of 
 
 ///<summary> sets the checked property without triggering an OnClickCheck event </summary>
 procedure TCheckListBox_SetCheckedNoClick(_clb: TCheckListBox; _Idx: Integer; _Checked: Boolean);
+
+///<summary>
+/// sets the given item enabled or disabled
+/// @raise EdzVclUtils if the item does not exist </summary>
+procedure TCheckListBox_SetItemEnabled(_clb: TCheckListBox; const _Item: string; _Enabled: Boolean);
+///<summary>
+/// Tries to set the given item enabled or disabled
+/// @returns True if the item was found
+///          False otherwies </summary>
+function TCheckListBox_TrySetItemEnabled(_clb: TCheckListBox; const _Item: string; _Enabled: Boolean): Boolean;
 
 procedure TCheckListBox_CheckSelected(_clb: TCheckListBox; _IncludeDisabled: Boolean = False);
 procedure TCheckListBox_UncheckSelected(_clb: TCheckListBox; _IncludeDisabled: Boolean = False);
@@ -1136,6 +1145,7 @@ function TPicture_WriteToString(_Pic: TPicture): string;
 ///          Picture_WriteToString </summary>
 procedure TPicture_ReadFromString(_Pic: TPicture; const _s: string);
 
+{$IF Declared(TRichEdit)}
 ///<summary> Writes a TRichEdit to a string including all formatting </summary>
 function TRichEdit_WriteToString(_Re: TRichEdit): string;
 
@@ -1160,6 +1170,7 @@ procedure TRichEdit_ScrollToCaret(_Re: TRichEdit);
 
 ///<summary> Write a line to a RichEdit, optionally specifying color and font style </summary>
 procedure TRichEdit_WriteLn(_Re: TRichEdit; const _s: string; _Color: TColor = clBlack; _Style: TFontStyles = []);
+{$IFEND}
 
 ///<summary> Adds a control and a corresponding label, a line consists of 24 pixels
 ///          with 16 pixels distance from the upper and 8 pixels from the left border.
@@ -3737,8 +3748,7 @@ begin
   Result := TListBox_GetSelectedObject(_lst, Idx, _Obj);
 end;
 
-function TListBox_GetSelectedObject(_lst: TCustomListbox;
-  out _ObjAsInt: Integer): Boolean;
+function TListBox_GetSelectedObject(_lst: TCustomListbox; out _ObjAsInt: IntPtr): Boolean;
 begin
   Result := TListBox_GetSelectedObject(_lst, Pointer(_ObjAsInt)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end;
@@ -3825,6 +3835,26 @@ var
 begin
   for i := 0 to _clb.Items.Count - 1 do
     _clb.Checked[i] := not _clb.Checked[i] and (_IncludeDisabled or _clb.ItemEnabled[i]);
+end;
+
+procedure TCheckListBox_SetItemEnabled(_clb: TCheckListBox; const _Item: string; _Enabled: Boolean);
+begin
+  if not TCheckListBox_TrySetItemEnabled(_clb, _Item, _Enabled) then
+    raise EdzVclUtils.CreateFmt(_('CheckListBox %s does not contain an item "%s"'), [_clb.Name, _Item]);
+end;
+
+function TCheckListBox_TrySetItemEnabled(_clb: TCheckListBox; const _Item: string; _Enabled: Boolean): Boolean;
+var
+  i: Integer;
+begin
+  for i := 0 to _clb.Items.Count - 1 do begin
+    if SameText(_Item, _clb.Items[i]) then begin
+      _clb.ItemEnabled[i] := _Enabled;
+      Result := True;
+      Exit;
+    end;
+  end;
+  Result := False;
 end;
 
 procedure TCheckListBox_CheckSelected(_clb: TCheckListBox; _IncludeDisabled: Boolean = False);
@@ -3928,6 +3958,19 @@ begin
     end;
 end;
 
+function TCheckListBox_GetCheckedArr(_clb: TCheckListBox; _IncludeDisabled: Boolean = False): TStringArray;
+var
+  sl: TStringList;
+begin
+  sl := TStringList.Create;
+  try
+    TCheckListBox_GetChecked(_clb, sl, _IncludeDisabled);
+    Result := TStrings_AsStringArray(sl);
+  finally
+    FreeAndNil(sl);
+  end;
+end;
+
 function TCheckListBox_GetChecked(_clb: TCheckListBox; _IncludeDisabled: Boolean = False): string; overload;
 var
   sl: TStringList;
@@ -4000,25 +4043,21 @@ begin
   end;
 end;
 
-type
-  TComboHack = class(TCustomCombo)
-  end;
-
-procedure TComboBox_Change(_cmb: TCustomCombo);
+procedure TComboBox_Change(_cmb: TCustomComboBox);
 begin
-  TComboHack(_cmb).Change;
+  TComboBoxHack(_cmb).Change;
 end;
 
 procedure TComboBox_SelectWithoutChangeEvent(_cmb: TCustomComboBox; _Idx: Integer);
 var
   Event: TNotifyEvent;
 begin
-  Event := TComboHack(_cmb).OnChange;
+  Event := TComboBoxHack(_cmb).OnChange;
   try
-    TComboHack(_cmb).OnChange := nil;
+    TComboBoxHack(_cmb).OnChange := nil;
     _cmb.ItemIndex := _Idx;
   finally
-    TComboHack(_cmb).OnChange := Event;
+    TComboBoxHack(_cmb).OnChange := Event;
   end;
 end;
 
@@ -4027,12 +4066,12 @@ function TComboBox_SelectWithoutChangeEvent(_cmb: TCustomComboBox; const _Item: 
 var
   Event: TNotifyEvent;
 begin
-  Event := TComboHack(_cmb).OnChange;
+  Event := TComboBoxHack(_cmb).OnChange;
   try
-    TComboHack(_cmb).OnChange := nil;
+    TComboBoxHack(_cmb).OnChange := nil;
     Result := TComboBox_Select(_cmb, _Item, _DefaultIdx, _AllowPartialMatch);
   finally
-    TComboHack(_cmb).OnChange := Event;
+    TComboBoxHack(_cmb).OnChange := Event;
   end;
 end;
 
@@ -4054,13 +4093,13 @@ begin
   if _cmb is TComboBox then
     TComboBox_AssignItemsList(_cmb, _Items)
   else begin
-    s := TComboHack(_cmb).Text;
-    SelStart := TComboHack(_cmb).SelStart;
-    SelLen := TComboHack(_cmb).SelLength;
+    s := TComboBoxHack(_cmb).Text;
+    SelStart := TComboBoxHack(_cmb).SelStart;
+    SelLen := TComboBoxHack(_cmb).SelLength;
     _cmb.Items.Assign(_Items);
-    TComboHack(_cmb).Text := s;
-    TComboHack(_cmb).SelStart := SelStart;
-    TComboHack(_cmb).SelLength := SelLen;
+    TComboBoxHack(_cmb).Text := s;
+    TComboBoxHack(_cmb).SelStart := SelStart;
+    TComboBoxHack(_cmb).SelLength := SelLen;
   end;
 end;
 
@@ -5163,7 +5202,7 @@ var
   DisableProcessWindowsGhostingProc: procedure;
 begin
   DisableProcessWindowsGhostingProc := GetProcAddress(
-    GetModuleHandle('user32.dll'),
+    GetModuleHandle(user32),
     'DisableProcessWindowsGhosting');
   if Assigned(DisableProcessWindowsGhostingProc) then
     DisableProcessWindowsGhostingProc;
@@ -6377,16 +6416,6 @@ begin
     Result := True;
 end;
 
-function TWindowProcHook.IsAutoSuggestDropdownVisible: Boolean;
-var
-  FoundAndVisible: Integer;
-begin
-  FoundAndVisible := 0;
-  EnumThreadWindows(GetCurrentThreadId, @EnumThreadWindowsProc,
-    LParam(@FoundAndVisible));
-  Result := FoundAndVisible > 0;
-end;
-
 type
   TDropFilesActivator = class(TWindowProcHook)
   private
@@ -6431,8 +6460,6 @@ function CheckAdmin(out _IsAdmin: Boolean): Boolean;
 type
   TIsUserAnAdminFunc = function(): BOOL; stdcall;
 const
-  ADVAPI32DLL = 'ADVAPI32.dll';
-  SHELL32DLL = 'shell32.dll';
   SECURITY_NT_AUTHORITY: TSIDIdentifierAuthority = (Value: (0, 0, 0, 0, 0, 5));
   SECURITY_BUILTIN_DOMAIN_RID = $00000020;
   DOMAIN_ALIAS_RID_ADMINS = $00000220;
@@ -6440,7 +6467,7 @@ const
 var
   CheckTokenMembership: function(TokenHandle: THandle; SidToCheck: PSID;
     out IsMember: Boolean): Boolean; stdcall;
-  lib: Cardinal;
+  ModuleHandle: HMODULE;
   Sid: PSID;
   IsUserAnAdminFunc: TIsUserAnAdminFunc;
 begin
@@ -6448,10 +6475,10 @@ begin
   _IsAdmin := False;
   if (Win32MajorVersion = 5) and (Win32MinorVersion = 0) then begin
     // Windows 2000
-    lib := GetModuleHandle(ADVAPI32DLL);
-    if lib = 0 then
-      LoadLibrary(ADVAPI32DLL);
-    @CheckTokenMembership := GetProcAddress(lib, 'CheckTokenMembership');
+    ModuleHandle := GetModuleHandle(ADVAPI32);
+    if ModuleHandle = 0 then
+      LoadLibrary(ADVAPI32);
+    @CheckTokenMembership := GetProcAddress(ModuleHandle, 'CheckTokenMembership');
     if Assigned(CheckTokenMembership) then begin
       Result := True;
       if AllocateAndInitializeSid(SECURITY_NT_AUTHORITY, 2,
@@ -6463,16 +6490,16 @@ begin
     end;
   end else if Win32MajorVersion >= 5 then begin
     // XP or above
-    lib := LoadLibraryA(SHELL32DLL);
+    ModuleHandle := LoadLibrary(shell32);
     try
-      if lib <> 0 then begin
-        @IsUserAnAdminFunc := GetProcAddress(lib, 'IsUserAnAdmin');
+      if ModuleHandle <> 0 then begin
+        @IsUserAnAdminFunc := GetProcAddress(ModuleHandle, 'IsUserAnAdmin');
         Result := Assigned(@IsUserAnAdminFunc);
         if Result then
           _IsAdmin := IsUserAnAdminFunc();
       end;
     finally
-      FreeLibrary(lib);
+      FreeLibrary(ModuleHandle);
     end;
   end;
 end;
@@ -6679,6 +6706,7 @@ type
     procedure WmNcCreate; override;
     procedure SetAutoComplete;
     procedure NewWindowProc(var _Msg: TMessage); override;
+    function IsAutoSuggestDropdownVisible: Boolean;
   public
     constructor Create(_ed: TCustomEdit; _Source: TAutoCompleteSourceEnumSet = [acsFileSystem];
       _Type: TAutoCompleteTypeEnumSet = []);
@@ -6704,6 +6732,16 @@ end;
 procedure TAutoCompleteActivator.SetAutoComplete;
 begin
   TEdit_SetAutocomplete(FCtrl as TCustomEdit, FSource, FType);
+end;
+
+function TAutoCompleteActivator.IsAutoSuggestDropdownVisible: Boolean;
+var
+  FoundAndVisible: Integer;
+begin
+  FoundAndVisible := 0;
+  EnumThreadWindows(GetCurrentThreadId, @EnumThreadWindowsProc,
+    LParam(@FoundAndVisible));
+  Result := FoundAndVisible > 0;
 end;
 
 procedure TAutoCompleteActivator.NewWindowProc(var _Msg: TMessage);

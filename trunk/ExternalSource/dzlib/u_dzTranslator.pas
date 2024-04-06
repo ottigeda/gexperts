@@ -29,52 +29,70 @@ uses
 const
   DZLIB_TRANSLATION_DOMAIN = 'dzlib';
 
-function _(const _s: string): string;
+type
+{$IFDEF gnugettext}
+  DomainString = gnugettext.DomainString;
+  LanguageString = gnugettext.LanguageString;
+  ComponentNameString = gnugettext.ComponentNameString;
+  MsgIdString = gnugettext.MsgIdString;
+  TranslatedUnicodeString = gnugettext.TranslatedUnicodeString;
+{$ELSE}
+{$IFNDEF UNICODE}
+  UnicodeString = WideString;
+{$ENDIF}
+  DomainString = string;
+  LanguageString = string;
+  ComponentNameString = string;
+  MsgIdString = UnicodeString;
+  TranslatedUnicodeString = UnicodeString;
+{$ENDIF}
+
+function _(const _s: MsgIdString): TranslatedUnicodeString;
 /// we can't inline this function because we don't want to add gnugettext to units using it
 
-function GetText(const _s: string): string;
+function GetText(const _s: MsgIdString): TranslatedUnicodeString;
 /// we can't inline this function because we don't want to add gnugettext to units using it
 
-function dzGetText(const _s: string): string;
+function dzGetText(const _s: MsgIdString): TranslatedUnicodeString;
 /// we can't inline this function because we don't want to add gnugettext to units using it
 
-function DGetText(const _s: string; const _TextDomain: string = ''): string;
+function DGetText(const _s: MsgIdString; const _TextDomain: DomainString = ''): TranslatedUnicodeString;
 /// we can't inline this function because we don't want to add gnugettext to units using it
 
 ///<summary> use this if you pass variables rather than constants to avoid warnings in the dxgettext tool </summary>
-function dzDGetText(const _s: string; const _TextDomain: string = ''): string;
+function dzDGetText(const _s: MsgIdString; const _TextDomain: DomainString = ''): TranslatedUnicodeString;
 /// we can't inline this function because we don't want to add gnugettext to units using it
 
 ///<summary> translate using the DZLIB_TRANSLATION_DOMAIN </summary>
-function dzlibGetText(const _s: string): string;
-procedure TranslateComponent(_Object: TComponent; const _TextDomain: string = '');
-procedure RetranslateComponent(_Object: TComponent; const _TextDomain: string = '');
-procedure AddDomainForResourceString(const _Domain: string);
-procedure SelectTextDomain(const _Domain: string);
+function dzlibGetText(const _s: MsgIdString): TranslatedUnicodeString;
+procedure TranslateComponent(_Object: TComponent; const _TextDomain: DomainString = '');
+procedure RetranslateComponent(_Object: TComponent; const _TextDomain: DomainString = '');
+procedure AddDomainForResourceString(const _Domain: DomainString);
+procedure SelectTextDomain(const _Domain: DomainString);
 procedure TP_GlobalIgnoreClass(_IgnClass: TClass);
 function TP_TryGlobalIgnoreClass(_IgnClass: TClass): Boolean;
-procedure TP_GlobalIgnoreClassProperty(_IgnClass: TClass; const _PropertyName: string);
+procedure TP_GlobalIgnoreClassProperty(_IgnClass: TClass; const _PropertyName: ComponentNameString);
 ///<summary>
 /// Sets the language to use </summary>
-procedure UseLanguage(const _LanguageCode: string);
-function GetCurrentLanguage: string; deprecated; // use GetCurrentLocaleName instead
-function GetCurrentLocaleName: string;
+procedure UseLanguage(const _LanguageCode: LanguageString);
+function GetCurrentLanguage: LanguageString; deprecated; // use GetCurrentLocaleName instead
+function GetCurrentLocaleName: LanguageString;
 ///<summary>
 /// Sets the language to use if the desired language is not available, defaults to English </summary>
-procedure SetDefaultLanguage(const _LanguageCode: string);
+procedure SetDefaultLanguage(const _LanguageCode: LanguageString);
 
 ///<summary>
 /// gets a list of languages for which translations are available </summary>
-procedure GetListOfLanguages(const _Domain: string; _Codes: TStrings; _Languages: TStrings = nil);
+procedure GetListOfLanguages(const _Domain: DomainString; _Codes: TStrings; _Languages: TStrings = nil);
 
 type
   {: use this for translation of special strings that might not be in the same language
      as the program (e.g. a German program generating an English report }
   IdzTranslator = interface ['{FD88CFEE-F2D6-45FB-BBD2-D3C6BE066683}']
-    function GetText(const _s: string): string;
+    function GetText(const _s: MsgIdString): TranslatedUnicodeString;
   end;
 
-function GenerateTranslator(const _LanguageCode: string): IdzTranslator;
+function GenerateTranslator(const _LanguageCode: LanguageString): IdzTranslator;
 
 implementation
 
@@ -89,7 +107,7 @@ uses
 {$ENDIF NoVCL}
 {$ENDIF CONSOLE}
 
-function _(const _s: string): string;
+function _(const _s: MsgIdString): TranslatedUnicodeString;
 begin
 {$IFDEF gnugettext}
   Result := gnugettext._(_s);
@@ -98,23 +116,17 @@ begin
 {$ENDIF}
 end;
 
-function GetText(const _s: string): string;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+function GetText(const _s: MsgIdString): TranslatedUnicodeString;
 begin
   Result := u_dzTranslator._(_s);
 end;
 
-function dzGetText(const _s: string): string;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+function dzGetText(const _s: MsgIdString): TranslatedUnicodeString;
 begin
   Result := u_dzTranslator._(_s);
 end;
 
-function DGetText(const _s: string; const _TextDomain: string = ''): string;
+function DGetText(const _s: MsgIdString; const _TextDomain: DomainString = ''): TranslatedUnicodeString;
 begin
 {$IFDEF gnugettext}
   Result := gnugettext.DGetText(_TextDomain, _s);
@@ -123,41 +135,38 @@ begin
 {$ENDIF}
 end;
 
-function dzDGetText(const _s: string; const _TextDomain: string = ''): string;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+function dzDGetText(const _s: MsgIdString; const _TextDomain: DomainString = ''): TranslatedUnicodeString;
 begin
   Result := DGetText(_s, _TextDomain);
 end;
 
-function dzlibGetText(const _s: string): string;
+function dzlibGetText(const _s: MsgIdString): TranslatedUnicodeString;
 begin
   Result := dzDGetText(_s, DZLIB_TRANSLATION_DOMAIN);
 end;
 
-procedure TranslateComponent(_Object: TComponent; const _TextDomain: string = '');
+procedure TranslateComponent(_Object: TComponent; const _TextDomain: DomainString = '');
 begin
 {$IFDEF gnugettext}
   gnugettext.TranslateComponent(_Object, _TextDomain);
 {$ENDIF}
 end;
 
-procedure RetranslateComponent(_Object: TComponent; const _TextDomain: string = '');
+procedure RetranslateComponent(_Object: TComponent; const _TextDomain: DomainString = '');
 begin
 {$IFDEF gnugettext}
   gnugettext.RetranslateComponent(_Object, _TextDomain);
 {$ENDIF}
 end;
 
-procedure AddDomainForResourceString(const _Domain: string);
+procedure AddDomainForResourceString(const _Domain: DomainString);
 begin
 {$IFDEF gnugettext}
   gnugettext.AddDomainForResourceString(_Domain);
 {$ENDIF}
 end;
 
-procedure SelectTextDomain(const _Domain: string);
+procedure SelectTextDomain(const _Domain: DomainString);
 begin
 {$IFDEF gnugettext}
   gnugettext.textdomain(_Domain);
@@ -180,7 +189,7 @@ begin
 {$ENDIF}
 end;
 
-procedure TP_GlobalIgnoreClassProperty(_IgnClass: TClass; const _PropertyName: string);
+procedure TP_GlobalIgnoreClassProperty(_IgnClass: TClass; const _PropertyName: ComponentNameString);
 begin
 {$IFDEF gnugettext}
   gnugettext.TP_GlobalIgnoreClassProperty(_IgnClass, _PropertyName);
@@ -190,13 +199,13 @@ end;
 const
   DEFAULT_LANGUAGE = 'en';
 var
-  gblDefaultLanguage: string = DEFAULT_LANGUAGE;
+  gblDefaultLanguage: LanguageString = DEFAULT_LANGUAGE;
 
-procedure UseLanguage(const _LanguageCode: string);
+procedure UseLanguage(const _LanguageCode: LanguageString);
 {$IFDEF gnugettext}
 var
   Codes: TStringList;
-  CurLang: string;
+  CurLang: LanguageString;
   i: Integer;
   p: Integer;
 {$ENDIF}
@@ -234,7 +243,7 @@ begin
 {$ENDIF}
 end;
 
-procedure SetDefaultLanguage(const _LanguageCode: string);
+procedure SetDefaultLanguage(const _LanguageCode: LanguageString);
 begin
   if _LanguageCode = '' then
     gblDefaultLanguage := DEFAULT_LANGUAGE
@@ -245,7 +254,7 @@ begin
 {$ENDIF}
 end;
 
-procedure GetListOfLanguages(const _Domain: string; _Codes: TStrings; _Languages: TStrings = nil);
+procedure GetListOfLanguages(const _Domain: DomainString; _Codes: TStrings; _Languages: TStrings = nil);
 {$IFDEF gnugettext}
 var
   i: Integer;
@@ -263,12 +272,12 @@ begin
 {$ENDIF}
 end;
 
-function GetCurrentLanguage: string;
+function GetCurrentLanguage: LanguageString;
 begin
   Result := GetCurrentLocaleName;
 end;
 
-function GetCurrentLocaleName: string;
+function GetCurrentLocaleName: LanguageString;
 begin
 {$IFDEF gnugettext}
   Result := gnugettext.GetCurrentLocaleName;
@@ -284,12 +293,12 @@ type
     fGetTextInstance: TGnuGettextInstance;
 {$ENDIF}
   protected
-    function GetText(const _s: string): string;
+    function GetText(const _s: MsgIdString): TranslatedUnicodeString;
   public
-    constructor Create(const _LanguageCode: string);
+    constructor Create(const _LanguageCode: LanguageString);
   end;
 
-constructor TdzTranslator.Create(const _LanguageCode: string);
+constructor TdzTranslator.Create(const _LanguageCode: LanguageString);
 begin
   inherited Create;
 {$IFDEF gnugettext}
@@ -298,7 +307,7 @@ begin
 {$ENDIF}
 end;
 
-function TdzTranslator.GetText(const _s: string): string;
+function TdzTranslator.GetText(const _s: MsgIdString): TranslatedUnicodeString;
 begin
 {$IFDEF gnugettext}
   Result := fGetTextInstance.GetText(_s);
@@ -307,7 +316,7 @@ begin
 {$ENDIF}
 end;
 
-function GenerateTranslator(const _LanguageCode: string): IdzTranslator;
+function GenerateTranslator(const _LanguageCode: LanguageString): IdzTranslator;
 begin
   Result := TdzTranslator.Create(_LanguageCode);
 end;
@@ -338,3 +347,4 @@ initialization
 
 {$ENDIF gnugettext}
 end.
+

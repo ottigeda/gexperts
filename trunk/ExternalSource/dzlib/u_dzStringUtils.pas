@@ -315,7 +315,7 @@ function CenterStr(const _s: string; _MaxLen: Integer): string;
 
 ///<summary>
 /// @returns the sub string starting from position Start </summary>
-{$IFDEF SUPPORTS_UNICODE_STRING}
+{$IFDEF SUPPORTS_UNICODE}
 function TailStr(const _s: AnsiString; _Start: Integer): AnsiString; overload;
 {$ENDIF}
 function TailStr(const _s: string; _Start: Integer): string; overload;
@@ -1289,8 +1289,7 @@ begin
     Result := Copy(_s, _Start, Length(_s) - _Start + 1);
 end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
-
+{$IFDEF SUPPORTS_UNICODE}
 function TailStr(const _s: AnsiString; _Start: Integer): AnsiString; overload;
 begin
   if _Start > Length(_s) then

@@ -290,7 +290,6 @@ function Str2Float(const _s: string; const _Source: string; _DecSeparator: Char 
 ///       variable DecimalSeparator in SysUtils. </summary>
 function TryStr2Float(const _s: string; out _flt: Extended; _DecSeparator: Char = '.'): Boolean; overload;
 
-{$IF SizeOf(Extended) <> SizeOf(Double)}
 ///<summary>
 /// tries to convert a string to a float, returns false if it fails
 /// @param s is the string to convert
@@ -301,7 +300,6 @@ function TryStr2Float(const _s: string; out _flt: Extended; _DecSeparator: Char 
 /// NOTE: This is not thread safe in Delphi 6 because there it changes the global
 ///       variable DecimalSeparator in SysUtils. </summary>
 function TryStr2Float(const _s: string; out _flt: Double; _DecSeparator: Char = '.'): Boolean; overload;
-{$IFEND}
 function TryStr2Float(const _s: string; out _flt: Single; _DecSeparator: Char = '.'): Boolean; overload;
 
 ///<summary>
@@ -455,6 +453,9 @@ type
 function Bool2Str(_b: Boolean): string;
 
 type
+  TBitGrouping = (bgNone, bgNibble, bgByte, bgWord, bgLongWord);
+
+type
   TBitNumber64 = 0..63;
   TByteNumber64 = 0..7;
 
@@ -480,6 +481,7 @@ type
     class function Create(_Value: TValue): TBits64; static;
     class function AllSet: TBits64; static;
     class function NoneSet: TBits64; static;
+    function Dump: string;
     procedure Init(_Value: TValue);
     function IsBitSet(_BitNo: TBitNumber): Boolean;
     procedure SetBit(_BitNo: TBitNumber; _BitValue: Boolean);
@@ -492,7 +494,7 @@ type
     function Value: TValue;
     function GetByte(_ByteNo: TByteNumber): Byte;
     procedure SetByte(_ByteNo: TByteNumber; _Value: Byte);
-    function AsString: string;
+    function AsString(_Grouped: TBitGrouping = bgNone): string;
     class operator BitwiseAnd(_a, _b: TBits64): TBits64;
     class operator BitwiseOr(_a, _b: TBits64): TBits64;
     class operator BitwiseXor(_a, _b: TBits64): TBits64;
@@ -528,6 +530,7 @@ type
     class function Create(_Value: TValue): TBits32; static;
     class function AllSet: TBits32; static;
     class function NoneSet: TBits32; static;
+    function Dump: string;
     procedure Init(_Value: TValue);
     function IsBitSet(_BitNo: TBitNumber): Boolean;
     procedure SetBit(_BitNo: TBitNumber; _BitValue: Boolean);
@@ -540,7 +543,7 @@ type
     function Value: TValue;
     function GetByte(_ByteNo: TByteNumber): Byte;
     procedure SetByte(_ByteNo: TByteNumber; _Value: Byte);
-    function AsString: string;
+    function AsString(_Grouped: TBitGrouping = bgNone): string;
     class operator BitwiseAnd(_a, _b: TBits32): TBits32;
     class operator BitwiseOr(_a, _b: TBits32): TBits32;
     class operator BitwiseXor(_a, _b: TBits32): TBits32;
@@ -576,6 +579,7 @@ type
     class function Create(_Value: TValue): TBits16; static;
     class function AllSet: TBits16; static;
     class function NoneSet: TBits16; static;
+    function Dump: string;
     procedure Init(_Value: TValue);
     function IsBitSet(_BitNo: TBitNumber): Boolean;
     function IsAnyBitSet: Boolean;
@@ -589,7 +593,7 @@ type
     function Value: TValue;
     function GetByte(_ByteNo: TByteNumber): Byte;
     procedure SetByte(_ByteNo: TByteNumber; _Value: Byte);
-    function AsString: string;
+    function AsString(_Grouped: TBitGrouping = bgNone): string;
     class operator BitwiseAnd(_a, _b: TBits16): TBits16;
     class operator BitwiseOr(_a, _b: TBits16): TBits16;
     class operator BitwiseXor(_a, _b: TBits16): TBits16;
@@ -623,6 +627,7 @@ type
     class function Create(_Value: TValue): TBits8; static;
     class function AllSet: TBits8; static;
     class function NoneSet: TBits8; static;
+    function Dump: string;
     procedure Init(_Value: TValue);
     function IsBitSet(_BitNo: TBitNumber): Boolean;
     function IsAnyBitSet: Boolean;
@@ -636,7 +641,7 @@ type
     function Value: TValue;
     function GetByte(_ByteNo: TByteNumber): Byte;
     procedure SetByte(_ByteNo: TByteNumber; _Value: Byte);
-    function AsString: string;
+    function AsString(_Grouped: TBitGrouping = bgNone): string;
     // according to the documentation:
     // > For a logical operator and a bitwise operator using the same symbol,
     // > the logical operator is used only when the operands are booleans.
@@ -1241,7 +1246,6 @@ begin
 {$IFEND}
 end;
 
-{$IF SizeOf(Extended) <> SizeOf(Double)}
 function TryStr2Float(const _s: string; out _flt: Double; _DecSeparator: Char = '.'): Boolean;
 var
   flt: Extended;
@@ -1250,7 +1254,6 @@ begin
   if Result then
     _flt := flt;
 end;
-{$IFEND}
 
 function TryStr2Float(const _s: string; out _flt: Single; _DecSeparator: Char = '.'): Boolean;
 var
@@ -1507,14 +1510,42 @@ begin
   Bytes[_ByteNo] := _Value;
 end;
 
-function TBits64.AsString: string;
+function TBits64.Dump: string;
+begin
+  Result := AsString(bgByte);
+end;
+
+procedure GroupBits(var _s: string; _Grouped: TBitGrouping);
+var
+  i: Integer;
+  Step: Integer;
+begin
+  case _Grouped of
+    bgNibble: Step := 4;
+    bgByte: Step := 8;
+    bgWord: Step := 16;
+    bgLongWord: Step := 32;
+  else
+    Step := 64;
+  end;
+
+  i := Length(_s) - Step + 1;
+  while i > 1 do begin
+    Insert(' ', _s, i);
+    Dec(i, Step);
+  end;
+end;
+
+function TBits64.AsString(_Grouped: TBitGrouping = bgNone): string;
 var
   i: Integer;
 begin
   Result := DupeString('0', Bits);
-  for i := High downto Low do
+  for i := High downto Low do begin
     if IsBitSet(i) then
       Result[Bits - i] := '1';
+  end;
+  GroupBits(Result, _Grouped);
 end;
 
 class operator TBits64.BitwiseAnd(_a, _b: TBits64): TBits64;
@@ -1549,14 +1580,21 @@ begin
   Result.Init($FFFFFFFF);
 end;
 
-function TBits32.AsString: string;
+function TBits32.Dump: string;
+begin
+  Result := AsString(bgByte);
+end;
+
+function TBits32.AsString(_Grouped: TBitGrouping = bgNone): string;
 var
   i: Integer;
 begin
   Result := DupeString('0', Bits);
-  for i := High downto Low do
+  for i := High downto Low do begin
     if IsBitSet(i) then
       Result[Bits - i] := '1';
+  end;
+  GroupBits(Result, _Grouped);
 end;
 
 class function TBits32.Create(_Value: TValue): TBits32;
@@ -1662,14 +1700,21 @@ begin
   Result.Init($FFFF);
 end;
 
-function TBits16.AsString: string;
+function TBits16.Dump: string;
+begin
+  Result := AsString(bgByte);
+end;
+
+function TBits16.AsString(_Grouped: TBitGrouping = bgNone): string;
 var
   i: Integer;
 begin
   Result := DupeString('0', Bits);
-  for i := High downto Low do
+  for i := High downto Low do begin
     if IsBitSet(i) then
       Result[Bits - i] := '1';
+  end;
+  GroupBits(Result, _Grouped);
 end;
 
 class function TBits16.Create(_Value: TValue): TBits16;
@@ -1775,14 +1820,21 @@ end;
 
 { TBits8 }
 
-function TBits8.AsString: string;
+function TBits8.Dump: string;
+begin
+  Result := AsString(bgByte);
+end;
+
+function TBits8.AsString(_Grouped: TBitGrouping = bgNone): string;
 var
   i: Integer;
 begin
   Result := DupeString('0', Bits);
-  for i := High downto Low do
+  for i := High downto Low do begin
     if IsBitSet(i) then
       Result[Bits - i] := '1';
+  end;
+  GroupBits(Result, _Grouped);
 end;
 
 class function TBits8.AllSet: TBits8;
@@ -1990,14 +2042,32 @@ begin
   Result := True;
 end;
 
+{$IFDEF DEBUG}
+procedure AssertBitsDump;
+var
+  bits64: TBits64;
+  bits32: TBits32;
+  bits16: TBits16;
+  bits8: TBits8;
+begin
+  bits64.Dump;
+  bits32.Dump;
+  bits16.Dump;
+  bits8.Dump;
+end;
+{$ENDIF DEBUG}
+
 initialization
 {$IF Declared(TFormatSettings)}
   DZ_FORMAT_DECIMAL_POINT := u_dzStringUtils.GetUserDefaultLocaleSettings;
   DZ_FORMAT_DECIMAL_POINT.DecimalSeparator := '.';
   DZ_FORMAT_DECIMAL_POINT.ThousandSeparator := #0;
 {$IFEND}
-
+{$IFDEF DEBUG}
   Assert(AssertYNStringLength);
   Assert(AssertSwap32);
   Assert(AssertBitReverse32);
+
+  AssertBitsDump;
+{$ENDIF DEBUG}
 end.

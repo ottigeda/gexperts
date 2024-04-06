@@ -1270,7 +1270,7 @@ function etpd(const _DirName: string): string;
 /// if Rewrite fails, File is zeroed
 /// @raise exception, if  rewrite fails </summary>
 procedure TextFile_AssignAndRewrite(var _File: TextFile; const _Filename: string);
-function TextFile_IsOpen(const _File: TextFile): Boolean;
+function TextFile_IsOpen(var _File: TextFile): Boolean;
 procedure TextFile_Close(var _File: TextFile);
 
 implementation
@@ -1980,6 +1980,15 @@ begin
     RaiseLastOSErrorEx(LastError, Format(_('Error %%1:s (%%0:d) while trying to move "%s" to "%s".'), [_Source, _Dest]));
   end;
 end;
+
+{$if not declared(MOVEFILE_WRITE_THROUGH)}
+const
+  MOVEFILE_WRITE_THROUGH          = $00000008;
+{$ifend}
+{$if not declared(MOVEFILE_FAIL_IF_NOT_TRACKABLE)}
+const
+  MOVEFILE_FAIL_IF_NOT_TRACKABLE  = $00000020;
+{$ifend}
 
 class function TFileSystem.MoveFileEx(const _Source, _Dest: string; _Flags: TMoveFileExFlagSet;
   _ErrorHandling: TErrorHandlingEnum = ehRaiseException): Boolean;
@@ -3418,7 +3427,7 @@ begin
   end;
 end;
 
-function TextFile_IsOpen(const _File: TextFile): Boolean;
+function TextFile_IsOpen(var _File: TextFile): Boolean;
 begin
   Result := (TTextRec(_File).Mode <> 0);
 end;

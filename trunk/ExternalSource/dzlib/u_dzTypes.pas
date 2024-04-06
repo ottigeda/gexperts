@@ -82,6 +82,8 @@ type
   UIntPtr = UInt64;
 {$IFEND}
 {$IFEND}
+  // This is to prevent a compile error if none of the above types needs to be declarred
+  TBlaBlaBlaBlaBlaBlaBla = Pointer;
 
 {$IF not declared(MaxUInt32)}
 const
