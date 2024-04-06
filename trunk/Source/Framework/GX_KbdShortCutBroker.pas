@@ -688,8 +688,8 @@ begin
 
   // Locate the shortcut in our list and dispatch
   // to the Execute function.
-  Assert(FOwner <> nil);
-  Assert(FOwner.FShortCutList <> nil);
+  Assert(FOwner <> nil, 'FOwner must not be nil');
+  Assert(FOwner.FShortCutList <> nil, 'FOwner.FShortCutList must not be nil');
 
   AShortCutItem := LocateKeyboardShortCut(FOwner.FShortCutList, KeyCode) as TGxOneKeyShortCut;
   if Assigned(AShortCutItem) and Assigned(AShortCutItem.Trigger) then
