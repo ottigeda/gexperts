@@ -295,6 +295,9 @@ var
   var
     act: TAction;
     cmp: TComponent;
+{$IFDEF GX_DELPHI2010_UP} // Not sure which Delphi version introduced TButton.ImageIndex...
+    ii: Integer;
+{$ENDIF}    
   begin
     // Unfortunately we can't just assign the button's OnClick event to the
     // OnExecute event of the action because Delphi apparently assigns the
@@ -307,11 +310,17 @@ var
     if TComponent_FindComponent(_Form, _BtnName, True, cmp) then begin
       if (cmp is TButton) or (cmp is TBitBtn) then begin
         _Btn := cmp as TCustomButton;
+{$IFDEF GX_DELPHI2010_UP}
+        ii := _Btn.ImageIndex;
+{$ENDIF}
         _OnClick := TCustomButtonHack(_Btn).OnClick;
         act := TActionlist_Append(TheActionList, '', _OnExecute, _Shortcut);
         act.Hint := _Caption;
         _Btn.Action := act;
         _Btn.ShowHint := True;
+{$IFDEF GX_DELPHI2010_UP}
+        if (ii >= 0) and (_Btn.ImageIndex < 0) then _Btn.ImageIndex := ii;
+{$ENDIF}        
       end;
     end;
   end;
@@ -360,7 +369,7 @@ begin
   FTabSheetList := TTabSheet.Create(_Form);
   FTabSheetMemo := TTabSheet.Create(_Form);
   FPageControl.Name := 'pc_PathList';
-  FPageControl.Parent := _Form;
+  FPageControl.Parent := FListbox.Parent;
   FPageControl.BoundsRect := FListbox.BoundsRect;
   FPageControl.Anchors := [akLeft, akTop, akRight, akBottom];
   FPageControl.TabPosition := tpBottom;
@@ -394,6 +403,10 @@ begin
 
   FListbox.Parent := FTabSheetList;
   FListbox.Align := alClient;
+{$IFDEF GX_DELPHI2007_UP}
+  FListbox.Margins.SetBounds(0, 0, 0, 0);
+  FListbox.Realign;
+{$ENDIF}
   FListboxOnClick := FListbox.OnClick;
   FListbox.OnClick := HandleListboxClick;
 {$IFDEF GX_LISTBOX_OWNERDRAW_FIX_ENABLED}
@@ -403,12 +416,14 @@ begin
 {$ENDIF}
 
   FDelDotsBtn := TButton.Create(_Form);
+  FDelDotsBtn.Name := 'DelDotsBtn';
+  FDelDotsBtn.Parent := FPageControl.Parent;
+  // read Width and Height after assigning Parent,
+  // because it may change the dimensions due to scaling!
   h := FDelDotsBtn.Height - 4;
   w := FDelDotsBtn.Width;
   t := FPageControl.Top - h;
-  l := FPageControl.Left + FPageControl.Width - 2 * w - 8;
-  FDelDotsBtn.Name := 'DelDotsBtn';
-  FDelDotsBtn.Parent := _Form;
+  l := FPageControl.Left + FPageControl.Width - (2 * w) - 8;
   FDelDotsBtn.Height := h;
   FDelDotsBtn.Top := t;
   FDelDotsBtn.Left := l;
@@ -422,7 +437,7 @@ begin
 
   FAddDotsBtn := TButton.Create(_Form);
   FAddDotsBtn.Name := 'AddDotsBtn';
-  FAddDotsBtn.Parent := _Form;
+  FAddDotsBtn.Parent := FPageControl.Parent;
   FAddDotsBtn.Height := h;
   FAddDotsBtn.Top := t;
   FAddDotsBtn.Left := l;
@@ -435,9 +450,9 @@ begin
 
   if Assigned(FUpBtn) then begin
     FFavoritesBtn := TButton.Create(_Form);
-    FFavoritesBtn.Parent := _Form;
+    FFavoritesBtn.Parent := FUpBtn.Parent;
     FFavoritesBtn.Left := FUpBtn.Left;
-    FFavoritesBtn.Top := FPageControl.Top;
+    FFavoritesBtn.Top := FDelDotsBtn.Top; // FPageControl.Top;
     FFavoritesBtn.Width := FUpBtn.Width;
     FFavoritesBtn.Height := FUpBtn.Height;
     FFavoritesBtn.Anchors := [akRight, akTop];
