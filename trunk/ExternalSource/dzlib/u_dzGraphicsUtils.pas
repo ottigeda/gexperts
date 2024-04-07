@@ -62,7 +62,10 @@ uses
   u_dzTypesUtils;
 
 type
-  EdzPixelFormatNotSupported = class(EdzException)
+  EdzGraphicsUtils = class(EdzException);
+
+type
+  EdzPixelFormatNotSupported = class(EdzGraphicsUtils)
     constructor Create(_PixelFormat: TPixelFormat); overload;
   end;
 
@@ -461,10 +464,12 @@ procedure TBitmap_AssignToRgb8(_BufferBitsToRgb8Meth: TBufferBitsToRgb8Meth;
   _Buffer: Pointer; _bmp: TBitmap; _YIsReversed: Boolean; _RowStride: Int64 = 0); overload;
 
 ///<summary>
-/// converts a pf24bit or pf32bit monochrome bitmap to a pf8bit monochrome bitmap </summary>
+/// Converts a pf8Bit, pf24bit or pf32bit monochrome bitmap to a new pf8bit monochrome bitmap </summary>
 function TBitmap_MonoToMono8(_bmp: TBitmap): TBitmap; overload;
 {(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
 
+///<summary>
+/// converts a pf8Bit, pf24bit or pf32bit monochrome bitmap to a pf8bit monochrome bitmap </summary>
 procedure TBitmap_MonoToMono8(_InBmp, _OutBmp: TBitmap); overload;
 
 ///<summary>
@@ -1600,7 +1605,6 @@ end;
 {$ENDIF}
 
 procedure TBitmap_SetSize(_bmp: TBitmap; _Width, _Height: Integer);
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
 begin
 {$IFDEF SUPPPORTS_BITMAP_SETSIZE}
   _bmp.SetSize(_Width, _Height);
@@ -2107,8 +2111,6 @@ var
   SrcLine: PByte;
   DstLine: PByte;
 begin
-  Assert(AssertPixelFormat(_InBmp, [pf8bit, pf24bit, pf32bit]));
-
   case _InBmp.PixelFormat of
     pf8bit: begin
         CopyScanLine := Copy8Bit;
@@ -2123,11 +2125,13 @@ begin
         SrcBytesPerPixel := 4;
       end;
   else
-    raise EdzPixelFormatNotSupported.Create(_InBmp.PixelFormat)
+    raise EdzPixelFormatNotSupported.Create(_InBmp.PixelFormat);
   end;
 
   w := _InBmp.Width;
   h := _InBmp.Height;
+  if (w = 0) or (h = 0) then
+    raise EdzGraphicsUtils.CreateFmt(_('Cannot handle empty bitmap (Width: %d, Height: %d)'), [w, h]);
 
   _OutBmp.PixelFormat := pf8bit;
   _OutBmp.Palette := MakeGrayPalette();

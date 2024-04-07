@@ -1051,31 +1051,38 @@ procedure TCheckListBox_DeleteDisabled(_clb: TCheckListBox);
 procedure TCheckListBox_InvertCheckmarks(_clb: TCheckListBox; _IncludeDisabled: Boolean = False);
 procedure TCheckListBox_UncheckAll(_clb: TCheckListBox);
 procedure TCheckListBox_CheckAll(_clb: TCheckListBox; _IncludeDisabled: Boolean = False);
-///<summary> Returns the checked items and the objects associated in them
-///          @param clb is the TCheckListBox
-///          @param Checked is a TStrings to which the selected items and objects are to be added
-///                         default: NIL
-///          @param IncludeDisabled determines whether the disabled items should also be returned if they are checked
-///          @returns the number of Items in Checked </summary>
+
+///<summary>
+/// Returns the checked items and the objects associated in them
+/// @param clb is the TCheckListBox
+/// @param Checked is a TStrings to which the selected items and objects are to be added
+///                default: NIL
+/// @param IncludeDisabled determines whether the disabled items should also be returned if they are checked
+/// @returns the number of Items in Checked </summary>
 function TCheckListBox_GetChecked(_clb: TCheckListBox; _Checked: TStrings = nil; _IncludeDisabled: Boolean = False): Integer; overload;
 function TCheckListBox_GetCheckedArr(_clb: TCheckListBox; _IncludeDisabled: Boolean = False): TStringArray;
+/// <summary>
+/// This is deprecated, use TCheckListBox_GetCheckedArr instead!
 /// todo: Why did I ever think it a good idea to return a string? A TStringArray would have been
-///       a much better choice.
+///       a much better choice. </summary>
 function TCheckListBox_GetChecked(_clb: TCheckListBox; _IncludeDisabled: Boolean = False): string; overload; deprecated; // use TCheckListBox_GetCheckedArr
-///<summary> Returns the objects associated with the checked items
-///          @param clb is the TCheckListBox
-///          @param Objects is a TList to which the selected objects are to be added
-///          @param IncludeDisabled determines whether the disabled items should also be returned if they are checked
-///          @returns the number of Items in Objects </summary>
+///<summary>
+/// Returns the objects associated with the checked items
+/// @param clb is the TCheckListBox
+/// @param Objects is a TList to which the selected objects are to be added
+/// @param IncludeDisabled determines whether the disabled items should also be returned if they are checked
+/// @returns the number of Items in Objects </summary>
 function TCheckListBox_GetCheckedObjects(_clb: TCheckListBox; _Objects: TList; _IncludeDisabled: Boolean = False): Integer;
-///<summary> Checks all items contained in the Checked string list
-///          @param clb is the TCheckListBox to modify
-///          @param Checked is a string list containing the items to be checked
-///          @param UncheckOthers determines whether any items not in the list should
-///                               be unchecked (defaults to true).
-///          @param SuppressClick determines whether the automatic OnClickCkeck
-///                               event should be suppressed.
-///          @returns the number of items that have been checked. </summary>
+
+///<summary>
+/// Checks all items contained in the Checked string list
+/// @param clb is the TCheckListBox to modify
+/// @param Checked is a string list containing the items to be checked
+/// @param UncheckOthers determines whether any items not in the list should
+///                      be unchecked (defaults to true).
+/// @param SuppressClick determines whether the automatic OnClickCkeck
+///                      event should be suppressed.
+/// @returns the number of items that have been checked. </summary>
 function TCheckListBox_SetChecked(_clb: TCheckListBox; _Checked: TStrings;
   _UncheckOthers: Boolean = True; _SuppressClick: Boolean = False): Integer; overload;
 
@@ -1084,6 +1091,12 @@ function TCheckListBox_SetChecked(_clb: TCheckListBox; const _Checked: string;
 
 function TCheckListBox_SetChecked(_clb: TCheckListBox; const _Checked: array of string;
   _UncheckOthers: Boolean = True; _SuppressClick: Boolean = False): Integer; overload;
+
+///<summary>
+/// Sets the Checked property of the (first) item whose Object matches Obj to Checked and
+/// returns its index or -1 if none was found. </summary>
+function TCheckListBox_SetChecked(_clb: TCheckListBox; _Obj: Pointer; _Checked: Boolean;
+  _SuppressClick: Boolean = False): Integer; overload;
 
 ///<summary> sets the checked property without triggering an OnClickCheck event </summary>
 procedure TCheckListBox_SetCheckedNoClick(_clb: TCheckListBox; _Idx: Integer; _Checked: Boolean);
@@ -3922,13 +3935,31 @@ begin
 end;
 
 function TCheckListBox_SetChecked(_clb: TCheckListBox; const _Checked: string;
-  _UncheckOthers: Boolean = True; _SuppressClick: Boolean = False): Integer; overload;
+  _UncheckOthers: Boolean = True; _SuppressClick: Boolean = False): Integer;
 begin
   Result := TCheckListBox_SetChecked(_clb, [_Checked], _UncheckOthers, _SuppressClick);
 end;
 
+function TCheckListBox_SetChecked(_clb: TCheckListBox; _Obj: Pointer; _Checked: Boolean;
+  _SuppressClick: Boolean = False): Integer;
+var
+  i: Integer;
+begin
+  for i := 0 to _clb.Items.Count - 1 do begin
+    if _clb.Items.Objects[i] = _Obj then begin
+      if _SuppressClick then
+        TCheckListBox_SetCheckedNoClick(_clb, i, _Checked)
+      else
+        _clb.Checked[i] := _Checked;
+      Result := i;
+      Exit; //==>
+    end;
+  end;
+  Result := -1;
+end;
+
 function TCheckListBox_SetChecked(_clb: TCheckListBox; const _Checked: array of string;
-  _UncheckOthers: Boolean = True; _SuppressClick: Boolean = False): Integer; overload;
+  _UncheckOthers: Boolean = True; _SuppressClick: Boolean = False): Integer;
 var
   i: Integer;
   sl: TStringList;
