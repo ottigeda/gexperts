@@ -1000,7 +1000,7 @@ begin
   inherited;             // will call ApplyDpi(), which resets the size.
   Self.BoundsRect := R;  // set the new size again.
 
-{$IFDEF GX_DELPHI_TOKYO_UP}
+{$IFDEF GX_DELPHI2007_UP}
   if pnlButtonsRight.HandleAllocated then
     GxSetWindowSizeGrip(pnlButtonsRight.Handle, True);
 {$ENDIF}
