@@ -90,7 +90,7 @@ begin
 end;
 
 const
-  ToolBarActionsKey = 'EditorEnhancements' +PathDelim+ 'ToolBarActions';
+  ToolBarActionsKey = 'EditorEnhancements' + PathDelim + 'ToolBarActions';
   ToolBarActionsCountValue = 'Count';
   ToolBarActionsActionPrefixValue = 'Action';
 
@@ -126,7 +126,7 @@ begin
     if EditorFormProxy.IsSourceEditor and (not Assigned(EditorForm.FindComponent(GX_ToolBarComponentName))) then
     begin
       ToolBar := TGXToolBar.Create(EditorForm);
-      toolbar.OnConfigureToolbar := HandleConfigureToolbar;
+      ToolBar.OnConfigureToolbar := HandleConfigureToolbar;
       FToolBarList.Add(ToolBar);
       ToolBar.FreeNotification(FNotificationProxy);
       ToolBar.Align := FToolBarAlign;
@@ -193,7 +193,7 @@ end;
 
 function TEditorEnhancements.CanHaveShortCut: Boolean;
 begin
-  Result := false;
+  Result := False;
 end;
 
 procedure TEditorEnhancements.Configure(_Owner: TWinControl);
@@ -234,7 +234,7 @@ begin
 
   FreeAndNil(FNotificationProxy);
 
-  FHideNavigationToolbarExpert := Nil;
+  FHideNavigationToolbarExpert := nil;
 
   FreeAndNil(FToolBarActionsList);
 
@@ -273,7 +273,7 @@ end;
 
 procedure TEditorEnhancements.Install;
 begin
-  if not EditorEnhancementsPossible then 
+  if not EditorEnhancementsPossible then
     Exit; //==>
 
   AddToolBar;
@@ -356,7 +356,7 @@ end;
 
 procedure TEditorEnhancements.Remove;
 begin
-  if not EditorEnhancementsPossible then 
+  if not EditorEnhancementsPossible then
     Exit;
 
   GxEditorFormServices.RemoveListener(EditorFormListener);
