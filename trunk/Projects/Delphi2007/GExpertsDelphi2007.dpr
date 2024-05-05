@@ -74,7 +74,7 @@ uses
   GX_eDate in '..\..\source\Editor\GX_eDate.pas' {fmDateFormat},
   GX_EditBookmark in '..\..\source\Bookmarks\GX_EditBookmark.pas' {fmEditBookmarks},
   GX_EditorChangeServices in '..\..\source\Framework\GX_EditorChangeServices.pas',
-  GX_EditorEnhancements in '..\..\source\experts\editorenhancements\GX_EditorEnhancements.pas',
+  GX_EditorEnhancements in '..\..\Source\Experts\EditorEnhancements\GX_EditorEnhancements.pas',
   GX_EditorEnhancementsConfig in '..\..\Source\Experts\EditorEnhancements\GX_EditorEnhancementsConfig.pas' {fmEditorEnhancementsConfig},
   GX_EditorExpert in '..\..\source\Editor\GX_EditorExpert.pas',
   GX_EditorExpertManager in '..\..\source\Editor\GX_EditorExpertManager.pas',
