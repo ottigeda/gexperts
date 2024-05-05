@@ -51,14 +51,10 @@ type
     ///</summary>
     /// Creates a unique comonent name based on the form name  </summary>
     class function GenerateName(const _FormName: string): string;
+    procedure FixFormPositioningBug;
   protected
-{$IFDEF GX_DELPHI_TOKYO_UP}
-{$IFNDEF GX_DELPHI_RIO_UP}
-    FTimer: TTimer;
-    procedure HandleTimer(_Sender: TObject);
-{$ENDIF ~GX_DELPHI_RIO_UP}
+    procedure MoveByOnePixel(_Sender: TObject);
     procedure DoAddSizeGrip; virtual;
-{$ENDIF GX_DELPHI_TOKYO_UP}
     procedure DoHookOnFormDestroy; virtual;
     procedure DoFixFormErrors; virtual;
     procedure DoMakeResizable; virtual;
@@ -195,14 +191,15 @@ uses
   OleDB,
   ComObj,
   ActiveX,
-{$IFDEF GX_DELPHI_TOKYO_UP}
+  u_dzClassUtils,
+  u_dzErrorThread,
+{$IFDEF GX_DELPHI2007_UP}
   GX_SizeGripHWND,
-{$ENDIF GX_DELPHI_TOKYO_UP}
+{$ENDIF GX_DELPHI2007_UP}
   GX_ConfigurationInfo,
   GX_GenericUtils,
-  u_dzClassUtils,
-  GX_IdeUtils,
-  u_dzErrorThread;
+  GX_TimedCallback,
+  GX_IdeUtils;
 
 const
   WidthIdent = 'Width';
@@ -303,8 +300,13 @@ begin
   Result := 'GXManagedForm_' + _FormName;
 end;
 
-{$IFDEF GX_DELPHI_TOKYO_UP}
 procedure TManagedForm.DoAddSizeGrip;
+{$IFDEF GX_DELPHI2007_UP}
+  // When Embarcadero added theming to the IDE in 10.2 Tokyo they introduced quite a few
+  // problems (which is the polite phrasing) one is that the frames of several windows
+  // is only 1 pixel wide so it's difficult to hit it for resizing the window.
+  // Adding a size grip makes this a bit easier.
+  // Also, it doesn't hurt to add this grip for other Delphi versions.
 var
   C      : TComponent;
   Target : TWinControl;
@@ -319,16 +321,12 @@ begin
       GxSetWindowSizeGrip(Target.Handle, True);
   end;
 end;
-
-{$IFNDEF GX_DELPHI_RIO_UP}
-procedure TManagedForm.HandleTimer(_Sender: TObject);
+{$ELSE}
 begin
-  FTimer.Enabled := False;
-  FForm.Left := FForm.Left - 1;
-  FForm.Left := FForm.Left + 1;
+  // todo: check whether older Delphi versions than Delphi 2007 support this
 end;
-{$ENDIF ~GX_DELPHI_RIO_UP}
-{$ENDIF GX_DELPHI_TOKYO_UP}
+{$ENDIF}
+
 
 class function TManagedForm.AlreadyExists(const _Form: TCustomForm): Boolean;
 var
@@ -1169,6 +1167,26 @@ begin
   FForm.OnDestroy := FormDestroy;
 end;
 
+procedure TManagedForm.FixFormPositioningBug;
+begin
+{$IFDEF GX_DELPHI_TOKYO_UP}
+{$IFNDEF GX_DELPHI_RIO_UP}
+  // Workaround for a problem that only exists in Delphi 10.2 if theming is enabled:
+  // If the form's position is changed while it is still drawing (as is the case for all
+  // forms that get manipulated by GExperts), it can no longer be moved or resized.
+  // https://sourceforge.net/p/gexperts/bugs/86/
+  // Workaround: In a timer, move the form by 1 pixel
+  TTimedCallback.Create(MoveByOnePixel, 50, True);
+{$ENDIF}
+{$ENDIF}
+end;
+
+procedure TManagedForm.MoveByOnePixel(_Sender: TObject);
+begin
+  FForm.Left := FForm.Left - 1;
+  FForm.Left := FForm.Left + 1;
+end;
+
 procedure TManagedForm.Init(const _FormChanges: TFormChanges);
 begin
   Assert(Assigned(FForm));
@@ -1177,26 +1195,11 @@ begin
 
   DoHookOnFormDestroy;
   DoMakeResizable;
-{$IFDEF GX_DELPHI_TOKYO_UP}
-  // When Embarcadero added theming to the IDE in 10.2 Tokyo they introduced quite a few
-  // problems (which is the polite phrasing) one is that the frames of several windows
-  // is only 1 pixel wide so it's difficult to hit it for resizing the window.
-  // Adding a size grip makes this a bit easier.
+
   DoAddSizeGrip;
 
-{$IFNDEF GX_DELPHI_RIO_UP}
-  // Workaround for a problem that only exists in Delphi 10.2 if theming is enabled:
-  // If the form's position is changed while it is still drawing (as is the case for all
-  // forms that get manipulated by GExperts), it can no longer be moved or resized.
-  // https://sourceforge.net/p/gexperts/bugs/86/
-  // Workaround: In a timer, move the form by 1 pixel
-  FTimer := TTimer.Create(FForm);
-  FTimer.Enabled := False;
-  FTimer.OnTimer := HandleTimer;
-  FTimer.Interval := 50;
-  FTimer.Enabled := True;
-{$ENDIF}
-{$ENDIF}
+  FixFormPositioningBug;
+
   DoFixFormErrors;
   DoLoadFormState;
   DoCollapseTreeNodes;
