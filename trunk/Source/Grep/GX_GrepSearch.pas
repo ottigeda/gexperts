@@ -121,6 +121,31 @@ uses
   GX_GenericUtils, GX_GxUtils, GX_OtaUtils, GX_GrepResults, GX_GrepOptions,
   GX_RegExpr, GX_TestRegEx;
 
+procedure FixComboBoxSelections(aForm: TCustomForm);
+// When resizing a TComboBox with Style = csDropDown, the whole text gets
+// selected; making it impossible to read if the combobox is not the active
+// control. This code iterates of all TComboBox controls and clears the
+// selection, to make the text readable again.
+// TODO: move to some support/utils unit.
+var
+  i : Integer;
+  C : TComponent;
+  LComboBox : TCustomComboBox;
+begin
+  if not Assigned(aForm) then Exit;
+
+  for i := 0 to aForm.ComponentCount-1 do
+  begin
+    C := aForm.Components[i];
+    if (C is TCustomComboBox) and (C <> aForm.ActiveControl) then
+    begin
+      LComboBox := TCustomComboBox(C);
+      LComboBox.SelStart := 0;
+      LComboBox.SelLength := 0;
+    end;
+  end;
+end;
+
 { TfmGrepSearch }
 
 procedure TfmGrepSearch.btnGrepAllClick(Sender: TObject);
@@ -171,37 +196,49 @@ begin
   end;
 end;
 
+type
+  TWinControlAccess = class(TWinControl);
+
 procedure TfmGrepSearch.EnableDirectoryControls(New: Boolean);
+var
+  LBackColor: TColor;
+  LFontColor: TColor;
+
+  procedure ApplyColors(AControl: TWinControl);
+  begin
+    TWinControlAccess(AControl).Color := LBackColor;
+    TWinControlAccess(AControl).Font.Color := LFontColor;
+  end;
+
 begin
   cbDirectory.Enabled := New;
   cbMasks.Enabled := New;
-  cbExcludedDirs.Enabled := New;
   cbInclude.Enabled := New;
-  ed_MinDepth.Enabled := New;
-  ed_MaxDepth.Enabled := New;
-  chk_SubDirRegex.Enabled := New;
+  cbExcludedDirs.Enabled := New and cbInclude.Checked;
+  l_MinMaxDepth.Enabled := New and cbInclude.Checked;
+  ed_MinDepth.Enabled := New and cbInclude.Checked;
+  ed_MaxDepth.Enabled := New and cbInclude.Checked;
+  chk_SubDirRegex.Enabled := New and cbInclude.Checked;
   btnBrowse.Enabled := New;
-  if not New then
-  begin
-    cbDirectory.Color := clBtnface;
-    cbExcludedDirs.Color := clBtnface;
-    cbMasks.Color := clBtnface;
-    ed_MinDepth.Color := clBtnface;
-    ed_MaxDepth.Color := clBtnface;
+  if New then begin
+    LBackColor := clWindow;
+    LFontColor := clWindowText;
   end
-  else
-  begin
-    cbDirectory.Color := clWindow;
-    cbExcludedDirs.Color := clWindow;
-    cbMasks.Color := clWindow;
-    ed_MinDepth.Color := clWindow;
-    ed_MaxDepth.Color := clWindow;
-  end
+  else begin
+    LBackColor := clBtnFace;
+    LFontColor := clGrayText;
+  end;
+  ApplyColors(cbDirectory);
+  ApplyColors(cbExcludedDirs);
+  ApplyColors(cbMasks);
+  ApplyColors(ed_MinDepth);
+  ApplyColors(ed_MaxDepth);
 end;
 
 procedure TfmGrepSearch.rbDirectoriesClick(Sender: TObject);
 begin
   EnableDirectoryControls(rbDirectories.Checked);
+  FixComboBoxSelections(Self);
 end;
 
 procedure TfmGrepSearch.btnHelpClick(Sender: TObject);
@@ -256,13 +293,15 @@ begin
 end;
 
 procedure TfmGrepSearch.cbIncludeClick(Sender: TObject);
-var
-  b: Boolean;
 begin
-  b := cbInclude.Checked;
-  l_MinMaxDepth.Enabled := b;
-  ed_MinDepth.Enabled := b;
-  ed_MaxDepth.Enabled := b;
+  EnableDirectoryControls(rbDirectories.Checked);
+//
+//  l_MinMaxDepth.Enabled := LEnabled;
+//  ed_MinDepth.Enabled := LEnabled;
+//  ed_MaxDepth.Enabled := LEnabled;
+//  chk_SubDirRegex.Enabled := LEnabled;
+//  lblExcludeDirs.Enabled := LEnabled;
+//  cbExcludedDirs.Enabled := LEnabled;
 end;
 
 procedure TfmGrepSearch.CheckSectionSelection(ClickedOption: TCheckBox);
@@ -396,6 +435,7 @@ begin
   InitializeForm;
 
   LoadFormSettings;
+  FixComboBoxSelections(Self);
   FCheckedWhere := True;
 end;
 
@@ -413,6 +453,11 @@ begin
   FOriginalWidth := Width;
   FOriginalOptionsGroupWidth := gbxOptions.Width;
   FOriginalWhereGroupWidth := gbxWhere.Width;
+
+  if Self.CurrentPPI > 110 then
+  begin
+    Self.Font.Size := Self.Font.Size - 1;
+  end;
 end;
 
 procedure TfmGrepSearch.cbDirectoryOnDropFiles(_Sender: TObject; _Files: TStrings);
@@ -573,7 +618,7 @@ begin
     cbInclude.Checked := gblGrepExpert.GrepSub;
     cbWholeWord.Checked := gblGrepExpert.GrepWholeWord;
     cbRegEx.Checked := gblGrepExpert.GrepRegEx;
-
+    cbIncludeClick(nil); // update depended controls
     rgSaveOption.ItemIndex := Integer(gblGrepExpert.SaveOption);
 
     case gblGrepExpert.GrepAction of
@@ -766,7 +811,12 @@ end;
 procedure TfmGrepSearch.FormShow(Sender: TObject);
 begin
   inherited;
+  {$IFDEF GX_IDE_IS_HIDPI_AWARE}
+  if IsThemesEnabled and (Self.CurrentPPI > 110) then
+    Self.Font.Height := Self.Font.Height + 1;
+  {$ENDIF}
   TControl_SetConstraints(Self, [ccMinWidth, ccMinHeight, ccMaxHeight]);
+  FixComboBoxSelections(Self);
 end;
 
 procedure TfmGrepSearch.ComboKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -958,4 +1008,3 @@ begin
 end;
 
 end.
-
