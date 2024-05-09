@@ -453,11 +453,6 @@ begin
   FOriginalWidth := Width;
   FOriginalOptionsGroupWidth := gbxOptions.Width;
   FOriginalWhereGroupWidth := gbxWhere.Width;
-
-  if Self.CurrentPPI > 110 then
-  begin
-    Self.Font.Size := Self.Font.Size - 1;
-  end;
 end;
 
 procedure TfmGrepSearch.cbDirectoryOnDropFiles(_Sender: TObject; _Files: TStrings);
