@@ -6126,11 +6126,18 @@ end;
 procedure TListView_Resize(_lv: TListView; _Options: TLIstViewResizeOptionSet = [lvrCaptions, lvrContent]);
 var
   i: Integer;
+  cnt: Integer;
 begin
   _lv.Items.BeginUpdate;
   try
-    for i := 0 to _lv.Columns.Count - 1 do
-      TListView_ResizeColumn(_lv.Columns[i], _Options);
+    cnt := _lv.Columns.Count;
+    if cnt > 0 then begin
+      for i := 0 to cnt - 2 do
+        TListView_ResizeColumn(_lv.Columns[i], _Options);
+      // "If you use this value with the last column, its width is set to fill the remaining width
+      //  of the list-view control."
+      TListView_ResizeColumn(_lv.Columns[cnt - 1], [lvrCaptions]);
+    end;
   finally
     _lv.Items.EndUpdate;
   end;
