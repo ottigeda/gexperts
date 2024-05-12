@@ -288,7 +288,7 @@ end;
 {$ELSE}
 
   procedure HandleBitmap(_il: TImageList; var _bmp: TBitmap; _ActionName: string);
-var
+  var
     BitmapName: string;
   begin
     if Assigned(_bmp) then begin
