@@ -5,7 +5,7 @@ unit GX_MenusForEditorExpert;
 interface
 
 uses
-  Menus, ActnList, GX_Experts;
+  Menus, ActnList, Actions, GX_Experts;
 
 type
   TMenusForEditorExperts = class(TGX_Expert)
