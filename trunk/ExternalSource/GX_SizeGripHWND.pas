@@ -40,6 +40,8 @@
 
 unit GX_SizeGripHWND;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -69,12 +71,12 @@ type
     GripRect   : TRect;
   end;
 
-function GET_X_LPARAM(lParam: LPARAM): Integer; inline;
+function GET_X_LPARAM(lParam: LPARAM): Integer;{$IFDEF GX_SupportsInline}inline;{$ENDIF}
 begin
   Result := Smallint(LoWord(DWord(lParam)));
 end;
 
-function GET_Y_LPARAM(lParam: LPARAM): Integer; inline;
+function GET_Y_LPARAM(lParam: LPARAM): Integer;{$IFDEF GX_SupportsInline}inline;{$ENDIF}
 begin
   Result := Smallint(HiWord(DWord(lParam)));
 end;
