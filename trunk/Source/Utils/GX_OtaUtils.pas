@@ -2289,6 +2289,8 @@ function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; Byt
         CursorPosition := EditView.CharPosToPos(CharPos);
         CursorPosition := UTF8CharPosToByteIndex(Result, CursorPosition, ChPos);
       end;
+{$ELSE}
+      CursorPosition := EditView.CharPosToPos(CharPos);
 {$ENDIF}
     end;
   end;
