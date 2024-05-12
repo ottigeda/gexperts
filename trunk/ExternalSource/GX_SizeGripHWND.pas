@@ -52,6 +52,8 @@ procedure GxSetWindowSizeGrip(hWnd: HWND; Enable: Boolean);
 
 implementation
 
+{$IFDEF GX_DELPHI7_UP}
+
 uses
   Messages,
   UxTheme,
@@ -269,5 +271,11 @@ begin
           InvalidateRect(hWnd, @GripRect, true);
       end;
 end;
+{$ELSE}
+procedure GxSetWindowSizeGrip(hWnd: HWND; Enable: Boolean);
+begin
+  // not supported for Delphi 6
+end;
+{$ENDIF}
 
 end.
