@@ -10,9 +10,6 @@ uses
   GX_SharedImages, GX_EnhancedEditor, GX_ProcedureListOptions, GX_FileScanner,
   GX_EditReader, GX_BaseForm;
 
-const
-  UM_RESIZECOLS = WM_USER + 523;
-
 type
   TfmProcedureList = class(TfmBaseForm)
     pnlFuncHolder: TPanel;
@@ -58,6 +55,7 @@ type
     actMatchMethod: TAction;
     p_AllButStatusBar: TPanel;
     actViewShowCode: TAction;
+    tim_Resize: TTimer;
     procedure actMatchMethodExecute(Sender: TObject);
     procedure actMatchClassExecute(Sender: TObject);
     procedure tmrFilterTimer(Sender: TObject);
@@ -81,7 +79,8 @@ type
     procedure actOptionsExecute(Sender: TObject);
     procedure lvProcsCompare(Sender: TObject; Item1, Item2: TListItem; Data: Integer; var Compare: Integer);
     procedure splSeparatorCanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
-    procedure lvProcsResize(Sender: TObject);
+    procedure tim_ResizeTimer(Sender: TObject);
+    procedure pnHolderResize(Sender: TObject);
   private
     FFileScanner: TFileScanner;
     FEditReader: TEditReader;
@@ -99,7 +98,6 @@ type
     procedure FillListBox;
     procedure ResizeCols;
     procedure GotoCurrentlySelectedProcedure;
-    procedure UMResizeCols(var Msg: TMessage); message UM_RESIZECOLS;
     procedure ClearObjectStrings;
     procedure LoadObjectCombobox;
     procedure CreateControls;
@@ -174,9 +172,9 @@ begin
 
   CreateControls;
 
-  InitDpiScaler;
-
   InitializeForm;
+
+  InitDpiScaler;
 
   LoadTime := GetTickCount;
   LoadTime := GetTickCount - LoadTime;
@@ -353,6 +351,7 @@ end;
 
 procedure TfmProcedureList.FormResize(Sender: TObject);
 var
+  MinWidth: Integer;
   w: Integer;
 begin
   case splSeparator.Align of
@@ -375,9 +374,12 @@ begin
   end;
 
   w := StatusBar.Width;
-  if w > 80 then begin
-    StatusBar.Panels[1].Width := 80;
-    StatusBar.Panels[0].Width := w - 80;
+  MinWidth := 80;
+  if Assigned(FScaler) then
+    FScaler.Calc(MinWidth);
+  if w > MinWidth then begin
+    StatusBar.Panels[1].Width := MinWidth;
+    StatusBar.Panels[0].Width := w - MinWidth;
   end;
 end;
 
@@ -385,19 +387,14 @@ end;
 // before playing with the column widths. We should fix this somehow.
 procedure TfmProcedureList.ResizeCols;
 begin
-  PostMessage(Self.Handle, UM_RESIZECOLS, 0, 0);
+  TTimer_Restart(tim_Resize);
 end;
 
-procedure TfmProcedureList.UMResizeCols(var Msg: TMessage);
+procedure TfmProcedureList.tim_ResizeTimer(Sender: TObject);
 begin
-  Application.ProcessMessages;
-  // this might be the "correct" way to resize the list, but it flickers a lot:
-  //  TListView_Resize(lvProcs);
-  // One reason for this is that this method is called very often, e.g. about 5 times
-  // already when the dialog is opened.
-  // So until we find a way to prevent this, we keep the following code:
-  lvProcs.Columns[1].Width := Max(80, lvProcs.ClientWidth - lvProcs.Columns[2].Width
-    - lvProcs.Columns[3].Width - lvProcs.Columns[0].Width);
+  tim_Resize.Enabled := False;
+
+    TListView_Resize(lvProcs);
 end;
 
 procedure TfmProcedureList.SaveSettings;
@@ -405,7 +402,7 @@ begin
   // Things that might have changed on the procedure list dialog box
   FOptions.BoundsRect := BoundsRect;
   FOptions.CodeViewWidthRelative := (10000 * pnlFunctionBody.Width) div Self.ClientWidth;
-  FOptions.CodeViewHeightRelative := (10000 * pnlFunctionBody.Height) div Self.clientHeight;
+  FOptions.CodeViewHeightRelative := (10000 * pnlFunctionBody.Height) div Self.ClientHeight;
   FOptions.DialogFont.Assign(lvProcs.Font);
   FOptions.SaveSettings(TProcedureListExpert.GetSettings);
 end;
@@ -439,14 +436,13 @@ end;
 
 procedure TfmProcedureList.edtMethodsChange(Sender: TObject);
 begin
-  tmrFilter.Enabled := False;
-  tmrFilter.Enabled := True; //FI:W508 - stop and restart timer on key press
+  TTimer_Restart(tmrFilter);
 end;
 
 procedure TfmProcedureList.tmrFilterTimer(Sender: TObject);
 begin
-  FillListBox;
   tmrFilter.Enabled := False;
+  FillListBox;
 end;
 
 procedure TfmProcedureList.edtMethodsKeyPress(Sender: TObject; var Key: Char);
@@ -480,7 +476,6 @@ end;
 procedure TfmProcedureList.cbxObjectsChange(Sender: TObject);
 begin
   FillListBox;
-  ResizeCols;
 end;
 
 procedure TfmProcedureList.pnlHeaderResize(Sender: TObject);
@@ -935,7 +930,7 @@ begin
   Compare := AnsiCompareText(Item1Value, Item2Value);
 end;
 
-procedure TfmProcedureList.lvProcsResize(Sender: TObject);
+procedure TfmProcedureList.pnHolderResize(Sender: TObject);
 begin
   ResizeCols;
 end;
