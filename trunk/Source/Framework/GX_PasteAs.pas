@@ -17,18 +17,17 @@ type
     FAddExtraSpaceAtTheEnd: Boolean;
     FShowOptions: Boolean;
     function DetermineIndent(ALines: TStrings): Integer;
-  protected
   public
     constructor Create;
     procedure LoadSettings(_Settings: IExpertSettings);
     procedure SaveSettings(_Settings: iExpertSettings);
     procedure ConvertToCode(ALines: TStrings; AOnlyUpdateLines: Boolean);
     procedure ExtractRawStrings(ALines: TStrings; ADoAddBaseIndent: Boolean);
-    function  ExecuteConfig(AConfigExpert: TEditorExpert; _Owner: TWinControl; ForceShow: Boolean): Boolean;
+    function  ExecuteConfig(_ConfigExpert: TEditorExpert; _Owner: TWinControl; _ForceShow: Boolean): Boolean;
     class procedure GetTypeText(AList: TStrings);
-    property CreateQuotedString: Boolean read FCreateQuotedString write FCreateQuotedString default True;
-    property PasteAsType: TPasteAsType read FPasteAsType write FPasteAsType default paStringArray;
-    property AddExtraSpaceAtTheEnd: Boolean read FAddExtraSpaceAtTheEnd write FAddExtraSpaceAtTheEnd default True;
+    property CreateQuotedString: Boolean read FCreateQuotedString write FCreateQuotedString;
+    property PasteAsType: TPasteAsType read FPasteAsType write FPasteAsType;
+    property AddExtraSpaceAtTheEnd: Boolean read FAddExtraSpaceAtTheEnd write FAddExtraSpaceAtTheEnd;
     property ShowOptions: Boolean read FShowOptions write FShowOptions;
   end;
 
@@ -188,37 +187,17 @@ begin
   end;
 end;
 
-function TPasteAsHandler.ExecuteConfig(AConfigExpert: TEditorExpert; _Owner: TWinControl; ForceShow: Boolean): Boolean;
-var
-  frm: TfmPasteAsConfig;
+function TPasteAsHandler.ExecuteConfig(_ConfigExpert: TEditorExpert; _Owner: TWinControl; _ForceShow: Boolean): Boolean;
 begin
   Result := True;
-  if not FShowOptions and not ForceShow then
+  if not FShowOptions and not _ForceShow then
     Exit; //==>
 
-  frm := TfmPasteAsConfig.Create(_Owner);
-  try
-    TForm_CenterOn(frm, _Owner);
-    GetTypeText(frm.cbPasteAsType.Items);
-    frm.cbPasteAsType.ItemIndex := Integer(PasteAsType);
-    frm.chkCreateQuotedStrings.Checked := CreateQuotedString;
-    frm.chkAddExtraSpaceAtTheEnd.Checked := AddExtraSpaceAtTheEnd;
-    frm.chkShowOptions.Checked := ShowOptions;
-
-    Result := frm.ShowModal = mrOk;
-    if Result then
-    begin
-      PasteAsType := TPasteAsType(frm.cbPasteAsType.ItemIndex);
-      CreateQuotedString := frm.chkCreateQuotedStrings.Checked;
-      AddExtraSpaceAtTheEnd := frm.chkAddExtraSpaceAtTheEnd.Checked;
-      ShowOptions := frm.chkShowOptions.Checked;
-
-      if Assigned(AConfigExpert) then
-        AConfigExpert.SaveSettings;
-    end;
-  finally
-    FreeAndNil(frm);
-  end;
+  Result := TfmPasteAsConfig.Execute(_Owner,
+    FPasteAsType, FCreateQuotedString, FAddExtraSpaceAtTheEnd, FShowOptions);
+  if Result then
+    if Assigned(_ConfigExpert) then
+      _ConfigExpert.SaveSettings;
 end;
 
 initialization
