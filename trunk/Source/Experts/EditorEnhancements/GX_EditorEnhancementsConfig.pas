@@ -85,10 +85,13 @@ begin
   FToolbarActions := TStringList.Create;
 
   gbxEditorTabs.Visible := RunningDelphi7OrLess;
+
 {$IFNDEF GX_VER300_up} // RAD Studio 10 Seattle (24; BDS 17)
+  // the navigation toolbar was introduced in Delphi 10.0
   chkHideNavbar.Visible := False;
 {$ENDIF}
-{$IFDEF GX_VER320_up} // RAD Studio 10.2 Tokyo (26; BDS 19)
+{$IFDEF GX_VER310_up} // RAD Studio 10.1 Berlin (25; BDS 18)
+  // From Delphi 10.1 on, it was pssible to hide it under Tools -> Options
   chkHideNavbar.Visible := False;
   lblHideNavBar.Visible := True;
 {$ENDIF}

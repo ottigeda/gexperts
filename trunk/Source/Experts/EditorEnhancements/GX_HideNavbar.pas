@@ -11,15 +11,6 @@ Integrated into GExperts by Thomas Mueller (http://blog.dummzeuch.de)
 
 {$I GX_CondDefine.inc}
 
-{$UNDEF GX_HIDE_NAVBAR_NECESSARY}
-{$IFDEF GX_VER300_up} // RAD Studio 10 Seattle (24; BDS 17)
-// The navigation toolbar exists only in Delphi 10 and later
-{$IFNDEF GX_VER310_up} // RAD Studio 10.1 Berlin (25; BDS 18)
-// In 10.1 it can be turned off in Tools->Options->Editor Options->Display
-{$DEFINE GX_HIDE_NAVBAR_NECESSARY}
-{$ENDIF}
-{$ENDIF}
-
 interface
 
 uses

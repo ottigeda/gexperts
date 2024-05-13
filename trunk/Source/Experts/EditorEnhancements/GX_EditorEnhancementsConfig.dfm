@@ -2,6 +2,8 @@ inherited fmEditorEnhancementsConfig: TfmEditorEnhancementsConfig
   Caption = 'Code Editor Enhancements Configuration'
   ClientHeight = 370
   ClientWidth = 649
+  ExplicitWidth = 665
+  ExplicitHeight = 409
   PixelsPerInch = 96
   TextHeight = 13
   object lblHideNavBar: TLabel
@@ -12,8 +14,8 @@ inherited fmEditorEnhancementsConfig: TfmEditorEnhancementsConfig
     Anchors = [akLeft, akTop, akRight]
     AutoSize = False
     Caption = 
-      'You can hide the navigation bar in the Tools -> Options dialog'#13#10 +
-      'See Editor Options -> Display -> Show Navigation Toolbar'
+      'You can hide the Navigation Toolbar in the Tools -> Options dial' +
+      'og'#13#10'See Editor Options -> Display -> Show Navigation Toolbar'
     Visible = False
     WordWrap = True
   end
@@ -114,7 +116,7 @@ inherited fmEditorEnhancementsConfig: TfmEditorEnhancementsConfig
     Width = 384
     Height = 24
     Anchors = [akLeft, akTop, akRight]
-    Caption = 'Hide Navigation Bar (Delphi 10 and 10.1)'
+    Caption = 'Hide Navigation Toolbar (Delphi 10 only)'
     TabOrder = 2
   end
   object b_OK: TButton

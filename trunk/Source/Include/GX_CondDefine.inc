@@ -192,6 +192,7 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 {$IFDEF GX_DELPHI10_UP}
 {$IFNDEF GX_DELPHI10_1_UP}
 {$DEFINE GX_TWMDPI_HAS_SCALLEDRECT_TYPO}
+{$DEFINE GX_HIDE_NAVBAR_NECESSARY}
 {$ENDIF GX_DELPHI10_1_UP}
 {$ENDIF GX_DELPHI10_UP}
 
