@@ -371,8 +371,6 @@ resourcestring
     Result.Anchors := [akLeft, akTop, akRight, akBottom];
 {$ENDIF}
     Result.ColCount := 2;
-    Result.DefaultColWidth := FScaler.Calc(150);
-    Result.DefaultRowHeight := FScaler.Calc(DEFAULT_GRID_ROWHEIGHT);
     Result.FixedCols := 0;
     Result.RowCount := 2;
     Result.Options := [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goEditing, goTabs, goAlwaysShowEditor, goThumbTracking];
@@ -394,8 +392,6 @@ begin
 
   TPanel_BevelNone([pnlRules, pnlRight, pnlIncSearch, pnlNames]);
 
-  InitDpiScaler;
-
   FGridVcl := CreateGrid(ts_NamesVcl, 'GridVcl');
   FGridFmx := CreateGrid(ts_NamesFmx, 'GridFmx');
 
@@ -403,6 +399,13 @@ begin
   btnClear.Left := pnlIncSearch.Width - btnClear.Width - GridPad;
   edtFind.Left := GridPad + l_Find.Width + 8;
   edtFind.Width := btnClear.Left - edtFind.Left;
+
+  InitDpiScaler;
+
+  FGridVcl.DefaultColWidth := FScaler.Calc(150);
+  FGridVcl.DefaultRowHeight := FScaler.Calc(DEFAULT_GRID_ROWHEIGHT);
+  FGridFmx.DefaultColWidth := FScaler.Calc(150);
+  FGridFmx.DefaultRowHeight := FScaler.Calc(DEFAULT_GRID_ROWHEIGHT);
 
   FValueListVcl := TStringList.Create;
   FValueListFmx := TStringList.Create;
