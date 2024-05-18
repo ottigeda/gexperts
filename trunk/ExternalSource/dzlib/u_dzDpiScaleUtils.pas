@@ -401,9 +401,9 @@ procedure TFormDpiScaler.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   Scaler: TDpiScaler;
 //  RedrawLock: IInterface;
-  ClientRect: TRect;
-  NewWidth: Integer;
-  NewHeight: Integer;
+//  ClientRect: TRect;
+//  NewWidth: Integer;
+//  NewHeight: Integer;
   FormActiveControl: TWinControl;
 begin
   if not Assigned(FFrm) then
@@ -436,11 +436,14 @@ begin
     if Assigned(_NewBounds) then begin
       FFrm.BoundsRect := _NewBounds^;
     end else begin
-      ClientRect := FFrm.ClientRect;
-      NewWidth := Scaler.Calc(FClientWidth);
-      NewHeight := Scaler.Calc(FClientHeight);
-      FFrm.ClientWidth := NewWidth;
-      FFrm.ClientHeight := NewHeight;
+      // the following broke saving the dialog sizes
+      // I have disabled the code for now. We'll see whether this has any adverse effects
+      // -- 2024-05-18 twm
+//      ClientRect := FFrm.ClientRect;
+//      NewWidth := Scaler.Calc(FClientWidth);
+//      NewHeight := Scaler.Calc(FClientHeight);
+//      FFrm.ClientWidth := NewWidth;
+//      FFrm.ClientHeight := NewHeight;
     end;
     LogForm('  FFrm(after)', FFrm);
 
