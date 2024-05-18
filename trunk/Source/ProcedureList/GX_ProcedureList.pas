@@ -393,8 +393,7 @@ end;
 procedure TfmProcedureList.tim_ResizeTimer(Sender: TObject);
 begin
   tim_Resize.Enabled := False;
-
-    TListView_Resize(lvProcs);
+  TListView_Resize(lvProcs);
 end;
 
 procedure TfmProcedureList.SaveSettings;
