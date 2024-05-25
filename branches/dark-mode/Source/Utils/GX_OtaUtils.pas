@@ -842,9 +842,10 @@ var
   UnitInfo: TUnitInfo;
 begin
   Assert(Assigned(List));
-  Assert(Assigned(_Project));
 
   TList_ClearAndFreeAllItems(List);
+  if not Assigned(_Project) then
+    Exit; //==>
 
   for i := 0 to _Project.GetModuleCount - 1 do
   begin
@@ -2255,8 +2256,8 @@ function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; Byt
     CharPos: TOTACharPos;
 {$IFDEF GX_DELPHI8_UP}
     IdeString: UTF8String;
-{$ENDIF}
     ChPos: Integer;
+{$ENDIF}
   begin
     Result := '';
     CursorPosition := 0;
@@ -2288,6 +2289,8 @@ function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; Byt
         CursorPosition := EditView.CharPosToPos(CharPos);
         CursorPosition := UTF8CharPosToByteIndex(Result, CursorPosition, ChPos);
       end;
+{$ELSE}
+      CursorPosition := EditView.CharPosToPos(CharPos);
 {$ENDIF}
     end;
   end;
@@ -3204,18 +3207,39 @@ var
   i: Integer;
   PathItem: string;
   PathProcessor: TPathProcessor;
+  Output: TStringList;
+  Temp: TStringList;
 begin
+  Output := nil;
+  Temp := nil;
   PathProcessor := TPathProcessor.Create(Prefix);
   try
+    Output := TStringList.Create();
+    Temp := TStringList.Create();
+    Temp.Delimiter := ';';
+{$IFDEF GX_HAS_STRICT_DELIMITER}
+    Temp.StrictDelimiter := True;
+{$ENDIF GX_HAS_STRICT_DELIMITER}
     // todo: What about ConfigName?
     PathProcessor.PlatformName := PlatformName;
     for i := 0 to Paths.Count - 1 do begin
       PathItem := Paths[i];
       PathItem := PathProcessor.Process(PathItem);
-      Paths[i] := PathItem;
+
+      // check if this item contains multiple paths seperated by ; (could come from environment variable)
+      if Pos(';', PathItem) = 0 then
+        Output.Add(PathItem)
+      else begin
+        Temp.DelimitedText := PathItem;
+        Output.AddStrings(Temp);
+      end;
     end;
+
+    Paths.Assign(Output);
   finally
     FreeAndNil(PathProcessor);
+    FreeAndNil(Output);
+    FreeAndNil(Temp);
   end;
 end;
 

@@ -634,8 +634,19 @@ type
     ///                      If ehReturnFalse, it will not raise an exception
     ///                      but just return false if copying the file fails.
     /// @returns true, if the directory was created
-    /// @raises EOSError if there was an error and RaiseException was true </summary>
+    /// @raises EOSError if there was an error and ErrorHandling was ehRaiseException </summary>
     class function ForceDir(const _DirectoryPath: string;
+      _ErrorHandling: TErrorHandlingEnum = ehRaiseException): Boolean;
+    ///<summary>
+    /// Creates the directory for storing the given filename
+    /// @param _FullFilename is the full name of the file to save
+    /// @param ErrorHandling is a TErrorHandlingEnum which controls whether the function retrieves
+    ///                      the Windows error and raises an exception if it fails.
+    ///                      If ehReturnFalse, it will not raise an exception
+    ///                      but just return false if copying the file fails.
+    /// @returns true, if the directory was created
+    /// @raises EOSError if there was an error and ErrorHandling was ehRaiseException </summary>
+    class function ForceDirFor(const _FullFilename: string;
       _ErrorHandling: TErrorHandlingEnum = ehRaiseException): Boolean;
 
     ///<summary> See also CopyMatchingFiles </summary>
@@ -745,6 +756,7 @@ type
     /// tries to find a matching file
     /// @param Mask is the filename mask to match
     /// @param Filename is the name of the file which has been found, only valid if result <> mfNotFound
+    ///                 @NOTE: The Filename does not contain the path!
     /// @returns mfNotFound, if no file was found, or mfDirectory, mfFile or mfSpecial
     ///          describing the type of the file which has been found.
     /// @NOTE: If there are multiple matches, the file name returned is not deterministic.
@@ -760,10 +772,13 @@ type
     class function FileExists(const _Filename: string): Boolean; overload;
     class function FileExists(const _Filename: string; _RaiseException: Boolean): Boolean; overload; deprecated; // use AssertFileExists instead
     ///<summary>
-    /// Checks if the given file exists. Note that wildcards are not supported! If you
-    /// need wildcards, use AssertMatchingFileExists.
-    /// @raises EFileNotFound if the file does not exist. </summary>
+    /// Checks if the given file exists.
+    /// @raises EFileNotFound if the file does not exist.
+    /// @NOTE: Wildcards are not supported. If you need wildcards, use AssertMatchingFileExists. </summary>
     class procedure AssertFileExists(const _Filename: string);
+    ///<summary>
+    /// Checks if a file matching the given mask exists.
+    /// @raises EFileNotFound if such a file file does not exist. </summary>
     class procedure AssertMatchingFileExists(const _Mask: string);
 
     ///<summary>
@@ -1256,7 +1271,7 @@ function etpd(const _DirName: string): string;
 /// if Rewrite fails, File is zeroed
 /// @raise exception, if  rewrite fails </summary>
 procedure TextFile_AssignAndRewrite(var _File: TextFile; const _Filename: string);
-function TextFile_IsOpen(const _File: TextFile): Boolean;
+function TextFile_IsOpen(var _File: TextFile): Boolean;
 procedure TextFile_Close(var _File: TextFile);
 
 implementation
@@ -1966,6 +1981,15 @@ begin
     RaiseLastOSErrorEx(LastError, Format(_('Error %%1:s (%%0:d) while trying to move "%s" to "%s".'), [_Source, _Dest]));
   end;
 end;
+
+{$if not declared(MOVEFILE_WRITE_THROUGH)}
+const
+  MOVEFILE_WRITE_THROUGH          = $00000008;
+{$ifend}
+{$if not declared(MOVEFILE_FAIL_IF_NOT_TRACKABLE)}
+const
+  MOVEFILE_FAIL_IF_NOT_TRACKABLE  = $00000020;
+{$ifend}
 
 class function TFileSystem.MoveFileEx(const _Source, _Dest: string; _Flags: TMoveFileExFlagSet;
   _ErrorHandling: TErrorHandlingEnum = ehRaiseException): Boolean;
@@ -2712,6 +2736,15 @@ begin
   end;
 end;
 
+class function TFileSystem.ForceDirFor(const _FullFilename: string;
+  _ErrorHandling: TErrorHandlingEnum): Boolean;
+var
+  dir: string;
+begin
+  dir := ExtractFileDir(_FullFilename);
+  Result := ForceDir(dir, _ErrorHandling);
+end;
+
 class function TFileSystem.RemoveDir(const _DirName: string; _RaiseException: Boolean = True; _Force: Boolean = False): Boolean;
 var
   Attr: Integer;
@@ -3395,7 +3428,7 @@ begin
   end;
 end;
 
-function TextFile_IsOpen(const _File: TextFile): Boolean;
+function TextFile_IsOpen(var _File: TextFile): Boolean;
 begin
   Result := (TTextRec(_File).Mode <> 0);
 end;

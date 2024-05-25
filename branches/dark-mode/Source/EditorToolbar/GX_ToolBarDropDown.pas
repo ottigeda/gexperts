@@ -686,23 +686,23 @@ begin
 
   LoadActionBitmaps;
 
-  IUnitDropDownAction := GxActionBroker.RequestAction('GxUnitDropDown', FUnitDropDownActionBitmap);
+  IUnitDropDownAction := GxActionBroker.RequestAction('UnitDropDown', FUnitDropDownActionBitmap);
   IUnitDropDownAction.Caption := SGxUnitDropDown;
   IUnitDropDownAction.OnExecute := CreateUnitDropDownMenu;
 
-  IFormDropDownAction := GxActionBroker.RequestAction('GxFormDropDown', FFormDropDownActionBitmap);
+  IFormDropDownAction := GxActionBroker.RequestAction('FormDropDown', FFormDropDownActionBitmap);
   IFormDropDownAction.Caption := SGxFormDropDown;
   IFormDropDownAction.OnExecute := CreateFormDropDownMenu;
 
-  IComponentDropDownAction := GxActionBroker.RequestAction('GxComponentDropDown', FComponentDropDownActionBitmap);
+  IComponentDropDownAction := GxActionBroker.RequestAction('ComponentDropDown', FComponentDropDownActionBitmap);
   IComponentDropDownAction.Caption := SGxComponentDropDown;
   IComponentDropDownAction.OnExecute := CreateComponentDropDownMenu;
 
-  IUsesDropDownAction := GxActionBroker.RequestAction('GxUsesDropDown', FUsesDropDownActionBitmap);
+  IUsesDropDownAction := GxActionBroker.RequestAction('UsesDropDown', FUsesDropDownActionBitmap);
   IUsesDropDownAction.Caption := SGxUsesDropDown;
   IUsesDropDownAction.OnExecute := CreateUsesDropDownMenu;
 
-  IPositionDropDownAction := GxActionBroker.RequestAction('GxPositionDropDown', FPositionDropDownActionBitmap);
+  IPositionDropDownAction := GxActionBroker.RequestAction('PositionDropDown', FPositionDropDownActionBitmap);
   IPositionDropDownAction.Caption := SGxPositionDropDown;
   IPositionDropDownAction.OnExecute := CreatePositionDropDownMenu;
 end;

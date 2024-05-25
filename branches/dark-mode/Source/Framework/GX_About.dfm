@@ -38,7 +38,7 @@ object fmAbout: TfmAbout
     Left = 368
     Top = 72
     Width = 147
-    Height = 14
+    Height = 20
     Alignment = taCenter
     Caption = 'http://www.gexperts.org/'
   end
@@ -46,7 +46,7 @@ object fmAbout: TfmAbout
     Left = 275
     Top = 91
     Width = 84
-    Height = 14
+    Height = 20
     Alignment = taRightJustify
     Caption = 'Project Leader:'
   end
@@ -54,7 +54,7 @@ object fmAbout: TfmAbout
     Left = 255
     Top = 112
     Width = 104
-    Height = 14
+    Height = 20
     Alignment = taRightJustify
     Caption = 'Major Contributors:'
   end
@@ -62,7 +62,7 @@ object fmAbout: TfmAbout
     Left = 368
     Top = 91
     Width = 85
-    Height = 14
+    Height = 20
     Cursor = crHandPoint
     Caption = 'Thomas Mueller'
     OnClick = btnEmailClick
@@ -71,7 +71,7 @@ object fmAbout: TfmAbout
     Left = 304
     Top = 72
     Width = 55
-    Height = 14
+    Height = 20
     Alignment = taRightJustify
     Caption = 'Web Site:'
   end
@@ -79,7 +79,7 @@ object fmAbout: TfmAbout
     Left = 241
     Top = 19
     Width = 101
-    Height = 19
+    Height = 20
     Alignment = taCenter
     AutoSize = False
     Caption = 'Pre-Release'
@@ -89,7 +89,7 @@ object fmAbout: TfmAbout
     Left = 489
     Top = 19
     Width = 101
-    Height = 19
+    Height = 20
     Alignment = taCenter
     AutoSize = False
     Caption = 'Pre-Release'
@@ -99,7 +99,7 @@ object fmAbout: TfmAbout
     Left = 224
     Top = 241
     Width = 241
-    Height = 39
+    Height = 40
     Alignment = taCenter
     BorderStyle = bsNone
     Color = clBtnFace

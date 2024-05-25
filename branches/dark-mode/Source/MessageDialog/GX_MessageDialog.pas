@@ -403,6 +403,8 @@ begin
   else
     chkGNUGettext.Caption := 'Add GetText(...) for &GNU Gettext';
 
+  InitDpiScaler;
+
   // Destroyed with form
   FEditor := TSynEdit.Create(Self);
   FEditor.Lines.Clear;
@@ -416,8 +418,6 @@ begin
   FEditor.RightEdge := 0;
   GxOtaGetEditorFont(FEditor.Font);
   SetSynEditHighlighter(FEditor, GetGXHighlighterForCurrentSourceEditor);
-
-  InitDpiScaler;
 
   UpdatePreview;
 end;

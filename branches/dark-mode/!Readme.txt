@@ -32,8 +32,10 @@ Alternatively you can call "__build.cmd" in the root of the source tree followed
     XE8
     Xx10Seattle
     Xx101Berlin
-	Xx102
-	Xx103
+    Xx102Tokyo
+    Xx103Sydney
+    Xx110Alexandria
+    Xx120
 
 To build GExperts for all supported Delphi versions, call
 "__build.cmd" in the root of the source tree.

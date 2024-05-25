@@ -1,7 +1,7 @@
 inherited fmeSortConfig: TfmeSortConfig
   ActiveControl = chkIgnoreFunction
   BorderStyle = bsDialog
-  Caption = 'Sort Selected Lines Expert'
+  Caption = 'Sort Selected Lines'
   ClientHeight = 233
   ClientWidth = 241
   Position = poDesigned

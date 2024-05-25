@@ -273,7 +273,11 @@ $(PreBuildEvent)]]>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_EditorChangeServices.pas"/>
-        <DCCReference Include="..\..\source\Framework\GX_EditorEnhancements.pas"/>
+        <DCCReference Include="..\..\source\experts\editorenhancements\GX_EditorEnhancements.pas"/>
+        <DCCReference Include="..\..\Source\Experts\EditorEnhancements\GX_EditorEnhancementsConfig.pas">
+            <Form>fmEditorEnhancementsConfig</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_EditorExpert.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_EditorExpertManager.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditorFormServices.pas"/>
@@ -434,7 +438,7 @@ $(PreBuildEvent)]]>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_GxUtils.pas"/>
-        <DCCReference Include="..\..\source\HideNavigationToolbar\GX_HideNavbar.pas"/>
+        <DCCReference Include="..\..\source\Experts\EditorEnhancements\GX_HideNavbar.pas"/>
         <DCCReference Include="..\..\source\HideNonvisualComponents\GX_HideNonVisualComps.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_IconMessageBox.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeApplicationSettingsEnhancer.pas"/>
@@ -550,10 +554,7 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_OtaUtils.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_PasteAs.pas"/>
-        <DCCReference Include="..\..\source\PeInfo\GX_PeInformation.pas">
-            <Form>fmPeInformation</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
+        <DCCReference Include="..\..\source\PeInfo\GX_PeInformation.pas"/>
         <DCCReference Include="..\..\Source\Legacy\GX_PerfectLayout.pas">
             <Form>fmPerfectLayout</Form>
             <FormType>dfm</FormType>

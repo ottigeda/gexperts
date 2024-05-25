@@ -122,7 +122,7 @@ begin
   end;
 end;
 
-procedure TStringArray_Delete(var _arr: TStringArray; _Index: Integer; _Count: Integer); overload;
+procedure TStringArray_Delete(var _arr: TStringArray; _Index: Integer; _Count: Integer);
 var
   len: Integer;
   i: Integer;

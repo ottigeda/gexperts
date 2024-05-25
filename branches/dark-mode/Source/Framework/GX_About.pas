@@ -34,6 +34,7 @@ type
     procedure btnEmailClick(Sender: TObject);
     procedure tim_ScrollTimer(Sender: TObject);
   private
+    procedure InitFonts;
     procedure InitVersionInfoControls;
   protected
     class function GetVersionStr: string; virtual;
@@ -67,6 +68,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Graphics, ToolsApi, Messages,
+  GX_GxUtils,
   GX_GenericUtils, GX_FeedbackWizard, GX_LibrarySource, u_dzVclUtils;
 
 const
@@ -88,18 +90,7 @@ end;
 constructor TfmAbout.Create(AOwner: TComponent);
 begin
   inherited;
-  SetFontBold(lblContributors);
-  SetFontBold(lblProjectLeader);
-  SetFontBold(lblWebSite);
-  SetFontBold(lblVersion);
-  SetFontBold(lblGExperts);
-  SetFontColor(lblPreRelease1, clRed);
-  SetFontColor(lblPreRelease2, clRed);
-  SetFontSize(lblGExperts, +4);
-  SetFontSize(lblVersion, +4);
-  SetFontUnderline(lblErik);
-  SetFontColor(lblErik, clBlue);
-  SetFontColor(mmoBuildDetails, clRed);
+  GxSetDefaultFont(Self);
 
   TLabel_MakeUrlLabel(lblWebPage);
 
@@ -127,6 +118,23 @@ begin
   end;
 
   InitDpiScaler;
+  InitFonts;
+end;
+
+procedure TfmAbout.InitFonts;
+begin
+  SetFontBold(lblContributors);
+  SetFontBold(lblProjectLeader);
+  SetFontBold(lblWebSite);
+  SetFontBold(lblVersion);
+  SetFontBold(lblGExperts);
+  SetFontColor(lblPreRelease1, clRed);
+  SetFontColor(lblPreRelease2, clRed);
+  SetFontSize(lblGExperts, +4);
+  SetFontSize(lblVersion, +4);
+  SetFontUnderline(lblErik);
+  SetFontColor(lblErik, clBlue);
+  SetFontColor(mmoBuildDetails, clRed);
 end;
 
 procedure TfmAbout.InitVersionInfoControls;

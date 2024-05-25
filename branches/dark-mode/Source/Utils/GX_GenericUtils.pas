@@ -24,6 +24,9 @@ const
   MaxSmallInt = 32767;
   MaxEditorCol = {$IFDEF GX_VER160_up} MaxSmallInt {$ELSE} 1023 {$ENDIF};
 
+const
+  DEFAULT_GRID_ROWHEIGHT = 18; // @96 dpi
+
 resourcestring
   SAllAlphaNumericChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
 
@@ -2554,39 +2557,56 @@ type
   TControlCracker = class(TControl);
 
 function SetDefaultFont(Control: TControl): string;
+var
+  ctrl: TControlCracker absolute Control;
+  FontSize: Integer;
 begin
   Result := '';
-  if Assigned(Control) then begin
-    if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 5) then
-      TControlCracker(Control).Font.Name := 'MS Shell Dlg 2'
-    else
-      TControlCracker(Control).Font.Name := 'MS Shell Dlg';
-    Result := TControlCracker(Control).Font.Name;
-    if IsWindowsVistaOrLater then // Vista and later default the UI to 9 point (not 8)
-      TControlCracker(Control).Font.Size := 9
-    else
-      TControlCracker(Control).Font.Size := 8;
+  if Assigned(ctrl) then begin
+    if IsWindowsVistaOrLater then begin
+      Result := 'Segoe UI';
+      // Vista and later default the UI to 9 point (not 8)
+      FontSize := 9;
+    end else begin
+      FontSize := 8;
+      if (Win32Platform = VER_PLATFORM_WIN32_NT) and (Win32MajorVersion >= 5) then
+        Result := 'MS Shell Dlg 2'
+      else
+        Result := 'MS Shell Dlg';
+    end;
+    ctrl.Font.Name := Result;
+    ctrl.Font.Size := FontSize;
+
+    Result := ctrl.Font.Name;
   end;
 end;
 
 procedure SetFontBold(Control: TControl);
+var
+  ctrl: TControlCracker absolute Control;
 begin
-  TControlCracker(Control).Font.Style := TControlCracker(Control).Font.Style + [fsBold];
+  ctrl.Font.Style := ctrl.Font.Style + [fsBold];
 end;
 
 procedure SetFontUnderline(Control: TControl);
+var
+  ctrl: TControlCracker absolute Control;
 begin
-  TControlCracker(Control).Font.Style := TControlCracker(Control).Font.Style + [fsUnderline];
+  ctrl.Font.Style := ctrl.Font.Style + [fsUnderline];
 end;
 
 procedure SetFontSize(Control: TControl; SizeChange: Integer);
+var
+  ctrl: TControlCracker absolute Control;
 begin
-  TControlCracker(Control).Font.Size := TControlCracker(Control).Font.Size + SizeChange;
+  ctrl.Font.Size := ctrl.Font.Size + SizeChange;
 end;
 
 procedure SetFontColor(Control: TControl; Color: TColor);
+var
+  ctrl: TControlCracker absolute Control;
 begin
-  TControlCracker(Control).Font.Color := Color;
+  ctrl.Font.Color := Color;
 end;
 
 function GetAverageCharWidth(Control: TControl): Integer;

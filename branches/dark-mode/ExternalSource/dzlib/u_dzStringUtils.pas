@@ -315,7 +315,7 @@ function CenterStr(const _s: string; _MaxLen: Integer): string;
 
 ///<summary>
 /// @returns the sub string starting from position Start </summary>
-{$IFDEF SUPPORTS_UNICODE_STRING}
+{$IFDEF SUPPORTS_UNICODE}
 function TailStr(const _s: AnsiString; _Start: Integer): AnsiString; overload;
 {$ENDIF}
 function TailStr(const _s: string; _Start: Integer): string; overload;
@@ -355,6 +355,9 @@ function ReplaceChars(const _s: string; _Search: TCharSet; const _Replace: strin
 /// If RemoveDuplicates is true, a sequence of control characters is replaced by a single ReplaceChar. </summary>
 function ReplaceCtrlChars(const _s: string; _ReplaceChar: Char; _RemoveDuplicates: Boolean = True): string; overload;
 {$IFDEF SUPPORTS_UNICODE}
+///<summary>
+/// Replaces all control characters (ord(c) < ord(' ')) with ReplaceChar.
+/// If RemoveDuplicates is true, a sequence of control characters is replaced by a single ReplaceChar. </summary>
 function ReplaceCtrlChars(const _s: AnsiString; _ReplaceChar: AnsiChar; _RemoveDuplicates: Boolean = True): AnsiString; overload;
 {$ENDIF SUPPORTS_UNICODE}
 
@@ -1286,8 +1289,7 @@ begin
     Result := Copy(_s, _Start, Length(_s) - _Start + 1);
 end;
 
-{$IFDEF SUPPORTS_UNICODE_STRING}
-
+{$IFDEF SUPPORTS_UNICODE}
 function TailStr(const _s: AnsiString; _Start: Integer): AnsiString; overload;
 begin
   if _Start > Length(_s) then

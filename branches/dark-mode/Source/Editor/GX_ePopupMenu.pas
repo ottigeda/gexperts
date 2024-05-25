@@ -368,7 +368,9 @@ var
   ExpName: string;
   Ex: TEditorExpert;
 begin
-  TListBox_GetSelectedObject(lb_EditorExperts, Pointer(Ex));
+  if not TListBox_GetSelectedObject(lb_EditorExperts, Pointer(Ex)) then
+    Exit; //==>
+
   ExpName := Ex.GetName;
   AddExpert('', ExpName, Ex);
 end;
@@ -378,7 +380,9 @@ var
   ExpName: string;
   Ex: TGX_Expert;
 begin
-  TListBox_GetSelectedObject(lb_Experts, Pointer(Ex));
+  if not TListBox_GetSelectedObject(lb_Experts, Pointer(Ex)) then
+    Exit; //==
+
   ExpName := Ex.GetName;
   AddExpert('', ExpName, Ex);
 end;

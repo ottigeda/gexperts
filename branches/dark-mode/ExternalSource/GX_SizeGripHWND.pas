@@ -40,6 +40,8 @@
 
 unit GX_SizeGripHWND;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -49,6 +51,8 @@ uses
 procedure GxSetWindowSizeGrip(hWnd: HWND; Enable: Boolean);
 
 implementation
+
+{$IFDEF GX_DELPHI7_UP}
 
 uses
   Messages,
@@ -69,12 +73,12 @@ type
     GripRect   : TRect;
   end;
 
-function GET_X_LPARAM(lParam: LPARAM): Integer; inline;
+function GET_X_LPARAM(lParam: LPARAM): Integer;{$IFDEF GX_SupportsInline}inline;{$ENDIF}
 begin
   Result := Smallint(LoWord(DWord(lParam)));
 end;
 
-function GET_Y_LPARAM(lParam: LPARAM): Integer; inline;
+function GET_Y_LPARAM(lParam: LPARAM): Integer;{$IFDEF GX_SupportsInline}inline;{$ENDIF}
 begin
   Result := Smallint(HiWord(DWord(lParam)));
 end;
@@ -267,5 +271,11 @@ begin
           InvalidateRect(hWnd, @GripRect, true);
       end;
 end;
+{$ELSE}
+procedure GxSetWindowSizeGrip(hWnd: HWND; Enable: Boolean);
+begin
+  // not supported for Delphi 6
+end;
+{$ENDIF}
 
 end.

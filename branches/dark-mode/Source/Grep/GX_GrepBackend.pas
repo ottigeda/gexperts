@@ -497,7 +497,8 @@ begin
   FSearchRoot := ExtractFilePath(ProjectGroup.FileName);
   Context := TGrepSearchContext.Create;
   try
-    GrepProjectFile(ProjectGroup.FileName, Context);
+    if FileExists(ProjectGroup.FileName) then
+      GrepProjectFile(ProjectGroup.FileName, Context);
   finally
     FreeAndNil(Context);
   end;

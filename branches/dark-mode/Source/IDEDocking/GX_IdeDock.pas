@@ -7,14 +7,12 @@ interface
 uses
   Windows,
   SysUtils, Classes, Forms, Controls,
-  MenuBar, Menus, Messages,
-{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+  MenuBar, Menus, Messages, AppEvnts,
   u_dzDpiScaleUtils,
-{$ELSE}
-  u_dzDpiScaleUtilsDummy,
-{$ENDIF}
+  u_dzVclUtils,
   // You must link to the DesignIde package to compile this unit
-  DockForm;
+  DockForm,
+  GX_HintWindow;
 
 type
 {$IFDEF GX_EnableIdeDockingSupport}
@@ -34,18 +32,21 @@ type
 {$ENDIF TrickTheIdeAncestorForm}
   protected
     FMenuBar: TMenuBar;
+    FApplicationEvents: TApplicationEvents;
+    FGxHintCustomDataRec: TGxHintCustomDataRec;
     FScaler: TFormDpiScaler;
-{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+    procedure HandleApplicationEventsShowHint(var HintStr: string; var CanShow: Boolean;
+      var HintInfo: THintInfo);
     procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); virtual;
     procedure ArrangeControls; virtual;
-{$ENDIF}
   protected
     procedure InitDpiScaler;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
+    procedure ScaleHint(_HintWindow: TGxHintWindow);
     {$IFDEF GX_EnableIdeDockingSupport}
     {$ENDIF GX_EnableIdeDockingSupport}
   end;
@@ -75,7 +76,6 @@ implementation
 
 uses
   DeskForm, DeskUtil,
-  u_dzVclUtils,
   GX_GenericClasses, GX_GxUtils;
 
 type
@@ -144,6 +144,13 @@ end;
 constructor TfmIdeDockForm.Create(AOwner: TComponent);
 begin
   inherited;
+
+  FApplicationEvents := TApplicationEvents.Create(Self);
+  FApplicationEvents.OnShowHint := HandleApplicationEventsShowHint;
+
+  FGxHintCustomDataRec.ScaleHint := Self.ScaleHint;
+  CopyMemory(@(FGxHintCustomDataRec.ID), @GxHintCustomDataId, SizeOf(FGxHintCustomDataRec.ID));
+
   GxSetDefaultFont(Self);
 
   {$IFDEF GX_EnableIdeDockingSupport}
@@ -176,11 +183,14 @@ begin
   inherited;
 end;
 
-{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmIdeDockForm.WMDpiChanged(var _Msg: TWMDpi);
 begin
   inherited;
+{$IFDEF GX_TWMDPI_HAS_SCALLEDRECT_TYPO}
+  ApplyDpi(_Msg.YDpi, _Msg.ScalledRect);
+{$ELSE}
   ApplyDpi(_Msg.YDpi, _Msg.ScaledRect);
+{$ENDIF}
   _Msg.Result := 0;
 end;
 
@@ -189,32 +199,41 @@ begin
   if Assigned(FScaler) then
     FScaler.ApplyDpi(_NewDpi, _NewBounds);
   ArrangeControls;
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+  FCurrentPPI := _NewDpi;
+{$ENDIF}
 end;
 
 procedure TfmIdeDockForm.ArrangeControls;
 begin
   // do nothing
 end;
-{$ENDIF}
+
+procedure TfmIdeDockForm.ScaleHint(_HintWindow: TGxHintWindow);
+begin
+  _HintWindow.Canvas.Font.Size := FScaler.Calc(Screen.HintFont.Size);
+end;
 
 procedure TfmIdeDockForm.InitDpiScaler;
+var
+  DpiForForm: Integer;
 begin
   FScaler := TFormDpiScaler.Create(Self);
-{$IFDEF GX_IDE_IS_HIDPI_AWARE}
-  ApplyDpi(TScreen_GetDpiForForm(Self), nil);
-{$ENDIF}
+  DpiForForm := TScreen_GetDpiForForm(Self);
+  ApplyDpi(DpiForForm, nil);
 end;
 
 procedure TfmIdeDockForm.Loaded;
 begin
   inherited;
   Scaled := False;
-{$IFDEF GX_HAS_PROPERTY_OLDCREATEORDER}
-  // Delphi 11 removes this property from all dfm files, but unfortunately its default value
-  // is True, so older Delphi versions will add it again as True which will break several
-  // forms that rely on it to be False.
-  OldCreateOrder := False;
-{$ENDIF}
+end;
+
+procedure TfmIdeDockForm.HandleApplicationEventsShowHint(var HintStr: string; var CanShow: Boolean;
+  var HintInfo: THintInfo);
+begin
+  TGxHintWindow.HandleShowHintEvent(FApplicationEvents, @FGxHintCustomDataRec,
+    HintStr, CanShow, HintInfo);
 end;
 
 {$IFDEF GX_EnableIdeDockingSupport}

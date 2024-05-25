@@ -57,6 +57,7 @@ object fmProcedureList: TfmProcedureList
         BevelOuter = bvNone
         FullRepaint = False
         TabOrder = 0
+        OnResize = pnHolderResize
         object lvProcs: TListView
           Left = 0
           Top = 0
@@ -90,7 +91,6 @@ object fmProcedureList: TfmProcedureList
           OnColumnClick = lvProcsColumnClick
           OnCompare = lvProcsCompare
           OnDblClick = actViewGotoExecute
-          OnResize = lvProcsResize
         end
       end
       object pnlHeader: TPanel
@@ -406,6 +406,13 @@ object fmProcedureList: TfmProcedureList
     Interval = 200
     OnTimer = tmrFilterTimer
     Left = 136
+    Top = 88
+  end
+  object tim_Resize: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = tim_ResizeTimer
+    Left = 200
     Top = 88
   end
 end

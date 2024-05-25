@@ -186,7 +186,16 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 {$IFDEF GX_DELPHI2006_UP}
   {$DEFINE GX_SupportsInline}
   {$DEFINE GX_HAS_ALIGN_WITH_MARGINS}
+  {$DEFINE GX_HAS_STRICT_DELIMITER}
 {$ENDIF GX_DELPHI2005_UP}
+
+{$IFDEF GX_DELPHI10_UP}
+{$IFNDEF GX_DELPHI10_1_UP}
+{$DEFINE GX_TWMDPI_HAS_SCALLEDRECT_TYPO}
+{$DEFINE GX_HIDE_NAVBAR_NECESSARY}
+{$ENDIF GX_DELPHI10_1_UP}
+{$ENDIF GX_DELPHI10_UP}
+
 
 {$IFDEF GX_DELPHI10_2_UP}
 {$IFNDEF GX_DELPHI10_3_UP}
@@ -234,18 +243,13 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$DEFINE GX_CUSTOMINIFILE_HAS_READSUBSECTIONS}
 {$ENDIF}
 
-{$IFNDEF GX_DELPHI11_UP}
-  // Delphi 11 removed the property OldCreateOrder from TForm which breaks compatiblity
-  // of dfm files for older Delphi versions.
-  {$DEFINE GX_HAS_PROPERTY_OLDCREATEORDER}
-{$ENDIF}
-
 {$IFDEF GX_DELPHI11_UP}
   {$DEFINE GX_IDE_IS_HIDPI_AWARE}
   {$IFNDEF GX_DELPHI_12_UP}
     // we hope this gets fixed in Delphi 12 and later ...
     {$DEFINE GX_WRONG_BUTTON_PARENTS_IN_PATH_EDIT_FIX_ENABLED}
     {$DEFINE GX_AV_IN_CODE_FORMATTER_FIX_ENABLED}
+    {$DEFINE GX_ACTION_BROKER_IMAGELIST_FIX_ENABLED}
   {$ENDIF}
 {$ENDIF}
 {.$DEFINE GX_IDE_IS_HIDPI_AWARE}

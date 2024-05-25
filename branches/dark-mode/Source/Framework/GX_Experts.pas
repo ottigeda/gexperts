@@ -24,31 +24,25 @@ type
     // you usually don't need to override this
     procedure SaveActiveAndShortCut(Settings: TGExpertsSettings); override;
   public
+    ///<summary>
+    /// @returns the category of this expert. It is used to create submenus in the GExperts menu.
+    ///          Defaults to an empty string, meaning the expert is listed directly in
+    ///          the GExperts menu. </summary>
+    class function GetCategory: string; virtual;
     constructor Create; virtual;
     destructor Destroy; override;
     // Information functions that need to be overriden
     // by each expert to provide required registration
     // information.
-    // Caption of a menu item entry.
-    // Defaults to GetName (we don't want any abstract methods),
-    // but descendants should override this method.
-    function GetActionCaption: string; virtual;
+
     // Determine if the expert action is enabled
     function GetActionEnabled: Boolean; virtual;
-    // Name of action to be created for expert; by default,
-    // the action name is constructed from the expert's name.
-    function GetActionName: string;
     // Name to be displayed for the expert in the GExperts
     // *configuration* dialog; this is a different entry than
     // the action caption (GetActionCaption) but by default
     // it calls GetActionCaption and removes any Hotkey characters and '...'
     // This is probably OK for most experts.
     function GetDisplayName: string; override;
-    ///<summary>
-    /// @returns the category of this expert. It is used to create submenus in the GExperts menu.
-    ///          Defaults to an empty string, meaning the expert is listed directly in
-    ///          the GExperts menu. </summary>
-    class function GetCategory: string; virtual;
     // Defaults to True
     function HasMenuItem: Boolean; virtual;
     // Defaults to False
@@ -113,12 +107,6 @@ begin
   Active := False;
 
   inherited Destroy;
-end;
-
-function TGX_Expert.GetActionName: string;
-begin
-  // Default action name from expert name; do not localize.
-  Result := 'GX_' + GetName + 'Action';
 end;
 
 class function TGX_Expert.GetCategory: string;
@@ -278,11 +266,6 @@ end;
 function TGX_Expert.HasDesignerMenuItem: Boolean;
 begin
   Result := False;
-end;
-
-function TGX_Expert.GetActionCaption: string;
-begin
-  Result := GetName;
 end;
 
 function TGX_Expert.GetActionEnabled: Boolean;

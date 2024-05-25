@@ -10,6 +10,9 @@ uses
   UITypes,
   GX_KbdShortCutBroker;
 
+const
+  GExpertsActionCategory = 'GExperts';
+
 type
   { This interface is a rather typical action - except
     that it takes care of
@@ -94,6 +97,7 @@ type
     procedure SetShortCut(Value: TShortCut); {$ifdef GX_VER240_up} override; {$endif}
     procedure SetVisible(Value: Boolean); {$ifdef GX_VER240_up} override; {$endif}
   public
+    constructor Create(_Owner: TComponent; const _Name: string); reintroduce;
     property ShortCut: TShortCut read GetShortCut write SetShortCut;
     function GetAction: TCustomAction;
   end;
@@ -104,6 +108,13 @@ uses
   Windows;
 
 { TGxCustomAction }
+
+constructor TGxCustomAction.Create(_Owner: TComponent; const _Name: string);
+begin
+  inherited Create(_Owner);
+  Category := GExpertsActionCategory;
+  Name := _Name;
+end;
 
 function TGxCustomAction.GetAction: TCustomAction;
 begin

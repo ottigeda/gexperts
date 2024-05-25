@@ -2,7 +2,7 @@ object fmPrevNextConfig: TfmPrevNextConfig
   Left = 311
   Top = 211
   BorderStyle = bsDialog
-  Caption = 'Prev/Next Identifier Options'
+  Caption = 'Prev/Next Identifier Configuration'
   ClientHeight = 137
   ClientWidth = 312
   Color = clBtnFace

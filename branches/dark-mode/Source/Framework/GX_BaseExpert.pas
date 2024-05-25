@@ -24,17 +24,6 @@ type
     procedure SetActive(New: Boolean); virtual;
     function GetShortCut: TShortCut; virtual;
     procedure SetShortCut(Value: TShortCut); virtual;
-    // Return the file name of an icon associated with
-    // the expert. Do not specify a path.
-    // This bitmap must be included in the
-    // GXIcons.rc file which in turn can be created
-    // from all .bmp files located in the Images
-    // directory by calling the _CreateGXIconsRc.bat
-    // script located in that directory.
-    // It is possible to return an empty string. This
-    // signals that no icon file is available.
-    // Defaults to ClassName.
-    function GetBitmapFileName: string; virtual;
     // Override to load any configuration settings
     procedure InternalLoadSettings(_Settings: IExpertSettings); virtual;
     // Override to save any configuration settings
@@ -46,12 +35,42 @@ type
     // theses settings are "traditionally" stored differently.
     procedure SaveActiveAndShortCut(Settings: TGExpertsSettings); virtual;
   public
-    // Internal name of expert for expert identification.
+    ///<sumary>
+    /// @returns the internal name of expert for expert identification
+    ///          defaults to ClassName </summary>
     class function GetName: string; virtual;
-    // Subkey used to store configuration details in the registry
-    // defaults to GetName
+    ///<sumary>
+    /// @returns the Subkey used to store configuration details in the registry
+    ///          defaults to GetName </summary>
     class function ConfigurationKey: string; virtual;
-    constructor Create;
+    ///<sumary>
+    /// @returns the file name of an icon associated with
+    /// the expert. Do not specify a path.
+    /// This bitmap must be included in the
+    /// GXIcons.rc file which in turn can be created
+    /// from all .bmp files located in the Images
+    /// directory by calling the _CreateGXIconsRc.bat
+    /// script located in that directory.
+    /// It is possible to return an empty string. This
+    /// signals that no icon file is available.
+    /// Defaults to ClassName. </summary>
+    class function GetBitmapFileName: string; virtual;
+    ///<summary>
+    /// Loads the bitmap for the expert from resources and returns it.
+    /// In contrast to GetBitmap, this always loads and creates a new bitmap
+    /// or NIL if the bitmap could not be loaded.
+    /// @NOTE: The caller is responsible for freeing that bitmap /// </summary>
+    class function LoadBitmap: TBitmap; virtual;
+    ///<summary>
+    /// Name of action to be created for expert; by default,
+    /// the action name is constructed from the expert's name. </summary>
+    class function GetActionName: string;
+    ///<summary>
+    /// Caption of a menu item entry.
+    /// Defaults to GetName (we don't want any abstract methods),
+    /// but descendants should override this method. </summary>
+    function GetActionCaption: string; virtual;
+  constructor Create;
     destructor Destroy; override;
     function CanHaveShortCut: boolean; virtual; abstract;
     // displays a dialog saying there are no configuration options
@@ -105,6 +124,9 @@ type
     property TotalCallCount: Integer read GetTotalCallCount;
   end;
 
+type
+  TGX_BaseExpertClass = class of TGX_BaseExpert;
+
 implementation
 
 uses
@@ -151,35 +173,42 @@ begin
   MessageDlg(SNoConfigurationOptions, mtInformation, [mbOK], 0);
 end;
 
-function TGX_BaseExpert.GetBitmap: Graphics.TBitmap;
+class function TGX_BaseExpert.LoadBitmap: TBitmap;
 var
   BitmapFile: string;
 begin
-  if not Assigned(FBitmap) then
-  begin
-    // Locate and load the bitmap for the expert if it exists.
-    BitmapFile := GetBitmapFileName;
-    if BitmapFile <> '' then
-    begin
-      if not GxLoadBitmapForExpert(BitmapFile, FBitmap) then
-      begin
+  Result := nil;
+  BitmapFile := GetBitmapFileName;
+  if BitmapFile <> '' then begin
+    if not GxLoadBitmapForExpert(BitmapFile, Result) then begin
 {$IF Declared(SendDebugError)}
-        SendDebugError('Missing bitmap ' + BitmapFile + ' for ' + Self.ClassName);
+      SendDebugError('Missing bitmap ' + GetBitmapFileName + ' for ' + Self.ClassName);
 {$IFEND}
-        GxLoadBitmapForExpert('NoIcon', FBitmap);
-//        ShowGxMessageBox(TShowMissingIconMessage, ChangeFileExt(BitmapFile, '.bmp'));
-      end;
-    end
-    else
-    begin
-      {$IFOPT D+} SendDebugError('Bitmap missing for expert ' + Self.ClassName); {$ENDIF D+}
+      GxLoadBitmapForExpert('NoIcon', Result);
     end;
   end;
+end;
 
+function TGX_BaseExpert.GetActionCaption: string;
+begin
+  Result := GetName;
+end;
+
+class function TGX_BaseExpert.GetActionName: string;
+begin
+  // Default action name from expert name; do not localize.
+  Result := 'GX_' + GetName + 'Action';
+end;
+
+function TGX_BaseExpert.GetBitmap: Graphics.TBitmap;
+begin
+  if not Assigned(FBitmap) then begin
+    FBitmap := LoadBitmap;
+  end;
   Result := FBitmap;
 end;
 
-function TGX_BaseExpert.GetBitmapFileName: string;
+class function TGX_BaseExpert.GetBitmapFileName: string;
 begin
   Result := ClassName;
 end;

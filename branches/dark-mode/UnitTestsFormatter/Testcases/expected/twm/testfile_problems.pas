@@ -34,8 +34,8 @@ type
   end;
   Test = class(TCa)
   public
-    property IndentCaseElse: Boolean
-  function Text;
+    property IndentCaseElse: Boolean;
+    function Text;
       message WMCommand;
   end;
 

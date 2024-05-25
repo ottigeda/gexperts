@@ -13,7 +13,12 @@ uses
   Buttons,
   Controls,
   Graphics,
-  u_dzVclUtils;
+  u_dzTypes,
+  u_dzVclUtils,
+  u_dzTranslator;
+
+type
+  EdzSpeedButton = class(EdzException);
 
 type
   ///<summary>
@@ -29,7 +34,8 @@ type
   TdzSpeedBitBtn = class(TWindowProcHook)
   private
     FCaption: string;
-    FOrigBmp: TBitmap;
+    FUpGlyph: TBitmap;
+    FDownGlyph: TBitmap;
     FOrigOnClick: TNotifyEvent;
     FUpBmp: TBitmap;
     FDownBmp: TBitmap;
@@ -43,12 +49,15 @@ type
     procedure SetDown(const Value: Boolean);
     procedure UpdateGlyph;
     function GetBitBtn: TBitBtn;
-    procedure PrepareBmp(_w, _h: Integer; _Color: TColor; _Edge: UINT; out _bmp: TBitmap);
-    procedure PrepareBmps;
+    procedure PrepareBmp(_w, _h: Integer; _Color: TColor; _Edge: UINT; _Glyph: TBitmap;
+      _bmp: TBitmap);
+    procedure PrepareBmps(_UpBmp, _DownBmp: TBitmap);
   protected
     procedure NewWindowProc(var _Msg: TMessage); override;
   public
-    constructor Create(_btn: TWinControl);
+    constructor Create(_btn: TBitBtn); reintroduce; overload;
+    constructor Create(_btn: TBitBtn; _UpGlyph, _DownGlyph: TBitmap); overload;
+    constructor Create(_btn: TBitBtn; _ImageList: TImageList; _UpGlyphIdx, _DownGlyphIdx: Integer); overload;
     destructor Destroy; override;
     property Down: Boolean read GetDown write SetDown;
     property BitBtn: TBitBtn read GetBitBtn;
@@ -108,26 +117,44 @@ implementation
 uses
   Math,
   Forms,
-  u_dzGraphicsUtils;
+  u_dzGraphicsUtils,
+  u_dzMiscUtils;
+
+function _(const _Text: string): string;
+begin
+  Result := dzlibGetText(_Text);
+end;
 
 { TdzSpeedBitBtn }
 
-constructor TdzSpeedBitBtn.Create(_btn: TWinControl);
+constructor TdzSpeedBitBtn.Create(_btn: TBitBtn);
+begin
+  Create(_btn, _btn.Glyph, _btn.Glyph);
+end;
+
+constructor TdzSpeedBitBtn.Create(_btn: TBitBtn; _UpGlyph, _DownGlyph: TBitmap);
 begin
   inherited Create(_btn);
   FOrigOnClick := BitBtn.OnClick;
   FCaption := BitBtn.Caption;
 
-  FOrigBmp := TBitmap.Create;
-  FOrigBmp.Assign(BitBtn.Glyph);
-  FOrigBmp.Transparent := True;
+  FUpGlyph := TBitmap.Create;
+  FUpGlyph.Assign(_UpGlyph);
+  FUpGlyph.Transparent := True;
+
+  FDownGlyph := TBitmap.Create;
+  FDownGlyph.Assign(_DownGlyph);
+  FDownGlyph.Transparent := True;
+
+  if (FUpGlyph.Width <> FDownGlyph.Width)
+    or (FUpGlyph.Height <> FDownGlyph.Height) then
+    raise EdzSpeedButton.Create(_('Glyphs must have the same height'));
 
   BitBtn.Caption := '';
 
   FUpBmp := TBitmap.Create;
   FDownBmp := TBitmap.Create;
-
-  PrepareBmps;
+  PrepareBmps(FUpBmp, FDownBmp);
 
   BitBtn.OnClick := HandleOnClick;
 
@@ -139,17 +166,36 @@ begin
   UpdateGlyph;
 end;
 
+constructor TdzSpeedBitBtn.Create(_btn: TBitBtn; _ImageList: TImageList; _UpGlyphIdx,
+  _DownGlyphIdx: Integer);
+var
+  UpGlyph: TBitmap;
+  DownGlyph: TBitmap;
+begin
+  InitializeNil(UpGlyph, DownGlyph);
+  try
+    UpGlyph := TBitmap.Create;
+    DownGlyph := TBitmap.Create;
+    TBitmap_FromImagelist(UpGlyph, _ImageList, _UpGlyphIdx);
+    TBitmap_FromImagelist(DownGlyph, _ImageList, _DownGlyphIdx);
+    Create(_btn, UpGlyph, DownGlyph);
+  finally
+    FreeAndNil(UpGlyph, DownGlyph);
+  end;
+end;
+
 destructor TdzSpeedBitBtn.Destroy;
 begin
   // If we get here, either the constructor failed (which automatically calls the destructor)
   // or BitBtn was already destroyed, so we must not access it at all.
   FUpBmp.Free;
   FDownBmp.Free;
-  FOrigBmp.Free;
+  FUpGlyph.Free;
+  FDownGlyph.Free;
   inherited;
 end;
 
-procedure TdzSpeedBitBtn.PrepareBmps;
+procedure TdzSpeedBitBtn.PrepareBmps(_UpBmp, _DownBmp: TBitmap);
 var
   w: Integer;
   h: Integer;
@@ -162,11 +208,12 @@ begin
   ColBack1 := RGB(240, 240, 240); // clBtnFace;
   ColBack2 := RGB(245, 245, 245); // a bit lighter than clBtnFace;
 
-  PrepareBmp(w, h, ColBack1, EDGE_RAISED, FUpBmp);
-  PrepareBmp(w, h, ColBack2, EDGE_SUNKEN, FDownBmp);
+  PrepareBmp(w, h, ColBack1, EDGE_RAISED, FUpGlyph, FUpBmp);
+  PrepareBmp(w, h, ColBack2, EDGE_SUNKEN, FDownGlyph, FDownBmp);
 end;
 
-procedure TdzSpeedBitBtn.PrepareBmp(_w, _h: Integer; _Color: TColor; _Edge: UINT; out _bmp: TBitmap);
+procedure TdzSpeedBitBtn.PrepareBmp(_w, _h: Integer; _Color: TColor; _Edge: UINT; _Glyph: TBitmap;
+  _bmp: TBitmap);
 var
   cnv: TCanvas;
 
@@ -176,14 +223,14 @@ var
     Y: Integer;
   begin
     X := FOrigMargin;
-    Y := (_h - FOrigBmp.Height) div 2;
+    Y := (_h - _Glyph.Height) div 2;
     if X = -1 then begin
       // center image in the button
-      X := (_w - FOrigBmp.Width) div 2;
+      X := (_w - _Glyph.Width) div 2;
     end else begin
       // left align image
     end;
-    cnv.Draw(X, Y, FOrigBmp);
+    cnv.Draw(X, Y, _Glyph);
   end;
 
   procedure HandleTextOnlySingleLine;
@@ -260,18 +307,18 @@ var
     TextSize := cnv.TextExtent(FCaption);
     if FOrigMargin = -1 then begin
       // center image and text on the button
-      RequiredWidth := FOrigBmp.Width + FOrigSpacing + TextSize.cx;
+      RequiredWidth := _Glyph.Width + FOrigSpacing + TextSize.cx;
       X := (_w - RequiredWidth) div 2;
-      cnv.Draw(X, (_h - FOrigBmp.Width) div 2, FOrigBmp);
-      r.Left := X + FOrigMargin + FOrigSpacing + FOrigBmp.Width;
+      cnv.Draw(X, (_h - _Glyph.Width) div 2, _Glyph);
+      r.Left := X + FOrigMargin + FOrigSpacing + _Glyph.Width;
       r.Top := (_h - TextSize.cy) div 2;
       r.Right := r.Left + TextSize.cx;
       r.Bottom := r.Top + TextSize.cy;
       TCanvas_DrawText(cnv, FCaption, r, [dtfLeft, dtfTopSingle, dtfSingleLine, dtfNoClip]);
     end else begin
       // left align image and text
-      cnv.Draw(FOrigMargin, (_h - FOrigBmp.Height) div 2, FOrigBmp);
-      r.Left := FOrigMargin + FOrigSpacing + FOrigBmp.Width;
+      cnv.Draw(FOrigMargin, (_h - _Glyph.Height) div 2, _Glyph);
+      r.Left := FOrigMargin + FOrigSpacing + _Glyph.Width;
       r.Top := (_h - TextSize.cy) div 2;
       r.Right := r.Left + TextSize.cx;
       r.Bottom := r.Top + TextSize.cy;
@@ -289,29 +336,29 @@ var
   begin
     if FOrigMargin = -1 then begin
       // center image and text on the button
-      r := Rect(0, 0, _w - FOrigBmp.Width - 1 - FOrigSpacing, _h - 2);
+      r := Rect(0, 0, _w - _Glyph.Width - 1 - FOrigSpacing, _h - 2);
       TCanvas_DrawText(cnv, FCaption, r, [dtfCalcRect, dtfCenter, dtfWordBreak]);
       TextWidth := r.Right - r.Left;
       TextHeight := r.Bottom - r.Top;
-      RequiredWidth := FOrigBmp.Width + FOrigSpacing + TextWidth;
+      RequiredWidth := _Glyph.Width + FOrigSpacing + TextWidth;
       X := (_w - RequiredWidth) div 2;
-      cnv.Draw(X, (_h - FOrigBmp.Height) div 2, FOrigBmp);
+      cnv.Draw(X, (_h - _Glyph.Height) div 2, _Glyph);
 
-      r.Left := X + FOrigBmp.Width + FOrigSpacing;
+      r.Left := X + _Glyph.Width + FOrigSpacing;
       r.Top := (_h - TextHeight) div 2;
       r.Right := r.Left + TextWidth;
       r.Bottom := r.Top + TextHeight;
       TCanvas_DrawText(cnv, FCaption, r, [dtfCenter, dtfWordBreak]);
     end else begin
       // left align image and text
-      r := Rect(0, 0, _w - FOrigMargin - FOrigBmp.Width - 1 - FOrigSpacing, _h - 2);
+      r := Rect(0, 0, _w - FOrigMargin - _Glyph.Width - 1 - FOrigSpacing, _h - 2);
       TCanvas_DrawText(cnv, FCaption, r, [dtfCalcRect, dtfCenter, dtfWordBreak]);
       TextWidth := r.Right - r.Left;
       TextHeight := r.Bottom - r.Top;
 
-      cnv.Draw(FOrigMargin, (_h - FOrigBmp.Width) div 2, FOrigBmp);
+      cnv.Draw(FOrigMargin, (_h - _Glyph.Width) div 2, _Glyph);
 
-      r.Left := FOrigMargin + FOrigBmp.Width + FOrigSpacing;
+      r.Left := FOrigMargin + _Glyph.Width + FOrigSpacing;
       r.Top := (_h - TextWidth) div 2;
       r.Right := r.Left + TextWidth;
       r.Bottom := r.Top + TextHeight;
@@ -340,7 +387,6 @@ begin
   _bmp.TransparentColor := clFuchsia;
 
   cnv := _bmp.Canvas;
-
   cnv.Brush.Color := _Color;
   cnv.Brush.Style := bsSolid;
   cnv.FillRect(Rect(0, 0, _w, _h));
@@ -352,7 +398,7 @@ begin
   cnv.Font := BitBtn.Font;
 
   if FCaption <> '' then begin
-    if (FOrigBmp.Width <> 0) and (FOrigBmp.Height <> 0) then begin
+    if (_Glyph.Width <> 0) and (_Glyph.Height <> 0) then begin
       HandleBmpAndText;
     end else begin
       // text only
@@ -392,7 +438,7 @@ begin
     inherited;
   end else if _Msg.Msg = WM_PAINT then begin
     if FNeedsNewGlyphs then begin
-      PrepareBmps;
+      PrepareBmps(FUpBmp, FDownBmp);
       UpdateGlyph;
       FNeedsNewGlyphs := False;
     end;

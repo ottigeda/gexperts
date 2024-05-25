@@ -54,7 +54,8 @@ uses
   u_dzStringArrayUtils,
   u_dzTypes,
   u_dzStringUtils,
-  GX_GenericUtils;
+  GX_GenericUtils,
+  GX_GxUtils;
 
 { TfmFavOptions }
 
@@ -114,6 +115,8 @@ begin
 {$ENDIF}
 
   InitDpiScaler;
+  GxSetDefaultFont(Self);
+  sg_FileFilters.DefaultRowHeight := FScaler.Calc(DEFAULT_GRID_ROWHEIGHT);
 end;
 
 procedure TfmFavOptions.b_DefaultClick(Sender: TObject);

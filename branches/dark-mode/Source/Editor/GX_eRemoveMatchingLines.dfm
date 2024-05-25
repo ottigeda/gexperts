@@ -2,7 +2,7 @@ object fmRemoveMatchingLinesExpertConfig: TfmRemoveMatchingLinesExpertConfig
   Left = 381
   Top = 212
   BorderIcons = [biSystemMenu]
-  Caption = 'Remove Matching Lines Expert Config'
+  Caption = 'Remove Matching Lines Configuration'
   ClientHeight = 257
   ClientWidth = 377
   Color = clBtnFace

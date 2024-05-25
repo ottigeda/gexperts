@@ -271,17 +271,22 @@ end;
 
 function HKeyToString(_HKey: HKey): string;
 begin
-  case _HKey of
-    HKEY_CLASSES_ROOT: Result := 'HKEY_CLASSES_ROOT'; // do not translate
-    HKEY_CURRENT_USER: Result := 'HKEY_CURRENT_USER'; // do not translate
-    HKEY_LOCAL_MACHINE: Result := 'HKEY_LOCAL_MACHINE'; // do not translate
-    HKEY_USERS: Result := 'HKEY_USERS'; // do not translate
-    HKEY_PERFORMANCE_DATA: Result := 'HKEY_PERFORMANCE_DATA'; // do not translate
-    HKEY_CURRENT_CONFIG: Result := 'HKEY_CURRENT_CONFIG'; // do not translate
-    HKEY_DYN_DATA: Result := 'HKEY_DYN_DATA'; // do not translate
+  if _HKey = HKEY_CLASSES_ROOT then
+    Result := 'HKEY_CLASSES_ROOT' // do not translate
+  else if _HKey = HKEY_CURRENT_USER then
+    Result := 'HKEY_CURRENT_USER' // do not translate
+  else if _HKey = HKEY_LOCAL_MACHINE then
+    Result := 'HKEY_LOCAL_MACHINE' // do not translate
+  else if _HKey = HKEY_USERS then
+    Result := 'HKEY_USERS' // do not translate
+  else if _HKey = HKEY_PERFORMANCE_DATA then
+    Result := 'HKEY_PERFORMANCE_DATA' // do not translate
+  else if _HKey = HKEY_CURRENT_CONFIG then
+    Result := 'HKEY_CURRENT_CONFIG' // do not translate
+  else if _HKey = HKEY_DYN_DATA then
+    Result := 'HKEY_DYN_DATA' // do not translate
   else
     Result := Format(_('unknown Registry Root Key %x'), [_HKey]);
-  end;
 end;
 
 function RegDataTypeToString(_DataType: TRegDataType): string;

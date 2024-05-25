@@ -361,6 +361,7 @@ end;
 
 procedure TfmIdeShortCuts.FormShow(Sender: TObject);
 begin
+  inherited;
   InitializeForm;
 end;
 

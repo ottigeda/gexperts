@@ -311,6 +311,9 @@ var
 begin
   inherited Create(AOwner);
 
+  InitDpiScaler;
+  GxSetDefaultFont(Self);
+
   TControl_SetMinConstraints(Self);
 
   FLastLoadedSet := '';
@@ -620,6 +623,8 @@ end;
 
 procedure TfmProjOptionSets.FormShow(Sender: TObject);
 begin
+  inherited;
+
   // Add a default, empty set if none exist
   if lstSets.Items.Count = 0 then
     AddNewOptionSet('Default');

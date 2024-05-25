@@ -306,7 +306,7 @@ end;
 procedure TfmClipboardHistory.InitializeForm;
 begin
   inherited;
-  PasteAsHandler.GetTypeText(cbPasteAsType.Items);
+  TPasteAsHandler.GetTypeText(cbPasteAsType.Items);
   cbPasteAsType.DropDownCount := Integer(High(TPasteAsType)) + 1;
   cbPasteAsType.ItemIndex := Integer(PasteAsHandler.PasteAsType);
   chkCreateQuotedStrings.Checked := PasteAsHandler.CreateQuotedString;

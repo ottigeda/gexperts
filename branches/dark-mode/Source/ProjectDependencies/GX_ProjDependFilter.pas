@@ -139,6 +139,8 @@ end;
 
 procedure TfmProjDependFilter.FormShow(Sender: TObject);
 begin
+  inherited;
+
   UpdateButtonState;
 end;
 

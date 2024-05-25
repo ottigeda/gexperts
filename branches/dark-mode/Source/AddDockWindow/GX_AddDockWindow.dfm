@@ -18,10 +18,13 @@ object fmGxDockForm: TfmGxDockForm
   PixelsPerInch = 96
   TextHeight = 14
   object l_Warning: TLabel
-    Left = 0
-    Top = 0
-    Width = 409
-    Height = 582
+    AlignWithMargins = True
+    Left = 16
+    Top = 3
+    Width = 377
+    Height = 576
+    Margins.Left = 16
+    Margins.Right = 16
     Align = alClient
     Alignment = taCenter
     AutoSize = False

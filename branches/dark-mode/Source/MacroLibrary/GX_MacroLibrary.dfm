@@ -27,6 +27,7 @@ object fmMacroLibrary: TfmMacroLibrary
     Cursor = crVSplit
     Align = alBottom
     Beveled = True
+    OnMoved = SplitterMoved
   end
   object lvMacros: TListView
     Left = 0

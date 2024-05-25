@@ -272,6 +272,11 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\ExpertManager\GX_ExpertManager.pas">
             <Form>fmExpertManager</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Experts\EditorEnhancements\GX_EditorEnhancements.pas"/>
+        <DCCReference Include="..\..\Source\Experts\EditorEnhancements\GX_EditorEnhancementsConfig.pas">
+            <Form>fmEditorEnhancementsConfig</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Experts\EditorEnhancements\GX_HideNavbar.pas"/>
         <DCCReference Include="..\..\Source\Experts\GX_SelectComponents.pas">
             <Form>SelectComponentsForm</Form>
         </DCCReference>
@@ -364,7 +369,6 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\Framework\GX_DesignerMenu.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_DummyWizard.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditorChangeServices.pas"/>
-        <DCCReference Include="..\..\source\Framework\GX_EditorEnhancements.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditorFormServices.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditReader.pas"/>
         <DCCReference Include="..\..\source\framework\GX_EventHook.pas"/>
@@ -375,6 +379,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\Framework\GX_FileScanner.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_GetIdeVersion.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_GExperts.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_HintWindow.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_IconMessageBox.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_KbdShortCutBroker.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_KibitzComp.pas"/>
@@ -446,7 +451,6 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\Source\Grep\GX_TestRegEx.pas">
             <Form>fmTestRegEx</Form>
         </DCCReference>
-        <DCCReference Include="..\..\source\HideNavigationToolbar\GX_HideNavbar.pas"/>
         <DCCReference Include="..\..\source\HideNonvisualComponents\GX_HideNonVisualComps.pas"/>
         <DCCReference Include="..\..\source\IDEDocking\GX_IdeDock.pas">
             <Form>fmIdeDockForm</Form>

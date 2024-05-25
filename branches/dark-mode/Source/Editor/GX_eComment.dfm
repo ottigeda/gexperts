@@ -3,7 +3,7 @@ object fmCommentConfig: TfmCommentConfig
   Top = 211
   ActiveControl = lvStyles
   BorderStyle = bsDialog
-  Caption = 'Comment Expert'
+  Caption = 'Comment Expert Configuration'
   ClientHeight = 371
   ClientWidth = 355
   Color = clBtnFace

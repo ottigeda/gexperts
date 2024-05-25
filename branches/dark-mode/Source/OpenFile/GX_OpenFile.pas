@@ -190,6 +190,7 @@ type
     function GetMapTabVisible: Boolean;
     property CurrentListView: TListView read FCurrentListView write SetCurrentListView;
   protected
+    procedure Loaded; override;
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
@@ -209,7 +210,7 @@ implementation
 uses
   Menus, Graphics, ToolsAPI, StrUtils,
   u_dzVclUtils, u_dzStringUtils,
-  GX_IdeUtils, GX_Experts, GX_ConfigurationInfo, GX_OtaUtils,
+  GX_IdeUtils, GX_SizeGripHWND, GX_Experts, GX_ConfigurationInfo, GX_OtaUtils,
   GX_GxUtils, GX_GExperts;
 
 resourcestring
@@ -697,6 +698,13 @@ begin
   InitDpiScaler;
 end;
 
+procedure TfmOpenFile.Loaded;
+begin
+  inherited;
+  if Self.Position <> poDesigned then
+    Self.Position := poDesigned;
+end;
+
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmOpenFile.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
@@ -985,7 +993,17 @@ begin
 end;
 
 procedure TfmOpenFile.FormShow(Sender: TObject);
+var
+  R : TRect;
 begin
+  R := Self.BoundsRect;
+  inherited;             // will call ApplyDpi(), which resets the size.
+  Self.BoundsRect := R;  // set the new size again.
+
+{$IFDEF GX_DELPHI2007_UP}
+  if pnlButtonsRight.HandleAllocated then
+    GxSetWindowSizeGrip(pnlButtonsRight.Handle, True);
+{$ENDIF}
   lvSearchPath.Columns[0].Width := FFileColumnWidth;
   CopyColumns(lvSearchPath);
   ResizeListViewColumns;
@@ -1013,7 +1031,7 @@ end;
 
 procedure TfmOpenFile.ResizeListViewColumns;
 begin
-  if Assigned(CurrentListView) then
+  if Assigned(CurrentListView) and (CurrentListView.Columns.Count > 1) then
     ListViewResizeColumn(CurrentListView, 1);
 end;
 

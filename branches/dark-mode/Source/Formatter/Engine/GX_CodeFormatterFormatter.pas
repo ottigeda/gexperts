@@ -611,7 +611,7 @@ begin
     Exit; //==>
   end;
 
-  // todo: This can be implemented more efficiently because we know that
+  // done: This can be implemented more efficiently because we know that
   //       Idx-2n-1 is a comment and Idx-2n must be the line feed in front of that comment
   //       until we hit a non-comment at Idx-2n-1.
   //       -> No, we don't know that. There can be single line feeds in between that break
@@ -628,13 +628,23 @@ begin
     CommentLFs[Len] := LineFeed;
   end;
 
-  // We assume that the comments have already been arranged correctly to match
-  // the first comment. So we determine the adjustment for that first comment
-  // and apply it to all comment lines.
+  Len := Length(CommentLFs);
+  if Len = 0 then begin
+    // Fix for bug #318: Formatter fails with comment after function declaration in implementation
+    // for the case:
+    {
+    procedure bla; // <== this is the comment before the procedure blub in the next line
+    procedure blub;
+    }
+    // There is no other comment before that, so the array is empty.
+    Exit; //==>
+  end;
+
+  // We assume that the previous comments have already been arranged correctly
+  // to match the first comment. So we determine the adjustment for that first
+  // comment and apply it to all comment lines.
 
   DesiredNoOfSpaces := ThisLineStart.NoOfSpaces;
-  Len := Length(CommentLFs);
-  Assert(Len > 0);
   LineFeed := CommentLFs[Len - 1];
   Diff := LineFeed.NoOfSpaces - DesiredNoOfSpaces;
   LineFeed.NoOfSpaces := DesiredNoOfSpaces;
@@ -1048,12 +1058,18 @@ var
   wType: TWordType;
   exp: TGXUnicodeString;
   LFeed: TLineFeed;
+  AllowPop: Boolean;
 begin
   if FCurrentToken = nil then
     Exit;
 
   FCurrentRType := FCurrentToken.ReservedType;
   wType := FCurrentToken.WordType;
+
+  if wtype in [wtMultilineStringStart, wtMultilineString, wtMultilineStringEnd] then begin
+    // we do not indent those
+    Exit; //==>
+  end;
 
   // This handles the case where a reserved word was used as the name of a class member.
   // (Is that even allowed?)
@@ -1227,6 +1243,7 @@ begin
           rtRecord:
             FWrapIndent := False;
         end;
+        // todo: handle procedure/function 'of object' type declaration
       end;
 
     rtLineFeed: begin
@@ -1416,13 +1433,19 @@ begin
           RemoveMe := 0;
           repeat
             Assert(False, '.CheckIndent: in repeat');
+            // search for the first token after the function name or the closing bracket
+            // procedure bla or procedure bla(...)
+			//              ^-- here              ^-- here
             Inc(RemoveMe);
             if TryGetToken(FTokenIdx + RemoveMe, Next) then
-              if Next.ReservedType = rtLeftBr then
+              if Next.ReservedType = rtLeftBr then begin
+                // procedure bla( -> there is an opening bracket after the function name -> search for the closing bracket
                 repeat
                   Inc(RemoveMe);
                 until not TryGetToken(FTokenIdx + RemoveMe, Next) or (Next.ReservedType = rtRightBr);
+              end;
           until (Next = nil) or (Next.ReservedType in [rtSemiColon, rtBegin]);
+          // we found either a semicolon or a Begin (or the end of the file)
 
           if Next <> nil then begin
             if Next.ReservedType = rtBegin then begin
@@ -1432,6 +1455,9 @@ begin
               Next.AddOption(toFeedNewLine); // Force NewLine Feed!
             end;
 
+            // todo: If it was a begin, should the following still be executed?
+            //       A delegate cannot be declared as forward after all
+            //       So maybe this should go into an else branch
             Assert(False, '.CheckIndent: Next <> nil');
             repeat
               Assert(False, '.CheckIndent: in repeat');
@@ -1615,7 +1641,7 @@ begin
                 AssertLineFeedAfter(FTokenIdx);
             end;
           end else begin
-            if ((FPrevToken is TLineFeed) and (FStack.GetTopType = rtBegin)) then begin
+            if ((FPrevToken is TLineFeed) and (FStack.GetTopType in [rtBegin, rtTry])) then begin
               // inline var declaration
             end else if (FPrevToken.GetExpression(exp) and SameText(exp, 'for')) then begin
               // for with inline var declaration
@@ -1731,15 +1757,35 @@ begin
             end;
           end;
 
-          while (FStack.GetTopType in
-            [rtDo, rtWhile, rtProcDeclare, rtThen, rtProgram, rtUses, rtColon, rtClassDecl, rtIfElse]) do begin
-            Assert(False, '.CheckIndent: in while');
-            FStack.Pop;
+          AllowPop := True;
+          if FStack.GetTopType = rtProcDeclare then begin
+            // this checks for function declarations with function directives in the next line like this:
+            // procedure bla;
+            //   cdecl;
+            // It does not yet solve the problem with multi line function directives like this:
+            // procedure bla;
+            //   cdecl;
+            //   overload;
+            RemoveMe := 1;
+            while TryGetToken(FTokenIdx + RemoveMe, Next) and Assigned(Next) and (Next.ReservedType in [rtSemiColon, rtLineFeed, rtComment, rtFuncDirective]) do begin
+              if Next.ReservedType = rtFuncDirective then begin
+                AllowPop := False;
+                Break; //==v
+              end;
+              Inc(RemoveMe);
+            end
           end;
+          if AllowPop then begin
+            while (FStack.GetTopType in
+              [rtDo, rtWhile, rtProcDeclare, rtThen, rtProgram, rtUses, rtColon, rtClassDecl, rtIfElse]) do begin
+              Assert(False, '.CheckIndent: in while');
+              FStack.Pop;
+		    end;
+		  end;
 
+          // Look for 'absolute' or a function directive before the next line feed
           // todo: This only works, if 'absolute' or any of the function directives ('overload',
           // 'stdcall' etc). are on the same line as the function / procedure declaration:
-          // Look for 'absolute' or a function directive before the next line feed
           FWrapIndent := False;
           RemoveMe := 0;
           repeat

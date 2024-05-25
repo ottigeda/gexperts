@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, SysUtils, Classes, StdCtrls, Controls, Forms,
-  GX_BaseForm, GX_eSelectionEditorExpert, GX_EditorExpert, GX_ConfigurationInfo;
+  GX_BaseForm, GX_eSelectionEditorExpert, GX_EditorExpert, GX_ConfigurationInfo,
+  GX_PasteAs;
 
 type
   TfmPasteAsConfig = class(TfmBaseForm)
@@ -17,7 +18,13 @@ type
     chkAddExtraSpaceAtTheEnd: TCheckBox;
     chkShowOptions: TCheckBox;
   private
+    procedure SetData(_PasteAsType: TPasteAsType;
+      _CreateQuotedString, _AddExtraSpaceAtTheEnd, _ShowOptions: Boolean);
+    procedure GetData(out _PasteAsType: TPasteAsType;
+      out _CreateQuotedString, _AddExtraSpaceAtTheEnd, _ShowOptions: Boolean);
   public
+    class function Execute(_Owner: TWinControl; var _PasteAsType: TPasteAsType;
+      var _CreateQuotedString, _AddExtraSpaceAtTheEnd, _ShowOptions: Boolean): Boolean;
     constructor Create(_Owner: TComponent); override;
   end;
 
@@ -26,9 +33,13 @@ implementation
 {$R *.dfm}
 
 uses
-  GX_PasteAs, Clipbrd, Dialogs;
+  Clipbrd, Dialogs, u_dzVclUtils;
 
 type
+  ///<summary>
+  /// @NOTE: Currently this expert shares the configuration of the TConvertRawStringsExpert expert
+  ///        (stored in the global GX_PastAs.PasteAsHandler).
+  ///        The same configuration is used in the Clipboard History expert. </summary>
   TPasteAsExpert = class(TEditorExpert)
   protected
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
@@ -54,6 +65,12 @@ type
     function HasConfigOptions: Boolean; override;
   end;
 
+  ///<summary>
+  /// @NOTE: Currently this expert shares the configuration of the PasteAs expert (stored in the
+  ///        global GX_PastAs.PasteAsHandler).
+  ///        That could be considered as fine, but it also does not save the settings when the
+  ///        configuration dialog is closed, which looks like a bug.
+  ///        The same configuration is used in the Clipboard History expert. </summary>
   TConvertRawStringsExpert = class(TSelectionEditorExpert)
   protected
     function ProcessSelected(Lines: TStrings): Boolean; override;
@@ -123,18 +140,19 @@ var
   ALines: TStringList;
 begin
   if not Clipboard.HasFormat(CF_TEXT) then
-    Exit;
+    Exit; //==>
+
+  if not PasteAsHandler.ExecuteConfig(Self, nil, False) then
+    Exit; //==>
 
   ALines := TStringList.Create;
   try
     ALines.Text := Clipboard.AsText;
-    if PasteAsHandler.ExecuteConfig(Self, nil, False) then begin
-      PasteAsHandler.ConvertToCode(ALines, False);
-      IncCallCount;
-    end;
+    PasteAsHandler.ConvertToCode(ALines, False);
   finally
     ALines.Free;
   end;
+  IncCallCount;
 end;
 
 { TCopyRawStringsExpert }
@@ -243,17 +261,52 @@ end;
 
 { TfmPasteAsConfig }
 
+class function TfmPasteAsConfig.Execute(_Owner: TWinControl; var _PasteAsType: TPasteAsType;
+  var _CreateQuotedString, _AddExtraSpaceAtTheEnd, _ShowOptions: Boolean): Boolean;
+var
+  frm: TfmPasteAsConfig;
+begin
+  frm := TfmPasteAsConfig.Create(_Owner);
+  try
+    TForm_CenterOn(frm, _Owner);
+    frm.SetData(_PasteAsType, _CreateQuotedString, _AddExtraSpaceAtTheEnd, _ShowOptions);
+    Result := frm.ShowModal = mrOk;
+    if Result then
+      frm.GetData(_PasteAsType, _CreateQuotedString, _AddExtraSpaceAtTheEnd, _ShowOptions);
+  finally
+    FreeandNil(frm);
+  end;
+end;
+
 constructor TfmPasteAsConfig.Create(_Owner: TComponent);
 begin
   inherited;
+  TPasteAsHandler.GetTypeText(cbPasteAsType.Items);
   cbPasteAsType.DropDownCount := Integer(High(TPasteAsType)) + 1;
 
   InitDpiScaler;
+end;
+
+procedure TfmPasteAsConfig.GetData(out _PasteAsType: TPasteAsType;
+  out _CreateQuotedString, _AddExtraSpaceAtTheEnd, _ShowOptions: Boolean);
+begin
+  _PasteAsType := TPasteAsType(cbPasteAsType.ItemIndex);
+  _CreateQuotedString := chkCreateQuotedStrings.Checked;
+  _AddExtraSpaceAtTheEnd := chkAddExtraSpaceAtTheEnd.Checked;
+  _ShowOptions := chkShowOptions.Checked;
+end;
+
+procedure TfmPasteAsConfig.SetData(_PasteAsType: TPasteAsType;
+  _CreateQuotedString, _AddExtraSpaceAtTheEnd, _ShowOptions: Boolean);
+begin
+  cbPasteAsType.ItemIndex := Integer(_PasteAsType);
+  chkCreateQuotedStrings.Checked := _CreateQuotedString;
+  chkAddExtraSpaceAtTheEnd.Checked := _AddExtraSpaceAtTheEnd;
+  chkShowOptions.Checked := _ShowOptions;
 end;
 
 initialization
   RegisterEditorExpert(TPasteAsExpert);
   RegisterEditorExpert(TCopyRawStringsExpert);
   RegisterEditorExpert(TConvertRawStringsExpert);
-
 end.

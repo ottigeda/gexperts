@@ -5,23 +5,26 @@ interface
 uses
   Graphics;
 
+///<summary>:
+/// Will rescale the Source image and put the rescaled version into the Destination
+/// bitmap. If NearestFit is set to True, this is the same kind of rescaling that TImage.Stretch
+/// will perform. If it's set to False, the procedure will use a resampling algorithm called
+/// "Fant's Resampling Algorithm". This algorithm makes sure that instead of just picking single
+/// pixels and either skipping some or duplicating other to make the image smaller or larger
+/// all pixels contribute to the image and thus makes a much better end result, albeit a little
+/// slower than the nearest fit algorithm (stretchdraw). </summary>
 function Rescale(Source, Destination: TBitmap; NearestFit: Boolean): Boolean;
-// Will rescale the Source image and put the rescaled version into the Destination
-// bitmap. If NearestFit is set to True, this is the same kind of rescaling that TImage.Stretch
-// will perform. If it's set to False, the procedure will use a resampling algorithm called
-// "Fant's Resampling Algorithm". This algorithm makes sure that instead of just picking single
-// pixels and either skipping some or duplicating other to make the image smaller or larger
-// all pixels contribute to the image and thus makes a much better end result, albeit a little
-// slower than the nearest fit algorithm (stretchdraw).
 
+///<summary>:
+/// Will effectively call Rescale above with Source=Destination (not quite, but that's effect),
+/// and resize the Bitmap variable in-place. That means that if this function returns True, the
+/// Bitmap object will have the new width and height and its contents will have been rescaled to
+/// match (not cropped) </summary>
 function Resize(Bitmap: TBitmap; NewWidth, NewHeight: Integer; NearestFit: Boolean): Boolean;
-// Will effectively call Rescale above with Source=Destination (not quite, but that's effect),
-// and resize the Bitmap variable in-place. That means that if this function returns True, the
-// Bitmap object will have the new width and height and its contents will have been rescaled to
-// match (not cropped)
 
+///<summary>:
+/// Will just call Resize with the width and height of Bitmap multiplied with the factor </summary>
 function Zoom(Bitmap: TBitmap; Factor: Integer; NearestFit: Boolean): Boolean;
-// Will just call Resize with the width and height of Bitmap multiplied with the factor
 
 implementation
 

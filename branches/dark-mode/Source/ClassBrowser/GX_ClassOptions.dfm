@@ -3,7 +3,7 @@ object fmClassOptions: TfmClassOptions
   Top = 170
   AutoScroll = False
   BorderIcons = [biSystemMenu]
-  Caption = 'Class Browser Options'
+  Caption = 'Class Browser Configuration'
   ClientHeight = 385
   ClientWidth = 423
   Color = clBtnFace

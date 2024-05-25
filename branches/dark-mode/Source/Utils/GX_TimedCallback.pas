@@ -15,31 +15,33 @@ type
     FFreeAfterCallback: Boolean;
     procedure HandleTimer(Sender: TObject);
   public
-    constructor Create(CallBack: TNotifyEvent; _DelayMS: integer; _FreeAfterCallback: boolean);
+    constructor Create(_CallBack: TNotifyEvent; _DelayMS: Integer; _FreeAfterCallback: Boolean);
     destructor Destroy; override;
     procedure Reset;
   end;
 
 implementation
 
+uses
+  u_dzVclUtils;
+
 { TTimedCallback }
 
-constructor TTimedCallback.Create(CallBack: TNotifyEvent; _DelayMS: integer;
-  _FreeAfterCallback: boolean);
+constructor TTimedCallback.Create(_CallBack: TNotifyEvent; _DelayMS: Integer;
+  _FreeAfterCallback: Boolean);
 begin
   inherited Create;
 
-  Assert(Assigned(Callback));
+  Assert(Assigned(_Callback));
+
+  FCallback := _CallBack;
+  FFreeAfterCallback := _FreeAfterCallback;
 
   FTimer := TTimer.Create(nil);
   FTimer.Enabled := False;
   FTimer.OnTimer := HandleTimer;
   FTimer.Interval := _DelayMS;
   FTimer.Enabled := True;
-
-  FCallback := CallBack;
-
-  FFreeAfterCallback := _FreeAfterCallback;
 end;
 
 destructor TTimedCallback.Destroy;
@@ -59,8 +61,7 @@ end;
 
 procedure TTimedCallback.Reset;
 begin
-  FTimer.Enabled := False;
-  FTimer.Enabled := True; // FI:W508 Variable is assigned twice successively
+  TTimer_Restart(FTimer);
 end;
 
 end.

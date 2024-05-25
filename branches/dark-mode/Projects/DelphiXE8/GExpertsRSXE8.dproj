@@ -14,25 +14,25 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
-        <Base>true</Base>
-        <CfgParent>Base</CfgParent>
         <Base_Win32>true</Base_Win32>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
-        <Base>true</Base>
-        <CfgParent>Base</CfgParent>
         <Cfg_1>true</Cfg_1>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
-        <Base>true</Base>
-        <CfgParent>Base</CfgParent>
         <Cfg_2>true</Cfg_2>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
-        <Base>true</Base>
+        <Cfg_2_Win32>true</Cfg_2_Win32>
         <CfgParent>Cfg_2</CfgParent>
         <Cfg_2>true</Cfg_2>
-        <Cfg_2_Win32>true</Cfg_2_Win32>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <SanitizedProjectName>GExpertsRSXE8</SanitizedProjectName>
@@ -120,7 +120,6 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Utils\GX_BookmarkList.pas"/>
         <DCCReference Include="..\..\source\Bookmarks\GX_Bookmarks.pas">
             <Form>fmGxBookmarksForm</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\ProjectOptionSets\GX_CheckListBoxWithHints.pas"/>
         <DCCReference Include="..\..\source\ClassBrowser\GX_ClassBrowser.pas">
@@ -200,7 +199,6 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\Source\Framework\GX_ConfigureExperts.pas">
             <Form>frConfigureExperts</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_Consts.pas"/>
@@ -230,10 +228,12 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\source\Bookmarks\GX_EditBookmark.pas">
             <Form>fmEditBookmarks</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_EditorChangeServices.pas"/>
-        <DCCReference Include="..\..\source\Framework\GX_EditorEnhancements.pas"/>
+        <DCCReference Include="..\..\source\experts\editorenhancements\GX_EditorEnhancements.pas"/>
+        <DCCReference Include="..\..\Source\Experts\EditorEnhancements\GX_EditorEnhancementsConfig.pas">
+            <Form>fmEditorEnhancementsConfig</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_EditorExpert.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_EditorExpertManager.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_EditorFormServices.pas"/>
@@ -365,7 +365,7 @@ $(PreBuildEvent)]]>
             <Form>fmGrepSelect</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_GxUtils.pas"/>
-        <DCCReference Include="..\..\source\HideNavigationToolbar\GX_HideNavbar.pas"/>
+        <DCCReference Include="..\..\source\Experts\EditorEnhancements\GX_HideNavbar.pas"/>
         <DCCReference Include="..\..\source\HideNonvisualComponents\GX_HideNonVisualComps.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_IconMessageBox.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeApplicationSettingsEnhancer.pas"/>
@@ -580,7 +580,6 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\Source\UsesExpert\GX_UsesExpertOptions.pas">
             <Form>fmUsesExpertOptions</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_UsesManager.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_VCLFixPack.pas"/>
@@ -647,17 +646,19 @@ $(PreBuildEvent)]]>
     <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
     <Import Project="$(MSBuildProjectName).deployproj" Condition="Exists('$(MSBuildProjectName).deployproj')"/>
     <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win32'">
-        <PostBuildEvent/>
-        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
-        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;</PreBuildEvent>        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
+        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;</PreBuildEvent>
+        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent/>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win32'">
-        <PostBuildEvent/>
-        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
-        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;</PreBuildEvent>        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
+        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;</PreBuildEvent>
+        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent/>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
 </Project>

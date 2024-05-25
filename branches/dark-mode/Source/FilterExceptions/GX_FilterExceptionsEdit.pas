@@ -16,6 +16,7 @@ uses
   Controls,
   Forms,
   Dialogs,
+  GX_GxUtils,
   GX_BaseForm,
   StdCtrls,
   ComCtrls,
@@ -104,6 +105,7 @@ begin
   FRegEx := TRegExpr.Create;
 
   InitDpiScaler;
+  GxSetDefaultFont(Self);
 end;
 
 destructor TfmGxFilterExceptionsEdit.Destroy;
@@ -163,6 +165,11 @@ end;
 procedure TfmGxFilterExceptionsEdit.SetData(const _Message: string;
   const _Project, _ExceptionClass, _MessageRe: string; _Action: TExceptionFilterAction);
 begin
+  re_Test.Font.Assign(Self.Font);
+  re_Test.DefAttributes.Name := Self.Font.Name;
+  re_Test.DefAttributes.Size := Self.Font.Size;
+  re_Test.DefAttributes.Style := [];
+
   FProject := _Project;
   if (_Project = '') or (_Project = '.*') then
     b_ProjectName.Visible := False

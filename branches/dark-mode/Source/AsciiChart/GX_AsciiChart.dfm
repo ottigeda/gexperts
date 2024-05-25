@@ -253,24 +253,27 @@ object fmAsciiChart: TfmAsciiChart
       OnUpdate = actCharHexUpdate
     end
     object actFontSize8: TAction
+      Tag = 8
       Category = 'FontSize'
       Caption = 'Font Size: 8'
-      ShortCut = 16440
-      OnExecute = actFontSize8Execute
+      ShortCut = 16433
+      OnExecute = actFontSizeExecute
       OnUpdate = actGenericFontSizeUpdate
     end
     object actFontSize10: TAction
+      Tag = 10
       Category = 'FontSize'
       Caption = 'Font Size: 10'
-      ShortCut = 16432
-      OnExecute = actFontSize10Execute
+      ShortCut = 16434
+      OnExecute = actFontSizeExecute
       OnUpdate = actGenericFontSizeUpdate
     end
     object actFontSize12: TAction
+      Tag = 12
       Category = 'FontSize'
       Caption = 'Font Size: 12'
-      ShortCut = 16434
-      OnExecute = actFontSize12Execute
+      ShortCut = 16435
+      OnExecute = actFontSizeExecute
       OnUpdate = actGenericFontSizeUpdate
     end
     object actShowHints: TAction

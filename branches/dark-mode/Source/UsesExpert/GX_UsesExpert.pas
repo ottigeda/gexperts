@@ -2932,6 +2932,8 @@ procedure SelectInGrid(_sg: TStringGrid; const _Unit: string);
 var
   s: string;
 begin
+  inherited;
+
   FilterVisibleUnits;
 
   s := edtIdentifierFilter.Text;

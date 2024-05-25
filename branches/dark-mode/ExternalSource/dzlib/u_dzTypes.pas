@@ -82,6 +82,8 @@ type
   UIntPtr = UInt64;
 {$IFEND}
 {$IFEND}
+  // This is to prevent a compile error if none of the above types needs to be declarred
+  TBlaBlaBlaBlaBlaBlaBla = Pointer;
 
 {$IF not declared(MaxUInt32)}
 const
@@ -168,10 +170,15 @@ type
   TStringArray = TStringDynArray;
   TRawByteStringArray = array of RawByteString;
   TIntegerArray = array of Integer;
+  PIntegerArray = ^TIntegerArray;
   TSingleArray = array of Single;
+  PSingleArray = ^TSingleArray;
   TDoubleArray = array of Double;
+  PDoubleArray = ^TDoubleArray;
   TExtendedArray = array of Extended;
+  PExtendedArray = ^TExtendedArray;
   TExtendedDynArray = TExtendedArray;
+  PExtendedDynArray = ^TExtendedDynArray;
 {$IF not Declared(TBytes)}
   TBytes = array of Byte;
 {$IFEND}

@@ -371,8 +371,6 @@ resourcestring
     Result.Anchors := [akLeft, akTop, akRight, akBottom];
 {$ENDIF}
     Result.ColCount := 2;
-    Result.DefaultColWidth := 150;
-    Result.DefaultRowHeight := 17;
     Result.FixedCols := 0;
     Result.RowCount := 2;
     Result.Options := [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goEditing, goTabs, goAlwaysShowEditor, goThumbTracking];
@@ -402,6 +400,13 @@ begin
   edtFind.Left := GridPad + l_Find.Width + 8;
   edtFind.Width := btnClear.Left - edtFind.Left;
 
+  InitDpiScaler;
+
+  FGridVcl.DefaultColWidth := FScaler.Calc(150);
+  FGridVcl.DefaultRowHeight := FScaler.Calc(DEFAULT_GRID_ROWHEIGHT);
+  FGridFmx.DefaultColWidth := FScaler.Calc(150);
+  FGridFmx.DefaultRowHeight := FScaler.Calc(DEFAULT_GRID_ROWHEIGHT);
+
   FValueListVcl := TStringList.Create;
   FValueListFmx := TStringList.Create;
   UpdateGridEvents;
@@ -420,8 +425,6 @@ begin
   finally
     st.Free;
   end;
-
-  InitDpiScaler;
 end;
 
 destructor TfmCompRenameConfig.Destroy;
@@ -489,8 +492,8 @@ end;
 
 procedure TfmCompRenameConfig.ResizeGrids;
 begin
-  FGridVcl.ResizeColumns;
-  FGridFmx.ResizeColumns;
+  if Assigned(FGridVcl) then FGridVcl.ResizeColumns;
+  if Assigned(FGridFmx) then FGridFmx.ResizeColumns;
 end;
 
 procedure TfmCompRenameConfig.CopyValuesToGrid(_Values: TStringList; _Grid: TRenameStringGrid);

@@ -1,7 +1,6 @@
 library GExpertsRS110;
 
 {$E dll}
-{$R 'GExperts_manifest.res' '..\..\Source\GExperts_manifest.rc'}
 
 uses
   GX_About in '..\..\source\Framework\GX_About.pas' {fmAbout},
@@ -75,7 +74,8 @@ uses
   GX_eDate in '..\..\source\Editor\GX_eDate.pas' {fmDateFormat},
   GX_EditBookmark in '..\..\source\Bookmarks\GX_EditBookmark.pas' {fmEditBookmarks},
   GX_EditorChangeServices in '..\..\source\Framework\GX_EditorChangeServices.pas',
-  GX_EditorEnhancements in '..\..\source\Framework\GX_EditorEnhancements.pas',
+  GX_EditorEnhancements in '..\..\source\experts\editorenhancements\GX_EditorEnhancements.pas',
+  GX_EditorEnhancementsConfig in '..\..\Source\Experts\EditorEnhancements\GX_EditorEnhancementsConfig.pas' {fmEditorEnhancementsConfig},
   GX_EditorExpert in '..\..\source\Editor\GX_EditorExpert.pas',
   GX_EditorExpertManager in '..\..\source\Editor\GX_EditorExpertManager.pas',
   GX_EditorFormServices in '..\..\source\Framework\GX_EditorFormServices.pas',
@@ -139,7 +139,7 @@ uses
   GX_GrepSearchExpert in '..\..\Source\Grep\GX_GrepSearchExpert.pas',
   GX_GrepSelect in '..\..\Source\Grep\GX_GrepSelect.pas' {fmGrepSelect},
   GX_GxUtils in '..\..\source\Utils\GX_GxUtils.pas',
-  GX_HideNavbar in '..\..\source\HideNavigationToolbar\GX_HideNavbar.pas',
+  GX_HideNavbar in '..\..\source\Experts\EditorEnhancements\GX_HideNavbar.pas',
   GX_HideNonVisualComps in '..\..\source\HideNonvisualComponents\GX_HideNonVisualComps.pas',
   GX_IconMessageBox in '..\..\source\Framework\GX_IconMessageBox.pas',
   GX_IdeApplicationSettingsEnhancer in '..\..\Source\IDE\GX_IdeApplicationSettingsEnhancer.pas',
@@ -258,10 +258,11 @@ uses
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
   GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas';
 
-{$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
+// using this resouce results in an Access Violiation on closing the IDE
+{.$R '..\..\Source\GExperts_manifest.res'}
+{$R '..\..\images\GXIcons.res''}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
 {$R '..\..\Binaries\ConvertStrings.res' '..\..\Binaries\ConvertStrings.rc'}
-
 {$R *_version.res}
 
 begin

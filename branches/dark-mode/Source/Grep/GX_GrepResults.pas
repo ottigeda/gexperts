@@ -2041,6 +2041,8 @@ end;
 
 procedure TfmGrepResults.FormShow(Sender: TObject);
 begin
+  inherited;
+
   AssignSettingsToForm;
   ResizeListBox;
   ResizeStatusBar;
@@ -2057,14 +2059,46 @@ end;
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmGrepResults.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
+  dil: TImageList;
   il: TImageList;
+  i: Integer;
+  tbbtn: TToolButton;
 begin
-  inherited;
-  ToolBar.DisabledImages := GExpertsInst(True).GetScaledSharedDisabledImages(_NewDpi);
+  dil := GExpertsInst(True).GetScaledSharedDisabledImages(_NewDpi);
   il := GExpertsInst(True).GetScaledSharedImages(_NewDpi);
-  ToolBar.Images := il;
+
   TheActionList.Images := il;
   MainMenu.Images := il;
+
+  // All this fumbling with the Toolbar and its buttons tries to fix
+  // a scaling problem for the icons. It's still far from perfect but
+  // better than it used to be.
+  // Unfortunately this fixes only the Grep Results form, the other
+  // forms are still badly broken.
+  ToolBar.DisabledImages := nil;
+  ToolBar.Images := nil;
+  ToolBar.AutoSize := False;
+  for i := 0 to ToolBar.ButtonCount - 1 do begin
+    tbbtn := ToolBar.Buttons[i];
+    if tbbtn.Style <> tbsSeparator then
+      tbbtn.AutoSize := False;
+  end;
+  ToolBar.ButtonWidth := 0;
+  ToolBar.ButtonHeight := 0;
+
+  inherited;
+
+  ToolBar.Images := il;
+  ToolBar.DisabledImages := dil;
+  ToolBar.ButtonWidth := 0;
+  ToolBar.ButtonHeight := 0;
+
+  for i := 0 to ToolBar.ButtonCount - 1 do begin
+    tbbtn := ToolBar.Buttons[i];
+    if tbbtn.Style <> tbsSeparator then
+      tbbtn.AutoSize := True;
+  end;
+  ToolBar.AutoSize := True;
 end;
 
 procedure TfmGrepResults.ArrangeControls;

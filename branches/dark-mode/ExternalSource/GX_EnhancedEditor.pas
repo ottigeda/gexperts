@@ -7,9 +7,10 @@ interface
 // This is implemented as a TWinControl to ease design-time usage
 
 uses
-  Windows, Classes, Graphics, Controls,
-  SynEdit, SynMemo, SynEditTypes, SynEditTextBuffer, GX_SynMemoUtils,
-  GX_GenericUtils, GX_StringList, SynEditKeyCmds;
+  Windows, Classes, Graphics, Controls, Types,
+  SynEdit, SynMemo, SynEditTypes, SynEditTextBuffer, SynEditKeyCmds,
+  GX_SynMemoUtils,
+  GX_GenericUtils, GX_StringList;
 
 type
   TGxEnhancedEditor = class(TWinControl)

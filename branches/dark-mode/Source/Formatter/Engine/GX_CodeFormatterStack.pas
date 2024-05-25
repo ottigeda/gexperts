@@ -129,7 +129,7 @@ begin
     + ' IncIndent: ' + IntToStr(_IncIndent));
 
   if FStackPtr >= MaxStack then
-    raise EFormatException.Create('Stack overflow');
+    raise EFormatException.Create('CodeFormatterStack overflow');
 
   Inc(FStackPtr);
   tr := GetTopRec;
@@ -163,6 +163,11 @@ begin
 
     Result := tr^.RT;
     Dec(FStackPtr);
+{$IFDEF DEBUG}
+    tr.RT := rtNothing;
+    tr.nInd := 0;
+{$ENDIF}
+    asm nop end;
   end else begin
     Assert(False, 'Stack.Pop: empty stack');
     FNIndent := 0;
@@ -190,11 +195,21 @@ begin
 end;
 
 function TCodeFormatterSegment.Clear: Integer;
+{$IFDEF DEBUG}
+var
+  i: integer;
+{$ENDIF}
 begin
   Result := Depth;
   FStackPtr := -1;
   FNIndent := 0;
   FProcLevel := 0;
+{$IFDEF DEBUG}
+  for i := 0 to Result - 1 do begin
+    FStack[i].RT := rtNothing;
+    FStack[i].nInd := 0;
+  end;
+{$ENDIF}
 end;
 
 function TCodeFormatterSegment.Depth: Integer;

@@ -934,6 +934,8 @@ end;
 
 procedure TfmMacroTemplates.FormShow(Sender: TObject);
 begin
+  inherited;
+
   // Loading executed here, because file name is a property (not added to Create)
   if FMacroFile = nil then
     FMacroFile := TMacroFile.Create;

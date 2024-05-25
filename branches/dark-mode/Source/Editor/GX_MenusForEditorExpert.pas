@@ -5,7 +5,7 @@ unit GX_MenusForEditorExpert;
 interface
 
 uses
-  Menus, ActnList, GX_Experts;
+  Menus, ActnList, Actions, GX_Experts;
 
 type
   TMenusForEditorExperts = class(TGX_Expert)
@@ -122,7 +122,7 @@ begin
     if AEditorExpert.Active then
     begin
       ExpertMenuEntry := TMenuItem.Create(MenuItem);
-      ExpertMenuEntry.Action := GxActionBroker.FindAction(AEditorExpert.GetActionName);
+      ExpertMenuEntry.Action := GxActionBroker.FindGExpertsAction(AEditorExpert.GetActionName);
 
       MenuItem.Add(ExpertMenuEntry);
     end;
@@ -136,6 +136,7 @@ var
   AEditorExpertManager: TGxEditorExpertManager;
   AEditorExpert: TEditorExpert;
   ExpertMenuEntry: TMenuItem;
+  act: TContainedAction;
 begin
   Assert(Assigned(PopupMenu));
   PopupMenu.Items.Clear;
@@ -157,7 +158,10 @@ begin
     if AEditorExpert.Active then
     begin
       ExpertMenuEntry := TMenuItem.Create(PopupMenu);
-      ExpertMenuEntry.Action := GxActionBroker.FindAction(AEditorExpert.GetActionName);
+      act := GxActionBroker.FindAction(GxActionBroker.GenerateActionName(AEditorExpert.GetActionName));
+      Assert(Assigned(act),
+        Format('Action "%s" for editor expert "%s not found', [AEditorExpert.GetActionName, AEditorExpert.GetName]));
+      ExpertMenuEntry.Action := act;
 
       PopupMenu.Items.Add(ExpertMenuEntry);
     end;

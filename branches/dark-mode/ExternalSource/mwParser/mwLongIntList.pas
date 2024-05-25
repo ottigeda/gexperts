@@ -52,10 +52,13 @@ end; { Destroy }
 procedure TLongintList.Sort;
 var
   Left, Right, SubArray, SubLeft, SubRight, Temp, Pivot: Longint;
-  Stack: array[1..32] of record First, Last: Longint; end;
+  StackSize: Integer;
+  Stack: array of record First, Last: Longint; end;
 begin
   if Count > 1 then
   begin
+    StackSize := 32;
+    SetLength(Stack, StackSize);
     SubArray := 1;
     Stack[SubArray].First := 0;
     Stack[SubArray].Last := Count - 1;
@@ -82,6 +85,10 @@ begin
         if SubLeft < Right then
         begin
           Inc(SubArray);
+          if SubArray >= StackSize then begin
+            Inc(StackSize, 16);
+            SetLength(Stack, StackSize);
+          end;
           Stack[SubArray].First := SubLeft;
           Stack[SubArray].Last := Right;
         end;

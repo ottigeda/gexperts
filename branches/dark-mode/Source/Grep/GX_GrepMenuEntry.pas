@@ -207,11 +207,7 @@ var
       Exit; //==>
 
     ExpertMenuEntry := TMenuItem.Create(MenuItem);
-    if Expert.HasMenuItem then begin
-      ExpertMenuEntry.Action := GxActionBroker.FindGExpertsMenuAction(Expert.GetActionName)
-    end else begin
-      ExpertMenuEntry.Action := GxActionBroker.FindGExpertsAction(Expert.GetActionName);
-    end;
+    ExpertMenuEntry.Action := GxActionBroker.FindGExpertsAction(Expert.GetActionName);
     MenuItem.Add(ExpertMenuEntry);
   end;
 
@@ -283,11 +279,7 @@ var
       Exit; //==>
 
     ExpertMenuEntry := TMenuItem.Create(PopupMenu);
-    if Expert.HasMenuItem then begin
-      ExpertMenuEntry.Action := GxActionBroker.FindGExpertsMenuAction(Expert.GetActionName)
-    end else begin
-      ExpertMenuEntry.Action := GxActionBroker.FindGExpertsAction(Expert.GetActionName);
-    end;
+    ExpertMenuEntry.Action := GxActionBroker.FindGExpertsAction(Expert.GetActionName);
     PopupMenu.Items.Add(ExpertMenuEntry);
   end;
 

@@ -1,7 +1,7 @@
 inherited fmTabOrderOptions: TfmTabOrderOptions
   BorderIcons = [biSystemMenu, biMaximize]
   BorderStyle = bsDialog
-  Caption = 'Set Tab Order Options'
+  Caption = 'Set Tab Order Configuration'
   ClientHeight = 177
   ClientWidth = 281
   PixelsPerInch = 96

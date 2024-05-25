@@ -185,6 +185,8 @@ end;
 
 procedure TfmToDoOptions.FormShow(Sender: TObject);
 begin
+  inherited;
+
   cboPriority.ItemIndex := 1;
   UpdateButtonState;
 end;

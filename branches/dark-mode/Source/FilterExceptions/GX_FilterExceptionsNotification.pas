@@ -74,7 +74,6 @@ implementation
 
 {$IFDEF GX_DELPHI2005_UP}
 
-
 {$R *.dfm}
 
 uses
@@ -88,6 +87,7 @@ uses
 {$IFOPT D+}GX_DbugIntf,
 {$ENDIF}
   GX_VerDepConst,
+  GX_GxUtils,
   GX_OtaUtils,
   GX_GenericUtils,
   GX_ConfigurationInfo;
@@ -117,8 +117,8 @@ constructor TfmExceptionNotification.Create(_Owner: TComponent);
 begin
   inherited Create(_Owner);
   TControl_SetMinConstraints(Self);
-
   InitDpiScaler;
+  GxSetDefaultFont(Self);
 end;
 
 destructor TfmExceptionNotification.Destroy;

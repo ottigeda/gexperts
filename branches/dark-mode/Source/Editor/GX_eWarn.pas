@@ -59,6 +59,7 @@ implementation
 uses
   Messages,
   u_dzVclUtils,
+  GX_GxUtils,
   GX_OtaUtils,
   GX_GenericUtils;
 
@@ -281,14 +282,14 @@ begin
   b_ERROR.Visible := False;
 {$IFEND}
 
+  InitDpiScaler;
+  GxSetDefaultFont(Self);
   TControl_SetMinConstraints(Self);
 
   FAvailable := TStringList.Create;
   InitWarnings;
   GxOtaGetEditorFont(lb_Warn.Font, 0);
   lb_Warn.Items.Assign(FAvailable);
-
-  InitDpiScaler;
 end;
 
 destructor TfmConfigureWarning.Destroy;

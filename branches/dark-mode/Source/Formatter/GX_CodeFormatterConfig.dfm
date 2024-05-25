@@ -583,7 +583,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object ud_AlignCommentPos: TUpDown
           Left = 91
-          Top = 48
+          Top = 56
           Width = 13
           Height = 21
           Associate = ed_AlignCommentPos
@@ -618,7 +618,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object ud_AlignVarPos: TUpDown
           Left = 91
-          Top = 168
+          Top = 152
           Width = 13
           Height = 21
           Associate = ed_AlignVarPos
@@ -629,7 +629,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         Caption = 'Misc.'
         object grp_ConfigPrecedence: TGroupBox
           Left = 7
-          Top = 72
+          Top = 88
           Width = 274
           Height = 97
           Caption = 'Configuration Precedence'
@@ -666,26 +666,26 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 7
           Top = 7
           Width = 250
-          Height = 59
+          Height = 74
           Caption = 'Source Directives to Prevent Formatting'
           TabOrder = 0
           object l_MiscStart: TLabel
-            Left = 7
-            Top = 20
+            Left = 8
+            Top = 24
             Width = 24
             Height = 13
             Caption = 'Start'
           end
           object l_MiscEnd: TLabel
-            Left = 124
-            Top = 20
+            Left = 128
+            Top = 24
             Width = 18
             Height = 13
             Caption = 'End'
           end
           object ed_StartComment: TEdit
-            Left = 3
-            Top = 33
+            Left = 8
+            Top = 40
             Width = 108
             Height = 21
             MaxLength = 20
@@ -693,8 +693,8 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             OnChange = UpdatePreview
           end
           object ed_EndCommentOut: TEdit
-            Left = 124
-            Top = 33
+            Left = 128
+            Top = 40
             Width = 108
             Height = 21
             MaxLength = 20

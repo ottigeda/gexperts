@@ -8,8 +8,6 @@ uses
 
 type
   TEditorExpert = class(TGX_BaseExpert)
-  private
-    FActionName: string;
   protected
     // you usually don't need to override this
     procedure LoadActiveAndShortCut(Settings: TGExpertsSettings); override;
@@ -23,7 +21,6 @@ type
     // returns true
     function CanHaveShortCut: boolean; override;
     procedure DoExecute(Sender: TObject);
-    function GetActionName: string;
     // you usually don't need to override this
     class function GetOptionsBaseRegistryKey: string; override;
   end;
@@ -33,31 +30,16 @@ type
 function EditorExpertClassList: TList;
 
 procedure RegisterEditorExpert(AClass: TEditorExpertClass);
-function GetExpertClass(const ClassName: string): TEditorExpertClass;
-function GetExpertClassByIndex(const Index: Integer): TEditorExpertClass;
+function GetEditorExpertClassByIndex(const Index: Integer): TEditorExpertClass;
 
 implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Dialogs, ActnList, ToolsAPI,
-  GX_ActionBroker, GX_OtaUtils, GX_GenericUtils;
+  GX_ActionBroker, GX_OtaUtils, GX_GenericUtils, GX_Actions;
 
 { Global utility functions }
-
-procedure RegisterEditorExpert(AClass: TEditorExpertClass);
-var
-  ClassName: string;
-begin
-  Assert(Assigned(AClass));
-  ClassName := AClass.ClassName;
-  if GetExpertClass(ClassName) <> nil then
-  begin
-    {raise EFilerError.CreateFmt(SDuplicateClass, [ClassName]);}
-    Exit;
-  end;
-  EditorExpertClassList.Add(AClass);
-end;
 
 function GetExpertClass(const ClassName: string): TEditorExpertClass;
 var
@@ -74,7 +56,21 @@ begin
   Result := nil;
 end;
 
-function GetExpertClassByIndex(const Index: Integer): TEditorExpertClass;
+procedure RegisterEditorExpert(AClass: TEditorExpertClass);
+var
+  ClassName: string;
+begin
+  Assert(Assigned(AClass));
+  ClassName := AClass.ClassName;
+  if GetExpertClass(ClassName) <> nil then
+  begin
+    {raise EFilerError.CreateFmt(SDuplicateClass, [ClassName]);}
+    Exit;
+  end;
+  EditorExpertClassList.Add(AClass);
+end;
+
+function GetEditorExpertClassByIndex(const Index: Integer): TEditorExpertClass;
 begin
   Assert((Index >= 0) and (Index <= EditorExpertClassList.Count - 1));
 
@@ -92,11 +88,9 @@ begin
   Assert(IsValidIdent(GetName),
     Format('%s needs to specify a valid name; currently it is "%s"', [Self.ClassName, GetName]));
 
-  FActionName := EditorExpertPrefix + GetName;
-
-  FActionInt := GxActionBroker.RequestAction(FActionName, GetBitmap);
+  FActionInt := GxActionBroker.RequestAction(GetActionName, GetBitmap);
   FActionInt.OnExecute := Self.DoExecute;
-  FActionInt.Caption := GetDisplayName;
+  FActionInt.Caption := GetActionCaption;
   FActionInt.OnUpdate := ActionOnUpdate;
 
   ShortCut := GetDefaultShortCut;
@@ -147,11 +141,6 @@ var
 function EditorExpertClassList: TList;
 begin
   Result := PrivateEditorExpertClassList;
-end;
-
-function TEditorExpert.GetActionName: string;
-begin
-  Result := GExpertsActionCategory + GxGenericActionQualifier + FActionName;
 end;
 
 procedure TEditorExpert.ActionOnUpdate(Sender: TObject);

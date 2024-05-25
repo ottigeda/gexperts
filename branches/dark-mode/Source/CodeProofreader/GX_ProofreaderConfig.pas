@@ -224,6 +224,8 @@ procedure TfmProofreaderConfig.FormShow(Sender: TObject);
 var
   i: TReplacementSource;
 begin
+  inherited;
+
   // Fill combo box with "languages" to select from
   for i := Low(TReplacementSource) to High(TReplacementSource) do
     cbLanguage.Items.Add(ReplacementSourceText[i]);

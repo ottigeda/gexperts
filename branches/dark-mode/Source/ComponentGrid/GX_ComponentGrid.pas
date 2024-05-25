@@ -165,13 +165,10 @@ begin
         PrintPageHeader(ReportName);
       end;
 
-      with StringGrid do
-      begin
-        WriteLn(F, GetPaddedString(Cells[0, i], 23) +
-                   GetPaddedString(Cells[1, i], 15) +
-                   GetPaddedString(Cells[2, i], 15) +
-                   Cells[3, i]);
-      end;
+      WriteLn(F, GetPaddedString(StringGrid.Cells[0, i], 23) +
+                 GetPaddedString(StringGrid.Cells[1, i], 15) +
+                 GetPaddedString(StringGrid.Cells[2, i], 15) +
+                 StringGrid.Cells[3, i]);
     end;
   finally
     System.CloseFile(F);
@@ -336,9 +333,11 @@ begin
 
   TControl_SetMinConstraints(Self);
 
-  InitDpiScaler;
+  GxSetDefaultFont(Self);
 
   InitializeForm;
+
+  InitDpiScaler;
 
   FComponentList := TInterfaceList.Create;
   FModified := False;
@@ -367,21 +366,31 @@ begin
   il := GExpertsInst.GetScaledSharedImages(_NewDpi);
   ToolBar.Images := il;
   Actions.Images := il;
+
+  if Assigned(StringGrid) then begin
+    StringGrid.DefaultRowHeight := FScaler.Calc(DEFAULT_GRID_ROWHEIGHT);
+    StringGrid.DefaultColWidth := FScaler.Calc(130);
+  end;
 end;
 {$ENDIF}
 
 procedure TfmComponentGrid.StringGridResize(Sender: TObject);
 const
-  MinimumLastColWidth = 100;
+  MINIMUM_LAST_COLWIDTH = 100; // @96 dpi
 var
   SendingGrid: TSortGrid;
   i: Integer;
   WidthDelta: Integer;
   LastColWidth: Integer;
+  MinimumLastColWidth: Integer;
 begin
   SendingGrid := Sender as TSortGrid;
   Assert(Assigned(SendingGrid));
 
+  if Assigned(FScaler) then
+    MinimumLastColWidth := FScaler.Calc(MINIMUM_LAST_COLWIDTH)
+  else
+    MinimumLastColWidth := MINIMUM_LAST_COLWIDTH;
   WidthDelta := SendingGrid.ClientWidth;
   for i := 0 to SendingGrid.ColCount - 1 do
     Dec(WidthDelta, SendingGrid.ColWidths[i]);
@@ -462,34 +471,33 @@ end;
 procedure TfmComponentGrid.InitializeForm;
 begin
   SetToolbarGradient(ToolBar);
+
   StringGrid := TSortGrid.Create(Self);
-  with StringGrid do
-  begin
-    Name := 'StringGrid';
-    Parent := Self;
-    Left := 0;
-    Top := 22;
-    Width := 449;
-    Height := 218;
-    Align := alClient;
-    ColCount := FixedColumns + Length(GridProperties);
-    DefaultRowHeight := 18;
-    DefaultColWidth := 130;
-    FixedCols := FixedColumns;
-    RowCount := 2;
-    Options := [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goEditing, goTabs, goColSizing];
-    TabOrder := 0;
-    OnSelectCell := StringGridSelectCell;
-    OnSetEditText := StringGridSetEditText;
-    CaseSensitive := False;
-    AlignmentHorz := taLeftJustify;
-    AlignmentVert := taTopJustify;
-    ClickSorting := True;
-    BevelStyle := cbNone;
-    ProportionalScrollBars := True;
-    ExtendedKeys := False;
-    OnResize := StringGridResize;
-  end;
+  StringGrid.Name := 'StringGrid';
+  StringGrid.Parent := Self;
+  StringGrid.Align := alClient;
+
+  StringGrid.ColCount := FixedColumns + Length(GridProperties);
+{$IFDEF GX_VER210_up}
+  StringGrid.DrawingStyle := gdsClassic;
+  StringGrid.FixedColor   := clBtnFace;
+{$ENDIF}
+  StringGrid.FixedCols := FixedColumns;
+  StringGrid.DefaultRowHeight := DEFAULT_GRID_ROWHEIGHT;
+  StringGrid.DefaultColWidth := 130;
+  StringGrid.RowCount := 2;
+  StringGrid.Options := [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goEditing, goTabs, goColSizing];
+  StringGrid.TabOrder := 0;
+  StringGrid.OnSelectCell := StringGridSelectCell;
+  StringGrid.OnSetEditText := StringGridSetEditText;
+  StringGrid.CaseSensitive := False;
+  StringGrid.AlignmentHorz := taLeftJustify;
+  StringGrid.AlignmentVert := taTopJustify;
+  StringGrid.ClickSorting := True;
+  StringGrid.BevelStyle := cbNone;
+  StringGrid.ProportionalScrollBars := True;
+  StringGrid.ExtendedKeys := False;
+  StringGrid.OnResize := StringGridResize;
 end;
 
 initialization

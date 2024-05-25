@@ -79,7 +79,7 @@ begin
   ConfigInfo.EditorExpertsEnabled := True;
   for i := 0 to EditorExpertClassList.Count - 1 do
   begin
-    ExpertClass := GetExpertClassByIndex(i);
+    ExpertClass := GetEditorExpertClassByIndex(i);
     try
       EditorExpert := ExpertClass.Create;
       EditorExpert.LoadSettings;

@@ -117,7 +117,7 @@ begin
   MatchLen := _Len;
 end;
 
-{ TfmFastGrep }
+{ TfmGxInstantGrepForm }
 
 constructor TfmGxInstantGrepForm.Create(_Owner: TComponent);
 begin
@@ -141,6 +141,7 @@ begin
   TStrings_FreeAllObjects(lb_Results.Items);
   FreeAndNil(FCurrentCode);
   inherited;
+  fmGxInstantGrepForm := nil;
 end;
 
 procedure TfmGxInstantGrepForm.act_ClearExecute(Sender: TObject);
@@ -537,8 +538,7 @@ constructor TGrepInstantSearchExpert.Create;
 begin
   inherited;
 
-  fmGxInstantGrepForm := TfmGxInstantGrepForm.Create(nil);
-  SetFormIcon(fmGxInstantGrepForm);
+  // SetFormIcon(fmGxInstantGrepForm);
   IdeDockManager.RegisterDockableForm(TfmGxInstantGrepForm, fmGxInstantGrepForm, 'fmGxInstantGrepForm');
 
 {$IFDEF GX_VER170_up}
@@ -555,6 +555,8 @@ begin
   if FNotifierIdx <> 0 then
     (BorlandIDEServices as IOTAEditorServices).RemoveNotifier(FNotifierIdx);
 {$ENDIF}
+
+  // inherited Destroy sets Active to false which frees the form
   inherited;
 end;
 
@@ -611,6 +613,7 @@ begin
     end;
   end;
 end;
+
 initialization
   RegisterGX_Expert(TGrepInstantSearchExpert);
 end.

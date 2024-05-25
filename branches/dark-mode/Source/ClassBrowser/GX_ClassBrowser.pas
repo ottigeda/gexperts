@@ -251,6 +251,7 @@ type
   protected
     procedure SetActive(New: Boolean); override;
   public
+    constructor Create; override;
     destructor Destroy; override;
     function GetActionCaption: string; override;
     class function GetName: string; override;
@@ -268,7 +269,10 @@ uses
   u_dzVclUtils,
   GX_VerDepConst, GX_ClassIdentify, GX_ConfigurationInfo,
   GX_ClassProp, GX_GExperts,
-  GX_GxUtils, GX_GenericUtils, GX_StringList, GX_IdeUtils;
+  GX_GxUtils, GX_GenericUtils, GX_StringList, GX_IdeUtils, GX_Logging;
+
+var
+  Logger: IGxLogger;
 
 type
   TClassProjectNotifier = class(TBaseIdeNotifier)
@@ -514,7 +518,13 @@ begin
         Dec(i);
     end;
 
-    Assert(TempClassList.Count = 0, 'Bad algorithm building tree');
+    if TempClassList.Count > 0 then begin
+      Logger.WarningFmt('%d items left in TempClassList, possibly due to an interposer class', [TempClassList.Count]);
+      Logger.Indent;
+      for i := 0 to TempClassList.Count - 1 do
+        Logger.WarningFmt('%d: %s (%s)', [i, TempClassList[i], TBrowseClassInfoCollection(TempClassList.Objects[i]).DerivedFrom]);
+      Logger.UnIndent;
+    end;
 
   finally
     FreeAndNil(TempClassList);
@@ -706,7 +716,7 @@ end;
 
 procedure TfmClassBrowser.tvBrowseChange(Sender: TObject; Node: TTreeNode);
 resourcestring
-  SSourceModule = 'Source module: %s  (%d ms)';
+  SSourceModule = 'Source module: %s line: %d  (%d ms)';
 var
   OInfo: TBrowseClassInfoCollection;
   TimeSpent: DWORD;
@@ -730,7 +740,7 @@ begin
         DrawInheritance;
       TimeSpent := GetTickCount - TimeSpent;
       LoadList(OInfo);
-      StatusBar.SimpleText := Format(SSourceModule, [OInfo.SourceName, TimeSpent]);
+      StatusBar.SimpleText := Format(SSourceModule, [OInfo.SourceName, oinfo.LineNo, TimeSpent]);
     end else begin
       StatusBar.SimpleText := '';
       FMethodText.Clear;
@@ -828,11 +838,14 @@ begin
 end;
 
 procedure TfmClassBrowser.edtClassFilterKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+var
+  cnt: Integer;
 begin
   if (Key in [VK_DOWN, VK_UP, VK_NEXT, VK_PRIOR]) then begin
-    if tvBrowse.Items.Count > 1 then
+    cnt := tvBrowse.Items.Count;
+    if cnt > 1 then
       tvBrowse.Perform(WM_KEYDOWN, Key, 0)
-    else if tvBrowse.Items.Count = 1 then
+    else if cnt = 1 then
       tvBrowse.Items[0].Selected := True;
     Key := 0;
   end;
@@ -980,9 +993,9 @@ var
     begin
       if Node.Level > LastVisitedLevel then
       begin
-        if SameText(TBrowseClassInfoCollection(Node.Data).Name, Comp) then
+        OInfo := TBrowseClassInfoCollection(Node.Data);
+        if SameText(OInfo.Name, Comp) then
         begin
-          OInfo := TBrowseClassInfoCollection(Node.Data);
           Result := OInfo.DerivedFrom;
           if SameText(Result, Comp) then begin
             // prevent infinite loop for IInterface and TObject
@@ -1548,6 +1561,7 @@ begin
   FParseRecursing := False;
   FAutomaticallyHideBrowser := True;
   FInfoViewMode := vmTree;
+  edtClassFilter.Visible := (FInfoViewMode = vmList);
 
   FClassList := TClassList.Create;
   FClassList.OnParseFile := ParseFile;
@@ -1631,11 +1645,18 @@ begin
   end;
 end;
 
+constructor TClassBrowserExpert.Create;
+begin
+  inherited;
+  Logger := CreateModuleLogger(GetName);
+end;
+
 destructor TClassBrowserExpert.Destroy;
 begin
   FreeAndNil(fmClassBrowser);
 
   inherited Destroy;
+  Logger := nil;
 end;
 
 function TClassBrowserExpert.GetActionCaption: string;
@@ -1887,6 +1908,8 @@ begin
     Exit;
 
   FInfoViewMode := Value;
+  edtClassFilter.Visible := (FInfoViewMode = vmList);
+  tbBrowse.Invalidate;
   LoadAllObjects;
 end;
 

@@ -62,7 +62,7 @@ type
     BoundsRect: TRect;
     FontSize: Integer;
     ItemHeight: Integer;
-    procedure Assign(_Ctrl: TControl);
+    procedure Assign(_Ctrl: TControl; _DesignDpi: Integer);
     procedure ApplyScale(const _Scaler: TDpiScaler);
     procedure ResizeFont(const _Scaler: TDpiScaler);
   end;
@@ -73,7 +73,7 @@ type
     FClientWidth, FClientHeight: Integer;
     FMinWidth, FMinHeight: Integer;
     FMaxWidth, FMaxHeight: Integer;
-    FFontSize: Integer;
+    FFormDesignFontSize: Integer;
     FFrm: TForm;
     FCtrlParams: array of TCtrlDpiScaler;
     FDesigDpi: Integer;
@@ -96,6 +96,45 @@ uses
   u_dzTypesUtils,
   u_dzMiscUtils;
 
+{$IFDEF DPI_SCALER_LOGGING}
+var
+  LogIsOpen: Boolean = False;
+  LogFile: Textfile;
+{$ENDIF}
+
+procedure LogStr(const _s: string);
+begin
+{$IFDEF DPI_SCALER_LOGGING}
+  if LogIsOpen then begin
+    WriteLn(LogFile, _s);
+    Flush(LogFile);
+  end;
+{$ENDIF}
+end;
+
+procedure LogFmt(const _s: string; _Params: array of const);
+begin
+  LogStr(Format(_s, _Params));
+end;
+
+procedure LogRect(const _Prefix: string; const _Rect: TRect);
+begin
+  LogFmt('%s: (Left: %d, Top: %d, Right: %d, Bottom: %d, (Width: %d, Height: %d))',
+    [_Prefix, _Rect.Left, _Rect.Top, _Rect.Right, _Rect.Bottom, TRect_Width(_Rect), TRect_Height(_Rect)]);
+end;
+
+procedure LogConstraints(const _Prefix: string; _Cstr: TSizeConstraints);
+begin
+  LogFmt('%s: (MinWidth, %d, MinHeight: %d, MaxWidth: %d, MaxHeight: %d)',
+    [_Prefix, _Cstr.MinWidth, _Cstr.MinHeight, _Cstr.MaxWidth, _Cstr.MaxHeight]);
+end;
+
+procedure LogForm(const _Prefix: string; _Frm: TForm);
+begin
+  LogFmt('%s: Left: %d, Top: %d, Width: %d, Height: %d, ClientWidth: %d, ClientHeight: %d',
+    [_Prefix, _Frm.Left, _Frm.Top, _Frm.Width, _Frm.Height, _Frm.ClientWidth, _Frm.ClientHeight]);
+end;
+
 type
   TFormHack = class(TForm)
   end;
@@ -103,7 +142,11 @@ type
 function TForm_GetDesignDPI(_Frm: TForm): UINT;
 begin
 {$IFDEF HAS_TFORM_GETDESIGNDPI}
-  Result := TFormHack(_Frm).GetDesignDpi;
+  if Assigned(_Frm) then begin
+    Result := TFormHack(_Frm).GetDesignDpi;
+    LogFmt('TForm_GetDesignDPI(%s: %s): Result: %d', [_Frm.Name, _Frm.ClassName, Result]);
+  end else
+    Result := 96;
 {$ELSE}
   Result := 96;
 {$ENDIF}
@@ -125,48 +168,17 @@ begin
 end;
 
 function TScreen_GetDpiForForm(_Frm: TCustomForm): UINT;
+var
+  DpiForWindow: UINT;
 begin
   Result := Screen.PixelsPerInch;
   if _Frm is TForm then begin
-    if Assigned(GetDpiForWindow) then
-      Result := GetDpiForWindow(_Frm.Handle);
+    if Assigned(GetDpiForWindow) then begin
+      DpiForWindow := GetDpiForWindow(_Frm.Handle);
+      LogFmt('TScreen_GetDpiForForm(%s): Screen.PixelsPerInch: %d DpiForWindow: %d', [_Frm.Name, Result, DpiForWindow]);
+      Result := DpiForWindow;
+    end;
   end;
-end;
-
-{$IFDEF DPI_SCALER_LOGGING}
-var
-  LogFile: Textfile;
-{$ENDIF}
-
-procedure LogStr(const _s: string);
-begin
-{$IFDEF DPI_SCALER_LOGGING}
-  WriteLn(LogFile, _s);
-  Flush(LogFile);
-{$ENDIF}
-end;
-
-procedure LogFmt(const _s: string; _Params: array of const);
-begin
-  LogStr(Format(_s, _Params));
-end;
-
-procedure LogRect(const _Prefix: string; const _Rect: TRect);
-begin
-  LogFmt('%s: (Left: %d, Top: %d, Right: %d, Bottom: %d, (Width: %d, Height: %d))',
-    [_Prefix, _Rect.Left, _Rect.Top, _Rect.Right, _Rect.Bottom, TRect_Width(_Rect), TRect_Height(_Rect)]);
-end;
-
-procedure LogConstraints(const _Prefix: string; _Cstr: TSizeConstraints);
-begin
-  LogFmt('%s: (MinWidth, %d, MinHeight: %d, MaxWidth: %d, MaxHeight: %d)',
-    [_Prefix, _Cstr.MinWidth, _Cstr.MinHeight, _Cstr.MaxWidth, _Cstr.MaxHeight]);
-end;
-
-procedure LogForm(const _Prefix: string; _frm: TForm);
-begin
-  LogFmt('%s: Left: %d, Top: %d, Width: %d, Height: %d, ClientWidth: %d, ClientHeight: %d',
-    [_Prefix, _frm.Left, _frm.Top, _frm.Width, _frm.Height, _frm.ClientWidth, _frm.ClientHeight]);
 end;
 
 { TDpiScaler }
@@ -208,21 +220,21 @@ begin
   _fnt.Height := _Size;
 end;
 
-procedure TDpiScaler.Init(_frm: TCustomForm);
+procedure TDpiScaler.Init(_Frm: TCustomForm);
 begin
-  if not Assigned(_frm) then begin
+  if not Assigned(_Frm) then begin
     FDesignDpi := 96;
     FCurrentDpi := 96;
   end else begin
 // todo: adjust as needed
 {$IFDEF DELPHIX_TOKYO_UP}
-    FDesignDpi := TForm_GetDesignDPI(TForm(_frm));
+    FDesignDpi := TForm_GetDesignDPI(TForm(_Frm));
     // I don't remember why I didn't use TForm(_frm).PixelsPerInch here
     // there possibly was a bug in some Delphi versions.
-    FCurrentDpi := TScreen_GetDpiForForm(_frm);
+    FCurrentDpi := TScreen_GetDpiForForm(_Frm);
 {$ELSE ~DELPHIX_TOKYO_UP}
-    FDesignDpi := TForm(_frm).PixelsPerInch;
-    FCurrentDpi := TForm(_frm).PixelsPerInch;
+    FDesignDpi := TForm(_Frm).PixelsPerInch;
+    FCurrentDpi := TForm(_Frm).PixelsPerInch;
 {$ENDIF DELPHIX_TOKYO_UP}
   end;
 end;
@@ -237,16 +249,16 @@ begin
   FCurrentDpi := _DPI;
 end;
 
-procedure TDpiScaler.SetCurrentDpi(_frm: TCustomForm);
+procedure TDpiScaler.SetCurrentDpi(_Frm: TCustomForm);
 begin
-  if not Assigned(_frm) then begin
+  if not Assigned(_Frm) then begin
     FCurrentDpi := 96;
   end else begin
 // todo: adjust as needed
 {$IFDEF DELPHIX_TOKYO_UP}
-    FCurrentDpi := TScreen_GetDpiForForm(_frm)
+    FCurrentDpi := TScreen_GetDpiForForm(_Frm)
 {$ELSE ~DELPHIX_TOKYO_UP}
-    FCurrentDpi := TForm(_frm).PixelsPerInch;
+    FCurrentDpi := TForm(_Frm).PixelsPerInch;
 {$ENDIF DELPHIX_TOKYO_UP}
   end;
 end;
@@ -258,7 +270,7 @@ var
   br: TRect;
   LabelWasAutoSize: Boolean;
 begin
-  LogFmt('TCtrlDpiScaler.ApplyScale(%s, %d %%)', [Ctrl.Name, _Scaler.ScaleFactorPercent]);
+  LogFmt('TCtrlDpiScaler.ApplyScale(%s: %s, %d %%)', [Ctrl.Name, Ctrl.ClassName, _Scaler.ScaleFactorPercent]);
 
   ResizeFont(_Scaler);
 
@@ -299,14 +311,18 @@ begin
 
   // if we don't do this, the text is truncated on the left
   if LabelWasAutoSize then begin
+    // LabelWasAutoSize is only True, if
+    // 1. the control is a label and
+    // 2. its AutoSize property was True
     TLabel(Ctrl).AutoSize := False;
     TLabel(Ctrl).AutoSize := True;
   end;
 end;
 
-procedure TCtrlDpiScaler.Assign(_Ctrl: TControl);
+procedure TCtrlDpiScaler.Assign(_Ctrl: TControl; _DesignDpi: Integer);
 var
   fnt: TFont;
+  Scaler: TDpiScaler;
 begin
   Ctrl := _Ctrl;
   BoundsRect := Ctrl.BoundsRect;
@@ -314,13 +330,19 @@ begin
     FontSize := 0;
   end else begin
     FontSize := GetFontSize(fnt);
+    Scaler.Init(fnt.PixelsPerInch, _DesignDpi);
+    FontSize := Scaler.Calc(FontSize);
   end;
 
   if not TryGetIntProperty(_Ctrl, 'ItemHeight', ItemHeight) then begin
     ItemHeight := 0;
   end;
 
-  LogFmt('TCtrlDpiScaler.Assign(%s):', [_Ctrl.Name]);
+  LogFmt('TCtrlDpiScaler.Assign(%s: %s):', [Ctrl.Name, Ctrl.ClassName]);
+  if FontSize <> 0 then
+    LogFmt('  FontSize: %d', [FontSize]);
+  if ItemHeight <> 0 then
+    LogFmt('  ItemHeight: %d', [ItemHeight]);
   LogRect('  BoundsRect', BoundsRect);
 end;
 
@@ -329,19 +351,30 @@ var
   fnt: TFont;
   ParentFontValue: Boolean;
   OldFontSize: Integer;
+  ParentFont: TFont;
 begin
-  if TryGetObjectProperty(Ctrl, 'Font', TObject(fnt)) then begin
-    if not TryGetBoolProperty(Ctrl, 'ParentFont', ParentFontValue)
-      or not ParentFontValue then begin
-      Assert(FontSize <> 0);
+  if not TryGetObjectProperty(Ctrl, 'Font', TObject(fnt)) then
+    Exit; //==>
 
-      LogFmt('TCtrlDpiScaler.ResizeFont(%d %%)', [_Scaler.ScaleFactorPercent]);
-      OldFontSize := GetFontSize(fnt);
-      SetFontSize(fnt, _Scaler.Calc(FontSize));
-
-      LogFmt('  OldFontSize: %d, NewFontSize: %d', [OldFontSize, GetFontSize(fnt)]);
+  if TryGetBoolProperty(Ctrl, 'ParentFont', ParentFontValue) then begin
+    if ParentFontValue then begin
+      if TryGetObjectProperty(Ctrl.Parent, 'Font', TObject(ParentFont)) then begin
+        LogFmt('TCtrlDpiScaler.ResizeFont(%d %%)', [_Scaler.ScaleFactorPercent]);
+        OldFontSize := GetFontSize(fnt);
+        SetFontSize(fnt, GetFontSize(ParentFont));
+        LogFmt('  OldFontSize: %d, NewFontSize: %d', [OldFontSize, GetFontSize(fnt)]);
+        Exit; //==>
+      end;
     end;
   end;
+
+  Assert(FontSize <> 0);
+
+  LogFmt('TCtrlDpiScaler.ResizeFont(%d %%)', [_Scaler.ScaleFactorPercent]);
+  OldFontSize := GetFontSize(fnt);
+  SetFontSize(fnt, _Scaler.Calc(FontSize));
+
+  LogFmt('  OldFontSize: %d, NewFontSize: %d', [OldFontSize, GetFontSize(fnt)]);
 end;
 
 { TFormDpiScaler }
@@ -358,7 +391,7 @@ begin
   SetLength(FCtrlParams, Offset + cnt);
   for i := 0 to cnt - 1 do begin
     Ctrl := _Ctrl.Controls[i];
-    FCtrlParams[Offset + i].Assign(Ctrl);
+    FCtrlParams[Offset + i].Assign(Ctrl, FDesignDpi);
     if Ctrl is TWinControl then
       AddControls(TWinControl(Ctrl));
   end;
@@ -368,9 +401,9 @@ procedure TFormDpiScaler.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   Scaler: TDpiScaler;
 //  RedrawLock: IInterface;
-  ClientRect: TRect;
-  NewWidth: Integer;
-  NewHeight: Integer;
+//  ClientRect: TRect;
+//  NewWidth: Integer;
+//  NewHeight: Integer;
   FormActiveControl: TWinControl;
 begin
   if not Assigned(FFrm) then
@@ -403,11 +436,14 @@ begin
     if Assigned(_NewBounds) then begin
       FFrm.BoundsRect := _NewBounds^;
     end else begin
-      ClientRect := FFrm.ClientRect;
-      NewWidth := Scaler.Calc(FClientWidth);
-      NewHeight := Scaler.Calc(FClientHeight);
-      FFrm.ClientWidth := NewWidth;
-      FFrm.ClientHeight := NewHeight;
+      // the following broke saving the dialog sizes
+      // I have disabled the code for now. We'll see whether this has any adverse effects
+      // -- 2024-05-18 twm
+//      ClientRect := FFrm.ClientRect;
+//      NewWidth := Scaler.Calc(FClientWidth);
+//      NewHeight := Scaler.Calc(FClientHeight);
+//      FFrm.ClientWidth := NewWidth;
+//      FFrm.ClientHeight := NewHeight;
     end;
     LogForm('  FFrm(after)', FFrm);
 
@@ -429,7 +465,7 @@ begin
   LogFmt('TFormDpiScaler.ApplyScale(%s, %d %%)', [FFrm.Name, _Scaler.ScaleFactorPercent]);
 
   OldFontSize := GetFontSize(FFrm.Font);
-  SetFontSize(FFrm.Font, _Scaler.Calc(FFontSize));
+  SetFontSize(FFrm.Font, _Scaler.Calc(FFormDesignFontSize));
   LogFmt('  OldFontSize: %d, NewFontSize: %d', [OldFontSize, GetFontSize(FFrm.Font)]);
 
   cnt := Length(FCtrlParams);
@@ -452,7 +488,7 @@ begin
   Result := Scaler.Calc(_Value);
 end;
 
-constructor TFormDpiScaler.Create(_frm: TForm);
+constructor TFormDpiScaler.Create(_Frm: TForm);
 var
   Scaler: TDpiScaler;
   cnstr: TSizeConstraints;
@@ -461,17 +497,17 @@ var
   FormActiveControl: TWinControl;
 begin
   inherited Create;
-  FFrm := _frm;
+  FFrm := _Frm;
   FormActiveControl := FFrm.ActiveControl;
-  FClientWidth := _frm.ClientWidth;
-  FClientHeight := _frm.ClientHeight;
-  cnstr := _frm.Constraints;
+  FClientWidth := _Frm.ClientWidth;
+  FClientHeight := _Frm.ClientHeight;
+  cnstr := _Frm.Constraints;
   FMinWidth := cnstr.MinWidth;
   FMinHeight := cnstr.MinHeight;
   FMaxWidth := cnstr.MaxWidth;
   FMaxHeight := cnstr.MaxHeight;
-  CurrFontSize := GetFontSize(_frm.Font);
-  FDesignDpi := TForm_GetDesignDPI(_frm);
+  CurrFontSize := GetFontSize(_Frm.Font);
+  FDesignDpi := TForm_GetDesignDPI(_Frm);
 
   FPnlMaster := TPanel.Create(FFrm);
   FPnlMaster.Parent := FFrm;
@@ -488,14 +524,16 @@ begin
   FPnlMaster.Align := alClient;
   FFrm.ActiveControl := FormActiveControl;
 
-  LogFmt('TFormDpiScaler.Create(%s)', [FFrm.Name]);
-  LogFmt('  ClientWidth: %d, ClientHeight: %d, MinWidth: %d, MinHeight: %d, MaxWdidth: %d MaxHeight: %d CurrFontSize: %d DesignDpi: %d',
+  LogFmt('TFormDpiScaler.Create(%s: %s)', [FFrm.Name, FFrm.ClassName]);
+  LogFmt('  ClientWidth: %d, ClientHeight: %d,'
+    + ' MinWidth: %d, MinHeight: %d, MaxWdidth: %d MaxHeight: %d,'
+    + ' CurrFontSize: %d DesignDpi: %d',
     [FClientWidth, FClientHeight, FMinWidth, FMinHeight, FMaxWidth, FMaxHeight, CurrFontSize, FDesignDpi]);
 
   // FontSize has already been changed by the VCL, but we need the design font size
-  Scaler.Init(_frm.Font.PixelsPerInch, FDesignDpi);
-  FFontSize := Scaler.Calc(CurrFontSize);
-  LogFmt('  (FontPixelsPerInc: %d, FontSize: %d', [_frm.Font.PixelsPerInch, FFontSize]);
+  Scaler.Init(_Frm.Font.PixelsPerInch, FDesignDpi);
+  FFormDesignFontSize := Scaler.Calc(CurrFontSize);
+  LogFmt('  Frm.Font.PixelsPerInch: %d, FormDesignFontSize: %d', [_Frm.Font.PixelsPerInch, FFormDesignFontSize]);
 
   AddControls(FFrm);
 end;
@@ -630,8 +668,14 @@ initialization
 // It didn't make any noticable difference though, probably because GExperts doesn't use VCL styles.
 {$IFDEF DPI_SCALER_LOGGING}
   Assignfile(LogFile, 'd:\DpiScaling.log');
-  Rewrite(LogFile);
+  try
+    Rewrite(LogFile);
+    LogIsOpen := True;
+  except
+    LogIsOpen := False;
+  end;
 finalization
-  CloseFile(LogFile);
+  if LogIsOpen then
+    CloseFile(LogFile);
 {$ENDIF}
 end.

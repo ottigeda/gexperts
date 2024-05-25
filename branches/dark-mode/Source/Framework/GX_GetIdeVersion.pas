@@ -49,6 +49,8 @@ type
      ideRS11U2, // Rad Studio 11 Alexandria Update 2 (aka version 11.2)
      ideRS11U3, // Rad Studio 11 Alexandria Update 3 (aka version 11.3)
      ideRS12,   // Rad Studio 12 Athens
+     ideRS12P1, // Rad Studio 12 Athens Patch 1
+     ideRS12U1, // Rad Studio 12 Athens Update 1
      // C# Builder
      ideCSB100,
      // C++Builder
@@ -1050,14 +1052,40 @@ begin
   end;
 end;
 
+{
+  Delphi 12 Athens
+  delphicoreide290.bpl 29.0.50491.5718
+  coreide290.bpl       29.0.50491.5718
+  bds.exe              29.0.50491.5718
+  dcldb290.bpl         29.0.50491.5718
+  rtl290.bpl           29.0.51211.6493
+
+  Delphi 12 (Patch 1)
+  rtl290.bpl           29.0.51211.6493
+
+  Delphi 12 (Update 1)
+  delphicoreide290.bpl 29.0.51961.7529
+  coreide290.bpl       29.0.51961.7529
+  bds.exe              29.0.51961.7529
+  dcldb290.bpl         29.0.51961.7529
+  rtl290.bpl           29.0.51961.7529
+
+}
+
 function GetRS12Version: TBorlandIdeVersion;
 const
-  BdsIde2900: TVersionNumber =     (Minor: 0; Major: 29; Build: 5718; Release: 50491);
+  RtlBpl2900: TVersionNumber =     (Minor: 0; Major: 29; Build: 5718; Release: 50491);
+  RtlBpl2900Patch1: TVersionNumber = (Minor: 0; Major: 29; Build: 6493; Release: 51211);
+  RtlBpl2900Upd1:TVersionNumber = (Minor: 0; Major: 29; Build: 7529; Release: 51961);
 var
-  BdsIdeFileVersion: TVersionNumber;
+  RtlBplFileVersion: TVersionNumber;
 begin
-  BdsIdeFileVersion := GetFileVersionNumber(GetIdeRootDirectory + 'Bin\bds.exe');
-  if CompareVersionNumber(BdsIdeFileVersion, BdsIde2900) >= 0 then begin
+  RtlBplFileVersion := GetFileVersionNumber(GetIdeRootDirectory + 'Bin\rtl290.bpl');
+  if CompareVersionNumber(RtlBplFileVersion, RtlBpl2900Upd1) >= 0 then begin
+    Result := ideRS12U1;
+  end else if CompareVersionNumber(RtlBplFileVersion, RtlBpl2900Patch1) >= 0 then begin
+    Result := ideRS12P1
+  end else if CompareVersionNumber(RtlBplFileVersion, RtlBpl2900) >= 0 then begin
     Result := ideRS12
   end else begin
     Result := ideUnknown;
@@ -1201,7 +1229,7 @@ begin
 
   {$IFDEF VER360}
     Result := GetRS12Version;
-    Assert(Result in [ideRS12]);
+    Assert(Result in [ideRS12, ideRS12P1, ideRS12U1]);
   {$ENDIF VER360}
 
   if Result = ideUnknown then

@@ -66,9 +66,7 @@ type
     procedure FormConstrainedResize(Sender: TObject;
       var MinWidth, MinHeight, MaxWidth, MaxHeight: Integer);
     procedure actShowHintsExecute(Sender: TObject);
-    procedure actFontSize8Execute(Sender: TObject);
-    procedure actFontSize10Execute(Sender: TObject);
-    procedure actFontSize12Execute(Sender: TObject);
+    procedure actFontSizeExecute(Sender: TObject);
     procedure actCharDecExecute(Sender: TObject);
     procedure actCharHexExecute(Sender: TObject);
     procedure actCharHexUpdate(Sender: TObject);
@@ -127,7 +125,8 @@ implementation
 
 uses
   Windows, Messages, SysUtils, GX_Experts,
-  GX_GExperts, GX_ConfigurationInfo, GX_GxUtils, GX_GenericUtils, GX_IdeUtils;
+  GX_GExperts, GX_ConfigurationInfo, GX_GxUtils, GX_GenericUtils, GX_IdeUtils,
+  GX_HintWindow;
 
 type
   TAsciiChartExpert = class(TGX_Expert)
@@ -434,37 +433,34 @@ var
   HintText: string;
   HintScreenOffset: TPoint;
   CharPos: Integer;
+  HintFont: TFont;
 begin
   if not TryGetCharPos(X, Y, CharPos, XPos, YPos, HorizMult, VertMult) then
     Exit;
 
   { Create my custom hint }
-  if (FOldCharPos <> CharPos) and Self.Active then
-  begin
+  if (FOldCharPos <> CharPos) and Self.Active then begin
     KillHint;
-    FHint := THintWindow.Create(Self);
-    FHint.Color := clInfoBk;
-    if (FStartCharacter = 0) and (CharPos < 32) and (FOldCharPos <> CharPos) then
-    begin
-      HintText := DescLow[CharPos];
-    end
-    else
-    begin
-      HintText := Char(CharPos);
-      with FHint.Canvas.Font do
-      begin
-        Charset := DEFAULT_CHARSET;
-        Name := FFontName;
-        Size := FZoomFontSize;
+    if FShowHints then begin
+      FHint := TGxHintWindow.Create(Self);
+      FHint.Color := clInfoBk;
+      if (FStartCharacter = 0) and (CharPos < 32) then begin
+        HintText := DescLow[CharPos];
+      end else begin
+        HintText := Char(CharPos);
       end;
+      HintFont := FHint.Canvas.Font;
+      HintFont.Charset := DEFAULT_CHARSET;
+      HintFont.Name := FFontName;
+      HintFont.Size := FScaler.Calc(FZoomFontSize);
+
+      HintDrawingRect := FHint.CalcHintRect(Screen.Width, HintText, nil);
+      HintScreenOffset := ClientToScreen(Point((XPos + 1) * HorizMult - 1, (YPos + 1) * VertMult + 24));
+      OffsetRect(HintDrawingRect, HintScreenOffset.X, HintScreenOffset.Y);
+      FHint.ActivateHintData(HintDrawingRect, HintText, nil);
+      HintTimer.Enabled := True;
+      FOldCharPos := CharPos;
     end;
-    HintDrawingRect := FHint.CalcHintRect(Screen.Width, HintText, nil);
-    HintScreenOffset := ClientToScreen(Point((XPos + 1) * HorizMult - 1, (YPos + 1) * VertMult + 24));
-    OffsetRect(HintDrawingRect, HintScreenOffset.x, HintScreenOffset.y);
-    if FShowHints then
-      FHint.ActivateHint(HintDrawingRect, HintText);
-    HintTimer.Enabled := True;
-    FOldCharPos := CharPos;
   end;
 end;
 
@@ -621,19 +617,11 @@ begin
   FShowHints := not FShowHints;
 end;
 
-procedure TfmAsciiChart.actFontSize8Execute(Sender: TObject);
+procedure TfmAsciiChart.actFontSizeExecute(Sender: TObject);
+var
+  Action: TCustomAction absolute Sender;
 begin
-  SetDisplayFontSize(8);
-end;
-
-procedure TfmAsciiChart.actFontSize10Execute(Sender: TObject);
-begin
-  SetDisplayFontSize(10);
-end;
-
-procedure TfmAsciiChart.actFontSize12Execute(Sender: TObject);
-begin
-  SetDisplayFontSize(12);
+  SetDisplayFontSize(FScaler.Calc(Action.Tag));
 end;
 
 procedure TfmAsciiChart.actCharDecExecute(Sender: TObject);
@@ -747,6 +735,8 @@ begin
   updFontSize.Max := MaximumDisplayFontSize;
   updFontSize.Min := MinimumDisplayFontSize;
 
+  InitDpiScaler;
+
   doArrangeControls;
 
   Settings := TAsciiChartExpert.GetSettings;
@@ -759,8 +749,6 @@ begin
   eChars.Text := Settings.ReadString('Edit Display Text', '');
   eChars.SelStart := Length(eChars.Text);
   FShowHints := Settings.ReadBool('Show Hint', True);
-
-  InitDpiScaler;
 
   CenterForm(Self);
   Settings.LoadForm('Window', Self);
@@ -789,8 +777,12 @@ begin
   sb_Hex.Left := sb_Dec.Left + sb_Dec.Width + 1;
 
   edFontSize.Left := cbxFontName.Left + cbxFontName.Width + 8;
-  eChars.Left := edFontSize.Left + edFontSize.Width + 16;
+  eChars.Left := edFontSize.Left + edFontSize.Width + updFontSize.Width + 8;
   btnClear.Left := eChars.Left + eChars.Width + 1;
+
+  actFontSize8.Caption := Format('Font size: %d', [FScaler.Calc(8)]);
+  actFontSize10.Caption := Format('Font size: %d', [FScaler.Calc(10)]);
+  actFontSize12.Caption := Format('Font size: %d', [FScaler.Calc(12)]);
 end;
 
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}

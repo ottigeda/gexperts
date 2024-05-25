@@ -1,7 +1,7 @@
 object fmCompsToCode: TfmCompsToCode
   Left = 298
   Top = 212
-  Caption = 'Components to Code'
+  Caption = 'Components to Code Configuration'
   ClientHeight = 572
   ClientWidth = 678
   Color = clBtnFace

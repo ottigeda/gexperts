@@ -3,7 +3,7 @@ object fmProofreaderConfig: TfmProofreaderConfig
   Top = 203
   AutoScroll = False
   BorderIcons = [biSystemMenu]
-  Caption = 'Code Proofreader'
+  Caption = 'Code Proofreader Configuration'
   ClientHeight = 490
   ClientWidth = 523
   Color = clBtnFace

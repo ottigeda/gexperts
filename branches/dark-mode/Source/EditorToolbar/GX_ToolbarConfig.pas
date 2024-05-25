@@ -63,16 +63,15 @@ type
     FSavedToolbarItemIndex: Integer;
     FTextOffset: Integer;
     procedure SetupActionListBoxes;
-    function GetToolBarActions: TStrings;
-    procedure SetToolBarActions(const Value: TStrings);
+    procedure SetData(_Actions: TStrings);
+    procedure GetData(_Actions: TStrings);
   public
+    ///<sumamry>
+    /// @param Actions is The list of actions names which are already present on the toolbar. </summary>
+    class function Execute(_Owner: TWinControl; _Actions: TStrings): Boolean;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function ShowModal: Integer; override;
-    // The list of actions names which are already
-    // present on the toolbar. This property is
-    // queried for the new list of action names.
-    property ToolBarActions: TStrings read GetToolBarActions write SetToolBarActions;
   end;
 
 implementation
@@ -81,7 +80,7 @@ implementation
 
 uses
   SysUtils, Graphics, Menus, Messages, StrUtils,
-  u_dzStringUtils,
+  u_dzStringUtils, u_dzVclUtils,
   GX_ActionBroker, GX_GenericUtils, GX_GxUtils, GX_Toolbar;
 
 procedure AddActionToListbox(Action: TContainedAction; Listbox: TCustomListbox; Select: Boolean);
@@ -96,6 +95,22 @@ begin
     NewIndex := Listbox.Items.AddObject(Action.Name, Action);
   if Select then
     Listbox.ItemIndex := NewIndex;
+end;
+
+class function TfmToolbarConfig.Execute(_Owner: TWinControl; _Actions: TStrings): Boolean;
+var
+  frm: TfmToolbarConfig;
+begin
+  frm := TfmToolbarConfig.Create(_Owner);
+  try
+    TForm_CenterOn(frm, _Owner);
+    frm.SetData(_Actions);
+    Result := (mrOk = frm.ShowModal);
+    if Result then
+      frm.GetData(_Actions);
+  finally
+    FreeAndNil(frm);
+  end;
 end;
 
 procedure TfmToolbarConfig.SetupActionListBoxes;
@@ -131,10 +146,10 @@ begin
   end;
 end;
 
-procedure TfmToolbarConfig.SetToolBarActions(const Value: TStrings);
+procedure TfmToolbarConfig.SetData(_Actions: TStrings);
 begin
   Assert(Assigned(FToolbarActionNames));
-  FToolbarActionNames.Assign(Value);
+  FToolbarActionNames.Assign(_Actions);
 end;
 
 constructor TfmToolbarConfig.Create(AOwner: TComponent);
@@ -221,7 +236,9 @@ procedure TfmToolbarConfig.lbCategoriesClick(Sender: TObject);
 var
   i: Integer;
   Category: string;
+  TheAction: TContainedAction;
   ActionName: string;
+  ActionCategory: string;
 begin
   lbAvailable.Items.BeginUpdate;
   try
@@ -229,18 +246,34 @@ begin
     if lbCategories.ItemIndex = -1 then
       Exit;
     Category := lbCategories.Items[lbCategories.ItemIndex];
-    for i := 0 to GxActionBroker.ActionCount - 1 do
-    begin
-      ActionName := GxActionBroker.Actions[i].Name;
-      // Close All causes AVs, so we don't allow it.  More/Editor Experts are not useful.
-      if StartsStr('FileClose', ActionName) or StrContains('GExpertsMoreAction', ActionName, False) then
-        Continue;
+    for i := 0 to GxActionBroker.GetActionCount - 1 do begin
+      TheAction := GxActionBroker.GetActions(i);
+      ActionName := TheAction.Name;
+      if ActionName = '' then begin
+        // Some actions (mainly 3d party actions) don't have a name.
+        // We can't handle these, so we skip them
+        Continue; //==^
+      end;
+      if not (TheAction is TCustomAction) then begin
+        // TContainedAction does not have ImageIndex (at least in older Delphi versions)
+        Continue; //==^
+      end;
+      if TCustomAction(TheAction).ImageIndex = -1 then begin
+        // Also skip actions that don't have an icon associated with them because they
+        // obviously are not meant to be shown on a tool bar.
+        Continue; //==^
+      end;
+      if StartsStr('FileClose', ActionName) or StrContains('GExpertsMoreAction', ActionName, False) then begin
+        // Close All causes AVs, so we don't allow it.  More/Editor Experts are not useful.
+        Continue; //==^
+      end;
+      ActionCategory := TheAction.Category;
       if Category = SAllButtonsCategory then
-        AddActionToListbox(GxActionBroker.Actions[i], lbAvailable, False)
-      else if SameText(Category, GxActionBroker.Actions[i].Category) then
-        AddActionToListbox(GxActionBroker.Actions[i], lbAvailable, False)
-      else if (Category = SNoButtonCategory) and (Trim(GxActionBroker.Actions[i].Category) = '') then
-        AddActionToListbox(GxActionBroker.Actions[i], lbAvailable, False);
+        AddActionToListbox(TheAction, lbAvailable, False)
+      else if SameText(Category, ActionCategory) then
+        AddActionToListbox(TheAction, lbAvailable, False)
+      else if (Category = SNoButtonCategory) and (Trim(ActionCategory) = '') then
+        AddActionToListbox(TheAction, lbAvailable, False);
     end;
     lbAvailable.Sorted := True;
   finally
@@ -248,9 +281,9 @@ begin
   end;
 end;
 
-function TfmToolbarConfig.GetToolBarActions: TStrings;
+procedure TfmToolbarConfig.GetData(_Actions: TStrings);
 begin
-  Result := FToolbarActionNames;
+  _Actions.Assign(FToolbarActionNames);
 end;
 
 function TfmToolbarConfig.ShowModal: Integer;
@@ -285,12 +318,11 @@ var
   Action: TContainedAction;
 begin
   FToolbarActionNames.Clear;
-  for i := 0 to lbToolbar.Items.Count - 1 do
-  begin
+  for i := 0 to lbToolbar.Items.Count - 1 do begin
     Action := TContainedAction(lbToolbar.Items.Objects[i]);
     if Action = nil then
       FToolbarActionNames.Add(SeparatorMenuItemString)
-    else
+    else if Action.Name <> '' then
       FToolbarActionNames.Add(Action.Name);
   end;
 end;

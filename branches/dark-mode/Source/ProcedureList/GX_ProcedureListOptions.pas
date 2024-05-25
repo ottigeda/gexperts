@@ -236,6 +236,8 @@ end;
 
 procedure TfmProcedureListOptions.FormShow(Sender: TObject);
 begin
+  inherited;
+
   FOptions.AlignmentChanged := False;
   chkShowCodeView.Checked := FOptions.CodeViewVisible;
   chkShowObjectName.Checked := FOptions.ObjectNameVisible;

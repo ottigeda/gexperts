@@ -32,6 +32,7 @@ call :doItem Xx102Tokyo
 call :doItem Xx103Rio
 call :doItem Xx104Sydney
 call :doItem Xx110Alexandria
+call :doItem Xx120
 
 goto :eof
 

@@ -1,7 +1,7 @@
 inherited fmEditorPopupMenuExpertConfig: TfmEditorPopupMenuExpertConfig
   Left = 0
   Top = 0
-  Caption = 'Editor Popup Menu Expert Configuration'
+  Caption = 'Editor Popup Menu Configuration'
   ClientHeight = 313
   ClientWidth = 577
   ParentFont = False

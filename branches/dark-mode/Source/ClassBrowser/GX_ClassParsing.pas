@@ -34,6 +34,7 @@ end;
 
 procedure TfmClassParsing.FormShow(Sender: TObject);
 begin
+  inherited;
   aniFlashlight.Active := True;
 end;
 

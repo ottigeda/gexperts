@@ -55,7 +55,7 @@ end;
 constructor Tf_GrepMenuConfig.Create(_Owner: TComponent);
 begin
   inherited;
-
+  InitDpiScaler;
 end;
 
 procedure Tf_GrepMenuConfig.GetData(out _ReplaceFind: Boolean);

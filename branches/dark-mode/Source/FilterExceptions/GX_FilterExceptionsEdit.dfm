@@ -112,9 +112,9 @@ inherited fmGxFilterExceptionsEdit: TfmGxFilterExceptionsEdit
   end
   object grp_Message: TGroupBox
     Left = 8
-    Top = 104
+    Top = 95
     Width = 489
-    Height = 136
+    Height = 145
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 'Exception Message (regex)'
     TabOrder = 2
@@ -144,7 +144,6 @@ inherited fmGxFilterExceptionsEdit: TfmGxFilterExceptionsEdit
       Height = 64
       Anchors = [akLeft, akTop, akRight, akBottom]
       Lines.Strings = (
-        
           'type any text you want to match here (e.g. the full message of t' +
           'he exception you want to '
         'catch)')
