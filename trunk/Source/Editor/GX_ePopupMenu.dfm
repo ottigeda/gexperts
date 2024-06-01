@@ -27,7 +27,7 @@ inherited fmEditorPopupMenuExpertConfig: TfmEditorPopupMenuExpertConfig
     Top = 8
     Width = 201
     Height = 249
-    ActivePage = ts_EditorExperts
+    ActivePage = ts_Experts
     Anchors = [akLeft, akTop, akBottom]
     TabOrder = 0
     object ts_Experts: TTabSheet
