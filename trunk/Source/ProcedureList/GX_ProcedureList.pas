@@ -706,8 +706,10 @@ begin
   ToolBar.Images := il;
   Actions.Images := il;
 
-  FMinListWidth := FScaler.Calc(MIN_LIST_WIDTH);
-  FMinListHeight := FScaler.Calc(MIN_LIST_HEIGHT);
+  if Assigned(FScaler) then begin
+    FMinListWidth := FScaler.Calc(MIN_LIST_WIDTH);
+    FMinListHeight := FScaler.Calc(MIN_LIST_HEIGHT);
+  end;
 end;
 
 procedure TfmProcedureList.ArrangeControls;
