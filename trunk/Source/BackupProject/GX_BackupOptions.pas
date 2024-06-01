@@ -24,9 +24,12 @@ type
 
 implementation
 
-uses Graphics, GX_GenericUtils;
-
 {$R *.dfm}
+
+uses
+  Graphics,
+  GX_GenericUtils,
+  u_dzVclUtils;
 
 procedure TfmBackupOptions.cbPasswordClick(Sender: TObject);
 begin
@@ -44,6 +47,7 @@ end;
 constructor TfmBackupOptions.Create(_Owner: TComponent);
 begin
   inherited;
+  TControl_SetMinConstraints(Self);
   InitDpiScaler;
 end;
 

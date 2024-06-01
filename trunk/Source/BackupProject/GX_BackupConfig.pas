@@ -60,6 +60,7 @@ var
   i: Integer;
 begin
   inherited;
+  TControl_SetMinConstraints(Self);
   TWinControl_ActivateDropFiles(edBackupDir, edBackupDirOnDropFiles);
   TEdit_ActivateAutoComplete(edBackupDir, [acsFileSystem], [actSuggest]);
 

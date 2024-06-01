@@ -86,11 +86,15 @@ implementation
 
 {$R *.dfm}
 
-uses Graphics;
+uses
+  Graphics,
+  u_dzVclUtils;
 
 constructor TfmGrepResultsOptions.Create(_Owner: TComponent);
 begin
   inherited;
+
+  TControl_SetMinConstraints(Self);
 
   InitDpiScaler;
 end;

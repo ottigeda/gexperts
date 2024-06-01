@@ -89,6 +89,9 @@ var
   s: string;
 begin
   inherited;
+
+  TControl_SetMinConstraints(Self);
+
   Items := lb_UnitPositions.Items;
   Items.BeginUpdate;
   try

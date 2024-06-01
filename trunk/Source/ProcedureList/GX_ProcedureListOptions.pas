@@ -80,7 +80,9 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Dialogs;
+  SysUtils,
+  Dialogs,
+  u_dzVclUtils;
 
 const
   CodeViewFontKey = 'CodeViewFont';
@@ -172,7 +174,7 @@ end;
 constructor TfmProcedureListOptions.Create(_Owner: TComponent);
 begin
   inherited;
-
+  TControl_SetMinConstraints(Self);
   InitDpiScaler;
 end;
 

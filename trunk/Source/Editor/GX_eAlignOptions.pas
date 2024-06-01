@@ -27,6 +27,9 @@ type
 
 implementation
 
+uses
+  u_dzVclUtils;
+
 {$R *.dfm}
 
 { TfmAlignOptions }
@@ -34,7 +37,7 @@ implementation
 constructor TfmAlignOptions.Create(_Owner: TComponent);
 begin
   inherited;
-
+  TControl_SetMinConstraints(Self);
   InitDpiScaler;
 end;
 

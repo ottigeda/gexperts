@@ -426,6 +426,8 @@ begin
   FEmbedded := False;
   FEmbeddedHolder := nil;
 
+  TControl_SetMinConstraints(Self);
+
   TWinControl_ActivateDropFiles(cbDirectory, cbDirectoryOnDropFiles);
 
   pnlBottom.BevelOuter := bvNone;

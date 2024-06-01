@@ -68,6 +68,7 @@ constructor TfmeSortConfig.Create(_Owner: TComponent);
 begin
   inherited;
 
+  TControl_SetMinConstraints(Self);
   InitDpiScaler;
 end;
 

@@ -14,6 +14,7 @@ type
   private
   public
     class function Execute(_Owner: TWinControl; var APromptForName: Boolean): Boolean;
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
@@ -25,6 +26,13 @@ uses
 
 { TfmGxMacroLibraryConfig }
 
+constructor TfmGxMacroLibraryConfig.Create(_Owner: TComponent);
+begin
+  inherited;
+  TControl_SetMinConstraints(Self);
+  InitDpiScaler;
+end;
+
 class function TfmGxMacroLibraryConfig.Execute(_Owner: TWinControl; var APromptForName: Boolean): Boolean;
 var
   frm: TfmGxMacroLibraryConfig;
@@ -33,8 +41,7 @@ begin
   try
     TForm_CenterOn(frm, _Owner);
     frm.chk_AutoPrompt.Checked := APromptForName;
-    frm.InitDpiScaler;
-    Result := mrOk = frm.ShowModal;
+    Result := (mrOk = frm.ShowModal);
     if Result then
       APromptForName := frm.chk_AutoPrompt.Checked;
   finally
