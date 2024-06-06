@@ -1580,10 +1580,21 @@ end;
 
 // declared wrongly in WINDOWS
 
+{$IFDEF UNICODE}
+function GetVolumeInformation(lpRootPathName: PChar;
+  lpVolumeNameBuffer: PChar; nVolumeNameSize: DWORD; lpVolumeSerialNumber: PDWORD;
+  lpMaximumComponentLength, lpFileSystemFlags: LPDWORD;
+  lpFileSystemNameBuffer: PChar; nFileSystemNameSize: DWORD): BOOL; stdcall; external kernel32 Name 'GetVolumeInformationW';
+function GetVolumeInformationA(lpRootPathName: PAnsiChar;
+  lpVolumeNameBuffer: PAnsiChar; nVolumeNameSize: DWORD; lpVolumeSerialNumber: PDWORD;
+  lpMaximumComponentLength, lpFileSystemFlags: LPDWORD;
+  lpFileSystemNameBuffer: PAnsiChar; nFileSystemNameSize: DWORD): BOOL; stdcall; external kernel32 Name 'GetVolumeInformationA';
+{$ELSE}
 function GetVolumeInformation(lpRootPathName: PChar;
   lpVolumeNameBuffer: PChar; nVolumeNameSize: DWORD; lpVolumeSerialNumber: PDWORD;
   lpMaximumComponentLength, lpFileSystemFlags: LPDWORD;
   lpFileSystemNameBuffer: PChar; nFileSystemNameSize: DWORD): BOOL; stdcall; external kernel32 Name 'GetVolumeInformationA';
+{$ENDIF}
 
 class function TFileSystem.GetVolumeName(_DriveLetter: Char): string;
 begin
@@ -1982,14 +1993,14 @@ begin
   end;
 end;
 
-{$if not declared(MOVEFILE_WRITE_THROUGH)}
+{$IF not declared(MOVEFILE_WRITE_THROUGH)}
 const
-  MOVEFILE_WRITE_THROUGH          = $00000008;
-{$ifend}
-{$if not declared(MOVEFILE_FAIL_IF_NOT_TRACKABLE)}
+  MOVEFILE_WRITE_THROUGH = $00000008;
+{$IFEND}
+{$IF not declared(MOVEFILE_FAIL_IF_NOT_TRACKABLE)}
 const
-  MOVEFILE_FAIL_IF_NOT_TRACKABLE  = $00000020;
-{$ifend}
+  MOVEFILE_FAIL_IF_NOT_TRACKABLE = $00000020;
+{$IFEND}
 
 class function TFileSystem.MoveFileEx(const _Source, _Dest: string; _Flags: TMoveFileExFlagSet;
   _ErrorHandling: TErrorHandlingEnum = ehRaiseException): Boolean;
