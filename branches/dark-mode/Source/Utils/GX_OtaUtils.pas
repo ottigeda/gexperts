@@ -6,6 +6,9 @@ interface
 
 uses
   SysUtils, Classes, Controls, Contnrs, Forms, ActnList, ImgList, Menus, ToolsAPI,
+{$IFDEF GX_SUPPORTS_THEMING}
+  Themes,
+{$ENDIF}
   Actions, Graphics,
   GX_GenericUtils, GX_StringList, GX_IdeUtils;
 
@@ -63,6 +66,18 @@ function GxOtaEditorIsPlayingMacro: Boolean;
 function GxOtaEditorIsPausedMacro: Boolean;
 procedure GxOtaSetEditorKeyTracingEnabled(Enabled: Boolean);
 function GxOtaGetEditorKeyTracingEnabled: Boolean;
+
+{$IFDEF GX_SUPPORTS_THEMING}
+function IdeStyleIsDark: Boolean;
+function IdeStyleService: TCustomStyleServices;
+function GxOtaActiveTheme: string;
+function GxOtaGetStyleColor(AColor: TStyleColor; ADefault: TColor): TColor;
+function GxOtaGetStyleFontColor(AFontStyle: TStyleFont; ADefault: TColor = clNone): TColor;
+{$ENDIF}
+function GxOtaApplyTheme(AForm: TCustomForm): Boolean;
+function GxOtaThemingEnabled: Boolean;
+function GxOtaInitTheming(AForm: TCustomForm): Boolean;
+function GxOtaGetThemedColor(AColor: TColor): TColor;
 
 const
   // Invalid notifier index
@@ -318,6 +333,7 @@ procedure GxOtaFillUnitInfoListForProject(List: TList; _Project: IOTAProject);
 //
 //
 //
+procedure GxOtaIdeSetSearchWordBoundary(Value: Boolean);
 
 procedure GxOtaSelectComponentOnCurrentForm(const ComponentName: string);
 procedure GxOtaClearSelectionOnCurrentForm;
@@ -4003,6 +4019,149 @@ begin
   Result := (BorlandIDEServices as ToolsAPI.IOTAKeyboardDiagnostics).KeyTracing;
 end;
 
+{$IFDEF GX_SUPPORTS_THEMING}
+function IdeStyleService: TCustomStyleServices;
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := nil;
+  if Supports(BorlandIDEServices, IOTAIDEThemingServices, LService) then
+  begin
+    Result := LService.StyleServices;
+  end;
+end;
+
+function GxOtaActiveTheme: string;
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := '';
+  if Supports(BorlandIDEServices, IOTAIDEThemingServices, LService) then
+  begin
+    Result := LService.ActiveTheme;
+  end;
+end;
+
+function IdeStyleIsDark: Boolean;
+begin
+  Result := SameText(GxOtaActiveTheme, 'Dark');
+end;
+
+{$ENDIF}
+
+function GxOtaThemingEnabled: Boolean;
+{$IFDEF GX_SUPPORTS_THEMING}
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := False;
+  if Supports(BorlandIDEServices, IOTAIDEThemingServices, LService) then
+  begin
+    Result := LService.IDEThemingEnabled;
+  end;
+end;
+{$ELSE}
+begin
+  Result := False;
+end;
+{$ENDIF}
+
+function GxOtaApplyTheme(AForm: TCustomForm): Boolean;
+{$IFDEF GX_SUPPORTS_THEMING}
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := False;
+  if Assigned(AForm)
+  and Supports(BorlandIDEServices, IOTAIDEThemingServices, LService)
+  then begin
+    if LService.IDEThemingEnabled then
+    begin
+      LService.ApplyTheme(AForm);
+      Result := True;
+    end;
+  end;
+end;
+{$ELSE}
+begin
+  Result := False;
+end;
+{$ENDIF}
+
+function GxOtaInitTheming(AForm: TCustomForm): Boolean;
+{$IFDEF GX_SUPPORTS_THEMING}
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := False;
+  if Assigned(AForm)
+  and Supports(BorlandIDEServices, IOTAIDEThemingServices, LService)
+  then begin
+    if LService.IDEThemingEnabled then
+    begin
+      LService.RegisterFormClass(TCustomFormClass(AForm.ClassType));
+      LService.ApplyTheme(AForm);
+      Result := True;
+    end;
+  end;
+end;
+{$ELSE}
+begin
+  Result := False;
+end;
+{$ENDIF}
+
+function GxOtaGetThemedColor(AColor: TColor): TColor;
+{$IFDEF GX_SUPPORTS_THEMING}
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := AColor;
+  if Supports(BorlandIDEServices, IOTAIDEThemingServices, LService) then
+  begin
+    if LService.IDEThemingEnabled then
+    begin
+      Result := LService.StyleServices.GetSystemColor(AColor);
+    end;
+  end;
+{$ELSE}
+begin
+  Result := AColor;
+{$ENDIF}
+end;
+
+{$IFDEF GX_SUPPORTS_THEMING}
+function GxOtaGetStyleColor(AColor: TStyleColor; ADefault: TColor): TColor;
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := ADefault;
+  if Supports(BorlandIDEServices, IOTAIDEThemingServices, LService) then
+  begin
+    if LService.IDEThemingEnabled then
+    begin
+      Result := LService.StyleServices.GetStyleColor(AColor);
+    end;
+  end;
+end;
+{$ENDIF}
+
+{$IFDEF GX_SUPPORTS_THEMING}
+function GxOtaGetStyleFontColor(AFontStyle: TStyleFont; ADefault: TColor): TColor;
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := ADefault;
+  if Supports(BorlandIDEServices, IOTAIDEThemingServices, LService) then
+  begin
+    if LService.IDEThemingEnabled then
+    begin
+      Result := LService.StyleServices.GetStyleFontColor(AFontStyle);
+    end;
+  end;
+end;
+{$ENDIF}
+
 type
   // TODO 3 -cCleanup -oAnyone: Remove this type, since it is confusing and is not .NET compatible
   TPropertyValBuffer = record
@@ -4423,6 +4582,22 @@ begin
     Result := SameText(Component.GetPropName(i), PropertyName);
     if Result then
       Break;
+  end;
+end;
+
+procedure GxOtaIdeSetSearchWordBoundary(Value: Boolean);
+var
+  EditView     : IOTAEditView;
+  EditPosition : IOTAEditPosition;
+begin
+  EditView := GxOtaGetTopMostEditView;
+  if Assigned(EditView) then
+  begin
+    EditPosition := EditView.Position;
+    if Assigned(EditPosition) then
+    begin
+      EditPosition.SearchOptions.WordBoundary := Value;
+    end;
   end;
 end;
 
