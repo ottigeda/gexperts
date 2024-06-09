@@ -143,7 +143,7 @@ procedure Register;
 implementation
 
 uses
- SysUtils, SynUnicode, Math, SynEditPrint;
+ SysUtils, SynUnicode, Math, Gx_IdeUtils, SynEditPrint;
 
 procedure Register;
 begin
@@ -181,7 +181,7 @@ begin
   Height := 89;
   AutoSize := False;
   ParentColor := False;
-  Color := clWindow;
+  Color := GetThemedColor(clWindow);
 end;
 
 destructor TGxEnhancedEditor.Destroy;

@@ -1841,6 +1841,17 @@ begin
   FCodeText.ReadOnly := True;
   FCodeText.Highlighter := gxpPas;
   FCodeText.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
+
+{$IFDEF GX_SUPPORTS_THEMING}
+  GxOtaGetEditorFont(FMethodText.Font, -1);
+  FMethodText.Color := GetThemedColor(clWindow);
+  FMethodText.Font.Color := GetThemedColor(clWindowText);
+
+  GxOtaGetEditorFont(FCodeText.Font, -1);
+  FCodeText.Color := GetThemedColor(clWindow);
+  FCodeText.Font.Color := GetThemedColor(clWindowText);
+  FCodeText.ActiveLineColor := GetThemedColor(clInfoBk);
+{$ENDIF}
 end;
 
 procedure TfmClassBrowser.ViewBrowserDetails;

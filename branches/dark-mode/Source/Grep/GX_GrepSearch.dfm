@@ -9,7 +9,7 @@ object fmGrepSearch: TfmGrepSearch
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = 'Tahoma'
+  Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   KeyPreview = True
   OldCreateOrder = False
@@ -21,12 +21,12 @@ object fmGrepSearch: TfmGrepSearch
     681
     588)
   PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 15
   object lblFind: TLabel
-    Left = 14
+    Left = 21
     Top = 12
-    Width = 66
-    Height = 14
+    Width = 59
+    Height = 15
     Alignment = taRightJustify
     Caption = '&Text to find'
     FocusControl = cbText
@@ -38,7 +38,7 @@ object fmGrepSearch: TfmGrepSearch
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     DropDownCount = 15
-    ItemHeight = 14
+    ItemHeight = 0
     TabOrder = 0
     OnKeyDown = ComboKeyDown
   end
@@ -141,7 +141,7 @@ object fmGrepSearch: TfmGrepSearch
       193)
     object chk_UseMapFile: TCheckBox
       Left = 24
-      Top = 80
+      Top = 79
       Width = 201
       Height = 17
       Hint = 
@@ -214,10 +214,10 @@ object fmGrepSearch: TfmGrepSearch
       OnClick = rbDirectoriesClick
     end
     object txt_NoMapFile: TStaticText
-      Left = 40
-      Top = 80
-      Width = 116
-      Height = 18
+      Left = 43
+      Top = 79
+      Width = 117
+      Height = 19
       Hint = 
         'Parses the .map file to get the unit names of all units used in ' +
         'the project.'#13#10'You must enable generating a map file with publics' +
@@ -355,32 +355,32 @@ object fmGrepSearch: TfmGrepSearch
     object lblMasks: TLabel
       Left = 8
       Top = 72
-      Width = 188
-      Height = 14
+      Width = 183
+      Height = 15
       Caption = 'File mas&ks (separate by semicolon)'
       FocusControl = cbMasks
     end
     object lblDirectory: TLabel
       Left = 8
       Top = 24
-      Width = 192
-      Height = 14
+      Width = 185
+      Height = 15
       Caption = 'Di&rectories (separate by semicolon)'
       FocusControl = cbDirectory
     end
     object lblExcludeDirs: TLabel
       Left = 24
       Top = 168
-      Width = 200
-      Height = 14
+      Width = 192
+      Height = 15
       Caption = 'Exclude Dirs (separate by semicolon)'
       FocusControl = cbExcludedDirs
     end
     object l_MinMaxDepth: TLabel
       Left = 176
       Top = 121
-      Width = 90
-      Height = 14
+      Width = 89
+      Height = 15
       Caption = 'Min / Max Depth'
     end
     object cbMasks: TComboBox
@@ -390,7 +390,7 @@ object fmGrepSearch: TfmGrepSearch
       Height = 22
       Anchors = [akLeft, akTop, akRight]
       DropDownCount = 15
-      ItemHeight = 14
+      ItemHeight = 0
       TabOrder = 2
       OnKeyDown = ComboKeyDown
     end

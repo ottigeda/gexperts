@@ -1,9 +1,11 @@
 unit GX_FavFileProp;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, StdCtrls, ComCtrls,
+  Windows, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, StdCtrls, ComCtrls,
   GX_BaseForm, GX_FavUtil;
 
 type
@@ -38,6 +40,11 @@ type
     procedure InitializeForm;
     procedure SetData(_FavoriteFilesForm: TForm; _File: TGXFile);
     procedure GetData(_File: TGXFile);
+  protected
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+    FOldDPI: Integer;
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
+{$ENDIF}
   public
     class function Execute(_Owner: TWinControl; _File: TGXFile): boolean;
     constructor Create(_Owner: TComponent); override;
@@ -48,7 +55,7 @@ implementation
 {$R *.dfm}
 
 uses
-  GX_FavFiles, GX_GenericUtils, u_dzVclUtils;
+  GX_FavFiles, GX_GenericUtils, GX_IdeUtils, u_dzVclUtils;
 
 { TfmFavFileProp }
 
@@ -73,10 +80,32 @@ constructor TfmFavFileProp.Create(_Owner: TComponent);
 begin
   inherited;
 
+  TControl_SetMinConstraints(Self);
   InitDpiScaler;
-
   InitializeForm;
 end;
+
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+procedure TfmFavFileProp.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+var
+  LClientRect: TRect;
+  NewWidth: Integer;
+  NewHeight: Integer;
+begin
+  Exit;
+  
+  if FOldDPI = 0 then
+    FOldDPI := TForm_CurrentPPI(Self);
+  if Assigned(FScaler) then begin
+    FScaler.ApplyDpi(_NewDpi, _NewBounds);
+    LClientRect := Self.ClientRect;
+    NewWidth := FScaler.Calc(LClientRect.Width);
+    NewHeight := FScaler.Calc(LClientRect.Height);
+    Self.ClientWidth := NewWidth;
+    Self.ClientHeight := NewHeight;
+  end;
+end;
+{$ENDIF}
 
 procedure TfmFavFileProp.sbnFileClick(Sender: TObject);
 var
@@ -129,9 +158,9 @@ begin
   sbnExecute.Enabled := ItemEnabled;
   edtExecuteUsing.Enabled := ItemEnabled;
   if ItemEnabled then
-    edtExecuteUsing.Color := clWindow
+    edtExecuteUsing.Color := GetThemedColor(clWindow)
   else
-    edtExecuteUsing.Color := clBtnFace;
+    edtExecuteUsing.Color := GetThemedColor(clBtnFace);
 end;
 
 procedure TfmFavFileProp.FormActivate(Sender: TObject);

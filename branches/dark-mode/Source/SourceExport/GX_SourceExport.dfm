@@ -101,6 +101,18 @@ object fmSourceExport: TfmSourceExport
         end
       end
     end
+    object chkUseDarkMode: TCheckBox
+      Left = 470
+      Top = 13
+      Width = 56
+      Height = 21
+      Margins.Left = 4
+      Margins.Top = 4
+      Margins.Right = 4
+      Margins.Bottom = 4
+      Caption = 'Dark'
+      TabOrder = 2
+    end
   end
   object pnlEditor: TPanel
     Left = 0
@@ -138,14 +150,14 @@ object fmSourceExport: TfmSourceExport
       ShowHint = True
     end
     object tbnSave: TToolButton
-      Left = 23
+      Left = 25
       Top = 0
       Action = actFileSave
       ParentShowHint = False
       ShowHint = True
     end
     object tbnCopy: TToolButton
-      Left = 46
+      Left = 50
       Top = 0
       Action = actCopy
       DropdownMenu = pmuCopy
@@ -154,42 +166,42 @@ object fmSourceExport: TfmSourceExport
       Style = tbsDropDown
     end
     object ToolButton3: TToolButton
-      Left = 84
+      Left = 94
       Top = 0
       Width = 8
       ImageIndex = 6
       Style = tbsSeparator
     end
     object tbnPrint: TToolButton
-      Left = 92
+      Left = 102
       Top = 0
       Action = actFilePrint
       ParentShowHint = False
       ShowHint = True
     end
     object ToolButton2: TToolButton
-      Left = 115
+      Left = 127
       Top = 0
       Width = 8
       ImageIndex = 6
       Style = tbsSeparator
     end
     object tbnConfigure: TToolButton
-      Left = 123
+      Left = 135
       Top = 0
       Action = actFileConfigure
       ParentShowHint = False
       ShowHint = True
     end
     object ToolButton1: TToolButton
-      Left = 146
+      Left = 160
       Top = 0
       Width = 8
       ImageIndex = 6
       Style = tbsSeparator
     end
     object tbnHelp: TToolButton
-      Left = 154
+      Left = 168
       Top = 0
       Action = actHelpHelp
       ParentShowHint = False

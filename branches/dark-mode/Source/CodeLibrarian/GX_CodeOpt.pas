@@ -1,5 +1,7 @@
 unit GX_CodeOpt;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -47,7 +49,7 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, GX_GenericUtils, u_dzVclUtils;
+  SysUtils, Graphics, GX_GenericUtils, GX_IdeUtils, u_dzVclUtils;
 
 procedure TfmCodeOptions.sbBrowseClick(Sender: TObject);
 var
@@ -59,9 +61,28 @@ begin
 end;
 
 procedure TfmCodeOptions.InitializeForm;
+
+  procedure SetShapeColors(AShape: TShape; APenColor, ABrushColor: TColor);
+  begin
+    AShape.Pen.Color   := APenColor;
+    AShape.Brush.Color := ABrushColor;
+  end;
+
+var
+  LPenColor   : TColor;
+  LBrushColor : TColor;
+
 begin
   fcTreeview.Items.Assign(Screen.Fonts);
   fcEditor.Items.Assign(Screen.Fonts);
+
+  LPenColor   := GetThemedColor(clWindowFrame);
+  LBrushColor := GetThemedColor(clWindow);
+
+  SetShapeColors(shpLeft, LPenColor, LBrushColor);
+  SetShapeColors(shpRight, LPenColor, LBrushColor);
+  SetShapeColors(shpTop, LPenColor, LBrushColor);
+  SetShapeColors(shpBottom, LPenColor, LBrushColor);
 end;
 
 constructor TfmCodeOptions.Create(_Owner: TComponent);

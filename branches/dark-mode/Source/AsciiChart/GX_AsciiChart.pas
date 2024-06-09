@@ -197,7 +197,7 @@ begin
   { draw the character value as Int or Hex on screen }
   cnv.Font.Name := 'Tahoma';  // do not localize
   cnv.Font.Size := 9;
-  cnv.Font.Color := clGrayText;
+  cnv.Font.Color := GetThemedColor(clGrayText);
   { Only do the if check once for improved speed rather than every iteration }
   if FShowHex then begin
     for i := 0 to 127 do begin
@@ -213,7 +213,7 @@ begin
     end;
   end;
   { Draw in the characters 0-31 if required }
-  cnv.Font.Color := clWindowText;
+  cnv.Font.Color := GetThemedColor(clWindowText);
   if FStartCharacter = 0 then begin
     DrawCharacter(cnv, 0,  'NUL', HorizMult, VertMult); // Ctrl @, NULL
     DrawCharacter(cnv, 1,  'SOH', HorizMult, VertMult); // Ctrl A, Start of Header
@@ -261,14 +261,14 @@ begin
   cnv.Pen.Width := 1;
   cnv.Pen.Style := psSolid;
   { 1) draw left and top sides }
-  cnv.Pen.Color := clBtnHighlight;
+  cnv.Pen.Color := GetThemedColor(clBtnHighlight);
   for i := 0 to 7 do
     for j := 0 to 15 do
       cnv.PolyLine([Point(i * HorizMult, (j + 1) * VertMult - 2),
           Point(i * HorizMult, j * VertMult - 1),
           Point((i + 1) * HorizMult - 1, j * VertMult + -1)]);
   { 2) draw right and bottom sides }
-  cnv.Pen.Color := clBtnShadow;
+  cnv.Pen.Color := GetThemedColor(clBtnShadow);
   for i := 0 to 7 do
     for j := 0 to 15 do
       cnv.PolyLine([Point((i + 1) * HorizMult - 1, j * VertMult - 1),
@@ -443,7 +443,7 @@ begin
     KillHint;
     if FShowHints then begin
       FHint := TGxHintWindow.Create(Self);
-      FHint.Color := clInfoBk;
+      FHint.Color := GetThemedColor(clInfoBk);
       if (FStartCharacter = 0) and (CharPos < 32) then begin
         HintText := DescLow[CharPos];
       end else begin
@@ -770,14 +770,17 @@ begin
 end;
 
 procedure TfmAsciiChart.doArrangeControls;
+var
+  Spacer: Integer;
 begin
+  Spacer := FScaler.Calc(8);
   sb_Low.Left := 0;
   sb_High.Left := sb_Low.Left + sb_Low.Width + 1;
-  sb_Dec.Left := sb_High.Left + sb_High.Width + 8;
+  sb_Dec.Left := sb_High.Left + sb_High.Width + Spacer;
   sb_Hex.Left := sb_Dec.Left + sb_Dec.Width + 1;
 
-  edFontSize.Left := cbxFontName.Left + cbxFontName.Width + 8;
-  eChars.Left := edFontSize.Left + edFontSize.Width + updFontSize.Width + 8;
+  edFontSize.Left := cbxFontName.Left + cbxFontName.Width + Spacer;
+  eChars.Left := edFontSize.Left + edFontSize.Width + updFontSize.Width + Spacer;
   btnClear.Left := eChars.Left + eChars.Width + 1;
 
   actFontSize8.Caption := Format('Font size: %d', [FScaler.Calc(8)]);

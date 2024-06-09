@@ -11,5 +11,6 @@ object fmBaseForm: TfmBaseForm
   Position = poScreenCenter
   Scaled = False
   OnShow = FormShow
+  PixelsPerInch = 96
   TextHeight = 13
 end

@@ -101,6 +101,8 @@ type
     procedure CheckEnabledWhereControls;
     procedure CheckContentTypeSelection(ClickedOption: TCheckBox);
     procedure CheckSectionSelection(ClickedOption: TCheckBox);
+  protected
+    procedure FormResize(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     procedure EmbeddedInit(AHolderControl: TWinControl; ASearchEvent: TNotifyEvent);
@@ -119,6 +121,7 @@ uses
   SysUtils, Windows, Messages, Graphics, StrUtils, Menus, Math,
   u_dzVclUtils, u_dzOsUtils, u_dzStringUtils,
   GX_GenericUtils, GX_GxUtils, GX_OtaUtils, GX_GrepResults, GX_GrepOptions,
+  GX_IdeUtils,
   GX_RegExpr, GX_TestRegEx;
 
 procedure FixComboBoxSelections(aForm: TCustomForm);
@@ -221,12 +224,12 @@ begin
   chk_SubDirRegex.Enabled := New and cbInclude.Checked;
   btnBrowse.Enabled := New;
   if New then begin
-    LBackColor := clWindow;
-    LFontColor := clWindowText;
+    LBackColor := GetThemedColor(clWindow);
+    LFontColor := GetThemedColor(clWindowText);
   end
   else begin
-    LBackColor := clBtnFace;
-    LFontColor := clGrayText;
+    LBackColor := GetThemedColor(clBtnFace);
+    LFontColor := GetThemedColor(clGrayText);
   end;
   ApplyColors(cbDirectory);
   ApplyColors(cbExcludedDirs);
@@ -295,13 +298,6 @@ end;
 procedure TfmGrepSearch.cbIncludeClick(Sender: TObject);
 begin
   EnableDirectoryControls(rbDirectories.Checked);
-//
-//  l_MinMaxDepth.Enabled := LEnabled;
-//  ed_MinDepth.Enabled := LEnabled;
-//  ed_MaxDepth.Enabled := LEnabled;
-//  chk_SubDirRegex.Enabled := LEnabled;
-//  lblExcludeDirs.Enabled := LEnabled;
-//  cbExcludedDirs.Enabled := LEnabled;
 end;
 
 procedure TfmGrepSearch.CheckSectionSelection(ClickedOption: TCheckBox);
@@ -426,6 +422,8 @@ begin
   FEmbedded := False;
   FEmbeddedHolder := nil;
 
+  TControl_SetMinConstraints(Self);
+
   TWinControl_ActivateDropFiles(cbDirectory, cbDirectoryOnDropFiles);
 
   pnlBottom.BevelOuter := bvNone;
@@ -442,10 +440,14 @@ end;
 procedure TfmGrepSearch.ed_MinDepthChange(Sender: TObject);
 begin
   inherited;
-  if ed_MinDepth.Text <> '0' then
-    ed_MinDepth.Color := clYellow
-  else
-    ed_MinDepth.Color := clWindow;
+  if ed_MinDepth.Text <> '0' then begin
+    ed_MinDepth.Color := GetThemedColor(clWarningBack);
+    ed_MinDepth.Font.Color := GetThemedColor(clWarningText);
+  end
+  else begin
+    ed_MinDepth.Color := GetThemedColor(clWindow);
+    ed_MinDepth.Font.Color := GetThemedColor(clWindowText);
+  end;
 end;
 
 procedure TfmGrepSearch.InitializeForm;
@@ -453,6 +455,7 @@ begin
   FOriginalWidth := Width;
   FOriginalOptionsGroupWidth := gbxOptions.Width;
   FOriginalWhereGroupWidth := gbxWhere.Width;
+  OnResize := FormResize;
 end;
 
 procedure TfmGrepSearch.cbDirectoryOnDropFiles(_Sender: TObject; _Files: TStrings);
@@ -811,6 +814,9 @@ begin
     Self.Font.Height := Self.Font.Height + 1;
   {$ENDIF}
   TControl_SetConstraints(Self, [ccMinWidth, ccMinHeight, ccMaxHeight]);
+
+  if not IsStandAlone then
+    InitTheming(Self);
   FixComboBoxSelections(Self);
 end;
 
@@ -974,6 +980,12 @@ begin
   inherited;
   if FEmbedded then
     Action := caHide;
+end;
+
+procedure TfmGrepSearch.FormResize(Sender: TObject);
+begin
+  inherited;
+  FixComboBoxSelections(Self);
 end;
 
 procedure TfmGrepSearch.EmbeddedShow;

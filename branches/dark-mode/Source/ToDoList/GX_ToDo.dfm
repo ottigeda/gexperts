@@ -4,8 +4,8 @@ object fmToDo: TfmToDo
   ActiveControl = edtFilterTodoList
   AutoScroll = False
   Caption = 'To Do List'
-  ClientHeight = 229
-  ClientWidth = 665
+  ClientHeight = 213
+  ClientWidth = 661
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -19,12 +19,13 @@ object fmToDo: TfmToDo
   OnActivate = FormActivate
   OnKeyDown = FormKeyDown
   OnResize = FormResize
+  ParentFont = True
   PixelsPerInch = 96
   TextHeight = 14
   object StatusBar: TStatusBar
     Left = 0
-    Top = 210
-    Width = 665
+    Top = 194
+    Width = 661
     Height = 19
     Panels = <>
     ParentFont = True
@@ -34,8 +35,8 @@ object fmToDo: TfmToDo
   object lvTodo: TListView
     Left = 0
     Top = 22
-    Width = 665
-    Height = 188
+    Width = 661
+    Height = 172
     Align = alClient
     Columns = <
       item
@@ -79,7 +80,7 @@ object fmToDo: TfmToDo
   object ToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 665
+    Width = 661
     Height = 22
     AutoSize = True
     DisabledImages = dmSharedImages.DisabledImages

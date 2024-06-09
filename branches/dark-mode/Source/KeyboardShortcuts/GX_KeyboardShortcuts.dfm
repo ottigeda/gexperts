@@ -5,20 +5,16 @@ inherited fmGxKeyboardShortcuts: TfmGxKeyboardShortcuts
   Height = 507
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'Actions with Keyboard Shortcuts'
-  Color = clBtnFace
+  ParentFont = True
   Font.Charset = ANSI_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -12
-  Font.Name = 'Tahoma'
-  Font.Style = []
   OnClose = FormClose
   PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 15
   object sg_Actions: TStringGrid
     Left = 0
     Top = 0
-    Width = 589
-    Height = 468
+    Width = 653
+    Height = 541
     Align = alClient
     ColCount = 4
     DefaultColWidth = 50

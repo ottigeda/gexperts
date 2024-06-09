@@ -171,6 +171,7 @@ uses
   SynUnicode,
   SynEdit,
   GX_OtaUtils,
+  GX_IdeUtils,
   GX_Experts,
   GX_EnhancedEditor,
   GX_GExperts,
@@ -214,6 +215,13 @@ begin
 
   il := GExpertsInst.GetScaledSharedImages(_NewDpi);
   TheActionList.Images := il;
+  sb_MoveUp.Images := il;
+  sb_MoveDown.Images := il;
+
+  act_MoveUp.ImageIndex := ImageIndexMoveUp;
+  sb_MoveUp.ImageIndex := ImageIndexMoveUp;
+  act_MoveDown.ImageIndex := ImageIndexMoveDown;
+  sb_MoveDown.ImageIndex := ImageIndexMoveDown;
 end;
 {$ENDIF}
 
@@ -818,7 +826,12 @@ begin
   FMemo.Align := alClient;
   FMemo.HideSelection := False;
   FMemo.WordWrap := False;
-  FMemo.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
+{$IFDEF GX_SUPPORTS_THEMING}
+  FMemo.ParentColor := True;
+  FMemo.Color := GetIdeEditorBackgroundColor;
+  FMemo.Font.Color := GetIdeEditorForegroundColor;
+{$ENDIF}
+  FMemo.ActiveLineColor := GetIdeEditorLineHighlightColor;
   FMemo.RightEdge := 0;
   FMemo.Gutter.Width := 0;
   FMemo.Options := FMemo.Options - [eoScrollPastEol, eoTabsToSpaces] + [eoHideShowScrollbars];

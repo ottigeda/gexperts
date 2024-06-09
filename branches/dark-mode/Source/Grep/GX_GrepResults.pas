@@ -963,21 +963,12 @@ begin
 end;
 
 procedure TfmGrepResults.Loaded;
-var
-  PropInfo: PPropInfo;
-  i: Integer;
-  cmp: TComponent;
 begin
   inherited Loaded;
-  PropInfo := GetPropInfo(Self, 'StyleElements');
-  if Assigned(PropInfo) then
-    SetOrdProp(Self, PropInfo, 0);
-  for I := 0 to ComponentCount - 1 do begin
-    cmp := Components[I];
-    PropInfo := GetPropInfo(cmp, 'StyleElements');
-    if Assigned(PropInfo) then
-      SetOrdProp(cmp, PropInfo, 0);
-  end;
+
+  if IsThemingEnabled then
+    InitTheming(Self);
+  RemoveStyleElements(Self, True); // include sub-components
 end;
 
 procedure TfmGrepResults.LoadSettings;
@@ -1341,13 +1332,13 @@ resourcestring
     FileString: string;
     FileResult: TFileResult;
   begin
-    TopColor := clBtnHighlight;
-    BottomColor := clBtnShadow;
+    TopColor := GetThemedColor(clBtnHighlight);
+    BottomColor := GetThemedColor(clBtnShadow);
 
     FileResult := TFileResult(lbResults.Items.Objects[Index]);
     // Paint an expandable search file header (gray)
-    ResultsCanvas.Brush.Color := clBtnFace;
-    ResultsCanvas.Font.Color := clBtnText;
+    ResultsCanvas.Brush.Color := GetThemedColor(clBtnFace);
+    ResultsCanvas.Font.Color := GetThemedColor(clBtnText);
     ResultsCanvas.FillRect(Rect);
 
     Rect.Right := Rect.Right + 2;
@@ -1404,10 +1395,10 @@ resourcestring
     begin
       if gblGrepExpert.ListUseDefaultColors then
       begin
-        nb := clHighLight;
-        nf := clHighLightText;
-        sb := clWindow;
-        sf := clWindowText;
+        nb := GetThemedColor(clHighLight);
+        nf := GetThemedColor(clHighLightText);
+        sb := GetThemedColor(clWindow);
+        sf := GetThemedColor(clWindowText);
       end
       else
       begin
@@ -1421,16 +1412,16 @@ resourcestring
     begin
       if gblGrepExpert.ListUseDefaultColors then
       begin
-        sb := clHighLight;
-        sf := clHighLightText;
-        nb := clWindow;
-        nf := clWindowText;
+        sb := GetThemedColor(clHighLight);
+        sf := GetThemedColor(clHighLightText);
+        nb := GetThemedColor(clWindow);
+        nf := GetThemedColor(clWindowText);
       end
       else
       begin
         sb := gblGrepExpert.ListMatchBrushColor;
         sf := gblGrepExpert.ListMatchTextColor;
-        nb := clWindow;
+        nb := GetThemedColor(clWindow);
         nf := gblGrepExpert.ListFont.Color;
       end;
     end;
@@ -1497,8 +1488,8 @@ resourcestring
 
   procedure PaintOnlySaveSettings;
   begin
-    ResultsCanvas.Brush.Color := clWindow;
-    ResultsCanvas.Font.Color := clWindowText;
+    ResultsCanvas.Brush.Color := GetThemedColor(clWindow);
+    ResultsCanvas.Font.Color := GetThemedColor(clWindowText);
     ResultsCanvas.FillRect(Rect);
 
     ResultsCanvas.TextOut(Rect.Left + 3, Rect.Top + 1, lbResults.Items[Index]);
@@ -2040,12 +2031,23 @@ begin
 end;
 
 procedure TfmGrepResults.FormShow(Sender: TObject);
+var
+  LBackColor : TColor;
 begin
   inherited;
 
   AssignSettingsToForm;
   ResizeListBox;
   ResizeStatusBar;
+  if IsThemingEnabled then begin
+    InitTheming(Self);
+    LBackColor := GetThemedColor(clWindow);
+    pnlMain.Color := LBackColor;
+    pnlBottom.Color := LBackColor;
+    lbResults.Color := LBackColor;
+    lbHistoryList.Color := LBackColor;
+    reContext.Color := LBackColor;
+  end;
   ForceRedraw;
 end;
 
@@ -2114,7 +2116,9 @@ procedure TfmGrepResults.AssignSettingsToForm;
 begin
   Assert(Assigned(gblGrepExpert));
   reContext.Font.Assign(gblGrepExpert.ContextFont);
+  reContext.Font.Color := GetThemedColor(gblGrepExpert.ContextFont.Color);
   lbResults.Font.Assign(gblGrepExpert.ListFont);
+  lbResults.Font.Color := GetThemedColor(gblGrepExpert.ListFont.Color);
 end;
 
 procedure TfmGrepResults.actReplaceAllExecute(Sender: TObject);
@@ -2382,7 +2386,20 @@ begin
     Exit;
 
   cnv := lbHistoryList.Canvas;
-  if not gblGrepExpert.ListUseDefaultColors then
+  if gblGrepExpert.ListUseDefaultColors then
+  begin
+    if odSelected in State then
+    begin
+      cnv.Font.Color  := GetThemedColor(clHighlightText);
+      cnv.Brush.Color := GetThemedColor(clHighlight);
+    end
+    else
+    begin
+      cnv.Font.Color  := GetThemedColor(clWindowText);
+      cnv.Brush.Color := GetThemedColor(clWindow);
+    end;
+  end
+  else
   begin
     if odSelected in State then
     begin
@@ -2392,7 +2409,7 @@ begin
     else
     begin
       cnv.Font.Color := gblGrepExpert.ListFont.Color;
-      cnv.Brush.Color := clWindow;
+      cnv.Brush.Color := GetThemedColor(clWindow);
     end;
   end;
 

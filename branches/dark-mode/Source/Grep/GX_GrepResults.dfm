@@ -3,8 +3,8 @@ inherited fmGrepResults: TfmGrepResults
   Top = 243
   ActiveControl = lbResults
   Caption = 'Grep Results'
-  ClientHeight = 337
-  ClientWidth = 396
+  ClientHeight = 329
+  ClientWidth = 394
   DefaultMonitor = dmDesktop
   KeyPreview = True
   OldCreateOrder = False
@@ -17,16 +17,16 @@ inherited fmGrepResults: TfmGrepResults
   object pnlMain: TPanel
     Left = 0
     Top = 0
-    Width = 396
-    Height = 318
+    Width = 394
+    Height = 329
     Align = alClient
     BevelOuter = bvNone
     FullRepaint = False
     TabOrder = 0
     object SplitterContext: TSplitter
       Left = 0
-      Top = 222
-      Width = 396
+      Top = 224
+      Width = 394
       Height = 8
       Cursor = crVSplit
       Align = alBottom
@@ -40,8 +40,7 @@ inherited fmGrepResults: TfmGrepResults
       Left = 147
       Top = 22
       Width = 8
-      Height = 200
-      Cursor = crHSplit
+      Height = 202
       AutoSnap = False
       Beveled = True
       MinSize = 20
@@ -51,8 +50,8 @@ inherited fmGrepResults: TfmGrepResults
     object lbResults: TListBox
       Left = 155
       Top = 22
-      Width = 241
-      Height = 200
+      Width = 239
+      Height = 202
       Style = lbOwnerDrawFixed
       Align = alClient
       ItemHeight = 17
@@ -70,11 +69,10 @@ inherited fmGrepResults: TfmGrepResults
     object ToolBar: TToolBar
       Left = 0
       Top = 0
-      Width = 396
+      Width = 394
       Height = 22
       AutoSize = True
       DisabledImages = dmSharedImages.DisabledImages
-      Flat = True
       Images = dmSharedImages.Images
       ParentShowHint = False
       ShowHint = True
@@ -223,7 +221,7 @@ inherited fmGrepResults: TfmGrepResults
       Left = 0
       Top = 22
       Width = 147
-      Height = 200
+      Height = 202
       Align = alLeft
       TabOrder = 1
       Tabs.Strings = (
@@ -237,7 +235,7 @@ inherited fmGrepResults: TfmGrepResults
         Left = 4
         Top = 25
         Width = 139
-        Height = 171
+        Height = 173
         Style = lbVirtualOwnerDraw
         Align = alClient
         Font.Charset = ANSI_CHARSET
@@ -260,8 +258,8 @@ inherited fmGrepResults: TfmGrepResults
     end
     object pnlBottom: TPanel
       Left = 0
-      Top = 240
-      Width = 396
+      Top = 232
+      Width = 394
       Height = 97
       Align = alBottom
       BevelOuter = bvNone
@@ -279,7 +277,6 @@ inherited fmGrepResults: TfmGrepResults
             Width = 60
           end>
         ParentFont = True
-        SimplePanel = False
         UseSystemFont = False
       end
       object reContext: TRichEdit

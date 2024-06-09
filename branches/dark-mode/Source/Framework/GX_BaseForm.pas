@@ -51,6 +51,7 @@ implementation
 {$R *.dfm}
 
 uses
+  GX_OtaUtils,
   GX_GxUtils;
 
 class function TfmBaseForm.Execute(_Owner: TComponent): Boolean;
@@ -133,6 +134,7 @@ begin
   FGxHintCustomDataRec.ScaleHint := Self.ScaleHint;
   CopyMemory(@(FGxHintCustomDataRec.ID), @GxHintCustomDataId, SizeOf(FGxHintCustomDataRec.ID));
   GxSetDefaultFont(Self);
+  GxOtaInitTheming(Self);
   if not Assigned(OnShow) then
     OnShow := FormShow;
 end;

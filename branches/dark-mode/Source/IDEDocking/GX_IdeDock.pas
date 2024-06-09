@@ -76,7 +76,7 @@ implementation
 
 uses
   DeskForm, DeskUtil,
-  GX_GenericClasses, GX_GxUtils;
+  GX_GenericClasses, GX_OtaUtils, GX_GxUtils;
 
 type
   TIdeDockManager = class(TSingletonInterfacedObject, IIdeDockManager)
@@ -152,6 +152,7 @@ begin
   CopyMemory(@(FGxHintCustomDataRec.ID), @GxHintCustomDataId, SizeOf(FGxHintCustomDataRec.ID));
 
   GxSetDefaultFont(Self);
+  GxOtaInitTheming(Self);
 
   {$IFDEF GX_EnableIdeDockingSupport}
   if Menu <> nil then
@@ -211,7 +212,10 @@ end;
 
 procedure TfmIdeDockForm.ScaleHint(_HintWindow: TGxHintWindow);
 begin
-  _HintWindow.Canvas.Font.Size := FScaler.Calc(Screen.HintFont.Size);
+  if Assigned(FScaler) then
+    _HintWindow.Canvas.Font.Height := FScaler.Calc(Screen.HintFont.Height)
+  else
+    _HintWindow.Canvas.Font.Size := Screen.HintFont.Size;
 end;
 
 procedure TfmIdeDockForm.InitDpiScaler;

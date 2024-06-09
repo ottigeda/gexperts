@@ -81,6 +81,7 @@ uses
   GX_GExperts,
   GX_ConfigurationInfo,
   GX_OtaUtils,
+  GX_IdeUtils,
   GX_GenericUtils,
   GX_NTAEditServiceNotifier,
   GX_EditBookmark;
@@ -108,6 +109,10 @@ var
   BookmarksExpert: TBookmarksExpert = nil;
 
 { TGxBookmarksExpert }
+
+const
+  clBookmarkDark  = $00404A36; // RGB(54, 74, 65);
+  clBookmarkLight = $00F6FFFA; // RGB(250, 255, 230);
 
 constructor TBookmarksExpert.Create;
 begin
@@ -498,11 +503,11 @@ var
     LineText: string;
   begin
     TextTop := _Rect.Top + TopOffset;
-    TopColor := clBtnHighlight;
-    BottomColor := clBtnShadow;
+    TopColor := GetThemedColor(clBtnHighlight);
+    BottomColor := GetThemedColor(clBtnShadow);
 
-    LbCanvas.Brush.Color := clBtnFace;
-    LbCanvas.Font.Color := clBtnText;
+    LbCanvas.Brush.Color := GetThemedColor(clBtnFace);
+    LbCanvas.Font.Color := GetThemedColor(clBtnText);
     LbCanvas.FillRect(_Rect);
 
     _Rect.Right := _Rect.Right + 2;
@@ -535,13 +540,20 @@ var
     BGBookmark: TColor;
   begin
     if [odSelected, odFocused] * _State = [odSelected, odFocused] then begin
-      BGNormal := clHighLight;
-      LbCanvas.Font.Color := clHighLightText;
+      BGNormal := GetThemedColor(clHighLight);
+      LbCanvas.Font.Color := GetThemedColor(clHighLightText);
       BGBookmark := BGNormal;
     end else begin
-      BGNormal := clWindow;
-      LbCanvas.Font.Color := clWindowText;
-      BGBookmark := RGB(250, 255, 230);
+      BGNormal := GetThemedColor(clWindow);
+      LbCanvas.Font.Color := GetThemedColor(clWindowText);
+
+      {$IFDEF GX_SUPPORTS_THEMING}
+      if IdeStyleIsDark
+      then BGBookmark := clBookmarkDark
+      else BGBookmark := clBookmarkLight;
+      {$ELSE}
+      BGBookmark := clBookmarkLight;
+      {$ENDIF}
     end;
     LbCanvas.Brush.Color := BGNormal;
     LbCanvas.FillRect(_Rect);
