@@ -8,9 +8,14 @@ interface
 
 uses
   Classes, Controls, Forms, StdCtrls, Menus, ExtCtrls, ComCtrls,
-  GX_Experts, GX_OtaUtils, GX_BaseForm;
+  GX_Experts, GX_OtaUtils, 
+  {$IFDEF GX_SUPPORTS_THEMING}GX_HotkeyDrawFix,{$ENDIF} 
+  GX_BaseForm;
 
 type
+{$IFDEF GX_SUPPORTS_THEMING}
+  THotkey = class(THotkeyDrawFix);
+{$ENDIF}
   TfmIdeShortCuts = class(TfmBaseForm)
     MainMenu: TMainMenu;
     lblMenuStruc: TLabel;
@@ -363,6 +368,7 @@ procedure TfmIdeShortCuts.FormShow(Sender: TObject);
 begin
   inherited;
   InitializeForm;
+  hkShortCut.Invalidate;
 end;
 
 procedure TfmIdeShortCuts.chkUseShortCutClick(Sender: TObject);
