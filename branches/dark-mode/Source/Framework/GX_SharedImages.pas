@@ -57,6 +57,9 @@ const
 
   ImageIndexInterface = 86;
 
+  ImageIndexMoveDown  = 92;
+  ImageIndexMoveUp    = 93;
+
 function GetSharedImageList: TImageList;
 
 implementation
