@@ -1463,6 +1463,7 @@ function TSynPasSyn.UseUserSettings(VersionIndex: Integer): Boolean;
 
   var
     tmpAsmAttri, tmpCommentAttri, tmpIdentAttri, tmpKeyAttri, tmpNumberAttri,
+    tmpFloatAttri,
     tmpSpaceAttri, tmpStringAttri, tmpSymbolAttri: TSynHighlighterAttributes;
     iVersions: TStringList;
     iVersionTag: string;
@@ -1489,6 +1490,7 @@ function TSynPasSyn.UseUserSettings(VersionIndex: Integer): Boolean;
     tmpIdentAttri   := TSynHighlighterAttributes.Create('', '');
     tmpKeyAttri     := TSynHighlighterAttributes.Create('', '');
     tmpNumberAttri  := TSynHighlighterAttributes.Create('', '');
+    tmpFloatAttri   := TSynHighlighterAttributes.Create('', '');
     tmpSpaceAttri   := TSynHighlighterAttributes.Create('', '');
     tmpStringAttri  := TSynHighlighterAttributes.Create('', '');
     tmpSymbolAttri  := TSynHighlighterAttributes.Create('', '');
@@ -1508,7 +1510,6 @@ function TSynPasSyn.UseUserSettings(VersionIndex: Integer): Boolean;
       FCharAttri.AssignColorAndStyle(tmpStringAttri); { Delphi lacks Char attribute }
       FCommentAttri.AssignColorAndStyle(tmpCommentAttri);
       FDirecAttri.AssignColorAndStyle(tmpCommentAttri); { Delphi lacks Directive attribute }
-      FFloatAttri.AssignColorAndStyle(tmpNumberAttri); { Delphi lacks Float attribute }
       FHexAttri.AssignColorAndStyle(tmpNumberAttri); { Delphi lacks Hex attribute }
       FIdentifierAttri.AssignColorAndStyle(tmpIdentAttri);
       FKeyAttri.AssignColorAndStyle(tmpKeyAttri);
@@ -1516,12 +1517,19 @@ function TSynPasSyn.UseUserSettings(VersionIndex: Integer): Boolean;
       FSpaceAttri.AssignColorAndStyle(tmpSpaceAttri);
       FStringAttri.AssignColorAndStyle(tmpStringAttri);
       FSymbolAttri.AssignColorAndStyle(tmpSymbolAttri);
+      
+      FFloatAttri.Assign(FNumberAttri); // use Number as fallback for Float
     end;
+    
+    if Result and ReadDelphiSetting(iVersionTag, tmpFloatAttri, 'Float') then
+      FFloatAttri.AssignColorAndStyle(tmpFloatAttri);
+
     tmpAsmAttri.Free;
     tmpCommentAttri.Free;
     tmpIdentAttri.Free;
     tmpKeyAttri.Free;
     tmpNumberAttri.Free;
+    tmpFloatAttri.Free;
     tmpSpaceAttri.Free;
     tmpStringAttri.Free;
     tmpSymbolAttri.Free;

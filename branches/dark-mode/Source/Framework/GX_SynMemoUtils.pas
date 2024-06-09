@@ -15,9 +15,10 @@ procedure SetSynEditHighlighter(SynEdit: TCustomSynEdit; Highlighter: TGXSyntaxH
 implementation
 
 uses
-  SysUtils, Classes, Graphics, ToolsAPI,
+  Windows, SysUtils, Classes, Graphics, ToolsAPI,
   SynEditHighlighter, SynHighlighterPas, SynHighlighterCpp, SynHighlighterHtml,
-  SynHighlighterSql, SynHighlighterCS, SynHighlighterXML, SynHighlighterGeneral, GX_OtaUtils;
+  SynHighlighterSql, SynHighlighterCS, SynHighlighterXML, SynHighlighterGeneral,
+  GX_OtaUtils;
 
 procedure GxGetIDEHighLigherSettings(Highlighter: TSynCustomHighlighter; const Prefer: string);
 var
@@ -71,7 +72,34 @@ begin
     SynEdit.Highlighter := TSynGeneralSyn.Create(SynEdit);
   end;
   if Highlighter in [gxpPAS, gxpCPP, gxpSQL, gxpCS] then
+  begin
     GxGetIDEHighLigherSettings(SynEdit.Highlighter, GetIDEVersionID);
+{$IFDEF GX_SUPPORTS_THEMING}
+    var Key: string;
+    if GxOtaThemingEnabled
+    and IdeStyleIsDark // ColorToGrayscale(GxOtaGetThemedColor(clWindow)) < 127)
+    then begin
+      // Dark Mode
+      Key := GxOtaGetIdeBaseRegistryKey + '\Editor\Highlight';
+      for i := 0 to SynEdit.Highlighter.AttrCount-1 do
+      begin
+        SynEdit.Highlighter.Attribute[i].LoadFromBorlandRegistry(
+          HKEY_CURRENT_USER,
+          Key,
+          SynEdit.Highlighter.Attribute[i].FriendlyName,
+          False
+        );
+      end;
+      SynEdit.Highlighter.WhitespaceAttribute.LoadFromBorlandRegistry(
+        HKEY_CURRENT_USER,
+        Key,
+        'Whitespace',
+        False
+      );
+      SynEdit.Color := SynEdit.Highlighter.WhitespaceAttribute.Background;
+    end;
+{$ENDIF}
+  end;
 end;
 
 function GetGXHighlighterForCurrentSourceEditor: TGXSyntaxHighlighter;
