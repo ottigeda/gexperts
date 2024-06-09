@@ -725,14 +725,6 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         Width = 22
         Height = 13
         Caption = 'After'
-        Color = clBtnFace
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -9
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentColor = False
-        ParentFont = False
       end
     end
   end

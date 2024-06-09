@@ -98,6 +98,7 @@ type
     property OldName: WideString read GetOldName write SetOldName;
     property NewName: WideString read GetNewName write SetNewName;
     function Execute: TModalResult;
+    procedure FixTabOrder;
     procedure SetRuleSelection(SelStart, SelEnd: Integer);
     property OnIsValidComponentName: TIsValidComponentName read FIsValidComponentName write FIsValidComponentName;
   end;
@@ -200,7 +201,28 @@ begin
   ActiveControl := edtNewName;
 //  lblReason.Top := btnOK.Top + Round((btnOK.Height / 2) - (lblReason.Height / 2));
   InitDpiScaler;
+  FixTabOrder;
   Result := ShowModal;
+end;
+
+procedure TfmCompRename.FixTabOrder;
+var
+  i : Integer;
+  C : TWinControl;
+begin
+  edtOldName.TabOrder := 0;
+  edtNewName.TabOrder := 1;
+  for i := 0 to FProperties.Count-1 do
+  begin
+    if FProperties[i] is TWinControl then begin
+      C := TWinControl(FProperties[i]);
+      TWinControl(C).TabOrder := 2 + i;
+    end;
+  end;
+  btnOK.TabOrder         := FProperties.Count + 2;
+  btnCancel.TabOrder     := FProperties.Count + 3;
+  btnSettings.TabOrder   := FProperties.Count + 4;
+  pc_Additional.TabOrder := FProperties.Count + 5;
 end;
 
 function TfmCompRename.GetNewName: WideString;
@@ -418,6 +440,7 @@ begin
   Edit := TEdit.Create(Self);
   Edit.Name := 'edtProperty_' + PropertyName;
   Edit.Parent := Self;
+  Edit.Name := 'edt' + PropertyName;
   Edit.Top := (FProperties.Count + 1) * (edtNewName.Top - edtOldName.Top) + edtNewName.Top;
   Edit.Left := edtNewName.Left;
   Edit.Width := edtNewName.Width;

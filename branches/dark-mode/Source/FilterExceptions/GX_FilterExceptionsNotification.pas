@@ -103,7 +103,11 @@ class function TfmExceptionNotification.Execute(_Owner: TWinControl; _OnAddExcep
 var
   frm: TfmExceptionNotification;
 begin
+  {$IF CompilerVersion >= 36}
+  frm := TfmExceptionNotification.CreateScaledNew(_Owner, _Owner.CurrentPPI);
+  {$ELSE}
   frm := TfmExceptionNotification.Create(_Owner);
+  {$IFEND}
   try
     TForm_CenterOn(frm, _Owner);
     frm.SetData(_OnAddException, _Project, _Exception, _Message, _AdditionalData, _ConfigurationKey);

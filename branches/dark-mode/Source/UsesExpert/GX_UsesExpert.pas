@@ -14,6 +14,9 @@ uses
   Windows, SysUtils,
   Classes, Controls, Forms, Menus, ComCtrls, Buttons, ImgList, ImageList,
   ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types,
+{$IFDEF GX_SUPPORTS_THEMING}
+  Themes,
+{$ENDIF}
   u_dzSpeedBitBtn, u_dzStopwatch,
   u_dzDpiScaleUtils,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
@@ -898,6 +901,25 @@ begin
   pnlUses.DoubleBuffered := True;
 
   FIdentifierMatchGrp :=  TdzSpeedBitBtnGroup.Create;
+{$IFDEF SUPPORTS_THEMING}
+  // consider using a RadioGroup, or TSpeedButtons...
+  if IsThemingEnabled then
+  begin
+    FIdentifierMatchGrp.ColorText   := ColorToRGB(GetThemedColor(clWindowText));
+    // if FIdentifierMatchGrp.ColorText >= $800000 then
+    if IdeStyleIsDark then
+    begin
+      // dark background
+      FIdentifierMatchGrp.ColorRaised := GxOtaGetStyleColor(scButtonNormal,  clBtnFace);
+      FIdentifierMatchGrp.ColorSunken := GxOtaGetStyleColor(scButtonPressed, clAppWorkSpace);
+    end
+    else begin
+      // light background
+      FIdentifierMatchGrp.ColorRaised := GetThemedColor(clBtnFace);
+      FIdentifierMatchGrp.ColorSunken := FIdentifierMatchGrp.ColorRaised + $00070707; // lighter
+    end;
+  end;
+{$ENDIF}
   FIdentifierMatchGrp.AllowAllUp := False;
   FIdentifierMatchGrp.Add(b_IdentifierMatchStart, Ord(fieStartOnly));
   FIdentifierMatchGrp.Add(b_IdentifierMatchAnywhere, Ord(fieAnywhere));
@@ -1205,7 +1227,8 @@ end;
 
 procedure TfmUsesManager.FormResize(Sender: TObject);
 begin
-  pnlUses.Width := Round(FLeftRatio * ClientWidth);
+  if Self.Showing then
+    pnlUses.Width := Round(FLeftRatio * ClientWidth);
 end;
 
 procedure TfmUsesManager.lbxInterfaceFilesDropped(_Sender: TObject; _Files: TStrings);
@@ -1546,13 +1569,14 @@ begin
     end;
     if gdSelected in _State then begin
       if not _Focused then begin
-        cnv.Brush.Color := clDkGray;
+        cnv.Brush.Color := GetThemedColor(clDkGray);
         // I would have used clHighlightText but that becomes unreadable when theming is active
-        cnv.Font.Color := clWhite;
+        cnv.Font.Color := GetThemedColor(clWhite);
       end;
     end else begin
       if _Tag <> 0 then begin
-        cnv.Brush.Color := clYellow;
+        cnv.Brush.Color := GetThemedColor(clWarningBack);
+        cnv.Font.Color  := GetThemedColor(clWarningText);
       end;
     end;
   end;
@@ -2148,7 +2172,7 @@ begin
     FreeAndNil(PathFiles);
   end;
   FilterVisibleUnits;
-  sg_SearchPath.Color := clWindow;
+  sg_SearchPath.Color := GetThemedColor(clWindow);
   sg_SearchPath.Enabled := True;
 end;
 

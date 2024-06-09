@@ -2,7 +2,6 @@ object fmExpertManager: TfmExpertManager
   Left = 277
   Top = 202
   ActiveControl = lvExperts
-  AutoScroll = False
   BorderIcons = [biSystemMenu]
   Caption = 'Expert Manager'
   ClientHeight = 263
@@ -31,7 +30,6 @@ object fmExpertManager: TfmExpertManager
     Height = 19
     Panels = <>
     ParentFont = True
-    SimplePanel = False
     UseSystemFont = False
   end
   object lvExperts: TListView
@@ -69,7 +67,6 @@ object fmExpertManager: TfmExpertManager
     Height = 24
     AutoSize = True
     DisabledImages = dmSharedImages.DisabledImages
-    Flat = True
     Images = dmSharedImages.Images
     ParentShowHint = False
     ShowHint = True
@@ -277,7 +274,7 @@ object fmExpertManager: TfmExpertManager
     Left = 160
     Top = 96
     Bitmap = {
-      494C010104000900200010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010104000900280010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

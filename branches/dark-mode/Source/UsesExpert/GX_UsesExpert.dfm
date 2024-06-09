@@ -4,30 +4,27 @@ inherited fmUsesManager: TfmUsesManager
   ActiveControl = edtUnitFilter
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'Uses Clause Manager'
-  ClientHeight = 490
-  ClientWidth = 1008
+  ClientHeight = 482
+  ClientWidth = 1006
   ParentFont = False
   Font.Charset = ANSI_CHARSET
-  Font.Height = -12
-  Font.Name = 'Tahoma'
-  Font.Style = []
   KeyPreview = True
   OnClose = FormClose
   OnResize = FormResize
   OnShow = FormShow
   PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 13
   object Splitter: TSplitter
     Left = 329
     Top = 0
-    Height = 434
+    Height = 426
     OnMoved = SplitterMoved
   end
   object pnlUnits: TPanel
     Left = 332
     Top = 0
-    Width = 676
-    Height = 434
+    Width = 674
+    Height = 426
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 6
@@ -36,9 +33,9 @@ inherited fmUsesManager: TfmUsesManager
     object pcUnits: TPageControl
       Left = 6
       Top = 47
-      Width = 664
-      Height = 381
-      ActivePage = tabSearchPath
+      Width = 662
+      Height = 373
+      ActivePage = tabIdentifiers
       Align = alClient
       TabOrder = 1
       OnChange = pcUnitsChange
@@ -48,8 +45,8 @@ inherited fmUsesManager: TfmUsesManager
         ImageIndex = 3
         object pnlSearchPathFooter: TPanel
           Left = 0
-          Top = 304
-          Width = 656
+          Top = 296
+          Width = 654
           Height = 48
           Align = alBottom
           BevelOuter = bvNone
@@ -90,8 +87,8 @@ inherited fmUsesManager: TfmUsesManager
         object pnlSearchPath: TPanel
           Left = 0
           Top = 0
-          Width = 656
-          Height = 304
+          Width = 654
+          Height = 296
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -100,8 +97,8 @@ inherited fmUsesManager: TfmUsesManager
           object sg_SearchPath: TStringGrid
             Left = 3
             Top = 3
-            Width = 650
-            Height = 298
+            Width = 648
+            Height = 290
             Align = alClient
             ColCount = 1
             DefaultColWidth = 100
@@ -127,8 +124,8 @@ inherited fmUsesManager: TfmUsesManager
         object pnlProject: TPanel
           Left = 0
           Top = 0
-          Width = 656
-          Height = 304
+          Width = 654
+          Height = 296
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -137,8 +134,8 @@ inherited fmUsesManager: TfmUsesManager
           object sg_Project: TStringGrid
             Left = 3
             Top = 3
-            Width = 650
-            Height = 265
+            Width = 648
+            Height = 257
             Align = alClient
             ColCount = 1
             DefaultColWidth = 100
@@ -158,8 +155,8 @@ inherited fmUsesManager: TfmUsesManager
           end
           object p_NoMapFile: TPanel
             Left = 3
-            Top = 268
-            Width = 650
+            Top = 260
+            Width = 648
             Height = 33
             Align = alBottom
             BevelOuter = bvNone
@@ -167,12 +164,12 @@ inherited fmUsesManager: TfmUsesManager
             TabOrder = 1
             Visible = False
             DesignSize = (
-              650
+              648
               33)
             object l_NoMapFile: TLabel
               Left = 0
               Top = 0
-              Width = 650
+              Width = 648
               Height = 33
               Align = alClient
               Caption = 
@@ -181,7 +178,7 @@ inherited fmUsesManager: TfmUsesManager
               WordWrap = True
             end
             object b_NoMapFileClose: TButton
-              Left = 625
+              Left = 619
               Top = 0
               Width = 25
               Height = 33
@@ -194,8 +191,8 @@ inherited fmUsesManager: TfmUsesManager
         end
         object pnlProjFooter: TPanel
           Left = 0
-          Top = 304
-          Width = 656
+          Top = 297
+          Width = 654
           Height = 48
           Align = alBottom
           BevelOuter = bvNone
@@ -267,8 +264,8 @@ inherited fmUsesManager: TfmUsesManager
         object pnlCommon: TPanel
           Left = 0
           Top = 0
-          Width = 656
-          Height = 304
+          Width = 654
+          Height = 296
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -277,8 +274,8 @@ inherited fmUsesManager: TfmUsesManager
           object sg_Common: TStringGrid
             Left = 3
             Top = 3
-            Width = 650
-            Height = 298
+            Width = 648
+            Height = 290
             Align = alClient
             ColCount = 1
             DefaultColWidth = 100
@@ -299,8 +296,8 @@ inherited fmUsesManager: TfmUsesManager
         end
         object pnlCommonFooter: TPanel
           Left = 0
-          Top = 304
-          Width = 656
+          Top = 296
+          Width = 654
           Height = 48
           Align = alBottom
           BevelOuter = bvNone
@@ -431,8 +428,8 @@ inherited fmUsesManager: TfmUsesManager
         object pnlIdentifiers: TPanel
           Left = 0
           Top = 0
-          Width = 656
-          Height = 304
+          Width = 654
+          Height = 296
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -441,8 +438,8 @@ inherited fmUsesManager: TfmUsesManager
           object sg_Identifiers: TStringGrid
             Left = 3
             Top = 3
-            Width = 650
-            Height = 298
+            Width = 648
+            Height = 290
             Align = alClient
             ColCount = 2
             DefaultColWidth = 150
@@ -460,8 +457,8 @@ inherited fmUsesManager: TfmUsesManager
         end
         object pnlIdentifiersFooter: TPanel
           Left = 0
-          Top = 304
-          Width = 656
+          Top = 296
+          Width = 654
           Height = 48
           Align = alBottom
           BevelOuter = bvNone
@@ -537,29 +534,29 @@ inherited fmUsesManager: TfmUsesManager
           object lblIdentifiers: TLabel
             Left = 16
             Top = 88
-            Width = 117
-            Height = 14
+            Width = 104
+            Height = 13
             Caption = 'Identifiers found: %d'
           end
           object lblUnitsParsed: TLabel
             Left = 16
             Top = 40
-            Width = 94
-            Height = 14
+            Width = 84
+            Height = 13
             Caption = 'Units parsed: %d'
           end
           object lblUnitsLoaded: TLabel
             Left = 16
             Top = 64
-            Width = 94
-            Height = 14
+            Width = 83
+            Height = 13
             Caption = 'Units loaded: %d'
           end
           object lblUnitsFound: TLabel
             Left = 16
             Top = 16
-            Width = 90
-            Height = 14
+            Width = 79
+            Height = 13
             Caption = 'Units found: %d'
           end
         end
@@ -568,7 +565,7 @@ inherited fmUsesManager: TfmUsesManager
     object pnlAvailableHeader: TPanel
       Left = 6
       Top = 6
-      Width = 664
+      Width = 662
       Height = 41
       Align = alTop
       BevelOuter = bvNone
@@ -576,7 +573,7 @@ inherited fmUsesManager: TfmUsesManager
       TabOrder = 0
       OnResize = pnlAvailableHeaderResize
       DesignSize = (
-        664
+        662
         41)
       object edtUnitFilter: TEdit
         Left = 200
@@ -593,7 +590,7 @@ inherited fmUsesManager: TfmUsesManager
       object pnlUnitsCaption: TPanel
         Left = 0
         Top = 0
-        Width = 664
+        Width = 662
         Height = 15
         Align = alTop
         BevelOuter = bvNone
@@ -603,8 +600,8 @@ inherited fmUsesManager: TfmUsesManager
         object lblFilter: TLabel
           Left = 1
           Top = 0
-          Width = 26
-          Height = 14
+          Width = 24
+          Height = 13
           Caption = 'Filte&r'
           FocusControl = edtUnitFilter
         end
@@ -628,7 +625,7 @@ inherited fmUsesManager: TfmUsesManager
     Left = 0
     Top = 0
     Width = 329
-    Height = 434
+    Height = 426
     Align = alLeft
     BevelOuter = bvNone
     BorderWidth = 6
@@ -802,15 +799,15 @@ inherited fmUsesManager: TfmUsesManager
   end
   object pnlFooter: TPanel
     Left = 0
-    Top = 434
-    Width = 1008
+    Top = 426
+    Width = 1006
     Height = 37
     Align = alBottom
     BevelOuter = bvNone
     FullRepaint = False
     TabOrder = 2
     object pnlButtonsRight: TPanel
-      Left = 653
+      Left = 651
       Top = 0
       Width = 355
       Height = 37
@@ -886,8 +883,8 @@ inherited fmUsesManager: TfmUsesManager
   end
   object sbUCM: TStatusBar
     Left = 0
-    Top = 471
-    Width = 1008
+    Top = 463
+    Width = 1006
     Height = 19
     Hint = 
       'DOUBLE-click on this Status Bar to copy the text displayed on th' +

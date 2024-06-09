@@ -93,15 +93,15 @@ type
     gbxCustomDirectory: TGroupBox;
     btnDirectory: TSpeedButton;
     lbxDirectoryList: TListBox;
-    btnDirectoryAdd: TBitBtn;
-    btnDirectoryDelete: TBitBtn;
+    btnDirectoryAdd: TButton;
+    btnDirectoryDelete: TButton;
     chkRecursive: TCheckBox;
-    btnDirectoryReplace: TBitBtn;
+    btnDirectoryReplace: TButton;
     edtDirectory: TEdit;
     lbxTypeList: TListBox;
     edtExtension: TEdit;
-    btnTypeAdd: TBitBtn;
-    btnTypeDelete: TBitBtn;
+    btnTypeAdd: TButton;
+    btnTypeDelete: TButton;
     edtMaxRecentFiles: TEdit;
     tsIDEOptions: TTabSheet;
     gbxIDEMenuItems: TGroupBox;
@@ -141,6 +141,9 @@ type
     function GetFileTypes: TFileTypes;
     function IDEOverride: TIDEOverride;
     procedure lbxDirectoryListFilesDropped(Sender: TObject; Files: TStrings);
+  protected
+    procedure FormResize(Sender: TObject);
+
   public
     class function ExecuteWithSettings(_Owner: TWinControl;Settings: TOpenFileSettings): Boolean;
     constructor Create(_Owner: TComponent); override;
@@ -156,6 +159,11 @@ uses
 
 const
   DefaultMaxMRU = 100;
+
+{$IF not declared(DisableAlign)}
+procedure DisableAlign; begin; end; // Dummy for backwards compatbility
+procedure EnableAlign; begin; end;
+{$IFEND}
 
 { TFileType }
 
@@ -596,11 +604,29 @@ begin
   end;
 end;
 
+procedure TfmOpenFileConfig.FormResize(Sender: TObject);
+var
+  Space: Integer;
+begin
+  if Self.Showing then begin
+    Space := 6;
+    if Assigned(FScaler) then
+      Space := FScaler.Calc(Space);
+
+    DisableAlign;
+      btnTypeAdd.Top := tsTypes.ClientHeight - btnTypeAdd.Height - Space;
+      btnTypeDelete.Top := btnTypeAdd.Top;
+      lbxTypeList.Height := btnTypeAdd.Top - Space - lbxTypeList.Top;
+
+      gbxCustomDirectory.Height := tsTypes.ClientHeight - gbxCustomDirectory.Top;
+
+    EnableAlign;
+  end;
+end;
+
 constructor TfmOpenFileConfig.Create(_Owner: TComponent);
 begin
   inherited;
-
-  TControl_SetMinConstraints(Self);
 
   SetParentBackgroundValue(gbxCustomDirectory, True);
   SetParentBackgroundValue(gbxGeneralSettings, True);
@@ -608,6 +634,8 @@ begin
   TWinControl_ActivateDropFiles(lbxDirectoryList, lbxDirectoryListFilesDropped);
 
   InitDpiScaler;
+  TControl_SetMinConstraints(Self);
+  Self.OnResize := FormResize;
 end;
 
 procedure TfmOpenFileConfig.SaveSettings(Settings: TOpenFileSettings);

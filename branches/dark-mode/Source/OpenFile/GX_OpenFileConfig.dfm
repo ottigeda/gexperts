@@ -135,7 +135,7 @@ object fmOpenFileConfig: TfmOpenFileConfig
             TabOrder = 2
             OnClick = lbxDirectoryListClick
           end
-          object btnDirectoryAdd: TBitBtn
+          object btnDirectoryAdd: TButton
             Left = 90
             Top = 182
             Width = 75
@@ -145,7 +145,7 @@ object fmOpenFileConfig: TfmOpenFileConfig
             TabOrder = 5
             OnClick = btnDirectoryAddClick
           end
-          object btnDirectoryDelete: TBitBtn
+          object btnDirectoryDelete: TButton
             Left = 170
             Top = 182
             Width = 75
@@ -163,7 +163,7 @@ object fmOpenFileConfig: TfmOpenFileConfig
             Caption = 'Include subdirectories'
             TabOrder = 1
           end
-          object btnDirectoryReplace: TBitBtn
+          object btnDirectoryReplace: TButton
             Left = 10
             Top = 182
             Width = 75
@@ -210,7 +210,7 @@ object fmOpenFileConfig: TfmOpenFileConfig
           Anchors = [akLeft, akTop, akRight]
           TabOrder = 3
         end
-        object btnTypeAdd: TBitBtn
+        object btnTypeAdd: TButton
           Left = 8
           Top = 261
           Width = 75
@@ -220,7 +220,7 @@ object fmOpenFileConfig: TfmOpenFileConfig
           TabOrder = 1
           OnClick = btnTypeAddClick
         end
-        object btnTypeDelete: TBitBtn
+        object btnTypeDelete: TButton
           Left = 87
           Top = 261
           Width = 75
@@ -293,7 +293,7 @@ object fmOpenFileConfig: TfmOpenFileConfig
             Width = 160
             Height = 22
             Style = csDropDownList
-            ItemHeight = 14
+            ItemHeight = 0
             TabOrder = 1
           end
           object cbxViewFormType: TComboBox
@@ -302,7 +302,7 @@ object fmOpenFileConfig: TfmOpenFileConfig
             Width = 160
             Height = 22
             Style = csDropDownList
-            ItemHeight = 14
+            ItemHeight = 0
             TabOrder = 3
           end
           object chkOverrideOpenProject: TCheckBox
@@ -319,7 +319,7 @@ object fmOpenFileConfig: TfmOpenFileConfig
             Width = 160
             Height = 22
             Style = csDropDownList
-            ItemHeight = 14
+            ItemHeight = 0
             TabOrder = 5
           end
         end
@@ -344,7 +344,7 @@ object fmOpenFileConfig: TfmOpenFileConfig
             Width = 160
             Height = 22
             Style = csDropDownList
-            ItemHeight = 14
+            ItemHeight = 0
             TabOrder = 1
           end
           object chkMatchAnywhere: TCheckBox

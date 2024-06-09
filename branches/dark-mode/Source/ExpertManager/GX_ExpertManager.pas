@@ -308,6 +308,14 @@ begin
   SetToolbarGradient(ToolBar);
   SetNonModalFormPopupMode(Self);
 
+  if IsThemesEnabled then
+  begin
+{$IF not declared(RTLVersion112)}  
+    lvExperts.DoubleBuffered := True;
+{$IFEND}    
+    lvExperts.Canvas.Font.Assign(Self.Font);
+  end;
+
   FFileDrop := TDropFileTarget.Create(nil);
   FFileDrop.OnDrop := DropFiles;
   FFileDrop.Dragtypes := [dtCopy, dtMove, dtLink];

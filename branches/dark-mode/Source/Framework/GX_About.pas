@@ -32,6 +32,7 @@ type
     mmoContributors: TMemo;
     tim_Scroll: TTimer;
     procedure btnEmailClick(Sender: TObject);
+    procedure DoRaiseTestException(Sender: TObject);
     procedure tim_ScrollTimer(Sender: TObject);
   private
     procedure InitFonts;
@@ -119,6 +120,7 @@ begin
 
   InitDpiScaler;
   InitFonts;
+  imgLogo.OnDblClick := DoRaiseTestException;
 end;
 
 procedure TfmAbout.InitFonts;
@@ -322,6 +324,17 @@ begin
   Result := -1;
 end;
 {$ENDIF not GX_VER170_up}
+
+procedure TfmAbout.DoRaiseTestException(Sender: TObject);
+const
+  ExceptionMessage = 'Test Exception for debug purpose.';
+begin
+{$IFDEF GX_DELPHI2009_UP}
+  raise EProgrammerNotFound.Create(ExceptionMessage);
+{$ELSE}
+  raise Exception.Create(ExceptionMessage);
+{$ENDIF}
+end;
 
 var
   FAboutPluginIndex: Integer;

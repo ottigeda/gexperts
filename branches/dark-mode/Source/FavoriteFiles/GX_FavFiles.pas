@@ -1109,6 +1109,7 @@ end;
 procedure TfmFavFiles.FormShow(Sender: TObject);
 begin
   inherited;
+  LoadSettings;
   FFileDrop.Register(ListView);
 end;
 

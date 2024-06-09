@@ -103,6 +103,8 @@ begin
   lblComponentClass.Caption := _CompClass;
   if Assigned(_Additional) then
     mmoPropertyNames.Lines.Assign(_Additional);
+  ActiveControl := mmoPropertyNames;
+  btnOK.Default := True;
 end;
 
 end.

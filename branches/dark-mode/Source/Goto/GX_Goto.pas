@@ -85,10 +85,14 @@ var
   i: Integer;
   reg: TRegistry;
   cnt: Integer;
-  Spacer: Integer;
+  NeededHeight : Integer;
+  DeltaHeight : Integer;
   s: string;
 begin
   inherited;
+
+  TControl_SetMinConstraints(Self);
+
   Items := lb_UnitPositions.Items;
   Items.BeginUpdate;
   try
@@ -104,13 +108,14 @@ begin
   InitDpiScaler;
   GxSetDefaultFont(Self);
 
-  Spacer := lb_UnitPositions.Left;
-  lb_UnitPositions.ClientHeight := (FUnitPositions.Count + 1) * lb_UnitPositions.ItemHeight;
-  b_Ok.Top := lb_UnitPositions.Top + lb_UnitPositions.Height + Spacer;
-  b_Cancel.Top := b_Ok.Top;
-  b_Cancel.Left := lb_UnitPositions.Left + lb_UnitPositions.Width - b_Cancel.Width;
-  Self.ClientHeight := b_Ok.Top + b_Ok.Height + Spacer;
-  Self.ClientWidth  := lb_UnitPositions.Left + lb_UnitPositions.Width + Spacer;
+  NeededHeight := (FUnitPositions.Count + 1) * lb_UnitPositions.ItemHeight;
+  DeltaHeight := NeededHeight - lb_UnitPositions.ClientHeight;
+  if DeltaHeight > 0 then begin
+    DisableAlign;
+    Self.ClientHeight := Self.ClientHeight + DeltaHeight;
+    EnableAlign;
+  end;
+  b_Ok.Caption := 'Go';
 
   // Unfortunately the IDE only updates the registry when it closes down so this list will be
   // outdated if the user switched from the IDE's goto dialog to the GExperts one.

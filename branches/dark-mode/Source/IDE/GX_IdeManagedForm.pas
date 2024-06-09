@@ -317,6 +317,8 @@ begin
     C := FForm.FindComponent('CancelButton');
     if C is TButton then
       Target := TButton(C).Parent;
+    if not Assigned(Target) then
+      Target := FForm;
     if Assigned(Target) then
       GxSetWindowSizeGrip(Target.Handle, True);
   end;

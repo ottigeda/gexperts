@@ -66,6 +66,7 @@ uses
   GX_Experts,
   GX_GExperts,
   GX_ConfigurationInfo,
+  GX_GxUtils,
   GX_OtaUtils,
   GX_FilterExceptionsNotification;
 
@@ -536,6 +537,7 @@ end;
 constructor TfmGxFilterExceptionsExpert.Create(_Owner: TComponent);
 begin
   inherited;
+  GxSetDefaultFont(Self);
   TControl_SetMinConstraints(Self);
 
   sg_Exceptions.ColWidths[COL_PROJECT] := 100;
