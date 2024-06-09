@@ -74,6 +74,9 @@ var
   Items: TStrings;
 begin
   inherited;
+
+  TControl_SetMinConstraints(Self);
+
   pnlEditGoesHere.BevelOuter := bvNone;
   FEdit := TSynEdit.Create(Self);
   FEdit.Parent := pnlEditGoesHere;

@@ -32,6 +32,7 @@ type
   public
     class function Execute(_Owner: TWinControl; var _CrLfPascal: string; var _CrLfCPP: string;
       var _GunGetTextFunction: TGnuGetTextFunction; var _GnuGetTextIndividual: Boolean): Boolean;
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
@@ -51,7 +52,6 @@ begin
   frm := TfmMessageOptions.Create(_Owner);
   try
     TForm_CenterOn(frm, _Owner);
-    frm.InitDpiScaler;
     frm.SetData(_CrLfPascal, _CrLfCPP, _GunGetTextFunction, _GnuGetTextIndividual);
     Result := (frm.ShowModal = mrOk);
     if Result then
@@ -59,6 +59,13 @@ begin
   finally
     FreeAndNil(frm);
   end;
+end;
+
+constructor TfmMessageOptions.Create(_Owner: TComponent);
+begin
+  inherited;
+  TControl_SetMinConstraints(Self);
+  InitDpiScaler;
 end;
 
 procedure TfmMessageOptions.GetData(out _CrLfPascal, _CrLfCPP: string;

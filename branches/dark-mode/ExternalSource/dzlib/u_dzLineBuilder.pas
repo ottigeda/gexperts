@@ -22,6 +22,7 @@ type
     FQuoteChar: Char;
     FColumnCount: Integer;
     FForceQuoted: Boolean;
+    FIgnoreEmpty: Boolean;
     function GetDecimalSeparator: Char;
     procedure SetDecimalSeparator(_Value: Char);
   public
@@ -76,10 +77,41 @@ type
     ///<summary> If set to true, every column will be enclosed in quotes </summary>
     property ForceQuoted: Boolean read FForceQuoted write FForceQuoted;
     property QuoteChar: Char read FQuoteChar write FQuoteChar;
+    ///<summary>
+    /// If set to True, adding empty strings will not change the content -> no empty columns will be added
+    /// Default: False </summary>
+    property IgnoreEmpty: Boolean read FIgnoreEmpty write FIgnoreEmpty;
 {$IF Declared(TFormatSettings)}
     property FormatSettings: TFormatSettings read FFormatSettings;
 {$IFEND}
   end;
+
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
+type
+  ///<summary>
+  /// A very simple version of the line builder that only generates a comma separated string and
+  /// ignores empty strings. </summary>
+  TCommaSepStringBuilderRec = record
+  private
+    FSeparator: string;
+    FValue: string;
+    function GetSeparator: string;
+  public
+    procedure Clear;
+    ///<summary>
+    /// Appends a string, if it is not empty. Inserts the separator string in front of it, if Value
+    /// is not empty. if Value = '' then Value := _s; if_s = '' then Value remains unchanged,
+    /// otherwise Value := Value + Separator + _s </summary>
+    procedure Append(const _s: string);
+    property Value: string read FValue;
+    ///<summary>
+    /// The string used to separate strings appended, defaults to ','
+    /// @NOTE: For better readability, you might want to set it to ', ' instead. </summary>
+    property Separator: string read GetSeparator write FSeparator;
+    class operator Implicit(_a: TCommaSepStringBuilderRec): string;
+    class operator Add(_a: TCommaSepStringBuilderRec; _b: string): TCommaSepStringBuilderRec;
+  end;
+{$ENDIF}
 
 implementation
 
@@ -211,6 +243,8 @@ procedure TLineBuilder.Add(const _Column: string);
 var
   s: string;
 begin
+  if (_Column = '') and (FIgnoreEmpty) then
+    Exit; //==>
   if FColumnCount > 0 then
     FContent := FContent + FListSeparator;
   if FForceQuoted then
@@ -308,5 +342,43 @@ begin
     FContent := s;
   FColumnCount := FColumnCount + _Line.ColumnCount;
 end;
+
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
+{ TCommaSepListBuilderRec }
+
+procedure TCommaSepStringBuilderRec.Append(const _s: string);
+begin
+  if _s = '' then
+    Exit; //==>
+
+  if FValue <> '' then
+    FValue := FValue + GetSeparator;
+  FValue := FValue + _s;
+end;
+
+procedure TCommaSepStringBuilderRec.Clear;
+begin
+  FValue := '';
+end;
+
+function TCommaSepStringBuilderRec.GetSeparator: string;
+begin
+  Result := FSeparator;
+  if Result = '' then
+    Result := ','
+  else
+end;
+
+class operator TCommaSepStringBuilderRec.Implicit(_a: TCommaSepStringBuilderRec): string;
+begin
+  Result := _a.FValue;
+end;
+
+class operator TCommaSepStringBuilderRec.Add(_a: TCommaSepStringBuilderRec; _b: string): TCommaSepStringBuilderRec;
+begin
+  Result := _a;
+  Result.Append(_b);
+end;
+{$ENDIF}
 
 end.

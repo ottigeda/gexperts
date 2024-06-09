@@ -31,6 +31,7 @@ type
   public
     class function Execute(_Owner: TWinControl;
       var _ScanEntireUnit, _SearchLibraryPath, _SearchBrowsingPath: Boolean): Boolean;
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
@@ -41,6 +42,13 @@ uses
   u_dzVclUtils;
 
 { TfmProjDependOptions }
+
+constructor TfmProjDependOptions.Create(_Owner: TComponent);
+begin
+  inherited;
+  TControl_SetMinConstraints(Self);
+  InitDpiScaler;
+end;
 
 class function TfmProjDependOptions.Execute(_Owner: TWinControl;
   var _ScanEntireUnit, _SearchLibraryPath, _SearchBrowsingPath: Boolean): Boolean;

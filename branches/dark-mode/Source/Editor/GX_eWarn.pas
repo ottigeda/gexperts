@@ -282,9 +282,9 @@ begin
   b_ERROR.Visible := False;
 {$IFEND}
 
+  TControl_SetMinConstraints(Self);
   InitDpiScaler;
   GxSetDefaultFont(Self);
-  TControl_SetMinConstraints(Self);
 
   FAvailable := TStringList.Create;
   InitWarnings;

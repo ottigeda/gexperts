@@ -324,6 +324,7 @@ var
   i: Integer;
 begin
   inherited;
+  TControl_SetMinConstraints(Self);
   Placeholders := TStringList.Create;
   try
     TAutoTodoHandler.GetPlaceholders(Placeholders);

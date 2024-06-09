@@ -281,6 +281,7 @@ end;
 constructor TfmPasteAsConfig.Create(_Owner: TComponent);
 begin
   inherited;
+  TControl_SetMinConstraints(Self);
   TPasteAsHandler.GetTypeText(cbPasteAsType.Items);
   cbPasteAsType.DropDownCount := Integer(High(TPasteAsType)) + 1;
 

@@ -17,6 +17,11 @@ uses
   u_dzVclUtils,
   u_dzTranslator;
 
+{$IF not declared(NativeInt)}
+type
+  NativeInt = Integer;
+{$IFEND}
+
 type
   EdzSpeedButton = class(EdzException);
 
@@ -33,6 +38,9 @@ type
   /// Note: Actions do not work.</summary>
   TdzSpeedBitBtn = class(TWindowProcHook)
   private
+    FColorRaised: TColor;
+    FColorSunken: TColor;
+    FColorText: TColor;
     FCaption: string;
     FUpGlyph: TBitmap;
     FDownGlyph: TBitmap;
@@ -49,8 +57,7 @@ type
     procedure SetDown(const Value: Boolean);
     procedure UpdateGlyph;
     function GetBitBtn: TBitBtn;
-    procedure PrepareBmp(_w, _h: Integer; _Color: TColor; _Edge: UINT; _Glyph: TBitmap;
-      _bmp: TBitmap);
+    procedure PrepareBmp(_w, _h: Integer; _Color: TColor; _Edge: UINT; _Glyph: TBitmap; _bmp: TBitmap);
     procedure PrepareBmps(_UpBmp, _DownBmp: TBitmap);
   protected
     procedure NewWindowProc(var _Msg: TMessage); override;
@@ -58,6 +65,7 @@ type
     constructor Create(_btn: TBitBtn); reintroduce; overload;
     constructor Create(_btn: TBitBtn; _UpGlyph, _DownGlyph: TBitmap); overload;
     constructor Create(_btn: TBitBtn; _ImageList: TImageList; _UpGlyphIdx, _DownGlyphIdx: Integer); overload;
+    constructor Create(_btn: TWinControl; AColorText: TColor = clNone; AColorRaised: TColor = clNone; AColorSunken: TColor = clNone); overload;
     destructor Destroy; override;
     property Down: Boolean read GetDown write SetDown;
     property BitBtn: TBitBtn read GetBitBtn;
@@ -74,6 +82,9 @@ type
     FOnClick: TNotifyEvent;
     FList: TList;
     FAllowAllUp: Boolean;
+    FColorRaised: TColor;
+    FColorSunken: TColor;
+    FColorText: TColor;
     procedure HandleClick(_Sender: TObject);
     procedure doOnClick;
     function TryGetSelectedSb(out _Idx: Integer; out _sb: TdzSpeedBitBtn): Boolean;
@@ -82,7 +93,7 @@ type
     destructor Destroy; override;
     function Add(_btn: TBitBtn): TdzSpeedBitBtn; overload;
     function Add(_btn: TBitBtn; _Data: Pointer): TdzSpeedBitBtn; overload;
-    function Add(_btn: TBitBtn; _Data: Integer): TdzSpeedBitBtn; overload;
+    function Add(_btn: TBitBtn; _Data: NativeInt): TdzSpeedBitBtn; overload;
     ///<summary>
     /// Sets the given button's down state to False, if allowed
     /// @param Idx is the index of the button to change
@@ -110,13 +121,26 @@ type
     function TryGetSelected(out _Data: Pointer): Boolean; overload;
     property AllowAllUp: Boolean read FAllowAllUp write FAllowAllUp;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
-  end;
+    property ColorRaised: TColor read FColorRaised write FColorRaised default clNone;
+    property ColorSunken: TColor read FColorSunken write FColorSunken default clNone;
+    property ColorText: TColor read FColorText write FColorText default clNone;  end;
 
 implementation
+
+{$IF CompilerVersion >= 35} // Delphi 11 and up.
+  {$DEFINE USE_THEMING}
+{$IFEND}
 
 uses
   Math,
   Forms,
+{$IFDEF USE_THEMING}
+  UxTheme,
+  Themes,
+  {$IFDEF USE_IDE_THEMING}
+  GX_OtaUtils,
+  {$ENDIF}
+{$ENDIF}
   u_dzGraphicsUtils,
   u_dzMiscUtils;
 
@@ -166,6 +190,20 @@ begin
   UpdateGlyph;
 end;
 
+constructor TdzSpeedBitBtn.Create(_btn: TWinControl;
+                                  AColorText, AColorRaised, AColorSunken: TColor);
+begin
+  inherited Create(_btn);
+  
+  FColorRaised := AColorRaised;
+  FColorSunken := AColorSunken;
+  FColorText   := AColorText;
+
+  if FColorRaised = clNone then FColorRaised := RGB(240, 240, 240); // clBtnFace;
+  if FColorSunken = clNone then FColorSunken := RGB(245, 245, 245); // a bit lighter than clBtnFace;
+  if FColorText   = clNone then FColorText   := RGB(0, 0, 0);       // Black
+end;
+
 constructor TdzSpeedBitBtn.Create(_btn: TBitBtn; _ImageList: TImageList; _UpGlyphIdx,
   _DownGlyphIdx: Integer);
 var
@@ -204,9 +242,13 @@ var
 begin
   w := BitBtn.ClientWidth;
   h := BitBtn.ClientHeight;
+  BitBtn.Spacing := 0;
 
   ColBack1 := RGB(240, 240, 240); // clBtnFace;
   ColBack2 := RGB(245, 245, 245); // a bit lighter than clBtnFace;
+
+  if FColorRaised <> clNone then ColBack1 := FColorRaised;
+  if FColorSunken <> clNone then ColBack2 := FColorSunken;
 
   PrepareBmp(w, h, ColBack1, EDGE_RAISED, FUpGlyph, FUpBmp);
   PrepareBmp(w, h, ColBack2, EDGE_SUNKEN, FDownGlyph, FDownBmp);
@@ -216,6 +258,11 @@ procedure TdzSpeedBitBtn.PrepareBmp(_w, _h: Integer; _Color: TColor; _Edge: UINT
   _bmp: TBitmap);
 var
   cnv: TCanvas;
+{$IFDEF USE_THEMING}
+  LStyleService : TCustomStyleServices;
+  LDetails      : TThemedElementDetails;
+  DC            : HDC;
+{$ENDIF}
 
   procedure HandleBmpOnly;
   var
@@ -247,7 +294,21 @@ var
       HorizontalAlignment := dthaLeft;
       r := Rect(X + 2, 0, _w - 3, _h);
     end;
-    TCanvas_DrawTextSingleLine(cnv, FCaption, r, HorizontalAlignment, dtvaCenter, []);
+{$IFDEF USE_THEMING}
+    if Assigned(LStyleService) and (LStyleService.Enabled) then
+    begin
+      LStyleService.DrawText(
+        DC,
+        LDetails,
+        FCaption,
+        R,
+        [tfCenter, tfVerticalCenter, tfSingleLine],
+        FColorText
+      );
+    end
+    else
+{$ENDIF}
+      TCanvas_DrawTextSingleLine(cnv, FCaption, r, HorizontalAlignment, dtvaCenter, []);
   end;
 
   procedure HandleTextOnlyMultiLine;
@@ -386,14 +447,40 @@ begin
   _bmp.Height := _h;
   _bmp.TransparentColor := clFuchsia;
 
+{$IFDEF USE_THEMING}
+  _bmp.PixelFormat := pfDevice;
   cnv := _bmp.Canvas;
-  cnv.Brush.Color := _Color;
-  cnv.Brush.Style := bsSolid;
-  cnv.FillRect(Rect(0, 0, _w, _h));
+  {$IFDEF USE_IDE_THEMING}
+  LStyleService := IdeStyleService;
+  {$ELSE}
+  LStyleService := Themes.StyleServices;
+  {$ENDIF}
+  if Assigned(LStyleService) and LStyleService.Enabled then
+  begin
+    R := Rect(0, 0, _w, _h);
+    if _Edge = EDGE_SUNKEN then // "down"
+    begin
+      LDetails   := LStyleService.GetElementDetails(TThemedButton.tbPushButtonPressed);
+      FColorText := LStyleService.GetStyleFontColor(TStyleFont.sfButtonTextPressed);
+    end
+    else begin // "up"
+      LDetails   := LStyleService.GetElementDetails(TThemedButton.tbPushButtonNormal);
+      FColorText := LStyleService.GetStyleFontColor(TStyleFont.sfButtonTextNormal);
+    end;
+    LStyleService.DrawElement(DC, LDetails, R, nil, 0);
+//    _bmp.Canvas.Pixels[0, 0] := clFuchsia;
+  end
+  else
+{$ENDIF USE_THEMING}
+  begin
+    cnv := _bmp.Canvas;
+    cnv.Brush.Color := _Color;
+    cnv.Brush.Style := bsSolid;
+    cnv.FillRect(Rect(0, 0, _w, _h));
 
-  r := Rect(0, 0, _w - 1, _h - 2);
-  DrawEdge(cnv.Handle, r, _Edge, BF_RECT);
-
+    r := Rect(0, 0, _w - 1, _h - 2);
+    DrawEdge(cnv.Handle, r, _Edge, BF_RECT);
+  end;
   cnv.Brush.Style := bsClear;
   cnv.Font := BitBtn.Font;
 
@@ -485,6 +572,9 @@ constructor TdzSpeedBitBtnGroup.Create;
 begin
   inherited Create;
   FList := TList.Create;
+  FColorRaised := clNone;
+  FColorSunken := clNone;
+  FColorText   := clNone;
 end;
 
 destructor TdzSpeedBitBtnGroup.Destroy;
@@ -496,7 +586,10 @@ end;
 function TdzSpeedBitBtnGroup.Add(_btn: TBitBtn; _Data: Pointer): TdzSpeedBitBtn;
 begin
   _btn.OnClick := Self.HandleClick;
-  Result := TdzSpeedBitBtn.Create(_btn);
+{$IFDEF USE_THEMING}
+  _btn.StyleElements := [];
+{$ENDIF}
+  Result := TdzSpeedBitBtn.Create(_btn, FColorText, FColorRaised, FColorSunken);
   Result.Data := _Data;
   FList.Add(Result);
 end;
@@ -506,7 +599,7 @@ begin
   Result := Add(_btn, nil);
 end;
 
-function TdzSpeedBitBtnGroup.Add(_btn: TBitBtn; _Data: Integer): TdzSpeedBitBtn;
+function TdzSpeedBitBtnGroup.Add(_btn: TBitBtn; _Data: NativeInt): TdzSpeedBitBtn;
 begin
   Result := Add(_btn, Pointer(_Data)); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end;

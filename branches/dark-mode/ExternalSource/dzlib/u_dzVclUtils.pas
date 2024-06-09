@@ -1133,10 +1133,23 @@ procedure TCheckListBox_Readonly(_clb: TCheckListBox; _ReadOnly: Boolean; _Chang
 function TRadioGroup_GetItemCaption(_rg: TCustomRadioGroup;
   out _Caption: string; _Idx: Integer = -1): Boolean;
 
-///<summary> Selects the item in the radio group with the given caption,
-///          returns the item's index or -1 if no item matched.
-///          Comparison is case insensitive </summary>
+///<summary>
+/// Selects the item in the radio group with the given caption,
+/// @returns the item's index or -1 if no item matched.
+/// @NOTE: Comparison is case insensitive </summary>
 function TRadioGroup_Select(_rg: TCustomRadioGroup; const _Item: string; _DefaultIdx: Integer = -1): Integer;
+
+///<summary>
+/// Selects the item in the radio group with the given object value
+/// @returns the item's index or -1 if no item matched. </summary>
+function TRadioGroup_SelectByObject(_rg: TCustomRadioGroup; _Obj: Pointer;
+  _WithClick: Boolean = False; _DefaultIdx: Integer = -1): Integer; overload;
+
+///<summary>
+/// Selects the item in the radio group with the given object value
+/// @returns the item's index or -1 if no item matched. </summary>
+function TRadioGroup_SelectByObject(_rg: TCustomRadioGroup; _ObjAsInt: Integer;
+  _WithClick: Boolean = False; _DefaultIdx: Integer = -1): Integer; overload;
 
 procedure TRadioGroup_SelectWithoutClickEvent(_rg: TCustomRadioGroup; _Idx: Integer);
 
@@ -4235,10 +4248,36 @@ begin
     if AnsiSameText(Hack.Items[i], _Item) then begin
       Hack.ItemIndex := i;
       Result := Hack.ItemIndex;
-      Exit;
+      Exit; //==>
     end;
   Hack.ItemIndex := _DefaultIdx;
   Result := Hack.ItemIndex;
+end;
+
+function TRadioGroup_SelectByObject(_rg: TCustomRadioGroup; _Obj: Pointer;
+  _WithClick: Boolean = False; _DefaultIdx: Integer = -1): Integer;
+var
+  Hack: TRadioGroupHack;
+  i: Integer;
+begin
+  Hack := TRadioGroupHack(_rg);
+  for i := 0 to Hack.Items.Count - 1 do
+    if Hack.Items.Objects[i] = _Obj then begin
+      if _WithClick then
+        Hack.ItemIndex := i
+      else
+        TRadioGroup_SelectWithoutClickEvent(_rg, i);
+      Result := Hack.ItemIndex;
+      Exit; //==>
+    end;
+  Hack.ItemIndex := _DefaultIdx;
+  Result := Hack.ItemIndex;
+end;
+
+function TRadioGroup_SelectByObject(_rg: TCustomRadioGroup; _ObjAsInt: Integer;
+  _WithClick: Boolean = False; _DefaultIdx: Integer = -1): Integer;
+begin
+  Result := TRadioGroup_SelectByObject(_rg, Pointer(_ObjAsInt), _WithClick, _DefaultIdx);
 end;
 
 procedure TRadioGroup_SelectWithoutClickEvent(_rg: TCustomRadioGroup; _Idx: Integer);

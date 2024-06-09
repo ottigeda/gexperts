@@ -76,6 +76,8 @@ constructor TfmClipboardOptions.Create(_Owner: TComponent);
 begin
   inherited;
 
+  TControl_SetMinConstraints(Self);
+
   cbPreviewFont.Items.Assign(Screen.Fonts);
 
   InitDpiScaler;
