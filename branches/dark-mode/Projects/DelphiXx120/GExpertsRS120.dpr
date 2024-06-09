@@ -184,6 +184,7 @@ uses
   GX_MacroTemplates in '..\..\source\MacroTemplates\GX_MacroTemplates.pas' {fmMacroTemplates},
   GX_MacroTemplatesExpert in '..\..\source\MacroTemplates\GX_MacroTemplatesExpert.pas',
   GX_MemoEscFix in '..\..\Source\Utils\GX_MemoEscFix.pas',
+  GX_HotkeyDrawFix in '..\..\Source\Utils\GX_HotkeyDrawFix.pas',
   GX_MenuActions in '..\..\source\Framework\GX_MenuActions.pas',
   GX_MenusForEditorExpert in '..\..\source\Editor\GX_MenusForEditorExpert.pas',
   GX_MessageBox in '..\..\source\Framework\GX_MessageBox.pas' {fmGxMessageBox},

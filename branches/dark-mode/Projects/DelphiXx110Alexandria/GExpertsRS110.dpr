@@ -141,6 +141,7 @@ uses
   GX_GxUtils in '..\..\source\Utils\GX_GxUtils.pas',
   GX_HideNavbar in '..\..\source\Experts\EditorEnhancements\GX_HideNavbar.pas',
   GX_HideNonVisualComps in '..\..\source\HideNonvisualComponents\GX_HideNonVisualComps.pas',
+  GX_HotkeyDrawFix in '..\..\source\utils\GX_HotkeyDrawFix.pas',
   GX_IconMessageBox in '..\..\source\Framework\GX_IconMessageBox.pas',
   GX_IdeApplicationSettingsEnhancer in '..\..\Source\IDE\GX_IdeApplicationSettingsEnhancer.pas',
   GX_IdeBuildEventFavoriteEdit in '..\..\Source\IDE\GX_IdeBuildEventFavoriteEdit.pas' {f_IdeBuildEventFavoriteEdit},
