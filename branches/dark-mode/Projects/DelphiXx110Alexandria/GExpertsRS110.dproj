@@ -78,7 +78,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <Debugger_HostApplication>$(BDS)\bin\bds.exe</Debugger_HostApplication>
-        <Debugger_RunParams>-rBDSPlain</Debugger_RunParams>
+        <Debugger_RunParams>-rBDSPlain -pDelphi</Debugger_RunParams>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">

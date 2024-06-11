@@ -70,7 +70,8 @@ function GxOtaGetEditorKeyTracingEnabled: Boolean;
 {$IFDEF GX_SUPPORTS_THEMING}
 function IdeStyleIsDark: Boolean;
 function IdeStyleService: TCustomStyleServices;
-function GxOtaActiveTheme: string;
+function GxOtaGetIDEThemingServices: IOTAIDEThemingServices;
+function GxOtaActiveThemeName: string;
 function GxOtaGetStyleColor(AColor: TStyleColor; ADefault: TColor): TColor;
 function GxOtaGetStyleFontColor(AFontStyle: TStyleFont; ADefault: TColor = clNone): TColor;
 {$ENDIF}
@@ -4024,29 +4025,36 @@ function IdeStyleService: TCustomStyleServices;
 var
   LService: IOTAIDEThemingServices;
 begin
-  Result := nil;
-  if Supports(BorlandIDEServices, IOTAIDEThemingServices, LService) then
-  begin
-    Result := LService.StyleServices;
-  end;
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(LService) then
+    Result := LService.StyleServices
+  else
+    Result := nil;
 end;
 
-function GxOtaActiveTheme: string;
+function GxOtaGetIDEThemingServices: IOTAIDEThemingServices;
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := nil;
+  if Supports(BorlandIDEServices, IOTAIDEThemingServices, LService) then
+    Result := LService;
+end;
+
+function GxOtaActiveThemeName: string;
 var
   LService: IOTAIDEThemingServices;
 begin
   Result := '';
-  if Supports(BorlandIDEServices, IOTAIDEThemingServices, LService) then
-  begin
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(LService) then
     Result := LService.ActiveTheme;
-  end;
 end;
 
 function IdeStyleIsDark: Boolean;
 begin
-  Result := SameText(GxOtaActiveTheme, 'Dark');
+  Result := SameText(GxOtaActiveThemeName, 'Dark');
 end;
-
 {$ENDIF}
 
 function GxOtaThemingEnabled: Boolean;
@@ -4055,10 +4063,9 @@ var
   LService: IOTAIDEThemingServices;
 begin
   Result := False;
-  if Supports(BorlandIDEServices, IOTAIDEThemingServices, LService) then
-  begin
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(LService) then
     Result := LService.IDEThemingEnabled;
-  end;
 end;
 {$ELSE}
 begin
@@ -4072,14 +4079,11 @@ var
   LService: IOTAIDEThemingServices;
 begin
   Result := False;
-  if Assigned(AForm)
-  and Supports(BorlandIDEServices, IOTAIDEThemingServices, LService)
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(AForm) and Assigned(LService) and (LService.IDEThemingEnabled)
   then begin
-    if LService.IDEThemingEnabled then
-    begin
-      LService.ApplyTheme(AForm);
-      Result := True;
-    end;
+    LService.ApplyTheme(AForm);
+    Result := True;
   end;
 end;
 {$ELSE}
@@ -4091,18 +4095,15 @@ end;
 function GxOtaInitTheming(AForm: TCustomForm): Boolean;
 {$IFDEF GX_SUPPORTS_THEMING}
 var
-  LService: IOTAIDEThemingServices;
+  LService : IOTAIDEThemingServices;
 begin
   Result := False;
-  if Assigned(AForm)
-  and Supports(BorlandIDEServices, IOTAIDEThemingServices, LService)
-  then begin
-    if LService.IDEThemingEnabled then
-    begin
-      LService.RegisterFormClass(TCustomFormClass(AForm.ClassType));
-      LService.ApplyTheme(AForm);
-      Result := True;
-    end;
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(AForm) and Assigned(LService) and (LService.IDEThemingEnabled) then
+  begin
+    LService.RegisterFormClass(TCustomFormClass(AForm.ClassType));
+    LService.ApplyTheme(AForm);
+    Result := True;
   end;
 end;
 {$ELSE}
@@ -4117,12 +4118,10 @@ var
   LService: IOTAIDEThemingServices;
 begin
   Result := AColor;
-  if Supports(BorlandIDEServices, IOTAIDEThemingServices, LService) then
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(LService) and LService.IDEThemingEnabled then
   begin
-    if LService.IDEThemingEnabled then
-    begin
-      Result := LService.StyleServices.GetSystemColor(AColor);
-    end;
+    Result := LService.StyleServices.GetSystemColor(AColor);
   end;
 {$ELSE}
 begin
@@ -4136,12 +4135,10 @@ var
   LService: IOTAIDEThemingServices;
 begin
   Result := ADefault;
-  if Supports(BorlandIDEServices, IOTAIDEThemingServices, LService) then
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(LService) and LService.IDEThemingEnabled then
   begin
-    if LService.IDEThemingEnabled then
-    begin
-      Result := LService.StyleServices.GetStyleColor(AColor);
-    end;
+    Result := LService.StyleServices.GetStyleColor(AColor);
   end;
 end;
 {$ENDIF}
@@ -4152,12 +4149,10 @@ var
   LService: IOTAIDEThemingServices;
 begin
   Result := ADefault;
-  if Supports(BorlandIDEServices, IOTAIDEThemingServices, LService) then
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(LService) and LService.IDEThemingEnabled then
   begin
-    if LService.IDEThemingEnabled then
-    begin
-      Result := LService.StyleServices.GetStyleFontColor(AFontStyle);
-    end;
+    Result := LService.StyleServices.GetStyleFontColor(AFontStyle);
   end;
 end;
 {$ENDIF}
