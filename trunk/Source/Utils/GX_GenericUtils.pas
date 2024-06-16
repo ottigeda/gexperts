@@ -3602,12 +3602,19 @@ begin
 end;
 
 function GetUserLocalApplicationDataFolder: string;
-{$if not defined(CSIDL_LOCAL_APPDATA)}
+{$IF NOT defined(CSIDL_LOCAL_APPDATA)}
 const
-  CSIDL_LOCAL_APPDATA = $001c; { <user name>\Local Settings\Application Data (non roaming) }
-{$ifend}
+  // <user name>\Local Settings\Application Data (non roaming), available only for Windows 2000 and up
+  CSIDL_LOCAL_APPDATA = $001C;
+{$IFEND}
 begin
-  Result := GetSpecialFolderPath(CSIDL_LOCAL_APPDATA)
+  if CheckWin32Version(5, 0) then begin
+    // Windows 2000 and up
+    Result := GetSpecialFolderPath(CSIDL_LOCAL_APPDATA);
+  end else begin
+    // Windows 9x or Windows NT (Yes, there are people using this version even in 2024)
+    Result := GetUserApplicationDataFolder;
+  end;
 end;
 
 function RunningWindows: Boolean;
