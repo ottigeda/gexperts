@@ -93,7 +93,7 @@ begin
   inherited;
   TControl_SetMinConstraints(Self);
   GxSetDefaultFont(Self);
-
+  TControl_SetMinConstraints(Self);
   TLabel_MakeUrlLabel(lblWebPage);
 
 {$IF DECLARED(TfmFeedbackWizard)}
