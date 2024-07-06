@@ -802,7 +802,9 @@ procedure TSearchPathEnhancer.UpBtnClick(_Sender: TObject);
 var
   LineIdx: Integer;
   YPos: Integer;
+{$IFNDEF GX_VER350_up}
   LSelected: Boolean;
+{$ENDIF}
 begin
   if FPageControl.ActivePage = FTabSheetMemo then begin
     FMemo.BeginUpdate;
@@ -823,9 +825,14 @@ begin
     end;
     SetFocusTo(FMemo);
   end else begin
+{$IFDEF GX_VER350_up}
+    FUpClick(FUpBtn);
+{$ELSE}
+    // FIX RSP-32650:
     LSelected := FListbox.Selected[FListbox.ItemIndex];
     FUpClick(FUpBtn);
     FListbox.Selected[FListbox.ItemIndex] := LSelected;
+{$ENDIF}
   end;
 end;
 
@@ -833,7 +840,9 @@ procedure TSearchPathEnhancer.DownBtnClick(_Sender: TObject);
 var
   LineCnt: Integer;
   YPos: Integer;
+{$IFNDEF GX_VER350_up}
   LSelected: Boolean;
+{$ENDIF}
 begin
   if FPageControl.ActivePage = FTabSheetMemo then begin
     FMemo.BeginUpdate;
@@ -855,9 +864,14 @@ begin
     end;
     SetFocusTo(FMemo);
   end else begin
+{$IFDEF GX_VER350_up}
+    FDownClick(FDownBtn);
+{$ELSE}
+    // FIX RSP-32650:
     LSelected := FListbox.Selected[FListbox.ItemIndex];
     FDownClick(FDownBtn);
     FListbox.Selected[FListbox.ItemIndex] := LSelected;
+{$ENDIF}
   end;
 end;
 
