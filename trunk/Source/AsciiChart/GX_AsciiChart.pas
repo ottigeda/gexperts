@@ -770,14 +770,17 @@ begin
 end;
 
 procedure TfmAsciiChart.doArrangeControls;
+var
+  Spacer: Integer;
 begin
+  Spacer := FScaler.Calc(8);
   sb_Low.Left := 0;
   sb_High.Left := sb_Low.Left + sb_Low.Width + 1;
-  sb_Dec.Left := sb_High.Left + sb_High.Width + 8;
+  sb_Dec.Left := sb_High.Left + sb_High.Width + Spacer;
   sb_Hex.Left := sb_Dec.Left + sb_Dec.Width + 1;
 
-  edFontSize.Left := cbxFontName.Left + cbxFontName.Width + 8;
-  eChars.Left := edFontSize.Left + edFontSize.Width + updFontSize.Width + 8;
+  edFontSize.Left := cbxFontName.Left + cbxFontName.Width + Spacer;
+  eChars.Left := edFontSize.Left + edFontSize.Width + updFontSize.Width + Spacer;
   btnClear.Left := eChars.Left + eChars.Width + 1;
 
   actFontSize8.Caption := Format('Font size: %d', [FScaler.Calc(8)]);
