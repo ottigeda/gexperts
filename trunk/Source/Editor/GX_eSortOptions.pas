@@ -27,6 +27,7 @@ type
     procedure btnUpClick(Sender: TObject);
     procedure btnDownClick(Sender: TObject);
     procedure lbxGroupOrderClick(Sender: TObject);
+    procedure lbxGroupOrderKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     procedure GetData(_CustomPrefixOrder: TGXUnicodeStringList);
     procedure SetData(_CustomPrefixOrder: TGXUnicodeStringList);
@@ -84,10 +85,16 @@ begin
 end;
 
 constructor TfrmSortOptions.Create(_Owner: TComponent);
+var
+  LSpacer : Integer;
 begin
   inherited;
 
   TControl_SetMinConstraints(Self);
+  LSpacer := grpSortOrder.Left;
+  Self.ClientWidth := grpSortOrder.Width +  (2 * LSpacer);
+  Self.ClientHeight := btnCancel.Top + btnCancel.Height + LSpacer;
+
   InitDpiScaler;
 end;
 
@@ -112,6 +119,18 @@ end;
 procedure TfrmSortOptions.lbxGroupOrderClick(Sender: TObject);
 begin
   EnableButtons;
+end;
+
+procedure TfrmSortOptions.lbxGroupOrderKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+  if Shift = [ssCtrl] then begin
+    case Key of
+      VK_UP   : begin btnUpClick(nil); Key := 0; end;
+      VK_DOWN : begin btnDownClick(nil); Key := 0; end;
+    end;
+  end;
 end;
 
 end.

@@ -20,6 +20,7 @@ inherited frmSortOptions: TfrmSortOptions
       ItemHeight = 13
       TabOrder = 0
       OnClick = lbxGroupOrderClick
+      OnKeyDown = lbxGroupOrderKeyDown
     end
     object btnUp: TBitBtn
       Left = 168
