@@ -44,6 +44,7 @@ uses
   u_dzDpiScaleUtils,
 {$ENDIF}
   u_dzVclUtils,
+  GX_GxUtils,
   GX_FavFiles;
 
 { TfmFavNewFolder }
@@ -67,7 +68,7 @@ end;
 constructor TfmFavNewFolder.Create(_Owner: TComponent);
 begin
   inherited;
-
+  TControl_SetMinConstraints(Self);
   InitDpiScaler;
 
   InitializeForm;
@@ -82,6 +83,7 @@ procedure TfmFavNewFolder.InitializeForm;
 var
   i: TFolderType;
 begin
+  GxSetDefaultFont(Self);
   for i := Low(TFolderType) to High(TFolderType) do
     cbxFolderType.Items.AddObject(FolderNames[i], Pointer(i));
   cbxFolderType.ItemIndex := 0;

@@ -1759,14 +1759,16 @@ constructor TfmFavFiles.Create(AOwner: TComponent; _Options: TFavFilesOptions);
 begin
   inherited Create(AOwner);
 
+//{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+//  TCustomForm(Self).Scaled := True;
+//{$ENDIF}
   FRootFolder := TGXFolder.Create(nil);
   FOptions := _Options;
 
-  SetupSystemImageLists;
-  InitDpiScaler;
-  GxSetDefaultFont(Self);
-
   TControl_SetMinConstraints(Self);
+  InitDpiScaler;
+  SetupSystemImageLists;
+  GxSetDefaultFont(Self);
 
   SetToolbarGradient(ToolBar);
   pnlFileView.Caption := '';
