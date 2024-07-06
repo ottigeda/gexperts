@@ -36,7 +36,8 @@ procedure Register;
 implementation
 
 uses
-  Controls, Forms, Graphics, StdCtrls, SysUtils, GX_OtaUtils, GX_StringList;
+  Controls, Forms, Graphics, StdCtrls, SysUtils,
+  GX_OtaUtils, GX_StringList;
 
 constructor TFileViewer.Create(AOwner: TComponent);
 begin
@@ -77,6 +78,7 @@ begin
       Gutter.Width := 0;
       Visible := False;
     end;
+    GxOtaGetEditorFont(FEditor.Font, -1);
     {$ENDIF SYNEDIT}
   end;
 end;
@@ -124,10 +126,11 @@ procedure TFileViewer.LoadFromFile(const FileName: string);
     finally
       FreeAndNil(Strings);
     end;
-    begin
-      SetSynEditHighlighter(FEditor, Parser);
-      FGXSyntaxParser := Parser;
-    end;
+    if Parser > gxpNone then
+      GxOtaGetEditorFont(FEditor.Font, -1);
+      
+    SetSynEditHighlighter(FEditor, Parser);
+    FGXSyntaxParser := Parser;
     FEditor.Visible := True;
   end;
   {$ENDIF SYNEDIT}
@@ -174,6 +177,9 @@ begin
       {$IFDEF SYNEDIT}
       FEditor.Visible := False;
       {$ENDIF SYNEDIT}
+// TODO: Use IDE's editor font?
+//      FRichEdit.Font.Name := '';
+//      FRichEdit.DefAttributes.Name := '';
       FRichEdit.Lines.LoadFromFile(FileName);
       FRichEdit.Visible := True;
     end
