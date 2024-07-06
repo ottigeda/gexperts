@@ -63,6 +63,7 @@ function GxOtaEditorIsPlayingMacro: Boolean;
 function GxOtaEditorIsPausedMacro: Boolean;
 procedure GxOtaSetEditorKeyTracingEnabled(Enabled: Boolean);
 function GxOtaGetEditorKeyTracingEnabled: Boolean;
+function GxOtaThemingEnabled: Boolean;
 
 const
   // Invalid notifier index
@@ -4001,6 +4002,15 @@ end;
 function GxOtaGetEditorKeyTracingEnabled: Boolean;
 begin
   Result := (BorlandIDEServices as ToolsAPI.IOTAKeyboardDiagnostics).KeyTracing;
+end;
+
+function GxOtaThemingEnabled: Boolean;
+var
+  LService : IOTAIDEThemingServices;
+begin
+  Result := False;
+  if Supports(BorlandIDEServices, ToolsAPI.IOTAIDEThemingServices, LService) then
+    Result := LService.IDEThemingEnabled;
 end;
 
 type
