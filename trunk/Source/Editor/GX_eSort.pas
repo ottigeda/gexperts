@@ -65,8 +65,13 @@ begin
 end;
 
 constructor TfmeSortConfig.Create(_Owner: TComponent);
+var
+  LSpacer : Integer;
 begin
   inherited;
+  LSpacer := grpSort.Left;
+  Self.ClientWidth := grpSort.Width + (2 * LSpacer);
+  Self.ClientHeight := btnCancel.Top +  btnCancel.Height + LSpacer;
 
   TControl_SetMinConstraints(Self);
   InitDpiScaler;

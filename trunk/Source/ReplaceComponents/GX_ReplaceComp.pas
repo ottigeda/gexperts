@@ -447,6 +447,7 @@ end;
 constructor TfmReplaceComp.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  TControl_SetMinConstraints(Self);
   LoadFormSettings;
   SetupControls;
 

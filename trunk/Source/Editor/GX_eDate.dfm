@@ -1,36 +1,29 @@
-object fmDateFormat: TfmDateFormat
+inherited fmDateFormat: TfmDateFormat
   Left = 285
   Top = 201
   BorderStyle = bsDialog
   Caption = 'Insert Date/Time Configuration'
   ClientHeight = 74
   ClientWidth = 337
-  Color = clBtnFace
-  Font.Charset = ANSI_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -12
-  Font.Name = 'Tahoma'
-  Font.Style = []
-  Position = poScreenCenter
-  Scaled = False
+  Position = poOwnerFormCenter
+  StyleElements = [seFont, seClient, seBorder]
   PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 15
   object lblFormat: TLabel
-    Left = 17
+    Left = 20
     Top = 13
-    Width = 95
-    Height = 14
+    Width = 92
+    Height = 15
     Alignment = taRightJustify
     Caption = 'Date/time &format'
     FocusControl = cbFormat
   end
   object cbFormat: TComboBox
     Left = 120
-    Top = 9
+    Top = 10
     Width = 209
-    Height = 22
+    Height = 23
     DropDownCount = 18
-    ItemHeight = 14
     TabOrder = 0
     Text = 'cbFormat'
     Items.Strings = (
