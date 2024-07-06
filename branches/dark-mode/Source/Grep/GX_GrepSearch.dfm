@@ -18,15 +18,15 @@ object fmGrepSearch: TfmGrepSearch
   ShowHint = True
   OnClose = FormClose
   DesignSize = (
-    681
-    588)
+    679
+    580)
   PixelsPerInch = 96
-  TextHeight = 15
+  TextHeight = 14
   object lblFind: TLabel
-    Left = 21
+    Left = 14
     Top = 12
-    Width = 59
-    Height = 15
+    Width = 66
+    Height = 14
     Alignment = taRightJustify
     Caption = '&Text to find'
     FocusControl = cbText
@@ -34,11 +34,10 @@ object fmGrepSearch: TfmGrepSearch
   object cbText: TComboBox
     Left = 85
     Top = 8
-    Width = 589
+    Width = 585
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     DropDownCount = 15
-    ItemHeight = 0
     TabOrder = 0
     OnKeyDown = ComboKeyDown
   end
@@ -216,8 +215,8 @@ object fmGrepSearch: TfmGrepSearch
     object txt_NoMapFile: TStaticText
       Left = 43
       Top = 79
-      Width = 117
-      Height = 19
+      Width = 116
+      Height = 18
       Hint = 
         'Parses the .map file to get the unit names of all units used in ' +
         'the project.'#13#10'You must enable generating a map file with publics' +
@@ -230,18 +229,18 @@ object fmGrepSearch: TfmGrepSearch
   object gbxContentTypes: TGroupBox
     Left = 488
     Top = 40
-    Width = 185
+    Width = 181
     Height = 81
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Delphi Code Content Types'
     TabOrder = 3
     DesignSize = (
-      185
+      181
       81)
     object cbGrepCode: TCheckBox
       Left = 10
       Top = 18
-      Width = 168
+      Width = 164
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Code'
@@ -251,7 +250,7 @@ object fmGrepSearch: TfmGrepSearch
     object cbGrepStrings: TCheckBox
       Left = 10
       Top = 38
-      Width = 168
+      Width = 164
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Strings'
@@ -261,7 +260,7 @@ object fmGrepSearch: TfmGrepSearch
     object cbGrepComments: TCheckBox
       Left = 10
       Top = 58
-      Width = 168
+      Width = 164
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Comments'
@@ -269,7 +268,7 @@ object fmGrepSearch: TfmGrepSearch
       OnClick = cbGrepCommentsClick
     end
     object btnGrepAll: TButton
-      Left = 134
+      Left = 130
       Top = 48
       Width = 43
       Height = 25
@@ -282,18 +281,18 @@ object fmGrepSearch: TfmGrepSearch
   object gbxUnitSections: TGroupBox
     Left = 488
     Top = 128
-    Width = 185
+    Width = 181
     Height = 105
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Delphi Code Sections'
     TabOrder = 4
     DesignSize = (
-      185
+      181
       105)
     object cbSectionInterface: TCheckBox
       Left = 10
       Top = 18
-      Width = 168
+      Width = 164
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Interface'
@@ -303,7 +302,7 @@ object fmGrepSearch: TfmGrepSearch
     object cbSectionImplementation: TCheckBox
       Left = 10
       Top = 38
-      Width = 168
+      Width = 164
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Implementation'
@@ -313,7 +312,7 @@ object fmGrepSearch: TfmGrepSearch
     object cbSectionInitialization: TCheckBox
       Left = 10
       Top = 58
-      Width = 168
+      Width = 164
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Initialization'
@@ -323,7 +322,7 @@ object fmGrepSearch: TfmGrepSearch
     object cbSectionFinalization: TCheckBox
       Left = 10
       Top = 78
-      Width = 168
+      Width = 164
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Finalization'
@@ -331,7 +330,7 @@ object fmGrepSearch: TfmGrepSearch
       OnClick = cbSectionFinalizationClick
     end
     object btnSectionAll: TButton
-      Left = 134
+      Left = 130
       Top = 72
       Width = 43
       Height = 25
@@ -344,53 +343,52 @@ object fmGrepSearch: TfmGrepSearch
   object gbxDirectories: TGroupBox
     Left = 8
     Top = 240
-    Width = 666
+    Width = 662
     Height = 217
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Directory Search'
     TabOrder = 5
     DesignSize = (
-      666
+      662
       217)
     object lblMasks: TLabel
       Left = 8
       Top = 72
-      Width = 183
-      Height = 15
+      Width = 188
+      Height = 14
       Caption = 'File mas&ks (separate by semicolon)'
       FocusControl = cbMasks
     end
     object lblDirectory: TLabel
       Left = 8
       Top = 24
-      Width = 185
-      Height = 15
+      Width = 192
+      Height = 14
       Caption = 'Di&rectories (separate by semicolon)'
       FocusControl = cbDirectory
     end
     object lblExcludeDirs: TLabel
       Left = 24
       Top = 168
-      Width = 192
-      Height = 15
+      Width = 200
+      Height = 14
       Caption = 'Exclude Dirs (separate by semicolon)'
       FocusControl = cbExcludedDirs
     end
     object l_MinMaxDepth: TLabel
       Left = 176
       Top = 121
-      Width = 89
-      Height = 15
+      Width = 90
+      Height = 14
       Caption = 'Min / Max Depth'
     end
     object cbMasks: TComboBox
       Left = 8
       Top = 88
-      Width = 617
+      Width = 613
       Height = 22
       Anchors = [akLeft, akTop, akRight]
       DropDownCount = 15
-      ItemHeight = 0
       TabOrder = 2
       OnKeyDown = ComboKeyDown
     end
@@ -406,7 +404,7 @@ object fmGrepSearch: TfmGrepSearch
     object cbInclude: TCheckBox
       Left = 8
       Top = 128
-      Width = 149
+      Width = 145
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Search su&bdirectories'
@@ -416,18 +414,17 @@ object fmGrepSearch: TfmGrepSearch
     object cbDirectory: TComboBox
       Left = 8
       Top = 40
-      Width = 617
+      Width = 613
       Height = 22
       Hint = 'Separate multiple directories by semicolon'
       Anchors = [akLeft, akTop, akRight]
       DropDownCount = 15
-      ItemHeight = 14
       TabOrder = 0
       OnDropDown = cbDirectoryDropDown
       OnKeyDown = ComboKeyDown
     end
     object btnBrowse: TButton
-      Left = 632
+      Left = 628
       Top = 39
       Width = 25
       Height = 25
@@ -442,11 +439,10 @@ object fmGrepSearch: TfmGrepSearch
     object cbExcludedDirs: TComboBox
       Left = 24
       Top = 184
-      Width = 601
+      Width = 597
       Height = 22
       Anchors = [akLeft, akTop, akRight]
       DropDownCount = 15
-      ItemHeight = 14
       TabOrder = 6
       OnDropDown = cbExcludedDirsDropDown
       OnKeyDown = ComboKeyDown
@@ -474,16 +470,16 @@ object fmGrepSearch: TfmGrepSearch
   end
   object pnlBottom: TPanel
     Left = 0
-    Top = 553
-    Width = 681
+    Top = 545
+    Width = 679
     Height = 35
     Align = alBottom
     TabOrder = 7
     DesignSize = (
-      681
+      679
       35)
     object btnOK: TButton
-      Left = 436
+      Left = 432
       Top = 2
       Width = 75
       Height = 25
@@ -494,7 +490,7 @@ object fmGrepSearch: TfmGrepSearch
       OnClick = btnOKClick
     end
     object btnCancel: TButton
-      Left = 516
+      Left = 512
       Top = 2
       Width = 75
       Height = 25
@@ -505,7 +501,7 @@ object fmGrepSearch: TfmGrepSearch
       TabOrder = 3
     end
     object btnHelp: TButton
-      Left = 596
+      Left = 592
       Top = 2
       Width = 75
       Height = 25
@@ -537,7 +533,7 @@ object fmGrepSearch: TfmGrepSearch
   object rgSaveOption: TRadioGroup
     Left = 8
     Top = 464
-    Width = 666
+    Width = 662
     Height = 81
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Save Search History'

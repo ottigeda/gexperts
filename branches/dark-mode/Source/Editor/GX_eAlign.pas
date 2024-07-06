@@ -19,6 +19,7 @@ type
     cbxMode: TComboBox;
     procedure lstTokensDblClick(Sender: TObject);
     procedure btnConfigClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   public
     constructor Create(_Owner: TComponent); override;
   end;
@@ -269,6 +270,12 @@ begin
   InitDpiScaler;
 end;
 
+procedure TfmAlign.FormCreate(Sender: TObject);
+begin
+  inherited;
+  SetDefaultFont(Self);
+end;
+
 procedure TfmAlign.lstTokensDblClick(Sender: TObject);
 begin
   ModalResult := mrOk;
@@ -283,6 +290,9 @@ begin
 
   frm := TfmAlign.Create(nil);
   try
+    if frm.lstTokens.Count > 0 then
+      frm.ActiveControl := frm.lstTokens;
+    frm.btnOK.Default := True;
     LoadConfiguration(frm);
     if frm.lstTokens.Items.Count > 0 then
       frm.ActiveControl := frm.lstTokens;

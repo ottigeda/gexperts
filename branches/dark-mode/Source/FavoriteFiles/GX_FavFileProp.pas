@@ -55,7 +55,11 @@ implementation
 {$R *.dfm}
 
 uses
-  GX_FavFiles, GX_GenericUtils, GX_IdeUtils, u_dzVclUtils;
+  GX_FavFiles,
+  GX_GenericUtils,
+  GX_GxUtils,
+  GX_IdeUtils,
+  u_dzVclUtils;
 
 { TfmFavFileProp }
 
@@ -79,9 +83,10 @@ end;
 constructor TfmFavFileProp.Create(_Owner: TComponent);
 begin
   inherited;
-
   TControl_SetMinConstraints(Self);
   InitDpiScaler;
+  GxSetDefaultFont(Self);
+
   InitializeForm;
 end;
 
@@ -198,6 +203,9 @@ begin
   cbxExecuteType.Items.Clear;
   for ExecType := Low(TExecType) to High(TExecType) do
     cbxExecuteType.Items.AddObject(ExecTypeNames[ExecType], TObject(Ord(ExecType)));
+
+  TButton_AlignVerticallyTo(sbnFile, edtFilename);
+  TButton_AlignVerticallyTo(sbnExecute, edtExecuteUsing);
 end;
 
 end.

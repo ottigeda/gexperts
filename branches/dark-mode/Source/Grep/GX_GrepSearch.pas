@@ -809,14 +809,10 @@ end;
 procedure TfmGrepSearch.FormShow(Sender: TObject);
 begin
   inherited;
-  {$IFDEF GX_IDE_IS_HIDPI_AWARE}
-  if IsThemesEnabled and (Self.CurrentPPI > 110) then
-    Self.Font.Height := Self.Font.Height + 1;
-  {$ENDIF}
   TControl_SetConstraints(Self, [ccMinWidth, ccMinHeight, ccMaxHeight]);
 
   if not IsStandAlone then
-    InitTheming(Self);
+    InitTheming;
   FixComboBoxSelections(Self);
 end;
 

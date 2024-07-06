@@ -38,7 +38,7 @@ object fmReplaceComp: TfmReplaceComp
     FocusControl = cbReplace
   end
   object btnOK: TButton
-    Left = 150
+    Left = 144
     Top = 190
     Width = 75
     Height = 25
@@ -50,7 +50,7 @@ object fmReplaceComp: TfmReplaceComp
     OnClick = btnOKClick
   end
   object btnCancel: TButton
-    Left = 233
+    Left = 227
     Top = 190
     Width = 75
     Height = 25
@@ -61,7 +61,7 @@ object fmReplaceComp: TfmReplaceComp
     TabOrder = 5
   end
   object btnHelp: TButton
-    Left = 398
+    Left = 392
     Top = 190
     Width = 75
     Height = 25
@@ -73,11 +73,10 @@ object fmReplaceComp: TfmReplaceComp
   object cbSearch: TComboBox
     Left = 111
     Top = 12
-    Width = 314
+    Width = 308
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     DropDownCount = 18
-    ItemHeight = 14
     Sorted = True
     TabOrder = 0
     OnChange = cbSearchChange
@@ -85,19 +84,18 @@ object fmReplaceComp: TfmReplaceComp
   end
   object cbReplace: TComboBox
     Left = 111
-    Top = 36
-    Width = 314
+    Top = 37
+    Width = 308
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     DropDownCount = 18
-    ItemHeight = 14
     Sorted = True
     TabOrder = 1
     OnChange = cbSearchChange
     OnKeyDown = cbSearchKeyDown
   end
   object gbxScope: TGroupBox
-    Left = 188
+    Left = 182
     Top = 70
     Width = 285
     Height = 108
@@ -186,7 +184,7 @@ object fmReplaceComp: TfmReplaceComp
     end
   end
   object btnSettings: TButton
-    Left = 316
+    Left = 310
     Top = 190
     Width = 75
     Height = 25

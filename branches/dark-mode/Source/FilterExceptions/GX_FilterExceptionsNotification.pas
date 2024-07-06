@@ -109,6 +109,7 @@ begin
   frm := TfmExceptionNotification.Create(_Owner);
   {$IFEND}
   try
+    GxSetDefaultFont(frm);
     TForm_CenterOn(frm, _Owner);
     frm.SetData(_OnAddException, _Project, _Exception, _Message, _AdditionalData, _ConfigurationKey);
     Result := (frm.ShowModal = mrOk);
@@ -122,7 +123,6 @@ begin
   inherited Create(_Owner);
   TControl_SetMinConstraints(Self);
   InitDpiScaler;
-  GxSetDefaultFont(Self);
 end;
 
 destructor TfmExceptionNotification.Destroy;

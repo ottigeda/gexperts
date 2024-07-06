@@ -201,6 +201,7 @@ type
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
 {$ENDIF}
     procedure AddToMacroLibrary(CR: IOTARecord);
+    procedure FormShow(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -680,6 +681,8 @@ end;
 
 procedure TfmMacroLibrary.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  if Self.Floating then
+    SaveSettings;
   Action := caHide;
 end;
 
@@ -758,6 +761,7 @@ begin
   FDataList := TList.Create;
   LoadSettings;
   FSBWidth := GetSystemMetrics(SM_CXVSCROLL);
+  OnShow := FormShow;
   ResizeColumns;
 
   InitializeForm;
@@ -1032,9 +1036,16 @@ end;
 
 procedure TfmMacroLibrary.ResizeColumns;
 var
+  DummyTimeStamp : TDateTime;
   ColWidth: Integer;
 begin
-  ColWidth := Max(lvMacros.Width - fSBWidth - 6 - lvMacros.Columns[1].MinWidth, NameColMinMidth);
+  // calculate needed with for the timestamp
+  DummyTimeStamp := EncodeDate(2000, 12, 31) + EncodeTime(23, 53, 55, 0);
+  ColWidth := lvMacros.Canvas.TextWidth(DateTimeToStr(DummyTimeStamp)) + FSBWidth;
+  lvMacros.Columns[1].MinWidth := ColWidth;
+  lvMacros.Columns[1].Width    := ColWidth;
+
+  ColWidth := Max(lvMacros.Width - FSBWidth - 6 - lvMacros.Columns[1].MinWidth, NameColMinMidth);
   lvMacros.Columns[0].MaxWidth := ColWidth;
   lvMacros.Columns[0].MinWidth := ColWidth;
   lvMacros.Columns[0].Width := ColWidth;
@@ -1226,6 +1237,12 @@ end;
 function TfmMacroLibrary.GetDescriptionVisible: Boolean;
 begin
   Result := pnlDescription.Visible;
+end;
+
+procedure TfmMacroLibrary.FormShow(Sender: TObject);
+begin
+  if Self.Floating then
+    LoadSettings;
 end;
 
 { TMacroLibraryExpert }

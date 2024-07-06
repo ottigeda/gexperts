@@ -834,6 +834,18 @@ type
       const FileName: string; var Cancel: Boolean); override;
   end;
 
+(*
+type
+  TThemeChangedNotifier = class(TBaseIdeNotifier, INTAIDEThemingServicesNotifier)
+  private
+    FOnThemeChanged : TNotifyEvent;
+  public
+    constructor Create(_OnThemeChanged: TNotifyEvent);
+    procedure ChangingTheme;
+    procedure ChangedTheme;
+  end;
+*)
+
 type
   EStandAloneUsage = class(Exception);
 
@@ -4096,6 +4108,7 @@ function GxOtaInitTheming(AForm: TCustomForm): Boolean;
 {$IFDEF GX_SUPPORTS_THEMING}
 var
   LService : IOTAIDEThemingServices;
+//  LNotifier : TThemeChangedNotifier;
 begin
   Result := False;
   LService := GxOtaGetIDEThemingServices;
@@ -4103,6 +4116,10 @@ begin
   begin
     LService.RegisterFormClass(TCustomFormClass(AForm.ClassType));
     LService.ApplyTheme(AForm);
+
+//    LNotifier := TThemeChangedNotifier.Create(AForm);
+//    LNotifier.AddNotifierToIDE;
+
     Result := True;
   end;
 end;
@@ -5995,6 +6012,41 @@ begin
     FOnProjectChanged(Self);
   end;
 end;
+
+{ TThemeChangedNotifier }
+
+(*
+function TThemeChangedNotifier.AddNotifierToIDE: Boolean;
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := False;
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(LService) and (LService.IDEThemingEnabled) then
+  begin
+    FNotifierIndex := LService.AddNotifier(Self);
+    Result := (FNotifierIndex <> InvalidNotifierIndex);
+  end;
+end;
+
+procedure TThemeChangedNotifier.ChangedTheme;
+begin
+  if Assigned(FOnThemeChanged) then
+    FOnThemeChanged(Self);
+end;
+
+procedure TThemeChangedNotifier.ChangingTheme;
+begin
+  // not implemented.
+end;
+
+constructor TThemeChangedNotifier.Create(_OnThemeChanged: TNotifyEvent);
+begin
+  inherited Create;
+  Assert(Assigned(_OnThemeChanged);
+  FOnThemeChanged := _OnThemeChanged;
+end;
+*)
 
 initialization
 

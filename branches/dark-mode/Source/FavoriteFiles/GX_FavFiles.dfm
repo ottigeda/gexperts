@@ -2,38 +2,34 @@ object fmFavFiles: TfmFavFiles
   Left = 402
   Top = 273
   Caption = 'Favorite Files'
-  ClientHeight = 342
-  ClientWidth = 495
+  ClientHeight = 334
+  ClientWidth = 493
   Color = clBtnFace
   DefaultMonitor = dmDesktop
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
-  Font.Height = -12
+  Font.Height = -15
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
   Menu = MainMenu
-  OldCreateOrder = False
   Position = poDesigned
   Scaled = False
   OnClose = FormClose
   OnHide = FormHide
   OnKeyPress = FormKeyPress
   OnShow = FormShow
-  PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 18
   object splTreeView: TSplitter
     Left = 121
     Top = 22
-    Width = 3
-    Height = 301
-    Cursor = crHSplit
+    Height = 293
   end
   object tvFolders: TTreeView
     Left = 0
     Top = 22
     Width = 121
-    Height = 301
+    Height = 293
     Align = alLeft
     DragMode = dmAutomatic
     HideSelection = False
@@ -53,8 +49,8 @@ object fmFavFiles: TfmFavFiles
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 323
-    Width = 495
+    Top = 315
+    Width = 493
     Height = 19
     Panels = <>
     ParentFont = True
@@ -64,15 +60,15 @@ object fmFavFiles: TfmFavFiles
   object pnlFiles: TPanel
     Left = 124
     Top = 22
-    Width = 371
-    Height = 301
+    Width = 369
+    Height = 293
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
     object splFileView: TSplitter
       Left = 0
-      Top = 151
-      Width = 371
+      Top = 143
+      Width = 369
       Height = 3
       Cursor = crVSplit
       Align = alBottom
@@ -80,8 +76,8 @@ object fmFavFiles: TfmFavFiles
     object ListView: TListView
       Left = 0
       Top = 0
-      Width = 371
-      Height = 151
+      Width = 369
+      Height = 143
       Align = alClient
       Columns = <
         item
@@ -118,8 +114,8 @@ object fmFavFiles: TfmFavFiles
     end
     object pnlFileView: TPanel
       Left = 0
-      Top = 154
-      Width = 371
+      Top = 146
+      Width = 369
       Height = 147
       Align = alBottom
       BevelOuter = bvNone
@@ -131,12 +127,10 @@ object fmFavFiles: TfmFavFiles
   object ToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 495
+    Width = 493
     Height = 22
     AutoSize = True
     DisabledImages = dmSharedImages.DisabledImages
-    EdgeBorders = []
-    Flat = True
     Images = dmSharedImages.Images
     ParentShowHint = False
     ShowHint = True

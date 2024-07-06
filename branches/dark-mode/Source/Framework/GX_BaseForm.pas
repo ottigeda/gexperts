@@ -32,11 +32,16 @@ type
     FGxHintCustomDataRec: TGxHintCustomDataRec;
     FScaler: TFormDpiScaler;
     FApplicationEvents: TApplicationEvents;
+    {$IFDEF GX_SUPPORTS_THEMING}
+    //FThemeChangedNotifier: TThemeChangedNotifier;
+    procedure InitTheming; virtual;
+    {$ENDIF}
     procedure HandleApplicationEventsShowHint(var HintStr: string; var CanShow: Boolean;
       var HintInfo: THintInfo);
     procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); virtual;
     procedure ArrangeControls; virtual;
+
   protected
     procedure InitDpiScaler;
   public
@@ -91,6 +96,12 @@ begin
   _Msg.Result := 0;
 end;
 
+{$IFDEF GX_SUPPORTS_THEMING}
+procedure TfmBaseForm.InitTheming;
+begin
+end;
+{$ENDIF}
+
 procedure TfmBaseForm.HandleApplicationEventsShowHint(var HintStr: string; var CanShow: Boolean;
   var HintInfo: THintInfo);
 begin
@@ -127,7 +138,7 @@ end;
 constructor TfmBaseForm.Create(AOwner: TComponent);
 begin
   inherited;
-
+  //FThemeChangedNotifier := nil;
   FApplicationEvents := TApplicationEvents.Create(Self);
   FApplicationEvents.OnShowHint := HandleApplicationEventsShowHint;
 

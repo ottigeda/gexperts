@@ -1018,21 +1018,31 @@ var
   OrigTop: Integer;
   OrigWidth: Integer;
   OrigHeight: Integer;
+  OrigDpi: Integer;
   NewLeft: Integer;
   NewTop: Integer;
   NewWidth: Integer;
   NewHeight: Integer;
+  NewDpi: Integer;
 begin
   if Section = '' then
     StorageSection := Form.ClassName
   else
     StorageSection := Section;
 
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+  OrigDpi := TScreen_GetDpiForForm(Form);
+{$ELSE}
+  OrigDpi := USER_DEFAULT_SCREEN_DPI; // 96
+{$ENDIF}
+  NewDPI := OrigDPI;
+
   R := Form.BoundsRect;
   OrigLeft := R.Left;
   OrigTop := R.Top;
   OrigWidth := R.Right - OrigLeft;
   OrigHeight := R.Bottom - OrigTop;
+
   // we assign NewXxx to OrigXxx which will 1. prevent a compiler warning and 2. save some checks
   // below
   NewLeft := OrigLeft;
@@ -1042,6 +1052,11 @@ begin
 
   PosChanged := False;
   SizeChanged := False;
+
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+  if (FormSaveFlags <> []) and ValueExists(StorageSection, 'DPi') then
+    NewDpi := ReadInteger(StorageSection, 'Dpi', OrigDpi);
+{$ENDIF}
 
   if (fsPosition in FormSaveFlags) and ValueExists(StorageSection, 'Left') then
   begin
@@ -1056,6 +1071,15 @@ begin
     NewHeight := ReadInteger(StorageSection, 'Height', OrigHeight);
     SizeChanged := True;
   end;
+
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+  if (NewDpi > 0) and (OrigDpi > 0) and (NewDpi<> OrigDpi) then begin
+    NewLeft   := MulDiv(NewLeft, NewDpi, OrigDpi);
+    NewTop    := MulDiv(NewTop, NewDpi, OrigDpi);
+    NewWidth  := MulDiv(NewWidth, NewDpi, OrigDpi);
+    NewHeight := MulDiv(NewHeight, NewDpi, OrigDpi);
+  end;
+{$ENDIF}
 
   if PosChanged then begin
     R.Left := NewLeft;
@@ -1095,6 +1119,12 @@ begin
     StorageSection := Form.ClassName
   else
     StorageSection := Section;
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+  if FormSaveFlags <> [] then
+  begin
+    WriteInteger(StorageSection, 'Dpi', TScreen_GetDpiForForm(Form));
+  end;
+{$ENDIF}
   if fsPosition in FormSaveFlags then
   begin
     WriteInteger(StorageSection, 'Left', Form.Left);

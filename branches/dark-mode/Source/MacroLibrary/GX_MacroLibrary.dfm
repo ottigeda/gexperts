@@ -2,7 +2,6 @@ object fmMacroLibrary: TfmMacroLibrary
   Left = 326
   Top = 252
   ActiveControl = lvMacros
-  AutoScroll = False
   Caption = 'Keyboard Macro Library'
   ClientHeight = 218
   ClientWidth = 314
@@ -12,12 +11,10 @@ object fmMacroLibrary: TfmMacroLibrary
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnClose = FormClose
   OnResize = FormResize
-  PixelsPerInch = 96
   TextHeight = 14
   object Splitter: TSplitter
     Left = 0
@@ -69,8 +66,6 @@ object fmMacroLibrary: TfmMacroLibrary
     Width = 314
     Height = 22
     AutoSize = True
-    EdgeBorders = []
-    Flat = True
     Images = dmSharedImages.Images
     ParentShowHint = False
     ShowHint = True

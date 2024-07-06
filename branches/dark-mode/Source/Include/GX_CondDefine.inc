@@ -261,6 +261,7 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 // Define UniSynEdit if SynEdit is available
 {$IFDEF SYNEDIT}
   {$DEFINE UniSynEdit}
+  {$DEFINE GX_ENHANCED_EDITOR}
 {$ELSE}
   GExperts now requires SynEdit.
 {$ENDIF SYNEDIT}

@@ -1763,11 +1763,10 @@ begin
   FRootFolder := TGXFolder.Create(nil);
   FOptions := _Options;
 
-  SetupSystemImageLists;
-  InitDpiScaler;
-  GxSetDefaultFont(Self);
-
   TControl_SetMinConstraints(Self);
+  InitDpiScaler;
+  SetupSystemImageLists;
+  GxSetDefaultFont(Self);
 
   SetToolbarGradient(ToolBar);
   pnlFileView.Caption := '';
