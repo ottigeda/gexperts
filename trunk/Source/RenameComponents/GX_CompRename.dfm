@@ -16,6 +16,7 @@ object fmCompRename: TfmCompRename
   Position = poScreenCenter
   Scaled = False
   PixelsPerInch = 96
+  OnShow = FormShow
   TextHeight = 14
   object lblOldName: TLabel
     Left = 8
@@ -317,7 +318,7 @@ object fmCompRename: TfmCompRename
   end
   object edtOldName: TEdit
     Left = 8
-    Top = 24
+    Top = 25
     Width = 305
     Height = 22
     Color = clBtnFace
@@ -326,7 +327,7 @@ object fmCompRename: TfmCompRename
   end
   object edtNewName: TEdit
     Left = 8
-    Top = 72
+    Top = 73
     Width = 305
     Height = 22
     AutoSelect = False
