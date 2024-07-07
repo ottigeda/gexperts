@@ -71,6 +71,7 @@ type
     procedure b_Margins3Click(Sender: TObject);
     procedure b_Margins6Click(Sender: TObject);
     procedure b_Margins8Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FIsValidComponentName: TIsValidComponentName;
     FProperties: TObjectList;
@@ -200,7 +201,6 @@ function TfmCompRename.Execute: TModalResult;
 begin
   ActiveControl := edtNewName;
 //  lblReason.Top := btnOK.Top + Round((btnOK.Height / 2) - (lblReason.Height / 2));
-  InitDpiScaler;
   FixTabOrder;
   Result := ShowModal;
 end;
@@ -223,6 +223,17 @@ begin
   btnCancel.TabOrder     := FProperties.Count + 3;
   btnSettings.TabOrder   := FProperties.Count + 4;
   pc_Additional.TabOrder := FProperties.Count + 5;
+end;
+
+procedure TfmCompRename.FormShow(Sender: TObject);
+begin
+  inherited;
+  // Adjust some button positons and size after scaling
+  // DisableAlign;
+  b_AlignRight.Left   := b_AlignTop.Left + b_AlignTop.Width - b_AlignRight.Width;
+  b_AlignClient.Left  := b_AlignLeft.Left + b_AlignLeft.Width + 1;
+  b_AlignClient.Width := b_AlignRight.Left - b_AlignClient.Left - 2;
+  // EnableAlign;
 end;
 
 function TfmCompRename.GetNewName: WideString;
@@ -470,6 +481,8 @@ end;
 constructor TfmCompRename.Create(Owner: TComponent);
 begin
   inherited;
+  TControl_SetMinConstraints(Self);
+
   FProperties := TObjectList.Create(False);
 
   FAlignButtons[alTop] := TdzSpeedBitBtn.Create(b_AlignTop);
@@ -873,6 +886,7 @@ begin
         frm.OldName := CompName;
 
         frm.SetComponent(Component);
+        frm.InitDpiScaler;
 
         Index := RenameRuleList.IndexOfName(Component.GetComponentType);
         if Index <> -1 then

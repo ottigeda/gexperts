@@ -16,6 +16,7 @@ object fmCompRename: TfmCompRename
   Position = poScreenCenter
   Scaled = False
   PixelsPerInch = 96
+  OnShow = FormShow
   TextHeight = 14
   object lblOldName: TLabel
     Left = 8
