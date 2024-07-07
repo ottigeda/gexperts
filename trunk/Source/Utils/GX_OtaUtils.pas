@@ -4005,6 +4005,7 @@ begin
 end;
 
 function GxOtaThemingEnabled: Boolean;
+{$IF declared(IOTAIDEThemingServices)}
 var
   LService : IOTAIDEThemingServices;
 begin
@@ -4012,6 +4013,11 @@ begin
   if Supports(BorlandIDEServices, ToolsAPI.IOTAIDEThemingServices, LService) then
     Result := LService.IDEThemingEnabled;
 end;
+{$ELSE}
+begin
+  Result := False;
+end;
+{$IFEND}
 
 type
   // TODO 3 -cCleanup -oAnyone: Remove this type, since it is confusing and is not .NET compatible

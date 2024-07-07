@@ -856,20 +856,20 @@ begin
 end;
 
 function IsThemingEnabled: Boolean;
-{$IFNDEF GX_DELPHI_RIO_UP}
+{$IFDEF GX_DELPHI_RIO_UP} // Delphi 10.3 Rio
+begin
+  Result := GX_OtaUtils.GxOtaThemingEnabled;
+end;
+{$ELSE}
 var
   reg: TRegistry;
-{$ENDIF}
 begin
+  Result := False;
   if CompilerVersion < CompilerVersionDelphiX103 then
   begin
-    Result := False;
     Exit; //==>
   end;
 
-{$IFDEF GX_DELPHI_RIO_UP} // Delphi 10.3 Rio
-  Result := GX_OtaUtils.GxOtaThemingEnabled;
-{$ELSE}
   // if yes, check if theming is enabled
   reg := TRegistry.Create;
   try
@@ -885,8 +885,8 @@ begin
   finally
     FreeAndNil(reg);
   end;
-{$ENDIF GX_VER330_up}
 end;
+{$ENDIF GX_DELPHI_RIO_UP}
 
 function TScreen_TryFindClassForm(const _ClassName: string; out _Form: TForm): Boolean;
 var

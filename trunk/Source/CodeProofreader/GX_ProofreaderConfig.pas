@@ -231,8 +231,7 @@ begin
     cbLanguage.Items.Add(ReplacementSourceText[i]);
 
   // Initialize option settings
-  btnSelectFile.Top    := eCustomBeep.Top - 1; // Ord(IsThemingEnabled);
-  btnSelectFile.Height := eCustomBeep.Height + 2; // * Ord(IsThemingEnabled);
+  TButton_AlignVerticallyTo(btnSelectFile, eCustomBeep);
   cbBeep.Checked := FProofreaderData.BeepOnReplace;
   eCustomBeep.Text := FProofreaderData.CustomBeepSound;
   cbReplacerActive.Checked := FProofreaderData.ReplacerActive;
