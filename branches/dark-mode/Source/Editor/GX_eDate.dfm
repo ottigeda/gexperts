@@ -6,7 +6,6 @@ inherited fmDateFormat: TfmDateFormat
   ClientHeight = 74
   ClientWidth = 337
   Position = poOwnerFormCenter
-  StyleElements = [seFont, seClient, seBorder]
   PixelsPerInch = 96
   TextHeight = 15
   object lblFormat: TLabel
