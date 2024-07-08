@@ -1018,12 +1018,15 @@ var
   OrigTop: Integer;
   OrigWidth: Integer;
   OrigHeight: Integer;
-  OrigDpi: Integer;
   NewLeft: Integer;
   NewTop: Integer;
   NewWidth: Integer;
   NewHeight: Integer;
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+  OrigDpi: Integer;
   NewDpi: Integer;
+{$ENDIF}
+
 begin
   if Section = '' then
     StorageSection := Form.ClassName
@@ -1032,10 +1035,8 @@ begin
 
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
   OrigDpi := TScreen_GetDpiForForm(Form);
-{$ELSE}
-  OrigDpi := USER_DEFAULT_SCREEN_DPI; // 96
+  NewDPI  := OrigDPI;
 {$ENDIF}
-  NewDPI := OrigDPI;
 
   R := Form.BoundsRect;
   OrigLeft := R.Left;

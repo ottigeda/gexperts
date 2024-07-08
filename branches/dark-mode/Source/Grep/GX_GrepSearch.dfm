@@ -18,8 +18,8 @@ object fmGrepSearch: TfmGrepSearch
   ShowHint = True
   OnClose = FormClose
   DesignSize = (
-    679
-    580)
+    681
+    588)
   PixelsPerInch = 96
   TextHeight = 14
   object lblFind: TLabel
@@ -470,13 +470,13 @@ object fmGrepSearch: TfmGrepSearch
   end
   object pnlBottom: TPanel
     Left = 0
-    Top = 545
-    Width = 679
+    Top = 553
+    Width = 681
     Height = 35
     Align = alBottom
     TabOrder = 7
     DesignSize = (
-      679
+      681
       35)
     object btnOK: TButton
       Left = 432
