@@ -935,7 +935,7 @@ type
     /// Uses kernel32.GetFullPathName and then compares the result using SameText.
     /// Note that this does not handle all possible cases, e.g. two files with totally different
     /// names could be the same due to hard links, soft links or multiple UNC paths pointing to
-    // the same directory. </summary>
+    /// the same directory. </summary>
     class function IsSameFilename(const _fn1, _fn2: string): Boolean;
 
     ///<summary>

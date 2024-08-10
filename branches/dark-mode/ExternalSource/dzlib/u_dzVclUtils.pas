@@ -1163,6 +1163,20 @@ function TRadioGroup_GetSelectedObject(_rg: TCustomRadioGroup; out _Idx: Integer
 function TRadioGroup_GetSelectedObject(_rg: TCustomRadioGroup; out _Obj: Pointer): Boolean; overload;
 function TRadioGroup_GetSelectedObject(_rg: TCustomRadioGroup; out _ObjAsInt: Integer): Boolean; overload;
 
+///<summary>
+/// If Highlighted is True, highlights the RadioGroup's Idx'th button, otherwise it un-highlights it,
+/// Highlighting the button means setting its Font.Color to the given Color, and un-higlighting
+/// means to set its ParentFont property to True </summary>
+procedure TRadioGroup_HighlightButton(_rg: TRadioGroup; _Idx: Integer; _Highlighted: Boolean;
+  _Color: TColor = clRed);
+
+///<summary>
+/// Highlights the currently selected button of the ReadioGroup if it is not the given DefaultIdx.
+/// Highlighting the button means setting its Font.Color to the given Color, and un-higlighting
+/// means to set its ParentFont property to True </summary>
+procedure TRadioGroup_HighlightIfNotDefault(_rg: TRadioGroup; _DefaultIdx: Integer;
+  _Color: TColor = clRed);
+
 ///<summary> Writes a TPicture object to a String. The Format is
 ///          <pictureformat>#26<picturedata> </summary>
 function TPicture_WriteToString(_Pic: TPicture): string;
@@ -1634,6 +1648,34 @@ procedure TButtonControl_SetChecked(_bctrl: TButtonControl; _Value: Boolean);
 
 ///<summary> Sets the Caption value of a TCheckbox or TRadioButton (which both descend from TButtonControl) </summary>
 procedure TButtonControl_SetCaption(_bctrl: TButtonControl; const _Value: string);
+
+///<summary>
+/// If Highlight is True, hightlightes the button, ohterweise un-highlights it.
+/// Highlighting the button means setting its Font.Color to the given Color, and un-higlighting
+/// means to set its ParentFont property to True </summary>
+procedure TButtonControl_Highlight(_bctrl: TButtonControl; _Highlighted: Boolean; _Color: TColor = clRed);
+
+///<summary>
+/// Highlights the button if its Checked property does not have the default value.
+/// Otherwise un-highlights it.
+/// Highlighting the button means setting its Font.Color to the given Color, and un-higlighting
+/// means to set its ParentFont property to True </summary>
+procedure TButtonControl_HighlightIfNotDefault(_bctrl: TButtonControl; _Default: Boolean;
+  _Color: TColor = clRed);
+
+///<summary>
+/// Highlights the button if is checked.
+/// Otherwise un-highlights it.
+/// Highlighting the button means setting its Font.Color to the given Color, and un-higlighting
+/// means to set its ParentFont property to True </summary>
+procedure TButtonControl_HighlightIfChecked(_bctrl: TButtonControl; _Color: TColor = clRed);
+
+///<summary>
+/// Highlights the button if is no checked.
+/// Otherwise un-highlights it.
+/// Highlighting the button means setting its Font.Color to the given Color, and un-higlighting
+/// means to set its ParentFont property to True </summary>
+procedure TButtonControl_HighlightIfNotChecked(_bctrl: TButtonControl; _Color: TColor = clRed);
 
 {$IFNDEF DELPHI2009_UP}
 //Delphi 2009 introduced TCustomButton as the common Ancestor of TButton and TBitBtn.
@@ -4322,6 +4364,27 @@ begin
     _ObjAsInt := Integer(Obj); //FI:W541 Casting from Integer to Pointer type (or vice versa)
 end;
 
+procedure TRadioGroup_HighlightButton(_rg: TRadioGroup; _Idx: Integer; _Highlighted: Boolean;
+  _Color: TColor = clRed);
+begin
+  if (_Idx < 0) or (_Idx >= _rg.Items.Count) then
+    Exit; //==>
+
+  TButtonControl_Highlight(TRadioGroup_GetButton(_rg, _Idx), _Highlighted, _Color);
+end;
+
+procedure TRadioGroup_HighlightIfNotDefault(_rg: TRadioGroup; _DefaultIdx: Integer;
+  _Color: TColor = clRed);
+var
+  Idx: Integer;
+  i: Integer;
+begin
+  Idx := _rg.ItemIndex;
+  for i := 0 to _rg.Items.Count - 1 do begin
+    TRadioGroup_HighlightButton(_rg, i, (i = Idx) and not (i = _DefaultIdx));
+  end;
+end;
+
 function TRichEdit_WriteToString(_Re: TRichEdit): string;
 var
   st: TMemoryStream;
@@ -5706,6 +5769,43 @@ end;
 procedure TButtonControl_SetCaption(_bctrl: TButtonControl; const _Value: string);
 begin
   THackButtonControl(_bctrl).Caption := _Value;
+end;
+
+procedure TButtonControl_Highlight(_bctrl: TButtonControl; _Highlighted: Boolean; _Color: TColor = clRed);
+var
+  bctrl: TButtonControlHack absolute _bctrl;
+begin
+  if not Assigned(bctrl) then
+    Exit; //==>
+
+  if _Highlighted then
+    bctrl.Font.Color := _Color
+  else
+    bctrl.ParentFont := True;
+end;
+
+procedure TButtonControl_HighlightIfNotDefault(_bctrl: TButtonControl; _Default: Boolean;
+  _Color: TColor = clRed);
+var
+  bctrl: TButtonControlHack absolute _bctrl;
+begin
+  if not Assigned(bctrl) then
+    Exit; //==>
+
+  if bctrl.Checked <> _Default then
+    bctrl.Font.Color := _Color
+  else
+    bctrl.ParentFont := True;
+end;
+
+procedure TButtonControl_HighlightIfChecked(_bctrl: TButtonControl; _Color: TColor = clRed);
+begin
+  TButtonControl_HighlightIfNotDefault(_bctrl, False, _Color);
+end;
+
+procedure TButtonControl_HighlightIfNotChecked(_bctrl: TButtonControl; _Color: TColor = clRed);
+begin
+  TButtonControl_HighlightIfNotDefault(_bctrl, True, _Color);
 end;
 
 type

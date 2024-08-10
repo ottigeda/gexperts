@@ -19,7 +19,8 @@ type
     cbxMode: TComboBox;
     procedure lstTokensDblClick(Sender: TObject);
     procedure btnConfigClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
+  private
+    procedure InitializeForm;
   public
     constructor Create(_Owner: TComponent); override;
   end;
@@ -268,11 +269,12 @@ begin
   TControl_SetMinConstraints(Self);
 
   InitDpiScaler;
+
+  InitializeForm;
 end;
 
-procedure TfmAlign.FormCreate(Sender: TObject);
+procedure TfmAlign.InitializeForm;
 begin
-  inherited;
   SetDefaultFont(Self);
 end;
 

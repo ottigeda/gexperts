@@ -1,27 +1,27 @@
 inherited fmDateFormat: TfmDateFormat
-  Left = 285
-  Top = 201
+  Left = 606
+  Top = 312
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Insert Date/Time Configuration'
-  ClientHeight = 74
-  ClientWidth = 337
+  ClientHeight = 90
+  ClientWidth = 226
   Position = poOwnerFormCenter
   PixelsPerInch = 96
-  TextHeight = 15
+  TextHeight = 13
   object lblFormat: TLabel
-    Left = 20
-    Top = 13
-    Width = 92
-    Height = 15
-    Alignment = taRightJustify
+    Left = 8
+    Top = 8
+    Width = 82
+    Height = 13
     Caption = 'Date/time &format'
     FocusControl = cbFormat
   end
   object cbFormat: TComboBox
-    Left = 120
-    Top = 10
+    Left = 8
+    Top = 24
     Width = 209
-    Height = 23
+    Height = 21
     DropDownCount = 18
     TabOrder = 0
     Text = 'cbFormat'
@@ -52,8 +52,8 @@ inherited fmDateFormat: TfmDateFormat
       'mm-dd-yy h:mm')
   end
   object btnOK: TButton
-    Left = 168
-    Top = 41
+    Left = 64
+    Top = 56
     Width = 75
     Height = 25
     Caption = 'OK'
@@ -62,8 +62,8 @@ inherited fmDateFormat: TfmDateFormat
     TabOrder = 1
   end
   object btnCancel: TButton
-    Left = 252
-    Top = 41
+    Left = 144
+    Top = 56
     Width = 75
     Height = 25
     Cancel = True

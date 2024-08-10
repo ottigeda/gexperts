@@ -772,6 +772,7 @@ uses
   pngimage, // support for TImage.LoadGraphics for PNG files
 {$ENDIF}
   GraphUtil,
+  u_dzTypeInfoUtils,
   u_dzFileUtils;
 
 function _(const _s: string): string;
@@ -1708,8 +1709,8 @@ begin
   Assert(Assigned(_bmp), 'bitmap is not assigned');
   Result := (_bmp.PixelFormat = _Expected);
   if not Result then begin
-    ActualName := GetEnumName(TypeInfo(TPixelFormat), Ord(_bmp.PixelFormat));
-    ExpectedName := GetEnumName(TypeInfo(TPixelFormat), Ord(_Expected));
+    ActualName := SafeGetEnumName(TypeInfo(TPixelFormat), Ord(_bmp.PixelFormat));
+    ExpectedName := SafeGetEnumName(TypeInfo(TPixelFormat), Ord(_Expected));
     Assert(False, 'unexpected PixelFormat ' + ActualName + ' (expected ' + ExpectedName + ')');
   end;
 end;

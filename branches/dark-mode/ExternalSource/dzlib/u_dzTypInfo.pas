@@ -16,7 +16,7 @@ uses
   TypInfo,
   u_dzTranslator;
 
-  // I am not going to proved support for Variant properties here. I hate Variants.
+// I am not going to provide support for Variant properties here. I hate Variants.
 
 const
   ///<summary> property types that can be converted to string </summary>
@@ -87,6 +87,9 @@ procedure GetEnumValues(_Instance: TObject; const _Name: string; _sl: TStrings);
 implementation
 
 {$IFDEF DELPHI2007_UP}
+
+uses
+  u_dzTypes;
 
 function _(const _s: string): string; inline;
 begin
@@ -353,3 +356,4 @@ end;
 {$ENDIF DELPHI2007_UP}
 
 end.
+
