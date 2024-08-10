@@ -47,7 +47,8 @@ type
   TBaseN = 2..36;
 
 const
-  MaxLongWord = $FFFFFFFF;
+  MaxLongWord = $FFFFFFFF deprecated; // use u_dzTypes MaxUInt32
+  MaxInt64 = $7FFFFFFFFFFFFFFF deprecated; // use u_dzTypes MaxInt64
 
 const
   /// <summary>
@@ -253,6 +254,11 @@ function Str2Int64(const _s: string; _Default: Int64): Int64; overload;
 /// @returns the integer value of s
 /// @raises EStringConvertError if s can not be converted </summary>
 function Str2Int64(const _s: string; const _Source: string): Int64; overload;
+
+function TryStr2Int64(const _s: string; var _Value: Int64): Boolean; overload;
+{$IFDEF SUPPORTS_UNICODE}
+function TryStr2Int64(const _s: AnsiString; var _Value: Int64): Boolean; overload;
+{$ENDIF SUPPORTS_UNICODE}
 
 ///<summary>
 /// tries to guess the decimal separator </summary>
@@ -1174,6 +1180,24 @@ end;
 function TryStr2Int(const _s: AnsiString; var _Value: Integer): Boolean;
 begin
   Result := TryStr2Int(string(_s), _Value);
+end;
+{$ENDIF SUPPORTS_UNICODE}
+
+function TryStr2Int64(const _s: string; var _Value: Int64): Boolean; overload;
+var
+  e: Integer;
+  v: Integer;
+begin
+  Val(_s, v, e);
+  Result := (e = 0);
+  if Result then
+    _Value := v;
+end;
+
+{$IFDEF SUPPORTS_UNICODE}
+function TryStr2Int64(const _s: AnsiString; var _Value: Int64): Boolean; overload;
+begin
+  Result := TryStr2Int64(string(_s), _Value);
 end;
 {$ENDIF SUPPORTS_UNICODE}
 

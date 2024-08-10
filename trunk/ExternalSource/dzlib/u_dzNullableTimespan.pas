@@ -142,6 +142,7 @@ type
     class operator Multiply(_a: TNullableTimespan; _b: Extended): TNullableTimespan;
 
     class function Zero: TNullableTimespan; static;
+    class function OneDay: TNullableTimespan; static;
     class function FromDays(_Days: Double): TNullableTimespan; static;
     class function FromHours(_Hours: Extended): TNullableTimespan; overload; static;
     class function FromHours(_Hours: TNullableExtended): TNullableTimespan; overload; static;
@@ -638,6 +639,11 @@ end;
 class function TNullableTimespan.Zero: TNullableTimespan;
 begin
   Result.AssignZero;
+end;
+
+class function TNullableTimespan.OneDay: TNullableTimespan;
+begin
+  Result.AssignDays(1);
 end;
 
 class operator TNullableTimespan.GreaterThanOrEqual(_a, _b: TNullableTimespan): Boolean;
