@@ -38,7 +38,7 @@ object fmAbout: TfmAbout
     Left = 368
     Top = 72
     Width = 147
-    Height = 20
+    Height = 14
     Alignment = taCenter
     Caption = 'http://www.gexperts.org/'
   end
@@ -46,7 +46,7 @@ object fmAbout: TfmAbout
     Left = 275
     Top = 91
     Width = 84
-    Height = 20
+    Height = 14
     Alignment = taRightJustify
     Caption = 'Project Leader:'
   end
@@ -54,7 +54,7 @@ object fmAbout: TfmAbout
     Left = 255
     Top = 112
     Width = 104
-    Height = 20
+    Height = 14
     Alignment = taRightJustify
     Caption = 'Major Contributors:'
   end
@@ -62,7 +62,7 @@ object fmAbout: TfmAbout
     Left = 368
     Top = 91
     Width = 85
-    Height = 20
+    Height = 14
     Cursor = crHandPoint
     Caption = 'Thomas Mueller'
     OnClick = btnEmailClick
@@ -71,7 +71,7 @@ object fmAbout: TfmAbout
     Left = 304
     Top = 72
     Width = 55
-    Height = 20
+    Height = 14
     Alignment = taRightJustify
     Caption = 'Web Site:'
   end
@@ -177,7 +177,9 @@ object fmAbout: TfmAbout
       'Alex Petrov'
       'Puthoon'
       'Mahdi Safsafi'
-      'Martin Waldenburg')
+      'Martin Waldenburg'
+      'Thomas M'#252'ller'
+      'Achim Kalwa')
     ParentCtl3D = False
     ReadOnly = True
     ScrollBars = ssVertical

@@ -166,6 +166,10 @@ end;
 
 procedure TfmFeedbackWizard.Init(const ABugEmail, AFeatureEmail: string);
 begin
+  if IsThemingEnabled
+  then pgeMain.Style := tsButtons
+  else pgeMain.Style := tsTabs;
+
   FBugEmail := ABugEmail;
   FFeatureEmail := AFeatureEmail;
   TLabel_MakeUrlLabel(l_BugReportUrl, FBugEmail, True);

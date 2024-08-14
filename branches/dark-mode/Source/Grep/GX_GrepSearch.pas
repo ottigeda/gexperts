@@ -812,7 +812,7 @@ begin
   TControl_SetConstraints(Self, [ccMinWidth, ccMinHeight, ccMaxHeight]);
 
   if not IsStandAlone then
-    InitTheming(Self);
+    InitTheming;
   FixComboBoxSelections(Self);
 end;
 

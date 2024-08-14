@@ -13,11 +13,9 @@ interface
 uses
   Windows, SysUtils,
   Classes, Controls, Forms, Menus, ComCtrls, Buttons, ImgList, ImageList,
-  ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types,
-{$IFDEF GX_SUPPORTS_THEMING}
-  Themes,
-{$ENDIF}
-  u_dzSpeedBitBtn, u_dzStopwatch,
+  ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types, Themes,
+  GX_CheckButton,
+  u_dzStopwatch,
   u_dzDpiScaleUtils,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
   GX_UnitExportsParser, GX_UsesExpertOptions, GX_UnitExportList,
@@ -315,7 +313,7 @@ type
     FOldToNewUnitNameMap: TStringList;
     FCaption_lblFilter: string;
     FForceFocusToIdentifierFilter: Boolean;
-    FIdentifierMatchGrp: TdzSpeedBitBtnGroup;
+    FIdentifierMatchGrp: TGXCheckButtonGroup;
     FSelectedUnitLineNo: Integer;
     FSelectedUnitFn: string;
     FDefaultToInterfaceList: Boolean;
@@ -371,6 +369,12 @@ type
     procedure FinalizeForm;
     procedure SetSelectedFile(const _fn: string; _LineNo: Integer = -1);
     procedure UpdateDefaultButton;
+
+  private
+    ckbIdentifierMatchStart    : TGXCheckButton;
+    ckbIdentifierMatchAnywhere : TGXCheckButton;
+    ckbIdentifierMatchSort     : TGXCheckButton;
+
   protected
     FProjectUnits: TStringList;
     FCommonUnits: TStringList;
@@ -900,33 +904,17 @@ begin
   pnlUnits.DoubleBuffered := True;
   pnlUses.DoubleBuffered := True;
 
-  FIdentifierMatchGrp :=  TdzSpeedBitBtnGroup.Create;
-{$IFDEF SUPPORTS_THEMING}
-  // consider using a RadioGroup, or TSpeedButtons...
-  if IsThemingEnabled then
-  begin
-    FIdentifierMatchGrp.ColorText   := ColorToRGB(GetThemedColor(clWindowText));
-    // if FIdentifierMatchGrp.ColorText >= $800000 then
-    if IdeStyleIsDark then
-    begin
-      // dark background
-      FIdentifierMatchGrp.ColorRaised := GxOtaGetStyleColor(scButtonNormal,  clBtnFace);
-      FIdentifierMatchGrp.ColorSunken := GxOtaGetStyleColor(scButtonPressed, clAppWorkSpace);
-    end
-    else begin
-      // light background
-      FIdentifierMatchGrp.ColorRaised := GetThemedColor(clBtnFace);
-      FIdentifierMatchGrp.ColorSunken := FIdentifierMatchGrp.ColorRaised + $00070707; // lighter
-    end;
-  end;
-{$ENDIF}
+  FIdentifierMatchGrp := TGXCheckButtonGroup.Create(Self);
   FIdentifierMatchGrp.AllowAllUp := False;
-  FIdentifierMatchGrp.Add(b_IdentifierMatchStart, Ord(fieStartOnly));
-  FIdentifierMatchGrp.Add(b_IdentifierMatchAnywhere, Ord(fieAnywhere));
-  FIdentifierMatchGrp.Add(b_IdentifierMatchSort, Ord(fieStartFirst));
-  // this only works if the order the buttons are added is the same as the order of the enums
+  ckbIdentifierMatchStart    := FIdentifierMatchGrp.Add(b_IdentifierMatchStart, Ord(fieStartOnly));
+  ckbIdentifierMatchAnywhere := FIdentifierMatchGrp.Add(b_IdentifierMatchAnywhere, Ord(fieAnywhere));
+  ckbIdentifierMatchSort     := FIdentifierMatchGrp.Add(b_IdentifierMatchSort, Ord(fieStartFirst));
   FIdentifierMatchGrp.SetDown(Ord(FUsesExpert.FFilterIdentifiers));
   FIdentifierMatchGrp.OnClick := sb_MatchWhereClick;
+  FIdentifierMatchGrp.AllowAllUp := False;
+
+  // this only works if the order the buttons are added is the same as the order of the enums
+  FIdentifierMatchGrp.SetDown(Ord(FUsesExpert.FFilterIdentifiers));
 
   chk_FastAdd.Checked := _UsesExpert.FFastAdd;
 
@@ -1131,6 +1119,14 @@ begin
   FSearchPathUnits := TStringList.Create;
   sg_SearchPath.AssociatedList := FSearchPathUnits;
 
+  sg_Interface.Color      := GetThemedColor(clWindow);
+  sg_Implementation.Color := GetThemedColor(clWindow);
+  sg_Project.Color        := GetThemedColor(clWindow);
+  sg_Common.Color         := GetThemedColor(clWindow);
+  sg_Favorite.Color       := GetThemedColor(clWindow);
+  sg_SearchPath.Color     := GetThemedColor(clWindow);
+  sg_Identifiers.Color    := GetThemedColor(clWindow);
+
   FIdentifiers := TUnitExportlist.Create(0);
   FAliases := TStringList.Create;
   FOldToNewUnitNameMap := TStringList.Create;
@@ -1154,6 +1150,10 @@ begin
 {$IFOPT D+}
   SendDebug('Started SearchPath FindThread');
 {$ENDIF D+}
+
+  if IsThemingEnabled
+  then pcUnits.Style := tsButtons
+  else pcUnits.Style := tsTabs;
 
   pcUnits.ActivePage := tabSearchPath;
   GxOtaGetUnitAliases(FAliases);
@@ -1675,16 +1675,18 @@ end;
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfmUsesManager.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); 
 
-  procedure AdjustTop(_ctrl: TControl);
+  procedure AdjustTop(_Ctrl: TControl);
   begin
     // todo: Is this still necessary?
-    _Ctrl.Top := MulDiv(_Ctrl.Top, _NewDPI, FOldDPI);
+    if Assigned(_Ctrl) then
+      _Ctrl.Top := MulDiv(_Ctrl.Top, _NewDPI, FOldDPI);
   end;
 
-  procedure AdjustHeight(_ctrl: TControl);
+  procedure AdjustHeight(_Ctrl: TControl);
   begin
     // todo: Is this still necessary?
-    _Ctrl.Height := MulDiv(_Ctrl.Height, _NewDPI, FOldDPI);
+    if Assigned(_Ctrl) then
+      _Ctrl.Height := MulDiv(_Ctrl.Height, _NewDPI, FOldDPI);
   end;
 
   procedure ArrangeButtonsInGroup(const _Buttons: array of TWinControl; _grp: TGroupBox);
@@ -1695,6 +1697,8 @@ procedure TfmUsesManager.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
   begin
     Assert(Length(_Buttons) > 1);
     btn := _Buttons[0];
+    if not Assigned(btn) then Exit;
+
     Offset := _grp.ClientHeight - btn.Top - btn.Height;
     for i := 0 to Length(_Buttons) - 1 do
       AdjustTop(_Buttons[i]);
@@ -2320,11 +2324,11 @@ begin
   TWinControl_Lock(pnlIdentifiers);
   Filter := Trim(edtIdentifierFilter.Text);
 
+  if not Assigned(FIdentifierMatchGrp) then Exit;
   if FIdentifierMatchGrp.TryGetSelected(Idx) then
-    FilterType := TFilterIdentifiersEnum(Idx)
+    FilterType := TFilterIdentifiersEnum(FIdentifierMatchGrp.GetButtonData(Idx))
   else
     FilterType := FUsesExpert.FFilterIdentifiers;
-
   FilterList := TList.Create;
   try
     MultiFilter := TStringList.Create;

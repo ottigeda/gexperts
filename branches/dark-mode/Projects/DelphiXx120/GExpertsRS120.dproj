@@ -88,7 +88,6 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <Manifest_File>None</Manifest_File>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
-        <DCC_DebugDCUs>true</DCC_DebugDCUs>
         <Debugger_HostApplication>$(BDS)\bin\bds.exe</Debugger_HostApplication>
         <Debugger_RunParams>-rBDSPlain -pDelphi</Debugger_RunParams>
     </PropertyGroup>
@@ -144,6 +143,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <Form>fmGxBookmarksForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Utils\GX_CheckButton.pas"/>
         <DCCReference Include="..\..\Source\ProjectOptionSets\GX_CheckListBoxWithHints.pas"/>
         <DCCReference Include="..\..\source\ClassBrowser\GX_ClassBrowser.pas">
             <Form>fmClassBrowser</Form>

@@ -112,7 +112,7 @@ object fmProofreaderConfig: TfmProofreaderConfig
         end
         object eCustomBeep: TEdit
           Left = 22
-          Top = 48
+          Top = 52
           Width = 395
           Height = 22
           Anchors = [akLeft, akTop, akRight]
@@ -121,7 +121,7 @@ object fmProofreaderConfig: TfmProofreaderConfig
         end
         object btnSelectFile: TButton
           Left = 423
-          Top = 48
+          Top = 52
           Width = 75
           Height = 22
           Anchors = [akTop, akRight]
