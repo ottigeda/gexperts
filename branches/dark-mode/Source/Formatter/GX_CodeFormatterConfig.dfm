@@ -32,8 +32,8 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         object l_SpacesPerIndent: TLabel
           Left = 16
           Top = 8
-          Width = 88
-          Height = 13
+          Width = 93
+          Height = 15
           Caption = 'Spaces per Indent'
         end
         object ed_SpacePerIndent: TEdit
@@ -179,31 +179,30 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         object l_BeginStyle: TLabel
           Left = 240
           Top = 96
-          Width = 52
-          Height = 13
+          Width = 57
+          Height = 15
           Caption = 'Begin style'
         end
         object l_WrapAtPosition: TLabel
           Left = 248
           Top = 216
-          Width = 51
-          Height = 13
+          Width = 58
+          Height = 15
           Caption = 'At position'
         end
         object l_TryStyle: TLabel
           Left = 240
           Top = 144
           Width = 42
-          Height = 13
+          Height = 15
           Caption = 'Try style'
         end
         object cmb_FeedRoundBegin: TComboBox
           Left = 240
           Top = 112
           Width = 185
-          Height = 21
+          Height = 23
           Style = csDropDownList
-          ItemHeight = 13
           TabOrder = 2
           OnChange = UpdatePreview
           Items.Strings = (
@@ -387,9 +386,8 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 240
           Top = 160
           Width = 185
-          Height = 21
+          Height = 23
           Style = csDropDownList
-          ItemHeight = 13
           TabOrder = 3
           OnChange = UpdatePreview
           Items.Strings = (
@@ -402,40 +400,40 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         Caption = 'Capitalization'
         DesignSize = (
           426
-          454)
+          452)
         object l_Capitalize: TLabel
           Left = 16
           Top = 8
-          Width = 46
-          Height = 13
+          Width = 51
+          Height = 15
           Caption = 'Capitalize'
         end
         object l_ReservedWords: TLabel
           Left = 16
           Top = 48
-          Width = 78
-          Height = 13
+          Width = 82
+          Height = 15
           Caption = 'Reserved words'
         end
         object l_StandardDirectives: TLabel
           Left = 144
           Top = 48
-          Width = 93
-          Height = 13
+          Width = 100
+          Height = 15
           Caption = 'Standard directives'
         end
         object l_Identifiers: TLabel
           Left = 272
           Top = 48
-          Width = 49
-          Height = 13
+          Width = 52
+          Height = 15
           Caption = 'Identifiers'
         end
         object l_CapitalizationInFile: TLabel
           Left = 16
           Top = 248
-          Width = 126
-          Height = 13
+          Width = 140
+          Height = 15
           Caption = 'Capitalization stored in file'
         end
         object chk_UpperCompDirectives: TCheckBox
@@ -460,9 +458,8 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 16
           Top = 64
           Width = 118
-          Height = 21
+          Height = 23
           Style = csDropDownList
-          ItemHeight = 13
           TabOrder = 2
           OnChange = UpdatePreview
           Items.Strings = (
@@ -475,9 +472,8 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 144
           Top = 64
           Width = 117
-          Height = 21
+          Height = 23
           Style = csDropDownList
-          ItemHeight = 13
           TabOrder = 3
           OnChange = UpdatePreview
           Items.Strings = (
@@ -534,9 +530,8 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 272
           Top = 64
           Width = 118
-          Height = 21
+          Height = 23
           Style = csDropDownList
-          ItemHeight = 13
           TabOrder = 4
           OnChange = UpdatePreview
           Items.Strings = (
@@ -552,15 +547,15 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         object l_AlignComentsAtPosition: TLabel
           Left = 40
           Top = 40
-          Width = 51
-          Height = 13
+          Width = 58
+          Height = 15
           Caption = 'At position'
         end
         object l_AlignVarAtPosition: TLabel
           Left = 40
           Top = 136
-          Width = 51
-          Height = 13
+          Width = 58
+          Height = 15
           Caption = 'At position'
         end
         object chk_AlignComments: TCheckBox
@@ -673,14 +668,14 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 8
             Top = 24
             Width = 24
-            Height = 13
+            Height = 15
             Caption = 'Start'
           end
           object l_MiscEnd: TLabel
             Left = 128
             Top = 24
-            Width = 18
-            Height = 13
+            Width = 20
+            Height = 15
             Caption = 'End'
           end
           object ed_StartComment: TEdit
@@ -715,15 +710,15 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
       object l_Before: TLabel
         Left = 24
         Top = 1
-        Width = 32
-        Height = 13
+        Width = 34
+        Height = 15
         Caption = 'Before'
       end
       object l_After: TLabel
         Left = 202
         Top = 1
-        Width = 22
-        Height = 13
+        Width = 26
+        Height = 15
         Caption = 'After'
       end
     end

@@ -122,6 +122,7 @@ end;
 
 procedure TfmBaseForm.ArrangeControls;
 begin
+  //
 end;
 
 procedure TfmBaseForm.Loaded;

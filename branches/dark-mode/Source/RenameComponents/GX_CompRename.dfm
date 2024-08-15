@@ -202,7 +202,6 @@ object fmCompRename: TfmCompRename
           Top = 0
           Width = 169
           Height = 25
-          Anchors = []
           Caption = 'Top'
           TabOrder = 0
           OnClick = b_AlignTopClick
@@ -212,7 +211,6 @@ object fmCompRename: TfmCompRename
           Top = 24
           Width = 41
           Height = 65
-          Anchors = []
           Caption = 'Left'
           TabOrder = 1
           OnClick = b_AlignLeftClick
@@ -222,7 +220,6 @@ object fmCompRename: TfmCompRename
           Top = 24
           Width = 89
           Height = 65
-          Anchors = []
           Caption = 'Client'
           TabOrder = 2
           OnClick = b_AlignClientClick
@@ -232,7 +229,6 @@ object fmCompRename: TfmCompRename
           Top = 120
           Width = 65
           Height = 25
-          Anchors = []
           Caption = 'None'
           TabOrder = 5
           OnClick = b_AlignNoneClick
@@ -242,7 +238,6 @@ object fmCompRename: TfmCompRename
           Top = 120
           Width = 65
           Height = 25
-          Anchors = []
           Caption = 'Custom'
           TabOrder = 6
           OnClick = b_AlignCustomClick
@@ -252,7 +247,6 @@ object fmCompRename: TfmCompRename
           Top = 24
           Width = 41
           Height = 65
-          Anchors = []
           Caption = 'Right'
           TabOrder = 3
           OnClick = b_AlignRightClick
@@ -262,7 +256,6 @@ object fmCompRename: TfmCompRename
           Top = 88
           Width = 169
           Height = 25
-          Anchors = []
           Caption = 'Bottom'
           TabOrder = 4
           OnClick = b_AlignBottomClick
@@ -276,7 +269,6 @@ object fmCompRename: TfmCompRename
           Top = 46
           Width = 49
           Height = 49
-          Anchors = []
           Caption = 'Left'
           TabOrder = 1
         end
@@ -285,7 +277,6 @@ object fmCompRename: TfmCompRename
           Top = 46
           Width = 49
           Height = 49
-          Anchors = []
           Caption = 'Right'
           TabOrder = 2
         end
@@ -294,7 +285,6 @@ object fmCompRename: TfmCompRename
           Top = 16
           Width = 49
           Height = 49
-          Anchors = []
           Caption = 'Top'
           TabOrder = 0
         end
@@ -303,7 +293,6 @@ object fmCompRename: TfmCompRename
           Top = 71
           Width = 49
           Height = 49
-          Anchors = []
           Caption = 'Bottom'
           TabOrder = 3
         end

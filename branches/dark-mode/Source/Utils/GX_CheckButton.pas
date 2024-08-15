@@ -1,5 +1,14 @@
 unit GX_CheckButton;
 
+{ This unit provides:
+  - TGXCheckButton: A CheckBox-like component, which looks like a TButton;
+    similar to TSpeedButton, but with keyboard focus control.
+  - TGXCheckButtonGroup: Group TGXCheckButtons to behave like a RadioGroup.
+  - TGXCheckButtonStyleHook for themed drawing.
+}
+
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -58,7 +67,9 @@ uses
   Types,
   Windows,
   SysUtils,
-  Graphics;
+  Graphics,
+  GX_IdeUtils
+  ;
 
 type
   TGXCheckButtonStyleHook = class(TButtonStyleHook)
@@ -68,12 +79,50 @@ type
 
 { TGXCheckButtonStyleHook }
 
+const
+  Pattern : array[0..7] of Word = (
+    $5555, $AAAA, $5555, $AAAA
+   ,$5555, $AAAA, $5555, $AAAA
+  );
+
 procedure TGXCheckButtonStyleHook.DrawButton(ACanvas: TCanvas; AMouseInControl: Boolean);
 var
   LStyle  : TCustomStyleServices;
   Details : TThemedElementDetails;
   LControl: TGXCheckButton;
   R       : TRect;
+
+  procedure GXDrawFocusRect(DC: HDC; R: TRect);
+  var
+    hbmpPattern : HBITMAP;
+    hbrPattern  : HBRUSH;
+    hbrOriginal : HBRUSH;
+    cx, cy      : Integer;
+    nSaved      : Integer;
+  begin
+    nSaved := SaveDC(DC);
+    hbmpPattern := CreateBitmap(8, 8, 1, 1, @Pattern);
+    hbrPattern  := CreatePatternBrush(hbmpPattern);
+    hbrOriginal := SelectObject(DC, hbrPattern);
+
+    SetBkColor(DC,   ColorToRGB(GetThemedColor(clWindow)));
+    SetTextColor(DC, ColorToRGB(GetThemedColor(clWindowText)));
+
+    SystemParametersInfo(SPI_GETFOCUSBORDERWIDTH, 0, cx, 0);
+    SystemParametersInfo(SPI_GETFOCUSBORDERHEIGHT, 0, cy, 0);
+
+    PatBlt(DC, R.Left      , R.Top        , R.Width, cy , PATINVERT);  // top
+    PatBlt(DC, R.Left      , R.Bottom - cy, R.Width, cy , PATINVERT);  // bottom
+    PatBlt(DC, R.Left      , R.Top    + cy, cx     , R.Height - (cy * 2), PATINVERT);  // left
+    PatBlt(DC, R.Right - cx, R.Top    + cy, cx     , R.Height - (cy * 2), PATINVERT);  // right
+
+    SelectObject(DC, hbrOriginal);
+    DeleteObject(hbrPattern);
+    DeleteObject(hbmpPattern);
+
+    RestoreDC(DC, nSaved);
+  end;
+
 begin
   LStyle := StyleServices;
   if not LStyle.Available then
@@ -85,17 +134,23 @@ begin
   if Control is TGXCheckButton then
   begin
     LControl := TGXCheckButton(Control);
-    if LControl.Checked
-    then Details := LStyle.GetElementDetails(tbPushButtonPressed)
-    else Details := LStyle.GetElementDetails(tbPushButtonNormal);
+
+    if LControl.Checked then
+      Details := LStyle.GetElementDetails(tbPushButtonPressed)
+    else
+      Details := LStyle.GetElementDetails(tbPushButtonNormal);
 
     R := LControl.ClientRect;
     LStyle.DrawElement(ACanvas.Handle, Details, R, nil);
     LStyle.DrawText(ACanvas.Handle, Details, LControl.Caption, R, [tfCenter, tfVerticalCenter]);
+
     if Focused then
     begin
-      R.Inflate(-2, -2);
-      DrawFocusRect(ACanvas.Handle, R);
+      R.Inflate(-2, -2); // for better visibility
+
+      // DrawFocusRect(ACanvas.Handle, R);      // respects SPI_GETFOCUSBORDERWIDTH/SPI_GETFOCUSBORDERHEIGHT
+      // DrawStyleFocusRect(ACanvas.Handle, R); // only 1 pixel; ignores system settings
+      GXDrawFocusRect(ACanvas.Handle, R); // own implementation
     end;
   end;
 end;
@@ -196,7 +251,7 @@ begin
 
     if AButton.Down then
     begin
-      if Assigned(AButton.FSavedOnClick) then
+    if Assigned(AButton.FSavedOnClick) then
         AButton.FSavedOnClick(AButton)
       else
         if Assigned(FOnClick) then

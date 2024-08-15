@@ -14,7 +14,7 @@ uses
   Classes, Controls, Forms, StdCtrls, ExtCtrls, ToolsAPI, ComCtrls, Buttons,
   GX_Experts, GX_ConfigurationInfo, GX_EditorChangeServices, GX_CheckButton,
   Contnrs, Messages,
-  Types, GX_BaseForm, u_dzSpeedBitBtn;
+  Types, GX_BaseForm;
 
 type
   TIsValidComponentName = function (const OldName, NewName: WideString; var Reason: WideString): Boolean of object;

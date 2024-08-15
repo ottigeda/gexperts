@@ -7,9 +7,9 @@
         <MainSource>GExpertsRS120.dpr</MainSource>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <ProjectGuid>{BB29661E-3FA2-4EA6-96EB-0768940BAAB6}</ProjectGuid>
+        <ProjectName Condition="'$(ProjectName)'==''">GExpertsRS120</ProjectName>
         <ProjectVersion>20.1</ProjectVersion>
         <TargetedPlatforms>1</TargetedPlatforms>
-        <ProjectName Condition="'$(ProjectName)'==''">GExpertsRS120</ProjectName>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -57,11 +57,13 @@
         <DCC_UsePackage>rtl;vcl;designide;$(DCC_UsePackage)</DCC_UsePackage>
         <GenDll>true</GenDll>
         <Manifest_File>(None)</Manifest_File>
-        <PreBuildEvent><![CDATA[call ..\..\images\_CreateGXIconsRc.cmd
+        <PreBuildEvent>
+            <![CDATA[call ..\..\images\_CreateGXIconsRc.cmd
 call ..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"
 call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"
 call ..\..\source\_CreateGExpertsManifest.cmd
-$(PreBuildEvent)]]></PreBuildEvent>
+$(PreBuildEvent)]]>
+        </PreBuildEvent>
         <UsePackages>True</UsePackages>
         <VerInfo_Keys>FileVersion=1.0.0.0</VerInfo_Keys>
         <VerInfo_Locale>2057</VerInfo_Locale>
@@ -764,23 +766,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win64'">
-        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;&amp;&amp;call ..\..\source\_CreateGExpertsManifest.cmd</PreBuildEvent>
-        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
-        <PreLinkEvent/>
-        <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent/>
-        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
-    </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win32'">
-        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;&amp;&amp;call ..\..\source\_CreateGExpertsManifest.cmd</PreBuildEvent>
-        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
-        <PreLinkEvent/>
-        <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
-        <PostBuildEvent/>
-        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win64'">
         <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;&amp;&amp;call ..\..\source\_CreateGExpertsManifest.cmd</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
