@@ -18,6 +18,7 @@ uses
   GX_BaseForm in '..\..\source\Framework\GX_BaseForm.pas' {fmBaseForm},
   GX_BookmarkList in '..\..\source\Utils\GX_BookmarkList.pas',
   GX_Bookmarks in '..\..\source\Bookmarks\GX_Bookmarks.pas' {fmGxBookmarksForm},
+  GX_CheckButton in '..\..\source\Utils\GX_CheckButton.pas',
   GX_CheckListBoxWithHints in '..\..\Source\ProjectOptionSets\GX_CheckListBoxWithHints.pas',
   GX_ClassBrowser in '..\..\source\ClassBrowser\GX_ClassBrowser.pas' {fmClassBrowser},
   GX_ClassHacks in '..\..\source\Framework\GX_ClassHacks.pas',
