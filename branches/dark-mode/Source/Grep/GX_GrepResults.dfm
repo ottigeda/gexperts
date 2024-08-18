@@ -9,6 +9,7 @@ inherited fmGrepResults: TfmGrepResults
   KeyPreview = True
   OldCreateOrder = False
   ShowHint = True
+  OnActivate = FormActivate
   OnKeyPress = FormKeyPress
   OnResize = FormResize
   OnShow = FormShow

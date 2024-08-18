@@ -22,8 +22,10 @@ type
   private
     FSavedOnClick: TNotifyEvent;
     FData: Pointer;
+{$IFDEF GX_SUPPORTS_THEMING}
     class constructor Create;
     class destructor Destroy;
+{$ENDIF}    
     function GetDownState: Boolean;
     procedure SetDownState(const Value: Boolean);
   protected
@@ -71,6 +73,7 @@ uses
   GX_IdeUtils
   ;
 
+{$IFDEF GX_SUPPORTS_THEMING}
 type
   TGXCheckButtonStyleHook = class(TButtonStyleHook)
   protected
@@ -154,12 +157,14 @@ begin
     end;
   end;
 end;
+{$ENDIF}
 
 { TGXCheckButton }
 
 type
   TWinControlAccess = class(TWinControl);
 
+{$IFDEF GX_SUPPORTS_THEMING}
 class constructor TGXCheckButton.Create;
 begin
   TCustomStyleEngine.UnRegisterStyleHook(TGXCheckButton, TCheckBoxStyleHook);
@@ -170,6 +175,7 @@ class destructor TGXCheckButton.Destroy;
 begin
   TCustomStyleEngine.UnRegisterStyleHook(TGXCheckButton, TGXCheckButtonStyleHook);
 end;
+{$ENDIF}
 
 constructor TGXCheckButton.Clone(var AControl);
 var

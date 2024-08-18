@@ -811,8 +811,10 @@ begin
   inherited;
   TControl_SetConstraints(Self, [ccMinWidth, ccMinHeight, ccMaxHeight]);
 
+{$IFDEF GX_SUPPORTS_THEMING}
   if not IsStandAlone then
     InitTheming;
+{$ENDIF}    
   FixComboBoxSelections(Self);
 end;
 

@@ -326,6 +326,7 @@ type
     procedure SplitterHistoryListCanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
     procedure actHistoryClearExecute(Sender: TObject);
     procedure actFileOptionsStandAloneExecute(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
     FLastRepaintTick: DWORD;
     FSearchInProgress: Boolean;
@@ -360,6 +361,7 @@ type
     FSaveSortCaption: string;
     FSavedFormCaption: string;
     FlbHistoryListIndexForHistoryMenuActions: Integer;
+    procedure InitThemedColors;
     procedure SetStayOnTop(Value: Boolean);
     procedure RefreshContextLines;
     procedure SetShowContext(Value: Boolean);
@@ -544,6 +546,19 @@ begin
 end;
 
 { TfmGrepResults }
+
+procedure TfmGrepResults.FormActivate(Sender: TObject);
+// will be called by the IDE if the form is in the saved layout.
+begin
+  inherited;
+  InitThemedColors;
+
+  AssignSettingsToForm;
+  ResizeListBox;
+  ResizeStatusBar;
+
+  ForceRedraw;
+end;
 
 procedure TfmGrepResults.FormKeyPress(Sender: TObject; var Key: Char);
 begin
@@ -893,6 +908,29 @@ begin
     FEmbeddedGrepSearch.EmbeddedUpdatePos;
   ForceRedraw;
   lbResults.Refresh;
+end;
+
+procedure TfmGrepResults.InitThemedColors;
+var
+  LBackColor : TColor;
+begin
+{$IFDEF GX_SUPPORTS_THEMING}
+  if IsThemingEnabled then begin
+    InitTheming(Self);
+    GxOtaGetIDEThemingServices.ApplyTheme(tcHistoryListPage);
+
+    LBackColor := GetThemedColor(clWindow);
+
+    tcHistoryListPage.Style := tsFlatButtons; // don't paint the control themed
+    tcHistoryListPage.Brush.Color := LBackColor;
+
+    pnlMain.Color := LBackColor;
+    pnlBottom.Color := LBackColor;
+    lbResults.Color := LBackColor;
+    lbHistoryList.Color := LBackColor;
+    reContext.Color := LBackColor;
+  end;
+{$ENDIF}  
 end;
 
 procedure TfmGrepResults.InitGrepSettings(AGrepSettings: TGrepSettings);
@@ -2030,24 +2068,48 @@ begin
   lbHistoryList.Refresh;
 end;
 
-procedure TfmGrepResults.FormShow(Sender: TObject);
+(*
+procedure TfmGrepResults.TabControlDrawTab(Control: TCustomTabControl; TabIndex: Integer; const Rect: TRect; Active: Boolean);
 var
+  LCaption   : string;
+  LTextRect  : TRect;
   LBackColor : TColor;
+  LTextColor : TColor;
+begin
+  LCaption := TTabControl(Control).Tabs[TabIndex];
+  if Active then
+  begin
+    LBackColor := GetThemedColor(clHighlight);
+    LTextColor := GetThemedColor(clHighlightText)
+  end
+  else begin
+    LBackColor := GetThemedColor(clBtnFace);
+    LTextColor := GetThemedColor(clBtnText);
+  end;
+
+  Control.Canvas.Brush.Color := LBackColor;
+  Control.Canvas.FillRect(Rect);
+  Control.Canvas.Font.Color := LTextColor;
+
+  LTextRect := Rect;
+  LTextRect.Inflate(-3, -3);
+  DrawText(Control.Canvas.Handle, PChar(LCaption), -1, LTextRect, DT_TOP or DT_LEFT);
+end;
+*)
+
+type
+  TWinControlAccess = class(TWinControl);
+
+procedure TfmGrepResults.FormShow(Sender: TObject);
 begin
   inherited;
+
+  InitThemedColors;
 
   AssignSettingsToForm;
   ResizeListBox;
   ResizeStatusBar;
-  if IsThemingEnabled then begin
-    InitTheming(Self);
-    LBackColor := GetThemedColor(clWindow);
-    pnlMain.Color := LBackColor;
-    pnlBottom.Color := LBackColor;
-    lbResults.Color := LBackColor;
-    lbHistoryList.Color := LBackColor;
-    reContext.Color := LBackColor;
-  end;
+
   ForceRedraw;
 end;
 
