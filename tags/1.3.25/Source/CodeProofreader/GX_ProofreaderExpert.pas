@@ -1,0 +1,170 @@
+unit GX_ProofreaderExpert;
+
+{$I GX_CondDefine.inc}
+
+interface
+
+uses
+  Classes, Types,  Controls,
+  GX_ProofreaderData, GX_ConfigurationInfo, GX_Experts;
+
+type
+  TCodeProofreaderExpert = class(TGX_Expert)
+  private
+    FProofreaderData: TProofreaderData;
+    procedure CopyDefaultsFromResource(const _FileName: string);
+  protected
+    procedure SetActive(New: Boolean); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+    function GetActionCaption: string; override;
+    class function GetName: string; override;
+    procedure Execute(Sender: TObject); override;
+    procedure Configure(_Owner: TWinControl); override;
+  end;
+
+var
+  CodeProofreaderExpert: TCodeProofreaderExpert = nil;
+
+implementation
+
+uses
+  SysUtils, Dialogs,
+  GX_ProofreaderConfig, GX_MessageBox, u_dzVclUtils;
+
+type
+  TCreateDefaultTablesMessage = class(TGxQuestionBoxAdaptor)
+  protected
+    function GetMessage: string; override;
+  end;
+
+{ TCreateDefaultTablesMessage }
+
+function TCreateDefaultTablesMessage.GetMessage: string;
+resourcestring
+  SDefaultTablesCreated = 'Could not find the Code Proofreader data file:'
+  + sLineBreak + '%s' + sLineBreak +
+  'Would you like to create the default replacement rules and dictionary entries?';
+begin
+  Result := Format(SDefaultTablesCreated, [FData]);
+end;
+
+{ TCodeProofreaderExpert }
+
+procedure TCodeProofreaderExpert.Execute(Sender: TObject);
+begin
+  Configure(nil);
+end;
+
+procedure TCodeProofreaderExpert.Configure(_Owner: TWinControl);
+var
+  Data: TProofreaderData;
+  frm: TfmProofreaderConfig;
+  FileName: string;
+begin
+  Data := FProofreaderData;
+  if Data = nil then begin
+    // the expert is not active, crate a local instance of the data just for configuring it
+    Data := TProofreaderData.Create;
+  end;
+  try
+    FileName := Data.GetXmlFileName;
+    if (not FileExists(FileName)) and
+      (ShowGxMessageBox(TCreateDefaultTablesMessage, FileName) = mrYes) then
+    begin
+      CopyDefaultsFromResource(FileName);
+    end;
+    Data.ReloadData;
+
+    frm := TfmProofreaderConfig.Create(_Owner, Self, Data);
+    try
+      TForm_CenterOn(frm, _Owner);
+      SetFormIcon(frm);
+      frm.ShowModal;
+    finally
+      FreeAndNil(frm);
+    end;
+    SaveSettings;
+  finally
+    if not Assigned(FProofreaderData) then begin
+      // We created a local instance just for configuring the expert, but since it is not active
+      // we no longer need it.
+      FreeAndNil(Data);
+    end;
+  end;
+end;
+
+procedure TCodeProofreaderExpert.CopyDefaultsFromResource(const _FileName: string);
+var
+  ResStream: TResourceStream;
+  FileStream: TFileStream;
+begin
+  FileStream := nil;
+  ResStream := TResourceStream.Create(hInstance, 'CodeProofreaderDefault', RT_RCDATA);
+  try
+    FileStream := TFileStream.Create(_FileName, fmOpenReadWrite or fmCreate);
+    FileStream.CopyFrom(ResStream, ResStream.Size);
+  finally
+    FreeAndNil(FileStream);
+    FreeAndNil(ResStream);
+  end;
+end;
+
+constructor TCodeProofreaderExpert.Create;
+begin
+  inherited;
+
+  FreeAndNil(CodeProofreaderExpert);
+  CodeProofreaderExpert := Self;
+end;
+
+destructor TCodeProofreaderExpert.Destroy;
+begin
+  FreeAndNil(FProofreaderData);
+  CodeProofreaderExpert := nil;
+
+  inherited Destroy;
+end;
+
+function TCodeProofreaderExpert.GetActionCaption: string;
+resourcestring
+  SProofMenuCaption = 'Code &Proofreader...';
+begin
+  Result := SProofMenuCaption;
+end;
+
+class function TCodeProofreaderExpert.GetName: string;
+begin
+  Result := 'CodeProofreader';
+end;
+
+procedure TCodeProofreaderExpert.InternalSaveSettings(_Settings: IExpertSettings);
+begin
+  inherited InternalSaveSettings(_Settings);
+
+  if Assigned(FProofreaderData) then
+    FProofreaderData.SaveSettings(_Settings);
+end;
+
+procedure TCodeProofreaderExpert.SetActive(New: Boolean);
+begin
+  inherited SetActive(New);
+
+  if Active then
+  begin
+    if not Assigned(FProofreaderData) then
+      FProofreaderData := TProofreaderData.Create;
+
+    FProofreaderData.ReloadData;
+  end
+  else
+    FreeAndNil(FProofreaderData);
+end;
+
+initialization
+  RegisterGX_Expert(TCodeProofreaderExpert);
+
+end.
+

@@ -1,0 +1,4 @@
+ConvertStringsAddToSql RCDATA "./ConvertStrings/Add-to-SQL.ini"
+ConvertStringsSqlToAdd RCDATA "./ConvertStrings/SQL-to-Add.ini"
+ConvertStringsSqlToString RCDATA "./ConvertStrings/SQL-to-string.ini"
+ConvertStringsStringToSql RCDATA "./ConvertStrings/String-to-SQL.ini"
