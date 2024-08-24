@@ -7,12 +7,13 @@ unit GX_CodeLib;
 interface
 
 uses
-  Windows, SysUtils, 
+  Windows, SysUtils,
   Forms, Controls, StdActns, Classes, ActnList, Actions, UITypes,
   Dialogs, Menus, ComCtrls, ToolWin, ExtCtrls,
   GpStructuredStorage,
   GX_Experts, GX_EnhancedEditor,
-  GX_GenericUtils, GX_StringList, GX_SharedImages, GX_BaseForm;
+  GX_GenericUtils, GX_StringList, GX_SharedImages, GX_BaseForm,
+  GX_CodeOpt;
 
 type
   TSearchRecord = record
@@ -20,8 +21,6 @@ type
     CaseSensitive: Boolean;
     WholeWord: Boolean;
   end;
-
-  TCodeLayout = (clSide, clTop);
 
   TGXStorageFile = class(TObject)
   private
@@ -287,7 +286,7 @@ uses
   Clipbrd,
   u_dzVclUtils, u_dzStringUtils,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  GX_CodeSrch, GX_CodeOpt, GX_GxUtils,
+  GX_CodeSrch, GX_GxUtils,
   GX_OtaUtils, GX_IdeUtils,
   GX_GExperts, GX_ConfigurationInfo, GX_MessageBox;
 
@@ -953,59 +952,27 @@ end;
 
 procedure TfmCodeLib.OptionsExecute(Sender: TObject);
 var
-  frm: TfmCodeOptions;
+  lStoragePath: string;
+  lLayout: TCodeLayout;
 begin
-  frm := TfmCodeOptions.Create(nil);
-  try
-    frm.edPath.Text := StoragePath;
-    if Layout = clSide then
-      frm.rbSide.Checked := True
-    else
-      frm.rbTop.Checked := True;
-{$IFOPT D+}SendDebug('Setting fcTreeView.Text to ' + tvTopics.Font.Name); {$ENDIF}
-    frm.fcTreeView.ItemIndex := frm.fcTreeView.Items.IndexOf(tvTopics.Font.Name);
-{$IFOPT D+}SendDebug('fcTreeView.Text is ' + frm.fcTreeView.Text);{$ENDIF}
-    frm.udTreeView.Position := tvTopics.Font.Size;
-    frm.fcEditor.ItemIndex := frm.fcEditor.Items.IndexOf(FCodeText.Font.Name);
-    frm.udEditor.Position := FCodeText.Font.Size;
-
-    if frm.ShowModal = mrOk then
-    begin
-      if (StoragePath <> frm.edPath.Text) then
-      begin
-        if CodeDB <> nil then
-          CloseDB(True);
-
-        FreeAndNil(CodeDB);
-        tvTopics.Items.Clear;
-        FCodeText.Clear;
-        StoragePath := AddSlash(frm.edPath.Text);
-        CodeDB := OpenStorage(StoragePath + DefaultFileName);
-        if CodeDB = nil then
-        begin
-          MessageDlg(SCouldNotCreateStorage, mtError, [mbOK], 0);
-          Exit;
-        end;
-        InitializeTreeView;
+  lStoragePath := StoragePath;
+  lLayout := Layout;
+  if TfmCodeOptions.Execute(Self, lStoragePath, lLayout, tvTopics.Font, FCodeText.Font) then begin
+    if StoragePath <> lStoragePath then begin
+      if CodeDB <> nil then
+        CloseDB(True);
+      FreeAndNil(CodeDB);
+      tvTopics.Items.Clear;
+      FCodeText.Clear;
+      StoragePath := AddSlash(lStoragePath);
+      CodeDB := OpenStorage(StoragePath + DefaultFileName);
+      if CodeDB = nil then begin
+        MessageDlg(SCouldNotCreateStorage, mtError, [mbOK], 0);
+        Exit;
       end;
-      if frm.rbSide.Checked then
-        Layout := clSide
-      else
-        Layout := clTop;
-
-      with tvTopics.Font do
-      begin
-        Name := frm.fcTreeView.Text;
-        Size := Trunc(StrToInt(frm.eTreeView.Text));
-      end;
-      with FCodeText.Font do
-      begin
-        Name := frm.fcEditor.Text;
-        Size := Trunc(StrToInt(frm.eEditor.Text));
-      end;
+      InitializeTreeView;
     end;
-  finally
-    FreeAndNil(frm);
+    Layout := lLayout;
   end;
 end;
 
