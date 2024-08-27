@@ -6,7 +6,12 @@ interface
 
 uses  // If you get errors here, add SynEdit to your library path
   SynEdit,
-  GX_GenericUtils, GX_IDEUtils;
+{$IFDEF GX_SUPPORTS_THEMING}
+  Vcl.Themes,
+  Vcl.Forms,
+{$ENDIF}
+  GX_GenericUtils,
+  GX_IDEUtils;
 
 function GetGXHighlighterForCurrentSourceEditor: TGXSyntaxHighlighter;
 
@@ -113,6 +118,14 @@ begin
 
   Result := GxOtaGetCurrentSyntaxHighlighter(SourceEditor);
 end;
+
+{$IFDEF GX_SUPPORTS_THEMING}
+Initialization
+  TCustomStyleEngine.RegisterStyleHook(TCustomSynEdit, TScrollingStyleHook);
+
+Finalization
+  TCustomStyleEngine.UnRegisterStyleHook(TCustomSynEdit, TScrollingStyleHook);
+{$ENDIF}
 
 end.
 
