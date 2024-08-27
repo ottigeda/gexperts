@@ -43,7 +43,7 @@ object fmCodeOptions: TfmCodeOptions
     Top = 8
     Width = 305
     Height = 185
-    ActivePage = tabLayout
+    ActivePage = tabPaths
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
     object tabPaths: TTabSheet
@@ -167,6 +167,7 @@ object fmCodeOptions: TfmCodeOptions
         Height = 22
         Style = csDropDownList
         DropDownCount = 18
+        ItemHeight = 0
         TabOrder = 0
       end
       object fcEditor: TComboBox
@@ -176,6 +177,7 @@ object fmCodeOptions: TfmCodeOptions
         Height = 22
         Style = csDropDownList
         DropDownCount = 18
+        ItemHeight = 0
         TabOrder = 3
       end
       object udTreeview: TUpDown
@@ -188,6 +190,7 @@ object fmCodeOptions: TfmCodeOptions
         Max = 24
         Position = 8
         TabOrder = 2
+        Wrap = False
       end
       object udEditor: TUpDown
         Left = 273
@@ -199,6 +202,7 @@ object fmCodeOptions: TfmCodeOptions
         Max = 24
         Position = 8
         TabOrder = 5
+        Wrap = False
       end
       object eTreeview: TEdit
         Left = 232

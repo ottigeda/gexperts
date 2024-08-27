@@ -7,12 +7,13 @@ unit GX_CodeLib;
 interface
 
 uses
-  Windows, SysUtils, 
+  Windows, SysUtils,
   Forms, Controls, StdActns, Classes, ActnList, Actions, UITypes,
   Dialogs, Menus, ComCtrls, ToolWin, ExtCtrls,
   GpStructuredStorage,
   GX_Experts, GX_EnhancedEditor,
-  GX_GenericUtils, GX_StringList, GX_SharedImages, GX_BaseForm;
+  GX_GenericUtils, GX_StringList, GX_SharedImages, GX_BaseForm,
+  GX_CodeOpt;
 
 type
   TSearchRecord = record
@@ -20,8 +21,6 @@ type
     CaseSensitive: Boolean;
     WholeWord: Boolean;
   end;
-
-  TCodeLayout = (clSide, clTop);
 
   TGXStorageFile = class(TObject)
   private
@@ -287,7 +286,7 @@ uses
   Clipbrd,
   u_dzVclUtils, u_dzStringUtils,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  GX_CodeSrch, GX_CodeOpt, GX_GxUtils,
+  GX_CodeSrch, GX_GxUtils,
   GX_OtaUtils, GX_IdeUtils,
   GX_GExperts, GX_ConfigurationInfo, GX_MessageBox;
 
@@ -390,20 +389,22 @@ begin
       clSide:
         begin
           tvTopics.Align := alLeft;
-          tvTopics.Width := Self.Width div 2;
+          tvTopics.Width := ClientWidth div 3;
           Splitter.Align := alLeft;
-          if Splitter.Left < tvTopics.Left then
-            Splitter.Left := Self.Width;
+          Splitter.Left := tvTopics.Left + tvTopics.Width + 1;
           Splitter.Cursor := crHSplit;
+          Splitter.Width  := 4;
+          Splitter.Height := Splitter.Parent.ClientHeight;
           FCodeText.Align := AlClient;
         end;
       clTop:
         begin
           tvTopics.Align := alTop;
-          tvTopics.Height := Self.Height div 2;
+          tvTopics.Height := ClientHeight div 3;
           Splitter.Align := alTop;
-          if Splitter.Top < tvTopics.Top then
-            Splitter.Top := Self.Height;
+          Splitter.Top := tvTopics.Top + tvTopics.Height + 1;
+          Splitter.Height := 4;
+          Splitter.Width  := Splitter.Parent.ClientWidth;
           FCodeText.Align := AlClient;
           Splitter.Cursor := crVSplit;
         end;
@@ -903,11 +904,12 @@ begin
 
   Settings.LoadForm('Window', Self);
   Settings := Settings.Subkey('Window');
-  Layout := TCodeLayout(Settings.ReadInteger('Layout', 0));
+  FLayout := TCodeLayout.clUnknown; // Force next line to set the new layout
+  Layout := TCodeLayout(Settings.ReadInteger('Layout', Ord(clSide)));
   if Layout = clSide then
-    tvTopics.Width := Settings.ReadInteger('Splitter', tvTopics.Width)
+    tvTopics.Width := Settings.ReadInteger('Splitter', ClientWidth div 4)
   else
-    tvTopics.Height := Settings.ReadInteger('Splitter', tvTopics.Height);
+    tvTopics.Height := Settings.ReadInteger('Splitter', ClientHeight div 3);
 end;
 
 procedure TfmCodeLib.HelpExecute(Sender: TObject);
@@ -953,59 +955,27 @@ end;
 
 procedure TfmCodeLib.OptionsExecute(Sender: TObject);
 var
-  frm: TfmCodeOptions;
+  lStoragePath: string;
+  lLayout: TCodeLayout;
 begin
-  frm := TfmCodeOptions.Create(nil);
-  try
-    frm.edPath.Text := StoragePath;
-    if Layout = clSide then
-      frm.rbSide.Checked := True
-    else
-      frm.rbTop.Checked := True;
-{$IFOPT D+}SendDebug('Setting fcTreeView.Text to ' + tvTopics.Font.Name); {$ENDIF}
-    frm.fcTreeView.ItemIndex := frm.fcTreeView.Items.IndexOf(tvTopics.Font.Name);
-{$IFOPT D+}SendDebug('fcTreeView.Text is ' + frm.fcTreeView.Text);{$ENDIF}
-    frm.udTreeView.Position := tvTopics.Font.Size;
-    frm.fcEditor.ItemIndex := frm.fcEditor.Items.IndexOf(FCodeText.Font.Name);
-    frm.udEditor.Position := FCodeText.Font.Size;
-
-    if frm.ShowModal = mrOk then
-    begin
-      if (StoragePath <> frm.edPath.Text) then
-      begin
-        if CodeDB <> nil then
-          CloseDB(True);
-
-        FreeAndNil(CodeDB);
-        tvTopics.Items.Clear;
-        FCodeText.Clear;
-        StoragePath := AddSlash(frm.edPath.Text);
-        CodeDB := OpenStorage(StoragePath + DefaultFileName);
-        if CodeDB = nil then
-        begin
-          MessageDlg(SCouldNotCreateStorage, mtError, [mbOK], 0);
-          Exit;
-        end;
-        InitializeTreeView;
+  lStoragePath := StoragePath;
+  lLayout := Layout;
+  if TfmCodeOptions.Execute(Self, lStoragePath, lLayout, tvTopics.Font, FCodeText.Font) then begin
+    if StoragePath <> lStoragePath then begin
+      if CodeDB <> nil then
+        CloseDB(True);
+      FreeAndNil(CodeDB);
+      tvTopics.Items.Clear;
+      FCodeText.Clear;
+      StoragePath := AddSlash(lStoragePath);
+      CodeDB := OpenStorage(StoragePath + DefaultFileName);
+      if CodeDB = nil then begin
+        MessageDlg(SCouldNotCreateStorage, mtError, [mbOK], 0);
+        Exit;
       end;
-      if frm.rbSide.Checked then
-        Layout := clSide
-      else
-        Layout := clTop;
-
-      with tvTopics.Font do
-      begin
-        Name := frm.fcTreeView.Text;
-        Size := Trunc(StrToInt(frm.eTreeView.Text));
-      end;
-      with FCodeText.Font do
-      begin
-        Name := frm.fcEditor.Text;
-        Size := Trunc(StrToInt(frm.eEditor.Text));
-      end;
+      InitializeTreeView;
     end;
-  finally
-    FreeAndNil(frm);
+    Layout := lLayout;
   end;
 end;
 
@@ -1040,6 +1010,7 @@ begin
   if FModified then
     SaveRecord;
   CloseDB;
+  SaveSettings; // Fix Bug #388?
 end;
 
 procedure TfmCodeLib.FormShow(Sender: TObject);
@@ -1047,6 +1018,7 @@ var
   Node: TTreeNode;
 begin
   inherited;
+  LoadSettings; // Fix Bug #388?
   CodeDB.OpenStorage(StoragePath + DefaultFileName);
   if TryGetSelected(Node) and (IsCodeSnippet(Node)) then
     CodeDB.OpenFile(GetNodePath(Node));
