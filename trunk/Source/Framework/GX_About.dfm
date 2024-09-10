@@ -37,10 +37,10 @@ object fmAbout: TfmAbout
   object lblWebPage: TLabel
     Left = 368
     Top = 72
-    Width = 147
+    Width = 184
     Height = 14
     Alignment = taCenter
-    Caption = 'http://www.gexperts.org/'
+    Caption = 'https://gexperts.dummzeuch.de/'
   end
   object lblProjectLeader: TLabel
     Left = 275
@@ -175,6 +175,7 @@ object fmAbout: TfmAbout
       'Taz Higgins'
       'Stefan Hoffmeister'
       'Rick Hollerich'
+      'Achim Kalwa'
       'Per-Eric Larsson'
       'Piotr Likus'
       'Ray Lischner'
@@ -182,6 +183,7 @@ object fmAbout: TfmAbout
       'Alex Petrov'
       'Puthoon'
       'Mahdi Safsafi'
+      'Egbert van Nes'
       'Martin Waldenburg')
     ParentCtl3D = False
     ReadOnly = True

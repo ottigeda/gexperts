@@ -74,8 +74,8 @@ uses
   GX_GenericUtils, GX_FeedbackWizard, GX_LibrarySource, GX_GetIdeVersion;
 
 const
-  DefaultBugEmail = 'bugs@gexperts.org';  // Do not localize.
-  DefaultSuggestionEmail = 'suggestions@gexperts.org'; // Do not localize.
+  DefaultBugEmail = 'https://bugs.dummzeuch.de/';  // Do not localize.
+  DefaultSuggestionEmail = 'https://features.dummzeuch.de/'; // Do not localize.
 var
   BuildDetails: string = '';
   BugEmail: string = DefaultBugEmail;
@@ -307,19 +307,28 @@ end;
 class function TfmAbout.DoAddToAboutDialog: Integer;
 {$IFDEF GX_VER170_up}
 // Only Delphi 2005 and up support the about box services
-var
-  AboutBoxServices: IOTAAboutBoxServices;
-begin
-  Result := -1;
-  if Supports(BorlandIDEServices, IOTAAboutBoxServices, AboutBoxServices) then
-  begin
-    Result := AboutBoxServices.AddPluginInfo(
-      'GExperts',
-      'GExperts is a free set of tools built to increase the productivity of Delphi and C++Builder'
+const
+  Description = 'GExperts is a free set of tools built to increase the productivity of Delphi and C++Builder'
       + ' programmers by adding several features to the IDE.'
       + ' GExperts is developed as Open Source software and we encourage user contributions to the project.'#13#10
-      + '(c) Erik Berry and the GExperts Team'#13#10
-      + 'http://www.gexperts.org',
+      + '(c) Thomas Mueller, Erik Berry and the GExperts Team';
+var
+  AboutBoxServices: IOTAAboutBoxServices;
+  DupeString: string;
+  Desc: string;
+begin
+  if GExpertsDllMarker = nil then begin
+    DupeString := ' (duplicate, inactive)';
+    Desc := 'GExperts is listed twice in the IDE Experts list, so this instance is inactive.'#13#10
+      + 'Use the Expert Manager to remove the duplicate!';
+  end else
+    Desc := Description;
+  Result := -1;
+  if Supports(BorlandIDEServices, IOTAAboutBoxServices, AboutBoxServices) then begin
+    Result := AboutBoxServices.AddPluginInfo(
+      'GExperts' + DupeString,
+      Desc + #13#10
+      + 'https://gexperts.dummzeuch.de',
       GetAboutIcon,
       False,
       '', // leave this empty!

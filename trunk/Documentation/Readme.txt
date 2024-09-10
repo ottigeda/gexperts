@@ -1,13 +1,15 @@
 GExperts 1.3
 Open Source Programming Tools for Delphi and C++Builder
 
-Source code, the FAQ, and the latest news are available at:
+Source code, the FAQ, and the latest news are available at
+  https://gexperts.dummzeuch.de
+additional (older) information at
   http://www.gexperts.org/
 
 Please send all bug reports and suggestions using the feedback wizard
-available in the GExperts about box.  You may send other GExperts
-related queries to the project leader at:
-  Erik Berry <eberry@gexperts.org> or <eb@techie.com>
+available in the GExperts about box.  For other GExperts related
+queries use the GExperts subforum in Delphi Praxis at
+  https://en.delphipraxis.net/forum/31-gexperts/
 
 
 INTRODUCTION
@@ -25,6 +27,9 @@ THE EXPERTS
 GExperts contains numerous experts.  See the online help
 (GExperts.chm) for information on the usage of the experts.
 
+The source code formatter expert is based on DelForExp by Egbert van Nes
+who contributed it to GExperts.
+http://web.archive.org/web/20121115141650/http://www.aew.wur.nl/UK/Delforexp
 
 KNOWN LIMITATIONS/BUGS
 -----------------------------------------------
@@ -78,6 +83,10 @@ Expert Manager tool in the GExperts start menu group.  If you prefer, you
 can also manually register the DLL with the IDE using the Windows registry
 editor (RegEdit.exe).  Create a key similar to the following (the
 version number appearing before "\Experts\" is IDE dependent):
+HKEY_CURRENT_USER\Software\Embarcadero\BDS\23.0\Experts\ (RAD Studio 12)
+HKEY_CURRENT_USER\Software\Embarcadero\BDS\22.0\Experts\ (RAD Studio 11)
+HKEY_CURRENT_USER\Software\Embarcadero\BDS\21.0\Experts\ (RAD Studio 10.4)
+HKEY_CURRENT_USER\Software\Embarcadero\BDS\20.0\Experts\ (RAD Studio 10.3)
 HKEY_CURRENT_USER\Software\Embarcadero\BDS\19.0\Experts\ (RAD Studio 10.2)
 HKEY_CURRENT_USER\Software\Embarcadero\BDS\18.0\Experts\ (RAD Studio 10.1)
 HKEY_CURRENT_USER\Software\Embarcadero\BDS\17.0\Experts\ (RAD Studio 10)
@@ -110,7 +119,7 @@ Add/Remove Programs or Programs [and Features] tool.
 CHANGE LOG
 ----------------------
 Sorry, I have not maintained the change log since I took over from
-Eric Berry. There were many. I particular of course support for the
+Eric Berry. There were many. In particular of course support for the
 latest released versions of RAD Studio / Delphi.
 -- Thomas Mueller
 
