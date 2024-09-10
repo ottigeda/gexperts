@@ -1,6 +1,6 @@
 inherited fmAboutExperimental: TfmAboutExperimental
   Caption = 'About GExperts - Experimental'
-  ClientHeight = 330
+  ClientHeight = 329
   PixelsPerInch = 96
   TextHeight = 14
   inherited lblWebPage: TLabel
@@ -14,9 +14,8 @@ inherited fmAboutExperimental: TfmAboutExperimental
     Left = 256
     Top = 192
   end
-  inherited lblErik: TLabel
+  inherited lblProjectLeaderName: TLabel
     Top = 160
-    OnClick = nil
   end
   inherited lblWebSite: TLabel
     Top = 135
@@ -73,20 +72,12 @@ inherited fmAboutExperimental: TfmAboutExperimental
     Left = 488
     Top = 296
   end
-  inherited pnlLogo: TPanel
-    Top = 26
-    inherited imgLogo: TImage
-      Left = 2
-      Top = 0
-    end
-  end
   inherited btnEmail: TButton
     Left = 240
     Top = 296
     Width = 241
   end
   inherited mmoContributors: TMemo
-    Left = 368
     Top = 192
     Width = 225
     Height = 97

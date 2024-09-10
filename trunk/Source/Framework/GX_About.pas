@@ -24,7 +24,7 @@ type
     lblWebPage: TLabel;
     lblProjectLeader: TLabel;
     lblContributors: TLabel;
-    lblErik: TLabel;
+    lblProjectLeaderName: TLabel;
     lblWebSite: TLabel;
     lblPreRelease1: TLabel;
     lblPreRelease2: TLabel;
@@ -68,8 +68,9 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Graphics, ToolsApi, Messages,
+  u_dzVclUtils,
   GX_GxUtils,
-  GX_GenericUtils, GX_FeedbackWizard, GX_LibrarySource, u_dzVclUtils;
+  GX_GenericUtils, GX_FeedbackWizard, GX_LibrarySource, GX_GetIdeVersion;
 
 const
   DefaultBugEmail = 'bugs@gexperts.org';  // Do not localize.
@@ -96,6 +97,8 @@ begin
 
 {$IF DECLARED(TfmFeedbackWizard)}
   btnEmail.Visible := True;
+  lblProjectLeaderName.Cursor := crHandPoint;
+  lblProjectLeaderName.OnClick := btnEmailClick;
 {$ELSE}
   btnEmail.Visible := False;
 {$IFEND}
@@ -132,14 +135,16 @@ begin
   SetFontColor(lblPreRelease2, clRed);
   SetFontSize(lblGExperts, +4);
   SetFontSize(lblVersion, +4);
-  SetFontUnderline(lblErik);
-  SetFontColor(lblErik, clBlue);
+{$IF DECLARED(TfmFeedbackWizard)}
+  SetFontUnderline(lblProjectLeaderName);
+  SetFontColor(lblProjectLeaderName, clBlue);
+{$IFEND}
   SetFontColor(mmoBuildDetails, clRed);
 end;
 
 procedure TfmAbout.InitVersionInfoControls;
 begin
-  lblVersion.Caption := GetVersionStr;
+  lblVersion.Caption := GetVersionStr + #13#10 + 'running in ' + GetBorlandIdeVersionStr;
 end;
 
 class procedure TfmAbout.SetCustomBuildDetails(const Details: string);
