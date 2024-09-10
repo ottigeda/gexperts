@@ -6,7 +6,6 @@ library GExpertsBDS2006;
 
 uses
   GX_About in '..\..\source\Framework\GX_About.pas' {fmAbout},
-  GX_AboutExperimental in '..\..\source\Formatter\GX_AboutExperimental.pas' {fmAboutExperimental},
   GX_ActionBroker in '..\..\source\Framework\GX_ActionBroker.pas',
   GX_Actions in '..\..\source\Framework\GX_Actions.pas',
   GX_AddDockWindow in '..\..\Source\AddDockWindow\GX_AddDockWindow.pas' {fmGxDockForm},

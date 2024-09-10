@@ -87,10 +87,6 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <Form>fmAbout</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\..\source\Formatter\GX_AboutExperimental.pas">
-            <Form>fmAboutExperimental</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_ActionBroker.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_Actions.pas"/>
         <DCCReference Include="..\..\Source\AddDockWindow\GX_AddDockWindow.pas">
