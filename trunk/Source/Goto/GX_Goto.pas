@@ -90,8 +90,6 @@ var
 begin
   inherited;
 
-  TControl_SetMinConstraints(Self);
-
   Items := lb_UnitPositions.Items;
   Items.BeginUpdate;
   try
@@ -104,7 +102,6 @@ begin
     Items.EndUpdate;
   end;
 
-  InitDpiScaler;
   GxSetDefaultFont(Self);
 
   Spacer := lb_UnitPositions.Left;
@@ -114,6 +111,10 @@ begin
   b_Cancel.Left := lb_UnitPositions.Left + lb_UnitPositions.Width - b_Cancel.Width;
   Self.ClientHeight := b_Ok.Top + b_Ok.Height + Spacer;
   Self.ClientWidth  := lb_UnitPositions.Left + lb_UnitPositions.Width + Spacer;
+
+  TControl_SetMinConstraints(Self);
+
+  InitDpiScaler;
 
   // Unfortunately the IDE only updates the registry when it closes down so this list will be
   // outdated if the user switched from the IDE's goto dialog to the GExperts one.
