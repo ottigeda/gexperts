@@ -29,7 +29,7 @@ object fmAbout: TfmAbout
     Left = 224
     Top = 32
     Width = 385
-    Height = 33
+    Height = 22
     Alignment = taCenter
     AutoSize = False
     Caption = 'Version ?.??'
@@ -38,7 +38,7 @@ object fmAbout: TfmAbout
     Left = 368
     Top = 72
     Width = 147
-    Height = 20
+    Height = 14
     Alignment = taCenter
     Caption = 'http://www.gexperts.org/'
   end
@@ -46,7 +46,7 @@ object fmAbout: TfmAbout
     Left = 275
     Top = 91
     Width = 84
-    Height = 20
+    Height = 14
     Alignment = taRightJustify
     Caption = 'Project Leader:'
   end
@@ -54,7 +54,7 @@ object fmAbout: TfmAbout
     Left = 255
     Top = 112
     Width = 104
-    Height = 20
+    Height = 14
     Alignment = taRightJustify
     Caption = 'Major Contributors:'
   end
@@ -62,14 +62,14 @@ object fmAbout: TfmAbout
     Left = 368
     Top = 91
     Width = 85
-    Height = 20
+    Height = 14
     Caption = 'Thomas Mueller'
   end
   object lblWebSite: TLabel
     Left = 304
     Top = 72
     Width = 55
-    Height = 20
+    Height = 14
     Alignment = taRightJustify
     Caption = 'Web Site:'
   end
@@ -92,6 +92,15 @@ object fmAbout: TfmAbout
     AutoSize = False
     Caption = 'Pre-Release'
     Visible = False
+  end
+  object lblIdeVersion: TLabel
+    Left = 224
+    Top = 56
+    Width = 385
+    Height = 14
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'IDE version goes here'
   end
   object mmoBuildDetails: TMemo
     Left = 224

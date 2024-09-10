@@ -34,9 +34,9 @@ inherited fmAboutExperimental: TfmAboutExperimental
   end
   object l_CreatedBy: TLabel [9]
     Left = 224
-    Top = 64
+    Top = 72
     Width = 385
-    Height = 20
+    Height = 14
     Alignment = taCenter
     AutoSize = False
     Caption = 'Experimental version created by Thomas M'#252'ller'
@@ -45,7 +45,7 @@ inherited fmAboutExperimental: TfmAboutExperimental
     Left = 224
     Top = 88
     Width = 385
-    Height = 20
+    Height = 14
     Alignment = taCenter
     AutoSize = False
     Caption = 'https://gexperts.dummzeuch.de'
@@ -54,7 +54,7 @@ inherited fmAboutExperimental: TfmAboutExperimental
     Left = 224
     Top = 112
     Width = 385
-    Height = 20
+    Height = 14
     Cursor = crHandPoint
     Alignment = taCenter
     AutoSize = False

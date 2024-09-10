@@ -31,6 +31,7 @@ type
     mmoBuildDetails: TMemo;
     mmoContributors: TMemo;
     tim_Scroll: TTimer;
+    lblIdeVersion: TLabel;
     procedure btnEmailClick(Sender: TObject);
     procedure tim_ScrollTimer(Sender: TObject);
   private
@@ -134,7 +135,7 @@ begin
   SetFontColor(lblPreRelease1, clRed);
   SetFontColor(lblPreRelease2, clRed);
   SetFontSize(lblGExperts, +4);
-  SetFontSize(lblVersion, +4);
+  SetFontSize(lblVersion, +2);
 {$IF DECLARED(TfmFeedbackWizard)}
   SetFontUnderline(lblProjectLeaderName);
   SetFontColor(lblProjectLeaderName, clBlue);
@@ -144,7 +145,8 @@ end;
 
 procedure TfmAbout.InitVersionInfoControls;
 begin
-  lblVersion.Caption := GetVersionStr + #13#10 + 'running in ' + GetBorlandIdeVersionStr;
+  lblVersion.Caption := GetVersionStr;
+  lblIdeVersion.Caption := 'running in ' + GetBorlandIdeVersionStr;
 end;
 
 class procedure TfmAbout.SetCustomBuildDetails(const Details: string);
@@ -198,9 +200,11 @@ var
 begin
   Version.IsValid := False;
   Version := GetFileVersionNumber(ThisDllName, False, False);
-  if Version.IsValid then
-    Result := Format('%d.%d.%d build %d', [Version.Major, Version.Minor, Version.Release, Version.Build])
-  else
+  if Version.IsValid then begin
+    Result := Format('%d.%d.%d', [Version.Major, Version.Minor, Version.Release, Version.Build]);
+    if Version.Build <> 0 then
+      Result := Result + '  build ' + IntToStr(Version.Build);
+  end else
     Result := SUnknown;
 {$IFOPT D+}
   Result := SVersion + ' ' + Result + ' - Debug';
