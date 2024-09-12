@@ -51,6 +51,7 @@ type
      ideRS12,   // Rad Studio 12 Athens
      ideRS12P1, // Rad Studio 12 Athens Patch 1
      ideRS12U1, // Rad Studio 12 Athens Update 1
+     ideRS12U2, // Rad Studio 12 Athens Update 2
      // C# Builder
      ideCSB100,
      // C++Builder
@@ -1083,11 +1084,14 @@ const
   RtlBpl2900: TVersionNumber =     (Minor: 0; Major: 29; Build: 5718; Release: 50491);
   RtlBpl2900Patch1: TVersionNumber = (Minor: 0; Major: 29; Build: 6493; Release: 51211);
   RtlBpl2900Upd1:TVersionNumber = (Minor: 0; Major: 29; Build: 7529; Release: 51961);
+  RtlBpl2900Upd2:TVersionNumber = (Minor: 0; Major: 29; Build: 9782; Release: 53571);
 var
   RtlBplFileVersion: TVersionNumber;
 begin
   RtlBplFileVersion := GetFileVersionNumber(GetIdeRootDirectory + 'Bin\rtl290.bpl');
-  if CompareVersionNumber(RtlBplFileVersion, RtlBpl2900Upd1) >= 0 then begin
+  if CompareVersionNumber(RtlBplFileVersion, RtlBpl2900Upd2) >= 0 then begin
+    Result := ideRS12U2;
+  end else if CompareVersionNumber(RtlBplFileVersion, RtlBpl2900Upd1) >= 0 then begin
     Result := ideRS12U1;
   end else if CompareVersionNumber(RtlBplFileVersion, RtlBpl2900Patch1) >= 0 then begin
     Result := ideRS12P1
@@ -1235,7 +1239,7 @@ begin
 
   {$IFDEF VER360}
     Result := GetRS12Version;
-    Assert(Result in [ideRS12, ideRS12P1, ideRS12U1]);
+    Assert(Result in [ideRS12, ideRS12P1, ideRS12U1, ideRS12U2]);
   {$ENDIF VER360}
 
   if Result = ideUnknown then
@@ -1319,6 +1323,7 @@ begin
      ideRS12: Result := 'RAD Studio 12 (Athens)';
      ideRS12P1: Result := 'RAD Studio 12 (Athens) patch 1';
      ideRS12U1: Result := 'RAD Studio 12.1 (Athens upd 1)';
+     ideRS12U2: Result := 'RAD Studio 12.2 (Athens upd 2)';
 
      ideCSB100: Result := 'C# Builder 1.00';
 
