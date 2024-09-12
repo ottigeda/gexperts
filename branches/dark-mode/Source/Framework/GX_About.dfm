@@ -4,8 +4,8 @@ object fmAbout: TfmAbout
   ActiveControl = btnClose
   BorderStyle = bsDialog
   Caption = 'About GExperts'
-  ClientHeight = 283
-  ClientWidth = 614
+  ClientHeight = 289
+  ClientWidth = 617
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -26,9 +26,9 @@ object fmAbout: TfmAbout
     Caption = 'GExperts'
   end
   object lblVersion: TLabel
-    Left = 232
-    Top = 35
-    Width = 369
+    Left = 224
+    Top = 32
+    Width = 385
     Height = 22
     Alignment = taCenter
     AutoSize = False
@@ -37,10 +37,10 @@ object fmAbout: TfmAbout
   object lblWebPage: TLabel
     Left = 368
     Top = 72
-    Width = 147
+    Width = 184
     Height = 14
     Alignment = taCenter
-    Caption = 'http://www.gexperts.org/'
+    Caption = 'https://gexperts.dummzeuch.de/'
   end
   object lblProjectLeader: TLabel
     Left = 275
@@ -58,14 +58,12 @@ object fmAbout: TfmAbout
     Alignment = taRightJustify
     Caption = 'Major Contributors:'
   end
-  object lblErik: TLabel
+  object lblProjectLeaderName: TLabel
     Left = 368
     Top = 91
     Width = 85
     Height = 14
-    Cursor = crHandPoint
     Caption = 'Thomas Mueller'
-    OnClick = btnEmailClick
   end
   object lblWebSite: TLabel
     Left = 304
@@ -95,11 +93,20 @@ object fmAbout: TfmAbout
     Caption = 'Pre-Release'
     Visible = False
   end
+  object lblIdeVersion: TLabel
+    Left = 224
+    Top = 56
+    Width = 385
+    Height = 14
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'IDE version goes here'
+  end
   object mmoBuildDetails: TMemo
     Left = 224
-    Top = 241
-    Width = 241
-    Height = 40
+    Top = 240
+    Width = 273
+    Height = 49
     Alignment = taCenter
     BorderStyle = bsNone
     Color = clBtnFace
@@ -113,8 +120,8 @@ object fmAbout: TfmAbout
     Visible = False
   end
   object btnClose: TButton
-    Left = 473
-    Top = 243
+    Left = 504
+    Top = 256
     Width = 105
     Height = 26
     Cancel = True
@@ -124,25 +131,23 @@ object fmAbout: TfmAbout
     TabOrder = 1
   end
   object pnlLogo: TPanel
-    Left = 14
-    Top = 15
-    Width = 203
-    Height = 254
+    Left = 8
+    Top = 8
+    Width = 217
+    Height = 273
     BevelOuter = bvLowered
     TabOrder = 2
     object imgLogo: TImage
-      Left = 1
-      Top = 1
+      Left = 9
+      Top = 9
       Width = 201
       Height = 252
       Center = True
-      Proportional = True
-      Stretch = True
     end
   end
   object btnEmail: TButton
-    Left = 245
-    Top = 243
+    Left = 248
+    Top = 256
     Width = 213
     Height = 26
     Caption = '&Send a Bug Report/Suggestion'
@@ -150,10 +155,10 @@ object fmAbout: TfmAbout
     OnClick = btnEmailClick
   end
   object mmoContributors: TMemo
-    Left = 367
+    Left = 368
     Top = 112
-    Width = 223
-    Height = 121
+    Width = 241
+    Height = 129
     BevelInner = bvNone
     BevelOuter = bvNone
     BorderStyle = bsNone
@@ -170,6 +175,7 @@ object fmAbout: TfmAbout
       'Taz Higgins'
       'Stefan Hoffmeister'
       'Rick Hollerich'
+      'Achim Kalwa'
       'Per-Eric Larsson'
       'Piotr Likus'
       'Ray Lischner'
@@ -177,9 +183,8 @@ object fmAbout: TfmAbout
       'Alex Petrov'
       'Puthoon'
       'Mahdi Safsafi'
-      'Martin Waldenburg'
-      'Thomas M'#252'ller'
-      'Achim Kalwa')
+      'Egbert van Nes'
+      'Martin Waldenburg')
     ParentCtl3D = False
     ReadOnly = True
     ScrollBars = ssVertical

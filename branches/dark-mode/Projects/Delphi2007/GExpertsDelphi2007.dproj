@@ -322,9 +322,6 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterTokens.pas"/>
         <DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterTypes.pas"/>
         <DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterUnicode.pas"/>
-        <DCCReference Include="..\..\source\Formatter\GX_AboutExperimental.pas">
-            <Form>fmAboutExperimental</Form>
-        </DCCReference>
         <DCCReference Include="..\..\source\Formatter\GX_CodeFormatterBookmarks.pas"/>
         <DCCReference Include="..\..\source\Formatter\GX_CodeFormatterBreakpoints.pas"/>
         <DCCReference Include="..\..\source\Formatter\GX_CodeFormatterConfig.pas">

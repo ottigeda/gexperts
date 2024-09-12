@@ -4,7 +4,6 @@ library GExpertsRS120;
 
 uses
   GX_About in '..\..\source\Framework\GX_About.pas' {fmAbout},
-  GX_AboutExperimental in '..\..\source\Formatter\GX_AboutExperimental.pas' {fmAboutExperimental},
   GX_ActionBroker in '..\..\source\Framework\GX_ActionBroker.pas',
   GX_Actions in '..\..\source\Framework\GX_Actions.pas',
   GX_AddDockWindow in '..\..\Source\AddDockWindow\GX_AddDockWindow.pas' {fmGxDockForm},
@@ -261,9 +260,7 @@ uses
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
   GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas';
 
-// using this resouce results in an Access Violiation on closing the IDE
-{.$R '..\..\Source\GExperts_manifest.res'}
-{$R '..\..\images\GXIcons.res''}
+{$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
 {$R '..\..\Binaries\ConvertStrings.res' '..\..\Binaries\ConvertStrings.rc'}
 {$R *_version.res}

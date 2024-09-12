@@ -91,8 +91,6 @@ var
 begin
   inherited;
 
-  TControl_SetMinConstraints(Self);
-
   Items := lb_UnitPositions.Items;
   Items.BeginUpdate;
   try
@@ -105,7 +103,6 @@ begin
     Items.EndUpdate;
   end;
 
-  InitDpiScaler;
   GxSetDefaultFont(Self);
 
   NeededHeight := (FUnitPositions.Count + 1) * lb_UnitPositions.ItemHeight;
@@ -116,6 +113,10 @@ begin
     EnableAlign;
   end;
   b_Ok.Caption := 'Go';
+
+  TControl_SetMinConstraints(Self);
+
+  InitDpiScaler;
 
   // Unfortunately the IDE only updates the registry when it closes down so this list will be
   // outdated if the user switched from the IDE's goto dialog to the GExperts one.

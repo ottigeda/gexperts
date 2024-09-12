@@ -24,13 +24,14 @@ type
     lblWebPage: TLabel;
     lblProjectLeader: TLabel;
     lblContributors: TLabel;
-    lblErik: TLabel;
+    lblProjectLeaderName: TLabel;
     lblWebSite: TLabel;
     lblPreRelease1: TLabel;
     lblPreRelease2: TLabel;
     mmoBuildDetails: TMemo;
     mmoContributors: TMemo;
     tim_Scroll: TTimer;
+    lblIdeVersion: TLabel;
     procedure btnEmailClick(Sender: TObject);
     procedure DoRaiseTestException(Sender: TObject);
     procedure tim_ScrollTimer(Sender: TObject);
@@ -69,12 +70,13 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Graphics, ToolsApi, Messages,
+  u_dzVclUtils,
   GX_GxUtils,
-  GX_GenericUtils, GX_FeedbackWizard, GX_LibrarySource, u_dzVclUtils;
+  GX_GenericUtils, GX_FeedbackWizard, GX_LibrarySource, GX_GetIdeVersion;
 
 const
-  DefaultBugEmail = 'bugs@gexperts.org';  // Do not localize.
-  DefaultSuggestionEmail = 'suggestions@gexperts.org'; // Do not localize.
+  DefaultBugEmail = 'https://bugs.dummzeuch.de/';  // Do not localize.
+  DefaultSuggestionEmail = 'https://features.dummzeuch.de/'; // Do not localize.
 var
   BuildDetails: string = '';
   BugEmail: string = DefaultBugEmail;
@@ -98,6 +100,8 @@ begin
 
 {$IF DECLARED(TfmFeedbackWizard)}
   btnEmail.Visible := True;
+  lblProjectLeaderName.Cursor := crHandPoint;
+  lblProjectLeaderName.OnClick := btnEmailClick;
 {$ELSE}
   btnEmail.Visible := False;
 {$IFEND}
@@ -134,15 +138,18 @@ begin
   SetFontColor(lblPreRelease1, clRed);
   SetFontColor(lblPreRelease2, clRed);
   SetFontSize(lblGExperts, +4);
-  SetFontSize(lblVersion, +4);
-  SetFontUnderline(lblErik);
-  SetFontColor(lblErik, clBlue);
+  SetFontSize(lblVersion, +2);
+{$IF DECLARED(TfmFeedbackWizard)}
+  SetFontUnderline(lblProjectLeaderName);
+  SetFontColor(lblProjectLeaderName, clBlue);
+{$IFEND}
   SetFontColor(mmoBuildDetails, clRed);
 end;
 
 procedure TfmAbout.InitVersionInfoControls;
 begin
   lblVersion.Caption := GetVersionStr;
+  lblIdeVersion.Caption := 'running in ' + GetBorlandIdeVersionStr;
 end;
 
 class procedure TfmAbout.SetCustomBuildDetails(const Details: string);
@@ -196,9 +203,11 @@ var
 begin
   Version.IsValid := False;
   Version := GetFileVersionNumber(ThisDllName, False, False);
-  if Version.IsValid then
-    Result := Format('%d.%d.%d build %d', [Version.Major, Version.Minor, Version.Release, Version.Build])
-  else
+  if Version.IsValid then begin
+    Result := Format('%d.%d.%d', [Version.Major, Version.Minor, Version.Release, Version.Build]);
+    if Version.Build <> 0 then
+      Result := Result + '  build ' + IntToStr(Version.Build);
+  end else
     Result := SUnknown;
 {$IFOPT D+}
   Result := SVersion + ' ' + Result + ' - Debug';
@@ -301,19 +310,28 @@ end;
 class function TfmAbout.DoAddToAboutDialog: Integer;
 {$IFDEF GX_VER170_up}
 // Only Delphi 2005 and up support the about box services
-var
-  AboutBoxServices: IOTAAboutBoxServices;
-begin
-  Result := -1;
-  if Supports(BorlandIDEServices, IOTAAboutBoxServices, AboutBoxServices) then
-  begin
-    Result := AboutBoxServices.AddPluginInfo(
-      'GExperts',
-      'GExperts is a free set of tools built to increase the productivity of Delphi and C++Builder'
+const
+  Description = 'GExperts is a free set of tools built to increase the productivity of Delphi and C++Builder'
       + ' programmers by adding several features to the IDE.'
       + ' GExperts is developed as Open Source software and we encourage user contributions to the project.'#13#10
-      + '(c) Erik Berry and the GExperts Team'#13#10
-      + 'http://www.gexperts.org',
+      + '(c) Thomas Mueller, Erik Berry and the GExperts Team';
+var
+  AboutBoxServices: IOTAAboutBoxServices;
+  DupeString: string;
+  Desc: string;
+begin
+  if GExpertsDllMarker = nil then begin
+    DupeString := ' (duplicate, inactive)';
+    Desc := 'GExperts is listed twice in the IDE Experts list, so this instance is inactive.'#13#10
+      + 'Use the Expert Manager to remove the duplicate!';
+  end else
+    Desc := Description;
+  Result := -1;
+  if Supports(BorlandIDEServices, IOTAAboutBoxServices, AboutBoxServices) then begin
+    Result := AboutBoxServices.AddPluginInfo(
+      'GExperts' + DupeString,
+      Desc + #13#10
+      + 'https://gexperts.dummzeuch.de',
       GetAboutIcon,
       False,
       '', // leave this empty!

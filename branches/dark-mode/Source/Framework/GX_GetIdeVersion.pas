@@ -72,6 +72,7 @@ type
 // higher.
 
 function GetBorlandIdeVersion: TBorlandIdeVersion;
+function GetBorlandIdeVersionStr: string;
 
 implementation
 
@@ -363,6 +364,9 @@ end;
   B.Studio.Host.dll    9.0.1810.11291 688,128    Thursday, December 09, 2004, 9:01:00 AM
   bordbk9.dll          90.1.2.1       782,336    Thursday, December 09, 2004, 9:01:00 AM
 
+  We do not have the version numbers for Delphi 2005 Update 2, so we assume that
+  the version numbers are > those of Update 1 and < those of Update 3.
+
   Delphi 2005 Update 3:
 
   File                 File Version   Size       Modified Time
@@ -406,6 +410,8 @@ end;
 
 {
   BDS 2006:
+
+  todo: get at least the version numbers of Delphi 2006 from my installation
 
   File                 File Version   Size       Modified Time
   delphicoreide100.bpl
@@ -1241,6 +1247,93 @@ end;
 {$IF CompilerVersion > 36} // new Delphi version
   'Add the information for the new Delphi version above and increase the CompilerVersion in this conditional'
 {$IFEND}
+
+function GetBorlandIdeVersionStr: string;
+begin
+  case GetBorlandIdeVersion of
+     ideD600: Result := 'Delphi 6.00';
+     ideD601R: Result := 'Delphi 6.01 (recalled)';
+     ideD601F: Result := 'Delphi 6.01 (final)';
+     ideD602: Result := 'Delphi 6.02';
+
+     ideD700: Result := 'Delphi 7.0';
+     ideD71: Result := 'Delphi 7.1';
+
+     ideD800: Result := 'Delphi 8.00';
+     ideD801: Result := 'Delphi 8.01';
+     ideD802: Result := 'Delphi 8.02';
+
+     ideD900: Result := 'Delphi 2005';
+     ideD901: Result := 'Delphi 2005 upd 1';
+     ideD902: Result := 'Delphi 2005 upd 2';
+     ideD903: Result := 'Delphi 2005 upd 3';
+
+     ideBDS2006: Result := 'BDS 2006';
+
+     ideDelphi2007: Result := 'RAD Studio 2007';
+
+     ideRS2009: Result := 'RAD Studio 2009';
+     ideRS2009U1: Result := 'RAD Studio 2009 upd 1';
+     ideRS2009U2: Result := 'RAD Studio 2009 upd 2';
+     ideRS2009U3: Result := 'RAD Studio 2009 upd 3';
+     ideRS2009U4: Result := 'RAD Studio 2009 upd 4';
+
+     ideRS2010: Result := 'RAD Studio 2009';
+     ideRS2010U1: Result := 'RAD Studio 2009 upd 1';
+     ideRS2010U4: Result := 'RAD Studio 2009 upd 4';
+     ideRS2010U5: Result := 'RAD Studio 2009 upd 5';
+
+     ideRSXE1: Result := 'RAD Studio XE';
+     ideRSXE1U1: Result := 'RAD Studio XE upd 1';
+     ideRSXE2: Result := 'RAD Studio XE2';
+     ideRSXE3: Result := 'RAD Studio XE3';
+     ideRSXE4: Result := 'RAD Studio XE4';
+     ideRSXE5: Result := 'RAD Studio XE5';
+     ideRSXE6: Result := 'RAD Studio XE6';
+     ideRSXE7: Result := 'RAD Studio XE7';
+     ideRSXE8: Result := 'RAD Studio XE8';
+
+     ideRS10: Result := 'RAD Studio 10 (Seattle)';
+
+     ideRS101: Result := 'RAD Studio 10.1 (Berlin)';
+     ideRS101U1: Result := 'RAD Studio 10.1 (Berlin) upd 1';
+     ideRS101U2: Result := 'RAD Studio 10.1 (Berlin) upd 2';
+
+     ideRS102: Result := 'RAD Studio 10.2 (Tokyo)';
+
+     ideRS103: Result := 'RAD Studio 10.3 (Rio)';
+     ideRS103U1: Result := 'RAD Studio 10.3 (Rio) upd 1';
+     ideRS103U2: Result := 'RAD Studio 10.3 (Rio) upd 2';
+     ideRS103U3: Result := 'RAD Studio 10.3 (Rio) upd 3';
+
+     ideRS104: Result := 'RAD Studio 10.4 (Sydney)';
+     ideRS104P2: Result := 'RAD Studio 10.4 (Sydney) patch 2';
+     ideRS104U1: Result := 'RAD Studio 10.4 (Sydney) upd 1';
+     ideRS104U2: Result := 'RAD Studio 10.4 (Sydney) upd 2';
+
+     ideRS11: Result := 'RAD Studio 11 (Alexandria)';
+     ideRS11U1: Result := 'RAD Studio 11.1 (Alexandria upd 1)';
+     ideRS11U2: Result := 'RAD Studio 11.2 (Alexandria upd 2)';
+     ideRS11U3: Result := 'RAD Studio 11.3 (Alexandria upd 3)';
+
+     ideRS12: Result := 'RAD Studio 12 (Athens)';
+     ideRS12P1: Result := 'RAD Studio 12 (Athens) patch 1';
+     ideRS12U1: Result := 'RAD Studio 12.1 (Athens upd 1)';
+
+     ideCSB100: Result := 'C# Builder 1.00';
+
+     ideBCB600: Result := 'C++ Builder 6.00';
+     ideBCB601: Result := 'C++ Builder 6.01';
+     ideBCB602: Result := 'C++ Builder 6.02';
+     ideBCB604: Result := 'C++ Builder 6.04';
+
+     ideKylix100: Result := 'Kylix 1.00';
+     ideKylix200: Result := 'Kylix 2.00';
+     ideKylix300: Result := 'Kylix 3.00';
+  else
+    Result := 'Unknown IDE version';
+  end;
+end;
 
 initialization
   DetectedVersion := ideUndetected;
