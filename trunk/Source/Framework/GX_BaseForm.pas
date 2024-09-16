@@ -25,8 +25,8 @@ type
   // Changes here must also be made to TfmIdeDockForm, since it must descend
   // from the IDE-internal TDockableForm class.
   TfmBaseForm = class(TForm)
-    procedure FormShow(Sender: TObject);
   protected
+    procedure DoShow; override;
     procedure Loaded; override;
   protected
     FGxHintCustomDataRec: TGxHintCustomDataRec;
@@ -65,9 +65,10 @@ begin
   end;
 end;
 
-procedure TfmBaseForm.FormShow(Sender: TObject);
+procedure TfmBaseForm.doShow;
 begin
   ApplyDpi(TScreen_GetDpiForForm(Self), nil);
+  inherited;
 end;
 
 procedure TfmBaseForm.InitDpiScaler;
@@ -133,8 +134,6 @@ begin
   FGxHintCustomDataRec.ScaleHint := Self.ScaleHint;
   CopyMemory(@(FGxHintCustomDataRec.ID), @GxHintCustomDataId, SizeOf(FGxHintCustomDataRec.ID));
   GxSetDefaultFont(Self);
-  if not Assigned(OnShow) then
-    OnShow := FormShow;
 end;
 
 destructor TfmBaseForm.Destroy;
