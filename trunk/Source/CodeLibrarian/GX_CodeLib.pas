@@ -366,7 +366,7 @@ begin
     ParentNode := ParentNode.Parent;
 
   NewTopic := GetUniqueTopicName(ParentNode, True);
-  NewFolder := AddSlash(GetNodePath(ParentNode)) + NewTopic;
+  NewFolder := CodeDB.AddSlash(GetNodePath(ParentNode)) + NewTopic;
   CodeDB.AssertValidFolderName(NewFolder);
   CodeDB.CreateFolder(NewFolder);
   Assert(CodeDB.FolderExists(NewFolder));
@@ -405,7 +405,7 @@ begin
     SelectedNode := SelectedNode.Parent;
 
   TopicName := GetUniqueTopicName(SelectedNode, False);
-  NewFileName := AddSlash(GetNodePath(SelectedNode)) + TopicName;
+  NewFileName := CodeDB.AddSlash(GetNodePath(SelectedNode)) + TopicName;
   CodeDB.OpenFile(NewFileName);
   Assert(CodeDB.FileExists(NewFileName));
   CodeDB.SetAttribute(AttrTopic, TopicName);
@@ -474,7 +474,7 @@ var
 begin
   Modified := True;
   AssertValidFileName(S);
-  NewFileName := AddSlash(GetNodeParentPath(Node)) + S;
+  NewFileName := CodeDB.AddSlash(GetNodeParentPath(Node)) + S;
   if CodeDB.FileExists(NewFileName) or CodeDB.FolderExists(NewFileName) then
     raise Exception.CreateFmt('An item named %s already exists.', [S]);
   SetNodeAttribute(Node, AttrTopic, S);
@@ -769,7 +769,7 @@ begin
     if IsCodeSnippet(DestNode) or DestNode.HasAsParent(SelectedNode) then
       Exit; //==>
 
-    CodeDB.Move(SelectedNodeFullName, AddSlash(GetNodePath(DestNode)) + SelectedCaption);
+    CodeDB.Move(SelectedNodeFullName, CodeDB.AddSlash(GetNodePath(DestNode)) + SelectedCaption);
     CodeDB.SaveStorage;
     SelectedNode.MoveTo(DestNode, naAddChild);
     DestNode.AlphaSort;
@@ -1426,7 +1426,7 @@ begin
     TopicName := FolderPrefix
   else
     TopicName := SnippetPrefix;
-  ParentPath := AddSlash(GetNodePath(ParentNode));
+  ParentPath := CodeDB.AddSlash(GetNodePath(ParentNode));
   for i := 1 to 101 do
   begin
     TestName := TopicName + IntToStr(i);

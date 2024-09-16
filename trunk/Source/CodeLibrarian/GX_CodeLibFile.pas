@@ -56,18 +56,29 @@ type
     function GetObjectAttribute(const ObjectName, AttrName: TGXUnicodeString): TGXUnicodeString; overload;
     function GetObjectAttribute(const FolderName, FileName, AttrName: TGXUnicodeString): TGXUnicodeString; overload;
     function MakeFileName(const FolderName, FileName: TGXUnicodeString): TGXUnicodeString;
+    function AddSlash(const Foldername: TGXUnicodeString): TGXUnicodeString;
   end;
 
 implementation
 
-uses
-  GX_GenericUtils;
-
 { TGXStorageFile }
+
+function TGXStorageFile.AddSlash(const FolderName: TGXUnicodeString): TGXUnicodeString;
+
+  function IsPathSep(const s: string; Index: Integer): Boolean;
+  begin
+    Result := (Index >= Low(string)) and (Index <= High(s)) and (s[Index] = CodeLibPathSep)
+      and (ByteType(s, Index) = mbSingleByte);
+  end;
+
+begin
+  Result := FolderName;
+  if not IsPathSep(Result, High(Result)) then
+    Result := Result + CodeLibPathSep;
+end;
 
 function TGXStorageFile.MakeFileName(const FolderName, FileName: TGXUnicodeString): TGXUnicodeString;
 begin
-  // todo: This is not consistent: Either use CodeLibPathSep or use AddSlash, but not both
   Result := FolderName;
   if Result = '' then
     Result := CodeLibPathSep
