@@ -61,19 +61,22 @@ type
 
 implementation
 
+uses
+  u_dzStringUtils;
+
 { TGXStorageFile }
 
 function TGXStorageFile.AddSlash(const FolderName: TGXUnicodeString): TGXUnicodeString;
 
-  function IsPathSep(const s: string; Index: Integer): Boolean;
+  function IsPathSep(const s: TGXUnicodeString; Index: Integer): Boolean;
   begin
-    Result := (Index >= Low(string)) and (Index <= High(s)) and (s[Index] = CodeLibPathSep)
+    Result := (Index > 0) and (Index <= Length(s)) and (s[Index] = CodeLibPathSep)
       and (ByteType(s, Index) = mbSingleByte);
   end;
 
 begin
   Result := FolderName;
-  if not IsPathSep(Result, High(Result)) then
+  if not IsPathSep(Result, Length(Result)) then
     Result := Result + CodeLibPathSep;
 end;
 
