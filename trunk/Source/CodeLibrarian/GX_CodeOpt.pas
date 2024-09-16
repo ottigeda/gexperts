@@ -43,12 +43,12 @@ type
     procedure InitializeForm;
     procedure edPathOnFilesDropped(_Sender: TObject; _Files: TStrings);
     procedure SetData(const _StoragePath: string; _Layout: TCodeLayout;
-      _TreeFont, _EditFont: TFont);
+      const _TreeFont: string; _TreeFontSize: Integer; const _EditFont: string; _EditFontSize: Integer);
     procedure GetData(out _StoragePath: string; out _Layout: TCodeLayout;
-      _TreeFont, _EditFont: TFont);
+      out _TreeFont: string; out _TreeFontSize: Integer; out _EditFont: string; out _EditFontSize: Integer);
   public
     class function Execute(_Owner: TWinControl; var _StoragePath: string; var _Layout: TCodeLayout;
-      _TreeFont, _EditFont: TFont): Boolean;
+      var _TreeFont: string; var _TreeFontSize: Integer; var _EditFont: string; var _EditFontSize: Integer): Boolean;
     constructor Create(_Owner: TComponent); override;
   end;
 
@@ -59,25 +59,25 @@ implementation
 uses
   SysUtils, GX_GenericUtils, u_dzVclUtils;
 
-class function TfmCodeOptions.Execute(_Owner: TWinControl; var _StoragePath: string;
-  var _Layout: TCodeLayout; _TreeFont, _EditFont: TFont): Boolean;
+class function TfmCodeOptions.Execute(_Owner: TWinControl; var _StoragePath: string; var _Layout: TCodeLayout;
+  var _TreeFont: string; var _TreeFontSize: Integer; var _EditFont: string; var _EditFontSize: Integer): Boolean;
 var
   frm: TfmCodeOptions;
 begin
   frm := TfmCodeOptions.Create(nil);
   try
     TForm_CenterOn(frm, _Owner);
-    frm.SetData(_StoragePath, _Layout, _TreeFont, _EditFont);
+    frm.SetData(_StoragePath, _Layout, _TreeFont, _TreeFontSize, _EditFont, _EditFontSize);
     Result :=( frm.ShowModal = mrOk);
     if Result then
-      frm.GetData(_StoragePath, _Layout, _TreeFont, _EditFont);
+      frm.GetData(_StoragePath, _Layout, _TreeFont, _TreeFontSize, _EditFont, _EditFontSize);
   finally
     FreeAndNil(frm);
   end;
 end;
 
 procedure TfmCodeOptions.SetData(const _StoragePath: string; _Layout: TCodeLayout;
-  _TreeFont, _EditFont: TFont);
+  const _TreeFont: string; _TreeFontSize: Integer; const _EditFont: string; _EditFontSize: Integer);
 begin
   edPath.Text := _StoragePath;
 
@@ -86,15 +86,15 @@ begin
   else
     rbTop.Checked := True;
 
-  fcTreeview.ItemIndex := fcTreeview.Items.IndexOf(_TreeFont.Name);
-  udTreeview.Position := _TreeFont.Size;
+  fcTreeview.ItemIndex := fcTreeview.Items.IndexOf(_TreeFont);
+  udTreeview.Position := _TreeFontSize;
 
-  fcEditor.ItemIndex := fcEditor.Items.IndexOf(_EditFont.Name);
-  udEditor.Position := _EditFont.Size;
+  fcEditor.ItemIndex := fcEditor.Items.IndexOf(_EditFont);
+  udEditor.Position := _EditFontSize;
 end;
 
 procedure TfmCodeOptions.GetData(out _StoragePath: string; out _Layout: TCodeLayout;
-  _TreeFont, _EditFont: TFont);
+  out _TreeFont: string; out _TreeFontSize: Integer; out _EditFont: string; out _EditFontSize: Integer);
 begin
   _StoragePath := edPath.Text;
   if rbSide.Checked then
@@ -102,10 +102,10 @@ begin
   else
     _Layout := clTop;
 
-  _TreeFont.Name := fcTreeview.Text;
-  _TreeFont.Size := Trunc(StrToInt(eTreeview.Text));
-  _EditFont.Name := fcEditor.Text;
-  _EditFont.Size := Trunc(StrToInt(eEditor.Text));
+  _TreeFont:= fcTreeview.Text;
+  _TreeFontSize := Trunc(StrToInt(eTreeview.Text));
+  _EditFont:= fcEditor.Text;
+  _EditFontSize := Trunc(StrToInt(eEditor.Text));
 end;
 
 procedure TfmCodeOptions.sbBrowseClick(Sender: TObject);
