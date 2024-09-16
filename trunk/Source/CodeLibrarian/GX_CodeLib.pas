@@ -220,19 +220,6 @@ type
     property Layout: TCodeLayout read FLayout write SetLayout;
   end;
 
-  TCodeLibrarianExpert = class(TGX_Expert)
-  protected
-    FCodeLibForm: TfmCodeLib;
-    procedure SetActive(New: Boolean); override;
-    procedure CreateCodeLibForm;
-  public
-    destructor Destroy; override;
-    function GetActionCaption: string; override;
-    class function GetName: string; override;
-    procedure Execute(Sender: TObject); override;
-    function HasConfigOptions: Boolean; override;
-  end;
-
 procedure ShowCodeLib; {$IFNDEF GX_BCB} export; {$ENDIF GX_BCB}
 
 implementation
@@ -264,6 +251,20 @@ const
 
 resourcestring
   SCouldNotCreateStorage = 'Could not create Code Librarian storage file.';
+
+type
+  TCodeLibrarianExpert = class(TGX_Expert)
+  protected
+    FCodeLibForm: TfmCodeLib;
+    procedure SetActive(New: Boolean); override;
+    procedure CreateCodeLibForm;
+  public
+    destructor Destroy; override;
+    function GetActionCaption: string; override;
+    class function GetName: string; override;
+    procedure Execute(Sender: TObject); override;
+    function HasConfigOptions: Boolean; override;
+  end;
 
 type
   TReadOnlyCodeLibFileMessage = class(TGxMsgBoxAdaptor)
@@ -870,8 +871,8 @@ begin
   Settings.LoadFont('TreeView', TreeViewFont);
   tvTopics.Font.Name := TreeViewFont.Name;
   FCodeText.Font.Name := CodeFont.Name;
-  FTreeFontSize := CodeFont.Size;
-  FCodeFontSize := TreeViewFont.Size;
+  FTreeFontSize := TreeViewFont.Size;
+  FCodeFontSize := CodeFont.Size;
   RescaleFonts;
 
   Settings.LoadForm('Window', Self);
@@ -981,13 +982,15 @@ begin
   if FModified then
     SaveRecord;
   CloseDB;
+  SaveSettings;
 end;
 
 procedure TfmCodeLib.FormShow(Sender: TObject);
 var
   Node: TTreeNode;
 begin
-  inherited;
+  LoadSettings;
+
   CodeDB.OpenStorage(StoragePath + DefaultFileName);
   if TryGetSelected(Node) and (IsCodeSnippet(Node)) then
     CodeDB.OpenFile(GetNodePath(Node));
