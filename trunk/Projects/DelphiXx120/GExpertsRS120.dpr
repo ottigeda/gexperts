@@ -46,6 +46,7 @@ uses
   GX_CodeFormatterTypes in '..\..\source\Formatter\engine\GX_CodeFormatterTypes.pas',
   GX_CodeFormatterUnicode in '..\..\source\Formatter\engine\GX_CodeFormatterUnicode.pas',
   GX_CodeLib in '..\..\source\CodeLibrarian\GX_CodeLib.pas' {fmCodeLib},
+  GX_CodeLibFile in '..\..\Source\CodeLibrarian\GX_CodeLibFile.pas',
   GX_CodeOpt in '..\..\source\CodeLibrarian\GX_CodeOpt.pas' {fmCodeOptions},
   GX_CodeSrch in '..\..\source\CodeLibrarian\GX_CodeSrch.pas' {fmCodeSearch},
   GX_ComponentGrid in '..\..\source\ComponentGrid\GX_ComponentGrid.pas' {fmComponentGrid},
@@ -256,8 +257,7 @@ uses
   GX_VCLFixPack in '..\..\Source\Utils\GX_VCLFixPack.pas',
   GX_VerDepConst in '..\..\source\Framework\GX_VerDepConst.pas',
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
-  GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas',
-  GX_CodeLibFile in '..\..\Source\CodeLibrarian\GX_CodeLibFile.pas';
+  GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas';
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
