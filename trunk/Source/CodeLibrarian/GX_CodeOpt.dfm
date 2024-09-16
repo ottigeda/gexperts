@@ -74,7 +74,6 @@ object fmCodeOptions: TfmCodeOptions
           Top = 21
           Width = 41
           Height = 17
-          Alignment = taCenter
           AutoSize = False
           Caption = 'Size'
         end

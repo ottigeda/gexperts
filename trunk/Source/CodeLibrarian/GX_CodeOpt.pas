@@ -127,6 +127,7 @@ constructor TfmCodeOptions.Create(_Owner: TComponent);
 begin
   inherited;
 
+  pgeCodeOpt.ActivePage := tabFonts;
   TControl_SetConstraints(Self, [ccMinWidth, ccMinHeight, ccMaxHeight]);
   TWinControl_ActivateDropFiles(edPath, edPathOnFilesDropped);
   TEdit_ActivateAutoComplete(edPath, [acsFileSystem], [actSuggest]);
