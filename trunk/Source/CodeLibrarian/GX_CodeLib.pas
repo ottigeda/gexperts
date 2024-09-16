@@ -294,7 +294,7 @@ procedure TfmCodeLib.InitializeTreeView;
       CodeDB.ListFolders(RootPath, Folders);
       for i := 0 to Folders.Count - 1 do
       begin
-        RNode := tvTopics.Items.AddChild(Node, CodeDB.GetObjectAttribute(CodeDb.MakeFileName(RootPath, Folders[i]), AttrTopic));
+        RNode := tvTopics.Items.AddChild(Node, CodeDB.GetObjectAttribute(RootPath, Folders[i], AttrTopic));
         RNode.ImageIndex := ImageIndexClosedFolder;
         RNode.SelectedIndex := ImageIndexOpenFolder;
         LoadTreeView(RNode);
@@ -302,7 +302,7 @@ procedure TfmCodeLib.InitializeTreeView;
       CodeDB.ListFiles(RootPath, Files);
       for i := 0 to Files.Count - 1 do
       begin
-        RNode := tvTopics.Items.AddChild(Node, CodeDB.GetObjectAttribute(CodeDb.MakeFileName(RootPath, Files[i]), AttrTopic));
+        RNode := tvTopics.Items.AddChild(Node, CodeDB.GetObjectAttribute(RootPath, Files[i], AttrTopic));
         RNode.ImageIndex := ImageIndexDocument;
         RNode.SelectedIndex := ImageIndexDocument;
       end;

@@ -8,6 +8,9 @@ uses
   GpStructuredStorage,
   GX_StringList;
 
+//TODO 3 -cIssue -oAnyone: Handle invalid filenames with \/, or use Topic attribute as the display text?
+//                         (See AssertValidFilename method calls.)
+
 const
   CodeLibPathSep = '\';
 
@@ -50,7 +53,8 @@ type
     procedure SetAttribute(const AttrName: TGXUnicodeString; const Value: TGXUnicodeString); overload;
     procedure SetAttribute(const AttrName: TGXUnicodeString; const Value: Integer); overload;
     procedure SetObjectAttribute(const ObjectName, AttrName, AttrValue: TGXUnicodeString);
-    function GetObjectAttribute(const ObjectName, AttrName: TGXUnicodeString): TGXUnicodeString;
+    function GetObjectAttribute(const ObjectName, AttrName: TGXUnicodeString): TGXUnicodeString; overload;
+    function GetObjectAttribute(const FolderName, FileName, AttrName: TGXUnicodeString): TGXUnicodeString; overload;
     function MakeFileName(const FolderName, FileName: TGXUnicodeString): TGXUnicodeString;
   end;
 
@@ -63,6 +67,7 @@ uses
 
 function TGXStorageFile.MakeFileName(const FolderName, FileName: TGXUnicodeString): TGXUnicodeString;
 begin
+  // todo: This is not consistent: Either use CodeLibPathSep or use AddSlash, but not both
   Result := FolderName;
   if Result = '' then
     Result := CodeLibPathSep
@@ -278,6 +283,12 @@ begin
   FileInfo := FStorage.FileInfo[ObjectName];
   Assert(Assigned(FileInfo));
   Result := FileInfo.Attribute[AttrName];
+end;
+
+function TGXStorageFile.GetObjectAttribute(const FolderName, FileName,
+  AttrName: TGXUnicodeString): TGXUnicodeString;
+begin
+  Result := GetObjectAttribute(MakeFileName(FolderName, FileName), AttrName);
 end;
 
 procedure TGXStorageFile.AssertExistingObjectName(const ObjectName: TGXUnicodeString);
