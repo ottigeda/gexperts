@@ -203,6 +203,7 @@ $(PreBuildEvent)]]>
             <Form>fmCodeLib</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\CodeLibrarian\GX_CodeLibFile.pas"/>
         <DCCReference Include="..\..\source\CodeLibrarian\GX_CodeOpt.pas">
             <Form>fmCodeOptions</Form>
             <FormType>dfm</FormType>
@@ -719,7 +720,6 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Framework\GX_VerDepConst.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas"/>
         <DCCReference Include="..\..\source\BackupProject\GX_Zipper.pas"/>
-        <DCCReference Include="..\..\Source\CodeLibrarian\GX_CodeLibFile.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
