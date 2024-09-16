@@ -57,6 +57,7 @@ type
   end;
 
 type
+  PCtrlDpiScaler = ^TCtrlDpiScaler;
   TCtrlDpiScaler = record
     Ctrl: TControl;
     BoundsRect: TRect;
@@ -79,11 +80,14 @@ type
     FDesigDpi: Integer;
     FPnlMaster: TPanel;
     procedure AddControls(_Ctrl: TWinControl);
+    function FindCtrlScaler(_ctrl: TControl): PCtrlDpiScaler;
   public
     constructor Create(_Frm: TForm);
     procedure ApplyScale(const _Scaler: TDpiScaler);
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
     function Calc(_Value: Integer): Integer;
+    function GetControlFontSize(_ctrl: TControl): integer;
+    procedure SetControlFontSize(_ctrl: TControl; _FontSize: integer);
     property DesignDPI: Integer read FDesigDpi;
   end;
 
@@ -94,7 +98,8 @@ uses
   CommCtrl,
   u_dzTypInfo,
   u_dzTypesUtils,
-  u_dzMiscUtils;
+  u_dzMiscUtils,
+  u_dzVclUtils;
 
 {$IFDEF DPI_SCALER_LOGGING}
 var
@@ -146,9 +151,9 @@ begin
     Result := TFormHack(_Frm).GetDesignDpi;
     LogFmt('TForm_GetDesignDPI(%s: %s): Result: %d', [_Frm.Name, _Frm.ClassName, Result]);
   end else
-    Result := 96;
+    Result := DEFAULT_DPI;
 {$ELSE}
-  Result := 96;
+  Result := DEFAULT_DPI;
 {$ENDIF}
 end;
 
@@ -223,8 +228,8 @@ end;
 procedure TDpiScaler.Init(_Frm: TCustomForm);
 begin
   if not Assigned(_Frm) then begin
-    FDesignDpi := 96;
-    FCurrentDpi := 96;
+    FDesignDpi := DEFAULT_DPI;
+    FCurrentDpi := DEFAULT_DPI;
   end else begin
 // todo: adjust as needed
 {$IFDEF DELPHIX_TOKYO_UP}
@@ -252,7 +257,7 @@ end;
 procedure TDpiScaler.SetCurrentDpi(_Frm: TCustomForm);
 begin
   if not Assigned(_Frm) then begin
-    FCurrentDpi := 96;
+    FCurrentDpi := DEFAULT_DPI;
   end else begin
 // todo: adjust as needed
 {$IFDEF DELPHIX_TOKYO_UP}
@@ -536,6 +541,39 @@ begin
   LogFmt('  Frm.Font.PixelsPerInch: %d, FormDesignFontSize: %d', [_Frm.Font.PixelsPerInch, FFormDesignFontSize]);
 
   AddControls(FFrm);
+end;
+
+function TFormDpiScaler.FindCtrlScaler(_ctrl: TControl): PCtrlDpiScaler;
+var
+  i: Integer;
+begin
+  for i := Low(FCtrlParams) to High(FCtrlParams) do begin
+    Result := @(FCtrlParams[i]);
+    if Result.Ctrl = _Ctrl then begin
+      Exit; //==>
+    end;
+  end;
+  Result := nil;
+end;
+
+function TFormDpiScaler.GetControlFontSize(_Ctrl: TControl): Integer;
+var
+  Ctrl: PCtrlDpiScaler;
+begin
+  Ctrl := FindCtrlScaler(_Ctrl);
+  if Assigned(Ctrl) then
+    Result := Ctrl.FontSize
+  else
+    Result := -1;
+end;
+
+procedure TFormDpiScaler.SetControlFontSize(_Ctrl: TControl; _FontSize: Integer);
+var
+  Ctrl: PCtrlDpiScaler;
+begin
+  Ctrl := FindCtrlScaler(_Ctrl);
+  if Assigned(Ctrl) then
+    Ctrl.FontSize := _FontSize;
 end;
 
 { TImageListScaler }
