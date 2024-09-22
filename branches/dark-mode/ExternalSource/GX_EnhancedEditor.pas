@@ -105,7 +105,6 @@ type
     property CaretXY: TPoint  read GetCaretXY write SetCaretXY;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property Modified: Boolean read GetModified write SetModified;
-    property Font: TFont read GetFont write SetFont;
     property SelText: string read GetSelText write SetSelText;
     property SelStart: Integer read GetSelStart;
     property TopLine: Integer read GetTopLine write SetTopLine;
@@ -121,6 +120,7 @@ type
     property Align;
     property Anchors;
     property Enabled;
+    property Font: TFont read GetFont write SetFont;
     property PopupMenu;
     property ShowHint;
     property TabOrder;

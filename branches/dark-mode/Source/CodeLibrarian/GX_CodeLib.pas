@@ -3,14 +3,15 @@ unit GX_CodeLib;
 {$I GX_CondDefine.inc}
 
 //TODO 3 -cIssue -oAnyone: Handle invalid filenames with \/, or use Topic attribute as the display text?
+//                         (See AssertValidFilename method calls.)
 
 interface
 
 uses
   Windows, SysUtils,
   Forms, Controls, StdActns, Classes, ActnList, Actions, UITypes,
-  Dialogs, Menus, ComCtrls, ToolWin, ExtCtrls,
-  GpStructuredStorage,
+  Dialogs, Menus, ComCtrls, ToolWin, ExtCtrls, Graphics,
+  GX_CodeLibFile,
   GX_Experts, GX_EnhancedEditor,
   GX_GenericUtils, GX_StringList, GX_SharedImages, GX_BaseForm,
   GX_CodeOpt;
@@ -20,46 +21,6 @@ type
     Text: TGXUnicodeString;
     CaseSensitive: Boolean;
     WholeWord: Boolean;
-  end;
-
-  TGXStorageFile = class(TObject)
-  private
-    FStorage: IGpStructuredStorage;
-    FFile: TStream;
-    FFileName: TGXUnicodeString;
-    function GetFileText: TGXUnicodeString;
-    procedure SetFileText(const Value: TGXUnicodeString);
-    procedure AssertFileIsOpen;
-    procedure AssertValidFolderName(FolderName: TGXUnicodeString);
-    procedure AssertValidFileName(FileName: TGXUnicodeString);
-    procedure AssertExistingObjectName(const ObjectName: TGXUnicodeString);
-    function GetFileInfo: IGpStructuredFileInfo;
-  public
-    constructor Create(const FileName: TGXUnicodeString);
-    procedure CompactStorage;
-    procedure CloseStorage;
-    procedure OpenStorage(const FileName: WideString);
-    procedure SaveStorage;
-
-    procedure OpenFile(const FullPath: TGXUnicodeString); overload;
-    procedure OpenFile(const FolderName, FileName: TGXUnicodeString); overload;
-    procedure Delete(const ObjectName: TGXUnicodeString);
-    procedure Move(const OldName, NewName: TGXUnicodeString);
-    procedure CloseFile;
-    procedure CreateFolder(const FolderName: TGXUnicodeString);
-    function FolderExists(const FolderName: TGXUnicodeString): Boolean;
-    function FileExists(const FileName: TGXUnicodeString): Boolean;
-    function ObjectExists(const ObjectName: TGXUnicodeString): Boolean;
-
-    procedure ListFiles(const FolderName: TGXUnicodeString; Files: TStrings);
-    procedure ListFolders(const FolderName: TGXUnicodeString; Files: TStrings);
-
-    property FileText: TGXUnicodeString read GetFileText write SetFileText;
-    function AttributeAsString(const AttrName: TGXUnicodeString; const Default: TGXUnicodeString = ''): TGXUnicodeString;
-    procedure SetAttribute(const AttrName: TGXUnicodeString; const Value: TGXUnicodeString); overload;
-    procedure SetAttribute(const AttrName: TGXUnicodeString; const Value: Integer); overload;
-    procedure SetObjectAttribute(const ObjectName, AttrName, AttrValue: TGXUnicodeString);
-    function GetObjectAttribute(const ObjectName, AttrName: TGXUnicodeString): TGXUnicodeString;
   end;
 
   TfmCodeLib = class(TfmBaseForm)
@@ -257,19 +218,6 @@ type
     property Layout: TCodeLayout read FLayout write SetLayout;
   end;
 
-  TCodeLibrarianExpert = class(TGX_Expert)
-  protected
-    FCodeLibForm: TfmCodeLib;
-    procedure SetActive(New: Boolean); override;
-    procedure CreateCodeLibForm;
-  public
-    destructor Destroy; override;
-    function GetActionCaption: string; override;
-    class function GetName: string; override;
-    procedure Execute(Sender: TObject); override;
-    function HasConfigOptions: Boolean; override;
-  end;
-
 procedure ShowCodeLib; {$IFNDEF GX_BCB} export; {$ENDIF GX_BCB}
 
 implementation
@@ -284,7 +232,7 @@ implementation
 
 uses
   Clipbrd,
-  u_dzVclUtils, u_dzStringUtils,
+  u_dzVclUtils, u_dzStringUtils, u_dzMiscUtils, u_dzTypInfo, u_dzDpiScaleUtils,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_CodeSrch, GX_GxUtils,
   GX_OtaUtils, GX_IdeUtils,
@@ -292,7 +240,6 @@ uses
 
 const
   DefaultFileName = 'CodeLibrarian.fs';
-  CodeLibPathSep = '\';
   AttrTopic = 'Topic';
   AttrLanguage = 'Language';
   SyntaxCategory = 'Syntax';
@@ -304,26 +251,24 @@ resourcestring
   SCouldNotCreateStorage = 'Could not create Code Librarian storage file.';
 
 type
+  TCodeLibrarianExpert = class(TGX_Expert)
+  protected
+    FCodeLibForm: TfmCodeLib;
+    procedure SetActive(New: Boolean); override;
+    procedure CreateCodeLibForm;
+  public
+    destructor Destroy; override;
+    function GetActionCaption: string; override;
+    class function GetName: string; override;
+    procedure Execute(Sender: TObject); override;
+    function HasConfigOptions: Boolean; override;
+  end;
+
+type
   TReadOnlyCodeLibFileMessage = class(TGxMsgBoxAdaptor)
   protected
     function GetMessage: string; override;
   end;
-
-function MakeFileName(const FolderName, FileName: TGXUnicodeString): TGXUnicodeString;
-begin
-  Result := FolderName;
-  if Result = '' then
-    Result := CodeLibPathSep
-  else
-    Result := AddSlash(Result);
-  if FileName <> '' then
-  begin
-    if FileName[1] = CodeLibPathSep then
-      Result := Result + Copy(FileName, 2)
-    else
-      Result := Result + FileName;
-  end;
-end;
 
 function TfmCodeLib.OpenStorage(const StorageFile: TGXUnicodeString): TGXStorageFile;
 begin
@@ -348,7 +293,7 @@ procedure TfmCodeLib.InitializeTreeView;
       CodeDB.ListFolders(RootPath, Folders);
       for i := 0 to Folders.Count - 1 do
       begin
-        RNode := tvTopics.Items.AddChild(Node, CodeDB.GetObjectAttribute(MakeFileName(RootPath, Folders[i]), AttrTopic));
+        RNode := tvTopics.Items.AddChild(Node, CodeDB.GetObjectAttribute(RootPath, Folders[i], AttrTopic));
         RNode.ImageIndex := ImageIndexClosedFolder;
         RNode.SelectedIndex := ImageIndexOpenFolder;
         LoadTreeView(RNode);
@@ -356,7 +301,7 @@ procedure TfmCodeLib.InitializeTreeView;
       CodeDB.ListFiles(RootPath, Files);
       for i := 0 to Files.Count - 1 do
       begin
-        RNode := tvTopics.Items.AddChild(Node, CodeDB.GetObjectAttribute(MakeFileName(RootPath, Files[i]), AttrTopic));
+        RNode := tvTopics.Items.AddChild(Node, CodeDB.GetObjectAttribute(RootPath, Files[i], AttrTopic));
         RNode.ImageIndex := ImageIndexDocument;
         RNode.SelectedIndex := ImageIndexDocument;
       end;
@@ -422,7 +367,7 @@ begin
     ParentNode := ParentNode.Parent;
 
   NewTopic := GetUniqueTopicName(ParentNode, True);
-  NewFolder := AddSlash(GetNodePath(ParentNode)) + NewTopic;
+  NewFolder := CodeDB.AddSlash(GetNodePath(ParentNode)) + NewTopic;
   CodeDB.AssertValidFolderName(NewFolder);
   CodeDB.CreateFolder(NewFolder);
   Assert(CodeDB.FolderExists(NewFolder));
@@ -461,7 +406,7 @@ begin
     SelectedNode := SelectedNode.Parent;
 
   TopicName := GetUniqueTopicName(SelectedNode, False);
-  NewFileName := AddSlash(GetNodePath(SelectedNode)) + TopicName;
+  NewFileName := CodeDB.AddSlash(GetNodePath(SelectedNode)) + TopicName;
   CodeDB.OpenFile(NewFileName);
   Assert(CodeDB.FileExists(NewFileName));
   CodeDB.SetAttribute(AttrTopic, TopicName);
@@ -530,7 +475,7 @@ var
 begin
   Modified := True;
   AssertValidFileName(S);
-  NewFileName := AddSlash(GetNodeParentPath(Node)) + S;
+  NewFileName := CodeDB.AddSlash(GetNodeParentPath(Node)) + S;
   if CodeDB.FileExists(NewFileName) or CodeDB.FolderExists(NewFileName) then
     raise Exception.CreateFmt('An item named %s already exists.', [S]);
   SetNodeAttribute(Node, AttrTopic, S);
@@ -825,7 +770,7 @@ begin
     if IsCodeSnippet(DestNode) or DestNode.HasAsParent(SelectedNode) then
       Exit; //==>
 
-    CodeDB.Move(SelectedNodeFullName, AddSlash(GetNodePath(DestNode)) + SelectedCaption);
+    CodeDB.Move(SelectedNodeFullName, CodeDB.AddSlash(GetNodePath(DestNode)) + SelectedCaption);
     CodeDB.SaveStorage;
     SelectedNode.MoveTo(DestNode, naAddChild);
     DestNode.AlphaSort;
@@ -874,14 +819,35 @@ begin
 end;
 
 procedure TfmCodeLib.SaveSettings;
+
+  procedure GetDesignFont(_Ctrl: TControl; _Font: TFont);
+  var
+    fnt: TFont;
+  begin
+    if TryGetObjectProperty(_Ctrl, 'Font', TObject(fnt)) then
+      _Font.Assign(fnt);
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+    _Font.Height := FScaler.GetControlFontSize(_Ctrl);
+{$ENDIF}
+  end;
+
 var
   Settings: IExpertSettings;
+  TempFont: TFont;
 begin
   Settings := TCodeLibrarianExpert.GetSettings;
   // Do not localize any of the following lines.
   Settings.WriteString('StoragePath', StoragePath);
-  Settings.SaveFont('Editor', FCodeText.Font);
-  Settings.SaveFont('TreeView', tvTopics.Font);
+
+  TempFont := TFont.Create;
+  try
+    GetDesignFont(FCodeText, TempFont);
+    Settings.SaveFont('Editor', TempFont);
+    GetDesignFont(tvTopics, TempFont);
+    Settings.SaveFont('TreeView', TempFont);
+  finally
+    FreeAndNil(TempFont);
+  end;
 
   Settings.SaveForm('Window', Self);
   Settings := Settings.Subkey('Window');
@@ -893,14 +859,37 @@ begin
 end;
 
 procedure TfmCodeLib.LoadSettings;
+
+  procedure SetDesignFont(_Ctrl: TControl; _Font: TFont);
+  var
+    fnt: TFont;
+  begin
+    if TryGetObjectProperty(_Ctrl, 'Font', TObject(fnt)) then begin
+      fnt.Assign(_Font);
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+      FScaler.SetControlFontSize(_Ctrl, fnt.Height);
+      fnt.Height := FScaler.Calc(fnt.Height);
+{$ENDIF}
+    end;
+  end;
+
 var
   Settings: IExpertSettings;
+  TempFont: TFont;
 begin
   Settings := TCodeLibrarianExpert.GetSettings;
   // Do not localize any of the following lines.
   StoragePath := Settings.ReadString('StoragePath', StoragePath);
-  Settings.LoadFont('Editor', FCodeText.Font);
-  Settings.LoadFont('TreeView', tvTopics.Font);
+
+  TempFont := TFont.Create;
+  try
+    Settings.LoadFont('Editor', TempFont);
+    SetDesignFont(FCodeText, TempFont);
+    Settings.LoadFont('TreeView', TempFont);
+    SetDesignFont(tvTopics, TempFont);
+  finally
+    FreeAndNil(TempFont);
+  end;
 
   Settings.LoadForm('Window', Self);
   Settings := Settings.Subkey('Window');
@@ -957,10 +946,22 @@ procedure TfmCodeLib.OptionsExecute(Sender: TObject);
 var
   lStoragePath: string;
   lLayout: TCodeLayout;
+  TreeFont: TFont;
+  TreeFontName: string;
+  TreeFontSize: Integer;
+  CodeFont: TFont;
+  CodeFontName: string;
+  CodeFontSize: Integer;
 begin
   lStoragePath := StoragePath;
   lLayout := Layout;
-  if TfmCodeOptions.Execute(Self, lStoragePath, lLayout, tvTopics.Font, FCodeText.Font) then begin
+  treefont := tvTopics.Font;
+  TreeFontName := TreeFont.Name;
+  TreeFontSize := TreeFont.Size;
+  CodeFont := FCodeText.Font;
+  CodeFontName := CodeFont.Name;
+  CodeFontSize := CodeFont.Size;
+  if TfmCodeOptions.Execute(Self, lStoragePath, lLayout, TreeFontName, TreeFontSize, CodeFontName, CodeFontSize) then begin
     if StoragePath <> lStoragePath then begin
       if CodeDB <> nil then
         CloseDB(True);
@@ -975,6 +976,19 @@ begin
       end;
       InitializeTreeView;
     end;
+
+    TreeFont.Name := TreeFontName;
+    TreeFont.Size := TreeFontSize;
+    CodeFont.Name := CodeFontName;
+    CodeFont.Size := CodeFontSize;
+
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+    TreeFontSize := MulDiv(TreeFont.Height, DEFAULT_DPI, CurrentPPI);
+    CodeFontSize := MulDiv(CodeFont.Height, DEFAULT_DPI, CurrentPPI);
+    FScaler.SetControlFontSize(tvTopics, TreeFontSize);
+    FScaler.SetControlFontSize(FCodeText, CodeFontSize);
+{$ENDIF}
+
     Layout := lLayout;
   end;
 end;
@@ -1010,15 +1024,14 @@ begin
   if FModified then
     SaveRecord;
   CloseDB;
-  SaveSettings; // Fix Bug #388?
+  SaveSettings;
 end;
 
 procedure TfmCodeLib.FormShow(Sender: TObject);
 var
   Node: TTreeNode;
 begin
-  inherited;
-  LoadSettings; // Fix Bug #388?
+  LoadSettings;
   CodeDB.OpenStorage(StoragePath + DefaultFileName);
   if TryGetSelected(Node) and (IsCodeSnippet(Node)) then
     CodeDB.OpenFile(GetNodePath(Node));
@@ -1276,7 +1289,7 @@ function TfmCodeLib.GetNodePath(Node: TTreeNode): TGXUnicodeString;
     if not Assigned(Node) then
       Result := Prefix
     else
-      Result := MakeFileName(GetPath(Prefix, Node.Parent), Node.Text);
+      Result := CodeDB.MakeFileName(GetPath(Prefix, Node.Parent), Node.Text);
   end;
 
 begin
@@ -1440,216 +1453,6 @@ begin
   end;
 end;
 
-{ TGXStorageFile }
-
-procedure TGXStorageFile.AssertFileIsOpen;
-begin
-  if not Assigned(FFile) then
-    raise Exception.Create('No file is currently open');
-  if FFileName = '' then
-    raise Exception.Create('The file name is blank');
-end;
-
-procedure TGXStorageFile.AssertValidFileName(FileName: TGXUnicodeString);
-begin
-  if FileName = '' then
-    raise Exception.Create('The file name can not be blank');
-  if FileName[1] = CodeLibPathSep then
-    raise Exception.Create('The file name can not start with a slash: ' + FileName);
-end;
-
-procedure TGXStorageFile.AssertValidFolderName(FolderName: TGXUnicodeString);
-begin
-  if FolderName = '' then
-    raise Exception.Create('FolderName can not be blank');
-  if FolderName[1] <> CodeLibPathSep then
-    raise Exception.Create('FolderName must start with a slash');
-end;
-
-function TGXStorageFile.AttributeAsString(const AttrName, Default: TGXUnicodeString): TGXUnicodeString;
-var
-  FileInfo: IGpStructuredFileInfo;
-begin
-  Result := Default;
-  FileInfo := GetFileInfo;
-  Result := FileInfo.GetAttribute(AttrName);
-end;
-
-procedure TGXStorageFile.CloseFile;
-begin
-  FreeAndNil(FFile);
-end;
-
-procedure TGXStorageFile.CloseStorage;
-begin
-  CloseFile;
-  FStorage := nil;
-end;
-
-constructor TGXStorageFile.Create(const FileName: TGXUnicodeString);
-begin
-  inherited Create;
-  OpenStorage(FileName);
-end;
-
-procedure TGXStorageFile.CreateFolder(const FolderName: TGXUnicodeString);
-begin
-  FStorage.CreateFolder(FolderName);
-end;
-
-procedure TGXStorageFile.Delete(const ObjectName: TGXUnicodeString);
-begin
-  Assert(Length(ObjectName) > 0);
-  CloseFile;
-  FStorage.Delete(ObjectName);
-end;
-
-function TGXStorageFile.FileExists(const FileName: TGXUnicodeString): Boolean;
-begin
-  Result := FStorage.FileExists(FileName);
-end;
-
-function TGXStorageFile.FolderExists(const FolderName: TGXUnicodeString): Boolean;
-begin
-  Result := FStorage.FolderExists(FolderName);
-end;
-
-function TGXStorageFile.GetFileInfo: IGpStructuredFileInfo;
-begin
-  AssertFileIsOpen;
-  Result := FStorage.GetFileInfo(FFileName);
-  if not Assigned(Result) then
-    raise Exception.CreateFmt('The file %s does not exist to get the file info', [FFileName]);
-end;
-
-function TGXStorageFile.GetFileText: TGXUnicodeString;
-var
-  StringStream: TStringStream;
-begin
-  AssertFileIsOpen;
-  StringStream := TStringStream.Create('');
-  try
-    StringStream.CopyFrom(FFile, 0);
-    Result := StringStream.DataString;
-  finally
-    FreeAndNil(StringStream);
-  end;
-end;
-
-procedure TGXStorageFile.ListFiles(const FolderName: TGXUnicodeString; Files: TStrings);
-begin
-  AssertValidFolderName(FolderName);
-  FStorage.FileNames(FolderName, Files);
-end;
-
-procedure TGXStorageFile.ListFolders(const FolderName: TGXUnicodeString; Files: TStrings);
-begin
-  AssertValidFolderName(FolderName);
-  FStorage.FolderNames(FolderName, Files);
-end;
-
-procedure TGXStorageFile.Move(const OldName, NewName: TGXUnicodeString);
-begin
-  if OldName = NewName then
-    Exit;
-  FStorage.Move(OldName, NewName);
-  if SameFileName(FFileName, OldName) then
-    OpenFile(NewName);
-end;
-
-procedure TGXStorageFile.OpenFile(const FolderName, FileName: TGXUnicodeString);
-begin
-  AssertValidFolderName(FolderName);
-  AssertValidFileName(FileName);
-  OpenFile(MakeFileName(FolderName, FileName));
-end;
-
-procedure TGXStorageFile.OpenStorage(const FileName: WideString);
-begin
-  if not Assigned(FStorage) then begin
-    FStorage := CreateStructuredStorage;
-    if SysUtils.FileExists(FileName) then
-      FStorage.Initialize(FileName, fmOpenReadWrite)
-    else
-      FStorage.Initialize(FileName, fmCreate or fmOpenReadWrite);
-  end;
-end;
-
-procedure TGXStorageFile.OpenFile(const FullPath: TGXUnicodeString);
-begin
-  FreeAndNil(FFile);
-  Assert(Assigned(FStorage));
-  AssertValidFolderName(FullPath);
-  Assert(Length(FullPath) > 0);
-  FFile := FStorage.OpenFile(FullPath, fmCreate or fmOpenReadWrite);
-  FFileName := FullPath;
-end;
-
-procedure TGXStorageFile.CompactStorage;
-begin
-  FreeAndNil(FFile);
-  FStorage.Compact;
-end;
-
-procedure TGXStorageFile.SaveStorage;
-begin
-  //FStorage.Save;
-  { TODO -oAnyone -ccheck : Is this commented out on purpose? Or did somebody forget to reenable this code? }
-end;
-
-procedure TGXStorageFile.SetAttribute(const AttrName: TGXUnicodeString; const Value: Integer);
-begin
-  SetAttribute(AttrName, IntToStr(Value));
-end;
-
-procedure TGXStorageFile.SetAttribute(const AttrName: TGXUnicodeString; const Value: TGXUnicodeString);
-var
-  FileInfo: IGpStructuredFileInfo;
-begin
-  AssertFileIsOpen;
-  FileInfo := GetFileInfo;
-  FileInfo.Attribute[AttrName] := Value;
-end;
-
-procedure TGXStorageFile.SetFileText(const Value: TGXUnicodeString);
-var
-  StringStream: TStringStream;
-begin
-  AssertFileIsOpen;
-  StringStream := TStringStream.Create(Value);
-  try
-    FFile.Size := StringStream.Size;
-    FFile.Position := 0;
-    FFile.CopyFrom(StringStream, 0);
-  finally
-    FreeAndNil(StringStream);
-  end;
-end;
-
-procedure TGXStorageFile.SetObjectAttribute(const ObjectName, AttrName, AttrValue: TGXUnicodeString);
-var
-  FileInfo: IGpStructuredFileInfo;
-begin
-  FileInfo := FStorage.FileInfo[ObjectName];
-  Assert(Assigned(FileInfo));
-  FileInfo.Attribute[AttrName] := AttrValue;
-end;
-
-function TGXStorageFile.GetObjectAttribute(const ObjectName, AttrName: TGXUnicodeString): TGXUnicodeString;
-var
-  FileInfo: IGpStructuredFileInfo;
-begin
-  AssertExistingObjectName(ObjectName);
-  FileInfo := FStorage.FileInfo[ObjectName];
-  Assert(Assigned(FileInfo));
-  Result := FileInfo.Attribute[AttrName];
-end;
-
-procedure TGXStorageFile.AssertExistingObjectName(const ObjectName: TGXUnicodeString);
-begin
-  Assert(ObjectExists(ObjectName), ObjectName + ' does not exist');
-end;
-
 function TfmCodeLib.GetUniqueTopicName(ParentNode: TTreeNode; Folder: Boolean): TGXUnicodeString;
 resourcestring
   FolderPrefix = 'Folder ';
@@ -1664,7 +1467,7 @@ begin
     TopicName := FolderPrefix
   else
     TopicName := SnippetPrefix;
-  ParentPath := AddSlash(GetNodePath(ParentNode));
+  ParentPath := CodeDB.AddSlash(GetNodePath(ParentNode));
   for i := 1 to 101 do
   begin
     TestName := TopicName + IntToStr(i);
@@ -1676,11 +1479,6 @@ begin
     end;
   end;
   raise Exception.Create('Unable to find a unique folder name under ' + ParentPath);
-end;
-
-function TGXStorageFile.ObjectExists(const ObjectName: TGXUnicodeString): Boolean;
-begin
-  Result := FileExists(ObjectName) or FolderExists(ObjectName);
 end;
 
 procedure TfmCodeLib.InitializeSyntaxLanguages;

@@ -47,6 +47,7 @@ uses
   GX_CodeFormatterTypes in '..\..\source\Formatter\engine\GX_CodeFormatterTypes.pas',
   GX_CodeFormatterUnicode in '..\..\source\Formatter\engine\GX_CodeFormatterUnicode.pas',
   GX_CodeLib in '..\..\source\CodeLibrarian\GX_CodeLib.pas' {fmCodeLib},
+  GX_CodeLibFile in '..\..\Source\CodeLibrarian\GX_CodeLibFile.pas',
   GX_CodeOpt in '..\..\source\CodeLibrarian\GX_CodeOpt.pas' {fmCodeOptions},
   GX_CodeSrch in '..\..\source\CodeLibrarian\GX_CodeSrch.pas' {fmCodeSearch},
   GX_ComponentGrid in '..\..\source\ComponentGrid\GX_ComponentGrid.pas' {fmComponentGrid},

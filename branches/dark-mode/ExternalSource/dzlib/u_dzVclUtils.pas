@@ -59,6 +59,9 @@ type
 
   EdzStatusBarNoMatchingPanel = class(EdzVclUtils);
 
+const
+  DEFAULT_DPI = 96;
+
 {$IF not declared(WM_DPICHANGED)}
 const
   WM_DPICHANGED = $02E0;
@@ -4766,7 +4769,7 @@ begin
 {$IFDEF HAS_TFORM_GETDESIGNDPI}
   Result := TFormHack(_frm).GetDesignDpi;
 {$ELSE}
-  Result := 96;
+  Result := DEFAULT_DPI;
 {$ENDIF}
 end;
 

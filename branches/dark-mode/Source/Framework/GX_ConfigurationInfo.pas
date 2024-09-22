@@ -1075,8 +1075,6 @@ begin
 
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
   if (NewDpi > 0) and (OrigDpi > 0) and (NewDpi<> OrigDpi) then begin
-    NewLeft   := MulDiv(NewLeft, NewDpi, OrigDpi);
-    NewTop    := MulDiv(NewTop, NewDpi, OrigDpi);
     NewWidth  := MulDiv(NewWidth, NewDpi, OrigDpi);
     NewHeight := MulDiv(NewHeight, NewDpi, OrigDpi);
   end;

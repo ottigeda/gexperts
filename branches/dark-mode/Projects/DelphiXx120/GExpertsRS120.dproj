@@ -88,6 +88,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <Manifest_File>None</Manifest_File>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+        <DCC_DebugDCUs>true</DCC_DebugDCUs>
         <Debugger_HostApplication>$(BDS)\bin\bds.exe</Debugger_HostApplication>
         <Debugger_RunParams>-rBDSPlain -pDelphi</Debugger_RunParams>
     </PropertyGroup>
@@ -202,6 +203,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <Form>fmCodeLib</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\CodeLibrarian\GX_CodeLibFile.pas"/>
         <DCCReference Include="..\..\source\CodeLibrarian\GX_CodeOpt.pas">
             <Form>fmCodeOptions</Form>
             <FormType>dfm</FormType>
