@@ -7,6 +7,7 @@ interface
 uses  // If you get errors here, add SynEdit to your library path
   SynEdit,
 {$IFDEF GX_SUPPORTS_THEMING}
+  SynMemo,
   Vcl.Themes,
   Vcl.Forms,
 {$ENDIF}
@@ -122,10 +123,12 @@ end;
 {$IFDEF GX_SUPPORTS_THEMING}
 Initialization
   TCustomStyleEngine.RegisterStyleHook(TCustomSynEdit, TScrollingStyleHook);
+  TCustomStyleEngine.RegisterStyleHook(TSynMemo, TScrollingStyleHook);
 
 Finalization
   TCustomStyleEngine.UnRegisterStyleHook(TCustomSynEdit, TScrollingStyleHook);
-{$ENDIF}
+  TCustomStyleEngine.UnRegisterStyleHook(TSynMemo, TScrollingStyleHook);
+{$ENDIF GX_SUPPORTS_THEMING}
 
 end.
 
