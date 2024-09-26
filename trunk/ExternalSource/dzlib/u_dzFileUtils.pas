@@ -3819,6 +3819,10 @@ var
 begin
   sl := AsStringlist;
   try
+    if sl.Count = 0 then begin
+      Result := False;
+      Exit; //==>
+    end;
     for i := 0 to sl.Count - 1 do begin
       if sl[i] <> '' then
         if not TFileSystem.DirExists(sl[i]) then begin
