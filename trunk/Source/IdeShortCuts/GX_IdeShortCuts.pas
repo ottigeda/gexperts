@@ -537,6 +537,10 @@ begin
     for i := 0 to RegValues.Count - 1 do
     begin
       AMenuItemName := RegValues[i];
+      if AMenuItemName = 'TotalCallCount' then begin
+        // this counter was introduced later and is not a menu shortcut
+        Continue; //==^
+      end;
       {$IFOPT D+} SendDebug('Looking for ' + AMenuItemName); {$ENDIF}
       AMenuItem := FindMenuByName(IDEMainMenu.Items, AMenuItemName);
       if AMenuItem <> nil then
