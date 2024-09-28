@@ -7,13 +7,13 @@ interface
 // This is implemented as a TWinControl to ease design-time usage
 
 uses
-  Windows, Classes, Graphics, Controls, Types,
+  Windows, Classes, Graphics, Controls, ExtCtrls, Types,
   SynEdit, SynMemo, SynEditTypes, SynEditTextBuffer, SynEditKeyCmds,
   GX_SynMemoUtils,
   GX_GenericUtils, GX_StringList;
 
 type
-  TGxEnhancedEditor = class(TWinControl)
+  TGxEnhancedEditor = class(TPanel)
   private
     FEditor: TSynMemo;
     FHighlighter: TGXSyntaxHighlighter;
@@ -33,8 +33,6 @@ type
     procedure SetColor(const Value: TColor);
     function  GetText: string;
     procedure SetText(const Value: string);
-    function  GetFont: TFont;
-    procedure SetFont(const Value: TFont);
     function  GetCaretXY: TPoint;
     procedure SetCaretXY(const Value: TPoint);
     function  GetTopLine: Integer;
@@ -117,18 +115,8 @@ type
     property AsAnsiString: AnsiString read GetAsAnsiString write SetAsAnsiString;
     property AsUnicodeString: TGXUnicodeString read GetAsUnicodeString write SetAsUnicodeString;
   published
-    property Align;
-    property Anchors;
-    property Enabled;
-    property Font: TFont read GetFont write SetFont;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property Visible;
     property OnChange: TNotifyEvent read FOnChange write SetOnChange;
     property OnClick: TNotifyEvent read FOnClick write SetOnClick;
-    property OnExit;
-    property OnEnter;
     property OnKeyDown: TKeyEvent read FOnKeyDown write SetOnKeyDown;
     property OnKeyPress: TKeyPressWEvent read FOnKeyPress write SetOnKeyPress;
     property OnKeyUp: TKeyEvent read FOnKeyUp write SetOnKeyUp;
@@ -162,6 +150,8 @@ constructor TGxEnhancedEditor.Create(AOwner: TComponent);
 begin
   inherited;
 
+  BevelOuter := bvNone;
+
   if not (csDesigning in ComponentState) then
   begin
     FEditor := TSynMemo.Create(nil);
@@ -172,6 +162,7 @@ begin
 
     FEditor.Parent := Self;
     FEditor.Align := alClient;
+    FEditor.ParentFont := True;
     if Assigned(FOnChange) then
       FEditor.OnChange := FOnchange;
   end; // not csDesigning
@@ -523,16 +514,6 @@ procedure TGxEnhancedEditor.SetSelection(AStart, ALength: Integer);
 begin
   FEditor.SelStart := AStart;
   FEditor.SelEnd := AStart + ALength;
-end;
-
-function TGxEnhancedEditor.GetFont: TFont;
-begin
-  Result := FEditor.Font;
-end;
-
-procedure TGxEnhancedEditor.SetFont(const Value: TFont);
-begin
-  FEditor.Font.Assign(Value);
 end;
 
 function TGxEnhancedEditor.GetSelText: string;
