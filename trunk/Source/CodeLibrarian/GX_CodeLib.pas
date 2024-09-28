@@ -10,7 +10,7 @@ interface
 uses
   Windows, SysUtils,
   Forms, Controls, StdActns, Classes, ActnList, Actions, UITypes,
-  Dialogs, Menus, ComCtrls, ToolWin, ExtCtrls, Graphics,
+  Dialogs, Menus, ComCtrls, StdCtrls, ToolWin, ExtCtrls, Graphics,
   GX_CodeLibFile,
   GX_Experts, GX_EnhancedEditor,
   GX_GenericUtils, GX_StringList, GX_SharedImages, GX_BaseForm,
@@ -232,7 +232,7 @@ implementation
 
 uses
   Clipbrd,
-  u_dzVclUtils, u_dzStringUtils, u_dzMiscUtils, u_dzTypInfo, u_dzDpiScaleUtils,
+  u_dzVclUtils, u_dzStringUtils, u_dzMiscUtils, u_dzDpiScaleUtils,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_CodeSrch, GX_GxUtils,
   GX_OtaUtils, GX_IdeUtils,
@@ -817,35 +817,15 @@ begin
 end;
 
 procedure TfmCodeLib.SaveSettings;
-
-  procedure GetDesignFont(_Ctrl: TControl; _Font: TFont);
-  var
-    fnt: TFont;
-  begin
-    if TryGetObjectProperty(_Ctrl, 'Font', TObject(fnt)) then
-      _Font.Assign(fnt);
-{$IFDEF GX_IDE_IS_HIDPI_AWARE}
-    _Font.Height := FScaler.GetControlFontSize(_Ctrl);
-{$ENDIF}
-  end;
-
 var
   Settings: IExpertSettings;
-  TempFont: TFont;
 begin
   Settings := TCodeLibrarianExpert.GetSettings;
   // Do not localize any of the following lines.
   Settings.WriteString('StoragePath', StoragePath);
 
-  TempFont := TFont.Create;
-  try
-    GetDesignFont(FCodeText, TempFont);
-    Settings.SaveFont('Editor', TempFont);
-    GetDesignFont(tvTopics, TempFont);
-    Settings.SaveFont('TreeView', TempFont);
-  finally
-    FreeAndNil(TempFont);
-  end;
+  Settings.SaveFont('Editor', pnlView.Font);
+  Settings.SaveFont('TreeView', tvTopics.Font);
 
   Settings.SaveForm('Window', Self);
   Settings := Settings.Subkey('Window');
@@ -857,37 +837,30 @@ begin
 end;
 
 procedure TfmCodeLib.LoadSettings;
+var
+  Settings: IExpertSettings;
 
-  procedure SetDesignFont(_Ctrl: TControl; _Font: TFont);
+  procedure DoLoadFont(const _Name: string; _Ctrl: TControl; _Font: TFont);
   var
-    fnt: TFont;
+    OldSize: integer;
   begin
-    if TryGetObjectProperty(_Ctrl, 'Font', TObject(fnt)) then begin
-      fnt.Assign(_Font);
+    OldSize := _Font.Size;
+    Settings.LoadFont(_Name, _Font);
+    if _Font.Size <> OldSize then begin
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
-      FScaler.SetControlFontSize(_Ctrl, fnt.Height);
-      fnt.Height := FScaler.Calc(fnt.Height);
+      // the user has set the font size, so we don't scale it
+      FScaler.DisableControlFontScaling(_ctrl);
 {$ENDIF}
     end;
   end;
 
-var
-  Settings: IExpertSettings;
-  TempFont: TFont;
 begin
   Settings := TCodeLibrarianExpert.GetSettings;
   // Do not localize any of the following lines.
   StoragePath := Settings.ReadString('StoragePath', StoragePath);
 
-  TempFont := TFont.Create;
-  try
-    Settings.LoadFont('Editor', TempFont);
-    SetDesignFont(FCodeText, TempFont);
-    Settings.LoadFont('TreeView', TempFont);
-    SetDesignFont(tvTopics, TempFont);
-  finally
-    FreeAndNil(TempFont);
-  end;
+  DoLoadFont('Editor', pnlView, pnlView.Font);
+  DoLoadFont('TreeView', tvTopics, tvTopics.Font);
 
   Settings.LoadForm('Window', Self);
   Settings := Settings.Subkey('Window');
@@ -940,24 +913,31 @@ begin
 end;
 
 procedure TfmCodeLib.OptionsExecute(Sender: TObject);
+
+  procedure doSetFontSize(_Ctrl: TControl; _Font: TFont; _NewFontSize: integer);
+  begin
+    if _Font.Size <> _NewFontSize then begin
+      _Font.Size := _NewFontSize;
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+      FScaler.DisableControlFontScaling(_Ctrl);
+{$ENDIF}
+    end;
+  end;
+
 var
   lStoragePath: string;
   lLayout: TCodeLayout;
-  TreeFont: TFont;
   TreeFontName: string;
   TreeFontSize: Integer;
-  CodeFont: TFont;
   CodeFontName: string;
   CodeFontSize: Integer;
 begin
   lStoragePath := StoragePath;
   lLayout := Layout;
-  treefont := tvTopics.Font;
-  TreeFontName := TreeFont.Name;
-  TreeFontSize := TreeFont.Size;
-  CodeFont := FCodeText.Font;
-  CodeFontName := CodeFont.Name;
-  CodeFontSize := CodeFont.Size;
+  TreeFontName := tvTopics.Font.Name;
+  TreeFontSize := tvTopics.Font.Size;
+  CodeFontName := pnlView.Font.Name;
+  CodeFontSize := pnlView.Font.Size;
   if TfmCodeOptions.Execute(Self, lStoragePath, lLayout, TreeFontName, TreeFontSize, CodeFontName, CodeFontSize) then begin
     if StoragePath <> lStoragePath then begin
       if CodeDB <> nil then
@@ -974,17 +954,11 @@ begin
       InitializeTreeView;
     end;
 
-    TreeFont.Name := TreeFontName;
-    TreeFont.Size := TreeFontSize;
-    CodeFont.Name := CodeFontName;
-    CodeFont.Size := CodeFontSize;
+    tvTopics.Font.Name := TreeFontName;
+    doSetFontSize(tvTopics, tvTopics.Font, TreeFontSize);
 
-{$IFDEF GX_IDE_IS_HIDPI_AWARE}
-    TreeFontSize := MulDiv(TreeFont.Height, DEFAULT_DPI, CurrentPPI);
-    CodeFontSize := MulDiv(CodeFont.Height, DEFAULT_DPI, CurrentPPI);
-    FScaler.SetControlFontSize(tvTopics, TreeFontSize);
-    FScaler.SetControlFontSize(FCodeText, CodeFontSize);
-{$ENDIF}
+    pnlView.Font.Name := CodeFontName;
+    doSetFontSize(pnlView, pnlView.Font, CodeFontSize);
 
     Layout := lLayout;
   end;
