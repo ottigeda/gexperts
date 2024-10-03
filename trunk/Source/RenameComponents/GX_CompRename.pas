@@ -863,7 +863,6 @@ begin
         frm.OldName := CompName;
 
         frm.SetComponent(Component);
-        frm.InitDpiScaler;
 
         Index := RenameRuleList.IndexOfName(Component.GetComponentType);
         if Index <> -1 then
@@ -904,6 +903,7 @@ begin
         end
         else
           OtherProps := nil;
+        frm.InitDpiScaler;
 
         if UseRules then
         begin
