@@ -37,7 +37,7 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <DCC_DcuOutput>.\dcu\$(Platform)\$(Config)</DCC_DcuOutput>
-        <DCC_Define>NO_TRANSLATION;NO_TRANSLATION_HINT;UnicodeRE;$(DCC_Define)</DCC_Define>
+        <DCC_Define>NO_TRANSLATION;NO_TRANSLATION_HINT;UnicodeRE;dzVCL_DISABLE_DBGRID_SUPPORT;$(DCC_Define)</DCC_Define>
         <DCC_DependencyCheckOutputName>..\..\Binaries\GExpertsRSXE2.dll</DCC_DependencyCheckOutputName>
         <DCC_ExeOutput>..\..\Binaries</DCC_ExeOutput>
         <DCC_ImageBase>00400000</DCC_ImageBase>
@@ -91,10 +91,6 @@ $(PreBuildEvent)]]>
         </DelphiCompile>
         <DCCReference Include="..\..\source\Framework\GX_About.pas">
             <Form>fmAbout</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="..\..\source\Formatter\GX_AboutExperimental.pas">
-            <Form>fmAboutExperimental</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_ActionBroker.pas"/>
@@ -199,6 +195,7 @@ $(PreBuildEvent)]]>
             <Form>fmCodeLib</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\CodeLibrarian\GX_CodeLibFile.pas"/>
         <DCCReference Include="..\..\source\CodeLibrarian\GX_CodeOpt.pas">
             <Form>fmCodeOptions</Form>
             <FormType>dfm</FormType>
