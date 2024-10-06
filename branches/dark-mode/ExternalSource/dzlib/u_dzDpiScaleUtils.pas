@@ -86,8 +86,7 @@ type
     procedure ApplyScale(const _Scaler: TDpiScaler);
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
     function Calc(_Value: Integer): Integer;
-    function GetControlFontSize(_ctrl: TControl): integer;
-    procedure SetControlFontSize(_ctrl: TControl; _FontSize: integer);
+    procedure DisableControlFontScaling(_ctrl: TControl);
     property DesignDPI: Integer read FDesigDpi;
   end;
 
@@ -373,7 +372,10 @@ begin
     end;
   end;
 
-  Assert(FontSize <> 0);
+  if FontSize = 0 then begin
+    // Font resizing has been turned off, e.g. because this font size is user configurable
+    Exit; //==>
+  end;
 
   LogFmt('TCtrlDpiScaler.ResizeFont(%d %%)', [_Scaler.ScaleFactorPercent]);
   OldFontSize := GetFontSize(fnt);
@@ -556,24 +558,13 @@ begin
   Result := nil;
 end;
 
-function TFormDpiScaler.GetControlFontSize(_Ctrl: TControl): Integer;
+procedure TFormDpiScaler.DisableControlFontScaling(_Ctrl: TControl);
 var
   Ctrl: PCtrlDpiScaler;
 begin
   Ctrl := FindCtrlScaler(_Ctrl);
   if Assigned(Ctrl) then
-    Result := Ctrl.FontSize
-  else
-    Result := -1;
-end;
-
-procedure TFormDpiScaler.SetControlFontSize(_Ctrl: TControl; _FontSize: Integer);
-var
-  Ctrl: PCtrlDpiScaler;
-begin
-  Ctrl := FindCtrlScaler(_Ctrl);
-  if Assigned(Ctrl) then
-    Ctrl.FontSize := _FontSize;
+    Ctrl.FontSize := 0;
 end;
 
 { TImageListScaler }

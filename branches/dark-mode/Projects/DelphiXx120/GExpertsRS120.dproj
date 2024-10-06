@@ -44,7 +44,7 @@
     <PropertyGroup Condition="'$(Base)'!=''">
         <SanitizedProjectName>GExpertsRS120</SanitizedProjectName>
         <DCC_DcuOutput>.\dcu\$(Platform)\$(Config)</DCC_DcuOutput>
-        <DCC_Define>NO_TRANSLATION;NO_TRANSLATION_HINT;NO_OPTIMIZE_DZ_GRAPHIC_UTILS_HINT;UnicodeRE;$(DCC_Define)</DCC_Define>
+        <DCC_Define>NO_TRANSLATION;NO_TRANSLATION_HINT;NO_OPTIMIZE_DZ_GRAPHIC_UTILS_HINT;UnicodeRE;dzVCL_DISABLE_DBGRID_SUPPORT;$(DCC_Define)</DCC_Define>
         <DCC_ExeOutput>..\..\Binaries</DCC_ExeOutput>
         <DCC_ImageBase>00400000</DCC_ImageBase>
         <DCC_MapFile>3</DCC_MapFile>

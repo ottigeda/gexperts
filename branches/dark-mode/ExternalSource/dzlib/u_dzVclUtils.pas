@@ -10,6 +10,10 @@ unit u_dzVclUtils;
 // WindowProc are written to the console window -> requires a console
 {.$DEFINE dzMESSAGEDEBUG}
 
+// If this conditional define is set, Support for TDbGrid is disabled
+// and the unit DBGrids is not required.
+{.$DEFINE dzVCL_DISABLE_DBGRID_SUPPORT}
+
 interface
 
 uses
@@ -26,7 +30,9 @@ uses
   StdCtrls,
   ExtCtrls,
   Grids,
+{$ifNdef dzVCL_DISABLE_DBGRID_SUPPORT}
   DBGrids,
+{$endif dzVCL_DISABLE_DBGRID_SUPPORT}
   Buttons,
   Menus,
   Themes,
@@ -179,12 +185,14 @@ function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet;
 function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet;
   const _ConstantCols: array of Integer; _RowOffset: Integer; out _RequiredSize: Integer): Boolean; overload;
 
+{$ifNdef dzVCL_DISABLE_DBGRID_SUPPORT}
 ///<summary> Resizes the columns of a TDbGrid to fit their contents
 ///          @param Grid is the TCustomDbGrid to work on
 ///          @param Options is a TResizeOptionSet specifying additional options,
 ///                         defaults to an empty set. </summary>
 procedure TDbGrid_Resize(_Grid: TCustomDbGrid; _Options: TResizeOptionSet = []; _MinWidth: Integer = 100); overload;
 procedure TDbGrid_Resize(_Grid: TCustomDbGrid; _Options: TResizeOptionSet; _MinWidths: array of Integer); overload;
+{$endif dzVCL_DISABLE_DBGRID_SUPPORT}
 
 ///<summary>
 /// Reduce the width of grid columns so there is no horizontal scroll bar.
@@ -195,6 +203,7 @@ procedure TGrid_RestrictToGridWdith(_Grid: TCustomGrid; _ConstantCols: array of 
 
 procedure TStringGrid_AdjustRowHeight(_sg: TStringGrid);
 
+{$ifNdef dzVCL_DISABLE_DBGRID_SUPPORT}
 ///<summary>
 /// Adds a column to the TDbGrid
 /// @param Field is the field name
@@ -207,6 +216,7 @@ function TDbGrid_AddColumn(_dbg: TDBGrid; const _Field: string; const _Title: st
 ///<summary>
 /// Returns the value of the protected field VisibleRowCount </summary>
 function TDbGrid_VisibleRowCount(_dbg: TDBGrid): Integer;
+{$endif dzVCL_DISABLE_DBGRID_SUPPORT}
 
 ///<summary>
 /// Returns the content of a Grid as a string
@@ -2068,8 +2078,10 @@ end;
 type
   TGridHack = class(TCustomGrid);
 
+{$ifNdef dzVCL_DISABLE_DBGRID_SUPPORT}
 type
   TDbGridHack = class(TCustomDbGrid);
+{$endif dzVCL_DISABLE_DBGRID_SUPPORT}
 
 function TGrid_GetText(_Grid: TCustomGrid; _IncludeFixed: Boolean = False): string;
 var
@@ -2925,8 +2937,13 @@ var
   ColWidth: Integer;
   ColText: string;
 begin
+{$ifdef dzVCL_DISABLE_DBGRID_SUPPORT}
+  if Assigned(_Grid) and ( (_Grid.ClassName = 'TCustomDBGrid') or (_Grid.ClassName = 'TDBGrid') ) then
+    if _Col = 0 then
+{$else dzVCL_DISABLE_DBGRID_SUPPORT}
   if TCustomGrid(_Grid) is TCustomDbGrid then
     if (dgIndicator in TDbGridHack(_Grid).Options) and (_Col = 0) then
+{$endif dzVCL_DISABLE_DBGRID_SUPPORT}
       Exit; //==>
   ColText := _Grid.GetEditText(_Col, _Row);
   ColWidth := _Grid.Canvas.TextWidth(ColText);
@@ -3140,6 +3157,7 @@ begin
   _sg.DefaultRowHeight := rh + 4;
 end;
 
+{$ifNdef dzVCL_DISABLE_DBGRID_SUPPORT}
 function TDbGrid_CalcAdditionalWidth(_Grid: TCustomDbGrid): Integer;
 var
   Grid: TDbGridHack;
@@ -3308,6 +3326,7 @@ function TDbGrid_VisibleRowCount(_dbg: TDBGrid): Integer;
 begin
   Result := TDbGridHack(_dbg).VisibleRowCount;
 end;
+{$endif dzVCL_DISABLE_DBGRID_SUPPORT}
 
 function TPageControl_AddTabSheet(_PageControl: TPageControl; const _Caption: string): TTabSheet;
 begin
@@ -7697,7 +7716,7 @@ end;
 type
   TScreenMonitorCacheFix = class(TWindowProcHook)
   private
-    procedure HandleActiveFormChangedOnce(_Sender: TObject);
+    class procedure HandleActiveFormChangedOnce(_Sender: TObject);
     class function TryInitialize: Boolean; static;
   protected
     procedure NewWindowProc(var _Msg: TMessage); override;
@@ -7724,7 +7743,7 @@ begin
   inherited;
 end;
 
-procedure TScreenMonitorCacheFix.HandleActiveFormChangedOnce(_Sender: TObject);
+class procedure TScreenMonitorCacheFix.HandleActiveFormChangedOnce(_Sender: TObject);
 begin
   // we must not access self here as this event handler is assigned without instantiating the class
   if TryInitialize then begin

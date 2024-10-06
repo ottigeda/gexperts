@@ -12,9 +12,8 @@ interface
 
 uses
   Classes, Controls, Forms, StdCtrls, ExtCtrls, ToolsAPI, ComCtrls, Buttons,
-  GX_Experts, GX_ConfigurationInfo, GX_EditorChangeServices, GX_CheckButton,
-  Contnrs, Messages,
-  Types, GX_BaseForm;
+  GX_Experts, GX_ConfigurationInfo, GX_EditorChangeServices, Contnrs, Messages,
+  Types, GX_BaseForm, GX_CheckButton;
 
 type
   TIsValidComponentName = function (const OldName, NewName: WideString; var Reason: WideString): Boolean of object;
@@ -923,6 +922,7 @@ begin
         end
         else
           OtherProps := nil;
+//        frm.InitDpiScaler;
 
         if UseRules then
         begin

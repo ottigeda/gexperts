@@ -50,7 +50,7 @@ PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=..\..\source\Framework;..\..\ExternalSource;..\..\ExternalSource\RegExpr;..\..\ExternalSource\mwParser;..\..\ExternalSource\Abbrevia;..\..\ExternalSource\UniSynEdit;..\..\ExternalSource\dzlib;..\..\source\Include
 Packages=rtl;vcl;vclx;vclsmp;designide
-Conditionals=NO_TRANSLATION;NO_TRANSLATION_HINT;NO_DELPHI2007UP_HINT
+Conditionals=NO_TRANSLATION;NO_TRANSLATION_HINT;NO_DELPHI2007UP_HINT;dzVCL_DISABLE_DBGRID_SUPPORT
 DebugSourceDirs=
 UsePackages=1
 

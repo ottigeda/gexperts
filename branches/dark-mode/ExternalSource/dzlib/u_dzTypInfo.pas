@@ -48,6 +48,7 @@ function TryGetFloatProperty(_Instance: TObject; const _Name: string; out _Value
 function TryGetIntProperty(_Instance: TObject; const _Name: string; out _Value: Integer): Boolean;
 function TrySetIntProperty(_Instance: TObject; const _Name: string; _Value: Integer): Boolean;
 function TryGetBoolProperty(_Instance: TObject; const _Name: string; out _Value: Boolean): Boolean;
+function TrySetBoolProperty(_Instance: TObject; const _Name: string; _Value: Boolean): Boolean;
 ///<summary>
 /// Reads an enum type property with type checking.
 /// @param TypeInfo is the PTypeInfo for the enum, pass TypeInfo(YourEnumType) here </summary>
@@ -226,6 +227,16 @@ begin
     and (GetTypeData(PropInfo.PropType^)^.BaseType^ = TypeInfo(Boolean));
   if Result then
     _Value := Boolean(GetOrdProp(_Instance, PropInfo));
+end;
+
+function TrySetBoolProperty(_Instance: TObject; const _Name: string; _Value: Boolean): Boolean;
+var
+  PropInfo: PPropInfo;
+begin
+  PropInfo := GetPropInfo(_Instance.ClassInfo, _Name);
+  Result := Assigned(PropInfo) and (PropInfo.PropType^.Kind = tkEnumeration);
+  if Result then
+    SetOrdProp(_Instance, PropInfo, Ord(_Value));
 end;
 
 function TryGetEnumProperty(_Instance: TObject; const _Name: string; const _TypeInfo: PTypeInfo;

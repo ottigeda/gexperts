@@ -456,6 +456,7 @@ begin
   FOriginalOptionsGroupWidth := gbxOptions.Width;
   FOriginalWhereGroupWidth := gbxWhere.Width;
   OnResize := FormResize;
+  OnShow   := FormShow;
 end;
 
 procedure TfmGrepSearch.cbDirectoryOnDropFiles(_Sender: TObject; _Files: TStrings);
