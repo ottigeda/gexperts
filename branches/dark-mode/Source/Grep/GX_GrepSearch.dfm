@@ -12,6 +12,7 @@ object fmGrepSearch: TfmGrepSearch
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   KeyPreview = True
+  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   ShowHint = True
@@ -19,6 +20,7 @@ object fmGrepSearch: TfmGrepSearch
   DesignSize = (
     681
     588)
+  PixelsPerInch = 96
   TextHeight = 14
   object lblFind: TLabel
     Left = 14
