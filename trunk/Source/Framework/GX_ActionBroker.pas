@@ -499,7 +499,7 @@ end;
 
 procedure TGxMenuAction.SetShortCut(Value: TShortCut);
 begin
-  SendDebugWarning(ClassName + '.SetShortCut');
+{(*)}{$IFOPT D+} SendDebugWarning(ClassName + '.SetShortCut'); {$ENDIF}{*)}
   // RAD Studio 12.1: IOTAKeyboardBinding.BindKeyboard is received when another 'ToolsApi' package is re-build (Unload/Install).
   // This case is not handled in GX_KbdShortCutBroker.pas and 'GExperts' disappear from 'Tools/Editor/Key Mappings'.
   // Then Action ShortCut is first cleared (nil) then re-assigned - the check below fails: if (ShortCut <> Value) ...
@@ -565,7 +565,7 @@ end;
 
 procedure TGxToolsAction.SetShortCut(Value: TShortCut);
 begin
-  SendDebugWarning(ClassName + '.SetShortCut');
+{(*)}{$IFOPT D+} SendDebugWarning(ClassName + '.SetShortCut'); {$ENDIF}{*)}
   // RAD Studio 12.1: IOTAKeyboardBinding.BindKeyboard is received when another 'ToolsApi' package is re-build (Unload/Install).
   // This case is not handled in GX_KbdShortCutBroker.pas and 'GExperts' disappear from 'Tools/Editor/Key Mappings'.
   // Then Action ShortCut is first cleared (nil) then re-assigned - the check below fails: if (ShortCut <> Value) ...
