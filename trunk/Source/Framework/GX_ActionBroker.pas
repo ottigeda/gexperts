@@ -99,7 +99,7 @@ type
 {$ENDIF}
     procedure doSetShortcut(Value: TShortCut);
   protected
-    procedure SetShortCut(Value: TShortCut); {$ifdef GX_VER240_up} override; {$endif}
+    procedure SetShortCut(Value: TShortCut); {$IFDEF GX_VER240_up} override; {$ENDIF}
     function GetAssociatedMenuItem: TMenuItem;
   public
     constructor Create(_Owner: TComponent; const _Name: string); reintroduce;
@@ -112,9 +112,11 @@ type
 {$IFDEF GX_KEYBOARD_BINDING_FIX}
     FTimedValue: TShortCut;
     FTimedSet: TTimedCallback;
-{$ENDIF}
     procedure HandleDelayedSetShortcut(Sender: TObject);
-    procedure SetShortCut(Value: TShortCut); {$ifdef GX_VER240_up} override; {$endif}
+{$ENDIF}
+    procedure doSetShortcut(Value: TShortCut);
+  protected
+    procedure SetShortCut(Value: TShortCut); {$IFDEF GX_VER240_up} override; {$ENDIF}
     procedure doOnExecute(Sender: TObject);
   public
     destructor Destroy; override;
@@ -519,6 +521,8 @@ procedure TGxMenuAction.HandleDelayedSetShortcut(Sender: TObject);
 var
   Value: TShortCut;
 begin
+{(*)}{$IFOPT D+} SendDebugWarning(ClassName + '.HandleDelayedSetShortcut'); {$ENDIF}{*)}
+
   Value := FTimedValue;
   FTimedSet := nil;
 
@@ -534,6 +538,8 @@ end;
 
 procedure TGxMenuAction.doSetShortcut(Value: TShortCut);
 begin
+{(*)}{$IFOPT D+} SendDebugWarning(ClassName + '.doSetShortcut'); {$ENDIF}{*)}
+
   IdeShortCut := nil; // Unregisters the shortcut with the IDE
 
   if Value <> 0 then begin
@@ -577,23 +583,26 @@ begin
     FTimedSet := TTimedCallback.Create(HandleDelayedSetShortcut, 50, True)
   else
 {$ENDIF GExpertsBPL_FixTimedSetShortCut}
-    HandleDelayedSetShortcut(nil);
+  doSetShortcut(Value);
 end;
 
 procedure TGxToolsAction.HandleDelayedSetShortcut(Sender: TObject);
 var
   Value: TShortCut;
 begin
+{(*)}{$IFOPT D+} SendDebugWarning(ClassName + '.HandleDelayedSetShortcut'); {$ENDIF}{*)}
   Value := FTimedValue;
   FTimedSet := nil;
+  doSetShortcut(Value);
+end;
+
+procedure TGxToolsAction.doSetShortcut(Value: TShortCut);
+begin
+{(*)}{$IFOPT D+} SendDebugWarning(ClassName + '.doSetShortcut'); {$ENDIF}{*)}
   // Not necessary under Delphi 5/6 since the callbacks never happen anyway
   if RunningDelphi7OrGreater then
   begin
     if Assigned(IdeShortCut) and (IdeShortCut.ShortCut <> Value) then begin
-{$IFOPT D+}
-      if not Assigned(Sender) and (Value = 0) then
-        SendDebugWarning(ClassName + ': not timed SetShortCut(0)!');
-{$ENDIF}
       IdeShortCut := nil; // Unregisters the shortcut with the IDE
     end;
 
