@@ -92,11 +92,14 @@ type
   TGxMenuAction = class(TGxCustomAction, IUnknown, IGxAction, IGxMenuAction)
   private
     FAssociatedMenuItem: TMenuItem;
+{$IFDEF GX_KEYBOARD_BINDING_FIX}
     FTimedValue: TShortCut;
     FTimedSet: TTimedCallback;
-    procedure DoSetShortCut(Sender: TObject);
-    procedure SetShortCut(Value: TShortCut); {$ifdef GX_VER240_up} override; {$endif}
+    procedure HandleDelayedSetShortcut(Sender: TObject);
+{$ENDIF}
+    procedure doSetShortcut(Value: TShortCut);
   protected
+    procedure SetShortCut(Value: TShortCut); {$ifdef GX_VER240_up} override; {$endif}
     function GetAssociatedMenuItem: TMenuItem;
   public
     constructor Create(_Owner: TComponent; const _Name: string); reintroduce;
@@ -106,8 +109,10 @@ type
 type
   TGxToolsAction = class(TGxCustomAction, IUnknown, IGxAction)
   private
+{$IFDEF GX_KEYBOARD_BINDING_FIX}
     FTimedValue: TShortCut;
     FTimedSet: TTimedCallback;
+{$ENDIF}
     procedure DoSetShortCut(Sender: TObject);
     procedure SetShortCut(Value: TShortCut); {$ifdef GX_VER240_up} override; {$endif}
     procedure doOnExecute(Sender: TObject);
@@ -481,7 +486,9 @@ end;
 
 destructor TGxMenuAction.Destroy;
 begin
+{$IFDEF GX_KEYBOARD_BINDING_FIX}
   FreeAndNil(FTimedSet);
+{$ENDIF GX_KEYBOARD_BINDING_FIX}
   inherited;
 end;
 
@@ -496,19 +503,37 @@ begin
   // This case is not handled in GX_KbdShortCutBroker.pas and 'GExperts' disappear from 'Tools/Editor/Key Mappings'.
   // Then Action ShortCut is first cleared (nil) then re-assigned - the check below fails: if (ShortCut <> Value) ...
   // Fix by using timed callback for updating the ShortCut.
+{$IFDEF GX_KEYBOARD_BINDING_FIX}
   FreeAndNil(FTimedSet);
   FTimedValue := Value;
-  FTimedSet := TTimedCallback.Create(DoSetShortCut, 50, True);
+  if Value = 0 then
+    FTimedSet := TTimedCallback.Create(HandleDelayedSetShortcut, 50, True)
+  else
+{$ENDIF GX_KEYBOARD_BINDING_FIX}
+    doSetShortcut(Value);
 end;
 
-procedure TGxMenuAction.DoSetShortCut(Sender: TObject);
+{$IFDEF GX_KEYBOARD_BINDING_FIX}
+procedure TGxMenuAction.HandleDelayedSetShortcut(Sender: TObject);
 var
-  Value:TShortCut;
+  Value: TShortCut;
 begin
   Value := FTimedValue;
   FTimedSet := nil;
-  if Assigned(IdeShortCut) and (IdeShortCut.ShortCut <> Value) then
-    IdeShortCut := nil;  // Unregisters the shortcut with the IDE
+
+  if Assigned(IdeShortCut) and (IdeShortCut.ShortCut <> Value) then begin
+{$IFOPT D+}
+    if not Assigned(Sender) and (Value = 0) then
+      SendDebugWarning(ClassName + ': not timed SetShortCut(0)!');
+{$ENDIF}
+    doSetShortcut(Value);
+  end;
+end;
+{$ENDIF GX_KEYBOARD_BINDING_FIX}
+
+procedure TGxMenuAction.doSetShortcut(Value: TShortCut);
+begin
+  IdeShortCut := nil; // Unregisters the shortcut with the IDE
 
   if Value <> 0 then begin
     if Assigned(FAssociatedMenuItem) and not Assigned(IdeShortCut) then
@@ -520,7 +545,7 @@ begin
     end;
   end;
 
-  inherited;
+  inherited SetShortCut(Value);
 end;
 
 { TGxToolsAction }
@@ -545,7 +570,12 @@ begin
   // Fix by using timed callback for updating the ShortCut.
   FreeAndNil(FTimedSet);
   FTimedValue := Value;
-  FTimedSet := TTimedCallback.Create(DoSetShortCut, 50, True);
+{$IFDEF GX_KEYBOARD_BINDING_FIX}
+  if Value = 0 then
+    FTimedSet := TTimedCallback.Create(DoSetShortCut, 50, True)
+  else
+{$ENDIF GExpertsBPL_FixTimedSetShortCut}
+    DoSetShortCut(nil);
 end;
 
 procedure TGxToolsAction.DoSetShortCut(Sender: TObject);
@@ -557,8 +587,13 @@ begin
   // Not necessary under Delphi 5/6 since the callbacks never happen anyway
   if RunningDelphi7OrGreater then
   begin
-    if Assigned(IdeShortCut) and (IdeShortCut.ShortCut <> Value) then
-      IdeShortCut := nil;  // Unregisters the shortcut with the IDE
+    if Assigned(IdeShortCut) and (IdeShortCut.ShortCut <> Value) then begin
+{$IFOPT D+}
+      if not Assigned(Sender) and (Value = 0) then
+        SendDebugWarning(ClassName + ': not timed SetShortCut(0)!');
+{$ENDIF}
+      IdeShortCut := nil; // Unregisters the shortcut with the IDE
+    end;
 
     if Value <> 0 then begin
       if not Assigned(IdeShortCut) then
