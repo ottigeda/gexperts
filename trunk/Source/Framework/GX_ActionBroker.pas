@@ -113,7 +113,7 @@ type
     FTimedValue: TShortCut;
     FTimedSet: TTimedCallback;
 {$ENDIF}
-    procedure DoSetShortCut(Sender: TObject);
+    procedure HandleDelayedSetShortcut(Sender: TObject);
     procedure SetShortCut(Value: TShortCut); {$ifdef GX_VER240_up} override; {$endif}
     procedure doOnExecute(Sender: TObject);
   public
@@ -499,6 +499,7 @@ end;
 
 procedure TGxMenuAction.SetShortCut(Value: TShortCut);
 begin
+  SendDebugWarning(ClassName + '.SetShortCut');
   // RAD Studio 12.1: IOTAKeyboardBinding.BindKeyboard is received when another 'ToolsApi' package is re-build (Unload/Install).
   // This case is not handled in GX_KbdShortCutBroker.pas and 'GExperts' disappear from 'Tools/Editor/Key Mappings'.
   // Then Action ShortCut is first cleared (nil) then re-assigned - the check below fails: if (ShortCut <> Value) ...
@@ -564,6 +565,7 @@ end;
 
 procedure TGxToolsAction.SetShortCut(Value: TShortCut);
 begin
+  SendDebugWarning(ClassName + '.SetShortCut');
   // RAD Studio 12.1: IOTAKeyboardBinding.BindKeyboard is received when another 'ToolsApi' package is re-build (Unload/Install).
   // This case is not handled in GX_KbdShortCutBroker.pas and 'GExperts' disappear from 'Tools/Editor/Key Mappings'.
   // Then Action ShortCut is first cleared (nil) then re-assigned - the check below fails: if (ShortCut <> Value) ...
@@ -572,13 +574,13 @@ begin
   FTimedValue := Value;
 {$IFDEF GX_KEYBOARD_BINDING_FIX}
   if Value = 0 then
-    FTimedSet := TTimedCallback.Create(DoSetShortCut, 50, True)
+    FTimedSet := TTimedCallback.Create(HandleDelayedSetShortcut, 50, True)
   else
 {$ENDIF GExpertsBPL_FixTimedSetShortCut}
-    DoSetShortCut(nil);
+    HandleDelayedSetShortcut(nil);
 end;
 
-procedure TGxToolsAction.DoSetShortCut(Sender: TObject);
+procedure TGxToolsAction.HandleDelayedSetShortcut(Sender: TObject);
 var
   Value: TShortCut;
 begin
