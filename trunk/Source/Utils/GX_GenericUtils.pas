@@ -38,7 +38,7 @@ type
   // that made it hard to find accidental usages of the wrong type.
   GXNativeInt = Integer;
   GXNativeUInt = Cardinal;
-{$IFNDEF GX_DELPHI2009_UP}
+{$IF not declared(UInt32)}
   UInt32 = Cardinal;
 {$ENDIF}
 
