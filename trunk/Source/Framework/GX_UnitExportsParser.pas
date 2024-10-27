@@ -1230,8 +1230,8 @@ var
   WasLoadedFromCache: Boolean;
   UnitName: string;
   CacheFn: string;
-  UnitTimestamp: UInt32;
-  CacheTimestamp: UInt32;
+  UnitTimestamp: GXNativeUInt;
+  CacheTimestamp: GXNativeUInt;
   Loading: TStopwatch;
   Inserting: TStopwatch;
   Sorting: TStopwatch;
