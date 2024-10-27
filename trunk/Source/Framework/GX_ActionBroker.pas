@@ -559,7 +559,9 @@ end;
 
 destructor TGxToolsAction.Destroy;
 begin
+{$IFDEF GX_KEYBOARD_BINDING_FIX}
   FreeAndNil(FTimedSet);
+{$ENDIF GX_KEYBOARD_BINDING_FIX}
   inherited;
 end;
 
@@ -576,16 +578,17 @@ begin
   // This case is not handled in GX_KbdShortCutBroker.pas and 'GExperts' disappear from 'Tools/Editor/Key Mappings'.
   // Then Action ShortCut is first cleared (nil) then re-assigned - the check below fails: if (ShortCut <> Value) ...
   // Fix by using timed callback for updating the ShortCut.
+{$IFDEF GX_KEYBOARD_BINDING_FIX}
   FreeAndNil(FTimedSet);
   FTimedValue := Value;
-{$IFDEF GX_KEYBOARD_BINDING_FIX}
   if Value = 0 then
     FTimedSet := TTimedCallback.Create(HandleDelayedSetShortcut, 50, True)
   else
-{$ENDIF GExpertsBPL_FixTimedSetShortCut}
+{$ENDIF GX_KEYBOARD_BINDING_FIX}
   doSetShortcut(Value);
 end;
 
+{$IFDEF GX_KEYBOARD_BINDING_FIX}
 procedure TGxToolsAction.HandleDelayedSetShortcut(Sender: TObject);
 var
   Value: TShortCut;
@@ -595,6 +598,7 @@ begin
   FTimedSet := nil;
   doSetShortcut(Value);
 end;
+{$ENDIF GX_KEYBOARD_BINDING_FIX}
 
 procedure TGxToolsAction.doSetShortcut(Value: TShortCut);
 begin
