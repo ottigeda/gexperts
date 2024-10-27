@@ -771,10 +771,10 @@ begin
     FCodeText.HighLighter := gxpCpp
   else
     FCodeText.Highlighter := gxpNone;
-  FCodeText.Align := alClient;
-  FCodeText.Font.Name := 'Courier New';
-  FCodeText.Font.Size := 10;
   FCodeText.Parent := pnlFunctionBody;
+  FCodeText.Align := alClient;
+  pnlFunctionBody.Font.Name := 'Courier New';
+  pnlFunctionBody.Font.Size := 10;
   FCodeText.ReadOnly := True;
 end;
 
@@ -860,7 +860,7 @@ var
   w: integer;
 begin
   SetCodeViewVisibility(FOptions.CodeViewVisible);
-  FCodeText.Font.Assign(FOptions.CodeViewFont);
+  pnlFunctionBody.Font.Assign(FOptions.CodeViewFont);
   lvProcs.Font.Assign(FOptions.DialogFont);
 
   if FOptions.AlignmentChanged or bLoading then

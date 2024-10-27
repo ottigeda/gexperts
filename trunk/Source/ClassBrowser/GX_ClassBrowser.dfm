@@ -14,7 +14,7 @@ object fmClassBrowser: TfmClassBrowser
   Font.Style = []
   KeyPreview = True
   Menu = MainMenu
-  OldCreateOrder = True
+  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnActivate = FormActivate
@@ -223,6 +223,20 @@ object fmClassBrowser: TfmClassBrowser
       end
       object tshCode: TTabSheet
         Caption = '&Code'
+        object pnlCode: TPanel
+          Left = 0
+          Top = 0
+          Width = 376
+          Height = 415
+          Margins.Left = 4
+          Margins.Top = 4
+          Margins.Right = 4
+          Margins.Bottom = 4
+          Align = alClient
+          BevelOuter = bvNone
+          Caption = 'pnlCode'
+          TabOrder = 0
+        end
       end
     end
   end

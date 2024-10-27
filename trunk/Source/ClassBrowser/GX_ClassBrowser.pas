@@ -137,6 +137,7 @@ type
     pmiBrowserSep2: TMenuItem;
     pmiBrowserPrintClassHierarchy: TMenuItem;
     pmiBrowserPrintClassReport: TMenuItem;
+    pnlCode: TPanel;
     procedure tvBrowseChange(Sender: TObject; Node: TTreeNode);
     procedure pnlDataResize(Sender: TObject);
     procedure lvInfoChange(Sender: TObject; Item: TListItem; Change: TItemChange);

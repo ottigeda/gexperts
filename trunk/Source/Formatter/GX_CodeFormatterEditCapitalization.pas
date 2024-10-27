@@ -118,8 +118,8 @@ begin
   FWords.Parent := p_Items;
   FWords.HighLighter := gxpNone;
   FWords.Align := alClient;
-  FWords.Font.Name := 'Courier New';
-  FWords.Font.Size := 10;
+  p_Items.Font.Name := 'Courier New';
+  p_Items.Font.Size := 10;
   FWords.OnEnter := HandleOnEnterList;
   FWords.OnExit := HandleOnExitList;
   FWords.ActiveLineColor := clYellow;
