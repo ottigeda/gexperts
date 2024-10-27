@@ -49,8 +49,7 @@ implementation
 {$R *.dfm}
 
 uses
-{$IFOPT D+}GX_DbugIntf,
-{$ENDIF}
+{(*}{$IFOPT D+}GX_DbugIntf, {$ENDIF}{*)}
   Registry,
   Menus,
   GX_GenericUtils,
@@ -91,11 +90,7 @@ begin
 end;
 
 type
-{$IFDEF GX_DELPHIXE2_UP}
-  NumberOfBytesType = NativeUInt;
-{$ELSE}
-  NumberOfBytesType = Cardinal;
-{$ENDIF}
+  NumberOfBytesType = GXNativeUInt;
 
 procedure HookProc(Proc, Dest: Pointer; var BackupCode: TXRedirCode);
 var
