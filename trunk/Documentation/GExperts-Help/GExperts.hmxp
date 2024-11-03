@@ -23,6 +23,7 @@
               <task-config-value name="table_of_contents">Table of Contents</task-config-value>
               <task-config-value name="make0include">CHM</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
+              <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
             </task-config-group>
           </export-task>
           <export-task name="Publish your project in HTML format" format="HTM">
@@ -34,6 +35,7 @@
               <task-config-value name="deletetemp">1</task-config-value>
               <task-config-value name="make0include">CHM</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
+              <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
             </task-config-group>
           </export-task>
         </export-tasks>
@@ -51,8 +53,8 @@
           </export-task>
           <export-task name="Publish as HTM" format="HTM">
             <task-config-group name="settings">
-              <task-config-value name="outputfile">..\webhelp\index.html</task-config-value>
-              <task-config-value name="skin">GExpertsSkinBlack.hmskin</task-config-value>
+              <task-config-value name="outputfile">..\..\webhelp\index.html</task-config-value>
+              <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
               <task-config-value name="make3include">HTML</task-config-value>
               <task-config-value name="make3status">*</task-config-value>
             </task-config-group>
@@ -559,7 +561,7 @@ GExperts Help
       <config-value name="imageconversion">1</config-value>
       <config-value name="jpgquality">90</config-value>
       <config-value name="imagehint">1</config-value>
-      <config-value name="outputfile">..\webhelp\index.html</config-value>
+      <config-value name="outputfile">..\..\webhelp\index.html</config-value>
       <config-value name="layoutthreeframe">0</config-value>
       <config-value name="exportutf8bom">1</config-value>
       <config-value name="synctimestamp">1</config-value>
