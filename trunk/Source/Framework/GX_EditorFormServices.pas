@@ -92,7 +92,7 @@ type
     FEditControl: TWinControl;
   protected
     // Overriden IUnknown implementations to implement life-time
-    // management in a non-TInterfacedObject descendant.
+    // management in a TComponent descendant.
     function _AddRef: Integer; stdcall;
     function _Release: Integer; stdcall;
   protected
@@ -344,11 +344,15 @@ begin
     end;
     Dec(i);
   end;
-  Assert(i >= 0);
-  Assert(Assigned(AForm));
+  if (i < 0) or not Assigned(AForm) then begin
+    // This can happen, if there is an additional edit window, no idea why.
+    // Since we can't do a thing, we might as well exit instead of throwing an assertion error.
+    Exit; //==>
+  end;
 
   if csDesigning in AForm.ComponentState then
-    Exit;
+    Exit; //==>
+
   HostComponent := AForm.FindComponent(TGxEditorFormHostComponent.ClassName);
   if not Assigned(HostComponent) then
   begin
