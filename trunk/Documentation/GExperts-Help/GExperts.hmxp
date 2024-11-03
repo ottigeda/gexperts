@@ -18,7 +18,7 @@
           </export-task>
           <export-task name="Publish your project in CHM format" format="CHM">
             <task-config-group name="settings">
-              <task-config-value name="outputfile">..\GExperts.chm</task-config-value>
+              <task-config-value name="outputfile">..\..\Binaries\GExperts.chm</task-config-value>
               <task-config-value name="deletetemp">1</task-config-value>
               <task-config-value name="table_of_contents">Table of Contents</task-config-value>
               <task-config-value name="make0include">CHM</task-config-value>
@@ -29,7 +29,7 @@
           <export-task name="Publish your project in HTML format" format="HTM">
             <task-config-group name="settings">
               <task-config-value name="outputfile">..\..\webhelp\index.html</task-config-value>
-              <task-config-value name="table_of_contents">Inhaltsverzeichnis</task-config-value>
+              <task-config-value name="table_of_contents">Table of Contents</task-config-value>
               <task-config-value name="make3include">HTML</task-config-value>
               <task-config-value name="make3status">*</task-config-value>
               <task-config-value name="deletetemp">1</task-config-value>
@@ -44,8 +44,8 @@
         <export-tasks>
           <export-task name="Publish as CHM" format="CHM">
             <task-config-group name="settings">
-              <task-config-value name="outputfile">GExperts.chm</task-config-value>
-              <task-config-value name="skin">GExpertsSkinBlack.hmskin</task-config-value>
+              <task-config-value name="outputfile">..\..\Binaries\GExperts.chm</task-config-value>
+              <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
               <task-config-value name="deletetemp">1</task-config-value>
               <task-config-value name="make0include">CHM,PDF,EBOOK</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
@@ -57,6 +57,17 @@
               <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
               <task-config-value name="make3include">HTML</task-config-value>
               <task-config-value name="make3status">*</task-config-value>
+            </task-config-group>
+          </export-task>
+          <export-task name="Publish as PDF" format="PDF">
+            <task-config-group name="settings">
+              <task-config-value name="outputfile">..\GExperts.pdf</task-config-value>
+              <task-config-value name="template">$(HMSYS)Templates\PDF\Standard_manual.mnl</task-config-value>
+              <task-config-value name="highlighthotspots">0</task-config-value>
+              <task-config-value name="exportcomments">0</task-config-value>
+              <task-config-value name="exportcommentsdate">36526</task-config-value>
+              <task-config-value name="make4include">PDF</task-config-value>
+              <task-config-value name="make4status">*</task-config-value>
             </task-config-group>
           </export-task>
         </export-tasks>
@@ -161,7 +172,7 @@
       <config-value name="htmlpopuptextfile"></config-value>
       <config-value name="hhcwindowstyles">8389157</config-value>
       <config-value name="usesecondarywindows">1</config-value>
-      <config-value name="outputfile">GExperts.chm</config-value>
+      <config-value name="outputfile">..\..\Binaries\GExperts.chm</config-value>
       <config-value name="deletetemp">1</config-value>
       <config-value name="skin">..\GExpertsSkinBlack.hmskin</config-value>
     </config-group>
@@ -571,7 +582,7 @@ GExperts Help
       <config-value name="skin">..\GExpertsSkinBlack.hmskin</config-value>
     </config-group>
     <config-group name="pdf">
-      <config-value name="template">..\..\..\..\Program Files\Dev\Help and Manual\Templates\Standard_manual.mnl</config-value>
+      <config-value name="template">$(HMSYS)Templates\PDF\Standard_manual.mnl</config-value>
       <config-value name="style">0</config-value>
       <config-value name="createoutline">1</config-value>
       <config-value name="createhotspots">1</config-value>
@@ -599,7 +610,10 @@ GExperts Help
       <config-value name="cidfontmode">0</config-value>
       <config-value name="newfontsubsetting">1</config-value>
       <config-value name="textasglyphs">0</config-value>
-      <config-value name="outputfile">GExperts.pdf</config-value>
+      <config-value name="outputfile">..\GExperts.pdf</config-value>
+      <config-value name="highlighthotspots">0</config-value>
+      <config-value name="exportcomments">0</config-value>
+      <config-value name="exportcommentsdate">36526</config-value>
     </config-group>
     <config-group name="rtf">
       <config-value name="papersize"></config-value>
