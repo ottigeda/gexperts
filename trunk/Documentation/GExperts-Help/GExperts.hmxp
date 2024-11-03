@@ -7,7 +7,7 @@
         <export-tasks>
           <export-task name="Publish your project in PDF format" format="PDF">
             <task-config-group name="settings">
-              <task-config-value name="outputfile">GExperts.pdf</task-config-value>
+              <task-config-value name="outputfile">..\GExperts.pdf</task-config-value>
               <task-config-value name="template">$(HMSYS)Templates\pdf\Standard_manual.mnl</task-config-value>
               <task-config-value name="exportcomments">0</task-config-value>
               <task-config-value name="exportcommentsdate">36526</task-config-value>
@@ -18,7 +18,7 @@
           </export-task>
           <export-task name="Publish your project in CHM format" format="CHM">
             <task-config-group name="settings">
-              <task-config-value name="outputfile">GExperts.chm</task-config-value>
+              <task-config-value name="outputfile">..\GExperts.chm</task-config-value>
               <task-config-value name="deletetemp">1</task-config-value>
               <task-config-value name="table_of_contents">Table of Contents</task-config-value>
               <task-config-value name="make0include">CHM</task-config-value>
@@ -27,7 +27,7 @@
           </export-task>
           <export-task name="Publish your project in HTML format" format="HTM">
             <task-config-group name="settings">
-              <task-config-value name="outputfile">..\webhelp\index.html</task-config-value>
+              <task-config-value name="outputfile">..\..\webhelp\index.html</task-config-value>
               <task-config-value name="table_of_contents">Inhaltsverzeichnis</task-config-value>
               <task-config-value name="make3include">HTML</task-config-value>
               <task-config-value name="make3status">*</task-config-value>
