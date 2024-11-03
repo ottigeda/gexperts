@@ -107,6 +107,7 @@ type
     l_ForceDestkopAV: TLabel;
     chkAutoCloseIgnoreHints: TCheckBox;
     chkAutoCloseIgnoreWarnings: TCheckBox;
+    chkSplitterVisibility: TCheckBox;
     procedure btnEnumerateModulesClick(Sender: TObject);
     procedure chkEditorKeyTracingClick(Sender: TObject);
     procedure sbVCLDirClick(Sender: TObject);
@@ -574,6 +575,8 @@ begin
   chkCPMultiLineClick(chkCPMultiLine);
   chkMultiLineTabDockHostClick(chkMultiLineTabDockHost);
   chkCPMultiLineClick(chkCPMultiLine);
+
+  chkSplitterVisibility.Checked := IdeEnhancements.SplitterVisibilty;
 end;
 
 procedure TfmConfiguration.LoadSuppressedMessages;
@@ -659,6 +662,8 @@ begin
   IdeEnhancements.OICustomFontNames := chkOIFontNames.Checked;
   IdeEnhancements.OIHideHotCmds := chkOIHideHotCmds.Checked;
   IdeEnhancements.OIHideDescPane := chkOIHideDescPane.Checked;
+
+  IdeEnhancements.SplitterVisibilty := chkSplitterVisibility.Checked;
 
   IdeEnhancements.SaveSettings;
 end;

@@ -412,6 +412,14 @@ object fmConfiguration: TfmConfiguration
             Visible = False
             OnClick = b_CustomFontForNewFormsClick
           end
+          object chkSplitterVisibility: TCheckBox
+            Left = 194
+            Top = 368
+            Width = 487
+            Height = 21
+            Caption = 'Enhance Splitter Visibility'
+            TabOrder = 16
+          end
         end
         object gbxObjectInspector: TGroupBox
           Left = 448

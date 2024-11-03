@@ -98,6 +98,8 @@ type
     procedure SetEnhanceBuildEventsDialog(const Value: boolean);
     procedure SetEnhanceApplicationSettingsDialog(const Value: boolean);
     procedure SetAutoCloseMessageWindow(const Value: Boolean);
+    function GetSplitterVisibilty: boolean;
+    procedure SetSplitterVisibilty(const Value: boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -151,6 +153,8 @@ type
     // Multi-line tab dock host
     property MultiLineTabDockHost: Boolean read GetMultiLineTabDockHost write SetMultiLineTabDockHost;
     property DefaultMultiLineTabDockHost: Boolean read GetDefaultMultiLineTabDockHost write SetDefaultMultiLineTabDockHost;
+    // Visibility of splitter controls
+    property SplitterVisibilty: boolean read GetSplitterVisibilty write SetSplitterVisibilty;
   end;
 
 function IdeEnhancements: TIdeEnhancements;
@@ -167,7 +171,8 @@ uses
   GX_IdeSearchPathEnhancer, GX_IdeProjectOptionsEnhancer,
   GX_IdeToolPropertiesEnhancer, GX_IdeInstallPackagesEnhancer,
   GX_IdeObjectInspectorEnhancer, GX_IdeBuildEventsEnhancer,
-  GX_IdeApplicationSettingsEnhancer, GX_IdeMessageAutoClose, GX_IdeDockFormEnhancer;
+  GX_IdeApplicationSettingsEnhancer, GX_IdeMessageAutoClose, GX_IdeDockFormEnhancer,
+  GX_IdeSplitterVisibility;
 
 { TIdeEnhancements }
 
@@ -328,6 +333,8 @@ begin
   // MultiLine tab dock host
   MultiLineTabDockHost := ExpSettings.ReadBool('MultiLineTabDockHost', False);
   DefaultMultiLineTabDockHost := ExpSettings.ReadBool('DefaultMultiLineTabDockHost', True);
+
+  SplitterVisibilty := ExpSettings.ReadBool('EnhanceSplitterVisibility', False);
 end;
 
 procedure TIdeEnhancements.SaveSettings;
@@ -377,6 +384,8 @@ begin
   // MultiLine tab dock host
   ExpSettings.WriteBool('MultiLineTabDockHost', MultiLineTabDockHost);
   ExpSettings.WriteBool('DefaultMultiLineTabDockHost', DefaultMultiLineTabDockHost);
+
+  ExpSettings.WriteBool('EnhanceSplitterVisibility', SplitterVisibilty);
 end;
 
 procedure TIdeEnhancements.AddTabsToPopup(Sender: TObject);
@@ -792,6 +801,16 @@ end;
 function TIdeEnhancements.GetEnhanceIDEForms: Boolean;
 begin
   Result := TIDEFormEnhancements.GetEnabled;
+end;
+
+function TIdeEnhancements.GetSplitterVisibilty: boolean;
+begin
+  Result := TGxIdeSplitterVisibilityEnhancer.GetEnabled;
+end;
+
+procedure TIdeEnhancements.SetSplitterVisibilty(const Value: Boolean);
+begin
+  TGxIdeSplitterVisibilityEnhancer.SetEnabled(Value);
 end;
 
 function TIdeEnhancements.GetMultiLineTabDockHost: Boolean;
