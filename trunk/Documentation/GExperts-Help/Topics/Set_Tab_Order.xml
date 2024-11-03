@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Set Tab Order</title>
+  <keywords>
+    <keyword translate="true">Set Tab Order</keyword>
+    <keyword translate="true">Tab Order</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Set Tab Order</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This expert enables you to quickly modify the tab order of a form&apos;s components. &#160;There are two major modes of usage for this expert. &#160;If you hold down the Shift key and select multiple components, the expert assumes you have selected components that share a parent and you wish to set the tab order for those components to the selection order (this mode is not supported in Delphi 2005, due to an IDE bug). &#160;If a single component is selected that contains child components, the expert attempts to guess a good tab order for those child components based on their relative Top/Left positions and displays the suggested order in the Arrange Components tree. &#160;You can rearrange the suggested tab order displayed in the tree using drag and drop. &#160;As you select a component in the tree, it will be selected on the underlying form to ease identification.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Set Tab Order.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Notes:</text><text styleclass="Normal" translate="true"> This expert does not modify the TabStop property of your controls and will ignore components without a TabOrder property.</text></para>
+  </body>
+</topic>

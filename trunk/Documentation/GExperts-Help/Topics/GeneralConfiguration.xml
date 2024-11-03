@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-09-25T23:43:14.433+02:00" lasteditedby="jim" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">General Configuration</title>
+  <keywords>
+    <keyword translate="true">File Locations</keyword>
+    <keyword translate="true">General Configuration</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">General Configuration</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The General tab allows setting locations for the VCL source, the default GExperts data storage directory (where GExperts stores your .xml and other data files), and the GExperts help file. &#160;You can also choose to use a custom UI font for all GExperts forms. &#160;</text><text styleclass="Normal" style="font-weight:bold;" translate="true">Note</text><text styleclass="Normal" translate="true"> you should only choose 7-9 point variable width fonts, or you may find that the GExperts forms do not scale very well to fit larger text. &#160;If you don&apos;t specify a custom UI font, the OS default font is used (generally that is Tahoma 8-point for Windows XP and earlier releases, and Segoe UI 9 point for Vista and later).</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Configuration General.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

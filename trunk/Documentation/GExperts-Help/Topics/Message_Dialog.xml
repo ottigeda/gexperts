@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Message Dialog</title>
+  <keywords>
+    <keyword translate="true">Message Dialog</keyword>
+    <keyword translate="true">MessageDlg</keyword>
+    <keyword translate="true">MessageBox</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Message Dialog</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Message Dialog expert provides a convenient way to enter MessageDlg or Windows MessageBox function calls code into your source code. To use this expert, fill out the fields shown and press the OK button. &#160;The expert will then generate the required function call and insert it into the editor. &#160;If your message contains embedded carriage returns, those will be reflected in the message shown. &#160;You can test the execution of your dialog using the Test button or copy the code to the clipboard using the Clipboard button.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This expert can generate an if, negative if, or case/switch statement in Delphi or C++ code that tests the user&apos;s response to the dialog box against the responses marked in the Function Results box. &#160;To set your the current options as the default, check the &quot;Save as defaults&quot; checkbox before pressing OK. &#160;See the VCL and Windows API documentation for help with the options available for each type of message dialog.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Message Dialog.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Tip:</text><text styleclass="Normal" translate="true"> You can press Ctrl+Enter while typing in the message memo to confirm the dialog (click OK).</text></para>
+  </body>
+</topic>

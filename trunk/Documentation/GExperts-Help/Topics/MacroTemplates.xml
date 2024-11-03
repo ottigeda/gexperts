@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Macro Templates</title>
+  <keywords>
+    <keyword translate="true">Macro Templates</keyword>
+    <keyword translate="true">Procedure Header</keyword>
+    <keyword translate="true">Unit Header</keyword>
+    <keyword translate="true">Expand Macro Template</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Macro Templates</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Macro Templates is an editor expert that allows text snippets to be quickly copied into the code editor and those snippets can contain any number of %-delimited </text><link displaytype="text" defaultstyle="true" type="topiclink" href="MacroTemplates" styleclass="Normal" translate="true">macros</link><text styleclass="Normal" translate="true"> that can insert the current date/time, user name, procedure name, unit name, clipboard contents, etc. &#160;For a full list, see the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="SubstitutionMacros" styleclass="Normal" translate="true">Substitution Macros</link><text styleclass="Normal" translate="true"> topic. &#160;Note that some of the macros are only supported for Delphi source code. &#160;As an example, the following template would produce a Delphi unit header comment:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Courier Fixed" translate="true">// Unit: &#160; &#160;%UNIT%</text></para>
+    <para styleclass="Normal"><text styleclass="Courier Fixed" translate="true">// Purpose: |</text></para>
+    <para styleclass="Normal"><text styleclass="Courier Fixed" translate="true">// Author: &#160;%USER%</text></para>
+    <para styleclass="Normal"><text styleclass="Courier Fixed" translate="true">// Date: &#160; &#160;%DATETIME%</text></para>
+    <para styleclass="Normal"><text styleclass="Courier Fixed" translate="true">// Version: 1.0</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">For each macro template you define, you can configure the position where template will be inserted. It can be the current cursor position, the start of the unit, or the beginning of the current line in the editor. &#160;You can also configure a shortcut to activate your most frequently used templates. &#160;The &quot;|&quot; (pipe) character can be used inside your templates to define the desired cursor position after a template is inserted. &#160;The screenshot below shows the configuration interface for Macro Templates: </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Macro Templates.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">You can also define a list of units that should be present in the interface or implementation for each template to function. &#160;If the unit you define is not already used by the unit where the template is being inserted, the defined units are added to the appropriate uses clause. &#160;Right-click the implementation/interface list to add/delete items from the unit lists. &#160;Note that this feature is only supported in Delphi source code.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">On the Configuration tab, you can enter your name, initials, and an auto-incremented sequence number to use in generated templates (you could use it to create unique error numbers, etc.). &#160;The values you type there can be substituted into your templates using the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="SubstitutionMacros" styleclass="Normal" translate="true">Substitution Macros</link><text styleclass="Normal" translate="true"> (%PROGRAMMERNAME%, etc.). &#160;You can also configure your templates to be able to expand after pressing space and a short delay.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">One time-saving method of using the macro templates is to create macros using %SELECTION% that allow you to embed the selected lines inside a begin/end, try/finally, try/except, region, or any other type of block.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">There are several methods available to insert templates into the editor:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="text-indent:-13px; margin-left:27px; tabstops:27px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li style="text-indent:-13px; margin-left:27px; tabstops:27px left ;"><text styleclass="Normal" translate="true">Press the shortcut key you have assigned to the specific template you want to insert.</text></li>
+      <li style="text-indent:-13px; margin-left:27px; tabstops:27px left ;"><text styleclass="Normal" translate="true">Type the template name in the editor and press the shortcut assigned to the Macro Templates expert. &#160;If your typed name matches a template name, the template is inserted. &#160;If there is not a match, or no name was typed, the dialog described below is shown. &#160;The template name you typed in the editor will only be deleted if it matches the inserted template name.</text></li>
+      <li style="text-indent:-13px; margin-left:27px; tabstops:27px left ;"><text styleclass="Normal" translate="true">Press the shortcut assigned to the Macro Templates expert and choose the template from the list in the resulting dialog. &#160;The dialog supports incremental searching through your templates.</text></li>
+      <li style="text-indent:-13px; margin-left:27px; tabstops:27px left ;"><text styleclass="Normal" translate="true">Enable the option to expand templates when pressing space in the Configuration tab. &#160;Type the template name and press space. &#160;After your configured delay, the template will be inserted into the editor and the template name you typed will be automatically deleted.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Note:</text><text styleclass="Normal" translate="true"> Starting with BDS 2006, you may prefer to use the IDE&apos;s built-in live templates, which have added features such as ordered code insert points and custom scripting within the templates.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Note</text><text styleclass="Normal" translate="true">: Please see </text><link displaytype="text" defaultstyle="true" type="topiclink" href="CCompatibility" styleclass="Normal" translate="true">C++ and C# Compatibility</link><text styleclass="Normal" translate="true"> for some limitations with those file types.</text></para>
+  </body>
+</topic>

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="ErikBerry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">IDE Menu Shortcuts</title>
+  <keywords>
+    <keyword translate="true">IDE Menu Shortcuts</keyword>
+    <keyword translate="true">IDE Shortcuts</keyword>
+    <keyword translate="true">Main Menu</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">IDE Menu Shortcuts</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This expert enables you to configure any of the IDE menu shortcuts. &#160;To change the shortcut of a menu item, select the appropriate menu item, click &quot;Use Shortcut Expert for this menu item&quot; and type the desired shortcut into the Shortcut edit box. &#160;If you find your chosen shortcut does not work, it is likely because the shortcut is reserved by the code editor or another menu item, and you&apos;ll need to select a different, unused shortcut. &#160;This expert can not change the shortcuts for the GExperts menu items; for this purpose, use the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="GExperts_Configuration" styleclass="Normal" translate="true">GExperts Configuration</link><text styleclass="Normal" translate="true"> dialog.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="IDE Menu Shortcuts.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+  </body>
+</topic>

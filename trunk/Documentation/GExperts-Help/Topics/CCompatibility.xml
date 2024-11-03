@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="ErikBerry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">C++ and C# Compatibility</title>
+  <keywords>
+    <keyword translate="true">C# Compatibility</keyword>
+    <keyword translate="true">C++ Compatibility</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">C++ and C# Compatibility</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">The following tools should work with C++ code:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - IDE Menu Shortcuts</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - PE Information</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Grep Search / Grep Results</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Procedure List (no support for old C-style parameter lists)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Message Dialog</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Expert Manager</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - ASCII Chart</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Clipboard History</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Perfect Layout (deprecated)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Replace Components</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Set Tab Order</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Clean Directories</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Favorite Files (although one icon shows Delphi)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Code Librarian (although two icons show Delphi)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Source Export</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Code Proofreader (except compiler-assisted replacement)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Components to Code</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Backup Project (it only includes C++ source files in the project file)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - To Do List</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Rename Components</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Copy Component Names</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Editor Experts</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; - Insert Date/Time</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; - Comment Code</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; - Uncomment Code</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; - Locate/Move to Matching Delimiter</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; - Macro Templates (except for many %MACROS% that require source parsing)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; - Sort Selected Lines</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; - Previous/Next Identifier Reference</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; - Reverse Statement</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; - Change Case</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; - Select Identifier</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; - Align Lines</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; - Change Case</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - IDE Enhancements</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; - Multi-line Tabs</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; - Show Tabs as Buttons</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; - Component Palette Tab Names in Popup Menu</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; - Add a Windows Menu</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Code editor enhancements and the editor toolbar</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Macro Library</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Open File</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Find Component Reference</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Set Component Properties</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Hide/Show Non-Visual Components</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Set FocusControl</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">The following tools will only work with Delphi source code:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Class Browser</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Project Dependencies (only Pascal dependencies in the project file are found)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Several of the editor toolbar buttons, such as Used Units, Unit Positions, etc.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Uses Clause Manager</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">C# Compatibility</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">None of the tools that require source code parsing will work with C# code, because GExperts does not contain a C# code parser. &#160;The state of the other tools with respect to C# is that they may work, but there has been only limited testing to verify correct results, since RAD Studio no longer supports C# projects.</text></para>
+  </body>
+</topic>

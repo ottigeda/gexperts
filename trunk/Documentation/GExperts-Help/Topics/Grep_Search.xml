@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="ErikBerry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Grep Search</title>
+  <keywords>
+    <keyword translate="true">Grep Search</keyword>
+    <keyword translate="true">Grep Search and Replace</keyword>
+    <keyword translate="true">Search</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Grep Search</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">GExperts incorporates a powerful search facility that enables you to quickly locate text strings in files (ANSI/ASCII, UTF-8/UTF-16 unicode, and dfm/nfm/xfm form files). &#160;Using Grep, you can search the current file, all open project files, all files in your project or project group, or all files in a directory (optionally including sub-directories). &#160;The grep search is also available outside the IDE by executing the standalone GExpertsGrep.exe application.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To begin a search, select Grep Search from the GExperts menu. &#160;A dialog will appear like the one below where you can enter your search criteria. &#160;Note that if you have a string highlighted in the code editor when calling up this dialog, it will be used as the default search string.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Grep Search.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The various options in the search dialog are as follows:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Text to Find</text><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">: &#160;The text or </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Grep_Regular_Expressions" style="font-family:Arial; font-size:10pt; color:#008000;" translate="true">regular expression</link><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true"> to search for &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Options:</text></para>
+    <para style="margin-left:27px;"><table rowcount="5" colcount="2" style="width:auto; cell-padding:1px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
+      <tr style="vertical-align:top">
+        <td style="width:170px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Case sensitive:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Search is case sensitive (a and A are treated as different characters)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:170px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Whole word:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Return matches that are whole words (delimited by whitespace or punctuation such as &quot;().,&lt;&gt;-{}!@#$&quot;) &#160;Note that 0-9 and _ are treated as part of a word.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:170px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Search form files:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Include form files in the search (GExperts can search inside binary format form files)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:170px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Regular expression:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">The text to find is a </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Grep_Regular_Expressions" style="font-family:Arial; font-size:10pt; color:#008000;" translate="true">regular expression</link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:170px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Ignore Delphi comments:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Don&apos;t look for matches inside Delphi source file comments</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Where (search scope):</text></para>
+    <para style="margin-left:27px;"><table rowcount="6" colcount="2" style="width:auto; cell-padding:1px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
+      <tr style="vertical-align:top">
+        <td style="width:169px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Current file:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Only the file that is currently active for editing</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:169px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">All files in project:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">All files that are part of the current project. &#160;Note that this only includes the files the IDE reports as directly in the project, or those listed in the View Unit(s) dialog. &#160;As an example, for Delphi applications, the file must be present in the .dpr uses clause with a proper &apos;in&apos; specifier.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:169px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">All files in project group:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Al</text><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">l files that are part of the current project group</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:169px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Open project files:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">All project files that are currently open in a source code editor</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:169px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Directories:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">All files specified by the Directory Search options (see below)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:169px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Previous search result files:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Within files that had matches from the previous search (only enabled if a previous search found at least one match)</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Directory Search:</text></para>
+    <para style="tabstops:8px left ;"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Note:</text><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true"> This portion of the dialog is only enabled if &quot;Search in directories&quot; is selected. </text></para>
+    <para style="margin-left:27px;"><table rowcount="5" colcount="2" style="width:auto; cell-padding:1px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
+      <tr style="vertical-align:top">
+        <td style="width:169px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Directories:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">A semicolon separated list of directories to search</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:169px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">&quot;...&quot; Button:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Allows browsing for a search directory</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:169px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Exclude Dirs</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">A semicolon separated list of directories to exclude from the search (the exclusion is done via a substring match on the full directory and file name)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:169px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">File masks:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Limits the search to a semicolon separated list of file extensions</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:169px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Include subdirectories:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Enables recursive searching of the search directories</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Once you have entered the search criteria, click the OK button or press enter to initiate the search. &#160;As the search progresses, results will be shown in the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Grep_Results" styleclass="Normal" translate="true">Grep Results</link><text styleclass="Normal" translate="true"> window. &#160;From the results window, you can also perform multi-file search/replace on the matches.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The </text><link displaytype="text" defaultstyle="true" type="topiclink" href="GExperts_Configuration" styleclass="Normal" translate="true">GExperts Configuration</link><text styleclass="Normal" translate="true"> dialog allows setting the Grep Search option to use the current editor identifier as the default search string, if no block is selected.</text></para>
+  </body>
+</topic>

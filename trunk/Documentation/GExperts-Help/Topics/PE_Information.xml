@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="ErikBerry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">PE Information</title>
+  <keywords>
+    <keyword translate="true">PE Information</keyword>
+    <keyword translate="true">Library Dependencies</keyword>
+    <keyword translate="true">Required Packages</keyword>
+    <keyword translate="true">Imports/Exports</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">PE Information</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The PE Information expert enables you to examine the contents of a Portable Executable (PE) file. &#160;Almost all Win32 EXEs and DLLs are PE format files. &#160;Many other files are also PE files, such as Borland/CodeGear packages (DPL/BPL), Active X controls (OCX), etc. &#160;This expert supports IDE docking and drag and drop of files from Windows Explorer.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="PE Information.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To view the contents of a PE format file, click the Open button and select the file or drag and drop a file from your file manager. &#160;There are five tabs in the expert as follows:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="text-indent:-19px; margin-left:29px; tabstops:29px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li style="text-indent:-19px; margin-left:29px; tabstops:29px left ;"><text styleclass="Bulleted List" style="font-weight:bold;" translate="true">MS-DOS Header:</text><text styleclass="Bulleted List" translate="true"> All windows programs contain the MS-DOS header, sometimes referred to as the MS-DOS stub.</text></li>
+    </list>
+    <para style="margin-left:10px;"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="text-indent:-19px; margin-left:29px; tabstops:29px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li style="text-indent:-19px; margin-left:29px; tabstops:29px left ;"><text styleclass="Bulleted List" style="font-weight:bold;" translate="true">PE Header:</text><text styleclass="Bulleted List" translate="true"> The portable executable header contains data such as what machine the binary is targeted for (Intel 0x86, AMD x64, Alpha, MIPS, etc.).</text></li>
+    </list>
+    <para style="margin-left:10px;"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="text-indent:-19px; margin-left:29px; tabstops:29px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li style="text-indent:-19px; margin-left:29px; tabstops:29px left ;"><text styleclass="Bulleted List" style="font-weight:bold;" translate="true">PE Optional Header:</text><text styleclass="Bulleted List" translate="true"> Contrary to its name, this header is required in PE files. &#160;It contains information regarding the subsystem required, the version number of the OS required, etc.</text></li>
+    </list>
+    <para style="margin-left:10px;"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="text-indent:-19px; margin-left:29px; tabstops:29px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li style="text-indent:-19px; margin-left:29px; tabstops:29px left ;"><text styleclass="Bulleted List" style="font-weight:bold;" translate="true">Imports:</text><text styleclass="Bulleted List" translate="true"> This section contains a list of all files required by this file to run, including Borland packages. &#160;Selecting a file will cause a list of all functions imported from the selected file to appear.</text></li>
+    </list>
+    <para style="margin-left:10px;"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="text-indent:-19px; margin-left:29px; tabstops:29px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li style="text-indent:-19px; margin-left:29px; tabstops:29px left ;"><text styleclass="Bulleted List" style="font-weight:bold;" translate="true">Exports:</text><text styleclass="Bulleted List" translate="true"> Exported functions are the ones that are made publicly available for other applications call. &#160;This tab is mostly of use when examining DLLs or packages.</text></li>
+    </list>
+    <para style="margin-left:13px;"></para>
+    <para styleclass="Normal"><text styleclass="Bulleted List" style="font-weight:bold;" translate="true">Note</text><text styleclass="Bulleted List" translate="true">: This tool can detect 64-bit binaries, but will not be able to read all of the data from them (imports, exports, etc.).</text></para>
+  </body>
+</topic>

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Clipboard History</title>
+  <keywords>
+    <keyword translate="true">Clipboard History</keyword>
+    <keyword translate="true">Clipboard</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Clipboard History</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Clipboard History expert allows you to view the current and previous text contents of the clipboard. &#160;You can re-copy any of the saved items by double-clicking the item or pressing the Copy button. &#160;The saved items may be purged at any time by choosing Clear. &#160;This expert supports IDE docking.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Several options can be set via the configuration dialog, including the maximum number of items to store, whether or not Clipboard History starts capturing automatically when the IDE starts, and whether or not to hide the form after pasting the selected item into the code editor. &#160;The clipboard history data is persistent across IDE sessions, and is stored in a file called ClipboardHistory.xml in your GExperts storage directory.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Note:</text><text styleclass="Normal" translate="true"> &#160;The Clipboard History expert only tracks standard ASCII (CF_TEXT) items on the clipboard with a size under 512 kilobytes. &#160;It does not maintain a history of other clipboard items such as bitmaps, components, etc.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Note:</text><text styleclass="Normal" translate="true"> &#160;Some applications (such as Remote Desktop) may improperly hook the Windows clipboard chain or create desktops that break the clipboard chain and prevent GExperts from receiving notification of new items on the clipboard. &#160;If you experience this problem, try using the Rehook Clipboard menu item in the File menu. </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Clipboard History.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+  </body>
+</topic>

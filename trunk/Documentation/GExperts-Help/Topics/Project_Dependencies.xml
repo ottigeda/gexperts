@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Project Dependencies</title>
+  <keywords>
+    <keyword translate="true">Project Dependencies</keyword>
+    <keyword translate="true">Units</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Project Dependencies</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The project dependency expert enables you to see what units a particular unit uses, and in turn what units use a particular unit. &#160;When this expert is activated, it parses all of the current project&apos;s source code for uses clauses and builds up a list of dependencies. &#160;To view the dependency information for a particular unit, click on it in the left pane. &#160;The right pane will contain the dependency information. &#160;Indirect dependencies are units that are used by used units of a particular unit.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">You can refresh the dependency information at any time by clicking the refresh button on the toolbar and you can sort the file listing by clicking on the column headers.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Project Dependencies.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+  </body>
+</topic>

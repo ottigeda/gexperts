@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Perfect Layout</title>
+  <keywords>
+    <keyword translate="true">Perfect Layout</keyword>
+    <keyword translate="true">Saved Desktop</keyword>
+    <keyword translate="true">Windows</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Perfect Layout</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Perfect Layout expert repositions the IDE&apos;s windows so that they are located exactly where you want them. &#160;This expert supports two pre-defined layouts, which can be selected via the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="GExperts_Configuration" styleclass="Normal" translate="true">GExperts Configuration</link><text styleclass="Normal" translate="true"> dialog.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">You can also create a custom layout by positioning the IDE windows as you want them, and using the Save Custom Layout button. &#160;You can change your custom layout at any time by repeating this process. </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Note:</text><text styleclass="Normal" translate="true"> This expert is deprecated and does not work well with docked window configurations. &#160;We recommend you use the named desktop saving features of your IDE instead.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Perfect Layout.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+  </body>
+</topic>

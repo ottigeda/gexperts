@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Backup Project</title>
+  <keywords>
+    <keyword translate="true">Backup Project</keyword>
+    <keyword translate="true">zip</keyword>
+    <keyword translate="true">Backup</keyword>
+    <keyword translate="true">Archive Project</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Backup Project</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The project backup expert enables you to backup an entire project to a zip file. &#160;Always save all files in your project before running this expert or your latest changes will not be included in the zip archive. &#160;When this expert is executed, a list of all files in the project appears in the dialog. You can add or remove files from the list using the Add and Remove buttons. &#160;To backup the project, click the Backup button.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Quick-access options such as password protection for your archive, the backup scope, and an option to search for included files on the library path are available via the Options button. &#160;These options are not saved between invocations of the expert; you must use the Backup Project Configuration dialog described below to set the default options.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Backup Project.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The default configuration options are set from the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="GExperts_Configuration" styleclass="Normal" translate="true">GExperts Configuration</link><text styleclass="Normal" translate="true"> window. You can configure the backup project expert to scan all of the project&apos;s source files for resource files and other files which should be included in the backup. &#160;These files are indicated by the $I, $R, $INCLUDE, and $RESOURCE directives for Delphi, and the included files can be anywhere in the project directory or the IDE/project library path. &#160;The backup can also default to backup the project group or just the current project.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If you have enabled the option to scan for included files, you can force certain files to be included in the backup by adding a command directive line to the interface of any unit in the project. &#160;For example, if you have a PAS file that always accesses a certain INI file and you want it included in the backup, add a </text><text styleclass="Courier Fixed" translate="true">{#BACKUP MYINI.INI}</text><text styleclass="Normal" translate="true"> line to the top of the file and from then on GExperts will include it in the backup. &#160;This expert has support for wildcards and paths in the filename such as: </text><text styleclass="Courier Fixed" translate="true">{#BACKUP *.INI}</text><text styleclass="Normal" translate="true">, and </text><text styleclass="Courier Fixed" translate="true">{#BACKUP &apos;C:\Program Files\test.dat&apos;}</text><text styleclass="Normal" translate="true">. &#160;For C++ files, use the syntax </text><text styleclass="Courier Fixed" translate="true">#pragma backup Docs.txt</text><text styleclass="Normal" translate="true"> instead.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Backup Project Configuration.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The expert can prompt for a file name for each backup, or you can instruct the expert automatically backup to a specified directory and file without having to specify a file name each time. &#160;Various </text><link displaytype="text" defaultstyle="true" type="topiclink" href="SubstitutionMacros" styleclass="Normal" translate="true">substitution macros</link><text styleclass="Normal" translate="true"> are available that allow you to specify the directory and filename used, for example:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">%PROJECTDIR%Backup\%YEAR%-%MONTH%-%DAY%</text><text styleclass="Normal" translate="true"> will produce a backup file in a subdirectory called &quot;Backup&quot; off of your main project directory. &#160;The filename will consist of the year, month, and day the backup was made.</text></para>
+    <para styleclass="Normal"></para>
+    <para style="tabstops:182px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">C:\Backups\%ProjectName%-%DAYSHORTNAME%-%DAY%.zip</text><text styleclass="Normal" translate="true"> will produce a backup file named similar to C:\Backups\Project1-Wed-26.zip.</text></para>
+  </body>
+</topic>

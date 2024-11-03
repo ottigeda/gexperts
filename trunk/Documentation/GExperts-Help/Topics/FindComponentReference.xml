@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="ErikBerry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Find Component Reference</title>
+  <keywords>
+    <keyword translate="true">Find Component Reference</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Find Component Reference</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Find Component Reference tool operates in two different modes:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="text-indent:-13px; margin-left:27px; tabstops:27px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li style="text-indent:-13px; margin-left:27px; tabstops:27px left ;"><text styleclass="Normal" translate="true">If a form designer is active and there is a currently selected component, the tool focuses the code editor and then tries to locate the first reference to that component in the source file. &#160;For Delphi source files, it will try to locate and select the second occurrence of the component, since the first occurrence of the component name is usually the declaration instead of the first usage of the component. &#160;Component references in comments will be found and selected.</text></li>
+      <li style="text-indent:-13px; margin-left:27px; tabstops:27px left ;"><text styleclass="Normal" translate="true">If the code editor is active, the tool grabs the identifier under the editor cursor and tries to locate a component on that unit&apos;s form named the same as the identifier and selects that component.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Note:</text><text styleclass="Normal" translate="true"> Find Component Reference can not locate references to components on other forms/frames or source code references in units other than the current one.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Find Component Reference.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+  </body>
+</topic>

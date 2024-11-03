@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Clean Directories</title>
+  <keywords>
+    <keyword translate="true">Clean Directories</keyword>
+    <keyword translate="true">Delete Temporary Files</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Clean Directories</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This expert enables you to quickly delete several types of non-critical files that can accumulate during development. &#160;When it is activated, a list of all directories that project files reside in will appear. &#160;All of the listed directories will be searched for cleanable files. &#160;Check the checkbox next to a directory to scan it recursively. &#160;Select which file types to delete from those directories by checking the various checkboxes in the file extensions listbox. &#160;To start the cleaning process, press the Clean button. Once the process is complete, you will be notified how many files were deleted and how much disk space was reclaimed.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">You can add and delete directories and extensions to be cleaned using the provided Add and Remove buttons. &#160;By checking the &quot;Report errors&quot; checkbox you can request that GExperts notifies you when files can&apos;t be deleted, such as when the files are read only or in use by other applications.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Clean Directories.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+  </body>
+</topic>

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Expert Manager</title>
+  <keywords>
+    <keyword translate="true">Expert Manager</keyword>
+    <keyword translate="true">Experts</keyword>
+    <keyword translate="true">Wizards</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Expert Manager</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The expert manager enables you to add, enable, disable, and remove DLL experts from the IDE without having to directly edit the registry. &#160;The experts marked with a red </text><text styleclass="Normal" style="font-weight:bold;" translate="true">X</text><text styleclass="Normal" translate="true"> are disabled and those with the green checkmark are enabled. &#160;If an expert has a red dot in front of the graphic, the expert&apos;s state has been changed since the IDE was started, and you will not see the effect of the change until you restart the IDE. &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Note that the expert manager does not allow you to turn on and off the various GExperts experts. This can be done in the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="GExperts_Configuration" styleclass="Normal" translate="true">GExperts Configuration</link><text styleclass="Normal" translate="true"> window using the checkboxes on the Experts tab. &#160;Package-based experts should be enabled and disabled using the IDE&apos;s Project Options dialog.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Expert Manager.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+  </body>
+</topic>

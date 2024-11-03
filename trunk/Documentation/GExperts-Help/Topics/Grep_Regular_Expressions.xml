@@ -1,0 +1,789 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="ErikBerry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Grep Regular Expressions</title>
+  <keywords>
+    <keyword translate="true">Grep Regular Expressions</keyword>
+    <keyword translate="true">Regular Expressions</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Grep Regular Expressions</text></para>
+    </header>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Normal" translate="true">Grep regular expressions allow you to formulate complex searches that are not possible using a basic text search. &#160;GExperts implements a subset of the Perl regular expression syntax, as described below.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Simple Matches</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Any single character matches itself, unless it is a metacharacter with a special meaning, as described below.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">A series of characters matches that series of characters in the target string. &#160;So, the regular expression search pattern &quot;foo&quot; would match the characters &quot;foo&apos;&apos; in the target string.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">You can cause characters that normally function as metacharacters to be interpreted literal characters by &apos;escaping&apos; them by preceding them with a single backslash (&quot;\&quot;). &#160;For instance, the metacharacter &quot;^&quot; matches beginning of string, but &quot;\^&quot; matches the literal character &quot;^&quot;, &quot;\\&quot; matches &quot;\&quot; and so on.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Examples:</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="2" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">foobar</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches string &apos;foobar&apos;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\^FooBarPtr</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches &apos;^FooBarPtr&apos;</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Escape Sequences</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Some special characters may be specified using escape sequences similar to those used in languages like C and Perl: &quot;\n&apos;&apos; matches a newline, &quot;\t&apos;&apos; a tab, etc. More generally, \xnn, where nn is a string of hexadecimal digits, matches the character whose ASCII value is nn. If you need to specify a unicode character, you can use &apos;\x{nnnn}&apos;, where &apos;nnnn&apos; are the hexadecimal digits for the unicode code point.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="8" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\xnn</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">ASCII Char with hex code nn</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\x{nnnn}</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Character with hex code nnnn (use nn for ASCII or nnnn for Unicode)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\t</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Tab (same as \x09)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\n</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Newline (same as \x0a)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\r</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Carriage return (same as \x0d)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\f</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Form feed (same as \x0c)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\a</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Alarm/bell (same as \x07)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\e</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Escape (same as \x1b)</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Examples:</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="2" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">foo\x20bar</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches &apos;foo bar&apos; (note space in the middle)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\tfoobar</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches &apos;foobar&apos; preceded by a tab</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Character Classes</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">You can specify a character class (to denote any one of a set of characters), by enclosing a list of characters in square brackets [], and this will match any single character from the list.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">If the first character after the &quot;[&apos;&apos; is &quot;^&apos;&apos;, the class matches any character not in the list.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Examples:</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="2" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">foob[aeiou]r</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Finds strings &apos;foobar&apos;, &apos;foober&apos; etc. but not &apos;foobbr&apos;, &apos;foobcr&apos; etc.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">foob[^aeiou]r</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Find strings &apos;foobbr&apos;, &apos;foobcr&apos; etc. but not &apos;foobar&apos;, &apos;foober&apos; etc.</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Within a list, the &quot;-&apos;&apos; character can be used to specify a range, so that [a-z] represents any ASCII characters between &quot;a&apos;&apos; and &quot;z&apos;&apos;, inclusive.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">If you want &quot;-&apos;&apos; itself to be a member of a class, put it at the start or end of the list, or escape it with a backslash. If you want &apos;]&apos; you may place it at the start of list or escape it with a backslash.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Examples:</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="7" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">[-az]</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches &apos;a&apos;, &apos;z&apos; and &apos;-&apos;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">[az-]</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches &apos;a&apos;, &apos;z&apos; and &apos;-&apos;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">[a\-z]</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches &apos;a&apos;, &apos;z&apos; and &apos;-&apos;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">[a-z]</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches all 26 lower case ASCII characters from &apos;a&apos; to &apos;z&apos;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">[\n-\x0D]</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches any of the characters #10, #11, #12, and #13</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">[\d-t]</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches any numeric digit, &apos;-&apos; or &apos;t&apos; (see &quot;Predefined Classes&quot; below)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">[]-a]</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches any character in the range of &apos;]&apos;..&apos;a&apos;.</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Metacharacters - Line Separators</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="5" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">^</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Start of line</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">$</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">End of line</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\A</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Start of text (equivalent to ^ since all searches are single-line)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\Z</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">End of text (equivalent to $ since all searches are single-line)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">.</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Any character (period)</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Examples:</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="4" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">^foobar</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches &apos;foobar&apos; only if it is at the beginning of line</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">foobar$</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches &apos;foobar&apos; only if it is at the end of line</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">^foobar$</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches &apos;foobar&apos; only if those are the only characters in the line</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">foob.r</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches strings like &apos;foobar&apos;, &apos;foobbr&apos;, &apos;foob1r&apos; and so on</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">The &quot;.&apos;&apos; metacharacter matches any character, by default, but if you can switch off the /s modifier to stop &apos;.&apos; from matching embedded line separators.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Unicode line separators are supported (based on </text><link displaytype="text" defaultstyle="true" type="weblink" href="http://www.unicode.org/unicode/reports/tr18/" target="_blank" style="font-family:Arial; font-size:10pt; text-decoration:underline; color:#0000ff;" translate="true">http://www.unicode.org/unicode/reports/tr18/</link><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">: \x2028, \x2029, \x0B, \x0C, and \x85):</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Metacharacters - Predefined Classes</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="6" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\w</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches any alphanumeric character (including &quot;_&quot;)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\W</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches any non-alphanumeric character</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\d</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches any numeric digit</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\D</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches any non-numeric character</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\s</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches any whitespace character (equivalent to [ \t\n\r\f])</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\S</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches any non whitespace character</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Note that you may use \w, \d, and \s within custom character classes.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Examples:</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="2" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">foob\dr</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches strings like &apos;foob1r&apos;, &apos;&apos;foob6r&apos; and so on but not &apos;foobar&apos;, &apos;foobbr&apos; and so on</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">foob[\w\s]r</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches strings like &apos;foobar&apos;, &apos;foob r&apos;, &apos;foobbr&apos; and so on but not &apos;foob1r&apos;, &apos;foob=r&apos; and so on</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><tab /></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Alphanumeric characters only include only the basic low-ASCII upper and lower case Latin alphabet, the digits 0-9, and &apos;_&apos;.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Metacharacters - Word Boundaries</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="2" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\b</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Match a word boundary</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">\B</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Match a non-(word boundary)</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">A word boundary (\b) is a spot between two characters that has a \w on one side of it and a \W on the other side of it (in either order), counting the imaginary characters off the beginning and end of the string as matching a \W.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Metacharacters - Iterators</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Any item of a regular expression may be followed by an iterator metacharacter. Using these metacharacters, you can specify the number of occurrences of the previous character, metacharacter, or subexpression.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="12" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">*</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Zero or more (&quot;greedy&quot;), similar to {0,}</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">+</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Zero or more (&quot;greedy&quot;), similar to {1,}</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">?</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Zero or one (&quot;greedy&quot;), similar to {0,1}</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">{n}</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Exactly n times (&quot;greedy&quot;)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">{n,}</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">At least n times (&quot;greedy&quot;)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">{n,m}</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">At least n but not more than m times (&quot;greedy&quot;)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">*?</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Zero or more (&quot;non-greedy&quot;), similar to {0,}?</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">+?</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">One or more (&quot;non-greedy&quot;), similar to {1,}?</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">??</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Zero or </text><tab /><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">one (&quot;non-greedy&quot;), similar to {0,1}?</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">{n}?</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Exactly n times (&quot;non-greedy&quot;)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">{n,}?</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">At least n times (&quot;non-greedy&quot;)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">{n,m}?</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:0px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">At least n but not more than m times (&quot;non-greedy&quot;)</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">The digits in curly brackets of the form {n,m} specify the minimum number of times to match the item as &quot;n&quot; and the maximum as &quot;m&quot;. &#160;The form {n} is equivalent to {n,n} and matches exactly n times. &#160;The form {n,} matches n or more times. &#160;There is no limit to the size of n or m, but large numbers will use up more memory and be slightly slower. &#160;If a curly bracket occurs in any other context, it is treated as a regular character.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">&quot;Greedy&quot; means the iterator will match as many characters as possible, whereas &quot;non-greedy&quot; matches takes as few characters as possible. &#160;For example, &apos;b+&apos; and &apos;b*&apos; applied to the string &apos;abbbbc&apos; matches &apos;bbbb&apos;, &apos;b+?&apos; matches &apos;b&apos;, &apos;b*?&apos; matches the empty string, &apos;b{2,3}?&apos; matches &apos;bb&apos;, &apos;b{2,3}&apos; matches &apos;bbb&apos;, etc. &#160;You can switch all iterators into a &quot;non-greedy&quot; mode using the modifier /g.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Examples:</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="6" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">foob.*r</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches strings like &apos;foobar&apos;, &apos;foobalkjdflkj9r&apos; and &apos;foobr&apos;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">foob.+r</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches strings like &apos;foobar&apos;, &apos;foobalkjdflkj9r&apos; but not &apos;foobr&apos;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">foob.?r</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches strings like &apos;foobar&apos;, &apos;foobbr&apos; and &apos;foobr&apos; but not &apos;foobalkj9r&apos;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">fooba{2}r</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches the string &apos;foobaar&apos;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">fooba{2,}r</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches strings like &apos;foobaar&apos;, &apos;foobaaar&apos;, &apos;foobaaaar&apos; etc.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">fooba{2,3}r</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches strings like &apos;foobaar&apos;, or &apos;foobaaar&apos; but not &apos;foobaaaar&apos;</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Metacharacters - Alternatives</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">You can specify a series of alternatives for a pattern using a pipe &quot;|&apos;&apos; to separate them, so that fee|fie|foe will match any of &quot;fee&apos;&apos;, &quot;fie&apos;&apos;, or &quot;foe&apos;&apos; in the target string (as would f(e|i|o)e). &#160;The first alternative includes everything from the last pattern delimiter (&quot;(&apos;&apos;, &quot;[&apos;&apos;, or the beginning of the pattern) up to the first &quot;|&apos;&apos;, and the last alternative contains everything from the last &quot;|&apos;&apos; to the next pattern delimiter. &#160;For this reason, it is common practice to include alternatives in parentheses, to minimize confusion about where they start and end.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Alternatives are tried from left to right, so the first alternative found for which the entire expression matches, is the one that is chosen. &#160;This means that alternatives are not necessarily greedy. &#160;For example, when matching foo|foot against &quot;barefoot&apos;&apos;, only the &quot;foo&apos;&apos; part will match, as that is the first alternative tried, and it successfully matches the target string. This distinction is important when you are capturing matched text using parentheses. &#160;Also remember that &quot;|&apos;&apos; is interpreted as a literal within square brackets, so if you write [fee|fie|foe] You&apos;re really only matching [feio|].</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Examples:</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="1" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">foo(bar|foo)</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches strings &apos;foobar&apos; or &apos;foofoo&apos;</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><anchor id="RegExSubexpressions" styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;"><keywords><keyword translate="true">Subexpressions</keyword></keywords></anchor><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Metacharacters - Subexpressions</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">The bracketing construct using parenthesis ( ... ) may also be used to define subexpressions so you can separate the matched text into several subparts. &#160;Subexpressions are numbered based on the left to right order of their opening parenthesis. &#160;The first subexpression has the number &apos;1&apos;, etc. &#160;The whole expression match is given the number &apos;0&apos;. &#160;You can also use sub-expressions to perform search and replace ($0 or $&amp; would match the whole expression, $1 would match the first subexpression, $2 the second, etc.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Examples:</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="3" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">(foobar){8,10}</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches strings which contain 8, 9 or 10 instances of the &apos;foobar&apos;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">foob([0-9]|a+)r</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches &apos;foob0r&apos;, &apos;foob1r&apos; , &apos;foobar&apos;, &apos;foobaar&apos;, &apos;foobaar&apos; etc.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">(John) (Doe)</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches the literal name &quot;John Doe&quot; with each word being a subexpression (John = $1, Doe = $2). You can then use the replacement string of &quot;$2, $1&quot; to replace that with &quot;Doe, John&quot;.</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Metacharacters - Backreferences</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Metacharacters \1 through \9 are interpreted as backreferences, so in general, \&lt;n&gt; matches previously matched subexpression #&lt;n&gt;.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Examples:</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="3" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">(.)\1+</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches &apos;aaaa&apos; and &apos;cc&apos; (a single character followed by itself, one or more times)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">(.+)\1+</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Also match &apos;abab&apos; and &apos;123123&apos;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">([&apos;&quot;]?)(\d+)\1</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches &apos;&quot;13&quot; (in double quotes), or &apos;4&apos; (in single quotes) or 77 (without quotes) etc.</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Modifiers</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Modifiers are used to change the behaviour of the regular expression engine. &#160;Any of the modifiers may be embedded within the regular expression itself using the (?...) construct, as described below. &#160;The case sensitivity modifier also has an equivalent option on the grep search screen.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="6" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">i</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Do case-insensitive pattern matching (based on your system locale settings). &#160;In this mode, a lower case character can also match the equivalent upper case character, and vice versa.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">m</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Treat the string to search as multiple lines. That is, change &quot;^&apos;&apos; and &quot;$&apos;&apos; from matching at only the very start or end of the string to the start or end of any line anywhere within the string. &#160;This modifier won&apos;t generally be useful, because the grep search operates a single line at a time.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">s</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Treat the string to search as a single line. This changes &quot;.&apos;&apos; to match any character (even a line separator) which it normally would not match.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">g</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Non standard modifier used to switch all of the subsequent operators into non-greedy mode. So, if this modifier /g is specified, &apos;+&apos; works like &apos;+?&apos;, &apos;*&apos;works like &apos;*?&apos; and so on. &#160;Greedy mode is enabled by default.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">x</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Allow whitespace and comments (see explanation below), to enhance the expression&apos;s legibility.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:101px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">r</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Non-standard modifier used to simplify Russian character range entry. If this is turned on, the range à-ÿ automatically also includes the Russian letter &apos;¸&apos;, À-ß includes &apos;¨&apos;, and à-ß includes all Russian symbols. &#160;This modifier is off by default.</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><tab /></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">The modifier /x needs a little more explanation. It allows the regular expression to contain whitespace that is neither escaped nor within a character class. You can use this to break up your regular expression into more readable parts. The # character is also treated as a metacharacter introducing a line comment, for example:</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><tab /><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">( &#160; </text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><tab /><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">(arc) # comment 1 &#160;</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><tab /><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true"> &#160;| &#160; # You can use spaces to format your search expression, and they are ignored</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><tab /><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">(efg) # comment 2 &#160;</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><tab /><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">) &#160;</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">In this mode, if you want literal whitespace or # characters in the pattern (outside a character class, where they are unaffected by /x), you will either have to escape them or encode them using hex references.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><tab /><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">&#32;</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Perl Extensions To Modifiers</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">(?imsxr-imsxr)</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">You can use some Perl extensions to change the modifiers on the fly. &#160;If this construction is inlined into a subexpression, it only effects that subexpression.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Examples:</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="margin-left:23px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><table styleclass="Default" rowcount="4" colcount="2">
+      <tr style="vertical-align:top">
+        <td style="width:120px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">(?i)Frog-Soup</text></para>
+        </td>
+        <td style="width:1122px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches &apos;Frog-soup&apos; and &apos;Frog-Soup&apos;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:120px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">(?i)Frog-(?-i)Soup</text></para>
+        </td>
+        <td style="width:1122px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches &apos;Frog-Soup&apos; but not &apos;Frog-soup&apos;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:120px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">(?i)(Frog-)?Soup</text></para>
+        </td>
+        <td style="width:1122px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches &apos;Frog-soup&apos; and &apos;frog-soup&apos;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:120px;">
+          <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">((?i)Frog-)?Soup</text></para>
+        </td>
+        <td style="width:1122px;">
+          <para styleclass="Normal" style="text-indent:0px; margin-right:90px; margin-left:0px; tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Matches &apos;frog-Soup&apos;, but not &apos;frog-soup&apos;</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Perl Extensions for Comments</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">(?#text)</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Text inside a comment like the above is ignored. The comment ends at the first &quot;)&quot;, so there is no way to put a literal &quot;)&quot; inside the comment.</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text styleclass="Font Style" style="font-family:Arial; font-size:10pt; font-weight:bold; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#010100; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Source Code</text></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"></para>
+    <para style="tabstops:48px left &apos;left&apos;,96px left &apos;left&apos;,144px left &apos;left&apos;,192px left &apos;left&apos;,240px left &apos;left&apos;,288px left &apos;left&apos;;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Note: The free </text><link displaytype="text" defaultstyle="true" type="weblink" href="http://regexpstudio.com/TRegExpr/TRegExpr.html" target="_blank" style="font-family:Arial; font-size:10pt; text-decoration:underline; color:#0000ff;" translate="true">TRegExpr</link><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true"> Delphi library is used to implement regular expression searching.</text></para>
+  </body>
+</topic>

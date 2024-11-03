@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Code Proofreader</title>
+  <keywords>
+    <keyword translate="true">Code Proofreader</keyword>
+    <keyword translate="true">Correction</keyword>
+    <keyword translate="true">Auto-Correct</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Code Proofreader</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Code Proofreader is a powerful tool that can correct your typing in the code editor as-you-type based on a list of custom dictionary words, a list of AutoCorrect entries, or context sensitive information supplied by the Delphi compiler. It supports Delphi, C++, SQL, and C# code.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The corrections can be customized per source file type and even for different syntax entities within a file by using the dropdown box at the top of the window. &#160;You can import or export dictionary words from/to ASCII files that contain one word per line, or you can insert or delete single words using the provided buttons.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">AutoCorrect entries wait for you to press a certain sequence of keys, and then replace that string with another string you define. &#160;This can be used to correct typing mistakes you commonly make, or it can be used to expand simple macros. &#160;AutoCorrect entries support usage of the &quot;|&quot; character to determine the position of the cursor after the correction takes place, similar to the IDE&apos;s Code Templates. If you want to create more complex macros containing multiple lines or dynamic text substitutions, try using the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="MacroTemplates" styleclass="Normal" translate="true">Macro Templates</link><text styleclass="Normal" translate="true"> feature instead.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The compiler replacement option allows GExperts to interface with the Delphi compiler to generate a context-sensitive list of potential matches for a typed identifier and use that list to attempt to correct the typed identifier. Be careful, since this option causes the IDE to attempt to recompile parts of the project each time you press a non-alphanumeric keystroke in the source code window, and can slow down your coding on older machines. &#160;This option is useful to auto-correct identifiers to match the case they were declared in. &#160;Note that if you have dictionary replacement enabled and a typed identifier is present in the dictionary, compiler replacement is not attempted for that identifier, to allow you to easily override replacements where the compiler&apos;s suggested results are not ideal. &#160;For example, you may want to make sure the dictionary contains the language keywords, so those are never corrected, since the compiler correction feature (which uses the code completion dropdown identifier list) does not support keywords in all IDE versions.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Several options allow you to tune the dictionary and compiler correction. &#160;You can choose to correct or not correct based on word case; errors based on incorrectly hitting nearby keys on the keyboard; and missing, inserted, or switched characters in the word. &#160;Finally, the Code Proofreader can issue a beep after correcting to make sure you know it was activated.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Correction History tab on this form shows the last few corrections that were made, so you can review exactly what the Code Proofreader has changed and what rule triggered the correction, since this isn&apos;t always obvious. &#160;You can also disable any of the recent corrections, if you find a correction is not helpful.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Code Proofreader.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

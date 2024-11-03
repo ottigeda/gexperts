@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Component Grid</title>
+  <keywords>
+    <keyword translate="true">Component Grid</keyword>
+    <keyword translate="true">Tag Property</keyword>
+    <keyword translate="true">HelpContext Property</keyword>
+    <keyword translate="true">Hint Property</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Component Grid</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This expert enables you to edit the Tag, HelpContext, and Hint properties of all components on a form at once instead of having to individually select components. &#160;You can sort the component list by name or parent by clicking the relevant column header. &#160;When you want to save your changes, press the Save button.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The toolbar controls provide support for renumbering help context IDs starting from a given number and skipping by another number and the ability to print a simple report listing all of the components on the current form.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Component Grid.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+  </body>
+</topic>

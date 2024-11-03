@@ -1,0 +1,422 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Substitution Macros</title>
+  <keywords>
+    <keyword translate="true">Substitution Macros</keyword>
+    <keyword translate="true">Macros</keyword>
+    <keyword translate="true">Code Templates</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Substitution Macros</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Some GExperts tools such as the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="MacroTemplates" styleclass="Normal" translate="true">Macro Templates</link><text styleclass="Normal" translate="true"> editor expert and the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Backup_Project" styleclass="Normal" translate="true">Backup Project</link><text styleclass="Normal" translate="true"> expert can use substitution macros in their configuration. &#160;These macros allow various %-delimited phrases to be dynamically replaced with a context-sensitive string. The supported macros are:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Project/Unit:</text></para>
+    <para style="margin-left:13px;"><table rowcount="6" colcount="2" style="cell-padding:0px; cell-spacing:0px; border-width:0px; cell-border-width:0px;">
+      <tr style="vertical-align:top">
+        <td style="width:195px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%PROJECTNAME%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The project name</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:195px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%PROJECTDIR%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The project directory</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:195px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%PROJECTGROUPNAME%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The project group name</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:195px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%PROJECTGROUPDIR%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The project group directory</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:195px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%UNIT%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The current unit name</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:195px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%UNITDIR%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The unit directory</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="margin-left:13px;"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Date/Time:</text></para>
+    <para style="margin-left:13px;"><table rowcount="12" colcount="2" style="cell-padding:0px; cell-spacing:0px; border-width:0px; cell-border-width:0px;">
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%DATE%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The system format date</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%DATETIME%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The system format date/time</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%YEAR%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The year, in four digits</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%MONTH%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The month in two digits</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%MONTHSHORTNAME%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The short month name</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%MONTHLONGNAME%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The long month name</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%DAY%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The day in two digit format</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%DAYSHORTNAME%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The short day name</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%DAYLONGNAME%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The long day name</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%HOUR%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Hour in two-digit format</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%MINUTE%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Minute in two-digit format</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%SECOND%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Second in two-digit format</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="margin-left:13px;"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">System:</text></para>
+    <para style="margin-left:13px;"><table rowcount="5" colcount="2" style="cell-padding:0px; cell-spacing:0px; border-width:0px; cell-border-width:0px;">
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%USER%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The currently logged in username</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%CLIPBOARD%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The text contents of the clipboard</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%SELECTION%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Selected text in the current IDE editor. &#160;For the macro templates, the selection text will be deleted from the editor and moved to the position specified by this macro.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">%COPYSELECTION%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Selected text in the current IDE editor. For the macro templates, the selection is not deleted from the editor but instead is copied into the macro.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:196px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%INPUTVAR%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Queries the user for a string when executed. &#160;The format of this macro is: &quot;%INPUTVAR,VarName,&lt;caption&gt;%&quot;, where the dialog caption is optional. &#160;For example: &quot;%INPUTVAR,VarName,Enter a value%&quot;. &#160;After the user has input the desired value, the value may be used as a macro later as %VarName%.</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="margin-left:13px;"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Version Information (requires version information in the IDE project options):</text></para>
+    <para style="margin-left:13px;"><table rowcount="9" colcount="2" style="cell-padding:0px; cell-spacing:0px; border-width:0px; cell-border-width:0px;">
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%VERPRODUCTVERSION%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The project product version</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%VERFILEVERSION%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The project file version</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%VERMAJOR%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The project major version</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%VERMINOR%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The project minor version</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%VERRELEASE%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The project release version</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%VERBUILD%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The project build version</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%VERPRODUCTNAME%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The project product name</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%VERINTERNALNAME%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The project internal name</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%VERFILEDESCRIPTION%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The project file description</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para style="margin-left:13px;"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Source Code Parsing (Delphi source only):</text></para>
+    <para style="margin-left:13px;"><table rowcount="12" colcount="2" style="cell-padding:0px; cell-spacing:0px; border-width:0px; cell-border-width:0px;">
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%IDENT%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The identifier under the editor cursor (works for C++)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%PROCNAME%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The name of the procedure after/before the cursor</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%RESULT%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The result of the procedure after/before the cursor</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%ARGUMENTS%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The arguments of the procedure after/before the cursor (all on one line)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%METHODCLASS%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The class and method name in the format &quot;Class.Method&quot; for the procedure after/before the cursor</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%CLASS%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The class name after/before the cursor (searches declarations and method definitions)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%INTERFACE%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">The interface name after/before the cursor</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%BEFORE%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Toggles the state of looking after/before the cursor position for macro substitutions like PROCNAME, RESULT, etc. &#160;The default is to look after the cursor.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">%BEGINPARAMLIST%</text></para>
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">%ENDPARAMLIST%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Starts and ends a section of the substitution where the appearance of any of the three below macros reports on only a single argument of the method before/after the cursor. &#160;This allows creating macros with an argument per line.</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">%PARAMNAME%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">The name of a single argument (use after %BEGINPARAMLIST%)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">%PARAMTYPE%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">The type of a single argument (use after %BEGINPARAMLIST%)</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">%PARAMDEF%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">The default value of a single argument (use after %BEGINPARAMLIST%)</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">For Macro Templates Only (configured inside Macro Templates):</text></para>
+    <para style="margin-left:13px;"><table rowcount="3" colcount="2" style="cell-padding:0px; cell-spacing:0px; border-width:0px; cell-border-width:0px;">
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%PROGRAMMERNAME%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Full name of the user</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%PROGRAMMERINITIALS%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Initials of the user</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:197px;">
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">%PGEN%</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">An auto-incremented integer sequence number</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Note</text><text styleclass="Normal" translate="true">: To produce a literal percent (%) character in the output, type it as two consecutive percent characters (%%) to prevent an attempt to parse the percent as the start of a macro.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Examples</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Examples of many of these macros can be seen by looking at the default macro templates accessed via GExperts, Configuration, Editor Experts, Expand Macro Template, Configuration.</text></para>
+  </body>
+</topic>

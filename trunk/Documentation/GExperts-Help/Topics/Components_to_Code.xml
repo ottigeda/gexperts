@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="ErikBerry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Components to Code</title>
+  <keywords>
+    <keyword translate="true">Components to Code</keyword>
+    <keyword translate="true">Runtime Component Creation</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Components to Code</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This expert allows you to select one or more components on a form and copy the appropriate code to the clipboard that would create those same components at runtime with any modified property settings intact. &#160;This expert is also available from the Form designer&apos;s context menu.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">You can set the following options in the configuration dialog:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="margin-left:14px; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li style="margin-left:14px;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Binary Properties</text><text styleclass="Normal" translate="true">: When encountering binary properties such as bitmaps, the tool can completely skip them, create a comment in the generated code that contains the binary data, or create uncommented code you then manually change to setup your own custom binary data.</text></li>
+      <li style="margin-left:14px;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Prepend Original Component Source</text><text styleclass="Normal" translate="true">: Include a copy of the original DFM source so you can later paste it back on a form, if needed.</text></li>
+      <li style="margin-left:14px;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Use Delphi With Statement</text><text styleclass="Normal" translate="true">: Use a &quot;with&quot; statement to set each component&apos;s properties, when generating Delphi code.</text></li>
+      <li style="margin-left:14px;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Generate Code to Free Components</text><text styleclass="Normal" translate="true">: Enable if you want to manually handle memory management by generating the code to free each component and set the component owner to nil/null, rather than making the owner/form automatically free the component by setting the owner to Self/this.</text></li>
+      <li style="margin-left:14px;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Language</text><text styleclass="Normal" translate="true">: Choose the target language for the generated code (Delphi or C++).</text></li>
+    </list>
+    <para style="margin-left:14px;"></para>
+    <para style="margin-left:14px;"><text styleclass="Normal" translate="true">As you change the options in this dialog, a sample view of the component creation code is updated to reflect your options.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Components to Code.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Note:</text><text styleclass="Normal" translate="true"> This expert will not work perfectly with some components with subcomponents such as TTeeChart/TDataSet/TTreeView and third party tabsheets that do not descend from TTabSheet, because the sub-components need component-specific code to create or register them with the parent/owner component.</text></para>
+  </body>
+</topic>

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="ErikBerry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Grep Results</title>
+  <keywords>
+    <keyword translate="true">Grep Results</keyword>
+    <keyword translate="true">Search Results</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Grep Results</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Grep Results window is where the results of a </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Grep_Search" styleclass="Normal" translate="true">Grep Search</link><text styleclass="Normal" translate="true"> are shown. &#160;It also provides an interface for multi-file search and replace on matches. &#160;The window uses a folding display of matches to allow you to easily locate a particular match. &#160;This expert supports IDE docking. &#160;An example of this window appears below.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Grep Results.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The results window displays all files which contained one or more matches for the search term. &#160;Under each file, a list of matches for that particular file can be shown. &#160;To expand or contract a file&apos;s matches, click on the filename, press enter, or use the &apos;+&apos; and &apos;-&apos; keys. &#160;When a specific match line is selected, the window can show any number of lines of match context using the Show Match Context and Set Context Lines menu items. Note that the match context might not be accurate if the file has changed since the search.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The number to the left of each match is the line number where the match was found. &#160;The results list highlights the matching characters in each entry to indicate where the match occurred.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To jump to a match in the IDE editor, double click the desired line, press enter, or use the Goto button. &#160;You can control whether the result is positioned at the top of the IDE editor or in the middle through an option in under Vies,Options or via the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="GExperts_Configuration" styleclass="Normal" translate="true">GExperts Configuration</link><text styleclass="Normal" translate="true"> dialog in the section for the Grep Results expert.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To start a new search, click the Search button and the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Grep_Search" styleclass="Normal" translate="true">Grep Search</link><text styleclass="Normal" translate="true"> dialog will appear. As the search progresses, the new search button will be disabled and the abort button will be enabled to cancel the current search. &#160;Once a search is completed, the results window displays the number of files searched, the search time, and the total number of matches.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">You can expand all items in the list by clicking the expand button in the toolbar. &#160;Similarly, clicking the contract button in the tool bar will contract all result items. &#160;The entire match list can be coped to the clipboard or saved to a file using the items on the File menu.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Using the Options dialog, define how selected matches are shown in the editor, whether to expand all matches by default, the number of context lines to show, and the list and context fonts/colors. </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Search and Replace on Matches</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">You can do a search and replace operation on all of the matches in the list or only the selected file/match. &#160;When you choose one of those options, a dialog appears prompting for the string to use in place of the matched text. &#160;The replace operation supports regular expression subexpressions. &#160;See the section on </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Grep_Regular_Expressions" anchor="RegExSubexpressions" styleclass="Normal" translate="true">Subexpressions</link><text styleclass="Normal" translate="true"> for more details. &#160;Note that forms that are currently open can not have their text replaced, due to limitations in the IDE. &#160;Please close all forms before trying to replace text in them.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Tip:</text><text styleclass="Normal" translate="true"> &#160;You can drag and drop a file from the results list onto a running program like notepad, or you can drag it onto a program icon or shortcut to execute the program with the selected file. &#160;When running the standalone GExpertsGrep.exe program, double clicking a file will open the associated program for that file type.</text></para>
+  </body>
+</topic>

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-09-25T23:38:54.215+02:00" lasteditedby="jim" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Editor Experts</title>
+  <keywords>
+    <keyword translate="true">Editor Experts</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Editor Experts</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The editor experts are active only when the IDE code editor has focus. &#160;They perform various functions on the source. &#160;The shortcut key combination for each editor expert can be changed via the Shortcut button, but you should verify the shortcut is unused by the editor itself (see Key Mappings in the IDE help file for more information) and the main menu.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Some of the experts have options that can be changed using the Configure button. &#160;Selecting such an expert enables the button. &#160;The function of each of these experts is described in the help memo at the bottom of the tab. &#160;There is extended help for the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="MacroTemplates" styleclass="Normal" translate="true">Macro Templates</link><text styleclass="Normal" translate="true"> editor expert. The macro templates editor expert replaces the old procedure header and unit header experts. &#160;It offers the same style of replaceable </text><text styleclass="Normal" style="font-family:Consolas;" translate="true">%macros%</text><text styleclass="Normal" translate="true">, to insert values such as the current date, procedure name, user name, etc. into the editor.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="GExperts Configuration - Editor Experts - All.png" imagestyleclass="Default" scale="75.00%" width="590" height="910" styleclass="Image Caption" figurelistinclude="0"></image></para>
+  </body>
+</topic>

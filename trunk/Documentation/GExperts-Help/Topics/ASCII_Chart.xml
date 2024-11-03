@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">ASCII Chart</title>
+  <keywords>
+    <keyword translate="true">ASCII Chart</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">ASCII Chart</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The ASCII Chart expert shows ASCII values for all of the characters in a given font. &#160;You can set various options by right clicking on the grid. &#160;You can choose to view the high or low half of the ASCII character range (0-127, 128-55) and choose between HEX and decimal number representations for a character using the buttons at the top of the window. &#160;You can also choose the display font and size for the ASCII chart. &#160;Several other options are available in the context menu for the ASCII chart.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Clicking a character in the ASCII character grid will copy that character to the edit box at the top right of the window. &#160;From there, you can copy any characters to the clipboard for use in your program. </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="ASCII Chart.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+  </body>
+</topic>

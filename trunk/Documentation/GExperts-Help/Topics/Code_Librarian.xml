@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Code Librarian</title>
+  <keywords>
+    <keyword translate="true">Code Librarian</keyword>
+    <keyword translate="true">Code Snippets</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Code Librarian</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Code Librarian enables you to organize and access often-used code snippets. &#160;It is an easy way to store the various code items that you use often, but do not fit into a general-purpose library unit. &#160;The snippets are stored in a custom structured storage file called CodeLibrarian.fs.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Code Librarian is composed of two panes. &#160;The pane on the left is the folder view that allows you to create nested categories to organize for your code snippets. &#160;You can rename, add, and delete folders, or move them using drag and drop. &#160;Folder titles can be edited by clicking a selected folder.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Code Librarian supports copying code from the IDE into the code pane and vice versa.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">You can search for keywords by clicking the Find button. &#160;Both the topic title and the code pane are searched.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Options selection allows you to change the display fonts, layout mode, and the location of the Code Librarian snippet file. &#160;The syntax highlighting mode for the code snippet can also be toggled between none, Delphi, C++, HTML, and SQL from the context menu of the source editor.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Code Librarian.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Tip:</text><text styleclass="Normal" translate="true"> &#160;A starter database of code snippets (shown in the screen shot above) that you can integrate directly into the Code Librarian is available on the </text><link displaytype="text" defaultstyle="true" type="weblink" href="http://www.gexperts.org/" target="_blank" style="font-family:Arial; font-size:10pt; text-decoration:underline; color:#0000ff;" translate="true">GExperts home page</link><text styleclass="Normal" translate="true">.</text></para>
+  </body>
+</topic>

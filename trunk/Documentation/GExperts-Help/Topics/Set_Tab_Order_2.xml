@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="ErikBerry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Set FocusControl</title>
+  <keywords>
+    <keyword translate="true">FocusControl</keyword>
+    <keyword translate="true">Set FocusControl</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Set FocusControl</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This tool enables you to quickly set the FocusControl property of labels on your VCL forms. &#160;There are two ways to use this tool:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="text-indent:-13px; margin-left:13px; tabstops:13px left &apos;left&apos;; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left &apos;left&apos;;"><text styleclass="Normal" translate="true">You can multi-select a TLabel and the associated TWinControl descendant (in either order) and execute this tool. &#160;The FocusControl property of the label will be set to the TWinControl descendant.</text></li>
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left &apos;left&apos;;"><text styleclass="Normal" translate="true">You can multi-select any number of TWinControls and the tool will try and guess what TLabel to associate with each control. &#160;It looks both above and to the left of the control a certain distance and tries to find the closest label. &#160;It won&apos;t associate labels with controls where TabStop is False, or with any TButtonControl descendants. &#160;Each label and control pair must have the same parent component. &#160;Labels that already have an assigned FocusControl are not changed unless you hold down the Shift key while activating the tool. &#160;If you want to locate a label for all TWinControls on the form at once, you can either use Edit, Select All or, equivalently, select the form itself to have the tool operate on the whole form.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">After the FocusControl assignment process completes, any labels assigned a FocusControl will be selected in the designer, so you can see exactly which labels were modified.</text></para>
+  </body>
+</topic>

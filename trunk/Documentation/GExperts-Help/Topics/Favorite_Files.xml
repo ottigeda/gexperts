@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Favorite Files</title>
+  <keywords>
+    <keyword translate="true">Favorite Files</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Favorite Files</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Favorite Files expert provides a convenient way to organize commonly used files. &#160;You can create as many nested folders as you like, and each folder can be one of several types representing bitmaps, source code, help files, folders, glyphs, etc. &#160;To add a new folder, right click the folder pane and select the new menu. &#160;A window will appear prompting you to enter a folder name and type. &#160;The folder type is used to determine which icon is used represent the folder.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Similarly, you can add files to a folder by right clicking on the file pane and selecting new. &#160;An open file dialog will appear, from which you can select multiple files to add to the current folder. &#160;After adding the files, you can edit their properties by bringing up the property dialog. &#160;Each favorite item has a file name, a name, a description, and an execution type. &#160;The execution type determines what to do with the file when it is executed as follows:</text></para>
+    <para styleclass="Normal"></para>
+    <para style="margin-left:13px;"><table rowcount="4" colcount="2" style="cell-padding:1px; cell-spacing:0px; border-width:0px; cell-border-width:0px;">
+      <tr style="vertical-align:top">
+        <td style="width:63px;">
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">IDE:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Load the file into the IDE</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:63px;">
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Shell:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Use the ShellExecute API call to run the file with the associated program</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:63px;">
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Custom:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Manually specify an application to use to open the file</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:63px;">
+          <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Project:</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Load the file as a new project into the IDE</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">A file viewer is available in this expert to preview files as they are selected. &#160;It can preview several file types such as PAS, DPR, RTF, HTML, BMP, SQL, C, CPP, TXT, etc. &#160;To speed up the process of selecting files, you can hide the preview panel via the Options menu.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Tip:</text><text styleclass="Normal" translate="true"> You can drag and drop files from Windows Explorer into the file listing to quickly add new entries.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Favorite Files.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+  </body>
+</topic>

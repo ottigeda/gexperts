@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="ErikBerry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Hide/Show Non-Visual Components</title>
+  <keywords>
+    <keyword translate="true">Hide/Show Non-Visual Components</keyword>
+    <keyword translate="true">Non-Visual Components</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Hide/Show Non-Visual Components</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This allows you to temporarily toggle the visibility of non-visual components on VCL TCustomForm designers. &#160;The effect is only temporary until you close the form, but should allow you to visualize the form without any non-visual components present. &#160;Note that the non-visual components are not actually removed from the form, so you can still click on and select them, if you know where they are located.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Note: This tool only works for Windows VCL TCustomForm and TFrame designers (not data modules, CLX forms, .NET forms, etc.).</text></para>
+  </body>
+</topic>

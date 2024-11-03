@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="ErikBerry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Macro Library</title>
+  <keywords>
+    <keyword translate="true">Macro Library</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Macro Library</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The IDE&apos;s code editor has a built-in keyboard macro facility, but there is a limitation that it can only store a single macro and that macro is lost when the IDE exits. &#160;The GExperts Macro Library allows you to save and later playback an unlimited number of keyboard macros in future IDE sessions.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To begin recording a macro, press the record toolbar button. &#160;Then, begin typing your editor keystrokes. &#160;When you are done recording the macro, use the record button to stop recording. &#160;At that point, the Macro Library windows should add your new macro to the window with the current date and time as the timestamp. &#160;You can then give the macro a name and a long description. &#160;All of the listed macros will be automatically saved to an XML file called MacroLibrary.xml. &#160;Delphi 7 and later also have the ability to automatically add all editor recorded macros to the library, without using the record toolbar button (you can start/stop recording by pressing Shift+Ctrl+R with the default editor keymapping). &#160;This feature can be turned off using the Pause button in the toolbar.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To playback a macro, first place the editor cursor in the desired location, and then press the playback button, double-click the macro, or use the copy toolbar button and press Shift+Ctrl+P to execute the macro as many times as you need.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Once you are done using a macro, you can delete it using the delete button or clear all of the macros at once.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">If you want to share individual macros with other systems, you can use the save and load buttons to save or load individual macros to a file. &#160;To share all of your macros, you can exit the IDE and then copy the entire MacroLibrary.xml to another computer.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Note:</text><text styleclass="Normal" translate="true"> It is the IDE that implements the actual recording and playback of macros. You should find that it properly records and plays back most standard editor keystrokes (arrow/movement keys, letters/numbers/symbols, block selection) and some types of menu item selections, but certain other types of IDE actions (creating new event handlers from the designer or object inspector , etc.) can not be recorded or played back.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Macro Library.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+  </body>
+</topic>

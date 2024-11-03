@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="ErikBerry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Set Component Properties</title>
+  <keywords>
+    <keyword translate="true">Set Component Properties</keyword>
+    <keyword translate="true">Disconnect Datasets</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Set Component Properties</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This tool waits in the background until you compile a project. &#160;It then scans the current project&apos;s forms to check for components with certain properties and changes those properties to a defined value. &#160;This tool is useful to deactivate datasets or database connections before you compile your applications, but it can be used for any similar situations as well. &#160;To activate the scanning, enable the checkbox next to this expert in the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="GExperts_Configuration" styleclass="Normal" translate="true">GExperts Configuration</link><text styleclass="Normal" translate="true"> screen.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To add a new component class and property to search for, enter those values in the Property to Set area. &#160;Then type in the desired value of the property as the Value text (see </text><link displaytype="text" defaultstyle="true" type="topiclink" href="PropertyValueConstants" styleclass="Normal" translate="true">Property Value Constants</link><text styleclass="Normal" translate="true"> for details). &#160;Finally, click Add to add that property rule to the stored list of rules. &#160;To edit an existing property rule, select it in the list, make your changes, and click Modify. &#160;To delete a property rule, select the property in the list and hit Delete.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The property types that are listed in the property dropdown can be edited using the context menu in the Property Types area. &#160;You can add and remove property types to show only those you are interested in seeing.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Options</text><text styleclass="Normal" translate="true">:</text></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="text-indent:-13px; margin-left:13px; tabstops:13px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Only process currently open files</text><text styleclass="Normal" translate="true">: Only scan project forms that are currently open in the IDE. &#160;It is recommended that you keep this option enabled because it results in much faster scanning, because GExperts will not need to open a potentially large number of forms into the IDE for larger projects.</text></li>
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Only simulate and log property changes</text><text styleclass="Normal" translate="true">: Do not actually change the value of any properties - just log the changes that would be made. &#160;This is useful for testing new property rules, to be sure they have the intended effect.</text></li>
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Verbose status display and logging</text><text styleclass="Normal" translate="true">: This enables detailed logging of each property that is changed and enables the display of a small status window while the forms are being scanned for property changes. &#160;The log details are output to the IDE&apos;s message view. &#160;Note that important messages such as non-existent properties or errors while setting a property are always reported regardless of this setting.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Set Component Properties.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+  </body>
+</topic>

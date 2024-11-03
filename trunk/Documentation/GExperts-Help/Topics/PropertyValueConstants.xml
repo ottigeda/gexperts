@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="ErikBerry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Property Value Constants</title>
+  <keywords>
+    <keyword translate="true">Property Value Constants</keyword>
+    <keyword translate="true">Set Property Values</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Property Value Constants</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">For features such as the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Replace_Components" styleclass="Normal" translate="true">Replace Components</link><text styleclass="Normal" translate="true"> constant property specifiers and the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="RenameComponents" styleclass="Normal" translate="true">Rename Components</link><text styleclass="Normal" translate="true"> &quot;Other Properties&quot; default values, you can specify constant values as strings that get converted into property values at runtime. &#160;Here are the basic types of properties that can be set using these constant specifiers:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="text-indent:-13px; margin-left:13px; tabstops:13px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Ordinals</text><text styleclass="Normal" translate="true">: Integers, Int64, Extended, and other ordinal values can be specified by specifying the integer or float value, such as &apos;557&apos; or &apos;5.57&apos;.</text></li>
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Strings</text><text styleclass="Normal" translate="true">: Short strings, long strings, unicode strings, and wide string properties can be set just as expected, by entering normal strings such as &apos;Value&apos;, &apos;OK&apos;, etc. &#160;In some cases, you can specify an empty string using two single quotes, like this: &apos;&apos;.</text></li>
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Enums</text><text styleclass="Normal" translate="true">: You can set an enum by specifying either the ordinal value or string name of the enum value such as &apos;mbNo&apos; or just &apos;1&apos;.</text></li>
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Sets</text><text styleclass="Normal" translate="true">: Sets modifications can be entered such that all of the members are defined using syntax such as &apos;[akLeft,akTop]&apos; or &apos;akLeft,akTop&apos;. &#160;To remove a set member, use a minus sign, similar to &apos;-akBottom&apos;, and to add members do the same with a plus sign: &apos;+akBottom&apos;.</text></li>
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Variants</text><text styleclass="Normal" translate="true">: Specify the value using either a string notation or an ordinal/float value, similar to the above.</text></li>
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Boolean</text><text styleclass="Normal" translate="true">: Specify either &apos;True&apos;, &apos;1&apos;, &apos;False&apos;, or &apos;0&apos;.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Other published property types such as tkMethod, tkInterface, tkDynArray, tkClass, tkArray, tkRecord, and tkUnknown are not supported.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Note</text><text styleclass="Normal" translate="true">: Some IDE versions have a bug that does not allow you to set boolean and enum properties on VCL.NET components. &#160;WinForms components are also not supported.</text></para>
+  </body>
+</topic>

@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-09-29T05:45:53.731+02:00" lasteditedby="jim" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Credits</title>
+  <keywords>
+    <keyword translate="true">change log</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Credits</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">GExperts would not exist without the help and advice of many people.This is a possibly incomplete list as some names may have been lost to time.</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">ArentJan Banck</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Erik Berry</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Jim Campbell</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Primoz Gabrijelcic</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Ulrich Gerhardt</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Benjamin Fournier</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">John Hansen</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Taz Higgins</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Stefan Hoffmeister</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Rick Hollerich</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Per-Eric Larsson</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Piotr Likus</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Ray Lischner</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Jim McKeeth</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Gerald Nunn</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Alex Petrov</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Puthoon</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Mahdi Safsafi</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Martin Waldenburg</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">As the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Change-Log-2006-2015" styleclass="Normal" translate="true">change log</link><text styleclass="Normal" translate="true"> in the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Readme_txt" styleclass="Normal" translate="true">readme.txt</link><text styleclass="Normal" translate="true"> was out of date it has been moved to it&apos;s own file.</text></para>
+  </body>
+</topic>

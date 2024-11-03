@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Project Option Sets</title>
+  <keywords>
+    <keyword translate="true">Project Option Sets</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Project Option Sets</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">With this expert, you can save off sets of project options and recall them at a later time. &#160;Along with the project options, a few environment options can be saved as well. &#160;This expert supports IDE docking.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To save a given set of project options, you should first execute the Project Option Sets expert and click Add to name the new set (such as &quot;Debug&quot; or &quot;Release&quot;). &#160;Next, open the IDE&apos;s Project Options dialog and verify that the settings you wish to save are set correctly. &#160;Note that you can open the Project Options dialog from the right-click menu of settings listbox. &#160;Let the IDE store those settings by confirming the Project Options dialog. &#160;Next, check the settings on the Project Settings or Environment Settings tabs that you want to be saved. &#160;Settings you don&apos;t check here are not affected when you load the stored settings later. &#160;Finally, use the Save button to save the settings. &#160;Your saved option sets are stored in an XML file called ProjectOptionSets-*.xml. &#160;The storage location of this file is defined in the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="GExperts_Configuration" styleclass="Normal" translate="true">GExperts Configuration</link><text styleclass="Normal" translate="true"> dialog. &#160;To load a previously saved set of options, select the set name in the list and use the Apply button.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Note:</text><text styleclass="Normal" translate="true"> The option name lists match those used internally by the IDE, so it may take some searching to determine which option name matches a given setting in the project options dialog. &#160;The listbox provides some popup hints to help you, and you can use the combobox below the list to filter the available options based on certain categories.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Project Option Sets.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+  </body>
+</topic>

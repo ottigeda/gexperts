@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Procedure List</title>
+  <keywords>
+    <keyword translate="true">Procedure List</keyword>
+    <keyword translate="true">Procedures</keyword>
+    <keyword translate="true">Methods</keyword>
+    <keyword translate="true">Code Navigation</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Procedure List</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The procedure list enables you to view a list of Delphi or C++ procedures in the current unit and quickly jump to the implementation of a given procedure. &#160;The procedure list window is pictured below:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Procedure List.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">To search for a procedure, start typing in the Search edit box. &#160;As you type, the characters will appear at the top next to the word </text><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Search</text><text styleclass="Normal" translate="true">. To jump to a selected procedure, double click or highlight it and press enter.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Two search modes are provided. &#160;In the first search mode (match only from the start), searches are conducted only on the beginning of the procedure name (after an optional object reference). &#160;In the second search mode (match anywhere), the search string can match at any point in the procedure name. &#160;For example, if you had two functions, </text><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">TMyObject.Assign</text><text styleclass="Normal" translate="true"> and </text><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">TMyObject.AssignWidget</text><text styleclass="Normal" translate="true">, searching for &quot;assign&quot; would return both methods in either mode, whereas searching for widget would return neither when searching from the start, while </text><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">TMyObject.AssignWidget</text><text styleclass="Normal" translate="true"> would appear if searching for a match at any point.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Using the Objects combobox on the right, you can filter the procedure list to display all procedures, only those without an associated object, or only those associated with a specific object. &#160;The Copy button will copy all of the visible procedure details to the clipboard.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Using the options button, you can configure several items:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="text-indent:-13px; margin-left:13px; tabstops:13px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left ;"><text styleclass="Normal" translate="true">Optionally show the selected procedure&apos;s source code in a pane inside the procedure list</text></li>
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left ;"><text styleclass="Normal" translate="true">Determine whether the search filter matches within class names as well as procedure names</text></li>
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left ;"><text styleclass="Normal" translate="true">Configure the fonts used for display</text></li>
+    </list>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="text-indent:-13px; margin-left:13px; tabstops:13px left ; font-family:Symbol; font-size:10pt; color:#010100;">
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left ;"><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">Select whether or not the class name of any methods are displayed</text></li>
+    </list>
+  </body>
+</topic>

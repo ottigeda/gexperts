@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Copy Component Names</title>
+  <keywords>
+    <keyword translate="true">Copy Component Names</keyword>
+    <keyword translate="true">Clipboard</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Copy Component Names</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">This simple expert allows you to copy the names of a form&apos;s selected components to the clipboard. &#160;The format with one component name per line. &#160;This might be useful to select several components and then paste the names into the code editor, so you can easily operate on the components without retyping the names. &#160;This expert is also available from a Form&apos;s context menu.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Copy Component Names.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+  </body>
+</topic>

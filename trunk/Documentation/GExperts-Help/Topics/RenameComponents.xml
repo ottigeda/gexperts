@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" lasteditedby="ErikBerry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Rename Components</title>
+  <keywords>
+    <keyword translate="true">Rename Components</keyword>
+    <keyword translate="true">Component Naming</keyword>
+    <keyword translate="true">Name property</keyword>
+    <keyword translate="true">Default Properties for Components</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Rename Components</text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Rename Components tool allows you to define custom rename rules for various component classes and have those rules executed when components are added to a form at design time. &#160;The renaming can be completely automatic, or you can be prompted for each component to customize the suggested name.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Rename Components.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">In the configuration screen, you can click Add to add a new rule, Remove to remove the selected rule, or Defaults to add some basic default rules to the list.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The rename rule consists of a default name for the component, and (optionally) any of the following patterns:</text></para>
+    <para styleclass="Normal"><table rowcount="3" colcount="2" style="width:auto; cell-padding:0px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
+      <tr style="vertical-align:top">
+        <td style="width:58px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" style="font-weight:bold;" translate="true">%d</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Causes the automatic renaming to insert the smallest positive integer possible to create a unique component name on the form</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:58px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" style="font-weight:bold;" translate="true">|</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Defines the default position of the caret in the interactive rename dialog</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:58px;">
+          <para styleclass="Normal"><text styleclass="Bulleted List" style="font-weight:bold;" translate="true">|foo|</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal"><text styleclass="Normal" translate="true">Causes the interactive rename dialog to select the text &apos;foo&apos; by default</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The &quot;Other Properties&quot; button&apos;s dialog allows you to enter any extra properties you want to be able to edit when the interactive rename dialog pops up. &#160;Those properties will be shown below the name property entry area in the rename dialog. &#160;For example, you might use this to set the Caption of a Button while you are renaming or, or to set the checked status of a checkbox. &#160;You need to enter the other properties one per line in the resulting dialog. &#160;If you want any of the properties to have a default value different from the component&apos;s default, add an equals sign and then the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="PropertyValueConstants" styleclass="Normal" translate="true">default value</link><text styleclass="Normal" translate="true"> after the property name. &#160;If you have chosen not to show the interactive rename dialog, you can still specify &quot;Other Properties&quot; with defaults and those defaults will apply to any new component you place on the form. &#160;For example, for TButton, you could define this set of properties in the other properties list to set some defaults and also be able to edit the default Hint property in the rename dialog:</text></para>
+    <para styleclass="Normal"></para>
+    <para style="margin-left:13px;"><text styleclass="Courier Fixed" translate="true">Caption=OK</text></para>
+    <para style="margin-left:13px;"><text styleclass="Courier Fixed" translate="true">Hint</text></para>
+    <para style="margin-left:13px;"><text styleclass="Courier Fixed" translate="true">Enabled=False</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Options</text><text styleclass="Normal" translate="true">:</text></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="text-indent:-13px; margin-left:13px; tabstops:13px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Show rename dialog for new components</text><text styleclass="Normal" translate="true">: Show the interactive rename dialog for all newly added components. &#160;Without this checked, the renaming is done automatically without user interaction.</text></li>
+      <li style="text-indent:-13px; margin-left:13px; tabstops:13px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Auto-add rules for new components</text><text styleclass="Normal" translate="true">: Each time a component is added to a form, a default rename rule will be added to the list so you can customize it. &#160;Note that you need to create one rename rule manually to active this expert first before it will begin creating rules for you.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Rename Components Config.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Note:</text><text styleclass="Normal" translate="true"> This tool will only work for VCL and VCL.NET projects.</text></para>
+  </body>
+</topic>
