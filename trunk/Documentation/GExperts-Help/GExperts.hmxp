@@ -121,7 +121,7 @@
       <config-value name="autohelpstart">57</config-value>
       <config-value name="autohelpincrement">1</config-value>
       <config-value name="autohelpanchor">0</config-value>
-      <config-value name="searchpath">.\;.\Graphics\</config-value>
+      <config-value name="searchpath">..\;..\Graphics\</config-value>
       <config-value name="imageshortcuts"></config-value>
       <config-group name="custombuilds">
         <config-value name="demo">Demo Build</config-value>
@@ -191,17 +191,18 @@
 <html>
 <head>
    <title><%TOPIC_TITLE%></title>
-   <meta name="generator" content="Help &amp; Manual" />
+   <meta name="generator" content="Help+Manual" />
    <meta name="keywords" content="<%TOPIC_KEYWORDS%>" />
    <meta http-equiv="Content-Type" content="text/html; charset=<%DOCCHARSET%>" />
    <meta http-equiv="Content-Style-Type" content="text/css" />
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <link type="text/css" href="<%STYLESHEET%>" rel="stylesheet" />
    <style type="text/css">
     .headlinks {font-size: 11pt; margin-bottom: 5px; margin-top: 5px; color: #FF0000; text-align: right}
     .headlinks a {text-decoration: underline; color: #DCE6F2}
     .headlinks a:visited {text-decoration: underline; color: #DCE6F2}
     .headlinks a:hover {color: #FFFFFF}
-   </style>    
+   </style>
 </head>
 <body style="margin: 0px 0px 0px 0px; background: #FFFFFF;">
 
@@ -233,9 +234,10 @@
 <html>
 <head>
    <title><%TOPIC_TITLE%></title>
-   <meta name="generator" content="Help & Manual">
-   <meta name="keywords" content="<%TOPIC_KEYWORDS%>">
-    <meta http-equiv="Content-Type" content="text/html; charset=<%DOCCHARSET%>" />
+   <meta name="generator" content="Help+Manual" />
+   <meta name="keywords" content="<%TOPIC_KEYWORDS%>" />
+   <meta http-equiv="Content-Type" content="text/html; charset=<%DOCCHARSET%>" />
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
    <link type="text/css" href="<%STYLESHEET%>" rel="stylesheet" />
 </head>
 
