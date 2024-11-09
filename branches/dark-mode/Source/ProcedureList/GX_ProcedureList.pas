@@ -6,9 +6,9 @@ interface
 
 uses
   Windows, SysUtils, Classes, Types, ActnList, Actions, Dialogs, ComCtrls, ToolWin, StdCtrls,
-  Controls, ExtCtrls, Messages, Forms, UITypes,
+  Controls, ExtCtrls, Messages, Forms, UITypes, Graphics,
   GX_SharedImages, GX_EnhancedEditor, GX_ProcedureListOptions, GX_FileScanner,
-  GX_EditReader, GX_BaseForm;
+  GX_Splitter, GX_EditReader, GX_BaseForm;
 
 type
   TfmProcedureList = class(TfmBaseForm)
@@ -734,7 +734,10 @@ end;
 
 procedure TfmProcedureList.InitializeForm;
 begin
+  splSeparator.Color := GetThemedColor(clBtnFace);
 
+  lblObjects.Top := lblMethods.Top;
+  cbxObjects.Top := edtMethods.Top;
   FEditReader := TEditReader.Create(FFileName);
   FEditReader.FreeFileData;
 

@@ -24,7 +24,7 @@ object fmCodeLib: TfmCodeLib
   object Splitter: TSplitter
     Left = 169
     Top = 24
-    Width = 3
+    Width = 4
     Height = 325
     Cursor = crHSplit
   end

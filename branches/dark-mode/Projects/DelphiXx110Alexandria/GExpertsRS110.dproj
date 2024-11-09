@@ -659,34 +659,29 @@ $(PreBuildEvent)]]>
             <Form>fmSourceExportOptions</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Utils\GX_Splitter.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_StringGridDrawFix.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_StringList.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_SynMemoUtils.pas"/>
         <DCCReference Include="..\..\source\TabOrder\GX_TabOrder.pas">
             <Form>fmTabOrder</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\TabOrder\GX_TabOrderOptions.pas">
             <Form>fmTabOrderOptions</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\Grep\GX_TestRegEx.pas">
             <Form>fmTestRegEx</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\Utils\GX_TimedCallback.pas"/>
         <DCCReference Include="..\..\source\ToDoList\GX_ToDo.pas">
             <Form>fmToDo</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\ToDoList\GX_ToDoOptions.pas">
             <Form>fmToDoOptions</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\EditorToolbar\GX_Toolbar.pas"/>
         <DCCReference Include="..\..\source\EditorToolbar\GX_ToolbarConfig.pas">
             <Form>fmToolbarConfig</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\EditorToolbar\GX_ToolBarDropDown.pas"/>
         <DCCReference Include="..\..\Source\AutoTodo\GX_uAutoTodoHandler.pas"/>
@@ -695,15 +690,12 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Framework\GX_UnitPositions.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_UsageStatistics.pas">
             <Form>fmUsageStatistics</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\UsesExpert\GX_UsesExpert.pas">
             <Form>fmUsesManager</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\UsesExpert\GX_UsesExpertOptions.pas">
             <Form>fmUsesExpertOptions</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_UsesManager.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_VCLFixPack.pas"/>

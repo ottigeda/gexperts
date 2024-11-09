@@ -11,7 +11,7 @@ uses
   SysUtils, Classes, Types, Controls, Forms, ComCtrls, ExtCtrls,
   StdCtrls, Menus, Dialogs, ActnList, Actions, StdActns,
   GX_ConfigurationInfo, GX_MacroFile, GX_EnhancedEditor, GX_GenericUtils,
-  GX_SharedImages, GX_BaseForm;
+  GX_SharedImages, GX_Splitter, GX_BaseForm;
 
 const
   DefaultMacroFileName = 'MacroTemplates.xml';
@@ -477,6 +477,9 @@ end;
 constructor TfmMacroTemplates.Create(_Owner: TComponent);
 begin
   inherited;
+
+  splTemplates.Color := GetThemedColor(clBtnFace);
+  splUses.Color := GetThemedColor(clBtnFace);
 
   SetupTemplateMemo;
   pnlMacroText.Caption := ''; // hide design-time text

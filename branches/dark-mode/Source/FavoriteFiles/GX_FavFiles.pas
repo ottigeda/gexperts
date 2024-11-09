@@ -5,11 +5,11 @@ unit GX_FavFiles;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, UITypes,
+  Windows, SysUtils, Classes, Controls, Graphics, Forms, UITypes,
   ComCtrls, Menus, ExtCtrls, ImgList, ImageList, ActnList, ToolWin, Dialogs, Actions,
   u_dzDpiScaleUtils,
   DropTarget, FileView,
-  GX_FavUtil, GX_SharedImages, GX_BaseForm;
+  GX_FavUtil, GX_SharedImages, GX_Splitter, GX_BaseForm;
 
 type
   TFavFilesOptions = class
@@ -1779,6 +1779,9 @@ begin
   FFileViewer.Align := alClient;
 
   FMRUEntryFiles := TStringList.Create;
+
+  splTreeView.Color := GetThemedColor(clBtnFace);
+  splFileView.Color := GetThemedColor(clBtnFace);
 
   CenterForm(Self);
   LoadSettings;

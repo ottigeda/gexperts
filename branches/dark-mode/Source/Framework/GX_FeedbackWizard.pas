@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, ComCtrls, ActnList,
-  GX_BaseForm, Actions, ShellAPI;
+  GX_BaseForm, GX_Splitter, Actions, ShellAPI;
 
 type
   TFeedbackType = (fbBug, fbFeature);
@@ -381,6 +381,7 @@ begin
   pgeMain.Style := tsButtons;
   FIDEName := GxOtaGetIDEProductIdentifier;
   SetParentBackgroundValue(pnlHeader, False);
+  Splitter.Color := GetThemedColor(clBtnFace);
 
   InitDpiScaler;
 end;

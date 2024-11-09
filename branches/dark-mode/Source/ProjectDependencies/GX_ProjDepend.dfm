@@ -22,7 +22,7 @@ object fmProjDepend: TfmProjDepend
   object Splitter: TSplitter
     Left = 213
     Top = 22
-    Width = 3
+    Width = 4
     Height = 221
     Cursor = crHSplit
   end

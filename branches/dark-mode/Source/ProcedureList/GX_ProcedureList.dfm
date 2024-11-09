@@ -33,7 +33,7 @@ object fmProcedureList: TfmProcedureList
     object splSeparator: TSplitter
       Left = 517
       Top = 0
-      Width = 3
+      Width = 4
       Height = 268
       Cursor = crHSplit
       Align = alRight

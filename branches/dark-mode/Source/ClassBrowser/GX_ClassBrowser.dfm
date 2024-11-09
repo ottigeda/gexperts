@@ -24,7 +24,7 @@ object fmClassBrowser: TfmClassBrowser
   object Splitter1: TSplitter
     Left = 233
     Top = 0
-    Width = 3
+    Width = 4
     Height = 444
     Cursor = crHSplit
   end

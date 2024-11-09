@@ -11,6 +11,7 @@ uses
   Types, // for inlining
   ComCtrls, Menus, Actions, UITypes,
   DropSource,
+  GX_Splitter,
   GX_GrepBackend, GX_GrepExpert, GX_ConfigurationInfo, GX_IdeDock, GX_GrepSearch, GX_SharedImages;
 
 type
@@ -1899,6 +1900,8 @@ begin
 
   FSearchInProgress := False;
   lbResults.DoubleBuffered := True;
+  SplitterContext.Color := GetThemedColor(clBtnFace);
+  SplitterHistoryList.Color := GetThemedColor(clBtnFace);
   CenterForm(Self);
 
   InitDpiScaler;

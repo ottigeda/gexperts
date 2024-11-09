@@ -17,7 +17,7 @@ uses
   GX_CheckButton,
   u_dzStopwatch,
   u_dzDpiScaleUtils,
-  GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
+  GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm, GX_Splitter,
   GX_UnitExportsParser, GX_UsesExpertOptions, GX_UnitExportList,
   GX_OtaUtils;
 
@@ -1126,6 +1126,7 @@ begin
   sg_Favorite.Color       := GetThemedColor(clWindow);
   sg_SearchPath.Color     := GetThemedColor(clWindow);
   sg_Identifiers.Color    := GetThemedColor(clWindow);
+  Splitter.Color          := GetThemedColor(clBtnFace);
 
   FIdentifiers := TUnitExportlist.Create(0);
   FAliases := TStringList.Create;

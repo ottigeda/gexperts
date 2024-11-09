@@ -27,6 +27,7 @@ uses
   Menus,
   GX_BaseForm,
   GX_GxUtils,
+  GX_Splitter,
   GX_SharedImages,
   GX_EditPathConfig;
 
@@ -812,6 +813,9 @@ begin
   FMinSearchPathWidth := p_Client.Width;
   FMinHistoryHeight := p_ClientBottom.Height;
   FMinSearchPathHeight := p_ClientClient.Height;
+
+  spl_Vertical.Color := GetThemedColor(clBtnFace);
+  spl_Horizontal.Color := GetThemedColor(clBtnFace);
 
   TPanel_BevelNone([p_BottomButtons, p_TargetCaption, p_InheritedCaption, p_MemoCaption, p_RightButtons]);
 

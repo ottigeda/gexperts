@@ -11,7 +11,7 @@ uses
   Actions, ActnList, ImageList, ImgList, ToolWin, ToolsAPI,
   OmniXML,
   GX_SharedImages, GX_Experts, GX_ConfigurationInfo, GX_KbdShortCutBroker,
-  GX_IdeDock, GX_MemoEscFix, GX_StringList;
+  GX_Splitter, GX_IdeDock, GX_MemoEscFix, GX_StringList;
 
 type
   TMemo = class(TMemoEscFix)
@@ -756,6 +756,7 @@ begin
   TControl_SetMinConstraints(Self);
 
   InitDpiScaler;
+  Splitter.Color := GetThemedColor(clBtnFace);
 
   FSuspended := False;
   FDataList := TList.Create;

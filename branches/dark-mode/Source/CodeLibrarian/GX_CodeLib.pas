@@ -1133,6 +1133,7 @@ begin
     Exit;
   end;
   {$IFOPT D+}SendDebug('Opened storage file');{$ENDIF}
+  Splitter.Color := GetThemedColor(clBtnFace);
   InitializeTreeView;
   InitializeSyntaxLanguages;
   FModified := False;
