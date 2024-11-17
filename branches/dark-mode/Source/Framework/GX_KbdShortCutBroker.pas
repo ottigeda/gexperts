@@ -572,6 +572,7 @@ begin
   if FKeyboardBindingIndex <> InvalidIndex then begin
     IKeyboardServices := GxOtaGetKeyboardServices;
     try
+      {$IFOPT D+} SendDebugWarning(ClassName + ' IKeyboardServices.RemoveKeyboardBindings!'); {$ENDIF}
       IKeyboardServices.RemoveKeyboardBinding(FKeyboardBindingIndex);
     except
       on E: Exception do

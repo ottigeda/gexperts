@@ -291,6 +291,8 @@ constructor TfmCompsToCode.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
+  GxOtaGetEditorFont(pnlView.Font, 0);
+
   FCodeText := TGXEnhancedEditor.Create(Self);
   FCodeText.Highlighter := gxpNone;
   FCodeText.Align := alClient;
@@ -298,7 +300,6 @@ begin
   FCodeText.ReadOnly := True;
   FCodeText.WantTabs := True;
   FCodeText.TabWidth := GxOtaGetTabWidth;
-  GxOtaGetEditorFont(FCodeText.Font, 0);
 
   InitDpiScaler;
 end;

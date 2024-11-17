@@ -229,6 +229,8 @@ begin
   TWinControl_ActivateDropFiles(ed_CapitalizationFile, HandleCaptitalizationFileDropped);
   TEdit_ActivateAutoComplete(ed_CapitalizationFile, [acsFileSystem], [actSuggest]);
 
+  GxOtaGetEditorFont(p_Preview.Font, -1);
+
   m_PreviewBefore := TGxEnhancedEditor.Create(Self);
   m_PreviewBefore.Name := 'm_PreviewBefore';
   m_PreviewBefore.Parent := p_Preview;
@@ -237,7 +239,6 @@ begin
   m_PreviewBefore.Width := 241;
   m_PreviewBefore.Height := 337;
   m_PreviewBefore.TabOrder := 0;
-  GxOtaGetEditorFont(m_PreviewBefore.Font, -1);
   m_PreviewBefore.OnChange := UpdatePreview;
   m_PreviewBefore.OnStatusChange := HandleOnStatusChange;
   m_PreviewBefore.Highlighter := gxpPas;
@@ -251,7 +252,6 @@ begin
   m_PreviewAfter.Height := 337;
   m_PreviewAfter.Anchors := [akLeft, akTop, akRight];
   m_PreviewAfter.TabOrder := 1;
-  GxOtaGetEditorFont(m_PreviewAfter.Font, -1);
   m_PreviewAfter.Highlighter := gxpPas;
 
   TWinControl_ActivateDropFiles(m_PreviewBefore, m_PreviewFileDropped);

@@ -2,7 +2,7 @@
     <PropertyGroup>
         <Base>True</Base>
         <AppType>Library</AppType>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <FrameworkType>VCL</FrameworkType>
         <MainSource>GExpertsRS120.dpr</MainSource>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -69,6 +69,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
         <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
+        <DCC_UsePackage>xmlrtl;vclactnband;vclx;vclie;fmx;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_DebugInformation>0</DCC_DebugInformation>
@@ -491,6 +492,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas"/>
+        <DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibility.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_IdeUtils.pas"/>
         <DCCReference Include="..\..\Source\AutoTodo\GX_InsertAutoTodo.pas">
             <Form>fmInsertAutoTodoForm</Form>
@@ -676,23 +678,29 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\source\Framework\GX_SynMemoUtils.pas"/>
         <DCCReference Include="..\..\source\TabOrder\GX_TabOrder.pas">
             <Form>fmTabOrder</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\TabOrder\GX_TabOrderOptions.pas">
             <Form>fmTabOrderOptions</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\Grep\GX_TestRegEx.pas">
             <Form>fmTestRegEx</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\Utils\GX_TimedCallback.pas"/>
         <DCCReference Include="..\..\source\ToDoList\GX_ToDo.pas">
             <Form>fmToDo</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\ToDoList\GX_ToDoOptions.pas">
             <Form>fmToDoOptions</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\EditorToolbar\GX_Toolbar.pas"/>
         <DCCReference Include="..\..\source\EditorToolbar\GX_ToolbarConfig.pas">
             <Form>fmToolbarConfig</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\EditorToolbar\GX_ToolBarDropDown.pas"/>
         <DCCReference Include="..\..\Source\AutoTodo\GX_uAutoTodoHandler.pas"/>
@@ -701,12 +709,15 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\source\Framework\GX_UnitPositions.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_UsageStatistics.pas">
             <Form>fmUsageStatistics</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\UsesExpert\GX_UsesExpert.pas">
             <Form>fmUsesManager</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\UsesExpert\GX_UsesExpertOptions.pas">
             <Form>fmUsesExpertOptions</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_UsesManager.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_VCLFixPack.pas"/>

@@ -1083,6 +1083,8 @@ begin
   else
     FCurrentSyntaxMode := gxpPas;
 
+  GxOtaGetEditorFont(pnlMacroText.Font, 0);
+
   FTemplateText := TGXEnhancedEditor.Create(Self);
   FTemplateText.Highlighter := FCurrentSyntaxMode;
   FTemplateText.Align := alClient;
@@ -1091,7 +1093,6 @@ begin
   FTemplateText.OnEnter := TemplateCodeEnter;
   FTemplateText.Parent := pnlMacroText;
   FTemplateText.ReadOnly := True;
-  GxOtaGetEditorFont(FTemplateText.Font);
   FTemplateText.WantTabs := True;
   FTemplateText.OnChange := TemplateTextChanged;
 end;

@@ -137,6 +137,7 @@ type
     pmiBrowserSep2: TMenuItem;
     pmiBrowserPrintClassHierarchy: TMenuItem;
     pmiBrowserPrintClassReport: TMenuItem;
+    pnlCode: TPanel;
     procedure tvBrowseChange(Sender: TObject; Node: TTreeNode);
     procedure pnlDataResize(Sender: TObject);
     procedure lvInfoChange(Sender: TObject; Item: TListItem; Change: TItemChange);
@@ -1059,6 +1060,12 @@ var
     APanel.FullRepaint := False;
     APanel.Caption := PanelText;
     APanel.BevelInner := bvLowered;
+  {$IFDEF GX_SUPPORTS_THEMING}
+    if IdeStyleIsDark then begin
+      APanel.StyleElements := [seFont];
+      APanel.Color := GetThemedColor(clBtnFace);
+    end;
+  {$ENDIF}
     APanel.SetBounds(ClassControlLeft, (PanelPosition * 50) + 10, ClassControlWidth, 30);
 
     // Assumes that form and panel have the same font
@@ -1076,6 +1083,8 @@ var
     shp := TShape.Create(scInherit);
     shp.Visible := True;
     shp.Parent := scInherit;
+    shp.Pen.Color   := GetThemedColor(clWindowText);
+    shp.Brush.Color := GetThemedColor(clWindow);
     shp.SetBounds(LeftPos, ((Index - 1) * 50) + 40, 2, 20);
   end;
 

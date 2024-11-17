@@ -81,7 +81,8 @@ implementation
 uses
   u_dzVclUtils,
   u_dzStringUtils,
-  GX_GenericUtils;
+  GX_GenericUtils,
+  GX_OtaUtils;
 
 { TfmCodeFormatterCapitalization }
 
@@ -118,8 +119,7 @@ begin
   FWords.Parent := p_Items;
   FWords.HighLighter := gxpNone;
   FWords.Align := alClient;
-  FWords.Font.Name := 'Courier New';
-  FWords.Font.Size := 10;
+  GxOtaGetEditorFont(p_Items.Font, -1);
   FWords.OnEnter := HandleOnEnterList;
   FWords.OnExit := HandleOnExitList;
   FWords.ActiveLineColor := clYellow;
