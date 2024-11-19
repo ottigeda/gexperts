@@ -529,6 +529,9 @@ begin
   if FInstallingKeyboardBinding then
     Exit;
 
+  if Assigned(Application) and (Application.Terminated) then
+    Exit;
+
   FInstallingKeyboardBinding := True;
   try
     // XE5, and probably older versions, will AV when you add a keyboard binding
