@@ -776,8 +776,7 @@ begin
     FCodeText.Highlighter := gxpNone;
   FCodeText.Parent := pnlFunctionBody;
   FCodeText.Align := alClient;
-  pnlFunctionBody.Font.Name := 'Courier New'; {$MESSAGE HINT 'Use Editor Font'}
-  pnlFunctionBody.Font.Size := 10;
+  GxOtaGetEditorFont(pnlFunctionBody.Font, -1);
   FCodeText.ReadOnly := True;
 end;
 

@@ -82,6 +82,7 @@ implementation
 uses
   SysUtils,
   Dialogs,
+  GX_OtaUtils,
   u_dzVclUtils;
 
 const
@@ -92,8 +93,7 @@ constructor TProcedureListOptions.Create;
 begin
   FDialogFont := TFont.Create;
   FCodeViewFont := TFont.Create;
-  FCodeViewFont.Name := 'Courier New';
-  FCodeViewFont.Size := 8;
+  GxOtaGetEditorFont(FCodeViewFont, -1);
   AlignmentChanged := False;
   ObjectNameVisible := True;
   SortOnColumn := 1;
