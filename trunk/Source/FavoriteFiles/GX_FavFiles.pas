@@ -866,7 +866,7 @@ begin
 
   SubSettings := Settings.Subkey('Window');
   SubSettings.WriteInteger('Splitter', Max(tvFolders.Width, 30));
-  SubSettings.WriteInteger('Splitter2', Max(FFileViewer.Height, 30));
+  SubSettings.WriteInteger('Splitter2', Max(pnlFileView.Height, 30));
   SubSettings.WriteInteger('ListView', Ord(ListView.ViewStyle));
 
   if FEntryFile = GetDefaultEntryFileName then
@@ -899,7 +899,7 @@ begin
 
   SubSettings := Settings.Subkey('Window');
   tvFolders.Width := SubSettings.ReadInteger('Splitter', tvFolders.Width);
-  FFileViewer.Height := SubSettings.ReadInteger('Splitter2', FFileViewer.Height);
+  pnlFileView.Height := SubSettings.ReadInteger('Splitter2', FFileViewer.Height);
   ListView.ViewStyle := TViewStyle(SubSettings.ReadInteger('ListView', Ord(ListView.ViewStyle)));
 
   EntryFile := Settings.ReadString('EntryFile', GetDefaultEntryFileName);
@@ -1828,6 +1828,9 @@ procedure TfmFavFiles.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;
 begin
+  FScaler.ControlHasSplitter(tvFolders);
+  FScaler.ControlHasSplitter(pnlFileView);
+
   inherited;
   il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
   ToolBar.DisabledImages := il;
