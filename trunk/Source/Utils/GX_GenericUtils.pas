@@ -37,9 +37,12 @@ type
   // Originally this simply redeclared NativeInt as Integer for older versions, but
   // that made it hard to find accidental usages of the wrong type.
   GXNativeInt = Integer;
-{$IF declared(NativeUInt) and defined(GX_DELPHI2009_UP)}
+{$IF declared(NativeUInt) and defined(GX_DELPHIXE2_UP)}
   // Delphi 7 and 2007 declare NativeUInt wrongly as 64 bit even though there is only a 32 bit compiler
-   GXNativeUInt = NativeUInt;
+  // but it matters only from XE2 up because that's the first version that had a 64 bit compiler
+  // On the other hand: GExperts is an IDE plugin and until the IDE is 64 bit, 32 bits would
+  // probably be fine for all Delphi versions (Just like with GXNativeInt above.)
+  GXNativeUInt = NativeUInt;
 {$ELSE}
   GXNativeUInt = Cardinal;
 {$IFEND}
