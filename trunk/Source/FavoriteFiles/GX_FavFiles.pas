@@ -1787,6 +1787,7 @@ begin
   FFileViewer := TFileViewer.Create(nil);
   FFileViewer.Parent := pnlFileView;
   FFileViewer.Align := alClient;
+  GxOtaGetEditorFont(pnlFileView.Font, 0);
 
   FMRUEntryFiles := TStringList.Create;
 

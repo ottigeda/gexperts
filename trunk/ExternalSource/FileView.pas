@@ -31,8 +31,6 @@ type
     property LoadedFile: string read FLoadedFile write FLoadedFile;
   end;
 
-procedure Register;
-
 implementation
 
 uses
@@ -78,7 +76,7 @@ begin
       Gutter.Width := 0;
       Visible := False;
     end;
-    GxOtaGetEditorFont(FEditor.Font, -1);
+    FEditor.ParentFont := True;
     {$ENDIF SYNEDIT}
   end;
 end;
@@ -126,8 +124,6 @@ procedure TFileViewer.LoadFromFile(const FileName: string);
     finally
       FreeAndNil(Strings);
     end;
-    if Parser > gxpNone then
-      GxOtaGetEditorFont(FEditor.Font, -1);
       
     SetSynEditHighlighter(FEditor, Parser);
     FGXSyntaxParser := Parser;
@@ -212,11 +208,6 @@ begin
     {$ENDIF SYNEDIT}
     FRichEdit.Lines.EndUpdate;
   end;
-end;
-
-procedure Register;
-begin
-  RegisterComponents('User', [TFileViewer]);
 end;
 
 end.
