@@ -517,13 +517,4 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
     TabOrder = 4
     OnClick = chkAdvancedClick
   end
-  object dlgGrepListFont: TFontDialog
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    Left = 271
-    Top = 332
-  end
 end

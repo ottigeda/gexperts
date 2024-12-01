@@ -31,7 +31,6 @@ type
     lblContextLines: TLabel;
     btnOK: TButton;
     btnCancel: TButton;
-    dlgGrepListFont: TFontDialog;
     pnlContextMatchFontColor: TPanel;
     chkGrepMiddle: TCheckBox;
     chkGrepExpandAll: TCheckBox;
