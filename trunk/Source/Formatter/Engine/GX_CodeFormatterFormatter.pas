@@ -1780,8 +1780,8 @@ begin
               [rtDo, rtWhile, rtProcDeclare, rtThen, rtProgram, rtUses, rtColon, rtClassDecl, rtIfElse]) do begin
               Assert(False, '.CheckIndent: in while');
               FStack.Pop;
-		    end;
-		  end;
+            end;
+          end;
 
           // Look for 'absolute' or a function directive before the next line feed
           // todo: This only works, if 'absolute' or any of the function directives ('overload',
