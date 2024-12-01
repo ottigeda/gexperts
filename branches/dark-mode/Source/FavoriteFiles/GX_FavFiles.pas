@@ -858,12 +858,17 @@ procedure TfmFavFiles.SaveSettings;
 var
   Settings: IExpertSettings;
   Key: string;
+  SubSettings: IExpertSettings;
 begin
   // Do not localize.
   Settings := TFavoriteFilesExpert.GetSettings;
   Settings.SaveForm('Window', Self);
-  Settings.WriteInteger('Window\Splitter', Max(tvFolders.Width, 30));
-  Settings.WriteInteger('Window\Splitter2', Max(FFileViewer.Height, 30));
+
+  SubSettings := Settings.Subkey('Window');
+  SubSettings.WriteInteger('Splitter', Max(tvFolders.Width, 30));
+  SubSettings.WriteInteger('Splitter2', Max(pnlFileView.Height, 30));
+  SubSettings.WriteInteger('ListView', Ord(ListView.ViewStyle));
+
   if FEntryFile = GetDefaultEntryFileName then
     Settings.DeleteKey('EntryFile')
   else
@@ -876,7 +881,6 @@ begin
   Settings.WriteBool('IsFavMenuVisible', FOptions.FIsFavMenuVisible);
   Settings.WriteString('FileFilter', FOptions.FFileFilter);
 
-  Settings.WriteInteger('Window\ListView', Ord(ListView.ViewStyle));
   Settings.WriteStrings('MRUEntryFiles', MRUEntryFiles, 'EntryFile');
 
   Key := AddSlash(ConfigInfo.GExpertsIdeRootRegistryKey) + ConfigurationKey;
@@ -887,12 +891,17 @@ procedure TfmFavFiles.LoadSettings;
 var
   Settings: IExpertSettings;
   Key: string;
+  SubSettings: IExpertSettings;
 begin
   // Do not localize.
   Settings := TFavoriteFilesExpert.GetSettings;
   Settings.LoadForm('Window', Self);
-  tvFolders.Width := Settings.ReadInteger('Window\Splitter', tvFolders.Width);
-  FFileViewer.Height := Settings.ReadInteger('Window\Splitter2', FFileViewer.Height);
+
+  SubSettings := Settings.Subkey('Window');
+  tvFolders.Width := SubSettings.ReadInteger('Splitter', tvFolders.Width);
+  pnlFileView.Height := SubSettings.ReadInteger('Splitter2', FFileViewer.Height);
+  ListView.ViewStyle := TViewStyle(SubSettings.ReadInteger('ListView', Ord(ListView.ViewStyle)));
+
   EntryFile := Settings.ReadString('EntryFile', GetDefaultEntryFileName);
 
   FOptions.FFolderDelete := Settings.ReadBool('FolderDelete', FOptions.FFolderDelete);
@@ -902,7 +911,6 @@ begin
   FOptions.FIsFavMenuVisible := Settings.ReadBool('IsFavMenuVisible', FOptions.FIsFavMenuVisible);
   FOptions.FFileFilter := Settings.ReadString('FileFilter', FOptions.FFileFilter);
 
-  ListView.ViewStyle := TViewStyle(Settings.ReadInteger('Window\ListView', Ord(ListView.ViewStyle)));
   Assert(ListView.ViewStyle in [Low(TViewStyle)..High(TViewStyle)]);
   MRUEntryFiles.Clear;
   Settings.ReadStrings('MRUEntryFiles', MRUEntryFiles, 'EntryFile');
@@ -1777,6 +1785,7 @@ begin
   FFileViewer := TFileViewer.Create(nil);
   FFileViewer.Parent := pnlFileView;
   FFileViewer.Align := alClient;
+  GxOtaGetEditorFont(pnlFileView.Font, 0);
 
   FMRUEntryFiles := TStringList.Create;
 
@@ -1821,6 +1830,9 @@ procedure TfmFavFiles.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;
 begin
+  FScaler.ControlHasSplitter(tvFolders);
+  FScaler.ControlHasSplitter(pnlFileView);
+
   inherited;
   il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
   ToolBar.DisabledImages := il;

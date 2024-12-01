@@ -912,10 +912,10 @@ begin
 end;
 
 procedure TfmGrepResults.InitThemedColors;
+{$IFDEF GX_SUPPORTS_THEMING}
 var
   LBackColor : TColor;
 begin
-{$IFDEF GX_SUPPORTS_THEMING}
   if IsThemingEnabled then begin
     InitTheming(Self);
     GxOtaGetIDEThemingServices.ApplyTheme(tcHistoryListPage);
@@ -931,7 +931,9 @@ begin
     lbHistoryList.Color := LBackColor;
     reContext.Color := LBackColor;
   end;
-{$ENDIF}  
+{$ELSE GX_SUPPORTS_THEMING}
+begin
+{$ENDIF GX_SUPPORTS_THEMING}
 end;
 
 procedure TfmGrepResults.InitGrepSettings(AGrepSettings: TGrepSettings);
@@ -1892,6 +1894,8 @@ begin
       FPageIndexes[IM, IT] := -1;
 
   SetToolbarGradient(ToolBar);
+  lbResults.ParentFont := True;
+  lbResults.Canvas.Font.Assign(Self.Font);
 
   if IsStandAlone then begin
     actHamburgerMenu.Visible := False;
@@ -2184,6 +2188,9 @@ begin
   reContext.Font.Color := GetThemedColor(gblGrepExpert.ContextFont.Color);
   lbResults.Font.Assign(gblGrepExpert.ListFont);
   lbResults.Font.Color := GetThemedColor(gblGrepExpert.ListFont.Color);
+  lbHistoryList.ParentFont := True;
+  lbHistoryList.Canvas.Font.Assign(Self.Font);
+  lbHistoryList.ItemHeight := 2 * lbHistoryList.Canvas.TextHeight(SAllAlphaNumericChars);
 end;
 
 procedure TfmGrepResults.actReplaceAllExecute(Sender: TObject);

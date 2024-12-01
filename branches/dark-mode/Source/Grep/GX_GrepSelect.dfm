@@ -12,7 +12,7 @@ inherited fmGrepSelect: TfmGrepSelect
     Left = 0
     Top = 0
     Width = 790
-    Height = 384
+    Height = 360
     Align = alClient
     Checkboxes = True
     Columns = <
@@ -60,20 +60,21 @@ inherited fmGrepSelect: TfmGrepSelect
     OnColumnClick = lvHistoryListColumnClick
     OnCompare = lvHistoryListCompare
     OnMouseDown = lvHistoryListMouseDown
+    ExplicitHeight = 384
   end
   object pnlTools: TPanel
     Left = 0
-    Top = 384
+    Top = 360
     Width = 790
-    Height = 150
+    Height = 174
     Align = alBottom
     TabOrder = 1
     DesignSize = (
       790
-      150)
+      174)
     object pnlSortButtons: TPanel
       Left = 361
-      Top = 90
+      Top = 114
       Width = 340
       Height = 60
       Anchors = [akRight, akBottom]
@@ -203,8 +204,8 @@ inherited fmGrepSelect: TfmGrepSelect
       Left = 709
       Top = 88
       Width = 75
-      Height = 25
-      Anchors = [akTop, akRight]
+      Height = 49
+      Anchors = [akTop, akRight, akBottom]
       Caption = 'OK'
       Default = True
       ModalResult = 1
@@ -262,15 +263,15 @@ inherited fmGrepSelect: TfmGrepSelect
       object lblSaveOption: TLabel
         Left = 5
         Top = 8
-        Width = 205
-        Height = 13
+        Width = 222
+        Height = 15
         Caption = 'Save option new value (when IDE closing):'
       end
       object cbxSaveOptionValue: TComboBox
         Left = 34
         Top = 26
         Width = 183
-        Height = 21
+        Height = 23
         Style = csDropDownList
         ItemHeight = 13
         ItemIndex = 3
@@ -339,27 +340,28 @@ inherited fmGrepSelect: TfmGrepSelect
     end
     object pnlSearch: TPanel
       Left = 0
-      Top = 30
+      Top = 54
       Width = 697
       Height = 60
       Anchors = [akLeft, akRight, akBottom]
       BevelOuter = bvNone
       BorderStyle = bsSingle
       TabOrder = 4
+      ExplicitTop = 30
       object lblSearch: TLabel
-        Left = 32
+        Left = 31
         Top = 8
-        Width = 37
-        Height = 13
+        Width = 38
+        Height = 15
         Alignment = taRightJustify
         Caption = 'Search:'
         FocusControl = eSearch
       end
       object lblSearchSaveOption: TLabel
-        Left = 24
+        Left = 17
         Top = 33
-        Width = 113
-        Height = 13
+        Width = 120
+        Height = 15
         Alignment = taRightJustify
         Caption = 'Save option for search:'
       end
@@ -367,7 +369,7 @@ inherited fmGrepSelect: TfmGrepSelect
         Left = 72
         Top = 4
         Width = 265
-        Height = 21
+        Height = 23
         TabOrder = 0
         OnChange = eSearchChange
       end
@@ -375,7 +377,7 @@ inherited fmGrepSelect: TfmGrepSelect
         Left = 144
         Top = 29
         Width = 194
-        Height = 21
+        Height = 23
         Style = csDropDownList
         ItemHeight = 13
         ItemIndex = 3
@@ -497,8 +499,8 @@ inherited fmGrepSelect: TfmGrepSelect
       object lblSaveSplitCount: TLabel
         Left = 27
         Top = 30
-        Width = 54
-        Height = 13
+        Width = 60
+        Height = 15
         Caption = 'Split count:'
         Enabled = False
       end
@@ -515,22 +517,22 @@ inherited fmGrepSelect: TfmGrepSelect
         Left = 93
         Top = 27
         Width = 25
-        Height = 21
+        Height = 23
         Enabled = False
         TabOrder = 1
       end
     end
     object pnlSortMoves: TPanel
-      Left = 0
-      Top = 90
+      Left = 2
+      Top = 89
       Width = 243
-      Height = 60
+      Height = 85
       BevelOuter = bvNone
       TabOrder = 9
       object btnMoveDown: TButton
         Tag = 1
         Left = 144
-        Top = 32
+        Top = 43
         Width = 90
         Height = 25
         Caption = 'Move Down'
@@ -540,7 +542,7 @@ inherited fmGrepSelect: TfmGrepSelect
       object btnMoveUp: TButton
         Tag = -1
         Left = 144
-        Top = 6
+        Top = 17
         Width = 90
         Height = 25
         Caption = 'Move Up'
@@ -551,7 +553,7 @@ inherited fmGrepSelect: TfmGrepSelect
         Left = 2
         Top = 0
         Width = 136
-        Height = 58
+        Height = 81
         Caption = 'Move Items:'
         ItemIndex = 0
         Items.Strings = (
@@ -563,10 +565,10 @@ inherited fmGrepSelect: TfmGrepSelect
     end
     object btnCancel: TButton
       Left = 709
-      Top = 117
+      Top = 141
       Width = 75
       Height = 25
-      Anchors = [akTop, akRight]
+      Anchors = [akRight, akBottom]
       Cancel = True
       Caption = 'Cancel'
       ModalResult = 2

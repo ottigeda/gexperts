@@ -866,7 +866,7 @@ begin
 
   Settings.LoadForm('Window', Self);
   Settings := Settings.Subkey('Window');
-  FLayout := TCodeLayout.clUnknown; // Force next line to set the new layout
+  FLayout := clUnknown; // Force next line to set the new layout
   Layout := TCodeLayout(Settings.ReadInteger('Layout', Ord(clSide)));
   if Layout = clSide then
     tvTopics.Width := Settings.ReadInteger('Splitter', ClientWidth div 4)

@@ -14,6 +14,7 @@ object fmProcedureList: TfmProcedureList
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
+  OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
   OnClose = FormClose
@@ -31,7 +32,7 @@ object fmProcedureList: TfmProcedureList
     FullRepaint = False
     TabOrder = 0
     object splSeparator: TSplitter
-      Left = 517
+      Left = 516
       Top = 0
       Width = 4
       Height = 268
@@ -42,7 +43,7 @@ object fmProcedureList: TfmProcedureList
     object pnlFuncHolder: TPanel
       Left = 0
       Top = 0
-      Width = 517
+      Width = 516
       Height = 268
       Align = alClient
       BevelOuter = bvNone
@@ -51,7 +52,7 @@ object fmProcedureList: TfmProcedureList
       object pnHolder: TPanel
         Left = 0
         Top = 58
-        Width = 517
+        Width = 516
         Height = 210
         Align = alClient
         BevelOuter = bvNone
@@ -61,7 +62,7 @@ object fmProcedureList: TfmProcedureList
         object lvProcs: TListView
           Left = 0
           Top = 0
-          Width = 517
+          Width = 516
           Height = 210
           Align = alClient
           Columns = <
@@ -96,7 +97,7 @@ object fmProcedureList: TfmProcedureList
       object pnlHeader: TPanel
         Left = 0
         Top = 22
-        Width = 517
+        Width = 516
         Height = 36
         Align = alTop
         BevelOuter = bvNone
@@ -138,7 +139,7 @@ object fmProcedureList: TfmProcedureList
         object pnlHeaderRight: TPanel
           Left = 252
           Top = 0
-          Width = 265
+          Width = 264
           Height = 36
           Align = alClient
           BevelOuter = bvNone
@@ -171,7 +172,7 @@ object fmProcedureList: TfmProcedureList
       object ToolBar: TToolBar
         Left = 0
         Top = 0
-        Width = 517
+        Width = 516
         Height = 22
         AutoSize = True
         DisabledImages = dmSharedImages.DisabledImages

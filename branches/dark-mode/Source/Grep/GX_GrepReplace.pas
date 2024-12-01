@@ -38,14 +38,18 @@ implementation
 
 {$R *.dfm}
 
-uses SysUtils,
-  GX_GenericUtils, GX_GxUtils, GX_GrepResults;
+uses 
+  SysUtils,
+  GX_GenericUtils, GX_GxUtils, GX_GrepResults, 
+  u_dzVclUtils;
 
 constructor TfmGrepReplace.Create(AOwner: TComponent);
 begin
   inherited;
+  GxSetDefaultFont(Self);
   LoadFormSettings;
 
+  TControl_SetMinConstraints(Self);
   InitDpiScaler;
 end;
 

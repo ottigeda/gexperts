@@ -268,7 +268,7 @@ inherited fmGrepResults: TfmGrepResults
       object StatusBar: TStatusBar
         Left = 0
         Top = 78
-        Width = 396
+        Width = 394
         Height = 19
         Panels = <
           item
@@ -283,7 +283,7 @@ inherited fmGrepResults: TfmGrepResults
       object reContext: TRichEdit
         Left = 0
         Top = 0
-        Width = 396
+        Width = 394
         Height = 78
         Align = alClient
         Font.Charset = ANSI_CHARSET

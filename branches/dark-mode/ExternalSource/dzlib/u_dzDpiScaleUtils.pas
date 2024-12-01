@@ -62,6 +62,8 @@ type
     Ctrl: TControl;
     BoundsRect: TRect;
     FontSize: Integer;
+    LastDpi: integer;
+    HasSplitter: boolean;
     ItemHeight: Integer;
     procedure Assign(_Ctrl: TControl; _DesignDpi: Integer);
     procedure ApplyScale(const _Scaler: TDpiScaler);
@@ -87,6 +89,7 @@ type
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
     function Calc(_Value: Integer): Integer;
     procedure DisableControlFontScaling(_ctrl: TControl);
+    procedure ControlHasSplitter(_ctrl: TControl);
     property DesignDPI: Integer read FDesigDpi;
   end;
 
@@ -280,6 +283,22 @@ begin
 
   br := _Scaler.Calc(BoundsRect);
   LogRect('  br', br);
+
+  if HasSplitter and(LastDpi <> 0) then begin
+    case Ctrl.Align of
+      alTop,
+        alBottom: begin
+          br.Height := MulDiv(Ctrl.Height, _Scaler.FCurrentDpi, LastDpi);
+        end;
+      alLeft,
+        alRight: begin
+          br.Width := MulDiv(Ctrl.Width, _Scaler.FCurrentDpi, LastDpi);
+        end;
+    else
+      // should be impossible, we simply ignore it
+    end;
+  end;
+  LastDpi := _Scaler.FCurrentDpi;
 
   LabelWasAutoSize := False;
   if (Ctrl is TLabel) then begin
@@ -493,6 +512,15 @@ var
 begin
   Scaler.Init(FFrm);
   Result := Scaler.Calc(_Value);
+end;
+
+procedure TFormDpiScaler.ControlHasSplitter(_ctrl: TControl);
+var
+  CtrlScaler: PCtrlDpiScaler;
+begin
+  CtrlScaler := FindCtrlScaler(_Ctrl);
+  if Assigned(CtrlScaler) then
+    CtrlScaler.HasSplitter := true;
 end;
 
 constructor TFormDpiScaler.Create(_Frm: TForm);

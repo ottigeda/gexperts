@@ -13,6 +13,7 @@ object fmProjDepend: TfmProjDepend
   Font.Style = []
   KeyPreview = True
   Menu = MainMenu
+  OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
   OnActivate = FormActivate
@@ -55,9 +56,9 @@ object fmProjDepend: TfmProjDepend
     OnKeyDown = tvUnitsKeyDown
   end
   object pnlPageControlHost: TPanel
-    Left = 216
+    Left = 217
     Top = 22
-    Width = 303
+    Width = 302
     Height = 221
     Align = alClient
     BevelOuter = bvNone
@@ -66,7 +67,7 @@ object fmProjDepend: TfmProjDepend
     object pcData: TPageControl
       Left = 0
       Top = 0
-      Width = 303
+      Width = 302
       Height = 221
       ActivePage = tshUnitUses
       Align = alClient
@@ -78,7 +79,7 @@ object fmProjDepend: TfmProjDepend
         object lvUnitUses: TListView
           Left = 0
           Top = 0
-          Width = 295
+          Width = 294
           Height = 192
           Align = alClient
           Columns = <

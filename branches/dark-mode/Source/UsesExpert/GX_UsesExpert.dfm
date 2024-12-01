@@ -191,7 +191,7 @@ inherited fmUsesManager: TfmUsesManager
         end
         object pnlProjFooter: TPanel
           Left = 0
-          Top = 295
+          Top = 297
           Width = 654
           Height = 48
           Align = alBottom
@@ -429,7 +429,7 @@ inherited fmUsesManager: TfmUsesManager
           Left = 0
           Top = 0
           Width = 654
-          Height = 295
+          Height = 297
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -439,7 +439,7 @@ inherited fmUsesManager: TfmUsesManager
             Left = 3
             Top = 3
             Width = 648
-            Height = 289
+            Height = 291
             Align = alClient
             ColCount = 2
             DefaultColWidth = 150
@@ -457,7 +457,7 @@ inherited fmUsesManager: TfmUsesManager
         end
         object pnlIdentifiersFooter: TPanel
           Left = 0
-          Top = 295
+          Top = 297
           Width = 654
           Height = 48
           Align = alBottom
@@ -534,29 +534,29 @@ inherited fmUsesManager: TfmUsesManager
           object lblIdentifiers: TLabel
             Left = 16
             Top = 88
-            Width = 110
-            Height = 15
+            Width = 104
+            Height = 13
             Caption = 'Identifiers found: %d'
           end
           object lblUnitsParsed: TLabel
             Left = 16
             Top = 40
-            Width = 88
-            Height = 15
+            Width = 84
+            Height = 13
             Caption = 'Units parsed: %d'
           end
           object lblUnitsLoaded: TLabel
             Left = 16
             Top = 64
-            Width = 89
-            Height = 15
+            Width = 83
+            Height = 13
             Caption = 'Units loaded: %d'
           end
           object lblUnitsFound: TLabel
             Left = 16
             Top = 16
-            Width = 85
-            Height = 15
+            Width = 79
+            Height = 13
             Caption = 'Units found: %d'
           end
         end
@@ -579,7 +579,7 @@ inherited fmUsesManager: TfmUsesManager
         Left = 200
         Top = 16
         Width = 462
-        Height = 23
+        Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 1
         OnChange = edtUnitFilterChange
@@ -600,8 +600,8 @@ inherited fmUsesManager: TfmUsesManager
         object lblFilter: TLabel
           Left = 1
           Top = 0
-          Width = 26
-          Height = 15
+          Width = 24
+          Height = 13
           Caption = 'Filte&r'
           FocusControl = edtUnitFilter
         end
@@ -610,7 +610,7 @@ inherited fmUsesManager: TfmUsesManager
         Left = 0
         Top = 16
         Width = 421
-        Height = 23
+        Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 2
         Visible = False
@@ -1185,7 +1185,7 @@ inherited fmUsesManager: TfmUsesManager
     Left = 600
     Top = 240
     Bitmap = {
-      494C010109003800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C0101090038000C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       000000000000000000000000000000000000D1B08E00C69E7400000000FF0000
       00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000

@@ -14,7 +14,7 @@ object fmClassBrowser: TfmClassBrowser
   Font.Style = []
   KeyPreview = True
   Menu = MainMenu
-  OldCreateOrder = True
+  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnActivate = FormActivate
@@ -39,9 +39,9 @@ object fmClassBrowser: TfmClassBrowser
     UseSystemFont = False
   end
   object pnlData: TPanel
-    Left = 236
+    Left = 237
     Top = 0
-    Width = 384
+    Width = 383
     Height = 444
     Align = alClient
     BevelOuter = bvNone
@@ -51,11 +51,10 @@ object fmClassBrowser: TfmClassBrowser
     object pcMain: TPageControl
       Left = 0
       Top = 0
-      Width = 384
+      Width = 383
       Height = 444
       ActivePage = tshMembers
       Align = alClient
-      TabIndex = 0
       TabOrder = 0
       OnChange = pcMainChange
       object tshMembers: TTabSheet
@@ -63,7 +62,7 @@ object fmClassBrowser: TfmClassBrowser
         object Splitter2: TSplitter
           Left = 0
           Top = 351
-          Width = 376
+          Width = 375
           Height = 4
           Cursor = crVSplit
           Align = alBottom
@@ -71,7 +70,7 @@ object fmClassBrowser: TfmClassBrowser
         object pnlMethod: TPanel
           Left = 0
           Top = 355
-          Width = 376
+          Width = 375
           Height = 60
           Align = alBottom
           BevelOuter = bvNone
@@ -83,7 +82,7 @@ object fmClassBrowser: TfmClassBrowser
         object lvInfo: TListView
           Left = 0
           Top = 25
-          Width = 376
+          Width = 375
           Height = 326
           Align = alClient
           Columns = <
@@ -128,7 +127,7 @@ object fmClassBrowser: TfmClassBrowser
         object tbInfo: TToolBar
           Left = 0
           Top = 0
-          Width = 376
+          Width = 375
           Height = 25
           Caption = 'tbInfo'
           DisabledImages = dmSharedImages.DisabledImages
@@ -223,6 +222,20 @@ object fmClassBrowser: TfmClassBrowser
       end
       object tshCode: TTabSheet
         Caption = '&Code'
+        object pnlCode: TPanel
+          Left = 0
+          Top = 0
+          Width = 376
+          Height = 415
+          Margins.Left = 4
+          Margins.Top = 4
+          Margins.Right = 4
+          Margins.Bottom = 4
+          Align = alClient
+          BevelOuter = bvNone
+          Caption = 'pnlCode'
+          TabOrder = 0
+        end
       end
     end
   end

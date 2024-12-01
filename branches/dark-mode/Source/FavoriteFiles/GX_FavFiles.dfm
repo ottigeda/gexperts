@@ -13,12 +13,14 @@ object fmFavFiles: TfmFavFiles
   Font.Style = []
   KeyPreview = True
   Menu = MainMenu
+  OldCreateOrder = True
   Position = poDesigned
   Scaled = False
   OnClose = FormClose
   OnHide = FormHide
   OnKeyPress = FormKeyPress
   OnShow = FormShow
+  PixelsPerInch = 96
   TextHeight = 18
   object splTreeView: TSplitter
     Left = 121
@@ -292,7 +294,7 @@ object fmFavFiles: TfmFavFiles
     Left = 16
     Top = 80
     Bitmap = {
-      494C01010A000E00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010A000E000C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

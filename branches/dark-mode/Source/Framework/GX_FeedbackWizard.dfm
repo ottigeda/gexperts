@@ -1,7 +1,6 @@
 object fmFeedbackWizard: TfmFeedbackWizard
   Left = 285
   Top = 155
-  AutoScroll = False
   BorderIcons = [biSystemMenu]
   Caption = 'GExperts Feedback Wizard'
   ClientHeight = 515
@@ -14,6 +13,7 @@ object fmFeedbackWizard: TfmFeedbackWizard
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
+  OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
   OnClose = FormClose
@@ -84,6 +84,8 @@ object fmFeedbackWizard: TfmFeedbackWizard
         Font.Style = [fsBold]
         ParentFont = False
         Layout = tlCenter
+        ExplicitWidth = 152
+        ExplicitHeight = 24
       end
     end
   end
@@ -101,7 +103,6 @@ object fmFeedbackWizard: TfmFeedbackWizard
       Top = 0
       Width = 5
       Height = 396
-      Cursor = crHSplit
       Align = alRight
       AutoSnap = False
       Beveled = True
@@ -115,7 +116,6 @@ object fmFeedbackWizard: TfmFeedbackWizard
       ActivePage = tshInfoHelp
       Align = alRight
       MultiLine = True
-      TabIndex = 0
       TabOrder = 0
       object tshInfoHelp: TTabSheet
         Caption = 'Help'
@@ -135,6 +135,10 @@ object fmFeedbackWizard: TfmFeedbackWizard
       object tshInfoExample: TTabSheet
         Caption = 'Example'
         ImageIndex = 1
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object mmoInfoExample: TMemo
           Left = 0
           Top = 0
@@ -164,7 +168,6 @@ object fmFeedbackWizard: TfmFeedbackWizard
         Height = 392
         ActivePage = tshType
         Align = alClient
-        TabIndex = 0
         TabOrder = 0
         OnResize = pgeMainResize
         object tshType: TTabSheet
@@ -229,6 +232,10 @@ object fmFeedbackWizard: TfmFeedbackWizard
         object tshDescription: TTabSheet
           Caption = 'Bug Description'
           ImageIndex = 1
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object mmoDescription: TMemo
             Left = 0
             Top = 0
@@ -242,6 +249,10 @@ object fmFeedbackWizard: TfmFeedbackWizard
         object tshBugDetails: TTabSheet
           Caption = 'Bug Details'
           ImageIndex = 2
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object gbxBugDetails: TGroupBox
             Left = 8
             Top = 6
@@ -299,6 +310,10 @@ object fmFeedbackWizard: TfmFeedbackWizard
         object tshBugSteps: TTabSheet
           Caption = 'Bug Duplication Steps'
           ImageIndex = 3
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object mmoBugSteps: TMemo
             Left = 0
             Top = 0
@@ -312,6 +327,10 @@ object fmFeedbackWizard: TfmFeedbackWizard
         object tshConfiguration: TTabSheet
           Caption = 'Configuration Data to Report'
           ImageIndex = 5
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object gbxConfigurationData: TGroupBox
             Left = 8
             Top = 2
@@ -407,6 +426,10 @@ object fmFeedbackWizard: TfmFeedbackWizard
         object tshReport: TTabSheet
           Caption = 'Completed Bug Report'
           ImageIndex = 4
+          ExplicitLeft = 0
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object mmoReport: TMemo
             Left = 0
             Top = 0

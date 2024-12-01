@@ -31,8 +31,6 @@ type
     property LoadedFile: string read FLoadedFile write FLoadedFile;
   end;
 
-procedure Register;
-
 implementation
 
 uses
@@ -212,11 +210,6 @@ begin
     {$ENDIF SYNEDIT}
     FRichEdit.Lines.EndUpdate;
   end;
-end;
-
-procedure Register;
-begin
-  RegisterComponents('User', [TFileViewer]);
 end;
 
 end.

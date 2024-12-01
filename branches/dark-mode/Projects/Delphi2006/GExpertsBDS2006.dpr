@@ -166,6 +166,7 @@ uses
   GX_IdeSearchPathFavoriteEdit in '..\..\Source\IDE\GX_IdeSearchPathFavoriteEdit.pas' {f_IdeSearchPathFavoriteEdit},
   GX_IdeShortCuts in '..\..\source\IdeShortCuts\GX_IdeShortCuts.pas' {fmIdeShortCuts},
   GX_IdeToolPropertiesEnhancer in '..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas',
+  GX_IdeSplitterVisibility in '..\..\Source\IDE\GX_IdeSplitterVisibility.pas',
   GX_IdeUtils in '..\..\source\Utils\GX_IdeUtils.pas',
   GX_InsertAutoTodo in '..\..\Source\AutoTodo\GX_InsertAutoTodo.pas' {fmInsertAutoTodoForm},
   GX_KbdShortCutBroker in '..\..\source\Framework\GX_KbdShortCutBroker.pas',
