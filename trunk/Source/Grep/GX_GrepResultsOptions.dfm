@@ -202,7 +202,7 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
       Position = 1
       TabOrder = 4
     end
-    object pnlContextMacthLineFontColor: TPanel
+    object pnlContextMatchLineFontColor: TPanel
       Left = 48
       Top = 64
       Width = 197
@@ -211,7 +211,7 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
       Caption = 'Match Line Font Color...'
       Color = clWindow
       TabOrder = 1
-      OnClick = pnlContextMacthLineFontColorClick
+      OnClick = pnlContextMatchLineFontColorClick
     end
   end
   object btnOK: TButton
@@ -525,34 +525,5 @@ object fmGrepResultsOptions: TfmGrepResultsOptions
     Font.Style = []
     Left = 271
     Top = 332
-  end
-  object dlgGrepContextFont: TFontDialog
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Courier New'
-    Font.Style = []
-    Left = 602
-    Top = 329
-  end
-  object dlgContextMatchFontColor: TColorDialog
-    Options = [cdSolidColor]
-    Left = 601
-    Top = 409
-  end
-  object dlgListMatchTextColor: TColorDialog
-    Options = [cdSolidColor]
-    Left = 273
-    Top = 401
-  end
-  object dlgListMatchBackgroundColor: TColorDialog
-    Options = [cdSolidColor]
-    Left = 273
-    Top = 441
-  end
-  object dlgContextMatchLineFontColor: TColorDialog
-    Options = [cdSolidColor]
-    Left = 601
-    Top = 369
   end
 end

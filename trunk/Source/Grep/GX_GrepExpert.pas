@@ -332,119 +332,21 @@ begin
 end;
 
 procedure TGrepExpert.Configure(_Owner: TWinControl);
-var
-  frm: TfmGrepResultsOptions;
 begin
-  frm := TfmGrepResultsOptions.Create(_Owner);
-  try
-    Tform_CenterOn(frm, _Owner);
-    frm.chkAdvanced.Checked := GrepAdvancedOptions;
-    frm.chkAdvancedClick(nil);
-
-    frm.chkGrepMiddle.Checked := GrepMiddle;
-    frm.chkGrepExpandAll.Checked := GrepExpandAll;
-    frm.chkGrepExpandIf.Checked := GrepExpandIf;
-    frm.eExpandIfFiles.Text := IntToStr(GrepExpandIfFiles);
-    frm.eExpandIfMatches.Text := IntToStr(GrepExpandIfMatches);
-    frm.chkGrepExpandFew.Checked := GrepExpandFew;
-    frm.eExpandFewLines.Text := IntToStr(GrepExpandFewLines);
-
-    frm.chkDefaultListColors.Checked := ListUseDefaultColors;
-    frm.pnlListFont.Font.Assign(ListFont);
-    frm.pnlListMatchTextColor.Font.Assign(ListFont);
-    frm.pnlListMatchTextColor.Font.Color := ListMatchTextColor;
-    frm.pnlListMatchTextColor.Color := ListMatchBrushColor;
-    frm.pnlListMatchBackgroundColor.Font.Assign(ListFont);
-    frm.pnlListMatchBackgroundColor.Font.Color := ListMatchTextColor;
-    frm.pnlListMatchBackgroundColor.Color := ListMatchBrushColor;
-
-    frm.pnlContextFont.Font.Assign(ContextFont);
-    frm.pnlContextMacthLineFontColor.Font.Assign(ContextFont);
-    frm.pnlContextMacthLineFontColor.Font.Color := ContextMatchLineColor;
-    frm.pnlContextMatchFontColor.Font.Assign(ContextFont);
-    frm.pnlContextMatchFontColor.Font.Color := ContextMatchColor;
-
-    frm.udContextLines.Position := NumContextLines;
-    frm.chkGrepSaveHistoryListItems.Checked := GrepSaveHistoryListItems;
-    frm.rbSaveToIniFile.Checked := GrepSaveHistoryListItemsToIni;
-    frm.rbSaveToRegistry.Checked := GrepSaveHistoryListItemsToReg;
-
-    frm.chkGrepAutoHide.Checked := AutoHide;
-
-    frm.chkFileListDeleteAfterDays.Checked := GrepFileListDeleteAfterDays;
-    frm.eDeleteAfterDays.Text := IntToStr(GrepDeleteAfterDays);
-    frm.chkEmptyMoveToParams.Checked := GrepEmptyMoveToOnlySaveParams;
-    frm.cbxSearchSaveOptionDefaultValue.ItemIndex := GrepSaveOptionDefaultValue;
-    frm.cbxOpenSaveOptionDefaultValue.ItemIndex := GrepOpenSaveOptionDefaultValue;
-    frm.cbxOnlySaveParamsAction.ItemIndex := GrepOnlySaveParamsAction;
-    frm.cbxHistoryListDefaultPage.ItemIndex := GrepHistoryListDefaultPage;
-    frm.chkQuickRefreshMode.Checked := GrepQuickRefresh;
-
-    frm.chkHistoryPagesTabMultiLine.Checked := GrepHistoryPagesTabMultiline;
-    frm.eHistoryPagesTabWidth.Text := IntToStr(GrepHistoryPagesTabWidth);
-    frm.chkMouseWheelMoveItemIndex.Checked := GrepMouseWheelPrevNextMatch;
-
-    if frm.ShowModal = mrOk then
-    begin
-      GrepAdvancedOptions := frm.chkAdvanced.Checked;
-
-      GrepMiddle := frm.chkGrepMiddle.Checked;
-      GrepExpandAll := frm.chkGrepExpandAll.Checked;
-      GrepExpandIf := GrepAdvancedOptions and frm.chkGrepExpandIf.Checked;
-      GrepExpandIfFiles := StrToIntDef(frm.eExpandIfFiles.Text, 25);
-      GrepExpandIfMatches := StrToIntDef(frm.eExpandIfMatches.Text, 150);
-      GrepExpandFew := GrepAdvancedOptions and frm.chkGrepExpandFew.Checked;
-      GrepExpandFewLines := StrToIntDef(frm.eExpandFewLines.Text, 20);
-
-      ListUseDefaultColors := frm.chkDefaultListColors.Checked;
-      FListFont.Assign(frm.pnlListFont.Font);
-      FContextFont.Assign(frm.pnlContextFont.Font);
-      ListMatchTextColor := frm.pnlListMatchTextColor.Font.Color;
-      ListMatchBrushColor := frm.pnlListMatchBackgroundColor.Color;
-      ContextMatchLineColor := frm.pnlContextMacthLineFontColor.Font.Color;
-      ContextMatchColor := frm.pnlContextMatchFontColor.Font.Color;
-
-      NumContextLines := frm.udContextLines.Position;
-      if GrepAdvancedOptions then
-      begin
-        if not frm.chkGrepSaveHistoryListItems.Checked then
-          FGrepSaveHistoryListItems := 0
-        else if frm.rbSaveToIniFile.Checked then
-          FGrepSaveHistoryListItems := 1
-        else if frm.rbSaveToRegistry.Checked then
-          FGrepSaveHistoryListItems := 2;
-      end
-      else
-      begin
-        if not frm.chkGrepSaveHistoryListItems.Checked then
-          FGrepSaveHistoryListItems := 0
-        else
-          FGrepSaveHistoryListItems := 1;
-      end;
-
-      GrepFileListDeleteAfterDays := frm.chkFileListDeleteAfterDays.Checked;
-      GrepDeleteAfterDays := StrToIntDef(frm.eDeleteAfterDays.Text, 30);
-      GrepSaveOptionDefaultValue := frm.cbxSearchSaveOptionDefaultValue.ItemIndex;
-      GrepOpenSaveOptionDefaultValue := frm.cbxOpenSaveOptionDefaultValue.ItemIndex;
-      GrepEmptyMoveToOnlySaveParams := GrepAdvancedOptions and frm.chkEmptyMoveToParams.Checked;
-      GrepOnlySaveParamsAction := frm.cbxOnlySaveParamsAction.ItemIndex;
-      GrepHistoryListDefaultPage := frm.cbxHistoryListDefaultPage.ItemIndex;
-      GrepQuickRefresh := frm.chkQuickRefreshMode.Checked;
-
-      if GrepAdvancedOptions then
-      begin
-        GrepHistoryPagesTabMultiline := frm.chkHistoryPagesTabMultiLine.Checked;
-        GrepHistoryPagesTabWidth := StrToIntDef(frm.eHistoryPagesTabWidth.Text, GrepHistoryPagesTabWidth);
-      end;
-
-      GrepMouseWheelPrevNextMatch := GrepAdvancedOptions and frm.chkMouseWheelMoveItemIndex.Checked;
-
-      AutoHide := frm.chkGrepAutoHide.Checked;
-      SaveSettings;
+  if TfmGrepResultsOptions.Execute(_Owner,
+    FGrepAdvancedOptions, FGrepMiddle,
+    FGrepExpandAll, FGrepExpandIf, FGrepExpandIfFiles, FGrepExpandIfMatches,
+    FGrepExpandFew, FGrepExpandFewLines,
+    FListUseDefaultColors, FListFont, FListMatchTextColor, FListMatchBrushColor,
+    FContextFont, FContextMatchLineColor, FContextMatchColor, FNumContextLines,
+    FGrepSaveHistoryListItems,
+    FAutoHide, FGrepFileListDeleteAfterDays, FGrepDeleteAfterDays,
+    FGrepEmptyMoveToOnlySaveParams, FGrepSaveOptionDefaultValue, FGrepOpenSaveOptionDefaultValue,
+    FGrepOnlySaveParamsAction, FGrepHistoryListDefaultPage, FGrepQuickRefresh,
+    FGrepHistoryPagesTabMultiline, FGrepHistoryPagesTabWidth,
+    FGrepMouseWheelPrevNextMatch) then begin
+    SaveSettings;
     end;
-  finally
-    FreeAndNil(frm);
-  end;
 end;
 
 procedure TGrepExpert.InternalSaveSettings(_Settings: IExpertSettings);
