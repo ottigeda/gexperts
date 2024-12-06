@@ -3,7 +3,7 @@ unit GX_OpenFileConfig;
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, Buttons, ComCtrls, ExtCtrls,
+  Windows, Classes, Controls, Forms, StdCtrls, Buttons, ComCtrls, ExtCtrls,
   GX_ConfigurationInfo, GX_BaseForm;
 
 type
@@ -141,6 +141,10 @@ type
     function GetFileTypes: TFileTypes;
     function IDEOverride: TIDEOverride;
     procedure lbxDirectoryListFilesDropped(Sender: TObject; Files: TStrings);
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+  protected
+    procedure ArrangeControls; override;
+{$ENDIF GX_IDE_IS_HIDPI_AWARE}
   public
     class function ExecuteWithSettings(_Owner: TWinControl;Settings: TOpenFileSettings): Boolean;
     constructor Create(_Owner: TComponent); override;
@@ -531,6 +535,23 @@ procedure TfmOpenFileConfig.btnDirectoryClick(Sender: TObject);
 begin
   SelectDirectory;
 end;
+
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+procedure TfmOpenFileConfig.ArrangeControls;
+var
+  ch: integer;
+  Spacing: integer;
+  h: integer;
+begin
+  Spacing := MulDiv(8, FCurrentPPI, GetDesignDpi);
+  ch := tsTypes.ClientHeight;
+  gbxCustomDirectory.Height := ch - gbxCustomDirectory.Top - Spacing;
+  h := btnTypeAdd.Height;
+  btnTypeAdd.Top := ch - h - Spacing;
+  btnTypeDelete.Top := ch - h - Spacing;
+  lbxTypeList.Height := ch - h - 2 * Spacing - lbxTypeList.Top;
+end;
+{$ENDIF GX_IDE_IS_HIDPI_AWARE}
 
 procedure TfmOpenFileConfig.btnDirectoryAddClick(Sender: TObject);
 
