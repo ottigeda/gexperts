@@ -854,6 +854,7 @@ procedure TfmProcedureList.ApplyOptions(const bLoading: Boolean);
     splSeparator.Visible := bVisible;
     tbnShowFunctionCode.Down := bVisible;
   end;
+
 var
   Offset: integer;
   h: integer;
@@ -866,12 +867,12 @@ begin
   if FOptions.AlignmentChanged or bLoading then
   begin
     if FOptions.AlignmentChanged then begin
-      w := (ClientWidth * 5000) div 10000;
-      h := (ClientHeight * 3000) div 10000;
+      w := MulDiv(ClientWidth, 5000, 10000);
+      h := MulDiv(ClientHeight, 3000, 10000);
       FOptions.AlignmentChanged := False;
     end else begin
-      w := (FOptions.CodeViewWidthRelative * ClientWidth) div 10000;
-      h := (FOptions.CodeViewHeightRelative * ClientHeight) div 10000;
+      w := MulDiv(FOptions.CodeViewWidthRelative, ClientWidth, 10000);
+      h := MulDiv(FOptions.CodeViewHeightRelative, ClientHeight, 10000);
     end;
     pnlFunctionBody.Align := FOptions.CodeViewAlignment;
     splSeparator.Align := FOptions.CodeViewAlignment;
