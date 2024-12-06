@@ -223,6 +223,7 @@ type
     mitAvailSep3: TMenuItem;
     mCopyThisIdentifierToTheClipboard: TMenuItem;
     mSearchThisOnTheWeb: TMenuItem;
+    b_Help: TButton;
     procedure FormResize(Sender: TObject);
     procedure sg_ImplementationDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure sg_InterfaceDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -302,6 +303,7 @@ type
     procedure actAddToInterfaceAndCloseExecute(Sender: TObject);
     procedure actAddToImplemenationAndCloseExecute(Sender: TObject);
     procedure chk_FastAddClick(Sender: TObject);
+    procedure b_HelpClick(Sender: TObject);
   private
     FLeftRatio: Double;
     FAliases: TStringList;
@@ -398,7 +400,7 @@ uses
   GX_DbugIntf,
 {$ENDIF D+}
   GX_MessageBox, GX_IdeSearchPathEnhancer, u_dzTypes, u_dzStringArrayUtils,
-  GX_StringGridDrawFix;
+  GX_StringGridDrawFix, GX_GxUtils;
 
 { TUsesClauseMgrExpert }
 
@@ -2692,6 +2694,11 @@ begin
 
   RemoveDotsfrom(sg_Interface);
   RemoveDotsfrom(sg_Implementation);
+end;
+
+procedure TfmUsesManager.b_HelpClick(Sender: TObject);
+begin
+  GxContextHelp(Self, 58);
 end;
 
 procedure TfmUsesManager.b_NoMapFileCloseClick(Sender: TObject);
