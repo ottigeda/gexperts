@@ -131,7 +131,7 @@
       <config-value name="deffont">font-family:Tahoma; font-size:9pt; color:#000000;</config-value>
       <config-value name="contents">Introduction</config-value>
       <config-value name="topicprefix"></config-value>
-      <config-value name="autohelpstart">57</config-value>
+      <config-value name="autohelpstart">58</config-value>
       <config-value name="autohelpincrement">1</config-value>
       <config-value name="autohelpanchor">0</config-value>
       <config-value name="searchpath">..\;..\Graphics\</config-value>
@@ -686,7 +686,7 @@ GExperts Help
       </config-group>
       <config-group name="twm">
         <config-group name="project">
-          <config-value name="lastexport">3</config-value>
+          <config-value name="lastexport">0</config-value>
         </config-group>
       </config-group>
     </config-group>
@@ -737,6 +737,7 @@ GExperts Help
       <helpcontext-number href="Source_Export" value="26"/>
       <helpcontext-number href="SubstitutionMacros" value="41"/>
       <helpcontext-number href="To_Do_List" value="24"/>
+      <helpcontext-number href="Uses-Clause-Manager" value="58"/>
     </helpcontext-numbers>
   </config>
   <xi:include parse="xml" href="Maps/table_of_contents.xml"/>

@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic template="Default" modified="2024-12-06T16:01:48.510+01:00" lasteditedby="twm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Uses Clause Manager</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Uses Clause Manager</text></para>
+    </header>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Uses Clause Manager allows you to manage both uses clauses in the current unit.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="Uses Clause Manager.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">On the left there are two lists with the units in the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Interface</text><text styleclass="Normal" translate="true"> and </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Implementation</text><text styleclass="Normal" translate="true"> uses clauses respectively. The four buttons below these lists </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Delete</text><text styleclass="Normal" translate="true"> from these lists or </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Move</text><text styleclass="Normal" translate="true"> entries from one of the lists to the other. It is also possibly to drag files from the Explorer to any of these lists to add a unit.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">On the right there are five tabs:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Search Path</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Project</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">VCL/RTL</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Favorite</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Identifiers</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Starting from the right, because it is probably the most useful one, is the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Identifiers</text><text styleclass="Normal" translate="true"> tab. It lists all identifiers from units in the units search path. The filter above the list allows to narrow down the results. In the screen shot the filter contains &quot;TObject&quot; which results in a list of all identifiers that start with this string, e.g. TObject, TObjectArray, TObjectBucketList etc. The list is updated dynamically, so changing the filter will immediately show different entries. Entries are sorted alphabetically.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">There are three buttons that control the way the filter works:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Start</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Anywhere</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Start First</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Start first</text><text styleclass="Normal" translate="true"> means that the list will show the entries that start with the search string first, followed by others where search string is anywhere in the identifier. Note that these buttons actually can get the input focus, so they can be pressed using the keyboard.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Identifiers in the list are updated in a background thread. There is a cache that is kept up to date with all identifiers that have been parsed before. The directory for this cache is configured in the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">GExperts Configuration</text><text styleclass="Normal" translate="true"> dialog on the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">General</text><text styleclass="Normal" translate="true"> tab.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Add Unit Prefixes</text><text styleclass="Normal" translate="true"> and </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Remove Unit Prefixes</text><text styleclass="Normal" translate="true"> are helpful for people who develop software for multiple Delphi versions including those ancient versions that did not support namespaces.Adding these prefixes is a bit tricky because the experts needs to go through all the configured namespaces in the project and the use the unit search path to find a unit matching these namespaces. If it does not find them, it will not change the unit name.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The check mark </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Add fast (to interface)</text><text styleclass="Normal" translate="true"> or </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Add fast (to implementation)</text><text styleclass="Normal" translate="true"> will automatically add the selected unit to the uses clause given in the caption and close the dialog. Which uses clause is given in the caption depends on where the cursor in the edit window was located. If it was in the interface section, the caption will say &quot;to interface&quot;, if it was in the implementation section, the caption will say &quot;to implementation&quot;.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Open Unit</text><text styleclass="Normal" translate="true"> does the obvious: It opens the selected unite in the code editor and closes the dialog. Note that there is a shortcut Ctrl+O for it, or you can just double click an entry.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">OK</text><text styleclass="Normal" translate="true"> closes the dialog and commits the changes. It also remembers the currently selected tab and whether the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Add fast</text><text styleclass="Normal" translate="true"> check mark was set.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Cancel</text><text styleclass="Normal" translate="true"> closes the dialog and discards any changes.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Most buttons have got a mouse over hint giving a short description and the keyboard shortcut for them.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Continuing the tabs from the right:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Favorite</text><text styleclass="Normal" translate="true"> is a list of favorite units. Initially this list is empty. </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Add Unit</text><text styleclass="Normal" translate="true"> adds to this list, </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Delete Unit</text><text styleclass="Normal" translate="true"> deletes the currently selected one. The list also supports Drag and Drop from the Explorer.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">VCL/RTL</text><text styleclass="Normal" translate="true"> is a list of all units in the VCL / RTL. The caption is a bit of a misnomer because the list also contains units from the Firemonkey framework.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Project</text><text styleclass="Normal" translate="true"> is a list of all units in the current project.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Search Path</text><text styleclass="Normal" translate="true"> contains all units in the current unit search path.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Each of these tabs has got a button </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Add all to Favorite</text><text styleclass="Normal" translate="true"> which will do what it says: Add all the units from the lists to the favorites.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Again there is a </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Filter</text><text styleclass="Normal" translate="true"> above the list that allows narrowing down the listed entries, e.g. entering &quot;vcl.&quot; will only show entries that contain that string in the unit name.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The buttons in the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Add to ...</text><text styleclass="Normal" translate="true"> groupbox should be self explanatory. They add the selected unit to the uses clause in the interface and implementation section respectively. Note that both buttons have two keyboard shortcuts Alt+C/Alt+L adds the unit Ctrl+C/Ctrl+L adds the unit and automatically closes the dialog. It is also possible to drag a unit from the lists on the right to the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Interface</text><text styleclass="Normal" translate="true"> or </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Implementation</text><text styleclass="Normal" translate="true"> unit lists on the left. Dragging also works in the other direction by removing entries from the list. Not that the only list on the right that can accept entries is the one on the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Favorite</text><text styleclass="Normal" translate="true"> tab.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The </text><text styleclass="Normal" style="font-weight:bold;" translate="true">status bar</text><text styleclass="Normal" translate="true"> always shows the full path of the selected unit. Right clicking on the status bar shows a context menu with the following entries:</text></para>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Copy this text to the clipboard</text><br/><text styleclass="Normal" translate="true">Copies the full file name to the clipboard.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Copy this file to the clipboard</text><br/><text styleclass="Normal" translate="true">Copies the file to the clipboard so it can be used as if copied from the Explorer.</text></li>
+      <li styleclass="Normal"><text styleclass="Normal" translate="true">Open location of this file</text><br/><text styleclass="Normal" translate="true">Opens the folder in which the file is located in the Explorer and selects the file.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Uses Clause Manager has some additional configuration options available from the GExperts configuration dialog:</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal" style="text-align:center;"><image src="Uses Clause Manager Configuration.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" style="font-size:10pt;" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"></para>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Read project units from map file rather than .dpr</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> means that the </text><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Project</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> tab will be filled with units read from the project&apos;s map file. This requires that a map file has been created. This is a Linker setting in the project options.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Replace IDE file, Use Unit feature</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> means that Use Unit menu entry in the file menu will open the Uses Clause Manager instead.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Parse all units, not just the Favorites</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> means that the parser that fills the </text><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Identifier</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> tab will not just handle the units listed on the </text><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Favorites</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> tab but all units in the search path.</text></li>
+      <list id="5" level="1" type="ul" listtype="bullet" formatstring="&#111;" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:10pt; color:#000000;">
+        <li styleclass="Normal"><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Disable Parser Cache</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> means that the parser will always run when the Uses Clause Manager dialog is opened. Filling the </text><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Identifier</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> list will be much slower in this case. Alternatively to setting this option, the </text><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Clear Cache</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> button allows to delete stale cache files if there were any.</text></li>
+      </list>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Also search the favorites configured for the search path</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> refers to the favorites configured for the xxxxx expert</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true">The </text><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Show identifiers matching search string</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> option allows to preselect on of the three buttons in the </text><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Match filter at</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> group box.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal"><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Default to Fast Add</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> sets the </text><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Add fast</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> check mark in the dialog.</text></li>
+    </list>
+  </body>
+</topic>
