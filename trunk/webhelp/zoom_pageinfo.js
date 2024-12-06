@@ -46,6 +46,7 @@ pageinfo = [[0,0,0,0,null],
 	[0,0,0,0,null],
 	[0,0,0,0,null],
 	[0,0,0,0,null],
+	[0,0,0,0,null],
 	[0,0,0,0,null]];
 pagedata = [ ["./ascii_chart.html","Experts &#62; ASCII Chart","ASCII Chart",""],
 ["./backup_project.html","Experts &#62; Backup Project","Backup Project",""],
@@ -95,4 +96,5 @@ pagedata = [ ["./ascii_chart.html","Experts &#62; ASCII Chart","ASCII Chart",""]
 ["./set_tab_order_2.html","Experts &#62; Set FocusControl","Set FocusControl",""],
 ["./source_export.html","Experts &#62; Source Export","Source Export",""],
 ["./substitutionmacros.html","Experts &#62; Substitution Macros","Substitution Macros",""],
-["./to_do_list.html","Experts &#62; To Do List","To Do List",""]];
+["./to_do_list.html","Experts &#62; To Do List","To Do List",""],
+["./uses-clause-manager.html","Experts &#62; Uses Clause Manager","Uses Clause Manager",""]];

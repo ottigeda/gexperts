@@ -57,3 +57,4 @@ hmContextIds["11"]="set_tab_order.html";
 hmContextIds["26"]="source_export.html";
 hmContextIds["41"]="substitutionmacros.html";
 hmContextIds["24"]="to_do_list.html";
+hmContextIds["58"]="uses-clause-manager.html";
