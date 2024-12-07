@@ -228,10 +228,6 @@ object fmClassBrowser: TfmClassBrowser
           Top = 0
           Width = 376
           Height = 415
-          Margins.Left = 4
-          Margins.Top = 4
-          Margins.Right = 4
-          Margins.Bottom = 4
           Align = alClient
           BevelOuter = bvNone
           Caption = 'pnlCode'
