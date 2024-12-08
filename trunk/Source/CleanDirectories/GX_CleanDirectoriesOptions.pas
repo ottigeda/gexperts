@@ -13,10 +13,11 @@ uses
   Controls,
   Forms,
   Dialogs,
-  StdCtrls;
+  StdCtrls,
+  GX_BaseForm;
 
 type
-  TfmCleanDirectoriesOptions = class(TForm)
+  TfmCleanDirectoriesOptions = class(TfmBaseForm)
     chk_IncludeBinary: TCheckBox;
     b_OK: TButton;
     b_Cancel: TButton;
@@ -25,6 +26,7 @@ type
     procedure GetData(out _IncludeBinaryDirs: Boolean);
   public
     class function Execute(_Owner: TWinControl; var _IncludeBinaryDirs: Boolean): Boolean;
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
@@ -50,6 +52,13 @@ begin
   finally
     FreeAndNil(frm);
   end;
+end;
+
+constructor TfmCleanDirectoriesOptions.Create(_Owner: TComponent);
+begin
+  inherited;
+  TControl_SetMinConstraints(Self);
+  InitDpiScaler;
 end;
 
 procedure TfmCleanDirectoriesOptions.GetData(out _IncludeBinaryDirs: Boolean);

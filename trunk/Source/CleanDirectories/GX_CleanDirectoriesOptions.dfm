@@ -1,21 +1,8 @@
-object fmCleanDirectoriesOptions: TfmCleanDirectoriesOptions
-  Left = 551
-  Top = 313
+inherited fmCleanDirectoriesOptions: TfmCleanDirectoriesOptions
   BorderStyle = bsDialog
   Caption = 'Clean Directories Configuration'
   ClientHeight = 81
-  ClientWidth = 353
-  Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -12
-  Font.Name = 'Segoe UI'
-  Font.Style = []
-  OldCreateOrder = False
-  DesignSize = (
-    353
-    81)
-  PixelsPerInch = 96
+  ClientWidth = 361
   TextHeight = 15
   object chk_IncludeBinary: TCheckBox
     Left = 8
@@ -26,7 +13,7 @@ object fmCleanDirectoriesOptions: TfmCleanDirectoriesOptions
     TabOrder = 0
   end
   object b_OK: TButton
-    Left = 179
+    Left = 192
     Top = 48
     Width = 75
     Height = 25
@@ -37,7 +24,7 @@ object fmCleanDirectoriesOptions: TfmCleanDirectoriesOptions
     TabOrder = 1
   end
   object b_Cancel: TButton
-    Left = 267
+    Left = 278
     Top = 48
     Width = 75
     Height = 25
