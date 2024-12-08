@@ -179,6 +179,9 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\CleanDirectories\GX_CleanDirectories.pas">
             <Form>fmCleanDirectories</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\CleanDirectories\GX_CleanDirectoriesOptions.pas">
+            <Form>fmCleanDirectoriesOptions</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\ClipboardHistory\GX_ClipboardHistory.pas">
             <Form>fmClipboardHistory</Form>
         </DCCReference>
@@ -483,6 +486,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\Source\IDE\GX_IdeSearchPathFavoriteEdit.pas">
             <Form>f_IdeSearchPathFavoriteEdit</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibility.pas"/>
         <DCCReference Include="..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas"/>
         <DCCReference Include="..\..\source\IDE\GX_MultilineHost.pas"/>
         <DCCReference Include="..\..\source\IDE\GX_MultiLinePalette.pas"/>

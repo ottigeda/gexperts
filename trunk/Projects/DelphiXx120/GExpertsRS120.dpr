@@ -26,6 +26,7 @@ uses
   GX_ClassParsing in '..\..\source\ClassBrowser\GX_ClassParsing.pas' {fmClassParsing},
   GX_ClassProp in '..\..\source\ClassBrowser\GX_ClassProp.pas' {fmClassProp},
   GX_CleanDirectories in '..\..\source\CleanDirectories\GX_CleanDirectories.pas' {fmCleanDirectories},
+  GX_CleanDirectoriesOptions in '..\..\Source\CleanDirectories\GX_CleanDirectoriesOptions.pas' {fmCleanDirectoriesOptions},
   GX_ClipboardHistory in '..\..\source\ClipboardHistory\GX_ClipboardHistory.pas' {fmClipboardHistory},
   GX_ClipboardOptions in '..\..\source\ClipboardHistory\GX_ClipboardOptions.pas' {fmClipboardOptions},
   GX_CodeFormatterBookmarks in '..\..\source\Formatter\GX_CodeFormatterBookmarks.pas',

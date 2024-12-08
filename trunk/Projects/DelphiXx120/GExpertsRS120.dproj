@@ -492,6 +492,7 @@ $(PreBuildEvent)]]>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas"/>
+        <DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibility.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_IdeUtils.pas"/>
         <DCCReference Include="..\..\Source\AutoTodo\GX_InsertAutoTodo.pas">
             <Form>fmInsertAutoTodoForm</Form>
@@ -721,6 +722,10 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Framework\GX_VerDepConst.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas"/>
         <DCCReference Include="..\..\source\BackupProject\GX_Zipper.pas"/>
+        <DCCReference Include="..\..\Source\CleanDirectories\GX_CleanDirectoriesOptions.pas">
+            <Form>fmCleanDirectoriesOptions</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
