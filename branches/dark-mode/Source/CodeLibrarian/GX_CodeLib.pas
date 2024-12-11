@@ -12,7 +12,7 @@ uses
   Forms, Controls, StdActns, Classes, ActnList, Actions, UITypes,
   Dialogs, Menus, ComCtrls, StdCtrls, ToolWin, ExtCtrls, Graphics,
   GX_CodeLibFile,
-  GX_Experts, GX_EnhancedEditor,
+  GX_Experts, GX_EnhancedEditor, GX_Splitter,
   GX_GenericUtils, GX_StringList, GX_SharedImages, GX_BaseForm,
   GX_CodeOpt;
 

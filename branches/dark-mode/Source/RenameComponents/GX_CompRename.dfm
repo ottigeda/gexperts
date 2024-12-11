@@ -198,35 +198,35 @@ object fmCompRename: TfmCompRename
           TabOrder = 7
         end
         object b_AlignTop: TBitBtn
-          Left = 0
-          Top = 0
-          Width = 169
+          Left = 2
+          Top = 4
+          Width = 174
           Height = 25
           Caption = 'Top'
           TabOrder = 0
           OnClick = b_AlignTopClick
         end
         object b_AlignLeft: TBitBtn
-          Left = 0
-          Top = 24
-          Width = 41
+          Left = 2
+          Top = 30
+          Width = 40
           Height = 65
           Caption = 'Left'
           TabOrder = 1
           OnClick = b_AlignLeftClick
         end
         object b_AlignClient: TBitBtn
-          Left = 40
-          Top = 24
-          Width = 89
+          Left = 42
+          Top = 30
+          Width = 90
           Height = 65
           Caption = 'Client'
           TabOrder = 2
           OnClick = b_AlignClientClick
         end
         object b_AlignNone: TBitBtn
-          Left = 0
-          Top = 120
+          Left = 3
+          Top = 135
           Width = 65
           Height = 25
           Caption = 'None'
@@ -234,8 +234,8 @@ object fmCompRename: TfmCompRename
           OnClick = b_AlignNoneClick
         end
         object b_AlignCustom: TBitBtn
-          Left = 104
-          Top = 120
+          Left = 109
+          Top = 135
           Width = 65
           Height = 25
           Caption = 'Custom'
@@ -243,18 +243,18 @@ object fmCompRename: TfmCompRename
           OnClick = b_AlignCustomClick
         end
         object b_AlignRight: TBitBtn
-          Left = 128
-          Top = 24
-          Width = 41
+          Left = 134
+          Top = 30
+          Width = 40
           Height = 65
           Caption = 'Right'
           TabOrder = 3
           OnClick = b_AlignRightClick
         end
         object b_AlignBottom: TBitBtn
-          Left = 0
-          Top = 88
-          Width = 169
+          Left = 2
+          Top = 97
+          Width = 174
           Height = 25
           Caption = 'Bottom'
           TabOrder = 4
@@ -265,32 +265,32 @@ object fmCompRename: TfmCompRename
         Caption = 'An&chors'
         ImageIndex = 1
         object b_AnchorLeft: TBitBtn
-          Left = 80
-          Top = 46
+          Left = 74
+          Top = 57
           Width = 49
           Height = 49
           Caption = 'Left'
           TabOrder = 1
         end
         object b_AnchorRight: TBitBtn
-          Left = 184
-          Top = 46
+          Left = 192
+          Top = 57
           Width = 49
           Height = 49
           Caption = 'Right'
           TabOrder = 2
         end
         object b_AnchorTop: TBitBtn
-          Left = 132
-          Top = 16
+          Left = 131
+          Top = 8
           Width = 49
           Height = 49
           Caption = 'Top'
           TabOrder = 0
         end
         object b_AnchorBottom: TBitBtn
-          Left = 132
-          Top = 71
+          Left = 131
+          Top = 106
           Width = 49
           Height = 49
           Caption = 'Bottom'

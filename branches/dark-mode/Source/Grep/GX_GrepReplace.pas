@@ -38,9 +38,9 @@ implementation
 
 {$R *.dfm}
 
-uses 
+uses
   SysUtils,
-  GX_GenericUtils, GX_GxUtils, GX_GrepResults, 
+  GX_GenericUtils, GX_GxUtils, GX_GrepResults,
   u_dzVclUtils;
 
 constructor TfmGrepReplace.Create(AOwner: TComponent);

@@ -76,6 +76,7 @@ begin
       Gutter.Width := 0;
       Visible := False;
     end;
+    // FEditor.ParentFont := True;
     GxOtaGetEditorFont(FEditor.Font, -1);
     {$ENDIF SYNEDIT}
   end;
