@@ -1558,7 +1558,7 @@ begin
       end;
     end;
   end;
-  TStringGrid_DrawCellFixed(_sg, _Text, _Rect, _State, _focused);
+  TStringGrid_DrawCellFixed(_sg, _Text, _Rect, _State, _Focused);
 end;
 
 procedure TfmUsesManager.sg_UsedDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect;
