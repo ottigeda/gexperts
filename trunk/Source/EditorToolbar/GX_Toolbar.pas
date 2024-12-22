@@ -10,7 +10,6 @@ uses
 
 const // Do not localize.
   EditorToolBarRegKey = 'EditorToolBar';
-  SeparatorMenuItemString = '-';
 
 type
   TGXToolBar = class(TToolBar)
@@ -62,7 +61,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Menus, ToolWin, ActnList, Graphics, ToolsAPI, Actions,
-  GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_GenericUtils;
+  GX_Consts, GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_GenericUtils, GX_UnspecifiedImage;
 
 const
   SGxEditorDockToolBar = 'GxEditorDockToolBar';
@@ -73,30 +72,6 @@ const
   TabControlName = 'TabControl';
   CodePanelName = 'CodePanel';
   TabPanelName = 'TabPanel';
-
-var
-  GxUnspecifiedImageIndex: Integer = -1;
-
-procedure RegisterUnspecifiedBitmapWithIde;
-const
-  UnspecifiedName = 'Unspecified';
-var
-  Bitmap: TBitmap;
-  NTAServices: INTAServices;
-begin
-  if IsStandAlone then
-    Exit;
-  if GxUnspecifiedImageIndex <> -1 then
-    Exit;
-  Bitmap := nil;
-  GxLoadBitmapForExpert(UnspecifiedName, Bitmap);
-  if Bitmap = nil then
-    Exit;
-  NTAServices := BorlandIDEServices as INTAServices;
-  Assert(Assigned(NTAServices));
-  GxUnspecifiedImageIndex := NTAServices.AddMasked(Bitmap, Bitmap.TransparentColor, UnspecifiedName);
-  FreeAndNil(Bitmap);
-end;
 
 { TGXToolBar }
 
