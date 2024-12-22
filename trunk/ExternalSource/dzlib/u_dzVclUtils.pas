@@ -1873,6 +1873,15 @@ procedure TMonitor_MakeFullyVisible(_MonitorHandle: HMonitor; var _Rect: TRect);
 procedure TMonitor_MakeFullyVisible(_MonitorHandle: HMonitor; var _Rect: TRectLTWH); overload;
 
 ///<summary>
+/// Searches Screen.Forms for a form with the given name. Comparison is case insensitive.
+/// @param Name is the name of the form to search for
+/// @params frm is the form that was found, only valid if Result = True
+/// @returns True, if the form could be found
+///          False, if not </summary>
+function TScreen_TryFindFormByName(const _Name: string; out _frm: TForm): Boolean;
+
+
+///<summary>
 /// Tries to get the primary monitor.
 /// @param Monitor returns the primary monitor, only valid if Result = True
 /// @returns True, if the primary monitor could be determined
@@ -7327,6 +7336,22 @@ begin
     TMonitor_MakeFullyVisible(Monitor, _Rect);
 end;
 
+function TScreen_TryFindFormByName(const _Name: string; out _frm: TForm): Boolean;
+var
+  i: Integer;
+  frm: TForm;
+begin
+  for i := 0 to Screen.FormCount - 1 do begin
+    frm := Screen.Forms[i];
+    if SameText(frm.Name, _Name) then begin
+      _frm := frm;
+      Result := True;
+      Exit; //==>
+    end;
+  end;
+  Result := False;
+end;
+
 procedure TForm_MoveTo(_frm: TCustomForm; _Position: TdzWindowPositions);
 
   procedure ToTop(var _Re: TRect; _MinHeight, _MaxHeight: Integer);
@@ -7899,3 +7924,4 @@ initialization
 finalization
   FreeAndNil(gblCheckListBoxHelper);
 end.
+
