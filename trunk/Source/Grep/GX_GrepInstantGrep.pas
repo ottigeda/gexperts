@@ -69,6 +69,7 @@ type
     procedure GoToCurrent;
     procedure SetListboxItemHeight;
     procedure LoadCurrentCode;
+    procedure GetOriginalEditPos;
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
@@ -133,6 +134,9 @@ begin
   FRegEx := TRegExpr.Create;
   FCurrentCode := TGXUnicodeStringList.Create;
 
+  FOriginalEditPos.Col := -1;
+  FOriginalEditPos.Line := -1;
+
   LoadCurrentCode;
   SetListboxItemHeight;
 
@@ -177,6 +181,25 @@ begin
   end;
 end;
 
+procedure TfmGxInstantGrepForm.GetOriginalEditPos;
+var
+  ISourceEditor: IOTASourceEditor;
+  EditView: IOTAEditView;
+begin
+  if Assigned(BorlandIDEServices)
+    and GxOtaTryGetCurrentSourceEditor(ISourceEditor) then begin
+    if GxOtaTryGetTopMostEditView(ISourceEditor, EditView) then begin
+      FOriginalEditPos := EditView.CursorPos;
+    end else begin
+      FOriginalEditPos.Col := -1;
+      FOriginalEditPos.Line := -1;
+    end;
+  end else begin
+    FOriginalEditPos.Col := -1;
+    FOriginalEditPos.Line := -1;
+  end;
+end;
+
 procedure TfmGxInstantGrepForm.LoadCurrentCode;
 
   function GetModuleDir: string;
@@ -188,25 +211,16 @@ resourcestring
   SCaption = '%s - Instant Grep';
 var
   ISourceEditor: IOTASourceEditor;
-  EditView: IOTAEditView;
 begin
   if Assigned(BorlandIDEServices)
     and GxOtaTryGetCurrentSourceEditor(ISourceEditor)
     and GxOtaGetActiveEditorText(FCurrentCode, False) then begin
     FCurrentFile := ISourceEditor.FileName;
-    if GxOtaTryGetTopMostEditView(ISourceEditor, EditView) then begin
-      FOriginalEditPos := EditView.CursorPos;
-    end else begin
-      FOriginalEditPos.Col := -1;
-      FOriginalEditPos.Line := -1;
-    end;
   end else begin
     FCurrentFile := IncludeTrailingPathDelimiter(GetModuleDir) + 'preview.pas';
     if FileExists(FCurrentFile) then begin
       FCurrentCode.LoadFromFile(FCurrentFile);
     end;
-    FOriginalEditPos.Col := -1;
-    FOriginalEditPos.Line := -1;
   end;
 
   // modify caption to show current module name
@@ -236,6 +250,7 @@ begin
   FLineHighlightColor := _LineHighlightBG;
   ed_RegEx.Text := _Text;
   TWinControl_SetFocus(fmGxInstantGrepForm.ed_RegEx);
+  GetOriginalEditPos;
 end;
 
 function TfmGxInstantGrepForm.TryGetSelectedEditorPos(out _EditPos: TOTAEditPos): Boolean;
