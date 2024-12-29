@@ -625,7 +625,9 @@ function TRegistry_TryReadString(_Reg: TRegistry; const _Entry: string;
   out _Value: string): Boolean; overload;
 
 ///<summary>
-/// Tries to read a boolean value from the registry
+/// Tries to read a boolean value from the given (open) TRegistry instance. In addtion to
+/// REG_DWORD (0 and <>0) it also supports REG_SZ when the string can be converted to boolean
+/// with SysUtils.StrToBool
 /// @param Key is the Key in which to read
 /// @param Entry is the name of the entry to read
 /// @param Value contains the boolean value that was read, only valid if Result = true
@@ -634,14 +636,28 @@ function TRegistry_TryReadString(_Reg: TRegistry; const _Entry: string;
 /// @raises any exception that TRegistry raises if something goes wrong reading the value,
 ///         e.g. the value exists, but is not a boolean </summary>
 function TRegistry_TryReadBool(const _Key: string; const _Entry: string; out _Value: Boolean;
-  _HKEY: HKEY = HKEY_CURRENT_USER): Boolean;
+  _HKEY: HKEY = HKEY_CURRENT_USER): Boolean; overload;
+
+///<summary>
+/// Tries to read a boolean value from the given (open) TRegistry instance. In addtion to
+/// REG_DWORD (0 and <>0) it also supports REG_SZ when the string can be converted to boolean
+/// with SysUtils.StrToBool
+/// @param Reg is aTRegistry instance where some registry key was opened
+/// @param Entry is the name of the entry to read
+/// @param Value will return the value of the entry, if it could be read (only valid if Result = true)
+/// @returns True, if the entry exists and is a boolean
+///          False otherwise.
+/// @raises any exception that TRegistry raises if something goes wrong reading the value,
+///         e.g. the value exists, but cannot be converted to boolean </summary>
+function TRegistry_TryReadBool(_Reg: TRegistry; const _Entry: string;
+  out _Value: Boolean): Boolean; overload;
 
 ///<summary>
 /// Tries to read an integer value from the given (open) TRegistry instance.
 /// @param Reg is aTRegistry instance where some registry key was opened
 /// @param Entry is the name of the entry to read
 /// @param Value will return the value of the entry, if it could be read (only valid if Result = true)
-/// @returns True, if the entry exists, and is a string
+/// @returns True, if the entry exists and is an integer
 ///          False otherwise.
 function TRegistry_TryReadInteger(_Reg: TRegistry; const _Entry: string;
   out _Value: Integer): Boolean; overload;
@@ -681,16 +697,31 @@ function TRegistry_ReadString(_Reg: TRegistry; const _Entry: string;
   const _Default: string = ''): string; overload;
 
 ///<summary>
-/// Reads a boolean value from the registry
+/// Reads a boolean value from the given (open) TRegistry instance. In addtion to
+/// REG_DWORD (0 and <>0) it also supports REG_SZ when the string can be converted to boolean
+/// with SysUtils.StrToBool
 /// @param Key is the Key in which to read
 /// @param Entry is the name of the entry to read
 /// @param Default is the value to return if the value does not exist in the registry
 /// @param HKEY is the root key to use, defaults to HKEY_CURRENT_USER
 /// @returns the boolean value that was read, the default if the value did not exist
 /// @raises any exception that TRegistry raises if something goes wrong reading the value,
-///         e.g. the value exists, but is not a boolean value </summary>
+///         e.g. the value exists, but cannot be converted to a boolean value </summary>
 function TRegistry_ReadBool(const _Key: string; const _Entry: string; _Default: Boolean = False;
-  _HKEY: HKEY = HKEY_CURRENT_USER): Boolean;
+  _HKEY: HKEY = HKEY_CURRENT_USER): Boolean; overload;
+
+///<summary>
+/// Reads a boolean value from the given (open) TRegistry instance. In addtion to
+/// REG_DWORD (0 and <>0) it also supports REG_SZ when the string can be converted to boolean
+/// with SysUtils.StrToBool
+/// @param Reg is aTRegistry instance where some registry key was opened
+/// @param Entry is the name of the entry to read
+/// @param Default is the value to return if the entry cannot be read
+/// @returns the value if it could be read or the given default if not
+/// @raises any exception that TRegistry raises if something goes wrong reading the value,
+///         e.g. the value exists, but cannot be converted to a boolean value </summary>
+function TRegistry_ReadBool(_Reg: TRegistry; const _Entry: string;
+  _Default: Boolean = False): Boolean; overload;
 
 ///<summary>
 /// Reads an integer value from the given (open) TRegistry instance.
@@ -698,7 +729,19 @@ function TRegistry_ReadBool(const _Key: string; const _Entry: string; _Default: 
 /// @param Entry is the name of the entry to read
 /// @param Default is the value to return if the entry cannot be read
 /// @returns the value if it could be read or the given default if not
+/// @raises any exception that TRegistry raises if something goes wrong reading the value,
+///         e.g. the value exists, but is not an integer value </summary>
 function TRegistry_ReadInteger(_Reg: TRegistry; const _Entry: string; _Default: Integer = 0): Integer; overload;
+
+///<summary>
+/// Reads an integer value from the registry
+/// @param Key is the Key in which to read
+/// @param Entry is the name of the entry to read
+/// @param Default is the value to return if the value does not exist in the registry
+/// @param HKEY is the root key to use, defaults to HKEY_CURRENT_USER
+/// @returns the boolean value that was read, the default if the value did not exist
+/// @raises any exception that TRegistry raises if something goes wrong reading the value,
+///         e.g. the value exists, but is not an integer value </summary>
 function TRegistry_ReadInteger(const _Key, _Entry: string; _Default: Integer = 0;
   _HKEY: HKEY = HKEY_CURRENT_USER): Integer; overload;
 
@@ -754,6 +797,7 @@ procedure TRegistry_DeleteAllSubkeys(_Reg: TRegistry);
 implementation
 
 uses
+  RTLConsts,
   StrUtils,
   u_dzConvertUtils,
   u_dzStringUtils;
@@ -2210,10 +2254,30 @@ var
   Guard: IRegistryGuard;
 begin
   Guard := TRegistry_TryOpenKeyReadonly(_Key, _HKEY);
-  Result := Guard.IsValid and Guard.Reg.ValueExists(_Entry);
+  Result := TRegistry_TryReadBool(Guard.Reg, _Entry, _Value);
+end;
+
+function TRegistry_TryReadBool(_Reg: TRegistry; const _Entry: string;
+  out _Value: Boolean): Boolean;
+var
+  IntValue: Integer;
+  s: string;
+begin
+  Result := _Reg.ValueExists(_Entry);
   if not Result then
-    Exit;
-  _Value := Guard.Reg.ReadBool(_Entry);
+    Exit; //==>
+  case _Reg.GetDataType(_Entry) of
+    rdString, rdExpandString: begin
+        s := _Reg.ReadString(_Entry);
+        _Value := StrToBool(s);
+      end;
+    rdInteger: begin
+        IntValue := _Reg.ReadInteger(_Entry);
+        _Value := (IntValue <> 0);
+      end;
+  else
+    raise ERegistryException.CreateFmt(SInvalidRegType, [_Entry]);
+  end;
 end;
 
 //function TRegistry_ReadString(const _Path: string; const _Default: string = '';
@@ -2246,6 +2310,13 @@ function TRegistry_ReadBool(const _Key: string; const _Entry: string; _Default: 
   _HKEY: HKEY = HKEY_CURRENT_USER): Boolean;
 begin
   if not TRegistry_TryReadBool(_Key, _Entry, Result, _HKEY) then
+    Result := _Default;
+end;
+
+function TRegistry_ReadBool(_Reg: TRegistry; const _Entry: string;
+  _Default: Boolean = False): Boolean;
+begin
+  if not TRegistry_TryReadBool(_Reg, _Entry, Result) then
     Result := _Default;
 end;
 
