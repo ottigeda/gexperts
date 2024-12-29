@@ -61,6 +61,7 @@ type
     FCurrentCode: TGXUnicodeStringList;
     FCurrentFile: string;
     FOriginalEditPos: TOTAEditPos;
+    FLineHighlightColor: TColor;
     procedure Clear;
     procedure UpdateOutput;
     function TryGetSelectedEditorPos(out _EditPos: TOTAEditPos): Boolean;
@@ -76,6 +77,7 @@ type
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
+    procedure Init(_LineHighlightBG: TColor; const _Text: string);
   end;
 
 implementation
@@ -91,6 +93,7 @@ uses
   GX_Experts,
   GX_GrepMenuEntry,
   GX_GenericUtils,
+  GX_IdeUtils,
   GX_NTAEditServiceNotifier,
   GX_GExperts;
 
@@ -151,6 +154,7 @@ end;
 
 procedure TfmGxInstantGrepForm.act_RefreshExecute(Sender: TObject);
 begin
+  LoadCurrentCode;
   UpdateOutput;
 end;
 
@@ -225,6 +229,13 @@ begin
     GxOtaTryGotoEditPos(EditPos);
   end;
   GxOtaFocusCurrentIDEEditControl;
+end;
+
+procedure TfmGxInstantGrepForm.Init(_LineHighlightBG: TColor; const _Text: string);
+begin
+  FLineHighlightColor := _LineHighlightBG;
+  ed_RegEx.Text := _Text;
+  TWinControl_SetFocus(fmGxInstantGrepForm.ed_RegEx);
 end;
 
 function TfmGxInstantGrepForm.TryGetSelectedEditorPos(out _EditPos: TOTAEditPos): Boolean;
@@ -345,7 +356,7 @@ var
     end else begin
       BGNormal := clWindow;
       LbCanvas.Font.Color := clWindowText;
-      BGMatch := RGB(250, 255, 230);
+      BGMatch := FLineHighlightColor;
     end;
     LbCanvas.Brush.Color := BGNormal;
     LbCanvas.FillRect(_Rect);
@@ -569,6 +580,17 @@ begin
 end;
 {$ENDIF}
 
+function GetEditorLineHighlightColor: TColor;
+var
+  FG: TColor;
+  Bold: Boolean;
+  Italic: Boolean;
+  Underline: Boolean;
+begin
+  if not TryGetIdeEditorHighlightColors('Line Highlight', FG, Result, Bold, Italic, Underline) then
+    Result := RGB(250, 255, 230);
+end;
+
 procedure TGrepInstantSearchExpert.Execute(Sender: TObject);
 begin
   if not Assigned(fmGxInstantGrepForm) then begin
@@ -577,6 +599,7 @@ begin
   end;
   IdeDockManager.ShowForm(fmGxInstantGrepForm);
   EnsureFormVisible(fmGxInstantGrepForm);
+  fmGxInstantGrepForm.Init(GetEditorLineHighlightColor, GxOtaGetCurrentIdent);
   IncCallCount;
 end;
 
