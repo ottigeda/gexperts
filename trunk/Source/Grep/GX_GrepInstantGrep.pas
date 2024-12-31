@@ -104,19 +104,19 @@ var
 type
   TFileResult = class
   private
-    Idx: Integer;
+    LineIdx: Integer;
     MatchStart: Integer;
     MatchLen: Integer;
   public
-    constructor Create(_Index, _Start, _Len: Integer);
+    constructor Create(_LineIdx, _Start, _Len: Integer);
   end;
 
 { TFileResult }
 
-constructor TFileResult.Create(_Index, _Start, _Len: Integer);
+constructor TFileResult.Create(_LineIdx, _Start, _Len: Integer);
 begin
   inherited Create;
-  Idx := _Index;
+  LineIdx := _LineIdx;
   MatchStart := _Start;
   MatchLen := _Len;
 end;
@@ -271,7 +271,7 @@ begin
     Exit;
 
   _EditPos.Col := Res.MatchStart;
-  _EditPos.Line := Res.Idx + 1;
+  _EditPos.Line := Res.LineIdx + 1;
   Result := True;
 end;
 
@@ -316,7 +316,7 @@ var
   Res: TFileResult;
   LineHeight: Integer;
 
-  procedure PaintFrame(_Rect: TRect);
+  procedure PaintSurroundingFrame(_Rect: TRect);
   begin
     // all but the very first line should draw the upperframe line one pixel above to avoid thick horizontal lines
     if _Index > 0 then
@@ -337,11 +337,13 @@ var
 
     TextTop := _Rect.Top + TopOffset;
     for i := -1 to 1 do begin
-      if i = 0 then
-        LbCanvas.Font.Color := clBtnText
-      else
+      Line := Format('%d', [Res.LineIdx + 1 + i]);
+      if i = 0 then begin
+        // line containing the match
+        LbCanvas.Font.Color := clBtnText;
+      end else begin
         LbCanvas.Font.Color := clGrayText;
-      Line := Format('%d', [Res.Idx + 1 + i]);
+      end;
       LbCanvas.TextOut(_Rect.Right - 1 - LbCanvas.TextWidth(Line) - FScaler.Calc(5), TextTop, Line);
       Inc(TextTop, LineHeight);
     end;
@@ -364,7 +366,8 @@ var
       BGNormal := clHighLight;
       LbCanvas.Font.Color := clHighLightText;
       BGMatch := BGNormal;
-    end else if _Index = 0 then begin
+    end else if Res.MatchStart = -1 then begin
+      // original position
       BGNormal := clBtnFace;
       LbCanvas.Font.Color := clWindowText;
       BGMatch := BGNormal;
@@ -378,7 +381,7 @@ var
 
     TextTop := _Rect.Top + TopOffset;
     for i := -1 to 1 do begin
-      Idx := Res.Idx + i;
+      Idx := Res.LineIdx + i;
       if (Idx >= 0) and (Idx < FCurrentCode.Count) then
         LineText := FCurrentCode[Idx]
       else
@@ -411,8 +414,7 @@ begin // TfmFastGrep.lb_ResultsDrawItem
     LineHeight := LbCanvas.TextHeight('Mg');
     GutterWidth := LbCanvas.TextWidth(DupeString('9', Length(Format('%d', [FCurrentCode.Count])))) + FScaler.Calc(10);
 
-    // draw surrounding frame
-    PaintFrame(_Rect);
+    PaintSurroundingFrame(_Rect);
     PaintGutter(Rect(_Rect.Left + 1, _Rect.Top + 1, _Rect.Left + GutterWidth + 1, _Rect.Bottom - 1));
     PaintLines(Rect(_Rect.Left + GutterWidth + 2, _Rect.Top + 1, _Rect.Right - 1, _Rect.Bottom - 1));
   end;
@@ -476,11 +478,29 @@ begin
 end;
 
 procedure TfmGxInstantGrepForm.UpdateOutput;
+
+  function InsertOriginalPos(_Items: TStrings; _LineIdx: Integer): Integer;
+  var
+    i: Integer;
+    Res: TFileResult;
+  begin
+    Result := _Items.Count;
+    for i := 0 to _Items.Count - 1 do begin
+      Res := _Items.Objects[i] as TFileResult;
+      if Res.LineIdx >= _LineIdx then begin
+        Result := i;
+        Break; //==v
+      end;
+    end;
+    _Items.InsertObject(Result, 'Original Position', TFileResult.Create(_LineIdx, -1, -1));
+  end;
+
 var
   Res: Boolean;
-  i: Integer;
+  LineIdx: Integer;
   Items: TStrings;
   RegEx: string;
+  ItemIndex: Integer;
 begin
   RegEx := ed_RegEx.Text;
   if RegEx = '' then
@@ -495,17 +515,14 @@ begin
       TStrings_FreeAllObjects(Items);
       Items.Clear;
       FRegEx.Compile;
-      for i := 0 to FCurrentCode.Count - 1 do begin
-        Res := FRegEx.Exec(FCurrentCode[i]);
+      for LineIdx := 0 to FCurrentCode.Count - 1 do begin
+        Res := FRegEx.Exec(FCurrentCode[LineIdx]);
         if Res then begin
-          Items.AddObject(FCurrentFile, TFileResult.Create(i, FRegEx.MatchPos[0], FRegEx.MatchLen[0]));
+          Items.AddObject(FCurrentFile, TFileResult.Create(LineIdx, FRegEx.MatchPos[0], FRegEx.MatchLen[0]));
         end;
       end;
-      if Items.Count > 0 then begin
-        Items.InsertObject(0, 'Original Position', TFileResult.Create(FOriginalEditPos.Line - 1, 0, 0));
-        TListBox_SetItemIndex(lb_Results, 0, False);
-      end else
-        lb_Results.ItemIndex := -1;
+      ItemIndex := InsertOriginalPos(Items, FOriginalEditPos.Line - 1);
+      TListBox_SetItemIndex(lb_Results, ItemIndex, False);
     except
       // ignore
     end; //FI:W501 Empty except block
