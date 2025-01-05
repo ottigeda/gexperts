@@ -224,6 +224,7 @@ type
     mitAvailSep3: TMenuItem;
     mCopyThisIdentifierToTheClipboard: TMenuItem;
     mSearchThisOnTheWeb: TMenuItem;
+    b_Help: TButton;
     procedure FormResize(Sender: TObject);
     procedure sg_ImplementationDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure sg_InterfaceDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -303,6 +304,7 @@ type
     procedure actAddToInterfaceAndCloseExecute(Sender: TObject);
     procedure actAddToImplemenationAndCloseExecute(Sender: TObject);
     procedure chk_FastAddClick(Sender: TObject);
+    procedure b_HelpClick(Sender: TObject);
   private
     FLeftRatio: Double;
     FAliases: TStringList;
@@ -405,7 +407,7 @@ uses
   GX_DbugIntf,
 {$ENDIF D+}
   GX_MessageBox, GX_IdeSearchPathEnhancer, u_dzTypes, u_dzStringArrayUtils,
-  GX_StringGridDrawFix;
+  GX_StringGridDrawFix, GX_GxUtils;
 
 { TUsesClauseMgrExpert }
 
@@ -1581,7 +1583,7 @@ begin
       end;
     end;
   end;
-  TStringGrid_DrawCellFixed(_sg, _Text, _Rect, _State, _focused);
+  TStringGrid_DrawCellFixed(_sg, _Text, _Rect, _State, _Focused);
 end;
 
 procedure TfmUsesManager.sg_UsedDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect;
@@ -2721,6 +2723,11 @@ begin
 
   RemoveDotsfrom(sg_Interface);
   RemoveDotsfrom(sg_Implementation);
+end;
+
+procedure TfmUsesManager.b_HelpClick(Sender: TObject);
+begin
+  GxContextHelp(Self, 58);
 end;
 
 procedure TfmUsesManager.b_NoMapFileCloseClick(Sender: TObject);

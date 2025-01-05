@@ -784,15 +784,38 @@ begin
 end;
 
 procedure TfmClassBrowser.pnlDataResize(Sender: TObject);
+var
+  w: integer;
+  lvh: HWND;
 begin
-  if csDestroying in ComponentState then Exit;
-    if lvInfo.ClientWidth > 50 then
-    begin
-      lvInfo.Columns[5].Width := Max(lvInfo.ClientWidth - lvInfo.Columns[0].Width - lvInfo.Columns[1].Width -
-        lvInfo.Columns[2].Width - lvInfo.Columns[3].Width - lvInfo.Columns[4].Width, 0);
-    end;
-  tshMembers.Width := pcMain.ActivePage.Width;
-  tshMembers.Height := pcMain.ActivePage.Height;
+  if csDestroying in ComponentState then
+    Exit; //==>
+
+// I commented out this code because I have no idea why it might
+// necessary. I'm not yet removing it because maybe it was a bugfix
+// for a specific Delphi version.
+//  tshMembers.Width := pcMain.ActivePage.Width;
+//  tshMembers.Height := pcMain.ActivePage.Height;
+// -- 2024-12-07 twm
+
+  // using ListView_SetColumnWidth instead of setting the Column[x].Width
+  // property fixed bug #401: Class Browser always has a horizontal scroll bar
+  // Setting the Width property didn't change its value.
+  // This seems to be a bug in the VCL of Delphi 12.
+  // And since we are at it, we can also use ListView_GetColumnWidth.
+  // -- 2024-12-07 twm
+  w := lvInfo.ClientWidth;
+  if w > 50 then begin
+    lvh := lvInfo.Handle;
+    w := w
+      - ListView_GetColumnWidth(lvh, 0)
+      - ListView_GetColumnWidth(lvh, 1)
+      - ListView_GetColumnWidth(lvh, 2)
+      - ListView_GetColumnWidth(lvh, 3)
+      - ListView_GetColumnWidth(lvh, 4);
+    ListView_SetColumnWidth(lvh, 5, Max(0, w));
+  end;
+
   DrawResize;
 end;
 
@@ -808,8 +831,13 @@ begin
   // todo: This could use GX_dzVclUtils.TWinControl_Lock
   SendMessage(scInherit.Handle, WM_SETREDRAW, WPARAM(False), 0);
   try
-    tshInherit.Width := pcMain.ActivePage.Width;
-    tshInherit.Height := pcMain.ActivePage.Height;
+// I commented out this code because I have no idea why it might
+// necessary. I'm not yet removing it because maybe it was a bugfix
+// for a specific Delphi version.
+//    tshInherit.Width := pcMain.ActivePage.Width;
+//    tshInherit.Height := pcMain.ActivePage.Height;
+// -- 2024-12-07 twm
+
     scInherit.Width := tshInherit.Width;
     scInherit.Height := tshInherit.Height;
     W := scInherit.Width - 20;

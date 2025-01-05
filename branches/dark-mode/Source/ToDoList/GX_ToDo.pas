@@ -1049,7 +1049,9 @@ begin
   FNotifier := TToDoNotifier.Create(Self);
   FNotifier.AddNotifierToIDE;
 
-  // lvToDo.DoubleBuffered := IsThemingEnabled;
+  {$IFNDEF GX_DELPHI12_UP}
+  lvToDo.DoubleBuffered := IsThemingEnabled;
+  {$ENDIF}
   LoadSettings;
 end;
 

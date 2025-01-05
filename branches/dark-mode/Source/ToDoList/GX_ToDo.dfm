@@ -7,11 +7,6 @@ object fmToDo: TfmToDo
   ClientHeight = 213
   ClientWidth = 661
   Color = clBtnFace
-  Font.Charset = ANSI_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -12
-  Font.Name = 'Tahoma'
-  Font.Style = []
   KeyPreview = True
   OldCreateOrder = True
   Position = poScreenCenter

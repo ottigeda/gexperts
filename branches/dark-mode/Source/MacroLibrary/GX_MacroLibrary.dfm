@@ -2,6 +2,7 @@ object fmMacroLibrary: TfmMacroLibrary
   Left = 326
   Top = 252
   ActiveControl = lvMacros
+  AutoScroll = False
   Caption = 'Keyboard Macro Library'
   ClientHeight = 218
   ClientWidth = 314
@@ -68,6 +69,8 @@ object fmMacroLibrary: TfmMacroLibrary
     Width = 314
     Height = 22
     AutoSize = True
+    EdgeBorders = []
+    Flat = True
     Images = dmSharedImages.Images
     ParentShowHint = False
     ShowHint = True
@@ -186,7 +189,6 @@ object fmMacroLibrary: TfmMacroLibrary
       Align = alTop
       Caption = '  Macro Description'
       FocusControl = mmoMacroDescription
-      ExplicitWidth = 104
     end
     object mmoMacroDescription: TMemo
       Left = 0

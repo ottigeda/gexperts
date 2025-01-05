@@ -10,12 +10,8 @@ object fmMacroTemplates: TfmMacroTemplates
   Color = clBtnFace
   Constraints.MinHeight = 387
   Constraints.MinWidth = 353
-  Font.Charset = ANSI_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -12
-  Font.Name = 'Tahoma'
-  Font.Style = []
-  OldCreateOrder = True
+  ParentFont = True
+  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnClose = FormClose

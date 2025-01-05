@@ -9,6 +9,9 @@ resourcestring
   SCouldNotGetModuleIntf = 'Could not get a module interface.';
   SCouldNotGetFormIntf = 'Could not get a form interface.';
 
+const
+  SeparatorMenuItemString = '-';
+
 implementation
 
 end.

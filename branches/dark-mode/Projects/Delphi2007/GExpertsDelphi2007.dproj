@@ -108,17 +108,6 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
     <DelphiCompile Include="GExpertsDelphi2007.dpr">
       <MainSource>MainSource</MainSource>
     </DelphiCompile>
-    <DCCReference Include="..\" />
-    <DCCReference Include="..\..\" />
-    <DCCReference Include="..\..\..\GExperts-DarkMode" />
-    <DCCReference Include="..\..\Projects" />
-    <DCCReference Include="..\..\S" />
-    <DCCReference Include="..\..\So" />
-    <DCCReference Include="..\..\Sou" />
-    <DCCReference Include="..\..\Sour" />
-    <DCCReference Include="..\..\Sourc" />
-    <DCCReference Include="..\..\Source" />
-    <DCCReference Include="..\..\Source\" />
     <DCCReference Include="..\..\Source\AddDockWindow\GX_AddDockWindow.pas">
       <Form>fmGxDockForm</Form>
     </DCCReference>
@@ -168,6 +157,9 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
     </DCCReference>
     <DCCReference Include="..\..\source\CleanDirectories\GX_CleanDirectories.pas">
       <Form>fmCleanDirectories</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\source\CleanDirectories\GX_CleanDirectoriesOptions.pas">
+      <Form>fmCleanDirectoriesOptions</Form>
     </DCCReference>
     <DCCReference Include="..\..\source\ClipboardHistory\GX_ClipboardHistory.pas">
       <Form>fmClipboardHistory</Form>
@@ -389,6 +381,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
     <DCCReference Include="..\..\source\Framework\GX_SynMemoUtils.pas" />
     <DCCReference Include="..\..\Source\Framework\GX_UnitExportsParser.pas" />
     <DCCReference Include="..\..\source\Framework\GX_UnitPositions.pas" />
+    <DCCReference Include="..\..\Source\Framework\GX_UnspecifiedImage.pas" />
     <DCCReference Include="..\..\Source\Framework\GX_UsageStatistics.pas">
       <Form>fmUsageStatistics</Form>
     </DCCReference>
@@ -440,13 +433,14 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
       <Form>fmTestRegEx</Form>
     </DCCReference>
     <DCCReference Include="..\..\source\HideNonvisualComponents\GX_HideNonVisualComps.pas" />
-    <DCCReference Include="..\..\Source\IDE" />
     <DCCReference Include="..\..\source\IDEDocking\GX_IdeDock.pas">
       <Form>fmIdeDockForm</Form>
     </DCCReference>
     <DCCReference Include="..\..\source\IdeShortCuts\GX_IdeShortCuts.pas">
       <Form>fmIdeShortCuts</Form>
     </DCCReference>
+    <DCCReference Include="..\..\Source\IdeToolbar\GX_IdeToolbar.pas" />
+    <DCCReference Include="..\..\Source\IdeToolbar\GX_IdeToolbarExpert.pas" />
     <DCCReference Include="..\..\Source\IDE\GX_IdeApplicationSettingsEnhancer.pas" />
     <DCCReference Include="..\..\Source\IDE\GX_IdeBuildEventFavoriteEdit.pas">
       <Form>f_IdeBuildEventFavoriteEdit</Form>
@@ -474,11 +468,6 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
     <DCCReference Include="..\..\Source\IDE\GX_IdeSearchPathFavoriteEdit.pas">
       <Form>f_IdeSearchPathFavoriteEdit</Form>
     </DCCReference>
-    <DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibilit" />
-    <DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibility" />
-    <DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibility.p" />
-    <DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibility.pa" />
-    <DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibility.pas" />
     <DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibility.pas" />
     <DCCReference Include="..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas" />
     <DCCReference Include="..\..\source\IDE\GX_MultilineHost.pas" />
@@ -602,7 +591,6 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
     <DCCReference Include="..\..\source\ToDoList\GX_ToDoOptions.pas">
       <Form>fmToDoOptions</Form>
     </DCCReference>
-    <DCCReference Include="..\..\Source\U" />
     <DCCReference Include="..\..\Source\UsesExpert\GX_UnitExportList.pas" />
     <DCCReference Include="..\..\Source\UsesExpert\GX_UsesExpert.pas">
       <Form>fmUsesManager</Form>
@@ -610,14 +598,6 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
     <DCCReference Include="..\..\Source\UsesExpert\GX_UsesExpertOptions.pas">
       <Form>fmUsesExpertOptions</Form>
     </DCCReference>
-    <DCCReference Include="..\..\Source\Ut" />
-    <DCCReference Include="..\..\Source\Uti" />
-    <DCCReference Include="..\..\Source\Util" />
-    <DCCReference Include="..\..\Source\Utils" />
-    <DCCReference Include="..\..\Source\Utils\" />
-    <DCCReference Include="..\..\Source\Utils\G" />
-    <DCCReference Include="..\..\Source\Utils\GX" />
-    <DCCReference Include="..\..\Source\Utils\GX_" />
     <DCCReference Include="..\..\source\Utils\GX_BookmarkList.pas" />
     <DCCReference Include="..\..\Source\Utils\GX_CheckButton.pas" />
     <DCCReference Include="..\..\source\Utils\GX_DbugIntf.pas" />
@@ -631,25 +611,13 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
     <DCCReference Include="..\..\source\Utils\GX_OtaUtils.pas" />
     <DCCReference Include="..\..\Source\Utils\GX_ReadMapFileThread.pas" />
     <DCCReference Include="..\..\Source\Utils\GX_RegExpr.pas" />
-    <DCCReference Include="..\..\Source\Utils\GX_S" />
     <DCCReference Include="..\..\Source\Utils\GX_ShLwApi.pas" />
-    <DCCReference Include="..\..\Source\Utils\GX_Sp" />
-    <DCCReference Include="..\..\Source\Utils\GX_Spl" />
-    <DCCReference Include="..\..\Source\Utils\GX_Spli" />
-    <DCCReference Include="..\..\Source\Utils\GX_Split" />
-    <DCCReference Include="..\..\Source\Utils\GX_Splitt" />
-    <DCCReference Include="..\..\Source\Utils\GX_Splitte" />
-    <DCCReference Include="..\..\Source\Utils\GX_Splitter" />
-    <DCCReference Include="..\..\Source\Utils\GX_Splitter.p" />
-    <DCCReference Include="..\..\Source\Utils\GX_Splitter.pa" />
     <DCCReference Include="..\..\Source\Utils\GX_Splitter.pas" />
     <DCCReference Include="..\..\Source\Utils\GX_StringGridDrawFix.pas" />
     <DCCReference Include="..\..\Source\Utils\GX_StringList.pas" />
     <DCCReference Include="..\..\Source\Utils\GX_TimedCallback.pas" />
     <DCCReference Include="..\..\Source\Utils\GX_VCLFixPack.pas" />
     <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas" />
-    <DCCReference Include="..\..\Source\Utils\H" />
-    <DCCReference Include="..\Delphi2007" />
     <RcCompile Include="..\..\Binaries\CodeProofreaderDefault.rc">
       <Form>..\..\Binaries\CodeProofreaderDefault.res</Form>
     </RcCompile>

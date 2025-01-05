@@ -34,6 +34,8 @@ type
     FCurrentSourceFn: string;
     procedure SetData(_Row: Integer);
     procedure GetData(out _Row: Integer);
+  protected
+    procedure ArrangeControls; override;
   public
     class function Execute(var _Row: Integer): Boolean;
     constructor Create(_Owner: TComponent); override;
@@ -85,8 +87,6 @@ var
   i: Integer;
   reg: TRegistry;
   cnt: Integer;
-  NeededHeight : Integer;
-  DeltaHeight : Integer;
   s: string;
 begin
   inherited;
@@ -104,15 +104,7 @@ begin
   end;
 
   GxSetDefaultFont(Self);
-
-  NeededHeight := (FUnitPositions.Count + 1) * lb_UnitPositions.ItemHeight;
-  DeltaHeight := NeededHeight - lb_UnitPositions.ClientHeight;
-  if DeltaHeight > 0 then begin
-    DisableAlign;
-    Self.ClientHeight := Self.ClientHeight + DeltaHeight;
-    EnableAlign;
-  end;
-  b_Ok.Caption := 'Go';
+  ArrangeControls;
 
   TControl_SetMinConstraints(Self);
 
@@ -181,6 +173,21 @@ end;
 procedure Tf_Goto.SetData(_Row: Integer);
 begin
   cmb_LineNumber.Text := IntToStr(_Row);
+end;
+
+procedure Tf_Goto.ArrangeControls;
+var
+  Spacer : Integer;
+begin
+  inherited;
+  
+  Spacer := lb_UnitPositions.Left;
+  b_Ok.Top := lb_UnitPositions.Top + lb_UnitPositions.Height + Spacer;
+  b_Cancel.Top := b_Ok.Top;
+  b_Cancel.Left := Spacer + lb_UnitPositions.Width - b_Cancel.Width;
+  Self.ClientHeight := b_Ok.Top + b_Ok.Height + Spacer;
+  Self.ClientWidth  := Spacer + lb_UnitPositions.Width + Spacer;
+  b_Ok.Caption := 'Go';
 end;
 
 procedure Tf_Goto.cmb_LineNumberChange(Sender: TObject);

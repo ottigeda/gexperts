@@ -3,7 +3,7 @@ unit GX_OpenFileConfig;
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, Buttons, ComCtrls, ExtCtrls,
+  Windows, Classes, Controls, Forms, StdCtrls, Buttons, ComCtrls, ExtCtrls,
   GX_ConfigurationInfo, GX_BaseForm;
 
 type
@@ -142,6 +142,9 @@ type
     function IDEOverride: TIDEOverride;
     procedure lbxDirectoryListFilesDropped(Sender: TObject; Files: TStrings);
   protected
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+    procedure ArrangeControls; override;
+{$ENDIF GX_IDE_IS_HIDPI_AWARE}
     procedure FormResize(Sender: TObject);
 
   public
@@ -540,6 +543,23 @@ begin
   SelectDirectory;
 end;
 
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+procedure TfmOpenFileConfig.ArrangeControls;
+var
+  ch: integer;
+  Spacing: integer;
+  h: integer;
+begin
+  Spacing := MulDiv(8, FCurrentPPI, GetDesignDpi);
+  ch := tsTypes.ClientHeight;
+  gbxCustomDirectory.Height := ch - gbxCustomDirectory.Top - Spacing;
+  h := btnTypeAdd.Height;
+  btnTypeAdd.Top := ch - h - Spacing;
+  btnTypeDelete.Top := ch - h - Spacing;
+  lbxTypeList.Height := ch - h - 2 * Spacing - lbxTypeList.Top;
+end;
+{$ENDIF GX_IDE_IS_HIDPI_AWARE}
+
 procedure TfmOpenFileConfig.btnDirectoryAddClick(Sender: TObject);
 
   procedure AddDirectory;
@@ -605,28 +625,15 @@ begin
 end;
 
 procedure TfmOpenFileConfig.FormResize(Sender: TObject);
-var
-  Space: Integer;
 begin
-  if Self.Showing then begin
-    Space := 6;
-    if Assigned(FScaler) then
-      Space := FScaler.Calc(Space);
-
-    DisableAlign;
-      btnTypeAdd.Top := tsTypes.ClientHeight - btnTypeAdd.Height - Space;
-      btnTypeDelete.Top := btnTypeAdd.Top;
-      lbxTypeList.Height := btnTypeAdd.Top - Space - lbxTypeList.Top;
-
-      gbxCustomDirectory.Height := tsTypes.ClientHeight - gbxCustomDirectory.Top;
-
-    EnableAlign;
-  end;
+  ArrangeControls;
 end;
 
 constructor TfmOpenFileConfig.Create(_Owner: TComponent);
 begin
   inherited;
+
+  TControl_SetMinConstraints(Self);
 
   SetParentBackgroundValue(gbxCustomDirectory, True);
   SetParentBackgroundValue(gbxGeneralSettings, True);
@@ -634,7 +641,7 @@ begin
   TWinControl_ActivateDropFiles(lbxDirectoryList, lbxDirectoryListFilesDropped);
 
   InitDpiScaler;
-  TControl_SetMinConstraints(Self);
+  
   Self.OnResize := FormResize;
 end;
 

@@ -2,9 +2,6 @@ unit GX_CleanDirectories;
 
 {$I GX_CondDefine.inc}
 
-{$WARN UNIT_PLATFORM OFF}
-{$WARN SYMBOL_PLATFORM OFF}
-
 // TODO 3 -cFeature -oAnyone: Add save/restore of recursive directory checkboxes and custom-added directories?
 
 interface
@@ -118,8 +115,9 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  Variants, SysUtils, FileCtrl, Dialogs, Math,
-  ToolsAPI, GX_GxUtils, GX_GenericUtils, GX_OtaUtils, u_dzVclUtils;
+  Variants, SysUtils, FileCtrl, Dialogs, Math, ToolsAPI,
+  u_dzVclUtils,
+  GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_CleanDirectoriesOptions;
 
 resourcestring
   SCouldNotDelete = 'Could not delete %s' + sLineBreak +
@@ -476,7 +474,8 @@ const // We will never localize these strings.
     '.#??' + sLineBreak + '.ddp' + sLineBreak + '.rsm' + sLineBreak + '.map' + sLineBreak +
     '.pdb' + sLineBreak + '.gex' + sLineBreak +'.~xfm' + sLineBreak + '.~nfm'+ sLineBreak +
     '.~bdsproj'+ sLineBreak + '.~dproj'+ sLineBreak + '.~bdsgroup' + sLineBreak +
-    '.~groupproj' + sLineBreak + '.identcache' + sLineBreak + '.dcuil' + sLineBreak + '.dcpil';
+    '.~groupproj' + sLineBreak + '.identcache' + sLineBreak + '.dcuil' + sLineBreak +
+    '.dcpil' + sLineBreak + '.dproj.local';
 var
   i, j: Integer;
 begin
@@ -702,14 +701,8 @@ begin
 end;
 
 procedure TCleanDirectoriesExpert.Configure(_Owner: TWinControl);
-resourcestring
-  SAddExeDcuDirsToCleanList =
-    'Would you like the project''s unit output and executable' + sLineBreak +
-    'output directories included in the default cleanable' + sLineBreak +
-    'directory list?';
 begin
-  FIncludeBinaryDirs := MessageDlg(SAddExeDcuDirsToCleanList,
-      mtConfirmation, [mbYes, mbNo], 0) = mrYes;
+  TfmCleanDirectoriesOptions.Execute(_Owner, FIncludeBinaryDirs);
 end;
 
 initialization

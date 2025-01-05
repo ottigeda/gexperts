@@ -8,12 +8,14 @@ object fmFavFileProp: TfmFavFileProp
   Color = clBtnFace
   ParentFont = True
   KeyPreview = True
+  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
   OnActivate = FormActivate
   DesignSize = (
     464
     272)
+  PixelsPerInch = 96
   TextHeight = 15
   object pgeProperties: TPageControl
     Left = 8
@@ -23,6 +25,7 @@ object fmFavFileProp: TfmFavFileProp
     ActivePage = tabProperties
     Anchors = [akLeft, akTop, akRight]
     MultiLine = True
+    TabIndex = 0
     TabOrder = 0
     TabStop = False
     object tabProperties: TTabSheet

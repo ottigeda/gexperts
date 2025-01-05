@@ -61,6 +61,7 @@ type
     FCurrentCode: TGXUnicodeStringList;
     FCurrentFile: string;
     FOriginalEditPos: TOTAEditPos;
+    FLineHighlightColor: TColor;
     procedure Clear;
     procedure UpdateOutput;
     function TryGetSelectedEditorPos(out _EditPos: TOTAEditPos): Boolean;
@@ -68,6 +69,7 @@ type
     procedure GoToCurrent;
     procedure SetListboxItemHeight;
     procedure LoadCurrentCode;
+    procedure GetOriginalEditPos;
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
@@ -76,6 +78,7 @@ type
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
+    procedure Init(_LineHighlightBG: TColor; const _Text: string);
   end;
 
 implementation
@@ -91,9 +94,9 @@ uses
   GX_Experts,
   GX_GrepMenuEntry,
   GX_GenericUtils,
+  GX_IdeUtils,
   GX_NTAEditServiceNotifier,
-  GX_GExperts,
-  GX_IdeUtils;
+  GX_GExperts;
 
 var
   fmGxInstantGrepForm: TfmGxInstantGrepForm = nil;
@@ -101,19 +104,19 @@ var
 type
   TFileResult = class
   private
-    Idx: Integer;
+    LineIdx: Integer;
     MatchStart: Integer;
     MatchLen: Integer;
   public
-    constructor Create(_Index, _Start, _Len: Integer);
+    constructor Create(_LineIdx, _Start, _Len: Integer);
   end;
 
 { TFileResult }
 
-constructor TFileResult.Create(_Index, _Start, _Len: Integer);
+constructor TFileResult.Create(_LineIdx, _Start, _Len: Integer);
 begin
   inherited Create;
-  Idx := _Index;
+  LineIdx := _LineIdx;
   MatchStart := _Start;
   MatchLen := _Len;
 end;
@@ -130,6 +133,9 @@ begin
 
   FRegEx := TRegExpr.Create;
   FCurrentCode := TGXUnicodeStringList.Create;
+
+  FOriginalEditPos.Col := -1;
+  FOriginalEditPos.Line := -1;
 
   LoadCurrentCode;
   SetListboxItemHeight;
@@ -152,6 +158,7 @@ end;
 
 procedure TfmGxInstantGrepForm.act_RefreshExecute(Sender: TObject);
 begin
+  LoadCurrentCode;
   UpdateOutput;
 end;
 
@@ -174,6 +181,25 @@ begin
   end;
 end;
 
+procedure TfmGxInstantGrepForm.GetOriginalEditPos;
+var
+  ISourceEditor: IOTASourceEditor;
+  EditView: IOTAEditView;
+begin
+  if Assigned(BorlandIDEServices)
+    and GxOtaTryGetCurrentSourceEditor(ISourceEditor) then begin
+    if GxOtaTryGetTopMostEditView(ISourceEditor, EditView) then begin
+      FOriginalEditPos := EditView.CursorPos;
+    end else begin
+      FOriginalEditPos.Col := -1;
+      FOriginalEditPos.Line := -1;
+    end;
+  end else begin
+    FOriginalEditPos.Col := -1;
+    FOriginalEditPos.Line := -1;
+  end;
+end;
+
 procedure TfmGxInstantGrepForm.LoadCurrentCode;
 
   function GetModuleDir: string;
@@ -185,25 +211,16 @@ resourcestring
   SCaption = '%s - Instant Grep';
 var
   ISourceEditor: IOTASourceEditor;
-  EditView: IOTAEditView;
 begin
   if Assigned(BorlandIDEServices)
     and GxOtaTryGetCurrentSourceEditor(ISourceEditor)
     and GxOtaGetActiveEditorText(FCurrentCode, False) then begin
     FCurrentFile := ISourceEditor.FileName;
-    if GxOtaTryGetTopMostEditView(ISourceEditor, EditView) then begin
-      FOriginalEditPos := EditView.CursorPos;
-    end else begin
-      FOriginalEditPos.Col := -1;
-      FOriginalEditPos.Line := -1;
-    end;
   end else begin
     FCurrentFile := IncludeTrailingPathDelimiter(GetModuleDir) + 'preview.pas';
     if FileExists(FCurrentFile) then begin
       FCurrentCode.LoadFromFile(FCurrentFile);
     end;
-    FOriginalEditPos.Col := -1;
-    FOriginalEditPos.Line := -1;
   end;
 
   // modify caption to show current module name
@@ -228,6 +245,14 @@ begin
   GxOtaFocusCurrentIDEEditControl;
 end;
 
+procedure TfmGxInstantGrepForm.Init(_LineHighlightBG: TColor; const _Text: string);
+begin
+  FLineHighlightColor := _LineHighlightBG;
+  ed_RegEx.Text := _Text;
+  TWinControl_SetFocus(fmGxInstantGrepForm.ed_RegEx);
+  GetOriginalEditPos;
+end;
+
 function TfmGxInstantGrepForm.TryGetSelectedEditorPos(out _EditPos: TOTAEditPos): Boolean;
 var
   Idx: Integer;
@@ -246,7 +271,7 @@ begin
     Exit;
 
   _EditPos.Col := Res.MatchStart;
-  _EditPos.Line := Res.Idx + 1;
+  _EditPos.Line := Res.LineIdx + 1;
   Result := True;
 end;
 
@@ -291,7 +316,7 @@ var
   Res: TFileResult;
   LineHeight: Integer;
 
-  procedure PaintFrame(_Rect: TRect);
+  procedure PaintSurroundingFrame(_Rect: TRect);
   begin
     // all but the very first line should draw the upperframe line one pixel above to avoid thick horizontal lines
     if _Index > 0 then
@@ -312,11 +337,13 @@ var
 
     TextTop := _Rect.Top + TopOffset;
     for i := -1 to 1 do begin
-      if i = 0 then
-        LbCanvas.Font.Color := GetThemedColor(clBtnText)
-      else
+      Line := Format('%d', [Res.LineIdx + 1 + i]);
+      if i = 0 then begin
+        // line containing the match
+        LbCanvas.Font.Color := GetThemedColor(clBtnText);
+      end else begin
         LbCanvas.Font.Color := GetThemedColor(clGrayText);
-      Line := Format('%d', [Res.Idx + 1 + i]);
+      end;
       LbCanvas.TextOut(_Rect.Right - 1 - LbCanvas.TextWidth(Line) - FScaler.Calc(5), TextTop, Line);
       Inc(TextTop, LineHeight);
     end;
@@ -339,21 +366,22 @@ var
       BGNormal := GetThemedColor(clHighLight);
       LbCanvas.Font.Color := GetThemedColor(clHighLightText);
       BGMatch := BGNormal;
-    end else if _Index = 0 then begin
+    end else if Res.MatchStart = -1 then begin
+      // original position
       BGNormal := GetThemedColor(clBtnFace);
       LbCanvas.Font.Color := GetThemedColor(clWindowText);
       BGMatch := BGNormal;
     end else begin
       BGNormal := GetThemedColor(clWindow);
       LbCanvas.Font.Color := GetThemedColor(clWindowText);
-      BGMatch := GetThemedColor(clInfoBk); // was: RGB(250, 255, 230);
+      BGMatch := FLineHighlightColor;
     end;
     LbCanvas.Brush.Color := BGNormal;
     LbCanvas.FillRect(_Rect);
 
     TextTop := _Rect.Top + TopOffset;
     for i := -1 to 1 do begin
-      Idx := Res.Idx + i;
+      Idx := Res.LineIdx + i;
       if (Idx >= 0) and (Idx < FCurrentCode.Count) then
         LineText := FCurrentCode[Idx]
       else
@@ -386,8 +414,7 @@ begin // TfmFastGrep.lb_ResultsDrawItem
     LineHeight := LbCanvas.TextHeight('Mg');
     GutterWidth := LbCanvas.TextWidth(DupeString('9', Length(Format('%d', [FCurrentCode.Count])))) + FScaler.Calc(10);
 
-    // draw surrounding frame
-    PaintFrame(_Rect);
+    PaintSurroundingFrame(_Rect);
     PaintGutter(Rect(_Rect.Left + 1, _Rect.Top + 1, _Rect.Left + GutterWidth + 1, _Rect.Bottom - 1));
     PaintLines(Rect(_Rect.Left + GutterWidth + 2, _Rect.Top + 1, _Rect.Right - 1, _Rect.Bottom - 1));
   end;
@@ -452,11 +479,29 @@ begin
 end;
 
 procedure TfmGxInstantGrepForm.UpdateOutput;
+
+  function InsertOriginalPos(_Items: TStrings; _LineIdx: Integer): Integer;
+  var
+    i: Integer;
+    Res: TFileResult;
+  begin
+    Result := _Items.Count;
+    for i := 0 to _Items.Count - 1 do begin
+      Res := _Items.Objects[i] as TFileResult;
+      if Res.LineIdx >= _LineIdx then begin
+        Result := i;
+        Break; //==v
+      end;
+    end;
+    _Items.InsertObject(Result, 'Original Position', TFileResult.Create(_LineIdx, -1, -1));
+  end;
+
 var
   Res: Boolean;
-  i: Integer;
+  LineIdx: Integer;
   Items: TStrings;
   RegEx: string;
+  ItemIndex: Integer;
 begin
   RegEx := ed_RegEx.Text;
   if RegEx = '' then
@@ -471,17 +516,14 @@ begin
       TStrings_FreeAllObjects(Items);
       Items.Clear;
       FRegEx.Compile;
-      for i := 0 to FCurrentCode.Count - 1 do begin
-        Res := FRegEx.Exec(FCurrentCode[i]);
+      for LineIdx := 0 to FCurrentCode.Count - 1 do begin
+        Res := FRegEx.Exec(FCurrentCode[LineIdx]);
         if Res then begin
-          Items.AddObject(FCurrentFile, TFileResult.Create(i, FRegEx.MatchPos[0], FRegEx.MatchLen[0]));
+          Items.AddObject(FCurrentFile, TFileResult.Create(LineIdx, FRegEx.MatchPos[0], FRegEx.MatchLen[0]));
         end;
       end;
-      if Items.Count > 0 then begin
-        Items.InsertObject(0, 'Original Position', TFileResult.Create(FOriginalEditPos.Line - 1, 0, 0));
-        TListBox_SetItemIndex(lb_Results, 0, False);
-      end else
-        lb_Results.ItemIndex := -1;
+      ItemIndex := InsertOriginalPos(Items, FOriginalEditPos.Line - 1);
+      TListBox_SetItemIndex(lb_Results, ItemIndex, False);
     except
       // ignore
     end; //FI:W501 Empty except block
@@ -571,6 +613,17 @@ begin
 end;
 {$ENDIF}
 
+function GetEditorLineHighlightColor: TColor;
+var
+  FG: TColor;
+  Bold: Boolean;
+  Italic: Boolean;
+  Underline: Boolean;
+begin
+  if not TryGetIdeEditorHighlightColors('Line Highlight', FG, Result, Bold, Italic, Underline) then
+    Result := RGB(250, 255, 230);
+end;
+
 procedure TGrepInstantSearchExpert.Execute(Sender: TObject);
 begin
   if not Assigned(fmGxInstantGrepForm) then begin
@@ -579,6 +632,7 @@ begin
   end;
   IdeDockManager.ShowForm(fmGxInstantGrepForm);
   EnsureFormVisible(fmGxInstantGrepForm);
+  fmGxInstantGrepForm.Init(GetEditorLineHighlightColor, GxOtaGetCurrentIdent);
   IncCallCount;
 end;
 

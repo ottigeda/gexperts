@@ -307,8 +307,8 @@ end;
 
 procedure TGX_BaseExpert.LoadSettings(_GxSettings: TGExpertsSettings);
 begin
-  LoadActiveAndShortCut(_GxSettings);
   InternalLoadSettings(GetSettings);
+  LoadActiveAndShortCut(_GxSettings);
 end;
 
 function TGX_BaseExpert.GetTotalCallCount: Integer;

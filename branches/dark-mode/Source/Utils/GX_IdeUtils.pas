@@ -50,6 +50,15 @@ function GetIDEFormNamed(const FormName: string): TCustomForm;
 function IsReplaceConfirmDialogOnScreen: Boolean;
 
 ///<summary>
+/// Reads an entry from the current IDE's Editor\Highlight branch
+/// @returns True, if all values could be read,
+///          False otherweise
+/// @NOTE: This also works for Delphi 6 where the colors were REG_DWORD
+///        and the booleans were REG_SZ but stored as -1 and 0. </summary>
+function TryGetIdeEditorHighlightColors(const _Key: string;
+  out _FG: TColor; out _BG: TColor; out _Bold, _Italic, _Underline: Boolean): Boolean;
+
+///<summary>
 /// Searches through Screen.Forms for a form of the given class
 /// @param ClassName is the classname of the form we are looking for
 /// @param Form contains the first form of the given class, only valid if Result = True
@@ -151,7 +160,7 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   TypInfo,
   SysUtils, Windows, Registry, StrUtils, Themes,
-  u_dzCompilerAndRtlVersions, u_dzClassUtils, u_dzStringUtils,
+  u_dzCompilerAndRtlVersions, u_dzClassUtils, u_dzStringUtils, u_dzGraphicsUtils,
   GX_GenericUtils, GX_OtaUtils, GX_GxUtils;
 
 function GetIdeMainForm: TCustomForm;
@@ -906,6 +915,58 @@ begin
     FreeAndNil(reg);
   end;
 {$ENDIF}
+end;
+
+function TryGetIdeEditorHighlightColors(const _Key: string;
+  out _FG: TColor; out _BG: TColor; out _Bold, _Italic, _Underline: Boolean): Boolean;
+var
+  BGColorName: string;
+  FGColorName: string;
+  RegKey: string;
+{$IFDEF GX_DELPHI7_UP}
+  s: string;
+{$ELSE}
+  IntValue: Integer;
+{$ENDIF}
+  reg: TRegistry;
+begin
+  RegKey := GxOtaGetIdeBaseRegistryKey + '\Editor\Highlight\' + _Key;
+  BGColorName := 'Background Color';
+  FGColorName := 'Foreground Color';
+{$IFDEF GX_DELPHI7_UP}
+  BGColorName := BGColorName + ' New';
+  FGColorName := FGColorName + ' New';
+{$ENDIF}
+
+  reg := TRegistry.Create(KEY_READ);
+  try
+    Result := reg.OpenKeyReadOnly(RegKey);
+    if not Result then
+      Exit; //==>>
+
+    Result := False;
+{$IFNDEF GX_DELPHI7_UP}
+    // Delphi 6 used REG_DWORD
+    if not TRegistry_TryReadInteger(reg, BGColorName, IntValue) then
+      Exit; //==>
+    _BG := IntValue;
+    if not TRegistry_TryReadInteger(reg, FGColorName, IntValue) then
+      Exit; //==>
+    _FG := IntValue;
+{$ELSE}
+    // Delphi 7 and later uses REG_SZ
+    if not TRegistry_TryReadString(reg, BGColorName, s) or not TryStr2Color(s, _BG) then
+      Exit; //==>
+    if not TRegistry_TryReadString(reg, FGColorName, s) or not TryStr2Color(s, _FG) then
+      Exit; //==>
+{$ENDIF}
+    Result := True;
+    _Bold := TRegistry_ReadBool(reg, 'Bold');
+    _Italic := TRegistry_ReadBool(reg, 'Italic');
+    _Underline := TRegistry_ReadBool(reg, 'Underline');
+  finally
+    FreeAndNil(reg);
+  end;
 end;
 
 function InitTheming(const AForm: TCustomForm): Boolean;

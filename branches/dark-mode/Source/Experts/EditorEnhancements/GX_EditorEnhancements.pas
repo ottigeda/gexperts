@@ -46,6 +46,7 @@ type
     procedure Remove;
     procedure HandleFreeNotification(Component: TComponent; Operation: TOperation);
     procedure HandleConfigureToolbar(_Sender: TObject);
+    procedure AddDefaultToolbarActions;
   protected
     procedure SetActive(_Value: Boolean); override;
   public
@@ -300,12 +301,23 @@ begin
   FHideNavigationToolbarExpert.SetVisible(not FHideNavbar);
 end;
 
-procedure TEditorEnhancements.LoadToolBarSettings(_Settings: IExpertSettings);
+procedure TEditorEnhancements.AddDefaultToolbarActions;
 const
   // Do not localize default action names.
   DefaultToolBarActions: array[0..4] of string =
     ('EditCutCommand', 'EditCopyCommand', 'EditPasteCommand', 'EditUndoCommand',
-     'EditRedoCommand');
+    'EditRedoCommand');
+var
+  i: Integer;
+begin
+  for i := Low(DefaultToolBarActions) to High(DefaultToolBarActions) do begin
+{$IFOPT D+}Assert(Assigned(GxActionBroker.FindAction(DefaultToolBarActions[i])),
+      'Could not locate default IDE action named ' + DefaultToolBarActions[i]); {$ENDIF D+}
+    FToolBarActionsList.Add(DefaultToolBarActions[i]);
+  end;
+end;
+
+procedure TEditorEnhancements.LoadToolBarSettings(_Settings: IExpertSettings);
 var
   i: Integer;
 begin
@@ -317,13 +329,7 @@ begin
   end;
 
   if (FToolBarActionsList.Count = 0) and (not IsStandAlone) then begin
-    for i := Low(DefaultToolBarActions) to High(DefaultToolBarActions) do begin
-{$IFOPT D+} Assert(Assigned(GxActionBroker.FindAction(DefaultToolBarActions[i])),
-                   'Could not locate default IDE action named ' + DefaultToolBarActions[i]);
-{$ENDIF D+}
-      FToolBarActionsList.Add(DefaultToolBarActions[i]);
-    end;
-
+    AddDefaultToolbarActions;
     SaveToolBarSettings(_Settings);
   end;
 end;

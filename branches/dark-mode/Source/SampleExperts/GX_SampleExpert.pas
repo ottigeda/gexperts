@@ -58,7 +58,7 @@ type
     // optional, defaults to true
     function HasMenuItem: Boolean; override;
     // optional if HasConfigOptions returns false
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     // Override to load any configuration settings
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     // Override to save any configuration settings
@@ -108,7 +108,7 @@ end;
 //          button on the Experts tab of menu item GExperts/
 //          GExperts Configuration...
 //*********************************************************
-procedure TGxSampleExpert.Configure;
+procedure TGxSampleExpert.Configure(_Owner: TWinControl);
 resourcestring
   SYouClickedConfigure = 'You clicked the Configuration button!';
 begin

@@ -73,36 +73,37 @@ type
     procedure b_Margins8Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
-    FIsValidComponentName: TIsValidComponentName;
+    FOnIsValidComponentName: TIsValidComponentName;
     FProperties: TObjectList;
     FAnchorButtons: array[TAnchorKind] of TGXCheckButton;
     FAlignButtons: array[TAlign] of TGXCheckButton;
     FComponentClassName: WideString;
     procedure InitializeForm;
-    function GetNewName: WideString;
-    function GetOldName: WideString;
-    procedure SetNewName(const Value: WideString);
-    procedure SetOldName(const Value: WideString);
-    procedure AddComponentProperty(Index: Integer; PropertyName: WideString; const Value: WideString);
+    procedure InitOtherProps(const _Component: IOTAComponent; _OtherProps: TStrings;
+      _UseRules: Boolean);
+    procedure AddComponentProperty(PropertyName: WideString; const Value: WideString);
     function GetComponentProperty(Index: Integer): WideString;
     procedure SetComponent(const _Component: IOTAComponent);
-    procedure SetAlign(const _Component: IOTAComponent);
-    procedure GetAlign(const _Component: IOTAComponent);
-    procedure SetAnchors(const _Component: IOTAComponent);
-    procedure GetAnchors(const _Component: IOTAComponent);
+    procedure InitAlign(const _Component: IOTAComponent);
+    procedure ApplyAlign(const _Component: IOTAComponent);
+    procedure InitAnchors(const _Component: IOTAComponent);
+    procedure ApplyAnchors(const _Component: IOTAComponent);
     procedure HandleAlignButtons(_Align: TAlign);
     procedure SetMargins(_Value: integer);
     procedure DialogKey(var Msg: TWMKey); message CM_DIALOGKEY;
+    procedure SetData(const _Component: IOTAComponent; _RenameRule: WideString;
+      _OtherProps: TStrings; _UseRules: Boolean;
+      _HandleIsValidComponentName: TIsValidComponentName);
+    procedure GetData(const _Component: IOTAComponent; _OtherProps: TStrings);
+    procedure SetRuleSelection(SelStart, SelEnd: Integer);
   protected
     procedure ArrangeControls; override;
   public
+    class function Execute(_Owner: TWinControl; const _Component: IOTAComponent;
+      _RenameRule: WideString; _OtherProps: TStrings; _UseRules: Boolean;
+      _HandleIsValidComponentName: TIsValidComponentName): Boolean;
     constructor Create(Owner: TComponent); override;
     destructor Destroy; override;
-    property OldName: WideString read GetOldName write SetOldName;
-    property NewName: WideString read GetNewName write SetNewName;
-    function Execute: TModalResult;
-    procedure SetRuleSelection(SelStart, SelEnd: Integer);
-    property OnIsValidComponentName: TIsValidComponentName read FIsValidComponentName write FIsValidComponentName;
   end;
 
 implementation
@@ -110,7 +111,7 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Windows, Menus, StrUtils, IniFiles, Graphics, TypInfo,
+  SysUtils, Windows, Menus, StrUtils, IniFiles, Graphics, TypInfo, Math,
   u_dzClassUtils, u_dzVclUtils, u_dzStringUtils,
   Themes,
   {$IFOPT D+}GX_DbugIntf, {$ENDIF}
@@ -154,7 +155,7 @@ type
     FFormEditor: IOTAFormEditor;
     FFormWidth: Integer;
     FFormHeight: Integer;
-    function DoRename(const Component: IOTAComponent; UseRules: Boolean): TModalResult;
+    function DoRename(const Component: IOTAComponent; UseRules: Boolean): Boolean;
     procedure HandleOnExport(_Sender: TObject; _RulesListVcl, _RulesListFmx: TStringList);
     procedure HandleOnImport(_Sender: TObject; const _fn: string;
       _RulesListVcl, _RulesListFmx: TStringList);
@@ -199,28 +200,101 @@ var
 
 { TfmCompRename }
 
-function TfmCompRename.Execute: TModalResult;
+class function TfmCompRename.Execute(_Owner: TWinControl; const _Component: IOTAComponent;
+  _RenameRule: WideString; _OtherProps: TStrings; _UseRules: Boolean;
+  _HandleIsValidComponentName: TIsValidComponentName): Boolean;
+var
+  frm: TfmCompRename;
 begin
-  ActiveControl := edtNewName;
-//  lblReason.Top := btnOK.Top + Round((btnOK.Height / 2) - (lblReason.Height / 2));
-  Result := ShowModal;
+  frm := TfmCompRename.Create(_Owner);
+  try
+    frm.SetData(_Component, _RenameRule, _OtherProps, _UseRules, _HandleIsValidComponentName);
+    Result := (frm.ShowModal = mrOk);
+    if Result then
+      frm.GetData(_Component, _OtherProps);
+  finally
+    FreeAndNil(frm);
+  end;
+end;
+
+procedure TfmCompRename.SetData(const _Component: IOTAComponent;
+  _RenameRule: WideString; _OtherProps: TStrings; _UseRules: Boolean;
+  _HandleIsValidComponentName: TIsValidComponentName);
+var
+  Pipe1Pos: Integer;
+  Pipe2Pos: Integer;
+  CompName: WideString;
+begin
+  Pipe2Pos := -1;
+  Pipe1Pos := Pos(WideString('|'), _RenameRule);
+  if Pipe1Pos > 0 then begin
+    System.Delete(_RenameRule, Pipe1Pos, 1);
+    Pipe2Pos := LastCharPos(_RenameRule, '|');
+    if (Pipe2Pos >= Pipe1Pos) then
+      System.Delete(_RenameRule, Pipe2Pos, 1);
+  end;
+
+  FOnIsValidComponentName := _HandleIsValidComponentName;
+
+  CompName := GxOtaGetComponentName(_Component);
+  edtOldName.Text := CompName;
+
+  SetComponent(_Component);
+
+  if Assigned(_OtherProps) then begin
+    InitOtherProps(_Component, _OtherProps, _UseRules)
+  end;
+
+  TControl_SetMinConstraints(Self);
+  InitDpiScaler;
+
+  if _UseRules then begin
+    edtNewName.Text := _RenameRule;
+    if Pipe1Pos > 0 then
+      SetRuleSelection(Pipe1Pos - 1, Pipe2Pos - 1)
+    else
+      SetRuleSelection(Length(_RenameRule), Length(_RenameRule));
+  end else begin
+    edtNewName.Text := CompName;
+    SetRuleSelection(0, Length(CompName));
+  end;
+end;
+
+procedure TfmCompRename.GetData(const _Component: IOTAComponent; _OtherProps: TStrings);
+var
+  CompName: WideString;
+  i: Integer;
+  PropName: WideString;
+begin
+  CompName := Trim(edtNewName.Text);
+  GxOtaSetComponentName(_Component, CompName);
+
+  ApplyAlign(_Component);
+  ApplyAnchors(_Component);
+
+  if Assigned(_OtherProps) then begin
+    for i := 0 to _OtherProps.Count - 1 do begin
+      PropName := _OtherProps.Names[i];
+      if PropName = '' then
+        PropName := _OtherProps[i];
+      if GxOtaPropertyExists(_Component, PropName) then
+        GxOtaSetComponentPropertyAsString(_Component, PropName, GetComponentProperty(i));
+    end;
+  end;
 end;
 
 procedure TfmCompRename.FormShow(Sender: TObject);
 begin
   inherited;
+  ArrangeControls;
+(*
   // Adjust some button positons and size after scaling
-//  ArrangeControls;
-end;
-
-function TfmCompRename.GetNewName: WideString;
-begin
-  Result := Trim(edtNewName.Text);
-end;
-
-function TfmCompRename.GetOldName: WideString;
-begin
-  Result := Trim(edtOldName.Text);
+  // DisableAlign;
+  b_AlignRight.Left   := b_AlignTop.Left + b_AlignTop.Width - b_AlignRight.Width;
+  b_AlignClient.Left  := b_AlignLeft.Left + b_AlignLeft.Width + 1;
+  b_AlignClient.Width := b_AlignRight.Left - b_AlignClient.Left - 2;
+  // EnableAlign;
+*)  
 end;
 
 procedure TfmCompRename.pc_AdditionalChange(Sender: TObject);
@@ -232,7 +306,7 @@ begin
     TWinControl_SetFocus(FAnchorButtons[akTop]);
 end;
 
-procedure TfmCompRename.GetAlign(const _Component: IOTAComponent);
+procedure TfmCompRename.ApplyAlign(const _Component: IOTAComponent);
 var
   BoolValue: LongBool;
   CompMargins: TObject;
@@ -276,85 +350,90 @@ begin
   end;
 end;
 
-procedure TfmCompRename.SetAlign(const _Component: IOTAComponent);
+procedure TfmCompRename.InitAlign(const _Component: IOTAComponent);
 var
+  HasAlign: Boolean;
+  HasMargins: Boolean;
+  HasAlignWithMargins: Boolean;
   BoolValue: LongBool;
   CompMargins: TObject;
   IntValue: Integer;
   AlignValue: TAlign;
   al: TAlign;
 begin
-  if not GxOtaActiveDesignerIsVCL then begin
-    ts_Align.TabVisible := False;
+  HasAlign := False;
+  HasMargins := False;
+  HasAlignWithMargins := False;
+  try
     // for whatever reason this currently does not work for FMX
-    Exit; //==>
-  end;
+    if not GxOtaActiveDesignerIsVCL then
+      Exit; //==>
 
-  // GetPropValueByName expects 4 byte values for enums
-  if not _Component.GetPropValueByName('Align', IntValue) then begin
-    ts_Align.TabVisible := False;
-    Exit; //==>
-  end;
+    // GetPropValueByName expects 4 byte values for enums
+    if not _Component.GetPropValueByName('Align', IntValue) then
+      Exit; //==>
 
-  if (IntValue < Ord(Low(TAlign))) or (Ord(High(TAlign)) < IntValue) then begin
-    ts_Align.TabVisible := False;
-    Exit; //==>
-  end;
-  AlignValue := TAlign(IntValue);
+    if not InRange(IntValue, Ord(Low(TAlign)), Ord(High(TAlign))) then
+      Exit; //==>
 
-  for al := Low(TAlign) to High(TAlign) do
-    FAlignButtons[al].Down := (al = AlignValue);
+    HasAlign := True;
+    AlignValue := TAlign(IntValue);
+    for al := Low(TAlign) to High(TAlign) do
+      FAlignButtons[al].Down := (al = AlignValue);
 
-  if _Component.GetPropTypeByName('Margins') <> tkClass then begin
-    grp_Margins.Visible := False;
-    chk_WithMargins.Visible := False;
-    Exit; //==>
-  end;
+    if _Component.GetPropTypeByName('Margins') <> tkClass then
+      Exit; //==>
 
-  // GetPropValueByName expects 4 byte values for booleans too
-  if not _Component.GetPropValueByName('AlignWithMargins', BoolValue) then begin
-    chk_WithMargins.Visible := False;
+    HasMargins := True;
+
+    // GetPropValueByName expects 4 byte values for booleans too
+    if _Component.GetPropValueByName('AlignWithMargins', BoolValue) then begin
+      HasAlignWithMargins := True;
+      chk_WithMargins.Checked := BoolValue;
+    end;
+
+    CompMargins := GetObjectProp((_Component as INTAComponent).GetComponent, 'Margins');
+    IntValue := GetOrdProp(CompMargins, 'Top');
+    ed_MarginTop.Text := IntToStr(IntValue);
+    IntValue := GetOrdProp(CompMargins, 'Left');
+    ed_MarginLeft.Text := IntToStr(IntValue);
+    IntValue := GetOrdProp(CompMargins, 'Right');
+    ed_MarginRight.Text := IntToStr(IntValue);
+    IntValue := GetOrdProp(CompMargins, 'Bottom');
+    ed_MarginBottom.Text := IntToStr(IntValue);
+  finally
+    ts_Align.TabVisible := HasAlign;
+    grp_Margins.Visible := HasMargins;
+    chk_WithMargins.Visible := HasAlignWithMargins;
   end;
-  chk_WithMargins.Checked := BoolValue;
-  CompMargins := GetObjectProp((_Component as INTAComponent).GetComponent, 'Margins');
-  IntValue := GetOrdProp(CompMargins, 'Top');
-  ed_MarginTop.Text := IntToStr(IntValue);
-  IntValue := GetOrdProp(CompMargins, 'Left');
-  ed_MarginLeft.Text := IntToStr(IntValue);
-  IntValue := GetOrdProp(CompMargins, 'Right');
-  ed_MarginRight.Text := IntToStr(IntValue);
-  IntValue := GetOrdProp(CompMargins, 'Bottom');
-  ed_MarginBottom.Text := IntToStr(IntValue);
 end;
 
-procedure TfmCompRename.GetAnchors(const _Component: IOTAComponent);
+procedure TfmCompRename.ApplyAnchors(const _Component: IOTAComponent);
 var
-  AnchorValue: TAnchors;
   IntValue: Integer;
+  AnchorValue: TAnchors absolute IntValue; // not the other way round!
   ak: TAnchorKind;
 begin
   if ts_Anchors.TabVisible then begin
-    AnchorValue := [];
+    IntValue := 0;
+    Assert(AnchorValue = []);
     for ak  := Low(TAnchorKind) to High(TAnchorKind) do begin
       if FAnchorButtons[ak].Down then
         Include(AnchorValue, ak);
     end;
-    IntValue := 0;
-    Move(AnchorValue, IntValue, SizeOf(AnchorValue));
-    _Component.SetPropByName('Anchors', AnchorValue);
+    _Component.SetPropByName('Anchors', IntValue);
   end;
 end;
 
-procedure TfmCompRename.SetAnchors(const _Component: IOTAComponent);
+procedure TfmCompRename.InitAnchors(const _Component: IOTAComponent);
 var
-  AnchorValue: TAnchors;
   IntValue: Integer;
+  AnchorValue: TAnchors absolute IntValue; // not the other way round!
   ak: TAnchorKind;
 begin
   if not _Component.GetPropValueByName('Anchors', IntValue) then begin
     ts_Anchors.TabVisible := False;
   end else begin
-    Move(IntValue, AnchorValue, SizeOf(AnchorValue));
     for ak := Low(TAnchorKind) to High(TAnchorKind) do
       FAnchorButtons[ak].Down := (ak in AnchorValue);
   end;
@@ -363,19 +442,42 @@ end;
 procedure TfmCompRename.SetComponent(const _Component: IOTAComponent);
 begin
   FComponentClassName := _Component.GetComponentType;
-  SetAlign(_Component);
-  SetAnchors(_Component);
+  InitAlign(_Component);
+  InitAnchors(_Component);
 end;
 
-procedure TfmCompRename.SetNewName(const Value: WideString);
+procedure TfmCompRename.InitOtherProps(const _Component: IOTAComponent; _OtherProps: TStrings;
+  _UseRules: Boolean);
+var
+  i: Integer;
+  UsePropValue: Boolean;
+  PropName: string;
+  PropValue: string;
 begin
-  edtNewName.Text := Value;
-  edtNewName.Modified := False;
-end;
-
-procedure TfmCompRename.SetOldName(const Value: WideString);
-begin
-  edtOldName.Text := Value;
+  for i := 0 to _OtherProps.Count - 1 do begin
+    UsePropValue := False;
+    PropName := _OtherProps.Names[i];
+    if PropName = '' then
+      PropName := _OtherProps[i];
+    if not GxOtaPropertyExists(_Component, PropName) then begin
+      AddComponentProperty(PropName, SPropertyNotFound);
+    end else begin
+      if _UseRules then begin
+        PropValue := _OtherProps.Values[PropName];
+        if PropValue <> '' then begin
+          PropValue := AnsiDequotedStr(PropValue, #39);
+          if (PropValue = #39#39) then
+            PropValue := '';
+          UsePropValue := True;
+        end;
+      end;
+      if UsePropValue then
+        AddComponentProperty(PropName, PropValue)
+      else
+        AddComponentProperty(PropName,
+          GxOtaGetComponentPropertyAsString(_Component, PropName, True));
+    end;
+  end;
 end;
 
 procedure TfmCompRename.edtNewNameChange(Sender: TObject);
@@ -384,11 +486,11 @@ var
   LNewName: WideString;
   Reason: WideString;
 begin
-  if Assigned(FIsValidComponentName) then
+  if Assigned(FOnIsValidComponentName) then
   begin
     LOldName := edtOldName.Text;
     LNewName := edtNewName.Text;
-    btnOK.Enabled := FIsValidComponentName(LOldName, LNewName, Reason);
+    btnOK.Enabled := FOnIsValidComponentName(LOldName, LNewName, Reason);
     if btnOK.Enabled then
       lblReason.Visible := False
     else
@@ -408,7 +510,7 @@ begin
     edtNewName.SelLength := SelEnd - SelStart;
 end;
 
-procedure TfmCompRename.AddComponentProperty(Index: Integer; PropertyName: WideString; const Value: WideString);
+procedure TfmCompRename.AddComponentProperty(PropertyName: WideString; const Value: WideString);
 var
   Lbl: TLabel;
   Edit: TEdit;
@@ -433,7 +535,7 @@ begin
   Edit.Left := edtNewName.Left;
   Edit.Width := edtNewName.Width;
   Edit.Text := Value;
-  Edit.TabOrder := edtNewName.TabOrder + Index;
+  Edit.TabOrder := FProperties.Count + 1 + edtNewName.TabOrder;
   FProperties.Add(Edit);
 
   if Edit.Text = SPropertyNotFound then begin
@@ -444,7 +546,7 @@ begin
   end;
 
   diff := edtNewName.Top - edtOldName.Top;
-  ClientHeight := ClientHeight + diff;
+  Height := Height + diff;
 end;
 
 function TfmCompRename.GetComponentProperty(Index: Integer): WideString;
@@ -458,7 +560,7 @@ end;
 constructor TfmCompRename.Create(Owner: TComponent);
 begin
   inherited;
-  TControl_SetMinConstraints(Self);
+  ActiveControl := edtNewName;
 
   FProperties := TObjectList.Create(False);
   FAlignButtons[alTop] := TGXCheckButton.Clone(b_AlignTop);
@@ -666,7 +768,7 @@ begin
       SelCount := FFormEditor.GetSelCount;
       for i := 0 to SelCount - 1 do begin
         CurrentComponent := FFormEditor.GetSelComponent(i);
-        if DoRename(CurrentComponent, False) = mrCancel then
+        if not DoRename(CurrentComponent, False) then
           Break;
       end;
     finally
@@ -808,21 +910,17 @@ begin
   inherited;
 end;
 
-function TRenameComponentsExpert.DoRename(const Component: IOTAComponent; UseRules: Boolean): TModalResult;
+function TRenameComponentsExpert.DoRename(const Component: IOTAComponent; UseRules: Boolean): Boolean;
 var
   i: Integer;
-  Pipe1Pos: Integer;
-  Pipe2Pos: Integer;
   PlaceHolderPos: Integer;
   ClassName: WideString;
   RenameRule: WideString;
   CompName: WideString;
   PropName: WideString;
   PropValue: String;
-  UsePropValue: Boolean;
   SearchName: WideString;
   Reason: WideString;
-  frm: TfmCompRename;
   ShowDialog: Boolean;
   OtherProps: TStringList;
   Index: Integer;
@@ -830,7 +928,11 @@ var
 begin
   Assert(Assigned(Component));
   Assert(Assigned(FFormEditor));
-  Result := mrOk;
+  Result := True;
+
+  CompName := GxOtaGetComponentName(Component);
+  if CompName = '' then
+    Exit; //==>
 
   // Get the component class name
   ClassName := Component.GetComponentType;
@@ -846,22 +948,9 @@ begin
     end;
   end;
 
-  Pipe2Pos := -1;
-  Pipe1Pos := Pos(WideString('|'), RenameRule);
-  if Pipe1Pos > 0 then begin
-    System.Delete(RenameRule, Pipe1Pos, 1);
-    Pipe2Pos := LastCharPos(RenameRule, '|');
-    if (Pipe2Pos >= Pipe1Pos) then
-      System.Delete(RenameRule, Pipe2Pos, 1);
-  end;
-
   PlaceHolderPos := Pos(WideString('%d'), RenameRule);
   if PlaceHolderPos > 0 then
     System.Delete(RenameRule, PlaceHolderPos, 2);
-
-  CompName := GxOtaGetComponentName(Component);
-  if CompName = '' then
-    Exit;
 
   ShowDialog := FShowDialog;
   if not UseRules and (Length(RenameRule) > 0) then
@@ -871,101 +960,16 @@ begin
   end;
 
   RenameRuleList := GetActiveRenameRuleList;
-  if not UseRules or (Length(RenameRule) > 0) then
-  begin
-    if ShowDialog or not UseRules then
-    begin
-      frm := TfmCompRename.Create(nil);
-      try
-        frm.OnIsValidComponentName := IsValidComponentName;
-        frm.OldName := CompName;
-
-        frm.SetComponent(Component);
-        frm.InitDpiScaler;
-
-        Index := RenameRuleList.IndexOfName(Component.GetComponentType);
-        if Index <> -1 then
-        begin
-          OtherProps := RenameRuleList.Objects[Index] as TStringList;
-          if Assigned(OtherProps) then
-          begin
-            for i := 0 to OtherProps.Count - 1 do
-            begin
-              UsePropValue := False;
-              PropName := OtherProps.Names[i];
-              if PropName = '' then
-                PropName := OtherProps[i];
-              // Consolidate with code below
-              if GxOtaPropertyExists(Component, PropName) then
-              begin
-                if UseRules then
-                begin
-                  PropValue := OtherProps.Values[PropName];
-                  if PropValue <> '' then
-                  begin
-                    PropValue := AnsiDequotedStr(PropValue, #39);
-                    if (PropValue= #39#39) then
-                      PropValue := '';
-                    UsePropValue := True;
-                  end;
-                end;
-                if UsePropValue then
-                  frm.AddComponentProperty(i, PropName, PropValue)
-                else
-                  frm.AddComponentProperty(i, PropName,
-                    GxOtaGetComponentPropertyAsString(Component, PropName, True));
-              end
-              else
-                frm.AddComponentProperty(i, PropName, SPropertyNotFound);
-            end;
-          end
-        end
-        else
-          OtherProps := nil;
-//        frm.InitDpiScaler;
-
-        if UseRules then
-        begin
-          frm.NewName := RenameRule;
-          if Pipe1Pos > 0 then
-            frm.SetRuleSelection(Pipe1Pos - 1, Pipe2Pos - 1)
-          else
-            frm.SetRuleSelection(Length(RenameRule), Length(RenameRule));
-        end
-        else
-        begin
-          frm.NewName := CompName;
-          frm.SetRuleSelection(0, Length(CompName));
-        end;
-
-        Result := frm.Execute;
-        if Result = mrOk then
-        begin
-          CompName := frm.NewName;
-          GxOtaSetComponentName(Component, CompName);
-
-          frm.GetAlign(Component);
-          frm.GetAnchors(Component);
-
-          if Assigned(OtherProps) then
-          begin
-            for i := 0 to OtherProps.Count - 1 do
-            begin
-              PropName := OtherProps.Names[i];
-              if PropName = '' then
-                PropName := OtherProps[i];
-              if GxOtaPropertyExists(Component, PropName) then
-                GxOtaSetComponentPropertyAsString(Component, PropName,
-                  frm.GetComponentProperty(i));
-            end;
-          end;
-        end;
-      finally
-        FreeAndNil(frm);
-      end;
-    end
-    else
-    begin
+  if not UseRules or (Length(RenameRule) > 0) then begin
+    if ShowDialog or not UseRules then begin
+      Index := RenameRuleList.IndexOfName(Component.GetComponentType);
+      if Index <> -1 then begin
+        OtherProps := RenameRuleList.Objects[Index] as TStringList;
+      end else
+        OtherProps := nil;
+      Result := TfmCompRename.Execute(nil, Component, RenameRule, OtherProps, UseRules,
+        IsValidComponentName);
+    end else begin
       // Try to find a new name without user interaction
       CompName := '';
 
@@ -1047,7 +1051,7 @@ begin
       begin
         if GxOtaIsInheritedComponent(Component) then
           Break;
-        if DoRename(Component, True) = mrCancel then
+        if not DoRename(Component, True) then
           Break;
       end;
     end;
@@ -1314,7 +1318,7 @@ begin
 
   FAlignButtons[alLeft].Anchors := [akLeft, akTop];
   FAlignButtons[alLeft].Left := FAlignButtons[alTop].Left;
-  FAlignButtons[alLeft].Top  := FAlignButtons[alTop].Height + Spacer;
+  FAlignButtons[alLeft].Top  := FAlignButtons[alTop].Top + FAlignButtons[alTop].Height + Spacer;
 
   W := FAlignButtons[alTop].Width - (2 * FAlignButtons[alLeft].Width) - (2 * Spacer);
   H := FAlignButtons[alLeft].Height;
@@ -1359,7 +1363,8 @@ begin
     for al := Low(FAlignButtons) to High(FAlignButtons) do
       if al <> _Align then
         FAlignButtons[al].Down := False;
-  end else
+  end
+  else
     FAlignButtons[_Align].Down := True;
 end;
 

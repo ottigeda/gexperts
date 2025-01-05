@@ -38,6 +38,7 @@ object fmGrepSearch: TfmGrepSearch
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     DropDownCount = 15
+    ItemHeight = 14
     TabOrder = 0
     OnKeyDown = ComboKeyDown
   end

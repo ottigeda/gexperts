@@ -815,7 +815,7 @@ inherited fmUsesManager: TfmUsesManager
       BevelOuter = bvNone
       TabOrder = 0
       object btnCancel: TButton
-        Left = 273
+        Left = 192
         Top = 4
         Width = 75
         Height = 25
@@ -825,7 +825,7 @@ inherited fmUsesManager: TfmUsesManager
         TabOrder = 2
       end
       object btnOK: TButton
-        Left = 189
+        Left = 112
         Top = 4
         Width = 75
         Height = 25
@@ -836,7 +836,7 @@ inherited fmUsesManager: TfmUsesManager
         TabOrder = 1
       end
       object btnOpen: TButton
-        Left = 72
+        Left = 0
         Top = 4
         Width = 107
         Height = 25
@@ -844,6 +844,15 @@ inherited fmUsesManager: TfmUsesManager
         ParentShowHint = False
         ShowHint = True
         TabOrder = 0
+      end
+      object b_Help: TButton
+        Left = 272
+        Top = 4
+        Width = 75
+        Height = 25
+        Caption = 'Help'
+        TabOrder = 3
+        OnClick = b_HelpClick
       end
     end
     object btnAddDots: TButton

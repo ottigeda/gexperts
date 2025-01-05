@@ -1,6 +1,7 @@
 object fmFavFiles: TfmFavFiles
   Left = 402
   Top = 273
+  AutoScroll = False
   Caption = 'Favorite Files'
   ClientHeight = 334
   ClientWidth = 493
@@ -13,7 +14,7 @@ object fmFavFiles: TfmFavFiles
   Font.Style = []
   KeyPreview = True
   Menu = MainMenu
-  OldCreateOrder = True
+  OldCreateOrder = False
   Position = poDesigned
   Scaled = False
   OnClose = FormClose
@@ -25,7 +26,9 @@ object fmFavFiles: TfmFavFiles
   object splTreeView: TSplitter
     Left = 121
     Top = 22
+    Width = 3
     Height = 293
+    Cursor = crHSplit
   end
   object tvFolders: TTreeView
     Left = 0
@@ -133,6 +136,8 @@ object fmFavFiles: TfmFavFiles
     Height = 22
     AutoSize = True
     DisabledImages = dmSharedImages.DisabledImages
+    EdgeBorders = []
+    Flat = True
     Images = dmSharedImages.Images
     ParentShowHint = False
     ShowHint = True
@@ -294,7 +299,7 @@ object fmFavFiles: TfmFavFiles
     Left = 16
     Top = 80
     Bitmap = {
-      494C01010A000E000C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C01010A000E00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

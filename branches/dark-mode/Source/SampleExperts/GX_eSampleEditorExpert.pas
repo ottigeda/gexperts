@@ -30,7 +30,7 @@ type
     // optional, defaults to true
     function CanHaveShortCut: boolean; override;
     // optional if HasConfigOptions returns false
-    procedure Configure; override;
+    procedure Configure(_Owner: TWinControl); override;
     procedure Execute(Sender: TObject); override;
     // optional, defaults to GetName which in turn defaults to the class name
     function GetBitmapFileName: string; override;
@@ -93,7 +93,7 @@ end;
 //          section, and remove the and set FHasConfigOptions
 //          to False in the Create method
 //*********************************************************
-procedure TGxSampleEditorExpert.Configure;
+procedure TGxSampleEditorExpert.Configure(_Owner: TWinControl);
 begin
   with TfmSampleEditorExpertConfig.Create(nil) do
   try

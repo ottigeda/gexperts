@@ -3,20 +3,19 @@ inherited f_GrepMenuConfig: Tf_GrepMenuConfig
   BorderStyle = bsDialog
   Caption = 'Grep Configuration'
   ClientHeight = 67
-  ClientWidth = 289
+  ClientWidth = 386
   PixelsPerInch = 96
   TextHeight = 13
   object chk_ReplaceFind: TCheckBox
     Left = 8
     Top = 8
-    Width = 273
+    Width = 369
     Height = 17
-    Caption = 'Replace Search -> Find command (not yet implemented)'
-    Enabled = False
+    Caption = 'Replace Search -> Find command (not yet fully implemented)'
     TabOrder = 0
   end
   object b_OK: TButton
-    Left = 128
+    Left = 224
     Top = 32
     Width = 75
     Height = 25
@@ -26,7 +25,7 @@ inherited f_GrepMenuConfig: Tf_GrepMenuConfig
     TabOrder = 1
   end
   object b_Cancel: TButton
-    Left = 206
+    Left = 302
     Top = 32
     Width = 75
     Height = 25

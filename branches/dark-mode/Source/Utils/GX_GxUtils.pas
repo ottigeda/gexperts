@@ -96,11 +96,23 @@ begin
 end;
 
 function GxLoadBitmapFromResource(const ResName: string; var TargetBitmap: Graphics.TBitmap): Boolean;
+var
+  HResInfo: HRSRC;
 begin
   Result := False;
   try
     FreeAndNil(TargetBitmap);
+
     TargetBitmap := Graphics.TBitmap.Create;
+
+    HResInfo := FindResource(HINSTANCE, PChar(ResName), RT_BITMAP);
+    if HResInfo = 0 then
+      Exit; //==>
+    // I could not find any information about releasing that handle, and all
+    // calls to FindResource seem to do nothing to release it either, so I assume
+    // it doesn't need to be released.
+    // 2024-12-06 twm
+
     TargetBitmap.LoadFromResourceName(HInstance, ResName);
     Result := True;
   except

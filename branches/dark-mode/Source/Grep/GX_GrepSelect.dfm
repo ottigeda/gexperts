@@ -3,7 +3,7 @@ inherited fmGrepSelect: TfmGrepSelect
   Caption = 'Search History Select'
   ClientHeight = 534
   ClientWidth = 790
-  ParentFont = False
+  ParentFont = True
   Font.Charset = ANSI_CHARSET
   ShowHint = True
   PixelsPerInch = 96
@@ -46,21 +46,14 @@ inherited fmGrepSelect: TfmGrepSelect
         Tag = 11
         Width = 150
       end>
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
     ReadOnly = True
     RowSelect = True
-    ParentFont = False
     TabOrder = 0
     ViewStyle = vsReport
     OnAdvancedCustomDrawItem = lvHistoryListAdvancedCustomDrawItem
     OnColumnClick = lvHistoryListColumnClick
     OnCompare = lvHistoryListCompare
     OnMouseDown = lvHistoryListMouseDown
-    ExplicitHeight = 384
   end
   object pnlTools: TPanel
     Left = 0
@@ -347,7 +340,6 @@ inherited fmGrepSelect: TfmGrepSelect
       BevelOuter = bvNone
       BorderStyle = bsSingle
       TabOrder = 4
-      ExplicitTop = 30
       object lblSearch: TLabel
         Left = 31
         Top = 8
@@ -425,8 +417,6 @@ inherited fmGrepSelect: TfmGrepSelect
         Width = 26
         Height = 25
         Cancel = True
-        TabOrder = 1
-        OnClick = btnClearSearchClick
         Glyph.Data = {
           DE010000424DDE01000000000000760000002800000024000000120000000100
           0400000000006801000000000000000000001000000000000000000000000000
@@ -445,14 +435,14 @@ inherited fmGrepSelect: TfmGrepSelect
           3333333333333333333888330000333333333333333333333333333333333333
           0000}
         NumGlyphs = 2
+        TabOrder = 1
+        OnClick = btnClearSearchClick
       end
       object btnRefreshSearch: TBitBtn
         Left = 372
         Top = 2
         Width = 26
         Height = 25
-        TabOrder = 2
-        OnClick = btnRefreshSearchClick
         Glyph.Data = {
           DE010000424DDE01000000000000760000002800000024000000120000000100
           0400000000006801000000000000000000001000000000000000000000000000
@@ -471,6 +461,8 @@ inherited fmGrepSelect: TfmGrepSelect
           3333333333338888883333330000333333333333333333333333333333333333
           0000}
         NumGlyphs = 2
+        TabOrder = 2
+        OnClick = btnRefreshSearchClick
       end
     end
     object pnlSearchIn: TPanel

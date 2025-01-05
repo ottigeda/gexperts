@@ -11,11 +11,10 @@ object fmCodeOptions: TfmCodeOptions
   Font.Height = -12
   Font.Name = 'Tahoma'
   Font.Style = []
+  OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
-  DesignSize = (
-    337
-    393)
+  PixelsPerInch = 96
   TextHeight = 14
   object btnOK: TButton
     Left = 176
@@ -85,6 +84,7 @@ object fmCodeOptions: TfmCodeOptions
           Height = 22
           Style = csDropDownList
           DropDownCount = 18
+          ItemHeight = 14
           TabOrder = 0
         end
         object fcEditor: TComboBox
@@ -94,6 +94,7 @@ object fmCodeOptions: TfmCodeOptions
           Height = 22
           Style = csDropDownList
           DropDownCount = 18
+          ItemHeight = 14
           TabOrder = 3
         end
         object udTreeview: TUpDown
@@ -205,9 +206,6 @@ object fmCodeOptions: TfmCodeOptions
     end
     object tabPaths: TTabSheet
       Caption = 'Storage'
-      DesignSize = (
-        313
-        308)
       object lblStoragePath: TLabel
         Left = 8
         Top = 16
