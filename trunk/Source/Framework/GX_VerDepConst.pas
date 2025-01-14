@@ -1,6 +1,6 @@
 unit GX_VerDepConst;
 
-// This can't simply be replaces by using GX_dzCompilerAndRtlVersions because
+// This can't simply be replaced by using GX_dzCompilerAndRtlVersions because
 // we also use the GX_BCB symbol below!
 {$I GX_CondDefine.inc}
 
