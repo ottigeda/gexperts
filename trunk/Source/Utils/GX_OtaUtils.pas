@@ -667,7 +667,14 @@ procedure GxOtaGetEditorFont(const AFont: TFont; ASizeAdjust: Integer = 0);
 // Returns a module interface for a given filename
 // May return nil if no such module is open.
 function GxOtaGetModule(const FileName: string): IOTAModule;
+function GxOtaTryGetModule(const FileName: string; out Module: IOTAModule): boolean;
 function GxOtaGetSourceEditor(const FileName: string): IOTASourceEditor;
+function GxOtaTryGetSourceEditor(const FileName: string; out SourceEditor: IOTASourceEditor): Boolean;
+
+///<summary>
+/// Tries to get the edit view for the given file
+/// @returns True, if it is available, False if not </summary>
+function GxOtaTryGetEditView(const _fn: string; out _EditView: IOTAEditView): Boolean;
 
 // Returns a fully qualified name of the current file,
 // which could either be a form or unit (.pas/.cpp/.dfm/.xfm etc.).
@@ -707,6 +714,8 @@ function GxOtaGetFormAsText(Form: IOTAFormEditor): string; overload;
 // if there is a file that supports one; returns nil
 // if there is no IOTASourceEditor
 function GxOtaGetSourceEditorFromModule(Module: IOTAModule; const FileName: string = ''): IOTASourceEditor;
+function GxOtaTryGetSourceEditorFromModule(Module: IOTAModule; const FileName: string;
+  out SourceEditor: IOTASourceEditor): Boolean;
 
 // Get the active IOTAEditor (which can be an IOTASourceEditor or IOTAFormEditor
 // (or maybe even more in future IDE versions)
@@ -3700,7 +3709,6 @@ begin
 *)
 end;
 
-
 function GxOtaGetIdeActionByName(const Name: string): TContainedAction;
 begin
   if not GxOtaTryGetIdeActionByName(Name, Result) then
@@ -3848,23 +3856,52 @@ begin
 end;
 
 function GxOtaGetModule(const FileName: string): IOTAModule;
+begin
+  if not GxOtaTryGetModule(FileName, Result) then
+    Result := nil;
+end;
+
+function GxOtaTryGetModule(const FileName: string; out Module: IOTAModule): Boolean;
 var
   ModuleServices: IOTAModuleServices;
 begin
   ModuleServices := BorlandIDEServices as IOTAModuleServices;
   Assert(Assigned(ModuleServices));
 
-  Result := ModuleServices.FindModule(FileName);
+  Module := ModuleServices.FindModule(FileName);
+  Result := Assigned(Module);
 end;
 
 function GxOtaGetSourceEditor(const FileName: string): IOTASourceEditor;
+begin
+  if not GxOtaTryGetSourceEditor(FileName, Result) then
+    Result := nil;
+end;
+
+function GxOtaTryGetSourceEditor(const FileName: string; out SourceEditor: IOTASourceEditor): Boolean;
 var
   Module: IOTAModule;
+  Editor: IOTASourceEditor;
 begin
-  Result := nil;
+  Result := False;
   Module := GxOtaGetModule(FileName);
-  if Assigned(Module) then
-    Result := GxOtaGetSourceEditorFromModule(Module, FileName)
+  if Assigned(Module) then begin
+    Editor := GxOtaGetSourceEditorFromModule(Module, FileName);
+    if Assigned(Editor) then begin
+      SourceEditor := Editor;
+      Result := True;
+    end;
+  end;
+end;
+
+function GxOtaTryGetEditView(const _fn: string; out _EditView: IOTAEditView): Boolean;
+var
+  SourceEditor: IOTASourceEditor;
+begin
+  SourceEditor := GxOtaGetSourceEditor(_fn);
+  Result := Assigned(SourceEditor) and (SourceEditor.EditViewCount > 0);
+  if Result then
+    _EditView := SourceEditor.EditViews[0];
 end;
 
 function GxOtaGetCurrentSourceFile: string;
@@ -4443,12 +4480,19 @@ begin
 end;
 
 function GxOtaGetSourceEditorFromModule(Module: IOTAModule; const FileName: string): IOTASourceEditor;
+begin
+  if not GxOtaTryGetSourceEditorFromModule(Module, FileName, Result) then
+    Result := nil;
+end;
+
+function GxOtaTryGetSourceEditorFromModule(Module: IOTAModule; const FileName: string;
+  out SourceEditor: IOTASourceEditor): Boolean;
 var
   i: Integer;
   IEditor: IOTAEditor;
   ISourceEditor: IOTASourceEditor;
 begin
-  Result := nil;
+  Result := False;
   if not Assigned(Module) then
     Exit;
 
@@ -4462,8 +4506,9 @@ begin
       begin
         if (FileName = '') or SameFileName(ISourceEditor.FileName, FileName) then
         begin
-          Result := ISourceEditor;
-          Break;
+          SourceEditor := ISourceEditor;
+          Result := True;
+          Exit;
         end;
       end;
     end;
