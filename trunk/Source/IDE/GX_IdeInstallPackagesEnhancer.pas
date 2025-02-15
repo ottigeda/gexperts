@@ -34,6 +34,7 @@ type
   private
 //    FPkgListBox: TCheckListBox;
     FPkgNameLabel: TLabel;
+    FPkgNameEdit: TEdit;
 //    procedure b_RenameClick(_Sender: TObject);
     procedure b_SelectClick(_Sender: TObject);
   protected
@@ -99,6 +100,7 @@ const
 var
   SelectBtn: TButton;
   cmp: TComponent;
+  bla: string;
   NamePnl: TPanel;
 begin
 // Unfortunately renaming packages (see b_RenameClick method) does not work.
@@ -107,13 +109,20 @@ begin
   if TComponent_FindComponent(_Form, ExplorerButtonName, True, cmp, TButton) then
     Exit; // the button already exists
 
-  if not TComponent_FindComponent(_Form, 'LabelPackageFile', True, TComponent(FPkgNameLabel), TLabel) then
-    Exit; // label not found, so we can't add the button
-
-  if not (FPkgNameLabel.Parent is TPanel) then
-    Exit; // the label should be on a panel
-
-  NamePnl := TPanel(FPkgNameLabel.Parent);
+  bla := 'EditPackageFile';
+  if TComponent_FindComponent(_Form, 'LabelPackageFile', True, TComponent(FPkgNameLabel), TLabel) then begin
+    if  FPkgNameLabel.Parent is TPanel then
+      NamePnl := TPanel(FPkgNameLabel.Parent)
+    else
+      Exit; // the label should be on a panel
+  end else if TComponent_FindComponent(_Form, bla, True, TComponent(FPkgNameEdit), TEdit) then begin
+    if FPkgNameEdit.Parent is TPanel then
+      NamePnl := TPanel(FPkgNameEdit.Parent)
+    else
+      Exit; // the edit should be on a panel
+  end else begin
+    Exit; // neither label nor edit found, so we can't add the button
+  end;
 
   SelectBtn := TButton.Create(NamePnl);
   SelectBtn.Name := ExplorerButtonName;
@@ -131,7 +140,10 @@ var
   fn: string;
   Wow64fn: string;
 begin
-  fn := FPkgNameLabel.Caption;
+  if Assigned(FPkgNameEdit) then
+    fn := FPkgNameEdit.Text
+  else
+    fn := FPkgNameLabel.Caption;
   if fn = '' then
     Exit;
 
