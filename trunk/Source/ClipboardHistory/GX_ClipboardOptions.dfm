@@ -31,33 +31,12 @@ object fmClipboardOptions: TfmClipboardOptions
     Caption = '&Font'
     FocusControl = cbPreviewFont
   end
-  object btnOK: TButton
-    Left = 144
-    Top = 192
-    Width = 75
-    Height = 25
-    Caption = 'OK'
-    Default = True
-    ModalResult = 1
-    TabOrder = 7
-  end
-  object btnCancel: TButton
-    Left = 224
-    Top = 192
-    Width = 75
-    Height = 25
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 8
-  end
-  object chkAutoClose: TCheckBox
+  object edtMaxClip: TEdit
     Left = 8
-    Top = 80
-    Width = 271
-    Height = 25
-    Caption = 'Auto-cl&ose window after copy'
-    TabOrder = 2
+    Top = 24
+    Width = 59
+    Height = 22
+    TabOrder = 0
   end
   object chkAutoStart: TCheckBox
     Left = 8
@@ -67,12 +46,13 @@ object fmClipboardOptions: TfmClipboardOptions
     Caption = 'St&art clipboard capture on startup'
     TabOrder = 1
   end
-  object edtMaxClip: TEdit
+  object chkAutoClose: TCheckBox
     Left = 8
-    Top = 24
-    Width = 59
-    Height = 22
-    TabOrder = 0
+    Top = 80
+    Width = 271
+    Height = 25
+    Caption = 'Auto-cl&ose window after copy'
+    TabOrder = 2
   end
   object cbPreviewFont: TComboBox
     Left = 8
@@ -110,9 +90,30 @@ object fmClipboardOptions: TfmClipboardOptions
     Top = 128
     Width = 25
     Height = 25
+    Anchors = [akTop, akRight]
     Caption = '...'
     TabOrder = 6
     OnClick = btnPreviewFontClick
+  end
+  object btnOK: TButton
+    Left = 144
+    Top = 192
+    Width = 75
+    Height = 25
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 7
+  end
+  object btnCancel: TButton
+    Left = 224
+    Top = 192
+    Width = 75
+    Height = 25
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 8
   end
   object txtPreview: TStaticText
     Left = 8
