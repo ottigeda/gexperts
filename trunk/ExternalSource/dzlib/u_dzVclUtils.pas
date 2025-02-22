@@ -800,19 +800,19 @@ procedure TControls_SetEnabled(_Enabled: Boolean; _Controls: array of TControl; 
 procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1: TControl; _Recursive: Boolean = False); overload;
 {$IFDEF SUPPORTS_INLINE}inline;
 {$ENDIF}
-procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2: TControl; _Recursive: Boolean = False); overload; inline;
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2: TControl; _Recursive: Boolean = False); overload;
 {$IFDEF SUPPORTS_INLINE}inline;
 {$ENDIF}
-procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3: TControl; _Recursive: Boolean = False); overload; inline;
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3: TControl; _Recursive: Boolean = False); overload;
 {$IFDEF SUPPORTS_INLINE}inline;
 {$ENDIF}
-procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4: TControl; _Recursive: Boolean = False); overload; inline;
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4: TControl; _Recursive: Boolean = False); overload;
 {$IFDEF SUPPORTS_INLINE}inline;
 {$ENDIF}
-procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4, _ctl5: TControl; _Recursive: Boolean = False); overload; inline;
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4, _ctl5: TControl; _Recursive: Boolean = False); overload;
 {$IFDEF SUPPORTS_INLINE}inline;
 {$ENDIF}
-procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4, _ctl5, _ctl6: TControl; _Recursive: Boolean = False); overload; inline;
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4, _ctl5, _ctl6: TControl; _Recursive: Boolean = False); overload;
 {$IFDEF SUPPORTS_INLINE}inline;
 {$ENDIF}
 
@@ -3596,7 +3596,7 @@ begin
   TControls_SetEnabled(_Enabled, [_ctl1, _ctl2, _ctl3, _ctl4, _ctl5], _Recursive);
 end;
 
-procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4, _ctl5, _ctl6: TControl; _Recursive: Boolean = False); overload; inline;
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4, _ctl5, _ctl6: TControl; _Recursive: Boolean = False); overload;
 begin
   TControls_SetEnabled(_Enabled, [_ctl1, _ctl2, _ctl3, _ctl4, _ctl5, _ctl6], _Recursive);
 end;
