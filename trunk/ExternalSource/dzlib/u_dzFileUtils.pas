@@ -410,7 +410,9 @@ type
     /// Calls the corresponding Windows function and returns the short path name
     /// for an *existing* file or directory. </summary>
     class function GetShortPathname(const _LongName: string): string;
-
+    ///<summary>
+    /// Wrapper for shlwapi.PathCanonicalize working with strings </summary>
+    class function PathCanonicalize(const _Path: string): string;
     /// <summary>
     /// Creates a unique subdirectory under BaseDir with the given Prefix
     /// if Basedir is an empty string the system's %TEMP% directory is used.
@@ -2966,7 +2968,7 @@ Name 'PathIsRelativeW';
 Name 'PathIsRelativeA';
 {$ENDIF}
 
-function PathCanonicalize(pszBuf: PChar; pszPath: PChar): BOOL; stdcall; external shlwapi32
+function PathCanonicalizeAPI(pszBuf: PChar; pszPath: PChar): BOOL; stdcall; external shlwapi32
 {$IFDEF UNICODE}
 Name 'PathCanonicalizeW';
 {$ELSE}
@@ -2978,18 +2980,26 @@ begin
   Result := PathIsRelativeAPI(PChar(_Filename));
 end;
 
-class function TFileSystem.ExpandFileNameRelBaseDir(const _Filename, _BaseDir: string): string;
+class function TFileSystem.PathCanonicalize(const _Path: string): string;
 var
   Buffer: array[0..MAX_PATH - 1] of Char;
+  OsError: DWORD;
+begin
+  if not PathCanonicalizeAPI(@Buffer[0], PChar(_Path)) then begin
+    OsError := GetLastError();
+    RaiseLastOSErrorEx(OsError, Format(_('Error %%1:s (%%0:d) calling %s'), ['PathCanonicalize']));
+  end;
+  Result := Buffer;
+end;
+
+class function TFileSystem.ExpandFileNameRelBaseDir(const _Filename, _BaseDir: string): string;
 begin
   if PathIsRelative(_Filename) then begin
     Result := IncludeTrailingPathDelimiter(_BaseDir) + _Filename;
   end else begin
     Result := _Filename;
   end;
-  if PathCanonicalize(@Buffer[0], PChar(Result)) then begin
-    Result := Buffer;
-  end;
+  Result := PathCanonicalize(Result)
 end;
 
 class function TFileSystem.ExtractFileExtFull(const _Filename: string; _IncludeDot: Boolean = True): string;
@@ -3379,7 +3389,8 @@ begin
             FCurrentSource := TempFile;
             FCurrentDest := Destination;
             // todo: Should that really be displayed? Usually the move operation is so fast that you can't see this anyway.
-            doOnSyncingFile(FCurrentSource, FCurrentDest, EnumA.Sr.Size, 0);
+            // -> No, it should not
+            // doOnSyncingFile(FCurrentSource, FCurrentDest, EnumA.Sr.Size, 0);
             if cfwOK <> TFileSystem.MoveFileWithProgress(FCurrentSource, FCurrentDest, ProgressStatusCallback, [mfwFailIfExists]) then
               SysUtils.Abort;
           end;

@@ -520,7 +520,7 @@ var
 begin
   CtrlScaler := FindCtrlScaler(_Ctrl);
   if Assigned(CtrlScaler) then
-    CtrlScaler.HasSplitter := true;
+    CtrlScaler.HasSplitter := True;
 end;
 
 constructor TFormDpiScaler.Create(_Frm: TForm);

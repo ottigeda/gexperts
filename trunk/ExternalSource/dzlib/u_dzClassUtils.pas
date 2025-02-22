@@ -371,7 +371,8 @@ function TStrings_TryStringByObj(_Strings: TStrings; _Obj: Pointer; out _Value: 
 function TIniFile_ReadChar(_Ini: TCustomIniFile; const _Section, _Ident: string; _Default: Char): Char;
 
 ///<summary> Like TIniFile.ReadString but allows to specify whether to use the Default if the read string
-///          is empty. </summary>
+///          is empty.
+/// @NOTE: If Default = '' there is no difference to TIniFile.ReadString. </summary>
 function TIniFile_ReadString(_Ini: TCustomIniFile; const _Section, _Ident: string; const _Default: string; _DefaultIfEmtpy: Boolean = False): string; overload;
 ///<summary> Like TIniFile.ReadString but allows to specify whether to use the Default if the read string
 ///          is empty. </summary>

@@ -795,7 +795,26 @@ procedure TControl_SetEnabled(_Control: TControl; _Enabled: Boolean);
 /// @param Enabled is the value to set the Enabled property to
 /// @param Recursive determines if also controls that are placed on the given controls should be
 ///                  processed. Defaults to False. </summary>
-procedure TControls_SetEnabled(_Controls: array of TControl; _Enabled: Boolean; _Recursive: Boolean = False);
+procedure TControls_SetEnabled(_Controls: array of TControl; _Enabled: Boolean; _Recursive: Boolean = False); overload;
+procedure TControls_SetEnabled(_Enabled: Boolean; _Controls: array of TControl; _Recursive: Boolean = False); overload;
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1: TControl; _Recursive: Boolean = False); overload;
+{$IFDEF SUPPORTS_INLINE}inline;
+{$ENDIF}
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2: TControl; _Recursive: Boolean = False); overload; inline;
+{$IFDEF SUPPORTS_INLINE}inline;
+{$ENDIF}
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3: TControl; _Recursive: Boolean = False); overload; inline;
+{$IFDEF SUPPORTS_INLINE}inline;
+{$ENDIF}
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4: TControl; _Recursive: Boolean = False); overload; inline;
+{$IFDEF SUPPORTS_INLINE}inline;
+{$ENDIF}
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4, _ctl5: TControl; _Recursive: Boolean = False); overload; inline;
+{$IFDEF SUPPORTS_INLINE}inline;
+{$ENDIF}
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4, _ctl5, _ctl6: TControl; _Recursive: Boolean = False); overload; inline;
+{$IFDEF SUPPORTS_INLINE}inline;
+{$ENDIF}
 
 ///<summary> Calls protected TControl.Resize (which calls TControl.OnResize if assigned) </summary>
 procedure TControl_Resize(_Control: TControl);
@@ -1166,12 +1185,13 @@ function TRadioGroup_SelectByObject(_rg: TCustomRadioGroup; _ObjAsInt: Integer;
 
 procedure TRadioGroup_SelectWithoutClickEvent(_rg: TCustomRadioGroup; _Idx: Integer);
 
-///<summary> Gets the object pointer of the selected RadioGroup item
-///          @param cmb is the TCustomRadioGroup (descendant) to read from
-///          @param Idx is the radio group's ItemIndex, only valid if the function returns true
-///          @param Obj is the value of the object pointer of the selected item, only valid
-///                     if the function returns true
-///          @returns true, if the out parameters are valid </summary>
+///<summary>
+/// Gets the object pointer of the selected RadioGroup item
+/// @param rg is the TCustomRadioGroup (descendant) to read from
+/// @param Idx is the radio group's ItemIndex, only valid if the function returns true
+/// @param Obj is the value of the object pointer of the selected item, only valid
+///            if the function returns true
+/// @returns true, if the out parameters are valid </summary>
 function TRadioGroup_GetSelectedObject(_rg: TCustomRadioGroup; out _Idx: Integer; out _Obj: Pointer): Boolean; overload;
 function TRadioGroup_GetSelectedObject(_rg: TCustomRadioGroup; out _Obj: Pointer): Boolean; overload;
 function TRadioGroup_GetSelectedObject(_rg: TCustomRadioGroup; out _ObjAsInt: Integer): Boolean; overload;
@@ -1189,6 +1209,15 @@ procedure TRadioGroup_HighlightButton(_rg: TRadioGroup; _Idx: Integer; _Highligh
 /// means to set its ParentFont property to True </summary>
 procedure TRadioGroup_HighlightIfNotDefault(_rg: TRadioGroup; _DefaultIdx: Integer;
   _Color: TColor = clRed);
+
+///<summary>
+/// Add a new TRadiobutton item to the TRadioGroup
+/// @param rg is the TCustomRadioGroup (descendant) to read from
+/// @param Caption is the caption of the entry to add
+/// @param Obj is the value of the object pointer for the entry
+/// @returns the index of the added item </summary>
+function TRadioGroup_Add(_rg: TCustomRadioGroup; const _Caption: string; _Obj: Pointer): Integer; overload;
+function TRadioGroup_Add(_rg: TCustomRadioGroup; const _Caption: string; _ObjAsInt: Integer): Integer; overload;
 
 ///<summary> Writes a TPicture object to a String. The Format is
 ///          <pictureformat>#26<picturedata> </summary>
@@ -3537,6 +3566,41 @@ begin
   end;
 end;
 
+procedure TControls_SetEnabled(_Enabled: Boolean; _Controls: array of TControl; _Recursive: Boolean = False);
+begin
+  TControls_SetEnabled(_Controls, _Enabled, _Recursive);
+end;
+
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1: TControl; _Recursive: Boolean = False);
+begin
+  TControls_SetEnabled(_Enabled, [_ctl1], _Recursive);
+end;
+
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2: TControl; _Recursive: Boolean = False);
+begin
+  TControls_SetEnabled(_Enabled, [_ctl1, _ctl2], _Recursive);
+end;
+
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3: TControl; _Recursive: Boolean = False);
+begin
+  TControls_SetEnabled(_Enabled, [_ctl1, _ctl2, _ctl3], _Recursive);
+end;
+
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4: TControl; _Recursive: Boolean = False);
+begin
+  TControls_SetEnabled(_Enabled, [_ctl1, _ctl2, _ctl3, _ctl4], _Recursive);
+end;
+
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4, _ctl5: TControl; _Recursive: Boolean = False);
+begin
+  TControls_SetEnabled(_Enabled, [_ctl1, _ctl2, _ctl3, _ctl4, _ctl5], _Recursive);
+end;
+
+procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4, _ctl5, _ctl6: TControl; _Recursive: Boolean = False); overload; inline;
+begin
+  TControls_SetEnabled(_Enabled, [_ctl1, _ctl2, _ctl3, _ctl4, _ctl5, _ctl6], _Recursive);
+end;
+
 procedure TControl_SetEnabled(_Control: TControl; _Enabled: Boolean);
 var
   i: Integer;
@@ -4416,6 +4480,18 @@ begin
   end;
 end;
 
+function TRadioGroup_Add(_rg: TCustomRadioGroup; const _Caption: string; _Obj: Pointer): Integer;
+var
+  rg: TRadioGroupHack absolute _rg;
+begin
+  Result := rg.Items.AddObject(_Caption, _Obj);
+end;
+
+function TRadioGroup_Add(_rg: TCustomRadioGroup; const _Caption: string; _ObjAsInt: Integer): Integer;
+begin
+  Result := TRadioGroup_Add(_rg, _Caption, Pointer(_ObjAsInt));
+end;
+
 function TRichEdit_WriteToString(_Re: TRichEdit): string;
 var
   st: TMemoryStream;
@@ -5255,13 +5331,24 @@ end;
 function TForm_AppendVersion(_frm: TForm; const _Caption: string = ''): string;
 var
   VersionInfo: IFileInfo;
+  s: string;
 begin
   VersionInfo := TApplicationInfo.Create;
   if _Caption = '' then
     Result := _frm.Caption
   else
     Result := _Caption;
-  Result := Result + ' - [' + VersionInfo.FileVersion + ' ' + VersionInfo.ProductVersion + ']';
+  try
+    if VersionInfo.HasVersionInfo then
+      s := VersionInfo.FileVersion + ' ' + VersionInfo.ProductVersion
+    else
+      s := _('no version info available');
+  except
+    on e: Exception do begin
+      s := e.Message;
+    end;
+  end;
+  Result := Result + ' - [' + s + ']';
   _frm.Caption := Result
 end;
 
@@ -7791,13 +7878,10 @@ begin
 end;
 
 class procedure TScreenMonitorCacheFix.Initialize;
-var
-  DummyInstance: TScreenMonitorCacheFix;
 begin
   if not TryInitialize then begin
     Assert(Assigned(Screen), 'Programmer error: Screen is not yet assigned');
-    DummyInstance := nil;
-    Screen.OnActiveFormChange := DummyInstance.HandleActiveFormChangedOnce;
+    Screen.OnActiveFormChange := TScreenMonitorCacheFix.HandleActiveFormChangedOnce;
   end;
 end;
 {$ENDIF}
@@ -7924,4 +8008,3 @@ initialization
 finalization
   FreeAndNil(gblCheckListBoxHelper);
 end.
-

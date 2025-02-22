@@ -358,6 +358,91 @@ const
 /// Converts a file size to a human readable string, e.g. 536870912000 = 5.00 GiB (gibibyte) </summary>
 function FileSizeToHumanReadableString(_FileSize: Int64): string;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
+type
+  ///<sumary>
+  /// Conversion functions for SI units </summary>
+  TSiUnit = record
+  public
+    const
+      MilliToNanoFactor = 1000 * 1000;
+      UnitToNanoFactor = 1000 * 1000 * 1000;
+      UnitToMicroFactor = 1000 * 1000;
+      UnitToMilliFactor = 1000;
+      KiloToUnitFactor = 1000;
+  public
+    ///<summary>
+    /// Converts Nano units to full units (divide by MilliToNanoFactor) </summary>
+    class function NanoToMilli(_NanoUnits: Int64): Extended; overload; static;
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
+    ///<summary>
+    /// Converts Nano units to Milli units (divide by MilliToNanoFactor) </summary>
+    class function NanoToMilli(_NanoUnits: Extended): Extended; overload; static;
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
+    ///<summary>
+    /// Converts Milli units to Nano units (multiply with MilliToNanoFactor) </summary>
+    class function MilliToNano(_NanoUnits: Int64): Int64; overload; static;
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
+    ///<summary>
+    /// Converts Milli units to Nano units (multiply with MilliToNanoFactor) </summary>
+    class function MilliToNano(_NanoUnits: Extended): Extended; overload; static;
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
+    ///<summary>
+    /// Converts Nano units to full units (divide by UnitToNanoFactor) </summary>
+    class function NanoToUnit(_NanoUnits: Int64): Extended; overload; static;
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
+    ///<summary>
+    /// Converts Nano units to full units (divide by UnitToNanoFactor) </summary>
+    class function NanoToUnit(_NanoUnits: Extended): Extended; overload; static;
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
+    ///<summary>
+    /// Converts Micro units to full units (divide by UnitToMicroFactor) </summary>
+    class function MicroToUnit(_MicroUnits: Int64): Extended; overload; static;
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
+    ///<summary>
+    /// Converts Micro units to full units (divide by UnitToMicroFactor) </summary>
+    class function MicroToUnit(_MicroUnits: Extended): Extended; overload; static;
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
+    ///<summary>
+    /// Converts Milli units to full units (divide by UnitToMilliFactor) </summary>
+    class function MilliToUnit(_MilliUnits: Int64): Extended; overload; static;
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
+    ///<summary>
+    /// Converts Milli units to full units (divide by UnitToMilliFactor) </summary>
+    class function MilliToUnit(_MilliUnits: Extended): Extended; overload; static;
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
+    ///<summary>
+    /// Converts full units to micro units units (multiply by UnitToMicroFactor) </summary>
+    class function UnitToMicro(_Units: Extended): Extended; overload; static;
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
+    ///<summary>
+    /// Converts full units to micro units units (multiply by UnitToMicroFactor) </summary>
+    class function UnitToMicro(_Units: Int64): Int64; overload; static;
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
+    ///<summary>
+    /// Converts Milli-Units to full units (divide by KiloToUnitFactor) </summary>
+    class function UnitToKilo(_Units: Int64): Extended; overload; static;
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+
+    ///<summary>
+    /// Converts Milli-Units to full units (divide by KiloToUnitFactor) </summary>
+    class function UnitToKilo(_Units: Extended): Extended; overload; static;
+{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+  end;
+{$ENDIF SUPPORTS_ENHANCED_RECORDS}
+
 const
   SecondsPerMinute = 60;
   MinutesPerHour = 60;
@@ -2027,7 +2112,6 @@ begin
 end;
 
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
-
 class function TBoolToStr.CreateYNLocalized: TBoolToStr;
 begin
   Result := Create(GetLocalizedOneLetterYesStr, GetLocalizedOneLetterNoStr);
@@ -2053,6 +2137,82 @@ begin
   Result := True;
 end;
 
+{$IFDEF SUPPORTS_ENHANCED_RECORDS}
+{ TSiUnit }
+
+class function TSiUnit.MicroToUnit(_MicroUnits: Int64): Extended;
+begin
+  Result := _MicroUnits / UnitToMicroFactor;
+end;
+
+class function TSiUnit.MicroToUnit(_MicroUnits: Extended): Extended;
+begin
+  Result := _MicroUnits / UnitToMicroFactor;
+end;
+
+class function TSiUnit.MilliToNano(_NanoUnits: Int64): Int64;
+begin
+  Result := _NanoUnits * MilliToNanoFactor;
+end;
+
+class function TSiUnit.MilliToNano(_NanoUnits: Extended): Extended;
+begin
+  Result := _NanoUnits * MilliToNanoFactor;
+end;
+
+class function TSiUnit.MilliToUnit(_MilliUnits: Int64): Extended;
+begin
+  Result := _MilliUnits / UnitToMilliFactor;
+end;
+
+class function TSiUnit.MilliToUnit(_MilliUnits: Extended): Extended;
+begin
+  Result := _MilliUnits / UnitToMilliFactor;
+end;
+
+class function TSiUnit.NanoToMilli(_NanoUnits: Int64): Extended;
+begin
+  Result := _NanoUnits / MilliToNanoFactor;
+end;
+
+class function TSiUnit.NanoToMilli(_NanoUnits: Extended): Extended;
+begin
+  Result := _NanoUnits / MilliToNanoFactor;
+end;
+
+class function TSiUnit.NanoToUnit(_NanoUnits: Int64): Extended;
+begin
+  Result := _NanoUnits / UnitToNanoFactor;
+end;
+
+class function TSiUnit.NanoToUnit(_NanoUnits: Extended): Extended;
+begin
+  Result := _NanoUnits / UnitToNanoFactor;
+end;
+
+class function TSiUnit.UnitToKilo(_Units: Int64): Extended;
+begin
+  Result := _Units / KiloToUnitFactor;
+end;
+
+class function TSiUnit.UnitToKilo(_Units: Extended): Extended;
+begin
+  Result := _Units / KiloToUnitFactor;
+end;
+
+class function TSiUnit.UnitToMicro(_Units: Extended): Extended;
+begin
+  Result := _Units * UnitToMicroFactor;
+end;
+
+class function TSiUnit.UnitToMicro(_Units: Int64): Int64;
+begin
+  Result := _Units * UnitToMicroFactor;
+end;
+
+{$ENDIF SUPPORTS_ENHANCED_RECORDS}
+
+{$IFDEF DEBUG}
 function AssertSwap32: Boolean;
 begin
   Assert(Swap32($01234567) = Swap32pas($01234567));
@@ -2066,7 +2226,6 @@ begin
   Result := True;
 end;
 
-{$IFDEF DEBUG}
 procedure AssertBitsDump;
 var
   bits64: TBits64;
