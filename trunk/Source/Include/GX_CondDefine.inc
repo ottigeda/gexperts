@@ -255,9 +255,9 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 {.$DEFINE GX_IDE_IS_HIDPI_AWARE}
 
 {$IFDEF GX_DELPHI12_UP}
-// Fix for bug #393 GExperts key mappings is removed when I unload/install another "ToolsApi" package
-// todo: Try to figure out which Delphi versions had this problem. It wasn't just Delphi 12
-{$DEFINE GX_KEYBOARD_BINDING_FIX}
+  // Fix for bug #393 GExperts key mappings is removed when I unload/install another "ToolsApi" package
+  // todo: Try to figure out which Delphi versions had this problem. It wasn't just Delphi 12
+  {$DEFINE GX_KEYBOARD_BINDING_FIX}
 {$ENDIF}
 
 // Define UniSynEdit if SynEdit is available
