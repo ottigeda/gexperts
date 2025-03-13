@@ -197,7 +197,7 @@ begin
   repeat
     i := pSHItemID(pidl)^.cb;
     Inc(Result, i);
-    Inc(Longint(pidl), i);
+    Inc(NativeInt(pidl), i);
   until i = 0;
 end;
 // -----------------------------------------------------------------------------
@@ -934,7 +934,8 @@ begin
           dropfiles^.fwide := True
         else
           dropfiles^.fwide := False;
-        Longint(pFile) := Longint(dropfiles) + SizeOf(TDropFiles);
+        // NativeInt(pFile) := NativeInt(dropfiles) + SizeOf(TDropFiles);
+        pFile := PChar(dropfiles + SizeOf(TDropFiles));
         for i := 0 to fFiles.Count - 1 do
         begin
           StrPCopy(pFile, fFiles[i]);

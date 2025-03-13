@@ -18,7 +18,7 @@ type
   TCompareItemsMeth = function(_Idx1, _Idx2: Integer): Integer of object;
   ///<summary>
   /// Swap the items at the given indexes </summary>
-  TSwapItemsMeth = procedure(_Idx1, _Idx2: Integer) of object;
+  TSwapItemsMeth = procedure(_Idx1, _Idx2: NativeInt) of object;
 
 type
   ///<summary>

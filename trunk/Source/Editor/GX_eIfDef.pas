@@ -349,7 +349,11 @@ begin
     FTabSheet.Hint := FFilename;
 
   // this is how the PageControl knows how to deal with this tab
+{$IFDEF WIN64}
+  FTabSheet.Tag := NativeInt(Self);
+{$ELSE}
   FTabSheet.Tag := Integer(Self);
+{$ENDIF}
 
   pnl := TPanel.Create(_Form);
   pnl.Name := '';

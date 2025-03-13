@@ -166,7 +166,7 @@ var
 
 procedure InitApiCalls;
 var
-  Handle: Cardinal;
+  Handle: HMODULE;
 begin
   Handle := LoadLibrary('user32.dll');
   if Handle <> 0 then begin

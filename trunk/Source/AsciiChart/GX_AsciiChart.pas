@@ -441,7 +441,7 @@ begin
   DC := GetDC(0);
   try
     sl := TStringList.Create;
-    EnumFontFamiliesEx(DC, LFont, @EnumFontsProc, Longint(sl), 0);
+    EnumFontFamiliesEx(DC, LFont, @EnumFontsProc, LPARAM(sl), 0);
 
     sl.Sort;
     // move all fonts starting with '@' to the end of the list
