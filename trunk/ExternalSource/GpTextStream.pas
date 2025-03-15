@@ -290,7 +290,8 @@ procedure FilterTxt(srcStream, dstStream: TGpTextStream; filter: TFilterProc); o
 implementation
 
 uses
-  SysConst;
+  SysConst,
+  GX_GenericUtils;
 
 const
   {:Header for 'normal' Unicode UCS-4 stream (Intel format).
@@ -839,7 +840,7 @@ begin
         bytesLeft := 0;
         repeat
           // at least numChar UTF-8 bytes are needed for numChar WideChars
-          bytesRead := WrappedStream.Read(pointer(NativeInt(tmpBuf)+bytesLeft)^, numChar);
+          bytesRead := WrappedStream.Read(pointer(GXNativeInt(tmpBuf)+bytesLeft)^, numChar);
           bytesConv := UTF8BufToWideCharBuf(tmpBuf^, bytesRead+bytesLeft, bufPtr^, bytesLeft);
           Result := Result + bytesConv;
           if bytesRead <> numChar then // end of stream
@@ -847,7 +848,7 @@ begin
           numChar := numChar - (bytesConv div SizeOf(WideChar));
           Inc(bufPtr, bytesConv);
           if (bytesLeft > 0) and (bytesLeft < bytesRead) then
-            Move(pointer(NativeInt(tmpBuf)+bytesRead-bytesLeft)^, tmpBuf^, bytesLeft);
+            Move(pointer(GXNativeInt(tmpBuf)+bytesRead-bytesLeft)^, tmpBuf^, bytesLeft);
         until numChar = 0;
       finally FreeBuffer(tmpBuf); end;
     end
