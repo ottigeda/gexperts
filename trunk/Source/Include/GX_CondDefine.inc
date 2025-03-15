@@ -260,6 +260,10 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$DEFINE GX_KEYBOARD_BINDING_FIX}
 {$ENDIF}
 
+{$IF defined(GX_DELPHI2005_UP) and not defined(WIN64)}
+  {$DEFINE GX_FilterException_Enabled}
+{$ENDIF}
+
 // Define UniSynEdit if SynEdit is available
 {$IFDEF SYNEDIT}
   {$DEFINE UniSynEdit}

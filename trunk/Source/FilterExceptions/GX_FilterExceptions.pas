@@ -1,11 +1,11 @@
-unit GX_FilterExceptions;
+﻿unit GX_FilterExceptions;
 
 {$I GX_CondDefine.inc}
 
 
 interface
 
-{$IFDEF GX_DELPHI2005_UP}
+{$IFDEF GX_FilterException_Enabled}
 
 uses
   SysUtils,
@@ -47,11 +47,11 @@ type
     constructor Create(_Owner: TComponent); override;
   end;
 
-{$ENDIF GX_DELPHI2005_UP}
+{$ENDIF GX_FilterException_Enabled}
 
 implementation
 
-{$IFDEF GX_DELPHI2005_UP}
+{$IFDEF GX_FilterException_Enabled}
 
 {$R *.dfm}
 
@@ -614,5 +614,5 @@ end;
 initialization
   RegisterGX_Expert(TGxFilterExceptionsExpert);
 
-{$ENDIF GX_DELPHI2005_UP}
+{$ENDIF GX_FilterException_Enabled}
 end.

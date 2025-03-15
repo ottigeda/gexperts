@@ -4,7 +4,7 @@ unit GX_FilterExceptionsNotification;
 
 interface
 
-{$IFDEF GX_DELPHI2005_UP}
+{$IFDEF GX_FilterException_Enabled}
 
 uses
   Windows,
@@ -68,11 +68,11 @@ type
     destructor Destroy; override;
   end;
 
-{$ENDIF GX_DELPHI2005_UP}
+{$ENDIF GX_FilterException_Enabled}
 
 implementation
 
-{$IFDEF GX_DELPHI2005_UP}
+{$IFDEF GX_FilterException_Enabled}
 
 {$R *.dfm}
 
@@ -1079,5 +1079,6 @@ initialization
   FDebugEventCritSect := TdzCriticalSection.Create;
 finalization
   FreeAndNil(FDebugEventCritSect);
-{$ENDIF GX_DELPHI2005_UP}
+{$ENDIF GX_FilterException_Enabled}
 end.
+
