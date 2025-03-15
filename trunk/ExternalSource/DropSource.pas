@@ -198,7 +198,7 @@ begin
   repeat
     i := pSHItemID(pidl)^.cb;
     Inc(Result, i);
-    Inc(GXNativeInt(pidl), i);
+    pidl := pItemIDList(GXNativeInt(pidl) + i);
   until i = 0;
 end;
 // -----------------------------------------------------------------------------
