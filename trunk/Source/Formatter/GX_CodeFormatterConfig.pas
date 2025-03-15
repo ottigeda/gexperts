@@ -642,7 +642,7 @@ var
 begin
   { TODO : replace with GExperts help (and add contents of DelFor help to GExperts help) }
   HlpFile := GetModuleDir + 'delfor.hlp';
-  WinHelp(0, PChar(HlpFile), HELP_KEY, NativeUInt(pc_Main.ActivePage.Caption));
+  WinHelp(0, PChar(HlpFile), HELP_KEY, DWORD(PChar(pc_Main.ActivePage.Caption)));
 end;
 
 procedure TfmCodeFormatterConfig.b_EditCapitalizationClick(Sender: TObject);
