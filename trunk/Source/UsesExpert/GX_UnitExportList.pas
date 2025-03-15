@@ -42,7 +42,11 @@ type
     FItems: TObjectList;
     FIsSorted: Boolean;
   protected
+{$IFDEF WIN64}
+    function CompareItems(_Idx1, _Idx2: Int64): Integer; virtual; abstract;
+{$ELSE}
     function CompareItems(_Idx1, _Idx2: Integer): Integer; virtual; abstract;
+{$ENDIF}
     function CompareToItem(const _Key; _Idx: Integer): Integer;
   public
     constructor Create(_Capacity: Integer);
@@ -61,7 +65,11 @@ type
   private
     function GetItems(_Idx: Integer): TUnitIdentifier;
   protected
+{$IFDEF WIN64}
+    function CompareItems(_Idx1, _Idx2: Int64): Integer; override;
+{$ELSE}
     function CompareItems(_Idx1, _Idx2: Integer): Integer; override;
+{$ENDIF}
   public
     function Add(const _Identifier: AnsiString; _LineNo: Integer): Integer;
     ///<summary>
@@ -86,7 +94,11 @@ type
   private
     function GetItems(_Idx: Integer): TUnitExport;
   protected
+{$IFDEF WIN64}
+    function CompareItems(_Idx1, _Idx2: Int64): Integer; override;
+{$ELSE}
     function CompareItems(_Idx1, _Idx2: Integer): Integer; override;
+{$ENDIF}
   public
     function Add(const _Identifier: AnsiString; const _Filename: string; _LineNo: Integer): Integer;
     property Items[_Idx: Integer]: TUnitExport read GetItems; default;
@@ -346,7 +358,11 @@ end;
 
 { TUnitExportlist }
 
+{$IFDEF WIN64}
+function TUnitExportlist.CompareItems(_Idx1, _Idx2: Int64): Integer;
+{$ELSE}
 function TUnitExportlist.CompareItems(_Idx1, _Idx2: Integer): Integer;
+{$ENDIF}
 var
   Item1: TUnitExport;
   Item2: TUnitExport;
@@ -380,7 +396,11 @@ begin
   FIsSorted := False;
 end;
 
+{$IFDEF WIN64}
+function TUnitIdentifierList.CompareItems(_Idx1, _Idx2: Int64): Integer;
+{$ELSE}
 function TUnitIdentifierList.CompareItems(_Idx1, _Idx2: Integer): Integer;
+{$ENDIF}
 var
   Item1: TUnitIdentifier;
   Item2: TUnitIdentifier;
