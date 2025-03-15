@@ -183,7 +183,8 @@ type
 implementation
 
 uses
-  Clipbrd, CommCtrl, ShlObj, SysUtils;
+  Clipbrd, CommCtrl, ShlObj, SysUtils,
+  GX_GenericUtils;
 
 // -----------------------------------------------------------------------------
 //			Miscellaneous functions.
@@ -197,7 +198,7 @@ begin
   repeat
     i := pSHItemID(pidl)^.cb;
     Inc(Result, i);
-    Inc(NativeInt(pidl), i);
+    Inc(GXNativeInt, pidl, i);
   until i = 0;
 end;
 // -----------------------------------------------------------------------------
@@ -934,8 +935,7 @@ begin
           dropfiles^.fwide := True
         else
           dropfiles^.fwide := False;
-        // NativeInt(pFile) := NativeInt(dropfiles) + SizeOf(TDropFiles);
-        pFile := PChar(dropfiles + SizeOf(TDropFiles));
+        pFile :=PChar(GXNativeInt(dropfiles) + SizeOf(TDropFiles));
         for i := 0 to fFiles.Count - 1 do
         begin
           StrPCopy(pFile, fFiles[i]);
