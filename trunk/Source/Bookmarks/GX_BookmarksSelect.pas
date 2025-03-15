@@ -3,7 +3,7 @@ unit GX_BookmarksSelect;
 interface { --------------------------------------------------------------------------- }
 
 uses Windows,Messages,SysUtils,Classes,Graphics,Controls,Forms,Dialogs,StdCtrls,StrUtils,
-     ComCtrls,ToolWin,Math,ExtCtrls,ImgList,
+     ComCtrls,ToolWin,Math,ExtCtrls,ImgList,ImageList,
 
      u_dzStringUtils, // for PosEx in Delphi 6
 
@@ -196,8 +196,8 @@ var Text,T,
  begin
   if p-1>=1                then ch1:=LineText[p-1] else ch1:='A';
   if p+5< length(LineText) then ch2:=LineText[p+5] else ch2:='A';
-  Result:=not(((p=1)                   or (ch1 in Chars)) or
-              ((p+5>=length(LineText)) or (ch2 in Chars)));
+  Result:=not(((p=1)                   or CharInSet(ch1, Chars)) or
+              ((p+5>=length(LineText)) or CharInSet(ch2, Chars)));
  end;
 
  function FollowingText(LineText:String;p:Integer):Boolean;
@@ -207,7 +207,7 @@ var Text,T,
   if p<length(LineText) then
    while (p<length(LineText)) and (LineText[p]=' ') do inc(p);
 
-  if p<length(LineText) then Result:=LineText[p] in Chars;
+  if p<length(LineText) then Result:=CharInSet(LineText[p], Chars);
  end;
 
  function TrimLine(Line:String):String;
@@ -642,7 +642,7 @@ begin
    if Key=vk_Delete then FFilter:=''
                     else if Key=vk_Back then delete(FFilter,length(FFilter),1)
                                         else if (length(FFilter)<MaxFilterLen) and
-                                                (chr(Key) in Chars)            then FFilter:=FFilter+chr(Key)
+                                                CharInSet(chr(Key), Chars)            then FFilter:=FFilter+chr(Key)
                                                                                else exit;
    Key:=0;
    SetFilter;

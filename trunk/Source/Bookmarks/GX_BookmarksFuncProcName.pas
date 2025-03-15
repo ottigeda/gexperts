@@ -177,7 +177,7 @@ var   State       : tBlockState;
    L     :=length(RW);
    repeat
     p:=posex(RW,Line,p);
-    if (p>0) then begin if (Line[p-1] in Divider) and (Line[p+L] in Divider) and not(Literal(Line,RW,p,L)) then inc(Result);
+    if (p>0) then begin if CharInSet(Line[p-1], Divider) and CharInSet(Line[p+L], Divider) and not(Literal(Line,RW,p,L)) then inc(Result);
                         inc(p,L);
                         end;
     until p=0;
