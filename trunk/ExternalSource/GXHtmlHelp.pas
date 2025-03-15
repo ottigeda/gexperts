@@ -44,7 +44,11 @@ end;
 
 function HtmlHelp(hWndCaller: HWND; pszFile: LPCTSTR; uCommand: UINT; dwData: DWORD): HWND;
 begin
+{$IFDEF UNICODE}
+  Result := HtmlHelpW(hWndCaller, pszFile, uCommand, dwData);
+{$ELSE}
   Result := HtmlHelpA(hWndCaller, pszFile, uCommand, dwData);
+{$ENDIF}
   if Result = 0 then
     raise Exception.Create('Microsoft HTML Help is not functioning.  Please update to Internet Explorer 5 or later.');
 end;
