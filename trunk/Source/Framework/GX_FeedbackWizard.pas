@@ -744,6 +744,24 @@ begin
   end;
 end;
 
+{$IFDEF Win64}
+function GetCPUSpeed: Extended;
+var
+  Reg: TRegistry;
+begin
+  Result := 0;
+  Reg := TRegistry.Create(KEY_QUERY_VALUE);
+  try
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    if Reg.OpenKeyReadOnly('HARDWARE\DESCRIPTION\System\CentralProcessor\0') then begin
+      Result := Reg.ReadInteger('~MHz');
+      Reg.CloseKey;
+    end;
+  finally
+    Reg.free;
+  end;
+end;
+{$ELSE}
 function GetCPUSpeed: Extended;
 const
   DelayTime = 250;
@@ -781,6 +799,7 @@ begin
     Result := 0;
   end;
 end;
+{$ENDIF}
 
 function GetCpuInfoString: string;
 var
