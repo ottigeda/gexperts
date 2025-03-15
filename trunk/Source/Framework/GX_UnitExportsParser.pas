@@ -1297,8 +1297,8 @@ begin
     UnitTimestamp := UInt32(FFiles.Objects[FileIdx]);
     UnitName := ExtractFileName(fn);
     UnitName := ChangeFileExt(UnitName, '');
-    if UnitName = 'u_dzBeep' then
-      asm nop end;
+//    if UnitName = 'u_dzBeep' then
+//      asm nop end;
     if FCacheDirBS = '' then
       CacheFn := ''
     else begin

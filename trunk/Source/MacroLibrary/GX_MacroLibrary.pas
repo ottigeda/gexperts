@@ -433,7 +433,7 @@ begin
         Special := TMacroSpecialKey(Ord(mskF1) + MacroKey.LoByte - $006F);
       // $88..$FF -> invalid
     else
-      asm nop end; // invalid
+//      asm nop end; // invalid
     end;
   end else if MacroKey.Modifier = $0080 then begin
     case MacroKey.Code of
@@ -444,17 +444,17 @@ begin
       $000D:
        Special := mskEnter;
     else
-      asm nop end; // invalid
+//      asm nop end; // invalid
     end;
   end else if MacroKey.Modifier <> 0 then begin
-    asm nop end; // invalid
+//    asm nop end; // invalid
   end else begin
     if (MacroKey.Code < $001F) then
-      asm nop end // invalid
+//      asm nop end // invalid
     else if MacroKey.Code = $001F then
       Special := mskEsc
     else if MacroKey.Code = $007F then
-      asm nop end // invalid
+//      asm nop end // invalid
     else
       wc := MacroKey.wc;
   end;
