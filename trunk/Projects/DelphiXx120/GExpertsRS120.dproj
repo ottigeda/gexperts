@@ -8,7 +8,7 @@
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <ProjectGuid>{BB29661E-3FA2-4EA6-96EB-0768940BAAB6}</ProjectGuid>
         <ProjectName Condition="'$(ProjectName)'==''">GExpertsRS120</ProjectName>
-        <ProjectVersion>20.2</ProjectVersion>
+        <ProjectVersion>20.3</ProjectVersion>
         <TargetedPlatforms>1</TargetedPlatforms>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
@@ -142,6 +142,19 @@ $(PreBuildEvent)]]>
             <Form>fmGxBookmarksForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksConst.pas"/>
+        <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksEdit.pas">
+            <Form>foBookmarksEdit</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksOptions.pas">
+            <Form>foBookmarksOptions</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksSelect.pas">
+            <Form>foBookmarksSelect</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <DCCReference Include="..\..\Source\ProjectOptionSets\GX_CheckListBoxWithHints.pas"/>
         <DCCReference Include="..\..\source\ClassBrowser\GX_ClassBrowser.pas">
             <Form>fmClassBrowser</Form>
@@ -167,6 +180,10 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\source\CleanDirectories\GX_CleanDirectories.pas">
             <Form>fmCleanDirectories</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\CleanDirectories\GX_CleanDirectoriesOptions.pas">
+            <Form>fmCleanDirectoriesOptions</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\ClipboardHistory\GX_ClipboardHistory.pas">
@@ -271,10 +288,6 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_eDate.pas">
             <Form>fmDateFormat</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="..\..\source\Bookmarks\GX_EditBookmark.pas">
-            <Form>fmEditBookmarks</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_EditorChangeServices.pas"/>
@@ -491,6 +504,8 @@ $(PreBuildEvent)]]>
             <Form>fmIdeShortCuts</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\IdeToolbar\GX_IdeToolbar.pas"/>
+        <DCCReference Include="..\..\Source\IdeToolbar\GX_IdeToolbarExpert.pas"/>
         <DCCReference Include="..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibility.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_IdeUtils.pas"/>
@@ -705,6 +720,7 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\Source\UsesExpert\GX_UnitExportList.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_UnitExportsParser.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_UnitPositions.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_UnspecifiedImage.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_UsageStatistics.pas">
             <Form>fmUsageStatistics</Form>
             <FormType>dfm</FormType>
@@ -722,10 +738,6 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Framework\GX_VerDepConst.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas"/>
         <DCCReference Include="..\..\source\BackupProject\GX_Zipper.pas"/>
-        <DCCReference Include="..\..\Source\CleanDirectories\GX_CleanDirectoriesOptions.pas">
-            <Form>fmCleanDirectoriesOptions</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
