@@ -19,7 +19,6 @@ type
   TCompareItemsMeth64 = function(_Idx1, _Idx2: Int64): Integer of object;
   ///<summary>
   /// Swap the items at the given indexes </summary>
-  // todo: make compaptible to 64-bits
   TSwapItemsMeth32 = procedure(_Idx1, _Idx2: Integer) of object;
   TSwapItemsMeth64 = procedure(_Idx1, _Idx2: Int64) of object;
 

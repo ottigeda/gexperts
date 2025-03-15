@@ -723,6 +723,7 @@ type
     function IsBitSet(_BitNo: TBitNumber): Boolean;
     function IsAnyBitSet: Boolean;
     procedure SetBit(_BitNo: TBitNumber; _BitValue: Boolean);
+    function BitsSetCount: Integer;
     ///<summary>
     /// interpret the given bit range as an integer and return it </summary>
     function Extract(_BitFirst, _BitLast: TBitNumber): TValue;
@@ -2012,6 +2013,20 @@ begin
     FValue := FValue or (1 shl _BitNo)
   else
     FValue := FValue and not (1 shl _BitNo);
+end;
+
+function TBits8.BitsSetCount: Integer;
+var
+  i: Integer;
+  v: TValue;
+begin
+  Result := 0;
+  v := self.Value;
+  for i := Low to High do begin
+    if (v and $01) <> 0 then
+      Inc(Result);
+    v := v shr 1;
+  end;
 end;
 
 function TBits8.Extract(_BitFirst, _BitLast: TBitNumber): TValue;

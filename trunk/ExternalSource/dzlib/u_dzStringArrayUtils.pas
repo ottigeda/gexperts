@@ -24,10 +24,10 @@ procedure TStringArray_Append(var _arr: TStringArray; const _Value: string);
 /// @raises ERangeCheck if Index or Count < 0 </summary>
 procedure TStringArray_Delete(var _arr: TStringArray; _Index: Integer; _Count: Integer);
 
-function TStringArray_Contains(const _arr: TStringArray; const _s: string; out _Idx: Integer): Boolean; overload;
-function TStringArray_Contains(const _arr: TStringArray; const _s: string): Boolean; overload;
+function TStringArray_Contains(const _arr: array of string; const _s: string; out _Idx: Integer): Boolean; overload;
+function TStringArray_Contains(const _arr: array of string; const _s: string): Boolean; overload;
 
-function TStringArray_AsCsv(const _arr: TStringArray; const _Separator: string = ','): string;
+function TStringArray_AsCsv(const _arr: array of string; const _Separator: string = ','): string;
 
 function TStringArray_FromStrings(_sl: TStrings): TStringArray;
 {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
@@ -150,7 +150,7 @@ begin
   SetLength(_arr, len - _Count);
 end;
 
-function TStringArray_Contains(const _arr: TStringArray; const _s: string; out _Idx: Integer): Boolean;
+function TStringArray_Contains(const _arr: array of string; const _s: string; out _Idx: Integer): Boolean;
 var
   i: Integer;
 begin
@@ -163,14 +163,14 @@ begin
   Result := False;
 end;
 
-function TStringArray_Contains(const _arr: TStringArray; const _s: string): Boolean;
+function TStringArray_Contains(const _arr: array of string; const _s: string): Boolean;
 var
   Idx: Integer;
 begin
   Result := TStringArray_Contains(_arr, _s, Idx);
 end;
 
-function TStringArray_AsCsv(const _arr: TStringArray; const _Separator: string = ','): string;
+function TStringArray_AsCsv(const _arr: array of string; const _Separator: string = ','): string;
 var
   i: Integer;
   len: Integer;
