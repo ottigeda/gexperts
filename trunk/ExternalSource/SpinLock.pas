@@ -96,7 +96,9 @@ unit SpinLock;
 }
 
 {$DEFINE SpinLock}
+{$IFNDEF WIN64}
 {$DEFINE ASM}
+{$ENDIF}
 {$DEFINE DynamicSleep}
 
 interface
