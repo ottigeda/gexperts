@@ -46,8 +46,10 @@ type
 /// @longcode(##
 ///   Quicksort(0, Count-1, self.CompareItems, self.SwapItems);
 /// ##) </summary>
-procedure QuickSort(_Left, _Right: Integer; _CompareMeth: TCompareItemsMeth;
-  _SwapMeth: TSwapItemsMeth); overload;
+procedure QuickSort(_Left, _Right: Integer; _CompareMeth: TCompareItemsMeth32;
+  _SwapMeth: TSwapItemsMeth32); overload;
+procedure QuickSort(_Left, _Right: Integer; _CompareMeth: TCompareItemsMeth64;
+  _SwapMeth: TSwapItemsMeth64); overload;
 
 ///<summary>
 /// Quicksort with an ISortDataHandler interface that does the comparison and swapping
@@ -171,8 +173,44 @@ begin
   until I >= _Right;
 end;
 
-procedure QuickSort(_Left, _Right: Integer; _CompareMeth: TCompareItemsMeth;
-  _SwapMeth: TSwapItemsMeth);
+procedure QuickSort(_Left, _Right: Integer; _CompareMeth: TCompareItemsMeth32;
+  _SwapMeth: TSwapItemsMeth32);
+var
+  I, J, P: Integer;
+begin
+  if _Left >= _Right then
+    Exit; //==>
+  repeat
+    I := _Left;
+    J := _Right;
+//    P := (_Left + _Right) shr 1;
+    // Chosing the pivot element can make a big difference:
+    // In my unit tests its factor 100 for the TestPartSortedPartReverse test
+    P := GetPivot(I, J, _CompareMeth);
+    repeat
+      while _CompareMeth(I, P) < 0 do
+        Inc(I);
+      while _CompareMeth(J, P) > 0 do
+        Dec(J);
+      if I <= J then begin
+        if I < J then
+          _SwapMeth(I, J);
+        if P = I then
+          P := J
+        else if P = J then
+          P := I;
+        Inc(I);
+        Dec(J);
+      end;
+    until I > J;
+    if _Left < J then
+      QuickSort(_Left, J, _CompareMeth, _SwapMeth);
+    _Left := I;
+  until I >= _Right;
+end;
+
+procedure QuickSort(_Left, _Right: Integer; _CompareMeth: TCompareItemsMeth64;
+  _SwapMeth: TSwapItemsMeth64);
 var
   I, J, P: Integer;
 begin
