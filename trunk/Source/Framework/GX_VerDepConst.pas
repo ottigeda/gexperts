@@ -228,7 +228,8 @@ const
     TTabDockHostFormClassContainer = 'designide280.bpl';
     MajorVersionNumberChar = '28';
     IDEEnglishName = 'RAD Studio 11';
-    CompilerDefinedProductRegistryKey = CompanyRegPrefix + 'BDS\22.0';
+    ProductVersionSuffix ='BDS\22.0';
+    CompilerDefinedProductRegistryKey = CompanyRegPrefix + ProductVersionSuffix;
     ClassBrowserStorageFolder = 'Classes.RADStudio11.0';
   {$ENDIF VER350}
 
@@ -237,7 +238,8 @@ const
     TTabDockHostFormClassContainer = 'designide290.bpl';
     MajorVersionNumberChar = '29';
     IDEEnglishName = 'RAD Studio 12';
-    CompilerDefinedProductRegistryKey = CompanyRegPrefix + 'BDS\23.0';
+    ProductVersionSuffix ='BDS\23.0';
+    CompilerDefinedProductRegistryKey = CompanyRegPrefix + ProductVersionSuffix;
     ClassBrowserStorageFolder = 'Classes.RADStudio12.0';
   {$ENDIF VER360}
 
