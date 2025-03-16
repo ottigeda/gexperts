@@ -549,8 +549,7 @@ begin
     IKeyboardBinding := TGxKeyboardBinding.Create(Self);
     FKeyboardName := IKeyboardBinding.Name;
     try
-//      FKeyboardBindingIndex := IKeyboardServices.AddKeyboardBinding(IKeyboardBinding);
-      FKeyboardBindingIndex := 0;
+      FKeyboardBindingIndex := IKeyboardServices.AddKeyboardBinding(IKeyboardBinding);
     except
       on E: Exception do
       begin
