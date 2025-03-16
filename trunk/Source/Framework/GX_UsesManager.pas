@@ -11,7 +11,7 @@ unit GX_UsesManager;
 
 interface
 
-uses Classes, Contnrs, ToolsAPI, mPasLex;
+uses Classes, Contnrs, ToolsAPI, GX_GenericUtils, mPasLex;
 
 type
   TUsesItem = class(TObject)
@@ -25,13 +25,13 @@ type
 
   TUsesList = class(TObjectList)
   private
-    function GetItem(AIndex: Integer): TUsesItem;
-    procedure SetItem(AIndex: Integer; const Value: TUsesItem);
+    function GetItem(AIndex: GXNativeInt): TUsesItem;
+    procedure SetItem(AIndex: GXNativeInt; const Value: TUsesItem);
   public
     function Add: TUsesItem;
     procedure AssignTo(List: TStrings);
     function IndexOf(const AUnitName: string): Integer;
-    property Items[AIndex: Integer]: TUsesItem read GetItem write SetItem;
+    property Items[AIndex: GXNativeInt]: TUsesItem read GetItem write SetItem;
   end;
 
   TUsesStatus = (usNonExisting, usInterface, usImplementation, usInsideUnit);
@@ -90,7 +90,7 @@ procedure ReplaceUnitInInterface(const AOldUnitName, ANewUnitName: string);
 
 implementation
 
-uses SysUtils, GX_OtaUtils, GX_GenericUtils, mwPasParserTypes;
+uses SysUtils, GX_OtaUtils, mwPasParserTypes;
 
 function UseUnitInImplementation(const AUnitName: string): Boolean;
 begin
@@ -611,12 +611,12 @@ begin
     List.Add(Items[i].Name);
 end;
 
-function TUsesList.GetItem(AIndex: Integer): TUsesItem;
+function TUsesList.GetItem(AIndex: GXNativeInt): TUsesItem;
 begin
   Result := TUsesItem(Get(AIndex));
 end;
 
-procedure TUsesList.SetItem(AIndex: Integer; const Value: TUsesItem);
+procedure TUsesList.SetItem(AIndex: GXNativeInt; const Value: TUsesItem);
 begin
   Put(AIndex, Value);
 end;

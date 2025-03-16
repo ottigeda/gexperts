@@ -7,19 +7,19 @@ unit GX_ReplaceCompUtils;
 interface
 
 uses
-  Classes, TypInfo;
+  Classes, TypInfo, GX_GenericUtils;
 
 type
   TPropInfoList = class(TList)
   private
-    function GetItem(Index: Integer): PPropInfo;
-    procedure SetItem(Index: Integer; const Value: PPropInfo);
+    function GetItem(Index: GXNativeInt): PPropInfo;
+    procedure SetItem(Index: GXNativeInt; const Value: PPropInfo);
   protected
     FOwner: TObject;
   public
     function FindProperty(const APropName: string): Integer; virtual;
     property Owner: TObject read FOwner write FOwner;
-    property Items[Index: Integer]: PPropInfo read GetItem write SetItem; default;
+    property Items[Index: GXNativeInt]: PPropInfo read GetItem write SetItem; default;
   end;
 
 function GetPropertyList(ClassInfo: PTypeInfo): TPropInfoList;
@@ -36,7 +36,7 @@ function ExtractToken(var VStr: string; const Delimiter: string): string;
 implementation
 
 uses
-  Variants, GX_GenericUtils, SysUtils;
+  Variants, SysUtils;
   
 function FlatLine(const AText: string): string;
 begin
@@ -285,12 +285,12 @@ begin
     end;
 end;
 
-function TPropInfoList.GetItem(Index: Integer): PPropInfo;
+function TPropInfoList.GetItem(Index: GXNativeInt): PPropInfo;
 begin
   Result := PPropInfo(inherited Items[Index]);
 end;
 
-procedure TPropInfoList.SetItem(Index: Integer; const Value: PPropInfo);
+procedure TPropInfoList.SetItem(Index: GXNativeInt; const Value: PPropInfo);
 begin
   inherited Items[Index] := Value;
 end;

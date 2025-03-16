@@ -32,16 +32,17 @@ resourcestring
 
 type
   // NativeInt and NativeUInt are wrongly declared as 8 bytes in size in Delphi 6 to 2007,
-  // so we can't use them. Instead we declare our own types which, since GExperts is a
-  // 32 IDE plugin are both 32 bits.
+  // so we can't use them. Instead we declare our own types which.
   // Originally this simply redeclared NativeInt as Integer for older versions, but
   // that made it hard to find accidental usages of the wrong type.
+{$IF declared(NativeInt) and defined(GX_DELPHIXE2_UP)}
+  GXNativeInt = NativeInt;
+{$ELSE}
   GXNativeInt = Integer;
+{$IFEND}
 {$IF declared(NativeUInt) and defined(GX_DELPHIXE2_UP)}
   // Delphi 7 and 2007 declare NativeUInt wrongly as 64 bit even though there is only a 32 bit compiler
   // but it matters only from XE2 up because that's the first version that had a 64 bit compiler
-  // On the other hand: GExperts is an IDE plugin and until the IDE is 64 bit, 32 bits would
-  // probably be fine for all Delphi versions (Just like with GXNativeInt above.)
   GXNativeUInt = NativeUInt;
 {$ELSE}
   GXNativeUInt = Cardinal;
