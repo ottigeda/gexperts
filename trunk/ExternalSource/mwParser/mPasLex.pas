@@ -79,7 +79,7 @@ unit mPasLex;
 interface
 
 uses
-  Classes, Contnrs, mwPasParserTypes;
+  Classes, Contnrs, mwPasParserTypes, GX_IndexTypes;
 
 var
   Identifiers: array[#0..#127] of ByteBool;
@@ -297,9 +297,9 @@ type
 
   TLexArgList = class(TObjectList)
   private
-    function GetItem(Index: Integer): TLexArgItem;
+    function GetItem(Index: TGXListIndex): TLexArgItem;
   public
-    property Items[Index: Integer]: TLexArgItem read GetItem; default;
+    property Items[Index: TGXListIndex]: TLexArgItem read GetItem; default;
   end;
 
 const
@@ -1857,7 +1857,7 @@ end;
 
 { TLexArgList }
 
-function TLexArgList.GetItem(Index: Integer): TLexArgItem;
+function TLexArgList.GetItem(Index: TGXListIndex): TLexArgItem;
 begin
   Result := (inherited Items[Index]) as TLexArgItem;
 end;

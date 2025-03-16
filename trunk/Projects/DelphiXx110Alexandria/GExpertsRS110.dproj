@@ -493,6 +493,7 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibility.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_IdeUtils.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_IndexTypes.pas"/>
         <DCCReference Include="..\..\Source\AutoTodo\GX_InsertAutoTodo.pas">
             <Form>fmInsertAutoTodoForm</Form>
             <FormType>dfm</FormType>

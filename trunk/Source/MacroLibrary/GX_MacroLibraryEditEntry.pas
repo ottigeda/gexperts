@@ -14,6 +14,7 @@ uses
   StdCtrls,
   ExtCtrls,
   SynEdit,
+  GX_GenericUtils,
   GX_StringList,
   GX_BaseForm,
   GX_MacroLibrary;
@@ -165,7 +166,7 @@ begin
     FEdit.Text := '';
     rbSpecial.Checked := True;
     TMacroInfo.DecodeMacroKey(_Macro, wc, Special, Ctrl, Shift, Alt);
-    TComboBox_SelectByObject(cmbSpecialKey, Integer(Special));
+    TComboBox_SelectByObject(cmbSpecialKey, GXNativeInt(Special));
     chkModifierControl.Checked := Ctrl;
     chkModifierShift.Checked := Shift;
     chkModifierAlt.Checked := Alt;

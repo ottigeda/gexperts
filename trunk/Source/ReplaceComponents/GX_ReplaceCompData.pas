@@ -7,6 +7,7 @@ interface
 uses
   Classes, SysUtils, Contnrs,
   OmniXML,
+  GX_IndexTypes,
   GX_GenericUtils,
   GX_GenericClasses;
 
@@ -106,9 +107,9 @@ type
 
   TCompRepMapList = class(TObjectList)
   private
-    function GetItem(Index: GXNativeInt): TCompRepMapItem;
+    function GetItem(Index: TGXListIndex): TCompRepMapItem;
   public
-    property Items[Index: GXNativeInt]: TCompRepMapItem read GetItem; default;
+    property Items[Index: TGXListIndex]: TCompRepMapItem read GetItem; default;
   end;
 
   TReplaceCompData = class
@@ -160,11 +161,11 @@ type
 
   TCompRepEventList = class(TObjectList)
   private
-    function GetItem(Index: GXNativeInt): TCompRepEvent;
+    function GetItem(Index: TGXListIndex): TCompRepEvent;
     procedure SaveLogEvent(const Doc: IXMLDocument; const ItemNode: IXMLNode; Event: TCompRepEvent);
   public
     procedure SaveAsXML(const AFileName: string; SelectedList: TList);
-    property Items[Index: GXNativeInt]: TCompRepEvent read GetItem; default;
+    property Items[Index: TGXListIndex]: TCompRepEvent read GetItem; default;
   end;
 
   TDefaultMap = record
@@ -358,7 +359,7 @@ end;
 
 { TCompRepMapList }
 
-function TCompRepMapList.GetItem(Index: GXNativeInt): TCompRepMapItem;
+function TCompRepMapList.GetItem(Index: TGXListIndex): TCompRepMapItem;
 begin
   Result := (inherited Items[Index]) as TCompRepMapItem;
 end;
@@ -372,8 +373,7 @@ begin
   AddWithCode(MapGroupName, Result);
 end;
 
-function TCompRepMapGroupList.GetItem(
-  Index: Integer): TCompRepMapGroupItem;
+function TCompRepMapGroupList.GetItem(Index: Integer): TCompRepMapGroupItem;
 begin
   Result := (inherited Items[Index]) as TCompRepMapGroupItem;
 end;
@@ -748,7 +748,7 @@ end;
 
 { TCompRepEventList }
 
-function TCompRepEventList.GetItem(Index: GXNativeInt): TCompRepEvent;
+function TCompRepEventList.GetItem(Index: TGXListIndex): TCompRepEvent;
 begin
   Result := (inherited Items[Index]) as TCompRepEvent;
 end;

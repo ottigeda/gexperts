@@ -1,4 +1,4 @@
-{-------------------------------------------------------------------------------
+﻿{-------------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -43,6 +43,7 @@ uses
   SynUnicode,
   SysUtils,
   Classes,
+  GX_IndexTypes,
   SynEditHighlighterOptions;
 
 type
@@ -247,7 +248,7 @@ type
   TSynHighlighterList = class(TList)
   private
     FHighlighterList: TList;
-    function GetItem(Index: Integer): TSynCustomHighlighterClass;
+    function GetItem(Index: TGXListIndex): TSynCustomHighlighterClass;
   public
     constructor Create;
     destructor Destroy; override;
@@ -255,7 +256,7 @@ type
     function FindByFriendlyName(FriendlyName: string): Integer;
     function FindByName(Name: string): Integer;
     function FindByClass(Comp: TComponent): Integer;
-    property Items[Index: Integer]: TSynCustomHighlighterClass
+    property Items[Index: TGXListIndex]: TSynCustomHighlighterClass
       read GetItem; default;
   end;
 
@@ -338,7 +339,7 @@ begin
   end;
 end;
 
-function TSynHighlighterList.GetItem(Index: Integer): TSynCustomHighlighterClass;
+function TSynHighlighterList.GetItem(Index: TGXListIndex): TSynCustomHighlighterClass;
 begin
   Result := TSynCustomHighlighterClass(FHighlighterList[Index]);
 end;

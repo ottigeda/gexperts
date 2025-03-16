@@ -7,19 +7,19 @@ unit GX_ReplaceCompUtils;
 interface
 
 uses
-  Classes, TypInfo, GX_GenericUtils;
+  Classes, TypInfo, GX_IndexTypes, GX_GenericUtils;
 
 type
   TPropInfoList = class(TList)
   private
-    function GetItem(Index: GXNativeInt): PPropInfo;
-    procedure SetItem(Index: GXNativeInt; const Value: PPropInfo);
+    function GetItem(Index: TGXListIndex): PPropInfo;
+    procedure SetItem(Index: TGXListIndex; const Value: PPropInfo);
   protected
     FOwner: TObject;
   public
     function FindProperty(const APropName: string): Integer; virtual;
     property Owner: TObject read FOwner write FOwner;
-    property Items[Index: GXNativeInt]: PPropInfo read GetItem write SetItem; default;
+    property Items[Index: TGXListIndex]: PPropInfo read GetItem write SetItem; default;
   end;
 
 function GetPropertyList(ClassInfo: PTypeInfo): TPropInfoList;
@@ -285,12 +285,12 @@ begin
     end;
 end;
 
-function TPropInfoList.GetItem(Index: GXNativeInt): PPropInfo;
+function TPropInfoList.GetItem(Index: TGXListIndex): PPropInfo;
 begin
   Result := PPropInfo(inherited Items[Index]);
 end;
 
-procedure TPropInfoList.SetItem(Index: GXNativeInt; const Value: PPropInfo);
+procedure TPropInfoList.SetItem(Index: TGXListIndex; const Value: PPropInfo);
 begin
   inherited Items[Index] := Value;
 end;

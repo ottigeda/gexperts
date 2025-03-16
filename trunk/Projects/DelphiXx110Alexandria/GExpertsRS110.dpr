@@ -175,6 +175,7 @@ uses
   GX_IdeToolPropertiesEnhancer in '..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas',
   GX_IdeSplitterVisibility in '..\..\Source\IDE\GX_IdeSplitterVisibility.pas',
   GX_IdeUtils in '..\..\source\Utils\GX_IdeUtils.pas',
+  GX_IndexTypes in '..\..\Source\Utils\GX_IndexTypes.pas',
   GX_InsertAutoTodo in '..\..\Source\AutoTodo\GX_InsertAutoTodo.pas' {fmInsertAutoTodoForm},
   GX_KbdShortCutBroker in '..\..\source\Framework\GX_KbdShortCutBroker.pas',
   GX_KeyboardShortcuts in '..\..\Source\KeyboardShortcuts\GX_KeyboardShortcuts.pas' {fmGxKeyboardShortcuts},
@@ -269,9 +270,7 @@ uses
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
   GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas';
 
-// using this resouce results in an Access Violiation on closing the IDE
-{.$R '..\..\Source\GExperts_manifest.res'}
-{$R '..\..\images\GXIcons.res''}
+{$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
 {$R '..\..\Binaries\ConvertStrings.res' '..\..\Binaries\ConvertStrings.rc'}
 {$R *_version.res}
