@@ -260,6 +260,12 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$DEFINE GX_KEYBOARD_BINDING_FIX}
 {$ENDIF}
 
+{$IFDEF GX_DELPHI11_UP}
+  // Fix for the IDE not setting the window size correctly on startup in some display combinations
+  // (mine -- twm)
+  {$DEFINE GX_DESKTOP_SIZE_FIX}
+{$ENDIF}
+
 {$IF defined(GX_DELPHI2005_UP) and not defined(WIN64)}
   {$DEFINE GX_FilterException_Enabled}
 {$ENDIF}
