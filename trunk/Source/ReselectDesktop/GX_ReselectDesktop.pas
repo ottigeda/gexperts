@@ -114,6 +114,7 @@ var
   T: Integer;
   w: Integer;
   h: Integer;
+  State: integer;
   DstFn: string;
   Ini: TMemIniFile;
 begin
@@ -124,6 +125,11 @@ begin
 
   Ini := TMemIniFile.Create(DstFn);
   try
+    State := Ini.ReadInteger(SECTION, 'State', 0);
+    if State <> 0 then begin
+      // The window is probably maximized. We don't touch that.
+      Exit; //==>
+    end;
     L := Ini.ReadInteger(SECTION, 'Left', 0);
     T := Ini.ReadInteger(SECTION, 'Top', 0);
     w := Ini.ReadInteger(SECTION, 'Width', 0);
