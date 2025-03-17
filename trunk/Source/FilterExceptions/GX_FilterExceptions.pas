@@ -1,4 +1,4 @@
-ï»¿unit GX_FilterExceptions;
+unit GX_FilterExceptions;
 
 {$I GX_CondDefine.inc}
 
@@ -290,11 +290,11 @@ function TryGetMessageParts(const _Message: string;
     DE_WITH_MESSAGE_ = ' mit der Meldung '#39;
     DE_TAIL = #39' aufgetreten';
     FR_PROJECT_ = 'Le projet ';
-    FR_RAISED_EXCEPTION_CLASS_ = ' a dÃ©clenchÃ© la classe d''exception ';
+    FR_RAISED_EXCEPTION_CLASS_ = ' a déclenché la classe d''exception ';
     FR_WITH_MESSAGE_ = ' avec le message '#39;
     FR_TAIL = #39'.';
 // 'Im Projekt Project1.exe ist eine Exception der Klasse Exception mit der Meldung 'bla' aufgetreten.'
-// 'Le projet Project1.exe a dÃ©clenchÃ© la classe d'exception Exception avec le message 'bla'.'
+// 'Le projet Project1.exe a déclenché la classe d'exception Exception avec le message 'bla'.'
   begin
     Result := True;
     if StartsText(EN_PROJECT_, _Message) then begin

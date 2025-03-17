@@ -268,7 +268,7 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 
 {$IF defined(GX_DELPHI2005_UP) and not defined(WIN64)}
   {$DEFINE GX_FilterException_Enabled}
-{$ENDIF}
+{$IFEND}
 
 // Define UniSynEdit if SynEdit is available
 {$IFDEF SYNEDIT}
