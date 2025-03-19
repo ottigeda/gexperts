@@ -133,12 +133,17 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksConst.pas"/>
         <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksEdit.pas">
             <Form>foBookmarksEdit</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Bookmarks\GX_BookmarksFuncProcName.pas"/>
+        <DCCReference Include="..\..\Source\Bookmarks\GX_BookmarksLists.pas"/>
         <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksOptions.pas">
             <Form>foBookmarksOptions</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksSelect.pas">
             <Form>foBookmarksSelect</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\Source\ProjectOptionSets\GX_CheckListBoxWithHints.pas"/>
         <DCCReference Include="..\..\source\ClassBrowser\GX_ClassBrowser.pas">
@@ -169,6 +174,7 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\Source\CleanDirectories\GX_CleanDirectoriesOptions.pas">
             <Form>fmCleanDirectoriesOptions</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\ClipboardHistory\GX_ClipboardHistory.pas">
             <Form>fmClipboardHistory</Form>
