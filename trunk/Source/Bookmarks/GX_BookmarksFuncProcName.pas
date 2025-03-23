@@ -199,6 +199,9 @@ var   State       : tBlockState;
   end;
 
  begin
+ if StartIdx >= FSL.Count then
+   Exit; //==>
+
   LineText:=NA;
   Idx     :=StartIdx-1;
   nBegin  :=0;
@@ -266,7 +269,7 @@ begin                                     // processing ComCtrls (~23.000 Zeilen
  repeat
   GetBlock(StartIdx,EndIdx,State);
   StartIdx:=EndIdx+1;
-  until StartIdx=LinesCount-1;
+  until StartIdx>=LinesCount-1;
 end;
 
 function GetFuncProcName(LineNo:Integer):String;
