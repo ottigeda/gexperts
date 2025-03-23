@@ -1077,13 +1077,13 @@ begin
     // we currently handle "class", check the next token whether it is "operator"
     if TryGetNextNoComment(FTokenIdx, Next) and (Next.ReservedType = rtOperatorProc) then begin
       // Yes -> handle it like "class procedure"
-      Next.ReservedType := rtProcedure;
+      Next.SetReservedType(rtProcedure);
     end;
   end;
   if FCurrentToken.ReservedType = rtOperatorProc then begin
     // this can only happen, if the check above for "class operator" did not change
     // this token's ReservedType to rtProcedure
-    FCurrentToken.ReservedType := rtNothing;
+    FCurrentToken.SetReservedType(rtNothing);
     FCurrentRType := rtNothing;
   end;
 
@@ -1093,7 +1093,7 @@ begin
       rtProgram, rtType, rtVar, rtConst, rtIf, rtThen, rtElse] + StandardDirectives)
     and IsRType(FPrevToken, rtDot) then begin
     Assert(False, '.CheckIndent: Set ReservedType to rtNothing');
-    FCurrentToken.ReservedType := rtNothing;
+    FCurrentToken.SetReservedType(rtNothing);
     FCurrentRType := rtNothing;
   end;
 
@@ -1306,6 +1306,13 @@ begin
           end else begin
             Assert(False, '.CheckIndent: setting WrapIndent to True');
             FWrapIndent := True;
+          end;
+
+          if (Next.ReservedType = rtFuncDirective) and (FStack.GetTopType = rtClass) and SameText(Next.Content, 'Index') then begin
+            // "Index" can be a simple identifier. That case is handled there but unfortunately
+            // that is only after the previous line feed (which is the one handled here)
+            // so we detect that case and prevent indenting it.
+            _NTmp := 0;
           end;
         end;
 
