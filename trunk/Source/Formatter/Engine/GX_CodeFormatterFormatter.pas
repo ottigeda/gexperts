@@ -1071,13 +1071,29 @@ begin
     Exit; //==>
   end;
 
+  // This handles the case where "operator" is not used as a reserved word in "class operator" but
+  // as a simple identifier.
+  if FCurrentRType = rtClass then begin
+    // we currently handle "class", check the next token whether it is "operator"
+    if TryGetNextNoComment(FTokenIdx, Next) and (Next.ReservedType = rtOperatorProc) then begin
+      // Yes -> handle it like "class procedure"
+      Next.ReservedType := rtProcedure;
+    end;
+  end;
+  if FCurrentToken.ReservedType = rtOperatorProc then begin
+    // this can only happen, if the check above for "class operator" did not change
+    // this token's ReservedType to rtProcedure
+    FCurrentToken.ReservedType := rtNothing;
+    FCurrentRType := rtNothing;
+  end;
+
   // This handles the case where a reserved word was used as the name of a class member.
   // (Is that even allowed?)
   if (FCurrentRType in [rtWhile, rtEnd, rtRepeat, rtBegin, rtUses, rtTry,
       rtProgram, rtType, rtVar, rtConst, rtIf, rtThen, rtElse] + StandardDirectives)
     and IsRType(FPrevToken, rtDot) then begin
-    Assert(False, '.CheckIndent: SetReservedType to rtNothing');
-    FCurrentToken.SetReservedType(rtNothing);
+    Assert(False, '.CheckIndent: Set ReservedType to rtNothing');
+    FCurrentToken.ReservedType := rtNothing;
     FCurrentRType := rtNothing;
   end;
 
@@ -1877,10 +1893,6 @@ begin
     try
       FTokenIdx := 0;
       while TryGetToken(FTokenIdx, FCurrentToken) do begin
-//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'bla') then
-//          gblAssertTraceOn := True;
-//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'constructor') then
-//          gblAssertTraceOn := False;
         Assert(False, '**** .doExecute: CurrentToken(' + IntToStr(FTokenIdx) + '): ' + FCurrentToken.GetForDebug);
         Assert(False, '.doExecute: Stack.Depth: ' + IntToStr(FStack.Depth) + ' .TopType: ' + GetEnumname(TypeInfo(TReservedType), Ord(FStack.GetTopType)) + ' .TopIndent: ' + IntToStr(FStack.GetTopIndent));
         Assert(False, '.doExecute: WrapIndent: ' + Ifthen(FWrapIndent, 'True', 'False'));

@@ -179,14 +179,15 @@ begin
       Expression := TExpression.Create(FPrevType, s);
       // The following handles the case of 'in' being used as the name in operator overloading
       // We set ReservedType to rtNothing in this case.
-      // todo: Should this go here? It's not really a parsing issue, but OTOT ReservedType
+      // todo: Should this go here? It's not really a parsing issue, but OTOH ReservedType
       //       has been set incorrectly.
+      //       No, it definitely should not go here. -- 2025-03-23 twm
       if (Expression.ReservedType = rtOper) and SameText(s, 'in') then begin
         PrevIdx := FTokens.Count - 1;
         if PrevIdx >= 0 then begin
           PrevToken := FTokens[PrevIdx];
           case PrevToken.ReservedType of
-            rtProcedure: begin
+            rtOperatorProc: begin
                 if PrevToken.GetExpression(s) and SameText(s, 'operator') then begin
                   // special case: class operator in(...)
                   // 'in' is not a reserved word in this case

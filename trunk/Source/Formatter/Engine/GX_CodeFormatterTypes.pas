@@ -55,7 +55,7 @@ const
 
 type
   TReservedType = (rtNothing, rtReserved, rtOper, rtDirective,
-    rtIf, rtDo, rtWhile, rtOn, rtVar, rtType, rtProcedure, rtAsm, rtTry,
+    rtIf, rtDo, rtWhile, rtOn, rtVar, rtType, rtProcedure, rtOperatorProc, rtAsm, rtTry,
     rtExcept,
     rtEnd, rtBegin, rtCase, rtOf, rtLineFeed, rtColon, rtSemiColon,
     rtThen, rtClass, rtClassDecl, rtProgram, rtRepeat, rtUntil, rtRecord,
@@ -231,15 +231,10 @@ begin
   Add('nil', rtReserved);
   Add('nodefault', rtFuncDirective);
   Add('not', rtOper);
-  // todo: "object" can also be a function directive:
-  //   of object
-  // and
-  //   procedure FunctionName; cdecl; external object 'ObjectFile.o' name '_FunctionName';
-  // The use of "object" for class declaration has been deprecated for years.
   Add('object', rtClass);
   Add('of', rtOf);
   Add('on', rtOn);
-  Add('operator', rtProcedure);
+  Add('operator', rtOperatorProc);
   Add('or', rtOper);
   Add('out', rtReserved);
   Add('overload', rtFuncDirective);
