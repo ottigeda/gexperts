@@ -87,8 +87,7 @@ end;
 {$IFDEF GX_VER170_up}
 procedure TBookmarksExpert.EditorViewActivated(_Sender:TObject;_EditView:IOTAEditView);
 begin
-// todo: enable again
-// if Assigned(fmBookmarks) then fmBookmarks.Init;
+ if Assigned(fmBookmarks) then fmBookmarks.ScanBookmarks;
 end;
 {$ENDIF}
 
