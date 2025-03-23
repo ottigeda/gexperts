@@ -9,7 +9,7 @@
         <ProjectGuid>{BB29661E-3FA2-4EA6-96EB-0768940BAAB6}</ProjectGuid>
         <ProjectName Condition="'$(ProjectName)'==''">GExpertsRS120</ProjectName>
         <ProjectVersion>20.3</ProjectVersion>
-        <TargetedPlatforms>1</TargetedPlatforms>
+        <TargetedPlatforms>3</TargetedPlatforms>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -46,8 +46,15 @@
         <Cfg_2>true</Cfg_2>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win64)'!=''">
+        <Cfg_2_Win64>true</Cfg_2_Win64>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <SanitizedProjectName>GExpertsRS120</SanitizedProjectName>
+        <DCC_DUPLICATE_CTOR_DTOR>false</DCC_DUPLICATE_CTOR_DTOR>
         <DCC_DcuOutput>.\dcu\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_Define>NO_TRANSLATION;NO_TRANSLATION_HINT;NO_OPTIMIZE_DZ_GRAPHIC_UTILS_HINT;UnicodeRE;dzVCL_DISABLE_DBGRID_SUPPORT;$(DCC_Define)</DCC_Define>
         <DCC_ExeOutput>..\..\Binaries</DCC_ExeOutput>
@@ -62,11 +69,13 @@
         <DCC_UsePackage>rtl;vcl;designide;$(DCC_UsePackage)</DCC_UsePackage>
         <GenDll>true</GenDll>
         <Manifest_File>(None)</Manifest_File>
-        <PreBuildEvent><![CDATA[call ..\..\images\_CreateGXIconsRc.cmd
+        <PreBuildEvent>
+            <![CDATA[call ..\..\images\_CreateGXIconsRc.cmd
 call ..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"
 call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"
 call ..\..\source\_CreateGExpertsManifest.cmd
-$(PreBuildEvent)]]></PreBuildEvent>
+$(PreBuildEvent)]]>
+        </PreBuildEvent>
         <UsePackages>True</UsePackages>
         <VerInfo_Keys>FileVersion=1.0.0.0</VerInfo_Keys>
         <VerInfo_Locale>2057</VerInfo_Locale>
@@ -75,6 +84,13 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
         <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <DCC_UsePackage>xmlrtl;vclactnband;vclx;vclie;fmx;$(DCC_UsePackage)</DCC_UsePackage>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Win64)'!=''">
+        <BT_BuildType>Debug</BT_BuildType>
+        <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_DebugInformation>0</DCC_DebugInformation>
@@ -95,7 +111,11 @@ $(PreBuildEvent)]]></PreBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
+        <DCC_MapFile>0</DCC_MapFile>
         <Debugger_HostApplication>$(BDS)\bin\bds.exe</Debugger_HostApplication>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
+        <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -150,6 +170,8 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <Form>foBookmarksEdit</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Bookmarks\GX_BookmarksFuncProcName.pas"/>
+        <DCCReference Include="..\..\Source\Bookmarks\GX_BookmarksLists.pas"/>
         <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksOptions.pas">
             <Form>foBookmarksOptions</Form>
             <FormType>dfm</FormType>
@@ -512,7 +534,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibility.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_IdeUtils.pas"/>
-        <DCCReference Include="..\..\source\Utils\GX_IndexTypes.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_IndexTypes.pas"/>
         <DCCReference Include="..\..\Source\AutoTodo\GX_InsertAutoTodo.pas">
             <Form>fmInsertAutoTodoForm</Form>
             <FormType>dfm</FormType>
@@ -783,7 +805,23 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <PostBuildEvent/>
         <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win64'">
+        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;&amp;&amp;call ..\..\source\_CreateGExpertsManifest.cmd</PreBuildEvent>
+        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
+        <PreLinkEvent/>
+        <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent/>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win32'">
+        <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;&amp;&amp;call ..\..\source\_CreateGExpertsManifest.cmd</PreBuildEvent>
+        <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
+        <PreLinkEvent/>
+        <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent/>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win64'">
         <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;&amp;&amp;call ..\..\source\_CreateGExpertsManifest.cmd</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
