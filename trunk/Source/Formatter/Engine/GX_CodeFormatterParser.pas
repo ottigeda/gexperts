@@ -442,7 +442,7 @@ var
 
     while P^ <> #0 do begin
       if StrLIComp(P, FEndCommentOut, Len) = 0 then begin
-        Inc(P, Len - 1);
+        Inc(P, Len);
         AResult := wtFullOutComment;
         Break;
       end;
