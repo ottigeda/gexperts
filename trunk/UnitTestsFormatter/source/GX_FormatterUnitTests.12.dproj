@@ -18,29 +18,29 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
-        <Base_Win32>true</Base_Win32>
-        <CfgParent>Base</CfgParent>
         <Base>true</Base>
+        <CfgParent>Base</CfgParent>
+        <Base_Win32>true</Base_Win32>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
-        <Cfg_1>true</Cfg_1>
-        <CfgParent>Base</CfgParent>
         <Base>true</Base>
+        <CfgParent>Base</CfgParent>
+        <Cfg_1>true</Cfg_1>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
-        <Cfg_2>true</Cfg_2>
-        <CfgParent>Base</CfgParent>
         <Base>true</Base>
+        <CfgParent>Base</CfgParent>
+        <Cfg_2>true</Cfg_2>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
-        <Cfg_2_Win32>true</Cfg_2_Win32>
+        <Base>true</Base>
         <CfgParent>Cfg_2</CfgParent>
         <Cfg_2>true</Cfg_2>
-        <Base>true</Base>
+        <Cfg_2_Win32>true</Cfg_2_Win32>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <SanitizedProjectName>GX_FormatterUnitTests_12</SanitizedProjectName>
-        <DCC_DcuOutput>..\dcu\delphi10-3</DCC_DcuOutput>
+        <DCC_DcuOutput>..\dcu\delphi12</DCC_DcuOutput>
         <DCC_Define>_ASSERT_TRACING;NO_TRANSLATION;$(DCC_Define)</DCC_Define>
         <DCC_DependencyCheckOutputName>..\..\GX_FormatterUnitTests.exe</DCC_DependencyCheckOutputName>
         <DCC_ExeOutput>..\</DCC_ExeOutput>
@@ -55,6 +55,7 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
         <DCC_Namespace>System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <Debugger_DebugSourcePath>C:\Program Files\Borland\BDS\3.0\source\dUnit\src\;$(Debugger_DebugSourcePath)</Debugger_DebugSourcePath>
         <VerInfo_Build>0</VerInfo_Build>
@@ -77,18 +78,14 @@
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
-        <DCC_HppOutput>..\..\dcu\unittests</DCC_HppOutput>
         <DCC_IncludePath>..\..\source\framework;$(DCC_IncludePath)</DCC_IncludePath>
         <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
-        <DCC_ObjOutput>..\..\dcu\unittests</DCC_ObjOutput>
-        <DCC_ObjPath>..\..\source\framework;$(DCC_ObjPath)</DCC_ObjPath>
         <DCC_Optimize>False</DCC_Optimize>
         <DCC_RangeChecking>True</DCC_RangeChecking>
         <DCC_ResourcePath>..\..\source\framework;$(DCC_ResourcePath)</DCC_ResourcePath>
         <Version>7.0</Version>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
-        <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
         <DCC_Inlining>off</DCC_Inlining>
         <DCC_MapFile>3</DCC_MapFile>
