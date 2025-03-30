@@ -1467,7 +1467,7 @@ begin
             Assert(False, '.CheckIndent: in repeat');
             // search for the first token after the function name or the closing bracket
             // procedure bla or procedure bla(...)
-			//              ^-- here              ^-- here
+            //              ^-- here              ^-- here
             Inc(RemoveMe);
             if TryGetToken(FTokenIdx + RemoveMe, Next) then
               if Next.ReservedType = rtLeftBr then begin
@@ -1477,11 +1477,11 @@ begin
                 until not TryGetToken(FTokenIdx + RemoveMe, Next) or (Next.ReservedType = rtRightBr);
               end;
           until (Next = nil) or (Next.ReservedType in [rtSemiColon, rtBegin]);
-          // we found either a semicolon or a Begin (or the end of the file)
+          // we found either a semicolon, or a 'begin' (or the end of the file)
 
           if Next <> nil then begin
             if Next.ReservedType = rtBegin then begin
-              // Begin before a SemiColon, presume that is a anonymous delegate...
+              // 'begin' before a SemiColon, assume that is a anonymous delegate...
               Assert(False, '.CheckIndent: Next.ReservedType = rtBegin');
               IsDelegate := True;
               Next.AddOption(toFeedNewLine); // Force NewLine Feed!
