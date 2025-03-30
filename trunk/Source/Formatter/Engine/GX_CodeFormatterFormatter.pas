@@ -64,7 +64,8 @@ type
     procedure UppercaseCompilerDirective(_Token: TPascalToken); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     function NoBeginTryIndent(_rType: TReservedType): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure IndentProcedureComment;
-    procedure SetPrevLineIndent(_Additional: Integer); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    procedure SetPrevLineIndent(_Value: integer); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    procedure AddToPrevLineIndent(_Additional: Integer); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure DecPrevLineIndent; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
     ///<summary>
@@ -654,10 +655,16 @@ begin
   end;
 end;
 
-procedure TCodeFormatterFormatter.SetPrevLineIndent(_Additional: Integer);
+procedure TCodeFormatterFormatter.AddToPrevLineIndent(_Additional: Integer);
 begin
   if FPrevLine <> nil then
     FPrevLine.SetIndent(FStack.nIndent + _Additional + FStack.ProcLevel);
+end;
+
+procedure TCodeFormatterFormatter.SetPrevLineIndent(_Value: integer);
+begin
+  if FPrevLine <> nil then
+    FPrevLine.SetIndent(_Value);
 end;
 
 function TCodeFormatterFormatter.NoBeginTryIndent(_rType: TReservedType): Boolean;
@@ -692,7 +699,7 @@ begin
   if FPrevToken = nil then
     Exit; //==>
 
-  if FPrevToken.ReservedType = rtClass then begin
+  if IsRType(FPrevToken, rtClass) then begin
     // class procedure / function, skip "class"
     k := 2;
     Prev2 := GetToken(FTokenIdx - 2);
@@ -818,7 +825,7 @@ begin
   end;
 
   if FTokenIdx < FTokens.Count then
-    SetPrevLineIndent(_NTmp);
+    AddToPrevLineIndent(_NTmp);
 
   Dec(FTokenIdx);
 end;
@@ -873,7 +880,7 @@ begin
       ComplexIfElse(_NTmp);
   end;
 
-  SetPrevLineIndent(_NTmp);
+  AddToPrevLineIndent(_NTmp);
 end;
 
 procedure TCodeFormatterFormatter.CheckShortLine;
@@ -1022,7 +1029,7 @@ begin
 
   FStack.nIndent := FStack.GetTopIndent;
   if FPrevToken = FPrevLine then
-    SetPrevLineIndent(_NTmp);
+    AddToPrevLineIndent(_NTmp);
 
   if FSettings.FeedBeforeElse then begin
     if not TokenAtIs(FTokenIdx - 1, rtLineFeed) then begin
@@ -1033,10 +1040,10 @@ begin
 
   if FSettings.IndentTryElse and (FStack.GetTopType = rtTry) then begin
     FStack.nIndent := FStack.nIndent + 1;
-    SetPrevLineIndent(_NTmp);
+    AddToPrevLineIndent(_NTmp);
   end else if FSettings.IndentCaseElse and (FStack.GetTopType = rtOf) then begin
     FStack.nIndent := FStack.nIndent + 1;
-    SetPrevLineIndent(_NTmp);
+    AddToPrevLineIndent(_NTmp);
   end;
 
   if FStack.GetTopType = rtThen then
@@ -1132,7 +1139,7 @@ begin
         repeat
           FLastPopResType := FStack.Pop;
         until (FLastPopResType = rtRepeat) or FStack.IsEmpty;
-        SetPrevLineIndent(_NTmp);
+        AddToPrevLineIndent(_NTmp);
       end;
 
     rtLeftBr: begin
@@ -1229,7 +1236,7 @@ begin
           FStack.Pop;
 
         FStack.nIndent := FStack.GetTopIndent;
-        SetPrevLineIndent(_NTmp);
+        AddToPrevLineIndent(_NTmp);
         FStack.nIndent := FStack.nIndent + 1;
         FWrapIndent := False;
       end;
@@ -1243,7 +1250,9 @@ begin
       end else if (FStack.GetTopType in [rtVar, rtConst, rtType]) and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
         FStack.Pop;
         DecPrevLineIndent;
-        DecPrevLineIndent;
+        if FStack.GetTopType in [rtClass, rtClassDecl, rtRecord] then begin
+          SetPrevLineIndent(FStack.nIndent - 1);
+        end;
         FWrapIndent := False;
       end else
         FCurrentToken.SetReservedType(rtNothing);
@@ -1318,7 +1327,7 @@ begin
 
         FPrevPrevLine := FPrevLine;
         FPrevLine := TLineFeed(FCurrentToken);
-        SetPrevLineIndent(_NTmp);
+        AddToPrevLineIndent(_NTmp);
       end;
 
     rtAsm: begin
@@ -1329,7 +1338,7 @@ begin
     rtComma: begin
         if FStack.GetTopType = rtUses then begin
           if (FSettings.NoIndentUsesComma) and (FPrevToken is TLineFeed) then
-            SetPrevLineIndent(-1)
+            AddToPrevLineIndent(-1)
           else if FSettings.FeedEachUnit then begin
             if FSettings.FeedEachUnitBeforeComma then begin
               // linefeed before comma
@@ -1386,7 +1395,7 @@ begin
 
     rtFuncDirective, rtDefault, rtPropertyAccess: begin
         Assert(False, '.CheckIndent: rtFuncDirective');
-        if FPrevToken.ReservedType in [rtProcedure, rtProcDeclare, rtDot] then begin
+        if IsRType(FPrevToken, [rtProcedure, rtProcDeclare, rtDot]) then begin
           // the previous token was 'procedure' or '.' -> it's an identifier
           // todo: What if the previous token was a line feed and the one before that was
           //       'procedure' or '.' or if there was a comment in between ?
@@ -1504,7 +1513,7 @@ begin
               if FStack.nIndent > 0 then begin
                 Assert(False, '.CheckIndent: Stack.nIndent > 0');
                 FStack.nIndent := 0;
-                SetPrevLineIndent(_NTmp);
+                AddToPrevLineIndent(_NTmp);
               end;
 
               FStack.ProcLevel := 0;
@@ -1524,7 +1533,7 @@ begin
 
             if FStack.nIndent = 0 then begin
               Assert(False, '.CheckIndent: Stack.nIndent=0');
-              SetPrevLineIndent(_NTmp);
+              AddToPrevLineIndent(_NTmp);
               FStack.nIndent := FStack.nIndent + 1;
             end;
           end;
@@ -1545,7 +1554,7 @@ begin
             if (not FunctDeclare) and (FStack.GetTopType <> rtClass) then begin
               Assert(False, '.CheckIndent: TopType <> rtClass');
               FStack.nIndent := 0;
-              SetPrevLineIndent(_NTmp);
+              AddToPrevLineIndent(_NTmp);
               if FSettings.IndentComments then
                 IndentProcedureComment;
             end;
@@ -1573,7 +1582,7 @@ begin
         FWrapIndent := False;
         { DecPrevIndent; }
         { nIndent := 0; }
-        SetPrevLineIndent(_NTmp);
+        AddToPrevLineIndent(_NTmp);
       end;
 
     rtBegin, rtTry: begin
@@ -1625,7 +1634,7 @@ begin
 
         FStack.Push(FCurrentRType, 1);
         if FPrevToken = FPrevLine then begin
-          SetPrevLineIndent(_NTmp);
+          AddToPrevLineIndent(_NTmp);
           DecPrevLineIndent;
         end;
 
@@ -1654,7 +1663,11 @@ begin
             FStack.Pop;
         end;
         if (FStack.GetTopType in [rtClass, rtClassDecl, rtRecord]) then begin
-          FStack.Push(FCurrentRType, 1);
+          if IsRType(FPrevToken, rtVisibility) then begin
+            FStack.Push(FCurrentRType, 0);
+          end else begin
+            FStack.Push(FCurrentRType, 1);
+          end;
         end else begin
           if (FStack.GetTopType = rtProcDeclare) then begin
             // inline function
@@ -1731,7 +1744,7 @@ begin
         end;
 
         if (FPrevToken = FPrevLine) then
-          SetPrevLineIndent(_NTmp);
+          AddToPrevLineIndent(_NTmp);
 
         if NoBeginTryIndent(FCurrentRType) then
           FStack.nIndent := FStack.nIndent + 1;
@@ -1743,7 +1756,7 @@ begin
 
         if FStack.IsEmpty and (FStack.nIndent > 0) then begin
           FStack.nIndent := 0;
-          SetPrevLineIndent(_NTmp);
+          AddToPrevLineIndent(_NTmp);
         end;
 
         AdjustSpacing(GetToken(FTokenIdx + 1), FCurrentToken, FTokenIdx + 1);
@@ -1771,7 +1784,7 @@ begin
           if FStack.GetTopType = rtUses then begin
             if (FPrevToken is TLineFeed) then begin
               if (FSettings.NoIndentUsesComma) then
-                SetPrevLineIndent(-1);
+                AddToPrevLineIndent(-1);
             end else if (FSettings.FeedEachUnit and FSettings.FeedEachUnitBeforeComma) then begin
               // if we break before the comma, also break before the semicolon
               LFeed := AssertLineFeedAfter(FTokenIdx - 1);
@@ -1869,7 +1882,7 @@ begin
       Assert(False, '.CheckIndent: IndentCompDirectives');
       _NTmp := -FStack.nIndent;
       Assert(False, Format('NTmp=%d', [_NTmp]));
-      SetPrevLineIndent(_NTmp);
+      AddToPrevLineIndent(_NTmp);
     end;
 
     if FSettings.UpperCompDirectives then
