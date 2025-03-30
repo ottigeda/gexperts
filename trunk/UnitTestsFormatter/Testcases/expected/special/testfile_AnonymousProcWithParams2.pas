@@ -10,7 +10,8 @@ var
 begin
   RegisterConverter(
     procedure(bla: integer; var blub: string)
-    var i: integer;
+    var
+      i: integer;
     begin
     end);
 end;
