@@ -170,9 +170,16 @@ begin
       FPrevType := ReadWord(s, _Buff);
 
     if FPrevType = wtSpaces then begin
-      if (FPrevLine <> nil) and (FPrevLine.NoOfSpaces = 0) then begin
-        FPrevLine.NoOfSpaces := Length(s);
-        FPrevLine.OldNoOfSpaces := FPrevLine.NoOfSpaces;
+      if FPrevLine <> nil then begin
+        if FPrevLine.NoOfSpaces = 0 then begin
+          FPrevLine.NoOfSpaces := Length(s);
+          FPrevLine.OldNoOfSpaces := FPrevLine.NoOfSpaces;
+        end else begin
+          if FTokens.TryGetLastItem(PrevToken) then begin
+            if PrevToken.GetWordType = wtFullComment then
+              PrevToken.SetSpace([spAfter], True);
+          end;
+        end;
       end else if FPrevLine = nil then
         FTokens.Add(TExpression.Create(FPrevType, s));
     end else begin
@@ -651,7 +658,8 @@ begin
 
   // This is for changing the casing of identifiers without adding them to
   // the global list.
-  if not (Result in [wtString, wtSpaces, wtMultilineStringStart, wtMultilineString, wtMultilineStringEnd])
+  if not (Result in [wtString, wtSpaces, wtFullComment,
+    wtMultilineStringStart, wtMultilineString, wtMultilineStringEnd])
     and not FReadingAsm and not FReadingMultilineString then
     _Dest := FIdentifiers.AddIdentifier(_Dest);
 
@@ -663,8 +671,10 @@ begin
   if (P^ = #0) then
     _Source := P
   else begin
-    if CharInSet(P^, [Tab, Space]) then
-      Inc(P);
+    if Result <> wtFullComment then begin
+      if CharInSet(P^, [Tab, Space]) then
+        Inc(P);
+    end;
 
     _Source := P;
   end;
