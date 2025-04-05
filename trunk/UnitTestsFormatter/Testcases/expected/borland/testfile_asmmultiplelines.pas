@@ -13,5 +13,6 @@ begin
 end;
 
 initialization
-  asm nop end;
+  asm nop
+  end;
 end.
