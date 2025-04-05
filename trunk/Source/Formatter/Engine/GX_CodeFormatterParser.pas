@@ -651,8 +651,7 @@ begin
 
   // This is for changing the casing of identifiers without adding them to
   // the global list.
-  // todo: Shouldn't this also check for Result <> wtSpaces?
-  if not (Result in [wtString, wtMultilineStringStart, wtMultilineString, wtMultilineStringEnd])
+  if not (Result in [wtString, wtSpaces, wtMultilineStringStart, wtMultilineString, wtMultilineStringEnd])
     and not FReadingAsm and not FReadingMultilineString then
     _Dest := FIdentifiers.AddIdentifier(_Dest);
 
