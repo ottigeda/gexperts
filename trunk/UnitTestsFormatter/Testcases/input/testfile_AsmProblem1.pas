@@ -4,6 +4,8 @@ interface
 
 implementation
 
+// NOTE: asm code is not indented at all indentation is kept as is.
+//       So it is *not* an error that the asm code is not indented as you might like it.
 function ColorMap(Height, Sea: integer): TColor;
 begin
   asm
@@ -49,4 +51,3 @@ mov Result,ecx
 end;
 
 end.
-
