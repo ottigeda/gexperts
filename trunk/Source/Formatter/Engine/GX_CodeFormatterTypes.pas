@@ -66,7 +66,7 @@ type
     rtUses, rtProcDeclare, rtFuncDirective, rtPropertyAccess, rtAbsolute, rtComment, rtRecCase, rtDot,
     rtCompIf, rtDotDot,
     rtCompElse, rtCompEndif,
-    rtGenericStart,
+    rtGenericStart, rtGenericEnd,
     rtConst);
 
 type

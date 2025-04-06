@@ -365,7 +365,10 @@ begin
           Assert(False, '.AdjustSpacing');
           if FStack.HasType(rtGenericStart) then begin
             Assert(False, '.AdjustSpacing');
+            // todo: This does nothing! Is it supposed to remove any spaces?
+            //       In that case it should be SetSpace([spBefore, spAfter], False)
             _CurrentToken.SetSpace([], True);
+            _CurrentToken.SetReservedType(rtGenericEnd);
             repeat
               Assert(False, '.AdjustSpacing');
               FLastPopResType := FStack.Pop;
@@ -427,6 +430,11 @@ begin
     rtRightHook: begin
         Assert(False, '.AdjustSpacing');
         _CurrentToken.SetSpace(FSettings.SpaceRightHook, True);
+      end;
+
+    rtPropertyAccess: begin
+        if _PrevToken.ReservedType = rtGenericEnd then
+          _CurrentToken.SetSpace([spBefore], True);
       end;
   end;
 
