@@ -734,14 +734,10 @@ begin
 
   SetString(_Dest, FirstNonSpace, PCharDiff(P, FirstNonSpace));
 
-  if (P^ = #0) then
-    _Source := P
-  else begin
-    if CharInSet(P^, [Tab, Space]) then
-      Inc(P);
+  if CharInSet(P^, [Tab, Space]) then
+    Inc(P);
 
-    _Source := P;
-  end;
+  _Source := P;
 end;
 
 { TIdentifiersList }
