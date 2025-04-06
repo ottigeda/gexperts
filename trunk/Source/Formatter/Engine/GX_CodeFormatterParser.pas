@@ -168,8 +168,10 @@ begin
       FPrevType := ReadHalfComment(s, _Buff, SpaceSuffix);
       if FPrevType = wtFullComment then
         FPrevLine := nil;
-    end else
+    end else begin
       FPrevType := ReadWord(s, _Buff);
+      SpaceSuffix := False;
+    end;
 
     if FPrevType = wtSpaces then begin
       if FPrevLine <> nil then begin
