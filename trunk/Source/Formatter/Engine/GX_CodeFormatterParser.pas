@@ -67,7 +67,8 @@ type
     ///      fifth line, the fourth line above is emtpy
     ///      '''; // a comment is allowed here or even code
     procedure ReadMultilineString(var _Buff: PGXUnicodeChar);
-    function ReadHalfComment(out _Dest: TGXUnicodeString; var _Source: PGXUnicodeChar): TWordType;
+    function ReadHalfComment(out _Dest: TGXUnicodeString; var _Source: PGXUnicodeChar;
+      out _SpaceSuffix: Boolean): TWordType;
     function ReadWord(out _Dest: TGXUnicodeString; var _Source: PGXUnicodeChar): TWordType;
     {: Adds a single line of text to the parse tree }
     procedure AddLine(_Buff: PGXUnicodeChar);
@@ -148,6 +149,7 @@ var
   Expression: TExpression;
   PrevIdx: integer;
   PrevToken: TPascalToken;
+  SpaceSuffix: Boolean;
 begin
   FPrevLine := TLineFeed.Create(0, FSpacePerIndent);
   FTokens.Add(FPrevLine);
@@ -163,7 +165,7 @@ begin
 
   while (_Buff^ <> #0) do begin
     if FPrevType in [wtHalfComment, wtHalfStarComment, wtHalfOutComment] then begin
-      FPrevType := ReadHalfComment(s, _Buff);
+      FPrevType := ReadHalfComment(s, _Buff, SpaceSuffix);
       if FPrevType = wtFullComment then
         FPrevLine := nil;
     end else
@@ -184,6 +186,7 @@ begin
         FTokens.Add(TExpression.Create(FPrevType, s));
     end else begin
       Expression := TExpression.Create(FPrevType, s);
+
       // The following handles the case of 'in' being used as the name in operator overloading
       // We set ReservedType to rtNothing in this case.
       // todo: Should this go here? It's not really a parsing issue, but OTOH ReservedType
@@ -213,7 +216,10 @@ begin
               end;
           end;
         end;
+      end else if (FPrevType = wtFullComment) and SpaceSuffix then begin
+        Expression.SetSpace([spAfter], True);
       end;
+
       FTokens.Add(Expression);
 
       if FReadingAsm and (_Buff^ <> #0) then
@@ -680,7 +686,8 @@ begin
   end;
 end;
 
-function TCodeFormatterParser.ReadHalfComment(out _Dest: TGXUnicodeString; var _Source: PGXUnicodeChar): TWordType;
+function TCodeFormatterParser.ReadHalfComment(out _Dest: TGXUnicodeString; var _Source: PGXUnicodeChar;
+  out _SpaceSuffix: Boolean): TWordType;
 var
   Len: Integer;
   P: PGXUnicodeChar;
@@ -701,6 +708,7 @@ begin
   end;
 
   Result := FPrevType;
+  _SpaceSuffix := False;
 
   case FPrevType of
     wtHalfComment: begin
@@ -734,8 +742,11 @@ begin
 
   SetString(_Dest, FirstNonSpace, PCharDiff(P, FirstNonSpace));
 
-  if CharInSet(P^, [Tab, Space]) then
+  // todo: Should this be a while loop?
+  if CharInSet(P^, [Tab, Space]) then begin
+    _SpaceSuffix := True;
     Inc(P);
+  end;
 
   _Source := P;
 end;

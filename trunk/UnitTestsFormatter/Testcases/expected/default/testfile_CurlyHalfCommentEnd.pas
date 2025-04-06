@@ -6,5 +6,5 @@ implementation
 
 begin
   { testcomment
-  }s := '';
+} s := '';
 end;
