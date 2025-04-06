@@ -63,7 +63,7 @@ type
     rtLeftBr, rtRightBr, rtLeftHook, rtRightHook, rtMathOper, rtAssignOper,
     rtMinus, rtPlus,
     rtLogOper, rtEquals, rtForward, rtDefault, rtInitialization, rtComma,
-    rtUses, rtProcDeclare, rtFuncDirective, rtPropertyAccess, rtAbsolute, rtComment, rtRecCase, rtDot,
+    rtUses, rtProcDeclare, rtFuncDirective, rtExternal, rtPropertyAccess, rtAbsolute, rtComment, rtRecCase, rtDot,
     rtCompIf, rtDotDot,
     rtCompElse, rtCompEndif,
     rtGenericStart, rtGenericEnd,
@@ -200,7 +200,7 @@ begin
   Add('experimental', rtFuncDirective);
   Add('export', rtFuncDirective);
   Add('exports', rtUses);
-  Add('external', rtForward);
+  Add('external', rtExternal);
   Add('far', rtFuncDirective);
   Add('file', rtReserved);
   Add('final', rtFuncDirective);

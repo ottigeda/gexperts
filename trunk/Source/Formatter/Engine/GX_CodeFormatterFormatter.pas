@@ -1420,7 +1420,7 @@ begin
         end;
       end;
 
-    rtForward: begin
+    rtForward, rtExternal: begin
         Assert(False, '.CheckIndent: rtForward');
         if FStack.GetTopType in [rtProcedure, rtProcDeclare] then begin
           // todo: This fails because rtProcDeclare is removed from the stack as soon as
@@ -1504,7 +1504,7 @@ begin
               Inc(RemoveMe);
             until not TryGetToken(FTokenIdx + RemoveMe, Next) or not (Next.ReservedType in [rtLineFeed, rtComment]);
 
-            if IsRType(Next, rtForward) then begin
+            if IsRType(Next, [rtForward, rtExternal]) then begin
               Assert(False, '.CheckIndent: Next = rtForward');
               NoBlankLine := True;
             end;
@@ -1812,8 +1812,8 @@ begin
             //   overload;
             RemoveMe := 1;
             while TryGetToken(FTokenIdx + RemoveMe, Next)
-              and IsRType(Next, [rtSemiColon, rtLineFeed, rtComment, rtFuncDirective, rtForward]) do begin
-              if IsRType(Next, [rtFuncDirective, rtForward]) then begin
+              and IsRType(Next, [rtSemiColon, rtLineFeed, rtComment, rtFuncDirective, rtForward, rtExternal]) do begin
+              if IsRType(Next, [rtFuncDirective, rtForward, rtExternal]) then begin
                 AllowPop := False;
                 Break; //==v
               end;
@@ -1842,11 +1842,11 @@ begin
             Assert(False, '.CheckIndent: Next <> nil');
             if (Next.ReservedType = rtAbsolute)
               or ((FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass])
-              and (Next.ReservedType in [rtFuncDirective, rtForward])
+              and (Next.ReservedType in [rtFuncDirective, rtForward, rtExternal])
               and (FStack.ProcLevel = 0)) then
               FWrapIndent := True
             else if FSettings.FeedAfterSemiColon then begin
-              if not (Next.ReservedType in [rtForward, rtFuncDirective, rtDefault]) then
+              if not (Next.ReservedType in [rtForward, rtExternal, rtFuncDirective, rtDefault]) then
                 AssertLineFeedAfter(FTokenIdx);
             end;
           end;
