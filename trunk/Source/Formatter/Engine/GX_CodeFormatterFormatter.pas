@@ -1414,7 +1414,7 @@ begin
         end else begin
           Next := GetNextNoComment(FTokenIdx, RemoveMe);
           if Next.ReservedType = rtColon then begin
-            // followed by ':' -> Its an identifier
+            // followed by ':' -> It is an identifier
             FCurrentToken.SetReservedType(rtNothing);
           end;
         end;
@@ -1811,8 +1811,9 @@ begin
             //   cdecl;
             //   overload;
             RemoveMe := 1;
-            while TryGetToken(FTokenIdx + RemoveMe, Next) and Assigned(Next) and (Next.ReservedType in [rtSemiColon, rtLineFeed, rtComment, rtFuncDirective]) do begin
-              if Next.ReservedType = rtFuncDirective then begin
+            while TryGetToken(FTokenIdx + RemoveMe, Next)
+              and IsRType(Next, [rtSemiColon, rtLineFeed, rtComment, rtFuncDirective, rtForward]) do begin
+              if IsRType(Next, [rtFuncDirective, rtForward]) then begin
                 AllowPop := False;
                 Break; //==v
               end;
