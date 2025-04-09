@@ -178,6 +178,12 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 // All IDEs support this feature to some degree (though Delphi 8+ do not support multiline editor tabs)
 {$DEFINE GX_EditorEnhancements}
 
+{$IFDEF GX_DELPHI7_UP}
+  {$IFNDEF GX_DELPHI8_UP}
+    {$DEFINE GX_COMPONENT_SELECT_BUTTON}
+  {$ENDIF GX_DELPHI8_UP}
+{$ENDIF GX_DELPHI7_UP}
+
 {$IFDEF GX_DELPHI2005_UP}
   {$DEFINE GX_SUPPORTS_FOLDING}
   {. inlining in Delphi 2005 wasn't stable enough to use $DEFINE GX_SupportsInline}
