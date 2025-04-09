@@ -169,10 +169,10 @@ uses
   SysUtils, Forms,
   GX_GenericUtils, GX_GxUtils, GX_IdeUtils, GX_OtaUtils, GX_ConfigurationInfo,
   GX_IdeSearchPathEnhancer, GX_IdeProjectOptionsEnhancer,
-  GX_IdeToolPropertiesEnhancer, GX_IdeInstallPackagesEnhancer,
+  GX_IdeToolPropertiesEnhancer, GX_IdeInstallPackagesEnhancer, GX_IdeEvaluateModifyEnhance,
   GX_IdeObjectInspectorEnhancer, GX_IdeBuildEventsEnhancer,
   GX_IdeApplicationSettingsEnhancer, GX_IdeMessageAutoClose, GX_IdeDockFormEnhancer,
-  GX_IdeSplitterVisibility;
+  GX_IdeSplitterVisibilityr;
 
 { TIdeEnhancements }
 
@@ -267,6 +267,7 @@ procedure TIdeEnhancements.SetIdeFormsAllowResize(const Value: Boolean);
 begin
   FIdeFormsAllowResize := Value;
   TIDEFormEnhancements.SetAllowResize(Value and EnhanceIDEForms);
+  TGxIdeEvaluateModifyEnhancer.SetEnabled(Value);
 end;
 
 procedure TIdeEnhancements.SetIdeFormsRememberPosition(const Value: Boolean);

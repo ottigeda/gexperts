@@ -157,6 +157,7 @@ uses
   GX_IdeDock in '..\..\source\IDEDocking\GX_IdeDock.pas' {fmIdeDockForm},
   GX_IdeDockFormEnhancer in '..\..\Source\IDE\GX_IdeDockFormEnhancer.pas',
   GX_IdeEnhance in '..\..\source\IDE\GX_IdeEnhance.pas',
+  GX_IdeEvaluateModifyEnhancer in '..\..\Source\IDE\GX_IdeEvaluateModifyEnhancer.pas',
   GX_IdeFavoritesList in '..\..\Source\IDE\GX_IdeFavoritesList.pas' {f_GxIdeFavoritesList},
   GX_IdeFormChangeManager in '..\..\Source\IDE\GX_IdeFormChangeManager.pas',
   GX_IdeFormEnhancer in '..\..\source\IDE\GX_IdeFormEnhancer.pas',
