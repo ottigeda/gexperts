@@ -169,10 +169,10 @@ uses
   SysUtils, Forms,
   GX_GenericUtils, GX_GxUtils, GX_IdeUtils, GX_OtaUtils, GX_ConfigurationInfo,
   GX_IdeSearchPathEnhancer, GX_IdeProjectOptionsEnhancer,
-  GX_IdeToolPropertiesEnhancer, GX_IdeInstallPackagesEnhancer, GX_IdeEvaluateModifyEnhance,
+  GX_IdeToolPropertiesEnhancer, GX_IdeInstallPackagesEnhancer, GX_IdeEvaluateModifyEnhancer,
   GX_IdeObjectInspectorEnhancer, GX_IdeBuildEventsEnhancer,
   GX_IdeApplicationSettingsEnhancer, GX_IdeMessageAutoClose, GX_IdeDockFormEnhancer,
-  GX_IdeSplitterVisibilityr;
+  GX_IdeSplitterVisibility;
 
 { TIdeEnhancements }
 
