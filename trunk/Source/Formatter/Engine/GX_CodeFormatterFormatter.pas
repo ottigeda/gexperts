@@ -171,7 +171,7 @@ var
 begin
   FHasAligned := True;
   OldExpr := TExpression(FTokens.Extract(_Idx));
-  Result := TAlignExpression.Create(OldExpr, _Pos);
+  Result := TAlignExpression.Create(OldExpr, _Pos, OldExpr.OrigLineNo);
   FTokens.AtInsert(_Idx, Result);
   OldExpr.Free;
 end;
@@ -551,7 +551,7 @@ begin
   Result := FPrevLine;
 
   for LineIdx := 0 to _NLines - 1 do begin //FI:W528
-    Result := TLineFeed.Create(0, FSettings.SpacePerIndent);
+    Result := TLineFeed.Create(0, FSettings.SpacePerIndent, -1);
     Result.SetIndent(FStack.nIndent);
     NextToken := GetToken(_AtIndex);
 
@@ -1968,7 +1968,7 @@ var
     PrevPrevLine: TLineFeed;
   begin
     PrevPrevLine := FPrevLine;
-    FPrevLine := TLineFeed.Create(PrevPrevLine.OldNoOfSpaces, FSettings.SpacePerIndent);
+    FPrevLine := TLineFeed.Create(PrevPrevLine.OldNoOfSpaces, FSettings.SpacePerIndent, -1);
     FPrevLine.NoOfSpaces := PrevPrevLine.NoOfSpaces;
     FPrevLine.Wrapped := True;
     GetToken(ATokenIdx).SetSpace([spBefore], False);

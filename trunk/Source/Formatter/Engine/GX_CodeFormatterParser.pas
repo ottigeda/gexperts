@@ -48,7 +48,7 @@ type
     /// ReadAsm does very simple parsing only to find comments because this
     /// influences finding the matching "end". No formatting is done
     /// later to asm code </summary>
-    procedure ReadAsm(var _Buff: PGXUnicodeChar);
+    procedure ReadAsm(var _Buff: PGXUnicodeChar; _OrigLineNo: Integer);
     ///<summary>
     /// A multi line string literal
     /// * starts with a line ending in a triple of single quotes, optionally followed by space characters
@@ -66,12 +66,12 @@ type
     ///
     ///      fifth line, the fourth line above is emtpy
     ///      '''; // a comment is allowed here or even code
-    procedure ReadMultilineString(var _Buff: PGXUnicodeChar);
+    procedure ReadMultilineString(var _Buff: PGXUnicodeChar; _OrigLineNo: Integer);
     function ReadHalfComment(out _Dest: TGXUnicodeString; var _Source: PGXUnicodeChar;
       out _SpaceSuffix: Boolean): TWordType;
     function ReadWord(out _Dest: TGXUnicodeString; var _Source: PGXUnicodeChar): TWordType;
     {: Adds a single line of text to the parse tree }
-    procedure AddLine(_Buff: PGXUnicodeChar);
+    procedure AddLine(_Buff: PGXUnicodeChar; _OrigLineNo: Integer);
     procedure DoExecute(_Text: TGXUnicodeStringList);{$IFDEF GX_SupportsInline} inline; {$ENDIF}
   public
     constructor Create(_Settings: TCodeFormatterSettings);
@@ -139,11 +139,11 @@ begin
   for i := 0 to _Text.Count - 1 do begin
     s := _Text[i];
     Buff := PGXUnicodeChar(s);
-    AddLine(Buff);
+    AddLine(Buff, i + 1);
   end;
 end;
 
-procedure TCodeFormatterParser.AddLine(_Buff: PGXUnicodeChar);
+procedure TCodeFormatterParser.AddLine(_Buff: PGXUnicodeChar; _OrigLineNo: Integer);
 var
   s: TGXUnicodeString;
   Expression: TExpression;
@@ -151,17 +151,17 @@ var
   PrevToken: TPascalToken;
   SpaceSuffix: Boolean;
 begin
-  FPrevLine := TLineFeed.Create(0, FSpacePerIndent);
+  FPrevLine := TLineFeed.Create(0, FSpacePerIndent, _OrigLineNo - 1);
   FTokens.Add(FPrevLine);
 
   if not Assigned(_Buff) or (_Buff^ = #0) then
     Exit;
 
   if FReadingAsm then
-    ReadAsm(_Buff);
+    ReadAsm(_Buff, _OrigLineNo);
 
   if FReadingMultilineString then
-    ReadMultilineString(_Buff);
+    ReadMultilineString(_Buff, _OrigLineNo);
 
   while (_Buff^ <> #0) do begin
     if FPrevType in [wtHalfComment, wtHalfStarComment, wtHalfOutComment] then begin
@@ -185,9 +185,9 @@ begin
           end;
         end;
       end else if FPrevLine = nil then
-        FTokens.Add(TExpression.Create(FPrevType, s));
+        FTokens.Add(TExpression.Create(FPrevType, s, _OrigLineNo));
     end else begin
-      Expression := TExpression.Create(FPrevType, s);
+      Expression := TExpression.Create(FPrevType, s, _OrigLineNo);
 
       // The following handles the case of 'in' being used as the name in operator overloading
       // We set ReservedType to rtNothing in this case.
@@ -225,7 +225,7 @@ begin
       FTokens.Add(Expression);
 
       if FReadingAsm and (_Buff^ <> #0) then
-        ReadAsm(_Buff);
+        ReadAsm(_Buff, _OrigLineNo);
     end;
   end;
 
@@ -251,7 +251,7 @@ begin
   Result := (GXNativeInt(_Higher) - GXNativeInt(_Lower)) div SizeOf(_Higher^);
 end;
 
-procedure TCodeFormatterParser.ReadAsm(var _Buff: PGXUnicodeChar);
+procedure TCodeFormatterParser.ReadAsm(var _Buff: PGXUnicodeChar; _OrigLineNo: Integer);
 var
   P: PGXUnicodeChar;
   FirstNonWhitespace: PGXUnicodeChar;
@@ -287,7 +287,7 @@ begin
 
         if FirstNonWhitespace <> P then begin
           SetString(s, FirstNonWhitespace, PCharDiff(p, FirstNonWhitespace) - 1);
-          FTokens.Add(TExpression.Create(wtAsm, s));
+          FTokens.Add(TExpression.Create(wtAsm, s, _OrigLineNo));
         end;
 
         _Buff := P;
@@ -321,11 +321,11 @@ begin
   end; // while
 
   SetString(s, _Buff, StrLen(_Buff));
-  FTokens.Add(TExpression.Create(wtAsm, s));
+  FTokens.Add(TExpression.Create(wtAsm, s, _OrigLineNo));
   _Buff := P;
 end;
 
-procedure TCodeFormatterParser.ReadMultilineString(var _Buff: PGXUnicodeChar);
+procedure TCodeFormatterParser.ReadMultilineString(var _Buff: PGXUnicodeChar; _OrigLineNo: Integer);
 var
   P: PGXUnicodeChar;
   s: TGXUnicodeString;
@@ -340,7 +340,7 @@ begin
           if (PCharPlus(P, 1)^ = #39) and (PCharPlus(P, 2)^ = #39) then begin
             // this is the end marker for the multi line string
             SetString(s, _Buff, PCharDiff(P, _Buff) + 3);
-            FTokens.Add(TExpression.Create(wtMultilineStringEnd, s));
+            FTokens.Add(TExpression.Create(wtMultilineStringEnd, s, _OrigLineNo));
             _Buff := PCharPlus(P, 3);
             FReadingMultilineString := False;
             Exit; //==>
@@ -354,14 +354,14 @@ begin
       while P^ <> #0 do
         Inc(P);
       SetString(s, _Buff, PCharDiff(P, _Buff));
-      FTokens.Add(TExpression.Create(wtMultilineString, s));
+      FTokens.Add(TExpression.Create(wtMultilineString, s, _OrigLineNo));
       _Buff := P;
       Exit; //==>
     end;
     Inc(P);
   end; // while
   SetString(s, _Buff, StrLen(_Buff));
-  FTokens.Add(TExpression.Create(wtMultilineString, s));
+  FTokens.Add(TExpression.Create(wtMultilineString, s, _OrigLineNo));
   _Buff := P;
 end;
 
