@@ -9,7 +9,8 @@ interface
 uses
   SysUtils,
   Classes,
-  ToolsApi;
+  ToolsApi,
+  GX_StringList;
 
 type
   TSourceBreakpoint = class
@@ -77,7 +78,10 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure RestoreItems;
+    ///<summary>
+    /// @param NewCode contains the old line numbers of the code, incremented by 1,
+    ///                in the Object property </summary>
+    procedure RestoreItems(_NewCode: TGXUnicodeStringList);
     procedure SaveItems;
     procedure Dump(const _Filename: string);
   end;
@@ -85,7 +89,8 @@ type
 implementation
 
 uses
-  IniFiles, Math;
+  IniFiles, Math,
+  GX_GenericUtils;
 
 { TBreakpoints }
 
@@ -161,7 +166,25 @@ begin
   inherited;
 end;
 
-procedure TBreakpointHandler.RestoreItems;
+procedure TBreakpointHandler.RestoreItems(_NewCode: TGXUnicodeStringList);
+
+  function FindNewLineNo(_OldLineNo: Integer): Integer;
+  var
+    i: Integer;
+    OldLineNoOfCode: Integer;
+  begin
+    for i := 0 to _NewCode.Count - 1 do begin
+      // stored old line numbers were incremented by 1
+      OldLineNoOfCode := GXNativeInt(_NewCode.Objects[i]) - 1;
+      if _OldLineNo = OldLineNoOfCode then begin
+        // line numbers are one based
+        Result := i + 1;
+        Exit;
+      end;
+    end;
+    Result := _OldLineNo;
+  end;
+
 var
   DebuggerServices: IOTADebuggerServices;
   i: Integer;
@@ -180,6 +203,7 @@ begin
   for i := 0 to FBreakpoints.Count - 1 do begin
     SrcBreakpoint := FBreakpoints[i];
     try
+      SrcBreakpoint.LineNumber := FindNewLineNo(SrcBreakpoint.LineNumber);
       SrcBrkPtInt := DebuggerServices.NewSourceBreakpoint(
         SrcBreakpoint.FileName, SrcBreakpoint.LineNumber,
         DebuggerServices.CurrentProcess);

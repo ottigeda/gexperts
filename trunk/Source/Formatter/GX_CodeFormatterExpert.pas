@@ -333,7 +333,7 @@ begin
             GxOtaReplaceEditorTextWithUnicodeString(SourceEditor, FullText.Text);
           end;
           Logger.Info('TCodeFormatterExpert.Execute:Restore breakpoints and bookmarks');
-          Breakpoints.RestoreItems;
+          Breakpoints.RestoreItems(FullText);
           Bookmarks.RestoreItems;
           Logger.Info('TCodeFormatterExpert.Execute:Force repaints');
           for i := 0 to SourceEditor.EditViewCount - 1 do
