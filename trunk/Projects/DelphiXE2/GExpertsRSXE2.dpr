@@ -47,6 +47,7 @@ uses
   GX_CodeFormatterGXConfigWrapper in '..\..\source\Formatter\GX_CodeFormatterGXConfigWrapper.pas',
   GX_CodeFormatterParser in '..\..\source\Formatter\engine\GX_CodeFormatterParser.pas',
   GX_CodeFormatterSettings in '..\..\source\Formatter\engine\GX_CodeFormatterSettings.pas',
+  GX_CodeFormatterSourceLineList in '..\..\Source\Formatter\GX_CodeFormatterSourceLineList.pas',
   GX_CodeFormatterStack in '..\..\source\Formatter\engine\GX_CodeFormatterStack.pas',
   GX_CodeFormatterTokenList in '..\..\source\Formatter\engine\GX_CodeFormatterTokenList.pas',
   GX_CodeFormatterTokens in '..\..\source\Formatter\engine\GX_CodeFormatterTokens.pas',
