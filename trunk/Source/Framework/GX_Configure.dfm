@@ -320,6 +320,7 @@ object fmConfiguration: TfmConfiguration
             Height = 24
             Caption = 'Allow resize and remember size'
             TabOrder = 1
+            OnClick = chkAllowResizeClick
           end
           object chkRememberPosition: TCheckBox
             Left = 48
@@ -360,6 +361,7 @@ object fmConfiguration: TfmConfiguration
             Height = 24
             Caption = 'Automatically close message window after successful compile'
             TabOrder = 9
+            OnClick = chkAutoCloseMessageClick
           end
           object chkAutoCloseIgnoreHints: TCheckBox
             Left = 40
@@ -384,6 +386,7 @@ object fmConfiguration: TfmConfiguration
             Height = 24
             Caption = 'Force desktop on startup (leave empty for last selected)'
             TabOrder = 13
+            OnClick = chkForceStartupDesktopClick
           end
           object cbxDesktop: TComboBox
             Left = 24
