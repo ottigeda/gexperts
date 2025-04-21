@@ -102,8 +102,6 @@ type
     lblCachingPath: TLabel;
     edCachingPath: TEdit;
     bCachingPath: TButton;
-    chk_FontForNewForms: TCheckBox;
-    b_CustomFontForNewForms: TButton;
     l_ForceDestkopAV: TLabel;
     chkAutoCloseIgnoreHints: TCheckBox;
     chkAutoCloseIgnoreWarnings: TCheckBox;
@@ -138,7 +136,6 @@ type
     procedure btnExportClick(Sender: TObject);
     procedure btnUsageClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure b_CustomFontForNewFormsClick(Sender: TObject);
     procedure chkUseCustomFontClick(Sender: TObject);
   private
     FOIFont: TFont;
@@ -464,29 +461,6 @@ end;
 procedure TfmConfiguration.btnUsageClick(Sender: TObject);
 begin
   TfmUsageStatistics.Execute(Self);
-end;
-
-procedure TfmConfiguration.b_CustomFontForNewFormsClick(Sender: TObject);
-begin
-  dlgUIFont.Font.Height := DefFontData.Height;
-{$IFDEF GX_DELPHI2005_UP}
-  dlgUIFont.Font.Orientation := DefFontData.Orientation;
-{$ENDIF}
-  dlgUIFont.Font.Pitch := DefFontData.Pitch;
-  dlgUIFont.Font.Style := DefFontData.Style;
-  dlgUIFont.Font.Charset := DefFontData.Charset;
-  dlgUIFont.Font.Name := TFontName(DefFontData.Name);
-  if dlgUIFont.Execute then begin
-    chk_FontForNewForms.Checked := True;
-    DefFontData.Height := dlgUIFont.Font.Height;
-{$IFDEF GX_DELPHI2005_UP}
-    DefFontData.Orientation := dlgUIFont.Font.Orientation;
-{$ENDIF}
-    DefFontData.Pitch := dlgUIFont.Font.Pitch;
-    DefFontData.Style := dlgUIFont.Font.Style;
-    DefFontData.Charset := dlgUIFont.Font.Charset;
-    DefFontData.Name := TFontDataName(dlgUIFont.Font.Name);
-  end;
 end;
 
 procedure TfmConfiguration.btnHelpClick(Sender: TObject);

@@ -260,7 +260,7 @@ object fmConfiguration: TfmConfiguration
           TabOrder = 2
           object l_ForceDestkopAV: TLabel
             Left = 176
-            Top = 324
+            Top = 332
             Width = 288
             Height = 14
             Caption = 'Warning: Can cause Access Violations on IDE startup'
@@ -403,25 +403,6 @@ object fmConfiguration: TfmConfiguration
             Height = 24
             Caption = 'Enhance Dock Forms to allow minimize and Win+arrow positioning'
             TabOrder = 7
-          end
-          object chk_FontForNewForms: TCheckBox
-            Left = 8
-            Top = 352
-            Width = 729
-            Height = 24
-            Caption = 'Custom Font for new forms (sets DefFontData)'
-            TabOrder = 15
-            Visible = False
-          end
-          object b_CustomFontForNewForms: TButton
-            Left = 368
-            Top = 352
-            Width = 79
-            Height = 25
-            Caption = 'Font...'
-            TabOrder = 16
-            Visible = False
-            OnClick = b_CustomFontForNewFormsClick
           end
         end
         object gbxObjectInspector: TGroupBox
