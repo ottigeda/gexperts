@@ -1,5 +1,7 @@
 unit GX_CodeFormatterSourceLineList;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -10,11 +12,17 @@ uses
 type
   TSourceLineList = class(TGXUnicodeStringList)
   private
-  protected
     FFirstLine: Integer;
     FLastLine: Integer;
     FFormattedBlockStart: string;
     FFormattedBlockEnd: string;
+    ///<summary>
+    /// Set to 0 when formatting the whole unit
+    /// Set to -1 initially when formatting the selected block only
+    /// Set to the new line number of the first line of the selected block in the first
+    /// call to FindNewLineNo to calculate the offset. </summary>
+    FFirstLineNew: Integer;
+    function FindNewLineNoGlobal(_OldLineNo: Integer): Integer;
   public
     ///<summary>
     /// @param FirstLine and LastLine are the line numbers of the block that was formatted. </summary>
@@ -31,8 +39,9 @@ type
 implementation
 
 uses
-  GX_GenericUtils,
-  u_dzStringUtils;
+  u_dzStringUtils,
+{$IFOPT D+} GX_DbugIntf, {$ENDIF}
+  GX_GenericUtils;
 
 constructor TSourceLineList.Create(const _Content: TGXUnicodeString; _FirstLine, _LastLine: Integer);
 const
@@ -43,9 +52,14 @@ begin
 
   Self.Text := _Content;
   FFirstLine := _FirstLine;
-  if _LastLine = -1 then
-    FLastLine := Self.Count + 1
-  else begin
+  if _LastLine = -1 then begin
+    // formatting the whole unit
+    FFirstLineNew := 0;
+    FLastLine := Self.Count + 1;
+  end else begin
+    // formatting the selected block (-1 is a flag)
+    FFirstLineNew := -1;
+
     FLastLine := _LastLine;
 
     FFormattedBlockStart := FORMATTED_BLOCK_START;
@@ -63,30 +77,48 @@ begin
 
 end;
 
-function TSourceLineList.FindNewLineNo(_OldLineNo: Integer; out _NewLineNo: Integer): Boolean;
+function TSourceLineList.FindNewLineNoGlobal(_OldLineNo: Integer): Integer;
 var
   i: Integer;
-  OldLineNoOfCode: Integer;
+  OldLineNoOfCode: GXNativeInt;
 begin
-  _NewLineNo := _OldLineNo;
-  Result := (FFirstLine <= _OldLineNo) and (_OldLineNo <= FLastLine);
-  if not Result then
-    Exit; //==>
-
   for i := 0 to Self.Count - 1 do begin
     // stored old line numbers were incremented by 1
     OldLineNoOfCode := GXNativeInt(Self.Objects[i]) - 1;
     if _OldLineNo = OldLineNoOfCode then begin
       // line numbers are one based
-      _NewLineNo := i + 1;
+      Result := i + 1;
       Exit; //==>
     end;
     if _OldLineNo < OldLineNoOfCode then begin
       // we passed the line we're searching for -> take the previous line
-      _NewLineNo := i;
+      Result := i;
       Exit; //==>
     end;
   end;
+  // this should not happen but if it does, don't change the line no
+{$IFDEF DEBUG} SendDebugFmt('Could not determine new line number for line %d', [_OldlineNo]); {$ENDIF}
+  Result := _OldLineNo;
+end;
+
+function TSourceLineList.FindNewLineNo(_OldLineNo: Integer; out _NewLineNo: Integer): Boolean;
+begin
+  Result := (FFirstLine <= _OldLineNo) and (_OldLineNo <= FLastLine);
+  if not Result then begin
+    // outside the formatted block, don't change it
+    _NewLineNo := _OldLineNo;
+    Exit; //==>
+  end;
+
+  if FFirstLineNew = -1 then begin
+    // We are formatting the selected block and this is the first call to FindNewLineNo
+    // We need the new line of the first line in the block to be used as an offset
+    FFirstLineNew := FindNewLineNoGlobal(FFirstLine);
+  end;
+
+  _NewLineNo := FindNewLineNoGlobal(_OldLineNo);
+  // adjust for the block offset (FFirstLine and FFirstLineNew are 0 if there is no block)
+  _NewLineNo := _NewLineNo - FFirstLineNew + FFirstLine;
 end;
 
 function TSourceLineList.GetFormattedBlock: TGXUnicodeString;
