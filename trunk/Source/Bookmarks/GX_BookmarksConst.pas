@@ -18,6 +18,7 @@ const WM_AddBookmark             = WM_User+300;
       DefEnlargedLineDisplay     = true;
       DefHideClassName           = false;
       DefHideLBFocus             = true;
+      DefDenyDoubleBookmarks     = false;
       DefLBColorBackground       = $00FBEBE7;
       DefLBColorBMline           = $00F3CFC3;
       DefLBColorBkFuncProcName   = $00FFDFFF;
@@ -37,6 +38,7 @@ const WM_AddBookmark             = WM_User+300;
       maxFilterLen               =    8; // 1.. 8
 
       NA                         = maxInt;
+      NewDialogFont              ='Segoe UI';
 
 var   Settings                   : IExpertSettings;
 
@@ -145,7 +147,7 @@ begin
  OrgHelpPathFName:=ConfigInfo.HelpFile;
 
     ConfigInfo.HelpFile:=ConfigInfo.ConfigPath;
-    HtmlHelp(0,PChar(ConfigInfo.HelpFile+HelpFName+'::/'+TopicFName),HH_Display_Topic,0);
+    HtmlHelpA(0,PChar(ConfigInfo.ConfigPath+HelpFName+'::/'+TopicFName),HH_Display_Topic,0);
 
  ConfigInfo.HelpFile:=OrgHelpPathFName;
 end;
