@@ -3,7 +3,7 @@ unit GX_BookmarksSelect;
 interface { --------------------------------------------------------------------------- }
 
 uses Windows,Messages,SysUtils,Classes,Graphics,Controls,Forms,Dialogs,StdCtrls,StrUtils,
-     ComCtrls,ToolWin,Math,ExtCtrls,ImgList,ImageList,
+     ComCtrls,ToolWin,Math,ExtCtrls,
 
      u_dzStringUtils, // for PosEx in Delphi 6
 
@@ -33,11 +33,9 @@ type tSort              = (soLine,soType,soName,soNoData);
                            buCancel                       : TButton;
 
                            SBar                           : TStatusBar;
-
-                           ilEnabled                      : TImageList;
-                           ilDisabled                     : TImageList;
                            
                            imF1                           : TImage;
+                           imF1NA                         : TImage;
 
                            procedure lbFuncsProcsDrawItem (Control:TWinControl;Index:Integer;_Rect:TRect;State:TOwnerDrawState);
                            procedure lbFuncsProcsClick    (Sender:TObject);
@@ -65,6 +63,7 @@ type tSort              = (soLine,soType,soName,soNoData);
                            FSort                          : tSort;
                            FModulePathFName               : String;
                            FFilter                        : String;
+                           FDenyDoubleBookmarks           : Boolean;
                            FFilterLock                    : Boolean;
 
                            procedure LoadSettings;
@@ -118,13 +117,16 @@ procedure TfoBookmarksSelect.LoadSettings;
 var SubSettings : IExpertSettings;
     L,T,W,H     : Integer;
 begin
- SubSettings:=Settings.Subkey('Select'); //  do not localize
+ SubSettings:=Settings.Subkey('Bookmarks'); // do not localize
+
+ FDenyDoubleBookmarks:=SubSettings.ReadBool('BookmarksDenyDoubleBookmarks',DefDenyDoubleBookmarks);
+
+ SubSettings:=Settings.Subkey('Select');
 
  L:=SubSettings.ReadInteger('SelectLeft',  NA);
  T:=SubSettings.ReadInteger('SelectTop',   NA);
  W:=SubSettings.ReadInteger('SelectWidth', NA);
  H:=SubSettings.ReadInteger('SelectHeight',NA);
-
 
  if (L<>NA) and (T<>NA) and
     (W<>NA) and (H<>NA) then begin Left  :=L;
@@ -196,8 +198,8 @@ var Text,T,
  begin
   if p-1>=1                then ch1:=LineText[p-1] else ch1:='A';
   if p+5< length(LineText) then ch2:=LineText[p+5] else ch2:='A';
-  Result:=not(((p=1)                   or CharInSet(ch1, Chars)) or
-              ((p+5>=length(LineText)) or CharInSet(ch2, Chars)));
+  Result:=not(((p=1)                   or CharInSet(ch1,Chars)) or
+              ((p+5>=length(LineText)) or CharInSet(ch2,Chars)));
  end;
 
  function FollowingText(LineText:String;p:Integer):Boolean;
@@ -207,7 +209,7 @@ var Text,T,
   if p<length(LineText) then
    while (p<length(LineText)) and (LineText[p]=' ') do inc(p);
 
-  if p<length(LineText) then Result:=CharInSet(LineText[p], Chars);
+  if p<length(LineText) then Result:=CharInSet(LineText[p],Chars);
  end;
 
  function TrimLine(Line:String):String;
@@ -243,10 +245,11 @@ var Text,T,
  var i : Integer;
  begin
   Result:=false;
-  for i:=0 to FBM.Count-1 do
-   if FBM[i].Line=Line then begin Result:=true;
-                                  Break;
-                                  end;
+  if FDenyDoubleBookmarks then
+   for i:=0 to FBM.Count-1 do
+    if FBM[i].Line=Line then begin Result:=true;
+                                   Break;
+                                   end;
  end;
 
 begin
@@ -642,7 +645,7 @@ begin
    if Key=vk_Delete then FFilter:=''
                     else if Key=vk_Back then delete(FFilter,length(FFilter),1)
                                         else if (length(FFilter)<MaxFilterLen) and
-                                                CharInSet(chr(Key), Chars)            then FFilter:=FFilter+chr(Key)
+                                                CharInSet(chr(Key),Chars)      then FFilter:=FFilter+chr(Key)
                                                                                else exit;
    Key:=0;
    SetFilter;
@@ -700,9 +703,17 @@ begin
 
  SBar.Font.Name:='MS Sans Serif'; // ?!!
  SBar.Font.Size:=8;               // ?!!
- imF1.Parent   :=SBar;
- imF1.Left     :=3;
- imF1.Top      :=3;
+
+ imF1.Parent:=SBar;
+ imF1.Left  :=3;
+ imF1.Top   :=3;
+
+ if not(FileExists(ConfigInfo.ConfigPath+HLP_HelpFileName)) then begin
+  imF1.  Visible:=false;
+  imF1NA.Left   :=imF1.Left;
+  imF1NA.Top    :=imF1.Top;
+  imF1NA.Visible:=true;
+  end;
 
  SBarShowFilterInfo;
 end;
