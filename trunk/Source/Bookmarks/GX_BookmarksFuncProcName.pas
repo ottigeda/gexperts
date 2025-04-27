@@ -3,9 +3,13 @@ unit GX_BookmarksFuncProcName;
 interface { --------------------------------------------------------------------------- }
 
 uses SysUtils,Classes,StrUtils,
+
+     ToolsAPI,
+     GX_OtaUtils,
+
      u_dzStringUtils; // for PosEx in Delphi 6
 
-procedure BuildLinkArray  (PathFName:String);
+procedure BuildLinkArray;
 function  GetFuncProcName (LineNo:Integer):String; // LineNo 1..N
 
 implementation { ---------------------------------------------------------------------- }
@@ -121,20 +125,23 @@ begin
   end;
 end;
 
-procedure BuildLinkArray(PathFName:String);
+procedure BuildLinkArray;
 type  tBlockState = (bsTop,bsFuncProc,bsBot,bsNONE);
 var   State       : tBlockState;
       LinesCount,
       StartIdx,
       EndIdx,i    : Integer;
 
- function GetFile(PathFName:String):Integer;
+ procedure GetActiveEditorLines(SL:TStringList);
+ var EditReader : IOTAEditReader;
+     EditorText : String;
  begin
-  FSL.LoadFromFile(PathFName);
-  Result:=FSL.Count;
+  SL.Clear;
+  EditReader:=GxOtaGetEditReaderForSourceEditor();
+  if GxOtaGetActiveEditorTextAsString(EditorText,false) then SL.Text:=EditorText;
  end;
 
- procedure GetHeaderPositions(PathFName:String;LinesCount:Integer);
+ procedure GetHeaderPositions(LinesCount:Integer);
  var LineNo   : Integer;
      LineText : String;
  begin
@@ -177,7 +184,9 @@ var   State       : tBlockState;
    L     :=length(RW);
    repeat
     p:=posex(RW,Line,p);
-    if (p>0) then begin if CharInSet(Line[p-1], Divider) and CharInSet(Line[p+L], Divider) and not(Literal(Line,RW,p,L)) then inc(Result);
+    if (p>0) then begin if CharInSet(Line[p-1],Divider) and
+                           CharInSet(Line[p+L],Divider) and
+                           not(Literal(Line,RW,p,L))    then inc(Result);
                         inc(p,L);
                         end;
     until p=0;
@@ -199,8 +208,7 @@ var   State       : tBlockState;
   end;
 
  begin
- if StartIdx >= FSL.Count then
-   Exit; //==>
+  if StartIdx>=FSL.Count then exit; // twm
 
   LineText:=NA;
   Idx     :=StartIdx-1;
@@ -225,7 +233,7 @@ var   State       : tBlockState;
    inc(nBegin,CheckReservedWord(Line2Check,'except' ));
    inc(nEnd,  CheckReservedWord(Line2Check,'end'    ));
 
-   until (Idx=LinesCount-2              )  or // eof
+   until (Idx>=LinesCount-2             )  or // eof
          (LineText<>NA                  )  or // next func proc found
          ((nBegin>0) and (nBegin-nEnd=0));    // end of func proc
 
@@ -252,24 +260,33 @@ var   State       : tBlockState;
                                    end;
  end;
 
-begin                                     // processing ComCtrls (~23.000 Zeilen) takes about 62 mSec
- if FSL=nil then FSL:=TStringlist.Create  // not fast but fast enough ?!
-            else FSL.Clear;
- if LiFoCount(FLiFo)>0 then FreeLiFo(FLiFo);
- InitLifo(FLiFo);
+begin                                      // processing ComCtrls (~23.000 Zeilen) takes about 62 mSec
+ if FSL=nil then FSL:=TStringlist.Create;  // not fast, but fast enough ?!
 
- LinesCount:=GetFile(PathFName);
-
+ GetActiveEditorLines(FSL);
+ LinesCount:=FSL.Count;
  SetLength(FLinkArray,LinesCount);
- for i:=Low(FLinkArray) to High(FLinkArray) do FLinkArray[i]:=0;
 
- GetHeaderPositions(PathFName,LinesCount);
+ if LinesCount>0 then begin
 
- StartIdx:=LineNoImplementation; // = 1st line after "implementation"
- repeat
-  GetBlock(StartIdx,EndIdx,State);
-  StartIdx:=EndIdx+1;
-  until StartIdx>=LinesCount-1;
+  if LiFoCount(FLiFo)>0 then FreeLiFo(FLiFo);
+  InitLifo(FLiFo);
+
+  SetLength(FLinkArray,LinesCount);
+  for i:=Low(FLinkArray) to High(FLinkArray) do FLinkArray[i]:=0;
+
+  GetHeaderPositions(LinesCount);
+
+  //§§ -cError -oRZ : inc-files results wrong results
+  // INC-Files results LineNoImplementation = 0
+  //               and LinesCount           > 0
+
+  StartIdx:=LineNoImplementation; // = 1st line after "implementation"
+  repeat
+   GetBlock(StartIdx,EndIdx,State);
+   StartIdx:=EndIdx+1;
+   until StartIdx>=LinesCount-1;
+  end;
 end;
 
 function GetFuncProcName(LineNo:Integer):String;
