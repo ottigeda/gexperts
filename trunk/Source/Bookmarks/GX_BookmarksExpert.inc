@@ -105,4 +105,3 @@ function TBookmarksExpert.HasConfigOptions:Boolean;
 begin
  Result:=false;
 end;
-
