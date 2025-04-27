@@ -1,8 +1,9 @@
 inherited fmGxBookmarksForm: TfmGxBookmarksForm
-  Left = 1428
-  Top = 534
+  Left = 427
+  Top = 10
+  Width = 240
+  Height = 260
   Caption = 'Bookmarks'
-  ClientHeight = 221
   Constraints.MinHeight = 260
   Constraints.MinWidth = 240
   DefaultMonitor = dmDesktop
@@ -16,8 +17,8 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
   object paListbox: TPanel
     Left = 0
     Top = 28
-    Width = 304
-    Height = 171
+    Width = 230
+    Height = 178
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
@@ -47,8 +48,8 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
     end
     object paListboxGutterBottom: TPanel
       Left = 0
-      Top = 102
-      Width = 304
+      Top = 109
+      Width = 230
       Height = 3
       Align = alBottom
       BevelOuter = bvNone
@@ -56,10 +57,10 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
       TabOrder = 1
     end
     object paListboxGutterRight: TPanel
-      Left = 302
+      Left = 228
       Top = 0
       Width = 2
-      Height = 102
+      Height = 109
       Align = alRight
       BevelOuter = bvNone
       Color = clRed
@@ -67,8 +68,8 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
     end
     object me: TMemo
       Left = 0
-      Top = 105
-      Width = 304
+      Top = 112
+      Width = 230
       Height = 66
       Align = alBottom
       Color = clYellow
@@ -80,7 +81,7 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
   object paToolbar: TPanel
     Left = 0
     Top = 0
-    Width = 304
+    Width = 230
     Height = 28
     Align = alTop
     BevelOuter = bvNone
@@ -95,6 +96,8 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
       Caption = 'ToolBar'
       Color = clSilver
       DisabledImages = ilDisabled
+      EdgeBorders = []
+      Flat = True
       Font.Charset = ANSI_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -211,8 +214,8 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
   end
   object SBar: TStatusBar
     Left = 0
-    Top = 199
-    Width = 304
+    Top = 206
+    Width = 230
     Height = 22
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBtnText
@@ -244,7 +247,7 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
     Left = 135
     Top = 39
     Bitmap = {
-      494C0101080009000C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -651,7 +654,7 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
     Left = 164
     Top = 86
     Bitmap = {
-      494C0101080009000C0010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010108000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

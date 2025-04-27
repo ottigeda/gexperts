@@ -11,8 +11,8 @@ unit GX_Bookmarks;
 interface { --------------------------------------------------------------------------- }
 
 uses SysUtils,Classes,Controls,Forms,Dialogs,StdCtrls,ComCtrls,ToolsAPI,ExtCtrls,Messages,
-     ToolWin,Types,Graphics,StrUtils,Math,ImgList,
-     ImageList,
+     ToolWin,Types,Graphics,StrUtils,Math,ImgList,ImageList,
+
      {$IFDEF GX_IDE_IS_HIDPI_AWARE}
      u_dzDpiScaleUtils,
      {$ENDIF}
@@ -84,13 +84,13 @@ type tSortMode          = (smIdx,smName,smLine);
                            FSortMode                        : tSortMode;
                            FLastSortMode                    : tSortMode;
                            FEditorPathFName                 : String;
-                           FLastEditorPathFName             : String;
                            FUseOldEditForm                  : Boolean;
                            FEnlargedLineDisplay             : Boolean;
                            FLastEnlargedLineDisplay         : Boolean;
                            FRemoveLeadingBlanks             : Boolean;
                            FHideClassName                   : Boolean;
                            FHideLBFocus                     : Boolean;
+                           FDenyDoubleBookmarks             : Boolean;
                            FListboxColorBackground          : TColor;
                            FListboxColorBMline              : TColor;
                            FBkColorFuncProcName             : TColor;
@@ -183,8 +183,9 @@ begin
  SubSettings.WriteBool   ('BookmarksUseOldEditForm',         FUseOldEditForm        );
  SubSettings.WriteBool   ('BookmarksEnlargedLineDisplay',    FEnlargedLineDisplay   );
  SubSettings.WriteBool   ('BookmarksRemoveLeadingBlanks',    FRemoveLeadingBlanks   );
- SubSettings.WriteBool   ('BookmarksHideClassName',          FHideClassName         ); 
- SubSettings.WriteBool   ('BookmarksHideLBFocus',            FHideLBFocus           ); 
+ SubSettings.WriteBool   ('BookmarksHideClassName',          FHideClassName         );
+ SubSettings.WriteBool   ('BookmarksHideLBFocus',            FHideLBFocus           );
+ SubSettings.WriteBool   ('BookmarksDenyDoubleBookmarks',    FDenyDoubleBookmarks   );
 
  SubSettings.WriteInteger('BookmarksLBColorBackground',      FListboxColorBackground);
  SubSettings.WriteInteger('BookmarksLBColorBMline',          FListboxColorBMline    );
@@ -203,6 +204,7 @@ begin
  FRemoveLeadingBlanks   :=          SubSettings.ReadBool   ('BookmarksRemoveLeadingBlanks',    DefRemoveLeadingBlanks     );
  FHideClassName         :=          SubSettings.ReadBool   ('BookmarksHideClassName',          DefHideClassName           );
  FHideLBFocus           :=          SubSettings.ReadBool   ('BookmarksHideLBFocus',            DefHideLBFocus             );
+ FDenyDoubleBookmarks   :=          SubSettings.ReadBool   ('BookmarksDenyDoubleBookmarks',    DefDenyDoubleBookmarks     );
 
  FListboxColorBackground:=          SubSettings.ReadInteger('BookmarksLBColorBackground',      DefLBColorBackground       );
  FListboxColorBMline    :=          SubSettings.ReadInteger('BookmarksLBColorBMline',          DefLBColorBMline           );
@@ -228,7 +230,8 @@ procedure TfmGxBookmarksForm.SetButtonState;
   Result:=true;
   if GetEditView(SourceEditor,EditView) then
    for i:=0 to lbBookmarks.Count-1 do
-    if TBookmark(lbBookmarks.Items.Objects[i]).Line=EditView.CursorPos.Line then begin
+    if (TBookmark(lbBookmarks.Items.Objects[i]).Line=EditView.CursorPos.Line) and
+       FDenyDoubleBookmarks                                                   then begin
      Result:=false;
      Break;
      end;
@@ -240,7 +243,7 @@ procedure TfmGxBookmarksForm.SetButtonState;
  end;
 
 begin
- tbAdd1.     Enabled:=(lbBookmarks.Count<maxBookmarks) and CanSetBookmark; 
+ tbAdd1.     Enabled:=(lbBookmarks.Count<maxBookmarks) and CanSetBookmark;
  tbAdd2.     Enabled:=(lbBookmarks.Count<maxBookmarks) and NoDFM;
  tbEdit.     Enabled:=(lbBookmarks.Count>0)            and (lbBookmarks.ItemIndex>=0);
  tbSort.     Enabled:=true;
@@ -354,7 +357,7 @@ begin
 
  EditView.BookmarkGoto(BM.Number);
  EditView.MoveViewToCursor;
- lbBookmarks.SetFocus; //§§ -cStrange -oRZ : MUST for updating IDE statusbar | EditView.Paint is needless.
+ lbBookmarks.SetFocus; //§§ -cInfo -oRZ : MUST for updating IDE SBar, EditView.Paint has no effect
  GxOtaFocusCurrentIDEEditControl;
  // EditView.Paint;
 end;
@@ -366,39 +369,6 @@ var SourceEditor       : IOTASourceEditor;
     BM                 : TBookmark;
     NewBookmarks       : TBookmarkList;
     FuncProcName       : String;
-
- function DoubleBookmarkDeleted(var NewBookmarks:TBookmarklist):Boolean;
- var i : Integer;
-
-  function AlreadySet(LineNo,BMidx:Integer):Boolean;
-  var i : Integer;
-  begin
-   Result:=true;
-   for i:=0 to FBookmarks.Count-1 do
-    if (FBookmarks[i].Line   =LineNo) and
-       (FBookmarks[i].Number<>BMidx ) then exit;
-   Result:=false;
-  end;
-
- begin
-  Result:=false;
-  if FBookmarks<>nil then begin
-  
-   for i:=0 to NewBookmarks.Count-1 do
-    if AlreadySet(NewBookmarks[i].Line,NewBookmarks[i].Number) then begin
-  
-     BookmarkDel(NewBookmarks[i].Module,NewBookmarks[i].Number);
-     NewDialog(nil,mtInformation,
-              'Information',
-              Format('Bookmark for line %d already exists, adding bookmark #%d refused',[NewBookmarks[i].Line,NewBookmarks[i].Number]),
-              'MS Sans Serif',
-              ['Ok']);
-
-     Result:=true;
-     Break;
-     end;
-    end; 
- end;
 
  procedure GetBookmarks(const _ModuleName:String;_EditView:IOTAEditView;_Bookmarks:TBookmarkList);
  var i     : Integer;
@@ -415,16 +385,19 @@ var SourceEditor       : IOTASourceEditor;
      BM2 : Pointer;
      i   : Integer;
  begin
-  Result:=true;
-  if not(Assigned(FBookmarks)) or (_NewBookmarks.Count<>FBookmarks.Count) then exit;
-
-  for i:=0 to _NewBookmarks.Count-1 do begin
-   BM1:=_NewBookmarks[i];
-   BM2:=FBookmarks[i];
-   if not BM1.IsSame(BM2) then exit;
-   end;
-
   Result:=false;
+  if not(assigned(FBookmarks)) then exit;
+
+  if _NewBookmarks.Count<>FBookmarks.Count then Result:=true
+                                           else
+
+   for i:=0 to _NewBookmarks.Count-1 do begin
+    BM1:=_NewBookmarks[i];
+    BM2:=FBookmarks[i];
+    if not BM1.IsSame(BM2) then begin Result:=true;
+                                      exit;
+                                      end;
+    end;
  end;
 
  procedure AddOrInsertIdx(LB:TListbox;Idx:Integer;FuncProcName:String;BMptr:Pointer);
@@ -480,17 +453,10 @@ begin
 
    if BookmarksChanged(NewBookmarks)                   or         // refill if new bookmarks avail
       (           FSortMode<>FLastSortMode           ) or         // or sortmode changed
-      (FEnlargedLineDisplay<>FLastEnlargedLineDisplay) or         // or linecount2display changed
-      (    FEditorPathFName<>FLastEditorPathFName    ) then begin // or file in editor changed
-
-    if DoubleBookmarkDeleted(NewBookmarks) then begin
-     NewBookmarks.Clear; // GetBookmarks() should clear NewBookmarks before adding new items??!!
-     GetBookmarks(SourceEditor.Filename,EditView,NewBookmarks);
-     end;
+      (FEnlargedLineDisplay<>FLastEnlargedLineDisplay) then begin // or linecount2display changed
 
     FLastSortMode           :=FSortMode;
     FLastEnlargedLineDisplay:=FEnlargedLineDisplay;
-    FLastEditorPathFName    :=FEditorPathFName;
 
     FreeAndNil(FBookmarks);
     FBookmarks:=NewBookmarks;
@@ -499,9 +465,9 @@ begin
     lbBookmarks.Items.BeginUpdate;
     lbBookmarks.Items.Clear;
 
-    lbBookmarks.Enabled:=(FBookmarks.Count>0); // no select rectangle if lb ist empty
+    lbBookmarks.Enabled:=(FBookmarks.Count>0); // no focus rectangle if lb is empty
     Caption:='Bookmarks'+' ('+IntToStr(FBookmarks.Count)+')';
-    BuildLinkArray(FEditorPathFName);
+    BuildLinkArray;
 
     for i:=0 to FBookmarks.Count-1 do begin
 
@@ -596,7 +562,7 @@ var ListBox      : TListBox absolute _Control;
 
   if FHideClassName then begin
    p:=pos('.',FuncProcName);
-   if p>0 then delete(FuncProcName,1,p-1); //§§ -cInfo -oRZ : show that local and class methods are grouped
+   if p>0 then delete(FuncProcName,1,p-1); //§§ -cInfo -oRZ : group local + class methods
    end;
 
   lbCanvas.TextOut(_Rect.Left+GutterL,TextTop,Shorten(lbCanvas,MaxL,FuncProcName,#133));
@@ -768,7 +734,6 @@ var SourceEditor : IOTASourceEditor;
     ModuleName   : String;
     LineNo       : Integer;
     BMIndex      : Integer;
-    buID         : Integer;
 begin
  if not(GetEditView(SourceEditor,EditView)) then exit;
 
@@ -780,17 +745,7 @@ begin
   if FUseOldEditForm then
    if not(TfoBookmarksEdit.Execute(Self,ModuleName,LineNo,BMIndex)) then exit;
 
-  if (EditView.BookmarkPos[BMindex].Line=LineNo) then begin
-
-   buID:=NewDialog(Self,mtInformation,
-                  'Information',Format('Bookmark for line %d already exists, adding bookmark #%d refused',[BMindex]),
-                  'MS Sans Serif',
-                  ['Ok','Abort']);
-
-   if buID=1 then BookmarkDel(ModuleName,BMIndex)
-             else exit;
-   end
-                                                 else BookmarkSet(ModuleName,LineNo,BMIndex);
+  BookmarkSet(ModuleName,LineNo,BMIndex);
 
  finally
   ScanBookmarks;
@@ -858,6 +813,7 @@ begin
  if FSortMode=smIdx then                          FSortMode:=smName
                     else if FSortMode=smName then FSortMode:=smLine
                                              else FSortMode:=smIdx;
+ SaveSettings;
  SBarShowSortInfo;
 end;
 
@@ -865,10 +821,10 @@ procedure TfmGxBookmarksForm.tbDeleteClick(Sender:TObject);
 var BM : TBookmark;
 begin
  if TListBox_GetSelectedObject(lbBookmarks,Pointer(BM)) then begin
+
   BookmarkDel(BM.Module,BM.Number);
-  if lbBookmarks.Count=0 then begin // FSortMode:=smIdx; //§§ -cCheck -oRZ : Don't change current sort mode?!
-                                    SBarShowSortInfo;
-                                    end;
+
+  SBarShowSortInfo;
   SetButtonState;
   end;
 end;
@@ -879,9 +835,9 @@ var BM : TBookmark;
 begin
  tiUpdateBookmarks.Enabled:=false;
 
- if NewDialog(Self,mtConfirmation,
-             'Confirm delete',#13+'Sure to delete all bookmarks ...',
-             'MS Sans Serif',
+ if NewDialog(Self,mtConfirmation,'Confirm delete',
+              #13+'Sure to delete all bookmarks?',
+             NewDialogFont,
              ['Delete','Abort'])=1 then begin
 
   for i:=lbBookmarks.Count-1 downto 0 do begin
@@ -891,7 +847,6 @@ begin
 
   ScanBookmarks; // and enable tiUpdateBookmarks
 
-  // FSortMode:=smIdx; //§§ -cCheck -oRZ : Don't change current sort mode?!
   SBarShowSortInfo;
   SetButtonState;
   end
@@ -981,11 +936,12 @@ begin
  LoadSettings;
  SetListboxItemHeight;
 
- paToolbar.            Color :=Color;            // different colors are
- paListboxGutterRight. Color :=Color;            // very comfortable
- paListboxGutterBottom.Color :=Color;            // in designtime
- Toolbar.              Color :=Color;            // ..
+ paToolbar.            Color  :=Color;            // different colors are
+ paListboxGutterRight. Color  :=Color;            // very comfortable
+ paListboxGutterBottom.Color  :=Color;            // in designtime
+ Toolbar.              Color  :=Color;            // ..
  tbEdit.               Visible:=FUseOldEditForm;
+ tbHelp.               Enabled:=FileExists(ConfigInfo.ConfigPath+HLP_HelpFileName);
  lbBookmarks.          Color  :=FListboxColorBackground;
 
  FLastSortMode:=smLine;
