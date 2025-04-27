@@ -1,12 +1,12 @@
 inherited foBookmarksOptions: TfoBookmarksOptions
-  Left = 1213
+  Left = 213
   Top = 213
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Options'
-  ClientHeight = 292
+  ClientHeight = 313
   ClientWidth = 260
-  Constraints.MinHeight = 324
+  Constraints.MinHeight = 345
   Constraints.MinWidth = 270
   ParentFont = False
   KeyPreview = True
@@ -20,7 +20,7 @@ inherited foBookmarksOptions: TfoBookmarksOptions
   TextHeight = 13
   object imF1: TImage
     Left = 6
-    Top = 264
+    Top = 285
     Width = 16
     Height = 16
     Hint = 'Help (F1)'
@@ -38,9 +38,30 @@ inherited foBookmarksOptions: TfoBookmarksOptions
     Transparent = True
     OnClick = imF1Click
   end
+  object imF1NA: TImage
+    Left = 14
+    Top = 277
+    Width = 16
+    Height = 16
+    Hint = 'Help (F1)'
+    Anchors = [akLeft, akRight, akBottom]
+    ParentShowHint = False
+    Picture.Data = {
+      07544269746D6170C2000000424DC20000000000000042000000280000001000
+      000010000000010004000000000080000000C40E0000C40E0000030000000300
+      0000FFFF010081818100F1FBFF00000000000002000000000000001200000000
+      2222210122000001111110011200001200000000012000120120001201200012
+      0120001201200012012200120120001201110012012000120120001201200012
+      0122011201200012011100100120001200000000012000122222222221000001
+      1111111110000000000000000000}
+    ShowHint = True
+    Transparent = True
+    Visible = False
+    OnClick = imF1Click
+  end
   object buSave: TButton
     Left = 28
-    Top = 259
+    Top = 280
     Width = 156
     Height = 25
     Hint = 'Save options and close form (Return)'
@@ -60,7 +81,7 @@ inherited foBookmarksOptions: TfoBookmarksOptions
   end
   object buCancel: TButton
     Left = 192
-    Top = 259
+    Top = 280
     Width = 60
     Height = 25
     Hint = 'Close form (Escape)'
@@ -122,7 +143,7 @@ inherited foBookmarksOptions: TfoBookmarksOptions
   end
   object paColorBase: TPanel
     Left = 0
-    Top = 110
+    Top = 131
     Width = 260
     Height = 145
     BevelOuter = bvNone
@@ -249,10 +270,24 @@ inherited foBookmarksOptions: TfoBookmarksOptions
     ParentFont = False
     TabOrder = 7
   end
+  object cbDenyDoubleBookmarks: TCheckBox
+    Left = 8
+    Top = 112
+    Width = 136
+    Height = 17
+    Caption = 'deny double bookmarks'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 8
+  end
   object ColorDialog: TColorDialog
     OnShow = ColorDialogShow
     Options = [cdFullOpen]
-    Left = 181
+    Left = 180
     Top = 13
   end
 end

@@ -13,6 +13,7 @@ type TfoBookmarksOptions = class(TfmBaseForm)
                             cbRemoveLeadingBlanks                : TCheckBox;
                             cbHideClassName                      : TCheckBox;
                             cbHideLBFocus                        : TCheckBox;
+                            cbDenyDoubleBookmarks                : TCheckBox;
 
                             paColorBase                          : TPanel;
                              laListboxColors1                    : TLabel;
@@ -22,6 +23,7 @@ type TfoBookmarksOptions = class(TfmBaseForm)
                              paHeaderBkColor                     : TPanel;
                               laHeaderFontColor                  : TLabel;
                             imF1                                 : TImage;
+                            imF1NA                               : TImage;
                             buSave                               : TButton;
                             buCancel                             : TButton;
 
@@ -93,6 +95,7 @@ begin
  cbRemoveLeadingBlanks. Checked:=SubSettings.ReadBool   ('BookmarksRemoveLeadingBlanks',    DefRemoveLeadingBlanks     );
  cbHideClassName.       Checked:=SubSettings.ReadBool   ('BookmarksHideClassName',          DefHideClassName           );
  cbHideLBFocus.         Checked:=SubSettings.ReadBool   ('BookmarksHideLBFocus',            DefHideLBFocus             );
+ cbDenyDoubleBookmarks. Checked:=SubSettings.ReadBool   ('BookmarksDenyDoubleBookmarks',    DefDenyDoubleBookmarks     );
 
  paLBcolorBkg.          Color  :=SubSettings.ReadInteger('BookmarksLBColorBackground',      DefLBColorBackground       );
  paLBcolorBMline.       Color  :=SubSettings.ReadInteger('BookmarksLBColorBMline',          DefLBColorBMline           );
@@ -110,6 +113,7 @@ begin
  SubSettings.WriteBool   ('BookmarksRemoveLeadingBlanks',    cbRemoveLeadingBlanks.Checked);
  SubSettings.WriteBool   ('BookmarksHideClassName',          cbHideClassName.      Checked);
  SubSettings.WriteBool   ('BookmarksHideLBFocus',            cbHideLBFocus.        Checked);
+ SubSettings.WriteBool   ('BookmarksDenyDoubleBookmarks',    cbDenyDoubleBookmarks.Checked);
 
  SubSettings.WriteInteger('BookmarksLBColorBackground',      paLBcolorBkg.          Color );
  SubSettings.WriteInteger('BookmarksLBColorBMline',          paLBcolorBMline.       Color );
@@ -282,6 +286,13 @@ begin
  Width :=Constraints.MinWidth;
  Height:=Constraints.MinHeight;
  EnsureFormVisible(Self);
+
+ if not(FileExists(ConfigInfo.ConfigPath+HLP_HelpFileName)) then begin
+  imF1.  Visible:=false;
+  imF1NA.Left   :=imF1.Left;
+  imF1NA.Top    :=imF1.Top;
+  imF1NA.Visible:=true;
+  end;
 end;
 
 // ......................................................................................
