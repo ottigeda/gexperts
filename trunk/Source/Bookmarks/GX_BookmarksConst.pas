@@ -147,7 +147,7 @@ begin
  OrgHelpPathFName:=ConfigInfo.HelpFile;
 
     ConfigInfo.HelpFile:=ConfigInfo.ConfigPath;
-    HtmlHelpA(0,PChar(ConfigInfo.ConfigPath+HelpFName+'::/'+TopicFName),HH_Display_Topic,0);
+    HtmlHelp(0,PChar(ConfigInfo.ConfigPath+HelpFName+'::/'+TopicFName),HH_Display_Topic,0);
 
  ConfigInfo.HelpFile:=OrgHelpPathFName;
 end;
