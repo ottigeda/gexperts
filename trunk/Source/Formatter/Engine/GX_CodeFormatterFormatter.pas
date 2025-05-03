@@ -1408,7 +1408,7 @@ begin
           // todo: What if the previous token was a line feed and the one before that was
           //       'procedure' or '.' or if there was a comment in between ?
           FCurrentToken.SetReservedType(rtNothing);
-        end else if not (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass]) then begin
+        end else if not (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass, rtExternal]) then begin
           // we are not in a procedure or class declaration -> it's an identifier
           FCurrentToken.SetReservedType(rtNothing);
         end else begin
@@ -1420,12 +1420,44 @@ begin
         end;
       end;
 
-    rtForward, rtExternal: begin
+    rtForward: begin
         Assert(False, '.CheckIndent: rtForward');
+        if not (FStack.GetTopType in [rtProcedure, rtProcDeclare]) then begin
+          // we are not in a procedure or class declaration -> it's an identifier
+          FCurrentToken.SetReservedType(rtNothing);
+        end;
+      end;
+
+    rtExternal: begin
+        Assert(False, '.CheckIndent: rtExternal');
+        // There are mulitple options for external declarations:
+        // 1. just external (requires a {$L objectfile.obj} directive in the same unit)
+        //      procedure MoveWord(var Source, Dest; Count: Integer); external;
+        // 2. importing from a library with the function's name:
+        //      function SomeFunction(S: string): string; external 'strlib.dll';
+        // 3. importing from a library with an explicit name:
+        //    function MessageBox(HWnd: Integer; Text, Caption: PChar; Flags: Integer): Integer;
+        //      stdcall; external 'user32.dll' name 'MessageBoxA';
+        // 4. importing from a library with an index:
+        //    function MessageBox(HWnd: Integer; Text, Caption: PChar; Flags: Integer): Integer;
+        //      stdcall; external 'user32.dll' index 5;
+        // 5. importing from an object file with an explicit name:
+        //      procedure FunctionName; cdecl; external object 'ObjectFile.o' name '_FunctionName';
+        // 6. importing from a framework:
+        //      function foo: Integer; external framework 'framework name';
+        // On top of that,the libaray can be delay loaded:
+        //   function ExternalMethod(const SomeString: PChar): Integer; stdcall;
+        //     external 'cstyle.dll' delayed;
+        // and one can declare dependencies:
+        //   function DllGetDataSnapClassObject(const [REF] CLSID, [REF] IID: TGUID; var Obj): HResult;
+        //     cdecl; external 'libmidas.a' dependency 'stdc++';
+        // All these cases have only one thing in common: The external directive ends with a semicolon.
         if FStack.GetTopType in [rtProcedure, rtProcDeclare] then begin
-          // todo: This fails because rtProcDeclare is removed from the stack as soon as
-          //       a semicolon is encountered.
+          // we put rtExternal on the stack so we can check for it and remove it when we get to
+          // the semicolon
           FStack.Pop;
+          FStack.Push(rtProcDeclare, 0);
+          FStack.Push(rtExternal, 0);
         end else begin
           // we are not in a procedure or class declaration -> it's an identifier
           FCurrentToken.SetReservedType(rtNothing);
@@ -1787,6 +1819,11 @@ begin
 
     rtSemiColon: begin
         Assert(False, '.CheckIndent: rtSemiColon');
+
+        if FStack.GetTopType = rtExternal then begin
+          FStack.Pop;
+        end;
+
         if not (FStack.GetTopType in [rtLeftBr, rtLeftHook, rtGenericStart]) then begin
           Assert(False, '.CheckIndent: Not (LeftBr or LeftHook)');
           if FStack.GetTopType = rtUses then begin
@@ -1820,12 +1857,17 @@ begin
               Inc(RemoveMe);
             end
           end;
+
           if AllowPop then begin
             while (FStack.GetTopType in
               [rtDo, rtWhile, rtProcDeclare, rtThen, rtProgram, rtUses, rtColon, rtClassDecl, rtIfElse]) do begin
               Assert(False, '.CheckIndent: in while');
               FStack.Pop;
             end;
+          end;
+
+          if (FPrevToken.ReservedType = rtForward) and (FStack.GetTopType = rtProcedure) then begin
+            FStack.Pop;
           end;
 
           // Look for 'absolute' or a function directive before the next line feed
