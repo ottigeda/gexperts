@@ -283,8 +283,8 @@ procedure TfoBookmarksOptions.FormShow(Sender:TObject);
 begin
  LoadSettings;
  LoadPositionAndUserColors;
- Width :=Constraints.MinWidth;
- Height:=Constraints.MinHeight;
+ Width :=270;
+ Height:=348;
  EnsureFormVisible(Self);
 
  if not(FileExists(ConfigInfo.ConfigPath+HLP_HelpFileName)) then begin

@@ -1,13 +1,11 @@
 inherited foBookmarksOptions: TfoBookmarksOptions
-  Left = 213
-  Top = 213
+  Left = 1382
+  Top = 41
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Options'
-  ClientHeight = 313
+  ClientHeight = 316
   ClientWidth = 260
-  Constraints.MinHeight = 345
-  Constraints.MinWidth = 270
   ParentFont = False
   KeyPreview = True
   OldCreateOrder = True
@@ -20,11 +18,11 @@ inherited foBookmarksOptions: TfoBookmarksOptions
   TextHeight = 13
   object imF1: TImage
     Left = 6
-    Top = 285
+    Top = 288
     Width = 16
     Height = 16
     Hint = 'Help (F1)'
-    Anchors = [akLeft, akRight, akBottom]
+    Anchors = [akLeft, akBottom]
     ParentShowHint = False
     Picture.Data = {
       07544269746D6170D2000000424DD20000000000000052000000280000001000
@@ -40,11 +38,11 @@ inherited foBookmarksOptions: TfoBookmarksOptions
   end
   object imF1NA: TImage
     Left = 14
-    Top = 277
+    Top = 280
     Width = 16
     Height = 16
     Hint = 'Help (F1)'
-    Anchors = [akLeft, akRight, akBottom]
+    Anchors = [akLeft, akBottom]
     ParentShowHint = False
     Picture.Data = {
       07544269746D6170C2000000424DC20000000000000042000000280000001000
@@ -61,7 +59,7 @@ inherited foBookmarksOptions: TfoBookmarksOptions
   end
   object buSave: TButton
     Left = 28
-    Top = 280
+    Top = 283
     Width = 156
     Height = 25
     Hint = 'Save options and close form (Return)'
@@ -81,11 +79,11 @@ inherited foBookmarksOptions: TfoBookmarksOptions
   end
   object buCancel: TButton
     Left = 192
-    Top = 280
+    Top = 283
     Width = 60
     Height = 25
     Hint = 'Close form (Escape)'
-    Anchors = [akLeft, akRight, akBottom]
+    Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancel'
     Font.Charset = DEFAULT_CHARSET
@@ -143,12 +141,10 @@ inherited foBookmarksOptions: TfoBookmarksOptions
   end
   object paColorBase: TPanel
     Left = 0
-    Top = 131
+    Top = 134
     Width = 260
     Height = 145
     BevelOuter = bvNone
-    Caption = 'paColorBase'
-    Color = clAqua
     TabOrder = 5
     DesignSize = (
       260
@@ -190,7 +186,6 @@ inherited foBookmarksOptions: TfoBookmarksOptions
       Height = 48
       Hint = 'Select color with DblClick xxx'
       Anchors = [akLeft, akTop, akRight]
-      BevelOuter = bvNone
       Caption = 'paLBcolorBkg'
       Color = clSilver
       ParentShowHint = False
@@ -205,7 +200,6 @@ inherited foBookmarksOptions: TfoBookmarksOptions
       Width = 254
       Height = 16
       Anchors = [akLeft, akTop, akRight]
-      BevelInner = bvLowered
       Color = clYellow
       ParentShowHint = False
       ShowHint = True
