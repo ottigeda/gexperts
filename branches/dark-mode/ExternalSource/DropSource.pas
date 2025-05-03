@@ -183,10 +183,11 @@ type
 implementation
 
 uses
-  Clipbrd, CommCtrl, ShlObj, SysUtils;
+  Clipbrd, CommCtrl, ShlObj, SysUtils,
+  GX_GenericUtils;
 
 // -----------------------------------------------------------------------------
-//			Miscellaneous functions.
+//      Miscellaneous functions.
 // -----------------------------------------------------------------------------
 
 function GetSizeOfPidl(pidl: pItemIDList): Integer;
@@ -197,7 +198,7 @@ begin
   repeat
     i := pSHItemID(pidl)^.cb;
     Inc(Result, i);
-    Inc(Longint(pidl), i);
+    pidl := pItemIDList(GXNativeInt(pidl) + i);
   until i = 0;
 end;
 // -----------------------------------------------------------------------------
@@ -896,7 +897,7 @@ begin
   end else Result := False;
 end;
 // -----------------------------------------------------------------------------
-
+{$POINTERMATH ON}
 function TDropFileSource.DoGetData(const FormatEtcIn: TFormatEtc;
          out Medium: TStgMedium):HRESULT;
 var
@@ -934,7 +935,7 @@ begin
           dropfiles^.fwide := True
         else
           dropfiles^.fwide := False;
-        Longint(pFile) := Longint(dropfiles) + SizeOf(TDropFiles);
+        pFile :=PChar(GXNativeInt(dropfiles) + SizeOf(TDropFiles));
         for i := 0 to fFiles.Count - 1 do
         begin
           StrPCopy(pFile, fFiles[i]);

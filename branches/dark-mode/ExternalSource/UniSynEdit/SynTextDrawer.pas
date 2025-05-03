@@ -472,11 +472,11 @@ begin
   with pFontsInfo^ do
   begin
     try
-	  // possible fix for frequent Assertion failures when Delphi closed, seems to work mostly
-	  // see bug report #288
+      // possible fix for frequent Assertion failures when Delphi closed, seems to work mostly
+      // see bug report #288
       if LockCount >= RefCount then
         UnLockFontsInfo(pFontsInfo);
-	  // end of fix
+      // end of fix
       Assert(LockCount < RefCount, 'Call DeactivateFontsInfo before calling this.');
     except
       // yes this does not make sense, it's just a convenient place to put a breakpoint

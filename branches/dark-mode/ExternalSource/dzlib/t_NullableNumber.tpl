@@ -204,7 +204,9 @@ var
 begin
   if not _a.IsValid or not _b.IsValid then
     raise EInvalidValue.Create(_('Cannot divide two nullable values if one of them is not valid'));
-  DivideNumbers(_a.Value, _b.Value, Res);
+  // DivideNumbers(_a.Value, _b.Value, Res);
+  // Result := Res;
+  Res := _A.Value / _B.Value;
   Result := Res;
 end;
 
@@ -214,7 +216,8 @@ var
 begin
   if not _a.IsValid then
     raise EInvalidValue.Create(_('Cannot divide a nullable value if it is not valid'));
-  DivideNumbers(_a.Value, _b, Res);
+  //  DivideNumbers(_a.Value, _b, Res);
+  Res := _a.Value / _b;
   Result := Res;
 end;
 
@@ -224,7 +227,8 @@ var
 begin
   if not _b.IsValid then
     raise EInvalidValue.Create(_('Cannot divide by a nullable value if it is not valid'));
-  DivideNumbers(_a, _b, Res);
+  // DivideNumbers(_a, _b, Res);
+  Res := _a / _b;
   Result := Res;
 end;
 
@@ -232,7 +236,8 @@ procedure TdzNullableNumber.AssignStr(const _s: string; const _FormatSettings: T
 begin
   if SameText('NULL', _s) then
     FIsValid := nil
-  else if TryStrToNumber(_s, FValue, _FormatSettings) then
+//  else if TryStrToNumber(_s, FValue, _FormatSettings) then
+  else if TryStrToFloat(_s, FValue, _FormatSettings) then
     FIsValid := GetNullableTypesFlagInterface
   else
     FIsValid := nil;
@@ -250,7 +255,8 @@ begin
     FormatSettings := DZ_FORMAT_DECIMAL_POINT;
     FormatSettings.DecimalSeparator := _DecSeparator;
 
-    if TryStrToNumber(_s, FValue, FormatSettings) then
+//    if TryStrToNumber(_s, FValue, FormatSettings) then
+    if TryStrToFloat(_s, FValue, FormatSettings) then
       FIsValid := GetNullableTypesFlagInterface
     else
       FIsValid := nil;
@@ -264,7 +270,8 @@ end;
 
 class operator TdzNullableNumber.Explicit(const _s: string): TdzNullableNumber;
 begin
-  if TryStrToNumber(_s, Result.FValue, UserLocaleFormatSettings^) then
+//  if TryStrToNumber(_s, Result.FValue, UserLocaleFormatSettings^) then
+  if TryStrToFloat(_s, Result.FValue, UserLocaleFormatSettings^) then
     Result.FIsValid := GetNullableTypesFlagInterface
   else
     Result.FIsValid := nil;
@@ -301,10 +308,18 @@ end;
 
 procedure TdzNullableNumber.AssignVariant(_a: Variant);
 begin
-  if TryVar2Number(_a, FValue) then
-    FIsValid := GetNullableTypesFlagInterface
-  else
-    FIsValid := nil;
+//  if TryVar2Number(_a, FValue) then
+//    FIsValid := GetNullableTypesFlagInterface
+//  else
+//    FIsValid := nil;
+  if VarIsNull(_a) then
+  begin
+    FIsValid := GetNullableTypesFlagInterface;
+  end
+  else begin
+    FValue := _A;
+    FIsValid := GetNullableTypesFlagInterface;
+  end;
 end;
 
 class function TdzNullableNumber.Compare(_a, _b: TdzNullableNumber): Integer;

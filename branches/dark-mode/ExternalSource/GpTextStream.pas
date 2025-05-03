@@ -41,6 +41,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    </pre>
 *)(*
    History:
+     1.09x: 2025-03-10
+       - modified pointer operation for 64 bit (Achim Kalwa)
      1.09: 2010-07-20
        - Reversed Unicode streams were improperly read from.
      1.08: 2010-05-25
@@ -138,6 +140,13 @@ type
 {$IFNDEF D6PLUS}
   UCS4Char = type LongWord;
 {$ENDIF}
+//{$IF not declared(NativeInt)}
+//  {$IFDEF WIN64}
+//  NativeInt = Int64;
+//  {$ELSE}
+//  NativeInt = Integer;
+//  {$ENDIF}
+//{$IFEND}
 
   {:Base exception class for exceptions created in TGpTextStream.
   }
@@ -290,7 +299,8 @@ procedure FilterTxt(srcStream, dstStream: TGpTextStream; filter: TFilterProc); o
 implementation
 
 uses
-  SysConst;
+  SysConst,
+  GX_GenericUtils;
 
 const
   {:Header for 'normal' Unicode UCS-4 stream (Intel format).
@@ -839,7 +849,7 @@ begin
         bytesLeft := 0;
         repeat
           // at least numChar UTF-8 bytes are needed for numChar WideChars
-          bytesRead := WrappedStream.Read(pointer(integer(tmpBuf)+bytesLeft)^, numChar);
+          bytesRead := WrappedStream.Read(pointer(GXNativeInt(tmpBuf)+bytesLeft)^, numChar);
           bytesConv := UTF8BufToWideCharBuf(tmpBuf^, bytesRead+bytesLeft, bufPtr^, bytesLeft);
           Result := Result + bytesConv;
           if bytesRead <> numChar then // end of stream
@@ -847,7 +857,7 @@ begin
           numChar := numChar - (bytesConv div SizeOf(WideChar));
           Inc(bufPtr, bytesConv);
           if (bytesLeft > 0) and (bytesLeft < bytesRead) then
-            Move(pointer(integer(tmpBuf)+bytesRead-bytesLeft)^, tmpBuf^, bytesLeft);
+            Move(pointer(GXNativeInt(tmpBuf)+bytesRead-bytesLeft)^, tmpBuf^, bytesLeft);
         until numChar = 0;
       finally FreeBuffer(tmpBuf); end;
     end

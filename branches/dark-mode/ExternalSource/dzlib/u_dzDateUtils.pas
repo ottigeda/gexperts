@@ -94,7 +94,8 @@ function TryIso2Time(const _s: string; out _Time: TDateTime): Boolean;
 /// If no separator is used, the last two digits are assumed to be the minutes.
 /// if a spearator is used, the number of digits for the minutes can be 0 or 2, so
 /// TryHHmm2Hours('234h', 'h') and TryHHmm2Hours('234h00', 'h') are both valid. </summary>
-function TryHHmm2Hours(const _s: string; out _Hours: Extended; const _Separator: Char = #0): Boolean;
+function TryHHmm2Hours(const _s: string; out _Hours: Extended; const _Separator: Char = #0): Boolean; overload;
+function TryHHmm2Hours(const _s: string; out _Hours: Double; const _Separator: Char = #0): Boolean; overload;
 
 {$IF Declared(TFormatSettings)}
 /// <summary>
@@ -294,6 +295,35 @@ end;
 {$IFEND}
 
 function TryHHmm2Hours(const _s: string; out _Hours: Extended; const _Separator: Char = #0): Boolean;
+var
+  Len: Integer;
+  hh: Integer;
+  mm: Integer;
+begin
+  Len := Length(_s);
+  if _Separator = #0 then begin
+    Result := TryStrToInt(LeftStr(_s, Len - 2), hh);
+    if Result then
+      Result := TryStrToInt(TailStr(_s, Len - 2), mm);
+  end else begin
+    Result := Len > 1;
+    if Result then begin
+      if Copy(_s, Len - 2, 1) = _Separator then begin
+        Result := TryStrToInt(LeftStr(_s, Len - 3), hh);
+        if Result then
+          Result := TryStrToInt(TailStr(_s, Len - 1), mm);
+      end else if Copy(_s, Len, 1) = _Separator then begin
+        Result := TryStrToInt(LeftStr(_s, Len - 1), hh);
+        mm := 0;
+      end else
+        Result := False;
+    end;
+  end;
+  if Result then
+    _Hours := hh + mm / 60;
+end;
+
+function TryHHmm2Hours(const _s: string; out _Hours: Double; const _Separator: Char = #0): Boolean; overload;
 var
   Len: Integer;
   hh: Integer;

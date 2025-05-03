@@ -164,9 +164,14 @@ type
 var
   GetDpiForWindow: TGetDpiForWindow = nil;
 
+{$IF not declared(HMODULE)}
+type
+  HMODULE = Cardinal;
+{$IFEND}
+
 procedure InitApiCalls;
 var
-  Handle: Cardinal;
+  Handle: HMODULE;
 begin
   Handle := LoadLibrary('user32.dll');
   if Handle <> 0 then begin
@@ -520,7 +525,7 @@ var
 begin
   CtrlScaler := FindCtrlScaler(_Ctrl);
   if Assigned(CtrlScaler) then
-    CtrlScaler.HasSplitter := true;
+    CtrlScaler.HasSplitter := True;
 end;
 
 constructor TFormDpiScaler.Create(_Frm: TForm);

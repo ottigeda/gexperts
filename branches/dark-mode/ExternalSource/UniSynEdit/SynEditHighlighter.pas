@@ -12,7 +12,7 @@ The Original Code is: SynEditHighlighter.pas, released 2000-04-07.
 The Original Code is based on mwHighlighter.pas by Martin Waldenburg, part of
 the mwEdit component suite.
 Portions created by Martin Waldenburg are Copyright (C) 1998 Martin Waldenburg.
-Unicode translation by MaÃ«l HÃ¶rz.
+Unicode translation by Maël Hörz.
 Options property added by CodehunterWorks
 All Rights Reserved.
 
@@ -43,6 +43,7 @@ uses
   SynUnicode,
   SysUtils,
   Classes,
+  GX_IndexTypes,
   SynEditHighlighterOptions;
 
 type
@@ -247,7 +248,7 @@ type
   TSynHighlighterList = class(TList)
   private
     FHighlighterList: TList;
-    function GetItem(Index: Integer): TSynCustomHighlighterClass;
+    function GetItem(Index: TGXListIndex): TSynCustomHighlighterClass;
   public
     constructor Create;
     destructor Destroy; override;
@@ -255,7 +256,7 @@ type
     function FindByFriendlyName(FriendlyName: string): Integer;
     function FindByName(Name: string): Integer;
     function FindByClass(Comp: TComponent): Integer;
-    property Items[Index: Integer]: TSynCustomHighlighterClass
+    property Items[Index: TGXListIndex]: TSynCustomHighlighterClass
       read GetItem; default;
   end;
 
@@ -338,7 +339,7 @@ begin
   end;
 end;
 
-function TSynHighlighterList.GetItem(Index: Integer): TSynCustomHighlighterClass;
+function TSynHighlighterList.GetItem(Index: TGXListIndex): TSynCustomHighlighterClass;
 begin
   Result := TSynCustomHighlighterClass(FHighlighterList[Index]);
 end;
@@ -539,6 +540,7 @@ const
         reg.Free;
       end;
     except
+      //TODO 5 -oAchim -cEmpty Code Block: Get (except/end in function)
     end;
   end; { LoadOldStyle }
 
@@ -616,6 +618,7 @@ const
         reg.Free;
       end;
     except
+      //TODO 5 -oAchim -cEmpty Code Block: IsTrue (except/end in function)
     end;
   end; { LoadNewStyle }
 
@@ -1171,6 +1174,7 @@ end;
 
 procedure TSynCustomHighlighter.ResetRange;
 begin
+  //TODO 5 -oAchim -cEmpty Code Block: TSynCustomHighlighter.ResetRange (begin/end in procedure)
 end;
 
 procedure TSynCustomHighlighter.SetAdditionalIdentChars(
@@ -1254,6 +1258,7 @@ end;
 
 procedure TSynCustomHighlighter.SetRange(Value: Pointer);
 begin
+  //TODO 5 -oAchim -cEmpty Code Block: TSynCustomHighlighter.SetRange (begin/end in procedure)
 end;
 
 procedure TSynCustomHighlighter.SetDefaultFilter(Value: string);

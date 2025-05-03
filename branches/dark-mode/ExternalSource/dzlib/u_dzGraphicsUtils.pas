@@ -2194,11 +2194,6 @@ begin
     SetLength(_out[y], w);
   end;
 
-  if (w = 0) or (h = 0) then begin
-    asm nop end;
-    Exit;
-  end;
-
   // copy first and last line without changes
   for y := 0 to h - 1 do begin
     _out[y][0] := _In[y][0];

@@ -58,6 +58,8 @@ type
     procedure Add(_b: Boolean); overload;
     ///<summary> Adds a variant column, if it is a float, converts it to string using the configured DecimalSeparator </summary>
     procedure Add(_v: Variant); overload;
+    ///<summary> Combines .Add with Format </summary>
+    procedure AddFmt(const _FormatString: string; _Params: array of const);
     ///<summary> Clears the line </summary>
     procedure Clear;
     ///<summary> Appends the contents of the given line </summary>
@@ -287,6 +289,11 @@ begin
     Add(Var2ExtEx(_v, 'TLineBuilder.Add'))
   else
     Add(Var2Str(_v, ''));
+end;
+
+procedure TLineBuilder.AddFmt(const _FormatString: string; _Params: array of const);
+begin
+  Add(Format(_FormatString, _Params));
 end;
 
 procedure TLineBuilder.AddQuoted(const _Column: string);

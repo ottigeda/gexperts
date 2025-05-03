@@ -14,7 +14,7 @@ uses
   SysUtils,
   u_dzTranslator,
   u_dzNullableTypesUtils,
-  u_dzNullableExtended;
+  u_dzNullableDouble;
 
 type
   TNullableTimespan = record
@@ -105,14 +105,14 @@ type
     /// @Note: Days is not a TDateTime value representing a date but just a number
     /// of days with possibly fractions. </summary>
     procedure AssignDays(_Days: Double);
-    procedure AssignHours(_Hours: Extended); overload;
-    procedure AssignHours(_Hours: TNullableExtended); overload;
-    procedure AssignMinutes(_Minutes: Extended); overload;
+    procedure AssignHours(_Hours: Double); overload;
+    procedure AssignHours(_Hours: TNullableDouble); overload;
+    procedure AssignMinutes(_Minutes: Double); overload;
     procedure AssignMinutes(_Minutes: Int64); overload;
-    procedure AssignSeconds(_Seconds: Extended); overload;
+    procedure AssignSeconds(_Seconds: Double); overload;
     procedure AssignSeconds(_Seconds: Int64); overload;
     procedure AssignMilliseconds(_MilliSeconds: Int64); overload;
-    procedure AssignMilliseconds(_MilliSeconds: Extended); overload;
+    procedure AssignMilliseconds(_MilliSeconds: Double); overload;
     procedure AssignMicroseconds(_MicroSeconds: Int64);
     procedure AssignZero;
     ///<summary>
@@ -126,7 +126,7 @@ type
     procedure AssignHoursStr(const _s: string);
 
     procedure Add(_Value: TNullableTimespan);
-    procedure AddHours(_Hours: Extended);
+    procedure AddHours(_Hours: Double);
 
     class operator GreaterThan(_a, _b: TNullableTimespan): Boolean;
     class operator LessThan(_a, _b: TNullableTimespan): Boolean;
@@ -137,17 +137,17 @@ type
     class operator Add(_a, _b: TNullableTimespan): TNullableTimespan;
     class operator Subtract(_a, _b: TNullableTimespan): TNullableTimespan;
     class operator Divide(_a: TNullableTimespan; _b: Integer): TNullableTimespan;
-    class operator Divide(_a: TNullableTimespan; _b: Extended): TNullableTimespan;
+    class operator Divide(_a: TNullableTimespan; _b: Double): TNullableTimespan;
     class operator Multiply(_a: TNullableTimespan; _b: Integer): TNullableTimespan;
-    class operator Multiply(_a: TNullableTimespan; _b: Extended): TNullableTimespan;
+    class operator Multiply(_a: TNullableTimespan; _b: Double): TNullableTimespan;
 
     class function Zero: TNullableTimespan; static;
     class function OneDay: TNullableTimespan; static;
     class function FromDays(_Days: Double): TNullableTimespan; static;
-    class function FromHours(_Hours: Extended): TNullableTimespan; overload; static;
-    class function FromHours(_Hours: TNullableExtended): TNullableTimespan; overload; static;
+    class function FromHours(_Hours: Double): TNullableTimespan; overload; static;
+    class function FromHours(_Hours: TNullableDouble): TNullableTimespan; overload; static;
     class function FromHoursStr(const _s: string): TNullableTimespan; overload; static;
-    class function FromSeconds(_Seconds: Extended): TNullableTimespan; static;
+    class function FromSeconds(_Seconds: Double): TNullableTimespan; static;
     class function Combine(_Days, _Hours, _Minutes, _Seconds, _MilliSeconds: Word): TNullableTimespan; static;
   end;
 
@@ -186,12 +186,12 @@ begin
   SetDaysAndMicroseconds(Trunc(_Days), Round(Frac(_Days) / OneMicrosecond));
 end;
 
-procedure TNullableTimespan.AssignHours(_Hours: Extended);
+procedure TNullableTimespan.AssignHours(_Hours: Double);
 begin
   AssignDays(_Hours * OneHour);
 end;
 
-procedure TNullableTimespan.AssignHours(_Hours: TNullableExtended);
+procedure TNullableTimespan.AssignHours(_Hours: TNullableDouble);
 begin
   if _Hours.IsValid then
     AssignHours(_Hours.Value)
@@ -201,7 +201,7 @@ end;
 
 procedure TNullableTimespan.AssignHoursStr(const _s: string);
 var
-  flt: Extended;
+  flt: Double;
 begin
   if _s = '' then begin
     Invalidate;
@@ -228,12 +228,12 @@ begin
   SetDaysAndMicroseconds(_MilliSeconds div MillisecondsPerDay, (_MilliSeconds mod MillisecondsPerDay) * MicrosecondsPerMillisecond);
 end;
 
-procedure TNullableTimespan.AssignMilliseconds(_MilliSeconds: Extended);
+procedure TNullableTimespan.AssignMilliseconds(_MilliSeconds: Double);
 begin
   AssignDays(_MilliSeconds / MillisecondsPerDay);
 end;
 
-procedure TNullableTimespan.AssignMinutes(_Minutes: Extended);
+procedure TNullableTimespan.AssignMinutes(_Minutes: Double);
 begin
   AssignDays(_Minutes * OneMinute);
 end;
@@ -248,7 +248,7 @@ begin
   SetDaysAndMicroseconds(_Seconds div SecondsPerDay, (_Seconds mod SecondsPerDay) * MicrosecondsPerSecond);
 end;
 
-procedure TNullableTimespan.AssignSeconds(_Seconds: Extended);
+procedure TNullableTimespan.AssignSeconds(_Seconds: Double);
 begin
   AssignDays(_Seconds * OneSecond);
 end;
@@ -264,7 +264,7 @@ begin
   Result.Assign(_Days, _Hours, _Minutes, _Seconds, _MilliSeconds);
 end;
 
-class operator TNullableTimespan.Divide(_a: TNullableTimespan; _b: Extended): TNullableTimespan;
+class operator TNullableTimespan.Divide(_a: TNullableTimespan; _b: Double): TNullableTimespan;
 begin
   Result.AssignDays(_a.InDays / _b);
 end;
@@ -284,7 +284,7 @@ begin
   Result.AssignDays(_Days);
 end;
 
-class function TNullableTimespan.FromHours(_Hours: TNullableExtended): TNullableTimespan;
+class function TNullableTimespan.FromHours(_Hours: TNullableDouble): TNullableTimespan;
 begin
   Result.AssignHours(_Hours)
 end;
@@ -294,12 +294,12 @@ begin
   Result.AssignHoursStr(_s);
 end;
 
-class function TNullableTimespan.FromHours(_Hours: Extended): TNullableTimespan;
+class function TNullableTimespan.FromHours(_Hours: Double): TNullableTimespan;
 begin
   Result.AssignHours(_Hours);
 end;
 
-class function TNullableTimespan.FromSeconds(_Seconds: Extended): TNullableTimespan;
+class function TNullableTimespan.FromSeconds(_Seconds: Double): TNullableTimespan;
 begin
   Result.AssignSeconds(_Seconds);
 end;
@@ -320,7 +320,7 @@ begin
   end;
 end;
 
-procedure TNullableTimespan.AddHours(_Hours: Extended);
+procedure TNullableTimespan.AddHours(_Hours: Double);
 begin
   AssignHours(InHours + _Hours);
 end;
@@ -532,7 +532,7 @@ begin
   Result.AssignDays(_a.InDays * _b);
 end;
 
-class operator TNullableTimespan.Multiply(_a: TNullableTimespan; _b: Extended): TNullableTimespan;
+class operator TNullableTimespan.Multiply(_a: TNullableTimespan; _b: Double): TNullableTimespan;
 begin
   Result.AssignDays(_a.InDays * _b);
 end;

@@ -70,6 +70,7 @@ uses
   {$IFDEF SYN_COMPILER_17_UP}
   Types, UITypes,
   {$ENDIF}
+  GX_IndexTypes,
   Imm,
   SynUnicode,
   SynTextDrawer,
@@ -298,8 +299,8 @@ type
     FEdit: TCustomSynEdit;
     FOnChange: TNotifyEvent;
     procedure Notify(Ptr: Pointer; Action: TListNotification); override;
-    function GetItem(Index: Integer): TSynEditMark;
-    procedure SetItem(Index: Integer; Item: TSynEditMark);
+    function GetItem(Index: TGXListIndex): TSynEditMark;
+    procedure SetItem(Index: TGXListIndex; Item: TSynEditMark);
     property OwnsObjects;                          // This is to hide the inherited property,
   public                                           // because TSynEditMarkList always owns the marks
     constructor Create(AOwner: TCustomSynEdit);
@@ -310,7 +311,7 @@ type
     procedure GetMarksForLine(line: Integer; var Marks: TSynEditMarks);
     procedure Place(mark: TSynEditMark);
   public
-    property Items[Index: Integer]: TSynEditMark read GetItem write SetItem; default;
+    property Items[Index: TGXListIndex]: TSynEditMark read GetItem write SetItem; default;
     property Edit: TCustomSynEdit read FEdit;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
@@ -11781,12 +11782,12 @@ begin
     FOnChange(Self);
 end;
 
-function TSynEditMarkList.GetItem(Index: Integer): TSynEditMark;
+function TSynEditMarkList.GetItem(Index: TGXListIndex): TSynEditMark;
 begin
   Result := TSynEditMark(inherited GetItem(Index));
 end;
 
-procedure TSynEditMarkList.SetItem(Index: Integer; Item: TSynEditMark);
+procedure TSynEditMarkList.SetItem(Index: TGXListIndex; Item: TSynEditMark);
 begin
   inherited SetItem(Index, Item);
 end;

@@ -63,6 +63,9 @@ function DGetText(const _s: MsgIdString; const _TextDomain: DomainString = ''): 
 function dzDGetText(const _s: MsgIdString; const _TextDomain: DomainString = ''): TranslatedUnicodeString;
 /// we can't inline this function because we don't want to add gnugettext to units using it
 
+function PGetText(const _Context, _MsgId: MsgIdString): TranslatedUnicodeString;
+/// we can't inline this function because we don't want to add gnugettext to units using it
+
 ///<summary> translate using the DZLIB_TRANSLATION_DOMAIN </summary>
 function dzlibGetText(const _s: MsgIdString): TranslatedUnicodeString;
 procedure TranslateComponent(_Object: TComponent; const _TextDomain: DomainString = '');
@@ -124,6 +127,15 @@ end;
 function dzGetText(const _s: MsgIdString): TranslatedUnicodeString;
 begin
   Result := u_dzTranslator._(_s);
+end;
+
+function PGetText(const _Context, _MsgId: MsgIdString): TranslatedUnicodeString;
+begin
+{$IFDEF gnugettext}
+  Result := gnugettext.PGetText(_Context, _MsgId);
+{$ELSE}
+  Result := _MsgId;
+{$ENDIF}
 end;
 
 function DGetText(const _s: MsgIdString; const _TextDomain: DomainString = ''): TranslatedUnicodeString;

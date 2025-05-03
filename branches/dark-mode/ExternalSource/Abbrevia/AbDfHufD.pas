@@ -259,15 +259,19 @@ begin
 
   {now we know the maximum code length we can allocate our decoder
    array}
+  DecoderLen := 0; // silence compiler warning W1063
   if (FUsage <> huEncoding) then begin
     DecoderLen := PowerOfTwo[FMaxCodeLen];
     GetMem(FDecodes, DecoderLen * sizeof(longint));
     DecodesEnd := PAnsiChar(FDecodes) + (DecoderLen * sizeof(longint));
+    if Assigned(DecodesEnd) then; // silence compiler hint.
     {$IFOPT C+}
     FillChar(FDecodes^, DecoderLen * sizeof(longint), $FF);
     FMask := not (DecoderLen - 1);
     {$ENDIF}
   end;
+  if DecoderLen <> 0 then; // silence compiler hint H2077
+
 
   {calculate the start codes for each code length}
   Code := 0;
@@ -281,6 +285,7 @@ begin
   Decodes := FDecodes;
   Encodes := FEncodes;
   TablePtr := @ByteRevTable;
+  if Assigned(TablePtr) then ; // silence compiler hint.
 
   {for each symbol...}
   for Symbol := 0 to pred(aCount) do begin
