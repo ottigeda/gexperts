@@ -96,7 +96,7 @@ end;
 function NewDialog(foParent:TForm;aType:TMsgDlgType;const aCaption,aMessage,aFontName:String;buText:Array of String):Integer;
 var aMsgDlg   : TForm;
     i,buIdx   : Integer;                // Code from JON in stackoverflow Sep 13, 2024
-    dlgButton : TButton;                // slightly modified by Ralph Zornig Jan 20225
+    dlgButton : TButton;                //  slightly modified by Ralph Zornig Jan 2025
     Buttons   : TMsgDlgButtons;      
 begin
  Buttons:=[];
