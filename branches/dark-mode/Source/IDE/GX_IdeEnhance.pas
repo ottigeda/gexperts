@@ -20,10 +20,10 @@ type
     FAutoSave: Boolean;
     FAutoSaveInterval: Integer;
     // Menus
-    {$IFDEF VER150} // Delphi 7 only
+    {$IFDEF GX_COMPONENT_SELECT_BUTTON} // Delphi 7 only
     procedure SetCPTabSelectButton(Value: Boolean);
     procedure TabSelectButtonClick(Sender: TObject);
-    {$ENDIF VER150}
+    {$ENDIF GX_COMPONENT_SELECT_BUTTON}
     procedure SetAutoSave(const Value: Boolean);
     procedure SetAutoSaveInterval(const Value: Integer);
     procedure SetOIFont(Value: TFont);
@@ -169,7 +169,7 @@ uses
   SysUtils, Forms,
   GX_GenericUtils, GX_GxUtils, GX_IdeUtils, GX_OtaUtils, GX_ConfigurationInfo,
   GX_IdeSearchPathEnhancer, GX_IdeProjectOptionsEnhancer,
-  GX_IdeToolPropertiesEnhancer, GX_IdeInstallPackagesEnhancer,
+  GX_IdeToolPropertiesEnhancer, GX_IdeInstallPackagesEnhancer, GX_IdeEvaluateModifyEnhancer,
   GX_IdeObjectInspectorEnhancer, GX_IdeBuildEventsEnhancer,
   GX_IdeApplicationSettingsEnhancer, GX_IdeMessageAutoClose, GX_IdeDockFormEnhancer,
   GX_IdeSplitterVisibility;
@@ -267,6 +267,7 @@ procedure TIdeEnhancements.SetIdeFormsAllowResize(const Value: Boolean);
 begin
   FIdeFormsAllowResize := Value;
   TIDEFormEnhancements.SetAllowResize(Value and EnhanceIDEForms);
+  TGxIdeEvaluateModifyEnhancer.SetEnabled(Value);
 end;
 
 procedure TIdeEnhancements.SetIdeFormsRememberPosition(const Value: Boolean);
@@ -612,7 +613,7 @@ begin
     FCPTabsInPopupAlphaSort := Value;
 end;
 
-{$IFDEF VER150}
+{$IFDEF GX_COMPONENT_SELECT_BUTTON}
 procedure TIdeEnhancements.TabSelectButtonClick(Sender: TObject);
 var
   Button: TSpeedButton;
@@ -674,7 +675,7 @@ begin
   end;
 end;
 
-{$ELSE not VER150}
+{$ELSE not GX_COMPONENT_SELECT_BUTTON}
 
 procedure TIdeEnhancements.SetCPTabsInPopup(Value: Boolean);
 var

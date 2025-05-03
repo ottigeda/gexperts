@@ -178,6 +178,12 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 // All IDEs support this feature to some degree (though Delphi 8+ do not support multiline editor tabs)
 {$DEFINE GX_EditorEnhancements}
 
+{$IFDEF GX_DELPHI7_UP}
+  {$IFNDEF GX_DELPHI8_UP}
+    {$DEFINE GX_COMPONENT_SELECT_BUTTON}
+  {$ENDIF GX_DELPHI8_UP}
+{$ENDIF GX_DELPHI7_UP}
+
 {$IFDEF GX_DELPHI2005_UP}
   {$DEFINE GX_SUPPORTS_FOLDING}
   {. inlining in Delphi 2005 wasn't stable enough to use $DEFINE GX_SupportsInline}
@@ -259,10 +265,22 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 {$ENDIF}
 
 {$IFDEF GX_DELPHI12_UP}
-// Fix for bug #393 GExperts key mappings is removed when I unload/install another "ToolsApi" package
-// todo: Try to figure out which Delphi versions had this problem. It wasn't just Delphi 12
-{$DEFINE GX_KEYBOARD_BINDING_FIX}
+  // Fix for bug #393 GExperts key mappings is removed when I unload/install another "ToolsApi" package
+  // todo: Try to figure out which Delphi versions had this problem. It wasn't just Delphi 12
+  {$DEFINE GX_KEYBOARD_BINDING_FIX}
 {$ENDIF}
+{$IFDEF GX_DELPHI11_UP}
+  // Fix for the IDE not setting the window size correctly on startup in some display combinations
+  // (mine -- twm)
+  {$DEFINE GX_DESKTOP_SIZE_FIX}
+  {$DEFINE GX_EVAL_MODIFY_FIX}
+{$ENDIF}
+
+
+{$IF defined(GX_DELPHI2005_UP) and not defined(WIN64)}
+  {$DEFINE GX_FilterException_Enabled}
+{$IFEND}
+
 // Define UniSynEdit if SynEdit is available
 {$IFDEF SYNEDIT}
   {$DEFINE UniSynEdit}

@@ -8,7 +8,7 @@ uses
   Windows, SysUtils, Classes, Types, Forms, Messages, ActnList, Actions, Menus, ImgList,
   StdCtrls, ExtCtrls,
   Controls, ComCtrls, ToolWin, ToolsAPI, UITypes, Graphics,
-  GX_IdeDock, GX_SharedImages, GX_Experts, GX_OtaUtils, GX_ConfigurationInfo;
+  GX_IdeDock, GX_SharedImages, GX_Experts, GX_OtaUtils, GX_ConfigurationInfo, GX_ToDoOptions;
 
 const
   UM_RESIZECOLS = WM_USER + 523;
@@ -69,7 +69,6 @@ type
     function MatchesFilter(const _Filter: string): Boolean;
   end;
 
-  TToDoScanType = (tstProject, tstOpenFiles, tstDirectory, tstProjectGroup);
   TParsePasFileCallback = procedure(const FileName: string; const SComment, EComment: string;
     const CommentStr: string; LineNumber: Integer) of object;
 
@@ -201,7 +200,7 @@ uses
   u_dzVclUtils, u_dzStringUtils,
   GX_GxUtils, GX_GenericUtils, GX_EditReader,
   GX_IdeUtils,
-  GX_ToDoOptions, GX_GExperts;
+  GX_GExperts;
 
 resourcestring
   SParsingError = 'A parsing error occurred in file %s.' + sLineBreak;
@@ -1359,95 +1358,17 @@ begin
   IncCallCount;
 end;
 
-{ TODO 3 -cIssue -oAnyone: This process needs to be cleaned up.  Why store the configuration
- settings in the expert and the form?  It only makes updating both
- copies harder. }
 procedure TToDoExpert.Configure(_Owner: TWinControl);
-var
-  TodoListOptionsUnchanged: Boolean;
-
-  function HasChanged(Value: boolean): boolean;
-  begin
-    Result := not Value;
-    if Result then
-      TodoListOptionsUnchanged := False;
-  end;
-
-var
-  frm: TfmToDoOptions;
-  OldScanType: TToDoScanType;
 begin
-  TodoListOptionsUnchanged := True;
+  if not TfmToDoOptions.Execute(_Owner, FTokenList, FShowTokens, FAddMessage, FHideOnGoto,
+    FDirectoryHistoryList, FScanType, FRecurseDirScan, FDirsToScan, FFont) then
+    Exit; //==>
 
-  frm := TfmToDoOptions.Create(_Owner);
-  try
-    TForm_CenterOn(frm, _Owner);
-    FTokenList.Sort;
-    frm.lstTokens.Items.Assign(FTokenList);
-    frm.cbShowTokens.Checked := FShowTokens;
-    frm.cbAddMessage.Checked := FAddMessage;
-    frm.cbHideOnGoto.Checked := FHideOnGoto;
-    frm.cboDirectories.Items.Assign(FDirectoryHistoryList);
-    case FScanType of
-      tstProject:
-        frm.radScanProj.Checked := True;
-      tstProjectGroup:
-        frm.radScanProjGroup.Checked := True;
-      tstOpenFiles:
-        frm.radScanOpen.Checked := True;
-      tstDirectory:
-        frm.radScanDir.Checked := True;
-    end;
-    frm.chkInclude.Checked := FRecurseDirScan;
-    frm.cboDirectories.Text := FDirsToScan;
-    frm.btnFont.Font := FFont;
+  SaveSettings;
 
-    if frm.ShowModal = mrOk then
-    begin
-      // Add directory to FDirectoryHistoryList
-      AddMRUString(frm.cboDirectories.Text, FDirectoryHistoryList, True);
-
-      if HasChanged(FTokenList.Equals(frm.lstTokens.Items)) then
-        FTokenList.Assign(frm.lstTokens.Items);
-      if HasChanged(FShowTokens = frm.cbShowTokens.Checked) then
-        FShowTokens := frm.cbShowTokens.Checked;
-      if HasChanged(FAddMessage = frm.cbAddMessage.Checked) then
-        FAddMessage := frm.cbAddMessage.Checked;
-      if HasChanged(FHideOnGoto = frm.cbHideOnGoto.Checked) then
-        FHideOnGoto := frm.cbHideOnGoto.Checked;
-
-      OldScanType := FScanType;
-      if frm.radScanProj.Checked then
-        FScanType := tstProject
-      else if frm.radScanProjGroup.Checked then
-        FScanType := tstProjectGroup
-      else
-      if frm.radScanOpen.Checked then
-        FScanType := tstOpenFiles
-      else
-      if frm.radScanDir.Checked then
-        FScanType := tstDirectory;
-      HasChanged(FScanType = OldScanType);
-
-      if HasChanged(FRecurseDirScan = frm.chkInclude.Checked) then
-        FRecurseDirScan := frm.chkInclude.Checked;
-      if HasChanged(SameFileName(FDirsToScan, frm.cboDirectories.Text)) then
-        FDirsToScan := frm.cboDirectories.Text;
-
-      FFont.Assign(frm.btnFont.Font);
-      if Assigned(fmTodo) then
-        fmTodo.lvTodo.Font := FFont;
-
-      SaveSettings;
-    end;
-  finally
-    FreeAndNil(frm);
-  end;
-
-  if not TodoListOptionsUnchanged then
-  begin
-    if Assigned(fmToDo) then
-      fmToDo.RefreshTodoList;
+  if Assigned(fmToDo) then begin
+    fmToDo.lvToDo.Font := FFont;
+    fmToDo.RefreshTodoList;
   end;
 end;
 

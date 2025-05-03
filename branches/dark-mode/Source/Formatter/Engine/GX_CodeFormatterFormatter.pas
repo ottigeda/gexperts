@@ -64,7 +64,8 @@ type
     procedure UppercaseCompilerDirective(_Token: TPascalToken); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     function NoBeginTryIndent(_rType: TReservedType): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure IndentProcedureComment;
-    procedure SetPrevLineIndent(_Additional: Integer); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    procedure SetPrevLineIndent(_Value: integer); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    procedure AddToPrevLineIndent(_Additional: Integer); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure DecPrevLineIndent; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
     ///<summary>
@@ -170,7 +171,7 @@ var
 begin
   FHasAligned := True;
   OldExpr := TExpression(FTokens.Extract(_Idx));
-  Result := TAlignExpression.Create(OldExpr, _Pos);
+  Result := TAlignExpression.Create(OldExpr, _Pos, OldExpr.OrigLineNo);
   FTokens.AtInsert(_Idx, Result);
   OldExpr.Free;
 end;
@@ -364,7 +365,10 @@ begin
           Assert(False, '.AdjustSpacing');
           if FStack.HasType(rtGenericStart) then begin
             Assert(False, '.AdjustSpacing');
+            // todo: This does nothing! Is it supposed to remove any spaces?
+            //       In that case it should be SetSpace([spBefore, spAfter], False)
             _CurrentToken.SetSpace([], True);
+            _CurrentToken.SetReservedType(rtGenericEnd);
             repeat
               Assert(False, '.AdjustSpacing');
               FLastPopResType := FStack.Pop;
@@ -426,6 +430,11 @@ begin
     rtRightHook: begin
         Assert(False, '.AdjustSpacing');
         _CurrentToken.SetSpace(FSettings.SpaceRightHook, True);
+      end;
+
+    rtPropertyAccess: begin
+        if _PrevToken.ReservedType = rtGenericEnd then
+          _CurrentToken.SetSpace([spBefore], True);
       end;
   end;
 
@@ -542,7 +551,7 @@ begin
   Result := FPrevLine;
 
   for LineIdx := 0 to _NLines - 1 do begin //FI:W528
-    Result := TLineFeed.Create(0, FSettings.SpacePerIndent);
+    Result := TLineFeed.Create(0, FSettings.SpacePerIndent, -1);
     Result.SetIndent(FStack.nIndent);
     NextToken := GetToken(_AtIndex);
 
@@ -654,10 +663,16 @@ begin
   end;
 end;
 
-procedure TCodeFormatterFormatter.SetPrevLineIndent(_Additional: Integer);
+procedure TCodeFormatterFormatter.AddToPrevLineIndent(_Additional: Integer);
 begin
   if FPrevLine <> nil then
     FPrevLine.SetIndent(FStack.nIndent + _Additional + FStack.ProcLevel);
+end;
+
+procedure TCodeFormatterFormatter.SetPrevLineIndent(_Value: integer);
+begin
+  if FPrevLine <> nil then
+    FPrevLine.SetIndent(_Value);
 end;
 
 function TCodeFormatterFormatter.NoBeginTryIndent(_rType: TReservedType): Boolean;
@@ -692,7 +707,7 @@ begin
   if FPrevToken = nil then
     Exit; //==>
 
-  if FPrevToken.ReservedType = rtClass then begin
+  if IsRType(FPrevToken, rtClass) then begin
     // class procedure / function, skip "class"
     k := 2;
     Prev2 := GetToken(FTokenIdx - 2);
@@ -818,7 +833,7 @@ begin
   end;
 
   if FTokenIdx < FTokens.Count then
-    SetPrevLineIndent(_NTmp);
+    AddToPrevLineIndent(_NTmp);
 
   Dec(FTokenIdx);
 end;
@@ -873,7 +888,7 @@ begin
       ComplexIfElse(_NTmp);
   end;
 
-  SetPrevLineIndent(_NTmp);
+  AddToPrevLineIndent(_NTmp);
 end;
 
 procedure TCodeFormatterFormatter.CheckShortLine;
@@ -1022,7 +1037,7 @@ begin
 
   FStack.nIndent := FStack.GetTopIndent;
   if FPrevToken = FPrevLine then
-    SetPrevLineIndent(_NTmp);
+    AddToPrevLineIndent(_NTmp);
 
   if FSettings.FeedBeforeElse then begin
     if not TokenAtIs(FTokenIdx - 1, rtLineFeed) then begin
@@ -1033,10 +1048,10 @@ begin
 
   if FSettings.IndentTryElse and (FStack.GetTopType = rtTry) then begin
     FStack.nIndent := FStack.nIndent + 1;
-    SetPrevLineIndent(_NTmp);
+    AddToPrevLineIndent(_NTmp);
   end else if FSettings.IndentCaseElse and (FStack.GetTopType = rtOf) then begin
     FStack.nIndent := FStack.nIndent + 1;
-    SetPrevLineIndent(_NTmp);
+    AddToPrevLineIndent(_NTmp);
   end;
 
   if FStack.GetTopType = rtThen then
@@ -1071,12 +1086,28 @@ begin
     Exit; //==>
   end;
 
+  // This handles the case where "operator" is not used as a reserved word in "class operator" but
+  // as a simple identifier.
+  if FCurrentRType = rtClass then begin
+    // we currently handle "class", check the next token whether it is "operator"
+    if TryGetNextNoComment(FTokenIdx, Next) and (Next.ReservedType = rtOperatorProc) then begin
+      // Yes -> handle it like "class procedure"
+      Next.SetReservedType(rtProcedure);
+    end;
+  end;
+  if FCurrentToken.ReservedType = rtOperatorProc then begin
+    // this can only happen, if the check above for "class operator" did not change
+    // this token's ReservedType to rtProcedure
+    FCurrentToken.SetReservedType(rtNothing);
+    FCurrentRType := rtNothing;
+  end;
+
   // This handles the case where a reserved word was used as the name of a class member.
   // (Is that even allowed?)
   if (FCurrentRType in [rtWhile, rtEnd, rtRepeat, rtBegin, rtUses, rtTry,
       rtProgram, rtType, rtVar, rtConst, rtIf, rtThen, rtElse] + StandardDirectives)
     and IsRType(FPrevToken, rtDot) then begin
-    Assert(False, '.CheckIndent: SetReservedType to rtNothing');
+    Assert(False, '.CheckIndent: Set ReservedType to rtNothing');
     FCurrentToken.SetReservedType(rtNothing);
     FCurrentRType := rtNothing;
   end;
@@ -1116,7 +1147,7 @@ begin
         repeat
           FLastPopResType := FStack.Pop;
         until (FLastPopResType = rtRepeat) or FStack.IsEmpty;
-        SetPrevLineIndent(_NTmp);
+        AddToPrevLineIndent(_NTmp);
       end;
 
     rtLeftBr: begin
@@ -1213,7 +1244,7 @@ begin
           FStack.Pop;
 
         FStack.nIndent := FStack.GetTopIndent;
-        SetPrevLineIndent(_NTmp);
+        AddToPrevLineIndent(_NTmp);
         FStack.nIndent := FStack.nIndent + 1;
         FWrapIndent := False;
       end;
@@ -1227,7 +1258,9 @@ begin
       end else if (FStack.GetTopType in [rtVar, rtConst, rtType]) and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
         FStack.Pop;
         DecPrevLineIndent;
-        DecPrevLineIndent;
+        if FStack.GetTopType in [rtClass, rtClassDecl, rtRecord] then begin
+          SetPrevLineIndent(FStack.nIndent - 1);
+        end;
         FWrapIndent := False;
       end else
         FCurrentToken.SetReservedType(rtNothing);
@@ -1291,11 +1324,18 @@ begin
             Assert(False, '.CheckIndent: setting WrapIndent to True');
             FWrapIndent := True;
           end;
+
+          if (Next.ReservedType = rtFuncDirective) and (FStack.GetTopType = rtClass) and SameText(Next.Content, 'Index') then begin
+            // "Index" can be a simple identifier. That case is handled there but unfortunately
+            // that is only after the previous line feed (which is the one handled here)
+            // so we detect that case and prevent indenting it.
+            _NTmp := 0;
+          end;
         end;
 
         FPrevPrevLine := FPrevLine;
         FPrevLine := TLineFeed(FCurrentToken);
-        SetPrevLineIndent(_NTmp);
+        AddToPrevLineIndent(_NTmp);
       end;
 
     rtAsm: begin
@@ -1306,7 +1346,7 @@ begin
     rtComma: begin
         if FStack.GetTopType = rtUses then begin
           if (FSettings.NoIndentUsesComma) and (FPrevToken is TLineFeed) then
-            SetPrevLineIndent(-1)
+            AddToPrevLineIndent(-1)
           else if FSettings.FeedEachUnit then begin
             if FSettings.FeedEachUnitBeforeComma then begin
               // linefeed before comma
@@ -1363,7 +1403,7 @@ begin
 
     rtFuncDirective, rtDefault, rtPropertyAccess: begin
         Assert(False, '.CheckIndent: rtFuncDirective');
-        if FPrevToken.ReservedType in [rtProcedure, rtProcDeclare, rtDot] then begin
+        if IsRType(FPrevToken, [rtProcedure, rtProcDeclare, rtDot]) then begin
           // the previous token was 'procedure' or '.' -> it's an identifier
           // todo: What if the previous token was a line feed and the one before that was
           //       'procedure' or '.' or if there was a comment in between ?
@@ -1374,13 +1414,13 @@ begin
         end else begin
           Next := GetNextNoComment(FTokenIdx, RemoveMe);
           if Next.ReservedType = rtColon then begin
-            // followed by ':' -> Its an identifier
+            // followed by ':' -> It is an identifier
             FCurrentToken.SetReservedType(rtNothing);
           end;
         end;
       end;
 
-    rtForward: begin
+    rtForward, rtExternal: begin
         Assert(False, '.CheckIndent: rtForward');
         if FStack.GetTopType in [rtProcedure, rtProcDeclare] then begin
           // todo: This fails because rtProcDeclare is removed from the stack as soon as
@@ -1435,7 +1475,7 @@ begin
             Assert(False, '.CheckIndent: in repeat');
             // search for the first token after the function name or the closing bracket
             // procedure bla or procedure bla(...)
-			//              ^-- here              ^-- here
+            //              ^-- here              ^-- here
             Inc(RemoveMe);
             if TryGetToken(FTokenIdx + RemoveMe, Next) then
               if Next.ReservedType = rtLeftBr then begin
@@ -1445,11 +1485,11 @@ begin
                 until not TryGetToken(FTokenIdx + RemoveMe, Next) or (Next.ReservedType = rtRightBr);
               end;
           until (Next = nil) or (Next.ReservedType in [rtSemiColon, rtBegin]);
-          // we found either a semicolon or a Begin (or the end of the file)
+          // we found either a semicolon, or a 'begin' (or the end of the file)
 
           if Next <> nil then begin
             if Next.ReservedType = rtBegin then begin
-              // Begin before a SemiColon, presume that is a anonymous delegate...
+              // 'begin' before a SemiColon, assume that is a anonymous delegate...
               Assert(False, '.CheckIndent: Next.ReservedType = rtBegin');
               IsDelegate := True;
               Next.AddOption(toFeedNewLine); // Force NewLine Feed!
@@ -1464,7 +1504,7 @@ begin
               Inc(RemoveMe);
             until not TryGetToken(FTokenIdx + RemoveMe, Next) or not (Next.ReservedType in [rtLineFeed, rtComment]);
 
-            if IsRType(Next, rtForward) then begin
+            if IsRType(Next, [rtForward, rtExternal]) then begin
               Assert(False, '.CheckIndent: Next = rtForward');
               NoBlankLine := True;
             end;
@@ -1481,7 +1521,7 @@ begin
               if FStack.nIndent > 0 then begin
                 Assert(False, '.CheckIndent: Stack.nIndent > 0');
                 FStack.nIndent := 0;
-                SetPrevLineIndent(_NTmp);
+                AddToPrevLineIndent(_NTmp);
               end;
 
               FStack.ProcLevel := 0;
@@ -1501,7 +1541,7 @@ begin
 
             if FStack.nIndent = 0 then begin
               Assert(False, '.CheckIndent: Stack.nIndent=0');
-              SetPrevLineIndent(_NTmp);
+              AddToPrevLineIndent(_NTmp);
               FStack.nIndent := FStack.nIndent + 1;
             end;
           end;
@@ -1522,7 +1562,7 @@ begin
             if (not FunctDeclare) and (FStack.GetTopType <> rtClass) then begin
               Assert(False, '.CheckIndent: TopType <> rtClass');
               FStack.nIndent := 0;
-              SetPrevLineIndent(_NTmp);
+              AddToPrevLineIndent(_NTmp);
               if FSettings.IndentComments then
                 IndentProcedureComment;
             end;
@@ -1550,7 +1590,7 @@ begin
         FWrapIndent := False;
         { DecPrevIndent; }
         { nIndent := 0; }
-        SetPrevLineIndent(_NTmp);
+        AddToPrevLineIndent(_NTmp);
       end;
 
     rtBegin, rtTry: begin
@@ -1602,7 +1642,7 @@ begin
 
         FStack.Push(FCurrentRType, 1);
         if FPrevToken = FPrevLine then begin
-          SetPrevLineIndent(_NTmp);
+          AddToPrevLineIndent(_NTmp);
           DecPrevLineIndent;
         end;
 
@@ -1631,7 +1671,11 @@ begin
             FStack.Pop;
         end;
         if (FStack.GetTopType in [rtClass, rtClassDecl, rtRecord]) then begin
-          FStack.Push(FCurrentRType, 1);
+          if IsRType(FPrevToken, rtVisibility) then begin
+            FStack.Push(FCurrentRType, 0);
+          end else begin
+            FStack.Push(FCurrentRType, 1);
+          end;
         end else begin
           if (FStack.GetTopType = rtProcDeclare) then begin
             // inline function
@@ -1708,7 +1752,7 @@ begin
         end;
 
         if (FPrevToken = FPrevLine) then
-          SetPrevLineIndent(_NTmp);
+          AddToPrevLineIndent(_NTmp);
 
         if NoBeginTryIndent(FCurrentRType) then
           FStack.nIndent := FStack.nIndent + 1;
@@ -1720,7 +1764,7 @@ begin
 
         if FStack.IsEmpty and (FStack.nIndent > 0) then begin
           FStack.nIndent := 0;
-          SetPrevLineIndent(_NTmp);
+          AddToPrevLineIndent(_NTmp);
         end;
 
         AdjustSpacing(GetToken(FTokenIdx + 1), FCurrentToken, FTokenIdx + 1);
@@ -1748,7 +1792,7 @@ begin
           if FStack.GetTopType = rtUses then begin
             if (FPrevToken is TLineFeed) then begin
               if (FSettings.NoIndentUsesComma) then
-                SetPrevLineIndent(-1);
+                AddToPrevLineIndent(-1);
             end else if (FSettings.FeedEachUnit and FSettings.FeedEachUnitBeforeComma) then begin
               // if we break before the comma, also break before the semicolon
               LFeed := AssertLineFeedAfter(FTokenIdx - 1);
@@ -1767,8 +1811,9 @@ begin
             //   cdecl;
             //   overload;
             RemoveMe := 1;
-            while TryGetToken(FTokenIdx + RemoveMe, Next) and Assigned(Next) and (Next.ReservedType in [rtSemiColon, rtLineFeed, rtComment, rtFuncDirective]) do begin
-              if Next.ReservedType = rtFuncDirective then begin
+            while TryGetToken(FTokenIdx + RemoveMe, Next)
+              and IsRType(Next, [rtSemiColon, rtLineFeed, rtComment, rtFuncDirective, rtForward, rtExternal]) do begin
+              if IsRType(Next, [rtFuncDirective, rtForward, rtExternal]) then begin
                 AllowPop := False;
                 Break; //==v
               end;
@@ -1797,11 +1842,11 @@ begin
             Assert(False, '.CheckIndent: Next <> nil');
             if (Next.ReservedType = rtAbsolute)
               or ((FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass])
-              and (Next.ReservedType in [rtFuncDirective, rtForward])
+              and (Next.ReservedType in [rtFuncDirective, rtForward, rtExternal])
               and (FStack.ProcLevel = 0)) then
               FWrapIndent := True
             else if FSettings.FeedAfterSemiColon then begin
-              if not (Next.ReservedType in [rtForward, rtFuncDirective, rtDefault]) then
+              if not (Next.ReservedType in [rtForward, rtExternal, rtFuncDirective, rtDefault]) then
                 AssertLineFeedAfter(FTokenIdx);
             end;
           end;
@@ -1846,7 +1891,7 @@ begin
       Assert(False, '.CheckIndent: IndentCompDirectives');
       _NTmp := -FStack.nIndent;
       Assert(False, Format('NTmp=%d', [_NTmp]));
-      SetPrevLineIndent(_NTmp);
+      AddToPrevLineIndent(_NTmp);
     end;
 
     if FSettings.UpperCompDirectives then
@@ -1877,10 +1922,6 @@ begin
     try
       FTokenIdx := 0;
       while TryGetToken(FTokenIdx, FCurrentToken) do begin
-//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'bla') then
-//          gblAssertTraceOn := True;
-//        if (FCurrentToken is TExpression) and (FCurrentToken.GetContent = 'constructor') then
-//          gblAssertTraceOn := False;
         Assert(False, '**** .doExecute: CurrentToken(' + IntToStr(FTokenIdx) + '): ' + FCurrentToken.GetForDebug);
         Assert(False, '.doExecute: Stack.Depth: ' + IntToStr(FStack.Depth) + ' .TopType: ' + GetEnumname(TypeInfo(TReservedType), Ord(FStack.GetTopType)) + ' .TopIndent: ' + IntToStr(FStack.GetTopIndent));
         Assert(False, '.doExecute: WrapIndent: ' + Ifthen(FWrapIndent, 'True', 'False'));
@@ -1927,7 +1968,7 @@ var
     PrevPrevLine: TLineFeed;
   begin
     PrevPrevLine := FPrevLine;
-    FPrevLine := TLineFeed.Create(PrevPrevLine.OldNoOfSpaces, FSettings.SpacePerIndent);
+    FPrevLine := TLineFeed.Create(PrevPrevLine.OldNoOfSpaces, FSettings.SpacePerIndent, -1);
     FPrevLine.NoOfSpaces := PrevPrevLine.NoOfSpaces;
     FPrevLine.Wrapped := True;
     GetToken(ATokenIdx).SetSpace([spBefore], False);

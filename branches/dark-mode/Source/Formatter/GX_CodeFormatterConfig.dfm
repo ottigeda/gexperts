@@ -4,11 +4,11 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
   Caption = 'Delphi Code Formatter Configuration'
   ClientHeight = 530
   ClientWidth = 1015
-  OldCreateOrder = False
   PopupMenu = pm_Extra
   OnShow = FormShow
-  PixelsPerInch = 96
-  TextHeight = 13
+  ExplicitWidth = 1033
+  ExplicitHeight = 577
+  TextHeight = 15
   object p_Main: TPanel
     Left = 0
     Top = 0
@@ -51,11 +51,8 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Width = 16
           Height = 21
           Associate = ed_SpacePerIndent
-          Min = 0
           Max = 10
-          Position = 0
           TabOrder = 1
-          Wrap = False
         end
         object chk_IndentComments: TCheckBox
           Left = 216
@@ -234,11 +231,8 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Width = 13
           Height = 21
           Associate = ed_WrapPosition
-          Min = 0
           Max = 254
-          Position = 0
           TabOrder = 6
-          Wrap = False
         end
         object grp_AlwaysBreakLine: TGroupBox
           Left = 8

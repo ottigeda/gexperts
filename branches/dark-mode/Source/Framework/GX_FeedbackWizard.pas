@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, ComCtrls, ActnList,
-  GX_BaseForm, GX_Splitter, Actions, ShellAPI;
+  GX_BaseForm, Actions, ShellAPI;
 
 type
   TFeedbackType = (fbBug, fbFeature);
@@ -166,10 +166,6 @@ end;
 
 procedure TfmFeedbackWizard.Init(const ABugEmail, AFeatureEmail: string);
 begin
-  if IsThemingEnabled
-  then pgeMain.Style := tsButtons
-  else pgeMain.Style := tsTabs;
-
   FBugEmail := ABugEmail;
   FFeatureEmail := AFeatureEmail;
   TLabel_MakeUrlLabel(l_BugReportUrl, FBugEmail, True);
@@ -381,7 +377,6 @@ begin
   pgeMain.Style := tsButtons;
   FIDEName := GxOtaGetIDEProductIdentifier;
   SetParentBackgroundValue(pnlHeader, False);
-  Splitter.Color := GetThemedColor(clBtnFace);
 
   InitDpiScaler;
 end;
@@ -749,6 +744,24 @@ begin
   end;
 end;
 
+{$IFDEF Win64}
+function GetCPUSpeed: Extended;
+var
+  Reg: TRegistry;
+begin
+  Result := 0;
+  Reg := TRegistry.Create(KEY_QUERY_VALUE);
+  try
+    Reg.RootKey := HKEY_LOCAL_MACHINE;
+    if Reg.OpenKeyReadOnly('HARDWARE\DESCRIPTION\System\CentralProcessor\0') then begin
+      Result := Reg.ReadInteger('~MHz');
+      Reg.CloseKey;
+    end;
+  finally
+    Reg.free;
+  end;
+end;
+{$ELSE}
 function GetCPUSpeed: Extended;
 const
   DelayTime = 250;
@@ -786,6 +799,7 @@ begin
     Result := 0;
   end;
 end;
+{$ENDIF}
 
 function GetCpuInfoString: string;
 var

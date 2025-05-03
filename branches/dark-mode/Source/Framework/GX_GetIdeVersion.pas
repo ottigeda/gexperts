@@ -52,6 +52,7 @@ type
      ideRS12P1, // Rad Studio 12 Athens Patch 1
      ideRS12U1, // Rad Studio 12 Athens Update 1
      ideRS12U2, // Rad Studio 12 Athens Update 2
+     ideRS12U3, // Rad Studio 12 Athens Update 3
      // C# Builder
      ideCSB100,
      // C++Builder
@@ -1084,12 +1085,25 @@ const
   RtlBpl2900: TVersionNumber =     (Minor: 0; Major: 29; Build: 5718; Release: 50491);
   RtlBpl2900Patch1: TVersionNumber = (Minor: 0; Major: 29; Build: 6493; Release: 51211);
   RtlBpl2900Upd1:TVersionNumber = (Minor: 0; Major: 29; Build: 7529; Release: 51961);
-  RtlBpl2900Upd2:TVersionNumber = (Minor: 0; Major: 29; Build: 9782; Release: 53571);
+  RtlBpl2900Upd2:TVersionNumber = (Minor: 0; Major: 29; Build: 0329; Release: 53982);
+  RtlBpl2900Upd3:TVersionNumber = (Minor: 0; Major: 29; Build: 2017; Release: 55362);
 var
   RtlBplFileVersion: TVersionNumber;
+  RtlBplFileName : string;
 begin
-  RtlBplFileVersion := GetFileVersionNumber(GetIdeRootDirectory + 'Bin\rtl290.bpl');
-  if CompareVersionNumber(RtlBplFileVersion, RtlBpl2900Upd2) >= 0 then begin
+{$IFDEF WIN64}
+  RtlBplFileName := GetIdeRootDirectory + 'Bin64\rtl290.bpl';
+  if not FileExists(RtlBplFileName) then
+    RtlBplFileName := GetIdeRootDirectory + 'Bin64\bds.exe'; // Fallback
+{$ELSE}
+  RtlBplFileName := GetIdeRootDirectory + 'Bin\rtl290.bpl';
+  if not FileExists(RtlBplFileName) then
+    RtlBplFileName := GetIdeRootDirectory + 'Bin\bds.exe';
+{$ENDIF}
+  RtlBplFileVersion := GetFileVersionNumber(RtlBplFileName);
+  if CompareVersionNumber(RtlBplFileVersion, RtlBpl2900Upd3) >= 0 then begin
+    Result := ideRS12U3;
+  end else if CompareVersionNumber(RtlBplFileVersion, RtlBpl2900Upd2) >= 0 then begin
     Result := ideRS12U2;
   end else if CompareVersionNumber(RtlBplFileVersion, RtlBpl2900Upd1) >= 0 then begin
     Result := ideRS12U1;
@@ -1239,7 +1253,7 @@ begin
 
   {$IFDEF VER360}
     Result := GetRS12Version;
-    Assert(Result in [ideRS12, ideRS12P1, ideRS12U1, ideRS12U2]);
+    Assert(Result in [ideRS12, ideRS12P1, ideRS12U1, ideRS12U2, ideRS12U3]);
   {$ENDIF VER360}
 
   if Result = ideUnknown then
@@ -1324,6 +1338,7 @@ begin
      ideRS12P1: Result := 'RAD Studio 12 (Athens) patch 1';
      ideRS12U1: Result := 'RAD Studio 12.1 (Athens upd 1)';
      ideRS12U2: Result := 'RAD Studio 12.2 (Athens upd 2)';
+     ideRS12U3: Result := 'RAD Studio 12.3 (Athens upd 3)';
 
      ideCSB100: Result := 'C# Builder 1.00';
 

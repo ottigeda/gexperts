@@ -20,7 +20,9 @@ uses
 type
   {: TPascalToken is never instantiated }
   TPascalToken = class
+    FOrigLineNo: Integer;
   public
+    constructor Create(_OrigLineNo: Integer);
     function GetWordType: TWordType; virtual; abstract;
     procedure GetLength(var _Length: Integer); virtual; abstract;
     function Space(_Space: TSpace): Boolean; virtual;
@@ -51,6 +53,7 @@ type
     property WordType: TWordType read GetWordType;
     property Content: TGXUnicodeString read GetContent;
     property Options: TTokenOptions read GetOptions write SetOptions;
+    property OrigLineNo: Integer read FOrigLineNo;
   end;
 
   TLineFeed = class(TPascalToken)
@@ -60,7 +63,7 @@ type
     FOldNoOfSpaces: Integer;
     FWrapped: Boolean;
   public
-    constructor Create(_OldnSpaces: Integer; _SpacePerIndent: Integer);
+    constructor Create(_OldnSpaces: Integer; _SpacePerIndent: Integer; _OrigLineNo: Integer);
     function GetWordType: TWordType; override;
     procedure SetIndent(_Value: Integer);{$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure IncIndent(_Value: Integer);{$IFDEF GX_SupportsInline} inline; {$ENDIF}
@@ -85,7 +88,7 @@ type
     FReservedType: TReservedType;
     FOptions: TTokenOptions;
   public
-    constructor Create(_Type: TWordType; const _Expression: TGXUnicodeString);
+    constructor Create(_Type: TWordType; const _Expression: TGXUnicodeString; _OrigLineNo: Integer);
     procedure CheckReserved;
     procedure SetSpace(_Space: TSpaceSet; _State: Boolean); override;
     procedure SetReservedType(_ReservedType: TReservedType); override;
@@ -110,7 +113,7 @@ type
     FAlignPos: Byte;
     FNoOfSpaces: Byte;
   public
-    constructor Create(_Like: TExpression; _AlignPos: Byte);
+    constructor Create(_Like: TExpression; _AlignPos: Byte; _OrigLineNo: Integer);
     // Note: As a side effect, this adjusts FNoOfspaces
     procedure GetLength(var _Length: Integer); override;
     ///<summary>
@@ -125,6 +128,12 @@ uses
   u_dzStringUtils;
 
 { TPascalToken }
+
+constructor TPascalToken.Create(_OrigLineNo: Integer);
+begin
+  inherited Create;
+  FOrigLineNo := _OrigLineNo;
+end;
 
 function TPascalToken.GetExpression(out _Expression: TGXUnicodeString): Boolean;
 begin
@@ -213,9 +222,9 @@ end;
 
 { TExpression }
 
-constructor TExpression.Create(_Type: TWordType; const _Expression: TGXUnicodeString);
+constructor TExpression.Create(_Type: TWordType; const _Expression: TGXUnicodeString; _OrigLineNo: Integer);
 begin
-  inherited Create;
+  inherited Create(_OrigLineNo);
   FWordType := _Type;
   FSpaceType := [];
   FCaseType := rfUnchanged;
@@ -474,9 +483,9 @@ begin
   Result := rtLineFeed;
 end;
 
-constructor TLineFeed.Create(_OldnSpaces: Integer; _SpacePerIndent: Integer);
+constructor TLineFeed.Create(_OldnSpaces: Integer; _SpacePerIndent: Integer; _OrigLineNo: Integer);
 begin
-  inherited Create;
+  inherited Create(_OrigLineNo);
   FOldNoOfSpaces := _OldnSpaces;
   FSpacePerIndent := _SpacePerIndent;
   FWrapped := False;
@@ -495,12 +504,12 @@ end;
 
 { TAlignExpression }
 
-constructor TAlignExpression.Create(_Like: TExpression; _AlignPos: Byte);
+constructor TAlignExpression.Create(_Like: TExpression; _AlignPos: Byte; _OrigLineNo: Integer);
 var
   s: TGXUnicodeString;
 begin
   _Like.GetExpression(s);
-  inherited Create(_Like.FWordType, s);
+  inherited Create(_Like.FWordType, s, _OrigLineNo);
   FAlignPos := _AlignPos;
   FNoOfSpaces := 0;
   FSpaceType := _Like.FSpaceType;

@@ -21,14 +21,14 @@ type
   TCodeFormatterExpert = class
   private
     FEngine: TCodeFormatterEngine;
-    function GetSettingsName(const AFileName: string; FullText: TGXUnicodeStringList): string;
+    function GetSettingsName(const AFileName: string; FullText: TGXUnicodeString): string;
   protected
   public
     constructor Create;
     destructor Destroy; override;
     procedure Configure(_Owner: TWinControl);
     ///<summary>
-    /// @returns true if formatting was actually done </summary>
+    /// @returns True if formatting was actually done </summary>
     function Execute: Boolean;
     procedure InternalLoadSettings(_Settings: IExpertSettings);
     procedure InternalSaveSettings(_Settings: IExpertSettings);
@@ -45,11 +45,13 @@ uses
   IniFiles,
   ToolsAPI,
   u_dzStringUtils,
+  u_dzMiscUtils,
   GX_OtaUtils,
   GX_Logging,
   GX_CodeFormatterGXConfigWrapper,
   GX_CodeFormatterTypes,
   GX_CodeFormatterConfig,
+  GX_CodeFormatterSourceLineList,
   GX_CodeFormatterBookmarks,
   GX_CodeFormatterBreakpoints,
   GX_CodeFormatterDefaultSettings,
@@ -124,7 +126,7 @@ begin
   end;
 end;
 
-function TCodeFormatterExpert.GetSettingsName(const AFileName: string; FullText: TGXUnicodeStringList): string;
+function TCodeFormatterExpert.GetSettingsName(const AFileName: string; FullText: TGXUnicodeString): string;
 
   function GetFromConfigFile: string;
   var
@@ -164,7 +166,7 @@ function TCodeFormatterExpert.GetSettingsName(const AFileName: string; FullText:
   var
     FirstLine: string;
   begin
-    FirstLine := Trim(FullText[0]);
+    FirstLine := Trim(FullText);
     if SameText(Copy(FirstLine, 1, Length(cConfigDirective)), cConfigDirective) and
       (FirstLine[Length(FirstLine)] = '}') then begin
       Result := Trim(Copy(FirstLine, Length(cConfigDirective) + 1, Length(FirstLine) - Length(cConfigDirective) - 1));
@@ -221,14 +223,11 @@ resourcestring
   str_NoEditor = 'No source editor';
   str_UnsupportedFileTypeS = 'Unsupported file type: %s';
   str_UnableToGetContentsS = 'Unable to get contents of %s';
-const
-  FORMATTED_BLOCK_START = '****formatted block start****';
-  FORMATTED_BLOCK_END = '****formatted block end****';
 var
   SourceEditor: IOTASourceEditor;
   FileName: string;
   FullTextStr: TGXUnicodeString;
-  FullText: TGXUnicodeStringList;
+  FullText: TSourceLineList;
   Bookmarks: TBookmarkHandler;
   Breakpoints: TBreakpointHandler;
   i: Integer;
@@ -240,9 +239,6 @@ var
   SelStart: Integer;
   SelLength: Integer;
   FormatSelection: Boolean;
-  Position: Integer;
-  FormattedBlockStart: string;
-  FormattedBlockEnd: string;
   Logger: IgxLogger;
 begin
   Logger := CreateModuleLogger('CodeFormatter');
@@ -252,106 +248,90 @@ begin
 
   if not GxOtaTryGetCurrentSourceEditor(SourceEditor) then
     raise ECodeFormatter.Create(str_NoEditor);
+
   FileName := SourceEditor.FileName;
   if not (IsPascalSourceFile(FileName) or IsDelphiPackage(FileName) or FileMatchesExtension(FileName, '.tpl')) then
     raise ECodeFormatter.CreateFmt(str_UnsupportedFileTypeS, [ExtractFileName(FileName)]);
 
   Logger.InfoFmt('Formatting requested for "%s"', [FileName]);
-  TempSettings := nil;
-  FullText := TGXUnicodeStringList.Create;
+
+  if not GxOtaGetActiveEditorTextAsUnicodeString(FullTextStr, False) then
+    raise ECodeFormatter.CreateFmt(str_UnableToGetContentsS, [FileName]);
+
+  if FullTextStr = '' then
+    Exit; //==>
+
+  InitializeNil(TempSettings, FullText, Breakpoints, Bookmarks);
   try
-    if not GxOtaGetActiveEditorTextAsUnicodeString(FullTextStr, False) then
-      raise ECodeFormatter.CreateFmt(str_UnableToGetContentsS, [FileName]);
-    if FullTextStr = '' then
-      Exit;
-    FullText.Text := FullTextStr;
-
     Logger.Info('TCodeFormatterExpert.Execute:Save Breakpoints and bookmarks');
-    Breakpoints := nil;
     Bookmarks := TBookmarkHandler.Create;
-    try
-      Breakpoints := TBreakpointHandler.Create;
-      Breakpoints.SaveItems;
-      Bookmarks.SaveItems;
-      Logger.Info('TCodeFormatterExpert.Execute:Determine settings');
-      SettingsName := Trim(GetSettingsName(FileName, FullText));
-      if SettingsName <> '-' then begin
-        if SettingsName <> '' then begin
-          Logger.InfoFmt('Use settings "%s"', [SettingsName]);
-          TempSettings := TCodeFormatterSettings.Create;
-          if TCodeFormatterConfigHandler.GetDefaultConfig(SettingsName, TempSettings,
-            GetDefaultCapitalizationFilename) then begin
-            OrigSettings := FEngine.Settings.Settings;
-            FEngine.Settings.Settings := TempSettings.Settings;
-          end else
-            FreeAndNil(TempSettings);
-        end else
-          Logger.Info('Use default settings');
+    Bookmarks.SaveItems;
+    Breakpoints := TBreakpointHandler.Create;
+    Breakpoints.SaveItems;
 
-        Logger.Info('TCodeFormatterExpert.Execute:Format selection ?');
-        FormatSelection := False;
-        if GxOtaGetSelection(GxOtaGetTopMostEditView(SourceEditor), BlockStart, BlockEnd, SelStart, SelLength) then begin
-          FormatSelection := (SelLength > 0) and (BlockStart.Line < BlockEnd.Line);
-          if FormatSelection then begin
-            Logger.Info('TCodeFormatterExpert.Execute:Prepare to format selection');
-            FormattedBlockStart := FORMATTED_BLOCK_START;
-            FormattedBlockEnd := FORMATTED_BLOCK_END;
-            while Pos(FormattedBlockStart, FullTextStr) <> 0 do
-              FormattedBlockStart := '*' + FormattedBlockStart + '*';
-            while Pos(FormattedBlockEnd, FullTextStr) <> 0 do
-              FormattedBlockEnd := '*' + FormattedBlockEnd + '*';
-            FormattedBlockStart := '{' + FormattedBlockStart + '}';
-            FormattedBlockEnd := '{' + FormattedBlockEnd + '}';
-
-            BlockStart.Col := 1;
-            if BlockEnd.Col > 1 then begin
-              BlockEnd.Col := 1;
-              BlockEnd.Line := BlockEnd.Line + 1;
-            end;
-            Assert(BlockEnd.Line > 0, 'Blockend.Line <= 0');
-            Assert(BlockStart.Line > 0, 'BlockStart.Line <= 0');
-            FullText.Insert(BlockEnd.Line - 1, FormattedBlockEnd);
-            FullText.Insert(BlockStart.Line - 1, FormattedBlockStart);
-          end;
-        end;
-        FullTextStr := ''; // might save some memory
-        Logger.Info('TCodeFormatterExpert.Execute:Executing formatter');
-        if FEngine.Execute(FullText) then begin
-          if FormatSelection then begin
-            Logger.Info('TCodeFormatterExpert.Execute:Replace selection only');
-            FullTextStr := FullText.Text;
-            Position := Pos(FormattedBlockEnd, FullTextStr);
-            FullTextStr := Copy(FullTextStr, 1, Position - 1);
-            Position := Pos(FormattedBlockStart, FullTextStr);
-            FullTextStr := Copy(FullTextStr, Position + Length(FormattedBlockStart));
-            if Copy(FullTextStr, 1, 2) = CRLF then
-              FullTextStr := Copy(FullTextStr, 3);
-            GxOtaSelectBlock(SourceEditor, BlockStart, BlockEnd);
-            GxOtaReplaceSelection(SourceEditor, 0, FullTextStr);
-          end else begin
-            Logger.Info('TCodeFormatterExpert.Execute:Replace full text');
-            GxOtaReplaceEditorTextWithUnicodeString(SourceEditor, FullText.Text);
-          end;
-          Logger.Info('TCodeFormatterExpert.Execute:Restore breakpoints and bookmarks');
-          Breakpoints.RestoreItems;
-          Bookmarks.RestoreItems;
-          Logger.Info('TCodeFormatterExpert.Execute:Force repaints');
-          for i := 0 to SourceEditor.EditViewCount - 1 do
-            SourceEditor.EditViews[i].Paint;
-          ShowGxMessageBox(TCodeFormatterDone);
-          Result := True;
-        end else begin
-          Logger.Info('FEngine.Exeucte returned false, not changing anything');
-        end;
+    Logger.Info('TCodeFormatterExpert.Execute:Determine settings');
+    SettingsName := Trim(GetSettingsName(FileName, FullTextStr));
+    if SettingsName = '-' then begin
+      Logger.Info('Ignoring request, no settings name available');
+    end else if SettingsName = '' then begin
+      Logger.Info('Use default settings');
+    end else begin
+      Logger.InfoFmt('Use settings "%s"', [SettingsName]);
+      TempSettings := TCodeFormatterSettings.Create;
+      if TCodeFormatterConfigHandler.GetDefaultConfig(SettingsName, TempSettings,
+        GetDefaultCapitalizationFilename) then begin
+        OrigSettings := FEngine.Settings.Settings;
+        FEngine.Settings.Settings := TempSettings.Settings;
       end else
-        Logger.Info('Ignoring request, no settings name available');
-      Logger.Info('TCodeFormatterExpert.Execute:Cleanup');
-    finally
-      FreeAndNil(Breakpoints);
-      FreeAndNil(Bookmarks);
+        FreeAndNil(TempSettings);
     end;
+
+    Logger.Info('TCodeFormatterExpert.Execute:Format selection ?');
+    FormatSelection := GxOtaGetSelection(
+      GxOtaGetTopMostEditView(SourceEditor), BlockStart, BlockEnd, SelStart, SelLength);
+    if FormatSelection then
+      FormatSelection := (SelLength > 0) and (BlockStart.Line < BlockEnd.Line);
+
+    if not FormatSelection then begin
+      Logger.Info('TCodeFormatterExpert.Execute:Formatting whole file');
+      FullText := TSourceLineList.Create(FullTextStr, 0, -1);
+    end else begin
+      Logger.Info('TCodeFormatterExpert.Execute:Prepare to format selection');
+      BlockStart.Col := 1;
+      if BlockEnd.Col > 1 then begin
+        BlockEnd.Col := 1;
+        BlockEnd.Line := BlockEnd.Line + 1;
+      end;
+      Assert(BlockEnd.Line > 0, 'Blockend.Line <= 0');
+      Assert(BlockStart.Line > 0, 'BlockStart.Line <= 0');
+      FullText := TSourceLineList.Create(FullTextStr, BlockStart.Line, BlockEnd.Line);
+    end;
+    FullTextStr := ''; // might save some memory
+    Logger.Info('TCodeFormatterExpert.Execute:Executing formatter');
+    if FEngine.Execute(FullText) then begin
+      if FormatSelection then begin
+        Logger.Info('TCodeFormatterExpert.Execute:Replace selection only');
+        FullTextStr := FullText.GetFormattedBlock;
+        GxOtaSelectBlock(SourceEditor, BlockStart, BlockEnd);
+        GxOtaReplaceSelection(SourceEditor, 0, FullTextStr);
+      end else begin
+        Logger.Info('TCodeFormatterExpert.Execute:Replace full text');
+        GxOtaReplaceEditorTextWithUnicodeString(SourceEditor, FullText.Text);
+      end;
+      Logger.Info('TCodeFormatterExpert.Execute:Restore breakpoints and bookmarks');
+      Breakpoints.RestoreItems(FullText);
+      Bookmarks.RestoreItems(FullText);
+      Logger.Info('TCodeFormatterExpert.Execute:Force repaints');
+      for i := 0 to SourceEditor.EditViewCount - 1 do
+        SourceEditor.EditViews[i].Paint;
+      ShowGxMessageBox(TCodeFormatterDone);
+      Result := True;
+    end else begin
+      Logger.Info('FEngine.Exeucte returned false, not changing anything');
+    end;
+    Logger.Info('TCodeFormatterExpert.Execute:Cleanup');
   finally
-    FreeAndNil(FullText);
+    FreeAndNil(Breakpoints, Bookmarks, FullText);
     if Assigned(TempSettings) then begin
       FreeAndNil(TempSettings);
       FEngine.Settings.Settings := OrigSettings;
@@ -395,7 +375,7 @@ begin
   try
     FullText.LoadFromFile(_FileName);
 
-    SettingsName := Trim(GetSettingsName(_FileName, FullText));
+    SettingsName := Trim(GetSettingsName(_FileName, FullText.Text));
     if SettingsName <> '-' then begin
       if SettingsName <> '' then begin
         Logger.InfoFmt('Use settings "%s"', [SettingsName]);

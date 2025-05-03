@@ -58,6 +58,12 @@ type
     function GetFirstItem: _ITEM_TYPE_;
     /// short for Items[Count-1];
     function GetLastItem: _ITEM_TYPE_;
+    ///<summary>
+    /// Checks if the list is empty and returns the last item if not.
+    /// @param Item is the returned last item, only valid if Result = True
+    /// @returns True, if the list was not empty -> Item is valid
+    ///          False, if the list was empty -> Item is not valid </summary>
+    function TryGetLastItem(out _Item: _ITEM_TYPE_): Boolean;
     /// allows accessing the items in the list by index
     property Items[_Idx: integer]: _ITEM_TYPE_ read _GetItems; default;
   end;
@@ -143,6 +149,13 @@ end;
 function _DZ_LIST_TEMPLATE_.GetLastItem: _ITEM_TYPE_;
 begin
   Result := Items[Count - 1];
+end;
+
+function _DZ_LIST_TEMPLATE_.TryGetLastItem(out _Item: _ITEM_TYPE_): Boolean;
+begin
+  Result := Count <> 0;
+  if Result then
+    _Item := Items[Count - 1];
 end;
 
 function _DZ_LIST_TEMPLATE_.Add(_Item: _ITEM_TYPE_): integer;

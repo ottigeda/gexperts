@@ -16,10 +16,10 @@ object frConfigureExperts: TfrConfigureExperts
     BevelOuter = bvNone
     TabOrder = 0
     object lblFilter: TLabel
-      Left = 19
+      Left = 17
       Top = 14
-      Width = 24
-      Height = 13
+      Width = 26
+      Height = 15
       Alignment = taRightJustify
       Caption = '&Filter'
       FocusControl = edtFilter
@@ -28,7 +28,7 @@ object frConfigureExperts: TfrConfigureExperts
       Left = 50
       Top = 10
       Width = 111
-      Height = 21
+      Height = 23
       TabOrder = 0
       OnChange = edtFilterChange
       OnKeyDown = edtFilterKeyDown
@@ -129,7 +129,7 @@ object frConfigureExperts: TfrConfigureExperts
         Left = 267
         Top = 10
         Width = 126
-        Height = 22
+        Height = 23
         HotKey = 32833
         TabOrder = 1
       end

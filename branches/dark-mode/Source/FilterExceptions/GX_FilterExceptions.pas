@@ -5,7 +5,7 @@ unit GX_FilterExceptions;
 
 interface
 
-{$IFDEF GX_DELPHI2005_UP}
+{$IFDEF GX_FilterException_Enabled}
 
 uses
   SysUtils,
@@ -47,11 +47,11 @@ type
     constructor Create(_Owner: TComponent); override;
   end;
 
-{$ENDIF GX_DELPHI2005_UP}
+{$ENDIF GX_FilterException_Enabled}
 
 implementation
 
-{$IFDEF GX_DELPHI2005_UP}
+{$IFDEF GX_FilterException_Enabled}
 
 {$R *.dfm}
 
@@ -291,11 +291,11 @@ function TryGetMessageParts(const _Message: string;
     DE_WITH_MESSAGE_ = ' mit der Meldung '#39;
     DE_TAIL = #39' aufgetreten';
     FR_PROJECT_ = 'Le projet ';
-    FR_RAISED_EXCEPTION_CLASS_ = ' a dÃ©clenchÃ© la classe d''exception ';
+    FR_RAISED_EXCEPTION_CLASS_ = ' a déclenché la classe d''exception ';
     FR_WITH_MESSAGE_ = ' avec le message '#39;
     FR_TAIL = #39'.';
 // 'Im Projekt Project1.exe ist eine Exception der Klasse Exception mit der Meldung 'bla' aufgetreten.'
-// 'Le projet Project1.exe a dÃ©clenchÃ© la classe d'exception Exception avec le message 'bla'.'
+// 'Le projet Project1.exe a déclenché la classe d'exception Exception avec le message 'bla'.'
   begin
     Result := True;
     if StartsText(EN_PROJECT_, _Message) then begin
@@ -616,5 +616,5 @@ end;
 initialization
   RegisterGX_Expert(TGxFilterExceptionsExpert);
 
-{$ENDIF GX_DELPHI2005_UP}
+{$ENDIF GX_FilterException_Enabled}
 end.

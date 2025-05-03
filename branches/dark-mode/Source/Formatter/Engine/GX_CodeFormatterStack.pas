@@ -150,6 +150,11 @@ begin
     end;
 end;
 
+procedure DoNop; Assembler; Register;
+asm
+  Nop;
+end;
+
 function TCodeFormatterSegment.Pop: TReservedType;
 var
   tr: PStackRec;
@@ -167,7 +172,7 @@ begin
     tr.RT := rtNothing;
     tr.nInd := 0;
 {$ENDIF}
-    asm nop end;
+//    asm nop end;
   end else begin
     Assert(False, 'Stack.Pop: empty stack');
     FNIndent := 0;

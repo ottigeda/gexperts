@@ -20,6 +20,9 @@ type
 
 implementation
 
+uses
+  u_dzVclUtils;
+
 {$R *.dfm}
 
 { TfmCodeSearch }
@@ -27,6 +30,7 @@ implementation
 constructor TfmCodeSearch.Create(_Owner: TComponent);
 begin
   inherited;
+  TControl_SetConstraints(Self, [ccMinWidth, ccMinHeight, ccMaxHeight]);
   InitDpiScaler;
 end;
 

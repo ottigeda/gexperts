@@ -147,9 +147,10 @@ type
 
 procedure TToolPropertiesEnhancer.EnhanceForm(_Form: TForm);
 var
-  b_Export: TButton;
   HelpButton: TButton;
   CancelButton: TButton;
+  TheParent: TWinControl;
+  b_Export: TButton;
   b_Import: TButton;
   pm: TPopupMenu;
   // The macro button is a button in Delphi 2007 and a TBitBtn in 10.3, so a TCustomButton should work for all
@@ -187,12 +188,19 @@ begin
   CancelButton := _Form.FindComponent('CancelButton') as TButton;
   HelpButton := _Form.FindComponent('HelpButton') as TButton;
   MacroButton := _Form.FindComponent('MacroButton') as TCustomButton;
+
+  TheParent := _Form.FindComponent('pnMain') as TWinControl;
+  if not Assigned(TheParent) then begin
+    // Older delphi versions did not have that panel
+    TheParent := _Form;
+  end;
+
   FOrigMacroOnClick := TCustomButtonHack(MacroButton).OnClick;
   TCustomButtonHack(MacroButton).OnClick := Self.HandleMacroButtonClick;
 
   b_Export := TButton.Create(_Form);
   b_Export.Name := 'GxExportButton';
-  b_Export.Parent := _Form;
+  b_Export.Parent := TheParent;
   b_Export.Caption := 'Export ...';
   b_Export.Top := HelpButton.Top + (HelpButton.Top - CancelButton.Top);
   b_Export.Left := HelpButton.Left;
@@ -201,7 +209,7 @@ begin
 
   b_Import := TButton.Create(_Form);
   b_Import.Name := 'GxImportButton';
-  b_Import.Parent := _Form;
+  b_Import.Parent := TheParent;
   b_Import.Caption := 'Import ...';
   b_Import.Top := b_Export.Top + b_Export.Height + 4;
   b_Import.Left := HelpButton.Left;
@@ -232,7 +240,7 @@ begin
   MacroList := FForm.FindComponent('MacroList') as TListBox;
   FOrigMacroOnClick(_Sender);
   if FForm.Height > FOrigFormHeight then begin
-    CurrentDPI :=    TScreen_GetDpiForForm(FForm);
+    CurrentDPI := TScreen_GetDpiForForm(FForm);
     DesiredHeight := MulDiv(540, CurrentDPI, 96);
     Monitor := TForm_GetMonitor(FForm);
     if not Assigned(Monitor) then

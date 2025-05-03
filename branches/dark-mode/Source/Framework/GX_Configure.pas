@@ -102,8 +102,6 @@ type
     lblCachingPath: TLabel;
     edCachingPath: TEdit;
     bCachingPath: TButton;
-    chk_FontForNewForms: TCheckBox;
-    b_CustomFontForNewForms: TButton;
     l_ForceDestkopAV: TLabel;
     chkAutoCloseIgnoreHints: TCheckBox;
     chkAutoCloseIgnoreWarnings: TCheckBox;
@@ -123,6 +121,9 @@ type
     procedure chkCPTabsInPopupClick(Sender: TObject);
     procedure chkCPMultiLineClick(Sender: TObject);
     procedure chkMultiLineTabDockHostClick(Sender: TObject);
+    procedure chkAllowResizeClick(Sender: TObject);
+    procedure chkAutoCloseMessageClick(Sender: TObject);
+    procedure chkForceStartupDesktopClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btnEumerateActionsClick(Sender: TObject);
     procedure btnGetFontsClick(Sender: TObject);
@@ -135,7 +136,6 @@ type
     procedure btnExportClick(Sender: TObject);
     procedure btnUsageClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure b_CustomFontForNewFormsClick(Sender: TObject);
     procedure chkUseCustomFontClick(Sender: TObject);
   private
     FOIFont: TFont;
@@ -463,29 +463,6 @@ begin
   TfmUsageStatistics.Execute(Self);
 end;
 
-procedure TfmConfiguration.b_CustomFontForNewFormsClick(Sender: TObject);
-begin
-  dlgUIFont.Font.Height := DefFontData.Height;
-{$IFDEF GX_DELPHI2005_UP}
-  dlgUIFont.Font.Orientation := DefFontData.Orientation;
-{$ENDIF}
-  dlgUIFont.Font.Pitch := DefFontData.Pitch;
-  dlgUIFont.Font.Style := DefFontData.Style;
-  dlgUIFont.Font.Charset := DefFontData.Charset;
-  dlgUIFont.Font.Name := TFontName(DefFontData.Name);
-  if dlgUIFont.Execute then begin
-    chk_FontForNewForms.Checked := True;
-    DefFontData.Height := dlgUIFont.Font.Height;
-{$IFDEF GX_DELPHI2005_UP}
-    DefFontData.Orientation := dlgUIFont.Font.Orientation;
-{$ENDIF}
-    DefFontData.Pitch := dlgUIFont.Font.Pitch;
-    DefFontData.Style := dlgUIFont.Font.Style;
-    DefFontData.Charset := dlgUIFont.Font.Charset;
-    DefFontData.Name := TFontDataName(dlgUIFont.Font.Name);
-  end;
-end;
-
 procedure TfmConfiguration.btnHelpClick(Sender: TObject);
 var
   ActivePage: TTabSheet;
@@ -715,6 +692,11 @@ begin
   btnCPFont.Enabled := chkCPFontEnabled.Checked;
 end;
 
+procedure TfmConfiguration.chkForceStartupDesktopClick(Sender: TObject);
+begin
+  UpdateIdeDialogCheckboxes;
+end;
+
 procedure TfmConfiguration.btnFontClick(Sender: TObject);
 begin
   if Sender = btnOIFont then
@@ -729,6 +711,16 @@ begin
     if dlgFont.Execute then
       FCPFont.Assign(dlgFont.Font);
   end;
+end;
+
+procedure TfmConfiguration.chkAllowResizeClick(Sender: TObject);
+begin
+  UpdateIdeDialogCheckboxes;
+end;
+
+procedure TfmConfiguration.chkAutoCloseMessageClick(Sender: TObject);
+begin
+  UpdateIdeDialogCheckboxes;
 end;
 
 procedure TfmConfiguration.chkAutoSaveClick(Sender: TObject);
@@ -904,22 +896,27 @@ end;
 procedure TfmConfiguration.UpdateIdeDialogCheckboxes;
 var
   EnableState: Boolean;
+  EnableState2: boolean;
 begin
-  EnableState := chkEnhanceDialogs.Checked and
-                 chkEnhanceDialogs.Enabled;
-  chkAllowResize.Enabled := EnableState;
-  chkRememberPosition.Enabled := EnableState;
+  EnableState := chkEnhanceDialogs.Checked;
   chkEnhanceSearchPaths.Enabled := EnableState;
   chkEnhanceToolProperties.Enabled := EnableState;
   chkEnhanceInstallPackages.Enabled := EnableState;
   chkEnhanceDockForms.Enabled := EnableState;
   chkEnhanceBuildEventsDialog.Enabled := EnableState;
   chkEnhanceApplicationSettingsDialog.Enabled := EnableState;
+  chkAllowResize.Enabled := EnableState;
+  EnableState2 := EnableState and chkAllowResize.Checked;
+  chkRememberPosition.Enabled := EnableState2;
 {$IFDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
   chkAutoCloseMessage.Enabled := EnableState;
+  EnableState2 := EnableState and chkAutoCloseMessage.Checked;
+  chkAutoCloseIgnoreHints.Enabled := EnableState2;
+  chkAutoCloseIgnoreWarnings.Enabled := EnableState2;
 {$ENDIF}
 {$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
-  chkForceStartupDesktop.Enabled := EnableState;
+  EnableState := chkForceStartupDesktop.Checked;
+  cbxDesktop.Enabled := EnableState;
 {$ENDIF}
 end;
 

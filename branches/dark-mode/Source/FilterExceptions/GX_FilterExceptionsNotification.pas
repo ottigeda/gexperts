@@ -4,7 +4,7 @@ unit GX_FilterExceptionsNotification;
 
 interface
 
-{$IFDEF GX_DELPHI2005_UP}
+{$IFDEF GX_FilterException_Enabled}
 
 uses
   Windows,
@@ -68,11 +68,11 @@ type
     destructor Destroy; override;
   end;
 
-{$ENDIF GX_DELPHI2005_UP}
+{$ENDIF GX_FilterException_Enabled}
 
 implementation
 
-{$IFDEF GX_DELPHI2005_UP}
+{$IFDEF GX_FilterException_Enabled}
 
 {$R *.dfm}
 
@@ -553,8 +553,10 @@ begin
   // thread is suspended so we can get current address from instruction pointer register
   case IProcess.GetProcessType of
     optWin32: begin // x86
+{$IFDEF CPUX86}
         Result := IThread.OTAThreadContextEx.win32.Eip;
         SizeOfResult := SizeOf(IThread.OTAThreadContextEx.win32.Eip);
+{$ENDIF}
       end;
     optWin64: begin // x64
         Result := IThread.OTAThreadContextEx.win64.Rip;
@@ -1083,5 +1085,6 @@ initialization
   FDebugEventCritSect := TdzCriticalSection.Create;
 finalization
   FreeAndNil(FDebugEventCritSect);
-{$ENDIF GX_DELPHI2005_UP}
+{$ENDIF GX_FilterException_Enabled}
 end.
+

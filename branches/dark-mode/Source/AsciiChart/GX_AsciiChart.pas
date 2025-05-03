@@ -8,8 +8,11 @@ unit GX_AsciiChart;
 interface
 
 uses
-  Forms, ExtCtrls, Controls, Classes, StdCtrls, Menus, ComCtrls, ActnList,
-  ToolWin, ImgList, GX_BaseForm, Actions, Buttons, Graphics;
+  Windows, Messages, SysUtils,
+  Types, Forms, ExtCtrls, Controls, Classes, StdCtrls, Menus, ComCtrls, ActnList,
+  ToolWin, ImgList, Actions, Buttons, Graphics,
+  u_dzTypes,
+  GX_BaseForm;
 
 type
   TfmAsciiChart = class(TfmBaseForm)
@@ -36,6 +39,7 @@ type
     sb_Dec: TSpeedButton;
     sb_Hex: TSpeedButton;
     cbxFontName: TComboBox;
+    cbxCodePage: TComboBox;
     edFontSize: TEdit;
     updFontSize: TUpDown;
     actCharLow: TAction;
@@ -52,6 +56,7 @@ type
     btnClear: TButton;
     pb_Grid: TPaintBox;
     procedure cbxFontNameChange(Sender: TObject);
+    procedure cbxCodePageChange(Sender: TObject);
     procedure pb_GridMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -93,6 +98,11 @@ type
     FHint: THintWindow;
     FOldCharPos: Integer;
     FZoomFontSize: Integer;
+{$IFDEF UNICODE}
+    FCodePage: UInt32;
+    procedure GetCodepages;
+    procedure SetCodepage(_cp: Integer);
+{$ENDIF}
     function TryGetCharPos(MouseX, MouseY: Integer; out CharPos: Integer): Boolean; overload;
     function TryGetCharPos(MouseX, MouseY: Integer; out CharPos: Integer;
       out XPos, YPos, HorizMult, VertMult: Integer): Boolean; overload;
@@ -107,6 +117,7 @@ type
     procedure DoHint(Sender: TObject);
     procedure DoDeactivate(Sender: TObject);
     procedure doArrangeControls;
+    function GetCharAtPos(_CharPos: Integer): string;
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
@@ -124,9 +135,9 @@ implementation
 {$R *.dfm}
 
 uses
-  Windows, Messages, SysUtils, GX_Experts,
-  GX_GExperts, GX_ConfigurationInfo, GX_GxUtils, GX_GenericUtils, GX_IdeUtils,
-  GX_HintWindow;
+  StrUtils,
+  u_dzVclUtils,
+  GX_Experts, GX_GExperts, GX_ConfigurationInfo, GX_GxUtils, GX_GenericUtils, GX_IdeUtils, GX_HintWindow;
 
 type
   TAsciiChartExpert = class(TGX_Expert)
@@ -142,6 +153,16 @@ type
 
 
 const
+  CharLow: array[0..31] of string =
+    ('NUL', 'SOH', 'STX', 'ETX', 'EOT',
+    'ENQ', 'ACK', 'BEL', 'BS',
+    'TAB', 'LF', 'VT',
+    'FF', 'CR', 'SO', 'SI',
+    'DLE', 'DC1', 'DC2',
+    'DC3', 'DC4', 'NAK',
+    'SYN', 'ETB', 'CAN', 'EM',
+    'SUB', 'ESC', 'FS', 'GS',
+    'RS', 'US');
   DescLow: array[0..31] of string =
     ('Null', 'Start of Header', 'Start of Text', 'End of Text',
     'End of Transmission', 'Enquiry', 'Acknowledge', 'Bell',
@@ -173,6 +194,26 @@ begin
   Settings.WriteInteger('Zoom Font Size', FZoomFontSize);
   Settings.WriteBool('Show Hint', FShowHints);
   Settings.SaveForm('Window', Self);
+end;
+
+function TfmAsciiChart.GetCharAtPos(_CharPos: Integer): string;
+{$IFDEF UNICODE}
+var
+  raw: RawByteString;
+{$ENDIF}
+begin
+  if _CharPos < 32 then
+    Result := CharLow[_CharPos]
+  else begin
+{$IFDEF UNICODE}
+    SetLength(raw, 1);
+    Byte(raw[1]) := _CharPos;
+    System.SetCodepage(raw, FCodePage, False);
+    Result := string(raw);
+{$ELSE}
+   Result := Char(_CharPos);
+{$ENDIF}
+  end;
 end;
 
 procedure TfmAsciiChart.pb_GridPaint(Sender: TObject);
@@ -215,6 +256,7 @@ begin
   { Draw in the characters 0-31 if required }
   cnv.Font.Color := GetThemedColor(clWindowText);
   if FStartCharacter = 0 then begin
+    // todo: Use CharLow array in a for loop
     DrawCharacter(cnv, 0,  'NUL', HorizMult, VertMult); // Ctrl @, NULL
     DrawCharacter(cnv, 1,  'SOH', HorizMult, VertMult); // Ctrl A, Start of Header
     DrawCharacter(cnv, 2,  'STX', HorizMult, VertMult); // Ctrl B, Start of Text
@@ -253,8 +295,9 @@ begin
   cnv.Font.Size := FDisplayFontSize;
   cnv.Font.Name := FFontName;
 
-  for i := Start to 127 do
-    DrawCharacter(cnv, i, Char(FStartCharacter + i), HorizMult, VertMult);
+  for i := Start to 127 do begin
+    DrawCharacter(cnv, i, GetCharAtPos(FStartCharacter+i), HorizMult, VertMult);
+  end;
 
   { Draw the boxes on the screen }
   { Only two colour assignments to cnv speeds things up }
@@ -344,9 +387,22 @@ begin
   else
   begin
     if TryGetCharPos(X, Y, Charpos) then begin
-      eChars.SelText := Char(CharPos);
+      eChars.SelText := GetCharAtPos(CharPos);
     end;
   end;
+end;
+
+procedure TfmAsciiChart.cbxCodePageChange(Sender: TObject);
+{$IFDEF UNICODE}
+var
+  Idx: Integer;
+begin
+  Idx := cbxCodePage.ItemIndex;
+  FCodePage := Integer(cbxCodePage.Items.Objects[Idx]);
+  pb_Grid.Invalidate;
+{$ELSE}
+begin
+{$ENDIF}
 end;
 
 procedure TfmAsciiChart.cbxFontNameChange(Sender: TObject);
@@ -385,7 +441,7 @@ begin
   DC := GetDC(0);
   try
     sl := TStringList.Create;
-    EnumFontFamiliesEx(DC, LFont, @EnumFontsProc, Longint(sl), 0);
+    EnumFontFamiliesEx(DC, LFont, @EnumFontsProc, LPARAM(sl), 0);
 
     sl.Sort;
     // move all fonts starting with '@' to the end of the list
@@ -424,6 +480,62 @@ begin
   end;
 end;
 
+{$IfDEF UNICODE}
+var
+  Codepages: TStringList = nil;
+
+function GetCPName(cp: Cardinal): string;
+var
+  CpInfoEx: TCPInfoEx;
+begin
+  Result := '';
+  if IsValidCodePage(cp) then begin
+    GetCPInfoEx(cp, 0, CpInfoEx);
+    Result := Format('%s', [CpInfoEx.CodePageName]);
+    Result := TrimLeft(ReplaceStr(Result, IntToStr(cp) + ' ', ''));
+    Result := Copy(Result, 2, Length(Result) - 2);
+  end;
+end;
+
+function CodePageEnumProc(CodePage: PChar): Cardinal; stdcall;
+var
+ cp: uint32;
+  CpName: string;
+begin
+  cp := StrToIntDef(CodePage, 0);
+  if cp > 0 then begin
+    CpName := GetCPName(cp);
+    Codepages.AddObject(CpName, Pointer(cp));
+  end;
+  Result := 1;
+end;
+
+procedure TfmAsciiChart.GetCodepages;
+begin
+  Codepages := TStringList.Create;
+  try
+    EnumSystemCodePages(@CodePageEnumProc, CP_INSTALLED);
+    cbxCodePage.Items.Assign(Codepages);
+  finally
+    FreeAndNil(Codepages);
+  end;
+end;
+
+procedure TfmAsciiChart.SetCodepage(_cp: Integer);
+var
+  i: Integer;
+  Items: TStrings;
+begin
+  Items := cbxCodePage.Items;
+  for i := 0 to Items.Count do begin
+    if Integer(Items.Objects[i]) = _cp then begin
+      cbxCodePage.ItemIndex := i;
+      Exit;
+    end;
+  end;
+end;
+{$ENDIF}
+
 procedure TfmAsciiChart.pb_GridMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 { Charpos is the ordinal value of the cell clicked on }
 var
@@ -444,11 +556,7 @@ begin
     if FShowHints then begin
       FHint := TGxHintWindow.Create(Self);
       FHint.Color := GetThemedColor(clInfoBk);
-      if (FStartCharacter = 0) and (CharPos < 32) then begin
-        HintText := DescLow[CharPos];
-      end else begin
-        HintText := Char(CharPos);
-      end;
+      HintText := GetCharAtPos(CharPos);
       HintFont := FHint.Canvas.Font;
       HintFont.Charset := DEFAULT_CHARSET;
       HintFont.Name := FFontName;
@@ -735,6 +843,13 @@ begin
   updFontSize.Max := MaximumDisplayFontSize;
   updFontSize.Min := MinimumDisplayFontSize;
 
+{$IFDEF UNICODE}
+  FCodePage := GetACP;
+  GetCodepages;
+{$ELSE}
+  cbxCodePage.Visible := False;
+{$ENDIF}
+
   InitDpiScaler;
 
   doArrangeControls;
@@ -755,6 +870,10 @@ begin
 
   updFontSize.Position := FDisplayFontSize;
   SetFontName(FFontName);
+{$IFDEF UNICODE}
+  SetCodepage(FCodePage);
+{$ENDIF}
+
   eChars.Font.Name := FFontName;
   EnsureFormVisible(Self);
 
@@ -769,19 +888,32 @@ begin
   fmAsciiChart := nil;
 end;
 
+function TControl_Right(_ctrl: TControl): Integer;
+begin
+  Result := _ctrl.Left + _ctrl.Width;
+end;
+
 procedure TfmAsciiChart.doArrangeControls;
 var
   Spacer: Integer;
 begin
   Spacer := FScaler.Calc(8);
   sb_Low.Left := 0;
-  sb_High.Left := sb_Low.Left + sb_Low.Width + 1;
-  sb_Dec.Left := sb_High.Left + sb_High.Width + Spacer;
-  sb_Hex.Left := sb_Dec.Left + sb_Dec.Width + 1;
+  sb_High.Left := TControl_Right(sb_Low) + 1;
 
-  edFontSize.Left := cbxFontName.Left + cbxFontName.Width + Spacer;
-  eChars.Left := edFontSize.Left + edFontSize.Width + updFontSize.Width + Spacer;
-  btnClear.Left := eChars.Left + eChars.Width + 1;
+  sb_Dec.Left := TControl_Right(sb_High) + Spacer;
+  sb_Hex.Left := TControl_Right(sb_Dec) + 1;
+
+  cbxFontName.Left := TControl_Right(sb_Hex) + Spacer;
+{$IFDEF UNICODE}
+  cbxCodePage.Left := TControl_Right(cbxFontName) + Spacer;
+  edFontSize.Left := TControl_Right(cbxCodePage) + Spacer;
+{$ELSE}
+  edFontSize.Left := TControl_Right(cbxFontName) + Spacer;
+{$ENDIF}
+
+  eChars.Left := TControl_Right(edFontSize) + updFontSize.Width + Spacer;
+  btnClear.Left := TControl_Right(eChars) + 1;
 
   actFontSize8.Caption := Format('Font size: %d', [FScaler.Calc(8)]);
   actFontSize10.Caption := Format('Font size: %d', [FScaler.Calc(10)]);

@@ -55,7 +55,7 @@ const
 
 type
   TReservedType = (rtNothing, rtReserved, rtOper, rtDirective,
-    rtIf, rtDo, rtWhile, rtOn, rtVar, rtType, rtProcedure, rtAsm, rtTry,
+    rtIf, rtDo, rtWhile, rtOn, rtVar, rtType, rtProcedure, rtOperatorProc, rtAsm, rtTry,
     rtExcept,
     rtEnd, rtBegin, rtCase, rtOf, rtLineFeed, rtColon, rtSemiColon,
     rtThen, rtClass, rtClassDecl, rtProgram, rtRepeat, rtUntil, rtRecord,
@@ -63,10 +63,10 @@ type
     rtLeftBr, rtRightBr, rtLeftHook, rtRightHook, rtMathOper, rtAssignOper,
     rtMinus, rtPlus,
     rtLogOper, rtEquals, rtForward, rtDefault, rtInitialization, rtComma,
-    rtUses, rtProcDeclare, rtFuncDirective, rtPropertyAccess, rtAbsolute, rtComment, rtRecCase, rtDot,
+    rtUses, rtProcDeclare, rtFuncDirective, rtExternal, rtPropertyAccess, rtAbsolute, rtComment, rtRecCase, rtDot,
     rtCompIf, rtDotDot,
     rtCompElse, rtCompEndif,
-    rtGenericStart,
+    rtGenericStart, rtGenericEnd,
     rtConst);
 
 type
@@ -200,7 +200,7 @@ begin
   Add('experimental', rtFuncDirective);
   Add('export', rtFuncDirective);
   Add('exports', rtUses);
-  Add('external', rtForward);
+  Add('external', rtExternal);
   Add('far', rtFuncDirective);
   Add('file', rtReserved);
   Add('final', rtFuncDirective);
@@ -231,15 +231,10 @@ begin
   Add('nil', rtReserved);
   Add('nodefault', rtFuncDirective);
   Add('not', rtOper);
-  // todo: "object" can also be a function directive:
-  //   of object
-  // and
-  //   procedure FunctionName; cdecl; external object 'ObjectFile.o' name '_FunctionName';
-  // The use of "object" for class declaration has been deprecated for years.
   Add('object', rtClass);
   Add('of', rtOf);
   Add('on', rtOn);
-  Add('operator', rtProcedure);
+  Add('operator', rtOperatorProc);
   Add('or', rtOper);
   Add('out', rtReserved);
   Add('overload', rtFuncDirective);

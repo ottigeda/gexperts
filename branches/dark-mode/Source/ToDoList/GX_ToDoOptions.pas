@@ -7,7 +7,11 @@ interface
 {$I GX_CondDefine.inc}
 
 uses
-  Classes, Controls, StdCtrls, Forms, GX_BaseForm, Dialogs;
+  Classes, Controls, StdCtrls, Forms, Graphics, Dialogs,
+  GX_BaseForm;
+
+type
+  TToDoScanType = (tstProject, tstOpenFiles, tstDirectory, tstProjectGroup);
 
 type
   TfmToDoOptions = class(TfmBaseForm)
@@ -50,7 +54,23 @@ type
     procedure UpdateButtonState;
     procedure DirEnable(New: Boolean);
     procedure HandleDirectoriesDropped(_Sender: TObject; _Files: TStrings);
+    procedure SetData(_TokenList: TStringList;
+      _ShowTokens: Boolean; _AddMessage: Boolean; _HideOnGoto: Boolean;
+      _DirectoryHistoryList: TStringList;
+      _ScanType: TToDoScanType; _RecurseDirScan: Boolean; _DirsToScan: string;
+      _Font: TFont);
+    procedure GetData(_TokenList: TStringList;
+      out _ShowTokens: Boolean; out _AddMessage: Boolean; out _HideOnGoto: Boolean;
+      _DirectoryHistoryList: TStringList;
+      out _ScanType: TToDoScanType; out _RecurseDirScan: Boolean; out _DirsToScan: string;
+      _Font: TFont);
   public
+    class function Execute(_Owner: TWinControl;
+      _TokenList: TStringList;
+      var _ShowTokens: Boolean; var _AddMessage: Boolean; var _HideOnGoto: Boolean;
+      _DirectoryHistoryList: TStringList;
+      var _ScanType: TToDoScanType; var _RecurseDirScan: Boolean; var _DirsToScan: string;
+      _Font: TFont): Boolean;
     constructor Create(_Owner: TComponent); override;
   end;
 
@@ -61,7 +81,32 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Graphics, u_dzVclUtils, GX_GenericUtils, GX_ToDo;
+  SysUtils, u_dzVclUtils, GX_GenericUtils, GX_ToDo;
+
+class function TfmToDoOptions.Execute(_Owner: TWinControl;
+  _TokenList: TStringList;
+  var _ShowTokens: Boolean; var _AddMessage: Boolean; var _HideOnGoto: Boolean;
+  _DirectoryHistoryList: TStringList;
+  var _ScanType: TToDoScanType; var _RecurseDirScan: Boolean; var _DirsToScan: string;
+  _Font: TFont): Boolean;
+var
+  frm: TfmToDoOptions;
+begin
+  frm := TfmToDoOptions.Create(_Owner);
+  try
+    TForm_CenterOn(frm, _Owner);
+
+    frm.SetData(_TokenList, _ShowTokens, _AddMessage, _HideOnGoto, _DirectoryHistoryList,
+      _ScanType, _RecurseDirScan, _DirsToScan, _Font);
+    Result := (frm.ShowModal = mrok);
+    if Result then begin
+      frm.GetData(_TokenList, _ShowTokens, _AddMessage, _HideOnGoto, _DirectoryHistoryList,
+        _ScanType, _RecurseDirScan, _DirsToScan, _Font);
+    end;
+  finally
+    FreeAndNil(frm);
+  end;
+end;
 
 procedure TfmToDoOptions.UpdateButtonState;
 var
@@ -119,12 +164,15 @@ var
   TokenInfo: TTokenInfo;
   TokenString: string;
 begin
-  TokenString := Trim(edToken.Text);
-  if TokenString <> '' then
-  begin
-    if TokenString[1] = '$' then
-    begin
-      MessageDlg(SLeadingDollarNotAllowed, mtError, [mbOk], 0);
+  try
+    TokenString := Trim(edToken.Text);
+    if TokenString = '' then begin
+      MessageDlg(SEmptyTokenTextError, mtError, [mbOK], 0);
+      Exit; //==>
+    end;
+
+    if TokenString[1] = '$' then begin
+      MessageDlg(SLeadingDollarNotAllowed, mtError, [mbOK], 0);
       Exit;
     end;
 
@@ -132,13 +180,9 @@ begin
     TokenInfo.Token := TokenString;
     TokenInfo.Priority := TTodoPriority(cboPriority.ItemIndex);
     lstTokens.Items.AddObject(TokenInfo.Token, TokenInfo);
-  end
-  else
-  begin
-    // Warning message that an empty token is inserted
-    MessageDlg(SEmptyTokenTextError, mtError, [mbOK], 0);
+  finally
+    UpdateButtonState;
   end;
-  UpdateButtonState;
 end;
 
 procedure TfmToDoOptions.btnRemoveClick(Sender: TObject);
@@ -231,6 +275,60 @@ end;
 procedure TfmToDoOptions.radScanDirClick(Sender: TObject);
 begin
   DirEnable(radScanDir.Checked);
+end;
+
+procedure TfmToDoOptions.GetData(_TokenList: TStringList; out _ShowTokens, _AddMessage,
+  _HideOnGoto: Boolean; _DirectoryHistoryList: TStringList; out _ScanType: TToDoScanType;
+  out _RecurseDirScan: Boolean; out _DirsToScan: string; _Font: TFont);
+begin
+  // Add directory to FDirectoryHistoryList
+  AddMRUString(cboDirectories.Text, _DirectoryHistoryList, True);
+
+  _TokenList.Assign(lstTokens.Items);
+  _ShowTokens := cbShowTokens.Checked;
+  _AddMessage := cbAddMessage.Checked;
+  _HideOnGoto := cbHideOnGoto.Checked;
+
+  if radScanProj.Checked then
+    _ScanType := tstProject
+  else if radScanProjGroup.Checked then
+    _ScanType := tstProjectGroup
+  else if radScanOpen.Checked then
+    _ScanType := tstOpenFiles
+  else if radScanDir.Checked then
+    _ScanType := tstDirectory;
+
+  _RecurseDirScan := chkInclude.Checked;
+  _DirsToScan := cboDirectories.Text;
+
+  _Font.Assign(btnFont.Font);
+end;
+
+procedure TfmToDoOptions.SetData(_TokenList: TStringList;
+  _ShowTokens: Boolean; _AddMessage: Boolean; _HideOnGoto: Boolean;
+  _DirectoryHistoryList: TStringList;
+  _ScanType: TToDoScanType; _RecurseDirScan: Boolean; _DirsToScan: string;
+  _Font: TFont);
+begin
+  _TokenList.Sort;
+  lstTokens.Items.Assign(_TokenList);
+  cbShowTokens.Checked := _ShowTokens;
+  cbAddMessage.Checked := _AddMessage;
+  cbHideOnGoto.Checked := _HideOnGoto;
+  cboDirectories.Items.Assign(_DirectoryHistoryList);
+  case _ScanType of
+    tstProject:
+      radScanProj.Checked := True;
+    tstProjectGroup:
+      radScanProjGroup.Checked := True;
+    tstOpenFiles:
+      radScanOpen.Checked := True;
+    tstDirectory:
+      radScanDir.Checked := True;
+  end;
+  chkInclude.Checked := _RecurseDirScan;
+  cboDirectories.Text := _DirsToScan;
+  btnFont.Font := _Font;
 end;
 
 end.

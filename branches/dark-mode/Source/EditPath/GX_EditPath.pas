@@ -780,8 +780,12 @@ begin
     end else begin
       Result := False;
     end;
-  end else
+  end else begin
+    // todo: Instead of raising an exception, we should build a list of default
+    //       configurations. It's really annoying that can't call the configuration
+    //       dialog for this expert if no project is available.
     raise Exception.Create('no project available');
+  end;
 end;
 
 procedure TPanel_SetBevelEdges(_pnl: TPanel; _Bevels: TBevelEdges);
