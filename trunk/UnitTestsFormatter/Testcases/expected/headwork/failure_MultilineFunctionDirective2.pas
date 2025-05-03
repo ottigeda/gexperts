@@ -5,7 +5,7 @@ interface
 function RegisterClipboardFormatW(lpszFormat: PWideChar): UINT;
   stdcall;
   external user32
-  Name 'RegisterClipboardFormatW';
+  name 'RegisterClipboardFormatW';
 
 implementation
 
