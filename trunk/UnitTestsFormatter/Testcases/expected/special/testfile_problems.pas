@@ -147,10 +147,10 @@ end;
 function LoadLibrary16(LibraryName: PChar): THandle;
   stdcall;
   external Kernel32
-Index
-35;
+  index
+  35;
 
-function AbortSystemShutdownA; external 'test.dll' Name 'AbortSystemShutdownA';
+function AbortSystemShutdownA; external 'test.dll' name 'AbortSystemShutdownA';
 
 var
   Ctl3DRegister: function(Instance: THandle): BOOL stdcall;
