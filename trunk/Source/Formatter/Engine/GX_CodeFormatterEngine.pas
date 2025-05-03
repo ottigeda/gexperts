@@ -101,8 +101,8 @@ begin
       end;
 
       // We now have got a string list with the formatted code where the object pointer
-      // is the line number from the original source code. NIL means we don't have an
-      // orignial line number.
+      // is the line number from the original source code. NIL means we don't have the
+      // original line number.
       NewSource := _SourceCode.Text;
       Result := SourceDifferentApartFromTrailingLineBreak(OrigSource, NewSource);
     except
