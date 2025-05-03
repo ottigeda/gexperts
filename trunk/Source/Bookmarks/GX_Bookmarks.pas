@@ -966,6 +966,6 @@ end;
 
 initialization // -----------------------------------------------------------------------
 
-// RegisterGX_Expert(TBookmarksExpert);
+RegisterGX_Expert(TBookmarksExpert);
 
 end.
