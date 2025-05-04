@@ -704,8 +704,13 @@ end;
 class function TExpertManagerExpert.GetExpertsRegKeyName(IsEnabled: Boolean; var Section: string): string;
 const
   // Do not localize.
+{$IFDEF WIN64}
+  EnabledExpertRegistryLocation = 'Experts x64';
+  DisabledExpertRegistryLocationSection = 'DisabledExperts x64';
+{$ELSE}
   EnabledExpertRegistryLocation = 'Experts';
   DisabledExpertRegistryLocationSection = 'DisabledExperts';
+{$ENDIF}
 begin
   if IsEnabled then
   begin

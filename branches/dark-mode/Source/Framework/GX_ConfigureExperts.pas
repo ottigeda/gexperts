@@ -809,8 +809,8 @@ end;
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure TfrConfigureExperts.ArrangeControls;
 begin
-  if Name = 'frmConfigureEditorExperts' then
-    asm nop end;
+//  if Name = 'frmConfigureEditorExperts' then
+//    asm nop end;
   tim_Resize.Enabled := False;
   tim_Resize.Enabled := True;
 end;

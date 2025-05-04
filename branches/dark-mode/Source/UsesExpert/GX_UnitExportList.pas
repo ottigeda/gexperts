@@ -13,6 +13,7 @@ uses
 {$IFDEF unicode}
   AnsiStrings,
 {$ENDIF}
+  GX_IndexTypes,
   u_dzTypes;
 
 const
@@ -42,7 +43,7 @@ type
     FItems: TObjectList;
     FIsSorted: Boolean;
   protected
-    function CompareItems(_Idx1, _Idx2: Integer): Integer; virtual; abstract;
+    function CompareItems(_Idx1, _Idx2: TGXListIndex): Integer; virtual; abstract;
     function CompareToItem(const _Key; _Idx: Integer): Integer;
   public
     constructor Create(_Capacity: Integer);
@@ -61,7 +62,7 @@ type
   private
     function GetItems(_Idx: Integer): TUnitIdentifier;
   protected
-    function CompareItems(_Idx1, _Idx2: Integer): Integer; override;
+    function CompareItems(_Idx1, _Idx2: TGXListIndex): Integer; override;
   public
     function Add(const _Identifier: AnsiString; _LineNo: Integer): Integer;
     ///<summary>
@@ -86,7 +87,7 @@ type
   private
     function GetItems(_Idx: Integer): TUnitExport;
   protected
-    function CompareItems(_Idx1, _Idx2: Integer): Integer; override;
+    function CompareItems(_Idx1, _Idx2: TGXListIndex): Integer; override;
   public
     function Add(const _Identifier: AnsiString; const _Filename: string; _LineNo: Integer): Integer;
     property Items[_Idx: Integer]: TUnitExport read GetItems; default;
@@ -346,7 +347,7 @@ end;
 
 { TUnitExportlist }
 
-function TUnitExportlist.CompareItems(_Idx1, _Idx2: Integer): Integer;
+function TUnitExportlist.CompareItems(_Idx1, _Idx2: TGXListIndex): Integer;
 var
   Item1: TUnitExport;
   Item2: TUnitExport;
@@ -380,7 +381,7 @@ begin
   FIsSorted := False;
 end;
 
-function TUnitIdentifierList.CompareItems(_Idx1, _Idx2: Integer): Integer;
+function TUnitIdentifierList.CompareItems(_Idx1, _Idx2: TGXListIndex): Integer;
 var
   Item1: TUnitIdentifier;
   Item2: TUnitIdentifier;
