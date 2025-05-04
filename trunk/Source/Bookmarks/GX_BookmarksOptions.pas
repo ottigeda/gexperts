@@ -1,5 +1,7 @@
 unit GX_BookmarksOptions;
 
+{$I GX_CondDefine.inc}
+
 interface { --------------------------------------------------------------------------- }
 
 uses Windows,Messages,SysUtils,Classes,Graphics,Controls,Forms,Dialogs,StdCtrls,ExtCtrls,
@@ -40,9 +42,7 @@ type TfoBookmarksOptions = class(TfmBaseForm)
                             procedure ColorDialogShow            (Sender:TObject);
 
                             procedure FormKeyDown                (Sender:TObject;var Key:Word;Shift:TShiftState);
-                            procedure FormCreate                 (Sender:TObject);
                             procedure FormShow                   (Sender:TObject);
-                            procedure FormDestroy                (Sender:TObject);
 
                            private
 
@@ -55,15 +55,11 @@ type TfoBookmarksOptions = class(TfmBaseForm)
                             procedure LoadCustomColors           (ColorDialog:TColorDialog);
                             procedure SaveCustomColors           (ColorDialog:TColorDialog);
 
-                           protected
-
-                            procedure CreateWnd;                                             override;
-                            procedure CreateParams               (var Params:TCreateParams); override;
-
                            public
 
                             class function Execute               (Owner:TWinControl):Boolean;
                             constructor    Create                (Owner:TComponent); override;
+                            destructor     Destroy; override;
 
                            end;
 
@@ -259,32 +255,10 @@ begin
  if Key=vk_F1 then imF1Click(nil);
 end;
 
-procedure TfoBookmarksOptions.FormCreate(Sender:TObject);
-begin
- inherited;
- BorderIcons:=[biSystemMenu];
- BorderStyle:=bsSizeable;
- AutoScroll :=false;
-end;
-
-procedure TfoBookmarksOptions.CreateParams(var Params:TCreateParams);
-begin
- inherited CreateParams(Params);
- Params.ExStyle:=Params.ExStyle or WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE;
-end;
-
-procedure TfoBookmarksOptions.CreateWnd;
-begin
- inherited;
- SendMessage(Handle,WM_SETICON,1,0);
-end;
-
 procedure TfoBookmarksOptions.FormShow(Sender:TObject);
 begin
  LoadSettings;
  LoadPositionAndUserColors;
- Width :=270;
- Height:=348;
  EnsureFormVisible(Self);
 
  if not(FileExists(ConfigInfo.ConfigPath+HLP_HelpFileName)) then begin
@@ -301,15 +275,23 @@ constructor TfoBookmarksOptions.Create(Owner:TComponent);
 begin
  inherited;
  InitDPIScaler;
+
+{$IFDEF GX_DELPHIXE3_UP}
+ // alternatively we could use the same TPanel interceptor class as the Grep Results Options dialog
+ paLBcolorBkg.StyleElements := [];
+ paLBcolorBMline.StyleElements := [];
+ paHeaderBkColor.StyleElements := [];
+{$ENDIF}
  paColorBase.Color:=Color;
  FUserColors:=TStringList.Create;
 end;
 
-procedure TfoBookmarksOptions.FormDestroy(Sender:TObject);
+destructor TfoBookmarksOptions.Destroy;
 begin
- inherited;
  FUserColors.Free;
+ inherited;
 end;
+
 
 // ......................................................................................
 end.

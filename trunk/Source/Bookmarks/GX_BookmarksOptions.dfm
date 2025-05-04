@@ -10,8 +10,6 @@ inherited foBookmarksOptions: TfoBookmarksOptions
   KeyPreview = True
   OldCreateOrder = True
   Position = poDefault
-  OnCreate = FormCreate
-  OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
