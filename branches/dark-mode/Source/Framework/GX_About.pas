@@ -72,7 +72,10 @@ uses
   SysUtils, Graphics, ToolsApi, Messages,
   u_dzVclUtils,
   GX_GxUtils,
-  GX_GenericUtils, GX_FeedbackWizard, GX_LibrarySource, GX_GetIdeVersion;
+{$IFNDEF GX_STANDALONE}
+  GX_GetIdeVersion,
+{$ENDIF}
+  GX_GenericUtils, GX_FeedbackWizard, GX_LibrarySource;
 
 const
   DefaultBugEmail = 'https://bugs.dummzeuch.de/';  // Do not localize.
@@ -149,7 +152,11 @@ end;
 procedure TfmAbout.InitVersionInfoControls;
 begin
   lblVersion.Caption := GetVersionStr;
+{$IF declared(GetBorlandIdeVersionStr)}
   lblIdeVersion.Caption := 'running in ' + GetBorlandIdeVersionStr;
+{$ELSE}
+  lblIdeVersion.Visible := False;
+{$IFEND}
 end;
 
 class procedure TfmAbout.SetCustomBuildDetails(const Details: string);

@@ -1,14 +1,5 @@
 unit GX_CheckButton;
 
-{ This unit provides:
-  - TGXCheckButton: A CheckBox-like component, which looks like a TButton;
-    similar to TSpeedButton, but with keyboard focus control.
-  - TGXCheckButtonGroup: Group TGXCheckButtons to behave like a RadioGroup.
-  - TGXCheckButtonStyleHook for themed drawing.
-}
-
-{$I GX_CondDefine.inc}
-
 interface
 
 uses
@@ -69,9 +60,7 @@ uses
   Types,
   Windows,
   SysUtils,
-  Graphics,
-  GX_IdeUtils
-  ;
+  Graphics;
 
 {$IFDEF GX_SUPPORTS_THEMING}
 type
@@ -82,50 +71,12 @@ type
 
 { TGXCheckButtonStyleHook }
 
-const
-  Pattern : array[0..7] of Word = (
-    $5555, $AAAA, $5555, $AAAA
-   ,$5555, $AAAA, $5555, $AAAA
-  );
-
 procedure TGXCheckButtonStyleHook.DrawButton(ACanvas: TCanvas; AMouseInControl: Boolean);
 var
   LStyle  : TCustomStyleServices;
   Details : TThemedElementDetails;
   LControl: TGXCheckButton;
   R       : TRect;
-
-  procedure GXDrawFocusRect(DC: HDC; R: TRect);
-  var
-    hbmpPattern : HBITMAP;
-    hbrPattern  : HBRUSH;
-    hbrOriginal : HBRUSH;
-    cx, cy      : Integer;
-    nSaved      : Integer;
-  begin
-    nSaved := SaveDC(DC);
-    hbmpPattern := CreateBitmap(8, 8, 1, 1, @Pattern);
-    hbrPattern  := CreatePatternBrush(hbmpPattern);
-    hbrOriginal := SelectObject(DC, hbrPattern);
-
-    SetBkColor(DC,   ColorToRGB(GetThemedColor(clWindow)));
-    SetTextColor(DC, ColorToRGB(GetThemedColor(clWindowText)));
-
-    SystemParametersInfo(SPI_GETFOCUSBORDERWIDTH, 0, cx, 0);
-    SystemParametersInfo(SPI_GETFOCUSBORDERHEIGHT, 0, cy, 0);
-
-    PatBlt(DC, R.Left      , R.Top        , R.Width, cy , PATINVERT);  // top
-    PatBlt(DC, R.Left      , R.Bottom - cy, R.Width, cy , PATINVERT);  // bottom
-    PatBlt(DC, R.Left      , R.Top    + cy, cx     , R.Height - (cy * 2), PATINVERT);  // left
-    PatBlt(DC, R.Right - cx, R.Top    + cy, cx     , R.Height - (cy * 2), PATINVERT);  // right
-
-    SelectObject(DC, hbrOriginal);
-    DeleteObject(hbrPattern);
-    DeleteObject(hbmpPattern);
-
-    RestoreDC(DC, nSaved);
-  end;
-
 begin
   LStyle := StyleServices;
   if not LStyle.Available then
@@ -137,23 +88,17 @@ begin
   if Control is TGXCheckButton then
   begin
     LControl := TGXCheckButton(Control);
-
-    if LControl.Checked then
-      Details := LStyle.GetElementDetails(tbPushButtonPressed)
-    else
-      Details := LStyle.GetElementDetails(tbPushButtonNormal);
+    if LControl.Checked
+    then Details := LStyle.GetElementDetails(tbPushButtonPressed)
+    else Details := LStyle.GetElementDetails(tbPushButtonNormal);
 
     R := LControl.ClientRect;
     LStyle.DrawElement(ACanvas.Handle, Details, R, nil);
     LStyle.DrawText(ACanvas.Handle, Details, LControl.Caption, R, [tfCenter, tfVerticalCenter]);
-
     if Focused then
     begin
-      R.Inflate(-2, -2); // for better visibility
-
-      // DrawFocusRect(ACanvas.Handle, R);      // respects SPI_GETFOCUSBORDERWIDTH/SPI_GETFOCUSBORDERHEIGHT
-      // DrawStyleFocusRect(ACanvas.Handle, R); // only 1 pixel; ignores system settings
-      GXDrawFocusRect(ACanvas.Handle, R); // own implementation
+      R.Inflate(-2, -2);
+      DrawFocusRect(ACanvas.Handle, R);
     end;
   end;
 end;
@@ -240,7 +185,6 @@ begin
   if Sender is TGXCheckButton then
   begin
     AButton := TGXCheckButton(Sender);
-
     // set all other button to "up"
     for i := 0 to FButtonList.Count-1 do
     begin
@@ -255,14 +199,9 @@ begin
       AButton.Down := True;
     end;
 
-    if AButton.Down then
-    begin
+    if Assigned(FOnClick) then FOnClick(AButton);
     if Assigned(AButton.FSavedOnClick) then
-        AButton.FSavedOnClick(AButton)
-      else
-        if Assigned(FOnClick) then
-          FOnClick(AButton);
-    end;
+      AButton.FSavedOnClick(AButton);
   end; // if Sender is TGXCheckButton
 end;
 
@@ -392,17 +331,14 @@ function TGXCheckButtonGroup.Add(var AControl; AData: Pointer): TGXCheckButton;
 var
   ASource : TWinControl;
   AButton : TGXCheckButton;
-  LOnClick: TNotifyEvent;
 begin
   if not (TObject(Pointer(AControl)) is TWinControl) then
     raise EComponentError.Create('Invalid source control');
 
   ASource := TWinControl(AControl);
-  LOnClick := TWinControlAccess(ASource).OnClick;
-
   AButton := TGXCheckButton.Clone(ASource);
   AButton.Data := AData;
-  AButton.SavedOnClick := LOnClick;
+  AButton.SavedOnClick := AButton.OnClick;
   AButton.OnClick      := Self.AnyButtonClicked;
 
   FButtonList.Add(AButton);

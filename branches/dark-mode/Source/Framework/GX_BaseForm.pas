@@ -128,8 +128,8 @@ end;
 
 procedure TfmBaseForm.Loaded;
 begin
-  inherited;
   Scaled := False;
+  inherited;
 end;
 
 procedure TfmBaseForm.ScaleHint(_HintWindow: TGxHintWindow);

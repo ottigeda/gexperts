@@ -11,6 +11,11 @@ type
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
   end;
 
+  TTabControlDrawFix = class(TTabControl)
+  public
+    procedure DrawTabThemed(Control: TCustomTabControl; TabIndex: Integer; const Rect: TRect; Active: Boolean);
+  end;
+
 procedure PaintHotkey(AHotkey: THotkey);
 
 implementation
@@ -69,6 +74,35 @@ procedure THotkeyDrawFix.WMPaint(var Msg: TWMPaint);
 begin
   PaintHotkey(Self);
   Msg.Result := 0;
+end;
+
+{ TTabControlDrawFix }
+
+procedure TTabControlDrawFix.DrawTabThemed(Control: TCustomTabControl; TabIndex: Integer; const Rect: TRect; Active: Boolean);
+var
+  LCaption   : string;
+  LTextRect  : TRect;
+  LBackColor : TColor;
+  LTextColor : TColor;
+begin
+  LCaption := TTabControl(Control).Tabs[TabIndex];
+  if Active then
+  begin
+    LBackColor := ColorToRGB(GxOtaGetStyleColor(scButtonHot, clHighlight));// GetThemedColor(clHighlight);
+    LTextColor := ColorToRGB(GxOtaGetStyleFontColor(sfButtonTextHot, clHighlightText));//GetThemedColor(clHighlightText)
+  end
+  else begin
+    LBackColor := ColorToRGB(GxOtaGetStyleColor(scButtonNormal, clBtnFace));// GetThemedColor(clHighlight);
+    LTextColor := ColorToRGB(GxOtaGetStyleFontColor(sfButtonTextNormal, clBtnText));//GetThemedColor(clHighlightText)
+  end;
+
+  Control.Canvas.Brush.Color := LBackColor;
+  Control.Canvas.FillRect(Rect);
+  Control.Canvas.Font.Color := LTextColor;
+
+  LTextRect := Rect;
+  LTextRect.Inflate(-3, -3);
+  DrawText(Control.Canvas.Handle, PChar(LCaption), -1, LTextRect, DT_TOP or DT_LEFT);
 end;
 
 end.

@@ -81,7 +81,8 @@ type
     procedure InitializeForm;
     procedure InitOtherProps(const _Component: IOTAComponent; _OtherProps: TStrings;
       _UseRules: Boolean);
-    procedure AddComponentProperty(PropertyName: WideString; const Value: WideString);
+    procedure AddComponentProperty(const _Component: IOTAComponent; 
+      PropertyName: WideString; const Value: WideString);
     function GetComponentProperty(Index: Integer): WideString;
     procedure SetComponent(const _Component: IOTAComponent);
     procedure InitAlign(const _Component: IOTAComponent);
@@ -112,7 +113,7 @@ implementation
 
 uses
   SysUtils, Windows, Menus, StrUtils, IniFiles, Graphics, TypInfo, Math,
-  u_dzClassUtils, u_dzVclUtils, u_dzStringUtils,
+  u_dzClassUtils, u_dzVclUtils, u_dzStringUtils, u_dzTypeInfoUtils,
   Themes,
   {$IFOPT D+}GX_DbugIntf, {$ENDIF}
   GX_CompRenameConfig, GX_OtaUtils, GX_GenericUtils, GX_IdeUtils;
@@ -287,14 +288,6 @@ procedure TfmCompRename.FormShow(Sender: TObject);
 begin
   inherited;
   ArrangeControls;
-(*
-  // Adjust some button positons and size after scaling
-  // DisableAlign;
-  b_AlignRight.Left   := b_AlignTop.Left + b_AlignTop.Width - b_AlignRight.Width;
-  b_AlignClient.Left  := b_AlignLeft.Left + b_AlignLeft.Width + 1;
-  b_AlignClient.Width := b_AlignRight.Left - b_AlignClient.Left - 2;
-  // EnableAlign;
-*)  
 end;
 
 procedure TfmCompRename.pc_AdditionalChange(Sender: TObject);
@@ -440,10 +433,18 @@ begin
 end;
 
 procedure TfmCompRename.SetComponent(const _Component: IOTAComponent);
+var
+  h: Integer;
 begin
   FComponentClassName := _Component.GetComponentType;
   InitAlign(_Component);
   InitAnchors(_Component);
+  if not ts_Align.TabVisible and not ts_Anchors.TabVisible then begin
+    h := pc_Additional.Height;
+    p_Buttons.Height := p_Buttons.Height - h;
+    Self.Height := Self.Height - h;
+    pc_Additional.Visible := False;
+  end;
 end;
 
 procedure TfmCompRename.InitOtherProps(const _Component: IOTAComponent; _OtherProps: TStrings;
@@ -460,7 +461,7 @@ begin
     if PropName = '' then
       PropName := _OtherProps[i];
     if not GxOtaPropertyExists(_Component, PropName) then begin
-      AddComponentProperty(PropName, SPropertyNotFound);
+      AddComponentProperty(_Component, PropName, SPropertyNotFound);
     end else begin
       if _UseRules then begin
         PropValue := _OtherProps.Values[PropName];
@@ -472,9 +473,9 @@ begin
         end;
       end;
       if UsePropValue then
-        AddComponentProperty(PropName, PropValue)
+        AddComponentProperty(_Component, PropName, PropValue)
       else
-        AddComponentProperty(PropName,
+        AddComponentProperty(_Component, PropName,
           GxOtaGetComponentPropertyAsString(_Component, PropName, True));
     end;
   end;
@@ -510,11 +511,41 @@ begin
     edtNewName.SelLength := SelEnd - SelStart;
 end;
 
-procedure TfmCompRename.AddComponentProperty(PropertyName: WideString; const Value: WideString);
+procedure TfmCompRename.AddComponentProperty(const _Component: IOTAComponent;
+  PropertyName: WideString; const Value: WideString);
+
+  function PropertyIsEnum(const _Component: IOTAComponent; _PropName: string;
+    out _TypeInfo: PTypeInfo; out _Min, _Max: Integer): Boolean;
+  var
+    NativeComp: TComponent;
+    TypeData: PTypeData;
+    PropInfo: PPropInfo;
+  begin
+    Result := False;
+    NativeComp := GxOtaGetNativeComponent(_Component);
+    if Assigned(NativeComp) then begin
+      PropInfo := GetPropInfo(NativeComp, PropertyName);
+      if PropInfo.PropType^^.Kind = tkEnumeration then begin
+        TypeData := GetTypeData(PropInfo^.PropType^);
+        _Min := TypeData.MinValue;
+        _Max := TypeData.MaxValue;
+        _TypeInfo := PropInfo.PropType^;
+        Result := True;
+      end;
+    end;
+  end;
+
 var
   Lbl: TLabel;
   Edit: TEdit;
   diff: Integer;
+  TypeInfo: PTypeInfo;
+  IsEnum: Boolean;
+  MinValue: Integer;
+  MaxValue: Integer;
+  cmb: TComboBox;
+  i: Integer;
+  s: string;
 begin
   PropertyName := Trim(PropertyName);
   if PropertyName = '' then
@@ -527,22 +558,44 @@ begin
   Lbl.Left := lblNewName.Left;
   Lbl.Caption := PropertyName;
 
-  Edit := TEdit.Create(Self);
-  Edit.Name := 'edtProperty_' + PropertyName;
-  Edit.Parent := Self;
-  Edit.Name := 'edt' + PropertyName;
-  Edit.Top := (FProperties.Count + 1) * (edtNewName.Top - edtOldName.Top) + edtNewName.Top;
-  Edit.Left := edtNewName.Left;
-  Edit.Width := edtNewName.Width;
-  Edit.Text := Value;
-  Edit.TabOrder := FProperties.Count + 1 + edtNewName.TabOrder;
-  FProperties.Add(Edit);
-
-  if Edit.Text = SPropertyNotFound then begin
-    Edit.ReadOnly := True;
-    Edit.Color := clBtnFace;
-    Edit.TabStop := False;
+  IsEnum := false;
+  if Value = SPropertyNotFound then begin
     Lbl.Font.Color := clGrayText;
+  end else begin
+    IsEnum := PropertyIsEnum(_Component, PropertyName, TypeInfo, MinValue, MaxValue);
+  end;
+
+  if IsEnum then begin
+    cmb := TComboBox.Create(Self);
+    cmb.Name := 'cmbProperty_' + PropertyName;
+    cmb.Parent := Self;
+    cmb.Top := (FProperties.Count + 1) * (edtNewName.Top - edtOldName.Top) + edtNewName.Top;
+    cmb.Left := edtNewName.Left;
+    cmb.Width := edtNewName.Width;
+    cmb.Style := csDropDownList;
+    for i := MinValue to MaxValue do begin
+      s := SafeGetEnumName(TypeInfo, i);
+      cmb.Items.Add(s);
+    end;
+    cmb.TabOrder := FProperties.Count + 1 + edtNewName.TabOrder;
+    TComboBox_SelectWithoutChangeEvent(cmb, Value, 0);
+    FProperties.Add(cmb);
+  end else begin
+    Edit := TEdit.Create(Self);
+    Edit.Name := 'edtProperty_' + PropertyName;
+    Edit.Parent := Self;
+    Edit.Top := (FProperties.Count + 1) * (edtNewName.Top - edtOldName.Top) + edtNewName.Top;
+    Edit.Left := edtNewName.Left;
+    Edit.Width := edtNewName.Width;
+    Edit.Text := Value;
+    Edit.TabOrder := FProperties.Count + 1 + edtNewName.TabOrder;
+    FProperties.Add(Edit);
+
+    if Value = SPropertyNotFound then begin
+      Edit.ReadOnly := True;
+      Edit.Color := GetThemedColor(clBtnFace);
+      Edit.TabStop := False;
+    end;
   end;
 
   diff := edtNewName.Top - edtOldName.Top;
@@ -550,11 +603,19 @@ begin
 end;
 
 function TfmCompRename.GetComponentProperty(Index: Integer): WideString;
+var
+  obj: TObject;
 begin
-  if (Index >=0) and (Index < FProperties.Count) then
-    Result := (FProperties[Index] as TEdit).Text
-  else
+  if (Index < 0) or (Index >= FProperties.Count) then
     raise Exception.Create('Invalid property index in TfmCompRename.GetComponentProperty');
+
+  obj := FProperties[Index];
+  if obj is TEdit then begin
+    Result := TEdit(FProperties[Index]).Text;
+  end else if obj is TComboBox then begin
+    Result := TComboBox_GetSelectedDef(TComboBox(obj), '');
+  end else
+    raise Exception.Create('Invalid property value control in TfmCompRename.GetComponentProperty');
 end;
 
 constructor TfmCompRename.Create(Owner: TComponent);
