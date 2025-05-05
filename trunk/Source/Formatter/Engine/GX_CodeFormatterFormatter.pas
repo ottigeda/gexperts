@@ -214,20 +214,6 @@ begin
   Result := TryGetNextNoComment(_StartPos, _Token, Offset);
 end;
 
-function TCodeFormatterFormatter.CheckForFunctDeclare(out _CheckedToken: TPascalToken): Boolean;
-var
-  TempWordIdx: Integer;
-begin
-  Assert(IsRType(FCurrentToken, rtProcedure));
-  // search for the previous token that is not a comment or LineFeed
-  TempWordIdx := FTokenIdx - 1;
-  while TryGetToken(TempWordIdx, _CheckedToken) and IsRType(_CheckedToken, [rtComment, rtLineFeed]) do begin
-    Assert(False, '.CheckIndent: in while');
-    Dec(TempWordIdx);
-  end;
-  Result := IsRType(_CheckedToken, [rtEquals, rtColon, rtComma, rtLeftBr]);
-end;
-
 function TCodeFormatterFormatter.DetectGenericStart(_TokenIdx: Integer): Boolean;
 var
   Next: TPascalToken;
@@ -1077,6 +1063,20 @@ begin
     FStack.Push(rtElse, 1);
 
   FWrapIndent := False;
+end;
+
+function TCodeFormatterFormatter.CheckForFunctDeclare(out _CheckedToken: TPascalToken): Boolean;
+var
+  TempWordIdx: Integer;
+begin
+  Assert(IsRType(FCurrentToken, rtProcedure));
+  // search for the previous token that is not a comment or LineFeed
+  TempWordIdx := FTokenIdx - 1;
+  while TryGetToken(TempWordIdx, _CheckedToken) and IsRType(_CheckedToken, [rtComment, rtLineFeed]) do begin
+    Assert(False, '.CheckIndent: in while');
+    Dec(TempWordIdx);
+  end;
+  Result := IsRType(_CheckedToken, [rtEquals, rtColon, rtComma, rtLeftBr]);
 end;
 
 function TCodeFormatterFormatter.FindBeginOrSemicolonAfterProc(out _Offset: Integer; out _Token: TPascalToken): Boolean;
