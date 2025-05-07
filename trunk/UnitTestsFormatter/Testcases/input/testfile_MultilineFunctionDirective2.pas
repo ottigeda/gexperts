@@ -1,4 +1,4 @@
-unit testfile_MultilineFunctionDirective1;
+unit testfile_MultilineFunctionDirective2;
 
 interface
 
