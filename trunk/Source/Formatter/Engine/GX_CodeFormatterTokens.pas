@@ -253,6 +253,8 @@ begin
 
         if AnsiStartsStr('endif', Directive) then
           SetReservedType(rtCompEndif)
+        else if AnsiStartsStr('ifend', Directive) then
+          SetReservedType(rtCompEndif)
         else if AnsiStartsStr('else', Directive) then
           SetReservedType(rtCompElse)
         else if AnsiStartsStr('ifdef', Directive) then
