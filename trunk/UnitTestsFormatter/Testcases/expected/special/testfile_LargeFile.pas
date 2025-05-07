@@ -3884,9 +3884,7 @@ type
     procedure setIgnoreUnspecified(const value: boolean); virtual;
     procedure setIncludeXmlDecl(const value: boolean); virtual;
 {$IFNDEF LINUX}
-    procedure setUseActiveCodePage(const value: boolean); virtual;
-{$IFDEF VER140+} platform;
-{$ENDIF}
+    procedure setUseActiveCodePage(const value: boolean); virtual; {$IFDEF VER140+} platform; {$ENDIF}
 {$ENDIF}
     procedure setWriteLFOption(const value: TCodecWriteLFOption); virtual;
 
