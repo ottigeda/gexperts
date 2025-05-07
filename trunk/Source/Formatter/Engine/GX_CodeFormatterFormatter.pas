@@ -1155,7 +1155,7 @@ begin
   FCurrentRType := FCurrentToken.ReservedType;
   wType := FCurrentToken.WordType;
 
-  if wtype in [wtMultilineStringStart, wtMultilineString, wtMultilineStringEnd] then begin
+  if wType in [wtMultilineStringStart, wtMultilineString, wtMultilineStringEnd] then begin
     // we do not indent those
     Exit; //==>
   end;
@@ -1169,7 +1169,7 @@ begin
       Next.SetReservedType(rtProcedure);
     end;
   end;
-  if FCurrentToken.ReservedType = rtOperatorProc then begin
+  if FCurrentRType = rtOperatorProc then begin
     // this can only happen, if the check above for "class operator" did not change
     // this token's ReservedType to rtProcedure
     FCurrentToken.SetReservedType(rtNothing);
@@ -1866,7 +1866,8 @@ begin
             //   overload;
             RemoveMe := 1;
             while TryGetToken(FTokenIdx + RemoveMe, Next)
-              and IsRType(Next, [rtSemiColon, rtLineFeed, rtComment, rtFuncDirective, rtForward, rtExternal]) do begin
+              and IsRType(Next, [rtSemiColon, rtLineFeed, rtComment, rtCompIf, rtCompElse, rtCompEndif,
+                                 rtFuncDirective, rtForward, rtExternal]) do begin
               if IsRType(Next, [rtFuncDirective, rtForward, rtExternal]) then begin
                 AllowPop := False;
                 Break; //==v
@@ -1905,8 +1906,11 @@ begin
               and (FStack.ProcLevel = 0)) then
               FWrapIndent := True
             else if FSettings.FeedAfterSemiColon then begin
-              if not (Next.ReservedType in [rtForward, rtExternal, rtFuncDirective, rtDefault]) then
-                AssertLineFeedAfter(FTokenIdx);
+              if not (Next.ReservedType in [rtForward, rtExternal, rtFuncDirective, rtDefault]) then begin
+                if Next.WordType <> wtCompDirective then begin
+                  AssertLineFeedAfter(FTokenIdx);
+                end;
+              end;
             end;
           end;
         end;
