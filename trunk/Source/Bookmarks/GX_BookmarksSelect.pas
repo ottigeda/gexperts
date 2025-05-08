@@ -3,12 +3,12 @@ unit GX_BookmarksSelect;
 interface { --------------------------------------------------------------------------- }
 
 uses Windows,Messages,SysUtils,Classes,Graphics,Controls,Forms,Dialogs,StdCtrls,StrUtils,
-     ComCtrls,ToolWin,Math,ExtCtrls,
+     ComCtrls,ToolWin,Math,ExtCtrls,ImgList,
 
      u_dzStringUtils, // for PosEx in Delphi 6
 
      GX_BaseForm,
-     GX_BookmarksLists, ImgList;
+     GX_BookmarksLists;
 
 type tSort              = (soLine,soType,soName,soNoData);
      tTypeID            = (idConstr,idDestr,idFunc,idProc,idNone);
@@ -36,7 +36,8 @@ type tSort              = (soLine,soType,soName,soNoData);
                            
                            imF1                           : TImage;
                            imF1NA                         : TImage;
-    ilToolbar: TImageList;
+
+                           ilToolbar                      : TImageList;
 
                            procedure lbFuncsProcsDrawItem (Control:TWinControl;Index:Integer;_Rect:TRect;State:TOwnerDrawState);
                            procedure lbFuncsProcsClick    (Sender:TObject);
