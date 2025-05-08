@@ -65,7 +65,7 @@ type
     rtLogOper, rtEquals, rtForward, rtDefault, rtInitialization, rtComma,
     rtUses, rtProcDeclare, rtFuncDirective, rtExternal, rtPropertyAccess, rtAbsolute, rtComment, rtRecCase, rtDot,
     rtCompIf, rtDotDot,
-    rtCompElse, rtCompEndif,
+    rtCompElse, rtCompEndif, rtCompMessage,
     rtGenericStart, rtGenericEnd,
     rtConst);
 
@@ -75,10 +75,10 @@ type
 const
   NoReservedTypes = [rtNothing, rtComma, rtColon, rtLineFeed, rtDefault,
     rtFuncDirective, rtAbsolute, rtComment, rtLeftBr, rtRightBr, rtForward,
-    rtCompIf, rtCompElse, rtCompEndif, rtVisibility];
+    rtCompIf, rtCompElse, rtCompEndif, rtCompMessage, rtVisibility];
 
   StandardDirectives = [rtDefault, rtAbsolute, rtVisibility, rtFuncDirective,
-    rtForward];
+    rtForward, rtExternal];
 
 type
   ///<summary>

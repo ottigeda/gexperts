@@ -691,12 +691,24 @@ procedure TCodeFormatterFormatter.UppercaseCompilerDirective(_Token: TPascalToke
 var
   Idx: Integer;
   s: TGXUnicodeString;
+  Len: Integer;
 begin
   _Token.GetExpression(s);
+  Len := Length(s);
   Idx := 2;
-  while (Idx < Length(s)) and (s[Idx] <> Space) and (s[Idx] <> Tab) do begin
+  while (Idx < Len) and (s[Idx] <> Space) and (s[Idx] <> Tab) do begin
     s[Idx] := UpCase(s[Idx]);
     Inc(Idx);
+  end;
+  if _Token.ReservedType = rtCompMessage then begin
+    // {$MESSAGE WARN 'xxxx'}
+    // -> We also want to upper case the message type
+    while (Idx < Len) and (s[Idx] = Space) or (s[Idx] = Tab) do
+      Inc(Idx);
+    while (Idx < Len) and (s[Idx] <> Space) and (s[Idx] <> Tab) do begin
+      s[Idx] := UpCase(s[Idx]);
+      Inc(Idx);
+    end;
   end;
 
   _Token.SetExpression(s);

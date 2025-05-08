@@ -257,14 +257,16 @@ begin
           SetReservedType(rtCompEndif)
         else if AnsiStartsStr('else', Directive) then
           SetReservedType(rtCompElse)
-        else if AnsiStartsStr('ifdef', Directive) then
+        else if AnsiStartsStr('ifdef ', Directive) then
           SetReservedType(rtCompIf)
-        else if AnsiStartsStr('ifopt', Directive) then
+        else if AnsiStartsStr('ifopt ', Directive) then
           SetReservedType(rtCompIf)
         else if AnsiStartsStr('if ', Directive) then
           SetReservedType(rtCompIf)
-        else if AnsiStartsStr('ifndef', Directive) then
-          SetReservedType(rtCompIf);
+        else if AnsiStartsStr('ifndef ', Directive) then
+          SetReservedType(rtCompIf)
+        else if AnsiStartsStr('message ', Directive) then
+          SetReservedType(rtCompMessage);
       end;
 
     wtFullComment, wtFullOutComment, wtHalfStarComment,
