@@ -8,7 +8,7 @@ uses Windows,Messages,SysUtils,Classes,Graphics,Controls,Forms,Dialogs,StdCtrls,
      u_dzStringUtils, // for PosEx in Delphi 6
 
      GX_BaseForm,
-     GX_BookmarksLists;
+     GX_BookmarksLists, ImgList;
 
 type tSort              = (soLine,soType,soName,soNoData);
      tTypeID            = (idConstr,idDestr,idFunc,idProc,idNone);
@@ -36,6 +36,7 @@ type tSort              = (soLine,soType,soName,soNoData);
                            
                            imF1                           : TImage;
                            imF1NA                         : TImage;
+    ilToolbar: TImageList;
 
                            procedure lbFuncsProcsDrawItem (Control:TWinControl;Index:Integer;_Rect:TRect;State:TOwnerDrawState);
                            procedure lbFuncsProcsClick    (Sender:TObject);
@@ -709,7 +710,10 @@ begin
  imF1.Top   :=3;
 
  if not(FileExists(ConfigInfo.ConfigPath+HLP_HelpFileName)) then begin
+
   imF1.  Visible:=false;
+
+  imF1NA.Parent :=SBar;
   imF1NA.Left   :=imF1.Left;
   imF1NA.Top    :=imF1.Top;
   imF1NA.Visible:=true;
