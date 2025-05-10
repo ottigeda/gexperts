@@ -1338,6 +1338,7 @@ begin
      ideRS12P1: Result := 'RAD Studio 12 (Athens) patch 1';
      ideRS12U1: Result := 'RAD Studio 12.1 (Athens upd 1)';
      ideRS12U2: Result := 'RAD Studio 12.2 (Athens upd 2)';
+     ideRS12U3: Result := 'RAD Studio 12.3 (Athens upd 3)';
 
      ideCSB100: Result := 'C# Builder 1.00';
 
