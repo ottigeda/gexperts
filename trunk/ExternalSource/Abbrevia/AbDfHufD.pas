@@ -198,6 +198,12 @@ begin
   inherited Destroy;
 end;
 {--------}
+
+procedure SilenceCompilerHint(const Value);
+begin
+  // Nothing.
+end;
+
 procedure TAbDfDecodeHuffmanTree.Build(
                                 const aCodeLengths : array of integer;
                                       aStartInx    : integer;
@@ -259,6 +265,7 @@ begin
 
   {now we know the maximum code length we can allocate our decoder
    array}
+  DecoderLen := 0;
   if (FUsage <> huEncoding) then begin
     DecoderLen := PowerOfTwo[FMaxCodeLen];
     GetMem(FDecodes, DecoderLen * sizeof(longint));
@@ -268,6 +275,8 @@ begin
     FMask := not (DecoderLen - 1);
     {$ENDIF}
   end;
+  //SilenceCompilerHint(DecodesEnd);
+  //SilenceCompilerHint(DecoderLen);
 
   {calculate the start codes for each code length}
   Code := 0;
@@ -281,6 +290,7 @@ begin
   Decodes := FDecodes;
   Encodes := FEncodes;
   TablePtr := @ByteRevTable;
+  //SilenceCompilerHint(TablePtr);
 
   {for each symbol...}
   for Symbol := 0 to pred(aCount) do begin
