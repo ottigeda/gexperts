@@ -498,7 +498,7 @@ end;
 
 procedure TLineFeed.IncIndent(_Value: Integer);
 begin
-  inc(FNoOfSpaces, _Value * FSpacePerIndent);
+  Inc(FNoOfSpaces, _Value * FSpacePerIndent);
 end;
 
 procedure TLineFeed.SetIndent(_Value: Integer);
