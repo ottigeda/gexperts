@@ -64,7 +64,7 @@ type
     procedure UppercaseCompilerDirective(_Token: TPascalToken); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     function NoBeginTryIndent(_rType: TReservedType): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure IndentProcedureComment;
-    procedure SetPrevLineIndent(_Value: integer); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    procedure SetPrevLineIndent(_Value: Integer); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure AddToPrevLineIndent(_Additional: Integer); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure DecPrevLineIndent; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
@@ -97,7 +97,7 @@ type
     /// @returns True, if the token has the queried type, False otherwise
     ///          also False, if the index is out of bounds. </summary>
     function TokenAtIs(_Idx: Integer; _rType: TReservedType): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
-    function TokenAtIs(_Idx: Integer; _rTypes: TReservedTypeSet): Boolean; overload;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function TokenAtIs(_Idx: Integer; _rTypes: TReservedTypeSet): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
     function GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     function TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
@@ -120,7 +120,7 @@ type
     procedure CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed);
     procedure HandleCapitalization(_CurrentToken: TPascalToken);
     function TryGetPrevLineFeed(var _TokenIdx: Integer; out _LineFeed: TLineFeed): Boolean;
-    function CheckForFunctDeclare(out _CheckedToken: TPascalToken): Boolean;
+    function CheckForFunctTypeDeclare(out _CheckedToken: TPascalToken): Boolean;
     procedure CheckSpecialProcedure(out _Offset: Integer; var _NoBlankLine, _IsDelegate: Boolean);
     function FindBeginOrSemicolonAfterProc(out _Offset: Integer; out _Token: TPascalToken): Boolean;
   public
@@ -1077,7 +1077,7 @@ begin
   FWrapIndent := False;
 end;
 
-function TCodeFormatterFormatter.CheckForFunctDeclare(out _CheckedToken: TPascalToken): Boolean;
+function TCodeFormatterFormatter.CheckForFunctTypeDeclare(out _CheckedToken: TPascalToken): Boolean;
 var
   TempWordIdx: Integer;
 begin
@@ -1154,7 +1154,7 @@ var
   RemoveMe: Integer;
   Next: TPascalToken;
   Prev1: TPascalToken;
-  FunctDeclare, IsDelegate, NoBlankLine: Boolean;
+  FunctTypeDeclare, IsDelegate, NoBlankLine: Boolean;
   FeedRound: TFeedBegin;
   wType: TWordType;
   exp: TGXUnicodeString;
@@ -1459,12 +1459,14 @@ begin
       end;
 
     rtProgram, rtUses, rtInitialization:
+      // todo: Why does this check for a '(' on the stack? In which case is that valid code?
       if FStack.GetTopType <> rtLeftBr then begin
         Next := GetNextNoComment(FTokenIdx, RemoveMe);
 
-        if (FCurrentRType = rtUses) and (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass]) then
-          FCurrentToken.SetReservedType(rtNothing)
-        else begin
+        if (FCurrentRType = rtUses) and (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass]) then begin
+          FCurrentToken.SetReservedType(rtNothing);
+          FCurrentRType := rtNothing;
+        end else begin
           DecPrevLineIndent;
           FStack.Clear;
           FStack.Push(FCurrentRType, 1);
@@ -1553,12 +1555,14 @@ begin
     rtProcedure: begin
         Assert(False, '.CheckIndent: rtProcedure');
         case FStack.GetTopType of
+          // todo: rtClassDecl or rtClass ?
           rtClassDecl, rtRecord: begin
               Assert(False, '.CheckIndent: Top type is Class or Record');
               FStack.Pop;
               FStack.Push(rtClass, 1);
             end;
           rtVar, rtConst, rtType: begin
+              // todo: rtClassDecl or rtClass ?
               if (FPrevToken.ReservedType <> rtEquals)
                 and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
                 // There was a nested class/record declaration that ended
@@ -1571,17 +1575,17 @@ begin
             end;
         end;
 
-        FunctDeclare := CheckForFunctDeclare(Prev1);
+        FunctTypeDeclare := CheckForFunctTypeDeclare(Prev1);
         NoBlankLine := False;
         IsDelegate := False;
 
-        if not FunctDeclare then begin
+        if not FunctTypeDeclare then begin
           Assert(False, '.CheckIndent: FunctDeclare = False');
           CheckSpecialProcedure(RemoveMe, NoBlankLine, IsDelegate);
         end;
 
-        if not FunctDeclare and not FIsInInterfacePart and not (FStack.GetTopType = rtClass) then begin
-          Assert(False, '.CheckIndent: not (FunctDeclare or InInterface or (TopType = rtClass))');
+        if not FunctTypeDeclare and not FIsInInterfacePart and not (FStack.GetTopType = rtClass) then begin
+          Assert(False, '.CheckIndent: not FunctTypeDeclare and not FIsInInterface and not (TopType = rtClass))');
           if not FStack.HasType(rtProcedure) then begin
             Assert(False, '.CheckIndent: Stack.HasType(rtProcedure) = False');
             if not IsDelegate then begin
@@ -1621,7 +1625,8 @@ begin
           if (FStack.GetTopType = rtType) and IsRType(Prev1, [rtOf, rtOper, rtComma]) then begin
             // do nothing
           end else begin
-            if (not FunctDeclare) and (FStack.GetTopType <> rtClass) then begin
+            // todo: rtClass or also rtClassDecl
+            if (not FunctTypeDeclare) and (FStack.GetTopType <> rtClass) then begin
               FStack.nIndent := 0;
               AddToPrevLineIndent(_NTmp);
               if FSettings.IndentComments then
@@ -1692,6 +1697,7 @@ begin
             end;
 
           NewLine: begin
+              // todo: could this use TryGetToken instead of checking for FPrevToken <> nil ?
               if (FPrevToken <> nil) and (GetToken(FTokenIdx - 1).ReservedType <> rtLineFeed) then begin
                 FPrevLine := AssertLineFeedAfter(FTokenIdx - 1);
                 FPrevToken := FPrevLine;
@@ -1954,7 +1960,10 @@ begin
     _PrevCommentLine := nil;
     Assert(False, '.CheckIndent: _PrevCommentLine=nil');
   end else begin
-    Assert(False, Format('.CheckIndent: _PrevCommentLine.NoOfSpaces=%d .OldNoOfSpaces=%d',
+    if not Assigned(_PrevCommentLine) then
+      Assert(False, '.CheckIndent: _PrevCommentLine=nil')
+    else
+      Assert(False, Format('.CheckIndent: _PrevCommentLine.NoOfSpaces=%d .OldNoOfSpaces=%d',
       [_PrevCommentLine.NoOfSpaces, _PrevCommentLine.OldNoOfSpaces]));
   end;
 
@@ -2001,7 +2010,7 @@ begin
         Assert(False, '.doExecute: Stack.Depth: ' + IntToStr(FStack.Depth) + ' .TopType: ' + GetEnumname(TypeInfo(TReservedType), Ord(FStack.GetTopType)) + ' .TopIndent: ' + IntToStr(FStack.GetTopIndent));
         Assert(False, '.doExecute: WrapIndent: ' + Ifthen(FWrapIndent, 'True', 'False'));
         Assert(False, '.doExecute: before CheckIndent: NTmp: ' + IntToStr(NTmp));
-        if Assigned(PrevCommentLine) then begin
+        if not Assigned(PrevCommentLine) then begin
           Assert(False, '.doExecute: before CheckIndent: PrevCommentLine=nil');
         end else begin
           Assert(False, Format('.doExecute: before CheckIndent: PrevCommentLine.NoOfSpaces=%d .OldNoOfSpaces=%d',
@@ -2010,7 +2019,7 @@ begin
         CheckIndent(NTmp, PrevCommentLine);
 //        FTokens.WriteTo(Format('d:\output%.3d.txt', [FTokenIdx]));
         Assert(False, '.doExecute: after CheckIndent:  NTmp: ' + IntToStr(NTmp));
-        if Assigned(PrevCommentLine) then begin
+        if not Assigned(PrevCommentLine) then begin
           Assert(False, '.doExecute: after CheckIndent: PrevCommentLine=nil');
         end else begin
           Assert(False, Format('.doExecute: after CheckIndent: PrevCommentLine.NoOfSpaces=%d .OldNoOfSpaces=%d',
