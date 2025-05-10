@@ -167,7 +167,6 @@ begin
     tr.RT := rtNothing;
     tr.nInd := 0;
 {$ENDIF}
-//    asm nop end;
   end else begin
     Assert(False, 'Stack.Pop: empty stack');
     FNIndent := 0;
