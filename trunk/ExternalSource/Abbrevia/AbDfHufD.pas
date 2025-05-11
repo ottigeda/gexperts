@@ -275,8 +275,8 @@ begin
     FMask := not (DecoderLen - 1);
     {$ENDIF}
   end;
-  //SilenceCompilerHint(DecodesEnd);
-  //SilenceCompilerHint(DecoderLen);
+  SilenceCompilerHint(DecodesEnd);
+  SilenceCompilerHint(DecoderLen);
 
   {calculate the start codes for each code length}
   Code := 0;
@@ -290,7 +290,7 @@ begin
   Decodes := FDecodes;
   Encodes := FEncodes;
   TablePtr := @ByteRevTable;
-  //SilenceCompilerHint(TablePtr);
+  SilenceCompilerHint(TablePtr);
 
   {for each symbol...}
   for Symbol := 0 to pred(aCount) do begin
