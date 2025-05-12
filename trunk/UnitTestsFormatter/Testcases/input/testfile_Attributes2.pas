@@ -20,7 +20,7 @@ type
     property SomeProperty: Integer read FSomeField write FSomeField;
   end;
 
-interface
+implementation
 
 procedure TSomeClass.bla;
 begin

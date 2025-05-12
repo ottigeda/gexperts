@@ -9,7 +9,7 @@ type
     procedure bla;
   end;
   
-interface
+implementation
 
 procedure TSomeClass.bla;
 begin
