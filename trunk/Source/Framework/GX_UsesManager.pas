@@ -36,26 +36,34 @@ type
 
   TUsesStatus = (usNonExisting, usInterface, usImplementation, usInsideUnit);
   TPosInUsesList = (puInterface, puImplementation, puNo);
+  TWhichUsesList = puInterface..puImplementation;
+
+  TUsesClause = class
+  public
+    // Position of the last char of the "interface" and the "implementation" keyword
+    SECTION: Integer;
+    // Position of first char of "uses" keyword
+    BegOfUses: Integer;
+    // Position of the semicolon which ends uses clause
+    EndOfUses: Integer;
+    Units: TUsesList;
+    constructor Create;
+    destructor Destroy; override;
+  end;
 
   TUsesManager = class(TObject)
   private
     FFileContent: string;
-    FInterfUses: TUsesList;
-    FImplemUses: TUsesList;
-    FImplPosition: Integer;  // Position of the last char of the "implementation" keyword
-    FIntfPosition: Integer;  // Position of the last char of the "interface" keyword
-    FBegOfIntfUses: Integer; // Position of first char of interface "uses" keyword
-    FEndOfIntfUses: Integer; // Position of the semicolon which ends interface uses clause
-    FBegOfImplUses: Integer; // Position of first char of implementation "uses" keyword
-    FEndOfImplUses: Integer; // Position of the semicolon which ends implementation uses clause
+    FUsesClause: array[TWhichUsesList] of TUsesClause;
     FFileName: string;
     procedure BuildUsesList;
     function GetCurrentUnitName: string;
     function UsesLineWouldBeTooLong(InsertPos, InsertLength: Integer): Boolean;
     procedure InternalInit;
     procedure InternalReplaceInUses(UsesList: TUsesList; const AOldUnitName, ANewUnitName: string);
-    function InternalAddToUsesSection(const AUnitName: string; ToInterface: Boolean): Boolean;
-    procedure InternalRemoveFromUses(InInterface: Boolean; const AUnitName: string);
+    function InternalAddToUsesSection(const AUnitName: string; _Which: TWhichUsesList): Boolean;
+    procedure InternalRemoveFromUses(_Which: TWhichUsesList; const AUnitName: string);
+    function GetUsesList(_Which: TWhichUsesList): TUsesList;
   public
     constructor Create(const SourceEditor: IOTASourceEditor); overload;
     constructor Create(const FileName: string); overload;
@@ -65,15 +73,15 @@ type
     function AddToIntSection(const AUnitName: string): Boolean;
     function IsPositionBeforeImplementation(Pos: Integer): Boolean;
     function IsPositionInUsesList(Pos: integer): TPosInUsesList;
-    procedure AddUnits(AUnits: TStrings; AToImplementation: Boolean = True);
+    procedure AddUnits(AUnits: TStrings; _Which: TWhichUsesList);
     procedure RemoveFromImplUses(const AUnitName: string);
     procedure RemoveImplementationUses;
     procedure RemoveFromIntfUses(const AUnitName: string);
     procedure RemoveInterfaceUses;
     procedure ReplaceInImplUses(const AOldUnitName, ANewUnitName: string);
     procedure ReplaceInIntUses(const AOldUnitName, ANewUnitName: string);
-    property ImplementationUses: TUsesList read FImplemUses;
-    property InterfaceUses: TUsesList read FInterfUses;
+    property ImplementationUses: TUsesList index puImplementation read GetUsesList;
+    property InterfaceUses: TUsesList index puInterface read GetUsesList;
   end;
 
 // These act on the current source editor
@@ -122,17 +130,14 @@ begin
   end;
 end;
 
-procedure InternalGetUnits(Units: TStrings; FromIntf: Boolean);
+procedure InternalGetUnits(Units: TStrings; _Which: TWhichUsesList);
 var
   UsesList: TUsesList;
 begin
   Assert(Assigned(Units));
   with TUsesManager.Create(GxOtaGetCurrentSourceEditor) do
   try
-    if FromIntf then
-      UsesList := FInterfUses
-    else
-      UsesList := FImplemUses;
+    UsesList := GetUsesList(_Which);
     UsesList.AssignTo(Units);
   finally
     Free;
@@ -141,12 +146,12 @@ end;
 
 procedure GetImplementationUnits(Units: TStrings);
 begin
-  InternalGetUnits(Units, False);
+  InternalGetUnits(Units, puImplementation);
 end;
 
 procedure GetInterfaceUnits(Units: TStrings);
 begin
-  InternalGetUnits(Units, True);
+  InternalGetUnits(Units, puInterface);
 end;
 
 procedure RemoveUnitFromImplementation(const AUnitName: string);
@@ -218,32 +223,32 @@ end;
 
 procedure TUsesManager.InternalInit;
 begin
-  FInterfUses := TUsesList.Create;
-  FImplemUses := TUsesList.Create;
+  FUsesClause[puInterface] := TUsesClause.Create;
+  FUsesClause[puImplementation] := TUsesClause.Create;
 
   BuildUsesList;
 end;
 
 destructor TUsesManager.Destroy;
 begin
-  FreeAndNil(FInterfUses);
-  FreeAndNil(FImplemUses);
+  FreeAndNil(FUsesClause[puInterface]);
+  FreeAndNil(FUsesClause[puImplementation]);
 
   inherited Destroy;
 end;
 
 function TUsesManager.AddToImpSection(const AUnitName: string): Boolean;
 begin
-  Result := InternalAddToUsesSection(AUnitName, False);
+  Result := InternalAddToUsesSection(AUnitName, puImplementation);
 end;
 
 function TUsesManager.AddToIntSection(const AUnitName: string): Boolean;
 begin
-  Result := InternalAddToUsesSection(AUnitName, True);
+  Result := InternalAddToUsesSection(AUnitName, puInterface);
 end;
 
 // Add a unit to a uses clause (may require removing it from the other clause)
-function TUsesManager.InternalAddToUsesSection(const AUnitName: string; ToInterface: Boolean): Boolean;
+function TUsesManager.InternalAddToUsesSection(const AUnitName: string; _Which: TWhichUsesList): Boolean;
 var
   InsertPosition: Integer;
   LastUses: TUsesItem;
@@ -255,23 +260,27 @@ begin
   Result := False;
   Status := GetUsesStatus(AUnitName);
   if Status = usInsideUnit then
-    Exit;
+    Exit; //==>
 
-  if ToInterface then
-  begin
-    if Status = usImplementation then
-      RemoveFromImplUses(AUnitName)
-    else if Status = usInterface then
-      Exit;
-    UsesPos := FIntfPosition;
-    UsesItems := FInterfUses;
-  end
-  else begin // Add to implementation
-    if Status in [usInterface, usImplementation] then
-      Exit;
-    UsesPos := FImplPosition;
-    UsesItems := FImplemUses;
+  case _Which of
+    puInterface: begin
+        if Status = usInterface then
+          Exit; //==>
+        if Status = usImplementation then
+          RemoveFromImplUses(AUnitName);
+        UsesPos := FUsesClause[puInterface].Section;
+        UsesItems := InterfaceUses;
+      end;
+    puImplementation: begin
+        if Status in [usInterface, usImplementation] then
+          Exit;
+        UsesPos := FUsesClause[puImplementation].Section;
+        UsesItems := ImplementationUses;
+      end;
+  else
+    Exit; //==>
   end;
+
   if UsesPos = 0 then
     Exit;
 
@@ -294,7 +303,7 @@ begin
   end;
 
   // This needs to be done last since it changes the implementation offsets
-  if not ToInterface then
+  if _Which = puImplementation then
   begin
     if Status = usInterface then
       RemoveFromIntfUses(AUnitName);
@@ -303,7 +312,7 @@ begin
   Result := True;
 end;
 
-procedure TUsesManager.AddUnits(AUnits: TStrings; AToImplementation: Boolean);
+procedure TUsesManager.AddUnits(AUnits: TStrings; _Which: TWhichUsesList);
 var
   UnitName: string;
   i: Integer;
@@ -311,10 +320,12 @@ begin
   for i := 0 to AUnits.Count - 1 do
   begin
     UnitName := AUnits.Strings[i];
-    if AToImplementation then
-      AddToImpSection(UnitName)
-    else
-      AddToIntSection(UnitName);
+    case _Which of
+      puInterface:
+        AddToIntSection(UnitName);
+      puImplementation:
+        AddToImpSection(UnitName);
+    end;
   end;
 end;
 
@@ -331,11 +342,12 @@ begin
     Parser.Origin := @FFileContent[1];
     Section := sInterface;
     InUses := False;
-    FBegOfImplUses := 0;
-    FImplPosition := 0;
-    FIntfPosition := 0;
-    FEndOfIntfUses := 0;
-    FBegOfIntfUses := 0;
+    FUsesClause[puImplementation].BegOfUses := 0;
+    FUsesClause[puImplementation].Section := 0;
+
+    FUsesClause[puInterface].Section := 0;
+    FUsesClause[puInterface].EndOfUses := 0;
+    FUsesClause[puInterface].BegOfUses := 0;
 
     UsesItem := nil;
     LastCommaPos := 0;
@@ -347,14 +359,14 @@ begin
         tkInterface:
           begin
             Section := sInterface;
-            FIntfPosition := Parser.RunPos;
+            FUsesClause[puInterface].Section := Parser.RunPos;
             InUses := False;
             LastCommaPos := 0;
           end;
         tkImplementation:
           begin
             Section := sImplementation;
-            FImplPosition := Parser.RunPos;
+            FUsesClause[puImplementation].Section := Parser.RunPos;
             InUses := False;
             LastCommaPos := 0;
           end;
@@ -362,9 +374,9 @@ begin
           begin
             InUses := True;
             if Section = sImplementation then
-              FBegOfImplUses := Parser.RunPos - Length('uses');
+              FUsesClause[puImplementation].BegOfUses := Parser.RunPos - Length('uses');
             if Section = sInterface then
-              FBegOfIntfUses := Parser.RunPos - Length('uses');
+              FUsesClause[puInterface].BegOfUses := Parser.RunPos - Length('uses');
             LastCommaPos := 0;
           end;
       else
@@ -374,9 +386,9 @@ begin
           if Parser.TokenID = tkIdentifier then
           begin
             if Section = sInterface then
-              UsesItem := FInterfUses.Add
+              UsesItem := InterfaceUses.Add
             else // Section = sImplementation
-              UsesItem := FImplemUses.Add;
+              UsesItem := ImplementationUses.Add;
             {$IFOPT D+} Assert(UsesItem <> nil); {$ENDIF}
 
             UsesItem.Name := Parser.GetDottedIdentifierAtPos(True);
@@ -403,11 +415,11 @@ begin
             InUses := False;
             if Section = sImplementation then
             begin
-              FEndOfImplUses := Parser.RunPos;
+              FUsesClause[puImplementation].EndOfUses := Parser.RunPos;
               Break; // End of parsing
             end;
             if Section = sInterface then
-              FEndOfIntfUses := Parser.RunPos;
+              FUsesClause[puInterface].EndOfUses := Parser.RunPos;
           end; // Not comma
         end; // UsesFlag
       end;
@@ -423,13 +435,18 @@ begin
   Result := Trim(ExtractPureFileName(FFileName));
 end;
 
+function TUsesManager.GetUsesList(_Which: TWhichUsesList): TUsesList;
+begin
+  Result := FUsesClause[_Which].Units;
+end;
+
 function TUsesManager.GetUsesStatus(const AUnitName: string): TUsesStatus;
 begin
   if SameFileName(GetCurrentUnitName, Trim(AUnitName)) then
     Result := usInsideUnit
-  else if FInterfUses.IndexOf(AUnitName) > -1 then
+  else if InterfaceUses.IndexOf(AUnitName) > -1 then
     Result := usInterface
-  else if FImplemUses.IndexOf(AUnitName) > -1 then
+  else if ImplementationUses.IndexOf(AUnitName) > -1 then
     Result := usImplementation
   else
     Result := usNonExisting;
@@ -452,70 +469,64 @@ end;
     uses Unit2 ,Unit1 ,Unit3; // Comma not directly after the unit name
     -> The Unit name and preceeding comma are deleted
 }
-procedure TUsesManager.InternalRemoveFromUses(InInterface: Boolean; const AUnitName: string);
+procedure TUsesManager.InternalRemoveFromUses(_Which: TWhichUsesList; const AUnitName: string);
 var
   DeletedUnit: TUsesItem;
   UnitIndex: Integer;
   BegPos, EndPos: Integer;
   UsesList: TUsesList;
 begin
-  if InInterface then
-    UsesList := FInterfUses
-  else
-    UsesList := FImplemUses;
-
+  UsesList := FUsesClause[_Which].Units;
   UnitIndex := UsesList.IndexOf(AUnitName);
-  if UnitIndex > -1 then
-  begin
-    // If this is the only uses unit, we delete the whole clause
-    if UsesList.Count = 1 then
-    begin
-      if InInterface then
-        RemoveInterfaceUses
-      else
-        RemoveImplementationUses;
-    end
-    else
-    begin
-      DeletedUnit := UsesList.Items[UnitIndex];
-      if UnitIndex = 0 then // First in the uses clause
-      begin
-        if DeletedUnit.CommaAfterPos <> 0 then
-          EndPos := DeletedUnit.CommaAfterPos + 1
-        else
-          EndPos := DeletedUnit.EndPos;
-        BegPos := DeletedUnit.BeginPos;
-      end
-      else if UnitIndex = UsesList.Count-1 then // Last in the uses clause
-      begin
-        EndPos := DeletedUnit.EndPos;
-        if DeletedUnit.CommaBeforePos <> 0 then
-          BegPos := DeletedUnit.CommaBeforePos
-        else
-          BegPos := DeletedUnit.BeginPos;
-      end
-      else // In the middle of the uses clause
-      begin
-        if DeletedUnit.CommaAfterPos = DeletedUnit.EndPos then
-        begin // Comma directly after unit
-          BegPos := DeletedUnit.BeginPos;
-          EndPos := DeletedUnit.CommaAfterPos + 1;
-        end
-        else // Comma before unit
-        begin
-          if DeletedUnit.CommaBeforePos <> 0 then
-            BegPos := DeletedUnit.CommaBeforePos
-          else
-            BegPos := DeletedUnit.BeginPos;
-          EndPos := DeletedUnit.EndPos;
-        end;
-      end;
-      if DeletedUnit.SpaceAfter then
-        Inc(EndPos);
+  if UnitIndex < 0 then
+    Exit; //==>
 
-      GxOtaDeleteTextFromPos(BegPos, EndPos - BegPos);
+  if UsesList.Count = 1 then
+  begin
+    // This is the only unit in the list -> we delete the whole clause
+    case _Which of
+      puInterface:
+        RemoveInterfaceUses;
+      puImplementation:
+        RemoveImplementationUses;
+    end;
+    Exit; //==>
+  end;
+
+  DeletedUnit := UsesList.Items[UnitIndex];
+  if UnitIndex = 0 then begin
+    // First in the uses clause
+    if DeletedUnit.CommaAfterPos <> 0 then
+      EndPos := DeletedUnit.CommaAfterPos + 1
+    else
+      EndPos := DeletedUnit.EndPos;
+    BegPos := DeletedUnit.BeginPos;
+  end else if UnitIndex = UsesList.Count-1 then begin
+    // Last in the uses clause
+    EndPos := DeletedUnit.EndPos;
+    if DeletedUnit.CommaBeforePos <> 0 then
+      BegPos := DeletedUnit.CommaBeforePos
+    else
+      BegPos := DeletedUnit.BeginPos;
+  end else begin
+    // In the middle of the uses clause
+    if DeletedUnit.CommaAfterPos = DeletedUnit.EndPos then begin
+      // Comma directly after unit
+      BegPos := DeletedUnit.BeginPos;
+      EndPos := DeletedUnit.CommaAfterPos + 1;
+    end else begin
+      // Comma before unit
+      if DeletedUnit.CommaBeforePos <> 0 then
+        BegPos := DeletedUnit.CommaBeforePos
+      else
+        BegPos := DeletedUnit.BeginPos;
+      EndPos := DeletedUnit.EndPos;
     end;
   end;
+  if DeletedUnit.SpaceAfter then
+    Inc(EndPos);
+
+  GxOtaDeleteTextFromPos(BegPos, EndPos - BegPos);
 end;
 
 // Remove the whole implementation uses clause
@@ -523,22 +534,22 @@ procedure TUsesManager.RemoveImplementationUses;
 var
   BegIndex, Count: Integer;
 begin
-  if (FBegOfImplUses = 0) or (FEndOfImplUses = 0) then
+  if (FUsesClause[puImplementation].BegOfUses = 0) or (FUsesClause[puImplementation].EndOfUses = 0) then
     raise Exception.Create('RemoveImplementationUses: Begin or End of uses clause is not available!');
 
-  BegIndex := FBegOfImplUses;
-  Count := FEndOfImplUses - BegIndex;
+  BegIndex := FUsesClause[puImplementation].BegOfUses;
+  Count := FUsesClause[puImplementation].EndOfUses - BegIndex;
   GxOtaDeleteTextFromPos(BegIndex, Count);
 end;
 
 procedure TUsesManager.RemoveFromImplUses(const AUnitName: string);
 begin
-  InternalRemoveFromUses(False, AUnitName);
+  InternalRemoveFromUses(puImplementation, AUnitName);
 end;
 
 procedure TUsesManager.RemoveFromIntfUses(const AUnitName: string);
 begin
-  InternalRemoveFromUses(True, AUnitName);
+  InternalRemoveFromUses(puInterface, AUnitName);
 end;
 
 // Remove the whole interface uses clause
@@ -546,11 +557,11 @@ procedure TUsesManager.RemoveInterfaceUses;
 var
   BegIndex, Count: Integer;
 begin
-  if (FBegOfIntfUses = 0) or (FEndOfIntfUses = 0) then
+  if (FUsesClause[puInterface].BegOfUses = 0) or (FUsesClause[puInterface].EndOfUses = 0) then
     raise Exception.Create('RemoveInterfaceUses: Begin or End of uses clause is not available!');
 
-  BegIndex := FBegOfIntfUses;
-  Count := FEndOfIntfUses - BegIndex;
+  BegIndex := FUsesClause[puInterface].BegOfUses;
+  Count := FUsesClause[puInterface].EndOfUses - BegIndex;
   GxOtaDeleteTextFromPos(BegIndex, Count);
 end;
 
@@ -576,12 +587,12 @@ end;
 
 procedure TUsesManager.ReplaceInImplUses(const AOldUnitName, ANewUnitName: string);
 begin
-  InternalReplaceInUses(FImplemUses, AOldUnitName, ANewUnitName);
+  InternalReplaceInUses(ImplementationUses, AOldUnitName, ANewUnitName);
 end;
 
 procedure TUsesManager.ReplaceInIntUses(const AOldUnitName, ANewUnitName: string);
 begin
-  InternalReplaceInUses(FInterfUses, AOldUnitName, ANewUnitName);
+  InternalReplaceInUses(InterfaceUses, AOldUnitName, ANewUnitName);
 end;
 
 function TUsesList.Add: TUsesItem;
@@ -636,17 +647,31 @@ end;
 
 function TUsesManager.IsPositionBeforeImplementation(Pos: Integer): Boolean;
 begin
-  Result := FImplPosition > Pos;
+  Result := FUsesClause[puImplementation].Section > Pos;
 end;
 
 function TUsesManager.IsPositionInUsesList(Pos: Integer): TPosInUsesList;
 begin
-  if (FBegOfIntfUses + Length('uses') < Pos) and (Pos < FEndOfIntfUses) then
+  if (FUsesClause[puInterface].BegOfUses + Length('uses') < Pos) and (Pos < FUsesClause[puInterface].EndOfUses) then
     Result := puInterface
-  else if (FBegOfImplUses + Length('uses') < Pos) and (Pos < FEndOfImplUses) then
+  else if (FUsesClause[puImplementation].BegOfUses + Length('uses') < Pos) and (Pos < FUsesClause[puImplementation].EndOfUses) then
     Result := puImplementation
   else
     Result := puNo;
+end;
+
+{ TPositionClass }
+
+constructor TUsesClause.Create;
+begin
+  inherited Create;
+  Units := TUsesList.Create;
+end;
+
+destructor TUsesClause.Destroy;
+begin
+  FreeAndNil(Units);
+  inherited;
 end;
 
 end.
