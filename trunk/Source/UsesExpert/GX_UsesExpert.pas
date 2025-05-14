@@ -2772,23 +2772,23 @@ begin
   NewToOldUnitNameMap := nil;
   Units := TStringList.Create;
   try
-    GetInterfaceUnits(Units);
+    TUsesManager.GetInterfaceUnits(Units);
     for i := 0 to Units.Count - 1 do begin
       OldUnitName := Units[i];
       if IndexInStringGrid(sg_Interface, OldUnitName) = -1 then begin
         NewUnitName := FOldToNewUnitNameMap.Values[OldUnitName];
         if (NewUnitName = '') or (IndexInStringGrid(sg_Interface, NewUnitName) = -1) then
-          RemoveUnitFromInterface(OldUnitName);
+          TUsesManager.RemoveUnitFromInterface(OldUnitName);
       end;
     end;
 
-    GetImplementationUnits(Units);
+    TUsesManager.GetImplementationUnits(Units);
     for i := 0 to Units.Count - 1 do begin
       OldUnitName := Units[i];
       if IndexInStringGrid(sg_Implementation, OldUnitName) = -1 then begin
         NewUnitName := FOldToNewUnitNameMap.Values[OldUnitName];
         if (NewUnitName = '') or (IndexInStringGrid(sg_Implementation, NewUnitName) = -1) then
-          RemoveUnitFromImplementation(OldUnitName);
+          TUsesManager.RemoveUnitFromImplementation(OldUnitName);
       end;
     end;
 
@@ -2805,21 +2805,21 @@ begin
         OldUnitName := NewToOldUnitNameMap.Values[NewUnitName];
         if OldUnitName = NewUnitName then
           OldUnitName := '';
-        case GetUsesStatus(NewUnitName) of
+        case TUsesManager.GetUnitUsesStatus(NewUnitName) of
           usNonExisting: begin
               if OldUnitName = '' then begin
-                UseUnitInInterface(NewUnitName);
+                TUsesManager.UseUnitInInterface(NewUnitName);
               end else begin
-                case GetUsesStatus(OldUnitName) of
+                case TUsesManager.GetUnitUsesStatus(OldUnitName) of
                   usNonExisting: begin
-                      UseUnitInInterface(NewUnitName);
+                      TUsesManager.UseUnitInInterface(NewUnitName);
                     end;
                   usImplementation: begin
-                      RemoveUnitFromImplementation(OldUnitName);
-                      UseUnitInInterface(NewUnitName);
+                      TUsesManager.RemoveUnitFromImplementation(OldUnitName);
+                      TUsesManager.UseUnitInInterface(NewUnitName);
                     end;
                   usInterface: begin
-                      ReplaceUnitInInterface(OldUnitName, NewUnitName);
+                      TUsesManager.ReplaceUnitInInterface(OldUnitName, NewUnitName);
                     end;
                 end;
               end;
@@ -2828,25 +2828,25 @@ begin
               // the new unit name is already in the interface uses
               // there is a slim chance that the old one is also used
               if OldUnitName <> '' then begin
-                case GetUsesStatus(OldUnitName) of
+                case TUsesManager.GetUnitUsesStatus(OldUnitName) of
                   usImplementation:
-                    RemoveUnitFromImplementation(OldUnitName);
+                    TUsesManager.RemoveUnitFromImplementation(OldUnitName);
                   usInterface:
-                    RemoveUnitFromInterface(OldUnitName);
+                    TUsesManager.RemoveUnitFromInterface(OldUnitName);
                 end;
               end;
             end;
           usImplementation: begin
               // also removes it from the implementation uses
-              UseUnitInInterface(NewUnitName);
+              TUsesManager.UseUnitInInterface(NewUnitName);
               // the new unit name is now in the interface uses
               // there is a slim chance that the old one is also used
               if OldUnitName <> '' then begin
-                case GetUsesStatus(OldUnitName) of
+                case TUsesManager.GetUnitUsesStatus(OldUnitName) of
                   usImplementation:
-                    RemoveUnitFromImplementation(OldUnitName);
+                    TUsesManager.RemoveUnitFromImplementation(OldUnitName);
                   usInterface:
-                    RemoveUnitFromInterface(OldUnitName);
+                    TUsesManager.RemoveUnitFromInterface(OldUnitName);
                 end;
               end;
             end;
@@ -2860,36 +2860,36 @@ begin
         OldUnitName := NewToOldUnitNameMap.Values[NewUnitName];
         if OldUnitName = NewUnitName then
           OldUnitName := '';
-        case GetUsesStatus(NewUnitName) of
+        case TUsesManager.GetUnitUsesStatus(NewUnitName) of
           usNonExisting: begin
               if OldUnitName = '' then begin
-                UseUnitInImplementation(NewUnitName);
+                TUsesManager.UseUnitInImplementation(NewUnitName);
               end else begin
-                case GetUsesStatus(OldUnitName) of
+                case TUsesManager.GetUnitUsesStatus(OldUnitName) of
                   usNonExisting: begin
-                      UseUnitInImplementation(NewUnitName);
+                      TUsesManager.UseUnitInImplementation(NewUnitName);
                     end;
                   usInterface: begin
-                      RemoveUnitFromInterface(OldUnitName);
-                      UseUnitInImplementation(NewUnitName);
+                      TUsesManager.RemoveUnitFromInterface(OldUnitName);
+                      TUsesManager.UseUnitInImplementation(NewUnitName);
                     end;
                   usImplementation: begin
-                      ReplaceUnitInImplementation(OldUnitName, NewUnitName);
+                      TUsesManager.ReplaceUnitInImplementation(OldUnitName, NewUnitName);
                     end;
                 end;
               end;
             end;
           usInterface: begin
               // also removes it from the interface uses
-              UseUnitInImplementation(NewUnitName);
+              TUsesManager.UseUnitInImplementation(NewUnitName);
               // the new unit name is now in the implementation uses
               // there is a slim chance that the old one is also used
               if OldUnitName <> '' then begin
-                case GetUsesStatus(OldUnitName) of
+                case TUsesManager.GetUnitUsesStatus(OldUnitName) of
                   usImplementation:
-                    RemoveUnitFromImplementation(OldUnitName);
+                    TUsesManager.RemoveUnitFromImplementation(OldUnitName);
                   usInterface:
-                    RemoveUnitFromInterface(OldUnitName);
+                    TUsesManager.RemoveUnitFromInterface(OldUnitName);
                 end;
               end;
             end;
@@ -2897,11 +2897,11 @@ begin
               // the new unit name is already in the implementation uses
               // there is a slim chance that the old one is also used
               if OldUnitName <> '' then begin
-                case GetUsesStatus(OldUnitName) of
+                case TUsesManager.GetUnitUsesStatus(OldUnitName) of
                   usImplementation:
-                    RemoveUnitFromImplementation(OldUnitName);
+                    TUsesManager.RemoveUnitFromImplementation(OldUnitName);
                   usInterface:
-                    RemoveUnitFromInterface(OldUnitName);
+                    TUsesManager.RemoveUnitFromInterface(OldUnitName);
                 end;
               end;
             end;

@@ -64,6 +64,18 @@ type
     function InternalAddToUsesSection(const AUnitName: string; _Which: TWhichUsesList): Boolean;
     procedure InternalRemoveFromUses(_Which: TWhichUsesList; const AUnitName: string);
     function GetUsesList(_Which: TWhichUsesList): TUsesList;
+    class procedure InternalGetUnits(Units: TStrings; _Which: TWhichUsesList);
+  public
+    // These act on the current source editor
+    class function UseUnitInImplementation(const AUnitName: string): boolean;
+    class function UseUnitInInterface(const AUnitName: string): Boolean;
+    class function GetUnitUsesStatus(const AUnitName: string): TUsesStatus;
+    class procedure GetImplementationUnits(Units: TStrings);
+    class procedure GetInterfaceUnits(Units: TStrings);
+    class procedure RemoveUnitFromImplementation(const AUnitName: string);
+    class procedure RemoveUnitFromInterface(const AUnitName: string);
+    class procedure ReplaceUnitInImplementation(const AOldUnitName, ANewUnitName: string);
+    class procedure ReplaceUnitInInterface(const AOldUnitName, ANewUnitName: string);
   public
     constructor Create(const SourceEditor: IOTASourceEditor); overload;
     constructor Create(const FileName: string); overload;
@@ -84,113 +96,116 @@ type
     property InterfaceUses: TUsesList index puInterface read GetUsesList;
   end;
 
-// These act on the current source editor
-function UseUnitInImplementation(const AUnitName: string): Boolean;
-function UseUnitInInterface(const AUnitName: string): Boolean;
-function GetUsesStatus(const AUnitName: string): TUsesStatus;
-procedure GetImplementationUnits(Units: TStrings);
-procedure GetInterfaceUnits(Units: TStrings);
-procedure RemoveUnitFromImplementation(const AUnitName: string);
-procedure RemoveUnitFromInterface(const AUnitName: string);
-procedure ReplaceUnitInImplementation(const AOldUnitName, ANewUnitName: string);
-procedure ReplaceUnitInInterface(const AOldUnitName, ANewUnitName: string);
-
-
 implementation
 
 uses SysUtils, GX_OtaUtils, mwPasParserTypes;
 
-function UseUnitInImplementation(const AUnitName: string): Boolean;
+class function TUsesManager.UseUnitInImplementation(const AUnitName: string): boolean;
+var
+  um: TUsesManager;
 begin
-  with TUsesManager.Create(GxOtaGetCurrentSourceEditor) do
+  um := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
   try
-    Result := AddToImpSection(AUnitName);
+    Result := um.AddToImpSection(AUnitName);
   finally
-    Free;
+    um.free;
   end;
 end;
 
-function UseUnitInInterface(const AUnitName: string): Boolean;
+class function TUsesManager.UseUnitInInterface(const AUnitName: string): Boolean;
+var
+  um: TUsesManager;
 begin
-  with TUsesManager.Create(GxOtaGetCurrentSourceEditor) do
+  um := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
   try
-    Result := AddToIntSection(AUnitName);
+    Result := um.AddToIntSection(AUnitName);
   finally
-    Free;
+    um.Free;
   end;
 end;
 
-function GetUsesStatus(const AUnitName: string): TUsesStatus;
+class function TUsesManager.GetUnitUsesStatus(const AUnitName: string): TUsesStatus;
+var
+  um: TUsesManager;
 begin
-  with TUsesManager.Create(GxOtaGetCurrentSourceEditor) do
+  um := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
   try
-    Result := GetUsesStatus(AUnitName);
+    Result := um.GetUsesStatus(AUnitName);
   finally
-    Free;
+    um.Free;
   end;
 end;
 
-procedure InternalGetUnits(Units: TStrings; _Which: TWhichUsesList);
+class procedure TUsesManager.InternalGetUnits(Units: TStrings; _Which: TWhichUsesList);
 var
   UsesList: TUsesList;
+  um: TUsesManager;
 begin
   Assert(Assigned(Units));
-  with TUsesManager.Create(GxOtaGetCurrentSourceEditor) do
+  um := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
   try
-    UsesList := GetUsesList(_Which);
+    UsesList := um.GetUsesList(_Which);
     UsesList.AssignTo(Units);
   finally
-    Free;
+    um.Free;
   end;
 end;
 
-procedure GetImplementationUnits(Units: TStrings);
+class procedure TUsesManager.GetImplementationUnits(Units: TStrings);
 begin
   InternalGetUnits(Units, puImplementation);
 end;
 
-procedure GetInterfaceUnits(Units: TStrings);
+class procedure TUsesManager.GetInterfaceUnits(Units: TStrings);
 begin
   InternalGetUnits(Units, puInterface);
 end;
 
-procedure RemoveUnitFromImplementation(const AUnitName: string);
+class procedure TUsesManager.RemoveUnitFromImplementation(const AUnitName: string);
+var
+  um: TUsesManager;
 begin
-  with TUsesManager.Create(GxOtaGetCurrentSourceEditor) do
+  um := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
   try
-    RemoveFromImplUses(AUnitName);
+    um.RemoveFromImplUses(AUnitName);
   finally
-    Free;
+    um.Free;
   end;
 end;
 
-procedure RemoveUnitFromInterface(const AUnitName: string);
+class procedure TUsesManager.RemoveUnitFromInterface(const AUnitName: string);
+var
+  um: TUsesManager;
 begin
-  with TUsesManager.Create(GxOtaGetCurrentSourceEditor) do
+  um := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
   try
-    RemoveFromIntfUses(AUnitName);
+    um.RemoveFromIntfUses(AUnitName);
   finally
-    Free;
+    um.Free;
   end;
 end;
 
-procedure ReplaceUnitInImplementation(const AOldUnitName, ANewUnitName: string);
+class procedure TUsesManager.ReplaceUnitInImplementation(const AOldUnitName, ANewUnitName: string);
+var
+  um: TUsesManager;
 begin
-  with TUsesManager.Create(GxOtaGetCurrentSourceEditor) do
+  um := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
   try
-    ReplaceInImplUses(AOldUnitName, ANewUnitName);
+    um.ReplaceInImplUses(AOldUnitName, ANewUnitName);
   finally
-    Free;
+    um.Free;
   end;
 end;
 
-procedure ReplaceUnitInInterface(const AOldUnitName, ANewUnitName: string);
+class procedure TUsesManager.ReplaceUnitInInterface(const AOldUnitName, ANewUnitName: string);
+var
+  um: TUsesManager;
 begin
-  with TUsesManager.Create(GxOtaGetCurrentSourceEditor) do
+  um := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
   try
-    ReplaceInIntUses(AOldUnitName, ANewUnitName);
+    um.ReplaceInIntUses(AOldUnitName, ANewUnitName);
   finally
-    Free;
+    um.Free;
   end;
 end;
 
