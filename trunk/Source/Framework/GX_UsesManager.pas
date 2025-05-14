@@ -1,5 +1,8 @@
 unit GX_UsesManager;
 
+{$I GX_CondDefine.inc}
+{$I dzlib.inc}
+
 // Add to, remove from, and query the uses clauses of Object Pascal units
 // Orginal Author: Krzysztof Jez - krzysztofj@bms.com.pl
 // Modified by Erik Berry to remove external dependencies and cleanup
@@ -8,6 +11,14 @@ unit GX_UsesManager;
 // note: Even though TUsesManager.Create takes a parameter specifying the unit to work on
 //       this is only used in the parser. Any of the methodes manipulating the uses list
 //       always work on the current source editor.
+
+// note: In theory we should be using TGXUnicodeString and TGXUnicodeStringList instad of
+//       string and TStringList/TStrings so non-UNICODE Delphi versions (< Delphi 2009) can
+//       handle file and unit names with unicode characters.
+//       Unfortunately this would break a lot of code and I have just decided that it is not
+//       worth the offort. These > 10 years old Delphi versions will continue to be broken
+//       the way they have been for years. As far as I know, nobody has complained about this.
+//       -- 2025-05-14 twm
 
 interface
 
@@ -20,7 +31,6 @@ type
     EndPos: Longint; // Position at the end of the unit name
     CommaBeforePos: Longint; // Position of ',' before unit name
     CommaAfterPos: Longint;  // Position of ',' after unit name
-    SpaceAfter: Boolean;
   end;
 
   TUsesList = class(TObjectList)
@@ -98,7 +108,14 @@ type
 
 implementation
 
-uses SysUtils, GX_OtaUtils, mwPasParserTypes;
+
+uses
+  SysUtils,
+{$IFDEF HAS_UNIT_CHARACTER}
+  Character,
+{$ENDIF}
+  GX_OtaUtils,
+  mwPasParserTypes;
 
 class function TUsesManager.UseUnitInImplementation(const AUnitName: string): boolean;
 var
@@ -421,8 +438,6 @@ begin
             if UsesItem <> nil then
             begin
               UsesItem.CommaAfterPos := LastCommaPos - 1;
-              if Parser.NextChar = ' ' then
-                UsesItem.SpaceAfter := True;
             end;
           end
           else // FParser.TokenID <> tkComma
@@ -485,6 +500,22 @@ end;
     -> The Unit name and preceeding comma are deleted
 }
 procedure TUsesManager.InternalRemoveFromUses(_Which: TWhichUsesList; const AUnitName: string);
+
+{$IFDEF DEPRECATED_TCHARACTER}
+  function IsWhiteSpace(const _c: Char): Boolean;
+  begin
+    Result := _c.IsWhiteSpace;
+  end;
+{$ENDIF}
+
+{$IF not declared(IsWhiteSpace)}
+  function IsWhiteSpace(const _c: Char): Boolean;
+  begin
+  // SPACE, TAB,LF,LINE-TAB,FF,CR
+    Result := CharInSet(_c, [#$20, #$09..#$0D]);
+  end;
+{$IFEND}
+
 var
   DeletedUnit: TUsesItem;
   UnitIndex: Integer;
@@ -538,7 +569,8 @@ begin
       EndPos := DeletedUnit.EndPos;
     end;
   end;
-  if DeletedUnit.SpaceAfter then
+
+  while IsWhiteSpace(FFileContent[EndPos + 1]) do
     Inc(EndPos);
 
   GxOtaDeleteTextFromPos(BegPos, EndPos - BegPos);
