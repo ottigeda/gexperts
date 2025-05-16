@@ -1665,6 +1665,8 @@ var
   EnvName: string;
   EnvValue: string;
   WasAnythingReplaced: Boolean;
+  Temp: TStringList;
+  Dir: string;
 begin
   Result := _Path;
 
@@ -1695,9 +1697,25 @@ begin
   if FConfigName <> '' then
     Result := ReplaceMacro(Result, 'Config', FConfigName);
 
-  if not IsPathAbsolute(Result) then begin
-    if FPrefix <> '' then begin
-      Result := TFileSystem.ExpandFileNameRelBaseDir(Result, FPrefix);
+  if FPrefix <> '' then begin
+    // It's possible that the environment variables expanded to multiple directories separated
+    // by a ';'. So we need to convert them to absolute paths separately.
+    Temp := TStringList.Create;
+    try
+      Temp.Delimiter := ';';
+{$IFDEF GX_HAS_STRICT_DELIMITER}
+      Temp.StrictDelimiter := True;
+{$ENDIF GX_HAS_STRICT_DELIMITER}
+      Temp.DelimitedText := Result;
+      for i := 0 to Temp.Count - 1 do begin
+        Dir := Temp[i];
+        if not IsPathAbsolute(Dir) then begin
+          Temp[i] := TFileSystem.ExpandFileNameRelBaseDir(Dir, FPrefix);
+        end;
+      end;
+      Result := temp.DelimitedText;
+    finally
+      FreeAndNil(Temp);
     end;
   end;
 end;
