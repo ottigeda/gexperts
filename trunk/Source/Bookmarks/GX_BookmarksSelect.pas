@@ -692,6 +692,7 @@ end;
 procedure TfoBookmarksSelect.FormResize(Sender:TObject);
 begin
  inherited;
+ lbFuncsProcs.Refresh;
  SBar.Panels[1].Width:=SBar.ClientWidth-SBar.Panels[2].Width-SBar.Panels[3].Width;
 end;
 
