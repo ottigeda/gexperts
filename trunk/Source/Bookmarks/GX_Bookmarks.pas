@@ -145,10 +145,11 @@ uses {$IFOPT D+} GX_DbugIntf, {$ENDIF}
      GX_BookmarksOptions,
      GX_BookmarksSelect;
 
+const
+     sExpertFormName    = 'fmGxBookmarksForm'; // as defined in IDE (must not be a resource string)
+
 resourcestring
 
-     sExpertName        = 'BookmarksExpert';   // internal name of expert for expert identification = BaseKeyName in registry
-     sExpertFormName    = 'fmGxBookmarksForm'; // as defined in IDE
      sExpertMenuCaption = 'Editor Bookmarks';  // caption of a menu item entry, do we really need?
 
 type TBookmarksExpert   = class(TGX_Expert)
@@ -244,7 +245,8 @@ end;
 
 class function TBookmarksExpert.GetName:String;
 begin
- Result:=sExpertName;
+  // do not translate (and do not make a resource string)
+ Result:='BookmarksExpert';
 end;
 
 function TBookmarksExpert.HasConfigOptions:Boolean;
