@@ -5,17 +5,6 @@
     <export-task-groups>
       <export-task-group name="Common">
         <export-tasks>
-          <export-task name="Publish your project in PDF format" format="PDF">
-            <task-config-group name="settings">
-              <task-config-value name="outputfile">..\GExperts.pdf</task-config-value>
-              <task-config-value name="template">$(HMSYS)Templates\pdf\Standard_manual.mnl</task-config-value>
-              <task-config-value name="exportcomments">0</task-config-value>
-              <task-config-value name="exportcommentsdate">36526</task-config-value>
-              <task-config-value name="table_of_contents">Table of Contents</task-config-value>
-              <task-config-value name="make4include">PDF</task-config-value>
-              <task-config-value name="make4status">*</task-config-value>
-            </task-config-group>
-          </export-task>
           <export-task name="Publish your project in CHM format" format="CHM">
             <task-config-group name="settings">
               <task-config-value name="outputfile">..\..\Binaries\GExperts.chm</task-config-value>
@@ -38,6 +27,17 @@
               <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
             </task-config-group>
           </export-task>
+          <export-task name="Publish your project in PDF format" format="PDF">
+            <task-config-group name="settings">
+              <task-config-value name="outputfile">..\GExperts.pdf</task-config-value>
+              <task-config-value name="template">$(HMSYS)Templates\pdf\Standard_manual.mnl</task-config-value>
+              <task-config-value name="exportcomments">0</task-config-value>
+              <task-config-value name="exportcommentsdate">36526</task-config-value>
+              <task-config-value name="table_of_contents">Table of Contents</task-config-value>
+              <task-config-value name="make4include">PDF</task-config-value>
+              <task-config-value name="make4status">*</task-config-value>
+            </task-config-group>
+          </export-task>
         </export-tasks>
       </export-task-group>
       <export-task-group name="Recent Publishes">
@@ -47,7 +47,7 @@
               <task-config-value name="outputfile">..\..\Binaries\GExperts.chm</task-config-value>
               <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
               <task-config-value name="deletetemp">1</task-config-value>
-              <task-config-value name="make0include">CHM,PDF,EBOOK</task-config-value>
+              <task-config-value name="make0include">CHM,HTML,PDF</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
             </task-config-group>
           </export-task>
@@ -131,10 +131,10 @@
       <config-value name="deffont">font-family:Tahoma; font-size:9pt; color:#000000;</config-value>
       <config-value name="contents">Introduction</config-value>
       <config-value name="topicprefix"></config-value>
-      <config-value name="autohelpstart">58</config-value>
+      <config-value name="autohelpstart">62</config-value>
       <config-value name="autohelpincrement">1</config-value>
       <config-value name="autohelpanchor">0</config-value>
-      <config-value name="searchpath">..\;..\Graphics\</config-value>
+      <config-value name="searchpath">..\;..\Graphics\;..\..\..\..\..\..\Data_P_Temp\GX_OLD\</config-value>
       <config-value name="imageshortcuts"></config-value>
       <config-group name="custombuilds">
         <config-value name="demo">Demo Build</config-value>
@@ -145,7 +145,7 @@
       <config-value name="imageshortcuts_includebaggage">1</config-value>
       <config-value name="make3include">HTML</config-value>
       <config-value name="make3status">*</config-value>
-      <config-value name="make0include">CHM,PDF,EBOOK</config-value>
+      <config-value name="make0include">CHM,HTML,PDF</config-value>
       <config-value name="make0status">*</config-value>
       <config-group name="spellcheck">
         <config-value name="project">0</config-value>
@@ -689,6 +689,11 @@ GExperts Help
           <config-value name="lastexport">0</config-value>
         </config-group>
       </config-group>
+      <config-group name="ghost">
+        <config-group name="project">
+          <config-value name="lastexport">0</config-value>
+        </config-group>
+      </config-group>
     </config-group>
     <variables/>
     <helpcontext-numbers>
@@ -708,6 +713,10 @@ GExperts Help
       <helpcontext-number href="Credits" value="56"/>
       <helpcontext-number href="Editor_Experts" value="29"/>
       <helpcontext-number href="Editor_Toolbar" value="32"/>
+      <helpcontext-number href="EditorBookmarks00General" value="59"/>
+      <helpcontext-number href="EditorBookmarks10Edit" value="60"/>
+      <helpcontext-number href="EditorBookmarks20Select" value="61"/>
+      <helpcontext-number href="EditorBookmarks30Options" value="62"/>
       <helpcontext-number href="Expert_Manager" value="7"/>
       <helpcontext-number href="Favorite_Files" value="15"/>
       <helpcontext-number href="FindComponentReference" value="45"/>
