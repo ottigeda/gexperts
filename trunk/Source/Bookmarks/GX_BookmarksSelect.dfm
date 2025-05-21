@@ -1,6 +1,6 @@
 inherited foBookmarksSelect: TfoBookmarksSelect
-  Left = 2794
-  Top = 240
+  Left = 759
+  Top = 78
   Anchors = [akTop, akRight]
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog

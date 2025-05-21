@@ -61,6 +61,7 @@ uses u_dzVclUtils,
      GX_ConfigurationInfo,
      GX_GenericUtils,
      GX_OtaUtils,
+     GX_GxUtils,
 
      GX_BookmarksConst;
 
@@ -136,7 +137,7 @@ end;
 
 procedure TfoBookmarksEdit.imF1Click(Sender:TObject);
 begin
- CallHtmlHelp(HLP_HelpFileName,HLP_BookmarksHelpEdit);
+ GXContextHelp(Self,60);
 end;
 
 // ................................................................................. Form
@@ -214,7 +215,8 @@ begin
  Width :=Constraints.MinWidth;
  Height:=Constraints.MinHeight;
  EnsureFormVisible(Self);
- if not(FileExists(ConfigInfo.ConfigPath+HLP_HelpFileName)) then begin
+
+ if not(FileExists(ConfigInfo.HelpFile)) then begin
   imF1.  Visible:=false;
   imF1NA.Left   :=imF1.Left;
   imF1NA.Top    :=imF1.Top;

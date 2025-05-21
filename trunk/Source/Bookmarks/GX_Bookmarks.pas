@@ -980,7 +980,8 @@ end;
 
 procedure TfmGxBookmarksForm.tbHelpClick(Sender:TObject);
 begin
- CallHtmlHelp(HLP_HelpFileName,HLP_BookmarksHelpGeneral);
+ //CallHtmlHelp(HLP_HelpFileName,HLP_BookmarksHelpGeneral);
+ GXContextHelp(Self,59);
 end;
 
 // ................................................................................. SBar
@@ -1048,7 +1049,7 @@ begin
  paListboxGutterBottom.Color  :=Color;            // in designtime
  Toolbar.              Color  :=Color;            // ..
  tbEdit.               Visible:=FUseOldEditForm;
- tbHelp.               Enabled:=FileExists(ConfigInfo.ConfigPath+HLP_HelpFileName);
+ tbHelp.               Enabled:=FileExists(ConfigInfo.HelpFile);
  lbBookmarks.          Color  :=FListboxColorBackground;
 
  FLastSortMode:=smLine;

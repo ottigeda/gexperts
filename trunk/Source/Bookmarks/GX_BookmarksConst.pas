@@ -4,8 +4,8 @@ interface { --------------------------------------------------------------------
 
 uses  Windows,Graphics,Forms,Types,Dialogs,Controls,Messages,StdCtrls,Math,
 
-      GX_ConfigurationInfo,
-      GXHtmlHelp;
+      GX_ConfigurationInfo;
+//      GXHtmlHelp;
 
 const WM_AddBookmark             = WM_User+300;
       WM_Dock                    = WM_User+301;
@@ -26,14 +26,6 @@ const WM_AddBookmark             = WM_User+300;
       DefRemoveLeadingBlanks     = true;
       DefUseOldEditForm          = false;
 
-      HLP_HelpFileName           = 'BookmarksHelp.chm';
-      HLP_BookmarksHelpEdit      = 'BookmarksHelpEdit.htm';
-      HLP_BookmarksHelpGeneral   = 'BookmarksHelpGeneral.htm';
-      HLP_BookmarksHelpOptions   = 'BookmarksHelpOptions.htm';
-      HLP_BookmarksHelpSelect    = 'BookmarksHelpSelect.htm';
-
-      HH_DISPLAY_TOPIC           = $0000;
-
       maxBookmarks               =   20; // 0..19
       maxFilterLen               =    8; // 1.. 8
 
@@ -47,7 +39,6 @@ function  Shorten                (Canvas:TCanvas;MaxL:Integer;Text,Trailer:Strin
 function  SetLightness           (Color:TColor;Percentage:ShortInt):TColor;
 function  NewDialog              (foParent:TForm;aType:TMsgDlgType;const aCaption,aMessage,aFontName:String;buText:Array of String):Integer;
 procedure Wait                   (mSek:Cardinal);
-procedure CallHtmlHelp           (HelpFName,TopicFName:String);
 procedure ChangeColorDialogText  (Dialog:TColorDialog;X,Y:Integer;CaptionText:String);
 
 implementation { ---------------------------------------------------------------------- }
@@ -139,17 +130,6 @@ begin
  repeat
   Application.ProcessMessages;
   until Int64(Windows.GetTickCount)-Int64(Start)>=mSek
-end;
-
-procedure CallHtmlHelp(HelpFName,TopicFName:String);
-var OrgHelpPathFName : String;
-begin
- OrgHelpPathFName:=ConfigInfo.HelpFile;
-
-    ConfigInfo.HelpFile:=ConfigInfo.ConfigPath;
-    HtmlHelp(0,PChar(ConfigInfo.ConfigPath+HelpFName+'::/'+TopicFName),HH_Display_Topic,0);
-
- ConfigInfo.HelpFile:=OrgHelpPathFName;
 end;
 
 procedure ChangeColorDialogText(Dialog:TColorDialog;X,Y:Integer;CaptionText:String);

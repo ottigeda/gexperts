@@ -69,6 +69,7 @@ implementation { ---------------------------------------------------------------
 
 uses GX_ConfigurationInfo,
      GX_GenericUtils,
+     GX_GxUtils,
 
      GX_BookmarksConst;
 
@@ -226,7 +227,7 @@ end;
 
 procedure TfoBookmarksOptions.imF1Click(Sender:TObject);
 begin
- CallHtmlHelp(HLP_HelpFileName,HLP_BookmarksHelpOptions);
+ GXContextHelp(Self,62);
 end;
 
 // ................................................................................. Form
@@ -261,7 +262,7 @@ begin
  LoadPositionAndUserColors;
  EnsureFormVisible(Self);
 
- if not(FileExists(ConfigInfo.ConfigPath+HLP_HelpFileName)) then begin
+ if not(FileExists(ConfigInfo.HelpFile)) then begin
   imF1.  Visible:=false;
   imF1NA.Left   :=imF1.Left;
   imF1NA.Top    :=imF1.Top;
@@ -277,11 +278,13 @@ begin
  InitDPIScaler;
 
 {$IFDEF GX_DELPHIXE3_UP}
- // alternatively we could use the same TPanel interceptor class as the Grep Results Options dialog
- paLBcolorBkg.StyleElements := [];
- paLBcolorBMline.StyleElements := [];
- paHeaderBkColor.StyleElements := [];
+ // §§ -cInfo -oRZ : PanelColors > pay attention to this in the future!
+ // Alternatively we could use the same TPanel interceptor class as the Grep Results Options dialog
+ paLBcolorBkg.   StyleElements:=[];
+ paLBcolorBMline.StyleElements:=[];
+ paHeaderBkColor.StyleElements:=[];
 {$ENDIF}
+
  paColorBase.Color:=Color;
  FUserColors:=TStringList.Create;
 end;

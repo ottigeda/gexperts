@@ -15,9 +15,9 @@ inherited foBookmarksOptions: TfoBookmarksOptions
   PixelsPerInch = 96
   TextHeight = 13
   object imF1: TImage
-    Left = 6
+    Left = 8
     Top = 288
-    Width = 16
+    Width = 14
     Height = 16
     Hint = 'Help (F1)'
     Anchors = [akLeft, akBottom]
