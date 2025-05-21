@@ -5,7 +5,6 @@ interface { --------------------------------------------------------------------
 uses  Windows,Graphics,Forms,Types,Dialogs,Controls,Messages,StdCtrls,Math,
 
       GX_ConfigurationInfo;
-//      GXHtmlHelp;
 
 const WM_AddBookmark             = WM_User+300;
       WM_Dock                    = WM_User+301;

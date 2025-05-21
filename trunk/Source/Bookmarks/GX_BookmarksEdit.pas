@@ -15,7 +15,6 @@ type TfoBookmarksEdit = class(TfmBaseForm)
                          laBookmarkIdx                 : TLabel;
                          coBookmarkIdx                 : TComboBox;
                          imF1                          : TImage;
-                         imF1NA                        : TImage;
                          buOk                          : TButton;
                          buCancel                      : TButton;
 
@@ -215,13 +214,6 @@ begin
  Width :=Constraints.MinWidth;
  Height:=Constraints.MinHeight;
  EnsureFormVisible(Self);
-
- if not(FileExists(ConfigInfo.HelpFile)) then begin
-  imF1.  Visible:=false;
-  imF1NA.Left   :=imF1.Left;
-  imF1NA.Top    :=imF1.Top;
-  imF1NA.Visible:=true;
-  end;
 end;
 
 procedure TfoBookmarksEdit.FormClose(Sender:TObject;var Action:TCloseAction);

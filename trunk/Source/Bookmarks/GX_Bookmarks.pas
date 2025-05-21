@@ -1049,7 +1049,6 @@ begin
  paListboxGutterBottom.Color  :=Color;            // in designtime
  Toolbar.              Color  :=Color;            // ..
  tbEdit.               Visible:=FUseOldEditForm;
- tbHelp.               Enabled:=FileExists(ConfigInfo.HelpFile);
  lbBookmarks.          Color  :=FListboxColorBackground;
 
  FLastSortMode:=smLine;

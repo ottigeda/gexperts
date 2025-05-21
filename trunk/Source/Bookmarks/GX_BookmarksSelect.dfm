@@ -42,8 +42,8 @@ inherited foBookmarksSelect: TfoBookmarksSelect
     ShowHint = True
   end
   object imF1: TImage
-    Left = 385
-    Top = 4
+    Left = 412
+    Top = 10
     Width = 16
     Height = 16
     Hint = 'Help (F1)'
@@ -58,26 +58,6 @@ inherited foBookmarksSelect: TfoBookmarksSelect
       344422242130001222222222210000011111111110000000000000000000}
     ShowHint = True
     Transparent = True
-    OnClick = imF1Click
-  end
-  object imF1NA: TImage
-    Left = 393
-    Top = 11
-    Width = 16
-    Height = 16
-    Hint = 'Help (F1)'
-    ParentShowHint = False
-    Picture.Data = {
-      07544269746D6170C2000000424DC20000000000000042000000280000001000
-      000010000000010004000000000080000000C40E0000C40E0000030000000300
-      0000FFFF010081818100F1FBFF00000000000002000000000000001200000000
-      2222210122000001111110011200001200000000012000120120001201200012
-      0120001201200012012200120120001201110012012000120120001201200012
-      0122011201200012011100100120001200000000012000122222222221000001
-      1111111110000000000000000000}
-    ShowHint = True
-    Transparent = True
-    Visible = False
     OnClick = imF1Click
   end
   object buSelect: TButton

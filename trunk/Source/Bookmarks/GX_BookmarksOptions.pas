@@ -25,7 +25,6 @@ type TfoBookmarksOptions = class(TfmBaseForm)
                              paHeaderBkColor                     : TPanel;
                               laHeaderFontColor                  : TLabel;
                             imF1                                 : TImage;
-                            imF1NA                               : TImage;
                             buSave                               : TButton;
                             buCancel                             : TButton;
 
@@ -261,13 +260,6 @@ begin
  LoadSettings;
  LoadPositionAndUserColors;
  EnsureFormVisible(Self);
-
- if not(FileExists(ConfigInfo.HelpFile)) then begin
-  imF1.  Visible:=false;
-  imF1NA.Left   :=imF1.Left;
-  imF1NA.Top    :=imF1.Top;
-  imF1NA.Visible:=true;
-  end;
 end;
 
 // ......................................................................................
