@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="ErikBerry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic modified="2025-06-02T08:42:56.719+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Grep Search</title>
   <keywords>
     <keyword translate="true">Grep Search</keyword>
@@ -11,19 +11,17 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Grep Search</text></para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">GExperts incorporates a powerful search facility that enables you to quickly locate text strings in files (ANSI/ASCII, UTF-8/UTF-16 unicode, and dfm/nfm/xfm form files). &#160;Using Grep, you can search the current file, all open project files, all files in your project or project group, or all files in a directory (optionally including sub-directories). &#160;The grep search is also available outside the IDE by executing the standalone GExpertsGrep.exe application.</text></para>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">GExperts incorporates a powerful search facility that enables you to quickly locate text strings in files (ANSI/ASCII, UTF-8/UTF-16 unicode, and dfm/nfm/xfm form files). &#160;Using Grep, you can search the current file, all open project files, all files in your project or project group, or all files in a directory (optionally including sub-directories). &#160;The grep search is also available outside the IDE by executing the standalone GExpertsGrep.exe application.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">To begin a search, select Grep Search from the GExperts menu. &#160;A dialog will appear like the one below where you can enter your search criteria. &#160;Note that if you have a string highlighted in the code editor when calling up this dialog, it will be used as the default search string.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><image src="Grep Search.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-bottom:40px;"><image src="Grep Search.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" figurelistinclude="0"></image><text style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The various options in the search dialog are as follows:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Text to Find</text><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true">: &#160;The text or </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Grep_Regular_Expressions" style="font-family:Arial; font-size:10pt; color:#008000;" translate="true">regular expression</link><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true"> to search for &#160;</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Options:</text></para>
-    <para style="margin-left:27px;"><table rowcount="5" colcount="2" style="width:auto; cell-padding:1px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table rowcount="5" colcount="2" style="width:auto; cell-padding:1px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
       <tr style="vertical-align:top">
         <td style="width:170px;">
           <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Case sensitive:</text></para>
@@ -67,7 +65,7 @@
     </table></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Where (search scope):</text></para>
-    <para style="margin-left:27px;"><table rowcount="6" colcount="2" style="width:auto; cell-padding:1px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table rowcount="6" colcount="2" style="width:auto; cell-padding:1px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
       <tr style="vertical-align:top">
         <td style="width:169px;">
           <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Current file:</text></para>
@@ -119,8 +117,8 @@
     </table></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Directory Search:</text></para>
-    <para style="tabstops:8px left ;"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Note:</text><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true"> This portion of the dialog is only enabled if &quot;Search in directories&quot; is selected. </text></para>
-    <para style="margin-left:27px;"><table rowcount="5" colcount="2" style="width:auto; cell-padding:1px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:8px left ;"><text style="font-family:Arial; font-size:10pt; font-weight:bold; color:#010100;" translate="true">Note:</text><text style="font-family:Arial; font-size:10pt; color:#010100;" translate="true"> This portion of the dialog is only enabled if &quot;Search in directories&quot; is selected. </text></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table rowcount="5" colcount="2" style="width:auto; cell-padding:1px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
       <tr style="vertical-align:top">
         <td style="width:169px;">
           <para styleclass="Normal"><text styleclass="Bulleted List" translate="true">Directories:</text></para>
@@ -166,5 +164,8 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Once you have entered the search criteria, click the OK button or press enter to initiate the search. &#160;As the search progresses, results will be shown in the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Grep_Results" styleclass="Normal" translate="true">Grep Results</link><text styleclass="Normal" translate="true"> window. &#160;From the results window, you can also perform multi-file search/replace on the matches.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The </text><link displaytype="text" defaultstyle="true" type="topiclink" href="GExperts_Configuration" styleclass="Normal" translate="true">GExperts Configuration</link><text styleclass="Normal" translate="true"> dialog allows setting the Grep Search option to use the current editor identifier as the default search string, if no block is selected.</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:40:30.875+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true">&#32;</text></para>
   </body>
 </topic>

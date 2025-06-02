@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-10-22T20:49:16.886-05:00" lasteditedby="jim" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic modified="2025-06-02T08:50:01.196+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Readme.txt</title>
   <keywords>
     <keyword translate="true">readme</keyword>
@@ -9,7 +9,8 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Readme.txt</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" style="font-family:Consolas; font-weight:bold;" translate="true">GExperts 1.3.25</text></para>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" style="font-family:Consolas; font-weight:bold;" translate="true">GExperts 1.3.25</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Consolas;" translate="true">Open Source Programming Tools for Delphi and C++Builder</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Consolas;" translate="true">Source code, the FAQ, and the latest news are available at:</text></para>
@@ -222,10 +223,8 @@
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Consolas;" translate="true">warranties of merchantability and fitness for a particular purpose. In</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Consolas;" translate="true">other words, we accept no liability for any damage that may result from</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Consolas;" translate="true">using GExperts or programs that use the GExperts source code.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="topiclink" href="License_Agreement" styleclass="Normal" style="font-family:Consolas;" translate="true">GEXPERTS LICENSE</link></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" style="font-family:Consolas;" translate="true">EOF</text></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:27:32.218+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true">&#32;</text></para>
   </body>
 </topic>

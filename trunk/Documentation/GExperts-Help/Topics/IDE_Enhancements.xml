@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic modified="2025-06-02T08:43:48.393+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">IDE Enhancements</title>
   <keywords>
     <keyword translate="true">IDE Enhancements</keyword>
@@ -8,8 +9,8 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">IDE Enhancements</text></para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The GExperts IDE enhancements use low-level techniques to interface directly with the IDE and add often-requested features. &#160;You can disable all of the IDE enhancements at once using the &quot;Disable IDE enhancements&quot; checkbox.</text></para>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">The GExperts IDE enhancements use low-level techniques to interface directly with the IDE and add often-requested features. &#160;You can disable all of the IDE enhancements at once using the &quot;Disable IDE enhancements&quot; checkbox.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Menu</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-size:5pt;" translate="true">&#32;</text></para>
@@ -18,23 +19,21 @@
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">IDE</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The Enhance IDE dialogs setting causes GExperts to perform the following enhancements:</text></para>
-    <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="text-indent:-13px; margin-left:27px; tabstops:27px left ; font-family:Symbol; font-size:10pt; color:#000000;">
-      <li style="text-indent:-13px; margin-left:27px; tabstops:27px left ;"><text styleclass="Normal" translate="true">Makes the options dialogs remember their last position onscreen</text></li>
-      <li style="text-indent:-13px; margin-left:27px; tabstops:27px left ;"><text styleclass="Normal" translate="true">Makes the Environment Options and Project Options dialogs resizable (BDS 2006 or later only)</text></li>
-      <li style="text-indent:-13px; margin-left:27px; tabstops:27px left ;"><text styleclass="Normal" translate="true">Saves the splitter position on the options dialogs (BDS 2006 or later only)</text></li>
-      <li style="text-indent:-13px; margin-left:27px; tabstops:27px left ;"><text styleclass="Normal" translate="true">Increases all of the TComboBox DropDownCount values in the options dialog boxes to show at least 15 items</text></li>
-      <li style="text-indent:-13px; margin-left:27px; tabstops:27px left ;"><text styleclass="Normal" translate="true">Collapses the Together node in the options dialog (BDS 2006 or later only)</text></li>
-      <li style="text-indent:-13px; margin-left:27px; tabstops:27px left ;"><text styleclass="Normal" translate="true">Removes the product list horizontal scrollbar in the about box (BDS 2006 or later only)</text></li>
-      <li style="text-indent:-13px; margin-left:27px; tabstops:27px left ;"><text styleclass="Normal" translate="true">Remembers the width of the text search dialog</text></li>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" translate="true">Makes the options dialogs remember their last position onscreen</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" translate="true">Makes the Environment Options and Project Options dialogs resizable (BDS 2006 or later only)</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" translate="true">Saves the splitter position on the options dialogs (BDS 2006 or later only)</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" translate="true">Increases all of the TComboBox DropDownCount values in the options dialog boxes to show at least 15 items</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" translate="true">Collapses the Together node in the options dialog (BDS 2006 or later only)</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" translate="true">Removes the product list horizontal scrollbar in the about box (BDS 2006 or later only)</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" translate="true">Remembers the width of the text search dialog</text></li>
     </list>
-    <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" style="text-indent:-13px; margin-left:27px; tabstops:27px left ; font-family:Symbol; font-size:10pt; color:#000000;">
-      <li style="text-indent:-13px; margin-left:27px; tabstops:27px left ;"><text styleclass="Normal" translate="true">Allows resizing the open picture dialogs for image lists and glyphs</text></li>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" translate="true">Allows resizing the open picture dialogs for image lists and glyphs</text></li>
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">You can also tell the object inspector to display font name dropdown selections using the actual font&apos;s face.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><image src="Configuration IDE Enhancements.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;"></image></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-bottom:40px;"><image src="Configuration IDE Enhancements.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" figurelistinclude="0"></image><text style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Tab Dock Hosts</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-size:5pt;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">When docking multiple IDE tool windows together, GExperts can force the Delphi 6/7 IDE to use multiline tabs when the tabs do not fit in the available space. &#160;The multiline tab setting can be changed on a per-dock host basis from the right-click menu of the tabs, or set as the default for all new dock hosts.</text></para>
@@ -49,5 +48,8 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Note: Starting with Delphi 8, there is no tabbed component palette, so these options do not apply.</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Note: If the multiline option causes component icons to paint improperly when switching forms, it is suggested that you enable the flat button mode, which should fix the problem.</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:40:52.494+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true">&#32;</text></para>
   </body>
 </topic>

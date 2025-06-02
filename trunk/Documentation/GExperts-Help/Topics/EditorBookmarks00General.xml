@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic modified="2025-05-21T10:16:06.709+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic modified="2025-06-02T00:35:14.922+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Editor Bookmarks</title>
   <body>
     <header>
@@ -19,34 +19,34 @@
       </thead>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Overview" styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#000000;" translate="true">Overview</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Overview" styleclass="Courier Fixed" style="font-size:8pt;" translate="true">Overview</link><text styleclass="Courier Fixed" style="font-size:8pt;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#e4641c;" translate="true">General </text></para>
+          <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Heading1" style="font-family:&apos;Courier New&apos;; font-size:8pt; color:#efa175;" translate="true">General</text><text styleclass="Courier Fixed" style="font-size:8pt;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="SettingBookmarks" styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#000000;" translate="true">Setting bookmarks</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="SettingBookmarks" styleclass="Courier Fixed" style="font-size:8pt;" translate="true">Setting bookmarks</link><text styleclass="Courier Fixed" style="font-size:8pt;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks10Edit" styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#000000;" translate="true">Add an edit bookmarks</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks10Edit" styleclass="Courier Fixed" style="font-size:8pt;" translate="true">Add an edit bookmarks</link><text styleclass="Courier Fixed" style="font-size:8pt;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="EditAndDeleteBookmarks" styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#000000;" translate="true">Edit and delete bookmarks</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="EditAndDeleteBookmarks" styleclass="Courier Fixed" style="font-size:8pt;" translate="true">Edit and delete bookmarks</link><text styleclass="Courier Fixed" style="font-size:8pt;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks20Select" styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#000000;" translate="true">Select function or procedure</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks20Select" styleclass="Courier Fixed" style="font-size:8pt;" translate="true">Select function or procedure</link><text styleclass="Courier Fixed" style="font-size:8pt;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:22px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-bottom:2px; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="BookmarkList" styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#000000;" translate="true">Bookmark list</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-bottom:2px; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="BookmarkList" styleclass="Courier Fixed" style="font-size:8pt;" translate="true">Bookmarks list</link><text styleclass="Courier Fixed" style="font-size:8pt;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:22px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-bottom:2px; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks30Options" styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#000000;" translate="true">Configuration (Options)</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-bottom:2px; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks30Options" styleclass="Courier Fixed" style="font-size:8pt;" translate="true">Configuration (Options)</link><text styleclass="Courier Fixed" style="font-size:8pt;" translate="true">&#32;</text></para>
         </td>
       </tr>
     </table></para>
@@ -57,8 +57,8 @@
         <td style="height:22px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Overview </text></para>
         </td>
-        <td style="width:40px; height:22px;">
-          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">TOP</link></para>
+        <td style="vertical-align:top; width:40px; height:22px;">
+          <para styleclass="Normal" style="text-align:center; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-size:8pt;" translate="true">TOP</link></para>
         </td>
       </tr>
     </table></para>
@@ -71,8 +71,8 @@
         <td style="height:22px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Setting bookmarks </text></para>
         </td>
-        <td style="width:40px; height:22px;">
-          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">TOP</link></para>
+        <td style="vertical-align:top; width:40px; height:22px;">
+          <para styleclass="Normal" style="text-align:center; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-size:8pt;" translate="true">TOP</link></para>
         </td>
       </tr>
     </table></para>
@@ -96,8 +96,8 @@
         <td style="height:22px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Edit and delete bookmarks </text></para>
         </td>
-        <td style="width:40px; height:22px;">
-          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">TOP</link></para>
+        <td style="vertical-align:top; width:40px; height:22px;">
+          <para styleclass="Normal" style="text-align:center; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-size:8pt;" translate="true">TOP</link></para>
         </td>
       </tr>
     </table></para>
@@ -111,10 +111,10 @@
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
       <tr style="vertical-align:middle">
         <td style="height:22px;">
-          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Bookmark list </text></para>
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Bookmarks list </text></para>
         </td>
-        <td style="width:40px; height:22px;">
-          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">TOP</link></para>
+        <td style="vertical-align:top; width:40px; height:22px;">
+          <para styleclass="Normal" style="text-align:center; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-size:8pt;" translate="true">TOP</link></para>
         </td>
       </tr>
     </table></para>
@@ -125,6 +125,8 @@
       <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">By repeatedly clicking on the lightning symbol in the toolbar, the list can be sorted by the attributes </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic;" translate="true">BookmarkIndex</text><text styleclass="Normal" style="font-family:Verdana;" translate="true">, </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic;" translate="true">MethodName</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> and </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic;" translate="true">LineNumber</text><text styleclass="Normal" style="font-family:Verdana;" translate="true">. The active sort mode is displayed in the 2nd panel of the statusbar. </text></li>
     </list>
     <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:6px; margin-right:6px; margin-left:60px;"><text styleclass="Normal" style="font-family:Verdana; color:#ff0000;" translate="true">Notice</text><tab /><text styleclass="Normal" style="font-family:Verdana;" translate="true">Unfortunately, the determination of the method identifier within INC files is still faulty. </text></para>
-    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:6px; margin-right:6px; margin-left:60px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:35:11.804+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true">&#32;</text></para>
   </body>
 </topic>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-09-29T05:45:53.731+02:00" lasteditedby="jim" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic modified="2025-06-02T08:34:57.658+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Credits</title>
   <keywords>
     <keyword translate="true">change log</keyword>
@@ -9,7 +9,8 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Credits</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">GExperts would not exist without the help and advice of many people.This is a possibly incomplete list as some names may have been lost to time.</text></para>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">GExperts would not exist without the help and advice of many people.This is a possibly incomplete list as some names may have been lost to time.</text></para>
     <para styleclass="Normal"></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:10pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Normal" translate="true">ArentJan Banck</text></li>
@@ -34,5 +35,8 @@
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">As the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Change-Log-2006-2015" styleclass="Normal" translate="true">change log</link><text styleclass="Normal" translate="true"> in the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Readme_txt" styleclass="Normal" translate="true">readme.txt</link><text styleclass="Normal" translate="true"> was out of date it has been moved to it&apos;s own file.</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:34:33.245+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
   </body>
 </topic>

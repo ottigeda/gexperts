@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" lasteditedby="ErikBerry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic modified="2025-06-02T08:27:49.111+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">C++ and C# Compatibility</title>
   <keywords>
     <keyword translate="true">C# Compatibility</keyword>
@@ -10,8 +10,8 @@
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">C++ and C# Compatibility</text></para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">The following tools should work with C++ code:</text></para>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" style="font-weight:bold;" translate="true">The following tools should work with C++ code:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true"> - IDE Menu Shortcuts</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true"> - PE Information</text></para>
@@ -72,5 +72,8 @@
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">C# Compatibility</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">None of the tools that require source code parsing will work with C# code, because GExperts does not contain a C# code parser. &#160;The state of the other tools with respect to C# is that they may work, but there has been only limited testing to verify correct results, since RAD Studio no longer supports C# projects.</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:32:42.294+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
   </body>
 </topic>

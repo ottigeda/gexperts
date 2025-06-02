@@ -1,15 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-12-06T16:01:48.510+01:00" lasteditedby="twm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic modified="2025-06-02T08:56:19.069+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Uses Clause Manager</title>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Uses Clause Manager</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">The Uses Clause Manager allows you to manage both uses clauses in the current unit.</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><image src="Uses Clause Manager.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">The Uses Clause Manager allows you to manage both uses clauses in the current unit.</text></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-bottom:40px;"><image src="Uses Clause Manager.png" imagestyleclass="Default" scale="90.40%" width="913" height="472" styleclass="Image Caption" figurelistinclude="0"></image><text styleclass="Image Caption" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">On the left there are two lists with the units in the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Interface</text><text styleclass="Normal" translate="true"> and </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Implementation</text><text styleclass="Normal" translate="true"> uses clauses respectively. The four buttons below these lists </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Delete</text><text styleclass="Normal" translate="true"> from these lists or </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Move</text><text styleclass="Normal" translate="true"> entries from one of the lists to the other. It is also possibly to drag files from the Explorer to any of these lists to add a unit.</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">On the right there are five tabs:</text></para>
@@ -69,9 +68,7 @@
     </list>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">The Uses Clause Manager has some additional configuration options available from the GExperts configuration dialog:</text></para>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal" style="text-align:center;"><image src="Uses Clause Manager Configuration.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" style="font-size:10pt;" figurelistinclude="0"></image></para>
-    <para styleclass="Normal"></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-bottom:40px;"><image src="Uses Clause Manager Configuration.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" style="font-size:10pt;" figurelistinclude="0"></image><text styleclass="Image Caption" style="font-size:10pt;" translate="true">&#32;</text></para>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:10pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Read project units from map file rather than .dpr</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> means that the </text><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Project</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> tab will be filled with units read from the project&apos;s map file. This requires that a map file has been created. This is a Linker setting in the project options.</text></li>
     </list>
@@ -98,5 +95,8 @@
     <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="font-family:Symbol; font-size:10pt; color:#000000;">
       <li styleclass="Normal"><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Default to Fast Add</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> sets the </text><text styleclass="Image Caption" style="font-size:10pt;" translate="true">Add fast</text><text styleclass="Image Caption" style="font-size:10pt; font-weight:normal;" translate="true"> check mark in the dialog.</text></li>
     </list>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:27:32.218+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true">&#32;</text></para>
   </body>
 </topic>

@@ -136,16 +136,13 @@ function toggleToggles() {
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal"><strong style="font-weight: bold;">Usage:</strong></p>
 <p class="p_Normal">The GExperts Debug Window is a separate program (<strong style="font-weight: bold;">GExpertsDebugWindow.exe</strong>) that sits in the task tray of the Windows shell. You can add it to the Tools menu in Delphi, launch from the start menu, or when you send a debug message, GExperts will try to start the it automatically. </p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"> <img alt="RAD Studio Tools - GExperts Debug Window" title="RAD Studio Tools - GExperts Debug Window" width="442" height="417" style="margin:0;width:442px;height:417px;border:none" src="hmfile_hash_0776d6e4.png"/></p>
-<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-align: center; margin: 40px 0 40px 0;"> <img alt="RAD Studio Tools - GExperts Debug Window" title="RAD Studio Tools - GExperts Debug Window" width="442" height="417" style="margin:0 auto 0 auto;width:442px;height:417px;border:none" src="hmfile_hash_0776d6e4.png"/><span class="f_ImageCaption"> </span></p>
 <p class="p_Normal"><img alt="Debug Window - Icon Message" width="81" height="40" style="float:right;margin:0;width:81px;height:40px;border:none" src="hmfile_hash_d0e3d0a5.png"/>Whenever the window receives a new message, if it is minimized to the task tray then the icon will change from a plain paper icon to a paper icon with a pen writing on it. </p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">Three types of messages can be sent to the debug window: informational, warning, and error. &nbsp;These message types are sent using the mtInformation, mtWarning and mtError constants that are defined in the VCL's Dialogs unit and can be sent using the SendDebugEx command: <span class="f_CourierFixed">SendDebugEx('Debug message', mtInformation);</span>. &nbsp;DbugIntf.pas also defines several other useful methods to send data types directly and signal entry into and exiting from methods, etc.</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">The Debug Window allows you to clear the message display, copy the messages to the clipboard, save them to a file, pause collection of messages, and configure some basic options.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"><img alt="Debug Window" width="893" height="585" style="margin:0;width:893px;height:585px;border:none" src="hmfile_hash_d0f6a431.png"/></p>
+<p class="p_Normal" style="text-align: center; margin: 40px 0 40px 0;"><img alt="Debug Window" width="893" height="585" style="margin:0 auto 0 auto;width:893px;height:585px;border:none" src="hmfile_hash_d0f6a431.png"/><span style="font-size: 8pt; font-family: 'MS Sans Serif',Geneva,sans-serif;"> </span></p>
 <p class="p_Normal">Here is the interface from <span style="font-family: Consolas;">DbugIntf.pas</span> with all the supported functions</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal"><strong style="font-family: 'Courier New',Courier,monospace; font-weight: bold; color: #000080;">procedure</strong><span style="font-family: 'Courier New',Courier,monospace;"> SendBoolean(</span><strong style="font-family: 'Courier New',Courier,monospace; font-weight: bold; color: #000080;">const</strong><span style="font-family: 'Courier New',Courier,monospace;"> Identifier: </span><strong style="font-family: 'Courier New',Courier,monospace; font-weight: bold; color: #000080;">string</strong><span style="font-family: 'Courier New',Courier,monospace;">; </span><strong style="font-family: 'Courier New',Courier,monospace; font-weight: bold; color: #000080;">const</strong><span style="font-family: 'Courier New',Courier,monospace;"> Value: Boolean);</span></p>
@@ -166,8 +163,7 @@ function toggleToggles() {
 <p class="p_Normal"><strong style="font-family: 'Courier New',Courier,monospace; font-weight: bold; color: #000080;">function</strong><span style="font-family: 'Courier New',Courier,monospace;"> StartDebugWin: hWnd;</span></p>
 <p class="p_Normal"><strong style="font-family: 'Courier New',Courier,monospace; font-weight: bold; color: #000080;">procedure</strong><span style="font-family: 'Courier New',Courier,monospace;"> SendDebugPause;</span></p>
 <p class="p_Normal"><strong style="font-family: 'Courier New',Courier,monospace; font-weight: bold; color: #000080;">procedure</strong><span style="font-family: 'Courier New',Courier,monospace;"> SendDebugResume;</span></p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal" style="text-align: justify; text-indent: -54px; margin: 12px 6px 30px 60px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p>
 
 <!--ZOOMSTOP-->
 </div></div>

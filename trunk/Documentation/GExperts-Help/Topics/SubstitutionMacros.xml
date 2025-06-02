@@ -1,20 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<topic template="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic modified="2025-06-02T08:53:48.148+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Substitution Macros</title>
   <keywords>
-    <keyword translate="true">Substitution Macros</keyword>
-    <keyword translate="true">Macros</keyword>
     <keyword translate="true">Code Templates</keyword>
+    <keyword translate="true">Macros</keyword>
+    <keyword translate="true">Substitution Macros</keyword>
   </keywords>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Substitution Macros</text></para>
     </header>
-    <para styleclass="Normal"></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">Some GExperts tools such as the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="MacroTemplates" styleclass="Normal" translate="true">Macro Templates</link><text styleclass="Normal" translate="true"> editor expert and the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Backup_Project" styleclass="Normal" translate="true">Backup Project</link><text styleclass="Normal" translate="true"> expert can use substitution macros in their configuration. &#160;These macros allow various %-delimited phrases to be dynamically replaced with a context-sensitive string. The supported macros are:</text></para>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">Some GExperts tools such as the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="MacroTemplates" styleclass="Normal" translate="true">Macro Templates</link><text styleclass="Normal" translate="true"> editor expert and the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Backup_Project" styleclass="Normal" translate="true">Backup Project</link><text styleclass="Normal" translate="true"> expert can use substitution macros in their configuration. &#160;These macros allow various %-delimited phrases to be dynamically replaced with a context-sensitive string. The supported macros are:</text></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Project/Unit:</text></para>
-    <para style="margin-left:13px;"><table rowcount="6" colcount="2" style="cell-padding:0px; cell-spacing:0px; border-width:0px; cell-border-width:0px;">
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table rowcount="6" colcount="2" style="width:auto; cell-padding:0px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
       <tr style="vertical-align:top">
         <td style="width:195px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">%PROJECTNAME%</text></para>
@@ -64,9 +65,9 @@
         </td>
       </tr>
     </table></para>
-    <para style="margin-left:13px;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Date/Time:</text></para>
-    <para style="margin-left:13px;"><table rowcount="12" colcount="2" style="cell-padding:0px; cell-spacing:0px; border-width:0px; cell-border-width:0px;">
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table rowcount="12" colcount="2" style="width:auto; cell-padding:0px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
       <tr style="vertical-align:top">
         <td style="width:196px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">%DATE%</text></para>
@@ -164,9 +165,9 @@
         </td>
       </tr>
     </table></para>
-    <para style="margin-left:13px;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">System:</text></para>
-    <para style="margin-left:13px;"><table rowcount="5" colcount="2" style="cell-padding:0px; cell-spacing:0px; border-width:0px; cell-border-width:0px;">
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table rowcount="5" colcount="2" style="width:auto; cell-padding:0px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
       <tr style="vertical-align:top">
         <td style="width:196px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">%USER%</text></para>
@@ -208,9 +209,9 @@
         </td>
       </tr>
     </table></para>
-    <para style="margin-left:13px;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Version Information (requires version information in the IDE project options):</text></para>
-    <para style="margin-left:13px;"><table rowcount="9" colcount="2" style="cell-padding:0px; cell-spacing:0px; border-width:0px; cell-border-width:0px;">
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table rowcount="9" colcount="2" style="width:auto; cell-padding:0px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
       <tr style="vertical-align:top">
         <td style="width:197px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">%VERPRODUCTVERSION%</text></para>
@@ -284,9 +285,9 @@
         </td>
       </tr>
     </table></para>
-    <para style="margin-left:13px;"></para>
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Source Code Parsing (Delphi source only):</text></para>
-    <para style="margin-left:13px;"><table rowcount="12" colcount="2" style="cell-padding:0px; cell-spacing:0px; border-width:0px; cell-border-width:0px;">
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table rowcount="12" colcount="2" style="width:auto; cell-padding:0px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
       <tr style="vertical-align:top">
         <td style="width:197px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">%IDENT%</text></para>
@@ -387,7 +388,7 @@
     </table></para>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">For Macro Templates Only (configured inside Macro Templates):</text></para>
-    <para style="margin-left:13px;"><table rowcount="3" colcount="2" style="cell-padding:0px; cell-spacing:0px; border-width:0px; cell-border-width:0px;">
+    <para styleclass="" style="text-align:left; text-indent:0px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:13px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table rowcount="3" colcount="2" style="width:auto; cell-padding:0px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;">
       <tr style="vertical-align:top">
         <td style="width:197px;">
           <para styleclass="Normal"><text styleclass="Normal" translate="true">%PROGRAMMERNAME%</text></para>
@@ -418,5 +419,8 @@
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Examples</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">Examples of many of these macros can be seen by looking at the default macro templates accessed via GExperts, Configuration, Editor Experts, Expand Macro Template, Configuration.</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:27:32.218+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true">&#32;</text></para>
   </body>
 </topic>

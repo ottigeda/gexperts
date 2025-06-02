@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic template="Default" modified="2024-09-27T20:50:59.219+02:00" lasteditedby="jim" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic modified="2025-06-02T08:27:53.889+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Change Log (2006-2015)</title>
   <body>
     <header>
       <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Change Log (2006-2015)</text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">VERSION 1.38 (September 2015)</text></para>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">VERSION 1.38 (September 2015)</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">- General: Added support for RAD Studio 10 Seattle.</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">- General: Improved Unicode support for several GExperts tools (Thomas Mueller).</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true">- General: Various minor bug fixes.</text></para>
@@ -162,5 +163,8 @@
     <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Component Grid: Allow editing the Hint property for components (Erik)</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true"> - IDE Enhancements: Changing the multiline component tabs setting in</text></para>
     <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; Delphi 6/7 no longer requires a restart (Erik)</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:32:52.877+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
   </body>
 </topic>

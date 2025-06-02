@@ -9,7 +9,7 @@
             <task-config-group name="settings">
               <task-config-value name="outputfile">..\..\Binaries\GExperts.chm</task-config-value>
               <task-config-value name="deletetemp">1</task-config-value>
-              <task-config-value name="table_of_contents">Table of Contents</task-config-value>
+              <task-config-value name="table_of_contents">Inhaltsverzeichnis</task-config-value>
               <task-config-value name="make0include">CHM</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
               <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
@@ -42,23 +42,6 @@
       </export-task-group>
       <export-task-group name="Recent Publishes">
         <export-tasks>
-          <export-task name="Publish as CHM" format="CHM">
-            <task-config-group name="settings">
-              <task-config-value name="outputfile">..\..\Binaries\GExperts.chm</task-config-value>
-              <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
-              <task-config-value name="deletetemp">1</task-config-value>
-              <task-config-value name="make0include">CHM,HTML,PDF</task-config-value>
-              <task-config-value name="make0status">*</task-config-value>
-            </task-config-group>
-          </export-task>
-          <export-task name="Publish as HTM" format="HTM">
-            <task-config-group name="settings">
-              <task-config-value name="outputfile">..\..\webhelp\index.html</task-config-value>
-              <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
-              <task-config-value name="make3include">HTML</task-config-value>
-              <task-config-value name="make3status">*</task-config-value>
-            </task-config-group>
-          </export-task>
           <export-task name="Publish as PDF" format="PDF">
             <task-config-group name="settings">
               <task-config-value name="outputfile">..\GExperts.pdf</task-config-value>
@@ -66,8 +49,25 @@
               <task-config-value name="highlighthotspots">0</task-config-value>
               <task-config-value name="exportcomments">0</task-config-value>
               <task-config-value name="exportcommentsdate">36526</task-config-value>
-              <task-config-value name="make4include">PDF</task-config-value>
+              <task-config-value name="make4include">PDF,RZONLY</task-config-value>
               <task-config-value name="make4status">*</task-config-value>
+            </task-config-group>
+          </export-task>
+          <export-task name="Publish as CHM" format="CHM">
+            <task-config-group name="settings">
+              <task-config-value name="outputfile">..\..\Binaries\GExperts.chm</task-config-value>
+              <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
+              <task-config-value name="deletetemp">1</task-config-value>
+              <task-config-value name="make0include">CHM,RZONLY</task-config-value>
+              <task-config-value name="make0status">*</task-config-value>
+            </task-config-group>
+          </export-task>
+          <export-task name="Publish as HTM" format="HTM">
+            <task-config-group name="settings">
+              <task-config-value name="outputfile">..\..\webhelp\index.html</task-config-value>
+              <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
+              <task-config-value name="make3include">HTML,RZONLY</task-config-value>
+              <task-config-value name="make3status">*</task-config-value>
             </task-config-group>
           </export-task>
         </export-tasks>
@@ -131,31 +131,37 @@
       <config-value name="deffont">font-family:Tahoma; font-size:9pt; color:#000000;</config-value>
       <config-value name="contents">Introduction</config-value>
       <config-value name="topicprefix"></config-value>
-      <config-value name="autohelpstart">62</config-value>
+      <config-value name="autohelpstart">64</config-value>
       <config-value name="autohelpincrement">1</config-value>
       <config-value name="autohelpanchor">0</config-value>
-      <config-value name="searchpath">..\;..\Graphics\;..\..\..\..\..\..\Data_P_Temp\GX_OLD\</config-value>
+      <config-value name="searchpath">..\;..\Graphics\</config-value>
       <config-value name="imageshortcuts"></config-value>
       <config-group name="custombuilds">
-        <config-value name="demo">Demo Build</config-value>
-        <config-value name="user1">User defined 1</config-value>
-        <config-value name="user2">User defined 2</config-value>
-        <config-value name="user3">User defined 3</config-value>
+        <config-value name="DEMO">Demo Build</config-value>
+        <config-value name="USER1">User defined 1</config-value>
+        <config-value name="USER2">User defined 2</config-value>
+        <config-value name="USER3">User defined 3</config-value>
+        <config-value name="RZONLY">RZONLY</config-value>
       </config-group>
       <config-value name="imageshortcuts_includebaggage">1</config-value>
-      <config-value name="make3include">HTML</config-value>
+      <config-value name="make3include">HTML,RZONLY</config-value>
       <config-value name="make3status">*</config-value>
-      <config-value name="make0include">CHM,HTML,PDF</config-value>
+      <config-value name="make0include">CHM,RZONLY</config-value>
       <config-value name="make0status">*</config-value>
       <config-group name="spellcheck">
         <config-value name="project">0</config-value>
       </config-group>
-      <config-value name="make4include">PDF</config-value>
+      <config-value name="make4include">PDF,RZONLY</config-value>
       <config-value name="make4status">*</config-value>
       <config-value name="comment">https://gexperts.dummzeuch.de/</config-value>
       <config-value name="synchronizedwithfile">GExperts(Jim).hmxz</config-value>
       <config-value name="synchronizeoption">overwrite</config-value>
       <config-value name="synchronizehighlight">1</config-value>
+      <config-group name="topicstatus">
+        <config-value name="Needs Review">#B6FEAB</config-value>
+        <config-value name="Out Of Date">#FEC79E</config-value>
+        <config-value name="Under Construction">#FEFC9E</config-value>
+      </config-group>
     </config-group>
     <config-group name="hlp">
       <config-value name="citation" translate="true"></config-value>
@@ -695,6 +701,9 @@ GExperts Help
         </config-group>
       </config-group>
     </config-group>
+    <config-group name="publishtasks">
+      <config-value name="openedtasks">Common</config-value>
+    </config-group>
     <variables/>
     <helpcontext-numbers>
       <helpcontext-number href="ASCII_Chart" value="21"/>
@@ -746,12 +755,16 @@ GExperts Help
       <helpcontext-number href="Source_Export" value="26"/>
       <helpcontext-number href="SubstitutionMacros" value="41"/>
       <helpcontext-number href="To_Do_List" value="24"/>
+      <helpcontext-number href="ToDoGrid" value="63"/>
+      <helpcontext-number href="ToDoGridOptions" value="64"/>
       <helpcontext-number href="Uses-Clause-Manager" value="58"/>
     </helpcontext-numbers>
   </config>
   <xi:include parse="xml" href="Maps/table_of_contents.xml"/>
   <project-files>
-    <file href="Topics/*.xml" build="ALL" filetype="topic"/>
+    <file href="Topics/*.xml" build="ALL" filetype="topic">
+      <file-mod href="ToDoGrid.xml" build="RZONLY"/>
+    </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>
 </helpproject>
