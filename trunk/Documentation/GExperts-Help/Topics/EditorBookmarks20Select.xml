@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic modified="2025-06-02T00:38:27.180+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic modified="2025-06-07T17:58:00.745+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">EditorBookmarksSelect</title>
   <body>
     <header>
       <para styleclass="Heading1" style="margin-top:6px; margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:14pt;" translate="true">Editor Bookmarks </text></para>
       <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt; color:#efa175;" translate="true">Select function or procedure </text></para>
     </header>
-    <para styleclass="Normal"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="2" style="width:100%; page-break-inside:avoid; background-color:#ebfafa; head-row-background-color:#ccffff; alt-row-background-color:none;">
       <thead style="vertical-align:middle">
         <td style="width:200px; height:22px; background-color:#e2e2e2;">
@@ -19,34 +19,34 @@
       </thead>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Overview" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:8pt; color:#000000;" translate="true">Overview</link><text styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Overview" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Overview</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks00General" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:8pt; color:#000000;" translate="true">General</link><text styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks00General" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">General</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Details" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:8pt; color:#000000;" translate="true">Details</link><text styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Details" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Details</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks10Edit" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:8pt; color:#000000;" translate="true">Add and edit bookmarks</link><text styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks10Edit" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Add and edit bookmarks</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:8pt;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:8pt; font-weight:bold; color:#efa175;" translate="true">Select function or procedure</text><text styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:8pt; color:#e4641c;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; vertical-align:baseline; color:#efa175;" translate="true">Select function or procedure</text><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:22px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-bottom:2px; margin-left:6px;"><text styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:8pt;" translate="true">&#32;</text></para>
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:22px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-bottom:2px; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks30Options" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:8pt; color:#000000;" translate="true">Configuration (Options)</link><text styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks30Options" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Configuration (Options)</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
     </table></para>
@@ -55,10 +55,10 @@
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
       <tr style="vertical-align:middle">
         <td style="height:22px;">
-          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Overview </text></para>
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Overview </text></para>
         </td>
-        <td style="vertical-align:top; width:40px; height:22px;">
-          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:8pt;" translate="true">TOP</link></para>
+        <td style="vertical-align:middle; width:40px; height:22px;">
+          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">TOP</link></para>
         </td>
       </tr>
     </table></para>
@@ -70,10 +70,10 @@
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
       <tr style="vertical-align:middle">
         <td style="height:22px;">
-          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Details </text></para>
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Details </text></para>
         </td>
-        <td style="vertical-align:top; width:40px; height:22px;">
-          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Normal" style="font-family:&apos;Courier New&apos;; font-size:8pt;" translate="true">TOP</link></para>
+        <td style="vertical-align:middle; width:40px; height:22px;">
+          <para styleclass="Normal" style="text-align:center;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">TOP</link></para>
         </td>
       </tr>
     </table></para>
@@ -85,7 +85,7 @@
       <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">With the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Cancel button</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or pressing </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Escape</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> you may close the window without selecting a new bookmark. </text></li>
       <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">You can access help by pressing the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">F1 key</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or by clicking on the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">F1 symbol</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> in the statusbar. </text></li>
     </list>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><draft-comment id="ANNOT69FA80" width="353px" height="64px" modified="2025-06-02T00:37:22.666+02:00" styleclass="Comment"><![CDATA[No DistanceAfter because Topic is not included in TOC
+    <para styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px;"><draft-comment id="ANNOT69FA80" width="353px" height="64px" modified="2025-06-02T00:37:22.666+02:00" styleclass="Comment"><![CDATA[No DistanceAfter because Topic is not included in TOC
 
 Ghost | rzrz]]></draft-comment><text styleclass="Normal" translate="true">&#32;</text></para>
   </body>

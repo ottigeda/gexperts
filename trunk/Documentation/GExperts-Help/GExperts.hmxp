@@ -49,7 +49,7 @@
               <task-config-value name="highlighthotspots">0</task-config-value>
               <task-config-value name="exportcomments">0</task-config-value>
               <task-config-value name="exportcommentsdate">36526</task-config-value>
-              <task-config-value name="make4include">PDF,RZONLY</task-config-value>
+              <task-config-value name="make4include">PDF</task-config-value>
               <task-config-value name="make4status">*</task-config-value>
             </task-config-group>
           </export-task>
@@ -58,7 +58,7 @@
               <task-config-value name="outputfile">..\..\Binaries\GExperts.chm</task-config-value>
               <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
               <task-config-value name="deletetemp">1</task-config-value>
-              <task-config-value name="make0include">CHM,RZONLY</task-config-value>
+              <task-config-value name="make0include">CHM</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
             </task-config-group>
           </export-task>
@@ -66,7 +66,7 @@
             <task-config-group name="settings">
               <task-config-value name="outputfile">..\..\webhelp\index.html</task-config-value>
               <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
-              <task-config-value name="make3include">HTML,RZONLY</task-config-value>
+              <task-config-value name="make3include">HTML</task-config-value>
               <task-config-value name="make3status">*</task-config-value>
             </task-config-group>
           </export-task>
@@ -131,7 +131,7 @@
       <config-value name="deffont">font-family:Tahoma; font-size:9pt; color:#000000;</config-value>
       <config-value name="contents">Introduction</config-value>
       <config-value name="topicprefix"></config-value>
-      <config-value name="autohelpstart">64</config-value>
+      <config-value name="autohelpstart">65</config-value>
       <config-value name="autohelpincrement">1</config-value>
       <config-value name="autohelpanchor">0</config-value>
       <config-value name="searchpath">..\;..\Graphics\</config-value>
@@ -144,14 +144,14 @@
         <config-value name="RZONLY">RZONLY</config-value>
       </config-group>
       <config-value name="imageshortcuts_includebaggage">1</config-value>
-      <config-value name="make3include">HTML,RZONLY</config-value>
+      <config-value name="make3include">HTML</config-value>
       <config-value name="make3status">*</config-value>
-      <config-value name="make0include">CHM,RZONLY</config-value>
+      <config-value name="make0include">CHM</config-value>
       <config-value name="make0status">*</config-value>
       <config-group name="spellcheck">
         <config-value name="project">0</config-value>
       </config-group>
-      <config-value name="make4include">PDF,RZONLY</config-value>
+      <config-value name="make4include">PDF</config-value>
       <config-value name="make4status">*</config-value>
       <config-value name="comment">https://gexperts.dummzeuch.de/</config-value>
       <config-value name="synchronizedwithfile">GExperts(Jim).hmxz</config-value>
@@ -594,9 +594,8 @@ GExperts Help
       <config-value name="createhotspots">1</config-value>
       <config-value name="createthumbnails">0</config-value>
       <config-value name="insertseealso">0</config-value>
-      <config-value name="linkcolor">#0000FF</config-value>
+      <config-value name="linkcolor">16711680</config-value>
       <config-value name="ignoreblank">1</config-value>
-      <config-value name="embedfilesext"></config-value>
       <config-value name="compression">1</config-value>
       <config-value name="jpegquality">0</config-value>
       <config-value name="openmode">1</config-value>
@@ -620,6 +619,9 @@ GExperts Help
       <config-value name="highlighthotspots">0</config-value>
       <config-value name="exportcomments">0</config-value>
       <config-value name="exportcommentsdate">36526</config-value>
+      <config-value name="outlinesnumbered">0</config-value>
+      <config-value name="outlinesnumberedlinks">0</config-value>
+      <config-value name="linkunderline">0</config-value>
     </config-group>
     <config-group name="rtf">
       <config-value name="papersize"></config-value>
@@ -700,6 +702,11 @@ GExperts Help
           <config-value name="lastexport">0</config-value>
         </config-group>
       </config-group>
+      <config-group name="ralph">
+        <config-group name="project">
+          <config-value name="lastexport">0</config-value>
+        </config-group>
+      </config-group>
     </config-group>
     <config-group name="publishtasks">
       <config-value name="openedtasks">Common</config-value>
@@ -757,7 +764,8 @@ GExperts Help
       <helpcontext-number href="To_Do_List" value="24"/>
       <helpcontext-number href="ToDoGrid" value="63"/>
       <helpcontext-number href="ToDoGridOptions" value="64"/>
-      <helpcontext-number href="Uses-Clause-Manager" value="58"/>
+      <helpcontext-number href="UsesClauseManager" value="58"/>
+      <helpcontext-number href="UsesClauseManagerOptions" value="65"/>
     </helpcontext-numbers>
   </config>
   <xi:include parse="xml" href="Maps/table_of_contents.xml"/>
