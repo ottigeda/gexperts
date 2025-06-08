@@ -1,0 +1,279 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+   <title>ToDoGrid50FltrMain</title>
+   <meta name="generator" content="Help & Manual">
+   <meta name="keywords" content="">
+   <meta name="description" content="ToDo Grid Column filter">
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+   <!-- This line forces IE8 into IE7 mode, safer until IE8 is better known -->
+   <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+
+   <link type="text/css" href="default.css" rel="stylesheet">
+   <link type="text/css" href="custom.css" rel="stylesheet">
+   <script type="text/javascript" src="nsh.js"></script>
+
+<script type="text/javascript">   
+// Toggle Toggler 
+
+var toggleCount=false;
+var switchState;
+
+function toggleToggles() {
+
+    if (!toggleCount) {
+     toggleCount = true;
+     HMToggleExpandAll(true);
+     switchState = true;
+     }
+   
+     else if (switchState) {
+        HMToggleExpandAll(false);
+        switchState = false;
+        }
+        
+     else  {
+        HMToggleExpandAll(true);
+        switchState = true;
+        } 
+    }
+</script>
+   
+<!-- non-scrolling headers for CHM and browser-based help, local styles-->
+<style TYPE="text/css" media="screen"> 
+   body {    
+      margin:0; 
+      padding:0; 
+      overflow: auto; 
+      background: #FFFFFF; 
+   } 
+   #idheader { 
+      width:100%; 
+      height:auto; 
+      padding: 0; 
+      margin: 0; 
+} 
+    #idheaderbg  {
+    background: #6F6F6F; 
+}
+
+   #callout-table, #overview-table {display:block; position:relative; top:0; left:0;}
+   #callout-icon {display:block; position:absolute; top:-11px; left:-11px;}
+   #callout-icon-flag {display:block; position:absolute; top:-11px; left:-8px;}
+   #callout-table a {text-decoration: none; color: blue;}
+   #callout-table a:visited {text-decoration: none; color: blue;}
+   #overview-table a {text-decoration: none; color: black;}
+   #overview-table a:visited {text-decoration: none; color: black;}
+   #callout-table a:hover, #overview-table a:hover {text-decoration: underline;}
+   </style>
+   
+<style TYPE="text/css" MEDIA="print">
+<!--
+/* Hide navigation links and add space between header
+     and text in the printed version. Not valid for eBooks. */
+#idnav { display:none;	 }
+.topichead { padding: 5px 5px 20px 5px; }
+-->
+</style>   
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript" src="helpman_topicinit.js"></script>
+
+   <script type="text/javascript">
+     HMSyncTOC("index.html", "todogrid50fltrmain.html");
+   </script>
+   <script type="text/javascript" src="highlight.js"></script>
+   <script type="text/javascript">
+     $(document).ready(function(){highlight();});
+   </script>
+</head>
+<body>
+<!--ZOOMSTOP-->
+
+<div id="idheader">
+<div id="idheaderbg">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" 
+       style="margin: 0px; background: url(header_bg.jpg);">
+
+  <tr valign="bottom">
+    <td align="left" valign="bottom" class="topichead"><!--
+   <p class="crumbs" id="idnav"><b>Navigation:</b>&nbsp;
+   &raquo;No topics above this level&laquo;
+   </p>-->
+   <h1 class="p_Heading1" style="margin: 6px 0 0 6px;"><span class="f_Heading1" style="font-size: 14pt; font-family: Verdana,Geneva,Arial,sans-serif;">ToDo Grid </span></h1>
+<h1 class="p_Heading1" style="margin: 0 0 0 6px;"><span class="f_Heading1" style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #efa175;">Column filter </span></h1>
+
+    </td>
+    <td align="right" width="120" valign="middle" class="topichead" id="idnav">
+    
+     <img src="btn_prev_d.gif" border="0"
+        ><a href="introduction.html"
+        onmouseover="document.images.main.src='btn_home_h.gif'" 
+        onmouseout="document.images.main.src='btn_home_n.gif'"><img name=main src="btn_home_n.gif" border=0 alt="Return to chapter overview"
+        ></a><img src="btn_next_d.gif" border="0">
+    </td>
+  </tr>
+  <tr><td colspan="2" style="height: 3px; background: url(header_bg_shadow.gif)"></td></tr>
+</table>
+</div>
+
+<!-- The following code displays Expand All/Collapse All links  below the header in topics containing toggles -->
+  
+
+</div>  
+
+
+
+<div id="idcontent"><div id="innerdiv"> 
+<!--ZOOMRESTART-->
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#ebfafa; border:none; border-spacing:0;">
+<thead>
+<tr>
+<th style="vertical-align:middle; width:200px; height:22px; background-color:#E2E2E2; padding:0; border:none" scope="col"><p class="p_Normal" style="margin: 0 0 0 6px;"><strong style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #008080;">this page .. </strong></p>
+</th>
+<th style="vertical-align:middle; height:22px; background-color:#E2E2E2; padding:0; border:none" scope="col"><p class="p_Normal" style="margin: 0 0 0 6px;"><strong style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #008080;">see also .. </strong></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="todogrid50fltrmain.html#overview" class="topiclink">Overview</a> </span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><h1 class="p_Heading1" style="margin: 0 0 0 6px;"><strong style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #efa175;">Column filter</strong><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> </span></h1>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="todogrid50fltrmain.html#mouseandkeyboard" class="topiclink">Mouse and keyboard</a> </span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="todogrid60fltrsub.html" class="topiclink">Column filter, set check mask</a> </span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 2px 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 2px 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 2px 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal">&nbsp;</p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; border:none; border-spacing:0;" role="presentation">
+<tr>
+<td style="vertical-align:middle; background-color:#FFCCFF; padding:0; border:none"><p class="p_Normal" style="text-align: center; margin: 2px 0 3px 0;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #ff0000;">ToDo Grid Expert is not yet available in GExperts </span></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal"><a id="overview" class="hmanchor"></a><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p>
+<p class="p_Normal"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#d9ecff; border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:middle; height:22px; padding:0; border:none"><p class="p_Normal" style="page-break-inside: avoid; page-break-after: avoid; margin: 0 0 0 6px;"><strong style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Overview </strong></p>
+</td>
+<td style="vertical-align:middle; width:40px; height:22px; padding:0; border:none"><p class="p_Normal" style="text-align: center; margin: 0 0 0 6px;"><span class="f_CourierFixed" style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="todogrid50fltrmain.html" class="topiclink" title="Jump to top of page">TOP</a></span></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">In diesem Fenster werden alle Elemente (ohne Doppelte) der zu filternden Spalte der Gitteranzeige aufgelistet. Für Zellen ohne Wert wird das Synonym [empty cells] als erstes Listenelement eingefügt. Der Filter wird durch Markierung der Einträge definiert - nur markierte Elemente werden nach Übergabe der Auswahl im Anzeigegitter angezeigt. Das Filterfenster kann wie ein normalen Fensters mit der Maus verschoben werden. </span></p>
+<p class="p_Normal" style="text-align: center; margin: 24px 6px 12px 6px;"><img alt="ToDoGrid50_Pic00" width="168" height="271" style="margin:0 auto 0 auto;width:168px;height:271px;border:none" src="todogrid50_pic00.png"/><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Enthält die Liste nur wenige Elemente die alle im Fenster dargestellt werden können, sind die Markierungen ausschließlich direkt vorzunehmen: </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Der Status der Kontrollkästchen ist alternativ zum direkten Mausklick auch mit der Leertaste für das aktuell markierte Listenelement änderbar. </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Ebenfalls kann durch vertikale Bewegung des Mauscursors rechts der Kontrollkästchen (über dem Text) bei gleichzeitig gedrückter linker Maustaste nach unten der Check-Status gesetzt werden - die Bewegung nach oben hebt den Check-Status wieder auf. </span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Ein Doppelklick in beliebiger Zeile hinter dem Text oder im rechten Viertel der Liste negiert den aktuellen Status aller aktiven Einträge. </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Dieses Vorgehen ist bei umfangreichen Listen die nicht komplett im Fenster dargestellt werden können meist nicht praktikabel. In diesem Fall können in einem separaten Context Menü Fenster (Aufruf via Rechtsklick) Masken für die automatische Markierung von Listenelementen definiert werden. </span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Sofern eine Teilmenge der Kontrollkästchen markiert ist, kann die Anzeige via Doppelklick im ersten Feld der Statuszeile gruppiert werden; d.h. alle markierten Elemente werden am Listenanfang dargestellt. Ein erneuter Doppelklick hebt die Gruppierung wieder auf. Nach einer automatischen Markierung (Maskenfenster) erfolgt die Gruppierung automatisch. </span></p>
+<div style="text-align: justify; text-indent: 0; padding: 0 0 0 0; margin: 6px 6px 0 6px;"><table style="border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:top; width:40px; padding:0; border:none"><p class="p_Normal" style="margin: 6px 0 0 0;"><span style="color: #ff0000;">Notice</span></p>
+</td>
+<td style="vertical-align:top; width:20px; padding:0; border:none"><p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">▪</span></p>
+</td>
+<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal" style="text-align: justify; margin: 6px 0 0 0;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Der Filter kann nur mit Apply übergeben werden, wenn mindestens 1 Element und nicht alle Elemente markiert sind.</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:40px; padding:0; border:none"><p class="p_Normal" style="margin: 6px 0 0 0;">&nbsp;</p>
+</td>
+<td style="vertical-align:top; width:20px; padding:0; border:none"><p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;">▪</p>
+</td>
+<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal" style="text-align: justify; margin: 6px 0 0 0;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Die Anzahl der im Anzeigegitter gefilterten Zeilen kann durchaus von der Menge der im Filter markierten Einträge abweichen, da die Filterliste keine doppelten Elemente aufführt, die im Anzeigegitter aber natürlich enthalten sind. </span></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal"><a id="mouseandkeyboard" class="hmanchor"></a><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p>
+<p class="p_Normal"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#d9ecff; border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:middle; height:22px; padding:0; border:none"><p class="p_Normal" style="page-break-inside: avoid; page-break-after: avoid; margin: 0 0 0 6px;"><strong style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Mouse and keyboard </strong></p>
+</td>
+<td style="vertical-align:middle; width:40px; height:22px; padding:0; border:none"><p class="p_Normal" style="text-align: center; margin: 0 0 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;"><a href="todogrid50fltrmain.html" class="topiclink" title="Jump to top of page">TOP</a></span></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Das Filterfenster bietet, sofern nicht bereits vorstehend aufgeführt, Maus- und Tastaturbefehle mit folgenden Steuerungsmöglichkeiten: </span></p>
+<div style="text-align: justify; text-indent: 0; padding: 0 0 0 0; margin: 6px 0 0 6px;"><table style="width:100%; border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:middle; width:196px; height:22px; background-color:#E2E2E2; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><strong style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #008080;">Bedienelement</strong><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p>
+</td>
+<td style="vertical-align:middle; height:22px; background-color:#E2E2E2; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><strong style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #008080;">Aktion</strong><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:196px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="text-align: justify; margin: 4px 0 4px 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">F1 </span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #ff0000;">oder</span><br />
+<span style="font-family: Verdana,Geneva,Arial,sans-serif;">F1-Symbol </span><span style="font-family: Verdana,Geneva,Arial,sans-serif; color: #008080;">(Statuszeile)</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p>
+</td>
+<td style="vertical-align:top; background-color:#F4F4F4; padding:0; border:none"><p style="text-align: justify; margin: 4px 0 4px 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Aufruf der Hilfe (diese Seite). </span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:196px; background-color:#FAFADA; padding:0; border:none"><p class="p_Normal" style="text-align: justify; margin: 4px 0 4px 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">F9 </span></p>
+</td>
+<td style="vertical-align:top; background-color:#FAFADA; padding:0; border:none"><p style="text-align: justify; margin: 4px 0 4px 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Setzt das Filterfenster auf Ausgangsposition (nach Öffnen des Filters). </span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:196px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="text-align: justify; margin: 4px 0 4px 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Return </span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #ff0000;">oder</span><br />
+<em style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">Schaltfläche &quot;Apply&quot;</em><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p>
+</td>
+<td style="vertical-align:top; background-color:#F4F4F4; padding:0; border:none"><p style="text-align: justify; margin: 4px 0 4px 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Aktiviert den Spaltenfilter im Anzeigegitter und schließt das Filterfenster. </span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; width:196px; background-color:#FAFADA; padding:0; border:none"><p class="p_Normal" style="text-align: justify; margin: 4px 0 4px 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Escape </span><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #ff0000;">oder</span><br />
+<em style="font-family: Verdana,Geneva,Arial,sans-serif; font-style: italic; color: #800000;">Schaltfläche [X]</em><span style="font-family: Verdana,Geneva,Arial,sans-serif;"> </span></p>
+</td>
+<td style="vertical-align:top; background-color:#FAFADA; padding:0; border:none"><p style="text-align: justify; margin: 4px 0 4px 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Schließt das Filterfenster ohne den Spaltenfilter im Anzeigegitter zu aktivieren. </span></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 12px 6px 0 6px;"> </p>
+
+<!--ZOOMSTOP-->
+</div></div>
+<script type="text/javascript"> 
+<!-- 
+var lastSlashPos = document.URL.lastIndexOf("/") >
+document.URL.lastIndexOf("\\") ? document.URL.lastIndexOf("/") :
+document.URL.lastIndexOf("\\");
+if( document.URL.substring( lastSlashPos + 1, lastSlashPos + 4
+).toLowerCase() != "~hh" )
+{
+    nsrInit();
+}
+--> 
+</script> 
+</body>
+</html>

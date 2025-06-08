@@ -49,7 +49,7 @@
               <task-config-value name="highlighthotspots">0</task-config-value>
               <task-config-value name="exportcomments">0</task-config-value>
               <task-config-value name="exportcommentsdate">36526</task-config-value>
-              <task-config-value name="make4include">PDF</task-config-value>
+              <task-config-value name="make4include">PDF,RZONLY</task-config-value>
               <task-config-value name="make4status">*</task-config-value>
             </task-config-group>
           </export-task>
@@ -58,7 +58,7 @@
               <task-config-value name="outputfile">..\..\Binaries\GExperts.chm</task-config-value>
               <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
               <task-config-value name="deletetemp">1</task-config-value>
-              <task-config-value name="make0include">CHM</task-config-value>
+              <task-config-value name="make0include">CHM,RZONLY</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
             </task-config-group>
           </export-task>
@@ -66,7 +66,7 @@
             <task-config-group name="settings">
               <task-config-value name="outputfile">..\..\webhelp\index.html</task-config-value>
               <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
-              <task-config-value name="make3include">HTML</task-config-value>
+              <task-config-value name="make3include">HTML,RZONLY</task-config-value>
               <task-config-value name="make3status">*</task-config-value>
             </task-config-group>
           </export-task>
@@ -131,7 +131,7 @@
       <config-value name="deffont">font-family:Tahoma; font-size:9pt; color:#000000;</config-value>
       <config-value name="contents">Introduction</config-value>
       <config-value name="topicprefix"></config-value>
-      <config-value name="autohelpstart">65</config-value>
+      <config-value name="autohelpstart">69</config-value>
       <config-value name="autohelpincrement">1</config-value>
       <config-value name="autohelpanchor">0</config-value>
       <config-value name="searchpath">..\;..\Graphics\</config-value>
@@ -144,24 +144,27 @@
         <config-value name="RZONLY">RZONLY</config-value>
       </config-group>
       <config-value name="imageshortcuts_includebaggage">1</config-value>
-      <config-value name="make3include">HTML</config-value>
+      <config-value name="make3include">HTML,RZONLY</config-value>
       <config-value name="make3status">*</config-value>
-      <config-value name="make0include">CHM</config-value>
+      <config-value name="make0include">CHM,RZONLY</config-value>
       <config-value name="make0status">*</config-value>
       <config-group name="spellcheck">
         <config-value name="project">0</config-value>
       </config-group>
-      <config-value name="make4include">PDF</config-value>
+      <config-value name="make4include">PDF,RZONLY</config-value>
       <config-value name="make4status">*</config-value>
       <config-value name="comment">https://gexperts.dummzeuch.de/</config-value>
       <config-value name="synchronizedwithfile">GExperts(Jim).hmxz</config-value>
       <config-value name="synchronizeoption">overwrite</config-value>
       <config-value name="synchronizehighlight">1</config-value>
       <config-group name="topicstatus">
-        <config-value name="Needs Review">#B6FEAB</config-value>
+        <config-value name="Abgeschlossen RZ">#92F766</config-value>
+        <config-value name="Needs Review">#FFC4E1</config-value>
         <config-value name="Out Of Date">#FEC79E</config-value>
+        <config-value name="Übersetzung offen">#80FFFF</config-value>
         <config-value name="Under Construction">#FEFC9E</config-value>
       </config-group>
+      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="hlp">
       <config-value name="citation" translate="true"></config-value>
@@ -699,7 +702,7 @@ GExperts Help
       </config-group>
       <config-group name="ghost">
         <config-group name="project">
-          <config-value name="lastexport">0</config-value>
+          <config-value name="lastexport">4</config-value>
         </config-group>
       </config-group>
       <config-group name="ralph">
@@ -762,8 +765,11 @@ GExperts Help
       <helpcontext-number href="Source_Export" value="26"/>
       <helpcontext-number href="SubstitutionMacros" value="41"/>
       <helpcontext-number href="To_Do_List" value="24"/>
-      <helpcontext-number href="ToDoGrid" value="63"/>
-      <helpcontext-number href="ToDoGridOptions" value="64"/>
+      <helpcontext-number href="ToDoGrid00General" value="63"/>
+      <helpcontext-number href="ToDoGrid10Rules" value="66"/>
+      <helpcontext-number href="ToDoGrid20Options" value="64"/>
+      <helpcontext-number href="ToDoGrid50FltrMain" value="69"/>
+      <helpcontext-number href="ToDoGrid60FltrSub" value="68"/>
       <helpcontext-number href="UsesClauseManager" value="58"/>
       <helpcontext-number href="UsesClauseManagerOptions" value="65"/>
     </helpcontext-numbers>
@@ -771,7 +777,11 @@ GExperts Help
   <xi:include parse="xml" href="Maps/table_of_contents.xml"/>
   <project-files>
     <file href="Topics/*.xml" build="ALL" filetype="topic">
-      <file-mod href="ToDoGrid.xml" build="RZONLY"/>
+      <file-mod href="ToDoGrid00General.xml" build="RZONLY"/>
+      <file-mod href="ToDoGrid10Rules.xml" build="RZONLY"/>
+      <file-mod href="ToDoGrid20Options.xml" build="RZONLY"/>
+      <file-mod href="ToDoGrid50FltrMain.xml" build="RZONLY"/>
+      <file-mod href="ToDoGrid60FltrSub.xml" build="RZONLY"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

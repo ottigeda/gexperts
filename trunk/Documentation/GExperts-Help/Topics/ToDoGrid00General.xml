@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic status="Under Construction" modified="2025-06-08T15:55:51.766+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">ToDo Grid</title>
+  <body>
+    <header>
+      <para styleclass="Heading1" style="margin-top:6px; margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:14pt;" translate="true">ToDo Grid </text></para>
+      <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt; color:#efa175;" translate="true">General </text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="10" colcount="2" style="width:100%; page-break-inside:avoid; background-color:#ebfafa; head-row-background-color:#ccffff; alt-row-background-color:none;">
+      <thead style="vertical-align:middle">
+        <td style="width:200px; height:22px; background-color:#e2e2e2;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; color:#008080;" translate="true">this page .. </text></para>
+        </td>
+        <td style="height:22px; background-color:#e2e2e2;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; color:#008080;" translate="true">see also .. </text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Overview" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Overview</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; vertical-align:baseline; color:#efa175;" translate="true">General</text><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="UsingTheGrid" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Using the string grid</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="ToDoGrid10Rules" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Rules of syntax analysis</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:19px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="QuickSelectRows" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Quick select rows</link></para>
+        </td>
+        <td style="height:19px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="ToDoGrid20Options" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Configuration (Options)</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="SelectRows" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Select rows</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="HighlightRows" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Highlight rows</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="SortGrid" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Sort grid</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="FilterGrid" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Filter grid</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="AdjustColumnWidth" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Adjust column width</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="HideColumns" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Hide columns</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="1" style="width:100%;">
+      <tr style="vertical-align:middle">
+        <td style="background-color:#ffccff;">
+          <para styleclass="Normal" style="text-align:center; margin-top:2px; margin-bottom:3px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#ff0000;" translate="true">ToDo Grid Expert is not yet available in GExperts </text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+      <tr style="vertical-align:middle">
+        <td style="height:22px;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Overview </text></para>
+        </td>
+        <td style="vertical-align:middle; width:40px; height:22px;">
+          <para styleclass="Normal" style="text-align:center; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">TOP<title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The &quot;ToDo Grid&quot; expert offers ...</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#ff0000;" translate="true">convenient ways to create, handle and use bookmarks. The expert has a dockable main window; this mode should also be the primary form of use. The expert complements the bookmark function available in the IDE and offers new ways to keep a good overview of the bookmarks set and to access them specifically. </text></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-right:6px; margin-bottom:24px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text><image src="ToDoGrid00General.png" imagestyleclass="Default" scale="95.74%" width="651" height="270" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"><anchor id="UsingTheGrid" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+      <tr style="vertical-align:middle">
+        <td style="height:22px;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Using the string grid </text></para>
+        </td>
+        <td style="vertical-align:middle; width:40px; height:22px;">
+          <para styleclass="Normal" style="text-align:center; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">TOP<title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; border:none;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true"> &#160; </text><anchor id="QuickSelectRows" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text><draft-comment id="ANNOT45B689" width="16px" height="13px" modified="2025-06-08T15:46:47.675+02:00" styleclass="Comment"><![CDATA[At least 3 chars in front of bookmark!]]></draft-comment></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; page-break-after:avoid; border-color:#000000; border-style:single; border-width:1px; border-top:none; border-right:none; border-left:none; padding:0px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Quick select rows &#160;</text><text styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true"> &#160;|</text><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">▲<title translate="true">Jump to top of page</title></link><text styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">| </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">xxx </text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
+    </list>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; border:none;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true"> &#160; </text><anchor id="SelectRows" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; page-break-after:avoid; border-color:#000000; border-style:single; border-width:1px; border-top:none; border-right:none; border-left:none; padding:0px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Select rows &#160;</text><text styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true"> &#160;|</text><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">▲<title translate="true">Jump to top of page</title></link><text styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">| </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">xxx </text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
+    </list>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; border:none;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true"> &#160; </text><anchor id="HighlightRows" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; page-break-after:avoid; border-color:#000000; border-style:single; border-width:1px; border-top:none; border-right:none; border-left:none; padding:0px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Highlight rows &#160; </text><text styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true"> |</text><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">▲<title translate="true">Jump to top of page</title></link><text styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">| </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">xxx </text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
+    </list>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; border:none;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true"> &#160; </text><anchor id="SortGrid" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; page-break-after:avoid; border-color:#000000; border-style:single; border-width:1px; border-top:none; border-right:none; border-left:none; padding:0px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Sort grid &#160; </text><text styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true"> |</text><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">▲<title translate="true">Jump to top of page</title></link><text styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">| </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">xxx </text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
+    </list>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; border:none;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true"> &#160; </text><anchor id="FilterGrid" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; page-break-after:avoid; border-color:#000000; border-style:single; border-width:1px; border-top:none; border-right:none; border-left:none; padding:0px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Filter grid &#160;</text><text styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true"> &#160;|</text><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">▲<title translate="true">Jump to top of page</title></link><text styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">| </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">xxx </text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
+    </list>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; border:none;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true"> &#160; </text><anchor id="AdjustColumnWidth" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; page-break-after:avoid; border-color:#000000; border-style:single; border-width:1px; border-top:none; border-right:none; border-left:none; padding:0px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Adjust column width &#160; </text><text styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true"> |</text><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">▲<title translate="true">Jump to top of page</title></link><text styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">| </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">xxx </text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
+    </list>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; border:none;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true"> &#160; </text><anchor id="HideColumns" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; page-break-after:avoid; border-color:#000000; border-style:single; border-width:1px; border-top:none; border-right:none; border-left:none; padding:0px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Hide columns &#160; </text><text styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true"> |</text><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">▲<title translate="true">Jump to top of page</title></link><text styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">| </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">xxx </text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
+    </list>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:27:32.218+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true">&#32;</text></para>
+  </body>
+</topic>
