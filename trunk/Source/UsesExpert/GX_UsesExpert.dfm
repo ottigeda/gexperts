@@ -234,6 +234,8 @@ inherited fmUsesManager: TfmUsesManager
               Width = 145
               Height = 25
               Action = actAddToInterfaceBtn
+              ParentShowHint = False
+              ShowHint = True
               TabOrder = 0
             end
             object btnProjectAddToImplementation: TButton
@@ -242,6 +244,8 @@ inherited fmUsesManager: TfmUsesManager
               Width = 145
               Height = 25
               Action = actAddToImplementationBtn
+              ParentShowHint = False
+              ShowHint = True
               TabOrder = 1
             end
           end
@@ -322,6 +326,8 @@ inherited fmUsesManager: TfmUsesManager
               Width = 145
               Height = 25
               Action = actAddToInterfaceBtn
+              ParentShowHint = False
+              ShowHint = True
               TabOrder = 0
             end
             object btnCommonAddToImplementation: TButton
@@ -330,6 +336,8 @@ inherited fmUsesManager: TfmUsesManager
               Width = 145
               Height = 25
               Action = actAddToImplementationBtn
+              ParentShowHint = False
+              ShowHint = True
               TabOrder = 1
             end
           end
@@ -400,6 +408,8 @@ inherited fmUsesManager: TfmUsesManager
               Width = 145
               Height = 25
               Action = actAddToInterfaceBtn
+              ParentShowHint = False
+              ShowHint = True
               TabOrder = 0
             end
             object btnFavoriteAddToImplementation: TButton
@@ -408,6 +418,8 @@ inherited fmUsesManager: TfmUsesManager
               Width = 145
               Height = 25
               Action = actAddToImplementationBtn
+              ParentShowHint = False
+              ShowHint = True
               TabOrder = 1
             end
           end
