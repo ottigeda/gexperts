@@ -164,7 +164,6 @@
         <config-value name="Übersetzung offen">#80FFFF</config-value>
         <config-value name="Under Construction">#FEFC9E</config-value>
       </config-group>
-      <config-group name="bookmarks"/>
     </config-group>
     <config-group name="hlp">
       <config-value name="citation" translate="true"></config-value>
@@ -702,7 +701,7 @@ GExperts Help
       </config-group>
       <config-group name="ghost">
         <config-group name="project">
-          <config-value name="lastexport">4</config-value>
+          <config-value name="lastexport">3</config-value>
         </config-group>
       </config-group>
       <config-group name="ralph">
