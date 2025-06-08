@@ -67,6 +67,8 @@ inherited fmUsesManager: TfmUsesManager
               Width = 145
               Height = 25
               Action = actAddToInterfaceBtn
+              ParentShowHint = False
+              ShowHint = True
               TabOrder = 0
             end
             object btnSearchPathAddToImpl: TButton
@@ -75,6 +77,8 @@ inherited fmUsesManager: TfmUsesManager
               Width = 145
               Height = 25
               Action = actAddToImplementationBtn
+              ParentShowHint = False
+              ShowHint = True
               TabOrder = 1
             end
           end
