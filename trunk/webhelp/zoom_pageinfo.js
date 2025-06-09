@@ -59,7 +59,6 @@ pageinfo = [[0,0,0,0,null],
 	[0,0,0,0,null],
 	[0,0,0,0,null],
 	[0,0,0,0,null],
-	[0,0,0,0,null],
 	[0,0,0,0,null]];
 pagedata = [ ["./ascii_chart.html","Experts &#62; ASCII Chart","ASCII Chart",""],
 ["./backup_project.html","Experts &#62; Backup Project","Backup Project",""],
@@ -121,6 +120,5 @@ pagedata = [ ["./ascii_chart.html","Experts &#62; ASCII Chart","ASCII Chart",""]
 ["./todogrid60fltrsub.html","ToDoGridFltrSub","ToDo Grid Column filter, set check mask",""],
 ["./todogridoptions.html","ToDoGridOptions","ToDo Grid Configuration (Options)",""],
 ["./to_do_list.html","Experts &#62; To Do List","To Do List",""],
-["./uses-clause-manager.html","Experts &#62; Uses Clause Manager","Uses Clause Manager",""],
 ["./usesclausemanager.html","Experts &#62; Uses Clause Manager","Uses Clause Manager General",""],
 ["./usesclausemanageroptions.html","UsesClauseManagerOptions","Uses Clause Manager Configuration (Options)",""]];
