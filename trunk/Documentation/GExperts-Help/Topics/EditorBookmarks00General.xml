@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Abgeschlossen RZ" modified="2025-06-08T17:06:26.300+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Abgeschlossen RZ" modified="2025-06-11T17:05:34.060+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Editor Bookmarks</title>
   <body>
     <header>
@@ -54,11 +54,11 @@
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
       <tr style="vertical-align:middle">
-        <td style="height:22px;">
+        <td style="height:24px;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Overview </text></para>
         </td>
-        <td style="vertical-align:middle; width:40px; height:22px;">
-          <para styleclass="Normal" style="text-align:center; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">TOP<title translate="true">Jump to top of page</title></link></para>
+        <td style="width:40px; height:24px;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
     </table></para>
@@ -68,11 +68,11 @@
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
       <tr style="vertical-align:middle">
-        <td style="height:22px;">
+        <td style="height:24px;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Setting bookmarks </text></para>
         </td>
-        <td style="vertical-align:middle; width:40px; height:22px;">
-          <para styleclass="Normal" style="text-align:center; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">TOP<title translate="true">Jump to top of page</title></link></para>
+        <td style="width:40px; height:24px;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
     </table></para>
@@ -115,11 +115,11 @@
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
       <tr style="vertical-align:middle">
-        <td style="height:22px;">
+        <td style="height:24px;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Edit and delete bookmarks </text></para>
         </td>
-        <td style="vertical-align:middle; width:40px; height:22px;">
-          <para styleclass="Normal" style="text-align:center; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">TOP<title translate="true">Jump to top of page</title></link></para>
+        <td style="width:40px; height:24px;">
+          <para styleclass="Normal" style="text-align:right; margin-top:4px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
     </table></para>
@@ -145,11 +145,11 @@
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
       <tr style="vertical-align:middle">
-        <td style="height:22px;">
+        <td style="height:24px;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Bookmarks list </text></para>
         </td>
-        <td style="vertical-align:middle; width:40px; height:22px;">
-          <para styleclass="Normal" style="text-align:center; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" styleclass="Courier Fixed" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">TOP<title translate="true">Jump to top of page</title></link></para>
+        <td style="width:40px; height:24px;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
     </table></para>
