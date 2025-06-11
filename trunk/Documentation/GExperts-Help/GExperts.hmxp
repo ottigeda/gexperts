@@ -66,7 +66,7 @@
             <task-config-group name="settings">
               <task-config-value name="outputfile">..\..\webhelp\index.html</task-config-value>
               <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
-              <task-config-value name="make3include">HTML,RZONLY</task-config-value>
+              <task-config-value name="make3include">HTML</task-config-value>
               <task-config-value name="make3status">*</task-config-value>
             </task-config-group>
           </export-task>
@@ -134,7 +134,7 @@
       <config-value name="autohelpstart">69</config-value>
       <config-value name="autohelpincrement">1</config-value>
       <config-value name="autohelpanchor">0</config-value>
-      <config-value name="searchpath">..\;..\Graphics\</config-value>
+      <config-value name="searchpath">..\;..\Graphics\;..\Snippets\</config-value>
       <config-value name="imageshortcuts"></config-value>
       <config-group name="custombuilds">
         <config-value name="DEMO">Demo Build</config-value>
@@ -144,7 +144,7 @@
         <config-value name="RZONLY">RZONLY</config-value>
       </config-group>
       <config-value name="imageshortcuts_includebaggage">1</config-value>
-      <config-value name="make3include">HTML,RZONLY</config-value>
+      <config-value name="make3include">HTML</config-value>
       <config-value name="make3status">*</config-value>
       <config-value name="make0include">CHM,RZONLY</config-value>
       <config-value name="make0status">*</config-value>
