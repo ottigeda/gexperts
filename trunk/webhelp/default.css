@@ -9,34 +9,34 @@ body, table, tr, th /* Normal */
  color: #000000;
  text-decoration: none;
 }
-span.f_BulletedList /* Bulleted List */
+span.f_BulletedList, strong.f_BulletedList, em.f_BulletedList /* Bulleted List */
 {
 }
-span.f_CodeExample /* Code Example */
+span.f_CodeExample, strong.f_CodeExample, em.f_CodeExample /* Code Example */
 {
  font-size: 8pt;
  font-family: 'Courier New',Courier,monospace;
 }
-span.f_Comment /* Comment */
+span.f_Comment, strong.f_Comment, em.f_Comment /* Comment */
 {
 }
-span.f_CourierFixed /* Courier Fixed */
+span.f_CourierFixed, strong.f_CourierFixed, em.f_CourierFixed /* Courier Fixed */
 {
  font-size: 9pt;
  font-family: 'Courier New',Courier,monospace;
 }
-span.f_Heading1 /* Heading1 */
+span.f_Heading1, strong.f_Heading1, em.f_Heading1 /* Heading1 */
 {
  font-size: 16pt;
  font-weight: bold;
  color: #ffffff;
 }
-span.f_ImageCaption /* Image Caption */
+span.f_ImageCaption, strong.f_ImageCaption, em.f_ImageCaption /* Image Caption */
 {
  font-size: 8pt;
  font-weight: bold;
 }
-span.f_Notes /* Notes */
+span.f_Notes, strong.f_Notes, em.f_Notes /* Notes */
 {
 }
 /* Paragraph styles */

@@ -134,7 +134,7 @@ function toggleToggles() {
 <!--ZOOMRESTART-->
 <p class="p_Normal">Grep regular expressions allow you to formulate complex searches that are not possible using a basic text search. &nbsp;GExperts implements a subset of the Perl regular expression syntax, as described below.</p>
 <p><span style="color: #000000;">&nbsp;</span></p>
-<p><span style="font-weight: bold;">Simple Matches</span></p>
+<p><strong style="font-weight: bold;">Simple Matches</strong></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #010100;">Any single character matches itself, unless it is a metacharacter with a special meaning, as described below.</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
@@ -161,7 +161,7 @@ function toggleToggles() {
 </div>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
-<p><span style="font-weight: bold; color: #010100;">Escape Sequences</span></p>
+<p><strong style="font-weight: bold; color: #010100;">Escape Sequences</strong></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #010100;">Some special characters may be specified using escape sequences similar to those used in languages like C and Perl: &quot;\n'' matches a newline, &quot;\t'' a tab, etc. More generally, \xnn, where nn is a string of hexadecimal digits, matches the character whose ASCII value is nn. If you need to specify a unicode character, you can use '\x{nnnn}', where 'nnnn' are the hexadecimal digits for the unicode code point.</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
@@ -236,7 +236,7 @@ function toggleToggles() {
 </div>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
-<p><span style="font-weight: bold; color: #010100;">Character Classes</span></p>
+<p><strong style="font-weight: bold; color: #010100;">Character Classes</strong></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #010100;">You can specify a character class (to denote any one of a set of characters), by enclosing a list of characters in square brackets [], and this will match any single character from the list.</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
@@ -313,7 +313,7 @@ function toggleToggles() {
 </div>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
-<p><span style="font-weight: bold; color: #010100;">Metacharacters - Line Separators</span></p>
+<p><strong style="font-weight: bold; color: #010100;">Metacharacters - Line Separators</strong></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 23px;"><table style="border:none; border-spacing:0;">
 <tr>
@@ -384,7 +384,7 @@ function toggleToggles() {
 <p><span style="color: #010100;">Unicode line separators are supported (based on </span><span style="color: #0000ff; text-decoration: underline;"><a href="http://www.unicode.org/unicode/reports/tr18/" target="_blank" class="weblink">http://www.unicode.org/unicode/reports/tr18/</a></span><span style="color: #010100;">: \x2028, \x2029, \x0B, \x0C, and \x85):</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
-<p><span style="font-weight: bold; color: #010100;">Metacharacters - Predefined Classes</span></p>
+<p><strong style="font-weight: bold; color: #010100;">Metacharacters - Predefined Classes</strong></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 23px;"><table style="border:none; border-spacing:0;">
 <tr>
@@ -449,7 +449,7 @@ function toggleToggles() {
 <p><span style="color: #010100;">Alphanumeric characters only include only the basic low-ASCII upper and lower case Latin alphabet, the digits 0-9, and '_'.</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
-<p><span style="font-weight: bold; color: #010100;">Metacharacters - Word Boundaries</span></p>
+<p><strong style="font-weight: bold; color: #010100;">Metacharacters - Word Boundaries</strong></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 23px;"><table style="border:none; border-spacing:0;">
 <tr>
@@ -470,7 +470,7 @@ function toggleToggles() {
 <p><span style="color: #010100;">A word boundary (\b) is a spot between two characters that has a \w on one side of it and a \W on the other side of it (in either order), counting the imaginary characters off the beginning and end of the string as matching a \W.</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
-<p><span style="font-weight: bold; color: #010100;">Metacharacters - Iterators</span></p>
+<p><strong style="font-weight: bold; color: #010100;">Metacharacters - Iterators</strong></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #010100;">Any item of a regular expression may be followed by an iterator metacharacter. Using these metacharacters, you can specify the number of occurrences of the previous character, metacharacter, or subexpression.</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
@@ -597,7 +597,7 @@ function toggleToggles() {
 </div>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
-<p><span style="font-weight: bold; color: #010100;">Metacharacters - Alternatives</span></p>
+<p><strong style="font-weight: bold; color: #010100;">Metacharacters - Alternatives</strong></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #010100;">You can specify a series of alternatives for a pattern using a pipe &quot;|'' to separate them, so that fee|fie|foe will match any of &quot;fee'', &quot;fie'', or &quot;foe'' in the target string (as would f(e|i|o)e). &nbsp;The first alternative includes everything from the last pattern delimiter (&quot;('', &quot;['', or the beginning of the pattern) up to the first &quot;|'', and the last alternative contains everything from the last &quot;|'' to the next pattern delimiter. &nbsp;For this reason, it is common practice to include alternatives in parentheses, to minimize confusion about where they start and end.</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
@@ -616,7 +616,7 @@ function toggleToggles() {
 </div>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
-<p><a id="regexsubexpressions" class="hmanchor"></a><span style="font-weight: bold; color: #010100;">Metacharacters - Subexpressions</span></p>
+<p><a id="regexsubexpressions" class="hmanchor"></a><strong style="font-weight: bold; color: #010100;">Metacharacters - Subexpressions</strong></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #010100;">The bracketing construct using parenthesis ( ... ) may also be used to define subexpressions so you can separate the matched text into several subparts. &nbsp;Subexpressions are numbered based on the left to right order of their opening parenthesis. &nbsp;The first subexpression has the number '1', etc. &nbsp;The whole expression match is given the number '0'. &nbsp;You can also use sub-expressions to perform search and replace ($0 or $&amp; would match the whole expression, $1 would match the first subexpression, $2 the second, etc.</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
@@ -645,7 +645,7 @@ function toggleToggles() {
 </div>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
-<p><span style="font-weight: bold; color: #010100;">Metacharacters - Backreferences</span></p>
+<p><strong style="font-weight: bold; color: #010100;">Metacharacters - Backreferences</strong></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #010100;">Metacharacters \1 through \9 are interpreted as backreferences, so in general, \&lt;n&gt; matches previously matched subexpression #&lt;n&gt;.</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
@@ -674,7 +674,7 @@ function toggleToggles() {
 </div>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
-<p><span style="font-weight: bold; color: #010100;">Modifiers</span></p>
+<p><strong style="font-weight: bold; color: #010100;">Modifiers</strong></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #010100;">Modifiers are used to change the behaviour of the regular expression engine. &nbsp;Any of the modifiers may be embedded within the regular expression itself using the (?...) construct, as described below. &nbsp;The case sensitivity modifier also has an equivalent option on the grep search screen.</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
@@ -729,7 +729,7 @@ function toggleToggles() {
 <p><span style="color: #010100;">In this mode, if you want literal whitespace or # characters in the pattern (outside a character class, where they are unaffected by /x), you will either have to escape them or encode them using hex references.</span></p>
 <p><span style="width:48px;display:inline-block">&nbsp;</span><span style="color: #010100;"> </span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
-<p><span style="font-weight: bold; color: #010100;">Perl Extensions To Modifiers</span></p>
+<p><strong style="font-weight: bold; color: #010100;">Perl Extensions To Modifiers</strong></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #010100;">(?imsxr-imsxr)</span></p>
 <p><span style="color: #010100;">You can use some Perl extensions to change the modifiers on the fly. &nbsp;If this construction is inlined into a subexpression, it only effects that subexpression.</span></p>
@@ -765,12 +765,12 @@ function toggleToggles() {
 </div>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
-<p><span style="font-weight: bold; color: #010100;">Perl Extensions for Comments</span></p>
+<p><strong style="font-weight: bold; color: #010100;">Perl Extensions for Comments</strong></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #010100;">(?#text)</span></p>
 <p><span style="color: #010100;">Text inside a comment like the above is ignored. The comment ends at the first &quot;)&quot;, so there is no way to put a literal &quot;)&quot; inside the comment.</span></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
-<p><span style="font-weight: bold; color: #010100;">Source Code</span></p>
+<p><strong style="font-weight: bold; color: #010100;">Source Code</strong></p>
 <p><span style="color: #000000;">&nbsp;</span></p>
 <p><span style="color: #010100;">Note: The free </span><span style="color: #0000ff; text-decoration: underline;"><a href="http://regexpstudio.com/TRegExpr/TRegExpr.html" target="_blank" class="weblink">TRegExpr</a></span><span style="color: #010100;"> Delphi library is used to implement regular expression searching.</span></p>
 <p class="p_Normal" style="text-align: justify; text-indent: -54px; margin: 12px 6px 30px 60px;"><span class="f_Comment"> </span></p>

@@ -168,8 +168,12 @@ var HMShowPictureLightbox = function(objID) {
   var newSrc = obj.src.replace(oldFile, newFile);
   var newTitle = obj.getAttribute("hm.title1");
   var newCaption = obj.getAttribute("hm.caption1");
+  var isSVG = (newSrc.substring(newSrc.length-4).toLowerCase() == '.svg');
 
   var htmlCode = '<img id="hmlightboximage" src="' + newSrc + '" alt="' + newTitle + '"/>';
+  if (isSVG) {
+	var htmlCode = '<div id="hmlightboximage"><object width="100%" height="100%" data="' + newSrc + '" alt="' + newTitle + '" type="image/svg+xml"><img src="' + newSrc + '></object></div>';
+  }
   var imgPreloader = new Image();
   imgPreloader.onload = function() {
   	HMShowLightbox(htmlCode, startL, startT, startW, startH, imgPreloader.width, imgPreloader.height, newCaption, true, false); 
