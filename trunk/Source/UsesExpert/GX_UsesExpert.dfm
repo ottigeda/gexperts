@@ -465,7 +465,7 @@ inherited fmUsesManager: TfmUsesManager
             DefaultRowHeight = 16
             FixedCols = 0
             RowCount = 2
-            Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goDrawFocusSelected, goColSizing, goRowSelect]
+            Options = [goFixedVertLine, goFixedHorzLine, goRangeSelect, goDrawFocusSelected, goColSizing, goRowSelect]
             PopupMenu = pmuAvail
             TabOrder = 0
             OnDblClick = lbxAvailDblClick
