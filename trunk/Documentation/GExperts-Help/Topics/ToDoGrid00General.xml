@@ -1,8 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Under Construction" modified="2025-06-11T17:02:29.721+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Under Construction" modified="2025-06-12T20:20:43.184+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">ToDo Grid</title>
   <body>
+    <header>
+      <para styleclass="Heading1" style="margin-top:4px; margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:14pt;" translate="true">ToDo Grid </text></para>
+      <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt; color:#efa175;" translate="true">General </text></para>
+    </header>
     <para styleclass="Normal"></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="10" colcount="2" style="width:100%; page-break-inside:avoid; background-color:#ebfafa; head-row-background-color:#ccffff; alt-row-background-color:none;">
       <thead style="vertical-align:middle">
@@ -31,7 +35,7 @@
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:19px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="QuickSelectRows" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Quick select rows</link></para>
+          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="QuickSelectRows" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Quick select rows</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:19px; background-color:#f4f4f4;">
           <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="ToDoGrid20Options" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Configuration (Options)</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
@@ -96,12 +100,12 @@
     </table></para>
     <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
-        <td style="height:24px;">
+        <td style="height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Overview </text></para>
         </td>
-        <td style="width:40px; height:24px;">
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""></link></para>
         </td>
       </tr>
@@ -111,12 +115,12 @@
     <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-right:6px; margin-bottom:24px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text><image src="ToDoGrid00General.png" imagestyleclass="Default" scale="95.74%" width="651" height="270" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"><anchor id="UsingTheGrid" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
-        <td style="height:24px;">
+        <td style="height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Using the string grid </text></para>
         </td>
-        <td style="width:40px; height:24px;">
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""></link></para>
         </td>
       </tr>

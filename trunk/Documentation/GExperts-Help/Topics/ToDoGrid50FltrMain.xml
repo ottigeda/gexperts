@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Abgeschlossen RZ" modified="2025-06-11T17:00:57.598+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Done RZ" modified="2025-06-12T20:13:59.547+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">ToDoGrid50FltrMain</title>
   <body>
     <header>
-      <para styleclass="Heading1" style="margin-top:6px; margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:14pt; vertical-align:baseline;" translate="true">ToDo Grid </text></para>
+      <para styleclass="Heading1" style="margin-top:4px; margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:14pt; vertical-align:baseline;" translate="true">ToDo Grid </text></para>
       <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt; vertical-align:baseline; color:#efa175;" translate="true">Column filter </text></para>
     </header>
     <para styleclass="Normal"></para>
@@ -60,12 +60,12 @@
     </table></para>
     <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
-        <td style="height:24px;">
+        <td style="height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Overview </text></para>
         </td>
-        <td style="width:40px; height:24px;">
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
@@ -83,8 +83,8 @@
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">If a subset of checkboxes is checked, the display can be grouped by double-clicking in the first panel of the status bar; this means that all checked items are displayed at the top of the list. Double-clicking again removes the grouping; after automatic marking through the context menu window, grouping is done automatically. </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="2" colcount="3" style="width:100%; background-color:#f4f4f4;">
       <tr style="vertical-align:top">
-        <td style="width:44px;">
-          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="color:#ff0000;" translate="true">Notice</text></para>
+        <td style="width:48px;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; color:#ff0000;" translate="true">Notice</text></para>
         </td>
         <td style="vertical-align:top; width:20px;">
           <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">▪</text></para>
@@ -94,7 +94,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:44px;">
+        <td style="width:48px;">
           <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
         </td>
         <td style="vertical-align:top; width:20px;">
@@ -107,12 +107,12 @@
     </table></para>
     <para styleclass="Normal"><anchor id="MouseAndKeyboard" styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;"></anchor><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
-        <td style="height:24px;">
+        <td style="height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:bold; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Mouse and keyboard </text></para>
         </td>
-        <td style="width:40px; height:24px;">
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
@@ -136,10 +136,10 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:196px; background-color:#fafada; border:none;">
+        <td style="width:196px; background-color:#ebf5ff; border:none;">
           <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">F9 </text></para>
         </td>
-        <td style="background-color:#fafada; border:none;">
+        <td style="background-color:#ebf5ff; border:none;">
           <para styleclass="" style="text-align:justify; text-indent:0px; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Moves the filter window to its original position (after opening the filter). </text></para>
         </td>
       </tr>
@@ -152,10 +152,10 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:196px; background-color:#fafada; border:none;">
+        <td style="width:196px; background-color:#ebf5ff; border:none;">
           <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Escape </text><text styleclass=" " style="font-family:Verdana; font-size:8pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#ff0000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">or</text><br/><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:italic; text-decoration:none; text-transform:none; vertical-align:baseline; color:#800000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Button [X]</text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">&#32;</text></para>
         </td>
-        <td style="background-color:#fafada; border:none;">
+        <td style="background-color:#ebf5ff; border:none;">
           <para styleclass="" style="text-align:justify; text-indent:0px; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass="rynqvb" style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Closes the filter window without activating the column filter in the display grid. </text></para>
         </td>
       </tr>

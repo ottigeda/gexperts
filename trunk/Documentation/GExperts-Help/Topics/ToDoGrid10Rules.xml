@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Under Construction" modified="2025-06-11T17:02:06.520+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Under Construction" modified="2025-06-12T20:04:36.562+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">ToDoGridFunctionality</title>
   <body>
     <header>
-      <para styleclass="Heading1" style="margin-top:6px; margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:14pt; vertical-align:baseline;" translate="true">ToDo Grid </text></para>
+      <para styleclass="Heading1" style="margin-top:4px; margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:14pt; vertical-align:baseline;" translate="true">ToDo Grid </text></para>
       <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt; vertical-align:baseline; color:#efa175;" translate="true">Rules of syntax analysis </text></para>
     </header>
     <para styleclass="Normal"></para>
@@ -60,12 +60,12 @@
     </table></para>
     <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
-        <td style="height:24px;">
+        <td style="height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Overview </text></para>
         </td>
-        <td style="width:40px; height:24px;">
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
@@ -73,12 +73,12 @@
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></para>
     <para styleclass="Normal"><anchor id="Rules" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
-        <td style="height:24px;">
+        <td style="height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Rules of syntax analysis </text></para>
         </td>
-        <td style="width:40px; height:24px;">
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
@@ -90,12 +90,12 @@
     </list>
     <para styleclass="Normal"><anchor id="Suggestions" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
-        <td style="height:24px;">
+        <td style="height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Suggestions for individual use </text></para>
         </td>
-        <td style="width:40px; height:24px;">
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>

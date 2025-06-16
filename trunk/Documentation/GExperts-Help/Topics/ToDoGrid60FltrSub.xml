@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Übersetzung offen" modified="2025-06-11T17:00:37.698+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Needs Translation" modified="2025-06-12T20:06:42.448+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">ToDoGridFltrSub</title>
   <body>
     <header>
-      <para styleclass="Heading1" style="margin-top:6px; margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:14pt;" translate="true">ToDo Grid </text></para>
+      <para styleclass="Heading1" style="margin-top:4px; margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:14pt;" translate="true">ToDo Grid </text></para>
       <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt; color:#efa175;" translate="true">Column filter, set check mask </text></para>
     </header>
     <para styleclass="Normal"></para>
@@ -60,12 +60,12 @@
     </table></para>
     <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
-        <td style="height:24px;">
+        <td style="height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Overview </text></para>
         </td>
-        <td style="width:40px; height:24px;">
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
@@ -86,12 +86,12 @@
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Nachdem der zu verwendende Maskentyp ausgewählt ist, kann im darunter befindlichen Eingabefeld der Maskentext definiert werden. Die Eingabelänge ist auf maximal 24 Zeichen begrenzt. Bereits während der Eingabe wird in der Statuszeile die Zahl der Entsprechungen in der zu filternden Liste angezeigt. </text></para>
     <para styleclass="Normal"><anchor id="MouseAndKeyboard" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
-        <td style="height:24px;">
+        <td style="height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Mouse and keyboard </text></para>
         </td>
-        <td style="width:40px; height:24px;">
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
@@ -115,10 +115,10 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:196px; background-color:#fafada; border:none;">
+        <td style="width:196px; background-color:#ebf5ff; border:none;">
           <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Return </text><text styleclass=" " style="font-family:Verdana; font-size:8pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#ff0000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">oder</text><br/><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:italic; text-decoration:none; text-transform:none; vertical-align:baseline; color:#800000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Schaltfläche &quot;Apply&quot;</text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">&#32;</text></para>
         </td>
-        <td style="background-color:#fafada; border:none;">
+        <td style="background-color:#ebf5ff; border:none;">
           <para styleclass="" style="text-align:justify; text-indent:0px; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Markiert</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> die Einträge gemäß definierter Maske in der Liste des Filterfensters und schließt das Maskenfenster. </text></para>
         </td>
       </tr>

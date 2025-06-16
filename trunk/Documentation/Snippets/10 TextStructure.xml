@@ -1,13 +1,13 @@
-﻿<topic modified="2025-06-11T17:14:34.840+02:00" lasteditedby="Ghost">
+﻿<topic modified="2025-06-12T19:53:09.656+02:00" lasteditedby="Ghost">
   <body>
     <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
-        <td style="height:24px;">
+        <td style="height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Overview </text></para>
         </td>
-        <td style="vertical-align:middle; width:40px; height:24px;">
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="text-align:right; margin-top:4px; margin-right:4px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
@@ -17,12 +17,12 @@
     <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-right:6px; margin-bottom:24px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:20pt; color:#ff0000;" translate="true"> Picture</text><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><anchor id="UsingTheGrid" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
-        <td style="height:24px;">
+        <td style="height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Xxx </text></para>
         </td>
-        <td style="vertical-align:middle; width:40px; height:24px;">
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><draft-comment id="ANNOT05BB96" width="16px" height="13px" modified="2025-06-11T17:14:10.511+02:00" styleclass="Comment"><![CDATA[Most times DistanceBefore should set to 3 pixel,
 but sometimes we must set it to 4 pixel
 

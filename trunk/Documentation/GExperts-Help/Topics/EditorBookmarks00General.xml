@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Abgeschlossen RZ" modified="2025-06-11T17:05:34.060+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Done RZ" modified="2025-06-12T20:15:43.259+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Editor Bookmarks</title>
   <body>
     <header>
-      <para styleclass="Heading1" style="margin-top:6px; margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:14pt;" translate="true">Editor Bookmarks </text></para>
+      <para styleclass="Heading1" style="margin-top:4px; margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:14pt;" translate="true">Editor Bookmarks </text></para>
       <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt; color:#efa175;" translate="true">General </text></para>
     </header>
     <para styleclass="Normal"></para>
@@ -52,12 +52,12 @@
     </table></para>
     <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
-        <td style="height:24px;">
+        <td style="height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Overview </text></para>
         </td>
-        <td style="width:40px; height:24px;">
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
@@ -66,12 +66,12 @@
     <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-right:6px; margin-bottom:24px; margin-left:6px;"><image src="EditorBookmarks00General.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><anchor id="SettingBookmarks" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
-        <td style="height:24px;">
+        <td style="height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Setting bookmarks </text></para>
         </td>
-        <td style="width:40px; height:24px;">
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
@@ -89,8 +89,8 @@
     </list>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="2" colcount="3" style="width:100%; background-color:#f4f4f4;">
       <tr style="vertical-align:top">
-        <td style="width:44px;">
-          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="color:#ff0000;" translate="true">Notice</text></para>
+        <td style="width:48px;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; color:#ff0000;" translate="true">Notice</text></para>
         </td>
         <td style="vertical-align:top; width:20px;">
           <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">▪</text></para>
@@ -100,7 +100,7 @@
         </td>
       </tr>
       <tr style="vertical-align:top">
-        <td style="width:44px;">
+        <td style="width:48px;">
           <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
         </td>
         <td style="vertical-align:top; width:20px;">
@@ -113,12 +113,12 @@
     </table></para>
     <para styleclass="Normal"><anchor id="EditAndDeleteBookmarks" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
-        <td style="height:24px;">
+        <td style="height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Edit and delete bookmarks </text></para>
         </td>
-        <td style="width:40px; height:24px;">
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="text-align:right; margin-top:4px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
@@ -130,8 +130,8 @@
     </list>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="3" style="width:100%; background-color:#f4f4f4;">
       <tr style="vertical-align:top">
-        <td style="width:44px;">
-          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="color:#ff0000;" translate="true">Notice</text></para>
+        <td style="width:48px;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; color:#ff0000;" translate="true">Notice</text></para>
         </td>
         <td style="vertical-align:top; width:20px;">
           <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">▪</text></para>
@@ -143,12 +143,12 @@
     </table></para>
     <para styleclass="Normal"><anchor id="BookmarkList" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#d9ecff;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
-        <td style="height:24px;">
+        <td style="height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Bookmarks list </text></para>
         </td>
-        <td style="width:40px; height:24px;">
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
@@ -161,8 +161,8 @@
     </list>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="3" style="width:100%; background-color:#f4f4f4;">
       <tr style="vertical-align:top">
-        <td style="width:44px;">
-          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="color:#ff0000;" translate="true">Notice</text></para>
+        <td style="width:48px;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; color:#ff0000;" translate="true">Notice</text></para>
         </td>
         <td style="vertical-align:top; width:20px;">
           <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">▪</text></para>
