@@ -5,7 +5,7 @@ inherited fmUsesManager: TfmUsesManager
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'Uses Clause Manager'
   ClientHeight = 490
-  ClientWidth = 1008
+  ClientWidth = 993
   ParentFont = False
   Font.Charset = ANSI_CHARSET
   Font.Height = -12
@@ -26,7 +26,7 @@ inherited fmUsesManager: TfmUsesManager
   object pnlUnits: TPanel
     Left = 332
     Top = 0
-    Width = 676
+    Width = 661
     Height = 434
     Align = alClient
     BevelOuter = bvNone
@@ -35,9 +35,9 @@ inherited fmUsesManager: TfmUsesManager
     TabOrder = 1
     object pcUnits: TPageControl
       Left = 6
-      Top = 47
-      Width = 664
-      Height = 381
+      Top = 59
+      Width = 649
+      Height = 369
       ActivePage = tabSearchPath
       Align = alClient
       TabOrder = 1
@@ -48,8 +48,8 @@ inherited fmUsesManager: TfmUsesManager
         ImageIndex = 3
         object pnlSearchPathFooter: TPanel
           Left = 0
-          Top = 304
-          Width = 656
+          Top = 292
+          Width = 641
           Height = 48
           Align = alBottom
           BevelOuter = bvNone
@@ -57,14 +57,14 @@ inherited fmUsesManager: TfmUsesManager
           object grp_SearchPathAdd: TGroupBox
             Left = 4
             Top = 0
-            Width = 313
+            Width = 285
             Height = 49
             Caption = 'Add to ...'
             TabOrder = 0
             object btnSearchPathAddToIntf: TButton
               Left = 8
               Top = 20
-              Width = 145
+              Width = 129
               Height = 25
               Action = actAddToInterfaceBtn
               ParentShowHint = False
@@ -72,9 +72,9 @@ inherited fmUsesManager: TfmUsesManager
               TabOrder = 0
             end
             object btnSearchPathAddToImpl: TButton
-              Left = 160
+              Left = 144
               Top = 20
-              Width = 145
+              Width = 129
               Height = 25
               Action = actAddToImplementationBtn
               ParentShowHint = False
@@ -83,7 +83,7 @@ inherited fmUsesManager: TfmUsesManager
             end
           end
           object btnAddSearchPathlToFavorites: TButton
-            Left = 320
+            Left = 296
             Top = 20
             Width = 169
             Height = 25
@@ -94,8 +94,8 @@ inherited fmUsesManager: TfmUsesManager
         object pnlSearchPath: TPanel
           Left = 0
           Top = 0
-          Width = 656
-          Height = 304
+          Width = 641
+          Height = 292
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -104,8 +104,8 @@ inherited fmUsesManager: TfmUsesManager
           object sg_SearchPath: TStringGrid
             Left = 3
             Top = 3
-            Width = 650
-            Height = 298
+            Width = 635
+            Height = 286
             Align = alClient
             ColCount = 1
             DefaultColWidth = 100
@@ -131,8 +131,8 @@ inherited fmUsesManager: TfmUsesManager
         object pnlProject: TPanel
           Left = 0
           Top = 0
-          Width = 656
-          Height = 304
+          Width = 641
+          Height = 292
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -141,8 +141,8 @@ inherited fmUsesManager: TfmUsesManager
           object sg_Project: TStringGrid
             Left = 3
             Top = 3
-            Width = 650
-            Height = 265
+            Width = 635
+            Height = 253
             Align = alClient
             ColCount = 1
             DefaultColWidth = 100
@@ -162,8 +162,8 @@ inherited fmUsesManager: TfmUsesManager
           end
           object p_NoMapFile: TPanel
             Left = 3
-            Top = 268
-            Width = 650
+            Top = 256
+            Width = 635
             Height = 33
             Align = alBottom
             BevelOuter = bvNone
@@ -171,12 +171,12 @@ inherited fmUsesManager: TfmUsesManager
             TabOrder = 1
             Visible = False
             DesignSize = (
-              650
+              635
               33)
             object l_NoMapFile: TLabel
               Left = 0
               Top = 0
-              Width = 650
+              Width = 635
               Height = 33
               Align = alClient
               Caption = 
@@ -185,7 +185,7 @@ inherited fmUsesManager: TfmUsesManager
               WordWrap = True
             end
             object b_NoMapFileClose: TButton
-              Left = 625
+              Left = 610
               Top = 0
               Width = 25
               Height = 33
@@ -198,14 +198,14 @@ inherited fmUsesManager: TfmUsesManager
         end
         object pnlProjFooter: TPanel
           Left = 0
-          Top = 304
-          Width = 656
+          Top = 292
+          Width = 641
           Height = 48
           Align = alBottom
           BevelOuter = bvNone
           TabOrder = 1
           object btnCopySaveProjectListMenu: TSpeedButton
-            Left = 632
+            Left = 608
             Top = 20
             Width = 25
             Height = 25
@@ -224,14 +224,14 @@ inherited fmUsesManager: TfmUsesManager
           object grp_ProjectAdd: TGroupBox
             Left = 4
             Top = 0
-            Width = 313
+            Width = 285
             Height = 49
             Caption = 'Add to ...'
             TabOrder = 0
             object btnProjectAddToInterface: TButton
               Left = 8
               Top = 20
-              Width = 145
+              Width = 129
               Height = 25
               Action = actAddToInterfaceBtn
               ParentShowHint = False
@@ -239,9 +239,9 @@ inherited fmUsesManager: TfmUsesManager
               TabOrder = 0
             end
             object btnProjectAddToImplementation: TButton
-              Left = 160
+              Left = 144
               Top = 20
-              Width = 145
+              Width = 129
               Height = 25
               Action = actAddToImplementationBtn
               ParentShowHint = False
@@ -250,7 +250,7 @@ inherited fmUsesManager: TfmUsesManager
             end
           end
           object btnAddProjectToFavorites: TButton
-            Left = 320
+            Left = 296
             Top = 20
             Width = 169
             Height = 25
@@ -258,7 +258,7 @@ inherited fmUsesManager: TfmUsesManager
             TabOrder = 1
           end
           object btnCopySaveCurrentList: TButton
-            Left = 496
+            Left = 472
             Top = 20
             Width = 137
             Height = 25
@@ -275,8 +275,8 @@ inherited fmUsesManager: TfmUsesManager
         object pnlCommon: TPanel
           Left = 0
           Top = 0
-          Width = 656
-          Height = 304
+          Width = 641
+          Height = 292
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -285,8 +285,8 @@ inherited fmUsesManager: TfmUsesManager
           object sg_Common: TStringGrid
             Left = 3
             Top = 3
-            Width = 650
-            Height = 298
+            Width = 635
+            Height = 286
             Align = alClient
             ColCount = 1
             DefaultColWidth = 100
@@ -307,8 +307,8 @@ inherited fmUsesManager: TfmUsesManager
         end
         object pnlCommonFooter: TPanel
           Left = 0
-          Top = 304
-          Width = 656
+          Top = 292
+          Width = 641
           Height = 48
           Align = alBottom
           BevelOuter = bvNone
@@ -316,14 +316,14 @@ inherited fmUsesManager: TfmUsesManager
           object grp_CommonAdd: TGroupBox
             Left = 4
             Top = 0
-            Width = 313
+            Width = 285
             Height = 49
             Caption = 'Add to ...'
             TabOrder = 0
             object btnCommonAddToInterface: TButton
               Left = 8
               Top = 20
-              Width = 145
+              Width = 129
               Height = 25
               Action = actAddToInterfaceBtn
               ParentShowHint = False
@@ -331,9 +331,9 @@ inherited fmUsesManager: TfmUsesManager
               TabOrder = 0
             end
             object btnCommonAddToImplementation: TButton
-              Left = 160
+              Left = 144
               Top = 20
-              Width = 145
+              Width = 129
               Height = 25
               Action = actAddToImplementationBtn
               ParentShowHint = False
@@ -342,7 +342,7 @@ inherited fmUsesManager: TfmUsesManager
             end
           end
           object btnAddRtlToFavorites: TButton
-            Left = 320
+            Left = 296
             Top = 20
             Width = 169
             Height = 25
@@ -357,8 +357,8 @@ inherited fmUsesManager: TfmUsesManager
         object pnlFavorite: TPanel
           Left = 0
           Top = 0
-          Width = 656
-          Height = 304
+          Width = 641
+          Height = 292
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -367,8 +367,8 @@ inherited fmUsesManager: TfmUsesManager
           object sg_Favorite: TStringGrid
             Left = 3
             Top = 3
-            Width = 650
-            Height = 298
+            Width = 635
+            Height = 286
             Align = alClient
             ColCount = 1
             DefaultColWidth = 100
@@ -389,8 +389,8 @@ inherited fmUsesManager: TfmUsesManager
         end
         object pnlFavFooter: TPanel
           Left = 0
-          Top = 304
-          Width = 656
+          Top = 292
+          Width = 641
           Height = 48
           Align = alBottom
           BevelOuter = bvNone
@@ -398,14 +398,14 @@ inherited fmUsesManager: TfmUsesManager
           object grp_FavoriteAdd: TGroupBox
             Left = 4
             Top = 0
-            Width = 313
+            Width = 285
             Height = 49
             Caption = 'Add to ...'
             TabOrder = 0
             object btnFavoriteAddToInterface: TButton
               Left = 8
               Top = 20
-              Width = 145
+              Width = 129
               Height = 25
               Action = actAddToInterfaceBtn
               ParentShowHint = False
@@ -413,9 +413,9 @@ inherited fmUsesManager: TfmUsesManager
               TabOrder = 0
             end
             object btnFavoriteAddToImplementation: TButton
-              Left = 160
+              Left = 144
               Top = 20
-              Width = 145
+              Width = 129
               Height = 25
               Action = actAddToImplementationBtn
               ParentShowHint = False
@@ -424,7 +424,7 @@ inherited fmUsesManager: TfmUsesManager
             end
           end
           object btnFavoriteAddToFavorites: TButton
-            Left = 320
+            Left = 296
             Top = 20
             Width = 169
             Height = 25
@@ -432,7 +432,7 @@ inherited fmUsesManager: TfmUsesManager
             TabOrder = 1
           end
           object btnFavoriteDeleteFromFavorites: TButton
-            Left = 496
+            Left = 472
             Top = 20
             Width = 161
             Height = 25
@@ -447,8 +447,8 @@ inherited fmUsesManager: TfmUsesManager
         object pnlIdentifiers: TPanel
           Left = 0
           Top = 0
-          Width = 656
-          Height = 304
+          Width = 641
+          Height = 292
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -457,8 +457,8 @@ inherited fmUsesManager: TfmUsesManager
           object sg_Identifiers: TStringGrid
             Left = 3
             Top = 3
-            Width = 650
-            Height = 298
+            Width = 635
+            Height = 286
             Align = alClient
             ColCount = 2
             DefaultColWidth = 150
@@ -476,8 +476,8 @@ inherited fmUsesManager: TfmUsesManager
         end
         object pnlIdentifiersFooter: TPanel
           Left = 0
-          Top = 304
-          Width = 656
+          Top = 292
+          Width = 641
           Height = 48
           Align = alBottom
           BevelOuter = bvNone
@@ -485,14 +485,14 @@ inherited fmUsesManager: TfmUsesManager
           object grp_IdentifiersAdd: TGroupBox
             Left = 4
             Top = 0
-            Width = 313
+            Width = 285
             Height = 49
             Caption = 'Add to ...'
             TabOrder = 0
             object btnIdentifiersAddToIntf: TButton
               Left = 8
               Top = 20
-              Width = 145
+              Width = 129
               Height = 25
               Action = actAddToInterfaceBtn
               ParentShowHint = False
@@ -500,46 +500,14 @@ inherited fmUsesManager: TfmUsesManager
               TabOrder = 0
             end
             object btnIdentifiersAddToImpl: TButton
-              Left = 160
+              Left = 144
               Top = 20
-              Width = 145
+              Width = 129
               Height = 25
               Action = actAddToImplementationBtn
               ParentShowHint = False
               ShowHint = True
               TabOrder = 1
-            end
-          end
-          object grp_IdentifiersMatch: TGroupBox
-            Left = 328
-            Top = 0
-            Width = 321
-            Height = 49
-            Caption = 'Match filter at ...'
-            TabOrder = 1
-            object b_IdentifierMatchAnywhere: TBitBtn
-              Left = 112
-              Top = 20
-              Width = 97
-              Height = 25
-              Caption = '&Anywhere'
-              TabOrder = 1
-            end
-            object b_IdentifierMatchStart: TBitBtn
-              Left = 8
-              Top = 20
-              Width = 97
-              Height = 25
-              Caption = 'S&tart'
-              TabOrder = 0
-            end
-            object b_IdentifierMatchSort: TBitBtn
-              Left = 216
-              Top = 20
-              Width = 97
-              Height = 25
-              Caption = 'Start First'
-              TabOrder = 2
             end
           end
         end
@@ -584,20 +552,20 @@ inherited fmUsesManager: TfmUsesManager
     object pnlAvailableHeader: TPanel
       Left = 6
       Top = 6
-      Width = 664
-      Height = 41
+      Width = 649
+      Height = 53
       Align = alTop
       BevelOuter = bvNone
       FullRepaint = False
       TabOrder = 0
       OnResize = pnlAvailableHeaderResize
       DesignSize = (
-        664
-        41)
+        649
+        53)
       object edtUnitFilter: TEdit
         Left = 200
-        Top = 16
-        Width = 462
+        Top = 20
+        Width = 324
         Height = 22
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 1
@@ -609,11 +577,10 @@ inherited fmUsesManager: TfmUsesManager
       object pnlUnitsCaption: TPanel
         Left = 0
         Top = 0
-        Width = 664
+        Width = 649
         Height = 15
         Align = alTop
         BevelOuter = bvNone
-        Caption = 'Available Units'
         ParentColor = True
         TabOrder = 0
         object lblFilter: TLabel
@@ -627,8 +594,8 @@ inherited fmUsesManager: TfmUsesManager
       end
       object edtIdentifierFilter: TEdit
         Left = 0
-        Top = 16
-        Width = 421
+        Top = 20
+        Width = 300
         Height = 22
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 2
@@ -637,6 +604,38 @@ inherited fmUsesManager: TfmUsesManager
         OnEnter = edtIdentifierFilterEnter
         OnExit = edtIdentifierFilterExit
         OnKeyDown = edtIdentifierFilterKeyDown
+      end
+      object grp_IdentifiersMatch: TGroupBox
+        Left = 328
+        Top = 0
+        Width = 321
+        Height = 53
+        Caption = 'Match filter at ...'
+        TabOrder = 3
+        object b_IdentifierMatchAnywhere: TBitBtn
+          Left = 112
+          Top = 20
+          Width = 97
+          Height = 25
+          Caption = 'Any&where'
+          TabOrder = 1
+        end
+        object b_IdentifierMatchStart: TBitBtn
+          Left = 8
+          Top = 20
+          Width = 97
+          Height = 25
+          Caption = 'S&tart'
+          TabOrder = 0
+        end
+        object b_IdentifierMatchSort: TBitBtn
+          Left = 216
+          Top = 20
+          Width = 97
+          Height = 25
+          Caption = 'St&art First'
+          TabOrder = 2
+        end
       end
     end
   end
@@ -819,14 +818,14 @@ inherited fmUsesManager: TfmUsesManager
   object pnlFooter: TPanel
     Left = 0
     Top = 434
-    Width = 1008
+    Width = 993
     Height = 37
     Align = alBottom
     BevelOuter = bvNone
     FullRepaint = False
     TabOrder = 2
     object pnlButtonsRight: TPanel
-      Left = 653
+      Left = 638
       Top = 0
       Width = 355
       Height = 37
@@ -899,7 +898,7 @@ inherited fmUsesManager: TfmUsesManager
     object chk_FastAdd: TCheckBox
       Left = 376
       Top = 8
-      Width = 273
+      Width = 249
       Height = 17
       Hint = 'Enter adds to Interface and closes dialog'
       Caption = 'Fast Add'
@@ -912,7 +911,7 @@ inherited fmUsesManager: TfmUsesManager
   object sbUCM: TStatusBar
     Left = 0
     Top = 471
-    Width = 1008
+    Width = 993
     Height = 19
     Hint = 
       'DOUBLE-click on this Status Bar to copy the text displayed on th' +

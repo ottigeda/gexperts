@@ -400,7 +400,7 @@ uses
   GX_DbugIntf,
 {$ENDIF D+}
   GX_MessageBox, GX_IdeSearchPathEnhancer, u_dzTypes, u_dzStringArrayUtils,
-  GX_StringGridDrawFix, GX_GxUtils;
+  GX_StringGridDrawFix, GX_GxUtils, GX_IdeSplitterVisibility;
 
 { TUsesClauseMgrExpert }
 
@@ -910,6 +910,8 @@ begin
 
   FLeftRatio := pnlUses.Width / ClientWidth;
 
+  TSplitterPainter.Create(Splitter);
+
   FUsesExpert.SetFormIcon(Self);
 
   sg_Identifiers.Cells[0, 0] := 'Identifier';
@@ -1338,6 +1340,7 @@ begin
     TWinControl_SetFocus(edtIdentifierFilter);
     edtUnitFilter.Visible := False;
     lblFilter.FocusControl := edtIdentifierFilter;
+    grp_IdentifiersMatch.Visible := True;
   end
   else
   begin
@@ -1346,6 +1349,7 @@ begin
     TWinControl_SetFocus(edtUnitFilter);
     edtIdentifierFilter.Visible := False;
     lblFilter.FocusControl := edtUnitFilter;
+    grp_IdentifiersMatch.Visible := False;
   end;
   UpdateDefaultButton;
 end;
@@ -1365,11 +1369,19 @@ begin
 end;
 
 procedure TfmUsesManager.pnlAvailableHeaderResize(Sender: TObject);
+var
+  w: Integer;
+  l: Integer;
 begin
+  l := pnlAvailableHeader.Width - grp_IdentifiersMatch.Width - 2;
+  w := l - 8 - lblFilter.Left;
+
+  grp_IdentifiersMatch.Left := l;
+
   edtUnitFilter.Left := 0;
-  edtUnitFilter.Width := pnlAvailableHeader.Width;
+  edtUnitFilter.Width := w;
   edtIdentifierFilter.Left := 0;
-  edtIdentifierFilter.Width := pnlAvailableHeader.Width;
+  edtIdentifierFilter.Width := w;
 end;
 
 procedure TfmUsesManager.pnlUsesBottomResize(Sender: TObject);
@@ -3105,7 +3117,7 @@ begin
   TCursor_TemporaryChange();
   FilterIdentifiers;
   FForceFocusToIdentifierFilter := True;
-  edtIdentifierFilter.SetFocus;
+  TWinControl_SetFocus(edtIdentifierFilter);
 end;
 
 procedure TfmUsesManager.mi_SaveProjectListClick(Sender: TObject);
