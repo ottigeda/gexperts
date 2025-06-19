@@ -306,7 +306,7 @@ implementation
 uses
   Windows, Graphics, Clipbrd, TypInfo, Math,
   GX_GxUtils, GX_MacroParser, GX_MacroTemplateEdit, GX_OtaUtils, GX_IdeUtils,
-  GX_MacroTemplatesExpert, GX_GExperts;
+  GX_MacroTemplatesExpert, GX_GExperts, GX_IdeSplitterVisibility;
 
 var
   ProgInfoProc: TGetProgrammerInfo;
@@ -477,6 +477,9 @@ end;
 constructor TfmMacroTemplates.Create(_Owner: TComponent);
 begin
   inherited;
+
+  TSplitterPainter.Create(splTemplates);
+  TSplitterPainter.Create(splUses);
 
   SetupTemplateMemo;
   pnlMacroText.Caption := ''; // hide design-time text

@@ -246,7 +246,7 @@ uses
   GX_ConfigurationInfo, GX_Experts, GX_GExperts,
   {$ENDIF STANDALONE}
   GX_GxUtils, GX_GenericUtils, GX_OtaUtils, OmniXML,
-  GX_XmlUtils, GX_IdeUtils;
+  GX_XmlUtils, GX_IdeUtils, GX_IdeSplitterVisibility;
 
 type
   EFavFiles = class(Exception);
@@ -1774,6 +1774,9 @@ end;
 constructor TfmFavFiles.Create(AOwner: TComponent; _Options: TFavFilesOptions);
 begin
   inherited Create(AOwner);
+
+  TSplitterPainter.Create(splTreeView);
+  TSplitterPainter.Create(splFileView);
 
 //{$IFDEF GX_IDE_IS_HIDPI_AWARE}
 //  TCustomForm(Self).Scaled := True;

@@ -132,7 +132,7 @@ implementation
 
 uses Windows, SysUtils, TypInfo, Clipbrd, Registry,
   GX_GenericUtils, GX_ConfigurationInfo, GX_OtaUtils, GX_GetIdeVersion, GX_IdeUtils,
-  Menus, Math, Graphics, u_dzVclUtils;
+  Menus, Math, Graphics, u_dzVclUtils, GX_IdeSplitterVisibility;
 
 {$R *.dfm}
 
@@ -360,6 +360,8 @@ var
   i: Integer;
 begin
   inherited;
+
+  TSplitterPainter.Create(Splitter);
 
   TLabel_MakeUrlLabel(l_URL);
 

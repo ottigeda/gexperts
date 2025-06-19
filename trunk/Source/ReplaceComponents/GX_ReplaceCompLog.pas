@@ -67,7 +67,8 @@ implementation
 uses
   SysUtils, Clipbrd,
   u_dzVclUtils,
-  Gx_GenericUtils, GX_ReplaceCompUtils, GX_ConfigurationInfo;
+  Gx_GenericUtils, GX_ReplaceCompUtils, GX_ConfigurationInfo,
+  GX_IdeSplitterVisibility;
 
 { TfmReplaceCompLog }
 
@@ -78,6 +79,7 @@ begin
   inherited Create(Owner);
 
   TControl_SetMinConstraints(Self);
+  TSplitterPainter.Create(Splitter);
   FConfigData := ConfigData;
   FLogEvents := LogEvents;
   edtSourceClassName.Text := SourceClassName;

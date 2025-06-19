@@ -273,7 +273,8 @@ uses
   u_dzVclUtils,
   GX_VerDepConst, GX_ClassIdentify, GX_ConfigurationInfo,
   GX_ClassProp, GX_GExperts,
-  GX_GxUtils, GX_GenericUtils, GX_StringList, GX_IdeUtils, GX_Logging;
+  GX_GxUtils, GX_GenericUtils, GX_StringList, GX_IdeUtils, GX_Logging,
+  GX_IdeSplitterVisibility;
 
 var
   Logger: IGxLogger;
@@ -1589,6 +1590,10 @@ begin
   TControl_SetMinConstraints(Self);
 
   SetNonModalFormPopupMode(Self);
+
+  TSplitterPainter.Create(Splitter1);
+  TSplitterPainter.Create(Splitter2);
+
   FStartingDir := ExtractFilePath(Application.ExeName);
   FIsFirstInvocation := True;
   FProjectNeedsLoading := True;

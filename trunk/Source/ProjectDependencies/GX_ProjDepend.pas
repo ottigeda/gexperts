@@ -168,7 +168,7 @@ uses
   mPasLex, mwPasParserTypes,
   GX_EditReader, GX_ProjDependProp, GX_GExperts, GX_ProjDependFilter,
   GX_GenericUtils, GX_GxUtils, GX_IdeUtils,
-  u_dzClassUtils, u_dzVclUtils, GX_ProjDependOptions;
+  u_dzClassUtils, u_dzVclUtils, GX_ProjDependOptions, GX_IdeSplitterVisibility;
 
 var
   fmProjDepend: TfmProjDepend = nil;
@@ -767,6 +767,8 @@ begin
   inherited;
 
   TControl_SetMinConstraints(Self);
+
+  TSplitterPainter.Create(Splitter);
 
   SetToolbarGradient(ToolBar);
   SetNonModalFormPopupMode(Self);

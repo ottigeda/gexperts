@@ -452,7 +452,8 @@ uses
   GX_GrepOptionsStandAlone,
 {$ENDIF GX_STANDALONE}
   GX_GExperts, GX_GenericUtils, GX_StringList, GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_MessageBox,
-  GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect, GX_GrepProgress;
+  GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect, GX_GrepProgress,
+  GX_IdeSplitterVisibility;
 
 resourcestring
   SGrepReplaceStats = 'Replaced %d occurrence(s) in %.2f seconds';
@@ -1854,6 +1855,9 @@ begin
   inherited;
 
   TControl_SetMinConstraints(Self);
+
+  TSplitterPainter.Create(SplitterContext);
+  TSplitterPainter.Create(SplitterHistoryList);
 
   FShowHistoryList := True;
 

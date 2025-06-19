@@ -129,7 +129,7 @@ uses
   Clipbrd, Menus, StrUtils, Math,
   u_dzVclUtils, u_dzStringUtils, u_dzTypes,
   GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_IdeUtils,
-  GX_Experts, GX_GExperts;
+  GX_Experts, GX_GExperts, GX_IdeSplitterVisibility;
 
 resourcestring
   SAllString = '<All>';
@@ -673,6 +673,8 @@ constructor TfmProcedureList.Create(AOwner: TComponent);
 begin
   inherited;
   TControl_SetMinConstraints(Self);
+
+  TSplitterPainter.Create(splSeparator);
 
   FMinListWidth := MIN_LIST_WIDTH;
   FMinListHeight := MIN_LIST_HEIGHT;

@@ -241,7 +241,8 @@ uses
   GX_GxUtils, GX_OtaUtils,
   GX_XmlUtils,
   GX_MacroLibraryNamePrompt, GX_MacroLibraryConfig, GX_IdeUtils,
-  GX_MessageBox, u_dzVclUtils, GX_GenericUtils, GX_GExperts;
+  GX_MessageBox, u_dzVclUtils, GX_GenericUtils, GX_GExperts,
+  GX_IdeSplitterVisibility;
 
 type
   TIDEMacroBugMessage = class(TGxMsgBoxAdaptor)
@@ -751,6 +752,8 @@ begin
   inherited;
 
   TControl_SetMinConstraints(Self);
+
+  TSplitterPainter.Create(Splitter);
 
   InitDpiScaler;
 

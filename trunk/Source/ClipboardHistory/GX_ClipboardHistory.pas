@@ -206,7 +206,7 @@ uses
   Messages, Clipbrd, Dialogs, Math, StrUtils, OmniXML,
   GX_GxUtils, GX_GenericUtils, GX_OtaUtils, u_dzVclUtils,
   GX_GExperts, GX_ClipboardOptions, GX_XmlUtils,
-  GX_PasteAs;
+  GX_PasteAs, GX_IdeSplitterVisibility;
 
 const
   ClipStorageFileName = 'ClipboardHistory.xml';
@@ -498,6 +498,8 @@ begin
   inherited;
 
   TControl_SetMinConstraints(Self);
+
+  TSplitterPainter.Create(Splitter);
 
   if IsStandAlone then begin
     actHamburgerMenu.Visible := False;
