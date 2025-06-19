@@ -257,11 +257,9 @@ begin
 
     // backwards, because we remove items that do not match
     for ItemIdx := _Found.Count - 1 downto 0 do begin
-      for WordIdx := 0 to LcWords.Count - 1 do begin
-        Item := _Found[ItemIdx];
-        if not StrMatchesAll(Item.LCIdentifier, LcWords) then
-          _Found.Delete(ItemIdx);
-      end;
+      Item := _Found[ItemIdx];
+      if not StrMatchesAll(Item.LCIdentifier, LcWords) then
+        _Found.Delete(ItemIdx);
     end;
   finally
     FreeAndNil(LcWords);
