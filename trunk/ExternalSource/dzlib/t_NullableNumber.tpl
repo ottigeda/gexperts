@@ -29,6 +29,8 @@ type
     procedure Invalidate;
     function Value: _NULLABLE_TYPE_BASE_;
     function IsValid: Boolean; inline;
+    function IsZero: Boolean; inline;
+    function IsInvalidOrZero: Boolean; inline;
     function GetValue(out _Value: _NULLABLE_TYPE_BASE_): Boolean;
     procedure AssignVariant(_a: Variant);
     function ToVariant: Variant;
@@ -173,7 +175,7 @@ end;
 class operator TdzNullableNumber.Subtract(_a: _NULLABLE_TYPE_BASE_; _b: TdzNullableNumber): TdzNullableNumber;
 begin
   if not _b.IsValid then
-    raise EInvalidValue.Create(_('Cannot subtract from a value if it is not valid'));
+    raise EInvalidValue.Create(_('Cannot subtract a nullable value if it is not valid'));
   Result := _a - _b.Value;
 end;
 
@@ -386,6 +388,16 @@ end;
 function TdzNullableNumber.IsValid: Boolean;
 begin
   Result := FIsValid <> nil;
+end;
+
+function TdzNullableNumber.IsInvalidOrZero: Boolean;
+begin
+  Result := not IsValid or IsZero;
+end;
+
+function TdzNullableNumber.IsZero: Boolean;
+begin
+  Result := Math.IsZero(Value);
 end;
 
 class operator TdzNullableNumber.LessThan(_a: TdzNullableNumber; _b: _NULLABLE_TYPE_BASE_): Boolean;

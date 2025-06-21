@@ -1154,11 +1154,11 @@ type
     function Split: TStringArray;
     ///<summary>
     /// @returns True, if the last extension matches the given one (case insensitively)
-    ///          Fales otherwise </summary>
+    ///          False otherwise </summary>
     function HasExtensionLast(const _Ext: string): Boolean;
     ///<summary>
     /// @returns True, if the full extension matches the given one (case insensitively)
-    ///          Fales otherwise </summary>
+    ///          False otherwise </summary>
     function HasExtensionFull(const _Ext: string): Boolean;
     class function Combine(_Parts: TStringArray): TFilename; static;
     ///<summary>

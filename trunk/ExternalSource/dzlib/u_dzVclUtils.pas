@@ -1260,6 +1260,15 @@ function AddLabeledControl(_Idx: Integer; const _Caption: string; _Ctrl: TContro
 function CalcTextHeight(_Ctrl: TWinControl; const _Text: string; _Width: Integer = -1): Integer; overload;
 function CalcTextHeight(_Ctrl: TGraphicControl; const _Text: string; _Width: Integer = -1): Integer; overload;
 
+///<summary>
+/// Adjusts the height of the control so it fits the text and returns the difference between the new and the
+/// old height so other controls can be moved up or down and the form's height can be adjusted.
+/// @param Ctrl is the TGraphicsControl to adjust
+/// @param VOffset is the vertical offset of the first text line (defaults to 0)
+/// @NOTE: Do not let any gap above the control at design time, instead pass a VOffset. So this function
+///        will also work with an empty text. </summary>
+function TGraphicControl_AdjustHeight(_Ctrl: TGraphicControl; const _Text: string; _VOffset: Integer = 0): Integer;
+
 ///<summary> I don't quite remember what this is supposed to do and where it is used,
 ///          Please, if you find a call to this function somewhere, tell me. -- twm </summary>
 function TStringGrid_IsScrollBarVisible(_Grid: TCustomGrid; _Code: Integer): Boolean;
@@ -2029,10 +2038,7 @@ uses
   u_dzStringArrayUtils,
   u_dzNamedThread;
 
-function _(const _s: string): string;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+function _(const _s: string): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
   Result := dzDGetText(_s, DZLIB_TRANSLATION_DOMAIN);
 end;
@@ -4595,13 +4601,32 @@ type
 
 function CalcTextHeight(_Ctrl: TGraphicControl; const _Text: string; _Width: Integer = -1): Integer; overload;
 var
+  ctrl: TGraphicControlHack absolute _Ctrl;
   Rect: TRect;
 begin
   Rect := _Ctrl.BoundsRect;
   if _Width <> -1 then
     Rect.Right := Rect.Left + _Width - 1;
-  Result := DrawText(TGraphicControlHack(_Ctrl).Canvas.Handle, PChar(_Text),
+  Result := DrawText(ctrl.Canvas.Handle, PChar(_Text),
     Length(_Text), Rect, DT_LEFT or DT_WORDBREAK or DT_CALCRECT);
+end;
+
+function TGraphicControl_AdjustHeight(_Ctrl: TGraphicControl; const _Text: string; _VOffset: Integer = 0): Integer;
+var
+  ctrl: TGraphicControlHack absolute _Ctrl;
+  h: Integer;
+  r: TRect;
+  Res: Integer;
+begin
+  h := ctrl.Height;
+  if _Text = '' then
+    Result := -h
+  else begin
+    r := Rect(0, _VOffset, _Ctrl.Width, h);
+    Res := DrawText(ctrl.Canvas.Handle, PChar(_Text), Length(_Text), r, DT_LEFT or DT_WORDBREAK or DT_CALCRECT);
+    ctrl.ClientHeight := Res + _VOffset;
+    Result := Res + _VOffset - h;
+  end;
 end;
 
 type
