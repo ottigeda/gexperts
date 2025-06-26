@@ -2119,6 +2119,10 @@ begin
   Assert(Assigned(gblGrepExpert));
   reContext.Font.Assign(gblGrepExpert.ContextFont);
   lbResults.Font.Assign(gblGrepExpert.ListFont);
+
+  lbHistoryList.ParentFont := True;
+  lbHistoryList.Canvas.Font.Assign(Self.Font);
+  lbHistoryList.ItemHeight := 2 * lbHistoryList.Canvas.TextHeight(SAllAlphaNumericChars);
 end;
 
 procedure TfmGrepResults.actReplaceAllExecute(Sender: TObject);

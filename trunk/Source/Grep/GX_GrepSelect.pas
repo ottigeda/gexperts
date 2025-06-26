@@ -133,6 +133,9 @@ end;
 
 procedure TfmGrepSelect.InitializeForm;
 begin
+  lvHistoryList.ParentFont := True;
+  lvHistoryList.Canvas.Font.Assign(Self.Font);
+
   btnCheckItems.Tag := Integer(True);
   btnUnCheckItems.Tag := Integer(False);
 
