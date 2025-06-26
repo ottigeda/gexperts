@@ -180,7 +180,7 @@ uses
   GX_ConfigurationInfo,
   GX_IdeSearchPathEnhancer,
   GX_IdeFavoritesList,
-  GX_IdeSearchPathFavoriteEdit;
+  GX_IdeSearchPathFavoriteEdit, GX_IdeSplitterVisibility;
 
 type
   TEditPathExpert = class(TGX_Expert)
@@ -807,6 +807,9 @@ begin
   inherited;
 
   FConfigs := TObjectList.Create;
+
+  TSplitterPainter.Create(spl_Vertical);
+  TSplitterPainter.Create(spl_Horizontal);
 
   InitDpiScaler;
   GxSetDefaultFont(Self);

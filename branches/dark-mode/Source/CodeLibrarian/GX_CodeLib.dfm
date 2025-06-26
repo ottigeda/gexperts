@@ -14,7 +14,7 @@ object fmCodeLib: TfmCodeLib
   KeyPreview = True
   Menu = MainMenu
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poDesigned
   Scaled = False
   OnHide = FormHide
   OnKeyPress = FormKeyPress

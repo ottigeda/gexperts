@@ -67,6 +67,7 @@ type
     procedure cbDirectoryDropDown(Sender: TObject);
     procedure cbExcludedDirsDropDown(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure ComboKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -136,6 +137,7 @@ var
   LComboBox : TCustomComboBox;
 begin
   if not Assigned(aForm) then Exit;
+  if not aForm.Showing then Exit;
 
   for i := 0 to aForm.ComponentCount-1 do
   begin
@@ -433,7 +435,7 @@ begin
   InitializeForm;
 
   LoadFormSettings;
-  FixComboBoxSelections(Self);
+  OnActivate := FormActivate; // to fix Bug #375
   FCheckedWhere := True;
 end;
 
@@ -972,6 +974,13 @@ begin
   rgSaveOption.Width := NewWidth - Margins;
 
   Width := NewWidth;
+end;
+
+procedure TfmGrepSearch.FormActivate(Sender: TObject);
+begin
+  inherited;
+  if Self.Visible then
+    FixComboBoxSelections(Self);
 end;
 
 procedure TfmGrepSearch.FormClose(Sender: TObject; var Action: TCloseAction);

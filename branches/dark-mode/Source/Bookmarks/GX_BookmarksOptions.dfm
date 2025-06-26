@@ -1,30 +1,26 @@
 inherited foBookmarksOptions: TfoBookmarksOptions
-  Left = 213
-  Top = 213
+  Left = 1382
+  Top = 41
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Options'
-  ClientHeight = 313
+  ClientHeight = 316
   ClientWidth = 260
-  Constraints.MinHeight = 345
-  Constraints.MinWidth = 270
   ParentFont = False
   KeyPreview = True
   OldCreateOrder = True
   Position = poDefault
-  OnCreate = FormCreate
-  OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object imF1: TImage
-    Left = 6
-    Top = 285
-    Width = 16
+    Left = 8
+    Top = 288
+    Width = 14
     Height = 16
     Hint = 'Help (F1)'
-    Anchors = [akLeft, akRight, akBottom]
+    Anchors = [akLeft, akBottom]
     ParentShowHint = False
     Picture.Data = {
       07544269746D6170D2000000424DD20000000000000052000000280000001000
@@ -38,30 +34,9 @@ inherited foBookmarksOptions: TfoBookmarksOptions
     Transparent = True
     OnClick = imF1Click
   end
-  object imF1NA: TImage
-    Left = 14
-    Top = 277
-    Width = 16
-    Height = 16
-    Hint = 'Help (F1)'
-    Anchors = [akLeft, akRight, akBottom]
-    ParentShowHint = False
-    Picture.Data = {
-      07544269746D6170C2000000424DC20000000000000042000000280000001000
-      000010000000010004000000000080000000C40E0000C40E0000030000000300
-      0000FFFF010081818100F1FBFF00000000000002000000000000001200000000
-      2222210122000001111110011200001200000000012000120120001201200012
-      0120001201200012012200120120001201110012012000120120001201200012
-      0122011201200012011100100120001200000000012000122222222221000001
-      1111111110000000000000000000}
-    ShowHint = True
-    Transparent = True
-    Visible = False
-    OnClick = imF1Click
-  end
   object buSave: TButton
     Left = 28
-    Top = 280
+    Top = 283
     Width = 156
     Height = 25
     Hint = 'Save options and close form (Return)'
@@ -81,11 +56,11 @@ inherited foBookmarksOptions: TfoBookmarksOptions
   end
   object buCancel: TButton
     Left = 192
-    Top = 280
+    Top = 283
     Width = 60
     Height = 25
     Hint = 'Close form (Escape)'
-    Anchors = [akLeft, akRight, akBottom]
+    Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancel'
     Font.Charset = DEFAULT_CHARSET
@@ -143,12 +118,10 @@ inherited foBookmarksOptions: TfoBookmarksOptions
   end
   object paColorBase: TPanel
     Left = 0
-    Top = 131
+    Top = 134
     Width = 260
     Height = 145
     BevelOuter = bvNone
-    Caption = 'paColorBase'
-    Color = clAqua
     TabOrder = 5
     DesignSize = (
       260
@@ -190,7 +163,6 @@ inherited foBookmarksOptions: TfoBookmarksOptions
       Height = 48
       Hint = 'Select color with DblClick xxx'
       Anchors = [akLeft, akTop, akRight]
-      BevelOuter = bvNone
       Caption = 'paLBcolorBkg'
       Color = clSilver
       ParentShowHint = False
@@ -205,7 +177,6 @@ inherited foBookmarksOptions: TfoBookmarksOptions
       Width = 254
       Height = 16
       Anchors = [akLeft, akTop, akRight]
-      BevelInner = bvLowered
       Color = clYellow
       ParentShowHint = False
       ShowHint = True

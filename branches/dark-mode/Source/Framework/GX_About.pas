@@ -326,6 +326,7 @@ var
   AboutBoxServices: IOTAAboutBoxServices;
   DupeString: string;
   Desc: string;
+  VerString: string;
 begin
   if GExpertsDllMarker = nil then begin
     DupeString := ' (duplicate, inactive)';
@@ -335,8 +336,10 @@ begin
     Desc := Description;
   Result := -1;
   if Supports(BorlandIDEServices, IOTAAboutBoxServices, AboutBoxServices) then begin
+    VerString := 'GExperts ' + GetVersionStr;
+    VerString := StringReplace(VerString, '  build ', '.', []);
     Result := AboutBoxServices.AddPluginInfo(
-      'GExperts' + DupeString,
+      VerString + DupeString,
       Desc + #13#10
       + 'https://gexperts.dummzeuch.de',
       GetAboutIcon,

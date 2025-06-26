@@ -27,11 +27,6 @@ type
     class procedure SetEnabled(const _Value: Boolean); //static;
   end;
 
-implementation
-
-const
-  PainterSuffix = '_GXPainter';
-
 type
   TSplitterPainter = class(TComponent)
   private
@@ -40,6 +35,11 @@ type
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
   end;
+
+implementation
+
+const
+  PainterSuffix = '_GXPainter';
 
 { TSplitterPainter }
 

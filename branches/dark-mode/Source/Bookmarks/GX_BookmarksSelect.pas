@@ -3,7 +3,7 @@ unit GX_BookmarksSelect;
 interface { --------------------------------------------------------------------------- }
 
 uses Windows,Messages,SysUtils,Classes,Graphics,Controls,Forms,Dialogs,StdCtrls,StrUtils,
-     ComCtrls,ToolWin,Math,ExtCtrls,
+     ComCtrls,ToolWin,Math,ExtCtrls,ImgList,
 
      u_dzStringUtils, // for PosEx in Delphi 6
 
@@ -35,7 +35,8 @@ type tSort              = (soLine,soType,soName,soNoData);
                            SBar                           : TStatusBar;
                            
                            imF1                           : TImage;
-                           imF1NA                         : TImage;
+
+                           ilToolbar                      : TImageList;
 
                            procedure lbFuncsProcsDrawItem (Control:TWinControl;Index:Integer;_Rect:TRect;State:TOwnerDrawState);
                            procedure lbFuncsProcsClick    (Sender:TObject);
@@ -108,6 +109,7 @@ uses  u_dzVclUtils,
       GX_ConfigurationInfo,
       GX_GenericUtils,
       GX_OtaUtils,
+      GX_GxUtils,
       
       GX_BookmarksConst;
 
@@ -568,7 +570,7 @@ end;
 
 procedure TfoBookmarksSelect.imF1Click(Sender:TObject);
 begin
- CallHtmlHelp(HLP_HelpFileName,HLP_BookmarksHelpSelect);
+ GXContextHelp(Self,61);
 end;
 
 // .................................................................... Toolbar + Buttons
@@ -690,6 +692,7 @@ end;
 procedure TfoBookmarksSelect.FormResize(Sender:TObject);
 begin
  inherited;
+ lbFuncsProcs.Refresh;
  SBar.Panels[1].Width:=SBar.ClientWidth-SBar.Panels[2].Width-SBar.Panels[3].Width;
 end;
 
@@ -707,13 +710,6 @@ begin
  imF1.Parent:=SBar;
  imF1.Left  :=3;
  imF1.Top   :=3;
-
- if not(FileExists(ConfigInfo.ConfigPath+HLP_HelpFileName)) then begin
-  imF1.  Visible:=false;
-  imF1NA.Left   :=imF1.Left;
-  imF1NA.Top    :=imF1.Top;
-  imF1NA.Visible:=true;
-  end;
 
  SBarShowFilterInfo;
 end;

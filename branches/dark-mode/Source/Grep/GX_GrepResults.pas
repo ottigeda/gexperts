@@ -455,8 +455,8 @@ uses
   GX_GrepOptionsStandAlone,
 {$ENDIF GX_STANDALONE}
   GX_GExperts, GX_GenericUtils, GX_StringList, GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_MessageBox,
-  GX_HotkeyDrawFix,
-  GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect, GX_GrepProgress;
+  GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect, GX_GrepProgress,
+  GX_IdeSplitterVisibility;
 
 resourcestring
   SGrepReplaceStats = 'Replaced %d occurrence(s) in %.2f seconds';
@@ -923,10 +923,8 @@ begin
 
     LBackColor := GetThemedColor(clWindow);
 
-    tcHistoryListPage.Style := tsTabs;// tsFlatButtons; // don't paint the control themed
-    tcHistoryListPage.StyleElements := [seFont, seBorder]; // removed seClient
+    tcHistoryListPage.Style := tsFlatButtons; // don't paint the control themed
     tcHistoryListPage.Brush.Color := LBackColor;
-    tcHistoryListPage.OnDrawTab := TTabControlDrawFix(tcHistoryListPage).DrawTabThemed;
 
     pnlMain.Color := LBackColor;
     pnlBottom.Color := LBackColor;
@@ -1890,6 +1888,9 @@ begin
 
   TControl_SetMinConstraints(Self);
 
+  TSplitterPainter.Create(SplitterContext);
+  TSplitterPainter.Create(SplitterHistoryList);
+
   FShowHistoryList := True;
 
   for IM := Low(TGrepHistoryListMode) to High(TGrepHistoryListMode) do
@@ -2077,6 +2078,35 @@ begin
   UpdateHistoryPagesOptions;
   lbHistoryList.Refresh;
 end;
+
+(*
+procedure TfmGrepResults.TabControlDrawTab(Control: TCustomTabControl; TabIndex: Integer; const Rect: TRect; Active: Boolean);
+var
+  LCaption   : string;
+  LTextRect  : TRect;
+  LBackColor : TColor;
+  LTextColor : TColor;
+begin
+  LCaption := TTabControl(Control).Tabs[TabIndex];
+  if Active then
+  begin
+    LBackColor := GetThemedColor(clHighlight);
+    LTextColor := GetThemedColor(clHighlightText)
+  end
+  else begin
+    LBackColor := GetThemedColor(clBtnFace);
+    LTextColor := GetThemedColor(clBtnText);
+  end;
+
+  Control.Canvas.Brush.Color := LBackColor;
+  Control.Canvas.FillRect(Rect);
+  Control.Canvas.Font.Color := LTextColor;
+
+  LTextRect := Rect;
+  LTextRect.Inflate(-3, -3);
+  DrawText(Control.Canvas.Handle, PChar(LCaption), -1, LTextRect, DT_TOP or DT_LEFT);
+end;
+*)
 
 type
   TWinControlAccess = class(TWinControl);

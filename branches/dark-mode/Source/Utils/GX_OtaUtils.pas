@@ -1634,7 +1634,10 @@ type
     FPlatformName: string;
     FPrefix: string;
     FEnvironment: TStringList;
+    class function TryReplaceMacro(var Str: string; const OldValue, NewValue: string): Boolean;
     class function ReplaceMacro(const Str, OldValue, NewValue: string): string;
+    class function TryReplaceEnvVar(var Str: string; const OldValue, NewValue: string): Boolean;
+    class function ReplaceEnvVar(const Str, OldValue, NewValue: string): string;
   public
     ///<summary>
     /// @param Prefix will be used for relative paths
@@ -1689,6 +1692,9 @@ var
   i: Integer;
   EnvName: string;
   EnvValue: string;
+  WasAnythingReplaced: Boolean;
+  Temp: TStringList;
+  Dir: string;
 begin
   Result := _Path;
 
@@ -1697,12 +1703,21 @@ begin
     Result := ReplaceMacro(Result, IDEBaseMacros[i], FIdeBasePath);
 
   // Expand any environment variable macros
-  for i := 0 to FEnvironment.Count - 1 do begin
-    EnvName := FEnvironment.Names[i];
-    EnvValue := FEnvironment.Values[EnvName];
-    if (Trim(EnvName) <> '') and (Trim(EnvValue) <> '') then
-      Result := ReplaceMacro(Result, EnvName, EnvValue);
-  end;
+  repeat
+    WasAnythingReplaced := False;
+    for i := 0 to FEnvironment.Count - 1 do begin
+      EnvName := FEnvironment.Names[i];
+      EnvValue := FEnvironment.Values[EnvName];
+      if (Trim(EnvName) <> '') and (Trim(EnvValue) <> '') then begin
+        // the order is important: First the function call then the variable
+        WasAnythingReplaced := TryReplaceMacro(Result, EnvName, EnvValue) or WasAnythingReplaced;
+        // if an environment variable contains another one, it is enclused with %..%, , not $(..),
+        // even if it was enclosed in $(..) when entered into the IDE dialog in
+        // Tools -> Options -> Environment. So we need to search for that too.
+        WasAnythingReplaced := TryReplaceEnvVar(Result, EnvName, EnvValue) or WasAnythingReplaced;
+      end;
+    end;
+  until not WasAnythingReplaced;
 
   if FPlatformName <> '' then
     Result := ReplaceMacro(Result, 'Platform', FPlatformName);
@@ -1710,11 +1725,53 @@ begin
   if FConfigName <> '' then
     Result := ReplaceMacro(Result, 'Config', FConfigName);
 
-  if not IsPathAbsolute(Result) then begin
-    if FPrefix <> '' then begin
-      Result := TFileSystem.ExpandFileNameRelBaseDir(Result, FPrefix);
+  if FPrefix <> '' then begin
+    // It's possible that the environment variables expanded to multiple directories separated
+    // by a ';'. So we need to convert them to absolute paths separately.
+    Temp := TStringList.Create;
+    try
+      Temp.Delimiter := ';';
+{$IFDEF GX_HAS_STRICT_DELIMITER}
+      Temp.StrictDelimiter := True;
+{$ENDIF GX_HAS_STRICT_DELIMITER}
+      Temp.DelimitedText := Result;
+      for i := 0 to Temp.Count - 1 do begin
+        Dir := Temp[i];
+        if not IsPathAbsolute(Dir) then begin
+          Temp[i] := TFileSystem.ExpandFileNameRelBaseDir(Dir, FPrefix);
+        end;
+      end;
+      Result := temp.DelimitedText;
+    finally
+      FreeAndNil(Temp);
     end;
   end;
+end;
+
+class function TPathProcessor.TryReplaceEnvVar(var Str: string; const OldValue, NewValue: string): Boolean;
+var
+  Orig: string;
+begin
+  Orig := Str;
+  Str := ReplaceEnvVar(Orig, OldValue, NewValue);
+  Result := (Orig <> Str);
+end;
+
+class function TPathProcessor.ReplaceEnvVar(const Str, OldValue, NewValue: string): string;
+var
+  ReplaceVal: string;
+begin
+  ReplaceVal := '%' + OldValue + '%';
+  Result := StringReplace(Str, ReplaceVal, NewValue, [rfReplaceAll, rfIgnoreCase]);
+end;
+
+class function TPathProcessor.TryReplaceMacro(var Str: string; const OldValue, NewValue: string): Boolean;
+var
+  Orig: string;
+begin
+  Orig := Str;
+  Str := ReplaceMacro(Orig, OldValue, NewValue);
+  Result := (Orig <> Str);
 end;
 
 class function TPathProcessor.ReplaceMacro(const Str, OldValue, NewValue: string): string;

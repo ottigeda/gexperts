@@ -379,6 +379,7 @@ begin
   FStringGrid.ColCount := 2;
   FStringGrid.FixedCols := 0;
   FStringGrid.FixedRows := 0;
+  FStringGrid.RowCount := 1;
   FStringGrid.Options := [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect];
   FStringGrid.TabOrder := 1;
   FStringGrid.ColWidths[0] := 50;

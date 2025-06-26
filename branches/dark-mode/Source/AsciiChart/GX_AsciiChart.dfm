@@ -2,8 +2,8 @@ object fmAsciiChart: TfmAsciiChart
   Left = 422
   Top = 177
   Caption = 'ASCII Chart'
-  ClientHeight = 395
-  ClientWidth = 542
+  ClientHeight = 633
+  ClientWidth = 668
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -25,8 +25,8 @@ object fmAsciiChart: TfmAsciiChart
   object pb_Grid: TPaintBox
     Left = 0
     Top = 24
-    Width = 542
-    Height = 371
+    Width = 668
+    Height = 609
     Align = alClient
     OnMouseMove = pb_GridMouseMove
     OnMouseUp = pb_GridMouseUp
@@ -35,7 +35,7 @@ object fmAsciiChart: TfmAsciiChart
   object p_ToolBar: TPanel
     Left = 0
     Top = 0
-    Width = 542
+    Width = 668
     Height = 24
     Align = alTop
     BevelOuter = bvNone
@@ -97,18 +97,32 @@ object fmAsciiChart: TfmAsciiChart
       OnChange = cbxFontNameChange
       OnEnter = cbxFontNameEnter
     end
+    object cbxCodePage: TComboBox
+      Left = 360
+      Top = 0
+      Width = 113
+      Height = 22
+      Hint = 'Code Page'
+      Style = csDropDownList
+      DropDownCount = 20
+      ItemHeight = 14
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+      OnChange = cbxCodePageChange
+    end
     object edFontSize: TEdit
-      Left = 352
+      Left = 480
       Top = 0
       Width = 57
       Height = 22
       MaxLength = 2
-      TabOrder = 1
+      TabOrder = 2
       Text = '9'
       OnChange = edFontSizeChange
     end
     object updFontSize: TUpDown
-      Left = 409
+      Left = 537
       Top = 0
       Width = 16
       Height = 22
@@ -116,23 +130,23 @@ object fmAsciiChart: TfmAsciiChart
       Min = 6
       Max = 20
       Position = 9
-      TabOrder = 2
+      TabOrder = 3
       OnClick = updFontSizeClick
     end
     object eChars: TEdit
-      Left = 432
+      Left = 560
       Top = 0
       Width = 85
       Height = 22
-      TabOrder = 3
+      TabOrder = 4
     end
     object btnClear: TButton
-      Left = 517
+      Left = 645
       Top = 0
       Width = 22
       Height = 22
       Caption = 'X'
-      TabOrder = 4
+      TabOrder = 5
       OnClick = btnClearClick
     end
   end

@@ -13,7 +13,6 @@ uses
 {$IFDEF unicode}
   AnsiStrings,
 {$ENDIF}
-  GX_IndexTypes,
   u_dzTypes;
 
 const
@@ -43,7 +42,11 @@ type
     FItems: TObjectList;
     FIsSorted: Boolean;
   protected
-    function CompareItems(_Idx1, _Idx2: TGXListIndex): Integer; virtual; abstract;
+{$IFDEF WIN64}
+    function CompareItems(_Idx1, _Idx2: Int64): Integer; virtual; abstract;
+{$ELSE}
+    function CompareItems(_Idx1, _Idx2: Integer): Integer; virtual; abstract;
+{$ENDIF}
     function CompareToItem(const _Key; _Idx: Integer): Integer;
   public
     constructor Create(_Capacity: Integer);
@@ -62,7 +65,11 @@ type
   private
     function GetItems(_Idx: Integer): TUnitIdentifier;
   protected
-    function CompareItems(_Idx1, _Idx2: TGXListIndex): Integer; override;
+{$IFDEF WIN64}
+    function CompareItems(_Idx1, _Idx2: Int64): Integer; override;
+{$ELSE}
+    function CompareItems(_Idx1, _Idx2: Integer): Integer; override;
+{$ENDIF}
   public
     function Add(const _Identifier: AnsiString; _LineNo: Integer): Integer;
     ///<summary>
@@ -87,7 +94,11 @@ type
   private
     function GetItems(_Idx: Integer): TUnitExport;
   protected
-    function CompareItems(_Idx1, _Idx2: TGXListIndex): Integer; override;
+{$IFDEF WIN64}
+    function CompareItems(_Idx1, _Idx2: Int64): Integer; override;
+{$ELSE}
+    function CompareItems(_Idx1, _Idx2: Integer): Integer; override;
+{$ENDIF}
   public
     function Add(const _Identifier: AnsiString; const _Filename: string; _LineNo: Integer): Integer;
     property Items[_Idx: Integer]: TUnitExport read GetItems; default;
@@ -246,11 +257,9 @@ begin
 
     // backwards, because we remove items that do not match
     for ItemIdx := _Found.Count - 1 downto 0 do begin
-      for WordIdx := 0 to LcWords.Count - 1 do begin
-        Item := _Found[ItemIdx];
-        if not StrMatchesAll(Item.LCIdentifier, LcWords) then
-          _Found.Delete(ItemIdx);
-      end;
+      Item := _Found[ItemIdx];
+      if not StrMatchesAll(Item.LCIdentifier, LcWords) then
+        _Found.Delete(ItemIdx);
     end;
   finally
     FreeAndNil(LcWords);
@@ -347,7 +356,11 @@ end;
 
 { TUnitExportlist }
 
-function TUnitExportlist.CompareItems(_Idx1, _Idx2: TGXListIndex): Integer;
+{$IFDEF WIN64}
+function TUnitExportlist.CompareItems(_Idx1, _Idx2: Int64): Integer;
+{$ELSE}
+function TUnitExportlist.CompareItems(_Idx1, _Idx2: Integer): Integer;
+{$ENDIF}
 var
   Item1: TUnitExport;
   Item2: TUnitExport;
@@ -381,7 +394,11 @@ begin
   FIsSorted := False;
 end;
 
-function TUnitIdentifierList.CompareItems(_Idx1, _Idx2: TGXListIndex): Integer;
+{$IFDEF WIN64}
+function TUnitIdentifierList.CompareItems(_Idx1, _Idx2: Int64): Integer;
+{$ELSE}
+function TUnitIdentifierList.CompareItems(_Idx1, _Idx2: Integer): Integer;
+{$ENDIF}
 var
   Item1: TUnitIdentifier;
   Item2: TUnitIdentifier;

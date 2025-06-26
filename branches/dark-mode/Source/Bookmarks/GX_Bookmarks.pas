@@ -145,7 +145,114 @@ uses {$IFOPT D+} GX_DbugIntf, {$ENDIF}
      GX_BookmarksOptions,
      GX_BookmarksSelect;
 
-{$I GX_BookmarksExpert.inc}
+const
+     sExpertFormName    = 'fmGxBookmarksForm'; // as defined in IDE (must not be a resource string)
+
+resourcestring
+
+     sExpertMenuCaption = 'Editor Bookmarks';  // caption of a menu item entry, do we really need?
+
+type TBookmarksExpert   = class(TGX_Expert)
+                          private
+
+                           {$IFDEF GX_VER170_up}
+                           FNotifierIdx                     : Integer;
+                           procedure EditorViewActivated    (_Sender:TObject;_EditView:IOTAEditView);
+                           {$ENDIF}
+
+                          protected
+
+                           procedure SetActive              (New:Boolean);    override;
+
+                          public
+
+                           constructor Create;                                override;
+                           destructor  Destroy;                               override;
+
+                           function       GetActionCaption  : String;         override;
+                           class function GetName           : String;         override;
+                           function       HasConfigOptions  : Boolean;        override;
+                           procedure      Execute           (Sender:TObject); override;
+
+                          end;
+
+var  fmBookmarks        : TfmGxBookmarksForm = nil;
+     BookmarksExpert    : TBookmarksExpert   = nil;
+
+constructor TBookmarksExpert.Create;
+begin
+ inherited Create;
+
+ {$IFDEF GX_VER170_up}
+ if Assigned(BorlandIDEServices) then begin
+  FNotifierIdx:=(BorlandIDEServices as IOTAEditorServices).AddNotifier(
+  TGxNTAEditServiceNotifierActivate.Create(EditorViewActivated));
+  end;
+ {$ENDIF}
+
+ BookmarksExpert:=Self;
+ IdeDockManager.RegisterDockableForm(TfmGxBookmarksForm,fmBookmarks,sExpertFormName);
+end;
+
+destructor TBookmarksExpert.Destroy;
+begin
+ BookmarksExpert:=nil;
+
+ {$IFDEF GX_VER170_up}
+ if FNotifierIdx<>0 then (BorlandIDEServices as IOTAEditorServices).RemoveNotifier(FNotifierIdx);
+ {$ENDIF}
+
+ FreeAndNil(fmBookmarks);
+
+ inherited Destroy;
+end;
+
+procedure TBookmarksExpert.SetActive(New:Boolean);
+begin
+ if New<>Active then begin
+
+  inherited SetActive(New);
+
+  if New then       IdeDockManager.  RegisterDockableForm(TfmGxBookmarksForm,fmBookmarks,sExpertFormName)
+         else begin IdeDockManager.UnRegisterDockableForm(                   fmBookmarks,sExpertFormName);
+                    FreeAndNil(fmBookmarks);
+                    end;
+  end;
+end;
+
+procedure TBookmarksExpert.Execute(Sender:TObject);
+begin
+ if fmBookmarks=nil then begin fmBookmarks:=TfmGxBookmarksForm.Create(nil);
+                               SetFormIcon(fmBookmarks);
+                               end;
+ fmBookmarks.ScanBookmarks;
+ IdeDockManager.ShowForm(fmBookmarks);
+ EnsureFormVisible(fmBookmarks);
+ IncCallCount;
+end;
+
+{$IFDEF GX_VER170_up}
+procedure TBookmarksExpert.EditorViewActivated(_Sender:TObject;_EditView:IOTAEditView);
+begin
+ if Assigned(fmBookmarks) then fmBookmarks.ScanBookmarks;
+end;
+{$ENDIF}
+
+function TBookmarksExpert.GetActionCaption:String;
+begin
+ Result:=sExpertMenuCaption;
+end;
+
+class function TBookmarksExpert.GetName:String;
+begin
+  // do not translate (and do not make a resource string)
+ Result:='BookmarksExpert';
+end;
+
+function TBookmarksExpert.HasConfigOptions:Boolean;
+begin
+ Result:=false;
+end;
 
 // ......................................................................................
 
@@ -197,6 +304,13 @@ end;
 procedure TfmGxBookmarksForm.LoadSettings;
 var SubSettings : IExpertSettings;
 begin
+  {$IFDEF GX_SUPPORTS_THEMING}
+  DefLBColorBackground       := GxOtaGetThemedColor(clWindow);
+  DefLBColorBMline           := GxOtaGetThemedColor(clHighlight);
+  DefLBColorBkFuncProcName   := GxOtaGetThemedColor(clWindow);
+  DefLBColorFontFuncProcName := GxOtaGetThemedColor(clWindowText);
+  {$ENDIF GX_SUPPORTS_THEMING}
+
  SubSettings:=Settings.Subkey('Bookmarks'); // do not localize
 
  FUseOldEditForm        :=          SubSettings.ReadBool   ('BookmarksUseOldEditForm',         DefUseOldEditForm          );
@@ -357,7 +471,7 @@ begin
 
  EditView.BookmarkGoto(BM.Number);
  EditView.MoveViewToCursor;
- lbBookmarks.SetFocus; //§§ -cInfo -oRZ : MUST for updating IDE SBar, EditView.Paint has no effect
+ lbBookmarks.SetFocus; //§3 -cInfo : MUST for updating IDE SBar, EditView.Paint has no effect
  GxOtaFocusCurrentIDEEditControl;
  // EditView.Paint;
 end;
@@ -562,7 +676,7 @@ var ListBox      : TListBox absolute _Control;
 
   if FHideClassName then begin
    p:=pos('.',FuncProcName);
-   if p>0 then delete(FuncProcName,1,p-1); //§§ -cInfo -oRZ : group local + class methods
+   if p>0 then delete(FuncProcName,1,p-1); //§3 -cInfo : group local + class methods
    end;
 
   lbCanvas.TextOut(_Rect.Left+GutterL,TextTop,Shorten(lbCanvas,MaxL,FuncProcName,#133));
@@ -873,7 +987,7 @@ end;
 
 procedure TfmGxBookmarksForm.tbHelpClick(Sender:TObject);
 begin
- CallHtmlHelp(HLP_HelpFileName,HLP_BookmarksHelpGeneral);
+ GXContextHelp(Self,59);
 end;
 
 // ................................................................................. SBar
@@ -941,7 +1055,6 @@ begin
  paListboxGutterBottom.Color  :=Color;            // in designtime
  Toolbar.              Color  :=Color;            // ..
  tbEdit.               Visible:=FUseOldEditForm;
- tbHelp.               Enabled:=FileExists(ConfigInfo.ConfigPath+HLP_HelpFileName);
  lbBookmarks.          Color  :=FListboxColorBackground;
 
  FLastSortMode:=smLine;
@@ -966,6 +1079,6 @@ end;
 
 initialization // -----------------------------------------------------------------------
 
-// RegisterGX_Expert(TBookmarksExpert);
+RegisterGX_Expert(TBookmarksExpert);
 
 end.

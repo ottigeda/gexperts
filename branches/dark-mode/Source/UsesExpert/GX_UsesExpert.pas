@@ -407,7 +407,7 @@ uses
   GX_DbugIntf,
 {$ENDIF D+}
   GX_MessageBox, GX_IdeSearchPathEnhancer, u_dzTypes, u_dzStringArrayUtils,
-  GX_StringGridDrawFix, GX_GxUtils;
+  GX_StringGridDrawFix, GX_GxUtils, GX_IdeSplitterVisibility;
 
 { TUsesClauseMgrExpert }
 
@@ -547,26 +547,12 @@ begin
   end;
 end;
 
-procedure TUsesClauseMgrExpert.StartUnitParserThread;
-var
-  Paths: TStrings;
-  Symbols: TStrings;
-  CacheDir: string;
-  FavoriteUnits: TStringList;
-  fn: string;
-  sl: TStringList;
+procedure PrepareForPlatform(out _CacheDir: string; _Symbols: TStrings);
 {$IFDEF GX_DELPHIXE2_UP}
+var
   PlatformName: string;
 {$ENDIF}
 begin
-  FreeAndNil(FUnitExportParserThread);
-
-  Symbols := nil;
-  Paths := TStringList.Create;
-  try
-    Symbols := TStringList.Create;
-    TUnitExportsParser.AddDefaultSymbols(Symbols);
-
   // since these symbols are project and configuration specific, we cannot really use them
   // to generate a generic cache of symbols.
   // The cache must also be project and configuration specific which would make it rather
@@ -576,169 +562,189 @@ begin
 {$IFDEF GX_DELPHIXE2_UP}
     PlatformName := GxOtaGetProjectPlatform;
     if SameText(PlatformName, cWin64Platform) then begin
-      CacheDir := PlatformName;
-      Symbols.Add('ASSEMBLER');
-      Symbols.Add('CPU64BITS');
-      Symbols.Add('CPUX64');
-      Symbols.Add('MSWINDOWS');
-      Symbols.Add('WIN64');
+      _CacheDir := PlatformName;
+      _Symbols.Add('ASSEMBLER');
+      _Symbols.Add('CPU64BITS');
+      _Symbols.Add('CPUX64');
+      _Symbols.Add('MSWINDOWS');
+      _Symbols.Add('WIN64');
     end else if SameText(PlatformName, cOSX32Platform) then begin
-      CacheDir := PlatformName;
-      Symbols.Add('MACOS');
-      Symbols.Add('MACOS32');
-      Symbols.Add('POSIX');
-      Symbols.Add('POSIX32');
-      Symbols.Add('CPU386');
-      Symbols.Add('CPUX86');
-      Symbols.Add('CPU32BITS');
-      Symbols.Add('ALIGN_STACK');
-      Symbols.Add('ASSEMBLER');
-      Symbols.Add('PC_MAPPED_EXCEPTIONS');
-      Symbols.Add('PIC');
-      Symbols.Add('UNDERSCOREIMPORTNAME');
+      _CacheDir := PlatformName;
+      _Symbols.Add('MACOS');
+      _Symbols.Add('MACOS32');
+      _Symbols.Add('POSIX');
+      _Symbols.Add('POSIX32');
+      _Symbols.Add('CPU386');
+      _Symbols.Add('CPUX86');
+      _Symbols.Add('CPU32BITS');
+      _Symbols.Add('ALIGN_STACK');
+      _Symbols.Add('ASSEMBLER');
+      _Symbols.Add('PC_MAPPED_EXCEPTIONS');
+      _Symbols.Add('PIC');
+      _Symbols.Add('UNDERSCOREIMPORTNAME');
     end else if SameText(PlatformName, cOSX64Platform) then begin
-      CacheDir := PlatformName;
-      Symbols.Add('CPU64BITS');
-      Symbols.Add('CPU386');
-      Symbols.Add('CPUX64');
-      Symbols.Add('EXTERNALLINKER');
-      Symbols.Add('MACOS');
-      Symbols.Add('MACOS64');
-      Symbols.Add('PIC');
-      Symbols.Add('POSIX');
-      Symbols.Add('POSIX64');
-      Symbols.Add('WEAKINTFREF');
-      Symbols.Add('WEAKREF');
+      _CacheDir := PlatformName;
+      _Symbols.Add('CPU64BITS');
+      _Symbols.Add('CPU386');
+      _Symbols.Add('CPUX64');
+      _Symbols.Add('EXTERNALLINKER');
+      _Symbols.Add('MACOS');
+      _Symbols.Add('MACOS64');
+      _Symbols.Add('PIC');
+      _Symbols.Add('POSIX');
+      _Symbols.Add('POSIX64');
+      _Symbols.Add('WEAKINTFREF');
+      _Symbols.Add('WEAKREF');
 {$IFNDEF GX_DELPHI_TOKYO_UP}
-      Symbols.Add('AUTOREFCOUNT'); // only up to 10.3
-      Symbols.Add('NEXTGEN'); // only up to 10.3
-      Symbols.Add('WEAKINSTREF'); // only up to 10.3
+      _Symbols.Add('AUTOREFCOUNT'); // only up to 10.3
+      _Symbols.Add('NEXTGEN'); // only up to 10.3
+      _Symbols.Add('WEAKINSTREF'); // only up to 10.3
 {$ENDIF}
     end else if SameText(PlatformName, ciOSDevice32Platform) then begin
-      CacheDir := PlatformName;
-      Symbols.Add('CPU32BITS');
-      Symbols.Add('CPUARM');
-      Symbols.Add('CPUARM32');
-      Symbols.Add('EXTERNALLINKER');
-      Symbols.Add('IOS');
-      Symbols.Add('IOS32');
-      Symbols.Add('MACOS');
-      Symbols.Add('MACOS32');
-      Symbols.Add('PIC');
-      Symbols.Add('POSIX');
-      Symbols.Add('POSIX32');
-      Symbols.Add('WEAKINTFREF');
-      Symbols.Add('WEAKREF');
+      _CacheDir := PlatformName;
+      _Symbols.Add('CPU32BITS');
+      _Symbols.Add('CPUARM');
+      _Symbols.Add('CPUARM32');
+      _Symbols.Add('EXTERNALLINKER');
+      _Symbols.Add('IOS');
+      _Symbols.Add('IOS32');
+      _Symbols.Add('MACOS');
+      _Symbols.Add('MACOS32');
+      _Symbols.Add('PIC');
+      _Symbols.Add('POSIX');
+      _Symbols.Add('POSIX32');
+      _Symbols.Add('WEAKINTFREF');
+      _Symbols.Add('WEAKREF');
 {$IFNDEF GX_DELPHI_TOKYO_UP}
-      Symbols.Add('AUTOREFCOUNT'); // only up to 10.3
-      Symbols.Add('NEXTGEN'); // only up to 10.3
-      Symbols.Add('WEAKINSTREF'); // only up to 10.3
+      _Symbols.Add('AUTOREFCOUNT'); // only up to 10.3
+      _Symbols.Add('NEXTGEN'); // only up to 10.3
+      _Symbols.Add('WEAKINSTREF'); // only up to 10.3
 {$ENDIF}
     end else if SameText(PlatformName, ciOSSimulatorPlatform) then begin
-      CacheDir := PlatformName;
-      Symbols.Add('ALIGN_STACK');
-      Symbols.Add('ASSEMBLER');
-      Symbols.Add('CPU32BITS');
-      Symbols.Add('CPU386');
-      Symbols.Add('CPUX86');
-      Symbols.Add('IOS');
-      Symbols.Add('IOS32');
-      Symbols.Add('MACOS');
-      Symbols.Add('MACOS32');
-      Symbols.Add('PIC');
-      Symbols.Add('POSIX');
-      Symbols.Add('POSIX32');
-      Symbols.Add('UNDERSCOREIMPORTNAME');
-      Symbols.Add('WEAKINTFREF');
-      Symbols.Add('WEAKREF');
+      _CacheDir := PlatformName;
+      _Symbols.Add('ALIGN_STACK');
+      _Symbols.Add('ASSEMBLER');
+      _Symbols.Add('CPU32BITS');
+      _Symbols.Add('CPU386');
+      _Symbols.Add('CPUX86');
+      _Symbols.Add('IOS');
+      _Symbols.Add('IOS32');
+      _Symbols.Add('MACOS');
+      _Symbols.Add('MACOS32');
+      _Symbols.Add('PIC');
+      _Symbols.Add('POSIX');
+      _Symbols.Add('POSIX32');
+      _Symbols.Add('UNDERSCOREIMPORTNAME');
+      _Symbols.Add('WEAKINTFREF');
+      _Symbols.Add('WEAKREF');
 {$IFNDEF GX_DELPHI_TOKYO_UP}
-      Symbols.Add('AUTOREFCOUNT'); // only up to 10.3
-      Symbols.Add('NEXTGEN'); // only up to 10.3
-      Symbols.Add('WEAKINSTREF'); // only up to 10.3
+      _Symbols.Add('AUTOREFCOUNT'); // only up to 10.3
+      _Symbols.Add('NEXTGEN'); // only up to 10.3
+      _Symbols.Add('WEAKINSTREF'); // only up to 10.3
 {$ENDIF}
     end else if SameText(PlatformName, cAndroidPlatform) then begin
-      CacheDir := PlatformName;
-      Symbols.Add('ANDROID');
-      Symbols.Add('ANDROID32');
-      Symbols.Add('CPU32BITS');
-      Symbols.Add('CPUARM');
-      Symbols.Add('CPUARM32');
-      Symbols.Add('EXTERNALLINKER');
-      Symbols.Add('PIC');
-      Symbols.Add('POSIX');
-      Symbols.Add('POSIX32');
-      Symbols.Add('WEAKINTFREF');
-      Symbols.Add('WEAKREF');
+      _CacheDir := PlatformName;
+      _Symbols.Add('ANDROID');
+      _Symbols.Add('ANDROID32');
+      _Symbols.Add('CPU32BITS');
+      _Symbols.Add('CPUARM');
+      _Symbols.Add('CPUARM32');
+      _Symbols.Add('EXTERNALLINKER');
+      _Symbols.Add('PIC');
+      _Symbols.Add('POSIX');
+      _Symbols.Add('POSIX32');
+      _Symbols.Add('WEAKINTFREF');
+      _Symbols.Add('WEAKREF');
 {$IFNDEF GX_DELPHI_TOKYO_UP}
-      Symbols.Add('AUTOREFCOUNT'); // only up to 10.3
-      Symbols.Add('NEXTGEN'); // only up to 10.3
-      Symbols.Add('WEAKINSTREF'); // only up to 10.3
+      _Symbols.Add('AUTOREFCOUNT'); // only up to 10.3
+      _Symbols.Add('NEXTGEN'); // only up to 10.3
+      _Symbols.Add('WEAKINSTREF'); // only up to 10.3
 {$ENDIF}
     end else if SameText(PlatformName, ciOSDevice64Platform) then begin
-      CacheDir := PlatformName;
-      Symbols.Add('CPU64BITS');
-      Symbols.Add('CPUARM');
-      Symbols.Add('CPUARM64');
-      Symbols.Add('EXTERNALLINKER');
-      Symbols.Add('IOS');
-      Symbols.Add('IOS64');
-      Symbols.Add('MACOS');
-      Symbols.Add('MACOS64');
-      Symbols.Add('PIC');
-      Symbols.Add('POSIX');
-      Symbols.Add('POSIX64');
-      Symbols.Add('WEAKINTFREF');
-      Symbols.Add('WEAKREF');
+      _CacheDir := PlatformName;
+      _Symbols.Add('CPU64BITS');
+      _Symbols.Add('CPUARM');
+      _Symbols.Add('CPUARM64');
+      _Symbols.Add('EXTERNALLINKER');
+      _Symbols.Add('IOS');
+      _Symbols.Add('IOS64');
+      _Symbols.Add('MACOS');
+      _Symbols.Add('MACOS64');
+      _Symbols.Add('PIC');
+      _Symbols.Add('POSIX');
+      _Symbols.Add('POSIX64');
+      _Symbols.Add('WEAKINTFREF');
+      _Symbols.Add('WEAKREF');
 {$IFNDEF GX_DELPHI_TOKYO_UP}
-      Symbols.Add('AUTOREFCOUNT'); // only up to 10.3
-      Symbols.Add('NEXTGEN'); // only up to 10.3
-      Symbols.Add('WEAKINSTREF'); // only up to 10.3
+      _Symbols.Add('AUTOREFCOUNT'); // only up to 10.3
+      _Symbols.Add('NEXTGEN'); // only up to 10.3
+      _Symbols.Add('WEAKINSTREF'); // only up to 10.3
 {$ENDIF}
     end else if SameText(PlatformName, cLinux64Platform) then begin
-      CacheDir := PlatformName;
-      Symbols.Add('LINUX');
-      Symbols.Add('LINUX64');
-      Symbols.Add('POSIX');
-      Symbols.Add('POSIX64');
-      Symbols.Add('ASSEMBLER');
-      Symbols.Add('CPU64BITS');
-      Symbols.Add('CPUX64');
-      Symbols.Add('EXTERNALLINKER');
-      Symbols.Add('ELF');
-      Symbols.Add('PIC');
-      Symbols.Add('WEAKINTFREF');
-      Symbols.Add('WEAKREF');
+      _CacheDir := PlatformName;
+      _Symbols.Add('LINUX');
+      _Symbols.Add('LINUX64');
+      _Symbols.Add('POSIX');
+      _Symbols.Add('POSIX64');
+      _Symbols.Add('ASSEMBLER');
+      _Symbols.Add('CPU64BITS');
+      _Symbols.Add('CPUX64');
+      _Symbols.Add('EXTERNALLINKER');
+      _Symbols.Add('ELF');
+      _Symbols.Add('PIC');
+      _Symbols.Add('WEAKINTFREF');
+      _Symbols.Add('WEAKREF');
 {$IFDEF GX_DELPHI_SYDNEY_UP}
-      Symbols.Add('AUTOREFCOUNT'); // only in 10.2
-      Symbols.Add('NEXTGEN'); // only up to 10.2
-      Symbols.Add('WEAKINSTREF'); // only up to 10.
+      _Symbols.Add('AUTOREFCOUNT'); // only in 10.2
+      _Symbols.Add('NEXTGEN'); // only up to 10.2
+      _Symbols.Add('WEAKINSTREF'); // only up to 10.
 {$ENDIF}
     end else if SameText(PlatformName, cAndroid64Platform) then begin
-      CacheDir := PlatformName;
-      Symbols.Add('POSIX');
-      Symbols.Add('POSIX64');
-      Symbols.Add('ANDROID');
-      Symbols.Add('ANDROID64');
-      Symbols.Add('CPU64BITS');
-      Symbols.Add('CPUARM');
-      Symbols.Add('CPUARM64');
-      Symbols.Add('EXTERNALLINKER');
-      Symbols.Add('PIC');
-      Symbols.Add('WEAKINTFREF');
-      Symbols.Add('WEAKREF');
+      _CacheDir := PlatformName;
+      _Symbols.Add('POSIX');
+      _Symbols.Add('POSIX64');
+      _Symbols.Add('ANDROID');
+      _Symbols.Add('ANDROID64');
+      _Symbols.Add('CPU64BITS');
+      _Symbols.Add('CPUARM');
+      _Symbols.Add('CPUARM64');
+      _Symbols.Add('EXTERNALLINKER');
+      _Symbols.Add('PIC');
+      _Symbols.Add('WEAKINTFREF');
+      _Symbols.Add('WEAKREF');
     end else if SameText(PlatformName, cWin32Platform) or (PlatformName = '') then
 {$ENDIF}begin
       // CONSOLE?
-      CacheDir := '';
-      Symbols.Add('ASSEMBLER');
-      Symbols.Add('CPU32BITS');
-      Symbols.Add('CPU386');
-      Symbols.Add('CPUX86');
-      Symbols.Add('DCC');
-      Symbols.Add('MSWINDOWS');
-      Symbols.Add('UNDERSCOREIMPORTNAME');
-      Symbols.Add('WIN32');
+      _CacheDir := '';
+      _Symbols.Add('ASSEMBLER');
+      _Symbols.Add('CPU32BITS');
+      _Symbols.Add('CPU386');
+      _Symbols.Add('CPUX86');
+      _Symbols.Add('DCC');
+      _Symbols.Add('MSWINDOWS');
+      _Symbols.Add('UNDERSCOREIMPORTNAME');
+      _Symbols.Add('WIN32');
     end;
+end;
+
+procedure TUsesClauseMgrExpert.StartUnitParserThread;
+var
+  Paths: TStrings;
+  Symbols: TStrings;
+  CacheDir: string;
+  FavoriteUnits: TStringList;
+  fn: string;
+  sl: TStringList;
+begin
+  FreeAndNil(FUnitExportParserThread);
+
+  Symbols := nil;
+  Paths := TStringList.Create;
+  try
+    Symbols := TStringList.Create;
+    TUnitExportsParser.AddDefaultSymbols(Symbols);
+
+    PrepareForPlatform(CacheDir, Symbols);
 
     if FDisableCache then
       CacheDir := ''
@@ -758,14 +764,10 @@ begin
     end;
 
     if FParseAll then begin
-{$IFOPT D+}
-      SendDebug('Running UnitExportParser thread to get identifiers from all units in search path');
-{$ENDIF D+}
+{$IFOPT D+}SendDebug('Running UnitExportParser thread to get identifiers from all units in search path');{$ENDIF D+}
       FUnitExportParserThread := TUnitExportParserThread.Create(nil, Paths, CacheDir, Symbols);
     end else begin
-{$IFOPT D+}
-      SendDebug('Loading favorites');
-{$ENDIF D+}
+{$IFOPT D+}SendDebug('Loading favorites');{$ENDIF D+}
       FavoriteUnits := TStringList.Create;
       FavoriteUnits.Sorted := False;
       FavoriteUnits.Clear;
@@ -773,13 +775,9 @@ begin
       if FileExists(fn) then
         FavoriteUnits.LoadFromFile(fn);
       FavoriteUnits.Sorted := True;
-{$IFOPT D+}
-      SendDebugFmt('Done loading %d favorites', [FavoriteUnits.Count]);
-{$ENDIF D+}
+{$IFOPT D+}SendDebugFmt('Done loading %d favorites', [FavoriteUnits.Count]);{$ENDIF D+}
       if FavoriteUnits.Count > 0 then begin
-{$IFOPT D+}
-        SendDebug('Running UnitExportParser thread to get identifiers from favorites');
-{$ENDIF D+}
+{$IFOPT D+}SendDebug('Running UnitExportParser thread to get identifiers from favorites');{$ENDIF D+}
         FUnitExportParserThread := TUnitExportParserThread.Create(FavoriteUnits, Paths, CacheDir, Symbols);
       end;
     end;
@@ -921,6 +919,8 @@ begin
   chk_FastAdd.Checked := _UsesExpert.FFastAdd;
 
   FLeftRatio := pnlUses.Width / ClientWidth;
+
+  TSplitterPainter.Create(Splitter);
 
   FUsesExpert.SetFormIcon(Self);
 
@@ -1364,6 +1364,7 @@ begin
     TWinControl_SetFocus(edtIdentifierFilter);
     edtUnitFilter.Visible := False;
     lblFilter.FocusControl := edtIdentifierFilter;
+    grp_IdentifiersMatch.Visible := True;
   end
   else
   begin
@@ -1372,6 +1373,7 @@ begin
     TWinControl_SetFocus(edtUnitFilter);
     edtIdentifierFilter.Visible := False;
     lblFilter.FocusControl := edtUnitFilter;
+    grp_IdentifiersMatch.Visible := False;
   end;
   UpdateDefaultButton;
 end;
@@ -1391,11 +1393,19 @@ begin
 end;
 
 procedure TfmUsesManager.pnlAvailableHeaderResize(Sender: TObject);
+var
+  w: Integer;
+  l: Integer;
 begin
+  l := pnlAvailableHeader.Width - grp_IdentifiersMatch.Width - 2;
+  w := l - 8 - lblFilter.Left;
+
+  grp_IdentifiersMatch.Left := l;
+
   edtUnitFilter.Left := 0;
-  edtUnitFilter.Width := pnlAvailableHeader.Width;
+  edtUnitFilter.Width := w;
   edtIdentifierFilter.Left := 0;
-  edtIdentifierFilter.Width := pnlAvailableHeader.Width;
+  edtIdentifierFilter.Width := w;
 end;
 
 procedure TfmUsesManager.pnlUsesBottomResize(Sender: TObject);
@@ -1548,14 +1558,16 @@ procedure TfmUsesManager.sg_ImplementationDragOver(Sender, Source: TObject; X, Y
   State: TDragState; var Accept: Boolean);
 begin
   Accept := (Source = sg_Project) or (Source = sg_Common) or
-    (Source = sg_Favorite) or (Source = sg_SearchPath) or (Source = sg_Interface);
+    (Source = sg_Favorite) or (Source = sg_SearchPath) or (Source = sg_Interface)
+    or (Source = sg_Identifiers);
 end;
 
 procedure TfmUsesManager.sg_InterfaceDragOver(Sender, Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
   Accept := (Source = sg_Project) or (Source = sg_Common) or
-    (Source = sg_Favorite) or (Source = sg_SearchPath) or (Source = sg_Implementation);
+    (Source = sg_Favorite) or (Source = sg_SearchPath) or (Source = sg_Implementation)
+    or (Source = sg_Identifiers);
 end;
 
 procedure TfmUsesManager.DrawStringGridCell(_sg: TStringGrid; const _Text: string; const _Rect: TRect;
@@ -2801,23 +2813,23 @@ begin
   NewToOldUnitNameMap := nil;
   Units := TStringList.Create;
   try
-    GetInterfaceUnits(Units);
+    TUsesManager.GetInterfaceUnits(Units);
     for i := 0 to Units.Count - 1 do begin
       OldUnitName := Units[i];
       if IndexInStringGrid(sg_Interface, OldUnitName) = -1 then begin
         NewUnitName := FOldToNewUnitNameMap.Values[OldUnitName];
         if (NewUnitName = '') or (IndexInStringGrid(sg_Interface, NewUnitName) = -1) then
-          RemoveUnitFromInterface(OldUnitName);
+          TUsesManager.RemoveUnitFromInterface(OldUnitName);
       end;
     end;
 
-    GetImplementationUnits(Units);
+    TUsesManager.GetImplementationUnits(Units);
     for i := 0 to Units.Count - 1 do begin
       OldUnitName := Units[i];
       if IndexInStringGrid(sg_Implementation, OldUnitName) = -1 then begin
         NewUnitName := FOldToNewUnitNameMap.Values[OldUnitName];
         if (NewUnitName = '') or (IndexInStringGrid(sg_Implementation, NewUnitName) = -1) then
-          RemoveUnitFromImplementation(OldUnitName);
+          TUsesManager.RemoveUnitFromImplementation(OldUnitName);
       end;
     end;
 
@@ -2834,21 +2846,21 @@ begin
         OldUnitName := NewToOldUnitNameMap.Values[NewUnitName];
         if OldUnitName = NewUnitName then
           OldUnitName := '';
-        case GetUsesStatus(NewUnitName) of
+        case TUsesManager.GetUnitUsesStatus(NewUnitName) of
           usNonExisting: begin
               if OldUnitName = '' then begin
-                UseUnitInInterface(NewUnitName);
+                TUsesManager.UseUnitInInterface(NewUnitName);
               end else begin
-                case GetUsesStatus(OldUnitName) of
+                case TUsesManager.GetUnitUsesStatus(OldUnitName) of
                   usNonExisting: begin
-                      UseUnitInInterface(NewUnitName);
+                      TUsesManager.UseUnitInInterface(NewUnitName);
                     end;
                   usImplementation: begin
-                      RemoveUnitFromImplementation(OldUnitName);
-                      UseUnitInInterface(NewUnitName);
+                      TUsesManager.RemoveUnitFromImplementation(OldUnitName);
+                      TUsesManager.UseUnitInInterface(NewUnitName);
                     end;
                   usInterface: begin
-                      ReplaceUnitInInterface(OldUnitName, NewUnitName);
+                      TUsesManager.ReplaceUnitInInterface(OldUnitName, NewUnitName);
                     end;
                 end;
               end;
@@ -2857,25 +2869,25 @@ begin
               // the new unit name is already in the interface uses
               // there is a slim chance that the old one is also used
               if OldUnitName <> '' then begin
-                case GetUsesStatus(OldUnitName) of
+                case TUsesManager.GetUnitUsesStatus(OldUnitName) of
                   usImplementation:
-                    RemoveUnitFromImplementation(OldUnitName);
+                    TUsesManager.RemoveUnitFromImplementation(OldUnitName);
                   usInterface:
-                    RemoveUnitFromInterface(OldUnitName);
+                    TUsesManager.RemoveUnitFromInterface(OldUnitName);
                 end;
               end;
             end;
           usImplementation: begin
               // also removes it from the implementation uses
-              UseUnitInInterface(NewUnitName);
+              TUsesManager.UseUnitInInterface(NewUnitName);
               // the new unit name is now in the interface uses
               // there is a slim chance that the old one is also used
               if OldUnitName <> '' then begin
-                case GetUsesStatus(OldUnitName) of
+                case TUsesManager.GetUnitUsesStatus(OldUnitName) of
                   usImplementation:
-                    RemoveUnitFromImplementation(OldUnitName);
+                    TUsesManager.RemoveUnitFromImplementation(OldUnitName);
                   usInterface:
-                    RemoveUnitFromInterface(OldUnitName);
+                    TUsesManager.RemoveUnitFromInterface(OldUnitName);
                 end;
               end;
             end;
@@ -2889,36 +2901,36 @@ begin
         OldUnitName := NewToOldUnitNameMap.Values[NewUnitName];
         if OldUnitName = NewUnitName then
           OldUnitName := '';
-        case GetUsesStatus(NewUnitName) of
+        case TUsesManager.GetUnitUsesStatus(NewUnitName) of
           usNonExisting: begin
               if OldUnitName = '' then begin
-                UseUnitInImplementation(NewUnitName);
+                TUsesManager.UseUnitInImplementation(NewUnitName);
               end else begin
-                case GetUsesStatus(OldUnitName) of
+                case TUsesManager.GetUnitUsesStatus(OldUnitName) of
                   usNonExisting: begin
-                      UseUnitInImplementation(NewUnitName);
+                      TUsesManager.UseUnitInImplementation(NewUnitName);
                     end;
                   usInterface: begin
-                      RemoveUnitFromInterface(OldUnitName);
-                      UseUnitInImplementation(NewUnitName);
+                      TUsesManager.RemoveUnitFromInterface(OldUnitName);
+                      TUsesManager.UseUnitInImplementation(NewUnitName);
                     end;
                   usImplementation: begin
-                      ReplaceUnitInImplementation(OldUnitName, NewUnitName);
+                      TUsesManager.ReplaceUnitInImplementation(OldUnitName, NewUnitName);
                     end;
                 end;
               end;
             end;
           usInterface: begin
               // also removes it from the interface uses
-              UseUnitInImplementation(NewUnitName);
+              TUsesManager.UseUnitInImplementation(NewUnitName);
               // the new unit name is now in the implementation uses
               // there is a slim chance that the old one is also used
               if OldUnitName <> '' then begin
-                case GetUsesStatus(OldUnitName) of
+                case TUsesManager.GetUnitUsesStatus(OldUnitName) of
                   usImplementation:
-                    RemoveUnitFromImplementation(OldUnitName);
+                    TUsesManager.RemoveUnitFromImplementation(OldUnitName);
                   usInterface:
-                    RemoveUnitFromInterface(OldUnitName);
+                    TUsesManager.RemoveUnitFromInterface(OldUnitName);
                 end;
               end;
             end;
@@ -2926,11 +2938,11 @@ begin
               // the new unit name is already in the implementation uses
               // there is a slim chance that the old one is also used
               if OldUnitName <> '' then begin
-                case GetUsesStatus(OldUnitName) of
+                case TUsesManager.GetUnitUsesStatus(OldUnitName) of
                   usImplementation:
-                    RemoveUnitFromImplementation(OldUnitName);
+                    TUsesManager.RemoveUnitFromImplementation(OldUnitName);
                   usInterface:
-                    RemoveUnitFromInterface(OldUnitName);
+                    TUsesManager.RemoveUnitFromInterface(OldUnitName);
                 end;
               end;
             end;
@@ -3134,7 +3146,7 @@ begin
   TCursor_TemporaryChange();
   FilterIdentifiers;
   FForceFocusToIdentifierFilter := True;
-  edtIdentifierFilter.SetFocus;
+  TWinControl_SetFocus(edtIdentifierFilter);
 end;
 
 procedure TfmUsesManager.mi_SaveProjectListClick(Sender: TObject);

@@ -277,9 +277,9 @@ begin                                      // processing ComCtrls (~23.000 Zeile
 
   GetHeaderPositions(LinesCount);
 
-  //§§ -cError -oRZ : inc-files results wrong results
-  // INC-Files results LineNoImplementation = 0
-  //               and LinesCount           > 0
+  //§§ -cError -oRZ : results wrong names for INC-files
+  //                  INC-Files results LineNoImplementation = 0
+  //                                and LinesCount           > 0
 
   StartIdx:=LineNoImplementation; // = 1st line after "implementation"
   repeat

@@ -263,7 +263,6 @@ end;
 procedure TfmCompRenameConfig.SetData(_ValueListVcl, _ValueListFmx: TStringList;
   _AutoShow, _AutoAdd: Boolean; _FormWidth, _FormHeight: Integer; const _Selected: string);
 begin
-(*
   // These checks should not be necessary because we set the minimum constraints, but
   // that didn't work in Delphi 2007 and 2009 in GExperts. I could not reproduce the behaviour
   // in a stand alone test.
@@ -271,7 +270,7 @@ begin
     Width := _FormWidth;
   if _FormHeight > Constraints.MinHeight then
     Height := _FormHeight;
-*)
+
   chkShowDialog.Checked := _AutoShow;
   chkAutoAdd.Checked := _AutoAdd;
 

@@ -2,20 +2,25 @@
     <PropertyGroup>
         <Base>True</Base>
         <AppType>Library</AppType>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <FrameworkType>VCL</FrameworkType>
         <MainSource>GExpertsRS120.dpr</MainSource>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <ProjectGuid>{BB29661E-3FA2-4EA6-96EB-0768940BAAB6}</ProjectGuid>
         <ProjectName Condition="'$(ProjectName)'==''">GExpertsRS120</ProjectName>
-        <ProjectVersion>20.2</ProjectVersion>
-        <TargetedPlatforms>1</TargetedPlatforms>
+        <ProjectVersion>20.3</ProjectVersion>
+        <TargetedPlatforms>3</TargetedPlatforms>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
         <Base_Win32>true</Base_Win32>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Base)'=='true') or '$(Base_Win64)'!=''">
+        <Base_Win64>true</Base_Win64>
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
@@ -41,8 +46,15 @@
         <Cfg_2>true</Cfg_2>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win64)'!=''">
+        <Cfg_2_Win64>true</Cfg_2_Win64>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <SanitizedProjectName>GExpertsRS120</SanitizedProjectName>
+        <DCC_DUPLICATE_CTOR_DTOR>false</DCC_DUPLICATE_CTOR_DTOR>
         <DCC_DcuOutput>.\dcu\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_Define>NO_TRANSLATION;NO_TRANSLATION_HINT;NO_OPTIMIZE_DZ_GRAPHIC_UTILS_HINT;UnicodeRE;dzVCL_DISABLE_DBGRID_SUPPORT;$(DCC_Define)</DCC_Define>
         <DCC_ExeOutput>..\..\Binaries</DCC_ExeOutput>
@@ -71,6 +83,13 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <DCC_UsePackage>xmlrtl;vclactnband;vclx;vclie;fmx;$(DCC_UsePackage)</DCC_UsePackage>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Base_Win64)'!=''">
+        <BT_BuildType>Debug</BT_BuildType>
+        <DCC_Namespace>Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_DebugInformation>0</DCC_DebugInformation>
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
@@ -90,8 +109,11 @@ $(PreBuildEvent)]]></PreBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
+        <DCC_MapFile>0</DCC_MapFile>
         <Debugger_HostApplication>$(BDS)\bin\bds.exe</Debugger_HostApplication>
-        <Debugger_RunParams>-rBDSPlain -pDelphi</Debugger_RunParams>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
+        <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -141,6 +163,21 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <Form>fmGxBookmarksForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksConst.pas"/>
+        <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksEdit.pas">
+            <Form>foBookmarksEdit</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Bookmarks\GX_BookmarksFuncProcName.pas"/>
+        <DCCReference Include="..\..\Source\Bookmarks\GX_BookmarksLists.pas"/>
+        <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksOptions.pas">
+            <Form>foBookmarksOptions</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksSelect.pas">
+            <Form>foBookmarksSelect</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <DCCReference Include="..\..\Source\Utils\GX_CheckButton.pas"/>
         <DCCReference Include="..\..\Source\ProjectOptionSets\GX_CheckListBoxWithHints.pas"/>
         <DCCReference Include="..\..\source\ClassBrowser\GX_ClassBrowser.pas">
@@ -169,8 +206,9 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <Form>fmCleanDirectories</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\..\source\CleanDirectories\GX_CleanDirectoriesOptions.pas">
+        <DCCReference Include="..\..\Source\CleanDirectories\GX_CleanDirectoriesOptions.pas">
             <Form>fmCleanDirectoriesOptions</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\ClipboardHistory\GX_ClipboardHistory.pas">
             <Form>fmClipboardHistory</Form>
@@ -198,6 +236,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\source\Formatter\GX_CodeFormatterGXConfigWrapper.pas"/>
         <DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterParser.pas"/>
         <DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterSettings.pas"/>
+        <DCCReference Include="..\..\Source\Formatter\GX_CodeFormatterSourceLineList.pas"/>
         <DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterStack.pas"/>
         <DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterTokenList.pas"/>
         <DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterTokens.pas"/>
@@ -274,10 +313,6 @@ $(PreBuildEvent)]]></PreBuildEvent>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_eDate.pas">
             <Form>fmDateFormat</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="..\..\source\Bookmarks\GX_EditBookmark.pas">
-            <Form>fmEditBookmarks</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Framework\GX_EditorChangeServices.pas"/>
@@ -454,6 +489,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\source\Experts\EditorEnhancements\GX_HideNavbar.pas"/>
         <DCCReference Include="..\..\source\HideNonvisualComponents\GX_HideNonVisualComps.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_HintWindow.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_HotkeyDrawFix.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_IconMessageBox.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeApplicationSettingsEnhancer.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeBuildEventFavoriteEdit.pas">
@@ -469,6 +505,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         </DCCReference>
         <DCCReference Include="..\..\Source\IDE\GX_IdeDockFormEnhancer.pas"/>
         <DCCReference Include="..\..\source\IDE\GX_IdeEnhance.pas"/>
+        <DCCReference Include="..\..\Source\IDE\GX_IdeEvaluateModifyEnhancer.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeFavoritesList.pas">
             <Form>f_GxIdeFavoritesList</Form>
             <FormType>dfm</FormType>
@@ -494,9 +531,12 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <Form>fmIdeShortCuts</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\IdeToolbar\GX_IdeToolbar.pas"/>
+        <DCCReference Include="..\..\Source\IdeToolbar\GX_IdeToolbarExpert.pas"/>
         <DCCReference Include="..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibility.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_IdeUtils.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_IndexTypes.pas"/>
         <DCCReference Include="..\..\Source\AutoTodo\GX_InsertAutoTodo.pas">
             <Form>fmInsertAutoTodoForm</Form>
             <FormType>dfm</FormType>
@@ -542,7 +582,6 @@ $(PreBuildEvent)]]></PreBuildEvent>
         </DCCReference>
         <DCCReference Include="..\..\source\MacroTemplates\GX_MacroTemplatesExpert.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_MemoEscFix.pas"/>
-        <DCCReference Include="..\..\Source\Utils\GX_HotkeyDrawFix.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_MenuActions.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_MenusForEditorExpert.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_MessageBox.pas">
@@ -710,6 +749,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\Source\UsesExpert\GX_UnitExportList.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_UnitExportsParser.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_UnitPositions.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_UnspecifiedImage.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_UsageStatistics.pas">
             <Form>fmUsageStatistics</Form>
             <FormType>dfm</FormType>
@@ -727,10 +767,6 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\source\Framework\GX_VerDepConst.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas"/>
         <DCCReference Include="..\..\source\BackupProject\GX_Zipper.pas"/>
-        <DCCReference Include="..\..\Source\CleanDirectories\GX_CleanDirectoriesOptions.pas">
-            <Form>fmCleanDirectoriesOptions</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -756,7 +792,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <ModelSupport>False</ModelSupport>
             <Platforms>
                 <Platform value="Win32">True</Platform>
-                <Platform value="Win64">False</Platform>
+                <Platform value="Win64">True</Platform>
             </Platforms>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>

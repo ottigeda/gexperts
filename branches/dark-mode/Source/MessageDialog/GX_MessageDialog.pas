@@ -1084,9 +1084,9 @@ begin
         if not IsDpr(GxOtaGetCurrentSourceFile) then
         begin
           if GxOtaActiveDesignerIsVCL or GxOtaActiveDesignerIsNFM then
-            UseUnitInImplementation(frm.UsesUnit)
+            TUsesManager.UseUnitInImplementation(frm.UsesUnit)
           else if GxOtaActiveDesignerIsCLX then
-            UseUnitInImplementation(frm.UsesUnitCLX);
+            TUsesManager.UseUnitInImplementation(frm.UsesUnitCLX);
         end;
       end;
       if frm.chkDefaults.Checked then

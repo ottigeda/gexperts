@@ -260,7 +260,7 @@ begin
 
   // Tag = 1 is used a a flag for custom painting.
   // If we drop support for older Delphi versions we could simply set the StyleElements property
-  // to [seFont] and get rid of the TPanel intersceptor class.
+  // to [seFont] and get rid of the TPanel interceptor class.
   pnlListMatchTextColor.Tag := 1;
   pnlListMatchBackgroundColor.Tag := 1;
   pnlContextMatchFontColor.Tag := 1;

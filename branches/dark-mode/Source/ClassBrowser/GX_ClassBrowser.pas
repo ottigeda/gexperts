@@ -198,7 +198,9 @@ type
     FLastHitTestItemIdx: Integer;
     FLastHitTestSubItemIdx: Integer;
     FTreeFilter: string;
-
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+    FColWidths: array of Integer;
+{$ENDIF}
     procedure EndParse(Sender: TObject);
     procedure ParseFile(Sender: TObject; const FileName: string; FileIndex, FileCount: Integer);
     procedure LoadObjects(Item: TClassItem; ONode: TTreeNode);
@@ -236,6 +238,7 @@ type
     function Images: TImageList;
     procedure UpdateListFilter;
     function TryGetClassInfo(out _Info: TBrowseClassInfoCollection): Boolean;
+    procedure ResizeLastListViewColumn;
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
@@ -270,7 +273,8 @@ uses
   u_dzVclUtils,
   GX_VerDepConst, GX_ClassIdentify, GX_ConfigurationInfo,
   GX_ClassProp, GX_GExperts,
-  GX_GxUtils, GX_GenericUtils, GX_StringList, GX_IdeUtils, GX_Logging;
+  GX_GxUtils, GX_GenericUtils, GX_StringList, GX_IdeUtils, GX_Logging,
+  GX_IdeSplitterVisibility;
 
 var
   Logger: IGxLogger;
@@ -784,9 +788,6 @@ begin
 end;
 
 procedure TfmClassBrowser.pnlDataResize(Sender: TObject);
-var
-  w: integer;
-  lvh: HWND;
 begin
   if csDestroying in ComponentState then
     Exit; //==>
@@ -798,6 +799,16 @@ begin
 //  tshMembers.Height := pcMain.ActivePage.Height;
 // -- 2024-12-07 twm
 
+  ResizeLastListViewColumn;
+
+  DrawResize;
+end;
+
+procedure TfmClassBrowser.ResizeLastListViewColumn;
+var
+  w: Integer;
+  lvh: HWND;
+begin
   // using ListView_SetColumnWidth instead of setting the Column[x].Width
   // property fixed bug #401: Class Browser always has a horizontal scroll bar
   // Setting the Width property didn't change its value.
@@ -815,8 +826,6 @@ begin
       - ListView_GetColumnWidth(lvh, 4);
     ListView_SetColumnWidth(lvh, 5, Max(0, w));
   end;
-
-  DrawResize;
 end;
 
 procedure TfmClassBrowser.DrawResize;
@@ -1578,18 +1587,34 @@ begin
 end;
 
 constructor TfmClassBrowser.Create(AOwner: TComponent);
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+var
+  i: Integer;
+  lvh: HWND;
+{$ENDIF}
 begin
   inherited;
 
   TControl_SetMinConstraints(Self);
 
   SetNonModalFormPopupMode(Self);
+
+  TSplitterPainter.Create(Splitter1);
+  TSplitterPainter.Create(Splitter2);
+
   FStartingDir := ExtractFilePath(Application.ExeName);
   FIsFirstInvocation := True;
   FProjectNeedsLoading := True;
   FLastHitTestItemIdx := -1;
 
   SetupEditorControls;
+
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+  lvh := lvInfo.Handle;
+  SetLength(FColWidths, 5);
+  for i := 0 to 4 do
+    FColWidths[i] := ListView_GetColumnWidth(lvh, i);
+{$ENDIF}
 
   InitDpiScaler;
 
@@ -1626,6 +1651,8 @@ end;
 procedure TfmClassBrowser.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   il: TImageList;
+  lvh: HWND;
+  i: Integer;
 begin
   inherited;
   il := GExpertsInst.GetScaledSharedDisabledImages(_NewDpi);
@@ -1637,6 +1664,12 @@ begin
   tbInfo.Images := il;
   Actions.Images := il;
   MainMenu.Images := il;
+  lvInfo.SmallImages := il;
+
+  lvh := lvInfo.Handle;
+  for i := Low(FColWidths) to High(FColWidths) do
+    ListView_SetColumnWidth(lvh, i, FScaler.Calc(FColWidths[i]));
+  ResizeLastListViewColumn;
 end;
 {$ENDIF}
 

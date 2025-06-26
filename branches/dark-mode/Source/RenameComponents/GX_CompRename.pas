@@ -81,8 +81,7 @@ type
     procedure InitializeForm;
     procedure InitOtherProps(const _Component: IOTAComponent; _OtherProps: TStrings;
       _UseRules: Boolean);
-    procedure AddComponentProperty(const _Component: IOTAComponent; 
-      PropertyName: WideString; const Value: WideString);
+    procedure AddComponentProperty(const _Component: IOTAComponent; PropertyName: WideString; const Value: WideString);
     function GetComponentProperty(Index: Integer): WideString;
     procedure SetComponent(const _Component: IOTAComponent);
     procedure InitAlign(const _Component: IOTAComponent);
@@ -288,6 +287,14 @@ procedure TfmCompRename.FormShow(Sender: TObject);
 begin
   inherited;
   ArrangeControls;
+(*
+  // Adjust some button positons and size after scaling
+  // DisableAlign;
+  b_AlignRight.Left   := b_AlignTop.Left + b_AlignTop.Width - b_AlignRight.Width;
+  b_AlignClient.Left  := b_AlignLeft.Left + b_AlignLeft.Width + 1;
+  b_AlignClient.Width := b_AlignRight.Left - b_AlignClient.Left - 2;
+  // EnableAlign;
+*)  
 end;
 
 procedure TfmCompRename.pc_AdditionalChange(Sender: TObject);
@@ -560,7 +567,7 @@ begin
 
   IsEnum := false;
   if Value = SPropertyNotFound then begin
-    Lbl.Font.Color := clGrayText;
+    Lbl.Font.Color := GetThemedColor(clGrayText);
   end else begin
     IsEnum := PropertyIsEnum(_Component, PropertyName, TypeInfo, MinValue, MaxValue);
   end;

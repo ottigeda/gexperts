@@ -237,7 +237,7 @@ implementation
 {$R *.dfm}
 
 uses
-  Messages, ShellAPI, StrUtils, DropSource,
+  Messages, ShellAPI, StrUtils, CommCtrl, DropSource,
   ToolsAPI, Math, IniFiles,
   u_dzVclUtils,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
@@ -246,7 +246,7 @@ uses
   GX_ConfigurationInfo, GX_Experts, GX_GExperts,
   {$ENDIF STANDALONE}
   GX_GxUtils, GX_GenericUtils, GX_OtaUtils, OmniXML,
-  GX_XmlUtils, GX_IdeUtils;
+  GX_XmlUtils, GX_IdeUtils, GX_IdeSplitterVisibility;
 
 type
   EFavFiles = class(Exception);
@@ -404,12 +404,12 @@ var
   i: Integer;
 begin
   cols := FListView.Columns;
-  cnt := FListView.Columns.Count;
+  cnt := cols.Count;
 
   cols.BeginUpdate;
   FListView.Items.BeginUpdate;
 
-  FOnChange := fListView.OnChange;
+  FOnChange := FListView.OnChange;
   SetLength(FColumnWidths, cnt);
   for i := 0 to cnt - 1 do
     FColumnWidths[i] := cols[i].Width;
@@ -452,15 +452,16 @@ var
   mFile: TGXFile;
   i: Integer;
   LItem: TListItem;
+  Updater: IInterface;
+  HourGlass: IInterface;
 begin
   if (csDestroying in ComponentState) then
     Exit;
   if tvFolders.Selected = nil then
     Exit;
 
-
-  TCursor_TempHourglass;
-  TListView_BeginUpdate(ListView);
+  HourGlass := TCursor_TempHourglass;
+  Updater := TListView_BeginUpdate(ListView);
   ListView.Items.Clear;
   Folder := GetFolder(tvFolders.Selected);
   for i := 0 to Folder.FileCount - 1 do
@@ -476,11 +477,12 @@ end;
 procedure TfmFavFiles.DeleteSelectedFiles;
 var
   i: Integer;
+  Updater: IInterface;
 begin
   if ListView.Selected = nil then
     Exit;
 
-  TListView_BeginUpdate(ListView);
+  Updater := TListView_BeginUpdate(ListView);
   i := 0;
   while i <= ListView.Items.Count - 1 do
   begin
@@ -1119,6 +1121,8 @@ begin
   inherited;
   LoadSettings;
   FFileDrop.Register(ListView);
+  if ListView.ViewStyle = vsList then
+    ListView_SetColumnWidth(ListView.Handle, 0, ListView.Width);
 end;
 
 procedure TfmFavFiles.FormHide(Sender: TObject);
@@ -1148,6 +1152,8 @@ var
   mFile: TGXFile;
   LItem: TListItem;
   Folder: TGXFolder;
+  Updater: IInterface;
+  HourGlass: IInterface;
 begin
   if (tvFolders.Selected = nil) or (AFileName = '') then
     Exit;
@@ -1156,8 +1162,8 @@ begin
   LItem := nil;
 {$ENDIF}
   Folder := GetFolder(tvFolders.Selected);
-  TCursor_TempHourglass;
-  ListView.Items.BeginUpdate;
+  HourGlass := TCursor_TempHourglass;
+  Updater := TListView_BeginUpdate(ListView);
   try
     mFile := TGXFile.Create(Folder);
     try
@@ -1177,7 +1183,7 @@ begin
     end;
     FModified := True;
   finally
-    ListView.Items.EndUpdate;
+    Updater := nil;
   end;
 
   if Assigned(LItem) then
@@ -1195,14 +1201,16 @@ var
   i: Integer;
   LItem: TListItem;
   Folder: TGXFolder;
+  Updater: IInterface;
+  HourGlass: IInterface;
 begin
   if (Files = nil) or (Files.Count < 1) or (tvFolders.Selected = nil) then
     Exit;
 
   LItem := nil;
   Folder := GetFolder(tvFolders.Selected);
-  TCursor_TempHourglass;
-  TListView_BeginUpdate(ListView);
+  HourGlass := TCursor_TempHourglass;
+  Updater := TListView_BeginUpdate(ListView);
   for i := 0 to Files.Count - 1 do
   begin
     mFile := TGXFile.Create(Folder);
@@ -1768,6 +1776,12 @@ constructor TfmFavFiles.Create(AOwner: TComponent; _Options: TFavFilesOptions);
 begin
   inherited Create(AOwner);
 
+  TSplitterPainter.Create(splTreeView);
+  TSplitterPainter.Create(splFileView);
+
+//{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+//  TCustomForm(Self).Scaled := True;
+//{$ENDIF}
   FRootFolder := TGXFolder.Create(nil);
   FOptions := _Options;
 

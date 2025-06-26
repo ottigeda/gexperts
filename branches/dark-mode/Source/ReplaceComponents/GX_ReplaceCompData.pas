@@ -47,10 +47,10 @@ type
 
   TCompRepMapGroupList = class(TGxObjectDictionary)
   private
-    function GetItem(Index: TGXListIndex): TCompRepMapGroupItem;
+    function GetItem(Index: Integer): TCompRepMapGroupItem;
   public
     function Add(const MapGroupName: string): TCompRepMapGroupItem;
-    property Items[Index: TGXListIndex]: TCompRepMapGroupItem read GetItem; default;
+    property Items[Index: Integer]: TCompRepMapGroupItem read GetItem; default;
   end;
 
   TCompRepMapItem = class
@@ -373,7 +373,7 @@ begin
   AddWithCode(MapGroupName, Result);
 end;
 
-function TCompRepMapGroupList.GetItem(Index: TGXListIndex): TCompRepMapGroupItem;
+function TCompRepMapGroupList.GetItem(Index: Integer): TCompRepMapGroupItem;
 begin
   Result := (inherited Items[Index]) as TCompRepMapGroupItem;
 end;

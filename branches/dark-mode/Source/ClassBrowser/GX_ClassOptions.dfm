@@ -82,7 +82,7 @@ object fmClassOptions: TfmClassOptions
           object cbTreeView: TComboBox
             Left = 8
             Top = 40
-            Width = 233
+            Width = 281
             Height = 22
             Style = csDropDownList
             Anchors = [akLeft, akTop, akRight]
@@ -92,7 +92,7 @@ object fmClassOptions: TfmClassOptions
           object cbListView: TComboBox
             Left = 8
             Top = 88
-            Width = 233
+            Width = 281
             Height = 22
             Style = csDropDownList
             Anchors = [akLeft, akTop, akRight]
@@ -102,7 +102,7 @@ object fmClassOptions: TfmClassOptions
           object cbEditor: TComboBox
             Left = 8
             Top = 136
-            Width = 233
+            Width = 281
             Height = 22
             Style = csDropDownList
             Anchors = [akLeft, akTop, akRight]
@@ -110,7 +110,7 @@ object fmClassOptions: TfmClassOptions
             TabOrder = 8
           end
           object sTreeView: TEdit
-            Left = 248
+            Left = 296
             Top = 40
             Width = 33
             Height = 22
@@ -119,7 +119,7 @@ object fmClassOptions: TfmClassOptions
             Text = '1'
           end
           object sListView: TEdit
-            Left = 248
+            Left = 296
             Top = 88
             Width = 35
             Height = 22
@@ -128,7 +128,7 @@ object fmClassOptions: TfmClassOptions
             Text = '1'
           end
           object sEditor: TEdit
-            Left = 248
+            Left = 296
             Top = 136
             Width = 35
             Height = 22
@@ -137,9 +137,9 @@ object fmClassOptions: TfmClassOptions
             Text = '1'
           end
           object udTree: TUpDown
-            Left = 281
+            Left = 329
             Top = 40
-            Width = 17
+            Width = 16
             Height = 22
             Anchors = [akTop, akRight]
             Associate = sTreeView
@@ -148,7 +148,7 @@ object fmClassOptions: TfmClassOptions
             TabOrder = 2
           end
           object udList: TUpDown
-            Left = 283
+            Left = 331
             Top = 88
             Width = 16
             Height = 22
@@ -159,7 +159,7 @@ object fmClassOptions: TfmClassOptions
             TabOrder = 6
           end
           object udEditor: TUpDown
-            Left = 283
+            Left = 331
             Top = 136
             Width = 16
             Height = 22
@@ -170,28 +170,31 @@ object fmClassOptions: TfmClassOptions
             TabOrder = 10
           end
           object b_TreeFont: TButton
-            Left = 304
+            Left = 352
             Top = 39
             Width = 25
             Height = 25
+            Anchors = [akTop, akRight]
             Caption = '...'
             TabOrder = 3
             OnClick = b_TreeFontClick
           end
           object b_ListFont: TButton
-            Left = 304
+            Left = 352
             Top = 87
             Width = 25
             Height = 25
+            Anchors = [akTop, akRight]
             Caption = '...'
             TabOrder = 7
             OnClick = b_ListFontClick
           end
           object b_EditorFont: TButton
-            Left = 304
+            Left = 352
             Top = 135
             Width = 25
             Height = 25
+            Anchors = [akTop, akRight]
             Caption = '...'
             TabOrder = 11
             OnClick = b_EditorFontClick
@@ -354,7 +357,7 @@ object fmClassOptions: TfmClassOptions
           Top = 8
           Width = 387
           Height = 73
-          Anchors = [akLeft, akTop, akRight, akBottom]
+          Anchors = [akLeft, akTop, akRight]
           Caption = 'Font for Class Hierarchy'
           TabOrder = 0
           DesignSize = (
@@ -369,17 +372,18 @@ object fmClassOptions: TfmClassOptions
             FocusControl = cbReportFont
           end
           object lblFontSize: TLabel
-            Left = 226
+            Left = 296
             Top = 24
             Width = 21
             Height = 14
+            Anchors = [akTop, akRight]
             Caption = 'Size'
             FocusControl = spnFontSize
           end
           object cbReportFont: TComboBox
             Left = 8
             Top = 40
-            Width = 209
+            Width = 281
             Height = 22
             Style = csDropDownList
             Anchors = [akLeft, akTop, akRight]
@@ -387,18 +391,20 @@ object fmClassOptions: TfmClassOptions
             TabOrder = 0
           end
           object spnFontSize: TEdit
-            Left = 224
+            Left = 296
             Top = 40
-            Width = 65
+            Width = 33
             Height = 22
+            Anchors = [akTop, akRight]
             TabOrder = 1
             Text = '1'
           end
           object udReportFontSize: TUpDown
-            Left = 285
+            Left = 329
             Top = 40
             Width = 16
             Height = 22
+            Anchors = [akTop, akRight]
             Associate = spnFontSize
             Min = 1
             Position = 1
@@ -410,6 +416,7 @@ object fmClassOptions: TfmClassOptions
           Top = 88
           Width = 387
           Height = 129
+          Anchors = [akLeft, akTop, akRight]
           Caption = 'Boxes for Class Hierarchy'
           TabOrder = 1
           object lblBoxSize: TLabel

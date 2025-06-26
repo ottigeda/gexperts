@@ -76,6 +76,106 @@
       
       
       
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
       <Excluded_Packages Name="$(BDS)\bin\applet100.bpl">CodeGear Control Panel Applet Package</Excluded_Packages>
       <Excluded_Packages Name="$(BDS)\bin\bcbie100.bpl">CodeGear C++Builder Internet Explorer 5 Components Package</Excluded_Packages>
       <Excluded_Packages Name="$(BDS)\bin\dbx100.bpl">CodeGear SQL Explorer UI Package</Excluded_Packages>
@@ -137,8 +237,17 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
     <DCCReference Include="..\..\source\Bookmarks\GX_Bookmarks.pas">
       <Form>fmGxBookmarksForm</Form>
     </DCCReference>
-    <DCCReference Include="..\..\source\Bookmarks\GX_EditBookmark.pas">
-      <Form>fmEditBookmarks</Form>
+    <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksConst.pas" />
+    <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksEdit.pas">
+      <Form>foBookmarksEdit</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\Source\Bookmarks\GX_BookmarksFuncProcName.pas" />
+    <DCCReference Include="..\..\Source\Bookmarks\GX_BookmarksLists.pas" />
+    <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksOptions.pas">
+      <Form>foBookmarksOptions</Form>
+    </DCCReference>
+    <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksSelect.pas">
+      <Form>foBookmarksSelect</Form>
     </DCCReference>
     <DCCReference Include="..\..\source\ClassBrowser\GX_ClassBrowser.pas">
       <Form>fmClassBrowser</Form>
@@ -158,7 +267,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
     <DCCReference Include="..\..\source\CleanDirectories\GX_CleanDirectories.pas">
       <Form>fmCleanDirectories</Form>
     </DCCReference>
-    <DCCReference Include="..\..\source\CleanDirectories\GX_CleanDirectoriesOptions.pas">
+    <DCCReference Include="..\..\Source\CleanDirectories\GX_CleanDirectoriesOptions.pas">
       <Form>fmCleanDirectoriesOptions</Form>
     </DCCReference>
     <DCCReference Include="..\..\source\ClipboardHistory\GX_ClipboardHistory.pas">
@@ -317,6 +426,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
     </DCCReference>
     <DCCReference Include="..\..\source\Formatter\GX_CodeFormatterExpert.pas" />
     <DCCReference Include="..\..\source\Formatter\GX_CodeFormatterGXConfigWrapper.pas" />
+    <DCCReference Include="..\..\Source\Formatter\GX_CodeFormatterSourceLineList.pas" />
     <DCCReference Include="..\..\Source\Formatter\GX_eAddToCaptitalization.pas" />
     <DCCReference Include="..\..\source\Formatter\GX_eCodeFormatter.pas" />
     <DCCReference Include="..\..\Source\FormHotkeys\GX_FormHotkeys.pas">
@@ -450,6 +560,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
     <DCCReference Include="..\..\Source\IDE\GX_IdeDialogEnhancer.pas" />
     <DCCReference Include="..\..\Source\IDE\GX_IdeDockFormEnhancer.pas" />
     <DCCReference Include="..\..\source\IDE\GX_IdeEnhance.pas" />
+    <DCCReference Include="..\..\Source\IDE\GX_IdeEvaluateModifyEnhancer.pas" />
     <DCCReference Include="..\..\Source\IDE\GX_IdeFavoritesList.pas">
       <Form>f_GxIdeFavoritesList</Form>
     </DCCReference>
@@ -606,6 +717,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
     <DCCReference Include="..\..\source\Utils\GX_GenericUtils.pas" />
     <DCCReference Include="..\..\source\Utils\GX_GxUtils.pas" />
     <DCCReference Include="..\..\source\Utils\GX_IdeUtils.pas" />
+    <DCCReference Include="..\..\source\Utils\GX_IndexTypes.pas" />
     <DCCReference Include="..\..\Source\Utils\GX_MemoEscFix.pas" />
     <DCCReference Include="..\..\source\Utils\GX_NTAEditServiceNotifier.pas" />
     <DCCReference Include="..\..\source\Utils\GX_OtaUtils.pas" />

@@ -12,7 +12,7 @@
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
         <DCC_DebugInformation>False</DCC_DebugInformation>
-        <DCC_Define>RELEASE;NO_TRANSLATION;no_translation_hint</DCC_Define>
+        <DCC_Define>RELEASE;NO_TRANSLATION;no_translation_hint;GX_STANDALONE</DCC_Define>
         <DCC_Description>GExperts Grep</DCC_Description>
         <DCC_ExeOutput>..\..\..\binaries</DCC_ExeOutput>
         <DCC_HppOutput>.\dcu</DCC_HppOutput>
@@ -33,7 +33,7 @@
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
-        <DCC_Define>DEBUG;NO_TRANSLATION;no_translation_hint</DCC_Define>
+        <DCC_Define>DEBUG;NO_TRANSLATION;no_translation_hint;GX_STANDALONE</DCC_Define>
         <DCC_Description>GExperts Grep</DCC_Description>
         <DCC_ExeOutput>..\..\..\binaries</DCC_ExeOutput>
         <DCC_GenerateStackFrames>True</DCC_GenerateStackFrames>
@@ -139,9 +139,6 @@
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzVariantUtils.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzVclUtils.pas"/>
         <DCCReference Include="..\..\..\ExternalSource\dzlib\u_dzVersionInfo.pas"/>
-        <DCCReference Include="..\..\..\Source\Formatter\GX_AboutExperimental.pas">
-            <Form>fmAboutExperimental</Form>
-        </DCCReference>
         <DCCReference Include="..\..\..\Source\Framework\GX_About.pas">
             <Form>fmAbout</Form>
         </DCCReference>

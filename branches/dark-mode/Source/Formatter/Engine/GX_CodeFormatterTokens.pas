@@ -253,16 +253,20 @@ begin
 
         if AnsiStartsStr('endif', Directive) then
           SetReservedType(rtCompEndif)
+        else if AnsiStartsStr('ifend', Directive) then
+          SetReservedType(rtCompEndif)
         else if AnsiStartsStr('else', Directive) then
           SetReservedType(rtCompElse)
-        else if AnsiStartsStr('ifdef', Directive) then
+        else if AnsiStartsStr('ifdef ', Directive) then
           SetReservedType(rtCompIf)
-        else if AnsiStartsStr('ifopt', Directive) then
+        else if AnsiStartsStr('ifopt ', Directive) then
           SetReservedType(rtCompIf)
         else if AnsiStartsStr('if ', Directive) then
           SetReservedType(rtCompIf)
-        else if AnsiStartsStr('ifndef', Directive) then
-          SetReservedType(rtCompIf);
+        else if AnsiStartsStr('ifndef ', Directive) then
+          SetReservedType(rtCompIf)
+        else if AnsiStartsStr('message ', Directive) then
+          SetReservedType(rtCompMessage);
       end;
 
     wtFullComment, wtFullOutComment, wtHalfStarComment,
@@ -494,7 +498,7 @@ end;
 
 procedure TLineFeed.IncIndent(_Value: Integer);
 begin
-  inc(FNoOfSpaces, _Value * FSpacePerIndent);
+  Inc(FNoOfSpaces, _Value * FSpacePerIndent);
 end;
 
 procedure TLineFeed.SetIndent(_Value: Integer);

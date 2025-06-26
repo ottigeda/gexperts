@@ -236,7 +236,7 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_CodeSrch, GX_GxUtils,
   GX_OtaUtils, GX_IdeUtils,
-  GX_GExperts, GX_ConfigurationInfo, GX_MessageBox;
+  GX_GExperts, GX_ConfigurationInfo, GX_MessageBox, GX_IdeSplitterVisibility;
 
 const
   DefaultFileName = 'CodeLibrarian.fs';
@@ -1110,6 +1110,8 @@ begin
   SetNonModalFormPopupMode(Self);
   SetToolbarGradient(ToolBar);
   SetupSyntaxHighlightingControl;
+
+  TSplitterPainter.Create(Splitter);
 
   InitDpiScaler;
 

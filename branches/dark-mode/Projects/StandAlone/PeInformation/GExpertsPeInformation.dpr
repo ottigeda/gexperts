@@ -33,7 +33,6 @@ uses
   u_dzErrorThread in '..\..\..\ExternalSource\dzlib\u_dzErrorThread.pas',
   u_dzStringArrayUtils in '..\..\..\ExternalSource\dzlib\u_dzStringArrayUtils.pas',
   GX_About in '..\..\..\Source\Framework\GX_About.pas' {fmAbout},
-  GX_AboutExperimental in '..\..\..\Source\Formatter\GX_AboutExperimental.pas' {fmAboutExperimental},
   GX_BaseForm in 'src\GX_BaseForm.pas' {fmBaseForm},
   GX_ConfigurationInfo in 'src\GX_ConfigurationInfo.pas',
   u_dzCompilerAndRtlVersions in '..\..\..\ExternalSource\dzlib\u_dzCompilerAndRtlVersions.pas',

@@ -64,7 +64,7 @@ type
     procedure UppercaseCompilerDirective(_Token: TPascalToken); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     function NoBeginTryIndent(_rType: TReservedType): Boolean; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure IndentProcedureComment;
-    procedure SetPrevLineIndent(_Value: integer); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    procedure SetPrevLineIndent(_Value: Integer); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure AddToPrevLineIndent(_Additional: Integer); {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure DecPrevLineIndent; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
@@ -97,7 +97,7 @@ type
     /// @returns True, if the token has the queried type, False otherwise
     ///          also False, if the index is out of bounds. </summary>
     function TokenAtIs(_Idx: Integer; _rType: TReservedType): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
-    function TokenAtIs(_Idx: Integer; _rTypes: TReservedTypeSet): Boolean; overload;{$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function TokenAtIs(_Idx: Integer; _rTypes: TReservedTypeSet): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
     function GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     function TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
@@ -120,6 +120,9 @@ type
     procedure CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed);
     procedure HandleCapitalization(_CurrentToken: TPascalToken);
     function TryGetPrevLineFeed(var _TokenIdx: Integer; out _LineFeed: TLineFeed): Boolean;
+    function CheckForFunctTypeDeclare(out _CheckedToken: TPascalToken): Boolean;
+    procedure CheckSpecialProcedure(out _Offset: Integer; var _NoBlankLine, _IsDelegate: Boolean);
+    function FindBeginOrSemicolonAfterProc(out _Offset: Integer; out _Token: TPascalToken): Boolean;
   public
     class procedure Execute(_Tokens: TPascalTokenList; _Settings: TCodeFormatterSettings);
     constructor Create(_Settings: TCodeFormatterSettings);
@@ -688,12 +691,24 @@ procedure TCodeFormatterFormatter.UppercaseCompilerDirective(_Token: TPascalToke
 var
   Idx: Integer;
   s: TGXUnicodeString;
+  Len: Integer;
 begin
   _Token.GetExpression(s);
+  Len := Length(s);
   Idx := 2;
-  while (Idx < Length(s)) and (s[Idx] <> Space) and (s[Idx] <> Tab) do begin
+  while (Idx < Len) and (s[Idx] <> Space) and (s[Idx] <> Tab) do begin
     s[Idx] := UpCase(s[Idx]);
     Inc(Idx);
+  end;
+  if _Token.ReservedType = rtCompMessage then begin
+    // {$MESSAGE WARN 'xxxx'}
+    // -> We also want to upper case the message type
+    while (Idx < Len) and (s[Idx] = Space) or (s[Idx] = Tab) do
+      Inc(Idx);
+    while (Idx < Len) and (s[Idx] <> Space) and (s[Idx] <> Tab) do begin
+      s[Idx] := UpCase(s[Idx]);
+      Inc(Idx);
+    end;
   end;
 
   _Token.SetExpression(s);
@@ -1062,13 +1077,84 @@ begin
   FWrapIndent := False;
 end;
 
+function TCodeFormatterFormatter.CheckForFunctTypeDeclare(out _CheckedToken: TPascalToken): Boolean;
+var
+  TempWordIdx: Integer;
+begin
+  Assert(IsRType(FCurrentToken, rtProcedure));
+  // search for the previous token that is not a comment or LineFeed
+  TempWordIdx := FTokenIdx - 1;
+  while TryGetToken(TempWordIdx, _CheckedToken) and IsRType(_CheckedToken, [rtComment, rtLineFeed]) do begin
+    Assert(False, '.CheckIndent: in while');
+    Dec(TempWordIdx);
+  end;
+  Result := IsRType(_CheckedToken, [rtEquals, rtColon, rtComma, rtLeftBr]);
+end;
+
+function TCodeFormatterFormatter.FindBeginOrSemicolonAfterProc(out _Offset: Integer; out _Token: TPascalToken): Boolean;
+begin
+  // search for a 'begin' or semicolon after the procedure name or the closing bracket
+  // procedure bla or procedure bla(...)
+  //              ^--- here or here ----^
+  _Offset := 0;
+  repeat
+    Assert(False, '.CheckSpecialProcedure: in repeat');
+    Inc(_Offset);
+    Result := TryGetToken(FTokenIdx + _Offset, _Token);
+    if not Result then begin
+      // end of file, should not happen with valid code, but this might not be valid code
+      Exit; //==>
+    end;
+
+    if _Token.ReservedType = rtLeftBr then begin
+      // procedure bla( -> there is an opening bracket after the procedure name -> search for the closing bracket
+      repeat
+        Inc(_Offset);
+        Result := TryGetToken(FTokenIdx + _Offset, _Token);
+        if not Result then begin
+          // end of file, should not happen with valid code, but this might not be valid code
+          Exit; //==>
+        end;
+      until _Token.ReservedType = rtRightBr;
+    end;
+  until (_Token.ReservedType in [rtSemiColon, rtBegin]);
+end;
+
+procedure TCodeFormatterFormatter.CheckSpecialProcedure(out _Offset: Integer; var _NoBlankLine, _IsDelegate: Boolean);
+var
+  Token: TPascalToken;
+begin
+  if not FindBeginOrSemicolonAfterProc(_Offset, Token) then begin
+    // end of file
+    Exit; //==>
+  end;
+
+  if Token.ReservedType = rtBegin then begin
+    // 'begin' before a SemiColon, assume that is a anonymous delegate
+    _IsDelegate := True;
+    Token.AddOption(toFeedNewLine);
+  end else begin
+    // semicolon -> Check for 'forward' or 'external'
+    repeat
+      Inc(_Offset);
+      if not TryGetToken(FTokenIdx + _Offset, Token) then begin
+        // end of file
+        Exit; //==>
+      end;
+      if Token.ReservedType in [rtForward, rtExternal] then begin
+        _NoBlankLine := True;
+        Exit; //==>
+      end;
+    until not (Token.ReservedType in [rtLineFeed, rtComment, rtSemiColon, rtFuncDirective]);
+  end;
+end;
+
 procedure TCodeFormatterFormatter.CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed);
 var
   RemoveMe: Integer;
   Next: TPascalToken;
-  TempWordIdx: Integer;
   Prev1: TPascalToken;
-  FunctDeclare, IsDelegate, NoBlankLine: Boolean;
+  FunctTypeDeclare, IsDelegate, NoBlankLine: Boolean;
   FeedRound: TFeedBegin;
   wType: TWordType;
   exp: TGXUnicodeString;
@@ -1081,7 +1167,7 @@ begin
   FCurrentRType := FCurrentToken.ReservedType;
   wType := FCurrentToken.WordType;
 
-  if wtype in [wtMultilineStringStart, wtMultilineString, wtMultilineStringEnd] then begin
+  if wType in [wtMultilineStringStart, wtMultilineString, wtMultilineStringEnd] then begin
     // we do not indent those
     Exit; //==>
   end;
@@ -1095,7 +1181,7 @@ begin
       Next.SetReservedType(rtProcedure);
     end;
   end;
-  if FCurrentToken.ReservedType = rtOperatorProc then begin
+  if FCurrentRType = rtOperatorProc then begin
     // this can only happen, if the check above for "class operator" did not change
     // this token's ReservedType to rtProcedure
     FCurrentToken.SetReservedType(rtNothing);
@@ -1373,12 +1459,14 @@ begin
       end;
 
     rtProgram, rtUses, rtInitialization:
+      // todo: Why does this check for a '(' on the stack? In which case is that valid code?
       if FStack.GetTopType <> rtLeftBr then begin
         Next := GetNextNoComment(FTokenIdx, RemoveMe);
 
-        if (FCurrentRType = rtUses) and (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass]) then
-          FCurrentToken.SetReservedType(rtNothing)
-        else begin
+        if (FCurrentRType = rtUses) and (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass]) then begin
+          FCurrentToken.SetReservedType(rtNothing);
+          FCurrentRType := rtNothing;
+        end else begin
           DecPrevLineIndent;
           FStack.Clear;
           FStack.Push(FCurrentRType, 1);
@@ -1408,7 +1496,7 @@ begin
           // todo: What if the previous token was a line feed and the one before that was
           //       'procedure' or '.' or if there was a comment in between ?
           FCurrentToken.SetReservedType(rtNothing);
-        end else if not (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass]) then begin
+        end else if not (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass, rtExternal]) then begin
           // we are not in a procedure or class declaration -> it's an identifier
           FCurrentToken.SetReservedType(rtNothing);
         end else begin
@@ -1420,12 +1508,44 @@ begin
         end;
       end;
 
-    rtForward, rtExternal: begin
+    rtForward: begin
         Assert(False, '.CheckIndent: rtForward');
+        if not (FStack.GetTopType in [rtProcedure, rtProcDeclare]) then begin
+          // we are not in a procedure or class declaration -> it's an identifier
+          FCurrentToken.SetReservedType(rtNothing);
+        end;
+      end;
+
+    rtExternal: begin
+        Assert(False, '.CheckIndent: rtExternal');
+        // There are mulitple options for external declarations:
+        // 1. just external (requires a {$L objectfile.obj} directive in the same unit)
+        //      procedure MoveWord(var Source, Dest; Count: Integer); external;
+        // 2. importing from a library with the function's name:
+        //      function SomeFunction(S: string): string; external 'strlib.dll';
+        // 3. importing from a library with an explicit name:
+        //    function MessageBox(HWnd: Integer; Text, Caption: PChar; Flags: Integer): Integer;
+        //      stdcall; external 'user32.dll' name 'MessageBoxA';
+        // 4. importing from a library with an index:
+        //    function MessageBox(HWnd: Integer; Text, Caption: PChar; Flags: Integer): Integer;
+        //      stdcall; external 'user32.dll' index 5;
+        // 5. importing from an object file with an explicit name:
+        //      procedure FunctionName; cdecl; external object 'ObjectFile.o' name '_FunctionName';
+        // 6. importing from a framework:
+        //      function foo: Integer; external framework 'framework name';
+        // On top of that,the libaray can be delay loaded:
+        //   function ExternalMethod(const SomeString: PChar): Integer; stdcall;
+        //     external 'cstyle.dll' delayed;
+        // and one can declare dependencies:
+        //   function DllGetDataSnapClassObject(const [REF] CLSID, [REF] IID: TGUID; var Obj): HResult;
+        //     cdecl; external 'libmidas.a' dependency 'stdc++';
+        // All these cases have only one thing in common: The external directive ends with a semicolon.
         if FStack.GetTopType in [rtProcedure, rtProcDeclare] then begin
-          // todo: This fails because rtProcDeclare is removed from the stack as soon as
-          //       a semicolon is encountered.
+          // we put rtExternal on the stack so we can check for it and remove it when we get to
+          // the semicolon
           FStack.Pop;
+          FStack.Push(rtProcDeclare, 0);
+          FStack.Push(rtExternal, 0);
         end else begin
           // we are not in a procedure or class declaration -> it's an identifier
           FCurrentToken.SetReservedType(rtNothing);
@@ -1434,85 +1554,38 @@ begin
 
     rtProcedure: begin
         Assert(False, '.CheckIndent: rtProcedure');
-        if FStack.GetTopType in [rtClassDecl, rtRecord] then begin
-          Assert(False, '.CheckIndent: Top type is Class or Record');
-          FStack.Pop;
-          FStack.Push(rtClass, 1);
-        end else if (FStack.GetTopType in [rtVar, rtConst, rtType])
-          and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord])
-          and (FPrevToken.ReservedType <> rtEquals) then begin
-          // There was a nested class/record declaration that ended
-          Assert(False, '.CheckIndent: Nested Class or Record ended');
-          FStack.Pop;
-          FStack.Pop;
-          FStack.Push(rtClass, 1);
-          DecPrevLineIndent;
+        case FStack.GetTopType of
+          // todo: rtClassDecl or rtClass ?
+          rtClassDecl, rtRecord: begin
+              Assert(False, '.CheckIndent: Top type is Class or Record');
+              FStack.Pop;
+              FStack.Push(rtClass, 1);
+            end;
+          rtVar, rtConst, rtType: begin
+              // todo: rtClassDecl or rtClass ?
+              if (FPrevToken.ReservedType <> rtEquals)
+                and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
+                // There was a nested class/record declaration that ended
+                Assert(False, '.CheckIndent: Nested Class or Record ended');
+                FStack.Pop;
+                FStack.Pop;
+                FStack.Push(rtClass, 1);
+                DecPrevLineIndent;
+              end;
+            end;
         end;
 
-        Prev1 := FPrevToken;
-        TempWordIdx := FTokenIdx;
-        if Prev1 <> nil then begin
-          Assert(False, '.CheckIndent: Prev1 <> nil');
-          while (TempWordIdx > 0) and (Prev1.ReservedType in [rtComment, rtLineFeed]) do begin
-            Assert(False, '.CheckIndent: in while');
-            Dec(TempWordIdx);
-            Prev1 := FTokens[TempWordIdx];
-          end;
-
-          FunctDeclare := IsRType(Prev1, [rtEquals, rtColon, rtComma, rtLeftBr]);
-        end else begin
-          Assert(False, '.CheckIndent: Prev1 = nil');
-          FunctDeclare := False;
-        end;
-
+        FunctTypeDeclare := CheckForFunctTypeDeclare(Prev1);
         NoBlankLine := False;
         IsDelegate := False;
 
-        if not FunctDeclare then begin
+        if not FunctTypeDeclare then begin
           Assert(False, '.CheckIndent: FunctDeclare = False');
-          RemoveMe := 0;
-          repeat
-            Assert(False, '.CheckIndent: in repeat');
-            // search for the first token after the function name or the closing bracket
-            // procedure bla or procedure bla(...)
-            //              ^-- here              ^-- here
-            Inc(RemoveMe);
-            if TryGetToken(FTokenIdx + RemoveMe, Next) then
-              if Next.ReservedType = rtLeftBr then begin
-                // procedure bla( -> there is an opening bracket after the function name -> search for the closing bracket
-                repeat
-                  Inc(RemoveMe);
-                until not TryGetToken(FTokenIdx + RemoveMe, Next) or (Next.ReservedType = rtRightBr);
-              end;
-          until (Next = nil) or (Next.ReservedType in [rtSemiColon, rtBegin]);
-          // we found either a semicolon, or a 'begin' (or the end of the file)
-
-          if Next <> nil then begin
-            if Next.ReservedType = rtBegin then begin
-              // 'begin' before a SemiColon, assume that is a anonymous delegate...
-              Assert(False, '.CheckIndent: Next.ReservedType = rtBegin');
-              IsDelegate := True;
-              Next.AddOption(toFeedNewLine); // Force NewLine Feed!
-            end;
-
-            // todo: If it was a begin, should the following still be executed?
-            //       A delegate cannot be declared as forward after all
-            //       So maybe this should go into an else branch
-            Assert(False, '.CheckIndent: Next <> nil');
-            repeat
-              Assert(False, '.CheckIndent: in repeat');
-              Inc(RemoveMe);
-            until not TryGetToken(FTokenIdx + RemoveMe, Next) or not (Next.ReservedType in [rtLineFeed, rtComment]);
-
-            if IsRType(Next, [rtForward, rtExternal]) then begin
-              Assert(False, '.CheckIndent: Next = rtForward');
-              NoBlankLine := True;
-            end;
-          end;
+          CheckSpecialProcedure(RemoveMe, NoBlankLine, IsDelegate);
         end;
 
-        if not (FunctDeclare or FIsInInterfacePart or (FStack.GetTopType = rtClass)) then begin
-          Assert(False, '.CheckIndent: not (FunctDeclare or InInterface or (TopType = rtClass))');
+        if not FunctTypeDeclare and not FIsInInterfacePart and not (FStack.GetTopType = rtClass) then begin
+          Assert(False, '.CheckIndent: not FunctTypeDeclare and not FIsInInterface and not (TopType = rtClass))');
           if not FStack.HasType(rtProcedure) then begin
             Assert(False, '.CheckIndent: Stack.HasType(rtProcedure) = False');
             if not IsDelegate then begin
@@ -1548,19 +1621,12 @@ begin
 
           FStack.Push(rtProcedure, 0);
         end else begin
-          Assert(False, '.CheckIndent: (FunctDeclare or InInterface or (TopType = rtClass))');
           // Array of Procedure, Reference To Function...
           if (FStack.GetTopType = rtType) and IsRType(Prev1, [rtOf, rtOper, rtComma]) then begin
-            Assert(False, '.CheckIndent: type declaration');
-            // SetPrevLineIndent(NTmp);
-            //
-            // FStack.ProcLevel := FStack.ProcLevel + 1;
-            ////              FStack.Push(FCurrentRType  , 1);
-            //
+            // do nothing
           end else begin
-            Assert(False, '.CheckIndent: no type declaration');
-            if (not FunctDeclare) and (FStack.GetTopType <> rtClass) then begin
-              Assert(False, '.CheckIndent: TopType <> rtClass');
+            // todo: rtClass or also rtClassDecl
+            if (not FunctTypeDeclare) and (FStack.GetTopType <> rtClass) then begin
               FStack.nIndent := 0;
               AddToPrevLineIndent(_NTmp);
               if FSettings.IndentComments then
@@ -1631,6 +1697,7 @@ begin
             end;
 
           NewLine: begin
+              // todo: could this use TryGetToken instead of checking for FPrevToken <> nil ?
               if (FPrevToken <> nil) and (GetToken(FTokenIdx - 1).ReservedType <> rtLineFeed) then begin
                 FPrevLine := AssertLineFeedAfter(FTokenIdx - 1);
                 FPrevToken := FPrevLine;
@@ -1787,6 +1854,11 @@ begin
 
     rtSemiColon: begin
         Assert(False, '.CheckIndent: rtSemiColon');
+
+        if FStack.GetTopType = rtExternal then begin
+          FStack.Pop;
+        end;
+
         if not (FStack.GetTopType in [rtLeftBr, rtLeftHook, rtGenericStart]) then begin
           Assert(False, '.CheckIndent: Not (LeftBr or LeftHook)');
           if FStack.GetTopType = rtUses then begin
@@ -1812,7 +1884,8 @@ begin
             //   overload;
             RemoveMe := 1;
             while TryGetToken(FTokenIdx + RemoveMe, Next)
-              and IsRType(Next, [rtSemiColon, rtLineFeed, rtComment, rtFuncDirective, rtForward, rtExternal]) do begin
+              and IsRType(Next, [rtSemiColon, rtLineFeed, rtComment, rtCompIf, rtCompElse, rtCompEndif,
+                                 rtFuncDirective, rtForward, rtExternal]) do begin
               if IsRType(Next, [rtFuncDirective, rtForward, rtExternal]) then begin
                 AllowPop := False;
                 Break; //==v
@@ -1820,12 +1893,17 @@ begin
               Inc(RemoveMe);
             end
           end;
+
           if AllowPop then begin
             while (FStack.GetTopType in
               [rtDo, rtWhile, rtProcDeclare, rtThen, rtProgram, rtUses, rtColon, rtClassDecl, rtIfElse]) do begin
               Assert(False, '.CheckIndent: in while');
               FStack.Pop;
             end;
+          end;
+
+          if (FPrevToken.ReservedType = rtForward) and (FStack.GetTopType = rtProcedure) then begin
+            FStack.Pop;
           end;
 
           // Look for 'absolute' or a function directive before the next line feed
@@ -1846,8 +1924,11 @@ begin
               and (FStack.ProcLevel = 0)) then
               FWrapIndent := True
             else if FSettings.FeedAfterSemiColon then begin
-              if not (Next.ReservedType in [rtForward, rtExternal, rtFuncDirective, rtDefault]) then
-                AssertLineFeedAfter(FTokenIdx);
+              if not (Next.ReservedType in [rtForward, rtExternal, rtFuncDirective, rtDefault]) then begin
+                if Next.WordType <> wtCompDirective then begin
+                  AssertLineFeedAfter(FTokenIdx);
+                end;
+              end;
             end;
           end;
         end;
@@ -1879,7 +1960,10 @@ begin
     _PrevCommentLine := nil;
     Assert(False, '.CheckIndent: _PrevCommentLine=nil');
   end else begin
-    Assert(False, Format('.CheckIndent: _PrevCommentLine.NoOfSpaces=%d .OldNoOfSpaces=%d',
+    if not Assigned(_PrevCommentLine) then
+      Assert(False, '.CheckIndent: _PrevCommentLine=nil')
+    else
+      Assert(False, Format('.CheckIndent: _PrevCommentLine.NoOfSpaces=%d .OldNoOfSpaces=%d',
       [_PrevCommentLine.NoOfSpaces, _PrevCommentLine.OldNoOfSpaces]));
   end;
 
@@ -1926,15 +2010,16 @@ begin
         Assert(False, '.doExecute: Stack.Depth: ' + IntToStr(FStack.Depth) + ' .TopType: ' + GetEnumname(TypeInfo(TReservedType), Ord(FStack.GetTopType)) + ' .TopIndent: ' + IntToStr(FStack.GetTopIndent));
         Assert(False, '.doExecute: WrapIndent: ' + Ifthen(FWrapIndent, 'True', 'False'));
         Assert(False, '.doExecute: before CheckIndent: NTmp: ' + IntToStr(NTmp));
-        if Assigned(PrevCommentLine) then begin
+        if not Assigned(PrevCommentLine) then begin
           Assert(False, '.doExecute: before CheckIndent: PrevCommentLine=nil');
         end else begin
           Assert(False, Format('.doExecute: before CheckIndent: PrevCommentLine.NoOfSpaces=%d .OldNoOfSpaces=%d',
             [PrevCommentLine.NoOfSpaces, PrevCommentLine.OldNoOfSpaces]));
         end;
         CheckIndent(NTmp, PrevCommentLine);
+//        FTokens.WriteTo(Format('d:\output%.3d.txt', [FTokenIdx]));
         Assert(False, '.doExecute: after CheckIndent:  NTmp: ' + IntToStr(NTmp));
-        if Assigned(PrevCommentLine) then begin
+        if not Assigned(PrevCommentLine) then begin
           Assert(False, '.doExecute: after CheckIndent: PrevCommentLine=nil');
         end else begin
           Assert(False, Format('.doExecute: after CheckIndent: PrevCommentLine.NoOfSpaces=%d .OldNoOfSpaces=%d',
