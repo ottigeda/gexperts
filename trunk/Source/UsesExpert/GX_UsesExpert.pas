@@ -5,6 +5,7 @@ interface
 {$I 'GX_CondDefine.inc'}
 
 {.$DEFINE DEBUG_NOT_FOUND_UNITS}
+{.$DEFINE DEBUG_USE_STOPWATCH}
 
 {$IFOPT D-}
 {$UNDEF DEBUG_NOT_FOUND_UNITS}
@@ -14,7 +15,10 @@ uses
   Windows, SysUtils,
   Classes, Controls, Forms, Menus, ComCtrls, Buttons, ImgList, ImageList,
   ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types,
-  u_dzSpeedBitBtn, u_dzStopwatch,
+  u_dzSpeedBitBtn,
+  {$IFDEF DEBUG_USE_STOPWATCH}
+  u_dzStopwatch,
+  {$ENDIF}
   u_dzDpiScaleUtils,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
   GX_UnitExportsParser, GX_UsesExpertOptions, GX_UnitExportList,
@@ -48,7 +52,9 @@ type
     FUnitExportParserThread: TUnitExportParserThread;
     FSearchPathFavorites: Boolean;
     FFastAdd: Boolean;
+{$IF declared(TStopwatch)}
     FIdentifierTabTimer: TStopwatch;
+{$IFEND}
     procedure InternalExecute;
     function FindAction(out _Action: TBasicAction): Boolean;
     procedure HandleProjectChanged(_Sender: TObject);
@@ -815,8 +821,9 @@ procedure TUsesClauseMgrExpert.InternalExecute;
 var
   frm: TfmUsesManager;
 begin
+{$IF declared(TStopwatch)}
   FIdentifierTabTimer := TStopwatch_StartNew;
-
+{$IFEND}
   AssertIsDprOrPasOrInc(GxOtaGetCurrentSourceFile);
 
   frm := TfmUsesManager.Create(Application, Self);
@@ -873,7 +880,9 @@ end;
 
 constructor TfmUsesManager.Create(_Owner: TComponent; _UsesExpert: TUsesClauseMgrExpert);
 var
+{$IF declared(TStopwatch)}
   StopWatch: TStopwatch;
+{$IFEND}
   il: TImageList;
 begin
 {$IFOPT D+}
@@ -881,15 +890,19 @@ begin
 {$ENDIF D+}
   FUsesExpert := _UsesExpert;
 
+{$IF declared(TStopwatch)}
   StopWatch := TStopwatch_StartNew;
+{$IFEND}
   // To ensure we get the latest version of all units, start the thread again
   // it will run fast if everything is already cached.
   FUsesExpert.StartUnitParserThread;
 
-  TStopWatch_Stop(StopWatch);
+{$IF declared(TStopwatch)}
 {$IFOPT D+}
+  TStopWatch_Stop(StopWatch);
   SendDebugFmt('Starting Unit Parser Thread took %d milliseconds', [TStopWatch_ElapsedMilliseconds(StopWatch)]);
 {$ENDIF D+}
+{$IFEND}
 
   inherited Create(_Owner);
 
@@ -2478,7 +2491,9 @@ var
   Idx: Integer;
   Item: TUnitExport;
 {$ENDIF}
+{$IF declared(TStopwatch)}
   StopWatch: TStopwatch;
+{$IFEND}
 begin
   upt := FUsesExpert.FUnitExportParserThread;
   if Assigned(upt) and not upt.HasFinished then begin
@@ -2490,23 +2505,31 @@ begin
     Exit; //==>
   end;
 
+{$IF declared(TStopwatch)}
   StopWatch := TStopwatch_StartNew;
+{$IFEND}
   tim_Progress.Enabled := False;
   pnlIdentifiersProgress.Visible := False;
+{$IF declared(TStopwatch)}
   TStopWatch_Stop(StopWatch);
 {$IFOPT D+}
   SendDebugFmt('Hiding Panel and stopping timer took %d milliseconds', [TStopWatch_ElapsedMilliseconds(StopWatch)]);
 {$ENDIF D+}
+{$IFEND}
 
   if not Assigned(upt) then
     Exit; //==>
 
+{$IF declared(TStopwatch)}
   StopWatch := TStopwatch_StartNew;
+{$IFEND}
   TStringGrid_Clear(sg_Identifiers);
+{$IF declared(TStopwatch)}
   TStopWatch_Stop(StopWatch);
 {$IFOPT D+}
   SendDebugFmt('Clearing string grid took %d milliseconds', [TStopWatch_ElapsedMilliseconds(StopWatch)]);
 {$ENDIF D+}
+{$IFEND}
 
   FreeAndNil(FIdentifiers);
   FIdentifiers := upt.DetachIdentifiers;
@@ -2549,17 +2572,23 @@ begin
 {$IFOPT D+}
   SendDebug('Filtering identifiers');
 {$ENDIF D+}
+{$IF declared(TStopwatch)}
   StopWatch := TStopwatch_StartNew;
+{$IFEND}
   FilterIdentifiers;
+{$IF declared(TStopwatch)}
   TStopWatch_Stop(StopWatch);
 {$IFOPT D+}
   SendDebugFmt('Filtering identifiers took %d milliseconds', [TStopWatch_ElapsedMilliseconds(StopWatch)]);
 {$ENDIF D+}
+{$IFEND}
 
+{$IF declared(TStopwatch)}
+  {$IFOPT D+}
   TStopWatch_Stop(FUsesExpert.FIdentifierTabTimer);
-{$IFOPT D+}
   SendDebugFmt('Total time from calling the expert until after filtering: %d milliseconds', [TStopWatch_ElapsedMilliseconds(FUsesExpert.FIdentifierTabTimer)]);
-{$ENDIF D+}
+  {$ENDIF D+}
+{$IFEND}
 end;
 
 type
