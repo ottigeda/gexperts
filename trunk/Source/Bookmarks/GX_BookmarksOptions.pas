@@ -270,7 +270,7 @@ begin
  InitDPIScaler;
 
 {$IFDEF GX_DELPHIXE3_UP}
- // §§ -cInfo -oRZ : PanelColors > pay attention to this in the future!
+ // §3 -cInfo : PanelColors > pay attention to this in the future!
  // Alternatively we could use the same TPanel interceptor class as the Grep Results Options dialog
  paLBcolorBkg.   StyleElements:=[];
  paLBcolorBMline.StyleElements:=[];

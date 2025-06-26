@@ -96,7 +96,7 @@ begin
 
  aMsgDlg:=CreateMessageDialog(aMessage,aType,Buttons);
  if aFontName<>'' then aMsgDlg.Font.Name:=aFontName;
- // aMsgDlg.Font.Size:=9; //§§ -cCheck -oRZ : Setting aMsgDlg.Font.Size:=9 has no effect?!
+ // aMsgDlg.Font.Size:=9; //§3 -cInfo : Setting aMsgDlg.Font.Size:=9 has no effect?!
 
  try
   aMsgDlg.Caption:=aCaption;

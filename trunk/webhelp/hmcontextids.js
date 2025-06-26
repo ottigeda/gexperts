@@ -14,14 +14,14 @@ function hmGetContextId(query) {
 
 hmContextIds["55"]="readme_txt.html";
 hmContextIds["50"]="ccompatibility.html";
+hmContextIds["57"]="change-log-2006-2015.html";
+hmContextIds["56"]="credits.html";
 hmContextIds["12"]="gexperts_configuration.html";
 hmContextIds["29"]="editor_experts.html";
 hmContextIds["53"]="generalconfiguration.html";
 hmContextIds["30"]="ide_enhancements.html";
 hmContextIds["35"]="code_editor_enhancements.html";
 hmContextIds["32"]="editor_toolbar.html";
-hmContextIds["56"]="credits.html";
-hmContextIds["57"]="change-log-2006-2015.html";
 hmContextIds["21"]="ascii_chart.html";
 hmContextIds["10"]="backup_project.html";
 hmContextIds["5"]="class_browser.html";
@@ -62,5 +62,4 @@ hmContextIds["58"]="usesclausemanager.html";
 hmContextIds["60"]="editorbookmarks10edit.html";
 hmContextIds["61"]="editorbookmarks20select.html";
 hmContextIds["62"]="editorbookmarks30options.html";
-hmContextIds["72"]="editunitsearchpathoptions.html";
 hmContextIds["65"]="usesclausemanageroptions.html";

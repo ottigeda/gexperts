@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Under Construction" modified="2025-06-12T20:40:55.934+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Under Construction" modified="2025-06-22T20:17:19.425+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">EditUnitSearchPathOptions</title>
   <body>
     <header>
@@ -64,6 +64,6 @@
     </table></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xx </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xx </text></para>
-    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-right:6px; margin-bottom:24px; margin-left:6px;"></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-right:6px; margin-bottom:24px; margin-left:6px;"><image src="EditUnitSearchPathConfig01.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image><text styleclass="Image Caption" translate="true">&#32;</text><draft-comment id="ANNOTAE0CE1" width="16px" height="13px" modified="2025-06-22T20:17:14.138+02:00" styleclass="Comment"><![CDATA[Replace image (HelpCall missing)]]></draft-comment></para>
   </body>
 </topic>

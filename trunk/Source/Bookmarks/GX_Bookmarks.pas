@@ -464,7 +464,7 @@ begin
 
  EditView.BookmarkGoto(BM.Number);
  EditView.MoveViewToCursor;
- lbBookmarks.SetFocus; //§§ -cInfo -oRZ : MUST for updating IDE SBar, EditView.Paint has no effect
+ lbBookmarks.SetFocus; //§3 -cInfo : MUST for updating IDE SBar, EditView.Paint has no effect
  GxOtaFocusCurrentIDEEditControl;
  // EditView.Paint;
 end;
@@ -669,7 +669,7 @@ var ListBox      : TListBox absolute _Control;
 
   if FHideClassName then begin
    p:=pos('.',FuncProcName);
-   if p>0 then delete(FuncProcName,1,p-1); //§§ -cInfo -oRZ : group local + class methods
+   if p>0 then delete(FuncProcName,1,p-1); //§3 -cInfo : group local + class methods
    end;
 
   lbCanvas.TextOut(_Rect.Left+GutterL,TextTop,Shorten(lbCanvas,MaxL,FuncProcName,#133));
@@ -980,7 +980,6 @@ end;
 
 procedure TfmGxBookmarksForm.tbHelpClick(Sender:TObject);
 begin
- //CallHtmlHelp(HLP_HelpFileName,HLP_BookmarksHelpGeneral);
  GXContextHelp(Self,59);
 end;
 

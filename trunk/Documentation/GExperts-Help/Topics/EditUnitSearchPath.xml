@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Under Construction" modified="2025-06-12T20:40:48.291+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Under Construction" modified="2025-06-22T20:31:08.606+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Edit Unit Search Path</title>
   <body>
     <header>
@@ -62,9 +62,10 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The &quot;Edit Unit Search Path&quot; expert offers ...</text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xx </text></para>
-    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-right:6px; margin-bottom:24px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:20pt; color:#ff0000;" translate="true"> Picture</text><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The &quot;Edit Unit Search Path&quot; expert helps you editing the current project&apos;s unit search path ...</text></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-right:6px; margin-bottom:24px; margin-left:6px;"><image src="EditUnitSearchPathMain01.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text><draft-comment id="ANNOT6168AE" width="16px" height="13px" modified="2025-06-22T20:16:41.290+02:00" styleclass="Comment"><![CDATA[Replace image (HelpCall missing)]]></draft-comment></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-right:6px; margin-bottom:24px; margin-left:6px;"></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-right:6px; margin-bottom:24px; margin-left:6px;"><image src="EditUnitSearchPathMain02.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image><text styleclass="Image Caption" translate="true">&#32;</text><draft-comment id="ANNOT9BAC8B" width="16px" height="13px" modified="2025-06-22T20:16:51.736+02:00" styleclass="Comment"><![CDATA[Replace image (HelpCall missing)]]></draft-comment></para>
     <para styleclass="Normal"><anchor id="UsingTheGrid" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">

@@ -168,16 +168,29 @@ begin
 end;
 
 procedure TfmAbout.tim_ScrollTimer(Sender: TObject);
-var
-  Res: Integer;
+// var
+//   Res: Integer;
+
+ function MustRestart: Boolean;
+ var
+   TopLineIdx,
+   VisibleLinesCount: Integer;
+ begin
+  TopLineIdx := SendMessage(mmoContributors.Handle, EM_GETFIRSTVISIBLELINE, 0, 0);
+  VisibleLinesCount := mmoContributors.Height div (abs(mmoContributors.Font.Height) + 2);
+  Result := (TopLineIdx = succ(mmoContributors.Lines.Count - VisibleLinesCount));
+ end;
+
 begin
   inherited;
 
   if mmoContributors.Focused then
     Exit;
     
-  Res :=  SendMessage(mmoContributors.Handle, WM_VSCROLL, SB_LINEDOWN, 0);
-  if Res = 0 then begin
+  // Res :=
+  SendMessage(mmoContributors.Handle, WM_VSCROLL, SB_LINEDOWN, 0);
+  if MustRestart then begin
+    // if Res = 0 then begin - no correct restart!
     // we have reached the end
     SendMessage(mmoContributors.Handle, WM_VSCROLL, SB_TOP, 0);
   end;
@@ -196,7 +209,6 @@ const
 begin
   Result := LoadBitmap(HInstance, GX_ABOUT_ICON24);
 end;
-
 
 class function TfmAbout.GetVersionStr: string;
 resourcestring

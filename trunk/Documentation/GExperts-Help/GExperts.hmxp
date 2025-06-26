@@ -131,7 +131,7 @@
       <config-value name="deffont">font-family:Tahoma; font-size:9pt; color:#000000;</config-value>
       <config-value name="contents">Introduction</config-value>
       <config-value name="topicprefix"></config-value>
-      <config-value name="autohelpstart">72</config-value>
+      <config-value name="autohelpstart">73</config-value>
       <config-value name="autohelpincrement">1</config-value>
       <config-value name="autohelpanchor">0</config-value>
       <config-value name="searchpath">..\;..\Graphics\;..\Snippets\</config-value>
@@ -784,6 +784,7 @@ GExperts Help
       <file-mod href="ToDoGrid50FltrMain.xml" build="RZONLY"/>
       <file-mod href="ToDoGrid60FltrSub.xml" build="RZONLY"/>
       <file-mod href="EditUnitSearchPath.xml" build="RZONLY"/>
+      <file-mod href="EditUnitSearchPathOptions.xml" build="RZONLY"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>
