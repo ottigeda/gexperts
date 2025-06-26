@@ -17,7 +17,13 @@ uses
   GX_BaseForm in '..\..\source\Framework\GX_BaseForm.pas' {fmBaseForm},
   GX_BookmarkList in '..\..\source\Utils\GX_BookmarkList.pas',
   GX_Bookmarks in '..\..\source\Bookmarks\GX_Bookmarks.pas' {fmGxBookmarksForm},
-  GX_CheckButton in '..\..\source\Utils\GX_CheckButton.pas',
+  GX_BookmarksConst in '..\..\source\Bookmarks\GX_BookmarksConst.pas',
+  GX_BookmarksEdit in '..\..\source\Bookmarks\GX_BookmarksEdit.pas' {foBookmarksEdit},
+  GX_BookmarksFuncProcName in '..\..\Source\Bookmarks\GX_BookmarksFuncProcName.pas',
+  GX_BookmarksLists in '..\..\Source\Bookmarks\GX_BookmarksLists.pas',
+  GX_BookmarksOptions in '..\..\source\Bookmarks\GX_BookmarksOptions.pas' {foBookmarksOptions},
+  GX_BookmarksSelect in '..\..\source\Bookmarks\GX_BookmarksSelect.pas' {foBookmarksSelect},
+  GX_CheckButton in '..\..\Source\Utils\GX_CheckButton.pas',
   GX_CheckListBoxWithHints in '..\..\Source\ProjectOptionSets\GX_CheckListBoxWithHints.pas',
   GX_ClassBrowser in '..\..\source\ClassBrowser\GX_ClassBrowser.pas' {fmClassBrowser},
   GX_ClassHacks in '..\..\source\Framework\GX_ClassHacks.pas',
@@ -27,7 +33,7 @@ uses
   GX_ClassParsing in '..\..\source\ClassBrowser\GX_ClassParsing.pas' {fmClassParsing},
   GX_ClassProp in '..\..\source\ClassBrowser\GX_ClassProp.pas' {fmClassProp},
   GX_CleanDirectories in '..\..\source\CleanDirectories\GX_CleanDirectories.pas' {fmCleanDirectories},
-  GX_CleanDirectoriesOptions in '..\..\source\CleanDirectories\GX_CleanDirectoriesOptions.pas' {fmCleanDirectoriesOptions},
+  GX_CleanDirectoriesOptions in '..\..\Source\CleanDirectories\GX_CleanDirectoriesOptions.pas' {fmCleanDirectoriesOptions},
   GX_ClipboardHistory in '..\..\source\ClipboardHistory\GX_ClipboardHistory.pas' {fmClipboardHistory},
   GX_ClipboardOptions in '..\..\source\ClipboardHistory\GX_ClipboardOptions.pas' {fmClipboardOptions},
   GX_CodeFormatterBookmarks in '..\..\source\Formatter\GX_CodeFormatterBookmarks.pas',
@@ -42,6 +48,7 @@ uses
   GX_CodeFormatterGXConfigWrapper in '..\..\source\Formatter\GX_CodeFormatterGXConfigWrapper.pas',
   GX_CodeFormatterParser in '..\..\source\Formatter\engine\GX_CodeFormatterParser.pas',
   GX_CodeFormatterSettings in '..\..\source\Formatter\engine\GX_CodeFormatterSettings.pas',
+  GX_CodeFormatterSourceLineList in '..\..\Source\Formatter\GX_CodeFormatterSourceLineList.pas',
   GX_CodeFormatterStack in '..\..\source\Formatter\engine\GX_CodeFormatterStack.pas',
   GX_CodeFormatterTokenList in '..\..\source\Formatter\engine\GX_CodeFormatterTokenList.pas',
   GX_CodeFormatterTokens in '..\..\source\Formatter\engine\GX_CodeFormatterTokens.pas',
@@ -74,7 +81,6 @@ uses
   GX_eComment in '..\..\source\Editor\GX_eComment.pas' {fmCommentConfig},
   GX_eConvertStrings in '..\..\Source\Editor\GX_eConvertStrings.pas' {fmEConvertStrings},
   GX_eDate in '..\..\source\Editor\GX_eDate.pas' {fmDateFormat},
-  GX_EditBookmark in '..\..\source\Bookmarks\GX_EditBookmark.pas' {fmEditBookmarks},
   GX_EditorChangeServices in '..\..\source\Framework\GX_EditorChangeServices.pas',
   GX_EditorEnhancements in '..\..\source\experts\editorenhancements\GX_EditorEnhancements.pas',
   GX_EditorEnhancementsConfig in '..\..\Source\Experts\EditorEnhancements\GX_EditorEnhancementsConfig.pas' {fmEditorEnhancementsConfig},
@@ -144,7 +150,7 @@ uses
   GX_HideNavbar in '..\..\source\Experts\EditorEnhancements\GX_HideNavbar.pas',
   GX_HideNonVisualComps in '..\..\source\HideNonvisualComponents\GX_HideNonVisualComps.pas',
   GX_HintWindow in '..\..\Source\Framework\GX_HintWindow.pas',
-  GX_HotkeyDrawFix in '..\..\source\utils\GX_HotkeyDrawFix.pas',
+  GX_HotkeyDrawFix in '..\..\Source\Utils\GX_HotkeyDrawFix.pas',
   GX_IconMessageBox in '..\..\source\Framework\GX_IconMessageBox.pas',
   GX_IdeApplicationSettingsEnhancer in '..\..\Source\IDE\GX_IdeApplicationSettingsEnhancer.pas',
   GX_IdeBuildEventFavoriteEdit in '..\..\Source\IDE\GX_IdeBuildEventFavoriteEdit.pas' {f_IdeBuildEventFavoriteEdit},
@@ -154,6 +160,7 @@ uses
   GX_IdeDock in '..\..\source\IDEDocking\GX_IdeDock.pas' {fmIdeDockForm},
   GX_IdeDockFormEnhancer in '..\..\Source\IDE\GX_IdeDockFormEnhancer.pas',
   GX_IdeEnhance in '..\..\source\IDE\GX_IdeEnhance.pas',
+  GX_IdeEvaluateModifyEnhancer in '..\..\Source\IDE\GX_IdeEvaluateModifyEnhancer.pas',
   GX_IdeFavoritesList in '..\..\Source\IDE\GX_IdeFavoritesList.pas' {f_GxIdeFavoritesList},
   GX_IdeFormChangeManager in '..\..\Source\IDE\GX_IdeFormChangeManager.pas',
   GX_IdeFormEnhancer in '..\..\source\IDE\GX_IdeFormEnhancer.pas',
@@ -172,6 +179,7 @@ uses
   GX_IdeToolPropertiesEnhancer in '..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas',
   GX_IdeSplitterVisibility in '..\..\Source\IDE\GX_IdeSplitterVisibility.pas',
   GX_IdeUtils in '..\..\source\Utils\GX_IdeUtils.pas',
+  GX_IndexTypes in '..\..\source\Utils\GX_IndexTypes.pas',
   GX_InsertAutoTodo in '..\..\Source\AutoTodo\GX_InsertAutoTodo.pas' {fmInsertAutoTodoForm},
   GX_KbdShortCutBroker in '..\..\source\Framework\GX_KbdShortCutBroker.pas',
   GX_KeyboardShortcuts in '..\..\Source\KeyboardShortcuts\GX_KeyboardShortcuts.pas' {fmGxKeyboardShortcuts},
@@ -240,7 +248,7 @@ uses
   GX_ShLwApi in '..\..\Source\Utils\GX_ShLwApi.pas',
   GX_SourceExport in '..\..\source\SourceExport\GX_SourceExport.pas' {fmSourceExport},
   GX_SourceExportOptions in '..\..\source\SourceExport\GX_SourceExportOptions.pas' {fmSourceExportOptions},
-  GX_Splitter in '..\..\Source\Utils\GX_Splitter.pas',
+  GX_Splitter in '..\..\source\Utils\GX_Splitter.pas',
   GX_StringGridDrawFix in '..\..\Source\Utils\GX_StringGridDrawFix.pas',
   GX_StringList in '..\..\Source\Utils\GX_StringList.pas',
   GX_SynMemoUtils in '..\..\source\Framework\GX_SynMemoUtils.pas',
@@ -267,9 +275,7 @@ uses
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
   GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas';
 
-// using this resouce results in an Access Violiation on closing the IDE
-{.$R '..\..\Source\GExperts_manifest.res'}
-{$R '..\..\images\GXIcons.res''}
+{$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
 {$R '..\..\Binaries\ConvertStrings.res' '..\..\Binaries\ConvertStrings.rc'}
 {$R *_version.res}
