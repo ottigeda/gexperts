@@ -30,15 +30,15 @@ uses
   StdCtrls,
   ExtCtrls,
   Grids,
-{$ifNdef dzVCL_DISABLE_DBGRID_SUPPORT}
+{$IFNDEF dzVCL_DISABLE_DBGRID_SUPPORT}
   DBGrids,
-{$endif dzVCL_DISABLE_DBGRID_SUPPORT}
+{$ENDIF dzVCL_DISABLE_DBGRID_SUPPORT}
   Buttons,
   Menus,
   Themes,
   MultiMon, // this unit doesn't exist in older Delphi versions, use a unit alias like Multimon=Windows in that case
 {$IFDEF HAS_UNIT_SYSTEM_ACTIONS}
-  System.Actions,
+  Actions,
 {$ENDIF}
 {$IFDEF HAS_UNIT_SYSTEM_UITYPES}
   UITypes,
@@ -185,14 +185,14 @@ function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet;
 function TGrid_Resize(_Grid: TCustomGrid; _Options: TResizeOptionSet;
   const _ConstantCols: array of Integer; _RowOffset: Integer; out _RequiredSize: Integer): Boolean; overload;
 
-{$ifNdef dzVCL_DISABLE_DBGRID_SUPPORT}
+{$IFNDEF dzVCL_DISABLE_DBGRID_SUPPORT}
 ///<summary> Resizes the columns of a TDbGrid to fit their contents
 ///          @param Grid is the TCustomDbGrid to work on
 ///          @param Options is a TResizeOptionSet specifying additional options,
 ///                         defaults to an empty set. </summary>
 procedure TDbGrid_Resize(_Grid: TCustomDbGrid; _Options: TResizeOptionSet = []; _MinWidth: Integer = 100); overload;
 procedure TDbGrid_Resize(_Grid: TCustomDbGrid; _Options: TResizeOptionSet; _MinWidths: array of Integer); overload;
-{$endif dzVCL_DISABLE_DBGRID_SUPPORT}
+{$ENDIF dzVCL_DISABLE_DBGRID_SUPPORT}
 
 ///<summary>
 /// Reduce the width of grid columns so there is no horizontal scroll bar.
@@ -203,7 +203,7 @@ procedure TGrid_RestrictToGridWdith(_Grid: TCustomGrid; _ConstantCols: array of 
 
 procedure TStringGrid_AdjustRowHeight(_sg: TStringGrid);
 
-{$ifNdef dzVCL_DISABLE_DBGRID_SUPPORT}
+{$IFNDEF dzVCL_DISABLE_DBGRID_SUPPORT}
 ///<summary>
 /// Adds a column to the TDbGrid
 /// @param Field is the field name
@@ -216,7 +216,7 @@ function TDbGrid_AddColumn(_dbg: TDBGrid; const _Field: string; const _Title: st
 ///<summary>
 /// Returns the value of the protected field VisibleRowCount </summary>
 function TDbGrid_VisibleRowCount(_dbg: TDBGrid): Integer;
-{$endif dzVCL_DISABLE_DBGRID_SUPPORT}
+{$ENDIF dzVCL_DISABLE_DBGRID_SUPPORT}
 
 ///<summary>
 /// Returns the content of a Grid as a string
@@ -669,7 +669,9 @@ procedure TTreeView_ClearWithObjects(_Tree: TTreeView);
 function TPageControl_AddTabSheet(_PageControl: TPageControl; const _Caption: string): TTabSheet;
 
 ///<summary>
-/// Inserts a TTabSheet with the given caption at the given index into the page control and returns it </summary>
+/// Inserts a TTabSheet with the given caption at the given index into the page control and returns it
+/// @param Idx is the index at which to insert the tab sheet, can be negative which means
+///        insert from the right (PageControl.PageCount + Idx) </summary>
 function TPageControl_InsertTabSheet(_PageControl: TPageControl; _Idx: Integer;
   const _Caption: string): TTabSheet;
 
@@ -798,23 +800,17 @@ procedure TControl_SetEnabled(_Control: TControl; _Enabled: Boolean);
 procedure TControls_SetEnabled(_Controls: array of TControl; _Enabled: Boolean; _Recursive: Boolean = False); overload;
 procedure TControls_SetEnabled(_Enabled: Boolean; _Controls: array of TControl; _Recursive: Boolean = False); overload;
 procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1: TControl; _Recursive: Boolean = False); overload;
-{$IFDEF SUPPORTS_INLINE}inline;
-{$ENDIF}
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2: TControl; _Recursive: Boolean = False); overload;
-{$IFDEF SUPPORTS_INLINE}inline;
-{$ENDIF}
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3: TControl; _Recursive: Boolean = False); overload;
-{$IFDEF SUPPORTS_INLINE}inline;
-{$ENDIF}
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4: TControl; _Recursive: Boolean = False); overload;
-{$IFDEF SUPPORTS_INLINE}inline;
-{$ENDIF}
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4, _ctl5: TControl; _Recursive: Boolean = False); overload;
-{$IFDEF SUPPORTS_INLINE}inline;
-{$ENDIF}
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 procedure TControls_SetEnabled(_Enabled: Boolean; _ctl1, _ctl2, _ctl3, _ctl4, _ctl5, _ctl6: TControl; _Recursive: Boolean = False); overload;
-{$IFDEF SUPPORTS_INLINE}inline;
-{$ENDIF}
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
 ///<summary> Calls protected TControl.Resize (which calls TControl.OnResize if assigned) </summary>
 procedure TControl_Resize(_Control: TControl);
@@ -1264,6 +1260,15 @@ function AddLabeledControl(_Idx: Integer; const _Caption: string; _Ctrl: TContro
 function CalcTextHeight(_Ctrl: TWinControl; const _Text: string; _Width: Integer = -1): Integer; overload;
 function CalcTextHeight(_Ctrl: TGraphicControl; const _Text: string; _Width: Integer = -1): Integer; overload;
 
+///<summary>
+/// Adjusts the height of the control so it fits the text and returns the difference between the new and the
+/// old height so other controls can be moved up or down and the form's height can be adjusted.
+/// @param Ctrl is the TGraphicsControl to adjust
+/// @param VOffset is the vertical offset of the first text line (defaults to 0)
+/// @NOTE: Do not let any gap above the control at design time, instead pass a VOffset. So this function
+///        will also work with an empty text. </summary>
+function TGraphicControl_AdjustHeight(_Ctrl: TGraphicControl; const _Text: string; _VOffset: Integer = 0): Integer;
+
 ///<summary> I don't quite remember what this is supposed to do and where it is used,
 ///          Please, if you find a call to this function somewhere, tell me. -- twm </summary>
 function TStringGrid_IsScrollBarVisible(_Grid: TCustomGrid; _Code: Integer): Boolean;
@@ -1566,6 +1571,10 @@ function TApplication_GetExePathBS: string;
 ///<summary>
 /// @returns the filename of the executable without path and extension </summary>
 function TApplication_GetFilenameOnly: string;
+
+///<summary>
+/// @returns the filename of the executable without path but with extension </summary>
+function TApplication_GetFilename: string;
 
 ///<summary>
 /// @returns true, if the application's executable contains version information </summary>
@@ -1909,7 +1918,6 @@ procedure TMonitor_MakeFullyVisible(_MonitorHandle: HMonitor; var _Rect: TRectLT
 ///          False, if not </summary>
 function TScreen_TryFindFormByName(const _Name: string; out _frm: TForm): Boolean;
 
-
 ///<summary>
 /// Tries to get the primary monitor.
 /// @param Monitor returns the primary monitor, only valid if Result = True
@@ -2030,10 +2038,7 @@ uses
   u_dzStringArrayUtils,
   u_dzNamedThread;
 
-function _(const _s: string): string;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+function _(const _s: string): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
   Result := dzDGetText(_s, DZLIB_TRANSLATION_DOMAIN);
 end;
@@ -2116,10 +2121,10 @@ end;
 type
   TGridHack = class(TCustomGrid);
 
-{$ifNdef dzVCL_DISABLE_DBGRID_SUPPORT}
+{$IFNDEF dzVCL_DISABLE_DBGRID_SUPPORT}
 type
   TDbGridHack = class(TCustomDbGrid);
-{$endif dzVCL_DISABLE_DBGRID_SUPPORT}
+{$ENDIF dzVCL_DISABLE_DBGRID_SUPPORT}
 
 function TGrid_GetText(_Grid: TCustomGrid; _IncludeFixed: Boolean = False): string;
 var
@@ -2975,13 +2980,13 @@ var
   ColWidth: Integer;
   ColText: string;
 begin
-{$ifdef dzVCL_DISABLE_DBGRID_SUPPORT}
-  if Assigned(_Grid) and ( (_Grid.ClassName = 'TCustomDBGrid') or (_Grid.ClassName = 'TDBGrid') ) then
+{$IFDEF dzVCL_DISABLE_DBGRID_SUPPORT}
+  if Assigned(_Grid) and ((_Grid.ClassName = 'TCustomDBGrid') or (_Grid.ClassName = 'TDBGrid')) then
     if _Col = 0 then
-{$else dzVCL_DISABLE_DBGRID_SUPPORT}
+{$ELSE dzVCL_DISABLE_DBGRID_SUPPORT}
   if TCustomGrid(_Grid) is TCustomDbGrid then
     if (dgIndicator in TDbGridHack(_Grid).Options) and (_Col = 0) then
-{$endif dzVCL_DISABLE_DBGRID_SUPPORT}
+{$ENDIF dzVCL_DISABLE_DBGRID_SUPPORT}
       Exit; //==>
   ColText := _Grid.GetEditText(_Col, _Row);
   ColWidth := _Grid.Canvas.TextWidth(ColText);
@@ -3195,7 +3200,7 @@ begin
   _sg.DefaultRowHeight := rh + 4;
 end;
 
-{$ifNdef dzVCL_DISABLE_DBGRID_SUPPORT}
+{$IFNDEF dzVCL_DISABLE_DBGRID_SUPPORT}
 function TDbGrid_CalcAdditionalWidth(_Grid: TCustomDbGrid): Integer;
 var
   Grid: TDbGridHack;
@@ -3364,7 +3369,7 @@ function TDbGrid_VisibleRowCount(_dbg: TDBGrid): Integer;
 begin
   Result := TDbGridHack(_dbg).VisibleRowCount;
 end;
-{$endif dzVCL_DISABLE_DBGRID_SUPPORT}
+{$ENDIF dzVCL_DISABLE_DBGRID_SUPPORT}
 
 function TPageControl_AddTabSheet(_PageControl: TPageControl; const _Caption: string): TTabSheet;
 begin
@@ -3377,6 +3382,8 @@ end;
 function TPageControl_InsertTabSheet(_PageControl: TPageControl; _Idx: Integer;
   const _Caption: string): TTabSheet;
 begin
+  if _Idx < 0 then
+    _Idx := _PageControl.PageCount + _Idx;
   Result := TPageControl_AddTabSheet(_PageControl, _Caption);
   Result.PageIndex := _Idx;
 end;
@@ -4594,13 +4601,32 @@ type
 
 function CalcTextHeight(_Ctrl: TGraphicControl; const _Text: string; _Width: Integer = -1): Integer; overload;
 var
+  ctrl: TGraphicControlHack absolute _Ctrl;
   Rect: TRect;
 begin
   Rect := _Ctrl.BoundsRect;
   if _Width <> -1 then
     Rect.Right := Rect.Left + _Width - 1;
-  Result := DrawText(TGraphicControlHack(_Ctrl).Canvas.Handle, PChar(_Text),
+  Result := DrawText(ctrl.Canvas.Handle, PChar(_Text),
     Length(_Text), Rect, DT_LEFT or DT_WORDBREAK or DT_CALCRECT);
+end;
+
+function TGraphicControl_AdjustHeight(_Ctrl: TGraphicControl; const _Text: string; _VOffset: Integer = 0): Integer;
+var
+  ctrl: TGraphicControlHack absolute _Ctrl;
+  h: Integer;
+  r: TRect;
+  Res: Integer;
+begin
+  h := ctrl.Height;
+  if _Text = '' then
+    Result := -h
+  else begin
+    r := Rect(0, _VOffset, _Ctrl.Width, h);
+    Res := DrawText(ctrl.Canvas.Handle, PChar(_Text), Length(_Text), r, DT_LEFT or DT_WORDBREAK or DT_CALCRECT);
+    ctrl.ClientHeight := Res + _VOffset;
+    Result := Res + _VOffset - h;
+  end;
 end;
 
 type
@@ -5730,7 +5756,12 @@ end;
 
 function TApplication_GetFilenameOnly: string;
 begin
-  Result := ChangeFileExt(ExtractFileName(Application.ExeName), '');
+  Result := ChangeFileExt(TApplication_GetFilename, '');
+end;
+
+function TApplication_GetFilename: string;
+begin
+  Result := ExtractFileName(Application.ExeName);
 end;
 
 function TApplication_GetExePath: string;

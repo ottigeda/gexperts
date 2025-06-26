@@ -251,7 +251,9 @@ function ShutdownWindows(_Force, _Reboot: Boolean): Boolean;
 
 ///<summary>
 /// @Returns the volume name of the given drive
-/// @raises EOsError if an error occurs (e.g. if the drive does not exist) </summary>
+/// @raises EOsError if an error occurs (e.g. if the drive does not exist)
+/// @NOTE: For drives mapped to a share, this will return the share name *without*
+///        the server (e.g. x: mapped to \\server\SomeShare will return 'SomeShare' </summary>
 function GetHdVolumeName(_DriveChar: Char; _RaiseException: Boolean = False): string;
 function TryGetHdVolumeName(_DriveChar: Char; out _Name: string): Boolean;
 

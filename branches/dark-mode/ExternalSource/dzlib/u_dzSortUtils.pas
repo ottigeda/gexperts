@@ -16,10 +16,12 @@ type
   ///          <0 if Item[Idx1] < Item[Idx2]
   ///          >0 if Item[Idx1] > Item[Idx2] </summary>
   TCompareItemsMeth32 = function(_Idx1, _Idx2: Integer): Integer of object;
+  TCompareItemsMeth = TCompareItemsMeth32;
   TCompareItemsMeth64 = function(_Idx1, _Idx2: Int64): Integer of object;
   ///<summary>
   /// Swap the items at the given indexes </summary>
   TSwapItemsMeth32 = procedure(_Idx1, _Idx2: Integer) of object;
+  TSwapItemsMeth = TSwapItemsMeth32;
   TSwapItemsMeth64 = procedure(_Idx1, _Idx2: Int64) of object;
 
 type

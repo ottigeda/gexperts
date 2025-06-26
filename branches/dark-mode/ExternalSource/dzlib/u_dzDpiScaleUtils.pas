@@ -46,10 +46,10 @@ type
     FDesignDpi: Integer;
     FCurrentDpi: Integer;
   public
-    procedure Init(_Frm: TCustomForm); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure Init(_Frm: TCustomForm); overload;
     procedure Init(_Dpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     procedure Init(_DesignDpi, _CurrentDpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
-    procedure SetCurrentDpi(_Frm: TCustomForm); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
+    procedure SetCurrentDpi(_Frm: TCustomForm); overload;
     procedure SetCurrentDpi(_Dpi: Integer); overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     function Calc(_Value: Integer): Integer; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}
     function Calc(const _Value: TRect): TRect; overload; {$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}

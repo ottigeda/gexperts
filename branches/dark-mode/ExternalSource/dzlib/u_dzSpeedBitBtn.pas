@@ -247,10 +247,10 @@ var
     X := FOrigMargin;
     if X = -1 then begin
       HorizontalAlignment := dthaCenter;
-      r := Rect(2, 0, _w - 3, _h);
+      r := Rect(2, 0, _w - 3, _h - 1);
     end else begin
       HorizontalAlignment := dthaLeft;
-      r := Rect(X + 2, 0, _w - 3, _h);
+      r := Rect(X + 2, 0, _w - 3, _h - 1);
     end;
     TCanvas_DrawTextSingleLine(cnv, FCaption, r, HorizontalAlignment, dtvaCenter, []);
   end;
@@ -264,7 +264,7 @@ var
   begin
     X := FOrigMargin;
     if X = -1 then begin
-        // center
+      // center
       r := Rect(2, 0, _w - 3, _h - 4);
       TCanvas_DrawText(cnv, FCaption, r, [dtfCalcRect, dtfCenter, dtfWordBreak]);
       TextHeight := r.Bottom - r.Top;

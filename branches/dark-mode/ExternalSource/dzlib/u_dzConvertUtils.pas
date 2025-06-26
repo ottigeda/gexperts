@@ -25,6 +25,7 @@ var
 
 {$IF Declared(FormatSettings)}
 function DecimalSeparator: Char; inline;
+function ThousandSeparator: Char; inline;
 {$IFEND}
 
 type
@@ -177,26 +178,19 @@ function isNumberN(const _s: string; _Base: TBaseN): Integer;
 
 ///<summary>
 /// Reduces an Integer to a Byte value by cutting it off at 0 and 255 </summary>
-function ReduceToByte(const _Value: Integer): Byte;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+function ReduceToByte(const _Value: Integer): Byte; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-function ReduceToInt8(const _Value: Integer): Int8;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+function ReduceToInt8(const _Value: Integer): Int8; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-function ReduceToUInt8(const _Value: Integer): UInt8;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+function ReduceToUInt8(const _Value: Integer): UInt8; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-function ReduceToInt16(const _Value: Integer): Int16;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+function ReduceToInt16(const _Value: Integer): Int16; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-function ReduceToUInt16(const _Value: Integer): UInt16;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+function ReduceToUInt16(const _Value: Integer): UInt16; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-function ReduceToInt32(const _Value: Int64): Int32;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+function ReduceToInt32(const _Value: Int64): Int32; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
-function ReduceToUInt32(const _Value: Int64): UInt32;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+function ReduceToUInt32(const _Value: Int64): UInt32; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
 ///<summary>
 /// Converts a string of the form '-hh:mm:ss', 'hh:mm:ss',
@@ -217,25 +211,35 @@ function TimeToSeconds(_Zeit: TDateTime): Integer; deprecated;
 ///<summary>
 /// Converts a string to an integer.
 /// If s can not be converted, it returns the Default.
-/// @param(s string to convert)
-/// @param(Default value to return if s can not be converted)
+/// @param s string to convert
+/// @param Default value to return if s can not be converted
+/// @param ThousandSeparator is a character to be used for grouping 3 digits.
+///         Defaults to #0 which means that the string must not contain such a separator.
+///         Popular values are comma (','), point ('.'), space (' ') and single quote ('''').
+///         The function will not check for validity but simply delete any occurence of this character
+///         from the string before trying to convert the remaining string to an integer.
 /// @returns(the integer value of s or Default, if s can not be converted) </summary>
-function Str2Int(const _s: string; _Default: Integer): Integer; overload;
+function Str2Int(const _s: string; _Default: Integer; _ThousandSeparator: Char = #0): Integer; overload;
 
 ///<summary>
 /// Converts a string to an integer.
 /// If s can not be converted, it raises an exception EStringConvertError.
 /// @param s string to convert
 /// @param Source string to include in the exception message
+/// @param ThousandSeparator is a character to be used for grouping 3 digits.
+///         Defaults to #0 which means that the string must not contain such a separator.
+///         Popular values are comma (','), point ('.'), space (' ') and single quote ('''').
+///         The function will not check for validity but simply delete any occurence of this character
+///         from the string before trying to convert the remaining string to an integer.
 /// @returns the integer value of s
 /// @raises EStringConvertError if s can not be converted </summary>
-function Str2Int(const _s: string; const _Source: string): Integer; overload;
+function Str2Int(const _s: string; const _Source: string; _ThousandSeparator: Char = #0): Integer; overload;
 
 ///<summary>
 /// Does the same as TryStrToInt but does not change Value if the string cannot be converted. </summary>
-function TryStr2Int(const _s: string; var _Value: Integer): Boolean; overload;
+function TryStr2Int(const _s: string; var _Value: Integer; _ThousandSeparator: Char = #0): Boolean; overload;
 {$IFDEF SUPPORTS_UNICODE}
-function TryStr2Int(const _s: AnsiString; var _Value: Integer): Boolean; overload;
+function TryStr2Int(const _s: AnsiString; var _Value: Integer; _ThousandSeparator: AnsiChar = #0): Boolean; overload;
 {$ENDIF SUPPORTS_UNICODE}
 
 ///<summary>
@@ -373,73 +377,59 @@ type
   public
     ///<summary>
     /// Converts Nano units to full units (divide by MilliToNanoFactor) </summary>
-    class function NanoToMilli(_NanoUnits: Int64): Extended; overload; static;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+    class function NanoToMilli(_NanoUnits: Int64): Extended; overload; static; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
     ///<summary>
     /// Converts Nano units to Milli units (divide by MilliToNanoFactor) </summary>
-    class function NanoToMilli(_NanoUnits: Extended): Extended; overload; static;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+    class function NanoToMilli(_NanoUnits: Extended): Extended; overload; static; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
     ///<summary>
     /// Converts Milli units to Nano units (multiply with MilliToNanoFactor) </summary>
-    class function MilliToNano(_NanoUnits: Int64): Int64; overload; static;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+    class function MilliToNano(_NanoUnits: Int64): Int64; overload; static; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
     ///<summary>
     /// Converts Milli units to Nano units (multiply with MilliToNanoFactor) </summary>
-    class function MilliToNano(_NanoUnits: Extended): Extended; overload; static;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+    class function MilliToNano(_NanoUnits: Extended): Extended; overload; static; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
     ///<summary>
     /// Converts Nano units to full units (divide by UnitToNanoFactor) </summary>
-    class function NanoToUnit(_NanoUnits: Int64): Extended; overload; static;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+    class function NanoToUnit(_NanoUnits: Int64): Extended; overload; static; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
     ///<summary>
     /// Converts Nano units to full units (divide by UnitToNanoFactor) </summary>
-    class function NanoToUnit(_NanoUnits: Extended): Extended; overload; static;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+    class function NanoToUnit(_NanoUnits: Extended): Extended; overload; static; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
     ///<summary>
     /// Converts Micro units to full units (divide by UnitToMicroFactor) </summary>
-    class function MicroToUnit(_MicroUnits: Int64): Extended; overload; static;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+    class function MicroToUnit(_MicroUnits: Int64): Extended; overload; static; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
     ///<summary>
     /// Converts Micro units to full units (divide by UnitToMicroFactor) </summary>
-    class function MicroToUnit(_MicroUnits: Extended): Extended; overload; static;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+    class function MicroToUnit(_MicroUnits: Extended): Extended; overload; static; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
     ///<summary>
     /// Converts Milli units to full units (divide by UnitToMilliFactor) </summary>
-    class function MilliToUnit(_MilliUnits: Int64): Extended; overload; static;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+    class function MilliToUnit(_MilliUnits: Int64): Extended; overload; static; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
     ///<summary>
     /// Converts Milli units to full units (divide by UnitToMilliFactor) </summary>
-    class function MilliToUnit(_MilliUnits: Extended): Extended; overload; static;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+    class function MilliToUnit(_MilliUnits: Extended): Extended; overload; static; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
     ///<summary>
     /// Converts full units to micro units units (multiply by UnitToMicroFactor) </summary>
-    class function UnitToMicro(_Units: Extended): Extended; overload; static;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+    class function UnitToMicro(_Units: Extended): Extended; overload; static; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
     ///<summary>
     /// Converts full units to micro units units (multiply by UnitToMicroFactor) </summary>
-    class function UnitToMicro(_Units: Int64): Int64; overload; static;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+    class function UnitToMicro(_Units: Int64): Int64; overload; static; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
     ///<summary>
     /// Converts Milli-Units to full units (divide by KiloToUnitFactor) </summary>
-    class function UnitToKilo(_Units: Int64): Extended; overload; static;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+    class function UnitToKilo(_Units: Int64): Extended; overload; static; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
     ///<summary>
     /// Converts Milli-Units to full units (divide by KiloToUnitFactor) </summary>
-    class function UnitToKilo(_Units: Extended): Extended; overload; static;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+    class function UnitToKilo(_Units: Extended): Extended; overload; static; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
   end;
 {$ENDIF SUPPORTS_ENHANCED_RECORDS}
 
@@ -499,8 +489,7 @@ function ByteArr2LongWord(const _Arr: array of Byte; _MsbFirst: Boolean = False)
 /// aka converts intel (little endian) to motorola (big endian) byte order format
 /// (This is just an alias for system.swap for consistency with Swap32.)
 ///</summary
-function Swap16(_Value: Word): Word;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+function Swap16(_Value: Word): Word; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 
 ///<summary>
 /// returns a 32 bit value in reversed byte order e.g. $12345678 -> $78563412
@@ -774,8 +763,7 @@ uses
   StrUtils,
   u_dzStringUtils;
 
-function _(const _s: string): string;
-{(*}{$IFDEF SUPPORTS_INLINE}inline;{$ENDIF}{*)}
+function _(const _s: string): string; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
   Result := dzDGetText(_s, 'dzlib');
 end;
@@ -1178,6 +1166,11 @@ function DecimalSeparator: Char; inline;
 begin
   Result := FormatSettings.DecimalSeparator;
 end;
+
+function ThousandSeparator: Char; inline;
+begin
+  Result := FormatSettings.ThousandSeparator;
+end;
 {$IFEND}
 
 function Float2Str(_flt: Extended; _DecSeparator: Char = '.'): string;
@@ -1233,39 +1226,59 @@ begin
     end;
 end;
 
-function Str2Int(const _s: string; _Default: Integer): Integer;
+function TryRemoveThousandSeparator(const _s: string; out _Filtered: string; _ThousandSeparator: Char): Boolean; {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+begin
+  Result := (_ThousandSeparator <> #0);
+  if Result then begin
+    _Filtered := ReplaceChars(_s, _ThousandSeparator, '');
+  end;
+end;
+
+function Str2Int(const _s: string; _Default: Integer; _ThousandSeparator: Char = #0): Integer;
 var
+  s: string;
   e: Integer;
 begin
-  Val(_s, Result, e);
+  if TryRemoveThousandSeparator(_s, s, _ThousandSeparator) then
+    Val(s, Result, e)
+  else
+    Val(_s, Result, e);
   if e <> 0 then
     Result := _Default
 end;
 
-function Str2Int(const _s: string; const _Source: string): Integer;
+function Str2Int(const _s: string; const _Source: string; _ThousandSeparator: Char = #0): Integer;
 var
+  s: string;
   e: Integer;
 begin
-  Val(_s, Result, e);
+  if TryRemoveThousandSeparator(_s, s, _ThousandSeparator) then
+    Val(s, Result, e)
+  else
+    Val(_s, Result, e);
   if e <> 0 then
     raise EStringConvertError.CreateFmt(_('"%s" is not a valid integer value: %s'), [_s, _Source]);
 end;
 
-function TryStr2Int(const _s: string; var _Value: Integer): Boolean;
+function TryStr2Int(const _s: string; var _Value: Integer; _ThousandSeparator: Char = #0): Boolean;
 var
+  s: string;
   e: Integer;
   v: Integer;
 begin
-  Val(_s, v, e);
+  if TryRemoveThousandSeparator(_s, s, _ThousandSeparator) then
+    Val(s, v, e)
+  else
+    Val(_s, v, e);
   Result := (e = 0);
   if Result then
     _Value := v;
 end;
 
 {$IFDEF SUPPORTS_UNICODE}
-function TryStr2Int(const _s: AnsiString; var _Value: Integer): Boolean;
+function TryStr2Int(const _s: AnsiString; var _Value: Integer; _ThousandSeparator: AnsiChar = #0): Boolean;
 begin
-  Result := TryStr2Int(string(_s), _Value);
+  Result := TryStr2Int(string(_s), _Value, Char(_ThousandSeparator));
 end;
 {$ENDIF SUPPORTS_UNICODE}
 
