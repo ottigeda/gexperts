@@ -75,7 +75,7 @@ pagedata = [ ["./ascii_chart.html","Experts &#62; ASCII Chart","ASCII Chart",""]
 ["./components_to_code.html","Experts &#62; Components to Code","Components to Code",""],
 ["./component_grid.html","Experts &#62; Component Grid","Component Grid",""],
 ["./copycomponentnames.html","Experts &#62; Copy Component Names","Copy Component Names",""],
-["./credits.html","GExperts &#62; Credits","Credits Major GExperts contributors and donors",""],
+["./credits.html","GExperts &#62; Credits","Credits Major GExperts contributors",""],
 ["./debug_window.html","GExperts &#62; Debug Window and DbugIntf.pas","Debug Window and DbugIntf.pas",""],
 ["./editorbookmarks00general.html","Experts &#62; Editor Bookmarks","Editor Bookmarks General",""],
 ["./editorbookmarks10edit.html","EditorBookmarksEdit","Editor Bookmarks Add and edit bookmarks",""],

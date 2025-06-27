@@ -130,7 +130,6 @@
       <config-value name="charset" translate="true">DEFAULT_CHARSET</config-value>
       <config-value name="deffont">font-family:Tahoma; font-size:9pt; color:#000000;</config-value>
       <config-value name="contents">Introduction</config-value>
-      <config-value name="topicprefix"></config-value>
       <config-value name="autohelpstart">73</config-value>
       <config-value name="autohelpincrement">1</config-value>
       <config-value name="autohelpanchor">0</config-value>
@@ -164,6 +163,12 @@
         <config-value name="Out Of Date">#FEC79E</config-value>
         <config-value name="Under Construction">#FEFC9E</config-value>
       </config-group>
+      <config-value name="openchildreadonly">1</config-value>
+      <config-value name="mustcalculatefiguretables">0</config-value>
+      <config-value name="tidyxml">0</config-value>
+      <config-value name="historyfiles">0</config-value>
+      <config-value name="historyfilecount">10</config-value>
+      <config-value name="historykeepdeletedfiles">0</config-value>
     </config-group>
     <config-group name="hlp">
       <config-value name="citation" translate="true"></config-value>
@@ -701,7 +706,7 @@ GExperts Help
       </config-group>
       <config-group name="ghost">
         <config-group name="project">
-          <config-value name="lastexport">4</config-value>
+          <config-value name="lastexport">0</config-value>
         </config-group>
       </config-group>
       <config-group name="ralph">
