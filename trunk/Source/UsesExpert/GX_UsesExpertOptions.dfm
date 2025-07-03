@@ -14,7 +14,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   PixelsPerInch = 96
   TextHeight = 13
   object imHelp: TImage
-    Left = 11
+    Left = 8
     Top = 302
     Width = 16
     Height = 16
@@ -86,7 +86,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
     TabOrder = 2
   end
   object btnOK: TButton
-    Left = 160
+    Left = 164
     Top = 296
     Width = 75
     Height = 25
@@ -97,7 +97,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
     TabOrder = 8
   end
   object btnCancel: TButton
-    Left = 240
+    Left = 246
     Top = 296
     Width = 75
     Height = 25
@@ -128,7 +128,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
     Top = 168
     Width = 313
     Height = 81
-    Caption = 'Show identifiers matching search string ...'
+    Caption = ' Show identifiers matching search string ... '
     Items.Strings = (
       'at start only'
       'anywhere'

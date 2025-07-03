@@ -162,6 +162,7 @@
         <config-value name="Needs Translation">#80FFFF</config-value>
         <config-value name="Out Of Date">#FEC79E</config-value>
         <config-value name="Under Construction">#FEFC9E</config-value>
+        <config-value name="Next2Edit">#858585</config-value>
       </config-group>
       <config-value name="openchildreadonly">1</config-value>
       <config-value name="mustcalculatefiguretables">0</config-value>
@@ -706,7 +707,7 @@ GExperts Help
       </config-group>
       <config-group name="ghost">
         <config-group name="project">
-          <config-value name="lastexport">0</config-value>
+          <config-value name="lastexport">3</config-value>
         </config-group>
       </config-group>
       <config-group name="ralph">
@@ -741,6 +742,7 @@ GExperts Help
       <helpcontext-number href="EditorBookmarks20Select" value="61"/>
       <helpcontext-number href="EditorBookmarks30Options" value="62"/>
       <helpcontext-number href="EditUnitSearchPath" value="71"/>
+      <helpcontext-number href="EditUnitSearchPathFavorites" value="73"/>
       <helpcontext-number href="EditUnitSearchPathOptions" value="72"/>
       <helpcontext-number href="Expert_Manager" value="7"/>
       <helpcontext-number href="Favorite_Files" value="15"/>
@@ -788,8 +790,6 @@ GExperts Help
       <file-mod href="ToDoGrid20Options.xml" build="RZONLY"/>
       <file-mod href="ToDoGrid50FltrMain.xml" build="RZONLY"/>
       <file-mod href="ToDoGrid60FltrSub.xml" build="RZONLY"/>
-      <file-mod href="EditUnitSearchPath.xml" build="RZONLY"/>
-      <file-mod href="EditUnitSearchPathOptions.xml" build="RZONLY"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>
