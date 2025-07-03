@@ -30,7 +30,9 @@ type
     rg_FilterIdentifiers: TRadioGroup;
     chkSearchPathFavorites: TCheckBox;
     chk_FastAdd: TCheckBox;
+    imHelp: TImage;
     procedure btnClearCacheClick(Sender: TObject);
+    procedure imHelpClick(Sender: TObject);
   private
     FCacheDir: string;
     procedure SetData(const _CanReplaceFindUseUnit: Boolean; const _CacheDir: string;
@@ -54,7 +56,8 @@ implementation
 uses
   u_dzFileUtils,
   u_dzVclUtils,
-  GX_MessageBox;
+  GX_MessageBox,
+  GX_GxUtils;
 
 { TfmUsesExpertOptions }
 
@@ -163,6 +166,12 @@ begin
   TFileSystem.DelDirTree(FCacheDir);
   btnClearCache.Enabled := False;
   ShowGxMessageBox(TCacheClearedMessage);
+end;
+
+procedure TfmUsesExpertOptions.imHelpClick(Sender: TObject);
+begin
+  inherited;
+  GxContextHelp(Self, 65);
 end;
 
 end.

@@ -310,6 +310,9 @@ type
     procedure actAddToImplemenationAndCloseExecute(Sender: TObject);
     procedure chk_FastAddClick(Sender: TObject);
     procedure b_HelpClick(Sender: TObject);
+    procedure pnlIdentifiersResize(Sender: TObject);
+    procedure sg_IdentifiersMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     FLeftRatio: Double;
     FAliases: TStringList;
@@ -1221,6 +1224,12 @@ end;
 procedure TfmUsesManager.FormResize(Sender: TObject);
 begin
   pnlUses.Width := Round(FLeftRatio * ClientWidth);
+
+  pnlUses.Constraints.MinWidth := 326; // ??!!
+  pnlUses.Constraints.MaxWidth := Self.ClientWidth - Splitter.Width - pnlUnits.Constraints.MinWidth;
+
+  pnlAvailableHeaderResize(nil);
+  pnlIdentifiersResize(nil);
 end;
 
 procedure TfmUsesManager.lbxInterfaceFilesDropped(_Sender: TObject; _Files: TStrings);
@@ -1365,6 +1374,7 @@ begin
     grp_IdentifiersMatch.Visible := False;
   end;
   UpdateDefaultButton;
+  pnlAvailableHeaderResize(nil); // calculate new edit width
 end;
 
 procedure TfmUsesManager.pcUnitsResize(Sender: TObject);
@@ -1384,12 +1394,14 @@ end;
 procedure TfmUsesManager.pnlAvailableHeaderResize(Sender: TObject);
 var
   w: Integer;
-  l: Integer;
+// l: Integer;
 begin
-  l := pnlAvailableHeader.Width - grp_IdentifiersMatch.Width - 2;
-  w := l - 8 - lblFilter.Left;
+  // l := pnlAvailableHeader.Width - grp_IdentifiersMatch.Width - 2;
+  // w := l - 8 - lblFilter.Left;
+  // grp_IdentifiersMatch.Left := l;
 
-  grp_IdentifiersMatch.Left := l;
+  if grp_IdentifiersMatch.Visible then w := pnlAvailableHeader.Width - grp_IdentifiersMatch.Width - 7
+                                  else w := pnlAvailableHeader.Width;
 
   edtUnitFilter.Left := 0;
   edtUnitFilter.Width := w;
@@ -1413,7 +1425,7 @@ end;
 
 procedure TfmUsesManager.pnlUsesResize(Sender: TObject);
 begin
-  p_Interface.Width := pnlUses.ClientWidth div 2;
+  p_Interface.Width := (pnlUses.ClientWidth div 2) - 8; // It looks better when it is set symmetrically to the buttons!
 end;
 
 procedure TfmUsesManager.AddListToImplSection(sg: TObject; RemoveFromInterface: Boolean);
@@ -2214,6 +2226,8 @@ end;
 procedure TfmUsesManager.SplitterMoved(Sender: TObject);
 begin
   FLeftRatio :=  pnlUses.Width / ClientWidth;
+  pnlAvailableHeaderResize(nil);
+  pnlIdentifiersResize(nil);
 end;
 
 procedure TfmUsesManager.SwitchUnitsTab(_Direction: Integer);
@@ -3402,6 +3416,24 @@ end;
 procedure TStringGrid.SetAssociatedList(const Value: TStringList);
 begin
   Tag := Integer(Value);
+end;
+
+procedure TfmUsesManager.pnlIdentifiersResize(Sender: TObject);
+begin
+  inherited;
+
+  sg_Identifiers.ColWidths[0] := sg_Identifiers.ClientWidth div 2;
+  sg_Identifiers.ColWidths[1] := sg_Identifiers.ClientWidth - sg_Identifiers.ColWidths[0] - 2 * sg_Identifiers.GridLineWidth;;
+end;
+
+procedure TfmUsesManager.sg_IdentifiersMouseUp(Sender: TObject;Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var SG: TStringgrid absolute Sender;
+    w1: Integer;
+begin
+  inherited;
+
+  W1 := SG.ClientWidth - SG.ColWidths[0] - (2 * SG.GridLineWidth);
+  if SG.ColWidths[1] <> w1 then SG.ColWidths[1] := w1;
 end;
 
 initialization
