@@ -8,6 +8,14 @@ uses Windows,Messages,SysUtils,Classes,Graphics,Controls,Forms,Dialogs,StdCtrls,
 
      GX_BaseForm;
 
+
+type TPanel              = class(ExtCtrls.TPanel)      // Ferenc Kiffer, Hungary <kifferferenc@yahoo.com>
+                           private                     // Simple painting without theeming, so we can set the background color
+                            procedure CustomPaint;     // if Tag = 1 call CustomPaint, otherwise call inherited Paint
+                           protected                   // see unit GX_GrepResultsOptions
+                            procedure Paint; override;
+                           end;
+
 type TfoBookmarksOptions = class(TfmBaseForm)
 
                             cbUseOldEditForm                     : TCheckBox;
@@ -77,6 +85,60 @@ const idColorDialogBk       = 1;
       idColorDialogFnt      = 3;
       idColorDialogHeaderBk = 4;
 
+// ............................................................. TPanel interceptor class
+
+procedure TPanel.CustomPaint;
+const Alignments : array[TAlignment] of LongWord = (DT_LEFT, DT_RIGHT, DT_CENTER);
+var   Rect       : TRect;
+      FontHeight : Integer;
+      Flags      : LongWord;
+
+ procedure DrawBevel(_Bevel:TPanelBevel;_Rect:TRect);
+ var TopColor    : TColor;
+     BottomColor : TColor;
+  begin
+   TopColor:=clBtnHighlight;
+   if _Bevel=bvLowered then TopColor:=clBtnShadow;
+
+   BottomColor:=clBtnShadow;
+   if _Bevel=bvLowered then BottomColor:=clBtnHighlight;
+
+   Frame3D(Canvas,_Rect,TopColor,BottomColor,BevelWidth);
+  end;
+
+begin
+ Rect:=GetClientRect;
+ if BevelOuter<>bvNone then DrawBevel(BevelOuter,Rect);
+ Frame3D(Canvas, Rect, Color, Color, BorderWidth);
+ if BevelInner<>bvNone then DrawBevel(BevelInner,Rect);
+
+ Canvas.Brush.Color:=Color;
+ Canvas.FillRect(Rect);
+
+ FontHeight:=Canvas.TextHeight('W');
+ {$IFDEF GX_IDE_IS_HIDPI_AWARE}
+   FontHeight:=MulDiv(FontHeight,(GetParentForm(Self) as TfmGrepResultsOptions).CurrentPPI,GetDesignDpi);
+ {$ENDIF}
+
+ Rect.Top   :=((Rect.Bottom+Rect.Top)-FontHeight) div 2;
+ Rect.Bottom:=Rect.Top+FontHeight;
+
+ Canvas.Brush.Style:=bsClear;
+ Canvas.Font       :=Self.Font;
+
+ Flags:=DT_EXPANDTABS or DT_VCENTER or Alignments[Self.Alignment];
+ Flags:=DrawTextBiDiModeFlags(Flags);
+
+ DrawText(Canvas.Handle,PChar(Self.Caption),-1,Rect,Flags);
+end;
+
+procedure TPanel.Paint;
+begin
+ if Tag=1 then CustomPaint
+          else inherited
+end;
+
+// ................................................................... TfoBookmarksOptions
 // ................................................................................. Misc
 
 procedure TfoBookmarksOptions.LoadSettings;
@@ -269,13 +331,18 @@ begin
  inherited;
  InitDPIScaler;
 
-{$IFDEF GX_DELPHIXE3_UP}
  // §3 -cInfo : PanelColors > pay attention to this in the future!
- // Alternatively we could use the same TPanel interceptor class as the Grep Results Options dialog
- paLBcolorBkg.   StyleElements:=[];
- paLBcolorBMline.StyleElements:=[];
- paHeaderBkColor.StyleElements:=[];
-{$ENDIF}
+
+ (* Already in Delphi 2010, coloring the panels no longer works.
+    Since Delphi 2010 does not yet support "StyleElements"
+    the TPanel interceptor class is used according to the template of GX_GrepResultsOptions
+
+    {$IFDEF GX_DELPHIXE3_UP}
+        paLBcolorBkg.   StyleElements:=[];
+        paLBcolorBMline.StyleElements:=[];
+        paHeaderBkColor.StyleElements:=[];
+    {$ENDIF}
+   *)
 
  paColorBase.Color:=Color;
  FUserColors:=TStringList.Create;

@@ -707,7 +707,7 @@ GExperts Help
       </config-group>
       <config-group name="ghost">
         <config-group name="project">
-          <config-value name="lastexport">3</config-value>
+          <config-value name="lastexport">0</config-value>
         </config-group>
       </config-group>
       <config-group name="ralph">
@@ -790,6 +790,9 @@ GExperts Help
       <file-mod href="ToDoGrid20Options.xml" build="RZONLY"/>
       <file-mod href="ToDoGrid50FltrMain.xml" build="RZONLY"/>
       <file-mod href="ToDoGrid60FltrSub.xml" build="RZONLY"/>
+      <file-mod href="EditUnitSearchPath.xml" build="RZONLY"/>
+      <file-mod href="EditUnitSearchPathFavorites.xml" build="RZONLY"/>
+      <file-mod href="EditUnitSearchPathOptions.xml" build="RZONLY"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>
