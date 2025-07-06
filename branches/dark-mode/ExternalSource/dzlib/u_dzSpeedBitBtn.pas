@@ -17,11 +17,6 @@ uses
   u_dzVclUtils,
   u_dzTranslator;
 
-{$IF not declared(NativeInt)}
-type
-  NativeInt = Integer;
-{$IFEND}
-
 type
   EdzSpeedButton = class(EdzException);
 
@@ -87,7 +82,7 @@ type
     destructor Destroy; override;
     function Add(_btn: TBitBtn): TdzSpeedBitBtn; overload;
     function Add(_btn: TBitBtn; _Data: Pointer): TdzSpeedBitBtn; overload;
-    function Add(_btn: TBitBtn; _Data: NativeInt): TdzSpeedBitBtn; overload;
+    function Add(_btn: TBitBtn; _Data: Integer): TdzSpeedBitBtn; overload;
     ///<summary>
     /// Sets the given button's down state to False, if allowed
     /// @param Idx is the index of the button to change

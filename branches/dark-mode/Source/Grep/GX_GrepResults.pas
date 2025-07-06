@@ -455,8 +455,9 @@ uses
   GX_GrepOptionsStandAlone,
 {$ENDIF GX_STANDALONE}
   GX_GExperts, GX_GenericUtils, GX_StringList, GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_MessageBox,
-  GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect, GX_GrepProgress,
-  GX_IdeSplitterVisibility;
+  GX_HotkeyDrawFix,
+  GX_IdeSplitterVisibility,
+  GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect, GX_GrepProgress;
 
 resourcestring
   SGrepReplaceStats = 'Replaced %d occurrence(s) in %.2f seconds';

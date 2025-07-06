@@ -23,7 +23,7 @@ uses
   GX_BookmarksLists in '..\..\Source\Bookmarks\GX_BookmarksLists.pas',
   GX_BookmarksOptions in '..\..\source\Bookmarks\GX_BookmarksOptions.pas' {foBookmarksOptions},
   GX_BookmarksSelect in '..\..\source\Bookmarks\GX_BookmarksSelect.pas' {foBookmarksSelect},
-  GX_CheckButton in '..\..\Source\Utils\GX_CheckButton.pas',
+  GX_CheckButton in '..\..\source\Utils\GX_CheckButton.pas',
   GX_CheckListBoxWithHints in '..\..\Source\ProjectOptionSets\GX_CheckListBoxWithHints.pas',
   GX_ClassBrowser in '..\..\source\ClassBrowser\GX_ClassBrowser.pas' {fmClassBrowser},
   GX_ClassHacks in '..\..\source\Framework\GX_ClassHacks.pas',

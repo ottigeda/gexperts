@@ -164,11 +164,6 @@ type
 var
   GetDpiForWindow: TGetDpiForWindow = nil;
 
-{$IF not declared(HMODULE)}
-type
-  HMODULE = Cardinal;
-{$IFEND}
-
 procedure InitApiCalls;
 var
   Handle: HMODULE;

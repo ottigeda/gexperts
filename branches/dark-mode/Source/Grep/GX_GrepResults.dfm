@@ -74,6 +74,7 @@ inherited fmGrepResults: TfmGrepResults
       Height = 22
       AutoSize = True
       DisabledImages = dmSharedImages.DisabledImages
+      Flat = True
       Images = dmSharedImages.Images
       ParentShowHint = False
       ShowHint = True

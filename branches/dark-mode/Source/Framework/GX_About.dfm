@@ -18,7 +18,7 @@ object fmAbout: TfmAbout
   TextHeight = 14
   object lblGExperts: TLabel
     Left = 346
-    Top = 14
+    Top = 6
     Width = 140
     Height = 22
     Alignment = taCenter
@@ -27,7 +27,7 @@ object fmAbout: TfmAbout
   end
   object lblVersion: TLabel
     Left = 224
-    Top = 32
+    Top = 28
     Width = 385
     Height = 22
     Alignment = taCenter
@@ -44,7 +44,7 @@ object fmAbout: TfmAbout
   end
   object lblProjectLeader: TLabel
     Left = 275
-    Top = 91
+    Top = 92
     Width = 84
     Height = 14
     Alignment = taRightJustify
@@ -60,7 +60,7 @@ object fmAbout: TfmAbout
   end
   object lblProjectLeaderName: TLabel
     Left = 368
-    Top = 91
+    Top = 92
     Width = 85
     Height = 14
     Caption = 'Thomas Mueller'
@@ -75,7 +75,7 @@ object fmAbout: TfmAbout
   end
   object lblPreRelease1: TLabel
     Left = 241
-    Top = 19
+    Top = 15
     Width = 101
     Height = 20
     Alignment = taCenter
@@ -85,7 +85,7 @@ object fmAbout: TfmAbout
   end
   object lblPreRelease2: TLabel
     Left = 489
-    Top = 19
+    Top = 15
     Width = 101
     Height = 20
     Alignment = taCenter
@@ -95,7 +95,7 @@ object fmAbout: TfmAbout
   end
   object lblIdeVersion: TLabel
     Left = 224
-    Top = 56
+    Top = 51
     Width = 385
     Height = 14
     Alignment = taCenter
@@ -103,24 +103,31 @@ object fmAbout: TfmAbout
     Caption = 'IDE version goes here'
   end
   object mmoBuildDetails: TMemo
-    Left = 224
+    Left = 230
     Top = 240
-    Width = 273
+    Width = 271
     Height = 49
     Alignment = taCenter
     BorderStyle = bsNone
     Color = clBtnFace
     Ctl3D = False
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -12
+    Font.Name = 'Tahoma'
+    Font.Style = []
     Lines.Strings = (
-      'Experimental build from http://www.domain.com.  '
+      'Experimental build from '
+      'http://www.domain.com.  '
       'Please report all bugs to email@domain.com.')
     ParentCtl3D = False
+    ParentFont = False
     ReadOnly = True
     TabOrder = 3
     Visible = False
   end
   object btnClose: TButton
-    Left = 504
+    Left = 503
     Top = 256
     Width = 105
     Height = 26
@@ -133,32 +140,32 @@ object fmAbout: TfmAbout
   object pnlLogo: TPanel
     Left = 8
     Top = 8
-    Width = 217
+    Width = 219
     Height = 273
     BevelOuter = bvLowered
     TabOrder = 2
     object imgLogo: TImage
       Left = 9
-      Top = 9
+      Top = 10
       Width = 201
       Height = 252
       Center = True
     end
   end
   object btnEmail: TButton
-    Left = 248
+    Left = 236
     Top = 256
-    Width = 213
+    Width = 258
     Height = 26
     Caption = '&Send a Bug Report/Suggestion'
     TabOrder = 0
     OnClick = btnEmailClick
   end
   object mmoContributors: TMemo
-    Left = 368
+    Left = 365
     Top = 112
     Width = 241
-    Height = 129
+    Height = 122
     BevelInner = bvNone
     BevelOuter = bvNone
     BorderStyle = bsNone
@@ -169,6 +176,7 @@ object fmAbout: TfmAbout
       'Erik Berry'
       'Jim Campbell'
       'Primoz Gabrijelcic'
+      'Paul Gardner'
       'Ulrich Gerhardt'
       'Benjamin Fournier'
       'John Hansen'
@@ -179,20 +187,25 @@ object fmAbout: TfmAbout
       'Per-Eric Larsson'
       'Piotr Likus'
       'Ray Lischner'
+      'Jim McKeeth'
+      'Thomas M'#252'ller'
       'Gerald Nunn'
       'Alex Petrov'
       'Puthoon'
       'Mahdi Safsafi'
       'Egbert van Nes'
-      'Martin Waldenburg')
+      'Robert Wachtel'
+      'Martin Waldenburg'
+      'Ralph Zornig')
     ParentCtl3D = False
     ReadOnly = True
     ScrollBars = ssVertical
     TabOrder = 4
   end
   object tim_Scroll: TTimer
+    Interval = 1200
     OnTimer = tim_ScrollTimer
     Left = 296
-    Top = 144
+    Top = 143
   end
 end

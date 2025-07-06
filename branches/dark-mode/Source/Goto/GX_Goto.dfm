@@ -8,7 +8,7 @@ inherited f_Goto: Tf_Goto
   Font.Height = -13
   Font.Name = 'MS Shell Dlg 2'
   Position = poMainFormCenter
-  PixelsPerInch = 96  
+  PixelsPerInch = 96
   TextHeight = 16
   object l_LineNumber: TLabel
     Left = 8

@@ -287,14 +287,6 @@ procedure TfmCompRename.FormShow(Sender: TObject);
 begin
   inherited;
   ArrangeControls;
-(*
-  // Adjust some button positons and size after scaling
-  // DisableAlign;
-  b_AlignRight.Left   := b_AlignTop.Left + b_AlignTop.Width - b_AlignRight.Width;
-  b_AlignClient.Left  := b_AlignLeft.Left + b_AlignLeft.Width + 1;
-  b_AlignClient.Width := b_AlignRight.Left - b_AlignClient.Left - 2;
-  // EnableAlign;
-*)  
 end;
 
 procedure TfmCompRename.pc_AdditionalChange(Sender: TObject);

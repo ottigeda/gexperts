@@ -12,7 +12,6 @@ interface
 uses
   Classes,
   SysUtils,
-  GX_IndexTypes,
   u_dzSortUtils;
 
 type

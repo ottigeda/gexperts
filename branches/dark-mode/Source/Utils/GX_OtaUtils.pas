@@ -4893,7 +4893,7 @@ end;
 function IsValidExpertDll(const FileName: string): Boolean;
 {$IFDEF LoadAndCheckEntryPoint}
 var
-  DllHandle: THandle;
+  DllHandle: HMODULE;
 {$ENDIF LoadAndCheckEntryPoint}
 begin
   Result := True;

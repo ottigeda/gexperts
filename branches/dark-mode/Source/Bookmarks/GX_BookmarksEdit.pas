@@ -146,7 +146,7 @@ var fo : TfoBookmarksEdit;
 begin
  fo:=TfoBookmarksEdit.Create(_Owner);
  try
-  fo.Caption:='Add bookmark';
+  fo.Caption:='Editor Bookmarks, Add';
   fo.Left   :=Mouse.CursorPos.X+30;
   fo.Top    :=Mouse.CursorPos.y+60;
 
@@ -166,7 +166,7 @@ var fo     : TfoBookmarksEdit;
 begin
  fo:=TfoBookmarksEdit.Create(_Owner);
  try
-  fo.Caption:='Edit bookmark';
+  fo.Caption:='Editor Bookmarks, Edit';
   fo.Left   :=Mouse.CursorPos.X+30;
   fo.Top    :=Mouse.CursorPos.y+60;
 

@@ -14,7 +14,8 @@ uses
   Dialogs,
   GX_BaseForm,
   StdCtrls,
-  ComCtrls;
+  ComCtrls,
+  ExtCtrls;
 
 type
   TOnEditFavoritesEntry = procedure(_Sender: TWinControl;
@@ -27,19 +28,22 @@ type
     b_Add: TButton;
     b_Edit: TButton;
     b_Delete: TButton;
+    imF1: TImage;
     procedure b_AddClick(Sender: TObject);
     procedure b_EditClick(Sender: TObject);
     procedure b_DeleteClick(Sender: TObject);
     procedure lv_FavoritesDblClick(Sender: TObject);
+    procedure imF1Click(Sender: TObject);
   private
     FOnEdit: TOnEditFavoritesEntry;
-    procedure SetData(const _Caption: string; _OnEdit: TOnEditFavoritesEntry; _Favorites: TStrings);
+    FOnCallHelpContext: TNotifyEvent;
+    procedure SetData(const _Caption: string; _OnEdit: TOnEditFavoritesEntry; _Favorites: TStrings; _OnCallHelpContext:TNotifyEvent=nil);
     procedure GetData(_Favorites: TStrings);
     procedure EditCurrent;
     function doOnEdit(var _Name, _Value: string): Boolean;
   public
     class procedure Execute(_Owner: TComponent; const _Caption: string;
-      _OnEdit: TOnEditFavoritesEntry; _Favorites: TStringList);
+      _OnEdit: TOnEditFavoritesEntry; _Favorites: TStringList;_OnCallHelpContext:TNotifyEvent=nil);
     constructor Create(_Owner: TComponent); override;
   end;
 
@@ -53,13 +57,13 @@ uses
 { Tf_GxIdeFavoritesList }
 
 class procedure Tf_GxIdeFavoritesList.Execute(_Owner: TComponent; const _Caption: string;
-  _OnEdit: TOnEditFavoritesEntry; _Favorites: TStringList);
+  _OnEdit: TOnEditFavoritesEntry; _Favorites: TStringList; _OnCallHelpContext:TNotifyEvent=nil);
 var
   frm: Tf_GxIdeFavoritesList;
 begin
   frm := Tf_GxIdeFavoritesList.Create(_Owner);
   try
-    frm.SetData(_Caption, _OnEdit, _Favorites);
+    frm.SetData(_Caption, _OnEdit, _Favorites, _OnCallHelpContext);
     frm.ShowModal;
     frm.GetData(_Favorites);
   finally
@@ -153,7 +157,7 @@ begin
 end;
 
 procedure Tf_GxIdeFavoritesList.SetData(const _Caption: string; _OnEdit: TOnEditFavoritesEntry;
-  _Favorites: TStrings);
+  _Favorites: TStrings; _OnCallHelpContext:TNotifyEvent=nil);
 var
   i: Integer;
   FavName: string;
@@ -162,6 +166,7 @@ var
 begin
   Caption := _Caption;
   FOnEdit := _OnEdit;
+  FOnCallHelpContext := _OnCallHelpContext;
   for i := 0 to _Favorites.Count - 1 do begin
     FavName := _Favorites.Names[i];
     FavValue := _Favorites.Values[FavName];
@@ -169,6 +174,14 @@ begin
     li.Caption := FavName;
     li.SubItems.Add(FavValue);
   end;
+
+  imF1.Enabled := Assigned(_OnCallHelpContext);
+end;
+
+procedure Tf_GxIdeFavoritesList.imF1Click(Sender: TObject);
+begin
+  inherited;
+  FOnCallHelpContext(Self);
 end;
 
 end.

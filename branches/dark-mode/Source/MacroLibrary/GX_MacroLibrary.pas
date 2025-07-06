@@ -1043,7 +1043,7 @@ var
   DummyTimeStamp : TDateTime;
   ColWidth: Integer;
 begin
-  // calculate needed with for the timestamp
+  // calculate needed width for the timestamp
   DummyTimeStamp := EncodeDate(2000, 12, 31) + EncodeTime(23, 53, 55, 0);
   ColWidth := lvMacros.Canvas.TextWidth(DateTimeToStr(DummyTimeStamp)) + FSBWidth;
   lvMacros.Columns[1].MinWidth := ColWidth;

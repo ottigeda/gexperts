@@ -4967,7 +4967,7 @@ end;
 // Initialization variables
 var
   OldError: Longint;
-  FLibHandle: THandle;
+  FLibHandle: HMODULE;
   Ver: TOsVersionInfo;
 
 initialization

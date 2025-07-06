@@ -888,22 +888,22 @@ begin
 end;
 
 function IsThemingEnabled: Boolean;
-{$IFNDEF GX_SUPPORTS_THEMING}
+{$IFDEF GX_SUPPORTS_THEMING}
+begin
+  Result := GX_OtaUtils.GxOtaThemingEnabled;
+end;
+{$ELSE}
 var
   reg: TRegistry;
-{$ENDIF}
+
 begin
+  Result := False;
   if CompilerVersion < CompilerVersionDelphiX103 then
   begin
-    Result := False;
     Exit; //==>
   end;
 
-{$IFDEF GX_SUPPORTS_THEMING}
-  Result := GxOtaThemingEnabled;
-{$ELSE}
   // if yes, check if theming is enabled
-  Result := False; // default
   reg := TRegistry.Create;
   try
     reg.RootKey := HKEY_CURRENT_USER;
@@ -918,8 +918,8 @@ begin
   finally
     FreeAndNil(reg);
   end;
-{$ENDIF}
 end;
+{$ENDIF}
 
 function TryGetIdeEditorHighlightColors(const _Key: string;
   out _FG: TColor; out _BG: TColor; out _Bold, _Italic, _Underline: Boolean): Boolean;

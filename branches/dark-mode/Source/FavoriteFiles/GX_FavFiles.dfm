@@ -22,7 +22,7 @@ object fmFavFiles: TfmFavFiles
   OnKeyPress = FormKeyPress
   OnShow = FormShow
   PixelsPerInch = 96
-  TextHeight = 18
+  TextHeight = 14
   object splTreeView: TSplitter
     Left = 121
     Top = 22

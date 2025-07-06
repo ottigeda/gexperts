@@ -5,8 +5,7 @@ unit GX_GenericClasses;
 interface
 
 uses
-  Classes,
-  GX_IndexTypes;
+  Classes;
 
 type
   // We use the NoRefCount type to assign interface instances without invoking
@@ -33,8 +32,8 @@ type
   TGxObjectDictionary = class
   private
     FOwnsObjects: Boolean;
-    function GetItem(Index: TGXListIndex): TObject;
-    function GetCode(Index: TGXListIndex): string;
+    function GetItem(Index: Integer): TObject;
+    function GetCode(Index: Integer): string;
   protected
     FList: TStringList;
     function GetObjectCode(AObject: TObject): string; virtual;
@@ -54,8 +53,8 @@ type
     function ObjectByCode(const ACode: string): TObject;
     procedure ForEach(AHandler: TGxListEntryHandler; AData: TObject = nil); virtual;
 
-    property Items[Index: TGXListIndex]: TObject read GetItem; default;
-    property Codes[Index: TGXListIndex]: string read GetCode;
+    property Items[Index: Integer]: TObject read GetItem; default;
+    property Codes[Index: Integer]: string read GetCode;
     property OwnsObjects: Boolean read FOwnsObjects write FOwnsObjects;
   end;
 
@@ -157,7 +156,7 @@ begin
     Delete(Idx);
 end;
 
-function TGxObjectDictionary.GetItem(Index: TGXListIndex): TObject;
+function TGxObjectDictionary.GetItem(Index: Integer): TObject;
 begin
   Result := FList.Objects[Index];
 end;
@@ -193,7 +192,7 @@ begin
     AHandler(Self, i, AData);
 end;
 
-function TGxObjectDictionary.GetCode(Index: TGXListIndex): string;
+function TGxObjectDictionary.GetCode(Index: Integer): string;
 begin
   Result := FList[Index];
 end;

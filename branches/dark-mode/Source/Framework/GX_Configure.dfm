@@ -91,14 +91,6 @@ object fmConfiguration: TfmConfiguration
               Caption = 'Help &file'
               FocusControl = edHelpFile
             end
-            object lblCachingPath: TLabel
-              Left = 12
-              Top = 120
-              Width = 146
-              Height = 14
-              Caption = 'GExperts caching directory'
-              FocusControl = edCachingPath
-            end
             object sbVCLDir: TButton
               Left = 716
               Top = 40
@@ -152,6 +144,14 @@ object fmConfiguration: TfmConfiguration
               Height = 22
               Anchors = [akLeft, akTop, akRight]
               TabOrder = 6
+            end
+            object lblCachingPath: TLabel
+              Left = 12
+              Top = 120
+              Width = 146
+              Height = 14
+              Caption = 'GExperts caching directory'
+              FocusControl = edCachingPath
             end
             object edCachingPath: TEdit
               Left = 12

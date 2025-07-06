@@ -304,13 +304,6 @@ end;
 procedure TfmGxBookmarksForm.LoadSettings;
 var SubSettings : IExpertSettings;
 begin
-  {$IFDEF GX_SUPPORTS_THEMING}
-  DefLBColorBackground       := GxOtaGetThemedColor(clWindow);
-  DefLBColorBMline           := GxOtaGetThemedColor(clHighlight);
-  DefLBColorBkFuncProcName   := GxOtaGetThemedColor(clWindow);
-  DefLBColorFontFuncProcName := GxOtaGetThemedColor(clWindowText);
-  {$ENDIF GX_SUPPORTS_THEMING}
-
  SubSettings:=Settings.Subkey('Bookmarks'); // do not localize
 
  FUseOldEditForm        :=          SubSettings.ReadBool   ('BookmarksUseOldEditForm',         DefUseOldEditForm          );

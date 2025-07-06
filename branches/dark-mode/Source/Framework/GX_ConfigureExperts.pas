@@ -471,36 +471,6 @@ begin
   PaintHotkey(Self);
   Msg.Result := 0;
 end;
-(*
-var
-  LText      : string;
-  LBackColor : TColor;
-  LTextColor : TColor;
-  DC         : HDC;
-  PS         : TPaintStruct;
-  OldFont    : HFONT;
-begin
-  LText := Self.Caption;
-  LText := UpperCase(ShortCutToText(Self.HotKey));
-  LText := StringReplace(LText, '+', ' + ', [rfReplaceAll]);
-  if LText.Length = 0 then LText := 'None';
-
-  LBackColor := ColorToRGB(GxOtaGetStyleColor(TStyleColor.scEdit, clWindow));
-  LTextColor := ColorToRGB(GxOtaGetStyleFontColor(TStyleFont.sfEditBoxTextNormal, clWindowText));
-
-  DC := BeginPaint(Self.Handle, PS);
-  if DC <> 0 then
-  begin
-    OldFont := SelectObject(DC, TForm(Parent).Font.Handle);
-    SetBkColor(DC, LBackColor);
-    SetTextColor(DC, LTextColor);
-    TextOut(DC, PS.rcPaint.Left+2, PS.rcPaint.Top+2, PChar(LText), LText.Length);
-    if OldFont <> 0 then SelectObject(DC, OldFont);
-  end;
-  EndPaint(Self.Handle, PS);
-  Msg.Result := 0;
-end;
-*)
 {$ENDIF}
 
 procedure THotKeyHack.KeyDown(var Key: Word; Shift: TShiftState);

@@ -19,6 +19,7 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
+  ExtCtrls,
   Contnrs,
   GX_BaseForm;
 
@@ -45,6 +46,8 @@ type
     b_Ok: TButton;
     b_Cancel: TButton;
     lb_Target: TListBox;
+    imF1: TImage;
+    procedure imF1Click(Sender: TObject);
   private
     procedure SetData(_ConfigList: TObjectList; const _Platform, _Config: string);
     procedure GetData(out _Platform, _Config: string);
@@ -64,7 +67,8 @@ implementation
 
 uses
   u_dzVclUtils,
-  GX_OtaUtils;
+  GX_OtaUtils,
+  GX_GxUtils;
 
 const
   CURRENT_CONFIG = '<Current Config>';
@@ -125,6 +129,12 @@ begin
     if (cfg.Platform = _Platform) and (cfg.ConfigName = _Config) then
       lb_Target.ItemIndex := ThisIndex;
   end;
+end;
+
+procedure Tf_EditPathConfig.imF1Click(Sender: TObject);
+begin
+  inherited;
+  GXContextHelp(Self,74);
 end;
 
 { TConfigEntry }

@@ -193,7 +193,7 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
       object tbOptions: TToolButton
         Left = 174
         Top = 0
-        Hint = 'Options ...'
+        Hint = 'Options'
         Caption = 'tbOptions'
         ImageIndex = 6
         ParentShowHint = False
