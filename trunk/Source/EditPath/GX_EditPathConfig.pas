@@ -20,7 +20,7 @@ uses
   Dialogs,
   StdCtrls,
   Contnrs,
-  GX_BaseForm;
+  GX_BaseForm, ExtCtrls;
 
 type
   TConfigEntry = class
@@ -45,6 +45,8 @@ type
     b_Ok: TButton;
     b_Cancel: TButton;
     lb_Target: TListBox;
+    imF1: TImage;
+    procedure imF1Click(Sender: TObject);
   private
     procedure SetData(_ConfigList: TObjectList; const _Platform, _Config: string);
     procedure GetData(out _Platform, _Config: string);
@@ -64,7 +66,8 @@ implementation
 
 uses
   u_dzVclUtils,
-  GX_OtaUtils;
+  GX_OtaUtils,
+  GX_GxUtils;
 
 const
   CURRENT_CONFIG = '<Current Config>';
@@ -127,6 +130,12 @@ begin
   end;
 end;
 
+procedure Tf_EditPathConfig.imF1Click(Sender: TObject);
+begin
+  inherited;
+  GXContextHelp(Self,74);
+end;
+
 { TConfigEntry }
 
 constructor TConfigEntry.Create(const _ConfigName, _Platform, _Path: string);
@@ -167,6 +176,7 @@ begin
     Result := GetConfigCaption;
 end;
 {$ENDIF GX_DELPHI2009_UP}
+
 
 end.
 

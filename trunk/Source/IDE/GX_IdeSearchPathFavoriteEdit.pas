@@ -13,7 +13,7 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
-  GX_BaseForm;
+  GX_BaseForm, ExtCtrls;
 
 type
   Tf_IdeSearchPathFavoriteEdit = class(TfmBaseForm)
@@ -24,13 +24,16 @@ type
     b_OK: TButton;
     b_Cancel: TButton;
     b_Select: TButton;
+    imF1: TImage;
     procedure b_SelectClick(Sender: TObject);
+    procedure imF1Click(Sender: TObject);
   private
+    FOnCallHelpContext: TNotifyEvent;
     procedure GetData(out _Name, _Path: string);
-    procedure SetData(const _Name, _Path: string);
+    procedure SetData(const _Name, _Path: string; _OnCallHelpContext:TNotifyEvent=nil);
     procedure HandleFilesDropped(_Sender: TObject; _Files: TStrings);
   public
-    class function Execute(_Owner: TComponent; var _Name, _Path: string): Boolean;
+    class function Execute(_Owner: TComponent; var _Name, _Path: string; _OnCallHelpContext:TNotifyEvent=nil): Boolean;
     constructor Create(_Owner: TComponent); override;
   end;
 
@@ -44,13 +47,14 @@ uses
 
 { Tf_IdeSearchPathFavoriteEdit }
 
-class function Tf_IdeSearchPathFavoriteEdit.Execute(_Owner: TComponent; var _Name, _Path: string): Boolean;
+//§B : Tf_IdeSearchPathFavoriteEdit.Execute
+class function Tf_IdeSearchPathFavoriteEdit.Execute(_Owner: TComponent; var _Name, _Path: string; _OnCallHelpContext:TNotifyEvent=nil): Boolean;
 var
   frm: Tf_IdeSearchPathFavoriteEdit;
 begin
   frm := Tf_IdeSearchPathFavoriteEdit.Create(_Owner);
   try
-    frm.SetData(_Name, _Path);
+    frm.SetData(_Name, _Path, _OnCallHelpContext);
     Result := (frm.ShowModal = mrok);
     if Result then
       frm.GetData(_Name, _Path);
@@ -92,10 +96,20 @@ begin
   _Path := AnsiDequotedStr(m_Path.Lines.DelimitedText, '"');
 end;
 
-procedure Tf_IdeSearchPathFavoriteEdit.SetData(const _Name, _Path: string);
+procedure Tf_IdeSearchPathFavoriteEdit.SetData(const _Name, _Path: string; _OnCallHelpContext: TNotifyEvent=nil);
 begin
   ed_Name.Text := _Name;
   m_Path.Lines.DelimitedText := AnsiDequotedStr(_Path, '"');
+  FOnCallHelpContext := _OnCallHelpContext;
+
+  if not(Assigned(_OnCallHelpContext)) then b_Select.Left := m_Path.Left;
+  // imF1.Enabled := Assigned(_OnCallHelpContext);
+end;
+
+procedure Tf_IdeSearchPathFavoriteEdit.imF1Click(Sender: TObject);
+begin
+  inherited;
+  FOnCallHelpContext(Self);
 end;
 
 end.

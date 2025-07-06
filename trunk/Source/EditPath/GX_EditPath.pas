@@ -94,6 +94,7 @@ type
     mi_MemoRemoveDots: TMenuItem;
     mi_MemoMakeRelative: TMenuItem;
     mi_MemoMakeAbsolute: TMenuItem;
+    imF1: TImage;
     procedure cmb_TargetChange(Sender: TObject);
     procedure lb_TargetClick(Sender: TObject);
     procedure act_MoveUpExecute(Sender: TObject);
@@ -113,6 +114,7 @@ type
       var Resize: Boolean);
     procedure p_ClientBottomCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
       var Resize: Boolean);
+    procedure imF1Click(Sender: TObject);
   private
     FConfigs: TObjectList;
     FMemo: TSynMemo;
@@ -138,6 +140,8 @@ type
     procedure FavoritesPmConfigureClick(_Sender: TObject);
     procedure FavoritesPmHandleFavoriteClick(_Sender: TObject);
     procedure FavoritesEditEntry(_Sender: TWinControl; var _Name, _Value: string; var _OK: Boolean);
+    procedure FavoritesCallHelpContext(_Sender:TObject);
+    procedure FavoritesEditCallHelpContext(_Sender:TObject);
     procedure GetSelectedLines(out _StartIdx, _EndIdx: Integer);
     class function TryGetProjectConfigurations(_Configs: TObjectList; out _ActiveIndex: Integer): Boolean;
   protected
@@ -466,7 +470,8 @@ var
   pnt: TPoint;
 begin
   pnt := b_Favorites.ClientToScreen(Point(0, b_Favorites.Height));
-  pm_Favorites.Popup(pnt.X, pnt.Y);
+  if pm_Favorites.Items.Count>1 then pm_Favorites.Popup(pnt.X, pnt.Y)   // INFO : RZ - 05.07.2025
+                                else FavoritesPmConfigureClick(Sender);
 end;
 
 procedure Tf_EditPath.InitFavoritesMenu;
@@ -656,17 +661,20 @@ begin
   end;
 end;
 
+//§B : CALL Tf_IdeSearchPathFavoriteEdit.Execute  (+AddEntry???)
 procedure Tf_EditPath.FavoritesEditEntry(_Sender: TWinControl; var _Name, _Value: string;
   var _OK: Boolean);
 begin
-  _OK := Tf_IdeSearchPathFavoriteEdit.Execute(_Sender, _Name, _Value)
+  _OK := Tf_IdeSearchPathFavoriteEdit.Execute(_Sender, _Name, _Value, FavoritesEditCallHelpContext)
 end;
 
+//§B : CALL Tf_GxIdeFavoritesList.Execute
 procedure Tf_EditPath.FavoritesPmConfigureClick(_Sender: TObject);
 resourcestring
-  SFavSearchPaths = 'Favorite Search Paths';
+  // SFavSearchPaths = 'Favorite Search Paths';
+  SFavSearchPaths = 'Edit Unit Search Path, Favorites'; // according to the undefinied rule of GX_Experts captions
 begin
-  Tf_GxIdeFavoritesList.Execute(Self, SFavSearchPaths, FavoritesEditEntry, FFavorites);
+  Tf_GxIdeFavoritesList.Execute(Self, SFavSearchPaths, FavoritesEditEntry, FFavorites, FavoritesCallHelpContext);
   TGxIdeSearchPathEnhancer.SetSearchPathFavorites(FFavorites);
   InitFavoritesMenu;
 end;
@@ -870,6 +878,16 @@ begin
   inherited;
 end;
 
+procedure Tf_EditPath.FavoritesCallHelpContext(_Sender: TObject);
+begin
+ GXContextHelp(Self,72);
+end;
+
+procedure Tf_EditPath.FavoritesEditCallHelpContext(_Sender: TObject);
+begin
+ GXContextHelp(Self,73);
+end;
+
 { TEditPathExpert }
 
 procedure TEditPathExpert.Configure(_Owner: TWinControl);
@@ -916,7 +934,7 @@ end;
 
 function TEditPathExpert.GetActionCaption: string;
 begin
-  Result := 'Edit &Path ...';
+  Result := 'Edit Unit Search &Path ...';
 end;
 
 function TEditPathExpert.GetHelpString: string;
@@ -958,6 +976,12 @@ begin
 
   // tell the caller that the event has been handled
   Result := True;
+end;
+
+procedure Tf_EditPath.imF1Click(Sender: TObject);
+begin
+  inherited;
+  GXContextHelp(Self,71);
 end;
 
 initialization
