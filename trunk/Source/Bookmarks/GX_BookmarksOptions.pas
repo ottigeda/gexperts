@@ -117,7 +117,7 @@ begin
 
  FontHeight:=Canvas.TextHeight('W');
  {$IFDEF GX_IDE_IS_HIDPI_AWARE}
-   FontHeight:=MulDiv(FontHeight,(GetParentForm(Self) as TfmGrepResultsOptions).CurrentPPI,GetDesignDpi);
+   FontHeight:=MulDiv(FontHeight,(GetParentForm(Self) as TfoBookmarksOptions).CurrentPPI,GetDesignDpi);
  {$ENDIF}
 
  Rect.Top   :=((Rect.Bottom+Rect.Top)-FontHeight) div 2;
