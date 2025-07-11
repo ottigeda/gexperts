@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Done RZ" modified="2025-07-03T19:29:39.413+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Done RZ" modified="2025-07-10T19:56:41.555+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">UsesClauseManager</title>
   <body>
     <header>
@@ -35,7 +35,7 @@
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Actions" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Available actions</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Actions" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Available actions</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" translate="true">&#32;</text></para>
@@ -43,7 +43,7 @@
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Popup" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Context menu and ..</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Popup" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Context menu and ..</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" translate="true">&#32;</text></para>
@@ -59,7 +59,7 @@
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:19px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="PagesA" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Tabs &quot;Search path&quot;..</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="PagesA" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Tabs &quot;Search path&quot;..</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:19px; background-color:#f4f4f4;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
@@ -67,7 +67,7 @@
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:19px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="PagesB" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Tab &quot;Favorite&quot;</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="PagesB" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Tab &quot;Favorite&quot;</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:19px; background-color:#f4f4f4;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
@@ -75,7 +75,7 @@
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:19px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="PagesC" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Tab &quot;Identifiers&quot;</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="PagesC" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Tab &quot;Identifiers&quot;</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:19px; background-color:#f4f4f4;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>

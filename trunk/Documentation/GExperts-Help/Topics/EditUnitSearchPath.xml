@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Under Construction" modified="2025-07-06T13:03:07.189+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Done RZ" modified="2025-07-11T14:11:47.228+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Edit Unit Search Path</title>
   <body>
     <header>
@@ -8,7 +8,7 @@
       <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt; vertical-align:baseline; color:#efa175;" translate="true">General </text></para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="2" style="width:100%; page-break-inside:avoid; background-color:#ebfafa; head-row-background-color:#ccffff; alt-row-background-color:none;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="2" style="width:100%; page-break-inside:avoid; background-color:#ebfafa; head-row-background-color:#ccffff; alt-row-background-color:none;">
       <thead style="vertical-align:middle">
         <td style="width:200px; height:22px; background-color:#e2e2e2;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; color:#008080;" translate="true">this page .. </text></para>
@@ -35,7 +35,7 @@
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Target" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Target</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
           <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditUnitSearchPathFavoritesEdit" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Favorites, Add or Edit</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
@@ -43,10 +43,18 @@
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="UnitSearchPath" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Unit Search Path</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
           <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditUnitSearchPathOptions" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Configuration (Options)</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true"> &#160;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Inherited" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Inherited</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"></para>
         </td>
       </tr>
     </table></para>
@@ -62,9 +70,9 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The &quot;Edit Unit Search Path&quot; expert helps you editing the current project&apos;s unit search path. </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The &quot;Edit</text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true"> </text><text styleclass="Normal" style="font-family:Verdana;" translate="true">Unit</text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true"> </text><text styleclass="Normal" style="font-family:Verdana;" translate="true">Search</text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true"> </text><text styleclass="Normal" style="font-family:Verdana;" translate="true">Path&quot; expert helps you edit the unit search path of the current project. It also provides an easy way to select the target for which the path should be edited. </text></para>
     <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-right:6px; margin-bottom:40px; margin-left:6px;"><image src="EditUnitSearchPath10Main.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="3" colcount="3" style="width:100%; background-color:#f4f4f4;">
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="2" colcount="3" style="width:100%; background-color:#f4f4f4;">
       <tr style="vertical-align:top">
         <td style="width:48px;">
           <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; color:#ff0000;" translate="true">Notice</text></para>
@@ -73,7 +81,7 @@
           <para styleclass="Normal" style="text-align:center; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">▪</text></para>
         </td>
         <td>
-          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The expert offers the same functionality as the &quot;IDE Enhancement for search paths&quot; (see Configuration, IDE Enhancements). </text></para>
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">This expert is only available in </text><text styleclass="Normal" style="font-family:Verdana;" translate="true">Delphi versions from Delphi</text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true"> </text><text styleclass="Normal" style="font-family:Verdana;" translate="true">2009 and later because the OTAPI did not offer access to the target list in earlier versions. </text></para>
         </td>
       </tr>
       <tr style="vertical-align:top">
@@ -84,18 +92,7 @@
           <para styleclass="Normal" style="text-align:center; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" translate="true">▪</text></para>
         </td>
         <td>
-          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The &quot;</text><text styleclass="Normal" style="font-family:Verdana;" translate="true">IDE Enhancement for search paths&quot; should work in </text><text styleclass="Normal" style="font-family:Verdana; text-decoration:underline;" translate="true">all</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> Delphi versions from Delphi 6 and later. </text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:top">
-        <td style="width:48px;">
-          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"></para>
-        </td>
-        <td style="vertical-align:top; width:20px;">
-          <para styleclass="Normal" style="text-align:center; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" translate="true">▪</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">This expert is only available in </text><text styleclass="Normal" style="font-family:Verdana;" translate="true">Delphi versions from Delphi 2009 and later because the OTAPI did not offer access to the target list in earlier versions. </text></para>
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">In </text><text styleclass="Normal" style="font-family:Verdana; text-decoration:underline;" translate="true">all</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> Delphi versions from Delphi</text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true"> </text><text styleclass="Normal" style="font-family:Verdana;" translate="true">6 and later t</text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">he &quot;</text><text styleclass="Normal" style="font-family:Verdana;" translate="true">IDE Enhancement for search paths&quot; should work - the functionality of the enhancement is very similar to the capabilities of this expert. </text></para>
         </td>
       </tr>
     </table></para>
@@ -111,16 +108,51 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The dialog offers the following functionalities ...</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; border:none;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true"> &#160; </text><anchor id="Target" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text><draft-comment id="ANNOT45B689" width="16px" height="13px" modified="2025-06-08T15:46:47.675+02:00" styleclass="Comment"><![CDATA[At least 3 chars in front of bookmark!]]></draft-comment></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+      <tr style="vertical-align:top">
+        <td style="border-top:none; border-right:none; border-left:none;">
+          <para styleclass="Normal" style="page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Target </text></para>
+        </td>
+        <td style="vertical-align:top; width:20px; border-top:none; border-right:none; border-left:none;">
+          <para styleclass="Normal" style="text-align:right;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
-      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Multi line editing </text></li>
-      <li styleclass="Normal" style="margin-top:3px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Make relative / absolute for the currently selected line(s) </text></li>
-      <li styleclass="Normal" style="margin-top:3px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Prepend .. / Remove .. for the currently selected line(s) </text></li>
-      <li styleclass="Normal" style="margin-top:3px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Move current line up or down with the arrow buttons or Ctrl + up/down arrow keys </text></li>
-      <li styleclass="Normal" style="margin-top:3px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Favorites menu for currently used paths (if items available, open popup for selecting item in the other case open the favorites form directly)</text></li>
-      <li styleclass="Normal" style="margin-top:3px; margin-bottom:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">A simple way to select the target for which to edit the path </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The target list shows all defined compiler targets of the current project. </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">By default, the currently active compiler target of the project is preselected. This behavior can be set in the configuration; the configuration dialog is accessible only in the GExperts configuration. </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">You can select the desired entry with the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">mouse</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or with </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Alt + up/down arrow keys</text><text styleclass="Normal" style="font-family:Verdana;" translate="true">. </text></li>
+    </list>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The list does not provide options for creating or deleting targets; this must be done in the IDE. </text></li>
+    </list>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; border:none;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true"> &#160; </text><anchor id="UnitSearchPath" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text><draft-comment id="ANNOT45B689" width="16px" height="13px" modified="2025-06-08T15:46:47.675+02:00" styleclass="Comment"><![CDATA[At least 3 chars in front of bookmark!]]></draft-comment></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+      <tr style="vertical-align:top">
+        <td style="border-top:none; border-right:none; border-left:none;">
+          <para styleclass="Normal" style="page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Unit Search Path </text></para>
+        </td>
+        <td style="vertical-align:top; width:20px; border-top:none; border-right:none; border-left:none;">
+          <para styleclass="Normal" style="text-align:right;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">This object is your central work area for managing search paths, it shows all defined search paths for the selected compiler target in the target list. </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The list is actually no list but an editable TMemo; this allows you multi line editing and quickly transfer paths and individual folder names using copy and paste. It&apos;s even possible to drop directories on the memo to add them. </text></li>
+    </list>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The alternative way to add directories is to use the Favorites. If no favorites have been defined yet, the button </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">&quot;Fav&quot;</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> opens the favorites form. Otherwise, the button opens a pop up from which you can either directly select a favorite or open the favorites window. A single favorite entry can contain multiple directories, so it is e.g. possible to add all directories necessary for Indy, JCL or JVCL with one click rather than having to add each of them separately. </text></li>
+    </list>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">With the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">arrow keys</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or with </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Ctrl + up/down arrow keys</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> you can change the order of the directory entries and thus their search priority and the compiler speed. </text></li>
+    </list>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Using the buttons </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic;" translate="true">&quot;</text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Make Relative</text><text styleclass="Normal" style="font-family:Verdana; font-style:italic;" translate="true">&quot;</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic;" translate="true">&quot;</text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Make Absolute</text><text styleclass="Normal" style="font-family:Verdana; font-style:italic;" translate="true">&quot;</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> all directories of the currently selected line(s) in the memo will be made relative to the project file directory or absolute. </text></li>
+    </list>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">With the buttons </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">&quot;Prepend ..\&quot;</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">&quot;Remove ..\&quot;</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> you can add or remove a relative path prefix for the currently selected line(s) to specify a parent or child directory as the starting point for the path specification. </text></li>
     </list>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="3" style="width:100%; background-color:#f4f4f4;">
       <tr style="vertical-align:top">
@@ -131,10 +163,24 @@
           <para styleclass="Normal" style="text-align:center; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">▪</text></para>
         </td>
         <td>
-          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The preselection of a specific target can be set in the configuration. This dialog is not accessible in the expert itself, but only in the GExperts configuration. </text></para>
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The ability to edit data without restrictions requires disciplined work, as the accessibility of the paths is not checked by the application. This option can be very useful, but you should know exactly what you are doing and whether your path specification references a correct directory under all circumstances. </text></para>
         </td>
       </tr>
     </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; border:none;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true"> &#160; </text><anchor id="Inherited" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text><draft-comment id="ANNOT45B689" width="16px" height="13px" modified="2025-06-08T15:46:47.675+02:00" styleclass="Comment"><![CDATA[At least 3 chars in front of bookmark!]]></draft-comment></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+      <tr style="vertical-align:top">
+        <td style="border-top:none; border-right:none; border-left:none;">
+          <para styleclass="Normal" style="page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Inherited </text></para>
+        </td>
+        <td style="vertical-align:top; width:20px; border-top:none; border-right:none; border-left:none;">
+          <para styleclass="Normal" style="text-align:right;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The lower list on the right is not editable, the list shows all inherited search paths for the current selected compiler target. </text></li>
+    </list>
     <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:35:11.804+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
 
 Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true">&#32;</text></para>

@@ -49,7 +49,7 @@
               <task-config-value name="highlighthotspots">0</task-config-value>
               <task-config-value name="exportcomments">0</task-config-value>
               <task-config-value name="exportcommentsdate">36526</task-config-value>
-              <task-config-value name="make4include">PDF</task-config-value>
+              <task-config-value name="make4include">CHM,HTML,PDF</task-config-value>
               <task-config-value name="make4status">*</task-config-value>
             </task-config-group>
           </export-task>
@@ -150,7 +150,7 @@
       <config-group name="spellcheck">
         <config-value name="project">0</config-value>
       </config-group>
-      <config-value name="make4include">PDF</config-value>
+      <config-value name="make4include">CHM,HTML,PDF</config-value>
       <config-value name="make4status">*</config-value>
       <config-value name="comment">https://gexperts.dummzeuch.de/</config-value>
       <config-value name="synchronizedwithfile">GExperts(Jim).hmxz</config-value>
@@ -707,7 +707,7 @@ GExperts Help
       </config-group>
       <config-group name="ghost">
         <config-group name="project">
-          <config-value name="lastexport">3</config-value>
+          <config-value name="lastexport">0</config-value>
         </config-group>
       </config-group>
       <config-group name="ralph">

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Under Construction" modified="2025-07-02T22:24:17.452+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Under Construction" modified="2025-07-10T19:55:55.207+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">ToDo Grid</title>
   <body>
     <header>
@@ -35,7 +35,7 @@
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:19px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="SelectRows" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Select rows + Move selection</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="SelectRows" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Select rows + Move selection</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:19px; background-color:#f4f4f4;">
           <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="ToDoGrid20Options" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Configuration (Options)</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
@@ -43,7 +43,7 @@
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="HighlightRows" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Highlight rows</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="HighlightRows" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Highlight rows</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
@@ -51,7 +51,7 @@
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="SortGrid" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Sort grid</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="SortGrid" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Sort grid</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
@@ -59,7 +59,7 @@
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="FilterGrid" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Filter grid</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="FilterGrid" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Filter grid</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
@@ -67,7 +67,7 @@
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="AdjustColumnWidth" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Adjust column width</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="AdjustColumnWidth" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Adjust column width</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
@@ -75,7 +75,7 @@
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="HideColumns" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Hide columns</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="HideColumns" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Hide columns</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
