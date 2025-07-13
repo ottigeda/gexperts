@@ -13,7 +13,8 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
-  GX_BaseForm, ExtCtrls;
+  GX_BaseForm,
+  ExtCtrls;
 
 type
   Tf_IdeSearchPathFavoriteEdit = class(TfmBaseForm)
@@ -24,14 +25,19 @@ type
     b_OK: TButton;
     b_Cancel: TButton;
     b_Select: TButton;
-    imF1: TImage;
+    b_Help: TButton;
     procedure b_SelectClick(Sender: TObject);
-    procedure imF1Click(Sender: TObject);
+    procedure b_HelpClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     FOnCallHelpContext: TNotifyEvent;
     procedure GetData(out _Name, _Path: string);
     procedure SetData(const _Name, _Path: string; _OnCallHelpContext:TNotifyEvent=nil);
     procedure HandleFilesDropped(_Sender: TObject; _Files: TStrings);
+  protected
+    procedure CreateWnd;                              override; // show sizeable form like a dialog
+    procedure CreateParams(var Params:TCreateParams); override; // form without caption icon
   public
     class function Execute(_Owner: TComponent; var _Name, _Path: string; _OnCallHelpContext:TNotifyEvent=nil): Boolean;
     constructor Create(_Owner: TComponent); override;
@@ -47,7 +53,6 @@ uses
 
 { Tf_IdeSearchPathFavoriteEdit }
 
-//§B : Tf_IdeSearchPathFavoriteEdit.Execute
 class function Tf_IdeSearchPathFavoriteEdit.Execute(_Owner: TComponent; var _Name, _Path: string; _OnCallHelpContext:TNotifyEvent=nil): Boolean;
 var
   frm: Tf_IdeSearchPathFavoriteEdit;
@@ -102,14 +107,39 @@ begin
   m_Path.Lines.DelimitedText := AnsiDequotedStr(_Path, '"');
   FOnCallHelpContext := _OnCallHelpContext;
 
-  if not(Assigned(_OnCallHelpContext)) then b_Select.Left := m_Path.Left;
-  // imF1.Enabled := Assigned(_OnCallHelpContext);
+  b_Help.Visible:=Assigned(_OnCallHelpContext);
+  if not(b_Help.Visible) then b_Select.Left := b_Help.Left;
+
+  if _Path='' then Caption := Caption+', Add'
+              else Caption := Caption+', Edit';
 end;
 
-procedure Tf_IdeSearchPathFavoriteEdit.imF1Click(Sender: TObject);
+procedure Tf_IdeSearchPathFavoriteEdit.b_HelpClick(Sender: TObject);
 begin
   inherited;
   FOnCallHelpContext(Self);
+end;
+
+procedure Tf_IdeSearchPathFavoriteEdit.FormKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  inherited;
+  if Key=vk_F1 then b_HelpClick(nil);
+end;
+
+// show sizeable form like a dialog
+// form without caption icon
+procedure Tf_IdeSearchPathFavoriteEdit.CreateParams(
+  var Params: TCreateParams);
+begin
+  inherited;
+  Params.ExStyle:=Params.ExStyle or WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE;
+end;
+
+procedure Tf_IdeSearchPathFavoriteEdit.CreateWnd;
+begin
+  inherited;
+  SendMessage(Handle,WM_SETICON,1,0);
 end;
 
 end.

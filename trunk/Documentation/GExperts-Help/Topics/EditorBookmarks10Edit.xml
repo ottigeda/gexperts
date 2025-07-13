@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Done RZ" modified="2025-07-04T12:47:59.005+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Done RZ" modified="2025-07-13T15:16:32.592+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">EditorBookmarksEdit</title>
   <body>
     <header>
@@ -50,7 +50,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true"> &#160; </text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
@@ -63,7 +63,7 @@
       </tr>
     </table></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">If activated in the options, you may use the good old edit window, well known from the former version of the expert. This edit window will be opened when you click on the first toolbutton to </text><text styleclass="Normal" style="font-family:Verdana; text-decoration:underline;" translate="true">add</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> a new bookmark. Furthermore, an additional button will be visible in the toolbar, which can be used to </text><text styleclass="Normal" style="font-family:Verdana; text-decoration:underline;" translate="true">edit</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> bookmarks that have already been created. </text></para>
-    <para styleclass="Normal"><anchor id="AddBookmark" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><anchor id="AddBookmark" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; </text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
@@ -75,7 +75,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-right:6px; margin-bottom:40px; margin-left:6px;"><image src="EditorBookmarks10Edit10.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:30px; margin-right:6px; margin-bottom:30px; margin-left:6px;"><image src="EditorBookmarks10Edit10.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">After opening the adding window, the preselection is set so that the next free bookmark is placed in the caret line of the active unit. If that is ok, the selection can be accepted with the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Save button</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or pressing </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Return</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> and the window will be closed immediately. </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">You can change the default setting individually: </text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
@@ -87,7 +87,7 @@
       <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">With the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Cancel button</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or pressing </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Escape</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> you may close the window without adding bookmark. </text></li>
       <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">You can access help by pressing the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">F1 key</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or by clicking on the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">F1 symbol</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> bottom left. </text></li>
     </list>
-    <para styleclass="Normal"><anchor id="EditBookmark" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><anchor id="EditBookmark" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; </text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
@@ -99,7 +99,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-right:6px; margin-bottom:40px; margin-left:6px;"><image src="EditorBookmarks10Edit20.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:30px; margin-right:6px; margin-bottom:30px; margin-left:6px;"><image src="EditorBookmarks10Edit20.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Of course, the edit window can only be opened for bookmarks that already exist. Editing means being able to change the line number or module for the bookmark. Changes are accepted with the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Save button</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or pressing </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Return</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> and the window will be closed immediately. </text></para>
     <list id="2" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
       <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">By changing the </text><text styleclass="Normal" style="font-family:Verdana; text-decoration:underline;" translate="true">line number</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> you can assign the bookmark to every desired line number, even to lines that are outside the visible area - how practical this option is, remains to be seen. </text></li>

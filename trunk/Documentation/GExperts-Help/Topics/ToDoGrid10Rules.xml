@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Under Construction" modified="2025-07-02T22:20:38.965+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Under Construction" modified="2025-07-13T14:58:26.398+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">ToDoGridFunctionality</title>
   <body>
     <header>
@@ -8,7 +8,7 @@
       <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt; vertical-align:baseline; color:#efa175;" translate="true">Rules of syntax analysis </text></para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="2" style="width:100%; page-break-inside:avoid; background-color:#ebfafa; head-row-background-color:#ccffff; alt-row-background-color:none;">
+    <para styleclass="Normal"><table styleclass="Default" rowcount="6" colcount="2" style="width:100%; page-break-inside:avoid; background-color:#ebfafa; head-row-background-color:#ccffff; alt-row-background-color:none;">
       <thead style="vertical-align:middle">
         <td style="width:200px; height:22px; background-color:#e2e2e2;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; color:#008080;" translate="true">this page .. </text></para>
@@ -27,10 +27,26 @@
       </tr>
       <tr style="vertical-align:middle">
         <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Rules" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Rules of syntax analysis</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="WhatIsAToken" styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">What is a token?</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
           <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt; vertical-align:baseline; color:#efa175;" translate="true">Rules of syntax analysis</text><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="HowToInsertTokens" styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">How to insert tokens</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="ToDoGrid20Options" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Configuration (Options)</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Rules" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Rules of syntax analysis</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Heading1" style="margin-left:6px;"></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
@@ -38,15 +54,7 @@
           <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Suggestions" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Suggestions for individual use</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:19px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="ToDoGrid20Options" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Configuration (Options)</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
-        </td>
-      </tr>
-      <tr style="vertical-align:middle">
-        <td style="width:200px; height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
-        </td>
-        <td style="height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
         </td>
       </tr>
     </table></para>
@@ -58,7 +66,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true"> &#160; </text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
@@ -70,13 +78,35 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The &quot;ToDoGrid&quot; expert offers a great overview of all ToDo items that are present in your source code. The expert has a dockable main window; this mode should also be the primary form of use. Disadvantage of the dockable window is, that only a small amount of data from the data grid is visible. To compensate for this limitation, a second, large and freely movable window can be opened which displays the data grid with a significantly larger number of rows. </text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The extended functionality complements the todo function available in the IDE and offers new ways to keep a good overview by sorting, filtering and temporarily highlighting the data. The configuration allows you to adapt the examination of the files very individually to the respective situation (examination of C files is currently not available). Detailed information about the way of scanning and parsing your source files can be found on this help page. </text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">(diesen Inhalt überprüfen) </text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></para>
-    <para styleclass="Normal"><anchor id="Rules" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The configuration allows you to adapt the examination of the files very individually to the respective situation (examination of C files is currently not available). Detailed information about the way of scanning and parsing your source files is explained in this page. </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-right:6px; margin-left:6px; border:none;"><anchor id="WhatIsAToken" styleclass="Normal" style="font-family:Verdana;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+      <tr style="vertical-align:top">
+        <td style="border-top:none; border-right:none; border-left:none;">
+          <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">What is a token? </text></para>
+        </td>
+        <td style="vertical-align:top; width:20px; border-top:none; border-right:none; border-left:none;">
+          <para styleclass="Normal" style="text-align:right;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">In the context of &quot;ToDo Grid&quot; a token is a keyword inserted into the source code that indicates the presence of additional ToDo text information within the program code. To separate this information from the source code to be compiled, the information is marked as a comment in Delphi, using // for single line ToDo and (* *) or { } for multi line ToDo. </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The definition of the token is essentially free; however, if you&apos;re working within a group of programmers, there will be rules that must be observed. Thanks to the ability to individually activate/deactivate the tokens to be considered for scanning, adaptation to the specific work situation is very easy. </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Typical tokens and rules for displaying additional information are presented in the next chapter &quot;Rules of syntax analysis&quot;. </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-right:6px; margin-left:6px; border:none;"><anchor id="HowToInsertTokens" styleclass="Normal" style="font-family:Verdana;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+      <tr style="vertical-align:top">
+        <td style="border-top:none; border-right:none; border-left:none;">
+          <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">How to insert</text><text styleclass="Normal" style="font-family:Verdana; color:#808080;" translate="true"> (and remove) </text><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">tokens </text></para>
+        </td>
+        <td style="vertical-align:top; width:20px; border-top:none; border-right:none; border-left:none;">
+          <para styleclass="Normal" style="text-align:right;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">To create entries in the source code, you can use the &quot;source code templates&quot; available in the IDE, which can be accessed via Ctrl+J. Alternatively, you can also use the &quot;Code Librarian&quot; expert. In both cases, regular token texts must be created, which can then be quickly inserted later.</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">In order to keep the time required for scanning the files as short as possible, tokens that are no longer needed should also be removed from the source - a perhaps unspectacular task, but one that should nevertheless be carried out regularly (even within a workgroup)! </text></para>
+    <para styleclass="Normal"><anchor id="Rules" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; </text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
@@ -88,49 +118,69 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Hier müssen die Regeln von Hinweisen zur Options-Nutzung getrennt werden - ODER? </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-right:6px; margin-left:6px; border:none;"><anchor id="StructureOfToDo" styleclass="Normal" style="font-family:Verdana;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+      <tr style="vertical-align:top">
+        <td style="border-top:none; border-right:none; border-left:none;">
+          <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Structure of ToDo </text></para>
+        </td>
+        <td style="vertical-align:top; width:20px; border-top:none; border-right:none; border-left:none;">
+          <para styleclass="Normal" style="text-align:right;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">xx </text></para>
     <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
-      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Der primäre Scanbereich wird über die Auswahlfelder bestimmt. Aus den von der IDE übernommenen Dateilisten werden nur Dateien mit den Dateierweiterungen  .dpr   .pas   .inc  und  .todo  auf ToDo-Einträge untersucht. Dateien mit der Erweiterung  .c  werden nicht behandelt. Diese Auswahl ist im Code fest eingestellt und derzeit nicht konfigurierbar (wie ToDoList). </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Es wird empfohlen das Einfügen und den Aufbau der ToDo-Einträge zu standardisieren und hierfür z.B. in der IDE Strg+J (xxx) oder den &quot;Code Librarian Experten&quot; zu verwenden. Ein Standard-ToDo-Eintrag besteht aus Einleitung // oder (* oder { gefolgt von einem Token, optional einer Priorität, einer Kategori, einem Besitzer, einem Doppelpunkt und einem Erläuterungstext. </text></li>
     </list>
     <list id="1" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
-      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Die Angabe der Additional directories ist optional; nur die jeweils als aktiv markierten Verzeichnisse werden gescannt. Optional werden auch Unterverzeichnisse eingelesen; mit Doppelklick auf einen Verzeichniseintrag wird die Berücksichtigung von Unterverzeichnissen aktiviert bzw. deaktiviert. </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Die Priorität der ToDo-Einträge wird primär von der in OPTIONS definierten Zuordnung von Priorität zu Token festgelegt. In den Sourcen definierte Prioritäten überschreiben die in Options definierten Zuordnungen, wenn nach dem Token ein Leerzeichen, gefolgt von einer Ziffer 0..9 stehen. Die Ziffern 1..5 werden als die 5 deklarierten Prioritätsstufen gewertet, die Ziffern 0 und 6..9 &#160;werden als Priorität &quot;Lowest&quot; interpretiert. Steht zwischen Token und Ziffer kein Leerzeichen, wird die Ziffer als Bestandteil des Tokens gewertet. </text></li>
     </list>
     <list id="2" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
-      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Die Extensions werden nur für das Einlesen der Dateien der zusätzlichen Verzeichnisse verwendet! Nur die jeweils als aktiv markierten Dateinamenerweiterungen sind für die Auswertung relevant. </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Die optionale Kategorie (Category) des ToDo-Eintrags wird durch den Parameter &#160;-c  festgelegt. Der direkt nach &#160;-c  stehende Text darf keine Leerzeichen oder Trennstriche enthalten. Die Begrifflichkeit ist grundsätzlich frei definierbar, im Interesse einer guten Auswertbarkeit sollte die Definitionsmenge so klein wie möglich sein. </text></li>
     </list>
     <list id="3" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Der optionale Besitzer (Owner) des ToDo-Eintrags wird durch den Parameter &#160;-o  festgelegt. Der direkt nach &#160;-o  stehende Text darf keine Leerzeichen oder Trennstriche enthalten. Die Begrifflichkeit ist grundsätzlich frei definierbar, im Interesse einer guten Auswertbarkeit sollte das Synonym aber nicht gewechselt werden. </text></li>
+    </list>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Werden die Parameter  -c  (Category) und &#160; -o  (Owner) mehrfach angegeben, wird nur die jeweils erste Nennung ausgewertet; die Reihenfolge der Nennung ist nicht von Belang. </text></li>
+    </list>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Der Beschreibungstext (Description) ist möglichst kurz und prägnant zu formulieren; fehlt der Text zu einem ansonsten gültigen ToDo-Eintrag wird der Hinweistext &#160;&quot;No description found&quot; in der Liste angezeigt. </text></li>
+    </list>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">MultiLine-Einträge aus maximal 4 aufeinander folgenden Zeilen sind möglich, sofern sie mit &#160;{  oder &#160;(*  eingeleitet werden. Ein MultiLine-Eintrag der in mehreren Zeilen mit jeweils &#160;//  beginnt, wird nicht erkannt (wie ToDoList). </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xx </text></li>
+    </list>
+    <para styleclass="Normal" style="text-align:justify; margin-right:6px; margin-left:6px; border:none;"><anchor id="DataScan" styleclass="Normal" style="font-family:Verdana;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
+      <tr style="vertical-align:top">
+        <td style="border-top:none; border-right:none; border-left:none;">
+          <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Datascan </text></para>
+        </td>
+        <td style="vertical-align:top; width:20px; border-top:none; border-right:none; border-left:none;">
+          <para styleclass="Normal" style="text-align:right;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Der primäre Scanbereich wird über die Auswahlfelder bestimmt. Aus den von der IDE übernommenen Dateilisten werden nur Dateien mit den Dateierweiterungen &#160;.dpr  &#160;.pas  &#160;.inc  und &#160;.todo  auf ToDo-Einträge untersucht. Dateien mit der Erweiterung &#160;.c  werden nicht behandelt. Diese Auswahl ist im Code fest eingestellt und derzeit nicht konfigurierbar (wie ToDoList). </text></li>
+    </list>
+    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Die Angabe der Additional directories ist optional; nur die jeweils als aktiv markierten Verzeichnisse werden gescannt. Optional werden auch Unterverzeichnisse eingelesen; mit Doppelklick auf einen Verzeichniseintrag wird die Berücksichtigung von Unterverzeichnissen aktiviert bzw. deaktiviert. </text></li>
+    </list>
+    <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Die Extensions werden nur für das Einlesen der Dateien der zusätzlichen Verzeichnisse verwendet! Nur die jeweils als aktiv markierten Dateinamenerweiterungen sind für die Auswertung relevant. </text></li>
+    </list>
+    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
       <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Die Token werden für die Auswertung aller aus den Dateien extrahierter Zeilen verwendet; nur die markierten Token werden für die Analyse genutzt. Die Geschwindigkeit der Syntaxanalyse wird maßgeblich durch die Anzahl der zu Vergleichenden Token bestimmt, daher sollte immer nur die tatsächlich relevante Menge von Token für die Analyse aktiviert werden. Folgende Aussagen anpassen /erweitern, wenn neuer Scan einsatzbereit: </text></li>
     </list>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:19px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">TODO 3 findet nur TODO 3, TODO findet TODO und TODO 3 - es wäre daher unsinnig ToDo X und gleichzeitig ToDo zu aktivieren. </text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:19px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Auch ein mit  //  eingeleiteter ToDo-Eintrag hinter einem mit  //  auskommentiertem Befehl wird gefunden. </text></para>
-    <list id="4" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
-      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Es wird empfohlen das Einfügen und den Aufbau der ToDo-Einträge zu standardisieren und hierfür z.B. den &quot;Code Librarian Experten&quot; zu verwenden. Ein Standard-ToDo-Eintrag besteht aus Einleitung // oder (* oder { gefolgt von einem Token, optional einer Priorität, einer Kategori, einem Besitzer, einem Doppelpunkt und einem Erläuterungstext. </text></li>
-    </list>
-    <list id="5" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
-      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Die Priorität der ToDo-Einträge wird primär von der in OPTIONS definierten Zuordnung von Priorität zu Token festgelegt. In den Sourcen definierte Prioritäten überschreiben die in Options definierten Zuordnungen, wenn nach dem Token ein Leerzeichen, gefolgt von einer Ziffer 0..9 stehen. Die Ziffern 1..5 werden als die 5 deklarierten Prioritätsstufen gewertet, die Ziffern 0 und 6..9 &#160;werden als Priorität &quot;Lowest&quot; interpretiert. Steht zwischen Token und Ziffer kein Leerzeichen, wird die Ziffer als Bestandteil des Tokens gewertet. </text></li>
-    </list>
-    <list id="6" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
-      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Die optionale Kategorie (Category) des ToDo-Eintrags wird durch den Parameter  -c  festgelegt. Der direkt nach  -c  stehende Text darf keine Leerzeichen oder Trennstriche enthalten. Die Begrifflichkeit ist grundsätzlich frei definierbar, im Interesse einer guten Auswertbarkeit sollte die Definitionsmenge so klein wie möglich sein. </text></li>
-    </list>
-    <list id="7" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
-      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Der optionale Besitzer (Owner) des ToDo-Eintrags wird durch den Parameter  -o  festgelegt. Der direkt nach  -o  stehende Text darf keine Leerzeichen oder Trennstriche enthalten. Die Begrifflichkeit ist grundsätzlich frei definierbar, im Interesse einer guten Auswertbarkeit sollte das Synonym aber nicht gewechselt werden. </text></li>
-    </list>
-    <list id="8" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
-      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Werden die Parameter  -c  (Category) und &#160; -o  (Owner) mehrfach angegeben, wird nur die jeweils erste Nennung ausgewertet; die Reihenfolge der Nennung ist nicht von Belang. </text></li>
-    </list>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:19px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Auch ein mit &#160;//  eingeleiteter ToDo-Eintrag hinter einem mit &#160;//  auskommentiertem Befehl wird gefunden. </text></para>
     <list id="9" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
-      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Der Beschreibungstext (Description) ist möglichst kurz und prägnant zu formulieren; fehlt der Text zu einem ansonsten gültigen ToDo-Eintrag wird der Hinweistext &#160;&quot;No description found&quot; in der Liste angezeigt. </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xx </text></li>
     </list>
-    <list id="10" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
-      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">MultiLine-Einträge aus maximal 4 aufeinander folgenden Zeilen sind möglich, sofern sie mit  {  oder  (*  eingeleitet werden. Ein MultiLine-Eintrag der in mehreren Zeilen mit jeweils  //  beginnt, wird nicht erkannt (wie ToDoList). </text></li>
-    </list>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></para>
-    <list id="11" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
-      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
-      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
-    </list>
-    <para styleclass="Normal"><anchor id="Suggestions" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><anchor id="Suggestions" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; </text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
@@ -142,43 +192,38 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Sofern die Arbeitsituation keine obligatorischen Regeln aufgibt und zumindest teilweise eine freie Gestaltung zulässt, können folgende Überlegungen möglicherweise interessante Anwendungsvorschläge anbieten ... </text></para>
-    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Sofern die Arbeitssituation keine obligatorischen Regeln aufgibt und zumindest teilweise eine freie Gestaltung zulässt, können folgende Überlegungen möglicherweise interessante Anwendungsvorschläge anbieten ... </text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Es wird empfohlen das Einfügen und den Aufbau der ToDo-Einträge zu standardisieren und hierfür z.B. in der IDE Strg+J (xxx) oder den &quot;Code Librarian Experten&quot; zu verwenden. Ein Standard-ToDo-Eintrag besteht aus Einleitung // oder (* oder { gefolgt von einem Token, optional einer Priorität, einer Kategori, einem Besitzer, einem Doppelpunkt und einem Erläuterungstext. </text></li>
+    </list>
+    <list id="11" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
       <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Sofern es verschiedene Rahmenbedingen (Arbeitumgebungen) gibt, alle relevanten Token definieren und nur bei Bedarf in der Konfiguration von ToDoGrid aktivieren (&gt; scheiße formuliert, ÄNDERN) </text></li>
     </list>
-    <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
+    <list id="12" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
       <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Es sind grundsätzlich natürlich verschiedenste Vorgehensweisen möglich:</text></li>
     </list>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Der Token identifiziert die &quot;Category&quot;. Das führt zu kurzen Einträgen, wenn man auf eine Personifizierung verzichtet),</text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; ohne Personifizierung &#160; //ToDo : xxx &#160; &#160; &#160; &#160; &#160;oder  //Error : xxx &#160; &#160; &#160; &#160; oder &#160;//Info : xxx </text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; &#160; mit Personifizierung &#160; // ToDo -oRZ : xxx &#160;oder &#160;//Error -oRZ : xxx  oder  //Info -oRZ : xxx </text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">ODER</text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; ohne Personifizierung &#160; //ToDo : xxx &#160; &#160; &#160; &#160; &#160;oder &#160;//Error : xxx &#160; &#160; &#160; &#160; oder &#160;//Info : xxx </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; &#160; mit Personifizierung &#160; // ToDo -oRZ : xxx &#160;oder &#160;//Error -oRZ : xxx &#160;oder &#160;//Info -oRZ : xxx </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">ODER</text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Der Token identifiziert &quot;Category&quot; und &quot;Priority&quot;. Xx ...</text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; &#160;????</text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Der Token identifiziert den &quot;Owner&quot;. Mögliches Problem ist, dass auch Andere den gleichen &quot;persönlichen Token&quot; gewählt haben (eine Doppelnutzung sollte aber nach Abstimmung vermeidbar sein). Die Kategorie wird über den Parameter -cXX bestimmt.</text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; &#160;//§§ -cToDo : xx &#160; &#160;oder  //§§ -cError : xx &#160; oder &#160; //§§ -cInfo : xx</text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; &#160;//§RZ -cToDo : xx &#160;oder &#160;//§RZ -cError : xx  oder  //§RZ -cInfo : xx &#160; (Doppelnutzung sehr unwahrscheinlich)</text></para>
-    <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
-      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Für die Erstellung der Einträge im Source sollte die in der IDE verfügbare xxx-Funktion verwendet werden (Aufruf via Ctrl+J) Alternativ ist auch die Verwendung des XXX-Experten möglich. In beiden Fällen sind &#160;entsprechende Textvarianten anzulegen, die dann später schnell eingefügt werden können. </text></li>
-    </list>
-    <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; &#160;//§§ -cToDo : xx &#160; &#160;oder &#160;//§§ -cError : xx &#160; oder &#160; //§§ -cInfo : xx</text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; &#160;//§RZ -cToDo : xx &#160;oder &#160;//§RZ -cError : xx &#160;oder &#160;//§RZ -cInfo : xx &#160; (Doppelnutzung sehr unwahrscheinlich)</text></para>
+    <list id="13" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
       <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Der ToDo-Eintrag kann auch sehr gut zweckentfremdet als Sprungziel verwendet werden und damit dem Bookmark-Experten Konkurrenz machen. Der besondere Vorteil ist, dass das Sprungziel in diesem Fall automatisch mit dem Source gespeichert wird und damit auch in einem späteren Aufruf der IDE wieder verfügbar ist. </text></li>
     </list>
-    <list id="16" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
+    <list id="14" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
       <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Meine derzeit favorisierte Nutzung ist folgende...</text></li>
     </list>
-    <list id="17" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
+    <list id="15" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
       <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Personalisierter Token um die Angabe des Owners überflüssig zu machen:</text></li>
     </list>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">//§§ </text></para>
-    <list id="18" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
+    <list id="16" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
       <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Für den Bereich ToDo sind nur wenige Kategorien definiert: </text></li>
     </list>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">-cNew </text></para>
@@ -186,11 +231,11 @@
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">-cCheck &#160;</text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">-cError </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">-cInfo</text></para>
-    <list id="19" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
+    <list id="17" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
       <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Für die Nutzung als dauerhaftes Sprungziel:</text></li>
     </list>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">-cJump </text></para>
-    <list id="20" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
+    <list id="18" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Symbol; font-size:10pt; color:#000000;">
       <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Die Dringlichkeit ist für mich derzeit kein relevantes Attribut ??? </text></li>
     </list>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">▪</text></para>
@@ -199,13 +244,6 @@
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">//§§ -cInfo : New SBarText created dd.mm.yyyy</text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">//§§ -cJump : xx </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></para>
-    <list id="21" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
-      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
-      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xxx </text></li>
-    </list>
     <para styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px;"><draft-comment id="ANNOT69FA80" width="353px" height="64px" modified="2025-06-02T00:37:22.666+02:00" styleclass="Comment"><![CDATA[No DistanceAfter because Topic is not included in TOC
 
 Ghost | rzrz]]></draft-comment><text styleclass="Normal" translate="true">&#32;</text></para>

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Done RZ" modified="2025-07-10T19:56:41.555+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Done RZ" modified="2025-07-13T15:01:51.006+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">UsesClauseManager</title>
   <body>
     <header>
@@ -90,7 +90,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true"> &#160; </text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
@@ -131,8 +131,8 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-bottom:24px;"><image src="Uses Clause Manager.png" imagestyleclass="Default" scale="79.56%" width="646" height="417" styleclass="Image Caption" figurelistinclude="0"></image></para>
-    <para styleclass="Normal"><anchor id="UsedUnits" styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;"></anchor><text styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;" translate="true">&#32;</text></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:30px; margin-bottom:24px;"><image src="Uses Clause Manager.png" imagestyleclass="Default" scale="79.56%" width="646" height="417" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"><anchor id="UsedUnits" styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;"></anchor><text styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;" translate="true"> &#160; </text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
@@ -144,7 +144,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; border:none;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true"> &#160; </text><anchor id="Actions" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text><draft-comment id="ANNOT45B689" width="16px" height="13px" modified="2025-06-08T15:46:47.675+02:00" styleclass="Comment"><![CDATA[At least 3 chars in front of bookmark!]]></draft-comment></para>
+    <para styleclass="Normal" style="text-align:justify; margin-right:6px; margin-left:6px; border:none;"><anchor id="Actions" styleclass="Normal" style="font-family:Verdana;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <tr style="vertical-align:top">
         <td style="border-top:none; border-right:none; border-left:none;">
@@ -194,7 +194,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; border:none;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true"> &#160; </text><anchor id="Popup" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text><draft-comment id="ANNOT45B689" width="16px" height="13px" modified="2025-06-08T15:46:47.675+02:00" styleclass="Comment"><![CDATA[At least 3 chars in front of bookmark!]]></draft-comment></para>
+    <para styleclass="Normal" style="text-align:justify; margin-right:6px; margin-left:6px; border:none;"><anchor id="Popup" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <tr style="vertical-align:top">
         <td style="border-top:none; border-right:none; border-left:none;">
@@ -246,7 +246,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal"><anchor id="AvailableUnits" styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;"></anchor><text styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><anchor id="AvailableUnits" styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;"></anchor><text styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;" translate="true"> &#160; </text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
@@ -259,7 +259,7 @@
       </tr>
     </table></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">On the right of the expert&apos;s dialog there are five tabs with lists from which the desired unit can be selected and added to the </text><text styleclass="Normal" style="font-family:Verdana;" translate="true">uses lists in the left part of the dialog. The content of the Favorites</text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">list is configured by the user, the other lists are filled automatically. If an entry is crossed out, this means that it is already in one of the Used units lists.</text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true"> &#160; </text><anchor id="PagesA" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text><draft-comment id="ANNOT45B689" width="16px" height="13px" modified="2025-06-08T15:46:47.675+02:00" styleclass="Comment"><![CDATA[At least 3 chars in front of bookmark!]]></draft-comment></para>
+    <para styleclass="Normal" style="text-align:justify; margin-right:6px; margin-left:6px;"><anchor id="PagesA" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Comment" style="font-family:Verdana;" translate="true"> &#160; </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <tr style="vertical-align:top">
         <td style="border-top:none; border-right:none; border-left:none;">
@@ -329,7 +329,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; border:none;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true"> &#160; </text><anchor id="PagesB" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text><draft-comment id="ANNOT45B689" width="16px" height="13px" modified="2025-06-08T15:46:47.675+02:00" styleclass="Comment"><![CDATA[At least 3 chars in front of bookmark!]]></draft-comment></para>
+    <para styleclass="Normal" style="text-align:justify; margin-right:6px; margin-left:6px; border:none;"><anchor id="PagesB" styleclass="Normal" style="font-family:Verdana;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <tr style="vertical-align:top">
         <td style="border-top:none; border-right:none; border-left:none;">
@@ -386,7 +386,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; border:none;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true"> &#160; </text><anchor id="PagesC" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">&#32;</text><draft-comment id="ANNOT45B689" width="16px" height="13px" modified="2025-06-08T15:46:47.675+02:00" styleclass="Comment"><![CDATA[At least 3 chars in front of bookmark!]]></draft-comment></para>
+    <para styleclass="Normal" style="text-align:justify; margin-right:6px; margin-left:6px; border:none;"><anchor id="PagesC" styleclass="Normal" style="font-family:Verdana;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; border-width:0px; border-spacing:0px; border-collapse:collapse; cell-border-width:1px; border-color:#000000; border-style:solid;">
       <tr style="vertical-align:top">
         <td style="border-top:none; border-right:none; border-left:none;">
@@ -483,7 +483,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal"><anchor id="Statusbar" styleclass="Normal" style="font-family:Verdana;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><anchor id="Statusbar" styleclass="Normal" style="font-family:Verdana;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; </text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">

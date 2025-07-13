@@ -130,7 +130,7 @@
       <config-value name="charset" translate="true">DEFAULT_CHARSET</config-value>
       <config-value name="deffont">font-family:Tahoma; font-size:9pt; color:#000000;</config-value>
       <config-value name="contents">Introduction</config-value>
-      <config-value name="autohelpstart">74</config-value>
+      <config-value name="autohelpstart">75</config-value>
       <config-value name="autohelpincrement">1</config-value>
       <config-value name="autohelpanchor">0</config-value>
       <config-value name="searchpath">..\;..\Graphics\;..\Snippets\</config-value>
@@ -707,7 +707,7 @@ GExperts Help
       </config-group>
       <config-group name="ghost">
         <config-group name="project">
-          <config-value name="lastexport">0</config-value>
+          <config-value name="lastexport">3</config-value>
         </config-group>
       </config-group>
       <config-group name="ralph">
@@ -791,6 +791,7 @@ GExperts Help
       <file-mod href="ToDoGrid20Options.xml" build="RZONLY"/>
       <file-mod href="ToDoGrid50FltrMain.xml" build="RZONLY"/>
       <file-mod href="ToDoGrid60FltrSub.xml" build="RZONLY"/>
+      <file-mod href="_Dummy4Snippets.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
   </project-files>

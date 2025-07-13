@@ -1,163 +1,111 @@
 inherited f_EditPath: Tf_EditPath
-  Left = 1075
-  Top = 77
-  BorderIcons = [biSystemMenu, biMaximize]
+  Left = 2386
+  Top = 230
+  BorderIcons = [biSystemMenu]
   Caption = 'Edit Unit Search Path'
-  ClientHeight = 271
-  ClientWidth = 569
+  ClientHeight = 352
+  ClientWidth = 627
+  KeyPreview = True
   Position = poDesigned
   OnClose = FormClose
+  OnKeyDown = FormKeyDown
+  OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
-  object spl_Horizontal: TSplitter
-    Left = 217
+  object spVer: TSplitter
+    Left = 200
     Top = 0
-    Width = 5
-    Height = 230
+    Width = 8
+    Height = 316
+    Hint = 'Toggle MinSize / Center / MaxSize with DblClick'
+    MinSize = 200
+    ResizeStyle = rsUpdate
   end
   object p_BottomButtons: TPanel
     Left = 0
-    Top = 230
-    Width = 569
-    Height = 41
+    Top = 316
+    Width = 627
+    Height = 36
     Align = alBottom
     TabOrder = 1
     DesignSize = (
-      569
-      41)
-    object imF1: TImage
-      Left = 7
-      Top = 12
-      Width = 16
-      Height = 16
-      Picture.Data = {
-        07544269746D617036030000424D360300000000000036000000280000001000
-        0000100000000100180000000000000300000000000000000000000000000000
-        0000FF00FFFF00FFFF00FFFF00FF9C9C9C6B6B6B5252524A4A4A4A4A4A4A4A4A
-        5252529C9C9CFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFADADADE7CE
-        C6EFDED6F7E7D6F7E7D6EFDED6EFDED6CEBDB55A5A5A7373739C9C9CFF00FFFF
-        00FFFF00FFFF00FFCEC6BDF7E7D6F7F7F7E7E7E7CEB5A5D6AD94DEC6BDEFF7F7
-        F7EFEFEFDED68C847B6B6B6B9C9C9CFF00FFFF00FFE7D6CEF7E7DEF7FFFFCE9C
-        84B54A10BD6339D6AD9CC65A21BD5221D6AD9CF7FFFFF7DED67B736B737373FF
-        00FFFF00FFEFDED6F7FFFFC67B5ABD4A10C65218C6A594FFFFFFDE9473BD4A10
-        B54A10CE9C84F7FFFFEFDED65A5A5A9C9C9CF7E7E7F7F7F7D6AD94BD4A10CE63
-        31CE6329CE6B39DE8C6BCE6329CE6331C65A29B54A10DEC6BDF7EFE7A59C9463
-        6363F7EFE7F7F7F7C66331C65A29CE6B31CE5A21CE8C6BF7E7DECE6B39C65A21
-        CE6331C65218C67B52F7FFFFDECEC6525252F7EFE7EFDED6C65A21CE6331CE63
-        31CE5A21C6846BFFFFFFEFAD94C64A10CE6331CE6329C65A29F7EFEFEFDED652
-        5252F7EFE7F7DECECE5A21CE6331CE6331CE6329C65221CEB5A5FFFFFFE79C7B
-        C65218CE6329C65A29F7EFEFEFDED6525252F7EFE7F7EFE7DE6B31D66B31CE63
-        29C65A21C65218BD4A10DECEC6FFFFFFD67342CE5A21CE6B39FFF7F7EFDED66B
-        6B6BF7E7E7FFFFFFF79C6BE76329CE8C6BEFE7DED67B52BD3100D69C7BFFFFFF
-        DE8C63CE5218E79C73FFFFFFDEC6BDADADADF7EFE7F7EFEFFFEFDEFF8C4ADE84
-        5AEFFFFFFFFFFFE7BDA5F7FFFFEFFFFFE77339E77339FFEFEFF7E7DEA59C94FF
-        00FFFF00FFEFDED6FFFFFFFFEFCEFFB573EFAD84EFE7DEEFF7F7EFE7DEF7A57B
-        FF8C4AFFDECEFFFFFFEFDED6CECEC6FF00FFFF00FFF7EFEFEFDED6FFFFFFFFFF
-        FFFFF7C6FFDEADFFCE94FFCE94FFD6ADFFF7F7FFFFFFEFDED6CECEC6FF00FFFF
-        00FFFF00FFFF00FFF7EFEFEFDED6F7E7E7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-        EFE7DEEFDED6DEDEDEFF00FFFF00FFFF00FFFF00FFFF00FFFF00FFF7EFE7F7F7
-        EFF7EFEFF7EFEFF7EFEFF7EFEFF7EFEFF7EFEFF7EFE7FF00FFFF00FFFF00FFFF
-        00FF}
-      Transparent = True
-      OnClick = imF1Click
-    end
+      627
+      36)
     object b_Cancel: TButton
-      Left = 493
-      Top = 8
+      Left = 551
+      Top = 6
       Width = 70
-      Height = 25
+      Height = 24
       Action = act_Cancel
       Anchors = [akTop, akRight]
       Cancel = True
-      TabOrder = 5
+      TabOrder = 1
     end
     object b_OK: TButton
-      Left = 417
-      Top = 8
+      Left = 475
+      Top = 6
       Width = 70
-      Height = 25
+      Height = 24
       Action = act_OK
       Anchors = [akTop, akRight]
       Default = True
-      TabOrder = 4
-    end
-    object b_MakeRelative: TButton
-      Left = 37
-      Top = 8
-      Width = 88
-      Height = 25
-      Action = act_MakeRelative
-      Anchors = [akTop, akRight]
       TabOrder = 0
     end
-    object b_MakeAbsolute: TButton
-      Left = 132
-      Top = 8
-      Width = 88
-      Height = 25
-      Action = act_MakeAbsolute
-      Anchors = [akTop, akRight]
-      TabOrder = 1
-    end
-    object b_PrependDots: TButton
-      Left = 226
-      Top = 8
-      Width = 78
-      Height = 25
-      Action = act_PrependDots
-      Anchors = [akTop, akRight]
+    object b_Help: TButton
+      Left = 6
+      Top = 6
+      Width = 70
+      Height = 24
+      Hint = 'Help (F1)'
+      Caption = 'Help'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 2
-    end
-    object b_RemoveDots: TButton
-      Left = 311
-      Top = 8
-      Width = 78
-      Height = 25
-      Action = act_RemoveDots
-      Anchors = [akTop, akRight]
-      TabOrder = 3
+      OnClick = b_HelpClick
     end
   end
   object p_Client: TPanel
-    Left = 222
+    Left = 208
     Top = 0
-    Width = 347
-    Height = 230
+    Width = 419
+    Height = 316
     Align = alClient
     TabOrder = 0
-    object spl_Vertical: TSplitter
+    object spHor: TSplitter
       Left = 1
-      Top = 125
-      Width = 345
-      Height = 5
+      Top = 201
+      Width = 417
+      Height = 8
       Cursor = crVSplit
-      Align = alBottom
+      Hint = 'Toggle MinSize / Center / MaxSize with DblClick'
+      Align = alTop
+      MinSize = 200
+      ResizeStyle = rsUpdate
     end
-    object p_ClientClient: TPanel
+    object p_ClientTop: TPanel
       Left = 1
       Top = 1
-      Width = 345
-      Height = 124
-      Align = alClient
+      Width = 417
+      Height = 200
+      Align = alTop
       Caption = 'Memo goes here'
       TabOrder = 0
-      object p_RightButtons: TPanel
-        Left = 303
-        Top = 17
-        Width = 41
-        Height = 106
+      object p_MemoButtons: TPanel
+        Left = 316
+        Top = 19
+        Width = 100
+        Height = 180
         Align = alRight
         TabOrder = 0
         DesignSize = (
-          41
-          106)
+          100
+          180)
         object sb_MoveUp: TSpeedButton
-          Left = 8
-          Top = 40
+          Left = 6
+          Top = 0
           Width = 25
           Height = 23
           Action = act_MoveUp
-          Anchors = [akLeft, akBottom]
           Glyph.Data = {
             B6080000424DB608000000000000360400002800000030000000180000000100
             0800000000008004000000000000000000000001000000000000000000000000
@@ -235,12 +183,11 @@ inherited f_EditPath: Tf_EditPath
           Spacing = 0
         end
         object sb_MoveDown: TSpeedButton
-          Left = 8
-          Top = 72
+          Left = 6
+          Top = 23
           Width = 25
           Height = 23
           Action = act_MoveDown
-          Anchors = [akLeft, akBottom]
           Glyph.Data = {
             86020000424D8602000000000000460000002800000030000000180000000100
             04000000000040020000C40E0000C40E00000400000004000000C0A0E000FF00
@@ -269,8 +216,8 @@ inherited f_EditPath: Tf_EditPath
           Spacing = 0
         end
         object b_Favorites: TButton
-          Left = 8
-          Top = 8
+          Left = 68
+          Top = 0
           Width = 25
           Height = 23
           Hint = 'Favorites'
@@ -281,17 +228,53 @@ inherited f_EditPath: Tf_EditPath
           TabOrder = 0
           OnClick = b_FavoritesClick
         end
+        object b_MakeRelative: TButton
+          Left = 6
+          Top = 72
+          Width = 88
+          Height = 24
+          Action = act_MakeRelative
+          Anchors = [akRight, akBottom]
+          TabOrder = 1
+        end
+        object b_MakeAbsolute: TButton
+          Left = 6
+          Top = 96
+          Width = 88
+          Height = 24
+          Action = act_MakeAbsolute
+          Anchors = [akRight, akBottom]
+          TabOrder = 2
+        end
+        object b_PrependDots: TButton
+          Left = 6
+          Top = 126
+          Width = 88
+          Height = 24
+          Action = act_PrependDots
+          Anchors = [akRight, akBottom]
+          TabOrder = 3
+        end
+        object b_RemoveDots: TButton
+          Left = 6
+          Top = 150
+          Width = 88
+          Height = 24
+          Action = act_RemoveDots
+          Anchors = [akRight, akBottom]
+          TabOrder = 4
+        end
       end
       object p_MemoCaption: TPanel
         Left = 1
         Top = 1
-        Width = 343
-        Height = 16
+        Width = 415
+        Height = 18
         Align = alTop
         TabOrder = 1
         object l_UnitSearchPath: TLabel
-          Left = 8
-          Top = 0
+          Left = 5
+          Top = 2
           Width = 256
           Height = 13
           Caption = 'Unit &Search Path (drop a directory or file here to add it)'
@@ -300,32 +283,30 @@ inherited f_EditPath: Tf_EditPath
     end
     object p_ClientBottom: TPanel
       Left = 1
-      Top = 130
-      Width = 345
-      Height = 99
-      Align = alBottom
+      Top = 209
+      Width = 417
+      Height = 106
+      Align = alClient
       TabOrder = 1
-      OnCanResize = p_ClientBottomCanResize
       object lb_Inherited: TListBox
         Left = 1
-        Top = 17
-        Width = 343
-        Height = 81
+        Top = 19
+        Width = 415
+        Height = 86
         Align = alClient
-        Anchors = [akLeft, akRight, akBottom]
         ItemHeight = 13
         TabOrder = 0
       end
       object p_InheritedCaption: TPanel
         Left = 1
         Top = 1
-        Width = 343
-        Height = 16
+        Width = 415
+        Height = 18
         Align = alTop
         TabOrder = 1
         object l_Inherited: TLabel
-          Left = 8
-          Top = 0
+          Left = 5
+          Top = 2
           Width = 41
           Height = 13
           Caption = 'Inherited'
@@ -336,16 +317,15 @@ inherited f_EditPath: Tf_EditPath
   object p_Left: TPanel
     Left = 0
     Top = 0
-    Width = 217
-    Height = 230
+    Width = 200
+    Height = 316
     Align = alLeft
     TabOrder = 2
-    OnCanResize = p_LeftCanResize
     object lb_Target: TListBox
       Left = 1
-      Top = 17
-      Width = 215
-      Height = 212
+      Top = 19
+      Width = 198
+      Height = 296
       Hint = 'Alt+Up/Down to move between entries'
       Align = alClient
       ExtendedSelect = False
@@ -358,13 +338,13 @@ inherited f_EditPath: Tf_EditPath
     object p_TargetCaption: TPanel
       Left = 1
       Top = 1
-      Width = 215
-      Height = 16
+      Width = 198
+      Height = 18
       Align = alTop
       TabOrder = 1
       object l_Target: TLabel
-        Left = 8
-        Top = 0
+        Left = 5
+        Top = 2
         Width = 31
         Height = 13
         Caption = '&Target'
@@ -373,7 +353,7 @@ inherited f_EditPath: Tf_EditPath
   end
   object TheActionList: TActionList
     Left = 96
-    Top = 53
+    Top = 52
     object act_MoveUp: TAction
       Hint = 'Move Up'
       ShortCut = 16422
@@ -426,12 +406,12 @@ inherited f_EditPath: Tf_EditPath
     end
   end
   object pm_Favorites: TPopupMenu
-    Left = 469
+    Left = 468
     Top = 46
   end
   object pm_Memo: TPopupMenu
-    Left = 376
-    Top = 151
+    Left = 280
+    Top = 61
     object mi_MemoMoveUp: TMenuItem
       Action = act_MoveUp
       Caption = 'Move Up'
