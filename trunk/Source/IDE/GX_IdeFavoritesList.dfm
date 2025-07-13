@@ -83,7 +83,6 @@ inherited f_GxIdeFavoritesList: Tf_GxIdeFavoritesList
     Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Help'
-    ModalResult = 1
     ParentShowHint = False
     ShowHint = True
     TabOrder = 5
