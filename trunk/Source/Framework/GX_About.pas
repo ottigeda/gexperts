@@ -74,7 +74,7 @@ uses
 {$IFNDEF GX_STANDALONE}
   GX_GetIdeVersion,
 {$ENDIF}
-  GX_GenericUtils, GX_FeedbackWizard, GX_LibrarySource;
+  GX_GenericUtils, GX_FeedbackWizard, GX_IdeUtils;
 
 const
   DefaultBugEmail = 'https://bugs.dummzeuch.de/';  // Do not localize.

@@ -12,10 +12,6 @@ uses
   Classes,
   ToolsAPI; // Errors here indicate that you didn't link to the DesignIde package
 
-var
-  // used to detect duplicate GExperts.dlls loaded into the same IDE instance
-  GExpertsDllMarker: TComponent = nil;
-
 // This function needs to be interface-visible, otherwise
 // C++Builder 5 complains about a missing EXTDEF symbol
 // for this export.  Do not call this function yourself.
@@ -28,7 +24,7 @@ implementation
 uses
   Windows, Forms, GX_GxUtils, GX_OtaUtils, GX_VerDepConst,
   GX_DbugIntf,  GX_GExperts, GX_MessageBox, GX_CodeLib, GX_GrepExpert, GX_ExpertManager,
-  GX_DummyWizard;
+  GX_DummyWizard, GX_IdeUtils;
 
 const
   InvalidIndex = -1;
