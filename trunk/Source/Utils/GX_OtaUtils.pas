@@ -839,7 +839,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   Variants, Windows, ActiveX, DesignIntf, TypInfo,
-  GX_EditReader, GX_VerDepConst, SynUnicode, Math, StrUtils,
+  GX_EditReader, GX_VerDepConst, Math, StrUtils,
   GX_GetIdeVersion, u_dzFileUtils, u_dzClassUtils;
 
 const
