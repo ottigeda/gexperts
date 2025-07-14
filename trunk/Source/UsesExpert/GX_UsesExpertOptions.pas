@@ -30,9 +30,11 @@ type
     rg_FilterIdentifiers: TRadioGroup;
     chkSearchPathFavorites: TCheckBox;
     chk_FastAdd: TCheckBox;
-    imHelp: TImage;
+    b_Help: TButton;
     procedure btnClearCacheClick(Sender: TObject);
-    procedure imHelpClick(Sender: TObject);
+    procedure b_HelpClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     FCacheDir: string;
     procedure SetData(const _CanReplaceFindUseUnit: Boolean; const _CacheDir: string;
@@ -168,10 +170,17 @@ begin
   ShowGxMessageBox(TCacheClearedMessage);
 end;
 
-procedure TfmUsesExpertOptions.imHelpClick(Sender: TObject);
+procedure TfmUsesExpertOptions.b_HelpClick(Sender: TObject);
 begin
   inherited;
   GxContextHelp(Self, 65);
+end;
+
+procedure TfmUsesExpertOptions.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+  if Key=vk_F1 then b_HelpClick(nil);
 end;
 
 end.

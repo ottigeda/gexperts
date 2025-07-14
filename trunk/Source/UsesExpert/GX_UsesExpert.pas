@@ -22,10 +22,15 @@ uses
   u_dzDpiScaleUtils,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
   GX_UnitExportsParser, GX_UsesExpertOptions, GX_UnitExportList,
-  GX_OtaUtils;
+  GX_OtaUtils,
+  rzC_Splitter;
 
 type
   TPageControl = class(ComCtrls.TPageControl)
+  end;
+
+type
+  TSplitter = class(TrzSplitter)
   end;
 
 type
@@ -313,8 +318,9 @@ type
     procedure pnlIdentifiersResize(Sender: TObject);
     procedure sg_IdentifiersMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
-    FLeftRatio: Double;
     FAliases: TStringList;
     FSearchPathThread: TFileFindThread;
     // maintains a list unit name mappings from "originally used" to "currently used"
@@ -409,7 +415,7 @@ uses
   GX_DbugIntf,
 {$ENDIF D+}
   GX_MessageBox, GX_IdeSearchPathEnhancer, u_dzTypes, u_dzStringArrayUtils,
-  GX_StringGridDrawFix, GX_GxUtils, GX_IdeSplitterVisibility;
+  GX_StringGridDrawFix, GX_GxUtils;
 
 { TUsesClauseMgrExpert }
 
@@ -923,11 +929,6 @@ begin
   FIdentifierMatchGrp.OnClick := sb_MatchWhereClick;
 
   chk_FastAdd.Checked := _UsesExpert.FFastAdd;
-
-  FLeftRatio := pnlUses.Width / ClientWidth;
-
-  TSplitterPainter.Create(Splitter);
-
   FUsesExpert.SetFormIcon(Self);
 
   sg_Identifiers.Cells[0, 0] := 'Identifier';
@@ -1222,14 +1223,11 @@ begin
 end;
 
 procedure TfmUsesManager.FormResize(Sender: TObject);
+const pnlUsesMinWidth  = 326;
+      pnlUnitsMinWidth = 473;
 begin
-  pnlUses.Width := Round(FLeftRatio * ClientWidth);
-
-  pnlUses.Constraints.MinWidth := 326; // ??!!
-  pnlUses.Constraints.MaxWidth := Self.ClientWidth - Splitter.Width - pnlUnits.Constraints.MinWidth;
-
-  pnlAvailableHeaderResize(nil);
-  pnlIdentifiersResize(nil);
+ Splitter.MinSize := FScaler.Calc(pnlUsesMinWidth);
+ Splitter.MaxSize := Self.ClientWidth - Splitter.Width - FScaler.Calc(pnlUnitsMinWidth);
 end;
 
 procedure TfmUsesManager.lbxInterfaceFilesDropped(_Sender: TObject; _Files: TStrings);
@@ -2225,9 +2223,7 @@ end;
 
 procedure TfmUsesManager.SplitterMoved(Sender: TObject);
 begin
-  FLeftRatio :=  pnlUses.Width / ClientWidth;
-  pnlAvailableHeaderResize(nil);
-  pnlIdentifiersResize(nil);
+ pnlUnits.Refresh;
 end;
 
 procedure TfmUsesManager.SwitchUnitsTab(_Direction: Integer);
@@ -3434,6 +3430,13 @@ begin
 
   W1 := SG.ClientWidth - SG.ColWidths[0] - (2 * SG.GridLineWidth);
   if SG.ColWidths[1] <> w1 then SG.ColWidths[1] := w1;
+end;
+
+procedure TfmUsesManager.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+  if Key=vk_F1 then b_Helpclick(nil);
 end;
 
 initialization

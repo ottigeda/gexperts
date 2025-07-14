@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Done RZ" modified="2025-07-13T15:01:51.006+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Done RZ" modified="2025-07-14T21:30:24.563+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">UsesClauseManager</title>
   <body>
     <header>
@@ -131,7 +131,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:center; margin-top:30px; margin-bottom:24px;"><image src="Uses Clause Manager.png" imagestyleclass="Default" scale="79.56%" width="646" height="417" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:30px; margin-bottom:24px;"><image src="Uses Clause Manager.png" imagestyleclass="Default" scale="78.08%" width="634" height="409" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"><anchor id="UsedUnits" styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;"></anchor><text styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;" translate="true"> &#160; </text></para>
     <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;" translate="true">&#32;</text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">

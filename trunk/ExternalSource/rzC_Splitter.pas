@@ -10,8 +10,8 @@ unit rzC_Splitter;
 // Free for personal and commercial use.
 // No rights reserved.
 //
-// Use in GExperts as interposer class only
 // See rzC_Splitter.rtf for some explanations (german only)
+// Use in GExperts as interposer class only
 //
 // ======================================================================================
 
@@ -99,8 +99,9 @@ end;
 
 procedure TrzSplitter.SetHintText;
 begin
- if FMaxSize<=MinSize then                                             Hint:=''
-                      else if (FMaxSize-MinSize<FCenterThreshold) or                      
+ if FMaxSize<=MinSize then                                             Hint:='Splitter movement not allowed,'+#13+
+                                                                             'form must be enlarged ...'
+                      else if (FMaxSize-MinSize<FCenterThreshold) or
                               (FCenterThreshold=0               ) or
                               (FCenterThreshold=maxInt          ) then Hint:='Toggle MinSize / MaxSize with DblClick'
                                                                   else Hint:='Toggle MinSize / Center / MaxSize with DblClick';
