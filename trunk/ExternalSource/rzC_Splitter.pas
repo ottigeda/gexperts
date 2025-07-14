@@ -1,5 +1,20 @@
 unit rzC_Splitter;
 
+// ======================================================================================
+//
+// Name        : rzC_Splitter.pas
+// Author      : Ralph Zornig
+// Created     : unknown
+// Last Change : 2025-07-14
+//
+// Free for personal and commercial use.
+// No rights reserved.
+//
+// Use in GExperts as interposer class only
+// See rzC_Splitter.rtf for some explanations (german only)
+//
+// ======================================================================================
+
 interface { --------------------------------------------------------------------------- }
 
 uses Windows,Messages,Classes,ExtCtrls,Graphics,Controls;
@@ -7,18 +22,20 @@ uses Windows,Messages,Classes,ExtCtrls,Graphics,Controls;
 type TrzSplitter = class(TSplitter)       
                    private                
                  
-                    FMaxSize                 : NaturalNumber;
-                    FCenter                  : NaturalNumber;
-                    FCenterThreshold         : Integer;
-                    FPosition                : NaturalNumber;
-                    FDblCount                : Integer;
-                    FDblStart                : DWord;
-                    FDrawSymbol              : Boolean;
-                    FOnDblClick              : TNotifyEvent;
-
-                    function  FindCtrl2Size  : TControl;
-                    procedure SetMaxSize     (const Value:NaturalNumber);
-                    procedure SetPosition    (const Value:NaturalNumber);
+                    FMaxSize                     : NaturalNumber;
+                    FCenter                      : NaturalNumber;
+                    FCenterThreshold             : Integer;
+                    FPosition                    : NaturalNumber;
+                    FDblCount                    : Integer;
+                    FDblStart                    : DWord;
+                    FDrawSymbol                  : Boolean;
+                    FOnDblClick                  : TNotifyEvent;
+                                                 
+                    function  FindCtrl2Size      : TControl;
+                    procedure SetMaxSize         (const Value:NaturalNumber);
+                    procedure SetPosition        (const Value:NaturalNumber);
+                    procedure SetCenterThreshold (const Value:Integer);
+                    procedure SetHintText;                    
 
                    protected
 
@@ -37,14 +54,14 @@ type TrzSplitter = class(TSplitter)
                     property MaxSize         : NaturalNumber read FMaxSize         write SetMaxSize;
                     property Position        : NaturalNumber read FPosition        write SetPosition;
                     property Center          : NaturalNumber read FCenter;
-                    property CenterThreshold : Integer       read FCenterThreshold write FCenterThreshold;
+                    property CenterThreshold : Integer       read FCenterThreshold write SetCenterThreshold;
                     property DrawSymbol      : Boolean       read FDrawSymbol      write FDrawSymbol;
                     property ShowHint;
                     property OnDblClick      : TNotifyEvent  read FOnDblClick      write FOnDblClick;
 
                    end;
 
-procedure Register;
+// procedure Register;
 
 implementation { ---------------------------------------------------------------------- }
 
@@ -80,6 +97,15 @@ begin
  Result:=nil;
 end;
 
+procedure TrzSplitter.SetHintText;
+begin
+ if FMaxSize<=MinSize then                                             Hint:=''
+                      else if (FMaxSize-MinSize<FCenterThreshold) or                      
+                              (FCenterThreshold=0               ) or
+                              (FCenterThreshold=maxInt          ) then Hint:='Toggle MinSize / MaxSize with DblClick'
+                                                                  else Hint:='Toggle MinSize / Center / MaxSize with DblClick';
+end;
+
 procedure TrzSplitter.SetMaxSize(const Value:NaturalNumber);
 begin
  FMaxSize:=Value;
@@ -87,7 +113,8 @@ begin
  FCenter:=MinSize+(FMaxSize-MinSize) div 2;
 
  if FPosition<MinSize then                            SetPosition( MinSize)
-                      else if FPosition>FMaxSize then SetPosition(FMaxSize)
+                      else if FPosition>FMaxSize then SetPosition(FMaxSize);
+ SetHintText;                     
 end;
 
 procedure TrzSplitter.SetPosition(const Value:NaturalNumber);
@@ -104,6 +131,13 @@ begin
 
    if Assigned(OnMoved) then OnMoved(Self);
    end;
+end;
+
+procedure TrzSplitter.SetCenterThreshold (const Value:Integer);
+begin
+ if Value<>FCenterThreshold then begin FCenterThreshold:=Value;
+                                       SetHintText;
+                                       end;
 end;
 
 procedure TrzSplitter.SetParent(AParent:TWinControl);
@@ -247,20 +281,19 @@ begin
   MinSize        :=100;
  FMaxSize        :=200;
  FCenter         :=MinSize+(FMaxSize-MinSize) div 2;
- FCenterThreshold:=100; // MaxSize-MinSize>FCenterThreshold >> Jump2Center
+ FCenterThreshold:=100;
  FDrawSymbol     :=true;
- Align           :=alLeft; // default values, possibly adapted to
- Width           :=10;     // Align=alTop + Height=10 in SetParent()
- Hint            :='Toggle MinSize / Center / MaxSize with DblClick';
+ Align           :=alLeft;
+ Width           :=10;     
  ShowHint        :=true;
 end;
 
 // ............................................................................. Register
 
-procedure Register;
-begin
- RegisterComponents('rzLib',[TrzSplitter]);
-end;
+// procedure Register;
+// begin
+//  RegisterComponents('rzLib',[TrzSplitter]);
+// end;
 
 // ......................................................................................
 end.
