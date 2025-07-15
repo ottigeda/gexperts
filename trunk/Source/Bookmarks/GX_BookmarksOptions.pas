@@ -32,7 +32,8 @@ type TfoBookmarksOptions = class(TfmBaseForm)
                              laListboxColors2                    : TLabel;
                              paHeaderBkColor                     : TPanel;
                               laHeaderFontColor                  : TLabel;
-                            imF1                                 : TImage;
+
+                            buHelp                               : TButton;
                             buSave                               : TButton;
                             buCancel                             : TButton;
 
@@ -44,7 +45,7 @@ type TfoBookmarksOptions = class(TfmBaseForm)
                             procedure paLBcolorBMlineMouseDown   (Sender:TObject;Button:TMouseButton;Shift:TShiftState;X,Y:Integer);
                             procedure paHeaderXXXDblClick        (Sender:TObject);
                             procedure paHeaderXXXColorMouseDown  (Sender:TObject;Button:TMouseButton;Shift:TShiftState;X,Y:Integer);
-                            procedure imF1Click                  (Sender:TObject);
+                            procedure buHelpClick                (Sender:TObject);
 
                             procedure ColorDialogShow            (Sender:TObject);
 
@@ -286,8 +287,9 @@ begin
                               else paHeaderBkColor.       Color:=DefLBColorBkFuncProcName;
 end;
 
-procedure TfoBookmarksOptions.imF1Click(Sender:TObject);
+procedure TfoBookmarksOptions.buHelpClick(Sender:TObject);
 begin
+ inherited;
  GXContextHelp(Self,62);
 end;
 
@@ -314,7 +316,7 @@ end;
 
 procedure TfoBookmarksOptions.FormKeyDown(Sender:TObject;var Key:Word;Shift:TShiftState);
 begin
- if Key=vk_F1 then imF1Click(nil);
+ if Key=vk_F1 then buHelpClick(nil);
 end;
 
 procedure TfoBookmarksOptions.FormShow(Sender:TObject);

@@ -1,11 +1,13 @@
 inherited fmGxBookmarksForm: TfmGxBookmarksForm
-  Left = 427
-  Top = 10
-  Width = 240
-  Height = 260
+  Left = 274
+  Top = 23
+  Width = 266
+  Height = 159
   Caption = 'Bookmarks'
-  Constraints.MinHeight = 260
-  Constraints.MinWidth = 240
+  Constraints.MaxHeight = 159
+  Constraints.MaxWidth = 300
+  Constraints.MinHeight = 159
+  Constraints.MinWidth = 266
   DefaultMonitor = dmDesktop
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
@@ -17,16 +19,16 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
   object paListbox: TPanel
     Left = 0
     Top = 28
-    Width = 230
-    Height = 178
+    Width = 256
+    Height = 77
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
     object lbBookmarks: TListBox
       Left = 0
       Top = 0
-      Width = 228
-      Height = 109
+      Width = 254
+      Height = 8
       HelpType = htKeyword
       Style = lbOwnerDrawFixed
       Align = alClient
@@ -48,8 +50,8 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
     end
     object paListboxGutterBottom: TPanel
       Left = 0
-      Top = 109
-      Width = 230
+      Top = 8
+      Width = 256
       Height = 3
       Align = alBottom
       BevelOuter = bvNone
@@ -57,10 +59,10 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
       TabOrder = 1
     end
     object paListboxGutterRight: TPanel
-      Left = 228
+      Left = 254
       Top = 0
       Width = 2
-      Height = 109
+      Height = 8
       Align = alRight
       BevelOuter = bvNone
       Color = clRed
@@ -68,8 +70,8 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
     end
     object me: TMemo
       Left = 0
-      Top = 112
-      Width = 230
+      Top = 11
+      Width = 256
       Height = 66
       Align = alBottom
       Color = clYellow
@@ -81,7 +83,7 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
   object paToolbar: TPanel
     Left = 0
     Top = 0
-    Width = 230
+    Width = 256
     Height = 28
     Align = alTop
     BevelOuter = bvNone
@@ -214,8 +216,8 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
   end
   object SBar: TStatusBar
     Left = 0
-    Top = 206
-    Width = 230
+    Top = 105
+    Width = 256
     Height = 22
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBtnText
