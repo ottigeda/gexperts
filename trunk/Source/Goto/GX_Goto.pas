@@ -181,7 +181,7 @@ var
 begin
   inherited;
   Spacer := lb_UnitPositions.Left;
-//  lb_UnitPositions.ClientHeight := (FUnitPositions.Count + 1) * lb_UnitPositions.ItemHeight;
+  lb_UnitPositions.ClientHeight := FUnitPositions.Count * lb_UnitPositions.ItemHeight + 2;
   b_Ok.Top := lb_UnitPositions.Top + lb_UnitPositions.Height + Spacer;
   b_Cancel.Top := b_Ok.Top;
   b_Cancel.Left := Spacer + lb_UnitPositions.Width - b_Cancel.Width;
