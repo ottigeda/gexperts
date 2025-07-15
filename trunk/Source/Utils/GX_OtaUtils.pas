@@ -7,11 +7,7 @@ interface
 uses
   SysUtils, Classes, Controls, Contnrs, Forms, ActnList, ImgList, Menus, ToolsAPI,
   Actions, Graphics,
-
-  {$IFNDEF UNICODE}  // RZ 2025.07.14 - Sonst konnte ich plötzlich
-  SynUnicode,        // nicht mehr mit Delpi 7 kompilieren | Error in GxOtaLoadSourceEditorToUnicodeStrings()
-  {$ENDIF UNICODE}   // - ist diese Einfügung die richtige Lösung?
-
+  SynUnicode, // required for pre-UNICODE Delphi versions
   GX_GenericUtils, GX_StringList, GX_IdeUtils;
 
 // Idea: These functions could be encapsulated as class functions which would reduce the
