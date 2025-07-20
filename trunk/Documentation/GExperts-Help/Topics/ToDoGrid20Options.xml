@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Under Construction" modified="2025-07-13T15:04:17.450+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Under Construction" modified="2025-07-15T23:25:02.957+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">ToDoGridOptions</title>
   <body>
     <header>
@@ -38,7 +38,7 @@
           <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Extensions2Scan" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Extensions to scan</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
         <td style="height:20px; background-color:#f4f4f4;">
-          <para styleclass="Normal" style="margin-bottom:2px; margin-left:6px;"><link displaytype="text" defaultstyle="false" type="topiclink" href="CopyComponentNames" styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; vertical-align:baseline; color:#efa175;" translate="true">Configuration (Options)</link><link displaytype="text" defaultstyle="false" type="topiclink" href="CopyComponentNames" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true"> </link></para>
+          <para styleclass="Normal" style="margin-bottom:2px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; vertical-align:baseline; color:#efa175;" translate="true">Configuration (Options)</text><link displaytype="text" defaultstyle="false" type="topiclink" href="CopyComponentNames" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true"> </link></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">

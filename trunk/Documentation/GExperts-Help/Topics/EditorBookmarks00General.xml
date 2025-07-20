@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Done RZ" modified="2025-07-13T15:11:41.908+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Done RZ" modified="2025-07-20T21:28:21.951+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">Editor Bookmarks</title>
   <body>
     <header>
@@ -63,7 +63,7 @@
       </tr>
     </table></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The &quot;Editor Bookmarks&quot; expert offers convenient ways to create, handle and use bookmarks. The expert has a dockable main window; this mode should also be the primary form of use. The expert complements the bookmark function available in the IDE and offers new ways to keep a good overview of the bookmarks set and to access them specifically. </text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="2" colcount="3" style="width:100%; background-color:#f4f4f4;">
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="3" colcount="3" style="width:100%; background-color:#f4f4f4;">
       <tr style="vertical-align:top">
         <td style="width:48px;">
           <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; color:#ff0000;" translate="true">Notice</text></para>
@@ -83,7 +83,18 @@
           <para styleclass="Normal" style="text-align:center; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" translate="true">▪</text></para>
         </td>
         <td>
-          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">In current Delphi versions the plugin &quot;Bookmarks&quot; can be used. </text></para>
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Unfortunately, due to system constraints, the experts help cannot be called with F1 in </text><text styleclass="Normal" style="font-family:Verdana; text-decoration:underline;" translate="true">docked</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> windows. If a dockable window is currently undocked, the F1 key can be used. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="width:48px;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"></para>
+        </td>
+        <td style="vertical-align:top; width:20px;">
+          <para styleclass="Normal" style="text-align:center; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" translate="true">▪</text></para>
+        </td>
+        <td>
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">In current Delphi versions the plugin &quot;Bookmarks&quot; available via &quot;GetIt&quot; can be used. </text></para>
         </td>
       </tr>
     </table></para>

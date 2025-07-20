@@ -39,6 +39,7 @@ function  SetLightness           (Color:TColor;Percentage:ShortInt):TColor;
 function  NewDialog              (foParent:TForm;aType:TMsgDlgType;const aCaption,aMessage,aFontName:String;buText:Array of String):Integer;
 procedure Wait                   (mSek:Cardinal);
 procedure ChangeColorDialogText  (Dialog:TColorDialog;X,Y:Integer;CaptionText:String);
+function  FormIsDocked           (FO:TCustomForm):Boolean;
 
 implementation { ---------------------------------------------------------------------- }
 
@@ -180,6 +181,11 @@ begin
 
  if IsFullOpen then    ShowWindow(GetDlgItem(DialogHWnd,COLOR_MIX),SW_HIDE) // don't show deactivated button
                else SetWindowText(GetDlgItem(DialogHWnd,COLOR_MIX),pChar('Define custom colors >>'));
+end;
+
+function FormIsDocked(FO:TCustomForm):Boolean;
+begin
+ Result:=(FO<>nil) and (FO.Parent<>nil);
 end;
 
 // ......................................................................................

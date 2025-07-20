@@ -211,6 +211,7 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
         ParentShowHint = False
         ShowHint = True
         OnClick = tbHelpClick
+        OnMouseMove = tbHelpMouseMove
       end
     end
   end
