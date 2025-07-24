@@ -106,7 +106,9 @@ begin
   GxSetDefaultFont(Self);
   ArrangeControls;
 
-  TControl_SetMinConstraints(Self);
+// Setting min constraints here breaks scaling, not quite sure why.
+// But we don't really need it because the form has a fixed size anyway.
+//  TControl_SetMinConstraints(Self);
 
   InitDpiScaler;
 
