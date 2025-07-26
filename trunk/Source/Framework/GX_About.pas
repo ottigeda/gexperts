@@ -249,14 +249,14 @@ end;
 {$ENDIF}
 
 procedure AddPluginToSplashScreen(_Icon: HBITMAP; const _Title: string; const _Version: string);
-{$IFDEF GX_VER170_up}
+{$IF declared(SplashScreenServices)}
 // Only Delphi 2005 and up support the splash screen services
 begin
   if Assigned(SplashScreenServices) then
     SplashScreenServices.AddPluginBitmap(_Title,
       _Icon, False, _Version);
 end;
-{$ELSE GX_VER170_up}
+{$ELSE}
 const
   XPOS = 140;
   YPOS = 150;
@@ -311,7 +311,7 @@ begin
   end;
 {$IFOPT D+} SendUnIndent; {$ENDIF}
 end;
-{$ENDIF GX_VER170_up}
+{$IFEND GX_VER170_up}
 
 class procedure TfmAbout.AddToSplashScreen;
 var
@@ -324,7 +324,7 @@ begin
 end;
 
 class function TfmAbout.DoAddToAboutDialog: Integer;
-{$IFDEF GX_VER170_up}
+{$IF declared(IOTAAboutBoxServices)}
 // Only Delphi 2005 and up support the about box services
 const
   Description = 'GExperts is a free set of tools built to increase the productivity of Delphi and C++Builder'
@@ -357,11 +357,11 @@ begin
       GetVersionStr);
   end;
 end;
-{$ELSE not GX_VER170_up}
+{$ELSE}
 begin
   Result := -1;
 end;
-{$ENDIF not GX_VER170_up}
+{$IFEND}
 
 var
   FAboutPluginIndex: Integer;
@@ -372,7 +372,7 @@ begin
 end;
 
 class procedure TfmAbout.RemoveFromAboutDialog;
-{$IFDEF GX_VER170_up}
+{$IF declared(IOTAAboutBoxServices)}
 // Only Delphi 2005 and up support the about box services
 var
   AboutBoxServices: IOTAAboutBoxServices;
@@ -384,10 +384,10 @@ begin
     FAboutPluginIndex := -1;
   end;
 end;
-{$ELSE not GX_VER170_up}
+{$ELSE}
 begin //fi:W519
 end;
-{$ENDIF not GX_VER170_up}
+{$IFEND}
 
 initialization
   TfmAbout.AddToSplashScreen;
