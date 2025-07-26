@@ -70,11 +70,11 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Graphics, ToolsApi, Messages,
   u_dzVclUtils,
-  GX_GxUtils,
+  GX_GxUtils, GX_DuplicateDllHandler,
 {$IFNDEF GX_STANDALONE}
   GX_GetIdeVersion,
 {$ENDIF}
-  GX_GenericUtils, GX_FeedbackWizard, GX_IdeUtils;
+  GX_GenericUtils, GX_FeedbackWizard;
 
 const
   DefaultBugEmail = 'https://bugs.dummzeuch.de/';  // Do not localize.
@@ -318,7 +318,7 @@ var
   VerString: string;
 begin
   VerString := GetVersionStr;
-  if GExpertsDllMarker = nil then
+  if IsDuplicateGExpertsDll() then
     VerString := VerString + ' (duplicate, inactive)';
   AddPluginToSplashScreen(GetSplashIcon, 'GExperts', VerString);
 end;
@@ -337,7 +337,7 @@ var
   Desc: string;
   VerString: string;
 begin
-  if GExpertsDllMarker = nil then begin
+  if IsDuplicateGExpertsDll() then begin
     DupeString := ' (duplicate, inactive)';
     Desc := 'GExperts is listed twice in the IDE Experts list, so this instance is inactive.'#13#10
       + 'Use the Expert Manager to remove the duplicate!';

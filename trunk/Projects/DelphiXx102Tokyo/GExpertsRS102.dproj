@@ -134,6 +134,8 @@ $(PreBuildEvent)]]>
             <Form>foBookmarksEdit</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Bookmarks\GX_BookmarksFuncProcName.pas"/>
+        <DCCReference Include="..\..\Source\Bookmarks\GX_BookmarksLists.pas"/>
         <DCCReference Include="..\..\source\Bookmarks\GX_BookmarksOptions.pas">
             <Form>foBookmarksOptions</Form>
             <FormType>dfm</FormType>
@@ -199,6 +201,7 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Formatter\GX_CodeFormatterGXConfigWrapper.pas"/>
         <DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterParser.pas"/>
         <DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterSettings.pas"/>
+        <DCCReference Include="..\..\Source\Formatter\GX_CodeFormatterSourceLineList.pas"/>
         <DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterStack.pas"/>
         <DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterTokenList.pas"/>
         <DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterTokens.pas"/>
@@ -466,6 +469,7 @@ $(PreBuildEvent)]]>
         </DCCReference>
         <DCCReference Include="..\..\Source\IDE\GX_IdeDockFormEnhancer.pas"/>
         <DCCReference Include="..\..\source\IDE\GX_IdeEnhance.pas"/>
+        <DCCReference Include="..\..\Source\IDE\GX_IdeEvaluateModifyEnhancer.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeFavoritesList.pas">
             <Form>f_GxIdeFavoritesList</Form>
             <FormType>dfm</FormType>
@@ -496,6 +500,7 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibility.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_IdeUtils.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_IndexTypes.pas"/>
         <DCCReference Include="..\..\Source\AutoTodo\GX_InsertAutoTodo.pas">
             <Form>fmInsertAutoTodoForm</Form>
             <FormType>dfm</FormType>
@@ -725,8 +730,7 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Framework\GX_VerDepConst.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas"/>
         <DCCReference Include="..\..\source\BackupProject\GX_Zipper.pas"/>
-        <DCCReference Include="..\..\Source\Bookmarks\GX_BookmarksFuncProcName.pas"/>
-        <DCCReference Include="..\..\Source\Bookmarks\GX_BookmarksLists.pas"/>
+        <DCCReference Include="..\..\Source\Framework\GX_DuplicateDllHandler.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

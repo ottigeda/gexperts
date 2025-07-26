@@ -22,10 +22,6 @@ const
   EditorControlName = 'Editor';
   EditorControlClassName = 'TEditControl';
 
-var
-  // used to detect duplicate GExperts.dlls loaded into the same IDE instance
-  GExpertsDllMarker: TComponent = nil;
-
 // Returns a reference to the main form of the IDE (TAppBuilder)
 function GetIdeMainForm: TCustomForm;
 // Returns the height of a IDE main menu item
