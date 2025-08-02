@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Done RZ" modified="2025-07-15T18:43:09.316+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Done RZ" modified="2025-07-26T22:20:20.207+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">EditorBookmarksSelect</title>
   <body>
     <header>
@@ -50,8 +50,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true"> &#160; </text></para>
-    <para styleclass="Normal"><text styleclass="Normal" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
         <td style="height:24px; background-color:#cfe7ff;">
@@ -65,8 +64,7 @@
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">In this additional window you can select the position of the new bookmark in a list of all functions and procedures of the active file in the IDE. Each list item represents a possible bookmark position and shows the line number, method type and method name. </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">If </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic;" translate="true">deny double bookmarks</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> is activated in options, all list items that have already been assigned to a bookmark are shown in a different font style and color and cannot be selected. </text></para>
     <para styleclass="Normal" style="text-align:center; margin-top:30px; margin-right:6px; margin-bottom:24px; margin-left:6px;"><image src="EditorBookmarks20Select.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
-    <para styleclass="Normal"><anchor id="Details" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana;" translate="true"> &#160; </text></para>
-    <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><anchor id="Details" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
         <td style="height:24px; background-color:#cfe7ff;">

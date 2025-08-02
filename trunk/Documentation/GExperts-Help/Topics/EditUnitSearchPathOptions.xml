@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Done RZ" modified="2025-07-13T22:05:11.101+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Done RZ" modified="2025-07-26T22:22:17.673+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">EditUnitSearchPathOptions</title>
   <body>
     <header>
@@ -50,8 +50,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true"> &#160; </text></para>
-    <para styleclass="Normal"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
     <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
       <tr style="vertical-align:middle">
         <td style="height:24px; background-color:#cfe7ff;">
@@ -63,16 +62,15 @@
       </tr>
     </table></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">By default, the currently active target is preset in the target list of the expert dialog. If you want to preselect a different target, you can specify it in this configuration. For the default behavior select &lt;Current Config&gt;, otherwise the desired configuration. </text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="3" style="width:100%; background-color:#f4f4f4;">
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; background-color:#f4f4f4;">
       <tr style="vertical-align:top">
         <td style="width:48px;">
           <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; color:#ff0000;" translate="true">Notice</text></para>
         </td>
-        <td style="vertical-align:top; width:20px;">
-          <para styleclass="Normal" style="text-align:center; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">▪</text></para>
-        </td>
-        <td>
-          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">This configuration cannot be accessed from the expert itself, but only in the parent configuration of GExperts! </text></para>
+        <td style="vertical-align:top;">
+          <list id="0" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:8px; font-family:Wingdings; font-size:10pt; color:#000000;">
+            <li styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:8px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">This configuration cannot be accessed from the expert itself, but only in the parent configuration of GExperts! </text></li>
+          </list>
         </td>
       </tr>
     </table></para>

@@ -170,6 +170,9 @@
       <config-value name="historyfiles">0</config-value>
       <config-value name="historyfilecount">10</config-value>
       <config-value name="historykeepdeletedfiles">0</config-value>
+      <config-group name="bookmarks">
+        <config-value name="UsesClauseManagerOptions">UsesClauseManagerOptions</config-value>
+      </config-group>
     </config-group>
     <config-group name="hlp">
       <config-value name="citation" translate="true"></config-value>
@@ -707,7 +710,12 @@ GExperts Help
       </config-group>
       <config-group name="ghost">
         <config-group name="project">
-          <config-value name="lastexport">4</config-value>
+          <config-value name="lastexport">0</config-value>
+        </config-group>
+        <config-group name="report">
+          <config-value name="type">0</config-value>
+          <config-value name="sort">1</config-value>
+          <config-value name="include">ALL</config-value>
         </config-group>
       </config-group>
       <config-group name="ralph">
@@ -786,11 +794,6 @@ GExperts Help
   <xi:include parse="xml" href="Maps/table_of_contents.xml"/>
   <project-files>
     <file href="Topics/*.xml" build="ALL" filetype="topic">
-      <file-mod href="ToDoGrid00General.xml" build="RZONLY"/>
-      <file-mod href="ToDoGrid10Rules.xml" build="RZONLY"/>
-      <file-mod href="ToDoGrid20Options.xml" build="RZONLY"/>
-      <file-mod href="ToDoGrid50FltrMain.xml" build="RZONLY"/>
-      <file-mod href="ToDoGrid60FltrSub.xml" build="RZONLY"/>
       <file-mod href="_Dummy4Snippets.xml"/>
     </file>
     <file href="Baggage/*.*" build="ALL" filetype="baggage"/>
