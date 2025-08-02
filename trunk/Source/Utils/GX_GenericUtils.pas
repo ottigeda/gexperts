@@ -3471,7 +3471,7 @@ begin
   Stream.Position := 0;
   SetLength(AnsiStr, Stream.Size);
   Stream.Write(AnsiStr[1], Stream.Size);
-  Data := AnsiStr; // Let the RTL do the convesion for us
+  Data := AnsiStr; // Let the RTL do the conversion for us
 end;
 
 function GetFileVersionNumber(const FileName: string;
