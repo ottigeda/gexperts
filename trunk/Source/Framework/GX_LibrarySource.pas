@@ -57,7 +57,6 @@ function InitWizard(const BorlandIDEServices: IBorlandIDEServices;
   var Terminate: TWizardTerminateProc): Boolean; stdcall;
 var
   WizardServices: IOTAWizardServices;
-  GExpertsDllMarker2: TComponent;
 begin
   Result := (BorlandIDEServices <> nil);
 
@@ -78,16 +77,13 @@ begin
   // loaded into the IDE. If the same one is loaded twice, the initialization section
   // (and thus CreateInstanceMutexes) is only called once.
   // So we now do the same GExpertsDLLMarker trick again, with a different name this time
-  if Application.FindComponent('GExpertsDllMarker2') <> nil then begin
-      // OK, it is indeed the second (or third ...) call to InitWizard in the same DLL
-      // simply return true and exit.
-      // todo: Maybe we should display an error message?
+  if  CheckAndCreateDllMarkerComponent('GExpertsDllMarker2') = nil then begin
+    // OK, it is indeed the second (or third ...) call to InitWizard in the same DLL
+    // simply return true and exit.
+    // todo: Maybe we should display an error message?
     Result := True;
     Exit; //==>
   end;
-
-  GExpertsDllMarker2 := TComponent.Create(Application);
-  GExpertsDllMarker2.Name := 'GExpertsDllMarker2';
 
   Terminate := FinalizeWizard;
 

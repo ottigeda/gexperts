@@ -13,6 +13,13 @@ uses
 // if this unit is in the other unit's uses list, that should always be the case.
 function IsDuplicateGExpertsDll: Boolean;
 
+///<summary>
+/// Checks if a component with the given name already exists. If not, create it.
+/// @param MarkerName is the component name to check for and create.
+/// @returns NIL if the comopnent already exists
+///          otherwise the newly created component </summary>
+function CheckAndCreateDllMarkerComponent(const _MarkerName: string): TComponent;
+
 implementation
 
 uses
@@ -41,9 +48,23 @@ begin
   Result := SMultipleGExpertsInstances;
 end;
 
+function CheckAndCreateDllMarkerComponent(const _MarkerName: string): TComponent;
+begin
+  if Application.FindComponent(_MarkerName) <> nil then begin
+    // Another instance of GExperts has already been loaded.
+    Result := nil;
+    Exit;
+  end;
+
+  Result := TComponent.Create(Application);
+  Result.Name := _MarkerName;
+end;
+
 var
   // used to detect duplicate GExperts.dlls loaded into the same IDE instance
   GExpertsDllMarker: TComponent = nil;
+
+  // used to detect duplicate GExperts.dlls loaded into different IDE instances
   GXGeneralMutex: THandle;
   GXVersionMutex: THandle;
 
@@ -61,14 +82,12 @@ begin
   // is only called once. So we need another way of preventing this.
   // But nothing is preventing us from doing the GExpertsDLLMarker trick twice, with
   // a different name in InitWizard above.
-  if Application.FindComponent('GExpertsDllMarker') <> nil then begin
+  GExpertsDllMarker := CheckAndCreateDllMarkerComponent('GExpertsDllMarker');
+  if GExpertsDllMarker = nil then begin
     // Another instance of GExperts has already been loaded.
     // -> Fail silently and do not create an instance of TGExperts in InitWizard.
     Exit;
   end;
-
-  GExpertsDllMarker := TComponent.Create(Application);
-  GExpertsDllMarker.Name := 'GExpertsDllMarker';
 
   // This mutex signals that at least one copy of GExperts is running
   // The installer uses this to determine if it should allow installation
