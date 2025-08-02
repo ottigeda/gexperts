@@ -38,6 +38,7 @@ type
     procedure InitFonts;
     procedure InitVersionInfoControls;
   protected
+    class function GetFileDescription: string; virtual;
     class function GetVersionStr: string; virtual;
     class function DoAddToAboutDialog: Integer; virtual;
     class function GetAboutIcon: HBITMAP; virtual;
@@ -69,7 +70,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Graphics, ToolsApi, Messages,
-  u_dzVclUtils,
+  u_dzVclUtils, u_dzVersionInfo,
   GX_GxUtils, GX_DuplicateDllHandler,
 {$IFNDEF GX_STANDALONE}
   GX_GetIdeVersion,
@@ -148,6 +149,7 @@ end;
 
 procedure TfmAbout.InitVersionInfoControls;
 begin
+  lblGExperts.Caption := GetFileDescription;
   lblVersion.Caption := GetVersionStr;
 {$IF declared(GetBorlandIdeVersionStr)}
   lblIdeVersion.Caption := 'running in ' + GetBorlandIdeVersionStr;
@@ -215,12 +217,13 @@ resourcestring
   SVersion = 'Version';
   SUnknown = '<unknown>';
 var
-  Version: TVersionNumber;
+  Info: IFileInfo;
+  Version: TFileVersionRec;
 begin
-  Version.IsValid := False;
-  Version := GetFileVersionNumber(ThisDllName, False, False);
-  if Version.IsValid then begin
-    Result := Format('%d.%d.%d', [Version.Major, Version.Minor, Version.Release, Version.Build]);
+  Info := TDllInfo.Create;
+  if Info.HasVersionInfo then begin
+    Version := Info.FileVersionRec;
+    Result := Info.FileVersionStr();
     if Version.Build <> 0 then
       Result := Result + '  build ' + IntToStr(Version.Build);
   end else
@@ -316,11 +319,24 @@ end;
 class procedure TfmAbout.AddToSplashScreen;
 var
   VerString: string;
+  FileDesc: string;
 begin
+  FileDesc := GetFileDescription;
   VerString := GetVersionStr;
   if IsDuplicateGExpertsDll() then
     VerString := VerString + ' (duplicate, inactive)';
-  AddPluginToSplashScreen(GetSplashIcon, 'GExperts', VerString);
+  AddPluginToSplashScreen(GetSplashIcon, FileDesc, VerString);
+end;
+
+class function TfmAbout.GetFileDescription: string;
+var
+  Info: IFileInfo;
+begin
+  Info :=  TDllInfo.Create;
+  if Info.HasVersionInfo then
+    Result := Info.FileDescription
+  else
+    Result := 'GExperts';
 end;
 
 class function TfmAbout.DoAddToAboutDialog: Integer;
@@ -334,6 +350,7 @@ const
 var
   AboutBoxServices: IOTAAboutBoxServices;
   DupeString: string;
+  FileDesc: string;
   Desc: string;
   VerString: string;
 begin
@@ -345,16 +362,16 @@ begin
     Desc := Description;
   Result := -1;
   if Supports(BorlandIDEServices, IOTAAboutBoxServices, AboutBoxServices) then begin
-    VerString := 'GExperts ' + GetVersionStr;
-    VerString := StringReplace(VerString, '  build ', '.', []);
+    FileDesc := GetFileDescription;
+    VerString := GetVersionStr;
     Result := AboutBoxServices.AddPluginInfo(
-      VerString + DupeString,
+      FileDesc + DupeString,
       Desc + #13#10
       + 'https://gexperts.dummzeuch.de',
       GetAboutIcon,
       False,
       '', // leave this empty!
-      GetVersionStr);
+      VerString);
   end;
 end;
 {$ELSE}
