@@ -24,7 +24,7 @@ uses
   Dialogs,
   StdCtrls,
   ExtCtrls,
-{$IFNDEF no_jcl}
+{$IFNDEF NO_JCL}
   Jcldebug,
 {$ENDIF}
   u_dzTypes,
@@ -56,30 +56,32 @@ type
   TShowMaximizeOption = (smSmart, smShow, smHide);
 
 type
-  { used for the property OnButtonClick in asynchronous mode
-    @param(Sender is the Exceptiondialog)
-    @param(Button is the ModalResult value of the button pressed)
-    @param(Action is a TCloseAction indicating whether the dialog can be closed,
-           it is initialized to caNone and can be set to caHide, caFree or caMinimize)}
+  ///<summary>
+  /// used for the property OnButtonClick in asynchronous mode
+  /// @param Sender is the Exceptiondialog
+  /// @param Button is the ModalResult value of the button pressed
+  /// @param Action is a TCloseAction indicating whether the dialog can be closed,
+  ///               it is initialized to caNone and can be set to caHide, caFree or caMinimize </summary>
   TOnButtonClick = procedure(Sender: TObject; _Button: TModalResult; var _Action: TCloseAction) of object;
 
 type
-  ///<summary> defines the exception and messsage dialog.
-  ///          This dialog is used by the various dzShowException and the dzShowMessage
-  ///          functions. It can of course also be created independently. The minimum
-  ///          properties to set are
-  ///          <ul>
-  ///            <li>ExcecptionClass</li>
-  ///            <li>ExceptionMessage</li>
-  ///            <li>VisibleButtons</li>
-  ///          </ul>
-  ///          for showing an exception and
-  ///          <ul>
-  ///            <li>UserMessage</li>
-  ///            <li>VisibleButtons</li>
-  ///            <li>ShowDetailButton (to false)</li>
-  ///          </ul>
-  ///          for showing a message. </summary>
+  ///<summary>
+  /// defines the exception and messsage dialog.
+  /// This dialog is used by the various dzShowException and the dzShowMessage
+  /// functions. It can of course also be created independently. The minimum
+  /// properties to set are
+  /// <ul>
+  ///   <li>ExcecptionClass</li>
+  ///   <li>ExceptionMessage</li>
+  ///   <li>VisibleButtons</li>
+  /// </ul>
+  /// for showing an exception and
+  /// <ul>
+  ///   <li>UserMessage</li>
+  ///   <li>VisibleButtons</li>
+  ///   <li>ShowDetailButton (to false)</li>
+  /// </ul>
+  /// for showing a message. </summary>
   Tf_dzDialog = class(TForm)
     p_Top: TPanel;
     l_Message: TLabel;
@@ -121,16 +123,18 @@ type
     procedure MakeModal;
     procedure MakeNonModal;
     procedure ButtonClick(_Sender: TObject);
-    procedure SetVisibleButtons(const _Buttons: array of TDialogButtonEnum);
-    procedure SetFocusButton(_ButtonIndex: Integer);
+    function GetDontShowAgainValue: Boolean;
+    procedure SetDontShowAgainValue(const _Value: Boolean);
   protected
     procedure b_DetailsClick(Sender: TObject);
-    procedure GenerateControls;
     procedure CreateParams(var Params: TCreateParams); override;
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
 
+    procedure SetFocusButton(_ButtonIndex: Integer);
+    procedure SetVisibleButtons(const _Buttons: array of TDialogButtonEnum);
+    procedure GenerateControls; virtual;
     procedure Hide;
     ///<summary> class name of the exception </summary>
     property ExceptionClass: string read FExceptionClass write FExceptionClass;
@@ -170,6 +174,7 @@ type
     property ShowDontShowAgain: Boolean read FShowDontShowAgain write FShowDontShowAgain;
     ///<summary> checkbox caption to show instead of 'Do not ask again.' </summary>
     property DontShowAgainText: string read FDontShowAgainText write SetDontShowAgainText;
+    property DontShowAgainValue: Boolean read GetDontShowAgainValue write SetDontShowAgainValue;
     ///<summary> whether to show the maximze button
     ///          <ul>
     ///            <li>smSmart - show only when details are visible</li>
@@ -532,7 +537,7 @@ class function Tf_dzDialog.ShowException(_e: Exception; const _Message: string;
   const _Buttons: array of TDialogButtonEnum; const _OptionDesc: string = ''; _Owner: TWinControl = nil): Integer;
 var
   frm: Tf_dzDialog;
-{$IFNDEF no_jcl}
+{$IFNDEF NO_JCL}
   sl: TStringList;
   StackList: TJclStackInfoList;
 {$ENDIF}
@@ -757,6 +762,9 @@ begin
   // Max. 5/8 of the monitor width
   // according to https://devblogs.microsoft.com/oldnewthing/20110624-00/?p=10343
   lRect := Rect(0, 0, MulDiv(TRect_Width(Monitor.WorkareaRect), 5, 8), 0);
+  DialogUnits := GetAveCharSize(Canvas);
+  MinWidth := Min(TRect_Width(lRect), DialogUnits.x * 278);
+  TRect_SetWidth(lRect, MinWidth - l_Message.Left);
   Canvas.TextRect(lRect, FUserMessage, [tfCalcRect, tfWordBreak]);
   l_Message.Caption := FUserMessage;
   if lRect.Bottom > im_Icon.Height then
@@ -767,7 +775,6 @@ begin
   MinWidth := MulDiv(250, CurrentDPI, DesignDPI); // 400;
   Inc(MinHeight, mcVertSpacing);
   MinWidth := Max(MinWidth, l_Message.Left + lRect.Right + mcHorzMargin);
-  l_Message.Width := lRect.Right;
   if FOptionDescription = '' then
     l_Options.Visible := False
   else begin
@@ -799,7 +806,6 @@ begin
     end else
       m_Details.Lines.Text := FDetails;
   BiDiMode := Application.BiDiMode;
-  DialogUnits := GetAveCharSize(Canvas);
   ButtonWidth := MulDiv(mcButtonWidth, DialogUnits.X, 4);
   if FShowDetailButton then
     ButtonWidth := CalcMinButtonWidth(Canvas.Handle, ' ' + _('&Details') + '^^' + ' ');
@@ -839,6 +845,7 @@ begin
   p_Top.Height := ButtonTop + ButtonHeight + mcVertMargin;
   if Self.ClientWidth < MinWidth then
     Self.ClientWidth := MinWidth;
+  l_Message.Width := MinWidth - l_Message.Left - mcHorzMargin;
   Self.ClientHeight := p_Top.Height;
   Constraints.MinWidth := Self.Width;
   Constraints.MinHeight := Self.Height;
@@ -975,6 +982,17 @@ begin
   FShowDontShowAgain := FDontShowAgainText <> '';
 end;
 
+function Tf_dzDialog.GetDontShowAgainValue: Boolean;
+begin
+  Result := Assigned(chk_DontAskAgain) and chk_DontAskAgain.Checked;
+end;
+
+procedure Tf_dzDialog.SetDontShowAgainValue(const _Value: Boolean);
+begin
+  if Assigned(chk_DontAskAgain) then
+    chk_DontAskAgain.Checked := _Value;
+end;
+
 procedure Tf_dzDialog.SetFocusButton(_ButtonIndex: Integer);
 begin
   FFocusButton := _ButtonIndex;
@@ -1037,7 +1055,7 @@ begin
   end;
 end;
 
-{$IFNDEF no_jcl}
+{$IFNDEF NO_JCL}
 initialization
   // Enable raw mode (default mode uses stack frames which aren't always generated by the compiler)
   Include(JclStackTrackingOptions, stRawMode);
