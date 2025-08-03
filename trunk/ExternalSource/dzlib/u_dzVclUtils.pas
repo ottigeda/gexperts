@@ -4953,24 +4953,27 @@ begin
 end;
 
 procedure TForm_CenterOn(_frm: TForm; _Center: TWinControl);
+var
+  CenterPoint: TPoint;
 begin
-  if not Assigned(_Center) then
+  if not Assigned(_Center) or ((_Center is TForm) and not _Center.Visible) then
     _Center := Application.MainForm;
-  if not Assigned(_Center) then begin
+  if not Assigned(_Center) or ((_Center is TForm) and not _Center.Visible) then begin
     if Screen.FormCount > 0 then
       _Center := Screen.Forms[0];
   end;
   // It's possible that the programmer passed the form itself or that he passed nil and it was read
   // by one of the methods above. We cannot center a form on itself, so we center it on the
   // screen.
-  if Assigned(_Center) and (_frm <> _Center) then begin
-    if Assigned(_Center.Parent) then
-      TForm_CenterOn(_frm, _Center.ClientToScreen(Point(_Center.Width div 2, _Center.Height div 2)))
-    else
-      TForm_CenterOn(_frm, Point(_Center.Left + _Center.Width div 2, _Center.Top + _Center.Height div 2));
+  if _frm = _Center then begin
+    CenterPoint := Point(Screen.Width div 2, Screen.Height div 2);
   end else begin
-    TForm_CenterOn(_frm, Point(Screen.Width div 2, Screen.Height div 2));
+    if Assigned(_Center.Parent) then
+      CenterPoint := Point(_Center.Width div 2, _Center.Height div 2)
+    else
+      CenterPoint := Point(_Center.Left + _Center.Width div 2, _Center.Top + _Center.Height div 2);
   end;
+  TForm_CenterOn(_frm, CenterPoint);
 end;
 
 procedure TForm_CenterOn(_frmHwnd: HWND; _Center: TWinControl);
