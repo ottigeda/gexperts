@@ -209,7 +209,8 @@ function GxOtaGetPreceedingCharactersInLine(View: IOTAEditView): string;
 // Select the current identifier under the cursor
 function GxOtaSelectCurrentIdent(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True): Boolean;
 // Select the current line of text
-procedure GxOtaSelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True);
+//procedure GxOtaSelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True);
+procedure GxOtaSelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True; CharsOnly : Boolean = True);
 
 // Insert a string into the current IOTASourceEditor
 // This should be used when the Text is a single line
@@ -4908,7 +4909,7 @@ begin
   end;
 end;
 
-procedure GxOtaSelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean);
+procedure GxOtaSelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = true; CharsOnly : Boolean = true);
 var
   EditPos: TOTAEditPos;
   EditView: IOTAEditView;
@@ -4921,7 +4922,8 @@ begin
   EditPos.Col := 1;
   EditView.CursorPos := EditPos;
   EditView.Block.BeginBlock;
-  EditView.Block.Style := btNonInclusive;
+  if CharsOnly then EditView.Block.Style := btNonInclusive
+               else EditView.Block.Style := btLine;
   if EditView.Position.MoveEOL then
     EditView.MoveViewToCursor;
   EditView.Block.EndBlock;
@@ -5954,5 +5956,4 @@ finalization
   // IDE - and if we write our own IOTACustomMessage, the IDE
   // will try to access these. But since the DLL is gone -> AV.
   //GxOtaClearToolMessages;
-
 end.
