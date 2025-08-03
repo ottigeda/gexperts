@@ -566,7 +566,7 @@ begin
     [FClientWidth, FClientHeight, FMinWidth, FMinHeight, FMaxWidth, FMaxHeight, CurrFontSize, FDesignDpi]);
 
   // FontSize has already been changed by the VCL, but we need the design font size
-  Scaler.Init(_Frm.Font.PixelsPerInch, FDesignDpi);
+  Scaler.Init(FDesignDpi, _Frm.Font.PixelsPerInch);
   FFormDesignFontSize := Scaler.Calc(CurrFontSize);
   LogFmt('  Frm.Font.PixelsPerInch: %d, FormDesignFontSize: %d', [_Frm.Font.PixelsPerInch, FFormDesignFontSize]);
 
