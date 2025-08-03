@@ -107,7 +107,6 @@ type
     FCapNames: TGXUnicodeStringList;
     FCapFile: string;
     FCapFileTimestamp: TDateTime;
-    FShowDoneDialog: Boolean;
     FConfigPrecedence: TConfigPrecedenceArr;
     function GetConfigPrecedence(_Idx: TOneToThree): TConfigPrecedenceEnum;
     procedure SetConfigPrecedence(_Idx: TOneToThree; const _Value: TConfigPrecedenceEnum);
@@ -200,7 +199,6 @@ begin
 
   FCapFileTimestamp := -1;
 
-  FShowDoneDialog := True;
   FSettings := BorlandDefaults;
 
   FConfigPrecedence[1] := cpDirective;
