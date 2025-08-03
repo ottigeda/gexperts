@@ -700,19 +700,19 @@ var
   DesignDPI: Integer;
   lRect: TRect;
 
-  function CalcTextSize(_Handle: HDC; const _Caption: string; _Format: Integer): TPoint;
+  function CalcTextSize(_Canvas: TCanvas; const _Caption: string; _Format: Integer): TPoint;
   var
     TextRect: TRect;
   begin
     TextRect := Rect(0, 0, 0, 0);
-    Windows.DrawText(_Handle, PChar(_Caption), -1, TextRect,
+    Windows.DrawText(_Canvas.Handle, PChar(_Caption), -1, TextRect,
       DT_CALCRECT or _Format);
     Result := TextRect.BottomRight;
   end;
 
-  function CalcMinButtonWidth(_Handle: HDC; const _Caption: string): Integer;
+  function CalcMinButtonWidth(_Canvas: TCanvas; const _Caption: string): Integer;
   begin
-    Result := CalcTextSize(_Handle, _Caption, DT_LEFT or DT_SINGLELINE or
+    Result := CalcTextSize(_Canvas, _Caption, DT_LEFT or DT_SINGLELINE or
       DrawTextBiDiModeFlagsReadingOnly).X + MulDiv(8, CurrentDPI, DesignDPI);
   end;
 
@@ -750,7 +750,8 @@ begin
 
   EnableMenuItem(GetSystemMenu(Handle, LongBool(False)), SC_MAXIMIZE, MF_BYCOMMAND or MF_GRAYED);
 
-  m_Details.Font.Height := MulDiv(m_Details.Font.Height, CurrentDPI, DesignDPI);
+  // the font has already been scaled by the VCL (why?)
+  m_Details.Font.Height := MulDiv(m_Details.Font.Height, CurrentDPI, m_Details.Font.PixelsPerInch);
 
   if FUserMessage = '' then
     FUserMessage := Format(_('An error occurred:'#13#10'%s'), [FExceptionMessage]);
@@ -765,13 +766,19 @@ begin
   DialogUnits := GetAveCharSize(Canvas);
   MinWidth := Min(TRect_Width(lRect), DialogUnits.x * 278);
   TRect_SetWidth(lRect, MinWidth - l_Message.Left);
+  // the font has already been scaled by the VCL (why?) -> scale it back
+  Canvas.Font.Height := MulDiv(Canvas.Font.Height, Canvas.Font.PixelsPerInch, DesignDPI);
+{$IF Declared(tfCalcRect)}
   Canvas.TextRect(lRect, FUserMessage, [tfCalcRect, tfWordBreak]);
+{$ELSE}
+  Canvas.TextRect(lRect, 0, 0, FUserMessage);
+{$IFEND}
   l_Message.Caption := FUserMessage;
   if lRect.Bottom > im_Icon.Height then
     MinHeight := l_Message.Top + lRect.Bottom
   else
     MinHeight := im_Icon.Top + im_Icon.Height;
-  l_Message.Height := lRect.Bottom;
+  l_Message.Height := lRect.Bottom + mcVertMargin;
   MinWidth := MulDiv(250, CurrentDPI, DesignDPI); // 400;
   Inc(MinHeight, mcVertSpacing);
   MinWidth := Max(MinWidth, l_Message.Left + lRect.Right + mcHorzMargin);
@@ -808,21 +815,22 @@ begin
   BiDiMode := Application.BiDiMode;
   ButtonWidth := MulDiv(mcButtonWidth, DialogUnits.X, 4);
   if FShowDetailButton then
-    ButtonWidth := CalcMinButtonWidth(Canvas.Handle, ' ' + _('&Details') + '^^' + ' ');
+    ButtonWidth := CalcMinButtonWidth(Canvas, ' ' + _('&Details') + '^^' + ' ');
   CustomCount := 0;
   for i := Low(FVisibleButtons) to High(FVisibleButtons) do begin
     be := FVisibleButtons[i];
     if be = dbeCustom then begin
-      CurButtonWidth := CalcMinButtonWidth(Canvas.Handle, FCustomButtonCaptions[CustomCount]);
+      CurButtonWidth := CalcMinButtonWidth(Canvas, FCustomButtonCaptions[CustomCount]);
       Inc(CustomCount);
     end else
-      CurButtonWidth := CalcMinButtonWidth(Canvas.Handle, ButtonCaptions[be]);
+      CurButtonWidth := CalcMinButtonWidth(Canvas, ButtonCaptions[be]);
     if CurButtonWidth > ButtonWidth then
       ButtonWidth := CurButtonWidth;
   end;
   ButtonHeight := MulDiv(mcButtonHeight, DialogUnits.Y, 8);
   ButtonSpacing := MulDiv(mcButtonSpacing, DialogUnits.X, 4);
   IconID := IconIDs[FDialogType];
+  // todo: scale icon bitmap
   im_Icon.Picture.Icon.Handle := LoadIcon(0, IconID);
   ButtonCount := Length(FVisibleButtons);
   if FShowDetailButton then
@@ -836,7 +844,7 @@ begin
 
   if FShowDontShowAgain then begin
     MinWidth := Max(MinWidth, ButtonGroupWidth + 2 * ButtonSpacing
-      + CalcTextSize(Canvas.Handle, FDontShowAgainText,
+      + CalcTextSize(Canvas, FDontShowAgainText,
       DT_LEFT or DT_SINGLELINE or
       DrawTextBiDiModeFlagsReadingOnly).X + CHECKBOX_WIDTH + mcHorzMargin);
   end else
@@ -911,7 +919,7 @@ begin
     chk_DontAskAgain := TCheckBox.Create(Self);
     chk_DontAskAgain.Name := 'chk_DontAskAgain';
     chk_DontAskAgain.Parent := p_Top;
-    chk_DontAskAgain.Width := CalcTextSize(Canvas.Handle, FDontShowAgainText,
+    chk_DontAskAgain.Width := CalcTextSize(Canvas, FDontShowAgainText,
       DT_LEFT or DT_SINGLELINE or DrawTextBiDiModeFlagsReadingOnly).X + CHECKBOX_WIDTH;
     chk_DontAskAgain.Left := mcHorzMargin;
     chk_DontAskAgain.Top := ButtonTop + ButtonHeight - chk_DontAskAgain.Height;
