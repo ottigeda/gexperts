@@ -7,7 +7,7 @@ interface
 uses
   SysUtils, Classes, Types, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, AppEvnts,
   Messages,
-  w_dzDialog, u_dzDpiScaleUtils;
+  w_dzDialog, u_dzDpiScaleUtils, u_dzVclUtils;
 
 type
   TGxMsgBoxAdaptor = class(TObject)
@@ -75,7 +75,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   Consts,
-  GX_ConfigurationInfo, u_dzVclUtils;
+  GX_ConfigurationInfo;
 
 const
   MsgDlgResults: array[TMsgDlgBtn] of Integer = (
