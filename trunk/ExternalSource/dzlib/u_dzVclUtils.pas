@@ -669,6 +669,10 @@ procedure TTreeView_ClearWithObjects(_Tree: TTreeView);
 function TPageControl_AddTabSheet(_PageControl: TPageControl; const _Caption: string): TTabSheet;
 
 ///<summary>
+/// Deletes all TabSheets and frees them. </summary>
+procedure TPageControl_DeleteAll(_pc: TPageControl);
+
+///<summary>
 /// Inserts a TTabSheet with the given caption at the given index into the page control and returns it
 /// @param Idx is the index at which to insert the tab sheet, can be negative which means
 ///        insert from the right (PageControl.PageCount + Idx) </summary>
@@ -3388,6 +3392,15 @@ begin
   Result.PageIndex := _Idx;
 end;
 
+procedure TPageControl_DeleteAll(_pc: TPageControl);
+var
+  i: Integer;
+begin
+  for i := _pc.PageCount - 1 downto 0 do begin
+    _pc.Pages[i].Free;
+  end;
+end;
+
 procedure DrawTab(_TabControl: TCustomTabControl; const _Caption: string;
   const _Rect: TRect; _Active: Boolean);
 var
@@ -4969,7 +4982,7 @@ begin
     CenterPoint := Point(Screen.Width div 2, Screen.Height div 2);
   end else begin
     if Assigned(_Center.Parent) then
-      CenterPoint := Point(_Center.Width div 2, _Center.Height div 2)
+      CenterPoint := _Center.ClientToScreen(Point(_Center.Width div 2, _Center.Height div 2))
     else
       CenterPoint := Point(_Center.Left + _Center.Width div 2, _Center.Top + _Center.Height div 2);
   end;
