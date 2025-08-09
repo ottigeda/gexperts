@@ -653,10 +653,13 @@ begin
     FreeAndNil(ResultFiles);
   end;
 
-  SetStatusString(Format(SGrepSearchStats, [FilesSearched, (Now - TimeStart) * 24*60*60, FGrepSettings.Pattern]));
-
   lbResults.Sorted := True;  // There is no Sort method
   lbResults.Sorted := False; //FI:W508 - sort once but do not keep sorted
+  // Immediately refresh the output, because the rest of this procedure takes nearly
+  // a second, which feels like eternity (on my computer). The user won't be
+  // able to interact with the output, but it feels faster -- 2025-08-09 twm
+  lbResults.Refresh;
+  SetStatusString(Format(SGrepSearchStats, [FilesSearched, (Now - TimeStart) * 24*60*60, FGrepSettings.Pattern]));
 
   if gblGrepExpert.HistoryList.ListMode = hlmSettings then
     SetSavedHistoryIndexes(lbHistoryList.ItemIndex + 1);
