@@ -81,6 +81,7 @@ type
     procedure splSeparatorCanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
     procedure tim_ResizeTimer(Sender: TObject);
     procedure pnHolderResize(Sender: TObject);
+    procedure StatusBarResize(Sender: TObject);
   private
     FFileScanner: TFileScanner;
     FEditReader: TEditReader;
@@ -108,6 +109,7 @@ type
     procedure ApplyOptions(const bLoading: Boolean);
     procedure UpdateCodeView(ProcInfo: TProcedure);
     function CurrentProcInfo: TProcedure;
+    procedure HandleResize;
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
@@ -160,6 +162,8 @@ var
 begin
   inherited Create(AOwner);
   TControl_SetMinConstraints(Self);
+
+  TSplitterPainter.Create(splSeparator);
 
   FMinListWidth := MIN_LIST_WIDTH;
   FMinListHeight := MIN_LIST_HEIGHT;
@@ -350,9 +354,11 @@ begin
 end;
 
 procedure TfmProcedureList.FormResize(Sender: TObject);
-var
-  MinWidth: Integer;
-  w: Integer;
+begin
+  HandleResize;
+end;
+
+procedure TfmProcedureList.HandleResize;
 begin
   case splSeparator.Align of
     alTop: begin
@@ -373,10 +379,17 @@ begin
       end;
   end;
 
+end;
+
+procedure TfmProcedureList.StatusBarResize(Sender: TObject);
+var
+  MinWidth: Integer;
+  w: Integer;
+begin
   w := StatusBar.Width;
   MinWidth := 80;
   if Assigned(FScaler) then
-    FScaler.Calc(MinWidth);
+    MinWidth := FScaler.Calc(MinWidth);
   if w > MinWidth then begin
     StatusBar.Panels[1].Width := MinWidth;
     StatusBar.Panels[0].Width := w - MinWidth;
@@ -718,6 +731,7 @@ procedure TfmProcedureList.ArrangeControls;
 begin
   inherited;
   ApplyOptions(false);
+  HandleResize;
 end;
 {$ENDIF}
 
@@ -880,22 +894,30 @@ begin
     splSeparator.Align := FOptions.CodeViewAlignment;
     case pnlFunctionBody.Align of
       alTop: begin
+          if Assigned(FScaler) then
+            splSeparator.Height := FScaler.Calc(8);
           pnlFunctionBody.Height := h;
           pnlFunctionBody.Top := 0;
           splSeparator.Top := h + 10;
         end;
       alBottom: begin
+          if Assigned(FScaler) then
+            splSeparator.Height := FScaler.Calc(8);
           pnlFunctionBody.Height := h;
           Offset := pnlFuncHolder.Height;
           splSeparator.Top := Offset + 10;
           pnlFunctionBody.Top := Offset + 10;
         end;
       alLeft: begin
+          if Assigned(FScaler) then
+            splSeparator.Width := FScaler.Calc(8);
           pnlFunctionBody.Width := w;
           pnlFunctionBody.Left := 0;
           splSeparator.Left := w + 10;
         end;
       alRight: begin
+          if Assigned(FScaler) then
+            splSeparator.Width := FScaler.Calc(8);
           pnlFunctionBody.Width := w;
           Offset := pnlFuncHolder.Width;
           splSeparator.Left := offset + 10;

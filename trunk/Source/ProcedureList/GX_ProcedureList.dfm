@@ -307,6 +307,7 @@ object fmProcedureList: TfmProcedureList
     ParentFont = True
     SimplePanel = False
     UseSystemFont = False
+    OnResize = StatusBarResize
   end
   object dlgProcFont: TFontDialog
     Font.Charset = ANSI_CHARSET
