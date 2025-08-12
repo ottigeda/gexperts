@@ -91,8 +91,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Height = 14
           Hint = 
             'Do not ident units in the uses block if the line starts with a c' +
-            'omma.'#13#10'Note: This disables Line Breaks after each unit uses list' +
-            '.'
+            'omma.'
           Caption = 'Do not indent uses starting with ,'
           ParentShowHint = False
           ShowHint = True
