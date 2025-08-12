@@ -281,12 +281,16 @@ end;
 
 function TGExperts.GetExpert(const Index: Integer): TGX_Expert;
 begin
-  Result := TGX_Expert(FExpertList.Items[Index]);
+  Result := nil;
+  if FExpertList <> nil then
+    Result := TGX_Expert(FExpertList.Items[Index]);
 end;
 
 function TGExperts.GetExpertCount: Integer;
 begin
-  Result := FExpertList.Count;
+  Result := 0;
+  if FExpertList <> nil then
+    Result := FExpertList.Count;
 end;
 
 function TGExperts.GetExpertList: TList;
