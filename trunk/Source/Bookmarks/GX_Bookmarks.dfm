@@ -4,8 +4,8 @@ inherited fmGxBookmarksForm: TfmGxBookmarksForm
   Width = 266
   Height = 159
   Caption = 'Bookmarks'
-  Constraints.MaxHeight = 159
-  Constraints.MaxWidth = 300
+  Constraints.MaxHeight = 1111
+  Constraints.MaxWidth = 1111
   Constraints.MinHeight = 159
   Constraints.MinWidth = 266
   DefaultMonitor = dmDesktop
