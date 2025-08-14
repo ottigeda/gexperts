@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
-<topic status="Done RZ" modified="2025-08-03T19:45:36.357+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+<topic status="Done RZ" modified="2025-08-14T12:54:04.402+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
   <title translate="true">ToDoGridOptions</title>
   <body>
     <header>
@@ -286,7 +286,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">While the three group boxes on the left are responsible for the file scan settings, the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">upper group box</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> on the right allows you to set the main colors of the string grid. Please note that all changes must be explicitly submitted using the Save button; optical changes are immediately visible! </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">While the three group boxes on the left are responsible for the file scan settings, the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">upper group box</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> on the right allows you to set the main colors of the string grid. Please note that all changes must be explicitly submitted using the Save button; optical changes are immediately visible after save! </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Double-clicking on the reference area in the example grid opens the color dialog in which the new color can be selected. In the color dialog custom colors can be created; the colors are automatically saved by the expert and restored when the dialog is called again. Right-clicking on the reference area in the example grid will restore the applications default color. </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="4" colcount="2" style="width:100%;">
       <tr style="vertical-align:top">
@@ -333,7 +333,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">While the three group boxes on the left are responsible for the file scan settings, the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">lower group box</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> on the right controls the display and operation of the string grid. Please note that all changes must be explicitly submitted using the Save button; optical changes are immediately visible! </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">While the three group boxes on the left are responsible for the file scan settings, the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">lower group box</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> on the right controls the display and operation of the string grid. Please note that all changes must be explicitly submitted using the Save button; optical changes are immediately visible after save! </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="8" colcount="2" style="width:100%;">
       <tr style="vertical-align:top">
         <td style="width:170px; background-color:#f4f4f4;">
