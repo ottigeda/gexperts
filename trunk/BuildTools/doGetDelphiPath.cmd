@@ -124,6 +124,12 @@ goto DelphiEndCase
 :DelphiXX120
   call :ReadReg Embarcadero\BDS\23.0
   goto :DelphiEndCase
+:Delphi13
+:Delphi130
+:DelphiXX13
+:DelphiXX130
+  call :ReadReg Embarcadero\BDS\37.0
+  goto :DelphiEndCase
 :DelphiEndCase
 
 echo DelphiPath: "%DelphiPath%"

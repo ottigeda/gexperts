@@ -53,6 +53,7 @@ type
      ideRS12U1, // Rad Studio 12 Athens Update 1
      ideRS12U2, // Rad Studio 12 Athens Update 2
      ideRS12U3, // Rad Studio 12 Athens Update 3
+     ideRS13,   // Rad Studio 13 Florence
      // C# Builder
      ideCSB100,
      // C++Builder
@@ -1116,6 +1117,26 @@ begin
   end;
 end;
 
+function GetRS13Version: TBorlandIdeVersion;
+const
+  RtlBpl3700: TVersionNumber =     (Minor: 0; Major: 37; Build: 5718; Release: 50491);
+var
+  RtlBplFileVersion: TVersionNumber;
+  RtlBplFileName : string;
+begin
+{$IFDEF WIN64}
+  RtlBplFileName := GetIdeRootDirectory + 'Bin64\rtl290.bpl';
+  if not FileExists(RtlBplFileName) then
+    RtlBplFileName := GetIdeRootDirectory + 'Bin64\bds.exe'; // Fallback
+{$ELSE}
+  RtlBplFileName := GetIdeRootDirectory + 'Bin\rtl370.bpl';
+  if not FileExists(RtlBplFileName) then
+    RtlBplFileName := GetIdeRootDirectory + 'Bin\bds.exe';
+{$ENDIF}
+  RtlBplFileVersion := GetFileVersionNumber(RtlBplFileName);
+    Result := ideRS13;
+end;
+
 function GetBorlandIdeVersion: TBorlandIdeVersion;
 begin
   // We only actually detect the version once per session.
@@ -1256,13 +1277,18 @@ begin
     Assert(Result in [ideRS12, ideRS12P1, ideRS12U1, ideRS12U2, ideRS12U3]);
   {$ENDIF VER360}
 
+  {$IFDEF VER370}
+    Result := GetRS13Version;
+    Assert(Result in [ideRS13]);
+  {$ENDIF VER370}
+
   if Result = ideUnknown then
     MessageDlg('Unknown IDE major version detected.  Please update GX_GetIdeVersion.pas.', mtError, [mbOK], 0);
 
   DetectedVersion := Result;
 end;
 
-{$IF CompilerVersion > 36} // new Delphi version
+{$IF CompilerVersion > 37} // new Delphi version
   'Add the information for the new Delphi version above and increase the CompilerVersion in this conditional'
 {$IFEND}
 
@@ -1339,6 +1365,8 @@ begin
      ideRS12U1: Result := 'RAD Studio 12.1 (Athens upd 1)';
      ideRS12U2: Result := 'RAD Studio 12.2 (Athens upd 2)';
      ideRS12U3: Result := 'RAD Studio 12.3 (Athens upd 3)';
+
+     ideRS13: Result := 'RAD Studio 13 (Florence)';
 
      ideCSB100: Result := 'C# Builder 1.00';
 
