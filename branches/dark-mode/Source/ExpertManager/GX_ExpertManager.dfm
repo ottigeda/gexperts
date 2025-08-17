@@ -5,8 +5,8 @@ object fmExpertManager: TfmExpertManager
   AutoScroll = False
   BorderIcons = [biSystemMenu]
   Caption = 'Expert Manager'
-  ClientHeight = 263
-  ClientWidth = 578
+  ClientHeight = 255
+  ClientWidth = 576
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -26,19 +26,18 @@ object fmExpertManager: TfmExpertManager
   TextHeight = 14
   object StatusBar: TStatusBar
     Left = 0
-    Top = 244
-    Width = 578
+    Top = 236
+    Width = 576
     Height = 19
     Panels = <>
     ParentFont = True
-    SimplePanel = False
     UseSystemFont = False
   end
   object lvExperts: TListView
     Left = 0
-    Top = 24
-    Width = 578
-    Height = 220
+    Top = 22
+    Width = 576
+    Height = 214
     Align = alClient
     Columns = <
       item
@@ -65,11 +64,10 @@ object fmExpertManager: TfmExpertManager
   object ToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 578
-    Height = 24
+    Width = 576
+    Height = 22
     AutoSize = True
     DisabledImages = dmSharedImages.DisabledImages
-    Flat = True
     Images = dmSharedImages.Images
     ParentShowHint = False
     ShowHint = True
@@ -277,7 +275,7 @@ object fmExpertManager: TfmExpertManager
     Left = 160
     Top = 96
     Bitmap = {
-      494C010104000900200010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010104000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

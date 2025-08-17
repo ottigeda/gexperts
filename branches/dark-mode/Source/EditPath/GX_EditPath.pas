@@ -29,7 +29,8 @@ uses
   GX_GxUtils,
   GX_Splitter,
   GX_SharedImages,
-  GX_EditPathConfig;
+  GX_EditPathConfig,
+  rzC_Splitter;
 
 type
   TLineProcessMethod = function(const _s: string): string of object;
@@ -44,23 +45,27 @@ type
   end;
 
 type
+  TSplitter = class(TrzSplitter)
+  end;
+
+type
   Tf_EditPath = class(TfmBaseForm)
     p_BottomButtons: TPanel;
     b_Cancel: TButton;
     b_Ok: TButton;
     p_Client: TPanel;
-    p_ClientClient: TPanel;
-    spl_Vertical: TSplitter;
+    p_ClientTop: TPanel;
+    spHor: TSplitter;
     p_Left: TPanel;
     lb_Target: TListBox;
     p_TargetCaption: TPanel;
     l_Target: TLabel;
-    spl_Horizontal: TSplitter;
+    spVer: TSplitter;
     p_ClientBottom: TPanel;
     lb_Inherited: TListBox;
     p_InheritedCaption: TPanel;
     l_Inherited: TLabel;
-    p_RightButtons: TPanel;
+    p_MemoButtons: TPanel;
     sb_MoveUp: TSpeedButton;
     sb_MoveDown: TSpeedButton;
     TheActionList: TActionList;
@@ -76,10 +81,6 @@ type
     act_RemoveDots: TAction;
     p_MemoCaption: TPanel;
     l_UnitSearchPath: TLabel;
-    b_MakeRelative: TButton;
-    b_MakeAbsolute: TButton;
-    b_PrependDots: TButton;
-    b_RemoveDots: TButton;
     b_Favorites: TButton;
     pm_Favorites: TPopupMenu;
     pm_Memo: TPopupMenu;
@@ -95,7 +96,11 @@ type
     mi_MemoRemoveDots: TMenuItem;
     mi_MemoMakeRelative: TMenuItem;
     mi_MemoMakeAbsolute: TMenuItem;
-    imF1: TImage;
+    b_Help: TButton;
+    b_MakeRelative: TButton;
+    b_MakeAbsolute: TButton;
+    b_PrependDots: TButton;
+    b_RemoveDots: TButton;
     procedure cmb_TargetChange(Sender: TObject);
     procedure lb_TargetClick(Sender: TObject);
     procedure act_MoveUpExecute(Sender: TObject);
@@ -111,21 +116,15 @@ type
     procedure act_MoveToBaseExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure b_FavoritesClick(Sender: TObject);
-    procedure p_LeftCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
-      var Resize: Boolean);
-    procedure p_ClientBottomCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
-      var Resize: Boolean);
-    procedure imF1Click(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure b_HelpClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     FConfigs: TObjectList;
     FMemo: TSynMemo;
     FActiveItem: TConfigEntry;
     FProjectDir: string;
     FFavorites: TStringList;
-    FMinTargetListWidth: Integer;
-    FMinSearchPathWidth: Integer;
-    FMinHistoryHeight: Integer;
-    FMinSearchPathHeight: Integer;
     procedure SetData(const _Path, _InheritedPath: string);
     procedure GetData(out _Path: string);
     procedure HandleDropFiles(_Sender: TObject; _Files: TStrings);
@@ -145,6 +144,7 @@ type
     procedure FavoritesEditCallHelpContext(_Sender:TObject);
     procedure GetSelectedLines(out _StartIdx, _EndIdx: Integer);
     class function TryGetProjectConfigurations(_Configs: TObjectList; out _ActiveIndex: Integer): Boolean;
+    procedure UpdateScrollbars(ME:TSynMemo);
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
@@ -215,19 +215,20 @@ const
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure Tf_EditPath.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
-  il: TImageList;
+  il  : TImageList;
 begin
   inherited ApplyDpi(_NewDpi, _NewBounds);
 
   il := GExpertsInst.GetScaledSharedImages(_NewDpi);
   TheActionList.Images := il;
-  sb_MoveUp.Images := il;
-  sb_MoveDown.Images := il;
 
-  act_MoveUp.ImageIndex := ImageIndexMoveUp;
-  sb_MoveUp.ImageIndex := ImageIndexMoveUp;
-  act_MoveDown.ImageIndex := ImageIndexMoveDown;
-  sb_MoveDown.ImageIndex := ImageIndexMoveDown;
+  {$IFDEF GX_SUPPORTS_THEMING}
+  sb_MoveUp.Images := il;
+  sb_MoveUp.ImageIndex := act_MoveUp.ImageIndex;
+
+  sb_MoveDown.Images := il;
+  sb_MoveDown.ImageIndex := act_MoveDown.ImageIndex;
+  {$ENDIF}
 end;
 {$ENDIF}
 
@@ -261,6 +262,7 @@ begin
     if DirectoryExists(fn) then
       Lines.Add(fn);
   end;
+  UpdateScrollbars(FMemo);
 end;
 
 procedure Tf_EditPath.SelectConfig(const _Platform, _Config: string);
@@ -465,6 +467,7 @@ begin
     FMemo.EndUpdate;
   end;
 
+  UpdateScrollbars(FMemo);
 end;
 
 function Tf_EditPath.doMakeAbsolute(const _s: string): string;
@@ -498,6 +501,7 @@ begin
     mi := TPopupMenu_AppendMenuItem(pm_Favorites, FavName, FavoritesPmHandleFavoriteClick);
     mi.Tag := i + 1;
   end;
+  TPopupMenu_AppendMenuItem(pm_Favorites, '-',             FavoritesPmConfigureClick);
   TPopupMenu_AppendMenuItem(pm_Favorites, 'Configure ...', FavoritesPmConfigureClick);
 end;
 
@@ -576,28 +580,8 @@ begin
   finally
     FreeAndNil(sl);
   end;
-end;
 
-procedure Tf_EditPath.p_ClientBottomCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
-  var Resize: Boolean);
-var
-  MinValue: Integer;
-  MaxValue: Integer;
-begin
-  MinValue := FScaler.Calc(FMinHistoryHeight);
-  MaxValue := p_Client.Height - FScaler.Calc(FMinSearchPathHeight);
-  NewHeight := Min(MaxValue, Max(MinValue, NewHeight));
-end;
-
-procedure Tf_EditPath.p_LeftCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
-  var Resize: Boolean);
-var
-  MinValue: Integer;
-  MaxValue: Integer;
-begin
-  MinValue := FScaler.Calc(FMinTargetListWidth);
-  MaxValue := ClientWidth - FMinSearchPathWidth;
-  NewWidth := Min(MaxValue, Max(MinValue, NewWidth));
+  UpdateScrollbars(FMemo);
 end;
 
 function Tf_EditPath.doAddDots(const _s: string): string;
@@ -681,10 +665,9 @@ end;
 
 procedure Tf_EditPath.FavoritesPmConfigureClick(_Sender: TObject);
 resourcestring
-  // SFavSearchPaths = 'Favorite Search Paths';
-  SFavSearchPaths = 'Edit Unit Search Path, Favorites'; // according to the undefinied rule of GX_Experts captions
+  SFavSearchPathList = 'Edit Unit Search Path, Favorites'; // according to the undefinied rule of GX_Experts captions
 begin
-  Tf_GxIdeFavoritesList.Execute(Self, SFavSearchPaths, FavoritesEditEntry, FFavorites, FavoritesCallHelpContext);
+  Tf_GxIdeFavoritesList.Execute(Self, SFavSearchPathList, FavoritesEditEntry, FFavorites, FavoritesCallHelpContext);
   TGxIdeSearchPathEnhancer.SetSearchPathFavorites(FFavorites);
   InitFavoritesMenu;
 end;
@@ -817,46 +800,43 @@ begin
 
   FConfigs := TObjectList.Create;
 
-  TSplitterPainter.Create(spl_Vertical);
-  TSplitterPainter.Create(spl_Horizontal);
-
   InitDpiScaler;
   GxSetDefaultFont(Self);
 
   TControl_SetMinConstraints(Self);
-
-  FMinTargetListWidth := p_Left.Width;
-  FMinSearchPathWidth := p_Client.Width;
-  FMinHistoryHeight := p_ClientBottom.Height;
-  FMinSearchPathHeight := p_ClientClient.Height;
-
-  spl_Vertical.Color := GetThemedColor(clBtnFace);
-  spl_Horizontal.Color := GetThemedColor(clBtnFace);
-
-  TPanel_BevelNone([p_BottomButtons, p_TargetCaption, p_InheritedCaption, p_MemoCaption, p_RightButtons]);
+  TPanel_BevelNone([p_BottomButtons, p_TargetCaption, p_InheritedCaption, p_MemoCaption, p_MemoButtons]);
 
   // only show bevels where the splitters are
   TPanel_SetBevelEdges(p_Left, [beRight]);
   TPanel_SetBevelEdges(p_Client, [beleft]);
   TPanel_SetBevelEdges(p_ClientBottom, [beTop]);
-  TPanel_SetBevelEdges(p_ClientClient, [bebottom]);
+  TPanel_SetBevelEdges(p_ClientTop, [bebottom]);
 
   FMemo := TSynMemo.Create(Self);
-  FMemo.Parent := p_ClientClient;
+  FMemo.Parent := p_ClientTop;
   FMemo.Align := alClient;
   FMemo.HideSelection := False;
   FMemo.WordWrap := False;
 {$IFDEF GX_SUPPORTS_THEMING}
-  FMemo.ParentColor := True;
+  FMemo.StyleElements := [];
+  FMemo.ParentColor := False;
   FMemo.Color := GetIdeEditorBackgroundColor;
   FMemo.Font.Color := GetIdeEditorForegroundColor;
-{$ENDIF}
   FMemo.ActiveLineColor := GetIdeEditorLineHighlightColor;
+{$ELSE}
+  FMemo.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
+{$ENDIF}
   FMemo.RightEdge := 0;
   FMemo.Gutter.Width := 0;
   FMemo.Options := FMemo.Options - [eoScrollPastEol, eoTabsToSpaces] + [eoHideShowScrollbars];
   FMemo.OnKeyDown := MemoKeyDown;
   FMemo.PopupMenu := pm_Memo;
+
+  act_MoveDown.ImageIndex := ImageIndexMoveDown;
+  act_MoveUp.ImageIndex := ImageIndexMoveUp;
+
+  spVer.Color := GetThemedColor(clBtnFace);
+  spHor.Color := GetThemedColor(clBtnFace);
 
   l_UnitSearchPath.FocusControl := FMemo;
 
@@ -898,12 +878,18 @@ end;
 
 procedure Tf_EditPath.FavoritesCallHelpContext(_Sender: TObject);
 begin
- GXContextHelp(Self,72);
+  GXContextHelp(Self, 72);
 end;
 
 procedure Tf_EditPath.FavoritesEditCallHelpContext(_Sender: TObject);
 begin
- GXContextHelp(Self,73);
+  GXContextHelp(Self, 73);
+end;
+
+procedure Tf_EditPath.UpdateScrollbars(ME:TSynMemo);
+begin
+ ME.Scrollbars:=ssNone;
+ ME.Scrollbars:=ssBoth;
 end;
 
 { TEditPathExpert }
@@ -952,7 +938,7 @@ end;
 
 function TEditPathExpert.GetActionCaption: string;
 begin
-  Result := 'Edit Unit Search &Path ...';
+  Result := 'Edit &Path ...';
 end;
 
 function TEditPathExpert.GetHelpString: string;
@@ -996,10 +982,33 @@ begin
   Result := True;
 end;
 
-procedure Tf_EditPath.imF1Click(Sender: TObject);
+procedure Tf_EditPath.FormResize(Sender: TObject);
+const      TargetMinWidth   = 140;
+        InheritedMinWidth   = 381;
+       p_ClientTopMinHeight = 180;
+      lb_InheritedMinHeight = 200;
 begin
   inherited;
-  GXContextHelp(Self,71);
+  if Assigned(FScaler) then begin
+    spVer.MinSize:=FScaler.Calc(TargetMinWidth);
+    spVer.MaxSize:=Self.ClientWidth-spVer.Width-FScaler.Calc(InheritedMinWidth);
+
+    spHor.MinSize:=FScaler.Calc(p_ClientTopMinHeight);
+    spHor.MaxSize:=Self.ClientHeight-spHor.Height-p_InheritedCaption.Height-FScaler.Calc(lb_InheritedMinHeight)-p_BottomButtons.Height;
+  end;
+end;
+
+procedure Tf_EditPath.b_HelpClick(Sender: TObject);
+begin
+  inherited;
+  GXContextHelp(Self, 71);
+end;
+
+procedure Tf_EditPath.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+  if Key=vk_F1 then b_HelpClick(nil);
 end;
 
 initialization

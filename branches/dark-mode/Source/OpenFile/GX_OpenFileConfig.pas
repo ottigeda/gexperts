@@ -1,5 +1,7 @@
 unit GX_OpenFileConfig;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
