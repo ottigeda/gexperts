@@ -34,7 +34,8 @@ const
   CompilerVersionDelphiX104 = 34;
   CompilerVersionDelphiX110 = 35;
   CompilerVersionDelphiX120 = 36;
-{$IF CompilerVersion > CompilerVersionDelphiX120}
+  CompilerVersionDelphiX130 = 37;
+{$IF CompilerVersion > CompilerVersionDelphiX130}
 {$MESSAGE HINT 'Add new CompilerVersion(s) here'}
 {$IFEND}
 
@@ -46,8 +47,9 @@ const
   CompilerVersionDelphiSydney = 34;
   CompilerVersionDelphiAlexandria = 35;
   CompilerVersionDelphiAthens = 36;
+  CompilerVersionDelphi13 = 37;
 
-{$IF CompilerVersion > CompilerVersionDelphiAthens}
+{$IF CompilerVersion > CompilerVersionDelphi13}
 {$MESSAGE HINT 'Add new CompilerVersion(s) here'}
 {$IFEND}
 
@@ -79,7 +81,8 @@ const
   RtlVersionDelphiX104 = 34;
   RtlVersionDelphiX110 = 35;
   RtlVersionDelphiX120 = 36;
-{$IF RtlVersion > RtlVersionDelphiX120}
+  RtlVersionDelphiX130 = 37;
+{$IF RtlVersion > RtlVersionDelphiX130}
 {$MESSAGE HINT 'Add new RtlVersion(s) here'}
 {$IFEND}
 
@@ -90,9 +93,10 @@ const
   RtlVersionDelphiRio = 33;
   RtlVersionDelphiSydney = 34;
   RtlVersionDelphiAlexandria = 35;
-  RtlVersionDelphiAthens= 36;
+  RtlVersionDelphiAthens = 36;
+  RtlVersionDelphi13 = 37;
 
-{$IF RtlVersion > RtlVersionDelphiAthens}
+{$IF RtlVersion > RtlVersionDelphi13}
 {$MESSAGE HINT 'Add new RtlVersion(s) here'}
 {$IFEND}
 

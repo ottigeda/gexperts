@@ -114,16 +114,15 @@
                                             {$DEFINE GX_DELPHI_SYDNEY_UP}
                                             {$DEFINE GX_DELPHI10_4_UP}
                                             {$IF CompilerVersion >= 35}
-                                              {$DEFINE GX_VER350_up}  // RAD Studio 11 Alexandria (28; BDS 22)
+                                              {$DEFINE GX_VER350_UP}  // RAD Studio 11 Alexandria (28; BDS 22)
                                               {$DEFINE GX_DELPHI11_UP}
                                               {$IF CompilerVersion >= 36}
-                                                {$DEFINE GX_VER360_up}  // RAD Studio 12 Athens (29; BDS 23)
+                                                {$DEFINE GX_VER360_UP}  // RAD Studio 12 Athens (29; BDS 23)
                                                 {$DEFINE GX_DELPHI12_UP}
                                                 {$IF CompilerVersion >= 37}
-                                                  {$DEFINE GX_VER370_up}  // RAD Studio 13 Florence (37; BDS 37)
+                                                  {$DEFINE GX_VER370_UP}  // RAD Studio 13 Florence (37; BDS 37)
                                                   {$DEFINE GX_DELPHI13_UP}
                                                   {$IF CompilerVersion >= 38}
-                                                
     unsupported Delphi version
     If you get here, you are probably trying to compile GExperts with a new Delphi release.
     In addition to define a new GX_VERxxx_UP symbol, you should also have a look at
@@ -264,10 +263,6 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$ENDIF}
 {$ENDIF}
 {.$DEFINE GX_IDE_IS_HIDPI_AWARE}
-
-{$IFDEF GX_DELPHI11_UP}
-  {$DEFINE GX_SUPPORTS_THEMING}
-{$ENDIF}
 
 {$IFDEF GX_DELPHI12_UP}
   // Fix for bug #393 GExperts key mappings is removed when I unload/install another "ToolsApi" package

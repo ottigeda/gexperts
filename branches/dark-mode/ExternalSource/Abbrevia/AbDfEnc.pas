@@ -813,7 +813,9 @@ begin
     {$IFNDEF VER340} // Delphi 10.4 Sydney / BDS 21 does not need this
     {$IFNDEF VER350} // Delphi 11 Alexandria / BDS 22 does not need this
     {$IFNDEF VER360} // Delphi 12 Athens / BDS 23 does not need this
+    {$IFNDEF VER370} // Delphi 13 / BDS 23 does not need this
   Result := 0;
+    {$ENDIF}
     {$ENDIF}
     {$ENDIF}
     {$ENDIF}
