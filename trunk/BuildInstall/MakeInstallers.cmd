@@ -40,6 +40,7 @@ call :makeinst RS103 RS10.3
 call :makeinst RS104 RS10.4
 call :makeinst RS110 RS11
 call :makeinst RS120 RS12
+call :makeinst RS130 RS13
 goto :eof
 
 :makeinst
