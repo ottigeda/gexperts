@@ -118,6 +118,7 @@ procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TEdit); overload;
 procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: THotKey); overload;
 procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TButton); overload;
 procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TCheckbox); overload;
+procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TComboBox); overload;
 procedure TCheckBox_AlignVerticallyTo(_Chk: TCheckbox; _Template: TControl);
 procedure TLabel_AlignVerticallyTo(_lbl: TLabel; _Template: TEdit);
 
@@ -667,6 +668,10 @@ procedure TTreeView_ClearWithObjects(_Tree: TTreeView);
 
 ///<summary> adds a new TTabSheet with the given Caption to the PageControl and returns it </summary>
 function TPageControl_AddTabSheet(_PageControl: TPageControl; const _Caption: string): TTabSheet;
+
+///<summary>
+/// Deletes all TabSheets and frees them. </summary>
+procedure TPageControl_DeleteAll(_pc: TPageControl);
 
 ///<summary>
 /// Inserts a TTabSheet with the given caption at the given index into the page control and returns it
@@ -3388,6 +3393,15 @@ begin
   Result.PageIndex := _Idx;
 end;
 
+procedure TPageControl_DeleteAll(_pc: TPageControl);
+var
+  i: Integer;
+begin
+  for i := _pc.PageCount - 1 downto 0 do begin
+    _pc.Pages[i].Free;
+  end;
+end;
+
 procedure DrawTab(_TabControl: TCustomTabControl; const _Caption: string;
   const _Rect: TRect; _Active: Boolean);
 var
@@ -4953,24 +4967,27 @@ begin
 end;
 
 procedure TForm_CenterOn(_frm: TForm; _Center: TWinControl);
+var
+  CenterPoint: TPoint;
 begin
-  if not Assigned(_Center) then
+  if not Assigned(_Center) or ((_Center is TForm) and not _Center.Visible) then
     _Center := Application.MainForm;
-  if not Assigned(_Center) then begin
+  if not Assigned(_Center) or ((_Center is TForm) and not _Center.Visible) then begin
     if Screen.FormCount > 0 then
       _Center := Screen.Forms[0];
   end;
   // It's possible that the programmer passed the form itself or that he passed nil and it was read
   // by one of the methods above. We cannot center a form on itself, so we center it on the
   // screen.
-  if Assigned(_Center) and (_frm <> _Center) then begin
-    if Assigned(_Center.Parent) then
-      TForm_CenterOn(_frm, _Center.ClientToScreen(Point(_Center.Width div 2, _Center.Height div 2)))
-    else
-      TForm_CenterOn(_frm, Point(_Center.Left + _Center.Width div 2, _Center.Top + _Center.Height div 2));
+  if _frm = _Center then begin
+    CenterPoint := Point(Screen.Width div 2, Screen.Height div 2);
   end else begin
-    TForm_CenterOn(_frm, Point(Screen.Width div 2, Screen.Height div 2));
+    if Assigned(_Center.Parent) then
+      CenterPoint := _Center.ClientToScreen(Point(_Center.Width div 2, _Center.Height div 2))
+    else
+      CenterPoint := Point(_Center.Left + _Center.Width div 2, _Center.Top + _Center.Height div 2);
   end;
+  TForm_CenterOn(_frm, CenterPoint);
 end;
 
 procedure TForm_CenterOn(_frmHwnd: HWND; _Center: TWinControl);
@@ -5662,6 +5679,17 @@ end;
 procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TCheckbox);
 begin
   _btn.Top := _Template.Top + (_Template.Height - _btn.Height) div 2;
+end;
+
+procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TComboBox);
+begin
+  if IsThemesEnabled then begin
+    _btn.Top := _Template.Top - 1;
+    _btn.Height := _Template.Height + 2;
+  end else begin
+    _btn.Top := _Template.Top;
+    _btn.Height := _Template.Height;
+  end;
 end;
 
 procedure TCheckBox_AlignVerticallyTo(_Chk: TCheckbox; _Template: TControl);

@@ -214,6 +214,7 @@ type
     function ConfigurationKey: string;
     function ExecuteFile(AFile: TGXFile): Boolean;
     function ExecuteFileItem(AListItem: TListItem): Boolean;
+    procedure FixSplitterPosition;
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     // TImageListScaler descends from TComponents and gets freed automatically
@@ -1123,6 +1124,8 @@ begin
   FFileDrop.Register(ListView);
   if ListView.ViewStyle = vsList then
     ListView_SetColumnWidth(ListView.Handle, 0, ListView.Width);
+  if FOptions.FShowPreview then
+    FixSplitterPosition;
 end;
 
 procedure TfmFavFiles.FormHide(Sender: TObject);
@@ -1257,6 +1260,7 @@ begin
   begin
     pnlFileView.Visible := Value;
     splFileView.Visible := Value;
+    FixSplitterPosition;
     FFileViewer.Clear;
     if (Value) and (ListView.Selected <> nil) then
       ListViewChange(ListView, ListView.Selected, ctState);
@@ -1945,6 +1949,14 @@ begin
     AListItem.SubItems.Add(ExecTypeNames[AFile.ExecType]);
   AListItem.Data := AFile;
   AListItem.ImageIndex := GetSystemImageIndexForFile(MakeFileNameAbsolute(AFile.FileName));
+end;
+
+procedure TfmFavFiles.FixSplitterPosition;
+begin
+  if splFileView.Visible then begin
+    splFileView.Align := alTop;
+    splFileView.Align := alBottom;
+  end;
 end;
 
 { TFavoriteFilesExpert }

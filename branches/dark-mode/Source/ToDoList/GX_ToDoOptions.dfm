@@ -7,19 +7,16 @@ object fmToDoOptions: TfmToDoOptions
   ClientHeight = 329
   ClientWidth = 542
   Color = clBtnFace
-  Font.Charset = ANSI_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -12
-  Font.Name = 'Tahoma'
-  Font.Style = []
+  ParentFont = True
   Position = poScreenCenter
   Scaled = False
+  OnResize = FormResize
   OnShow = FormShow
   DesignSize = (
     542
     329)
   PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 15
   object gbxTokens: TGroupBox
     Left = 8
     Top = 6
@@ -34,16 +31,16 @@ object fmToDoOptions: TfmToDoOptions
     object lblPriority: TLabel
       Left = 131
       Top = 185
-      Width = 37
-      Height = 14
+      Width = 38
+      Height = 15
       Caption = '&Priority'
       FocusControl = cboPriority
     end
     object lblToken: TLabel
       Left = 131
       Top = 139
-      Width = 35
-      Height = 14
+      Width = 32
+      Height = 15
       Caption = 'To&ken'
       FocusControl = edToken
     end
@@ -53,7 +50,7 @@ object fmToDoOptions: TfmToDoOptions
       Width = 118
       Height = 287
       Anchors = [akLeft, akTop, akBottom]
-      ItemHeight = 14
+      ItemHeight = 15
       Sorted = True
       TabOrder = 0
       OnClick = lstTokensClick
@@ -89,7 +86,7 @@ object fmToDoOptions: TfmToDoOptions
       Left = 131
       Top = 155
       Width = 96
-      Height = 22
+      Height = 23
       TabOrder = 4
       OnChange = edTokenChange
     end
@@ -97,9 +94,8 @@ object fmToDoOptions: TfmToDoOptions
       Left = 131
       Top = 203
       Width = 96
-      Height = 22
+      Height = 23
       Style = csDropDownList
-      ItemHeight = 14
       TabOrder = 5
       OnChange = cboPriorityChange
     end
@@ -129,18 +125,18 @@ object fmToDoOptions: TfmToDoOptions
   object gbxOptions: TGroupBox
     Left = 251
     Top = 6
-    Width = 282
+    Width = 278
     Height = 87
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Options'
     TabOrder = 1
     DesignSize = (
-      282
+      278
       87)
     object cbShowTokens: TCheckBox
       Left = 8
       Top = 20
-      Width = 272
+      Width = 268
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = '&Show tokens in description'
@@ -149,7 +145,7 @@ object fmToDoOptions: TfmToDoOptions
     object cbAddMessage: TCheckBox
       Left = 8
       Top = 40
-      Width = 272
+      Width = 268
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Add to do items to &message view'
@@ -158,7 +154,7 @@ object fmToDoOptions: TfmToDoOptions
     object cbHideOnGoto: TCheckBox
       Left = 8
       Top = 60
-      Width = 272
+      Width = 268
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = '&Hide window after jumping to an item'
@@ -168,16 +164,16 @@ object fmToDoOptions: TfmToDoOptions
   object gbxSearchFiles: TGroupBox
     Left = 251
     Top = 99
-    Width = 282
+    Width = 278
     Height = 150
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Search for To Do Tokens'
     TabOrder = 2
     DesignSize = (
-      282
+      278
       150)
     object btnBrowse: TButton
-      Left = 255
+      Left = 251
       Top = 100
       Width = 20
       Height = 20
@@ -190,27 +186,26 @@ object fmToDoOptions: TfmToDoOptions
       OnClick = btnBrowseClick
     end
     object chkInclude: TCheckBox
-      Left = 18
-      Top = 125
-      Width = 255
+      Left = 24
+      Top = 126
+      Width = 251
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Include su&bdirectories'
       TabOrder = 6
     end
     object cboDirectories: TComboBox
-      Left = 12
+      Left = 24
       Top = 100
-      Width = 242
-      Height = 22
+      Width = 226
+      Height = 23
       Anchors = [akLeft, akTop, akRight]
-      ItemHeight = 14
       TabOrder = 4
     end
     object radScanProj: TRadioButton
       Left = 8
       Top = 39
-      Width = 271
+      Width = 267
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Scan pro&ject files'
@@ -220,7 +215,7 @@ object fmToDoOptions: TfmToDoOptions
     object radScanOpen: TRadioButton
       Left = 8
       Top = 59
-      Width = 271
+      Width = 267
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Scan &open project files'
@@ -231,7 +226,7 @@ object fmToDoOptions: TfmToDoOptions
     object radScanDir: TRadioButton
       Left = 8
       Top = 79
-      Width = 271
+      Width = 267
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Scan &directories'
@@ -242,7 +237,7 @@ object fmToDoOptions: TfmToDoOptions
     object radScanProjGroup: TRadioButton
       Left = 8
       Top = 20
-      Width = 271
+      Width = 267
       Height = 17
       Anchors = [akLeft, akTop, akRight]
       Caption = 'Scan project &group'

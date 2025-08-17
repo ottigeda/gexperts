@@ -537,8 +537,8 @@ end;
 constructor TfmGxFilterExceptionsExpert.Create(_Owner: TComponent);
 begin
   inherited;
-  GxSetDefaultFont(Self);
   TControl_SetMinConstraints(Self);
+  GxSetDefaultFont(Self);
 
   sg_Exceptions.ColWidths[COL_PROJECT] := 100;
   sg_Exceptions.ColWidths[COL_EXCEPTION] := 100;

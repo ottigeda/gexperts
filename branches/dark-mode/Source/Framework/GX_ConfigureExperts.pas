@@ -112,7 +112,7 @@ uses
   GX_OtaUtils,
   GX_IdeUtils,
 {$IFDEF GX_SUPPORTS_THEMING}
-  GX_HotkeyDrawFix,
+  GX_DrawFixes,
 {$ENDIF}
   u_dzVclUtils;
 
