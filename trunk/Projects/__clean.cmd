@@ -28,6 +28,7 @@ call :doItem Xx103
 call :doItem Xx104
 call :doItem Xx110Alexandria
 call :doItem Xx120
+call :doItem Xx130
 goto :eof
 
 :doItem
