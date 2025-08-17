@@ -651,9 +651,9 @@ begin
     P := @Parsed[0];
     Inc(P, $A8);
     P := PPointer(P)^;
-    PE := PExceptionRecord(Integer(P) + $18);
+    PE := PExceptionRecord(GXNativeInt(P) + $18);
     C := PE.ExceptionCode;
-    Params := Pointer(Integer(P) + $30);
+    Params := Pointer(GXNativeInt(P) + $30);
     _ExceptionInformation := Params^;
 {$IFOPT D+}
     for i := Low(_ExceptionInformation) to High(_ExceptionInformation) do
@@ -673,12 +673,12 @@ begin
         Result := PUInt64(P)^;
       end;
     end else begin
-      C := PCardinal(Integer(P) + $34)^;
+      C := PCardinal(GXNativeInt(P) + $34)^;
       if C <> 0 then begin
         Inc(P, $48);
         Result := PUInt64(P)^;
       end else begin
-        C := PCardinal(Integer(P) + $30)^;
+        C := PCardinal(GXNativeInt(P) + $30)^;
         if C <> 1 then begin
           Inc(P, $48);
           Result := PUInt64(P)^;

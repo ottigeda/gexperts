@@ -187,7 +187,7 @@ uses
   GX_GenericUtils;
 
 // -----------------------------------------------------------------------------
-//      Miscellaneous functions.
+//			Miscellaneous functions.
 // -----------------------------------------------------------------------------
 
 function GetSizeOfPidl(pidl: pItemIDList): Integer;

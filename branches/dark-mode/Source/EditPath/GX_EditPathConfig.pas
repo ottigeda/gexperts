@@ -46,12 +46,13 @@ type
     b_Ok: TButton;
     b_Cancel: TButton;
     lb_Target: TListBox;
-    imF1: TImage;
-    procedure imF1Click(Sender: TObject);
+    b_Help: TButton;
+    procedure b_HelpClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     procedure SetData(_ConfigList: TObjectList; const _Platform, _Config: string);
     procedure GetData(out _Platform, _Config: string);
-  protected
   public
     class function Execute(_Owner: TWinControl; _ConfigList: TObjectList; var _Platform, _Config: string): Boolean;
     constructor Create(_Owner: TComponent); override;
@@ -131,10 +132,17 @@ begin
   end;
 end;
 
-procedure Tf_EditPathConfig.imF1Click(Sender: TObject);
+procedure Tf_EditPathConfig.b_HelpClick(Sender: TObject);
 begin
   inherited;
   GXContextHelp(Self,74);
+end;
+
+procedure Tf_EditPathConfig.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+  if Key=vk_F1 then b_HelpClick(nil);
 end;
 
 { TConfigEntry }
@@ -176,7 +184,7 @@ begin
   else
     Result := GetConfigCaption;
 end;
-{$ENDIF GX_DELPHI2009_UP}
 
+{$ENDIF GX_DELPHI2009_UP}
 end.
 

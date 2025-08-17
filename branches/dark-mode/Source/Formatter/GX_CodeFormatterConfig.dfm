@@ -91,8 +91,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Height = 14
           Hint = 
             'Do not ident units in the uses block if the line starts with a c' +
-            'omma.'#13#10'Note: This disables Line Breaks after each unit uses list' +
-            '.'
+            'omma.'
           Caption = 'Do not indent uses starting with ,'
           ParentShowHint = False
           ShowHint = True
@@ -750,7 +749,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
       OnClick = b_HelpClick
     end
     object b_Ok: TButton
-      Left = 853
+      Left = 851
       Top = 1
       Width = 75
       Height = 25
@@ -761,7 +760,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
       TabOrder = 2
     end
     object b_Cancel: TButton
-      Left = 934
+      Left = 932
       Top = 1
       Width = 75
       Height = 25

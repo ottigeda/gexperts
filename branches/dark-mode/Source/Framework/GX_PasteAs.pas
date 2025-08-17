@@ -62,7 +62,7 @@ var
   AType: TPasteAsType;
 begin
   for AType := Low(TPasteAsType) to High(TPasteAsType) do
-    AList.AddObject(cPasteAsTypeText[AType], TObject(Integer(AType)));
+    AList.AddObject(cPasteAsTypeText[AType], TObject(GXNativeInt(AType)));
 end;
 
 procedure TPasteAsHandler.LoadSettings(_Settings: IExpertSettings);

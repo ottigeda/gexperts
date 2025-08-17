@@ -4,12 +4,10 @@ inherited f_Goto: Tf_Goto
   Caption = 'Go to'
   ClientHeight = 219
   ClientWidth = 217
-  ParentFont = False
-  Font.Height = -13
-  Font.Name = 'MS Shell Dlg 2'
+  ParentFont = True
   Position = poMainFormCenter
   PixelsPerInch = 96
-  TextHeight = 16
+  TextHeight = 15
   object l_LineNumber: TLabel
     Left = 8
     Top = 8

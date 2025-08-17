@@ -16,7 +16,7 @@ object fmFavFileProp: TfmFavFileProp
     464
     272)
   PixelsPerInch = 96
-  TextHeight = 15
+  TextHeight = 14
   object pgeProperties: TPageControl
     Left = 8
     Top = 8

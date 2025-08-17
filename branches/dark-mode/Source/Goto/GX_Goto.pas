@@ -106,7 +106,9 @@ begin
   GxSetDefaultFont(Self);
   ArrangeControls;
 
-  TControl_SetMinConstraints(Self);
+// Setting min constraints here breaks scaling, not quite sure why.
+// But we don't really need it because the form has a fixed size anyway.
+//  TControl_SetMinConstraints(Self);
 
   InitDpiScaler;
 
@@ -180,8 +182,8 @@ var
   Spacer : Integer;
 begin
   inherited;
-  
   Spacer := lb_UnitPositions.Left;
+  lb_UnitPositions.ClientHeight := FUnitPositions.Count * lb_UnitPositions.ItemHeight + 2;
   b_Ok.Top := lb_UnitPositions.Top + lb_UnitPositions.Height + Spacer;
   b_Cancel.Top := b_Ok.Top;
   b_Cancel.Left := Spacer + lb_UnitPositions.Width - b_Cancel.Width;

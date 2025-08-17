@@ -129,7 +129,7 @@ type
     class function EnumFilesOnly(const _Mask: string; _List: TStrings;
       _IncludePath: Boolean = False; _Sort: Boolean = True; _Recursive: Boolean = False): Integer; overload;
     class function EnumFilesOnly(const _Mask: string;
-      _IncludePath: Boolean = False; _Sort: Boolean = True; _Recursive: Boolean = False): TStringArray; overload;
+      _IncludePath: Boolean = False; _Sort: Boolean = True; _Recursive: Boolean = False): TStringDynArray; overload;
     ///<summary>
     /// Calls the given callback for all files matching the mask. To Abort, raise EAbort. </summary>
     class procedure EnumFilesOnly(const _Mask: string; _Callback: TOnFileEnumCallback;
@@ -140,7 +140,7 @@ type
     /// @param IncludePath determines whether the List of filenames includes the full path or not </summary>
     class function EnumDirsOnly(const _Mask: string; _List: TStrings;
       _IncludePath: Boolean = False; _Sort: Boolean = True): Integer; overload;
-    class function EnumDirsOnly(const _Mask: string; _IncludePath: Boolean = False; _Sort: Boolean = True): TStringArray; overload;
+    class function EnumDirsOnly(const _Mask: string; _IncludePath: Boolean = False; _Sort: Boolean = True): TStringDynArray; overload;
     /// <summary>
     /// Calls SysUtils.FindFirst on first call and SysUtls.FindNext in later
     /// calls.
@@ -755,7 +755,7 @@ type
     class function FindMatchingFiles(const _Mask: string; _sl: TStrings; _IncludePath: Boolean = False;
       _Sort: Boolean = True): Integer; overload;
     class function FindMatchingFiles(const _Mask: string;
-      _IncludePath: Boolean = False; _Sort: Boolean = True): TStringArray; overload;
+      _IncludePath: Boolean = False; _Sort: Boolean = True): TStringDynArray; overload;
 
     /// <summary>
     /// tries to find a matching file
@@ -1048,7 +1048,7 @@ type
     ///                Comparison is case insensitive
     ///          False if the extensions don't machch. </summary>
     class function HasFileExtLast(const _Filename: string; const _Ext: string): Boolean; overload;
-    class function HasFileExtLast(const _Filename: string; const _Ext: TStringArray): Boolean; overload;
+    class function HasFileExtLast(const _Filename: string; const _Ext: TStringDynArray): Boolean; overload;
 
     ///<summary>
     /// Sets the file's date and time to the given time or to the current time
@@ -1086,7 +1086,7 @@ type
     function Filename: string;
     ///<summary>
     /// returns an array of extensions, all including the leading '.' </summary>
-    function GetExtensions: TStringArray;
+    function GetExtensions: TStringDynArray;
     ///<symmary> Returns the extension(s) only.
     ///          Note that this treats everything after the first '.' as extension(s). </summary>
     function Extension: string;
@@ -1116,7 +1116,7 @@ type
     ///<summary>
     /// Replaces the whole extension with the given array of extensions
     /// Example: ['.bla', '.blub', '.tmp'] will change the extension to '.bla.blub.tmp' </summary>
-    procedure ReplaceExtensions(const _Extensions: TStringArray);
+    procedure ReplaceExtensions(const _Extensions: TStringDynArray);
     ///<summary>
     /// Replaces the last extension of the filename with the given one
     /// @param Extension is the new extension including the leading dot e.g. '.txt'
@@ -1152,9 +1152,9 @@ type
     /// as function result </summary>
     function GetParts(_sl: TStrings): Integer; deprecated; // use Split instead
     ///<summary>
-    /// Splits all parts of the file name in a TStringArray
+    /// Splits all parts of the file name in a TStringDynArray
     /// @returns the number of parts </summary>
-    function Split: TStringArray;
+    function Split: TStringDynArray;
     ///<summary>
     /// @returns True, if the last extension matches the given one (case insensitively)
     ///          False otherwise </summary>
@@ -1163,7 +1163,7 @@ type
     /// @returns True, if the full extension matches the given one (case insensitively)
     ///          False otherwise </summary>
     function HasExtensionFull(const _Ext: string): Boolean;
-    class function Combine(_Parts: TStringArray): TFilename; static;
+    class function Combine(_Parts: TStringDynArray): TFilename; static;
     ///<summary>
     /// Same as Init </summary>
     class operator Implicit(const _s: string): TFilename;
@@ -1202,7 +1202,7 @@ type
     function PartCount: Integer;
     function Part(_Idx: Integer): string;
     procedure GetParts(_Parts: TStrings); overload;
-    function GetParts: TStringArray; overload;
+    function GetParts: TStringDynArray; overload;
     procedure AssignParts(_Parts: TStrings);
     class operator Implicit(_sl: TStrings): TSearchPath;
     class operator Implicit(const _s: string): TSearchPath;
@@ -1362,7 +1362,7 @@ begin
   end;
 end;
 
-class function TSimpleDirEnumerator.EnumDirsOnly(const _Mask: string; _IncludePath, _Sort: Boolean): TStringArray;
+class function TSimpleDirEnumerator.EnumDirsOnly(const _Mask: string; _IncludePath, _Sort: Boolean): TStringDynArray;
 var
   dirs: TStringList;
 begin
@@ -1400,7 +1400,7 @@ begin
 end;
 
 class function TSimpleDirEnumerator.EnumFilesOnly(const _Mask: string; _IncludePath: Boolean;
-  _Sort: Boolean; _Recursive: Boolean): TStringArray;
+  _Sort: Boolean; _Recursive: Boolean): TStringDynArray;
 var
   sl: TStringList;
 begin
@@ -1425,7 +1425,7 @@ class function TSimpleDirEnumerator.Execute(const _Mask: string; _List: TStrings
 var
   enum: TSimpleDirEnumerator;
   List: TStringList;
-  dirs: TStringArray;
+  dirs: TStringDynArray;
   BaseDirBS: string;
   DirIdx: Integer;
   MaskOnly: string;
@@ -1612,7 +1612,7 @@ begin
 end;
 
 class function TFileSystem.HasFileExtLast(const _Filename: string;
-  const _Ext: TStringArray): Boolean;
+  const _Ext: TStringDynArray): Boolean;
 var
   i: Integer;
 begin
@@ -2679,7 +2679,7 @@ begin
 end;
 
 class function TFileSystem.FindMatchingFiles(const _Mask: string;
-  _IncludePath: Boolean; _Sort: Boolean): TStringArray;
+  _IncludePath: Boolean; _Sort: Boolean): TStringDynArray;
 var
   Cnt: Integer;
   sl: TStringList;
@@ -3529,7 +3529,7 @@ begin
   Result := TFileSystem.ExtractFileExtLast(FFull);
 end;
 
-function TFilename.GetExtensions: TStringArray;
+function TFilename.GetExtensions: TStringDynArray;
 var
   Ext: string;
   p: Integer;
@@ -3590,7 +3590,7 @@ begin
   Assert(_sl.Count = Result);
 end;
 
-function TFilename.Split: TStringArray;
+function TFilename.Split: TStringDynArray;
 
   procedure Append(const _s: string);
   var
@@ -3638,7 +3638,7 @@ begin
   Result := TFileSystem.RemoveFileExtFull(FFull);
 end;
 
-class function TFilename.Combine(_Parts: TStringArray): TFilename;
+class function TFilename.Combine(_Parts: TStringDynArray): TFilename;
 var
   len: Integer;
   i: Integer;
@@ -3672,7 +3672,7 @@ end;
 
 function TFilename.Parts(_Depth: Integer): string;
 var
-  sa: TStringArray;
+  sa: TStringDynArray;
   len: Integer;
   i: Integer;
 begin
@@ -3720,7 +3720,7 @@ begin
   FFull := TFileSystem.ChangeFileExtFull(FFull, _Extension);
 end;
 
-procedure TFilename.ReplaceExtensions(const _Extensions: TStringArray);
+procedure TFilename.ReplaceExtensions(const _Extensions: TStringDynArray);
 var
   i: Integer;
   Ext: string;
@@ -3956,7 +3956,7 @@ begin
   end;
 end;
 
-function TSearchPath.GetParts: TStringArray;
+function TSearchPath.GetParts: TStringDynArray;
 var
   sl: TStringList;
 begin

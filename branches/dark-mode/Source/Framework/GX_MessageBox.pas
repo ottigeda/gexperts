@@ -5,12 +5,9 @@ unit GX_MessageBox;
 interface
 
 uses
-  Classes, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
-  GX_BaseForm, GX_MemoEscFix;
-
-type
-  TMemo = class(TMemoEscFix)
-  end;
+  SysUtils, Classes, Types, Controls, Forms, Dialogs, StdCtrls, ExtCtrls, AppEvnts,
+  Messages,
+  w_dzDialog, u_dzDpiScaleUtils, u_dzVclUtils;
 
 type
   TGxMsgBoxAdaptor = class(TObject)
@@ -29,7 +26,7 @@ type
     function GetDefaultButton: TMsgDlgBtn; virtual;
     // Return a unique identifier for this dialog; this
     // is used for storage in the registry.
-    // By default, this is the content of Self.ClassName
+    // By default, this is Self.ClassName
     function GetUniqueIdentifier: string;
     // Mark this message box as suppressed; by default,
     // state is stored in the registry.
@@ -50,15 +47,21 @@ type
     function GetDefaultButton: TMsgDlgBtn; override;
   end;
 
-  TfmGxMessageBox = class(TfmBaseForm)
-    p_Buttons: TPanel;
-    p_Top: TPanel;
-    mmoMessage: TMemo;
-    p_Chkbox: TPanel;
-    chkNeverShowAgain: TCheckBox;
-    p_ChkLeft: TPanel;
+type
+  TfmGxMessageBox = class(Tf_dzDialog)
+  protected
+    procedure DoShow; override;
+    procedure Loaded; override;
+  protected
+    FScaler: TFormDpiScaler;
+    procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
+    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); virtual;
+    procedure ArrangeControls; virtual;
+  protected
+    procedure InitDpiScaler;
   public
-    constructor Create(_Owner: TComponent); override;
+    destructor Destroy; override;
+    procedure GenerateControls; override;
   end;
 
   TGxMsgBoxAdaptorClass = class of TGxMsgBoxAdaptor;
@@ -71,91 +74,73 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, Consts,
-  GX_ConfigurationInfo, u_dzVclUtils;
+  Consts,
+  GX_ConfigurationInfo;
 
 const
   MsgDlgResults: array[TMsgDlgBtn] of Integer = (
-    mrYes, mrNo, mrOk, mrCancel, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
+    mrYes, mrNo, mrOk, mrCancel, mrAbort, mrRetry,
+    mrIgnore, mrAll, mrNoToAll,
     mrYesToAll, 0 {$IFDEF GX_VER200_up}, mrClose{$ENDIF});
 
   MsgDlgButtonCaptions: array[TMsgDlgBtn] of string = (
    SMsgDlgYes, SNoButton, SMsgDlgOK, SMsgDlgCancel, SMsgDlgAbort, SMsgDlgRetry,
-   SMsgDlgIgnore, SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll, SMsgDlgHelp {$IFDEF GX_VER200_up}, SMsgDlgClose{$ENDIF});
+   SMsgDlgIgnore, SMsgDlgAll, SMsgDlgNoToAll,
+   SMsgDlgYesToAll, SMsgDlgHelp {$IFDEF GX_VER200_up}, SMsgDlgClose{$ENDIF});
+
+  MsgDlgBtn2dzDialogButtonEnum: array[TMsgDlgBtn] of TDialogButtonEnum = (
+    dbeYes, dbeNo, dbeOK, dbeCancel, dbeAbort, dbeRetry, dbeIgnore, dbeAll, dbeNoToAll,
+    dbeYesToAll, dbeHelp{$IFDEF GX_VER200_up}, dbeOK{$ENDIF});
+
+function MsgDlgButtons2DialogButtonArr(_Buttons:TMsgDlgButtons):TDialogButtonArr;
+var
+  btn: TMsgDlgBtn;
+  cnt: integer;
+begin
+cnt := 0;
+  SetLength(Result, 0);
+  for btn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do begin
+    if btn in _Buttons then begin
+      SetLength(Result, cnt + 1);
+      Result[cnt] := MsgDlgBtn2dzDialogButtonEnum[btn];
+      Inc(cnt);
+    end;
+  end;
+end;
 
 function ShowGxMessageBox(AdaptorClass: TGxMsgBoxAdaptorClass; const Data: string): TModalResult;
 var
   Adaptor: TGxMsgBoxAdaptor;
   frm: TfmGxMessageBox;
-
-  procedure CreateButtons;
-  const
-    SingleButtonWidth = 75;
-    SingleButtonHeight = 25;
-    Spacing = 8;
-  var
-    BtnType, DefaultBtn, CancelBtn: TMsgDlgBtn;
-    DialogButtons: TMsgDlgButtons;
-    ButtonRowWidth, NextButonXPos: Integer;
-    CurrentButton: TButton;
-  begin
-    // Calculate the width of all buttons together
-    ButtonRowWidth := 0;
-    DialogButtons := Adaptor.GetButtons;
-    for BtnType := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
-      if BtnType in DialogButtons then
-        Inc(ButtonRowWidth, SingleButtonWidth + Spacing);
-    Dec(ButtonRowWidth, Spacing);
-    if ButtonRowWidth > frm.ClientWidth then
-      frm.ClientWidth := ButtonRowWidth;
-
-    DefaultBtn := Adaptor.GetDefaultButton;
-
-    if mbCancel in DialogButtons then
-      CancelBtn := mbCancel
-    else if mbNo in DialogButtons then
-      CancelBtn := mbNo
-    else
-      CancelBtn := mbOK;
-
-    NextButonXPos := (frm.p_Buttons.ClientWidth - ButtonRowWidth) div 2;
-
-    for BtnType := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do begin
-      if BtnType in DialogButtons then begin
-        CurrentButton := TButton.Create(frm);
-        CurrentButton.Caption := MsgDlgButtonCaptions[BtnType];
-        CurrentButton.ModalResult := MsgDlgResults[BtnType];
-        CurrentButton.Parent := frm.p_Buttons;
-        CurrentButton.TabOrder := 999;
-        CurrentButton.SetBounds(NextButonXPos, Spacing, SingleButtonWidth, SingleButtonHeight);
-        if BtnType = DefaultBtn then begin
-          CurrentButton.Default := True;
-          frm.ActiveControl := CurrentButton;
-        end;
-        if BtnType = CancelBtn then
-          CurrentButton.Cancel := True;
-        Inc(NextButonXPos, SingleButtonWidth + Spacing);
-      end;
-    end;
-  end;
-
+  Buttons: TDialogButtonArr;
+  DialogButtons: TMsgDlgButtons;
 begin
   Adaptor := AdaptorClass.Create;
-  Adaptor.FData := Data;
   try
+    Adaptor.FData := Data;
     Result := MsgDlgResults[Adaptor.GetDefaultButton];
     if Adaptor.IsPermanentlySuppressed then
-      Exit;
+      Exit; //==>
+
     if Adaptor.ShouldShow then begin
       frm := TfmGxMessageBox.Create(nil);
       try
+        frm.ShowDontShowAgain := Adaptor.AllowSuppress;
+        frm.ShowDetailButton := False;
+        DialogButtons := Adaptor.GetButtons;
+        Buttons := MsgDlgButtons2DialogButtonArr(DialogButtons);
+        frm.SetVisibleButtons(Buttons);
+        frm.SetFocusButton(0);
         frm.Caption := Adaptor.GetCaption;
-        frm.chkNeverShowAgain.Enabled := Adaptor.AllowSuppress;
-        frm.mmoMessage.Lines.Text := Adaptor.GetMessage;
-        CreateButtons;
-        frm.InitDpiScaler;
+        frm.UserMessage := Adaptor.GetMessage;
+        frm.OptionDescription := '';
+        frm.DialogType := mtInformation;
+        // center the form first, so the DPI gets set correctly
+        TForm_CenterOn(frm, nil);
+        frm.GenerateControls;
+        TForm_CenterOn(frm, nil);
         Result := frm.ShowModal;
-        if Adaptor.AllowSuppress and frm.chkNeverShowAgain.Checked then
+        if Adaptor.AllowSuppress and frm.DontShowAgainValue then
           Adaptor.DoPermanentlySuppress;
       finally
         FreeAndNil(frm);
@@ -242,10 +227,64 @@ end;
 
 { TfmGxMessageBox }
 
-constructor TfmGxMessageBox.Create(_Owner: TComponent);
+procedure TfmGxMessageBox.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+begin
+  if Assigned(FScaler) then begin
+    FScaler.ApplyDpi(_NewDpi, _NewBounds);
+  end;
+  ArrangeControls;
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
+  FCurrentPPI := _NewDpi;
+{$ENDIF}
+end;
+
+procedure TfmGxMessageBox.ArrangeControls;
+begin
+
+end;
+
+destructor TfmGxMessageBox.Destroy;
+begin
+  FreeAndNil(FScaler);
+  inherited;
+end;
+
+procedure TfmGxMessageBox.DoShow;
+begin
+  ApplyDpi(TScreen_GetDpiForForm(Self), nil);
+  inherited;
+end;
+
+procedure TfmGxMessageBox.GenerateControls;
 begin
   inherited;
-  TPanel_BevelNone([p_Buttons, p_Top, p_Chkbox, p_ChkLeft]);
+  InitDpiScaler;
+end;
+
+procedure TfmGxMessageBox.InitDpiScaler;
+var
+  DpiForForm: Integer;
+begin
+  FScaler := TFormDpiScaler.Create(Self);
+  DpiForForm := TScreen_GetDpiForForm(Self);
+  ApplyDpi(DpiForForm, nil);
+end;
+
+procedure TfmGxMessageBox.Loaded;
+begin
+  Scaled := False;
+  inherited;
+end;
+
+procedure TfmGxMessageBox.WMDpiChanged(var _Msg: TWMDpi);
+begin
+  inherited;
+{$IFDEF GX_TWMDPI_HAS_SCALLEDRECT_TYPO}
+  ApplyDpi(_Msg.YDpi, _Msg.ScalledRect);
+{$ELSE}
+  ApplyDpi(_Msg.YDpi, _Msg.ScaledRect);
+{$ENDIF}
+  _Msg.Result := 0;
 end;
 
 end.

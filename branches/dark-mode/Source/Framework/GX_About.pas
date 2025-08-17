@@ -39,6 +39,7 @@ type
     procedure InitFonts;
     procedure InitVersionInfoControls;
   protected
+    class function GetFileDescription: string; virtual;
     class function GetVersionStr: string; virtual;
     class function DoAddToAboutDialog: Integer; virtual;
     class function GetAboutIcon: HBITMAP; virtual;
@@ -70,12 +71,12 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Graphics, ToolsApi, Messages,
-  u_dzVclUtils,
-  GX_GxUtils,
+  u_dzVclUtils, u_dzVersionInfo,
+  GX_GxUtils, GX_DuplicateDllHandler,
 {$IFNDEF GX_STANDALONE}
   GX_GetIdeVersion,
 {$ENDIF}
-  GX_GenericUtils, GX_FeedbackWizard, GX_LibrarySource;
+  GX_GenericUtils, GX_FeedbackWizard;
 
 const
   DefaultBugEmail = 'https://bugs.dummzeuch.de/';  // Do not localize.
@@ -151,6 +152,7 @@ end;
 
 procedure TfmAbout.InitVersionInfoControls;
 begin
+  lblGExperts.Caption := GetFileDescription;
   lblVersion.Caption := GetVersionStr;
 {$IF declared(GetBorlandIdeVersionStr)}
   lblIdeVersion.Caption := 'running in ' + GetBorlandIdeVersionStr;
@@ -213,18 +215,18 @@ begin
   Result := LoadBitmap(HInstance, GX_ABOUT_ICON24);
 end;
 
-
 class function TfmAbout.GetVersionStr: string;
 resourcestring
   SVersion = 'Version';
   SUnknown = '<unknown>';
 var
-  Version: TVersionNumber;
+  Info: IFileInfo;
+  Version: TFileVersionRec;
 begin
-  Version.IsValid := False;
-  Version := GetFileVersionNumber(ThisDllName, False, False);
-  if Version.IsValid then begin
-    Result := Format('%d.%d.%d', [Version.Major, Version.Minor, Version.Release, Version.Build]);
+  Info := TDllInfo.Create;
+  if Info.HasVersionInfo then begin
+    Version := Info.FileVersionRec;
+    Result := Info.FileVersionStr();
     if Version.Build <> 0 then
       Result := Result + '  build ' + IntToStr(Version.Build);
   end else
@@ -253,14 +255,14 @@ end;
 {$ENDIF}
 
 procedure AddPluginToSplashScreen(_Icon: HBITMAP; const _Title: string; const _Version: string);
-{$IFDEF GX_VER170_up}
+{$IF declared(SplashScreenServices)}
 // Only Delphi 2005 and up support the splash screen services
 begin
   if Assigned(SplashScreenServices) then
     SplashScreenServices.AddPluginBitmap(_Title,
       _Icon, False, _Version);
 end;
-{$ELSE GX_VER170_up}
+{$ELSE}
 const
   XPOS = 140;
   YPOS = 150;
@@ -315,20 +317,33 @@ begin
   end;
 {$IFOPT D+} SendUnIndent; {$ENDIF}
 end;
-{$ENDIF GX_VER170_up}
+{$IFEND declared(SplashScreenServices)}
 
 class procedure TfmAbout.AddToSplashScreen;
 var
   VerString: string;
+  FileDesc: string;
 begin
+  FileDesc := GetFileDescription;
   VerString := GetVersionStr;
-  if GExpertsDllMarker = nil then
+  if IsDuplicateGExpertsDll() then
     VerString := VerString + ' (duplicate, inactive)';
-  AddPluginToSplashScreen(GetSplashIcon, 'GExperts', VerString);
+  AddPluginToSplashScreen(GetSplashIcon, FileDesc, VerString);
+end;
+
+class function TfmAbout.GetFileDescription: string;
+var
+  Info: IFileInfo;
+begin
+  Info :=  TDllInfo.Create;
+  if Info.HasVersionInfo then
+    Result := Info.FileDescription
+  else
+    Result := 'GExperts';
 end;
 
 class function TfmAbout.DoAddToAboutDialog: Integer;
-{$IFDEF GX_VER170_up}
+{$IF declared(IOTAAboutBoxServices)}
 // Only Delphi 2005 and up support the about box services
 const
   Description = 'GExperts is a free set of tools built to increase the productivity of Delphi and C++Builder'
@@ -338,10 +353,11 @@ const
 var
   AboutBoxServices: IOTAAboutBoxServices;
   DupeString: string;
+  FileDesc: string;
   Desc: string;
   VerString: string;
 begin
-  if GExpertsDllMarker = nil then begin
+  if IsDuplicateGExpertsDll() then begin
     DupeString := ' (duplicate, inactive)';
     Desc := 'GExperts is listed twice in the IDE Experts list, so this instance is inactive.'#13#10
       + 'Use the Expert Manager to remove the duplicate!';
@@ -349,23 +365,23 @@ begin
     Desc := Description;
   Result := -1;
   if Supports(BorlandIDEServices, IOTAAboutBoxServices, AboutBoxServices) then begin
-    VerString := 'GExperts ' + GetVersionStr;
-    VerString := StringReplace(VerString, '  build ', '.', []);
+    FileDesc := GetFileDescription;
+    VerString := GetVersionStr;
     Result := AboutBoxServices.AddPluginInfo(
-      VerString + DupeString,
+      FileDesc + DupeString,
       Desc + #13#10
       + 'https://gexperts.dummzeuch.de',
       GetAboutIcon,
       False,
       '', // leave this empty!
-      GetVersionStr);
+      VerString);
   end;
 end;
-{$ELSE not GX_VER170_up}
+{$ELSE}
 begin
   Result := -1;
 end;
-{$ENDIF not GX_VER170_up}
+{$IFEND declared(IOTAAboutBoxServices)}
 
 procedure TfmAbout.DoRaiseTestException(Sender: TObject);
 const
@@ -387,7 +403,7 @@ begin
 end;
 
 class procedure TfmAbout.RemoveFromAboutDialog;
-{$IFDEF GX_VER170_up}
+{$IF declared(IOTAAboutBoxServices)}
 // Only Delphi 2005 and up support the about box services
 var
   AboutBoxServices: IOTAAboutBoxServices;
@@ -399,10 +415,10 @@ begin
     FAboutPluginIndex := -1;
   end;
 end;
-{$ELSE not GX_VER170_up}
+{$ELSE}
 begin //fi:W519
 end;
-{$ENDIF not GX_VER170_up}
+{$IFEND declared(IOTAAboutBoxServices)}
 
 initialization
   TfmAbout.AddToSplashScreen;

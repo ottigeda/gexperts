@@ -306,9 +306,10 @@ begin
       act := TActionlist_Append(al, 'Target', ShiftCtrlT, ShortCut(Ord('T'), [ssShift, ssCtrl]));
       lbl := _Form.FindComponent('Label1') as TLabel; // sic!
       if Assigned(lbl) then begin
-        lbl.AutoSize := False;
-
-        lbl.Width := FConfigCombo.Left - lbl.Left;
+        if lbl.Left < FConfigCombo.Left then begin
+          lbl.AutoSize := False;
+          lbl.Width := FConfigCombo.Left - lbl.Left;
+        end;
         lbl.Hint := ShortCutToText(act.ShortCut);
         lbl.ShowHint := True;
       end;

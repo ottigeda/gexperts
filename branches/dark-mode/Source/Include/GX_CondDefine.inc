@@ -274,6 +274,7 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   // todo: Try to figure out which Delphi versions had this problem. It wasn't just Delphi 12
   {$DEFINE GX_KEYBOARD_BINDING_FIX}
 {$ENDIF}
+
 {$IFDEF GX_DELPHI11_UP}
   // Fix for the IDE not setting the window size correctly on startup in some display combinations
   // (mine -- twm)

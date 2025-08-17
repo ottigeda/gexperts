@@ -113,7 +113,7 @@ begin
     Exit;
 
   // Get NT header
-  NtHeader := PImageNtHeaders(Longint(DosHeader) + DosHeader.e_lfanew);
+  NtHeader := PImageNtHeaders(GXNativeInt(DosHeader) + DosHeader.e_lfanew);
   if IsBadReadPtr(NtHeader, SizeOf(IMAGE_NT_HEADERS)) or
      (NtHeader.Signature <> IMAGE_NT_SIGNATURE) or
      (NtHeader.FileHeader.SizeOfOptionalHeader <> SizeOf(NtHeader.OptionalHeader)) then

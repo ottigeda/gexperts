@@ -7,6 +7,7 @@ uses
   DebugWindow in 'DebugWindow.pas' {fmDebug};
 
 {$R *_icon.res}
+{$R *.res}
 
 var
   PrvHWND: HWND;

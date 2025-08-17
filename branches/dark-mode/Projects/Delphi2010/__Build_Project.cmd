@@ -5,7 +5,6 @@
 setlocal
 call :FindInParents %0% buildtools
 call "%result%\doBuildProject.cmd"
-pause
 goto :eof
 
 :FindInParents

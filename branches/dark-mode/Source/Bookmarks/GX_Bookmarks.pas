@@ -69,6 +69,7 @@ type tSortMode          = (smIdx,smName,smLine);
                            procedure tbDeleteClick          (Sender:TObject);
                            procedure tbDeleteAllClick       (Sender:TObject);
                            procedure tbOptionsClick         (Sender:TObject);
+                           procedure tbHelpMouseMove        (Sender:TObject;Shift:TShiftState;X,Y:Integer);
                            procedure tbHelpClick            (Sender:TObject);
 
                            procedure SBarResize             (Sender:TObject);
@@ -824,7 +825,7 @@ begin
                           vk_Space,
                           vk_Return : lbBookmarksDblClick(nil);
                           vk_Delete : tbDeleteClick(tbDelete);
-                          vk_F1     : tbHelpClick(tbHelp);
+                          vk_F1     : if not(FormIsDocked(Self)) then tbHelp.Click; // no help call via F1 in docked forms
                           end
                     else
 
@@ -978,6 +979,13 @@ begin
   end;
 end;
 
+procedure TfmGxBookmarksForm.tbHelpMouseMove(Sender:TObject;Shift:TShiftState;X,Y:Integer);
+begin
+ inherited;
+ if FormIsDocked(Self) then TToolbutton(Sender).Hint:='Help'
+                       else TToolbutton(Sender).Hint:='Help (F1)'
+end;
+
 procedure TfmGxBookmarksForm.tbHelpClick(Sender:TObject);
 begin
  GXContextHelp(Self,59);
@@ -1072,6 +1080,6 @@ end;
 
 initialization // -----------------------------------------------------------------------
 
-RegisterGX_Expert(TBookmarksExpert);
+ RegisterGX_Expert(TBookmarksExpert);
 
 end.

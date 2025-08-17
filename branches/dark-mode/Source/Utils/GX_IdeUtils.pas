@@ -425,7 +425,7 @@ const
 {$IFDEF WIN64}
   BinDirPostfix = PathDelim + 'Bin64';
 {$ELSE}
-  BinDirPostfix   = PathDelim + 'Bin';
+  BinDirPostfix = PathDelim + 'Bin';
 {$ENDIF}
 begin
   if TRegistry_TryReadString(GxOtaGetIdeBaseRegistryKey, 'RootDir', Result, HKEY_LOCAL_MACHINE) then begin

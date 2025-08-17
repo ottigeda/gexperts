@@ -9,7 +9,7 @@ interface
 uses
   Classes, Controls, Forms, StdCtrls, Menus, ExtCtrls, ComCtrls,
   GX_Experts, GX_OtaUtils, 
-  {$IFDEF GX_SUPPORTS_THEMING}GX_HotkeyDrawFix,{$ENDIF} 
+  {$IFDEF GX_SUPPORTS_THEMING}GX_DrawFixes,{$ENDIF}
   GX_BaseForm;
 
 type

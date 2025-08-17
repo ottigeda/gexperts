@@ -28,12 +28,14 @@ type
     b_Add: TButton;
     b_Edit: TButton;
     b_Delete: TButton;
-    imF1: TImage;
+    b_Help: TButton;
     procedure b_AddClick(Sender: TObject);
     procedure b_EditClick(Sender: TObject);
     procedure b_DeleteClick(Sender: TObject);
     procedure lv_FavoritesDblClick(Sender: TObject);
-    procedure imF1Click(Sender: TObject);
+    procedure b_HelpClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     FOnEdit: TOnEditFavoritesEntry;
     FOnCallHelpContext: TNotifyEvent;
@@ -41,6 +43,9 @@ type
     procedure GetData(_Favorites: TStrings);
     procedure EditCurrent;
     function doOnEdit(var _Name, _Value: string): Boolean;
+  protected
+    procedure CreateWnd;                              override; // show sizeable form like a dialog
+    procedure CreateParams(var Params:TCreateParams); override; // form without caption icon
   public
     class procedure Execute(_Owner: TComponent; const _Caption: string;
       _OnEdit: TOnEditFavoritesEntry; _Favorites: TStringList;_OnCallHelpContext:TNotifyEvent=nil);
@@ -97,13 +102,18 @@ end;
 procedure Tf_GxIdeFavoritesList.b_DeleteClick(Sender: TObject);
 var
   li: TListItem;
+  Idx : Integer;
 begin
   li := lv_Favorites.Selected;
   if not Assigned(li) then
     Exit;
   if MessageDlg('Delete this entry?', mtConfirmation, [mbYes, mbCancel], 0) <> mrYes then
     Exit;
+
+  Idx := lv_Favorites.ItemIndex;
   lv_Favorites.DeleteSelected;
+  if Idx<lv_Favorites.Items.Count then lv_Favorites.ItemIndex:=Idx
+                                  else lv_Favorites.ItemIndex:=Idx-1
 end;
 
 procedure Tf_GxIdeFavoritesList.b_EditClick(Sender: TObject);
@@ -174,14 +184,37 @@ begin
     li.Caption := FavName;
     li.SubItems.Add(FavValue);
   end;
+  lv_Favorites.ItemIndex:=0;
 
-  imF1.Enabled := Assigned(_OnCallHelpContext);
+  b_Help.Visible := Assigned(_OnCallHelpContext);
+  if not(b_Help.Visible) then b_Close.Top := b_Help.Top;
 end;
 
-procedure Tf_GxIdeFavoritesList.imF1Click(Sender: TObject);
+procedure Tf_GxIdeFavoritesList.b_HelpClick(Sender: TObject);
 begin
   inherited;
   FOnCallHelpContext(Self);
+end;
+
+procedure Tf_GxIdeFavoritesList.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+  if Key=vk_F1 then b_HelpClick(nil);
+end;
+
+// show sizeable form like a dialog
+// form without caption icon
+procedure Tf_GxIdeFavoritesList.CreateParams(var Params: TCreateParams);
+begin
+  inherited;
+  Params.ExStyle:=Params.ExStyle or WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE;
+end;
+
+procedure Tf_GxIdeFavoritesList.CreateWnd;
+begin
+  inherited;
+  SendMessage(Handle,WM_SETICON,1,0);
 end;
 
 end.

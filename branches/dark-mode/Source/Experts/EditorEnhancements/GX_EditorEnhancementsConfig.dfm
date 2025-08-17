@@ -2,8 +2,6 @@ inherited fmEditorEnhancementsConfig: TfmEditorEnhancementsConfig
   Caption = 'Code Editor Enhancements Configuration'
   ClientHeight = 370
   ClientWidth = 649
-  ExplicitWidth = 665
-  ExplicitHeight = 409
   PixelsPerInch = 96
   TextHeight = 13
   object lblHideNavBar: TLabel

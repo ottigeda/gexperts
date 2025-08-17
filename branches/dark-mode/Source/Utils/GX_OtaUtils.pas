@@ -10,6 +10,7 @@ uses
   Themes,
 {$ENDIF}
   Actions, Graphics,
+  SynUnicode, // required for pre-UNICODE Delphi versions
   GX_GenericUtils, GX_StringList, GX_IdeUtils;
 
 // Idea: These functions could be encapsulated as class functions which would reduce the
@@ -223,7 +224,8 @@ function GxOtaGetPreceedingCharactersInLine(View: IOTAEditView): string;
 // Select the current identifier under the cursor
 function GxOtaSelectCurrentIdent(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True): Boolean;
 // Select the current line of text
-procedure GxOtaSelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True);
+//procedure GxOtaSelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True);
+procedure GxOtaSelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True; CharsOnly : Boolean = True);
 
 // Insert a string into the current IOTASourceEditor
 // This should be used when the Text is a single line
@@ -867,7 +869,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   Variants, Windows, ActiveX, DesignIntf, TypInfo,
-  GX_EditReader, GX_VerDepConst, SynUnicode, Math, StrUtils,
+  GX_EditReader, GX_VerDepConst, Math, StrUtils,
   GX_GetIdeVersion, u_dzFileUtils, u_dzClassUtils;
 
 const
@@ -5078,7 +5080,7 @@ begin
   end;
 end;
 
-procedure GxOtaSelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean);
+procedure GxOtaSelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = true; CharsOnly : Boolean = true);
 var
   EditPos: TOTAEditPos;
   EditView: IOTAEditView;
@@ -5091,7 +5093,8 @@ begin
   EditPos.Col := 1;
   EditView.CursorPos := EditPos;
   EditView.Block.BeginBlock;
-  EditView.Block.Style := btNonInclusive;
+  if CharsOnly then EditView.Block.Style := btNonInclusive
+               else EditView.Block.Style := btLine;
   if EditView.Position.MoveEOL then
     EditView.MoveViewToCursor;
   EditView.Block.EndBlock;
@@ -6158,5 +6161,4 @@ finalization
   // IDE - and if we write our own IOTACustomMessage, the IDE
   // will try to access these. But since the DLL is gone -> AV.
   //GxOtaClearToolMessages;
-
 end.

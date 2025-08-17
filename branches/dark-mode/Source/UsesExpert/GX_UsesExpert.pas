@@ -5,6 +5,7 @@ interface
 {$I 'GX_CondDefine.inc'}
 
 {.$DEFINE DEBUG_NOT_FOUND_UNITS}
+{.$DEFINE DEBUG_USE_STOPWATCH}
 
 {$IFOPT D-}
 {$UNDEF DEBUG_NOT_FOUND_UNITS}
@@ -15,14 +16,21 @@ uses
   Classes, Controls, Forms, Menus, ComCtrls, Buttons, ImgList, ImageList,
   ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types, Themes,
   GX_CheckButton,
+  {$IFDEF DEBUG_USE_STOPWATCH}
   u_dzStopwatch,
+  {$ENDIF}
   u_dzDpiScaleUtils,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm, GX_Splitter,
   GX_UnitExportsParser, GX_UsesExpertOptions, GX_UnitExportList,
-  GX_OtaUtils;
+  GX_OtaUtils,
+  rzC_Splitter;
 
 type
   TPageControl = class(ComCtrls.TPageControl)
+  end;
+
+type
+  TSplitter = class(TrzSplitter)
   end;
 
 type
@@ -49,7 +57,9 @@ type
     FUnitExportParserThread: TUnitExportParserThread;
     FSearchPathFavorites: Boolean;
     FFastAdd: Boolean;
+{$IF declared(TStopwatch)}
     FIdentifierTabTimer: TStopwatch;
+{$IFEND}
     procedure InternalExecute;
     function FindAction(out _Action: TBasicAction): Boolean;
     procedure HandleProjectChanged(_Sender: TObject);
@@ -305,8 +315,9 @@ type
     procedure actAddToImplemenationAndCloseExecute(Sender: TObject);
     procedure chk_FastAddClick(Sender: TObject);
     procedure b_HelpClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
-    FLeftRatio: Double;
     FAliases: TStringList;
     FSearchPathThread: TFileFindThread;
     // maintains a list unit name mappings from "originally used" to "currently used"
@@ -407,7 +418,7 @@ uses
   GX_DbugIntf,
 {$ENDIF D+}
   GX_MessageBox, GX_IdeSearchPathEnhancer, u_dzTypes, u_dzStringArrayUtils,
-  GX_StringGridDrawFix, GX_GxUtils, GX_IdeSplitterVisibility;
+  GX_StringGridDrawFix, GX_GxUtils;
 
 { TUsesClauseMgrExpert }
 
@@ -822,8 +833,9 @@ procedure TUsesClauseMgrExpert.InternalExecute;
 var
   frm: TfmUsesManager;
 begin
+{$IF declared(TStopwatch)}
   FIdentifierTabTimer := TStopwatch_StartNew;
-
+{$IFEND}
   AssertIsDprOrPasOrInc(GxOtaGetCurrentSourceFile);
 
   frm := TfmUsesManager.Create(Application, Self);
@@ -880,7 +892,9 @@ end;
 
 constructor TfmUsesManager.Create(_Owner: TComponent; _UsesExpert: TUsesClauseMgrExpert);
 var
+{$IF declared(TStopwatch)}
   StopWatch: TStopwatch;
+{$IFEND}
   il: TImageList;
 begin
 {$IFOPT D+}
@@ -888,15 +902,19 @@ begin
 {$ENDIF D+}
   FUsesExpert := _UsesExpert;
 
+{$IF declared(TStopwatch)}
   StopWatch := TStopwatch_StartNew;
+{$IFEND}
   // To ensure we get the latest version of all units, start the thread again
   // it will run fast if everything is already cached.
   FUsesExpert.StartUnitParserThread;
 
-  TStopWatch_Stop(StopWatch);
+{$IF declared(TStopwatch)}
 {$IFOPT D+}
+  TStopWatch_Stop(StopWatch);
   SendDebugFmt('Starting Unit Parser Thread took %d milliseconds', [TStopWatch_ElapsedMilliseconds(StopWatch)]);
 {$ENDIF D+}
+{$IFEND}
 
   inherited Create(_Owner);
 
@@ -917,11 +935,6 @@ begin
   FIdentifierMatchGrp.SetDown(Ord(FUsesExpert.FFilterIdentifiers));
 
   chk_FastAdd.Checked := _UsesExpert.FFastAdd;
-
-  FLeftRatio := pnlUses.Width / ClientWidth;
-
-  TSplitterPainter.Create(Splitter);
-
   FUsesExpert.SetFormIcon(Self);
 
   sg_Identifiers.Cells[0, 0] := 'Identifier';
@@ -1229,12 +1242,13 @@ begin
 end;
 
 procedure TfmUsesManager.FormResize(Sender: TObject);
+const pnlUsesMinWidth  = 326;
+      pnlUnitsMinWidth = 473;
 begin
-  if Self.Showing then
-    pnlUses.Width := Round(FLeftRatio * ClientWidth);
-  pnlUses.Constraints.MinWidth := 326; // ??!!
-  pnlUses.Constraints.MaxWidth := Self.ClientWidth - Splitter.Width - pnlUnits.Constraints.MinWidth;
-
+  if Assigned(FScaler) then begin
+    Splitter.MinSize := FScaler.Calc(pnlUsesMinWidth);
+    Splitter.MaxSize := Self.ClientWidth - Splitter.Width - FScaler.Calc(pnlUnitsMinWidth);
+  end;
   pnlAvailableHeaderResize(nil);
   pnlIdentifiersResize(nil);
 end;
@@ -2237,9 +2251,7 @@ end;
 
 procedure TfmUsesManager.SplitterMoved(Sender: TObject);
 begin
-  FLeftRatio :=  pnlUses.Width / ClientWidth;
-  pnlAvailableHeaderResize(nil);
-  pnlIdentifiersResize(nil);
+ pnlUnits.Refresh;
 end;
 
 procedure TfmUsesManager.SwitchUnitsTab(_Direction: Integer);
@@ -2354,6 +2366,7 @@ begin
     FilterType := TFilterIdentifiersEnum(Idx)
   else
     FilterType := FUsesExpert.FFilterIdentifiers;
+
   FilterList := TList.Create;
   try
     MultiFilter := TStringList.Create;
@@ -2517,7 +2530,9 @@ var
   Idx: Integer;
   Item: TUnitExport;
 {$ENDIF}
+{$IF declared(TStopwatch)}
   StopWatch: TStopwatch;
+{$IFEND}
 begin
   upt := FUsesExpert.FUnitExportParserThread;
   if Assigned(upt) and not upt.HasFinished then begin
@@ -2529,23 +2544,31 @@ begin
     Exit; //==>
   end;
 
+{$IF declared(TStopwatch)}
   StopWatch := TStopwatch_StartNew;
+{$IFEND}
   tim_Progress.Enabled := False;
   pnlIdentifiersProgress.Visible := False;
+{$IF declared(TStopwatch)}
   TStopWatch_Stop(StopWatch);
 {$IFOPT D+}
   SendDebugFmt('Hiding Panel and stopping timer took %d milliseconds', [TStopWatch_ElapsedMilliseconds(StopWatch)]);
 {$ENDIF D+}
+{$IFEND}
 
   if not Assigned(upt) then
     Exit; //==>
 
+{$IF declared(TStopwatch)}
   StopWatch := TStopwatch_StartNew;
+{$IFEND}
   TStringGrid_Clear(sg_Identifiers);
+{$IF declared(TStopwatch)}
   TStopWatch_Stop(StopWatch);
 {$IFOPT D+}
   SendDebugFmt('Clearing string grid took %d milliseconds', [TStopWatch_ElapsedMilliseconds(StopWatch)]);
 {$ENDIF D+}
+{$IFEND}
 
   FreeAndNil(FIdentifiers);
   FIdentifiers := upt.DetachIdentifiers;
@@ -2588,17 +2611,23 @@ begin
 {$IFOPT D+}
   SendDebug('Filtering identifiers');
 {$ENDIF D+}
+{$IF declared(TStopwatch)}
   StopWatch := TStopwatch_StartNew;
+{$IFEND}
   FilterIdentifiers;
+{$IF declared(TStopwatch)}
   TStopWatch_Stop(StopWatch);
 {$IFOPT D+}
   SendDebugFmt('Filtering identifiers took %d milliseconds', [TStopWatch_ElapsedMilliseconds(StopWatch)]);
 {$ENDIF D+}
+{$IFEND}
 
+{$IF declared(TStopwatch)}
+  {$IFOPT D+}
   TStopWatch_Stop(FUsesExpert.FIdentifierTabTimer);
-{$IFOPT D+}
   SendDebugFmt('Total time from calling the expert until after filtering: %d milliseconds', [TStopWatch_ElapsedMilliseconds(FUsesExpert.FIdentifierTabTimer)]);
-{$ENDIF D+}
+  {$ENDIF D+}
+{$IFEND}
 end;
 
 type
@@ -3433,6 +3462,13 @@ begin
     W1 := SG.ClientWidth - SG.ColWidths[0] - (2 * SG.GridLineWidth);
     if SG.ColWidths[1] <> w1 then SG.ColWidths[1] := w1;
   end;
+end;
+
+procedure TfmUsesManager.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  inherited;
+  if Key=vk_F1 then b_Helpclick(nil);
 end;
 
 initialization

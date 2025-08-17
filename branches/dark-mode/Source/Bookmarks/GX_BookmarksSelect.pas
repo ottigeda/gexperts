@@ -29,12 +29,11 @@ type tSort              = (soLine,soType,soName,soNoData);
 
                            lbFuncsProcs                   : TListBox;
 
+                           buHelp                         : TButton;
                            buSelect                       : TButton;
                            buCancel                       : TButton;
 
                            SBar                           : TStatusBar;
-                           
-                           imF1                           : TImage;
 
                            ilToolbar                      : TImageList;
 
@@ -44,7 +43,7 @@ type tSort              = (soLine,soType,soName,soNoData);
                            procedure cbKeepMaskClick      (Sender:TObject);
 
                            procedure tbSortClick          (Sender:TObject);
-                           procedure imF1Click            (Sender:TObject);
+                           procedure buHelpClick          (Sender:TObject);
 
                            procedure SBarResize           (Sender:TObject);
 
@@ -568,8 +567,9 @@ begin
    lbFuncsProcs.SetFocus;
 end;
 
-procedure TfoBookmarksSelect.imF1Click(Sender:TObject);
+procedure TfoBookmarksSelect.buHelpClick(Sender:TObject);
 begin
+ inherited;
  GXContextHelp(Self,61);
 end;
 
@@ -588,7 +588,7 @@ end;
 
 procedure TfoBookmarksSelect.SBarResize(Sender:TObject);
 begin
- SBar.Panels[1].Width:=SBar.Clientwidth-SBar.Panels[0].Width-SBar.Panels[2].Width-SBar.Panels[3].Width;
+ SBar.Panels[0].Width:=SBar.Clientwidth-SBar.Panels[1].Width-SBar.Panels[2].Width;
 end;
 
 procedure TfoBookmarksSelect.SBarShowIndexInfo;
@@ -597,23 +597,23 @@ begin
  LBidx  :=lbFuncsProcs.ItemIndex;
  LBcount:=lbFuncsProcs.Count;
 
- if LBcount=0 then                    SBar.Panels[1].Text:=' '+       'No items found'
-              else if FFilter='' then SBar.Panels[1].Text:=' '+Format('Item %1.0n of %1.0n',              [succ(LBidx)/1,LBcount/1]                  )
-                                 else SBar.Panels[1].Text:=' '+Format('Item %1.0n of %1.0n (%1.0n items)',[succ(LBidx)/1,LBcount/1,FDataList.Count/1])
+ if LBcount=0 then                    SBar.Panels[0].Text:=' '+       'No items found'
+              else if FFilter='' then SBar.Panels[0].Text:=' '+Format('Item %1.0n of %1.0n',              [succ(LBidx)/1,LBcount/1]                  )
+                                 else SBar.Panels[0].Text:=' '+Format('Item %1.0n of %1.0n (%1.0n items)',[succ(LBidx)/1,LBcount/1,FDataList.Count/1])
 end;
 
 procedure TfoBookmarksSelect.SBarShowFilterInfo;
 begin
- SBar.Panels[2].Text:='>'+FFilter+'<';
+ SBar.Panels[1].Text:='>'+FFilter+'<';
 end;
 
 procedure TfoBookmarksSelect.SBarShowSortInfo;
 begin
  case FSort of
-  soLine : SBar.Panels[3].Text:=' Sort line';
-  soType : SBar.Panels[3].Text:=' Sort type';
-  soName : SBar.Panels[3].Text:=' Sort name';
-      else SBar.Panels[3].Text:=' No data';
+  soLine : SBar.Panels[2].Text:=' Sort line';
+  soType : SBar.Panels[2].Text:=' Sort type';
+  soName : SBar.Panels[2].Text:=' Sort name';
+      else SBar.Panels[2].Text:=' No data';
   end;
 end;
 
@@ -641,7 +641,7 @@ end;
 
 procedure TfoBookmarksSelect.FormKeyDown(Sender:TObject;var Key:Word;Shift:TShiftState);
 begin
- if Key=vk_F1 then imF1Click(nil)
+ if Key=vk_F1 then buHelpClick(nil)
               else
   if not(FFilterLock) then begin
    if Key=vk_Delete then FFilter:=''
@@ -693,7 +693,7 @@ procedure TfoBookmarksSelect.FormResize(Sender:TObject);
 begin
  inherited;
  lbFuncsProcs.Refresh;
- SBar.Panels[1].Width:=SBar.ClientWidth-SBar.Panels[2].Width-SBar.Panels[3].Width;
+ SBarResize(nil);
 end;
 
 procedure TfoBookmarksSelect.FormShow(Sender:TObject);
@@ -704,12 +704,8 @@ begin
  ScanModule;
  if FFilter<>'' then SetFilter;
 
- SBar.Font.Name:='MS Sans Serif'; // ?!!
- SBar.Font.Size:=8;               // ?!!
-
- imF1.Parent:=SBar;
- imF1.Left  :=3;
- imF1.Top   :=3;
+ //SBar.Font.Name:='MS Sans Serif'; // ?!!
+ //SBar.Font.Size:=8;               // ?!!
 
  SBarShowFilterInfo;
 end;

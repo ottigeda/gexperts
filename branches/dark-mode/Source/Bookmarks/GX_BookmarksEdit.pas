@@ -14,17 +14,16 @@ type TfoBookmarksEdit = class(TfmBaseForm)
                          edLine                        : TEdit;
                          laBookmarkIdx                 : TLabel;
                          coBookmarkIdx                 : TComboBox;
-                         imF1                          : TImage;
+                         buHelp                        : TButton;
                          buOk                          : TButton;
                          buCancel                      : TButton;
 
                          procedure coModuleChange      (Sender:TObject);
                          procedure edLineChange        (Sender:TObject);
                          procedure coBookmarkIdxChange (Sender:TObject);
-                         procedure imF1Click           (Sender:TObject);
+                         procedure buHelpClick         (Sender:TObject);
 
                          procedure FormKeyDown         (Sender:TObject;var Key:Word;Shift:TShiftState);
-                         procedure FormCreate          (Sender:TObject);
                          procedure FormShow            (Sender:TObject);
                          procedure FormClose           (Sender:TObject;var Action:TCloseAction);
 
@@ -35,11 +34,6 @@ type TfoBookmarksEdit = class(TfmBaseForm)
                          procedure SetData             (const _Module:String;    _LineNo:Integer;    _BMIndex:Integer);
                          procedure GetData             (out   _Module:String;out _LineNo:Integer;out _BMIndex:Integer);
                          procedure CheckInput;
-
-                        protected
-
-                         procedure CreateWnd;                                      override;
-                         procedure CreateParams        (var Params:TCreateParams); override;
 
                         public
 
@@ -134,8 +128,9 @@ begin
  CheckInput;
 end;
 
-procedure TfoBookmarksEdit.imF1Click(Sender:TObject);
+procedure TfoBookmarksEdit.buHelpClick(Sender:TObject);
 begin
+ inherited;
  GXContextHelp(Self,60);
 end;
 
@@ -186,33 +181,12 @@ end;
 
 procedure TfoBookmarksEdit.FormKeyDown(Sender:TObject;var Key:Word;Shift:TShiftState);
 begin
- if Key=vk_F1 then imF1Click(nil);
-end;
-
-procedure TfoBookmarksEdit.FormCreate(Sender: TObject);
-begin
- BorderIcons:=[biSystemMenu];
- BorderStyle:=bsSizeable;
- AutoScroll :=false;
-end;
-
-procedure TfoBookmarksEdit.CreateParams(var Params:TCreateParams);
-begin
- inherited CreateParams(Params);
- Params.ExStyle:=Params.ExStyle or WS_EX_DLGMODALFRAME or WS_EX_WINDOWEDGE;
-end;
-
-procedure TfoBookmarksEdit.CreateWnd;
-begin
- inherited;
- SendMessage(Handle,WM_SETICON,1,0);
+ if Key=vk_F1 then buHelpClick(nil);
 end;
 
 procedure TfoBookmarksEdit.FormShow(Sender:TObject);
 begin
  LoadSettings;
- Width :=Constraints.MinWidth;
- Height:=Constraints.MinHeight;
  EnsureFormVisible(Self);
 end;
 

@@ -67,6 +67,7 @@ uses
   GX_Debug in '..\..\Source\Utils\GX_Debug.pas',
   GX_DesignerMenu in '..\..\source\Framework\GX_DesignerMenu.pas',
   GX_DummyWizard in '..\..\Source\Framework\GX_DummyWizard.pas',
+  GX_DuplicateDllHandler in '..\..\Source\Framework\GX_DuplicateDllHandler.pas',
   GX_eAddToCaptitalization in '..\..\Source\Formatter\GX_eAddToCaptitalization.pas',
   GX_eAlign in '..\..\source\Editor\GX_eAlign.pas' {fmAlign},
   GX_eAlignOptions in '..\..\source\Editor\GX_eAlignOptions.pas' {fmAlignOptions},

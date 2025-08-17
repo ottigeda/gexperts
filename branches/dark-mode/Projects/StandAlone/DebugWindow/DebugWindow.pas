@@ -5,7 +5,13 @@ unit DebugWindow;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages,
+{$IF CompilerVersion >= 35}
+  System.UITypes,
+{$IFEND}
+  System.Actions,
+  System.ImageList,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, ImgList, Menus, ComCtrls, TrayIcon, ActnList, ToolWin;
 
 type
