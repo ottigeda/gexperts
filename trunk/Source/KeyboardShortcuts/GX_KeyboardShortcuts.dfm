@@ -17,19 +17,28 @@ inherited fmGxKeyboardShortcuts: TfmGxKeyboardShortcuts
   object sg_Actions: TStringGrid
     Left = 0
     Top = 0
-    Width = 589
-    Height = 468
+    Width = 304
+    Height = 201
     Align = alClient
     ColCount = 4
     DefaultColWidth = 50
-    DefaultRowHeight = 20
+    DefaultRowHeight = 16
     FixedCols = 0
     RowCount = 2
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect]
+    Options = [goFixedVertLine, goFixedHorzLine, goColSizing, goRowSelect]
     TabOrder = 0
     OnDrawCell = sg_ActionsDrawCell
     OnMouseUp = sg_ActionsMouseUp
     OnMouseWheelDown = sg_ActionsMouseWheelDown
     OnMouseWheelUp = sg_ActionsMouseWheelUp
+  end
+  object TheActionList: TActionList
+    Left = 320
+    Top = 280
+    object act_Close: TAction
+      Caption = 'Close'
+      ShortCut = 27
+      OnExecute = act_CloseExecute
+    end
   end
 end
