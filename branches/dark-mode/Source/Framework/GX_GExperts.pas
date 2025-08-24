@@ -96,7 +96,7 @@ end;
 
 procedure ShowGXAboutForm;
 begin
-  gblAboutFormClass.SetCustomBuildDetails('Dark mode');
+  gblAboutFormClass.SetCustomBuildDetails('Dark mode support');
   gblAboutFormClass.Execute(nil);
 end;
 

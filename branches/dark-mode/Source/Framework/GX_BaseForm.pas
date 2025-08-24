@@ -33,7 +33,7 @@ type
     FScaler: TFormDpiScaler;
     FApplicationEvents: TApplicationEvents;
     {$IFDEF GX_SUPPORTS_THEMING}
-    //FThemeChangedNotifier: TThemeChangedNotifier;
+    // FThemeChangedNotifier: TThemeChangedNotifier;
     procedure InitTheming; virtual;
     {$ENDIF}
     procedure HandleApplicationEventsShowHint(var HintStr: string; var CanShow: Boolean;
@@ -100,6 +100,7 @@ end;
 {$IFDEF GX_SUPPORTS_THEMING}
 procedure TfmBaseForm.InitTheming;
 begin
+  // Stub
 end;
 {$ENDIF}
 
@@ -123,7 +124,7 @@ end;
 
 procedure TfmBaseForm.ArrangeControls;
 begin
-  //
+  // Stub
 end;
 
 procedure TfmBaseForm.Loaded;
@@ -140,16 +141,14 @@ end;
 constructor TfmBaseForm.Create(AOwner: TComponent);
 begin
   inherited;
-  //FThemeChangedNotifier := nil;
+  // FThemeChangedNotifier := nil;
   FApplicationEvents := TApplicationEvents.Create(Self);
   FApplicationEvents.OnShowHint := HandleApplicationEventsShowHint;
 
   FGxHintCustomDataRec.ScaleHint := Self.ScaleHint;
   CopyMemory(@(FGxHintCustomDataRec.ID), @GxHintCustomDataId, SizeOf(FGxHintCustomDataRec.ID));
   GxSetDefaultFont(Self);
-  GxOtaInitTheming(Self);
-//  if not Assigned(OnShow) then
-//    OnShow := FormShow;
+  GxOtaInitTheming(Self); // enable dark mode support
 end;
 
 destructor TfmBaseForm.Destroy;

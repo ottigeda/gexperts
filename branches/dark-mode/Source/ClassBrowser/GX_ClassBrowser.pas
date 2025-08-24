@@ -1912,7 +1912,7 @@ begin
   FCodeText.Highlighter := gxpPas;
   FCodeText.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
 
-{$IFDEF GX_SUPPORTS_THEMING}
+{$IFDEF GX_SUPPORTS_THEMING} // do we need this one? Test with Delphi 2007
   GxOtaGetEditorFont(FMethodText.Font, -1);
   FMethodText.Color := GetThemedColor(clWindow);
   FMethodText.Font.Color := GetThemedColor(clWindowText);
