@@ -26,7 +26,6 @@ object fmFavFiles: TfmFavFiles
   object splTreeView: TSplitter
     Left = 121
     Top = 22
-    Width = 3
     Height = 293
     Cursor = crHSplit
   end
@@ -136,8 +135,6 @@ object fmFavFiles: TfmFavFiles
     Height = 22
     AutoSize = True
     DisabledImages = dmSharedImages.DisabledImages
-    EdgeBorders = []
-    Flat = True
     Images = dmSharedImages.Images
     ParentShowHint = False
     ShowHint = True

@@ -41,8 +41,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    </pre>
 *)(*
    History:
-     1.09x: 2025-03-10
-       - modified pointer operation for 64 bit (Achim Kalwa)
      1.09: 2010-07-20
        - Reversed Unicode streams were improperly read from.
      1.08: 2010-05-25
@@ -140,13 +138,6 @@ type
 {$IFNDEF D6PLUS}
   UCS4Char = type LongWord;
 {$ENDIF}
-//{$IF not declared(NativeInt)}
-//  {$IFDEF WIN64}
-//  NativeInt = Int64;
-//  {$ELSE}
-//  NativeInt = Integer;
-//  {$ENDIF}
-//{$IFEND}
 
   {:Base exception class for exceptions created in TGpTextStream.
   }

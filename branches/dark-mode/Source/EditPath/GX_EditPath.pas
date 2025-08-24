@@ -4,7 +4,7 @@ unit GX_EditPath;
 
 interface
 
-{$DEFINE GX_DELPHI2009_UP}
+{.$DEFINE GX_DELPHI2009_UP}
 
 {$IFDEF GX_DELPHI2009_UP}
 // Only Delphi 2009 and up provide the necessary ToolsAPI funtionality

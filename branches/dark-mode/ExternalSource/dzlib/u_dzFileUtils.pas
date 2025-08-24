@@ -5,9 +5,6 @@ unit u_dzFileUtils;
 
 {$INCLUDE 'dzlib.inc'}
 
-{$IFDEF DELPHIXE3_UP}
-{$WARN DUPLICATE_CTOR_DTOR OFF}
-{$ENDIF}
 interface
 
 uses

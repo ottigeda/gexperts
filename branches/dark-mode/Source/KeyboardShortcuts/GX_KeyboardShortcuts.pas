@@ -69,7 +69,6 @@ uses
   GX_ActionBroker,
   GX_GenericUtils,
   GX_GetIdeVersion,
-  GX_OtaUtils,
   GX_IdeUtils,
   GX_StringGridDrawFix;
 

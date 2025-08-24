@@ -540,7 +540,7 @@ const
         reg.Free;
       end;
     except
-      //TODO 5 -oAchim -cEmpty Code Block: Get (except/end in function)
+      Result := False;
     end;
   end; { LoadOldStyle }
 
@@ -618,7 +618,7 @@ const
         reg.Free;
       end;
     except
-      //TODO 5 -oAchim -cEmpty Code Block: IsTrue (except/end in function)
+      Result := False;
     end;
   end; { LoadNewStyle }
 
@@ -1174,7 +1174,7 @@ end;
 
 procedure TSynCustomHighlighter.ResetRange;
 begin
-  //TODO 5 -oAchim -cEmpty Code Block: TSynCustomHighlighter.ResetRange (begin/end in procedure)
+  // Stub only.
 end;
 
 procedure TSynCustomHighlighter.SetAdditionalIdentChars(

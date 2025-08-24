@@ -336,7 +336,6 @@ procedure GxOtaFillUnitInfoListForProject(List: TList; _Project: IOTAProject);
 //
 //
 //
-procedure GxOtaIdeSetSearchWordBoundary(Value: Boolean);
 
 procedure GxOtaSelectComponentOnCurrentForm(const ComponentName: string);
 procedure GxOtaClearSelectionOnCurrentForm;
@@ -4690,22 +4689,6 @@ begin
     Result := SameText(Component.GetPropName(i), PropertyName);
     if Result then
       Break;
-  end;
-end;
-
-procedure GxOtaIdeSetSearchWordBoundary(Value: Boolean);
-var
-  EditView     : IOTAEditView;
-  EditPosition : IOTAEditPosition;
-begin
-  EditView := GxOtaGetTopMostEditView;
-  if Assigned(EditView) then
-  begin
-    EditPosition := EditView.Position;
-    if Assigned(EditPosition) then
-    begin
-      EditPosition.SearchOptions.WordBoundary := Value;
-    end;
   end;
 end;
 

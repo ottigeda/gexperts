@@ -109,8 +109,6 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_GenericUtils,
   GX_BaseExpert,
-  GX_OtaUtils,
-  GX_IdeUtils,
 {$IFDEF GX_SUPPORTS_THEMING}
   GX_DrawFixes,
 {$ENDIF}

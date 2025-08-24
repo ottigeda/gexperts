@@ -5,10 +5,10 @@ inherited f_EditPath: Tf_EditPath
   ClientWidth = 627
   KeyPreview = True
   Position = poOwnerFormCenter
-  PixelsPerInch = 96
   OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnResize = FormResize
+  PixelsPerInch = 96
   TextHeight = 15
   object spVer: TSplitter
     Left = 200
