@@ -11,6 +11,8 @@ uses
   Grids,
   Types,
   Controls,
+  Actions,
+  ActnList,
   Forms,
   Dialogs,
   Graphics,
@@ -20,6 +22,8 @@ uses
 type
   TfmGxKeyboardShortcuts = class(TfmBaseForm)
     sg_Actions: TStringGrid;
+    TheActionList: TActionList;
+    act_Close: TAction;
     procedure sg_ActionsDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect;
       State: TGridDrawState);
     procedure sg_ActionsMouseWheelDown(Sender: TObject; Shift: TShiftState;
@@ -28,6 +32,7 @@ type
       MousePos: TPoint; var Handled: Boolean);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure sg_ActionsMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure act_CloseExecute(Sender: TObject);
   private
     FSortingCol: Integer;
     function ConfigurationKey: string;
@@ -58,8 +63,6 @@ uses
   Menus,
   StrUtils,
   Math,
-  Actions,
-  ActnList,
   u_dzVclUtils,
   u_dzQuicksort,
   GX_ConfigurationInfo,
@@ -336,6 +339,11 @@ begin
 end;
 {$ENDIF}
 
+procedure TfmGxKeyboardShortcuts.act_CloseExecute(Sender: TObject);
+begin
+  Close;
+end;
+
 function TfmGxKeyboardShortcuts.CompareEntries(_Idx1, _Idx2: Integer): Integer;
 var
   s1: string;
@@ -428,6 +436,7 @@ end;
 procedure TfmGxKeyboardShortcuts.sg_ActionsMouseWheelDown(Sender: TObject;
   Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
 begin
+exit;
   if (Sender is TStringGrid) then
     if ScrollGrid(TStringGrid(Sender), +1, Shift, MousePos) then
       Handled := True;
@@ -436,6 +445,7 @@ end;
 procedure TfmGxKeyboardShortcuts.sg_ActionsMouseWheelUp(Sender: TObject;
   Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
 begin
+exit;
   if Sender is TStringGrid then
     if ScrollGrid(TStringGrid(Sender), -1, Shift, MousePos) then
       Handled := True;

@@ -1,6 +1,6 @@
 object fmAbout: TfmAbout
-  Left = 285
-  Top = 198
+  Left = 915
+  Top = 210
   ActiveControl = btnClose
   BorderStyle = bsDialog
   Caption = 'About GExperts'
@@ -17,9 +17,9 @@ object fmAbout: TfmAbout
   PixelsPerInch = 96
   TextHeight = 14
   object lblGExperts: TLabel
-    Left = 346
+    Left = 306
     Top = 6
-    Width = 140
+    Width = 220
     Height = 22
     Alignment = taCenter
     AutoSize = False
@@ -74,9 +74,9 @@ object fmAbout: TfmAbout
     Caption = 'Web Site:'
   end
   object lblPreRelease1: TLabel
-    Left = 241
+    Left = 230
     Top = 15
-    Width = 101
+    Width = 80
     Height = 20
     Alignment = taCenter
     AutoSize = False
@@ -84,9 +84,9 @@ object fmAbout: TfmAbout
     Visible = False
   end
   object lblPreRelease2: TLabel
-    Left = 489
+    Left = 534
     Top = 15
-    Width = 101
+    Width = 80
     Height = 20
     Alignment = taCenter
     AutoSize = False
