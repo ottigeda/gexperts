@@ -125,6 +125,10 @@
   {$DEFINE TYPEDADDRESS_IS_ON}
 {$ENDIF}
 
+{$IF CompilerVersion >= 37}
+  {$DEFINE NO_JCL}
+{$IFEND}
+
 // we currently support only Windows (and a very small subset of Win64), so we turn platform
 // warnings off
 

@@ -9,7 +9,7 @@
         <ProjectGuid>{BB29661E-3FA2-4EA6-96EB-0768940BAAB6}</ProjectGuid>
         <ProjectName Condition="'$(ProjectName)'==''">GExpertsRS130</ProjectName>
         <ProjectVersion>20.3</ProjectVersion>
-        <TargetedPlatforms>1</TargetedPlatforms>
+        <TargetedPlatforms>3</TargetedPlatforms>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -89,6 +89,8 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
+        <DCC_ExeOutput>..\..\Binaries\Win64</DCC_ExeOutput>
+        <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_DebugInformation>0</DCC_DebugInformation>
@@ -114,6 +116,9 @@ $(PreBuildEvent)]]></PreBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
@@ -178,6 +183,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <Form>foBookmarksSelect</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\source\Utils\GX_CheckButton.pas"/>
         <DCCReference Include="..\..\Source\ProjectOptionSets\GX_CheckListBoxWithHints.pas"/>
         <DCCReference Include="..\..\source\ClassBrowser\GX_ClassBrowser.pas">
             <Form>fmClassBrowser</Form>
@@ -489,6 +495,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\source\Experts\EditorEnhancements\GX_HideNavbar.pas"/>
         <DCCReference Include="..\..\source\HideNonvisualComponents\GX_HideNonVisualComps.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_HintWindow.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_DrawFixes.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_IconMessageBox.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeApplicationSettingsEnhancer.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeBuildEventFavoriteEdit.pas">
@@ -713,6 +720,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <Form>fmSourceExportOptions</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Utils\GX_Splitter.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_StringGridDrawFix.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_StringList.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_SynMemoUtils.pas"/>
@@ -793,7 +801,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <ModelSupport>False</ModelSupport>
             <Platforms>
                 <Platform value="Win32">True</Platform>
-                <Platform value="Win64">False</Platform>
+                <Platform value="Win64">True</Platform>
             </Platforms>
             <Deployment Version="5">
                 <DeployFile LocalName="..\..\Binaries\GExpertsRS130.dll" Configuration="Debug" Class="ProjectOutput">
