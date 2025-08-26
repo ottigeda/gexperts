@@ -1,5 +1,7 @@
 unit GX_CheckButton;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
