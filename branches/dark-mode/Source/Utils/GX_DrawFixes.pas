@@ -13,7 +13,7 @@ type
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
   end;
 
-  TTabControlDrawFix = class(TTabControl)
+  TTabControlDrawFix = class(TTabControl) // currently not in use.
   private
 {$IFDEF GX_SUPPORTS_THEMING}
     class constructor Create;
@@ -112,8 +112,8 @@ begin
   if Active then
   begin
 {$IFDEF GX_SUPPORTS_THEMING}
-    LBackColor := ColorToRGB(GxOtaGetStyleColor(scButtonHot, clHighlight));// GetThemedColor(clHighlight);
-    LTextColor := ColorToRGB(GxOtaGetStyleFontColor(sfButtonTextHot, clHighlightText));//GetThemedColor(clHighlightText)
+    LBackColor := GxOtaGetThemedColor(clHighlight);
+    LTextColor := GxOtaGetThemedColor(clHighlightText);
 {$ELSE}
     LBackColor := clHighlight;
     LTextColor := clHighlightText;
@@ -121,8 +121,8 @@ begin
   end
   else begin
 {$IFDEF GX_SUPPORTS_THEMING}
-    LBackColor := ColorToRGB(GxOtaGetStyleColor(scButtonNormal, clBtnFace));// GetThemedColor(clHighlight);
-    LTextColor := ColorToRGB(GxOtaGetStyleFontColor(sfButtonTextNormal, clBtnText));//GetThemedColor(clHighlightText)
+    LBackColor := GxOtaGetThemedColor(clBtnFace);
+    LTextColor := GxOtaGetThemedColor(clBtnText);
 {$ELSE}
     LBackColor := clBtnFace;
     LTextColor := clBtnText;

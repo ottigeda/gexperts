@@ -455,7 +455,6 @@ uses
   GX_GrepOptionsStandAlone,
 {$ENDIF GX_STANDALONE}
   GX_GExperts, GX_GenericUtils, GX_StringList, GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_MessageBox,
-  GX_DrawFixes,
   GX_IdeSplitterVisibility,
   GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect, GX_GrepProgress;
 
@@ -923,23 +922,22 @@ var
 begin
   if IsThemingEnabled then begin
     InitTheming(Self);
-    GxOtaGetIDEThemingServices.ApplyTheme(tcHistoryListPage);
+
+    tcHistoryListPage.StyleElements := [seClient, seBorder];
+    tcHistoryListPage.Style := tsTabs;
 
     LBackColor := GetThemedColor(clWindow);
-
-    tcHistoryListPage.Style := tsFlatButtons; // don't paint the control themed
-    tcHistoryListPage.Brush.Color := LBackColor;
-
     pnlMain.Color := LBackColor;
     pnlBottom.Color := LBackColor;
     lbResults.Color := LBackColor;
     lbHistoryList.Color := LBackColor;
     reContext.Color := LBackColor;
   end;
+end { InitThemedColors };
 {$ELSE GX_SUPPORTS_THEMING}
 begin
-{$ENDIF GX_SUPPORTS_THEMING}
 end;
+{$ENDIF GX_SUPPORTS_THEMING}
 
 procedure TfmGrepResults.InitGrepSettings(AGrepSettings: TGrepSettings);
 begin
