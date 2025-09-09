@@ -897,7 +897,9 @@ begin
   end else Result := False;
 end;
 // -----------------------------------------------------------------------------
+{$IFDEF GX_DELPHI2009_UP}
 {$POINTERMATH ON}
+{$ENDIF}
 function TDropFileSource.DoGetData(const FormatEtcIn: TFormatEtc;
          out Medium: TStgMedium):HRESULT;
 var
