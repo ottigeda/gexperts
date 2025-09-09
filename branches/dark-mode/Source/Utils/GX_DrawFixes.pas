@@ -55,7 +55,7 @@ begin
     LText := TWinControlAccess(AHotKey).Caption;
     LText := UpperCase(ShortCutToText(AHotKey.HotKey));
     LText := StringReplace(LText, '+', ' + ', [rfReplaceAll]);
-    if LText.Length = 0 then LText := 'None';
+    if Length(LText) = 0 then LText := 'None';
 
     LParent := TWinControlAccess(AHotKey).Parent;
 {$IFDEF GX_SUPPORTS_THEMING}
@@ -72,7 +72,7 @@ begin
       OldFont := SelectObject(DC, TWinControlAccess(LParent).Font.Handle);
       SetBkColor(DC, LBackColor);
       SetTextColor(DC, LTextColor);
-      TextOut(DC, PS.rcPaint.Left+2, PS.rcPaint.Top+2, PChar(LText), LText.Length);
+      TextOut(DC, PS.rcPaint.Left+2, PS.rcPaint.Top+2, PChar(LText), Length(LText));
       if OldFont <> 0 then SelectObject(DC, OldFont);
     end;
     EndPaint(Wnd, PS);
@@ -134,7 +134,7 @@ begin
   Control.Canvas.Font.Color := LTextColor;
 
   LTextRect := Rect;
-  LTextRect.Inflate(-3, -3);
+  InflateRect(LTextRect, -3, -3); // LTextRect.Inflate(-3, -3);
   DrawText(Control.Canvas.Handle, PChar(LCaption), -1, LTextRect, DT_TOP or DT_LEFT);
 end;
 
