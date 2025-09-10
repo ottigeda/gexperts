@@ -754,11 +754,12 @@ begin
       Node := tvFolders.Items.AddObject(nil, FRootFolder.FolderName, FRootFolder);
     end;
   end;
-
-  Node.ImageIndex := 0;
-  Node.SelectedIndex := 1;
-  CreateFolders(FRootFolder, Node);
-  Node.Expand(FOptions.FExpandAll);
+  if Assigned(Node) then begin
+    Node.ImageIndex := 0;
+    Node.SelectedIndex := 1;
+    CreateFolders(FRootFolder, Node);
+    Node.Expand(FOptions.FExpandAll);
+  end;
   if (tvFolders.Selected = nil) and (tvFolders.Items.Count > 0) then
     tvFolders.Selected := tvFolders.Items[0];
 end;

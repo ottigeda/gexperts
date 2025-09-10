@@ -14,11 +14,6 @@ type
   end;
 
   TTabControlDrawFix = class(TTabControl) // currently not in use.
-  private
-{$IFDEF GX_SUPPORTS_THEMING}
-    class constructor Create;
-    class destructor Destroy;
-{$ENDIF}
   public
     procedure DrawTabThemed(Control: TCustomTabControl; TabIndex: Integer; const Rect: TRect; Active: Boolean);
   end;
@@ -88,18 +83,6 @@ begin
 end;
 
 { TTabControlDrawFix }
-
-{$IFDEF GX_SUPPORTS_THEMING}
-class constructor TTabControlDrawFix.Create;
-begin
-  TCustomStyleEngine.RegisterStyleHook(TTabControlDrawFix, TTabControlStyleHook);
-end;
-
-class destructor TTabControlDrawFix.Destroy;
-begin
-  TCustomStyleEngine.UnRegisterStyleHook(TTabControlDrawFix, TTabControlStyleHook);
-end;
-{$ENDIF}
 
 procedure TTabControlDrawFix.DrawTabThemed(Control: TCustomTabControl; TabIndex: Integer; const Rect: TRect; Active: Boolean);
 var
