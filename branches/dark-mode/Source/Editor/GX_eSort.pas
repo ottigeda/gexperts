@@ -75,6 +75,7 @@ begin
 
   TControl_SetMinConstraints(Self);
   InitDpiScaler;
+  TButton_AlignVerticallyTo(btnConfigCustom, btnCustom);
 end;
 
 class function TfmeSortConfig.Execute(_Owner: TWinControl; _CustomPrefixOrder: TGXUnicodeStringList;

@@ -11,12 +11,12 @@ inherited fmeSortConfig: TfmeSortConfig
     Left = 8
     Top = 0
     Width = 225
-    Height = 145
+    Height = 154
     Caption = 'Sort ...'
     TabOrder = 0
     object btnAscending: TButton
       Left = 8
-      Top = 16
+      Top = 24
       Width = 209
       Height = 25
       Caption = '&Ascending'
@@ -26,7 +26,7 @@ inherited fmeSortConfig: TfmeSortConfig
     end
     object btnDescending: TButton
       Left = 8
-      Top = 48
+      Top = 56
       Width = 209
       Height = 25
       Caption = '&Descending'
@@ -35,7 +35,7 @@ inherited fmeSortConfig: TfmeSortConfig
     end
     object chkIgnoreFunction: TCheckBox
       Left = 8
-      Top = 80
+      Top = 88
       Width = 209
       Height = 17
       Caption = '&Ignore procedure, function etc.'
@@ -43,8 +43,8 @@ inherited fmeSortConfig: TfmeSortConfig
     end
     object btnCustom: TButton
       Left = 8
-      Top = 112
-      Width = 177
+      Top = 120
+      Width = 178
       Height = 25
       Caption = '&Custom'
       ModalResult = 8
@@ -52,7 +52,7 @@ inherited fmeSortConfig: TfmeSortConfig
     end
     object btnConfigCustom: TButton
       Left = 192
-      Top = 112
+      Top = 120
       Width = 25
       Height = 25
       Caption = '...'

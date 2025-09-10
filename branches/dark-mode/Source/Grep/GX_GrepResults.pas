@@ -454,6 +454,9 @@ uses
 {$IFDEF GX_STANDALONE}
   GX_GrepOptionsStandAlone,
 {$ENDIF GX_STANDALONE}
+{$IFDEF GX_SUPPORTS_THEMING}
+  UxTheme,
+{$ENDIF}
   GX_GExperts, GX_GenericUtils, GX_StringList, GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_MessageBox,
   GX_IdeSplitterVisibility,
   GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect, GX_GrepProgress;
@@ -918,7 +921,8 @@ end;
 procedure TfmGrepResults.InitThemedColors;
 {$IFDEF GX_SUPPORTS_THEMING}
 var
-  LBackColor : TColor;
+  LBackColor     : TColor;
+  LSplitterColor : TColor;
 begin
   if IsThemingEnabled then begin
     InitTheming(Self);
@@ -927,11 +931,24 @@ begin
     tcHistoryListPage.Style := tsTabs;
 
     LBackColor := GetThemedColor(clWindow);
+    LSplitterColor := GetThemedColor(clBtnFace);
+    StatusBar.StyleElements := [seBorder, seClient]; // -seFont
+    StatusBar.Font.Color := GetThemedColor(clBtnText);
+    StatusBar.Canvas.Font.Color := GetThemedColor(clBtnText);
+
     pnlMain.Color := LBackColor;
     pnlBottom.Color := LBackColor;
     lbResults.Color := LBackColor;
     lbHistoryList.Color := LBackColor;
     reContext.Color := LBackColor;
+
+    SplitterHistoryList.Color := LSplitterColor;
+    SplitterContext.Color := LSplitterColor;
+
+    if IdeStyleIsDark then begin
+      if reContext.HandleAllocated then
+        SetWindowTheme(reContext.Handle, 'DarkMode_Explorer', nil);
+    end;
   end;
 end { InitThemedColors };
 {$ELSE GX_SUPPORTS_THEMING}
