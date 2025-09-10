@@ -1119,7 +1119,7 @@ end;
 
 function GetRS13Version: TBorlandIdeVersion;
 const
-  RtlBpl3700: TVersionNumber =     (Minor: 0; Major: 37; Build: 5718; Release: 50491);
+  RtlBpl3700: TVersionNumber =     (Minor: 0; Major: 37; Build: 3601; Release: 57242);
 var
   RtlBplFileVersion: TVersionNumber;
   RtlBplFileName : string;
