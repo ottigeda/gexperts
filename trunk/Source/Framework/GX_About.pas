@@ -314,7 +314,7 @@ begin
   end;
 {$IFOPT D+} SendUnIndent; {$ENDIF}
 end;
-{$IFEND GX_VER170_up}
+{$IFEND declared(SplashScreenServices)}
 
 class procedure TfmAbout.AddToSplashScreen;
 var
@@ -378,7 +378,7 @@ end;
 begin
   Result := -1;
 end;
-{$IFEND}
+{$IFEND declared(IOTAAboutBoxServices)}
 
 var
   FAboutPluginIndex: Integer;
@@ -404,7 +404,7 @@ end;
 {$ELSE}
 begin //fi:W519
 end;
-{$IFEND}
+{$IFEND declared(IOTAAboutBoxServices)}
 
 initialization
   TfmAbout.AddToSplashScreen;
