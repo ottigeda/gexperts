@@ -31,7 +31,7 @@ procedure UninstallHook();
 
 type
   TfmExceptionNotification = class(TfmBaseForm)
-    l_Message: TLabel;
+    e_Message: TMemo;
     b_Break: TButton;
     b_Continue: TButton;
     b_Filter: TButton;
@@ -147,7 +147,9 @@ begin
   FProject := _Project;
   FException := _Exception;
   FMessage := _Message;
-  l_Message.Caption := Format('Project %s.exe raised exception class %s with message ''%s''.',
+  e_Message.ReadOnly := True;
+  e_Message.Color := Self.Color; // clBtnFace
+  e_Message.Text := Format('Project %s.exe raised exception class %s with message ''%s''.',
     [_Project, _Exception, _Message]);
   b_Filter.Visible := Assigned(FOnAddException);
   FAdditionalData := _AdditionalData;
@@ -177,7 +179,7 @@ begin
     FreeAndNil(m_Additional);
     Constraints.MinHeight := FOrigMinHeight;
     Height := FOrigHeight;
-    SafeSetAnchors(l_Message, [akLeft, akTop, akRight, akBottom]);
+    SafeSetAnchors(e_Message, [akLeft, akTop, akRight, akBottom]);
     SafeSetAnchors(b_Filter, [akBottom, akLeft]);
     SafeSetAnchors(b_AllThisSession, [akBottom, akLeft]);
     SafeSetAnchors(b_AdditionalInfo, [akBottom, akLeft]);
@@ -186,7 +188,7 @@ begin
   end else begin
     FOrigHeight := Height;
     FOrigMinHeight := Constraints.MinHeight;
-    SafeSetAnchors(l_Message, [akLeft, akTop, akRight]);
+    SafeSetAnchors(e_Message, [akLeft, akTop, akRight]);
     SafeSetAnchors(b_Filter, [akTop, akLeft]);
     SafeSetAnchors(b_AllThisSession, [akTop, akLeft]);
     SafeSetAnchors(b_AdditionalInfo, [akTop, akLeft]);
@@ -195,7 +197,7 @@ begin
 
     m_Additional := TMemo.Create(Self);
     m_Additional.Parent := Self;
-    m_Additional.Left := l_Message.Left;
+    m_Additional.Left := e_Message.Left;
     m_Additional.Top := ClientHeight;
     m_Additional.Width := ClientWidth - 2 * 8;
     ClientHeight := ClientHeight + 200;
@@ -218,7 +220,7 @@ begin
   s := '---------------------------'#13#10
     + Caption + #13#10
     + '---------------------------'#13#10
-    + l_Message.Caption + #13#10
+    + e_Message.Text + #13#10
     + '---------------------------'#13#10
     + '[' + b_Filter.Caption + '] [' + b_AllThisSession.Caption + '] [' + b_Break.Caption
     + '] [' + b_AdditionalInfo.Caption + '] [' + b_Continue.Caption + ']'#13#10

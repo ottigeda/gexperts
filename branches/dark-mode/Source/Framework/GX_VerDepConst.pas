@@ -243,7 +243,7 @@ const
     ClassBrowserStorageFolder = 'Classes.RADStudio12.0';
   {$ENDIF VER360}
 
-  {$IFDEF VER370} // Delphi/RAD Studio 13
+  {$IFDEF VER370} // Delphi/RAD Studio 13 "Florence"
     GExpertsDll = 'GExpertsRS130.dll';
     TTabDockHostFormClassContainer = 'designide370.bpl';
     MajorVersionNumberChar = '37';

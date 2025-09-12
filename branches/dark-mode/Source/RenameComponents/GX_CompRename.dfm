@@ -4,8 +4,8 @@ object fmCompRename: TfmCompRename
   ActiveControl = edtNewName
   BorderStyle = bsDialog
   Caption = 'GExperts Rename Component'
-  ClientHeight = 326
-  ClientWidth = 315
+  ClientHeight = 318
+  ClientWidth = 313
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
@@ -36,8 +36,8 @@ object fmCompRename: TfmCompRename
   end
   object p_Buttons: TPanel
     Left = 0
-    Top = 76
-    Width = 315
+    Top = 68
+    Width = 313
     Height = 250
     Align = alBottom
     TabOrder = 2
@@ -81,11 +81,10 @@ object fmCompRename: TfmCompRename
     object pc_Additional: TPageControl
       Left = 1
       Top = 55
-      Width = 315
+      Width = 313
       Height = 194
       ActivePage = ts_Align
       Align = alBottom
-      TabIndex = 0
       TabOrder = 3
       OnChange = pc_AdditionalChange
       object ts_Align: TTabSheet

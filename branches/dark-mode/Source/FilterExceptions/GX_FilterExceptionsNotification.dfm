@@ -5,16 +5,18 @@ inherited fmExceptionNotification: TfmExceptionNotification
   ClientWidth = 585
   Position = poDesigned
   PixelsPerInch = 96
-  TextHeight = 13
-  object l_Message: TLabel
+  TextHeight = 15
+  object e_Message: TMemo
     Left = 8
     Top = 8
     Width = 569
     Height = 89
     Anchors = [akLeft, akTop, akRight, akBottom]
-    AutoSize = False
-    Caption = 'Message goes here'
+    Lines.Strings = (
+      'Message goes here')
+    ScrollBars = ssVertical
     WordWrap = True
+    TabOrder = 5
   end
   object b_Break: TButton
     Left = 424

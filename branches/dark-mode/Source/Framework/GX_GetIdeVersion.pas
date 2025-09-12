@@ -1125,7 +1125,7 @@ var
   RtlBplFileName : string;
 begin
 {$IFDEF WIN64}
-  RtlBplFileName := GetIdeRootDirectory + 'Bin64\rtl290.bpl';
+  RtlBplFileName := GetIdeRootDirectory + 'Bin64\rtl370.bpl';
   if not FileExists(RtlBplFileName) then
     RtlBplFileName := GetIdeRootDirectory + 'Bin64\bds.exe'; // Fallback
 {$ELSE}
@@ -1134,7 +1134,11 @@ begin
     RtlBplFileName := GetIdeRootDirectory + 'Bin\bds.exe';
 {$ENDIF}
   RtlBplFileVersion := GetFileVersionNumber(RtlBplFileName);
-    Result := ideRS13;
+  if CompareVersionNumber(RtlBplFileVersion, RtlBpl3700) >= 0 then begin
+    Result := ideRS13
+  end else begin
+    Result := ideUnknown;
+  end;
 end;
 
 function GetBorlandIdeVersion: TBorlandIdeVersion;
