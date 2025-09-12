@@ -676,7 +676,7 @@ begin
 {$ENDIF}
   def := TIfdefTabDefinition.Create(Self, pc_IfClasses, '&VERxxx', 4, 1, '{$IFNDEF %s}');
   FTabDefinitions.Add(def);
-  def.AddEntry('VER370', 'Delphi 13 / BDS 37');
+  def.AddEntry('VER370', 'Delphi 13 Florence / BDS 37');
   def.AddEntry('VER360', 'Delphi 12 Athens / BDS 23');
   def.AddEntry('VER350', 'Delphi 11 Alexandria / BDS 22');
   def.AddEntry('VER340', 'Delphi 10.4 Sydney / BDS 21');
@@ -757,7 +757,7 @@ begin
 {$IF CompilerVersion > CompilerVersionDelphiX130}
 {$MESSAGE HINT 'Add a new Delphi version here'}
 {$IFEND}
-  def.AddEntry(IntToStr(CompilerVersionDelphiX130), 'Delphi 13 / BDS 37');
+  def.AddEntry(IntToStr(CompilerVersionDelphiX130), 'Delphi 13 Florence / BDS 37');
   def.AddEntry(IntToStr(CompilerVersionDelphiX120), 'Delphi 12 Athens / BDS 23');
   def.AddEntry(IntToStr(CompilerVersionDelphiX110), 'Delphi 11 Alexandria/ BDS 22');
   def.AddEntry(IntToStr(CompilerVersionDelphiX104), 'Delphi 10.4 Sydney / BDS 21');

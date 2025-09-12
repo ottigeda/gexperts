@@ -95,6 +95,7 @@ const
   RtlVersionDelphiAlexandria = 35;
   RtlVersionDelphiAthens = 36;
   RtlVersionDelphi13 = 37;
+  RtlVersionDelphiFlorence= 37;
 
 {$IF RtlVersion > RtlVersionDelphi13}
 {$MESSAGE HINT 'Add new RtlVersion(s) here'}
