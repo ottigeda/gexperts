@@ -1243,6 +1243,7 @@ procedure TfmToDo.lvTodoCustomDrawItem(Sender: TCustomListView; Item: TListItem;
 {$IFNDEF GX_DELPHI2005_UP}
 const
   clWebOrangeRed = $0045FF;
+  clWebLightSkyBlue = $FACE87; 
 {$ENDIF}
 var
   cnv: TCanvas;
