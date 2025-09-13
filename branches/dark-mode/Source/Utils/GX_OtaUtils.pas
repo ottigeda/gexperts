@@ -844,7 +844,7 @@ type
       const FileName: string; var Cancel: Boolean); override;
   end;
 
-{.$IFDEF GX_SUPPORTS_THEMING}
+{$IFDEF GX_SUPPORTS_THEMING}
 type
   TThemeChangedNotifier = class(TNotifierObject, INTAIDEThemingServicesNotifier)
   private
@@ -859,7 +859,7 @@ type
     procedure ChangingTheme;
     procedure ChangedTheme;
   end;
-{.$ENDIF}
+{$ENDIF}
 
 type
   EStandAloneUsage = class(Exception);
@@ -6108,7 +6108,7 @@ end;
 
 { TThemeChangedNotifier }
 
-
+{$IFDEF GX_SUPPORTS_THEMING}
 function TThemeChangedNotifier.AddNotifierToIDE: Boolean;
 var
   LService: IOTAIDEThemingServices;
@@ -6161,6 +6161,8 @@ begin
     RemoveNotifierFromIDE;
   inherited Destroy;
 end;
+{$ENDIF GX_SUPPORTS_THEMING}
+
 
 initialization
 

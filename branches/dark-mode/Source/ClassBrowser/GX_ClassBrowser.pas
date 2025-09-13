@@ -253,8 +253,10 @@ type
   TClassBrowserExpert = class(TGX_Expert)
   private
     fmClassBrowser: TfmClassBrowser;
+{$IFDEF GX_SUPPORTS_THEMING}
     FThemeNotifier: TThemeChangedNotifier;
     procedure HandleThemeChanged(_Sender: TObject);
+{$ENDIF GX_SUPPORTS_THEMING}
   protected
     procedure SetActive(New: Boolean); override;
   public
@@ -1698,24 +1700,16 @@ end;
 
 procedure TfmClassBrowser.InitThemedColors;
 {$IFDEF GX_SUPPORTS_THEMING}
-var
-  LService: IOTAIDEThemingServices;
-  LBackColor     : TColor;
-  LSplitterColor : TColor;
 begin
   if IsThemingEnabled then begin
     GX_IdeUtils.InitTheming(Self);
 
-    LBackColor := GetThemedColor(clWindow);
-    LSplitterColor := GetThemedColor(clBtnFace);
-    StatusBar.StyleElements := [seBorder, seClient]; // -seFont
-    StatusBar.Font.Color := GetThemedColor(clBtnText);
-    StatusBar.Canvas.Font.Color := GetThemedColor(clBtnText);
-
+(* this does not work:
     LService := GxOtaGetIDEThemingServices;
     if Assigned(LService) and LService.IDEThemingEnabled then begin
       LService.ApplyTheme(MainMenu);
     end;
+*)
   end;
 end { InitThemedColors };
 {$ELSE GX_SUPPORTS_THEMING}
@@ -1749,18 +1743,22 @@ constructor TClassBrowserExpert.Create;
 begin
   inherited;
   Logger := CreateModuleLogger(GetName);
+{$IFDEF GX_SUPPORTS_THEMING}
   FThemeNotifier := TThemeChangedNotifier.Create(HandleThemeChanged);
   if not FThemeNotifier.AddNotifierToIDE then
     Logger.Warning('AddNotifierToIde failed for TClassBrowserExpert');
+{$ENDIF GX_SUPPORTS_THEMING}
 end;
 
 destructor TClassBrowserExpert.Destroy;
 begin
+{$IFDEF GX_SUPPORTS_THEMING}
   if Assigned(FThemeNotifier) then begin
     if not FThemeNotifier.RemoveNotifierFromIDE then
       Logger.Warning('AddNotifierToIde failed for TClassBrowserExpert');
     FThemeNotifier := nil;
   end;
+{$ENDIF GX_SUPPORTS_THEMING}
 
   FreeAndNil(fmClassBrowser);
 
@@ -1768,11 +1766,13 @@ begin
   Logger := nil;
 end;
 
+{$IFDEF GX_SUPPORTS_THEMING}
 procedure TClassBrowserExpert.HandleThemeChanged(_Sender: TObject);
 begin
   if Assigned(fmClassBrowser) then
     fmClassBrowser.InitThemedColors;
 end;
+{$ENDIF GX_SUPPORTS_THEMING}
 
 function TClassBrowserExpert.GetActionCaption: string;
 resourcestring
