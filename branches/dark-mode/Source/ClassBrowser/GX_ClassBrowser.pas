@@ -239,6 +239,7 @@ type
     procedure UpdateListFilter;
     function TryGetClassInfo(out _Info: TBrowseClassInfoCollection): Boolean;
     procedure ResizeLastListViewColumn;
+    procedure InitThemedColors;
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
@@ -252,6 +253,8 @@ type
   TClassBrowserExpert = class(TGX_Expert)
   private
     fmClassBrowser: TfmClassBrowser;
+    FThemeNotifier: TThemeChangedNotifier;
+    procedure HandleThemeChanged(_Sender: TObject);
   protected
     procedure SetActive(New: Boolean); override;
   public
@@ -1693,6 +1696,33 @@ begin
   Result := GetSharedImageList;
 end;
 
+procedure TfmClassBrowser.InitThemedColors;
+{$IFDEF GX_SUPPORTS_THEMING}
+var
+  LService: IOTAIDEThemingServices;
+  LBackColor     : TColor;
+  LSplitterColor : TColor;
+begin
+  if IsThemingEnabled then begin
+    GX_IdeUtils.InitTheming(Self);
+
+    LBackColor := GetThemedColor(clWindow);
+    LSplitterColor := GetThemedColor(clBtnFace);
+    StatusBar.StyleElements := [seBorder, seClient]; // -seFont
+    StatusBar.Font.Color := GetThemedColor(clBtnText);
+    StatusBar.Canvas.Font.Color := GetThemedColor(clBtnText);
+
+    LService := GxOtaGetIDEThemingServices;
+    if Assigned(LService) and LService.IDEThemingEnabled then begin
+      LService.ApplyTheme(MainMenu);
+    end;
+  end;
+end { InitThemedColors };
+{$ELSE GX_SUPPORTS_THEMING}
+begin
+end;
+{$ENDIF GX_SUPPORTS_THEMING}
+
 { TClassBrowserExpert }
 
 procedure TClassBrowserExpert.SetActive(New: Boolean);
@@ -1719,14 +1749,28 @@ constructor TClassBrowserExpert.Create;
 begin
   inherited;
   Logger := CreateModuleLogger(GetName);
+  FThemeNotifier := TThemeChangedNotifier.Create(HandleThemeChanged);
+  if not FThemeNotifier.AddNotifierToIDE then
+    Logger.Warning('AddNotifierToIde failed for TClassBrowserExpert');
 end;
 
 destructor TClassBrowserExpert.Destroy;
 begin
+  if Assigned(FThemeNotifier) then begin
+    if not FThemeNotifier.RemoveNotifierFromIDE then
+      Logger.Warning('AddNotifierToIde failed for TClassBrowserExpert');
+    FThemeNotifier := nil;
+  end;
+
   FreeAndNil(fmClassBrowser);
 
   inherited Destroy;
   Logger := nil;
+end;
+
+procedure TClassBrowserExpert.HandleThemeChanged(_Sender: TObject);
+begin
+  fmClassBrowser.InitThemedColors;
 end;
 
 function TClassBrowserExpert.GetActionCaption: string;

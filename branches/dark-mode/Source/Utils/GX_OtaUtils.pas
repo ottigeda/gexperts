@@ -844,17 +844,22 @@ type
       const FileName: string; var Cancel: Boolean); override;
   end;
 
-(*
+{.$IFDEF GX_SUPPORTS_THEMING}
 type
-  TThemeChangedNotifier = class(TBaseIdeNotifier, INTAIDEThemingServicesNotifier)
+  TThemeChangedNotifier = class(TNotifierObject, INTAIDEThemingServicesNotifier)
   private
+    FNotifierIndex: Integer;
     FOnThemeChanged : TNotifyEvent;
   public
     constructor Create(_OnThemeChanged: TNotifyEvent);
+  public
+    function AddNotifierToIDE: Boolean;
+    function RemoveNotifierFromIDE: Boolean;
+    destructor Destroy; override;
     procedure ChangingTheme;
     procedure ChangedTheme;
   end;
-*)
+{.$ENDIF}
 
 type
   EStandAloneUsage = class(Exception);
@@ -6103,7 +6108,7 @@ end;
 
 { TThemeChangedNotifier }
 
-(*
+
 function TThemeChangedNotifier.AddNotifierToIDE: Boolean;
 var
   LService: IOTAIDEThemingServices;
@@ -6116,6 +6121,20 @@ begin
     Result := (FNotifierIndex <> InvalidNotifierIndex);
   end;
 end;
+
+function TThemeChangedNotifier.RemoveNotifierFromIDE: Boolean;
+var
+  SavedIndex: Integer;
+begin
+  Result := False;
+  if FNotifierIndex = InvalidNotifierIndex then
+    Exit;
+  SavedIndex := FNotifierIndex;
+  FNotifierIndex := InvalidNotifierIndex;
+  GxOtaGetIDEThemingServices.RemoveNotifier(SavedIndex);
+  Result := True;
+end;
+
 
 procedure TThemeChangedNotifier.ChangedTheme;
 begin
@@ -6131,10 +6150,18 @@ end;
 constructor TThemeChangedNotifier.Create(_OnThemeChanged: TNotifyEvent);
 begin
   inherited Create;
-  Assert(Assigned(_OnThemeChanged);
+  FNotifierIndex := InvalidNotifierIndex;
+  Assert(Assigned(_OnThemeChanged));
   FOnThemeChanged := _OnThemeChanged;
 end;
-*)
+
+destructor TThemeChangedNotifier.Destroy;
+begin
+  if FNotifierIndex <> InvalidNotifierIndex then
+    RemoveNotifierFromIDE;
+  inherited Destroy;
+end;
+
 initialization
 
 finalization
