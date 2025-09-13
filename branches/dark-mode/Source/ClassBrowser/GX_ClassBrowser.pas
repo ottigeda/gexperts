@@ -1755,7 +1755,7 @@ begin
 {$IFDEF GX_SUPPORTS_THEMING}
   if Assigned(FThemeNotifier) then begin
     if not FThemeNotifier.RemoveNotifierFromIDE then
-      Logger.Warning('AddNotifierToIde failed for TClassBrowserExpert');
+      Logger.Warning('RemoveNotifierFromIDE failed for TClassBrowserExpert');
     FThemeNotifier := nil;
   end;
 {$ENDIF GX_SUPPORTS_THEMING}
