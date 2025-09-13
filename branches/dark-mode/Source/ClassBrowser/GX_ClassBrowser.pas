@@ -1770,7 +1770,8 @@ end;
 
 procedure TClassBrowserExpert.HandleThemeChanged(_Sender: TObject);
 begin
-  fmClassBrowser.InitThemedColors;
+  if Assigned(fmClassBrowser) then
+    fmClassBrowser.InitThemedColors;
 end;
 
 function TClassBrowserExpert.GetActionCaption: string;
