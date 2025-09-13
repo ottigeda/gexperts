@@ -2,11 +2,14 @@
 
 unit GX_GrepExpert;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
   Windows,
   Classes, Graphics, IniFiles, Controls,
+  GX_OtaUtils,
   GX_Experts, GX_ConfigurationInfo, GX_GrepBackend;
 
 type
@@ -72,6 +75,10 @@ type
     FExcludedDirsIsRegEx: Boolean;
     FExternalEditor: string;
     FExternalEditorParams: string;
+{$IFDEF GX_SUPPORTS_THEMING}
+    FThemeNotifier: TThemeChangedNotifier;
+    procedure HandleThemeChanged(_Sender: TObject);
+{$ENDIF GX_SUPPORTS_THEMING}
     function  GetGrepSaveHistoryListItems(AIndex: Integer): Boolean;
     procedure SetSearchList(New: TStrings);
     procedure SetReplaceList(New: TStrings);
@@ -200,7 +207,7 @@ uses
   SysUtils, Menus, ComCtrls,
   u_dzVclUtils,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF D+}
-  GX_OtaUtils, GX_GenericUtils,
+  GX_GenericUtils,
   GX_GrepResults, GX_GrepResultsOptions,
   GX_IdeDock, GX_GExperts, GX_ActionBroker, GX_GrepOptions, GX_GrepMenuEntry;
 
@@ -266,13 +273,28 @@ begin
 
   fmGrepResults := TfmGrepResults.Create(nil);
   SetFormIcon(fmGrepResults);
-  if not IsStandAlone then
+  if not IsStandAlone then begin
     IdeDockManager.RegisterDockableForm(TfmGrepResults, fmGrepResults, 'fmGrepResults');
+{$IFDEF GX_SUPPORTS_THEMING}
+    FThemeNotifier := TThemeChangedNotifier.Create(HandleThemeChanged);
+    if not FThemeNotifier.AddNotifierToIDE then
+;//      logger.Warning('AddNotifierToIde failed for TGrepExpert');
+{$ENDIF GX_SUPPORTS_THEMING}
+  end;
   gblGrepExpert := Self;
 end;
 
 destructor TGrepExpert.Destroy;
 begin
+{$IFDEF GX_SUPPORTS_THEMING}
+  if Assigned(FThemeNotifier) then begin
+    FThemeNotifier.RemoveNotifierFromIDE;
+    if not FThemeNotifier.RemoveNotifierFromIDE then
+; //      Logger.Warning('RemoveNotifierFromIDE failed for TGrepExpert');
+    FThemeNotifier := nil;
+  end;
+{$ENDIF GX_SUPPORTS_THEMING}
+
   IdeDockManager.UnRegisterDockableForm(fmGrepResults, 'fmGrepResults');
 
   HistoryListSaveSettings;
@@ -291,6 +313,14 @@ begin
 
   inherited Destroy;
 end;
+
+{$IFDEF GX_SUPPORTS_THEMING}
+procedure TGrepExpert.HandleThemeChanged(_Sender: TObject);
+begin
+  if Assigned(fmGrepResults) then
+    fmGrepResults.InitThemedColors;
+end;
+{$ENDIF GX_SUPPORTS_THEMING}
 
 function TGrepExpert.GetActionCaption: string;
 resourcestring

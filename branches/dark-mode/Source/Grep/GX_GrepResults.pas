@@ -362,7 +362,6 @@ type
     FSaveSortCaption: string;
     FSavedFormCaption: string;
     FlbHistoryListIndexForHistoryMenuActions: Integer;
-    procedure InitThemedColors;
     procedure SetStayOnTop(Value: Boolean);
     procedure RefreshContextLines;
     procedure SetShowContext(Value: Boolean);
@@ -426,6 +425,7 @@ public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
+    procedure InitThemedColors;
     procedure InitGrepSettings(AGrepSettings: TGrepSettings);
     function  Execute(AState: TGrepSearchState): Boolean;
     procedure UpdateFromSettings;
