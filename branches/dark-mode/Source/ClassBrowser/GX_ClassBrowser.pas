@@ -1704,7 +1704,7 @@ end;
 procedure TfmClassBrowser.InitThemedColors;
 begin
   if IsThemingEnabled then begin
-    GX_IdeUtils.InitTheming(Self);
+    InitThemingForForm(Self);
 
 (* this does not work:
     LService := GxOtaGetIDEThemingServices;

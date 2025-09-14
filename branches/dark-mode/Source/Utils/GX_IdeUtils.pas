@@ -150,7 +150,7 @@ function IDEEditorEncodingIsUTF8: Boolean;
 // Theming support
 function ColorToGrayscale(AColor: TColor): Integer;
 function IsThemingEnabled: Boolean;
-function InitTheming(const AForm: TCustomForm): Boolean;
+function InitThemingForForm(const AForm: TCustomForm): Boolean;
 function GetThemedColor(AColor: TColor): TColor;
 procedure RemoveStyleElements(AControl: TWinControl; IncludeSubComponents: Boolean);
 
@@ -973,7 +973,7 @@ begin
   end;
 end;
 
-function InitTheming(const AForm: TCustomForm): Boolean;
+function InitThemingForForm(const AForm: TCustomForm): Boolean;
 begin
 {$IFDEF GX_SUPPORTS_THEMING}
   Result := GxOtaInitTheming(AForm);
@@ -1010,20 +1010,23 @@ var
   i: Integer;
   cmp: TComponent;
 begin
-  if not Assigned(AControl) then Exit;
+{$IF Declared(TStyleElements)}
+  if not Assigned(AControl) then
+    Exit;
 
   PropInfo := GetPropInfo(AControl, 'StyleElements');
   if Assigned(PropInfo) then
     SetOrdProp(AControl, PropInfo, 0);
 
   if IncludeSubComponents then begin
-    for I := 0 to AControl.ComponentCount - 1 do begin
-      cmp := AControl.Components[I];
+    for i := 0 to AControl.ComponentCount - 1 do begin
+      cmp := AControl.Components[i];
       PropInfo := GetPropInfo(cmp, 'StyleElements');
       if Assigned(PropInfo) then
         SetOrdProp(cmp, PropInfo, 0);
     end;
   end;
+{$IFEND}
 end;
 
 function TScreen_TryFindClassForm(const _ClassName: string; out _Form: TForm): Boolean;

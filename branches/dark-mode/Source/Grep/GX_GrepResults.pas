@@ -925,7 +925,7 @@ var
   LSplitterColor : TColor;
 begin
   if IsThemingEnabled then begin
-    InitTheming(Self);
+    InitThemingForForm(Self);
 
     tcHistoryListPage.StyleElements := [seClient, seBorder];
     tcHistoryListPage.Style := tsTabs;
@@ -1028,7 +1028,7 @@ begin
   inherited Loaded;
 
   if IsThemingEnabled then
-    InitTheming(Self);
+    InitThemingForForm(Self);
   RemoveStyleElements(Self, True); // include sub-components
 end;
 
