@@ -358,11 +358,17 @@ begin
   Result := FStream.Seek(aOffset, aOrigin);
 end;
 {--------}
+procedure doAssert(const _Msg: string);
+begin
+  // This procedure only exists to avoid the warning with Delphi 13 or later that code after this assertion
+  // does nothing.
+  Assert(False, _Msg);
+end;
+{--------}
 function TAbDfDecryptStream.Write(const aBuffer; aCount : longint) : longint;
 begin
   {check for programming error}
-  Assert(false,
-         'TAbDfDecryptStream.Write: the stream is read-only');
+  doAssert('TAbDfDecryptStream.Write: the stream is read-only');
   Result := 0;
 end;
 {====================================================================}
@@ -593,8 +599,7 @@ end;
 function TAbDfEncryptStream.Read(var aBuffer; aCount : longint) : longint;
 begin
   {check for programming error}
-  Assert(false,
-         'TAbDfEncryptStream.Read: the stream is write-only');
+  doAssert('TAbDfEncryptStream.Read: the stream is write-only');
   Result := 0;
 end;
 {--------}

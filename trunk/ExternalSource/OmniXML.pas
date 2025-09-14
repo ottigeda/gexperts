@@ -3534,9 +3534,16 @@ begin
   Result := InternalCreateElement(TagName);
 end;
 
+procedure doAssert(const _Msg: string);
+begin
+  // This procedure only exists to avoid the warning with Delphi 13 or later that code after this assertion
+  // does nothing.
+  Assert(False, _Msg);
+end;
+
 function TXMLDocument.InternalCreateEntityReference(const Name: WideString): TXMLEntityReference;
 begin
-  Assert(False, 'NYI - CreateEntityReference');
+  doAssert('NYI - CreateEntityReference');
   Result := nil;
 end;
 

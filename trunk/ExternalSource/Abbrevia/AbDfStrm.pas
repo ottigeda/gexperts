@@ -687,10 +687,16 @@ begin
   FBufPos := FBuffer;
 end;
 {--------}
+procedure doAssert(const _Msg: string);
+begin
+  // This procedure only exists to avoid the warning with Delphi 13 or later that code after this assertion
+  // does nothing.
+  Assert(False, _Msg);
+end;
+{--------}
 function TAbDfOutBitStream.Position : longint;
 begin
-  Assert(false,
-         'TAbDfOutBitStream.Position: not implemented yet!');
+  doAssert('TAbDfOutBitStream.Position: not implemented yet!');
   Result := -1;
 end;
 {--------}

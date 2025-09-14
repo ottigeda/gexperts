@@ -474,9 +474,16 @@ begin
   end;
 end;
 {--------}
+procedure doAssert(const _Msg: string);
+begin
+  // This procedure only exists to avoid the warning with Delphi 13 or later that code after this assertion
+  // does nothing.
+  Assert(False, _Msg);
+end;
+{--------}
 function TAbLogger.Read(var Buffer; Count : longint) : longint;
 begin
-  Assert(false, 'TAbLogger.Read: loggers are write-only, no reading allowed');
+  doAssert('TAbLogger.Read: loggers are write-only, no reading allowed');
   Result := 0;
 end;
 {--------}
@@ -498,7 +505,7 @@ begin
       end;
   end;
 
-  Assert(false, 'TAbLogger.Seek: loggers are write-only, no seeking allowed');
+  doAssert('TAbLogger.Seek: loggers are write-only, no reading allowed');
   Result := 0;
 end;
 {--------}
