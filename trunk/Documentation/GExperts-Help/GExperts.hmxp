@@ -58,7 +58,7 @@
               <task-config-value name="outputfile">..\..\Binaries\GExperts.chm</task-config-value>
               <task-config-value name="skin">..\GExpertsSkinBlack.hmskin</task-config-value>
               <task-config-value name="deletetemp">1</task-config-value>
-              <task-config-value name="make0include">CHM</task-config-value>
+              <task-config-value name="make0include">CHM,RZONLY</task-config-value>
               <task-config-value name="make0status">*</task-config-value>
             </task-config-group>
           </export-task>
@@ -145,7 +145,7 @@
       <config-value name="imageshortcuts_includebaggage">1</config-value>
       <config-value name="make3include">HTML</config-value>
       <config-value name="make3status">*</config-value>
-      <config-value name="make0include">CHM</config-value>
+      <config-value name="make0include">CHM,RZONLY</config-value>
       <config-value name="make0status">*</config-value>
       <config-group name="spellcheck">
         <config-value name="project">0</config-value>

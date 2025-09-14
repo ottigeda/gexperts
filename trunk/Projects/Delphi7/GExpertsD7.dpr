@@ -271,7 +271,17 @@ uses
   GX_VCLFixPack in '..\..\Source\Utils\GX_VCLFixPack.pas',
   GX_VerDepConst in '..\..\source\Framework\GX_VerDepConst.pas',
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
-  GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas';
+  GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas',
+  
+  GX_ToDoGridConst in '..\..\Source\ToDoGrid\GX_ToDoGridConst.pas',
+  GX_ToDoGridFrame in '..\..\Source\ToDoGrid\GX_ToDoGridFrame.pas' {frmToDoGridFrame: TFrame},
+  GX_ToDoGridMainDock in '..\..\Source\ToDoGrid\GX_ToDoGridMainDock.pas' {foToDoGridMainDock},
+  GX_ToDoGridMainFree in '..\..\Source\ToDoGrid\GX_ToDoGridMainFree.pas' {foToDoGridMainFree},
+  GX_ToDoGridOptions in '..\..\Source\ToDoGrid\GX_ToDoGridOptions.pas' {foToDoGridOptions},
+  GX_ToDoGridOptionsCheck in '..\..\Source\ToDoGrid\GX_ToDoGridOptionsCheck.pas',
+  GX_ToDoGridScan in '..\..\Source\ToDoGrid\GX_ToDoGridScan.pas',
+  GX_ToDoGridUtilities in '..\..\Source\ToDoGrid\GX_ToDoGridUtilities.pas';
+  
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
