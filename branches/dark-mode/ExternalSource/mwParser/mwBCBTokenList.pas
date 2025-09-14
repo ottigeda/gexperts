@@ -346,6 +346,13 @@ begin
   end;
 end; { Retrive }
 
+procedure doAssert(const _Msg: string);
+begin
+  // This procedure only exists to avoid the warning with Delphi 13 or later that code after this assertion
+  // does nothing.
+  Assert(False, _Msg);
+end;
+
 function TmsSearcher.GetMethodImplementation(const aClassName, aMethodIdentifier: string): Longint;
 //var
 //  RPos: Longint;
@@ -353,7 +360,7 @@ function TmsSearcher.GetMethodImplementation(const aClassName, aMethodIdentifier
 //  ToFind: string;
 //  Found: Boolean;
 begin
-  Assert(False);
+  doAssert('TmsSearcher.GetMethodImplementation not implemented');
   Result := 0;
 end; { GetMethodImplementation }
 
