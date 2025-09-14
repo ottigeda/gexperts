@@ -239,7 +239,9 @@ type
     procedure UpdateListFilter;
     function TryGetClassInfo(out _Info: TBrowseClassInfoCollection): Boolean;
     procedure ResizeLastListViewColumn;
+{$IFDEF GX_SUPPORTS_THEMING}
     procedure InitThemedColors;
+{$ENDIF GX_SUPPORTS_THEMING}
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
@@ -1698,8 +1700,8 @@ begin
   Result := GetSharedImageList;
 end;
 
-procedure TfmClassBrowser.InitThemedColors;
 {$IFDEF GX_SUPPORTS_THEMING}
+procedure TfmClassBrowser.InitThemedColors;
 begin
   if IsThemingEnabled then begin
     GX_IdeUtils.InitTheming(Self);
@@ -1711,9 +1713,6 @@ begin
     end;
 *)
   end;
-end { InitThemedColors };
-{$ELSE GX_SUPPORTS_THEMING}
-begin
 end;
 {$ENDIF GX_SUPPORTS_THEMING}
 
