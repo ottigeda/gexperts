@@ -7,9 +7,8 @@
 if exist %1 (
   echo moving %1 to %1~ so the DLL can be compiled even though it is currently loaded in the IDE
   move %1 %1~
-)
-else (
-  echo DLL not found, does not need to be moved
+) else (
+  echo DLL %1 not found, does not need to be moved
 )
 set MAPFILE=%~dpn1.map
 if exist %MAPFILE% (
