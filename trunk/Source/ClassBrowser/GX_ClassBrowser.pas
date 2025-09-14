@@ -229,7 +229,8 @@ type
     procedure SetInfoViewMode(const Value: TInfoViewMode);
     procedure FindFromNode(const Text: string; Node: TTreeNode);
     procedure FiltersToActions;
-    procedure FileNotification(NotifyCode: TOTAFileNotification; const FileName: string; var Cancel: Boolean);
+    procedure HandleFileNotification(_Sender: TObject; NotifyCode: TOTAFileNotification; const FileName: string;
+      var Cancel: Boolean);
   private
     FMethodText: TGxEnhancedEditor;
     FCodeText: TGxEnhancedEditor;
@@ -278,30 +279,6 @@ uses
 
 var
   Logger: IGxLogger;
-
-type
-  TClassProjectNotifier = class(TBaseIdeNotifier)
-  private
-    fmClassBrowser: TfmClassBrowser;
-  public
-    constructor Create(Form: TfmClassBrowser);
-    procedure FileNotification(NotifyCode: TOTAFileNotification;
-      const FileName: string; var Cancel: Boolean); override;
-  end;
-
-{ TClassProjectNotifier }
-
-constructor TClassProjectNotifier.Create(Form: TfmClassBrowser);
-begin
-  inherited Create;
-  fmClassBrowser := Form;
-end;
-
-procedure TClassProjectNotifier.FileNotification(NotifyCode: TOTAFileNotification;
-  const FileName: string; var Cancel: Boolean);
-begin
-  fmClassBrowser.FileNotification(NotifyCode,FileName, Cancel);
-end;
 
 procedure ClearBitmap(Bitmap: Graphics.TBitmap);
 begin
@@ -1246,7 +1223,7 @@ begin
   FiltersToActions;
 end;
 
-procedure TfmClassBrowser.FileNotification(NotifyCode: TOTAFileNotification; const FileName: string;
+procedure TfmClassBrowser.HandleFileNotification(_Sender: TObject; NotifyCode: TOTAFileNotification; const FileName: string;
   var Cancel: Boolean);
 begin
   case NotifyCode of
@@ -1623,7 +1600,7 @@ begin
 
   LoadSettings;
 
-  FProjectNotifier := TClassProjectNotifier.Create(Self);
+  FProjectNotifier := TFileNotifier.Create(HandleFileNotification);
   FProjectNotifier.AddNotifierToIDE;
 end;
 
