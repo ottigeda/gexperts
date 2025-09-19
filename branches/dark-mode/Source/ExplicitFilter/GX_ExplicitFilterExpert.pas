@@ -85,7 +85,7 @@ function GetActualAddr(Proc: Pointer): Pointer;
 begin
   if Proc <> nil then begin
 {$IFDEF WIN64}
-{$MESSAGE ERROR 'this does ot work for Win64'}
+{$MESSAGE ERROR 'this does not work for Win64'}
 {$ENDIF}
     if (PAbsoluteIndirectJmp(Proc).OpCode = $25FF) then
       Result := PAbsoluteIndirectJmp(Proc).Addr^
