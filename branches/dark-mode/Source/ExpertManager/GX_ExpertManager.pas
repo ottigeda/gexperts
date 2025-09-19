@@ -666,8 +666,14 @@ begin
   end;
 
   RegIni := TGExpertsSettings.Create(ConfigInfo.IdeRootRegistryKey);
+{$IFDEF WIN64}
+const
+  ExpertsKey = 'Experts X64';
+{$ELSE}
+  ExpertsKey = 'Experts';
+{$ENDIF}
   try
-    RegIni.WriteString('Experts', ExpertName, FileName); // Do not localize.
+    RegIni.WriteString(ExpertsKey, ExpertName, FileName); // Do not localize.
   finally
     FreeAndNil(RegIni);
   end;
