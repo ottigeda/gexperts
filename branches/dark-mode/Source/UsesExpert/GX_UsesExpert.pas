@@ -22,6 +22,7 @@ uses
   u_dzDpiScaleUtils,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm, GX_Splitter,
   GX_UnitExportsParser, GX_UsesExpertOptions, GX_UnitExportList,
+  ToolsApi,
   GX_OtaUtils,
   rzC_Splitter;
 
@@ -53,16 +54,18 @@ type
     FOrigFileAddUnitExecute: TNotifyEvent;
     FReadMap: Boolean;
     FFilterIdentifiers: TFilterIdentifiersEnum;
-    FProjectChangedNotifier: TProjectChangedNotifier;
+    FProjectChangedNotifier: TFileNotifier;
     FUnitExportParserThread: TUnitExportParserThread;
     FSearchPathFavorites: Boolean;
     FFastAdd: Boolean;
+    FLastProject: string;
 {$IF declared(TStopwatch)}
     FIdentifierTabTimer: TStopwatch;
 {$IFEND}
     procedure InternalExecute;
     function FindAction(out _Action: TBasicAction): Boolean;
-    procedure HandleProjectChanged(_Sender: TObject);
+    procedure HandleFileNotification(_Sender: TObject; _NotifyCode: TOTAFileNotification; const _FileName: string;
+      var _Cancel: Boolean);
     procedure StartUnitParserThread;
     procedure GetSearchPathFavorites(_sl: TStrings);
   protected
@@ -411,7 +414,7 @@ implementation
 {$R *.dfm}
 
 uses
-  CommCtrl, Messages, Graphics, StrUtils, Math, ToolsAPI, Clipbrd, FileCtrl,
+  CommCtrl, Messages, Graphics, StrUtils, Math, Clipbrd, FileCtrl,
   u_dzVclUtils, u_dzMapFileReader, u_dzFileUtils, u_dzOsUtils, u_dzClassUtils, u_dzStringUtils,
   GX_IdeUtils, GX_UsesManager, GX_GetIdeVersion,
 {$IFOPT D+}
@@ -459,6 +462,7 @@ end;
 procedure TUsesClauseMgrExpert.AfterIDEInitialized;
 var
   act: TBasicAction;
+  Cancel: Boolean;
 begin
   inherited;
 
@@ -468,9 +472,11 @@ begin
       act.OnExecute := Self.Execute;
     end;
   end;
-  FProjectChangedNotifier := TProjectChangedNotifier.Create(HandleProjectChanged);
+  // This notifier is installed so we can scan units for the new project in the background as soon as it is being
+  // loaded, to speed up scanning when the dialog is shown.
+  FProjectChangedNotifier := TFileNotifier.Create(HandleFileNotification);
   FProjectChangedNotifier.AddNotifierToIDE;
-  HandleProjectChanged(FProjectChangedNotifier);
+  HandleFileNotification(FProjectChangedNotifier, ofnActiveProjectChanged, GxOtaGetCurrentProjectFileName, Cancel);
 end;
 
 function TUsesClauseMgrExpert.FindAction(out _Action: TBasicAction): Boolean;
@@ -530,9 +536,16 @@ begin
   Result := 'UsesClauseMgr';
 end;
 
-procedure TUsesClauseMgrExpert.HandleProjectChanged(_Sender: TObject);
+procedure TUsesClauseMgrExpert.HandleFileNotification(_Sender: TObject; _NotifyCode: TOTAFileNotification; const _FileName: string;
+  var _Cancel: Boolean);
 begin
-  StartUnitParserThread;
+  if _NotifyCode = ofnActiveProjectChanged then begin
+    // Check if the project actually has changed
+    if not SameText(_FileName, FLastProject) then begin
+      FLastProject := _FileName;
+      StartUnitParserThread;
+    end;
+  end;
 end;
 
 procedure TUsesClauseMgrExpert.GetSearchPathFavorites(_sl: TStrings);

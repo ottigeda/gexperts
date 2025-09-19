@@ -32,7 +32,7 @@ inherited fmUsesManager: TfmUsesManager
     object pcUnits: TPageControl
       Left = 6
       Top = 62
-      Width = 649
+      Width = 647
       Height = 366
       ActivePage = tabProject
       Align = alClient
@@ -174,8 +174,8 @@ inherited fmUsesManager: TfmUsesManager
             object l_NoMapFile: TLabel
               Left = 4
               Top = 0
-              Width = 467
-              Height = 45
+              Width = 644
+              Height = 30
               Align = alCustom
               Anchors = [akLeft, akTop, akRight, akBottom]
               Caption = 
@@ -184,7 +184,7 @@ inherited fmUsesManager: TfmUsesManager
               WordWrap = True
             end
             object b_NoMapFileClose: TButton
-              Left = 608
+              Left = 799
               Top = 0
               Width = 25
               Height = 33
@@ -433,7 +433,7 @@ inherited fmUsesManager: TfmUsesManager
             end
           end
           object btnFavoriteAddToFavorites: TButton
-            Left = 464
+            Left = 655
             Top = 20
             Width = 80
             Height = 25
@@ -442,7 +442,7 @@ inherited fmUsesManager: TfmUsesManager
             TabOrder = 1
           end
           object btnFavoriteDeleteFromFavorites: TButton
-            Left = 551
+            Left = 742
             Top = 20
             Width = 80
             Height = 25

@@ -809,11 +809,12 @@ type
   TBaseIdeNotifier = class(TNotifierObject, IOTAIDENotifier)
   private
     FNotifierIndex: Integer;
-  public
+  protected
     procedure FileNotification(NotifyCode: TOTAFileNotification;
       const FileName: string; var Cancel: Boolean); virtual;
     procedure BeforeCompile(const Project: IOTAProject; var Cancel: Boolean); virtual;
     procedure AfterCompile(Succeeded: Boolean); virtual;
+  public
     function AddNotifierToIDE: Boolean;
     function RemoveNotifierFromIDE: Boolean;
     destructor Destroy; override;
@@ -834,14 +835,16 @@ type
   end;
 
 type
-  TProjectChangedNotifier = class(TBaseIdeNotifier)
+  TFileNotificationEvent = procedure(_Sender: TObject; _NotifyCode: TOTAFileNotification; const _FileName: string;
+    var _Cancel: Boolean) of object;
+  TFileNotifier = class(TBaseIdeNotifier)
   private
-    FOnProjectChanged: TNotifyEvent;
-    FLastProject: string;
-  public
-    constructor Create(_OnProjectChanged: TNotifyEvent);
+    FOnFileNotificationEvent: TFileNotificationEvent;
+  protected
     procedure FileNotification(NotifyCode: TOTAFileNotification;
       const FileName: string; var Cancel: Boolean); override;
+  public
+    constructor Create(_OnFileNotificationEvent: TFileNotificationEvent);
   end;
 
 {$IFDEF GX_SUPPORTS_THEMING}
@@ -6082,28 +6085,19 @@ begin
   // Nothing
 end;
 
-{ TProjectChangedNotifier }
+{ TFileNotifier }
 
-constructor TProjectChangedNotifier.Create(_OnProjectChanged: TNotifyEvent);
+constructor TFileNotifier.Create(_OnFileNotificationEvent: TFileNotificationEvent);
 begin
   inherited Create;
-  Assert(Assigned(_OnProjectChanged));
-  FOnProjectChanged := _OnProjectChanged;
+  Assert(Assigned(_OnFileNotificationEvent));
+  FOnFileNotificationEvent := _OnFileNotificationEvent;
 end;
 
-procedure TProjectChangedNotifier.FileNotification(NotifyCode: TOTAFileNotification;
+procedure TFileNotifier.FileNotification(NotifyCode: TOTAFileNotification;
   const FileName: string; var Cancel: Boolean);
-var
-  ThisProject: string;
 begin
-  if NotifyCode = ofnActiveProjectChanged then begin
-    // Check if the project actually has changed
-    ThisProject := GxOtaGetCurrentProjectFileName;
-    if ThisProject = FLastProject then
-      Exit; //==>
-    FLastProject := ThisProject;
-    FOnProjectChanged(Self);
-  end;
+  FOnFileNotificationEvent(Self, NotifyCode, FileName, Cancel);
 end;
 
 { TThemeChangedNotifier }
