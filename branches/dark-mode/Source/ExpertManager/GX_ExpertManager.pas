@@ -670,6 +670,7 @@ begin
 const
   ExpertsKey = 'Experts X64';
 {$ELSE}
+const
   ExpertsKey = 'Experts';
 {$ENDIF}
   try
