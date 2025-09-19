@@ -9,6 +9,7 @@ unit GX_ExplicitFilterExpert;
 interface
 
 {$IFDEF GX_DELPHI2006_UP}
+{$IFNDEF WIN64}
 
 uses
   Windows,
@@ -40,11 +41,13 @@ type
     procedure GetData(out _Value: TExplicitPropertiesSet);
   end;
 
+{$ENDIF WIN64}
 {$ENDIF GX_DELPHI2006_UP}
 
 implementation
 
 {$IFDEF GX_DELPHI2006_UP}
+{$IFNDEF WIN64}
 
 {$R *.dfm}
 
@@ -81,6 +84,9 @@ type
 function GetActualAddr(Proc: Pointer): Pointer;
 begin
   if Proc <> nil then begin
+{$IFDEF WIN64}
+{$MESSAGE ERROR 'this does ot work for Win64'}
+{$ENDIF}
     if (PAbsoluteIndirectJmp(Proc).OpCode = $25FF) then
       Result := PAbsoluteIndirectJmp(Proc).Addr^
     else
@@ -389,5 +395,7 @@ end;
 
 initialization
   RegisterGX_Expert(TExplicitFilterExpert);
+
+{$ENDIF WIN64}
 {$ENDIF GX_DELPHI2006_UP}
 end.
