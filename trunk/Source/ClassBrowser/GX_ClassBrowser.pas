@@ -14,7 +14,7 @@ uses
   Classes, Controls, Buttons, StdCtrls, Forms, Dialogs, ActnList, ToolWin, ToolsAPI,
   Actions, Graphics, Menus, ExtCtrls, ComCtrls, ImgList, UITypes,
   GX_BaseForm, GX_ClassOptions, GX_ClassMgr, GX_ClassParsing, GX_Experts,
-  GX_OtaUtils, GX_EnhancedEditor, GX_SharedImages;
+  GX_OtaUtils, GX_Splitter, GX_EnhancedEditor, GX_SharedImages;
 
 type
   TInfoViewMode = (vmList, vmTree);
@@ -240,6 +240,9 @@ type
     procedure UpdateListFilter;
     function TryGetClassInfo(out _Info: TBrowseClassInfoCollection): Boolean;
     procedure ResizeLastListViewColumn;
+{$IFDEF GX_SUPPORTS_THEMING}
+    procedure InitThemedColors;
+{$ENDIF GX_SUPPORTS_THEMING}
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
@@ -253,6 +256,10 @@ type
   TClassBrowserExpert = class(TGX_Expert)
   private
     fmClassBrowser: TfmClassBrowser;
+{$IFDEF GX_SUPPORTS_THEMING}
+    FThemeNotifier: TThemeChangedNotifier;
+    procedure HandleThemeChanged(_Sender: TObject);
+{$ENDIF GX_SUPPORTS_THEMING}
   protected
     procedure SetActive(New: Boolean); override;
   public
@@ -1074,6 +1081,12 @@ var
     APanel.FullRepaint := False;
     APanel.Caption := PanelText;
     APanel.BevelInner := bvLowered;
+  {$IFDEF GX_SUPPORTS_THEMING}
+    if IdeStyleIsDark then begin
+      APanel.StyleElements := [seFont];
+      APanel.Color := GetThemedColor(clBtnFace);
+    end;
+  {$ENDIF}
     APanel.SetBounds(ClassControlLeft, (PanelPosition * 50) + 10, ClassControlWidth, 30);
 
     // Assumes that form and panel have the same font
@@ -1091,6 +1104,8 @@ var
     shp := TShape.Create(scInherit);
     shp.Visible := True;
     shp.Parent := scInherit;
+    shp.Pen.Color   := GetThemedColor(clWindowText);
+    shp.Brush.Color := GetThemedColor(clWindow);
     shp.SetBounds(LeftPos, ((Index - 1) * 50) + 40, 2, 20);
   end;
 
@@ -1662,6 +1677,22 @@ begin
   Result := GetSharedImageList;
 end;
 
+{$IFDEF GX_SUPPORTS_THEMING}
+procedure TfmClassBrowser.InitThemedColors;
+begin
+  if IsThemingEnabled then begin
+    InitThemingForForm(Self);
+
+(* this does not work:
+    LService := GxOtaGetIDEThemingServices;
+    if Assigned(LService) and LService.IDEThemingEnabled then begin
+      LService.ApplyTheme(MainMenu);
+    end;
+*)
+  end;
+end;
+{$ENDIF GX_SUPPORTS_THEMING}
+
 { TClassBrowserExpert }
 
 procedure TClassBrowserExpert.SetActive(New: Boolean);
@@ -1688,15 +1719,36 @@ constructor TClassBrowserExpert.Create;
 begin
   inherited;
   Logger := CreateModuleLogger(GetName);
+{$IFDEF GX_SUPPORTS_THEMING}
+  FThemeNotifier := TThemeChangedNotifier.Create(HandleThemeChanged);
+  if not FThemeNotifier.AddNotifierToIDE then
+    Logger.Warning('AddNotifierToIde failed for TClassBrowserExpert');
+{$ENDIF GX_SUPPORTS_THEMING}
 end;
 
 destructor TClassBrowserExpert.Destroy;
 begin
+{$IFDEF GX_SUPPORTS_THEMING}
+  if Assigned(FThemeNotifier) then begin
+    if not FThemeNotifier.RemoveNotifierFromIDE then
+      Logger.Warning('RemoveNotifierFromIDE failed for TClassBrowserExpert');
+    FThemeNotifier := nil;
+  end;
+{$ENDIF GX_SUPPORTS_THEMING}
+
   FreeAndNil(fmClassBrowser);
 
   inherited Destroy;
   Logger := nil;
 end;
+
+{$IFDEF GX_SUPPORTS_THEMING}
+procedure TClassBrowserExpert.HandleThemeChanged(_Sender: TObject);
+begin
+  if Assigned(fmClassBrowser) then
+    fmClassBrowser.InitThemedColors;
+end;
+{$ENDIF GX_SUPPORTS_THEMING}
 
 function TClassBrowserExpert.GetActionCaption: string;
 resourcestring
@@ -1880,6 +1932,19 @@ begin
   FCodeText.ReadOnly := True;
   FCodeText.Highlighter := gxpPas;
   FCodeText.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
+
+{$IFDEF GX_SUPPORTS_THEMING} // do we need this one? Test with Delphi 2007
+  GxOtaGetEditorFont(FMethodText.Font, -1);
+  FMethodText.Color := GetThemedColor(clWindow);
+  FMethodText.Font.Color := GetThemedColor(clWindowText);
+  Splitter1.Color := GetThemedColor(clBtnFace);
+  Splitter2.Color := GetThemedColor(clBtnFace);
+
+  GxOtaGetEditorFont(FCodeText.Font, -1);
+  FCodeText.Color := GetThemedColor(clWindow);
+  FCodeText.Font.Color := GetThemedColor(clWindowText);
+  FCodeText.ActiveLineColor := GetThemedColor(clInfoBk);
+{$ENDIF}
 end;
 
 procedure TfmClassBrowser.ViewBrowserDetails;
