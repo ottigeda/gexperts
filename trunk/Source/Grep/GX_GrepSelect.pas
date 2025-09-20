@@ -132,9 +132,17 @@ begin
 end;
 
 procedure TfmGrepSelect.InitializeForm;
+var
+  i : Integer;
 begin
   lvHistoryList.ParentFont := True;
   lvHistoryList.Canvas.Font.Assign(Self.Font);
+  lvHistoryList.Columns.BeginUpdate;
+  for i := 0 to lvHistoryList.Columns.Count - 1 do
+  begin
+    lvHistoryList.Columns[i].Width := FScaler.Calc(lvHistoryList.Columns[i].Width);
+  end;
+  lvHistoryList.Columns.EndUpdate;
 
   btnCheckItems.Tag := Integer(True);
   btnUnCheckItems.Tag := Integer(False);
