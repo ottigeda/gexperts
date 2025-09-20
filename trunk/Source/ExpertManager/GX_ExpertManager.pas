@@ -634,6 +634,13 @@ begin
 end;
 
 class function TExpertManagerExpert.AddExpertToRegistry(const ExpertName, FileName: string): TAddExpertToRegistryResult;
+{$IFDEF WIN64}
+const
+  ExpertsKey = 'Experts X64';
+{$ELSE}
+const
+  ExpertsKey = 'Experts';
+{$ENDIF}
 var
   RegIni: TGExpertsSettings;
   ExpertList: TStringList;
@@ -666,13 +673,6 @@ begin
   end;
 
   RegIni := TGExpertsSettings.Create(ConfigInfo.IdeRootRegistryKey);
-{$IFDEF WIN64}
-const
-  ExpertsKey = 'Experts X64';
-{$ELSE}
-const
-  ExpertsKey = 'Experts';
-{$ENDIF}
   try
     RegIni.WriteString(ExpertsKey, ExpertName, FileName); // Do not localize.
   finally
