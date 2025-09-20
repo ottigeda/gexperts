@@ -84,6 +84,7 @@ type
     procedure SetAllEnabled(_Value: Boolean);
     procedure SetDefaultShortcutClick(_Sender: TObject);
     procedure HandleVerticalScroll(_Sender: TObject);
+    procedure RepaintHotKeyControls(_Sender: TObject);
     procedure SetConfigButtonHotkey;
     procedure ScrollBy(_DeltaY: Integer);
     procedure AdjustScrollRange;
@@ -108,6 +109,9 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_GenericUtils,
   GX_BaseExpert,
+{$IFDEF GX_SUPPORTS_THEMING}
+  GX_DrawFixes,
+{$ENDIF}
   u_dzVclUtils;
 
 resourcestring
@@ -178,6 +182,7 @@ procedure TfrConfigureExperts.ScrollBy(_DeltaY: Integer);
 begin
   sbxExperts.VertScrollBar.Position := sbxExperts.VertScrollBar.Position + FThumbSize * _DeltaY;
   SetConfigButtonHotkey;
+  RepaintHotKeyControls(sbxExperts);
 end;
 
 function TryGetButton(_pnl: TPanel; const _Caption: string; out _btn: TButton): Boolean;
@@ -219,6 +224,31 @@ begin
   end;
 end;
 
+procedure TfrConfigureExperts.RepaintHotKeyControls(_Sender: TObject);
+{$IFDEF GX_SUPPORTS_THEMING}
+var
+  PanelIdx : Integer;
+  Panel    : TPanel;
+  HK       : THotKey;
+begin
+  if _Sender is TScrollBox then
+  begin
+    for PanelIdx := 0 to sbxExperts.ControlCount - 1 do begin
+      Panel := sbxExperts.Controls[PanelIdx] as TPanel;
+      if Panel <> pnlExpertLayout then begin
+        if Panel.Visible then begin
+          if TryGetHotkeyEdit(Panel, HK) then
+            HK.Invalidate;
+        end;
+      end;
+    end;
+  end;
+end;
+{$ELSE}
+begin
+end;
+{$ENDIF}
+
 procedure TfrConfigureExperts.SetConfigButtonHotkey;
 var
   h: Integer;
@@ -246,6 +276,7 @@ end;
 procedure TfrConfigureExperts.HandleVerticalScroll(_Sender: TObject);
 begin
   SetConfigButtonHotkey;
+  RepaintHotKeyControls(_Sender);
 end;
 
 function TryGetControl(_Owner: TControl; _CtrlClass: TControlClass; out _Ctrl: TControl): Boolean;
@@ -382,6 +413,9 @@ type
   THotKeyHack = class(THotKey)
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+{$IFDEF GX_SUPPORTS_THEMING}
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+{$ENDIF}
   end;
 
 { THotKeyHack }
@@ -426,6 +460,14 @@ begin
     Result := AppendToCsvStr(Result, 'ssMiddle');
   if ssDouble in _Shift then
     Result := AppendToCsvStr(Result, 'ssDouble');
+end;
+{$ENDIF}
+
+{$IFDEF GX_SUPPORTS_THEMING}
+procedure THotKeyHack.WMPaint(var Msg: TWMPaint);
+begin
+  PaintHotkey(Self);
+  Msg.Result := 0;
 end;
 {$ENDIF}
 
@@ -654,6 +696,7 @@ begin
   AdjustScrollRange;
 
   SetConfigButtonHotkey;
+  RepaintHotKeyControls(sbxExperts);
 end;
 
 procedure TfrConfigureExperts.AdjustScrollRange;
