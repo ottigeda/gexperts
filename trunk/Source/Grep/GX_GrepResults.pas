@@ -11,6 +11,7 @@ uses
   Types, // for inlining
   ComCtrls, Menus, Actions, UITypes,
   DropSource,
+  GX_Splitter,
   GX_GrepBackend, GX_GrepExpert, GX_ConfigurationInfo, GX_IdeDock, GX_GrepSearch, GX_SharedImages;
 
 type
@@ -326,6 +327,7 @@ type
     procedure SplitterHistoryListCanResize(Sender: TObject; var NewSize: Integer; var Accept: Boolean);
     procedure actHistoryClearExecute(Sender: TObject);
     procedure actFileOptionsStandAloneExecute(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
     FLastRepaintTick: DWORD;
     FSearchInProgress: Boolean;
@@ -423,6 +425,7 @@ public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
+    procedure InitThemedColors;
     procedure InitGrepSettings(AGrepSettings: TGrepSettings);
     function  Execute(AState: TGrepSearchState): Boolean;
     procedure UpdateFromSettings;
@@ -451,9 +454,12 @@ uses
 {$IFDEF GX_STANDALONE}
   GX_GrepOptionsStandAlone,
 {$ENDIF GX_STANDALONE}
+{$IFDEF GX_SUPPORTS_THEMING}
+  UxTheme,
+{$ENDIF}
   GX_GExperts, GX_GenericUtils, GX_StringList, GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_MessageBox,
-  GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect, GX_GrepProgress,
-  GX_IdeSplitterVisibility;
+  GX_IdeSplitterVisibility,
+  GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect, GX_GrepProgress;
 
 resourcestring
   SGrepReplaceStats = 'Replaced %d occurrence(s) in %.2f seconds';
@@ -545,6 +551,20 @@ begin
 end;
 
 { TfmGrepResults }
+
+procedure TfmGrepResults.FormActivate(Sender: TObject);
+// will be called by the IDE if the form is in the saved layout.
+// and also when the user clicks on the form - even if docked
+begin
+  inherited;
+  InitThemedColors;
+
+  AssignSettingsToForm;
+  ResizeListBox;
+  ResizeStatusBar;
+
+  ForceRedraw;
+end;
 
 procedure TfmGrepResults.FormKeyPress(Sender: TObject; var Key: Char);
 begin
@@ -899,6 +919,44 @@ begin
   lbResults.Refresh;
 end;
 
+procedure TfmGrepResults.InitThemedColors;
+{$IFDEF GX_SUPPORTS_THEMING}
+var
+  LBackColor     : TColor;
+  LSplitterColor : TColor;
+begin
+  if IsThemingEnabled then begin
+    InitThemingForForm(Self);
+
+    tcHistoryListPage.StyleElements := [seClient, seBorder];
+    tcHistoryListPage.Style := tsTabs;
+
+    LBackColor := GetThemedColor(clWindow);
+    LSplitterColor := GetThemedColor(clBtnFace);
+    StatusBar.StyleElements := [seBorder, seClient]; // -seFont
+    StatusBar.Font.Color := GetThemedColor(clBtnText);
+    StatusBar.Canvas.Font.Color := GetThemedColor(clBtnText);
+
+    pnlMain.Color := LBackColor;
+    pnlBottom.Color := LBackColor;
+    lbResults.Color := LBackColor;
+    lbHistoryList.Color := LBackColor;
+    reContext.Color := LBackColor;
+
+    SplitterHistoryList.Color := LSplitterColor;
+    SplitterContext.Color := LSplitterColor;
+
+    if IdeStyleIsDark then begin
+      if reContext.HandleAllocated then
+        SetWindowTheme(reContext.Handle, 'DarkMode_Explorer', nil);
+    end;
+  end;
+end { InitThemedColors };
+{$ELSE GX_SUPPORTS_THEMING}
+begin
+end;
+{$ENDIF GX_SUPPORTS_THEMING}
+
 procedure TfmGrepResults.InitGrepSettings(AGrepSettings: TGrepSettings);
 begin
   FGrepSettings := AGrepSettings;
@@ -967,21 +1025,12 @@ begin
 end;
 
 procedure TfmGrepResults.Loaded;
-var
-  PropInfo: PPropInfo;
-  i: Integer;
-  cmp: TComponent;
 begin
   inherited Loaded;
-  PropInfo := GetPropInfo(Self, 'StyleElements');
-  if Assigned(PropInfo) then
-    SetOrdProp(Self, PropInfo, 0);
-  for I := 0 to ComponentCount - 1 do begin
-    cmp := Components[I];
-    PropInfo := GetPropInfo(cmp, 'StyleElements');
-    if Assigned(PropInfo) then
-      SetOrdProp(cmp, PropInfo, 0);
-  end;
+
+  if IsThemingEnabled then
+    InitThemingForForm(Self);
+  RemoveStyleElements(Self, True); // include sub-components
 end;
 
 procedure TfmGrepResults.LoadSettings;
@@ -1345,13 +1394,13 @@ resourcestring
     FileString: string;
     FileResult: TFileResult;
   begin
-    TopColor := clBtnHighlight;
-    BottomColor := clBtnShadow;
+    TopColor := GetThemedColor(clBtnHighlight);
+    BottomColor := GetThemedColor(clBtnShadow);
 
     FileResult := TFileResult(lbResults.Items.Objects[Index]);
     // Paint an expandable search file header (gray)
-    ResultsCanvas.Brush.Color := clBtnFace;
-    ResultsCanvas.Font.Color := clBtnText;
+    ResultsCanvas.Brush.Color := GetThemedColor(clBtnFace);
+    ResultsCanvas.Font.Color := GetThemedColor(clBtnText);
     ResultsCanvas.FillRect(Rect);
 
     Rect.Right := Rect.Right + 2;
@@ -1408,10 +1457,10 @@ resourcestring
     begin
       if gblGrepExpert.ListUseDefaultColors then
       begin
-        nb := clHighLight;
-        nf := clHighLightText;
-        sb := clWindow;
-        sf := clWindowText;
+        nb := GetThemedColor(clHighLight);
+        nf := GetThemedColor(clHighLightText);
+        sb := GetThemedColor(clWindow);
+        sf := GetThemedColor(clWindowText);
       end
       else
       begin
@@ -1425,16 +1474,16 @@ resourcestring
     begin
       if gblGrepExpert.ListUseDefaultColors then
       begin
-        sb := clHighLight;
-        sf := clHighLightText;
-        nb := clWindow;
-        nf := clWindowText;
+        sb := GetThemedColor(clHighLight);
+        sf := GetThemedColor(clHighLightText);
+        nb := GetThemedColor(clWindow);
+        nf := GetThemedColor(clWindowText);
       end
       else
       begin
         sb := gblGrepExpert.ListMatchBrushColor;
         sf := gblGrepExpert.ListMatchTextColor;
-        nb := clWindow;
+        nb := GetThemedColor(clWindow);
         nf := gblGrepExpert.ListFont.Color;
       end;
     end;
@@ -1501,8 +1550,8 @@ resourcestring
 
   procedure PaintOnlySaveSettings;
   begin
-    ResultsCanvas.Brush.Color := clWindow;
-    ResultsCanvas.Font.Color := clWindowText;
+    ResultsCanvas.Brush.Color := GetThemedColor(clWindow);
+    ResultsCanvas.Font.Color := GetThemedColor(clWindowText);
     ResultsCanvas.FillRect(Rect);
 
     ResultsCanvas.TextOut(Rect.Left + 3, Rect.Top + 1, lbResults.Items[Index]);
@@ -1869,6 +1918,8 @@ begin
       FPageIndexes[IM, IT] := -1;
 
   SetToolbarGradient(ToolBar);
+  lbResults.ParentFont := True;
+  lbResults.Canvas.Font.Assign(Self.Font);
 
   if IsStandAlone then begin
     actHamburgerMenu.Visible := False;
@@ -1877,6 +1928,8 @@ begin
 
   FSearchInProgress := False;
   lbResults.DoubleBuffered := True;
+  SplitterContext.Color := GetThemedColor(clBtnFace);
+  SplitterHistoryList.Color := GetThemedColor(clBtnFace);
   CenterForm(Self);
 
   InitDpiScaler;
@@ -2046,13 +2099,48 @@ begin
   lbHistoryList.Refresh;
 end;
 
+(*
+procedure TfmGrepResults.TabControlDrawTab(Control: TCustomTabControl; TabIndex: Integer; const Rect: TRect; Active: Boolean);
+var
+  LCaption   : string;
+  LTextRect  : TRect;
+  LBackColor : TColor;
+  LTextColor : TColor;
+begin
+  LCaption := TTabControl(Control).Tabs[TabIndex];
+  if Active then
+  begin
+    LBackColor := GetThemedColor(clHighlight);
+    LTextColor := GetThemedColor(clHighlightText)
+  end
+  else begin
+    LBackColor := GetThemedColor(clBtnFace);
+    LTextColor := GetThemedColor(clBtnText);
+  end;
+
+  Control.Canvas.Brush.Color := LBackColor;
+  Control.Canvas.FillRect(Rect);
+  Control.Canvas.Font.Color := LTextColor;
+
+  LTextRect := Rect;
+  LTextRect.Inflate(-3, -3);
+  DrawText(Control.Canvas.Handle, PChar(LCaption), -1, LTextRect, DT_TOP or DT_LEFT);
+end;
+*)
+
+type
+  TWinControlAccess = class(TWinControl);
+
 procedure TfmGrepResults.FormShow(Sender: TObject);
 begin
   inherited;
 
+  InitThemedColors;
+
   AssignSettingsToForm;
   ResizeListBox;
   ResizeStatusBar;
+
   ForceRedraw;
 end;
 
@@ -2121,8 +2209,9 @@ procedure TfmGrepResults.AssignSettingsToForm;
 begin
   Assert(Assigned(gblGrepExpert));
   reContext.Font.Assign(gblGrepExpert.ContextFont);
+  reContext.Font.Color := GetThemedColor(gblGrepExpert.ContextFont.Color);
   lbResults.Font.Assign(gblGrepExpert.ListFont);
-
+  lbResults.Font.Color := GetThemedColor(gblGrepExpert.ListFont.Color);
   lbHistoryList.ParentFont := True;
   lbHistoryList.Canvas.Font.Assign(Self.Font);
   lbHistoryList.ItemHeight := 2 * lbHistoryList.Canvas.TextHeight(SAllAlphaNumericChars);
@@ -2393,7 +2482,20 @@ begin
     Exit;
 
   cnv := lbHistoryList.Canvas;
-  if not gblGrepExpert.ListUseDefaultColors then
+  if gblGrepExpert.ListUseDefaultColors then
+  begin
+    if odSelected in State then
+    begin
+      cnv.Font.Color  := GetThemedColor(clHighlightText);
+      cnv.Brush.Color := GetThemedColor(clHighlight);
+    end
+    else
+    begin
+      cnv.Font.Color  := GetThemedColor(clWindowText);
+      cnv.Brush.Color := GetThemedColor(clWindow);
+    end;
+  end
+  else
   begin
     if odSelected in State then
     begin
@@ -2403,7 +2505,7 @@ begin
     else
     begin
       cnv.Font.Color := gblGrepExpert.ListFont.Color;
-      cnv.Brush.Color := clWindow;
+      cnv.Brush.Color := GetThemedColor(clWindow);
     end;
   end;
 
