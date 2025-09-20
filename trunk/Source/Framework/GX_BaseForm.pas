@@ -32,6 +32,10 @@ type
     FGxHintCustomDataRec: TGxHintCustomDataRec;
     FScaler: TFormDpiScaler;
     FApplicationEvents: TApplicationEvents;
+    {$IFDEF GX_SUPPORTS_THEMING}
+    // FThemeChangedNotifier: TThemeChangedNotifier;
+    procedure InitTheming; virtual;
+    {$ENDIF}
     procedure HandleApplicationEventsShowHint(var HintStr: string; var CanShow: Boolean;
       var HintInfo: THintInfo);
     procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
@@ -51,6 +55,7 @@ implementation
 {$R *.dfm}
 
 uses
+  GX_OtaUtils,
   GX_GxUtils;
 
 class function TfmBaseForm.Execute(_Owner: TComponent): Boolean;
@@ -91,6 +96,13 @@ begin
   _Msg.Result := 0;
 end;
 
+{$IFDEF GX_SUPPORTS_THEMING}
+procedure TfmBaseForm.InitTheming;
+begin
+  // Stub
+end;
+{$ENDIF}
+
 procedure TfmBaseForm.HandleApplicationEventsShowHint(var HintStr: string; var CanShow: Boolean;
   var HintInfo: THintInfo);
 begin
@@ -111,6 +123,7 @@ end;
 
 procedure TfmBaseForm.ArrangeControls;
 begin
+  // Stub
 end;
 
 procedure TfmBaseForm.Loaded;
@@ -127,13 +140,14 @@ end;
 constructor TfmBaseForm.Create(AOwner: TComponent);
 begin
   inherited;
-
+  // FThemeChangedNotifier := nil;
   FApplicationEvents := TApplicationEvents.Create(Self);
   FApplicationEvents.OnShowHint := HandleApplicationEventsShowHint;
 
   FGxHintCustomDataRec.ScaleHint := Self.ScaleHint;
   CopyMemory(@(FGxHintCustomDataRec.ID), @GxHintCustomDataId, SizeOf(FGxHintCustomDataRec.ID));
   GxSetDefaultFont(Self);
+  GxOtaInitTheming(Self); // enable dark mode support
 end;
 
 destructor TfmBaseForm.Destroy;
