@@ -23,6 +23,7 @@ uses
   GX_BookmarksLists in '..\..\Source\Bookmarks\GX_BookmarksLists.pas',
   GX_BookmarksOptions in '..\..\source\Bookmarks\GX_BookmarksOptions.pas' {foBookmarksOptions},
   GX_BookmarksSelect in '..\..\source\Bookmarks\GX_BookmarksSelect.pas' {foBookmarksSelect},
+  GX_CheckButton in '..\..\source\Utils\GX_CheckButton.pas',
   GX_CheckListBoxWithHints in '..\..\Source\ProjectOptionSets\GX_CheckListBoxWithHints.pas',
   GX_ClassBrowser in '..\..\source\ClassBrowser\GX_ClassBrowser.pas' {fmClassBrowser},
   GX_ClassHacks in '..\..\source\Framework\GX_ClassHacks.pas',
@@ -71,6 +72,7 @@ uses
   GX_DbugIntf in '..\..\source\Utils\GX_DbugIntf.pas',
   GX_Debug in '..\..\Source\Utils\GX_Debug.pas',
   GX_DesignerMenu in '..\..\source\Framework\GX_DesignerMenu.pas',
+  GX_DrawFixes in '..\..\Source\Utils\GX_DrawFixes.pas',
   GX_DummyWizard in '..\..\Source\Framework\GX_DummyWizard.pas',
   GX_DuplicateDllHandler in '..\..\Source\Framework\GX_DuplicateDllHandler.pas',
   GX_eAddToCaptitalization in '..\..\Source\Formatter\GX_eAddToCaptitalization.pas',
@@ -247,6 +249,7 @@ uses
   GX_ShLwApi in '..\..\Source\Utils\GX_ShLwApi.pas',
   GX_SourceExport in '..\..\source\SourceExport\GX_SourceExport.pas' {fmSourceExport},
   GX_SourceExportOptions in '..\..\source\SourceExport\GX_SourceExportOptions.pas' {fmSourceExportOptions},
+  GX_Splitter in '..\..\Source\Utils\GX_Splitter.pas',
   GX_StringGridDrawFix in '..\..\Source\Utils\GX_StringGridDrawFix.pas',
   GX_StringList in '..\..\Source\Utils\GX_StringList.pas',
   GX_SynMemoUtils in '..\..\source\Framework\GX_SynMemoUtils.pas',
@@ -271,17 +274,7 @@ uses
   GX_VCLFixPack in '..\..\Source\Utils\GX_VCLFixPack.pas',
   GX_VerDepConst in '..\..\source\Framework\GX_VerDepConst.pas',
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
-  GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas',
-  
-  GX_ToDoGridConst in '..\..\Source\ToDoGrid\GX_ToDoGridConst.pas',
-  GX_ToDoGridFrame in '..\..\Source\ToDoGrid\GX_ToDoGridFrame.pas' {frmToDoGridFrame: TFrame},
-  GX_ToDoGridMainDock in '..\..\Source\ToDoGrid\GX_ToDoGridMainDock.pas' {foToDoGridMainDock},
-  GX_ToDoGridMainFree in '..\..\Source\ToDoGrid\GX_ToDoGridMainFree.pas' {foToDoGridMainFree},
-  GX_ToDoGridOptions in '..\..\Source\ToDoGrid\GX_ToDoGridOptions.pas' {foToDoGridOptions},
-  GX_ToDoGridOptionsCheck in '..\..\Source\ToDoGrid\GX_ToDoGridOptionsCheck.pas',
-  GX_ToDoGridScan in '..\..\Source\ToDoGrid\GX_ToDoGridScan.pas',
-  GX_ToDoGridUtilities in '..\..\Source\ToDoGrid\GX_ToDoGridUtilities.pas';
-  
+  GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas';
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
