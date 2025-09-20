@@ -747,6 +747,17 @@ begin
 end;
 
 {$IFDEF Win64}
+(*
+// https://stackoverflow.com/questions/21757165/how-to-get-cpu-speed-from-delphi-64-bit-application-xe5
+function GetCpuClockCycleCount: Int64; assembler; register;
+asm
+  dw 310Fh // rdtsc
+  shl rdx, 32
+  or rax, rdx
+end;
+
+*)
+
 function GetCPUSpeed: Extended;
 var
   Reg: TRegistry;
