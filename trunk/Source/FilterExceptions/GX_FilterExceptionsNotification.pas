@@ -103,7 +103,11 @@ class function TfmExceptionNotification.Execute(_Owner: TWinControl; _OnAddExcep
 var
   frm: TfmExceptionNotification;
 begin
+  {$IF CompilerVersion >= 36}
+  frm := TfmExceptionNotification.CreateScaledNew(_Owner, _Owner.CurrentPPI);
+  {$ELSE}
   frm := TfmExceptionNotification.Create(_Owner);
+  {$IFEND}
   try
     GxSetDefaultFont(frm);
     TForm_CenterOn(frm, _Owner);
@@ -551,8 +555,10 @@ begin
   // thread is suspended so we can get current address from instruction pointer register
   case IProcess.GetProcessType of
     optWin32: begin // x86
+{$IFDEF CPUX86}
         Result := IThread.OTAThreadContextEx.win32.Eip;
         SizeOfResult := SizeOf(IThread.OTAThreadContextEx.win32.Eip);
+{$ENDIF}
       end;
     optWin64: begin // x64
         Result := IThread.OTAThreadContextEx.win64.Rip;
@@ -647,9 +653,9 @@ begin
     P := @Parsed[0];
     Inc(P, $A8);
     P := PPointer(P)^;
-    PE := PExceptionRecord(Integer(P) + $18);
+    PE := PExceptionRecord(GXNativeInt(P) + $18);
     C := PE.ExceptionCode;
-    Params := Pointer(Integer(P) + $30);
+    Params := Pointer(GXNativeInt(P) + $30);
     _ExceptionInformation := Params^;
 {$IFOPT D+}
     for i := Low(_ExceptionInformation) to High(_ExceptionInformation) do
@@ -669,12 +675,12 @@ begin
         Result := PUInt64(P)^;
       end;
     end else begin
-      C := PCardinal(Integer(P) + $34)^;
+      C := PCardinal(GXNativeInt(P) + $34)^;
       if C <> 0 then begin
         Inc(P, $48);
         Result := PUInt64(P)^;
       end else begin
-        C := PCardinal(Integer(P) + $30)^;
+        C := PCardinal(GXNativeInt(P) + $30)^;
         if C <> 1 then begin
           Inc(P, $48);
           Result := PUInt64(P)^;
