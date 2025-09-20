@@ -120,6 +120,7 @@ type
     procedure mi_ExportClick(Sender: TObject);
     procedure pc_NamesChange(Sender: TObject);
     procedure mi_ResetToDefaultClick(Sender: TObject);
+    procedure lbxOtherPropsDblClick(Sender: TObject);
   private
     FOnImport: TOnImportLists;
     FOnExport: TOnExportLists;
@@ -749,6 +750,12 @@ begin
   Grid := GetActiveGrid;
   Result := (Trim(Grid.Cells[0, ARow]) > '') and
             (Trim(Grid.Cells[1, ARow]) > '');
+end;
+
+procedure TfmCompRenameConfig.lbxOtherPropsDblClick(Sender: TObject);
+begin
+  inherited;
+  acOtherProperties.Execute;
 end;
 
 procedure TfmCompRenameConfig.pc_NamesChange(Sender: TObject);
