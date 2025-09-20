@@ -14,14 +14,15 @@ interface
 uses
   Windows, SysUtils,
   Classes, Controls, Forms, Menus, ComCtrls, Buttons, ImgList, ImageList,
-  ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types, ToolsAPI,
-  u_dzSpeedBitBtn,
+  ExtCtrls, ActnList, Actions, Dialogs, StdCtrls, Grids, Types, Themes,
+  GX_CheckButton,
   {$IFDEF DEBUG_USE_STOPWATCH}
   u_dzStopwatch,
   {$ENDIF}
   u_dzDpiScaleUtils,
-  GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm,
+  GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm, GX_Splitter,
   GX_UnitExportsParser, GX_UsesExpertOptions, GX_UnitExportList,
+  ToolsApi,
   GX_OtaUtils,
   rzC_Splitter;
 
@@ -278,10 +279,9 @@ type
     procedure pnlUsesResize(Sender: TObject);
     procedure SplitterMoved(Sender: TObject);
     procedure pnlAvailableHeaderResize(Sender: TObject);
-    procedure sg_UsedDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect;
-      State: TGridDrawState);
-    procedure sg_AvailDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect;
-      State: TGridDrawState);
+    procedure pnlIdentifiersResize(Sender: TObject);
+    procedure sg_UsedDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
+    procedure sg_AvailDrawCell(Sender: TObject; ACol, ARow: Integer; Rect: TRect; State: TGridDrawState);
     procedure edtIdentifierFilterEnter(Sender: TObject);
     procedure edtIdentifierFilterExit(Sender: TObject);
     procedure edtUnitFilterEnter(Sender: TObject);
@@ -310,6 +310,7 @@ type
     procedure sg_CommonSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
     procedure sg_FavoriteSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
     procedure sg_IdentifiersSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
+    procedure sg_IdentifiersMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure sg_ProjectSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
     procedure sg_SearchPathSelectCell(Sender: TObject; ACol, ARow: Integer; var CanSelect: Boolean);
     procedure mSearchThisOnTheWebClick(Sender: TObject);
@@ -317,9 +318,6 @@ type
     procedure actAddToImplemenationAndCloseExecute(Sender: TObject);
     procedure chk_FastAddClick(Sender: TObject);
     procedure b_HelpClick(Sender: TObject);
-    procedure pnlIdentifiersResize(Sender: TObject);
-    procedure sg_IdentifiersMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   private
@@ -331,7 +329,7 @@ type
     FOldToNewUnitNameMap: TStringList;
     FCaption_lblFilter: string;
     FForceFocusToIdentifierFilter: Boolean;
-    FIdentifierMatchGrp: TdzSpeedBitBtnGroup;
+    FIdentifierMatchGrp: TGXCheckButtonGroup;
     FSelectedUnitLineNo: Integer;
     FSelectedUnitFn: string;
     FDefaultToInterfaceList: Boolean;
@@ -387,6 +385,12 @@ type
     procedure FinalizeForm;
     procedure SetSelectedFile(const _fn: string; _LineNo: Integer = -1);
     procedure UpdateDefaultButton;
+
+  private
+    ckbIdentifierMatchStart    : TGXCheckButton;
+    ckbIdentifierMatchAnywhere : TGXCheckButton;
+    ckbIdentifierMatchSort     : TGXCheckButton;
+
   protected
     FProjectUnits: TStringList;
     FCommonUnits: TStringList;
@@ -931,14 +935,17 @@ begin
   pnlUnits.DoubleBuffered := True;
   pnlUses.DoubleBuffered := True;
 
-  FIdentifierMatchGrp :=  TdzSpeedBitBtnGroup.Create;
+  FIdentifierMatchGrp := TGXCheckButtonGroup.Create(Self);
   FIdentifierMatchGrp.AllowAllUp := False;
-  FIdentifierMatchGrp.Add(b_IdentifierMatchStart, Ord(fieStartOnly));
-  FIdentifierMatchGrp.Add(b_IdentifierMatchAnywhere, Ord(fieAnywhere));
-  FIdentifierMatchGrp.Add(b_IdentifierMatchSort, Ord(fieStartFirst));
-  // this only works if the order the buttons are added is the same as the order of the enums
+  ckbIdentifierMatchStart    := FIdentifierMatchGrp.Add(b_IdentifierMatchStart, Ord(fieStartOnly));
+  ckbIdentifierMatchAnywhere := FIdentifierMatchGrp.Add(b_IdentifierMatchAnywhere, Ord(fieAnywhere));
+  ckbIdentifierMatchSort     := FIdentifierMatchGrp.Add(b_IdentifierMatchSort, Ord(fieStartFirst));
   FIdentifierMatchGrp.SetDown(Ord(FUsesExpert.FFilterIdentifiers));
   FIdentifierMatchGrp.OnClick := sb_MatchWhereClick;
+  FIdentifierMatchGrp.AllowAllUp := False;
+
+  // this only works if the order the buttons are added is the same as the order of the enums
+  FIdentifierMatchGrp.SetDown(Ord(FUsesExpert.FFilterIdentifiers));
 
   chk_FastAdd.Checked := _UsesExpert.FFastAdd;
   FUsesExpert.SetFormIcon(Self);
@@ -1140,6 +1147,15 @@ begin
   FSearchPathUnits := TStringList.Create;
   sg_SearchPath.AssociatedList := FSearchPathUnits;
 
+  sg_Interface.Color      := GetThemedColor(clWindow);
+  sg_Implementation.Color := GetThemedColor(clWindow);
+  sg_Project.Color        := GetThemedColor(clWindow);
+  sg_Common.Color         := GetThemedColor(clWindow);
+  sg_Favorite.Color       := GetThemedColor(clWindow);
+  sg_SearchPath.Color     := GetThemedColor(clWindow);
+  sg_Identifiers.Color    := GetThemedColor(clWindow);
+  Splitter.Color          := GetThemedColor(clBtnFace);
+
   FIdentifiers := TUnitExportlist.Create(0);
   FAliases := TStringList.Create;
   FOldToNewUnitNameMap := TStringList.Create;
@@ -1163,6 +1179,10 @@ begin
 {$IFOPT D+}
   SendDebug('Started SearchPath FindThread');
 {$ENDIF D+}
+
+  if IsThemingEnabled
+  then pcUnits.Style := tsButtons
+  else pcUnits.Style := tsTabs;
 
   pcUnits.ActivePage := tabSearchPath;
   GxOtaGetUnitAliases(FAliases);
@@ -1238,8 +1258,12 @@ procedure TfmUsesManager.FormResize(Sender: TObject);
 const pnlUsesMinWidth  = 326;
       pnlUnitsMinWidth = 473;
 begin
- Splitter.MinSize := FScaler.Calc(pnlUsesMinWidth);
- Splitter.MaxSize := Self.ClientWidth - Splitter.Width - FScaler.Calc(pnlUnitsMinWidth);
+  if Assigned(FScaler) then begin
+    Splitter.MinSize := FScaler.Calc(pnlUsesMinWidth);
+    Splitter.MaxSize := Self.ClientWidth - Splitter.Width - FScaler.Calc(pnlUnitsMinWidth);
+  end;
+  pnlAvailableHeaderResize(nil);
+  pnlIdentifiersResize(nil);
 end;
 
 procedure TfmUsesManager.lbxInterfaceFilesDropped(_Sender: TObject; _Files: TStrings);
@@ -1404,14 +1428,14 @@ end;
 procedure TfmUsesManager.pnlAvailableHeaderResize(Sender: TObject);
 var
   w: Integer;
-// l: Integer;
 begin
   // l := pnlAvailableHeader.Width - grp_IdentifiersMatch.Width - 2;
   // w := l - 8 - lblFilter.Left;
-  // grp_IdentifiersMatch.Left := l;
 
-  if grp_IdentifiersMatch.Visible then w := pnlAvailableHeader.Width - grp_IdentifiersMatch.Width - 7
-                                  else w := pnlAvailableHeader.Width;
+  if grp_IdentifiersMatch.Visible then 
+    w := pnlAvailableHeader.Width - grp_IdentifiersMatch.Width - 7
+  else 
+    w := pnlAvailableHeader.Width;
 
   edtUnitFilter.Left := 0;
   edtUnitFilter.Width := w;
@@ -1595,13 +1619,14 @@ begin
     end;
     if gdSelected in _State then begin
       if not _Focused then begin
-        cnv.Brush.Color := clDkGray;
+        cnv.Brush.Color := GetThemedColor(clDkGray);
         // I would have used clHighlightText but that becomes unreadable when theming is active
-        cnv.Font.Color := clWhite;
+        cnv.Font.Color := GetThemedColor(clWhite);
       end;
     end else begin
       if _Tag <> 0 then begin
-        cnv.Brush.Color := clYellow;
+        cnv.Brush.Color := GetThemedColor(clWarningBack);
+        cnv.Font.Color  := GetThemedColor(clWarningText);
       end;
     end;
   end;
@@ -1703,13 +1728,15 @@ procedure TfmUsesManager.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
   procedure AdjustTop(_ctrl: TControl);
   begin
     // todo: Is this still necessary?
-    _Ctrl.Top := MulDiv(_Ctrl.Top, _NewDPI, FOldDPI);
+    if Assigned(_ctrl) then
+      _ctrl.Top := MulDiv(_ctrl.Top, _NewDPI, FOldDPI);
   end;
 
   procedure AdjustHeight(_ctrl: TControl);
   begin
     // todo: Is this still necessary?
-    _Ctrl.Height := MulDiv(_Ctrl.Height, _NewDPI, FOldDPI);
+    if Assigned(_ctrl) then
+      _ctrl.Height := MulDiv(_ctrl.Height, _NewDPI, FOldDPI);
   end;
 
   procedure ArrangeButtonsInGroup(const _Buttons: array of TWinControl; _grp: TGroupBox);
@@ -1720,6 +1747,8 @@ procedure TfmUsesManager.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
   begin
     Assert(Length(_Buttons) > 1);
     btn := _Buttons[0];
+    if not Assigned(btn) then Exit;
+
     Offset := _grp.ClientHeight - btn.Top - btn.Height;
     for i := 0 to Length(_Buttons) - 1 do
       AdjustTop(_Buttons[i]);
@@ -2197,7 +2226,7 @@ begin
     FreeAndNil(PathFiles);
   end;
   FilterVisibleUnits;
-  sg_SearchPath.Color := clWindow;
+  sg_SearchPath.Color := GetThemedColor(clWindow);
   sg_SearchPath.Enabled := True;
 end;
 
@@ -2345,6 +2374,7 @@ begin
   TWinControl_Lock(pnlIdentifiers);
   Filter := Trim(edtIdentifierFilter.Text);
 
+  if not Assigned(FIdentifierMatchGrp) then Exit;
   if FIdentifierMatchGrp.TryGetSelected(Idx) then
     FilterType := TFilterIdentifiersEnum(Idx)
   else
@@ -3434,14 +3464,17 @@ begin
   sg_Identifiers.ColWidths[1] := sg_Identifiers.ClientWidth - sg_Identifiers.ColWidths[0] - 2 * sg_Identifiers.GridLineWidth;;
 end;
 
-procedure TfmUsesManager.sg_IdentifiersMouseUp(Sender: TObject;Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var SG: TStringgrid absolute Sender;
-    w1: Integer;
+procedure TfmUsesManager.sg_IdentifiersMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var 
+  SG: TStringgrid;
+  w1: Integer;
 begin
   inherited;
-
-  W1 := SG.ClientWidth - SG.ColWidths[0] - (2 * SG.GridLineWidth);
-  if SG.ColWidths[1] <> w1 then SG.ColWidths[1] := w1;
+  if Sender is TStringGrid then begin
+    SG := TStringGrid(Sender);
+    W1 := SG.ClientWidth - SG.ColWidths[0] - (2 * SG.GridLineWidth);
+    if SG.ColWidths[1] <> w1 then SG.ColWidths[1] := w1;
+  end;
 end;
 
 procedure TfmUsesManager.FormKeyDown(Sender: TObject; var Key: Word;
