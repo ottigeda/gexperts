@@ -132,6 +132,7 @@ type
     FColumnIndex: Integer;
     FProjectFileName: string;
     FScannedFiles: TStringList;
+    FDarkMode: Boolean;
     function GetSelectedItem: TToDoInfo;
     procedure UMResizeCols(var Msg: TMessage); message UM_RESIZECOLS;
     procedure RefreshTodoList;
@@ -198,6 +199,7 @@ uses
   mPasLex, mwBCBTokenList, mwPasParserTypes,
   u_dzVclUtils, u_dzStringUtils,
   GX_GxUtils, GX_GenericUtils, GX_EditReader,
+  GX_IdeUtils,
   GX_GExperts;
 
 resourcestring
@@ -716,6 +718,11 @@ begin
     RefreshTodoList;
     ShowNumberOfUnfilteredTodoItems;
   end;
+{$IFDEF GX_SUPPORTS_THEMING}
+  FDarkMode := IdeStyleIsDark;
+{$ELSE}
+  FDarkMode := False;
+{$ENDIF}
   PostMessage(Self.Handle, UM_RESIZECOLS, 0, 0);
   edtFilterTodoList.Height := ToolBar.Height; // avoid auto-resetting of edtFilterTodoList.Height / does not work?
 end;
@@ -1041,6 +1048,9 @@ begin
   FNotifier := TToDoNotifier.Create(Self);
   FNotifier.AddNotifierToIDE;
 
+  {$IFNDEF GX_SUPPORTS_THEMING}
+  lvToDo.DoubleBuffered := IsThemingEnabled;
+  {$ENDIF}
   LoadSettings;
 end;
 
@@ -1233,15 +1243,16 @@ procedure TfmToDo.lvTodoCustomDrawItem(Sender: TCustomListView; Item: TListItem;
 {$IFNDEF GX_DELPHI2005_UP}
 const
   clWebOrangeRed = $0045FF;
+  clWebLightSkyBlue = $FACE87; 
 {$ENDIF}
 var
   cnv: TCanvas;
 begin
   cnv := lvToDo.Canvas;
   if Odd(Item.Index) then
-    cnv.Brush.Color := clWindow
+    cnv.Brush.Color := GetThemedColor(clWindow)
   else
-    cnv.Brush.Color := clWindow or ($0A0A0A);
+    cnv.Brush.Color := GetThemedColor(clWindow) or ($0A0A0A);
 
   // todo: check for current file against TToDoInfo(Item.data).FileName and draw the filename in bold
   // TODO: make coloring the text an option, maybe even let the user select the colours
@@ -1256,19 +1267,22 @@ begin
         cnv.Font.Color := clWebOrangeRed;
       end;
     tpNormal: begin
-        cnv.Font.Color := clBlue;
+        if FDarkMode then
+          cnv.Font.Color := clWebLightSkyBlue
+        else
+          cnv.Font.Color := clBlue;
     end;
     tpLow: begin
-        cnv.Font.Color := clBlack;
+        cnv.Font.Color := GetThemedColor(clWindowText);
       end;
     tpLowest: begin
-        cnv.Font.Color := clGrayText;
+        cnv.Font.Color := GetThemedColor(clGrayText);
       end;
     tpInfo: begin
-        cnv.Font.Color := clBlack;
+        cnv.Font.Color := GetThemedColor(clWindowText);
       end;
     tpDone: begin
-        lvToDo.Canvas.Font.Color := clGrayText;
+        lvToDo.Canvas.Font.Color := GetThemedColor(clGrayText);
       end;
   end;
 end;
