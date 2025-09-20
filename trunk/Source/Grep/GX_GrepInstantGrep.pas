@@ -322,7 +322,7 @@ var
     if _Index > 0 then
       _Rect.Top := _Rect.Top - 1;
 
-    LbCanvas.Brush.Color := clBtnShadow;
+    LbCanvas.Brush.Color := GetThemedColor(clBtnShadow);
     LbCanvas.FrameRect(_Rect);
   end;
 
@@ -332,7 +332,7 @@ var
     Line: string;
     TextTop: Integer;
   begin
-    LbCanvas.Brush.Color := clBtnFace;
+    LbCanvas.Brush.Color := GetThemedColor(clBtnFace);
     LbCanvas.FillRect(_Rect);
 
     TextTop := _Rect.Top + TopOffset;
@@ -340,15 +340,15 @@ var
       Line := Format('%d', [Res.LineIdx + 1 + i]);
       if i = 0 then begin
         // line containing the match
-        LbCanvas.Font.Color := clBtnText;
+        LbCanvas.Font.Color := GetThemedColor(clBtnText);
       end else begin
-        LbCanvas.Font.Color := clGrayText;
+        LbCanvas.Font.Color := GetThemedColor(clGrayText);
       end;
       LbCanvas.TextOut(_Rect.Right - 1 - LbCanvas.TextWidth(Line) - FScaler.Calc(5), TextTop, Line);
       Inc(TextTop, LineHeight);
     end;
 
-    LbCanvas.Pen.Color := clBtnShadow;
+    LbCanvas.Pen.Color := GetThemedColor(clBtnShadow);
     LbCanvas.MoveTo(_Rect.Right - 1, _Rect.Top);
     LbCanvas.LineTo(_Rect.Right - 1, _Rect.Bottom);
   end;
@@ -363,17 +363,17 @@ var
     Idx: Integer;
   begin
     if odSelected in _State then begin
-      BGNormal := clHighLight;
-      LbCanvas.Font.Color := clHighLightText;
+      BGNormal := GetThemedColor(clHighLight);
+      LbCanvas.Font.Color := GetThemedColor(clHighLightText);
       BGMatch := BGNormal;
     end else if Res.MatchStart = -1 then begin
       // original position
-      BGNormal := clBtnFace;
-      LbCanvas.Font.Color := clWindowText;
+      BGNormal := GetThemedColor(clBtnFace);
+      LbCanvas.Font.Color := GetThemedColor(clWindowText);
       BGMatch := BGNormal;
     end else begin
-      BGNormal := clWindow;
-      LbCanvas.Font.Color := clWindowText;
+      BGNormal := GetThemedColor(clWindow);
+      LbCanvas.Font.Color := GetThemedColor(clWindowText);
       BGMatch := FLineHighlightColor;
     end;
     LbCanvas.Brush.Color := BGNormal;
@@ -426,7 +426,8 @@ var
 begin
   cnv := lb_Results.Canvas;
   cnv.Font := lb_Results.Font;
-  lb_Results.ItemHeight := (cnv.TextHeight('Mg') + 2) * 3;
+  lb_Results.Color := GetThemedColor(clWindow);
+  lb_Results.ItemHeight := 1 + (cnv.TextHeight('Mg') + 2) * 3;
 end;
 
 procedure TfmGxInstantGrepForm.ed_RegExChange(Sender: TObject);
