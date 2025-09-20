@@ -6,6 +6,9 @@ interface
 
 uses
   SysUtils, Classes, Controls, Contnrs, Forms, ActnList, ImgList, Menus, ToolsAPI,
+{$IFDEF GX_SUPPORTS_THEMING}
+  Themes,
+{$ENDIF}
   Actions, Graphics,
   SynUnicode, // required for pre-UNICODE Delphi versions
   GX_GenericUtils, GX_StringList, GX_IdeUtils;
@@ -64,7 +67,19 @@ function GxOtaEditorIsPlayingMacro: Boolean;
 function GxOtaEditorIsPausedMacro: Boolean;
 procedure GxOtaSetEditorKeyTracingEnabled(Enabled: Boolean);
 function GxOtaGetEditorKeyTracingEnabled: Boolean;
+
+{$IFDEF GX_SUPPORTS_THEMING}
+function IdeStyleIsDark: Boolean;
+function IdeStyleService: TCustomStyleServices;
+function GxOtaGetIDEThemingServices: IOTAIDEThemingServices;
+function GxOtaActiveThemeName: string;
+function GxOtaGetStyleColor(AColor: TStyleColor; ADefault: TColor): TColor;
+function GxOtaGetStyleFontColor(AFontStyle: TStyleFont; ADefault: TColor = clNone): TColor;
+{$ENDIF}
+function GxOtaApplyTheme(AForm: TCustomForm): Boolean;
 function GxOtaThemingEnabled: Boolean;
+function GxOtaInitTheming(AForm: TCustomForm): Boolean;
+function GxOtaGetThemedColor(AColor: TColor): TColor;
 
 const
   // Invalid notifier index
@@ -831,6 +846,23 @@ type
   public
     constructor Create(_OnFileNotificationEvent: TFileNotificationEvent);
   end;
+
+{$IFDEF GX_SUPPORTS_THEMING}
+type
+  TThemeChangedNotifier = class(TNotifierObject, INTAIDEThemingServicesNotifier)
+  private
+    FNotifierIndex: Integer;
+    FOnThemeChanged : TNotifyEvent;
+  public
+    constructor Create(_OnThemeChanged: TNotifyEvent);
+  public
+    function AddNotifierToIDE: Boolean;
+    function RemoveNotifierFromIDE: Boolean;
+    destructor Destroy; override;
+    procedure ChangingTheme;
+    procedure ChangedTheme;
+  end;
+{$ENDIF}
 
 type
   EStandAloneUsage = class(Exception);
@@ -4103,20 +4135,147 @@ begin
   Result := (BorlandIDEServices as ToolsAPI.IOTAKeyboardDiagnostics).KeyTracing;
 end;
 
-function GxOtaThemingEnabled: Boolean;
-{$IF declared(IOTAIDEThemingServices)}
+{$IFDEF GX_SUPPORTS_THEMING}
+function IdeStyleService: TCustomStyleServices;
 var
-  LService : IOTAIDEThemingServices;
+  LService: IOTAIDEThemingServices;
+begin
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(LService) then
+    Result := LService.StyleServices
+  else
+    Result := nil;
+end;
+
+function GxOtaGetIDEThemingServices: IOTAIDEThemingServices;
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := nil;
+  if Supports(BorlandIDEServices, IOTAIDEThemingServices, LService) then
+    Result := LService;
+end;
+
+function GxOtaActiveThemeName: string;
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := '';
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(LService) then
+    Result := LService.ActiveTheme;
+end;
+
+function IdeStyleIsDark: Boolean;
+begin
+  Result := SameText(GxOtaActiveThemeName, 'Dark');
+end;
+{$ENDIF}
+
+function GxOtaThemingEnabled: Boolean;
+{$IFDEF GX_SUPPORTS_THEMING}
+var
+  LService: IOTAIDEThemingServices;
 begin
   Result := False;
-  if Supports(BorlandIDEServices, ToolsAPI.IOTAIDEThemingServices, LService) then
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(LService) then
     Result := LService.IDEThemingEnabled;
 end;
 {$ELSE}
 begin
   Result := False;
 end;
-{$IFEND}
+{$ENDIF}
+
+function GxOtaApplyTheme(AForm: TCustomForm): Boolean;
+{$IFDEF GX_SUPPORTS_THEMING}
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := False;
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(AForm) and Assigned(LService) and (LService.IDEThemingEnabled)
+  then begin
+    LService.ApplyTheme(AForm);
+    Result := True;
+  end;
+end;
+{$ELSE}
+begin
+  Result := False;
+end;
+{$ENDIF}
+
+function GxOtaInitTheming(AForm: TCustomForm): Boolean;
+{$IFDEF GX_SUPPORTS_THEMING}
+var
+  LService : IOTAIDEThemingServices;
+//  LNotifier : TThemeChangedNotifier;
+begin
+  Result := False;
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(AForm) and Assigned(LService) and (LService.IDEThemingEnabled) then
+  begin
+    LService.RegisterFormClass(TCustomFormClass(AForm.ClassType));
+    LService.ApplyTheme(AForm);
+
+//    LNotifier := TThemeChangedNotifier.Create(AForm);
+//    LNotifier.AddNotifierToIDE;
+
+    Result := True;
+  end;
+end;
+{$ELSE}
+begin
+  Result := False;
+end;
+{$ENDIF}
+
+function GxOtaGetThemedColor(AColor: TColor): TColor;
+{$IFDEF GX_SUPPORTS_THEMING}
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := AColor;
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(LService) and LService.IDEThemingEnabled then
+  begin
+    Result := LService.StyleServices.GetSystemColor(AColor);
+  end;
+{$ELSE}
+begin
+  Result := AColor;
+{$ENDIF}
+end;
+
+{$IFDEF GX_SUPPORTS_THEMING}
+function GxOtaGetStyleColor(AColor: TStyleColor; ADefault: TColor): TColor;
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := ADefault;
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(LService) and LService.IDEThemingEnabled then
+  begin
+    Result := LService.StyleServices.GetStyleColor(AColor);
+  end;
+end;
+{$ENDIF}
+
+{$IFDEF GX_SUPPORTS_THEMING}
+function GxOtaGetStyleFontColor(AFontStyle: TStyleFont; ADefault: TColor): TColor;
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := ADefault;
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(LService) and LService.IDEThemingEnabled then
+  begin
+    Result := LService.StyleServices.GetStyleFontColor(AFontStyle);
+  end;
+end;
+{$ENDIF}
 
 type
   // TODO 3 -cCleanup -oAnyone: Remove this type, since it is confusing and is not .NET compatible
@@ -4727,7 +4886,7 @@ end;
 function IsValidExpertDll(const FileName: string): Boolean;
 {$IFDEF LoadAndCheckEntryPoint}
 var
-  DllHandle: THandle;
+  DllHandle: HMODULE;
 {$ENDIF LoadAndCheckEntryPoint}
 begin
   Result := True;
@@ -5940,6 +6099,64 @@ procedure TFileNotifier.FileNotification(NotifyCode: TOTAFileNotification;
 begin
   FOnFileNotificationEvent(Self, NotifyCode, FileName, Cancel);
 end;
+
+{ TThemeChangedNotifier }
+
+{$IFDEF GX_SUPPORTS_THEMING}
+function TThemeChangedNotifier.AddNotifierToIDE: Boolean;
+var
+  LService: IOTAIDEThemingServices;
+begin
+  Result := False;
+  LService := GxOtaGetIDEThemingServices;
+  if Assigned(LService) and (LService.IDEThemingEnabled) then
+  begin
+    FNotifierIndex := LService.AddNotifier(Self);
+    Result := (FNotifierIndex <> InvalidNotifierIndex);
+  end;
+end;
+
+function TThemeChangedNotifier.RemoveNotifierFromIDE: Boolean;
+var
+  SavedIndex: Integer;
+begin
+  Result := False;
+  if FNotifierIndex = InvalidNotifierIndex then
+    Exit;
+  SavedIndex := FNotifierIndex;
+  FNotifierIndex := InvalidNotifierIndex;
+  GxOtaGetIDEThemingServices.RemoveNotifier(SavedIndex);
+  Result := True;
+end;
+
+
+procedure TThemeChangedNotifier.ChangedTheme;
+begin
+  if Assigned(FOnThemeChanged) then
+    FOnThemeChanged(Self);
+end;
+
+procedure TThemeChangedNotifier.ChangingTheme;
+begin
+  // not implemented.
+end;
+
+constructor TThemeChangedNotifier.Create(_OnThemeChanged: TNotifyEvent);
+begin
+  inherited Create;
+  FNotifierIndex := InvalidNotifierIndex;
+  Assert(Assigned(_OnThemeChanged));
+  FOnThemeChanged := _OnThemeChanged;
+end;
+
+destructor TThemeChangedNotifier.Destroy;
+begin
+  if FNotifierIndex <> InvalidNotifierIndex then
+    RemoveNotifierFromIDE;
+  inherited Destroy;
+end;
+{$ENDIF GX_SUPPORTS_THEMING}
+
 
 initialization
 

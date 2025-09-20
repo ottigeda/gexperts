@@ -22,6 +22,9 @@ const
   EditorControlName = 'Editor';
   EditorControlClassName = 'TEditControl';
 
+  clWarningBack  = $01FFFF; // BGR: almost yellow
+  clWarningText  = $010000; // BGR: almost black
+
 // Returns a reference to the main form of the IDE (TAppBuilder)
 function GetIdeMainForm: TCustomForm;
 // Returns the height of a IDE main menu item
@@ -144,13 +147,19 @@ function IDEHasWelcomePage: Boolean;
 function FileIsWelcomePage(const FileName: string): Boolean;
 function IDEEditorEncodingIsUTF8: Boolean;
 
+// Theming support
+function ColorToGrayscale(AColor: TColor): Integer;
 function IsThemingEnabled: Boolean;
+function InitThemingForForm(const AForm: TCustomForm): Boolean;
+function GetThemedColor(AColor: TColor): TColor;
+procedure RemoveStyleElements(AControl: TWinControl; IncludeSubComponents: Boolean);
 
 implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  SysUtils, Windows, Registry, StrUtils,
+  TypInfo,
+  SysUtils, Windows, Registry, StrUtils, Themes,
   u_dzCompilerAndRtlVersions, u_dzClassUtils, u_dzStringUtils, u_dzGraphicsUtils,
   GX_GenericUtils, GX_OtaUtils, GX_GxUtils;
 
@@ -416,7 +425,7 @@ const
 {$IFDEF WIN64}
   BinDirPostfix = PathDelim + 'Bin64';
 {$ELSE}
-  BinDirPostfix   = PathDelim + 'Bin';
+  BinDirPostfix = PathDelim + 'Bin';
 {$ENDIF}
 begin
   if TRegistry_TryReadString(GxOtaGetIdeBaseRegistryKey, 'RootDir', Result, HKEY_LOCAL_MACHINE) then begin
@@ -568,6 +577,16 @@ begin
   end;
 end;
 {$ENDIF}
+
+function ColorToGrayscale(AColor: TColor): Integer;
+var
+  R, G, B: Byte;
+begin
+  R := GetRValue(AColor);
+  G := GetGValue(AColor);
+  B := GetBValue(AColor);
+  Result := ((299 * R) + (587 * G) + (114 * B)) div 1000;
+end;
 
 function GetIdeEditorBackgroundColor: TColor;
 const
@@ -869,13 +888,14 @@ begin
 end;
 
 function IsThemingEnabled: Boolean;
-{$IFDEF GX_DELPHI_RIO_UP} // Delphi 10.3 Rio
+{$IFDEF GX_SUPPORTS_THEMING}
 begin
   Result := GX_OtaUtils.GxOtaThemingEnabled;
 end;
 {$ELSE}
 var
   reg: TRegistry;
+
 begin
   Result := False;
   if CompilerVersion < CompilerVersionDelphiX103 then
@@ -899,7 +919,7 @@ begin
     FreeAndNil(reg);
   end;
 end;
-{$ENDIF GX_DELPHI_RIO_UP}
+{$ENDIF}
 
 function TryGetIdeEditorHighlightColors(const _Key: string;
   out _FG: TColor; out _BG: TColor; out _Bold, _Italic, _Underline: Boolean): Boolean;
@@ -951,6 +971,62 @@ begin
   finally
     FreeAndNil(reg);
   end;
+end;
+
+function InitThemingForForm(const AForm: TCustomForm): Boolean;
+begin
+{$IFDEF GX_SUPPORTS_THEMING}
+  Result := GxOtaInitTheming(AForm);
+{$ELSE}
+  Result := False;
+{$ENDIF}
+end;
+
+const
+  clAmberLight  = $2BD2FF; // BGR
+  clAmberDark   = $1597BF; // $0036D5; // BGR
+
+function GetThemedColor(AColor: TColor): TColor;
+begin
+{$IFDEF GX_SUPPORTS_THEMING}
+  case AColor of
+    clWarningBack:
+      if IdeStyleIsDark
+      then Result := clAmberDark
+      else Result := clAmberLight;
+    clWarningText:
+      Result := GxOtaGetThemedColor(clWindowText);
+    else
+      Result := GxOtaGetThemedColor(AColor);
+  end;
+{$ELSE}
+  Result := AColor;
+{$ENDIF}
+end;
+
+procedure RemoveStyleElements(AControl: TWinControl; IncludeSubComponents: Boolean);
+var
+  PropInfo: PPropInfo;
+  i: Integer;
+  cmp: TComponent;
+begin
+{$IF Declared(TStyleElements)}
+  if not Assigned(AControl) then
+    Exit;
+
+  PropInfo := GetPropInfo(AControl, 'StyleElements');
+  if Assigned(PropInfo) then
+    SetOrdProp(AControl, PropInfo, 0);
+
+  if IncludeSubComponents then begin
+    for i := 0 to AControl.ComponentCount - 1 do begin
+      cmp := AControl.Components[i];
+      PropInfo := GetPropInfo(cmp, 'StyleElements');
+      if Assigned(PropInfo) then
+        SetOrdProp(cmp, PropInfo, 0);
+    end;
+  end;
+{$IFEND}
 end;
 
 function TScreen_TryFindClassForm(const _ClassName: string; out _Form: TForm): Boolean;
