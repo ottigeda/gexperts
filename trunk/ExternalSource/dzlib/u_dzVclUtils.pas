@@ -118,6 +118,7 @@ procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TEdit); overload;
 procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: THotKey); overload;
 procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TButton); overload;
 procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TCheckbox); overload;
+procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TComboBox); overload;
 procedure TCheckBox_AlignVerticallyTo(_Chk: TCheckbox; _Template: TControl);
 procedure TLabel_AlignVerticallyTo(_lbl: TLabel; _Template: TEdit);
 
@@ -5678,6 +5679,17 @@ end;
 procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TCheckbox);
 begin
   _btn.Top := _Template.Top + (_Template.Height - _btn.Height) div 2;
+end;
+
+procedure TButton_AlignVerticallyTo(_btn: TButton; _Template: TComboBox);
+begin
+  if IsThemesEnabled then begin
+    _btn.Top := _Template.Top - 1;
+    _btn.Height := _Template.Height + 2;
+  end else begin
+    _btn.Top := _Template.Top;
+    _btn.Height := _Template.Height;
+  end;
 end;
 
 procedure TCheckBox_AlignVerticallyTo(_Chk: TCheckbox; _Template: TControl);
