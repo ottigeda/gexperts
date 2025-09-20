@@ -315,7 +315,13 @@ begin
   FFileDrop.Register(lvExperts);
 
   InitDpiScaler;
+  GxSetDefaultFont(Self);
 
+{$IF (CompilerVersion < 36) and (not declared(RTLVersion112)) }
+  if IsThemesEnabled then
+    lvExperts.DoubleBuffered := True;
+{$IFEND}
+  lvExperts.Canvas.Font.Assign(Self.Font);
   LoadSettings;
   RefreshExpertListControl;
 end;
@@ -660,8 +666,15 @@ begin
   end;
 
   RegIni := TGExpertsSettings.Create(ConfigInfo.IdeRootRegistryKey);
+{$IFDEF WIN64}
+const
+  ExpertsKey = 'Experts X64';
+{$ELSE}
+const
+  ExpertsKey = 'Experts';
+{$ENDIF}
   try
-    RegIni.WriteString('Experts', ExpertName, FileName); // Do not localize.
+    RegIni.WriteString(ExpertsKey, ExpertName, FileName); // Do not localize.
   finally
     FreeAndNil(RegIni);
   end;
