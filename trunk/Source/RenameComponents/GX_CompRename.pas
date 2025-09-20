@@ -13,7 +13,7 @@ interface
 uses
   Classes, Controls, Forms, StdCtrls, ExtCtrls, ToolsAPI, ComCtrls, Buttons,
   GX_Experts, GX_ConfigurationInfo, GX_EditorChangeServices, Contnrs, Messages,
-  Types, GX_BaseForm, u_dzSpeedBitBtn;
+  Types, GX_BaseForm, GX_CheckButton;
 
 type
   TIsValidComponentName = function (const OldName, NewName: WideString; var Reason: WideString): Boolean of object;
@@ -75,14 +75,13 @@ type
   private
     FOnIsValidComponentName: TIsValidComponentName;
     FProperties: TObjectList;
-    FAnchorButtons: array[TAnchorKind] of TdzSpeedBitBtn;
-    FAlignButtons: array[TAlign] of TdzSpeedBitBtn;
+    FAnchorButtons: array[TAnchorKind] of TGXCheckButton;
+    FAlignButtons: array[TAlign] of TGXCheckButton;
     FComponentClassName: WideString;
     procedure InitializeForm;
     procedure InitOtherProps(const _Component: IOTAComponent; _OtherProps: TStrings;
       _UseRules: Boolean);
-    procedure AddComponentProperty(const _Component: IOTAComponent;
-      PropertyName: WideString; const Value: WideString);
+    procedure AddComponentProperty(const _Component: IOTAComponent; PropertyName: WideString; const Value: WideString);
     function GetComponentProperty(Index: Integer): WideString;
     procedure SetComponent(const _Component: IOTAComponent);
     procedure InitAlign(const _Component: IOTAComponent);
@@ -97,6 +96,8 @@ type
       _HandleIsValidComponentName: TIsValidComponentName);
     procedure GetData(const _Component: IOTAComponent; _OtherProps: TStrings);
     procedure SetRuleSelection(SelStart, SelEnd: Integer);
+  protected
+    procedure ArrangeControls; override;
   public
     class function Execute(_Owner: TWinControl; const _Component: IOTAComponent;
       _RenameRule: WideString; _OtherProps: TStrings; _UseRules: Boolean;
@@ -112,6 +113,7 @@ implementation
 uses
   SysUtils, Windows, Menus, StrUtils, IniFiles, Graphics, TypInfo, Math,
   u_dzClassUtils, u_dzVclUtils, u_dzStringUtils, u_dzTypeInfoUtils,
+  Themes,
   {$IFOPT D+}GX_DbugIntf, {$ENDIF}
   GX_CompRenameConfig, GX_OtaUtils, GX_GenericUtils, GX_IdeUtils;
 
@@ -284,21 +286,16 @@ end;
 procedure TfmCompRename.FormShow(Sender: TObject);
 begin
   inherited;
-  // Adjust some button positons and size after scaling
-  // DisableAlign;
-  b_AlignRight.Left   := b_AlignTop.Left + b_AlignTop.Width - b_AlignRight.Width;
-  b_AlignClient.Left  := b_AlignLeft.Left + b_AlignLeft.Width + 1;
-  b_AlignClient.Width := b_AlignRight.Left - b_AlignClient.Left - 2;
-  // EnableAlign;
+  ArrangeControls;
 end;
 
 procedure TfmCompRename.pc_AdditionalChange(Sender: TObject);
 begin
   inherited;
   if pc_Additional.ActivePage = ts_Align then
-    TWinControl_SetFocus(b_AlignClient)
+    TWinControl_SetFocus(FAlignButtons[alClient])
   else if pc_Additional.ActivePage = ts_Anchors then
-    TWinControl_SetFocus(b_AnchorTop);
+    TWinControl_SetFocus(FAnchorButtons[akTop]);
 end;
 
 procedure TfmCompRename.ApplyAlign(const _Component: IOTAComponent);
@@ -562,7 +559,7 @@ begin
 
   IsEnum := false;
   if Value = SPropertyNotFound then begin
-    Lbl.Font.Color := clGrayText;
+    Lbl.Font.Color := GetThemedColor(clGrayText);
   end else begin
     IsEnum := PropertyIsEnum(_Component, PropertyName, TypeInfo, MinValue, MaxValue);
   end;
@@ -595,7 +592,7 @@ begin
 
     if Value = SPropertyNotFound then begin
       Edit.ReadOnly := True;
-      Edit.Color := clBtnFace;
+      Edit.Color := GetThemedColor(clBtnFace);
       Edit.TabStop := False;
     end;
   end;
@@ -626,19 +623,18 @@ begin
   ActiveControl := edtNewName;
 
   FProperties := TObjectList.Create(False);
+  FAlignButtons[alTop] := TGXCheckButton.Clone(b_AlignTop);
+  FAlignButtons[alLeft] := TGXCheckButton.Clone(b_AlignLeft);
+  FAlignButtons[alClient] := TGXCheckButton.Clone(b_AlignClient);
+  FAlignButtons[alRight] := TGXCheckButton.Clone(b_AlignRight);
+  FAlignButtons[alBottom] := TGXCheckButton.Clone(b_AlignBottom);
+  FAlignButtons[alNone] := TGXCheckButton.Clone(b_AlignNone);
+  FAlignButtons[alCustom] := TGXCheckButton.Clone(b_AlignCustom);
 
-  FAlignButtons[alTop] := TdzSpeedBitBtn.Create(b_AlignTop);
-  FAlignButtons[alLeft] := TdzSpeedBitBtn.Create(b_AlignLeft);
-  FAlignButtons[alClient] := TdzSpeedBitBtn.Create(b_AlignClient);
-  FAlignButtons[alRight] := TdzSpeedBitBtn.Create(b_AlignRight);
-  FAlignButtons[alBottom] := TdzSpeedBitBtn.Create(b_AlignBottom);
-  FAlignButtons[alNone] := TdzSpeedBitBtn.Create(b_AlignNone);
-  FAlignButtons[alCustom] := TdzSpeedBitBtn.Create(b_AlignCustom);
-
-  FAnchorButtons[akTop] := TdzSpeedBitBtn.Create(b_AnchorTop);
-  FAnchorButtons[akLeft] := TdzSpeedBitBtn.Create(b_AnchorLeft);
-  FAnchorButtons[akRight] := TdzSpeedBitBtn.Create(b_AnchorRight);
-  FAnchorButtons[akBottom] := TdzSpeedBitBtn.Create(b_AnchorBottom);
+  FAnchorButtons[akTop] := TGXCheckButton.Clone(b_AnchorTop);
+  FAnchorButtons[akLeft] := TGXCheckButton.Clone(b_AnchorLeft);
+  FAnchorButtons[akRight] := TGXCheckButton.Clone(b_AnchorRight);
+  FAnchorButtons[akBottom] := TGXCheckButton.Clone(b_AnchorBottom);
   p_Buttons.BevelOuter := bvNone;
 
   InitializeForm;
@@ -655,44 +651,63 @@ begin
   // make the selection of alignment and anchors via arrow keys more intuitive
   case Msg.CharCode of
     VK_DOWN: begin
-        if ActiveControl = b_AlignTop then
-          b_AlignClient.SetFocus
-        else if (ActiveControl = b_AlignClient) or (ActiveControl = b_AlignLeft) or (ActiveControl = b_AlignRight) then
-          b_AlignBottom.SetFocus
-        else if (ActiveControl = b_AnchorTop) or (ActiveControl = b_AnchorLeft) or (ActiveControl = b_AnchorRight) then
-          b_AnchorBottom.SetFocus
+        if ActiveControl = FAlignButtons[alTop] then
+          FAlignButtons[alClient].SetFocus
+        else if (ActiveControl = FAlignButtons[alClient])
+             or (ActiveControl = FAlignButtons[alLeft])
+             or (ActiveControl = FAlignButtons[alRight])
+        then
+          FAlignButtons[alBottom].SetFocus
+        else if (ActiveControl = FAnchorButtons[akTop])
+             or (ActiveControl = FAnchorButtons[akLeft])
+             or (ActiveControl = FAnchorButtons[akRight])
+        then
+          FAnchorButtons[akBottom].SetFocus
         else
           inherited;
       end;
     VK_UP: begin
-        if ActiveControl = b_AlignBottom then
-          b_AlignClient.SetFocus
-        else if (ActiveControl = b_AlignClient) or (ActiveControl = b_AlignLeft) or (ActiveControl = b_AlignRight) then
-          b_AlignTop.SetFocus
-        else if (ActiveControl = b_AlignNone) or (ActiveControl = b_AlignCustom)then
-          b_AlignBottom.SetFocus
-        else if (ActiveControl = b_AnchorBottom) or (ActiveControl = b_AnchorLeft) or (ActiveControl = b_AnchorRight) then
-          b_AnchorTop.SetFocus
+        if ActiveControl = FAlignButtons[alBottom] then
+          FAlignButtons[alClient].SetFocus
+        else if (ActiveControl = FAlignButtons[alClient])
+             or (ActiveControl = FAlignButtons[alLeft])
+             or (ActiveControl = FAlignButtons[alRight])
+        then
+          FAlignButtons[alTop].SetFocus
+        else if (ActiveControl = FAlignButtons[alNone])
+             or (ActiveControl = FAlignButtons[alCustom])
+        then
+          FAlignButtons[alBottom].SetFocus
+        else if (ActiveControl = FAnchorButtons[akBottom])
+             or (ActiveControl = FAnchorButtons[akLeft])
+             or (ActiveControl = FAnchorButtons[akRight])
+        then
+          FAnchorButtons[akTop].SetFocus
         else
           inherited;
       end;
     VK_RIGHT: begin
-        if ActiveControl = b_AlignLeft then
-          b_AlignClient.SetFocus
-        else if ActiveControl = b_AlignClient then
-          b_AlignRight.SetFocus
-        else if (ActiveControl = b_AnchorTop) or (ActiveControl = b_AnchorBottom) or (ActiveControl = b_AnchorLeft) then
-          b_AnchorRight.SetFocus
+        if ActiveControl = FAlignButtons[alLeft] then
+          FAlignButtons[alClient].SetFocus
+        else if ActiveControl = FAlignButtons[alClient] then
+          FAlignButtons[alRight].SetFocus
+        else if (ActiveControl = FAnchorButtons[akTop])
+             or (ActiveControl = FAnchorButtons[akBottom])
+             or (ActiveControl = FAnchorButtons[akLeft])
+        then
+          FAnchorButtons[akRight].SetFocus
         else
           inherited;
       end;
     VK_LEFT: begin
-        if ActiveControl = b_AlignRight then
-          b_AlignClient.SetFocus
-        else if ActiveControl = b_AlignClient then
-          b_AlignLeft.SetFocus
-        else if (ActiveControl = b_AnchorTop) or (ActiveControl = b_AnchorBottom) or (ActiveControl = b_AnchorRight) then
-          b_AnchorLeft.SetFocus
+        if ActiveControl = FAlignButtons[alRight] then
+          FAlignButtons[alClient].SetFocus
+        else if ActiveControl = FAlignButtons[alClient] then
+          FAlignButtons[alLeft].SetFocus
+        else if (ActiveControl = FAnchorButtons[akTop])
+             or (ActiveControl = FAnchorButtons[akBottom])
+             or (ActiveControl = FAnchorButtons[akRight]) then
+          FAnchorButtons[akLeft].SetFocus
         else
           inherited;
       end;
@@ -1347,6 +1362,51 @@ procedure TfmCompRename.InitializeForm;
 begin
   SetModalFormPopupMode(Self);
   lblReason.Font.Color := clRed;
+  if IsThemingEnabled
+  then pc_Additional.Style := tsButtons
+  else pc_Additional.Style := tsTabs;
+end;
+
+procedure TfmCompRename.ArrangeControls;
+var
+  Spacer : Integer;
+  H, W   : Integer;
+begin
+  inherited;
+  Spacer := FScaler.Calc(2);
+  FAlignButtons[alTop].Anchors := [akLeft, akTop];
+
+  FAlignButtons[alLeft].Anchors := [akLeft, akTop];
+  FAlignButtons[alLeft].Left := FAlignButtons[alTop].Left;
+  FAlignButtons[alLeft].Top  := FAlignButtons[alTop].Top + FAlignButtons[alTop].Height + Spacer;
+
+  W := FAlignButtons[alTop].Width - (2 * FAlignButtons[alLeft].Width) - (2 * Spacer);
+  H := FAlignButtons[alLeft].Height;
+
+  FAlignButtons[alClient].Anchors := [akLeft, akTop];
+  FAlignButtons[alClient].Top := FAlignButtons[alLeft].Top;
+  FAlignButtons[alClient].Width := W;
+  FAlignButtons[alClient].Left  := FAlignButtons[alLeft].Left + FAlignButtons[alLeft].Width + Spacer;
+  FAlignButtons[alClient].Height := H;
+
+  FAlignButtons[alRight].Anchors := [akLeft, akTop];
+  FAlignButtons[alRight].Left  := FAlignButtons[alClient].Left + FAlignButtons[alClient].Width + Spacer;
+  FAlignButtons[alRight].Top   := FAlignButtons[alLeft].Top;
+  FAlignButtons[alRight].Width := FAlignButtons[alLeft].Width;
+
+  FAlignButtons[alBottom].Anchors := [akLeft, akTop];
+  FAlignButtons[alBottom].Top   := FAlignButtons[alClient].Top + FAlignButtons[alClient].Height + Spacer;
+  FAlignButtons[alBottom].Left  := FAlignButtons[alTop].Left;
+  FAlignButtons[alBottom].Width := FAlignButtons[alTop].Width;
+
+  FAlignButtons[alNone].Anchors := [akLeft, akTop];
+  FAlignButtons[alNone].Left    := FAlignButtons[alLeft].Left;
+  FAlignButtons[alNone].Top     := FAlignButtons[alBottom].Top + FAlignButtons[alBottom].Height + (2 * Spacer);
+
+  FAlignButtons[alCustom].Anchors := [akLeft, akTop];
+  FAlignButtons[alCustom].Top     := FAlignButtons[alNone].Top;
+  FAlignButtons[alCustom].Width   := FAlignButtons[alNone].Width;
+  FAlignButtons[alCustom].Left    := FAlignButtons[alTop].Left + FAlignButtons[alTop].Width - FAlignButtons[alCustom].Width;
 end;
 
 procedure TfmCompRename.btnSettingsClick(Sender: TObject);
@@ -1363,7 +1423,8 @@ begin
     for al := Low(FAlignButtons) to High(FAlignButtons) do
       if al <> _Align then
         FAlignButtons[al].Down := False;
-  end else
+  end
+  else
     FAlignButtons[_Align].Down := True;
 end;
 
