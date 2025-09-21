@@ -33,7 +33,6 @@ type
     tim_Scroll: TTimer;
     lblIdeVersion: TLabel;
     procedure btnEmailClick(Sender: TObject);
-    procedure DoRaiseTestException(Sender: TObject);
     procedure tim_ScrollTimer(Sender: TObject);
   private
     procedure InitFonts;
@@ -99,7 +98,6 @@ begin
   inherited;
   TControl_SetMinConstraints(Self);
   GxSetDefaultFont(Self);
-  TControl_SetMinConstraints(Self);
   TLabel_MakeUrlLabel(lblWebPage);
 
 {$IF DECLARED(TfmFeedbackWizard)}
@@ -129,7 +127,6 @@ begin
 
   InitDpiScaler;
   InitFonts;
-  imgLogo.OnDblClick := DoRaiseTestException;
 end;
 
 procedure TfmAbout.InitFonts;
@@ -382,17 +379,6 @@ begin
   Result := -1;
 end;
 {$IFEND declared(IOTAAboutBoxServices)}
-
-procedure TfmAbout.DoRaiseTestException(Sender: TObject);
-const
-  ExceptionMessage = 'Test Exception for debug purpose.';
-begin
-{$IFDEF GX_DELPHI2009_UP}
-  raise EProgrammerNotFound.Create(ExceptionMessage);
-{$ELSE}
-  raise Exception.Create(ExceptionMessage);
-{$ENDIF}
-end;
 
 var
   FAboutPluginIndex: Integer;

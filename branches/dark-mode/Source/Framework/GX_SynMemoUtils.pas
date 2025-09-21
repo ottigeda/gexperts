@@ -11,8 +11,7 @@ uses  // If you get errors here, add SynEdit to your library path
   Vcl.Themes,
   Vcl.Forms,
 {$ENDIF}
-  GX_GenericUtils,
-  GX_IDEUtils;
+  GX_GenericUtils, GX_IDEUtils;
 
 function GetGXHighlighterForCurrentSourceEditor: TGXSyntaxHighlighter;
 

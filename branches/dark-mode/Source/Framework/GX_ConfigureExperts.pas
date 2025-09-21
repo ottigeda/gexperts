@@ -529,7 +529,6 @@ var
   chk: TCheckBox;
   hk: THotKeyHack;
   btn: TButton;
-
 begin
   FIsInitializing := True;
   try

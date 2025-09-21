@@ -118,7 +118,8 @@ type
     procedure b_FavoritesClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure b_HelpClick(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     FConfigs: TObjectList;
     FMemo: TSynMemo;
@@ -215,13 +216,13 @@ const
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
 procedure Tf_EditPath.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
-  il  : TImageList;
+  il: TImageList;
 begin
   inherited ApplyDpi(_NewDpi, _NewBounds);
 
   il := GExpertsInst.GetScaledSharedImages(_NewDpi);
   TheActionList.Images := il;
-
+  // todo: Why ifdef this? It should work just fine without theaming.
   {$IFDEF GX_SUPPORTS_THEMING}
   sb_MoveUp.Images := il;
   sb_MoveUp.ImageIndex := act_MoveUp.ImageIndex;
@@ -483,10 +484,8 @@ var
   pnt: TPoint;
 begin
   pnt := b_Favorites.ClientToScreen(Point(0, b_Favorites.Height));
-  if pm_Favorites.Items.Count>1 then 
-    pm_Favorites.Popup(pnt.X, pnt.Y)   // INFO : RZ - 05.07.2025
-  else 
-    FavoritesPmConfigureClick(Sender);
+  if pm_Favorites.Items.Count>1 then pm_Favorites.Popup(pnt.X, pnt.Y)
+                                else FavoritesPmConfigureClick(Sender);
 end;
 
 procedure Tf_EditPath.InitFavoritesMenu;
@@ -938,7 +937,7 @@ end;
 
 function TEditPathExpert.GetActionCaption: string;
 begin
-  Result := 'Edit &Path ...';
+  Result := 'Edit Unit Search &Path ...';
 end;
 
 function TEditPathExpert.GetHelpString: string;

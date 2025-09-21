@@ -296,8 +296,6 @@ begin
       frm.ActiveControl := frm.lstTokens;
     frm.btnOK.Default := True;
     LoadConfiguration(frm);
-    if frm.lstTokens.Items.Count > 0 then
-      frm.ActiveControl := frm.lstTokens;
 
     if frm.lstTokens.Items.Count > 0 then
       frm.ActiveControl := frm.lstTokens;

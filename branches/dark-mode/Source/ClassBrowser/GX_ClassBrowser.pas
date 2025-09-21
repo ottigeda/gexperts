@@ -229,7 +229,8 @@ type
     procedure SetInfoViewMode(const Value: TInfoViewMode);
     procedure FindFromNode(const Text: string; Node: TTreeNode);
     procedure FiltersToActions;
-    procedure HandleFileNotification(_Sender: TObject; NotifyCode: TOTAFileNotification; const FileName: string; var Cancel: Boolean);
+    procedure HandleFileNotification(_Sender: TObject; NotifyCode: TOTAFileNotification; const FileName: string;
+      var Cancel: Boolean);
   private
     FMethodText: TGxEnhancedEditor;
     FCodeText: TGxEnhancedEditor;

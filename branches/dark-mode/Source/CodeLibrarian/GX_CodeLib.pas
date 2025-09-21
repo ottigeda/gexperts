@@ -1006,6 +1006,7 @@ var
   Node: TTreeNode;
 begin
   LoadSettings;
+
   CodeDB.OpenStorage(StoragePath + DefaultFileName);
   if TryGetSelected(Node) and (IsCodeSnippet(Node)) then
     CodeDB.OpenFile(GetNodePath(Node));

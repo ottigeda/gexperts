@@ -41,7 +41,6 @@ type
     procedure WMDpiChanged(var _Msg: TWMDpi); message WM_DPICHANGED;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); virtual;
     procedure ArrangeControls; virtual;
-
   protected
     procedure InitDpiScaler;
   public

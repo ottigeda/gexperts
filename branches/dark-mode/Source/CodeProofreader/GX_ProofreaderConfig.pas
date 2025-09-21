@@ -153,9 +153,10 @@ begin
   Assert(Assigned(ProofreaderData));
   FProofreaderData := ProofreaderData;
 
-  if IsThemingEnabled
-  then Pages.Style := tsButtons
-  else Pages.Style := tsTabs;
+  if IsThemingEnabled then
+    Pages.Style := tsButtons
+  else
+    Pages.Style := tsTabs;
 
   TabIndex := FProofreaderData.ActiveTab;
   if (TabIndex > -1) and (TabIndex < Pages.PageCount) then

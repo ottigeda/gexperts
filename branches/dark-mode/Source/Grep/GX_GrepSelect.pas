@@ -138,7 +138,7 @@ begin
   lvHistoryList.ParentFont := True;
   lvHistoryList.Canvas.Font.Assign(Self.Font);
   lvHistoryList.Columns.BeginUpdate;
-  for i := 0 to lvHistoryList.Columns.Count-1 do
+  for i := 0 to lvHistoryList.Columns.Count - 1 do
   begin
     lvHistoryList.Columns[i].Width := FScaler.Calc(lvHistoryList.Columns[i].Width);
   end;

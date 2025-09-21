@@ -554,6 +554,7 @@ end;
 
 procedure TfmGrepResults.FormActivate(Sender: TObject);
 // will be called by the IDE if the form is in the saved layout.
+// and also when the user clicks on the form - even if docked
 begin
   inherited;
   InitThemedColors;
