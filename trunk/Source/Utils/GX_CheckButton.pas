@@ -138,10 +138,10 @@ begin
   Parent := ASource.Parent;
   BoundsRect := ASource.BoundsRect;
   Anchors    := ASource.Anchors;
-{$IF Declared(TMargins)}
-  Margins    := ASource.Margins;
+{$IFDEF GX_HAS_ALIGN_WITH_MARGINS}
+  Margins := ASource.Margins;
   AlignWithMargins := ASource.AlignWithMargins;
-{$IFEND}
+{$ENDIF}
   Caption    := TWinControlAccess(ASource).Caption;
   Enabled    := ASource.Enabled;
   Visible    := ASource.Visible;
