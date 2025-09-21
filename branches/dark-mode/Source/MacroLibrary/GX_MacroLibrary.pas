@@ -437,8 +437,7 @@ begin
     else
 //      asm nop end; // invalid
     end;
-  end
-  else if MacroKey.Modifier = $0080 then begin
+  end else if MacroKey.Modifier = $0080 then begin
     case MacroKey.Code of
       $0008:
         Special := mskBkSp;

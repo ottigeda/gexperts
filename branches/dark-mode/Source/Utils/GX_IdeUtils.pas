@@ -1005,12 +1005,12 @@ begin
 end;
 
 procedure RemoveStyleElements(AControl: TWinControl; IncludeSubComponents: Boolean);
+{$IF Declared(TStyleElements)}
 var
   PropInfo: PPropInfo;
   i: Integer;
   cmp: TComponent;
 begin
-{$IF Declared(TStyleElements)}
   if not Assigned(AControl) then
     Exit;
 
@@ -1026,8 +1026,11 @@ begin
         SetOrdProp(cmp, PropInfo, 0);
     end;
   end;
-{$IFEND}
 end;
+{$ELSE}
+begin
+end;
+{$IFEND}
 
 function TScreen_TryFindClassForm(const _ClassName: string; out _Form: TForm): Boolean;
 var

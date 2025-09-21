@@ -788,9 +788,10 @@ begin
 
   InitDpiScaler;
 
-  if IsThemingEnabled
-  then pcData.Style := tsButtons
-  else pcData.Style := tsTabs;
+  if IsThemingEnabled then
+    pcData.Style := tsButtons
+  else
+    pcData.Style := tsTabs;
 
   LoadSettings;
 
