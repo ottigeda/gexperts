@@ -29,6 +29,7 @@ implementation
 uses
   Graphics,
   GX_GenericUtils,
+  GX_IdeUtils,
   u_dzVclUtils;
 
 procedure TfmBackupOptions.cbPasswordClick(Sender: TObject);
@@ -36,7 +37,7 @@ begin
   edPassword.Enabled := cbPassword.Checked;
   if edPassword.Enabled then
   begin
-    edPassword.Color := clWindow;
+    edPassword.Color := GetThemedColor(clWindow);
     TryFocusControl(edPassword);
   end
   else

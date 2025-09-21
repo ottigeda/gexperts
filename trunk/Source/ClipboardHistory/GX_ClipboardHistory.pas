@@ -7,7 +7,7 @@ interface
 uses
   Windows, SysUtils, Classes, Types, Controls, Forms, StdCtrls, ExtCtrls, Menus,
   ComCtrls, ActnList, Actions, ToolWin, Graphics, GX_SharedImages,
-  GX_Experts, GX_ConfigurationInfo, GX_IdeDock;
+  GX_Experts, GX_Splitter, GX_ConfigurationInfo, GX_IdeDock;
 
 type
   TClipInfo = class(TObject)
@@ -306,6 +306,7 @@ end;
 procedure TfmClipboardHistory.InitializeForm;
 begin
   inherited;
+  Splitter.Color := GxOtaGetThemedColor(clBtnFace);
   TPasteAsHandler.GetTypeText(cbPasteAsType.Items);
   cbPasteAsType.DropDownCount := Integer(High(TPasteAsType)) + 1;
   cbPasteAsType.ItemIndex := Integer(PasteAsHandler.PasteAsType);

@@ -14,7 +14,8 @@ uses
   Dialogs,
   GX_BaseForm,
   StdCtrls,
-  ComCtrls, ExtCtrls;
+  ComCtrls,
+  ExtCtrls;
 
 type
   TOnEditFavoritesEntry = procedure(_Sender: TWinControl;

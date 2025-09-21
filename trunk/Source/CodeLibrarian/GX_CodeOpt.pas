@@ -1,12 +1,14 @@
 unit GX_CodeOpt;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
   Classes, Controls, Forms, StdCtrls, ExtCtrls, ComCtrls, Graphics, GX_BaseForm;
 
 type
-  TCodeLayout = (clSide, clTop);
+  TCodeLayout = (clSide, clTop, clUnknown);
 
 type
   TfmCodeOptions = class(TfmBaseForm)
@@ -57,7 +59,7 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, GX_GenericUtils, u_dzVclUtils;
+  SysUtils, GX_GenericUtils, GX_IdeUtils, u_dzVclUtils;
 
 class function TfmCodeOptions.Execute(_Owner: TWinControl; var _StoragePath: string; var _Layout: TCodeLayout;
   var _TreeFont: string; var _TreeFontSize: Integer; var _EditFont: string; var _EditFontSize: Integer): Boolean;
@@ -88,9 +90,11 @@ begin
 
   fcTreeview.ItemIndex := fcTreeview.Items.IndexOf(_TreeFont);
   udTreeview.Position := _TreeFontSize;
+  eTreeview.Text      := IntToStr(_TreeFontSize);
 
   fcEditor.ItemIndex := fcEditor.Items.IndexOf(_EditFont);
   udEditor.Position := _EditFontSize;
+  eEditor.Text      := IntToStr(_EditFontSize);
 end;
 
 procedure TfmCodeOptions.GetData(out _StoragePath: string; out _Layout: TCodeLayout;
@@ -118,9 +122,28 @@ begin
 end;
 
 procedure TfmCodeOptions.InitializeForm;
+
+  procedure SetShapeColors(AShape: TShape; APenColor, ABrushColor: TColor);
+  begin
+    AShape.Pen.Color   := APenColor;
+    AShape.Brush.Color := ABrushColor;
+  end;
+
+var
+  LPenColor   : TColor;
+  LBrushColor : TColor;
+
 begin
   fcTreeview.Items.Assign(Screen.Fonts);
   fcEditor.Items.Assign(Screen.Fonts);
+
+  LPenColor   := GetThemedColor(clWindowFrame);
+  LBrushColor := GetThemedColor(clWindow);
+
+  SetShapeColors(shpLeft, LPenColor, LBrushColor);
+  SetShapeColors(shpRight, LPenColor, LBrushColor);
+  SetShapeColors(shpTop, LPenColor, LBrushColor);
+  SetShapeColors(shpBottom, LPenColor, LBrushColor);
 end;
 
 constructor TfmCodeOptions.Create(_Owner: TComponent);

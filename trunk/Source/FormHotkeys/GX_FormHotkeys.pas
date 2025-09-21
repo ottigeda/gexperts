@@ -82,6 +82,7 @@ uses
   Math,
   u_dzVclUtils,
   GX_OtaUtils,
+  GX_IdeUtils,
   GX_Experts,
   GX_GetIdeVersion,
   GX_StringGridDrawFix,
@@ -416,14 +417,14 @@ begin
   cnv.Font := sg.Font;
   if (gdSelected in State) and (not (gdFocused in State) or
     ([goDrawFocusSelected, goRowSelect] * sg.Options <> [])) then begin
-    cnv.Brush.Color := clHighlight;
-    cnv.Font.Color := clHighlightText;
+    cnv.Brush.Color := GetThemedColor(clHighlight);
+    cnv.Font.Color := GetThemedColor(clHighlightText);
   end else if gdFixed in State then begin
-    cnv.Brush.Color := clBtnFace;
-    cnv.Font.Color := clWindowText;
+    cnv.Brush.Color := GetThemedColor(clBtnFace);
+    cnv.Font.Color := GetThemedColor(clWindowText);
   end else begin
-    cnv.Brush.Color := sg.Color;
-    cnv.Font.Color := clWindowText;
+    cnv.Brush.Color := GetThemedColor(clWindow);
+    cnv.Font.Color := GetThemedColor(clWindowText);
   end;
   cnv.FillRect(Rect);
 
@@ -431,7 +432,7 @@ begin
   if s = 'N/A' then begin
     s := '';
     if not (gdSelected in State) then
-      cnv.Brush.Color := clSilver;
+      cnv.Brush.Color := GetThemedColor(clScrollBar);
   end;
   TStringGrid_DrawCellFixed(sg, s, Rect, State, sg.Focused);
 end;

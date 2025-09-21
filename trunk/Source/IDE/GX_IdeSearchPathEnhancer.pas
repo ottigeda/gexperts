@@ -49,6 +49,7 @@ uses
   GX_GenericUtils,
   GX_IdeFavoritesList,
   GX_ConfigurationInfo,
+  GX_IdeUtils,
   GX_IdeSearchPathFavoriteEdit,
   GX_IdeDetectForms,
   GX_IdeDialogEnhancer,
@@ -399,6 +400,10 @@ begin
   FMemo.RightEdge := 0;
   FMemo.Gutter.Width := 0;
   FMemo.Options := FMemo.Options - [eoScrollPastEol, eoTabsToSpaces] + [eoHideShowScrollbars];
+  FMemo.Color := GetIdeEditorBackgroundColor;
+  FMemo.Font.Color := GetIdeEditorForegroundColor;
+  FMemo.ActiveLineColor := GetIdeEditorLineHighlightColor;
+
   GxOtaGetEditorFont(FMemo.Font, -1); // Editor font, size reduced by 1 pt.
 
   FListbox.Parent := FTabSheetList;
@@ -413,6 +418,13 @@ begin
   FListbox.ItemHeight := MulDiv(18, FTabSheetList.CurrentPPI, USER_DEFAULT_SCREEN_DPI);
   FListboxOnDrawItem := FListbox.OnDrawItem;
   FListbox.OnDrawItem := HandleListboxDrawItem;
+{$ENDIF}
+
+{$IFDEF GX_DELPHI10_4_UP}
+  if Assigned(FUpBtn) and (FUpBtn.ImageIndex < 0) then FUpBtn.ImageIndex := 2;
+  if Assigned(FUpBtn) and (FUpBtn.DisabledImageIndex < 0) then FUpBtn.DisabledImageIndex := 3;
+  if Assigned(FDownBtn) and (FDownBtn.ImageIndex < 0) then FDownBtn.ImageIndex := 0;
+  if Assigned(FDownBtn) and (FDownBtn.DisabledImageIndex < 0) then FDownBtn.DisabledImageIndex := 1;
 {$ENDIF}
 
   FDelDotsBtn := TButton.Create(_Form);

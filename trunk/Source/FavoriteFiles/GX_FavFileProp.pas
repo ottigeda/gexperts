@@ -1,9 +1,11 @@
 unit GX_FavFileProp;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
-  SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, StdCtrls, ComCtrls,
+  Windows, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, StdCtrls, ComCtrls,
   GX_BaseForm, GX_FavUtil;
 
 type
@@ -51,6 +53,7 @@ uses
   GX_FavFiles,
   GX_GenericUtils,
   GX_GxUtils,
+  GX_IdeUtils,
   u_dzVclUtils;
 
 { TfmFavFileProp }
@@ -133,9 +136,9 @@ begin
   sbnExecute.Enabled := ItemEnabled;
   edtExecuteUsing.Enabled := ItemEnabled;
   if ItemEnabled then
-    edtExecuteUsing.Color := clWindow
+    edtExecuteUsing.Color := GetThemedColor(clWindow)
   else
-    edtExecuteUsing.Color := clBtnFace;
+    edtExecuteUsing.Color := GetThemedColor(clBtnFace);
 end;
 
 procedure TfmFavFileProp.FormActivate(Sender: TObject);
@@ -175,6 +178,7 @@ begin
     cbxExecuteType.Items.AddObject(ExecTypeNames[ExecType], TObject(Ord(ExecType)));
 
   TButton_AlignVerticallyTo(sbnFile, edtFilename);
+  TButton_AlignVerticallyTo(sbnExecute, edtExecuteUsing);
 end;
 
 end.

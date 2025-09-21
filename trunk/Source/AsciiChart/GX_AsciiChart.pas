@@ -238,7 +238,7 @@ begin
   { draw the character value as Int or Hex on screen }
   cnv.Font.Name := 'Tahoma';  // do not localize
   cnv.Font.Size := 9;
-  cnv.Font.Color := clGrayText;
+  cnv.Font.Color := GetThemedColor(clGrayText);
   { Only do the if check once for improved speed rather than every iteration }
   if FShowHex then begin
     for i := 0 to 127 do begin
@@ -254,7 +254,7 @@ begin
     end;
   end;
   { Draw in the characters 0-31 if required }
-  cnv.Font.Color := clWindowText;
+  cnv.Font.Color := GetThemedColor(clWindowText);
   if FStartCharacter = 0 then begin
     // todo: Use CharLow array in a for loop
     DrawCharacter(cnv, 0,  'NUL', HorizMult, VertMult); // Ctrl @, NULL
@@ -304,14 +304,14 @@ begin
   cnv.Pen.Width := 1;
   cnv.Pen.Style := psSolid;
   { 1) draw left and top sides }
-  cnv.Pen.Color := clBtnHighlight;
+  cnv.Pen.Color := GetThemedColor(clBtnHighlight);
   for i := 0 to 7 do
     for j := 0 to 15 do
       cnv.PolyLine([Point(i * HorizMult, (j + 1) * VertMult - 2),
           Point(i * HorizMult, j * VertMult - 1),
           Point((i + 1) * HorizMult - 1, j * VertMult + -1)]);
   { 2) draw right and bottom sides }
-  cnv.Pen.Color := clBtnShadow;
+  cnv.Pen.Color := GetThemedColor(clBtnShadow);
   for i := 0 to 7 do
     for j := 0 to 15 do
       cnv.PolyLine([Point((i + 1) * HorizMult - 1, j * VertMult - 1),
@@ -555,7 +555,7 @@ begin
     KillHint;
     if FShowHints then begin
       FHint := TGxHintWindow.Create(Self);
-      FHint.Color := clInfoBk;
+      FHint.Color := GetThemedColor(clInfoBk);
       HintText := GetCharAtPos(CharPos);
       HintFont := FHint.Canvas.Font;
       HintFont.Charset := DEFAULT_CHARSET;

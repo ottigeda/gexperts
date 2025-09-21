@@ -19,8 +19,9 @@ uses
   Forms,
   Dialogs,
   StdCtrls,
+  ExtCtrls,
   Contnrs,
-  GX_BaseForm, ExtCtrls;
+  GX_BaseForm;
 
 type
   TConfigEntry = class

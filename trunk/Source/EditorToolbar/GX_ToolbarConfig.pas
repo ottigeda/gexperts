@@ -81,7 +81,7 @@ implementation
 uses
   SysUtils, Graphics, Menus, Messages, StrUtils,
   u_dzStringUtils, u_dzVclUtils,
-  GX_Consts, GX_ActionBroker, GX_GenericUtils, GX_GxUtils, GX_Toolbar;
+  GX_Consts, GX_ActionBroker, GX_GenericUtils, GX_GxUtils, GX_IdeUtils, GX_Toolbar;
 
 procedure AddActionToListbox(Action: TContainedAction; Listbox: TCustomListbox; Select: Boolean);
 var
@@ -346,9 +346,9 @@ var
       Action := TCustomAction(Obj);
 
     if odSelected in State then
-      LbCanvas.Brush.Color := clHighlight
+      LbCanvas.Brush.Color := GetThemedColor(clHighlight)
     else
-      LbCanvas.Brush.Color := clWindow;
+      LbCanvas.Brush.Color := GetThemedColor(clWindow);
 
     LbCanvas.FillRect(Rect);
 
@@ -356,7 +356,7 @@ var
     if Assigned(Action) and (Action.ImageIndex <> -1) then
     begin
       OldColor := LbCanvas.Brush.Color;
-      LbCanvas.Brush.Color := clBtnface;
+      LbCanvas.Brush.Color := GetThemedColor(clBtnface);
       try
         BtnRect := Classes.Rect(Rect.Left, Rect.Top + 1,
                                 Rect.Left + 20, Rect.Top + 20);
@@ -365,7 +365,7 @@ var
                                       Rect.Left + 2,
                                       Rect.Top + 2,
                                       Action.ImageIndex);
-        Frame3D(LbCanvas, BtnRect, clBtnHighlight, clBtnShadow, 1);
+        Frame3D(LbCanvas, BtnRect, GetThemedColor(clBtnHighlight), GetThemedColor(clBtnShadow), 1);
       finally
         LbCanvas.Brush.Color := OldColor;
       end;
@@ -384,7 +384,7 @@ begin
   LbCanvas.Brush.Style := bsClear;
 
   if not lbAvailable.Enabled then
-    LbCanvas.Font.Color := clGrayText;
+    LbCanvas.Font.Color := GetThemedColor(clGrayText);
   LbCanvas.TextOut(Rect.Left + 22, Rect.Top + FTextOffSet, Listbox.Items[Index]);
 end;
 

@@ -12,9 +12,9 @@ uses
   Controls,
   Forms,
   Dialogs,
-  StdCtrls,
-  GX_BaseForm,
-  ExtCtrls;
+  StdCtrls, 
+  ExtCtrls,
+  GX_BaseForm;
 
 type
   Tf_IdeSearchPathFavoriteEdit = class(TfmBaseForm)

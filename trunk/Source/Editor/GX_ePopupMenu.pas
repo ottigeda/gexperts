@@ -614,11 +614,18 @@ begin
 end;
 
 procedure TfmEditorPopupMenuExpertConfig.RemoveExpert;
+var
+  ndx : Integer;
 begin
-  if lv_Selected.ItemIndex = -1 then
+  ndx := lv_Selected.ItemIndex;
+  if ndx = -1 then
     Exit;
   lv_Selected.DeleteSelected;
   CheckForDuplicates;
+  if ndx < lv_Selected.Items.Count then begin
+    lv_Selected.ItemIndex := ndx;
+    ActiveControl := lv_Selected;
+  end;
 end;
 
 procedure TfmEditorPopupMenuExpertConfig.SetData(_sl: TStringList; _ForceEdiorActive: Boolean);

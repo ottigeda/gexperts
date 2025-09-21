@@ -12,7 +12,7 @@ uses
   Forms, Controls, StdActns, Classes, ActnList, Actions, UITypes,
   Dialogs, Menus, ComCtrls, StdCtrls, ToolWin, ExtCtrls, Graphics,
   GX_CodeLibFile,
-  GX_Experts, GX_EnhancedEditor,
+  GX_Experts, GX_EnhancedEditor, GX_Splitter,
   GX_GenericUtils, GX_StringList, GX_SharedImages, GX_BaseForm,
   GX_CodeOpt;
 
@@ -334,20 +334,22 @@ begin
       clSide:
         begin
           tvTopics.Align := alLeft;
-          tvTopics.Width := Self.Width div 2;
+          tvTopics.Width := ClientWidth div 3;
           Splitter.Align := alLeft;
-          if Splitter.Left < tvTopics.Left then
-            Splitter.Left := Self.Width;
+          Splitter.Left := tvTopics.Left + tvTopics.Width + 1;
           Splitter.Cursor := crHSplit;
+          Splitter.Width  := 4;
+          Splitter.Height := Splitter.Parent.ClientHeight;
           FCodeText.Align := AlClient;
         end;
       clTop:
         begin
           tvTopics.Align := alTop;
-          tvTopics.Height := Self.Height div 2;
+          tvTopics.Height := ClientHeight div 3;
           Splitter.Align := alTop;
-          if Splitter.Top < tvTopics.Top then
-            Splitter.Top := Self.Height;
+          Splitter.Top := tvTopics.Top + tvTopics.Height + 1;
+          Splitter.Height := 4;
+          Splitter.Width  := Splitter.Parent.ClientWidth;
           FCodeText.Align := AlClient;
           Splitter.Cursor := crVSplit;
         end;
@@ -864,11 +866,12 @@ begin
 
   Settings.LoadForm('Window', Self);
   Settings := Settings.Subkey('Window');
-  Layout := TCodeLayout(Settings.ReadInteger('Layout', 0));
+  FLayout := clUnknown; // Force next line to set the new layout
+  Layout := TCodeLayout(Settings.ReadInteger('Layout', Ord(clSide)));
   if Layout = clSide then
-    tvTopics.Width := Settings.ReadInteger('Splitter', tvTopics.Width)
+    tvTopics.Width := Settings.ReadInteger('Splitter', ClientWidth div 4)
   else
-    tvTopics.Height := Settings.ReadInteger('Splitter', tvTopics.Height);
+    tvTopics.Height := Settings.ReadInteger('Splitter', ClientHeight div 3);
 end;
 
 procedure TfmCodeLib.HelpExecute(Sender: TObject);
@@ -1133,6 +1136,7 @@ begin
     Exit;
   end;
   {$IFOPT D+}SendDebug('Opened storage file');{$ENDIF}
+  Splitter.Color := GetThemedColor(clBtnFace);
   InitializeTreeView;
   InitializeSyntaxLanguages;
   FModified := False;

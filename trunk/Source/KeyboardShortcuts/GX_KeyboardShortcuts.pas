@@ -69,6 +69,7 @@ uses
   GX_ActionBroker,
   GX_GenericUtils,
   GX_GetIdeVersion,
+  GX_IdeUtils,
   GX_StringGridDrawFix;
 
 type
@@ -230,6 +231,9 @@ begin
 
   sg_Actions.OnMouseWheelDown := sg_ActionsMouseWheelDown;
   sg_Actions.OnMouseWheelUp := sg_ActionsMouseWheelUp;
+
+  if IsThemingEnabled then
+    sg_Actions.DoubleBuffered := True;
 
   TabStr := ShortCutToText(ShortCut(VK_TAB, []));
   Row := sg_Actions.FixedRows;
@@ -396,9 +400,9 @@ var
   cnv: TCanvas;
 begin
   cnv := _sg.Canvas;
-  if _Duplicate then begin
-    cnv.Brush.Color := clYellow;
-    cnv.Font.Color := clBlack;
+  if _Duplicate and not (gdSelected in _State) then begin
+    cnv.Brush.Color := GetThemedColor(clWarningBack);
+    cnv.Font.Color  := GetThemedColor(clWarningText);
   end;
   TStringGrid_DrawCellFixed(_sg, _Text, _Rect, _State, _Focused);
 end;

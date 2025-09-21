@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, Graphics, Controls, Forms, Dialogs, ComCtrls, ExtCtrls, StdCtrls,
-  GX_ReplaceCompData, GX_BaseForm;
+  GX_Splitter, GX_ReplaceCompData, GX_BaseForm, GX_IdeUtils;
 
 type
   TfmReplaceCompLog = class(TfmBaseForm)
@@ -84,6 +84,7 @@ begin
   FLogEvents := LogEvents;
   edtSourceClassName.Text := SourceClassName;
   edtDestClassName.Text := DestClassName;
+  Splitter.Color := GetThemedColor(clBtnFace);
 
   InitDpiScaler;
 

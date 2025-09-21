@@ -132,6 +132,7 @@ uses
   SysUtils, MMSystem,
   GX_ProofreaderAutoCorrectEntry, GX_KibitzComp,
   GX_GxUtils, GX_GenericUtils, GX_OtaUtils, u_dzVclUtils, GX_ConfigurationInfo,
+  GX_IdeUtils,
   GX_GExperts;
 
 {$R *.dfm}
@@ -151,6 +152,11 @@ begin
   FProofreaderExpert := ProofreaderExpert;
   Assert(Assigned(ProofreaderData));
   FProofreaderData := ProofreaderData;
+
+  if IsThemingEnabled then
+    Pages.Style := tsButtons
+  else
+    Pages.Style := tsTabs;
 
   TabIndex := FProofreaderData.ActiveTab;
   if (TabIndex > -1) and (TabIndex < Pages.PageCount) then

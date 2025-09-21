@@ -96,8 +96,8 @@ end;
 constructor TfmAbout.Create(AOwner: TComponent);
 begin
   inherited;
-  GxSetDefaultFont(Self);
   TControl_SetMinConstraints(Self);
+  GxSetDefaultFont(Self);
   TLabel_MakeUrlLabel(lblWebPage);
 
 {$IF DECLARED(TfmFeedbackWizard)}

@@ -261,6 +261,7 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
     {$DEFINE GX_AV_IN_CODE_FORMATTER_FIX_ENABLED}
     {$DEFINE GX_ACTION_BROKER_IMAGELIST_FIX_ENABLED}
   {$ENDIF}
+  {$DEFINE GX_SUPPORTS_THEMING}
 {$ENDIF}
 {.$DEFINE GX_IDE_IS_HIDPI_AWARE}
 

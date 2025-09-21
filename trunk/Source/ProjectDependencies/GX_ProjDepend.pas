@@ -6,8 +6,8 @@ interface
 
 uses
   Windows, SysUtils, Classes, Controls, ComCtrls, ActnList, Menus, ToolWin, ExtCtrls,
-  Actions, UITypes, Forms,
-  GX_SharedImages, GX_Experts, GX_OtaUtils, GX_ConfigurationInfo, Dialogs, GX_BaseForm;
+  Actions, UITypes, Graphics, Forms, Dialogs,
+  GX_SharedImages, GX_Experts, GX_OtaUtils, GX_ConfigurationInfo, GX_Splitter, GX_BaseForm;
 
 type
   TfmProjDepend = class(TfmBaseForm)
@@ -773,6 +773,7 @@ begin
   SetToolbarGradient(ToolBar);
   SetNonModalFormPopupMode(Self);
   FFilterList := TStringList.Create;
+  Splitter.Color := GetThemedColor(clBtnFace);
 
   pcData.ActivePageIndex := 0;
 
@@ -786,6 +787,11 @@ begin
   CenterForm(Self);
 
   InitDpiScaler;
+
+  if IsThemingEnabled then
+    pcData.Style := tsButtons
+  else
+    pcData.Style := tsTabs;
 
   LoadSettings;
 

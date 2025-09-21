@@ -50,6 +50,7 @@ type
     procedure radScanDirClick(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
     procedure btnFontClick(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   private
     procedure UpdateButtonState;
     procedure DirEnable(New: Boolean);
@@ -64,6 +65,9 @@ type
       _DirectoryHistoryList: TStringList;
       out _ScanType: TToDoScanType; out _RecurseDirScan: Boolean; out _DirsToScan: string;
       _Font: TFont);
+  protected
+    procedure ArrangeControls; override;
+
   public
     class function Execute(_Owner: TWinControl;
       _TokenList: TStringList;
@@ -204,6 +208,12 @@ begin
     btnFont.Font := TheFontDialog.Font;
 end;
 
+procedure TfmToDoOptions.ArrangeControls;
+begin
+  inherited;
+  u_dzVclUtils.TButton_AlignVerticallyTo(btnBrowse, cboDirectories);
+end;
+
 procedure TfmToDoOptions.btnApplyClick(Sender: TObject);
 var
   TokenText: string;
@@ -225,6 +235,12 @@ end;
 procedure TfmToDoOptions.edTokenChange(Sender: TObject);
 begin
   UpdateButtonState;
+end;
+
+procedure TfmToDoOptions.FormResize(Sender: TObject);
+begin
+  inherited;
+  ArrangeControls;
 end;
 
 procedure TfmToDoOptions.FormShow(Sender: TObject);
@@ -257,6 +273,8 @@ var
   i: TToDoPriority;
 begin
   inherited;
+
+  TControl_SetMinConstraints(Self);
 
   TWinControl_ActivateDropFiles(cboDirectories, HandleDirectoriesDropped);
 

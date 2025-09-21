@@ -27,6 +27,7 @@ uses
   Menus,
   GX_BaseForm,
   GX_GxUtils,
+  GX_Splitter,
   GX_SharedImages,
   GX_EditPathConfig,
   rzC_Splitter;
@@ -176,6 +177,7 @@ uses
   SynUnicode,
   SynEdit,
   GX_OtaUtils,
+  GX_IdeUtils,
   GX_Experts,
   GX_EnhancedEditor,
   GX_GExperts,
@@ -183,7 +185,8 @@ uses
   GX_ConfigurationInfo,
   GX_IdeSearchPathEnhancer,
   GX_IdeFavoritesList,
-  GX_IdeSearchPathFavoriteEdit;
+  GX_IdeSearchPathFavoriteEdit,
+  GX_IdeSplitterVisibility;
 
 type
   TEditPathExpert = class(TGX_Expert)
@@ -219,6 +222,14 @@ begin
 
   il := GExpertsInst.GetScaledSharedImages(_NewDpi);
   TheActionList.Images := il;
+  // todo: Why ifdef this? It should work just fine without theaming.
+  {$IFDEF GX_SUPPORTS_THEMING}
+  sb_MoveUp.Images := il;
+  sb_MoveUp.ImageIndex := act_MoveUp.ImageIndex;
+
+  sb_MoveDown.Images := il;
+  sb_MoveDown.ImageIndex := act_MoveDown.ImageIndex;
+  {$ENDIF}
 end;
 {$ENDIF}
 
@@ -457,7 +468,7 @@ begin
     FMemo.EndUpdate;
   end;
 
- UpdateScrollbars(FMemo);
+  UpdateScrollbars(FMemo);
 end;
 
 function Tf_EditPath.doMakeAbsolute(const _s: string): string;
@@ -569,7 +580,7 @@ begin
     FreeAndNil(sl);
   end;
 
- UpdateScrollbars(FMemo);
+  UpdateScrollbars(FMemo);
 end;
 
 function Tf_EditPath.doAddDots(const _s: string): string;
@@ -805,12 +816,26 @@ begin
   FMemo.Align := alClient;
   FMemo.HideSelection := False;
   FMemo.WordWrap := False;
+{$IFDEF GX_SUPPORTS_THEMING}
+  FMemo.StyleElements := [];
+  FMemo.ParentColor := False;
+  FMemo.Color := GetIdeEditorBackgroundColor;
+  FMemo.Font.Color := GetIdeEditorForegroundColor;
+  FMemo.ActiveLineColor := GetIdeEditorLineHighlightColor;
+{$ELSE}
   FMemo.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
+{$ENDIF}
   FMemo.RightEdge := 0;
   FMemo.Gutter.Width := 0;
   FMemo.Options := FMemo.Options - [eoScrollPastEol, eoTabsToSpaces] + [eoHideShowScrollbars];
   FMemo.OnKeyDown := MemoKeyDown;
   FMemo.PopupMenu := pm_Memo;
+
+  act_MoveDown.ImageIndex := ImageIndexMoveDown;
+  act_MoveUp.ImageIndex := ImageIndexMoveUp;
+
+  spVer.Color := GetThemedColor(clBtnFace);
+  spHor.Color := GetThemedColor(clBtnFace);
 
   l_UnitSearchPath.FocusControl := FMemo;
 
@@ -852,12 +877,12 @@ end;
 
 procedure Tf_EditPath.FavoritesCallHelpContext(_Sender: TObject);
 begin
- GXContextHelp(Self,72);
+  GXContextHelp(Self, 72);
 end;
 
 procedure Tf_EditPath.FavoritesEditCallHelpContext(_Sender: TObject);
 begin
- GXContextHelp(Self,73);
+  GXContextHelp(Self, 73);
 end;
 
 procedure Tf_EditPath.UpdateScrollbars(ME:TSynMemo);
@@ -962,19 +987,20 @@ const      TargetMinWidth   = 140;
        p_ClientTopMinHeight = 180;
       lb_InheritedMinHeight = 200;
 begin
- inherited;
+  inherited;
+  if Assigned(FScaler) then begin
+    spVer.MinSize:=FScaler.Calc(TargetMinWidth);
+    spVer.MaxSize:=Self.ClientWidth-spVer.Width-FScaler.Calc(InheritedMinWidth);
 
- spVer.MinSize:=FScaler.Calc(TargetMinWidth);
- spVer.MaxSize:=Self.ClientWidth-spVer.Width-FScaler.Calc(InheritedMinWidth);
-
- spHor.MinSize:=FScaler.Calc(p_ClientTopMinHeight);
- spHor.MaxSize:=Self.ClientHeight-spHor.Height-p_InheritedCaption.Height-FScaler.Calc(lb_InheritedMinHeight)-p_BottomButtons.Height;
+    spHor.MinSize:=FScaler.Calc(p_ClientTopMinHeight);
+    spHor.MaxSize:=Self.ClientHeight-spHor.Height-p_InheritedCaption.Height-FScaler.Calc(lb_InheritedMinHeight)-p_BottomButtons.Height;
+  end;
 end;
 
 procedure Tf_EditPath.b_HelpClick(Sender: TObject);
 begin
- inherited;
-  GXContextHelp(Self,71);
+  inherited;
+  GXContextHelp(Self, 71);
 end;
 
 procedure Tf_EditPath.FormKeyDown(Sender: TObject; var Key: Word;

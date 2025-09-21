@@ -279,7 +279,9 @@ var
 begin
   inherited;
   h := grid_Spacing.Canvas.TextHeight('Mg') + 4;
+{$IF declared(FScaler)}
   grid_Spacing.DefaultRowHeight := FScaler.Calc(h);
+{$IFEND}
 end;
 
 procedure TfmCodeFormatterConfig.HandleCaptitalizationFileDropped(_Sender: TObject; _Files: TStrings);

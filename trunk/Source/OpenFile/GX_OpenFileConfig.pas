@@ -1,5 +1,7 @@
 unit GX_OpenFileConfig;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -93,15 +95,15 @@ type
     gbxCustomDirectory: TGroupBox;
     btnDirectory: TSpeedButton;
     lbxDirectoryList: TListBox;
-    btnDirectoryAdd: TBitBtn;
-    btnDirectoryDelete: TBitBtn;
+    btnDirectoryAdd: TButton;
+    btnDirectoryDelete: TButton;
     chkRecursive: TCheckBox;
-    btnDirectoryReplace: TBitBtn;
+    btnDirectoryReplace: TButton;
     edtDirectory: TEdit;
     lbxTypeList: TListBox;
     edtExtension: TEdit;
-    btnTypeAdd: TBitBtn;
-    btnTypeDelete: TBitBtn;
+    btnTypeAdd: TButton;
+    btnTypeDelete: TButton;
     edtMaxRecentFiles: TEdit;
     tsIDEOptions: TTabSheet;
     gbxIDEMenuItems: TGroupBox;
@@ -141,10 +143,12 @@ type
     function GetFileTypes: TFileTypes;
     function IDEOverride: TIDEOverride;
     procedure lbxDirectoryListFilesDropped(Sender: TObject; Files: TStrings);
-{$IFDEF GX_IDE_IS_HIDPI_AWARE}
   protected
+{$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
 {$ENDIF GX_IDE_IS_HIDPI_AWARE}
+    procedure FormResize(Sender: TObject);
+
   public
     class function ExecuteWithSettings(_Owner: TWinControl;Settings: TOpenFileSettings): Boolean;
     constructor Create(_Owner: TComponent); override;
@@ -160,6 +164,11 @@ uses
 
 const
   DefaultMaxMRU = 100;
+
+{$IF not declared(DisableAlign)}
+procedure DisableAlign; begin; end; // Dummy for backwards compatbility
+procedure EnableAlign; begin; end;
+{$IFEND}
 
 { TFileType }
 
@@ -617,6 +626,11 @@ begin
   end;
 end;
 
+procedure TfmOpenFileConfig.FormResize(Sender: TObject);
+begin
+  ArrangeControls;
+end;
+
 constructor TfmOpenFileConfig.Create(_Owner: TComponent);
 begin
   inherited;
@@ -629,6 +643,8 @@ begin
   TWinControl_ActivateDropFiles(lbxDirectoryList, lbxDirectoryListFilesDropped);
 
   InitDpiScaler;
+  
+  Self.OnResize := FormResize;
 end;
 
 procedure TfmOpenFileConfig.SaveSettings(Settings: TOpenFileSettings);

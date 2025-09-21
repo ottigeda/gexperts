@@ -189,6 +189,7 @@ begin
   b_Cancel.Left := Spacer + lb_UnitPositions.Width - b_Cancel.Width;
   Self.ClientHeight := b_Ok.Top + b_Ok.Height + Spacer;
   Self.ClientWidth  := Spacer + lb_UnitPositions.Width + Spacer;
+  b_Ok.Caption := 'Go';
 end;
 
 procedure Tf_Goto.cmb_LineNumberChange(Sender: TObject);

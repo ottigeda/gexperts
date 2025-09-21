@@ -75,6 +75,7 @@ implementation
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   Consts,
+  GX_GxUtils,
   GX_ConfigurationInfo;
 
 const
@@ -125,6 +126,7 @@ begin
     if Adaptor.ShouldShow then begin
       frm := TfmGxMessageBox.Create(nil);
       try
+        GxSetDefaultFont(frm);
         frm.ShowDontShowAgain := Adaptor.AllowSuppress;
         frm.ShowDetailButton := False;
         DialogButtons := Adaptor.GetButtons;

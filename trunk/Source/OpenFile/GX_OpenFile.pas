@@ -681,9 +681,9 @@ begin
   TControl_SetMinConstraints(Self);
 
   SetToolbarGradient(ToolBar);
-  lvSearchPath.Color := clBtnFace;
+  lvSearchPath.Color := GetThemedColor(clBtnFace);
   lvSearchPath.Enabled := False;
-  lvCommon.Color := clBtnFace;
+  lvCommon.Color := GetThemedColor(clBtnFace);
   lvCommon.Enabled := False;
   FAvailableFiles := TAvailableFiles.Create;
   AvailableFiles.OnFindComplete := SearchPathReady;
@@ -737,10 +737,10 @@ procedure TfmOpenFile.SearchPathReady;
 begin
   FilterVisibleUnits;
   lvSearchPath.HandleNeeded;
-  lvSearchPath.Color := clWindow;
+  lvSearchPath.Color := GetThemedColor(clWindow);
   lvSearchPath.Enabled := True;
   lvCommon.HandleNeeded;
-  lvCommon.Color := clWindow;
+  lvCommon.Color := GetThemedColor(clWindow);
   lvCommon.Enabled := True;
 end;
 
@@ -995,6 +995,7 @@ end;
 procedure TfmOpenFile.FormShow(Sender: TObject);
 var
   R : TRect;
+  LTextWidth: Integer;
 begin
   R := Self.BoundsRect;
   inherited;             // will call ApplyDpi(), which resets the size.
@@ -1005,6 +1006,11 @@ begin
     GxSetWindowSizeGrip(pnlButtonsRight.Handle, True);
 {$ENDIF}
   lvSearchPath.Columns[0].Width := FFileColumnWidth;
+  if lvSearchPath.Columns.Count >= 3 then
+  begin
+    LTextWidth := Self.Canvas.TextWidth(lvSearchPath.Columns[2].Caption) + 16;
+    lvSearchPath.Columns[2].Width := LTextWidth;
+  end;
   CopyColumns(lvSearchPath);
   ResizeListViewColumns;
   tabSearchPathShow(tabSearchPath);

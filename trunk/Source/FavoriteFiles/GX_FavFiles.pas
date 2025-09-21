@@ -5,11 +5,11 @@ unit GX_FavFiles;
 interface
 
 uses
-  Windows, SysUtils, Classes, Controls, Forms, UITypes,
+  Windows, SysUtils, Classes, Controls, Graphics, Forms, UITypes,
   ComCtrls, Menus, ExtCtrls, ImgList, ImageList, ActnList, ToolWin, Dialogs, Actions,
   u_dzDpiScaleUtils,
   DropTarget, FileView,
-  GX_FavUtil, GX_SharedImages, GX_BaseForm;
+  GX_FavUtil, GX_SharedImages, GX_Splitter, GX_BaseForm;
 
 type
   TFavFilesOptions = class
@@ -214,6 +214,7 @@ type
     function ConfigurationKey: string;
     function ExecuteFile(AFile: TGXFile): Boolean;
     function ExecuteFileItem(AListItem: TListItem): Boolean;
+    procedure FixSplitterPosition;
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     // TImageListScaler descends from TComponents and gets freed automatically
@@ -753,11 +754,12 @@ begin
       Node := tvFolders.Items.AddObject(nil, FRootFolder.FolderName, FRootFolder);
     end;
   end;
-
-  Node.ImageIndex := 0;
-  Node.SelectedIndex := 1;
-  CreateFolders(FRootFolder, Node);
-  Node.Expand(FOptions.FExpandAll);
+  if Assigned(Node) then begin
+    Node.ImageIndex := 0;
+    Node.SelectedIndex := 1;
+    CreateFolders(FRootFolder, Node);
+    Node.Expand(FOptions.FExpandAll);
+  end;
   if (tvFolders.Selected = nil) and (tvFolders.Items.Count > 0) then
     tvFolders.Selected := tvFolders.Items[0];
 end;
@@ -1119,9 +1121,12 @@ end;
 procedure TfmFavFiles.FormShow(Sender: TObject);
 begin
   inherited;
+  LoadSettings;
   FFileDrop.Register(ListView);
   if ListView.ViewStyle = vsList then
     ListView_SetColumnWidth(ListView.Handle, 0, ListView.Width);
+  if FOptions.FShowPreview then
+    FixSplitterPosition;
 end;
 
 procedure TfmFavFiles.FormHide(Sender: TObject);
@@ -1256,6 +1261,7 @@ begin
   begin
     pnlFileView.Visible := Value;
     splFileView.Visible := Value;
+    FixSplitterPosition;
     FFileViewer.Clear;
     if (Value) and (ListView.Selected <> nil) then
       ListViewChange(ListView, ListView.Selected, ctState);
@@ -1802,6 +1808,9 @@ begin
 
   FMRUEntryFiles := TStringList.Create;
 
+  splTreeView.Color := GetThemedColor(clBtnFace);
+  splFileView.Color := GetThemedColor(clBtnFace);
+
   CenterForm(Self);
   LoadSettings;
   LoadEntries;
@@ -1941,6 +1950,14 @@ begin
     AListItem.SubItems.Add(ExecTypeNames[AFile.ExecType]);
   AListItem.Data := AFile;
   AListItem.ImageIndex := GetSystemImageIndexForFile(MakeFileNameAbsolute(AFile.FileName));
+end;
+
+procedure TfmFavFiles.FixSplitterPosition;
+begin
+  if splFileView.Visible then begin
+    splFileView.Align := alTop;
+    splFileView.Align := alBottom;
+  end;
 end;
 
 { TFavoriteFilesExpert }

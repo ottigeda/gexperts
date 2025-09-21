@@ -55,6 +55,7 @@ type
     tbnConfigure: TToolButton;
     ToolButton1: TToolButton;
     tbnHelp: TToolButton;
+    chkUseDarkMode: TCheckBox;
     procedure actHelpExecute(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure actRefreshExecute(Sender: TObject);
@@ -88,6 +89,7 @@ type
     FDefaultCopyFormat: TGXCopyFormat;
     FSaveDir: string;
     FSaveFilter: Integer;
+    FUseDarkMode: Boolean;
     FBackgroundColor: TColor;
   protected
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
@@ -422,6 +424,7 @@ begin
   FDefaultCopyFormat := NewCopyFormat;
   FSaveDir := _Settings.ReadString('Save Directory', '');
   FSaveFilter := _Settings.ReadInteger('Save Format', 1);
+  FUseDarkMode := _Settings.ReadBool('DarkMode', False);
   FBackgroundColor := _Settings.ReadInteger('Background', GetIdeEditorBackgroundColor);
 end;
 
@@ -432,6 +435,7 @@ begin
   _Settings.WriteInteger('Copy Format', Ord(FDefaultCopyFormat));
   _Settings.WriteString('Save Directory', FSaveDir);
   _Settings.WriteInteger('Save Format', FSaveFilter);
+  _Settings.WriteBool('DarkMode', FUseDarkMode);
   _Settings.WriteInteger('Background', FBackgroundColor);
 end;
 

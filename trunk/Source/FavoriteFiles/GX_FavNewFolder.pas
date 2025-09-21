@@ -45,6 +45,7 @@ uses
 {$ENDIF}
   u_dzVclUtils,
   GX_GxUtils,
+  GX_IdeUtils,
   GX_FavFiles;
 
 { TfmFavNewFolder }
@@ -115,9 +116,9 @@ begin
   try
     cnv := cbxFolderType.Canvas;
     if odSelected in State then
-      cnv.Brush.Color := clHighlight
+      cnv.Brush.Color := GetThemedColor(clHighlight)
     else
-      cnv.Brush.Color := clWindow;
+      cnv.Brush.Color := GetThemedColor(clWindow);
     cnv.FillRect(Rect);
     TheForm := (FFavoriteFilesForm as TfmFavFiles);
     if Assigned(TheForm) then begin
