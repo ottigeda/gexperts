@@ -1,5 +1,7 @@
 unit GX_eSortOptions;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -43,7 +45,8 @@ implementation
 
 uses
   u_dzVclUtils,
-  GX_GenericUtils;
+  GX_GenericUtils,
+  GX_SharedImages;
 
 { TfrmSortOptions }
 
@@ -95,6 +98,14 @@ begin
   Self.ClientWidth := grpSortOrder.Width +  (2 * LSpacer);
   Self.ClientHeight := btnCancel.Top + btnCancel.Height + LSpacer;
 
+{$IFDEF GX_SUPPORTS_THEMING}
+  btnUp.Glyph.Assign(nil);
+  btnDown.Glyph.Assign(nil);
+  GetSharedImageList.GetBitmap(ImageIndexMoveUp, btnUp.Glyph);
+  GetSharedImageList.GetBitmap(ImageIndexMoveDown, btnDown.Glyph);
+  btnUp.NumGlyphs := 1;
+  btnDown.NumGlyphs := 1;
+{$ENDIF}
   InitDpiScaler;
 end;
 

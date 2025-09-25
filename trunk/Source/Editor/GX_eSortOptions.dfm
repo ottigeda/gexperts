@@ -1,8 +1,8 @@
 inherited frmSortOptions: TfrmSortOptions
   BorderStyle = bsDialog
   Caption = 'Sort Selected Lines Configuration'
-  ClientHeight = 249
-  ClientWidth = 217
+  ClientHeight = 241
+  ClientWidth = 215
   PixelsPerInch = 96
   TextHeight = 13
   object grpSortOrder: TGroupBox
@@ -17,7 +17,7 @@ inherited frmSortOptions: TfrmSortOptions
       Top = 24
       Width = 153
       Height = 169
-      ItemHeight = 13
+      ItemHeight = 15
       TabOrder = 0
       OnClick = lbxGroupOrderClick
       OnKeyDown = lbxGroupOrderKeyDown
