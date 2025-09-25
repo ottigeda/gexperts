@@ -2,8 +2,8 @@ inherited fmeSortConfig: TfmeSortConfig
   ActiveControl = chkIgnoreFunction
   BorderStyle = bsDialog
   Caption = 'Sort Selected Lines'
-  ClientHeight = 233
-  ClientWidth = 241
+  ClientHeight = 225
+  ClientWidth = 239
   Position = poDesigned
   PixelsPerInch = 96
   TextHeight = 13
@@ -11,12 +11,12 @@ inherited fmeSortConfig: TfmeSortConfig
     Left = 8
     Top = 0
     Width = 225
-    Height = 145
-    Caption = 'Sort ...'
+    Height = 153
+    Caption = 'Sort...'
     TabOrder = 0
     object btnAscending: TButton
       Left = 8
-      Top = 16
+      Top = 22
       Width = 209
       Height = 25
       Caption = '&Ascending'
@@ -26,7 +26,7 @@ inherited fmeSortConfig: TfmeSortConfig
     end
     object btnDescending: TButton
       Left = 8
-      Top = 48
+      Top = 54
       Width = 209
       Height = 25
       Caption = '&Descending'
@@ -35,7 +35,7 @@ inherited fmeSortConfig: TfmeSortConfig
     end
     object chkIgnoreFunction: TCheckBox
       Left = 8
-      Top = 80
+      Top = 86
       Width = 209
       Height = 17
       Caption = '&Ignore procedure, function etc.'
@@ -43,7 +43,7 @@ inherited fmeSortConfig: TfmeSortConfig
     end
     object btnCustom: TButton
       Left = 8
-      Top = 112
+      Top = 121
       Width = 177
       Height = 25
       Caption = '&Custom'
@@ -52,7 +52,7 @@ inherited fmeSortConfig: TfmeSortConfig
     end
     object btnConfigCustom: TButton
       Left = 192
-      Top = 112
+      Top = 121
       Width = 25
       Height = 25
       Caption = '...'
@@ -62,7 +62,7 @@ inherited fmeSortConfig: TfmeSortConfig
   end
   object btnReverse: TButton
     Left = 16
-    Top = 160
+    Top = 166
     Width = 209
     Height = 25
     Caption = '&Reverse Order'
