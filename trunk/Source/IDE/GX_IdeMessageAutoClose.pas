@@ -151,11 +151,23 @@ var
   HintCount: TLabel;
   WarningCount: TLabel;
   ErrorCount: TLabel;
+(*
+  AutoCloseChk: TCheckBox;
+*)  
 begin
   if TComponent_FindComponent(_Form, GxMessageAutoCloseComponent, True, cmp) then begin
     // our AutoClose component already exists, nothing to do
     Exit; //==>
   end;
+
+(*
+  // disable then auto-close checkbox
+  if TComponent_FindComponent(_Form, 'AutoCloseChk', True, TComponent(AutoCloseChk), TCheckBox) then
+  begin
+    AutoCloseChk.Checked := False;
+    AutoCloseChk.Enabled := False;
+  end;
+*)
 
   if not TComponent_FindComponent(_Form, 'HintCount', False, TComponent(HintCount), TLabel) then begin
     // no HintCount component -> There is some error
