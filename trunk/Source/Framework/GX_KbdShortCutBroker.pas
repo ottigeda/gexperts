@@ -540,6 +540,9 @@ begin
     if Assigned(Application) and (csDestroying in Application.ComponentState) then
       Exit;
 
+    if Assigned(Application) and (Application.Terminated) then
+      Exit;
+
     if not ConfigInfo.EnableKeyboardShortcuts then
       Exit;
 
