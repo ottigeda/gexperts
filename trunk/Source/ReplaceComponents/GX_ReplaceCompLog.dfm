@@ -14,6 +14,7 @@ object fmReplaceCompLog: TfmReplaceCompLog
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
+  OldCreateOrder = True
   Scaled = False
   OnClose = FormClose
   OnKeyDown = FormKeyDown

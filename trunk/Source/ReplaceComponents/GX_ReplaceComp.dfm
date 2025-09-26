@@ -3,7 +3,7 @@ object fmReplaceComp: TfmReplaceComp
   Top = 311
   BorderStyle = bsDialog
   Caption = 'Replace Components'
-  ClientHeight = 226
+  ClientHeight = 233
   ClientWidth = 485
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -16,8 +16,7 @@ object fmReplaceComp: TfmReplaceComp
   Scaled = False
   DesignSize = (
     485
-    226)
-  PixelsPerInch = 96
+    233)
   TextHeight = 14
   object lblSeach: TLabel
     Left = 79
@@ -38,8 +37,8 @@ object fmReplaceComp: TfmReplaceComp
     FocusControl = cbReplace
   end
   object btnOK: TButton
-    Left = 150
-    Top = 190
+    Left = 154
+    Top = 200
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -50,8 +49,8 @@ object fmReplaceComp: TfmReplaceComp
     OnClick = btnOKClick
   end
   object btnCancel: TButton
-    Left = 233
-    Top = 190
+    Left = 235
+    Top = 200
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -61,8 +60,8 @@ object fmReplaceComp: TfmReplaceComp
     TabOrder = 5
   end
   object btnHelp: TButton
-    Left = 398
-    Top = 190
+    Left = 397
+    Top = 200
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -77,7 +76,6 @@ object fmReplaceComp: TfmReplaceComp
     Height = 22
     Anchors = [akLeft, akTop, akRight]
     DropDownCount = 18
-    ItemHeight = 14
     Sorted = True
     TabOrder = 0
     OnChange = cbSearchChange
@@ -98,15 +96,15 @@ object fmReplaceComp: TfmReplaceComp
   end
   object gbxScope: TGroupBox
     Left = 188
-    Top = 70
+    Top = 67
     Width = 285
-    Height = 108
+    Height = 127
     Anchors = [akTop]
     Caption = 'Scope'
     TabOrder = 3
     DesignSize = (
       285
-      108)
+      127)
     object rbAllOnCurrentForm: TRadioButton
       Left = 8
       Top = 51
@@ -118,7 +116,7 @@ object fmReplaceComp: TfmReplaceComp
     end
     object rbAllInProject: TRadioButton
       Left = 8
-      Top = 82
+      Top = 79
       Width = 271
       Height = 17
       Anchors = [akLeft, akTop, akRight]
@@ -127,7 +125,7 @@ object fmReplaceComp: TfmReplaceComp
     end
     object rbSelectedOnCurrentForm: TRadioButton
       Left = 8
-      Top = 20
+      Top = 23
       Width = 271
       Height = 17
       Anchors = [akLeft, akTop, akRight]
@@ -139,14 +137,14 @@ object fmReplaceComp: TfmReplaceComp
   end
   object gbxOptions: TGroupBox
     Left = 12
-    Top = 70
+    Top = 67
     Width = 165
-    Height = 108
+    Height = 127
     Caption = '&Options'
     TabOrder = 2
     object chkIgnoreErrors: TCheckBox
       Left = 11
-      Top = 17
+      Top = 23
       Width = 150
       Height = 17
       Caption = 'Ignore errors'
@@ -154,7 +152,7 @@ object fmReplaceComp: TfmReplaceComp
     end
     object chkLogChanges: TCheckBox
       Left = 11
-      Top = 34
+      Top = 43
       Width = 150
       Height = 17
       Caption = 'Log changes'
@@ -162,7 +160,7 @@ object fmReplaceComp: TfmReplaceComp
     end
     object chkLogValues: TCheckBox
       Left = 23
-      Top = 51
+      Top = 63
       Width = 140
       Height = 17
       Caption = 'Log all values'
@@ -170,7 +168,7 @@ object fmReplaceComp: TfmReplaceComp
     end
     object chkOverwriteLog: TCheckBox
       Left = 23
-      Top = 68
+      Top = 83
       Width = 140
       Height = 17
       Caption = 'Overwrite old log'
@@ -178,7 +176,7 @@ object fmReplaceComp: TfmReplaceComp
     end
     object chkShowLogWin: TCheckBox
       Left = 23
-      Top = 85
+      Top = 103
       Width = 140
       Height = 17
       Caption = 'Show log window'
@@ -187,7 +185,7 @@ object fmReplaceComp: TfmReplaceComp
   end
   object btnSettings: TButton
     Left = 316
-    Top = 190
+    Top = 200
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]

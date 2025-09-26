@@ -232,6 +232,7 @@ object fmCompRenameConfig: TfmCompRenameConfig
           Anchors = [akLeft, akTop, akBottom]
           ItemHeight = 14
           TabOrder = 3
+          OnDblClick = lbxOtherPropsDblClick
         end
       end
     end

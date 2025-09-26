@@ -464,6 +464,8 @@ var
   CurrentComponent: IOTAComponent;
   i: Integer;
 begin
+  TCursor_TempHourglass;
+
   LoadComponentList;
 
   if not GxOtaTryGetCurrentFormEditor(FormEditor) then
