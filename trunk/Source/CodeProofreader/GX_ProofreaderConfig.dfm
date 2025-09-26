@@ -347,13 +347,13 @@ object fmProofreaderConfig: TfmProofreaderConfig
               Left = 8
               Top = 48
               Width = 293
-              Height = 147
+              Height = 153
               Anchors = [akLeft, akTop, akRight]
               Caption = 'Replace When'
               TabOrder = 2
               object cbOneCharIncorrect: TCheckBox
                 Left = 8
-                Top = 37
+                Top = 43
                 Width = 262
                 Height = 17
                 Caption = 'One character is wrong'
@@ -362,7 +362,7 @@ object fmProofreaderConfig: TfmProofreaderConfig
               end
               object cbAllowOneCharacterMissing: TCheckBox
                 Left = 8
-                Top = 81
+                Top = 83
                 Width = 262
                 Height = 17
                 Caption = 'One character is missing'
@@ -370,7 +370,7 @@ object fmProofreaderConfig: TfmProofreaderConfig
               end
               object cbAllowExtraChar: TCheckBox
                 Left = 8
-                Top = 101
+                Top = 103
                 Width = 262
                 Height = 17
                 Caption = 'An extra character is inserted'
@@ -378,7 +378,7 @@ object fmProofreaderConfig: TfmProofreaderConfig
               end
               object cbCaseDiffer: TCheckBox
                 Left = 8
-                Top = 17
+                Top = 23
                 Width = 262
                 Height = 17
                 Caption = 'Word case is different'
@@ -386,7 +386,7 @@ object fmProofreaderConfig: TfmProofreaderConfig
               end
               object cbAllowSwitchedChars: TCheckBox
                 Left = 8
-                Top = 121
+                Top = 123
                 Width = 262
                 Height = 17
                 Caption = 'Two characters are switched'
@@ -394,7 +394,7 @@ object fmProofreaderConfig: TfmProofreaderConfig
               end
               object cbMustBeNearbyLetter: TCheckBox
                 Left = 21
-                Top = 59
+                Top = 63
                 Width = 249
                 Height = 17
                 Caption = 'Character must be nearby correct key'
@@ -403,7 +403,7 @@ object fmProofreaderConfig: TfmProofreaderConfig
             end
             object cbFirstCharMustBeCorrect: TCheckBox
               Left = 8
-              Top = 202
+              Top = 208
               Width = 291
               Height = 17
               Anchors = [akLeft, akTop, akRight]
