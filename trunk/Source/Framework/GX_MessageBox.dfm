@@ -9,5 +9,9 @@ object fmGxMessageBox: TfmGxMessageBox
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OldCreateOrder = True
+  Position = poScreenCenter
+  Scaled = False
+  PixelsPerInch = 96
   TextHeight = 15
 end

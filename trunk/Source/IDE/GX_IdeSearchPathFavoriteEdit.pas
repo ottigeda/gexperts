@@ -12,7 +12,7 @@ uses
   Controls,
   Forms,
   Dialogs,
-  StdCtrls, 
+  StdCtrls,
   ExtCtrls,
   GX_BaseForm;
 

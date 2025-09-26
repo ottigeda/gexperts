@@ -1,6 +1,6 @@
 inherited f_IdeSearchPathFavoriteEdit: Tf_IdeSearchPathFavoriteEdit
-  Left = 2384
-  Top = 407
+  Left = 100
+  Top = 100
   BorderIcons = [biSystemMenu]
   Caption = 'Favorite Search Path'
   ClientHeight = 209
