@@ -1,6 +1,6 @@
 inherited fmUsesManager: TfmUsesManager
-  Left = 2211
-  Top = 216
+  Left = 311
+  Top = 202
   ActiveControl = edtUnitFilter
   BorderIcons = [biSystemMenu]
   Caption = 'Uses Clause Manager'

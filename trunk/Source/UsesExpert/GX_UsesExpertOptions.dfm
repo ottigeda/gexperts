@@ -1,13 +1,12 @@
 inherited fmUsesExpertOptions: TfmUsesExpertOptions
-  Left = 2484
-  Top = 215
+  Left = 338
+  Top = 241
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Uses Clause Manager, Configuration'
   ClientHeight = 330
   ClientWidth = 329
-  ParentFont = False
-  Font.Name = 'Tahoma'
+  ParentFont = True
   KeyPreview = True
   OnKeyDown = FormKeyDown
   DesignSize = (

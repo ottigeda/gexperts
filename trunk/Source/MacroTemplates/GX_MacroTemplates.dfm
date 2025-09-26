@@ -10,6 +10,7 @@ object fmMacroTemplates: TfmMacroTemplates
   Color = clBtnFace
   Constraints.MinHeight = 387
   Constraints.MinWidth = 353
+  OldCreateOrder = True  
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
