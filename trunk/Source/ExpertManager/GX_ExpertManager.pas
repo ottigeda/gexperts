@@ -787,6 +787,12 @@ begin
 end;
 
 procedure InstallGExperts(Handle: HWND; InstHandle: HINST; CmdLine: PAnsiChar; CmdShow: Integer);
+const
+{$IFDEF WIN64}
+  BITNESS = '64 bit';
+{$ELSE}
+  BITNESS = '32 bit';
+{$ENDIf}
 var
   Succeeded: Boolean;
 begin
@@ -796,10 +802,10 @@ begin
     Succeeded := False;
   end;
   if Succeeded then
-    ShowMessage(Format('GExperts has been registered for use in %s', [IDEEnglishName]))
+    ShowMessage(Format('GExperts has been registered for use in %s (%s).', [IDEEnglishName, BITNESS]))
   else begin
-    ShowMessage(Format('GExperts could not be registered for use in %s.'#13#10
-      + 'Starting the GExperts Expert Manager.', [IDEEnglishName]));
+    ShowMessage(Format('GExperts could not be registered for use in %s (%s).'#13#10
+      + 'Starting the GExperts Expert Manager.', [IDEEnglishName, BITNESS]));
     ShowExpertManager;
   end;
 end;
