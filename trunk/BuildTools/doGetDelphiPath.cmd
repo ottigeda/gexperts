@@ -128,6 +128,7 @@ goto DelphiEndCase
 :Delphi130
 :DelphiXX13
 :DelphiXX130
+:DelphiXX130_64
   call :ReadReg Embarcadero\BDS\37.0
   goto :DelphiEndCase
 :DelphiEndCase
