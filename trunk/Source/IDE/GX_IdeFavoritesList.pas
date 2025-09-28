@@ -184,7 +184,8 @@ begin
     li.Caption := FavName;
     li.SubItems.Add(FavValue);
   end;
-  lv_Favorites.ItemIndex:=0;
+  if lv_Favorites.Items.Count > 0 then
+    lv_Favorites.ItemIndex:=0;
 
   b_Help.Visible := Assigned(_OnCallHelpContext);
   if not(b_Help.Visible) then b_Close.Top := b_Help.Top;
