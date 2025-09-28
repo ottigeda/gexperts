@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic modified="2025-06-02T08:52:27.018+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Set Tab Order</title>
+  <keywords>
+    <keyword translate="true">Set Tab Order</keyword>
+    <keyword translate="true">Tab Order</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Set Tab Order</text></para>
+    </header>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">This expert enables you to quickly modify the tab order of a form&apos;s components. &#160;There are two major modes of usage for this expert. &#160;If you hold down the Shift key and select multiple components, the expert assumes you have selected components that share a parent and you wish to set the tab order for those components to the selection order (this mode is not supported in Delphi 2005, due to an IDE bug). &#160;If a single component is selected that contains child components, the expert attempts to guess a good tab order for those child components based on their relative Top/Left positions and displays the suggested order in the Arrange Components tree. &#160;You can rearrange the suggested tab order displayed in the tree using drag and drop. &#160;As you select a component in the tree, it will be selected on the underlying form to ease identification.</text></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-bottom:40px;"><image src="Set Tab Order.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" figurelistinclude="0"></image><text style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Notes:</text><text styleclass="Normal" translate="true"> This expert does not modify the TabStop property of your controls and will ignore components without a TabOrder property.</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:27:32.218+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true">&#32;</text></para>
+  </body>
+</topic>

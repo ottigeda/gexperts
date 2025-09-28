@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic modified="2025-06-02T08:46:59.460+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Open File</title>
+  <keywords>
+    <keyword translate="true">MRU</keyword>
+    <keyword translate="true">Open File</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Open File</text></para>
+    </header>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">The Open File tool allows you to search for and quickly open any type of file. &#160;The filter string you type will cause the file list to only show files containing that filter. &#160;The type dropdown allows you to select the groups of files to show in the lists.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">There are several tabs that show different groups of files:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Search Path</text><text styleclass="Normal" translate="true">: Files on the project search path and the IDE-global search path</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Project</text><text styleclass="Normal" translate="true">: Files in the project</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">VCL/RTL</text><text styleclass="Normal" translate="true">: Files in the IDE&apos;s Source directory</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Favorite</text><text styleclass="Normal" translate="true">: Files you have specifically indicated as a favorite file</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" style="font-weight:bold;" translate="true">Recent</text><text styleclass="Normal" translate="true">: Files that have been opened in the IDE recently</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Using the Options button, you can define custom file groups to use when filtering the file list using the Type dropdown. &#160;You can also configure custom directories to search and for files to add to the search path tab when that file group is selected. You can also choose to override the IDE&apos;s Open Project, Unit List, and Form list dialogs to bring up the Open File tool with a specific file group pre-selected.</text></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px;"><image src="Open File.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" figurelistinclude="0"></image><text style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:27:32.218+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true">&#32;</text></para>
+  </body>
+</topic>

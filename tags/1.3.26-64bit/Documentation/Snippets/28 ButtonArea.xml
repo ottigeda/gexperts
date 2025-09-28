@@ -1,0 +1,63 @@
+﻿<topic modified="2025-07-29T22:06:02.916+02:00" lasteditedby="Ghost">
+  <body>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The following </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">commands</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> are available for editing </text><text styleclass="Normal" style="font-family:Verdana; font-weight:bold; color:#ff0000;" translate="true">xxx</text><text styleclass="Normal" style="font-family:Verdana;" translate="true">. Please note that all changes must be explicitly submitted using the Save button! </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="5" colcount="3" style="width:100%;">
+      <tr style="vertical-align:top">
+        <td style="width:30px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-bottom:6px; margin-left:6px;"><image src="ToDoGrid60Options12AddExt.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" style="font-weight:normal;" figurelistinclude="0"></image></para>
+        </td>
+        <td style="width:140px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Restore default extensions </text></para>
+        </td>
+        <td style="vertical-align:top; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The button xx </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:30px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-bottom:6px; margin-left:6px;"><image src="ToDoGrid60Options14SortCLB.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" style="font-weight:normal;" figurelistinclude="0"></image></para>
+        </td>
+        <td style="vertical-align:top; width:140px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Sort list </text></para>
+        </td>
+        <td style="vertical-align:top; background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">xx xx </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:30px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-bottom:6px; margin-left:6px;"><image src="ToDoGrid60Options16AddExt.png" imagestyleclass="Default" scale="100.00%" styleclass="Normal" figurelistinclude="0"></image></para>
+        </td>
+        <td style="vertical-align:top; width:140px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Add extension </text></para>
+        </td>
+        <td style="vertical-align:top; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">xx xx </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:30px; height:30px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-bottom:6px; margin-left:6px;"><image src="ToDoGrid60Options18Apply.png" imagestyleclass="Default" scale="100.00%" styleclass="Normal" style="font-family:Verdana;" figurelistinclude="0"></image></para>
+        </td>
+        <td style="vertical-align:top; width:140px; height:30px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Apply changes </text></para>
+        </td>
+        <td style="vertical-align:top; height:30px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">xx xx </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:30px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-bottom:6px; margin-left:6px;"><image src="ToDoGrid60Options20DelExtension.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" style="font-weight:normal;" figurelistinclude="0"></image></para>
+        </td>
+        <td style="vertical-align:top; width:140px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Delete extension </text></para>
+        </td>
+        <td style="vertical-align:top; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">xx xx </text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" translate="true">&#32;</text></para>
+  </body>
+</topic>

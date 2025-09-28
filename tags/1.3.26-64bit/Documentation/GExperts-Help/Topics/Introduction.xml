@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic modified="2025-06-02T08:44:47.778+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Introduction</title>
+  <keywords>
+    <keyword translate="true">About</keyword>
+    <keyword translate="true">https://en.delphipraxis.net/forum/31-gexperts</keyword>
+    <keyword translate="true">Introduction</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><image src="GExpertsLogo.png" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    </header>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><image src="GExperts - Essential Logo (big G).svg" align="right" scale="33.00%" width="281" height="301" styleclass="Image Caption" figurelistinclude="0"></image><text styleclass="Normal" style="font-size:14pt; font-weight:bold;" translate="true">GExperts Version 1.3.25 </text><text styleclass="Normal" style="font-weight:bold;" translate="true">(Updated 2024-08-24) </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">GExperts is a free set of tools built to increase the productivity of Delphi and C++Builder programmers by adding several features to the IDE. GExperts is developed as Open Source software and encourages user contributions to the project. </text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">GExperts would not exist without the help and advice of many people. For more </text><link displaytype="text" defaultstyle="true" type="topiclink" href="Credits" styleclass="Normal" translate="true">credits</link><text styleclass="Normal" translate="true"> see the change log and commit history, or open the GExperts about box. Please take a moment to read the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="License_Agreement" styleclass="Normal" translate="true">GExperts License Agreement</link><text styleclass="Normal" translate="true">. &#160;Also, remember that the </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Readme.txt</text><text styleclass="Normal" translate="true"> file included with GExperts will often contain information not included in this help file, including the latest changes, known bugs, and plans for the future.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The latest version of GExperts and the FAQ are always available at: </text><link displaytype="text" defaultstyle="true" type="weblink" href="https://gexperts.dummzeuch.de/" target="_blank" style="font-family:Arial; font-size:10pt; text-decoration:underline; color:#0000ff;" translate="true">https://gexperts.dummzeuch.de</link><text styleclass="Normal" translate="true">. You can send bug reports and suggestions using the Feedback Wizard in the GExperts about box.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">For other GExperts related queries use the GExperts sub-forum in Delphi Praxis at</text></para>
+    <para styleclass="Normal"><link displaytype="text" defaultstyle="true" type="weblink" href="&lt;%LINK_CAPTION%&gt;" target="_blank" styleclass="Normal" translate="true">https://en.delphipraxis.net/forum/31-gexperts/</link></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><image src="AboutBox - Bug Reports.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:41:08.310+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true">&#32;</text></para>
+  </body>
+</topic>

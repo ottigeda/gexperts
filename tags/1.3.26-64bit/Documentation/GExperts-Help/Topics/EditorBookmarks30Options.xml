@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic status="Done RZ" modified="2025-07-26T22:20:42.872+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">EditorBookmarksOptions</title>
+  <body>
+    <header>
+      <para styleclass="Heading1" style="margin-top:4px; margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:14pt;" translate="true">Editor Bookmarks </text></para>
+      <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt; color:#efa175;" translate="true">Configuration (Options) </text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="5" colcount="2" style="width:100%; page-break-inside:avoid; background-color:#ebfafa; head-row-background-color:#ccffff; alt-row-background-color:none;">
+      <thead style="vertical-align:middle">
+        <td style="width:200px; height:22px; background-color:#e2e2e2;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; color:#008080;" translate="true">this page .. </text></para>
+        </td>
+        <td style="height:22px; background-color:#e2e2e2;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; color:#008080;" translate="true">see also .. </text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Overview" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Overview</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks00General" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">General</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Details" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Details</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks10Edit" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Add and edit bookmarks</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="EditorBookmarks20Select" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Select function or procedure</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; vertical-align:baseline; color:#efa175;" translate="true">Configuration (Options)</text><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+      <tr style="vertical-align:middle">
+        <td style="height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Overview </text></para>
+        </td>
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The expert offers the possibility to configure the behavior and interface of the application. All settings are applied immediately after closing the window. </text></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:30px; margin-right:6px; margin-bottom:24px; margin-left:6px;"><image src="EditorBookmarks30Options.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"><anchor id="Details" styleclass="Normal" style="font-family:Verdana;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+      <tr style="vertical-align:middle">
+        <td style="height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Details </text></para>
+        </td>
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The following settings are available: </text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Use old edit form</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> - You may activate the use of the old editform, known from the previous version. Using this editing form you can freely select the module, line number and bookmark number on adding new bookmarks. </text></li>
+    </list>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Enlarged line display</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> - Normally, 3 lines of source code are displayed for each bookmark. A better representation of the position is achieved with an enlarged line display of 5 lines. </text></li>
+    </list>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Remove leading blanks</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> - The display is also improved if leading spaces from the source code lines were removed without destroying the structure of the code. If this option is not active, the text will be copied without any correction. </text></li>
+    </list>
+    <list id="3" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Hide class name..</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> - The display of the function or procedure name can be optimized if the class name is particularly long and the header width is not wide enough to display both names. To ensure grouping, a dot is placed in front of each method identifier of a class method if the display of class name is deactivated. </text></li>
+    </list>
+    <list id="4" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Hide listbox focus</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> - This option controls the focus display of the listbox. If activated, no gray background is displayed for the selected item if the listbox does not have the focus. </text></li>
+    </list>
+    <list id="5" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Deny double bookmarks</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> - The last option controls whether you can set double bookmarks in a single line. If enabled, the expert prevents the creation of duplicate bookmarks within a line. However, this is generally possible within the IDE (and in &quot;Editor Bookmarks&quot; Edit form). </text></li>
+    </list>
+    <list id="6" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Colors</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> - In the lower part of the window the colors of the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic;" translate="true">listbox</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> background, the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic;" translate="true">bookmarks line</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> background and the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic;" translate="true">background</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> and font color of the header text can be changed: </text></li>
+    </list>
+    <para styleclass="Normal" style="text-align:justify; margin-top:2px; margin-right:6px; margin-left:19px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Double-clicking on the respective sample area opens the color selection dialog to select a new color. The custom colors of the color dialog can be used; they are saved (if dialog was exited via Ok) and restored by the expert. The application does not check the plausibility of your color selections - this must be ensured by the user. </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:2px; margin-right:6px; margin-left:19px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">By right-clicking on the sample area, the selection can be reset to the default color specified by the application. </text></para>
+    <list id="7" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Buttons + Keyboard + Mouse</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> - All changes are applied with the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Save button</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or pressing </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Return</text><text styleclass="Normal" style="font-family:Verdana;" translate="true">; after that the window closes automatically. With the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Cancel button</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or pressing </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Escape</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> you may close the window without changing any option. You can access help by pressing the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">F1 key</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> or by clicking on the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">F1 symbol</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> in the statusbar. </text></li>
+    </list>
+    <para styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px;"><draft-comment id="ANNOT69FA80" width="353px" height="64px" modified="2025-06-11T17:13:24.313+02:00" styleclass="Comment"><![CDATA[No DistanceAfter because Topic is not included in TOC
+
+Ghost | rzrz]]></draft-comment><text styleclass="Normal" translate="true">&#32;</text></para>
+  </body>
+</topic>

@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic modified="2025-06-02T08:53:39.370+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Source Export</title>
+  <keywords>
+    <keyword translate="true">HTML</keyword>
+    <keyword translate="true">RTF</keyword>
+    <keyword translate="true">Source Export</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Source Export</text></para>
+    </header>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">This expert enables you to save source code to an HTML or RTF file or to the clipboard with syntax highlighting preserved. &#160;Syntax highlighting of Delphi, C/C++, HTML, C#, XML, and SQL files is provided. &#160;You can export the whole file, the portion that is selected in the IDE, or you can edit the shown source to customize the output. &#160;The print button allows syntax-highlighted printing as well. &#160;You can also set the colors used for the syntax highlighting and the default clipboard format by clicking the Configure button.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">The copy button dropdown has three choices:</text></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" translate="true">Formatted text/RTF/HTML - Preserves the fonts/colors of the source text and places it on the clipboard in all three formats. &#160;The application you paste the code into will choose the clipboard format it prefers.</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" translate="true">HTML fragment text - Places the plain text of the HTML source on the clipboard. &#160;This text can then be pasted into an existing HTML document&apos;s source code.</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" translate="true">RTF fragment text - Places the plain text of the RTF source on the clipboard. &#160;This text can then be pasted into an existing RTF document&apos;s source code.</text></li>
+    </list>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px; margin-bottom:40px;"><image src="Source Export.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" figurelistinclude="0"></image><text style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Note: GExperts uses CSS to define HTML font styles. &#160;Because you are not supposed to duplicate CSS class definitions more than once per file, GExperts does not copy the CSS style definitions into every copied HTML fragment. &#160;The best way to preserve the styles when copying multiple fragments into a single HTML document or web site is to export a source code file to an HTML file and copy the CSS definitions from there to into the header of your HTML document or an externally referenced .css file if you want to share the styles across multiple pages. &#160;After this process, any further fragments you paste into your document will automatically pick up the shared CSS styles.</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:27:32.218+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true">&#32;</text></para>
+  </body>
+</topic>

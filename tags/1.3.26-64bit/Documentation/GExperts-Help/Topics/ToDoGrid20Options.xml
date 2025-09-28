@@ -1,0 +1,407 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic status="Done RZ" modified="2025-08-14T12:54:04.402+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">ToDoGridOptions</title>
+  <body>
+    <header>
+      <para styleclass="Heading1" style="margin-top:4px; margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:14pt;" translate="true">ToDo Grid </text></para>
+      <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt; color:#efa175;" translate="true">Configuration (Options) </text></para>
+    </header>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="7" colcount="2" style="width:100%; page-break-inside:avoid; background-color:#ebfafa; head-row-background-color:#ccffff; alt-row-background-color:none;">
+      <thead style="vertical-align:middle">
+        <td style="width:200px; height:22px; background-color:#e2e2e2;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; color:#008080;" translate="true">this page .. </text></para>
+        </td>
+        <td style="height:22px; background-color:#e2e2e2;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; color:#008080;" translate="true">see also .. </text></para>
+        </td>
+      </thead>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Overview" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Overview</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Heading1" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="ToDoGrid00General" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">General</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Scope2Scan" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Scope to scan</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="ToDoGrid10Rules" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Rules of syntax analysis</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Extensions2Scan" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Extensions to scan</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-bottom:2px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; vertical-align:baseline; color:#efa175;" translate="true">Configuration (Options)</text><link displaytype="text" defaultstyle="false" type="topiclink" href="CopyComponentNames" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true"> </link></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-bottom:2px; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Tokens2Scan" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Tokens to scan</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-bottom:2px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-bottom:2px; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Colors" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Colors</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:middle">
+        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-bottom:2px; margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="MiscOptions" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Miscellaneous options</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
+        </td>
+        <td style="height:20px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" translate="true">&#32;</text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="1" style="width:100%;">
+      <tr style="vertical-align:middle">
+        <td style="background-color:#ffccff;">
+          <para styleclass="Normal" style="text-align:center; margin-top:2px; margin-bottom:3px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; color:#ff0000;" translate="true">ToDo Grid Expert is not yet available in GExperts </text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+      <tr style="vertical-align:middle">
+        <td style="height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Overview </text></para>
+        </td>
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The configuration of the &quot;ToDo Grid&quot; expert is an important and probably frequently opened window, as it allows the rules for the scan to be defined very individually. All settings made by the user are closely monitored, so that, if necessary, a new scan is performed automatically when changes are saved. This allows the results of the settings to be immediately visible without having to close the window. Adjustments can therefore be made quickly without having to reopen the configuration. </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; background-color:#f4f4f4;">
+      <tr style="vertical-align:top">
+        <td style="width:48px;">
+          <para styleclass="Normal" style="margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; color:#ff0000;" translate="true">Notice</text></para>
+        </td>
+        <td>
+          <list id="0" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:8px; font-family:Wingdings; font-size:10pt; color:#000000;">
+            <li styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:8px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Scanning data is a time-consuming operation and the number of directories and tokens to be scanned is a crucial factor. Therefore, you should only activate as many directories and tokens for scanning as are actually necessary. </text></li>
+          </list>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:30px; margin-right:6px; margin-bottom:24px; margin-left:6px;"><image src="ToDoGrid60Options.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+    <para styleclass="Normal"><anchor id="Scope2Scan" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+      <tr style="vertical-align:middle">
+        <td style="height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Scope to scan </text></para>
+        </td>
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The &quot;Scope to scan&quot; group box is used to specify the directories to be scanned. The three radio buttons allow you to select the directories based on the project currently active in the IDE. </text></para>
+    <list id="1" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">&quot;Scan project group&quot;</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> selection is only useful if several projects are grouped together; if this is not the case, the &quot;Project files&quot; selection corresponds to this. </text></li>
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; line-height:1.00; background-color:transparent; border:none;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The selection of </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">&quot;Scan Project files&quot;</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> takes into account all files registered in the project. </text></li>
+    </list>
+    <list id="2" type="ul" listtype="bullet" formatstring="&#167;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; line-height:1.00; background-color:transparent; border:none; font-family:Wingdings; font-size:10pt; color:#000000;">
+      <li styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px; line-height:1.00; background-color:transparent; border:none;"><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">&quot;Scan open project files&quot;</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> takes into account all files entered in the project that are currently open in the editor. </text></li>
+    </list>
+    <para styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Below the radio buttons, you can optionally specify </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">additional directories</text><text styleclass="Normal" style="font-family:Verdana;" translate="true">. For each directory in the listbox, you can specify by double-clicking that sub directories should be included (entry contains ++). Only list items selected in the checkboxes are considered for scanning. </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The following </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">commands</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> are available for editing the additional directories. Please note that all changes must be explicitly submitted using the Save button! </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="2" colcount="3">
+      <tr style="vertical-align:top">
+        <td style="width:30px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-bottom:6px; margin-left:6px;"><image src="ToDoGrid60Options00AddDir.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+        </td>
+        <td style="width:140px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Add directory </text></para>
+        </td>
+        <td style="background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The button opens a window where you can select the desired directory to add. You cannot enter duplicate directories in the list; the list can contain a maximum of 16 elements. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:30px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-bottom:6px; margin-left:6px;"><image src="ToDoGrid60Options10DelDir.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+        </td>
+        <td style="vertical-align:top; width:140px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Delete directory </text></para>
+        </td>
+        <td style="background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">With the button you can remove the selected directory from the list. </text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal"><anchor id="Extensions2Scan" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+      <tr style="vertical-align:middle">
+        <td style="height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Extensions to scan </text></para>
+        </td>
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The group box &quot;Extensions to scan&quot; defines the file name extensions that are used for scanning the </text><text styleclass="Normal" style="font-family:Verdana; text-decoration:underline;" translate="true">extended directories</text><text styleclass="Normal" style="font-family:Verdana;" translate="true">; these name extensions do </text><text styleclass="Normal" style="font-family:Verdana; text-decoration:underline;" translate="true">not</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> apply to the scan of the directories of the project currently loaded in the IDE. Only list items selected in the checkboxes are considered for scanning. </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The extension length is limited to 10 characters; the characters </text><text styleclass="Normal" style="font-family:Verdana; background-color:#e2e2e2;" translate="true"> $ ~ - _ 0..9 A..Z a..z </text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> are accepted. </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The following </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">commands</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> are available for editing the extensions. Please note that all changes must be explicitly submitted using the Save button! </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="4" colcount="3" style="width:100%;">
+      <tr style="vertical-align:top">
+        <td style="width:30px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-bottom:6px; margin-left:6px;"><image src="ToDoGrid60Options12AddExt.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+        </td>
+        <td style="width:140px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Restore default extensions </text></para>
+        </td>
+        <td style="background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The button allows you to restore the default extensions (pas, inc, dpr, txt) provided by the application. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:30px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-bottom:6px; margin-left:6px;"><image src="ToDoGrid60Options16AddExt.png" imagestyleclass="Default" scale="100.00%" styleclass="Normal" figurelistinclude="0"></image></para>
+        </td>
+        <td style="vertical-align:top; width:140px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Add extension </text></para>
+        </td>
+        <td style="background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Enters a new extension. This button is only enabled if a file name extension that is not yet in the list has been entered in the input field. A maximum of 16 list elements can be defined. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:30px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-bottom:6px; margin-left:6px;"><image src="ToDoGrid60Options18Apply.png" imagestyleclass="Default" scale="100.00%" styleclass="Normal" style="font-family:Verdana;" figurelistinclude="0"></image></para>
+        </td>
+        <td style="vertical-align:top; width:140px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Apply changes </text></para>
+        </td>
+        <td style="background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">First, simply click to copy the desired list item into the edit field. You can then edit the entry and overwrite the selected list item, provided the text is different and not yet included in the list. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:30px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-bottom:6px; margin-left:6px;"><image src="ToDoGrid60Options20DelExtension.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+        </td>
+        <td style="vertical-align:top; width:140px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Delete extension </text></para>
+        </td>
+        <td style="background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">With this button you can remove the selected extension from the list. </text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify;"><anchor id="Tokens2Scan" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+      <tr style="vertical-align:middle">
+        <td style="height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Tokens to scan </text></para>
+        </td>
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The group box &quot;Tokens to scan&quot; defines the tokens that are used for scanning. Only list items selected in the checkboxes are considered for scanning. The assignment of the priority, category, and owner attributes is an optional feature that normally does not need to be used. Further information on the use of these additional attributes is described under </text><link displaytype="text" defaultstyle="true" type="topiclink" href="ToDoGrid10Rules" anchor="Suggestions" styleclass="Normal" style="font-family:Verdana;" translate="true">Suggestions for efficient use</link><text styleclass="Normal" style="font-family:Verdana;" translate="true">. </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The token length is limited to 10 characters; all characters in the range #33 .. #35 and #37 .. #126 and #167 are accepted - please remember that the $ sign and the space cannot be used. </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The following </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">commands</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> are available for editing the token. Please note that all changes must be explicitly submitted using the Save button! </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="5" colcount="3" style="width:100%;">
+      <tr style="vertical-align:top">
+        <td style="width:30px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-bottom:6px; margin-left:6px;"><image src="ToDoGrid60Options12AddExt.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+        </td>
+        <td style="width:140px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Restore default tokens </text></para>
+        </td>
+        <td style="background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The button allows you to restore the default extensions (pas, inc, dpr, txt) provided by the application. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:30px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-bottom:6px; margin-left:6px;"><image src="ToDoGrid60Options14SortCLB.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+        </td>
+        <td style="vertical-align:top; width:140px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Sort list </text></para>
+        </td>
+        <td style="vertical-align:middle; background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Clicking on the button sorts the list; with each click the sort changes to the next (or first) attribute (token, priority, category and owner). </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:30px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-bottom:6px; margin-left:6px;"><image src="ToDoGrid60Options16AddExt.png" imagestyleclass="Default" scale="100.00%" styleclass="Normal" figurelistinclude="0"></image></para>
+        </td>
+        <td style="vertical-align:top; width:140px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Add token </text></para>
+        </td>
+        <td style="background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Enters a new token. This button is only enabled if a token text that is not yet in the list has been entered in the input field. Different information about priority, category or owner does not justify a difference! A maximum of 32 list elements can be defined. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:30px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-bottom:6px; margin-left:6px;"><image src="ToDoGrid60Options18Apply.png" imagestyleclass="Default" scale="100.00%" styleclass="Normal" style="font-family:Verdana;" figurelistinclude="0"></image></para>
+        </td>
+        <td style="vertical-align:top; width:140px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Apply changes </text></para>
+        </td>
+        <td style="background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">First, simply click to copy the desired list item into the edit field. You can then edit the entry and overwrite the selected list item, provided the token text is different and not yet included in the list OR there are different priority, category or owner values. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:30px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-bottom:6px; margin-left:6px;"><image src="ToDoGrid60Options20DelExtension.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>
+        </td>
+        <td style="vertical-align:top; width:140px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Delete token </text></para>
+        </td>
+        <td style="background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">With this button you can remove the selected token from the list. </text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify;"><anchor id="Colors" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+      <tr style="vertical-align:middle">
+        <td style="height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Colors </text></para>
+        </td>
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">While the three group boxes on the left are responsible for the file scan settings, the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">upper group box</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> on the right allows you to set the main colors of the string grid. Please note that all changes must be explicitly submitted using the Save button; optical changes are immediately visible after save! </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Double-clicking on the reference area in the example grid opens the color dialog in which the new color can be selected. In the color dialog custom colors can be created; the colors are automatically saved by the expert and restored when the dialog is called again. Right-clicking on the reference area in the example grid will restore the applications default color. </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="4" colcount="2" style="width:100%;">
+      <tr style="vertical-align:top">
+        <td style="width:170px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">active row </text></para>
+        </td>
+        <td style="background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Color of the selected row in the active string grid. The default color corresponds to the Windows standard. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:170px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">default background </text></para>
+        </td>
+        <td style="vertical-align:middle; background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Color of all unselected rows; the default color is a slightly tinted white. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:170px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">alternating background </text></para>
+        </td>
+        <td style="background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Color of every second unselected row (if the &quot;alternating grid color&quot; option is enabled); the default color is a very light green - this gives the grid a look like white/green striped continuous-sheet printer paper. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:170px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">highlighted row </text></para>
+        </td>
+        <td style="background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">Color of the row marked as &quot;highlighted&quot; by the user (including the cell in the first column); the default color is a very bright red. </text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify;"><anchor id="MiscOptions" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
+    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+      <tr style="vertical-align:middle">
+        <td style="height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Miscellaneous options </text></para>
+        </td>
+        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+          <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">While the three group boxes on the left are responsible for the file scan settings, the </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">lower group box</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> on the right controls the display and operation of the string grid. Please note that all changes must be explicitly submitted using the Save button; optical changes are immediately visible after save! </text></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="8" colcount="2" style="width:100%;">
+      <tr style="vertical-align:top">
+        <td style="width:170px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">hide horizontal </text><br/><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">grid line </text></para>
+        </td>
+        <td style="background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">If enabled, the horizontal dividing line between the rows of the string grid is not displayed. If the next option is also inactive, the typical display of the string grid is shown. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:170px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">alternating grid color </text></para>
+        </td>
+        <td style="vertical-align:middle; background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">This option allows you to activate the alternate color for every second row of the grid. The color used for this is specified in the upper group box. Typically, the previous option is enabled together with this option. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:170px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">upper 1st char </text><br/><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">of grid text </text></para>
+        </td>
+        <td style="background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The description texts and owners listed in the source file are often not capitalized. Enabling this option will display the first letter of &quot;Category&quot;, &quot;Description&quot; and &quot;Owner&quot; in uppercase. Otherwise, both values will be displayed exactly as written in the source code. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:170px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">show priority icons </text></para>
+        </td>
+        <td style="background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">If this option is enabled, an additional icon will be displayed next to the text in the &quot;Priority&quot; column. This is always done in the &quot;To-Do List&quot; expert, but I think it&apos;s better to have this optionally. The icons are currently not editable. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:170px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">sort description only </text></para>
+        </td>
+        <td style="background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">This controls the sorting of the &quot;Description&quot; column when the token is displayed before the description text. If not enabled, the token and description text are used together for the comparison. If this option is enabled, the sorting considers only the description text. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:170px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">mouse wheel </text><br/><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">moves selection </text></para>
+        </td>
+        <td style="background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The behavior of the mouse wheel is configurable here. If enabled, the row selection can be moved directly with the mouse wheel. To move the area marker in the scroll bar, you must hold down the Shift key additionally. In the opposite case, the area marker in the scroll bar is moved directly with the mouse wheel; to move the row selection, hold down the Shift key additionally. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:170px; background-color:#f4f4f4;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">confirm line correction </text></para>
+        </td>
+        <td style="background-color:#f4f4f4;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The &quot;Goto source line&quot; function may be incorrect due to a change in the source code. If the token is found in the immediate line range and this option is activated, a confirmation is displayed asking whether the stored line number should be corrected. </text></para>
+        </td>
+      </tr>
+      <tr style="vertical-align:top">
+        <td style="vertical-align:top; width:170px; background-color:#fff5eb;">
+          <para styleclass="Normal" style="margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">keep focus after jump </text></para>
+        </td>
+        <td style="background-color:#fff5eb;">
+          <para styleclass="Normal" style="text-align:justify; margin-top:3px; margin-right:6px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">If this option is enabled, the &quot;Goto source line&quot; function brings the corresponding line into the visible area and selects the entire line, but keeps the focus in the string grid. If the option is not activated, the caret is placed at the beginning of the relevant line and the focus is transferred to the editor window. </text></para>
+        </td>
+      </tr>
+    </table></para>
+    <para styleclass="Normal" style="text-align:justify; margin-top:12px; margin-right:6px; margin-left:6px;"><draft-comment id="ANNOT69FA80" width="353px" height="64px" modified="2025-06-02T00:37:22.666+02:00" styleclass="Comment"><![CDATA[No DistanceAfter because Topic is not included in TOC
+
+Ghost | rzrz]]></draft-comment></para>
+  </body>
+</topic>

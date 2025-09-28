@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic modified="2025-06-28T09:55:37.816+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd" status="Next2Edit">
+  <title translate="true">General Configuration</title>
+  <keywords>
+    <keyword translate="true">File Locations</keyword>
+    <keyword translate="true">General Configuration</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">General Configuration</text></para>
+    </header>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">The General tab allows setting locations for the VCL source, the default GExperts data storage directory (where GExperts stores your .xml and other data files), and the GExperts help file.  You can also choose to use a custom UI font for all GExperts forms.  </text><text styleclass="Normal" style="font-weight:bold;" translate="true">Note</text><text styleclass="Normal" translate="true"> you should only choose 7-9 point variable width fonts, or you may find that the GExperts forms do not scale very well to fit larger text.  If you don&apos;t specify a custom UI font, the OS default font is used (generally that is Tahoma 8-point for Windows XP and earlier releases, and Segoe UI 9 point for Vista and later).</text></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px;"><image src="Configuration General.png" scale="100.00%" style="font-family:'MS Sans Serif'; font-size:8pt; color:#000000;" figurelistinclude="0"></image><text style="font-family:'MS Sans Serif'; font-size:8pt; color:#000000;" translate="true"> </text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:39:51.554+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true"> </text></para>
+    <para styleclass="Normal"></para>
+  </body>
+</topic>

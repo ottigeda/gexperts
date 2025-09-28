@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic modified="2025-06-02T08:40:07.282+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Find Component Reference</title>
+  <keywords>
+    <keyword translate="true">Find Component Reference</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Find Component Reference</text></para>
+    </header>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">The Find Component Reference tool operates in two different modes:</text></para>
+    <para styleclass="Normal"></para>
+    <list id="0" type="ul" listtype="bullet" formatstring="&#183;" format-charset="SYMBOL_CHARSET" levelreset="true" legalstyle="false" startfrom="1" styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ; font-family:Symbol; font-size:10pt; color:#000000;">
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" translate="true">If a form designer is active and there is a currently selected component, the tool focuses the code editor and then tries to locate the first reference to that component in the source file. &#160;For Delphi source files, it will try to locate and select the second occurrence of the component, since the first occurrence of the component name is usually the declaration instead of the first usage of the component. &#160;Component references in comments will be found and selected.</text></li>
+      <li styleclass="" style="text-align:left; text-indent:-13px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:27px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:27px left ;"><text styleclass="Normal" translate="true">If the code editor is active, the tool grabs the identifier under the editor cursor and tries to locate a component on that unit&apos;s form named the same as the identifier and selects that component.</text></li>
+    </list>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" style="font-weight:bold;" translate="true">Note:</text><text styleclass="Normal" translate="true"> Find Component Reference can not locate references to components on other forms/frames or source code references in units other than the current one.</text></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px;"><image src="Find Component Reference.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" figurelistinclude="0"></image><text style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:39:36.628+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true">&#32;</text></para>
+  </body>
+</topic>

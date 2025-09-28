@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic modified="2025-06-02T08:44:08.326+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">IDE Menu Shortcuts</title>
+  <keywords>
+    <keyword translate="true">IDE Menu Shortcuts</keyword>
+    <keyword translate="true">IDE Shortcuts</keyword>
+    <keyword translate="true">Main Menu</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">IDE Menu Shortcuts</text></para>
+    </header>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">This expert enables you to configure any of the IDE menu shortcuts. &#160;To change the shortcut of a menu item, select the appropriate menu item, click &quot;Use Shortcut Expert for this menu item&quot; and type the desired shortcut into the Shortcut edit box. &#160;If you find your chosen shortcut does not work, it is likely because the shortcut is reserved by the code editor or another menu item, and you&apos;ll need to select a different, unused shortcut. &#160;This expert can not change the shortcuts for the GExperts menu items; for this purpose, use the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="GExperts_Configuration" styleclass="Normal" translate="true">GExperts Configuration</link><text styleclass="Normal" translate="true"> dialog.</text></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px;"><image src="IDE Menu Shortcuts.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" figurelistinclude="0"></image><text style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:40:59.314+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true">&#32;</text></para>
+  </body>
+</topic>

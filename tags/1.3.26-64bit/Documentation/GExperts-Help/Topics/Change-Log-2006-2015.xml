@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic modified="2025-06-02T08:27:53.889+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Change Log (2006-2015)</title>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Change Log (2006-2015)</text></para>
+    </header>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">VERSION 1.38 (September 2015)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- General: Added support for RAD Studio 10 Seattle.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- General: Improved Unicode support for several GExperts tools (Thomas Mueller).</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- General: Various minor bug fixes.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">VERSION 1.37 (September 2012 - May 2015)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- General: Added support for RAD Studio XE3, XE4, XE5, XE6, XE7, and XE8</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;(with help from Jeroen Pluimers). &#160;Various other minor bug fixes.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Grep: Add Ignore Delphi comments feature (via Paul Gardner). &#160;Significantly</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;speed up searches by updating the search status details less often. &#160;Add</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;ability to auto-hide the Grep Results window when jumping to a match.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Components to Code: Preview the generated code as you change the options.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Message Dialog: Support leading spaces better for inserted code.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;Force focus to editor after code insertion.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Set Component Properties: Close opened but not modified files to save</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;resources. &#160;Force show modified files, to show changes without saving.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;Ignore some problematic TWebBrower properties causing read errors.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">VERSION 1.36 (December, 2011)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- General: Add official support for RAD Studio XE2, Allow filtering</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;expert list in configuration dialog (Ulrich Gerhardt), Update SynEdit</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;(syntax-highlighting text editor) version</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Replace Components: Ignore Touch/TTouchManager properties, since they</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;crash 2010/XE when copied to a new component, add more error checking.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Backup Project: Update Abbrevia component version used to generate .zip files</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Set Component Properties: Allow setting properties on forms and data modules</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Grep: Ignore symbolic link directories during recursive searches</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Uses Clause Manager: Add shortcut to open selected file. &#160;Close dialog</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;after opening a file.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Message Dialog: Changed default shortcut to Shift+Ctrl+D to not conflict</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;with source formatter in recent IDE releases.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">VERSION 1.35 (June, 2011)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- General: Fix problems with the bug reporting tool and about box disappearing.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Grep: Search and replace supports regular expression subgroubs (Egon Elbre).</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Favorite Files: Support relative filenames in saved files lists, support</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;multiple groups of favorite files. &#160;These changes may be useful for</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;project-specific favorite files lists. (Ulrich Gerhardt, Erik)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Clipboard History: Show combined text for multi-selected history entries.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">VERSION 1.34 (September, 2010)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- General: Added support for RAD Studio XE. &#160;Minor bugfixes and updates to</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;the help files. (Erik)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Set FocusControl: Add tool to assign focus control of labels by selecting</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;the related label and wincontrol or a group of wincontrols, and the tool</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;tries to guess the label to associate with each control. &#160;(Daniel</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;Maltarollo and Erik)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Grep: Allow excluding any number of directories from a search.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;Always center the match line in the Grep Result context pane.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Components to Code: Optionally generate code to free all created</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;components (Peter Dzomlija).</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Hide/Show Non-Visual Components: Added support for TFrame designers (Erik).</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">VERSION 1.33 (May 31, 2009)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- General: Added support for RAD Studio 2009/2010. &#160;Note that some of the tools</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;that require our source code parser (Procedure List, Class Browser, To Do</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;List, Delimiter Editor Experts, etc.) do not have full unicode support.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;Other tools such as the Grep Search/Replace, Source Export, Code Librarian,</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;etc. should support UNICODE files just fine. &#160;Also included are some shutdown</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;optimizations, removal of all known memory leaks, and other minor tweaks.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;All GExperts forms use the OS default font face/size. &#160;You can also override</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;the UI font in the General tab of the settings.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Grep Search: There is a new regular expression engine that supports a large</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;subset of the Perl regular expression syntax. &#160;Grep can now search and</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;replace files in ANSI, UTF-8, and UTF-16 formats in Delphi 2009/2010. &#160;The</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;stay on top feature was removed when running inside the IDE, since it could</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;hide modal dialogs. &#160;Allow searching within previously matched files</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;(John Hansen).</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Hide/Show Non-Visual Components: This new tool allows temporarily hiding</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;non-visual components on a form, so you can visualize the form as it will</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;appear at runtime.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Editor Experts: The main menu contains a submenu item for each editor</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;expert now in Delphi 8 or later.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Favorite Files: Supports preview of jpg, png, and gif files if the VCL</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;supports it in your IDE version, supports select all for files and move</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;up/down for folders.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Code Proofreader: Should be slightly more accurate with fewer false positive</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;corrections made to your code.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- To Do List: Display the category and owner for to do items, indicate items</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;marked DONE, support more priorities (Pestasoft, Erik).</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Code Librarian: Support C# and XML syntax highlighting.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Help File: Updated to reflect the current release. (John Hansen, Erik)</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">VERSION 1.32 (September 11, 2007)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- General: Added support for RAD Studio 2007</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;GExperts data files are saved under the user&apos;s Application Data\GExperts</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;directory by default for new installs, to better support Windows Vista user</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;restrictions. &#160;To change this location manually, go to GExperts,</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;Configuration, File Locations.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- Grep: Allow searching of the active form&apos;s text while the editor is active</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- To Do List: Allow scanning .inc files in searched directories for to do items</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">VERSION 1.31 (April 7, 2007)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- General: Added support for Delphi 2007</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;Fixed a possible shutdown exception when unloading GExperts</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;Help switched to HTML Help format (.chm) for better Vista support</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;Improve the font rendering on several forms</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">- IDE Enhancements: Added a new option to allow resizing and enhancing some</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160;IDE dialogs (for BDS 2006 or later). &#160;See the help file for full details.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">VERSION 1.30 (October 26, 2006)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - General: Added support for Delphi 2006. &#160;Better syntax highlighting</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; support for C#, HTML, and XML (Erik). &#160;Better ClearType support in</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; several forms.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Open File: New tool to quickly search for and open files in the project,</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; search path, recent files, favorite files, etc. &#160;The file groups are</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; configurable and the tool can override the IDE&apos;s internal open</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; project/form/unit dialogs. (Paul Gardner, Erik)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Replace Components: Comprehensive new system to map properties between</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; component classes and map constants to properties for replacement</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; components. &#160;Import/export of mapping sets via XML. &#160;Interactive and</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; file-based logging of replacement results. &#160;Smarter preservation of</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; properties such as TStrings, TWideStrings, TFields, component</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; references, etc. (Oasis Digital Solutions, Piotr Likus, Erik).</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Rename Components: Allows interactively renaming components after</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; they are placed on the form (Leonel Togniolli). &#160;Added ability to edit</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; a configurable list of component properties (Caption, Text, etc.) in</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; addition to the Name for each component class and supply default values</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; for most new component properties. (Thomas Mueller, Erik).</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Macro Templates: Optional expansion of templates when pressing space.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; Ability to embed the selection intelligently inside a construct such as</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; try/finally using the %SELECTION% macro. &#160;New macros such as</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; %BEGINPARAMLIST%, %PARAMNAME%, %PARAMTYPE%, etc. to format individual</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; parameters one per line. &#160;New default templates for XML method</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; documentation, begin/end completion, for/while loops, etc.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; (Piotr Likus, Erik)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Macro Library: Allows record and playback of saved editor keystroke</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; macros (John Hansen, Erik)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Find Component Reference: Allows quickly jumping from a component to the</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; first usage in your source, or from a component name in the source to</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; the component on the form. (Kristofer Skaug, Leonel Togniolli, Erik)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Set Component Properties: New tool to set properties (Boolean, string,</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; set, enum, ordinal, etc.) to some value when the a project is compiled.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; Useful to deactivate datasets/connections, etc. (Robert Wachtel,</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; Gami, Erik)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Editor Experts: New alignment tool to horizontally align variable</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; declarations, comments, assignments, etc. (Stefan Pettersson, Erik)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Editor Enhancements: Re-enabled for Delphi 8/2005, including the editor</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; toolbar, etc (Rick Hollerich, Erik). &#160;Middle mouse button close support</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; for the editor tabs in Delphi 6/7 (Gami). &#160;Note that the various editor</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; tab options can not be supported in the newer IDEs.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Procedure List: Option to view the selected procedure&apos;s source code</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; (Paul Gardner, Erik). &#160;Optionally search in the class name. (Primoz)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; Support for scanning Delphi .inc files and upgraded C++ support.</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Code Proofreader: Added basic C# support (Erik)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - Component Grid: Allow editing the Hint property for components (Erik)</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> - IDE Enhancements: Changing the multiline component tabs setting in</text></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true"> &#160; Delphi 6/7 no longer requires a restart (Erik)</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:32:52.877+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
+  </body>
+</topic>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic status="Next2Edit" modified="2025-07-02T20:53:35.963+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Editor Experts</title>
+  <keywords>
+    <keyword translate="true">Editor Experts</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Editor Experts</text></para>
+    </header>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">The editor experts are active only when the IDE code editor has focus. They perform various functions on the source. &#160;The shortcut key combination for each editor expert can be changed via the Shortcut button, but you should verify the shortcut is unused by the editor itself (see Key Mappings in the IDE help file for more information) and the main menu.</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Some of the experts have options that can be changed using the Configure button. &#160;Selecting such an expert enables the button. &#160;The function of each of these experts is described in the help memo at the bottom of the tab. &#160;There is extended help for the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="MacroTemplates" styleclass="Normal" translate="true">Macro Templates</link><text styleclass="Normal" translate="true"> editor expert. The macro templates editor expert replaces the old procedure header and unit header experts. &#160;It offers the same style of replaceable </text><text styleclass="Normal" style="font-family:Consolas;" translate="true">%macros%</text><text styleclass="Normal" translate="true">, to insert values such as the current date, procedure name, user name, etc. into the editor.</text></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px;"><image src="GExperts Configuration - Editor Experts - All.png" imagestyleclass="Default" scale="64.89%" width="510" height="787" styleclass="Image Caption" figurelistinclude="0"></image><text styleclass="Image Caption" translate="true">&#32;</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:34:54.314+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
+  </body>
+</topic>
