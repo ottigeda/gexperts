@@ -15,7 +15,7 @@ setlocal
 set parentdir=%1%
 set subdir=%2%
 :loop
-call :GetDir "%parentdir%"
+call :GetDir %parentdir%
 set parentdir=%result%
 if exist "%parentdir%\%subdir%" goto found
 goto loop
