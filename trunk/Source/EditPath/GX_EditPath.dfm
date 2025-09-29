@@ -92,17 +92,17 @@ inherited f_EditPath: Tf_EditPath
       TabOrder = 0
       object p_MemoButtons: TPanel
         Left = 316
-        Top = 19
+        Top = 21
         Width = 100
-        Height = 180
+        Height = 178
         Align = alRight
         TabOrder = 0
         DesignSize = (
           100
-          180)
+          178)
         object sb_MoveUp: TSpeedButton
           Left = 6
-          Top = 0
+          Top = 2
           Width = 25
           Height = 23
           Action = act_MoveUp
@@ -184,7 +184,7 @@ inherited f_EditPath: Tf_EditPath
         end
         object sb_MoveDown: TSpeedButton
           Left = 6
-          Top = 23
+          Top = 25
           Width = 25
           Height = 23
           Action = act_MoveDown
@@ -216,8 +216,8 @@ inherited f_EditPath: Tf_EditPath
           Spacing = 0
         end
         object b_Favorites: TButton
-          Left = 68
-          Top = 0
+          Left = 69
+          Top = 2
           Width = 25
           Height = 23
           Hint = 'Favorites'
@@ -230,7 +230,7 @@ inherited f_EditPath: Tf_EditPath
         end
         object b_MakeRelative: TButton
           Left = 6
-          Top = 72
+          Top = 66
           Width = 88
           Height = 24
           Action = act_MakeRelative
@@ -239,7 +239,7 @@ inherited f_EditPath: Tf_EditPath
         end
         object b_MakeAbsolute: TButton
           Left = 6
-          Top = 96
+          Top = 92
           Width = 88
           Height = 24
           Action = act_MakeAbsolute
@@ -248,7 +248,7 @@ inherited f_EditPath: Tf_EditPath
         end
         object b_PrependDots: TButton
           Left = 6
-          Top = 126
+          Top = 122
           Width = 88
           Height = 24
           Action = act_PrependDots
@@ -257,7 +257,7 @@ inherited f_EditPath: Tf_EditPath
         end
         object b_RemoveDots: TButton
           Left = 6
-          Top = 150
+          Top = 149
           Width = 88
           Height = 24
           Action = act_RemoveDots
@@ -269,14 +269,14 @@ inherited f_EditPath: Tf_EditPath
         Left = 1
         Top = 1
         Width = 415
-        Height = 18
+        Height = 20
         Align = alTop
         TabOrder = 1
         object l_UnitSearchPath: TLabel
           Left = 5
           Top = 2
-          Width = 256
-          Height = 13
+          Width = 288
+          Height = 15
           Caption = 'Unit &Search Path (drop a directory or file here to add it)'
         end
       end
@@ -307,8 +307,8 @@ inherited f_EditPath: Tf_EditPath
         object l_Inherited: TLabel
           Left = 5
           Top = 2
-          Width = 41
-          Height = 13
+          Width = 47
+          Height = 15
           Caption = 'Inherited'
         end
       end
@@ -323,9 +323,9 @@ inherited f_EditPath: Tf_EditPath
     TabOrder = 2
     object lb_Target: TListBox
       Left = 1
-      Top = 19
+      Top = 21
       Width = 198
-      Height = 296
+      Height = 294
       Hint = 'Alt+Up/Down to move between entries'
       Align = alClient
       ExtendedSelect = False
@@ -339,14 +339,14 @@ inherited f_EditPath: Tf_EditPath
       Left = 1
       Top = 1
       Width = 198
-      Height = 18
+      Height = 20
       Align = alTop
       TabOrder = 1
       object l_Target: TLabel
         Left = 5
         Top = 2
-        Width = 31
-        Height = 13
+        Width = 33
+        Height = 15
         Caption = '&Target'
       end
     end

@@ -222,14 +222,12 @@ begin
 
   il := GExpertsInst.GetScaledSharedImages(_NewDpi);
   TheActionList.Images := il;
-  // todo: Why ifdef this? It should work just fine without theaming.
-  {$IFDEF GX_SUPPORTS_THEMING}
+
   sb_MoveUp.Images := il;
   sb_MoveUp.ImageIndex := act_MoveUp.ImageIndex;
 
   sb_MoveDown.Images := il;
   sb_MoveDown.ImageIndex := act_MoveDown.ImageIndex;
-  {$ENDIF}
 end;
 {$ENDIF}
 
