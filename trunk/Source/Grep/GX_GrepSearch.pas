@@ -454,6 +454,7 @@ end;
 
 procedure TfmGrepSearch.InitializeForm;
 begin
+  TButton_AlignVerticallyTo(btnBrowse, cbDirectory);
   FOriginalWidth := Width;
   FOriginalOptionsGroupWidth := gbxOptions.Width;
   FOriginalWhereGroupWidth := gbxWhere.Width;
