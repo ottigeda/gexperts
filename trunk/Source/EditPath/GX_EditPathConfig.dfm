@@ -14,8 +14,8 @@ inherited f_EditPathConfig: Tf_EditPathConfig
   object l_SelectConfig: TLabel
     Left = 8
     Top = 8
-    Width = 100
-    Height = 13
+    Width = 111
+    Height = 17
     Caption = 'Select Default Config'
   end
   object b_OK: TButton
@@ -48,7 +48,7 @@ inherited f_EditPathConfig: Tf_EditPathConfig
     Hint = 'Alt+Up/Down to move between entries'
     Anchors = [akLeft, akTop, akRight, akBottom]
     ExtendedSelect = False
-    ItemHeight = 13
+    ItemHeight = 15
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
