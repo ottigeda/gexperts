@@ -1,1 +1,0 @@
-"C:\Program Files (x86)\Beyond Compare 3\BComp.exe" "c:\source\_sourceforge\gexperts\projects\Delphi2007\GExpertsDelphi2007.dpr" %1
