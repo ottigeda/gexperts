@@ -93,7 +93,7 @@ type
     lblExtension: TLabel;
     lblMaxRecentFiles: TLabel;
     gbxCustomDirectory: TGroupBox;
-    btnDirectory: TSpeedButton;
+    btnDirectory: TButton;
     lbxDirectoryList: TListBox;
     btnDirectoryAdd: TButton;
     btnDirectoryDelete: TButton;
@@ -636,6 +636,7 @@ begin
   inherited;
 
   TControl_SetMinConstraints(Self);
+  TButton_AlignVerticallyTo(btnDirectory, edtDirectory);
 
   SetParentBackgroundValue(gbxCustomDirectory, True);
   SetParentBackgroundValue(gbxGeneralSettings, True);
@@ -643,7 +644,7 @@ begin
   TWinControl_ActivateDropFiles(lbxDirectoryList, lbxDirectoryListFilesDropped);
 
   InitDpiScaler;
-  
+
   Self.OnResize := FormResize;
 end;
 

@@ -7,17 +7,13 @@ object fmOpenFile: TfmOpenFile
   ClientHeight = 352
   ClientWidth = 354
   Color = clBtnFace
-  Font.Charset = ANSI_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -12
-  Font.Name = 'Tahoma'
-  Font.Style = []
+  ParentFont = True
   Position = poScreenCenter
   Scaled = False
   OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 15
   object pnlUnits: TPanel
     Left = 0
     Top = 27
@@ -45,7 +41,7 @@ object fmOpenFile: TfmOpenFile
         OnShow = tabSearchPathShow
         object pnlSearchPathFooter: TPanel
           Left = 0
-          Top = 183
+          Top = 182
           Width = 334
           Height = 33
           Align = alBottom
@@ -64,7 +60,7 @@ object fmOpenFile: TfmOpenFile
           Left = 0
           Top = 0
           Width = 334
-          Height = 183
+          Height = 182
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -74,7 +70,7 @@ object fmOpenFile: TfmOpenFile
             Left = 3
             Top = 3
             Width = 328
-            Height = 177
+            Height = 176
             Align = alClient
             Columns = <
               item
@@ -110,8 +106,8 @@ object fmOpenFile: TfmOpenFile
         object pnlProject: TPanel
           Left = 0
           Top = 0
-          Width = 601
-          Height = 351
+          Width = 334
+          Height = 182
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -120,8 +116,8 @@ object fmOpenFile: TfmOpenFile
           object lvProjects: TListView
             Left = 3
             Top = 3
-            Width = 595
-            Height = 345
+            Width = 328
+            Height = 176
             Align = alClient
             Columns = <>
             DragMode = dmAutomatic
@@ -136,8 +132,8 @@ object fmOpenFile: TfmOpenFile
         end
         object pnlProjFooter: TPanel
           Left = 0
-          Top = 351
-          Width = 601
+          Top = 182
+          Width = 334
           Height = 33
           Align = alBottom
           BevelOuter = bvNone
@@ -159,8 +155,8 @@ object fmOpenFile: TfmOpenFile
         object pnlMap: TPanel
           Left = 0
           Top = 0
-          Width = 601
-          Height = 351
+          Width = 334
+          Height = 182
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -169,8 +165,8 @@ object fmOpenFile: TfmOpenFile
           object lvMap: TListView
             Left = 3
             Top = 3
-            Width = 595
-            Height = 345
+            Width = 328
+            Height = 176
             Align = alClient
             Columns = <>
             DragMode = dmAutomatic
@@ -185,8 +181,8 @@ object fmOpenFile: TfmOpenFile
         end
         object pnlMapFooter: TPanel
           Left = 0
-          Top = 351
-          Width = 601
+          Top = 182
+          Width = 334
           Height = 33
           Align = alBottom
           BevelOuter = bvNone
@@ -208,8 +204,8 @@ object fmOpenFile: TfmOpenFile
         object pnlCommon: TPanel
           Left = 0
           Top = 0
-          Width = 601
-          Height = 351
+          Width = 334
+          Height = 182
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -218,8 +214,8 @@ object fmOpenFile: TfmOpenFile
           object lvCommon: TListView
             Left = 3
             Top = 3
-            Width = 595
-            Height = 345
+            Width = 328
+            Height = 176
             Align = alClient
             Columns = <>
             DragMode = dmAutomatic
@@ -234,8 +230,8 @@ object fmOpenFile: TfmOpenFile
         end
         object pnlCommonFooter: TPanel
           Left = 0
-          Top = 351
-          Width = 601
+          Top = 182
+          Width = 334
           Height = 33
           Align = alBottom
           BevelOuter = bvNone
@@ -257,8 +253,8 @@ object fmOpenFile: TfmOpenFile
         object pnlFavorite: TPanel
           Left = 0
           Top = 0
-          Width = 601
-          Height = 351
+          Width = 334
+          Height = 182
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -267,8 +263,8 @@ object fmOpenFile: TfmOpenFile
           object lvFavorite: TListView
             Left = 3
             Top = 3
-            Width = 595
-            Height = 345
+            Width = 328
+            Height = 176
             Align = alClient
             Columns = <>
             DragMode = dmAutomatic
@@ -283,8 +279,8 @@ object fmOpenFile: TfmOpenFile
         end
         object pnlFavFooter: TPanel
           Left = 0
-          Top = 351
-          Width = 601
+          Top = 182
+          Width = 334
           Height = 33
           Align = alBottom
           BevelOuter = bvNone
@@ -313,8 +309,8 @@ object fmOpenFile: TfmOpenFile
         OnShow = tabRecentShow
         object pnlRecentFooter: TPanel
           Left = 0
-          Top = 351
-          Width = 601
+          Top = 182
+          Width = 334
           Height = 33
           Align = alBottom
           BevelOuter = bvNone
@@ -339,8 +335,8 @@ object fmOpenFile: TfmOpenFile
         object pnlRecent: TPanel
           Left = 0
           Top = 0
-          Width = 601
-          Height = 351
+          Width = 334
+          Height = 182
           Align = alClient
           BevelOuter = bvNone
           BorderWidth = 3
@@ -348,8 +344,8 @@ object fmOpenFile: TfmOpenFile
           object lvRecent: TListView
             Left = 3
             Top = 3
-            Width = 595
-            Height = 345
+            Width = 328
+            Height = 176
             Align = alClient
             Columns = <>
             DragMode = dmAutomatic
@@ -380,16 +376,16 @@ object fmOpenFile: TfmOpenFile
         Left = 17
         Top = 10
         Width = 26
-        Height = 14
+        Height = 15
         Alignment = taRightJustify
         Caption = '&Filter'
         FocusControl = edtFilter
       end
       object lblExtension: TLabel
-        Left = 183
+        Left = 186
         Top = 10
-        Width = 28
-        Height = 14
+        Width = 25
+        Height = 15
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         Caption = '&Type'
@@ -397,9 +393,9 @@ object fmOpenFile: TfmOpenFile
       end
       object edtFilter: TEdit
         Left = 50
-        Top = 6
+        Top = 7
         Width = 115
-        Height = 22
+        Height = 23
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
         OnChange = edtFilterChange
@@ -407,9 +403,9 @@ object fmOpenFile: TfmOpenFile
       end
       object cbxType: TComboBox
         Left = 217
-        Top = 6
+        Top = 7
         Width = 113
-        Height = 22
+        Height = 23
         Style = csDropDownList
         Anchors = [akTop, akRight]
         ItemHeight = 14

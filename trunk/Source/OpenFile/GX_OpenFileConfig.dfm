@@ -7,15 +7,11 @@ object fmOpenFileConfig: TfmOpenFileConfig
   ClientHeight = 369
   ClientWidth = 475
   Color = clBtnFace
-  Font.Charset = ANSI_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -12
-  Font.Name = 'Tahoma'
-  Font.Style = []
+  ParentFont = True
   Position = poScreenCenter
   Scaled = False
   PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 15
   object pnlButtons: TPanel
     Left = 0
     Top = 336
@@ -86,58 +82,59 @@ object fmOpenFileConfig: TfmOpenFileConfig
         Caption = 'File Groups'
         DesignSize = (
           455
-          295)
+          294)
         object lblExtension: TLabel
-          Left = 177
+          Left = 180
           Top = 13
-          Width = 79
-          Height = 14
+          Width = 76
+          Height = 15
           Alignment = taRightJustify
           Caption = 'File extensions'
           FocusControl = edtExtension
         end
         object lblMaxRecentFiles: TLabel
-          Left = 171
+          Left = 174
           Top = 45
-          Width = 85
-          Height = 14
+          Width = 82
+          Height = 15
           Alignment = taRightJustify
           Caption = 'Max recent files'
           FocusControl = edtMaxRecentFiles
         end
         object gbxCustomDirectory: TGroupBox
           Left = 173
-          Top = 72
+          Top = 69
           Width = 273
-          Height = 215
+          Height = 219
           Anchors = [akLeft, akTop, akRight, akBottom]
           Caption = 'Custom Search Path'
           TabOrder = 5
           DesignSize = (
             273
-            215)
-          object btnDirectory: TSpeedButton
+            219)
+          object btnDirectory: TButton
             Left = 241
-            Top = 155
+            Top = 159
             Width = 22
             Height = 20
             Anchors = [akRight, akBottom]
             Caption = '...'
+            TabStop = False
             OnClick = btnDirectoryClick
           end
           object lbxDirectoryList: TListBox
             Left = 10
-            Top = 64
+            Top = 66
             Width = 253
-            Height = 86
+            Height = 88
             Anchors = [akLeft, akTop, akRight, akBottom]
-            ItemHeight = 14
+            ItemHeight = 15
             TabOrder = 2
             OnClick = lbxDirectoryListClick
           end
-          object btnDirectoryAdd: TBitBtn
+          object btnDirectoryAdd: TButton
             Left = 90
-            Top = 182
+            Top = 186
             Width = 75
             Height = 25
             Anchors = [akLeft, akBottom]
@@ -145,9 +142,9 @@ object fmOpenFileConfig: TfmOpenFileConfig
             TabOrder = 5
             OnClick = btnDirectoryAddClick
           end
-          object btnDirectoryDelete: TBitBtn
+          object btnDirectoryDelete: TButton
             Left = 170
-            Top = 182
+            Top = 186
             Width = 75
             Height = 25
             Anchors = [akLeft, akBottom]
@@ -157,15 +154,15 @@ object fmOpenFileConfig: TfmOpenFileConfig
           end
           object chkRecursive: TCheckBox
             Left = 12
-            Top = 43
+            Top = 45
             Width = 250
             Height = 17
             Caption = 'Include subdirectories'
             TabOrder = 1
           end
-          object btnDirectoryReplace: TBitBtn
+          object btnDirectoryReplace: TButton
             Left = 10
-            Top = 182
+            Top = 186
             Width = 75
             Height = 25
             Anchors = [akLeft, akBottom]
@@ -175,15 +172,15 @@ object fmOpenFileConfig: TfmOpenFileConfig
           end
           object edtDirectory: TEdit
             Left = 10
-            Top = 155
+            Top = 159
             Width = 232
-            Height = 22
+            Height = 23
             Anchors = [akLeft, akRight, akBottom]
             TabOrder = 3
           end
           object chkCustomDirectoryList: TCheckBox
             Left = 12
-            Top = 21
+            Top = 24
             Width = 250
             Height = 17
             Caption = 'Add custom directories to search path'
@@ -195,24 +192,24 @@ object fmOpenFileConfig: TfmOpenFileConfig
           Left = 8
           Top = 9
           Width = 153
-          Height = 246
+          Height = 248
           Anchors = [akLeft, akTop, akBottom]
-          ItemHeight = 14
+          ItemHeight = 15
           Sorted = True
           TabOrder = 0
           OnClick = lbxTypeListClick
         end
         object edtExtension: TEdit
-          Left = 264
+          Left = 265
           Top = 9
           Width = 181
-          Height = 22
+          Height = 23
           Anchors = [akLeft, akTop, akRight]
           TabOrder = 3
         end
-        object btnTypeAdd: TBitBtn
+        object btnTypeAdd: TButton
           Left = 8
-          Top = 261
+          Top = 263
           Width = 75
           Height = 25
           Anchors = [akLeft, akBottom]
@@ -220,9 +217,9 @@ object fmOpenFileConfig: TfmOpenFileConfig
           TabOrder = 1
           OnClick = btnTypeAddClick
         end
-        object btnTypeDelete: TBitBtn
+        object btnTypeDelete: TButton
           Left = 87
-          Top = 261
+          Top = 263
           Width = 75
           Height = 25
           Anchors = [akLeft, akBottom]
@@ -234,7 +231,7 @@ object fmOpenFileConfig: TfmOpenFileConfig
           Left = 265
           Top = 40
           Width = 56
-          Height = 22
+          Height = 23
           TabOrder = 4
           Text = '20'
         end
@@ -244,36 +241,36 @@ object fmOpenFileConfig: TfmOpenFileConfig
         ImageIndex = 1
         object gbxIDEMenuItems: TGroupBox
           Left = 8
-          Top = 145
+          Top = 137
           Width = 323
-          Height = 144
+          Height = 152
           Caption = 'IDE Menu Item Overrides'
           TabOrder = 1
           object lblMenuItem: TLabel
             Left = 20
-            Top = 20
-            Width = 83
-            Height = 14
+            Top = 24
+            Width = 78
+            Height = 15
             Caption = 'IDE Menu Item'
           end
           object lblFileGroup: TLabel
             Left = 137
-            Top = 20
-            Width = 97
-            Height = 14
+            Top = 24
+            Width = 95
+            Height = 15
             Caption = 'Default File Group'
             FocusControl = cbxViewUnitType
           end
           object bvlRow: TBevel
             Left = 16
-            Top = 38
+            Top = 42
             Width = 295
             Height = 5
             Shape = bsTopLine
           end
           object chkOverrideViewUnit: TCheckBox
             Left = 20
-            Top = 49
+            Top = 52
             Width = 110
             Height = 17
             Caption = 'View units'
@@ -281,7 +278,7 @@ object fmOpenFileConfig: TfmOpenFileConfig
           end
           object chkOverrideViewForm: TCheckBox
             Left = 20
-            Top = 80
+            Top = 84
             Width = 110
             Height = 17
             Caption = 'View forms'
@@ -289,25 +286,25 @@ object fmOpenFileConfig: TfmOpenFileConfig
           end
           object cbxViewUnitType: TComboBox
             Left = 136
-            Top = 46
+            Top = 50
             Width = 160
-            Height = 22
+            Height = 23
             Style = csDropDownList
             ItemHeight = 14
             TabOrder = 1
           end
           object cbxViewFormType: TComboBox
             Left = 136
-            Top = 78
+            Top = 82
             Width = 160
-            Height = 22
+            Height = 23
             Style = csDropDownList
             ItemHeight = 14
             TabOrder = 3
           end
           object chkOverrideOpenProject: TCheckBox
             Left = 20
-            Top = 112
+            Top = 116
             Width = 110
             Height = 17
             Caption = 'Open project'
@@ -315,9 +312,9 @@ object fmOpenFileConfig: TfmOpenFileConfig
           end
           object cbxOpenProjectType: TComboBox
             Left = 136
-            Top = 110
+            Top = 114
             Width = 160
-            Height = 22
+            Height = 23
             Style = csDropDownList
             ItemHeight = 14
             TabOrder = 5
@@ -327,14 +324,14 @@ object fmOpenFileConfig: TfmOpenFileConfig
           Left = 8
           Top = 4
           Width = 323
-          Height = 133
+          Height = 127
           Caption = 'General Settings'
           TabOrder = 0
           object lblDefault: TLabel
             Left = 20
-            Top = 56
-            Width = 94
-            Height = 14
+            Top = 52
+            Width = 92
+            Height = 15
             Caption = 'Default file group'
             FocusControl = cbxDefaultFileTypes
           end
@@ -342,7 +339,7 @@ object fmOpenFileConfig: TfmOpenFileConfig
             Left = 136
             Top = 50
             Width = 160
-            Height = 22
+            Height = 23
             Style = csDropDownList
             ItemHeight = 14
             TabOrder = 1
