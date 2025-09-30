@@ -41,6 +41,13 @@ type
     class function ConfigurationKey: string;
   end;
 
+  TGxErrorBoxAdaptor = class(TGxMsgBoxAdaptor)
+  protected
+    function GetButtons: TMsgDlgButtons; override;
+    function AllowSuppress: Boolean; override;
+    function GetMessage: string; override;
+  end;
+
   TGxQuestionBoxAdaptor = class(TGxMsgBoxAdaptor)
   protected
     function GetButtons: TMsgDlgButtons; override;
@@ -215,6 +222,27 @@ begin
   Result := 'Misc' + PathDelim + 'SuppressedMessages';
 end;
 
+{ TGxErrorBoxAdaptor }
+
+function TGxErrorBoxAdaptor.AllowSuppress: Boolean;
+begin
+  Result := False;
+end;
+
+function TGxErrorBoxAdaptor.GetButtons: TMsgDlgButtons;
+begin
+{$IF declared(mbClose)}
+  Result := [mbClose];
+{$ELSE}
+  Result := [mbOK];
+{$IFEND}
+end;
+
+function TGxErrorBoxAdaptor.GetMessage: string;
+begin
+  Result := FData;
+end;
+
 { TGxQuestionBoxAdaptor }
 
 function TGxQuestionBoxAdaptor.GetButtons: TMsgDlgButtons;
@@ -242,7 +270,7 @@ end;
 
 procedure TfmGxMessageBox.ArrangeControls;
 begin
-
+// inherited?
 end;
 
 destructor TfmGxMessageBox.Destroy;

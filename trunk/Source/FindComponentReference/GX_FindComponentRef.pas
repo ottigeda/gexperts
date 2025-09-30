@@ -18,7 +18,7 @@ interface
 implementation
 
 uses SysUtils, Classes, ToolsAPI,
-  GX_OtaUtils, GX_Experts, GX_GenericUtils;
+  GX_OtaUtils, GX_Experts, GX_GenericUtils, GX_MessageBox;
 
 resourcestring
   rsNoComponentFound = 'A component named %s was not found on the form';
@@ -61,11 +61,18 @@ begin
   if not Assigned(Module) then
     Exit;
   CurEditor := GxOtaGetCurrentEditor;
-  if Supports(CurEditor, IOTAFormEditor, FrmEditor) then
-    FindSelectedComponentInSource(Module, FrmEditor)
-  else if Supports(CurEditor, IOTASourceEditor, SrcEditor) then
-    FindSelectedComponentOnForm(Module, SrcEditor);
-  IncCallCount;
+  try
+    if Supports(CurEditor, IOTAFormEditor, FrmEditor) then
+      FindSelectedComponentInSource(Module, FrmEditor)
+    else if Supports(CurEditor, IOTASourceEditor, SrcEditor) then
+      FindSelectedComponentOnForm(Module, SrcEditor);
+    IncCallCount;
+  except
+    on E: Exception do
+    begin
+      ShowGxMessageBox(TGxErrorBoxAdaptor, E.Message);
+    end;
+  end;
 end;
 
 procedure TFindComponentReferenceExpert.FindSelectedComponentOnForm(Module: IOTAModule;
