@@ -36,9 +36,9 @@ object fmMessageDialog: TfmMessageDialog
       TabOrder = 0
       object pgeMessageDialog: TPageControl
         Left = 6
-        Top = 137
+        Top = 129
         Width = 559
-        Height = 312
+        Height = 320
         ActivePage = tabMessageBox
         Align = alClient
         TabIndex = 0
@@ -50,14 +50,14 @@ object fmMessageDialog: TfmMessageDialog
             Left = 0
             Top = 0
             Width = 551
-            Height = 283
+            Height = 291
             Align = alClient
             Anchors = []
             BevelOuter = bvNone
             FullRepaint = False
             TabOrder = 0
             object gbxButtons: TGroupBox
-              Left = 242
+              Left = 237
               Top = 8
               Width = 154
               Height = 273
@@ -66,7 +66,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMbYes: TCheckBox
                 Tag = 1
                 Left = 8
-                Top = 17
+                Top = 23
                 Width = 137
                 Height = 17
                 Caption = 'mbYes'
@@ -76,7 +76,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMbNo: TCheckBox
                 Tag = 2
                 Left = 8
-                Top = 33
+                Top = 43
                 Width = 137
                 Height = 17
                 Caption = 'mbNo'
@@ -86,7 +86,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMbOK: TCheckBox
                 Tag = 4
                 Left = 8
-                Top = 49
+                Top = 63
                 Width = 137
                 Height = 17
                 Caption = 'mbOK'
@@ -96,7 +96,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMbCancel: TCheckBox
                 Tag = 8
                 Left = 8
-                Top = 65
+                Top = 83
                 Width = 137
                 Height = 17
                 Caption = 'mbCancel'
@@ -106,7 +106,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMbAbort: TCheckBox
                 Tag = 16
                 Left = 8
-                Top = 89
+                Top = 111
                 Width = 137
                 Height = 17
                 Caption = 'mbAbort'
@@ -116,7 +116,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMbRetry: TCheckBox
                 Tag = 32
                 Left = 8
-                Top = 105
+                Top = 131
                 Width = 137
                 Height = 17
                 Caption = 'mbRetry'
@@ -126,7 +126,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMbIgnore: TCheckBox
                 Tag = 64
                 Left = 8
-                Top = 121
+                Top = 151
                 Width = 137
                 Height = 17
                 Caption = 'mbIgnore'
@@ -136,7 +136,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMbAll: TCheckBox
                 Tag = 128
                 Left = 8
-                Top = 145
+                Top = 179
                 Width = 137
                 Height = 17
                 Caption = 'mbAll'
@@ -146,7 +146,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMbNoToAll: TCheckBox
                 Tag = 256
                 Left = 8
-                Top = 161
+                Top = 199
                 Width = 137
                 Height = 17
                 Caption = 'mbNoToAll'
@@ -156,7 +156,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMbYesToAll: TCheckBox
                 Tag = 512
                 Left = 8
-                Top = 176
+                Top = 219
                 Width = 137
                 Height = 17
                 Caption = 'mbYesToAll'
@@ -165,7 +165,7 @@ object fmMessageDialog: TfmMessageDialog
               end
               object chkMbHelp: TCheckBox
                 Left = 8
-                Top = 192
+                Top = 239
                 Width = 137
                 Height = 17
                 Caption = 'mbHelp'
@@ -174,16 +174,16 @@ object fmMessageDialog: TfmMessageDialog
               end
             end
             object gbxDlgFunctionResults: TGroupBox
-              Left = 400
+              Left = 402
               Top = 8
-              Width = 117
+              Width = 137
               Height = 273
               Caption = '&Function Results'
               TabOrder = 2
               object chkMrYes: TCheckBox
                 Tag = 1
                 Left = 8
-                Top = 17
+                Top = 23
                 Width = 105
                 Height = 17
                 Caption = 'mrYes'
@@ -194,7 +194,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMrNo: TCheckBox
                 Tag = 2
                 Left = 8
-                Top = 33
+                Top = 43
                 Width = 105
                 Height = 17
                 Caption = 'mrNo'
@@ -205,7 +205,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMrOK: TCheckBox
                 Tag = 4
                 Left = 8
-                Top = 49
+                Top = 63
                 Width = 105
                 Height = 17
                 Caption = 'mrOk'
@@ -216,7 +216,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMrCancel: TCheckBox
                 Tag = 8
                 Left = 8
-                Top = 65
+                Top = 83
                 Width = 105
                 Height = 17
                 Caption = 'mrCancel'
@@ -227,7 +227,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMrAbort: TCheckBox
                 Tag = 16
                 Left = 8
-                Top = 89
+                Top = 111
                 Width = 105
                 Height = 17
                 Caption = 'mrAbort'
@@ -238,7 +238,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMrRetry: TCheckBox
                 Tag = 32
                 Left = 8
-                Top = 105
+                Top = 131
                 Width = 105
                 Height = 17
                 Caption = 'mrRetry'
@@ -249,7 +249,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMrIgnore: TCheckBox
                 Tag = 64
                 Left = 8
-                Top = 121
+                Top = 151
                 Width = 105
                 Height = 17
                 Caption = 'mrIgnore'
@@ -260,7 +260,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMrAll: TCheckBox
                 Tag = 128
                 Left = 8
-                Top = 145
+                Top = 179
                 Width = 105
                 Height = 17
                 Caption = 'mrAll'
@@ -271,7 +271,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMrNoToAll: TCheckBox
                 Tag = 256
                 Left = 8
-                Top = 161
+                Top = 199
                 Width = 105
                 Height = 17
                 Caption = 'mrNoToAll'
@@ -282,7 +282,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMrYesToAll: TCheckBox
                 Tag = 512
                 Left = 8
-                Top = 177
+                Top = 219
                 Width = 105
                 Height = 17
                 Caption = 'mrYesToAll'
@@ -293,7 +293,7 @@ object fmMessageDialog: TfmMessageDialog
               object chkMrNone: TCheckBox
                 Tag = 1024
                 Left = 8
-                Top = 193
+                Top = 239
                 Width = 105
                 Height = 17
                 Caption = 'mrNone'
@@ -800,14 +800,14 @@ object fmMessageDialog: TfmMessageDialog
           ImageIndex = 1
           object gbxMsgBoxTypes: TGroupBox
             Left = 8
-            Top = 8
+            Top = 4
             Width = 217
-            Height = 272
+            Height = 284
             Caption = 'Dialog T&ype'
             TabOrder = 0
             object imgMsgBoxWarning: TImage
               Left = 8
-              Top = 24
+              Top = 25
               Width = 32
               Height = 32
               AutoSize = True
@@ -816,7 +816,7 @@ object fmMessageDialog: TfmMessageDialog
             end
             object imgInformationMsgBox: TImage
               Left = 8
-              Top = 145
+              Top = 146
               Width = 32
               Height = 32
               AutoSize = True
@@ -825,7 +825,7 @@ object fmMessageDialog: TfmMessageDialog
             end
             object imgErrorMsgBox: TImage
               Left = 8
-              Top = 88
+              Top = 89
               Width = 32
               Height = 32
               AutoSize = True
@@ -879,7 +879,7 @@ object fmMessageDialog: TfmMessageDialog
             end
             object rbnIconExclamation: TRadioButton
               Left = 48
-              Top = 40
+              Top = 42
               Width = 161
               Height = 17
               Caption = 'mb_IconExclamation'
@@ -890,7 +890,7 @@ object fmMessageDialog: TfmMessageDialog
             end
             object rbnIconAsterisk: TRadioButton
               Left = 48
-              Top = 160
+              Top = 162
               Width = 161
               Height = 17
               Caption = 'mb_IconAsterisk'
@@ -899,7 +899,7 @@ object fmMessageDialog: TfmMessageDialog
             end
             object rbnIconError: TRadioButton
               Left = 48
-              Top = 96
+              Top = 98
               Width = 161
               Height = 17
               Caption = 'mb_IconError'
@@ -908,7 +908,7 @@ object fmMessageDialog: TfmMessageDialog
             end
             object rbnIconHand: TRadioButton
               Left = 48
-              Top = 112
+              Top = 116
               Width = 161
               Height = 17
               Caption = 'mb_IconHand'
@@ -917,27 +917,26 @@ object fmMessageDialog: TfmMessageDialog
             end
           end
           object pgeMessageBoxOptions: TPageControl
-            Left = 232
-            Top = 8
+            Left = 231
+            Top = 3
             Width = 297
-            Height = 272
+            Height = 284
             ActivePage = tabOptions
-            TabIndex = 0
             TabOrder = 1
             OnChange = pgeMessageBoxOptionsChange
             object tabOptions: TTabSheet
               Caption = 'Options'
               object gbxMsgBoxFunctionResults: TGroupBox
                 Left = 164
-                Top = 75
-                Width = 117
-                Height = 135
+                Top = 73
+                Width = 121
+                Height = 145
                 Caption = '&Function Results'
                 TabOrder = 2
                 object chkYes: TCheckBox
                   Tag = 1
                   Left = 8
-                  Top = 17
+                  Top = 23
                   Width = 105
                   Height = 17
                   Caption = 'idYes'
@@ -948,7 +947,7 @@ object fmMessageDialog: TfmMessageDialog
                 object chkNo: TCheckBox
                   Tag = 2
                   Left = 8
-                  Top = 33
+                  Top = 40
                   Width = 105
                   Height = 17
                   Caption = 'idNo'
@@ -959,7 +958,7 @@ object fmMessageDialog: TfmMessageDialog
                 object chkOk: TCheckBox
                   Tag = 4
                   Left = 8
-                  Top = 49
+                  Top = 57
                   Width = 105
                   Height = 17
                   Caption = 'idOk'
@@ -970,7 +969,7 @@ object fmMessageDialog: TfmMessageDialog
                 object chkCancel: TCheckBox
                   Tag = 8
                   Left = 8
-                  Top = 65
+                  Top = 74
                   Width = 105
                   Height = 17
                   Caption = 'idCancel'
@@ -981,7 +980,7 @@ object fmMessageDialog: TfmMessageDialog
                 object chkAbort: TCheckBox
                   Tag = 16
                   Left = 8
-                  Top = 81
+                  Top = 91
                   Width = 105
                   Height = 17
                   Caption = 'idAbort'
@@ -992,7 +991,7 @@ object fmMessageDialog: TfmMessageDialog
                 object chkRetry: TCheckBox
                   Tag = 32
                   Left = 8
-                  Top = 97
+                  Top = 108
                   Width = 105
                   Height = 17
                   Caption = 'idRetry'
@@ -1003,7 +1002,7 @@ object fmMessageDialog: TfmMessageDialog
                 object chkIgnore: TCheckBox
                   Tag = 64
                   Left = 8
-                  Top = 113
+                  Top = 125
                   Width = 105
                   Height = 17
                   Caption = 'idIgnore'
@@ -1014,15 +1013,15 @@ object fmMessageDialog: TfmMessageDialog
               end
               object gbxMsgBoxDialogButtons: TGroupBox
                 Left = 6
-                Top = 75
+                Top = 73
                 Width = 154
-                Height = 135
+                Height = 145
                 Caption = '&Buttons'
                 TabOrder = 1
                 object rbnAbortRetryIgnore: TRadioButton
                   Tag = 112
                   Left = 8
-                  Top = 17
+                  Top = 23
                   Width = 140
                   Height = 17
                   Caption = 'mb_AbortRetryIgnore'
@@ -1033,7 +1032,7 @@ object fmMessageDialog: TfmMessageDialog
                 object rbnOk: TRadioButton
                   Tag = 4
                   Left = 8
-                  Top = 36
+                  Top = 43
                   Width = 140
                   Height = 17
                   Caption = 'mb_OK'
@@ -1045,7 +1044,7 @@ object fmMessageDialog: TfmMessageDialog
                 object rbnOkCancel: TRadioButton
                   Tag = 12
                   Left = 8
-                  Top = 55
+                  Top = 63
                   Width = 140
                   Height = 17
                   Caption = 'mb_OkCancel'
@@ -1056,7 +1055,7 @@ object fmMessageDialog: TfmMessageDialog
                 object rbnRetryCancel: TRadioButton
                   Tag = 40
                   Left = 8
-                  Top = 74
+                  Top = 83
                   Width = 140
                   Height = 17
                   Caption = 'mb_RetryCancel'
@@ -1067,7 +1066,7 @@ object fmMessageDialog: TfmMessageDialog
                 object rbnYesNo: TRadioButton
                   Tag = 3
                   Left = 8
-                  Top = 93
+                  Top = 103
                   Width = 140
                   Height = 17
                   Caption = 'mb_YesNo'
@@ -1078,7 +1077,7 @@ object fmMessageDialog: TfmMessageDialog
                 object rbnYesNoCancel: TRadioButton
                   Tag = 11
                   Left = 8
-                  Top = 113
+                  Top = 123
                   Width = 140
                   Height = 17
                   Caption = 'mb_YesNoCancel'
@@ -1089,36 +1088,36 @@ object fmMessageDialog: TfmMessageDialog
               end
               object chkDefaultButton: TCheckBox
                 Left = 6
-                Top = 220
+                Top = 227
                 Width = 104
-                Height = 13
+                Height = 17
                 Caption = 'Default button:'
                 TabOrder = 3
                 OnClick = chkDefaultButtonClick
               end
               object gbxCaption: TGroupBox
                 Left = 6
-                Top = 3
-                Width = 275
-                Height = 65
+                Top = 0
+                Width = 279
+                Height = 70
                 Caption = 'Ca&ption'
                 TabOrder = 0
                 DesignSize = (
-                  275
-                  65)
+                  279
+                  70)
                 object chkQuoteCaption: TCheckBox
                   Left = 8
-                  Top = 42
+                  Top = 47
                   Width = 257
-                  Height = 18
+                  Height = 17
                   Caption = 'Quote caption t&ext'
                   TabOrder = 1
                   OnClick = chkQuoteCaptionClick
                 end
                 object edtMsgBoxCaption: TEdit
                   Left = 8
-                  Top = 18
-                  Width = 260
+                  Top = 23
+                  Width = 264
                   Height = 22
                   Anchors = [akLeft, akTop, akRight]
                   TabOrder = 0
@@ -1127,7 +1126,7 @@ object fmMessageDialog: TfmMessageDialog
               end
               object edtDefaultButton: TEdit
                 Left = 117
-                Top = 216
+                Top = 224
                 Width = 32
                 Height = 22
                 TabOrder = 4
@@ -1136,7 +1135,7 @@ object fmMessageDialog: TfmMessageDialog
               end
               object udDefaultButton: TUpDown
                 Left = 149
-                Top = 216
+                Top = 224
                 Width = 12
                 Height = 22
                 Associate = edtDefaultButton
@@ -1152,14 +1151,14 @@ object fmMessageDialog: TfmMessageDialog
               ImageIndex = 1
               object gbxMsgBoxModality: TGroupBox
                 Left = 6
-                Top = 184
+                Top = 199
                 Width = 275
-                Height = 49
+                Height = 53
                 Caption = 'Mod&ality'
                 TabOrder = 1
                 object cbxModality: TComboBox
                   Left = 8
-                  Top = 19
+                  Top = 23
                   Width = 257
                   Height = 22
                   Style = csDropDownList
@@ -1177,12 +1176,12 @@ object fmMessageDialog: TfmMessageDialog
                 Left = 6
                 Top = 3
                 Width = 275
-                Height = 180
+                Height = 193
                 Caption = 'M&iscellaneous Flags'
                 TabOrder = 0
                 object chkDefaultDesktopOnly: TCheckBox
                   Left = 8
-                  Top = 20
+                  Top = 23
                   Width = 250
                   Height = 17
                   Caption = 'MB_DEFAULT_DESKTOP_ONLY'
@@ -1191,7 +1190,7 @@ object fmMessageDialog: TfmMessageDialog
                 end
                 object chkHelp: TCheckBox
                   Left = 8
-                  Top = 36
+                  Top = 41
                   Width = 250
                   Height = 17
                   Caption = 'MB_HELP'
@@ -1200,7 +1199,7 @@ object fmMessageDialog: TfmMessageDialog
                 end
                 object chkRight: TCheckBox
                   Left = 8
-                  Top = 70
+                  Top = 77
                   Width = 250
                   Height = 17
                   Caption = 'MB_RIGHT'
@@ -1209,7 +1208,7 @@ object fmMessageDialog: TfmMessageDialog
                 end
                 object chkRtlReading: TCheckBox
                   Left = 8
-                  Top = 87
+                  Top = 95
                   Width = 250
                   Height = 17
                   Caption = 'MB_RTLREADING'
@@ -1218,7 +1217,7 @@ object fmMessageDialog: TfmMessageDialog
                 end
                 object chkSetForeground: TCheckBox
                   Left = 8
-                  Top = 137
+                  Top = 149
                   Width = 250
                   Height = 17
                   Caption = 'MB_SETFOREGROUND'
@@ -1227,7 +1226,7 @@ object fmMessageDialog: TfmMessageDialog
                 end
                 object chkTopMost: TCheckBox
                   Left = 8
-                  Top = 154
+                  Top = 167
                   Width = 250
                   Height = 17
                   Caption = 'MB_TOPMOST'
@@ -1236,7 +1235,7 @@ object fmMessageDialog: TfmMessageDialog
                 end
                 object chkServiceNotification: TCheckBox
                   Left = 8
-                  Top = 103
+                  Top = 113
                   Width = 250
                   Height = 17
                   Caption = 'MB_SERVICE_NOTIFICATION'
@@ -1245,7 +1244,7 @@ object fmMessageDialog: TfmMessageDialog
                 end
                 object chkServiceNotificationNt3x: TCheckBox
                   Left = 8
-                  Top = 120
+                  Top = 131
                   Width = 250
                   Height = 17
                   Caption = 'MB_SERVICE_NOTIFICATION_NT3X'
@@ -1254,7 +1253,7 @@ object fmMessageDialog: TfmMessageDialog
                 end
                 object chkNoFocus: TCheckBox
                   Left = 8
-                  Top = 53
+                  Top = 59
                   Width = 250
                   Height = 17
                   Caption = 'MB_NOFOCUS'
@@ -1270,13 +1269,13 @@ object fmMessageDialog: TfmMessageDialog
         Left = 6
         Top = 104
         Width = 559
-        Height = 33
+        Height = 25
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 1
         object lblHelpContext: TLabel
           Left = 336
-          Top = 9
+          Top = 3
           Width = 71
           Height = 14
           Alignment = taRightJustify
@@ -1285,7 +1284,7 @@ object fmMessageDialog: TfmMessageDialog
         end
         object lblEmbed: TLabel
           Left = 130
-          Top = 9
+          Top = 3
           Width = 38
           Height = 14
           Alignment = taRightJustify
@@ -1294,7 +1293,7 @@ object fmMessageDialog: TfmMessageDialog
         end
         object edtHelpContext: TEdit
           Left = 417
-          Top = 5
+          Top = 0
           Width = 45
           Height = 22
           TabOrder = 2
@@ -1303,7 +1302,7 @@ object fmMessageDialog: TfmMessageDialog
         end
         object udHelpContext: TUpDown
           Left = 462
-          Top = 5
+          Top = 0
           Width = 16
           Height = 22
           Associate = edtHelpContext
@@ -1315,17 +1314,16 @@ object fmMessageDialog: TfmMessageDialog
         end
         object cbxTypeEmbedded: TComboBox
           Left = 177
-          Top = 5
+          Top = 0
           Width = 141
           Height = 22
           Style = csDropDownList
-          ItemHeight = 14
           TabOrder = 1
           OnChange = cbxTypeEmbeddedChange
         end
         object chkDefaults: TCheckBox
-          Left = 4
-          Top = 8
+          Left = 6
+          Top = 3
           Width = 115
           Height = 16
           Caption = '&Save as defaults'
