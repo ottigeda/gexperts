@@ -719,7 +719,7 @@ begin
 {$IFEND}
   def := TIfdefTabDefinition.Create(Self, pc_IfClasses, '&RtlVersion', 16, 2, '{$IF RtlVersion >= %s}');
   FTabDefinitions.Add(def);
-  def.AddEntry(IntToStr(RtlVersionDelphiX130), 'Delphi 13 / BDS 37');
+  def.AddEntry(IntToStr(RtlVersionDelphiX130), 'Delphi 13 Florence / BDS 37');
   def.AddEntry(IntToStr(RtlVersionDelphiX120), 'Delphi 12 Athens / BDS 23');
   def.AddEntry(IntToStr(RtlVersionDelphiX110), 'Delphi 11 Alexandria / BDS 22');
   def.AddEntry(IntToStr(RtlVersionDelphiX104), 'Delphi 10.4 Sydney / BDS 21');

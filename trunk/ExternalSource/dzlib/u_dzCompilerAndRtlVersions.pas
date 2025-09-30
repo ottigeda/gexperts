@@ -32,6 +32,7 @@ const
   CompilerVersionDelphiX102 = 32;
   CompilerVersionDelphiX103 = 33;
   CompilerVersionDelphiX104 = 34;
+  // Naming scheme changed to normal numbers again
   CompilerVersionDelphiX110 = 35;
   CompilerVersionDelphiX120 = 36;
   CompilerVersionDelphiX130 = 37;
@@ -47,9 +48,9 @@ const
   CompilerVersionDelphiSydney = 34;
   CompilerVersionDelphiAlexandria = 35;
   CompilerVersionDelphiAthens = 36;
-  CompilerVersionDelphi13 = 37;
+  CompilerVersionDelphiFlorence = 37;
 
-{$IF CompilerVersion > CompilerVersionDelphi13}
+{$IF CompilerVersion > CompilerVersionDelphiFlorence}
 {$MESSAGE HINT 'Add new CompilerVersion(s) here'}
 {$IFEND}
 
@@ -94,10 +95,9 @@ const
   RtlVersionDelphiSydney = 34;
   RtlVersionDelphiAlexandria = 35;
   RtlVersionDelphiAthens = 36;
-  RtlVersionDelphi13 = 37;
   RtlVersionDelphiFlorence= 37;
 
-{$IF RtlVersion > RtlVersionDelphi13}
+{$IF RtlVersion > RtlVersionDelphiFlorence}
 {$MESSAGE HINT 'Add new RtlVersion(s) here'}
 {$IFEND}
 
