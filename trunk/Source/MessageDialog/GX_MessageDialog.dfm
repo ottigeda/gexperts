@@ -58,9 +58,9 @@ object fmMessageDialog: TfmMessageDialog
             TabOrder = 0
             object gbxButtons: TGroupBox
               Left = 237
-              Top = 8
+              Top = 4
               Width = 154
-              Height = 273
+              Height = 284
               Caption = '&Buttons'
               TabOrder = 1
               object chkMbYes: TCheckBox
@@ -175,9 +175,9 @@ object fmMessageDialog: TfmMessageDialog
             end
             object gbxDlgFunctionResults: TGroupBox
               Left = 402
-              Top = 8
+              Top = 4
               Width = 137
-              Height = 273
+              Height = 284
               Caption = '&Function Results'
               TabOrder = 2
               object chkMrYes: TCheckBox
@@ -303,10 +303,10 @@ object fmMessageDialog: TfmMessageDialog
               end
             end
             object gbxTypes: TGroupBox
-              Left = 9
-              Top = 8
+              Left = 8
+              Top = 4
               Width = 217
-              Height = 272
+              Height = 284
               Caption = 'Dialog Type'
               TabOrder = 0
               object imgWarning: TImage
@@ -807,7 +807,7 @@ object fmMessageDialog: TfmMessageDialog
             TabOrder = 0
             object imgMsgBoxWarning: TImage
               Left = 8
-              Top = 25
+              Top = 24
               Width = 32
               Height = 32
               AutoSize = True
@@ -816,7 +816,7 @@ object fmMessageDialog: TfmMessageDialog
             end
             object imgInformationMsgBox: TImage
               Left = 8
-              Top = 146
+              Top = 145
               Width = 32
               Height = 32
               AutoSize = True
@@ -825,7 +825,7 @@ object fmMessageDialog: TfmMessageDialog
             end
             object imgErrorMsgBox: TImage
               Left = 8
-              Top = 89
+              Top = 88
               Width = 32
               Height = 32
               AutoSize = True
@@ -917,10 +917,10 @@ object fmMessageDialog: TfmMessageDialog
             end
           end
           object pgeMessageBoxOptions: TPageControl
-            Left = 231
-            Top = 3
-            Width = 297
-            Height = 284
+            Left = 237
+            Top = 4
+            Width = 300
+            Height = 283
             ActivePage = tabOptions
             TabOrder = 1
             OnChange = pgeMessageBoxOptionsChange
@@ -928,7 +928,7 @@ object fmMessageDialog: TfmMessageDialog
               Caption = 'Options'
               object gbxMsgBoxFunctionResults: TGroupBox
                 Left = 164
-                Top = 73
+                Top = 76
                 Width = 121
                 Height = 145
                 Caption = '&Function Results'
@@ -1013,7 +1013,7 @@ object fmMessageDialog: TfmMessageDialog
               end
               object gbxMsgBoxDialogButtons: TGroupBox
                 Left = 6
-                Top = 73
+                Top = 76
                 Width = 154
                 Height = 145
                 Caption = '&Buttons'
@@ -1087,8 +1087,8 @@ object fmMessageDialog: TfmMessageDialog
                 end
               end
               object chkDefaultButton: TCheckBox
-                Left = 6
-                Top = 227
+                Left = 14
+                Top = 230
                 Width = 104
                 Height = 17
                 Caption = 'Default button:'
@@ -1097,7 +1097,7 @@ object fmMessageDialog: TfmMessageDialog
               end
               object gbxCaption: TGroupBox
                 Left = 6
-                Top = 0
+                Top = 3
                 Width = 279
                 Height = 70
                 Caption = 'Ca&ption'
@@ -1125,8 +1125,8 @@ object fmMessageDialog: TfmMessageDialog
                 end
               end
               object edtDefaultButton: TEdit
-                Left = 117
-                Top = 224
+                Left = 125
+                Top = 227
                 Width = 32
                 Height = 22
                 TabOrder = 4
@@ -1134,8 +1134,8 @@ object fmMessageDialog: TfmMessageDialog
                 OnChange = edtDefaultButtonChange
               end
               object udDefaultButton: TUpDown
-                Left = 149
-                Top = 224
+                Left = 157
+                Top = 227
                 Width = 12
                 Height = 22
                 Associate = edtDefaultButton
@@ -1152,7 +1152,7 @@ object fmMessageDialog: TfmMessageDialog
               object gbxMsgBoxModality: TGroupBox
                 Left = 6
                 Top = 199
-                Width = 275
+                Width = 279
                 Height = 53
                 Caption = 'Mod&ality'
                 TabOrder = 1
@@ -1175,7 +1175,7 @@ object fmMessageDialog: TfmMessageDialog
               object gbxMsgBoxMisc: TGroupBox
                 Left = 6
                 Top = 3
-                Width = 275
+                Width = 279
                 Height = 193
                 Caption = 'M&iscellaneous Flags'
                 TabOrder = 0

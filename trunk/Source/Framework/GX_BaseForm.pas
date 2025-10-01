@@ -129,6 +129,7 @@ end;
 procedure TfmBaseForm.Loaded;
 begin
   Scaled := False;
+  AutoScroll := True;
   inherited;
 end;
 

@@ -153,6 +153,7 @@ function IsThemingEnabled: Boolean;
 function InitThemingForForm(const AForm: TCustomForm): Boolean;
 function GetThemedColor(AColor: TColor): TColor;
 procedure RemoveStyleElements(AControl: TWinControl; IncludeSubComponents: Boolean);
+procedure TPageControl_AdjustForTheme(_PageControl: TPageControl);
 
 implementation
 
@@ -1031,6 +1032,17 @@ end;
 begin
 end;
 {$IFEND}
+
+procedure TPageControl_AdjustForTheme(_PageControl: TPageControl);
+begin
+{$IFDEF GX_SUPPORTS_THEMING}
+  if Assigned(_PageControl) and GX_OtaUtils.GxOtaThemingEnabled then
+  begin
+    _PageControl.Style := tsButtons;
+    _PageControl.StyleElements := [seFont, seClient];
+  end;
+{$ENDIF}
+end;
 
 function TScreen_TryFindClassForm(const _ClassName: string; out _Form: TForm): Boolean;
 var

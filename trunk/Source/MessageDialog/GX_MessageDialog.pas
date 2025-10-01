@@ -277,9 +277,9 @@ implementation
 
 uses
   SysUtils, Windows, TypInfo, Menus, ActnList, ClipBrd, Dialogs, StrUtils,
-  u_dzVclUtils, u_dzStringUtils, 
+  u_dzVclUtils, u_dzStringUtils,
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  GX_GxUtils, GX_OtaUtils, GX_UsesManager,
+  GX_GxUtils, GX_OtaUtils, GX_IdeUtils, GX_UsesManager,
   GX_MessageOptions, GX_ConfigurationInfo, GX_Experts, GX_SynMemoUtils,
   GX_GenericUtils;
 
@@ -426,6 +426,8 @@ procedure TfmMessageDialog.Loaded;
 begin
   inherited Loaded;
   TControl_SetMinConstraints(Self);
+  TPageControl_AdjustForTheme(pgeMessageDialog);
+  TPageControl_AdjustForTheme(pgeMessageBoxOptions);
 end;
 
 function TfmMessageDialog.AssembleGroupBoxCheckBoxesText(GroupBox: TGroupBox): string;
