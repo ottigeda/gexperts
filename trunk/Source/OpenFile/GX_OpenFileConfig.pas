@@ -158,7 +158,7 @@ type
 implementation
 
 uses
-  SysUtils, Dialogs, GX_GenericUtils, GX_GxUtils, u_dzVclUtils;
+  SysUtils, Dialogs, GX_GenericUtils, GX_GxUtils, GX_IdeUtils, u_dzVclUtils;
 
 {$R *.dfm}
 
@@ -559,6 +559,7 @@ begin
   btnTypeAdd.Top := ch - h - Spacing;
   btnTypeDelete.Top := ch - h - Spacing;
   lbxTypeList.Height := ch - h - 2 * Spacing - lbxTypeList.Top;
+  TButton_AlignVerticallyTo(btnDirectory, edtDirectory);
 end;
 {$ENDIF GX_IDE_IS_HIDPI_AWARE}
 
@@ -642,7 +643,7 @@ begin
   SetParentBackgroundValue(gbxGeneralSettings, True);
   SetParentBackgroundValue(gbxIDEMenuItems, True);
   TWinControl_ActivateDropFiles(lbxDirectoryList, lbxDirectoryListFilesDropped);
-
+  TPageControl_AdjustForTheme(pcConfigPages);
   InitDpiScaler;
 
   Self.OnResize := FormResize;

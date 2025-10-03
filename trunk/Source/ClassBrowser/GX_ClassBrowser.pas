@@ -1689,6 +1689,18 @@ begin
       LService.ApplyTheme(MainMenu);
     end;
 *)
+    Splitter1.Color := GetThemedColor(clBtnFace);
+    Splitter2.Color := GetThemedColor(clBtnFace);
+
+    FMethodText.Highlighter := gxpPas;
+    FMethodText.Color := GetThemedColor(clWindow);
+    FMethodText.Font.Color := GetThemedColor(clWindowText);
+
+    GxOtaGetEditorFont(FCodeText.Font, -1);
+    FCodeText.Highlighter := gxpPas;
+    FCodeText.Color := GetThemedColor(clWindow);
+    FCodeText.Font.Color := GetThemedColor(clWindowText);
+    FCodeText.ActiveLineColor := GetThemedColor(clInfoBk);
   end;
 end;
 {$ENDIF GX_SUPPORTS_THEMING}

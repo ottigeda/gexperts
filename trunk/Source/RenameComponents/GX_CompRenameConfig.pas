@@ -173,7 +173,7 @@ implementation
 uses
   Math, StrUtils,
   u_dzClassUtils, u_dzVclUtils, u_dzStringUtils, u_dzMiscUtils,
-  GX_GenericUtils, GX_OtaUtils, GX_GxUtils, GX_CompRenameAdvanced,
+  GX_GenericUtils, GX_OtaUtils, GX_IdeUtils, GX_GxUtils, GX_CompRenameAdvanced,
   GX_MessageBox, GX_GExperts;
 
 function CompareClassFunc(List: TStringList; Index1, Index2: Integer): Integer;
@@ -398,6 +398,7 @@ begin
   TControl_SetMinConstraints(Self);
 
   TPanel_BevelNone([pnlRules, pnlRight, pnlIncSearch, pnlNames]);
+  TPageControl_AdjustForTheme(pc_Names);
 
   FGridVcl := CreateGrid(ts_NamesVcl, 'GridVcl');
   FGridFmx := CreateGrid(ts_NamesFmx, 'GridFmx');

@@ -115,6 +115,7 @@ implementation
 
 uses
   Dialogs,
+  GX_IdeUtils,
   u_dzVclUtils;
 
 constructor TfmClassOptions.Create(_Owner: TComponent);
@@ -128,6 +129,8 @@ begin
   cbListView.Items.Assign(Screen.Fonts);
   cbEditor.Items.Assign(Screen.Fonts);
   cbReportFont.Items.assign(Screen.Fonts);
+
+  TPageControl_AdjustForTheme(pcClassOptions);
 
   InitDpiScaler;
 end;
