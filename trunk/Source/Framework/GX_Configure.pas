@@ -519,6 +519,8 @@ begin
   chkEnhanceInstallPackages.Checked := IdeEnhancements.EnhanceInstallPackages;
   chkEnhanceDockForms.Checked := IdeEnhancements.EnhanceDockForms;
 {$IFDEF GX_VER170_up} // Delphi 9/2005 (BDS 2)
+  chkAutoCloseIgnoreHints.Checked := IdeEnhancements.AutoCloseIgnoreHints;
+  chkAutoCloseIgnoreWarnings.Checked := IdeEnhancements.AutoCloseIgnoreWarnings;
   chkAutoCloseMessage.Checked := IdeEnhancements.AutoCloseMessageWindow;
 {$ENDIF GX_VER170_up} // Delphi 9/2005 (BDS 2)
 
