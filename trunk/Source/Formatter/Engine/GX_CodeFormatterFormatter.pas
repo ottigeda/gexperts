@@ -123,6 +123,7 @@ type
     function CheckForFunctTypeDeclare(out _CheckedToken: TPascalToken): Boolean;
     procedure CheckSpecialProcedure(out _Offset: Integer; var _NoBlankLine, _IsDelegate: Boolean);
     function FindBeginOrSemicolonAfterProc(out _Offset: Integer; out _Token: TPascalToken): Boolean;
+    function InsertLinefeedBefore(ATokenIdx: Integer): boolean;
   public
     class procedure Execute(_Tokens: TPascalTokenList; _Settings: TCodeFormatterSettings);
     constructor Create(_Settings: TCodeFormatterSettings);
@@ -674,7 +675,7 @@ begin
     FPrevLine.SetIndent(FStack.nIndent + _Additional + FStack.ProcLevel);
 end;
 
-procedure TCodeFormatterFormatter.SetPrevLineIndent(_Value: integer);
+procedure TCodeFormatterFormatter.SetPrevLineIndent(_Value: Integer);
 begin
   if FPrevLine <> nil then
     FPrevLine.SetIndent(_Value);
@@ -985,6 +986,8 @@ begin
 end;
 
 procedure TCodeFormatterFormatter.HandleColon(_RemoveMe: Integer);
+var
+  PrevPrevToken: TPascalToken;
 begin
   case FStack.GetTopType of
     rtOf: begin
@@ -1020,8 +1023,20 @@ begin
     // label
     // maybe this could be reduced to rtBegin ?
     if (FPrevToken.WordType in [wtWord, wtNumber]) and (FPrevToken.ReservedType = rtNothing) then begin
-      if (FTokenIdx > 2) and (FTokens[FTokenIdx - 2].ReservedType = rtLineFeed) then begin
-        FPrevLine.NoOfSpaces := 0;
+      if (FTokenIdx > 2) then begin
+        PrevPrevToken := FTokens[FTokenIdx - 2];
+        case PrevPrevToken.ReservedType of
+          rtLineFeed:
+            FPrevLine.NoOfSpaces := 0;
+          rtSemiColon: begin
+              if InsertLinefeedBefore(FTokenIdx - 1) then begin
+                Inc(FTokenIdx);
+                FPrevLine.NoOfSpaces := 0;
+                FPrevLine.OldNoOfSpaces := 0;
+                FPrevLine.Wrapped := False;
+              end;
+            end;
+        end;
       end;
     end;
 
@@ -1977,7 +1992,7 @@ begin
       Assert(False, '.CheckIndent: _PrevCommentLine=nil')
     else
       Assert(False, Format('.CheckIndent: _PrevCommentLine.NoOfSpaces=%d .OldNoOfSpaces=%d',
-      [_PrevCommentLine.NoOfSpaces, _PrevCommentLine.OldNoOfSpaces]));
+        [_PrevCommentLine.NoOfSpaces, _PrevCommentLine.OldNoOfSpaces]));
   end;
 
   if wType = wtCompDirective then begin
@@ -2057,23 +2072,22 @@ begin
     CheckWrapping;
 end;
 
+function TCodeFormatterFormatter.InsertLinefeedBefore(ATokenIdx: Integer): Boolean;
+var
+  PrevPrevLine: TLineFeed;
+begin
+  PrevPrevLine := FPrevLine;
+  FPrevLine := TLineFeed.Create(PrevPrevLine.OldNoOfSpaces, FSettings.SpacePerIndent, -1);
+  FPrevLine.NoOfSpaces := PrevPrevLine.NoOfSpaces;
+  FPrevLine.Wrapped := True;
+  GetToken(ATokenIdx).SetSpace([spBefore], False);
+  FTokens.AtInsert(ATokenIdx, FPrevLine);
+  Result := True;
+end;
+
 procedure TCodeFormatterFormatter.CheckWrapping;
 var
   HasInserted: Boolean;
-
-  procedure InsertLinefeed(ATokenIdx: Integer);
-  var
-    PrevPrevLine: TLineFeed;
-  begin
-    PrevPrevLine := FPrevLine;
-    FPrevLine := TLineFeed.Create(PrevPrevLine.OldNoOfSpaces, FSettings.SpacePerIndent, -1);
-    FPrevLine.NoOfSpaces := PrevPrevLine.NoOfSpaces;
-    FPrevLine.Wrapped := True;
-    GetToken(ATokenIdx).SetSpace([spBefore], False);
-    FTokens.AtInsert(ATokenIdx, FPrevLine);
-    HasInserted := True;
-  end;
-
 var
   TokenIdx, j, k: Integer;
   K2, LineLen: Integer;
@@ -2119,7 +2133,7 @@ begin
         if (GetToken(k).ReservedType in [rtThen, rtDo])
           or ((GetToken(k).ReservedType = rtElse)
           and (GetToken(k + 1).ReservedType <> rtIf)) then begin
-          InsertLinefeed(k + 1);
+          HasInserted := InsertLinefeedBefore(k + 1);
           TokenIdx := j;
         end;
 
@@ -2131,7 +2145,7 @@ begin
       end;
 
       if not HasInserted and (K2 <> 0) and (K2 > j) then begin
-        InsertLinefeed(K2);
+        InsertLinefeedBefore(K2);
         TokenIdx := j;
       end;
 
