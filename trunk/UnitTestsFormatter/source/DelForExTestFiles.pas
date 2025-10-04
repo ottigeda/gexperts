@@ -30,6 +30,7 @@ type
     function GetConfigDirBS: string;
     procedure AdjustSettings_Special(var _cfg: TCodeFormatterEngineSettings);
     procedure AdjustSettings_twm(var _cfg: TCodeFormatterEngineSettings);
+    procedure AdjustSettings_All(var _cfg: TCodeFormatterEngineSettings);
   protected
     procedure SetUp; override;
     procedure TearDown; override;
@@ -76,6 +77,13 @@ begin
   _cfg.FillNewWords := [];
   _cfg.IdentifiersCase := rfUnchanged;
   _cfg.FeedAfterUses := False;
+
+  AdjustSettings_All(_cfg);
+end;
+
+procedure TTestTestfiles.AdjustSettings_All(var _cfg: TCodeFormatterEngineSettings);
+begin
+  _cfg.UnindentLabels := True;
 end;
 
 procedure TTestTestfiles.ExecuteDoubleClickAction;
@@ -185,7 +193,7 @@ type
 
 procedure TTestTestfiles.TestHeadworkFormatting;
 begin
-  TestFormatting('headwork');
+  TestFormatting('headwork', AdjustSettings_All);
 end;
 
 procedure TTestTestfiles.TestSpecialFormatting;
@@ -200,17 +208,17 @@ end;
 
 procedure TTestTestfiles.TestBorlandFormatting;
 begin
-  TestFormatting('borland');
+  TestFormatting('borland', AdjustSettings_All);
 end;
 
 procedure TTestTestfiles.TestDefaultFormatting;
 begin
-  TestFormatting('default');
+  TestFormatting('default', AdjustSettings_All);
 end;
 
 procedure TTestTestfiles.TestDelforFormatting;
 begin
-  TestFormatting('delforex');
+  TestFormatting('delforex', AdjustSettings_All);
 end;
 
 procedure TTestTestfiles.TestFormatting(const _ConfigName: string; _AdjustSettings: TAdjustSettings = nil);
