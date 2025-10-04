@@ -5,17 +5,17 @@ interface
 implementation
 
 function Bla: boolean;
-Begin
-   fThread_UDPServer := TThread.CreateAnonymousThread(Procedure
-     Procedure NestedProcedureInsideAnonymousProcedure;
-     Begin
-       CodeOfNestedProcedure;
-     End;
+begin
+  fThread_UDPServer := TThread.CreateAnonymousThread(procedure
+      procedure NestedProcedureInsideAnonymousProcedure;
+      begin
+        CodeOfNestedProcedure;
+      end;
 
-   Begin
-     CodeOfTheAnonymousProcedure;
-   End);
+    begin
+      CodeOfTheAnonymousProcedure;
+    end);
   CodeOfProcedureBla;
-End;
+end;
 
 end.
