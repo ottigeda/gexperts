@@ -326,7 +326,9 @@ begin
     Exit;
 
   { TODO -otwm : This doesn't really belong here, it has nothing to do with spacing
-                 it also unnecessarily sets each token's case three times }
+                 it also unnecessarily sets each token's case three times
+                 Also note that the parser already sets the capitalization using the
+                 ExpressionCase property. }
   HandleCapitalization(_CurrentToken);
 
   rType := _CurrentToken.ReservedType;
@@ -1010,8 +1012,19 @@ begin
 
     rtProcedure, rtProcDeclare:
       ; // do nothing
+
+    rtClass, rtRecord, rtGenericStart, rtLeftBr, rtOn, rtRecCase:
+      FWrapIndent := False;
+
   else
-    // label????
+    // label
+    // maybe this could be reduced to rtBegin ?
+    if (FPrevToken.WordType in [wtWord, wtNumber]) and (FPrevToken.ReservedType = rtNothing) then begin
+      if (FTokenIdx > 2) and (FTokens[FTokenIdx - 2].ReservedType = rtLineFeed) then begin
+        FPrevLine.NoOfSpaces := 0;
+      end;
+    end;
+
     FWrapIndent := False;
   end;
 end;
