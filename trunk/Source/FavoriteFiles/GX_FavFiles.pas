@@ -716,7 +716,9 @@ var
 begin
   FModified := False;
   tvFolders.Items.Clear;
+{$IFNDEF GX_DELPHI13_UP}
   Node := nil;
+{$ENDIF}
   if not FileExists(FEntryFile) then begin
     ErrorMsg := Format(SSaveWarning, [FEntryFile, GetDefaultEntryFileName]);
     MessageDlg(ErrorMsg, mtInformation, [mbOK], 0);
