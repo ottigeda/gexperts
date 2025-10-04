@@ -151,6 +151,14 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           TabOrder = 4
           OnClick = UpdatePreview
         end
+        object chk_UnindentLabels: TCheckBox
+          Left = 216
+          Top = 160
+          Width = 209
+          Height = 17
+          Caption = 'Unindent Labels'
+          TabOrder = 8
+        end
       end
       object ts_Spacing: TTabSheet
         Caption = 'Spacing'

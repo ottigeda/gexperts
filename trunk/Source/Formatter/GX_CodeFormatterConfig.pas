@@ -96,6 +96,7 @@ type
     chk_NoFeedBeforeThen: TCheckBox;
     chk_NoIndentElseIf: TCheckBox;
     chk_IndentCaseElse: TCheckBox;
+    chk_UnindentLabels: TCheckBox;
     chk_RemoveDoubleBlank: TCheckBox;
     b_EditCapitalization: TButton;
     p_Preview: TPanel;
@@ -394,6 +395,7 @@ begin
   _Settings.IndentTry := chk_IndentTry.Checked;
   _Settings.IndentTryElse := chk_IndentTryElse.Checked;
   _Settings.IndentCaseElse := chk_IndentCaseElse.Checked;
+  _Settings.UnindentLabels := chk_UnindentLabels.Checked;
   _Settings.UpperCompDirectives := chk_UpperCompDirectives.Checked;
   _Settings.UpperNumbers := chk_UpperNumbers.Checked;
   _Settings.ReservedCase := TCase(cmb_ReservedCase.ItemIndex);
@@ -486,6 +488,7 @@ begin
   chk_IndentTry.Checked := _Settings.IndentTry;
   chk_IndentTryElse.Checked := _Settings.IndentTryElse;
   chk_IndentCaseElse.Checked := _Settings.IndentCaseElse;
+  chk_UnindentLabels.Checked := _Settings.UnindentLabels;
   chk_UpperCompDirectives.Checked := _Settings.UpperCompDirectives;
   chk_UpperNumbers.Checked := _Settings.UpperNumbers;
   cmb_ReservedCase.ItemIndex := Ord(_Settings.ReservedCase);

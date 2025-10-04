@@ -1022,20 +1022,22 @@ begin
   else
     // label
     // maybe this could be reduced to rtBegin ?
-    if (FPrevToken.WordType in [wtWord, wtNumber]) and (FPrevToken.ReservedType = rtNothing) then begin
-      if (FTokenIdx > 2) then begin
-        PrevPrevToken := FTokens[FTokenIdx - 2];
-        case PrevPrevToken.ReservedType of
-          rtLineFeed:
-            FPrevLine.NoOfSpaces := 0;
-          rtSemiColon: begin
-              if InsertLinefeedBefore(FTokenIdx - 1) then begin
-                Inc(FTokenIdx);
-                FPrevLine.NoOfSpaces := 0;
-                FPrevLine.OldNoOfSpaces := 0;
-                FPrevLine.Wrapped := False;
+    if FSettings.UnindentLabels then begin
+      if (FPrevToken.WordType in [wtWord, wtNumber]) and (FPrevToken.ReservedType = rtNothing) then begin
+        if (FTokenIdx > 2) then begin
+          PrevPrevToken := FTokens[FTokenIdx - 2];
+          case PrevPrevToken.ReservedType of
+            rtLineFeed:
+              FPrevLine.NoOfSpaces := 0;
+            rtSemiColon: begin
+                if InsertLinefeedBefore(FTokenIdx - 1) then begin
+                  Inc(FTokenIdx);
+                  FPrevLine.NoOfSpaces := 0;
+                  FPrevLine.OldNoOfSpaces := 0;
+                  FPrevLine.Wrapped := False;
+                end;
               end;
-            end;
+          end;
         end;
       end;
     end;

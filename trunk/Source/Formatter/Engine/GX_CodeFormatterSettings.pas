@@ -61,7 +61,8 @@ type
     IndentCaseElse: Boolean;
     IndentComments: Boolean;
     IndentCompDirectives: Boolean;
-    NoIndentUsesComma: Boolean; {: don't indent units in the uses block if the line starts with a comma }
+    NoIndentUsesComma: Boolean; {: do not indent units in the uses block if the line starts with a comma }
+    UnindentLabels: Boolean;
 
     BlankProc: Boolean; {: blank line between main procedures }
     BlankSubProc: Boolean; {: blank line between sub procedures }
@@ -147,6 +148,7 @@ type
     property IndentComments: Boolean read FSettings.IndentComments;
     property IndentCompDirectives: Boolean read FSettings.IndentCompDirectives;
     property NoIndentUsesComma: Boolean read FSettings.NoIndentUsesComma;
+    property UnindentLabels: Boolean read FSettings.UnindentLabels;
     property BlankProc: Boolean read FSettings.BlankProc;
     property BlankSubProc: Boolean read FSettings.BlankSubProc;
     property RemoveDoubleBlank: Boolean read FSettings.RemoveDoubleBlank;

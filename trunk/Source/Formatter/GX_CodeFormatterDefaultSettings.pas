@@ -46,6 +46,8 @@ begin
   Result.IndentCaseElse := False;
   Result.IndentComments := False;
   Result.IndentCompDirectives := False;
+  Result.NoIndentUsesComma := False;
+  Result.UnindentLabels := False;
   Result.IndentTry := True;
   Result.IndentTryElse := False;
   Result.NoFeedBeforeThen := False;
@@ -100,6 +102,8 @@ begin
   Result.IndentCaseElse := False;
   Result.IndentComments := True;
   Result.IndentCompDirectives := False;
+  Result.NoIndentUsesComma := False;
+  Result.UnindentLabels := False;
   Result.IndentTry := True;
   Result.IndentTryElse := False;
   Result.NoFeedBeforeThen := True;
