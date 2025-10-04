@@ -127,7 +127,10 @@ var
 begin
   Result := Self.Text;
   Position := Pos(FFormattedBlockEnd, Result);
-  Result := Copy(Result, 1, Position - 1);
+  Dec(Position);
+  while Result[Position] = ' ' do
+    Dec(Position);
+  Result := Copy(Result, 1, Position);
   Position := Pos(FFormattedBlockStart, Result);
   Result := Copy(Result, Position + Length(FFormattedBlockStart));
   if Copy(Result, 1, 2) = CRLF then
