@@ -29,6 +29,7 @@ type
     function GetFormatSettings(const _Name: string): TCodeFormatterEngineSettings;
     function GetConfigDirBS: string;
     procedure AdjustSettings_Special(var _cfg: TCodeFormatterEngineSettings);
+    procedure AdjustSettings_twm(var _cfg: TCodeFormatterEngineSettings);
   protected
     procedure SetUp; override;
     procedure TearDown; override;
@@ -52,17 +53,29 @@ uses
   StrUtils,
   Dialogs,
   Registry,
+  u_dzAssertTrace,
+  u_dzVclUtils,
+  u_dzFileUtils,
   GX_CodeFormatterConfigHandler,
-  GX_DbugIntf,
-  u_dzAssertTrace;
+  GX_DbugIntf;
 
 { TTestTestfiles }
 
 procedure TTestTestfiles.AdjustSettings_Special(var _cfg: TCodeFormatterEngineSettings);
 begin
+  AdjustSettings_twm(_cfg);
   _cfg.ExceptSingle := True;
 //  _cfg.StandDirectivesCase := rfUpperCase;
   FConfigName := 'special';
+end;
+
+procedure TTestTestfiles.AdjustSettings_twm(var _cfg: TCodeFormatterEngineSettings);
+begin
+  // This reverts changes I made to the .ini file (because I wanted that behaviour when formatting my code)
+  // but which make the tests fail.
+  _cfg.FillNewWords := [];
+  _cfg.IdentifiersCase := rfUnchanged;
+  _cfg.FeedAfterUses := False;
 end;
 
 procedure TTestTestfiles.ExecuteDoubleClickAction;
@@ -99,7 +112,7 @@ const
     REG_VALUE = 'ExePath';
   begin
     Result := TryReadFromReg(HKEY_LOCAL_MACHINE, REG_KEY, REG_VALUE, _ExePath);
-    if not result then
+    if not Result then
       Result := TryReadFromReg(HKEY_CURRENT_USER, REG_KEY, REG_VALUE, _ExePath);
   end;
 
@@ -131,7 +144,8 @@ end;
 
 function TTestTestfiles.GetConfigDirBS: string;
 begin
-  Result := '..\binaries\';
+  // ensure to use an absolute path, based on the executable name rather than the current directory
+  Result := itpd(TFileSystem.ExpandFileNameRelBaseDir('..\binaries', TApplication_GetExePath));
 end;
 
 procedure TTestTestfiles.SetUp;
@@ -181,7 +195,7 @@ end;
 
 procedure TTestTestfiles.TestTwmFormatting;
 begin
-  TestFormatting('twm');
+  TestFormatting('twm', AdjustSettings_twm);
 end;
 
 procedure TTestTestfiles.TestBorlandFormatting;
