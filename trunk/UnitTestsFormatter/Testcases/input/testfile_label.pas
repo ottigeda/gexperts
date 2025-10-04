@@ -37,7 +37,7 @@ label
     if someCondition then
       goto Error;
     world;
-  Error:
+  Error: bla;
   end;
 
 label
@@ -48,11 +48,12 @@ begin
     goto SomeLabel;
   world;
 SomeLabel:
-
+    blub;
   hello;
   if someCondition then
     goto 99;
-  world; 99:
+  world; 99: bla;
+blub;
 end;
 
 end.
