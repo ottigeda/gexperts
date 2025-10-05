@@ -402,6 +402,16 @@ begin
 
     rtSemiColon: begin
         Assert(False, '.AdjustSpacing');
+        // todo: This would prevent a space being inserted between ';' and '{$ENDIF}'
+        // In theory it does not remove an existing space, but that does not
+        // matter because the parser does not preserve these spaces.
+        // So either we should have a special setting for spaces before/after
+        // compiler directives or we should leave it as is. Unfortunately
+        // leaving it as is woould mean that the parser should presever the
+        // spaces which it does not, so we would have to change the parser.
+        // for now I'll simply disable this code again.
+//        if _TokenIdx < FTokens.Count - 1 then
+//          if FTokens[_TokenIdx + 1].ReservedType <> rtCompEndif then
         _CurrentToken.SetSpace(FSettings.SpaceSemiColon, True);
       end;
 
@@ -855,7 +865,7 @@ begin
     FCurrentToken := GetToken(FTokenIdx);
   end;
 
-  if AsmTokenIdx 2 1 then begin
+  if AsmTokenIdx > 2 then begin
     IsAsmAfterLabel := (FTokens[AsmTokenIdx - 2].ReservedType = rtlabel);
   end else
     IsAsmAfterLabel := False;
