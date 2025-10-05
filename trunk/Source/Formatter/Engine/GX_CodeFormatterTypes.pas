@@ -67,7 +67,8 @@ type
     rtCompIf, rtDotDot,
     rtCompElse, rtCompEndif, rtCompMessage,
     rtGenericStart, rtGenericEnd,
-    rtConst);
+    rtConst,
+    rtLabel);
 
 type
   TReservedTypeSet = set of TReservedType;

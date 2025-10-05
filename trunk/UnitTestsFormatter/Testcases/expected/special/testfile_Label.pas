@@ -58,4 +58,17 @@ SomeLabel:
   blub;
 end;
 
+procedure trallala(Sender: TObject);
+label
+  999;
+label
+  ALabel;
+begin
+  goto 999;
+  raise exception.Create('test');
+999: asm nop end;
+ALabel:
+  asm nop end;
+end;
+
 end.
