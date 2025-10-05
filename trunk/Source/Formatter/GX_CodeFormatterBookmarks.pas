@@ -16,7 +16,7 @@ uses
 type
   TBookmarkHandler = class
   private
-    FCursorPos: TOTAEditPos;
+    FCursorPosArr: array of TOTAEditPos;
     FBookmarks: TBookmarkList;
   protected
     function GetEditView(var _SourceEditor: IOTASourceEditor; var _EditView: IOTAEditView): Boolean;
@@ -62,6 +62,7 @@ procedure TBookmarkHandler.SaveItems;
 var
   SourceEditor: IOTASourceEditor;
   EditView: IOTAEditView;
+  EditViewCount: Integer;
   i: Integer;
   BmPos: TOTACharPos;
 begin
@@ -69,7 +70,10 @@ begin
   if not GetEditView(SourceEditor, EditView) then
     Exit; //==>
 
-  FCursorPos := EditView.GetCursorPos;
+  EditViewCount := SourceEditor.EditViewCount;
+  SetLength(FCursorPosArr,EditViewCount);
+  for i := 0 to EditViewCount - 1 do
+    FCursorPosArr[i] := SourceEditor.EditViews[i].GetCursorPos;
 
   for i := 0 to 19 do begin
     BmPos := EditView.BookmarkPos[i];
@@ -83,7 +87,9 @@ procedure TBookmarkHandler.RestoreItems(_NewCode: TSourceLineList);
 var
   SourceEditor: IOTASourceEditor;
   EditView: IOTAEditView;
-  SavedCursorPos: TOTAEditPos;
+  CursorPos: TOTAEditPos;
+  SavedCursorPosArr: array of TOTAEditPos;
+  EditViewCount: Integer;
   BmPos: TOTACharPos;
   BmEditPos: TOTAEditPos;
   i: Integer;
@@ -92,7 +98,10 @@ begin
   if not GetEditView(SourceEditor, EditView) then
     Exit; //==>
 
-  SavedCursorPos := EditView.GetCursorPos;
+  EditViewCount := SourceEditor.EditViewCount;
+  SetLength(SavedCursorPosArr, EditViewCount);
+  for i := 0 to EditViewCount - 1 do
+    SavedCursorPosArr[i] := SourceEditor.EditViews[i].GetCursorPos;
 
   for i := 0 to FBookmarks.Count - 1 do begin
     BmPos.Line := FBookmarks[i].Line;
@@ -105,14 +114,23 @@ begin
     end;
   end;
 
-  if _NewCode.FindNewLineNo(FCursorPos.Line, NewLineNo) then begin
-    FCursorPos.Line := NewLineNo;
-    EditView.SetCursorPos(FCursorPos);
-  end else
-    EditView.SetCursorPos(SavedCursorPos);
+  EditViewCount := SourceEditor.EditViewCount;
+  for i := 0 to Length(FCursorPosArr) - 1 do begin
+    if i < EditViewCount then begin
+      CursorPos := FCursorPosArr[i];
+      if _NewCode.FindNewLineNo(CursorPos.Line, NewLineNo) then begin
+        CursorPos.Line := NewLineNo;
+        SourceEditor.EditViews[i].SetCursorPos(CursorPos);
+      end else begin
+        if i < Length(SavedCursorPosArr) then
+          SourceEditor.EditViews[i].SetCursorPos(SavedCursorPosArr[i]);
+      end;
+    end;
+  end;
 
-  EditView.Paint;
-  SourceEditor.Show;
+// not sure wether we need this, so I commented it out for the moment
+//  EditView.Paint;
+//  SourceEditor.Show;
   FBookmarks.Clear;
 end;
 
