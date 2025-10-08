@@ -11,7 +11,7 @@ type
   TGxMessageAutoClose = class
   public
     class function GetEnabled: Boolean; // static;
-    class procedure SetEnabled(const Value: Boolean; _IgnoreHints, _IgnoreWarnings: Boolean); //static;
+    class procedure SetEnabled(const _Value, _IgnoreHints, _IgnoreWarnings, _TransparencyDisabled: Boolean);
   end;
 
 implementation
@@ -36,13 +36,15 @@ uses
 type
   TMessageAutoClose = class(TIdeDialogEnhancer)
   private
+    FAutoCloseEnabled: Boolean;
     FIgnoreHints: Boolean;
     FIgnoreWarnings: Boolean;
+    FTransparencyDisabled: Boolean;
   protected
     function IsDesiredForm(_Form: TCustomForm): Boolean; override;
     procedure EnhanceForm(_Form: TForm); override;
   public
-    constructor Create(_IgnoreHints, _IgnoreWarnings: Boolean);
+    constructor Create(_Enabled, _IgnoreHints, _IgnoreWarnings: Boolean; _TransparencyDisabled: Boolean);
   end;
 {$ENDIF GX_VER170_up} // Delphi 9/2005 (BDS 2)
 
@@ -104,23 +106,22 @@ end;
 class function TGxMessageAutoClose.GetEnabled: Boolean;
 begin
 {$IF declared(TMessageAutoClose)}
-  Result := Assigned(TheMessageAutoClose);
+  Result := Assigned(TheMessageAutoClose) and TheMessageAutoClose.FAutoCloseEnabled;
 {$ELSE}
   Result := False;
 {$IFEND}
 end;
 
-class procedure TGxMessageAutoClose.SetEnabled(const Value: Boolean; _IgnoreHints, _IgnoreWarnings: Boolean);
+class procedure TGxMessageAutoClose.SetEnabled(const _Value, _IgnoreHints, _IgnoreWarnings, _TransparencyDisabled: Boolean);
 begin
 {$IF declared(TMessageAutoClose)}
-  if Value then begin
-    if Assigned(TheMessageAutoClose) then begin
-      TheMessageAutoClose.FIgnoreHints := _IgnoreHints;
-      TheMessageAutoClose.FIgnoreWarnings := _IgnoreWarnings;
-    end else
-      TheMessageAutoClose := TMessageAutoClose.Create(_IgnoreHints, _IgnoreWarnings);
+  if Assigned(TheMessageAutoClose) then begin
+    TheMessageAutoClose.FAutoCloseEnabled := _Value;
+    TheMessageAutoClose.FIgnoreHints := _IgnoreHints;
+    TheMessageAutoClose.FIgnoreWarnings := _IgnoreWarnings;
+    TheMessageAutoClose.FTransparencyDisabled := _TransparencyDisabled;
   end else
-    FreeAndNil(TheMessageAutoClose);
+    TheMessageAutoClose := TMessageAutoClose.Create(_Value, _IgnoreHints, _IgnoreWarnings, _TransparencyDisabled);
 {$IFEND}
 end;
 
@@ -128,11 +129,13 @@ end;
 
 { TMessageAutoClose }
 
-constructor TMessageAutoClose.Create(_IgnoreHints, _IgnoreWarnings: Boolean);
+constructor TMessageAutoClose.Create(_Enabled, _IgnoreHints, _IgnoreWarnings: Boolean; _TransparencyDisabled: Boolean);
 begin
   inherited Create;
+  FAutoCloseEnabled := _Enabled;
   FIgnoreHints := _IgnoreHints;
   FIgnoreWarnings := _IgnoreWarnings;
+  FTransparencyDisabled := _TransparencyDisabled;
 end;
 
 function TMessageAutoClose.IsDesiredForm(_Form: TCustomForm): Boolean;
@@ -153,7 +156,7 @@ var
   ErrorCount: TLabel;
 (*
   AutoCloseChk: TCheckBox;
-*)  
+*)
 begin
   if TComponent_FindComponent(_Form, GxMessageAutoCloseComponent, True, cmp) then begin
     // our AutoClose component already exists, nothing to do
@@ -161,13 +164,19 @@ begin
   end;
 
 (*
-  // disable then auto-close checkbox
+  // disable the auto-close checkbox
   if TComponent_FindComponent(_Form, 'AutoCloseChk', True, TComponent(AutoCloseChk), TCheckBox) then
   begin
     AutoCloseChk.Checked := False;
     AutoCloseChk.Enabled := False;
   end;
 *)
+
+  if FTransparencyDisabled then begin
+{$IFDEF GX_FORM_HAS_ALPHABLEND}
+    _Form.AlphaBlend := False;
+{$ENDIF}
+  end;
 
   if not TComponent_FindComponent(_Form, 'HintCount', False, TComponent(HintCount), TLabel) then begin
     // no HintCount component -> There is some error

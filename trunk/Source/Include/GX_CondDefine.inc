@@ -291,6 +291,8 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   GExperts now requires SynEdit.
 {$ENDIF SYNEDIT}
 
+{$DEFINE GX_FORM_HAS_ALPHABLEND}
+
 {$IFOPT B+}
   GExperts will not work well with "Complete Boolean Evaluation" on.
   Please turn it off in the Project Options dialog.

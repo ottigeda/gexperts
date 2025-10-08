@@ -106,6 +106,7 @@ type
     chkAutoCloseIgnoreHints: TCheckBox;
     chkAutoCloseIgnoreWarnings: TCheckBox;
     chkSplitterVisibility: TCheckBox;
+    chkProgressTransparency: TCheckBox;
     procedure btnEnumerateModulesClick(Sender: TObject);
     procedure chkEditorKeyTracingClick(Sender: TObject);
     procedure sbVCLDirClick(Sender: TObject);
@@ -556,6 +557,7 @@ begin
   chkCPMultiLineClick(chkCPMultiLine);
 
   chkSplitterVisibility.Checked := IdeEnhancements.SplitterVisibilty;
+  chkProgressTransparency.Checked := IdeEnhancements.ProgressTransparencyDisabled;
 end;
 
 procedure TfmConfiguration.LoadSuppressedMessages;
@@ -643,6 +645,7 @@ begin
   IdeEnhancements.OIHideDescPane := chkOIHideDescPane.Checked;
 
   IdeEnhancements.SplitterVisibilty := chkSplitterVisibility.Checked;
+  IdeEnhancements.ProgressTransparencyDisabled := chkProgressTransparency.Checked;
 
   IdeEnhancements.SaveSettings;
 end;
@@ -679,6 +682,10 @@ begin
   chkForceStartupDesktop.Visible := False;
   cbxDesktop.Visible := False;
   l_ForceDestkopAV.Visible := False;
+{$ENDIF}
+
+{$IFNDEF GX_FORM_HAS_ALPHABLEND}
+  chkProgressTransparency.Visible := False;
 {$ENDIF}
 
 {$IFDEF GX_VER160_up} // Delphi 8 (BDS 1)

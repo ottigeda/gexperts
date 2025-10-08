@@ -59,6 +59,7 @@ type
     FAutoCloseMessageWindow: Boolean;
     FAutoCloseIgnoreHints: Boolean;
     FAutoCloseIgnoreWarnings: Boolean;
+    FProgressTransparencyDisabled: boolean;
 
     procedure InstallMultiLineComponentTabs;
     procedure RemoveMultiLineComponentTabs;
@@ -125,6 +126,7 @@ type
     property AutoCloseIgnoreHints: Boolean read FAutoCloseIgnoreHints write FAutoCloseIgnoreHints;
     property AutoCloseIgnoreWarnings: Boolean read FAutoCloseIgnoreWarnings write FAutoCloseIgnoreWarnings;
     property AutoCloseMessageWindow: Boolean read FAutoCloseMessageWindow write SetAutoCloseMessageWindow;
+    property ProgressTransparencyDisabled: boolean read FProgressTransparencyDisabled write FProgressTransparencyDisabled;
     // Build Events dialog
     property  EnhanceBuildEventsDialog: boolean read FEnhanceBuildEventsDialog write SetEnhanceBuildEventsDialog;
     // Application Settings dialog
@@ -302,9 +304,13 @@ begin
   EnhanceToolProperties := ExpSettings.ReadBool('EnhanceToolProperties', False);
   EnhanceInstallPackages := ExpSettings.ReadBool('EnhanceInstallPackages', False);
   EnhanceDockForms := ExpSettings.ReadBool('EnhanceDockForms', False);
+
+  // the next three seetins must be read before AutoCloseMessageWindow
+  ProgressTransparencyDisabled := ExpSettings.ReadBool('ProgressTransparencyDisabled', False);
   AutoCloseIgnoreHints := ExpSettings.ReadBool('AutoCloseIgnoreHints', false);
   AutoCloseIgnoreWarnings := ExpSettings.ReadBool('AutoCloseIgnoreWarnings', False);
   AutoCloseMessageWindow := ExpSettings.ReadBool('AutoCloseMessageWindow', False);
+
   EnhanceBuildEventsDialog := ExpSettings.ReadBool('EnhanceBuildEventsDialog', False);
   EnhanceApplicationSettingsDialog := ExpSettings.ReadBool('EnhanceApplicationSettingsDialog', False);
 
@@ -352,9 +358,12 @@ begin
   ExpSettings.WriteBool('EnhanceToolProperties', EnhanceToolProperties);
   ExpSettings.WriteBool('EnhanceInstallPackages', EnhanceInstallPackages);
   ExpSettings.WriteBool('EnhanceDockForms', EnhanceDockForms);
+
+  ExpSettings.WriteBool('ProgressTransparencyDisabled', ProgressTransparencyDisabled);
   ExpSettings.WriteBool('AutoCloseIgnoreHints', AutoCloseIgnoreHints);
   ExpSettings.WriteBool('AutoCloseIgnoreWarnings', AutoCloseIgnoreWarnings);
   ExpSettings.WriteBool('AutoCloseMessageWindow', AutoCloseMessageWindow);
+
   ExpSettings.WriteBool('EnhanceBuildEventsDialog', EnhanceBuildEventsDialog);
   ExpSettings.WriteBool('EnhanceApplicationSettingsDialog', EnhanceApplicationSettingsDialog);
 
@@ -496,7 +505,8 @@ end;
 procedure TIdeEnhancements.SetAutoCloseMessageWindow(const Value: Boolean);
 begin
   FAutoCloseMessageWindow := Value;
-  TGxMessageAutoClose.SetEnabled(Value and EnhanceIDEForms, FAutoCloseIgnoreHints, FAutoCloseIgnoreWarnings);
+  TGxMessageAutoClose.SetEnabled(Value and EnhanceIDEForms, FAutoCloseIgnoreHints, FAutoCloseIgnoreWarnings,
+    FProgressTransparencyDisabled);
 end;
 
 procedure TIdeEnhancements.SetAutoSave(const Value: Boolean);

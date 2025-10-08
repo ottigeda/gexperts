@@ -260,7 +260,7 @@ object fmConfiguration: TfmConfiguration
           TabOrder = 2
           object l_ForceDestkopAV: TLabel
             Left = 176
-            Top = 332
+            Top = 356
             Width = 288
             Height = 14
             Caption = 'Warning: Can cause Access Violations on IDE startup'
@@ -381,7 +381,7 @@ object fmConfiguration: TfmConfiguration
           end
           object chkForceStartupDesktop: TCheckBox
             Left = 8
-            Top = 304
+            Top = 328
             Width = 729
             Height = 24
             Caption = 'Force desktop on startup (leave empty for last selected)'
@@ -390,7 +390,7 @@ object fmConfiguration: TfmConfiguration
           end
           object cbxDesktop: TComboBox
             Left = 24
-            Top = 328
+            Top = 352
             Width = 145
             Height = 22
             ItemHeight = 14
@@ -403,6 +403,18 @@ object fmConfiguration: TfmConfiguration
             Height = 24
             Caption = 'Enhance Dock Forms to allow minimize and Win+arrow positioning'
             TabOrder = 7
+          end
+          object chkProgressTransparency: TCheckBox
+            Left = 8
+            Top = 306
+            Width = 729
+            Height = 21
+            Margins.Left = 4
+            Margins.Top = 4
+            Margins.Right = 4
+            Margins.Bottom = 4
+            Caption = 'Turn off Progress Form transparency'
+            TabOrder = 15
           end
         end
         object gbxObjectInspector: TGroupBox
