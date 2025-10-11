@@ -209,7 +209,7 @@ begin
   Settings.FeedAfterSemiColon := False; { After semicolon (except directives) }
   Settings.FeedElseIf := False; { Between else and if }
   Settings.FeedAfterThen := False; { After "then","else","do",":" }
-  Settings.ExceptSingle := False; { Except single lines }
+  Settings.FeedAfterThenExceptSingle := False; { Except single lines }
   Settings.NoFeedBeforeThen := False; { Never before "then", "do" }
   Settings.FeedAfterUses := True; { After "uses" }
   Settings.FeedEachUnit := True; { Between every unit in "uses" }

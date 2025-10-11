@@ -28,7 +28,7 @@ begin
   Result.BlankProc := True;
   Result.BlankSubProc := False;
   Result.ChangeIndent := True;
-  Result.ExceptSingle := False;
+  Result.FeedAfterThenExceptSingle := False;
   Result.FeedAfterSemiColon := False;
   Result.FeedAfterThen := False;
   Result.FeedAfterUses:= False;
@@ -84,7 +84,7 @@ begin
   Result.BlankProc := True;
   Result.BlankSubProc := False;
   Result.ChangeIndent := True;
-  Result.ExceptSingle := False;
+  Result.FeedAfterThenExceptSingle := False;
   Result.FeedAfterSemiColon := True;
   Result.FeedAfterThen := True;
   Result.FeedAfterUses:= False;

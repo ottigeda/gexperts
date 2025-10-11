@@ -1027,7 +1027,7 @@ begin
     end;
     if FSettings.FeedAfterThen then begin
       if AssertLineFeedAfter(FTokenIdx) <> FPrevLine then begin
-        if (FLastPopResType = rtIf) and FSettings.ExceptSingle then
+        if (FLastPopResType = rtIf) and FSettings.FeedAfterThenExceptSingle then
           CheckShortLine;
       end;
     end;
@@ -1873,7 +1873,7 @@ begin
 
           if FSettings.FeedAfterThen then begin
             if AssertLineFeedAfter(FTokenIdx) <> FPrevLine then begin
-              if (FLastPopResType in [rtOn, rtWhile]) and FSettings.ExceptSingle then
+              if (FLastPopResType in [rtOn, rtWhile]) and FSettings.FeedAfterThenExceptSingle then
                 CheckShortLine;
             end;
           end;

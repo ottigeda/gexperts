@@ -73,7 +73,7 @@ type
     FeedBeforeElse: Boolean;
     FeedBeforeEnd: Boolean;
     FeedAfterThen: Boolean;
-    ExceptSingle: Boolean; { todo: This should have a better name like FeedAfterThenExceptSingle }
+    FeedAfterThenExceptSingle: Boolean;
     FeedAfterVar: Boolean;
     FeedAfterUses: Boolean; {: line feed after "uses" }
     FeedEachUnit: Boolean; {: line feed after each unit }
@@ -158,7 +158,7 @@ type
     property FeedBeforeElse: Boolean read FSettings.FeedBeforeElse;
     property FeedBeforeEnd: Boolean read FSettings.FeedBeforeEnd;
     property FeedAfterThen: Boolean read FSettings.FeedAfterThen;
-    property ExceptSingle: Boolean read FSettings.ExceptSingle;
+    property FeedAfterThenExceptSingle: Boolean read FSettings.FeedAfterThenExceptSingle;
     property FeedAfterVar: Boolean read FSettings.FeedAfterVar;
     property FeedAfterUses: Boolean read FSettings.FeedAfterUses;
     property FeedEachUnit: Boolean read FSettings.FeedEachUnit;

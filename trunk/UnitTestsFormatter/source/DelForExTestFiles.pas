@@ -65,7 +65,7 @@ uses
 procedure TTestTestfiles.AdjustSettings_Special(var _cfg: TCodeFormatterEngineSettings);
 begin
   AdjustSettings_twm(_cfg);
-  _cfg.ExceptSingle := True;
+  _cfg.FeedAfterThenExceptSingle := True;
 //  _cfg.StandDirectivesCase := rfUpperCase;
   FConfigName := 'special';
 end;
