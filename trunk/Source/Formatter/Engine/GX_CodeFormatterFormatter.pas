@@ -1527,13 +1527,6 @@ begin
       end;
 
     rtProgram, rtUses, rtInitialization:
-      // todo: Why does this check for a '(' on the stack? In which case is that valid code?
-      if FStack.GetTopType <> rtLeftBr then begin
-        // todo: What's the point in getting Next here? It isn't used anywhere in this
-        //       case block and also nowhere after the case statement.
-        //       Is this about the offset stored in RemoveMe? But that's not used anywhere either!
-        if not TryGetNextNoComment(FTokenIdx, Next, RemoveMe) then
-          Next := nil;
         if (FCurrentRType = rtUses) and (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass]) then begin
           FCurrentToken.SetReservedType(rtNothing);
           FCurrentRType := rtNothing;
@@ -1547,7 +1540,6 @@ begin
           if (FCurrentRType = rtUses) and (FSettings.FeedAfterUses) then
             AssertLineFeedAfter(FTokenIdx);
         end;
-      end;
 
     rtAbsolute:
       if not (FStack.GetTopType in [rtVar, rtConst, rtType]) then begin
