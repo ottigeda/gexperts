@@ -310,7 +310,8 @@ begin
   else begin
     _CurrentToken.ExpressionCase := rfUnchanged;
     if _CurrentToken.WordType = wtWord then begin
-      // todo: this shouldn't be a method of the Settings object
+      // todo: TCodeFormatterSettings.HandleCapitalization shouldn't be a method of
+      //       the Settings class
       FSettings.HandleCapitalization(_CurrentToken);
     end;
   end;
@@ -1527,19 +1528,19 @@ begin
       end;
 
     rtProgram, rtUses, rtInitialization:
-        if (FCurrentRType = rtUses) and (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass]) then begin
-          FCurrentToken.SetReservedType(rtNothing);
-          FCurrentRType := rtNothing;
-        end else begin
-          DecPrevLineIndent;
-          FStack.Clear;
-          FStack.Push(FCurrentRType, 1);
-          FWrapIndent := False;
+      if (FCurrentRType = rtUses) and (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass]) then begin
+        FCurrentToken.SetReservedType(rtNothing);
+        FCurrentRType := rtNothing;
+      end else begin
+        DecPrevLineIndent;
+        FStack.Clear;
+        FStack.Push(FCurrentRType, 1);
+        FWrapIndent := False;
 
-          // break after uses
-          if (FCurrentRType = rtUses) and (FSettings.FeedAfterUses) then
-            AssertLineFeedAfter(FTokenIdx);
-        end;
+        // break after uses
+        if (FCurrentRType = rtUses) and (FSettings.FeedAfterUses) then
+          AssertLineFeedAfter(FTokenIdx);
+      end;
 
     rtAbsolute:
       if not (FStack.GetTopType in [rtVar, rtConst, rtType]) then begin
