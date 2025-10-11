@@ -191,8 +191,10 @@ begin
     Exit;
   end;
 
-  cmp := TMessageAutoCloseComponent.Create(_Form, HintCount, WarningCount, ErrorCount, FIgnoreHints, FIgnoreWarnings);
-  cmp.Name := GxMessageAutoCloseComponent;
+  if FAutoCloseEnabled then begin
+    cmp := TMessageAutoCloseComponent.Create(_Form, HintCount, WarningCount, ErrorCount, FIgnoreHints, FIgnoreWarnings);
+    cmp.Name := GxMessageAutoCloseComponent;
+  end;
 end;
 {$IFEND}
 
