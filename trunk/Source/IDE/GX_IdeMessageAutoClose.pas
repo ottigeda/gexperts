@@ -17,8 +17,7 @@ type
 implementation
 
 uses
-{$IFOPT D+}GX_DbugIntf,
-{$ENDIF}
+{$IFOPT D+}GX_DbugIntf,{$ENDIF}
   Windows,
   Messages,
   Forms,
