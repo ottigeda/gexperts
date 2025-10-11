@@ -99,8 +99,6 @@ type
     function TokenAtIs(_Idx: Integer; _rType: TReservedType): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     function TokenAtIs(_Idx: Integer; _rTypes: TReservedTypeSet): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
-    function GetNextNoComment(_StartPos: Integer; _TreatEndIfAsComment: Boolean; out _Offset: Integer): TPascalToken; overload;
-    function GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken; overload;
     function TryGetNextNoComment(_StartPos: Integer; _TreatEndIfAsComment: Boolean;
       out _Token: TPascalToken; out _Offset: Integer): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     function TryGetNextNoComment(_StartPos: Integer;
@@ -569,20 +567,6 @@ begin
   TryGetToken(_Idx, Result);
 end;
 
-function TCodeFormatterFormatter.GetNextNoComment(_StartPos: Integer; _TreatEndIfAsComment: Boolean;
-  out _Offset: Integer): TPascalToken;
-var
-  Offset: Integer;
-begin
-  if not TryGetNextNoComment(_StartPos, _TreatEndIfAsComment, Result, Offset) then
-    Result := nil;
-end;
-
-function TCodeFormatterFormatter.GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken;
-begin
-  Result := GetNextNoComment(_StartPos, False, _Offset);
-end;
-
 function TCodeFormatterFormatter.InsertBlankLines(_AtIndex, _NLines: Integer): TLineFeed;
 var
   LineIdx: Integer;
@@ -1038,12 +1022,14 @@ end;
 procedure TCodeFormatterFormatter.HandleColon(_RemoveMe: Integer);
 var
   PrevPrevToken: TPascalToken;
+  Token: TPascalToken;
 begin
   case FStack.GetTopType of
     rtOf: begin
         FStack.Push(FCurrentRType, 1);
         if FSettings.FeedAfterThen then begin
-          if (GetNextNoComment(FTokenIdx, _RemoveMe).ReservedType = rtBegin)
+          if TryGetNextNoComment(FTokenIdx, Token, _RemoveMe)
+            and (Token.ReservedType = rtBegin)
             and (AssertLineFeedAfter(FTokenIdx) <> FPrevLine) then
             CheckShortLine;
         end;
@@ -1543,8 +1529,11 @@ begin
     rtProgram, rtUses, rtInitialization:
       // todo: Why does this check for a '(' on the stack? In which case is that valid code?
       if FStack.GetTopType <> rtLeftBr then begin
-        Next := GetNextNoComment(FTokenIdx, RemoveMe);
-
+        // todo: What's the point in getting Next here? It isn't used anywhere in this
+        //       case block and also nowhere after the case statement.
+        //       Is this about the offset stored in RemoveMe? But that's not used anywhere either!
+        if not TryGetNextNoComment(FTokenIdx, Next, RemoveMe) then
+          Next := nil;
         if (FCurrentRType = rtUses) and (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass]) then begin
           FCurrentToken.SetReservedType(rtNothing);
           FCurrentRType := rtNothing;
@@ -1582,8 +1571,8 @@ begin
           // we are not in a procedure or class declaration -> it's an identifier
           FCurrentToken.SetReservedType(rtNothing);
         end else begin
-          Next := GetNextNoComment(FTokenIdx, RemoveMe);
-          if Next.ReservedType = rtColon then begin
+          if TryGetNextNoComment(FTokenIdx, Next, RemoveMe)
+            and (Next.ReservedType = rtColon) then begin
             // followed by ':' -> It is an identifier
             FCurrentToken.SetReservedType(rtNothing);
           end;
