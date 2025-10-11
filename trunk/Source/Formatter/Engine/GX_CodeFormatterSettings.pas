@@ -73,7 +73,7 @@ type
     FeedBeforeElse: Boolean;
     FeedBeforeEnd: Boolean;
     FeedAfterThen: Boolean;
-    ExceptSingle: Boolean;
+    ExceptSingle: Boolean; { todo: This should have a better name like FeedAfterThenExceptSingle }
     FeedAfterVar: Boolean;
     FeedAfterUses: Boolean; {: line feed after "uses" }
     FeedEachUnit: Boolean; {: line feed after each unit }
