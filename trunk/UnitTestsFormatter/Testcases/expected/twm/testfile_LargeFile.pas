@@ -69,8 +69,7 @@ uses dialogs,
     // available at "http://www.philo.de/xml/".
 {$IFDEF MSWINDOWS}
 {$IFDEF VER140+}Types,
-{$ELSE}Windows,
-{$ENDIF}
+{$ELSE}Windows, {$ENDIF}
 {$ENDIF}
 {$IFDEF LINUX}
   Types,

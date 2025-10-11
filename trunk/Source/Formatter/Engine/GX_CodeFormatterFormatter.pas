@@ -99,12 +99,18 @@ type
     function TokenAtIs(_Idx: Integer; _rType: TReservedType): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     function TokenAtIs(_Idx: Integer; _rTypes: TReservedTypeSet): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
-    function GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
-    function TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
-    function TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function GetNextNoComment(_StartPos: Integer; _TreatEndIfAsComment: Boolean; out _Offset: Integer): TPascalToken; overload;
+    function GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken; overload;
+    function TryGetNextNoComment(_StartPos: Integer; _TreatEndIfAsComment: Boolean;
+      out _Token: TPascalToken; out _Offset: Integer): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function TryGetNextNoComment(_StartPos: Integer;
+      out _Token: TPascalToken; out _Offset: Integer): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function TryGetNextNoComment(_StartPos: Integer;
+      out _Token: TPascalToken): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
 
     function InsertBlankLines(_AtIndex, _NLines: Integer): TLineFeed;
-    function AssertLineFeedAfter(_StartPos: Integer): TLineFeed; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function AssertLineFeedAfter(_StartPos: Integer; _TreatEndIfAsComment: Boolean): TLineFeed; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function AssertLineFeedAfter(_StartPos: Integer): TLineFeed; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     procedure CheckSlashComment;
     procedure ComplexIfElse(_NTmp: Integer);
     procedure CheckShortLine;
@@ -197,14 +203,24 @@ begin
 end;
 
 // inlined method must be implemented before it is used
-function TCodeFormatterFormatter.TryGetNextNoComment(_StartPos: Integer; out _Token: TPascalToken; out _Offset: Integer): Boolean;
+function TCodeFormatterFormatter.TryGetNextNoComment(_StartPos: Integer; _TreatEndIfAsComment: Boolean;
+  out _Token: TPascalToken; out _Offset: Integer): Boolean;
 begin
   _Offset := 0;
 
   repeat
     Inc(_Offset);
     Result := TryGetToken(_StartPos + _Offset, _Token);
-  until not Result or (_Token.ReservedType <> rtComment);
+  until not Result
+  or ((_Token.ReservedType <> rtComment) and
+    (not _TreatEndIfAsComment or (_Token.GetReservedType <> rtCompEndif)));
+end;
+
+// inlined method must be implemented before it is used
+function TCodeFormatterFormatter.TryGetNextNoComment(_StartPos: Integer;
+  out _Token: TPascalToken; out _Offset: Integer): Boolean;
+begin
+  Result := TryGetNextNoComment(_StartPos, False, _Token, _Offset)
 end;
 
 // inlined method must be implemented before it is used
@@ -212,7 +228,7 @@ function TCodeFormatterFormatter.TryGetNextNoComment(_StartPos: Integer; out _To
 var
   Offset: Integer;
 begin
-  Result := TryGetNextNoComment(_StartPos, _Token, Offset);
+  Result := TryGetNextNoComment(_StartPos, False, _Token, Offset);
 end;
 
 function TCodeFormatterFormatter.DetectGenericStart(_TokenIdx: Integer): Boolean;
@@ -553,10 +569,18 @@ begin
   TryGetToken(_Idx, Result);
 end;
 
+function TCodeFormatterFormatter.GetNextNoComment(_StartPos: Integer; _TreatEndIfAsComment: Boolean;
+  out _Offset: Integer): TPascalToken;
+var
+  Offset: Integer;
+begin
+  if not TryGetNextNoComment(_StartPos, _TreatEndIfAsComment, Result, Offset) then
+    Result := nil;
+end;
+
 function TCodeFormatterFormatter.GetNextNoComment(_StartPos: Integer; out _Offset: Integer): TPascalToken;
 begin
-  if not TryGetNextNoComment(_StartPos, Result, _Offset) then
-    Result := nil;
+  Result := GetNextNoComment(_StartPos, False, _Offset);
 end;
 
 function TCodeFormatterFormatter.InsertBlankLines(_AtIndex, _NLines: Integer): TLineFeed;
@@ -583,15 +607,21 @@ begin
     Inc(FTokenIdx, _NLines);
 end;
 
-function TCodeFormatterFormatter.AssertLineFeedAfter(_StartPos: Integer): TLineFeed;
+function TCodeFormatterFormatter.AssertLineFeedAfter(_StartPos: Integer; _TreatEndIfAsComment: Boolean): TLineFeed;
 var
   Next: TPascalToken;
   Offset: Integer;
 begin
-  if TryGetNextNoComment(_StartPos, Next, Offset) and (Next.ReservedType <> rtLineFeed) then
+  if TryGetNextNoComment(_StartPos, _TreatEndIfAsComment, Next, Offset)
+    and (Next.ReservedType <> rtLineFeed) then
     Result := InsertBlankLines(_StartPos + Offset, 1)
   else
     Result := FPrevLine;
+end;
+
+function TCodeFormatterFormatter.AssertLineFeedAfter(_StartPos: Integer): TLineFeed;
+begin
+  Result := AssertLineFeedAfter(_StartPos, False);
 end;
 
 procedure TCodeFormatterFormatter.DecPrevLineIndent;
@@ -1496,17 +1526,15 @@ begin
                   LFeed.SetIndent(0);
 
                 // If we have a break after the comma, remove that
-                Next := GetNextNoComment(FTokenIdx, RemoveMe);
-                while Next.ReservedType = rtLineFeed do begin
+                while TryGetNextNoComment(FTokenIdx, Next, RemoveMe)
+                  and (Next.ReservedType = rtLineFeed) do begin
                   FTokens.Extract(FTokenIdx + RemoveMe).Free;
-                  Next := GetNextNoComment(FTokenIdx, RemoveMe);
                 end;
               end;
             end else begin
-              // FeedEachUnitBeforeComma
-              Next := GetNextNoComment(FTokenIdx, RemoveMe);
-              if Next.ReservedType <> rtLineFeed then
-                AssertLineFeedAfter(FTokenIdx);
+              // not FeedEachUnitBeforeComma
+              if TryGetNextNoComment(FTokenIdx, True, Next, RemoveMe) and (Next.ReservedType <> rtLineFeed) then
+                AssertLineFeedAfter(FTokenIdx,True);
             end;
           end;
         end;

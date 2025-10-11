@@ -9,7 +9,7 @@ uses
 implementation
 
 uses
-  Windows, // comment3
+  Windows, { comment3 }
   Controls;
 
 end.
