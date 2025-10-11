@@ -632,19 +632,22 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
             <Form>fmUsesExpertOptions</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Utils\GX_BookmarkList.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_CheckButton.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_DbugIntf.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_Debug.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_DrawFixes.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_GenericClasses.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_GenericUtils.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_GxUtils.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_IdeUtils.pas"/>
-        <DCCReference Include="..\..\Source\Utils\GX_IndexTypes.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_IndexTypes.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_MemoEscFix.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_NTAEditServiceNotifier.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_OtaUtils.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_ReadMapFileThread.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_RegExpr.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_ShLwApi.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_Splitter.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_StringGridDrawFix.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_StringList.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_TimedCallback.pas"/>
