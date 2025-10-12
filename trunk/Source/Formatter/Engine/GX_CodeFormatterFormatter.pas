@@ -118,15 +118,20 @@ type
     procedure doExecute(_Tokens: TPascalTokenList);
     procedure HandleIf;
     procedure HandleThen;
-    procedure HandleColon(_RemoveMe: Integer);
-    procedure HandleComma(var _RemoveMe: Integer);
+    procedure HandleColon;
+    ///<summary>
+    /// @returns True when FTokenIdx was changed and CheckIndent must exit </summary>
+    function HandleComma(): Boolean;
     procedure HandleElse(_NTmp: Integer);
+    ///<summary>
+    /// @returns True when FTokenIdx was changed and CheckIndent must exit </summary>
+    function HandleSemicolon(): Boolean;
     function DetectGenericStart(_TokenIdx: Integer): Boolean;
     procedure CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed);
     procedure HandleCapitalization(_CurrentToken: TPascalToken);
     function TryGetPrevLineFeed(var _TokenIdx: Integer; out _LineFeed: TLineFeed): Boolean;
     function CheckForFunctTypeDeclare(out _CheckedToken: TPascalToken): Boolean;
-    procedure CheckSpecialProcedure(out _Offset: Integer; var _NoBlankLine, _IsDelegate: Boolean);
+    procedure CheckSpecialProcedure(var _NoBlankLine, _IsDelegate: Boolean);
     function FindBeginOrSemicolonAfterProc(out _Offset: Integer; out _Token: TPascalToken): Boolean;
     function InsertLinefeedBefore(ATokenIdx: Integer): boolean;
   public
@@ -1021,16 +1026,17 @@ begin
   end;
 end;
 
-procedure TCodeFormatterFormatter.HandleColon(_RemoveMe: Integer);
+procedure TCodeFormatterFormatter.HandleColon;
 var
   PrevPrevToken: TPascalToken;
   Token: TPascalToken;
+  RemoveMe: Integer;
 begin
   case FStack.GetTopType of
     rtOf: begin
         FStack.Push(FCurrentRType, 1);
         if FSettings.FeedAfterThen then begin
-          if TryGetNextNoComment(FTokenIdx, Token, _RemoveMe)
+          if TryGetNextNoComment(FTokenIdx, Token, RemoveMe)
             and (Token.ReservedType = rtBegin)
             and (AssertLineFeedAfter(FTokenIdx) <> FPrevLine) then
             CheckShortLine;
@@ -1088,12 +1094,14 @@ begin
   end;
 end;
 
-procedure TCodeFormatterFormatter.HandleComma(var _RemoveMe: Integer);
+function TCodeFormatterFormatter.HandleComma: Boolean;
 var
   IdxChanged: Boolean;
   Next: TPascalToken;
+  RemoveMe: Integer;
   LFeed: TLineFeed;
 begin
+  Result := False;
   if FStack.GetTopType = rtUses then begin
     if (FSettings.NoIndentUsesComma) and (FPrevToken is TLineFeed) then
       AddToPrevLineIndent(-1)
@@ -1119,20 +1127,21 @@ begin
             LFeed.SetIndent(0);
 
           // If we have a break after the comma, remove that
-          while TryGetNextNoComment(FTokenIdx, Next, _RemoveMe)
+          while TryGetNextNoComment(FTokenIdx, Next, RemoveMe)
             and (Next.ReservedType = rtLineFeed) do begin
-            FTokens.Extract(FTokenIdx + _RemoveMe).Free;
+            FTokens.Extract(FTokenIdx + RemoveMe).Free;
           end;
 
           // We changed the code, we need to process the comment again
           if IdxChanged then begin
             FTokenIdx := FTokenIdx - 3;
-            Exit;
+            Result := True;
+            Exit; //==>
           end;
         end;
       end else begin
         // not FeedEachUnitBeforeComma
-        if TryGetNextNoComment(FTokenIdx, True, Next, _RemoveMe) and (Next.ReservedType <> rtLineFeed) then
+        if TryGetNextNoComment(FTokenIdx, True, Next, RemoveMe) and (Next.ReservedType <> rtLineFeed) then
           AssertLineFeedAfter(FTokenIdx, True);
       end;
     end;
@@ -1200,6 +1209,118 @@ begin
   FWrapIndent := False;
 end;
 
+function TCodeFormatterFormatter.HandleSemicolon(): Boolean;
+var
+  IdxChanged: Boolean;
+  Next: TPascalToken;
+  RemoveMe: Integer;
+  LFeed: TLineFeed;
+  AllowPop: Boolean;
+begin
+  Assert(False, '.CheckIndent: rtSemiColon');
+
+  Result := False;
+
+  if FStack.GetTopType = rtExternal then begin
+    FStack.Pop;
+  end;
+
+  if not (FStack.GetTopType in [rtLeftBr, rtLeftHook, rtGenericStart]) then begin
+    Assert(False, '.CheckIndent: Not (LeftBr or LeftHook)');
+    if FStack.GetTopType = rtUses then begin
+      if (FPrevToken is TLineFeed) then begin
+        if (FSettings.NoIndentUsesComma) then
+          AddToPrevLineIndent(-1);
+      end else if (FSettings.FeedEachUnit and FSettings.FeedEachUnitBeforeComma) then begin
+              // if we break before the comma, also break before the semicolon
+
+        IdxChanged := False;
+        Next := GetToken(FTokenIdx + 1);
+        if Next.ReservedType = rtComment then begin
+                // The next Token is a comment, we don't want this comment to
+                // be the first after the break which would comment out the next
+                // unit, so we need to move it.
+
+                // Move the Comma behind the comment
+          FTokens.AtInsert(FTokenIdx + 1, FTokens.Extract(FTokenIdx));
+          FTokenIdx := FTokenIdx + 1;
+          IdxChanged := True;
+        end;
+
+        LFeed := AssertLineFeedAfter(FTokenIdx - 1);
+        if (FSettings.NoIndentUsesComma) then
+          LFeed.SetIndent(0);
+
+        // We changed the code, we need to process the comment again
+        if IdxChanged then begin
+          FTokenIdx := FTokenIdx - 3;
+          Result := True;
+          Exit; //==>
+        end;
+      end;
+    end;
+
+    AllowPop := True;
+    if FStack.GetTopType = rtProcDeclare then begin
+      // this checks for function declarations with function directives in the next line like this:
+      // procedure bla;
+      //   cdecl;
+      // It does not yet solve the problem with multi line function directives like this:
+      // procedure bla;
+      //   cdecl;
+      //   overload;
+      RemoveMe := 1;
+      while TryGetToken(FTokenIdx + RemoveMe, Next)
+        and IsRType(Next, [rtSemiColon, rtLineFeed, rtComment, rtCompIf, rtCompElse, rtCompEndif,
+          rtFuncDirective, rtForward, rtExternal]) do begin
+        if IsRType(Next, [rtFuncDirective, rtForward, rtExternal]) then begin
+          AllowPop := False;
+          Break; //==v
+        end;
+        Inc(RemoveMe);
+      end
+    end;
+
+    if AllowPop then begin
+      while (FStack.GetTopType in
+        [rtDo, rtWhile, rtProcDeclare, rtThen, rtProgram, rtUses, rtColon, rtClassDecl, rtIfElse]) do begin
+        Assert(False, '.CheckIndent: in while');
+        FStack.Pop;
+      end;
+    end;
+
+    if (FPrevToken.ReservedType = rtForward) and (FStack.GetTopType = rtProcedure) then begin
+      FStack.Pop;
+    end;
+
+          // Look for 'absolute' or a function directive before the next line feed
+          // todo: This only works, if 'absolute' or any of the function directives ('overload',
+          // 'stdcall' etc). are on the same line as the function / procedure declaration:
+    FWrapIndent := False;
+    RemoveMe := 0;
+    repeat
+      Assert(False, '.CheckIndent: in repeat');
+      Inc(RemoveMe);
+    until not TryGetToken(FTokenIdx + RemoveMe, Next) or (not (Next.ReservedType in [{ rtComment, }rtLineFeed]));
+
+    if Next <> nil then begin
+      Assert(False, '.CheckIndent: Next <> nil');
+      if (Next.ReservedType = rtAbsolute)
+        or ((FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass])
+        and (Next.ReservedType in [rtFuncDirective, rtForward, rtExternal])
+        and (FStack.ProcLevel = 0)) then
+        FWrapIndent := True
+      else if FSettings.FeedAfterSemiColon then begin
+        if not (Next.ReservedType in [rtForward, rtExternal, rtFuncDirective, rtDefault]) then begin
+          if Next.WordType <> wtCompDirective then begin
+            AssertLineFeedAfter(FTokenIdx);
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
 function TCodeFormatterFormatter.CheckForFunctTypeDeclare(out _CheckedToken: TPascalToken): Boolean;
 var
   TempWordIdx: Integer;
@@ -1243,11 +1364,12 @@ begin
   until (_Token.ReservedType in [rtSemiColon, rtBegin]);
 end;
 
-procedure TCodeFormatterFormatter.CheckSpecialProcedure(out _Offset: Integer; var _NoBlankLine, _IsDelegate: Boolean);
+procedure TCodeFormatterFormatter.CheckSpecialProcedure(var _NoBlankLine, _IsDelegate: Boolean);
 var
   Token: TPascalToken;
+  Offset: Integer;
 begin
-  if not FindBeginOrSemicolonAfterProc(_Offset, Token) then begin
+  if not FindBeginOrSemicolonAfterProc(Offset, Token) then begin
     // end of file
     Exit; //==>
   end;
@@ -1259,8 +1381,8 @@ begin
   end else begin
     // semicolon -> Check for 'forward' or 'external'
     repeat
-      Inc(_Offset);
-      if not TryGetToken(FTokenIdx + _Offset, Token) then begin
+      Inc(Offset);
+      if not TryGetToken(FTokenIdx + Offset, Token) then begin
         // end of file
         Exit; //==>
       end;
@@ -1274,19 +1396,21 @@ end;
 
 procedure TCodeFormatterFormatter.CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed);
 var
-  RemoveMe: Integer;
+  // these XxxRemoveMe variables used to be only one variable called RemoveMe, but the variable
+  // was only ever used within different case blocks so I made them sepearate variables so this is
+  // clear. (In newer Delphi versions they could be inline variables, but this code must be
+  // backwards compatible to Delphi 6, so this is not an option.)
+  LeftBrRemoveMe: Integer;
+  FuncDirectiveRemoveMe: Integer;
   Next: TPascalToken;
   Prev1: TPascalToken;
   FunctTypeDeclare, IsDelegate, NoBlankLine: Boolean;
   FeedRound: TFeedBegin;
   wType: TWordType;
   exp: TGXUnicodeString;
-  LFeed: TLineFeed;
-  AllowPop: Boolean;
-  IdxChanged: Boolean;
 begin
   if FCurrentToken = nil then
-    Exit;
+    Exit; //==>
 
   FCurrentRType := FCurrentToken.ReservedType;
   wType := FCurrentToken.WordType;
@@ -1331,7 +1455,7 @@ begin
       HandleThen;
 
     rtColon:
-      HandleColon(RemoveMe);
+      HandleColon;
 
     rtElse:
       HandleElse(_NTmp);
@@ -1374,11 +1498,11 @@ begin
             FStack.Push(FCurrentRType, 1);
           end else begin
             Assert(False, '.CheckIndent');
-            RemoveMe := 1;
-            while (FTokenIdx > RemoveMe) and (TryGetToken(FTokenIdx - RemoveMe, Next)
+            LeftBrRemoveMe := 1;
+            while (FTokenIdx > LeftBrRemoveMe) and (TryGetToken(FTokenIdx - LeftBrRemoveMe, Next)
               and (Next.ReservedType in [rtDot, rtNothing])) do begin
               Assert(False, '.CheckIndent');
-              Inc(RemoveMe);
+              Inc(LeftBrRemoveMe);
             end;
             if IsRType(Next, rtProcedure) then begin
               Assert(False, '.CheckIndent');
@@ -1553,8 +1677,12 @@ begin
         Exit;
       end;
 
-    rtComma:
-      HandleComma(RemoveMe);
+    rtComma: begin
+        if HandleComma() then begin
+          // We changed the code, we need to process the comment again
+          Exit; //==>
+        end;
+      end;
 
     rtProgram, rtUses, rtInitialization:
       if (FCurrentRType = rtUses) and (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass]) then begin
@@ -1593,7 +1721,7 @@ begin
           // we are not in a procedure or class declaration -> it's an identifier
           FCurrentToken.SetReservedType(rtNothing);
         end else begin
-          if TryGetNextNoComment(FTokenIdx, Next, RemoveMe)
+          if TryGetNextNoComment(FTokenIdx, Next, FuncDirectiveRemoveMe)
             and (Next.ReservedType = rtColon) then begin
             // followed by ':' -> It is an identifier
             FCurrentToken.SetReservedType(rtNothing);
@@ -1674,7 +1802,7 @@ begin
 
         if not FunctTypeDeclare then begin
           Assert(False, '.CheckIndent: FunctDeclare = False');
-          CheckSpecialProcedure(RemoveMe, NoBlankLine, IsDelegate);
+          CheckSpecialProcedure(NoBlankLine, IsDelegate);
         end;
 
         if not FunctTypeDeclare and not FIsInInterfacePart and not (FStack.GetTopType = rtClass) then begin
@@ -1946,107 +2074,8 @@ begin
       end;
 
     rtSemiColon: begin
-        Assert(False, '.CheckIndent: rtSemiColon');
-
-        if FStack.GetTopType = rtExternal then begin
-          FStack.Pop;
-        end;
-
-        if not (FStack.GetTopType in [rtLeftBr, rtLeftHook, rtGenericStart]) then begin
-          Assert(False, '.CheckIndent: Not (LeftBr or LeftHook)');
-          if FStack.GetTopType = rtUses then begin
-            if (FPrevToken is TLineFeed) then begin
-              if (FSettings.NoIndentUsesComma) then
-                AddToPrevLineIndent(-1);
-            end else if (FSettings.FeedEachUnit and FSettings.FeedEachUnitBeforeComma) then begin
-              // if we break before the comma, also break before the semicolon
-
-              IdxChanged := False;
-              Next := GetToken(FTokenIdx+1);
-              if Next.ReservedType = rtComment then
-              begin
-                // The next Token is a comment, we don't want this comment to
-                // be the first after the break which would comment out the next
-                // unit, so we need to move it.
-
-                // Move the Comma behind the comment
-                FTokens.AtInsert(FTokenIdx+1, FTokens.Extract(FTokenIdx));
-                FTokenIdx := FTokenIdx+1;
-                IdxChanged := True;
-              end;
-
-              LFeed := AssertLineFeedAfter(FTokenIdx - 1);
-              if (FSettings.NoIndentUsesComma) then
-                LFeed.SetIndent(0);
-
-              // We changed the code, we need to process the comment again
-              if IdxChanged then
-              begin
-                FTokenIdx := FTokenIdx-3;
-                Exit;
-              end;
-            end;
-          end;
-
-          AllowPop := True;
-          if FStack.GetTopType = rtProcDeclare then begin
-            // this checks for function declarations with function directives in the next line like this:
-            // procedure bla;
-            //   cdecl;
-            // It does not yet solve the problem with multi line function directives like this:
-            // procedure bla;
-            //   cdecl;
-            //   overload;
-            RemoveMe := 1;
-            while TryGetToken(FTokenIdx + RemoveMe, Next)
-              and IsRType(Next, [rtSemiColon, rtLineFeed, rtComment, rtCompIf, rtCompElse, rtCompEndif,
-                                 rtFuncDirective, rtForward, rtExternal]) do begin
-              if IsRType(Next, [rtFuncDirective, rtForward, rtExternal]) then begin
-                AllowPop := False;
-                Break; //==v
-              end;
-              Inc(RemoveMe);
-            end
-          end;
-
-          if AllowPop then begin
-            while (FStack.GetTopType in
-              [rtDo, rtWhile, rtProcDeclare, rtThen, rtProgram, rtUses, rtColon, rtClassDecl, rtIfElse]) do begin
-              Assert(False, '.CheckIndent: in while');
-              FStack.Pop;
-            end;
-          end;
-
-          if (FPrevToken.ReservedType = rtForward) and (FStack.GetTopType = rtProcedure) then begin
-            FStack.Pop;
-          end;
-
-          // Look for 'absolute' or a function directive before the next line feed
-          // todo: This only works, if 'absolute' or any of the function directives ('overload',
-          // 'stdcall' etc). are on the same line as the function / procedure declaration:
-          FWrapIndent := False;
-          RemoveMe := 0;
-          repeat
-            Assert(False, '.CheckIndent: in repeat');
-            Inc(RemoveMe);
-          until not TryGetToken(FTokenIdx + RemoveMe, Next) or (not (Next.ReservedType in [{ rtComment, }rtLineFeed]));
-
-          if Next <> nil then begin
-            Assert(False, '.CheckIndent: Next <> nil');
-            if (Next.ReservedType = rtAbsolute)
-              or ((FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass])
-              and (Next.ReservedType in [rtFuncDirective, rtForward, rtExternal])
-              and (FStack.ProcLevel = 0)) then
-              FWrapIndent := True
-            else if FSettings.FeedAfterSemiColon then begin
-              if not (Next.ReservedType in [rtForward, rtExternal, rtFuncDirective, rtDefault]) then begin
-                if Next.WordType <> wtCompDirective then begin
-                  AssertLineFeedAfter(FTokenIdx);
-                end;
-              end;
-            end;
-          end;
-        end;
+        if HandleSemicolon() then
+          Exit; //==>
       end;
 
     rtCompIf: begin
