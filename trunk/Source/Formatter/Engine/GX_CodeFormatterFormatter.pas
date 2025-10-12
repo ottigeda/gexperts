@@ -1032,13 +1032,12 @@ procedure TCodeFormatterFormatter.HandleColon;
 var
   PrevPrevToken: TPascalToken;
   Token: TPascalToken;
-  RemoveMe: Integer;
 begin
   case FStack.GetTopType of
     rtOf: begin
         FStack.Push(FCurrentRType, 1);
         if FSettings.FeedAfterThen then begin
-          if TryGetNextNoComment(FTokenIdx, Token, RemoveMe)
+          if TryGetNextNoComment(FTokenIdx, Token)
             and (Token.ReservedType = rtBegin)
             and (AssertLineFeedAfter(FTokenIdx) <> FPrevLine) then
             CheckShortLine;
