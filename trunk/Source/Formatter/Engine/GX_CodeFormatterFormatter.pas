@@ -1231,6 +1231,7 @@ var
   exp: TGXUnicodeString;
   LFeed: TLineFeed;
   AllowPop: Boolean;
+  IdxChanged: Boolean;
 begin
   if FCurrentToken = nil then
     Exit;
@@ -1507,7 +1508,22 @@ begin
           else if FSettings.FeedEachUnit then begin
             if FSettings.FeedEachUnitBeforeComma then begin
               // linefeed before comma
+
               if (not (FPrevToken is TLineFeed)) then begin
+                IdxChanged := False;
+                Next := GetToken(FTokenIdx+1);
+                if Next.ReservedType = rtComment then
+                begin
+                  // The next Token is a comment, we don't want this comment to
+                  // be the first after the break which would comment out the next
+                  // unit, so we need to move it.
+
+                  // Move the Comma behind the comment
+                  FTokens.AtInsert(FTokenIdx+1, FTokens.Extract(FTokenIdx));
+                  FTokenIdx := FTokenIdx+1;
+                  IdxChanged := True;
+                end;
+
                 LFeed := AssertLineFeedAfter(FTokenIdx - 1);
                 if (FSettings.NoIndentUsesComma) then
                   LFeed.SetIndent(0);
@@ -1516,6 +1532,13 @@ begin
                 while TryGetNextNoComment(FTokenIdx, Next, RemoveMe)
                   and (Next.ReservedType = rtLineFeed) do begin
                   FTokens.Extract(FTokenIdx + RemoveMe).Free;
+                end;
+
+                // We changed the code, we need to process the comment again
+                if IdxChanged then
+                begin
+                  FTokenIdx := FTokenIdx-3;
+                  Exit;
                 end;
               end;
             end else begin
@@ -1931,9 +1954,31 @@ begin
                 AddToPrevLineIndent(-1);
             end else if (FSettings.FeedEachUnit and FSettings.FeedEachUnitBeforeComma) then begin
               // if we break before the comma, also break before the semicolon
+
+              IdxChanged := False;
+              Next := GetToken(FTokenIdx+1);
+              if Next.ReservedType = rtComment then
+              begin
+                // The next Token is a comment, we don't want this comment to
+                // be the first after the break which would comment out the next
+                // unit, so we need to move it.
+
+                // Move the Comma behind the comment
+                FTokens.AtInsert(FTokenIdx+1, FTokens.Extract(FTokenIdx));
+                FTokenIdx := FTokenIdx+1;
+                IdxChanged := True;
+              end;
+
               LFeed := AssertLineFeedAfter(FTokenIdx - 1);
               if (FSettings.NoIndentUsesComma) then
                 LFeed.SetIndent(0);
+
+              // We changed the code, we need to process the comment again
+              if IdxChanged then
+              begin
+                FTokenIdx := FTokenIdx-3;
+                Exit;
+              end;
             end;
           end;
 

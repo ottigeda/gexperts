@@ -19,6 +19,9 @@ uses
 implementation
 
 type
+ ///<summary>
+ /// special tests for formatting the uses clause in various ways. The input and expected output
+ /// are generated as string lists here in the code. </summary>
   TFormatterUsesTests = class(TTestCase)
   private
     FFormatter: TCodeFormatterEngine;
@@ -48,6 +51,19 @@ type
     procedure TestIndentUses;
 
     ///  <summary>
+    ///  Same as <see cref="DelForExUsesTests|TFormatterUsesTests.TestIndentUses" />
+    ///  but with comments.
+    ///  </summary>
+    ///  <remarks>
+    ///  <para>
+    ///  Goals:
+    ///  </para><para>
+    ///  - Ensure that comments don't break the code.
+    ///  </para>
+    ///  </remarks>
+    procedure TestIndentUsesComment;
+
+    ///  <summary>
     ///  Basic test with all uses indentation options off.
     ///  </summary>
     ///  <remarks>
@@ -73,6 +89,19 @@ type
     procedure TestDoNotIndentUsesStartingWithComma1;
 
     ///  <summary>
+    ///  Same as <see cref="DelForExUsesTests|TFormatterUsesTests.TestDoNotIndentUsesStartingWithComma1" />
+    ///  but with comments.
+    ///  </summary>
+    ///  <remarks>
+    ///  <para>
+    ///  Goals:
+    ///  </para><para>
+    ///  - Ensure that comments don't break the code.
+    ///  </para>
+    ///  </remarks>
+    procedure TestDoNotIndentUsesStartingWithComma1Comment;
+
+    ///  <summary>
     ///  Same test as <see cref="DelForExUsesTests|TFormatterUsesTests.TestDoNotIndentUsesStartingWithComma1" />
     ///  but also sets <c>FeedEachUnitBeforeComma</c> to False.
     ///  </summary>
@@ -88,6 +117,19 @@ type
     ///  </para>
     ///  </remarks>
     procedure TestDoNotIndentUsesStartingWithComma2;
+
+    ///  <summary>
+    ///  Same as <see cref="DelForExUsesTests|TFormatterUsesTests.TestDoNotIndentUsesStartingWithComma2" />
+    ///  but with comments.
+    ///  </summary>
+    ///  <remarks>
+    ///  <para>
+    ///  Goals:
+    ///  </para><para>
+    ///  - Ensure that comments don't break the code.
+    ///  </para>
+    ///  </remarks>
+    procedure TestDoNotIndentUsesStartingWithComma2Comment;
 
     ///  <summary>
     ///  Sets <c>FeedAfterUses</c> to False.
@@ -360,6 +402,112 @@ begin
   end;
 end;
 
+procedure TFormatterUsesTests.TestDoNotIndentUsesStartingWithComma2Comment;
+var
+  ActualText: TGxUnicodeStringList;
+  ExpectedText: TGxUnicodeStringList;
+  Settings: TCodeFormatterEngineSettings;
+begin
+  ExpectedText := TGxUnicodeStringList.Create;
+  try
+    ActualText := TGxUnicodeStringList.Create;
+    try
+      Settings := FFormatter.Settings.Settings;
+      Settings.NoIndentUsesComma := False; { Do not indent uses starting with , }
+      Settings.FeedEachUnitBeforeComma := False; { Before the comma }
+      FFormatter.Settings.Settings := Settings;
+
+      ActualText.Add('unit Preview;');
+      ActualText.Add('');
+      ActualText.Add('interface');
+      ActualText.Add('');
+      ActualText.Add('uses');
+      ActualText.Add('  Windows, // Comment 1');
+      ActualText.Add('  Graphics, // Comment 2');
+      ActualText.Add('  Forms; // Comment 3');
+      ActualText.Add('');
+      ActualText.Add('implementation');
+      ActualText.Add('');
+      ActualText.Add('end.');
+
+      ExpectedText.Clear;
+      ExpectedText.Add('unit Preview;');
+      ExpectedText.Add('');
+      ExpectedText.Add('interface');
+      ExpectedText.Add('');
+      ExpectedText.Add('uses');
+      ExpectedText.Add('  Windows, // Comment 1');
+      ExpectedText.Add('  Graphics, // Comment 2');
+      ExpectedText.Add('  Forms; // Comment 3');
+      ExpectedText.Add('');
+      ExpectedText.Add('implementation');
+      ExpectedText.Add('');
+      ExpectedText.Add('end.');
+
+      FFormatter.Execute(ActualText);
+
+      CheckEquals(ExpectedText.Text, ActualText.Text, 'error in output');
+
+    finally
+      FreeAndNil(ActualText);
+    end;
+  finally
+    FreeAndNil(ExpectedText);
+  end;
+end;
+
+procedure TFormatterUsesTests.TestDoNotIndentUsesStartingWithComma1Comment;
+var
+  ActualText: TGxUnicodeStringList;
+  ExpectedText: TGxUnicodeStringList;
+  Settings: TCodeFormatterEngineSettings;
+begin
+  ExpectedText := TGxUnicodeStringList.Create;
+  try
+    ActualText := TGxUnicodeStringList.Create;
+    try
+      Settings := FFormatter.Settings.Settings;
+      Settings.NoIndentUsesComma := False; { Do not indent uses starting with , }
+      FFormatter.Settings.Settings := Settings;
+
+      ActualText.Add('unit Preview;');
+      ActualText.Add('');
+      ActualText.Add('interface');
+      ActualText.Add('');
+      ActualText.Add('uses');
+      ActualText.Add('  Windows, // Comment 1');
+      ActualText.Add('  Graphics, // Comment 2');
+      ActualText.Add('  Forms; // Comment 3');
+      ActualText.Add('');
+      ActualText.Add('implementation');
+      ActualText.Add('');
+      ActualText.Add('end.');
+
+      ExpectedText.Add('unit Preview;');
+      ExpectedText.Add('');
+      ExpectedText.Add('interface');
+      ExpectedText.Add('');
+      ExpectedText.Add('uses');
+      ExpectedText.Add('  Windows // Comment 1');
+      ExpectedText.Add('  , Graphics // Comment 2');
+      ExpectedText.Add('  , Forms // Comment 3');
+      ExpectedText.Add('  ;');
+      ExpectedText.Add('');
+      ExpectedText.Add('implementation');
+      ExpectedText.Add('');
+      ExpectedText.Add('end.');
+
+      FFormatter.Execute(ActualText);
+
+      CheckEquals(ExpectedText.Text, ActualText.Text, 'error in output');
+    finally
+      FreeAndNil(ActualText);
+    end;
+  finally
+    FreeAndNil(ExpectedText);
+  end;
+end;
+
 procedure TFormatterUsesTests.TestNoFeedAfterUses;
 var
   ActualText: TGxUnicodeStringList;
@@ -494,7 +642,6 @@ procedure TFormatterUsesTests.TestIndentUses;
 var
   ActualText: TGxUnicodeStringList;
   ExpectedText: TGxUnicodeStringList;
-//  Settings: TCodeFormatterEngineSettings;
 begin
   ExpectedText := TGxUnicodeStringList.Create;
   try
@@ -555,6 +702,53 @@ begin
       FFormatter.Execute(ActualText);
 
       CheckEquals(ExpectedText.Text, ActualText.Text, 'error in output');
+    finally
+      FreeAndNil(ActualText);
+    end;
+  finally
+    FreeAndNil(ExpectedText);
+  end;
+end;
+
+procedure TFormatterUsesTests.TestIndentUsesComment;
+var
+  ActualText: TGxUnicodeStringList;
+  ExpectedText: TGxUnicodeStringList;
+begin
+  ExpectedText := TGxUnicodeStringList.Create;
+  try
+    ActualText := TGxUnicodeStringList.Create;
+    try
+      ActualText.Add('unit Preview;');
+      ActualText.Add('');
+      ActualText.Add('interface');
+      ActualText.Add('');
+      ActualText.Add('uses');
+      ActualText.Add('  Windows, // Comment 1');
+      ActualText.Add('  Graphics, // Comment 2');
+      ActualText.Add('  Forms; // Comment 3');
+      ActualText.Add('');
+      ActualText.Add('implementation');
+      ActualText.Add('');
+      ActualText.Add('end.');
+
+      ExpectedText.Add('unit Preview;');
+      ExpectedText.Add('');
+      ExpectedText.Add('interface');
+      ExpectedText.Add('');
+      ExpectedText.Add('uses');
+      ExpectedText.Add('  Windows // Comment 1');
+      ExpectedText.Add(', Graphics // Comment 2');
+      ExpectedText.Add(', Forms // Comment 3');
+      ExpectedText.Add(';');
+      ExpectedText.Add('');
+      ExpectedText.Add('implementation');
+      ExpectedText.Add('');
+      ExpectedText.Add('end.');
+
+      FFormatter.Execute(ActualText);
+
+      CheckEquals(ExpectedText.Text, ActualText.Text, 'Test with "default" options');
     finally
       FreeAndNil(ActualText);
     end;
