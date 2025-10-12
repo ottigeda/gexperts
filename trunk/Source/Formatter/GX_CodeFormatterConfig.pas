@@ -427,7 +427,7 @@ begin
   _Settings.SpaceLeftHook := GetSpaceItem(8);
   _Settings.SpaceRightHook := GetSpaceItem(9);
   _Settings.FeedAfterThen := chk_FeedAfterThen.Checked;
-  _Settings.ExceptSingle := chk_ExceptSingle.Checked;
+  _Settings.FeedAfterThenExceptSingle := chk_ExceptSingle.Checked;
   _Settings.FeedAfterUses := chk_FeedAfterUses.Checked;
   _Settings.FeedEachUnit := chk_FeedEachUnit.Checked;
   _Settings.FeedEachUnitBeforeComma := chk_FeedEachUnitBeforeComma.Checked;
@@ -518,7 +518,7 @@ begin
   chk_FeedEachUnit.Checked := _Settings.FeedEachUnit;
   chk_FeedEachUnitBeforeComma.Checked := _Settings.FeedEachUnitBeforeComma;
   chk_FeedAfterThen.Checked := _Settings.FeedAfterThen;
-  chk_ExceptSingle.Checked := _Settings.ExceptSingle;
+  chk_ExceptSingle.Checked := _Settings.FeedAfterThenExceptSingle;
   chk_NoFeedBeforeThen.Checked := _Settings.NoFeedBeforeThen;
   chk_FeedAfterVar.Checked := _Settings.FeedAfterVar;
   chk_FeedElseIf.Checked := _Settings.FeedElseIf;
