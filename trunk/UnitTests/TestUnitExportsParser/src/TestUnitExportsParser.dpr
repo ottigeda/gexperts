@@ -17,13 +17,11 @@ program TestUnitExportsParser;
 uses
   GX_UnitExportsParserTest in 'GX_UnitExportsParserTest.pas',
   GX_UnitExportsParser in '..\..\..\Source\Framework\GX_UnitExportsParser.pas',
-  DUnitConsts in '..\..\dunit\DUnitConsts.pas',
-  GUITestRunner in '..\..\dunit\GUITestRunner.pas' {GUITestRunner},
-  TestFramework in '..\..\dunit\TestFramework.pas',
-  TestFrameworkExt in '..\..\dunit\TestFrameworkExt.pas',
+  DUnitConsts in '..\..\..\UnitTestsFormatter\dunit\DUnitConsts.pas',
+  GUITestRunner in '..\..\..\UnitTestsFormatter\dunit\GUITestRunner.pas',
+  TestFramework in '..\..\..\UnitTestsFormatter\dunit\TestFramework.pas',
+  TestFrameworkExt in '..\..\..\UnitTestsFormatter\dunit\TestFrameworkExt.pas',
   GX_UnitExportList in '..\..\..\Source\UsesExpert\GX_UnitExportList.pas';
-
-{$R *.RES}
 
 begin
   GUITestRunner.RunRegisteredTests;
