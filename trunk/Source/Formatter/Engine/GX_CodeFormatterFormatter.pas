@@ -101,6 +101,8 @@ type
 
     function TryGetNextNoComment(_StartPos: Integer; _TreatEndIfAsComment: Boolean;
       out _Token: TPascalToken; out _Offset: Integer): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
+    function TryGetNextNoComment(_StartPos: Integer; _TreatEndIfAsComment: Boolean;
+      out _Token: TPascalToken): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     function TryGetNextNoComment(_StartPos: Integer;
       out _Token: TPascalToken; out _Offset: Integer): Boolean; overload; {$IFDEF GX_SupportsInline} inline; {$ENDIF}
     function TryGetNextNoComment(_StartPos: Integer;
@@ -623,6 +625,14 @@ begin
     FPrevLine.IncIndent(-1);
 end;
 
+function TCodeFormatterFormatter.TryGetNextNoComment(_StartPos: Integer; _TreatEndIfAsComment: Boolean;
+  out _Token: TPascalToken): Boolean;
+var
+  Offset: Integer;
+begin
+  Result := TryGetNextNoComment(_StartPos, _TreatEndIfAsComment, _Token, Offset);
+end;
+
 function TCodeFormatterFormatter.TryGetPrevLineFeed(var _TokenIdx: Integer;
   out _LineFeed: TLineFeed): Boolean;
 var
@@ -1099,7 +1109,7 @@ function TCodeFormatterFormatter.HandleComma: Boolean;
 var
   IdxChanged: Boolean;
   Next: TPascalToken;
-  RemoveMe: Integer;
+  Offset: Integer;
   LFeed: TLineFeed;
 begin
   Result := False;
@@ -1128,9 +1138,9 @@ begin
             LFeed.SetIndent(0);
 
           // If we have a break after the comma, remove that
-          while TryGetNextNoComment(FTokenIdx, Next, RemoveMe)
+          while TryGetNextNoComment(FTokenIdx, Next, Offset)
             and (Next.ReservedType = rtLineFeed) do begin
-            FTokens.Extract(FTokenIdx + RemoveMe).Free;
+            FTokens.Extract(FTokenIdx + Offset).Free;
           end;
 
           // We changed the code, we need to process the comment again
@@ -1142,7 +1152,7 @@ begin
         end;
       end else begin
         // not FeedEachUnitBeforeComma
-        if TryGetNextNoComment(FTokenIdx, True, Next, RemoveMe) and (Next.ReservedType <> rtLineFeed) then
+        if TryGetNextNoComment(FTokenIdx, True, Next) and (Next.ReservedType <> rtLineFeed) then
           AssertLineFeedAfter(FTokenIdx, True);
       end;
     end;
