@@ -133,7 +133,7 @@ type
     function CheckForFunctTypeDeclare(out _CheckedToken: TPascalToken): Boolean;
     procedure CheckSpecialProcedure(var _NoBlankLine, _IsDelegate: Boolean);
     function FindBeginOrSemicolonAfterProc(out _Offset: Integer; out _Token: TPascalToken): Boolean;
-    function InsertLinefeedBefore(ATokenIdx: Integer): boolean;
+    function InsertLinefeedBefore(ATokenIdx: Integer): Boolean;
   public
     class procedure Execute(_Tokens: TPascalTokenList; _Settings: TCodeFormatterSettings);
     constructor Create(_Settings: TCodeFormatterSettings);
@@ -216,7 +216,7 @@ begin
     Inc(_Offset);
     Result := TryGetToken(_StartPos + _Offset, _Token);
   until not Result
-  or ((_Token.ReservedType <> rtComment) and
+    or ((_Token.ReservedType <> rtComment) and
     (not _TreatEndIfAsComment or (_Token.GetReservedType <> rtCompEndif)));
 end;
 
@@ -851,7 +851,7 @@ end;
 // When we enter this method FCurrentToken is 'asm' and FCurrentRType is rtAsm
 procedure TCodeFormatterFormatter.FormatAsm(_NTmp: Integer);
 var
-  AsmTokenIdx: integer;
+  AsmTokenIdx: Integer;
   IsAsmAfterLabel: Boolean;
 begin
   // remove var / type stuff
@@ -1067,7 +1067,7 @@ begin
     // label
     // maybe this could be reduced to rtBegin ?
     if (FPrevToken.WordType in [wtWord, wtNumber]) and (FPrevToken.ReservedType = rtNothing) then begin
-        if (FTokenIdx > 2) then begin
+      if (FTokenIdx > 2) then begin
         PrevPrevToken := FTokens[FTokenIdx - 2];
         case PrevPrevToken.ReservedType of
           rtLineFeed: begin
