@@ -200,7 +200,7 @@ begin
           PrevToken := FTokens[PrevIdx];
           case PrevToken.ReservedType of
             rtOperatorProc: begin
-                if PrevToken.GetExpression(s) and SameText(s, 'operator') then begin
+                if PrevToken.TryGetExpression(s) and SameText(s, 'operator') then begin
                   // special case: class operator in(...)
                   // 'in' is not a reserved word in this case
                   Expression.ReservedType := rtNothing;
@@ -209,7 +209,7 @@ begin
             rtDot: begin
                 if PrevIdx > 1 then begin
                   PrevToken := FTokens[PrevIdx - 2];
-                  if PrevToken.GetExpression(s) and SameText(s, 'operator') then begin
+                  if PrevToken.TryGetExpression(s) and SameText(s, 'operator') then begin
                     // special case: class operator TSomeClass.in(...)
                     // 'in' is not a reserved word in this case
                     Expression.ReservedType := rtNothing;

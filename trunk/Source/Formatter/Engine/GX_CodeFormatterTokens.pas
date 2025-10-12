@@ -31,13 +31,15 @@ type
     procedure SetSpace(_Space: TSpaceSet; _State: Boolean); virtual;
     {: @returns the object's content }
     function GetContent: TGXUnicodeString; virtual; abstract;
-    (*: changes " // <comment>" to "{//<comment>}" used for preventing a
-      begin
-        moved from the next line to become commented out
-        @param ACommChar is one of '{', '(' or '/' specifying the new comment type
-        @returs True if token is a comment, False otherwise *)
-    function ChangeComment(_CommChar: char): Boolean;
-    function GetExpression(out _Expression: TGXUnicodeString): Boolean; virtual;
+    ///<summary>
+    /// changes " // <comment>" to "{//<comment>}"
+    /// used for preventing a
+    ///    begin
+    /// moved from the next line to become commented out
+    /// @returns True if token is a comment, False otherwise </summary>
+    // todo: This should not be a method of TPascalToken
+    function ChangeSingleLineCommentToBeginEndComment: Boolean;
+    function TryGetExpression(out _Expression: TGXUnicodeString): Boolean; virtual;
     procedure SetExpression(const _Expression: TGXUnicodeString); virtual;
     procedure SetExpressionCase(_Case: TCase); virtual;
     function GetExpressionCase: TCase; virtual;
@@ -99,7 +101,7 @@ type
     procedure GetLength(var _Length: Integer); override;
     function GetWordType: TWordType; override;
     function GetReservedType: TReservedType; override;
-    function GetExpression(out _Expression: TGXUnicodeString): Boolean; override;
+    function TryGetExpression(out _Expression: TGXUnicodeString): Boolean; override;
     procedure SetExpression(const _Value: TGXUnicodeString); override;
     procedure SetExpressionCase(_Value: TCase); override;
     function GetExpressionCase: TCase; override;
@@ -135,7 +137,7 @@ begin
   FOrigLineNo := _OrigLineNo;
 end;
 
-function TPascalToken.GetExpression(out _Expression: TGXUnicodeString): Boolean;
+function TPascalToken.TryGetExpression(out _Expression: TGXUnicodeString): Boolean;
 begin
   Result := False;
 end;
@@ -186,31 +188,38 @@ begin
   Options := Options + [_Option];
 end;
 
-function TPascalToken.ChangeComment(_CommChar: char): Boolean;
+function TPascalToken.ChangeSingleLineCommentToBeginEndComment: Boolean;
 var
   s: TGXUnicodeString;
 begin
   Result := (Reservedtype = rtComment);
-  if not Result then
+  if not Result then begin
+    // no comment
     Exit;
+  end;
 
-  GetExpression(s);
-  if Pos(_CommChar, s) <> 0 then
+  if not TryGetExpression(s) then begin
+    // no expression
+    // todo: This should not be possible -> raise an exception?
+    //       On the other hand: If it is not a comment we do not need to change it.
     Exit;
+  end;
 
-  case _CommChar of
-    '{':
-      if Pos('}', s) = 0 then
-        s := '{' + s + '}';
+  if Copy(s, 1, 2) <> '//' then begin
+    // not a double slash comment
+    Exit;
+  end;
 
-    '(':
-      if Pos('*)', s) = 0 then
-        s := '(*' + s + '*)';
-
-    '/':
-      if Pos('//', s) <> 1 then
-        s := '//' + s;
-  end; // case
+  if Pos('}', s) <> 0 then begin
+    // The comment contains '}' so we cannot convert it to a curly braces comment
+    // Therefore we must use '(*'.
+    if Pos('*)', s) <> 0 then begin
+      // But it also contains '*)' so we cannot use that either
+      raise Exception.CreateFmt('Cannot convert %s to one of the other comment types because the comment contains "}" and "*)"', [s]);
+    end;
+    s := '(*' + s + '*)';
+  end else
+    s := '{' + s + '}';
 
   SetExpression(s);
 end;
@@ -242,31 +251,30 @@ begin
   SetReservedType(rtNothing);
   case WordType of
     wtCompDirective: begin
-        GetExpression(Expr);
+        if TryGetExpression(Expr) then begin
+          if Copy(Expr, 1, 1) = '{' then
+            Directive := Copy(Expr, 3)
+          else if Copy(Expr, 1, 2) = '(*' then
+            Directive := Copy(Expr, 4);
+          Directive := LowerCase(Directive);
 
-        if Copy(Expr, 1, 1) = '{' then
-          Directive := Copy(Expr, 3)
-        else if Copy(Expr, 1, 2) = '(*' then
-          Directive := Copy(Expr, 4);
-
-        Directive := LowerCase(Directive);
-
-        if AnsiStartsStr('endif', Directive) then
-          SetReservedType(rtCompEndif)
-        else if AnsiStartsStr('ifend', Directive) then
-          SetReservedType(rtCompEndif)
-        else if AnsiStartsStr('else', Directive) then
-          SetReservedType(rtCompElse)
-        else if AnsiStartsStr('ifdef ', Directive) then
-          SetReservedType(rtCompIf)
-        else if AnsiStartsStr('ifopt ', Directive) then
-          SetReservedType(rtCompIf)
-        else if AnsiStartsStr('if ', Directive) then
-          SetReservedType(rtCompIf)
-        else if AnsiStartsStr('ifndef ', Directive) then
-          SetReservedType(rtCompIf)
-        else if AnsiStartsStr('message ', Directive) then
-          SetReservedType(rtCompMessage);
+          if AnsiStartsStr('endif', Directive) then
+            SetReservedType(rtCompEndif)
+          else if AnsiStartsStr('ifend', Directive) then
+            SetReservedType(rtCompEndif)
+          else if AnsiStartsStr('else', Directive) then
+            SetReservedType(rtCompElse)
+          else if AnsiStartsStr('ifdef ', Directive) then
+            SetReservedType(rtCompIf)
+          else if AnsiStartsStr('ifopt ', Directive) then
+            SetReservedType(rtCompIf)
+          else if AnsiStartsStr('if ', Directive) then
+            SetReservedType(rtCompIf)
+          else if AnsiStartsStr('ifndef ', Directive) then
+            SetReservedType(rtCompIf)
+          else if AnsiStartsStr('message ', Directive) then
+            SetReservedType(rtCompMessage);
+        end;
       end;
 
     wtFullComment, wtFullOutComment, wtHalfStarComment,
@@ -274,16 +282,17 @@ begin
       SetReservedType(rtComment);
 
     wtWord: begin
-        GetExpression(Expr);
-        Expr := LowerCase(Expr);
-        if ReservedWordList.FindWord(Expr, ResvdType) then begin
-          SetReservedType(ResvdType);
-          Exit;
+        if TryGetExpression(Expr) then begin
+          Expr := LowerCase(Expr);
+          if ReservedWordList.FindWord(Expr, ResvdType) then begin
+            SetReservedType(ResvdType);
+            Exit;
+          end;
         end;
       end;
 
     wtOperator: begin
-        if GetExpression(Expr) then begin
+        if TryGetExpression(Expr) then begin
           if Length(Expr) = 1 then begin
             case Expr[1] of
               ':':
@@ -346,7 +355,7 @@ begin
   Result := FWordType;
 end;
 
-function TExpression.GetExpression(out _Expression: TGXUnicodeString): Boolean;
+function TExpression.TryGetExpression(out _Expression: TGXUnicodeString): Boolean;
 begin
   _Expression := FExpression;
   Result := True;
@@ -512,7 +521,7 @@ constructor TAlignExpression.Create(_Like: TExpression; _AlignPos: Byte; _OrigLi
 var
   s: TGXUnicodeString;
 begin
-  _Like.GetExpression(s);
+  _Like.TryGetExpression(s);
   inherited Create(_Like.FWordType, s, _OrigLineNo);
   FAlignPos := _AlignPos;
   FNoOfSpaces := 0;

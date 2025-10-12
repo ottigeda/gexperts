@@ -120,6 +120,7 @@ type
     procedure doExecute(_Tokens: TPascalTokenList);
     procedure CheckIndentIf;
     procedure CheckIndentThen;
+    procedure CheckIndentBeginTry(_NTmp: Integer);
     procedure CheckIndentColon;
     ///<summary>
     /// @returns True when FTokenIdx was changed and CheckIndent must exit </summary>
@@ -252,7 +253,7 @@ begin
   if FCurrentRType <> rtLogOper then
     Exit; //==>
 
-  if not FCurrentToken.GetExpression(exp) or (exp <> '<') then
+  if not FCurrentToken.TryGetExpression(exp) or (exp <> '<') then
     Exit; //==>
 
   if not IsWType(FPrevToken, wtWord) then
@@ -283,7 +284,7 @@ begin
   while TryGetNextNoComment(Idx, Next, Offset) do begin
     case Next.ReservedType of
       rtLogOper: begin
-          if Next.GetExpression(exp) and (exp = '>') then begin
+          if Next.TryGetExpression(exp) and (exp = '>') then begin
             Result := True;
             Exit; //==>
           end;
@@ -379,8 +380,8 @@ begin
 
     rtLogOper: begin
         Assert(False, '.AdjustSpacing');
-        if not _CurrentToken.GetExpression(exp) then
-          raise EFormatException.Create('Programmer error: GetExpression for logical operator returned False');
+        if not _CurrentToken.TryGetExpression(exp) then
+          raise EFormatException.Create('Programmer error: TryGetExpression for logical operator returned False');
 
         if (exp = '<') then begin
           Assert(False, '.AdjustSpacing');
@@ -739,7 +740,9 @@ var
   s: TGXUnicodeString;
   Len: Integer;
 begin
-  _Token.GetExpression(s);
+  if not _Token.TryGetExpression(s) then
+    Exit; //==>
+
   Len := Length(s);
   Idx := 2;
   while (Idx < Len) and (s[Idx] <> Space) and (s[Idx] <> Tab) do begin
@@ -918,9 +921,9 @@ var
   i: Integer;
 begin
   if TryGetToken(FTokenIdx - 1, FPrevToken) and (FPrevToken.ReservedType = rtComment)
-    and FPrevToken.GetExpression(PrevExpression) and (PrevExpression[1] = '/') then begin
+    and FPrevToken.TryGetExpression(PrevExpression) and (PrevExpression[1] = '/') then begin
     // fix for situation with a // comment on prev line: begin becomes part of the comment
-    if FPrevToken.ChangeComment('{') then begin
+    if FPrevToken.ChangeSingleLineCommentToBeginEndComment then begin
       FPrevToken.SetSpace([spAfter], True);
     end else begin
       i := 0;
@@ -934,7 +937,7 @@ begin
 
       Dec(i);
       if (PrevPasWord.ReservedType = rtComment)
-        and PrevPasWord.GetExpression(Expression)
+        and PrevPasWord.TryGetExpression(Expression)
         and (Expression[1] = '/') then begin
         FPrevToken.SetExpression('{' + Copy(PrevExpression, 2) + '}');
         Exit;
@@ -1038,6 +1041,66 @@ begin
     end;
     FStack.Push(rtThen, 1);
   end;
+end;
+
+procedure TCodeFormatterFormatter.CheckIndentBeginTry(_NTmp: Integer);
+var
+  FeedRound: TFeedBegin;
+begin
+  while FStack.GetTopType in [rtVar, rtConst, rtType] do
+    FStack.Pop;
+
+  if FStack.GetTopType in [rtProcedure, rtProgram] then
+    FStack.Pop;
+
+  if FStack.IsEmpty then
+    FStack.nIndent := 0;
+
+  if NoBeginTryIndent(FCurrentRType) then
+    FStack.nIndent := FStack.nIndent - 1;
+
+  case FCurrentRType of
+    rtBegin:
+      if FCurrentToken.HasOption(toFeedNewLine) then
+        FeedRound := NewLine
+      else
+        FeedRound := FSettings.FeedRoundBegin;
+    rtTry:
+      FeedRound := FSettings.FeedRoundTry;
+  else
+    FeedRound := Unchanged;
+  end;
+
+  case FeedRound of
+    Hanging: begin
+        if (FStack.GetTopType in [rtDo, rtThen, rtIfElse, rtElse, rtColon])
+          and (FPrevToken <> nil) and (GetToken(FTokenIdx - 1) = FPrevLine) then begin
+          FTokens.Extract(FTokenIdx - 1).Free;
+          Dec(FTokenIdx);
+          CheckSlashComment;
+        end;
+
+        AssertLineFeedAfter(FTokenIdx);
+      end;
+
+    NewLine: begin
+        // todo: could this use TryGetToken instead of checking for FPrevToken <> nil ?
+        if (FPrevToken <> nil) and (GetToken(FTokenIdx - 1).ReservedType <> rtLineFeed) then begin
+          FPrevLine := AssertLineFeedAfter(FTokenIdx - 1);
+          FPrevToken := FPrevLine;
+        end;
+
+        AssertLineFeedAfter(FTokenIdx);
+      end;
+  end;
+
+  FStack.Push(FCurrentRType, 1);
+  if FPrevToken = FPrevLine then begin
+    AddToPrevLineIndent(_NTmp);
+    DecPrevLineIndent;
+  end;
+
+  FWrapIndent := False;
 end;
 
 procedure TCodeFormatterFormatter.CheckIndentColon;
@@ -1542,7 +1605,6 @@ end;
 procedure TCodeFormatterFormatter.CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed);
 var
   Next: TPascalToken;
-  FeedRound: TFeedBegin;
   wType: TWordType;
   exp: TGXUnicodeString;
 begin
@@ -1904,62 +1966,8 @@ begin
         AddToPrevLineIndent(_NTmp);
       end;
 
-    rtBegin, rtTry: begin
-        while FStack.GetTopType in [rtVar, rtConst, rtType] do
-          FStack.Pop;
-
-        if FStack.GetTopType in [rtProcedure, rtProgram] then
-          FStack.Pop;
-
-        if FStack.IsEmpty then
-          FStack.nIndent := 0;
-
-        if NoBeginTryIndent(FCurrentRType) then
-          FStack.nIndent := FStack.nIndent - 1;
-
-        case FCurrentRType of
-          rtBegin:
-            if FCurrentToken.HasOption(toFeedNewLine) then
-              FeedRound := NewLine
-            else
-              FeedRound := FSettings.FeedRoundBegin;
-          rtTry:
-            FeedRound := FSettings.FeedRoundTry;
-        else
-          FeedRound := Unchanged;
-        end;
-
-        case FeedRound of
-          Hanging: begin
-              if (FStack.GetTopType in [rtDo, rtThen, rtIfElse, rtElse, rtColon])
-                and (FPrevToken <> nil) and (GetToken(FTokenIdx - 1) = FPrevLine) then begin
-                FTokens.Extract(FTokenIdx - 1).Free;
-                Dec(FTokenIdx);
-                CheckSlashComment;
-              end;
-
-              AssertLineFeedAfter(FTokenIdx);
-            end;
-
-          NewLine: begin
-              // todo: could this use TryGetToken instead of checking for FPrevToken <> nil ?
-              if (FPrevToken <> nil) and (GetToken(FTokenIdx - 1).ReservedType <> rtLineFeed) then begin
-                FPrevLine := AssertLineFeedAfter(FTokenIdx - 1);
-                FPrevToken := FPrevLine;
-              end;
-
-              AssertLineFeedAfter(FTokenIdx);
-            end;
-        end;
-
-        FStack.Push(FCurrentRType, 1);
-        if FPrevToken = FPrevLine then begin
-          AddToPrevLineIndent(_NTmp);
-          DecPrevLineIndent;
-        end;
-
-        FWrapIndent := False;
-      end;
+    rtBegin, rtTry:
+      CheckIndentBeginTry(_NTmp);
 
     rtEquals:
       if (FSettings.ShouldAlignVar and (FStack.GetTopType = rtVar))
@@ -1999,7 +2007,7 @@ begin
           end else begin
             if ((FPrevToken is TLineFeed) and (FStack.GetTopType in [rtBegin, rtTry])) then begin
               // inline var declaration
-            end else if (FPrevToken.GetExpression(exp) and SameText(exp, 'for')) then begin
+            end else if (FPrevToken.TryGetExpression(exp) and SameText(exp, 'for')) then begin
               // for with inline var declaration
             end else begin
               FStack.Push(FCurrentRType, 0);

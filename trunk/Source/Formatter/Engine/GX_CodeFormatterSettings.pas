@@ -229,6 +229,7 @@ begin
   Result := AlignVar in [1, 3];
 end;
 
+  // todo: Why is this a method of the Settings class? It should be in the formatter class!
 procedure TCodeFormatterSettings.HandleCapitalization(_Word: TPascalToken);
 var
   Expression: TGXUnicodeString;
@@ -236,8 +237,7 @@ var
   Idx: Integer;
   CommentedIdx: Integer;
 begin
-  // todo: Why is this a method of the Settings class? It should be in the formatter class!
-  if not (_Word.GetExpression(Expression)) then
+  if not _Word.TryGetExpression(Expression) then
     Exit;
 
   Found := False;
