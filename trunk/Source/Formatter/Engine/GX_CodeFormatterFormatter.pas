@@ -118,18 +118,18 @@ type
     ///<summary>
     /// This function does the actual formatting </summary>
     procedure doExecute(_Tokens: TPascalTokenList);
-    procedure HandleIf;
-    procedure HandleThen;
-    procedure HandleColon;
+    procedure CheckIndentIf;
+    procedure CheckIndentThen;
+    procedure CheckIndentColon;
     ///<summary>
     /// @returns True when FTokenIdx was changed and CheckIndent must exit </summary>
-    function HandleComma(): Boolean;
-    procedure HandleElse(_NTmp: Integer);
-    procedure HandleLeftBr;
-    procedure HandleProcedure(var _NTmp: Integer);
+    function CheckIndentComma(): Boolean;
+    procedure CheckIndentElse(_NTmp: Integer);
+    procedure CheckIndentLeftBr;
+    procedure CheckIndentProcedure(var _NTmp: Integer);
     ///<summary>
     /// @returns True when FTokenIdx was changed and CheckIndent must exit </summary>
-    function HandleSemicolon(): Boolean;
+    function CheckIndentSemicolon(): Boolean;
     function DetectGenericStart(_TokenIdx: Integer): Boolean;
     procedure CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed);
     procedure HandleCapitalization(_CurrentToken: TPascalToken);
@@ -992,8 +992,9 @@ begin { CheckShortLine }
     FTokens.Extract(FTokenIdx + 1).Free;
 end;
 
-procedure TCodeFormatterFormatter.HandleIf;
+procedure TCodeFormatterFormatter.CheckIndentIf;
 begin
+  Assert(False, '.CheckIndentIf');
   if FSettings.FeedAfterThen and not FSettings.FeedElseIf
     and (FStack.GetTopType = rtIfElse) and (FPrevToken = FPrevLine) then begin
     FTokens.Extract(FTokenIdx - 1).Free;
@@ -1017,8 +1018,9 @@ begin
     FStack.Push(rtIf, 0);
 end;
 
-procedure TCodeFormatterFormatter.HandleThen;
+procedure TCodeFormatterFormatter.CheckIndentThen;
 begin
+  Assert(False, '.CheckIndentThen');
   if FStack.GetTopType in [rtIf, rtIfElse] then begin
     FWrapIndent := False;
     FLastPopResType := FStack.Pop;
@@ -1038,11 +1040,12 @@ begin
   end;
 end;
 
-procedure TCodeFormatterFormatter.HandleColon;
+procedure TCodeFormatterFormatter.CheckIndentColon;
 var
   PrevPrevToken: TPascalToken;
   Token: TPascalToken;
 begin
+  Assert(False, '.CheckIndentColon');
   case FStack.GetTopType of
     rtOf: begin
         FStack.Push(FCurrentRType, 1);
@@ -1105,13 +1108,15 @@ begin
   end;
 end;
 
-function TCodeFormatterFormatter.HandleComma: Boolean;
+function TCodeFormatterFormatter.CheckIndentComma: Boolean;
 var
   IdxChanged: Boolean;
   Next: TPascalToken;
   Offset: Integer;
   LFeed: TLineFeed;
 begin
+  Assert(False, '.CheckIndentComma');
+
   Result := False;
   if FStack.GetTopType = rtUses then begin
     if (FSettings.NoIndentUsesComma) and (FPrevToken is TLineFeed) then
@@ -1159,10 +1164,12 @@ begin
   end;
 end;
 
-procedure TCodeFormatterFormatter.HandleElse(_NTmp: Integer);
+procedure TCodeFormatterFormatter.CheckIndentElse(_NTmp: Integer);
 var
   Next: TPascalToken;
 begin
+  Assert(False, '.CheckIndentElse');
+
   FLastPopResType := rtNothing;
 
   while not FStack.IsEmpty and not (FStack.GetTopType in [rtThen, rtOf, rtTry]) do
@@ -1220,44 +1227,44 @@ begin
   FWrapIndent := False;
 end;
 
-procedure TCodeFormatterFormatter.HandleLeftBr();
+procedure TCodeFormatterFormatter.CheckIndentLeftBr();
 var
   Next: TPascalToken;
   Offset: Integer;
 begin
-  Assert(False, '.CheckIndent: LeftBr');
+  Assert(False, '.CheckIndentLeftBr');
   if (FStack.GetTopType = rtLeftBr) then begin
-    Assert(False, '.CheckIndent: Top is LeftBr');
+    Assert(False, '.CheckIndentLeftBr: Top is LeftBr');
     FStack.Push(FCurrentRType, 0)
   end else begin
-    Assert(False, '.CheckIndent: Top is not Leftbr');
+    Assert(False, '.CheckIndentLeftBr: Top is not Leftbr');
     FOldWrapIndent := FWrapIndent;
     if (FStack.ProcLevel <= 0) or (FStack.GetTopType <> rtProcedure) then begin
-      Assert(False, '.CheckIndent');
-            // not very clean
+      Assert(False, '.CheckIndentLeftBr');
+      // not very clean
       FStack.Push(FCurrentRType, 1);
     end else begin
-      Assert(False, '.CheckIndent');
+      Assert(False, '.CheckIndentLeftBr');
       Offset := 1;
       while (FTokenIdx > Offset) and (TryGetToken(FTokenIdx - Offset, Next)
         and (Next.ReservedType in [rtDot, rtNothing])) do begin
-        Assert(False, '.CheckIndent');
+        Assert(False, '.CheckIndentLeftBr');
         Inc(Offset);
       end;
       if IsRType(Next, rtProcedure) then begin
-        Assert(False, '.CheckIndent');
+        Assert(False, '.CheckIndentLeftBr');
         FStack.Push(FCurrentRType, 0);
       end else begin
-        Assert(False, '.CheckIndent');
+        Assert(False, '.CheckIndentLeftBr');
         FStack.Push(FCurrentRType, 1);
       end;
     end;
-    Assert(False, '.CheckIndent');
+    Assert(False, '.CheckIndentLeftBr');
     FWrapIndent := False;
   end;
 end;
 
-function TCodeFormatterFormatter.HandleSemicolon(): Boolean;
+function TCodeFormatterFormatter.CheckIndentSemicolon(): Boolean;
 var
   IdxChanged: Boolean;
   Next: TPascalToken;
@@ -1265,7 +1272,7 @@ var
   LFeed: TLineFeed;
   AllowPop: Boolean;
 begin
-  Assert(False, '.CheckIndent: rtSemiColon');
+  Assert(False, '.CheckIndentSemicolon');
 
   Result := False;
 
@@ -1442,16 +1449,16 @@ begin
   end;
 end;
 
-procedure TCodeFormatterFormatter.HandleProcedure(var _NTmp: Integer);
+procedure TCodeFormatterFormatter.CheckIndentProcedure(var _NTmp: Integer);
 var
   Prev1: TPascalToken;
   FunctTypeDeclare, IsDelegate, NoBlankLine: Boolean;
 begin
-  Assert(False, '.CheckIndent: rtProcedure');
+  Assert(False, '.CheckIndentProcedure');
   case FStack.GetTopType of
           // todo: rtClassDecl or rtClass ?
     rtClassDecl, rtRecord: begin
-        Assert(False, '.CheckIndent: Top type is Class or Record');
+        Assert(False, '.CheckIndentProcedure: Top type is Class or Record');
         FStack.Pop;
         FStack.Push(rtClass, 1);
       end;
@@ -1460,7 +1467,7 @@ begin
         if (FPrevToken.ReservedType <> rtEquals)
           and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
                 // There was a nested class/record declaration that ended
-          Assert(False, '.CheckIndent: Nested Class or Record ended');
+          Assert(False, '.CheckIndentProcedure: Nested Class or Record ended');
           FStack.Pop;
           FStack.Pop;
           FStack.Push(rtClass, 1);
@@ -1474,40 +1481,40 @@ begin
   IsDelegate := False;
 
   if not FunctTypeDeclare then begin
-    Assert(False, '.CheckIndent: FunctDeclare = False');
+    Assert(False, '.CheckIndentProcedure: FunctDeclare = False');
     CheckSpecialProcedure(NoBlankLine, IsDelegate);
   end;
 
   if not FunctTypeDeclare and not FIsInInterfacePart and not (FStack.GetTopType = rtClass) then begin
-    Assert(False, '.CheckIndent: not FunctTypeDeclare and not FIsInInterface and not (TopType = rtClass))');
+    Assert(False, '.CheckIndentProcedure: not FunctTypeDeclare and not FIsInInterface and not (TopType = rtClass))');
     if not FStack.HasType(rtProcedure) then begin
-      Assert(False, '.CheckIndent: Stack.HasType(rtProcedure) = False');
+      Assert(False, '.CheckIndentProcedure: Stack.HasType(rtProcedure) = False');
       if not IsDelegate then begin
-        Assert(False, '.CheckIndent: not IsDelegate');
+        Assert(False, '.CheckIndentProcedure: not IsDelegate');
 
         if FStack.nIndent > 0 then begin
-          Assert(False, '.CheckIndent: Stack.nIndent > 0');
+          Assert(False, '.CheckIndentProcedure: Stack.nIndent > 0');
           FStack.nIndent := 0;
           AddToPrevLineIndent(_NTmp);
         end;
 
         FStack.ProcLevel := 0;
         if FSettings.BlankProc and not NoBlankLine then begin
-          Assert(False, '.CheckIndent: Blank Lines Around Proc');
+          Assert(False, '.CheckIndentProcedure: Blank Lines Around Proc');
           CheckBlankLinesAroundProc;
         end;
       end;
     end else begin
-      Assert(False, '.CheckIndent: Stack.HasType(rtProcedure) = True');
+      Assert(False, '.CheckIndentProcedure: Stack.HasType(rtProcedure) = True');
       if FSettings.BlankSubProc and not NoBlankLine then begin
-        Assert(False, '.CheckIndent: Blanc Lines Around Sub Proc');
+        Assert(False, '.CheckIndentProcedure: Blanc Lines Around Sub Proc');
         CheckBlankLinesAroundProc;
       end;
 
       FStack.ProcLevel := FStack.ProcLevel + 1;
 
       if FStack.nIndent = 0 then begin
-        Assert(False, '.CheckIndent: Stack.nIndent=0');
+        Assert(False, '.CheckIndentProcedure: Stack.nIndent=0');
         AddToPrevLineIndent(_NTmp);
         FStack.nIndent := FStack.nIndent + 1;
       end;
@@ -1515,11 +1522,11 @@ begin
 
     FStack.Push(rtProcedure, 0);
   end else begin
-          // Array of Procedure, Reference To Function...
+    // Array of Procedure, Reference To Function...
     if (FStack.GetTopType = rtType) and IsRType(Prev1, [rtOf, rtOper, rtComma]) then begin
-            // do nothing
+      // do nothing
     end else begin
-            // todo: rtClass or also rtClassDecl
+      // todo: rtClass or also rtClassDecl
       if (not FunctTypeDeclare) and (FStack.GetTopType <> rtClass) then begin
         FStack.nIndent := 0;
         AddToPrevLineIndent(_NTmp);
@@ -1579,16 +1586,16 @@ begin
   { SetSpacing; }
   case FCurrentRType of
     rtIf:
-      HandleIf;
+      CheckIndentIf;
 
     rtThen:
-      HandleThen;
+      CheckIndentThen;
 
     rtColon:
-      HandleColon;
+      CheckIndentColon;
 
     rtElse:
-      HandleElse(_NTmp);
+      CheckIndentElse(_NTmp);
 
     rtRepeat, rtRecord: begin
         FStack.Push(FCurrentRType, 1);
@@ -1615,7 +1622,7 @@ begin
       end;
 
     rtLeftBr:
-      HandleLeftBr;
+      CheckIndentLeftBr;
 
     rtWhile: begin
        // Helper For
@@ -1778,7 +1785,7 @@ begin
       end;
 
     rtComma: begin
-        if HandleComma() then begin
+        if CheckIndentComma() then begin
           // We changed the code, we need to process the comment again
           Exit; //==>
         end;
@@ -1874,7 +1881,7 @@ begin
       end;
 
     rtProcedure:
-      HandleProcedure(_NTmp);
+      CheckIndentProcedure(_NTmp);
 
     rtInterface: begin
         if IsRType(FPrevToken, rtEquals) then begin
@@ -2091,7 +2098,7 @@ begin
       end;
 
     rtSemiColon: begin
-        if HandleSemicolon() then
+        if CheckIndentSemicolon() then
           Exit; //==>
       end;
 
