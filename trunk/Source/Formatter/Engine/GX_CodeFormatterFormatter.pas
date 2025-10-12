@@ -119,6 +119,7 @@ type
     procedure HandleIf;
     procedure HandleThen;
     procedure HandleColon(_RemoveMe: Integer);
+    procedure HandleComma(var _RemoveMe: Integer);
     procedure HandleElse(_NTmp: Integer);
     function DetectGenericStart(_TokenIdx: Integer): Boolean;
     procedure CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed);
@@ -1087,6 +1088,57 @@ begin
   end;
 end;
 
+procedure TCodeFormatterFormatter.HandleComma(var _RemoveMe: Integer);
+var
+  IdxChanged: Boolean;
+  Next: TPascalToken;
+  LFeed: TLineFeed;
+begin
+  if FStack.GetTopType = rtUses then begin
+    if (FSettings.NoIndentUsesComma) and (FPrevToken is TLineFeed) then
+      AddToPrevLineIndent(-1)
+    else if FSettings.FeedEachUnit then begin
+      if FSettings.FeedEachUnitBeforeComma then begin
+        // linefeed before comma
+        if (not (FPrevToken is TLineFeed)) then begin
+          IdxChanged := False;
+          Next := GetToken(FTokenIdx + 1);
+          if Next.ReservedType = rtComment then begin
+            // The next Token is a comment, we don't want this comment to
+            // be the first after the break which would comment out the next
+            // unit, so we need to move it.
+
+            // Move the Comma behind the comment
+            FTokens.AtInsert(FTokenIdx + 1, FTokens.Extract(FTokenIdx));
+            FTokenIdx := FTokenIdx + 1;
+            IdxChanged := True;
+          end;
+
+          LFeed := AssertLineFeedAfter(FTokenIdx - 1);
+          if (FSettings.NoIndentUsesComma) then
+            LFeed.SetIndent(0);
+
+          // If we have a break after the comma, remove that
+          while TryGetNextNoComment(FTokenIdx, Next, _RemoveMe)
+            and (Next.ReservedType = rtLineFeed) do begin
+            FTokens.Extract(FTokenIdx + _RemoveMe).Free;
+          end;
+
+          // We changed the code, we need to process the comment again
+          if IdxChanged then begin
+            FTokenIdx := FTokenIdx - 3;
+            Exit;
+          end;
+        end;
+      end else begin
+        // not FeedEachUnitBeforeComma
+        if TryGetNextNoComment(FTokenIdx, True, Next, _RemoveMe) and (Next.ReservedType <> rtLineFeed) then
+          AssertLineFeedAfter(FTokenIdx, True);
+      end;
+    end;
+  end;
+end;
+
 procedure TCodeFormatterFormatter.HandleElse(_NTmp: Integer);
 var
   Next: TPascalToken;
@@ -1501,54 +1553,8 @@ begin
         Exit;
       end;
 
-    rtComma: begin
-        if FStack.GetTopType = rtUses then begin
-          if (FSettings.NoIndentUsesComma) and (FPrevToken is TLineFeed) then
-            AddToPrevLineIndent(-1)
-          else if FSettings.FeedEachUnit then begin
-            if FSettings.FeedEachUnitBeforeComma then begin
-              // linefeed before comma
-
-              if (not (FPrevToken is TLineFeed)) then begin
-                IdxChanged := False;
-                Next := GetToken(FTokenIdx+1);
-                if Next.ReservedType = rtComment then
-                begin
-                  // The next Token is a comment, we don't want this comment to
-                  // be the first after the break which would comment out the next
-                  // unit, so we need to move it.
-
-                  // Move the Comma behind the comment
-                  FTokens.AtInsert(FTokenIdx+1, FTokens.Extract(FTokenIdx));
-                  FTokenIdx := FTokenIdx+1;
-                  IdxChanged := True;
-                end;
-
-                LFeed := AssertLineFeedAfter(FTokenIdx - 1);
-                if (FSettings.NoIndentUsesComma) then
-                  LFeed.SetIndent(0);
-
-                // If we have a break after the comma, remove that
-                while TryGetNextNoComment(FTokenIdx, Next, RemoveMe)
-                  and (Next.ReservedType = rtLineFeed) do begin
-                  FTokens.Extract(FTokenIdx + RemoveMe).Free;
-                end;
-
-                // We changed the code, we need to process the comment again
-                if IdxChanged then
-                begin
-                  FTokenIdx := FTokenIdx-3;
-                  Exit;
-                end;
-              end;
-            end else begin
-              // not FeedEachUnitBeforeComma
-              if TryGetNextNoComment(FTokenIdx, True, Next, RemoveMe) and (Next.ReservedType <> rtLineFeed) then
-                AssertLineFeedAfter(FTokenIdx,True);
-            end;
-          end;
-        end;
-      end;
+    rtComma:
+      HandleComma(RemoveMe);
 
     rtProgram, rtUses, rtInitialization:
       if (FCurrentRType = rtUses) and (FStack.GetTopType in [rtProcedure, rtProcDeclare, rtClass]) then begin
