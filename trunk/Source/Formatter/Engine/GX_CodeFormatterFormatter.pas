@@ -123,6 +123,7 @@ type
     /// @returns True when FTokenIdx was changed and CheckIndent must exit </summary>
     function HandleComma(): Boolean;
     procedure HandleElse(_NTmp: Integer);
+    procedure HandleLeftBr;
     procedure HandleProcedure(var _NTmp: Integer);
     ///<summary>
     /// @returns True when FTokenIdx was changed and CheckIndent must exit </summary>
@@ -1210,11 +1211,48 @@ begin
   FWrapIndent := False;
 end;
 
+procedure TCodeFormatterFormatter.HandleLeftBr();
+var
+  Next: TPascalToken;
+  Offset: Integer;
+begin
+  Assert(False, '.CheckIndent: LeftBr');
+  if (FStack.GetTopType = rtLeftBr) then begin
+    Assert(False, '.CheckIndent: Top is LeftBr');
+    FStack.Push(FCurrentRType, 0)
+  end else begin
+    Assert(False, '.CheckIndent: Top is not Leftbr');
+    FOldWrapIndent := FWrapIndent;
+    if (FStack.ProcLevel <= 0) or (FStack.GetTopType <> rtProcedure) then begin
+      Assert(False, '.CheckIndent');
+            // not very clean
+      FStack.Push(FCurrentRType, 1);
+    end else begin
+      Assert(False, '.CheckIndent');
+      Offset := 1;
+      while (FTokenIdx > Offset) and (TryGetToken(FTokenIdx - Offset, Next)
+        and (Next.ReservedType in [rtDot, rtNothing])) do begin
+        Assert(False, '.CheckIndent');
+        Inc(Offset);
+      end;
+      if IsRType(Next, rtProcedure) then begin
+        Assert(False, '.CheckIndent');
+        FStack.Push(FCurrentRType, 0);
+      end else begin
+        Assert(False, '.CheckIndent');
+        FStack.Push(FCurrentRType, 1);
+      end;
+    end;
+    Assert(False, '.CheckIndent');
+    FWrapIndent := False;
+  end;
+end;
+
 function TCodeFormatterFormatter.HandleSemicolon(): Boolean;
 var
   IdxChanged: Boolean;
   Next: TPascalToken;
-  RemoveMe: Integer;
+  Offset: Integer;
   LFeed: TLineFeed;
   AllowPop: Boolean;
 begin
@@ -1270,15 +1308,15 @@ begin
       // procedure bla;
       //   cdecl;
       //   overload;
-      RemoveMe := 1;
-      while TryGetToken(FTokenIdx + RemoveMe, Next)
+      Offset := 1;
+      while TryGetToken(FTokenIdx + Offset, Next)
         and IsRType(Next, [rtSemiColon, rtLineFeed, rtComment, rtCompIf, rtCompElse, rtCompEndif,
           rtFuncDirective, rtForward, rtExternal]) do begin
         if IsRType(Next, [rtFuncDirective, rtForward, rtExternal]) then begin
           AllowPop := False;
           Break; //==v
         end;
-        Inc(RemoveMe);
+        Inc(Offset);
       end
     end;
 
@@ -1298,11 +1336,11 @@ begin
           // todo: This only works, if 'absolute' or any of the function directives ('overload',
           // 'stdcall' etc). are on the same line as the function / procedure declaration:
     FWrapIndent := False;
-    RemoveMe := 0;
+    Offset := 0;
     repeat
       Assert(False, '.CheckIndent: in repeat');
-      Inc(RemoveMe);
-    until not TryGetToken(FTokenIdx + RemoveMe, Next) or (not (Next.ReservedType in [{ rtComment, }rtLineFeed]));
+      Inc(Offset);
+    until not TryGetToken(FTokenIdx + Offset, Next) or (not (Next.ReservedType in [{ rtComment, }rtLineFeed]));
 
     if Next <> nil then begin
       Assert(False, '.CheckIndent: Next <> nil');
@@ -1487,11 +1525,6 @@ end;
 
 procedure TCodeFormatterFormatter.CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed);
 var
-  // these XxxRemoveMe variables used to be only one variable called RemoveMe, but the variable
-  // was only ever used within different case blocks so I made them sepearate variables so this is
-  // clear. (In newer Delphi versions they could be inline variables, but this code must be
-  // backwards compatible to Delphi 6, so this is not an option.)
-  LeftBrRemoveMe: Integer;
   Next: TPascalToken;
   FeedRound: TFeedBegin;
   wType: TWordType;
@@ -1572,38 +1605,8 @@ begin
         AddToPrevLineIndent(_NTmp);
       end;
 
-    rtLeftBr: begin
-        Assert(False, '.CheckIndent: LeftBr');
-        if (FStack.GetTopType = rtLeftBr) then begin
-          Assert(False, '.CheckIndent: Top is LeftBr');
-          FStack.Push(FCurrentRType, 0)
-        end else begin
-          Assert(False, '.CheckIndent: Top is not Leftbr');
-          FOldWrapIndent := FWrapIndent;
-          if (FStack.ProcLevel <= 0) or (FStack.GetTopType <> rtProcedure) then begin
-            Assert(False, '.CheckIndent');
-            // not very clean
-            FStack.Push(FCurrentRType, 1);
-          end else begin
-            Assert(False, '.CheckIndent');
-            LeftBrRemoveMe := 1;
-            while (FTokenIdx > LeftBrRemoveMe) and (TryGetToken(FTokenIdx - LeftBrRemoveMe, Next)
-              and (Next.ReservedType in [rtDot, rtNothing])) do begin
-              Assert(False, '.CheckIndent');
-              Inc(LeftBrRemoveMe);
-            end;
-            if IsRType(Next, rtProcedure) then begin
-              Assert(False, '.CheckIndent');
-              FStack.Push(FCurrentRType, 0);
-            end else begin
-              Assert(False, '.CheckIndent');
-              FStack.Push(FCurrentRType, 1);
-            end;
-          end;
-          Assert(False, '.CheckIndent');
-          FWrapIndent := False;
-        end;
-      end;
+    rtLeftBr:
+      HandleLeftBr;
 
     rtWhile: begin
        // Helper For
