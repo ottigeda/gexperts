@@ -123,6 +123,7 @@ type
     /// @returns True when FTokenIdx was changed and CheckIndent must exit </summary>
     function HandleComma(): Boolean;
     procedure HandleElse(_NTmp: Integer);
+    procedure HandleProcedure(var _NTmp: Integer);
     ///<summary>
     /// @returns True when FTokenIdx was changed and CheckIndent must exit </summary>
     function HandleSemicolon(): Boolean;
@@ -1394,6 +1395,96 @@ begin
   end;
 end;
 
+procedure TCodeFormatterFormatter.HandleProcedure(var _NTmp: Integer);
+var
+  Prev1: TPascalToken;
+  FunctTypeDeclare, IsDelegate, NoBlankLine: Boolean;
+begin
+  Assert(False, '.CheckIndent: rtProcedure');
+  case FStack.GetTopType of
+          // todo: rtClassDecl or rtClass ?
+    rtClassDecl, rtRecord: begin
+        Assert(False, '.CheckIndent: Top type is Class or Record');
+        FStack.Pop;
+        FStack.Push(rtClass, 1);
+      end;
+    rtVar, rtConst, rtType: begin
+              // todo: rtClassDecl or rtClass ?
+        if (FPrevToken.ReservedType <> rtEquals)
+          and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
+                // There was a nested class/record declaration that ended
+          Assert(False, '.CheckIndent: Nested Class or Record ended');
+          FStack.Pop;
+          FStack.Pop;
+          FStack.Push(rtClass, 1);
+          DecPrevLineIndent;
+        end;
+      end;
+  end;
+
+  FunctTypeDeclare := CheckForFunctTypeDeclare(Prev1);
+  NoBlankLine := False;
+  IsDelegate := False;
+
+  if not FunctTypeDeclare then begin
+    Assert(False, '.CheckIndent: FunctDeclare = False');
+    CheckSpecialProcedure(NoBlankLine, IsDelegate);
+  end;
+
+  if not FunctTypeDeclare and not FIsInInterfacePart and not (FStack.GetTopType = rtClass) then begin
+    Assert(False, '.CheckIndent: not FunctTypeDeclare and not FIsInInterface and not (TopType = rtClass))');
+    if not FStack.HasType(rtProcedure) then begin
+      Assert(False, '.CheckIndent: Stack.HasType(rtProcedure) = False');
+      if not IsDelegate then begin
+        Assert(False, '.CheckIndent: not IsDelegate');
+
+        if FStack.nIndent > 0 then begin
+          Assert(False, '.CheckIndent: Stack.nIndent > 0');
+          FStack.nIndent := 0;
+          AddToPrevLineIndent(_NTmp);
+        end;
+
+        FStack.ProcLevel := 0;
+        if FSettings.BlankProc and not NoBlankLine then begin
+          Assert(False, '.CheckIndent: Blank Lines Around Proc');
+          CheckBlankLinesAroundProc;
+        end;
+      end;
+    end else begin
+      Assert(False, '.CheckIndent: Stack.HasType(rtProcedure) = True');
+      if FSettings.BlankSubProc and not NoBlankLine then begin
+        Assert(False, '.CheckIndent: Blanc Lines Around Sub Proc');
+        CheckBlankLinesAroundProc;
+      end;
+
+      FStack.ProcLevel := FStack.ProcLevel + 1;
+
+      if FStack.nIndent = 0 then begin
+        Assert(False, '.CheckIndent: Stack.nIndent=0');
+        AddToPrevLineIndent(_NTmp);
+        FStack.nIndent := FStack.nIndent + 1;
+      end;
+    end;
+
+    FStack.Push(rtProcedure, 0);
+  end else begin
+          // Array of Procedure, Reference To Function...
+    if (FStack.GetTopType = rtType) and IsRType(Prev1, [rtOf, rtOper, rtComma]) then begin
+            // do nothing
+    end else begin
+            // todo: rtClass or also rtClassDecl
+      if (not FunctTypeDeclare) and (FStack.GetTopType <> rtClass) then begin
+        FStack.nIndent := 0;
+        AddToPrevLineIndent(_NTmp);
+        if FSettings.IndentComments then
+          IndentProcedureComment;
+      end;
+
+      FStack.Push(rtProcDeclare, 0);
+    end;
+  end;
+end;
+
 procedure TCodeFormatterFormatter.CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed);
 var
   // these XxxRemoveMe variables used to be only one variable called RemoveMe, but the variable
@@ -1403,8 +1494,6 @@ var
   LeftBrRemoveMe: Integer;
   FuncDirectiveRemoveMe: Integer;
   Next: TPascalToken;
-  Prev1: TPascalToken;
-  FunctTypeDeclare, IsDelegate, NoBlankLine: Boolean;
   FeedRound: TFeedBegin;
   wType: TWordType;
   exp: TGXUnicodeString;
@@ -1773,91 +1862,8 @@ begin
         end;
       end;
 
-    rtProcedure: begin
-        Assert(False, '.CheckIndent: rtProcedure');
-        case FStack.GetTopType of
-          // todo: rtClassDecl or rtClass ?
-          rtClassDecl, rtRecord: begin
-              Assert(False, '.CheckIndent: Top type is Class or Record');
-              FStack.Pop;
-              FStack.Push(rtClass, 1);
-            end;
-          rtVar, rtConst, rtType: begin
-              // todo: rtClassDecl or rtClass ?
-              if (FPrevToken.ReservedType <> rtEquals)
-                and (FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord]) then begin
-                // There was a nested class/record declaration that ended
-                Assert(False, '.CheckIndent: Nested Class or Record ended');
-                FStack.Pop;
-                FStack.Pop;
-                FStack.Push(rtClass, 1);
-                DecPrevLineIndent;
-              end;
-            end;
-        end;
-
-        FunctTypeDeclare := CheckForFunctTypeDeclare(Prev1);
-        NoBlankLine := False;
-        IsDelegate := False;
-
-        if not FunctTypeDeclare then begin
-          Assert(False, '.CheckIndent: FunctDeclare = False');
-          CheckSpecialProcedure(NoBlankLine, IsDelegate);
-        end;
-
-        if not FunctTypeDeclare and not FIsInInterfacePart and not (FStack.GetTopType = rtClass) then begin
-          Assert(False, '.CheckIndent: not FunctTypeDeclare and not FIsInInterface and not (TopType = rtClass))');
-          if not FStack.HasType(rtProcedure) then begin
-            Assert(False, '.CheckIndent: Stack.HasType(rtProcedure) = False');
-            if not IsDelegate then begin
-              Assert(False, '.CheckIndent: not IsDelegate');
-
-              if FStack.nIndent > 0 then begin
-                Assert(False, '.CheckIndent: Stack.nIndent > 0');
-                FStack.nIndent := 0;
-                AddToPrevLineIndent(_NTmp);
-              end;
-
-              FStack.ProcLevel := 0;
-              if FSettings.BlankProc and not NoBlankLine then begin
-                Assert(False, '.CheckIndent: Blank Lines Around Proc');
-                CheckBlankLinesAroundProc;
-              end;
-            end;
-          end else begin
-            Assert(False, '.CheckIndent: Stack.HasType(rtProcedure) = True');
-            if FSettings.BlankSubProc and not NoBlankLine then begin
-              Assert(False, '.CheckIndent: Blanc Lines Around Sub Proc');
-              CheckBlankLinesAroundProc;
-            end;
-
-            FStack.ProcLevel := FStack.ProcLevel + 1;
-
-            if FStack.nIndent = 0 then begin
-              Assert(False, '.CheckIndent: Stack.nIndent=0');
-              AddToPrevLineIndent(_NTmp);
-              FStack.nIndent := FStack.nIndent + 1;
-            end;
-          end;
-
-          FStack.Push(rtProcedure, 0);
-        end else begin
-          // Array of Procedure, Reference To Function...
-          if (FStack.GetTopType = rtType) and IsRType(Prev1, [rtOf, rtOper, rtComma]) then begin
-            // do nothing
-          end else begin
-            // todo: rtClass or also rtClassDecl
-            if (not FunctTypeDeclare) and (FStack.GetTopType <> rtClass) then begin
-              FStack.nIndent := 0;
-              AddToPrevLineIndent(_NTmp);
-              if FSettings.IndentComments then
-                IndentProcedureComment;
-            end;
-
-            FStack.Push(rtProcDeclare, 0);
-          end;
-        end;
-      end;
+    rtProcedure:
+      HandleProcedure(_NTmp);
 
     rtInterface: begin
         if IsRType(FPrevToken, rtEquals) then begin
