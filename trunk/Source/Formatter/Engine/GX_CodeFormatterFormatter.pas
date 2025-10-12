@@ -1492,7 +1492,6 @@ var
   // clear. (In newer Delphi versions they could be inline variables, but this code must be
   // backwards compatible to Delphi 6, so this is not an option.)
   LeftBrRemoveMe: Integer;
-  FuncDirectiveRemoveMe: Integer;
   Next: TPascalToken;
   FeedRound: TFeedBegin;
   wType: TWordType;
@@ -1810,7 +1809,7 @@ begin
           // we are not in a procedure or class declaration -> it's an identifier
           FCurrentToken.SetReservedType(rtNothing);
         end else begin
-          if TryGetNextNoComment(FTokenIdx, Next, FuncDirectiveRemoveMe)
+          if TryGetNextNoComment(FTokenIdx, Next)
             and (Next.ReservedType = rtColon) then begin
             // followed by ':' -> It is an identifier
             FCurrentToken.SetReservedType(rtNothing);
