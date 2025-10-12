@@ -912,7 +912,52 @@ begin
   Dec(FTokenIdx);
 end;
 
+// todo: Since this can fail, why not simply keep the line feed that caused this problem?
+//       The user has used a // comment, so he should be the one to remove, move or replace it.
 procedure TCodeFormatterFormatter.CheckSlashComment;
+
+  ///<summary>
+  /// changes " // <comment>" to "{//<comment>}"
+  /// used for preventing a
+  ///    begin
+  /// moved from the next line to become commented out
+  /// @returns True if token is a comment, False otherwise </summary>
+  function ChangeSingleLineCommentToBeginEndComment(_Token: TPascalToken): Boolean;
+  var
+    s: TGXUnicodeString;
+  begin
+    Result := (_Token.ReservedType = rtComment);
+    if not Result then begin
+      // no comment
+      Exit;
+    end;
+
+    if not _Token.TryGetExpression(s) then begin
+      // no expression
+      // todo: This should not be possible -> raise an exception?
+      //       On the other hand: If it is not a comment we do not need to change it.
+      Exit;
+    end;
+
+    if Copy(s, 1, 2) <> '//' then begin
+      // not a double slash comment
+      Exit;
+    end;
+
+    if Pos('}', s) <> 0 then begin
+      // The comment contains '}' so we cannot convert it to a curly braces comment
+      // Therefore we must use '(*'.
+      if Pos('*)', s) <> 0 then begin
+        // But it also contains '*)' so we cannot use that either
+        raise Exception.CreateFmt('Cannot convert %s to one of the other comment types because the comment contains "}" and "*)"', [s]);
+      end;
+      s := '(*' + s + '*)';
+    end else
+      s := '{' + s + '}';
+
+    _Token.SetExpression(s);
+  end;
+
 var
   Token: TPascalToken;
   PrevPasWord: TPascalToken;
@@ -921,9 +966,9 @@ var
   i: Integer;
 begin
   if TryGetToken(FTokenIdx - 1, FPrevToken) and (FPrevToken.ReservedType = rtComment)
-    and FPrevToken.TryGetExpression(PrevExpression) and (PrevExpression[1] = '/') then begin
+    and FPrevToken.TryGetExpression(PrevExpression) and (Copy(PrevExpression, 1, 2) = '//') then begin
     // fix for situation with a // comment on prev line: begin becomes part of the comment
-    if FPrevToken.ChangeSingleLineCommentToBeginEndComment then begin
+    if ChangeSingleLineCommentToBeginEndComment(FPrevToken) then begin
       FPrevToken.SetSpace([spAfter], True);
     end else begin
       i := 0;

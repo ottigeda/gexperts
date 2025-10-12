@@ -31,14 +31,6 @@ type
     procedure SetSpace(_Space: TSpaceSet; _State: Boolean); virtual;
     {: @returns the object's content }
     function GetContent: TGXUnicodeString; virtual; abstract;
-    ///<summary>
-    /// changes " // <comment>" to "{//<comment>}"
-    /// used for preventing a
-    ///    begin
-    /// moved from the next line to become commented out
-    /// @returns True if token is a comment, False otherwise </summary>
-    // todo: This should not be a method of TPascalToken
-    function ChangeSingleLineCommentToBeginEndComment: Boolean;
     function TryGetExpression(out _Expression: TGXUnicodeString): Boolean; virtual;
     procedure SetExpression(const _Expression: TGXUnicodeString); virtual;
     procedure SetExpressionCase(_Case: TCase); virtual;
@@ -186,42 +178,6 @@ end;
 procedure TPascalToken.AddOption(_Option: TTokenOption);
 begin
   Options := Options + [_Option];
-end;
-
-function TPascalToken.ChangeSingleLineCommentToBeginEndComment: Boolean;
-var
-  s: TGXUnicodeString;
-begin
-  Result := (Reservedtype = rtComment);
-  if not Result then begin
-    // no comment
-    Exit;
-  end;
-
-  if not TryGetExpression(s) then begin
-    // no expression
-    // todo: This should not be possible -> raise an exception?
-    //       On the other hand: If it is not a comment we do not need to change it.
-    Exit;
-  end;
-
-  if Copy(s, 1, 2) <> '//' then begin
-    // not a double slash comment
-    Exit;
-  end;
-
-  if Pos('}', s) <> 0 then begin
-    // The comment contains '}' so we cannot convert it to a curly braces comment
-    // Therefore we must use '(*'.
-    if Pos('*)', s) <> 0 then begin
-      // But it also contains '*)' so we cannot use that either
-      raise Exception.CreateFmt('Cannot convert %s to one of the other comment types because the comment contains "}" and "*)"', [s]);
-    end;
-    s := '(*' + s + '*)';
-  end else
-    s := '{' + s + '}';
-
-  SetExpression(s);
 end;
 
 procedure TPascalToken.SetSpace(_Space: TSpaceSet; _State: Boolean);
