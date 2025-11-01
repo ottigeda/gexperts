@@ -1,6 +1,6 @@
 // handles reading and writing of the code formatter settings to an ini file or
 // any other implementation of the IConfigReader and IConfigWriter interface
-// Original Author:     Thomas Mueller (http://www.dummzeuch.de)
+// Original Author:     Thomas Mueller (http://blog.dummzeuch.de)
 unit GX_CodeFormatterConfigHandler;
 
 {$I GX_CondDefine.inc}
