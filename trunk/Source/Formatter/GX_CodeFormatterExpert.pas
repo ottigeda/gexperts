@@ -1,5 +1,5 @@
 // the actual code formatter expert, called either from GX_Formatter or GX_eCodeFormatter
-// Original Author:     Thomas Mueller (http://www.dummzeuch.de)
+// Original Author:     Thomas Mueller (http://blog.dummzeuch.de)
 // Contributors:
 // * Ulrich Gerhardt - 2007-08-11: added determining the settings via an external .ini file
 // * Ulrich Gerhardt - 2009-09-06: support for stand alone formatter
@@ -82,10 +82,13 @@ begin
   if sl.Find(_Identifier, Idx) then begin
     old := sl[Idx];
     Result := (old <> _Identifier);
-    sl.Delete(Idx);
+    if Result then begin
+      sl.Delete(Idx);
+    end;
   end else
     Result := True;
-  sl.Add(_Identifier);
+  if Result then
+    sl.Add(_Identifier);
 end;
 
 procedure TCodeFormatterExpert.Configure(_Owner: TWinControl);
