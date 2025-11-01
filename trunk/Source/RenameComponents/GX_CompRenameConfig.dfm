@@ -1,6 +1,7 @@
 object fmCompRenameConfig: TfmCompRenameConfig
   Left = 336
   Top = 315
+  ActiveControl = edtFind
   AutoScroll = False
   BorderIcons = [biSystemMenu]
   Caption = 'Rename Components Configuration'
@@ -70,7 +71,7 @@ object fmCompRenameConfig: TfmCompRenameConfig
     end
     object chkAutoAdd: TCheckBox
       Left = 8
-      Top = 21
+      Top = 24
       Width = 393
       Height = 17
       Anchors = [akLeft, akRight, akBottom]
@@ -79,7 +80,7 @@ object fmCompRenameConfig: TfmCompRenameConfig
     end
     object chkShowDialog: TCheckBox
       Left = 8
-      Top = 2
+      Top = 0
       Width = 393
       Height = 17
       Anchors = [akLeft, akRight, akBottom]
