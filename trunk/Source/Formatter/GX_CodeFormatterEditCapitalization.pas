@@ -288,7 +288,7 @@ procedure TfmCodeFormatterEditCapitalization.act_ExportExecute(Sender: TObject);
 var
   fn: string;
 begin
-  if ShowSaveDialog('Select file to import', 'txt', fn) then
+  if ShowSaveDialog('Select file to export', 'txt', fn) then
     FWords.SaveToFile(fn);
 end;
 
