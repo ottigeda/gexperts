@@ -53,17 +53,9 @@ uses
 { TeCodeFormatterExpert }
 
 procedure TeCodeFormatterExpert.AddToCapitalization(const _Identifier: TGXUnicodeString);
-var
-  Settings: TCodeFormatterSettings;
-  Timestamp: TDateTime;
 begin
   if FExpert.AddToCapitalization(_Identifier) then begin
-    Settings := FExpert.Engine.Settings;
-
-    Timestamp := Settings.CapFileTimestamp;
-    TCodeFormatterConfigHandler.WriteCaptialization(Settings.CapitalizationFile, Settings.CapNames,
-      Timestamp);
-    Settings.CapFileTimestamp := Timestamp;
+    FExpert.SaveCapitalization;
   end;
 end;
 

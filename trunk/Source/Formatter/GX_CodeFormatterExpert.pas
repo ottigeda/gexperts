@@ -36,6 +36,7 @@ type
     ///<summary>
     /// @returns True, if the captialization list was changed </summary>
     function AddToCapitalization(const _Identifier: TGXUnicodeString): Boolean;
+    procedure SaveCapitalization;
     property Engine: TCodeFormatterEngine read FEngine;
   end;
 
@@ -109,9 +110,28 @@ end;
 
 destructor TCodeFormatterExpert.Destroy;
 begin
+  try
+    SaveCapitalization;
+  except
+    // ignore any errors in the destructor
+  end;
+
   FreeAndNil(FEngine);
+
   inherited;
 end;
+
+procedure TCodeFormatterExpert.SaveCapitalization;
+var
+  Settings: TCodeFormatterSettings;
+  Timestamp: TDateTime;
+begin
+  Settings := FEngine.Settings;
+  Timestamp := Settings.CapFileTimestamp;
+  TCodeFormatterConfigHandler.WriteCaptialization(Settings.CapitalizationFile, Settings.CapNames, Timestamp);
+  Settings.CapFileTimestamp := Timestamp;
+end;
+
 
 function FileNameMatches(const FileName, Pattern: string): Boolean;
 var
