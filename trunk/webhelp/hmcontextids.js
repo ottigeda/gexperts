@@ -37,6 +37,7 @@ hmContextIds["59"]="editorbookmarks00general.html";
 hmContextIds["7"]="expert_manager.html";
 hmContextIds["15"]="favorite_files.html";
 hmContextIds["45"]="findcomponentreference.html";
+hmContextIds["75"]="formatter.html";
 hmContextIds["3"]="grep_results.html";
 hmContextIds["1"]="grep_search.html";
 hmContextIds["52"]="hideshownon-visualcomponents.html";
