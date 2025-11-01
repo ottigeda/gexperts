@@ -756,6 +756,7 @@ GExperts Help
       <helpcontext-number href="Expert_Manager" value="7"/>
       <helpcontext-number href="Favorite_Files" value="15"/>
       <helpcontext-number href="FindComponentReference" value="45"/>
+      <helpcontext-number href="Formatter" value="75"/>
       <helpcontext-number href="GeneralConfiguration" value="53"/>
       <helpcontext-number href="GExperts_Configuration" value="12"/>
       <helpcontext-number href="Grep_Results" value="3"/>

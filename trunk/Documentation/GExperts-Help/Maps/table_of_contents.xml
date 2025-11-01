@@ -92,6 +92,9 @@
     <topicref type="topic" id="401609818087454" build="ALL" modified="2009-12-13T23:48:43.999Z" icon="0" href="FindComponentReference">
       <caption translate="true">Find Component Reference</caption>
     </topicref>
+    <topicref type="topic" id="459629292727235" build="ALL" modified="2025-11-01T18:03:09.235Z" icon="0" href="Formatter">
+      <caption translate="true">Formatter</caption>
+    </topicref>
     <topicref type="topic" id="401609818791097" build="ALL" modified="2009-12-13T23:48:44.000Z" icon="0" href="Grep_Regular_Expressions">
       <caption translate="true">Grep Regular Expressions</caption>
     </topicref>
