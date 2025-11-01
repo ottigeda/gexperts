@@ -59,18 +59,18 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object chk_IndentComments: TCheckBox
           Left = 216
-          Top = 103
+          Top = 112
           Width = 238
-          Height = 14
+          Height = 17
           Caption = 'Indent comments'
           TabOrder = 5
           OnClick = UpdatePreview
         end
         object chk_IndentCompDirectives: TCheckBox
           Left = 216
-          Top = 123
+          Top = 136
           Width = 238
-          Height = 14
+          Height = 17
           Caption = 'Indent compiler directives'
           TabOrder = 6
           OnClick = UpdatePreview
@@ -79,16 +79,16 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 216
           Top = 64
           Width = 238
-          Height = 14
+          Height = 17
           Caption = 'Never indent else if'
           TabOrder = 3
           OnClick = UpdatePreview
         end
         object chk_NoIndentUsesComma: TCheckBox
           Left = 216
-          Top = 142
+          Top = 160
           Width = 238
-          Height = 14
+          Height = 17
           Hint = 
             'Do not ident units in the uses block if the line starts with a c' +
             'omma.'
@@ -102,14 +102,14 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 8
           Top = 56
           Width = 193
-          Height = 121
+          Height = 129
           Caption = 'Extra Indent Before'
           TabOrder = 2
           object chk_IndentCaseElse: TCheckBox
             Left = 8
             Top = 96
             Width = 140
-            Height = 14
+            Height = 17
             Caption = 'else in a case block'
             TabOrder = 3
             OnClick = UpdatePreview
@@ -118,7 +118,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 8
             Top = 72
             Width = 140
-            Height = 13
+            Height = 17
             Caption = 'else in a try block'
             TabOrder = 2
             OnClick = UpdatePreview
@@ -127,7 +127,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 8
             Top = 48
             Width = 140
-            Height = 14
+            Height = 17
             Caption = 'try'
             TabOrder = 1
             OnClick = UpdatePreview
@@ -136,7 +136,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 8
             Top = 24
             Width = 140
-            Height = 13
+            Height = 17
             Caption = 'begin'
             TabOrder = 0
             OnClick = UpdatePreview
@@ -144,16 +144,16 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object chk_NoIndentVarDecl: TCheckBox
           Left = 216
-          Top = 84
+          Top = 88
           Width = 238
-          Height = 14
+          Height = 17
           Caption = 'Never indent var declaration'
           TabOrder = 4
           OnClick = UpdatePreview
         end
         object chk_UnindentLabels: TCheckBox
           Left = 216
-          Top = 160
+          Top = 184
           Width = 209
           Height = 17
           Caption = 'Unindent Labels'
@@ -222,7 +222,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 240
           Top = 192
           Width = 167
-          Height = 18
+          Height = 17
           Caption = 'Wrap long lines'
           TabOrder = 4
           OnClick = UpdatePreview
@@ -259,7 +259,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 8
             Top = 24
             Width = 201
-            Height = 13
+            Height = 17
             Caption = 'After "var", "type" etc.'
             TabOrder = 0
             OnClick = UpdatePreview
@@ -268,7 +268,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 8
             Top = 72
             Width = 201
-            Height = 13
+            Height = 17
             Caption = 'Before "end"'
             TabOrder = 2
             OnClick = UpdatePreview
@@ -277,7 +277,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 8
             Top = 96
             Width = 201
-            Height = 14
+            Height = 17
             Caption = 'After semicolon (except directives)'
             TabOrder = 3
             OnClick = UpdatePreview
@@ -286,7 +286,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 8
             Top = 120
             Width = 201
-            Height = 13
+            Height = 17
             Caption = 'Between else and if'
             TabOrder = 4
             OnClick = UpdatePreview
@@ -295,7 +295,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 8
             Top = 144
             Width = 201
-            Height = 14
+            Height = 17
             Caption = 'After "then","else","do",":"'
             TabOrder = 5
             OnClick = chk_FeedAfterThenClick
@@ -304,7 +304,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 16
             Top = 168
             Width = 193
-            Height = 13
+            Height = 17
             Caption = 'Except single lines'
             TabOrder = 6
             OnClick = UpdatePreview
@@ -313,7 +313,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 8
             Top = 192
             Width = 201
-            Height = 14
+            Height = 17
             Caption = 'Never before "then", "do"'
             TabOrder = 7
             OnClick = UpdatePreview
@@ -322,7 +322,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 8
             Top = 216
             Width = 201
-            Height = 13
+            Height = 17
             Caption = 'After "uses"'
             TabOrder = 8
             OnClick = UpdatePreview
@@ -331,7 +331,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 8
             Top = 240
             Width = 201
-            Height = 13
+            Height = 17
             Caption = 'Between every unit in "uses"'
             TabOrder = 9
             OnClick = chk_FeedEachUnitClick
@@ -340,7 +340,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 16
             Top = 264
             Width = 168
-            Height = 13
+            Height = 17
             Caption = 'Before the comma'
             TabOrder = 10
             OnClick = UpdatePreview
@@ -349,7 +349,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 8
             Top = 288
             Width = 201
-            Height = 14
+            Height = 17
             Caption = 'Remove double blank lines'
             TabOrder = 11
             OnClick = UpdatePreview
@@ -358,7 +358,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 8
             Top = 48
             Width = 201
-            Height = 14
+            Height = 17
             Caption = 'Before "else"'
             TabOrder = 1
             OnClick = UpdatePreview
@@ -375,7 +375,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 8
             Top = 24
             Width = 177
-            Height = 13
+            Height = 17
             Caption = 'Main procedures/functions'
             TabOrder = 0
             OnClick = UpdatePreview
@@ -384,7 +384,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             Left = 8
             Top = 48
             Width = 177
-            Height = 14
+            Height = 17
             Caption = 'Local procedures/functions'
             TabOrder = 1
             OnClick = UpdatePreview
@@ -440,7 +440,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object l_CapitalizationInFile: TLabel
           Left = 16
-          Top = 248
+          Top = 272
           Width = 126
           Height = 13
           Caption = 'Capitalization stored in file'
@@ -449,16 +449,16 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 16
           Top = 24
           Width = 118
-          Height = 20
+          Height = 17
           Caption = 'Compiler directives'
           TabOrder = 0
           OnClick = UpdatePreview
         end
         object chk_UpperNumbers: TCheckBox
-          Left = 136
+          Left = 144
           Top = 24
           Width = 117
-          Height = 20
+          Height = 17
           Caption = 'Hex numbers'
           TabOrder = 1
           OnClick = UpdatePreview
@@ -495,7 +495,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object b_EditCapitalization: TButton
           Left = 347
-          Top = 232
+          Top = 256
           Width = 75
           Height = 25
           Anchors = [akTop, akRight]
@@ -505,7 +505,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object ed_CapitalizationFile: TEdit
           Left = 16
-          Top = 264
+          Top = 288
           Width = 323
           Height = 21
           Anchors = [akLeft, akTop, akRight]
@@ -513,7 +513,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object b_CapitalizationSelect: TButton
           Left = 347
-          Top = 262
+          Top = 286
           Width = 75
           Height = 25
           Anchors = [akTop, akRight]
@@ -525,7 +525,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 8
           Top = 96
           Width = 385
-          Height = 129
+          Height = 153
           Caption = 'User Defined Capitalization'
           Items.Strings = (
             'Do not use list'
@@ -574,7 +574,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 16
           Top = 16
           Width = 275
-          Height = 14
+          Height = 17
           Caption = 'Align simple comments after code'
           TabOrder = 0
           OnClick = UpdatePreview
@@ -600,7 +600,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 16
           Top = 88
           Width = 275
-          Height = 14
+          Height = 17
           Caption = 'Align const statements and resource strings'
           TabOrder = 3
           OnClick = UpdatePreview
@@ -609,7 +609,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Left = 16
           Top = 112
           Width = 275
-          Height = 14
+          Height = 17
           Caption = 'Align var statements'
           TabOrder = 4
           OnClick = UpdatePreview
@@ -729,7 +729,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
       object l_After: TLabel
         Left = 202
         Top = 1
-        Width = 22
+        Width = 25
         Height = 13
         Caption = 'After'
       end
