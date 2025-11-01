@@ -169,6 +169,7 @@ resourcestring
     Bytes: Integer;
     FileStream: TFileStream;
   begin
+    // todo: raise a specific exception class, not the generic Exception class
     if not FileExists(FFileName) then
       raise Exception.CreateFmt(SFileDoesNotExist, [FFileName]);
 
