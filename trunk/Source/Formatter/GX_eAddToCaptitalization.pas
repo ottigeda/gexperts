@@ -57,7 +57,7 @@ var
   Identifier: string;
   Position: TOTAEditPos;
 begin
-  if not assigned(gblCodeFormatter) then
+  if not Assigned(gblCodeFormatter) then
     Exit;
   if not GxOtaGetCurrentIdentData(Identifier, Position) then
     Exit;
