@@ -200,7 +200,7 @@ procedure TGrepMenuEntryExpert.HandleSearchFindExecute(_Sender: TObject);
 var
   Expert: TGX_Expert;
 begin
-  if not GExpertsInst.FindExpert(GrepFastSearchName, Expert) then
+  if not GExpertsInst.FindExpert(GrepFastSearchName, Expert) or not Expert.Active then
     FSearchFindOrig(_Sender)
   else
     Expert.Execute(_Sender);
