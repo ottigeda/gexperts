@@ -1873,11 +1873,14 @@ begin
             FWrapIndent := True;
           end;
 
-          if (Next.ReservedType = rtFuncDirective) and (FStack.GetTopType = rtClass) and SameText(Next.Content, 'Index') then begin
-            // "Index" can be a simple identifier. That case is handled there but unfortunately
+          if (Next.ReservedType = rtFuncDirective) and (FStack.GetTopType = rtClass) then begin
+            // "Index"  or "Name" can be simple identifiers. That case is handled there but unfortunately
             // that is only after the previous line feed (which is the one handled here)
-            // so we detect that case and prevent indenting it.
-            _NTmp := 0;
+            // so we detect that case and prevent indenting it
+            // todo: Are there any others, e.g. "External" ?)
+            if SameText(Next.Content, 'Index') or SameText(Next.Content, 'Name') then begin
+              _NTmp := 0;
+            end;
           end;
         end;
 
@@ -1936,8 +1939,8 @@ begin
           FCurrentToken.SetReservedType(rtNothing);
         end else begin
           if TryGetNextNoComment(FTokenIdx, Next)
-            and (Next.ReservedType = rtColon) then begin
-            // followed by ':' -> It is an identifier
+            and (Next.ReservedType in [rtColon, rtComma]) then begin
+            // followed by ':' or ',' -> It is an identifier
             FCurrentToken.SetReservedType(rtNothing);
           end;
         end;
@@ -2177,7 +2180,7 @@ begin
   AdjustSpacing(FCurrentToken, FPrevToken, FTokenIdx);
 
   if not (FCurrentRType in [rtLineFeed, rtComment]) then begin
-    Assert(False, '.CheckIndent: rtLineFeed or rtComment');
+    Assert(False, '.CheckIndent: not (rtLineFeed or rtComment)');
     _PrevCommentLine := nil;
     Assert(False, '.CheckIndent: _PrevCommentLine=nil');
   end else begin
