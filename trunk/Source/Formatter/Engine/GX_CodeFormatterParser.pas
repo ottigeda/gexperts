@@ -38,7 +38,12 @@ type
   private
     FTokens: TPascalTokenList;
     FReadingAsm: Boolean;
-    FReadingMultilineString: boolean;
+    ///<summary>
+    /// Contains the number of single quotes that was used to start a multi line string literal
+    /// According to ...
+    /// https://docwiki.embarcadero.com/RADStudio/Athens/en/String_Types_(Delphi)#Long_and_Multiline_String_Literals
+    /// ... this must be an odd number >=3 </summary>
+    FReadingMultilineStringCount: Integer;
     FAsmComment: TWordType;
     FPrevLine: TLineFeed;
     FPrevType: TWordType;
@@ -110,7 +115,7 @@ begin
   FEndCommentOut := _Settings.EndCommentOut;
   FLeftPointBracket := 0;
   FReadingAsm := False;
-  FReadingMultilineString := False;
+  FReadingMultilineStringCount := 0;
   FPrevLine := nil;
   FPrevType := wtNothing;
   FTokens := TPascalTokenList.Create;
@@ -160,7 +165,7 @@ begin
   if FReadingAsm then
     ReadAsm(_Buff, _OrigLineNo);
 
-  if FReadingMultilineString then
+  if FReadingMultilineStringCount > 0 then
     ReadMultilineString(_Buff, _OrigLineNo);
 
   while (_Buff^ <> #0) do begin
@@ -326,39 +331,51 @@ begin
 end;
 
 procedure TCodeFormatterParser.ReadMultilineString(var _Buff: PGXUnicodeChar; _OrigLineNo: Integer);
+
+  function IsMultiLineEnd(_p: PGXUnicodeChar; out _WhiteSpaceCount: integer): boolean;
+  var
+    SingleQuoteCount: Integer;
+  begin
+    _WhiteSpaceCount := 0;
+    while (_p^ = ' ') or (_p^ = Tab) do begin
+      Inc(_p);
+      Inc(_WhiteSpaceCount);
+    end;
+    SingleQuoteCount := 0;
+    while _p^ = #39 do begin
+      Inc(_p);
+      Inc(SingleQuoteCount);
+    end;
+    Result := (SingleQuoteCount >= 0) and (SingleQuoteCount = FReadingMultilineStringCount);
+  end;
+
 var
   P: PGXUnicodeChar;
   s: TGXUnicodeString;
+  WhiteSpaceCount: Integer;
 begin
-  // This is a line in a multi line string.
+  // This is a line in a multi line string literal.
   // It can contain anything.
-  // We only check for the end marker which consists of white space, followed by a triplet of single quotes
+  // We only check for the end marker which consists of white space, followed by FReadingMultilineStringCount single quotes
   P := _Buff;
-  while P^ <> #0 do begin
-    case P^ of
-      #39: begin
-          if (PCharPlus(P, 1)^ = #39) and (PCharPlus(P, 2)^ = #39) then begin
-            // this is the end marker for the multi line string
-            SetString(s, _Buff, PCharDiff(P, _Buff) + 3);
-            FTokens.Add(TExpression.Create(wtMultilineStringEnd, s, _OrigLineNo));
-            _Buff := PCharPlus(P, 3);
-            FReadingMultilineString := False;
-            Exit; //==>
-          end;
-        end;
-      ' ', Tab: begin
-          // might be white space before the end marker
-        end;
-    else
+  while p^ <> #0 do begin
+    if IsMultiLineEnd(p, WhiteSpaceCount) then begin
+      // this is the end marker for the multi line string literal
+      SetString(s, _Buff, PCharDiff(p, _Buff) + FReadingMultilineStringCount + WhiteSpaceCount);
+      FTokens.Add(TExpression.Create(wtMultilineStringEnd, s, _OrigLineNo));
+      _Buff := PCharPlus(p, FReadingMultilineStringCount + WhiteSpaceCount);
+      FReadingMultilineStringCount := 0;
+      Exit; //==>
+    end else begin
       // this is simply a line in the multi line string
-      while P^ <> #0 do
-        Inc(P);
-      SetString(s, _Buff, PCharDiff(P, _Buff));
+      while p^ <> #0 do
+        Inc(p);
+      SetString(s, _Buff, PCharDiff(p, _Buff));
       FTokens.Add(TExpression.Create(wtMultilineString, s, _OrigLineNo));
-      _Buff := P;
+      _Buff := p;
       Exit; //==>
     end;
-    Inc(P);
+    Inc(p);
   end; // while
   SetString(s, _Buff, StrLen(_Buff));
   FTokens.Add(TExpression.Create(wtMultilineString, s, _OrigLineNo));
@@ -466,24 +483,26 @@ var
     end;
   end;
 
-  function IsStartOfMultilineString(var _P: PWideChar): Boolean;
+  function IsStartOfMultilineString(var _P: PWideChar; out _SingleQouteCount: Integer): Boolean;
   var
     p1: PWideChar;
+    NumberOfSingleQuotes: Integer;
   begin
     Result := False;
     // when we get here, we already know that _P^ is a single quote
+    NumberOfSingleQuotes := 1;
     p1 := _P;
     Inc(p1);
-    if p1^ <> #39 then begin
-      // no second quote
+    while p1^ = #39 do
+    begin
+      Inc(NumberOfSingleQuotes);
+      Inc(P1);
+    end;
+    if (NumberOfSingleQuotes < 3) or not Odd(NumberOfSingleQuotes) then begin
+      // a multi line string literal starts with 3, 5, 7 ... single quotes
+      // the number of single quotes must be odd
       Exit; //==>
     end;
-    Inc(p1);
-    if p1^ <> #39 then begin
-      // no third quote
-      Exit; //==>
-    end;
-    Inc(p1);
     while p1^ = ' ' do begin
       // spaces are allowed after the initial ''', but nothing else
       Inc(p1);
@@ -493,6 +512,7 @@ var
       Exit; //==>
     end;
     // OK, this is the start of a multi line string
+    _SingleQouteCount := NumberOfSingleQuotes;
     Result := True;
     /// set _P to the end of line so we continue with the next line
     _P := p1;
@@ -525,9 +545,8 @@ begin
 
       #39: begin
           // single quote '
-          if IsStartOfMultilineString(P) then begin
+          if IsStartOfMultilineString(P, FReadingMultilineStringCount) then begin
             Result := wtMultilineStringStart;
-            FReadingMultilineString := True;
           end else begin
             // no triple quote -> This is the start of a regular string
             Result := ReadString;
@@ -668,7 +687,7 @@ begin
   // the global list.
   if not (Result in [wtString, wtSpaces, wtFullComment,
     wtMultilineStringStart, wtMultilineString, wtMultilineStringEnd])
-    and not FReadingAsm and not FReadingMultilineString then
+    and not FReadingAsm and (FReadingMultilineStringCount = 0) then
     _Dest := FIdentifiers.AddIdentifier(_Dest);
 
   if SameText(_Dest, AnsiString('asm')) then begin
