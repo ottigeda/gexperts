@@ -587,16 +587,17 @@ resourcestring
   SProcessing = 'Processing %s';
 var
   Dummy: Boolean;
-  CurrentGetTickCount: DWORD;
+  CurrentTickCount: DWORD;
 begin
+  CurrentTickCount := GetTickCount;
+  if CurrentTickCount < FLastRepaintTick + 100 then
+    Exit; //==>
+
   SetStatusString(Format(SProcessing, [PathName]));
   TheActionListUpdate(nil, Dummy);
-  CurrentGetTickCount := GetTickCount;
-  if CurrentGetTickCount <> FLastRepaintTick then
-  begin
-    Application.ProcessMessages;
-    FLastRepaintTick := CurrentGetTickCount;
-  end;
+
+  Application.ProcessMessages;
+  FLastRepaintTick := CurrentTickCount;
 end;
 
 procedure TfmGrepResults.StartDirectorySearch(Sender: TObject; const DirectoryName: string);
