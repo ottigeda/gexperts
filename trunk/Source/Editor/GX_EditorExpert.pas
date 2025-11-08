@@ -146,20 +146,17 @@ end;
 procedure TEditorExpert.ActionOnUpdate(Sender: TObject);
 var
   SendingAction: TCustomAction;
-  Editor: IOTASourceEditor;
 begin
   // All editor experts require a current edit view
   SendingAction := Sender as TCustomAction;
   Assert(Assigned(SendingAction));
 
-  SendingAction.Enabled := GxOtaTryGetCurrentEditorAsSourceEditor(Editor);
+  SendingAction.Enabled := Ota.CurrentEditorIsSourceEditor;
 end;
 
 procedure TEditorExpert.DoExecute(Sender: TObject);
-var
-  Editor: IOTASourceEditor;
 begin
-  if not GxOtaTryGetCurrentEditorAsSourceEditor(Editor) then begin
+  if not Ota.CurrentEditorIsSourceEditor then begin
     // since apparently ActionOnUpdate isn't reliably called,
     // we prevent editor actions from being executed here,
     // if the current editor is not a source editor (but e.g. a form editor)

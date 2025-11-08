@@ -13,32 +13,11 @@ uses
   SynUnicode, // required for pre-UNICODE Delphi versions
   GX_GenericUtils, GX_StringList, GX_IdeUtils;
 
-// Idea: These functions could be encapsulated as class functions which would reduce the
-// pollution of the namespace and also make for better code completion.
-// and with a short class name that would not mean more typing.
-// E.g.:
-//type
-//  // no T-prefix since this is only a container for class methods
-//  Ota = class
-//    class function GetNativeObject(const AComponent: IOTAComponent): TObject;
-//  end;
-//
-// instead of
-//   x := GxOtaGetNativeObject(bla);
-// we'd type
-//   x := Ota.GetNativeObject(bla);
-// which would even save one character. ;-)
-// It would also improve readability because it's easier to ignore a prefix which
-// is separated by a '.'.
-// On top of that
-//   Ota.TryGetWhatever()
-// is a lot more readable than
-//   GxOtaTryGetWhatever()
-
 type
   Ota = class
     class function TryGetCurrentEditorAsSourceEditor(out SourceEditor: IOTASourceEditor): Boolean;
     class function GetCurrentEditorAsSourceEditor: IOTASourceEditor;
+    class function CurrentEditorIsSourceEditor: Boolean;
 
     class function TryGetCurrentSourceEditor(out SourceEditor: IOTASourceEditor): Boolean;
     class function GetCurrentSourceEditor: IOTASourceEditor;
@@ -3913,7 +3892,7 @@ end;
 
 function GxOtaGetTopMostEditBuffer: IOTAEditBuffer;
 begin
-  Result := ota.GetTopMostEditBuffer;
+  Result := Ota.GetTopMostEditBuffer;
 end;
 
 class function Ota.TryGetTopMostEditBufferFileName(out FileName: string): Boolean;
@@ -4840,6 +4819,13 @@ end;
 function GxOtaTryGetCurrentEditorAsSourceEditor(out SourceEditor: IOTASourceEditor): Boolean;
 begin
   Result := ota.TryGetCurrentEditorAsSourceEditor(SourceEditor);
+end;
+
+class function Ota.CurrentEditorIsSourceEditor: Boolean;
+var
+  SourceEditor: IOTASourceEditor;
+begin
+  Result := TryGetCurrentEditorAsSourceEditor(SourceEditor);
 end;
 
 function GxOtaGetEditorFromModule(Module: IOTAModule; const FileName: string): IOTAEditor;
