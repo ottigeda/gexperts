@@ -35,6 +35,24 @@ uses
 // is a lot more readable than
 //   GxOtaTryGetWhatever()
 
+type
+  Ota = class
+    class function TryGetCurrentEditorAsSourceEditor(out SourceEditor: IOTASourceEditor): Boolean;
+    class function GetCurrentEditorAsSourceEditor: IOTASourceEditor;
+
+    class function TryGetCurrentSourceEditor(out SourceEditor: IOTASourceEditor): Boolean;
+    class function GetCurrentSourceEditor: IOTASourceEditor;
+
+    class function TryGetCurrentEditor(out Editor: IOTAEditor): boolean;
+    class function GetCurrentEditor: IOTAEditor;
+
+    class function TryGetTopMostEditBuffer(out EditBuffer: IOTAEditBuffer): Boolean;
+    class function GetTopMostEditBuffer: IOTAEditBuffer;
+
+    class function TryGetTopMostEditBufferFileName(out FileName: string): Boolean;
+    class function GetTopMostEditBufferFileName: string;
+end;
+
 // Returns the TObject represented by an IOTAComponent, if possible
 function GxOtaGetNativeObject(const AComponent: IOTAComponent): TObject;
 // Returns the TPersistent represented by an IOTAComponent, if possible
@@ -646,8 +664,8 @@ function GxOtaGetEditorServices: IOTAEditorServices;
 // Returns nil if none exists.
 function GxOtaGetTopMostEditView: IOTAEditView; overload;
 function GxOtaGetTopMostEditView(SourceEditor: IOTASourceEditor): IOTAEditView; overload;
-function GxOtaGetTopMostEditBuffer: IOTAEditBuffer;
-function GxOtaGetTopMostEditBufferFileName: string;
+function GxOtaGetTopMostEditBuffer: IOTAEditBuffer; deprecated; // use Ota.GetTopMostEditBuffer
+function GxOtaGetTopMostEditBufferFileName: string; deprecated; // use Ota.GetTopMostEditBufferFileName
 
 // calls GxOtaGetTopMostEditView and returns false if no edit view is available
 function GxOtaTryGetTopMostEditView(out EditView: IOTAEditView): boolean; overload;
@@ -665,15 +683,15 @@ function GxOtaGetCurrentModule: IOTAModule;
 // Note: This will return a source editor even if the currently active editor
 // is a form editor! This is probably not what you want.
 // See also GxOtaGetCurrentEditorAsSourceEditor
-function GxOtaGetCurrentSourceEditor: IOTASourceEditor;
-function GxOtaTryGetCurrentSourceEditor(out SourceEditor: IOTASourceEditor): boolean;
+function GxOtaGetCurrentSourceEditor: IOTASourceEditor; deprecated; // use Ota.GetCurrentSourceEditor
+function GxOtaTryGetCurrentSourceEditor(out SourceEditor: IOTASourceEditor): boolean; deprecated; // use Ota.TryGetCurrentSourceEditor
 procedure GxOtaShowCurrentSourceEditor;
 
 ///<summary>
 /// Get the current source code editor or nil if there is none (e.g. the current
 /// editor is a form editor </summary>
 function GxOtaGetCurrentEditorAsSourceEditor: IOTASourceEditor;
-function GxOtaTryGetCurrentEditorAsSourceEditor(out SourceEditor: IOTASourceEditor): Boolean;
+function GxOtaTryGetCurrentEditorAsSourceEditor(out SourceEditor: IOTASourceEditor): Boolean; deprecated; // use Ota.TryGetCurrentEditorAsSourceEditor
 
 // Raise an exception if the source editor is readonly
 procedure GxOtaAssertSourceEditorNotReadOnly(SourceEditor: IOTASourceEditor);
@@ -736,7 +754,7 @@ function GxOtaTryGetSourceEditorFromModule(Module: IOTAModule; const FileName: s
 
 // Get the active IOTAEditor (which can be an IOTASourceEditor or IOTAFormEditor
 // (or maybe even more in future IDE versions)
-function GxOtaGetCurrentEditor: IOTAEditor;
+function GxOtaGetCurrentEditor: IOTAEditor; deprecated; // use Ota.GetCurrentEditor
 
 // Get an editor for the file indicated by FileName
 // contained in the passed Module
@@ -1429,7 +1447,7 @@ var
   Editor: IOTAEditor;
 begin
   Result := False;
-  Editor := GxOtaGetCurrentEditor;
+  Editor := Ota.GetCurrentEditor;
   if Assigned(Editor) then
     Result := Supports(Editor, IOTAFormEditor);
 end;
@@ -2204,7 +2222,7 @@ begin
 
   Result := False;
 
-  if not GxOtaTryGetCurrentSourceEditor(ISourceEditor) then
+  if not Ota.TryGetCurrentSourceEditor(ISourceEditor) then
     Exit;
 
   if ISourceEditor.EditViewCount > 0 then
@@ -3824,7 +3842,7 @@ end;
 function GxOtaGetTopMostEditView(SourceEditor: IOTASourceEditor): IOTAEditView;
 begin
   if SourceEditor = nil then
-    SourceEditor := GxOtaGetCurrentSourceEditor;
+    SourceEditor := Ota.GetCurrentSourceEditor;
   if Assigned(SourceEditor) and (SourceEditor.EditViewCount > 0) then
     Result := SourceEditor.EditViews[0]
   else
@@ -3881,19 +3899,41 @@ begin
   Result := Assigned(EditView);
 end;
 
-function GxOtaGetTopMostEditBuffer: IOTAEditBuffer;
+class function Ota.TryGetTopMostEditBuffer(out EditBuffer: IOTAEditBuffer): Boolean;
 begin
-  Result := GxOTAGetEditorServices.TopBuffer;
+  EditBuffer := GxOtaGetEditorServices.TopBuffer;
+  Result := Assigned(EditBuffer);
 end;
 
-function GxOtaGetTopMostEditBufferFileName: string;
+class function Ota.GetTopMostEditBuffer: IOTAEditBuffer;
+begin
+  if not TryGetTopMostEditBuffer(Result) then
+    Result := nil;
+end;
+
+function GxOtaGetTopMostEditBuffer: IOTAEditBuffer;
+begin
+  Result := ota.GetTopMostEditBuffer;
+end;
+
+class function Ota.TryGetTopMostEditBufferFileName(out FileName: string): Boolean;
 var
   Buffer: IOTAEditBuffer;
 begin
-  Result := '';
-  Buffer := GxOtaGetTopMostEditBuffer;
-  if Assigned(Buffer) then
-    Result := Buffer.FileName;
+  Result := TryGetTopMostEditBuffer(Buffer);
+  if Result then
+    FileName := Buffer.FileName;
+end;
+
+class function Ota.GetTopMostEditBufferFileName: string;
+begin
+  if not TryGetTopMostEditBufferFileName(Result) then
+    Result := '';
+end;
+
+function GxOtaGetTopMostEditBufferFileName: string;
+begin
+  Result := Ota.GetTopMostEditBufferFileName;
 end;
 
 function GxOtaGetOpenModuleCount: Integer;
@@ -3915,16 +3955,27 @@ begin
   Result := ModuleServices.CurrentModule;
 end;
 
-function GxOtaGetCurrentSourceEditor: IOTASourceEditor;
+class function Ota.TryGetCurrentSourceEditor(out SourceEditor: IOTASourceEditor): Boolean;
 var
   EditBuffer: IOTAEditBuffer;
 begin
-  Result := nil;
-  EditBuffer := GxOtaGetTopMostEditBuffer;
-  if Assigned(EditBuffer) and (EditBuffer.FileName <> '') then
-    Result := GxOtaGetSourceEditorFromModule(GxOtaGetCurrentModule, EditBuffer.FileName);
-  if Result = nil then
-    Result := GxOtaGetSourceEditorFromModule(GxOtaGetCurrentModule);
+  SourceEditor := nil;
+  if TryGetTopMostEditBuffer(EditBuffer) and (EditBuffer.FileName <> '') then
+    SourceEditor := GxOtaGetSourceEditorFromModule(GxOtaGetCurrentModule, EditBuffer.FileName);
+  if SourceEditor = nil then
+    SourceEditor := GxOtaGetSourceEditorFromModule(GxOtaGetCurrentModule);
+  Result := Assigned(SourceEditor);
+end;
+
+class function Ota.GetCurrentSourceEditor: IOTASourceEditor;
+begin
+  if not TryGetCurrentSourceEditor(Result) then
+    Result := nil;
+end;
+
+function GxOtaGetCurrentSourceEditor: IOTASourceEditor;
+begin
+  Result := Ota.GetCurrentSourceEditor;
 end;
 
 function GxOtaTryGetCurrentSourceEditor(out SourceEditor: IOTASourceEditor): boolean;
@@ -3937,7 +3988,7 @@ procedure GxOtaShowCurrentSourceEditor;
 var
   Editor: IOTASourceEditor;
 begin
-  if GxOtaTryGetCurrentSourceEditor(Editor) then
+  if Ota.TryGetCurrentSourceEditor(Editor) then
     Editor.Show;
 end;
 
@@ -4029,7 +4080,7 @@ var
 begin
   Result := gxpNone;
   if SourceEditor = nil then
-    SourceEditor := GxOtaGetCurrentSourceEditor;
+    SourceEditor := Ota.GetCurrentSourceEditor;
   if not Assigned(SourceEditor) then
     Exit;
 
@@ -4736,37 +4787,59 @@ begin
   end;
 end;
 
-function GxOtaGetCurrentEditor: IOTAEditor;
+class function Ota.TryGetCurrentEditor(out Editor: IOTAEditor): boolean;
 var
   Module: IOTAModule;
-  Editor: IOTAEditor;
   TopFile: string;
 begin
-  Result := nil;
   Module := GxOtaGetCurrentModule;
-  if Module <> nil then
+  Result := Assigned(Module);
+  if Result then
   begin
     Editor := Module.GetCurrentEditor;
     if Editor <> nil then
       TopFile := Editor.FileName
     else // C++Builder 6 returns nil for some old-style modules without DFMs
       TopFile := Module.FileName;
-    Result := GxOtaGetEditorFromModule(Module, TopFile);
+    Editor := GxOtaGetEditorFromModule(Module, TopFile);
+    Result := Assigned(Editor);
   end;
+end;
+
+class function Ota.GetCurrentEditor: IOTAEditor;
+begin
+  if not TryGetCurrentEditor(Result) then
+    Result := nil;
+end;
+
+function GxOtaGetCurrentEditor: IOTAEditor;
+begin
+  Result := ota.GetCurrentEditor;
+end;
+
+class function Ota.GetCurrentEditorAsSourceEditor: IOTASourceEditor;
+begin
+  if not TryGetCurrentEditorAsSourceEditor(Result) then
+    Result := nil;
 end;
 
 function GxOtaGetCurrentEditorAsSourceEditor: IOTASourceEditor;
 begin
-  if not GxOtaTryGetCurrentEditorAsSourceEditor(Result) then
-    Result := nil;
+  Result := Ota.GetCurrentEditorAsSourceEditor;
 end;
 
-function GxOtaTryGetCurrentEditorAsSourceEditor(out SourceEditor: IOTASourceEditor): Boolean;
+class function Ota.TryGetCurrentEditorAsSourceEditor(out SourceEditor: IOTASourceEditor): Boolean;
 var
   Editor: IOTAEditor;
 begin
-  Editor := GxOtaGetCurrentEditor;
-  Result := (Editor <> nil) and Supports(Editor, IOTASourceEditor, SourceEditor);
+  Result := TryGetCurrentEditor(Editor);
+  if Result then
+    Result := Supports(Editor, IOTASourceEditor, SourceEditor);
+end;
+
+function GxOtaTryGetCurrentEditorAsSourceEditor(out SourceEditor: IOTASourceEditor): Boolean;
+begin
+  Result := ota.TryGetCurrentEditorAsSourceEditor(SourceEditor);
 end;
 
 function GxOtaGetEditorFromModule(Module: IOTAModule; const FileName: string): IOTAEditor;
@@ -4951,7 +5024,7 @@ begin
   Lines.Clear;
   Result := False;
 
-  if not GxOtaTryGetCurrentSourceEditor(ISourceEditor) then
+  if not Ota.TryGetCurrentSourceEditor(ISourceEditor) then
     Exit;
 
   if ISourceEditor.EditViewCount > 0 then
@@ -5134,7 +5207,7 @@ resourcestring
   SEditWriterNotAvail = 'Edit writer not available';
 begin
   if not Assigned(SourceEditor) then
-    SourceEditor := GxOtaGetCurrentSourceEditor;
+    SourceEditor := Ota.GetCurrentSourceEditor;
   if Assigned(SourceEditor) then
   begin
     GxOtaAssertSourceEditorNotReadOnly(SourceEditor);
@@ -5148,7 +5221,7 @@ resourcestring
   SEditReaderNotAvail = 'Edit reader not available';
 begin
   if not Assigned(SourceEditor) then
-    SourceEditor := GxOtaGetCurrentSourceEditor;
+    SourceEditor := Ota.GetCurrentSourceEditor;
   if Assigned(SourceEditor) then
   begin
     Result := SourceEditor.CreateReader;
@@ -5641,8 +5714,7 @@ var
   EditBuffer: IOTAEditBuffer;
 begin
   Result := '';
-  EditBuffer := GxOtaGetTopMostEditBuffer;
-  if Assigned(EditBuffer) and Assigned(EditBuffer.BufferOptions) then
+  if Ota.TryGetTopMostEditBuffer(EditBuffer) and Assigned(EditBuffer.BufferOptions) then
     Result := Trim(EditBuffer.BufferOptions.TabStops);
 end;
 
