@@ -61,6 +61,8 @@ type
 ///<summary>
 /// @param CheckValid, if true, raises an exception if the instance is NIL </summary>
 function GExpertsInst(CheckValid: Boolean = False): TGExperts;
+function TryGetGExpertsInst(out _GExpertsInst: TGExperts): Boolean;
+
 procedure ShowGXAboutForm;
 procedure ShowGXConfigurationForm;
 procedure InitSharedResources;
@@ -86,6 +88,12 @@ type
 var
   FPrivateGExpertsInst: TGExperts = nil;
   SharedImages: TdmSharedImages = nil;
+
+function TryGetGExpertsInst(out _GExpertsInst: TGExperts): Boolean;
+begin
+  _GExpertsInst := FPrivateGExpertsInst;
+  Result := Assigned(_GExpertsInst);
+end;
 
 function GExpertsInst(CheckValid: Boolean): TGExperts;
 begin
