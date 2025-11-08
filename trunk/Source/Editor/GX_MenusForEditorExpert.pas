@@ -33,6 +33,27 @@ uses
   GX_GExperts, GX_OtaUtils, GX_ActionBroker, GX_IdeUtils,
   GX_EditorExpert, GX_EditorExpertManager, ComCtrls, Forms;
 
+function TryGetEditorExpertsManager(out _EditorExpertsManager: TGxEditorExpertManager): Boolean;
+var
+  GExpertsInst: TGExperts;
+begin
+  Result := TryGetGExpertsInst(GExpertsInst);
+  if Result then begin
+    _EditorExpertsManager := GExpertsInst.EditorExpertManager;
+    Result := Assigned(_EditorExpertsManager);
+  end;
+end;
+
+function GetEditorExpertsCount: Integer;
+var
+  EditorExpertsManager: TGxEditorExpertManager;
+begin
+  if TryGetEditorExpertsManager(EditorExpertsManager) then
+    Result := EditorExpertsManager.EditorExpertCount
+  else
+    Result := 0;
+end;
+
 var
   InternalPopupMenu: TPopupMenu;
 
@@ -98,7 +119,6 @@ var
   AGExpertsInstance: TGExperts;
   AEditorExpertManager: TGxEditorExpertManager;
   AEditorExpert: TEditorExpert;
-
   ExpertMenuEntry: TMenuItem;
 begin
   inherited;
@@ -108,11 +128,11 @@ begin
   AGExpertsInstance := GExpertsInst;
   Assert(Assigned(AGExpertsInstance));
 
-  AEditorExpertManager := AGExpertsInstance.EditorExpertManager;
-  // If editor experts are not enabled, then the editor
-  // expert manager is not present; exit if this is the case.
-  if not Assigned(AEditorExpertManager) then
+  if not TryGetEditorExpertsManager(AEditorExpertManager) then begin
+    // If editor experts are not enabled, then the editor
+    // expert manager is not present; exit if this is the case.
     Exit;
+  end;
 
   for i := 0 to AEditorExpertManager.EditorExpertCount-1 do
   begin
@@ -132,7 +152,6 @@ end;
 procedure TMenusForEditorExperts.PopulatePopupMenu(const PopupMenu: TPopupMenu);
 var
   i: Integer;
-  AGExpertsInstance: TGExperts;
   AEditorExpertManager: TGxEditorExpertManager;
   AEditorExpert: TEditorExpert;
   ExpertMenuEntry: TMenuItem;
@@ -141,14 +160,11 @@ begin
   Assert(Assigned(PopupMenu));
   PopupMenu.Items.Clear;
 
-  AGExpertsInstance := GExpertsInst;
-  Assert(Assigned(AGExpertsInstance));
-
-  AEditorExpertManager := AGExpertsInstance.EditorExpertManager;
-  // If editor experts are not enabled, then the editor
-  // expert manager is not present; exit if this is the case.
-  if not Assigned(AEditorExpertManager) then
-    Exit;
+  if not TryGetEditorExpertsManager(AEditorExpertManager) then begin
+    // If editor experts are not enabled, then the editor
+    // expert manager is not present; exit if this is the case.
+    Exit; //==>
+  end;
 
   for i := 0 to AEditorExpertManager.EditorExpertCount-1 do
   begin
@@ -215,8 +231,7 @@ end;
 
 procedure TMenusForEditorExperts.UpdateAction(Action: TCustomAction);
 begin
-  Action.Enabled := Assigned(GExpertsInst.EditorExpertManager)
-    and (GExpertsInst.EditorExpertManager.EditorExpertCount > 0);
+  Action.Enabled := (GetEditorExpertsCount > 0);
   // todo: Is this a good idea? Shouldn't the action always be visible?
   Action.Visible := Action.Enabled;
 end;
