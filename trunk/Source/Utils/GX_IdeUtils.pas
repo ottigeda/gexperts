@@ -101,6 +101,9 @@ function TryGetIdeDesktops(out _Items: TStrings): Boolean;
 
 function TryGetDesktopCombo(out _cmb: TCustomCombobox): Boolean;
 
+function TryGetViewDesktopEntries(_Items: TStrings): Boolean;
+function GetViewDesktopEntries: TStrings;
+
 // Return the IDE's version identifier, such as ENT, CSS, PRO, STD,
 // or the empty string if unknown
 function GetIdeEdition: string;
@@ -383,6 +386,45 @@ begin
     on E: EAccessViolation do
       GxLogException(E, 'Error in SetIdeDesktop');
   end;
+end;
+
+function TryGetViewDesktopMenuItem(out _mi: TMenuItem): Boolean;
+var
+  AppBuilder: TForm;
+begin
+  Result := False;
+  AppBuilder := TForm(Application.FindComponent('AppBuilder'));
+  if not Assigned(AppBuilder) then
+    Exit;
+  _mi := TMenuItem(AppBuilder.FindComponent('ViewDesktopsMenu'));
+  Result := Assigned(_mi);
+end;
+
+///<summary>
+/// Get the Desktops from the View -> Desktops menu item and returns them as
+/// a TStrings whose Object[] property contains pointers to the TMenuItems (to be used to "click" them </summary>
+function TryGetViewDesktopEntries(_Items: TStrings): Boolean;
+var
+  mi: TMenuItem;
+  i: Integer;
+  si: TMenuItem;
+begin
+  Result := TryGetViewDesktopMenuItem(mi);
+  if not Result then
+    Exit;
+  for i := 0 to mi.Count - 1 do begin
+    si := mi.Items[i];
+    if Assigned(si.OnClick) and (si.Name = '') then begin
+      _Items.AddObject(StripHotkey(si.Caption), si);
+    end;
+  end;
+end;
+
+function GetViewDesktopEntries: TStrings;
+begin
+  Result := TStringList.Create;
+  if not TryGetViewDesktopEntries(Result) then
+    FreeAndNil(Result);
 end;
 
 function TryGetIdeDesktops(out _Items: TStrings): Boolean;
