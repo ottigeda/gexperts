@@ -18,6 +18,7 @@ type
   TfmBaseForm = class(TForm)
   protected
     procedure InitDpiScaler; virtual;
+    procedure ArrangeControls; virtual;
   public
   end;
 
@@ -26,6 +27,11 @@ implementation
 {$R *.dfm}
 
 { TfmBaseForm }
+
+procedure TfmBaseForm.ArrangeControls;
+begin
+
+end;
 
 procedure TfmBaseForm.InitDpiScaler;
 begin

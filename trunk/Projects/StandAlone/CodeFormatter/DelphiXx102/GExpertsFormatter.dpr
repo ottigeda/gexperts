@@ -24,6 +24,7 @@ uses
   GX_SynMemoUtils in 'GX_SynMemoUtils.pas',
   GX_CodeFormatterEditCapitalization in '..\..\..\..\Source\Formatter\GX_CodeFormatterEditCapitalization.pas' {fmCodeFormatterEditCapitalization},
   GX_OtaUtils in 'GX_OtaUtils.pas',
+  GX_IndexTypes in '..\..\..\..\Source\Utils\GX_IndexTypes.pas',
   GX_CodeFormatterGXConfigWrapper in 'GX_CodeFormatterGXConfigWrapper.pas',
   GX_DbugIntf in '..\..\..\..\Source\Utils\GX_DbugIntf.pas';
 
