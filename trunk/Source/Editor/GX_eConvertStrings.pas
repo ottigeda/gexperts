@@ -381,7 +381,7 @@ begin
     Prefix := Trim(GxOtaGetCurrentSelection(False));
     if Prefix = '' then begin
       Prefix := Trim(GxOtaGetCurrentLine);
-      GxOtaSelectCurrentLine(GxOtaGetCurrentSourceEditor);
+      GxOtaSelectCurrentLine(Ota.GetCurrentSourceEditor);
     end;
     // multiple lines? Only take the first
     p := Pos(CR, Prefix);

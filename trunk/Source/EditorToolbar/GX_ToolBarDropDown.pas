@@ -398,7 +398,7 @@ begin
   try
     GxOtaGetUnitAliases(Aliases);
     {$IFOPT D+}SendDebug('Populating empty unit list');{$ENDIF}
-    UsesManager := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
+    UsesManager := TUsesManager.Create(Ota.GetCurrentSourceEditor);
     try
       {$IFOPT D+}SendDebug('Iterating through interface uses.  Count = ' + IntToStr(UsesManager.InterfaceUses.Count));{$ENDIF}
       for i := 0 to UsesManager.InterfaceUses.Count - 1 do

@@ -601,7 +601,7 @@ var
   end;
 
 begin
-  FileName := GxOtaGetTopMostEditBufferFileName;
+  FileName := Ota.GetTopMostEditBufferFileName;
 
   if IsCpp(FileName) or IsC(FileName) or IsH(FileName) then
     Language := ltCpp
@@ -611,7 +611,7 @@ begin
     raise Exception.Create(SPasOrCFilesOnly);
 
   Module := GxOtaGetCurrentModule;
-  if (not Assigned(Module)) or not GxOtaTryGetCurrentSourceEditor(SourceEditor) then
+  if (not Assigned(Module)) or not Ota.TryGetCurrentSourceEditor(SourceEditor) then
     Exit; //==>
 
   IncCallCount;

@@ -295,7 +295,7 @@ begin
   begin
     if RunningDelphi8OrGreater then
     begin // This prevents .aspx editor flickering in Delphi 2005+
-      if (GxOtaGetTopMostEditBufferFileName <> FFileName) then
+      if Ota.GetTopMostEditBufferFileName <> FFileName then
         FEditIntf.Show;
     end
     else

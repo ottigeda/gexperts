@@ -328,7 +328,7 @@ begin
   if Settings.Verbose then
     TfmSetComponentPropsStatus.GetInstance.Show;
   try
-    CurrentEditor := GxOtaGetCurrentEditor;
+    CurrentEditor := Ota.GetCurrentEditor;
 
     // Iterate all modules of the current project and get forms and datamodules
     for IndexProjectModules := 0 to Pred(Project.GetModuleCount) do

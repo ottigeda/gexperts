@@ -187,7 +187,7 @@ var
   EditView: IOTAEditView;
 begin
   if Assigned(BorlandIDEServices)
-    and GxOtaTryGetCurrentSourceEditor(ISourceEditor) then begin
+    and Ota.TryGetCurrentSourceEditor(ISourceEditor) then begin
     if GxOtaTryGetTopMostEditView(ISourceEditor, EditView) then begin
       FOriginalEditPos := EditView.CursorPos;
     end else begin
@@ -213,7 +213,7 @@ var
   ISourceEditor: IOTASourceEditor;
 begin
   if Assigned(BorlandIDEServices)
-    and GxOtaTryGetCurrentSourceEditor(ISourceEditor)
+    and Ota.TryGetCurrentSourceEditor(ISourceEditor)
     and GxOtaGetActiveEditorText(FCurrentCode, False) then begin
     FCurrentFile := ISourceEditor.FileName;
   end else begin

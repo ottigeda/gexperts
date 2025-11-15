@@ -154,7 +154,7 @@ var
   EditView: IOTAEditView;
   Offset: Integer;
 begin
-    if not GxOtaTryGetCurrentSourceEditor(SourceEditor) then
+    if not Ota.TryGetCurrentSourceEditor(SourceEditor) then
       raise EAutoTodo.Create(str_NoEditor);
     FileName := SourceEditor.FileName;
     if not (IsPascalSourceFile(FileName) or IsDelphiPackage(FileName) or FileMatchesExtension(FileName, '.tpl')) then

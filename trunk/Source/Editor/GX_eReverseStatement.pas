@@ -105,7 +105,7 @@ var
   SpaceAfter: string;
   LeadingSpace: string;
 begin
-  if IsCPPSourceModule(GxOtaGetCurrentSourceEditor.FileName) then
+  if IsCPPSourceModule(Ota.GetCurrentSourceEditor.FileName) then
     AssignOp := '='
   else
     AssignOp := ':=';
@@ -124,7 +124,7 @@ begin
     if StrContains('(*', S) then
       if Pos('(*', S) < AssignPos then
         Exit;
-    if IsCPPSourceModule(GxOtaGetCurrentSourceEditor.FileName) then
+    if IsCPPSourceModule(Ota.GetCurrentSourceEditor.FileName) then
     begin
       if StrContains('/*', S) then
         if Pos('/*', S) < AssignPos then

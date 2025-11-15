@@ -121,7 +121,7 @@ class function TUsesManager.UseUnitInImplementation(const AUnitName: string): bo
 var
   um: TUsesManager;
 begin
-  um := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
+  um := TUsesManager.Create(Ota.GetCurrentSourceEditor);
   try
     Result := um.AddToImpSection(AUnitName);
   finally
@@ -133,7 +133,7 @@ class function TUsesManager.UseUnitInInterface(const AUnitName: string): Boolean
 var
   um: TUsesManager;
 begin
-  um := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
+  um := TUsesManager.Create(Ota.GetCurrentSourceEditor);
   try
     Result := um.AddToIntSection(AUnitName);
   finally
@@ -145,7 +145,7 @@ class function TUsesManager.GetUnitUsesStatus(const AUnitName: string): TUsesSta
 var
   um: TUsesManager;
 begin
-  um := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
+  um := TUsesManager.Create(Ota.GetCurrentSourceEditor);
   try
     Result := um.GetUsesStatus(AUnitName);
   finally
@@ -159,7 +159,7 @@ var
   um: TUsesManager;
 begin
   Assert(Assigned(Units));
-  um := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
+  um := TUsesManager.Create(Ota.GetCurrentSourceEditor);
   try
     UsesList := um.GetUsesList(_Which);
     UsesList.AssignTo(Units);
@@ -182,7 +182,7 @@ class procedure TUsesManager.RemoveUnitFromImplementation(const AUnitName: strin
 var
   um: TUsesManager;
 begin
-  um := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
+  um := TUsesManager.Create(Ota.GetCurrentSourceEditor);
   try
     um.RemoveFromImplUses(AUnitName);
   finally
@@ -194,7 +194,7 @@ class procedure TUsesManager.RemoveUnitFromInterface(const AUnitName: string);
 var
   um: TUsesManager;
 begin
-  um := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
+  um := TUsesManager.Create(Ota.GetCurrentSourceEditor);
   try
     um.RemoveFromIntfUses(AUnitName);
   finally
@@ -206,7 +206,7 @@ class procedure TUsesManager.ReplaceUnitInImplementation(const AOldUnitName, ANe
 var
   um: TUsesManager;
 begin
-  um := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
+  um := TUsesManager.Create(Ota.GetCurrentSourceEditor);
   try
     um.ReplaceInImplUses(AOldUnitName, ANewUnitName);
   finally
@@ -218,7 +218,7 @@ class procedure TUsesManager.ReplaceUnitInInterface(const AOldUnitName, ANewUnit
 var
   um: TUsesManager;
 begin
-  um := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
+  um := TUsesManager.Create(Ota.GetCurrentSourceEditor);
   try
     um.ReplaceInIntUses(AOldUnitName, ANewUnitName);
   finally
@@ -624,7 +624,7 @@ begin
     exit;
 
   ReplaceUnit := UsesList.Items[UnitIndex];
-  SourceEditor := GxOtaGetCurrentSourceEditor;
+  SourceEditor := Ota.GetCurrentSourceEditor;
 
   EndPos := ReplaceUnit.EndPos;
   BegPos := ReplaceUnit.BeginPos;

@@ -113,7 +113,7 @@ var
 begin
   Result := gxpNone;
 
-  if not GxOtaTryGetCurrentSourceEditor(SourceEditor) then
+  if not Ota.TryGetCurrentSourceEditor(SourceEditor) then
     Exit;
 
   Result := GxOtaGetCurrentSyntaxHighlighter(SourceEditor);

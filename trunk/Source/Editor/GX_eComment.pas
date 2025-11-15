@@ -259,7 +259,7 @@ var
 begin
   Assert(Assigned(Lines));
 
-  AStyle := Styles.GetStyle(GxOtaGetTopMostEditBufferFileName);
+  AStyle := Styles.GetStyle(Ota.GetTopMostEditBufferFileName);
 
   // Do not localize any of the below lines.
   case AStyle.CommentType of
@@ -422,7 +422,7 @@ var
 begin
   Assert(Assigned(Lines));
 
-  AStyle := Styles.GetStyle(GxOtaGetTopMostEditBufferFileName);
+  AStyle := Styles.GetStyle(Ota.GetTopMostEditBufferFileName);
 
   case AStyle.CommentType of
     ctSlash:

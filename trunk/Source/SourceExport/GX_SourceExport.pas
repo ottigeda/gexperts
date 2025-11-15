@@ -169,7 +169,7 @@ var
   CurrentModuleFileName: string;
   HasBlockSelection: Boolean;
 begin
-  CurrentModuleFileName := ExtractFileName(GxOtaGetTopMostEditBufferFileName);
+  CurrentModuleFileName := ExtractFileName(Ota.GetTopMostEditBufferFileName);
 
   HasBlockSelection := FillEditControlWithIdeData;
   LoadSettings;

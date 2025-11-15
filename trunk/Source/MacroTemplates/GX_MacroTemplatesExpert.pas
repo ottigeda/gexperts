@@ -766,7 +766,7 @@ end;
 
 procedure TMacroTemplatesExpert.AddUsesToUnit(ATemplateObject: TMacroObject);
 begin
-  with TUsesManager.Create(GxOtaGetCurrentSourceEditor) do
+  with TUsesManager.Create(Ota.GetCurrentSourceEditor) do
   try
     AddUnits(ATemplateObject.PrivUnits, puImplementation);
     AddUnits(ATemplateObject.PubUnits, puInterface);

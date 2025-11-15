@@ -1545,7 +1545,7 @@ begin
   TStringGrid_Clear(sg_Implementation);
 
   sl := nil;
-  UsesManager := TUsesManager.Create(GxOtaGetCurrentSourceEditor);
+  UsesManager := TUsesManager.Create(Ota.GetCurrentSourceEditor);
   try
     sl := TStringList.Create;
     UsesManager.InterfaceUses.AssignTo(sl);

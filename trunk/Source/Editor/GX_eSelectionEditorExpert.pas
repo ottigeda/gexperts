@@ -80,7 +80,7 @@ begin
   {$IFOPT D+} SendDebug('Executing TSelectionEditorExpert'); {$ENDIF}
   CodeList := TStringList.Create;
   try
-    if not GxOtaTryGetCurrentSourceEditor(SourceEditor) then
+    if not Ota.TryGetCurrentSourceEditor(SourceEditor) then
       Exit;
     CodeList.Text := GxOtaGetCurrentSelection;
 

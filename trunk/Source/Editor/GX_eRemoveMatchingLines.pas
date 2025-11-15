@@ -221,7 +221,7 @@ begin
       end;
     end;
     if WasChanged then
-      GxOtaReplaceEditorTextWithUnicodeString(GxOtaGetCurrentSourceEditor, Text.Text);
+      GxOtaReplaceEditorTextWithUnicodeString(Ota.GetCurrentSourceEditor, Text.Text);
   finally
     FreeAndNil(Text);
   end;

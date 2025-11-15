@@ -199,7 +199,7 @@ var
   FoundPos: Integer;
   Ident: string;
 begin
-  if not GxOtaTryGetCurrentSourceEditor(SourceEditor) then
+  if not Ota.TryGetCurrentSourceEditor(SourceEditor) then
     Exit;
 
   EditRead := TEditReader.Create(SourceEditor.FileName);

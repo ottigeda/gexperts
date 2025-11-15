@@ -162,7 +162,7 @@ var
   LineEndType: Integer;
 begin
   EnterWasPressed := False;
-  if not GxOtaTryGetCurrentSourceEditor(SourceEditor) then
+  if not Ota.TryGetCurrentSourceEditor(SourceEditor) then
     Exit;
   if FCodeList.Count = 1 then begin
     {$IFOPT D+}SendDebugFmt('Replacing selected editor text with "%s"', [FCodeList.Text]);{$ENDIF}
@@ -232,7 +232,7 @@ var
 begin
   if not IsEditorActive(ctl) then
     Exit;
-  if not GxOtaTryGetCurrentSourceEditor(SourceEditor) then
+  if not Ota.TryGetCurrentSourceEditor(SourceEditor) then
     Exit;
   FCodeList.Text := GxOtaGetCurrentSelection;
   if FCodeList.Count = 0 then begin
