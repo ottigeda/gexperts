@@ -21,7 +21,6 @@ type
   TCodeFormatterExpert = class
   private
     FEngine: TCodeFormatterEngine;
-    function GetSettingsName(const AFileName: string; FullText: TGXUnicodeString): string;
   protected
   public
     constructor Create;
@@ -43,7 +42,6 @@ type
 implementation
 
 uses
-  IniFiles,
   ToolsAPI,
   u_dzStringUtils,
   u_dzMiscUtils,
@@ -133,99 +131,6 @@ begin
 end;
 
 
-function FileNameMatches(const FileName, Pattern: string): Boolean;
-var
-  sr: TSearchRec;
-begin
-  Result := False;
-  if FindFirst(Pattern, 0, sr) = 0 then begin
-    repeat
-      if SameText(FileName, sr.Name) then begin
-        Result := True;
-        Break;
-      end;
-    until FindNext(sr) <> 0;
-    FindClose(sr);
-  end;
-end;
-
-function TCodeFormatterExpert.GetSettingsName(const AFileName: string; FullText: TGXUnicodeString): string;
-
-  function GetFromConfigFile: string;
-  var
-    ConfigFileName, ConfiguredFileName, Path: string;
-    IniFile: TIniFile;
-    ConfiguredFileNames: TStringList;
-    i: Integer;
-  begin
-    Result := '';
-    Path := AddSlash(ExtractFilePath(ExpandFileName(AFileName)));
-    ConfigFileName := Path + 'GXFormatter.ini'; // Do not localize.
-    IniFile := TIniFile.Create(ConfigFileName);
-    try
-      ConfiguredFileNames := TStringList.Create;
-      try
-        // Read section manually to preserve order:
-        IniFile.ReadSection('FileSettings', ConfiguredFileNames);
-        for i := 0 to Pred(ConfiguredFileNames.Count) do begin
-          ConfiguredFileName := ConfiguredFileNames[i];
-          if FileNameMatches(ExtractFileName(AFileName), Path + ConfiguredFileName) then begin
-            Result := IniFile.ReadString('FileSettings', ConfiguredFileName, '');
-            Logger.InfoFmt('Settings "%s" from rule %s in %s', [Result, ConfiguredFileName, ConfigFileName]);
-            Break;
-          end;
-        end;
-      finally
-        FreeAndNil(ConfiguredFileNames);
-      end;
-    finally
-      FreeAndNil(IniFile);
-    end;
-  end;
-
-  function GetFromSource: string;
-  const
-    cConfigDirective = '{GXFormatter.config='; // Do not localize.
-  var
-    FirstLine: string;
-  begin
-    FirstLine := Trim(FullText);
-    if SameText(Copy(FirstLine, 1, Length(cConfigDirective)), cConfigDirective) and
-      (FirstLine[Length(FirstLine)] = '}') then begin
-      Result := Trim(Copy(FirstLine, Length(cConfigDirective) + 1, Length(FirstLine) - Length(cConfigDirective) - 1));
-      Logger.InfoFmt('Settings "%s" from in-source directive', [Result]);
-    end else
-      Result := '';
-  end;
-
-  function GetSettingNameFor(_Precedence: TConfigPrecedenceEnum; out _Name: string): Boolean;
-  begin
-    case _Precedence of
-      cpDirective: begin
-          _Name := GetFromSource;
-          Result := _Name <> '';
-        end;
-      cpIniFile: begin
-          _Name := GetFromConfigFile;
-          Result := _Name <> '';
-        end;
-      cpMyConfig: begin
-          _Name := '';
-          Result := True;
-        end else
-      Result := False;
-    end;
-  end;
-
-var
-  i: Integer;
-begin
-  for i := Low(TOneToThree) to High(TOneToThree) do
-    if GetSettingNameFor(FEngine.Settings.ConfigPrecedence[i], Result) then
-      Exit;
-  Result := '';
-end;
-
 type
   TCodeFormatterDone = class(TGxMsgBoxAdaptor)
   protected
@@ -293,7 +198,7 @@ begin
     Breakpoints.SaveItems;
 
     Logger.Info('TCodeFormatterExpert.Execute:Determine settings');
-    SettingsName := Trim(GetSettingsName(FileName, FullTextStr));
+    SettingsName := Trim(FEngine.GetSettingsName(FileName, FullTextStr));
     if SettingsName = '-' then begin
       Logger.Info('Ignoring request, no settings name available');
     end else if SettingsName = '' then begin
@@ -398,7 +303,7 @@ begin
   try
     FullText.LoadFromFile(_FileName);
 
-    SettingsName := Trim(GetSettingsName(_FileName, FullText.Text));
+    SettingsName := Trim(FEngine.GetSettingsName(_FileName, FullText.Text));
     if SettingsName <> '-' then begin
       if SettingsName <> '' then begin
         Logger.InfoFmt('Use settings "%s"', [SettingsName]);
