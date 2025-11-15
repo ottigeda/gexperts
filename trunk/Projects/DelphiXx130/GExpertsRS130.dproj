@@ -109,7 +109,6 @@ $(PreBuildEvent)]]></PreBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
-        <DCC_MapFile>0</DCC_MapFile>
         <Debugger_HostApplication>$(BDS)\bin\bds.exe</Debugger_HostApplication>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
@@ -135,6 +134,11 @@ $(PreBuildEvent)]]></PreBuildEvent>
         </DCCReference>
         <DCCReference Include="..\..\Source\AutoTodo\GX_AutoTodoDone.pas">
             <Form>fmAutoTodoDone</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\AutoSwitchDesktop\GX_AutoSwitchDesktop.pas"/>
+        <DCCReference Include="..\..\Source\AutoSwitchDesktop\GX_AutoSwitchDesktopConfig.pas">
+            <Form>f_AutoSwitchDestkopConfig</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\BackupProject\GX_Backup.pas">
@@ -178,6 +182,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <Form>foBookmarksSelect</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\source\Utils\GX_CheckButton.pas"/>
         <DCCReference Include="..\..\Source\ProjectOptionSets\GX_CheckListBoxWithHints.pas"/>
         <DCCReference Include="..\..\source\ClassBrowser\GX_ClassBrowser.pas">
             <Form>fmClassBrowser</Form>
@@ -290,6 +295,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\source\Utils\GX_DbugIntf.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_Debug.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_DesignerMenu.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_DrawFixes.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_DummyWizard.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_DuplicateDllHandler.pas"/>
         <DCCReference Include="..\..\Source\Formatter\GX_eAddToCaptitalization.pas"/>
@@ -713,6 +719,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <Form>fmSourceExportOptions</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Utils\GX_Splitter.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_StringGridDrawFix.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_StringList.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_SynMemoUtils.pas"/>

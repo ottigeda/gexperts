@@ -1,0 +1,206 @@
+unit GX_AutoSwitchDesktop;
+
+interface
+
+uses
+  SysUtils,
+  Classes,
+  Windows,
+  Controls,
+  GX_ConfigurationInfo;
+
+implementation
+
+uses
+  Menus,
+  u_dzVclUtils,
+  u_dzConvertUtils,
+  GX_Experts,
+{$IFOPT D+}GX_DbugIntf, {$ENDIF}
+  GX_IdeUtils,
+  GX_OtaUtils,
+  GX_AutoSwitchDesktopConfig;
+
+type
+  TAutoSwitchDesktopExpert = class(TGX_Expert)
+  private
+    FIsIdeInitialized: Boolean;
+    FKBHook: HHOOK;
+    FFormDesktop: string;
+    FCodeDesktop: string;
+    procedure HandleF12Press;
+    procedure InstallKeyboardHook;
+    procedure UninstallKeyboardHook;
+  protected
+    procedure SetActive(New: Boolean); override;
+    // displays a dialog saying there are no configuration options
+    // see also HasConfigOptions
+    procedure Configure(_Owner: TWinControl); override;
+    procedure InternalLoadSettings(_Settings: IExpertSettings); override;
+    procedure InternalSaveSettings(_Settings: IExpertSettings); override;
+  public
+    constructor Create; override;
+    destructor Destroy; override;
+    // Name to be displayed for the expert in the GExperts
+    // *configuration* dialog; this is a different entry than
+    // the action caption (GetActionCaption) but by default
+    // it calls GetActionCaption and removes any Hotkey characters and '...'
+    // This is probably OK for most experts.
+    function GetDisplayName: string; override;
+    // Defaults to True
+    function HasMenuItem: Boolean; override;
+    // Returns true, see also Configure
+    function HasConfigOptions: Boolean; override;
+    function CanHaveShortCut: Boolean; override;
+    // Do any delayed setup after the IDE is done initializing
+    procedure AfterIDEInitialized; override;
+  end;
+
+var
+  TheExpert: TAutoSwitchDesktopExpert = nil;
+
+{$IF not declared(HC_ACTION)}
+const
+  HC_Action = 0;
+{$IFEND}
+{$IF not declared(HC_NOREMOVE)}
+const
+  HC_NOREMOVE = 3;
+{$IFEND}
+
+function KeyboardHookProc(Code: Integer; wparam: wparam; lparam: lparam): LRESULT; stdcall;
+begin
+  if Assigned(TheExpert) and TheExpert.Active then begin
+    if Code = 0 then begin
+      if wparam = VK_F12 then begin
+{$IFOPT D+}SendDebugFmt('F12: Code: %d WordParam: %d LongParam: %s', [Code, wparam, TBits32.Create(UInt32(lparam)).AsString(bgNibble)]); {$ENDIF}
+        if UInt32(lparam) and UInt32(1 shl 31) <> 0 then begin
+{$IFOPT D+}SendDebugFmt('F12 was released. Code: %d WordParam: %d LongParam: %d', [Code, wparam, lparam]); {$ENDIF}
+          TThread.ForceQueue(nil, TheExpert.HandleF12Press);
+        end;
+      end;
+    end;
+  end;
+  Result := CallNextHookEx(0, Code, wparam, lparam);
+end;
+
+{ TAutoSwitchDesktopExpert }
+
+constructor TAutoSwitchDesktopExpert.Create;
+begin
+  inherited Create;
+  TheExpert := self;
+end;
+
+destructor TAutoSwitchDesktopExpert.Destroy;
+begin
+  TheExpert := nil;
+  UninstallKeyboardHook;
+  inherited;
+end;
+
+procedure TAutoSwitchDesktopExpert.AfterIDEInitialized;
+begin
+  inherited;
+  FIsIdeInitialized := True;
+  if Active then
+    InstallKeyboardHook;
+end;
+
+procedure TAutoSwitchDesktopExpert.InstallKeyboardHook;
+begin
+  if FKBHook = 0 then
+    FKBHook := SetWindowsHookEx(WH_KEYBOARD, TFNHookProc(@KeyboardHookProc), HInstance, GetCurrentThreadId());
+end;
+
+procedure TAutoSwitchDesktopExpert.UninstallKeyboardHook;
+begin
+  if FKBHook <> 0 then begin
+    UnHookWindowsHookEx(FKBHook);
+    FKBHook := 0;
+  end;
+end;
+
+procedure TAutoSwitchDesktopExpert.HandleF12Press;
+var
+  Desktops: TStrings;
+  Idx: Integer;
+  mi: TMenuItem;
+  DesktopToSelect: string;
+begin
+  if GxOtaCurrentlyEditingForm then
+    DesktopToSelect := FFormDesktop
+  else
+    DesktopToSelect := FCodeDesktop;
+  if DesktopToSelect = '' then
+    Exit; //==>
+
+  Desktops := GetViewDesktopEntries;
+  try
+    Idx := Desktops.IndexOf(DesktopToSelect);
+    if Idx <> -1 then begin
+      mi := TMenuItem(Desktops.Objects[Idx]);
+      if Assigned(mi) then
+        mi.Click;
+    end;
+  finally
+    FreeAndNil(Desktops);
+  end;
+end;
+
+function TAutoSwitchDesktopExpert.GetDisplayName: string;
+begin
+  Result := 'Auto Switch Desktop';
+end;
+
+function TAutoSwitchDesktopExpert.CanHaveShortCut: Boolean;
+begin
+  Result := False;
+end;
+
+procedure TAutoSwitchDesktopExpert.Configure(_Owner: TWinControl);
+begin
+  if Tf_AutoSwitchDestkopConfig.Execute(_Owner, FFormDesktop, FCodeDesktop) then
+    ;
+end;
+
+function TAutoSwitchDesktopExpert.HasConfigOptions: Boolean;
+begin
+  Result := True;
+end;
+
+function TAutoSwitchDesktopExpert.HasMenuItem: Boolean;
+begin
+  Result := False;
+end;
+
+procedure TAutoSwitchDesktopExpert.InternalLoadSettings(_Settings: IExpertSettings);
+begin
+  inherited;
+  FFormDesktop := _Settings.ReadString('FormDestkop', '');
+  FCodeDesktop := _Settings.ReadString('CodeDestkop', '');
+end;
+
+procedure TAutoSwitchDesktopExpert.InternalSaveSettings(_Settings: IExpertSettings);
+begin
+  inherited;
+  _Settings.WriteString('FormDestkop', FFormDesktop);
+  _Settings.WriteString('CodeDestkop', FCodeDesktop);
+end;
+
+procedure TAutoSwitchDesktopExpert.SetActive(New: Boolean);
+begin
+  inherited SetActive(New);
+  if not FIsIdeInitialized then
+    Exit; //==>
+
+  if Active then
+    InstallKeyboardHook
+  else
+    UninstallKeyboardHook;
+end;
+
+initialization
+  RegisterGX_Expert(TAutoSwitchDesktopExpert);
+end.
+
