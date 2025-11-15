@@ -15,42 +15,42 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
-        <Base>true</Base>
-        <CfgParent>Base</CfgParent>
         <Base_Win32>true</Base_Win32>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Base)'=='true') or '$(Base_Win64)'!=''">
-        <Base>true</Base>
-        <CfgParent>Base</CfgParent>
         <Base_Win64>true</Base_Win64>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
-        <Base>true</Base>
-        <CfgParent>Base</CfgParent>
         <Cfg_1>true</Cfg_1>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
-        <Base>true</Base>
+        <Cfg_1_Win32>true</Cfg_1_Win32>
         <CfgParent>Cfg_1</CfgParent>
         <Cfg_1>true</Cfg_1>
-        <Cfg_1_Win32>true</Cfg_1_Win32>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
-        <Base>true</Base>
-        <CfgParent>Base</CfgParent>
         <Cfg_2>true</Cfg_2>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
-        <Base>true</Base>
+        <Cfg_2_Win32>true</Cfg_2_Win32>
         <CfgParent>Cfg_2</CfgParent>
         <Cfg_2>true</Cfg_2>
-        <Cfg_2_Win32>true</Cfg_2_Win32>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win64)'!=''">
-        <Base>true</Base>
+        <Cfg_2_Win64>true</Cfg_2_Win64>
         <CfgParent>Cfg_2</CfgParent>
         <Cfg_2>true</Cfg_2>
-        <Cfg_2_Win64>true</Cfg_2_Win64>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <SanitizedProjectName>GExpertsRS120</SanitizedProjectName>
@@ -139,6 +139,10 @@ $(PreBuildEvent)]]>
             <Form>fmAutoTodoDone</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\AutoSwitchDesktop\GX_AutoSwitchDesktop.pas"/>
+        <DCCReference Include="..\..\Source\AutoSwitchDesktop\GX_AutoSwitchDesktopConfig.pas">
+            <Form>f_AutoSwitchDestkopConfig</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\BackupProject\GX_Backup.pas">
             <Form>fmBackup</Form>
             <FormType>dfm</FormType>
@@ -180,6 +184,7 @@ $(PreBuildEvent)]]>
             <Form>foBookmarksSelect</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\source\Utils\GX_CheckButton.pas"/>
         <DCCReference Include="..\..\Source\ProjectOptionSets\GX_CheckListBoxWithHints.pas"/>
         <DCCReference Include="..\..\source\ClassBrowser\GX_ClassBrowser.pas">
             <Form>fmClassBrowser</Form>
@@ -292,6 +297,7 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\Utils\GX_DbugIntf.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_Debug.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_DesignerMenu.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_DrawFixes.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_DummyWizard.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_DuplicateDllHandler.pas"/>
         <DCCReference Include="..\..\Source\Formatter\GX_eAddToCaptitalization.pas"/>
@@ -537,7 +543,7 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibility.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_IdeUtils.pas"/>
-        <DCCReference Include="..\..\Source\Utils\GX_IndexTypes.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_IndexTypes.pas"/>
         <DCCReference Include="..\..\Source\AutoTodo\GX_InsertAutoTodo.pas">
             <Form>fmInsertAutoTodoForm</Form>
             <FormType>dfm</FormType>
@@ -715,6 +721,7 @@ $(PreBuildEvent)]]>
             <Form>fmSourceExportOptions</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\Utils\GX_Splitter.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_StringGridDrawFix.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_StringList.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_SynMemoUtils.pas"/>
@@ -801,35 +808,35 @@ $(PreBuildEvent)]]>
     <Import Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')"/>
     <Import Project="$(MSBuildProjectName).deployproj" Condition="Exists('$(MSBuildProjectName).deployproj')"/>
     <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win32'">
-        <PostBuildEvent/>
-        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
         <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;&amp;&amp;call ..\..\source\_CreateGExpertsManifest.cmd</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent/>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' And '$(Platform)'=='Win64'">
-        <PostBuildEvent/>
-        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
         <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;&amp;&amp;call ..\..\source\_CreateGExpertsManifest.cmd</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent/>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win32'">
-        <PostBuildEvent/>
-        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
         <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;&amp;&amp;call ..\..\source\_CreateGExpertsManifest.cmd</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent/>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' And '$(Platform)'=='Win64'">
-        <PostBuildEvent/>
-        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
         <PreBuildEvent>call ..\..\images\_CreateGXIconsRc.cmd&amp;&amp;call ..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;&amp;&amp;call ..\..\buildtools\movedll.cmd &quot;$(OUTPUTPATH)&quot;&amp;&amp;call ..\..\source\_CreateGExpertsManifest.cmd</PreBuildEvent>
         <PreBuildEventIgnoreExitCode>False</PreBuildEventIgnoreExitCode>
         <PreLinkEvent/>
         <PreLinkEventIgnoreExitCode>False</PreLinkEventIgnoreExitCode>
+        <PostBuildEvent/>
+        <PostBuildEventIgnoreExitCode>False</PostBuildEventIgnoreExitCode>
     </PropertyGroup>
 </Project>
