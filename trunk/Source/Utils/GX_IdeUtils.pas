@@ -411,7 +411,9 @@ var
 begin
   Result := TryGetViewDesktopMenuItem(mi);
   if not Result then
-    Exit;
+    Exit; //==>
+
+  mi.Click; // initialize the list
   for i := 0 to mi.Count - 1 do begin
     si := mi.Items[i];
     if Assigned(si.OnClick) and (si.Name = '') then begin
