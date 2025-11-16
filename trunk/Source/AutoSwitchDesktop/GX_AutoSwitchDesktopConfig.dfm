@@ -2,15 +2,15 @@ inherited f_AutoSwitchDestkopConfig: Tf_AutoSwitchDestkopConfig
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Auto Switch Desktop configuration'
-  ClientHeight = 186
+  ClientHeight = 137
   ClientWidth = 249
-  StyleElements = [seFont, seClient, seBorder]
-  TextHeight = 15
+  PixelsPerInch = 96
+  TextHeight = 13
   object l_FormDesktop: TLabel
-    Left = 10
-    Top = 14
-    Width = 141
-    Height = 15
+    Left = 8
+    Top = 8
+    Width = 128
+    Height = 13
     Margins.Left = 4
     Margins.Top = 4
     Margins.Right = 4
@@ -18,10 +18,10 @@ inherited f_AutoSwitchDestkopConfig: Tf_AutoSwitchDestkopConfig
     Caption = 'Desktop for &Form Designer'
   end
   object l_CodeDesktop: TLabel
-    Left = 10
-    Top = 78
-    Width = 126
-    Height = 15
+    Left = 8
+    Top = 56
+    Width = 115
+    Height = 13
     Margins.Left = 4
     Margins.Top = 4
     Margins.Right = 4
@@ -29,32 +29,36 @@ inherited f_AutoSwitchDestkopConfig: Tf_AutoSwitchDestkopConfig
     Caption = 'Desktop for &Code Editor'
   end
   object cmb_FormDesktop: TComboBox
-    Left = 10
-    Top = 38
-    Width = 231
-    Height = 23
+    Left = 8
+    Top = 24
+    Width = 233
+    Height = 21
     Margins.Left = 4
     Margins.Top = 4
     Margins.Right = 4
     Margins.Bottom = 4
+    Style = csDropDownList
+    ItemHeight = 13
     TabOrder = 0
   end
   object cmb_CodeDesktop: TComboBox
-    Left = 10
-    Top = 102
-    Width = 231
-    Height = 23
+    Left = 8
+    Top = 72
+    Width = 233
+    Height = 21
     Margins.Left = 4
     Margins.Top = 4
     Margins.Right = 4
     Margins.Bottom = 4
+    Style = csDropDownList
+    ItemHeight = 13
     TabOrder = 1
   end
   object b_OK: TButton
-    Left = 42
-    Top = 142
-    Width = 94
-    Height = 31
+    Left = 88
+    Top = 104
+    Width = 73
+    Height = 25
     Margins.Left = 4
     Margins.Top = 4
     Margins.Right = 4
@@ -65,10 +69,10 @@ inherited f_AutoSwitchDestkopConfig: Tf_AutoSwitchDestkopConfig
     TabOrder = 2
   end
   object b_Cancel: TButton
-    Left = 146
-    Top = 142
-    Width = 94
-    Height = 31
+    Left = 168
+    Top = 104
+    Width = 73
+    Height = 25
     Margins.Left = 4
     Margins.Top = 4
     Margins.Right = 4
