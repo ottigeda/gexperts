@@ -7,6 +7,7 @@ uses
   Classes,
   Windows,
   Controls,
+  u_dzTypes,
   GX_ConfigurationInfo;
 
 implementation
