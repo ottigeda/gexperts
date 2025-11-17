@@ -3,9 +3,10 @@ unit GX_AutoSwitchDesktop;
 interface
 
 uses
+  Windows,
+  Messages,
   SysUtils,
   Classes,
-  Windows,
   Controls,
   u_dzTypes,
   GX_ConfigurationInfo;
@@ -22,16 +23,22 @@ uses
   GX_OtaUtils,
   GX_AutoSwitchDesktopConfig;
 
+const
+  WM_F12 = WM_USER;
+
 type
   TAutoSwitchDesktopExpert = class(TGX_Expert)
   private
     FIsIdeInitialized: Boolean;
+    FMsgHandlerHWND: HWND;
     FKBHook: HHOOK;
     FFormDesktop: string;
     FCodeDesktop: string;
     procedure HandleF12Press;
     procedure InstallKeyboardHook;
     procedure UninstallKeyboardHook;
+    procedure WndMethod(var Msg: Messages.TMessage);
+    procedure CallHandleF12Press;
   protected
     procedure SetActive(New: Boolean); override;
     // displays a dialog saying there are no configuration options
@@ -77,7 +84,7 @@ begin
 {$IFOPT D+}SendDebugFmt('F12: Code: %d WordParam: %d LongParam: %s', [Code, wparam, TBits32.Create(UInt32(lparam)).AsString(bgNibble)]); {$ENDIF}
         if UInt32(lparam) and UInt32(1 shl 31) <> 0 then begin
 {$IFOPT D+}SendDebugFmt('F12 was released. Code: %d WordParam: %d LongParam: %d', [Code, wparam, lparam]); {$ENDIF}
-          TThread.ForceQueue(nil, TheExpert.HandleF12Press);
+          TheExpert.CallHandleF12Press;
         end;
       end;
     end;
@@ -90,6 +97,7 @@ end;
 constructor TAutoSwitchDesktopExpert.Create;
 begin
   inherited Create;
+  FMsgHandlerHWND := AllocateHWnd(WndMethod);
   TheExpert := self;
 end;
 
@@ -97,6 +105,7 @@ destructor TAutoSwitchDesktopExpert.Destroy;
 begin
   TheExpert := nil;
   UninstallKeyboardHook;
+  DeallocateHWnd(FMsgHandlerHWND);
   inherited;
 end;
 
@@ -120,6 +129,20 @@ begin
     UnHookWindowsHookEx(FKBHook);
     FKBHook := 0;
   end;
+end;
+
+procedure TAutoSwitchDesktopExpert.CallHandleF12Press;
+begin
+  PostMessage(TheExpert.FMsgHandlerHWND, WM_F12, 0, 0);
+end;
+
+procedure TAutoSwitchDesktopExpert.WndMethod(var Msg: Messages.TMessage);
+begin
+  if Msg.Msg = WM_F12 then begin
+    HandleF12Press;
+    Msg.Result := 0;
+  end else
+    Msg.Result := DefWindowProc(FMsgHandlerHWND, Msg.Msg, Msg.wparam, Msg.lparam);
 end;
 
 procedure TAutoSwitchDesktopExpert.HandleF12Press;
