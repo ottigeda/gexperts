@@ -34,6 +34,7 @@ type
     function Execute(_SourceCode: TGXUnicodeStringList): Boolean;
     property Settings: TCodeFormatterSettings read FSettings write FSettings;
     function GetSettingsName(const AFileName: string; FullText: TGXUnicodeString): string;
+    function FormatFile(const _FileName: string): Boolean;
   end;
 
 implementation
@@ -42,7 +43,9 @@ uses
   IniFiles,
   StrUtils,
   GX_CodeFormatterFormatter,
-  GX_CodeFormatterParser;
+  GX_CodeFormatterParser,
+  GX_CodeFormatterConfigHandler,
+  GX_CodeFormatterGXConfigWrapper;
 
 constructor TCodeFormatterEngine.Create;
 begin
@@ -93,7 +96,7 @@ begin
             if OrigLineNo > 0 then
               _SourceCode.AddObject(Line, Pointer(OrigLineNo))
             else
-            _SourceCode.Add(Line);
+              _SourceCode.Add(Line);
           end;
         end else begin
 //          Logger.Info('Tokens not assigned');
@@ -255,4 +258,58 @@ begin
   Result := '';
 end;
 
+function TCodeFormatterEngine.FormatFile(const _FileName: string): Boolean;
+resourcestring
+  str_UnsupportedFileTypeS = 'Unsupported file type: %s';
+var
+  FullText: TGXUnicodeStringList;
+  TempSettings: TCodeFormatterSettings;
+  OrigSettings: TCodeFormatterEngineSettings;
+  SettingsName: string;
+begin
+  Result := False;
+  if not (IsPascalSourceFile(_FileName) or IsDelphiPackage(_FileName) or FileMatchesExtension(_FileName, '.tpl')) then
+    raise ECodeFormatter.CreateFmt(str_UnsupportedFileTypeS, [ExtractFileName(_FileName)]);
+
+  Logger.InfoFmt('Formatting requested for "%s"', [_FileName]);
+  TempSettings := nil;
+  FullText := TGXUnicodeStringList.Create;
+  try
+    FullText.LoadFromFile(_FileName);
+
+    SettingsName := Trim(GetSettingsName(_FileName, FullText.Text));
+    if SettingsName <> '-' then begin
+      if SettingsName <> '' then begin
+        Logger.InfoFmt('Use settings "%s"', [SettingsName]);
+        TempSettings := TCodeFormatterSettings.Create;
+        if TCodeFormatterConfigHandler.GetDefaultConfig(SettingsName, TempSettings,
+          GetDefaultCapitalizationFilename) then begin
+          OrigSettings := Settings.Settings;
+          Settings.Settings := TempSettings.Settings;
+        end else
+          FreeAndNil(TempSettings);
+      end else
+        Logger.Info('Use default settings');
+
+      Result := Execute(FullText);
+      if Result then begin
+        Logger.Info('Saving changed file');
+        // add an empty line to be compatible with running in the IDE
+        FullText.Add('');
+        FullText.SaveToFile(_FileName);
+      end else begin
+        Logger.Info('Nothing changed');
+      end;
+    end else
+      Logger.Info('Ignoring request, no settings name available');
+  finally
+    FreeAndNil(FullText);
+    if Assigned(TempSettings) then begin
+      FreeAndNil(TempSettings);
+      Settings.Settings := OrigSettings;
+    end;
+  end;
+end;
+
 end.
+

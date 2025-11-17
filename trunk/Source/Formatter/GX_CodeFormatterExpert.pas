@@ -31,7 +31,6 @@ type
     function Execute: Boolean;
     procedure InternalLoadSettings(_Settings: IExpertSettings);
     procedure InternalSaveSettings(_Settings: IExpertSettings);
-    function FormatFile(const _FileName: string): Boolean;
     ///<summary>
     /// @returns True, if the captialization list was changed </summary>
     function AddToCapitalization(const _Identifier: TGXUnicodeString): Boolean;
@@ -129,7 +128,6 @@ begin
   TCodeFormatterConfigHandler.WriteCaptialization(Settings.CapitalizationFile, Settings.CapNames, Timestamp);
   Settings.CapFileTimestamp := Timestamp;
 end;
-
 
 type
   TCodeFormatterDone = class(TGxMsgBoxAdaptor)
@@ -282,60 +280,6 @@ var
 begin
   Writer := TGxConfigWrapper.Create(_Settings);
   TCodeFormatterConfigHandler.WriteSettings(Writer, FEngine.Settings);
-end;
-
-function TCodeFormatterExpert.FormatFile(const _FileName: string): Boolean;
-resourcestring
-  str_UnsupportedFileTypeS = 'Unsupported file type: %s';
-var
-  FullText: TGXUnicodeStringList;
-  TempSettings: TCodeFormatterSettings;
-  OrigSettings: TCodeFormatterEngineSettings;
-  SettingsName: string;
-begin
-  Result := False;
-  if not (IsPascalSourceFile(_FileName) or IsDelphiPackage(_FileName) or FileMatchesExtension(_FileName, '.tpl')) then
-    raise ECodeFormatter.CreateFmt(str_UnsupportedFileTypeS, [ExtractFileName(_FileName)]);
-
-  Logger.InfoFmt('Formatting requested for "%s"', [_FileName]);
-  TempSettings := nil;
-  FullText := TGXUnicodeStringList.Create;
-  try
-    FullText.LoadFromFile(_FileName);
-
-    SettingsName := Trim(FEngine.GetSettingsName(_FileName, FullText.Text));
-    if SettingsName <> '-' then begin
-      if SettingsName <> '' then begin
-        Logger.InfoFmt('Use settings "%s"', [SettingsName]);
-        TempSettings := TCodeFormatterSettings.Create;
-        if TCodeFormatterConfigHandler.GetDefaultConfig(SettingsName, TempSettings,
-          GetDefaultCapitalizationFilename) then begin
-          OrigSettings := FEngine.Settings.Settings;
-          FEngine.Settings.Settings := TempSettings.Settings;
-        end else
-          FreeAndNil(TempSettings);
-      end else
-        Logger.Info('Use default settings');
-
-      Result := FEngine.Execute(FullText);
-      if Result then begin
-        Logger.Info('Saving changed file');
-        // add an empty line to be compatible with running in the IDE
-        FullText.Add('');
-        FullText.SaveToFile(_FileName);
-        ShowGxMessageBox(TCodeFormatterDone);
-      end else begin
-        Logger.Info('Nothing changed');
-      end;
-    end else
-      Logger.Info('Ignoring request, no settings name available');
-  finally
-    FreeAndNil(FullText);
-    if Assigned(TempSettings) then begin
-      FreeAndNil(TempSettings);
-      FEngine.Settings.Settings := OrigSettings;
-    end;
-  end;
 end;
 
 end.

@@ -169,7 +169,7 @@ begin
       FormatterStandAlone := TeCodeFormatterExpert.Create;
       try
         FormatterStandAlone.LoadSettings;
-        Result := FormatterStandAlone.FExpert.FormatFile(_FileName);
+        Result := FormatterStandAlone.FExpert.Engine.FormatFile(_FileName);
         FormatterStandAlone.SaveSettings;
       finally
         FormatterStandAlone.Free;
@@ -223,7 +223,7 @@ begin
         try
           SplitStr(AFileNames, ';', FileList);
           for i := 0 to Pred(FileList.Count) do
-            FormatterStandAlone.FExpert.FormatFile(FileList[i]);
+            FormatterStandAlone.FExpert.Engine.FormatFile(FileList[i]);
         finally
           FileList.Free;
         end;
