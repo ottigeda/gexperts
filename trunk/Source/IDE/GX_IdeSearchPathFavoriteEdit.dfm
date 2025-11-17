@@ -81,6 +81,7 @@ inherited f_IdeSearchPathFavoriteEdit: Tf_IdeSearchPathFavoriteEdit
     Width = 70
     Height = 25
     Hint = 'Help (F1)'
+    Anchors = [akLeft, akBottom]
     Caption = 'Help'
     ParentShowHint = False
     ShowHint = True
