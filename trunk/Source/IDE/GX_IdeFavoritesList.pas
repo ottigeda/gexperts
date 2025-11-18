@@ -61,6 +61,7 @@ uses
   IniFiles,
   StrUtils,
   u_dzVclUtils,
+  u_dzStringUtils,
   u_dzDialogUtils,
   w_dzDialog,
   GX_GenericUtils;
@@ -258,7 +259,7 @@ begin
       end else begin
         for i := 0 to sl.Count - 1 do begin
           FavName := sl[i];
-          if (FavName <> '') and not StartsText('//', FavName) then begin
+          if (FavName <> '') and not StartsStr('//', FavName) then begin
             FavValue := Ini.ReadString('SearchPathFavorites', FavName, '');
             li := lv_Favorites.Items.Add;
             li.Caption := FavName;
