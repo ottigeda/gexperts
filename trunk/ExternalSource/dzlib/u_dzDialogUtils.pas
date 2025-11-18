@@ -9,75 +9,43 @@ uses
   Classes,
   Types,
   Controls,
+  Contnrs,
   u_dzTranslator,
   u_dzTypes;
 
-{$IFDEF SUPPORTS_ENHANCED_RECORDS}
 type
-  TFileFilter = record
-  private
-    FDescription: string;
-    FMask: string;
-  public
-    procedure Init(const _Description, _Mask: string; _AddMaskToDesc: Boolean);
-    property Description: string read FDescription;
-    property Mask: string read FMask;
-  end;
-
-type
-  TFileFilterArr = array of TFileFilter;
-
-  PFileFilterBuilder = ^TFileFilterBuilder;
-  TFileFilterBuilder = record
-  private
-  private
-    FFilters: TFileFilterArr;
-    FIncludeAllFiles: Boolean;
-    FAllSupported: string;
-  public
-    function Init(_IncludeAllFiles: Boolean = True; const _AllSupported: string = ''): PFileFilterBuilder;
-    ///<summary> Adds a new filter, the first one added is the default.
-    ///          @param Description is the file type description e.g. 'Text file'. This descrition
-    ///                             should be localized.
-    ///          @param Mask is the file mask, e.g. '*.txt', it should not be localized.
-    ///          @param AddMaskToDesc determines whether the mask is appended to the descripition as
-    ///                               ' (*.bla)', defaults to true, e.g. 'Text file (*.txt)
-    ///          @returns the interface itself, so chaining is possible like this:
-    ///                   od.Filter := FileFilterHelper.AddFilter('bla', '*.bla').AddFilter('blub', '*.blu').Value;
-    function Add(const _Description: string; const _Mask: string;
-      _AddMaskToDesc: Boolean = True): PFileFilterBuilder;
+  IFileFilterBuilder = interface
     ///<summary>
     /// Adds an entry <descriptionfmt> (<maskfmt>)|<maskfmt>
     /// where both *fmts are passed through Format(*fmt, Values) </summary>
     function AddFmt(const _DescriptionFmt: string; const _MaskFmt: string;
-      const _Values: array of const): PFileFilterBuilder;
-    function AddAvi: PFileFilterBuilder;
-    function AddBmp: PFileFilterBuilder;
-    function AddCsv: PFileFilterBuilder;
-    function AddDbf: PFileFilterBuilder;
-    function AddEmf: PFileFilterBuilder;
-    function AddExe: PFileFilterBuilder;
-    function AddGif: PFileFilterBuilder;
-    function AddHtml: PFileFilterBuilder;
-    function AddIni: PFileFilterBuilder;
-    function AddJpg: PFileFilterBuilder;
-    function AddLog: PFileFilterBuilder;
-    function AddMdb: PFileFilterBuilder;
-    function AddOdt: PFileFilterBuilder;
-    function AddOds: PFileFilterBuilder;
-    function AddPdf: PFileFilterBuilder;
-    function AddPicture: PFileFilterBuilder;
-    function AddRtf: PFileFilterBuilder;
-    function AddTiff: PFileFilterBuilder;
-    function AddTxt: PFileFilterBuilder;
-    function AddXml: PFileFilterBuilder;
-    function AddXls: PFileFilterBuilder;
+      const _Values: array of const): IFileFilterBuilder;
+    function AddAvi: IFileFilterBuilder;
+    function AddBmp: IFileFilterBuilder;
+    function AddCsv: IFileFilterBuilder;
+    function AddDbf: IFileFilterBuilder;
+    function AddEmf: IFileFilterBuilder;
+    function AddExe: IFileFilterBuilder;
+    function AddGif: IFileFilterBuilder;
+    function AddHtml: IFileFilterBuilder;
+    function AddIni: IFileFilterBuilder;
+    function AddJpg: IFileFilterBuilder;
+    function AddLog: IFileFilterBuilder;
+    function AddMdb: IFileFilterBuilder;
+    function AddOdt: IFileFilterBuilder;
+    function AddOds: IFileFilterBuilder;
+    function AddPdf: IFileFilterBuilder;
+    function AddPicture: IFileFilterBuilder;
+    function AddRtf: IFileFilterBuilder;
+    function AddTiff: IFileFilterBuilder;
+    function AddTxt: IFileFilterBuilder;
+    function AddXml: IFileFilterBuilder;
+    function AddXls: IFileFilterBuilder;
     function Value: string;
     function Filter: string; deprecated; // use Value instead
   end;
 
-function FileFilterBuilder(_IncludeAllFiles: Boolean = True; const _AllSupported: string = ''): TFileFilterBuilder;
-{$ENDIF}
+function FileFilterBuilder(_IncludeAllFiles: Boolean = True; const _AllSupported: string = ''): IFileFilterBuilder;
 
 function TOpenDialog_Execute(_Owner: TWinControl; const _Title: string; const _Filter: string;
   var _fn: string; _FileMustExist: Boolean = True): Boolean; overload;
@@ -325,140 +293,201 @@ begin
   Result := TSaveDialogXP_Execute(_Owner, _Title, _Filter, _fn, _DefaultExt);
 end;
 
-{$IF Declared(TFileFilterBuilder)}
-function FileFilterBuilder(_IncludeAllFiles: Boolean = True; const _AllSupported: string = ''): TFileFilterBuilder;
+type
+  TFileFilter = class
+  private
+    FDescription: string;
+    FMask: string;
+  public
+    constructor Create(const _Description, _Mask: string; _AddMaskToDesc: Boolean);
+    property Description: string read FDescription;
+    property Mask: string read FMask;
+  end;
+
+  TFileFilterBuilder = class(TInterfacedObject, IFileFilterBuilder)
+  private
+    FFilters: TObjectList;
+    FIncludeAllFiles: Boolean;
+    FAllSupported: string;
+  private
+    ///<summary>
+    /// Adds an entry <descriptionfmt> (<maskfmt>)|<maskfmt>
+    /// where both *fmts are passed through Format(*fmt, Values) </summary>
+    function AddFmt(const _DescriptionFmt: string; const _MaskFmt: string;
+      const _Values: array of const): IFileFilterBuilder;
+    function AddAvi: IFileFilterBuilder;
+    function AddBmp: IFileFilterBuilder;
+    function AddCsv: IFileFilterBuilder;
+    function AddDbf: IFileFilterBuilder;
+    function AddEmf: IFileFilterBuilder;
+    function AddExe: IFileFilterBuilder;
+    function AddGif: IFileFilterBuilder;
+    function AddHtml: IFileFilterBuilder;
+    function AddIni: IFileFilterBuilder;
+    function AddJpg: IFileFilterBuilder;
+    function AddLog: IFileFilterBuilder;
+    function AddMdb: IFileFilterBuilder;
+    function AddOdt: IFileFilterBuilder;
+    function AddOds: IFileFilterBuilder;
+    function AddPdf: IFileFilterBuilder;
+    function AddPicture: IFileFilterBuilder;
+    function AddRtf: IFileFilterBuilder;
+    function AddTiff: IFileFilterBuilder;
+    function AddTxt: IFileFilterBuilder;
+    function AddXml: IFileFilterBuilder;
+    function AddXls: IFileFilterBuilder;
+    function Value: string;
+    function Filter: string; deprecated; // use Value instead
+  public
+    constructor Create(_IncludeAllFiles: Boolean = True; const _AllSupported: string = '');
+    ///<summary> Adds a new filter, the first one added is the default.
+    ///          @param Description is the file type description e.g. 'Text file'. This descrition
+    ///                             should be localized.
+    ///          @param Mask is the file mask, e.g. '*.txt', it should not be localized.
+    ///          @param AddMaskToDesc determines whether the mask is appended to the descripition as
+    ///                               ' (*.bla)', defaults to true, e.g. 'Text file (*.txt)
+    ///          @returns the interface itself, so chaining is possible like this:
+    ///                   od.Filter := FileFilterHelper.AddFilter('bla', '*.bla').AddFilter('blub', '*.blu').Value;
+    destructor Destroy; override;
+    function Add(const _Description: string; const _Mask: string;
+      _AddMaskToDesc: Boolean = True): IFileFilterBuilder;
+  end;
+
+function FileFilterBuilder(_IncludeAllFiles: Boolean = True; const _AllSupported: string = ''): IFileFilterBuilder;
 begin
-  Result.Init(_IncludeAllFiles, _AllSupported);
+  Result := TFileFilterBuilder.Create(_IncludeAllFiles, _AllSupported);
 end;
 
 { TFileFilterBuilder }
 
-function TFileFilterBuilder.Init(_IncludeAllFiles: Boolean;
-  const _AllSupported: string): PFileFilterBuilder;
+constructor TFileFilterBuilder.Create(_IncludeAllFiles: Boolean; const _AllSupported: string);
 begin
+  inherited Create;
+  FFilters := TObjectList.Create;
   FIncludeAllFiles := _IncludeAllFiles;
   FAllSupported := _AllSupported;
-  Result := @Self;
+end;
+
+destructor TFileFilterBuilder.Destroy;
+begin
+  FreeAndNil(FFilters);
+  inherited;
 end;
 
 function TFileFilterBuilder.Add(const _Description, _Mask: string;
-  _AddMaskToDesc: Boolean): PFileFilterBuilder;
-var
-  Idx: Integer;
+  _AddMaskToDesc: Boolean): IFileFilterBuilder;
 begin
-  Idx := Length(FFilters);
-  SetLength(FFilters, Idx + 1);
-  FFilters[Idx].Init(_Description, _Mask, _AddMaskToDesc);
-  Result := @Self;
+  FFilters.Add(TFileFilter.Create(_Description, _Mask, _AddMaskToDesc));
+  Result := Self;
 end;
 
 function TFileFilterBuilder.AddFmt(const _DescriptionFmt, _MaskFmt: string;
-  const _Values: array of const): PFileFilterBuilder;
+  const _Values: array of const): IFileFilterBuilder;
 begin
   Result := Add(Format(_DescriptionFmt, _Values), Format(_MaskFmt, _Values));
 end;
 
-function TFileFilterBuilder.AddAvi: PFileFilterBuilder;
+function TFileFilterBuilder.AddAvi: IFileFilterBuilder;
 begin
   Result := Add(_('AVI files'), '*.AVI');
 end;
 
-function TFileFilterBuilder.AddBmp: PFileFilterBuilder;
+function TFileFilterBuilder.AddBmp: IFileFilterBuilder;
 begin
   Result := Add(_('Bitmap Files'), '*.BMP');
 end;
 
-function TFileFilterBuilder.AddCsv: PFileFilterBuilder;
+function TFileFilterBuilder.AddCsv: IFileFilterBuilder;
 begin
   Result := Add(_('Comma-separated values'), '*.CSV');
 end;
 
-function TFileFilterBuilder.AddDbf: PFileFilterBuilder;
+function TFileFilterBuilder.AddDbf: IFileFilterBuilder;
 begin
   Result := Add(_('DBase tables'), '*.DBF');
 end;
 
-function TFileFilterBuilder.AddEmf: PFileFilterBuilder;
+function TFileFilterBuilder.AddEmf: IFileFilterBuilder;
 begin
   Result := Add(_('Windows Enhanced Metafile'), '*.EMF');
 end;
 
-function TFileFilterBuilder.AddExe: PFileFilterBuilder;
+function TFileFilterBuilder.AddExe: IFileFilterBuilder;
 begin
   Result := Add(_('Executable Files'), '*.EXE');
 end;
 
-function TFileFilterBuilder.AddGif: PFileFilterBuilder;
+function TFileFilterBuilder.AddGif: IFileFilterBuilder;
 begin
   Result := Add(_('GIF Image'), '*.GIF');
 end;
 
-function TFileFilterBuilder.AddHtml: PFileFilterBuilder;
+function TFileFilterBuilder.AddHtml: IFileFilterBuilder;
 begin
   Result := Add(_('Hypertext Markup Language'), '*.html');
 end;
 
-function TFileFilterBuilder.AddIni: PFileFilterBuilder;
+function TFileFilterBuilder.AddIni: IFileFilterBuilder;
 begin
   Result := Add(_('INI files'), '*.INI');
 end;
 
-function TFileFilterBuilder.AddJpg: PFileFilterBuilder;
+function TFileFilterBuilder.AddJpg: IFileFilterBuilder;
 begin
   Result := Add(_('JPEG Files'), '*.jpg;*.jpeg');
 end;
 
-function TFileFilterBuilder.AddLog: PFileFilterBuilder;
+function TFileFilterBuilder.AddLog: IFileFilterBuilder;
 begin
   Result := Add(_('Log files'), '*.LOG');
 end;
 
-function TFileFilterBuilder.AddMdb: PFileFilterBuilder;
+function TFileFilterBuilder.AddMdb: IFileFilterBuilder;
 begin
   Result := Add(_('Microsoft Access Databases'), '*.mdb');
 end;
 
-function TFileFilterBuilder.AddOds: PFileFilterBuilder;
+function TFileFilterBuilder.AddOds: IFileFilterBuilder;
 begin
   Result := Add(_('Open Document Spreadsheet'), '*.ODS');
 end;
 
-function TFileFilterBuilder.AddOdt: PFileFilterBuilder;
+function TFileFilterBuilder.AddOdt: IFileFilterBuilder;
 begin
   Result := Add(_('Open Document Text'), '*.ODT');
 end;
 
-function TFileFilterBuilder.AddPdf: PFileFilterBuilder;
+function TFileFilterBuilder.AddPdf: IFileFilterBuilder;
 begin
   Result := Add(_('Portable Document Format'), '*.PDF');
 end;
 
-function TFileFilterBuilder.AddPicture: PFileFilterBuilder;
+function TFileFilterBuilder.AddPicture: IFileFilterBuilder;
 begin
   Result := Add(_('Picture files'), '*.bmp;*.jpg;*.jpeg').AddBmp.AddJpg;
 end;
 
-function TFileFilterBuilder.AddRtf: PFileFilterBuilder;
+function TFileFilterBuilder.AddRtf: IFileFilterBuilder;
 begin
   Result := Add(_('Rich Text Format'), '*.RTF');
 end;
 
-function TFileFilterBuilder.AddTiff: PFileFilterBuilder;
+function TFileFilterBuilder.AddTiff: IFileFilterBuilder;
 begin
   Result := Add(_('Tagged Image File Format'), '*.TIF;*.TIFF');
 end;
 
-function TFileFilterBuilder.AddTxt: PFileFilterBuilder;
+function TFileFilterBuilder.AddTxt: IFileFilterBuilder;
 begin
   Result := Add(_('Text files'), '*.TXT');
 end;
 
-function TFileFilterBuilder.AddXls: PFileFilterBuilder;
+function TFileFilterBuilder.AddXls: IFileFilterBuilder;
 begin
   Result := Add(_('Microsoft Excel File Format'), '*.XLS');
 end;
 
-function TFileFilterBuilder.AddXml: PFileFilterBuilder;
+function TFileFilterBuilder.AddXml: IFileFilterBuilder;
 begin
   Result := Add(_('Extensible Markup Language'), '*.XML');
 end;
@@ -490,16 +519,16 @@ begin
 
   if FAllSupported <> '' then begin
     s := '';
-    for i := Low(FFilters) to High(FFilters) do begin
+    for i := 0 to FFilters.Count - 1 do begin
       if s <> '' then
         s := s + ';';
-      s := s + FFilters[i].Mask;
+      s := s + TFileFilter(FFilters[i]).Mask;
     end;
     AddToResult(FAllSupported, s);
   end;
 
-  for i := Low(FFilters) to High(FFilters) do begin
-    AddToResult(FFilters[i]);
+  for i := 0 to FFilters.Count - 1 do begin
+    AddToResult(TFileFilter(FFilters[i]));
   end;
 
   if FIncludeAllFiles then
@@ -508,14 +537,14 @@ end;
 
 { TFileFilter }
 
-procedure TFileFilter.Init(const _Description, _Mask: string; _AddMaskToDesc: Boolean);
+constructor TFileFilter.Create(const _Description, _Mask: string; _AddMaskToDesc: Boolean);
 begin
+  inherited Create;
   FDescription := _Description;
   FMask := _Mask;
   if _AddMaskToDesc then
     FDescription := FDescription + ' (' + _Mask + ')';
 end;
-{$IFEND}
 
 // This would have been too easy: In theory setting this to true would
 // show the "new" TFileOpen/SaveDialogs available in Windows Vista+ even when using TOpen/SaveDialog
