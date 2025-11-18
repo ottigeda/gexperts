@@ -3,7 +3,7 @@ inherited f_GxIdeFavoritesList: Tf_GxIdeFavoritesList
   Top = 276
   BorderIcons = [biSystemMenu]
   Caption = 'Favorite Search Paths'
-  ClientHeight = 310
+  ClientHeight = 313
   ClientWidth = 417
   ParentFont = False
   KeyPreview = True
@@ -13,20 +13,20 @@ inherited f_GxIdeFavoritesList: Tf_GxIdeFavoritesList
   TextHeight = 13
   object b_Close: TButton
     Left = 336
-    Top = 246
+    Top = 248
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Close'
     ModalResult = 1
-    TabOrder = 4
+    TabOrder = 6
   end
   object lv_Favorites: TListView
     Left = 8
     Top = 8
     Width = 321
-    Height = 294
+    Height = 297
     Anchors = [akLeft, akTop, akRight, akBottom]
     Columns = <
       item
@@ -55,7 +55,7 @@ inherited f_GxIdeFavoritesList: Tf_GxIdeFavoritesList
   end
   object b_Edit: TButton
     Left = 336
-    Top = 55
+    Top = 56
     Width = 75
     Height = 25
     Anchors = [akTop, akRight]
@@ -66,7 +66,7 @@ inherited f_GxIdeFavoritesList: Tf_GxIdeFavoritesList
   end
   object b_Delete: TButton
     Left = 336
-    Top = 86
+    Top = 88
     Width = 75
     Height = 25
     Anchors = [akTop, akRight]
@@ -76,7 +76,7 @@ inherited f_GxIdeFavoritesList: Tf_GxIdeFavoritesList
   end
   object b_Help: TButton
     Left = 336
-    Top = 277
+    Top = 280
     Width = 75
     Height = 25
     Hint = 'Help (F1)'
@@ -85,7 +85,25 @@ inherited f_GxIdeFavoritesList: Tf_GxIdeFavoritesList
     Caption = 'Help'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 5
+    TabOrder = 7
     OnClick = b_HelpClick
+  end
+  object b_Export: TButton
+    Left = 336
+    Top = 136
+    Width = 75
+    Height = 25
+    Caption = 'E&xport ...'
+    TabOrder = 4
+    OnClick = b_ExportClick
+  end
+  object b_Import: TButton
+    Left = 336
+    Top = 168
+    Width = 75
+    Height = 25
+    Caption = '&Import ...'
+    TabOrder = 5
+    OnClick = b_ImportClick
   end
 end
