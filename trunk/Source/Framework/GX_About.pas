@@ -71,9 +71,9 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Graphics, ToolsApi, Messages,
   u_dzVclUtils, u_dzVersionInfo,
-  GX_GxUtils, GX_DuplicateDllHandler,
+  GX_GxUtils,
 {$IFNDEF GX_STANDALONE}
-  GX_GetIdeVersion,
+  GX_GetIdeVersion, GX_DuplicateDllHandler,
 {$ENDIF}
   GX_GenericUtils, GX_FeedbackWizard;
 
@@ -323,8 +323,10 @@ var
 begin
   FileDesc := GetFileDescription;
   VerString := GetVersionStr;
+{$IFNDEF GX_STANDALONE}
   if IsDuplicateGExpertsDll() then
     VerString := VerString + ' (duplicate, inactive)';
+{$ENDIF}
   AddPluginToSplashScreen(GetSplashIcon, FileDesc, VerString);
 end;
 
@@ -354,11 +356,13 @@ var
   Desc: string;
   VerString: string;
 begin
+{$IFNDEF GX_STANDALONE}
   if IsDuplicateGExpertsDll() then begin
     DupeString := ' (duplicate, inactive)';
     Desc := 'GExperts is listed twice in the IDE Experts list, so this instance is inactive.'#13#10
       + 'Use the Expert Manager to remove the duplicate!';
   end else
+{$ENDIF GX_STANDALONE}
     Desc := Description;
   Result := -1;
   if Supports(BorlandIDEServices, IOTAAboutBoxServices, AboutBoxServices) then begin
