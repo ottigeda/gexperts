@@ -89,30 +89,13 @@ begin
   end;
 end;
 
-function doFormatFile(_Engine: TCodeFormatterEngine; _FileName: string): Boolean;
-var
-  Source: TGXUnicodeStringList;
-begin
-  _FileName := ExpandFileName(_FileName);
-  Source := TGXUnicodeStringList.Create;
-  try
-    Source.LoadFromFile(_FileName);
-    Result := _Engine.Execute(Source);
-    if Result then begin
-      Source.SaveToFile(_FileName);
-    end;
-  finally
-    FreeAndNil(Source);
-  end;
-end;
-
 function FormatFile(const _FileName: string): Boolean;
 var
   Engine: TCodeFormatterEngine;
 begin
   Engine := CreateAndConfigureEngine;
   try
-    Result := doFormatFile(Engine, _FileName);
+    Result := Engine.FormatFile(ExpandFileName(_FileName));
   finally
     FreeAndNil(Engine);
   end;
@@ -128,7 +111,8 @@ begin
   try
     for i := 1 to ParamCount do begin
       fn := ParamStr(i);
-      doFormatFile(Engine, fn);
+      fn := ExpandFileName(fn);
+      Engine.FormatFile(fn);
     end;
   finally
     FreeAndNil(Engine);
