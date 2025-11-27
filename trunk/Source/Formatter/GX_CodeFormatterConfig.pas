@@ -275,15 +275,19 @@ begin
 end;
 
 procedure TfmCodeFormatterConfig.ArrangeControls;
+{$IF declared(FScaler)}
 var
   h: Integer;
 begin
   inherited;
   h := grid_Spacing.Canvas.TextHeight('Mg') + 4;
-{$IF declared(FScaler)}
   grid_Spacing.DefaultRowHeight := FScaler.Calc(h);
-{$IFEND}
 end;
+{$ELSE}
+begin
+  // do nothing
+end;
+{$IFEND}
 
 procedure TfmCodeFormatterConfig.HandleCaptitalizationFileDropped(_Sender: TObject; _Files: TStrings);
 begin
