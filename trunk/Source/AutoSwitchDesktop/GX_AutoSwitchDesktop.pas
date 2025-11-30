@@ -49,11 +49,16 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    // Name to be displayed for the expert in the GExperts
-    // *configuration* dialog; this is a different entry than
-    // the action caption (GetActionCaption) but by default
-    // it calls GetActionCaption and removes any Hotkey characters and '...'
-    // This is probably OK for most experts.
+    ///<summary>
+    /// Describes the purpose of the expert. Displayed as hint if the user
+    /// points the mouse on the expert's icon in the configuration dialog. </summary>
+    function GetHelpString: string; override;
+    ///<summary>
+    /// Name to be displayed for the expert in the GExperts *configuration*
+    /// dialog; this is a different entry than the action caption
+    /// (GetActionCaption) but by default it calls GetActionCaption and
+    /// removes any Hotkey characters and '...' This is probably OK for
+    /// most experts. </summary>
     function GetDisplayName: string; override;
     // Defaults to True
     function HasMenuItem: Boolean; override;
@@ -175,6 +180,13 @@ end;
 function TAutoSwitchDesktopExpert.GetDisplayName: string;
 begin
   Result := 'Auto Switch Desktop';
+end;
+
+function TAutoSwitchDesktopExpert.GetHelpString: string;
+begin
+  Result := 'This expert switches to a different desktop when the user presses F12 '
+    + 'to switch between the code editor and the form designer. Note that this does '
+    + 'not apply if the user switches using between these views using the mouse.';
 end;
 
 function TAutoSwitchDesktopExpert.CanHaveShortCut: Boolean;
