@@ -304,7 +304,7 @@ begin
   if ATemplateOffset = AInsertOffset then
   begin
     InsertOff := AInsertOffset + CodeLen;
-    GxOtaInsertTextIntoEditorAtBufferPos(ATemplateCode, InsertOff);
+    Ota.InsertTextIntoEditorAtBufferPos(ATemplateCode, InsertOff);
     // Delete template code (done after the insert to avoid problems)
     if CodeLen > 0 then
       GxOtaDeleteByteFromPos(ATemplateOffset, CodeLen);
@@ -314,7 +314,7 @@ begin
     InsertOff := AInsertOffset;
     if CodeLen > 0 then
       GxOtaDeleteByteFromPos(ATemplateOffset, CodeLen);
-    GxOtaInsertTextIntoEditorAtBufferPos(ATemplateCode, InsertOff);
+    Ota.InsertTextIntoEditorAtBufferPos(ATemplateCode, InsertOff);
   end;
 end;
 
@@ -477,7 +477,7 @@ begin
   if not GxOtaTryGetTopMostEditView(EditView) then
     Exit;
 
-  Result := GxOtaGetPreceedingCharactersInLine(EditView);
+  Result := Ota.GetPreceedingCharactersInLine(EditView);
 
   // Find the token start, if there is one under the cursor
   Idx := AInsertCol - 1;
@@ -616,7 +616,7 @@ begin
   if not GxOtaTryGetTopMostEditView(EditView) then
     raise Exception.Create('No edit view present');
 
-  CharPos := GxOtaGetCharPosFromPos(AOffset, EditView);
+  CharPos := Ota.GetCharPosFromPos(AOffset, EditView);
   EditView.ConvertPos(False, Result, CharPos);
 end;
 
@@ -652,11 +652,11 @@ begin
     IdentOffset := SelStart;
     IdentPos := BlockStart;
     AfterLen := 0;
-    GxOtaGetActiveEditorTextAsString(TemplateName, True);
-    CursorPos := GxOtaGetCurrentEditPos();
+    Ota.GetActiveEditorTextAsString(TemplateName, True);
+    CursorPos := Ota.GetCurrentEditPos();
   end else begin
-    GxOtaGetCurrentIdentEx(TemplateName, IdentOffset, IdentCursorPos, CaretPos, AfterLen, False);
-    GxOtaGetCurrentIdentEx(TemplateName, IdentOffset, IdentPos, CaretPos, AfterLen, True);
+    Ota.GetCurrentIdentEx(TemplateName, IdentOffset, IdentCursorPos, CaretPos, AfterLen, False);
+    Ota.GetCurrentIdentEx(TemplateName, IdentOffset, IdentPos, CaretPos, AfterLen, True);
   end;
 
   // IdentOffset: Offset of the identifier in the character stream (Integer)
@@ -740,7 +740,7 @@ begin
       if CodeInEditor then
         CursorPos := InsertPos // start of code in editor
       else
-        CursorPos := GxOtaGetCurrentEditPos;
+        CursorPos := Ota.GetCurrentEditPos;
 
       if CursorPos.Col > 1 then // Trim trailing blanks is on, and the user is not in the first column
         TemplateText := PrefixLines(TemplateText, StringOfChar(' ', CursorPos.Col - 1), 0);
@@ -1021,7 +1021,7 @@ begin
     Exit;
 
   TextLen := Length(AText);
-  TemplateOffset := GxOtaGetCurrentEditBufferPos - TextLen;
+  TemplateOffset := Ota.GetCurrentEditBufferPos - TextLen;
 
   if TemplateOffset < 0 then
     Exit;

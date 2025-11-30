@@ -204,7 +204,7 @@ begin
     Component.GetPropValueByName(LeftPropertyName, ComponentData.X);
     Component.GetPropValueByName(TopPropertyName, ComponentData.Y);
     Component.GetPropValueByName(TabOrderPropertyName, ComponentData.TabOrder);
-    AName := GxOtaGetComponentName(Component);
+    AName := Ota.GetComponentName(Component);
     TreeNode := tvComps.Items.AddChildObject(TTreeNode(Param), AName + ': ' +
       Component.GetComponentType, ComponentData);
     Component.GetChildren(TreeNode, ChildComponentCallback);
@@ -353,7 +353,7 @@ begin
         Continue // Ignore components without a parent (non-visual components)
       else if BaseComponentParent = nil then
         BaseComponentParent := CurrentComponentParent;
-      if not GxOtaComponentsAreEqual(BaseComponentParent, CurrentComponentParent) then
+      if not Ota.ComponentsAreEqual(BaseComponentParent, CurrentComponentParent) then
         raise Exception.Create(SSameParentRequired);
 {$ENDIF GX_VER160_up}
 
@@ -371,7 +371,7 @@ begin
             ParentName := BaseComponentParent.Name;
             ParentType := BaseComponentParent.ClassName;
 {$ELSE  GX_VER160_up}
-            ParentName := GxOtaGetComponentName(BaseComponentParent);
+            ParentName := Ota.GetComponentName(BaseComponentParent);
             ParentType := BaseComponentParent.GetComponentType;
 {$ENDIF GX_VER160_up}
           end;
@@ -413,7 +413,7 @@ var
     AComponent := FormEditor.GetRootComponent;
     Assert(Assigned(AComponent));
     ParentType := AComponent.GetComponentType;
-    ParentName := GxOtaGetComponentName(AComponent);
+    ParentName := Ota.GetComponentName(AComponent);
   end;
 
 begin
@@ -440,7 +440,7 @@ begin
     else
     begin
       ParentType := AComponent.GetComponentType;
-      ParentName := GxOtaGetComponentName(AComponent);
+      ParentName := Ota.GetComponentName(AComponent);
     end;
   end
   else
@@ -466,7 +466,7 @@ begin
             AComponent := ComponentList.Items[i] as IOTAComponent;
             Assert(Assigned(AComponent));
             AComponentType := AComponent.GetComponentType;
-            AComponentName := GxOtaGetComponentName(AComponent);
+            AComponentName := Ota.GetComponentName(AComponent);
 
             ComponentData := TComponentData.Create(TabOrderForm);
             TabOrderForm.grp_ByPosition.Visible := True;
@@ -475,7 +475,7 @@ begin
             AComponent.GetPropValueByName(TabOrderPropertyName, ComponentData.TabOrder);
             if (FirstTabOrder > ComponentData.TabOrder) or (FirstTabOrder = -1) then
               FirstTabOrder := ComponentData.TabOrder;
-            AComponentName := GxOtaGetComponentName(AComponent);
+            AComponentName := Ota.GetComponentName(AComponent);
             TabOrderForm.tvComps.Items.AddChildObject(TreeNode, AComponentName + ': ' + AComponentType,ComponentData);
           end;
         end;

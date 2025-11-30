@@ -91,8 +91,8 @@ var
   ColumnNo: Integer;
   LineNo: Integer;
 begin
-  FileContent := GxOtaReadEditorTextToString(GxOtaGetEditReaderForSourceEditor(SourceEditor));
-  GxOtaGetCurrentLineData(StartOffset, ColumnNo, LineNo);
+  FileContent := Ota.ReadEditorTextToString(Ota.GetEditReaderForSourceEditor(SourceEditor));
+  Ota.GetCurrentLineData(StartOffset, ColumnNo, LineNo);
   Result := LinePosToCharPos(Point(ColumnNo + 1, LineNo), FileContent);
 end;
 

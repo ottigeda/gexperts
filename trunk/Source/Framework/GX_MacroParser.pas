@@ -379,7 +379,7 @@ end;
 
 function TMacroSourceParser.GetIdentToken(AFullName: Boolean): string;
 begin
-  Result := GxOtaGetCurrentIdent;
+  Result := Ota.GetCurrentIdent;
   if Result = '' then
     Result := SUnknownNameResult;
 end;

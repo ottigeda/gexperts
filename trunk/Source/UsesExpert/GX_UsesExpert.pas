@@ -1193,7 +1193,7 @@ begin
   Selection := RetrieveEditorBlockSelection;
   if Trim(Selection) = '' then begin
     try
-      Selection := GxOtaGetCurrentIdent;
+      Selection := Ota.GetCurrentIdent;
     except
        // if access violation created
       on E: Exception do
@@ -1556,7 +1556,7 @@ begin
     TStringGrid_AssignCol(sg_Implementation, 0, sl);
     TGrid_Resize(sg_Implementation, [roUseGridWidth, roUseAllRows]);
     FDefaultToInterfaceList :=
-      UsesManager.IsPositionBeforeImplementation(GxOtaGetCurrentEditBufferPos);
+      UsesManager.IsPositionBeforeImplementation(Ota.GetCurrentEditBufferPos);
     if FDefaultToInterfaceList then begin
       chk_FastAdd.Caption := 'Add fast (to Interface)';
       chk_FastAdd.Hint := 'Enter adds to Interface and closes dialog';

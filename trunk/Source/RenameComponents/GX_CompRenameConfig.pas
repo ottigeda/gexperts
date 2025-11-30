@@ -1025,7 +1025,7 @@ constructor TRenameStringGrid.Create(AOwner: TComponent);
 begin
   inherited;
   FComponents := TStringList.Create;
-  GxOtaGetInstalledComponentList(FComponents, False);
+  Ota.GetInstalledComponentList(FComponents, False);
 end;
 
 destructor TRenameStringGrid.Destroy;

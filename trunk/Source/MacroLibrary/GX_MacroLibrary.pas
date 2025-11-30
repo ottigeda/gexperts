@@ -846,7 +846,7 @@ begin
   actEditRename.Enabled  := IsMacroSelected;
   actFileSave.Enabled    := IsMacroSelected;
   actEditSuspend.Checked := FSuspended;
-  actRecord.Checked      := GxOtaEditorIsRecordingMacro;
+  actRecord.Checked      := Ota.EditorIsRecordingMacro;
   actViewToolbar.Checked := Toolbar.Visible;
   actViewDescription.Checked    := DescriptionVisible;
   actPromptForName.Checked := FPromptForName;

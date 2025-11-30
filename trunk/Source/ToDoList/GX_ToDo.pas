@@ -719,7 +719,7 @@ begin
     ShowNumberOfUnfilteredTodoItems;
   end;
 {$IFDEF GX_SUPPORTS_THEMING}
-  FDarkMode := IdeStyleIsDark;
+  FDarkMode := OTA.IdeStyleIsDark;
 {$ELSE}
   FDarkMode := False;
 {$ENDIF}

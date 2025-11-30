@@ -935,7 +935,7 @@ end;
 function IsThemingEnabled: Boolean;
 {$IFDEF GX_SUPPORTS_THEMING}
 begin
-  Result := GX_OtaUtils.GxOtaThemingEnabled;
+  Result := Ota.ThemingEnabled;
 end;
 {$ELSE}
 var
@@ -1020,11 +1020,7 @@ end;
 
 function InitThemingForForm(const AForm: TCustomForm): Boolean;
 begin
-{$IFDEF GX_SUPPORTS_THEMING}
-  Result := GxOtaInitTheming(AForm);
-{$ELSE}
-  Result := False;
-{$ENDIF}
+  Result := Ota.InitTheming(AForm);
 end;
 
 const
@@ -1036,13 +1032,13 @@ begin
 {$IFDEF GX_SUPPORTS_THEMING}
   case AColor of
     clWarningBack:
-      if IdeStyleIsDark
+      if Ota.IdeStyleIsDark
       then Result := clAmberDark
       else Result := clAmberLight;
     clWarningText:
-      Result := GxOtaGetThemedColor(clWindowText);
+      Result := Ota.GetThemedColor(clWindowText);
     else
-      Result := GxOtaGetThemedColor(AColor);
+      Result := Ota.GetThemedColor(AColor);
   end;
 {$ELSE}
   Result := AColor;
@@ -1079,13 +1075,11 @@ end;
 
 procedure TPageControl_AdjustForTheme(_PageControl: TPageControl);
 begin
-{$IFDEF GX_SUPPORTS_THEMING}
-  if Assigned(_PageControl) and GX_OtaUtils.GxOtaThemingEnabled then
+  if Assigned(_PageControl) and Ota.ThemingEnabled then
   begin
     _PageControl.Style := tsButtons;
     _PageControl.StyleElements := [seFont, seClient];
   end;
-{$ENDIF}
 end;
 
 function TScreen_TryFindClassForm(const _ClassName: string; out _Form: TForm): Boolean;

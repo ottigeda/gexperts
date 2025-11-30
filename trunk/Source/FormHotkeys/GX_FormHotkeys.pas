@@ -171,7 +171,7 @@ begin
       cmp := Root.GetComponent(i);
       // I found no working way to access the SecondaryShortCuts value via IOTAComponent, so
       // I'm going through the native component
-      NativeCmp := GxOtaGetNativeComponent(cmp);
+      NativeCmp := Ota.GetNativeComponent(cmp);
       rec := @FCompRecs[Offset + i];
       rec.CompType := NativeCmp.ClassName;
       rec.CompName := NativeCmp.Name;
@@ -353,7 +353,7 @@ begin
   cnt := Root.GetComponentCount;
   for i := 0 to cnt - 1 do begin
     cmp := Root.GetComponent(i);
-    NativeCmp := GxOtaGetNativeComponent(cmp);
+    NativeCmp := Ota.GetNativeComponent(cmp);
     if SameText(NativeCmp.Name, CompName) then begin
       if rec.Shortcut <> 'N/A' then
         CompShortcut := TextToShortCut(rec.Shortcut)
@@ -398,7 +398,7 @@ begin
   cnt := Root.GetComponentCount;
   for i := 0 to cnt - 1 do begin
     cmp := Root.GetComponent(i);
-    NativeCmp := GxOtaGetNativeComponent(cmp);
+    NativeCmp := Ota.GetNativeComponent(cmp);
     if SameText(NativeCmp.Name, rec.Action) then begin
       TGrid_SetNonfixedRow(TheGrid, i);
       Exit; //==>

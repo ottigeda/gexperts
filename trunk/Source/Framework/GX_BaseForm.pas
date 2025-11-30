@@ -148,7 +148,7 @@ begin
   FGxHintCustomDataRec.ScaleHint := Self.ScaleHint;
   CopyMemory(@(FGxHintCustomDataRec.ID), @GxHintCustomDataId, SizeOf(FGxHintCustomDataRec.ID));
   GxSetDefaultFont(Self);
-  GxOtaInitTheming(Self); // enable dark mode support
+  Ota.InitTheming(Self); // enable dark mode support
 end;
 
 destructor TfmBaseForm.Destroy;

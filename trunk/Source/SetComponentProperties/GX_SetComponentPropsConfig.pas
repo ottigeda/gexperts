@@ -294,7 +294,7 @@ constructor TfmSetComponentPropsConfig.Create(_Owner: TComponent);
 begin
   inherited;
 
-  GxOtaGetInstalledComponentList(cbxComponents.Items, False);
+  Ota.GetInstalledComponentList(cbxComponents.Items, False);
 
   InitDpiScaler;
 

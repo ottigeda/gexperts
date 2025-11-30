@@ -158,7 +158,7 @@ begin
   //EditView.ConvertPos(False, EditPos, CharPos);
 
   case FViewChangeType of
-    vctScrollCenter: GxOtaGotoEditPos(EditPos);
+    vctScrollCenter: Ota.GotoEditPos(EditPos);
     vctScrollIfNeeded:
     begin
       EditView.CursorPos := EditPos;

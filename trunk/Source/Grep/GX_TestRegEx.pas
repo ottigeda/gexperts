@@ -97,7 +97,7 @@ begin
   FRegEx := TRegExpr.Create;
 
   FCurrentCode := TGxUnicodeStringList.Create;
-  if not Assigned(BorlandIDEServices) or not GxOtaGetActiveEditorText(FCurrentCode, False) then begin
+  if not Assigned(BorlandIDEServices) or not Ota.GetActiveEditorText(FCurrentCode, False) then begin
     begin
       s := IncludeTrailingPathDelimiter(GetModuleDir) + 'preview.pas';
       if FileExists(s) then begin

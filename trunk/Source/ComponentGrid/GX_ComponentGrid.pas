@@ -264,14 +264,14 @@ procedure TfmComponentGrid.PopulateGrid;
 
   function ComponentName(const AComponent: IOTAComponent): string;
   begin
-    Result := GxOtaGetComponentName(AComponent);
+    Result := Ota.GetComponentName(AComponent);
     if Result = '' then
       Result := SNotAvailable;
   end;
 
   function ParentName(const AComponent: IOTAComponent): WideString;
   begin
-    Result := GxOtaGetComponentParentName(AComponent);
+    Result := Ota.GetComponentParentName(AComponent);
     if Result = '' then
       Result := SNotAvailable;
   end;
@@ -279,7 +279,7 @@ procedure TfmComponentGrid.PopulateGrid;
   function ComponentProperty(const PropName: string; const AComponent: IOTAComponent): WideString;
   begin
     if GxOtaPropertyExists(AComponent, PropName) then
-      Result := GxOtaGetComponentPropertyAsString(AComponent, PropName)
+      Result := Ota.GetComponentPropertyAsString(AComponent, PropName)
     else
       Result := SNotAvailable;
   end;
@@ -424,7 +424,7 @@ begin
     for j := Low(GridProperties) to High(GridProperties) do begin
       Value := StringGrid.Cells[FixedColumns + j, Row];
       if Value <> SNotAvailable then
-        GxOtaSetComponentPropertyAsString(AComponent, GridProperties[j].PropertyName, Value);
+        Ota.SetComponentPropertyAsString(AComponent, GridProperties[j].PropertyName, Value);
     end;
   end;
   FModified := False;

@@ -361,7 +361,7 @@ begin
   Assert(Assigned(SourceEditor));
   Assert(Assigned(EditorPositionInformation));
 
-  EditWriter := GxOtaGetEditWriterForSourceEditor(SourceEditor);
+  EditWriter := Ota.GetEditWriterForSourceEditor(SourceEditor);
   Assert(Assigned(EditWriter));
 
   EditorCharIndex := EditorPositionInformation.BufferCharIndex;
@@ -662,7 +662,7 @@ begin
 
   // Read the part of the text in the current source line
   // that is located in front of the current cursor position.
-  SourceString := GxOtaGetPreceedingCharactersInLine(EditView);
+  SourceString := Ota.GetPreceedingCharactersInLine(EditView);
   if IsEmpty(SourceString) then
     Exit;
 

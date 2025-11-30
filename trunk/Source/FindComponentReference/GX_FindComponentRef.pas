@@ -85,8 +85,8 @@ begin
   FrmEditor := GxOtaGetFormEditorFromModule(Module);
   if Assigned(FrmEditor) then
   begin
-    GxOtaGetActiveEditorTextAsString(SrcText, False);
-    CurWord := GxOtaGetCurrentIdent;
+    Ota.GetActiveEditorTextAsString(SrcText, False);
+    CurWord := Ota.GetCurrentIdent;
     if Trim(CurWord) <> '' then
     begin
       Comp := FrmEditor.FindComponent(CurWord);
@@ -117,14 +117,14 @@ begin
   Comp := FrmEditor.GetSelComponent(0);
   if Assigned(Comp) then
   begin
-    CompName := GxOtaGetComponentName(Comp);
+    CompName := Ota.GetComponentName(Comp);
     if CompName <> '' then
     begin
       SrcEditor := GxOtaGetSourceEditorFromModule(Module);
       if Assigned(SrcEditor) then
       begin
         SrcEditor.Show;
-        GxOtaGetActiveEditorTextAsString(SrcText, False);
+        Ota.GetActiveEditorTextAsString(SrcText, False);
         if FindTextIdent(CompName, SrcText, 0, False, FoundPos) then
         begin
           // Try to locate the second reference to the component for Delphi files

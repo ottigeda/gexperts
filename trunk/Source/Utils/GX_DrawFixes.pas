@@ -54,8 +54,8 @@ begin
 
     LParent := TWinControlAccess(AHotKey).Parent;
 {$IFDEF GX_SUPPORTS_THEMING}
-    LBackColor := ColorToRGB(GxOtaGetStyleColor(TStyleColor.scEdit, clWindow));
-    LTextColor := ColorToRGB(GxOtaGetStyleFontColor(TStyleFont.sfEditBoxTextNormal, clWindowText));
+    LBackColor := ColorToRGB(Ota.GetStyleColor(TStyleColor.scEdit, clWindow));
+    LTextColor := ColorToRGB(Ota.GetStyleFontColor(TStyleFont.sfEditBoxTextNormal, clWindowText));
 {$ELSE}
     LBackColor := clWindow;
     LTextColor := clWindowText;
@@ -94,22 +94,12 @@ begin
   LCaption := TTabControl(Control).Tabs[TabIndex];
   if Active then
   begin
-{$IFDEF GX_SUPPORTS_THEMING}
-    LBackColor := GxOtaGetThemedColor(clHighlight);
-    LTextColor := GxOtaGetThemedColor(clHighlightText);
-{$ELSE}
-    LBackColor := clHighlight;
-    LTextColor := clHighlightText;
-{$ENDIF}
+    LBackColor := Ota.GetThemedColor(clHighlight);
+    LTextColor := Ota.GetThemedColor(clHighlightText);
   end
   else begin
-{$IFDEF GX_SUPPORTS_THEMING}
-    LBackColor := GxOtaGetThemedColor(clBtnFace);
-    LTextColor := GxOtaGetThemedColor(clBtnText);
-{$ELSE}
-    LBackColor := clBtnFace;
-    LTextColor := clBtnText;
-{$ENDIF}
+    LBackColor := Ota.GetThemedColor(clBtnFace);
+    LTextColor := Ota.GetThemedColor(clBtnText);
   end;
 
   Control.Canvas.Brush.Color := LBackColor;

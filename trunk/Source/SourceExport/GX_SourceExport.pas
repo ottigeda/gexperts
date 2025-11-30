@@ -55,7 +55,6 @@ type
     tbnConfigure: TToolButton;
     ToolButton1: TToolButton;
     tbnHelp: TToolButton;
-    chkUseDarkMode: TCheckBox;
     procedure actHelpExecute(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure actRefreshExecute(Sender: TObject);
@@ -132,7 +131,7 @@ begin
 
   SetSynEditHighlighter(FEditor, GetGXHighlighterForCurrentSourceEditor);
 
-  Result := GxOtaGetActiveEditorTextAsUnicodeString(Lines);
+  Result := Ota.GetActiveEditorTextAsUnicodeString(Lines);
   FEditor.Lines.Text := Lines;
 end;
 

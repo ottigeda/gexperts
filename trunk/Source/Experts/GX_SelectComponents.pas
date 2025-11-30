@@ -256,7 +256,7 @@ var
   Node: TTreeNode;
   CmpName: TGXUnicodeString;
 begin
-  CmpName := GxOtaGetComponentName(aComponent);
+  CmpName := Ota.GetComponentName(aComponent);
   Node := TreeView.Items.AddChildObject(TTreeNode(aParam), CmpName + ' : ' + aComponent.GetComponentType, nil);
   aComponent.GetChildren(Node, ChildComponentCallback);
   aResult := True;
@@ -491,7 +491,7 @@ begin
       Abort;
 
     ParentType := Root.GetComponentType;
-    ParentName := GxOtaGetComponentName(Root);
+    ParentName := Ota.GetComponentName(Root);
 
     TreeView.Items.Add(nil, ParentName + ' : ' + ParentType);
 

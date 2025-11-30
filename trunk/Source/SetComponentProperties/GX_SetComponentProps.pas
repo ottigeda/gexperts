@@ -400,7 +400,7 @@ var
   NormalizedValue: string;
 begin
   Result := False;
-  NativeComponent := GxOtaGetNativeComponent(Component);
+  NativeComponent := Ota.GetNativeComponent(Component);
   Settings := TSetComponentPropsSettings.GetInstance;
   if Assigned(NativeComponent) then
   begin
@@ -429,7 +429,7 @@ begin
         else
         begin
           try
-            CurrentValue := GxOtaGetComponentPropertyAsString(Component, cProperty);
+            CurrentValue := Ota.GetComponentPropertyAsString(Component, cProperty);
             NormalizedValue := GxOtaNormalizePropertyValue(Component, cProperty, cValue);
             if CurrentValue <> NormalizedValue then
             begin
@@ -438,7 +438,7 @@ begin
                 AddMessageToList(ModuleFileName, '%s %s: Setting %s to %s', [cClass, cName, cProperty, cValue]);
 
               if not Settings.Simulate then
-                if GxOtaSetComponentPropertyAsString(Component, cProperty, cValue) then begin
+                if Ota.SetComponentPropertyAsString(Component, cProperty, cValue) then begin
                   SetComponentPropsExpert.IncCallCount;
                 end else begin
                   AddMessageToList(ModuleFileName, '%s %s: Setting %s to %s failed', [cClass, cName, cProperty, cValue]);

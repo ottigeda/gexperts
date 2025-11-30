@@ -162,7 +162,7 @@ begin
 
     Lines := TGXUnicodeStringList.Create;
     try
-      if not GxOtaGetActiveEditorText(Lines, false) then
+      if not Ota.GetActiveEditorText(Lines, false) then
         raise EAutoTodo.CreateFmt(str_UnableToGetContentsS, [FileName]);
       Source := Lines.Text;
       if Source = '' then

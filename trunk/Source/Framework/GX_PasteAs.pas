@@ -148,7 +148,7 @@ begin
     ALines[I] := BaseIndent + ALine;
 
     if not AOnlyUpdateLines then
-      GxOtaInsertLineIntoEditor(ALine + sLineBreak);
+      Ota.InsertLineIntoEditor(ALine + sLineBreak);
   end;
 end;
 

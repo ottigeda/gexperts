@@ -172,7 +172,7 @@ begin
 
   Result := False;
 
-  if not GxOtaTryGetCurrentSourceEditor(SourceEditor) then
+  if not Ota.TryGetCurrentSourceEditor(SourceEditor) then
     raise ECodeFormatter.Create(str_NoEditor);
 
   FileName := SourceEditor.FileName;
@@ -181,7 +181,7 @@ begin
 
   Logger.InfoFmt('Formatting requested for "%s"', [FileName]);
 
-  if not GxOtaGetActiveEditorTextAsUnicodeString(FullTextStr, False) then
+  if not Ota.GetActiveEditorTextAsUnicodeString(FullTextStr, False) then
     raise ECodeFormatter.CreateFmt(str_UnableToGetContentsS, [FileName]);
 
   if FullTextStr = '' then
@@ -242,7 +242,7 @@ begin
         GxOtaReplaceSelection(SourceEditor, 0, FullTextStr);
       end else begin
         Logger.Info('TCodeFormatterExpert.Execute:Replace full text');
-        GxOtaReplaceEditorTextWithUnicodeString(SourceEditor, FullText.Text);
+        Ota.ReplaceEditorTextWithUnicodeString(SourceEditor, FullText.Text);
       end;
       Logger.Info('TCodeFormatterExpert.Execute:Restore breakpoints and bookmarks');
       Breakpoints.RestoreItems(FullText);

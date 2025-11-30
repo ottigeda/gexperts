@@ -306,7 +306,7 @@ end;
 procedure TfmClipboardHistory.InitializeForm;
 begin
   inherited;
-  Splitter.Color := GxOtaGetThemedColor(clBtnFace);
+  Splitter.Color := Ota.GetThemedColor(clBtnFace);
   TPasteAsHandler.GetTypeText(cbPasteAsType.Items);
   cbPasteAsType.DropDownCount := Integer(High(TPasteAsType)) + 1;
   cbPasteAsType.ItemIndex := Integer(PasteAsHandler.PasteAsType);
@@ -748,9 +748,9 @@ end;
 procedure TfmClipboardHistory.actEditPasteToIdeExecute(Sender: TObject);
 begin
   if mmoClipText.SelLength = 0 then
-    GxOtaInsertTextIntoEditor(mmoClipText.Text)
+    Ota.InsertTextIntoEditor(mmoClipText.Text)
   else
-    GxOtaInsertTextIntoEditor(mmoClipText.SelText);
+    Ota.InsertTextIntoEditor(mmoClipText.SelText);
 end;
 
 procedure TfmClipboardHistory.ActionsUpdate(Action: TBasicAction; var Handled: Boolean);

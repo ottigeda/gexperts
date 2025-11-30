@@ -236,7 +236,7 @@ begin
 
   FOnIsValidComponentName := _HandleIsValidComponentName;
 
-  CompName := GxOtaGetComponentName(_Component);
+  CompName := Ota.GetComponentName(_Component);
   edtOldName.Text := CompName;
 
   SetComponent(_Component);
@@ -267,7 +267,7 @@ var
   PropName: WideString;
 begin
   CompName := Trim(edtNewName.Text);
-  GxOtaSetComponentName(_Component, CompName);
+  Ota.SetComponentName(_Component, CompName);
 
   ApplyAlign(_Component);
   ApplyAnchors(_Component);
@@ -278,7 +278,7 @@ begin
       if PropName = '' then
         PropName := _OtherProps[i];
       if GxOtaPropertyExists(_Component, PropName) then
-        GxOtaSetComponentPropertyAsString(_Component, PropName, GetComponentProperty(i));
+        Ota.SetComponentPropertyAsString(_Component, PropName, GetComponentProperty(i));
     end;
   end;
 end;
@@ -475,7 +475,7 @@ begin
         AddComponentProperty(_Component, PropName, PropValue)
       else
         AddComponentProperty(_Component, PropName,
-          GxOtaGetComponentPropertyAsString(_Component, PropName, True));
+          Ota.GetComponentPropertyAsString(_Component, PropName, True));
     end;
   end;
 end;
@@ -521,7 +521,7 @@ procedure TfmCompRename.AddComponentProperty(const _Component: IOTAComponent;
     PropInfo: PPropInfo;
   begin
     Result := False;
-    NativeComp := GxOtaGetNativeComponent(_Component);
+    NativeComp := Ota.GetNativeComponent(_Component);
     if Assigned(NativeComp) then begin
       PropInfo := GetPropInfo(NativeComp, PropertyName);
       if PropInfo.PropType^^.Kind = tkEnumeration then begin
@@ -990,7 +990,7 @@ begin
   Assert(Assigned(FFormEditor));
   Result := True;
 
-  CompName := GxOtaGetComponentName(Component);
+  CompName := Ota.GetComponentName(Component);
   if CompName = '' then
     Exit; //==>
 
@@ -1041,7 +1041,7 @@ begin
       for i := 1 to 100 do
       begin
         SearchName := Format(RenameRule, [i]);
-        if GxOtaComponentsAreEqual(Component, FFormEditor.FindComponent(SearchName)) then
+        if Ota.ComponentsAreEqual(Component, FFormEditor.FindComponent(SearchName)) then
           Exit; // The component already matches the rename rule's result
 
         if IsValidComponentName(CompName, SearchName, Reason) then
@@ -1051,7 +1051,7 @@ begin
         end;
       end;
       if Length(CompName) > 0 then
-        GxOtaSetComponentName(Component, CompName);
+        Ota.SetComponentName(Component, CompName);
 
       if UseRules then
       begin
@@ -1072,7 +1072,7 @@ begin
                   PropValue := AnsiDequotedStr(PropValue, #39);
                   if (PropValue= #39#39) then
                     PropValue := '';
-                  GxOtaSetComponentPropertyAsString(Component, PropName, PropValue);
+                  Ota.SetComponentPropertyAsString(Component, PropName, PropValue);
                 end;
               end;
             end;
@@ -1109,7 +1109,7 @@ begin
       Component := FFormEditor.FindComponent(SearchName);
       if Assigned(Component) then
       begin
-        if GxOtaIsInheritedComponent(Component) then
+        if Ota.IsInheritedComponent(Component) then
           Break;
         if not DoRename(Component, True) then
           Break;
@@ -1301,7 +1301,7 @@ begin
   begin
     FoundComponent := FFormEditor.FindComponent(NewName);
     if Assigned(FoundComponent) then
-      FoundName := GxOtaGetComponentName(FoundComponent);
+      FoundName := Ota.GetComponentName(FoundComponent);
     Result := (not Assigned(FoundComponent)) or (FoundName = OldName);
     if not Result then
       Reason := DuplicateName;

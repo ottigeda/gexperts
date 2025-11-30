@@ -87,8 +87,8 @@ begin
     if CodeList.Count = 0 then
     begin
       case GetNoSelectionMode of
-        nsmSelectLine: GxOtaSelectCurrentLine(SourceEditor, False);
-        nsmSelectIdent: GxOtaSelectCurrentIdent(SourceEditor, False);
+        nsmSelectLine: Ota.SelectCurrentLine(SourceEditor, False);
+        nsmSelectIdent: Ota.SelectCurrentIdent(SourceEditor, False);
       else // nsmError:
         raise Exception.Create(NoSelectionError);
       end;

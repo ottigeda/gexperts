@@ -59,7 +59,7 @@ var
 begin
   if not Assigned(gblCodeFormatter) then
     Exit;
-  if not GxOtaGetCurrentIdentData(Identifier, Position) then
+  if not Ota.GetCurrentIdentData(Identifier, Position) then
     Exit;
   gblCodeFormatter.AddToCapitalization(Identifier);
 

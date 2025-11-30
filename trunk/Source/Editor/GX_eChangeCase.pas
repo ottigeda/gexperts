@@ -236,7 +236,7 @@ begin
     Exit;
   FCodeList.Text := GxOtaGetCurrentSelection;
   if FCodeList.Count = 0 then begin
-    GxOtaSelectCurrentIdent(SourceEditor, False);
+    Ota.SelectCurrentIdent(SourceEditor, False);
     FCodeList.Text := GxOtaGetCurrentSelection;
   end;
   if FCodeList.Count = 0 then

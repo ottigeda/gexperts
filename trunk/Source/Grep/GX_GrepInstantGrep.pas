@@ -214,7 +214,7 @@ var
 begin
   if Assigned(BorlandIDEServices)
     and Ota.TryGetCurrentSourceEditor(ISourceEditor)
-    and GxOtaGetActiveEditorText(FCurrentCode, False) then begin
+    and Ota.GetActiveEditorText(FCurrentCode, False) then begin
     FCurrentFile := ISourceEditor.FileName;
   end else begin
     FCurrentFile := IncludeTrailingPathDelimiter(GetModuleDir) + 'preview.pas';
@@ -230,7 +230,7 @@ end;
 procedure TfmGxInstantGrepForm.GoBack();
 begin
   if FOriginalEditPos.Col >= 0 then begin
-    GxOtaTryGotoEditPos(FOriginalEditPos);
+    Ota.TryGotoEditPos(FOriginalEditPos);
   end;
   GxOtaFocusCurrentIDEEditControl;
 end;
@@ -240,7 +240,7 @@ var
   EditPos: TOTAEditPos;
 begin
   if TryGetSelectedEditorPos(EditPos) then begin
-    GxOtaTryGotoEditPos(EditPos);
+    Ota.TryGotoEditPos(EditPos);
   end;
   GxOtaFocusCurrentIDEEditControl;
 end;
@@ -287,7 +287,7 @@ var
   EditPos: TOTAEditPos;
 begin
   if TryGetSelectedEditorPos(EditPos) then
-    GxOtaTryGotoEditPos(EditPos);
+    Ota.TryGotoEditPos(EditPos);
 end;
 
 procedure TfmGxInstantGrepForm.lb_ResultsDblClick(Sender: TObject);
@@ -632,7 +632,7 @@ begin
   end;
   IdeDockManager.ShowForm(fmGxInstantGrepForm);
   EnsureFormVisible(fmGxInstantGrepForm);
-  fmGxInstantGrepForm.Init(GetEditorLineHighlightColor, GxOtaGetCurrentIdent);
+  fmGxInstantGrepForm.Init(GetEditorLineHighlightColor, Ota.GetCurrentIdent);
   IncCallCount;
 end;
 

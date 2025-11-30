@@ -154,7 +154,7 @@ var
   begin
     if InMemory then
     begin
-      EditWriter := GxOtaGetEditWriterForSourceEditor(SourceEditor);
+      EditWriter := Ota.GetEditWriterForSourceEditor(SourceEditor);
       EditWriter.DeleteTo(MaxInt);
       // RemoveLastEOL is necessary because TStringList.Text adds an extra CRLF on the end
       EditWriter.Insert(PAnsiChar(ConvertToIDEEditorString(RemoveTrailingEOL(TempFile.Text))));

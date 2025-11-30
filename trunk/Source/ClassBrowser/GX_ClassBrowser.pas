@@ -1082,7 +1082,7 @@ var
     APanel.Caption := PanelText;
     APanel.BevelInner := bvLowered;
   {$IFDEF GX_SUPPORTS_THEMING}
-    if IdeStyleIsDark then begin
+    if Ota.IdeStyleIsDark then begin
       APanel.StyleElements := [seFont];
       APanel.Color := GetThemedColor(clBtnFace);
     end;

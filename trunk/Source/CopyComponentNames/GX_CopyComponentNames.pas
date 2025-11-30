@@ -60,7 +60,7 @@ begin
     for i := 0 to SelCount - 1 do
     begin
       CurrentComponent := FormEditor.GetSelComponent(i);
-      ComponentName := GxOtaGetComponentName(CurrentComponent);
+      ComponentName := Ota.GetComponentName(CurrentComponent);
       if ComponentName <> '' then
       begin
         // The order of selected components is not defined, or at least

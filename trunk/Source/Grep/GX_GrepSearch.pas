@@ -568,7 +568,7 @@ procedure TfmGrepSearch.LoadFormSettings;
     end;
     if (Trim(Selection) = '') and gblGrepExpert.GrepUseCurrentIdent then
       try
-        Selection := GxOtaGetCurrentIdent;  //if access violation created
+        Selection := Ota.GetCurrentIdent;  //if access violation created
       except
         on E: Exception do
           Selection := '';

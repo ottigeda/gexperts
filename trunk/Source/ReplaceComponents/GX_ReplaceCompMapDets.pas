@@ -213,7 +213,7 @@ end;
 
 procedure TfmReplaceCompMapDets.FillClassList(List: TStrings);
 begin
-  GxOtaGetInstalledComponentList(List, False);
+  Ota.GetInstalledComponentList(List, False);
 end;
 
 procedure TfmReplaceCompMapDets.SetComboColor(Combo: TComboBox; Color: TColor);

@@ -380,8 +380,8 @@ begin
 
     Prefix := Trim(GxOtaGetCurrentSelection(False));
     if Prefix = '' then begin
-      Prefix := Trim(GxOtaGetCurrentLine);
-      GxOtaSelectCurrentLine(Ota.GetCurrentSourceEditor);
+      Prefix := Trim(Ota.GetCurrentLine);
+      Ota.SelectCurrentLine(Ota.GetCurrentSourceEditor);
     end;
     // multiple lines? Only take the first
     p := Pos(CR, Prefix);
@@ -716,7 +716,7 @@ var
 begin
   Lines := m_Output.Lines;
   for i := 0 to Lines.Count - 1 do begin
-    GxOtaInsertLineIntoEditor(Lines[i] + sLineBreak);
+    Ota.InsertLineIntoEditor(Lines[i] + sLineBreak);
   end;
   ModalResult := mrOk;
 end;

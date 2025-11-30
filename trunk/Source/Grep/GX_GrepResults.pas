@@ -947,7 +947,7 @@ begin
     SplitterHistoryList.Color := LSplitterColor;
     SplitterContext.Color := LSplitterColor;
 
-    if IdeStyleIsDark then begin
+    if Ota.IdeStyleIsDark then begin
       if reContext.HandleAllocated then
         SetWindowTheme(reContext.Handle, 'DarkMode_Explorer', nil);
     end;

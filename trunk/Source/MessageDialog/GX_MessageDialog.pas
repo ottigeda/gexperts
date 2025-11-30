@@ -1077,9 +1077,9 @@ begin
     if frm.ShowModal = mrOk then
     begin
       if StrContains(#10, frm.GeneratedCode) then
-        GxOtaInsertTextIntoEditor(frm.GeneratedCode)
+        Ota.InsertTextIntoEditor(frm.GeneratedCode)
       else
-        GxOtaInsertLineIntoEditor(frm.GeneratedCode);
+        Ota.InsertLineIntoEditor(frm.GeneratedCode);
 
       if FSettings.FSourceType = stPascal then
       begin
@@ -1245,7 +1245,7 @@ function TCppMessageDialogBuilder.GetCode: string;
     StartOffset, LineNo: Integer;
     SwitchValue: string;
   begin
-    GxOtaGetCurrentLineData(StartOffset, Column, LineNo);
+    Ota.GetCurrentLineData(StartOffset, Column, LineNo);
 
     Result := Format('switch (%s) {' + sLineBreak, [Condition]);
     Indent := Indent + StringOfChar(' ', Column);
@@ -1385,7 +1385,7 @@ function TPascalMessageDialogBuilder.GetCode: string;
     Indent: string;
     StartOffset, LineNo: Integer;
   begin
-    GxOtaGetCurrentLineData(StartOffset, Column, LineNo);
+    Ota.GetCurrentLineData(StartOffset, Column, LineNo);
 
     Result := Format('case %s of' + sLineBreak, [Condition]);
     Indent := Indent + StringOfChar(' ', Column);

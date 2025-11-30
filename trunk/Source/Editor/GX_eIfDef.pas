@@ -134,14 +134,14 @@ begin
 
   IncCallCount;
 
-  GxOtaInsertLineIntoEditor(InsertString);
+  Ota.InsertLineIntoEditor(InsertString);
 
   if IncFile <> '' then begin
     // if an include file is necessary for the ifdef, add the include file at the beginning
-    CurPos := GxOtaGetCurrentEditPos();
+    CurPos := Ota.GetCurrentEditPos();
     Lines := TGXUnicodeStringList.Create;
     try
-      if not GxOtaGetActiveEditorText(Lines, False) then
+      if not Ota.GetActiveEditorText(Lines, False) then
         Exit; //==>
       for i := 0 to Lines.Count - 1 do begin
         s := Lines[i];
@@ -149,11 +149,11 @@ begin
         if SameText(s, 'INTERFACE') then begin
           EditPos.Col := 1;
           EditPos.Line := i + 2; // +1 for index -> number, +1 for next line
-          GxOtaGotoEditPos(EditPos);
-          GxOtaInsertLineIntoEditor('{$I ' + IncFile + '}' + CRLF);
+          Ota.GotoEditPos(EditPos);
+          Ota.InsertLineIntoEditor('{$I ' + IncFile + '}' + CRLF);
           if CurPos.Line > EditPos.Line then
             Inc(CurPos.Line);
-          GxOtaGotoEditPos(CurPos);
+          Ota.GotoEditPos(CurPos);
           Exit; //==>
         end;
       end;
@@ -977,7 +977,7 @@ begin
   Number := 1;
   Lines := TGXUnicodeStringList.Create;
   try
-    if not GxOtaGetActiveEditorText(Lines, False) then
+    if not Ota.GetActiveEditorText(Lines, False) then
       Exit;
 
     HandleFile(Number, Lines);

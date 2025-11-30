@@ -81,8 +81,8 @@ begin
     GxGetIDEHighLigherSettings(SynEdit.Highlighter, GetIDEVersionID);
 {$IFDEF GX_SUPPORTS_THEMING}
     var Key: string;
-    if GxOtaThemingEnabled
-    and IdeStyleIsDark // ColorToGrayscale(GxOtaGetThemedColor(clWindow)) < 127)
+    if Ota.ThemingEnabled
+    and Ota.IdeStyleIsDark // ColorToGrayscale(GxOtaGetThemedColor(clWindow)) < 127)
     then begin
       // Dark Mode
       Key := GxOtaGetIdeBaseRegistryKey + '\Editor\Highlight';

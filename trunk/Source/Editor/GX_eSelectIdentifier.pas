@@ -28,7 +28,7 @@ end;
 
 procedure TSelectIdentifierExpert.Execute(Sender: TObject);
 begin
-  GxOtaSelectCurrentIdent(Ota.GetCurrentSourceEditor);
+  Ota.SelectCurrentIdent(Ota.GetCurrentSourceEditor);
   IncCallCount;
 end;
 

@@ -83,8 +83,8 @@ var
   begin
     if Form.GetSelCount = 2 then
     begin
-      Component1 := GxOtaGetNativeComponent(Form.GetSelComponent(0));
-      Component2 := GxOtaGetNativeComponent(Form.GetSelComponent(1));
+      Component1 := Ota.GetNativeComponent(Form.GetSelComponent(0));
+      Component2 := Ota.GetNativeComponent(Form.GetSelComponent(1));
       if (Component1 is TCustomLabel) and (Component2 is TWinControl) then
         SetFocusControl(TCustomLabel(Component1), TWinControl(Component2), True)
       else if (Component2 is TCustomLabel) and (Component1 is TWinControl) then

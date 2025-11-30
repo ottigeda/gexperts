@@ -232,7 +232,7 @@ begin
 
   Assert(Assigned(SourceEditor));
   FFileName := SourceEditor.FileName;
-  FFileContent := GxOtaReadEditorTextToString(SourceEditor.CreateReader);
+  FFileContent := Ota.ReadEditorTextToString(SourceEditor.CreateReader);
   InternalInit;
 end;
 
@@ -326,12 +326,12 @@ begin
     if UsesLineWouldBeTooLong(InsertPosition, Length(InsertString)) then
       InsertString := ',' + sLineBreak + '  ' + AUnitName;
     // Insert the new unit name into the uses clause
-    GxOtaInsertTextIntoEditorAtCharPos(InsertString, InsertPosition);
+    Ota.InsertTextIntoEditorAtCharPos(InsertString, InsertPosition);
   end
   else // The uses clause does not exist
   begin
     InsertString := sLineBreak + sLineBreak +'uses'+ sLineBreak +'  '+ AUnitName +';';
-    GxOtaInsertTextIntoEditorAtCharPos(InsertString, UsesPos);
+    Ota.InsertTextIntoEditorAtCharPos(InsertString, UsesPos);
   end;
 
   // This needs to be done last since it changes the implementation offsets
@@ -629,7 +629,7 @@ begin
   EndPos := ReplaceUnit.EndPos;
   BegPos := ReplaceUnit.BeginPos;
   GxOtaDeleteTextFromPos(BegPos, EndPos - BegPos, SourceEditor);
-  GxOtaInsertTextIntoEditorAtCharPos(ANewUnitName, BegPos, SourceEditor);
+  Ota.InsertTextIntoEditorAtCharPos(ANewUnitName, BegPos, SourceEditor);
 end;
 
 procedure TUsesManager.ReplaceInImplUses(const AOldUnitName, ANewUnitName: string);
@@ -687,7 +687,7 @@ var
 begin
   EditView := GxOtaGetTopMostEditView;
   Assert(Assigned(EditView));
-  InsertCharPos := GxOtaGetCharPosFromPos(InsertPos, EditView);
+  InsertCharPos := Ota.GetCharPosFromPos(InsertPos, EditView);
   EditView.ConvertPos(False, InsertEditPos, InsertCharPos);
   Result := (InsertEditPos.Col + InsertLength) > 80;
 end;

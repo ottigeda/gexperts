@@ -457,7 +457,7 @@ begin
       AContainedComponent := AFormEditor.GetSelComponent(j);
       Assert(Assigned(AContainedComponent));
 
-      if compParent = GxOtaGetNativeComponent(AContainedComponent) then
+      if compParent = Ota.GetNativeComponent(AContainedComponent) then
       begin
         Result := False;
         Break;
@@ -488,9 +488,9 @@ begin
     AComponent := FormEditor.GetSelComponent(i);
     Assert(Assigned(AComponent));
 
-    Comp := GxOtaGetNativeComponent(AComponent);
+    Comp := Ota.GetNativeComponent(AComponent);
     if not Assigned(Comp) then
-      raise Exception.Create('Native component casting not allowed for this component: ' + GxOtaGetComponentName(AComponent));
+      raise Exception.Create('Native component casting not allowed for this component: ' + Ota.GetComponentName(AComponent));
     if ShouldDumpComponent(FormEditor, Comp, i) then
     begin
       Result[Count] := Comp;

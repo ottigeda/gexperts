@@ -152,7 +152,7 @@ begin
   CopyMemory(@(FGxHintCustomDataRec.ID), @GxHintCustomDataId, SizeOf(FGxHintCustomDataRec.ID));
 
   GxSetDefaultFont(Self);
-  GxOtaInitTheming(Self);
+  Ota.InitTheming(Self);
 
   {$IFDEF GX_EnableIdeDockingSupport}
   if Menu <> nil then

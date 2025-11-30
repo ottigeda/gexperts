@@ -208,7 +208,7 @@ begin
   if not GxOtaTryGetTopMostEditView(SourceEditor, EditView) then
     Exit;
 
-  LineText := GxOtaGetPreceedingCharactersInLine(EditView);
+  LineText := Ota.GetPreceedingCharactersInLine(EditView);
 
   if Trim(LineText) = '' then
     Exit;

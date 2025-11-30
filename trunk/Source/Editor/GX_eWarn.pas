@@ -104,7 +104,7 @@ begin
   if not TfmConfigureWarning.Execute(GetBitmap, Msg, Status) then
     Exit; //==>
   InsertString := Format('{$WARN %s %s}', [Msg, WarnStatusToStr(Status)]);
-  GxOtaInsertLineIntoEditor(InsertString);
+  Ota.InsertLineIntoEditor(InsertString);
   IncCallCount;
 end;
 

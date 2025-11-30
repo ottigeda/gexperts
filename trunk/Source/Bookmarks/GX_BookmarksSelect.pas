@@ -260,7 +260,7 @@ begin
 
  SL:=TStringList.Create;
  try
-  if GxOtaGetActiveEditorTextAsString(Text,false) then begin
+  if Ota.GetActiveEditorTextAsString(Text,false) then begin
 
    SL.Text     :=Text;
    FuncsCount  :=0;

@@ -165,7 +165,7 @@ end;
 
 function TConfigEntry.GetPlatformCaption: string;
 begin
-  Result := GxOtaGetPlatformCaption(FPlatform);
+  Result := Ota.GetPlatformCaption(FPlatform);
 end;
 
 function TConfigEntry.TextCaption: string;

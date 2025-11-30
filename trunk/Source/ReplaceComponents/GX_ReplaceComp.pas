@@ -187,7 +187,7 @@ begin
     else
       OldGroup := nil; // Not necessary?: ActivateClassGroup(QControls.TControl);
     try
-      GxOtaGetInstalledComponentList(cbSearch.Items, True);
+      Ota.GetInstalledComponentList(cbSearch.Items, True);
       cbReplace.Items.Text := cbSearch.Items.Text;
     finally
       if OldGroup <> nil then

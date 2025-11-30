@@ -204,7 +204,7 @@ var
 begin
   Text := TGXUnicodeStringList.Create;
   try
-    if not GxOtaGetActiveEditorText(Text, False) then
+    if not Ota.GetActiveEditorText(Text, False) then
       Exit; //==>
 
     if FRegEx then
@@ -221,7 +221,7 @@ begin
       end;
     end;
     if WasChanged then
-      GxOtaReplaceEditorTextWithUnicodeString(Ota.GetCurrentSourceEditor, Text.Text);
+      Ota.ReplaceEditorTextWithUnicodeString(Ota.GetCurrentSourceEditor, Text.Text);
   finally
     FreeAndNil(Text);
   end;

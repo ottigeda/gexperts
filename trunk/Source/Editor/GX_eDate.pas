@@ -78,7 +78,7 @@ begin
     on E: EConvertError do
       InsertString := SInvalidDateTimeFormat;
   end;
-  GxOtaInsertLineIntoEditor(InsertString);
+  Ota.InsertLineIntoEditor(InsertString);
   IncCallCount;
 end;
 

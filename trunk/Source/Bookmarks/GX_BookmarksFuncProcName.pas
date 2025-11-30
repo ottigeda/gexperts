@@ -137,8 +137,8 @@ var   State       : tBlockState;
      EditorText : String;
  begin
   SL.Clear;
-  EditReader:=GxOtaGetEditReaderForSourceEditor();
-  if GxOtaGetActiveEditorTextAsString(EditorText,false) then SL.Text:=EditorText;
+  EditReader:=Ota.GetEditReaderForSourceEditor();
+  if Ota.GetActiveEditorTextAsString(EditorText,false) then SL.Text:=EditorText;
  end;
 
  procedure GetHeaderPositions(LinesCount:Integer);

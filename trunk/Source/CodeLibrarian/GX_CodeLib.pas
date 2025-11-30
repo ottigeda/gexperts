@@ -604,7 +604,7 @@ begin
   if IsForm(FileName) then
     raise Exception.Create(SNotForFormFiles);
 
-  GxOtaInsertTextIntoEditor(FCodeText.Text);
+  Ota.InsertTextIntoEditor(FCodeText.Text);
   Hide;
 end;
 

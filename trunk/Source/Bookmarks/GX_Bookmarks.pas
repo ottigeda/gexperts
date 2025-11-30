@@ -584,18 +584,18 @@ begin
      if FEnlargedLineDisplay then begin if BM.Line=1 then BM.Text:=CRLF+CRLF;
                                         if BM.Line=2 then BM.Text:=CRLF;
 
-                                        BM.Text:=BM.Text+GxOtaGetEditorLineAsString(EditView,BM.Line-2);
-                                        BM.Text:=BM.Text+GxOtaGetEditorLineAsString(EditView,BM.Line-1);
-                                        BM.Text:=BM.Text+GxOtaGetEditorLineAsString(EditView,BM.Line  );
-                                        BM.Text:=BM.Text+GxOtaGetEditorLineAsString(EditView,BM.Line+1);
-                                        BM.Text:=BM.Text+GxOtaGetEditorLineAsString(EditView,BM.Line+2);
+                                        BM.Text:=BM.Text+Ota.GetEditorLineAsString(EditView,BM.Line-2);
+                                        BM.Text:=BM.Text+Ota.GetEditorLineAsString(EditView,BM.Line-1);
+                                        BM.Text:=BM.Text+Ota.GetEditorLineAsString(EditView,BM.Line  );
+                                        BM.Text:=BM.Text+Ota.GetEditorLineAsString(EditView,BM.Line+1);
+                                        BM.Text:=BM.Text+Ota.GetEditorLineAsString(EditView,BM.Line+2);
                                         end
 
                              else begin if BM.Line=1 then BM.Text:=CRLF;
 
-                                        BM.Text:=        GxOtaGetEditorLineAsString(EditView,BM.Line-1);
-                                        BM.Text:=BM.Text+GxOtaGetEditorLineAsString(EditView,BM.Line  );
-                                        BM.Text:=BM.Text+GxOtaGetEditorLineAsString(EditView,BM.Line+1);
+                                        BM.Text:=        Ota.GetEditorLineAsString(EditView,BM.Line-1);
+                                        BM.Text:=BM.Text+Ota.GetEditorLineAsString(EditView,BM.Line  );
+                                        BM.Text:=BM.Text+Ota.GetEditorLineAsString(EditView,BM.Line+1);
                                         end;
 
      FuncProcName:=GetFuncProcName(BM.Line);

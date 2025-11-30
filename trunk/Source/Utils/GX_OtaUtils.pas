@@ -15,7 +15,70 @@ uses
 
 type
   Ota = class
+  public
+    ///<summary>
+    /// @Returns the TObject represented by an IOTAComponent, or NIL if that's not possible </summary>
+    class function GetNativeObject(const AComponent: IOTAComponent): TObject;
+    ///<summary>
+    /// @Returns the TPersistent represented by an IOTAComponent, or NIL if that's not possible </summary>
+    class function GetNativePersistent(const AComponent: IOTAComponent): TPersistent;
+    ///<summary>
+    // Returns the TComponent represented by an IOTAComponent, or NIL if that's not possible </summary>
+    class function GetNativeComponent(const AComponent: IOTAComponent): TComponent;
+    ///<summary>
+    /// @Returns True if the component is inherited from a parent form </summary>
+    class function IsInheritedComponent(const AComponent: IOTAComponent): Boolean;
+    ///<summary>
+    /// @Returns the name of the component </summary>
+    class function GetComponentName(const AComponent: IOTAComponent): WideString;
+    ///<summary>
+    /// Sets the name of the component
+    /// @returns True if setting the name was successful, False otherwise </summary>
+    class function SetComponentName(const AComponent: IOTAComponent; const Name: WideString): Boolean;
+    ///<summary>
+    /// @Returns the name of the component's parent if the component has a parent,
+    ///          otherwise it returns 'no parent'  </summary>
+    class function GetComponentParentName(const AComponent: IOTAComponent): WideString;
+    ///<summary>
+    /// Checks if the two IOTAComponents are the same component </summary>
+    class function ComponentsAreEqual(Comp1, Comp2: IOTAComponent): Boolean;
+
+    class procedure GetInstalledComponentList(Components: TStrings; ActiveOnly: Boolean);
+
+    class function GetComponentPropertyAsString(const AComponent: IOTAComponent;
+      const PropertyName: string; PreferStrings: Boolean = False): WideString;
+    class function SetComponentPropertyAsString(const AComponent: IOTAComponent;
+      const PropertyName: string; const Value: WideString): Boolean;
+    class function NormalizePropertyValue(Component: IOTAComponent; const PropName, Value: string): string;
+    class function GetPropertyIndexByName(const AComponent: IOTAComponent;
+      const PropertyName: WideString): Integer;
+
+    class function EditorIsRecordingMacro: Boolean;
+    class function EditorIsPlayingMacro: Boolean;
+    class function EditorIsPausedMacro: Boolean;
+    class procedure SetEditorKeyTracingEnabled(Enabled: Boolean);
+    class function GetEditorKeyTracingEnabled: Boolean;
+
+{$IFDEF GX_SUPPORTS_THEMING}
+    class function IdeStyleIsDark: Boolean;
+    class function IdeStyleService: TCustomStyleServices;
+    class function GetIDEThemingServices: IOTAIDEThemingServices;
+    class function ActiveThemeName: string;
+    class function GetStyleColor(AColor: TStyleColor; ADefault: TColor): TColor;
+    class function GetStyleFontColor(AFontStyle: TStyleFont; ADefault: TColor = clNone): TColor;
+{$ENDIF}
+    class function ApplyTheme(AForm: TCustomForm): Boolean;
+    class function ThemingEnabled: Boolean;
+    class function InitTheming(AForm: TCustomForm): Boolean;
+    class function GetThemedColor(AColor: TColor): TColor;
+
+    ///<summary>
+    /// Trys to get the current source code editor
+    /// @returns False none (e.g. the current editor is a form editor </summary>
     class function TryGetCurrentEditorAsSourceEditor(out SourceEditor: IOTASourceEditor): Boolean;
+    ///<summary>
+    /// Get the current source code editor or nil if there is none (e.g. the current
+    /// editor is a form editor </summary>
     class function GetCurrentEditorAsSourceEditor: IOTASourceEditor;
     class function CurrentEditorIsSourceEditor: Boolean;
 
@@ -30,53 +93,184 @@ type
 
     class function TryGetTopMostEditBufferFileName(out FileName: string): Boolean;
     class function GetTopMostEditBufferFileName: string;
-end;
+
+    ///<summary>
+    /// Returns the full name of the given platform, e.g.
+    /// '32-bit Windows platform' for 'Win32'
+    /// for en empty string the result is 'All platforms'
+    /// for an unknown platform the result is Platform + ' platform' </summary>
+    class function GetPlatformCaption(const _Platform: string): string;
+
+    ///<summary>
+    /// returns an IOTAEditReader for the given or the current IOTASourceEditor if none is specified </summary>
+    class function GetEditReaderForSourceEditor(SourceEditor: IOTASourceEditor = nil): IOTAEditReader;
+
+    ///<summary>
+    /// Save an edit reader to a stream </summary>
+    class procedure SaveReaderToStream(EditReader: IOTAEditReader; Stream: TStream; TrailingNull: Boolean = True);
+    ///<summary>
+    /// @returns the text of an edit reader </summary>
+    class function ReadEditorTextToString(EditReader: IOTAEditReader): string;
+
+    ///<summary>
+    /// If UseSelection is True, get the selected text in the current edit view
+    /// (if any) and return True or get all of the editor's text (if no selection)
+    /// and return False </summary>
+    class function GetActiveEditorText(Lines: TGXUnicodeStringList; UseSelection: Boolean = True): Boolean;
+
+    ///<summary>
+    /// @returns the editor's active text as a string, similar to above </summary>
+    class function GetActiveEditorTextAsString(var Text: string; UseSelection: Boolean = True): Boolean;
+    class function GetActiveEditorTextAsUnicodeString(var Text: TGXUnicodeString; UseSelection: Boolean = True): Boolean;
+
+    ///<summary>
+    /// Get current identifier under cursor in the active edit buffer
+    /// Scans current line from cursor position to left and right for identifier name. </summary>
+    class function GetCurrentIdent: string;
+
+    ///<summary>
+    /// Replace the source editor's text with the passed text </summary>
+    class procedure ReplaceEditorText(SourceEditor: IOTASourceEditor; const AText: string);
+    class procedure ReplaceEditorTextWithUnicodeString(SourceEditor: IOTASourceEditor; Text: TGXUnicodeString);
+
+    ///<summary>
+    /// Returns current line from edit buffer
+    /// @param StartOffset is the start offset of line (zero-based)
+    /// @param ColumnNo is the current column number (zero-based, can be > than number of chars in line)
+    /// @param LineNo is the current line number (1 based, yes, that's inconsistent) </summary
+    class function GetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; ByteBased: Boolean = False): string;
+    ///<summary>
+    /// Calls GetCurrentLineData but only returns the line as a string </summary>
+    class function GetCurrentLine: string;
+    class function GetEditorLine(View: IOTAEditView; LineNo: Integer): UTF8String;
+    class function GetEditorLineAsString(View: IOTAEditView; LineNo: Integer): TGXUnicodeString;
+
+    ///<summary>
+    /// Get the identifier at the cursor position, similar to above.
+    /// If an identifier is found then:
+    /// @param Ident is the identifier text (if one is under the cursor)
+    /// param IdentOffset is the starting offset of the identifier in the character stream
+    /// param StartPos is the position where the identifier starts (line/col, 1-based)
+    /// param CurrentPos is the current cursor position (line/col)
+    /// param AfterLen is the length of the part of the identifier that is after cursor </summary>
+    class procedure GetCurrentIdentEx(var Ident: string; var IdentOffset: Integer;
+      var StartPos: TOTAEditPos; var CurrentPos: TOTAEditPos; var AfterLen: Integer; ByteBased: Boolean = False);
+    ///<summary>
+    /// Get the identifier and starting position only.  Return True on success. </summary>
+    class function GetCurrentIdentData(var Ident: string; var StartEditPos: TOTAEditPos): Boolean;
+
+    ///<summary>
+    /// Get all of the characters in the current line that are before the cursor </summary>
+    class function GetPreceedingCharactersInLine(View: IOTAEditView): string;
+
+    ///<summary>
+    /// Select the current identifier under the cursor </summary>
+    class function SelectCurrentIdent(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True): Boolean;
+    ///<summary>
+    /// Select the current line of text
+    class procedure SelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True; CharsOnly : Boolean = True);
+
+    ///<summary>
+    /// Insert a string into the current IOTASourceEditor
+    /// This should be used when the Text is a single line
+    /// It replaces the current selection (if any) and doesn't
+    /// require multiple undo operations to undo the insert </summary>
+    class procedure InsertLineIntoEditor(const Text: string);
+
+    ///<summary>
+    /// Insert any text into the current IOTASourceEditor
+    /// This should be used when the Text should not replace the
+    /// current selection and when it can contain more than one
+    /// line.  An undo might require multiple undo operations.
+    /// This procedure ensures the cursor is still visible. </summary>
+    class procedure InsertTextIntoEditor(const Text: string);
+
+    ///<summary>
+    /// Get an edit writer for the current source editor (raise an exception if not availble)
+    /// Use the current source editor if none is specified </summary>
+    class function GetEditWriterForSourceEditor(SourceEditor: IOTASourceEditor = nil): IOTAEditWriter;
+
+    ///<summary>
+    /// Insert a string into a file at a some character position
+    /// Uses the current source editor if none is specified </summary>
+    class procedure InsertTextIntoEditorAtCharPos(const Text: string; Position: Longint;
+      SourceEditor: IOTASourceEditor = nil);
+
+    ///<summary>
+    /// Insert a string into a file at a some buffer position
+    /// Uses the current source editor if none is specified </summary>
+    class procedure InsertTextIntoEditorAtBufferPos(const Text: string; Position: Longint;
+      SourceEditor: IOTASourceEditor = nil);
+
+    ///<summary>
+    /// Set the EditView's cursor position based on a character index or a
+    /// TOTAEditPos.  Uses the topmost EditView if none is specified </summary>
+    class procedure GotoPosition(Position: Longint; EditView: IOTAEditView = nil;
+      Middle: Boolean = True);
+    class function TryGotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView = nil;
+      Middle: Boolean = True): Boolean;
+    class procedure GotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView = nil;
+      Middle: Boolean = True);
+
+    ///<summary>
+    /// Converts a character index into a TOTACharPos, since
+    /// IOTAEditView.PosToCharPos doesn't work in D5/D6 (it always AVs) </summary>
+    class function GetCharPosFromPos(Position: Longint; EditView: IOTAEditView): TOTACharPos;
+
+    ///<summary>
+    // Get the TOTAEditPos for the edit view (defaults to the topmost view) </summary>
+    class function GetCurrentEditPos(EditView: IOTAEditView = nil): TOTAEditPos;
+    class function TryGetCurrentEditPos(out _EditPos: TOTAEditPos): Boolean;
+    ///<summary>
+    // Get the position in the character array for the edit view (defaults to the topmost view) </summary>
+    class function GetCurrentEditBufferPos(EditView: IOTAEditView = nil): Integer;
+  end;
 
 // Returns the TObject represented by an IOTAComponent, if possible
-function GxOtaGetNativeObject(const AComponent: IOTAComponent): TObject;
+function GxOtaGetNativeObject(const AComponent: IOTAComponent): TObject; deprecated; // use Ota.GetNativeObject
 // Returns the TPersistent represented by an IOTAComponent, if possible
-function GxOtaGetNativePersistent(const AComponent: IOTAComponent): TPersistent;
+function GxOtaGetNativePersistent(const AComponent: IOTAComponent): TPersistent; deprecated // use Ota.GetNativePersistent
 // Returns the TComponent represented by an IOTAComponent, if possible
-function GxOtaGetNativeComponent(const AComponent: IOTAComponent): TComponent;
+function GxOtaGetNativeComponent(const AComponent: IOTAComponent): TComponent; deprecated; // use Ota.GetNativeComponent
 // Returns if the component is inherited from a parent form
-function GxOtaIsInheritedComponent(const AComponent: IOTAComponent): Boolean;
+function GxOtaIsInheritedComponent(const AComponent: IOTAComponent): Boolean; deprecated; // use Ota.IsInheritedComponent
 // Returns the name of the component
-function GxOtaGetComponentName(const AComponent: IOTAComponent): WideString;
+function GxOtaGetComponentName(const AComponent: IOTAComponent): WideString; deprecated; // use Ota.GetComponentName
 // Sets the name of the component
-function GxOtaSetComponentName(const AComponent: IOTAComponent; const Name: WideString): Boolean;
+function GxOtaSetComponentName(const AComponent: IOTAComponent; const Name: WideString): Boolean; deprecated; // use Ota.SetComponentName
 // Returns the name of the component's parent if the component has a parent
-function GxOtaGetComponentParentName(const AComponent: IOTAComponent): WideString;
+function GxOtaGetComponentParentName(const AComponent: IOTAComponent): WideString; deprecated; // use Ota.GetComponentParentName
 // See if the two IOTAComponents are the same component
-function GxOtaComponentsAreEqual(Comp1, Comp2: IOTAComponent): Boolean;
+function GxOtaComponentsAreEqual(Comp1, Comp2: IOTAComponent): Boolean; deprecated; // use Ota.ComponentsAreEqual
 
-procedure GxOtaGetInstalledComponentList(Components: TStrings; ActiveOnly: Boolean);
+procedure GxOtaGetInstalledComponentList(Components: TStrings; ActiveOnly: Boolean); deprecated // use Ota.GetInstalledComponentList
 
 function GxOtaGetComponentPropertyAsString(const AComponent: IOTAComponent;
-  const PropertyName: string; PreferStrings: Boolean = False): WideString; overload;
+  const PropertyName: string; PreferStrings: Boolean = False): WideString; deprecated; // use Ota.GetComponentPropertyAsString
 function GxOtaSetComponentPropertyAsString(const AComponent: IOTAComponent;
-  const PropertyName: string; const Value: WideString): Boolean; overload;
+  const PropertyName: string; const Value: WideString): Boolean; deprecated; // use Ota.SetComponentPropertyAsString
 function GxOtaNormalizePropertyValue(Component: IOTAComponent; const PropName, Value: string): string;
 function GxOtaGetPropertyIndexByName(const AComponent: IOTAComponent;
-  const PropertyName: WideString): Integer;
+  const PropertyName: WideString): Integer; deprecated; // use Ota.GetPropertyIndexByName
 
-function GxOtaEditorIsRecordingMacro: Boolean;
-function GxOtaEditorIsPlayingMacro: Boolean;
-function GxOtaEditorIsPausedMacro: Boolean;
-procedure GxOtaSetEditorKeyTracingEnabled(Enabled: Boolean);
-function GxOtaGetEditorKeyTracingEnabled: Boolean;
+function GxOtaEditorIsRecordingMacro: Boolean; deprecated; // use Ota.EditorIsRecordingMacro
+function GxOtaEditorIsPlayingMacro: Boolean; deprecated; // use Ota.EditorIsPlayingMacro
+function GxOtaEditorIsPausedMacro: Boolean; deprecated; // use Ota.EditorIsPausedMacro
+procedure GxOtaSetEditorKeyTracingEnabled(Enabled: Boolean); deprecated; // use Ota.SetEditorKeyTracingEnabled
+function GxOtaGetEditorKeyTracingEnabled: Boolean; deprecated; // use Ota.GetEditorKeyTracingEnabled
 
 {$IFDEF GX_SUPPORTS_THEMING}
-function IdeStyleIsDark: Boolean;
-function IdeStyleService: TCustomStyleServices;
-function GxOtaGetIDEThemingServices: IOTAIDEThemingServices;
-function GxOtaActiveThemeName: string;
-function GxOtaGetStyleColor(AColor: TStyleColor; ADefault: TColor): TColor;
-function GxOtaGetStyleFontColor(AFontStyle: TStyleFont; ADefault: TColor = clNone): TColor;
+function IdeStyleIsDark: Boolean; deprecated; // use Ota.IdeStyleIsDark
+function IdeStyleService: TCustomStyleServices; deprecated; // use Ota.IdeStyleService
+function GxOtaGetIDEThemingServices: IOTAIDEThemingServices; deprecated; // use Ota.GetIDEThemingServices
+function GxOtaActiveThemeName: string; deprecated; // use Ota.ActiveThemeName
+function GxOtaGetStyleColor(AColor: TStyleColor; ADefault: TColor): TColor; deprecated; // use Ota.GetStyleColor
+function GxOtaGetStyleFontColor(AFontStyle: TStyleFont; ADefault: TColor = clNone): TColor; deprecated; // use Ota.GetStyleFontColor
 {$ENDIF}
-function GxOtaApplyTheme(AForm: TCustomForm): Boolean;
-function GxOtaThemingEnabled: Boolean;
-function GxOtaInitTheming(AForm: TCustomForm): Boolean;
-function GxOtaGetThemedColor(AColor: TColor): TColor;
+function GxOtaApplyTheme(AForm: TCustomForm): Boolean; deprecated; // use Ota.ApplyTheme
+function GxOtaThemingEnabled: Boolean; deprecated; // use Ota.ThemingEnabled
+function GxOtaInitTheming(AForm: TCustomForm): Boolean; deprecated; // use Ota.InitTheming
+function GxOtaGetThemedColor(AColor: TColor): TColor; deprecated; // use Ota.GetThemedColor
 
 const
   // Invalid notifier index
@@ -130,7 +324,7 @@ const
   OPTION_NAME_UNIT_ALIASES = 'UnitAliases';
 
 const
-  // from ToolsApi\PlatormConst.pas
+  // from ToolsApi\PlatformConst.pas
   { Universal platform ids }
   // If you add new platform ID, you have to update
   //  app\delphicore\PasMgr.pas
@@ -165,43 +359,43 @@ const
 /// '32-bit Windows platform' for 'Win32'
 /// for en empty string the result is 'All platforms'
 /// for an unknown platform the result is Platform + ' platform' </summary>
-function GxOtaGetPlatformCaption(const _Platform: string): string;
+function GxOtaGetPlatformCaption(const _Platform: string): string; deprecated; // use Ota.GetPlatformCaption
 
 // returns an IOTAEditReader for the given or the current IOTASourceEditor if none is specified
-function GxOtaGetEditReaderForSourceEditor(SourceEditor: IOTASourceEditor = nil): IOTAEditReader;
+function GxOtaGetEditReaderForSourceEditor(SourceEditor: IOTASourceEditor = nil): IOTAEditReader; deprecated // use Ota.GetEditReaderForSourceEditor
 
 // Save an edit reader to a stream
-procedure GxOtaSaveReaderToStream(EditReader: IOTAEditReader; Stream: TStream; TrailingNull: Boolean = True);
+procedure GxOtaSaveReaderToStream(EditReader: IOTAEditReader; Stream: TStream; TrailingNull: Boolean = True); deprecated; // use Ota.SaveReaderToStream
 
 // Like above, but return a string
-function GxOtaReadEditorTextToString(EditReader: IOTAEditReader): string;
+function GxOtaReadEditorTextToString(EditReader: IOTAEditReader): string; deprecated; // use Ota.ReadEditorTextToString
 
 // If UseSelection is True, get the selected text in the current edit view
 // (if any) and return True or get all of the editor's text (if no selection)
 // and return False
-function GxOtaGetActiveEditorText(Lines: TGXUnicodeStringList; UseSelection: Boolean = True): Boolean;
+function GxOtaGetActiveEditorText(Lines: TGXUnicodeStringList; UseSelection: Boolean = True): Boolean; deprecated; // use Ota.GetActiveEditorText
 
 // Returns the editor's active text as a string, similar to above
-function GxOtaGetActiveEditorTextAsString(var Text: string; UseSelection: Boolean = True): Boolean;
-function GxOtaGetActiveEditorTextAsUnicodeString(var Text: TGXUnicodeString; UseSelection: Boolean = True): Boolean;
+function GxOtaGetActiveEditorTextAsString(var Text: string; UseSelection: Boolean = True): Boolean; deprecated; // use Ota.GetActiveEditorTextAsString
+function GxOtaGetActiveEditorTextAsUnicodeString(var Text: TGXUnicodeString; UseSelection: Boolean = True): Boolean; deprecated; // use Ota.GetActiveEditorTextAsUnicodeString
 
 // Get current identifier under cursor in the active edit buffer
 // Scans current line from cursor position to left and right for identifier name.
-function GxOtaGetCurrentIdent: string;
+function GxOtaGetCurrentIdent: string; deprecated; // use Ota.GetCurrentIdent
 
 // Replace the source editor's text with the passed text
-procedure GxOtaReplaceEditorText(SourceEditor: IOTASourceEditor; const AText: string);
-procedure GxOtaReplaceEditorTextWithUnicodeString(SourceEditor: IOTASourceEditor; Text: TGXUnicodeString);
+procedure GxOtaReplaceEditorText(SourceEditor: IOTASourceEditor; const AText: string); deprecated; // use Ota.ReplaceEditorText
+procedure GxOtaReplaceEditorTextWithUnicodeString(SourceEditor: IOTASourceEditor; Text: TGXUnicodeString); deprecated; // use Ota.ReplaceEditorTextWithUnicodeString
 
 // Returns current line from edit buffer
 // StartOffset is the start offset of line (zero-based)
 // ColumnNo is the current column number (zero-based, can be > than number of chars in line)
 // LineNo is the current line number (1 based, yes, that's inconsistent)
-function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; ByteBased: Boolean = False): string;
+function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; ByteBased: Boolean = False): string; deprecated; // use Ota.GetCurrentLineData
 // Calls GxOtaGetCurrentLineData but only returns the line as a string
-function GxOtaGetCurrentLine: string;
-function GxOtaGetEditorLine(View: IOTAEditView; LineNo: Integer): UTF8String;
-function GxOtaGetEditorLineAsString(View: IOTAEditView; LineNo: Integer): TGXUnicodeString;
+function GxOtaGetCurrentLine: string; deprecated; // use Ota.GetCurrentLine
+function GxOtaGetEditorLine(View: IOTAEditView; LineNo: Integer): UTF8String; deprecated; // use Ota.GetEditorLine
+function GxOtaGetEditorLineAsString(View: IOTAEditView; LineNo: Integer): TGXUnicodeString; deprecated; // use Ota.GetEditorLineAsString
 
 // Get the identifier at the cursor position, similar to above.
 // If an identifier is found then:
@@ -211,64 +405,64 @@ function GxOtaGetEditorLineAsString(View: IOTAEditView; LineNo: Integer): TGXUni
 // - CurrentPos is the current cursor position (line/col)
 // - AfterLen is the length of the part of the identifier that is after cursor
 procedure GxOtaGetCurrentIdentEx(var Ident: string; var IdentOffset: Integer;
-  var StartPos: TOTAEditPos; var CurrentPos: TOTAEditPos; var AfterLen: Integer; ByteBased: Boolean = False);
+  var StartPos: TOTAEditPos; var CurrentPos: TOTAEditPos; var AfterLen: Integer; ByteBased: Boolean = False); deprecated; // use Ota.GetCurrentIdentEx
 // Get the identifier and starting position only.  Return True on success.
-function GxOtaGetCurrentIdentData(var Ident: string; var StartEditPos: TOTAEditPos): Boolean;
+function GxOtaGetCurrentIdentData(var Ident: string; var StartEditPos: TOTAEditPos): Boolean; deprecated; // use Ota.GetCurrentIdentData
 
 // Get all of the characters in the current line that are before the cursor
-function GxOtaGetPreceedingCharactersInLine(View: IOTAEditView): string;
+function GxOtaGetPreceedingCharactersInLine(View: IOTAEditView): string; deprecated; // use Ota.GetPreceedingCharactersInLine
 
 // Select the current identifier under the cursor
-function GxOtaSelectCurrentIdent(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True): Boolean;
+function GxOtaSelectCurrentIdent(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True): Boolean; deprecated; // use Ota.SelectCurrentIdent
 // Select the current line of text
 //procedure GxOtaSelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True);
-procedure GxOtaSelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True; CharsOnly : Boolean = True);
+procedure GxOtaSelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True; CharsOnly : Boolean = True); deprecated; // use Ota.SelectCurrentLine
 
 // Insert a string into the current IOTASourceEditor
 // This should be used when the Text is a single line
 // It replaces the current selection (if any) and doesn't
 // require multiple undo operations to undo the insert
-procedure GxOtaInsertLineIntoEditor(const Text: string);
+procedure GxOtaInsertLineIntoEditor(const Text: string); deprecated; // use Ota.InsertLineIntoEditor
 
 // Insert any text into the current IOTASourceEditor
 // This should be used when the Text should not replace the
 // current selection and when it can contain more than one
 // line.  An undo might require multiple undo operations.
 // This procedure ensures the cursor is still visible.
-procedure GxOtaInsertTextIntoEditor(const Text: string);
+procedure GxOtaInsertTextIntoEditor(const Text: string); deprecated; // use Ota.InsertTextIntoEditor
 
 // Get an edit writer for the current source editor (raise an exception if not availble)
 // Use the current source editor if none is specified
-function GxOtaGetEditWriterForSourceEditor(SourceEditor: IOTASourceEditor = nil): IOTAEditWriter;
+function GxOtaGetEditWriterForSourceEditor(SourceEditor: IOTASourceEditor = nil): IOTAEditWriter; deprecated; // use Ota.GetEditWriterForSourceEditor
 
 // Insert a string into a file at a some character position
 // Uses the current source editor if none is specified
 procedure GxOtaInsertTextIntoEditorAtCharPos(const Text: string; Position: Longint;
-  SourceEditor: IOTASourceEditor = nil);
+  SourceEditor: IOTASourceEditor = nil); deprecated; // use Ota.InsertTextIntoEditorAtCharPos
 
 // Insert a string into a file at a some buffer position
 // Uses the current source editor if none is specified
 procedure GxOtaInsertTextIntoEditorAtBufferPos(const Text: string; Position: Longint;
-  SourceEditor: IOTASourceEditor = nil);
+  SourceEditor: IOTASourceEditor = nil); deprecated; // use Ota.InsertTextIntoEditorAtBufferPos
 
 // Set the EditView's cursor position based on a character index or a
 // TOTAEditPos.  Uses the topmost EditView if none is specified
 procedure GxOtaGotoPosition(Position: Longint; EditView: IOTAEditView = nil;
-  Middle: Boolean = True);
+  Middle: Boolean = True); deprecated; // use Ota.GotoPosition
 function GxOtaTryGotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView = nil;
-  Middle: Boolean = True): Boolean;
+  Middle: Boolean = True): Boolean; deprecated; // use Ota.TryGotoEditPos
 procedure GxOtaGotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView = nil;
-  Middle: Boolean = True);
+  Middle: Boolean = True); deprecated; // use Ota.GotoEditPos
 
 // This function converts a character index into a TOTACharPos, since
 // IOTAEditView.PosToCharPos doesn't work in D5/D6 (it always AVs)
-function GxOtaGetCharPosFromPos(Position: Longint; EditView: IOTAEditView): TOTACharPos;
+function GxOtaGetCharPosFromPos(Position: Longint; EditView: IOTAEditView): TOTACharPos; deprecated; // use Ota.GetCharPosFromPos
 
 // Get the TOTAEditPos for the edit view (defaults to the topmost view)
-function GxOtaGetCurrentEditPos(EditView: IOTAEditView = nil): TOTAEditPos;
-function GxOtaTryGetCurrentEditPos(out _EditPos: TOTAEditPos): Boolean;
+function GxOtaGetCurrentEditPos(EditView: IOTAEditView = nil): TOTAEditPos; deprecated; // use Ota.GetCurrentEditPos
+function GxOtaTryGetCurrentEditPos(out _EditPos: TOTAEditPos): Boolean; deprecated; // use Ota.GetCurrentEditPos
 // Get the position in the character array for the edit view (defaults to the topmost view)
-function GxOtaGetCurrentEditBufferPos(EditView: IOTAEditView = nil): Integer;
+function GxOtaGetCurrentEditBufferPos(EditView: IOTAEditView = nil): Integer; deprecated; // use Ota.GetCurrentEditBufferPos
 
 // Delete "Count" bytes starting from "StartIndex" in some source editor.
 // Uses the current source editor if none is specified.
@@ -929,7 +1123,7 @@ begin
       if Assigned(OwnedComponent) then
       begin
         CompInfo := TCompInfo.Create;
-        CompInfo.CompName := GxOtaGetComponentName(OwnedComponent);
+        CompInfo.CompName := Ota.GetComponentName(OwnedComponent);
         CompInfo.CompType := OwnedComponent.GetComponentType;
         List.Add(CompInfo);
       end;
@@ -1087,7 +1281,7 @@ begin
   begin
     if Assigned(FormEditor.GetRootComponent) then
     begin
-      PersistentForm := GxOtaGetNativePersistent(FormEditor.GetRootComponent);
+      PersistentForm := Ota.GetNativePersistent(FormEditor.GetRootComponent);
       Designer := (FormEditor as INTAFormEditor).FormDesigner;
       if Assigned(Designer) then
         if Assigned(PersistentForm) then
@@ -1111,7 +1305,7 @@ begin
     for i := 0 to Form.GetSelCount - 1 do
     begin
       Component := Form.GetSelComponent(i);
-      NativeComponent := GxOtaGetNativeComponent(Component);
+      NativeComponent := Ota.GetNativeComponent(Component);
       if Assigned(NativeComponent) then
       begin
         if (not Assigned(ComponentClass)) or (Assigned(ComponentClass) and (NativeComponent is ComponentClass)) then
@@ -1148,7 +1342,7 @@ begin
     Form := GxOtaGetCurrentFormEditor;
   if Assigned(Form) then
   begin
-    Root := GxOtaGetNativeComponent(Form.GetRootComponent);
+    Root := Ota.GetNativeComponent(Form.GetRootComponent);
     if Assigned(Root) and (Root is TWinControl) then
     begin
       RootControl := Root as TWinControl;
@@ -2226,7 +2420,7 @@ begin
     end;
     if not UseSelection or not HasSelection then begin
       IEditReader := ISourceEditor.CreateReader;
-      GxOtaSaveReaderToStream(IEditReader, Stream);
+      Ota.SaveReaderToStream(IEditReader, Stream);
       Result := False;
     end;
     if HasSelection then begin
@@ -2347,6 +2541,11 @@ end;
 {$ENDIF}
 
 function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; ByteBased: Boolean): string;
+begin
+  Result := Ota.GetCurrentLineData(StartOffset, ColumnNo, LineNo, ByteBased);
+end;
+
+class function Ota.GetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; ByteBased: Boolean): string;
 
   // Returns column, line number, and source of the active editor
   function GetCurrentSourceAndPos(var CursorPosition: Integer;
@@ -2372,7 +2571,7 @@ function GxOtaGetCurrentLineData(var StartOffset, ColumnNo, LineNo: Integer; Byt
       if ByteBased then
         GxOtaGetActiveEditorTextAsStringBytes(Result, False)
       else
-        GxOtaGetActiveEditorTextAsString(Result, False);
+        Ota.GetActiveEditorTextAsString(Result, False);
       EditPos := EditView.CursorPos;
       EditView.ConvertPos(True, EditPos, CharPos);
       CursorLine := CharPos.Line;
@@ -2436,15 +2635,25 @@ begin
 end;
 
 function GxOtaGetCurrentLine: string;
+begin
+  Result := Ota.GetCurrentLine;
+end;
+
+class function Ota.GetCurrentLine: string;
 var
   StartOffset: Integer;
   ColumnNo: Integer;
   LineNo: Integer;
 begin
-  Result := GxOtaGetCurrentLineData(StartOffset, ColumnNo, LineNo)
+  Result := GetCurrentLineData(StartOffset, ColumnNo, LineNo)
 end;
 
 function GxOtaGetEditorLine(View: IOTAEditView; LineNo: Integer): UTF8String;
+begin
+  Result := Ota.GetEditorLine(View, LineNo);
+end;
+
+class function Ota.GetEditorLine(View: IOTAEditView; LineNo: Integer): UTF8String;
 var
   Buffer: IOTAEditBuffer;
   LineStartByte: Integer;
@@ -2474,20 +2683,31 @@ end;
 
 function GxOtaGetEditorLineAsString(View: IOTAEditView; LineNo: Integer): TGXUnicodeString;
 begin
+  Result := Ota.GetEditorLineAsString(View, LineNo);
+end;
+
+class function Ota.GetEditorLineAsString(View: IOTAEditView; LineNo: Integer): TGXUnicodeString;
+begin
   {$IFDEF UNICODE} // Delphi 2009 +
-  Result := string(GxOtaGetEditorLine(View, LineNo));
+  Result := string(GetEditorLine(View, LineNo));
   {$ELSE}
     {$IFDEF GX_VER160_up} // Delphi 8+
-    Result := UTF8Decode(GxOtaGetEditorLine(View, LineNo));
+    Result := UTF8Decode(GetEditorLine(View, LineNo));
     {$ELSE} // Delphi 6-7
     Result := GxOtaGetEditorLine(View, LineNo);
     {$ENDIF}
   {$ENDIF}
 end;
 
-// TODO 3 -oAnyone -cCleanup: This claims to return TOTAEditPos values but really returns TOTACharPos values
 procedure GxOtaGetCurrentIdentEx(var Ident: string; var IdentOffset: Integer;
   var StartPos: TOTAEditPos; var CurrentPos: TOTAEditPos; var AfterLen: Integer; ByteBased: Boolean);
+begin
+  Ota.GetCurrentIdentEx(Ident, IdentOffset, StartPos, CurrentPos, AfterLen, ByteBased);
+end;
+
+// TODO 3 -oAnyone -cCleanup: This claims to return TOTAEditPos values but really returns TOTACharPos values
+class procedure Ota.GetCurrentIdentEx(var Ident: string; var IdentOffset: Integer;
+  var StartPos, CurrentPos: TOTAEditPos; var AfterLen: Integer; ByteBased: Boolean);
 
   function IsEndOfWordChar(Char: Char): Boolean;
   begin
@@ -2510,7 +2730,7 @@ var
   TailLen: Integer;
 begin
   Ident := '';
-  CurrentLine := GxOtaGetCurrentLineData(StartOffset, ColumnNo, LineNo, ByteBased);
+  CurrentLine := Ota.GetCurrentLineData(StartOffset, ColumnNo, LineNo, ByteBased);
 
   CurrentPos.Col := ColumnNo;
   CurrentPos.Line := LineNo;
@@ -2578,6 +2798,11 @@ begin
 end;
 
 function GxOtaGetCurrentIdentData(var Ident: string; var StartEditPos: TOTAEditPos): Boolean;
+begin
+  Result := Ota.GetCurrentIdentData(Ident, StartEditPos);
+end;
+
+class function Ota.GetCurrentIdentData(var Ident: string; var StartEditPos: TOTAEditPos): Boolean;
 var
   IdentOffset: Integer;
   StartPos: TOTACharPos;
@@ -2587,7 +2812,7 @@ var
   EditView: IOTAEditView;
 begin
   // This claims to return TOTAEditPos, but actually returns TOTACharPos in disguise
-  GxOtaGetCurrentIdentEx(Ident, IdentOffset, EStart, ECurrent, AfterLen);
+  GetCurrentIdentEx(Ident, IdentOffset, EStart, ECurrent, AfterLen);
   StartEditPos.Col := 0;
   StartEditPos.Line := 0;
   Result := Ident <> '';
@@ -2602,13 +2827,18 @@ begin
 end;
 
 function GxOtaGetCurrentIdent: string;
+begin
+  Result := Ota.GetCurrentIdent;
+end;
+
+class function Ota.GetCurrentIdent: string;
 var
   IdentOffset: Integer;
   StartPos: TOTAEditPos;
   CurrentPos: TOTAEditPos;
   AfterLen: Integer;
 begin
-  GxOtaGetCurrentIdentEx(Result, IdentOffset, StartPos, CurrentPos, AfterLen);
+  GetCurrentIdentEx(Result, IdentOffset, StartPos, CurrentPos, AfterLen);
 end;
 
 (* // A start at making this support the UTF-8 returned by the editor
@@ -2651,6 +2881,11 @@ end;
 *)
 
 procedure GxOtaReplaceEditorText(SourceEditor: IOTASourceEditor; const AText: string);
+begin
+  Ota.ReplaceEditorText(SourceEditor, AText);
+end;
+
+class procedure Ota.ReplaceEditorText(SourceEditor: IOTASourceEditor; const AText: string);
 var
   Writer: IOTAEditWriter;
 begin
@@ -2664,6 +2899,11 @@ begin
 end;
 
 procedure GxOtaReplaceEditorTextWithUnicodeString(SourceEditor: IOTASourceEditor; Text: TGXUnicodeString);
+begin
+  Ota.ReplaceEditorTextWithUnicodeString(SourceEditor, Text);
+end;
+
+class procedure Ota.ReplaceEditorTextWithUnicodeString(SourceEditor: IOTASourceEditor;  Text: TGXUnicodeString);
 var
   Writer: IOTAEditWriter;
 begin
@@ -3075,7 +3315,7 @@ begin
   //       fixed in XE8 and later? So this should possibly be "not RunningRSXE7OrGreater". -- twm
   if RunningDelphi8OrGreater and not RunningRSXE7 then
   begin
-    LineData := GxOtaGetEditorLine(EditView, Line);
+    LineData := Ota.GetEditorLine(EditView, Line);
     StartColumn := GxOtaConvertColumnCharsToBytes(LineData, StartColumn, False);
     StopColumn := GxOtaConvertColumnCharsToBytes(LineData, StopColumn, True);
   end;
@@ -3230,6 +3470,11 @@ begin
 end;
 
 function GxOtaGetPlatformCaption(const _Platform: string): string;
+begin
+  Result := Ota.GetPlatformCaption(_Platform);
+end;
+
+class function Ota.GetPlatformCaption(const _Platform: string): string;
 begin
   if _Platform = '' then
     Result := sAllPlatforms
@@ -4113,6 +4358,12 @@ end;
 
 function GxOtaGetPropertyIndexByName(const AComponent: IOTAComponent; const PropertyName: WideString): Integer;
 begin
+  Result := Ota.GetPropertyIndexByName(AComponent, PropertyName);
+end;
+
+class function Ota.GetPropertyIndexByName(const AComponent: IOTAComponent;
+  const PropertyName: WideString): Integer;
+begin
   Assert(Assigned(AComponent));
 
   Result := AComponent.GetPropCount-1;
@@ -4126,6 +4377,11 @@ begin
 end;
 
 function GxOtaEditorIsRecordingMacro: Boolean;
+begin
+  Result := Ota.EditorIsRecordingMacro;
+end;
+
+class function Ota.EditorIsRecordingMacro: Boolean;
 var
   CurRecord: IOTARecord;
 begin
@@ -4136,6 +4392,11 @@ begin
 end;
 
 function GxOtaEditorIsPlayingMacro: Boolean;
+begin
+  Result := Ota.EditorIsPlayingMacro;
+end;
+
+class function Ota.EditorIsPlayingMacro: Boolean;
 var
   CurPlayback: IOTARecord;
 begin
@@ -4146,6 +4407,11 @@ begin
 end;
 
 function GxOtaEditorIsPausedMacro: Boolean;
+begin
+  Result   := Ota.EditorIsPausedMacro;
+end;
+
+class function Ota.EditorIsPausedMacro: Boolean;
 var
   CurRecord: IOTARecord;
 begin
@@ -4157,20 +4423,35 @@ end;
 
 procedure GxOtaSetEditorKeyTracingEnabled(Enabled: Boolean);
 begin
+  Ota.SetEditorKeyTracingEnabled(Enabled);
+end;
+
+class procedure Ota.SetEditorKeyTracingEnabled(Enabled: Boolean);
+begin
   (BorlandIDEServices as ToolsAPI.IOTAKeyboardDiagnostics).KeyTracing := Enabled;
 end;
 
 function GxOtaGetEditorKeyTracingEnabled: Boolean;
+begin
+  Result := Ota.GetEditorKeyTracingEnabled;
+end;
+
+class function Ota.GetEditorKeyTracingEnabled: Boolean;
 begin
   Result := (BorlandIDEServices as ToolsAPI.IOTAKeyboardDiagnostics).KeyTracing;
 end;
 
 {$IFDEF GX_SUPPORTS_THEMING}
 function IdeStyleService: TCustomStyleServices;
+begin
+  Result := Ota.IdeStyleService;
+end;
+
+class function Ota.IdeStyleService: TCustomStyleServices;
 var
   LService: IOTAIDEThemingServices;
 begin
-  LService := GxOtaGetIDEThemingServices;
+  LService := GetIDEThemingServices;
   if Assigned(LService) then
     Result := LService.StyleServices
   else
@@ -4178,6 +4459,11 @@ begin
 end;
 
 function GxOtaGetIDEThemingServices: IOTAIDEThemingServices;
+begin
+  Result := Ota.GEtIdeThemingServices;
+end;
+
+class function Ota.GetIDEThemingServices: IOTAIDEThemingServices;
 var
   LService: IOTAIDEThemingServices;
 begin
@@ -4187,28 +4473,43 @@ begin
 end;
 
 function GxOtaActiveThemeName: string;
+begin
+  Result := Ota.ActiveThemeName;
+end;
+
+class function Ota.ActiveThemeName: string;
 var
   LService: IOTAIDEThemingServices;
 begin
   Result := '';
-  LService := GxOtaGetIDEThemingServices;
+  LService := GetIDEThemingServices;
   if Assigned(LService) then
     Result := LService.ActiveTheme;
 end;
 
 function IdeStyleIsDark: Boolean;
 begin
-  Result := SameText(GxOtaActiveThemeName, 'Dark');
+  Result := Ota.IdeStyleIsDark;
+end;
+
+class function Ota.IdeStyleIsDark: Boolean;
+begin
+  Result := SameText(ActiveThemeName, 'Dark');
 end;
 {$ENDIF}
 
 function GxOtaThemingEnabled: Boolean;
+begin
+  Result := Ota.ThemingEnabled;
+end;
+
+class function Ota.ThemingEnabled: Boolean;
 {$IFDEF GX_SUPPORTS_THEMING}
 var
   LService: IOTAIDEThemingServices;
 begin
   Result := False;
-  LService := GxOtaGetIDEThemingServices;
+  LService := Ota.GetIDEThemingServices;
   if Assigned(LService) then
     Result := LService.IDEThemingEnabled;
 end;
@@ -4219,12 +4520,17 @@ end;
 {$ENDIF}
 
 function GxOtaApplyTheme(AForm: TCustomForm): Boolean;
+begin
+   Result := Ota.ApplyTheme(AForm);
+end;
+
+class function Ota.ApplyTheme(AForm: TCustomForm): Boolean;
 {$IFDEF GX_SUPPORTS_THEMING}
 var
   LService: IOTAIDEThemingServices;
 begin
   Result := False;
-  LService := GxOtaGetIDEThemingServices;
+  LService := GetIDEThemingServices;
   if Assigned(AForm) and Assigned(LService) and (LService.IDEThemingEnabled)
   then begin
     LService.ApplyTheme(AForm);
@@ -4238,13 +4544,18 @@ end;
 {$ENDIF}
 
 function GxOtaInitTheming(AForm: TCustomForm): Boolean;
+begin
+  Result := Ota.InitTheming(AForm);
+end;
+
+class function Ota.InitTheming(AForm: TCustomForm): Boolean;
 {$IFDEF GX_SUPPORTS_THEMING}
 var
   LService : IOTAIDEThemingServices;
 //  LNotifier : TThemeChangedNotifier;
 begin
   Result := False;
-  LService := GxOtaGetIDEThemingServices;
+  LService := GetIDEThemingServices;
   if Assigned(AForm) and Assigned(LService) and (LService.IDEThemingEnabled) then
   begin
     LService.RegisterFormClass(TCustomFormClass(AForm.ClassType));
@@ -4263,12 +4574,17 @@ end;
 {$ENDIF}
 
 function GxOtaGetThemedColor(AColor: TColor): TColor;
+begin
+  Result := Ota.GetThemedColor(AColor);
+end;
+
+class function Ota.GetThemedColor(AColor: TColor): TColor;
 {$IFDEF GX_SUPPORTS_THEMING}
 var
   LService: IOTAIDEThemingServices;
 begin
   Result := AColor;
-  LService := GxOtaGetIDEThemingServices;
+  LService := GetIDEThemingServices;
   if Assigned(LService) and LService.IDEThemingEnabled then
   begin
     Result := LService.StyleServices.GetSystemColor(AColor);
@@ -4281,25 +4597,33 @@ end;
 
 {$IFDEF GX_SUPPORTS_THEMING}
 function GxOtaGetStyleColor(AColor: TStyleColor; ADefault: TColor): TColor;
+begin
+  Result := Ota.GetStyleColor(AColor, ADefault);
+end;
+
+class function Ota.GetStyleColor(AColor: TStyleColor; ADefault: TColor): TColor;
 var
   LService: IOTAIDEThemingServices;
 begin
   Result := ADefault;
-  LService := GxOtaGetIDEThemingServices;
+  LService := GetIDEThemingServices;
   if Assigned(LService) and LService.IDEThemingEnabled then
   begin
     Result := LService.StyleServices.GetStyleColor(AColor);
   end;
 end;
-{$ENDIF}
 
-{$IFDEF GX_SUPPORTS_THEMING}
 function GxOtaGetStyleFontColor(AFontStyle: TStyleFont; ADefault: TColor): TColor;
+begin
+  Result := Ota.GetStyleFontColor(AFontStyle, ADefault);
+end;
+
+class function Ota.GetStyleFontColor(AFontStyle: TStyleFont; ADefault: TColor = clNone): TColor;
 var
   LService: IOTAIDEThemingServices;
 begin
   Result := ADefault;
-  LService := GxOtaGetIDEThemingServices;
+  LService := GetIDEThemingServices;
   if Assigned(LService) and LService.IDEThemingEnabled then
   begin
     Result := LService.StyleServices.GetStyleFontColor(AFontStyle);
@@ -4324,6 +4648,12 @@ type
     end;
 
 function GxOtaGetComponentPropertyAsString(const AComponent: IOTAComponent;
+  const PropertyName: string; PreferStrings: Boolean): WideString;
+begin
+  Result := Ota.GetComponentPropertyAsString(AComponent, PropertyName, PreferStrings);
+end;
+
+class function Ota.GetComponentPropertyAsString(const AComponent: IOTAComponent;
   const PropertyName: string; PreferStrings: Boolean): WideString;
 var
   PropertyType: TTypeKind;
@@ -4367,7 +4697,7 @@ begin
       begin
         if PreferStrings and GxOtaActiveDesignerIsVCL then
         begin
-          NativeObject := GxOtaGetNativeObject(AComponent);
+          NativeObject := Ota.GetNativeObject(AComponent);
           Assert(Assigned(NativeObject), 'No native object for property ' + PropertyName);
           Result := SetToString(GetPropInfo(NativeObject, PropertyName), Buffer.Int, True);
         end
@@ -4378,7 +4708,7 @@ begin
       begin
         if PreferStrings and GxOtaActiveDesignerIsVCL then
         begin
-          NativeObject := GxOtaGetNativeObject(AComponent);
+          NativeObject := Ota.GetNativeObject(AComponent);
           Assert(Assigned(NativeObject));
           Result := GetEnumName(FindTypeInfo(NativeObject, PropertyName), Buffer.Int);
         end
@@ -4397,6 +4727,12 @@ begin
 end;
 
 function GxOtaNormalizePropertyValue(Component: IOTAComponent; const PropName, Value: string): string;
+begin
+  Result := Ota.NormalizePropertyValue(Component, PropName, Value);
+end;
+
+class function Ota.NormalizePropertyValue(Component: IOTAComponent; const PropName,
+  Value: string): string;
 var
   PropType: TTypeKind;
   NativeObject: TObject;
@@ -4406,7 +4742,7 @@ begin
   PropType := Component.GetPropTypeByName(PropName);
   if PropType = tkEnumeration then
   begin
-    NativeObject := GxOtaGetNativeObject(Component);
+    NativeObject := Ota.GetNativeObject(Component);
     if Assigned(NativeObject) then
       Result := IntToStr(GetEnumValueFromStr(NativeObject, PropName, Value))
     else
@@ -4422,6 +4758,12 @@ begin
 end;
 
 function GxOtaSetComponentPropertyAsString(const AComponent: IOTAComponent;
+  const PropertyName: string; const Value: WideString): Boolean;
+begin
+  Result := Ota.SetComponentPropertyAsString(AComponent, PropertyName, Value);
+end;
+
+class function Ota.SetComponentPropertyAsString(const AComponent: IOTAComponent;
   const PropertyName: string; const Value: WideString): Boolean;
 var
   PropertyType     : TTypeKind;
@@ -4452,8 +4794,8 @@ begin
   Result := False;
   if Trim(PropertyName) = '' then
     Exit;
-  ComponentName := GxOtaGetComponentName(AComponent);
-  NativeObject := GxOtaGetNativeObject(AComponent);
+  ComponentName := Ota.GetComponentName(AComponent);
+  NativeObject := Ota.GetNativeObject(AComponent);
 
   PropertyType := AComponent.GetPropTypeByName(PropertyName);
   PropertyTypeName := GetEnumName(TypeInfo(TTypeKind), Ord(PropertyType));
@@ -4565,6 +4907,11 @@ begin
 end;
 
 function GxOtaGetNativeObject(const AComponent: IOTAComponent): TObject;
+begin
+  Result := Ota.GetNativeObject(AComponent);
+end;
+
+class function Ota.GetNativeObject(const AComponent: IOTAComponent): TObject;
 var
   CompHandle: TOTAHandle;
 begin
@@ -4577,11 +4924,16 @@ begin
 end;
 
 function GxOtaGetNativePersistent(const AComponent: IOTAComponent): TPersistent;
+begin
+  Result := Ota.GetNativePersistent(AComponent);
+end;
+
+class function Ota.GetNativePersistent(const AComponent: IOTAComponent): TPersistent;
 var
   ComponentObject: TObject;
 begin
   Result := nil;
-  ComponentObject := GxOtaGetNativeObject(AComponent);
+  ComponentObject := GetNativeObject(AComponent);
   if Assigned(ComponentObject) then
   begin
     if GxOtaActiveDesignerIsNFM then begin
@@ -4594,11 +4946,16 @@ begin
 end;
 
 function GxOtaGetNativeComponent(const AComponent: IOTAComponent): TComponent;
+begin
+  Result := Ota.GetNativeComponent(AComponent);
+end;
+
+class function Ota.GetNativeComponent(const AComponent: IOTAComponent): TComponent;
 var
   ComponentObject: TObject;
 begin
   Result := nil;
-  ComponentObject := GxOtaGetNativeObject(AComponent);
+  ComponentObject := GetNativeObject(AComponent);
   if Assigned(ComponentObject) then
   begin
     if GxOtaActiveDesignerIsNFM then begin
@@ -4611,24 +4968,34 @@ begin
 end;
 
 function GxOtaIsInheritedComponent(const AComponent: IOTAComponent): Boolean;
+begin
+  Result := Ota.IsInheritedComponent(AComponent);
+end;
+
+class function Ota.IsInheritedComponent(const AComponent: IOTAComponent): Boolean;
 var
   NativeComponent: TComponent;
 begin
   Result := False;
-  NativeComponent :=  GxOtaGetNativeComponent(AComponent);
+  NativeComponent := Ota.GetNativeComponent(AComponent);
   if Assigned(NativeComponent) then
     Result := (csAncestor in NativeComponent.ComponentState);
 end;
 
 function GxOtaGetComponentName(const AComponent: IOTAComponent): WideString;
+begin
+  Result := Ota.GetComponentName(AComponent);
+end;
+
+class function Ota.GetComponentName(const AComponent: IOTAComponent): WideString;
 var
   Component: TComponent;
 begin
   Assert(Assigned(AComponent));
-  Result := GxOtaGetComponentPropertyAsString(AComponent, NamePropertyName);
+  Result := GetComponentPropertyAsString(AComponent, NamePropertyName);
   if IsEmpty(Result) then
   begin
-    Component := GxOtaGetNativeComponent(AComponent);
+    Component := GetNativeComponent(AComponent);
     if Assigned(Component) then
       Result := Component.Name;
   end;
@@ -4636,11 +5003,22 @@ end;
 
 function GxOtaSetComponentName(const AComponent: IOTAComponent; const Name: WideString): Boolean;
 begin
+  Result := Ota.SetComponentName(AComponent, Name);
+end;
+
+class function Ota.SetComponentName(const AComponent: IOTAComponent;
+  const Name: WideString): Boolean;
+begin
   Assert(Assigned(AComponent));
-  Result := GxOtaSetComponentPropertyAsString(AComponent, NamePropertyName, Name);
+  Result := SetComponentPropertyAsString(AComponent, NamePropertyName, Name);
 end;
 
 function GxOtaGetComponentParentName(const AComponent: IOTAComponent): WideString;
+begin
+  Result := Ota.GetComponentParentName(AComponent);
+end;
+
+class function Ota.GetComponentParentName(const AComponent: IOTAComponent): WideString;
 resourcestring
   SNoParent = 'No Parent';
 var
@@ -4666,11 +5044,16 @@ begin
   {$ELSE GX_VER160_up}
   Parent := AComponent.GetParent;
   if Assigned(Parent) then
-    Result := GxOtaGetComponentName(Parent);
+    Result := GetComponentName(Parent);
   {$ENDIF GX_VER160_up}
 end;
 
 function GxOtaComponentsAreEqual(Comp1, Comp2: IOTAComponent): Boolean;
+begin
+  Result := Ota.ComponentsAreEqual(Comp1, Comp2);
+end;
+
+class function Ota.ComponentsAreEqual(Comp1, Comp2: IOTAComponent): Boolean;
 begin
   // Should we compare handles directly in Delphi 5/6/7?
   Result := False;
@@ -4678,11 +5061,16 @@ begin
     Exit;
   // Check if the parents are equal?
   Result := SameText(Comp1.GetComponentType, Comp2.GetComponentType) and
-    SameText(GxOtaGetComponentName(Comp1), GxOtaGetComponentName(Comp2)) and
-    SameText(GxOtaGetComponentParentName(Comp1), GxOtaGetComponentParentName(Comp2));
+    SameText(GetComponentName(Comp1), GetComponentName(Comp2)) and
+    SameText(GetComponentParentName(Comp1), GetComponentParentName(Comp2));
 end;
 
 procedure GxOtaGetInstalledComponentList(Components: TStrings; ActiveOnly: Boolean);
+begin
+  Ota.GetInstalledComponentList(Components, ActiveOnly);
+end;
+
+class procedure Ota.GetInstalledComponentList(Components: TStrings; ActiveOnly: Boolean);
 var
   PackageServices: IOTAPackageServices;
   PackageCounter: Integer;
@@ -4916,7 +5304,7 @@ begin
     if FormEditor.GetSelCount = 1 then begin
       CurrentComponent := FormEditor.GetSelComponent(0);
       if Assigned(CurrentComponent) then
-        Result := GxOtaGetComponentName(CurrentComponent);
+        Result := Ota.GetComponentName(CurrentComponent);
     end;
   end;
 end;
@@ -4932,7 +5320,7 @@ begin
     FormComponent := Form.GetRootComponent;
     if Assigned(FormComponent) then
     begin
-      NativeForm := GxOtaGetNativeComponent(FormComponent);
+      NativeForm := Ota.GetNativeComponent(FormComponent);
       if Assigned(NativeForm) and (NativeForm is TCustomForm) then
         Result := (NativeForm as TCustomForm).BiDiMode;
     end;
@@ -4976,6 +5364,11 @@ begin
 end;
 
 procedure GxOtaSaveReaderToStream(EditReader: IOTAEditReader; Stream: TStream; TrailingNull: Boolean);
+begin
+  Ota.SaveReaderToStream(EditReader, Stream, TrailingNull);
+end;
+
+class procedure Ota.SaveReaderToStream(EditReader: IOTAEditReader; Stream: TStream; TrailingNull: Boolean);
 const
   // Leave typed constant as is - needed for streaming code.
   TerminatingNullChar: AnsiChar = #0;
@@ -5002,6 +5395,11 @@ begin
 end;
 
 function GxOtaGetActiveEditorText(Lines: TGXUnicodeStringList; UseSelection: Boolean): Boolean;
+begin
+  Result := Ota.GetActiveEditorText(Lines, UseSelection);
+end;
+
+class function Ota.GetActiveEditorText(Lines: TGXUnicodeStringList; UseSelection: Boolean): Boolean;
 var
   ISourceEditor: IOTASourceEditor;
   IEditView: IOTAEditView;
@@ -5026,20 +5424,30 @@ begin
 end;
 
 function GxOtaGetActiveEditorTextAsString(var Text: string; UseSelection: Boolean): Boolean;
+begin
+  Result := Ota.GetActiveEditorTextAsString(Text, UseSelection);
+end;
+
+class function Ota.GetActiveEditorTextAsString(var Text: string; UseSelection: Boolean): Boolean;
 var
   Lines: TGXUnicodeString;
 begin
-  Result := GxOtaGetActiveEditorTextAsUnicodeString(Lines, UseSelection);
+  Result := Ota.GetActiveEditorTextAsUnicodeString(Lines, UseSelection);
   Text := Lines;
 end;
 
 function GxOtaGetActiveEditorTextAsUnicodeString(var Text: TGXUnicodeString; UseSelection: Boolean): Boolean;
+begin
+  Result := Ota.GetActiveEditorTextAsUnicodeString(Text, UseSelection);
+end;
+
+class function Ota.GetActiveEditorTextAsUnicodeString(var Text: TGXUnicodeString; UseSelection: Boolean): Boolean;
 var
   Lines: TGXUnicodeStringList;
 begin
   Lines := TGXUnicodeStringList.Create;
   try
-    Result := GxOtaGetActiveEditorText(Lines, UseSelection);
+    Result := GetActiveEditorText(Lines, UseSelection);
     Text := Lines.Text;
     RemoveLastEOL(Text);
   finally
@@ -5057,16 +5465,21 @@ begin
 end;
 
 function GxOtaReadEditorTextToString(EditReader: IOTAEditReader): string;
+begin
+  Result := Ota.ReadEditorTextToString(EditReader);
+end;
+
+class function Ota.ReadEditorTextToString(EditReader: IOTAEditReader): string;
 var
   Stream: TMemoryStream;
   Buffer: IDEEditBufferString;
 begin
   Stream := TMemoryStream.Create;
   try
-    GxOtaSaveReaderToStream(EditReader, Stream);
-      SetLength(Buffer, Stream.Size);
-      Stream.Position := 0;
-      Stream.ReadBuffer(Buffer[1], Stream.Size);
+    SaveReaderToStream(EditReader, Stream);
+    SetLength(Buffer, Stream.Size);
+    Stream.Position := 0;
+    Stream.ReadBuffer(Buffer[1], Stream.Size);
   finally
     Stream.Free;
   end;
@@ -5074,6 +5487,11 @@ begin
 end;
 
 function GxOtaGetPreceedingCharactersInLine(View: IOTAEditView): string;
+begin
+  Result := Ota.GetPreceedingCharactersInLine(View);
+end;
+
+class function Ota.GetPreceedingCharactersInLine(View: IOTAEditView): string;
 var
   CharPos: TOTACharPos;
   EditPos: TOTAEditPos;
@@ -5106,7 +5524,7 @@ begin
 // Unicode patch by Achim Kalwa
 {$IFDEF UNICODE}
   Result := Copy(
-    IDEEditorStringToString(GxOtaGetEditorLine(View, EditPos.Line)),
+    IDEEditorStringToString(Ota.GetEditorLine(View, EditPos.Line)),
     1, LineLength
   );
 {$ELSE}
@@ -5116,12 +5534,17 @@ begin
 end;
 
 function GxOtaSelectCurrentIdent(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True): Boolean;
+begin
+  Result := Ota.SelectCurrentIdent(SourceEditor, MakeVisible);
+end;
+
+class function Ota.SelectCurrentIdent(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean): Boolean;
 var
   EStart: TOTAEditPos;
   EEnd: TOTAEditPos;
   Ident: string;
 begin
-  Result := GxOtaGetCurrentIdentData(Ident, EStart);
+  Result := Ota.GetCurrentIdentData(Ident, EStart);
   if Result then
   begin
     EEnd.Line := EStart.Line;
@@ -5130,7 +5553,12 @@ begin
   end;
 end;
 
-procedure GxOtaSelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = true; CharsOnly : Boolean = true);
+procedure GxOtaSelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible: Boolean = True; CharsOnly: Boolean = True);
+begin
+  Ota.SelectCurrentLine(SourceEditor, MakeVisible, CharsOnly);
+end;
+
+class procedure Ota.SelectCurrentLine(const SourceEditor: IOTASourceEditor; MakeVisible, CharsOnly: Boolean);
 var
   EditPos: TOTAEditPos;
   EditView: IOTAEditView;
@@ -5156,6 +5584,11 @@ begin
 end;
 
 procedure GxOtaInsertLineIntoEditor(const Text: string);
+begin
+  Ota.InsertLineIntoEditor(Text);
+end;
+
+class procedure Ota.InsertLineIntoEditor(const Text: string);
 var
   EditView: IOTAEditView;
 resourcestring
@@ -5172,6 +5605,11 @@ begin
 end;
 
 procedure GxOtaInsertTextIntoEditor(const Text: string);
+begin
+  Ota.InsertTextIntoEditor(Text);
+end;
+
+class procedure Ota.InsertTextIntoEditor(const Text: string);
 var
   EditView: IOTAEditView;
   Position: Longint;
@@ -5183,12 +5621,17 @@ begin
   EditPos := EditView.CursorPos;
   EditView.ConvertPos(True, EditPos, CharPos);
   Position := EditView.CharPosToPos(CharPos);
-  GxOtaInsertTextIntoEditorAtBufferPos(Text, Position);
+  InsertTextIntoEditorAtBufferPos(Text, Position);
   EditView.MoveViewToCursor;
   EditView.Paint;
 end;
 
 function GxOtaGetEditWriterForSourceEditor(SourceEditor: IOTASourceEditor = nil): IOTAEditWriter;
+begin
+  Result := Ota.GetEditWriterForSourceEditor(SourceEditor);
+end;
+
+class function Ota.GetEditWriterForSourceEditor(SourceEditor: IOTASourceEditor): IOTAEditWriter;
 resourcestring
   SEditWriterNotAvail = 'Edit writer not available';
 begin
@@ -5203,6 +5646,11 @@ begin
 end;
 
 function GxOtaGetEditReaderForSourceEditor(SourceEditor: IOTASourceEditor = nil): IOTAEditReader;
+begin
+  Result := Ota.GetEditReaderForSourceEditor(SourceEditor);
+end;
+
+class function Ota.GetEditReaderForSourceEditor(SourceEditor: IOTASourceEditor): IOTAEditReader;
 resourcestring
   SEditReaderNotAvail = 'Edit reader not available';
 begin
@@ -5217,6 +5665,12 @@ end;
 
 procedure GxOtaInsertTextIntoEditorAtBufferPos(const Text: string; Position: Longint;
   SourceEditor: IOTASourceEditor);
+begin
+  Ota.InsertTextIntoEditorAtBufferPos(Text, Position, SourceEditor);
+end;
+
+class procedure Ota.InsertTextIntoEditorAtBufferPos(const Text: string; Position: Longint;
+  SourceEditor: IOTASourceEditor);
 var
   EditWriter: IOTAEditWriter;
   IdeString: UTF8String;
@@ -5224,14 +5678,19 @@ begin
   if Text = '' then
     Exit;
 
-  EditWriter := GxOtaGetEditWriterForSourceEditor(SourceEditor);
+  EditWriter := GetEditWriterForSourceEditor(SourceEditor);
   IdeString :=  ConvertToIDEEditorString(Text);
   EditWriter.CopyTo(Position);
   EditWriter.Insert(PAnsiChar(IdeString));
 end;
 
-
 procedure GxOtaInsertTextIntoEditorAtCharPos(const Text: string; Position: Longint;
+  SourceEditor: IOTASourceEditor);
+begin
+  Ota.InsertTextIntoEditorAtCharPos(Text, Position, SourceEditor);
+end;
+
+class procedure Ota.InsertTextIntoEditorAtCharPos(const Text: string; Position: Longint;
   SourceEditor: IOTASourceEditor);
 var
   EditWriter: IOTAEditWriter;
@@ -5247,17 +5706,22 @@ begin
   // Position is a character position in a (possibly unicode) string
   // the EditWriter needs a byte position in a UTF-8 string (for Delphi >=8)
   // or in an ansistring (for Delphi <8)
-  Buffer := GxOtaReadEditorTextToString(GxOtaGetEditReaderForSourceEditor(SourceEditor));
+  Buffer := Ota.ReadEditorTextToString(Ota.GetEditReaderForSourceEditor(SourceEditor));
   IdeString := ConvertToIDEEditorString(Buffer);
   Position := CharIndexToUTF8Pos(IdeString, Position);
 {$ENDIF}
   IdeString :=  ConvertToIDEEditorString(Text);
-  EditWriter := GxOtaGetEditWriterForSourceEditor(SourceEditor);
+  EditWriter := GetEditWriterForSourceEditor(SourceEditor);
   EditWriter.CopyTo(Position);
   EditWriter.Insert(PAnsiChar(IdeString));
 end;
 
 procedure GxOtaGotoPosition(Position: Longint; EditView: IOTAEditView; Middle: Boolean);
+begin
+  Ota.GotoPosition(Position, EditView, Middle);
+end;
+
+class procedure Ota.GotoPosition(Position: Longint; EditView: IOTAEditView; Middle: Boolean);
 var
   CurPos: TOTAEditPos;
   CharPos: TOTACharPos;
@@ -5266,13 +5730,18 @@ begin
     EditView := GxOtaGetTopMostEditView;
   Assert(Assigned(EditView));
 
-  CharPos := GxOtaGetCharPosFromPos(Position, EditView);
+  CharPos := GetCharPosFromPos(Position, EditView);
   CurPos.Col := CharPos.CharIndex + 1;
   CurPos.Line := CharPos.Line;
-  GxOtaGotoEditPos(CurPos, EditView, Middle);
+  GotoEditPos(CurPos, EditView, Middle);
 end;
 
 function GxOtaTryGotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView; Middle: Boolean): Boolean;
+begin
+  Result := Ota.TryGotoEditPos(EditPos, EditView, Middle);
+end;
+
+class function Ota.TryGotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView; Middle: Boolean): Boolean;
 var
   TopRow: TOTAEditPos;
 begin
@@ -5299,11 +5768,21 @@ end;
 
 procedure GxOtaGotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView; Middle: Boolean);
 begin
-  if not GxOtaTryGotoEditPos(EditPos, EditView, Middle) then
+  Ota.GotoEditPos(EditPos, EditView, Middle);
+end;
+
+class procedure Ota.GotoEditPos(EditPos: TOTAEditPos; EditView: IOTAEditView; Middle: Boolean);
+begin
+  if not TryGotoEditPos(EditPos, EditView, Middle) then
     raise Exception.Create('Not EditView available');
 end;
 
 function GxOtaGetCharPosFromPos(Position: Longint; EditView: IOTAEditView): TOTACharPos;
+begin
+  Result := Ota.GetCharPosFromPos(Position, EditView);
+end;
+
+class function Ota.GetCharPosFromPos(Position: Longint; EditView: IOTAEditView): TOTACharPos;
 var
   EditWriter : IOTAEditWriter;
 begin
@@ -5315,6 +5794,11 @@ begin
 end;
 
 function GxOtaTryGetCurrentEditPos(out _EditPos: TOTAEditPos): Boolean;
+begin
+  Result := Ota.TryGetCurrentEditPos(_EditPos);
+end;
+
+class function Ota.TryGetCurrentEditPos(out _EditPos: TOTAEditPos): Boolean;
 var
   View: IOTAEditView;
 begin
@@ -5324,6 +5808,11 @@ begin
 end;
 
 function GxOtaGetCurrentEditPos(EditView: IOTAEditView): TOTAEditPos;
+begin
+  Result := Ota.GetCurrentEditPos(EditView);
+end;
+
+class function Ota.GetCurrentEditPos(EditView: IOTAEditView): TOTAEditPos;
 begin
   Result.Col := -1;
   Result.Line := -1;
@@ -5335,13 +5824,18 @@ begin
 end;
 
 function GxOtaGetCurrentEditBufferPos(EditView: IOTAEditView = nil): Integer;
+begin
+  Result := Ota.GetCurrentEditBufferPos(EditView);
+end;
+
+class function Ota.GetCurrentEditBufferPos(EditView: IOTAEditView): Integer;
 var
   EditPos: TOTAEditPos;
   CharPos: TOTACharPos;
 begin
   if EditView = nil then
     EditView := GxOtaGetTopMostEditView;
-  EditPos := GxOtaGetCurrentEditPos(EditView);
+  EditPos := GetCurrentEditPos(EditView);
   EditView.ConvertPos(True, EditPos, CharPos);
   Result := EditView.CharPosToPos(CharPos);
 end;
@@ -5350,7 +5844,7 @@ procedure GxOtaDeleteByteFromPos(StartIndex, Count: Longint; SourceEditor: IOTAS
 var
   EditWriter: IOTAEditWriter;
 begin
-  EditWriter := GxOtaGetEditWriterForSourceEditor(SourceEditor);
+  EditWriter := Ota.GetEditWriterForSourceEditor(SourceEditor);
   EditWriter.CopyTo(StartIndex);
   EditWriter.DeleteTo(StartIndex + Count);
 end;
@@ -5367,12 +5861,12 @@ begin
   // "StartPos" is a character position in a (possibly unicode) string
   // the EditWriter needs a byte position in a UTF-8 string (for Delphi >=8)
   // or in an ansistring (for Delphi <8)
-  Buffer := GxOtaReadEditorTextToString(GxOtaGetEditReaderForSourceEditor(SourceEditor));
+  Buffer := Ota.ReadEditorTextToString(Ota.GetEditReaderForSourceEditor(SourceEditor));
   IdeString := ConvertToIDEEditorString(Buffer);
   StartPos := CharIndexToUTF8Pos(IdeString, StartPos);
 {$ENDIF}
 
-  EditWriter := GxOtaGetEditWriterForSourceEditor(SourceEditor);
+  EditWriter := Ota.GetEditWriterForSourceEditor(SourceEditor);
   EditWriter.CopyTo(StartPos);
   EditWriter.DeleteTo(StartPos + Count);
 end;
@@ -5545,7 +6039,7 @@ begin
   //TODO: Check stream format for forms as text (Ansi with escaped unicode, or UTF-8) in Delphi 2007/2009
   MemStream := TMemoryStream.Create;
   try
-    GxOtaSaveReaderToStream(SourceEditor.CreateReader, MemStream, False);
+    Ota.SaveReaderToStream(SourceEditor.CreateReader, MemStream, False);
     MemStream.Position := 0;
     {$IFDEF UNICODE}
     Data.LoadFromStream(MemStream, TEncoding.UTF8);
@@ -5578,7 +6072,7 @@ begin
   RootComponent := FormEditor.GetRootComponent;
   if RootComponent <> nil then
   begin
-    Component := GxOtaGetNativeComponent(RootComponent);
+    Component := Ota.GetNativeComponent(RootComponent);
     if Component <> nil then
     begin
       TextStream := nil;
@@ -5675,12 +6169,12 @@ begin
     // Convert Position from character postion in the unicode/ansi string to
     // character position in UTF-8 encoded buffer.
     // todo: This should really be a function as well as the reverse.
-    if GxOtaGetActiveEditorTextAsString(Buffer, False) then begin
+    if Ota.GetActiveEditorTextAsString(Buffer, False) then begin
       IdeString := ConvertToIDEEditorString(Buffer);
       Position := CharIndexToUTF8Pos(IdeString, Position);
     end;
 {$ENDIF}
-    CharPos := GxOtaGetCharPosFromPos(Position - 1, EditView);
+    CharPos := Ota.GetCharPosFromPos(Position - 1, EditView);
     EditView.ConvertPos(False, EditPos, CharPos);
     EditView.CursorPos := EditPos;
     EditView.MoveViewToCursor;
@@ -6166,7 +6660,7 @@ var
   LService: IOTAIDEThemingServices;
 begin
   Result := False;
-  LService := GxOtaGetIDEThemingServices;
+  LService := Ota.GetIDEThemingServices;
   if Assigned(LService) and (LService.IDEThemingEnabled) then
   begin
     FNotifierIndex := LService.AddNotifier(Self);
@@ -6183,7 +6677,7 @@ begin
     Exit;
   SavedIndex := FNotifierIndex;
   FNotifierIndex := InvalidNotifierIndex;
-  GxOtaGetIDEThemingServices.RemoveNotifier(SavedIndex);
+  Ota.GetIDEThemingServices.RemoveNotifier(SavedIndex);
   Result := True;
 end;
 
