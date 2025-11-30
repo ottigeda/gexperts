@@ -1078,7 +1078,9 @@ begin
   if Assigned(_PageControl) and Ota.ThemingEnabled then
   begin
     _PageControl.Style := tsButtons;
+{$IF Declared(TStyleElements)}
     _PageControl.StyleElements := [seFont, seClient];
+{$IFEND}
   end;
 end;
 

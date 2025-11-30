@@ -108,9 +108,10 @@ type
     ///<summary>
     /// Save an edit reader to a stream </summary>
     class procedure SaveReaderToStream(EditReader: IOTAEditReader; Stream: TStream; TrailingNull: Boolean = True);
+    class function ReadEditorTextToString(EditReader: IOTAEditReader; LineStartPos: Integer; LineLength: Integer): string; overload;
     ///<summary>
     /// @returns the text of an edit reader </summary>
-    class function ReadEditorTextToString(EditReader: IOTAEditReader): string;
+    class function ReadEditorTextToString(EditReader: IOTAEditReader): string; overload;
 
     ///<summary>
     /// If UseSelection is True, get the selected text in the current edit view
@@ -5455,7 +5456,7 @@ begin
   end;
 end;
 
-function ReadEditorTextToString(EditReader: IOTAEditReader; LineStartPos: Integer; LineLength: Integer): string;
+class function Ota.ReadEditorTextToString(EditReader: IOTAEditReader; LineStartPos: Integer; LineLength: Integer): string;
 var
   AString: IDEEditBufferString;
 begin
