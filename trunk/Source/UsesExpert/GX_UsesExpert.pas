@@ -62,7 +62,6 @@ type
 {$IF declared(TStopwatch)}
     FIdentifierTabTimer: TStopwatch;
 {$IFEND}
-    procedure InternalExecute;
     function FindAction(out _Action: TBasicAction): Boolean;
     procedure HandleFileNotification(_Sender: TObject; _NotifyCode: TOTAFileNotification; const _FileName: string;
       var _Cancel: Boolean);
@@ -497,8 +496,30 @@ begin
 end;
 
 procedure TUsesClauseMgrExpert.Execute(Sender: TObject);
+var
+  frm: TfmUsesManager;
 begin
-  InternalExecute;
+{$IF declared(TStopwatch)}
+  FIdentifierTabTimer := TStopwatch_StartNew;
+{$IFEND}
+  AssertIsDprOrPasOrInc(GxOtaGetCurrentSourceFile);
+
+  frm := TfmUsesManager.Create(Application, Self);
+  try
+    if (FAvailTabIndex >= 0) and (FAvailTabIndex < frm.pcUnits.PageCount) then begin
+      frm.pcUnits.ActivePageIndex := FAvailTabIndex;
+      frm.pcUnits.Change;
+    end;
+
+    if frm.ShowModal = mrOk then
+    begin
+      FAvailTabIndex := frm.pcUnits.ActivePageIndex;
+
+      IncCallCount;
+    end;
+  finally
+    FreeAndNil(frm);
+  end;
 end;
 
 function TUsesClauseMgrExpert.GetDefaultShortCut: TShortCut;
@@ -839,33 +860,6 @@ begin
         FOrigFileAddUnitExecute := nil;
       end;
     end;
-  end;
-end;
-
-procedure TUsesClauseMgrExpert.InternalExecute;
-var
-  frm: TfmUsesManager;
-begin
-{$IF declared(TStopwatch)}
-  FIdentifierTabTimer := TStopwatch_StartNew;
-{$IFEND}
-  AssertIsDprOrPasOrInc(GxOtaGetCurrentSourceFile);
-
-  frm := TfmUsesManager.Create(Application, Self);
-  try
-    if (FAvailTabIndex >= 0) and (FAvailTabIndex < frm.pcUnits.PageCount) then begin
-      frm.pcUnits.ActivePageIndex := FAvailTabIndex;
-      frm.pcUnits.Change;
-    end;
-
-    if frm.ShowModal = mrOk then
-    begin
-      FAvailTabIndex := frm.pcUnits.ActivePageIndex;
-
-      IncCallCount;
-    end;
-  finally
-    FreeAndNil(frm);
   end;
 end;
 
