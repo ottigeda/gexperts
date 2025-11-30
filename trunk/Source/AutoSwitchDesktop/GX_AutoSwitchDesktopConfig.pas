@@ -27,15 +27,16 @@ type
     procedure GetData(var _FormDesktop, _CodeDesktop: string);
   public
     class function Execute(_Owner: TWinControl; var _FormDesktop, _CodeDesktop: string): Boolean;
+    constructor Create(_Owner: TComponent); override;
   end;
 
 implementation
 
+{$R *.dfm}
+
 uses
   u_dzVclUtils,
   GX_IdeUtils;
-
-{$R *.dfm}
 
 { Tf_SwitchDestkopConfig }
 
@@ -53,6 +54,13 @@ begin
   finally
     FreeAndNil(frm);
   end;
+end;
+
+constructor Tf_AutoSwitchDestkopConfig.Create(_Owner: TComponent);
+begin
+  inherited;
+  TControl_SetMinConstraints(Self);
+  InitDpiScaler;
 end;
 
 procedure Tf_AutoSwitchDestkopConfig.GetData(var _FormDesktop, _CodeDesktop: string);
