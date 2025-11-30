@@ -602,7 +602,7 @@ function GetUserLocalApplicationDataFolder: string;
 
 ///<summary>
 /// Find the given file in the list of directories.
-///  @returns true, if the file has been found </sumary>
+///  @returns true, if the file has been found </summary>
 function FindFileInSearchPath(const _fn: string; _SearchPath: TStrings; out _FullFn: string): Boolean;
 
 // See if the current OS is Windows

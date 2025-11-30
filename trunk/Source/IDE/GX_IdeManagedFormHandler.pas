@@ -70,7 +70,7 @@ type
     /// @returns the registered handler count </summary>
     class function Count: Integer;
     ///<summary>
-    /// @returns the Idxth registered handler </sumary>
+    /// @returns the Idxth registered handler </summary>
     class function GetHandler(_Idx: Integer): TManagedFormHandler;
     ///<summary>
     /// Adds all TManagedFormHandlers for the given Form to the list </summary>

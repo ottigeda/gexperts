@@ -35,15 +35,15 @@ type
     // theses settings are "traditionally" stored differently.
     procedure SaveActiveAndShortCut(Settings: TGExpertsSettings); virtual;
   public
-    ///<sumary>
+    ///<summary>
     /// @returns the internal name of expert for expert identification
     ///          defaults to ClassName </summary>
     class function GetName: string; virtual;
-    ///<sumary>
+    ///<summary>
     /// @returns the Subkey used to store configuration details in the registry
     ///          defaults to GetName </summary>
     class function ConfigurationKey: string; virtual;
-    ///<sumary>
+    ///<summary>
     /// @returns the file name of an icon associated with
     /// the expert. Do not specify a path.
     /// This bitmap must be included in the
@@ -91,9 +91,9 @@ type
     // the action caption (GetActionCaption) but is the default
     // for that as well.
     function GetDisplayName: string; virtual;
-    // Describes the purpose of the expert. Displayed
-    // as hint if the user points the mouse on the expert's icon
-    // in the configuration dialog.
+    ///<summary>
+    /// Describes the purpose of the expert. Displayed as hint if the user
+    /// points the mouse on the expert's icon in the configuration dialog. </summary>
     function GetHelpString: string; virtual;
     // Returns 0, meaning: No default shortcut
     function GetDefaultShortCut: TShortCut; virtual;
