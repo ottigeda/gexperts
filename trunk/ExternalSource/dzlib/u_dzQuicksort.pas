@@ -22,7 +22,7 @@ type
   end;
 
 type
-  ///<sumary>
+  ///<summary>
   /// Method pointer for passing to BinarySearch
   /// @param Key is the key to compare to as an untyped const parameter
   /// @param Index is the index of te item in the list to compare this key to.
@@ -31,7 +31,7 @@ type
   ///          -1 if Key < Item[Idx].Key</summary>
   TCompareToItemMeth1 = function(const _Key; _Idx: Integer): Integer of object;
 
-  ///<sumary>
+  ///<summary>
   /// Method pointer for passing to BinarySearch
   /// @param Key is a pointer to the key to compare to
   /// @param Index is the index of te item in the list to compare this key to.

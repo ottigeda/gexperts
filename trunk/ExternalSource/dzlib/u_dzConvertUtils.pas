@@ -364,7 +364,7 @@ function FileSizeToHumanReadableString(_FileSize: Int64): string;
 
 {$IFDEF SUPPORTS_ENHANCED_RECORDS}
 type
-  ///<sumary>
+  ///<summary>
   /// Conversion functions for SI units </summary>
   TSiUnit = record
   public
