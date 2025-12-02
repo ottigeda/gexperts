@@ -595,6 +595,13 @@ object fmConfiguration: TfmConfiguration
       object tshDebug: TTabSheet
         Caption = 'Debug'
         ImageIndex = 6
+        object l_IdeDesktops: TLabel
+          Left = 352
+          Top = 20
+          Width = 279
+          Height = 14
+          Caption = 'Ide Desktops (double click to select) (testing only)'
+        end
         object chkEditorKeyTracing: TCheckBox
           Left = 16
           Top = 16
@@ -745,6 +752,15 @@ object fmConfiguration: TfmConfiguration
           Caption = 'Edit View'
           TabOrder = 2
           OnClick = btnEditViewClick
+        end
+        object lb_Desktops: TListBox
+          Left = 352
+          Top = 40
+          Width = 233
+          Height = 193
+          ItemHeight = 14
+          TabOrder = 8
+          OnDblClick = lb_DesktopsDblClick
         end
       end
     end

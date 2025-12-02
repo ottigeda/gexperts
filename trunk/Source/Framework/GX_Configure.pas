@@ -41,6 +41,8 @@ type
     btnEumerateActions: TButton;
     btnGetFonts: TButton;
     btnAppBuilder: TButton;
+    l_IdeDesktops: TLabel;
+    lb_Desktops: TListBox;
     gbxIDEForms: TGroupBox;
     chkEnhanceDialogs: TCheckBox;
     gbxFonts: TGroupBox;
@@ -109,6 +111,7 @@ type
     chkProgressTransparency: TCheckBox;
     procedure btnEnumerateModulesClick(Sender: TObject);
     procedure chkEditorKeyTracingClick(Sender: TObject);
+    procedure lb_DesktopsDblClick(Sender: TObject);
     procedure sbVCLDirClick(Sender: TObject);
     procedure sbConfigDirClick(Sender: TObject);
     procedure bCachingPathClick(Sender: TObject);
@@ -159,6 +162,7 @@ type
     procedure UpdateIdeDialogCheckboxes;
     procedure SaveAllSettings;
     procedure edCachingPathDropFiles(_Sender: TObject; _Files: TStrings);
+    procedure InitDesktopList;
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeGeneralTab;
   protected
@@ -282,7 +286,7 @@ begin
   chkMoveComponentMenu.Checked := ConfigInfo.MoveComponentMenu;
 
   // debug option:
-  chkEditorKeyTracing.Checked := GxOtaGetEditorKeyTracingEnabled;
+  chkEditorKeyTracing.Checked := Ota.GetEditorKeyTracingEnabled;
 
   HideUnsupportedIdeItems;
 
@@ -304,7 +308,33 @@ begin
   end;
   btnUsage.Caption := Format('Usage (%d) ...', [UsageCount]);
 
+  InitDesktopList;
+
   InitDpiScaler;
+end;
+
+procedure TfmConfiguration.InitDesktopList;
+var
+  sl: TStrings;
+begin
+  sl := GetViewDesktopEntries;
+  if Assigned(sl) then begin
+    lb_Desktops.Items.Assign(sl);
+    FreeAndNil(sl);
+  end;
+end;
+
+procedure TfmConfiguration.lb_DesktopsDblClick(Sender: TObject);
+var
+  Idx: Integer;
+  mi: TMenuItem;
+begin
+  Idx := lb_Desktops.ItemIndex;
+  if Idx >= 0 then begin
+    mi := TMenuItem(lb_Desktops.Items.Objects[Idx]);
+    if Assigned(mi) then
+      mi.Click;
+  end;
 end;
 
 destructor TfmConfiguration.Destroy;
@@ -492,7 +522,7 @@ end;
 
 procedure TfmConfiguration.chkEditorKeyTracingClick(Sender: TObject);
 begin
-  GxOtaSetEditorKeyTracingEnabled(chkEditorKeyTracing.Checked);
+  Ota.SetEditorKeyTracingEnabled(chkEditorKeyTracing.Checked);
 end;
 
 procedure TfmConfiguration.LoadIdeEnhancements;
