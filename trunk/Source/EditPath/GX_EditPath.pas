@@ -469,7 +469,7 @@ begin
     mi := TPopupMenu_AppendMenuItem(pm_Favorites, FavName, FavoritesPmHandleFavoriteClick);
     mi.Tag := i + 1;
   end;
-  TPopupMenu_AppendMenuItem(pm_Favorites, '-', nil);
+  TPopupMenu_AppendMenuItem(pm_Favorites, '-', TNotifyEvent(NilEvent));
   TPopupMenu_AppendMenuItem(pm_Favorites, 'Configure ...', FavoritesPmConfigureClick);
 end;
 
