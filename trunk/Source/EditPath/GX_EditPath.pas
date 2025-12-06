@@ -27,6 +27,7 @@ uses
   Menus,
   GX_BaseForm,
   GX_GxUtils,
+  GX_SynEditUtils,
   GX_Splitter,
   GX_SharedImages,
   GX_EditPathConfig,
@@ -124,28 +125,20 @@ type
     FConfigs: TObjectList;
     FMemo: TSynMemo;
     FActiveItem: TConfigEntry;
-    FProjectDir: string;
     FFavorites: TStringList;
     procedure SetData(const _Path, _InheritedPath: string);
     procedure GetData(out _Path: string);
     procedure HandleDropFiles(_Sender: TObject; _Files: TStrings);
     procedure HandleTargetChange(_NewCfg: TConfigEntry);
     procedure MemoKeyDown(_Sender: TObject; var _Key: Word; _Shift: TShiftState);
-    function doMakeRelative(const _s: string): string;
-    procedure ProcessSelectedMemoLines(_ProcessMethod: TLineProcessMethod);
-    procedure ProcessAllMemoLines(_ProcessMethod: TLineProcessMethod);
-    function doMakeAbsolute(const _s: string): string;
-    function doAddDots(const _s: string): string;
-    function doDelDots(const _s: string): string;
     procedure InitFavoritesMenu;
     procedure FavoritesPmConfigureClick(_Sender: TObject);
     procedure FavoritesPmHandleFavoriteClick(_Sender: TObject);
     procedure FavoritesEditEntry(_Sender: TWinControl; var _Name, _Value: string; var _OK: Boolean);
-    procedure FavoritesCallHelpContext(_Sender:TObject);
-    procedure FavoritesEditCallHelpContext(_Sender:TObject);
+    procedure FavoritesCallHelpContext(_Sender: TObject);
+    procedure FavoritesEditCallHelpContext(_Sender: TObject);
     procedure GetSelectedLines(out _StartIdx, _EndIdx: Integer);
     class function TryGetProjectConfigurations(_Configs: TObjectList; out _ActiveIndex: Integer): Boolean;
-    procedure UpdateScrollbars(ME:TSynMemo);
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
@@ -261,7 +254,7 @@ begin
     if DirectoryExists(fn) then
       Lines.Add(fn);
   end;
-  UpdateScrollbars(FMemo);
+  TSynMemo_UpdateScrollbars(FMemo);
 end;
 
 procedure Tf_EditPath.SelectConfig(const _Platform, _Config: string);
@@ -453,37 +446,15 @@ begin
   TListBox_SetItemIndex(lb_Target, lb_Target.ItemIndex - 1, True);
 end;
 
-procedure Tf_EditPath.ProcessAllMemoLines(_ProcessMethod: TLineProcessMethod);
-var
-  i: Integer;
-begin
-  FMemo.BeginUpdate;
-  try
-    for i := 0 to FMemo.Lines.Count - 1 do begin
-      FMemo.Lines[i] := _ProcessMethod(FMemo.Lines[i]);
-    end;
-  finally
-    FMemo.EndUpdate;
-  end;
-
-  UpdateScrollbars(FMemo);
-end;
-
-function Tf_EditPath.doMakeAbsolute(const _s: string): string;
-begin
-  if (_s <> '') and not StartsText('$(BDS)\', _s) then begin
-    Result := TFileSystem.ExpandFileNameRelBaseDir(_s, FProjectDir);
-  end else
-    Result := _s;
-end;
-
 procedure Tf_EditPath.b_FavoritesClick(Sender: TObject);
 var
   pnt: TPoint;
 begin
-  pnt := b_Favorites.ClientToScreen(Point(0, b_Favorites.Height));
-  if pm_Favorites.Items.Count>1 then pm_Favorites.Popup(pnt.X, pnt.Y)
-                                else FavoritesPmConfigureClick(Sender);
+  if pm_Favorites.Items.Count > 1 then begin
+    pnt := b_Favorites.ClientToScreen(Point(0, b_Favorites.Height));
+    pm_Favorites.Popup(pnt.X, pnt.Y);
+  end else
+    FavoritesPmConfigureClick(Sender);
 end;
 
 procedure Tf_EditPath.InitFavoritesMenu;
@@ -498,40 +469,18 @@ begin
     mi := TPopupMenu_AppendMenuItem(pm_Favorites, FavName, FavoritesPmHandleFavoriteClick);
     mi.Tag := i + 1;
   end;
-  TPopupMenu_AppendMenuItem(pm_Favorites, '-',             FavoritesPmConfigureClick);
+  TPopupMenu_AppendMenuItem(pm_Favorites, '-', nil);
   TPopupMenu_AppendMenuItem(pm_Favorites, 'Configure ...', FavoritesPmConfigureClick);
 end;
 
 procedure Tf_EditPath.act_MakeAbsoluteExecute(Sender: TObject);
-var
-  ProjectFile: string;
 begin
-  ProjectFile := GxOtaGetCurrentProjectFileName(True);
-  if ProjectFile = '' then
-    Exit; //==>
-
-  FProjectDir := ExtractFilePath(ProjectFile);
-  ProcessAllMemoLines(doMakeAbsolute);
-end;
-
-function Tf_EditPath.doMakeRelative(const _s: string): string;
-begin
-  if (_s <> '') and not StartsText('$(BDS)\', _s) then begin
-    Result := ExtractRelativePath(AddSlash(FProjectDir), _s);
-  end else
-    Result := _s;
+  TSynMemoUtilMakePathsAbsolute.ProcessAllLines(FMemo);
 end;
 
 procedure Tf_EditPath.act_MakeRelativeExecute(Sender: TObject);
-var
-  ProjectFile: string;
 begin
-  ProjectFile := GxOtaGetCurrentProjectFileName(True);
-  if ProjectFile = '' then
-    Exit; //==>
-
-  FProjectDir := ExtractFilePath(ProjectFile);
-  ProcessAllMemoLines(doMakeRelative);
+  TSynMemoUtilMakePathsRelative.ProcessAllLines(FMemo);
 end;
 
 procedure Tf_EditPath.GetSelectedLines(out _StartIdx, _EndIdx: Integer);
@@ -544,64 +493,14 @@ begin
     _EndIdx := _StartIdx;
 end;
 
-procedure Tf_EditPath.ProcessSelectedMemoLines(_ProcessMethod: TLineProcessMethod);
-var
-  i: Integer;
-  sl: TStringList;
-  StartIdx: Integer;
-  EndIdx: Integer;
-  SelStart: Integer;
-  Line: string;
-  SelEnd: Integer;
-begin
-  if FMemo.Lines.Count = 0 then
-    Exit; //==>
-
-  GetSelectedLines(StartIdx, EndIdx);
-  sl := TStringList.Create;
-  try
-    sl.Assign(FMemo.Lines);
-    for i := StartIdx to EndIdx do begin
-      sl[i] := _ProcessMethod(sl[i]);
-    end;
-    FMemo.Text := sl.Text;
-
-    SelStart := FMemo.RowColToCharIndex(BufferCoord(1, StartIdx + 1));
-    if EndIdx + 1 = FMemo.Lines.Count then begin
-      Line := FMemo.Lines[EndIdx];
-      SelEnd := FMemo.RowColToCharIndex(BufferCoord(Length(Line) + 1, EndIdx + 1));
-    end else
-      SelEnd := FMemo.RowColToCharIndex(BufferCoord(1, EndIdx + 2));
-    FMemo.SelStart := SelStart;
-    FMemo.SelEnd := SelEnd;
-  finally
-    FreeAndNil(sl);
-  end;
-
-  UpdateScrollbars(FMemo);
-end;
-
-function Tf_EditPath.doAddDots(const _s: string): string;
-begin
-  Result := '..\' + _s;
-end;
-
 procedure Tf_EditPath.act_PrependDotsExecute(Sender: TObject);
 begin
-  ProcessSelectedMemoLines(doAddDots);
-end;
-
-function Tf_EditPath.doDelDots(const _s: string): string;
-begin
-  if LeftStr(_s, 3) = '..\' then begin
-    Result := Copy(_s, 4);
-  end else
-    Result := _s;
+  TSynMemoUtilPrependDots.ProcessSelectedLines(FMemo);
 end;
 
 procedure Tf_EditPath.act_RemoveDotsExecute(Sender: TObject);
 begin
-  ProcessSelectedMemoLines(doDelDots);
+  TSynMemoUtilRemoveDots.ProcessSelectedLines(FMemo);
 end;
 
 procedure Tf_EditPath.act_OKExecute(Sender: TObject);
@@ -771,7 +670,7 @@ begin
     end;
   end else begin
     // todo: Instead of raising an exception, we should build a list of default
-    //       configurations. It's really annoying that can't call the configuration
+    //       configurations. It is really annoying that we cannot call the configuration
     //       dialog for this expert if no project is available.
     raise Exception.Create('no project available');
   end;
@@ -883,12 +782,6 @@ begin
   GXContextHelp(Self, 73);
 end;
 
-procedure Tf_EditPath.UpdateScrollbars(ME:TSynMemo);
-begin
- ME.Scrollbars:=ssNone;
- ME.Scrollbars:=ssBoth;
-end;
-
 { TEditPathExpert }
 
 procedure TEditPathExpert.Configure(_Owner: TWinControl);
@@ -980,18 +873,19 @@ begin
 end;
 
 procedure Tf_EditPath.FormResize(Sender: TObject);
-const      TargetMinWidth   = 140;
-        InheritedMinWidth   = 381;
-       p_ClientTopMinHeight = 180;
-      lb_InheritedMinHeight = 200;
+const
+  TargetMinWidth = 140;
+  InheritedMinWidth = 381;
+  p_ClientTopMinHeight = 180;
+  lb_InheritedMinHeight = 200;
 begin
   inherited;
   if Assigned(FScaler) then begin
-    spVer.MinSize:=FScaler.Calc(TargetMinWidth);
-    spVer.MaxSize:=Self.ClientWidth-spVer.Width-FScaler.Calc(InheritedMinWidth);
+    spVer.MinSize := FScaler.Calc(TargetMinWidth);
+    spVer.MaxSize := Self.ClientWidth - spVer.Width - FScaler.Calc(InheritedMinWidth);
 
-    spHor.MinSize:=FScaler.Calc(p_ClientTopMinHeight);
-    spHor.MaxSize:=Self.ClientHeight-spHor.Height-p_InheritedCaption.Height-FScaler.Calc(lb_InheritedMinHeight)-p_BottomButtons.Height;
+    spHor.MinSize := FScaler.Calc(p_ClientTopMinHeight);
+    spHor.MaxSize := Self.ClientHeight - spHor.Height - p_InheritedCaption.Height - FScaler.Calc(lb_InheritedMinHeight) - p_BottomButtons.Height;
   end;
 end;
 
@@ -1005,7 +899,8 @@ procedure Tf_EditPath.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   inherited;
-  if Key=vk_F1 then b_HelpClick(nil);
+  if Key = vk_F1 then
+    b_HelpClick(nil);
 end;
 
 initialization
