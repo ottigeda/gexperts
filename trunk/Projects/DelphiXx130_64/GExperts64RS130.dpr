@@ -9,6 +9,8 @@ uses
   GX_AddDockWindow in '..\..\Source\AddDockWindow\GX_AddDockWindow.pas' {fmGxDockForm},
   GX_AsciiChart in '..\..\source\AsciiChart\GX_AsciiChart.pas' {fmAsciiChart},
   GX_AutoTodoDone in '..\..\Source\AutoTodo\GX_AutoTodoDone.pas' {fmAutoTodoDone},
+  GX_AutoSwitchDesktop in '..\..\Source\AutoSwitchDesktop\GX_AutoSwitchDesktop.pas',
+  GX_AutoSwitchDesktopConfig in '..\..\Source\AutoSwitchDesktop\GX_AutoSwitchDesktopConfig.pas' {f_AutoSwitchDestkopConfig},
   GX_Backup in '..\..\source\BackupProject\GX_Backup.pas' {fmBackup},
   GX_BackupConfig in '..\..\source\BackupProject\GX_BackupConfig.pas' {fmBackupConfig},
   GX_BackupNotFound in '..\..\Source\BackupProject\GX_BackupNotFound.pas' {fmBackupNotFound},
