@@ -27,7 +27,7 @@ uses
   Menus,
   GX_BaseForm,
   GX_GxUtils,
-  GX_SynEditUtils,
+  GX_SynMemoUtils,
   GX_Splitter,
   GX_SharedImages,
   GX_EditPathConfig,

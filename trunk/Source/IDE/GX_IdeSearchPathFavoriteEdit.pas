@@ -8,19 +8,18 @@ uses
   Windows,
   Messages,
   SysUtils,
-  Variants,
   Classes,
   Graphics,
   Controls,
   Forms,
   Dialogs,
+  Menus,
+  ActnList,
+  Actions,
   StdCtrls,
   ExtCtrls,
-  GX_BaseForm,
-  System.Actions,
-  Vcl.ActnList,
   SynMemo,
-  Vcl.Menus;
+  GX_BaseForm;
 
 type
   Tf_IdeSearchPathFavoriteEdit = class(TfmBaseForm)
@@ -83,11 +82,11 @@ implementation
 
 uses
   u_dzVclUtils,
+  SynEdit,
   GX_GenericUtils,
   GX_OtaUtils,
   GX_EnhancedEditor,
-  SynEdit,
-  GX_SynEditUtils;
+  GX_SynMemoUtils;
 
 { Tf_IdeSearchPathFavoriteEdit }
 
@@ -117,7 +116,8 @@ begin
   FMemo.Align := alClient;
   FMemo.HideSelection := False;
   FMemo.WordWrap := False;
-  FMemo.Lines.Delimiter := ';';
+  TSynMemo_SetDelimiter(FMemo);
+
 {$IFDEF GX_SUPPORTS_THEMING}
   FMemo.StyleElements := [];
   FMemo.ParentColor := False;
@@ -145,13 +145,14 @@ end;
 procedure Tf_IdeSearchPathFavoriteEdit.GetData(out _Name, _Path: string);
 begin
   _Name := ed_Name.Text;
-  _Path := AnsiDequotedStr(FMemo.Lines.DelimitedText, '"');
+  _Path := TSynMemo_GetDelimitedText(FMemo);
+  _Path := AnsiDequotedStr(_Path, '"');
 end;
 
 procedure Tf_IdeSearchPathFavoriteEdit.SetData(const _Name, _Path: string; _OnCallHelpContext: TNotifyEvent = nil);
 begin
   ed_Name.Text := _Name;
-  FMemo.Lines.DelimitedText := AnsiDequotedStr(_Path, '"');
+  TSynMemo_SetDelimitedText(FMemo, AnsiDequotedStr(_Path, '"'));
   FOnCallHelpContext := _OnCallHelpContext;
 
   b_Help.Visible := Assigned(_OnCallHelpContext);

@@ -27,10 +27,12 @@ type
   PGXUnicodeChar = PChar;
   TGXUnicodeString = string;
   TGXUnicodeStringList = TGXStringList;
+  TGXUnicodeStrings = TStrings;
 {$ELSE ~UNICODE}
   TGXUnicodeChar = WideChar;
   PGXUnicodeChar = PWideChar;
   TGXUnicodeString = WideString;
+  TGXUnicodeStrings = TUnicodeStrings;
   TGXUnicodeStringList = class(TUnicodeStringList)
     // SynEdit TUnicodeStringList in D2007 and lower
     procedure SortLogical;
