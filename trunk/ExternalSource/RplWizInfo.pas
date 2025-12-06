@@ -339,7 +339,7 @@ var
   Comp: TPersistent;
   PropInfo: PPropInfo;
 begin
-  Comp := GxOtaGetNativePersistent(CompIntf);
+  Comp := Ota.GetNativePersistent(CompIntf);
   Assert(Assigned(Comp));
   PropInfo := GetPropInfo(Comp, Name);
   // If the property is read only, we should not try to set it
@@ -398,7 +398,7 @@ var
   PropInfo: PPropInfo;
 begin
   inherited Create;
-  Comp := TExposePersistent(GxOtaGetNativePersistent(CompIntf));
+  Comp := TExposePersistent(Ota.GetNativePersistent(CompIntf));
   Assert(Assigned(Comp));
   FController := Controller;
   FLeft := -1;
@@ -721,7 +721,7 @@ var
 begin
   Result := False;
   try
-    DestPropOwner := GxOtaGetNativeComponent(NewCompIntf);
+    DestPropOwner := Ota.GetNativeComponent(NewCompIntf);
     if (DestParentObject = nil) or (DestParentInfo = nil) then
       Exit;
 
@@ -909,7 +909,7 @@ var
 begin
   PropTail := PropExpression;
   PropName := ExtractToken(PropTail, '.');
-  PersObject := GxOtaGetNativePersistent(CompIntf);
+  PersObject := Ota.GetNativePersistent(CompIntf);
   VParentPropInfo := nil;
   ParentObj := nil;
   Obj := nil;
@@ -962,7 +962,7 @@ var
   Comp: TExposePersistent;
 begin
   try
-    Comp := TExposePersistent(GxOtaGetNativePersistent(CompIntf));
+    Comp := TExposePersistent(Ota.GetNativePersistent(CompIntf));
     Stream.Position := 0;
     Reader := TReader.Create(Stream, BufferSize);
     try
@@ -985,7 +985,7 @@ var
 begin
   if FLeft <> -1 then
   begin
-    NewComp := GxOtaGetNativeComponent(ADestComponent);
+    NewComp := Ota.GetNativeComponent(ADestComponent);
     if Assigned(NewComp) then
       NewComp.DesignInfo := MakeLong(FLeft, FTop);
   end;
@@ -1214,11 +1214,11 @@ var
   OldObject, NewObject: TObject;
   OldParentObject, NewParentObject: TObject;
 begin
-  OldObject := GxOtaGetNativePersistent(ComponentInterface);
-  OldParentObject := GxOtaGetNativePersistent(AParent.ComponentInterface);
+  OldObject := Ota.GetNativePersistent(ComponentInterface);
+  OldParentObject := Ota.GetNativePersistent(AParent.ComponentInterface);
 
-  NewObject := GxOtaGetNativePersistent(AComponent);
-  NewParentObject := GxOtaGetNativePersistent(AParent.LatestComponentInterface);
+  NewObject := Ota.GetNativePersistent(AComponent);
+  NewParentObject := Ota.GetNativePersistent(AParent.LatestComponentInterface);
 
   if (OldObject is TComponent)
      and (TFriendComponent(OldObject).GetParentComponent = OldParentObject)
@@ -1247,7 +1247,7 @@ procedure TCompInfo.UpdateName;
 var
   Comp: TComponent;
 begin
-  Comp := GxOtaGetNativeComponent(ComponentInterface);
+  Comp := Ota.GetNativeComponent(ComponentInterface);
   if Assigned(Comp) then
     Comp.Name := FOldName;
 end;
@@ -1263,7 +1263,7 @@ end;
   which are unique among all existing components. }
 function TCompInfo.FindComponent(CompIntf: IOTAComponent): TCompInfo;
 begin
-  if GxOtaComponentsAreEqual(CompIntf, ComponentInterface) then
+  if Ota.ComponentsAreEqual(CompIntf, ComponentInterface) then
     Result := Self
   else
     Result := Children.FindComponent(CompIntf);
@@ -1360,7 +1360,7 @@ begin
         try // except object processing
           try // except object begin
             List.Delete(Index);
-            CompObject := GxOtaGetNativeObject(ComponentInterface);
+            CompObject := Ota.GetNativeObject(ComponentInterface);
 
             if Assigned(CompObject) then
               OldClassName := CompObject.ClassName;
@@ -1395,7 +1395,7 @@ begin
           FController.SignalObjectEnd(ListName, CompObject);
         end;
 
-        CompObject := GxOtaGetNativeObject(NewComponentInterface);
+        CompObject := Ota.GetNativeObject(NewComponentInterface);
         try
           if Assigned(CompObject) then
             NewClassName := CompObject.ClassName;
@@ -1476,8 +1476,8 @@ var
   ChildList: TList;
   NativeObject: TObject;
 begin
-  OldObject := GxOtaGetNativeObject(OldCompInterface);
-  NewObject := GxOtaGetNativeObject(NewCompInterface);
+  OldObject := Ota.GetNativeObject(OldCompInterface);
+  NewObject := Ota.GetNativeObject(NewCompInterface);
   ChildList := TList.Create;
   try
     Stop := False;
@@ -1518,9 +1518,9 @@ end;
 function TCompInfo.GetAsNativeObject: TObject;
 begin
   if Assigned(NewComponentInterface) then
-    Result := GxOtaGetNativeObject(NewComponentInterface)
+    Result := Ota.GetNativeObject(NewComponentInterface)
   else
-    Result := GxOtaGetNativeObject(ComponentInterface);
+    Result := Ota.GetNativeObject(ComponentInterface);
 end;
 
 procedure TCompInfo.ReplaceLinks(PropOwner: TObject;
@@ -1605,7 +1605,7 @@ procedure TCompInfo.AddReplacedChild(ACompInfo: TCompInfo; AData: Pointer; var S
 var
   OldObject: TObject;
 begin
-  OldObject := GxOtaGetNativeObject(ACompInfo.ComponentInterface);
+  OldObject := Ota.GetNativeObject(ACompInfo.ComponentInterface);
 
   if Assigned(ACompInfo.NewComponentInterface) and Assigned(OldObject) then
     (TList(AData)).Add(OldObject);
