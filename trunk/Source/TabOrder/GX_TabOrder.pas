@@ -338,7 +338,7 @@ begin
 
       // All selected components need to have the same parent
 {$IFNDEF GX_VER160_up}
-      NativeComponent := GxOtaGetNativeComponent(CurrentComponent);
+      NativeComponent := Ota.GetNativeComponent(CurrentComponent);
       Assert(Assigned(NativeComponent));
       CurrentComponentParent := NativeComponent.GetParentComponent;
       if not Assigned(CurrentComponentParent) then

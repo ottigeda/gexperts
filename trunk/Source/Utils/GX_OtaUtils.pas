@@ -2695,7 +2695,7 @@ begin
     {$IFDEF GX_VER160_up} // Delphi 8+
     Result := UTF8Decode(GetEditorLine(View, LineNo));
     {$ELSE} // Delphi 6-7
-    Result := GxOtaGetEditorLine(View, LineNo);
+    Result := Ota.GetEditorLine(View, LineNo);
     {$ENDIF}
   {$ENDIF}
 end;
@@ -2857,7 +2857,7 @@ begin
   EditView := GxOtaGetTopmostEditView;
   if Assigned(EditView) then
   begin
-    Line := GxOtaGetEditorLineAsString(EditView, EditView.Position.Row);
+    Line := Ota.GetEditorLineAsString(EditView, EditView.Position.Row);
     if Length(Line) > 0 then
     begin
       EditPos := EditView.CursorPos;
@@ -5035,7 +5035,7 @@ begin
 
   // IOTAComponent.GetParent is broken in Delphi 5/6/7
   {$IFNDEF GX_VER160_up}
-  NativeComponent :=  GxOtaGetNativeComponent(AComponent);
+  NativeComponent :=  Ota.GetNativeComponent(AComponent);
   if Assigned(NativeComponent) then
   begin
     Parent := NativeComponent.GetParentComponent;
