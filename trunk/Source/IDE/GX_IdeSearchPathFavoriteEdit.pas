@@ -86,6 +86,7 @@ uses
   GX_GenericUtils,
   GX_OtaUtils,
   GX_EnhancedEditor,
+  GX_IdeUtils,
   GX_SynMemoUtils;
 
 { Tf_IdeSearchPathFavoriteEdit }
@@ -97,7 +98,7 @@ begin
   frm := Tf_IdeSearchPathFavoriteEdit.Create(_Owner);
   try
     frm.SetData(_Name, _Path, _OnCallHelpContext);
-    Result := (frm.ShowModal = mrok);
+    Result := (frm.ShowModal = mrOk);
     if Result then
       frm.GetData(_Name, _Path);
   finally
@@ -109,9 +110,9 @@ constructor Tf_IdeSearchPathFavoriteEdit.Create(_Owner: TComponent);
 begin
   inherited;
 
-  TControl_SetMinConstraints(Self);
+  TControl_SetMinConstraints(self);
 
-  FMemo := TSynMemo.Create(Self);
+  FMemo := TSynMemo.Create(self);
   FMemo.Parent := p_Memo;
   FMemo.Align := alClient;
   FMemo.HideSelection := False;
@@ -182,7 +183,7 @@ end;
 
 procedure Tf_IdeSearchPathFavoriteEdit.act_OKExecute(Sender: TObject);
 begin
-  ModalResult := mrok;
+  ModalResult := mrOk;
 end;
 
 procedure Tf_IdeSearchPathFavoriteEdit.act_PrependDotsExecute(Sender: TObject);
@@ -200,7 +201,7 @@ var
   Dir: string;
 begin
   Dir := '';
-  if GetDirectory('Select directory to add', Dir, Self) then
+  if GetDirectory('Select directory to add', Dir, self) then
     FMemo.Lines.Add(Dir);
 end;
 
@@ -212,7 +213,7 @@ end;
 procedure Tf_IdeSearchPathFavoriteEdit.b_HelpClick(Sender: TObject);
 begin
   inherited;
-  FOnCallHelpContext(Self);
+  FOnCallHelpContext(self);
 end;
 
 procedure Tf_IdeSearchPathFavoriteEdit.FormKeyDown(Sender: TObject;
