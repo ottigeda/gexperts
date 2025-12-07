@@ -53,7 +53,8 @@ uses
   GX_IdeSearchPathFavoriteEdit,
   GX_IdeDetectForms,
   GX_IdeDialogEnhancer,
-  GX_EnhancedEditor;
+  GX_EnhancedEditor,
+  GX_SynMemoUtils;
 
 type
   TLineProcessMethod = function(const _s: TGXUnicodeString): TGXUnicodeString of object;
@@ -90,7 +91,6 @@ type
     FEnabled: Boolean;
     FAddDotsBtn: TButton;
     FDelDotsBtn: TButton;
-    FProjectDir: string;
 {$IFDEF GX_LISTBOX_OWNERDRAW_FIX_ENABLED}
     FListboxOnDrawItem: TDrawItemEvent;
 {$ENDIF GX_LISTBOX_OWNERDRAW_FIX_ENABLED}
@@ -121,12 +121,6 @@ type
     procedure AddDotsBtnClick(_Sender: TObject);
     procedure DelDotsBtnClick(_Sender: TObject);
     procedure CopyMemoToList;
-    procedure ProcessSelectedMemoLines(_ProcessMethod: TLineProcessMethod);
-    function doAddDots(const _s: TGXUnicodeString): TGXUnicodeString;
-    function doDelDots(const _s: TGXUnicodeString): TGXUnicodeString;
-    function doMakeAbsolute(const _s: TGXUnicodeString): TGXUnicodeString;
-    function doMakeRelative(const _s: TGXUnicodeString): TGXUnicodeString;
-    procedure ProcessAllMemoLines(_ProcessMethod: TLineProcessMethod);
     procedure HandleMemoCommandProcessed(_Sender: TObject;
       var _Command: TSynEditorCommand; var _Char: WideChar; _Data: Pointer);
     procedure HandleMemoClick(_Sender: TObject);
@@ -296,9 +290,9 @@ var
   var
     act: TAction;
     cmp: TComponent;
-{$IFDEF GX_DELPHI2010_UP} // Not sure which Delphi version introduced TButton.ImageIndex...
+  {$IFDEF GX_DELPHI2010_UP} // Not sure which Delphi version introduced TButton.ImageIndex...
     ii: Integer;
-{$ENDIF}    
+  {$ENDIF}
   begin
     // Unfortunately we can't just assign the button's OnClick event to the
     // OnExecute event of the action because Delphi apparently assigns the
@@ -320,8 +314,9 @@ var
         _Btn.Action := act;
         _Btn.ShowHint := True;
 {$IFDEF GX_DELPHI2010_UP}
-        if (ii >= 0) and (_Btn.ImageIndex < 0) then _Btn.ImageIndex := ii;
-{$ENDIF}        
+        if (ii >= 0) and (_Btn.ImageIndex < 0) then
+          _Btn.ImageIndex := ii;
+{$ENDIF}
       end;
     end;
   end;
@@ -421,10 +416,14 @@ begin
 {$ENDIF}
 
 {$IFDEF GX_DELPHI10_4_UP}
-  if Assigned(FUpBtn) and (FUpBtn.ImageIndex < 0) then FUpBtn.ImageIndex := 2;
-  if Assigned(FUpBtn) and (FUpBtn.DisabledImageIndex < 0) then FUpBtn.DisabledImageIndex := 3;
-  if Assigned(FDownBtn) and (FDownBtn.ImageIndex < 0) then FDownBtn.ImageIndex := 0;
-  if Assigned(FDownBtn) and (FDownBtn.DisabledImageIndex < 0) then FDownBtn.DisabledImageIndex := 1;
+  if Assigned(FUpBtn) and (FUpBtn.ImageIndex < 0) then
+    FUpBtn.ImageIndex := 2;
+  if Assigned(FUpBtn) and (FUpBtn.DisabledImageIndex < 0) then
+    FUpBtn.DisabledImageIndex := 3;
+  if Assigned(FDownBtn) and (FDownBtn.ImageIndex < 0) then
+    FDownBtn.ImageIndex := 0;
+  if Assigned(FDownBtn) and (FDownBtn.DisabledImageIndex < 0) then
+    FDownBtn.DisabledImageIndex := 1;
 {$ENDIF}
 
   FDelDotsBtn := TButton.Create(_Form);
@@ -540,84 +539,16 @@ begin
   SetFocusTo(FListbox);
 end;
 
-procedure TSearchPathEnhancer.ProcessSelectedMemoLines(_ProcessMethod: TLineProcessMethod);
-var
-  i: Integer;
-  sl: TGXUnicodeStringList;
-  StartIdx: Integer;
-  EndIdx: Integer;
-  SelStart: Integer;
-  Line: TGXUnicodeString;
-  SelEnd: Integer;
-begin
-  if FMemo.Lines.Count = 0 then
-    Exit; //==>
-
-  sl := TGXUnicodeStringList.Create;
-  try
-    StartIdx := FMemo.BlockBegin.Line - 1;
-    EndIdx := FMemo.BlockEnd.Line - 1;
-    if FMemo.BlockEnd.Char = 1 then
-      Dec(EndIdx);
-    if EndIdx < StartIdx then
-      EndIdx := StartIdx;
-
-    sl.Assign(FMemo.Lines);
-    for i := StartIdx to EndIdx do begin
-      sl[i] := _ProcessMethod(sl[i]);
-    end;
-    FMemo.Text := sl.Text;
-
-    SelStart := FMemo.RowColToCharIndex(BufferCoord(1, StartIdx + 1));
-    if EndIdx + 1 = FMemo.Lines.Count then begin
-      Line := FMemo.Lines[EndIdx];
-      SelEnd := FMemo.RowColToCharIndex(BufferCoord(Length(Line) + 1, EndIdx + 1));
-    end else
-      SelEnd := FMemo.RowColToCharIndex(BufferCoord(1, EndIdx + 2));
-    FMemo.SelStart := SelStart;
-    FMemo.SelEnd := SelEnd;
-  finally
-    FreeAndNil(sl);
-  end;
-  CopyMemoToList;
-end;
-
-procedure TSearchPathEnhancer.ProcessAllMemoLines(_ProcessMethod: TLineProcessMethod);
-var
-  i: Integer;
-begin
-  FMemo.BeginUpdate;
-  try
-    for i := 0 to FMemo.Lines.Count - 1 do begin
-      FMemo.Lines[i] := _ProcessMethod(FMemo.Lines[i]);
-    end;
-  finally
-    FMemo.EndUpdate;
-  end;
-  CopyMemoToList;
-end;
-
-function TSearchPathEnhancer.doAddDots(const _s: TGXUnicodeString): TGXUnicodeString;
-begin
-  Result := '..\' + _s;
-end;
-
-function TSearchPathEnhancer.doDelDots(const _s: TGXUnicodeString): TGXUnicodeString;
-begin
-  if LeftStr(_s, 3) = '..\' then begin
-    Result := Copy(_s, 4);
-  end else
-    Result := _s;
-end;
-
 procedure TSearchPathEnhancer.AddDotsBtnClick(_Sender: TObject);
 begin
-  ProcessSelectedMemoLines(doAddDots);
+  TSynMemoUtilPrependDots.ProcessSelectedLines(FMemo);
+  CopyMemoToList;
 end;
 
 procedure TSearchPathEnhancer.DelDotsBtnClick(_Sender: TObject);
 begin
-  ProcessSelectedMemoLines(doDelDots);
+  TSynMemoUtilRemoveDots.ProcessSelectedLines(FMemo);
+  CopyMemoToList;
 end;
 
 procedure TSearchPathEnhancer.InitFavoritesMenu;
@@ -681,48 +612,32 @@ begin
   end;
 end;
 
-function TSearchPathEnhancer.doMakeAbsolute(const _s: TGXUnicodeString): TGXUnicodeString;
-begin
-  if (_s <> '') and not StartsText('$(BDS)\', _s) then begin
-    Result := TFileSystem.ExpandFileNameRelBaseDir(_s, FProjectDir);
-  end else
-    Result := _s;
-end;
-
 procedure TSearchPathEnhancer.MakeAbsoluteBtnClick(_Sender: TObject);
 var
-  ProjectFile: string;
+  Processor: TSynMemoUtilMakePathsAbsolute;
 begin
-  ProjectFile := GxOtaGetCurrentProjectFileName(False);
-  if ProjectFile = '' then
-    Exit; //==>
-
-  FProjectDir := ExtractFilePath(ProjectFile);
-  ProcessAllMemoLines(doMakeAbsolute);
-
-  FEdit.Text := doMakeAbsolute(FEdit.Text);
-end;
-
-function TSearchPathEnhancer.doMakeRelative(const _s: TGXUnicodeString): TGXUnicodeString;
-begin
-  if (_s <> '') and not StartsText('$(BDS)\', _s) then begin
-    Result := ExtractRelativePath(AddSlash(FProjectDir), _s);
-  end else
-    Result := _s;
+  Processor := TSynMemoUtilMakePathsAbsolute.Create(FMemo);
+  try
+    Processor.ProcessAllLines;
+    CopyMemoToList;
+    FEdit.Text := Processor.ProcessLine(FEdit.Text);
+  finally
+    FreeAndNil(Processor);
+  end;
 end;
 
 procedure TSearchPathEnhancer.MakeRelativeBtnClick(_Sender: TObject);
 var
-  ProjectFile: string;
+  Processor: TSynMemoUtilMakePathsRelative;
 begin
-  ProjectFile := GxOtaGetCurrentProjectFileName(True);
-  if ProjectFile = '' then
-    Exit; //==>
-
-  FProjectDir := ExtractFilePath(ProjectFile);
-  ProcessAllMemoLines(doMakeRelative);
-
-  FEdit.Text := doMakeRelative(FEdit.Text);
+  Processor := TSynMemoUtilMakePathsRelative.Create(FMemo);
+  try
+    Processor.ProcessAllLines;
+    CopyMemoToList;
+    FEdit.Text := Processor.ProcessLine(FEdit.Text);
+  finally
+    FreeAndNil(Processor);
+  end;
 end;
 
 procedure TSearchPathEnhancer.AddRecursiveBtnClick(_Sender: TObject);
@@ -731,18 +646,22 @@ var
   i: Integer;
   RecurseIdx: Integer;
   Path: WideString;
-  ProjectFile: string;
+  MakeAbsolute: TSynMemoUtilMakePathsAbsolute;
 begin
   Path := Trim(FEdit.Text);
   if Path = '' then
     Exit; //==>
 
-  ProjectFile := GxOtaGetCurrentProjectFileName(False);
-  if ProjectFile = '' then
-    Exit; //==>
+  MakeAbsolute := TSynMemoUtilMakePathsAbsolute.Create(FMemo);
+  try
+    if MakeAbsolute.ProjectDir = '' then
+      Exit; //==>
 
-  FProjectDir := ExtractFilePath(ProjectFile);
-  Path := doMakeAbsolute(Path);
+    Path := MakeAbsolute.ProcessLine(Path);
+  finally
+    FreeAndNil(MakeAbsolute);
+  end;
+
   Dirs := TStringList.Create;
   try
     TSimpleDirEnumerator.EnumDirsOnly(Path + '\*', Dirs, True);

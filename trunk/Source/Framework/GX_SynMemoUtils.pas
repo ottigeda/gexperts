@@ -4,7 +4,7 @@ unit GX_SynMemoUtils;
 
 interface
 
-uses  // If you get errors here, add SynEdit to your library path
+uses // If you get errors here, add SynEdit to your unit search path
   SynEdit,
   SynMemo,
 {$IFDEF GX_SUPPORTS_THEMING}
@@ -46,17 +46,18 @@ type
     FProjectDir: string;
   public
     constructor Create(_Memo: TSynMemo); override;
+    property ProjectDir: string read FProjectDir;
   end;
 
 type
   TSynMemoUtilMakePathsAbsolute = class(TSynMemoUtilMakePathsAbsoluteOrRelative)
-  protected
+  public
     function ProcessLine(const _Line: string): string; override;
   end;
 
 type
   TSynMemoUtilMakePathsRelative = class(TSynMemoUtilMakePathsAbsoluteOrRelative)
-  protected
+  public
     function ProcessLine(const _Line: string): string; override;
   end;
 
