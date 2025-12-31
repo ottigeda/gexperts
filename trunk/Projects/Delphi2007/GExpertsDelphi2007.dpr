@@ -252,6 +252,7 @@ uses
   GX_SourceExport in '..\..\source\SourceExport\GX_SourceExport.pas' {fmSourceExport},
   GX_SourceExportOptions in '..\..\source\SourceExport\GX_SourceExportOptions.pas' {fmSourceExportOptions},
   GX_Splitter in '..\..\Source\Utils\GX_Splitter.pas',
+  GX_SplitterPainter in '..\..\source\Utils\GX_SplitterPainter.pas',
   GX_StringGridDrawFix in '..\..\Source\Utils\GX_StringGridDrawFix.pas',
   GX_StringList in '..\..\Source\Utils\GX_StringList.pas',
   GX_SynMemoUtils in '..\..\source\Framework\GX_SynMemoUtils.pas',
@@ -276,8 +277,7 @@ uses
   GX_VCLFixPack in '..\..\Source\Utils\GX_VCLFixPack.pas',
   GX_VerDepConst in '..\..\source\Framework\GX_VerDepConst.pas',
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
-  GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas',
-  GX_SplitterPainter in '..\..\source\Utils\GX_SplitterPainter.pas';
+  GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas';
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}
