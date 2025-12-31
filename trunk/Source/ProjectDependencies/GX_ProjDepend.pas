@@ -168,7 +168,8 @@ uses
   mPasLex, mwPasParserTypes,
   GX_EditReader, GX_ProjDependProp, GX_GExperts, GX_ProjDependFilter,
   GX_GenericUtils, GX_GxUtils, GX_IdeUtils,
-  u_dzClassUtils, u_dzVclUtils, GX_ProjDependOptions, GX_IdeSplitterVisibility;
+  u_dzClassUtils, u_dzVclUtils, GX_ProjDependOptions, GX_IdeSplitterVisibility,
+  GX_SplitterPainter;
 
 var
   fmProjDepend: TfmProjDepend = nil;

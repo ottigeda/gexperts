@@ -306,7 +306,8 @@ implementation
 uses
   Windows, Graphics, Clipbrd, TypInfo, Math,
   GX_GxUtils, GX_MacroParser, GX_MacroTemplateEdit, GX_OtaUtils, GX_IdeUtils,
-  GX_MacroTemplatesExpert, GX_GExperts, GX_IdeSplitterVisibility;
+  GX_MacroTemplatesExpert, GX_GExperts, GX_IdeSplitterVisibility,
+  GX_SplitterPainter;
 
 var
   ProgInfoProc: TGetProgrammerInfo;

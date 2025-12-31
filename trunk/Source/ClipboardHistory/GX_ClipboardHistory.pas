@@ -206,7 +206,7 @@ uses
   Messages, Clipbrd, Dialogs, Math, StrUtils, OmniXML,
   GX_GxUtils, GX_GenericUtils, GX_OtaUtils, u_dzVclUtils,
   GX_GExperts, GX_ClipboardOptions, GX_XmlUtils,
-  GX_PasteAs, GX_IdeSplitterVisibility;
+  GX_PasteAs, GX_IdeSplitterVisibility, GX_SplitterPainter;
 
 const
   ClipStorageFileName = 'ClipboardHistory.xml';

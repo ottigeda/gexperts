@@ -6,7 +6,6 @@ uses
   GrepMain in 'GrepMain.pas',
   GX_Logging in '..\..\..\..\Source\Framework\GX_Logging.pas',
   GX_About in '..\..\..\..\Source\Framework\GX_About.pas' {fmAbout},
-  GX_AboutExperimental in '..\..\..\..\Source\Formatter\GX_AboutExperimental.pas' {fmAboutExperimental},
   GX_ActionBroker in 'GX_ActionBroker.pas',
   GX_BaseForm in '..\..\..\..\Source\Framework\GX_BaseForm.pas' {fmBaseForm},
   GX_CodeFormatterUnicode in '..\..\..\..\Source\Formatter\Engine\GX_CodeFormatterUnicode.pas',
@@ -46,7 +45,10 @@ uses
   GX_SharedImages in '..\..\..\..\Source\Framework\GX_SharedImages.pas' {dmSharedImages: TDataModule},
   GX_StringList in '..\..\..\..\Source\Utils\GX_StringList.pas',
   GX_TestRegEx in '..\..\..\..\Source\Grep\GX_TestRegEx.pas' {fmTestRegEx},
-  GX_VerDepConst in '..\..\..\..\Source\Framework\GX_VerDepConst.pas';
+  GX_VerDepConst in '..\..\..\..\Source\Framework\GX_VerDepConst.pas',
+  GX_IndexTypes in '..\..\..\..\Source\Utils\GX_IndexTypes.pas',
+  GX_Splitter in '..\..\..\..\Source\Utils\GX_Splitter.pas',
+  GX_SplitterPainter in '..\..\..\..\Source\Utils\GX_SplitterPainter.pas';
 
 {$R *_icon.res}
 {$R *_version.res}

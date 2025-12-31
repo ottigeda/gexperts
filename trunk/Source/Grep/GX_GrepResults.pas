@@ -458,7 +458,7 @@ uses
   UxTheme,
 {$ENDIF}
   GX_GExperts, GX_GenericUtils, GX_StringList, GX_OtaUtils, GX_GxUtils, GX_IdeUtils, GX_MessageBox,
-  GX_IdeSplitterVisibility,
+  GX_SplitterPainter,
   GX_GrepPrinting, GX_Replace, GX_GrepReplace, GX_GrepSelect, GX_GrepProgress;
 
 resourcestring

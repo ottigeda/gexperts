@@ -236,7 +236,8 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   GX_CodeSrch, GX_GxUtils,
   GX_OtaUtils, GX_IdeUtils,
-  GX_GExperts, GX_ConfigurationInfo, GX_MessageBox, GX_IdeSplitterVisibility;
+  GX_GExperts, GX_ConfigurationInfo, GX_MessageBox, GX_IdeSplitterVisibility,
+  GX_SplitterPainter;
 
 const
   DefaultFileName = 'CodeLibrarian.fs';

@@ -243,7 +243,7 @@ uses
   GX_XmlUtils,
   GX_MacroLibraryNamePrompt, GX_MacroLibraryConfig, GX_IdeUtils,
   GX_MessageBox, u_dzVclUtils, GX_GenericUtils, GX_GExperts,
-  GX_IdeSplitterVisibility;
+  GX_IdeSplitterVisibility, GX_SplitterPainter;
 
 type
   TIDEMacroBugMessage = class(TGxMsgBoxAdaptor)

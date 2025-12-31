@@ -9,8 +9,19 @@ interface
 uses
   SysUtils,
   Classes,
+  Forms,
   ToolsAPI,
   GX_StringList;
+
+type
+  Ota = class
+  public
+    class function InitTheming(AForm: TCustomForm): Boolean;
+    class function GetEditWriterForSourceEditor(SourceEditor: IOTASourceEditor = nil): IOTAEditWriter;
+    class function GetActiveEditorText(Lines: TGXUnicodeStringList; UseSelection: Boolean = True): Boolean;
+    // Returns an empty string
+    class function GetCurrentIdent: string;
+  end;
 
 ///<summary>
 /// @returns True </summary>
@@ -294,6 +305,28 @@ end;
 function GxOtaGetIDEProductIdentifier: string;
 begin
   Result := '';
+end;
+
+{ Ota }
+
+class function Ota.GetActiveEditorText(Lines: TGXUnicodeStringList; UseSelection: Boolean): Boolean;
+begin
+  Result := False;
+end;
+
+class function Ota.GetCurrentIdent: string;
+begin
+  Result := '';
+end;
+
+class function Ota.GetEditWriterForSourceEditor(SourceEditor: IOTASourceEditor): IOTAEditWriter;
+begin
+  raise Exception.Create('Stand alone version does not support ToolsAPI calls (Ota.GetEditWriterForSourceEditor)');
+end;
+
+class function Ota.InitTheming(AForm: TCustomForm): Boolean;
+begin
+  Result := False;
 end;
 
 end.

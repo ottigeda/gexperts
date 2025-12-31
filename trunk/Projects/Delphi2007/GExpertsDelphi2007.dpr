@@ -276,7 +276,8 @@ uses
   GX_VCLFixPack in '..\..\Source\Utils\GX_VCLFixPack.pas',
   GX_VerDepConst in '..\..\source\Framework\GX_VerDepConst.pas',
   GX_XmlUtils in '..\..\source\Utils\GX_XmlUtils.pas',
-  GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas';
+  GX_Zipper in '..\..\source\BackupProject\GX_Zipper.pas',
+  GX_SplitterPainter in '..\..\source\Utils\GX_SplitterPainter.pas';
 
 {$R '..\..\images\GXIcons.res' '..\..\images\GXIcons.rc'}
 {$R '..\..\Binaries\CodeProofreaderDefault.res' '..\..\Binaries\CodeProofreaderDefault.rc'}

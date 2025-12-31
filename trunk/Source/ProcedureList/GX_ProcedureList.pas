@@ -131,7 +131,7 @@ uses
   Clipbrd, Menus, StrUtils, Math,
   u_dzVclUtils, u_dzStringUtils, u_dzTypes,
   GX_GxUtils, GX_GenericUtils, GX_OtaUtils, GX_IdeUtils,
-  GX_Experts, GX_GExperts, GX_IdeSplitterVisibility;
+  GX_Experts, GX_GExperts, GX_IdeSplitterVisibility, GX_SplitterPainter;
 
 resourcestring
   SAllString = '<All>';

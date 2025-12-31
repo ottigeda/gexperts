@@ -130,11 +130,11 @@ type
 
 implementation
 
+{$R *.dfm}
+
 uses Windows, SysUtils, TypInfo, Clipbrd, Registry,
   GX_GenericUtils, GX_ConfigurationInfo, GX_OtaUtils, GX_GetIdeVersion, GX_IdeUtils,
-  Menus, Math, Graphics, u_dzVclUtils, GX_IdeSplitterVisibility;
-
-{$R *.dfm}
+  Menus, Math, Graphics, u_dzVclUtils, GX_SplitterPainter;
 
 const
   SkipLine = sLineBreak + sLineBreak;

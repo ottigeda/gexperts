@@ -6,10 +6,6 @@ uses
   SysUtils,
   Classes,
   Types,
-  ExtCtrls,
-  Graphics,
-  Controls,
-  Forms,
   GX_TimedCallback;
 
 type
@@ -27,69 +23,12 @@ type
     class procedure SetEnabled(const _Value: Boolean); //static;
   end;
 
-type
-  TSplitterPainter = class(TComponent)
-  private
-    procedure SplitterPaint(_Sender: TObject);
-  public
-    constructor Create(_Owner: TComponent); override;
-    destructor Destroy; override;
-  end;
-
 implementation
 
-const
-  PainterSuffix = '_GXPainter';
-
-{ TSplitterPainter }
-
-constructor TSplitterPainter.Create(_Owner: TComponent);
-var
-  Splitter: TSplitter absolute _Owner;
-begin
-  inherited;
-  Name := Splitter.Name + PainterSuffix;
-  Splitter.OnPaint := SplitterPaint;
-  Splitter.Invalidate;
-end;
-
-destructor TSplitterPainter.Destroy;
-var
-  Splitter: TSplitter;
-begin
-  Splitter := Owner as TSplitter;
-  if Assigned(Splitter) then begin
-    Splitter.OnPaint := nil;
-    Splitter.Invalidate;
-  end;
-  inherited;
-end;
-
-procedure TSplitterPainter.SplitterPaint(_Sender: TObject);
-var
-  Splitter: TSplitter absolute _Sender;
-  R: TRect;
-  cnv: TCanvas;
-  Delta: Integer;
-begin
-  R := Splitter.ClientRect;
-  cnv := Splitter.Canvas;
-  cnv.Pen.Color := clBtnShadow;
-  cnv.Pen.Style := psDash;
-  cnv.Pen.Mode := pmCopy;
-  cnv.Pen.Width := 0;
-  if Splitter.Align in [alLeft, alRight] then begin
-    Delta := (R.Right - R.Left) div 2;
-    cnv.MoveTo(R.Left + Delta, R.Top);
-    cnv.LineTo(R.Left + Delta, R.Bottom);
-  end else begin
-    Delta := (R.Bottom - R.Top) div 2;
-    cnv.MoveTo(R.Left, R.Top + Delta);
-    cnv.LineTo(R.Right, R.Top + Delta);
-  end;
-//  cnv.Brush.Color := clAqua;
-//  cnv.FillRect(R);
-end;
+uses
+  ExtCtrls,
+  Forms,
+  GX_SplitterPainter;
 
 { TGxIdeSplitterVisibilityEnhancer }
 
@@ -103,7 +42,7 @@ class function TGxIdeSplitterVisibilityEnhancer.TrySetPaintHandlers(_Enabled: Bo
     cmp: TComponent;
   begin
     if Assigned(_Splitter) and (_Splitter is TSplitter) then begin
-      cmp := _Splitter.FindComponent(_Splitter.Name + PainterSuffix);
+      cmp := _Splitter.FindComponent(_Splitter.Name + GXPainterSuffix);
       if not _Enabled and Assigned(cmp) then begin
         cmp.free;
       end else if _Enabled and not Assigned(cmp) then begin

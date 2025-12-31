@@ -68,7 +68,7 @@ uses
   SysUtils, Clipbrd,
   u_dzVclUtils,
   Gx_GenericUtils, GX_ReplaceCompUtils, GX_ConfigurationInfo,
-  GX_IdeSplitterVisibility;
+  GX_IdeSplitterVisibility, GX_SplitterPainter;
 
 { TfmReplaceCompLog }
 

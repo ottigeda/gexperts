@@ -135,6 +135,10 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\source\AsciiChart\GX_AsciiChart.pas">
             <Form>fmAsciiChart</Form>
         </DCCReference>
+        <DCCReference Include="..\..\Source\AutoSwitchDesktop\GX_AutoSwitchDesktop.pas"/>
+        <DCCReference Include="..\..\Source\AutoSwitchDesktop\GX_AutoSwitchDesktopConfig.pas">
+            <Form>f_AutoSwitchDestkopConfig</Form>
+        </DCCReference>
         <DCCReference Include="..\..\Source\AutoTodo\GX_AutoTodoDone.pas">
             <Form>fmAutoTodoDone</Form>
         </DCCReference>
@@ -648,6 +652,7 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\Source\Utils\GX_RegExpr.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_ShLwApi.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_Splitter.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_SplitterPainter.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_StringGridDrawFix.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_StringList.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_TimedCallback.pas"/>

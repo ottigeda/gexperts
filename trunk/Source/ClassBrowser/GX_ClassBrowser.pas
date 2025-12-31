@@ -282,7 +282,7 @@ uses
   GX_VerDepConst, GX_ClassIdentify, GX_ConfigurationInfo,
   GX_ClassProp, GX_GExperts,
   GX_GxUtils, GX_GenericUtils, GX_StringList, GX_IdeUtils, GX_Logging,
-  GX_IdeSplitterVisibility;
+  GX_IdeSplitterVisibility, GX_SplitterPainter;
 
 var
   Logger: IGxLogger;
