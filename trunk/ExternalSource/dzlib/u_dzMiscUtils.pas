@@ -253,21 +253,6 @@ begin
 end;
 {$ENDIF debug}
 
-procedure IncPtr(var _Ptr: Pointer; _Offset: IntPtr);
-begin
-  _Ptr := Pointer(IntPtr(_Ptr) + _Offset);
-end;
-
-function AddToPtr(const _Ptr: Pointer; _Offset: IntPtr): Pointer;
-begin
-  Result := Pointer(IntPtr(_Ptr) + _Offset);
-end;
-
-function PtrDiff(const _Ptr1, _Ptr2: Pointer): IntPtr;
-begin
-  Result := IntPtr(_Ptr1) - IntPtr(_Ptr2);
-end;
-
 function TwipsPerPixelX(_Handle: hdc): Extended;
 var
   Pixels: Integer;
@@ -909,6 +894,21 @@ begin
   Temp7.Free;
   Temp8.Free;
   Temp9.Free;
+end;
+
+procedure IncPtr(var _Ptr: Pointer; _Offset: IntPtr);
+begin
+  _Ptr := Pointer(IntPtr(_Ptr) + _Offset);
+end;
+
+function AddToPtr(const _Ptr: Pointer; _Offset: IntPtr): Pointer;
+begin
+  Result := Pointer(IntPtr(_Ptr) + _Offset);
+end;
+
+function PtrDiff(const _Ptr1, _Ptr2: Pointer): IntPtr;
+begin
+  Result := IntPtr(_Ptr1) - IntPtr(_Ptr2);
 end;
 
 end.

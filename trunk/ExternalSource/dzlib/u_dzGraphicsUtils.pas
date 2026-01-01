@@ -772,6 +772,7 @@ begin
   Result := dzDGetText(_s, 'dzlib');
 end;
 
+// these 3 functions could be imported from u_dzMiscUtils, but that crashes the Delphi 2007 commandline compiler
 procedure IncPtr(var _Ptr: Pointer; _Offset: IntPtr);
 {$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
