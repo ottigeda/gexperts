@@ -1833,7 +1833,7 @@ begin
     Exit;
   SetLastError(LastError);
   Inc(LengthNeeded, $1000);
-  SecurityDescriptor := PSecurityDescriptor(LocalAlloc(LPTR, LengthNeeded));
+  SecurityDescriptor := AllocMem(LengthNeeded);
   if not Assigned(SecurityDescriptor) then
     Exit;
   try
@@ -1862,7 +1862,7 @@ begin
       RevertToSelf;
     end;
   finally
-    LocalFree(HLOCAL(SecurityDescriptor));
+    FreeMem(SecurityDescriptor);
   end;
 end;
 

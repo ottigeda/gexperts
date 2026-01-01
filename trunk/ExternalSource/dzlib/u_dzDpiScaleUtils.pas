@@ -163,15 +163,20 @@ type
   TGetDpiForWindow = function(_HWnd: HWND): UINT; stdcall;
 var
   GetDpiForWindow: TGetDpiForWindow = nil;
+  User32Handle: HMODULE = 0;
 
 procedure InitApiCalls;
-var
-  Handle: HMODULE;
 begin
-  Handle := LoadLibrary('user32.dll');
-  if Handle <> 0 then begin
-    GetDpiForWindow := GetProcAddress(Handle, 'GetDpiForWindow');
+  User32Handle := LoadLibrary('user32.dll');
+  if User32Handle <> 0 then begin
+    GetDpiForWindow := GetProcAddress(User32Handle, 'GetDpiForWindow');
   end;
+end;
+
+procedure DoneApiCalls;
+begin
+  if User32Handle <> 0 then
+    FreeLibrary(User32Handle);
 end;
 
 function TScreen_GetDpiForForm(_Frm: TCustomForm): UINT;
@@ -734,8 +739,11 @@ initialization
   except
     LogIsOpen := False;
   end;
+{$ENDIF}
 finalization
+{$IFDEF DPI_SCALER_LOGGING}
   if LogIsOpen then
     CloseFile(LogFile);
 {$ENDIF}
+  DoneApiCalls;
 end.

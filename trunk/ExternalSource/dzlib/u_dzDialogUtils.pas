@@ -16,6 +16,17 @@ uses
 type
   IFileFilterBuilder = interface
     ///<summary>
+    /// Adds a new filter, the first one added is the default.
+    /// @param Description is the file type description e.g. 'Text file'. This descrition
+    ///                    should be localized.
+    /// @param Mask is the file mask, e.g. '*.txt', it should not be localized.
+    /// @param AddMaskToDesc determines whether the mask is appended to the descripition as
+    ///                      ' (*.bla)', defaults to true, e.g. 'Text file (*.txt)
+    /// @returns the interface itself, so chaining is possible like this:
+    ///          od.Filter := FileFilterHelper.AddFilter('bla', '*.bla').AddFilter('blub', '*.blu').Value;
+    function Add(const _Description: string; const _Mask: string;
+      _AddMaskToDesc: Boolean = True): IFileFilterBuilder;
+    ///<summary>
     /// Adds an entry <descriptionfmt> (<maskfmt>)|<maskfmt>
     /// where both *fmts are passed through Format(*fmt, Values) </summary>
     function AddFmt(const _DescriptionFmt: string; const _MaskFmt: string;
@@ -309,6 +320,16 @@ type
     FIncludeAllFiles: Boolean;
     FAllSupported: string;
   private
+    ///<summary> Adds a new filter, the first one added is the default.
+    ///          @param Description is the file type description e.g. 'Text file'. This descrition
+    ///                             should be localized.
+    ///          @param Mask is the file mask, e.g. '*.txt', it should not be localized.
+    ///          @param AddMaskToDesc determines whether the mask is appended to the descripition as
+    ///                               ' (*.bla)', defaults to true, e.g. 'Text file (*.txt)
+    ///          @returns the interface itself, so chaining is possible like this:
+    ///                   od.Filter := FileFilterHelper.AddFilter('bla', '*.bla').AddFilter('blub', '*.blu').Value;
+    function Add(const _Description: string; const _Mask: string;
+      _AddMaskToDesc: Boolean = True): IFileFilterBuilder;
     ///<summary>
     /// Adds an entry <descriptionfmt> (<maskfmt>)|<maskfmt>
     /// where both *fmts are passed through Format(*fmt, Values) </summary>
@@ -338,17 +359,7 @@ type
     function Value: string;
   public
     constructor Create(_IncludeAllFiles: Boolean = True; const _AllSupported: string = '');
-    ///<summary> Adds a new filter, the first one added is the default.
-    ///          @param Description is the file type description e.g. 'Text file'. This descrition
-    ///                             should be localized.
-    ///          @param Mask is the file mask, e.g. '*.txt', it should not be localized.
-    ///          @param AddMaskToDesc determines whether the mask is appended to the descripition as
-    ///                               ' (*.bla)', defaults to true, e.g. 'Text file (*.txt)
-    ///          @returns the interface itself, so chaining is possible like this:
-    ///                   od.Filter := FileFilterHelper.AddFilter('bla', '*.bla').AddFilter('blub', '*.blu').Value;
     destructor Destroy; override;
-    function Add(const _Description: string; const _Mask: string;
-      _AddMaskToDesc: Boolean = True): IFileFilterBuilder;
   end;
 
 function FileFilterBuilder(_IncludeAllFiles: Boolean = True; const _AllSupported: string = ''): IFileFilterBuilder;

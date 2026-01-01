@@ -749,8 +749,20 @@ function RainbowColor(_MinHue, _MaxHue, _Hue: Integer): TColor; overload;
 
 function TryStr2Color(const _s: string; out _Color: TColor): Boolean;
 
+///<summary>
+/// Tries to load the first matching file into a TPicture.
+/// @param pic is the TPicture to load the file into
+/// @param FileMask is the file mask to search for (e.g., 'image*.bmp')
+/// @returns True if successful, False if no matching file found or if loading failed
+/// @Note All exceptions are silently caught and result in False being returned </summary>
 function TPicture_TryLoadMatchingFile(_pic: TPicture; const _FileMask: string): Boolean;
 
+///<summary>
+/// Tries to load an image from a resource.
+/// @param pic is the TPicture to load the resource into
+/// @param ResName is the name of the resource
+/// @returns True if successful, False if resource not found or if loading failed
+/// @Note All exceptions are silently caught and result in False being returned </summary>
 function TPicture_TryLoadFromResource(_pic: TPicture; const _ResName: string): Boolean;
 
 implementation
@@ -4319,6 +4331,7 @@ begin
       _pic.LoadFromFile(fn);
       Result := True;
     except
+      Result := False;
     end;
   end;
 end;
