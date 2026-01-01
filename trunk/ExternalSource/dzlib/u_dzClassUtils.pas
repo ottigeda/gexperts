@@ -437,8 +437,10 @@ function TIniFile_ReadInt(_Ini: TCustomIniFile; const _Section, _Ident: string):
 ///<summary>
 /// Reads an integer from the ini-file, raises an exception if the value is not an integer or empty string.
 /// For empty strings, it returns the default. </summary>
-function TIniFile_ReadInt(const _Filename: string; const _Section, _Ident: string; _Default: Integer): Integer; overload;
-function TIniFile_ReadInt(_Ini: TCustomIniFile; const _Section, _Ident: string; _Default: Integer): Integer; overload;
+function TIniFile_ReadInt(const _Filename: string; const _Section, _Ident: string;
+  _Default: Integer; _DefaultIfEmtpy: Boolean = False): Integer; overload;
+function TIniFile_ReadInt(_Ini: TCustomIniFile; const _Section, _Ident: string;
+  _Default: Integer; _DefaultIfEmtpy: Boolean = False): Integer; overload;
 
 {$IF Declared(TryStr2Date)}
 ///<summary>
@@ -1709,7 +1711,8 @@ begin
   end;
 end;
 
-function TIniFile_ReadInt(const _Filename: string; const _Section, _Ident: string; _Default: Integer): Integer;
+function TIniFile_ReadInt(const _Filename: string; const _Section, _Ident: string;
+  _Default: Integer; _DefaultIfEmtpy: Boolean = False): Integer;
 var
   s: string;
   ErrStr: string;
@@ -1718,13 +1721,18 @@ begin
   if s = '' then
     Result := _Default
   else if not TryStrToInt(s, Result) then begin
-    ErrStr := Format(_('Invalid integer value "%s" for [%s]\%s in ini file'), [s, _Section, _Ident])
-      + ' ' + _Filename;
-    raise EStringConvertError.Create(ErrStr);
+    if _DefaultIfEmtpy then
+      Result := _Default
+    else begin
+      ErrStr := Format(_('Invalid integer value "%s" for [%s]\%s in ini file'), [s, _Section, _Ident])
+        + ' ' + _Filename;
+      raise EStringConvertError.Create(ErrStr);
+    end;
   end;
 end;
 
-function TIniFile_ReadInt(_Ini: TCustomIniFile; const _Section, _Ident: string; _Default: Integer): Integer;
+function TIniFile_ReadInt(_Ini: TCustomIniFile; const _Section, _Ident: string;
+  _Default: Integer; _DefaultIfEmtpy: Boolean = False): Integer;
 var
   s: string;
   ErrStr: string;
@@ -1735,9 +1743,13 @@ begin
   if s = '' then
     Result := _Default
   else if not TryStrToInt(s, Result) then begin
-    ErrStr := Format(_('Invalid integer value "%s" for [%s]\%s in ini file'), [s, _Section, _Ident])
-      + ' ' + _Ini.Filename;
-    raise EStringConvertError.Create(ErrStr);
+    if _DefaultIfEmtpy then
+      Result := _Default
+    else begin
+      ErrStr := Format(_('Invalid integer value "%s" for [%s]\%s in ini file'), [s, _Section, _Ident])
+        + ' ' + _Ini.Filename;
+      raise EStringConvertError.Create(ErrStr);
+    end;
   end;
 end;
 

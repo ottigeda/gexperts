@@ -94,6 +94,9 @@ const
 const
   MaxInt32 = $7FFFFFFF;
 {$IFEND}
+{$IF not declared(MinInt32)}
+  MinInt32 = -$80000000;
+{$IFEND}
 
 {$IF not declared(MinInt64)}
 const

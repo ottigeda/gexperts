@@ -42,7 +42,6 @@ type
     function AddXml: IFileFilterBuilder;
     function AddXls: IFileFilterBuilder;
     function Value: string;
-    function Filter: string; deprecated; // use Value instead
   end;
 
 function FileFilterBuilder(_IncludeAllFiles: Boolean = True; const _AllSupported: string = ''): IFileFilterBuilder;
@@ -337,7 +336,6 @@ type
     function AddXml: IFileFilterBuilder;
     function AddXls: IFileFilterBuilder;
     function Value: string;
-    function Filter: string; deprecated; // use Value instead
   public
     constructor Create(_IncludeAllFiles: Boolean = True; const _AllSupported: string = '');
     ///<summary> Adds a new filter, the first one added is the default.
@@ -490,11 +488,6 @@ end;
 function TFileFilterBuilder.AddXml: IFileFilterBuilder;
 begin
   Result := Add(_('Extensible Markup Language'), '*.XML');
-end;
-
-function TFileFilterBuilder.Filter: string;
-begin
-  Result := Value;
 end;
 
 function TFileFilterBuilder.Value: string;

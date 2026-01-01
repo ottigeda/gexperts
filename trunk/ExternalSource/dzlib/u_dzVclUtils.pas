@@ -1185,6 +1185,7 @@ function TRadioGroup_SelectByObject(_rg: TCustomRadioGroup; _ObjAsInt: Integer;
   _WithClick: Boolean = False; _DefaultIdx: Integer = -1): Integer; overload;
 
 procedure TRadioGroup_SelectWithoutClickEvent(_rg: TCustomRadioGroup; _Idx: Integer);
+procedure TRadioGroup_SelectByObjectWithoutClickEvent(_rg: TCustomRadioGroup; _ObjAsInt: Integer);
 
 ///<summary>
 /// Gets the object pointer of the selected RadioGroup item
@@ -4436,6 +4437,21 @@ function TRadioGroup_SelectByObject(_rg: TCustomRadioGroup; _ObjAsInt: Integer;
   _WithClick: Boolean = False; _DefaultIdx: Integer = -1): Integer;
 begin
   Result := TRadioGroup_SelectByObject(_rg, Pointer(_ObjAsInt), _WithClick, _DefaultIdx);
+end;
+
+procedure TRadioGroup_SelectByObjectWithoutClickEvent(_rg: TCustomRadioGroup; _ObjAsInt: Integer);
+var
+  Hack: TRadioGroupHack;
+  Event: TNotifyEvent;
+begin
+  Hack := TRadioGroupHack(_rg);
+  Event := Hack.OnClick;
+  try
+    Hack.OnClick := nil;
+    TRadioGroup_SelectByObject(_rg, _ObjAsInt);
+  finally
+    Hack.OnClick := Event;
+  end;
 end;
 
 procedure TRadioGroup_SelectWithoutClickEvent(_rg: TCustomRadioGroup; _Idx: Integer);

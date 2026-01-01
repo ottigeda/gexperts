@@ -216,6 +216,15 @@ procedure FreeAndNil(var _Obj1, _Obj2, _Obj3, _Obj4, _Obj5, _Obj6, _Obj7); overl
 procedure FreeAndNil(var _Obj1, _Obj2, _Obj3, _Obj4, _Obj5, _Obj6, _Obj7, _Obj8); overload;
 procedure FreeAndNil(var _Obj1, _Obj2, _Obj3, _Obj4, _Obj5, _Obj6, _Obj7, _Obj8, _Obj9); overload;
 
+procedure IncPtr(var _Ptr: Pointer; _Offset: IntPtr);
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+function AddToPtr(const _Ptr: Pointer; _Offset: IntPtr): Pointer;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
+function PtrDiff(const _Ptr1, _Ptr2: Pointer): IntPtr;
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
+
 {$IFDEF debug}
 // do NOT remove, this is a sanity check so we don't ship anything where there are
 // missing features.
@@ -231,21 +240,33 @@ uses
   u_dzConvertUtils;
 
 function _(const _s: string): string;
-{$IFDEF SUPPORTS_INLINE}
-inline;
-{$ENDIF}
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
   Result := dzDGetText(_s, 'dzlib');
 end;
 
 {$IFDEF debug}
-
 procedure NotImplemented;
 begin
   if ID_YES <> Windows.MessageBox(0, 'Function not implemented! Continue anyway?', 'Warning', MB_YESNO + MB_ICONWARNING) then
     raise ENotImplemented.Create('Function not implemented');
 end;
 {$ENDIF debug}
+
+procedure IncPtr(var _Ptr: Pointer; _Offset: IntPtr);
+begin
+  _Ptr := Pointer(IntPtr(_Ptr) + _Offset);
+end;
+
+function AddToPtr(const _Ptr: Pointer; _Offset: IntPtr): Pointer;
+begin
+  Result := Pointer(IntPtr(_Ptr) + _Offset);
+end;
+
+function PtrDiff(const _Ptr1, _Ptr2: Pointer): IntPtr;
+begin
+  Result := IntPtr(_Ptr1) - IntPtr(_Ptr2);
+end;
 
 function TwipsPerPixelX(_Handle: hdc): Extended;
 var
