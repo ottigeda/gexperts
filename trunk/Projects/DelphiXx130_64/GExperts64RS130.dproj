@@ -152,6 +152,10 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <Form>fmAutoTodoDone</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\..\Source\AutoSwitchDesktop\GX_AutoSwitchDesktop.pas"/>
+        <DCCReference Include="..\..\Source\AutoSwitchDesktop\GX_AutoSwitchDesktopConfig.pas">
+            <Form>f_AutoSwitchDestkopConfig</Form>
+        </DCCReference>
         <DCCReference Include="..\..\source\BackupProject\GX_Backup.pas">
             <Form>fmBackup</Form>
             <FormType>dfm</FormType>
@@ -306,6 +310,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\source\Utils\GX_DbugIntf.pas"/>
         <DCCReference Include="..\..\Source\Utils\GX_Debug.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_DesignerMenu.pas"/>
+        <DCCReference Include="..\..\Source\Utils\GX_DrawFixes.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_DummyWizard.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_DuplicateDllHandler.pas"/>
         <DCCReference Include="..\..\Source\Formatter\GX_eAddToCaptitalization.pas"/>
@@ -505,7 +510,6 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\source\Experts\EditorEnhancements\GX_HideNavbar.pas"/>
         <DCCReference Include="..\..\source\HideNonvisualComponents\GX_HideNonVisualComps.pas"/>
         <DCCReference Include="..\..\Source\Framework\GX_HintWindow.pas"/>
-        <DCCReference Include="..\..\Source\Utils\GX_DrawFixes.pas"/>
         <DCCReference Include="..\..\source\Framework\GX_IconMessageBox.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeApplicationSettingsEnhancer.pas"/>
         <DCCReference Include="..\..\Source\IDE\GX_IdeBuildEventFavoriteEdit.pas">
@@ -783,6 +787,7 @@ $(PreBuildEvent)]]></PreBuildEvent>
         <DCCReference Include="..\..\source\Framework\GX_VerDepConst.pas"/>
         <DCCReference Include="..\..\source\Utils\GX_XmlUtils.pas"/>
         <DCCReference Include="..\..\source\BackupProject\GX_Zipper.pas"/>
+        <DCCReference Include="..\..\source\Utils\GX_SplitterPainter.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -816,6 +821,12 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <Deployment Version="5">
                 <DeployFile LocalName="..\..\Binaries\GExperts64RS130.dll" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
+                        <RemoteName>GExperts64RS130.dll</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\Binaries\GExperts64RS130.dll" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win64">
                         <RemoteName>GExperts64RS130.dll</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
