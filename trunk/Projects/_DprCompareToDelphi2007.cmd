@@ -1,1 +1,1 @@
-start "" "C:\Delphi\13\bin\BCompareLite.exe" "c:\twm\source\_sourceforge\GExperts\Projects\Delphi2007\GExpertsDelphi2007.dpr" %1
+start "" "c:\Delphi\13\bin\BCompareLite.exe" "%~dp0Delphi2007\GExpertsDelphi2007.dpr" %1
