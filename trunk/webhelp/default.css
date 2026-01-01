@@ -59,6 +59,7 @@ p, p.p_Normal, div.p_Normal, li.p_Normal /* Normal */
  line-height: 1.0;
  white-space: nowrap;
  page-break-inside: avoid;
+ background: #f4f4f4;
 }
 .p_Comment /* Comment */
 {

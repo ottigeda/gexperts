@@ -96,7 +96,7 @@
       </styleclass>
       <styleclass name="Code Example" shortcut="0">
         <style-set media="screen" type="text">font-family:'Courier New'; font-size:8pt;</style-set>
-        <style-set media="screen" type="para">white-space:nowrap; page-break-inside:avoid;</style-set>
+        <style-set media="screen" type="para">white-space:nowrap; page-break-inside:avoid; background-color:#f4f4f4;</style-set>
       </styleclass>
       <styleclass name="Courier Fixed" shortcut="116">
         <style-set media="screen" type="text">font-family:'Courier New'; font-size:9pt; color:#000000;</style-set>
@@ -705,7 +705,7 @@ GExperts Help
       </config-group>
       <config-group name="twm">
         <config-group name="project">
-          <config-value name="lastexport">0</config-value>
+          <config-value name="lastexport">3</config-value>
         </config-group>
       </config-group>
       <config-group name="ghost">

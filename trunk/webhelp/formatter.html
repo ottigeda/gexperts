@@ -4,7 +4,7 @@
    <title>Experts &gt; Formatter</title>
    <meta name="generator" content="Help & Manual">
    <meta name="keywords" content="">
-   <meta name="description" content="Formatter">
+   <meta name="description" content="Formatter General">
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
    <!-- This line forces IE8 into IE7 mode, safer until IE8 is better known -->
@@ -101,7 +101,8 @@ function toggleToggles() {
    <p class="crumbs" id="idnav"><b>Navigation:</b>&nbsp;
    
    Experts&nbsp;&gt;</p>-->
-   <h1 class="p_Heading1"><span class="f_Heading1">Formatter</span></h1>
+   <h1 class="p_Heading1" style="margin: 4px 0 0 6px;"><span class="f_Heading1" style="font-size: 14pt; font-family: Verdana,Geneva,Arial,sans-serif;">Formatter </span></h1>
+<h1 class="p_Heading1" style="margin: 0 0 0 6px;"><span class="f_Heading1" style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; color: #efa175;">General </span></h1>
 
     </td>
     <td align="right" width="120" valign="middle" class="topichead" id="idnav">
@@ -133,35 +134,121 @@ function toggleToggles() {
 <div id="idcontent"><div id="innerdiv"> 
 <!--ZOOMRESTART-->
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">The GExperts code formatter is based on DelFor by Egbert van Nes.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">For now this help is a copy of the content from the original .hlp file. It is incomplete but better than nothing.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Introduction</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Delfor is a customizable source code formatter. It can improve the indentation, spacing, capitalization and the use of blank lines of Delphi source code. To do so the source code is parsed and lots of special constructs are tested. At default, the style of the Borland source code is followed closely, since this is the most widely accepted style. But formatting of Pascal code is much a matter of taste and debate. Therefore, some alternative rules are included.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Limitations and known problems</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">(1) Compiler {$IFDEF} + {$ELSE} directives may be nested to 3 levels and break into blocks of code. After the third nested level the right indentation is not guaranteed.</p>
-<p class="p_Normal">(2) After some options (aligning, adding line breaks) the indentation might be not correct. Rerunning DelFor can fix the problems.</p>
-<p class="p_Normal">(3) It is tried to indent function directives after function declarations. In some cases this does not happen.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Options dialog</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">In the options dialog some formatting rules can be deactivated or customized.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">The following tab sheets are included:</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Indent</p>
-<p class="p_Normal">Spacing</p>
-<p class="p_Normal">Line breaks</p>
-<p class="p_Normal">Capitalization</p>
-<p class="p_Normal">Align</p>
-<p class="p_Normal">Miscellaneous</p>
-<p class="p_Normal">Preview</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"><span style="font-weight: bold; color: #0000ff;">Indent tab</span></p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#ebfafa; border:none; border-spacing:0;">
+<thead>
+<tr>
+<th style="vertical-align:middle; width:200px; height:22px; background-color:#E2E2E2; padding:0; border:none" scope="col"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #008080;">this page .. </span></p>
+</th>
+<th style="vertical-align:middle; height:22px; background-color:#E2E2E2; padding:0; border:none" scope="col"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold; color: #008080;">see also .. </span></p>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="formatter.html#introduction" class="topiclink">Introduction</a> </span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="formatter.html#limitations" class="topiclink">Limitations and known problems</a> </span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="formatter.html#optionsdialog" class="topiclink">Options dialog</a> </span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="formatter.html#indenttab" class="topiclink">Indent tab</a> </span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="formatter.html#spacingtab" class="topiclink">Spacing tab</a> </span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="formatter.html#linebreakstab" class="topiclink">Line breaks tab</a> </span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="formatter.html#capitalizationtab" class="topiclink">Capitalization tab</a> </span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+</tr>
+<tr>
+<td style="vertical-align:middle; width:200px; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;"><a href="formatter.html#aligntab" class="topiclink">Align tab</a> </span></p>
+</td>
+<td style="vertical-align:middle; height:20px; background-color:#F4F4F4; padding:0; border:none"><p class="p_Normal" style="margin: 0 0 0 6px;"><span style="font-size: 8pt; font-family: Verdana,Geneva,Arial,sans-serif;">&nbsp;</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="p_Normal"><a id="introduction" class="hmanchor"></a><span style="font-size: 16pt; font-family: Verdana,Geneva,Arial,sans-serif;"> &nbsp; </span></p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#cfe7ff; border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:middle; height:24px; padding:0; border:none"><p class="p_Normal" style="page-break-inside: avoid; page-break-after: avoid; margin: 0 0 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Introduction </span></p>
+</td>
+<td style="vertical-align:middle; width:40px; height:24px; padding:0; border:none"><p class="p_Normal" style="text-align: right; margin: 3px 6px 0 0;"><a href="formatter.html" class="topiclink" title="Jump to top of page"><img alt="Jump to top of page" title="Jump to top of page" width="15" height="16" style="margin:0 0 0 auto;width:15px;height:16px;border:none" src="__jump2top.png"/></a></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The GExperts code formatter is based on DelFor by Egbert van Nes. The following is from the original help file that came with DelFor (Nobody has yet found the time to update it, sorry. If you want to volunteer, contact the project lead.)</span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Delfor is a customizable source code formatter. It can improve the indentation, spacing, capitalization and the use of blank lines of Delphi source code. To do so the source code is parsed and lots of special constructs are tested. At default, the style of the Borland source code is followed closely, since this is the most widely accepted style. But formatting of Pascal code is much a matter of taste and debate. Therefore, some alternative rules are included.</span></p>
+<p class="p_Normal"><a id="limitations" class="hmanchor"></a><span style="font-size: 16pt; font-family: Verdana,Geneva,Arial,sans-serif;"> &nbsp; </span></p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#cfe7ff; border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:middle; height:24px; padding:0; border:none"><p class="p_Normal" style="page-break-inside: avoid; page-break-after: avoid; margin: 0 0 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Limitations and known problems </span></p>
+</td>
+<td style="vertical-align:middle; width:40px; height:24px; padding:0; border:none"><p class="p_Normal" style="text-align: right; margin: 3px 6px 0 0;"><a href="formatter.html" class="topiclink" title="Jump to top of page"><img alt="Jump to top of page" title="Jump to top of page" width="15" height="16" style="margin:0 0 0 auto;width:15px;height:16px;border:none" src="__jump2top.png"/></a></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Compiler {$IFDEF} + {$ELSE} directives may be nested to 3 levels and break into blocks of code. After the third nested level the right indentation is not guaranteed.</span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">After some options (aligning, adding line breaks) the indentation might be not correct. Rerunning DelFor can fix the problems.</span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">It is tried to indent function directives after function declarations. In some cases this does not happen.</span></p>
+<p class="p_Normal"><a id="optionsdialog" class="hmanchor"></a><span style="font-size: 16pt; font-family: Verdana,Geneva,Arial,sans-serif;"> &nbsp; </span></p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#cfe7ff; border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:middle; height:24px; padding:0; border:none"><p class="p_Normal" style="page-break-inside: avoid; page-break-after: avoid; margin: 0 0 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Options dialog </span></p>
+</td>
+<td style="vertical-align:middle; width:40px; height:24px; padding:0; border:none"><p class="p_Normal" style="text-align: right; margin: 3px 6px 0 0;"><a href="formatter.html" class="topiclink" title="Jump to top of page"><img alt="Jump to top of page" title="Jump to top of page" width="15" height="16" style="margin:0 0 0 auto;width:15px;height:16px;border:none" src="__jump2top.png"/></a></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">In the options dialog some formatting rules can be deactivated or customized.</span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">The following tab sheets are included:</span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Indent</span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Spacing</span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Line breaks</span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Capitalization</span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Align</span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Miscellaneous</span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: 0; padding-left: 13px; margin: 6px 6px 0 6px;"><span class="f_Normal" style="font-family: Arial,'Lucida Sans Unicode','Lucida Grande','Lucida Sans';display:inline-block;width:13px;margin-left:-13px">&#9642;</span><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Preview</span></p>
+<p class="p_Normal"><a id="indenttab" class="hmanchor"></a><span style="font-size: 16pt; font-family: Verdana,Geneva,Arial,sans-serif;"> &nbsp; </span></p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#cfe7ff; border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:middle; height:24px; padding:0; border:none"><p class="p_Normal" style="page-break-inside: avoid; page-break-after: avoid; margin: 0 0 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Indent tab </span></p>
+</td>
+<td style="vertical-align:middle; width:40px; height:24px; padding:0; border:none"><p class="p_Normal" style="text-align: right; margin: 3px 6px 0 0;"><a href="formatter.html" class="topiclink" title="Jump to top of page"><img alt="Jump to top of page" title="Jump to top of page" width="15" height="16" style="margin:0 0 0 auto;width:15px;height:16px;border:none" src="__jump2top.png"/></a></p>
+</td>
+</tr>
+</table>
+</div>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal"><span style="font-weight: bold;">Spaces per indent</span></p>
 <p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; Defines the number of spaces per indent. In all situations the same amount of spaces is used.</p>
@@ -318,161 +405,181 @@ function toggleToggles() {
 <p class="p_CodeExample" style="page-break-inside: avoid;"><span style="width:48px;display:inline-block">&nbsp;</span><span class="f_CodeExample">&nbsp;&nbsp;j;</span></p>
 <p class="p_CodeExample" style="page-break-inside: avoid;"><span style="width:48px;display:inline-block">&nbsp;</span><span class="f_CodeExample">{$ENDIF}</span></p>
 <p class="p_CodeExample" style="page-break-inside: avoid;"><span style="width:48px;display:inline-block">&nbsp;</span><span class="f_CodeExample">end;</span></p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"><span style="font-weight: bold; color: #0000ff;">Spacing tab</span></p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">In this tab sheet you can define the spacing of various operators.</p>
-<p class="p_Normal">The spacing of each operator has four values:</p>
-<p class="p_Normal">&nbsp;</p>
+<p class="p_Normal"><a id="spacingtab" class="hmanchor"></a><span style="font-size: 16pt; font-family: Verdana,Geneva,Arial,sans-serif;"> &nbsp; </span></p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#cfe7ff; border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:middle; height:24px; padding:0; border:none"><p class="p_Normal" style="page-break-inside: avoid; page-break-after: avoid; margin: 0 0 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Spacing tab </span></p>
+</td>
+<td style="vertical-align:middle; width:40px; height:24px; padding:0; border:none"><p class="p_Normal" style="text-align: right; margin: 3px 6px 0 0;"><a href="formatter.html" class="topiclink" title="Jump to top of page"><img alt="Jump to top of page" title="Jump to top of page" width="15" height="16" style="margin:0 0 0 auto;width:15px;height:16px;border:none" src="__jump2top.png"/></a></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">In this tab sheet you can define the spacing of various operators.</span></p>
 <p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample">&nbsp;</span></p>
-<div style="text-align: left; text-indent: 0; line-height: 1.0; page-break-inside: avoid; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="border:none; border-spacing:0;">
+<div style="text-align: left; text-indent: 0; line-height: 1.0; page-break-inside: avoid; background: #f4f4f4; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; border:solid 2px #000000; border-spacing:0; border-collapse:collapse;">
 <tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">None</p>
-</td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">Nospaces around the operator</p>
-</td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">1+1</p>
+<td colspan="3"  style="vertical-align:top; background-color:#C0C0C0; padding:4px; border:solid thin #000000;"><p class="p_Normal">The spacing of each operator has four values:</p>
 </td>
 </tr>
 <tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">Before only</p>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">None</p>
 </td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">Only spaces before the operator</p>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">Nospaces around the operator</p>
 </td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">1 +1</p>
-</td>
-</tr>
-<tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">After only</p>
-</td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">Only spaces after the operator</p>
-</td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">1+ 1</p>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">1+1</p>
 </td>
 </tr>
 <tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">Before and after</p>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">Before only</p>
 </td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">Spaces around the operator</p>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">Only spaces before the operator</p>
 </td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">1 + 1</p>
-</td>
-</tr>
-<tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">The operators are grouped in the following way:</p>
-<p class="p_Normal">Equals</p>
-</td>
-<td style="vertical-align:bottom; padding:0; border:none"><p class="p_Normal">:=</p>
-</td>
-<td style="vertical-align:top; padding:0; border:none"><br />
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">1 +1</p>
 </td>
 </tr>
 <tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">Math</p>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">After only</p>
 </td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">+ - / * &lt; &gt; = and as div downto in is or shl shr xor</p>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">Only spaces after the operator</p>
 </td>
-<td style="vertical-align:top; padding:0; border:none"><br />
-</td>
-</tr>
-<tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">Colon</p>
-</td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">:</p>
-</td>
-<td style="vertical-align:top; padding:0; border:none"><br />
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">1+ 1</p>
 </td>
 </tr>
 <tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">Comma</p>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">Before and after</p>
 </td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">,</p>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">Spaces around the operator</p>
 </td>
-<td style="vertical-align:top; padding:0; border:none"><br />
-</td>
-</tr>
-<tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">Left parenthesis</p>
-</td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">(</p>
-</td>
-<td style="vertical-align:top; padding:0; border:none"><br />
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">1 + 1</p>
 </td>
 </tr>
 <tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">Right parenthesis</p>
-</td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">)</p>
-</td>
-<td style="vertical-align:top; padding:0; border:none"><br />
+<td colspan="3"  style="vertical-align:top; background-color:#C0C0C0; padding:4px; border:solid thin #000000;"><p class="p_Normal">The operators are grouped in the following way:</p>
 </td>
 </tr>
 <tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">Left bracket</p>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">Equals</p>
 </td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">[</p>
+<td style="vertical-align:bottom; padding:4px; border:solid thin #000000;"><p class="p_Normal">:=</p>
 </td>
-<td style="vertical-align:top; padding:0; border:none"><br />
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><br />
 </td>
 </tr>
 <tr>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">Right bracket</p>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">Math</p>
 </td>
-<td style="vertical-align:top; padding:0; border:none"><p class="p_Normal">]</p>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">+ - / * &lt; &gt; = and as div downto in is or shl shr xor</p>
 </td>
-<td style="vertical-align:top; padding:0; border:none"><br />
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><br />
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">Colon</p>
+</td>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">:</p>
+</td>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><br />
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">Comma</p>
+</td>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">,</p>
+</td>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><br />
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">Left parenthesis</p>
+</td>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">(</p>
+</td>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><br />
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">Right parenthesis</p>
+</td>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">)</p>
+</td>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><br />
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">Left bracket</p>
+</td>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">[</p>
+</td>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><br />
+</td>
+</tr>
+<tr>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">Right bracket</p>
+</td>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><p class="p_Normal">]</p>
+</td>
+<td style="vertical-align:top; padding:4px; border:solid thin #000000;"><br />
 </td>
 </tr>
 </table>
 </div>
 <p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample">&nbsp;</span></p>
-<p class="p_Normal"><span style="font-weight: bold; color: #0000ff;">Line breaks tab</span></p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Always break lines</p>
+<p class="p_Normal"><a id="linebreakstab" class="hmanchor"></a><span style="font-size: 16pt; font-family: Verdana,Geneva,Arial,sans-serif;"> &nbsp; </span></p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#cfe7ff; border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:middle; height:24px; padding:0; border:none"><p class="p_Normal" style="page-break-inside: avoid; page-break-after: avoid; margin: 0 0 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Line breaks tab </span></p>
+</td>
+<td style="vertical-align:middle; width:40px; height:24px; padding:0; border:none"><p class="p_Normal" style="text-align: right; margin: 3px 6px 0 0;"><a href="formatter.html" class="topiclink" title="Jump to top of page"><img alt="Jump to top of page" title="Jump to top of page" width="15" height="16" style="margin:0 0 0 auto;width:15px;height:16px;border:none" src="__jump2top.png"/></a></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Always break lines</span></p>
 <p class="p_Normal">Line breaks can be added:</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">After var, type etc. :</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; procedure Test(var i: Integer; const t: Byte);</p>
-<p class="p_Normal">var t: Integer;</p>
-<p class="p_Normal">type Pword = ^Word;</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">procedure</span><span class="f_CodeExample">&nbsp;Test(</span><span class="f_CodeExample" style="font-weight: bold;">var</span><span class="f_CodeExample">&nbsp;i:&nbsp;Integer;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">const</span><span class="f_CodeExample">&nbsp;t:&nbsp;Byte);</span><br />
+<span class="f_CodeExample" style="font-weight: bold;">var</span><span class="f_CodeExample">&nbsp;t:&nbsp;Integer;</span><br />
+<span class="f_CodeExample" style="font-weight: bold;">type</span><span class="f_CodeExample">&nbsp;Pword&nbsp;=&nbsp;^Word;</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">becomes:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; procedure Test(var i: Integer; const t: Byte);</p>
-<p class="p_Normal">var</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; t: Integer;</p>
-<p class="p_Normal">type</p>
-<p class="p_Normal">Pword = ^Word;</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">procedure</span><span class="f_CodeExample">&nbsp;Test(</span><span class="f_CodeExample" style="font-weight: bold;">var</span><span class="f_CodeExample">&nbsp;i:&nbsp;Integer;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">const</span><span class="f_CodeExample">&nbsp;t:&nbsp;Byte);</span><br />
+<span class="f_CodeExample" style="font-weight: bold;">var</span><br />
+<span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;t:&nbsp;Integer;</span><br />
+<span class="f_CodeExample" style="font-weight: bold;">type</span><br />
+<span class="f_CodeExample">Pword&nbsp;=&nbsp;^Word;</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">Before end :</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; if i &gt; 10 then</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; begin</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; l :=3; end;</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">if</span><span class="f_CodeExample">&nbsp;i&nbsp;&gt;&nbsp;10&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">then</span><br />
+<span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">begin</span><br />
+<span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l&nbsp;:=3;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">end</span><span class="f_CodeExample">;</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">becomes:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; if i &gt; 10 then</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; begin</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; l :=3;</p>
-<p class="p_Normal">end;</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">if</span><span class="f_CodeExample">&nbsp;i&nbsp;&gt;&nbsp;10&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">then</span><br />
+<span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">begin</span><br />
+<span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l&nbsp;:=3;</span><br />
+<span class="f_CodeExample" style="font-weight: bold;">end</span><span class="f_CodeExample">;</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">After semi colons (except directives):</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; if i &gt; 10 then</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; begin</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; l :=3; k := 3; s:=3;</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; end;</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">if</span><span class="f_CodeExample">&nbsp;i&nbsp;&gt;&nbsp;10&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">then</span><br />
+<span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">begin</span><br />
+<span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l&nbsp;:=3;&nbsp;k&nbsp;:=&nbsp;3;&nbsp;s:=3;</span><br />
+<span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">end</span><span class="f_CodeExample">;</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">becomes:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; if i &gt; 10 then</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; begin</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; l :=3;</p>
-<p class="p_Normal">k := 3;</p>
-<p class="p_Normal">s:=3;</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; end;</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">if</span><span class="f_CodeExample">&nbsp;i&nbsp;&gt;&nbsp;10&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">then</span><br />
+<span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">begin</span><br />
+<span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;l&nbsp;:=3;</span><br />
+<span class="f_CodeExample">k&nbsp;:=&nbsp;3;</span><br />
+<span class="f_CodeExample">s:=3;</span><br />
+<span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">end</span><span class="f_CodeExample">;</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">Note: no lines are added after directives like virtual, abstract, message. A construct like procedure test(k: integer; l: word); forward; remains unchanged.</p>
 <p class="p_Normal">&nbsp;</p>
@@ -482,17 +589,17 @@ function toggleToggles() {
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">After then, else(except else if), do, of :</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; if i &gt; 10 then l :=3 else if t=0 then k := 3;</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; for i:=0 to count-1 do inc(k);</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">if</span><span class="f_CodeExample">&nbsp;i&nbsp;&gt;&nbsp;10&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">then</span><span class="f_CodeExample">&nbsp;l&nbsp;:=3&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">else</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">if</span><span class="f_CodeExample">&nbsp;t=0&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">then</span><span class="f_CodeExample">&nbsp;k&nbsp;:=&nbsp;3;</span><br />
+<span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">for</span><span class="f_CodeExample">&nbsp;i:=0&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">to</span><span class="f_CodeExample">&nbsp;count-1&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">do</span><span class="f_CodeExample">&nbsp;inc(k);</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">becomes</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"> &nbsp; &nbsp; &nbsp; &nbsp; if i &gt; 10 then</p>
-<p class="p_Normal">l :=3</p>
-<p class="p_Normal">else if t=0 then</p>
-<p class="p_Normal">k := 3;</p>
-<p class="p_Normal">for i:=0 to count-1 do</p>
-<p class="p_Normal">inc(k);</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">if</span><span class="f_CodeExample">&nbsp;i&nbsp;&gt;&nbsp;10&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">then</span><br />
+<span class="f_CodeExample">l&nbsp;:=3</span><br />
+<span class="f_CodeExample" style="font-weight: bold;">else</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">if</span><span class="f_CodeExample">&nbsp;t=0&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">then</span><br />
+<span class="f_CodeExample">k&nbsp;:=&nbsp;3;</span><br />
+<span class="f_CodeExample" style="font-weight: bold;">for</span><span class="f_CodeExample">&nbsp;i:=0&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">to</span><span class="f_CodeExample">&nbsp;count-1&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">do</span><br />
+<span class="f_CodeExample">inc(k);</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">Use the Wrap long lines option to break large if then statements. (Wrap text breaks text on then or do if possible).</p>
@@ -502,21 +609,21 @@ function toggleToggles() {
 <p class="p_Normal">Except single lines:</p>
 <p class="p_Normal">If this option is selected in combination with the previous option (After then, else(except else if), do, of :) then single lines after if then, on : are NOT processed:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">if i &gt; 10 then l := 3;</p>
-<p class="p_Normal">case i of</p>
-<p class="p_Normal">1: t := 0;</p>
-<p class="p_Normal">2: t := 3;</p>
-<p class="p_Normal">end;</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample" style="font-weight: bold;">if</span><span class="f_CodeExample">&nbsp;i&nbsp;&gt;&nbsp;10&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">then</span><span class="f_CodeExample">&nbsp;l&nbsp;:=&nbsp;3;</span><br />
+<span class="f_CodeExample" style="font-weight: bold;">case</span><span class="f_CodeExample">&nbsp;i&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">of</span><br />
+<span class="f_CodeExample">1:&nbsp;t&nbsp;:=&nbsp;0;</span><br />
+<span class="f_CodeExample">2:&nbsp;t&nbsp;:=&nbsp;3;</span><br />
+<span class="f_CodeExample" style="font-weight: bold;">end</span><span class="f_CodeExample">;</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">Never before then and do :</p>
-<p class="p_Normal">if i &gt; 10</p>
-<p class="p_Normal">then</p>
-<p class="p_Normal">l := 3;</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample" style="font-weight: bold;">if</span><span class="f_CodeExample">&nbsp;i&nbsp;&gt;&nbsp;10</span><br />
+<span class="f_CodeExample" style="font-weight: bold;">then</span><br />
+<span class="f_CodeExample">l&nbsp;:=&nbsp;3;</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">becomes</p>
-<p class="p_Normal">if i &gt; 10 then</p>
-<p class="p_Normal">l := 3;</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample" style="font-weight: bold;">if</span><span class="f_CodeExample">&nbsp;i&nbsp;&gt;&nbsp;10&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">then</span><br />
+<span class="f_CodeExample">l&nbsp;:=&nbsp;3;</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">Note: if the Wrap Long lines option is checked then still might be moved to a single line.</p>
 <p class="p_Normal">Remove double blank lines</p>
@@ -541,25 +648,33 @@ function toggleToggles() {
 <p class="p_Normal">1. &nbsp; &nbsp; &nbsp; breaks before and after</p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">The code:</p>
-<p class="p_Normal">if i &gt; 10 then begin l :=3</p>
-<p class="p_Normal">end;</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample" style="font-weight: bold;">if</span><span class="f_CodeExample">&nbsp;i&nbsp;&gt;&nbsp;10&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">then</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">begin</span><span class="f_CodeExample">&nbsp;l&nbsp;:=3</span><br />
+<span class="f_CodeExample" style="font-weight: bold;">end</span><span class="f_CodeExample">;</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">stays the same if option 1 is selected. If option 2 is checked:</p>
 <p class="p_Normal">2. hanging:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">if i &gt; 10 then begin</p>
-<p class="p_Normal">l :=3</p>
-<p class="p_Normal">end;</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample" style="font-weight: bold;">if</span><span class="f_CodeExample">&nbsp;i&nbsp;&gt;&nbsp;10&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">then</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">begin</span><br />
+<span class="f_CodeExample">l&nbsp;:=3</span><br />
+<span class="f_CodeExample" style="font-weight: bold;">end</span><span class="f_CodeExample">;</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">3. breaks before and after:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">if i &gt; 10 then</p>
-<p class="p_Normal">begin</p>
-<p class="p_Normal">l :=3</p>
-<p class="p_Normal">end;</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"><span style="font-weight: bold; color: #0000ff;">Capitalization tab</span></p>
-<p class="p_Normal">Reserved words/Standard directives</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample" style="font-weight: bold;">if</span><span class="f_CodeExample">&nbsp;i&nbsp;&gt;&nbsp;10&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">then</span><br />
+<span class="f_CodeExample" style="font-weight: bold;">begin</span><br />
+<span class="f_CodeExample">l&nbsp;:=3</span><br />
+<span class="f_CodeExample" style="font-weight: bold;">end</span><span class="f_CodeExample">;</span></p>
+<p class="p_Normal"><a id="capitalizationtab" class="hmanchor"></a><span style="font-size: 16pt; font-family: Verdana,Geneva,Arial,sans-serif;"> &nbsp; </span></p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#cfe7ff; border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:middle; height:24px; padding:0; border:none"><p class="p_Normal" style="page-break-inside: avoid; page-break-after: avoid; margin: 0 0 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Capitalization tab </span></p>
+</td>
+<td style="vertical-align:middle; width:40px; height:24px; padding:0; border:none"><p class="p_Normal" style="text-align: right; margin: 3px 6px 0 0;"><a href="formatter.html" class="topiclink" title="Jump to top of page"><img alt="Jump to top of page" title="Jump to top of page" width="15" height="16" style="margin:0 0 0 auto;width:15px;height:16px;border:none" src="__jump2top.png"/></a></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Reserved words/Standard directives</span></p>
 <p class="p_Normal">The reserved words and standard directives can be written in:</p>
 <p class="p_Normal">1. lower case</p>
 <p class="p_Normal">2. UPPER CASE</p>
@@ -585,11 +700,11 @@ function toggleToggles() {
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">Using this file</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">i := TRUE;</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample">i&nbsp;:=&nbsp;TRUE;</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">is always replaced with</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">i:= True;</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample">i:=&nbsp;True;</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">The file can be created manual or automatically. If there are reserved words included in the file, the Capitalization of reserved words option is always overridden by this option.</p>
 <p class="p_Normal">&nbsp;</p>
@@ -599,13 +714,13 @@ function toggleToggles() {
 <p class="p_Normal">Use file: In this mode the capitalization of all words is changed according to the notation in the capitalization file. If there are reserved words or standard directives included in the file, the notation of the file is always used.</p>
 <p class="p_Normal">Use file (except standard directivess: This option is the same as the previous one except that standard directives are only changed if these are used as identifiers: e.g.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">PriVate</p>
-<p class="p_Normal">property PriVate: Boolean; read FPrivate write FPrivate;</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample" style="font-weight: bold;">PriVate</span><br />
+<span class="f_CodeExample" style="font-weight: bold;">property</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">PriVate</span><span class="f_CodeExample">:&nbsp;Boolean;&nbsp;read&nbsp;FPrivate&nbsp;write&nbsp;FPrivate;</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">changes in:</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">private</p>
-<p class="p_Normal">property Private: Boolean; read FPrivate write FPrivate;</p>
+<p class="p_CodeExample" style="page-break-inside: avoid;"><span class="f_CodeExample" style="font-weight: bold;">private</span><br />
+<span class="f_CodeExample" style="font-weight: bold;">property</span><span class="f_CodeExample">&nbsp;</span><span class="f_CodeExample" style="font-weight: bold;">Private</span><span class="f_CodeExample">:&nbsp;Boolean;&nbsp;read&nbsp;FPrivate&nbsp;write&nbsp;FPrivate;</span></p>
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">if Private is included in the capitalization file and Standard directives are set to lower case</p>
 <p class="p_Normal">Add and use: This mode is a combination of Add new words mode and the Use file mode. New words are added automatically.</p>
@@ -622,59 +737,45 @@ function toggleToggles() {
 <p class="p_Normal">&nbsp;</p>
 <p class="p_Normal">The words with a proceeding * are not changed in the text. In advantage over deleting is that the Add words mode doesnt add these outcommented words.</p>
 <p class="p_Normal">&nbsp;</p>
-<p class="p_Normal">Edit button</p>
-<p class="p_Normal">Use this button to view and edit the file with the idetifiers, see: Edit file dialog.</p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"><span style="font-size: 14pt; font-family: 'Times New Roman',Times,Georgia,serif; font-weight: bold;">Align tab</span><br />
-<span style="font-size: 14pt; font-family: 'Times New Roman',Times,Georgia,serif; font-weight: bold;">&nbsp;</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; color: #0000ff;">Align simple end of line comments</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">Simple end of line comments are comments that are one line, with proceeding code. It can be aligned to a certain position (if possible). E.g.</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">&nbsp;</span><br />
-<span style="font-size: 12pt; font-family: 'Courier New',Courier,monospace; font-weight: bold;">var</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">i:integer; </span><span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; font-style: italic;">//comm</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">j</span><span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; font-style: italic;">{comm.}</span><span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">:integer; </span><span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; font-style: italic;">{comm.}</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">toooooooooooooooo, long:integer;</span><span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; font-style: italic;"> {comm.}</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; font-style: italic;">{comm.}</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; font-style: italic;">&nbsp;</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">changes in (position = 30):</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">&nbsp;</span><br />
-<span style="font-size: 12pt; font-family: 'Courier New',Courier,monospace; font-weight: bold;">var</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">i: integer; </span><span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; font-style: italic;">//comm</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">j: </span><span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; font-style: italic;">{comm.}</span><span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;"> integer; </span><span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; font-style: italic;">{comm.}</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">toooooooooooooooo, long: integer;</span><span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; font-style: italic;"> {comm.}</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; font-style: italic;">{comm.}</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; font-style: italic;">&nbsp;</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; font-weight: bold; color: #0000ff;">Align var/const</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">Var and const declarations can be aligned in the same way: e.g.</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">&nbsp;</span><br />
-<span style="font-size: 12pt; font-family: 'Courier New',Courier,monospace; font-weight: bold;">const</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">i =0;</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; font-weight: bold;">var</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">j:integer;</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">toooooooooooooooooooo, long:integer;</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">&nbsp;</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">&nbsp;</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">changes in (position = 30):</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">&nbsp;</span><br />
-<span style="font-size: 12pt; font-family: 'Courier New',Courier,monospace; font-weight: bold;">const</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">i = 0;</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; font-weight: bold;">var</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">j : integer;</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">toooooooooooooooooooooo, long: integer;</span></p>
-<p class="p_Normal">&nbsp;</p>
-<p class="p_Normal"><span style="font-size: 14pt; font-family: 'Times New Roman',Times,Georgia,serif; font-weight: bold;">Miscellaneous tab</span><br />
-<span style="font-size: 14pt; font-family: 'Times New Roman',Times,Georgia,serif; font-weight: bold;">&nbsp;</span><br />
-<span style="font-size: 14pt; font-family: 'Times New Roman',Times,Georgia,serif; font-weight: bold;">&nbsp;</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif; font-weight: bold; color: #0000ff;">Directives in source to prevent formatting</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">To prevent the formatter from formatting a block of text use the directives.</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">&nbsp;</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">Default:</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">&nbsp;</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">{(*}</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">... block of code that remains unchanged ...</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">{*)}</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">&nbsp;</span><br />
-<span style="font-size: 12pt; font-family: 'Times New Roman',Times,Georgia,serif;">You can change the default directives in any other codes (start not necessarily different from end). Of course, the directives should be a Delphi comment.</span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Edit button</span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Use this button to view and edit the file with the identifiers, see: Edit file dialog.</span></p>
+<p class="p_Normal"><a id="aligntab" class="hmanchor"></a><span style="font-size: 16pt; font-family: Verdana,Geneva,Arial,sans-serif;"> &nbsp; </span></p>
+<div style="text-align: left; text-indent: 0; padding: 0 0 0 0; margin: 0 0 0 0;"><table style="width:100%; background-color:#cfe7ff; border:none; border-spacing:0;">
+<tr>
+<td style="vertical-align:middle; height:24px; padding:0; border:none"><p class="p_Normal" style="page-break-inside: avoid; page-break-after: avoid; margin: 0 0 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Align tab </span></p>
+</td>
+<td style="vertical-align:middle; width:40px; height:24px; padding:0; border:none"><p class="p_Normal" style="text-align: right; margin: 3px 6px 0 0;"><a href="formatter.html" class="topiclink" title="Jump to top of page"><img alt="Jump to top of page" title="Jump to top of page" width="15" height="16" style="margin:0 0 0 auto;width:15px;height:16px;border:none" src="__jump2top.png"/></a></p>
+</td>
+</tr>
+</table>
+</div>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Align simple end of line comments</span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Simple end of line comments are comments that are one line, with proceeding code. It can be aligned to a certain position (if possible). E.g.</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">var</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">&nbsp;i:integer;&nbsp;//comm</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">&nbsp;j{comm.}:integer;&nbsp;{comm.}</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">&nbsp;toooooooooooooooo,&nbsp;long:integer;&nbsp;{comm.}</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">&nbsp;{comm.}</span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">changes in (position = 30):</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">var</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">&nbsp;i:&nbsp;integer;&nbsp;//comm</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">&nbsp;j:&nbsp;{comm.}&nbsp;integer;&nbsp;{comm.}</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">&nbsp;toooooooooooooooo,&nbsp;long:&nbsp;integer;&nbsp;{comm.}</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">&nbsp;{comm.}</span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif; font-weight: bold;">Align var/const</span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">Var and const declarations can be aligned in the same way: e.g.</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">const</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">&nbsp;i&nbsp;=0;</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">var</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">&nbsp;j:integer;</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">&nbsp;toooooooooooooooooooo,&nbsp;long:integer;</span></p>
+<p class="p_Normal" style="text-align: justify; margin: 6px 6px 0 6px;"><span style="font-family: Verdana,Geneva,Arial,sans-serif;">changes in (position = 30):</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">const</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">&nbsp;i&nbsp;=&nbsp;0;</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">var</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">&nbsp;j&nbsp;:&nbsp;integer;</span></p>
+<p class="p_CodeExample" style="page-break-inside: avoid; margin: 0 0 0 6px;"><span class="f_CodeExample">&nbsp;toooooooooooooooooooooo,&nbsp;long:&nbsp;integer;</span></p>
+<p class="p_Normal" style="text-align: justify; text-indent: -54px; margin: 12px 6px 30px 60px;"><span class="f_Comment"> </span></p>
 
 <!--ZOOMSTOP-->
 </div></div>

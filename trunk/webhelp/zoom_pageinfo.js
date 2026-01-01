@@ -93,7 +93,7 @@ pagedata = [ ["./ascii_chart.html","Experts &#62; ASCII Chart","ASCII Chart",""]
 ["./expert_manager.html","Experts &#62; Expert Manager","Expert Manager",""],
 ["./favorite_files.html","Experts &#62; Favorite Files","Favorite Files",""],
 ["./findcomponentreference.html","Experts &#62; Find Component Reference","Find Component Reference",""],
-["./formatter.html","Experts &#62; Formatter","Formatter",""],
+["./formatter.html","Experts &#62; Formatter","Formatter General",""],
 ["./generalconfiguration.html","GExperts &#62; Configuration &#62; General Configuration","General Configuration",""],
 ["./gexperts_configuration.html","GExperts &#62; Configuration &#62; GExperts Configuration","GExperts Configuration",""],
 ["./grep_regular_expressions.html","Experts &#62; Grep Regular Expressions","Grep Regular Expressions",""],
