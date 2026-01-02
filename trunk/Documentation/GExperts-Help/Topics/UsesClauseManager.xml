@@ -8,95 +8,95 @@
       <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Heading1" style="font-family:Verdana; font-size:8pt; color:#efa175;" translate="true">General </text></para>
     </header>
     <para styleclass="Normal"></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="10" colcount="2" style="width:100%; page-break-inside:avoid; background-color:#ebfafa; head-row-background-color:#ccffff; alt-row-background-color:none;">
+    <para styleclass="Normal"><table styleclass="NavigationTable" rowcount="10" colcount="2">
       <thead style="vertical-align:middle">
-        <td style="width:200px; height:22px; background-color:#e2e2e2;">
+        <td style="width:200px; height:22px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; color:#008080;" translate="true">this page .. </text></para>
         </td>
-        <td style="height:22px; background-color:#e2e2e2;">
+        <td style="height:22px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; color:#008080;" translate="true">see also .. </text></para>
         </td>
       </thead>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+        <td style="width:200px; height:20px;">
           <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Overview" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Overview</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:20px; background-color:#f4f4f4;">
+        <td style="height:20px;">
           <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; vertical-align:baseline; color:#efa175;" translate="true">General</text><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+        <td style="width:200px; height:20px;">
           <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="UsedUnits" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Used units</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:20px; background-color:#f4f4f4;">
+        <td style="height:20px;">
           <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="UsesClauseManagerOptions" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Configuration (Options)</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+        <td style="width:200px; height:20px;">
           <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Actions" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Available actions</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:20px; background-color:#f4f4f4;">
+        <td style="height:20px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+        <td style="width:200px; height:20px;">
           <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Popup" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Context menu and ..</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:20px; background-color:#f4f4f4;">
+        <td style="height:20px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:19px; background-color:#f4f4f4;">
+        <td style="width:200px; height:19px;">
           <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="AvailableUnits" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Available units</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:19px; background-color:#f4f4f4;">
+        <td style="height:19px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:19px; background-color:#f4f4f4;">
+        <td style="width:200px; height:19px;">
           <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="PagesA" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Tabs &quot;Search path&quot;..</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:19px; background-color:#f4f4f4;">
+        <td style="height:19px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:19px; background-color:#f4f4f4;">
+        <td style="width:200px; height:19px;">
           <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="PagesB" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Tab &quot;Favorite&quot;</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:19px; background-color:#f4f4f4;">
+        <td style="height:19px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:19px; background-color:#f4f4f4;">
+        <td style="width:200px; height:19px;">
           <para styleclass="Normal" style="margin-left:18px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="PagesC" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Tab &quot;Identifiers&quot;</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:19px; background-color:#f4f4f4;">
+        <td style="height:19px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+        <td style="width:200px; height:20px;">
           <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Statusbar" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Statusbar</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:20px; background-color:#f4f4f4;">
+        <td style="height:20px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
     </table></para>
     <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+    <para styleclass="Normal"><table styleclass="SectionHeader" rowcount="1" colcount="2">
       <tr style="vertical-align:middle">
-        <td style="height:24px; background-color:#cfe7ff;">
+        <td style="height:24px;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Overview </text></para>
         </td>
-        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+        <td style="width:40px; height:24px;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
@@ -106,7 +106,7 @@
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The check mark </text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:italic; text-decoration:none; text-transform:none; vertical-align:baseline; color:#800000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Add fast (to interface)</text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true"> or </text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:italic; text-decoration:none; text-transform:none; vertical-align:baseline; color:#800000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Add fast (to implementation)</text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true"> changes the behavior of the </text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:italic; text-decoration:none; text-transform:none; vertical-align:baseline; color:#800000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">OK</text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true"> button. If checked, it adds the selected unit to the uses clause given in the caption and closes the dialog. Which uses clause is given in the caption depends on where the cursor in the code editor is located. If it is in the interface section, the caption says &quot;to interface&quot;, if it is in the implementation section, the caption says &quot;to implementation&quot;. </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">The </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Open Unit</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> button opens the selected unit in the code editor and closes the dialog. Note that there is a shortcut </text><text styleclass="Normal" style="font-family:Verdana; font-style:italic; color:#800000;" translate="true">Ctrl+O</text><text styleclass="Normal" style="font-family:Verdana;" translate="true"> for it, or you can double click an entry. In this case the unit lists in the source will not be changed. </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The </text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:italic; text-decoration:none; text-transform:none; vertical-align:baseline; color:#800000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">OK</text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true"> button or </text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:italic; text-decoration:none; text-transform:none; vertical-align:baseline; color:#800000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Enter</text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true"> closes the dialog and commits your changes, the </text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:italic; text-decoration:none; text-transform:none; vertical-align:baseline; color:#800000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Cancel</text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true"> button or </text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:italic; text-decoration:none; text-transform:none; vertical-align:baseline; color:#800000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Escape</text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true"> closes the dialog and discards any changes. </text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="2" colcount="2" style="width:100%; background-color:#f4f4f4;">
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="NoticeBox" rowcount="2" colcount="2">
       <tr style="vertical-align:top">
         <td style="width:48px;">
           <para styleclass="Normal" style="margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; color:#ff0000;" translate="true">Notice</text></para>
@@ -117,7 +117,7 @@
           </list>
         </td>
       </tr>
-      <tr style="vertical-align:top">
+      <tr>
         <td style="width:48px;">
           <para styleclass="Normal" style="margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">&#32;</text></para>
         </td>
@@ -130,12 +130,12 @@
     </table></para>
     <para styleclass="Normal" style="text-align:center; margin-top:30px; margin-bottom:24px;"><image src="Uses Clause Manager.png" imagestyleclass="Default" scale="78.08%" width="634" height="409" styleclass="Image Caption" figurelistinclude="0"></image></para>
     <para styleclass="Normal"><anchor id="UsedUnits" styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt; vertical-align:baseline;" translate="true"> &#160; </text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+    <para styleclass="Normal"><table styleclass="SectionHeader" rowcount="1" colcount="2">
       <tr style="vertical-align:middle">
-        <td style="height:24px; background-color:#cfe7ff;">
+        <td style="height:24px;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold; vertical-align:baseline;" translate="true">Used units</text><text styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;" translate="true"> (left part of dialog) </text></para>
         </td>
-        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+        <td style="width:40px; height:24px;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
@@ -155,7 +155,7 @@
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">The units to be added are usually selected from the lists placed on the right part of the dialog and </text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:italic; text-decoration:none; text-transform:none; vertical-align:baseline; color:#800000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">added</text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true"> from there to the uses lists; for further information see the next paragraph. Alternatively, you can drag files from the Windows Explorer to any of these two lists to </text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:italic; text-decoration:none; text-transform:none; vertical-align:baseline; color:#800000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">add</text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true"> a unit. </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Alternatively to using the Move button it is also possible to move entries with drag and drop between the two uses lists. </text></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Further below the lists there are two buttons to </text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:italic; text-decoration:none; text-transform:none; vertical-align:baseline; color:#800000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Add Unit Pre</text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">fixes or </text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:italic; text-decoration:none; text-transform:none; vertical-align:baseline; color:#800000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Remove Unit Prefixes</text><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#000000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true"> (name space qualifiers), e.g. they convert &quot;Registry&quot; to &quot;System.Win.Registry&quot; and vice versa. This functionality is helpful for people who develop software for multiple Delphi versions including those ancient versions that did not support name spaces. </text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="3" colcount="2" style="width:100%; background-color:#f4f4f4;">
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="NoticeBox" rowcount="3" colcount="2">
       <tr style="vertical-align:top">
         <td style="width:48px;">
           <para styleclass="Normal" style="margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass=" " style="font-family:Verdana; font-size:10pt; font-weight:normal; font-style:normal; text-decoration:none; text-transform:none; vertical-align:baseline; color:#ff0000; background-color:transparent; letter-spacing:normal; letter-scaling:100%;" translate="true">Notice</text></para>
@@ -230,12 +230,12 @@
       </tr>
     </table></para>
     <para styleclass="Normal"><anchor id="AvailableUnits" styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt; vertical-align:baseline;" translate="true"> &#160; </text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+    <para styleclass="Normal"><table styleclass="SectionHeader" rowcount="1" colcount="2">
       <tr style="vertical-align:middle">
-        <td style="height:24px; background-color:#cfe7ff;">
+        <td style="height:24px;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold; vertical-align:baseline;" translate="true">Available units</text><text styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;" translate="true"> (right part of dialog) </text></para>
         </td>
-        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+        <td style="width:40px; height:24px;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
@@ -402,7 +402,7 @@
         </td>
       </tr>
     </table></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="3" colcount="2" style="width:100%; background-color:#f4f4f4;">
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="NoticeBox" rowcount="3" colcount="2">
       <tr style="vertical-align:top">
         <td rowspan="3" style="width:48px;">
           <para styleclass="Normal" style="margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; color:#ff0000;" translate="true">Notice</text></para>
@@ -429,18 +429,18 @@
       </tr>
     </table></para>
     <para styleclass="Normal"><anchor id="Statusbar" styleclass="Normal" style="font-family:Verdana;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+    <para styleclass="Normal"><table styleclass="SectionHeader" rowcount="1" colcount="2">
       <tr style="vertical-align:middle">
-        <td style="height:24px; background-color:#cfe7ff;">
+        <td style="height:24px;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold; vertical-align:baseline;" translate="true">Statusbar</text><text styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+        <td style="width:40px; height:24px;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
     </table></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; vertical-align:baseline;" translate="true">The status bar always shows the full path of the selected unit in the 1st panel; the second panel shows the files line number of the currently selected identifiers declaration (for &quot;Identifiers&quot; tab only). Right clicking on the status bar shows a context menu with the following menu items: </text></para>
-    <para styleclass="List" style="text-align:justify; text-indent:0px; margin-top:6px; margin-right:6px; margin-bottom:0px; margin-left:6px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table styleclass="Default" rowcount="3" colcount="2" style="width:100%; background-color:#f4f4f4;">
+    <para styleclass="List" style="text-align:justify; text-indent:0px; margin-top:6px; margin-right:6px; margin-bottom:0px; margin-left:6px; line-height:1.00; background-color:transparent; white-space:normal; page-break-inside:auto; page-break-after:auto; border:none; tabstops:none;"><table styleclass="NoticeBox" rowcount="3" colcount="2">
       <tr style="vertical-align:top">
         <td rowspan="3" style="width:238px;">
           <para styleclass="Normal" style="text-align:center; margin-top:6px; margin-right:6px; margin-left:6px;"><image src="Uses Clause Manager, Popup#5.png" imagestyleclass="Default" scale="100.00%" styleclass="Image Caption" figurelistinclude="0"></image></para>

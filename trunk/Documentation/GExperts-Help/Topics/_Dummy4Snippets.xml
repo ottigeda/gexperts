@@ -10,84 +10,84 @@
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" translate="true">&#32;</text></para>
     <para styleclass="Normal"><line style="height:10px; color:#ff0000;" /></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" translate="true">&#32;</text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="10" colcount="2" style="width:100%; page-break-inside:avoid; background-color:#ebfafa; head-row-background-color:#ccffff; alt-row-background-color:none;">
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="NavigationTable" rowcount="10" colcount="2">
       <thead style="vertical-align:middle">
-        <td style="width:200px; height:22px; background-color:#e2e2e2;">
+        <td style="width:200px; height:22px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; color:#008080;" translate="true">this page .. </text></para>
         </td>
-        <td style="height:22px; background-color:#e2e2e2;">
+        <td style="height:22px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; color:#008080;" translate="true">see also .. </text></para>
         </td>
       </thead>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+        <td style="width:200px; height:20px;">
           <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="Overview" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Overview</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:20px; background-color:#f4f4f4;">
+        <td style="height:20px;">
           <para styleclass="Heading1" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; font-weight:bold; vertical-align:baseline; color:#efa175;" translate="true">General</text><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+        <td style="width:200px; height:20px;">
           <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="UsingTheGrid" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Using the string grid</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:20px; background-color:#f4f4f4;">
+        <td style="height:20px;">
           <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="ToDoGrid10Rules" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Rules of syntax analysis</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:19px; background-color:#f4f4f4;">
+        <td style="width:200px; height:19px;">
           <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="QuickSelectRows" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Quick select rows</link></para>
         </td>
-        <td style="height:19px; background-color:#f4f4f4;">
+        <td style="height:19px;">
           <para styleclass="Normal" style="margin-left:6px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="ToDoGrid20Options" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Configuration (Options)</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+        <td style="width:200px; height:20px;">
           <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="SelectRows" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Select rows</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:20px; background-color:#f4f4f4;">
+        <td style="height:20px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+        <td style="width:200px; height:20px;">
           <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="HighlightRows" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Highlight rows</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:20px; background-color:#f4f4f4;">
+        <td style="height:20px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+        <td style="width:200px; height:20px;">
           <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="SortGrid" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Sort grid</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:20px; background-color:#f4f4f4;">
+        <td style="height:20px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+        <td style="width:200px; height:20px;">
           <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="FilterGrid" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Filter grid</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:20px; background-color:#f4f4f4;">
+        <td style="height:20px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+        <td style="width:200px; height:20px;">
           <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="AdjustColumnWidth" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Adjust column width</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:20px; background-color:#f4f4f4;">
+        <td style="height:20px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
       <tr style="vertical-align:middle">
-        <td style="width:200px; height:20px; background-color:#f4f4f4;">
+        <td style="width:200px; height:20px;">
           <para styleclass="Normal" style="margin-left:19px;"><link displaytype="text" defaultstyle="true" type="topiclink" href="" anchor="HideColumns" styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">Hide columns</link><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
-        <td style="height:20px; background-color:#f4f4f4;">
+        <td style="height:20px;">
           <para styleclass="Normal" style="margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:8pt; vertical-align:baseline;" translate="true">&#32;</text></para>
         </td>
       </tr>
@@ -96,12 +96,12 @@
     <para styleclass="Normal"><line style="height:10px; color:#ff0000;" /></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" translate="true">&#32;</text></para>
     <para styleclass="Normal"><anchor id="Overview" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+    <para styleclass="Normal"><table styleclass="SectionHeader" rowcount="1" colcount="2">
       <tr style="vertical-align:middle">
-        <td style="height:24px; background-color:#cfe7ff;">
+        <td style="height:24px;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Overview </text></para>
         </td>
-        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+        <td style="width:40px; height:24px;">
           <para styleclass="Normal" style="text-align:right; margin-top:4px; margin-right:4px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
@@ -110,12 +110,12 @@
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana;" translate="true">xx </text></para>
     <para styleclass="Normal" style="text-align:center; margin-top:30px; margin-right:6px; margin-bottom:24px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; font-size:20pt; color:#ff0000;" translate="true">Picture</text></para>
     <para styleclass="Normal"><anchor id="aa" styleclass="Normal" style="font-family:Verdana; font-weight:bold;"></anchor><text styleclass="Normal" style="font-family:Verdana; font-size:16pt;" translate="true"> &#160; </text></para>
-    <para styleclass="Normal"><table styleclass="Default" rowcount="1" colcount="2" style="width:100%; cell-padding:0px; cell-spacing:0px; background-color:#cfe7ff;">
+    <para styleclass="Normal"><table styleclass="SectionHeader" rowcount="1" colcount="2">
       <tr style="vertical-align:middle">
-        <td style="height:24px; background-color:#cfe7ff;">
+        <td style="height:24px;">
           <para styleclass="Normal" style="margin-left:6px; page-break-inside:avoid; page-break-after:avoid;"><text styleclass="Normal" style="font-family:Verdana; font-weight:bold;" translate="true">Xxx </text></para>
         </td>
-        <td style="width:40px; height:24px; background-color:#cfe7ff;">
+        <td style="width:40px; height:24px;">
           <para styleclass="Normal" style="text-align:right; margin-top:3px; margin-right:6px;"><link displaytype="image" src="__Jump2Top.png" type="topiclink" href=""><title translate="true">Jump to top of page</title></link></para>
         </td>
       </tr>
@@ -155,7 +155,7 @@
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" translate="true">&#32;</text></para>
     <para styleclass="Normal"><line style="height:10px; color:#ff0000;" /></para>
     <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><text styleclass="Normal" translate="true">&#32;</text></para>
-    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="Default" rowcount="2" colcount="2" style="width:100%; background-color:#f4f4f4;">
+    <para styleclass="Normal" style="text-align:justify; margin-top:6px; margin-right:6px; margin-left:6px;"><table styleclass="NoticeBox" rowcount="2" colcount="2">
       <tr style="vertical-align:top">
         <td style="width:48px;">
           <para styleclass="Normal" style="margin-top:3px; margin-bottom:3px; margin-left:6px;"><text styleclass="Normal" style="font-family:Verdana; color:#ff0000;" translate="true">Notice</text></para>

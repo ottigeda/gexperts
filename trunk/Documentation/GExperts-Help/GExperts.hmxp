@@ -117,6 +117,15 @@
       <tablestyleclass name="Default">
         <style-set media="screen">width:auto; cell-padding:0px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:none; head-row-background-color:none; alt-row-background-color:none;</style-set>
       </tablestyleclass>
+      <tablestyleclass name="NavigationTable">
+        <style-set media="screen">width:100%; cell-padding:0px; cell-spacing:0px; page-break-inside:avoid; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:#f4f4f4; head-row-background-color:#e2e2e2; alt-row-background-color:none;</style-set>
+      </tablestyleclass>
+      <tablestyleclass name="SectionHeader">
+        <style-set media="screen">width:100%; cell-padding:0px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:#cfe7ff; head-row-background-color:none;</style-set>
+      </tablestyleclass>
+      <tablestyleclass name="NoticeBox">
+        <style-set media="screen">width:100%; cell-padding:0px; cell-spacing:0px; page-break-inside:auto; border-width:0px; border-spacing:0px; cell-border-width:0px; border-style:none; background-color:#f4f4f4; head-row-background-color:none;</style-set>
+      </tablestyleclass>
       <imagestyleclass name="Default"/>
     </styleclasses>
     <config-group name="project">
