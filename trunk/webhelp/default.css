@@ -83,6 +83,51 @@ p, p.p_Normal, div.p_Normal, li.p_Normal /* Normal */
  font-size: 10pt;
 }
 /* Table styles */
+table.NavigationTable {
+ width: 100%;
+ background-color: #F4F4F4;
+ border: none;
+ border-spacing: 0;
+}
+table.NavigationTable tr.NavigationTable {
+ text-align: left;
+}
+table.NavigationTable th.NavigationTable, table.NavigationTable td.NavigationTable {
+ vertical-align: top;
+ padding: 0;
+ border: none;
+}
+table.NavigationTable th.NavigationTable {
+ background-color:#e2e2e2;
+}
+table.SectionHeader {
+ width: 100%;
+ background-color: #CFE7FF;
+ border: none;
+ border-spacing: 0;
+}
+table.SectionHeader tr.SectionHeader {
+ text-align: left;
+}
+table.SectionHeader th.SectionHeader, table.SectionHeader td.SectionHeader {
+ vertical-align: top;
+ padding: 0;
+ border: none;
+}
+table.NoticeBox {
+ width: 100%;
+ background-color: #F4F4F4;
+ border: none;
+ border-spacing: 0;
+}
+table.NoticeBox tr.NoticeBox {
+ text-align: left;
+}
+table.NoticeBox th.NoticeBox, table.NoticeBox td.NoticeBox {
+ vertical-align: top;
+ padding: 0;
+ border: none;
+}
 div.hmrotate90  { display:inline-block; -webkit-writing-mode: vertical-rl; -ms-writing-mode: tb-rl; writing-mode: vertical-rl; }
 div.hmrotate270 { display:inline-block; -webkit-writing-mode: vertical-rl; -ms-writing-mode: tb-rl; writing-mode: vertical-rl; transform: rotate(180deg); }
 
