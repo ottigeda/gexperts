@@ -81,11 +81,27 @@ const
   HC_NOREMOVE = 3;
 {$IFEND}
 
+function GetShiftState: TShiftState;
+var
+  LState: SmallInt;
+begin
+  Result := [];
+
+  LState := GetAsyncKeyState(VK_CONTROL) and $8000;
+  if LState <> 0 then Include(Result, ssCtrl);
+
+  LState := GetAsyncKeyState(VK_SHIFT) and $8000;
+  if LState <> 0 then Include(Result, ssShift);
+
+  LState := GetAsyncKeyState(VK_MENU) and $8000;
+  if LState <> 0 then Include(Result, ssAlt);
+end;
+
 function KeyboardHookProc(Code: Integer; wparam: wparam; lparam: lparam): LRESULT; stdcall;
 begin
   if Assigned(TheExpert) and TheExpert.Active then begin
     if Code = 0 then begin
-      if wparam = VK_F12 then begin
+      if (wparam = VK_F12) and (GetShiftState = []) then begin
 {$IFOPT D+}SendDebugFmt('F12: Code: %d WordParam: %d LongParam: %s', [Code, wparam, TBits32.Create(UInt32(lparam)).AsString(bgNibble)]); {$ENDIF}
         if UInt32(lparam) and UInt32(1 shl 31) <> 0 then begin
 {$IFOPT D+}SendDebugFmt('F12 was released. Code: %d WordParam: %d LongParam: %d', [Code, wparam, lparam]); {$ENDIF}
