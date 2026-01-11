@@ -61,7 +61,7 @@ uses
   GX_DbugIntf in '..\..\Source\Utils\GX_DbugIntf.pas',
   DelForExUsesTests in 'DelForExUsesTests.pas';
 
-function IsConsoleMode: Boolean;
+function IsConsoleMode(out _Filename: string): Boolean;
 var
   i: Integer;
 begin
@@ -69,17 +69,43 @@ begin
   for i := 1 to ParamCount do begin
     if SameText(ParamStr(i), '-c') or SameText(ParamStr(i), '--console') then begin
       Result := True;
+      if i < ParamCount then
+        _Filename := ParamStr(i + 1);
       Exit;
     end;
   end;
 end;
 
+const
+  ATTACH_PARENT_PROCESS = DWORD(-1);
+
+procedure Main;
+var
+  OutputFileName: string;
+  Res: TTestResult;
 begin
   ReportMemoryLeaksOnShutdown := True;
-  if IsConsoleMode then begin
-    AllocConsole;
-    TextTestRunner.RunRegisteredTests(rxbHaltOnFailures);
+  if IsConsoleMode(OutputFileName) then begin
+    if not AttachConsole(ATTACH_PARENT_PROCESS) then
+      AllocConsole;
+    if OutputFileName <> '' then begin
+      WriteLn('Writing results to file ' + OutputFileName);
+      AssignFile(Output, OutputFileName);
+      Rewrite(Output);
+    end;
+    Res := TextTestRunner.RunRegisteredTests(rxbContinue);
+    try
+      ExitCode := Res.ErrorCount + Res.FailureCount;
+    finally
+      FreeAndNil(Res);
+    end;
+    if OutputFileName <> '' then
+      CloseFile(Output);
   end else
     TGUITestRunner.RunRegisteredTests;
+end;
+
+begin
+  Main;
 end.
 
