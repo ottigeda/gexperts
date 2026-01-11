@@ -8,7 +8,7 @@ implementation
 
 procedure bla;
 begin
-{$IFDEF DEBUG}WriteLn('This is debug mode.');{$ENDIF}
+{$IFDEF DEBUG}WriteLn('This is debug mode.'); {$ENDIF}
 end;
 
 end.
