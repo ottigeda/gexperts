@@ -72,6 +72,7 @@
         <DCCReference Include="..\dunit\GUITestRunner.pas"/>
         <DCCReference Include="DelForExTestOldNew.pas"/>
         <DCCReference Include="DelForExTestFiles.pas"/>
+        <DCCReference Include="..\..\Projects\StandAlone\common\GX_CodeFormatterGXConfigWrapper.pas"/>
         <DCCReference Include="..\..\Source\Formatter\GX_CodeFormatterDefaultSettings.pas"/>
         <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterTokenList.pas"/>
         <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterTypes.pas"/>

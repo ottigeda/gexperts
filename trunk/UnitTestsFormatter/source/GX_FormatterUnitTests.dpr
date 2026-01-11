@@ -36,11 +36,15 @@
 program GX_FormatterUnitTests;
 
 uses
+  Windows,
+  SysUtils,
   DUnitConsts in '..\dunit\DUnitConsts.pas',
   TestFramework in '..\dunit\TestFramework.pas',
   GUITestRunner in '..\dunit\GUITestRunner.pas',
+  TextTestRunner in '..\dunit\TextTestRunner.pas',
   DelForExTestOldNew in 'DelForExTestOldNew.pas',
   DelForExTestFiles in 'DelForExTestFiles.pas',
+  GX_CodeFormatterGXConfigWrapper in '..\..\Projects\StandAlone\common\GX_CodeFormatterGXConfigWrapper.pas',
   GX_CodeFormatterDefaultSettings in '..\..\Source\Formatter\GX_CodeFormatterDefaultSettings.pas',
   GX_CodeFormatterTokenList in '..\..\Source\Formatter\engine\GX_CodeFormatterTokenList.pas',
   GX_CodeFormatterTypes in '..\..\Source\Formatter\engine\GX_CodeFormatterTypes.pas',
@@ -57,8 +61,25 @@ uses
   GX_DbugIntf in '..\..\Source\Utils\GX_DbugIntf.pas',
   DelForExUsesTests in 'DelForExUsesTests.pas';
 
+function IsConsoleMode: Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  for i := 1 to ParamCount do begin
+    if SameText(ParamStr(i), '-c') or SameText(ParamStr(i), '--console') then begin
+      Result := True;
+      Exit;
+    end;
+  end;
+end;
+
 begin
   ReportMemoryLeaksOnShutdown := True;
-  TGUITestRunner.runRegisteredTests;
+  if IsConsoleMode then begin
+    AllocConsole;
+    TextTestRunner.RunRegisteredTests(rxbHaltOnFailures);
+  end else
+    TGUITestRunner.RunRegisteredTests;
 end.
 

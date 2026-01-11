@@ -6,7 +6,7 @@ set iscc="C:\Program Files (x86)\Inno Setup 5\ISCC.exe"
 if not exist %iscc% goto ISerror
 
 call :readver
-rem echo %result%
+echo %result%
 set version=%result%
 
 rem set instver=13D
@@ -14,9 +14,9 @@ set instver=%version%
 call :getdate
 set special=%dateYYYYMMDD%
 
-rem call :makeinst RS120 RS12
-rem pause
-rem goto :eof
+call :makeinst RS130 RS13
+pause
+goto :eof
 
 call :makeinst Delphi6 D6
 call :makeinst Delphi7 D7
