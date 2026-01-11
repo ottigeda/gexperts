@@ -320,10 +320,12 @@ begin
   Result := RunTest(Tests, exitBehavior);
 {$IFNDEF CLR}
   if not Result.WasSuccessful then begin
-    ExitCode := Result.ErrorCount + Result.FailureCount;
-    FreeAndNil(Result);
-    Tests := nil;
-    System.Halt(ExitCode);
+    if exitBehavior = rxbHaltOnFailures then begin
+      ExitCode := Result.ErrorCount + Result.FailureCount;
+      FreeAndNil(Result);
+      Tests := nil;
+      System.Halt(ExitCode);
+    end;
   end;
 {$ENDIF}
 end;
