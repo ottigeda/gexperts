@@ -9,6 +9,7 @@ interface
 uses
   SysUtils,
   Classes,
+  Graphics,
   Forms,
   ToolsAPI,
   GX_StringList;
@@ -33,6 +34,9 @@ function GxOtaGetModule(const _Filename: string): IOTAModule;
 
 // Transform dfm, hpp, etc. references to the base .pas/cpp file name
 function GxOtaGetBaseModuleFileName(const FileName: string): string;
+
+// Get the configured editor font.
+procedure GxOtaGetEditorFont(const AFont: TFont; ASizeAdjust: Integer = 0);
 
 // Returns the IOTASourceEditor interface for a module
 // if there is a file that supports one; returns nil
@@ -282,6 +286,10 @@ begin
   Result := '';
 end;
 
+procedure GxOtaGetEditorFont(const AFont: TFont; ASizeAdjust: Integer = 0);
+begin
+  // do nothing for now
+end;
 function GxOtaGetProjectGroupFileName: string;
 begin
   Result := '';

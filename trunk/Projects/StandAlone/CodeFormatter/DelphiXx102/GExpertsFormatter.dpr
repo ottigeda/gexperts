@@ -2,6 +2,7 @@ program GExpertsFormatter;
 
 uses
   Forms,
+  ToolsAPI in '..\..\common\ToolsAPI.pas',
   w_GExpertsFormatterMain in 'w_GExpertsFormatterMain.pas' {f_GExpertsFormatterMain},
   w_GExpertsFormatterAbout in 'w_GExpertsFormatterAbout.pas' {f_GExpertsFormatterAbout},
   GX_CodeFormatterDefaultSettings in '..\..\..\..\Source\Formatter\GX_CodeFormatterDefaultSettings.pas',
@@ -23,9 +24,10 @@ uses
   GX_EnhancedEditor in '..\..\..\..\ExternalSource\GX_EnhancedEditor.pas',
   GX_SynMemoUtils in 'GX_SynMemoUtils.pas',
   GX_CodeFormatterEditCapitalization in '..\..\..\..\Source\Formatter\GX_CodeFormatterEditCapitalization.pas' {fmCodeFormatterEditCapitalization},
-  GX_OtaUtils in 'GX_OtaUtils.pas',
+  GX_OtaUtils in '..\..\common\GX_OtaUtils.pas',
+  GX_VerDepConst in '..\..\..\..\Source\Framework\GX_VerDepConst.pas',
   GX_IndexTypes in '..\..\..\..\Source\Utils\GX_IndexTypes.pas',
-  GX_CodeFormatterGXConfigWrapper in 'GX_CodeFormatterGXConfigWrapper.pas',
+  GX_CodeFormatterGXConfigWrapper in '..\..\common\GX_CodeFormatterGXConfigWrapper.pas',
   GX_DbugIntf in '..\..\..\..\Source\Utils\GX_DbugIntf.pas';
 
 {$R *.res}

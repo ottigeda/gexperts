@@ -1,7 +1,7 @@
 program GExpertsGrep;
 
 uses
-  ToolsAPI in 'ToolsAPI.pas',
+  ToolsAPI in '..\..\common\ToolsAPI.pas',
   DropSource in '..\..\..\..\ExternalSource\DropSource.pas',
   GrepMain in 'GrepMain.pas',
   GX_Logging in '..\..\..\..\Source\Framework\GX_Logging.pas',
@@ -40,7 +40,7 @@ uses
   GX_LibrarySource in 'GX_LibrarySource.pas',
   GX_MemoEscFix in '..\..\..\..\Source\Utils\GX_MemoEscFix.pas',
   GX_MessageBox in '..\..\..\..\Source\Framework\GX_MessageBox.pas' {fmGxMessageBox},
-  GX_OtaUtils in 'GX_OtaUtils.pas',
+  GX_OtaUtils in '..\..\common\GX_OtaUtils.pas',
   GX_Replace in '..\..\..\..\Source\Grep\GX_Replace.pas',
   GX_SharedImages in '..\..\..\..\Source\Framework\GX_SharedImages.pas' {dmSharedImages: TDataModule},
   GX_StringList in '..\..\..\..\Source\Utils\GX_StringList.pas',
