@@ -299,24 +299,33 @@ begin
     rxbPause:
       try
         writeln(sPressReturn);
-        readln
+        readln;
       except
       end;
     rxbHaltOnFailures:
-{$IFNDEF CLR}
-      with Result do
-      begin
-        if not WasSuccessful then
-          System.Halt(ErrorCount+FailureCount);
-      end
-{$ENDIF}
+      if not Result.wasSuccessful then
+        Exit;
     // else fall through
   end;
 end;
 
 function RunRegisteredTests(exitBehavior: TRunnerExitBehavior = rxbContinue): TTestResult;
+var
+  Tests: ITestSuite;
+{$IFNDEF CLR}
+  ExitCode: Integer;
+{$ENDIF}
 begin
-   Result := RunTest(registeredTests, exitBehavior);
+  Tests := RegisteredTests;
+  Result := RunTest(Tests, exitBehavior);
+{$IFNDEF CLR}
+  if not Result.WasSuccessful then begin
+    ExitCode := Result.ErrorCount + Result.FailureCount;
+    FreeAndNil(Result);
+    Tests := nil;
+    System.Halt(ExitCode);
+  end;
+{$ENDIF}
 end;
 
 
