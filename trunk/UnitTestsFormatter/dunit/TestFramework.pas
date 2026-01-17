@@ -3078,13 +3078,12 @@ class function TConverter<T>.ValueToString(Info: PTypeInfo; Size: Cardinal;
   Value: TValueData): string;
 {$IF DEFINED(MSWINDOWS) OR DEFINED(POSIX)}
 var
-  I, MinValue: Integer;
+  I: Integer;
   LType: TRttiType;
   LContext: TRttiContext;
   LField: TRttiField;
   LValue: TValue;
   LTypeData: PTypeData;
-  Buffer: Pointer;
   Fmt: string;
 begin
   if Info = nil then
