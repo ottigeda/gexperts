@@ -47,7 +47,7 @@
     <PropertyGroup Condition="'$(Base)'!=''">
         <SanitizedProjectName>GX_FormatterUnitTests_13</SanitizedProjectName>
         <DCC_DcuOutput>..\dcu\delphi13</DCC_DcuOutput>
-        <DCC_Define>_ASSERT_TRACING;NO_TRANSLATION;$(DCC_Define)</DCC_Define>
+        <DCC_Define>_ASSERT_TRACING;NO_TRANSLATION;NO_TRANSLATION_HINT;$(DCC_Define)</DCC_Define>
         <DCC_DependencyCheckOutputName>..\..\GX_FormatterUnitTests.exe</DCC_DependencyCheckOutputName>
         <DCC_ExeOutput>..\</DCC_ExeOutput>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Winapi;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
@@ -96,7 +96,6 @@
         <Version>7.0</Version>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
-        <DCC_Define>ASSERT_TRACING;$(DCC_Define)</DCC_Define>
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
         <DCC_Inlining>off</DCC_Inlining>
         <DCC_MapFile>3</DCC_MapFile>
@@ -110,8 +109,10 @@
         <DCCReference Include="..\dunit\DUnitConsts.pas"/>
         <DCCReference Include="..\dunit\TestFramework.pas"/>
         <DCCReference Include="..\dunit\GUITestRunner.pas"/>
+        <DCCReference Include="..\dunit\TextTestRunner.pas"/>
         <DCCReference Include="DelForExTestOldNew.pas"/>
         <DCCReference Include="DelForExTestFiles.pas"/>
+        <DCCReference Include="..\..\Projects\StandAlone\common\GX_CodeFormatterGXConfigWrapper.pas"/>
         <DCCReference Include="..\..\Source\Formatter\GX_CodeFormatterDefaultSettings.pas"/>
         <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterTokenList.pas"/>
         <DCCReference Include="..\..\Source\Formatter\engine\GX_CodeFormatterTypes.pas"/>
