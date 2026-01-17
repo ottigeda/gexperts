@@ -136,6 +136,7 @@ type
     procedure HandleCapitalization(_CurrentToken: TPascalToken);
     function TryGetPrevLineFeed(var _TokenIdx: Integer; out _LineFeed: TLineFeed): Boolean;
     function CheckForFunctTypeDeclare(out _CheckedToken: TPascalToken): Boolean;
+    function AnonymousProcHadParams: Boolean;
     procedure CheckSpecialProcedure(var _NoBlankLine, _IsDelegate: Boolean);
     function FindBeginOrSemicolonAfterProc(out _Offset: Integer; out _Token: TPascalToken): Boolean;
     function InsertLinefeedBefore(ATokenIdx: Integer): Boolean;
@@ -1498,6 +1499,24 @@ begin
   Result := IsRType(_CheckedToken, [rtEquals, rtColon, rtComma, rtLeftBr]);
 end;
 
+function TCodeFormatterFormatter.AnonymousProcHadParams: Boolean;
+var
+  TempIdx: Integer;
+  Token: TPascalToken;
+begin
+  // Check if the anonymous procedure (whose declaration we're inside) had parameters
+  // by scanning backwards from the current position to find ')' before any line feeds
+  // This is used to determine if we should add a blank line before nested content
+  Result := False;
+  TempIdx := FTokenIdx - 1;
+  // Skip line feeds and comments
+  while TryGetToken(TempIdx, Token) and (Token.ReservedType in [rtLineFeed, rtComment]) do
+    Dec(TempIdx);
+  // Check if we found a closing parenthesis (indicating the anonymous proc had parameters)
+  if TryGetToken(TempIdx, Token) and (Token.ReservedType = rtRightBr) then
+    Result := True;
+end;
+
 function TCodeFormatterFormatter.FindBeginOrSemicolonAfterProc(out _Offset: Integer; out _Token: TPascalToken): Boolean;
 begin
   // search for a 'begin' or semicolon after the procedure name or the closing bracket
@@ -1642,7 +1661,9 @@ begin
         // For nested procedures inside anonymous procedures, set indent based on current nIndent
         AddToPrevLineIndent(_NTmp);
         // Then add blank lines if needed (this may change FPrevLine)
-        if FSettings.BlankSubProc and not NoBlankLine then
+        // For anonymous procedures with parameters, always add blank line before nested content
+        // Check if the previous non-whitespace token is ')' indicating parameters
+        if AnonymousProcHadParams or (FSettings.BlankSubProc and not NoBlankLine) then
           CheckBlankLinesAroundProc;
       end else begin
         if FSettings.BlankSubProc and not NoBlankLine then begin
