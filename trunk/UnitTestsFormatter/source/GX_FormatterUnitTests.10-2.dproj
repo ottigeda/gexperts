@@ -70,6 +70,7 @@
         <DCCReference Include="..\dunit\DUnitConsts.pas"/>
         <DCCReference Include="..\dunit\TestFramework.pas"/>
         <DCCReference Include="..\dunit\GUITestRunner.pas"/>
+        <DCCReference Include="..\dunit\TextTestRunner.pas"/>
         <DCCReference Include="DelForExTestOldNew.pas"/>
         <DCCReference Include="DelForExTestFiles.pas"/>
         <DCCReference Include="..\..\Projects\StandAlone\common\GX_CodeFormatterGXConfigWrapper.pas"/>
