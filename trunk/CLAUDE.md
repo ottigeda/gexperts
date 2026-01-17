@@ -61,6 +61,12 @@ cd UnitTestsFormatter
 bash _BuildProject.sh
 ```
 
+**Run formatter tests (WSL/bash):**
+```bash
+cd UnitTestsFormatter
+cmd.exe /c "GX_FormatterUnitTests.exe --console"
+```
+
 **Unit Exports Parser tests:**
 ```cmd
 cd UnitTests\TestUnitExportsParser\src
