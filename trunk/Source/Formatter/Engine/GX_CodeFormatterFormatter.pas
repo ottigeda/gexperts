@@ -1183,7 +1183,16 @@ begin
     rtProcedure, rtProcDeclare:
       ; // do nothing
 
-    rtClass, rtRecord, rtGenericStart, rtLeftBr, rtOn, rtRecCase:
+    rtRecCase: begin
+        // Variant record case label (e.g., "True:" or "False:" in variant part)
+        // Only push indentation if there's a linebreak after the colon
+        // (i.e., variant content is on the next line, not the same line)
+        if TryGetNextNoComment(FTokenIdx, Token) and (Token.ReservedType = rtLineFeed) then
+          FStack.Push(FCurrentRType, 1);
+        FWrapIndent := False;
+      end;
+
+    rtClass, rtRecord, rtGenericStart, rtLeftBr, rtOn:
       FWrapIndent := False;
 
   else
