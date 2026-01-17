@@ -115,6 +115,19 @@ GX_FormatterUnitTests.exe --console
 1. The failing tests you're trying to fix now pass
 2. All previously passing tests still pass (no regressions)
 
+### Workflow for Fixing Formatter Bugs
+
+When fixing a formatter bug:
+
+1. **Create a new test input file** in `UnitTestsFormatter/Testcases/input/` (e.g., `testfile_MyBug.pas`)
+2. **Run the tests** to see the current (buggy) formatter output
+3. **Show the actual formatter output** to the user and **ask for confirmation** before updating any expected files
+4. **Only after approval**, update the expected files for the new test
+5. **If existing tests are affected** by the fix, show the differences and **ask for confirmation** before updating those expected files
+6. Run all tests to verify no regressions
+
+**Important:** Never modify existing expected test files without explicit user approval. The user needs to verify that the new formatter behavior is correct before test expectations are changed.
+
 ## Architecture
 
 ### Expert Plugin Pattern
