@@ -4,18 +4,18 @@ interface
 
 implementation
 
-Procedure Bla;
-Begin
-   fThread_UDPServer := TThread.CreateAnonymousThread(procedure(bla: integer)
-     Procedure NestedProcedureInsideAnonymousProcedure;
-     Begin
-       CodeOfNestedProcedure;
-     End;
+procedure Bla;
+begin
+  fThread_UDPServer := TThread.CreateAnonymousThread(procedure(bla: integer)
+    procedure NestedProcedureInsideAnonymousProcedure;
+    begin
+      CodeOfNestedProcedure;
+    end;
 
-   Begin
-     CodeOfTheAnonymousProcedure;
-   End);
+    begin
+      CodeOfTheAnonymousProcedure;
+    end);
   CodeOfProcedureBla;
-End;
+end;
 
 end.

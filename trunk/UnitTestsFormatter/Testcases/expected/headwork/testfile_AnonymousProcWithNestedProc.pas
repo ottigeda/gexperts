@@ -7,10 +7,11 @@ implementation
 function Bla: boolean;
 begin
   fThread_UDPServer := TThread.CreateAnonymousThread(procedure
-      procedure NestedProcedureInsideAnonymousProcedure;
-      begin
-        CodeOfNestedProcedure;
-      end;
+
+    procedure NestedProcedureInsideAnonymousProcedure;
+    begin
+      CodeOfNestedProcedure;
+    end;
 
     begin
       CodeOfTheAnonymousProcedure;
