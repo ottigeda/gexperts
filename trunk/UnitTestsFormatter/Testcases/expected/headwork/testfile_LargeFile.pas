@@ -24964,9 +24964,9 @@ begin
       raise EXPath_Invalid_Function_Call_Err.createFmt('Argument mismatch error in %s(): Expression does not evaluate to string.', ['starts-with']);
     result := TdomXPathBooleanResult.create(
       CompareWideStr(
-      copy(S1_Result.asWideString, 1, length(S2_Result.asWideString)),
-      S2_Result.asWideString
-      ) = 0
+        copy(S1_Result.asWideString, 1, length(S2_Result.asWideString)),
+        S2_Result.asWideString
+        ) = 0
       );
   finally
     S1_Result.free;
@@ -25018,7 +25018,7 @@ begin
       raise EXPath_Invalid_Function_Call_Err.createFmt('Argument mismatch error in %s(): Expression does not evaluate to string.', ['substring-before']);
     result := TdomXPathStringResult.create(
       Copy(S1_Result.asWideString, 1,
-      Pred(Pos(S2_Result.asWideString, S1_Result.asWideString)))
+        Pred(Pos(S2_Result.asWideString, S1_Result.asWideString)))
       );
   finally
     S1_Result.free;
@@ -25046,10 +25046,10 @@ begin
     else
       result := TdomXPathStringResult.create(
         Copy(S1_Result.asWideString,
-        Pos(S2_Result.asWideString, S1_Result.asWideString)
-        + length(S2_Result.asWideString),
-        length(S1_Result.asWideString)
-        )
+          Pos(S2_Result.asWideString, S1_Result.asWideString)
+          + length(S2_Result.asWideString),
+          length(S1_Result.asWideString)
+          )
         );
   finally
     S1_Result.free;
@@ -25093,8 +25093,8 @@ begin
             begin
               if Sign(N2_Result.asNumber) = 1 then
                 result := TdomXPathStringResult.create(Copy(S1_Result.asWideString,
-                  Trunc(XPathRound(N1_Result.asNumber)),
-                  length(S1_Result.asWideString)))
+                    Trunc(XPathRound(N1_Result.asNumber)),
+                    length(S1_Result.asWideString)))
               else
                 result := TdomXPathStringResult.create('');
             end
@@ -25123,8 +25123,8 @@ begin
             end
           else
             result := TdomXPathStringResult.create(Copy(S1_Result.asWideString,
-              Trunc(XPathRound(N1_Result.asNumber)),
-              length(S1_Result.asWideString)));
+                Trunc(XPathRound(N1_Result.asNumber)),
+                length(S1_Result.asWideString)));
 
       end;
   finally
