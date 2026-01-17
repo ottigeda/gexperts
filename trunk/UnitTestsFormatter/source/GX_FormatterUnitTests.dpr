@@ -79,6 +79,10 @@ end;
 const
   ATTACH_PARENT_PROCESS = DWORD(-1);
 
+{$IF not Declared(AttachConsole)}
+function AttachConsole(dwProcessId: DWORD): BOOL; stdcall; external kernel32 name 'AttachConsole';
+{$IFEND}
+
 procedure Main;
 var
   OutputFileName: string;
