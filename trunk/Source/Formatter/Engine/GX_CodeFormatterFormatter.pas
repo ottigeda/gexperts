@@ -1095,7 +1095,7 @@ begin
   while FStack.GetTopType in [rtVar, rtConst, rtType] do
     FStack.Pop;
 
-  if FStack.GetTopType in [rtProcedure, rtProgram] then
+  if FStack.GetTopType in [rtProcedure, rtProcDeclare, rtProgram] then
     FStack.Pop;
 
   if FStack.IsEmpty then
@@ -1532,6 +1532,25 @@ var
   Token: TPascalToken;
   Offset: Integer;
 begin
+  // First check if this is an anonymous procedure by looking at the next non-comment token
+  // Anonymous procedures have no name, so the next token is either:
+  // - begin (simple anonymous proc)
+  // - procedure/function (nested declarations)
+  // - var/const/type (local declarations)
+  Offset := 0;
+  repeat
+    Inc(Offset);
+    if not TryGetToken(FTokenIdx + Offset, Token) then
+      Exit; //==> end of file
+  until not (Token.ReservedType in [rtLineFeed, rtComment]);
+
+  if Token.ReservedType in [rtBegin, rtProcedure, rtVar, rtConst, rtType] then begin
+    // Anonymous procedure (delegate) - no procedure name, just body or nested declarations
+    _IsDelegate := True;
+    Exit; //==>
+  end;
+
+  // Not an anonymous procedure, use the original logic
   if not FindBeginOrSemicolonAfterProc(Offset, Token) then begin
     // end of file
     Exit; //==>
@@ -1588,14 +1607,14 @@ begin
   NoBlankLine := False;
   IsDelegate := False;
 
-  if not FunctTypeDeclare then begin
-    Assert(False, '.CheckIndentProcedure: FunctDeclare = False');
-    CheckSpecialProcedure(NoBlankLine, IsDelegate);
-  end;
+  // Always call CheckSpecialProcedure to detect delegates (including anonymous procedures)
+  // For anonymous procedures, FunctTypeDeclare is True (prev token is '('), but we still
+  // need to detect if this is a delegate by looking at the next token
+  CheckSpecialProcedure(NoBlankLine, IsDelegate);
 
   if not FunctTypeDeclare and not FIsInInterfacePart and not (FStack.GetTopType = rtClass) then begin
     Assert(False, '.CheckIndentProcedure: not FunctTypeDeclare and not FIsInInterface and not (TopType = rtClass))');
-    if not FStack.HasType(rtProcedure) then begin
+    if not FStack.HasType(rtProcedure) and (FStack.GetTopType <> rtProcDeclare) then begin
       Assert(False, '.CheckIndentProcedure: Stack.HasType(rtProcedure) = False');
       if not IsDelegate then begin
         Assert(False, '.CheckIndentProcedure: not IsDelegate');
@@ -1614,17 +1633,28 @@ begin
       end;
     end else begin
       Assert(False, '.CheckIndentProcedure: Stack.HasType(rtProcedure) = True');
-      if FSettings.BlankSubProc and not NoBlankLine then begin
-        Assert(False, '.CheckIndentProcedure: Blanc Lines Around Sub Proc');
-        CheckBlankLinesAroundProc;
-      end;
+      // For nested procedures, increment ProcLevel (except when inside anonymous procedure)
+      if FStack.GetTopType <> rtProcDeclare then
+        FStack.ProcLevel := FStack.ProcLevel + 1;
 
-      FStack.ProcLevel := FStack.ProcLevel + 1;
-
-      if FStack.nIndent = 0 then begin
-        Assert(False, '.CheckIndentProcedure: Stack.nIndent=0');
+      if FStack.GetTopType = rtProcDeclare then begin
+        Assert(False, '.CheckIndentProcedure: TopType=rtProcDeclare (anonymous proc)');
+        // For nested procedures inside anonymous procedures, set indent based on current nIndent
         AddToPrevLineIndent(_NTmp);
-        FStack.nIndent := FStack.nIndent + 1;
+        // Then add blank lines if needed (this may change FPrevLine)
+        if FSettings.BlankSubProc and not NoBlankLine then
+          CheckBlankLinesAroundProc;
+      end else begin
+        if FSettings.BlankSubProc and not NoBlankLine then begin
+          Assert(False, '.CheckIndentProcedure: Blanc Lines Around Sub Proc');
+          CheckBlankLinesAroundProc;
+        end;
+
+        if FStack.nIndent = 0 then begin
+          Assert(False, '.CheckIndentProcedure: Stack.nIndent=0');
+          AddToPrevLineIndent(_NTmp);
+          FStack.nIndent := FStack.nIndent + 1;
+        end;
       end;
     end;
 
@@ -1635,7 +1665,7 @@ begin
       // do nothing
     end else begin
       // todo: rtClass or also rtClassDecl
-      if (not FunctTypeDeclare) and (FStack.GetTopType <> rtClass) then begin
+      if (not FunctTypeDeclare) and not (FStack.GetTopType in [rtClass, rtLeftBr]) then begin
         FStack.nIndent := 0;
         AddToPrevLineIndent(_NTmp);
         if FSettings.IndentComments then
