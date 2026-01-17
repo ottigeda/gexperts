@@ -1353,7 +1353,12 @@ begin
   Assert(False, '.CheckIndentLeftBr');
   if (FStack.GetTopType = rtLeftBr) then begin
     Assert(False, '.CheckIndentLeftBr: Top is LeftBr');
-    FStack.Push(FCurrentRType, 0)
+    // Nested parentheses for function calls should add indentation
+    // but not for record/array constants (where prev token is not a word)
+    if (FPrevToken.WordType = wtWord) then
+      FStack.Push(FCurrentRType, 1)
+    else
+      FStack.Push(FCurrentRType, 0)
   end else begin
     Assert(False, '.CheckIndentLeftBr: Top is not Leftbr');
     FOldWrapIndent := FWrapIndent;
