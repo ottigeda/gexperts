@@ -1925,8 +1925,20 @@ begin
           end;
 
           if Next.ReservedType in [rtLineFeed] then begin
-            Assert(False, '.CheckIndent: setting WrapIndent to False');
-            FWrapIndent := False;
+            // Check if the immediate next token (position+1) is a single-line comment.
+            // If so, we're in a sequence of single-line comments and should preserve FWrapIndent.
+            // If not (either a true blank line or block comment), reset FWrapIndent.
+            // Exception: in case statements (rtOf context), don't preserve FWrapIndent because
+            // case selectors should not have extra continuation indent after comments.
+            if TryGetToken(FTokenIdx + 1, Next) and (Next.ReservedType = rtComment)
+              and (Next.WordType = wtFullComment)
+              and not (FStack.GetTopType in [rtOf]) then begin
+              // Next immediate token is a single-line // comment, preserve FWrapIndent
+              Assert(False, '.CheckIndent: preserving WrapIndent through // comment');
+            end else begin
+              Assert(False, '.CheckIndent: setting WrapIndent to False');
+              FWrapIndent := False;
+            end;
           end else if FStack.GetTopType in [rtUses, rtLeftBr] then begin
             Assert(False, '.CheckIndent: setting WrapIndent to False');
             FWrapIndent := False;
@@ -2192,7 +2204,12 @@ begin
       end;
 
     rtComment: begin
-        if FSettings.IndentComments and not (FStack.GetTopType in [rtLeftHook, rtRecord, rtClassDecl]) then
+        // Only reset FWrapIndent for block comments (wtHalf*), not for single-line // comments.
+        // This preserves continuation indent through sequences of single-line comments.
+        // Exception: in case statements (rtOf), always reset FWrapIndent so case selectors align properly.
+        if FSettings.IndentComments and not (FStack.GetTopType in [rtLeftHook, rtRecord, rtClassDecl])
+          and ((FCurrentToken.WordType in [wtHalfComment, wtHalfStarComment, wtHalfOutComment])
+            or (FStack.GetTopType in [rtOf])) then
           FWrapIndent := False;
 
         if FStack.IsEmpty and (FStack.nIndent > 0) then begin
