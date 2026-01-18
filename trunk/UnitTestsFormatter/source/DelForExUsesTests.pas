@@ -226,7 +226,7 @@ begin
   Settings.NoIndentElseIf := False; { Never indent else if }
   Settings.NoIndentVarDecl := False; { Never indent var declaration }
   Settings.IndentComments := False; { Indent comments }
-  Settings.IndentCompDirectives := False; { Indent compiler directives }
+  Settings.IndentCompDirectives := icdNone; { Indent compiler directives }
   Settings.NoIndentUsesComma := True; { Do not indent uses starting with , }
 
 

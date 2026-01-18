@@ -60,7 +60,7 @@ type
     IndentTryElse: Boolean;
     IndentCaseElse: Boolean;
     IndentComments: Boolean;
-    IndentCompDirectives: Boolean;
+    IndentCompDirectives: TIndentCompDirectives; {: how to indent compiler directives }
     NoIndentUsesComma: Boolean; {: do not indent units in the uses block if the line starts with a comma }
     UnindentLabels: Boolean;
 
@@ -146,7 +146,7 @@ type
     property IndentTryElse: Boolean read FSettings.IndentTryElse;
     property IndentCaseElse: Boolean read FSettings.IndentCaseElse;
     property IndentComments: Boolean read FSettings.IndentComments;
-    property IndentCompDirectives: Boolean read FSettings.IndentCompDirectives;
+    property IndentCompDirectives: TIndentCompDirectives read FSettings.IndentCompDirectives;
     property NoIndentUsesComma: Boolean read FSettings.NoIndentUsesComma;
     property UnindentLabels: Boolean read FSettings.UnindentLabels;
     property BlankProc: Boolean read FSettings.BlankProc;

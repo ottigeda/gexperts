@@ -278,7 +278,9 @@ begin
   ES.IndentTryElse := _Reader.ReadBool('IndentTryElse', ES.IndentTryElse); //: Boolean;
   ES.IndentCaseElse := _Reader.ReadBool('IndentCaseElse', ES.IndentCaseElse); //: Boolean;
   ES.IndentComments := _Reader.ReadBool('IndentComments', ES.IndentComments); //: Boolean;
-  ES.IndentCompDirectives := _Reader.ReadBool('IndentCompDirectives', ES.IndentCompDirectives); //: Boolean;
+  // IndentCompDirectives: 0=icdNone, 1=icdFollowCode, 2=icdIndependent
+  // Backward compatible: old False=0=icdNone, old True=1=icdFollowCode
+  ES.IndentCompDirectives := TIndentCompDirectives(_Reader.ReadInteger('IndentCompDirectives', Ord(ES.IndentCompDirectives)));
   ES.BlankProc := _Reader.ReadBool('BlankProc', ES.BlankProc); //: Boolean;
   ES.BlankSubProc := _Reader.ReadBool('BlankSubProc', ES.BlankSubProc); //: Boolean;
   ES.RemoveDoubleBlank := _Reader.ReadBool('RemoveDoubleBlank', ES.RemoveDoubleBlank); //: Boolean;
@@ -384,7 +386,7 @@ begin
   _Writer.WriteBool('IndentTryElse', _Settings.IndentTryElse); //: Boolean;
   _Writer.WriteBool('IndentCaseElse', _Settings.IndentCaseElse); //: Boolean;
   _Writer.WriteBool('IndentComments', _Settings.IndentComments); //: Boolean;
-  _Writer.WriteBool('IndentCompDirectives', _Settings.IndentCompDirectives); //: Boolean;
+  _Writer.WriteInteger('IndentCompDirectives', Ord(_Settings.IndentCompDirectives)); //: TIndentCompDirectives;
   _Writer.WriteBool('BlankProc', _Settings.BlankProc); //: Boolean;
   _Writer.WriteBool('BlankSubProc', _Settings.BlankSubProc); //: Boolean;
   _Writer.WriteBool('RemoveDoubleBlank', _Settings.RemoveDoubleBlank); //: Boolean;

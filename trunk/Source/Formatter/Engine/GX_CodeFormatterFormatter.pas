@@ -55,6 +55,8 @@ type
     // the StackStack is used to preserve indenting over IFDEF/ELSE/ENDIF statements
     FStackStack: TCodeFormatterStack;
     FStack: TCodeFormatterSegment;
+    // Tracks compiler directive nesting level for icdIndependent mode
+    FCompDirectiveNestLevel: Integer;
     FLastPopResType: TReservedType;
     // True between 'interface' and 'implementation'
     FIsInInterfacePart: Boolean;
@@ -177,6 +179,7 @@ begin
   FHasAligned := False;
   FPrevLine := nil;
   FStack := TCodeFormatterSegment.Create;
+  FCompDirectiveNestLevel := 0;
 end;
 
 destructor TCodeFormatterFormatter.Destroy;
@@ -2277,11 +2280,54 @@ begin
     Assert(False, '.CheckIndent: compiler directive');
     FWrapIndent := False;
 
-    if not FSettings.IndentCompDirectives and IsRType(FPrevToken, rtLineFeed) then begin
-      Assert(False, '.CheckIndent: IndentCompDirectives');
-      _NTmp := -FStack.nIndent;
-      Assert(False, Format('NTmp=%d', [_NTmp]));
-      AddToPrevLineIndent(_NTmp);
+    // Handle indentation for directives at the start of a line
+    if IsRType(FPrevToken, rtLineFeed) then begin
+      case FSettings.IndentCompDirectives of
+        icdNone: begin
+          // Reset to column 1
+          Assert(False, '.CheckIndent: IndentCompDirectives=icdNone');
+          _NTmp := -FStack.nIndent;
+          Assert(False, Format('NTmp=%d', [_NTmp]));
+          AddToPrevLineIndent(_NTmp);
+        end;
+        icdIndependent: begin
+          // Indent based on directive nesting level
+          // Note: nIndent is in terms of indent levels, not spaces. SetIndent multiplies by SpacePerIndent.
+          Assert(False, Format('.CheckIndent: IndentCompDirectives=icdIndependent, NestLevel=%d', [FCompDirectiveNestLevel]));
+          case FCurrentRType of
+            rtCompIf: begin
+              _NTmp := -FStack.nIndent + FCompDirectiveNestLevel;
+            end;
+            rtCompElse: begin
+              _NTmp := -FStack.nIndent + (FCompDirectiveNestLevel - 1);
+            end;
+            rtCompEndif: begin
+              _NTmp := -FStack.nIndent + (FCompDirectiveNestLevel - 1);
+            end;
+          else
+            // Other directives ({$DEFINE}, {$UNDEF}, {$MESSAGE}, etc.) - indent at current level
+            _NTmp := -FStack.nIndent + FCompDirectiveNestLevel;
+          end;
+          Assert(False, Format('NTmp=%d', [_NTmp]));
+          AddToPrevLineIndent(_NTmp);
+        end;
+        icdFollowCode: begin
+          // Follow code indentation - don't adjust
+          Assert(False, '.CheckIndent: IndentCompDirectives=icdFollowCode');
+        end;
+      end;
+    end;
+
+    // Track nesting level for ALL directives (including inline ones)
+    // This must happen regardless of whether the directive is at the start of a line
+    if FSettings.IndentCompDirectives = icdIndependent then begin
+      case FCurrentRType of
+        rtCompIf:
+          Inc(FCompDirectiveNestLevel);
+        rtCompEndif:
+          if FCompDirectiveNestLevel > 0 then
+            Dec(FCompDirectiveNestLevel);
+      end;
     end;
 
     if FSettings.UpperCompDirectives then

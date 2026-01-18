@@ -45,7 +45,7 @@ begin
   Result.IndentBegin := False;
   Result.IndentCaseElse := False;
   Result.IndentComments := False;
-  Result.IndentCompDirectives := False;
+  Result.IndentCompDirectives := icdNone;
   Result.NoIndentUsesComma := False;
   Result.UnindentLabels := False;
   Result.IndentTry := True;
@@ -101,7 +101,7 @@ begin
   Result.IndentBegin := False;
   Result.IndentCaseElse := False;
   Result.IndentComments := True;
-  Result.IndentCompDirectives := False;
+  Result.IndentCompDirectives := icdNone;
   Result.NoIndentUsesComma := False;
   Result.UnindentLabels := False;
   Result.IndentTry := True;

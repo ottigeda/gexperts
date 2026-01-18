@@ -43,18 +43,18 @@ unit XDOM_3_1;
 {$WARNINGS OFF}
 
 {$IFDEF WIN32}
-{$IFNDEF VER140}
-{$DEFINE MSWINDOWS}
-{$ENDIF}
+  {$IFNDEF VER140}
+    {$DEFINE MSWINDOWS}
+  {$ENDIF}
 {$ENDIF}
 {$IFDEF WIN16}
-{$DEFINE MSWINDOWS}
+  {$DEFINE MSWINDOWS}
 {$ENDIF}
 {$IFDEF VER140}
-{$DEFINE VER140+}
+  {$DEFINE VER140+}
 {$ENDIF}
 {$IFDEF VER150}
-{$DEFINE VER140+}
+  {$DEFINE VER140+}
 {$ENDIF}
 
 interface
@@ -68,8 +68,8 @@ uses dialogs,
     // The above units are contained in the Open XML Utilities package 1.x
     // available at "http://www.philo.de/xml/".
 {$IFDEF MSWINDOWS}
-{$IFDEF VER140+}Types,
-{$ELSE}Windows, {$ENDIF}
+  {$IFDEF VER140+}Types,
+  {$ELSE}Windows, {$ENDIF}
 {$ENDIF}
 {$IFDEF LINUX}
   Types,

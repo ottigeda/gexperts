@@ -81,7 +81,8 @@ type
     l_Identifiers: TLabel;
     cmb_IdentifiersCase: TComboBox;
     chk_IndentComments: TCheckBox;
-    chk_IndentCompDirectives: TCheckBox;
+    l_IndentCompDirectives: TLabel;
+    cmb_IndentCompDirectives: TComboBox;
     ts_Misc: TTabSheet;
     chk_AlignComments: TCheckBox;
     l_AlignComentsAtPosition: TLabel;
@@ -395,7 +396,7 @@ begin
   _Settings.SpacePerIndent := ud_SpacePerIndent.Position;
   _Settings.IndentBegin := chk_IndentBegin.Checked;
   _Settings.IndentComments := chk_IndentComments.Checked;
-  _Settings.IndentCompDirectives := chk_IndentCompDirectives.Checked;
+  _Settings.IndentCompDirectives := TIndentCompDirectives(cmb_IndentCompDirectives.ItemIndex);
   _Settings.IndentTry := chk_IndentTry.Checked;
   _Settings.IndentTryElse := chk_IndentTryElse.Checked;
   _Settings.IndentCaseElse := chk_IndentCaseElse.Checked;
@@ -488,7 +489,7 @@ begin
   ud_SpacePerIndent.Position := _Settings.SpacePerIndent;
   chk_IndentBegin.Checked := _Settings.IndentBegin;
   chk_IndentComments.Checked := _Settings.IndentComments;
-  chk_IndentCompDirectives.Checked := _Settings.IndentCompDirectives;
+  cmb_IndentCompDirectives.ItemIndex := Ord(_Settings.IndentCompDirectives);
   chk_IndentTry.Checked := _Settings.IndentTry;
   chk_IndentTryElse.Checked := _Settings.IndentTryElse;
   chk_IndentCaseElse.Checked := _Settings.IndentCaseElse;

@@ -67,6 +67,7 @@ begin
   AdjustSettings_twm(_cfg);
   _cfg.FeedAfterThenExceptSingle := True;
 //  _cfg.StandDirectivesCase := rfUpperCase;
+  _cfg.IndentCompDirectives := icdIndependent;
   FConfigName := 'special';
 end;
 

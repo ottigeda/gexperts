@@ -9,11 +9,11 @@ begin
   if test1 then begin
 {$IFDEF level1}
     if test2 then begin
-{$IFDEF level2}
+  {$IFDEF level2}
     end;
-{$ELSE}
+  {$ELSE}
     end;
-{$ENDIF}
+  {$ENDIF}
   end;
 {$ELSE}
   end;

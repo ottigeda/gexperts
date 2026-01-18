@@ -43,6 +43,13 @@ type
   }
   TCase = (rfLowerCase, rfUpperCase, rfFirstUp, rfUnchanged, rfFirstOccurrence);
 
+  {: determines how compiler directives are indented:
+     * icdNone = place at column 1 (no indentation)
+     * icdFollowCode = follow the indentation of the surrounding code
+     * icdIndependent = indent based on directive nesting level (IFDEF/ELSE/ENDIF)
+  }
+  TIndentCompDirectives = (icdNone, icdFollowCode, icdIndependent);
+
   TSpace = (spBefore, spAfter);
   TSpaceSet = set of TSpace;
 

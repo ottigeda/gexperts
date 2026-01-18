@@ -66,14 +66,26 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           TabOrder = 5
           OnClick = UpdatePreview
         end
-        object chk_IndentCompDirectives: TCheckBox
+        object l_IndentCompDirectives: TLabel
           Left = 216
           Top = 136
-          Width = 238
-          Height = 17
-          Caption = 'Indent compiler directives'
+          Width = 105
+          Height = 13
+          Caption = 'Compiler directives'
+        end
+        object cmb_IndentCompDirectives: TComboBox
+          Left = 216
+          Top = 152
+          Width = 193
+          Height = 21
+          Style = csDropDownList
+          ItemHeight = 13
           TabOrder = 6
-          OnClick = UpdatePreview
+          OnChange = UpdatePreview
+          Items.Strings = (
+            'No indentation (column 1)'
+            'Follow code indentation'
+            'Indent by nesting level')
         end
         object chk_NoIndentElseIf: TCheckBox
           Left = 216
@@ -86,7 +98,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object chk_NoIndentUsesComma: TCheckBox
           Left = 216
-          Top = 160
+          Top = 184
           Width = 238
           Height = 17
           Hint = 
@@ -153,7 +165,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object chk_UnindentLabels: TCheckBox
           Left = 216
-          Top = 184
+          Top = 208
           Width = 209
           Height = 17
           Caption = 'Unindent Labels'
