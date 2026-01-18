@@ -58,14 +58,16 @@ call c:\Delphi\13\bin\rsvars.bat && msbuild /target:rebuild /p:config=Release GX
 **Build formatter tests (WSL/bash):**
 ```bash
 cd UnitTestsFormatter
-bash _BuildProject.sh
+bash _buildproject.sh
 ```
 
 **Run formatter tests (WSL/bash):**
 ```bash
 cd UnitTestsFormatter
-cmd.exe /c "GX_FormatterUnitTests.exe --console"
+bash _runformatterunittests.sh
 ```
+
+Results are written to `UnitTestsFormatter/testresults.txt`.
 
 **Unit Exports Parser tests:**
 ```cmd
@@ -236,10 +238,12 @@ Key settings affecting indentation:
 - `BlankSubProc` - Whether to add blank lines around sub-procedures
 - `BlankProc` - Whether to add blank lines around procedures
 
-## Recent Fix: Nested Procedure Indentation in Anonymous Procedures
+## Recent Fixes
 
 Fixed in `Source/Formatter/Engine/GX_CodeFormatterFormatter.pas`:
 
-1. **Nested procedure indentation** - Nested procedures inside anonymous procedures now maintain proper indentation instead of resetting to column 1.
+1. **Continuation indent after single-line comments** - Continuation indentation is now preserved through sequences of `//` comments in expressions. Previously, `FWrapIndent` was reset for all comments, breaking continuation. The fix only resets `FWrapIndent` for block comments (`{ }`, `(* *)`) or when in case statements (`rtOf` context).
 
-2. **Blank line after anonymous procedure with parameters** - Added `AnonymousProcHadParams` function to detect when an anonymous procedure has parameters and insert a blank line before nested content.
+2. **Nested procedure indentation** - Nested procedures inside anonymous procedures now maintain proper indentation instead of resetting to column 1.
+
+3. **Blank line after anonymous procedure with parameters** - Added `AnonymousProcHadParams` function to detect when an anonymous procedure has parameters and insert a blank line before nested content.
