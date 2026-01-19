@@ -283,6 +283,7 @@ begin
   ES.IndentCompDirectives := TIndentCompDirectives(_Reader.ReadInteger('IndentCompDirectives', Ord(ES.IndentCompDirectives)));
   ES.BlankProc := _Reader.ReadBool('BlankProc', ES.BlankProc); //: Boolean;
   ES.BlankSubProc := _Reader.ReadBool('BlankSubProc', ES.BlankSubProc); //: Boolean;
+  ES.BlankBeforeUses := _Reader.ReadBool('BlankBeforeUses', ES.BlankBeforeUses); //: Boolean;
   ES.RemoveDoubleBlank := _Reader.ReadBool('RemoveDoubleBlank', ES.RemoveDoubleBlank); //: Boolean;
   ES.SpacePerIndent := _Reader.ReadInteger('SpacePerIndent', ES.SpacePerIndent); //: Integer;
   ES.FeedRoundBegin := TFeedBegin(_Reader.ReadInteger('FeedRoundBegin', Ord(ES.FeedRoundBegin)));
@@ -389,6 +390,7 @@ begin
   _Writer.WriteInteger('IndentCompDirectives', Ord(_Settings.IndentCompDirectives)); //: TIndentCompDirectives;
   _Writer.WriteBool('BlankProc', _Settings.BlankProc); //: Boolean;
   _Writer.WriteBool('BlankSubProc', _Settings.BlankSubProc); //: Boolean;
+  _Writer.WriteBool('BlankBeforeUses', _Settings.BlankBeforeUses); //: Boolean;
   _Writer.WriteBool('RemoveDoubleBlank', _Settings.RemoveDoubleBlank); //: Boolean;
   _Writer.WriteInteger('SpacePerIndent', _Settings.SpacePerIndent); //: Integer;
   _Writer.WriteInteger('FeedRoundBegin', Ord(_Settings.FeedRoundBegin)); //: TFeedBegin;

@@ -80,6 +80,9 @@ type
     ///<summary>
     /// Checks and corrects the number of blank lines before a procedure / function declaration </summary>
     procedure CheckBlankLinesAroundProc;
+    ///<summary>
+    /// Checks and corrects the number of blank lines before a uses clause </summary>
+    procedure CheckBlankLinesBeforeUses;
     //procedure PutCommentBefore(const _Comment: TGXUnicodeString);
     procedure FormatAsm(_NTmp: Integer);
     procedure AdjustSpacing(_CurrentToken, _PrevToken: TPascalToken; _TokenIdx: Integer);
@@ -823,6 +826,51 @@ begin
 
     if (Prev2.ReservedType in [rtComment, rtCompIf, rtCompElse]) and TokenAtIs(FTokenIdx - k - 1, rtLineFeed) then begin
       // There is a comment before the procedure. Check for more comments before that.
+      Inc(k, 2);
+      while TryGetToken(FTokenIdx - k, Prev2) and (Prev2.ReservedType in [rtComment, rtCompIf, rtCompElse])
+        and TokenAtIs(FTokenIdx - k - 1, rtLineFeed) do begin
+        Inc(k, 2);
+      end;
+      // We found the line feed before the comment(s).
+      // Is there another one just before?
+      if not TokenAtIs(FTokenIdx - k, rtLineFeed) then begin
+        // no -> insert one
+        InsertBlankLines(FTokenIdx - k + 1, 1);
+      end;
+    end else begin
+      // only one line feed, add one for an empty line
+      FPrevLine := InsertBlankLines(FTokenIdx - k + 1, 1);
+      FPrevToken := FPrevLine;
+    end;
+  end;
+end;
+
+procedure TCodeFormatterFormatter.CheckBlankLinesBeforeUses;
+var
+  k: Integer;
+  Prev2: TPascalToken;
+begin
+  if FPrevToken = nil then
+    Exit; //==>
+
+  k := 1;
+  Prev2 := FPrevToken;
+
+  if not IsRType(Prev2, rtLineFeed) then begin
+    // no line feed at all -> add two for an empty line
+    FPrevLine := InsertBlankLines(FTokenIdx - k, 2);
+    FPrevToken := FPrevLine;
+  end else begin
+    // That's the line feed at the begin of this line.
+    // Now check for another one before that
+    Inc(k);
+    if not TryGetToken(FTokenIdx - k, Prev2) or (Prev2.ReservedType = rtLineFeed) then begin
+      // There is no previous token or there is already a second line feed, we are done.
+      Exit; //==>
+    end;
+
+    if (Prev2.ReservedType in [rtComment, rtCompIf, rtCompElse]) and TokenAtIs(FTokenIdx - k - 1, rtLineFeed) then begin
+      // There is a comment before the uses clause. Check for more comments before that.
       Inc(k, 2);
       while TryGetToken(FTokenIdx - k, Prev2) and (Prev2.ReservedType in [rtComment, rtCompIf, rtCompElse])
         and TokenAtIs(FTokenIdx - k - 1, rtLineFeed) do begin
@@ -1986,6 +2034,9 @@ begin
         FCurrentToken.SetReservedType(rtNothing);
         FCurrentRType := rtNothing;
       end else begin
+        if (FCurrentRType = rtUses) and (FSettings.BlankBeforeUses) then
+          CheckBlankLinesBeforeUses;
+
         DecPrevLineIndent;
         FStack.Clear;
         FStack.Push(FCurrentRType, 1);

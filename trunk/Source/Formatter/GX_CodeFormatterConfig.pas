@@ -59,6 +59,7 @@ type
     chk_UpperCompDirectives: TCheckBox;
     chk_BlankProc: TCheckBox;
     chk_BlankSubProc: TCheckBox;
+    chk_BlankBeforeUses: TCheckBox;
     chk_IndentTry: TCheckBox;
     chk_FeedAfterSemiColon: TCheckBox;
     cmb_FeedRoundBegin: TComboBox;
@@ -408,6 +409,7 @@ begin
   _Settings.IdentifiersCase := TCase(cmb_IdentifiersCase.ItemIndex);
   _Settings.BlankProc := chk_BlankProc.Checked;
   _Settings.BlankSubProc := chk_BlankSubProc.Checked;
+  _Settings.BlankBeforeUses := chk_BlankBeforeUses.Checked;
   _Settings.RemoveDoubleBlank := chk_RemoveDoubleBlank.Checked;
   _Settings.WrapLines := chk_WrapLines.Checked;
   _Settings.WrapPosition := ud_WrapPosition.Position;
@@ -501,6 +503,7 @@ begin
   cmb_IdentifiersCase.ItemIndex := Ord(_Settings.IdentifiersCase);
   chk_BlankProc.Checked := _Settings.BlankProc;
   chk_BlankSubProc.Checked := _Settings.BlankSubProc;
+  chk_BlankBeforeUses.Checked := _Settings.BlankBeforeUses;
   chk_RemoveDoubleBlank.Checked := _Settings.RemoveDoubleBlank;
   with grid_Spacing do begin
     RowCount := 10;

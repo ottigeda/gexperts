@@ -27,6 +27,7 @@ begin
   Result.AlignVarPos := 20;
   Result.BlankProc := True;
   Result.BlankSubProc := False;
+  Result.BlankBeforeUses := False;
   Result.ChangeIndent := True;
   Result.FeedAfterThenExceptSingle := False;
   Result.FeedAfterSemiColon := False;
@@ -83,6 +84,7 @@ begin
   Result.AlignVarPos := 20;
   Result.BlankProc := True;
   Result.BlankSubProc := False;
+  Result.BlankBeforeUses := False;
   Result.ChangeIndent := True;
   Result.FeedAfterThenExceptSingle := False;
   Result.FeedAfterSemiColon := True;

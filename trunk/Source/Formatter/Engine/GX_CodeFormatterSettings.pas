@@ -66,6 +66,7 @@ type
 
     BlankProc: Boolean; {: blank line between main procedures }
     BlankSubProc: Boolean; {: blank line between sub procedures }
+    BlankBeforeUses: Boolean; {: blank line before uses clause }
     RemoveDoubleBlank: Boolean; {: remove double blank lines }
     SpacePerIndent: Integer; {: number of spaces per indent }
     FeedRoundBegin: TFeedBegin; {: how to handle linefeeds around begin }
@@ -151,6 +152,7 @@ type
     property UnindentLabels: Boolean read FSettings.UnindentLabels;
     property BlankProc: Boolean read FSettings.BlankProc;
     property BlankSubProc: Boolean read FSettings.BlankSubProc;
+    property BlankBeforeUses: Boolean read FSettings.BlankBeforeUses;
     property RemoveDoubleBlank: Boolean read FSettings.RemoveDoubleBlank;
     property SpacePerIndent: Integer read FSettings.SpacePerIndent;
     property FeedRoundBegin: TFeedBegin read FSettings.FeedRoundBegin;

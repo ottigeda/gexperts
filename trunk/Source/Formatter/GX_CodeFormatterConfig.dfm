@@ -376,13 +376,30 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             OnClick = UpdatePreview
           end
         end
-        object grp_ForceBlankLineBetween: TGroupBox
+        object grp_ForceBlankLineBefore: TGroupBox
           Left = 232
           Top = 8
           Width = 193
+          Height = 50
+          Caption = 'Force a Blank Line Before'
+          TabOrder = 1
+          object chk_BlankBeforeUses: TCheckBox
+            Left = 8
+            Top = 24
+            Width = 177
+            Height = 17
+            Caption = 'Uses clause'
+            TabOrder = 0
+            OnClick = UpdatePreview
+          end
+        end
+        object grp_ForceBlankLineBetween: TGroupBox
+          Left = 232
+          Top = 66
+          Width = 193
           Height = 74
           Caption = 'Force a Blank Line Between'
-          TabOrder = 1
+          TabOrder = 2
           object chk_BlankProc: TCheckBox
             Left = 8
             Top = 24
