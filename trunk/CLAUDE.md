@@ -6,6 +6,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 GExperts is an open-source IDE plugin (DLL) for Delphi and C++Builder that provides productivity tools and code enhancements. It supports Delphi 6 through RAD Studio 13.0 (including 64-bit).
 
+## Version Control
+
+**IMPORTANT:** This project uses Subversion (SVN), not Git.
+
+**Server operations (require Windows svn.exe in WSL):**
+```cmd
+svn.exe commit -m "Commit message" <files>
+svn.exe update
+```
+
+**Local operations (work with standard svn):**
+```cmd
+svn status          # Check modified files
+svn diff <file>     # View changes
+svn add <file>      # Add new file to version control
+```
+
+**Note:** When working in WSL, server operations (commit, update) must use the Windows `svn.exe` executable due to connectivity issues with the SourceForge repository. Local operations work fine with the Linux SVN client.
+
 ## Build Commands
 
 **Build a specific Delphi version:**
