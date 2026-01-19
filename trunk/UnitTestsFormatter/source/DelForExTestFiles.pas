@@ -68,6 +68,7 @@ begin
   _cfg.FeedAfterThenExceptSingle := True;
 //  _cfg.StandDirectivesCase := rfUpperCase;
   _cfg.IndentCompDirectives := icdIndependent;
+  _cfg.BlankBeforeUses := True;
   FConfigName := 'special';
 end;
 
