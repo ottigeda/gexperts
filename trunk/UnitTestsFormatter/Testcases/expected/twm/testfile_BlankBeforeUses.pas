@@ -1,5 +1,6 @@
 unit testfile_BlankBeforeUses;
 interface
+
 uses
   System.SysUtils,
   System.Classes;
@@ -11,6 +12,7 @@ type
   end;
 
 implementation
+
 uses
   System.Math;
 

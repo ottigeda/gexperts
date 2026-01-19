@@ -1,5 +1,6 @@
 unit testfile_BlankBeforeUsesWithComment;
 interface
+
 // Comment about interface uses
 uses
   System.SysUtils,
@@ -12,6 +13,7 @@ type
   end;
 
 implementation
+
 { Multi-line comment
   about implementation uses }
 uses
