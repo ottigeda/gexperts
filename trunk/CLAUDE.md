@@ -288,6 +288,7 @@ Key settings affecting indentation:
 - `IndentBegin` - Whether `begin` adds extra indentation
 - `BlankSubProc` - Whether to add blank lines around sub-procedures
 - `BlankProc` - Whether to add blank lines around procedures
+- `BlankBeforeUses` - Whether to add a blank line before `uses` clauses (enabled in `twm` and `special` configs)
 - `IndentCompDirectives` - How compiler directives are indented (see below)
 
 ### Compiler Directive Indentation (IndentCompDirectives)
@@ -316,3 +317,5 @@ Fixed in `Source/Formatter/Engine/GX_CodeFormatterFormatter.pas`:
 3. **Blank line after anonymous procedure with parameters** - Added `AnonymousProcHadParams` function to detect when an anonymous procedure has parameters and insert a blank line before nested content.
 
 4. **Independent compiler directive indentation** - Added `icdIndependent` mode that indents `{$IFDEF}`, `{$IF}`, `{$ELSE}`, `{$ENDIF}`, `{$IFEND}` based on their own nesting level, independent of surrounding code. Inline directives (not at start of line) are tracked for nesting but not indented.
+
+5. **Blank line before uses clauses** - Added `BlankBeforeUses` setting to insert a blank line before `uses` clauses. When comments immediately precede a uses clause, the blank line is inserted before the comments to keep them visually grouped with the uses. Enabled by default in `twm` and `special` configurations.
