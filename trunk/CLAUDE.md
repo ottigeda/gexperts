@@ -130,6 +130,38 @@ When fixing a formatter bug:
 
 **Important:** Never modify existing expected test files without explicit user approval. The user needs to verify that the new formatter behavior is correct before test expectations are changed.
 
+**File encoding warning:** Some test files (e.g., `testfile_LargeFile.pas`) use ANSI encoding with special characters (German umlauts, etc.). Using `sed` or other Unix tools in WSL may convert them to UTF-8 and corrupt these characters. Prefer using the Edit tool for modifications to preserve encoding.
+
+### Workflow for Adding New Formatter Options
+
+When adding a new formatter option (e.g., a new boolean setting):
+
+**CRITICAL: Create test cases FIRST, before changing any code!**
+
+1. **Create test input file** in `UnitTestsFormatter/Testcases/input/` (e.g., `testfile_MyNewFeature.pas`)
+2. **Run tests with the ORIGINAL formatter** to generate baseline expected files:
+   ```cmd
+   cd UnitTestsFormatter
+   GX_FormatterUnitTests.exe --console
+   ```
+3. **Copy the output files to expected directories** for all configurations where the new feature will be disabled by default:
+   ```cmd
+   for config in borland default delforex headwork twm; do
+     cp Testcases/output/$config/testfile_MyNewFeature.pas Testcases/expected/$config/
+   done
+   ```
+4. **Now implement the formatter changes** (settings, UI, formatter logic)
+5. **Enable the new setting** in `AdjustSettings_Special` in `UnitTestsFormatter/source/DelForExTestFiles.pas`
+6. **Rebuild and run tests** - the new test will fail for the `special` config (expected)
+7. **Copy the special config output** to expected:
+   ```cmd
+   cp Testcases/output/special/testfile_MyNewFeature.pas Testcases/expected/special/
+   ```
+8. **Update any existing tests affected** by the new feature (check `output/special/` for other files)
+9. **Run final test verification** to ensure all 1324+ tests pass
+
+**Why create tests first?** This workflow ensures you capture the correct baseline behavior using the unmodified formatter. If you change the code first, you'll need to manually recreate what the original output should have been, which is error-prone.
+
 ## Architecture
 
 ### Expert Plugin Pattern
@@ -237,6 +269,22 @@ Key settings affecting indentation:
 - `IndentBegin` - Whether `begin` adds extra indentation
 - `BlankSubProc` - Whether to add blank lines around sub-procedures
 - `BlankProc` - Whether to add blank lines around procedures
+- `IndentCompDirectives` - How compiler directives are indented (see below)
+
+### Compiler Directive Indentation (IndentCompDirectives)
+
+The `IndentCompDirectives` setting is a `TIndentCompDirectives` enum with three values:
+- `icdNone` (=0) - Place directives at column 1 (default)
+- `icdFollowCode` (=1) - Follow surrounding code indentation
+- `icdIndependent` (=2) - Indent by directive nesting level, independent of code
+
+**INI backward compatibility:** Old boolean values map correctly (0=icdNone, 1=icdFollowCode).
+
+**Implementation notes** (in `GX_CodeFormatterFormatter.pas`):
+- `FCompDirectiveNestLevel` tracks the current directive nesting depth
+- Nesting level must be tracked for ALL directives, including inline ones like `{$ELSE}Windows, {$ENDIF}` where `{$ENDIF}` is not at the start of a line
+- `FStack.nIndent` is in indent **levels** (0, 1, 2...), not spaces. The `SetIndent` method multiplies by `SpacePerIndent`
+- For `rtCompEndif` indentation, use `FCompDirectiveNestLevel - 1` to match the opening `{$IFDEF}`
 
 ## Recent Fixes
 
@@ -247,3 +295,5 @@ Fixed in `Source/Formatter/Engine/GX_CodeFormatterFormatter.pas`:
 2. **Nested procedure indentation** - Nested procedures inside anonymous procedures now maintain proper indentation instead of resetting to column 1.
 
 3. **Blank line after anonymous procedure with parameters** - Added `AnonymousProcHadParams` function to detect when an anonymous procedure has parameters and insert a blank line before nested content.
+
+4. **Independent compiler directive indentation** - Added `icdIndependent` mode that indents `{$IFDEF}`, `{$IF}`, `{$ELSE}`, `{$ENDIF}`, `{$IFEND}` based on their own nesting level, independent of surrounding code. Inline directives (not at start of line) are tracked for nesting but not indented.
