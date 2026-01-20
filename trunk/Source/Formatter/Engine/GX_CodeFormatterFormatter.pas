@@ -57,6 +57,8 @@ type
     FStack: TCodeFormatterSegment;
     // Tracks compiler directive nesting level for icdIndependent mode
     FCompDirectiveNestLevel: Integer;
+    // Tracks inline if expression (ternary operator) nesting depth
+    FInlineIfDepth: Integer;
     FLastPopResType: TReservedType;
     // True between 'interface' and 'implementation'
     FIsInInterfacePart: Boolean;
@@ -145,6 +147,10 @@ type
     procedure CheckSpecialProcedure(var _NoBlankLine, _IsDelegate: Boolean);
     function FindBeginOrSemicolonAfterProc(out _Offset: Integer; out _Token: TPascalToken): Boolean;
     function InsertLinefeedBefore(ATokenIdx: Integer): Boolean;
+    ///<summary>
+    /// Detects if the current 'if' is used as an expression (ternary operator) rather than a statement
+    /// @returns True if this is an inline if expression </summary>
+    function IsInlineIfExpression: Boolean;
   public
     class procedure Execute(_Tokens: TPascalTokenList; _Settings: TCodeFormatterSettings);
     constructor Create(_Settings: TCodeFormatterSettings);
@@ -183,6 +189,7 @@ begin
   FPrevLine := nil;
   FStack := TCodeFormatterSegment.Create;
   FCompDirectiveNestLevel := 0;
+  FInlineIfDepth := 0;
 end;
 
 destructor TCodeFormatterFormatter.Destroy;
@@ -531,7 +538,7 @@ begin
     if IsRType(Prev2, [rtOper,
         rtMathOper, rtPlus, rtMinus, rtSemiColon, rtOf,
         rtMinus, rtLogOper, rtEquals, rtAssignOper, rtLeftBr, rtColon,
-        rtLeftHook, rtComma, rtDefault]) then begin
+        rtLeftHook, rtComma, rtDefault, rtThen, rtElse]) then begin
       Assert(False, '.AdjustSpacing');
       _CurrentToken.SetSpace([spAfter], False); { sign operator }
     end;
@@ -1095,6 +1102,16 @@ end;
 procedure TCodeFormatterFormatter.CheckIndentIf;
 begin
   Assert(False, '.CheckIndentIf');
+
+  // Check if this is an inline if expression (ternary operator)
+  if IsInlineIfExpression then begin
+    Inc(FInlineIfDepth);
+    // For inline if, we just push rtIf on the stack and don't do any line feed manipulation
+    FStack.Push(rtIf, 0);
+    Exit;
+  end;
+
+  // Statement if processing (existing logic)
   if FSettings.FeedAfterThen and not FSettings.FeedElseIf
     and (FStack.GetTopType = rtIfElse) and (FPrevToken = FPrevLine) then begin
     FTokens.Extract(FTokenIdx - 1).Free;
@@ -1124,6 +1141,14 @@ begin
   if FStack.GetTopType in [rtIf, rtIfElse] then begin
     FWrapIndent := False;
     FLastPopResType := FStack.Pop;
+
+    // For inline if expressions (ternary operator), skip line feed manipulation
+    if FInlineIfDepth > 0 then begin
+      FStack.Push(rtThen, 0);  // Push with no indent change
+      Exit;
+    end;
+
+    // Statement if processing (existing logic)
     if FSettings.NoFeedBeforeThen and (FPrevToken = FPrevLine)
       and (GetToken(FTokenIdx - 1).ReservedType <> rtComment) then begin
       FTokens.Extract(FTokenIdx - 1).Free;
@@ -1344,6 +1369,20 @@ begin
   while not FStack.IsEmpty and not (FStack.GetTopType in [rtThen, rtOf, rtTry]) do
     FLastPopResType := FStack.Pop;
 
+  // For inline if expressions (ternary operator), skip line feed manipulation
+  if FInlineIfDepth > 0 then begin
+    // Decrement depth as we're finishing this ternary operator
+    Dec(FInlineIfDepth);
+    // Push rtElse or rtIfElse with no indent change
+    if FStack.GetTopType = rtThen then
+      FStack.Push(rtIfElse, 0)
+    else
+      FStack.Push(rtElse, 0);
+    FWrapIndent := False;
+    Exit;
+  end;
+
+  // Statement if/else processing (existing logic)
   if FLastPopResType = rtIfElse then
     ComplexIfElse(_NTmp);
 
@@ -1931,6 +1970,10 @@ begin
         FCurrentToken.SetReservedType(rtNothing);
 
     rtOf: begin
+        // For inline if expressions in case statement, pop the rtElse/rtIfElse markers first
+        while FStack.GetTopType in [rtIf, rtThen, rtElse, rtIfElse] do
+          FStack.Pop;
+
         case FStack.GetTopType of
           rtCase: begin
               FStack.Push(FCurrentRType, 1);
@@ -2211,6 +2254,10 @@ begin
       end;
 
     rtDo: begin
+        // For inline if expressions in for/while loop, pop the rtElse/rtIfElse markers first
+        while FStack.GetTopType in [rtIf, rtThen, rtElse, rtIfElse] do
+          FStack.Pop;
+
         if FStack.GetTopType in [rtWhile, rtOn] then begin
           FLastPopResType := FStack.GetTopType;
           FStack.Push(FCurrentRType, 1);
@@ -2459,6 +2506,73 @@ begin
   GetToken(ATokenIdx).SetSpace([spBefore], False);
   FTokens.AtInsert(ATokenIdx, FPrevLine);
   Result := True;
+end;
+
+function TCodeFormatterFormatter.IsInlineIfExpression: Boolean;
+var
+  Idx: Integer;
+  Token: TPascalToken;
+  Expr: TGXUnicodeString;
+begin
+  // Detect if 'if' is used as an expression (ternary operator) rather than a statement
+  // by looking at the previous non-comment, non-linefeed token
+  Result := False;
+
+  // If we're already inside a ternary operator (FInlineIfDepth > 0),
+  // then this is a nested ternary
+  if FInlineIfDepth > 0 then begin
+    Result := True;
+    Exit;
+  end;
+
+  // Start from previous token
+  Idx := FTokenIdx - 1;
+
+  // Skip backwards over comments and linefeeds to find the actual previous token
+  while (Idx >= 0) do begin
+    Token := GetToken(Idx);
+    if Token.ReservedType = rtComment then begin
+      Dec(Idx);
+      Continue;
+    end;
+    if Token.ReservedType = rtLineFeed then begin
+      Dec(Idx);
+      Continue;
+    end;
+
+    // Found the previous significant token, now check its type
+    case Token.ReservedType of
+      // Expression operators that indicate ternary context
+      rtAssignOper,  // :=
+      rtEquals,      // =
+      rtLeftBr,      // (
+      rtComma,       // ,
+      rtLeftHook,    // [
+      rtPlus,        // +
+      rtMinus,       // -
+      rtMathOper,    // *, /, div, mod
+      rtLogOper,     // <, >, <=, >=, <>, and, or, xor
+      rtCase:        // case <expression> of
+        Result := True;
+
+      rtOper: begin
+        // Check for other operators like 'to', 'downto', 'of', 'in', 'is', 'as'
+        if Token.TryGetExpression(Expr) then begin
+          Expr := LowerCase(Expr);
+          if (Expr = 'to') or (Expr = 'downto') or (Expr = 'of')
+            or (Expr = 'in') or (Expr = 'is') or (Expr = 'as') then
+            Result := True;
+        end;
+      end;
+    end;
+
+    // We found a significant token and checked it, so exit loop
+    Exit;
+  end;
+
+  // If we reach here, there was no previous token (start of file)
+  // which means it's a statement if
+  Result := False;
 end;
 
 procedure TCodeFormatterFormatter.CheckWrapping;
