@@ -14,6 +14,8 @@ GExperts is an open-source IDE plugin (DLL) for Delphi and C++Builder that provi
 ```cmd
 svn.exe commit -m "Commit message" <files>
 svn.exe update
+svn.exe list <path>     # List repository contents
+svn.exe log <file>      # Show commit history from repository
 ```
 
 **Local operations (work with standard svn):**
@@ -21,9 +23,10 @@ svn.exe update
 svn status          # Check modified files
 svn diff <file>     # View changes
 svn add <file>      # Add new file to version control
+svn info <file>     # Show local file info
 ```
 
-**Note:** When working in WSL, server operations (commit, update) must use the Windows `svn.exe` executable due to connectivity issues with the SourceForge repository. Local operations work fine with the Linux SVN client.
+**Note:** When working in WSL, server operations (commit, update, list, log, etc.) must use the Windows `svn.exe` executable due to connectivity issues with the SourceForge repository. Local operations (status, diff, add, info, etc.) work fine with the Linux SVN client.
 
 ## Build Commands
 
