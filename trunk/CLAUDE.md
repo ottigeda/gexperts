@@ -322,3 +322,55 @@ Fixed in `Source/Formatter/Engine/GX_CodeFormatterFormatter.pas`:
 4. **Independent compiler directive indentation** - Added `icdIndependent` mode that indents `{$IFDEF}`, `{$IF}`, `{$ELSE}`, `{$ENDIF}`, `{$IFEND}` based on their own nesting level, independent of surrounding code. Inline directives (not at start of line) are tracked for nesting but not indented.
 
 5. **Blank line before uses clauses** - Added `BlankBeforeUses` setting to insert a blank line before `uses` clauses. When comments immediately precede a uses clause, the blank line is inserted before the comments to keep them visually grouped with the uses. Enabled by default in `twm` and `special` configurations.
+
+6. **Nested procedure indentation with BlankSubProc** - Fixed bug where nested procedures were not indented when there was no blank line above them in the input. The formatter now sets indentation before inserting blank lines (previously the blank line insertion changed `FPrevLine`, causing indentation to be applied to the wrong line).
+
+## Delphi 13 Ternary Operator Support
+
+Delphi 13 (RAD Studio 13 Florence) introduced inline if expressions, also called the "ternary operator" or "conditional operator". This feature allows `if-then-else` to be used as an expression that returns a value.
+
+**Syntax**: `if <condition> then <trueValue> else <falseValue>`
+
+**Key characteristics**:
+- Short-circuit evaluation (only evaluates the selected branch)
+- The `else` part is mandatory (cannot be omitted)
+- Can be used anywhere an expression is valid
+- Can be nested (parentheses recommended for clarity)
+- Can create compile-time constants when all parts are constants
+
+**Formatter implementation**: The formatter keeps inline if expressions on one line with proper spacing:
+
+```pascal
+// Simple ternary
+X := if Y > 0 then 10 else 20;
+
+// Nested ternary
+X := if Y > 0 then (if Y > 10 then 100 else 50) else 0;
+
+// In constants
+const MAX_SIZE = if True then 100 else 50;
+
+// In case statement
+case if Y > 0 then Y else -Y of
+  1: X := 1;
+end;
+
+// In for loop
+for X := 1 to if Y > 0 then Y else 10 do
+  WriteLn(X);
+```
+
+**Test case**: `UnitTestsFormatter/Testcases/input/testfile_TernaryOperator.pas` contains comprehensive test cases.
+
+**Implementation details** in `Source/Formatter/Engine/GX_CodeFormatterFormatter.pas`:
+- `FInlineIfDepth` field tracks ternary operator nesting depth
+- `IsInlineIfExpression()` detects if expression context based on previous token
+- `CheckIndentIf`, `CheckIndentThen`, `CheckIndentElse` skip line-breaking for ternary operators
+- Special handling in `rtOf` and `rtDo` to clean up stack markers for proper indentation
+
+**Future enhancement**: Add configuration option for vertical alignment style (Phase 2).
+
+**References**:
+- [Embarcadero Blog: Coming in RAD Studio 13](https://blogs.embarcadero.com/coming-in-rad-studio-13-a-conditional-ternary-operator-for-the-delphi-language/)
+- [Intentional Delphi: The Conditional Ternary Operator](https://wmeyer.tech/2025/10/20/the-conditional-ternary-operator/)
+- [Delphi-PRAXiS Discussion](https://en.delphipraxis.net/topic/13907-a-conditional-ternary-operator-for-the-delphi/)
