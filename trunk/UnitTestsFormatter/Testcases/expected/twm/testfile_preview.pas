@@ -30,7 +30,7 @@ end;
 
 procedure TClass.M1(S: Integer);
 
-procedure SubProc;
+  procedure SubProc;
   begin
     S := 9;
   end;

@@ -8463,7 +8463,7 @@ end;
 
 function TdomAttr.validateIDREFS: boolean;
 
-function isValidIDREF(const idrefValue: wideString): boolean;
+  function isValidIDREF(const idrefValue: wideString): boolean;
   var
     dummyIndex: integer;
   begin
