@@ -197,33 +197,33 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         Caption = 'Line Breaks'
         object l_BeginStyle: TLabel
           Left = 240
-          Top = 96
+          Top = 152
           Width = 52
           Height = 13
           Caption = 'Begin style'
         end
         object l_WrapAtPosition: TLabel
           Left = 248
-          Top = 216
+          Top = 272
           Width = 51
           Height = 13
           Caption = 'At position'
         end
         object l_TryStyle: TLabel
           Left = 240
-          Top = 144
+          Top = 200
           Width = 42
           Height = 13
           Caption = 'Try style'
         end
         object cmb_FeedRoundBegin: TComboBox
           Left = 240
-          Top = 112
+          Top = 168
           Width = 185
           Height = 21
           Style = csDropDownList
           ItemHeight = 13
-          TabOrder = 2
+          TabOrder = 7
           OnChange = UpdatePreview
           Items.Strings = (
             'Unchanged'
@@ -232,7 +232,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object chk_WrapLines: TCheckBox
           Left = 240
-          Top = 192
+          Top = 248
           Width = 167
           Height = 17
           Caption = 'Wrap long lines'
@@ -241,7 +241,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object ed_WrapPosition: TEdit
           Left = 264
-          Top = 232
+          Top = 288
           Width = 33
           Height = 21
           TabOrder = 5
@@ -250,7 +250,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object ud_WrapPosition: TUpDown
           Left = 297
-          Top = 232
+          Top = 288
           Width = 13
           Height = 21
           Associate = ed_WrapPosition
@@ -421,7 +421,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object cmb_FeedRoundTry: TComboBox
           Left = 240
-          Top = 160
+          Top = 216
           Width = 185
           Height = 21
           Style = csDropDownList
