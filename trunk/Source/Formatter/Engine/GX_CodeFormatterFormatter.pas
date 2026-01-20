@@ -1731,15 +1731,16 @@ begin
         if AnonymousProcHadParams or (FSettings.BlankSubProc and not NoBlankLine) then
           CheckBlankLinesAroundProc;
       end else begin
-        if FSettings.BlankSubProc and not NoBlankLine then begin
-          Assert(False, '.CheckIndentProcedure: Blanc Lines Around Sub Proc');
-          CheckBlankLinesAroundProc;
-        end;
-
+        // First set indentation, then add blank lines (blank line insertion may change FPrevLine)
         if FStack.nIndent = 0 then begin
           Assert(False, '.CheckIndentProcedure: Stack.nIndent=0');
           AddToPrevLineIndent(_NTmp);
           FStack.nIndent := FStack.nIndent + 1;
+        end;
+
+        if FSettings.BlankSubProc and not NoBlankLine then begin
+          Assert(False, '.CheckIndentProcedure: Blanc Lines Around Sub Proc');
+          CheckBlankLinesAroundProc;
         end;
       end;
     end;
