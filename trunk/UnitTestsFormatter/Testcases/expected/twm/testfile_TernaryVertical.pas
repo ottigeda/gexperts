@@ -143,16 +143,14 @@ var
   X, Y: Integer;
 begin
   // Inside begin/end block
-  if Y > 5 then
-  begin
+  if Y > 5 then begin
     X := if Y > 10
            then 100
            else 50;
   end;
 
   // Inside while loop
-  while Y > 0 do
-  begin
+  while Y > 0 do begin
     X := if Y > 10
            then Y
            else 5;
@@ -160,10 +158,8 @@ begin
   end;
 
   // Deeply nested in code
-  if Y > 0 then
-  begin
-    if Y > 10 then
-    begin
+  if Y > 0 then begin
+    if Y > 10 then begin
       X := if Y > 100
              then 1000
              else 500;
