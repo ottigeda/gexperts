@@ -52,38 +52,13 @@ The build system uses MSBuild for Delphi 2007+ and DCC32 directly for older vers
 
 ## Testing
 
-**Code Formatter tests (GUI):**
-```cmd
-cd UnitTestsFormatter
-GX_FormatterUnitTests.exe
-```
-
-**Code Formatter tests (Console for CI/automation):**
-```cmd
-cd UnitTestsFormatter
-GX_FormatterUnitTests.exe --console
-GX_FormatterUnitTests.exe --console results.txt
-```
-
-Console runner options:
-- `-c` or `--console` - Run in console mode with output to console
-- `-c <file>` or `--console <file>` - Run in console mode with output to file
-
-Exit code equals the number of test errors + failures, suitable for CI systems.
-
-**Build formatter tests (Delphi 13):**
-```cmd
-cd UnitTestsFormatter\source
-call c:\Delphi\13\bin\rsvars.bat && msbuild /target:rebuild /p:config=Release GX_FormatterUnitTests.13.dproj
-```
-
-**Build formatter tests (WSL/bash):**
+**Build formatter tests:**
 ```bash
 cd UnitTestsFormatter
 bash _buildproject.sh
 ```
 
-**Run formatter tests (WSL/bash):**
+**Run formatter tests:**
 ```bash
 cd UnitTestsFormatter
 bash _runformatterunittests.sh
@@ -124,15 +99,15 @@ The core formatting engine is in `Source/Formatter/Engine/GX_CodeFormatterFormat
 After modifying the formatter source code:
 
 1. **Rebuild the test runner:**
-```cmd
+```bash
 cd UnitTestsFormatter
-_BuildProject.cmd
+bash _buildproject.sh
 ```
 
 2. **Run the tests:**
-```cmd
+```bash
 cd UnitTestsFormatter
-GX_FormatterUnitTests.exe --console
+bash _runformatterunittests.sh
 ```
 
 **Important:** Always verify that:
@@ -162,12 +137,12 @@ When adding a new formatter option (e.g., a new boolean setting):
 
 1. **Create test input file** in `UnitTestsFormatter/Testcases/input/` (e.g., `testfile_MyNewFeature.pas`)
 2. **Run tests with the ORIGINAL formatter** to generate baseline expected files:
-   ```cmd
+   ```bash
    cd UnitTestsFormatter
-   GX_FormatterUnitTests.exe --console
+   bash _runformatterunittests.sh
    ```
 3. **Copy the output files to expected directories** for all configurations where the new feature will be disabled by default:
-   ```cmd
+   ```bash
    for config in borland default delforex headwork twm; do
      cp Testcases/output/$config/testfile_MyNewFeature.pas Testcases/expected/$config/
    done
@@ -176,7 +151,7 @@ When adding a new formatter option (e.g., a new boolean setting):
 5. **Enable the new setting** in `AdjustSettings_Special` in `UnitTestsFormatter/source/DelForExTestFiles.pas`
 6. **Rebuild and run tests** - the new test will fail for the `special` config (expected)
 7. **Copy the special config output** to expected:
-   ```cmd
+   ```bash
    cp Testcases/output/special/testfile_MyNewFeature.pas Testcases/expected/special/
    ```
 8. **Update any existing tests affected** by the new feature (check `output/special/` for other files)
