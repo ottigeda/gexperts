@@ -127,7 +127,7 @@ When fixing a formatter bug:
 
 **Important:** Never modify existing expected test files without explicit user approval. The user needs to verify that the new formatter behavior is correct before test expectations are changed.
 
-**File encoding warning:** Some test files (e.g., `testfile_LargeFile.pas`) use ANSI encoding with special characters (German umlauts, etc.). Using `sed` or other Unix tools in WSL may convert them to UTF-8 and corrupt these characters. Prefer using the Edit tool for modifications to preserve encoding.
+**Tool usage:** Use the Edit tool for file modifications to preserve encoding. Tools like `sed`, `grep`, `cat`, etc. can be used for reading files and filtering output, but not for modifying files in place.
 
 ### Workflow for Adding New Formatter Options
 
