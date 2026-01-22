@@ -148,7 +148,7 @@ begin
       X := if Y > 10
              then 100
              else 50;
-  end;
+    end;
 
   // Inside while loop
   while Y > 0 do
@@ -163,12 +163,12 @@ begin
   if Y > 0 then
     begin
       if Y > 10 then
-      begin
-        X := if Y > 100
-               then 1000
-               else 500;
-      end;
-  end;
+        begin
+          X := if Y > 100
+                 then 1000
+                 else 500;
+        end;
+    end;
 end;
 
 procedure TestLongConditions;
