@@ -1444,7 +1444,6 @@ var
   IfColumn: Integer;
   PrevIdx: Integer;
   PrevToken: TPascalToken;
-  IfLineFeedIdx: Integer;
 begin
   Assert(False, '.CheckIndentElse');
 
@@ -2816,7 +2815,6 @@ var
   Token: TPascalToken;
   Col: Integer;
   LineFeedIdx: Integer;
-  TokenCount: Integer;
   Expr: TGXUnicodeString;
   RType: TReservedType;
   NextToken: TPascalToken;
@@ -2828,7 +2826,6 @@ begin
   // Instead, calculate based on token text lengths plus spaces between tokens,
   // but skip spaces for brackets and similar tokens that don't have spaces.
 
-  Result := 0;
   Col := 0;
   LineFeedIdx := -1;
 
@@ -2849,7 +2846,6 @@ begin
     LineFeedIdx := -1;
 
   // Count tokens between linefeed and target, calculating their actual widths
-  TokenCount := 0;
   Idx := LineFeedIdx + 1;
   while Idx < _TokenIdx do begin
     Token := GetToken(Idx);
@@ -2876,8 +2872,6 @@ begin
          not (NextRType in [rtRightBr, rtRightHook]) and
          not ((NextRType in [rtLeftBr, rtLeftHook]) and (RType in [rtNothing, rtReserved])) then
         Inc(Col);
-
-      Inc(TokenCount);
     end;
     Inc(Idx);
   end;
