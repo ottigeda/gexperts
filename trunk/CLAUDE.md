@@ -125,7 +125,7 @@ When fixing a formatter bug:
 5. **If existing tests are affected** by the fix, show the differences and **ask for confirmation** before updating those expected files
 6. Run all tests to verify no regressions
 
-**Important:** Never modify existing expected test files without explicit user approval. The user needs to verify that the new formatter behavior is correct before test expectations are changed.
+**CRITICAL:** NEVER modify or revert expected test files without explicit user approval. ALWAYS ask first and show the differences. The user needs to verify that the new formatter behavior is correct before test expectations are changed. This applies to both updating expected files AND reverting changes to them.
 
 **Tool usage:** Use the Edit tool for file modifications to preserve encoding. Tools like `sed`, `grep`, `cat`, etc. can be used for reading files and filtering output, but not for modifying files in place.
 
