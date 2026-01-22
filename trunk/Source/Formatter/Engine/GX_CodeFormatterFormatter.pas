@@ -151,6 +151,15 @@ type
     /// Detects if the current 'if' is used as an expression (ternary operator) rather than a statement
     /// @returns True if this is an inline if expression </summary>
     function IsInlineIfExpression: Boolean;
+    ///<summary>
+    /// Calculates the column position of a token (0-based)
+    /// @param TokenIdx is the index of the token
+    /// @returns the column position where the token starts </summary>
+    function GetTokenColumn(_TokenIdx: Integer): Integer;
+    ///<summary>
+    /// Finds the corresponding 'if' token for the current 'then' or 'else' in a ternary expression
+    /// @returns the token index of the matching 'if', or -1 if not found </summary>
+    function FindMatchingTernaryIf: Integer;
   public
     class procedure Execute(_Tokens: TPascalTokenList; _Settings: TCodeFormatterSettings);
     constructor Create(_Settings: TCodeFormatterSettings);
@@ -1100,12 +1109,33 @@ begin { CheckShortLine }
 end;
 
 procedure TCodeFormatterFormatter.CheckIndentIf;
+var
+  Idx: Integer;
+  Token: TPascalToken;
+  IsElseIf: Boolean;
 begin
   Assert(False, '.CheckIndentIf');
 
   // Check if this is an inline if expression (ternary operator)
   if IsInlineIfExpression then begin
-    Inc(FInlineIfDepth);
+    // Check if this is an 'else if' continuation (previous token is else)
+    // In that case, we already didn't decrement at the else, so don't increment here
+    IsElseIf := False;
+    if FInlineIfDepth > 0 then begin
+      Idx := FTokenIdx - 1;
+      while Idx >= 0 do begin
+        Token := GetToken(Idx);
+        if (Token.ReservedType <> rtComment) and (Token.ReservedType <> rtLineFeed) then begin
+          if Token.ReservedType = rtElse then
+            IsElseIf := True;
+          Break;
+        end;
+        Dec(Idx);
+      end;
+    end;
+
+    if not IsElseIf then
+      Inc(FInlineIfDepth);
     // For inline if, we just push rtIf on the stack and don't do any line feed manipulation
     FStack.Push(rtIf, 0);
     Exit;
@@ -1136,14 +1166,63 @@ begin
 end;
 
 procedure TCodeFormatterFormatter.CheckIndentThen;
+var
+  IfTokenIdx: Integer;
+  IfColumn: Integer;
+  PrevIdx: Integer;
+  PrevToken: TPascalToken;
+  Idx: Integer;
+  Token: TPascalToken;
+  IfLineFeedIdx: Integer;
 begin
   Assert(False, '.CheckIndentThen');
   if FStack.GetTopType in [rtIf, rtIfElse] then begin
     FWrapIndent := False;
     FLastPopResType := FStack.Pop;
 
-    // For inline if expressions (ternary operator), skip line feed manipulation
+    // For inline if expressions (ternary operator), handle vertical formatting
     if FInlineIfDepth > 0 then begin
+      // Check if 'then' is on a new line (vertical formatting)
+      // Look backwards to see if there's a line feed (skipping comments)
+      PrevIdx := FTokenIdx - 1;
+      while (PrevIdx >= 0) do begin
+        PrevToken := GetToken(PrevIdx);
+        if PrevToken.ReservedType = rtLineFeed then begin
+          // Found a line feed - this is vertical formatting
+          // For 'then', find the corresponding 'if' by searching backwards for the first 'if'
+          IfTokenIdx := -1;
+          Idx := FTokenIdx - 1;
+          while Idx >= 0 do begin
+            Token := GetToken(Idx);
+            if (Token.ReservedType <> rtComment) and (Token.ReservedType <> rtLineFeed) then begin
+              if Token.ReservedType = rtIf then begin
+                IfTokenIdx := Idx;
+                Break;
+              end;
+            end;
+            Dec(Idx);
+          end;
+
+          if IfTokenIdx >= 0 then begin
+            // Calculate column position of 'if' and indent 'then' relative to it
+            // Check if the 'if' is at the start of its line or mid-line
+            IfLineFeedIdx := IfTokenIdx - 1;
+            while (IfLineFeedIdx >= 0) and (GetToken(IfLineFeedIdx).ReservedType <> rtLineFeed) do
+              Dec(IfLineFeedIdx);
+
+            // Calculate column position of 'if' using GetTokenColumn
+            IfColumn := GetTokenColumn(IfTokenIdx);
+            TLineFeed(PrevToken).NoOfSpaces := IfColumn + FSettings.SpacePerIndent;
+            if FPrevLine = PrevToken then
+              FPrevLine.NoOfSpaces := IfColumn + FSettings.SpacePerIndent;
+          end;
+          Break;
+        end else if PrevToken.ReservedType <> rtComment then begin
+          // Found a non-comment, non-linefeed token - not vertical formatting
+          Break;
+        end;
+        Dec(PrevIdx);
+      end;
       FStack.Push(rtThen, 0);  // Push with no indent change
       Exit;
     end;
@@ -1361,6 +1440,11 @@ end;
 procedure TCodeFormatterFormatter.CheckIndentElse(_NTmp: Integer);
 var
   Next: TPascalToken;
+  IfTokenIdx: Integer;
+  IfColumn: Integer;
+  PrevIdx: Integer;
+  PrevToken: TPascalToken;
+  IfLineFeedIdx: Integer;
 begin
   Assert(False, '.CheckIndentElse');
 
@@ -1369,15 +1453,42 @@ begin
   while not FStack.IsEmpty and not (FStack.GetTopType in [rtThen, rtOf, rtTry]) do
     FLastPopResType := FStack.Pop;
 
-  // For inline if expressions (ternary operator), skip line feed manipulation
+  // For inline if expressions (ternary operator), handle vertical formatting
   if FInlineIfDepth > 0 then begin
-    // Decrement depth as we're finishing this ternary operator
-    Dec(FInlineIfDepth);
+    // Check if 'else' is on a new line (vertical formatting)
+    // The previous token should be a line feed (or comments then line feed)
+    PrevIdx := FTokenIdx - 1;
+    while (PrevIdx >= 0) do begin
+      PrevToken := GetToken(PrevIdx);
+      if PrevToken.ReservedType = rtLineFeed then begin
+        // Found a line feed - this is vertical formatting
+        // Find the corresponding 'if' token
+        IfTokenIdx := FindMatchingTernaryIf;
+        if IfTokenIdx >= 0 then begin
+          // Calculate column position of 'if' and indent 'else' relative to it
+          IfColumn := GetTokenColumn(IfTokenIdx);
+          // Set the line feed's indentation
+          TLineFeed(PrevToken).NoOfSpaces := IfColumn + FSettings.SpacePerIndent;
+          if FPrevLine = PrevToken then
+            FPrevLine.NoOfSpaces := IfColumn + FSettings.SpacePerIndent;
+        end;
+        Break;
+      end else if PrevToken.ReservedType <> rtComment then begin
+        // Found a non-comment, non-linefeed token - not vertical formatting
+        Break;
+      end;
+      Dec(PrevIdx);
+    end;
     // Push rtElse or rtIfElse with no indent change
     if FStack.GetTopType = rtThen then
       FStack.Push(rtIfElse, 0)
     else
       FStack.Push(rtElse, 0);
+    // Decrement depth as we're finishing this ternary operator
+    // EXCEPTION: If next token is 'if', this is a nested ternary (else if ...)
+    // Don't decrement - the nested 'if' will see FInlineIfDepth > 0 and handle correctly
+    if not (TryGetNextNoComment(FTokenIdx, Next) and (Next.ReservedType = rtIf)) then
+      Dec(FInlineIfDepth);
     FWrapIndent := False;
     Exit;
   end;
@@ -1808,6 +1919,10 @@ var
   Next: TPascalToken;
   wType: TWordType;
   exp: TGXUnicodeString;
+  Idx, IfIdx, IfCol: Integer;
+  Token: TPascalToken;
+  Depth: Integer;
+  IsFirstOnLine: Boolean;
 begin
   if FCurrentToken = nil then
     Exit; //==>
@@ -1989,6 +2104,90 @@ begin
 
     rtLineFeed: begin
         Assert(False, '.CheckIndent: LineFeed');
+
+        // For inline if expressions (ternary operator), handle vertical formatting
+        if FInlineIfDepth > 0 then begin
+          // Check if the next token is 'then' or 'else' from a ternary
+          if TryGetNextNoComment(FTokenIdx, Next) then begin
+            if Next.ReservedType = rtThen then begin
+              // Next line will have 'then' - indent it relative to the matching 'if'
+              // We need to find the matching 'if' by searching forward from current position
+              // Actually, we can't easily do this here because we haven't processed 'then' yet
+              // So skip this case - it will be handled in CheckIndentThen
+            end else if (Next.ReservedType = rtElse) and (FStack.GetTopType in [rtThen, rtElse, rtIfElse]) then begin
+              // Next line will have 'else' - this is vertical ternary formatting
+              // Use the same approach as CheckIndentThen: find matching 'if' and calculate column
+              Idx := FTokenIdx + 1;
+              // Skip forward to the 'else' token
+              while (Idx < FTokens.Count) and (GetToken(Idx).ReservedType <> rtElse) do
+                Inc(Idx);
+
+              if Idx < FTokens.Count then begin
+                // Now search backwards from 'else' to find matching 'if'
+                Depth := 0;
+                Dec(Idx);
+                while Idx >= 0 do begin
+                  Token := GetToken(Idx);
+                  if (Token.ReservedType <> rtComment) and (Token.ReservedType <> rtLineFeed) then begin
+                    if Token.ReservedType = rtElse then
+                      Inc(Depth)
+                    else if Token.ReservedType = rtThen then
+                      Inc(Depth)
+                    else if Token.ReservedType = rtIf then begin
+                      if Depth = 0 then begin
+                        // Found matching 'if'
+                        IfIdx := Idx;
+                        IfCol := GetTokenColumn(IfIdx);
+                        TLineFeed(FCurrentToken).NoOfSpaces := IfCol + FSettings.SpacePerIndent;
+                        FPrevPrevLine := FPrevLine;
+                        FPrevLine := TLineFeed(FCurrentToken);
+                        Exit;
+                      end else
+                        Dec(Depth);
+                    end;
+                  end;
+                  Dec(Idx);
+                end;
+              end;
+            end;
+          end;
+        end;
+
+        // Check for values on separate lines after then/else in ternary operators
+        // We check if the stack top is rtThen/rtElse/rtIfElse pushed with indent 0 (ternary operators)
+        if (FStack.GetTopType in [rtThen, rtElse, rtIfElse]) and (FStack.nIndent = FStack.GetTopIndent) then begin
+          // Check if the previous non-comment, non-linefeed token was 'then' or 'else'
+          Idx := FTokenIdx - 1;
+          while (Idx >= 0) do begin
+            Token := GetToken(Idx);
+            if (Token.ReservedType <> rtComment) and (Token.ReservedType <> rtLineFeed) then begin
+              if Token.ReservedType in [rtThen, rtElse] then begin
+                // Value is on a separate line after 'then' or 'else'
+                // Find the linefeed before this then/else to get its indentation
+                Depth := Idx - 1;
+                while (Depth >= 0) and (GetToken(Depth).ReservedType <> rtLineFeed) do
+                  Dec(Depth);
+
+                if Depth >= 0 then begin
+                  // The then/else keyword is on a line with this indentation
+                  // Set the value's indentation to the same + SpacePerIndent
+                  IfCol := TLineFeed(GetToken(Depth)).NoOfSpaces;
+                  // Subtract 1 to compensate for an off-by-one in how linefeed indentation is calculated
+                  TLineFeed(FCurrentToken).NoOfSpaces := IfCol + FSettings.SpacePerIndent - 1;
+                end;
+                // Don't process the rest of the rtLineFeed logic
+                FPrevPrevLine := FPrevLine;
+                FPrevLine := TLineFeed(FCurrentToken);
+                Exit;
+              end else begin
+                // Found a non-then/else token, so not a value after then/else
+                Break;
+              end;
+            end;
+            Dec(Idx);
+          end;
+        end;
+
         if FStack.IsEmpty then begin
           Assert(False, '.CheckIndent: setting WrapIndent to False');
           FWrapIndent := False;
@@ -2009,6 +2208,27 @@ begin
           if Next.ReservedType in [rtElse, rtIfElse, rtBegin, rtEnd, rtUntil, rtExcept] then begin
             Assert(False, '.CheckIndent: setting WrapIndent to False');
             FWrapIndent := False;
+          end else if (FInlineIfDepth > 0) and (FStack.GetTopType in [rtThen, rtElse, rtIfElse]) then begin
+            // In ternary context, look past comments AND linefeeds to see if else is coming
+            // This ensures comments before 'else' don't get continuation indent
+            Idx := FTokenIdx + 1;
+            while TryGetToken(Idx, Token) and (Token.ReservedType in [rtComment, rtLineFeed]) do
+              Inc(Idx);
+            if TryGetToken(Idx, Token) and (Token.ReservedType in [rtElse, rtIfElse]) then begin
+              Assert(False, '.CheckIndent: ternary else ahead, setting WrapIndent to False');
+              FWrapIndent := False;
+            end;
+          end;
+
+          // In ternary context before 'else', ensure no continuation indent
+          if (FInlineIfDepth > 0) and (FStack.GetTopType in [rtThen, rtElse, rtIfElse])
+            and (Next.ReservedType = rtLineFeed) then begin
+            // Look past comments AND linefeeds to see if else is the next real token
+            Idx := FTokenIdx + 1;
+            while TryGetToken(Idx, Token) and (Token.ReservedType in [rtComment, rtLineFeed]) do
+              Inc(Idx);
+            if TryGetToken(Idx, Token) and (Token.ReservedType in [rtElse, rtIfElse]) then
+              FWrapIndent := False;
           end;
 
           if FWrapIndent and not FSettings.NoIndentVarDecl then begin
@@ -2040,7 +2260,9 @@ begin
           end else if FStack.GetTopType in [rtLeftHook] then begin
             Assert(False, '.CheckIndent: setting WrapIndent to False');
             FWrapIndent := False;
-          end else begin
+          end else if not (Next.ReservedType in [rtElse, rtIfElse, rtBegin, rtEnd, rtUntil, rtExcept]) then begin
+            // Don't set FWrapIndent True if next non-comment token is a control keyword
+            // (we already set it False for these at line 2210)
             Assert(False, '.CheckIndent: setting WrapIndent to True');
             FWrapIndent := True;
           end;
@@ -2321,8 +2543,18 @@ begin
 
         AdjustSpacing(GetToken(FTokenIdx + 1), FCurrentToken, FTokenIdx + 1);
         if (FPrevLine <> nil) and (FPrevLine = FPrevToken) then begin
-          if not FSettings.IndentComments
-            or (FCurrentToken.WordType in [wtFullOutComment, wtHalfOutComment]) then
+          // Check if we're in a ternary context and 'else' is coming - if so, don't restore old indent
+          IsFirstOnLine := False;
+          if (FInlineIfDepth > 0) and (FStack.GetTopType in [rtThen, rtElse, rtIfElse]) then begin
+            Idx := FTokenIdx + 1;
+            while TryGetToken(Idx, Token) and (Token.ReservedType in [rtComment, rtLineFeed]) do
+              Inc(Idx);
+            if TryGetToken(Idx, Token) and (Token.ReservedType in [rtElse, rtIfElse]) then
+              IsFirstOnLine := True; // Reuse this variable to indicate ternary else context
+          end;
+          if (not FSettings.IndentComments
+            or (FCurrentToken.WordType in [wtFullOutComment, wtHalfOutComment]))
+            and not IsFirstOnLine then
             FPrevLine.NoOfSpaces := FPrevLine.OldNoOfSpaces
           else begin
             if Assigned(_PrevCommentLine) then
@@ -2555,6 +2787,9 @@ begin
       rtCase:        // case <expression> of
         Result := True;
 
+      // 'else if' is handled by not decrementing FInlineIfDepth in CheckIndentElse
+      // when the next token is 'if', so no special handling needed here
+
       rtOper: begin
         // Check for other operators like 'to', 'downto', 'of', 'in', 'is', 'as'
         if Token.TryGetExpression(Expr) then begin
@@ -2573,6 +2808,141 @@ begin
   // If we reach here, there was no previous token (start of file)
   // which means it's a statement if
   Result := False;
+end;
+
+function TCodeFormatterFormatter.GetTokenColumn(_TokenIdx: Integer): Integer;
+var
+  Idx: Integer;
+  Token: TPascalToken;
+  Col: Integer;
+  LineFeedIdx: Integer;
+  TokenCount: Integer;
+  Expr: TGXUnicodeString;
+  RType: TReservedType;
+  NextToken: TPascalToken;
+  NextRType: TReservedType;
+begin
+  // Calculate the column position where a token appears in the final output.
+  // We can't rely on spBefore/spAfter flags because they may be modified
+  // during formatting (e.g., spAfter is cleared to avoid double spaces).
+  // Instead, calculate based on token text lengths plus spaces between tokens,
+  // but skip spaces for brackets and similar tokens that don't have spaces.
+
+  Result := 0;
+  Col := 0;
+  LineFeedIdx := -1;
+
+  // Search backwards from token to find the line feed
+  Idx := _TokenIdx - 1;
+  while Idx >= 0 do begin
+    Token := GetToken(Idx);
+    if Token is TLineFeed then begin
+      LineFeedIdx := Idx;
+      Col := TLineFeed(Token).NoOfSpaces;
+      Break;
+    end;
+    Dec(Idx);
+  end;
+
+  // If no line feed found, we're on the first line, start at column 0
+  if LineFeedIdx < 0 then
+    LineFeedIdx := -1;
+
+  // Count tokens between linefeed and target, calculating their actual widths
+  TokenCount := 0;
+  Idx := LineFeedIdx + 1;
+  while Idx < _TokenIdx do begin
+    Token := GetToken(Idx);
+    if not (Token is TLineFeed) then begin
+      // Add the token's text length
+      if Token.TryGetExpression(Expr) then
+        Inc(Col, Length(Expr))
+      else
+        Inc(Col); // Fallback for non-expression tokens
+
+      // Add space after this token, but not for brackets and not before right brackets
+      RType := Token.ReservedType;
+      if Idx + 1 < FTokens.Count then begin
+        NextToken := GetToken(Idx + 1);
+        NextRType := NextToken.ReservedType;
+      end else begin
+        NextRType := rtNothing;
+      end;
+
+      // Don't add space after left brackets, or before right brackets
+      // Also don't add space before left bracket when current token is an identifier
+      // (function calls like "ShowMessage(" have no space, but "then (" does)
+      if not (RType in [rtLeftBr, rtLeftHook]) and
+         not (NextRType in [rtRightBr, rtRightHook]) and
+         not ((NextRType in [rtLeftBr, rtLeftHook]) and (RType in [rtNothing, rtReserved])) then
+        Inc(Col);
+
+      Inc(TokenCount);
+    end;
+    Inc(Idx);
+  end;
+
+  Result := Col;
+end;
+
+function TCodeFormatterFormatter.FindMatchingTernaryIf: Integer;
+var
+  Idx: Integer;
+  Token: TPascalToken;
+  Depth: Integer;
+  RType: TReservedType;
+  FoundMatchingThen: Boolean;
+begin
+  // Find the corresponding 'if' for the current 'else' in a ternary expression
+  // Structure: if COND then TRUE else FALSE
+  // When searching backwards from 'else':
+  //  1. Skip FALSE value (might contain nested ternaries)
+  //  2. Find the matching 'then' (the one at depth 0)
+  //  3. Skip COND (might contain nested ternaries)
+  //  4. Find the 'if'
+  Result := -1;
+  Depth := 0;
+  FoundMatchingThen := False;
+
+  // Start from current token and search backwards
+  Idx := FTokenIdx - 1;
+  while Idx >= 0 do begin
+    Token := GetToken(Idx);
+    RType := Token.ReservedType;
+
+    // Skip comments and line feeds
+    if (RType = rtComment) or (RType = rtLineFeed) then begin
+      Dec(Idx);
+      Continue;
+    end;
+
+    if not FoundMatchingThen then begin
+      // Phase 1: Looking for the matching 'then'
+      if RType = rtElse then begin
+        // Entering a nested ternary in the TRUE part
+        Inc(Depth);
+      end
+      else if RType = rtThen then begin
+        if Depth = 0 then begin
+          // Found the matching 'then'!
+          FoundMatchingThen := True;
+        end else begin
+          // Exiting a nested ternary
+          Dec(Depth);
+        end;
+      end;
+    end else begin
+      // Phase 2: Looking for the matching 'if' (after finding 'then')
+      if RType = rtIf then begin
+        // Found the matching 'if'!
+        Result := Idx;
+        Exit;
+      end;
+      // Skip over condition tokens (including nested ternaries in the condition)
+    end;
+
+    Dec(Idx);
+  end;
 end;
 
 procedure TCodeFormatterFormatter.CheckWrapping;
