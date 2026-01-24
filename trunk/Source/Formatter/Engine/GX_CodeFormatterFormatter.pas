@@ -2113,42 +2113,10 @@ begin
               // We need to find the matching 'if' by searching forward from current position
               // Actually, we can't easily do this here because we haven't processed 'then' yet
               // So skip this case - it will be handled in CheckIndentThen
-            end else if (Next.ReservedType = rtElse) and (FStack.GetTopType in [rtThen, rtElse, rtIfElse]) then begin
-              // Next line will have 'else' - this is vertical inline if formatting
-              // Use the same approach as CheckIndentThen: find matching 'if' and calculate column
-              Idx := FTokenIdx + 1;
-              // Skip forward to the 'else' token
-              while (Idx < FTokens.Count) and (GetToken(Idx).ReservedType <> rtElse) do
-                Inc(Idx);
-
-              if Idx < FTokens.Count then begin
-                // Now search backwards from 'else' to find matching 'if'
-                Depth := 0;
-                Dec(Idx);
-                while Idx >= 0 do begin
-                  Token := GetToken(Idx);
-                  if (Token.ReservedType <> rtComment) and (Token.ReservedType <> rtLineFeed) then begin
-                    if Token.ReservedType = rtElse then
-                      Inc(Depth)
-                    else if Token.ReservedType = rtThen then
-                      Inc(Depth)
-                    else if Token.ReservedType = rtIf then begin
-                      if Depth = 0 then begin
-                        // Found matching 'if'
-                        IfIdx := Idx;
-                        IfCol := GetTokenColumn(IfIdx);
-                        TLineFeed(FCurrentToken).NoOfSpaces := IfCol + FSettings.SpacePerIndent;
-                        FPrevPrevLine := FPrevLine;
-                        FPrevLine := TLineFeed(FCurrentToken);
-                        Exit;
-                      end else
-                        Dec(Depth);
-                    end;
-                  end;
-                  Dec(Idx);
-                end;
-              end;
             end;
+            // Note: 'else' is handled in CheckIndentElse, not here.
+            // Handling it here caused a bug where FPrevToken wasn't updated (due to early Exit),
+            // which prevented AdjustSpacing from clearing spBefore on 'else', causing misalignment.
           end;
         end;
 

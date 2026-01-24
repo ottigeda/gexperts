@@ -304,6 +304,8 @@ Fixed in `Source/Formatter/Engine/GX_CodeFormatterFormatter.pas`:
 
 7. **Inline if after `not` operator** - The `not` operator before inline if expressions (e.g., `B := not if Y > 0 then True else False`) is now correctly recognized as an expression context. The fix adds `not` to the list of operators checked in `IsInlineIfExpression`.
 
+8. **Inline if `else` alignment** - Fixed misalignment where `else` had one extra space compared to `then` in vertical inline if formatting. The bug was caused by duplicate handling of `else` in both the `rtLineFeed` case and `CheckIndentElse`. The `rtLineFeed` case did an early `Exit` that skipped updating `FPrevToken`, so when `AdjustSpacing` ran for `else`, it didn't see the line feed as the previous token and didn't clear `spBefore`. The fix removes the redundant `else` handling from the `rtLineFeed` case.
+
 ## Delphi 13 Ternary Operator Support
 
 Delphi 13 (RAD Studio 13 Florence) introduced inline if expressions, also called the "ternary operator" or "conditional operator". This feature allows `if-then-else` to be used as an expression that returns a value.
@@ -344,6 +346,7 @@ for X := 1 to if Y > 0 then Y else 10 do
 - `testfile_TernaryContexts.pas` - Tests inline if in various expression contexts
 - `testfile_TernaryDeepNested.pas` - Tests deeply nested inline if expressions
 - `testfile_TernaryNotIf.pas` - Tests inline if preceded by `not` operator
+- `testfile_TernaryInCondition.pas` - Tests inline if within statement if conditions
 - `failure_*.pas` files - Document known formatting bugs (see below)
 
 **Implementation details** in `Source/Formatter/Engine/GX_CodeFormatterFormatter.pas`:
@@ -355,8 +358,6 @@ for X := 1 to if Y > 0 then Y else 10 do
 **Known bugs** (documented in `failure_*.pas` test files):
 
 1. **`failure_TernaryAsBoolCondition.pas`** - When inline if is used as the boolean condition of a statement if (e.g., `if if A > 0 then True else False then`), the inner inline if gets statement-like formatting instead of expression indentation.
-
-2. **`failure_TernaryInCondition.pas`** - When inline if is used within a statement if's condition (e.g., `if Y in if True then [0..10] else [11..20] then`), the `else` is misaligned by one extra space compared to `then`.
 
 **Future enhancement**: Add configuration option for vertical alignment style (Phase 2).
 
