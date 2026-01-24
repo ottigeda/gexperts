@@ -2790,11 +2790,12 @@ begin
       // when the next token is 'if', so no special handling needed here
 
       rtOper: begin
-        // Check for other operators like 'to', 'downto', 'of', 'in', 'is', 'as'
+        // Check for other operators like 'to', 'downto', 'of', 'in', 'is', 'as', 'not'
         if Token.TryGetExpression(Expr) then begin
           Expr := LowerCase(Expr);
           if (Expr = 'to') or (Expr = 'downto') or (Expr = 'of')
-            or (Expr = 'in') or (Expr = 'is') or (Expr = 'as') then
+            or (Expr = 'in') or (Expr = 'is') or (Expr = 'as')
+            or (Expr = 'not') then
             Result := True;
         end;
       end;
