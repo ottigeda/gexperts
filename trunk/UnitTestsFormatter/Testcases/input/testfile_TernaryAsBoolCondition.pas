@@ -5,15 +5,16 @@ interface
 implementation
 
 // Test case: inline if expression used as the boolean condition of a statement if
-// The formatter incorrectly treats the inner inline if as a statement if,
-// giving it statement-like indentation instead of expression indentation.
+// The formatter correctly recognizes the inner inline if as an expression,
+// applying inline if indentation (relative to the if keyword) rather than
+// statement indentation.
 
 procedure TestInlineIfAsBooleanCondition;
 var
   A, B, C, D: Integer;
 begin
   // 4-level nested inline if used as boolean condition for statement if
-  // The formatter incorrectly formats this as nested statement ifs
+  // The formatter correctly applies inline if indentation
   if if A > 0
 then if B > 0
 then if C > 0

@@ -1173,7 +1173,6 @@ var
   PrevToken: TPascalToken;
   Idx: Integer;
   Token: TPascalToken;
-  IfLineFeedIdx: Integer;
 begin
   Assert(False, '.CheckIndentThen');
   if FStack.GetTopType in [rtIf, rtIfElse] then begin
@@ -1205,12 +1204,6 @@ begin
 
           if IfTokenIdx >= 0 then begin
             // Calculate column position of 'if' and indent 'then' relative to it
-            // Check if the 'if' is at the start of its line or mid-line
-            IfLineFeedIdx := IfTokenIdx - 1;
-            while (IfLineFeedIdx >= 0) and (GetToken(IfLineFeedIdx).ReservedType <> rtLineFeed) do
-              Dec(IfLineFeedIdx);
-
-            // Calculate column position of 'if' using GetTokenColumn
             IfColumn := GetTokenColumn(IfTokenIdx);
             TLineFeed(PrevToken).NoOfSpaces := IfColumn + FSettings.SpacePerIndent;
             if FPrevLine = PrevToken then
@@ -2751,7 +2744,8 @@ begin
       rtMinus,       // -
       rtMathOper,    // *, /, div, mod
       rtLogOper,     // <, >, <=, >=, <>, and, or, xor
-      rtCase:        // case <expression> of
+      rtCase,        // case <expression> of
+      rtIf:          // if <expression> - second 'if' in 'if if ...' is inline if
         Result := True;
 
       // 'else if' is handled by not decrementing FInlineIfDepth in CheckIndentElse
