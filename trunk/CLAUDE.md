@@ -85,8 +85,10 @@ Test cases are located in `UnitTestsFormatter/Testcases/`:
 Formatter configurations: `borland`, `default`, `delforex`, `headwork`, `special`, `twm`
 
 **Naming conventions:**
-- `testfile_*.pas` - Regular test files
-- `failure_*.pas` - Known failing tests that need to be fixed
+- `testfile_*.pas` - Regular test files (tests pass when formatter produces expected output)
+- `failure_*.pas` - Known bug documentation files (tests FAIL until formatter is fixed)
+
+**Important:** `failure_*.pas` expected files contain CORRECT formatting (what the formatter SHOULD produce), not the current buggy output. These tests intentionally fail to document bugs. When someone fixes a formatter bug, the corresponding failure tests will start passing.
 
 When a test fails, the incorrectly formatted output is saved to `output/<config>/` for comparison with `expected/<config>/`. Use Beyond Compare or similar diff tool to analyze differences.
 
@@ -155,7 +157,7 @@ When adding a new formatter option (e.g., a new boolean setting):
    cp Testcases/output/special/testfile_MyNewFeature.pas Testcases/expected/special/
    ```
 8. **Update any existing tests affected** by the new feature (check `output/special/` for other files)
-9. **Run final test verification** to ensure all 1324+ tests pass
+9. **Run final test verification** to ensure all ~1380 tests pass (excluding expected `failure_*` test failures)
 
 **Why create tests first?** This workflow ensures you capture the correct baseline behavior using the unmodified formatter. If you change the code first, you'll need to manually recreate what the original output should have been, which is error-prone.
 
@@ -335,13 +337,25 @@ for X := 1 to if Y > 0 then Y else 10 do
   WriteLn(X);
 ```
 
-**Test case**: `UnitTestsFormatter/Testcases/input/testfile_TernaryOperator.pas` contains comprehensive test cases.
+**Test cases**:
+- `testfile_TernaryOperator.pas` - Comprehensive working test cases (single-line formatting)
+- `testfile_TernaryContexts.pas` - Tests inline if in various expression contexts
+- `testfile_TernaryDeepNested.pas` - Tests deeply nested inline if expressions
+- `failure_*.pas` files - Document known formatting bugs (see below)
 
 **Implementation details** in `Source/Formatter/Engine/GX_CodeFormatterFormatter.pas`:
 - `FInlineIfDepth` field tracks ternary operator nesting depth
 - `IsInlineIfExpression()` detects if expression context based on previous token
 - `CheckIndentIf`, `CheckIndentThen`, `CheckIndentElse` skip line-breaking for ternary operators
 - Special handling in `rtOf` and `rtDo` to clean up stack markers for proper indentation
+
+**Known bugs** (documented in `failure_*.pas` test files):
+
+1. **`failure_TernaryAsBoolCondition.pas`** - When inline if is used as the boolean condition of a statement if (e.g., `if if A > 0 then True else False then`), the inner inline if gets statement-like formatting instead of expression indentation.
+
+2. **`failure_TernaryNotIf.pas`** - The `not` operator before inline if (e.g., `B := not if Y > 0 then True else False`) causes the formatter to not recognize the inline if as an expression.
+
+3. **`failure_TernaryInCondition.pas`** - When inline if is used within a statement if's condition (e.g., `if Y in if True then [0..10] else [11..20] then`), the `else` is misaligned by one extra space compared to `then`.
 
 **Future enhancement**: Add configuration option for vertical alignment style (Phase 2).
 
