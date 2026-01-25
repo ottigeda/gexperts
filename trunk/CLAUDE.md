@@ -28,6 +28,10 @@ svn info <file>     # Show local file info
 
 **Note:** When working in WSL, server operations (commit, update, list, log, etc.) must use the Windows `svn.exe` executable due to connectivity issues with the SourceForge repository. Local operations (status, diff, add, info, etc.) work fine with the Linux SVN client.
 
+**Commit message guidelines:**
+- Do NOT include a list of changed files in commit messages - SVN tracks this automatically
+- Focus on describing what was changed and why
+
 ## Build Commands
 
 **Build a specific Delphi version:**
