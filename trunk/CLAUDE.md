@@ -298,6 +298,7 @@ Key settings affecting indentation:
 - `BlankProc` - Whether to add blank lines around procedures
 - `BlankBeforeUses` - Whether to add a blank line before `uses` clauses (enabled in `twm` and `special` configs)
 - `IndentCompDirectives` - How compiler directives are indented (see below)
+- `DoubleIndentIfCondition` - Double indent for multi-line if conditions (see below)
 
 ### Compiler Directive Indentation (IndentCompDirectives)
 
@@ -313,6 +314,37 @@ The `IndentCompDirectives` setting is a `TIndentCompDirectives` enum with three 
 - Nesting level must be tracked for ALL directives, including inline ones like `{$ELSE}Windows, {$ENDIF}` where `{$ENDIF}` is not at the start of a line
 - `FStack.nIndent` is in indent **levels** (0, 1, 2...), not spaces. The `SetIndent` method multiplies by `SpacePerIndent`
 - For `rtCompEndif` indentation, use `FCompDirectiveNestLevel - 1` to match the opening `{$IFDEF}`
+
+### Double Indent If Conditions (DoubleIndentIfCondition)
+
+The `DoubleIndentIfCondition` setting aligns multi-line if conditions by using double indentation for continuation lines. When enabled:
+
+- Adds an extra space after the `if` keyword (2 spaces total instead of 1)
+- Uses double indent (2 levels) for continuation lines in if conditions
+
+**Example with `DoubleIndentIfCondition := True`:**
+```pascal
+procedure Example;
+begin
+  if  Condition1
+      and Condition2
+      or Condition3 then begin
+    doSomething;
+  end;
+end;
+```
+
+Both `Condition1` and `and Condition2` align at the same column (column 7 in this example):
+- `if` at column 3 (2 spaces base indent) + 2 spaces after = `Condition1` at column 7
+- Continuation line: 2 spaces base + 4 spaces (2 indent levels) = `and` at column 7
+
+**Note:** This feature only applies to `if` statements, not `while` or `repeat/until`, because the longer keywords (`while` = 5 chars, `until` = 5 chars vs `if` = 2 chars) would not align properly with double indentation.
+
+**Implementation notes** (in `GX_CodeFormatterFormatter.pas`):
+- In `AdjustSpacing`: When `rtIf` is encountered and setting is enabled, the expression is changed from "if" to "if " (with trailing space)
+- In `CheckIndent`: When `FWrapIndent` is true and we're in an if condition (`rtIf` or `rtIfElse` on stack), `_NTmp` is set to 2 instead of 1
+
+**Test file:** `testfile_DoubleIndentIfCondition.pas`
 
 ## Recent Fixes
 
