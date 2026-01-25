@@ -53,12 +53,12 @@ uses
   ShellAPI,
   StrUtils,
   Dialogs,
-  Registry,
   u_dzAssertTrace,
   u_dzVclUtils,
   u_dzFileUtils,
   GX_CodeFormatterConfigHandler,
-  GX_DbugIntf;
+  GX_DbugIntf,
+  DelForExBeyondCompare;
 
 { TTestTestfiles }
 
@@ -89,67 +89,17 @@ begin
 end;
 
 procedure TTestTestfiles.ExecuteDoubleClickAction;
-const
-  CURRENTLY_FAILS = 'CurrentlyFails';
-
-  function TryReadFromReg(_HKey: HKEY; const _Key: string; _Value: string; out _ExePath: string): Boolean;
-  var
-    reg: TRegistry;
-  begin
-    Result := False;
-    reg := TRegistry.Create;
-    try
-      reg.RootKey := _HKey;
-      if reg.OpenKeyReadOnly(_Key) then begin
-        try
-          if reg.ValueExists(_Value) then begin
-            _ExePath := reg.ReadString(_Value);
-            Result := True;
-            Exit;
-          end;
-        finally
-          reg.CloseKey;
-        end;
-      end;
-    finally
-      FreeAndNil(reg);
-    end;
-  end;
-
-  function TryReadScooter(out _ExePath: string): Boolean;
-  const
-    REG_KEY = '\Software\Scooter Software\Beyond Compare';
-    REG_VALUE = 'ExePath';
-  begin
-    Result := TryReadFromReg(HKEY_LOCAL_MACHINE, REG_KEY, REG_VALUE, _ExePath);
-    if not Result then
-      Result := TryReadFromReg(HKEY_CURRENT_USER, REG_KEY, REG_VALUE, _ExePath);
-  end;
-
-  function TryReadIntelliPoint(out _ExePath: string): Boolean;
-  const
-    REG_KEY = '\Software\Microsoft\IntelliPoint\AppSpecific\BCompareLite.exe';
-    REG_VALUE = 'Path';
-  begin
-    Result := TryReadFromReg(HKEY_CURRENT_USER, REG_KEY, REG_VALUE, _ExePath)
-  end;
 var
   fn: string;
-  InFile: string;
   ExpectedFile: string;
   OutputFile: string;
   Params: string;
-  ExePath: string;
 begin
   fn := Name + '.pas';
-  InFile := 'testcases\input\' + fn;
   ExpectedFile := 'testcases\expected\' + FConfigName + '\' + fn;
   OutputFile := 'testcases\output\' + FConfigName + '\' + fn;
   Params := Format('"%s" "%s"', [ExpectedFile, OutputFile]);
-  if not TryReadScooter(ExePath) then
-    if not TryReadIntelliPoint(ExePath) then
-      ExePath := 'C:\Program Files (x86)\Beyond Compare 2\bc2.exe';
-  ShellExecute(0, '', PChar(ExePath), PChar(Params), '', SW_NORMAL);
+  ShellExecute(0, '', PChar(GetBeyondCompareExePath), PChar(Params), '', SW_NORMAL);
 end;
 
 function TTestTestfiles.GetConfigDirBS: string;

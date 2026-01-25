@@ -59,7 +59,9 @@ uses
   GX_GenericUtils in '..\..\Source\Utils\GX_GenericUtils.pas',
   TestFrameworkExt in '..\dunit\TestFrameworkExt.pas',
   GX_DbugIntf in '..\..\Source\Utils\GX_DbugIntf.pas',
-  DelForExUsesTests in 'DelForExUsesTests.pas';
+  DelForExUsesTests in 'DelForExUsesTests.pas',
+  DelForExSpecialCasesTests in 'DelForExSpecialCasesTests.pas',
+  DelForExBeyondCompare in 'DelForExBeyondCompare.pas';
 
 function IsConsoleMode(out _Filename: string): Boolean;
 var
