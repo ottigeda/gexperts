@@ -92,6 +92,34 @@ Formatter configurations: `borland`, `default`, `delforex`, `headwork`, `special
 
 When a test fails, the incorrectly formatted output is saved to `output/<config>/` for comparison with `expected/<config>/`. Use Beyond Compare or similar diff tool to analyze differences.
 
+### Special Cases Test Structure
+
+For testing formatter settings in isolation (without affecting all standard configurations), use the SpecialCases structure in `UnitTestsFormatter/Testcases/SpecialCases/`:
+
+```
+SpecialCases/
+  <setting-name>/
+    input/          # Input Pascal files
+    expected/       # Expected output for this specific configuration
+    output/         # Actual output (only written when tests fail)
+```
+
+Each special case has its own settings adjuster function in `DelForExSpecialCasesTests.pas`:
+
+```pascal
+procedure AdjustSettings_<SettingName>(var _cfg: TCodeFormatterEngineSettings);
+begin
+  _cfg.<SettingName> := True;  // or other value
+end;
+```
+
+To add a new special case:
+1. Create the directory structure under `Testcases/SpecialCases/<name>/`
+2. Add input test files to `input/`
+3. Add expected output files to `expected/`
+4. Add an `AdjustSettings_<name>` procedure in `DelForExSpecialCasesTests.pas`
+5. Register it in `CreateSpecialCasesSuite` with `TSpecialCaseTestSuite.Create('<name>', AdjustSettings_<name>)`
+
 ### Formatter Engine
 
 The core formatting engine is in `Source/Formatter/Engine/GX_CodeFormatterFormatter.pas`. The main class `TCodeFormatterFormatter` generates formatted Pascal code from a token collection.
