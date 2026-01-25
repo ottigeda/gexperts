@@ -6,7 +6,7 @@ implementation
 
 procedure test;
 begin
-  if boolarr[0] then
+  if  boolarr[0] then
     Hallo
   else
     Welt;

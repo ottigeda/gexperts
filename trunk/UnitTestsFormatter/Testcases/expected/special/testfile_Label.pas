@@ -9,7 +9,7 @@ label
   SomeLabel;
 begin
   hello;
-  if someCondition then
+  if  someCondition then
     goto SomeLabel;
   world;
 SomeLabel:
@@ -20,7 +20,7 @@ label
   99;
 begin
   hello;
-  if someCondition then
+  if  someCondition then
     goto 99;
   world;
 99:
@@ -35,7 +35,7 @@ label
     Error;
   begin
     hello;
-    if someCondition then
+    if  someCondition then
       goto Error;
     world;
 Error: bla;
@@ -45,13 +45,13 @@ label
   99;
 begin
   hello;
-  if someCondition then
+  if  someCondition then
     goto SomeLabel;
   world;
 SomeLabel:
   blub;
   hello;
-  if someCondition then
+  if  someCondition then
     goto 99;
   world;
 99: bla;

@@ -6,7 +6,7 @@ implementation
 
 procedure Test;
 begin
-  if 1 > 2 then {// this comment is the problem} begin
+  if  1 > 2 then {// this comment is the problem} begin
   end;
 end;
 

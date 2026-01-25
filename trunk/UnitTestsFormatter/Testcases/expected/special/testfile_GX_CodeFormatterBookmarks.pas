@@ -71,7 +71,7 @@ destructor TBookmarks.Destroy;
 var
   i: Integer;
 begin
-  if Assigned(fList) then begin
+  if  Assigned(fList) then begin
     for i := 0 to fList.Count - 1 do
       TBookmark(fList[i]).Free;
     fList.Free;
@@ -127,17 +127,17 @@ var
   BmPos: TOTACharPos;
 begin
   FBookmarks.Clear;
-  if BorlandIDEServices.QueryInterface(IOTAEditorServices, EditorService) <> S_OK then
+  if  BorlandIDEServices.QueryInterface(IOTAEditorServices, EditorService) <> S_OK then
     Exit;
   SourceEditor := EditorService.GetTopBuffer;
-  if not Assigned(SourceEditor) then
+  if  not Assigned(SourceEditor) then
     Exit;
   EditView := SourceEditor.GetEditView(0);
-  if not Assigned(EditView) then
+  if  not Assigned(EditView) then
     Exit;
   for i := 0 to 19 do begin
     BmPos := EditView.BookmarkPos[i];
-    if BmPos.Line <> 0 then
+    if  BmPos.Line <> 0 then
       FBookmarks.Add(i, BmPos.Line);
   end;
 end;
@@ -151,13 +151,13 @@ var
   BmEditPos: TOTAEditPos;
   i: Integer;
 begin
-  if not BorlandIDEServices.QueryInterface(IOTAEditorServices, EditorService) = S_OK then
+  if  not BorlandIDEServices.QueryInterface(IOTAEditorServices, EditorService) = S_OK then
     Exit;
   SourceEditor := EditorService.GetTopBuffer;
-  if not Assigned(SourceEditor) then
+  if  not Assigned(SourceEditor) then
     Exit;
   EditView := SourceEditor.GetEditView(0);
-  if not Assigned(EditView) then
+  if  not Assigned(EditView) then
     Exit;
   SaveCursorPos := EditView.GetCursorPos;
   try

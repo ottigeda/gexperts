@@ -69,6 +69,7 @@ begin
 //  _cfg.StandDirectivesCase := rfUpperCase;
   _cfg.IndentCompDirectives := icdIndependent;
   _cfg.BlankBeforeUses := True;
+  _cfg.DoubleIndentIfCondition := True;
   FConfigName := 'special';
 end;
 

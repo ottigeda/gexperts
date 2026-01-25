@@ -6,7 +6,7 @@ implementation
 
 procedure bla;
 begin
-  if s[1] = '5' then a := 5;
+  if  s[1] = '5' then a := 5;
 end;
 
 end.

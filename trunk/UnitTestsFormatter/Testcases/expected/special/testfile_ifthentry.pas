@@ -6,7 +6,7 @@ implementation
 
 procedure test;
 begin
-  if True then
+  if  True then
     try
       dosomething;
     finally

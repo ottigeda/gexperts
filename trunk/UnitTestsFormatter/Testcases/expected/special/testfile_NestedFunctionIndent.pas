@@ -6,7 +6,7 @@ implementation
 
 procedure Test;
 begin
-  if Tf_dzDialog.ShowMessage(mtConfirmation,
+  if  Tf_dzDialog.ShowMessage(mtConfirmation,
     Format(_('The segment length (%d m) from' + #13#10 +
         '%s' + #13#10 +
         'does not match this vehicle type (expected %d m).' + #13#10 + #13#10 +

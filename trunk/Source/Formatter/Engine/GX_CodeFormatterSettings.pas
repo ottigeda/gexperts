@@ -64,6 +64,7 @@ type
     NoIndentUsesComma: Boolean; {: do not indent units in the uses block if the line starts with a comma }
     UnindentLabels: Boolean;
     IndentInterfaceImpl: Boolean; {: indent content inside interface and implementation sections }
+    DoubleIndentIfCondition: Boolean; {: use double indent for continuation lines in if/while conditions }
 
     BlankProc: Boolean; {: blank line between main procedures }
     BlankSubProc: Boolean; {: blank line between sub procedures }
@@ -152,6 +153,7 @@ type
     property NoIndentUsesComma: Boolean read FSettings.NoIndentUsesComma;
     property UnindentLabels: Boolean read FSettings.UnindentLabels;
     property IndentInterfaceImpl: Boolean read FSettings.IndentInterfaceImpl;
+    property DoubleIndentIfCondition: Boolean read FSettings.DoubleIndentIfCondition;
     property BlankProc: Boolean read FSettings.BlankProc;
     property BlankSubProc: Boolean read FSettings.BlankSubProc;
     property BlankBeforeUses: Boolean read FSettings.BlankBeforeUses;

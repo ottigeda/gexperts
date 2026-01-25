@@ -91,7 +91,7 @@ end;
 
 procedure TOCollection.FreeItem(Item: Pointer);
 begin
-  if (Item <> nil) then
+  if  (Item <> nil) then
     with TObject(Item) as TObject do
       Free;
 end;
@@ -109,11 +109,11 @@ var
   I: Integer;
 begin
   IndexOf := -1;
-  if Search(KeyOf(Item), I) then begin
-    if Duplicates then
+  if  Search(KeyOf(Item), I) then begin
+    if  Duplicates then
       while (I < Count) and (Item <> Items[I]) do
         inc(I);
-    if I < Count then IndexOf := I;
+    if  I < Count then IndexOf := I;
   end;
 end;
 
@@ -121,7 +121,7 @@ procedure TSortedCollection.AddReplace(Item: Pointer);
 var
   Index: Integer;
 begin
-  if Search(KeyOf(Item), Index) then
+  if  Search(KeyOf(Item), Index) then
     Delete(Index);
   Add(Item);
 end;
@@ -130,7 +130,7 @@ procedure TSortedCollection.Add(Item: Pointer);
 var
   I: Integer;
 begin
-  if not Search(KeyOf(Item), I) or Duplicates then
+  if  not Search(KeyOf(Item), I) or Duplicates then
     Insert(I, Item);
 end;
 
@@ -149,13 +149,13 @@ begin
   while L <= H do begin
     I := (L + H) shr 1;
     C := Compare(KeyOf(Items[I]), Key);
-    if C < 0 then
+    if  C < 0 then
       L := I + 1
     else begin
       H := I - 1;
-      if C = 0 then begin
+      if  C = 0 then begin
         Search := True;
-        if not Duplicates then L := I;
+        if  not Duplicates then L := I;
       end;
     end;
   end;

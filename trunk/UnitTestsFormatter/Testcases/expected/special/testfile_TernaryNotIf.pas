@@ -14,7 +14,7 @@ var
   Y: Integer;
 begin
   // Inline if with not - formatter fails to format this correctly
-  B := not if Y > 0
+  B := not if  Y > 0
              then True
              else False;
 end;

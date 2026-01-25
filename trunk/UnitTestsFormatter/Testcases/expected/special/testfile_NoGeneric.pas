@@ -8,6 +8,6 @@ begin
   while i < sourceLength do begin
   end;
 
-  if b < a then
+  if  b < a then
     ;
 end.

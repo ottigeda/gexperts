@@ -123,7 +123,7 @@ begin
 
   fDoneForm := TfmCodeFormatterDone.Create(nil);
   ToolsMenu := GetToolsMenu;
-  if not Assigned(ToolsMenu) then begin
+  if  not Assigned(ToolsMenu) then begin
     MessageDlg('Something is very wrong: The IDE''s main menu has less than 3 items.'#13#10 +
       'Wizard will not be installed.', mtError, [mbOK], 0);
     FFormatter.Free;
@@ -161,7 +161,7 @@ end;
 
 destructor TDelforExpert.Destroy;
 begin
-  if Assigned(fKeyboardNotifier) then
+  if  Assigned(fKeyboardNotifier) then
     fKeyboardNotifier.Unregister;
   FFormatter.Free;
   FFormatter := nil;
@@ -176,8 +176,8 @@ var
 begin
   MainMenu := (BorlandIdeServices as INTAServices).MainMenu;
   Result := MainMenu.Items.Find('&Tools');
-  if not Assigned(Result) then begin
-    if MainMenu.Items.Count < 3 then begin
+  if  not Assigned(Result) then begin
+    if  MainMenu.Items.Count < 3 then begin
       Result := nil;
       Exit;
     end;
@@ -190,21 +190,21 @@ var
   ToolsMenu: TMenuItem;
   Settings: TDefaultSettings;
 begin
-  if not Assigned(FFormatter) then
+  if  not Assigned(FFormatter) then
     exit;
 
   Settings.Parser := FFormatter.Settings.Settings;
   Settings.Wizard := FWizardSettings;
 
-  if TfmCodeFormatterConfig.Execute(Settings, false) = mrOk then begin
+  if  TfmCodeFormatterConfig.Execute(Settings, false) = mrOk then begin
     FWizardSettings := Settings.Wizard;
     FFormatter.Settings.Settings := Settings.Parser;
     ToolsMenu := GetToolsMenu;
-    if Assigned(ToolsMenu) and Assigned(fSubMenu) and Assigned(FFormatter) then begin
+    if  Assigned(ToolsMenu) and Assigned(fSubMenu) and Assigned(FFormatter) then begin
       ToolsMenu.Remove(fSubMenu);
       ToolsMenu.Insert(FWizardSettings.ToolPosition, fSubMenu);
     end;
-    if Assigned(fKeyboardNotifier) then
+    if  Assigned(fKeyboardNotifier) then
       fKeyboardNotifier.Unregister;
     fKeyboardNotifier := TKeyboardNotifier.Create(Self, FWizardSettings.ShortCut);
   end;
@@ -241,7 +241,7 @@ var
   begin
     Reader := SourceEditor.CreateReader;
     Result := Assigned(Reader);
-    if not Result then
+    if  not Result then
       Exit;
     _Content := '';
     s := '';
@@ -264,7 +264,7 @@ var
     Writer: IOTAEditWriter;
   begin
     Writer := SourceEditor.CreateUndoableWriter;
-    if not Assigned(Writer) then
+    if  not Assigned(Writer) then
       Exit;
     Writer.DeleteTo(MaxLongint);
     Writer.Insert(PChar(_Content));
@@ -278,11 +278,11 @@ var
   Breakpoints: TBreakpointHandler;
   Extension: string;
 begin
-  if not Assigned(FFormatter) then
+  if  not Assigned(FFormatter) then
     Exit;
-  if Supports(BorlandIDEServices, IOTAModuleServices, ModuleServices) then begin
+  if  Supports(BorlandIDEServices, IOTAModuleServices, ModuleServices) then begin
     Module := ModuleServices.CurrentModule;
-    if not Assigned(Module) then
+    if  not Assigned(Module) then
       Exit;
 
 {$IFDEF delphi6}
@@ -290,15 +290,15 @@ begin
 {$ELSE}
     Editor := Module.GetModuleFileEditor(0);
 {$ENDIF}
-    if not Assigned(Editor) or not Supports(Editor, IOTASourceEditor, SourceEditor) then
+    if  not Assigned(Editor) or not Supports(Editor, IOTASourceEditor, SourceEditor) then
       Exit;
 
     Filename := SourceEditor.FileName;
     Extension := LowerCase(ExtractFileExt(Filename));
-    if (Extension <> '.pas') and (Extension <> '.dpk') and (Extension <> '.dpr') and (Extension <> '.dpkw') then
+    if  (Extension <> '.pas') and (Extension <> '.dpk') and (Extension <> '.dpr') and (Extension <> '.dpkw') then
       Exit;
 
-    if not ReadCurrentFile(FullText) then
+    if  not ReadCurrentFile(FullText) then
       Exit;
 
     Bookmarks := TBookmarkHandler.Create;
@@ -309,17 +309,17 @@ begin
         Breakpoints.SaveBreakpoints;
         FFormatter.Settings.LoadCapFile(FWizardSettings.CapFileName);
         FFormatter.SetTextStr(PChar(FullText));
-        if FFormatter.Execute then begin
-          if FFormatter.Settings.FillNewWords in [fmAddNewWord, fmAddUse, fmAddUseExcept] then
+        if  FFormatter.Execute then begin
+          if  FFormatter.Settings.FillNewWords in [fmAddNewWord, fmAddUse, fmAddUseExcept] then
             FFormatter.Settings.SaveCapFile(FWizardSettings.CapFileName);
-          if FullText = FFormatter.GetTextStr then
+          if  FullText = FFormatter.GetTextStr then
             Exit; // nothing has changed, so we don't change the buffer
           FullText := FFormatter.GetTextStr;
           ReplaceCurrentFile(FullText);
-          if FWizardSettings.ShowDoneDialog then begin
+          if  FWizardSettings.ShowDoneDialog then begin
             fDoneForm.ShowModal;
             ShowDone := not fDoneForm.chk_DontShowAgain.Checked;
-            if Showdone <> FWizardSettings.ShowDoneDialog then begin
+            if  Showdone <> FWizardSettings.ShowDoneDialog then begin
               FWizardSettings.ShowDoneDialog := ShowDone;
               TDelforRegistry.WriteShowDone(ShowDone);
             end;
@@ -344,11 +344,11 @@ var
   EditWindow: INTAEditWindow;
 begin
   EditorServices := BorlandIDEServices as IOTAEditorServices;
-  if Assigned(EditorServices) then
-    if Assigned(EditorServices.TopView) then begin
+  if  Assigned(EditorServices) then
+    if  Assigned(EditorServices.TopView) then begin
       EditWindow := EditorServices.TopView as INTAEditWindow;
-      if Assigned(EditWindow) then
-        if Assigned(EditWindow.Form) then
+      if  Assigned(EditWindow) then
+        if  Assigned(EditWindow.Form) then
           EditWindow.Form.SetFocus;
     end;
 end;
@@ -398,7 +398,7 @@ procedure TKeyboardNotifier.BindKeyboard(const BindingServices: IOTAKeyBindingSe
   end;
 
 begin
-  if fHotkey.Second <> #0 then
+  if  fHotkey.Second <> #0 then
     RegisterHotkey([fHotkey.First, Ord(fHotkey.Second)])
   else
     RegisterHotkey([fHotkey.First]);
@@ -410,7 +410,7 @@ var
 begin
   Idx := fBindingIndex;
   fBindingIndex := -1;
-  if Idx <> -1 then
+  if  Idx <> -1 then
     Self.Unregister(Idx);
 end;
 
@@ -457,4 +457,3 @@ begin
 end;
 
 end.
-

@@ -6,8 +6,8 @@ implementation
 
 procedure bla;
 begin
-  if true then begin
-  end else if S[i] = '&' then
+  if  true then begin
+  end else if  S[i] = '&' then
     blub
   else
     exit;

@@ -15,15 +15,15 @@ var
 begin
   // 4-level nested inline if used as boolean condition for statement if
   // The formatter correctly applies inline if indentation
-  if if A > 0
-       then if B > 0
-              then if C > 0
-                     then if D > 0
-                            then True
-                            else False
-                     else False
-              else False
-       else False then
+  if  if  A > 0
+        then if  B > 0
+               then if  C > 0
+                      then if  D > 0
+                             then True
+                             else False
+                      else False
+               else False
+        else False then
     WriteLn('All conditions met');
 end;
 

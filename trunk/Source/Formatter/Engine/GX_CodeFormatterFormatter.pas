@@ -396,7 +396,16 @@ begin
         _CurrentToken.SetSpace([spBefore], True);
       end;
 
-    rtIf, rtUntil, rtWhile, rtCase, rtRecord: begin
+    rtIf: begin
+        Assert(False, '.AdjustSpacing');
+        _CurrentToken.SetSpace([spAfter], True);
+        // Add extra space after 'if' when DoubleIndentIfCondition is enabled
+        // This aligns the first condition with continuation lines
+        if FSettings.DoubleIndentIfCondition then
+          _CurrentToken.SetExpression('if ');
+      end;
+
+    rtUntil, rtWhile, rtCase, rtRecord: begin
         Assert(False, '.AdjustSpacing');
         _CurrentToken.SetSpace([spAfter], True);
       end;
@@ -2200,8 +2209,14 @@ begin
           end;
 
           if FWrapIndent and not FSettings.NoIndentVarDecl then begin
-            Assert(False, '.CheckIndent: setting NTmp to 1');
-            _NTmp := 1;
+            if FSettings.DoubleIndentIfCondition
+              and (FStack.GetTopType in [rtIf, rtIfElse]) then begin
+              Assert(False, '.CheckIndent: setting NTmp to 2 (double indent if condition)');
+              _NTmp := 2;
+            end else begin
+              Assert(False, '.CheckIndent: setting NTmp to 1');
+              _NTmp := 1;
+            end;
           end else begin
             Assert(False, '.CheckIndent: setting NTmp to 0');
             _NTmp := 0;

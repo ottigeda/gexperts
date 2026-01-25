@@ -6,9 +6,9 @@ implementation
 
 procedure hallo;
 begin
-  if test1 then begin
+  if  test1 then begin
 {$IFDEF level1}
-    if test2 then begin
+    if  test2 then begin
   {$IFDEF level2}
     end;
   {$ELSE}

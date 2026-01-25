@@ -78,7 +78,7 @@ end;
 
 function TCodeFormatterStack.GetTopType: TReservedType;
 begin
-  if FStackPtr >= 0 then
+  if  FStackPtr >= 0 then
     Result := TopRec.RT
   else
     Result := rtNothing;
@@ -87,7 +87,7 @@ end;
 procedure TCodeFormatterStack.Push(RType: TReservedType; IncIndent: Integer);
 begin
   Inc(FStackPtr);
-  if FStackPtr > MaxStack then
+  if  FStackPtr > MaxStack then
     raise EFormatException.Create('Stack overflow');
 
   TopRec.RT := RType;
@@ -101,7 +101,7 @@ var
 begin
   Result := False;
   for I := 0 to FStackPtr do
-    if FStack[I].RT = AType then begin
+    if  FStack[I].RT = AType then begin
       Result := True;
       Exit;
     end;
@@ -109,9 +109,9 @@ end;
 
 function TCodeFormatterStack.Pop: TReservedType;
 begin
-  if FStackPtr >= 0 then begin
+  if  FStackPtr >= 0 then begin
     FNIndent := TopRec.nInd;
-    if (TopRec.RT = rtProcedure) and (FProcLevel > 0) then
+    if  (TopRec.RT = rtProcedure) and (FProcLevel > 0) then
       Dec(FProcLevel);
     Result := TopRec^.RT;
     Dec(FStackPtr);
@@ -129,7 +129,7 @@ end;
 
 function TCodeFormatterStack.GetTopIndent: Integer;
 begin
-  if not IsEmpty then begin
+  if  not IsEmpty then begin
     Result := TopRec.nInd;
     NIndent := Result;
   end else

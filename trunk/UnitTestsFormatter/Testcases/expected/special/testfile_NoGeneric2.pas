@@ -18,7 +18,7 @@ begin
   // Evaluate tagName:
   i := 1;
   while i <= sourceLength do begin
-    if IsXmlWhiteSpace(Source[i]) then
+    if  IsXmlWhiteSpace(Source[i]) then
       break;
     inc(i);
   end;
@@ -28,12 +28,12 @@ begin
   // Evaluate Attributes:
   while i < sourceLength do begin
     inc(i);
-    if not IsXmlWhiteSpace(Source[i]) then
+    if  not IsXmlWhiteSpace(Source[i]) then
       break;
   end;
   j := length(Source);
   while j >= i do begin
-    if not IsXmlWhiteSpace(Source[j]) then
+    if  not IsXmlWhiteSpace(Source[j]) then
       break;
     dec(j);
   end;

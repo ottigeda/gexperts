@@ -12,9 +12,9 @@ var
   Y: Integer;
 begin
   // Inline if in set inclusion check - else is misaligned
-  if Y in if True
-            then [0..10]
-            else [11..20] then
+  if  Y in if  True
+             then [0..10]
+             else [11..20] then
     WriteLn('In range');
 end;
 
@@ -26,9 +26,9 @@ var
   Y: Integer;
 begin
   // Inline if comparing enums - else is misaligned
-  if Status = if Y > 0
-                then stActive
-                else stNone then
+  if  Status = if  Y > 0
+                 then stActive
+                 else stNone then
     WriteLn('Match');
 end;
 

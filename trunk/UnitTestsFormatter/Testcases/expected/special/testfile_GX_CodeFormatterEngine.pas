@@ -77,7 +77,7 @@ end;
 function TCodeFormatterEngine.Execute: Boolean;
 begin
   try
-    if Assigned(FTokens) then
+    if  Assigned(FTokens) then
       FTokens.Free;
     FTokens := TCodeFormatterParser.Execute(FText, FSettings);
     FText.Clear; // we can free some memory since the text is now stored in the tokens
@@ -97,15 +97,15 @@ var
   i: Integer;
 begin
   Result := '';
-  if not Assigned(FTokens) then
+  if  not Assigned(FTokens) then
     Exit;
 
-  if (TokenNo >= 0) and (TokenNo < FTokens.Count) then begin
+  if  (TokenNo >= 0) and (TokenNo < FTokens.Count) then begin
     Token := FTokens.Items[TokenNo];
     repeat
       Result := Result + Token.GetString;
       Inc(TokenNo);
-      if TokenNo >= FTokens.Count then
+      if  TokenNo >= FTokens.Count then
         break;
       Token := TPascalToken(FTokens.Items[TokenNo]);
     until Token.ReservedType = rtLineFeed;
@@ -129,7 +129,7 @@ begin
 
   LB := sLineBreak;
   Size := 0;
-  if Assigned(FTokens) then begin
+  if  Assigned(FTokens) then begin
     TokenNo := 0;
     while TokenNo < FTokens.Count do begin
       Line := GetLine(TokenNo);
@@ -148,4 +148,3 @@ begin
 end;
 
 end.
-

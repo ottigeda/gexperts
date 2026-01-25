@@ -282,6 +282,7 @@ begin
   // Backward compatible: old False=0=icdNone, old True=1=icdFollowCode
   ES.IndentCompDirectives := TIndentCompDirectives(_Reader.ReadInteger('IndentCompDirectives', Ord(ES.IndentCompDirectives)));
   ES.IndentInterfaceImpl := _Reader.ReadBool('IndentInterfaceImpl', ES.IndentInterfaceImpl); //: Boolean;
+  ES.DoubleIndentIfCondition := _Reader.ReadBool('DoubleIndentIfCondition', ES.DoubleIndentIfCondition); //: Boolean;
   ES.BlankProc := _Reader.ReadBool('BlankProc', ES.BlankProc); //: Boolean;
   ES.BlankSubProc := _Reader.ReadBool('BlankSubProc', ES.BlankSubProc); //: Boolean;
   ES.BlankBeforeUses := _Reader.ReadBool('BlankBeforeUses', ES.BlankBeforeUses); //: Boolean;
@@ -390,6 +391,7 @@ begin
   _Writer.WriteBool('IndentComments', _Settings.IndentComments); //: Boolean;
   _Writer.WriteInteger('IndentCompDirectives', Ord(_Settings.IndentCompDirectives)); //: TIndentCompDirectives;
   _Writer.WriteBool('IndentInterfaceImpl', _Settings.IndentInterfaceImpl); //: Boolean;
+  _Writer.WriteBool('DoubleIndentIfCondition', _Settings.DoubleIndentIfCondition); //: Boolean;
   _Writer.WriteBool('BlankProc', _Settings.BlankProc); //: Boolean;
   _Writer.WriteBool('BlankSubProc', _Settings.BlankSubProc); //: Boolean;
   _Writer.WriteBool('BlankBeforeUses', _Settings.BlankBeforeUses); //: Boolean;

@@ -4,7 +4,7 @@ case ParamStatus of
     etIrrelevant,
     etUnProcessed*): Result := bpsUnProcessed;
 
-  if A {//t} then k;
+  if  A {//t} then k;
 const
   SepStr = ^I#39#13#10', / ?; `" <> [] {} - = +|()%@&^$ # !~ * ';
 
@@ -236,30 +236,30 @@ begin
     -3); //is ok
   Forward := 0;
   Message := 1;
-  if I then
-    if J then
+  if  I then
+    if  J then
       k
     else
       X
   else
     T;
-  if I > 10 then begin
+  if  I > 10 then begin
     I := I - 2;
   end; {both lines begin at same position}
 
-  if T[1][1] then
+  if  T[1][1] then
     SendMessage(-1, -3
       10)
   else begin
     k
   end;
 
-  if X1 then
-    if X2 then
+  if  X1 then
+    if  X2 then
       X3
-    else if x4 then
+    else if  x4 then
 
-      if Count = 0 then
+      if  Count = 0 then
       //34567890123456789012345678901234567890123456789012345678901234567890123456789012
         ;
   x5
@@ -267,23 +267,23 @@ begin
     x6;
   {this line is not indented correctly after formatting};
 
-    if T then
+    if  T then
       k
-    else if P then
+    else if  P then
       S
-    else if S then
+    else if  S then
       T;
 
-    if T then
+    if  T then
       with k[1] do
         Result := 0
-    else if T then //test
+    else if  T then //test
       Result := 10;
-    if T {//t} then {//t} begin //test
+    if  T {//t} then {//t} begin //test
     end;
 
-    if T,
-      l then
+    if  T,
+        l then
       J
     else {bla
     bla}begin
@@ -291,11 +291,11 @@ begin
     end;
     with T do begin
     end;
-    if T then
+    if  T then
       I
-    else if T then
+    else if  T then
       I
-    else if T then
+    else if  T then
       I
     else
       kk;
@@ -326,9 +326,9 @@ begin
       l;
     end;
 
-    if T then
+    if  T then
       try
-        if T then
+        if  T then
           Test
         else
           Test

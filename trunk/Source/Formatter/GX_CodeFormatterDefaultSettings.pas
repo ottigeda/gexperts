@@ -50,6 +50,7 @@ begin
   Result.NoIndentUsesComma := False;
   Result.UnindentLabels := False;
   Result.IndentInterfaceImpl := False;
+  Result.DoubleIndentIfCondition := False;
   Result.IndentTry := True;
   Result.IndentTryElse := False;
   Result.NoFeedBeforeThen := False;
@@ -108,6 +109,7 @@ begin
   Result.NoIndentUsesComma := False;
   Result.UnindentLabels := False;
   Result.IndentInterfaceImpl := False;
+  Result.DoubleIndentIfCondition := False;
   Result.IndentTry := True;
   Result.IndentTryElse := False;
   Result.NoFeedBeforeThen := True;

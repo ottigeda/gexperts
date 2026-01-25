@@ -69,7 +69,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         object l_IndentCompDirectives: TLabel
           Left = 216
           Top = 136
-          Width = 105
+          Width = 90
           Height = 13
           Caption = 'Compiler directives'
         end
@@ -98,7 +98,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object chk_IndentInterfaceImpl: TCheckBox
           Left = 216
-          Top = 178
+          Top = 184
           Width = 238
           Height = 17
           Caption = 'Indent interface/implementation'
@@ -107,7 +107,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object chk_NoIndentUsesComma: TCheckBox
           Left = 216
-          Top = 202
+          Top = 232
           Width = 238
           Height = 17
           Hint =
@@ -129,7 +129,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           object chk_IndentCaseElse: TCheckBox
             Left = 8
             Top = 96
-            Width = 140
+            Width = 177
             Height = 17
             Caption = 'else in a case block'
             TabOrder = 3
@@ -138,7 +138,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           object chk_IndentTryElse: TCheckBox
             Left = 8
             Top = 72
-            Width = 140
+            Width = 177
             Height = 17
             Caption = 'else in a try block'
             TabOrder = 2
@@ -147,7 +147,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           object chk_IndentTry: TCheckBox
             Left = 8
             Top = 48
-            Width = 140
+            Width = 177
             Height = 17
             Caption = 'try'
             TabOrder = 1
@@ -156,7 +156,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           object chk_IndentBegin: TCheckBox
             Left = 8
             Top = 24
-            Width = 140
+            Width = 177
             Height = 17
             Caption = 'begin'
             TabOrder = 0
@@ -174,11 +174,20 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object chk_UnindentLabels: TCheckBox
           Left = 216
-          Top = 226
+          Top = 256
           Width = 209
           Height = 17
           Caption = 'Unindent Labels'
           TabOrder = 9
+        end
+        object chk_DoubleIndentIfCondition: TCheckBox
+          Left = 216
+          Top = 208
+          Width = 238
+          Height = 17
+          Caption = 'Double indent if/while conditions'
+          TabOrder = 10
+          OnClick = UpdatePreview
         end
       end
       object ts_Spacing: TTabSheet

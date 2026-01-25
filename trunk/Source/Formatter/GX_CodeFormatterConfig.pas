@@ -100,6 +100,7 @@ type
     chk_NoIndentElseIf: TCheckBox;
     chk_IndentCaseElse: TCheckBox;
     chk_UnindentLabels: TCheckBox;
+    chk_DoubleIndentIfCondition: TCheckBox;
     chk_RemoveDoubleBlank: TCheckBox;
     b_EditCapitalization: TButton;
     p_Preview: TPanel;
@@ -400,6 +401,7 @@ begin
   _Settings.IndentComments := chk_IndentComments.Checked;
   _Settings.IndentCompDirectives := TIndentCompDirectives(cmb_IndentCompDirectives.ItemIndex);
   _Settings.IndentInterfaceImpl := chk_IndentInterfaceImpl.Checked;
+  _Settings.DoubleIndentIfCondition := chk_DoubleIndentIfCondition.Checked;
   _Settings.IndentTry := chk_IndentTry.Checked;
   _Settings.IndentTryElse := chk_IndentTryElse.Checked;
   _Settings.IndentCaseElse := chk_IndentCaseElse.Checked;
@@ -495,6 +497,7 @@ begin
   chk_IndentComments.Checked := _Settings.IndentComments;
   cmb_IndentCompDirectives.ItemIndex := Ord(_Settings.IndentCompDirectives);
   chk_IndentInterfaceImpl.Checked := _Settings.IndentInterfaceImpl;
+  chk_DoubleIndentIfCondition.Checked := _Settings.DoubleIndentIfCondition;
   chk_IndentTry.Checked := _Settings.IndentTry;
   chk_IndentTryElse.Checked := _Settings.IndentTryElse;
   chk_IndentCaseElse.Checked := _Settings.IndentCaseElse;
