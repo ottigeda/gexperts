@@ -49,6 +49,7 @@ begin
   Result.IndentCompDirectives := icdNone;
   Result.NoIndentUsesComma := False;
   Result.UnindentLabels := False;
+  Result.IndentInterfaceImpl := False;
   Result.IndentTry := True;
   Result.IndentTryElse := False;
   Result.NoFeedBeforeThen := False;
@@ -106,6 +107,7 @@ begin
   Result.IndentCompDirectives := icdNone;
   Result.NoIndentUsesComma := False;
   Result.UnindentLabels := False;
+  Result.IndentInterfaceImpl := False;
   Result.IndentTry := True;
   Result.IndentTryElse := False;
   Result.NoFeedBeforeThen := True;

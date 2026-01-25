@@ -209,8 +209,7 @@ end;
 
 procedure AdjustSettings_IndentSections(var _cfg: TCodeFormatterEngineSettings);
 begin
-  // TODO: Enable the IndentInterfaceImpl setting once it's implemented
-  // _cfg.IndentInterfaceImpl := True;
+  _cfg.IndentInterfaceImpl := True;
 end;
 
 { Registration }

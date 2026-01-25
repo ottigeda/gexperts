@@ -96,18 +96,27 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           TabOrder = 3
           OnClick = UpdatePreview
         end
-        object chk_NoIndentUsesComma: TCheckBox
+        object chk_IndentInterfaceImpl: TCheckBox
           Left = 216
-          Top = 184
+          Top = 178
           Width = 238
           Height = 17
-          Hint = 
+          Caption = 'Indent interface/implementation'
+          TabOrder = 7
+          OnClick = UpdatePreview
+        end
+        object chk_NoIndentUsesComma: TCheckBox
+          Left = 216
+          Top = 202
+          Width = 238
+          Height = 17
+          Hint =
             'Do not ident units in the uses block if the line starts with a c' +
             'omma.'
           Caption = 'Do not indent uses starting with ,'
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 7
+          TabOrder = 8
           OnClick = UpdatePreview
         end
         object grp_ExtraIndentBefore: TGroupBox
@@ -165,11 +174,11 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object chk_UnindentLabels: TCheckBox
           Left = 216
-          Top = 208
+          Top = 226
           Width = 209
           Height = 17
           Caption = 'Unindent Labels'
-          TabOrder = 8
+          TabOrder = 9
         end
       end
       object ts_Spacing: TTabSheet

@@ -63,6 +63,7 @@ type
     IndentCompDirectives: TIndentCompDirectives; {: how to indent compiler directives }
     NoIndentUsesComma: Boolean; {: do not indent units in the uses block if the line starts with a comma }
     UnindentLabels: Boolean;
+    IndentInterfaceImpl: Boolean; {: indent content inside interface and implementation sections }
 
     BlankProc: Boolean; {: blank line between main procedures }
     BlankSubProc: Boolean; {: blank line between sub procedures }
@@ -150,6 +151,7 @@ type
     property IndentCompDirectives: TIndentCompDirectives read FSettings.IndentCompDirectives;
     property NoIndentUsesComma: Boolean read FSettings.NoIndentUsesComma;
     property UnindentLabels: Boolean read FSettings.UnindentLabels;
+    property IndentInterfaceImpl: Boolean read FSettings.IndentInterfaceImpl;
     property BlankProc: Boolean read FSettings.BlankProc;
     property BlankSubProc: Boolean read FSettings.BlankSubProc;
     property BlankBeforeUses: Boolean read FSettings.BlankBeforeUses;

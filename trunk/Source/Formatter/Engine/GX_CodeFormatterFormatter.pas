@@ -1845,7 +1845,14 @@ begin
       if not IsDelegate then begin
         Assert(False, '.CheckIndentProcedure: not IsDelegate');
 
-        if FStack.nIndent > 0 then begin
+        if FSettings.IndentInterfaceImpl and FStack.HasType(rtImplementation) then begin
+          // With IndentInterfaceImpl, reset to implementation indent level (1) instead of 0
+          Assert(False, '.CheckIndentProcedure: IndentInterfaceImpl, resetting to impl indent');
+          if FStack.nIndent > 1 then begin
+            FStack.nIndent := 1;
+            AddToPrevLineIndent(_NTmp);
+          end;
+        end else if FStack.nIndent > 0 then begin
           Assert(False, '.CheckIndentProcedure: Stack.nIndent > 0');
           FStack.nIndent := 0;
           AddToPrevLineIndent(_NTmp);
@@ -1911,10 +1918,11 @@ var
   Next: TPascalToken;
   wType: TWordType;
   exp: TGXUnicodeString;
-  Idx, IfIdx, IfCol: Integer;
+  Idx, IfCol: Integer;
   Token: TPascalToken;
   Depth: Integer;
   IsFirstOnLine: Boolean;
+  PoppedPrevSection: Boolean;
 begin
   if FCurrentToken = nil then
     Exit; //==>
@@ -2263,9 +2271,18 @@ begin
         if (FCurrentRType = rtUses) and (FSettings.BlankBeforeUses) then
           CheckBlankLinesBeforeUses;
 
-        DecPrevLineIndent;
-        FStack.Clear;
-        FStack.Push(FCurrentRType, 1);
+        // When IndentInterfaceImpl is enabled and we're inside interface/implementation,
+        // keep the section indent for uses clause
+        if FSettings.IndentInterfaceImpl and (FCurrentRType = rtUses)
+          and (FStack.GetTopType in [rtInterface, rtImplementation]) then begin
+          // Don't clear the stack or decrement indent - uses should be indented
+          // Push with 1 so uses items are indented relative to uses keyword
+          FStack.Push(FCurrentRType, 1);
+        end else begin
+          DecPrevLineIndent;
+          FStack.Clear;
+          FStack.Push(FCurrentRType, 1);
+        end;
         FWrapIndent := False;
 
         // break after uses
@@ -2357,6 +2374,8 @@ begin
         end else begin
           FIsInInterfacePart := True;
           DecPrevLineIndent;
+          if FSettings.IndentInterfaceImpl then
+            FStack.Push(rtInterface, 1);
         end;
 
         FWrapIndent := False;
@@ -2369,6 +2388,8 @@ begin
         { DecPrevIndent; }
         { nIndent := 0; }
         AddToPrevLineIndent(_NTmp);
+        if FSettings.IndentInterfaceImpl then
+          FStack.Push(rtImplementation, 1);
       end;
 
     rtBegin, rtTry:
@@ -2384,6 +2405,7 @@ begin
         FWrapIndent := False;
         if FStack.nIndent < 1 then
           FStack.nIndent := 1;
+        PoppedPrevSection := False;
         if (FStack.GetTopType in [rtVar, rtConst, rtType]) then begin
           if (FCurrentRType = rtType) and IsRType(FPrevToken, rtEquals) then begin
             // in classes.pas I found
@@ -2392,8 +2414,10 @@ begin
           end else if FStack.GetType(1) in [rtClass, rtClassDecl, rtRecord] then begin
             FStack.Pop;
             DecPrevLineIndent;
-          end else
+          end else begin
             FStack.Pop;
+            PoppedPrevSection := True;
+          end;
         end;
         if (FStack.GetTopType in [rtClass, rtClassDecl, rtRecord]) then begin
           if IsRType(FPrevToken, rtVisibility) then begin
@@ -2414,6 +2438,16 @@ begin
               // inline var declaration
             end else if (FPrevToken.TryGetExpression(exp) and SameText(exp, 'for')) then begin
               // for with inline var declaration
+            end else if FSettings.IndentInterfaceImpl
+              and (FStack.GetTopType in [rtInterface, rtImplementation]) then begin
+              // Unit level type/var/const with IndentInterfaceImpl enabled:
+              // Only decrement if we popped a previous section (transition from type->var etc.)
+              if PoppedPrevSection then
+                DecPrevLineIndent;
+              // Push with 1 so content is indented relative to keyword
+              FStack.Push(FCurrentRType, 1);
+              if FSettings.FeedAfterVar then
+                AssertLineFeedAfter(FTokenIdx);
             end else begin
               FStack.Push(FCurrentRType, 0);
               if not IsRType(FPrevToken, rtEquals) then begin
