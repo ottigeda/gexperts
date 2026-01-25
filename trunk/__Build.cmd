@@ -34,6 +34,7 @@ call :doItem Xx104Sydney
 call :doItem Xx110Alexandria
 call :doItem Xx120
 call :doItem Xx130
+call :doItem Xx130_64
 
 goto :eof
 
