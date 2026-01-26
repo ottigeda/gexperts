@@ -4,6 +4,8 @@
 /// stand alone tools that do not have access to the OTAPI </summary>
 unit GX_OtaUtils;
 
+{$I GX_CondDefine.inc}
+
 interface
 
 uses
@@ -22,6 +24,8 @@ type
     class function GetActiveEditorText(Lines: TGXUnicodeStringList; UseSelection: Boolean = True): Boolean;
     // Returns an empty string
     class function GetCurrentIdent: string;
+    // always returns False
+    class function IdeStyleIsDark: Boolean;
   end;
 
 ///<summary>
@@ -121,6 +125,17 @@ function GxOtaHaveCPPSupport: Boolean;
 function GxOtaHaveCSharpSupport: Boolean;
 
 function GxOtaGetIDEProductIdentifier: string;
+
+type
+  TThemeChangedNotifier = class
+  public
+    constructor Create(_OnThemeChanged: TNotifyEvent);
+  public
+    // always returns True
+    function AddNotifierToIDE: Boolean;
+    // always returns True
+    function RemoveNotifierFromIDE: Boolean;
+  end;
 
 implementation
 
@@ -290,6 +305,7 @@ procedure GxOtaGetEditorFont(const AFont: TFont; ASizeAdjust: Integer = 0);
 begin
   // do nothing for now
 end;
+
 function GxOtaGetProjectGroupFileName: string;
 begin
   Result := '';
@@ -332,9 +348,31 @@ begin
   raise Exception.Create('Stand alone version does not support ToolsAPI calls (Ota.GetEditWriterForSourceEditor)');
 end;
 
+class function Ota.IdeStyleIsDark: Boolean;
+begin
+  Result := False;
+end;
+
 class function Ota.InitTheming(AForm: TCustomForm): Boolean;
 begin
   Result := False;
+end;
+
+{ TThemeChangedNotifier }
+
+constructor TThemeChangedNotifier.Create(_OnThemeChanged: TNotifyEvent);
+begin
+  inherited Create;
+end;
+
+function TThemeChangedNotifier.RemoveNotifierFromIDE: Boolean;
+begin
+  Result := True;
+end;
+
+function TThemeChangedNotifier.AddNotifierToIDE: Boolean;
+begin
+  Result := True;
 end;
 
 end.
