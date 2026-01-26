@@ -2,8 +2,6 @@
 
 @rem the build number is incremented in the _build.cmd script with is located in the main directory
 
-goto :test
-
 if "%1"=="" goto :list
 call :dobuild %1
 goto :eof
