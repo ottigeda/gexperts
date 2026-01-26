@@ -14,35 +14,35 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
-        <Base>true</Base>
-        <CfgParent>Base</CfgParent>
         <Base_Win32>true</Base_Win32>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_1)'!=''">
-        <Base>true</Base>
-        <CfgParent>Base</CfgParent>
         <Cfg_1>true</Cfg_1>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
-        <Base>true</Base>
+        <Cfg_1_Win32>true</Cfg_1_Win32>
         <CfgParent>Cfg_1</CfgParent>
         <Cfg_1>true</Cfg_1>
-        <Cfg_1_Win32>true</Cfg_1_Win32>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_2)'!=''">
-        <Base>true</Base>
-        <CfgParent>Base</CfgParent>
         <Cfg_2>true</Cfg_2>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
-        <Base>true</Base>
+        <Cfg_2_Win32>true</Cfg_2_Win32>
         <CfgParent>Cfg_2</CfgParent>
         <Cfg_2>true</Cfg_2>
-        <Cfg_2_Win32>true</Cfg_2_Win32>
+        <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
-        <SanitizedProjectName>GExpertsGrep_10-4</SanitizedProjectName>
-        <DCC_DcuOutput>..\dcu\10.4\$(Config)</DCC_DcuOutput>
+        <SanitizedProjectName>GExpertsGrep</SanitizedProjectName>
+        <DCC_DcuOutput>..\dcu\$(Config)</DCC_DcuOutput>
         <DCC_Define>NO_TRANSLATION;NO_TRANSLATION_HINT;GX_STANDALONE;$(DCC_Define)</DCC_Define>
         <DCC_ExeOutput>..\..\..\..\binaries</DCC_ExeOutput>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
@@ -87,14 +87,12 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="..\..\common\ToolsAPI.pas"/>
         <DCCReference Include="..\..\..\..\ExternalSource\DropSource.pas"/>
         <DCCReference Include="GrepMain.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Framework\GX_Logging.pas"/>
         <DCCReference Include="..\..\..\..\Source\Framework\GX_About.pas">
             <Form>fmAbout</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="..\..\..\..\Source\Formatter\GX_AboutExperimental.pas">
-            <Form>fmAboutExperimental</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="GX_ActionBroker.pas"/>
@@ -115,12 +113,16 @@
         <DCCReference Include="..\..\..\..\Source\Utils\GX_GenericUtils.pas"/>
         <DCCReference Include="..\..\..\..\Source\Framework\GX_GetIdeVersion.pas"/>
         <DCCReference Include="GX_GExperts.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Utils\GX_RegExpr.pas"/>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepBackend.pas"/>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepExpert.pas"/>
         <DCCReference Include="GX_GrepMenuEntry.pas"/>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepOptions.pas">
             <Form>fmGrepOptions</Form>
             <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="GX_GrepOptionsStandAlone.pas">
+            <Form>fmGrepGrepOptionsStandAlone</Form>
         </DCCReference>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepPrinting.pas"/>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_GrepProgress.pas">
@@ -149,7 +151,8 @@
             <Form>fmGrepSelect</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\..\..\..\Source\Utils\GX_GxUtils.pas"/>
+        <DCCReference Include="..\..\common\GX_GxUtils.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Framework\GX_HintWindow.pas"/>
         <DCCReference Include="GX_IdeDock.pas">
             <Form>fmIdeDockForm</Form>
             <FormType>dfm</FormType>
@@ -161,7 +164,7 @@
             <Form>fmGxMessageBox</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="GX_OtaUtils.pas"/>
+        <DCCReference Include="..\..\common\GX_OtaUtils.pas"/>
         <DCCReference Include="..\..\..\..\Source\Grep\GX_Replace.pas"/>
         <DCCReference Include="..\..\..\..\Source\Framework\GX_SharedImages.pas">
             <Form>dmSharedImages</Form>
@@ -174,7 +177,9 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\..\..\Source\Framework\GX_VerDepConst.pas"/>
-        <DCCReference Include="ToolsAPI.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Utils\GX_IndexTypes.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Utils\GX_Splitter.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Utils\GX_SplitterPainter.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
