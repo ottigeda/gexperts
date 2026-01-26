@@ -5,7 +5,7 @@
 setlocal
 pushd src
 call :FindInParents %0% buildtools
-call "%result%\doOpenInIde.cmd" 2007
+call "%result%\doOpenInIde.cmd" 12
 popd
 @setlocal enableextensions
 @if defined gx_cmd_debug (pause)
