@@ -4,7 +4,7 @@
 @endlocal
 setlocal
 call :FindInParents %0% buildtools
-call "%result%\doOpenInIde.cmd" 2007
+call "%result%\doOpenInIde.cmd" 12
 goto :eof
 
 :FindInParents
