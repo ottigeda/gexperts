@@ -238,6 +238,7 @@ begin
   Add('near', rtFuncDirective);
   Add('nil', rtReserved);
   Add('nodefault', rtFuncDirective);
+  Add('noreturn', rtFuncDirective);
   Add('not', rtOper);
   Add('object', rtClass);
   Add('of', rtOf);
