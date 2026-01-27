@@ -6,8 +6,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, ImgList, Menus, ComCtrls, TrayIcon, ActnList, ToolWin, System.Actions,
-  System.ImageList;
+  ExtCtrls, StdCtrls, ImgList, Menus, ComCtrls, TrayIcon, ActnList, ToolWin, Actions,
+  ImageList;
 
 type
   TfmDebug = class(TForm)
