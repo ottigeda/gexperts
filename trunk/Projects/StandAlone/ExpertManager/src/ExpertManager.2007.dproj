@@ -3,52 +3,52 @@
     <PropertyGroup>
         <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-        <DCC_DependencyCheckOutputName>..\..\..\Binaries\ExpertManager.exe</DCC_DependencyCheckOutputName>
+        <DCC_DependencyCheckOutputName>..\..\..\..\Binaries\ExpertManager.exe</DCC_DependencyCheckOutputName>
         <DCC_UsePackage>vcl;vclx</DCC_UsePackage>
         <MainSource>ExpertManager.dpr</MainSource>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
         <ProjectGuid>{f7e2cfb9-1ca6-4877-96cb-50b027efe0f2}</ProjectGuid>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
+        <DCC_DcuOutput>..\dcu\2007\Release</DCC_DcuOutput>
         <DCC_DebugInformation>False</DCC_DebugInformation>
         <DCC_Define>RELEASE</DCC_Define>
         <DCC_Description>GExperts IDE Expert Manager</DCC_Description>
-        <DCC_ExeOutput>..\..\..\Binaries</DCC_ExeOutput>
-        <DCC_HppOutput>.\dcu</DCC_HppOutput>
+        <DCC_ExeOutput>..\..\..\..\Binaries</DCC_ExeOutput>
+        <DCC_HppOutput>..\dcu\2007\Release</DCC_HppOutput>
         <DCC_IOChecking>False</DCC_IOChecking>
         <DCC_ImageBase>500000</DCC_ImageBase>
-        <DCC_IncludePath>..\..\..\Source\Include</DCC_IncludePath>
+        <DCC_IncludePath>..\..\..\..\Source\Include</DCC_IncludePath>
         <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
-        <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
-        <DCC_ObjPath>..\..\..\Source\Include</DCC_ObjPath>
-        <DCC_ResourcePath>..\..\..\Source\Include</DCC_ResourcePath>
+        <DCC_ObjOutput>..\dcu\2007\Release</DCC_ObjOutput>
+        <DCC_ObjPath>..\..\..\..\Source\Include</DCC_ObjPath>
+        <DCC_ResourcePath>..\..\..\..\Source\Include</DCC_ResourcePath>
         <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-        <DCC_UnitSearchPath>..\..\..\Source\Include</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>..\..\..\..\Source\Include</DCC_UnitSearchPath>
         <DCC_WriteableConstants>True</DCC_WriteableConstants>
         <Version>7.0</Version>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
+        <DCC_DcuOutput>..\dcu\2007\Debug</DCC_DcuOutput>
         <DCC_Define>DEBUG</DCC_Define>
         <DCC_Description>GExperts IDE Expert Manager</DCC_Description>
-        <DCC_ExeOutput>..\..\..\Binaries</DCC_ExeOutput>
+        <DCC_ExeOutput>..\..\..\..\Binaries</DCC_ExeOutput>
         <DCC_GenerateStackFrames>True</DCC_GenerateStackFrames>
-        <DCC_HppOutput>.\dcu</DCC_HppOutput>
+        <DCC_HppOutput>..\dcu\2007\Debug</DCC_HppOutput>
         <DCC_IOChecking>False</DCC_IOChecking>
         <DCC_ImageBase>500000</DCC_ImageBase>
-        <DCC_IncludePath>$(BDS)\lib\Debug;..\..\..\Source\Include</DCC_IncludePath>
-        <DCC_ObjOutput>.\dcu</DCC_ObjOutput>
-        <DCC_ObjPath>$(BDS)\lib\Debug;..\..\..\Source\Include</DCC_ObjPath>
+        <DCC_IncludePath>$(BDS)\lib\Debug;..\..\..\..\Source\Include</DCC_IncludePath>
+        <DCC_ObjOutput>..\dcu\2007\Debug</DCC_ObjOutput>
+        <DCC_ObjPath>$(BDS)\lib\Debug;..\..\..\..\Source\Include</DCC_ObjPath>
         <DCC_Optimize>False</DCC_Optimize>
-        <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\..\Source\Include</DCC_ResourcePath>
+        <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\..\..\Source\Include</DCC_ResourcePath>
         <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
         <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
         <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
-        <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\..\Source\Include</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\..\..\Source\Include</DCC_UnitSearchPath>
         <DCC_WriteableConstants>True</DCC_WriteableConstants>
         <Version>7.0</Version>
     </PropertyGroup>
@@ -110,7 +110,7 @@
         <DelphiCompile Include="ExpertManager.dpr">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="..\..\..\Source\Framework\GX_VerDepConst.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Framework\GX_VerDepConst.pas"/>
         <DCCReference Include="GExpertsDllSelection.pas">
             <Form>frGEXpertsDllSelection</Form>
         </DCCReference>
