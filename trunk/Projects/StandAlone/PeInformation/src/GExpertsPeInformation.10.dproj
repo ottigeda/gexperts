@@ -53,8 +53,7 @@
         <VerInfo_Locale>1033</VerInfo_Locale>
         <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
         <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
-        <PreBuildEvent><![CDATA[call ..\..\..\..\buildtools\prebuild.cmd "$(PROJECTPATH)"
-$(PreBuildEvent)]]></PreBuildEvent>
+        <PreBuildEvent>call ..\..\..\..\buildtools\prebuild.cmd &quot;$(PROJECTPATH)&quot;</PreBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <BT_BuildType>Debug</BT_BuildType>
