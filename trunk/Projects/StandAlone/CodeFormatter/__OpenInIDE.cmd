@@ -1,11 +1,15 @@
-@rem Searches the parent directories for the buildtools and calls the doBuildProject.cmd there
+@rem Searches the parent directories for the buildtools and calls the doOpenInIde.cmd there
 @setlocal enableextensions
 @if not defined gx_cmd_debug (echo off)
 @endlocal
 setlocal
+pushd src
 call :FindInParents %0% buildtools
-call "%result%\doBuildProject.cmd"
-pause
+call "%result%\doOpenInIde.cmd" 102
+popd
+@setlocal enableextensions
+@if defined gx_cmd_debug (pause)
+@endlocal
 goto :eof
 
 :FindInParents
