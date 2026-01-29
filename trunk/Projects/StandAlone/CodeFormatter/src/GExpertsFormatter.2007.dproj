@@ -1,167 +1,147 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <Base>True</Base>
-        <AppType>Console</AppType>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
-        <FrameworkType>VCL</FrameworkType>
+        <DCC_DependencyCheckOutputName>..\..\..\..\binaries\GExpertsFormatter.exe</DCC_DependencyCheckOutputName>
         <MainSource>GExpertsFormatter.dpr</MainSource>
-        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
         <ProjectGuid>{DB34219D-C604-46A3-BEAD-127B46182FDA}</ProjectGuid>
-        <ProjectVersion>18.4</ProjectVersion>
-        <TargetedPlatforms>1</TargetedPlatforms>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
-        <Base>true</Base>
-    </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
-        <Base_Win32>true</Base_Win32>
-        <CfgParent>Base</CfgParent>
-        <Base>true</Base>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
-        <Cfg_1>true</Cfg_1>
-        <CfgParent>Base</CfgParent>
-        <Base>true</Base>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
-        <Cfg_2>true</Cfg_2>
-        <CfgParent>Base</CfgParent>
-        <Base>true</Base>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Base)'!=''">
-        <SanitizedProjectName>GExpertsFormatter</SanitizedProjectName>
-        <DCC_DcuOutput>..\dcu\10.2\$(Platform)\$(Config)</DCC_DcuOutput>
-        <DCC_Define>NO_TRANSLATION;NO_TRANSLATION_HINT;UnicodeRE;$(DCC_Define)</DCC_Define>
-        <DCC_DependencyCheckOutputName>..\..\..\standalone\GExpertsFormatter.exe</DCC_DependencyCheckOutputName>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DCC_DcuOutput>..\dcu\2007\Release</DCC_DcuOutput>
+        <DCC_DebugInformation>False</DCC_DebugInformation>
+        <DCC_Define>RELEASE;NO_TRANSLATION;NO_TRANSLATION_HINT;UnicodeRE</DCC_Define>
+        <DCC_Description>GExperts Formatter</DCC_Description>
         <DCC_ExeOutput>..\..\..\..\binaries</DCC_ExeOutput>
-        <DCC_ImageBase>00400000</DCC_ImageBase>
-        <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;Winapi;$(DCC_Namespace)</DCC_Namespace>
-        <DCC_Platform>x86</DCC_Platform>
-        <DCC_UnitAlias>SynRegExpr=RegExpr;$(DCC_UnitAlias)</DCC_UnitAlias>
-        <DCC_UnitSearchPath>..\..\..\..\ExternalSource\dzlib;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\RegExpr;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
-        <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <VerInfo_Locale>1031</VerInfo_Locale>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Base_Win32)'!=''">
-        <DCC_Namespace>System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
-        <Icon_MainIcon>GExpertsFormatter_Icon.ico</Icon_MainIcon>
-        <Manifest_File>..\(None)</Manifest_File>
-        <VerInfo_Locale>1033</VerInfo_Locale>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Cfg_1)'!=''">
-        <DCC_DebugInformation>0</DCC_DebugInformation>
-        <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
-        <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
+        <DCC_HppOutput>..\dcu\2007\Release</DCC_HppOutput>
+        <DCC_IncludePath>..\..\..\..\ExternalSource\dzlib;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\RegExpr</DCC_IncludePath>
+        <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+        <DCC_ObjOutput>..\dcu\2007\Release</DCC_ObjOutput>
+        <DCC_ObjPath>..\..\..\..\ExternalSource\dzlib;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\RegExpr</DCC_ObjPath>
+        <DCC_ResourcePath>..\..\..\..\ExternalSource\dzlib;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\RegExpr</DCC_ResourcePath>
+        <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+        <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
+        <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
+        <DCC_UnitAlias>UITypes=Dialogs;Actions=ActnList;SynRegExpr=RegExpr</DCC_UnitAlias>
+        <DCC_UnitSearchPath>..\..\..\..\ExternalSource\dzlib;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\RegExpr</DCC_UnitSearchPath>
+        <DCC_WriteableConstants>True</DCC_WriteableConstants>
+        <Version>7.0</Version>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Cfg_2)'!=''">
-        <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DCC_DcuOutput>..\dcu\2007\Debug</DCC_DcuOutput>
+        <DCC_Define>DEBUG;NO_TRANSLATION;NO_TRANSLATION_HINT;UnicodeRE</DCC_Define>
+        <DCC_Description>GExperts Formatter</DCC_Description>
+        <DCC_ExeOutput>..\..\..\..\binaries</DCC_ExeOutput>
+        <DCC_GenerateStackFrames>True</DCC_GenerateStackFrames>
+        <DCC_HppOutput>..\dcu\2007\Debug</DCC_HppOutput>
+        <DCC_IncludePath>$(BDS)\lib\Debug;..\..\..\..\ExternalSource\dzlib;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\RegExpr</DCC_IncludePath>
+        <DCC_IntegerOverflowCheck>True</DCC_IntegerOverflowCheck>
+        <DCC_MapFile>3</DCC_MapFile>
+        <DCC_ObjOutput>..\dcu\2007\Debug</DCC_ObjOutput>
+        <DCC_ObjPath>$(BDS)\lib\Debug;..\..\..\..\ExternalSource\dzlib;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\RegExpr</DCC_ObjPath>
+        <DCC_Optimize>False</DCC_Optimize>
+        <DCC_RangeChecking>True</DCC_RangeChecking>
+        <DCC_ResourcePath>$(BDS)\lib\Debug;..\..\..\..\ExternalSource\dzlib;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\RegExpr</DCC_ResourcePath>
+        <DCC_SYMBOL_PLATFORM>False</DCC_SYMBOL_PLATFORM>
+        <DCC_SymbolReferenceInfo>2</DCC_SymbolReferenceInfo>
+        <DCC_TypedAtParameter>True</DCC_TypedAtParameter>
+        <DCC_UNIT_PLATFORM>False</DCC_UNIT_PLATFORM>
+        <DCC_UnitAlias>UITypes=Dialogs;Actions=ActnList;SynRegExpr=RegExpr</DCC_UnitAlias>
+        <DCC_UnitSearchPath>$(BDS)\lib\Debug;..\..\..\..\ExternalSource\dzlib;..\..\..\..\Source\Include;..\..\..\..\ExternalSource\UniSynEdit;..\..\..\..\ExternalSource\RegExpr</DCC_UnitSearchPath>
+        <DCC_WriteableConstants>True</DCC_WriteableConstants>
+        <Version>7.0</Version>
     </PropertyGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Delphi.Personality</Borland.Personality>
+        <Borland.ProjectType>VCLApplication</Borland.ProjectType>
+        <BorlandProject>
+            <BorlandProject>
+                <Delphi.Personality>
+                    <Parameters>
+                        <Parameters Name="UseLauncher">False</Parameters>
+                        <Parameters Name="LoadAllSymbols">True</Parameters>
+                        <Parameters Name="LoadUnspecifiedSymbols">False</Parameters>
+                    </Parameters>
+                    <VersionInfo>
+                        <VersionInfo Name="IncludeVerInfo">False</VersionInfo>
+                        <VersionInfo Name="AutoIncBuild">False</VersionInfo>
+                        <VersionInfo Name="MajorVer">1</VersionInfo>
+                        <VersionInfo Name="MinorVer">0</VersionInfo>
+                        <VersionInfo Name="Release">0</VersionInfo>
+                        <VersionInfo Name="Build">0</VersionInfo>
+                        <VersionInfo Name="Debug">False</VersionInfo>
+                        <VersionInfo Name="PreRelease">False</VersionInfo>
+                        <VersionInfo Name="Special">False</VersionInfo>
+                        <VersionInfo Name="Private">False</VersionInfo>
+                        <VersionInfo Name="DLL">False</VersionInfo>
+                        <VersionInfo Name="Locale">1033</VersionInfo>
+                        <VersionInfo Name="CodePage">1252</VersionInfo>
+                    </VersionInfo>
+                    <VersionInfoKeys>
+                        <VersionInfoKeys Name="CompanyName"/>
+                        <VersionInfoKeys Name="FileDescription"/>
+                        <VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
+                        <VersionInfoKeys Name="InternalName"/>
+                        <VersionInfoKeys Name="LegalCopyright"/>
+                        <VersionInfoKeys Name="LegalTrademarks"/>
+                        <VersionInfoKeys Name="OriginalFilename"/>
+                        <VersionInfoKeys Name="ProductName"/>
+                        <VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
+                        <VersionInfoKeys Name="Comments"/>
+                    </VersionInfoKeys>
+                    <Source>
+                        <Source Name="MainSource">GExpertsFormatter.dpr</Source>
+                    </Source>
+                    <Excluded_Packages>
+                        <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                        <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                        <Excluded_Packages Name="$(BDS)\bin\dcltee7100.bpl">TeeChart Components</Excluded_Packages>
+                    </Excluded_Packages>
+                </Delphi.Personality>
+            </BorlandProject>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets"/>
     <ItemGroup>
-        <DelphiCompile Include="$(MainSource)">
+        <DelphiCompile Include="GExpertsFormatter.dpr">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="w_GExpertsFormatterMain.pas">
-            <Form>f_GExpertsFormatterMain</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="w_GExpertsFormatterAbout.pas">
-            <Form>f_GExpertsFormatterAbout</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="..\..\..\..\Source\Formatter\GX_CodeFormatterDefaultSettings.pas"/>
-        <DCCReference Include="..\..\..\..\Source\Formatter\engine\GX_CodeFormatterTokenList.pas"/>
-        <DCCReference Include="..\..\..\..\Source\Formatter\Engine\GX_CodeFormatterTypes.pas"/>
-        <DCCReference Include="..\..\..\..\Source\Formatter\engine\GX_CodeFormatterEngine.pas"/>
-        <DCCReference Include="..\..\..\..\Source\Formatter\engine\GX_CodeFormatterTokens.pas"/>
-        <DCCReference Include="..\..\..\..\Source\Formatter\engine\GX_CodeFormatterSettings.pas"/>
-        <DCCReference Include="..\..\..\..\Source\Formatter\engine\GX_CodeFormatterFormatter.pas"/>
-        <DCCReference Include="..\..\..\..\Source\Formatter\engine\GX_CodeFormatterStack.pas"/>
-        <DCCReference Include="..\..\..\..\Source\Formatter\engine\GX_CodeFormatterParser.pas"/>
-        <DCCReference Include="..\..\..\..\Source\Formatter\GX_CodeFormatterConfigHandler.pas"/>
-        <DCCReference Include="..\..\..\..\Source\Formatter\engine\GX_CodeFormatterUnicode.pas"/>
-        <DCCReference Include="..\..\..\..\Source\Utils\GX_GenericUtils.pas"/>
-        <DCCReference Include="..\..\..\..\Source\Utils\GX_StringList.pas"/>
-        <DCCReference Include="..\..\..\..\Source\Framework\GX_Logging.pas"/>
-        <DCCReference Include="GX_BaseForm.pas">
-            <Form>fmBaseForm</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="..\..\..\..\Source\Formatter\GX_CodeFormatterConfig.pas"/>
         <DCCReference Include="..\..\..\..\ExternalSource\GX_EnhancedEditor.pas"/>
-        <DCCReference Include="GX_SynMemoUtils.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Formatter\engine\GX_CodeFormatterEngine.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Formatter\engine\GX_CodeFormatterFormatter.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Formatter\engine\GX_CodeFormatterParser.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Formatter\engine\GX_CodeFormatterSettings.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Formatter\engine\GX_CodeFormatterStack.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Formatter\engine\GX_CodeFormatterTokenList.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Formatter\engine\GX_CodeFormatterTokens.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Formatter\Engine\GX_CodeFormatterTypes.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Formatter\engine\GX_CodeFormatterUnicode.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Formatter\GX_CodeFormatterConfig.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Formatter\GX_CodeFormatterConfigHandler.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Formatter\GX_CodeFormatterDefaultSettings.pas"/>
         <DCCReference Include="..\..\..\..\Source\Formatter\GX_CodeFormatterEditCapitalization.pas">
             <Form>fmCodeFormatterEditCapitalization</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\..\..\..\Source\Utils\GX_IndexTypes.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Framework\GX_Logging.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Framework\GX_VerDepConst.pas"/>
         <DCCReference Include="..\..\..\..\Source\Utils\GX_DbugIntf.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Utils\GX_GenericUtils.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Utils\GX_IndexTypes.pas"/>
+        <DCCReference Include="..\..\..\..\Source\Utils\GX_StringList.pas"/>
+        <DCCReference Include="..\..\common\GX_CodeFormatterGXConfigWrapper.pas"/>
         <DCCReference Include="..\..\common\GX_OtaUtils.pas"/>
         <DCCReference Include="..\..\common\ToolsAPI.pas"/>
-        <DCCReference Include="..\..\..\..\Source\Framework\GX_VerDepConst.pas"/>
-        <DCCReference Include="..\..\common\GX_CodeFormatterGXConfigWrapper.pas"/>
-        <BuildConfiguration Include="Base">
-            <Key>Base</Key>
-        </BuildConfiguration>
-        <BuildConfiguration Include="Release">
-            <Key>Cfg_1</Key>
-            <CfgParent>Base</CfgParent>
-        </BuildConfiguration>
-        <BuildConfiguration Include="Debug">
-            <Key>Cfg_2</Key>
-            <CfgParent>Base</CfgParent>
-        </BuildConfiguration>
+        <DCCReference Include="GX_BaseForm.pas">
+            <Form>fmBaseForm</Form>
+        </DCCReference>
+        <DCCReference Include="GX_SynMemoUtils.pas"/>
+        <DCCReference Include="w_GExpertsFormatterAbout.pas">
+            <Form>f_GExpertsFormatterAbout</Form>
+        </DCCReference>
+        <DCCReference Include="w_GExpertsFormatterMain.pas">
+            <Form>f_GExpertsFormatterMain</Form>
+        </DCCReference>
     </ItemGroup>
-    <Import Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')" Project="$(BDS)\Bin\CodeGear.Delphi.Targets"/>
-    <Import Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')" Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj"/>
-    <ProjectExtensions>
-        <Borland.Personality>Delphi.Personality.12</Borland.Personality>
-        <Borland.ProjectType/>
-        <BorlandProject>
-            <Delphi.Personality>
-                <Source>
-                    <Source Name="MainSource">GExpertsFormatter.dpr</Source>
-                </Source>
-                <Excluded_Packages/>
-                <VersionInfo>
-                    <VersionInfo Name="IncludeVerInfo">False</VersionInfo>
-                    <VersionInfo Name="AutoIncBuild">False</VersionInfo>
-                    <VersionInfo Name="MajorVer">1</VersionInfo>
-                    <VersionInfo Name="MinorVer">0</VersionInfo>
-                    <VersionInfo Name="Release">0</VersionInfo>
-                    <VersionInfo Name="Build">0</VersionInfo>
-                    <VersionInfo Name="Debug">False</VersionInfo>
-                    <VersionInfo Name="PreRelease">False</VersionInfo>
-                    <VersionInfo Name="Special">False</VersionInfo>
-                    <VersionInfo Name="Private">False</VersionInfo>
-                    <VersionInfo Name="DLL">False</VersionInfo>
-                    <VersionInfo Name="Locale">1031</VersionInfo>
-                    <VersionInfo Name="CodePage">1252</VersionInfo>
-                </VersionInfo>
-                <VersionInfoKeys>
-                    <VersionInfoKeys Name="CompanyName"/>
-                    <VersionInfoKeys Name="FileDescription"/>
-                    <VersionInfoKeys Name="FileVersion">1.0.0.0</VersionInfoKeys>
-                    <VersionInfoKeys Name="InternalName"/>
-                    <VersionInfoKeys Name="LegalCopyright"/>
-                    <VersionInfoKeys Name="LegalTrademarks"/>
-                    <VersionInfoKeys Name="OriginalFilename"/>
-                    <VersionInfoKeys Name="ProductName"/>
-                    <VersionInfoKeys Name="ProductVersion">1.0.0.0</VersionInfoKeys>
-                    <VersionInfoKeys Name="Comments"/>
-                </VersionInfoKeys>
-                <Parameters/>
-            </Delphi.Personality>
-            <ModelSupport>False</ModelSupport>
-            <Platforms>
-                <Platform value="Win32">True</Platform>
-                <Platform value="Win64">False</Platform>
-            </Platforms>
-        </BorlandProject>
-        <ProjectFileVersion>12</ProjectFileVersion>
-    </ProjectExtensions>
-    <Import Project="$(MSBuildProjectName).deployproj" Condition="Exists('$(MSBuildProjectName).deployproj')"/>
 </Project>
