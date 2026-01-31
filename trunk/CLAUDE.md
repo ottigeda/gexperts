@@ -40,6 +40,14 @@ cd Projects\Delphi2007
 __Build_Project.cmd
 ```
 
+**Build from WSL:**
+```bash
+cd Projects/DelphiXx130
+bash _buildproject.sh
+```
+
+Each project directory has a `_buildproject.sh` script that calls `__Build_Project.cmd --nowait`.
+
 **Build all versions:**
 ```cmd
 __Build.cmd
@@ -249,6 +257,7 @@ All versions share the same source code in `Source/` with conditional compilatio
 
 Located in `ExternalSource/`:
 - **Abbrevia** - ZIP/archive compression
+- **DDetours** - Function hooking library (supports Win32 and Win64)
 - **RegExpr** - Regular expression engine
 - **OmniXML** - XML parsing
 - **UniSynEdit** - Unicode syntax highlighting
@@ -305,3 +314,8 @@ Key settings affecting indentation:
 - `DoubleIndentIfCondition` - Double indent for multi-line if conditions
 
 For detailed documentation of formatter features, fixes, and implementation notes, see [FORMATTER_CHANGES.md](FORMATTER_CHANGES.md).
+
+## Win64 Limitations
+
+Some experts are not yet available in the 64-bit build:
+- **Filter Exceptions** - Requires different debugger BPL names (`Win64DebugIde*.bpl` vs `Win32DebugIde*.bpl`); the exported function names need to be verified
