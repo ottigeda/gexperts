@@ -9,7 +9,6 @@ unit GX_ExplicitFilterExpert;
 interface
 
 {$IFDEF GX_DELPHI2006_UP}
-{$IFNDEF WIN64}
 
 uses
   Windows,
@@ -41,13 +40,11 @@ type
     procedure GetData(out _Value: TExplicitPropertiesSet);
   end;
 
-{$ENDIF WIN64}
 {$ENDIF GX_DELPHI2006_UP}
 
 implementation
 
 {$IFDEF GX_DELPHI2006_UP}
-{$IFNDEF WIN64}
 
 {$R *.dfm}
 
@@ -55,6 +52,7 @@ uses
 {(*}{$IFOPT D+}GX_DbugIntf, {$ENDIF}{*)}
   Registry,
   Menus,
+  DDetours,
   GX_GenericUtils,
   GX_GExperts,
   GX_ConfigurationInfo, u_dzVclUtils;
@@ -64,66 +62,6 @@ var
   // (actually we could but that would mean a global variable with the expert instance which isn't any better)
   gblWriteExplicitPropSet: TExplicitPropertiesSet = [];
 
-{ Hooking - from Andy Hausladen's VCLFixpack }
-
-type
-  TJumpOfs = Integer;
-  PPointer = ^Pointer;
-  PXRedirCode = ^TXRedirCode;
-  TXRedirCode = packed record
-    Jump: Byte;
-    Offset: TJumpOfs;
-  end;
-
-  PAbsoluteIndirectJmp = ^TAbsoluteIndirectJmp;
-  TAbsoluteIndirectJmp = packed record
-    OpCode: Word; //$FF25(Jmp, FF /4)
-    Addr: PPointer;
-  end;
-
-function GetActualAddr(Proc: Pointer): Pointer;
-begin
-  if Proc <> nil then begin
-{$IFDEF WIN64}
-{$MESSAGE ERROR 'this does not work for Win64'}
-{$ENDIF}
-    if (PAbsoluteIndirectJmp(Proc).OpCode = $25FF) then
-      Result := PAbsoluteIndirectJmp(Proc).Addr^
-    else
-      Result := Proc;
-  end else
-    Result := nil;
-end;
-
-type
-  NumberOfBytesType = GXNativeUInt;
-
-procedure HookProc(Proc, Dest: Pointer; var BackupCode: TXRedirCode);
-var
-  n: NumberOfBytesType;
-  Code: TXRedirCode;
-begin
-  Proc := GetActualAddr(Proc);
-  Assert(Proc <> nil);
-  if ReadProcessMemory(GetCurrentProcess, Proc, @BackupCode, SizeOf(BackupCode), n) then begin
-    Code.Jump := $E9;
-    Code.Offset := PAnsiChar(Dest) - PAnsiChar(Proc) - SizeOf(Code);
-    WriteProcessMemory(GetCurrentProcess, Proc, @Code, SizeOf(Code), n);
-  end;
-end;
-
-procedure UnhookProc(Proc: Pointer; var BackupCode: TXRedirCode);
-var
-  n: NumberOfBytesType;
-begin
-  if (BackupCode.Jump <> 0) and (Proc <> nil) then begin
-    Proc := GetActualAddr(Proc);
-    Assert(Proc <> nil);
-    WriteProcessMemory(GetCurrentProcess, Proc, @BackupCode, SizeOf(BackupCode), n);
-    BackupCode.Jump := 0;
-  end;
-end;
-
 { TControlExplicitFix - by Achim Kalwa }
 
 type
@@ -131,8 +69,7 @@ type
   end;
 
 var
-  Control_DefineProperties: Pointer;
-  BackupDefineProperties: TXRedirCode;
+  gblTrampolineDefineProperties: Pointer = nil;
 
 type
   TControlExplicitFix = class(TControl)
@@ -228,9 +165,8 @@ end;
 
 procedure InitControlExplicitFix;
 begin
-  // InitializeCriticalSection(DialogsTaskModalDialogCritSect);
-  Control_DefineProperties := @TControlHack.DefineProperties;
-  HookProc(Control_DefineProperties, @TControlExplicitFix.DefineProperties, BackupDefineProperties);
+  gblTrampolineDefineProperties := InterceptCreate(@TControlHack.DefineProperties,
+    @TControlExplicitFix.DefineProperties);
 
 {$IFOPT D+}GX_DbugIntf.SendDebug('InitControlExplicitFix');
 {$ENDIF}
@@ -238,8 +174,10 @@ end;
 
 procedure FinalizeControlExplicitFix;
 begin
-  UnhookProc(Control_DefineProperties, BackupDefineProperties);
-  Control_DefineProperties := nil;
+  if Assigned(gblTrampolineDefineProperties) then begin
+    InterceptRemove(gblTrampolineDefineProperties);
+    gblTrampolineDefineProperties := nil;
+  end;
 end;
 
 type
@@ -304,7 +242,7 @@ end;
 
 destructor TExplicitFilterExpert.Destroy;
 begin
-  if Assigned(Control_DefineProperties) then
+  if Assigned(gblTrampolineDefineProperties) then
     FinalizeControlExplicitFix;
   inherited Destroy;
 end;
@@ -354,10 +292,10 @@ begin
   if _Value <> Active then begin
     inherited SetActive(_Value);
     if _Value then begin
-      if not Assigned(Control_DefineProperties) then
+      if not Assigned(gblTrampolineDefineProperties) then
         InitControlExplicitFix;
     end else begin
-      if Assigned(Control_DefineProperties) then
+      if Assigned(gblTrampolineDefineProperties) then
         FinalizeControlExplicitFix;
     end;
   end;
@@ -396,6 +334,5 @@ end;
 initialization
   RegisterGX_Expert(TExplicitFilterExpert);
 
-{$ENDIF WIN64}
 {$ENDIF GX_DELPHI2006_UP}
 end.
