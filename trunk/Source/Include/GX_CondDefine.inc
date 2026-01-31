@@ -280,6 +280,7 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
 
 
 {$IF defined(GX_DELPHI2005_UP) and not defined(WIN64)}
+  // Win64 not yet supported: the debugger BPL names and function signatures differ
   {$DEFINE GX_FilterException_Enabled}
 {$IFEND}
 

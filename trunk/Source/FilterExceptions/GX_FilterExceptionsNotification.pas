@@ -363,12 +363,20 @@ const
 
 function GetPocessFromDebugger(Debugger: TDebugger): TProcess;
 asm
+{$IFDEF WIN64}
+  mov rax, [rcx + ProcessOffset]
+{$ELSE}
   mov eax, [eax + ProcessOffset]
+{$ENDIF}
 end;
 
 function GetThreadFromProcess(Process: TProcess): TThread;
 asm
+{$IFDEF WIN64}
+  mov rax, [rcx + ThreadOffset]
+{$ELSE}
   mov eax, [eax + ThreadOffset]
+{$ENDIF}
 end;
 
 var
