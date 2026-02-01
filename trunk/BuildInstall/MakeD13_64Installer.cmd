@@ -14,7 +14,7 @@ set instver=%version%
 call :getdate
 set special=%dateYYYYMMDD%
 
-call :makeinst RS130 RS13_64
+call :makeinst RS130_64 RS13_64
 pause
 goto :eof
 
@@ -22,7 +22,7 @@ goto :eof
 set Delphi=%1
 set Prefix=%2
 if "%prefix%" == "" set Prefix=%Delphi%
-%iscc% GExperts64.iss /d%Delphi% /dVersion=%version% /fGExperts_%Prefix%_%instver%_%special%
+%iscc% GExperts.iss /d%Delphi% /dVersion=%version% /fGExperts_%Prefix%_%instver%_%special%
 goto :eof
 
 :readver

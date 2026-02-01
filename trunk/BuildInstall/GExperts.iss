@@ -218,9 +218,22 @@
   #define IDERegName   "BDS"
   #define IDERegVer    "37"
 #endif
+#ifdef RS130_64
+  #define IDEShortName "RADStudio"
+  #define IDELongName  "RAD Studio"
+  #define IDEVer       "13 (64-bit)"
+  #define DLLSuffix    "64RS130"
+  #define IDERegName   "BDS"
+  #define IDERegVer    "37"
+  #define ExpertsKey   "Experts X64"
+#endif
 
 #ifndef IDEShortName
   #error Usage: "isppcc.exe GExperts.iss /dDelphi7 /dVersion=1.38"
+#endif
+
+#ifndef ExpertsKey
+  #define ExpertsKey   "Experts"
 #endif
 
 #define FullName    Product +" for "+ IDELongName +" "+ IDEVer
@@ -279,8 +292,8 @@ Name: {group}\PE Information; Filename: {app}\GExpertsPeInformation.exe
 Name: {group}\Source Code Formatter; Filename: {app}\GExpertsFormatter.exe
 
 [Registry]
-Root: HKCU; Subkey: Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\Experts; ValueType: STRING; ValueName: GExperts; ValueData: {app}\{#DLLName}; Flags: uninsdeletevalue; Check: IDEExecuted
-Root: HKLM; Subkey: Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\Experts; ValueType: STRING; ValueName: GExperts; ValueData: {app}\{#DLLName}; Flags: uninsdeletevalue uninsdeletekeyifempty
+Root: HKCU; Subkey: Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\{#ExpertsKey}; ValueType: STRING; ValueName: GExperts; ValueData: {app}\{#DLLName}; Flags: uninsdeletevalue; Check: IDEExecuted
+Root: HKLM; Subkey: Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\{#ExpertsKey}; ValueType: STRING; ValueName: GExperts; ValueData: {app}\{#DLLName}; Flags: uninsdeletevalue uninsdeletekeyifempty
 Root: HKCU; Subkey: Software\GExperts\Debug; ValueType: STRING; ValueName: FilePath; ValueData: {app}\GExpertsDebugWindow.exe
 
 [Code]
@@ -308,7 +321,7 @@ begin
   begin
     DataPath := '';
     // Delete the DLL reference even if it was copied from the HKLM tree
-    RegDeleteValue(HKEY_CURRENT_USER, 'Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\Experts', 'GExperts');
+    RegDeleteValue(HKEY_CURRENT_USER, 'Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\{#ExpertsKey}', 'GExperts');
     case MsgBox('Do you want to delete all of your GExperts preferences and data files?',
                 mbConfirmation, MB_YESNOCANCEL or MB_DEFBUTTON2) of
       IDYES:
