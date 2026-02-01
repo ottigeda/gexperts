@@ -60,7 +60,25 @@ __clean.cmd
 
 The build system uses MSBuild for Delphi 2007+ and DCC32 directly for older versions. Delphi installation paths are auto-detected from Windows Registry.
 
-**Output location:** `Binaries/GExpertsRS###.dll` where ### is the Delphi version number.
+**Output location:** `Binaries/GExpertsRS###.dll` where ### is the Delphi version number (64-bit: `GExperts64RS###.dll`).
+
+## Installer Build
+
+Installers are built using Inno Setup scripts in `BuildInstall/`. See `BuildInstall/CLAUDE.md` for detailed documentation.
+
+**Build all installers (32-bit and 64-bit):**
+```bash
+cd BuildInstall
+bash _makeinstallers.sh
+```
+
+**Build only 64-bit installer:**
+```bash
+cd BuildInstall
+bash _make64installer.sh
+```
+
+The installer script `GExperts.iss` supports all Delphi versions via preprocessor defines (`/dRS130` for 32-bit, `/dRS130_64` for 64-bit).
 
 ## Testing
 
@@ -276,9 +294,17 @@ Separate executables sharing the codebase in `Projects/StandAlone/`:
 
 ## IDE Registration
 
-GExperts registers with the Delphi IDE via:
+GExperts registers with the Delphi IDE via registry:
+
+**32-bit IDE:**
 ```
 HKEY_CURRENT_USER\Software\Embarcadero\BDS\<version>\Experts
+GExperts = <path to DLL>
+```
+
+**64-bit IDE:**
+```
+HKEY_CURRENT_USER\Software\Embarcadero\BDS\<version>\Experts X64
 GExperts = <path to DLL>
 ```
 
