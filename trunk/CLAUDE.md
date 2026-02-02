@@ -66,19 +66,13 @@ The build system uses MSBuild for Delphi 2007+ and DCC32 directly for older vers
 
 Installers are built using Inno Setup scripts in `BuildInstall/`. See `BuildInstall/CLAUDE.md` for detailed documentation.
 
-**Build all installers (32-bit and 64-bit):**
+**Build all installers:**
 ```bash
 cd BuildInstall
 bash _makeinstallers.sh
 ```
 
-**Build only 64-bit installer:**
-```bash
-cd BuildInstall
-bash _make64installer.sh
-```
-
-The installer script `GExperts.iss` supports all Delphi versions via preprocessor defines (`/dRS130` for 32-bit, `/dRS130_64` for 64-bit).
+The RS13 installer includes both 32-bit and 64-bit DLLs, with an optional checkbox to register for the 64-bit IDE.
 
 ## Testing
 
