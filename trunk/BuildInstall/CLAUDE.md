@@ -6,14 +6,11 @@ This directory contains the installer creation infrastructure for GExperts.
 
 | File/Directory | Purpose |
 |----------------|---------|
-| `GExperts.iss` | Main Inno Setup script - supports all Delphi versions from D6 to RS13, including 64-bit |
-| `GExperts64.iss` | **Obsolete** - superseded by RS130_64 in GExperts.iss |
+| `GExperts.iss` | Main Inno Setup script - supports all Delphi versions from D6 to RS13 |
 | `MakeInstallers.cmd` | Builds installers for ALL Delphi versions |
 | `MakeD12Installer.cmd` | Builds only RS12 installer (convenience script) |
-| `MakeD13Installer.cmd` | Builds only RS13 32-bit installer (convenience script) |
-| `MakeD13_64Installer.cmd` | Builds the RS13 64-bit installer |
-| `_makeinstallers.sh` | WSL script to build all installers (32-bit and 64-bit) |
-| `_make64installer.sh` | WSL script to build only the 64-bit installer |
+| `MakeD13Installer.cmd` | Builds only RS13 installer (convenience script) |
+| `_makeinstallers.sh` | WSL script to build all installers |
 | `GExperts.fbp6/.fbp7` | FinalBuilder project files (legacy build automation) |
 | `InnoSetup_5.6.1/` | Bundled Inno Setup installer for reference |
 | `Output/` | Generated installers and release archives |
@@ -30,31 +27,35 @@ The main installer script supports all Delphi versions via preprocessor defines:
 - **RAD Studio XE1-XE8**: `RSXE1` through `RSXE8` (Embarcadero registry)
 - **RAD Studio 10.x**: `RS100`, `RS101`, `RS102`, `RS103`, `RS104`
 - **RAD Studio 11-13**: `RS110`, `RS120`, `RS130`
-- **RAD Studio 13 64-bit**: `RS130_64`
 
 Usage:
 ```cmd
 iscc.exe GExperts.iss /dRS130 /dVersion=1.3.26 /fGExperts_RS13_1.3.26_2025-01-31
-iscc.exe GExperts.iss /dRS130_64 /dVersion=1.3.26 /fGExperts_RS13_64_1.3.26_2025-01-31
 ```
+
+### RS13 Combined 32-bit/64-bit Installer
+
+Starting with RAD Studio 13, the installer includes both 32-bit and 64-bit DLLs:
+- `GExpertsRS130.dll` (32-bit) - always installed and registered
+- `GExperts64RS130.dll` (64-bit) - always installed, registration optional
+
+The installer shows a checkbox "Also register for 64-bit IDE" (checked by default) that controls whether the 64-bit DLL is registered in `Experts X64`.
 
 ## Build Commands
 
-**Build all installers (including 64-bit):**
+**Build all installers:**
 ```cmd
 MakeInstallers.cmd
 ```
 
 **Build single version:**
 ```cmd
-MakeD13Installer.cmd       # RS13 32-bit only
-MakeD13_64Installer.cmd    # RS13 64-bit only
+MakeD13Installer.cmd       # RS13 (includes both 32-bit and 64-bit)
 ```
 
 **Build from WSL:**
 ```bash
-bash _makeinstallers.sh    # All installers (32-bit and 64-bit)
-bash _make64installer.sh   # 64-bit installer for RS13 only
+bash _makeinstallers.sh    # All installers
 ```
 
 The scripts:
@@ -66,6 +67,7 @@ The scripts:
 ## Files Included in Installers
 
 - Main DLL (`GExperts{DLLSuffix}.dll`)
+- For RS13: Also includes 64-bit DLL (`GExperts64RS130.dll`)
 - Standalone utilities:
   - `GExpertsPeInformation.exe` - PE file analyzer
   - `ExpertManager.exe` - Expert registration tool
@@ -80,8 +82,15 @@ The scripts:
 ## Registry Entries
 
 The installer creates:
+
+**32-bit IDE (all versions):**
 - `HKCU\Software\{Company}\{IDE}\{Version}.0\Experts\GExperts` - DLL path (if IDE was run)
 - `HKLM\Software\{Company}\{IDE}\{Version}.0\Experts\GExperts` - DLL path (always)
+
+**64-bit IDE (RS13 only, optional):**
+- `HKCU\Software\{Company}\{IDE}\{Version}.0\Experts X64\GExperts` - 64-bit DLL path
+- `HKLM\Software\{Company}\{IDE}\{Version}.0\Experts X64\GExperts` - 64-bit DLL path
+
 - `HKCU\Software\GExperts\Debug\FilePath` - Debug Window path
 
 Company varies by IDE version: Borland (D6-2007), CodeGear (2009-2010), Embarcadero (XE1+)

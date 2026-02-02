@@ -217,23 +217,12 @@
   #define DLLSuffix    "RS130"
   #define IDERegName   "BDS"
   #define IDERegVer    "37"
-#endif
-#ifdef RS130_64
-  #define IDEShortName "RADStudio"
-  #define IDELongName  "RAD Studio"
-  #define IDEVer       "13 (64-bit)"
-  #define DLLSuffix    "64RS130"
-  #define IDERegName   "BDS"
-  #define IDERegVer    "37"
-  #define ExpertsKey   "Experts X64"
+  #define Has64Bit
+  #define DLL64Name    "GExperts64RS130.dll"
 #endif
 
 #ifndef IDEShortName
   #error Usage: "isppcc.exe GExperts.iss /dDelphi7 /dVersion=1.38"
-#endif
-
-#ifndef ExpertsKey
-  #define ExpertsKey   "Experts"
 #endif
 
 #define FullName    Product +" for "+ IDELongName +" "+ IDEVer
@@ -271,6 +260,9 @@ Source: "..\Binaries\GExpertsGrep.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Binaries\GExpertsFormatter.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Binaries\GExperts.chm"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Binaries\{#DLLName}"; DestDir: "{app}"; Flags: ignoreversion
+#ifdef Has64Bit
+Source: "..\Binaries\{#DLL64Name}"; DestDir: "{app}"; Flags: ignoreversion
+#endif
 Source: "..\ExternalSource\DbugIntf.pas"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Documentation\Readme.txt"; DestDir: "{app}"; Flags: isreadme ignoreversion
 Source: "..\Binaries\FormatterSettings-Borland.ini"; DestDir: "{app}"; Flags: ignoreversion
@@ -291,9 +283,20 @@ Name: {group}\Grep Search; Filename: {app}\GExpertsGrep.exe
 Name: {group}\PE Information; Filename: {app}\GExpertsPeInformation.exe
 Name: {group}\Source Code Formatter; Filename: {app}\GExpertsFormatter.exe
 
+#ifdef Has64Bit
+[Tasks]
+Name: "register64"; Description: "Also register for 64-bit IDE"
+#endif
+
 [Registry]
-Root: HKCU; Subkey: Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\{#ExpertsKey}; ValueType: STRING; ValueName: GExperts; ValueData: {app}\{#DLLName}; Flags: uninsdeletevalue; Check: IDEExecuted
-Root: HKLM; Subkey: Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\{#ExpertsKey}; ValueType: STRING; ValueName: GExperts; ValueData: {app}\{#DLLName}; Flags: uninsdeletevalue uninsdeletekeyifempty
+; 32-bit IDE registration
+Root: HKCU; Subkey: Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\Experts; ValueType: STRING; ValueName: GExperts; ValueData: {app}\{#DLLName}; Flags: uninsdeletevalue; Check: IDEExecuted
+Root: HKLM; Subkey: Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\Experts; ValueType: STRING; ValueName: GExperts; ValueData: {app}\{#DLLName}; Flags: uninsdeletevalue uninsdeletekeyifempty
+#ifdef Has64Bit
+; 64-bit IDE registration (optional)
+Root: HKCU; Subkey: Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\Experts X64; ValueType: STRING; ValueName: GExperts; ValueData: {app}\{#DLL64Name}; Flags: uninsdeletevalue; Tasks: register64; Check: IDEExecuted
+Root: HKLM; Subkey: Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\Experts X64; ValueType: STRING; ValueName: GExperts; ValueData: {app}\{#DLL64Name}; Flags: uninsdeletevalue uninsdeletekeyifempty; Tasks: register64
+#endif
 Root: HKCU; Subkey: Software\GExperts\Debug; ValueType: STRING; ValueName: FilePath; ValueData: {app}\GExpertsDebugWindow.exe
 
 [Code]
@@ -321,7 +324,10 @@ begin
   begin
     DataPath := '';
     // Delete the DLL reference even if it was copied from the HKLM tree
-    RegDeleteValue(HKEY_CURRENT_USER, 'Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\{#ExpertsKey}', 'GExperts');
+    RegDeleteValue(HKEY_CURRENT_USER, 'Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\Experts', 'GExperts');
+#ifdef Has64Bit
+    RegDeleteValue(HKEY_CURRENT_USER, 'Software\{#RegCompany}\{#IDERegName}\{#IDERegVer}.0\Experts X64', 'GExperts');
+#endif
     case MsgBox('Do you want to delete all of your GExperts preferences and data files?',
                 mbConfirmation, MB_YESNOCANCEL or MB_DEFBUTTON2) of
       IDYES:
