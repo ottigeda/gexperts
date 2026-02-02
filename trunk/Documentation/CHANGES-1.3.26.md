@@ -8,11 +8,14 @@ Changes since version 1.3.25 (released 2024-08-24)
 - Full support for Delphi 13 32-bit and 64-bit IDEs
 - Added GExperts version info to the IDE's about screen
 - Support for Delphi 13 ternary operator (inline if expressions) in the code formatter
+- Support for Delphi 13 'noreturn' directive in the code formatter
 
 ### 64-bit IDE Support
 - GExperts now supports 64-bit IDEs (Delphi 12.3+ and Delphi 13)
 - Fixed pointer typecasts and registry key names for 64-bit IDE
-- Registration script for 64-bit IDE
+- RAD Studio 13 installer now includes both 32-bit and 64-bit DLLs
+- Optional checkbox to register for 64-bit IDE (checked by default)
+- ExplicitFilter expert now works on Win64 (uses DDetours library instead of manual function hooking)
 
 ### New Experts
 - **Auto Switch Desktop**: Automatically select a desktop when switching between code editor and form designer with F12 (Feature Request #196)
@@ -38,6 +41,7 @@ Changes since version 1.3.25 (released 2024-08-24)
 ## Bug Fixes
 
 ### General
+- Fixed Delphi 7 compile error (duplicate MinInt32 definition in dzlib)
 - #360: Fixed scaling the list in the Go to dialog
 - #375: Fixed blue bar selection in comboboxes
 - #388: Fixed Code librarian font sizes not restored after IDE restart in Delphi 12
@@ -137,6 +141,8 @@ Changes since version 1.3.25 (released 2024-08-24)
 
 ## Internal Changes
 
+- Build scripts: Added --nowait option to all __Build_Project.cmd scripts
+- Build scripts: Added _buildproject.sh WSL scripts for building from Linux/WSL
 - Updated to latest dzlib version
 - Refactored GxOtaXxx functions to Ota.Xxx class methods
 - Improved unit test framework for formatter
