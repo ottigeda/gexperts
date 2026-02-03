@@ -409,10 +409,6 @@ object fmConfiguration: TfmConfiguration
             Top = 306
             Width = 729
             Height = 21
-            Margins.Left = 4
-            Margins.Top = 4
-            Margins.Right = 4
-            Margins.Bottom = 4
             Caption = 'Turn off Progress Form transparency'
             TabOrder = 15
           end
