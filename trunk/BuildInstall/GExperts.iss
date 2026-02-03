@@ -270,6 +270,12 @@ Source: "..\Binaries\FormatterSettings-DelForEx.ini"; DestDir: "{app}"; Flags: i
 Source: "..\Binaries\FormatterSettings-headwork.ini"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Binaries\FormatterSettings-twm.ini"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Binaries\preview.pas"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\preview_align.pas"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\preview_capitalization.pas"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\preview_indent.pas"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\preview_linebreaks.pas"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\preview_misc.pas"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\Binaries\preview_spacing.pas"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Binaries\RenameComponents-Default.ini"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Binaries\RenameComponents-twm.ini"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\Binaries\proofreader.wav"; DestDir: "{app}"; Flags: ignoreversion
