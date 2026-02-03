@@ -159,6 +159,8 @@ type
     procedure lb_PrecedenceClick(Sender: TObject);
     procedure b_PrecedenceUpClick(Sender: TObject);
     procedure b_PrecedenceDownClick(Sender: TObject);
+    procedure pc_MainChange(Sender: TObject);
+    procedure grid_SpacingSetEditText(Sender: TObject; ACol, ARow: Integer; const Value: string);
   private
     FCapitalization: TGXUnicodeStringList;
     m_PreviewBefore: TGxEnhancedEditor;
@@ -167,7 +169,6 @@ type
     procedure SettingsToForm(const _Settings: TCodeFormatterSettings);
     procedure FormToEngineSettings(var _Settings: TCodeFormatterEngineSettings);
     procedure FormToSettings(_Settings: TCodeFormatterSettings);
-    procedure FillPreview;
     procedure AddSpaceRow(_RowNo: Integer; const _StrCol1, _StrCol2: string;
       _Space: TSpaceSet);
     function GetSpaceItem(_Idx: Integer): TSpaceSet;
@@ -175,6 +176,7 @@ type
     procedure HandleCaptitalizationFileDropped(_Sender: TObject; _Files: TStrings);
     procedure m_PreviewFileDropped(_Sender: TObject; _Files: TStrings);
     procedure ChangeCapitalizationFile(const _fn: string);
+    procedure LoadPreviewForTab(_Tab: TTabSheet);
   protected
     procedure ArrangeControls; override;
   public
@@ -381,15 +383,46 @@ begin
   Result := ExtractFilePath(GetModuleName(HInstance));
 end;
 
-procedure TfmCodeFormatterConfig.FillPreview;
+procedure TfmCodeFormatterConfig.LoadPreviewForTab(_Tab: TTabSheet);
 var
-  s: string;
+  PreviewName: string;
+  PreviewPath: string;
 begin
-  s := IncludeTrailingPathDelimiter(GetModuleDir) + 'preview.pas';
-  if FileExists(s) then begin
+  if _Tab = ts_Indent then
+    PreviewName := 'preview_indent.pas'
+  else if _Tab = ts_Spacing then
+    PreviewName := 'preview_spacing.pas'
+  else if _Tab = ts_LineBreaks then
+    PreviewName := 'preview_linebreaks.pas'
+  else if _Tab = ts_Capitalization then
+    PreviewName := 'preview_capitalization.pas'
+  else if _Tab = ts_Align then
+    PreviewName := 'preview_align.pas'
+  else if _Tab = ts_Misc then
+    PreviewName := 'preview_misc.pas'
+  else
+    PreviewName := 'preview.pas';
+
+  PreviewPath := IncludeTrailingPathDelimiter(GetModuleDir) + PreviewName;
+  if not FileExists(PreviewPath) then
+    PreviewPath := IncludeTrailingPathDelimiter(GetModuleDir) + 'preview.pas';
+
+  if FileExists(PreviewPath) then begin
     m_PreviewBefore.Clear;
-    m_PreviewBefore.LoadFromFile(s);
-  end
+    m_PreviewBefore.LoadFromFile(PreviewPath);
+  end;
+end;
+
+procedure TfmCodeFormatterConfig.pc_MainChange(Sender: TObject);
+begin
+  LoadPreviewForTab(pc_Main.ActivePage);
+  UpdatePreview(Sender);
+end;
+
+procedure TfmCodeFormatterConfig.grid_SpacingSetEditText(Sender: TObject; ACol, ARow: Integer;
+  const Value: string);
+begin
+  UpdatePreview(Sender);
 end;
 
 procedure TfmCodeFormatterConfig.FormToEngineSettings(var _Settings: TCodeFormatterEngineSettings);
@@ -678,9 +711,9 @@ end;
 procedure TfmCodeFormatterConfig.FormShow(Sender: TObject);
 begin
   inherited;
-  FillPreview;
-  UpdatePreview(Sender);
   pc_Main.ActivePage := ts_Indent;
+  LoadPreviewForTab(ts_Indent);
+  UpdatePreview(Sender);
 end;
 
 procedure TfmCodeFormatterConfig.chk_FeedAfterThenClick(Sender: TObject);

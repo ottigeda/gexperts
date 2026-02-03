@@ -26,7 +26,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
       ActivePage = ts_Indent
       Align = alLeft
       TabOrder = 0
-      OnChange = UpdatePreview
+      OnChange = pc_MainChange
       object ts_Indent: TTabSheet
         Caption = 'Indent'
         object l_SpacesPerIndent: TLabel
@@ -205,6 +205,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           RowCount = 15
           Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSizing, goColSizing, goEditing]
           TabOrder = 0
+          OnSetEditText = grid_SpacingSetEditText
           ColWidths = (
             170
             120
