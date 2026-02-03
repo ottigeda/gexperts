@@ -1,4 +1,4 @@
-GExperts 1.3.25
+GExperts 1.3.26
 Open Source Programming Tools for Delphi and C++Builder
 
 Source code, the FAQ, and the latest news are available at:
@@ -85,6 +85,8 @@ Expert Manager tool in the GExperts start menu group.  If you prefer, you
 can also manually register the DLL with the IDE using the Windows registry
 editor (RegEdit.exe).  Create a key similar to the following (the
 version number appearing before "\Experts\" is IDE dependent):
+HKEY_CURRENT_USER\Software\Embarcadero\BDS\37.0\Experts\ (RAD Studio 13)
+HKEY_CURRENT_USER\Software\Embarcadero\BDS\37.0\Experts X64\ (RAD Studio 13 64-bit IDE)
 HKEY_CURRENT_USER\Software\Embarcadero\BDS\23.0\Experts\ (RAD Studio 12)
 HKEY_CURRENT_USER\Software\Embarcadero\BDS\22.0\Experts\ (RAD Studio 11)
 HKEY_CURRENT_USER\Software\Embarcadero\BDS\21.0\Experts\ (RAD Studio 10.4)
@@ -120,12 +122,16 @@ Add/Remove Programs or Programs [and Features] tool.
 
 CHANGE LOG
 ----------------------
-Sorry, I have not maintained the change log since I took over from
-Eric Berry. There were many. In particular of course support for the
-latest released versions of RAD Studio / Delphi.
--- Thomas Mueller
-You can see the changes from 2006 to 2015 in the file
-changelog(2006-2015).txt
+Version 1.3.26 (2026-02-02)
+- RAD Studio 13: Installer now includes both 32-bit and 64-bit DLLs
+  with an optional checkbox to register for the 64-bit IDE
+- RAD Studio 13: ExplicitFilter expert now works on Win64 (uses DDetours
+  library instead of manual function hooking)
+- Formatter: Added support for Delphi 13 'noreturn' directive
+- Fixed Delphi 7 compile error (duplicate MinInt32 definition in dzlib)
+- Build scripts: Added --nowait option and WSL bash scripts for all projects
+
+For changes from 2006 to 2015, see changelog(2006-2015).txt
 
 
 FUTURE ENHANCEMENTS?
