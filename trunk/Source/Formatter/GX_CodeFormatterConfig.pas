@@ -165,6 +165,9 @@ type
     FCapitalization: TGXUnicodeStringList;
     m_PreviewBefore: TGxEnhancedEditor;
     m_PreviewAfter: TGxEnhancedEditor;
+    l_ResetPreview: TLabel;
+    FPreviewModifiedByUser: Boolean;
+    FLoadingPreview: Boolean;
     procedure EngineSettingsToForm(const _Settings: TCodeFormatterEngineSettings);
     procedure SettingsToForm(const _Settings: TCodeFormatterSettings);
     procedure FormToEngineSettings(var _Settings: TCodeFormatterEngineSettings);
@@ -177,6 +180,9 @@ type
     procedure m_PreviewFileDropped(_Sender: TObject; _Files: TStrings);
     procedure ChangeCapitalizationFile(const _fn: string);
     procedure LoadPreviewForTab(_Tab: TTabSheet);
+    procedure HandlePreviewModified(_Sender: TObject);
+    procedure l_ResetPreviewClick(_Sender: TObject);
+    procedure UpdateResetLinkAppearance;
   protected
     procedure ArrangeControls; override;
   public
@@ -208,6 +214,10 @@ resourcestring
   str_PrecedenceDirective = 'GXFormatter.config directive';
   str_PrecedenceIniFile = 'GXFormatter.ini file';
   str_PrecedenceMySettings = 'my settings as configured here';
+  str_ResetPreview = '(reset)';
+  str_ResetPreviewHint = 'Reset to the default preview code for %s';
+  str_EditOrDropHint = '(edit or drop file)';
+  str_EditOrDropHintLong = 'You can edit this code or drop a .pas file here to test formatting';
 
 constructor TfmCodeFormatterConfig.Create(_Owner: TComponent);
 var
@@ -246,9 +256,16 @@ begin
   m_PreviewBefore.Width := 241;
   m_PreviewBefore.Height := 337;
   m_PreviewBefore.TabOrder := 0;
-  m_PreviewBefore.OnChange := UpdatePreview;
+  m_PreviewBefore.OnChange := HandlePreviewModified;
   m_PreviewBefore.OnStatusChange := HandleOnStatusChange;
   m_PreviewBefore.Highlighter := gxpPas;
+
+  l_ResetPreview := TLabel.Create(Self);
+  l_ResetPreview.Name := 'l_ResetPreview';
+  l_ResetPreview.Parent := p_Preview;
+  l_ResetPreview.ShowHint := True;
+  l_ResetPreview.OnClick := l_ResetPreviewClick;
+  UpdateResetLinkAppearance;
 
   m_PreviewAfter := TGxEnhancedEditor.Create(Self);
   m_PreviewAfter.Name := 'm_PreviewAfter';
@@ -302,7 +319,14 @@ end;
 
 procedure TfmCodeFormatterConfig.m_PreviewFileDropped(_Sender: TObject; _Files: TStrings);
 begin
-  m_PreviewBefore.LoadFromFile(_Files[0]);
+  FLoadingPreview := True;
+  try
+    m_PreviewBefore.LoadFromFile(_Files[0]);
+  finally
+    FLoadingPreview := False;
+  end;
+  FPreviewModifiedByUser := True;
+  UpdateResetLinkAppearance;
   UpdatePreview(_Sender);
 end;
 
@@ -408,15 +432,65 @@ begin
     PreviewPath := IncludeTrailingPathDelimiter(GetModuleDir) + 'preview.pas';
 
   if FileExists(PreviewPath) then begin
-    m_PreviewBefore.Clear;
-    m_PreviewBefore.LoadFromFile(PreviewPath);
+    FLoadingPreview := True;
+    try
+      m_PreviewBefore.Clear;
+      m_PreviewBefore.LoadFromFile(PreviewPath);
+    finally
+      FLoadingPreview := False;
+    end;
   end;
 end;
 
 procedure TfmCodeFormatterConfig.pc_MainChange(Sender: TObject);
 begin
-  LoadPreviewForTab(pc_Main.ActivePage);
+  if not FPreviewModifiedByUser then
+    LoadPreviewForTab(pc_Main.ActivePage)
+  else
+    UpdateResetLinkAppearance; // Update hint with new tab name
   UpdatePreview(Sender);
+end;
+
+procedure TfmCodeFormatterConfig.HandlePreviewModified(_Sender: TObject);
+begin
+  if not FLoadingPreview and not FPreviewModifiedByUser then begin
+    FPreviewModifiedByUser := True;
+    UpdateResetLinkAppearance;
+  end;
+  UpdatePreview(_Sender);
+end;
+
+procedure TfmCodeFormatterConfig.l_ResetPreviewClick(_Sender: TObject);
+begin
+  if not FPreviewModifiedByUser then
+    Exit;
+  FPreviewModifiedByUser := False;
+  UpdateResetLinkAppearance;
+  LoadPreviewForTab(pc_Main.ActivePage);
+  UpdatePreview(_Sender);
+end;
+
+procedure TfmCodeFormatterConfig.UpdateResetLinkAppearance;
+var
+  TabName: string;
+begin
+  if FPreviewModifiedByUser then begin
+    l_ResetPreview.Caption := str_ResetPreview;
+    l_ResetPreview.Font.Color := clBlue;
+    l_ResetPreview.Font.Style := [fsUnderline];
+    l_ResetPreview.Cursor := crHandPoint;
+    if pc_Main.ActivePage <> nil then
+      TabName := pc_Main.ActivePage.Caption
+    else
+      TabName := 'this tab';
+    l_ResetPreview.Hint := Format(str_ResetPreviewHint, [TabName]);
+  end else begin
+    l_ResetPreview.Caption := str_EditOrDropHint;
+    l_ResetPreview.Font.Color := clGray;
+    l_ResetPreview.Font.Style := [];
+    l_ResetPreview.Cursor := crDefault;
+    l_ResetPreview.Hint := str_EditOrDropHintLong;
+  end;
 end;
 
 procedure TfmCodeFormatterConfig.grid_SpacingSetEditText(Sender: TObject; ACol, ARow: Integer;
@@ -735,6 +809,8 @@ begin
   w := (p_Preview.ClientWidth - 16) div 2;
   m_PreviewBefore.Left := 8;
   l_Before.Left := 8;
+  l_ResetPreview.Left := l_Before.Left + l_Before.Width + 4;
+  l_ResetPreview.Top := l_Before.Top;
   m_PreviewBefore.Width := w;
   m_PreviewBefore.Height := p_Preview.ClientHeight - m_PreviewBefore.Top - 8;
   l_After.Left := w + 9;
