@@ -108,6 +108,12 @@ Changes since version 1.3.25 (released 2024-08-24)
 - Formatter now restores breakpoints and bookmarks to their correct new line numbers after formatting
 - Also preserves cursor position
 
+### Configuration Dialog Improvements
+- Context-sensitive preview: Each settings tab now shows a preview file demonstrating the relevant options
+- Preview content is preserved when switching tabs after user modification
+- "(edit or drop file)" hint shows users they can customize the preview
+- "(reset)" link appears after modification to restore default preview for current tab
+
 ### Other Formatter Improvements
 - Better handling of continuation indent after single-line comments
 - Improved nested procedure indentation in anonymous procedures
