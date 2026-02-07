@@ -30,7 +30,7 @@ The main installer script supports all Delphi versions via preprocessor defines:
 
 Usage:
 ```cmd
-iscc.exe GExperts.iss /dRS130 /dVersion=1.3.26 /fGExperts_RS13_1.3.26_2025-01-31
+iscc.exe GExperts.iss /dRS130 /dVersion=1.3.27 /fGExperts_RS13_1.3.27_2026-02-07
 ```
 
 ### RS13 Combined 32-bit/64-bit Installer
@@ -104,7 +104,7 @@ GExperts_{IDEPrefix}_{Version}_{Date}.exe
 
 Examples:
 - `GExperts_D7_1.3.25_2025-05-18.exe`
-- `GExperts_RS13_1.3.26_2025-09-27.exe`
+- `GExperts_RS13_1.3.27_2026-02-07.exe`
 
 ## Known Limitations
 

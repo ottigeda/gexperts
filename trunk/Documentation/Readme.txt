@@ -1,4 +1,4 @@
-GExperts 1.3.26
+GExperts 1.3.27
 Open Source Programming Tools for Delphi and C++Builder
 
 Source code, the FAQ, and the latest news are available at:
@@ -122,7 +122,9 @@ Add/Remove Programs or Programs [and Features] tool.
 
 CHANGE LOG
 ----------------------
-Version 1.3.26 (2026-02-02)
+Version 1.3.27 (unreleased)
+
+Version 1.3.26 (2026-02-07)
 - RAD Studio 13: Installer now includes both 32-bit and 64-bit DLLs
   with an optional checkbox to register for the 64-bit IDE
 - RAD Studio 13: ExplicitFilter expert now works on Win64 (uses DDetours

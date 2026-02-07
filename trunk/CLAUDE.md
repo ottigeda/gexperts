@@ -32,7 +32,7 @@ svn info <file>     # Show local file info
 - Do NOT include a list of changed files in commit messages - SVN tracks this automatically
 - Focus on describing what was changed and why
 
-**After committing:** Always update the changelog file `Documentation/CHANGES-<version>.md` (currently `CHANGES-1.3.26.md`) with a brief description of the change.
+**After committing:** Always update the changelog file `Documentation/CHANGES-<version>.md` (currently `CHANGES-1.3.27.md`) with a brief description of the change.
 
 ## Build Commands
 
