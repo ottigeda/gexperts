@@ -9,6 +9,7 @@ Changes since version 1.3.25 (released 2024-08-24)
 - Added GExperts version info to the IDE's about screen
 - Support for Delphi 13 ternary operator (inline if expressions) in the code formatter
 - Support for Delphi 13 'noreturn' directive in the code formatter
+- Delphi 13 'is not' and 'not in' operators are handled correctly by the formatter
 
 ### 64-bit IDE Support
 - GExperts now supports 64-bit IDEs (Delphi 12.3+ and Delphi 13)
@@ -33,6 +34,11 @@ Changes since version 1.3.25 (released 2024-08-24)
 - Export and import for the search path favorites list (Feature Request #212)
 - Added buttons to make paths absolute/relative and prepend/remove '../' from directories
 
+### Standalone Formatter Improvements
+- Feature Request #209: GetSettingsName now accessible from standalone formatter (patch from Uli Gerhardt)
+- Feature Request #211: FormatFile now accessible from standalone formatter (patch from Uli Gerhardt)
+- Feature Request #213: Standalone formatter now respects ConfigPrecedence setting (patch from Uli Gerhardt)
+
 ### Instant Grep Improvements
 - Uses IDE's Line Highlight background color for matches
 - Searches for current identifier by default
@@ -41,6 +47,8 @@ Changes since version 1.3.25 (released 2024-08-24)
 ## Bug Fixes
 
 ### General
+- Auto Switch Desktop: Fixed key combinations (Ctrl+F12, Shift+F12) incorrectly triggering the desktop switch
+- Auto Switch Desktop: Fixed AutoClose after compile always being active regardless of configuration setting
 - Fixed Delphi 7 compile error (duplicate MinInt32 definition in dzlib)
 - #360: Fixed scaling the list in the Go to dialog
 - #375: Fixed blue bar selection in comboboxes
@@ -71,6 +79,7 @@ Changes since version 1.3.25 (released 2024-08-24)
 - #463: Fixed Help-Button not moving when resizing Add to Favorite Search Path dialog
 
 ### Formatter Bugs
+- Fixed begin style option hidden behind new controls on formatter config dialog
 - #161: Fixed formatter not indenting multiline function directives
 - #306: Fixed formatter spacing for generics property
 - #322: Fixed formatter indents Index even if it is a normal field name
@@ -126,6 +135,9 @@ Changes since version 1.3.25 (released 2024-08-24)
 - Added visible splitter painting to all splitters in GExperts forms
 - New IDE improvement option: Enhance Splitter Visibility
 
+### Compiler Progress Dialog
+- New IDE option: Disable transparency of the compiler progress dialog
+
 ### Theming Support
 - GUI adjustments for themed IDE
 - Better handling of dark mode icons (merged from dark mode branch)
@@ -149,6 +161,8 @@ Changes since version 1.3.25 (released 2024-08-24)
 
 - Build scripts: Added --nowait option to all __Build_Project.cmd scripts
 - Build scripts: Added _buildproject.sh WSL scripts for building from Linux/WSL
+- Build scripts: Refactored shared build logic (doFindBuildTools.cmd, doSelectDelphi.cmd, doBuildStandAlone.cmd)
+- Standalone tools: Restructured CodeFormatter, CodeLibrarian, DebugWindow, ExpertManager, and Grep with multi-version .dproj files and src/ subdirectories
 - Updated to latest dzlib version
 - Refactored GxOtaXxx functions to Ota.Xxx class methods
 - Improved unit test framework for formatter
