@@ -8,6 +8,8 @@ Changes since version 1.3.26 (released 2026-02-07)
 
 ## Internal Changes
 
+- Added DelphiLspProbe standalone tool to probe DelphiLSP.exe capabilities
+
 ## Contributors
 
 - Thomas Mueller (twm)
