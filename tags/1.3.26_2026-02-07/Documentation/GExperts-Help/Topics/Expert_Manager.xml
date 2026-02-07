@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../helpproject.xsl" ?>
+<topic modified="2025-06-02T08:38:59.404+02:00" lasteditedby="Ghost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../helpproject.xsd">
+  <title translate="true">Expert Manager</title>
+  <keywords>
+    <keyword translate="true">Expert Manager</keyword>
+    <keyword translate="true">Experts</keyword>
+    <keyword translate="true">Wizards</keyword>
+  </keywords>
+  <body>
+    <header>
+      <para styleclass="Heading1"><text styleclass="Heading1" translate="true">Expert Manager</text></para>
+    </header>
+    <para styleclass="Normal"><draft-comment id="ANNOT557F64" width="16px" height="13px" modified="2025-06-02T08:23:55.123+02:00" styleclass="Comment"><![CDATA[For a better PDF view, no empty paragraphs should be inserted here!
+rzrz]]></draft-comment><text styleclass="Normal" translate="true">The expert manager enables you to add, enable, disable, and remove DLL experts from the IDE without having to directly edit the registry. &#160;The experts marked with a red </text><text styleclass="Normal" style="font-weight:bold;" translate="true">X</text><text styleclass="Normal" translate="true"> are disabled and those with the green checkmark are enabled. &#160;If an expert has a red dot in front of the graphic, the expert&apos;s state has been changed since the IDE was started, and you will not see the effect of the change until you restart the IDE. &#160;</text></para>
+    <para styleclass="Normal"></para>
+    <para styleclass="Normal"><text styleclass="Normal" translate="true">Note that the expert manager does not allow you to turn on and off the various GExperts experts. This can be done in the </text><link displaytype="text" defaultstyle="true" type="topiclink" href="GExperts_Configuration" styleclass="Normal" translate="true">GExperts Configuration</link><text styleclass="Normal" translate="true"> window using the checkboxes on the Experts tab. &#160;Package-based experts should be enabled and disabled using the IDE&apos;s Project Options dialog.</text></para>
+    <para styleclass="Normal" style="text-align:center; margin-top:40px;"><image src="Expert Manager.png" scale="100.00%" style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" figurelistinclude="0"></image><text style="font-family:&apos;MS Sans Serif&apos;; font-size:8pt; color:#000000;" translate="true">&#32;</text></para>
+    <para styleclass="Normal" style="text-align:justify; text-indent:-54px; margin-top:12px; margin-right:6px; margin-bottom:30px; margin-left:60px;"><draft-comment id="ANNOT1733BC" width="300px" height="100px" modified="2025-06-02T00:39:18.910+02:00" styleclass="Comment"><![CDATA[Placing a DistanceAfter of 30 pixels at the end of all topics included in TOC improves the appearance of PDF output.
+
+Ghost | rzrz]]></draft-comment><text styleclass="Comment" translate="true">&#32;</text></para>
+  </body>
+</topic>

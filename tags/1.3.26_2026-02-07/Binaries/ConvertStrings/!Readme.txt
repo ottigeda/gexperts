@@ -1,0 +1,1 @@
+These are the default favorites for the Convert Strings editor expert
