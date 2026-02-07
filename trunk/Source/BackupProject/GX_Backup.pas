@@ -5,7 +5,7 @@ unit GX_Backup;
 interface
 
 uses
-  Classes, Controls, Forms, ExtCtrls, Dialogs, StdCtrls, UITypes,
+  Classes, Controls, Forms, ExtCtrls, Dialogs, StdCtrls, UITypes, ComCtrls,
   ToolsAPI, GX_Progress, GX_Experts, GX_ConfigurationInfo,
   GX_Zipper, AbArcTyp, AbUtils, GX_BaseForm, GX_GenericUtils;
 
@@ -25,7 +25,7 @@ type
     btnCancel: TButton;
     btnHelp: TButton;
     pnlFileList: TPanel;
-    lbFiles: TListBox;
+    tvFiles: TListView;
     pnlFileButtons: TPanel;
     pnlFileButtonsRight: TPanel;
     btnOptions: TButton;
@@ -38,7 +38,8 @@ type
     procedure btnHelpClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure btnOptionsClick(Sender: TObject);
-    procedure lbFilesKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure tvFilesKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure tvFilesData(Sender: TObject; Item: TListItem);
   private
     FDoAbortCollectingFiles: Boolean;
     FHaveCollectedFiles: Boolean;
@@ -50,8 +51,19 @@ type
     FBackupExpert: TBackupProjectExpert;
     FLibraryPath: TStringList;
     FFilesFoundNowhere: TStringList;
+
+    FExcludePatterns: TStringList;
+    FProjectGlobalMasks: TStringList;
+    FProjectFolders: TStringList;
+    
+    // ListView Management
+    FBaseProjectDir: string;
+    FFileList: TStringList; // Stores full file paths
+    FTotalSize: Int64; // Total size of all files in bytes
+
     FZipComponent: TGXZipper;
     FFileSearchThreads: array of TFileFindThread;
+    
     procedure AbbreviaProgress(Sender : TObject; Progress : Byte; var Abort : Boolean);
     procedure FileFailure(Sender: TObject; Item: TAbArchiveItem;
       ProcessType: TAbProcessType; ErrorClass: TAbErrorClass; ErrorCode: Integer);
@@ -66,8 +78,21 @@ type
     procedure LoadSettings;
     procedure CollectFilesForBackup;
     procedure IncrementProgress;
-    procedure lbFilesOnFilesDropped(_Sender: TObject; _Files: TStrings);
+    procedure tvFilesOnFilesDropped(_Sender: TObject; _Files: TStrings);
     procedure AddFilesInDirs(_Dirs: TStrings);
+    
+    // ListView Helper Methods
+    procedure InitializeListView;
+    procedure AddFileToListView(const FullPath: string);
+    function GetFileSize(const FileName: string): Int64;
+    function FormatFileSize(Size: Int64): string;
+    function GetFileModifiedTime(const FileName: string): TDateTime;
+    procedure UpdateSizeColumn;
+    
+    function IsFileExcluded(const FileName: string): Boolean;
+    procedure ProcessGlobalBackupMasks; 
+    procedure SearchAndAddFiles(const SearchPath, FileMask: string);
+    procedure SearchAndAddFilesRecursive(const SearchPath, FileMask: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -110,16 +135,141 @@ implementation
 
 uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
-  Windows, SysUtils, AbConst, StrUtils, Math,
+  Windows, SysUtils, AbConst, StrUtils, Math, Masks,
   GX_OtaUtils, GX_MacroParser, GX_GxUtils,
   GX_BackupOptions, GX_BackupConfig, u_dzVclUtils, GX_MessageBox,
   u_dzFileUtils, GX_BackupNotFound, u_dzStringUtils;
 
-const // Do not localize these constants.
+const 
   ItemSeparatorChar = '|';
+  
   BackupIncludeDirective: array[0..8] of string =
   ( '{$I ',  '{$INCLUDE ',  '{$RESOURCE ',  '{$R ', '{#BACKUP ',
    '(*$I ', '(*$INCLUDE ', '(*$RESOURCE ', '(*$R ');
+
+  BackupRecursiveIncludeDirective: array[0..0] of string = ( '{#+BACKUP' );
+
+  BackupExcludeDirective: array[0..1] of string =
+  ( '{#-BACKUP ', '(*$-BACKUP ' );
+
+// --- ListView Helper Implementations ---
+
+procedure TfmBackup.InitializeListView;
+var
+  Col: TListColumn;
+begin
+  tvFiles.ViewStyle := vsReport;
+  tvFiles.RowSelect := True;
+  tvFiles.ReadOnly := True;
+  tvFiles.Columns.Clear;
+  
+  // Column 1: Path
+  Col := tvFiles.Columns.Add;
+  Col.Caption := 'Path';
+  Col.Width := 300;
+  
+  // Column 2: File Name
+  Col := tvFiles.Columns.Add;
+  Col.Caption := 'File Name';
+  Col.Width := 150;
+  
+  // Column 3: Size (with live total)
+  Col := tvFiles.Columns.Add;
+  Col.Caption := 'Size(0)';
+  Col.Width := 120;
+  Col.Alignment := taRightJustify;
+  
+  // Column 4: Last Modified
+  Col := tvFiles.Columns.Add;
+  Col.Caption := 'Last Modified';
+  Col.Width := 150;
+  
+  FTotalSize := 0;
+end;
+
+function TfmBackup.GetFileSize(const FileName: string): Int64;
+var
+  SearchRec: TSearchRec;
+begin
+  Result := 0;
+  if FindFirst(FileName, faAnyFile, SearchRec) = 0 then
+  begin
+    Result := Int64(SearchRec.FindData.nFileSizeHigh) shl 32 + SearchRec.FindData.nFileSizeLow;
+    SysUtils.FindClose(SearchRec);
+  end;
+end;
+
+function TfmBackup.FormatFileSize(Size: Int64): string;
+const
+  KB = 1024;
+  MB = KB * 1024;
+  GB = MB * 1024;
+begin
+  if Size >= GB then
+    Result := Format('%.2f GB', [Size / GB])
+  else if Size >= MB then
+    Result := Format('%.2f MB', [Size / MB])
+  else if Size >= KB then
+    Result := Format('%.2f KB', [Size / KB])
+  else
+    Result := Format('%d bytes', [Size]);
+end;
+
+function TfmBackup.GetFileModifiedTime(const FileName: string): TDateTime;
+var
+  SearchRec: TSearchRec;
+  FileTime: TFileTime;
+  SystemTime: TSystemTime;
+begin
+  Result := 0;
+  if FindFirst(FileName, faAnyFile, SearchRec) = 0 then
+  begin
+    FileTimeToLocalFileTime(SearchRec.FindData.ftLastWriteTime, FileTime);
+    FileTimeToSystemTime(FileTime, SystemTime);
+    Result := SystemTimeToDateTime(SystemTime);
+    SysUtils.FindClose(SearchRec);
+  end;
+end;
+
+procedure TfmBackup.AddFileToListView(const FullPath: string);
+var
+  Item: TListItem;
+  FileSize: Int64;
+  ModifiedTime: TDateTime;
+begin
+  if not FileExists(FullPath) then Exit;
+  
+  // Check if file already exists in the list
+  if FFileList.IndexOf(FullPath) >= 0 then Exit;
+  
+  FFileList.Add(FullPath);
+  
+  Item := tvFiles.Items.Add;
+  Item.Caption := ExtractFilePath(FullPath); // Path
+  Item.SubItems.Add(ExtractFileName(FullPath)); // File Name
+  
+  FileSize := GetFileSize(FullPath);
+  FTotalSize := FTotalSize + FileSize;
+  Item.SubItems.Add(FormatFileSize(FileSize)); // Size
+  
+  ModifiedTime := GetFileModifiedTime(FullPath);
+  Item.SubItems.Add(FormatDateTime('yyyy-mm-dd hh:nn', ModifiedTime)); // Last Modified
+  
+  UpdateSizeColumn;
+end;
+
+procedure TfmBackup.UpdateSizeColumn;
+begin
+  if tvFiles.Columns.Count > 2 then
+    tvFiles.Columns[2].Caption := Format('Size(%s)', [FormatFileSize(FTotalSize)]);
+end;
+
+procedure TfmBackup.tvFilesData(Sender: TObject; Item: TListItem);
+begin
+  // Virtual list data handler (if needed in future)
+end;
+
+// --- Global Helper Procedures ---
 
 procedure AddFileToList(const FileSpec: string; List: TStrings);
 var
@@ -132,53 +282,166 @@ begin
 end;
 
 procedure ScanForIncludesAndAdd(const FileName: string;
-  FoundFileList, NotFoundFileList: TStrings);
+  BackupForm: TfmBackup; FoundFileList, NotFoundFileList: TStrings);
 
-  function GetIncludePrefix(const Line: string): string;
+  function IsProjectFile(const AFileName: string): Boolean;
+  var
+    Ext: string;
+  begin
+    Ext := ExtractFileExt(AFileName);
+    Result := SameText(Ext, '.dpr') or SameText(Ext, '.dpk');
+  end;
+
+  procedure CollectProjectDirectories(FileLines: TStrings; BaseDir: string);
+  var
+    i, pIn, pQuoteStart, pQuoteEnd: Integer;
+    Line, SPath: string;
+  begin
+    if BackupForm.FProjectFolders = nil then Exit;
+    for i := 0 to FileLines.Count - 1 do
+    begin
+      Line := Trim(FileLines[i]);
+      Line := StringReplace(Line, #9, ' ', [rfReplaceAll]);
+      while Pos('  ', Line) > 0 do
+        Line := StringReplace(Line, '  ', ' ', [rfReplaceAll]);
+      pIn := Pos(' in ''', AnsiLowerCase(Line));
+      if pIn > 0 then
+      begin
+        pQuoteStart := pIn + 5;
+        pQuoteEnd := PosEx('''', Line, pQuoteStart);
+        if pQuoteEnd > pQuoteStart then
+        begin
+          SPath := Copy(Line, pQuoteStart, pQuoteEnd - pQuoteStart);
+          SPath := ExtractFilePath(SPath);
+          if (SPath <> '') then
+          begin
+            SPath := ExpandFileName(IncludeTrailingPathDelimiter(BaseDir) + SPath);
+            SPath := IncludeTrailingPathDelimiter(SPath);
+            if BackupForm.FProjectFolders.IndexOf(SPath) = -1 then
+              BackupForm.FProjectFolders.Add(SPath);
+          end;
+        end;
+      end;
+    end;
+  end;
+
+  function GetDirectivePrefix(const Line: string; const Directives: array of string): string;
   var
     i: Integer;
   begin
     Result := '';
-    for i := Low(BackupIncludeDirective) to High(BackupIncludeDirective) do
+    for i := Low(Directives) to High(Directives) do
     begin
-      if CaseInsensitivePos(BackupIncludeDirective[i], Line) = 1 then
+      if CaseInsensitivePos(Directives[i], Line) = 1 then
       begin
-        Result := BackupIncludeDirective[i];
+        Result := Directives[i];
         Break;
       end;
     end;
   end;
 
-  procedure GetPasIncludeLines(FileLines: TStrings; IncludeLines: TStrings);
+  function IsIgnoredExtension(const AFileName: string): Boolean;
+  var
+    Ext: string;
+  begin
+    Ext := AnsiLowerCase(AFileName); 
+    Result := (Ext = '*.dfm') or (Ext = '*.xfm') or (Ext = '*.nfm');
+  end;
+
+  var
+    IsProject: Boolean;
+    CurrentFileDir: string;
+
+  // --- Parsing Procedures ---
+
+  procedure ParseFileForDirectives(FileLines: TStrings; IncludeLines: TStrings; RecursiveIncludeLines: TStrings);
   var
     i: Integer;
     Line: string;
-    IncludePrefix: string;
+    Prefix: string;
     FileSpec: string;
+    ResolvedMask: string;
     CommentPos: Integer;
   begin
     Assert(Assigned(FileLines));
     Assert(Assigned(IncludeLines));
+    Assert(Assigned(RecursiveIncludeLines));
 
     IncludeLines.Clear;
+    RecursiveIncludeLines.Clear;
+
     for i := 0 to FileLines.Count - 1 do
     begin
       Line := Trim(FileLines[i]);
-      IncludePrefix := GetIncludePrefix(Line);
-      if IncludePrefix <> '' then
+      
+      // 1. Check for EXCLUDES
+      Prefix := GetDirectivePrefix(Line, BackupExcludeDirective);
+      if Prefix <> '' then
       begin
-        FileSpec := Trim(Copy(Line, Length(IncludePrefix) + 1));
+        FileSpec := Trim(Copy(Line, Length(Prefix) + 1));
         CommentPos := Pos('//', FileSpec);
-        if CommentPos > 1 then
-          FileSpec := Copy(FileSpec, 1, CommentPos - 1);
-        if FileSpec = '' then
-          Continue;
+        if CommentPos > 1 then FileSpec := Copy(FileSpec, 1, CommentPos - 1);
+        if RightStr(FileSpec, 1) = '}' then FileSpec := Trim(Copy(FileSpec, 1, Length(FileSpec) - 1));
+        if RightStr(FileSpec, 2) = '*)' then FileSpec := Trim(Copy(FileSpec, 1, Length(FileSpec) - 2));
+
+        FileSpec := Trim(FileSpec);
+        if FileSpec <> '' then
+        begin
+          if IsProject and (ExtractFilePath(FileSpec) = '') then
+          begin
+             ResolvedMask := ExpandFileName(FileSpec);
+             if BackupForm.FExcludePatterns.IndexOf(ResolvedMask) = -1 then
+               BackupForm.FExcludePatterns.Add(ResolvedMask);
+             if BackupForm.FExcludePatterns.IndexOf(FileSpec) = -1 then
+               BackupForm.FExcludePatterns.Add(FileSpec);
+          end
+          else
+          begin
+             ResolvedMask := ExpandFileName(FileSpec); 
+             if BackupForm.FExcludePatterns.IndexOf(ResolvedMask) = -1 then
+               BackupForm.FExcludePatterns.Add(ResolvedMask);
+          end;
+        end;
+        Continue; 
+      end;
+
+      // 2. Check for RECURSIVE INCLUDES
+      Prefix := GetDirectivePrefix(Line, BackupRecursiveIncludeDirective);
+      if Prefix <> '' then
+      begin
+        FileSpec := Trim(Copy(Line, Length(Prefix) + 1));
+        CommentPos := Pos('//', FileSpec);
+        if CommentPos > 1 then FileSpec := Copy(FileSpec, 1, CommentPos - 1);
+        
+        if FileSpec = '' then Continue;
+
+        if (FileSpec[1] = '''') or (FileSpec[1] = '"') then
+          FileSpec := GetQuotedToken(FileSpec)
+        else
+        begin
+           if RightStr(FileSpec, 1) = '}' then FileSpec := Trim(Copy(FileSpec, 1, Length(FileSpec) - 1));
+           if RightStr(FileSpec, 2) = '*)' then FileSpec := Trim(Copy(FileSpec, 1, Length(FileSpec) - 2));
+           FileSpec := Trim(FileSpec);
+        end;
+
+        if FileSpec <> '' then
+          RecursiveIncludeLines.Add(FileSpec);
+          
+        Continue;
+      end;
+
+      // 3. Check for INCLUDES
+      Prefix := GetDirectivePrefix(Line, BackupIncludeDirective);
+      if Prefix <> '' then
+      begin
+        FileSpec := Trim(Copy(Line, Length(Prefix) + 1));
+        CommentPos := Pos('//', FileSpec);
+        if CommentPos > 1 then FileSpec := Copy(FileSpec, 1, CommentPos - 1);
+        if FileSpec = '' then Continue;
 
         FileSpec := GetQuotedToken(FileSpec);
-        if RightStr(FileSpec, 1) = '}' then
-          FileSpec := Trim(Copy(FileSpec, 1, Length(FileSpec) - 1));
-        if RightStr(FileSpec, 2) = '*)' then
-          FileSpec := Trim(Copy(FileSpec, 1, Length(FileSpec) - 2));
+        if RightStr(FileSpec, 1) = '}' then FileSpec := Trim(Copy(FileSpec, 1, Length(FileSpec) - 1));
+        if RightStr(FileSpec, 2) = '*)' then FileSpec := Trim(Copy(FileSpec, 1, Length(FileSpec) - 2));
 
         if FileSpec <> '' then
           IncludeLines.Add(FileSpec);
@@ -189,252 +452,220 @@ procedure ScanForIncludesAndAdd(const FileName: string;
   procedure GetCppPragmaBackupLines(FileLines: TStrings; IncludeLines: TStrings);
   var
     i, j: Integer;
-    Line: string;
-    ParsedLine: string;
-    PragmaBackup: string;
-    FileSpec: string;
-    SlashCommentActive: Boolean;
-    StarCommentActive: Boolean;
-    QuoteActive: Boolean;
-    DoubleQuoteActive: Boolean;
+    Line, ParsedLine, PragmaBackup, FileSpec: string;
+    SlashCommentActive, StarCommentActive, QuoteActive, DoubleQuoteActive: Boolean;
   begin
     Assert(Assigned(FileLines));
     Assert(Assigned(IncludeLines));
-
     StarCommentActive := False;
-
     IncludeLines.Clear;
     for i := 0 to FileLines.Count - 1 do
     begin
       SlashCommentActive := False;
       QuoteActive := False;
       DoubleQuoteActive := False;
-
       Line := Trim(FileLines[i]);
       ParsedLine := '';
-
       j := 1;
-
       while j <= Length(Line) do
       begin
-        if QuoteActive then
-        begin
+        if QuoteActive then begin
           ParsedLine := ParsedLine + Line[j];
-          if (Line[j] = #39) and ((j = 1) or (Line[j - 1] <> '\')) then
-            QuoteActive := False;
-        end
-        else if DoubleQuoteActive then
-        begin
+          if (Line[j] = #39) and ((j = 1) or (Line[j - 1] <> '\')) then QuoteActive := False;
+        end else if DoubleQuoteActive then begin
           ParsedLine := ParsedLine + Line[j];
-          if (Line[j] = '"') and ((j = 1) or (Line[j - 1] <> '\')) then
-            DoubleQuoteActive := False;
-        end
-        else if StarCommentActive then
-        begin
-          if (Line[j] = '/') and (j > 1) and (Line[j - 1] = '*') then
-            StarCommentActive := False;
-        end
-        else if not SlashCommentActive then
-        begin
+          if (Line[j] = '"') and ((j = 1) or (Line[j - 1] <> '\')) then DoubleQuoteActive := False;
+        end else if StarCommentActive then begin
+          if (Line[j] = '/') and (j > 1) and (Line[j - 1] = '*') then StarCommentActive := False;
+        end else if not SlashCommentActive then begin
           case Line[j] of
-            #39:
-              begin
-                QuoteActive := True;
-                ParsedLine := ParsedLine + Line[j];
-              end;
-            '"':
-              begin
-                DoubleQuoteActive := True;
-                ParsedLine := ParsedLine + Line[j];
-              end;
-            '/':
-              if j <> Length(Line) then
-              begin
-                case Line[j + 1] of
-                  '*':
-                    begin
-                      StarCommentActive := True;
-                      Inc(j);
-                    end;
-                  '/': SlashCommentActive := True;
-                else
-                  ParsedLine := ParsedLine + Line[j];
-                end
-              end
-              else
-                ParsedLine := ParsedLine + Line[j];
-          else
-            ParsedLine := ParsedLine + Line[j];
+            #39: begin QuoteActive := True; ParsedLine := ParsedLine + Line[j]; end;
+            '"': begin DoubleQuoteActive := True; ParsedLine := ParsedLine + Line[j]; end;
+            '/': if j <> Length(Line) then
+                   case Line[j + 1] of
+                     '*': begin StarCommentActive := True; Inc(j); end;
+                     '/': SlashCommentActive := True;
+                   else ParsedLine := ParsedLine + Line[j]; end
+                 else ParsedLine := ParsedLine + Line[j];
+          else ParsedLine := ParsedLine + Line[j];
           end;
         end;
         Inc(j);
       end;
-
-      if (ParsedLine <> '') and (ParsedLine[1] = '#') then
-      begin
-        // This will break filenames with more than one consecutive space
+      if (ParsedLine <> '') and (ParsedLine[1] = '#') then begin
         PragmaBackup := CompressWhiteSpace(Copy(ParsedLine, 2));
-        if StartsStr('pragma backup ', PragmaBackup) then
-        begin
+        if StartsStr('pragma backup ', PragmaBackup) then begin
           FileSpec := Trim(Copy(ParsedLine, Pos('backup', ParsedLine) + 6));
-          if FileSpec = '' then
-            Continue;
-
+          if FileSpec = '' then Continue;
           FileSpec := GetQuotedToken(FileSpec);
-          if FileSpec <> '' then
-            IncludeLines.Add(FileSpec);
+          if FileSpec <> '' then IncludeLines.Add(FileSpec);
         end;
       end;
     end;
   end;
 
-  procedure TextFileToStrings(const FileName: string; Strings: TStringList);
+  procedure ProcessRecursiveIncludeLine(const Line: string; const ContextFileName: string);
   var
-    AddString: string;
+    FileSpec: string;
+    RawDir, RawMask, AbsDir: string;
   begin
-    Assert(Assigned(Strings));
-    Strings.Clear;
-    try
-      // Don't try to open files with wildcard specifications
-      if not FileNameHasWildcards(FileName) then
-        if FileExists(FileName) then
-          Strings.LoadFromFile(FileName);
-    except
-      // This might be a lie since we might have found it, but since we can not
-      // 'Open' it and 'Read' it it is better to let the user know it now via a message
-      // than find out later when the zip component crashes or reports an error.
-      AddString := FileName + ItemSeparatorChar + FileName;
-      EnsureStringInList(NotFoundFileList, AddString);
-    end;
+    FileSpec := Trim(Line);
+    if FileSpec = '' then Exit;
+    if IsIgnoredExtension(FileSpec) then Exit;
+
+    RawMask := ExtractFileName(FileSpec);
+    RawDir := ExtractFilePath(FileSpec);
+    if RawMask = '' then RawMask := '*.*';
+
+    // Build Absolute Path relative to current file
+    if (Pos(':', RawDir) > 0) or (Pos('\\', RawDir) = 1) then
+      AbsDir := RawDir
+    else
+      AbsDir := IncludeTrailingPathDelimiter(CurrentFileDir) + RawDir;
+
+    AbsDir := ExpandFileName(AbsDir);
+    AbsDir := IncludeTrailingPathDelimiter(AbsDir);
+
+    if DirectoryExists(AbsDir) then
+       BackupForm.SearchAndAddFilesRecursive(AbsDir, RawMask);
   end;
 
-  procedure AddFilesForInclude(const Line: string; const FileName: string);
+  procedure ProcessIncludeLine(const Line: string; const ContextFileName: string);
   var
-    StoreFileName: string;
-    BaseFileName: string;
-    CompareExt: string;
+    FileSpec: string;
+    ResolvedPath, AbsPath: string;
   begin
-    StoreFileName := Trim(Line);
-    if StoreFileName = '' then
-      Exit;
-    CompareExt := AnsiLowerCase(StoreFileName);
-    if (CompareExt = '*.dfm') or (CompareExt = '*.xfm') or (CompareExt = '*.nfm') then
-      Exit; // Included elsewhere
-    if SameText(StoreFileName, '*.res') then
-      StoreFileName := ChangeFileExt(FileName, '.res')
-    else if SameText(StoreFileName, '*.dcr') then
-      StoreFileName := ChangeFileExt(FileName, '.dcr');
-    BaseFileName := StoreFileName;
+    FileSpec := Trim(Line);
+    if FileSpec = '' then Exit;
+    if IsIgnoredExtension(FileSpec) then Exit;
 
-    StoreFileName := ExpandFileName(StoreFileName);
-    if FileNameHasWildcards(StoreFileName) then begin
-      { TODO -oAnyone -cFeature : Search for matching files here and add them to the list
-        so the user can actually see what will be added. }
-      AddFileToList(StoreFileName, FoundFileList);
-    end
-    else
+    if SameText(FileSpec, '*.res') then 
+      FileSpec := ChangeFileExt(ContextFileName, '.res')
+    else if SameText(FileSpec, '*.dcr') then 
+      FileSpec := ChangeFileExt(ContextFileName, '.dcr');
+
+    if FileNameHasWildcards(FileSpec) then
     begin
-      if FileExists(StoreFileName) then
+      if (Pos(':', FileSpec) > 0) or (Pos('\\', FileSpec) = 1) then
+        AbsPath := FileSpec
+      else
+        AbsPath := IncludeTrailingPathDelimiter(CurrentFileDir) + FileSpec;
+      
+      if ExtractFilePath(FileSpec) = '' then
       begin
-        AddFileToList(StoreFileName, FoundFileList);
-        if IsDprOrPas(StoreFileName) or IsCpp(StoreFileName) then
-          ScanForIncludesAndAdd(StoreFileName, FoundFileList, NotFoundFileList);
+         BackupForm.SearchAndAddFiles(CurrentFileDir, FileSpec);
+         if IsProject and (BackupForm.FProjectGlobalMasks.IndexOf(FileSpec) = -1) then
+           BackupForm.FProjectGlobalMasks.Add(FileSpec);
       end
       else
       begin
-        StoreFileName := BaseFileName + ItemSeparatorChar + FileName;
-        AddFileToList(StoreFileName, NotFoundFileList);
+         AbsPath := IncludeTrailingPathDelimiter(CurrentFileDir) + ExtractFilePath(FileSpec);
+         AbsPath := ExpandFileName(AbsPath);
+         BackupForm.SearchAndAddFiles(AbsPath, ExtractFileName(FileSpec));
       end;
+    end
+    else
+    begin
+      ResolvedPath := ExpandFileName(FileSpec);
+      if BackupForm.IsFileExcluded(ResolvedPath) then Exit;
+      if FileExists(ResolvedPath) then
+      begin
+        AddFileToList(ResolvedPath, FoundFileList);
+        if IsDprOrPas(ResolvedPath) or IsCpp(ResolvedPath) then
+          ScanForIncludesAndAdd(ResolvedPath, BackupForm, FoundFileList, NotFoundFileList);
+      end
+      else
+        AddFileToList(FileSpec + ItemSeparatorChar + ContextFileName, NotFoundFileList);
     end;
   end;
 
 var
-  CurrentLine: string;
-  OriginalPath: string;
   CurrentLineNum: Integer;
   FileLines: TStringList;
   IncludeLines: TStringList;
+  RecursiveIncludeLines: TStringList;
+  OriginalPath: string;
 begin
-  CurrentLine := '';
   FileLines := nil;
   IncludeLines := nil;
+  RecursiveIncludeLines := nil;
   OriginalPath := GetCurrentDir;
+  
+  IsProject := IsProjectFile(FileName);
+  CurrentFileDir := IncludeTrailingPathDelimiter(ExtractFilePath(ExpandFileName(FileName)));
+
   try
-    // Changing directories allows ExpandFileName to work on relative paths
-    if DirectoryExists(ExtractFilePath(FileName)) then
-      SafeChangeDirectory(ExtractFilePath(FileName));
+    if DirectoryExists(CurrentFileDir) then
+      SafeChangeDirectory(CurrentFileDir);
+      
     FileLines := TStringList.Create;
     IncludeLines := TStringList.Create;
-    TextFileToStrings(FileName, FileLines);
+    RecursiveIncludeLines := TStringList.Create;
+    
+    try
+      if not FileNameHasWildcards(FileName) and FileExists(FileName) then
+        FileLines.LoadFromFile(FileName)
+      else begin
+        AddFileToList(FileName + ItemSeparatorChar + FileName, NotFoundFileList);
+        Exit;
+      end;
+    except
+      AddFileToList(FileName + ItemSeparatorChar + FileName, NotFoundFileList);
+      Exit;
+    end;
+    
+    if IsProject then
+    begin
+      CollectProjectDirectories(FileLines, CurrentFileDir);
+      if Assigned(BackupForm.FProjectFolders) and (BackupForm.FProjectFolders.IndexOf(CurrentFileDir) = -1) then
+         BackupForm.FProjectFolders.Add(CurrentFileDir);
+    end;
+    
     if IsDprOrPas(FileName) then
-      GetPasIncludeLines(FileLines, IncludeLines)
+      ParseFileForDirectives(FileLines, IncludeLines, RecursiveIncludeLines)
     else if IsCpp(FileName) then
       GetCppPragmaBackupLines(FileLines, IncludeLines);
 
+    for CurrentLineNum := 0 to RecursiveIncludeLines.Count - 1 do
+      ProcessRecursiveIncludeLine(RecursiveIncludeLines[CurrentLineNum], FileName);
+
     for CurrentLineNum := 0 to IncludeLines.Count - 1 do
-      AddFilesForInclude(IncludeLines[CurrentLineNum], FileName);
+      ProcessIncludeLine(IncludeLines[CurrentLineNum], FileName);
   finally
     FreeAndNil(FileLines);
     FreeAndNil(IncludeLines);
+    FreeAndNil(RecursiveIncludeLines);
     SafeChangeDirectory(OriginalPath);
   end;
 end;
 
 { TfmBackup }
 
-function TfmBackup.ListFiles(const FileName, UnitName, FormName: string): Boolean;
-var
-  TempFileName: string;
-begin
-  Result := True;
-  //{$IFOPT D+}SendDebug('Enumerating File: ' + FileName + ' Form: ' + FormName + ' Unit: ' + UnitName);{$ENDIF}
-
-  // Do not backup DCP/BPI/DLL files
-  TempFileName := ExtractUpperFileExt(FileName);
-  if (TempFileName = '.DCP') or (TempFileName = '.BPI') or (TempFileName = '.DLL') or (TempFileName = '.AQT') then
-    Exit;
-
-  AddBackupFile(FileName);
-
-  // Include matching header/bpr/bpk files for CPP files
-  if (TempFileName = '.CPP') then
-  begin
-    AddBackupFile(ChangeFileExt(FileName, '.h')); // Do not localize.
-    AddBackupFile(ChangeFileExt(FileName, '.bpr')); // Do not localize.
-    AddBackupFile(ChangeFileExt(FileName, '.bpk')); // Do not localize.
-  end;
-
-  // Include all form files, if they exist, just to be safe
-  AddBackupFile(ChangeFileExt(FileName, '.dfm')); // Do not localize.
-  AddBackupFile(ChangeFileExt(FileName, '.xfm')); // Do not localize.
-  AddBackupFile(ChangeFileExt(FileName, '.nfm')); // Do not localize.
-  AddBackupFile(ChangeFileExt(FileName, '.fmx')); // Do not localize.
-  AddBackupFile(ChangeFileExt(FileName, '.todo')); // Do not localize.
-
-  if FBackupExpert.DoBackupIncludedFiles and (IsDprOrPas(FileName) or IsCpp(FileName)) then
-  begin
-    //{$IFOPT D+}SendDebug('Scanning: ' + FileName);{$ENDIF}
-    ScanForIncludesAndAdd(FileName, lbFiles.Items, FFilesFoundNowhere);
-  end;
-
-  Result := not FDoAbortCollectingFiles;
-end;
-
 constructor TfmBackup.Create(AOwner: TComponent);
 begin
   inherited;
-
   FLibraryPath := TStringList.Create;
   FLibraryPath.Duplicates := dupIgnore;
   FFilesFoundNowhere := TStringList.Create;
+  
+  FExcludePatterns := TStringList.Create;
+  FProjectGlobalMasks := TStringList.Create;
+  FProjectFolders := TStringList.Create;
+  FProjectFolders.Duplicates := dupIgnore;
+  
+  FFileList := TStringList.Create;
+  FFileList.Duplicates := dupIgnore;
+  FFileList.Sorted := True;
 
   FZipEncrypted := False;
   FHaveCollectedFiles := False;
 
-  TWinControl_ActivateDropFiles(lbFiles, lbFilesOnFilesDropped);
-
+  TWinControl_ActivateDropFiles(tvFiles, tvFilesOnFilesDropped);
+  
+  // Initialize ListView
+  InitializeListView;
+  
   InitDpiScaler;
-
   LoadSettings;
 end;
 
@@ -448,8 +679,133 @@ begin
 
   FreeAndNil(FFilesFoundNowhere);
   FreeAndNil(FLibraryPath);
+  FreeAndNil(FExcludePatterns);
+  FreeAndNil(FProjectGlobalMasks);
+  FreeAndNil(FProjectFolders);
+  FreeAndNil(FFileList);
 
   inherited Destroy;
+end;
+
+function TfmBackup.IsFileExcluded(const FileName: string): Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  if not Assigned(FExcludePatterns) then Exit;
+  for i := 0 to FExcludePatterns.Count - 1 do
+  begin
+    if MatchesMask(FileName, FExcludePatterns[i]) then
+    begin
+      Result := True;
+      Exit;
+    end;
+  end;
+end;
+
+procedure TfmBackup.SearchAndAddFiles(const SearchPath, FileMask: string);
+var
+  SearchRec: TSearchRec;
+  FoundFile: string;
+  FullSearchMask: string;
+begin
+  if Trim(SearchPath) = '' then Exit;
+  FullSearchMask := IncludeTrailingPathDelimiter(SearchPath) + FileMask;
+  if FindFirst(FullSearchMask, faAnyFile, SearchRec) = 0 then
+  try
+    repeat
+      if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') and
+         ((SearchRec.Attr and faDirectory) = 0) then
+      begin
+        FoundFile := IncludeTrailingPathDelimiter(SearchPath) + SearchRec.Name;
+        if not IsFileExcluded(FoundFile) then
+          AddBackupFile(FoundFile);
+      end;
+    until FindNext(SearchRec) <> 0;
+  finally
+    SysUtils.FindClose(SearchRec);
+  end;
+end;
+
+procedure TfmBackup.SearchAndAddFilesRecursive(const SearchPath, FileMask: string);
+var
+  SearchRec: TSearchRec;
+  CurrentPath: string;
+begin
+  CurrentPath := IncludeTrailingPathDelimiter(SearchPath);
+  if not DirectoryExists(CurrentPath) then Exit;
+  SearchAndAddFiles(CurrentPath, FileMask);
+  if FindFirst(CurrentPath + '*.*', faAnyFile, SearchRec) = 0 then
+  try
+    repeat
+      if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') and
+         ((SearchRec.Attr and faDirectory) <> 0) then
+      begin
+        SearchAndAddFilesRecursive(CurrentPath + SearchRec.Name, FileMask);
+      end;
+    until FindNext(SearchRec) <> 0;
+  finally
+    SysUtils.FindClose(SearchRec);
+  end;
+end;
+
+procedure TfmBackup.ProcessGlobalBackupMasks;
+var
+  iFolder, iMask: Integer;
+  CurrentFolder, CurrentMask: string;
+begin
+  if (FProjectFolders.Count = 0) or (FProjectGlobalMasks.Count = 0) then Exit;
+  for iFolder := 0 to FProjectFolders.Count - 1 do
+  begin
+    CurrentFolder := IncludeTrailingPathDelimiter(FProjectFolders[iFolder]);
+    if not DirectoryExists(CurrentFolder) then Continue;
+    for iMask := 0 to FProjectGlobalMasks.Count - 1 do
+    begin
+      CurrentMask := FProjectGlobalMasks[iMask];
+      SearchAndAddFiles(CurrentFolder, CurrentMask);
+    end;
+  end;
+end;
+
+function TfmBackup.ListFiles(const FileName, UnitName, FormName: string): Boolean;
+var
+  TempFileName: string;
+begin
+  Result := True;
+  if IsFileExcluded(FileName) then Exit;
+  TempFileName := ExtractUpperFileExt(FileName);
+  if (TempFileName = '.DCP') or (TempFileName = '.BPI') or (TempFileName = '.DLL') or (TempFileName = '.AQT') then
+    Exit;
+
+  AddBackupFile(FileName);
+
+  if (TempFileName = '.DPR') or (TempFileName = '.DPK') then
+  begin
+    // Add .res and .rc for project files if they exist
+    if FileExists(ChangeFileExt(FileName, '.res')) then
+      AddBackupFile(ChangeFileExt(FileName, '.res'));
+    if FileExists(ChangeFileExt(FileName, '.rc')) then
+      AddBackupFile(ChangeFileExt(FileName, '.rc'));
+  end;
+
+  if (TempFileName = '.CPP') then
+  begin
+    AddBackupFile(ChangeFileExt(FileName, '.h')); 
+    AddBackupFile(ChangeFileExt(FileName, '.bpr')); 
+    AddBackupFile(ChangeFileExt(FileName, '.bpk')); 
+  end;
+
+  AddBackupFile(ChangeFileExt(FileName, '.dfm')); 
+  AddBackupFile(ChangeFileExt(FileName, '.xfm')); 
+  AddBackupFile(ChangeFileExt(FileName, '.nfm')); 
+  AddBackupFile(ChangeFileExt(FileName, '.fmx')); 
+  AddBackupFile(ChangeFileExt(FileName, '.todo')); 
+
+  if FBackupExpert.DoBackupIncludedFiles and (IsDprOrPas(FileName) or IsCpp(FileName)) then
+  begin
+    ScanForIncludesAndAdd(FileName, Self, FFilesFoundNowhere, FFilesFoundNowhere); 
+  end;
+  Result := not FDoAbortCollectingFiles;
 end;
 
 procedure TfmBackup.LocateFileOnPathAndAdd(FilesNotFound: TStrings);
@@ -457,12 +813,6 @@ var
   LastFileChecked: string;
   LastFileCheckResult: boolean;
 
-  // Often the same file is included from several places, like the GX_CondDefine.inc
-  // file in GExperts, which is included in >30 units. In that case it is listed in
-  // FilesNotFound multiple times, but we don't need to check it for every entry
-  // (accessing the hard disk is slow, even with caching). Here we simply cache the
-  //  result. On modern computers this doesn't make much of a difference (I benchmarked
-  // it with 200000 duplictes where it as 4 seconds faster), but in virtual machines it will.
   function DoesFileExist(const Filename: string): boolean;
   begin
     if Filename <> LastFileChecked then begin
@@ -493,28 +843,6 @@ var
   RefererFile: string;
   FileLocation: string;
 begin
-  // FilesNotFound is a list of files that have not been found, combined
-  // with the filename which contained the reference to that file
-  // Both parts are separated by the ItemSeparatorChar character ('|')
-  // This routine scans the library path for the presence of files;
-  // if a file is found, it is removed from the list of files not found
-  // and adds it to the list(box) of files to be backed up.
-  // Finally the list of *really* not found files is beautified.
-
-{$IFOPT D+}
-  if FilesNotFound.Count > 0 then
-    SendDebugError('+++ Files not found:');
-  for i := 0 to FilesNotFound.Count - 1 do
-    SendDebugError(FilesNotFound[i]);
-{$ENDIF D+}
-
-  // Scan each directory on the library path whether
-  // it contains any of the missing files.
-  // Scan one directory completely before progressing
-  // to the next to give the operating system's file cache
-  // an easier job of reading the directory structure;
-  // this should perform better than iterating over all files
-  // and for each file trying to find the containing directory.
   LastFileChecked := '';
   for i := 0 to FLibraryPath.Count - 1 do
   begin
@@ -523,18 +851,14 @@ begin
     begin
       SplitUpEntry(FilesNotFound[j], IncludedFile, RefererFile);
       FileLocation := FLibraryPath[i] + IncludedFile;
-      if DoesFileExist(FileLocation) then
+      if not IsFileExcluded(FileLocation) and DoesFileExist(FileLocation) then
       begin
         FilesNotFound.Delete(j);
-        if lbFiles.Items.IndexOf(FileLocation) < 0 then
-          AddBackupFile(FileLocation);
+        AddBackupFile(FileLocation);
       end;
       Dec(j);
     end;
   end;
-
-  // Finally post-process the list of *really* not found files
-  // and give the list a pretty format now.
   for j := 0 to FilesNotFound.Count - 1 do
   begin
     SplitUpEntry(FilesNotFound[j], IncludedFile, RefererFile);
@@ -550,16 +874,12 @@ var
 begin
   if FCurrentBackupScope = bsActiveProject then
     DoCollectFilesFromSingleProject(GxOtaGetCurrentProject)
-  else
-  begin
-    // First find the currently active project group.
+  else begin
     IProjectGroup := GxOtaGetProjectGroup;
-    if IProjectGroup = nil then
-      Exit;
+    if IProjectGroup = nil then Exit;
     ProjectGroupFileName := GxOtaGetProjectGroupFileName;
-
-    AddBackupFile(ProjectGroupFileName);
-
+    if not IsFileExcluded(ProjectGroupFileName) then
+      AddBackupFile(ProjectGroupFileName);
     for i := 0 to IProjectGroup.ProjectCount - 1 do
       DoCollectFilesFromSingleProject(IProjectGroup.Projects[i]);
   end;
@@ -572,33 +892,27 @@ var
   IEditor: IOTAEditor;
   FileName: string;
 begin
-  if IProject = nil then
-    Exit;
+  if IProject = nil then Exit;
   Assert(Assigned(FProgressForm));
   GxOtaGetEffectiveLibraryPath(FLibraryPath, IProject);
-
-  // Gather project files
+  ListFiles(IProject.FileName, '', '');
   for i := 0 to IProject.GetModuleFileCount - 1 do
   begin
     IEditor := IProject.GetModuleFileEditor(i);
     Assert(IEditor <> nil);
-
     FileName := IEditor.FileName;
     if FileName <> '' then
       ListFiles(IEditor.FileName, '', '');
   end;
-  // Delphi 8 project files have ModuleFileCount=0
-  ListFiles(IProject.FileName, '', '');
-
   for i := 0 to IProject.GetModuleCount - 1 do
   begin
     IModuleInfo := IProject.GetModule(i);
     Assert(IModuleInfo <> nil);
-
     FileName := IModuleInfo.FileName;
     if FileName <> '' then
       ListFiles(IModuleInfo.FileName, '', IModuleInfo.FormName);
   end;
+  ProcessGlobalBackupMasks;
 end;
 
 procedure RemoveDuplicates(_NotFound: TStringList);
@@ -614,7 +928,6 @@ begin
     s := _NotFound[i];
     p := Pos('|', s);
     if p > 1 then begin
-      // P should always be > 1
       s := LeftStr(s, p - 1);
       cnt := 0;
       for j := _NotFound.Count - 1 downto i + 1 do begin
@@ -633,14 +946,27 @@ end;
 procedure TfmBackup.CollectFilesForBackup;
 resourcestring
   SCollectingBackupFiles = 'Collecting Files...';
-  SFilesNotFound = 'The following included files could not be found for backup:' + sLineBreak +
-    sLineBreak +
-    '%s';
 var
   Cursor: IInterface;
+  ProjectName: string;
 begin
-  lbFiles.Clear;
+  tvFiles.Items.Clear;
+  FFileList.Clear;
+  FTotalSize := 0;
+  FBaseProjectDir := '';
+
   FFilesFoundNowhere.Clear;
+  FExcludePatterns.Clear; 
+  FProjectGlobalMasks.Clear;
+  FProjectFolders.Clear;
+  
+  if FCurrentBackupScope = bsActiveProject then
+    ProjectName := GxOtaGetCurrentProjectFileName
+  else
+    ProjectName := GxOtaGetProjectGroupFileName;
+
+  if ProjectName <> '' then
+    FBaseProjectDir := IncludeTrailingPathDelimiter(ExtractFilePath(ProjectName));
 
   Assert(FProgressForm = nil);
   FProgressForm := TfmProgress.Create(nil);
@@ -649,35 +975,25 @@ begin
     Self.Enabled := False;
     FProgressForm.Show;
     FProgressForm.Progress.Max := 40;
-
     FDoAbortCollectingFiles := False;
     TCursor_TempHourglass;
-    lbFiles.Items.BeginUpdate;
+    tvFiles.Items.BeginUpdate;
     try
       DoCollectFiles;
     finally
-      lbFiles.Sorted := True;
-      lbFiles.Items.EndUpdate;
+      tvFiles.Items.EndUpdate;
     end;
 
     if FBackupExpert.FBackupInc then
     begin
-      // The "FFilesFoundNowhere" list now contains everything that could not be
-      // found scanning the source text. Process now the path in order to
-      // possibly find items there.
-      // "LocateFileOnPathAndAdd" will remove the files that it finds;
-      // after returning, the list will contain those files that *really*
-      // could not be found, not even on the library path.
       if FBackupExpert.FollowLibraryPath and (FFilesFoundNowhere.Count > 0) then
         LocateFileOnPathAndAdd(FFilesFoundNowhere);
-
       RemoveDuplicates(FFilesFoundNowhere);
       FFilesFoundNowhere.Sort;
       FFilesFoundNowhere.Text := StringReplace(FFilesFoundNowhere.Text,
         '|', ' from ', [rfReplaceAll]);
       Self.Enabled := True;
       FreeAndNil(FProgressForm);
-
       if FFilesFoundNowhere.Count > 0 then begin
         Cursor := nil;
         TfmBackupNotFound.Execute(Self, FFilesFoundNowhere, FBackupExpert.FollowLibraryPath);
@@ -693,28 +1009,37 @@ end;
 procedure TfmBackup.PerformBackup(const Path, FileName: string);
 var
   DestFile: string;
+  FileList: TStringList;
+  i: Integer;
 begin
   Assert(FProgressForm = nil);
   FZipComponent := nil;
+  FileList := TStringList.Create;
   FProgressForm := TfmProgress.Create(nil);
   try
     DestFile := Path + FileName;
     FZipComponent := TGXZipper.Create(DestFile, fmCreate or fmShareDenyWrite);
     TCursor_TempHourglass;
+    
+    // Extract Files from ListView (use FFileList which contains all file paths)
+    FileList.Assign(FFileList);
+
     FProgressForm.Progress.Position := 0;
     Self.Enabled := False;
     FProgressForm.Show;
     Application.ProcessMessages;
-
     FProgressForm.Progress.Max := 100;
     FZipComponent.IncludePath := FBackupExpert.DoIncludeDirInfoInZip;
     if FZipEncrypted then
       FZipComponent.Password := AnsiString(FZipPassword);
     FZipComponent.OnProcessItemFailure := FileFailure;
     FZipComponent.OnArchiveProgress := AbbreviaProgress;
-    FZipComponent.AddFiles(lbFiles.Items);
+    
+    FZipComponent.AddFiles(FileList);
+    
     FZipComponent.Save;
   finally
+    FileList.Free;
     Self.Enabled := True;
     FreeAndNil(FProgressForm);
     FreeAndNil(FZipComponent);
@@ -726,7 +1051,7 @@ resourcestring
   SFileExists = 'File %s already exists, do you want to overwrite this file?';
   SDirectoryDoesNotExist = 'Directory %s does not exist, do you want to create this directory?';
 const
-  ZipExtension = '.zip'; // Do not localize.
+  ZipExtension = '.zip'; 
 var
   CurrentZipFileName: string;
   ZipFilePath: string;
@@ -735,18 +1060,12 @@ begin
   if FBackupExpert.BackupType = btFile then
   begin
     CurrentZipFileName := FLastZipFile;
-    if not ShowSaveDialog('Backup As', 'zip', CurrentZipFileName) then
-      Exit;
-
+    if not ShowSaveDialog('Backup As', 'zip', CurrentZipFileName) then Exit;
     if ExtractFileExt(CurrentZipFileName) = '' then
       CurrentZipFileName := CurrentZipFileName + ZipExtension;
     if FileExists(CurrentZipFileName) then
     begin
-      if MessageDlg(Format(SFileExists, [CurrentZipFileName]), mtConfirmation,
-        [mbYes, mbNo], 0) = mrNo then
-      begin
-        Exit;
-      end;
+      if MessageDlg(Format(SFileExists, [CurrentZipFileName]), mtConfirmation, [mbYes, mbNo], 0) = mrNo then Exit;
       DeleteFile(CurrentZipFileName);
     end;
   end
@@ -758,18 +1077,11 @@ begin
     CurrentZipFileName := ExtractFileName(CurrentZipFileName);
     if not DirectoryExists(ZipFilePath) then
     begin
-      if MessageDlg(Format(SDirectoryDoesNotExist, [ZipFilePath]), mtConfirmation,
-        [mbYes, mbNo], 0) = mrNo then
-      begin
-        Exit;
-      end
-      else
-        ForceDirectories(ZipFilePath);
+      if MessageDlg(Format(SDirectoryDoesNotExist, [ZipFilePath]), mtConfirmation, [mbYes, mbNo], 0) = mrNo then Exit
+      else ForceDirectories(ZipFilePath);
     end;
-
     if ExtractUpperFileExt(CurrentZipFileName) = '.ZIP' then
       CurrentZipFileName := ChangeFileExt(CurrentZipFileName, '');
-
     if FileExists(ZipFilePath + CurrentZipFileName + ZipExtension) then
     begin
       i := 1;
@@ -786,10 +1098,8 @@ begin
     else
       CurrentZipFileName := CurrentZipFileName + ZipExtension;
   end;
-
   PerformBackup(ZipFilePath, CurrentZipFileName);
   FLastZipFile := CurrentZipFileName;
-
   SaveSettings;
   ModalResult := mrOk;
 end;
@@ -813,30 +1123,30 @@ end;
 
 procedure TfmBackup.btnRemoveClick(Sender: TObject);
 var
-  i: Integer;
-  OldIndex: Integer;
+  SelectedItem: TListItem;
+  FilePath: string;
+  FileSize: Int64;
 begin
-  i := 0;
-  OldIndex := lbFiles.ItemIndex;
-  while i <= lbFiles.Items.Count - 1 do
+  SelectedItem := tvFiles.Selected;
+  if SelectedItem <> nil then
   begin
-    if lbFiles.Selected[i] then
-      lbFiles.Items.Delete(i)
-    else
-      Inc(i);
+    // Get the full file path from FFileList
+    if SelectedItem.Index < FFileList.Count then
+    begin
+      FilePath := FFileList[SelectedItem.Index];
+      FileSize := GetFileSize(FilePath);
+      FTotalSize := FTotalSize - FileSize;
+      FFileList.Delete(SelectedItem.Index);
+    end;
+    
+    SelectedItem.Delete;
+    UpdateSizeColumn;
+    AfterFileListChange;
   end;
-  OldIndex := Min(OldIndex, lbFiles.Items.Count - 1);
-  if OldIndex > -1 then
-  begin
-    lbFiles.ItemIndex := OldIndex;
-    lbFiles.Selected[OldIndex] := True;
-  end;
-  AfterFileListChange;
 end;
 
 procedure TfmBackup.FormDestroy(Sender: TObject);
 begin
-  // Aborting isn't actually possible with our current design
   FDoAbortCollectingFiles := True;
 end;
 
@@ -893,8 +1203,6 @@ type
     function GetDefaultButton: TMsgDlgBtn; override;
   end;
 
-{ TGxContainsDirectoriesRecursiveMessage }
-
 function TGxContainsDirectoriesRecursiveMessage.GetButtons: TMsgDlgButtons;
 begin
   Result := [mbYes, mbNo, mbCancel];
@@ -911,8 +1219,7 @@ resourcestring
     'The files you dropped contained at least one directory.  ' +
     'Do you want to recursively add all files within these directories?';
 begin
-  Result := SDroppedFilesContainedDirectories + #13#10
-    + FData;
+  Result := SDroppedFilesContainedDirectories + #13#10 + FData;
 end;
 
 type
@@ -922,8 +1229,6 @@ type
     function GetButtons: TMsgDlgButtons; override;
     function GetDefaultButton: TMsgDlgBtn; override;
   end;
-
-{ TGxContainsDirectoriesMessage }
 
 function TGxContainsDirectoriesMessage.GetButtons: TMsgDlgButtons;
 begin
@@ -937,33 +1242,30 @@ end;
 
 function TGxContainsDirectoriesMessage.GetMessage: string;
 resourcestring
-  SDroppedFilesContainedDirectories =
+  SDroppedFilesContainedDirectoriesMsg =
     'The files you dropped contained at least one directory.  ' +
     'Do you want to add all files within these directories?';
 begin
-  Result := SDroppedFilesContainedDirectories + #13#10
-    + FData;
+  Result := SDroppedFilesContainedDirectoriesMsg + #13#10 + FData;
 end;
 
 type
   TExtFindFileThread = class(TFileFindThread)
   private
-    FListBox: TListBox;
+    FListView: TListView;
     FIgnoreBackupFiles: Boolean;
+    FExcludePatterns: TStringList;
   public
-    constructor Create(_ListBox: TListBox; _IgnoreBackupFiles: boolean);
-    // This method is called in the main thread using synchronize, so access to the
-    // VCL is allowed.
+    constructor Create(_ListView: TListView; _IgnoreBackupFiles: boolean; _ExcludePatterns: TStringList);
     procedure SyncFindComplete;
   end;
 
-{ TExtFindFileThread }
-
-constructor TExtFindFileThread.Create(_ListBox: TListBox; _IgnoreBackupFiles: boolean);
+constructor TExtFindFileThread.Create(_ListView: TListView; _IgnoreBackupFiles: boolean; _ExcludePatterns: TStringList);
 begin
   inherited Create;
-  FListBox := _ListBox;
+  FListView := _ListView;
   FIgnoreBackupFiles := _IgnoreBackupFiles;
+  FExcludePatterns := _ExcludePatterns;
 end;
 
 procedure TExtFindFileThread.SyncFindComplete;
@@ -976,31 +1278,42 @@ procedure TExtFindFileThread.SyncFindComplete;
     Result := (Copy(Ext, 1, 2) = '.~') or (Copy(Ext, Length(Ext), 1) = '~');
   end;
 
+  function IsExcluded(const Filename: string): boolean;
+  var
+    k: Integer;
+  begin
+    Result := False;
+    if not Assigned(FExcludePatterns) then Exit;
+    for k := 0 to FExcludePatterns.Count - 1 do
+      if MatchesMask(Filename, FExcludePatterns[k]) then
+      begin
+        Result := True;
+        Exit;
+      end;
+  end;
+
+  procedure SafeAddToListView(const FilePath: string);
+  begin
+    TfmBackup(FListView.Owner).AddFileToListView(FilePath);
+  end;
+
 var
   i: Integer;
   fn: string;
-  sl: TStringList;
-  Idx: Integer;
 begin
   LockResults;
   try
-    FListBox.Items.BeginUpdate;
-    sl := TStringList.Create;
+    FListView.Items.BeginUpdate;
     try
-      sl.Sorted := True;
-      sl.Duplicates := dupIgnore;
-      sl.Assign(FListBox.Items);
       for i := 0 to Results.Count - 1 do begin
         fn := Results[i];
         if not DirectoryExists(fn) then
           if (not FIgnoreBackupFiles or not IsBackupFile(fn)) then
-            if not sl.Find(fn, Idx) then
-              sl.Add(fn);
+            if not IsExcluded(fn) then 
+               SafeAddToListView(fn);
       end;
-      FListBox.Items.Assign(sl);
     finally
-      FreeAndNil(sl);
-      FListBox.Items.EndUpdate;
+      FListView.Items.EndUpdate;
     end;
   finally
     ReleaseResults;
@@ -1012,7 +1325,7 @@ var
   DirThread: TExtFindFileThread;
   Idx: Integer;
 begin
-  DirThread := TExtFindFileThread.Create(lbFiles, FBackupExpert.FIgnoreBackupFiles);
+  DirThread := TExtFindFileThread.Create(tvFiles, FBackupExpert.FIgnoreBackupFiles, FExcludePatterns);
   try
     DirThread.FileMasks.Add(AllFilesWildCard);
     if FBackupExpert.FAddDirsRecursively and FBackupExpert.FIgnoreHistoryDir then
@@ -1034,7 +1347,7 @@ begin
   end;
 end;
 
-procedure TfmBackup.lbFilesOnFilesDropped(_Sender: TObject; _Files: TStrings);
+procedure TfmBackup.tvFilesOnFilesDropped(_Sender: TObject; _Files: TStrings);
 var
   i: Integer;
   fn: string;
@@ -1052,25 +1365,15 @@ begin
   if Dirs.Count > 0 then begin
     if FBackupExpert.FAddDirsRecursively then begin
       case ShowGxMessageBox(TGxContainsDirectoriesRecursiveMessage, Dirs.Text) of
-        mrYes: begin
-          AddFilesInDirs(Dirs);
-        end;
-        mrNo: begin
-          // nothing to do, we already removed the directories from _Files
-        end
-      else // mrCancel
-        Exit;
+        mrYes: AddFilesInDirs(Dirs);
+        mrNo: ;
+      else Exit;
       end;
     end else begin
       case ShowGxMessageBox(TGxContainsDirectoriesMessage, Dirs.Text) of
-        mrYes: begin
-          AddFilesInDirs(Dirs);
-        end;
-        mrNo: begin
-          // nothing to do, we already removed the directories from _Files
-        end
-      else // mrCancel
-        Exit;
+        mrYes: AddFilesInDirs(Dirs);
+        mrNo: ;
+      else Exit;
       end;
     end;
   end;
@@ -1078,28 +1381,27 @@ begin
     FreeAndNil(Dirs);
   end;
   for i := 0 to _Files.Count - 1 do begin
-    lbFiles.Items.Add(_Files[i]);
+    if not IsFileExcluded(_Files[i]) then
+      AddBackupFile(_Files[i]);
   end;
   AfterFileListChange;
 end;
 
-procedure TfmBackup.lbFilesKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TfmBackup.tvFilesKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-  if (Key = VK_DELETE) and (lbFiles.ItemIndex > -1) then
+  if (Key = VK_DELETE) and (tvFiles.Selected <> nil) then
   begin
     btnRemove.Click;
     Key := 0;
   end;
 end;
 
-// Check for duplicates before adding files to the the backup list
-// Prevents adding files twice when units are in two projects of a group
 procedure TfmBackup.AddBackupFile(const FileName: string);
 begin
   IncrementProgress;
-  if lbFiles.Items.IndexOf(FileName) = -1 then // Should be case sensitive in Kylix
-    if FileExists(FileName) then
-      lbFiles.Items.Add(FileName);
+  if IsFileExcluded(FileName) then Exit;
+  if FileExists(FileName) then
+    AddFileToListView(FileName);
 end;
 
 procedure TfmBackup.AfterFileListChange;
@@ -1108,24 +1410,16 @@ resourcestring
   SBackupFormCaptionPlural   = 'Backup Project (%d Files)';
   SBackupFormCaptionSingular = 'Backup Project (1 File)';
 var
-  NonWildcardFileCount: Integer;
-  i: Integer;
+  FileCount: Integer;
 begin
-  ListboxHorizontalScrollbar(lbFiles);
+  FileCount := tvFiles.Items.Count;
 
-  NonWildcardFileCount := 0;
-  for i := 0 to lbFiles.Items.Count - 1 do
-  begin
-    if not FileNameHasWildcards(lbFiles.Items[i]) then
-      Inc(NonWildcardFileCount);
-  end;
-  if NonWildcardFileCount < lbFiles.Items.Count then
-    Caption := Format(SBackupFormCaptionUnknown, [NonWildcardFileCount])
-  else if NonWildcardFileCount = 1 then
+  if FileCount = 1 then
     Caption := SBackupFormCaptionSingular
   else
-    Caption := Format(SBackupFormCaptionPlural, [NonWildcardFileCount]);
-  btnBackup.Enabled := (lbFiles.Items.Count > 0);
+    Caption := Format(SBackupFormCaptionPlural, [FileCount]);
+  
+  btnBackup.Enabled := (FileCount > 0);
 end;
 
 procedure TfmBackup.SaveSettings;
@@ -1133,7 +1427,6 @@ var
   Settings: IExpertSettings;
 begin
   Settings := TBackupProjectExpert.GetSettings;
-  // Do not localize.
   Settings.SaveForm('Window', Self, [fsSize]);
   Settings.WriteString('LastZipDir', ExtractFilePath(FLastZipFile));
 end;
@@ -1144,33 +1437,24 @@ var
   fn: string;
 begin
   Settings := TBackupProjectExpert.GetSettings;
-  // Do not localize.
-  // Also loading the position would break per monitor DPI awareness (no idea why)
   Settings.LoadForm('Window', Self, [fsSize]);
-
   if FCurrentBackupScope = bsActiveProject then
     fn := ChangeFileExt(ExtractFileName(GxOtaGetCurrentProjectFileName), '')
   else
     fn := ChangeFileExt(ExtractFileName(GxOtaGetProjectGroupFileName), '');
-
   FLastZipFile := Settings.ReadString('LastZipDir', '');
   if FLastZipFile <> '' then
     FLastZipFile := IncludeTrailingPathDelimiter(FLastZipFile) + fn
   else
     FLastZipFile := fn;
-
   EnsureFormVisible(Self);
 end;
 
 procedure TfmBackup.IncrementProgress;
 begin
-  if not Assigned(FProgressForm) then
-    Exit;
+  if not Assigned(FProgressForm) then Exit;
   with FProgressForm.Progress do
-    if Position = Max then
-      Position := 0
-    else
-      Position := Position + 1;
+    if Position = Max then Position := 0 else Position := Position + 1;
 end;
 
 procedure TfmBackup.FileFailure(Sender: TObject; Item: TAbArchiveItem;
@@ -1183,10 +1467,8 @@ begin
     Msg := Exception(ExceptObject).Message;
   case ErrorClass of
     ecAbbrevia: begin
-      if ErrorCode = AbDuplicateName then
-        Exit
-      else
-        Msg := AbStrRes(ErrorCode) + ' ' + Msg;
+      if ErrorCode = AbDuplicateName then Exit
+      else Msg := AbStrRes(ErrorCode) + ' ' + Msg;
     end;
     ecInOutError: Msg := Format('EInOutError (%d)', [ErrorCode]) + ' ' + Msg;
     ecFilerError: Msg := 'EFilerError' + ' ' + Msg;
@@ -1208,7 +1490,7 @@ constructor TBackupProjectExpert.Create;
 begin
   inherited Create;
   FBackupType := btFile;
-  FBackupDir := AddSlash('%PROJECTDIR%') + '%PROJECTNAME%'; // Do not localize.
+  FBackupDir := AddSlash('%PROJECTDIR%') + '%PROJECTNAME%'; 
   FIncludeDir := True;
   FBackupScope := bsActiveProject;
   FAddDirsRecursively := True;
@@ -1226,7 +1508,7 @@ end;
 
 class function TBackupProjectExpert.GetName: string;
 begin
-  Result := 'BackupProject'; // Do not localize.
+  Result := 'BackupProject'; 
 end;
 
 procedure TBackupProjectExpert.Execute(Sender: TObject);
@@ -1266,10 +1548,7 @@ begin
 
     if frm.ShowModal = mrOk then
     begin
-      if frm.rbBackupAskForFile.Checked then
-        FBackupType := btFile
-      else
-        FBackupType := btDir;
+      if frm.rbBackupAskForFile.Checked then FBackupType := btFile else FBackupType := btDir;
       FBackupDir := frm.edBackupDir.Text;
       FBackupInc := frm.cbBackupInc.Checked;
       FIncludeDir := frm.cbIncludeDir.Checked;
@@ -1288,7 +1567,6 @@ end;
 procedure TBackupProjectExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited InternalSaveSettings(_Settings);
-  // Do not localize any of the following lines.
   _Settings.WriteBool('Include', FBackupInc);
   _Settings.WriteEnumerated('Type', TypeInfo(TBackupType), Ord(FBackupType));
   _Settings.WriteString('Directory', FBackupDir);
@@ -1304,7 +1582,6 @@ end;
 procedure TBackupProjectExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited InternalLoadSettings(_Settings);
-  // Do not localize any of the following lines.
   FBackupInc := _Settings.ReadBool('Include', FBackupInc);
   FBackupType := TBackupType(_Settings.ReadEnumerated('Type', TypeInfo(TBackupType), Ord(FBackupType)));
   FBackupDir := _Settings.ReadString('Directory', FBackupDir);
@@ -1321,4 +1598,3 @@ initialization
   RegisterGX_Expert(TBackupProjectExpert);
 
 end.
-

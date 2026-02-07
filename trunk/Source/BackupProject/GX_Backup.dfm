@@ -1,11 +1,10 @@
 object fmBackup: TfmBackup
   Left = 318
   Top = 175
-  AutoScroll = False
+  Width = 772
+  Height = 539
   BorderIcons = [biSystemMenu]
   Caption = 'Backup Project'
-  ClientHeight = 435
-  ClientWidth = 600
   Color = clBtnFace
   Constraints.MinHeight = 300
   Constraints.MinWidth = 400
@@ -15,6 +14,7 @@ object fmBackup: TfmBackup
   Font.Name = 'Tahoma'
   Font.Style = []
   KeyPreview = True
+  OldCreateOrder = True
   Scaled = False
   OnActivate = FormActivate
   OnDestroy = FormDestroy
@@ -22,15 +22,15 @@ object fmBackup: TfmBackup
   TextHeight = 14
   object pnlButtons: TPanel
     Left = 0
-    Top = 397
-    Width = 600
+    Top = 462
+    Width = 756
     Height = 38
     Align = alBottom
     BevelOuter = bvNone
     FullRepaint = False
     TabOrder = 1
     object pnlButtonsRight: TPanel
-      Left = 334
+      Left = 490
       Top = 0
       Width = 266
       Height = 38
@@ -49,7 +49,7 @@ object fmBackup: TfmBackup
         OnClick = btnBackupClick
       end
       object btnCancel: TButton
-        Left = 100
+        Left = 102
         Top = 3
         Width = 75
         Height = 26
@@ -59,7 +59,7 @@ object fmBackup: TfmBackup
         TabOrder = 1
       end
       object btnHelp: TButton
-        Left = 182
+        Left = 185
         Top = 3
         Width = 75
         Height = 26
@@ -72,57 +72,59 @@ object fmBackup: TfmBackup
   object pnlFiles: TPanel
     Left = 0
     Top = 0
-    Width = 600
-    Height = 397
+    Width = 756
+    Height = 462
     Align = alClient
     BevelOuter = bvNone
-    BorderWidth = 6
+    BorderWidth = 7
     FullRepaint = False
     TabOrder = 0
     object gbxFiles: TGroupBox
-      Left = 6
-      Top = 6
-      Width = 588
-      Height = 385
+      Left = 7
+      Top = 7
+      Width = 742
+      Height = 448
       Align = alClient
-      Caption = ' &Files to Backup '
+      Caption = 'Files'
       TabOrder = 0
       object pnlFileList: TPanel
         Left = 2
         Top = 16
-        Width = 584
-        Height = 331
+        Width = 738
+        Height = 394
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 6
         FullRepaint = False
         TabOrder = 0
-        object lbFiles: TListBox
+        object tvFiles: TListView
           Left = 6
           Top = 6
-          Width = 572
-          Height = 319
+          Width = 726
+          Height = 382
           Align = alClient
-          ItemHeight = 14
-          MultiSelect = True
+          Columns = <>
+          ReadOnly = True
+          RowSelect = True
           TabOrder = 0
-          OnKeyDown = lbFilesKeyDown
+          ViewStyle = vsReport
+          OnKeyDown = tvFilesKeyDown
         end
       end
       object pnlFileButtons: TPanel
         Left = 2
-        Top = 347
-        Width = 584
+        Top = 410
+        Width = 738
         Height = 36
         Align = alBottom
         BevelOuter = bvNone
         FullRepaint = False
         TabOrder = 1
         DesignSize = (
-          584
+          738
           36)
         object pnlFileButtonsRight: TPanel
-          Left = 488
+          Left = 642
           Top = 0
           Width = 96
           Height = 36
@@ -151,7 +153,7 @@ object fmBackup: TfmBackup
           OnClick = btnRemoveClick
         end
         object btnAdd: TButton
-          Left = 7
+          Left = 6
           Top = 2
           Width = 75
           Height = 26
