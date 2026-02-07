@@ -1,12 +1,12 @@
 @echo off
 
-@rem the build number is incremented in the _build.cmd script with is located in the main directory
+rem we no longer increment the build number, it's now set to the highest svn revision
 
 if "%1"=="" goto :list
 call :dobuild %1
 goto :eof
-:list
 
+:list
 call :dobuild 6
 call :dobuild 7
 call :dobuild 2005
