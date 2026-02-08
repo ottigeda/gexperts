@@ -84,6 +84,9 @@ type
     // The FModifyingSelf Boolean flag prevents the
     // re-entrancy problem by exiting if True.
     FModifyingSelf: Boolean;
+    // Bug #21: Track the previous line number to detect when Enter was pressed.
+    // If the line number increases by 1 and current line is empty, Enter was pressed.
+    FPreviousLine: Integer;
     //
     procedure AppendHistory(const CorrectionKind: TCorrectionKind;
                             const SourceLanguage: TReplacementSource;
@@ -124,7 +127,8 @@ type
     function SetupProofing(const SourceEditor: IOTASourceEditor;
       var EditorPositionInformation: IEditorPositionInformation;
       var ReplacementSourceTable: TReplacementSource;
-      var SourceString: string): Boolean;
+      var SourceString: string;
+      out EnteredNewLine: Boolean): Boolean;
   protected
     // IGxEditorNotification
     procedure NewModuleOpened(const Module: IOTAModule);
@@ -631,7 +635,8 @@ end;
 function TAutoTypeWriterNotifier.SetupProofing(const SourceEditor: IOTASourceEditor;
   var EditorPositionInformation: IEditorPositionInformation;
   var ReplacementSourceTable: TReplacementSource;
-  var SourceString: string): Boolean;
+  var SourceString: string;
+  out EnteredNewLine: Boolean): Boolean;
 var
   SyntaxHighlighter: TGXSyntaxHighlighter;
   Element: Integer;
@@ -642,6 +647,7 @@ var
   CharPos: TOTACharPos;
 begin
   Result := False;
+  EnteredNewLine := False;
 
   if not CharPosAreEqual(SourceEditor.BlockStart, SourceEditor.BlockAfter) then
     Exit;
@@ -664,7 +670,31 @@ begin
   // that is located in front of the current cursor position.
   SourceString := Ota.GetPreceedingCharactersInLine(EditView);
   if IsEmpty(SourceString) then
-    Exit;
+  begin
+    // Bug #21: When Enter is pressed, the cursor moves to the new line before
+    // this code runs. Detect this by checking if line number increased by 1
+    // from the previous call and we're now on a line with only whitespace
+    // (auto-indent may have added spaces).
+    if (FPreviousLine > 0) and (CursorPos.Line = FPreviousLine + 1) then
+    begin
+      // Get the content of the previous line
+      // todo: Isn't there an OTA function that already calls IDEEditorStringToString ?
+      SourceString := IDEEditorStringToString(Ota.GetEditorLine(EditView, CursorPos.Line - 1));
+      if IsEmpty(SourceString) then
+        Exit;
+      // GetEditorLine includes the line terminator, remove it
+      SourceString := TrimRight(SourceString);
+      // Adjust position to end of previous line
+      Dec(CursorPos.Line);
+      CursorPos.Col := Length(SourceString) + 1;
+      EditView.ConvertPos(True, CursorPos, CharPos);
+      EditorPositionInformation.CursorPos := CursorPos;
+      EditorPositionInformation.CharPos := CharPos;
+      EnteredNewLine := True;
+    end
+    else
+      Exit;
+  end;
 
   EditView.GetAttributeAtPos(CursorPos, False, Element, LineFlag);
 
@@ -694,6 +724,17 @@ begin
 end;
 
 procedure TAutoTypeWriterNotifier.SourceEditorModified(const SourceEditor: IOTASourceEditor);
+
+  // Restore cursor to the new line after Enter-triggered replacement
+  procedure RestoreCursorIfNeeded(EnteredNewLine: Boolean; const EditView: IOTAEditView;
+    const OriginalCursorPos: TOTAEditPos);
+  begin
+    if EnteredNewLine and (OriginalCursorPos.Line > 0) then begin
+      EditView.CursorPos := OriginalCursorPos;
+      EditView.MoveViewToCursor;
+    end;
+  end;
+
 var
   TrailingChars: string;
   SourceString: string;
@@ -702,10 +743,25 @@ var
   ReplacementSourceTable: TReplacementSource;
   n: Integer;
   DoCompiler: Boolean;
+
+  // todo: Use EditorPositionInformation instead of EditView and OriginalCursorPos
+  //       (But note that it is being set up by the call to SetupProofing further
+  //       down than the code that initializes EditView and OriginalCursorPos.)
+  EnteredNewLine: Boolean;
+  EditView: IOTAEditView;
+  OriginalCursorPos: TOTAEditPos; // Bug #21: Save cursor for Enter case
 begin
   if FModifyingSelf then
     Exit;
   FModifyingSelf := True;
+
+  // Bug #21: Get current line for tracking and save cursor position (Note that it is used
+  // in the finally block, so it must be initialized before the try.)
+  OriginalCursorPos.Line := 0;
+  OriginalCursorPos.Col := 0;
+  if GxOtaTryGetTopMostEditView(SourceEditor, EditView) then begin
+    OriginalCursorPos := EditView.CursorPos;
+  end;
 
   try
     if IsReplaceConfirmDialogOnScreen then
@@ -728,7 +784,7 @@ begin
         // In:
         SourceEditor,
         // Out:
-        EditorPositionInformation, ReplacementSourceTable, SourceString) then
+        EditorPositionInformation, ReplacementSourceTable, SourceString, EnteredNewLine) then
       begin
         Exit;
       end;
@@ -753,35 +809,46 @@ begin
       // and cannot possibly match if the last char is alphanumeric
       n := Length(SourceString); // We know from the Exit above that Length(SourceString) > 0.
 
-      // Check the last character in the buffer that we copied.
-      //
-      // Usually[*] this will be the character that the user typed
-      // into the editor buffer. [*] The user may have pasted a long text.
-      //
-      // If that last character is in the set of alpha-numeric characters,
-      // the user is not done typing the word, identifier, or statement.
-      // Do not make an attempt to correct anything in that case.
-      if IsCharIdentifier(SourceString[n]) then
-        Exit;
-
-      // We now split the buffer we retrieved into two halves:
-      // * At the end of the buffer, we find what the user just typed in
-      //   (almost always a single char - see above)
-      // * At the beginning of the buffer we find a completed word
-      //   that we look at for proofing.
-
-      // Only copy the LAST character; this is slightly wrong, as the user
-      // may have pasted the string "(i: Integer)" following "showmessage".
-      // In this case, we simply do not detect that the word "showmessage"
-      // has been completed and needs to be corrected.
-      // Unfortunately, we have no means to do it any better, so it will
-      // have to remain slightly wrong for the time being.
-      TrailingChars := Copy(SourceString, n, n);
-      System.Delete(SourceString, n, n);
-      if (Length(SourceString) = 0) or
-         not (IsCharIdentifier(SourceString[Length(SourceString)])) then
+      if EnteredNewLine then
       begin
-        Exit;
+        // Bug #21: Enter was pressed after typing a word. The word is complete
+        // and there's no trailing character to extract.
+        if not IsCharIdentifier(SourceString[n]) then
+          Exit; // Line doesn't end with an identifier
+        TrailingChars := '';
+      end
+      else
+      begin
+        // Check the last character in the buffer that we copied.
+        //
+        // Usually[*] this will be the character that the user typed
+        // into the editor buffer. [*] The user may have pasted a long text.
+        //
+        // If that last character is in the set of alpha-numeric characters,
+        // the user is not done typing the word, identifier, or statement.
+        // Do not make an attempt to correct anything in that case.
+        if IsCharIdentifier(SourceString[n]) then
+          Exit;
+
+        // We now split the buffer we retrieved into two halves:
+        // * At the end of the buffer, we find what the user just typed in
+        //   (almost always a single char - see above)
+        // * At the beginning of the buffer we find a completed word
+        //   that we look at for proofing.
+
+        // Only copy the LAST character; this is slightly wrong, as the user
+        // may have pasted the string "(i: Integer)" following "showmessage".
+        // In this case, we simply do not detect that the word "showmessage"
+        // has been completed and needs to be corrected.
+        // Unfortunately, we have no means to do it any better, so it will
+        // have to remain slightly wrong for the time being.
+        TrailingChars := Copy(SourceString, n, n);
+        System.Delete(SourceString, n, n);
+        if (Length(SourceString) = 0) or
+           not (IsCharIdentifier(SourceString[Length(SourceString)])) then
+        begin
+          Exit;
+        end;
       end;
 
       if FProofreaderData.ReplacerActive then
@@ -789,6 +856,7 @@ begin
         if PerformReplacementAtEnd(SourceEditor, EditorPositionInformation,
           ReplacementSourceTable, TrailingChars, SourceString) then
         begin
+          RestoreCursorIfNeeded(EnteredNewLine, EditView, OriginalCursorPos);
           EditorPositionInformation.EditView.Paint;
           CodeProofreaderExpert.IncCallCount;
           Exit;
@@ -829,6 +897,7 @@ begin
         if DoCompiler and PerformKibitzReplacement(SourceEditor, EditorPositionInformation,
           ReplacementSourceTable, TrailingChars, SourceString, OriginalSourceString) then
         begin
+          RestoreCursorIfNeeded(EnteredNewLine, EditView, OriginalCursorPos);
           EditorPositionInformation.EditView.Paint;
           CodeProofreaderExpert.IncCallCount;
           Exit;
@@ -840,6 +909,7 @@ begin
         if PerformDictionaryReplacement(SourceEditor, EditorPositionInformation,
           ReplacementSourceTable, TrailingChars, SourceString) then
         begin
+          RestoreCursorIfNeeded(EnteredNewLine, EditView, OriginalCursorPos);
           EditorPositionInformation.EditView.Paint;
           CodeProofreaderExpert.IncCallCount;
           // Exit;
@@ -856,6 +926,8 @@ begin
     end;
   finally
     FModifyingSelf := False;
+    // Bug #21: Track the current line for detecting Enter key
+    FPreviousLine := OriginalCursorPos.Line;
   end;
 end;
 
