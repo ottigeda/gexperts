@@ -10,6 +10,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Backup Project: Added ListView with Path, File Name, Size, and Last Modified columns
 - Backup Project: Added {#+BACKUP} directive for recursive folder search
 - Backup Project: Added {#-BACKUP} directive for exclude patterns
+- Code Proofreader: AutoCorrect now triggers when pressing Enter after typing a word (#21)
 
 ## Internal Changes
 
