@@ -2695,7 +2695,7 @@ begin
     {$IFDEF GX_VER160_up} // Delphi 8+
     Result := UTF8Decode(GetEditorLine(View, LineNo));
     {$ELSE} // Delphi 6-7
-    Result := Ota.GetEditorLine(View, LineNo);
+    Result := GetEditorLine(View, LineNo);
     {$ENDIF}
   {$ENDIF}
 end;
@@ -5525,7 +5525,7 @@ begin
 // Unicode patch by Achim Kalwa
 {$IFDEF UNICODE}
   Result := Copy(
-    IDEEditorStringToString(Ota.GetEditorLine(View, EditPos.Line)),
+    IDEEditorStringToString(GetEditorLine(View, EditPos.Line)),
     1, LineLength
   );
 {$ELSE}
