@@ -1010,7 +1010,6 @@ procedure TfmBackup.PerformBackup(const Path, FileName: string);
 var
   DestFile: string;
   FileList: TStringList;
-  i: Integer;
 begin
   Assert(FProgressForm = nil);
   FZipComponent := nil;
