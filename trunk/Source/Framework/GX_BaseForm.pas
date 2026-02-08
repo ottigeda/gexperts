@@ -99,7 +99,7 @@ end;
 {$IFDEF GX_SUPPORTS_THEMING}
 procedure TfmBaseForm.InitTheming;
 begin
-  // Stub
+  // Stub for descendants that need custom theming initialization
 end;
 {$ENDIF}
 
