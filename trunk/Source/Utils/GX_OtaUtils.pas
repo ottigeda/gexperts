@@ -4562,6 +4562,9 @@ begin
     LService.RegisterFormClass(TCustomFormClass(AForm.ClassType));
     LService.ApplyTheme(AForm);
 
+    // Theme change notifier is disabled because freeing it during IDE shutdown
+    // causes an Invalid Pointer exception - the IDE's theming services are
+    // already destroyed before our destructor runs.
 //    LNotifier := TThemeChangedNotifier.Create(AForm);
 //    LNotifier.AddNotifierToIDE;
 

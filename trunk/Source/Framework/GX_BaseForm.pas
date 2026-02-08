@@ -33,6 +33,9 @@ type
     FScaler: TFormDpiScaler;
     FApplicationEvents: TApplicationEvents;
     {$IFDEF GX_SUPPORTS_THEMING}
+    // Theme change notifier is disabled because freeing it during IDE shutdown
+    // causes an Invalid Pointer exception - the IDE's theming services are
+    // already destroyed before our destructor runs.
     // FThemeChangedNotifier: TThemeChangedNotifier;
     procedure InitTheming; virtual;
     {$ENDIF}
