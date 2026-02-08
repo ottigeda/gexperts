@@ -61,7 +61,8 @@ type
     FCurrentCode: TGXUnicodeStringList;
     FCurrentFile: string;
     FOriginalEditPos: TOTAEditPos;
-    FLineHighlightColor: TColor;
+    FLineHighlightFG: TColor;
+    FLineHighlightBG: TColor;
     procedure Clear;
     procedure UpdateOutput;
     function TryGetSelectedEditorPos(out _EditPos: TOTAEditPos): Boolean;
@@ -70,6 +71,7 @@ type
     procedure SetListboxItemHeight;
     procedure LoadCurrentCode;
     procedure GetOriginalEditPos;
+    procedure UpdateLineHighlightColors;
   protected
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
     procedure ArrangeControls; override;
@@ -78,7 +80,7 @@ type
   public
     constructor Create(_Owner: TComponent); override;
     destructor Destroy; override;
-    procedure Init(_LineHighlightBG: TColor; const _Text: string);
+    procedure Init(const _Text: string);
   end;
 
 implementation
@@ -136,6 +138,10 @@ begin
 
   FOriginalEditPos.Col := -1;
   FOriginalEditPos.Line := -1;
+
+  // Bug #470: Initialize highlight colors in case the form is
+  // restored by the IDE (docked desktop) without Execute/Init being called
+  UpdateLineHighlightColors;
 
   LoadCurrentCode;
   SetListboxItemHeight;
@@ -245,9 +251,9 @@ begin
   GxOtaFocusCurrentIDEEditControl;
 end;
 
-procedure TfmGxInstantGrepForm.Init(_LineHighlightBG: TColor; const _Text: string);
+procedure TfmGxInstantGrepForm.Init(const _Text: string);
 begin
-  FLineHighlightColor := _LineHighlightBG;
+  UpdateLineHighlightColors;
   ed_RegEx.Text := _Text;
   TWinControl_SetFocus(fmGxInstantGrepForm.ed_RegEx);
   GetOriginalEditPos;
@@ -358,23 +364,29 @@ var
     TextTop: Integer;
     i: Integer;
     LineText: string;
+    FGNormal: TColor;
     BGNormal: TColor;
+    FGMatch: TColor;
     BGMatch: TColor;
     Idx: Integer;
   begin
     if odSelected in _State then begin
+      FGNormal := GetThemedColor(clHighLightText);
       BGNormal := GetThemedColor(clHighLight);
-      LbCanvas.Font.Color := GetThemedColor(clHighLightText);
+      FGMatch := FGNormal;
       BGMatch := BGNormal;
     end else if Res.MatchStart = -1 then begin
       // original position
+      FGNormal := GetThemedColor(clWindowText);
       BGNormal := GetThemedColor(clBtnFace);
-      LbCanvas.Font.Color := GetThemedColor(clWindowText);
+      FGMatch := FGNormal;
       BGMatch := BGNormal;
     end else begin
+      FGNormal := GetThemedColor(clWindowText);
       BGNormal := GetThemedColor(clWindow);
-      LbCanvas.Font.Color := GetThemedColor(clWindowText);
-      BGMatch := FLineHighlightColor;
+      // Bug #470: Use the IDE's Line Highlight foreground color for the match line
+      FGMatch := FLineHighlightFG;
+      BGMatch := FLineHighlightBG;
     end;
     LbCanvas.Brush.Color := BGNormal;
     LbCanvas.FillRect(_Rect);
@@ -389,10 +401,12 @@ var
       if i = 0 then begin
         // line containing the match
         LbCanvas.Brush.Color := BGMatch;
+        LbCanvas.Font.Color := FGMatch;
         LbCanvas.FillRect(Rect(_Rect.Left, TextTop, _Rect.Right, TextTop + LineHeight));
       end else begin
         // line above or below the match
         LbCanvas.Brush.Color := BGNormal;
+        LbCanvas.Font.Color := FGNormal;
       end;
 
       LbCanvas.TextOut(_Rect.Left + 1, TextTop, LineText);
@@ -613,15 +627,22 @@ begin
 end;
 {$ENDIF}
 
-function GetEditorLineHighlightColor: TColor;
+procedure TfmGxInstantGrepForm.UpdateLineHighlightColors;
 var
-  FG: TColor;
   Bold: Boolean;
   Italic: Boolean;
   Underline: Boolean;
 begin
-  if not TryGetIdeEditorHighlightColors('Line Highlight', FG, Result, Bold, Italic, Underline) then
-    Result := RGB(250, 255, 230);
+  if TryGetIdeEditorHighlightColors('Line Highlight', FLineHighlightFG, FLineHighlightBG, Bold, Italic, Underline) then begin
+    // Bug #470: If background is black or same as window text, use fallback colors
+    // This can happen if Line Highlight is disabled or set to default in the IDE
+    if (FLineHighlightBG <> clBlack) and (FLineHighlightBG <> TColor(GetSysColor(COLOR_WINDOWTEXT))) then
+      Exit; //==>
+  end;
+  // Fallback values if we could not read the colors or they are not suitable (e.g. black on black)
+  // Use themed colors that work in both light and dark mode
+  FLineHighlightFG := GetThemedColor(clInfoText);
+  FLineHighlightBG := GetThemedColor(clInfoBk);
 end;
 
 procedure TGrepInstantSearchExpert.Execute(Sender: TObject);
@@ -632,7 +653,7 @@ begin
   end;
   IdeDockManager.ShowForm(fmGxInstantGrepForm);
   EnsureFormVisible(fmGxInstantGrepForm);
-  fmGxInstantGrepForm.Init(GetEditorLineHighlightColor, Ota.GetCurrentIdent);
+  fmGxInstantGrepForm.Init(Ota.GetCurrentIdent);
   IncCallCount;
 end;
 
