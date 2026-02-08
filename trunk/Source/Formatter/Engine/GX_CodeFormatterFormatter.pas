@@ -2208,7 +2208,8 @@ begin
               FWrapIndent := False;
           end;
 
-          if FWrapIndent and not FSettings.NoIndentVarDecl then begin
+          // Bug #468: Only apply NoIndentVarDecl when in var/const context, not for if conditions
+          if FWrapIndent and not (FSettings.NoIndentVarDecl and (FStack.GetTopType in [rtVar, rtConst])) then begin
             if FSettings.DoubleIndentIfCondition
               and (FStack.GetTopType in [rtIf, rtIfElse]) then begin
               Assert(False, '.CheckIndent: setting NTmp to 2 (double indent if condition)');
