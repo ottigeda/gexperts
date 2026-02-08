@@ -27,46 +27,43 @@ uses
 type
   IEditorPositionInformation = interface(IUnknown)
     ['{35CA9CB1-33E2-11D4-A8A7-000000000000}']
-    function GetBufferCharIndex: Longint;
-    function GetCharPos: TOTACharPos;
-    function GetCursorPos: TOTAEditPos;
-    function GetEditView: IOTAEditView;
-    function GetRelativePlacement: Boolean;
-    function GetRelativePosition: TOTAEditPos;
+    function BufferCharIndex: Longint;
+    function CharPos: TOTACharPos;
+    function CursorPos: TOTAEditPos;
+    function EditView: IOTAEditView;
+    function OriginalCursorPos: TOTAEditPos;
+    function IsPlacementRelative: Boolean;
+    function RelativePosition: TOTAEditPos;
     procedure SetBufferCharIndex(const Value: Longint);
     procedure SetCharPos(const Value: TOTACharPos);
     procedure SetCursorPos(const Value: TOTAEditPos);
-    procedure SetRelativePlacement(const Value: Boolean);
+    procedure SetIsPlacementRelative(const Value: Boolean);
     procedure SetRelativePosition(const Value: TOTAEditPos);
-
-    property EditView: IOTAEditView read GetEditView;
-    property CursorPos: TOTAEditPos read GetCursorPos write SetCursorPos;
-    property CharPos: TOTACharPos read GetCharPos write SetCharPos;
-    property BufferCharIndex: Longint read GetBufferCharIndex write SetBufferCharIndex;
-
-    property RelativePlacement: Boolean read GetRelativePlacement write SetRelativePlacement;
-    property RelativePosition: TOTAEditPos read GetRelativePosition write SetRelativePosition;
+    procedure RestoreCursorIfNeeded(EnteredNewLine: Boolean);
   end;
 
   TEditorPositionInformation = class(TInterfacedObject, IEditorPositionInformation)
   private
     FEditView: IOTAEditView;
     FCursorPos: TOTAEditPos;
+    FOriginalCursorPos: TOTAEditPos;
     FCharPos: TOTACharPos;
     FBufferCharIndex: Longint;
     FRelativePlacement: Boolean;
     FRelativePosition: TOTAEditPos;
-    function GetBufferCharIndex: Longint;
-    function GetCharPos: TOTACharPos;
-    function GetCursorPos: TOTAEditPos;
-    function GetEditView: IOTAEditView;
-    function GetRelativePlacement: Boolean;
-    function GetRelativePosition: TOTAEditPos;
+    function BufferCharIndex: Longint;
+    function CharPos: TOTACharPos;
+    function CursorPos: TOTAEditPos;
+    function EditView: IOTAEditView;
+    function OriginalCursorPos: TOTAEditPos;
+    function IsPlacementRelative: Boolean;
+    function RelativePosition: TOTAEditPos;
     procedure SetBufferCharIndex(const Value: Longint);
     procedure SetCharPos(const Value: TOTACharPos);
     procedure SetCursorPos(const Value: TOTAEditPos);
-    procedure SetRelativePlacement(const Value: Boolean);
+    procedure SetIsPlacementRelative(const Value: Boolean);
     procedure SetRelativePosition(const Value: TOTAEditPos);
+    procedure RestoreCursorIfNeeded(EnteredNewLine: Boolean);
   public
     constructor Create(const EditView: IOTAEditView);
     destructor Destroy; override;
@@ -125,7 +122,7 @@ type
       const SourceString: string): Boolean;
 
     function SetupProofing(const SourceEditor: IOTASourceEditor;
-      var EditorPositionInformation: IEditorPositionInformation;
+      const EditorPositionInformation: IEditorPositionInformation;
       var ReplacementSourceTable: TReplacementSource;
       var SourceString: string;
       out EnteredNewLine: Boolean): Boolean;
@@ -336,7 +333,7 @@ begin
 
   NewCursorPos := EditorPositionInformation.CursorPos;
 
-  if EditorPositionInformation.RelativePlacement then
+  if EditorPositionInformation.IsPlacementRelative then
   begin
     Inc(NewCursorPos.Col, EditorPositionInformation.RelativePosition.Col - Length(ReplacedText));
     Inc(NewCursorPos.Line, EditorPositionInformation.RelativePosition.Line);
@@ -573,9 +570,9 @@ begin
     ReplacementString := ReplaceItem.Replace;
     if RemoveCaretPositioningFromString(ReplacementString, CaretLocation) then
     begin
-      EditorPositionInformation.RelativePlacement := True;
+      EditorPositionInformation.SetIsPlacementRelative(True);
       Dec(CaretLocation.Col, Length(TrailingCharacters));
-      EditorPositionInformation.RelativePosition := CaretLocation;
+      EditorPositionInformation.SetRelativePosition(CaretLocation);
     end;
 
     ReplaceTextAt(SourceEditor, EditorPositionInformation,
@@ -613,14 +610,14 @@ begin
     ReplacementString := ReplaceItem.Replace;
     if RemoveCaretPositioningFromString(ReplacementString, CaretLocation) then
     begin
-      EditorPositionInformation.RelativePlacement := True;
-      EditorPositionInformation.RelativePosition := CaretLocation;
+      EditorPositionInformation.SetIsPlacementRelative(True);
+      EditorPositionInformation.SetRelativePosition(CaretLocation);
     end;
 
     ReplaceTextAt(SourceEditor, EditorPositionInformation, ReplaceItem.Typed, ReplacementString, '');
     BeepOnDemand;
 
-    if EditorPositionInformation.RelativePlacement then
+    if EditorPositionInformation.IsPlacementRelative then
       AdjustEditorPosition(EditorPositionInformation, ReplacementString, ReplaceItem.Typed);
 
     ReplacedPartOfSource := Copy(SourceString,
@@ -633,7 +630,7 @@ begin
 end;
 
 function TAutoTypeWriterNotifier.SetupProofing(const SourceEditor: IOTASourceEditor;
-  var EditorPositionInformation: IEditorPositionInformation;
+  const EditorPositionInformation: IEditorPositionInformation;
   var ReplacementSourceTable: TReplacementSource;
   var SourceString: string;
   out EnteredNewLine: Boolean): Boolean;
@@ -652,19 +649,12 @@ begin
   if not CharPosAreEqual(SourceEditor.BlockStart, SourceEditor.BlockAfter) then
     Exit;
 
-  // Editor change notifiers may fire if the IDE auto-creates some
-  // code behind the scenes. Since we only want to react on user
-  // input, we exit if there is no edit view active.
-  if not GxOtaTryGetTopMostEditView(SourceEditor, EditView) then
-    Exit;
-
-  EditorPositionInformation := TEditorPositionInformation.Create(EditView);
-  EditorPositionInformation.CursorPos := EditView.CursorPos;
+  EditView := EditorPositionInformation.EditView;
 
   // Convert from a CursorPos to a CharPos
   CursorPos := EditorPositionInformation.CursorPos;
   EditView.ConvertPos(True, CursorPos, CharPos);
-  EditorPositionInformation.CharPos := CharPos;
+  EditorPositionInformation.SetCharPos(CharPos);
 
   // Read the part of the text in the current source line
   // that is located in front of the current cursor position.
@@ -688,8 +678,8 @@ begin
       Dec(CursorPos.Line);
       CursorPos.Col := Length(SourceString) + 1;
       EditView.ConvertPos(True, CursorPos, CharPos);
-      EditorPositionInformation.CursorPos := CursorPos;
-      EditorPositionInformation.CharPos := CharPos;
+      EditorPositionInformation.SetCursorPos(CursorPos);
+      EditorPositionInformation.SetCharPos(CharPos);
       EnteredNewLine := True;
     end
     else
@@ -724,17 +714,6 @@ begin
 end;
 
 procedure TAutoTypeWriterNotifier.SourceEditorModified(const SourceEditor: IOTASourceEditor);
-
-  // Restore cursor to the new line after Enter-triggered replacement
-  procedure RestoreCursorIfNeeded(EnteredNewLine: Boolean; const EditView: IOTAEditView;
-    const OriginalCursorPos: TOTAEditPos);
-  begin
-    if EnteredNewLine and (OriginalCursorPos.Line > 0) then begin
-      EditView.CursorPos := OriginalCursorPos;
-      EditView.MoveViewToCursor;
-    end;
-  end;
-
 var
   TrailingChars: string;
   SourceString: string;
@@ -743,26 +722,14 @@ var
   ReplacementSourceTable: TReplacementSource;
   n: Integer;
   DoCompiler: Boolean;
-
-  // todo: Use EditorPositionInformation instead of EditView and OriginalCursorPos
-  //       (But note that it is being set up by the call to SetupProofing further
-  //       down than the code that initializes EditView and OriginalCursorPos.)
   EnteredNewLine: Boolean;
   EditView: IOTAEditView;
-  OriginalCursorPos: TOTAEditPos; // Bug #21: Save cursor for Enter case
 begin
   if FModifyingSelf then
     Exit;
   FModifyingSelf := True;
 
-  // Bug #21: Get current line for tracking and save cursor position (Note that it is used
-  // in the finally block, so it must be initialized before the try.)
-  OriginalCursorPos.Line := 0;
-  OriginalCursorPos.Col := 0;
-  if GxOtaTryGetTopMostEditView(SourceEditor, EditView) then begin
-    OriginalCursorPos := EditView.CursorPos;
-  end;
-
+  EditorPositionInformation := nil;
   try
     if IsReplaceConfirmDialogOnScreen then
       Exit;
@@ -773,6 +740,15 @@ begin
     if not GxOtaCurrentlyEditingSource then
       Exit;
 
+    if not GxOtaTryGetTopMostEditView(SourceEditor, EditView) then begin
+      // Editor change notifiers may fire if the IDE auto-creates some
+      // code behind the scenes. Since we only want to react on user
+      // input, we exit if there is no edit view active.
+      Exit;
+    end;
+
+    EditorPositionInformation := TEditorPositionInformation.Create(EditView);
+
     try
       if not FProofreaderData.ReplacerActive and not FProofreaderData.DictionaryActive and
          not FProofreaderData.CompilerActive then
@@ -780,11 +756,8 @@ begin
         Exit;
       end;
 
-      if not SetupProofing(
-        // In:
-        SourceEditor,
-        // Out:
-        EditorPositionInformation, ReplacementSourceTable, SourceString, EnteredNewLine) then
+      if not SetupProofing(SourceEditor, EditorPositionInformation,
+        ReplacementSourceTable, SourceString, EnteredNewLine) then
       begin
         Exit;
       end;
@@ -856,8 +829,7 @@ begin
         if PerformReplacementAtEnd(SourceEditor, EditorPositionInformation,
           ReplacementSourceTable, TrailingChars, SourceString) then
         begin
-          RestoreCursorIfNeeded(EnteredNewLine, EditView, OriginalCursorPos);
-          EditorPositionInformation.EditView.Paint;
+          EditorPositionInformation.RestoreCursorIfNeeded(EnteredNewLine);
           CodeProofreaderExpert.IncCallCount;
           Exit;
         end;
@@ -897,8 +869,7 @@ begin
         if DoCompiler and PerformKibitzReplacement(SourceEditor, EditorPositionInformation,
           ReplacementSourceTable, TrailingChars, SourceString, OriginalSourceString) then
         begin
-          RestoreCursorIfNeeded(EnteredNewLine, EditView, OriginalCursorPos);
-          EditorPositionInformation.EditView.Paint;
+          EditorPositionInformation.RestoreCursorIfNeeded(EnteredNewLine);
           CodeProofreaderExpert.IncCallCount;
           Exit;
         end;
@@ -909,10 +880,8 @@ begin
         if PerformDictionaryReplacement(SourceEditor, EditorPositionInformation,
           ReplacementSourceTable, TrailingChars, SourceString) then
         begin
-          RestoreCursorIfNeeded(EnteredNewLine, EditView, OriginalCursorPos);
-          EditorPositionInformation.EditView.Paint;
+          EditorPositionInformation.RestoreCursorIfNeeded(EnteredNewLine);
           CodeProofreaderExpert.IncCallCount;
-          // Exit;
         end;
       end;
 
@@ -927,7 +896,10 @@ begin
   finally
     FModifyingSelf := False;
     // Bug #21: Track the current line for detecting Enter key
-    FPreviousLine := OriginalCursorPos.Line;
+    if Assigned(EditorPositionInformation) then
+      FPreviousLine := EditorPositionInformation.OriginalCursorPos.Line
+    else
+      FPreviousLine := 0;
   end;
 end;
 
@@ -982,6 +954,8 @@ begin
 
   FBufferCharIndex := InvalidBufferCharIndex;
   FEditView := EditView;
+  FOriginalCursorPos := EditView.CursorPos;
+  FCursorPos := FOriginalCursorPos;
 end;
 
 destructor TEditorPositionInformation.Destroy;
@@ -991,7 +965,7 @@ begin
   inherited Destroy;
 end;
 
-function TEditorPositionInformation.GetBufferCharIndex: Longint;
+function TEditorPositionInformation.BufferCharIndex: Longint;
 begin
   Result := FBufferCharIndex;
 
@@ -1009,27 +983,32 @@ begin
   end;
 end;
 
-function TEditorPositionInformation.GetCharPos: TOTACharPos;
+function TEditorPositionInformation.CharPos: TOTACharPos;
 begin
   Result := FCharPos;
 end;
 
-function TEditorPositionInformation.GetCursorPos: TOTAEditPos;
+function TEditorPositionInformation.CursorPos: TOTAEditPos;
 begin
   Result := FCursorPos;
 end;
 
-function TEditorPositionInformation.GetEditView: IOTAEditView;
+function TEditorPositionInformation.EditView: IOTAEditView;
 begin
   Result := FEditView;
 end;
 
-function TEditorPositionInformation.GetRelativePlacement: Boolean;
+function TEditorPositionInformation.OriginalCursorPos: TOTAEditPos;
+begin
+  Result := FOriginalCursorPos;
+end;
+
+function TEditorPositionInformation.IsPlacementRelative: Boolean;
 begin
   Result := FRelativePlacement;
 end;
 
-function TEditorPositionInformation.GetRelativePosition: TOTAEditPos;
+function TEditorPositionInformation.RelativePosition: TOTAEditPos;
 begin
   Result := FRelativePosition;
 end;
@@ -1049,7 +1028,7 @@ begin
   FCursorPos := Value;
 end;
 
-procedure TEditorPositionInformation.SetRelativePlacement(const Value: Boolean);
+procedure TEditorPositionInformation.SetIsPlacementRelative(const Value: Boolean);
 begin
   FRelativePlacement := Value;
 end;
@@ -1057,6 +1036,15 @@ end;
 procedure TEditorPositionInformation.SetRelativePosition(const Value: TOTAEditPos);
 begin
   FRelativePosition := Value;
+end;
+
+procedure TEditorPositionInformation.RestoreCursorIfNeeded(EnteredNewLine: Boolean);
+begin
+  if EnteredNewLine and (FOriginalCursorPos.Line > 0) then begin
+    FEditView.CursorPos := FOriginalCursorPos;
+    FEditView.MoveViewToCursor;
+  end;
+  FEditView.Paint;
 end;
 
 end.
