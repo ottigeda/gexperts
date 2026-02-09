@@ -13,10 +13,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Code Proofreader: AutoCorrect now triggers when pressing Enter after typing a word (#21)
 - Code Formatter: "Never indent var declaration" no longer affects "and"/"or" in if conditions (#468)
 - Instant Grep: Fixed wrong colors when form is restored by IDE docked desktop (#470)
-
-## Internal Changes
-
-- Added DelphiLspProbe standalone tool to probe DelphiLSP.exe capabilities
+- Replace Components: Replacing components with sub-components now works again in Delphi 13 (Embarcadero fixed the underlying OTA bug)
 
 ## Contributors
 
