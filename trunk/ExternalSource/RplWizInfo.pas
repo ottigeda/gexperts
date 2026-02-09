@@ -1380,10 +1380,10 @@ begin
             end;
           end;
 
-{$IFDEF GX_DELPHIXE3_UP}
+{$IFDEF GX_REPLACE_SUBCOMPONENTS_BROKEN}
           if Children.Count > 0 then
             raise Exception.CreateFmt(
-              'Due to a bug in the Open Tools API since Delphi XE3 %s cannot be replaced because it has sub components.',
+              'Due to a bug in the Open Tools API of this Delphi version %s cannot be replaced because it has sub components.',
               [StackName]);
 {$ENDIF}
           // Create a new one & assign properties
