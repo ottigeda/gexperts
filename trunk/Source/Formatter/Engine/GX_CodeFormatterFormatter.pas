@@ -320,10 +320,10 @@ begin
           if Next.WordType <> wtWord then
             Exit; //==>
         end;
-      rtComma: begin
-        // OK
+      rtComma,
+      rtDot: begin
+        // OK, dots appear in qualified type names like System.TJSONObject
         end;
-      // anything else?
     else
       Exit; //==>
     end;
