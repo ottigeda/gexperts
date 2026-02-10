@@ -14,6 +14,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Code Formatter: "Never indent var declaration" no longer affects "and"/"or" in if conditions (bug #468)
 - Code Formatter: Generic detection now handles dot-qualified type names like `System.TJSONObject` (bug #471)
 - Instant Grep: Fixed wrong colors when form is restored by IDE docked desktop (bug #470)
+- Edit Search Path: Dialog no longer grows on each open with mixed-DPI monitor setups (bug #472)
 - Replace Components: Replacing components with sub-components now works again in Delphi 13 (Embarcadero fixed the underlying OTA bug)
 
 ## Contributors
