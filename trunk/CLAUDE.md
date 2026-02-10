@@ -6,6 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 GExperts is an open-source IDE plugin (DLL) for Delphi and C++Builder that provides productivity tools and code enhancements. It supports Delphi 6 through RAD Studio 13.0 (including 64-bit).
 
+## Development Approach
+
+- **Investigate before implementing.** Before making code changes, read the relevant source files, trace the code path, and understand the existing patterns. For bug fixes, identify the root cause before proposing a fix. When a fix introduces regressions, step back and analyze rather than trying another quick approach.
+- **Run build and test commands separately.** Do NOT chain them in a single Bash call (e.g., don't use `build.sh && test.sh`). Run each as a separate tool invocation to avoid timeouts and unclear failures.
+- **Use existing build infrastructure.** Always call `__Build_Project.cmd` or the documented bash wrapper scripts (`_buildproject.sh`). Do NOT write custom build logic from scratch.
+- **Clean up temporary files.** Do not leave debug or temporary test files in the working directory. If temp files are needed during a task, clean them up before finishing.
+
 ## Version Control
 
 **IMPORTANT:** This project uses Subversion (SVN), not Git.
@@ -30,6 +37,7 @@ svn info <file>     # Show local file info
 
 **Commit message guidelines:**
 - Do NOT include a list of changed files in commit messages - SVN tracks this automatically
+- Do NOT include a Co-Authored-By line in commit messages
 - Focus on describing what was changed and why
 
 **After committing:** Always update the changelog file `Documentation/CHANGES-<version>.md` (currently `CHANGES-1.3.27.md`) with a brief description of the change.
