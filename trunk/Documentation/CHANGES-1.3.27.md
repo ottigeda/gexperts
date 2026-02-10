@@ -4,6 +4,8 @@ Changes since version 1.3.26 (released 2026-02-07)
 
 ## New Features
 
+- Code Formatter: Added option to use identifiers from Uses Clause Manager for capitalization (feature #218)
+
 ## Bug Fixes
 
 - Backup Project: Show actual matched files instead of wildcard patterns in file list (bug #19)
