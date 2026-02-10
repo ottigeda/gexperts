@@ -1074,9 +1074,15 @@ begin
   end;
 
 {$IFDEF GX_IDE_IS_HIDPI_AWARE}
-  if (NewDpi > 0) and (OrigDpi > 0) and (NewDpi<> OrigDpi) then begin
-    NewWidth  := MulDiv(NewWidth, NewDpi, OrigDpi);
-    NewHeight := MulDiv(NewHeight, NewDpi, OrigDpi);
+  // When restoring position, use the target monitor's DPI rather than the form's
+  // current monitor DPI. Otherwise, if the form was saved on a different-DPI monitor
+  // than where it's currently created, the mismatch causes incorrect scaling that
+  // accumulates on each open/close cycle.
+  if PosChanged then
+    OrigDpi := TScreen_GetDpiForPoint(Point(NewLeft, NewTop));
+  if (NewDpi > 0) and (OrigDpi > 0) and (NewDpi <> OrigDpi) then begin
+    NewWidth  := MulDiv(NewWidth, OrigDpi, NewDpi);
+    NewHeight := MulDiv(NewHeight, OrigDpi, NewDpi);
   end;
 {$ENDIF}
 
