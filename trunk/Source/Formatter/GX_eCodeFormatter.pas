@@ -19,6 +19,7 @@ type
   TeCodeFormatterExpert = class(TEditorExpert)
   private
     FExpert: TCodeFormatterExpert;
+    function UcmLookup(const _Identifier: string; out _Casing: string): Boolean;
   protected
     procedure InternalLoadSettings(_Settings: IExpertSettings); override;
     procedure InternalSaveSettings(_Settings: IExpertSettings); override;
@@ -45,9 +46,11 @@ uses
   Menus,
   GX_IdeUtils,
   GX_GExperts,
+  GX_Experts,
   GX_About,
   GX_CodeFormatterConfigHandler,
   GX_CodeFormatterSettings,
+  GX_UsesExpert,
   GX_GenericUtils;
 
 { TeCodeFormatterExpert }
@@ -144,10 +147,24 @@ begin
   Result := True;
 end;
 
+function TeCodeFormatterExpert.UcmLookup(const _Identifier: string; out _Casing: string): Boolean;
+var
+  GExpertsInst: TGExperts;
+  Expert: TGX_Expert;
+begin
+  Result := False;
+  if not TryGetGExpertsInst(GExpertsInst) then
+    Exit; //==>
+  if not GExpertsInst.FindExpert('UsesClauseMgr', Expert) then
+    Exit; //==>
+  Result := TUsesClauseMgrExpert(Expert).TryLookupIdentifier(AnsiString(_Identifier), _Casing);
+end;
+
 procedure TeCodeFormatterExpert.InternalLoadSettings(_Settings: IExpertSettings);
 begin
   inherited;
   FExpert.InternalLoadSettings(_Settings);
+  FExpert.Engine.Settings.UcmLookup := Self.UcmLookup;
 end;
 
 procedure TeCodeFormatterExpert.InternalSaveSettings(_Settings: IExpertSettings);

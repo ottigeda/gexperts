@@ -101,6 +101,8 @@ type
 {$ENDIF}
   public
     function Add(const _Identifier: AnsiString; const _Filename: string; _LineNo: Integer): Integer;
+    function FindIdentifierCasing(const _Identifier: AnsiString;
+      const _IdeSourcePath: string; out _Casing: string): Boolean;
     property Items[_Idx: Integer]: TUnitExport read GetItems; default;
   end;
 
@@ -384,6 +386,58 @@ function TUnitExportlist.Add(const _Identifier: AnsiString; const _Filename: str
 begin
   Result := FItems.Add(TUnitExport.Create(_Identifier, _Filename, _LineNo));
   FIsSorted := False;
+end;
+
+function TUnitExportlist.FindIdentifierCasing(const _Identifier: AnsiString;
+  const _IdeSourcePath: string; out _Casing: string): Boolean;
+var
+  Idx: Integer;
+  LcIdent: AnsiString;
+  Item: TUnitExport;
+  FirstCasing: string;
+  IdeCasing: string;
+  HasConflict: Boolean;
+  HasIdeCasing: Boolean;
+begin
+  Result := False;
+  LcIdent := LowerCase(_Identifier);
+  if not BinarySearch(0, Count - 1, Idx, LcIdent, CompareToItem, True) then
+    Exit; //==>
+
+  // Idx now points to the first entry with matching LCIdentifier.
+  // Scan all consecutive entries with the same LCIdentifier.
+  FirstCasing := '';
+  IdeCasing := '';
+  HasConflict := False;
+  HasIdeCasing := False;
+  while (Idx < Count) do begin
+    Item := Items[Idx];
+    if CompareStr(LcIdent, Item.LCIdentifier) <> 0 then
+      Break;
+    if FirstCasing = '' then begin
+      FirstCasing := string(Item.Identifier);
+    end else if not SameStr(FirstCasing, string(Item.Identifier)) then begin
+      HasConflict := True;
+    end;
+    if (_IdeSourcePath <> '') and StartsText(_IdeSourcePath, Item.FileName) then begin
+      if not HasIdeCasing then begin
+        IdeCasing := string(Item.Identifier);
+        HasIdeCasing := True;
+      end else if not SameStr(IdeCasing, string(Item.Identifier)) then begin
+        // Even RTL/VCL source has conflicting casings
+        HasIdeCasing := False;
+      end;
+    end;
+    Inc(Idx);
+  end;
+
+  if not HasConflict then begin
+    _Casing := FirstCasing;
+    Result := (FirstCasing <> '');
+  end else if HasIdeCasing then begin
+    _Casing := IdeCasing;
+    Result := True;
+  end;
 end;
 
 { TUnitIdentifierList }

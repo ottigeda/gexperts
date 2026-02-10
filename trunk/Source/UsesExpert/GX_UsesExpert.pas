@@ -80,6 +80,7 @@ type
     function GetActionCaption: string; override;
     function HasConfigOptions: Boolean; override;
     procedure Execute(Sender: TObject); override;
+    function TryLookupIdentifier(const _Identifier: AnsiString; out _Casing: string): Boolean;
   end;
 
 type
@@ -885,6 +886,23 @@ begin
   _Settings.WriteBool('DisableCache', FDisableCache);
   _Settings.WriteBool('SearchPathFavorites', FSearchPathFavorites);
   _Settings.WriteBool('FastAdd', FFastAdd);
+end;
+
+function TUsesClauseMgrExpert.TryLookupIdentifier(const _Identifier: AnsiString; out _Casing: string): Boolean;
+var
+  Identifiers: TUnitExportlist;
+  IdeSourcePath: string;
+begin
+  Result := False;
+  if not Assigned(FUnitExportParserThread) then
+    Exit; //==>
+  if not FUnitExportParserThread.HasFinished then
+    Exit; //==>
+  Identifiers := FUnitExportParserThread.Identifiers;
+  if not Assigned(Identifiers) then
+    Exit; //==>
+  IdeSourcePath := ExtractFilePath(ExcludeTrailingPathDelimiter(ConfigInfo.VCLPath));
+  Result := Identifiers.FindIdentifierCasing(_Identifier, IdeSourcePath, _Casing);
 end;
 
 procedure TAction_SetEnabled(const _Actions: array of TCustomAction; _Value: Boolean);

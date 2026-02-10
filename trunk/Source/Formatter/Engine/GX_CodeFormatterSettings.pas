@@ -93,6 +93,7 @@ type
     AlignComments: Boolean; {: turn on comment alignment }
     AlignVarPos: Byte; {: position to align variant/constant declarations (the colon) }
     AlignVar: Byte; {: turn on variable/constant alignment }
+    UseUcmIdentifiers: Boolean; {: use identifiers from Uses Clause Manager for capitalization }
   end;
 
 type
@@ -105,9 +106,13 @@ type
 function IntToConfigPrecedence(_Value: Integer): TConfigPrecedenceEnum;
 
 type
+  TUcmLookupFunc = function(const _Identifier: string; out _Casing: string): Boolean of object;
+
+type
   TCodeFormatterSettings = class
   private
     FSettings: TCodeFormatterEngineSettings;
+    FUcmLookup: TUcmLookupFunc;
     FCapNames: TGXUnicodeStringList;
     FCapFile: string;
     FCapFileTimestamp: TDateTime;
@@ -183,6 +188,8 @@ type
     property AlignVar: Byte read FSettings.AlignVar;
     property ShouldAlignVar: Boolean read GetShouldAlignVar;
     property ShouldAlignConst: Boolean read GetShouldAlignConst;
+    property UseUcmIdentifiers: Boolean read FSettings.UseUcmIdentifiers;
+    property UcmLookup: TUcmLookupFunc read FUcmLookup write FUcmLookup;
     // settings for the wizard
     property CapFileTimestamp: TDateTime read FCapFileTimestamp write FCapFileTimestamp;
     property CapitalizationFile: string read FCapFile write FCapFile;
@@ -242,6 +249,7 @@ var
   Found: Boolean;
   Idx: Integer;
   CommentedIdx: Integer;
+  UcmCasing: string;
 begin
   if not _Word.TryGetExpression(Expression) then
     Exit;
@@ -266,6 +274,17 @@ begin
       Found := CapNames.Find(String(Expression), Idx);
     if Found then begin
       _Word.SetExpression(CapNames[Idx]);
+      _Word.ExpressionCase := rfUnchanged;
+      Exit; //==> CapNames takes priority
+    end;
+  end;
+
+  // Fallback to UCM lookup if enabled and CapNames didn't match
+  if Settings.UseUcmIdentifiers and Assigned(FUcmLookup)
+    and (_Word.ReservedType in (NoReservedTypes - StandardDirectives))
+    and (_Word.WordType = wtWord) then begin
+    if FUcmLookup(String(Expression), UcmCasing) then begin
+      _Word.SetExpression(UcmCasing);
       _Word.ExpressionCase := rfUnchanged;
     end;
   end;

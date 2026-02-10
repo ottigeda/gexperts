@@ -143,6 +143,7 @@ type
     chk_FeedBeforeElse: TCheckBox;
     chk_NoIndentVarDecl: TCheckBox;
     p_Main: TPanel;
+    chk_UseUcmIdentifiers: TCheckBox;
     procedure b_HelpClick(Sender: TObject);
     procedure b_EditCapitalizationClick(Sender: TObject);
     procedure UpdatePreview(Sender: TObject);
@@ -161,6 +162,8 @@ type
     procedure b_PrecedenceDownClick(Sender: TObject);
     procedure pc_MainChange(Sender: TObject);
     procedure grid_SpacingSetEditText(Sender: TObject; ACol, ARow: Integer; const Value: string);
+    procedure chk_UseUcmIdentifiersClick(Sender: TObject);
+    procedure rg_CapitalizationClick(Sender: TObject);
   private
     FCapitalization: TGXUnicodeStringList;
     m_PreviewBefore: TGxEnhancedEditor;
@@ -168,6 +171,8 @@ type
     l_ResetPreview: TLabel;
     FPreviewModifiedByUser: Boolean;
     FLoadingPreview: Boolean;
+    FUcmLookup: TUcmLookupFunc;
+    l_UcmWarning: TLabel;
     procedure EngineSettingsToForm(const _Settings: TCodeFormatterEngineSettings);
     procedure SettingsToForm(const _Settings: TCodeFormatterSettings);
     procedure FormToEngineSettings(var _Settings: TCodeFormatterEngineSettings);
@@ -183,6 +188,7 @@ type
     procedure HandlePreviewModified(_Sender: TObject);
     procedure l_ResetPreviewClick(_Sender: TObject);
     procedure UpdateResetLinkAppearance;
+    procedure UpdateUcmWarning;
   protected
     procedure ArrangeControls; override;
   public
@@ -280,6 +286,15 @@ begin
 
   TWinControl_ActivateDropFiles(m_PreviewBefore, m_PreviewFileDropped);
   TWinControl_ActivateDropFiles(m_PreviewAfter, m_PreviewFileDropped);
+
+  l_UcmWarning := TLabel.Create(Self);
+  l_UcmWarning.Name := 'l_UcmWarning';
+  l_UcmWarning.Parent := ts_Capitalization;
+  l_UcmWarning.Left := 16;
+  l_UcmWarning.Top := 276;
+  l_UcmWarning.Caption := '''Add new words'' cannot be combined with UCM identifiers';
+  l_UcmWarning.Font.Color := clRed;
+  l_UcmWarning.Visible := False;
 
   lb_Precedence.Items.AddObject(str_PrecedenceDirective, Pointer(cpDirective));
   lb_Precedence.Items.AddObject(str_PrecedenceIniFile, Pointer(cpIniFile));
@@ -493,6 +508,11 @@ begin
   end;
 end;
 
+procedure TfmCodeFormatterConfig.UpdateUcmWarning;
+begin
+  l_UcmWarning.Visible := chk_UseUcmIdentifiers.Checked;
+end;
+
 procedure TfmCodeFormatterConfig.grid_SpacingSetEditText(Sender: TObject; ACol, ARow: Integer;
   const Value: string);
 begin
@@ -559,6 +579,7 @@ begin
   _Settings.FeedBeforeEnd := chk_FeedBeforeEnd.Checked;
   _Settings.FeedAfterSemiColon := chk_FeedAfterSemiColon.Checked;
   _Settings.FillNewWords := IntToCapfileMode(rg_Capitalization.ItemIndex);
+  _Settings.UseUcmIdentifiers := chk_UseUcmIdentifiers.Checked;
   _Settings.StartCommentOut := Trim(ed_StartComment.Text);
   _Settings.EndCommentOut := Trim(ed_EndCommentOut.Text);
   _Settings.FeedRoundBegin := TFeedBegin(cmb_FeedRoundBegin.ItemIndex);
@@ -656,6 +677,8 @@ begin
   chk_AlignConst.Checked := _Settings.AlignVar in [1, 3];
   ud_AlignVarPos.Position := _Settings.AlignVarPos;
   rg_Capitalization.ItemIndex := CapfileModeToInt(_Settings.FillNewWords);
+  chk_UseUcmIdentifiers.Checked := _Settings.UseUcmIdentifiers;
+  UpdateUcmWarning;
   ed_StartComment.Text := string(_Settings.StartCommentOut);
   ed_EndCommentOut.Text := string(_Settings.EndCommentOut);
   cmb_FeedRoundBegin.ItemIndex := Integer(_Settings.FeedRoundBegin);
@@ -802,6 +825,28 @@ begin
   UpdatePreview(Sender);
 end;
 
+procedure TfmCodeFormatterConfig.chk_UseUcmIdentifiersClick(Sender: TObject);
+begin
+  if chk_UseUcmIdentifiers.Checked then begin
+    // UCM mode is mutually exclusive with "Add" modes - strip the Add part but keep Use
+    case rg_Capitalization.ItemIndex of
+      1: rg_Capitalization.ItemIndex := 0; // Add only -> Do not use list
+      4: rg_Capitalization.ItemIndex := 2; // Add and use -> Use list
+      5: rg_Capitalization.ItemIndex := 3; // Add and use (except) -> Use list (except)
+    end;
+  end;
+  UpdateUcmWarning;
+  UpdatePreview(Sender);
+end;
+
+procedure TfmCodeFormatterConfig.rg_CapitalizationClick(Sender: TObject);
+begin
+  if chk_UseUcmIdentifiers.Checked and (rg_Capitalization.ItemIndex in [1, 4, 5]) then
+    chk_UseUcmIdentifiers.Checked := False;
+  UpdateUcmWarning;
+  UpdatePreview(Sender);
+end;
+
 procedure TfmCodeFormatterConfig.p_PreviewResize(Sender: TObject);
 var
   w: Integer;
@@ -885,6 +930,7 @@ begin
   frm := TfmCodeFormatterConfig.Create(_Owner);
   try
     TForm_CenterOn(frm, _Owner);
+    frm.FUcmLookup := _Settings.UcmLookup;
     frm.SettingsToForm(_Settings);
     Result := frm.ShowModal;
     if Result = mrOk then
@@ -906,6 +952,7 @@ begin
     sl := TGXUnicodeStringList.Create;
     m_PreviewBefore.GetLines(sl);
     FormToSettings(Formatter.Settings);
+    Formatter.Settings.UcmLookup := FUcmLookup;
     Formatter.Execute(sl);
     m_PreviewAfter.SetLines(sl);
   finally

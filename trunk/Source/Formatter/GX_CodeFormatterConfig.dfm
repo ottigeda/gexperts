@@ -488,7 +488,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object l_CapitalizationInFile: TLabel
           Left = 16
-          Top = 272
+          Top = 296
           Width = 126
           Height = 13
           Caption = 'Capitalization stored in file'
@@ -543,7 +543,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object b_EditCapitalization: TButton
           Left = 347
-          Top = 256
+          Top = 280
           Width = 75
           Height = 25
           Anchors = [akTop, akRight]
@@ -553,7 +553,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object ed_CapitalizationFile: TEdit
           Left = 16
-          Top = 288
+          Top = 312
           Width = 323
           Height = 21
           Anchors = [akLeft, akTop, akRight]
@@ -561,7 +561,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
         end
         object b_CapitalizationSelect: TButton
           Left = 347
-          Top = 286
+          Top = 310
           Width = 75
           Height = 25
           Anchors = [akTop, akRight]
@@ -583,7 +583,7 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             'Add and use'
             'Add and use (except standard directives)')
           TabOrder = 5
-          OnClick = UpdatePreview
+          OnClick = rg_CapitalizationClick
         end
         object cmb_IdentifiersCase: TComboBox
           Left = 272
@@ -600,6 +600,15 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
             'Only first up'
             'Unchanged'
             'Use first occurence')
+        end
+        object chk_UseUcmIdentifiers: TCheckBox
+          Left = 16
+          Top = 256
+          Width = 377
+          Height = 17
+          Caption = 'Use identifiers from Uses Clause Manager'
+          TabOrder = 9
+          OnClick = chk_UseUcmIdentifiersClick
         end
       end
       object ts_Align: TTabSheet
