@@ -223,6 +223,20 @@ When adding a new formatter option (e.g., a new boolean setting):
 
 **Why create tests first?** This workflow ensures you capture the correct baseline behavior using the unmodified formatter. If you change the code first, you'll need to manually recreate what the original output should have been, which is error-prone.
 
+**Alternative: Use SpecialCases instead of modifying all configurations.** If the new option should be isolated from the standard test configurations, use the `SpecialCases` structure (see above) instead of enabling it in `AdjustSettings_Special`. This avoids updating expected output for all standard configurations.
+
+### Smoke-Testing New Formatter Options
+
+After implementing a new formatter option, temporarily enable it in the `special` configuration to see how it affects all existing test files:
+
+1. **Temporarily add the setting** to `AdjustSettings_Special` in `UnitTestsFormatter/source/DelForExTestFiles.pas`
+2. **Rebuild and run tests** — many tests will fail (expected)
+3. **Examine the output files** in `Testcases/output/special/` to verify the formatting is correct across diverse real-world code patterns
+4. **Revert the temporary change** and clean up `Testcases/output/special/`
+5. **Rebuild and run tests** to confirm all tests pass again
+
+This technique is valuable for catching edge cases that targeted test files may miss. For example, when implementing assignment alignment, this caught a bug where `for var I: Integer := 0` (typed inline var in for-loop) was incorrectly aligned because the backward scan for the `for` keyword didn't skip past the `:` token between the variable name and type.
+
 ## Architecture
 
 ### Expert Plugin Pattern

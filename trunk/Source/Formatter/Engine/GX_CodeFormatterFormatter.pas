@@ -1932,6 +1932,8 @@ var
   Depth: Integer;
   IsFirstOnLine: Boolean;
   PoppedPrevSection: Boolean;
+  k: Integer;
+  IsForLoop: Boolean;
 begin
   if FCurrentToken = nil then
     Exit; //==>
@@ -2415,6 +2417,33 @@ begin
       if (FSettings.ShouldAlignVar and (FStack.GetTopType = rtVar))
         or (FSettings.ShouldAlignConst and (FStack.GetTopType = rtConst)) then
         FCurrentToken := AlignExpression(FTokenIdx, FSettings.AlignVarPos);
+
+    rtAssignOper:
+      if FSettings.AlignAssign
+        and not (FStack.GetTopType in [rtVar, rtConst]) then begin
+        // Exclude for-loop: scan backwards past identifiers, dots, 'var',
+        // whitespace, comments, and compiler directives to find 'for' (rtWhile)
+        IsForLoop := False;
+        k := 1;
+        while TryGetToken(FTokenIdx - k, Token) do begin
+          if Token.ReservedType = rtWhile then begin // 'for' is mapped to rtWhile
+            IsForLoop := True;
+            Break;
+          end;
+          if Token.ReservedType in [rtLineFeed, rtComment, rtCompIf, rtCompElse,
+            rtCompEndif, rtDot, rtVar, rtColon] then begin
+            Inc(k);
+            Continue;
+          end;
+          if Token.WordType in [wtWord, wtCompDirective] then begin
+            Inc(k);
+            Continue;
+          end;
+          Break;
+        end;
+        if not IsForLoop then
+          FCurrentToken := AlignExpression(FTokenIdx, FSettings.AlignAssignPos);
+      end;
 
     rtVar, rtConst, rtType:
       if not (FStack.GetTopType in [rtLeftBr, rtLeftHook]) then begin

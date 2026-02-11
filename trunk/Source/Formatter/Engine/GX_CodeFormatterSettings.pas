@@ -93,6 +93,8 @@ type
     AlignComments: Boolean; {: turn on comment alignment }
     AlignVarPos: Byte; {: position to align variant/constant declarations (the colon) }
     AlignVar: Byte; {: turn on variable/constant alignment }
+    AlignAssign: Boolean; {: turn on assignment operator alignment }
+    AlignAssignPos: Byte; {: position to align assignment operators }
     UseUcmIdentifiers: Boolean; {: use identifiers from Uses Clause Manager for capitalization }
   end;
 
@@ -186,6 +188,8 @@ type
     property AlignComments: Boolean read FSettings.AlignComments;
     property AlignVarPos: Byte read FSettings.AlignVarPos;
     property AlignVar: Byte read FSettings.AlignVar;
+    property AlignAssign: Boolean read FSettings.AlignAssign;
+    property AlignAssignPos: Byte read FSettings.AlignAssignPos;
     property ShouldAlignVar: Boolean read GetShouldAlignVar;
     property ShouldAlignConst: Boolean read GetShouldAlignConst;
     property UseUcmIdentifiers: Boolean read FSettings.UseUcmIdentifiers;

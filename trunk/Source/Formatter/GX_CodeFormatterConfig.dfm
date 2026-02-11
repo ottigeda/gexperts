@@ -688,6 +688,39 @@ inherited fmCodeFormatterConfig: TfmCodeFormatterConfig
           Associate = ed_AlignVarPos
           TabOrder = 6
         end
+        object chk_AlignAssign: TCheckBox
+          Left = 16
+          Top = 184
+          Width = 275
+          Height = 17
+          Caption = 'Align assignment operators'
+          TabOrder = 7
+          OnClick = UpdatePreview
+        end
+        object l_AlignAssignAtPosition: TLabel
+          Left = 40
+          Top = 208
+          Width = 51
+          Height = 13
+          Caption = 'At position'
+        end
+        object ed_AlignAssignPos: TEdit
+          Left = 40
+          Top = 224
+          Width = 51
+          Height = 21
+          TabOrder = 8
+          Text = '0'
+          OnChange = UpdatePreview
+        end
+        object ud_AlignAssignPos: TUpDown
+          Left = 91
+          Top = 224
+          Width = 13
+          Height = 21
+          Associate = ed_AlignAssignPos
+          TabOrder = 9
+        end
       end
       object ts_Misc: TTabSheet
         Caption = 'Misc.'

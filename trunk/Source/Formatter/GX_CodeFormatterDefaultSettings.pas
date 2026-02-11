@@ -25,6 +25,8 @@ begin
   Result.AlignComments := False;
   Result.AlignVar := 0;
   Result.AlignVarPos := 20;
+  Result.AlignAssign := False;
+  Result.AlignAssignPos := 30;
   Result.BlankProc := True;
   Result.BlankSubProc := False;
   Result.BlankBeforeUses := False;
@@ -84,6 +86,8 @@ begin
   Result.AlignComments := False;
   Result.AlignVar := 0;
   Result.AlignVarPos := 20;
+  Result.AlignAssign := False;
+  Result.AlignAssignPos := 30;
   Result.BlankProc := True;
   Result.BlankSubProc := False;
   Result.BlankBeforeUses := False;

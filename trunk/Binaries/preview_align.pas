@@ -46,6 +46,12 @@ begin
   A := 1;   // first value
   B := 2;   // second value
   Name := 'Demo';  // the name
+  for A := 1 to 10 do
+    B := B + A;
+  for var I: Integer := 0 to 10 do
+    B := B + I;
+  var C: Integer := 42;
+  var D := 'hello';
 end;
 
 end.

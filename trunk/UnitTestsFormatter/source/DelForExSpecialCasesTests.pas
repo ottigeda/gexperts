@@ -55,6 +55,7 @@ type
 // Settings adjusters for each special case
 procedure AdjustSettings_IndentSections(var _cfg: TCodeFormatterEngineSettings);
 procedure AdjustSettings_NoIndentVarDecl(var _cfg: TCodeFormatterEngineSettings);
+procedure AdjustSettings_AlignAssign(var _cfg: TCodeFormatterEngineSettings);
 
 implementation
 
@@ -218,6 +219,12 @@ begin
   _cfg.NoIndentVarDecl := True;
 end;
 
+procedure AdjustSettings_AlignAssign(var _cfg: TCodeFormatterEngineSettings);
+begin
+  _cfg.AlignAssign := True;
+  _cfg.AlignAssignPos := 30;
+end;
+
 { Registration }
 
 function CreateSpecialCasesSuite: ITestSuite;
@@ -232,6 +239,7 @@ begin
   //   3. Add Suite.AddSuite(TSpecialCaseTestSuite.Create('<name>', AdjustSettings_<name>)) below
   suite.AddSuite(TSpecialCaseTestSuite.Create('indentsections', AdjustSettings_IndentSections));
   suite.AddSuite(TSpecialCaseTestSuite.Create('NoIndentVarDecl', AdjustSettings_NoIndentVarDecl));
+  suite.AddSuite(TSpecialCaseTestSuite.Create('AlignAssign', AdjustSettings_AlignAssign));
   Result := suite;
 end;
 

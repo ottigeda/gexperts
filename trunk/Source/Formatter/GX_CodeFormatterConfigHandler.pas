@@ -310,6 +310,8 @@ begin
   ES.AlignComments := _Reader.ReadBool('AlignComments', ES.AlignComments); //: Boolean;
   ES.AlignVarPos := _Reader.ReadInteger('AlignVarPos', ES.AlignVarPos); //: Byte;
   ES.AlignVar := _Reader.ReadInteger('AlignVar', ES.AlignVar); //: Byte;
+  ES.AlignAssign := _Reader.ReadBool('AlignAssign', ES.AlignAssign);
+  ES.AlignAssignPos := _Reader.ReadInteger('AlignAssignPos', ES.AlignAssignPos);
   ES.UseUcmIdentifiers := _Reader.ReadBool('UseUcmIdentifiers', ES.UseUcmIdentifiers);
   _Settings.Settings := ES;
 end;
@@ -420,6 +422,8 @@ begin
   _Writer.WriteBool('AlignComments', _Settings.AlignComments); //: Boolean;
   _Writer.WriteInteger('AlignVarPos', _Settings.AlignVarPos); //: Byte;
   _Writer.WriteInteger('AlignVar', _Settings.AlignVar); //: Byte;
+  _Writer.WriteBool('AlignAssign', _Settings.AlignAssign);
+  _Writer.WriteInteger('AlignAssignPos', _Settings.AlignAssignPos);
   _Writer.WriteBool('UseUcmIdentifiers', _Settings.UseUcmIdentifiers);
 
   _Writer.WriteInteger('Precedence1', Ord(_Settings.ConfigPrecedence[1]));

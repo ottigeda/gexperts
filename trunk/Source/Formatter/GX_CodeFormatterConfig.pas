@@ -95,6 +95,10 @@ type
     l_AlignVarAtPosition: TLabel;
     ed_AlignVarPos: TEdit;
     ud_AlignVarPos: TUpDown;
+    chk_AlignAssign: TCheckBox;
+    l_AlignAssignAtPosition: TLabel;
+    ed_AlignAssignPos: TEdit;
+    ud_AlignAssignPos: TUpDown;
     chk_FeedElseIf: TCheckBox;
     chk_NoFeedBeforeThen: TCheckBox;
     chk_NoIndentElseIf: TCheckBox;
@@ -555,6 +559,8 @@ begin
   else
     _Settings.AlignVar := 0;
   _Settings.AlignVarPos := ud_AlignVarPos.Position;
+  _Settings.AlignAssign := chk_AlignAssign.Checked;
+  _Settings.AlignAssignPos := ud_AlignAssignPos.Position;
   _Settings.SpaceEqualOper := GetSpaceItem(1);
   _Settings.SpaceOperators := GetSpaceItem(2);
   _Settings.SpaceColon := GetSpaceItem(3);
@@ -676,6 +682,8 @@ begin
   chk_AlignVar.Checked := _Settings.AlignVar in [1, 2];
   chk_AlignConst.Checked := _Settings.AlignVar in [1, 3];
   ud_AlignVarPos.Position := _Settings.AlignVarPos;
+  chk_AlignAssign.Checked := _Settings.AlignAssign;
+  ud_AlignAssignPos.Position := _Settings.AlignAssignPos;
   rg_Capitalization.ItemIndex := CapfileModeToInt(_Settings.FillNewWords);
   chk_UseUcmIdentifiers.Checked := _Settings.UseUcmIdentifiers;
   UpdateUcmWarning;
@@ -687,6 +695,7 @@ begin
   ud_WrapPosition.Associate := ed_WrapPosition;
   ud_AlignCommentPos.Associate := ed_AlignCommentPos;
   ud_AlignVarPos.Associate := ed_AlignVarPos;
+  ud_AlignAssignPos.Associate := ed_AlignAssignPos;
   chk_FeedAfterThenClick(nil);
   chk_FeedEachUnitClick(nil);
 end;
