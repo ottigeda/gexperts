@@ -6,6 +6,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 
 - Code Formatter: Added option to use identifiers from Uses Clause Manager for capitalization (feature #218)
 - Code Proofreader: Added option to use identifiers from Uses Clause Manager for case correction (feature #218)
+- Code Formatter: Added option to align assignment operators (:=) at a fixed column position
 
 ## Bug Fixes
 
