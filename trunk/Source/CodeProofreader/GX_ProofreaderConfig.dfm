@@ -433,6 +433,15 @@ object fmProofreaderConfig: TfmProofreaderConfig
               TabOrder = 1
               OnClick = cbEnableCompilerClick
             end
+            object cbEnableUcm: TCheckBox
+              Left = 8
+              Top = 232
+              Width = 291
+              Height = 17
+              Anchors = [akLeft, akTop, akRight]
+              Caption = 'Use identifiers from Uses Clause Manager'
+              TabOrder = 4
+            end
           end
         end
       end

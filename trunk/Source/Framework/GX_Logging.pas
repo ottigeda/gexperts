@@ -46,6 +46,7 @@ var
   Logger: IGxLogger = nil;
 
 function CreateModuleLogger(const _Module: string): IGxLogger;
+function CreateNullLogger: IGxLogger;
 
 implementation
 
@@ -434,6 +435,11 @@ begin
   // if logging is turned off, return the global TGxNullLogger instance
   Result := Logger;
 {$ENDIF}
+end;
+
+function CreateNullLogger: IGxLogger;
+begin
+  Result := TGxNullLogger.Create;
 end;
 
 initialization

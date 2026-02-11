@@ -8,7 +8,10 @@ unit GX_ProofreaderData;
 interface
 
 uses
-  SysUtils, Classes, OmniXML, GX_ProofreaderUtils, GX_ConfigurationInfo;
+  SysUtils, Classes, OmniXML,
+  GX_ProofreaderUtils,
+  GX_ConfigurationInfo,
+  GX_CodeFormatterSettings; // for TUcmLookupFunc todo: Maybe move this type declaration to a differen Unit?
 
 type
   TProofreaderData = class
@@ -20,6 +23,8 @@ type
     FReplacerActive: Boolean;
     FDictionaryActive: Boolean;
     FCompilerActive: Boolean;
+    FUcmActive: Boolean;
+    FUcmLookup: TUcmLookupFunc;
     FDictionaryCaseMayDiffer: Boolean;
     FOneCharIncorrect: Boolean;
     FMustBeNearbyLetter: Boolean;
@@ -65,6 +70,8 @@ type
     property ReplacerActive: Boolean read FReplacerActive write FReplacerActive;
     property DictionaryActive: Boolean read FDictionaryActive write FDictionaryActive;
     property CompilerActive: Boolean read FCompilerActive write FCompilerActive;
+    property UcmActive: Boolean read FUcmActive write FUcmActive;
+    property UcmLookup: TUcmLookupFunc read FUcmLookup write FUcmLookup;
     property DictionaryCaseMayDiffer: Boolean read FDictionaryCaseMayDiffer write FDictionaryCaseMayDiffer;
     property OneCharIncorrect: Boolean read FOneCharIncorrect write FOneCharIncorrect;
     property MustBeNearbyLetter: Boolean read FMustBeNearbyLetter write FMustBeNearbyLetter;
@@ -539,6 +546,7 @@ begin
   // C++Builder does not have support for compiler-assisted proofreading
   FCompilerActive := _Settings.ReadBool('CompilerActive', False);
   {$ENDIF GX_BCB}
+  FUcmActive := _Settings.ReadBool('UcmActive', False);
   FDictionaryCaseMayDiffer := _Settings.ReadBool('DictionaryCaseDiffer', True);
   FOneCharIncorrect := _Settings.ReadBool('OtherLetter', True);
   FMustBeNearbyLetter := _Settings.ReadBool('NearbyLetter', False);
@@ -559,6 +567,7 @@ begin
   {$IFNDEF GX_BCB}
   _Settings.WriteBool('CompilerActive', FCompilerActive);
   {$ENDIF GX_BCB}
+  _Settings.WriteBool('UcmActive', FUcmActive);
   _Settings.WriteBool('DictionaryCaseDiffer', FDictionaryCaseMayDiffer);
   _Settings.WriteBool('OtherLetter', FOneCharIncorrect);
   _Settings.WriteBool('NearbyLetter', FMustBeNearbyLetter);

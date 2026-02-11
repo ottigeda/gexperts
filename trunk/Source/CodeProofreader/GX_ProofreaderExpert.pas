@@ -13,6 +13,7 @@ type
   private
     FProofreaderData: TProofreaderData;
     procedure CopyDefaultsFromResource(const _FileName: string);
+    function UcmLookup(const _Identifier: string; out _Casing: string): Boolean;
   protected
     procedure SetActive(New: Boolean); override;
     procedure InternalSaveSettings(_Settings: IExpertSettings); override;
@@ -32,7 +33,8 @@ implementation
 
 uses
   SysUtils, Dialogs,
-  GX_ProofreaderConfig, GX_MessageBox, u_dzVclUtils;
+  GX_ProofreaderConfig, GX_MessageBox, u_dzVclUtils,
+  GX_GExperts, GX_UsesExpert, GX_Logging;
 
 type
   TCreateDefaultTablesMessage = class(TGxQuestionBoxAdaptor)
@@ -140,6 +142,20 @@ begin
   Result := 'CodeProofreader';
 end;
 
+function TCodeProofreaderExpert.UcmLookup(const _Identifier: string; out _Casing: string): Boolean;
+var
+  GExpertsInst: TGExperts;
+  Expert: TGX_Expert;
+begin
+  Result := False;
+  if not TryGetGExpertsInst(GExpertsInst) then
+    Exit; //==>
+  if not GExpertsInst.FindExpert('UsesClauseMgr', Expert) then
+    Exit; //==>
+  Result := TUsesClauseMgrExpert(Expert).TryLookupIdentifier(AnsiString(_Identifier), _Casing,
+    CreateModuleLogger('Proofreader'));
+end;
+
 procedure TCodeProofreaderExpert.InternalSaveSettings(_Settings: IExpertSettings);
 begin
   inherited InternalSaveSettings(_Settings);
@@ -154,8 +170,10 @@ begin
 
   if Active then
   begin
-    if not Assigned(FProofreaderData) then
+    if not Assigned(FProofreaderData) then begin
       FProofreaderData := TProofreaderData.Create;
+      FProofreaderData.UcmLookup := Self.UcmLookup;
+    end;
 
     FProofreaderData.ReloadData;
   end

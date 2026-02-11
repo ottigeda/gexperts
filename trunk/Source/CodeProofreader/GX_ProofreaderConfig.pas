@@ -61,6 +61,7 @@ type
     cbFirstCharMustBeCorrect: TCheckBox;
     cbEnableDictionary: TCheckBox;
     cbEnableCompiler: TCheckBox;
+    cbEnableUcm: TCheckBox;
     tabHistory: TTabSheet;
     pnlHistory: TPanel;
     lvHistory: TListView;
@@ -243,6 +244,7 @@ begin
   cbReplacerActive.Checked := FProofreaderData.ReplacerActive;
   cbEnableDictionary.Checked := FProofreaderData.DictionaryActive;
   cbEnableCompiler.Checked := FProofreaderData.CompilerActive;
+  cbEnableUcm.Checked := FProofreaderData.UcmActive;
   cbCaseDiffer.Checked := FProofreaderData.DictionaryCaseMayDiffer;
   cbOneCharIncorrect.Checked := FProofreaderData.OneCharIncorrect;
   cbMustBeNearbyLetter.Checked := FProofreaderData.MustBeNearbyLetter;
@@ -279,6 +281,7 @@ begin
     ReplacerActive := cbReplacerActive.Checked;
     DictionaryActive := cbEnableDictionary.Checked;
     CompilerActive := cbEnableCompiler.Checked;
+    UcmActive := cbEnableUcm.Checked;
     DictionaryCaseMayDiffer := cbCaseDiffer.Checked;
     OneCharIncorrect := cbOneCharIncorrect.Checked;
     MustBeNearbyLetter := cbMustBeNearbyLetter.Checked;

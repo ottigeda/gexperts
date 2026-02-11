@@ -13,7 +13,8 @@ uses
 {$IFDEF unicode}
   AnsiStrings,
 {$ENDIF}
-  u_dzTypes;
+  u_dzTypes,
+  GX_Logging;
 
 const
   CURRENT_UNIT_CACHE_VERSION = 'GExpertsUsesClauseManagerCacheVersion3';
@@ -102,7 +103,7 @@ type
   public
     function Add(const _Identifier: AnsiString; const _Filename: string; _LineNo: Integer): Integer;
     function FindIdentifierCasing(const _Identifier: AnsiString;
-      const _IdeSourcePath: string; out _Casing: string): Boolean;
+      const _IdeSourcePath: string; out _Casing: string; _Logger: IGxLogger): Boolean;
     property Items[_Idx: Integer]: TUnitExport read GetItems; default;
   end;
 
@@ -389,7 +390,7 @@ begin
 end;
 
 function TUnitExportlist.FindIdentifierCasing(const _Identifier: AnsiString;
-  const _IdeSourcePath: string; out _Casing: string): Boolean;
+  const _IdeSourcePath: string; out _Casing: string; _Logger: IGxLogger): Boolean;
 var
   Idx: Integer;
   LcIdent: AnsiString;
@@ -398,11 +399,14 @@ var
   IdeCasing: string;
   HasConflict: Boolean;
   HasIdeCasing: Boolean;
+  EntryCount: Integer;
 begin
   Result := False;
   LcIdent := LowerCase(_Identifier);
-  if not BinarySearch(0, Count - 1, Idx, LcIdent, CompareToItem, True) then
+  if not BinarySearch(0, Count - 1, Idx, LcIdent, CompareToItem, True) then begin
+    _Logger.InfoFmt('FindCasing: BinarySearch failed for "%s"', [string(LcIdent)]);
     Exit; //==>
+  end;
 
   // Idx now points to the first entry with matching LCIdentifier.
   // Scan all consecutive entries with the same LCIdentifier.
@@ -410,10 +414,14 @@ begin
   IdeCasing := '';
   HasConflict := False;
   HasIdeCasing := False;
+  EntryCount := 0;
   while (Idx < Count) do begin
     Item := Items[Idx];
     if CompareStr(LcIdent, Item.LCIdentifier) <> 0 then
       Break;
+    Inc(EntryCount);
+    _Logger.InfoFmt('FindCasing: entry #%d Identifier="%s" FileName="%s"',
+      [EntryCount, string(Item.Identifier), Item.FileName]);
     if FirstCasing = '' then begin
       FirstCasing := string(Item.Identifier);
     end else if not SameStr(FirstCasing, string(Item.Identifier)) then begin
@@ -430,6 +438,9 @@ begin
     end;
     Inc(Idx);
   end;
+
+  _Logger.InfoFmt('FindCasing: entries=%d FirstCasing="%s" HasConflict=%s HasIdeCasing=%s',
+    [EntryCount, FirstCasing, BoolToStr(HasConflict, True), BoolToStr(HasIdeCasing, True)]);
 
   if not HasConflict then begin
     _Casing := FirstCasing;

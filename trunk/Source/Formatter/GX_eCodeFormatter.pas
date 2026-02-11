@@ -51,6 +51,7 @@ uses
   GX_CodeFormatterConfigHandler,
   GX_CodeFormatterSettings,
   GX_UsesExpert,
+  GX_Logging,
   GX_GenericUtils;
 
 { TeCodeFormatterExpert }
@@ -157,7 +158,8 @@ begin
     Exit; //==>
   if not GExpertsInst.FindExpert('UsesClauseMgr', Expert) then
     Exit; //==>
-  Result := TUsesClauseMgrExpert(Expert).TryLookupIdentifier(AnsiString(_Identifier), _Casing);
+  Result := TUsesClauseMgrExpert(Expert).TryLookupIdentifier(AnsiString(_Identifier), _Casing,
+    CreateNullLogger);
 end;
 
 procedure TeCodeFormatterExpert.InternalLoadSettings(_Settings: IExpertSettings);

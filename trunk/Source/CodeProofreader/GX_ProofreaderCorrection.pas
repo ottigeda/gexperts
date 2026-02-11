@@ -21,8 +21,19 @@ uses
   {$IFOPT D+} GX_DbugIntf, {$ENDIF}
   SysUtils, Classes, ToolsAPI, MMSystem, StrUtils,
   u_dzStringUtils,
+  GX_Logging,
   GX_OtaUtils, GX_GenericUtils, GX_ProofreaderUtils,
   GX_EditorFormServices, GX_KibitzComp, GX_IdeUtils;
+
+var
+  TheModuleLogger: IGxLogger = nil;
+
+function Logger: IGxLogger;
+begin
+  if not Assigned(TheModuleLogger) then
+    TheModuleLogger := CreateModuleLogger('Proofreader');
+  Result := TheModuleLogger;
+end;
 
 type
   IEditorPositionInformation = interface(IUnknown)
@@ -94,6 +105,8 @@ type
                                 const FromString, ToString: string);
     procedure AppendKibitzHistory(const SourceLanguage: TReplacementSource;
                                   const FromString, ToString: string);
+    procedure AppendUcmHistory(const SourceLanguage: TReplacementSource;
+                                const FromString, ToString: string);
     //
 
     procedure BeepOnDemand;
@@ -104,6 +117,10 @@ type
     function PerformDictionaryReplacement(const SourceEditor: IOTASourceEditor;
       const EditorPositionInformation: IEditorPositionInformation;
       const ReplacementSourceTable: TReplacementSource;
+      const TrailingCharacters, SourceString: string): Boolean;
+
+    function PerformUcmReplacement(const SourceEditor: IOTASourceEditor;
+      const EditorPositionInformation: IEditorPositionInformation;
       const TrailingCharacters, SourceString: string): Boolean;
 
     function PerformKibitzReplacement(const SourceEditor: IOTASourceEditor;
@@ -242,6 +259,13 @@ procedure TAutoTypeWriterNotifier.AppendKibitzHistory(const SourceLanguage: TRep
 begin
   AppendHistory(ckWord, SourceLanguage,
     Format('Compiler Correct: "%s" --> "%s"', [FromString, ToString]), FromString);
+end;
+
+procedure TAutoTypeWriterNotifier.AppendUcmHistory(const SourceLanguage: TReplacementSource;
+  const FromString, ToString: string);
+begin
+  AppendHistory(ckWord, SourceLanguage,
+    Format('UCM: "%s" --> "%s"', [FromString, ToString]), FromString);
 end;
 
 procedure TAutoTypeWriterNotifier.BeepOnDemand;
@@ -402,6 +426,40 @@ begin
 
     Result := True;
   end;
+end;
+
+function TAutoTypeWriterNotifier.PerformUcmReplacement(const SourceEditor: IOTASourceEditor;
+  const EditorPositionInformation: IEditorPositionInformation;
+  const TrailingCharacters, SourceString: string): Boolean;
+var
+  ReplacementString: string;
+begin
+  Result := False;
+
+  if not Assigned(FProofreaderData.UcmLookup) then begin
+    Logger.Info('UCM: UcmLookup not assigned');
+    Exit;
+  end;
+  if not FProofreaderData.UcmLookup(SourceString, ReplacementString) then begin
+    Logger.InfoFmt('UCM: lookup failed for "%s"', [SourceString]);
+    Exit;
+  end;
+  Logger.InfoFmt('UCM: lookup "%s" -> "%s"', [SourceString, ReplacementString]);
+  if ReplacementString = SourceString then begin
+    Logger.Info('UCM: already correct casing');
+    Exit; // already correct casing
+  end;
+
+  ReplaceTextAt(SourceEditor, EditorPositionInformation,
+    SourceString, ReplacementString, TrailingCharacters);
+
+  BeepOnDemand;
+
+  AdjustEditorPosition(EditorPositionInformation, ReplacementString, SourceString);
+
+  AppendUcmHistory(rtPasSrc, SourceString, ReplacementString);
+
+  Result := True;
 end;
 
 function TAutoTypeWriterNotifier.PerformKibitzReplacement(const SourceEditor: IOTASourceEditor;
@@ -751,7 +809,7 @@ begin
 
     try
       if not FProofreaderData.ReplacerActive and not FProofreaderData.DictionaryActive and
-         not FProofreaderData.CompilerActive then
+         not FProofreaderData.CompilerActive and not FProofreaderData.UcmActive then
       begin
         Exit;
       end;
@@ -882,6 +940,24 @@ begin
         begin
           EditorPositionInformation.RestoreCursorIfNeeded(EnteredNewLine);
           CodeProofreaderExpert.IncCallCount;
+          Exit;
+        end;
+      end;
+
+      if FProofreaderData.UcmActive then
+      begin
+        Logger.InfoFmt('UCM: ReplacementSourceTable=%d SourceString="%s"', [Ord(ReplacementSourceTable), SourceString]);
+        if ReplacementSourceTable = rtPasSrc then
+        begin
+          if PerformUcmReplacement(SourceEditor, EditorPositionInformation,
+            TrailingChars, SourceString) then
+          begin
+            EditorPositionInformation.RestoreCursorIfNeeded(EnteredNewLine);
+            CodeProofreaderExpert.IncCallCount;
+          end;
+        end
+        else begin
+          Logger.Info('UCM: skipped, not rtPasSrc');
         end;
       end;
 

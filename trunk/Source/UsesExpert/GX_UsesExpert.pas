@@ -22,6 +22,7 @@ uses
   u_dzDpiScaleUtils,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm, GX_Splitter,
   GX_UnitExportsParser, GX_UsesExpertOptions, GX_UnitExportList,
+  GX_Logging,
   ToolsApi,
   GX_OtaUtils,
   rzC_Splitter;
@@ -80,7 +81,8 @@ type
     function GetActionCaption: string; override;
     function HasConfigOptions: Boolean; override;
     procedure Execute(Sender: TObject); override;
-    function TryLookupIdentifier(const _Identifier: AnsiString; out _Casing: string): Boolean;
+    function TryLookupIdentifier(const _Identifier: AnsiString; out _Casing: string;
+      _Logger: IGxLogger): Boolean;
   end;
 
 type
@@ -888,21 +890,33 @@ begin
   _Settings.WriteBool('FastAdd', FFastAdd);
 end;
 
-function TUsesClauseMgrExpert.TryLookupIdentifier(const _Identifier: AnsiString; out _Casing: string): Boolean;
+function TUsesClauseMgrExpert.TryLookupIdentifier(const _Identifier: AnsiString; out _Casing: string;
+  _Logger: IGxLogger): Boolean;
 var
   Identifiers: TUnitExportlist;
   IdeSourcePath: string;
 begin
   Result := False;
-  if not Assigned(FUnitExportParserThread) then
+  if not Assigned(FUnitExportParserThread) then begin
+    _Logger.Info('TryLookup: ParserThread not assigned');
     Exit; //==>
-  if not FUnitExportParserThread.HasFinished then
+  end;
+  if not FUnitExportParserThread.HasFinished then begin
+    _Logger.Info('TryLookup: ParserThread not finished');
     Exit; //==>
+  end;
   Identifiers := FUnitExportParserThread.Identifiers;
-  if not Assigned(Identifiers) then
+  if not Assigned(Identifiers) then begin
+    _Logger.Info('TryLookup: Identifiers not assigned');
     Exit; //==>
+  end;
   IdeSourcePath := ExtractFilePath(ExcludeTrailingPathDelimiter(ConfigInfo.VCLPath));
-  Result := Identifiers.FindIdentifierCasing(_Identifier, IdeSourcePath, _Casing);
+  _Logger.InfoFmt('TryLookup: Count=%d IdeSourcePath="%s"', [Identifiers.Count, IdeSourcePath]);
+  Result := Identifiers.FindIdentifierCasing(_Identifier, IdeSourcePath, _Casing, _Logger);
+  if Result then
+    _Logger.InfoFmt('TryLookup: Result=True Casing="%s"', [_Casing])
+  else
+    _Logger.Info('TryLookup: Result=False');
 end;
 
 procedure TAction_SetEnabled(const _Actions: array of TCustomAction; _Value: Boolean);
