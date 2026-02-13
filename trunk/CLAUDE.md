@@ -13,6 +13,10 @@ GExperts is an open-source IDE plugin (DLL) for Delphi and C++Builder that provi
 - **Use existing build infrastructure.** Always call `__Build_Project.cmd` or the documented bash wrapper scripts (`_buildproject.sh`). Do NOT write custom build logic from scratch.
 - **Clean up temporary files.** Do not leave debug or temporary test files in the working directory. If temp files are needed during a task, clean them up before finishing.
 
+## DFM Compatibility
+
+**IMPORTANT:** Never use `Margins` or `AlignWithMargins` properties in DFM files. These were introduced in Delphi 2006 and cause errors in Delphi 6/7. The Delphi form designer auto-adds these properties, so always check DFM files before committing.
+
 ## Version Control
 
 **IMPORTANT:** This project uses Subversion (SVN), not Git.
