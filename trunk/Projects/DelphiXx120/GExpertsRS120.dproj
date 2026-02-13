@@ -142,6 +142,7 @@ $(PreBuildEvent)]]>
         <DCCReference Include="..\..\Source\AutoSwitchDesktop\GX_AutoSwitchDesktop.pas"/>
         <DCCReference Include="..\..\Source\AutoSwitchDesktop\GX_AutoSwitchDesktopConfig.pas">
             <Form>f_AutoSwitchDestkopConfig</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\BackupProject\GX_Backup.pas">
             <Form>fmBackup</Form>
@@ -361,6 +362,11 @@ $(PreBuildEvent)]]>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_eReverseStatement.pas"/>
+        <DCCReference Include="..\..\source\Editor\GX_ReverseStatementUtils.pas"/>
+        <DCCReference Include="..\..\source\Editor\GX_eReverseOptions.pas">
+            <Form>fmReverseOptions</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_eSelectIdentifier.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_eSelectionEditorExpert.pas"/>
         <DCCReference Include="..\..\Source\Editor\GX_eSort.pas">

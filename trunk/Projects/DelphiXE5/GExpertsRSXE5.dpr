@@ -100,6 +100,8 @@ uses
   GX_ePrevNextIdentifier in '..\..\source\Editor\GX_ePrevNextIdentifier.pas',
   GX_eRemoveMatchingLines in '..\..\Source\Editor\GX_eRemoveMatchingLines.pas' {fmRemoveMatchingLinesExpertConfig},
   GX_eReverseStatement in '..\..\source\Editor\GX_eReverseStatement.pas',
+  GX_ReverseStatementUtils in '..\..\source\Editor\GX_ReverseStatementUtils.pas',
+  GX_eReverseOptions in '..\..\source\Editor\GX_eReverseOptions.pas' {fmReverseOptions},
   GX_eSelectIdentifier in '..\..\source\Editor\GX_eSelectIdentifier.pas',
   GX_eSelectionEditorExpert in '..\..\source\Editor\GX_eSelectionEditorExpert.pas',
   GX_eSort in '..\..\Source\Editor\GX_eSort.pas' {fmeSortConfig},

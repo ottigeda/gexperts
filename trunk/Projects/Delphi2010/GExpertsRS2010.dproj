@@ -229,6 +229,11 @@
             <Form>fmRemoveMatchingLinesExpertConfig</Form>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_eReverseStatement.pas"/>
+        <DCCReference Include="..\..\source\Editor\GX_ReverseStatementUtils.pas"/>
+        <DCCReference Include="..\..\source\Editor\GX_eReverseOptions.pas">
+            <Form>fmReverseOptions</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_eSelectIdentifier.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_eSelectionEditorExpert.pas"/>
         <DCCReference Include="..\..\Source\Editor\GX_eSort.pas">
