@@ -1704,7 +1704,7 @@ end;
 
 function Copy(const _s: AnsiString; _Pos: Integer): AnsiString;
 begin
-  Result := Copy(_s, _Pos, Length(_s) - _Pos);
+  Result := Copy(_s, _Pos, Length(_s) - _Pos + 1);
 end;
 
 function Copy(const _s: string; _Pos, _Len: Integer): string; inline;

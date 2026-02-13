@@ -18,8 +18,7 @@ type
   ///<summary>
   /// raised in the sorted list templates instead of EListError so it is possible to
   /// specifically ignore these exceptions in the debugger if they are handled in code </summary>
-  EdzListError = class(EListError)
-  end;
+  EdzListError = u_dzSortUtils.EdzListError;
 
 type
   ///<summary>
@@ -176,73 +175,21 @@ end;
 procedure QuickSort(_Left, _Right: Integer; _CompareMeth: TCompareItemsMeth32;
   _SwapMeth: TSwapItemsMeth32);
 var
-  I, J, P: Integer;
+  Adapter: ISortDataHandler;
 begin
-  if _Left >= _Right then
-    Exit; //==>
-  repeat
-    I := _Left;
-    J := _Right;
-//    P := (_Left + _Right) shr 1;
-    // Chosing the pivot element can make a big difference:
-    // In my unit tests its factor 100 for the TestPartSortedPartReverse test
-    P := GetPivot(I, J, _CompareMeth);
-    repeat
-      while _CompareMeth(I, P) < 0 do
-        Inc(I);
-      while _CompareMeth(J, P) > 0 do
-        Dec(J);
-      if I <= J then begin
-        if I < J then
-          _SwapMeth(I, J);
-        if P = I then
-          P := J
-        else if P = J then
-          P := I;
-        Inc(I);
-        Dec(J);
-      end;
-    until I > J;
-    if _Left < J then
-      QuickSort(_Left, J, _CompareMeth, _SwapMeth);
-    _Left := I;
-  until I >= _Right;
+  // Wrapper: create adapter and delegate to interface version to avoid code duplication
+  Adapter := TSortDataHandlerAdapter.Create(_CompareMeth, _SwapMeth);
+  QuickSort(_Left, _Right, Adapter);
 end;
 
 procedure QuickSort(_Left, _Right: Integer; _CompareMeth: TCompareItemsMeth64;
   _SwapMeth: TSwapItemsMeth64);
 var
-  I, J, P: Integer;
+  Adapter: ISortDataHandler;
 begin
-  if _Left >= _Right then
-    Exit; //==>
-  repeat
-    I := _Left;
-    J := _Right;
-//    P := (_Left + _Right) shr 1;
-    // Chosing the pivot element can make a big difference:
-    // In my unit tests its factor 100 for the TestPartSortedPartReverse test
-    P := GetPivot(I, J, _CompareMeth);
-    repeat
-      while _CompareMeth(I, P) < 0 do
-        Inc(I);
-      while _CompareMeth(J, P) > 0 do
-        Dec(J);
-      if I <= J then begin
-        if I < J then
-          _SwapMeth(I, J);
-        if P = I then
-          P := J
-        else if P = J then
-          P := I;
-        Inc(I);
-        Dec(J);
-      end;
-    until I > J;
-    if _Left < J then
-      QuickSort(_Left, J, _CompareMeth, _SwapMeth);
-    _Left := I;
-  until I >= _Right;
+  // Wrapper: create adapter and delegate to interface version to avoid code duplication
+  Adapter := TSortDataHandlerAdapter64.Create(_CompareMeth, _SwapMeth);
+  QuickSort(_Left, _Right, Adapter);
 end;
 
 function BinarySearch(_Left, _Right: Integer; out _Index: Integer;

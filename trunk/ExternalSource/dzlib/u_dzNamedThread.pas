@@ -24,8 +24,10 @@ type
   end;
 
 ///<summary>
-/// Set the name (displayed in the debugger) for the current thread
-/// @param Name is a string with the name to use </summary>
+/// Set the name (displayed in the debugger) for the current thread.
+/// Uses the special Windows exception $406D1388 which the debugger intercepts.
+/// @param Name is a string with the name to use
+/// @Note The exception raised is intentionally caught and ignored - it's only for the debugger </summary>
 procedure SetThreadName(const _Name: AnsiString);
 
 type
@@ -77,9 +79,10 @@ begin
   ThreadNameInfo.FThreadID := $FFFFFFFF;
   ThreadNameInfo.FFlags := 0;
   try
+    // Raise special exception $406D1388 that debugger intercepts to set thread name
     RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord), Pointer(@ThreadNameInfo));
   except
-    // ignore
+    // Exception must be caught and ignored - it's only for the debugger to intercept
   end; //FI:W501 Empty EXCEPT block
 end;
 

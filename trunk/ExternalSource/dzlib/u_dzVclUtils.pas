@@ -2187,20 +2187,38 @@ end;
 
 procedure TGrid_ExportToStream(_Grid: TCustomGrid; _Stream: TStream; _IncludeFixed: Boolean = False);
 var
-  s: AnsiString;
+  s: string;
+{$IFDEF UNICODE}
+  utf: UTF8String;
+{$ENDIF}
 begin
-  // todo: Should this convert to UTF8 instead?
-  s := AnsiString(TGrid_GetText(_Grid, _IncludeFixed));
+  s := TGrid_GetText(_Grid, _IncludeFixed);
+{$IFDEF UNICODE}
+  // In Unicode Delphi (2009+), string is UnicodeString, convert to UTF-8 to preserve international characters
+  utf := UTF8Encode(s);
+  TStream_WriteStringLn(_Stream, RawByteString(utf));
+{$ELSE}
+  // In non-Unicode Delphi (2007-), string is already AnsiString, no conversion needed
   TStream_WriteStringLn(_Stream, s);
+{$ENDIF}
 end;
 
 procedure TGrid_ExportToStream(_Grid: TCustomGrid; _Stream: TStream; _Selection: TGridRect);
 var
-  s: AnsiString;
+  s: string;
+{$IFDEF UNICODE}
+  utf: UTF8String;
+{$ENDIF}
 begin
-  // todo: Should this convert to UTF8 instead?
-  s := AnsiString(TGrid_GetText(_Grid, _Selection));
+  s := TGrid_GetText(_Grid, _Selection);
+{$IFDEF UNICODE}
+  // In Unicode Delphi (2009+), string is UnicodeString, convert to UTF-8 to preserve international characters
+  utf := UTF8Encode(s);
+  TStream_WriteStringLn(_Stream, RawByteString(utf));
+{$ELSE}
+  // In non-Unicode Delphi (2007-), string is already AnsiString, no conversion needed
   TStream_WriteStringLn(_Stream, s);
+{$ENDIF}
 end;
 
 procedure TGrid_ExportToFile(_Grid: TCustomGrid; const _Filename: string; _IncludeFixed: Boolean = False);

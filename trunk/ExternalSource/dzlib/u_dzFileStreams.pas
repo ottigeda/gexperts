@@ -91,7 +91,7 @@ type
     /// .ReadBuffer
     /// .Free
     /// @raises the usual exceptions that can occur in these operations  </summary>
-    class procedure CreateReadFree(const _fn: string; var _Buffer; _Size: Integer);
+    class procedure CreateReadFree(const _Fn: string; var _Buffer; _Size: Integer);
     ///<summary>
     /// Short for
     /// .Create
@@ -99,40 +99,50 @@ type
     /// .WriteBuffer
     /// .Free
     /// @raises the usual exceptions that can occur in these operations  </summary>
-    class procedure CreateWriteFree(const _fn: string; const _Buffer; _Size: Integer);
-    ///<summary> Creates a TdzFile object.
-    ///          @param Filename is a string containing the name of the file to open </summary>
+    class procedure CreateWriteFree(const _Fn: string; const _Buffer; _Size: Integer);
+    ///<summary>
+    /// Creates a TdzFile object.
+    /// @param Filename is a string containing the name of the file to open </summary>
     constructor Create(const _Filename: string);
-    ///<summary>Flushes and closes the file if it is still open, destroys the object </summary>
+    ///<summary>
+    /// Flushes and closes the file if it is still open, destroys the object </summary>
     destructor Destroy; override;
     ///<summary>
     /// Checks the handle and returns true if it is <> INVALID_HANDLE_VALUE </summary>
     function IsOpen: Boolean;
-    ///<summary> Opens the file as specified by the properties, raises an exception on error </summary>
-    procedure Open;
-    ///<summary> Opens the file as specified by the properties, returns false on error </summary>
+    ///<summary>
+    /// Opens the file as specified by the properties
+    /// @returns Self
+    /// raises an exception on error </summary>
+    function Open: TdzFile;
+    ///<summary>
+    /// Opens the file as specified by the properties
+    /// @returns false on error </summary>
     function OpenNoException: Boolean;
     ///<summary>
     /// Opens the file in readonly mode, with
     /// * CreateDisposition = fcOpenFailIfNotExists
     /// * ShareMode = [fsRead]
     /// * AccessMode = [faRead]
+    /// @returns Self
     /// raises an exception on error </summary>
-    procedure OpenReadonly;
+    function OpenReadonly: TdzFile;
     ///<summary>
     /// Opens a new file for writing only (or truncates an existing file):
     /// * AccessMode := [faWrite];
     /// * ShareMode := fsNoSharing;
     /// * CreateDisposition := fcCreateTruncateIfExists;
+    /// @returns Self
     /// raises an exception on error </summary>
-    procedure OpenCreateWriteNoSharing;
+    function OpenCreateWriteNoSharing: TdzFile;
     ///<summary>
     /// Opens a new file for writing only (or truncates an existing file):
     /// * AccessMode := [faWrite];
     /// * ShareMode := fsShareRead;
     /// * CreateDisposition := fcCreateTruncateIfExists;
+    /// @returns Self
     /// raises an exception on error </summary>
-    procedure OpenCreateWriteShareRead;
+    function OpenCreateWriteShareRead: TdzFile;
     ///<summary> Opens the file and seeks to the end. Returns the new position (that is: The file length). </summary>
     function Append: LongInt;
     ///<summary>
@@ -281,11 +291,11 @@ type
 const
   INVALID_HANDLE_VALUE = -1;
 
-class procedure TdzFile.CreateReadFree(const _fn: string; var _Buffer; _Size: Integer);
+class procedure TdzFile.CreateReadFree(const _Fn: string; var _Buffer; _Size: Integer);
 var
   Stream: TdzFile;
 begin
-  Stream := TdzFile.Create(_fn);
+  Stream := TdzFile.Create(_Fn);
   try
     Stream.OpenReadonly;
     Stream.ReadBuffer(_Buffer, _Size);
@@ -294,11 +304,11 @@ begin
   end;
 end;
 
-class procedure TdzFile.CreateWriteFree(const _fn: string; const _Buffer; _Size: Integer);
+class procedure TdzFile.CreateWriteFree(const _Fn: string; const _Buffer; _Size: Integer);
 var
   Stream: TdzFile;
 begin
-  Stream := TdzFile.Create(_fn);
+  Stream := TdzFile.Create(_Fn);
   try
     Stream.OpenCreateWriteNoSharing;
     Stream.WriteBuffer(_Buffer, NativeInt(_Size));
@@ -337,31 +347,31 @@ begin
   THandleStreamHack(Self).FHandle := THandleCast(INVALID_HANDLE_VALUE);
 end;
 
-procedure TdzFile.OpenReadonly;
+function TdzFile.OpenReadonly: TdzFile;
 begin
   CreateDisposition := fcOpenFailIfNotExists;
   ShareMode := [fsRead, fsWrite];
   AccessMode := [faRead];
-  Open;
+  Result := Open;
 end;
 
-procedure TdzFile.OpenCreateWriteNoSharing;
+function TdzFile.OpenCreateWriteNoSharing: TdzFile;
 begin
   CreateDisposition := fcCreateTruncateIfExists;
   ShareMode := fsNoSharing;
   AccessMode := [faWrite];
-  Open;
+  Result := Open;
 end;
 
-procedure TdzFile.OpenCreateWriteShareRead;
+function TdzFile.OpenCreateWriteShareRead: TdzFile;
 begin
   CreateDisposition := fcCreateTruncateIfExists;
   ShareMode := [fsRead];
   AccessMode := [faWrite];
-  Open;
+  Result := Open;
 end;
 
-procedure TdzFile.Open;
+function TdzFile.Open: TdzFile;
 var
   LastError: Cardinal;
 begin
@@ -369,6 +379,7 @@ begin
     LastError := GetLastError;
     RaiseLastOSErrorEx(LastError, Format(_('%%1:s (%%0:d) trying to open "%s"'), [FFilename]));
   end;
+  Result := Self;
 end;
 
 function TdzFile.OpenNoException: Boolean;
@@ -397,7 +408,7 @@ begin
       TheShareMode, FSecurityAttributes, Disposition, FFileAttributes or FFileFlags, 0);
     Result := (ApiHandle <> THandle(INVALID_HANDLE_VALUE));
     if not Result and ResetReadOnly and not TriedResetReadonly then
-      TFileSystem.SetReadonly(FFilename, False, ehReturnFalse);
+      TFileSystem.SetReadOnly(FFilename, False, ehReturnFalse);
   until Result or TriedResetReadonly or not ResetReadOnly or not (faWrite in AccessMode) and ResetReadOnly;
   if Result then
     THandleStreamHack(Self).FHandle := THandleCast(ApiHandle)

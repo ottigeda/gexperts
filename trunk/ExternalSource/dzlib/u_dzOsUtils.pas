@@ -57,7 +57,7 @@ type
   EXTENDED_NAME_FORMAT = (
     NameUnknown = 0, // Unknown name type.
     NameFullyQualifiedDN = 1, // Fully qualified distinguished name
-    NameSamCompatible = 2, // Windows NT® 4.0 account name
+    NameSamCompatible = 2, // Windows NT 4.0 account name
     NameDisplay = 3, // A "friendly" display name
     NameUniqueId = 6, // GUID string that the IIDFromString function returns
     NameCanonical = 7, // Complete canonical name
@@ -266,6 +266,26 @@ function TryGetHdVolumeName(_DriveChar: Char; out _Name: string): Boolean;
 /// did not support the GetVersionEx API call used here. But we don't really care any more. </summary>
 function GetOsVersionString: string;
 
+///<summary>
+/// Gets the Windows version string using RtlGetVersion from ntdll.dll.
+/// Unlike GetVersionEx, RtlGetVersion always returns the actual OS version
+/// regardless of the application manifest. This is the recommended method.
+/// @param IsServer determines whether to format the result as a server version
+/// @param Result returns the formatted version string (e.g., "Windows 11 (23H2) (build 22631)")
+/// @returns True if successful, False if RtlGetVersion is not available
+/// @Note: Uses dynamic loading for compatibility. Available since Windows 2000. </summary>
+function TryOsVersionFromRtlGetVersion(_IsServer: Boolean; out _Result: string): Boolean;
+
+///<summary>
+/// Gets the Windows version string by reading kernel32.dll file version information.
+/// This is a fallback method when TryOsVersionFromRtlGetVersion is not available.
+/// @param IsServer determines whether to format the result as a server version
+/// @param Result returns the formatted version string with kernel32.dll version details
+/// @returns True if successful, False if kernel32.dll version info cannot be read
+/// @Note: Does not work reliably for recent Windows versions if the application
+///        is not manifested for that version. Prefer TryOsVersionFromRtlGetVersion. </summary>
+function TryGetOsVersionFromKernel32Version(_IsServer: Boolean; out _Result: string): Boolean;
+
 type
   TWinCurrentRec = record
     BuildLab: string;
@@ -294,13 +314,26 @@ function TryGetWindowsVersionFromRegistry(out _Values: TWinCurrentRec): Boolean;
 function GetWindowsVersionStringFromRegistry: string;
 
 ///<summary>
+/// Uses RtlGetVersion from ntdll.dll to get the true Windows version.
+/// Unlike GetVersionEx, RtlGetVersion always returns the actual OS version
+/// regardless of the application manifest.
+/// @param Major returns the major version number
+/// @param Minor returns the minor version number
+/// @param Build returns the build number
+/// @returns True if successful, False otherwise
+/// @Note: RtlGetVersion is technically undocumented but widely used and stable.
+///        This is the recommended replacement for GetVersionEx. </summary>
+function TryGetOsVersionViaRtlGetVersion(out _Major, _Minor, _Build: Integer): Boolean;
+
+///<summary>
 /// Retrieves the product version information from the kernel32.dll.
 /// @param on return Major, Minor, Revision and Build are the product version of the kernel32.dll,
 ///        only valid if Result = True
-/// @returns true, if the version information could be read
+/// @returns True, if the version information could be read
 /// @Note: Since in newer Windows (version 8 and later) the GetVersionEx WinAPI function
-/// is lying, we might as well directly call GetKernel32Version instead. </summary>
-function GetKernel32Version(out _Major, _Minor, _Revision, _Build: Integer): Boolean;
+///        is lying, we might as well directly call GetKernel32Version instead. </summary>
+function GetKernel32Version(out _Major, _Minor, _Revision, _Build: Integer): Boolean; deprecated; // use TryGetKernel32Version instead
+function TryGetKernel32Version(out _Major, _Minor, _Revision, _Build: Integer): Boolean;
 
 ///<summary>
 /// Uses the GetLogicalProcessorInformation WinAPI function to get the size of the processor's cache line </summary>
@@ -834,7 +867,7 @@ const
 {$ENDIF}
 var
   Sei: TShellExecuteInfo;
-  ShellExecuteExApi: Function(lpExecInfo: PShellExecuteInfo):Bool; stdcall;
+  ShellExecuteExApi: function(lpExecInfo: PShellExecuteInfo): BOOL; stdcall;
 begin
   ShellExecuteExApi := GetProcAddress(GetModuleHandle(shell32), ENTRY_POINT_NAME);
   if not Assigned(ShellExecuteExApi) then
@@ -1120,27 +1153,80 @@ type
     wReserved: Byte;
   end;
 
-function GetVersionExA(var lpVersionInformation: TOsVersionInfoExA): BOOL; stdcall; overload; external kernel32 Name 'GetVersionExA';
+function GetVersionExA(var lpVersionInformation: TOsVersionInfoExA): BOOL; stdcall; overload; external kernel32 name 'GetVersionExA';
 
-function GetVersionExW(var lpVersionInformation: TOsVersionInfoExW): BOOL; stdcall; overload; external kernel32 Name 'GetVersionExW';
+function GetVersionExW(var lpVersionInformation: TOsVersionInfoExW): BOOL; stdcall; overload; external kernel32 name 'GetVersionExW';
 
-{$IFDEF unicode}
+{$IFDEF UNICODE}
 type
   TOsVersionInfoEx = TOsVersionInfoExW;
 
-function GetVersionEx(var lpVersionInformation: TOsVersionInfoEx): BOOL; stdcall; overload; external kernel32 Name 'GetVersionExW';
+function GetVersionEx(var lpVersionInformation: TOsVersionInfoEx): BOOL; stdcall; overload; external kernel32 name 'GetVersionExW';
 
 {$ELSE}
 type
   TOsVersionInfoEx = TOsVersionInfoExA;
 
-function GetVersionEx(var lpVersionInformation: TOsVersionInfoEx): BOOL; stdcall; overload; external kernel32 Name 'GetVersionExA';
+function GetVersionEx(var lpVersionInformation: TOsVersionInfoEx): BOOL; stdcall; overload; external kernel32 name 'GetVersionExA';
 
 {$ENDIF}
 
-function GetKernel32Version(out _Major, _Minor, _Revision, _Build: Integer): Boolean;
+type
+  NTSTATUS = LongInt;
+
+const
+  STATUS_SUCCESS = NTSTATUS($00000000);
+
+type
+  TRtlGetVersion = function(var lpVersionInformation: TOsVersionInfoEx): NTSTATUS; stdcall;
+
+///<summary>
+/// Uses RtlGetVersion from ntdll.dll to get the true Windows version.
+/// Unlike GetVersionEx, RtlGetVersion always returns the actual OS version
+/// regardless of the application manifest.
+/// @param Major returns the major version number
+/// @param Minor returns the minor version number
+/// @param Build returns the build number
+/// @returns True if successful, False otherwise
+/// @Note: Uses dynamic loading for compatibility. RtlGetVersion has been available
+///        since Windows 2000, but we gracefully handle the case where it's not available. </summary>
+function TryGetOsVersionViaRtlGetVersion(out _Major, _Minor, _Build: Integer): Boolean;
 var
-  Kernel32Handle: HModule;
+  VerInfo: TOsVersionInfoEx;
+  NtDllHandle: HMODULE;
+  RtlGetVersion: TRtlGetVersion;
+begin
+  Result := False;
+
+  // Dynamically load ntdll.dll (should always be loaded, but be safe)
+  NtDllHandle := GetModuleHandle('ntdll.dll');
+  if NtDllHandle = 0 then
+    Exit; //==>
+
+  // Get the RtlGetVersion function pointer
+  @RtlGetVersion := GetProcAddress(NtDllHandle, 'RtlGetVersion');
+  if not Assigned(RtlGetVersion) then
+    Exit; //==>
+
+  ZeroMemory(@VerInfo, SizeOf(VerInfo));
+  VerInfo.dwOSVersionInfoSize := SizeOf(VerInfo);
+
+  if RtlGetVersion(VerInfo) = STATUS_SUCCESS then begin
+    _Major := VerInfo.dwMajorVersion;
+    _Minor := VerInfo.dwMinorVersion;
+    _Build := VerInfo.dwBuildNumber;
+    Result := True;
+  end;
+end;
+
+function GetKernel32Version(out _Major, _Minor, _Revision, _Build: Integer): Boolean;
+begin
+  Result := TryGetKernel32Version(_Major, _Minor, _Revision, _Build);
+end;
+
+function TryGetKernel32Version(out _Major, _Minor, _Revision, _Build: Integer): Boolean;
+var
+  Kernel32Handle: HMODULE;
   Kernel32Filename: string;
 begin
   Kernel32Handle := GetModuleHandle(kernel32);
@@ -1148,14 +1234,132 @@ begin
   Result := GetFileProductInfo(Kernel32Filename, _Major, _Minor, _Revision, _Build);
 end;
 
-function OsVersionFromKernel32Version(_IsServer: Boolean): string;
+function FormatWindowsVersion(_Major, _Minor, _Revision: Integer; _IsServer: Boolean): string;
+begin
+  // Shared formatting logic for both RtlGetVersion and kernel32 version detection
+  // we start with the most likely ones (not that it matters much here, nobody is going
+  // to call this function so often that it makes a difference performance wise)
+  if (_Major = 10) and (_Minor = 0) then begin
+    // We have reached the "last" Windows version 10, which of course still has
+    // new version numbers internally for each major update. Also, Windows 11 is still
+    // reported as Windows 10.
+    // The revision number corresponds to what Microsoft calls the "OS Build" number.
+    //
+    // As of 2025-12-31 there are the following revisions (newest first):
+    // Windows 11 (25H2)          10.0.26200
+    // Windows 11 (24H2)          10.0.26100
+    // Windows 11 (23H2)          10.0.22631
+    // Windows 11 (22H2)          10.0.22621
+    // Windows 11 (21H2)          10.0.22000 (first Windows 11 release from 2021)
+    // Windows 10 (22H2)          10.0.19045 (last Windows 10 release from 2022)
+    // Windows 10 (21H2)          10.0.19044
+    // Windows 10 (21H1)          10.0.19043
+    // Windows 10 (20H2)          10.0.19042
+    // Windows 10 (2004 aka 20H1) 10.0.19041
+    // Windows 10 (1909 aka 19H2) 10.0.18363
+    // Windows 10 (1903 aka 19H1) 10.0.18362
+    // Windows 10 (1809)          10.0.17763
+    // Windows 10 (1803)          10.0.17134
+    // Windows 10 (1709)          10.0.16299
+    // Windows 10 (1703)          10.0.15063
+    // Windows 10 (1607)          10.0.14393
+    // Windows 10 (1511)          10.0.10586
+    // Windows 10 (1507)          10.0.10240 (first Windows 10 release from 2015)
+
+    if _IsServer then begin
+      // todo: There are newer server versions
+      Result := 'Windows Server 2016'
+    end else begin
+      if _Revision >= 22000 then
+        Result := 'Windows 11'
+      else
+        Result := 'Windows 10';
+    end;
+
+    // todo: There should be a way to detect that there has been a new major Windows 11 update ...
+    if _Revision >= 26200 then begin
+      Result := Format('%s (%s)', [Result, '25H2']);
+    end else if _Revision >= 26100 then begin
+      Result := Format('%s (%s)', [Result, '24H2']);
+    end else if _Revision >= 22631 then begin
+      Result := Format('%s (%s)', [Result, '23H2']);
+    end else if _Revision >= 22621 then begin
+      Result := Format('%s (%s)', [Result, '22H2']);
+    end else if _Revision >= 22000 then begin
+      Result := Format('%s (%s)', [Result, '21H2']);
+    end else if _Revision >= 19045 then begin
+      Result := Format('%s (%s)', [Result, '22H2']);
+    end else if _Revision >= 19044 then begin
+      Result := Format('%s (%s)', [Result, '21H2']);
+    end else if _Revision >= 19043 then begin
+      Result := Format('%s (%s)', [Result, '21H1']);
+    end else if _Revision >= 19042 then begin
+      Result := Format('%s (%s)', [Result, '20H2']);
+    end else if _Revision >= 19041 then begin
+      Result := Format('%s (%s)', [Result, '20H1']);
+    end else if _Revision >= 18363 then begin
+      Result := Format('%s (%s)', [Result, '19H2']);
+    end else if _Revision >= 18362 then begin
+      Result := Format('%s (%s)', [Result, '19H1']);
+    end else if _Revision >= 17763 then begin
+      Result := Format('%s (%d)', [Result, 1809]);
+    end else if _Revision >= 17134 then begin
+      Result := Format('%s (%d)', [Result, 1803]);
+    end else if _Revision >= 16299 then begin
+      Result := Format('%s (%d)', [Result, 1709]);
+    end else if _Revision >= 15063 then begin
+      Result := Format('%s (%d)', [Result, 1703]);
+    end else if _Revision >= 14393 then begin
+      Result := Format('%s (%d)', [Result, 1607]);
+    end else if _Revision >= 10586 then begin
+      Result := Format('%s (%d)', [Result, 1511]);
+    end else if _Revision >= 10240 then begin
+      Result := Format('%s (%d)', [Result, 1507]);
+    end else
+      Result := Format(_('Windows %d.%d'), [_Major, _Minor]);
+  end else if _Major = 6 then begin
+    if _Minor = 3 then begin
+      if _IsServer then
+        Result := 'Windows Server 2012 R2'
+      else
+        Result := 'Windows 8.1';
+    end else
+      Result := Format(_('Unknown Windows %d.%d'), [_Major, _Minor]);
+  end else
+    Result := Format(_('Unknown Windows %d.%d'), [_Major, _Minor]);
+end;
+
+function TryOsVersionFromRtlGetVersion(_IsServer: Boolean; out _Result: string): Boolean;
+var
+  Major: Integer;
+  Minor: Integer;
+  Build: Integer;
+begin
+  // RtlGetVersion is the recommended alternative to GetVersionEx.
+  // Unlike GetVersionEx, it always returns the true OS version regardless of the
+  // application manifest, and unlike reading kernel32.dll file version info,
+  // it directly queries the OS kernel.
+
+  if not TryGetOsVersionViaRtlGetVersion(Major, Minor, Build) then begin
+    Result := False;
+    Exit; //==>
+  end;
+
+  _Result := FormatWindowsVersion(Major, Minor, Build, _IsServer);
+  if (Major = 10) and (Minor = 0) and (Build >= 10240) then
+    _Result := _Result + Format(' (build %d)', [Build]);
+  Result := True;
+end;
+
+function TryGetOsVersionFromKernel32Version(_IsServer: Boolean; out _Result: string): Boolean;
 var
   Major: Integer;
   Minor: Integer;
   Revision: Integer;
   Build: Integer;
+  s: string;
 begin
-  // Starting with Windows 8 the GerVersionEx function is lying:
+  // Starting with Windows 8 the GetVersionEx function is lying:
   // > With the release of Windows 8.1, the behavior of the GetVersionEx API has changed
   // in the value it will return for the operating system version. The value returned
   // by the GetVersionEx function now depends on how the application is manifested.
@@ -1172,64 +1376,31 @@ begin
   // Instead we now use GetFileVersionInfo on kernel32.dll.
   // https://docs.microsoft.com/en-us/windows/desktop/sysinfo/getting-the-system-version
 
-  if not GetKernel32Version(Major, Minor, Revision, Build) then begin
-    Result := _('Unknown OS version (GetFileProductInfo(kernel32.dll) failed).');
+  if not TryGetKernel32Version(Major, Minor, Revision, Build) then begin
+    Result := False;
     Exit; //==>
   end;
 
-  // we start with the most likely ones (not that it matters much here, nobody is going
-  // to call this function so often that it makes a difference performance wise)
-  if (Major = 10) and (Minor = 0) then begin
-    // We have reached the "last" Windows version 10, which of course still has
-    // new version numbers internally for each major update:
-    // For whatever reason, the Windows 10 revision number is often called build number.
-    // (e.g. https://en.wikipedia.org/wiki/Windows_10_version_history )
-    // But it is really the revision number.
-    //
-    // As of 2019-04-21 there are the following revisions (newest first):
-    // Windows 10 (1903) 10.0.18362
-    // Windows 10 (1809) 10.0.17763
-    // Windows 10 (1803) 10.0.17134
-    // Windows 10 (1709) 10.0.16299
-    // Windows 10 (1703) 10.0.15063
-    // Windows 10 (1607) 10.0.14393
-    // Windows 10 (1511) 10.0.10586
-    // Windows 10 (1507) 10.0.10240 (the first release from 2015)
+  // Use the shared formatting function
+  s := FormatWindowsVersion(Major, Minor, Revision, _IsServer);
 
-    if _IsServer then
-      Result := 'Windows Server 2016'
-    else
-      Result := 'Windows 10';
+  // For known Windows 10/11 versions, append kernel version details
+  if (Major = 10) and (Minor = 0) and (Revision >= 10240) then begin
+    // Add kernel version info for Windows 10/11
+    s := s + Format(' (kernel %d.%d.%d build %d)', [Major, Minor, Revision, Build]);
+  end else begin
+    // For unknown/older versions, use the kernel32-specific format
+    if Pos('Unknown Windows', s) > 0 then
+      s := Format(_('Unknown Windows %d.%d rev %d build %d (from kernel32)'), [Major, Minor, Revision, Build])
+    else if Pos('Windows ', s) = 1 then begin
+      // Windows 8.1 or earlier - add kernel version info
+      if Revision > 0 then
+        s := s + Format(' (kernel %d.%d.%d build %d)', [Major, Minor, Revision, Build]);
+    end;
+  end;
 
-    // todo: There should be a way to detect that there has been a new major Windows 10 update ...
-    if Revision >= 18362 then begin
-      Result := Format('%s (%d) (kernel %d.%d.%d build %d)', [Result, 1903, Major, Minor, Revision, Build]);
-    end else if Revision >= 17763 then begin
-      Result := Format('%s (%d) (kernel %d.%d.%d build %d)', [Result, 1809, Major, Minor, Revision, Build]);
-    end else if Revision >= 17134 then begin
-      Result := Format('%s (%d) (kernel %d.%d.%d build %d)', [Result, 1803, Major, Minor, Revision, Build]);
-    end else if Revision >= 16299 then begin
-      Result := Format('%s (%d) (kernel %d.%d.%d build %d)', [Result, 1709, Major, Minor, Revision, Build]);
-    end else if Revision >= 15063 then begin
-      Result := Format('%s (%d) (kernel %d.%d.%d build %d)', [Result, 1703, Major, Minor, Revision, Build]);
-    end else if Revision >= 14393 then begin
-      Result := Format('%s (%d) (kernel %d.%d.%d build %d)', [Result, 1607, Major, Minor, Revision, Build]);
-    end else if Revision >= 10586 then begin
-      Result := Format('%s (%d) (kernel %d.%d.%d build %d)', [Result, 1511, Major, Minor, Revision, Build]);
-    end else if Revision >= 10240 then begin
-      Result := Format('%s (%d) (kernel %d.%d.%d build %d)', [Result, 1507, Major, Minor, Revision, Build]);
-    end else
-      Result := Format(_('Windows %d.%d rev %d build %d (from kernel32)'), [Major, Minor, Revision, Build]);
-  end else if Major = 6 then begin
-    if Minor = 3 then begin
-      if _IsServer then
-        Result := 'Windows Server 2012 R2'
-      else
-        Result := 'Windows 8.1';
-    end else
-      Result := Format(_('Unknown Windows %d.%d rev %d build %d (from kernel32)'), [Major, Minor, Revision, Build]);
-  end else
-    Result := Format(_('Unknown Windows %d.%d rev %d build %d (from kernel32)'), [Major, Minor, Revision, Build]);
+  _Result := s;
+  Result := True;
 end;
 
 function GetOsVersionString: string;
@@ -1259,12 +1430,21 @@ begin
     // But this only works if the manifest tells Windows not to lie.
     // Since we don't know the version number ("Windows 10" is the product, it's not Windows
     // version 10), we need to check further anyway.
-    Result := OsVersionFromKernel32Version(IsServer);
+
+    // Try RtlGetVersion first (recommended, more direct), fall back to kernel32 file version
+    if not TryOsVersionFromRtlGetVersion(IsServer, Result) then begin
+      if not TryGetOsVersionFromKernel32Version(IsServer, Result) then
+        Result := _('Unknown Windows 10 version (both RtlGetVersion and kernel32 version detection failed).');
+    end;
   end else if VerInfo.dwMajorVersion = 6 then begin
     if VerInfo.dwMinorVersion = 2 then begin
       // Windows 8
       // In theory at least, but Windows might be lying so we need to check further
-      Result := OsVersionFromKernel32Version(IsServer);
+      // Try RtlGetVersion first, fall back to kernel32 file version
+      if not TryOsVersionFromRtlGetVersion(IsServer, Result) then begin
+        if not TryGetOsVersionFromKernel32Version(IsServer, Result) then
+          Result := _('Unknown OS version (both RtlGetVersion and kernel32 version detection failed).');
+      end;
     end else if VerInfo.dwMinorVersion = 3 then begin
       // Windows 8.1
       // But this only works if the manifest tells Windows not to lie
@@ -1341,7 +1521,7 @@ var
   Values: TWinCurrentRec;
 begin
   if not TryGetWindowsVersionFromRegistry(Values) then begin
-    Result := _('Unknown Windows 10 version (registry key does not exist)');
+    Result := _('Unknown Windows 10 or 11 version (registry key does not exist)');
     Exit; //==>
   end;
 
@@ -1408,7 +1588,7 @@ type
   PSystemLogicalProcessorInformation = ^TSystemLogicalProcessorInformation;
 
 function GetLogicalProcessorInformation(Buffer: PSystemLogicalProcessorInformation; var ReturnedLength: DWORD): BOOL; stdcall;
-  external kernel32 Name 'GetLogicalProcessorInformation';
+  external kernel32 name 'GetLogicalProcessorInformation';
 {$IFEND}
 
 function GetCpuCacheLineSize: Integer;

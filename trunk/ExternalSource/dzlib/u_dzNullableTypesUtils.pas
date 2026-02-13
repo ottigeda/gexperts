@@ -36,9 +36,10 @@ function TryStrToNumber(const _s: string; out _Value: Integer; const _FormatSett
 function TryStrToNumber(const _s: string; out _Value: Int64; const _FormatSettings: TFormatSettings): Boolean; overload;
 function TryStrToNumber(const _s: string; out _Value: Single; const _FormatSettings: TFormatSettings): Boolean; overload;
 function TryStrToNumber(const _s: string; out _Value: Double; const _FormatSettings: TFormatSettings): Boolean; overload;
-{$IFNDEF win64}
+// this compiles for Delphi 12. I'm not sure about older versions
+{.$IFNDEF WIN64}
 function TryStrToNumber(const _s: string; out _Value: Extended; const _FormatSettings: TFormatSettings): Boolean; overload;
-{$ENDIF}
+{.$ENDIF}
 
 function NumberToStr(_Value: Integer): string; overload;
 function NumberToStr(_Value: Single): string; overload;
@@ -51,9 +52,10 @@ function TryVar2Number(const _v: Variant; out _Value: Integer): Boolean; overloa
 function TryVar2Number(const _v: Variant; out _Value: Int64): Boolean; overload;
 function TryVar2Number(const _v: Variant; out _Value: Single): Boolean; overload;
 function TryVar2Number(const _v: Variant; out _Value: Double): Boolean; overload;
-{$IFNDEF win64}
+// this compiles for Delphi 12. I'm not sure about older versions
+{.$IFNDEF WIN64}
 function TryVar2Number(const _v: Variant; out _Value: Extended): Boolean; overload;
-{$ENDIF}
+{.$ENDIF}
 
 type
   INullableTypesFlagInterface = interface(IInterface)
@@ -65,9 +67,10 @@ procedure DivideNumbers(_a, _b: Integer; out _Value: Integer); overload;
 procedure DivideNumbers(_a, _b: Int64; out _Value: Int64); overload;
 procedure DivideNumbers(_a, _b: Single; out _Value: Single); overload;
 procedure DivideNumbers(_a, _b: Double; out _Value: Double); overload;
-{$IFNDEF win64}
+// this compiles for Delphi 12. I'm not sure about older versions
+{.$IFNDEF WIN64}
 procedure DivideNumbers(_a, _b: Extended; out _Value: Extended); overload;
-{$ENDIF}
+{.$ENDIF}
 
 {$ENDIF DELPHI2007_UP}
 
@@ -167,12 +170,13 @@ begin
   Result := TryStrToFloat(_s, _Value, _FormatSettings);
 end;
 
-{$IFNDEF win64}
+// this compiles for Delphi 12. I'm not sure about older versions
+{.$IFNDEF WIN64}
 function TryStrToNumber(const _s: string; out _Value: Extended; const _FormatSettings: TFormatSettings): Boolean;
 begin
   Result := TryStrToFloat(_s, _Value, _FormatSettings);
 end;
-{$ENDIF}
+{.$ENDIF}
 
 // NumberToStr
 
@@ -220,12 +224,13 @@ begin
   Result := TryVar2Dbl(_v, _Value);
 end;
 
-{$IFNDEF win64}
+// this compiles for Delphi 12. I'm not sure about older versions
+{.$IFNDEF WIN64}
 function TryVar2Number(const _v: Variant; out _Value: Extended): Boolean;
 begin
   Result := TryVar2Ext(_v, _Value);
 end;
-{$ENDIF}
+{.$ENDIF}
 
 procedure DivideNumbers(_a, _b: Integer; out _Value: Integer);
 begin
@@ -247,12 +252,13 @@ begin
   _Value := _a / _b;
 end;
 
-{$IFNDEF win64}
+// this compiles for Delphi 12. I'm not sure about older versions
+{.$IFNDEF WIN64}
 procedure DivideNumbers(_a, _b: Extended; out _Value: Extended);
 begin
   _Value := _a / _b;
 end;
-{$ENDIF}
+{.$ENDIF}
 
 initialization
   gblUserLocaleFormatSettings := GetUserDefaultLocaleSettings;

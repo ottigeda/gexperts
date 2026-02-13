@@ -188,7 +188,7 @@ uses
   u_dzOsUtils;
 
 function _(const _s: string): string;
-{(*}{$IFDEF SUPPORTS_INLINE} inline;{$ENDIF}{*)}
+{$IFDEF SUPPORTS_INLINE} inline; {$ENDIF}
 begin
   Result := dzlibGetText(_s);
 end;
