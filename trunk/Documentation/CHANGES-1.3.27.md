@@ -11,9 +11,12 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Reverse Statement: Default rules now correctly handle Read/Write method transformations (e.g. ReadString/WriteString)
 - Reverse Statement: Added configuration dialog with interactive Test button
 - Reverse Statement: Redesigned configuration dialog with two-column grid (match/replacement) replacing raw text editor (feature #14)
+- Reverse Statement: Added edit sub-dialog for adding/editing individual reversal rules with real-time regex validation and test (feature #14)
+- Reverse Statement: Moved source files to dedicated Source/ReverseStatement/ directory (feature #14)
 
 ## Bug Fixes
 
+- Reverse Statement: Fixed regex matching bare-dot expressions like `.ReadInteger()` which produced invalid code (feature #14)
 - Backup Project: Show actual matched files instead of wildcard patterns in file list (bug #19)
 - Backup Project: Added ListView with Path, File Name, Size, and Last Modified columns
 - Backup Project: Added {#+BACKUP} directive for recursive folder search
