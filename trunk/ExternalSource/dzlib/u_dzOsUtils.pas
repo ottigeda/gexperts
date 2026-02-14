@@ -168,7 +168,7 @@ function GetFileProductInfo(const _Filename: string; _AllowException: Boolean = 
 
 ///<summary> @returns the filename of the current module </summary>
 function GetModuleFilename: string; overload;
-function GetModuleFilename(const _Module: Cardinal): string; overload;
+function GetModuleFilename(const _Module: NativeUInt): string; overload;
 
 ///<summary> registers an open command for a file extension
 ///          @param Extension is the file extension to register e.g. '.bla'
@@ -607,11 +607,25 @@ begin
   RegisterFileAssociation(_Extension, _DocumentName, _DocumentName, _OpenCommand);
 end;
 
-function GetModuleFilename(const _Module: Cardinal): string;
+function GetModuleFilename(const _Module: NativeUInt): string;
+const
+  MAX_LONG_PATH = 32767;
 var
-  Buffer: array[0..260] of Char;
+  Buffer  : PChar;
+  BuffSize: Cardinal;
+  nSize   : Cardinal;
 begin
-  SetString(Result, Buffer, Windows.GetModuleFilename(_Module, Buffer, SizeOf(Buffer)))
+  BuffSize := MAX_LONG_PATH * SizeOf(Char);
+  GetMem(Buffer, BuffSize);
+  try
+    nSize := Windows.GetModuleFileName(_Module, Buffer, BuffSize);
+    if GetLastError = 0 then
+      SetString(Result, Buffer, nSize)
+    else
+      Result := '';
+  finally
+    FreeMem(Buffer);
+  end;
 end;
 
 function GetModuleFilename: string;
