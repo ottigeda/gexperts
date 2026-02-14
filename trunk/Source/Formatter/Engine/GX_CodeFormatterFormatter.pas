@@ -2007,6 +2007,8 @@ begin
         repeat
           FLastPopResType := FStack.Pop;
         until (FLastPopResType = rtRepeat) or FStack.IsEmpty;
+        // Enable continuation indent for multi-line until conditions (bug #473)
+        FWrapIndent := True;
         AddToPrevLineIndent(_NTmp);
       end;
 
