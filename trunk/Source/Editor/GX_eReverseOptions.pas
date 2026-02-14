@@ -51,6 +51,7 @@ implementation
 
 uses
   SysUtils,
+  Dialogs,
   u_dzVclUtils,
   GX_RegExpr;
 
@@ -177,13 +178,52 @@ end;
 procedure TfmReverseOptions.btnResetClick(Sender: TObject);
 begin
   if FDefaultRules <> nil then
-    SetRules(FDefaultRules);
+    if MessageDlg('Reset all rules to defaults?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      SetRules(FDefaultRules);
+end;
+
+function CountCaptureGroups(const _Pattern: string): Integer;
+var
+  i: Integer;
+  InCharClass: Boolean;
+begin
+  Result := 0;
+  InCharClass := False;
+  i := 1;
+  while i <= Length(_Pattern) do
+  begin
+    case _Pattern[i] of
+      '\': Inc(i); // skip escaped character
+      '[': InCharClass := True;
+      ']': InCharClass := False;
+      '(':
+        if not InCharClass then
+          if (i + 1 > Length(_Pattern)) or (_Pattern[i + 1] <> '?') then
+            Inc(Result);
+    end;
+    Inc(i);
+  end;
+end;
+
+function MaxBackReference(const _Replace: string): Integer;
+var
+  i, n: Integer;
+begin
+  Result := 0;
+  for i := 1 to Length(_Replace) - 1 do
+    if (_Replace[i] = '$') and (_Replace[i + 1] >= '1') and (_Replace[i + 1] <= '9') then
+    begin
+      n := Ord(_Replace[i + 1]) - Ord('0');
+      if n > Result then
+        Result := n;
+    end;
 end;
 
 function TfmReverseOptions.ValidateRules: Boolean;
 var
   i: Integer;
   Match, Replace: string;
+  GroupCount, MaxRef: Integer;
   re: TRegExpr;
 begin
   Result := True;
@@ -202,6 +242,7 @@ begin
         lblError.Caption := Format('Row %d: match pattern has no replacement', [i]);
         sgRules.Row := i;
         sgRules.Col := 1;
+        sgRules.SetFocus;
         Result := False;
         Exit;
       end;
@@ -210,6 +251,7 @@ begin
         lblError.Caption := Format('Row %d: replacement has no match pattern', [i]);
         sgRules.Row := i;
         sgRules.Col := 0;
+        sgRules.SetFocus;
         Result := False;
         Exit;
       end;
@@ -222,9 +264,21 @@ begin
           lblError.Caption := Format('Row %d: %s', [i, E.Message]);
           sgRules.Row := i;
           sgRules.Col := 0;
+          sgRules.SetFocus;
           Result := False;
           Exit;
         end;
+      end;
+      GroupCount := CountCaptureGroups(Match);
+      MaxRef := MaxBackReference(Replace);
+      if MaxRef > GroupCount then
+      begin
+        lblError.Caption := Format('Row %d: replacement references $%d but pattern only has %d capture group(s)', [i, MaxRef, GroupCount]);
+        sgRules.Row := i;
+        sgRules.Col := 1;
+        sgRules.SetFocus;
+        Result := False;
+        Exit;
       end;
     end;
   finally
