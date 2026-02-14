@@ -39,8 +39,9 @@ object fmReverseOptions: TfmReverseOptions
     DefaultRowHeight = 20
     FixedCols = 0
     RowCount = 2
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goTabs, goAlwaysShowEditor]
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect]
     TabOrder = 0
+    OnDblClick = sgRulesDblClick
   end
   object pnlButtons: TPanel
     Left = 712
@@ -59,22 +60,31 @@ object fmReverseOptions: TfmReverseOptions
       TabOrder = 0
       OnClick = btnAddClick
     end
-    object btnDelete: TButton
+    object btnEdit: TButton
       Left = 0
       Top = 32
       Width = 80
       Height = 25
-      Caption = '&Delete'
+      Caption = '&Edit'
       TabOrder = 1
-      OnClick = btnDeleteClick
+      OnClick = btnEditClick
     end
-    object btnReset: TButton
+    object btnDelete: TButton
       Left = 0
       Top = 64
       Width = 80
       Height = 25
-      Caption = '&Reset'
+      Caption = '&Delete'
       TabOrder = 2
+      OnClick = btnDeleteClick
+    end
+    object btnReset: TButton
+      Left = 0
+      Top = 96
+      Width = 80
+      Height = 25
+      Caption = '&Reset'
+      TabOrder = 3
       OnClick = btnResetClick
     end
   end
@@ -92,48 +102,46 @@ object fmReverseOptions: TfmReverseOptions
     Font.Style = []
     ParentFont = False
   end
-  object lblTestInput: TLabel
+  object gbTest: TGroupBox
     Left = 8
-    Top = 378
-    Width = 50
-    Height = 14
-    Anchors = [akLeft, akBottom]
-    Caption = 'Test input:'
-  end
-  object edTestInput: TEdit
-    Left = 8
-    Top = 398
-    Width = 696
-    Height = 22
-    Anchors = [akLeft, akRight, akBottom]
-    TabOrder = 2
-  end
-  object btnTest: TButton
-    Left = 712
-    Top = 397
-    Width = 80
-    Height = 24
-    Anchors = [akRight, akBottom]
-    Caption = '&Test'
-    TabOrder = 3
-    OnClick = btnTestClick
-  end
-  object lblTestResult: TLabel
-    Left = 8
-    Top = 428
-    Width = 56
-    Height = 14
-    Anchors = [akLeft, akBottom]
-    Caption = 'Test result:'
-  end
-  object edTestResult: TEdit
-    Left = 8
-    Top = 448
+    Top = 370
     Width = 784
-    Height = 22
+    Height = 104
     Anchors = [akLeft, akRight, akBottom]
-    ReadOnly = True
-    TabOrder = 4
+    Caption = 'Test'
+    TabOrder = 2
+    object lblTestInput: TLabel
+      Left = 8
+      Top = 18
+      Width = 28
+      Height = 14
+      Caption = 'Input'
+    end
+    object edTestInput: TEdit
+      Left = 8
+      Top = 36
+      Width = 768
+      Height = 22
+      Anchors = [akLeft, akTop, akRight]
+      TabOrder = 0
+      OnChange = edTestInputChange
+    end
+    object lblTestResult: TLabel
+      Left = 8
+      Top = 64
+      Width = 32
+      Height = 14
+      Caption = 'Result'
+    end
+    object edTestResult: TEdit
+      Left = 8
+      Top = 82
+      Width = 768
+      Height = 22
+      Anchors = [akLeft, akTop, akRight]
+      ReadOnly = True
+      TabOrder = 1
+    end
   end
   object btnOK: TButton
     Left = 620
@@ -143,7 +151,7 @@ object fmReverseOptions: TfmReverseOptions
     Anchors = [akRight, akBottom]
     Caption = '&OK'
     Default = True
-    TabOrder = 5
+    TabOrder = 4
     OnClick = btnOKClick
   end
   object btnCancel: TButton
@@ -155,6 +163,11 @@ object fmReverseOptions: TfmReverseOptions
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 6
+    TabOrder = 5
+  end
+  object tmrTest: TTimer
+    Enabled = False
+    Interval = 500
+    OnTimer = tmrTestTimer
   end
 end

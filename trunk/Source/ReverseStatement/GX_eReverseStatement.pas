@@ -51,10 +51,10 @@ procedure LoadDefaultRules(_Rules: TReversalRuleList);
     TC = '(\s*(?://.*|\{[^}]*\}|\(\*.*?\*\))?)';
   begin
     _Rules.Add(
-      '(\s*)([\w.]+)\s*:=\s*([\w.]*?)' + FuncA + '\(([\w.]+)\)\s*;' + TC,
+      '(\s*)([\w.]+)\s*:=\s*((?:[\w]+\.)*)' + FuncA + '\(([\w.]+)\)\s*;' + TC,
       '$1$4 := $3' + FuncB + '($2);$5');
     _Rules.Add(
-      '(\s*)([\w.]+)\s*:=\s*([\w.]*?)' + FuncB + '\(([\w.]+)\)\s*;' + TC,
+      '(\s*)([\w.]+)\s*:=\s*((?:[\w]+\.)*)' + FuncB + '\(([\w.]+)\)\s*;' + TC,
       '$1$4 := $3' + FuncA + '($2);$5');
   end;
 
@@ -65,11 +65,11 @@ procedure LoadDefaultRules(_Rules: TReversalRuleList);
   begin
     // Read -> Write: drop default param, insert LHS as 3rd param
     _Rules.Add(
-      '(\s*)([\w.]+)\s*:=\s*([\w.]*?)Read' + TypeName + '\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([^()]+?)\s*\)\s*;' + TC,
+      '(\s*)([\w.]+)\s*:=\s*((?:[\w]+\.)*)Read' + TypeName + '\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([^()]+?)\s*\)\s*;' + TC,
       '$1$3Write' + TypeName + '($4, $5, $2);$7');
     // Write -> Read: create assignment, add default
     _Rules.Add(
-      '(\s*)([\w.]*?)Write' + TypeName + '\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([\w.]+)\s*\)\s*;' + TC,
+      '(\s*)((?:[\w]+\.)*)Write' + TypeName + '\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([\w.]+)\s*\)\s*;' + TC,
       '$1$5 := $2Read' + TypeName + '($3, $4, ' + DefaultValue + ');$6');
   end;
 

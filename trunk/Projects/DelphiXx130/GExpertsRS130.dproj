@@ -358,10 +358,14 @@ $(PreBuildEvent)]]></PreBuildEvent>
             <Form>fmRemoveMatchingLinesExpertConfig</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\..\source\Editor\GX_eReverseStatement.pas"/>
-        <DCCReference Include="..\..\source\Editor\GX_ReverseStatementUtils.pas"/>
-        <DCCReference Include="..\..\source\Editor\GX_eReverseOptions.pas">
+        <DCCReference Include="..\..\source\ReverseStatement\GX_eReverseStatement.pas"/>
+        <DCCReference Include="..\..\source\ReverseStatement\GX_ReverseStatementUtils.pas"/>
+        <DCCReference Include="..\..\source\ReverseStatement\GX_eReverseOptions.pas">
             <Form>fmReverseOptions</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\source\ReverseStatement\GX_eReverseRuleEdit.pas">
+            <Form>fmReverseRuleEdit</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_eSelectIdentifier.pas"/>

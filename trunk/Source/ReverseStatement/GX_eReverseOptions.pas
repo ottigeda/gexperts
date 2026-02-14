@@ -15,22 +15,27 @@ type
     sgRules: TStringGrid;
     pnlButtons: TPanel;
     btnAdd: TButton;
+    btnEdit: TButton;
     btnDelete: TButton;
     btnReset: TButton;
     lblError: TLabel;
+    gbTest: TGroupBox;
     lblTestInput: TLabel;
     edTestInput: TEdit;
-    btnTest: TButton;
     lblTestResult: TLabel;
     edTestResult: TEdit;
     btnOK: TButton;
     btnCancel: TButton;
+    tmrTest: TTimer;
     procedure btnAddClick(Sender: TObject);
+    procedure btnEditClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
     procedure btnResetClick(Sender: TObject);
-    procedure btnTestClick(Sender: TObject);
+    procedure edTestInputChange(Sender: TObject);
+    procedure tmrTestTimer(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure sgRulesDblClick(Sender: TObject);
   private
     FDefaultRules: TReversalRuleList;
     function ValidateRules: Boolean;
@@ -53,7 +58,9 @@ uses
   SysUtils,
   Dialogs,
   u_dzVclUtils,
-  GX_RegExpr;
+  w_dzDialog,
+  GX_RegExpr,
+  GX_eReverseRuleEdit;
 
 {$R *.dfm}
 
@@ -139,15 +146,43 @@ end;
 
 procedure TfmReverseOptions.btnAddClick(Sender: TObject);
 var
+  Match, Replace: string;
   NewRow: Integer;
 begin
-  NewRow := sgRules.RowCount;
-  sgRules.RowCount := NewRow + 1;
-  sgRules.Cells[0, NewRow] := '';
-  sgRules.Cells[1, NewRow] := '';
-  sgRules.Row := NewRow;
-  sgRules.Col := 0;
-  sgRules.SetFocus;
+  Match := '';
+  Replace := '';
+  if TfmReverseRuleEdit.Execute(Self, Match, Replace) then
+  begin
+    NewRow := sgRules.RowCount;
+    sgRules.RowCount := NewRow + 1;
+    sgRules.Cells[0, NewRow] := Match;
+    sgRules.Cells[1, NewRow] := Replace;
+    sgRules.Row := NewRow;
+    TGrid_Resize(sgRules, [roUseGridWidth]);
+  end;
+end;
+
+procedure TfmReverseOptions.btnEditClick(Sender: TObject);
+var
+  Row: Integer;
+  Match, Replace: string;
+begin
+  Row := sgRules.Row;
+  if Row < 1 then
+    Exit;
+  Match := sgRules.Cells[0, Row];
+  Replace := sgRules.Cells[1, Row];
+  if TfmReverseRuleEdit.Execute(Self, Match, Replace) then
+  begin
+    sgRules.Cells[0, Row] := Match;
+    sgRules.Cells[1, Row] := Replace;
+    TGrid_Resize(sgRules, [roUseGridWidth]);
+  end;
+end;
+
+procedure TfmReverseOptions.sgRulesDblClick(Sender: TObject);
+begin
+  btnEditClick(Sender);
 end;
 
 procedure TfmReverseOptions.DeleteRow(_Row: Integer);
@@ -178,45 +213,8 @@ end;
 procedure TfmReverseOptions.btnResetClick(Sender: TObject);
 begin
   if FDefaultRules <> nil then
-    if MessageDlg('Reset all rules to defaults?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    if Tf_dzDialog.ShowMessage(mtConfirmation, 'Reset all rules to defaults?', [dbeYes, dbeNo], Self) = mrYes then
       SetRules(FDefaultRules);
-end;
-
-function CountCaptureGroups(const _Pattern: string): Integer;
-var
-  i: Integer;
-  InCharClass: Boolean;
-begin
-  Result := 0;
-  InCharClass := False;
-  i := 1;
-  while i <= Length(_Pattern) do
-  begin
-    case _Pattern[i] of
-      '\': Inc(i); // skip escaped character
-      '[': InCharClass := True;
-      ']': InCharClass := False;
-      '(':
-        if not InCharClass then
-          if (i + 1 > Length(_Pattern)) or (_Pattern[i + 1] <> '?') then
-            Inc(Result);
-    end;
-    Inc(i);
-  end;
-end;
-
-function MaxBackReference(const _Replace: string): Integer;
-var
-  i, n: Integer;
-begin
-  Result := 0;
-  for i := 1 to Length(_Replace) - 1 do
-    if (_Replace[i] = '$') and (_Replace[i + 1] >= '1') and (_Replace[i + 1] <= '9') then
-    begin
-      n := Ord(_Replace[i + 1]) - Ord('0');
-      if n > Result then
-        Result := n;
-    end;
 end;
 
 function TfmReverseOptions.ValidateRules: Boolean;
@@ -286,15 +284,26 @@ begin
   end;
 end;
 
-procedure TfmReverseOptions.btnTestClick(Sender: TObject);
+procedure TfmReverseOptions.edTestInputChange(Sender: TObject);
+begin
+  TTimer_Restart(tmrTest);
+end;
+
+procedure TfmReverseOptions.tmrTestTimer(Sender: TObject);
 var
   Rules: TReversalRuleList;
   TestStr: string;
 begin
+  tmrTest.Enabled := False;
+  TestStr := edTestInput.Text;
+  if TestStr = '' then
+  begin
+    edTestResult.Text := '';
+    Exit;
+  end;
   Rules := TReversalRuleList.Create;
   try
     GetRules(Rules);
-    TestStr := edTestInput.Text;
     if ReverseFunctionPairStr(TestStr, Rules) then
       edTestResult.Text := TestStr
     else

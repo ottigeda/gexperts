@@ -45,7 +45,7 @@
         <DCC_SYMBOL_PLATFORM>false</DCC_SYMBOL_PLATFORM>
         <DCC_UNIT_PLATFORM>false</DCC_UNIT_PLATFORM>
         <DCC_UnitAlias>SynRegExpr=regexpr;$(DCC_UnitAlias)</DCC_UnitAlias>
-        <DCC_UnitSearchPath>..\..\..\ExternalSource\dzlib;..\..\..\ExternalSource\RegExpr;..\..\..\Source\Editor;..\..\..\Source\Framework;..\..\..\Source\include;..\..\..\Source\utils;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>..\..\..\ExternalSource\dzlib;..\..\..\ExternalSource\RegExpr;..\..\..\Source\ReverseStatement;..\..\..\Source\Framework;..\..\..\Source\include;..\..\..\Source\utils;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_UsePackage>RESTComponents;FireDACIBDriver;FireDACCommon;RESTBackendComponents;soapserver;CloudService;FireDACCommonDriver;inet;FireDAC;FireDACSqliteDriver;soaprtl;soapmidas;$(DCC_UsePackage)</DCC_UsePackage>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>2057</VerInfo_Locale>
@@ -78,7 +78,7 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="GX_eReverseStatementTest.pas"/>
-        <DCCReference Include="..\..\..\Source\Editor\GX_ReverseStatementUtils.pas"/>
+        <DCCReference Include="..\..\..\Source\ReverseStatement\GX_ReverseStatementUtils.pas"/>
         <DCCReference Include="..\..\..\UnitTestsFormatter\dunit\TestFrameworkExt.pas"/>
         <DCCReference Include="..\..\..\UnitTestsFormatter\dunit\DUnitConsts.pas"/>
         <DCCReference Include="..\..\..\UnitTestsFormatter\dunit\TestFramework.pas"/>

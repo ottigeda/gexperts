@@ -4,7 +4,7 @@ uses
   Windows,
   SysUtils,
   GX_eReverseStatementTest in 'GX_eReverseStatementTest.pas',
-  GX_ReverseStatementUtils in '..\..\..\Source\Editor\GX_ReverseStatementUtils.pas',
+  GX_ReverseStatementUtils in '..\..\..\Source\ReverseStatement\GX_ReverseStatementUtils.pas',
   GX_RegExpr in '..\..\..\Source\Utils\GX_RegExpr.pas',
   DUnitConsts in '..\..\..\UnitTestsFormatter\dunit\DUnitConsts.pas',
   TestFramework in '..\..\..\UnitTestsFormatter\dunit\TestFramework.pas',

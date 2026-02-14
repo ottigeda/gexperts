@@ -35,6 +35,9 @@ type
     procedure TestPreservesTrailingComment;
     procedure TestNestedParenthesesSkipped;
     procedure TestStringLiteralArgSkipped;
+    procedure TestBareDotReadNotMatched;
+    procedure TestBareDotWriteNotMatched;
+    procedure TestBareDotSimplePairNotMatched;
     // Read/Write pattern tests
     procedure TestReadStringToWriteString;
     procedure TestWriteStringToReadString;
@@ -142,59 +145,59 @@ begin
   FRules := TReversalRuleList.Create;
   // IntToStr <-> StrToInt (simple pair, arg restricted to identifiers)
   FRules.Add(
-    '(\s*)([\w.]+)\s*:=\s*([\w.]*?)IntToStr\(([\w.]+)\)\s*;' + TC,
+    '(\s*)([\w.]+)\s*:=\s*((?:[\w]+\.)*)IntToStr\(([\w.]+)\)\s*;' + TC,
     '$1$4 := $3StrToInt($2);$5');
   FRules.Add(
-    '(\s*)([\w.]+)\s*:=\s*([\w.]*?)StrToInt\(([\w.]+)\)\s*;' + TC,
+    '(\s*)([\w.]+)\s*:=\s*((?:[\w]+\.)*)StrToInt\(([\w.]+)\)\s*;' + TC,
     '$1$4 := $3IntToStr($2);$5');
   // ReadString <-> WriteString (3-param Read/Write pair)
   FRules.Add(
-    '(\s*)([\w.]+)\s*:=\s*([\w.]*?)ReadString\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([^()]+?)\s*\)\s*;' + TC,
+    '(\s*)([\w.]+)\s*:=\s*((?:[\w]+\.)*)ReadString\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([^()]+?)\s*\)\s*;' + TC,
     '$1$3WriteString($4, $5, $2);$7');
   FRules.Add(
-    '(\s*)([\w.]*?)WriteString\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([\w.]+)\s*\)\s*;' + TC,
+    '(\s*)((?:[\w]+\.)*)WriteString\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([\w.]+)\s*\)\s*;' + TC,
     '$1$5 := $2ReadString($3, $4, '''');$6');
   // ReadInteger <-> WriteInteger
   FRules.Add(
-    '(\s*)([\w.]+)\s*:=\s*([\w.]*?)ReadInteger\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([^()]+?)\s*\)\s*;' + TC,
+    '(\s*)([\w.]+)\s*:=\s*((?:[\w]+\.)*)ReadInteger\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([^()]+?)\s*\)\s*;' + TC,
     '$1$3WriteInteger($4, $5, $2);$7');
   FRules.Add(
-    '(\s*)([\w.]*?)WriteInteger\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([\w.]+)\s*\)\s*;' + TC,
+    '(\s*)((?:[\w]+\.)*)WriteInteger\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([\w.]+)\s*\)\s*;' + TC,
     '$1$5 := $2ReadInteger($3, $4, 0);$6');
   // ReadBool <-> WriteBool
   FRules.Add(
-    '(\s*)([\w.]+)\s*:=\s*([\w.]*?)ReadBool\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([^()]+?)\s*\)\s*;' + TC,
+    '(\s*)([\w.]+)\s*:=\s*((?:[\w]+\.)*)ReadBool\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([^()]+?)\s*\)\s*;' + TC,
     '$1$3WriteBool($4, $5, $2);$7');
   FRules.Add(
-    '(\s*)([\w.]*?)WriteBool\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([\w.]+)\s*\)\s*;' + TC,
+    '(\s*)((?:[\w]+\.)*)WriteBool\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([\w.]+)\s*\)\s*;' + TC,
     '$1$5 := $2ReadBool($3, $4, False);$6');
   // ReadFloat <-> WriteFloat
   FRules.Add(
-    '(\s*)([\w.]+)\s*:=\s*([\w.]*?)ReadFloat\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([^()]+?)\s*\)\s*;' + TC,
+    '(\s*)([\w.]+)\s*:=\s*((?:[\w]+\.)*)ReadFloat\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([^()]+?)\s*\)\s*;' + TC,
     '$1$3WriteFloat($4, $5, $2);$7');
   FRules.Add(
-    '(\s*)([\w.]*?)WriteFloat\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([\w.]+)\s*\)\s*;' + TC,
+    '(\s*)((?:[\w]+\.)*)WriteFloat\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([\w.]+)\s*\)\s*;' + TC,
     '$1$5 := $2ReadFloat($3, $4, 0);$6');
   // ReadDate <-> WriteDate
   FRules.Add(
-    '(\s*)([\w.]+)\s*:=\s*([\w.]*?)ReadDate\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([^()]+?)\s*\)\s*;' + TC,
+    '(\s*)([\w.]+)\s*:=\s*((?:[\w]+\.)*)ReadDate\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([^()]+?)\s*\)\s*;' + TC,
     '$1$3WriteDate($4, $5, $2);$7');
   FRules.Add(
-    '(\s*)([\w.]*?)WriteDate\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([\w.]+)\s*\)\s*;' + TC,
+    '(\s*)((?:[\w]+\.)*)WriteDate\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([\w.]+)\s*\)\s*;' + TC,
     '$1$5 := $2ReadDate($3, $4, Date);$6');
   // ReadDateTime <-> WriteDateTime
   FRules.Add(
-    '(\s*)([\w.]+)\s*:=\s*([\w.]*?)ReadDateTime\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([^()]+?)\s*\)\s*;' + TC,
+    '(\s*)([\w.]+)\s*:=\s*((?:[\w]+\.)*)ReadDateTime\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([^()]+?)\s*\)\s*;' + TC,
     '$1$3WriteDateTime($4, $5, $2);$7');
   FRules.Add(
-    '(\s*)([\w.]*?)WriteDateTime\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([\w.]+)\s*\)\s*;' + TC,
+    '(\s*)((?:[\w]+\.)*)WriteDateTime\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([\w.]+)\s*\)\s*;' + TC,
     '$1$5 := $2ReadDateTime($3, $4, Now);$6');
   // ReadTime <-> WriteTime
   FRules.Add(
-    '(\s*)([\w.]+)\s*:=\s*([\w.]*?)ReadTime\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([^()]+?)\s*\)\s*;' + TC,
+    '(\s*)([\w.]+)\s*:=\s*((?:[\w]+\.)*)ReadTime\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([^()]+?)\s*\)\s*;' + TC,
     '$1$3WriteTime($4, $5, $2);$7');
   FRules.Add(
-    '(\s*)([\w.]*?)WriteTime\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([\w.]+)\s*\)\s*;' + TC,
+    '(\s*)((?:[\w]+\.)*)WriteTime\(\s*([^,()]+?)\s*,\s*([^,()]+?)\s*,\s*([\w.]+)\s*\)\s*;' + TC,
     '$1$5 := $2ReadTime($3, $4, Time);$6');
 end;
 
@@ -292,6 +295,39 @@ var
 begin
   // String literal can't be an LHS, so reversal must not happen
   S := 'X := StrToInt(''hallo'');';
+  Original := S;
+  CheckFalse(ReverseFunctionPairStr(S, FRules), 'Should return False');
+  CheckEquals(Original, S, 'String should be unchanged');
+end;
+
+procedure TTestReverseFunctionPair.TestBareDotReadNotMatched;
+var
+  S, Original: string;
+begin
+  // Bare dot without object name must not match
+  S := 'i := .ReadInteger(''bla'', ''blub'', 0);';
+  Original := S;
+  CheckFalse(ReverseFunctionPairStr(S, FRules), 'Should return False');
+  CheckEquals(Original, S, 'String should be unchanged');
+end;
+
+procedure TTestReverseFunctionPair.TestBareDotWriteNotMatched;
+var
+  S, Original: string;
+begin
+  // Bare dot without object name must not match
+  S := '.WriteInteger(''bla'', ''blub'', N);';
+  Original := S;
+  CheckFalse(ReverseFunctionPairStr(S, FRules), 'Should return False');
+  CheckEquals(Original, S, 'String should be unchanged');
+end;
+
+procedure TTestReverseFunctionPair.TestBareDotSimplePairNotMatched;
+var
+  S, Original: string;
+begin
+  // Bare dot without object name must not match simple pair
+  S := 'S := .IntToStr(X);';
   Original := S;
   CheckFalse(ReverseFunctionPairStr(S, FRules), 'Should return False');
   CheckEquals(Original, S, 'String should be unchanged');
@@ -452,7 +488,7 @@ begin
   Lines := TStringList.Create;
   Rules := TReversalRuleList.Create;
   try
-    Lines.Add('(\s*)([\w.]+)\s*:=\s*([\w.]*?)IntToStr\(([^()]+)\)\s*;' + TC);
+    Lines.Add('(\s*)([\w.]+)\s*:=\s*((?:[\w]+\.)*)IntToStr\(([^()]+)\)\s*;' + TC);
     Lines.Add('$1$4 := $3StrToInt($2);$5');
     Rules.LoadFromStrings(Lines);
     CheckEquals(1, Rules.Count, 'Should have 1 rule');
@@ -476,7 +512,7 @@ begin
   try
     Lines.Add('# This is a comment');
     Lines.Add('');
-    Lines.Add('(\s*)([\w.]+)\s*:=\s*([\w.]*?)IntToStr\(([^()]+)\)\s*;' + TC);
+    Lines.Add('(\s*)([\w.]+)\s*:=\s*((?:[\w]+\.)*)IntToStr\(([^()]+)\)\s*;' + TC);
     Lines.Add('$1$4 := $3StrToInt($2);$5');
     Lines.Add('');
     Lines.Add('# Another comment');

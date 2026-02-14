@@ -30,6 +30,8 @@ type
 function ReverseForLoopStr(var S: string): Boolean;
 function ReverseFunctionPairStr(var S: string; _Rules: TReversalRuleList): Boolean;
 function ReverseAssignmentStr(var S: string; _IsCpp: Boolean): Boolean;
+function CountCaptureGroups(const _Pattern: string): Integer;
+function MaxBackReference(const _Replace: string): Integer;
 
 implementation
 
@@ -232,6 +234,43 @@ begin
       SpaceBefore + StringBefore + ';' + TrailingString;
     Result := True;
   end;
+end;
+
+function CountCaptureGroups(const _Pattern: string): Integer;
+var
+  i: Integer;
+  InCharClass: Boolean;
+begin
+  Result := 0;
+  InCharClass := False;
+  i := 1;
+  while i <= Length(_Pattern) do
+  begin
+    case _Pattern[i] of
+      '\': Inc(i); // skip escaped character
+      '[': InCharClass := True;
+      ']': InCharClass := False;
+      '(':
+        if not InCharClass then
+          if (i + 1 > Length(_Pattern)) or (_Pattern[i + 1] <> '?') then
+            Inc(Result);
+    end;
+    Inc(i);
+  end;
+end;
+
+function MaxBackReference(const _Replace: string): Integer;
+var
+  i, n: Integer;
+begin
+  Result := 0;
+  for i := 1 to Length(_Replace) - 1 do
+    if (_Replace[i] = '$') and (_Replace[i + 1] >= '1') and (_Replace[i + 1] <= '9') then
+    begin
+      n := Ord(_Replace[i + 1]) - Ord('0');
+      if n > Result then
+        Result := n;
+    end;
 end;
 
 function ReverseForLoopStr(var S: string): Boolean;
