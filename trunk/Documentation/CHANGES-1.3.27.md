@@ -24,6 +24,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Instant Grep: Fixed wrong colors when form is restored by IDE docked desktop (bug #470)
 - Edit Search Path: Dialog no longer grows on each open with mixed-DPI monitor setups (bug #472)
 - Replace Components: Replacing components with sub-components now works again in Delphi 13 (Embarcadero fixed the underlying OTA bug)
+- Code Formatter: Fixed wrong indentation of continuation lines in multiline repeat-until conditions (bug #473)
 
 ## Contributors
 
