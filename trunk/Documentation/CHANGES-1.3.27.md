@@ -10,6 +10,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Reverse Statement: Replaced simple function name pairs with configurable regex-based reversal rules (feature #14)
 - Reverse Statement: Default rules now correctly handle Read/Write method transformations (e.g. ReadString/WriteString)
 - Reverse Statement: Added configuration dialog with interactive Test button
+- Reverse Statement: Redesigned configuration dialog with two-column grid (match/replacement) replacing raw text editor (feature #14)
 
 ## Bug Fixes
 
