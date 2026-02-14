@@ -128,6 +128,8 @@ Formatter configurations: `borland`, `default`, `delforex`, `headwork`, `special
 
 **Important:** `failure_*.pas` expected files contain CORRECT formatting (what the formatter SHOULD produce), not the current buggy output. These tests intentionally fail to document bugs. When someone fixes a formatter bug, the corresponding failure tests will start passing.
 
+**Auto-creation of expected files:** If no expected file exists for a test input, the framework automatically copies the input file to `expected/<config>/` and uses that as the baseline. The formatted output is then compared against this copy. This means tests always run regardless of whether expected files were pre-created.
+
 When a test fails, the incorrectly formatted output is saved to `output/<config>/` for comparison with `expected/<config>/`. Use Beyond Compare or similar diff tool to analyze differences.
 
 ### Special Cases Test Structure
