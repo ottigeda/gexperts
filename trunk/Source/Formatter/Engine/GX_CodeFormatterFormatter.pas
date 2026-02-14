@@ -1253,7 +1253,7 @@ begin
   while FStack.GetTopType in [rtVar, rtConst, rtType] do
     FStack.Pop;
 
-  if FStack.GetTopType in [rtProcedure, rtProcDeclare, rtProgram] then
+  if FStack.GetTopType in [rtProcedure, rtProgram] then
     FStack.Pop;
 
   if FStack.IsEmpty then
@@ -1712,7 +1712,7 @@ begin
     Assert(False, '.CheckIndent: in while');
     Dec(TempWordIdx);
   end;
-  Result := IsRType(_CheckedToken, [rtEquals, rtColon, rtComma, rtLeftBr]);
+  Result := IsRType(_CheckedToken, [rtEquals, rtColon, rtComma, rtLeftBr, rtAssignOper]);
 end;
 
 function TCodeFormatterFormatter.AnonymousProcHadParams: Boolean;
@@ -1917,7 +1917,13 @@ begin
           IndentProcedureComment;
       end;
 
-      FStack.Push(rtProcDeclare, 0);
+      // For anonymous functions in assignment context (:=), push with indent
+      // increment 1 to capture the continuation indent that would otherwise be
+      // lost when begin processes (bug #165)
+      if IsRType(Prev1, rtAssignOper) then
+        FStack.Push(rtProcDeclare, 1)
+      else
+        FStack.Push(rtProcDeclare, 0);
     end;
   end;
 end;
