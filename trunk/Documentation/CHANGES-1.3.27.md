@@ -25,6 +25,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Edit Search Path: Dialog no longer grows on each open with mixed-DPI monitor setups (bug #472)
 - Replace Components: Replacing components with sub-components now works again in Delphi 13 (Embarcadero fixed the underlying OTA bug)
 - Code Formatter: Fixed wrong indentation of continuation lines in multiline repeat-until conditions (bug #473)
+- Code Formatter: Fixed wrong indentation of begin/end in anonymous functions/procedures after := assignment (bug #165)
 
 ## Contributors
 
