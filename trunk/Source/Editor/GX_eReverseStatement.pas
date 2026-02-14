@@ -109,33 +109,15 @@ end;
 
 procedure TReverseStatementExpert.Configure(_Owner: TWinControl);
 var
-  frm: TfmReverseOptions;
-  TempLines: TStringList;
+  DefaultRules: TReversalRuleList;
 begin
-  frm := TfmReverseOptions.Create(_Owner);
+  DefaultRules := TReversalRuleList.Create;
   try
-    TForm_CenterOn(frm, _Owner);
-    TempLines := TStringList.Create;
-    try
-      FRules.SaveToStrings(TempLines);
-      frm.Memo.Lines.Assign(TempLines);
-    finally
-      FreeAndNil(TempLines);
-    end;
-
-    if frm.ShowModal = mrOk then
-    begin
-      TempLines := TStringList.Create;
-      try
-        TempLines.Assign(frm.Memo.Lines);
-        FRules.LoadFromStrings(TempLines);
-      finally
-        FreeAndNil(TempLines);
-      end;
+    LoadDefaultRules(DefaultRules);
+    if TfmReverseOptions.Execute(_Owner, FRules, DefaultRules) then
       SaveSettings;
-    end;
   finally
-    FreeAndNil(frm);
+    FreeAndNil(DefaultRules);
   end;
 end;
 

@@ -5,15 +5,18 @@ unit GX_eReverseOptions;
 interface
 
 uses
-  Windows, Classes, Controls, StdCtrls, ExtCtrls, Graphics, Forms,
-  SynEdit,
-  SynMemo,
-  GX_BaseForm;
+  Windows, Classes, Controls, StdCtrls, ExtCtrls, Grids, Forms,
+  GX_BaseForm,
+  GX_ReverseStatementUtils;
 
 type
   TfmReverseOptions = class(TfmBaseForm)
     lblFormat: TLabel;
-    pnlMemo: TPanel;
+    sgRules: TStringGrid;
+    pnlButtons: TPanel;
+    btnAdd: TButton;
+    btnDelete: TButton;
+    btnReset: TButton;
     lblError: TLabel;
     lblTestInput: TLabel;
     edTestInput: TEdit;
@@ -22,17 +25,26 @@ type
     edTestResult: TEdit;
     btnOK: TButton;
     btnCancel: TButton;
+    procedure btnAddClick(Sender: TObject);
+    procedure btnDeleteClick(Sender: TObject);
+    procedure btnResetClick(Sender: TObject);
     procedure btnTestClick(Sender: TObject);
+    procedure btnOKClick(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   private
-    FMemo: TSynMemo;
-    FInvalidLines: array of Boolean;
-    procedure MemoChange(Sender: TObject);
-    procedure MemoSpecialLineColors(Sender: TObject; Line: Integer;
-      var Special: Boolean; var FG, BG: TColor);
-    procedure ValidateLines;
+    FDefaultRules: TReversalRuleList;
+    function ValidateRules: Boolean;
+    procedure DeleteRow(_Row: Integer);
+  protected
+    procedure ArrangeControls; override;
   public
     constructor Create(_Owner: TComponent); override;
-    property Memo: TSynMemo read FMemo;
+    destructor Destroy; override;
+    class function Execute(_Owner: TWinControl; _Rules: TReversalRuleList;
+      _DefaultRules: TReversalRuleList): Boolean;
+    procedure SetRules(_Rules: TReversalRuleList);
+    procedure GetRules(_Rules: TReversalRuleList);
+    procedure SetDefaultRules(_Rules: TReversalRuleList);
   end;
 
 implementation
@@ -40,9 +52,7 @@ implementation
 uses
   SysUtils,
   u_dzVclUtils,
-  GX_EnhancedEditor,
-  GX_RegExpr,
-  GX_ReverseStatementUtils;
+  GX_RegExpr;
 
 {$R *.dfm}
 
@@ -53,126 +63,209 @@ begin
   inherited;
   TControl_SetMinConstraints(Self);
 
-  FMemo := TSynMemo.Create(Self);
-  FMemo.Align := alClient;
-  FMemo.Parent := pnlMemo;
-  FMemo.Gutter.Visible := False;
-  FMemo.Font.Height := -13;
-  FMemo.Font.Name := 'Courier New';
-  FMemo.ActiveLineColor := TGxEnhancedEditor.DefaultActiveLineColor;
-  FMemo.ScrollBars := ssBoth;
-  FMemo.WordWrap := False;
-  FMemo.RightEdge := 0;
-  FMemo.Options := FMemo.Options - [eoScrollPastEol, eoScrollPastEof];
-  FMemo.OnChange := MemoChange;
-  FMemo.OnSpecialLineColors := MemoSpecialLineColors;
+  sgRules.Cells[0, 0] := 'Match Pattern';
+  sgRules.Cells[1, 0] := 'Replacement';
 
   InitDpiScaler;
 end;
 
-procedure TfmReverseOptions.ValidateLines;
+destructor TfmReverseOptions.Destroy;
+begin
+  FreeAndNil(FDefaultRules);
+  inherited;
+end;
+
+class function TfmReverseOptions.Execute(_Owner: TWinControl; _Rules: TReversalRuleList;
+  _DefaultRules: TReversalRuleList): Boolean;
+var
+  frm: TfmReverseOptions;
+begin
+  frm := TfmReverseOptions.Create(_Owner);
+  try
+    TForm_CenterOn(frm, _Owner);
+    frm.SetRules(_Rules);
+    frm.SetDefaultRules(_DefaultRules);
+    Result := frm.ShowModal = mrOk;
+    if Result then
+      frm.GetRules(_Rules);
+  finally
+    FreeAndNil(frm);
+  end;
+end;
+
+procedure TfmReverseOptions.SetRules(_Rules: TReversalRuleList);
 var
   i: Integer;
-  Line: string;
-  ContentLines: TStringList;
-  re: TRegExpr;
-  FirstError: string;
-  ContentIdx: Integer;
-  LineMap: array of Integer; // maps content line index to memo line index
 begin
-  SetLength(FInvalidLines, FMemo.Lines.Count);
-  FirstError := '';
-  for i := 0 to FMemo.Lines.Count - 1 do
-    FInvalidLines[i] := False;
+  if _Rules.Count = 0 then
+  begin
+    sgRules.RowCount := 2;
+    sgRules.Cells[0, 1] := '';
+    sgRules.Cells[1, 1] := '';
+  end else
+  begin
+    sgRules.RowCount := _Rules.Count + 1;
+    for i := 0 to _Rules.Count - 1 do
+    begin
+      sgRules.Cells[0, i + 1] := _Rules[i].MatchPattern;
+      sgRules.Cells[1, i + 1] := _Rules[i].ReplaceTemplate;
+    end;
+  end;
+  TGrid_Resize(sgRules, [roUseGridWidth]);
+end;
 
-  // Collect non-comment, non-empty lines and track their original line numbers
-  ContentLines := TStringList.Create;
+procedure TfmReverseOptions.GetRules(_Rules: TReversalRuleList);
+var
+  i: Integer;
+  Match, Replace: string;
+begin
+  _Rules.Clear;
+  for i := 1 to sgRules.RowCount - 1 do
+  begin
+    Match := Trim(sgRules.Cells[0, i]);
+    Replace := Trim(sgRules.Cells[1, i]);
+    if (Match <> '') or (Replace <> '') then
+      _Rules.Add(Match, Replace);
+  end;
+end;
+
+procedure TfmReverseOptions.SetDefaultRules(_Rules: TReversalRuleList);
+begin
+  FreeAndNil(FDefaultRules);
+  FDefaultRules := TReversalRuleList.Create;
+  FDefaultRules.Assign(_Rules);
+end;
+
+procedure TfmReverseOptions.btnAddClick(Sender: TObject);
+var
+  NewRow: Integer;
+begin
+  NewRow := sgRules.RowCount;
+  sgRules.RowCount := NewRow + 1;
+  sgRules.Cells[0, NewRow] := '';
+  sgRules.Cells[1, NewRow] := '';
+  sgRules.Row := NewRow;
+  sgRules.Col := 0;
+  sgRules.SetFocus;
+end;
+
+procedure TfmReverseOptions.DeleteRow(_Row: Integer);
+var
+  i: Integer;
+begin
+  if sgRules.RowCount <= 2 then
+  begin
+    // Keep at least one data row, just clear it
+    sgRules.Cells[0, 1] := '';
+    sgRules.Cells[1, 1] := '';
+    Exit;
+  end;
+  for i := _Row to sgRules.RowCount - 2 do
+  begin
+    sgRules.Cells[0, i] := sgRules.Cells[0, i + 1];
+    sgRules.Cells[1, i] := sgRules.Cells[1, i + 1];
+  end;
+  sgRules.RowCount := sgRules.RowCount - 1;
+end;
+
+procedure TfmReverseOptions.btnDeleteClick(Sender: TObject);
+begin
+  if sgRules.Row >= 1 then
+    DeleteRow(sgRules.Row);
+end;
+
+procedure TfmReverseOptions.btnResetClick(Sender: TObject);
+begin
+  if FDefaultRules <> nil then
+    SetRules(FDefaultRules);
+end;
+
+function TfmReverseOptions.ValidateRules: Boolean;
+var
+  i: Integer;
+  Match, Replace: string;
+  re: TRegExpr;
+begin
+  Result := True;
+  lblError.Caption := '';
+  re := TRegExpr.Create;
   try
-    SetLength(LineMap, 0);
-    for i := 0 to FMemo.Lines.Count - 1 do
+    re.ModifierI := True;
+    for i := 1 to sgRules.RowCount - 1 do
     begin
-      Line := Trim(FMemo.Lines[i]);
-      if (Line = '') or (Line[1] = '#') then
+      Match := Trim(sgRules.Cells[0, i]);
+      Replace := Trim(sgRules.Cells[1, i]);
+      if (Match = '') and (Replace = '') then
         Continue;
-      SetLength(LineMap, Length(LineMap) + 1);
-      LineMap[High(LineMap)] := i;
-      ContentLines.Add(Line);
-    end;
-
-    // Validate match patterns (even-indexed content lines: 0, 2, 4, ...)
-    re := TRegExpr.Create;
-    try
-      ContentIdx := 0;
-      while ContentIdx < ContentLines.Count do
+      if (Match <> '') and (Replace = '') then
       begin
-        try
-          re.Expression := '^' + ContentLines[ContentIdx] + '$';
-          re.ModifierI := True;
-          re.Compile;
-        except
-          on E: ERegExpr do
-          begin
-            FInvalidLines[LineMap[ContentIdx]] := True;
-            if FirstError = '' then
-              FirstError := Format('Line %d: %s', [LineMap[ContentIdx] + 1, E.Message]);
-          end;
-        end;
-        Inc(ContentIdx, 2); // skip replacement line
+        lblError.Caption := Format('Row %d: match pattern has no replacement', [i]);
+        sgRules.Row := i;
+        sgRules.Col := 1;
+        Result := False;
+        Exit;
       end;
-    finally
-      FreeAndNil(re);
-    end;
-
-    // Check for unpaired trailing line
-    if (ContentLines.Count > 0) and Odd(ContentLines.Count) then
-    begin
-      i := LineMap[ContentLines.Count - 1];
-      FInvalidLines[i] := True;
-      if FirstError = '' then
-        FirstError := Format('Line %d: unpaired match pattern (missing replacement line)', [i + 1]);
+      if (Match = '') and (Replace <> '') then
+      begin
+        lblError.Caption := Format('Row %d: replacement has no match pattern', [i]);
+        sgRules.Row := i;
+        sgRules.Col := 0;
+        Result := False;
+        Exit;
+      end;
+      try
+        re.Expression := '^' + Match + '$';
+        re.Compile;
+      except
+        on E: ERegExpr do
+        begin
+          lblError.Caption := Format('Row %d: %s', [i, E.Message]);
+          sgRules.Row := i;
+          sgRules.Col := 0;
+          Result := False;
+          Exit;
+        end;
+      end;
     end;
   finally
-    FreeAndNil(ContentLines);
-  end;
-  lblError.Caption := FirstError;
-end;
-
-procedure TfmReverseOptions.MemoChange(Sender: TObject);
-begin
-  ValidateLines;
-  FMemo.Invalidate;
-end;
-
-procedure TfmReverseOptions.MemoSpecialLineColors(Sender: TObject; Line: Integer;
-  var Special: Boolean; var FG, BG: TColor);
-begin
-  if (Line >= 1) and (Line <= Length(FInvalidLines)) and FInvalidLines[Line - 1] then
-  begin
-    Special := True;
-    FG := clRed;
+    FreeAndNil(re);
   end;
 end;
 
 procedure TfmReverseOptions.btnTestClick(Sender: TObject);
 var
   Rules: TReversalRuleList;
-  TempLines: TStringList;
   TestStr: string;
 begin
   Rules := TReversalRuleList.Create;
-  TempLines := TStringList.Create;
   try
-    TempLines.Assign(FMemo.Lines);
-    Rules.LoadFromStrings(TempLines);
+    GetRules(Rules);
     TestStr := edTestInput.Text;
     if ReverseFunctionPairStr(TestStr, Rules) then
       edTestResult.Text := TestStr
     else
       edTestResult.Text := '(no rule matched)';
   finally
-    FreeAndNil(TempLines);
     FreeAndNil(Rules);
   end;
+end;
+
+procedure TfmReverseOptions.btnOKClick(Sender: TObject);
+begin
+  if ValidateRules then
+    ModalResult := mrOk;
+end;
+
+procedure TfmReverseOptions.ArrangeControls;
+begin
+  inherited;
+  sgRules.DefaultRowHeight := FScaler.Calc(20);
+  TGrid_Resize(sgRules, [roUseGridWidth]);
+end;
+
+procedure TfmReverseOptions.FormResize(Sender: TObject);
+begin
+  TGrid_Resize(sgRules, [roUseGridWidth]);
 end;
 
 end.

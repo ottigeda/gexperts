@@ -19,6 +19,8 @@ type
   public
     procedure Clear;
     procedure Add(const AMatchPattern, AReplaceTemplate: string);
+    procedure Delete(Index: Integer);
+    procedure Assign(Source: TReversalRuleList);
     procedure LoadFromStrings(Lines: TStrings);
     procedure SaveToStrings(Lines: TStrings);
     property Count: Integer read FCount;
@@ -52,6 +54,27 @@ begin
   FRules[FCount].MatchPattern := AMatchPattern;
   FRules[FCount].ReplaceTemplate := AReplaceTemplate;
   Inc(FCount);
+end;
+
+procedure TReversalRuleList.Delete(Index: Integer);
+var
+  i: Integer;
+begin
+  if (Index < 0) or (Index >= FCount) then
+    Exit;
+  for i := Index to FCount - 2 do
+    FRules[i] := FRules[i + 1];
+  Dec(FCount);
+end;
+
+procedure TReversalRuleList.Assign(Source: TReversalRuleList);
+var
+  i: Integer;
+begin
+  Clear;
+  if Source <> nil then
+    for i := 0 to Source.Count - 1 do
+      Add(Source[i].MatchPattern, Source[i].ReplaceTemplate);
 end;
 
 function TReversalRuleList.GetRule(Index: Integer): TReversalRule;
