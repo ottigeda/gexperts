@@ -432,9 +432,6 @@ procedure TFormDpiScaler.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 var
   Scaler: TDpiScaler;
 //  RedrawLock: IInterface;
-//  ClientRect: TRect;
-//  NewWidth: Integer;
-//  NewHeight: Integer;
   FormActiveControl: TWinControl;
 begin
   if not Assigned(FFrm) then
@@ -466,15 +463,13 @@ begin
 
     if Assigned(_NewBounds) then begin
       FFrm.BoundsRect := _NewBounds^;
-    end else begin
-      // the following broke saving the dialog sizes
-      // I have disabled the code for now. We'll see whether this has any adverse effects
-      // -- 2024-05-18 twm
-//      ClientRect := FFrm.ClientRect;
-//      NewWidth := Scaler.Calc(FClientWidth);
-//      NewHeight := Scaler.Calc(FClientHeight);
-//      FFrm.ClientWidth := NewWidth;
-//      FFrm.ClientHeight := NewHeight;
+    end else if FFrm.BorderStyle = bsDialog then begin
+      // bsDialog forms are non-resizable and don't save/restore their size,
+      // so they always need to be scaled from design dimensions.
+      // (The unconditional version was disabled 2024-05-18 because it broke
+      // saving/restoring of sizable dialog sizes.)
+      FFrm.ClientWidth := Scaler.Calc(FClientWidth);
+      FFrm.ClientHeight := Scaler.Calc(FClientHeight);
     end;
     LogForm('  FFrm(after)', FFrm);
 

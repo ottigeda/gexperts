@@ -6,8 +6,7 @@ interface
 
 uses
   Windows, Classes, Controls, StdCtrls, ExtCtrls, Forms,
-  GX_BaseForm,
-  u_dzDpiScaleUtils;
+  GX_BaseForm;
 
 type
   TfmReverseRuleEdit = class(TfmBaseForm)
@@ -30,11 +29,7 @@ type
     procedure tmrValidateTimer(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
   private
-    FDesignClientWidth: Integer;
-    FDesignClientHeight: Integer;
     procedure ValidateAndTest;
-  protected
-    procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect); override;
   public
     constructor Create(_Owner: TComponent); override;
     class function Execute(_Owner: TWinControl; var _Match, _Replace: string): Boolean;
@@ -55,30 +50,7 @@ uses
 constructor TfmReverseRuleEdit.Create(_Owner: TComponent);
 begin
   inherited;
-  FDesignClientWidth := ClientWidth;
-  FDesignClientHeight := ClientHeight;
   InitDpiScaler;
-end;
-
-procedure TfmReverseRuleEdit.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
-var
-  NewBounds: TRect;
-  ScaledCW, ScaledCH: Integer;
-begin
-  // bsDialog forms cannot be resized by the user, and TFormDpiScaler.ApplyDpi
-  // no longer scales the form size (the code was disabled because it broke
-  // saving/restoring of sizable dialog sizes). For fixed-size dialogs we must
-  // compute the scaled bounds ourselves so the form grows with DPI.
-  if (_NewBounds = nil) and Assigned(FScaler) then
-  begin
-    ScaledCW := FScaler.Calc(FDesignClientWidth);
-    ScaledCH := FScaler.Calc(FDesignClientHeight);
-    NewBounds := BoundsRect;
-    NewBounds.Right := NewBounds.Left + (Width - ClientWidth) + ScaledCW;
-    NewBounds.Bottom := NewBounds.Top + (Height - ClientHeight) + ScaledCH;
-    inherited ApplyDpi(_NewDpi, @NewBounds);
-  end else
-    inherited ApplyDpi(_NewDpi, _NewBounds);
 end;
 
 class function TfmReverseRuleEdit.Execute(_Owner: TWinControl; var _Match, _Replace: string): Boolean;
