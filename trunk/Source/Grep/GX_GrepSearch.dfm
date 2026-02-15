@@ -343,15 +343,15 @@ object fmGrepSearch: TfmGrepSearch
   end
   object gbxDirectories: TGroupBox
     Left = 8
-    Top = 240
+    Top = 248
     Width = 674
-    Height = 215
+    Height = 217
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Directory Search'
     TabOrder = 5
     DesignSize = (
       674
-      215)
+      217)
     object lblMasks: TLabel
       Left = 10
       Top = 69
@@ -395,7 +395,7 @@ object fmGrepSearch: TfmGrepSearch
       OnKeyDown = ComboKeyDown
     end
     object chk_SubDirRegex: TCheckBox
-      Left = 240
+      Left = 408
       Top = 160
       Width = 149
       Height = 19
@@ -534,20 +534,29 @@ object fmGrepSearch: TfmGrepSearch
       OnClick = btnOptionsClick
     end
   end
-  object rgSaveOption: TRadioGroup
+  object gbxSaveSearchHistory: TGroupBox
     Left = 8
-    Top = 460
+    Top = 480
     Width = 674
-    Height = 87
-    Anchors = [akLeft, akTop, akRight]
+    Height = 65
     Caption = 'Save Search History'
-    ItemIndex = 1
-    Items.Strings = (
-      'Save parameters and results'
-      'Only save parameters'
-      'Do not save')
-    ParentShowHint = False
-    ShowHint = False
     TabOrder = 6
+    DesignSize = (
+      674
+      65)
+    object cbSaveSearchHistory: TComboBox
+      Left = 8
+      Top = 27
+      Width = 658
+      Height = 22
+      Style = csDropDownList
+      Anchors = [akLeft, akTop, akRight]
+      ItemHeight = 14
+      TabOrder = 0
+      Items.Strings = (
+        'Save parameters and results'
+        'Only save parameters'
+        'Do not save')
+    end
   end
 end

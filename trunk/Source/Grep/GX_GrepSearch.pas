@@ -50,7 +50,8 @@ type
     cbSectionInitialization: TCheckBox;
     cbSectionFinalization: TCheckBox;
     btnOptions: TButton;
-    rgSaveOption: TRadioGroup;
+    gbxSaveSearchHistory: TGroupBox;
+    cbSaveSearchHistory: TComboBox;
     btnSearch: TButton;
     btnGrepAll: TButton;
     btnSectionAll: TButton;
@@ -496,7 +497,7 @@ begin
   gblGrepExpert.GrepWholeWord := cbWholeWord.Checked;
   gblGrepExpert.GrepRegEx := cbRegEx.Checked;
 
-  gblGrepExpert.GrepSaveOption := TGrepSaveOption(rgSaveOption.ItemIndex);
+  gblGrepExpert.GrepSaveOption := TGrepSaveOption(cbSaveSearchHistory.ItemIndex);
 
   if rbCurrentOnly.Checked then
     gblGrepExpert.GrepAction := gaCurrentOnlyGrep
@@ -621,7 +622,7 @@ begin
     cbWholeWord.Checked := gblGrepExpert.GrepWholeWord;
     cbRegEx.Checked := gblGrepExpert.GrepRegEx;
     cbIncludeClick(nil); // update depended controls
-    rgSaveOption.ItemIndex := Integer(gblGrepExpert.SaveOption);
+    cbSaveSearchHistory.ItemIndex := Integer(gblGrepExpert.SaveOption);
 
     case gblGrepExpert.GrepAction of
       gaCurrentOnlyGrep: rbCurrentOnly.Checked := True;
@@ -658,8 +659,8 @@ begin
       cbExcludedDirs.Text := cbExcludedDirs.Items[0];
 
     if not gblGrepExpert.GrepSaveHistoryListItems then begin
-      rgSaveOption.Visible := False;
-      Height := Height - rgSaveOption.Height;
+      gbxSaveSearchHistory.Visible := False;
+      Height := Height - gbxSaveSearchHistory.Height;
     end;
 
     if not IsStandAlone then
@@ -736,7 +737,7 @@ begin
   Value.HandleFormMultiline:= cbFormsMultiline.Checked;
   Value.HandleFormSpecialChars := cbFormsSpecialChars.Checked;
   Value.IncludeSQLs := cbSQLFiles.Checked;
-  Value.SaveOption := TGrepSaveOption(rgSaveOption.ItemIndex);
+  Value.SaveOption := TGrepSaveOption(cbSaveSearchHistory.ItemIndex);
   Value.Mask := '';
   Value.Directories := '';
   Value.ExcludedDirs := '';
@@ -785,7 +786,7 @@ begin
   cbFormsSpecialChars.Checked := Value.HandleFormSpecialChars;
   cbSQLFiles.Checked := Value.IncludeSQLs;
 
-  rgSaveOption.ItemIndex := Integer(Value.SaveOption);
+  cbSaveSearchHistory.ItemIndex := Integer(Value.SaveOption);
 
   cbMasks.Text := '';
   cbDirectory.Text := '';
@@ -971,8 +972,8 @@ begin
   gbxDirectories.Left := Margins div 2;
   gbxDirectories.Width := NewWidth - Margins;
 
-  rgSaveOption.Left := Margins div 2;
-  rgSaveOption.Width := NewWidth - Margins;
+  gbxSaveSearchHistory.Left := Margins div 2;
+  gbxSaveSearchHistory.Width := NewWidth - Margins;
 
   Width := NewWidth;
 end;
