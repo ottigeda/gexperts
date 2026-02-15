@@ -4,7 +4,7 @@ object fmCompRename: TfmCompRename
   ActiveControl = edtNewName
   BorderStyle = bsDialog
   Caption = 'GExperts Rename Component'
-  ClientHeight = 330
+  ClientHeight = 341
   ClientWidth = 321
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
@@ -15,8 +15,8 @@ object fmCompRename: TfmCompRename
   OldCreateOrder = False
   Position = poScreenCenter
   Scaled = False
-  PixelsPerInch = 96
   OnShow = FormShow
+  PixelsPerInch = 96
   TextHeight = 14
   object lblOldName: TLabel
     Left = 8
@@ -38,7 +38,7 @@ object fmCompRename: TfmCompRename
     Left = 0
     Top = 99
     Width = 321
-    Height = 231
+    Height = 242
     Align = alBottom
     TabOrder = 2
     object lblReason: TLabel
@@ -80,24 +80,23 @@ object fmCompRename: TfmCompRename
     end
     object pc_Additional: TPageControl
       Left = 1
-      Top = 53
+      Top = 56
       Width = 319
-      Height = 177
+      Height = 185
       ActivePage = ts_Align
       Align = alBottom
-      TabIndex = 0
       TabOrder = 3
       OnChange = pc_AdditionalChange
       object ts_Align: TTabSheet
         Caption = '&Align'
         DesignSize = (
           311
-          148)
+          156)
         object grp_Margins: TGroupBox
           Left = 176
           Top = 0
           Width = 137
-          Height = 145
+          Height = 153
           TabOrder = 8
           object l_MarginTop: TLabel
             Left = 24
@@ -108,49 +107,49 @@ object fmCompRename: TfmCompRename
           end
           object l_MarginLeft: TLabel
             Left = 8
-            Top = 56
+            Top = 60
             Width = 22
             Height = 14
             Caption = 'Left'
           end
           object l_MarginRight: TLabel
             Left = 48
-            Top = 56
+            Top = 60
             Width = 28
             Height = 14
             Caption = 'Right'
           end
           object l_MarginBottom: TLabel
             Left = 24
-            Top = 96
+            Top = 104
             Width = 41
             Height = 14
             Caption = 'Bottom'
           end
           object ed_MarginTop: TEdit
             Left = 24
-            Top = 32
+            Top = 34
             Width = 33
             Height = 22
             TabOrder = 0
           end
           object ed_MarginLeft: TEdit
             Left = 8
-            Top = 72
+            Top = 78
             Width = 33
             Height = 22
             TabOrder = 1
           end
           object ed_MarginRight: TEdit
             Left = 48
-            Top = 72
+            Top = 78
             Width = 33
             Height = 22
             TabOrder = 2
           end
           object ed_MarginBottom: TEdit
             Left = 24
-            Top = 112
+            Top = 122
             Width = 33
             Height = 22
             TabOrder = 3
@@ -205,7 +204,6 @@ object fmCompRename: TfmCompRename
           Top = 0
           Width = 169
           Height = 25
-          Anchors = []
           Caption = 'Top'
           TabOrder = 0
           OnClick = b_AlignTopClick
@@ -214,8 +212,7 @@ object fmCompRename: TfmCompRename
           Left = 0
           Top = 24
           Width = 41
-          Height = 65
-          Anchors = []
+          Height = 73
           Caption = 'Left'
           TabOrder = 1
           OnClick = b_AlignLeftClick
@@ -224,15 +221,14 @@ object fmCompRename: TfmCompRename
           Left = 40
           Top = 24
           Width = 89
-          Height = 65
-          Anchors = []
+          Height = 73
           Caption = 'Client'
           TabOrder = 2
           OnClick = b_AlignClientClick
         end
         object b_AlignNone: TBitBtn
           Left = 0
-          Top = 120
+          Top = 127
           Width = 65
           Height = 25
           Anchors = []
@@ -242,7 +238,7 @@ object fmCompRename: TfmCompRename
         end
         object b_AlignCustom: TBitBtn
           Left = 104
-          Top = 120
+          Top = 127
           Width = 65
           Height = 25
           Anchors = []
@@ -254,18 +250,16 @@ object fmCompRename: TfmCompRename
           Left = 128
           Top = 24
           Width = 41
-          Height = 65
-          Anchors = []
+          Height = 73
           Caption = 'Right'
           TabOrder = 3
           OnClick = b_AlignRightClick
         end
         object b_AlignBottom: TBitBtn
           Left = 0
-          Top = 88
+          Top = 96
           Width = 169
           Height = 25
-          Anchors = []
           Caption = 'Bottom'
           TabOrder = 4
           OnClick = b_AlignBottomClick
@@ -276,10 +270,10 @@ object fmCompRename: TfmCompRename
         ImageIndex = 1
         DesignSize = (
           311
-          148)
+          156)
         object b_AnchorLeft: TBitBtn
           Left = 80
-          Top = 46
+          Top = 50
           Width = 49
           Height = 49
           Anchors = []
@@ -288,7 +282,7 @@ object fmCompRename: TfmCompRename
         end
         object b_AnchorRight: TBitBtn
           Left = 184
-          Top = 46
+          Top = 50
           Width = 49
           Height = 49
           Anchors = []
@@ -297,7 +291,7 @@ object fmCompRename: TfmCompRename
         end
         object b_AnchorTop: TBitBtn
           Left = 132
-          Top = 16
+          Top = 18
           Width = 49
           Height = 49
           Anchors = []
@@ -306,7 +300,7 @@ object fmCompRename: TfmCompRename
         end
         object b_AnchorBottom: TBitBtn
           Left = 132
-          Top = 71
+          Top = 76
           Width = 49
           Height = 49
           Anchors = []

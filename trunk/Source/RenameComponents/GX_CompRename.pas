@@ -114,7 +114,7 @@ uses
   SysUtils, Windows, Menus, StrUtils, IniFiles, Graphics, TypInfo, Math,
   u_dzClassUtils, u_dzVclUtils, u_dzStringUtils, u_dzTypeInfoUtils,
   Themes,
-  {$IFOPT D+}GX_DbugIntf, {$ENDIF}
+{$IFOPT D+}GX_DbugIntf, {$ENDIF}
   GX_CompRenameConfig, GX_OtaUtils, GX_GenericUtils, GX_IdeUtils;
 
 type
@@ -1370,43 +1370,62 @@ end;
 procedure TfmCompRename.ArrangeControls;
 var
   Spacer : Integer;
-  H, W   : Integer;
+  HTotal: Integer;
+  WTotal: Integer;
+  HButton: integer;
+  WLeftRight: integer;
 begin
   inherited;
   Spacer := FScaler.Calc(2);
-  FAlignButtons[alTop].Anchors := [akLeft, akTop];
 
-  FAlignButtons[alLeft].Anchors := [akLeft, akTop];
-  FAlignButtons[alLeft].Left := FAlignButtons[alTop].Left;
-  FAlignButtons[alLeft].Top  := FAlignButtons[alTop].Top + FAlignButtons[alTop].Height + Spacer;
+//  +-------------------------+
+//  |           Top           |
+//  +-------+---------+-------+
+//  |       |         |       |
+//  | Left  | Center  | Right |
+//  |       |         |       |
+//  +-------+---------|-------+
+//  |         Bottom          |
+//  +------+-----------+------+
+//  | None |           |Custom|
+//  +------+           +------+
 
-  W := FAlignButtons[alTop].Width - (2 * FAlignButtons[alLeft].Width) - (2 * Spacer);
-  H := FAlignButtons[alLeft].Height;
+// WTotal = total width = Top.Width
+// HTotal = total height = TabSheet.ClientHeight
 
-  FAlignButtons[alClient].Anchors := [akLeft, akTop];
+  WTotal := FAlignButtons[alTop].Width;
+  HTotal := ts_Align.ClientHeight;
+
+// HButton = height of Top, Bottom, None and Custom buttons
+  HButton := FAlignButtons[alTop].Height;
+
+// WLeftRight = width of Left and Right buttons
+  WLeftRight := FAlignButtons[alLeft].Width;
+
+  FAlignButtons[alTop].Left := Spacer;
+  FAlignButtons[alLeft].Left := Spacer;
+  FAlignButtons[alBottom].Left := Spacer;
+  FAlignButtons[alNone].Left := Spacer;
+
+  FAlignButtons[alClient].Left := Spacer + WLeftRight + Spacer;
+  FAlignButtons[alRight].Left := Spacer + WTotal - WLeftRight;
+  FAlignButtons[alCustom].Left := Spacer + WTotal - FAlignButtons[alCustom].Width;
+
+  FAlignButtons[alTop].Top := Spacer;
+  FAlignButtons[alLeft].Top := Spacer + FAlignButtons[alTop].Height + Spacer;
   FAlignButtons[alClient].Top := FAlignButtons[alLeft].Top;
-  FAlignButtons[alClient].Width := W;
-  FAlignButtons[alClient].Left  := FAlignButtons[alLeft].Left + FAlignButtons[alLeft].Width + Spacer;
-  FAlignButtons[alClient].Height := H;
+  FAlignButtons[alRight].Top := FAlignButtons[alLeft].Top;
 
-  FAlignButtons[alRight].Anchors := [akLeft, akTop];
-  FAlignButtons[alRight].Left  := FAlignButtons[alClient].Left + FAlignButtons[alClient].Width + Spacer;
-  FAlignButtons[alRight].Top   := FAlignButtons[alLeft].Top;
-  FAlignButtons[alRight].Width := FAlignButtons[alLeft].Width;
+  FAlignButtons[alNone].Top := HTotal - Spacer - HButton - Spacer;
+  FAlignButtons[alCustom].Top := FAlignButtons[alNone].Top;
+  FAlignButtons[alBottom].Top := FAlignButtons[alNone].Top - Spacer - HButton;
 
-  FAlignButtons[alBottom].Anchors := [akLeft, akTop];
-  FAlignButtons[alBottom].Top   := FAlignButtons[alClient].Top + FAlignButtons[alClient].Height + Spacer;
-  FAlignButtons[alBottom].Left  := FAlignButtons[alTop].Left;
-  FAlignButtons[alBottom].Width := FAlignButtons[alTop].Width;
+  FAlignButtons[alClient].Height := FAlignButtons[alBottom].Top - Spacer - FAlignButtons[alClient].Top;
+  Falignbuttons[alLeft].Height :=  FAlignButtons[alClient].Height;
+  Falignbuttons[alRight].Height :=  FAlignButtons[alClient].Height;
 
-  FAlignButtons[alNone].Anchors := [akLeft, akTop];
-  FAlignButtons[alNone].Left    := FAlignButtons[alLeft].Left;
-  FAlignButtons[alNone].Top     := FAlignButtons[alBottom].Top + FAlignButtons[alBottom].Height + (2 * Spacer);
-
-  FAlignButtons[alCustom].Anchors := [akLeft, akTop];
-  FAlignButtons[alCustom].Top     := FAlignButtons[alNone].Top;
-  FAlignButtons[alCustom].Width   := FAlignButtons[alNone].Width;
-  FAlignButtons[alCustom].Left    := FAlignButtons[alTop].Left + FAlignButtons[alTop].Width - FAlignButtons[alCustom].Width;
+  FAlignButtons[alRight].Width := WLeftRight;
+  FAlignButtons[alClient].Width := WTotal - 2 * WLeftRight - 3 * Spacer;
 end;
 
 procedure TfmCompRename.btnSettingsClick(Sender: TObject);
