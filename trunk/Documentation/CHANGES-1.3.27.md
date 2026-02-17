@@ -13,6 +13,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Reverse Statement: Redesigned configuration dialog with two-column grid (match/replacement) replacing raw text editor (feature #14)
 - Reverse Statement: Added edit sub-dialog for adding/editing individual reversal rules with real-time regex validation and test (feature #14)
 - Reverse Statement: Moved source files to dedicated Source/ReverseStatement/ directory (feature #14)
+- DfmFilter: New standalone command-line tool to detect and remove Delphi 2006+ Margins/AlignWithMargins properties from DFM files
 
 ## Bug Fixes
 
