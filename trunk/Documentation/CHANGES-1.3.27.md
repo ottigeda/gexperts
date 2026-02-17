@@ -14,8 +14,11 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Reverse Statement: Added edit sub-dialog for adding/editing individual reversal rules with real-time regex validation and test (feature #14)
 - Reverse Statement: Moved source files to dedicated Source/ReverseStatement/ directory (feature #14)
 - DfmFilter: New standalone command-line tool to detect and remove Delphi 2006+ Margins/AlignWithMargins properties from DFM files
+- Uses Clause Manager: Added core sorting/grouping logic for uses clauses by namespace prefix (feature #181, feature #128)
 
 ## Bug Fixes
+
+- Uses Clause Manager: Line wrapping now respects IDE Right Margin setting instead of hardcoded 80 columns
 
 - Reverse Statement: Fixed regex matching bare-dot expressions like `.ReadInteger()` which produced invalid code (feature #14)
 - Backup Project: Show actual matched files instead of wildcard patterns in file list (bug #19)
