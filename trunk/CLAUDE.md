@@ -314,7 +314,7 @@ Located in `ExternalSource/`:
 ### Standalone Utilities
 
 Separate executables sharing the codebase in `Projects/StandAlone/`:
-- CodeFormatter, CodeLibrarian, DebugWindow, ExpertManager, Grep, PeInformation
+- CodeFormatter, CodeLibrarian, DebugWindow, DfmFilter, ExpertManager, Grep, PeInformation
 
 ## Configuration
 
