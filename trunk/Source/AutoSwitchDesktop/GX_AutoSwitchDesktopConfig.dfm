@@ -11,10 +11,6 @@ inherited f_AutoSwitchDestkopConfig: Tf_AutoSwitchDestkopConfig
     Top = 8
     Width = 128
     Height = 13
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
     Caption = 'Desktop for &Form Designer'
   end
   object l_CodeDesktop: TLabel
@@ -22,10 +18,6 @@ inherited f_AutoSwitchDestkopConfig: Tf_AutoSwitchDestkopConfig
     Top = 56
     Width = 115
     Height = 13
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
     Caption = 'Desktop for &Code Editor'
   end
   object cmb_FormDesktop: TComboBox
@@ -33,10 +25,6 @@ inherited f_AutoSwitchDestkopConfig: Tf_AutoSwitchDestkopConfig
     Top = 24
     Width = 233
     Height = 21
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
     Style = csDropDownList
     ItemHeight = 13
     TabOrder = 0
@@ -46,10 +34,6 @@ inherited f_AutoSwitchDestkopConfig: Tf_AutoSwitchDestkopConfig
     Top = 72
     Width = 233
     Height = 21
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
     Style = csDropDownList
     ItemHeight = 13
     TabOrder = 1
@@ -59,10 +43,6 @@ inherited f_AutoSwitchDestkopConfig: Tf_AutoSwitchDestkopConfig
     Top = 104
     Width = 73
     Height = 25
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
     Caption = 'OK'
     Default = True
     ModalResult = 1
@@ -73,10 +53,6 @@ inherited f_AutoSwitchDestkopConfig: Tf_AutoSwitchDestkopConfig
     Top = 104
     Width = 73
     Height = 25
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
