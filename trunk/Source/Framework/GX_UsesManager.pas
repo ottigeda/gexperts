@@ -75,6 +75,7 @@ type
     procedure InternalRemoveFromUses(_Which: TWhichUsesList; const AUnitName: string);
     function GetUsesList(_Which: TWhichUsesList): TUsesList;
     class procedure InternalGetUnits(Units: TStrings; _Which: TWhichUsesList);
+    class function GetIDERightMargin: Integer;
   public
     // These act on the current source editor
     class function UseUnitInImplementation(const AUnitName: string): boolean;
@@ -86,6 +87,10 @@ type
     class procedure RemoveUnitFromInterface(const AUnitName: string);
     class procedure ReplaceUnitInImplementation(const AOldUnitName, ANewUnitName: string);
     class procedure ReplaceUnitInInterface(const AOldUnitName, ANewUnitName: string);
+    ///<summary>
+    /// Deletes the existing uses clause and inserts NewUsesText at the same position.
+    /// NewUsesText must include the 'uses' keyword through trailing ';'. </summary>
+    class procedure RewriteUsesClause(_Which: TWhichUsesList; const _NewUsesText: string);
   public
     constructor Create(const SourceEditor: IOTASourceEditor); overload;
     constructor Create(const FileName: string); overload;
@@ -224,6 +229,28 @@ begin
   finally
     um.Free;
   end;
+end;
+
+class procedure TUsesManager.RewriteUsesClause(_Which: TWhichUsesList; const _NewUsesText: string);
+var
+  um: TUsesManager;
+  BegPos, EndPos, DeleteCount: Integer;
+  SourceEditor: IOTASourceEditor;
+begin
+  SourceEditor := Ota.GetCurrentSourceEditor;
+  um := TUsesManager.Create(SourceEditor);
+  try
+    BegPos := um.FUsesClause[_Which].BegOfUses;
+    EndPos := um.FUsesClause[_Which].EndOfUses;
+    if (BegPos = 0) or (EndPos = 0) then
+      raise Exception.Create('RewriteUsesClause: Uses clause not found');
+    DeleteCount := EndPos - BegPos;
+  finally
+    um.Free;
+  end;
+  // Delete old uses clause and insert new text
+  GxOtaDeleteTextFromPos(BegPos, DeleteCount, SourceEditor);
+  Ota.InsertTextIntoEditorAtCharPos(_NewUsesText, BegPos, SourceEditor);
 end;
 
 constructor TUsesManager.Create(const SourceEditor: IOTASourceEditor);
@@ -679,6 +706,17 @@ begin
   Put(AIndex, Value);
 end;
 
+class function TUsesManager.GetIDERightMargin: Integer;
+var
+  EditBuffer: IOTAEditBuffer;
+begin
+  Result := 80; // fallback
+  if Ota.TryGetTopMostEditBuffer(EditBuffer) and Assigned(EditBuffer.BufferOptions) then
+    Result := EditBuffer.BufferOptions.RightMargin;
+  if Result <= 0 then
+    Result := 80;
+end;
+
 function TUsesManager.UsesLineWouldBeTooLong(InsertPos, InsertLength: Integer): Boolean;
 var
   EditView: IOTAEditView;
@@ -689,7 +727,7 @@ begin
   Assert(Assigned(EditView));
   InsertCharPos := Ota.GetCharPosFromPos(InsertPos, EditView);
   EditView.ConvertPos(False, InsertEditPos, InsertCharPos);
-  Result := (InsertEditPos.Col + InsertLength) > 80;
+  Result := (InsertEditPos.Col + InsertLength) > GetIDERightMargin;
 end;
 
 function TUsesManager.IsPositionBeforeImplementation(Pos: Integer): Boolean;
