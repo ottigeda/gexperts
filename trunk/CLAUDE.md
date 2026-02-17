@@ -17,6 +17,12 @@ GExperts is an open-source IDE plugin (DLL) for Delphi and C++Builder that provi
 
 **IMPORTANT:** Never use `Margins` or `AlignWithMargins` properties in DFM files. These were introduced in Delphi 2006 and cause errors in Delphi 6/7. The Delphi form designer auto-adds these properties, so always check DFM files before committing.
 
+**Before committing any DFM file**, always run the DfmFilter tool to check for offending properties:
+```bash
+./Binaries/DfmFilter.exe <dfm-file>
+```
+If it reports problems, fix them with `--fix` or manually before committing.
+
 ## Version Control
 
 **IMPORTANT:** This project uses Subversion (SVN), not Git.
