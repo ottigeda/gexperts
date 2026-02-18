@@ -21,7 +21,7 @@ uses
   {$ENDIF}
   u_dzDpiScaleUtils,
   GX_ConfigurationInfo, GX_Experts, GX_GenericUtils, GX_BaseForm, GX_Splitter,
-  GX_UnitExportsParser, GX_UsesExpertOptions, GX_UnitExportList,
+  GX_UnitExportsParser, GX_UsesExpertOptions, GX_UnitExportList, GX_UsesSortGroups,
   GX_Logging,
   ToolsApi,
   GX_OtaUtils,
@@ -60,6 +60,8 @@ type
     FSearchPathFavorites: Boolean;
     FFastAdd: Boolean;
     FAutoSort: Boolean;
+    FPrefixGroups: TUsesPrefixGroupList;
+    FGroupSeparator: TGroupSeparator;
     FLastProject: string;
 {$IF declared(TStopwatch)}
     FIdentifierTabTimer: TStopwatch;
@@ -423,7 +425,7 @@ implementation
 uses
   CommCtrl, Messages, Graphics, StrUtils, Math, Clipbrd, FileCtrl,
   u_dzVclUtils, u_dzMapFileReader, u_dzFileUtils, u_dzOsUtils, u_dzClassUtils, u_dzStringUtils,
-  GX_IdeUtils, GX_UsesManager, GX_UsesSortGroups, GX_GetIdeVersion,
+  GX_IdeUtils, GX_UsesManager, GX_GetIdeVersion,
 {$IFOPT D+}
   GX_DbugIntf,
 {$ENDIF D+}
@@ -435,6 +437,8 @@ uses
 constructor TUsesClauseMgrExpert.Create;
 begin
   inherited;
+  FPrefixGroups := TUsesPrefixGroupList.Create;
+  FPrefixGroups.LoadDefaults;
   LoadSettings;
 end;
 
@@ -458,6 +462,8 @@ begin
   end;
 
   SaveSettings;
+
+  FreeAndNil(FPrefixGroups);
 
   if Assigned(FOrigFileAddUnitExecute) then
     if FindAction(act) then
@@ -855,7 +861,8 @@ begin
   CacheDir := ConfigInfo.CachingPath + 'UsesExpertCache';
 
   if TfmUsesExpertOptions.Execute(_Owner, Found, CacheDir, FReadMap, FReplaceFileUseUnit,
-    FParseAll, FDisableCache, FSearchPathFavorites, FFilterIdentifiers, FFastAdd, FAutoSort) then begin
+    FParseAll, FDisableCache, FSearchPathFavorites, FFilterIdentifiers, FFastAdd, FAutoSort,
+    FPrefixGroups, FGroupSeparator) then begin
     SaveSettings;
     if Found then begin
       if FReplaceFileUseUnit then begin
@@ -872,6 +879,8 @@ begin
 end;
 
 procedure TUsesClauseMgrExpert.InternalLoadSettings(_Settings: IExpertSettings);
+var
+  TempList: TStringList;
 begin
   inherited;
   FReplaceFileUseUnit := _Settings.ReadBool('ReplaceFileUseUnit', False);
@@ -882,9 +891,22 @@ begin
   FSearchPathFavorites := _Settings.ReadBool('SearchPathFavorites', False);
   FFastAdd := _Settings.ReadBool('FastAdd', False);
   FAutoSort := _Settings.ReadBool('AutoSort', False);
+  FGroupSeparator := TGroupSeparator(_Settings.ReadInteger('GroupSeparator', Ord(gsNone)));
+
+  TempList := TStringList.Create;
+  try
+    _Settings.ReadStrings('PrefixGroups', TempList, 'Prefix');
+    if TempList.Count > 0 then
+      FPrefixGroups.LoadFromStrings(TempList);
+    // If TempList was empty (first run), keep the defaults loaded in constructor
+  finally
+    FreeAndNil(TempList);
+  end;
 end;
 
 procedure TUsesClauseMgrExpert.InternalSaveSettings(_Settings: IExpertSettings);
+var
+  TempList: TStringList;
 begin
   inherited;
   _Settings.WriteBool('ReplaceFileUseUnit', FReplaceFileUseUnit);
@@ -895,6 +917,15 @@ begin
   _Settings.WriteBool('SearchPathFavorites', FSearchPathFavorites);
   _Settings.WriteBool('FastAdd', FFastAdd);
   _Settings.WriteBool('AutoSort', FAutoSort);
+  _Settings.WriteInteger('GroupSeparator', Ord(FGroupSeparator));
+
+  TempList := TStringList.Create;
+  try
+    FPrefixGroups.SaveToStrings(TempList);
+    _Settings.WriteStrings('PrefixGroups', TempList, 'Prefix');
+  finally
+    FreeAndNil(TempList);
+  end;
 end;
 
 function TUsesClauseMgrExpert.TryLookupIdentifier(const _Identifier: AnsiString; out _Casing: string;
@@ -2834,22 +2865,56 @@ begin
 end;
 
 procedure TfmUsesManager.b_SortClick(Sender: TObject);
-var
-  sl: TStringList;
-begin
-  sl := TStringList.Create;
-  try
-    TStringGrid_GetCol(sg_Interface, 0, sl);
-    sl.Sort;
-    TStringGrid_AssignCol(sg_Interface, 0, sl);
 
-    sl.Clear;
-    TStringGrid_GetCol(sg_Implementation, 0, sl);
-    sl.Sort;
-    TStringGrid_AssignCol(sg_Implementation, 0, sl);
-  finally
-    FreeAndNil(sl);
+  procedure SortGrid(_sg: TStringGrid);
+  var
+    sl: TStringList;
+    Grouped: TStringList;
+    Flat: TStringList;
+    i: Integer;
+    UnitName: string;
+    GroupLine: string;
+    p, Start: Integer;
+  begin
+    sl := TStringList.Create;
+    try
+      TStringGrid_GetCol(_sg, 0, sl);
+      Grouped := TUsesGroupSorter.SortAndGroupUnits(sl, FUsesExpert.FPrefixGroups);
+      try
+        // Flatten grouped result back to a flat sorted list
+        Flat := TStringList.Create;
+        try
+          for i := 0 to Grouped.Count - 1 do begin
+            GroupLine := Grouped[i];
+            // Split comma-separated group into individual units
+            Start := 1;
+            for p := 1 to Length(GroupLine) do begin
+              if GroupLine[p] = ',' then begin
+                UnitName := Trim(Copy(GroupLine, Start, p - Start));
+                if UnitName <> '' then
+                  Flat.Add(UnitName);
+                Start := p + 1;
+              end;
+            end;
+            UnitName := Trim(Copy(GroupLine, Start, MaxInt));
+            if UnitName <> '' then
+              Flat.Add(UnitName);
+          end;
+          TStringGrid_AssignCol(_sg, 0, Flat);
+        finally
+          FreeAndNil(Flat);
+        end;
+      finally
+        FreeAndNil(Grouped);
+      end;
+    finally
+      FreeAndNil(sl);
+    end;
   end;
+
+begin
+  SortGrid(sg_Interface);
+  SortGrid(sg_Implementation);
   chk_AutoSort.Checked := True;
 end;
 
@@ -3066,10 +3131,11 @@ begin
   end;
 end;
 
-procedure SortAndRewriteClause(_Which: TWhichUsesList);
+procedure SortAndRewriteClause(_Which: TWhichUsesList;
+  _PrefixGroups: TUsesPrefixGroupList; _Separator: TGroupSeparator);
 var
   Units: TStringList;
-  PrefixGroups: TUsesPrefixGroupList;
+  LocalGroups: TUsesPrefixGroupList;
   Grouped: TStringList;
   FormattedText: string;
 begin
@@ -3082,19 +3148,19 @@ begin
     if Units.Count = 0 then
       Exit;
 
-    PrefixGroups := TUsesPrefixGroupList.Create;
+    LocalGroups := TUsesPrefixGroupList.Create;
     try
-      PrefixGroups.LoadDefaults;
-      Grouped := TUsesGroupSorter.SortAndGroupUnits(Units, PrefixGroups);
+      LocalGroups.Assign(_PrefixGroups);
+      Grouped := TUsesGroupSorter.SortAndGroupUnits(Units, LocalGroups);
       try
         FormattedText := TUsesGroupSorter.FormatUsesClause(Grouped,
-          TUsesManager.GetIDERightMargin, gsNone);
+          TUsesManager.GetIDERightMargin, _Separator);
         TUsesManager.RewriteUsesClause(_Which, FormattedText);
       finally
         FreeAndNil(Grouped);
       end;
     finally
-      FreeAndNil(PrefixGroups);
+      FreeAndNil(LocalGroups);
     end;
   finally
     FreeAndNil(Units);
@@ -3109,14 +3175,14 @@ begin
   // Then re-read and rewrite both clauses sorted and grouped.
   // Process implementation first (later in file) to avoid position shifts.
   try
-    SortAndRewriteClause(puImplementation);
+    SortAndRewriteClause(puImplementation, FUsesExpert.FPrefixGroups, FUsesExpert.FGroupSeparator);
   except
     on E: Exception do
       ; // no implementation uses clause — nothing to sort
   end;
 
   try
-    SortAndRewriteClause(puInterface);
+    SortAndRewriteClause(puInterface, FUsesExpert.FPrefixGroups, FUsesExpert.FGroupSeparator);
   except
     on E: Exception do
       ; // no interface uses clause — nothing to sort

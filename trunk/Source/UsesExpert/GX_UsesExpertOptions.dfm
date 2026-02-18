@@ -4,14 +4,14 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Uses Clause Manager, Configuration'
-  ClientHeight = 354
+  ClientHeight = 606
   ClientWidth = 329
   ParentFont = True
   KeyPreview = True
   OnKeyDown = FormKeyDown
   DesignSize = (
     329
-    354)
+    606)
   PixelsPerInch = 96
   TextHeight = 13
   object chkReadMap: TCheckBox
@@ -19,7 +19,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
     Top = 8
     Width = 313
     Height = 17
-    Hint = 
+    Hint =
       'Requires that you turn on map file generation in the project'#39's l' +
       'inker options.'
     Anchors = [akLeft, akTop, akRight]
@@ -33,7 +33,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
     Top = 32
     Width = 313
     Height = 17
-    Hint = 
+    Hint =
       'If enabled, the menu entry File -> Use Unit will call the GExper' +
       'ts Uses Clause Manager'
     Anchors = [akLeft, akTop, akRight]
@@ -51,25 +51,27 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
     TabOrder = 2
   end
   object btnOK: TButton
-    Left = 164
-    Top = 320
-    Width = 75
+    Left = 145
+    Top = 572
+    Width = 85
     Height = 25
+    Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'OK'
     Default = True
     ModalResult = 1
-    TabOrder = 9
+    TabOrder = 10
   end
   object btnCancel: TButton
-    Left = 246
-    Top = 320
-    Width = 75
+    Left = 236
+    Top = 572
+    Width = 85
     Height = 25
+    Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 10
+    TabOrder = 11
   end
   object chkDisableParserCache: TCheckBox
     Left = 24
@@ -82,7 +84,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   object btnClearCache: TButton
     Left = 40
     Top = 104
-    Width = 75
+    Width = 85
     Height = 25
     Caption = 'Clear Cache'
     TabOrder = 4
@@ -132,16 +134,100 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
     ShowHint = True
     TabOrder = 8
   end
+  object grp_SortSettings: TGroupBox
+    Left = 8
+    Top = 312
+    Width = 313
+    Height = 252
+    Anchors = [akLeft, akTop, akRight]
+    Caption = ' Sorting and Grouping '
+    TabOrder = 9
+    object lb_Prefixes: TListBox
+      Left = 8
+      Top = 18
+      Width = 204
+      Height = 120
+      ItemHeight = 13
+      TabOrder = 0
+      OnClick = lb_PrefixesClick
+    end
+    object btnPrefixAdd: TButton
+      Left = 220
+      Top = 18
+      Width = 85
+      Height = 25
+      Caption = 'Add...'
+      TabOrder = 1
+      OnClick = btnPrefixAddClick
+    end
+    object btnPrefixEdit: TButton
+      Left = 220
+      Top = 46
+      Width = 85
+      Height = 25
+      Caption = 'Edit...'
+      TabOrder = 2
+      OnClick = btnPrefixEditClick
+    end
+    object btnPrefixDelete: TButton
+      Left = 220
+      Top = 74
+      Width = 85
+      Height = 25
+      Caption = 'Delete'
+      TabOrder = 3
+      OnClick = btnPrefixDeleteClick
+    end
+    object btnPrefixUp: TButton
+      Left = 220
+      Top = 106
+      Width = 85
+      Height = 25
+      Caption = 'Up'
+      TabOrder = 4
+      OnClick = btnPrefixUpClick
+    end
+    object btnPrefixDown: TButton
+      Left = 220
+      Top = 134
+      Width = 85
+      Height = 25
+      Caption = 'Down'
+      TabOrder = 5
+      OnClick = btnPrefixDownClick
+    end
+    object btnPrefixReset: TButton
+      Left = 8
+      Top = 144
+      Width = 120
+      Height = 25
+      Caption = 'Reset to Defaults'
+      TabOrder = 6
+      OnClick = btnPrefixResetClick
+    end
+    object rg_Separator: TRadioGroup
+      Left = 8
+      Top = 176
+      Width = 297
+      Height = 68
+      Caption = ' Group separator '
+      Items.Strings = (
+        'None'
+        'Blank line'
+        'Comment (e.g. { Vcl })')
+      TabOrder = 7
+    end
+  end
   object b_Help: TButton
     Left = 8
-    Top = 320
-    Width = 75
+    Top = 572
+    Width = 85
     Height = 25
     Hint = 'Help (F1)'
     Caption = 'Help'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 11
+    TabOrder = 12
     OnClick = b_HelpClick
   end
 end
