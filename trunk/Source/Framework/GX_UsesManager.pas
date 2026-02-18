@@ -75,8 +75,8 @@ type
     procedure InternalRemoveFromUses(_Which: TWhichUsesList; const AUnitName: string);
     function GetUsesList(_Which: TWhichUsesList): TUsesList;
     class procedure InternalGetUnits(Units: TStrings; _Which: TWhichUsesList);
-    class function GetIDERightMargin: Integer;
   public
+    class function GetIDERightMargin: Integer;
     // These act on the current source editor
     class function UseUnitInImplementation(const AUnitName: string): boolean;
     class function UseUnitInInterface(const AUnitName: string): Boolean;
@@ -237,6 +237,11 @@ var
   BegPos, EndPos, DeleteCount: Integer;
   SourceEditor: IOTASourceEditor;
 begin
+{$IFNDEF GX_DELPHI10_2_UP}
+  // Suppress W1036 "Variable might not have been initialized" in Delphi 10.1 and earlier.
+  // Delphi 10.2+ sees through the try/finally and doesn't warn, but emits H2077 instead.
+  DeleteCount := 0;
+{$ENDIF}
   SourceEditor := Ota.GetCurrentSourceEditor;
   um := TUsesManager.Create(SourceEditor);
   try
