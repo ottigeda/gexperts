@@ -267,16 +267,6 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         <DCCReference Include="..\..\Source\Editor\GX_eRemoveMatchingLines.pas">
             <Form>fmRemoveMatchingLinesExpertConfig</Form>
         </DCCReference>
-        <DCCReference Include="..\..\source\ReverseStatement\GX_eReverseStatement.pas"/>
-        <DCCReference Include="..\..\source\ReverseStatement\GX_ReverseStatementUtils.pas"/>
-        <DCCReference Include="..\..\source\ReverseStatement\GX_eReverseOptions.pas">
-            <Form>fmReverseOptions</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="..\..\source\ReverseStatement\GX_eReverseRuleEdit.pas">
-            <Form>fmReverseRuleEdit</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="..\..\source\Editor\GX_eSelectIdentifier.pas"/>
         <DCCReference Include="..\..\source\Editor\GX_eSelectionEditorExpert.pas"/>
         <DCCReference Include="..\..\Source\Editor\GX_eSort.pas">
@@ -611,6 +601,16 @@ call ..\..\buildtools\movedll.cmd "$(OUTPUTPATH)"</PreBuildEvent>
         </DCCReference>
         <DCCReference Include="..\..\source\ReplaceComponents\GX_ReplaceCompUtils.pas"/>
         <DCCReference Include="..\..\Source\ReselectDesktop\GX_ReselectDesktop.pas"/>
+        <DCCReference Include="..\..\source\ReverseStatement\GX_eReverseOptions.pas">
+            <FormType>dfm</FormType>
+            <Form>fmReverseOptions</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\source\ReverseStatement\GX_eReverseRuleEdit.pas">
+            <FormType>dfm</FormType>
+            <Form>fmReverseRuleEdit</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\source\ReverseStatement\GX_eReverseStatement.pas"/>
+        <DCCReference Include="..\..\source\ReverseStatement\GX_ReverseStatementUtils.pas"/>
         <DCCReference Include="..\..\source\SetComponentProperties\GX_SetComponentProps.pas"/>
         <DCCReference Include="..\..\source\SetComponentProperties\GX_SetComponentPropsConfig.pas">
             <Form>fmSetComponentPropsConfig</Form>

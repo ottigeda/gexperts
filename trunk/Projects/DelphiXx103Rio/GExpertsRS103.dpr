@@ -273,6 +273,7 @@ uses
   GX_UnspecifiedImage in '..\..\Source\Framework\GX_UnspecifiedImage.pas',
   GX_UsageStatistics in '..\..\Source\Framework\GX_UsageStatistics.pas' {fmUsageStatistics},
   GX_UsesExpert in '..\..\Source\UsesExpert\GX_UsesExpert.pas' {fmUsesManager},
+  GX_UsesSortGroups in '..\..\Source\UsesExpert\GX_UsesSortGroups.pas',
   GX_UsesExpertOptions in '..\..\Source\UsesExpert\GX_UsesExpertOptions.pas' {fmUsesExpertOptions},
   GX_UsesManager in '..\..\source\Framework\GX_UsesManager.pas',
   GX_VCLFixPack in '..\..\Source\Utils\GX_VCLFixPack.pas',
