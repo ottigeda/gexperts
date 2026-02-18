@@ -59,6 +59,7 @@ type
     FUnitExportParserThread: TUnitExportParserThread;
     FSearchPathFavorites: Boolean;
     FFastAdd: Boolean;
+    FAutoSort: Boolean;
     FLastProject: string;
 {$IF declared(TStopwatch)}
     FIdentifierTabTimer: TStopwatch;
@@ -155,6 +156,7 @@ type
     b_DeleteFromImpl: TButton;
     b_MoveToImpl: TButton;
     b_MoveToIntf: TButton;
+    b_Sort: TButton;
     actOpenUnit: TAction;
     tabSearchPath: TTabSheet;
     pnlSearchPathFooter: TPanel;
@@ -240,6 +242,7 @@ type
     mCopyThisIdentifierToTheClipboard: TMenuItem;
     mSearchThisOnTheWeb: TMenuItem;
     b_Help: TButton;
+    chk_AutoSort: TCheckBox;
     procedure FormResize(Sender: TObject);
     procedure sg_ImplementationDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure sg_InterfaceDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -320,6 +323,7 @@ type
     procedure actAddToImplemenationAndCloseExecute(Sender: TObject);
     procedure chk_FastAddClick(Sender: TObject);
     procedure b_HelpClick(Sender: TObject);
+    procedure b_SortClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   private
@@ -362,6 +366,7 @@ type
     procedure FilterIdentifiers;
     procedure SelectFirstItemInLists;
     procedure SaveChanges;
+    procedure SaveChangesRewrite;
     function GetListForOpen: TStringGrid;
     procedure OpenSelectedUnit(List: TStringGrid);
     procedure lbxInterfaceFilesDropped(_Sender: TObject; _Files: TStrings);
@@ -418,7 +423,7 @@ implementation
 uses
   CommCtrl, Messages, Graphics, StrUtils, Math, Clipbrd, FileCtrl,
   u_dzVclUtils, u_dzMapFileReader, u_dzFileUtils, u_dzOsUtils, u_dzClassUtils, u_dzStringUtils,
-  GX_IdeUtils, GX_UsesManager, GX_GetIdeVersion,
+  GX_IdeUtils, GX_UsesManager, GX_UsesSortGroups, GX_GetIdeVersion,
 {$IFOPT D+}
   GX_DbugIntf,
 {$ENDIF D+}
@@ -850,7 +855,7 @@ begin
   CacheDir := ConfigInfo.CachingPath + 'UsesExpertCache';
 
   if TfmUsesExpertOptions.Execute(_Owner, Found, CacheDir, FReadMap, FReplaceFileUseUnit,
-    FParseAll, FDisableCache, FSearchPathFavorites, FFilterIdentifiers, FFastAdd) then begin
+    FParseAll, FDisableCache, FSearchPathFavorites, FFilterIdentifiers, FFastAdd, FAutoSort) then begin
     SaveSettings;
     if Found then begin
       if FReplaceFileUseUnit then begin
@@ -876,6 +881,7 @@ begin
   FDisableCache := _Settings.ReadBool('DisableCache', False);
   FSearchPathFavorites := _Settings.ReadBool('SearchPathFavorites', False);
   FFastAdd := _Settings.ReadBool('FastAdd', False);
+  FAutoSort := _Settings.ReadBool('AutoSort', False);
 end;
 
 procedure TUsesClauseMgrExpert.InternalSaveSettings(_Settings: IExpertSettings);
@@ -888,6 +894,7 @@ begin
   _Settings.WriteBool('DisableCache', FDisableCache);
   _Settings.WriteBool('SearchPathFavorites', FSearchPathFavorites);
   _Settings.WriteBool('FastAdd', FFastAdd);
+  _Settings.WriteBool('AutoSort', FAutoSort);
 end;
 
 function TUsesClauseMgrExpert.TryLookupIdentifier(const _Identifier: AnsiString; out _Casing: string;
@@ -974,6 +981,7 @@ begin
   FIdentifierMatchGrp.SetDown(Ord(FUsesExpert.FFilterIdentifiers));
 
   chk_FastAdd.Checked := _UsesExpert.FFastAdd;
+  chk_AutoSort.Checked := _UsesExpert.FAutoSort;
   FUsesExpert.SetFormIcon(Self);
 
   sg_Identifiers.Cells[0, 0] := 'Identifier';
@@ -1006,8 +1014,10 @@ begin
     b_MoveToIntf.Visible := False;
     b_DeleteFromImpl.Visible := False;
     chk_FastAdd.Visible := False;
+    chk_AutoSort.Visible := False;
     btnAddDots.Enabled := False;
     btnRemoveDots.Enabled := False;
+    b_Sort.Enabled := False;
     TAction_SetEnabled([actOK,
         actImplDelete, actImplMove,
         actIntfDelete, actIntfMove,
@@ -2754,7 +2764,10 @@ end;
 
 procedure TfmUsesManager.actOKExecute(Sender: TObject);
 begin
-  SaveChanges;
+  if chk_AutoSort.Checked then
+    SaveChangesRewrite
+  else
+    SaveChanges;
   ModalResult := mrOk;
 end;
 
@@ -2818,6 +2831,26 @@ end;
 procedure TfmUsesManager.b_HelpClick(Sender: TObject);
 begin
   GxContextHelp(Self, 58);
+end;
+
+procedure TfmUsesManager.b_SortClick(Sender: TObject);
+var
+  sl: TStringList;
+begin
+  sl := TStringList.Create;
+  try
+    TStringGrid_GetCol(sg_Interface, 0, sl);
+    sl.Sort;
+    TStringGrid_AssignCol(sg_Interface, 0, sl);
+
+    sl.Clear;
+    TStringGrid_GetCol(sg_Implementation, 0, sl);
+    sl.Sort;
+    TStringGrid_AssignCol(sg_Implementation, 0, sl);
+  finally
+    FreeAndNil(sl);
+  end;
+  chk_AutoSort.Checked := True;
 end;
 
 procedure TfmUsesManager.b_NoMapFileCloseClick(Sender: TObject);
@@ -3030,6 +3063,63 @@ begin
   finally
     FreeAndNil(NewToOldUnitNameMap);
     FreeAndNil(Units);
+  end;
+end;
+
+procedure SortAndRewriteClause(_Which: TWhichUsesList);
+var
+  Units: TStringList;
+  PrefixGroups: TUsesPrefixGroupList;
+  Grouped: TStringList;
+  FormattedText: string;
+begin
+  Units := TStringList.Create;
+  try
+    if _Which = puInterface then
+      TUsesManager.GetInterfaceUnits(Units)
+    else
+      TUsesManager.GetImplementationUnits(Units);
+    if Units.Count = 0 then
+      Exit;
+
+    PrefixGroups := TUsesPrefixGroupList.Create;
+    try
+      PrefixGroups.LoadDefaults;
+      Grouped := TUsesGroupSorter.SortAndGroupUnits(Units, PrefixGroups);
+      try
+        FormattedText := TUsesGroupSorter.FormatUsesClause(Grouped,
+          TUsesManager.GetIDERightMargin, gsNone);
+        TUsesManager.RewriteUsesClause(_Which, FormattedText);
+      finally
+        FreeAndNil(Grouped);
+      end;
+    finally
+      FreeAndNil(PrefixGroups);
+    end;
+  finally
+    FreeAndNil(Units);
+  end;
+end;
+
+procedure TfmUsesManager.SaveChangesRewrite;
+begin
+  // First apply all add/remove/rename changes via the incremental method
+  SaveChanges;
+
+  // Then re-read and rewrite both clauses sorted and grouped.
+  // Process implementation first (later in file) to avoid position shifts.
+  try
+    SortAndRewriteClause(puImplementation);
+  except
+    on E: Exception do
+      ; // no implementation uses clause — nothing to sort
+  end;
+
+  try
+    SortAndRewriteClause(puInterface);
+  except
+    on E: Exception do
+      ; // no interface uses clause — nothing to sort
   end;
 end;
 

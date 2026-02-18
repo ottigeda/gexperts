@@ -4,12 +4,11 @@ inherited fmUsesManager: TfmUsesManager
   ActiveControl = edtUnitFilter
   BorderIcons = [biSystemMenu]
   Caption = 'Uses Clause Manager'
-  ClientHeight = 492
+  ClientHeight = 512
   ClientWidth = 802
   ParentFont = False
   Font.Charset = ANSI_CHARSET
   Font.Height = -12
-  Font.Name = 'Tahoma'
   KeyPreview = True
   OnClose = FormClose
   OnKeyDown = FormKeyDown
@@ -21,14 +20,14 @@ inherited fmUsesManager: TfmUsesManager
     Left = 326
     Top = 0
     Width = 8
-    Height = 436
+    Height = 456
     MinSize = 326
   end
   object pnlUnits: TPanel
     Left = 334
     Top = 0
     Width = 468
-    Height = 436
+    Height = 456
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 6
@@ -38,7 +37,7 @@ inherited fmUsesManager: TfmUsesManager
       Left = 6
       Top = 62
       Width = 456
-      Height = 368
+      Height = 388
       ActivePage = tabProject
       Align = alClient
       TabOrder = 1
@@ -134,7 +133,7 @@ inherited fmUsesManager: TfmUsesManager
           Left = 0
           Top = 0
           Width = 448
-          Height = 283
+          Height = 303
           Align = alTop
           Anchors = [akLeft, akTop, akRight, akBottom]
           BevelOuter = bvNone
@@ -145,7 +144,7 @@ inherited fmUsesManager: TfmUsesManager
             Left = 3
             Top = 3
             Width = 442
-            Height = 244
+            Height = 264
             Align = alClient
             ColCount = 1
             DefaultColWidth = 100
@@ -165,7 +164,7 @@ inherited fmUsesManager: TfmUsesManager
           end
           object p_NoMapFile: TPanel
             Left = 3
-            Top = 247
+            Top = 267
             Width = 442
             Height = 33
             Align = alBottom
@@ -202,7 +201,7 @@ inherited fmUsesManager: TfmUsesManager
         end
         object pnlProjFooter: TPanel
           Left = 0
-          Top = 281
+          Top = 301
           Width = 448
           Height = 58
           Align = alBottom
@@ -400,7 +399,7 @@ inherited fmUsesManager: TfmUsesManager
         end
         object pnlFavFooter: TPanel
           Left = 0
-          Top = 281
+          Top = 301
           Width = 448
           Height = 58
           Align = alBottom
@@ -663,7 +662,7 @@ inherited fmUsesManager: TfmUsesManager
     Left = 0
     Top = 0
     Width = 326
-    Height = 436
+    Height = 456
     Align = alLeft
     BevelOuter = bvNone
     BorderWidth = 6
@@ -674,7 +673,7 @@ inherited fmUsesManager: TfmUsesManager
       Left = 6
       Top = 20
       Width = 156
-      Height = 376
+      Height = 368
       Align = alLeft
       BevelOuter = bvNone
       TabOrder = 2
@@ -694,7 +693,7 @@ inherited fmUsesManager: TfmUsesManager
         Left = 0
         Top = 16
         Width = 156
-        Height = 360
+        Height = 352
         Align = alClient
         ColCount = 1
         DefaultColWidth = 100
@@ -716,14 +715,14 @@ inherited fmUsesManager: TfmUsesManager
       Left = 162
       Top = 20
       Width = 158
-      Height = 376
+      Height = 368
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 3
       OnResize = pcUsesResize
       object lblDprWarning: TLabel
         Left = 0
-        Top = 330
+        Top = 322
         Width = 158
         Height = 46
         Align = alBottom
@@ -756,7 +755,7 @@ inherited fmUsesManager: TfmUsesManager
         Left = 0
         Top = 16
         Width = 158
-        Height = 314
+        Height = 306
         Align = alClient
         ColCount = 1
         DefaultColWidth = 100
@@ -787,16 +786,19 @@ inherited fmUsesManager: TfmUsesManager
     end
     object pnlUsesBottom: TPanel
       Left = 6
-      Top = 396
+      Top = 388
       Width = 314
-      Height = 34
+      Height = 62
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 1
       OnResize = pnlUsesBottomResize
+      DesignSize = (
+        314
+        62)
       object b_DeleteFromIntf: TButton
         Left = 0
-        Top = 9
+        Top = 5
         Width = 73
         Height = 25
         Action = actIntfDelete
@@ -806,7 +808,7 @@ inherited fmUsesManager: TfmUsesManager
       end
       object b_DeleteFromImpl: TButton
         Left = 240
-        Top = 9
+        Top = 5
         Width = 73
         Height = 25
         Action = actImplDelete
@@ -816,7 +818,7 @@ inherited fmUsesManager: TfmUsesManager
       end
       object b_MoveToImpl: TButton
         Left = 80
-        Top = 9
+        Top = 5
         Width = 73
         Height = 25
         Action = actIntfMove
@@ -826,7 +828,7 @@ inherited fmUsesManager: TfmUsesManager
       end
       object b_MoveToIntf: TButton
         Left = 160
-        Top = 9
+        Top = 5
         Width = 73
         Height = 25
         Action = actImplMove
@@ -834,11 +836,37 @@ inherited fmUsesManager: TfmUsesManager
         ShowHint = True
         TabOrder = 3
       end
+      object b_Sort: TButton
+        Left = 1
+        Top = 35
+        Width = 73
+        Height = 25
+        Hint = 'Sort and group both uses clauses by namespace prefix'
+        Caption = 'Sort'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 4
+        OnClick = b_SortClick
+      end
+      object chk_AutoSort: TCheckBox
+        Left = 88
+        Top = 39
+        Width = 225
+        Height = 17
+        Hint = 
+          'Sort and group uses clauses by namespace prefix when closing wit' +
+          'h OK'
+        Anchors = [akLeft, akTop, akRight]
+        Caption = 'Sort and group uses clauses'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 5
+      end
     end
   end
   object pnlFooter: TPanel
     Left = 0
-    Top = 436
+    Top = 456
     Width = 802
     Height = 37
     Align = alBottom
@@ -938,7 +966,7 @@ inherited fmUsesManager: TfmUsesManager
   end
   object sbUCM: TStatusBar
     Left = 0
-    Top = 473
+    Top = 493
     Width = 802
     Height = 19
     Hint = 
@@ -1240,7 +1268,7 @@ inherited fmUsesManager: TfmUsesManager
     Left = 591
     Top = 160
     Bitmap = {
-      494C010109003800080010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010109003800140010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       000000000000000000000000000000000000D1B08E00C69E7400000000FF0000
       00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000

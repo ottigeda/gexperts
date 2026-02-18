@@ -4,14 +4,14 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Uses Clause Manager, Configuration'
-  ClientHeight = 330
+  ClientHeight = 354
   ClientWidth = 329
   ParentFont = True
   KeyPreview = True
   OnKeyDown = FormKeyDown
   DesignSize = (
     329
-    330)
+    354)
   PixelsPerInch = 96
   TextHeight = 13
   object chkReadMap: TCheckBox
@@ -52,24 +52,24 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   end
   object btnOK: TButton
     Left = 164
-    Top = 296
+    Top = 320
     Width = 75
     Height = 25
     Cancel = True
     Caption = 'OK'
     Default = True
     ModalResult = 1
-    TabOrder = 8
+    TabOrder = 9
   end
   object btnCancel: TButton
     Left = 246
-    Top = 296
+    Top = 320
     Width = 75
     Height = 25
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 9
+    TabOrder = 10
   end
   object chkDisableParserCache: TCheckBox
     Left = 24
@@ -121,16 +121,27 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
     ShowHint = True
     TabOrder = 7
   end
+  object chk_AutoSort: TCheckBox
+    Left = 8
+    Top = 288
+    Width = 313
+    Height = 17
+    Hint = 'When closing with OK, sort and group the uses clauses by namespace prefix.'
+    Caption = 'Default to sorting and grouping the uses clauses'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 8
+  end
   object b_Help: TButton
     Left = 8
-    Top = 296
+    Top = 320
     Width = 75
     Height = 25
     Hint = 'Help (F1)'
     Caption = 'Help'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 10
+    TabOrder = 11
     OnClick = b_HelpClick
   end
 end
