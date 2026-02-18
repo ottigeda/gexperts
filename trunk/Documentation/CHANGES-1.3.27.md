@@ -15,6 +15,9 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Reverse Statement: Moved source files to dedicated Source/ReverseStatement/ directory (feature #14)
 - DfmFilter: New standalone command-line tool to detect and remove Delphi 2006+ Margins/AlignWithMargins properties from DFM files
 - Uses Clause Manager: Added core sorting/grouping logic for uses clauses by namespace prefix (feature #181, feature #128)
+- Uses Clause Manager: Added Sort button and Auto Sort checkbox to the dialog (feature #181)
+- Uses Clause Manager: Made prefix groups and separator style configurable in the options dialog (feature #181)
+- ShowGxMessageBox: Added optional owner parameter for centering on parent forms
 
 ## Bug Fixes
 
