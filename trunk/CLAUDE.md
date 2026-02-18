@@ -12,6 +12,11 @@ GExperts is an open-source IDE plugin (DLL) for Delphi and C++Builder that provi
 - **Run build and test commands separately.** Do NOT chain them in a single Bash call (e.g., don't use `build.sh && test.sh`). Run each as a separate tool invocation to avoid timeouts and unclear failures.
 - **Use existing build infrastructure.** Always call `__Build_Project.cmd` or the documented bash wrapper scripts (`_buildproject.sh`). Do NOT write custom build logic from scratch.
 - **Clean up temporary files.** Do not leave debug or temporary test files in the working directory. If temp files are needed during a task, clean them up before finishing.
+- **Verify builds across Delphi versions.** After making changes to the DLL source code, always check that it builds at least with Delphi 6, 2007, and 13.
+
+## Conditional Defines
+
+When using `{$IFDEF}` directives for Delphi version checks, always prefer the `GX_DELPHIxxx_UP` defines over `GX_VERxxx_UP`. Both are defined in `GX_CondDefine.inc`, but the Delphi-named variants are more readable. Examples: `GX_DELPHI10_2_UP` (not `GX_VER320_up`), `GX_DELPHI2007_UP` (not `GX_VER185_up`).
 
 ## DFM Compatibility
 
