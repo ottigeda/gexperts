@@ -73,7 +73,8 @@ type
 
   TGxMsgBoxAdaptorClass = class of TGxMsgBoxAdaptor;
 
-function ShowGxMessageBox(AdaptorClass: TGxMsgBoxAdaptorClass; const Data: string = ''): TModalResult;
+function ShowGxMessageBox(AdaptorClass: TGxMsgBoxAdaptorClass; const Data: string = '';
+  _Owner: TWinControl = nil): TModalResult;
 
 implementation
 
@@ -116,7 +117,8 @@ cnt := 0;
   end;
 end;
 
-function ShowGxMessageBox(AdaptorClass: TGxMsgBoxAdaptorClass; const Data: string): TModalResult;
+function ShowGxMessageBox(AdaptorClass: TGxMsgBoxAdaptorClass; const Data: string;
+  _Owner: TWinControl): TModalResult;
 var
   Adaptor: TGxMsgBoxAdaptor;
   frm: TfmGxMessageBox;
@@ -131,7 +133,7 @@ begin
       Exit; //==>
 
     if Adaptor.ShouldShow then begin
-      frm := TfmGxMessageBox.Create(nil);
+      frm := TfmGxMessageBox.Create(_Owner);
       try
         GxSetDefaultFont(frm);
         frm.ShowDontShowAgain := Adaptor.AllowSuppress;
@@ -145,9 +147,9 @@ begin
         frm.OptionDescription := '';
         frm.DialogType := mtInformation;
         // center the form first, so the DPI gets set correctly
-        TForm_CenterOn(frm, nil);
+        TForm_CenterOn(frm, _Owner);
         frm.GenerateControls;
-        TForm_CenterOn(frm, nil);
+        TForm_CenterOn(frm, _Owner);
         Result := frm.ShowModal;
         if Adaptor.AllowSuppress and frm.DontShowAgainValue then
           Adaptor.DoPermanentlySuppress;
