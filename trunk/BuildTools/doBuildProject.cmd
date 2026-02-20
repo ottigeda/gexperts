@@ -4,6 +4,16 @@
 @endlocal
 setlocal
 set buildtools=%~dp0%
+
+@rem Pass GX_INSPECT_ENABLED define to compiler when requested.
+@rem For MSBuild: DCC_Define env var is picked up via $(DCC_Define) chaining in .dproj files.
+@rem For DCC32: -D flag is passed directly on the command line.
+set GX_DCC_EXTRA=
+if "%GX_INSPECT%"=="1" (
+  set DCC_Define=GX_INSPECT_ENABLED
+  set GX_DCC_EXTRA=-DGX_INSPECT_ENABLED
+)
+
 if exist _prebuild.cmd call _prebuild.cmd
 if "%1" == "" goto detectver
 echo %1
@@ -104,7 +114,7 @@ goto :eof
 @rem determine the .dpr file
 for %%a in (*.dpr) do set dprname=%%a
 @rem build is done with dcc32
-"%DelphiPath%\bin\dcc32.exe" %dprname%
+"%DelphiPath%\bin\dcc32.exe" %GX_DCC_EXTRA% %dprname%
 
 :done
 echo done building %dprname%

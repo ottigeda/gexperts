@@ -22,7 +22,7 @@
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
 			<DCC_DcuOutput>.\dcu</DCC_DcuOutput>
-			<DCC_Define>NO_TRANSLATION;NO_TRANSLATION_HINT;UnicodeRE;dzVCL_DISABLE_DBGRID_SUPPORT;NO_JCL</DCC_Define>
+			<DCC_Define>NO_TRANSLATION;NO_TRANSLATION_HINT;UnicodeRE;dzVCL_DISABLE_DBGRID_SUPPORT;NO_JCL;$(DCC_Define)</DCC_Define>
 			<DCC_DependencyCheckOutputName>..\..\Binaries\GExpertsRS2009.dll</DCC_DependencyCheckOutputName>
 			<DCC_ExeOutput>..\..\Binaries</DCC_ExeOutput>
 			<DCC_ImageBase>00400000</DCC_ImageBase>

@@ -13,6 +13,7 @@ type
   private
     FEditorExpertsManager: TGxEditorExpertManager;
     FExpertList: TList;
+    FInspectServer: TObject;
     FStartingUp: Boolean;
 {$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
     FLastDesktopName: string;
@@ -50,6 +51,7 @@ type
     procedure RefreshExpertShortCuts;
     procedure ShowConfigurationForm;
     procedure DoAfterIDEInitialized(Sender: TObject);
+    function GetInspectPort: Integer;
 
     function GetScaledSharedImages(_Dpi: Integer): TImageList;
     function GetScaledSharedDisabledImages(_Dpi: Integer): TImageList;
@@ -76,7 +78,7 @@ uses
   GX_GenericUtils, GX_GetIdeVersion, GX_About, GX_MenuActions, GX_MessageBox,
   GX_ConfigurationInfo, GX_Configure, GX_KbdShortCutBroker, GX_SharedImages,
   GX_IdeUtils, GX_IdeEnhance, GX_EditorChangeServices, GX_ToolbarDropDown,
-  GX_TimedCallback, GX_ActionBroker;
+  GX_TimedCallback, GX_ActionBroker, GX_InspectionServer;
 
 type
   TUnsupportedIDEMessage = class(TGxMsgBoxAdaptor)
@@ -186,6 +188,8 @@ var
 begin
   try
     {$IFOPT D+} SendDebug('Destroying GExperts'); {$ENDIF}
+
+    FreeAndNil(FInspectServer);
 
     gblAboutFormClass.RemoveFromAboutDialog;
     GxKeyboardShortCutBroker.BeginUpdate;
@@ -414,6 +418,7 @@ end;
 procedure TGExperts.DoAfterIDEInitialized(Sender: TObject);
 var
   i: Integer;
+  InspectPort: Integer;
 begin
   FStartingUp := False;
   for i := 0 to FExpertList.Count - 1 do
@@ -422,6 +427,10 @@ begin
     GxKeyboardShortCutBroker.DoUpdateKeyBindings(True);
 
   GXMenuActionManager.MoveMainMenuItems;
+
+  InspectPort := GX_InspectionServer.ReadPortFile;
+  if InspectPort > 0 then
+    FInspectServer := TGxInspectServer.Create(InspectPort);
 {$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
   if ConfigInfo.GetForceDesktopOnStartup then begin
     // Unfortunatly the 1200 ms delay used to call DoAfterIDEInitialized are not always
@@ -468,6 +477,14 @@ begin
 {$ENDIF}
     end;
   end;
+end;
+
+function TGExperts.GetInspectPort: Integer;
+begin
+  if FInspectServer is TGxInspectServer then
+    Result := TGxInspectServer(FInspectServer).Port
+  else
+    Result := 0;
 end;
 
 { TUnsupportedIDEMessage }

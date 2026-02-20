@@ -184,6 +184,7 @@ uses
   GX_IdeSplitterVisibility in '..\..\Source\IDE\GX_IdeSplitterVisibility.pas',
   GX_IdeUtils in '..\..\source\Utils\GX_IdeUtils.pas',
   GX_IndexTypes in '..\..\source\Utils\GX_IndexTypes.pas',
+  GX_InspectionServer in '..\..\Source\Framework\GX_InspectionServer.pas',
   GX_InsertAutoTodo in '..\..\Source\AutoTodo\GX_InsertAutoTodo.pas' {fmInsertAutoTodoForm},
   GX_KbdShortCutBroker in '..\..\source\Framework\GX_KbdShortCutBroker.pas',
   GX_KeyboardShortcuts in '..\..\Source\KeyboardShortcuts\GX_KeyboardShortcuts.pas' {fmGxKeyboardShortcuts},

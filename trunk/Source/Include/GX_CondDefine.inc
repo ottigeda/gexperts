@@ -289,6 +289,12 @@ Kylix is no longer supported.  You can try compiling with the GExperts source fr
   {$DEFINE GX_FilterException_Enabled}
 {$IFEND}
 
+// UI inspection server for debugging GExperts forms.
+// Disabled by default. Enable by passing --enable-gxinspect to the build scripts.
+// The build scripts pass this define via the DCC_Define environment variable (MSBuild)
+// or the -D command line flag (DCC32).
+{.$DEFINE GX_INSPECT_ENABLED}
+
 // Define UniSynEdit if SynEdit is available
 {$IFDEF SYNEDIT}
   {$DEFINE UniSynEdit}

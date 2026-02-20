@@ -206,6 +206,7 @@ var
   GExperts: TGExperts;
   i: Integer;
   UsageCount: Integer;
+  InspectPort: Integer;
   Expert: TGX_BaseExpert;
 {$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
   Desktops: TStrings;
@@ -309,6 +310,10 @@ begin
   btnUsage.Caption := Format('Usage (%d) ...', [UsageCount]);
 
   InitDesktopList;
+
+  InspectPort := GExperts.GetInspectPort;
+  if InspectPort > 0 then
+    Caption := Caption + ' [Inspect:' + IntToStr(InspectPort) + ']';
 
   InitDpiScaler;
 end;
