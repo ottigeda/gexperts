@@ -490,13 +490,9 @@ var
 begin
   LogFmt('TFormDpiScaler.ApplyScale(%s, %d %%)', [FFrm.Name, _Scaler.ScaleFactorPercent]);
 
-  // Don't scale the font if it has already the desired PixelsPerInch.
-  if FFrm.Font.PixelsPerInch <> _Scaler.FCurrentDpi then
-  begin
-    OldFontSize := GetFontSize(FFrm.Font);
-    SetFontSize(FFrm.Font, _Scaler.Calc(FFormDesignFontSize));
-    LogFmt('  OldFontSize: %d, NewFontSize: %d', [OldFontSize, GetFontSize(FFrm.Font)]);
-  end;
+  OldFontSize := GetFontSize(FFrm.Font);
+  SetFontSize(FFrm.Font, _Scaler.Calc(FFormDesignFontSize));
+  LogFmt('  OldFontSize: %d, NewFontSize: %d', [OldFontSize, GetFontSize(FFrm.Font)]);
   cnt := Length(FCtrlParams);
   for i := 0 to cnt - 1 do begin
     FCtrlParams[i].ApplyScale(_Scaler);

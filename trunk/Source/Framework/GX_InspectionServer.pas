@@ -277,6 +277,44 @@ begin
   Rest := Trim(Copy(Src, i, MaxInt));
 end;
 
+function ResolvePropertyPath(Obj: TObject; const PropPath: string;
+  out FinalObj: TObject; out FinalProp: PPropInfo): Boolean;
+var
+  DotPos: Integer;
+  Head, Tail: string;
+  PropInfoPtr: PPropInfo;
+begin
+  Result := False;
+  Tail := PropPath;
+  FinalObj := Obj;
+  FinalProp := nil;
+  while Tail <> '' do begin
+    DotPos := Pos('.', Tail);
+    if DotPos > 0 then begin
+      Head := Copy(Tail, 1, DotPos - 1);
+      Tail := Copy(Tail, DotPos + 1, MaxInt);
+    end else begin
+      Head := Tail;
+      Tail := '';
+    end;
+    PropInfoPtr := GetPropInfo(FinalObj, Head);
+    if PropInfoPtr = nil then
+      Exit;
+    if Tail = '' then begin
+      // Last segment — this is the leaf property
+      FinalProp := PropInfoPtr;
+      Result := True;
+    end else begin
+      // Intermediate segment — must be an object property
+      if PropInfoPtr^.PropType^^.Kind <> tkClass then
+        Exit;
+      FinalObj := GetObjectProp(FinalObj, PropInfoPtr);
+      if FinalObj = nil then
+        Exit;
+    end;
+  end;
+end;
+
 function PropValueToStr(Obj: TObject; PropInfo: PPropInfo): string;
 var
   TypeInfoPtr: PTypeInfo;
@@ -1170,6 +1208,7 @@ var
   Form: TCustomForm;
   Ctrl: TControl;
   PropInfoPtr: PPropInfo;
+  TargetObj: TObject;
 begin
   if not SplitNextArg(Args, FormId, Rest) or
      not SplitNextArg(Rest, ControlName, Rest) or
@@ -1187,12 +1226,11 @@ begin
     Result := 'ERROR Control not found: ' + ControlName + #13#10;
     Exit;
   end;
-  PropInfoPtr := GetPropInfo(Ctrl, PropName);
-  if PropInfoPtr = nil then begin
+  if not ResolvePropertyPath(Ctrl, PropName, TargetObj, PropInfoPtr) then begin
     Result := 'ERROR Property not found: ' + PropName + #13#10;
     Exit;
   end;
-  Result := PropName + '=' + PropValueToStr(Ctrl, PropInfoPtr) + #13#10;
+  Result := PropName + '=' + PropValueToStr(TargetObj, PropInfoPtr) + #13#10;
 end;
 
 function TGxInspectServer.CmdSetProp(const Args: string): string;
@@ -1201,6 +1239,7 @@ var
   Form: TCustomForm;
   Ctrl: TControl;
   PropInfoPtr: PPropInfo;
+  TargetObj: TObject;
 begin
   if not SplitNextArg(Args, FormId, Rest) or
      not SplitNextArg(Rest, ControlName, Rest) or
@@ -1218,12 +1257,11 @@ begin
     Result := 'ERROR Control not found: ' + ControlName + #13#10;
     Exit;
   end;
-  PropInfoPtr := GetPropInfo(Ctrl, PropName);
-  if PropInfoPtr = nil then begin
+  if not ResolvePropertyPath(Ctrl, PropName, TargetObj, PropInfoPtr) then begin
     Result := 'ERROR Property not found: ' + PropName + #13#10;
     Exit;
   end;
-  SetPropFromStr(Ctrl, PropInfoPtr, Value);
+  SetPropFromStr(TargetObj, PropInfoPtr, Value);
   Result := 'OK ' + ControlName + '.' + PropName + '=' + Value + #13#10;
 end;
 
