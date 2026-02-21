@@ -86,6 +86,7 @@ type
     function CmdOpenFile(const Args: string): string;
     function CmdShowDesigner: string;
     function CmdDesignScreenshot(const FilePath: string): string;
+    function CmdGxConfig: string;
   public
     constructor Create(APort: Integer);
     destructor Destroy; override;
@@ -115,7 +116,7 @@ implementation
 uses
   TypInfo, Jpeg, ToolsAPI, GX_GetIdeVersion, GX_GenericUtils,
   GX_GExperts, GX_Experts, GX_EditorExpertManager, GX_EditorExpert,
-  GX_OtaUtils;
+  GX_OtaUtils, GX_Configure;
 
 type
   TControlCracker = class(TControl);
@@ -159,6 +160,7 @@ const
   DA_EXECUTE = 1;
   DA_CONFIGURE = 2;
   DA_QUIT = 3;
+  DA_GXCONFIG = 4;
   SOCKET_ERROR_VALUE = -1;
 
 // WinSock types and functions (inline declarations for Delphi 6 compatibility)
@@ -507,6 +509,9 @@ begin
           else
             Application.Terminate;
         end;
+        DA_GXCONFIG: begin
+          TfmConfiguration.Execute(nil);
+        end;
       end;
     finally
       FDeferredAction := 0;
@@ -588,6 +593,8 @@ begin
     Result := CmdShowDesigner
   else if Command = 'DESIGNSCREENSHOT' then
     Result := CmdDesignScreenshot(Args)
+  else if Command = 'GXCONFIG' then
+    Result := CmdGxConfig
   else if Command = 'PING' then
     Result := 'PONG'#13#10
   else if Command = 'VERSION' then
@@ -1225,6 +1232,13 @@ begin
   FDeferredAction := DA_QUIT;
   PostMessage(FHiddenWnd, WM_GX_INSPECT_DEFERRED, 0, 0);
   Result := 'OK Closing IDE'#13#10;
+end;
+
+function TGxInspectServer.CmdGxConfig: string;
+begin
+  FDeferredAction := DA_GXCONFIG;
+  PostMessage(FHiddenWnd, WM_GX_INSPECT_DEFERRED, 0, 0);
+  Result := 'OK Opening GExperts configuration'#13#10;
 end;
 
 function TGxInspectServer.CmdOpenFile(const Args: string): string;

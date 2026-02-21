@@ -200,8 +200,9 @@ object fmConfiguration: TfmConfiguration
             object chkIsThemingEnabled: TCheckBox
               Left = 16
               Top = 48
-              Width = 417
+              Width = 714
               Height = 24
+              Anchors = [akLeft, akTop, akRight]
               Caption = 'Enable IDE theming for GExperts forms (may require IDE restart)'
               TabOrder = 2
             end

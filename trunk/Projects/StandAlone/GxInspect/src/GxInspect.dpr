@@ -161,6 +161,7 @@ begin
   WriteLn('  OPENFILE <filepath>                      Open a file in the IDE editor');
   WriteLn('  SHOWDESIGNER                             Switch to form designer view');
   WriteLn('  DESIGNSCREENSHOT <filepath>              Screenshot the designed form');
+  WriteLn('  GXCONFIG                                 Open GExperts configuration');
   WriteLn('  QUIT                                     Close the IDE');
   WriteLn('  VERSION                                  IDE and GExperts version');
   WriteLn('  PING                                     Test connection');
