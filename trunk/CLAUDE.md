@@ -85,7 +85,16 @@ __clean.cmd
 
 The build system uses MSBuild for Delphi 2007+ and DCC32 directly for older versions. Delphi installation paths are auto-detected from Windows Registry.
 
+**IMPORTANT: Do not run MSBuild-based builds in parallel.** They share the generated `Images/GXIcons.rc` file, and concurrent builds will corrupt it (duplicate entries). DCC32 builds (Delphi 6/7) do not use this file and can safely run in parallel with one MSBuild build.
+
 **Output location:** `Binaries/GExpertsRS###.dll` where ### is the Delphi version number (64-bit: `GExperts64RS###.dll`).
+
+**Build with GxInspect enabled:**
+```bash
+cd Projects/DelphiXx130
+bash _buildprojectgxinspect.sh
+```
+Each project directory has a `__Build_Project_GxInspect.cmd` wrapper and a `_buildprojectgxinspect.sh` bash wrapper that pass `--enable-gxinspect` to the build. This defines `GX_INSPECT_ENABLED` via the `DCC_Define` environment variable (MSBuild) or `-D` flag (DCC32), enabling the TCP-based UI inspection server in the DLL. Without this flag, a dummy no-op class is compiled instead.
 
 ## Installer Build
 

@@ -18,6 +18,8 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Uses Clause Manager: Added Sort button and Auto Sort checkbox to the dialog (feature #181)
 - Uses Clause Manager: Made prefix groups and separator style configurable in the options dialog (feature #181)
 - ShowGxMessageBox: Added optional owner parameter for centering on parent forms
+- GxInspect: Added TCP-based UI inspection server for debugging GExperts forms (disabled by default, enable with --enable-gxinspect build flag)
+- GxInspect: Added action commands: EXPERTS, EXECUTE, CONFIGURE, SETBOUNDS, CLOSE, CLICK, GETPROP, SETPROP, QUIT
 
 ## Bug Fixes
 

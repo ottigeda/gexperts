@@ -56,6 +56,8 @@ type
     FPendingResult: string;
     FResultEvent: TEvent;
     FCritSect: TCriticalSection;
+    FDeferredExpert: TObject;
+    FDeferredAction: Integer;
     procedure HiddenWndProc(var Msg: TMessage);
     function ProcessCommand(const Cmd: string): string;
     function CmdVersion: string;
@@ -71,6 +73,16 @@ type
     procedure CheckClipping(AParent: TWinControl; ALines: TStrings);
     procedure CheckOutside(AParent: TWinControl; ALines: TStrings);
     procedure CheckZeroSize(AParent: TWinControl; ALines: TStrings);
+    function FindControlByName(AForm: TCustomForm; const ControlName: string): TControl;
+    function CmdExperts: string;
+    function CmdExecute(const ExpertName: string): string;
+    function CmdConfigure(const ExpertName: string): string;
+    function CmdSetBounds(const Args: string): string;
+    function CmdClose(const FormId: string): string;
+    function CmdClick(const Args: string): string;
+    function CmdGetProp(const Args: string): string;
+    function CmdSetProp(const Args: string): string;
+    function CmdQuit: string;
   public
     constructor Create(APort: Integer);
     destructor Destroy; override;
@@ -98,7 +110,8 @@ implementation
 {$IFDEF GX_INSPECT_ENABLED}
 
 uses
-  TypInfo, Jpeg, GX_GetIdeVersion, GX_GenericUtils;
+  TypInfo, Jpeg, GX_GetIdeVersion, GX_GenericUtils,
+  GX_GExperts, GX_Experts, GX_EditorExpertManager, GX_EditorExpert;
 
 type
   TControlCracker = class(TControl);
@@ -138,6 +151,10 @@ end;
 
 const
   WM_GX_INSPECT = WM_USER + $0F01;
+  WM_GX_INSPECT_DEFERRED = WM_USER + $0F02;
+  DA_EXECUTE = 1;
+  DA_CONFIGURE = 2;
+  DA_QUIT = 3;
   SOCKET_ERROR_VALUE = -1;
 
 // WinSock types and functions (inline declarations for Delphi 6 compatibility)
@@ -220,6 +237,92 @@ begin
     Result := ' DPI=' + IntToStr(GetOrdProp(AForm, PropInfoPtr))
   else
     Result := '';
+end;
+
+function SplitNextArg(const S: string; var Arg, Rest: string): Boolean;
+var
+  i: Integer;
+  Src: string;
+begin
+  Src := S; // local copy in case S aliases with Arg or Rest
+  Result := False;
+  Arg := '';
+  Rest := '';
+  i := 1;
+  while (i <= Length(Src)) and (Src[i] = ' ') do
+    Inc(i);
+  if i > Length(Src) then
+    Exit;
+  Result := True;
+  if Src[i] = '"' then begin
+    Inc(i);
+    while (i <= Length(Src)) and (Src[i] <> '"') do begin
+      Arg := Arg + Src[i];
+      Inc(i);
+    end;
+    if i <= Length(Src) then
+      Inc(i); // skip closing quote
+  end else begin
+    while (i <= Length(Src)) and (Src[i] <> ' ') do begin
+      Arg := Arg + Src[i];
+      Inc(i);
+    end;
+  end;
+  Rest := Trim(Copy(Src, i, MaxInt));
+end;
+
+function PropValueToStr(Obj: TObject; PropInfo: PPropInfo): string;
+var
+  TypeInfoPtr: PTypeInfo;
+begin
+  TypeInfoPtr := PropInfo^.PropType^;
+  case TypeInfoPtr^.Kind of
+    tkInteger, tkChar, tkWChar:
+      Result := IntToStr(GetOrdProp(Obj, PropInfo));
+    tkEnumeration:
+      Result := GetEnumName(TypeInfoPtr, GetOrdProp(Obj, PropInfo));
+    tkFloat:
+      Result := FloatToStr(GetFloatProp(Obj, PropInfo));
+    tkString, tkLString, tkWString:
+      Result := GetStrProp(Obj, PropInfo);
+{$IFDEF GX_DELPHI2009_UP}
+    tkUString:
+      Result := GetStrProp(Obj, PropInfo);
+{$ENDIF}
+    tkSet:
+      Result := GetSetProp(Obj, PropInfo, True);
+    tkInt64:
+      Result := IntToStr(GetInt64Prop(Obj, PropInfo));
+  else
+    Result := '(unsupported)';
+  end;
+end;
+
+procedure SetPropFromStr(Obj: TObject; PropInfo: PPropInfo; const Value: string);
+var
+  TypeInfoPtr: PTypeInfo;
+begin
+  TypeInfoPtr := PropInfo^.PropType^;
+  case TypeInfoPtr^.Kind of
+    tkInteger, tkChar, tkWChar:
+      SetOrdProp(Obj, PropInfo, StrToInt(Value));
+    tkEnumeration:
+      SetOrdProp(Obj, PropInfo, GetEnumValue(TypeInfoPtr, Value));
+    tkFloat:
+      SetFloatProp(Obj, PropInfo, StrToFloat(Value));
+    tkString, tkLString, tkWString:
+      SetStrProp(Obj, PropInfo, Value);
+{$IFDEF GX_DELPHI2009_UP}
+    tkUString:
+      SetStrProp(Obj, PropInfo, Value);
+{$ENDIF}
+    tkSet:
+      SetSetProp(Obj, PropInfo, Value);
+    tkInt64:
+      SetInt64Prop(Obj, PropInfo, StrToInt64(Value));
+  else
+    raise Exception.Create('Unsupported property type');
+  end;
 end;
 
 { TGxInspectThread }
@@ -379,6 +482,32 @@ begin
         FPendingResult := 'ERROR ' + E.Message + #13#10;
     end;
     FResultEvent.SetEvent;
+  end else if Msg.Msg = WM_GX_INSPECT_DEFERRED then begin
+    try
+      case FDeferredAction of
+        DA_EXECUTE: begin
+          if FDeferredExpert is TGX_Expert then
+            TGX_Expert(FDeferredExpert).Execute(nil)
+          else if FDeferredExpert is TEditorExpert then
+            TEditorExpert(FDeferredExpert).Execute(nil);
+        end;
+        DA_CONFIGURE: begin
+          if FDeferredExpert is TGX_Expert then
+            TGX_Expert(FDeferredExpert).Configure(nil)
+          else if FDeferredExpert is TEditorExpert then
+            TEditorExpert(FDeferredExpert).Configure(nil);
+        end;
+        DA_QUIT: begin
+          if Application.MainForm <> nil then
+            Application.MainForm.Close
+          else
+            Application.Terminate;
+        end;
+      end;
+    finally
+      FDeferredAction := 0;
+      FDeferredExpert := nil;
+    end;
   end else
     Msg.Result := DefWindowProc(FHiddenWnd, Msg.Msg, Msg.WParam, Msg.LParam);
 end;
@@ -431,6 +560,24 @@ begin
     Result := CmdBounds(Args)
   else if Command = 'CHECK' then
     Result := CmdCheck(Args)
+  else if Command = 'EXPERTS' then
+    Result := CmdExperts
+  else if Command = 'EXECUTE' then
+    Result := CmdExecute(Args)
+  else if Command = 'CONFIGURE' then
+    Result := CmdConfigure(Args)
+  else if Command = 'SETBOUNDS' then
+    Result := CmdSetBounds(Args)
+  else if Command = 'CLOSE' then
+    Result := CmdClose(Args)
+  else if Command = 'CLICK' then
+    Result := CmdClick(Args)
+  else if Command = 'GETPROP' then
+    Result := CmdGetProp(Args)
+  else if Command = 'SETPROP' then
+    Result := CmdSetProp(Args)
+  else if Command = 'QUIT' then
+    Result := CmdQuit
   else if Command = 'PING' then
     Result := 'PONG'#13#10
   else if Command = 'VERSION' then
@@ -789,6 +936,285 @@ begin
     if Ctrl is TWinControl then
       CheckZeroSize(TWinControl(Ctrl), ALines);
   end;
+end;
+
+function TGxInspectServer.FindControlByName(AForm: TCustomForm; const ControlName: string): TControl;
+
+  function SearchChildren(AParent: TWinControl): TControl;
+  var
+    i: Integer;
+    Ctrl: TControl;
+  begin
+    Result := nil;
+    for i := 0 to AParent.ControlCount - 1 do begin
+      Ctrl := AParent.Controls[i];
+      if SameText(Ctrl.Name, ControlName) then begin
+        Result := Ctrl;
+        Exit;
+      end;
+      if Ctrl is TWinControl then begin
+        Result := SearchChildren(TWinControl(Ctrl));
+        if Result <> nil then
+          Exit;
+      end;
+    end;
+  end;
+
+begin
+  if (ControlName = '') or (ControlName = '.') then
+    Result := AForm
+  else
+    Result := SearchChildren(AForm);
+end;
+
+function TGxInspectServer.CmdExperts: string;
+var
+  GxInst: TGExperts;
+  Lines: TStringList;
+  i: Integer;
+  Expert: TGX_Expert;
+  EdExpert: TEditorExpert;
+  ActiveStr: string;
+begin
+  GxInst := GExpertsInst(True);
+  Lines := TStringList.Create;
+  try
+    for i := 0 to GxInst.ExpertCount - 1 do begin
+      Expert := GxInst.ExpertList[i];
+      if Expert.Active then
+        ActiveStr := 'Active'
+      else
+        ActiveStr := 'Inactive';
+      Lines.Add(Expert.GetName + ' "' + Expert.GetDisplayName + '" ' + ActiveStr);
+    end;
+    if GxInst.EditorExpertManager <> nil then begin
+      for i := 0 to GxInst.EditorExpertManager.EditorExpertCount - 1 do begin
+        EdExpert := GxInst.EditorExpertManager.EditorExpertList[i];
+        if EdExpert.Active then
+          ActiveStr := 'Active'
+        else
+          ActiveStr := 'Inactive';
+        Lines.Add('[Editor] ' + EdExpert.GetName + ' "' + EdExpert.GetDisplayName + '" ' + ActiveStr);
+      end;
+    end;
+    Result := Lines.Text;
+  finally
+    Lines.Free;
+  end;
+end;
+
+function TGxInspectServer.CmdExecute(const ExpertName: string): string;
+var
+  GxInst: TGExperts;
+  Expert: TGX_Expert;
+  EdIdx: Integer;
+  EdExpert: TEditorExpert;
+begin
+  if ExpertName = '' then begin
+    Result := 'ERROR Usage: EXECUTE <expert-name>'#13#10;
+    Exit;
+  end;
+  GxInst := GExpertsInst(True);
+  if GxInst.FindExpert(ExpertName, Expert) then begin
+    if not Expert.Active then begin
+      Result := 'ERROR Expert is inactive: ' + ExpertName + #13#10;
+      Exit;
+    end;
+    FDeferredExpert := Expert;
+    FDeferredAction := DA_EXECUTE;
+    PostMessage(FHiddenWnd, WM_GX_INSPECT_DEFERRED, 0, 0);
+    Result := 'OK ' + Expert.GetName + #13#10;
+  end else if (GxInst.EditorExpertManager <> nil) and
+              GxInst.EditorExpertManager.FindExpert(ExpertName, EdIdx) then begin
+    EdExpert := GxInst.EditorExpertManager.EditorExpertList[EdIdx];
+    if not EdExpert.Active then begin
+      Result := 'ERROR Expert is inactive: ' + ExpertName + #13#10;
+      Exit;
+    end;
+    FDeferredExpert := EdExpert;
+    FDeferredAction := DA_EXECUTE;
+    PostMessage(FHiddenWnd, WM_GX_INSPECT_DEFERRED, 0, 0);
+    Result := 'OK ' + EdExpert.GetName + #13#10;
+  end else
+    Result := 'ERROR Expert not found: ' + ExpertName + #13#10;
+end;
+
+function TGxInspectServer.CmdConfigure(const ExpertName: string): string;
+var
+  GxInst: TGExperts;
+  Expert: TGX_Expert;
+  EdIdx: Integer;
+  EdExpert: TEditorExpert;
+begin
+  if ExpertName = '' then begin
+    Result := 'ERROR Usage: CONFIGURE <expert-name>'#13#10;
+    Exit;
+  end;
+  GxInst := GExpertsInst(True);
+  if GxInst.FindExpert(ExpertName, Expert) then begin
+    if not Expert.HasConfigOptions then begin
+      Result := 'ERROR Expert has no configuration: ' + ExpertName + #13#10;
+      Exit;
+    end;
+    FDeferredExpert := Expert;
+    FDeferredAction := DA_CONFIGURE;
+    PostMessage(FHiddenWnd, WM_GX_INSPECT_DEFERRED, 0, 0);
+    Result := 'OK ' + Expert.GetName + #13#10;
+  end else if (GxInst.EditorExpertManager <> nil) and
+              GxInst.EditorExpertManager.FindExpert(ExpertName, EdIdx) then begin
+    EdExpert := GxInst.EditorExpertManager.EditorExpertList[EdIdx];
+    if not EdExpert.HasConfigOptions then begin
+      Result := 'ERROR Expert has no configuration: ' + ExpertName + #13#10;
+      Exit;
+    end;
+    FDeferredExpert := EdExpert;
+    FDeferredAction := DA_CONFIGURE;
+    PostMessage(FHiddenWnd, WM_GX_INSPECT_DEFERRED, 0, 0);
+    Result := 'OK ' + EdExpert.GetName + #13#10;
+  end else
+    Result := 'ERROR Expert not found: ' + ExpertName + #13#10;
+end;
+
+function TGxInspectServer.CmdSetBounds(const Args: string): string;
+var
+  Form: TCustomForm;
+  FormId, Rest, SL, ST, SW, SH: string;
+  L, T, W, H: Integer;
+begin
+  if not SplitNextArg(Args, FormId, Rest) then begin
+    Result := 'ERROR Usage: SETBOUNDS <form-id> <L> <T> <W> <H>'#13#10;
+    Exit;
+  end;
+  if not SplitNextArg(Rest, SL, Rest) or
+     not SplitNextArg(Rest, ST, Rest) or
+     not SplitNextArg(Rest, SW, Rest) or
+     not SplitNextArg(Rest, SH, Rest) then begin
+    Result := 'ERROR Usage: SETBOUNDS <form-id> <L> <T> <W> <H>'#13#10;
+    Exit;
+  end;
+  Form := FindForm(FormId);
+  if Form = nil then begin
+    Result := 'ERROR Form not found: ' + FormId + #13#10;
+    Exit;
+  end;
+  L := StrToInt(SL);
+  T := StrToInt(ST);
+  W := StrToInt(SW);
+  H := StrToInt(SH);
+  Form.SetBounds(L, T, W, H);
+  Result := 'OK ' + Form.ClassName + ' ' + BoundsToStr(L, T, W, H) + #13#10;
+end;
+
+function TGxInspectServer.CmdClose(const FormId: string): string;
+var
+  Form: TCustomForm;
+begin
+  if FormId = '' then begin
+    Result := 'ERROR Usage: CLOSE <form-id>'#13#10;
+    Exit;
+  end;
+  Form := FindForm(FormId);
+  if Form = nil then begin
+    Result := 'ERROR Form not found: ' + FormId + #13#10;
+    Exit;
+  end;
+  Result := 'OK ' + Form.ClassName + #13#10;
+  Form.Close;
+end;
+
+function TGxInspectServer.CmdClick(const Args: string): string;
+var
+  FormId, ControlName, Rest: string;
+  Form: TCustomForm;
+  Ctrl: TControl;
+begin
+  if not SplitNextArg(Args, FormId, Rest) or
+     not SplitNextArg(Rest, ControlName, Rest) then begin
+    Result := 'ERROR Usage: CLICK <form-id> <control-name>'#13#10;
+    Exit;
+  end;
+  Form := FindForm(FormId);
+  if Form = nil then begin
+    Result := 'ERROR Form not found: ' + FormId + #13#10;
+    Exit;
+  end;
+  Ctrl := FindControlByName(Form, ControlName);
+  if Ctrl = nil then begin
+    Result := 'ERROR Control not found: ' + ControlName + #13#10;
+    Exit;
+  end;
+  TControlCracker(Ctrl).Click;
+  Result := 'OK ' + ControlName + #13#10;
+end;
+
+function TGxInspectServer.CmdGetProp(const Args: string): string;
+var
+  FormId, ControlName, PropName, Rest: string;
+  Form: TCustomForm;
+  Ctrl: TControl;
+  PropInfoPtr: PPropInfo;
+begin
+  if not SplitNextArg(Args, FormId, Rest) or
+     not SplitNextArg(Rest, ControlName, Rest) or
+     not SplitNextArg(Rest, PropName, Rest) then begin
+    Result := 'ERROR Usage: GETPROP <form-id> <control-name> <property>'#13#10;
+    Exit;
+  end;
+  Form := FindForm(FormId);
+  if Form = nil then begin
+    Result := 'ERROR Form not found: ' + FormId + #13#10;
+    Exit;
+  end;
+  Ctrl := FindControlByName(Form, ControlName);
+  if Ctrl = nil then begin
+    Result := 'ERROR Control not found: ' + ControlName + #13#10;
+    Exit;
+  end;
+  PropInfoPtr := GetPropInfo(Ctrl, PropName);
+  if PropInfoPtr = nil then begin
+    Result := 'ERROR Property not found: ' + PropName + #13#10;
+    Exit;
+  end;
+  Result := PropName + '=' + PropValueToStr(Ctrl, PropInfoPtr) + #13#10;
+end;
+
+function TGxInspectServer.CmdSetProp(const Args: string): string;
+var
+  FormId, ControlName, PropName, Value, Rest: string;
+  Form: TCustomForm;
+  Ctrl: TControl;
+  PropInfoPtr: PPropInfo;
+begin
+  if not SplitNextArg(Args, FormId, Rest) or
+     not SplitNextArg(Rest, ControlName, Rest) or
+     not SplitNextArg(Rest, PropName, Value) then begin
+    Result := 'ERROR Usage: SETPROP <form-id> <control-name> <property> <value>'#13#10;
+    Exit;
+  end;
+  Form := FindForm(FormId);
+  if Form = nil then begin
+    Result := 'ERROR Form not found: ' + FormId + #13#10;
+    Exit;
+  end;
+  Ctrl := FindControlByName(Form, ControlName);
+  if Ctrl = nil then begin
+    Result := 'ERROR Control not found: ' + ControlName + #13#10;
+    Exit;
+  end;
+  PropInfoPtr := GetPropInfo(Ctrl, PropName);
+  if PropInfoPtr = nil then begin
+    Result := 'ERROR Property not found: ' + PropName + #13#10;
+    Exit;
+  end;
+  SetPropFromStr(Ctrl, PropInfoPtr, Value);
+  Result := 'OK ' + ControlName + '.' + PropName + '=' + Value + #13#10;
+end;
+
+function TGxInspectServer.CmdQuit: string;
+begin
+  FDeferredAction := DA_QUIT;
+  PostMessage(FHiddenWnd, WM_GX_INSPECT_DEFERRED, 0, 0);
+  Result := 'OK Closing IDE'#13#10;
 end;
 
 {$ELSE}
