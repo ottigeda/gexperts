@@ -564,10 +564,12 @@ begin
     + ' CurrFontSize: %d DesignDpi: %d',
     [FClientWidth, FClientHeight, FMinWidth, FMinHeight, FMaxWidth, FMaxHeight, CurrFontSize, FDesignDpi]);
 
-  // FontSize has already been changed by the VCL, but we need the design font size
-  Scaler.Init(FDesignDpi, _Frm.Font.PixelsPerInch);
-  FFormDesignFontSize := Scaler.Calc(CurrFontSize);
-  LogFmt('  Frm.Font.PixelsPerInch: %d, FormDesignFontSize: %d', [_Frm.Font.PixelsPerInch, FFormDesignFontSize]);
+  // FontSize has already been changed by the VCL, but we need the design font size.
+  // Reverse-scale from current DPI back to design DPI.
+  // (Note: uses TScreen_GetDpiForForm instead of Font.PixelsPerInch because
+  // Font.PixelsPerInch may not match the actual monitor DPI in all cases.)
+  FFormDesignFontSize := MulDiv(CurrFontSize, FDesignDpi, TScreen_GetDpiForForm(_Frm));
+  LogFmt('  DpiForForm: %d, FormDesignFontSize: %d', [TScreen_GetDpiForForm(_Frm), FFormDesignFontSize]);
 
   AddControls(FFrm);
 end;
