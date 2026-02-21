@@ -352,6 +352,17 @@ HKEY_CURRENT_USER\Software\Embarcadero\BDS\<version>\Experts X64
 GExperts = <path to DLL>
 ```
 
+## Launching the IDE
+
+Useful command-line options for the Delphi IDE (`bds.exe`):
+- `-np` — No project (start without loading a project, faster startup)
+- `-ns` — No splash screen
+
+Example (from WSL):
+```bash
+cmd.exe /c 'c:\Delphi\2007\Bin\bds.exe -np -ns' &
+```
+
 ## Delphi Version Mapping
 
 | Delphi Version | BDS Version | Project Folder |

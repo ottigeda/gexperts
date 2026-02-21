@@ -29,25 +29,42 @@ type
     sin_zero: array[0..7] of AnsiChar;
   end;
 
+  TFdSet = packed record
+    fd_count: Cardinal;
+    fd_array: array[0..63] of Integer;
+  end;
+
+  TTimeVal = packed record
+    tv_sec: Integer;
+    tv_usec: Integer;
+  end;
+
 const
   AF_INET = 2;
   SOCK_STREAM = 1;
   IPPROTO_TCP = 6;
   INADDR_LOOPBACK = $7F000001;
+  FIONBIO = Integer($8004667E);
+  WSAEWOULDBLOCK = 10035;
+  DefaultTimeout = 3;
 
 function WSAStartup(wVersionRequired: Word; var lpWSAData: TWSAData): Integer; stdcall; external 'ws2_32.dll';
 function WSACleanup: Integer; stdcall; external 'ws2_32.dll';
+function WSAGetLastError: Integer; stdcall; external 'ws2_32.dll';
 function ws_socket(af, type_, protocol: Integer): Integer; stdcall; external 'ws2_32.dll' name 'socket';
 function ws_connect(s: Integer; var name: TSockAddrIn; namelen: Integer): Integer; stdcall; external 'ws2_32.dll' name 'connect';
 function ws_closesocket(s: Integer): Integer; stdcall; external 'ws2_32.dll' name 'closesocket';
 function ws_send(s: Integer; const buf; len, flags: Integer): Integer; stdcall; external 'ws2_32.dll' name 'send';
 function ws_recv(s: Integer; var buf; len, flags: Integer): Integer; stdcall; external 'ws2_32.dll' name 'recv';
+function ws_select(nfds: Integer; readfds, writefds, exceptfds: Pointer; timeout: Pointer): Integer; stdcall; external 'ws2_32.dll' name 'select';
+function ws_ioctlsocket(s: Integer; cmd: Integer; var argp: Cardinal): Integer; stdcall; external 'ws2_32.dll' name 'ioctlsocket';
 function ws_htons(hostshort: Word): Word; stdcall; external 'ws2_32.dll' name 'htons';
 function ws_htonl(hostlong: Cardinal): Cardinal; stdcall; external 'ws2_32.dll' name 'htonl';
 
 var
   Port: Integer;
   PortExplicit: Boolean;
+  Timeout: Integer;
   CommandLine: string;
 
 function GetPortFilePath: string;
@@ -122,6 +139,8 @@ begin
   WriteLn;
   WriteLn('Usage: GxInspect [options] <command> [args...]');
   WriteLn('  -p <port>    Server port (default: ', DefaultPort, ')');
+  WriteLn('  -t <seconds> Connection timeout (default: ', DefaultTimeout, ')');
+  WriteLn('               Retries connecting until timeout expires.');
   WriteLn;
   WriteLn('Commands:');
   WriteLn('  ENABLE [port]                            Create port file to enable server');
@@ -158,6 +177,7 @@ var
 begin
   Port := DefaultPort;
   PortExplicit := False;
+  Timeout := DefaultTimeout;
   Parts := '';
   i := 1;
   while i <= ParamCount do begin
@@ -168,6 +188,10 @@ begin
         Port := StrToIntDef(ParamStr(i), DefaultPort);
         PortExplicit := True;
       end;
+    end else if (Arg = '-t') or (Arg = '--timeout') then begin
+      Inc(i);
+      if i <= ParamCount then
+        Timeout := StrToIntDef(ParamStr(i), DefaultTimeout);
     end else if (Arg = '--help') or (Arg = '-h') or (Arg = '/?') then begin
       ShowHelp;
       Halt(0);
@@ -217,6 +241,75 @@ begin
   end;
 end;
 
+function TryConnect(Sock: Integer; var Addr: TSockAddrIn): Boolean;
+var
+  NonBlock, Block: Cardinal;
+  WSet, ESet: TFdSet;
+  TV: TTimeVal;
+  Ret: Integer;
+begin
+  Result := False;
+  // Set non-blocking
+  NonBlock := 1;
+  ws_ioctlsocket(Sock, FIONBIO, NonBlock);
+
+  Ret := ws_connect(Sock, Addr, SizeOf(Addr));
+  if Ret <> SOCKET_ERROR_VALUE then begin
+    // Connected immediately
+    Block := 0;
+    ws_ioctlsocket(Sock, FIONBIO, Block);
+    Result := True;
+    Exit;
+  end;
+
+  if WSAGetLastError <> WSAEWOULDBLOCK then begin
+    Block := 0;
+    ws_ioctlsocket(Sock, FIONBIO, Block);
+    Exit;
+  end;
+
+  // Wait up to 1 second for connection to complete
+  FillChar(WSet, SizeOf(WSet), 0);
+  WSet.fd_count := 1;
+  WSet.fd_array[0] := Sock;
+  FillChar(ESet, SizeOf(ESet), 0);
+  ESet.fd_count := 1;
+  ESet.fd_array[0] := Sock;
+  TV.tv_sec := 1;
+  TV.tv_usec := 0;
+
+  Ret := ws_select(0, nil, @WSet, @ESet, @TV);
+
+  // Restore blocking mode
+  Block := 0;
+  ws_ioctlsocket(Sock, FIONBIO, Block);
+
+  // select returns > 0 if socket is in write set (connected) or error set
+  if (Ret > 0) and (WSet.fd_count > 0) then
+    Result := True;
+end;
+
+function ConnectWithRetry(var Addr: TSockAddrIn; TimeoutSec: Integer; out Sock: Integer): Boolean;
+var
+  Elapsed: Integer;
+begin
+  Result := False;
+  Elapsed := 0;
+  while Elapsed < TimeoutSec do begin
+    Sock := ws_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if Sock = INVALID_SOCKET_VALUE then
+      Exit;
+    if TryConnect(Sock, Addr) then begin
+      Result := True;
+      Exit;
+    end;
+    ws_closesocket(Sock);
+    Sock := INVALID_SOCKET_VALUE;
+    Inc(Elapsed);
+    // TryConnect already waited ~1 second via select, so no extra Sleep needed
+  end;
+end;
+
 var
   WsaData: TWSAData;
   Sock: Integer;
@@ -258,26 +351,22 @@ begin
     Halt(1);
   end;
   try
-    Sock := ws_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if Sock = INVALID_SOCKET_VALUE then begin
-      WriteLn('ERROR: Could not create socket');
+    FillChar(Addr, SizeOf(Addr), 0);
+    Addr.sin_family := AF_INET;
+    Addr.sin_port := ws_htons(Word(Port));
+    Addr.sin_addr := ws_htonl(INADDR_LOOPBACK);
+
+    Sock := INVALID_SOCKET_VALUE;
+    if not ConnectWithRetry(Addr, Timeout, Sock) then begin
+      WriteLn('ERROR: Could not connect to inspection server on port ', Port,
+        ' (timeout: ', Timeout, 's)');
+      if FilePort = 0 then
+        WriteLn('No port file found. Run "GxInspect ENABLE" first, then restart the IDE.')
+      else
+        WriteLn('Make sure the Delphi IDE was started after running "GxInspect ENABLE".');
       Halt(1);
     end;
     try
-      FillChar(Addr, SizeOf(Addr), 0);
-      Addr.sin_family := AF_INET;
-      Addr.sin_port := ws_htons(Word(Port));
-      Addr.sin_addr := ws_htonl(INADDR_LOOPBACK);
-
-      if ws_connect(Sock, Addr, SizeOf(Addr)) = SOCKET_ERROR_VALUE then begin
-        WriteLn('ERROR: Could not connect to inspection server on port ', Port);
-        if FilePort = 0 then
-          WriteLn('No port file found. Run "GxInspect ENABLE" first, then restart the IDE.')
-        else
-          WriteLn('Make sure the Delphi IDE was started after running "GxInspect ENABLE".');
-        Halt(1);
-      end;
-
       // Send the command
       SendAll(Sock, AnsiString(CommandLine + #13#10));
 
