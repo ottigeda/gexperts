@@ -20,6 +20,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - ShowGxMessageBox: Added optional owner parameter for centering on parent forms
 - GxInspect: Added TCP-based UI inspection server for debugging GExperts forms (disabled by default, enable with --enable-gxinspect build flag)
 - GxInspect: Added action commands: EXPERTS, EXECUTE, CONFIGURE, SETBOUNDS, CLOSE, CLICK, GETPROP, SETPROP, QUIT
+- GxInspect: Added OPENFILE, SHOWDESIGNER and DESIGNSCREENSHOT commands for form designer screenshots
 
 ## Bug Fixes
 
