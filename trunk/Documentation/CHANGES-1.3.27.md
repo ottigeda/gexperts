@@ -21,6 +21,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - GxInspect: Added TCP-based UI inspection server for debugging GExperts forms (disabled by default, enable with --enable-gxinspect build flag)
 - GxInspect: Added action commands: EXPERTS, EXECUTE, CONFIGURE, SETBOUNDS, CLOSE, CLICK, GETPROP, SETPROP, QUIT
 - GxInspect: Added OPENFILE, SHOWDESIGNER and DESIGNSCREENSHOT commands for form designer screenshots
+- GxInspect: Added -t timeout option with retry logic for waiting until the server becomes available
 
 ## Bug Fixes
 
