@@ -59,7 +59,8 @@ implementation
 
 uses
   GX_OtaUtils,
-  GX_GxUtils;
+  GX_GxUtils,
+  GX_ConfigurationInfo;
 
 class function TfmBaseForm.Execute(_Owner: TComponent): Boolean;
 var
@@ -151,7 +152,8 @@ begin
   FGxHintCustomDataRec.ScaleHint := Self.ScaleHint;
   CopyMemory(@(FGxHintCustomDataRec.ID), @GxHintCustomDataId, SizeOf(FGxHintCustomDataRec.ID));
   GxSetDefaultFont(Self);
-  Ota.InitTheming(Self); // enable dark mode support
+  if ConfigInfo.IsThemingEnabled then
+    Ota.InitTheming(Self);
 end;
 
 destructor TfmBaseForm.Destroy;

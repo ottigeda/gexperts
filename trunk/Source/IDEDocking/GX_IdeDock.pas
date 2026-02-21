@@ -76,7 +76,7 @@ implementation
 
 uses
   DeskForm, DeskUtil,
-  GX_GenericClasses, GX_OtaUtils, GX_GxUtils;
+  GX_GenericClasses, GX_OtaUtils, GX_GxUtils, GX_ConfigurationInfo;
 
 type
   TIdeDockManager = class(TSingletonInterfacedObject, IIdeDockManager)
@@ -152,7 +152,8 @@ begin
   CopyMemory(@(FGxHintCustomDataRec.ID), @GxHintCustomDataId, SizeOf(FGxHintCustomDataRec.ID));
 
   GxSetDefaultFont(Self);
-  Ota.InitTheming(Self);
+  if ConfigInfo.IsThemingEnabled then
+    Ota.InitTheming(Self);
 
   {$IFDEF GX_EnableIdeDockingSupport}
   if Menu <> nil then

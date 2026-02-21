@@ -112,6 +112,8 @@ type
     function GetEnableKeyboardShortcuts: Boolean;
     function GetEnableCustomFont: Boolean;
     procedure SetEnableCustomFont(const Value: Boolean);
+    function GetIsThemingEnabled: Boolean;
+    procedure SetIsThemingEnabled(const Value: Boolean);
     procedure UpdateScreenForms;
     // Return whether the editor experts are enabled.
     property EditorExpertsEnabled: Boolean read GetEditorExpertsEnabled write SetEditorExpertsEnabled;
@@ -126,6 +128,7 @@ type
     property MoveComponentMenu: Boolean read GetMoveComponentMenu write SetMoveComponentMenu;
     property EnableKeyboardShortcuts: Boolean read GetEnableKeyboardShortcuts;
     property EnableCustomFont: Boolean read GetEnableCustomFont write SetEnableCustomFont;
+    property IsThemingEnabled: Boolean read GetIsThemingEnabled write SetIsThemingEnabled;
     function CustomFont: TFont;
 {$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
     function GetForceDesktopOnStartup: Boolean;
@@ -295,6 +298,7 @@ type
     FPlaceGxMainMenuInToolsMenu: Boolean;
     FEnableKeyboardShortcuts: Boolean;
     FEnableCustomFont: Boolean;
+    FIsThemingEnabled: Boolean;
     FCustomFont: TFont;
     FHideWindowMenu: Boolean;
     FMoveComponentMenu: Boolean;
@@ -337,6 +341,8 @@ type
     function GetEnableKeyboardShortcuts: Boolean;
     function GetEnableCustomFont: Boolean;
     procedure SetEnableCustomFont(const Value: Boolean);
+    function GetIsThemingEnabled: Boolean;
+    procedure SetIsThemingEnabled(const Value: Boolean);
     function CustomFont: TFont;
     procedure UpdateScreenForms;
 {$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
@@ -603,6 +609,7 @@ begin
     FMoveComponentMenu := Settings.ReadBool(ConfigurationKey, 'MoveComponentMenu', False);
     FEnableKeyboardShortcuts := Settings.ReadBool(ConfigurationKey, 'EnableKeyboardShortcuts', True);
     FEnableCustomFont := Settings.ReadBool(ConfigurationKey, 'EnableCustomFont', False);
+    FIsThemingEnabled := Settings.ReadBool(ConfigurationKey, 'IsThemingEnabled', True);
     Settings.LoadFont(AddSlash(ConfigurationKey) + 'CustomFont', FCustomFont);
 {$ENDIF}
 
@@ -638,6 +645,7 @@ begin
     Settings.WriteBool(ConfigurationKey, 'HideWindowMenu', FHideWindowMenu);
     Settings.WriteBool(ConfigurationKey, 'MoveComponentMenu', FMoveComponentMenu);
     Settings.WriteBool(ConfigurationKey, 'EnableCustomFont', FEnableCustomFont);
+    Settings.WriteBool(ConfigurationKey, 'IsThemingEnabled', FIsThemingEnabled);
     Settings.SaveFont(AddSlash(ConfigurationKey) + 'CustomFont', FCustomFont);
 {$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}
     Settings.WriteBool(ConfigurationKey, 'ForceDesktopOnStartup', FForceDesktopOnStartup);
@@ -848,6 +856,16 @@ end;
 procedure TConfigInfo.SetEnableCustomFont(const Value: Boolean);
 begin
   FEnableCustomFont := Value;
+end;
+
+function TConfigInfo.GetIsThemingEnabled: Boolean;
+begin
+  Result := FIsThemingEnabled;
+end;
+
+procedure TConfigInfo.SetIsThemingEnabled(const Value: Boolean);
+begin
+  FIsThemingEnabled := Value;
 end;
 
 {$IFDEF GX_STARTUP_LAYOUT_FIX_ENABLED}

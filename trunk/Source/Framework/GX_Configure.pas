@@ -109,6 +109,7 @@ type
     chkAutoCloseIgnoreWarnings: TCheckBox;
     chkSplitterVisibility: TCheckBox;
     chkProgressTransparency: TCheckBox;
+    chkIsThemingEnabled: TCheckBox;
     procedure btnEnumerateModulesClick(Sender: TObject);
     procedure chkEditorKeyTracingClick(Sender: TObject);
     procedure lb_DesktopsDblClick(Sender: TObject);
@@ -417,6 +418,12 @@ begin
   edHelpFile.Text := ConfigInfo.HelpFile;
   chkUseCustomFont.Checked := ConfigInfo.EnableCustomFont;
   dlgUIFont.Font.Assign(ConfigInfo.CustomFont);
+{$IFDEF GX_SUPPORTS_THEMING}
+  chkIsThemingEnabled.Checked := ConfigInfo.IsThemingEnabled;
+{$ELSE}
+  chkIsThemingEnabled.Checked := False;
+  chkIsThemingEnabled.Enabled := False;
+{$ENDIF}
 end;
 
 procedure TfmConfiguration.SaveGeneral;
@@ -427,6 +434,9 @@ begin
   ConfigInfo.HelpFile := edHelpFile.Text;
   ConfigInfo.EnableCustomFont := chkUseCustomFont.Checked;
   ConfigInfo.CustomFont.Assign(dlgUIFont.Font);
+{$IFDEF GX_SUPPORTS_THEMING}
+  ConfigInfo.IsThemingEnabled := chkIsThemingEnabled.Checked;
+{$ENDIF}
   ConfigInfo.UpdateScreenForms;
 end;
 
@@ -721,6 +731,10 @@ begin
 
 {$IFNDEF GX_FORM_HAS_ALPHABLEND}
   chkProgressTransparency.Visible := False;
+{$ENDIF}
+
+{$IFNDEF GX_SUPPORTS_THEMING}
+  chkIsThemingEnabled.Visible := False;
 {$ENDIF}
 
 {$IFDEF GX_VER160_up} // Delphi 8 (BDS 1)

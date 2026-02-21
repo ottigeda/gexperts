@@ -176,7 +176,7 @@ object fmConfiguration: TfmConfiguration
             Left = 8
             Top = 239
             Width = 746
-            Height = 65
+            Height = 89
             Align = alTop
             Caption = 'User Interface'
             TabOrder = 1
@@ -196,6 +196,14 @@ object fmConfiguration: TfmConfiguration
               Caption = 'Font...'
               TabOrder = 1
               OnClick = btnCustomFontClick
+            end
+            object chkIsThemingEnabled: TCheckBox
+              Left = 16
+              Top = 48
+              Width = 417
+              Height = 24
+              Caption = 'Enable IDE theming for GExperts forms (requires IDE restart)'
+              TabOrder = 2
             end
           end
           object pnlGeneralSpacer: TPanel
