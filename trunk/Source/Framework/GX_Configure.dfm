@@ -202,7 +202,7 @@ object fmConfiguration: TfmConfiguration
               Top = 48
               Width = 417
               Height = 24
-              Caption = 'Enable IDE theming for GExperts forms (requires IDE restart)'
+              Caption = 'Enable IDE theming for GExperts forms (may require IDE restart)'
               TabOrder = 2
             end
           end
