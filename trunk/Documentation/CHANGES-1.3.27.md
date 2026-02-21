@@ -22,6 +22,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - GxInspect: Added action commands: EXPERTS, EXECUTE, CONFIGURE, SETBOUNDS, CLOSE, CLICK, GETPROP, SETPROP, QUIT
 - GxInspect: Added OPENFILE, SHOWDESIGNER and DESIGNSCREENSHOT commands for form designer screenshots
 - GxInspect: Added -t timeout option with retry logic for waiting until the server becomes available
+- GxInspect: Added GXCONFIG command to open the main GExperts configuration dialog
 - Configuration: Added option to disable IDE theming for GExperts forms (Delphi 11+, requires IDE restart)
 
 ## Bug Fixes
