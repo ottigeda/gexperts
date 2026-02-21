@@ -94,12 +94,15 @@
 			<DCCReference Include="..\..\source\Bookmarks\GX_BookmarksEdit.pas">
 				<Form>foBookmarksEdit</Form>
 			</DCCReference>
+			<DCCReference Include="..\..\Source\Bookmarks\GX_BookmarksFuncProcName.pas"/>
+			<DCCReference Include="..\..\Source\Bookmarks\GX_BookmarksLists.pas"/>
 			<DCCReference Include="..\..\source\Bookmarks\GX_BookmarksOptions.pas">
 				<Form>foBookmarksOptions</Form>
 			</DCCReference>
 			<DCCReference Include="..\..\source\Bookmarks\GX_BookmarksSelect.pas">
 				<Form>foBookmarksSelect</Form>
 			</DCCReference>
+			<DCCReference Include="..\..\source\Utils\GX_CheckButton.pas"/>
 			<DCCReference Include="..\..\Source\ProjectOptionSets\GX_CheckListBoxWithHints.pas"/>
 			<DCCReference Include="..\..\source\ClassBrowser\GX_ClassBrowser.pas">
 				<Form>fmClassBrowser</Form>
@@ -146,6 +149,7 @@
 			<DCCReference Include="..\..\source\Formatter\GX_CodeFormatterGXConfigWrapper.pas"/>
 			<DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterParser.pas"/>
 			<DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterSettings.pas"/>
+			<DCCReference Include="..\..\Source\Formatter\GX_CodeFormatterSourceLineList.pas"/>
 			<DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterStack.pas"/>
 			<DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterTokenList.pas"/>
 			<DCCReference Include="..\..\source\Formatter\engine\GX_CodeFormatterTokens.pas"/>
@@ -190,7 +194,9 @@
 			<DCCReference Include="..\..\source\Utils\GX_DbugIntf.pas"/>
 			<DCCReference Include="..\..\Source\Utils\GX_Debug.pas"/>
 			<DCCReference Include="..\..\source\Framework\GX_DesignerMenu.pas"/>
+			<DCCReference Include="..\..\Source\Utils\GX_DrawFixes.pas"/>
 			<DCCReference Include="..\..\Source\Framework\GX_DummyWizard.pas"/>
+			<DCCReference Include="..\..\Source\Framework\GX_DuplicateDllHandler.pas"/>
 			<DCCReference Include="..\..\Source\Formatter\GX_eAddToCaptitalization.pas"/>
 			<DCCReference Include="..\..\source\Editor\GX_eAlign.pas">
 				<Form>fmAlign</Form>
@@ -242,12 +248,12 @@
 			<DCCReference Include="..\..\source\ReverseStatement\GX_eReverseStatement.pas"/>
 			<DCCReference Include="..\..\source\ReverseStatement\GX_ReverseStatementUtils.pas"/>
 			<DCCReference Include="..\..\source\ReverseStatement\GX_eReverseOptions.pas">
-				<Form>fmReverseOptions</Form>
 				<FormType>dfm</FormType>
+				<Form>fmReverseOptions</Form>
 			</DCCReference>
 			<DCCReference Include="..\..\source\ReverseStatement\GX_eReverseRuleEdit.pas">
-				<Form>fmReverseRuleEdit</Form>
 				<FormType>dfm</FormType>
+				<Form>fmReverseRuleEdit</Form>
 			</DCCReference>
 			<DCCReference Include="..\..\source\Editor\GX_eSelectIdentifier.pas"/>
 			<DCCReference Include="..\..\source\Editor\GX_eSelectionEditorExpert.pas"/>
@@ -370,6 +376,7 @@
 			</DCCReference>
 			<DCCReference Include="..\..\Source\IDE\GX_IdeDockFormEnhancer.pas"/>
 			<DCCReference Include="..\..\source\IDE\GX_IdeEnhance.pas"/>
+			<DCCReference Include="..\..\Source\IDE\GX_IdeEvaluateModifyEnhancer.pas"/>
 			<DCCReference Include="..\..\Source\IDE\GX_IdeFavoritesList.pas">
 				<Form>f_GxIdeFavoritesList</Form>
 			</DCCReference>
@@ -396,6 +403,8 @@
 			<DCCReference Include="..\..\source\IDE\GX_IdeToolPropertiesEnhancer.pas"/>
 			<DCCReference Include="..\..\Source\IDE\GX_IdeSplitterVisibility.pas"/>
 			<DCCReference Include="..\..\source\Utils\GX_IdeUtils.pas"/>
+			<DCCReference Include="..\..\source\Utils\GX_IndexTypes.pas"/>
+			<DCCReference Include="..\..\Source\Framework\GX_InspectionServer.pas"/>
 			<DCCReference Include="..\..\Source\AutoTodo\GX_InsertAutoTodo.pas">
 				<Form>fmInsertAutoTodoForm</Form>
 			</DCCReference>
@@ -537,6 +546,8 @@
 			<DCCReference Include="..\..\source\SourceExport\GX_SourceExportOptions.pas">
 				<Form>fmSourceExportOptions</Form>
 			</DCCReference>
+			<DCCReference Include="..\..\Source\Utils\GX_Splitter.pas"/>
+			<DCCReference Include="..\..\source\Utils\GX_SplitterPainter.pas"/>
 			<DCCReference Include="..\..\Source\Utils\GX_StringGridDrawFix.pas"/>
 			<DCCReference Include="..\..\Source\Utils\GX_StringList.pas"/>
 			<DCCReference Include="..\..\source\Framework\GX_SynMemoUtils.pas"/>
@@ -572,6 +583,7 @@
 			<DCCReference Include="..\..\Source\UsesExpert\GX_UsesExpert.pas">
 				<Form>fmUsesManager</Form>
 			</DCCReference>
+			<DCCReference Include="..\..\Source\UsesExpert\GX_UsesSortGroups.pas"/>
 			<DCCReference Include="..\..\Source\UsesExpert\GX_UsesExpertOptions.pas">
 				<Form>fmUsesExpertOptions</Form>
 			</DCCReference>
