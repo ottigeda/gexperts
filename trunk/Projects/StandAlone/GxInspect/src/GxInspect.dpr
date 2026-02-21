@@ -139,6 +139,9 @@ begin
   WriteLn('  CLICK <form-id> <control-name>           Click a control');
   WriteLn('  GETPROP <form-id> <control> <property>   Get a property');
   WriteLn('  SETPROP <form-id> <ctrl> <prop> <value>  Set a property');
+  WriteLn('  OPENFILE <filepath>                      Open a file in the IDE editor');
+  WriteLn('  SHOWDESIGNER                             Switch to form designer view');
+  WriteLn('  DESIGNSCREENSHOT <filepath>              Screenshot the designed form');
   WriteLn('  QUIT                                     Close the IDE');
   WriteLn('  VERSION                                  IDE and GExperts version');
   WriteLn('  PING                                     Test connection');

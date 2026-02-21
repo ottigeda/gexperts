@@ -83,6 +83,9 @@ type
     function CmdGetProp(const Args: string): string;
     function CmdSetProp(const Args: string): string;
     function CmdQuit: string;
+    function CmdOpenFile(const Args: string): string;
+    function CmdShowDesigner: string;
+    function CmdDesignScreenshot(const FilePath: string): string;
   public
     constructor Create(APort: Integer);
     destructor Destroy; override;
@@ -110,8 +113,9 @@ implementation
 {$IFDEF GX_INSPECT_ENABLED}
 
 uses
-  TypInfo, Jpeg, GX_GetIdeVersion, GX_GenericUtils,
-  GX_GExperts, GX_Experts, GX_EditorExpertManager, GX_EditorExpert;
+  TypInfo, Jpeg, ToolsAPI, GX_GetIdeVersion, GX_GenericUtils,
+  GX_GExperts, GX_Experts, GX_EditorExpertManager, GX_EditorExpert,
+  GX_OtaUtils;
 
 type
   TControlCracker = class(TControl);
@@ -578,6 +582,12 @@ begin
     Result := CmdSetProp(Args)
   else if Command = 'QUIT' then
     Result := CmdQuit
+  else if Command = 'OPENFILE' then
+    Result := CmdOpenFile(Args)
+  else if Command = 'SHOWDESIGNER' then
+    Result := CmdShowDesigner
+  else if Command = 'DESIGNSCREENSHOT' then
+    Result := CmdDesignScreenshot(Args)
   else if Command = 'PING' then
     Result := 'PONG'#13#10
   else if Command = 'VERSION' then
@@ -1215,6 +1225,117 @@ begin
   FDeferredAction := DA_QUIT;
   PostMessage(FHiddenWnd, WM_GX_INSPECT_DEFERRED, 0, 0);
   Result := 'OK Closing IDE'#13#10;
+end;
+
+function TGxInspectServer.CmdOpenFile(const Args: string): string;
+var
+  FilePath: string;
+  i: Integer;
+begin
+  FilePath := Trim(Args);
+  if FilePath = '' then begin
+    Result := 'ERROR Usage: OPENFILE <filepath>'#13#10;
+    Exit;
+  end;
+  // Strip quotes if present
+  if (Length(FilePath) >= 2) and (FilePath[1] = '"') and (FilePath[Length(FilePath)] = '"') then
+    FilePath := Copy(FilePath, 2, Length(FilePath) - 2);
+  // Normalize forward slashes to backslashes for Windows
+  for i := 1 to Length(FilePath) do
+    if FilePath[i] = '/' then
+      FilePath[i] := '\';
+  try
+    if GxOtaOpenFile(FilePath) then
+      Result := 'OK ' + FilePath + #13#10
+    else
+      Result := 'ERROR Could not open file: ' + FilePath + #13#10;
+  except
+    on E: Exception do
+      Result := 'ERROR ' + E.Message + #13#10;
+  end;
+end;
+
+function TGxInspectServer.CmdShowDesigner: string;
+var
+  FormEditor: IOTAFormEditor;
+begin
+  if not GxOtaTryGetCurrentFormEditor(FormEditor) then begin
+    Result := 'ERROR No form editor active (open a unit with a form first)'#13#10;
+    Exit;
+  end;
+  try
+    FormEditor.Show;
+    Result := 'OK Designer shown'#13#10;
+  except
+    on E: Exception do
+      Result := 'ERROR ' + E.Message + #13#10;
+  end;
+end;
+
+function TGxInspectServer.CmdDesignScreenshot(const FilePath: string): string;
+var
+  DesignForm: TCustomForm;
+  Bmp: TBitmap;
+  Jpg: TJPEGImage;
+  WinDC: HDC;
+  Ext: string;
+  WndHandle: HWND;
+  R: TRect;
+  W, H: Integer;
+begin
+  if FilePath = '' then begin
+    Result := 'ERROR Usage: DESIGNSCREENSHOT <filepath>'#13#10;
+    Exit;
+  end;
+  DesignForm := GxOtaGetCurrentDesignForm;
+  if DesignForm = nil then begin
+    Result := 'ERROR No form currently in design mode'#13#10;
+    Exit;
+  end;
+  // Use the designer container (parent of designed form) if available,
+  // otherwise fall back to the designed form itself
+  if (DesignForm.Parent <> nil) and (DesignForm.Parent.Handle <> 0) then begin
+    WndHandle := DesignForm.Parent.Handle;
+    GetWindowRect(WndHandle, R);
+    W := R.Right - R.Left;
+    H := R.Bottom - R.Top;
+  end else begin
+    WndHandle := DesignForm.Handle;
+    W := DesignForm.Width;
+    H := DesignForm.Height;
+  end;
+  Bmp := TBitmap.Create;
+  try
+    Bmp.Width := W;
+    Bmp.Height := H;
+    Bmp.PixelFormat := pf24bit;
+    WinDC := GetWindowDC(WndHandle);
+    try
+      BitBlt(Bmp.Canvas.Handle, 0, 0, W, H, WinDC, 0, 0, SRCCOPY);
+    finally
+      ReleaseDC(WndHandle, WinDC);
+    end;
+    try
+      Ext := LowerCase(ExtractFileExt(FilePath));
+      if (Ext = '.jpg') or (Ext = '.jpeg') then begin
+        Jpg := TJPEGImage.Create;
+        try
+          Jpg.Assign(Bmp);
+          Jpg.CompressionQuality := 90;
+          Jpg.SaveToFile(FilePath);
+        finally
+          Jpg.Free;
+        end;
+      end else
+        Bmp.SaveToFile(FilePath);
+      Result := 'OK ' + DesignForm.Name + ' ' + FilePath + #13#10;
+    except
+      on E: Exception do
+        Result := 'ERROR ' + E.Message + #13#10;
+    end;
+  finally
+    Bmp.Free;
+  end;
 end;
 
 {$ELSE}
