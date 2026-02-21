@@ -4,14 +4,14 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Uses Clause Manager, Configuration'
-  ClientHeight = 606
+  ClientHeight = 593
   ClientWidth = 329
   ParentFont = True
   KeyPreview = True
   OnKeyDown = FormKeyDown
   DesignSize = (
     329
-    606)
+    593)
   PixelsPerInch = 96
   TextHeight = 13
   object chkReadMap: TCheckBox
@@ -52,7 +52,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   end
   object btnOK: TButton
     Left = 145
-    Top = 572
+    Top = 559
     Width = 85
     Height = 25
     Anchors = [akRight, akBottom]
@@ -64,7 +64,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   end
   object btnCancel: TButton
     Left = 236
-    Top = 572
+    Top = 559
     Width = 85
     Height = 25
     Anchors = [akRight, akBottom]
@@ -94,7 +94,8 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
     Left = 8
     Top = 168
     Width = 313
-    Height = 81
+    Height = 68
+    Anchors = [akLeft, akTop, akRight]
     Caption = ' Show identifiers matching search string ... '
     Items.Strings = (
       'at start only'
@@ -107,16 +108,18 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   object chkSearchPathFavorites: TCheckBox
     Left = 8
     Top = 136
-    Width = 321
+    Width = 313
     Height = 17
+    Anchors = [akLeft, akTop, akRight]
     Caption = 'Also search the favorites configured for the search path'
     TabOrder = 5
   end
   object chk_FastAdd: TCheckBox
     Left = 8
-    Top = 264
+    Top = 251
     Width = 313
     Height = 17
+    Anchors = [akLeft, akTop, akRight]
     Hint = 'Pressing Enter adds to current uses list and exits the dialog.'
     Caption = 'Default to Fast Add'
     ParentShowHint = False
@@ -125,9 +128,10 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   end
   object chk_AutoSort: TCheckBox
     Left = 8
-    Top = 288
+    Top = 275
     Width = 313
     Height = 17
+    Anchors = [akLeft, akTop, akRight]
     Hint = 'When closing with OK, sort and group the uses clauses by namespace prefix.'
     Caption = 'Default to sorting and grouping the uses clauses'
     ParentShowHint = False
@@ -136,7 +140,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   end
   object grp_SortSettings: TGroupBox
     Left = 8
-    Top = 312
+    Top = 299
     Width = 313
     Height = 252
     Anchors = [akLeft, akTop, akRight]
@@ -147,6 +151,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
       Top = 18
       Width = 204
       Height = 120
+      Anchors = [akLeft, akTop, akRight]
       ItemHeight = 13
       TabOrder = 0
       OnClick = lb_PrefixesClick
@@ -156,6 +161,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
       Top = 18
       Width = 85
       Height = 25
+      Anchors = [akTop, akRight]
       Caption = 'Add...'
       TabOrder = 1
       OnClick = btnPrefixAddClick
@@ -165,6 +171,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
       Top = 46
       Width = 85
       Height = 25
+      Anchors = [akTop, akRight]
       Caption = 'Edit...'
       TabOrder = 2
       OnClick = btnPrefixEditClick
@@ -174,6 +181,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
       Top = 74
       Width = 85
       Height = 25
+      Anchors = [akTop, akRight]
       Caption = 'Delete'
       TabOrder = 3
       OnClick = btnPrefixDeleteClick
@@ -183,6 +191,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
       Top = 106
       Width = 85
       Height = 25
+      Anchors = [akTop, akRight]
       Caption = 'Up'
       TabOrder = 4
       OnClick = btnPrefixUpClick
@@ -192,6 +201,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
       Top = 134
       Width = 85
       Height = 25
+      Anchors = [akTop, akRight]
       Caption = 'Down'
       TabOrder = 5
       OnClick = btnPrefixDownClick
@@ -210,6 +220,7 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
       Top = 176
       Width = 297
       Height = 68
+      Anchors = [akLeft, akTop, akRight]
       Caption = ' Group separator '
       Items.Strings = (
         'None'
@@ -220,9 +231,10 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
   end
   object b_Help: TButton
     Left = 8
-    Top = 572
+    Top = 559
     Width = 85
     Height = 25
+    Anchors = [akLeft, akBottom]
     Hint = 'Help (F1)'
     Caption = 'Help'
     ParentShowHint = False

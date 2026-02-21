@@ -41,6 +41,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Instant Grep: Fixed wrong colors when form is restored by IDE docked desktop (bug #470)
 - DPI Scaling: bsDialog forms now correctly scale their size at non-100% DPI (was disabled for all forms since 2024-05-18)
 - DPI Scaling: Fixed form font not scaling back down when moving a form from a higher-DPI monitor to a lower-DPI monitor, without reintroducing bug #439 (double-scaled fonts when all monitors use the same >100% scaling)
+- Uses Clause Manager: Fixed radio button spacing in configuration dialog and improved DPI-aware layout (anchoring, ArrangeControls, Help button anchoring)
 - Rename Components: Improved DFM layout to prevent button clipping at non-100% DPI
 - Edit Search Path: Dialog no longer grows on each open with mixed-DPI monitor setups (bug #472)
 - Replace Components: Replacing components with sub-components now works again in Delphi 13 (Embarcadero fixed the underlying OTA bug)

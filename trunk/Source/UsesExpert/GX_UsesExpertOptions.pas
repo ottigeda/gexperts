@@ -55,6 +55,7 @@ type
     procedure lb_PrefixesClick(Sender: TObject);
   private
     FCacheDir: string;
+    procedure ArrangeControls; override;
     procedure SetData(const _CanReplaceFindUseUnit: Boolean; const _CacheDir: string;
       const _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache, _SearchPathFavorites: Boolean;
       _FilterIdentifiers: TFilterIdentifiersEnum; _FastAdd, _AutoSort: Boolean;
@@ -118,6 +119,44 @@ begin
   inherited;
 
   InitDpiScaler;
+
+  ArrangeControls;
+end;
+
+procedure TfmUsesExpertOptions.ArrangeControls;
+var
+  Margin: Integer;
+  FullWidth: Integer;
+  ParentWidth: Integer;
+  GrpInnerWidth: Integer;
+  BtnLeft: Integer;
+begin
+  inherited;
+
+  if not Assigned(FScaler) then
+    Exit;
+
+  // Full-width controls: left margin = 8, right margin = 8 at design DPI
+  Margin := FScaler.Calc(8);
+  ParentWidth := rg_FilterIdentifiers.Parent.ClientWidth;
+  FullWidth := ParentWidth - 2 * Margin;
+
+  rg_FilterIdentifiers.Width := FullWidth;
+  chkSearchPathFavorites.Width := FullWidth;
+  chk_FastAdd.Width := FullWidth;
+  chk_AutoSort.Width := FullWidth;
+  grp_SortSettings.Width := FullWidth;
+
+  // Inside grp_SortSettings: buttons right-aligned, listbox fills remaining space
+  GrpInnerWidth := grp_SortSettings.ClientWidth;
+  BtnLeft := GrpInnerWidth - Margin - btnPrefixAdd.Width;
+  btnPrefixAdd.Left := BtnLeft;
+  btnPrefixEdit.Left := BtnLeft;
+  btnPrefixDelete.Left := BtnLeft;
+  btnPrefixUp.Left := BtnLeft;
+  btnPrefixDown.Left := BtnLeft;
+  lb_Prefixes.Width := BtnLeft - lb_Prefixes.Left - Margin;
+  rg_Separator.Width := GrpInnerWidth - 2 * Margin;
 end;
 
 procedure TfmUsesExpertOptions.GetData(out _ReadMapFile, _ReplaceFileUseUnit, _ParseAll: Boolean;
