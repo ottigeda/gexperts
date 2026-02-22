@@ -61,6 +61,8 @@ type
     constructor Create(_Form: TForm);
     function Calc(_Value: Integer): Integer;
     procedure ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
+    procedure ControlHasSplitter(_ctrl: TControl);
+    procedure DisableControlFontScaling(_ctrl: TControl);
   end;
 
 implementation
@@ -72,6 +74,11 @@ begin
   inherited Create;
 end;
 
+procedure TFormDpiScaler.DisableControlFontScaling(_ctrl: TControl);
+begin
+  // do nothing
+end;
+
 procedure TFormDpiScaler.ApplyDpi(_NewDpi: Integer; _NewBounds: PRect);
 begin
   // do nothing
@@ -80,6 +87,11 @@ end;
 function TFormDpiScaler.Calc(_Value: Integer): Integer;
 begin
   Result := _Value;
+end;
+
+procedure TFormDpiScaler.ControlHasSplitter(_ctrl: TControl);
+begin
+  // do nothing
 end;
 
 { TImageListScaler }
