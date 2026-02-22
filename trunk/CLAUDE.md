@@ -295,8 +295,9 @@ Each expert implements:
 
 Each Delphi version has its own project folder under `Projects/`:
 - `Projects/Delphi6/`, `Projects/Delphi7/`
-- `Projects/Delphi2005-2007/` (BDS 3.0-5.0)
-- `Projects/DelphiXE1-XE8/`
+- `Projects/Delphi2005/`, `Projects/Delphi2006/`, `Projects/Delphi2007/` (BDS 3.0-5.0)
+- `Projects/Delphi2009/`, `Projects/Delphi2010/`
+- `Projects/DelphiXE1/` through `Projects/DelphiXE8/`
 - `Projects/DelphiXx10Seattle/` through `Projects/DelphiXx130/`
 - `Projects/DelphiXx130_64/` (64-bit)
 
@@ -369,8 +370,8 @@ cmd.exe /c 'c:\Delphi\2007\Bin\bds.exe -np -ns' &
 |----------------|-------------|----------------|
 | Delphi 6 | 6.0 | Delphi6 |
 | Delphi 7 | 7.0 | Delphi7 |
-| Delphi 2007 | 5.0 | Delphi2005-2007 |
-| Delphi XE8 | 16.0 | DelphiXE1-XE8 |
+| Delphi 2007 | 5.0 | Delphi2007 |
+| Delphi XE8 | 16.0 | DelphiXE8 |
 | RAD Studio 10 Seattle | 17.0 | DelphiXx10Seattle |
 | RAD Studio 11 Alexandria | 22.0 | DelphiXx110Alexandria |
 | RAD Studio 12 | 23.0 | DelphiXx120 |
