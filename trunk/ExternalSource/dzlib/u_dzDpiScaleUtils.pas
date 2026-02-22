@@ -524,7 +524,6 @@ end;
 
 constructor TFormDpiScaler.Create(_Frm: TForm);
 var
-  Scaler: TDpiScaler;
   cnstr: TSizeConstraints;
   CurrFontSize: Integer;
   Ctrl: TControl;
