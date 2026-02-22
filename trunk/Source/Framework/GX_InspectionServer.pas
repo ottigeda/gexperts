@@ -994,8 +994,12 @@ begin
 end;
 
 function TGxInspectServer.FindControlByName(AForm: TCustomForm; const ControlName: string): TControl;
+var
+  BaseName: string;
+  ChildIndex: Integer;
+  BracketPos: Integer;
 
-  function SearchChildren(AParent: TWinControl): TControl;
+  function SearchChildren(AParent: TWinControl; const AName: string): TControl;
   var
     i: Integer;
     Ctrl: TControl;
@@ -1003,12 +1007,12 @@ function TGxInspectServer.FindControlByName(AForm: TCustomForm; const ControlNam
     Result := nil;
     for i := 0 to AParent.ControlCount - 1 do begin
       Ctrl := AParent.Controls[i];
-      if SameText(Ctrl.Name, ControlName) then begin
+      if SameText(Ctrl.Name, AName) then begin
         Result := Ctrl;
         Exit;
       end;
       if Ctrl is TWinControl then begin
-        Result := SearchChildren(TWinControl(Ctrl));
+        Result := SearchChildren(TWinControl(Ctrl), AName);
         if Result <> nil then
           Exit;
       end;
@@ -1016,10 +1020,32 @@ function TGxInspectServer.FindControlByName(AForm: TCustomForm; const ControlNam
   end;
 
 begin
-  if (ControlName = '') or (ControlName = '.') then
-    Result := AForm
-  else
-    Result := SearchChildren(AForm);
+  if (ControlName = '') or (ControlName = '.') then begin
+    Result := AForm;
+    Exit;
+  end;
+
+  // Support "ControlName[Index]" syntax to access child controls by index.
+  // This is useful for unnamed children like TGroupButton inside TRadioGroup.
+  BracketPos := Pos('[', ControlName);
+  if (BracketPos > 1) and (ControlName[Length(ControlName)] = ']') then begin
+    BaseName := Copy(ControlName, 1, BracketPos - 1);
+    ChildIndex := StrToIntDef(Copy(ControlName, BracketPos + 1,
+      Length(ControlName) - BracketPos - 1), -1);
+    if ChildIndex >= 0 then begin
+      Result := SearchChildren(AForm, BaseName);
+      if (Result <> nil) and (Result is TWinControl) then begin
+        if ChildIndex < TWinControl(Result).ControlCount then
+          Result := TWinControl(Result).Controls[ChildIndex]
+        else
+          Result := nil;
+      end else
+        Result := nil;
+      Exit;
+    end;
+  end;
+
+  Result := SearchChildren(AForm, ControlName);
 end;
 
 function TGxInspectServer.CmdExperts: string;
