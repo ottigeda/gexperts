@@ -28,7 +28,10 @@ type
     chkParseAll: TCheckBox;
     chkDisableParserCache: TCheckBox;
     btnClearCache: TButton;
-    rg_FilterIdentifiers: TRadioGroup;
+    grp_FilterIdentifiers: TGroupBox;
+    rb_FilterStartOnly: TRadioButton;
+    rb_FilterAnywhere: TRadioButton;
+    rb_FilterStartFirst: TRadioButton;
     chkSearchPathFavorites: TCheckBox;
     chk_FastAdd: TCheckBox;
     chk_AutoSort: TCheckBox;
@@ -41,7 +44,10 @@ type
     btnPrefixReset: TButton;
     btnPrefixUp: TButton;
     btnPrefixDown: TButton;
-    rg_Separator: TRadioGroup;
+    grp_Separator: TGroupBox;
+    rb_SepNone: TRadioButton;
+    rb_SepBlankLine: TRadioButton;
+    rb_SepComment: TRadioButton;
     procedure btnClearCacheClick(Sender: TObject);
     procedure b_HelpClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
@@ -55,7 +61,6 @@ type
     procedure lb_PrefixesClick(Sender: TObject);
   private
     FCacheDir: string;
-    procedure ArrangeControls; override;
     procedure SetData(const _CanReplaceFindUseUnit: Boolean; const _CacheDir: string;
       const _ReadMapFile, _ReplaceFileUseUnit, _ParseAll, _DisableCache, _SearchPathFavorites: Boolean;
       _FilterIdentifiers: TFilterIdentifiersEnum; _FastAdd, _AutoSort: Boolean;
@@ -64,6 +69,8 @@ type
       out _FilterIdentifiers: TFilterIdentifiersEnum; out _FastAdd, _AutoSort: Boolean;
       _PrefixGroups: TUsesPrefixGroupList; out _GroupSeparator: TGroupSeparator);
     procedure UpdatePrefixButtons;
+  protected
+    procedure ArrangeControls; override;
   public
     class function Execute(_Owner: TWinControl; _CanReplaceFindUseUnit: Boolean;
       const _CacheDir: string;
@@ -138,10 +145,10 @@ begin
 
   // Full-width controls: left margin = 8, right margin = 8 at design DPI
   Margin := FScaler.Calc(8);
-  ParentWidth := rg_FilterIdentifiers.Parent.ClientWidth;
+  ParentWidth := grp_FilterIdentifiers.Parent.ClientWidth;
   FullWidth := ParentWidth - 2 * Margin;
 
-  rg_FilterIdentifiers.Width := FullWidth;
+  grp_FilterIdentifiers.Width := FullWidth;
   chkSearchPathFavorites.Width := FullWidth;
   chk_FastAdd.Width := FullWidth;
   chk_AutoSort.Width := FullWidth;
@@ -156,7 +163,7 @@ begin
   btnPrefixUp.Left := BtnLeft;
   btnPrefixDown.Left := BtnLeft;
   lb_Prefixes.Width := BtnLeft - lb_Prefixes.Left - Margin;
-  rg_Separator.Width := GrpInnerWidth - 2 * Margin;
+  grp_Separator.Width := GrpInnerWidth - 2 * Margin;
 end;
 
 procedure TfmUsesExpertOptions.GetData(out _ReadMapFile, _ReplaceFileUseUnit, _ParseAll: Boolean;
@@ -171,7 +178,12 @@ begin
   _ParseAll := chkParseAll.Checked;
   _DisableCache := chkDisableParserCache.Checked;
   _SearchPathFavorites := chkSearchPathFavorites.Checked;
-  _FilterIdentifiers := TFilterIdentifiersEnum(rg_FilterIdentifiers.ItemIndex);
+  if rb_FilterAnywhere.Checked then
+    _FilterIdentifiers := fieAnywhere
+  else if rb_FilterStartFirst.Checked then
+    _FilterIdentifiers := fieStartFirst
+  else
+    _FilterIdentifiers := fieStartOnly;
   _FastAdd := chk_FastAdd.Checked;
   _AutoSort := chk_AutoSort.Checked;
 
@@ -179,7 +191,12 @@ begin
   for i := 0 to lb_Prefixes.Items.Count - 1 do
     _PrefixGroups.Add(lb_Prefixes.Items[i]);
 
-  _GroupSeparator := TGroupSeparator(rg_Separator.ItemIndex);
+  if rb_SepBlankLine.Checked then
+    _GroupSeparator := gsBlankLine
+  else if rb_SepComment.Checked then
+    _GroupSeparator := gsComment
+  else
+    _GroupSeparator := gsNone;
 end;
 
 procedure TfmUsesExpertOptions.SetData(const _CanReplaceFindUseUnit: Boolean; const _CacheDir: string;
@@ -199,7 +216,9 @@ begin
   chkParseAll.Checked := _ParseAll;
   chkDisableParserCache.Checked := _DisableCache;
   chkSearchPathFavorites.Checked := _SearchPathFavorites;
-  rg_FilterIdentifiers.ItemIndex := Ord(_FilterIdentifiers);
+  rb_FilterStartOnly.Checked := (_FilterIdentifiers = fieStartOnly);
+  rb_FilterAnywhere.Checked := (_FilterIdentifiers = fieAnywhere);
+  rb_FilterStartFirst.Checked := (_FilterIdentifiers = fieStartFirst);
   chk_FastAdd.Checked := _FastAdd;
   chk_AutoSort.Checked := _AutoSort;
 
@@ -207,7 +226,9 @@ begin
   for i := 0 to _PrefixGroups.Count - 1 do
     lb_Prefixes.Items.Add(_PrefixGroups.Groups[i]);
 
-  rg_Separator.ItemIndex := Ord(_GroupSeparator);
+  rb_SepNone.Checked := (_GroupSeparator = gsNone);
+  rb_SepBlankLine.Checked := (_GroupSeparator = gsBlankLine);
+  rb_SepComment.Checked := (_GroupSeparator = gsComment);
   UpdatePrefixButtons;
 end;
 

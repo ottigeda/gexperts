@@ -90,20 +90,38 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
     TabOrder = 4
     OnClick = btnClearCacheClick
   end
-  object rg_FilterIdentifiers: TRadioGroup
+  object grp_FilterIdentifiers: TGroupBox
     Left = 8
     Top = 168
     Width = 313
     Height = 68
     Anchors = [akLeft, akTop, akRight]
     Caption = ' Show identifiers matching search string ... '
-    Items.Strings = (
-      'at start only'
-      'anywhere'
-      'at start first then anywhere')
-    ParentShowHint = False
-    ShowHint = True
     TabOrder = 6
+    object rb_FilterStartOnly: TRadioButton
+      Left = 8
+      Top = 16
+      Width = 297
+      Height = 17
+      Caption = 'at start only'
+      TabOrder = 0
+    end
+    object rb_FilterAnywhere: TRadioButton
+      Left = 8
+      Top = 32
+      Width = 297
+      Height = 17
+      Caption = 'anywhere'
+      TabOrder = 1
+    end
+    object rb_FilterStartFirst: TRadioButton
+      Left = 8
+      Top = 48
+      Width = 297
+      Height = 17
+      Caption = 'at start first then anywhere'
+      TabOrder = 2
+    end
   end
   object chkSearchPathFavorites: TCheckBox
     Left = 8
@@ -215,18 +233,38 @@ inherited fmUsesExpertOptions: TfmUsesExpertOptions
       TabOrder = 6
       OnClick = btnPrefixResetClick
     end
-    object rg_Separator: TRadioGroup
+    object grp_Separator: TGroupBox
       Left = 8
       Top = 176
       Width = 297
       Height = 68
       Anchors = [akLeft, akTop, akRight]
       Caption = ' Group separator '
-      Items.Strings = (
-        'None'
-        'Blank line'
-        'Comment (e.g. { Vcl })')
       TabOrder = 7
+      object rb_SepNone: TRadioButton
+        Left = 8
+        Top = 16
+        Width = 281
+        Height = 17
+        Caption = 'None'
+        TabOrder = 0
+      end
+      object rb_SepBlankLine: TRadioButton
+        Left = 8
+        Top = 32
+        Width = 281
+        Height = 17
+        Caption = 'Blank line'
+        TabOrder = 1
+      end
+      object rb_SepComment: TRadioButton
+        Left = 8
+        Top = 48
+        Width = 281
+        Height = 17
+        Caption = 'Comment (e.g. { Vcl })'
+        TabOrder = 2
+      end
     end
   end
   object b_Help: TButton
