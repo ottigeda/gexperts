@@ -24,6 +24,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - GxInspect: Added -t timeout option with retry logic for waiting until the server becomes available
 - GxInspect: Added GXCONFIG command to open the main GExperts configuration dialog
 - GxInspect: GETPROP and SETPROP now support dotted property paths (e.g. Font.Size, Font.Name)
+- GxInspect: Control name now supports [Index] syntax for accessing unnamed children (e.g. rg_FilterIdentifiers[0] for TGroupButton inside TRadioGroup)
 - Configuration: Added option to disable IDE theming for GExperts forms (Delphi 11+, requires IDE restart)
 
 ## Bug Fixes
