@@ -29,6 +29,7 @@ type
     FBeginIndex: Integer;
     FScanningStatus: TProcScanningStatus;
     FEndIndex: Integer;
+    FSavedBeginCount: Integer;
     FProcName: string;
     FObjectSeparator: string;
     function GetProcName: string;
@@ -301,7 +302,8 @@ begin
         if Assigned(ProcedureItem) then
         begin
           ProcedureItem.EndIndex := FParser.TokenPos;
-          ProcedureItem.ScanningStatus := stOutofProcedure;
+          ProcedureItem.ScanningStatus := ProcScanning;
+          ProcedureItem.FSavedBeginCount := BeginCount;
           ProcedureStack.Push(ProcedureItem);
           ProcScanning := stNone;
           BeginCount := 0;
@@ -336,6 +338,16 @@ begin
 
             tkRoundClose:
               InParenthesis := False;
+
+            tkBegin, tkColon:
+              begin
+                // Anonymous method: procedure begin or procedure(args): ReturnType
+                if IdentifierNeeded and not InParenthesis then
+                begin
+                  FreeAndNil(ProcedureItem);
+                  Break;
+                end;
+              end;
           end; // case
 
           // End of the parameter list?
@@ -349,6 +361,16 @@ begin
           ProcLineLength := FParser.TokenPos - ProcedureItem.BeginIndex + 1;
           SetString(ProcedureItem.ProcLine, FParser.Origin + ProcedureItem.BeginIndex, ProcLineLength);
           ProcedureItem.ProcLine := CompressWhiteSpace(ProcedureItem.ProcLine);
+        end
+        else if ProcedureStack.Count > 0 then
+        begin
+          // Anonymous method was discarded - restore the outer procedure
+          ProcedureItem := ProcedureStack.Pop;
+          ProcScanning := ProcedureItem.ScanningStatus;
+          BeginCount := ProcedureItem.FSavedBeginCount;
+          // Handle the token that caused the anonymous method to be discarded
+          if FParser.TokenID = tkBegin then
+            Inc(BeginCount);
         end;
       end
       else
@@ -398,7 +420,7 @@ begin
                   // that one's turn.
                   ProcedureItem := ProcedureStack.Pop;
                   ProcScanning := ProcedureItem.ScanningStatus;
-                  BeginCount := 0;
+                  BeginCount := ProcedureItem.FSavedBeginCount;
                 end; // ProcedureStack.Count > 0
               end; // ProcScanning = stScanned
             end; // FParser.TokenID = tkEnd

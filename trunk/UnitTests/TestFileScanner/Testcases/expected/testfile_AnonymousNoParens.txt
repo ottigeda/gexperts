@@ -1,0 +1,2 @@
+7	Procedure	TForm2	FormDestroy	9
+17	Procedure	TForm2	FormHide	3
