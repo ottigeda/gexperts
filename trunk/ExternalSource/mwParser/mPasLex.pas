@@ -1479,8 +1479,60 @@ begin
 end;
 
 procedure TmwPasLex.StringProc;
+var
+  QuoteCount: Integer;
+  LookAhead: Integer;
 begin
   FTokenID := tkString;
+  // Count consecutive quotes to detect multi-line string (any odd count >= 3)
+  QuoteCount := 0;
+  while fOrigin[Run + QuoteCount] = #39 do
+    Inc(QuoteCount);
+  if (QuoteCount >= 3) and Odd(QuoteCount) then begin
+    // Check for multi-line string: quotes followed by optional whitespace and newline
+    LookAhead := Run + QuoteCount;
+    while CharInSet(fOrigin[LookAhead], [' ', #9]) do
+      Inc(LookAhead);
+    if CharInSet(fOrigin[LookAhead], [#10, #13]) then begin
+      // Multi-line string — skip opening quotes and the newline
+      Run := LookAhead;
+      if fOrigin[Run] = #13 then
+        Inc(Run);
+      if fOrigin[Run] = #10 then
+        Inc(Run);
+      Inc(fLineNumber);
+      fLinePos := Run;
+      // Scan until closing marker (odd count >= 3 of quotes) or end of input
+      while fOrigin[Run] <> #0 do begin
+        if fOrigin[Run] = #39 then begin
+          QuoteCount := 0;
+          while fOrigin[Run + QuoteCount] = #39 do
+            Inc(QuoteCount);
+          if (QuoteCount >= 3) and Odd(QuoteCount) then begin
+            Inc(Run, QuoteCount);
+            Exit;
+          end;
+          // Not a closing marker — skip quotes as literal content
+          Inc(Run, QuoteCount);
+        end else if fOrigin[Run] = #13 then begin
+          Inc(Run);
+          if fOrigin[Run] = #10 then
+            Inc(Run);
+          Inc(fLineNumber);
+          fLinePos := Run;
+        end else if fOrigin[Run] = #10 then begin
+          Inc(Run);
+          Inc(fLineNumber);
+          fLinePos := Run;
+        end else
+          Inc(Run);
+      end;
+      // Reached end of input without closing marker
+      FTokenID := tkBadString;
+      Exit;
+    end;
+  end;
+  // Regular single-line string
   Inc(Run);
   while True do begin
     if (fOrigin[Run] = #39) then begin
