@@ -12,23 +12,15 @@ interface
 
 uses
   Classes,
-  Windows;
+  Windows,
+  u_dzOsUtils;
 
 type
-  ///<summary> This record must be filled to set the name of a thread </summary>
-  TThreadNameInfo = record
-    FType: LongWord; // must be 0x1000
-    FName: PAnsiChar; // pointer to name (in user address space)
-    FThreadID: LongWord; // thread ID (-1 indicates caller thread)
-    FFlags: LongWord; // reserved for future use, must be zero
-  end;
+  TThreadNameInfo = u_dzOsUtils.TThreadNameInfo
+    deprecated; // moved to u_dzOsUtils
 
-///<summary>
-/// Set the name (displayed in the debugger) for the current thread.
-/// Uses the special Windows exception $406D1388 which the debugger intercepts.
-/// @param Name is a string with the name to use
-/// @Note The exception raised is intentionally caught and ignored - it's only for the debugger </summary>
 procedure SetThreadName(const _Name: AnsiString);
+  deprecated; // moved to u_dzOsUtils
 
 type
   /// <summary>
@@ -57,7 +49,7 @@ type
     /// That's on purpose: The class methode introduced in later Delphi versions (it does exist
     /// in Delphi 10.2) should always be called as TThread.CheckTerminates to prevent confusion
     /// which thread is being checked.
-    /// @returns The value of the protected Perminated property </summary>
+    /// @returns The value of the protected Terminated property </summary>
     function CheckTerminated: Boolean;
 {$IFNDEF TTHREAD_HAS_START}
     procedure Start;
@@ -66,24 +58,9 @@ type
 
 implementation
 
-{$IFDEF SUPPORTS_UNSAFE_WARNINGS}
-{$WARN UNSAFE_CODE OFF}
-{$ENDIF}
-
 procedure SetThreadName(const _Name: AnsiString);
-var
-  ThreadNameInfo: TThreadNameInfo;
 begin
-  ThreadNameInfo.FType := $1000;
-  ThreadNameInfo.FName := PAnsiChar(_Name);
-  ThreadNameInfo.FThreadID := $FFFFFFFF;
-  ThreadNameInfo.FFlags := 0;
-  try
-    // Raise special exception $406D1388 that debugger intercepts to set thread name
-    RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord), Pointer(@ThreadNameInfo));
-  except
-    // Exception must be caught and ignored - it's only for the debugger to intercept
-  end; //FI:W501 Empty EXCEPT block
+  u_dzOsUtils.SetThreadName(_Name);
 end;
 
 { TNamedThread }
@@ -115,7 +92,7 @@ end;
 
 procedure TNamedThread.SetName(const _Name: string);
 begin
-  SetThreadName(AnsiString(_Name));
+  u_dzOsUtils.SetThreadName(AnsiString(_Name));
 end;
 
 procedure TNamedThread.SetName;
@@ -132,5 +109,5 @@ end;
 
 initialization
   // set the name for the main thread to 'Main'
-  SetThreadName('Main');
+  u_dzOsUtils.SetThreadName('Main');
 end.
