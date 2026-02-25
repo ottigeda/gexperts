@@ -50,6 +50,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Code Formatter: Fixed wrong indentation of continuation lines in multiline repeat-until conditions (bug #473)
 - Code Formatter: Fixed wrong indentation of begin/end in anonymous functions/procedures after := assignment (wronly filed as feature request #165)
 - Procedure List: Fixed `(*` inside Delphi 12+ triple-quoted multi-line strings being misinterpreted as ANSI comment start, causing methods below the string to disappear (bug #475)
+- Code Formatter: Fixed missing space before `at` in `raise ... at P` statements (bug #476)
 
 ## Contributors
 

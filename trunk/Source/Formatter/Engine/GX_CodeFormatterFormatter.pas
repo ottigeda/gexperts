@@ -582,6 +582,12 @@ begin
     _CurrentToken.SetSpace([spBefore], True);
   end;
 
+  { a word after ) always needs a space, e.g. "raise ... at P" }
+  if (_PrevToken.ReservedType = rtRightBr)
+    and (wType = wtWord) then begin
+    _CurrentToken.SetSpace([spBefore], True);
+  end;
+
   if _CurrentToken.Space(spBefore) and _PrevToken.Space(spAfter) then begin
     Assert(False, '.AdjustSpacing');
     _PrevToken.SetSpace([spAfter], False); { avoid double spaces }
