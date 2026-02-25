@@ -389,7 +389,9 @@ begin
     ExpertList := FExpertManager.CurrentExperts;
     for i := 0 to ExpertList.Count - 1 do begin
       ExpertName := ExpertList.Names[i];
-      ExpertDll := ExpertList.Values[ExpertName];
+      // Use index-based value extraction instead of Values[ExpertName]
+      // to avoid getting the wrong value when duplicate names exist.
+      ExpertDll := Copy(ExpertList[i], Length(ExpertName) + 2, MaxInt);
       ListItem := Items.Add;
       ListItem.Caption := ExpertName;
       ListItem.SubItems.Add(ExpertDll);
@@ -515,6 +517,7 @@ end;
 constructor TExpertManagerExpert.Create;
 var
   DisabledExperts: TStringList;
+  i: Integer;
 begin
   inherited Create;
 
@@ -524,7 +527,13 @@ begin
   DisabledExperts := TStringList.Create;
   try
     ReadExpertsFromRegistry(DisabledExperts, False);
-    FInitialExperts.AddStrings(DisabledExperts);
+    // Only add disabled experts whose name doesn't already exist as enabled.
+    // Duplicates occur when an expert is disabled and then re-registered
+    // externally with the same name but a different DLL (bug #447).
+    for i := 0 to DisabledExperts.Count - 1 do begin
+      if FInitialExperts.IndexOfName(DisabledExperts.Names[i]) < 0 then
+        FInitialExperts.AddObject(DisabledExperts[i], DisabledExperts.Objects[i]);
+    end;
   finally
     FreeAndNil(DisabledExperts);
   end;
@@ -616,7 +625,7 @@ begin
 
   for i := 0 to FCurrentExperts.Count - 1 do begin
     ThisExpertName := FCurrentExperts.Names[i];
-    if SameText(FCurrentExperts.Values[ThisExpertName], _ExpertDll) then begin
+    if SameText(Copy(FCurrentExperts[i], Length(ThisExpertName) + 2, MaxInt), _ExpertDll) then begin
       Result := aerDuplicate;
       Exit; //==>
     end;
