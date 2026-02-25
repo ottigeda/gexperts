@@ -343,6 +343,22 @@ function GetCpuCacheLineSize: Integer;
 /// Uses the GetSystemInfo WinAPI function to get number of logical processors </summary>
 function GetCpuLogicalProcessorCount: Integer;
 
+type
+  ///<summary> This record must be filled to set the name of a thread </summary>
+  TThreadNameInfo = record
+    FType: LongWord; // must be 0x1000
+    FName: PAnsiChar; // pointer to name (in user address space)
+    FThreadID: LongWord; // thread ID (-1 indicates caller thread)
+    FFlags: LongWord; // reserved for future use, must be zero
+  end;
+
+///<summary>
+/// Set the name (displayed in the debugger) for the current thread.
+/// Uses the special Windows exception $406D1388 which the debugger intercepts.
+/// @param Name is a string with the name to use
+/// @Note The exception raised is intentionally caught and ignored - it's only for the debugger </summary>
+procedure SetThreadName(const _Name: AnsiString);
+
 implementation
 
 uses
@@ -1654,5 +1670,57 @@ begin
   Result := SysInfo.dwNumberOfProcessors;
 end;
 {$IFEND}
+
+type
+  TSetThreadDescription = function(hThread: THandle; lpThreadDescription: PWideChar): HRESULT; stdcall;
+
+var
+  GSetThreadDescription: TSetThreadDescription = nil;
+  GSetThreadDescriptionLoaded: Boolean = False;
+
+procedure LoadSetThreadDescription;
+var
+  hKernel32: HMODULE;
+begin
+  if GSetThreadDescriptionLoaded then
+    Exit;
+  GSetThreadDescriptionLoaded := True;
+  hKernel32 := GetModuleHandle('kernel32.dll');
+  if hKernel32 <> 0 then
+    @GSetThreadDescription := GetProcAddress(hKernel32, 'SetThreadDescription');
+end;
+
+{$IFDEF SUPPORTS_UNSAFE_WARNINGS}
+{$WARN UNSAFE_CODE OFF}
+{$ENDIF}
+
+procedure SetThreadName(const _Name: AnsiString);
+var
+  ThreadNameInfo: TThreadNameInfo;
+  WideName: WideString;
+begin
+  // 1. Classic $406D1388 exception method (works with all debuggers and crash dumps)
+  ThreadNameInfo.FType := $1000;
+  ThreadNameInfo.FName := PAnsiChar(_Name);
+  ThreadNameInfo.FThreadID := $FFFFFFFF;
+  ThreadNameInfo.FFlags := 0;
+  try
+    RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord), Pointer(@ThreadNameInfo));
+  except
+    // Exception must be caught and ignored - it's only for the debugger to intercept
+  end; //FI:W501 Empty EXCEPT block
+
+  // 2. SetThreadDescription API (Windows 10 1607+, supports Unicode,
+  //    stored in the thread object, visible in post-mortem debugging)
+  LoadSetThreadDescription;
+  if Assigned(GSetThreadDescription) then begin
+    WideName := WideString(_Name);
+    GSetThreadDescription(GetCurrentThread, PWideChar(WideName));
+  end;
+end;
+
+{$IFDEF SUPPORTS_UNSAFE_WARNINGS}
+{$WARN UNSAFE_CODE ON}
+{$ENDIF}
 
 end.
