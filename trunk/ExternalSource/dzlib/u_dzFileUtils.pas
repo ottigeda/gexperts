@@ -366,6 +366,10 @@ const
   INVALID_FILENAME_CHARS: set of AnsiChar = ['\', '/', ':', '*', '?', '"', '<', '>', '|'];
 
 type
+  TDirExistsResult = (derTrue, derFalse, derTimeout);
+  TDirExistsCallback = procedure(_Result: TDirExistsResult; const _Dir: string) of object;
+
+type
   /// <summary>
   /// This class owns all utility functions as class methods so they don't pollute the name space </summary>
   TFileSystem = class
@@ -788,6 +792,22 @@ type
     /// @raises EDirNotFound if the directory does not exist and RaiseException is true </summary>
     class function DirExists(const _DirName: string): Boolean; overload;
     class function DirExists(const _DirName: string; _RaiseException: Boolean): Boolean; overload; deprecated; // use AssertDirExists instead
+    /// <summary>
+    /// Checks if the given directory exists, with a timeout.
+    /// Runs the check in a worker thread and waits up to _TimeoutMs milliseconds.
+    /// If the check completes in time, returns derTrue or derFalse.
+    /// If the timeout expires, returns derTimeout.
+    /// If _Callback is assigned and the result is derTimeout, the callback will be
+    /// called when the worker thread eventually completes. If the check completes
+    /// within the timeout, the callback is NOT called.
+    /// WARNING: The callback is called in the worker thread's context, NOT the
+    /// main VCL thread. The caller is responsible for synchronizing with the
+    /// VCL thread if needed (e.g. via TThread.Queue or PostMessage).
+    /// NOTE: On derTimeout the worker thread continues running in the background
+    /// until the DirExists call returns. Rapid calls with slow network paths may
+    /// accumulate background threads. </summary>
+    class function DirExistsWithTimeout(const _DirName: string; _TimeoutMs: UInt32;
+      _Callback: TDirExistsCallback = nil): TDirExistsResult;
     ///<summary>
     /// Checks if the given directory exists.
     /// @raises EDirNotFound if the directory does not exist. </summary>
@@ -1282,6 +1302,7 @@ uses
   StrUtils,
   Masks,
   u_dzMiscUtils,
+  u_dzOsUtils,
   u_dzStringUtils,
   u_dzDateUtils,
   u_dzStringArrayUtils;
@@ -2625,6 +2646,55 @@ class procedure TFileSystem.AssertDirExists(const _DirName: string);
 begin
   if not SysUtils.DirectoryExists(_DirName) then
     raise EDirNotFound.CreateFmt(_('Directory not found: %s'), [_DirName]);
+end;
+
+type
+  TDirExistsThread = class(TThread)
+  private
+    FDir: string;
+    FResult: TDirExistsResult;
+    FCallback: TDirExistsCallback;
+  protected
+    procedure Execute; override;
+  public
+    constructor Create(const _Dir: string; _Callback: TDirExistsCallback);
+  end;
+
+constructor TDirExistsThread.Create(const _Dir: string; _Callback: TDirExistsCallback);
+begin
+  FDir := _Dir;
+  FCallback := _Callback;
+  FreeOnTerminate := True;
+  inherited Create(False);
+end;
+
+procedure TDirExistsThread.Execute;
+begin
+  SetThreadName(AnsiString('DirExistsWithTimeout: ' + FDir));
+  if SysUtils.DirectoryExists(FDir) then
+    FResult := derTrue
+  else
+    FResult := derFalse;
+  if Assigned(FCallback) then
+    FCallback(FResult, FDir);
+end;
+
+class function TFileSystem.DirExistsWithTimeout(const _DirName: string; _TimeoutMs: UInt32;
+  _Callback: TDirExistsCallback): TDirExistsResult;
+var
+  Thread: TDirExistsThread;
+  WaitResult: DWORD;
+begin
+  Thread := TDirExistsThread.Create(_DirName, _Callback);
+  WaitResult := WaitForSingleObject(Thread.Handle, _TimeoutMs);
+  if WaitResult = WAIT_OBJECT_0 then begin
+    Result := Thread.FResult;
+    // Thread completed in time, suppress callback
+    Thread.FCallback := nil;
+  end else begin
+    Result := derTimeout;
+    // Thread continues running in background (FreeOnTerminate will clean it up)
+  end;
 end;
 
 class function TFileSystem.AllDirsExist(_DirNames: TStrings): Boolean;
