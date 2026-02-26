@@ -139,7 +139,8 @@ type
     /// @returns True when FTokenIdx was changed and CheckIndent must exit </summary>
     function CheckIndentSemicolon(): Boolean;
     function DetectGenericStart(_TokenIdx: Integer): Boolean;
-    procedure CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed);
+    procedure CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed;
+      var _MidLineBlockComment: Boolean);
     procedure HandleCapitalization(_CurrentToken: TPascalToken);
     function TryGetPrevLineFeed(var _TokenIdx: Integer; out _LineFeed: TLineFeed): Boolean;
     function CheckForFunctTypeDeclare(out _CheckedToken: TPascalToken): Boolean;
@@ -1934,7 +1935,8 @@ begin
   end;
 end;
 
-procedure TCodeFormatterFormatter.CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed);
+procedure TCodeFormatterFormatter.CheckIndent(var _NTmp: Integer; var _PrevCommentLine: TLineFeed;
+  var _MidLineBlockComment: Boolean);
 var
   Next: TPascalToken;
   wType: TWordType;
@@ -2237,6 +2239,10 @@ begin
           end else begin
             Assert(False, '.CheckIndent: setting NTmp to 0');
             _NTmp := 0;
+            // Bug #367: Mid-line block comment continuation needs +1 indent level
+            // when FWrapIndent was already False (e.g. after semicolon)
+            if _MidLineBlockComment then
+              _NTmp := 1;
           end;
 
           if Next.ReservedType in [rtLineFeed] then begin
@@ -2581,6 +2587,15 @@ begin
       end;
 
     rtComment: begin
+        // Detect mid-line block comment opening where FWrapIndent is already False
+        // (e.g. after semicolon). The flag ensures the next LineFeed inside the
+        // comment gets NTmp=1 (proper continuation indent) without modifying
+        // FWrapIndent itself, which would leak to code after the comment closes.
+        if FSettings.IndentComments and not FWrapIndent
+          and not ((FPrevLine <> nil) and (FPrevLine = FPrevToken))
+          and (FCurrentToken.WordType in [wtHalfComment, wtHalfStarComment]) then
+          _MidLineBlockComment := True;
+
         // Only reset FWrapIndent for block comments (wtHalf*), not for single-line // comments.
         // This preserves continuation indent through sequences of single-line comments.
         // Exception: in case statements (rtOf), always reset FWrapIndent so case selectors align properly.
@@ -2620,6 +2635,9 @@ begin
           if TryGetToken(FTokenIdx + 1, Next) and (Next.ReservedType = rtLineFeed) then
             FCurrentToken := AlignExpression(FTokenIdx, FSettings.AlignCommentPos);
         end;
+        // Clear mid-line block comment flag when the comment closes
+        if FCurrentToken.WordType = wtFullComment then
+          _MidLineBlockComment := False;
       end;
 
     rtSemiColon: begin
@@ -2651,6 +2669,7 @@ begin
   if not (FCurrentRType in [rtLineFeed, rtComment]) then begin
     Assert(False, '.CheckIndent: not (rtLineFeed or rtComment)');
     _PrevCommentLine := nil;
+    _MidLineBlockComment := False;
     Assert(False, '.CheckIndent: _PrevCommentLine=nil');
   end else begin
     if not Assigned(_PrevCommentLine) then
@@ -2726,6 +2745,7 @@ procedure TCodeFormatterFormatter.doExecute(_Tokens: TPascalTokenList);
 var
   NTmp: Integer;
   PrevCommentLine: TLineFeed;
+  MidLineBlockComment: Boolean;
 begin
   FTokens := _Tokens;
 
@@ -2737,6 +2757,7 @@ begin
     FIsInInterfacePart := False;
     NTmp := 0;
     PrevCommentLine := nil;
+    MidLineBlockComment := False;
     // the StackStack is used to preserve indenting over IFDEF/ELSE/ENDIF statements
     FStackStack := TCodeFormatterStack.Create;
     try
@@ -2752,7 +2773,7 @@ begin
           Assert(False, Format('.doExecute: before CheckIndent: PrevCommentLine.NoOfSpaces=%d .OldNoOfSpaces=%d',
             [PrevCommentLine.NoOfSpaces, PrevCommentLine.OldNoOfSpaces]));
         end;
-        CheckIndent(NTmp, PrevCommentLine);
+        CheckIndent(NTmp, PrevCommentLine, MidLineBlockComment);
 //        FTokens.WriteTo(Format('d:\output%.3d.txt', [FTokenIdx]));
         Assert(False, '.doExecute: after CheckIndent:  NTmp: ' + IntToStr(NTmp));
         if not Assigned(PrevCommentLine) then begin

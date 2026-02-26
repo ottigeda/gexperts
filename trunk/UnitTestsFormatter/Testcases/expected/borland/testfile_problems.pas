@@ -74,7 +74,7 @@ var
   Ctl3DRegister: function(Instance: THandle): BOOL stdcall;
 
   TDecimal = record {You don't believe this:
-    a nested variant record!}
+      a nested variant record!}
     wReserved: Word;
     case Integer of
       0: (Scale, Sign: byte; Hi32: Longint;
@@ -290,7 +290,7 @@ begin
       l then
       J
     else {bla
-      bla}
+        bla}
     begin
       k;
     end;
