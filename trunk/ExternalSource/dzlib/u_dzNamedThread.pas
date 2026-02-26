@@ -17,7 +17,7 @@ uses
 
 type
   TThreadNameInfo = u_dzOsUtils.TThreadNameInfo
-    deprecated; // moved to u_dzOsUtils
+{$IFDEF SUPPORTS_DEPRECATED_TYPES} deprecated{$ENDIF};  // moved to u_dzOsUtils
 
 procedure SetThreadName(const _Name: AnsiString);
   deprecated; // moved to u_dzOsUtils
