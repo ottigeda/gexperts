@@ -62,6 +62,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Class Browser: Added nil check for empty treeview in GetInheritedList
 - Class Browser: Removed Application.ProcessMessages from print loop to prevent re-entrant UI interactions
 - Class Browser: Added circular inheritance detection to prevent infinite loop from corrupt cache files
+- Class Browser: Fixed line number always 0 for generic class/interface declarations like `TList<T>` or `TFoo<T: IBar>`
 - Class Browser: Fixed TClassBrowswerFilters typo (renamed to TClassBrowserFilters)
 
 ## Contributors

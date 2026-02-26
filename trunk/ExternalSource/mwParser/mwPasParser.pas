@@ -56,6 +56,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function GetSubString(StartPos, EndPos: Integer): string;
+    procedure SkipGenericParams;
     procedure NextClassLine;
     procedure NextObjectLine(out _IdentPos, _IdentLine: integer);
     procedure NextID(ID: TTokenKind);
@@ -784,20 +785,50 @@ begin
   NextToken;
 end; { ToLineStart }
 
+procedure TmPasParser.SkipGenericParams;
+var
+  Depth: Integer;
+begin
+  // Skip over generic type parameters: <T, T: IFoo, ...>
+  // Assumes current token is tkLower (<)
+  Depth := 1;
+  while (FToken.ID <> tkNull) and (Depth > 0) do
+  begin
+    NextNonJunk;
+    if FToken.ID = tkLower then
+      Inc(Depth)
+    else if FToken.ID = tkGreater then
+      Dec(Depth);
+  end;
+  if FToken.ID <> tkNull then
+    NextNonJunk;
+end; { SkipGenericParams }
+
 procedure TmPasParser.NextClassLine;
+var
+  SavedIdentPos: Integer;
+  SavedIdentLine: Integer;
 begin
   while FToken.ID <> tkNull do
   begin
     if FToken.ID in BigIdentDirect then
     begin
-      FLastIdentPos := FToken.Position;
-      FLastIdentLine := FToken.LineNumber;
+      SavedIdentPos := FToken.Position;
+      SavedIdentLine := FToken.LineNumber;
       NextNonJunk;
+      // Skip generic type parameters: TFoo<T: IBar> = class
+      // Must use saved values because SkipGenericParams advances past
+      // identifiers inside <>, which overwrites FLastIdentPos/Line.
+      if FToken.ID = tkLower then
+        SkipGenericParams;
       if FToken.ID = tkEqual then
       begin
         NextNonJunk;
-        if FToken.ID = tkClass then
+        if FToken.ID = tkClass then begin
+          FLastIdentPos := SavedIdentPos;
+          FLastIdentLine := SavedIdentLine;
           Break; //==v
+        end;
       end;
     end;
     NextNonJunk;
@@ -805,19 +836,30 @@ begin
 end; { NextClassLine }
 
 procedure TmPasParser.NextObjectLine(out _IdentPos, _IdentLine: integer);
+var
+  SavedIdentPos: Integer;
+  SavedIdentLine: Integer;
 begin
   while FToken.ID <> tkNull do
   begin
     if FToken.ID in BigIdentDirect then
     begin
-      FLastIdentPos := FToken.Position;
-      FLastIdentLine := FToken.LineNumber;
+      SavedIdentPos := FToken.Position;
+      SavedIdentLine := FToken.LineNumber;
       NextNonJunk;
+      // Skip generic type parameters: TFoo<T: IBar> = class/interface
+      // Must use saved values because SkipGenericParams advances past
+      // identifiers inside <>, which overwrites FLastIdentPos/Line.
+      if FToken.ID = tkLower then
+        SkipGenericParams;
       if FToken.ID = tkEqual then
       begin
         NextNonJunk;
-        if FToken.ID in [tkClass, tkDispInterface, tkInterface] then
+        if FToken.ID in [tkClass, tkDispInterface, tkInterface] then begin
+          FLastIdentPos := SavedIdentPos;
+          FLastIdentLine := SavedIdentLine;
           Break; //==v
+        end;
       end;
     end;
     NextNonJunk;
