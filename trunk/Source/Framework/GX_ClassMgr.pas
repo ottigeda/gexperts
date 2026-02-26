@@ -1207,6 +1207,7 @@ var
   Parser: TmPasParser;
   LocalEditReader: TEditReader;
 begin
+  Result := 0;
   LocalEditReader := Collection.ClassList.EditRead;
   LocalEditReader.FileName := Collection.FileName;
   LocalEditReader.Reset;
