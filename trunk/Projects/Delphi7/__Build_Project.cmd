@@ -17,5 +17,7 @@ goto parseargs
 
 call "%~dp0..\doFindBuildTools.cmd"
 call "%buildtools%\doBuildProject.cmd"
+set BUILDERROR=%ERRORLEVEL%
 
 if "%NOWAIT%"=="0" pause
+exit /b %BUILDERROR%

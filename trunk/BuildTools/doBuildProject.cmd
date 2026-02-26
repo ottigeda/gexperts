@@ -40,6 +40,7 @@ for %%a in (GExperts*.dproj) do set dprname=%%a
 @rem build it
 :dobuild
 msbuild /target:rebuild /p:config=Release %dprname%
+if errorlevel 1 goto :buildfailed
 goto :done
 
 :isRio
@@ -88,7 +89,8 @@ for %%a in (GExperts*.dproj) do set dprname=%%a
 @rem note that for Delphi 2007 the target is rebuild and the configuration must be specified with
 @rem /p:Configuration= instead of /p:Config= as in later versions.
 :: if msbuild stuff fails, then add this parameter: -verbosity:diagnostic
-msbuild /target:rebuild /p:Configuration=Release -p:DCC_Quiet=true %dprname% 
+msbuild /target:rebuild /p:Configuration=Release -p:DCC_Quiet=true %dprname%
+if errorlevel 1 goto :buildfailed
 goto :done
 
 :2007hint
@@ -115,6 +117,13 @@ goto :eof
 for %%a in (*.dpr) do set dprname=%%a
 @rem build is done with dcc32
 "%DelphiPath%\bin\dcc32.exe" %GX_DCC_EXTRA% %dprname%
+if errorlevel 1 goto :buildfailed
+goto :done
+
+:buildfailed
+echo BUILD FAILED for %dprname%
+endlocal
+exit /b 1
 
 :done
 echo done building %dprname%
