@@ -54,6 +54,15 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Code Formatter: Fixed missing indent for continuation lines in mid-line multiline block comments when IndentComments is active (bug #367)
 - Expert Manager: Fixed duplicate entries and wrong DLL path shown when the same expert name exists in both enabled and disabled registries (bug #447)
 - Procedure List: Anonymous methods (procedure/function without a name) no longer create bogus entries and no longer break the body range of the enclosing procedure (bug #63)
+- Class Browser: Fixed inheritance panel hint showing form title instead of class name
+- Class Browser: Fixed ClassHierarchyFont setting always saving as 'Arial' instead of the user's chosen font
+- Class Browser: Fixed SetInfoViewMode clearing treeview selection even when mode didn't change
+- Class Browser: Fixed potential crash when parsing empty source files (nil dereference on empty FileContent)
+- Class Browser: Fixed potential crash from dangling pointers when removing projects or files (OnChange firing during node deletion)
+- Class Browser: Added nil check for empty treeview in GetInheritedList
+- Class Browser: Removed Application.ProcessMessages from print loop to prevent re-entrant UI interactions
+- Class Browser: Added circular inheritance detection to prevent infinite loop from corrupt cache files
+- Class Browser: Fixed TClassBrowswerFilters typo (renamed to TClassBrowserFilters)
 
 ## Contributors
 

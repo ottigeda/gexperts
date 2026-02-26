@@ -482,6 +482,8 @@ begin
 
   FileContent := LocalEditReader.GetText;
   LocalEditReader.FreeFileData;
+  if FileContent = '' then
+    Exit;
   Parser := TmEPTokenList.Create;
   try
     Parser.SetOrigin(@FileContent[1], Length(FileContent));
@@ -817,6 +819,8 @@ begin
 
   FileContent := LocalEditReader.GetText;
   LocalEditReader.FreeFileData;
+  if FileContent = '' then
+    Exit;
   Parser := TmPasParser.Create;
   try
     Parser.Origin := @FileContent[1];
@@ -846,6 +850,8 @@ begin
 
   FIsLoaded := True;
   FileContent := LocalEditReader.GetText;
+  if FileContent = '' then
+    Exit;
   Parser := TmPasParser.Create;
   try
     Parser.Origin := @FileContent[1];
@@ -1163,6 +1169,8 @@ begin
 
   FileContent := LocalEditReader.GetText;
   LocalEditReader.FreeFileData;
+  if FileContent = '' then
+    Exit;
   Parser := TmPasParser.Create;
   try
     Parser.Origin := @FileContent[1];
@@ -1205,6 +1213,8 @@ begin
 
   FileContent := LocalEditReader.GetText;
   LocalEditReader.FreeFileData;
+  if FileContent = '' then
+    Exit;
   Parser := TmPasParser.Create;
   try
     Parser.Origin := @FileContent[1];

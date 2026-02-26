@@ -17,7 +17,7 @@ uses
   GX_BaseForm;
 
 type
-  TClassBrowswerFilters = array[0..8] of Boolean;
+  TClassBrowserFilters = array[0..8] of Boolean;
 
 type
   TfmClassOptions = class(TfmBaseForm)
@@ -86,13 +86,13 @@ type
     procedure SetData(_TreeFont, _ListFont, _EditorFont: TFont;
       _AutomaticallyHideBrowser: Boolean;
       _PrimitiveTop, _StayInPackage, _ParseRecursing: Boolean;
-      _Filters: TClassBrowswerFilters;
+      _Filters: TClassBrowserFilters;
       _ReportFontSize, _ReportBoxWidth, _ReportBoxSpace: Integer;
       const _ReportFont: string);
     procedure GetData(_TreeFont, _ListFont, _EditorFont: TFont;
       out _AutomaticallyHideBrowser: Boolean;
       out _PrimitiveTop, _StayInPackage, _ParseRecursing: Boolean;
-      out _Filters: TClassBrowswerFilters;
+      out _Filters: TClassBrowserFilters;
       out _ReportFontSize, _ReportBoxWidth, _ReportBoxSpace: Integer;
       out _ReportFont: string);
     procedure FontToForm(_Font: TFont; _NameCombo: TComboBox; _SizeUd: TUpDown);
@@ -102,7 +102,7 @@ type
     class function Execute(_Owner: TWinControl; _TreeFont, _ListFont, _EditorFont: TFont;
       var _AutomaticallyHideBrowser: Boolean;
       var _PrimitiveTop, _StayInPackage, _ParseRecursing: Boolean;
-      var _Filters: TClassBrowswerFilters;
+      var _Filters: TClassBrowserFilters;
       var _ReportFontSize, _ReportBoxWidth, _ReportBoxSpace: Integer;
       var _ReportFont: string): Boolean;
     constructor Create(_Owner: TComponent); override;
@@ -147,7 +147,7 @@ end;
 class function TfmClassOptions.Execute(_Owner: TWinControl; _TreeFont, _ListFont, _EditorFont: TFont;
   var _AutomaticallyHideBrowser: Boolean;
   var _PrimitiveTop, _StayInPackage, _ParseRecursing: Boolean;
-  var _Filters: TClassBrowswerFilters;
+  var _Filters: TClassBrowserFilters;
   var _ReportFontSize, _ReportBoxWidth, _ReportBoxSpace: Integer;
   var _ReportFont: string): Boolean;
 var
@@ -228,11 +228,12 @@ end;
 procedure TfmClassOptions.GetData(_TreeFont, _ListFont, _EditorFont: TFont;
   out _AutomaticallyHideBrowser: Boolean;
   out _PrimitiveTop, _StayInPackage, _ParseRecursing: Boolean;
-  out _Filters: TClassBrowswerFilters;
+  out _Filters: TClassBrowserFilters;
   out _ReportFontSize, _ReportBoxWidth, _ReportBoxSpace: Integer;
   out _ReportFont: string);
 var
   i: Integer;
+  TagIdx: Integer;
 begin
   FormToFont(FTreeFont, cbTreeView, udTree);
   _TreeFont.Assign(FTreeFont);
@@ -248,8 +249,8 @@ begin
 
   for i := 0 to gbxFilters.ControlCount - 1 do
     if gbxFilters.Controls[i] is TCheckBox then begin
-      Tag := TCheckBox(gbxFilters.Controls[i]).Tag;
-      _Filters[Tag] := TCheckBox(gbxFilters.Controls[i]).Checked;
+      TagIdx := TCheckBox(gbxFilters.Controls[i]).Tag;
+      _Filters[TagIdx] := TCheckBox(gbxFilters.Controls[i]).Checked;
     end;
 
   _ReportFontSize := udReportFontSize.Position;
@@ -262,11 +263,12 @@ end;
 procedure TfmClassOptions.SetData(_TreeFont, _ListFont, _EditorFont: TFont;
   _AutomaticallyHideBrowser: Boolean;
   _PrimitiveTop, _StayInPackage, _ParseRecursing: Boolean;
-  _Filters: TClassBrowswerFilters;
+  _Filters: TClassBrowserFilters;
   _ReportFontSize, _ReportBoxWidth, _ReportBoxSpace: Integer;
   const _ReportFont: string);
 var
   i: Integer;
+  TagIdx: Integer;
 begin
   FTreeFont.Assign(_TreeFont);
   FontToForm(FTreeFont, cbTreeView, udTree);
@@ -282,8 +284,8 @@ begin
 
   for i := 0 to gbxFilters.ControlCount - 1 do begin
     if gbxFilters.Controls[i] is TCheckBox then begin
-      Tag := TCheckBox(gbxFilters.Controls[i]).Tag;
-      TCheckBox(gbxFilters.Controls[i]).Checked := _Filters[Tag];
+      TagIdx := TCheckBox(gbxFilters.Controls[i]).Tag;
+      TCheckBox(gbxFilters.Controls[i]).Checked := _Filters[TagIdx];
     end;
   end;
 

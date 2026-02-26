@@ -193,7 +193,7 @@ type
     FClassHierarchyBoxWidth: Integer;
     FClassHierarchyBoxSpace: Integer;
     FClassHierarchyFont: string;
-    FFilters: TClassBrowswerFilters;
+    FFilters: TClassBrowserFilters;
     FLastFind: string;
     FLastHitTestItemIdx: Integer;
     FLastHitTestSubItemIdx: Integer;
@@ -346,19 +346,24 @@ begin
   Node := tvBrowse.Items[0];
   if Node = nil then
     Exit;
-  while Assigned(Node) do
-  begin
-    Item := TClassItem(Node.Data);
-    if Item.IsProject then
+  tvBrowse.OnChange := nil;
+  try
+    while Assigned(Node) do
     begin
-      Item.SaveToFile(Item.Directory);
-      FreeAndNil(Item);
-      ONode := Node.GetNextSibling;
-      FreeAndNil(Node);
-      Node := ONode;
-    end
-    else
-      Node := Node.GetNextSibling;
+      Item := TClassItem(Node.Data);
+      if Item.IsProject then
+      begin
+        Item.SaveToFile(Item.Directory);
+        FreeAndNil(Item);
+        ONode := Node.GetNextSibling;
+        FreeAndNil(Node);
+        Node := ONode;
+      end
+      else
+        Node := Node.GetNextSibling;
+    end;
+  finally
+    tvBrowse.OnChange := tvBrowseChange;
   end;
   tvBrowseChange(tvBrowse, nil);
 end;
@@ -1040,11 +1045,16 @@ var
   CommaPosition: Integer;
 begin
   FirstNode := tvBrowse.Items.GetFirstNode;
+  if FirstNode = nil then
+    Exit;
   LastVisitedLevel := FirstNode.Level;
 
   InheritingFromClassName := GetInherited(StartClassName);
   while InheritingFromClassName <> '' do
   begin
+    // Detect circular inheritance (e.g. A -> B -> A) to prevent infinite loop
+    if List.IndexOf(InheritingFromClassName) >= 0 then
+      Break;
     List.Add(InheritingFromClassName);
     CommaPosition := Pos(',', InheritingFromClassName);
     // With multiple ancestors we want to search for the first one.
@@ -1090,10 +1100,10 @@ var
     APanel.SetBounds(ClassControlLeft, (PanelPosition * 50) + 10, ClassControlWidth, 30);
 
     // Assumes that form and panel have the same font
-    if Self.Canvas.TextWidth(Caption) > APanel.ClientWidth - (2 * APanel.BorderWidth) then
+    if Self.Canvas.TextWidth(PanelText) > APanel.ClientWidth - (2 * APanel.BorderWidth) then
     begin
       APanel.ShowHint := True;
-      APanel.Hint := Caption;
+      APanel.Hint := PanelText;
     end;
   end;
 
@@ -1195,7 +1205,7 @@ begin
   Settings.WriteInteger('ClassHierarchyFontSize', FClassHierarchyFontSize);
   Settings.WriteInteger('ClassHierarchyBoxWidth', FClassHierarchyBoxWidth);
   Settings.WriteInteger('ClassHierarchyBoxSpace', FClassHierarchyBoxSpace);
-  Settings.WriteString('ClassHierarchyFont', 'Arial');
+  Settings.WriteString('ClassHierarchyFont', FClassHierarchyFont);
   for i := Low(FFilters) to High(FFilters) do
     Settings.WriteBool(Format('Filter%d', [i]), FFilters[i]);
   Settings.SaveFont('TreeFont', tvBrowse.Font);
@@ -1510,7 +1520,6 @@ var
     begin
       if op <> PageNum then
         np := 0;
-      Application.ProcessMessages;
       if Node.Level > 0 then
         if SameText(TBrowseClassInfoCollection(Node.Data).ObjectDerivedFrom, Info.Name) then
           PrintClassSquare(TBrowseClassInfoCollection(Node.Data), Level + 1, np);
@@ -1853,7 +1862,12 @@ begin
     Exit;
   end;
   Item := TClassItem(Selected.Data);
-  Selected.Free;
+  tvBrowse.OnChange := nil;
+  try
+    Selected.Free;
+  finally
+    tvBrowse.OnChange := tvBrowseChange;
+  end;
   FreeAndNil(Item);
   ClassList.SaveToFile(False);
   if tvBrowse.Selected = nil then
@@ -2018,11 +2032,10 @@ end;
 
 procedure TfmClassBrowser.SetInfoViewMode(const Value: TInfoViewMode);
 begin
-  tvBrowse.Selected := nil;
-
   if Value = FInfoViewMode then
     Exit;
 
+  tvBrowse.Selected := nil;
   FInfoViewMode := Value;
   edtClassFilter.Visible := (FInfoViewMode = vmList);
   tbBrowse.Invalidate;
