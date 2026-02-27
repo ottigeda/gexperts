@@ -57,6 +57,7 @@ type
     destructor Destroy; override;
     function GetSubString(StartPos, EndPos: Integer): string;
     procedure SkipGenericParams;
+    procedure SkipNestedTypeSection;
     procedure NextClassLine;
     procedure NextObjectLine(out _IdentPos, _IdentLine: integer);
     procedure NextID(ID: TTokenKind);
@@ -803,6 +804,118 @@ begin
   if FToken.ID <> tkNull then
     NextNonJunk;
 end; { SkipGenericParams }
+
+procedure TmPasParser.SkipNestedTypeSection;
+var
+  EndDepth: Integer;
+  PrevID: TTokenKind;
+  SavePos: Integer;
+begin
+  // Skips past a nested type section inside a class body.
+  // Assumes current token is tkType. On return, the parser is positioned
+  // on the first token after the nested type section (the token that is
+  // NOT part of a type declaration, e.g. a visibility keyword, var, procedure,
+  // or end of the enclosing class).
+  //
+  // Strategy: After the 'type' keyword, we parse each type declaration:
+  //   Identifier [<GenericParams>] = TypeDef ;
+  // For structured types (class/record/interface/object), we count end tokens
+  // to find the closing 'end;'. For simple types, we skip to ';'.
+  // We stop when we encounter a token that cannot start a type declaration.
+
+  if FToken.ID = tkType then
+    NextNonJunk;
+
+  while FToken.ID <> tkNull do
+  begin
+    // If we see something that starts a non-type member, the type section is over
+    if FToken.ID in [tkPrivate, tkProtected, tkPublic, tkPublished, tkStrict,
+      tkProcedure, tkFunction, tkConstructor, tkDestructor, tkOperator,
+      tkProperty, tkVar, tkEnd, tkClass] then
+      Break;
+
+    // We expect 'Identifier' at the start of each type declaration.
+    // Save position so we can restore if this turns out not to be a type decl.
+    if FToken.ID in BigIdentDirect then
+    begin
+      SavePos := FToken.Position;
+      // Skip 'Identifier'
+      NextNonJunk;
+      // Skip generic params if present: Identifier<T>
+      if FToken.ID = tkLower then
+        SkipGenericParams;
+      // Expect '='
+      if FToken.ID = tkEqual then
+      begin
+        NextNonJunk;
+        // Check what kind of type this is
+        if FToken.ID in [tkClass, tkRecord, tkInterface, tkDispInterface, tkObject] then
+        begin
+          // This is a structured type with begin/end-like nesting
+          NextNonJunk;
+          // Check for forward declarations: 'TFoo = class;'
+          if FToken.ID = tkSemiColon then
+          begin
+            NextNonJunk;
+            Continue;
+          end;
+          // Skip ancestry/GUID: class(TAncestor)
+          if FToken.ID = tkRoundOpen then
+          begin
+            while not (FToken.ID in [tkNull, tkRoundClose]) do
+              NextNonJunk;
+            if FToken.ID = tkRoundClose then
+              NextNonJunk;
+          end;
+          // Now count end tokens to find the matching 'end'.
+          // Only increment depth for 'class/record/object' preceded by '='
+          // (i.e. nested type declarations), NOT for 'class procedure' etc.
+          EndDepth := 1;
+          PrevID := tkNull;
+          while (FToken.ID <> tkNull) and (EndDepth > 0) do
+          begin
+            if (FToken.ID in [tkClass, tkRecord, tkObject, tkInterface, tkDispInterface])
+              and (PrevID = tkEqual) then
+            begin
+              // Nested structured type: Identifier = class/record/...
+              // Check for forward declaration
+              PrevID := FToken.ID;
+              NextNonJunk;
+              if FToken.ID <> tkSemiColon then
+                Inc(EndDepth);
+              Continue;
+            end;
+            if FToken.ID = tkEnd then
+              Dec(EndDepth);
+            PrevID := FToken.ID;
+            NextNonJunk;
+          end;
+          // We are now past 'end'. Expect ';'
+          if FToken.ID = tkSemiColon then
+            NextNonJunk;
+        end
+        else begin
+          // Simple type alias, enum, set, etc.: skip to ';'
+          while not (FToken.ID in [tkNull, tkSemiColon]) do
+            NextNonJunk;
+          if FToken.ID = tkSemiColon then
+            NextNonJunk;
+        end;
+      end
+      else begin
+        // Not a type declaration (e.g. a field like 'FName: string;')
+        // Restore parser position to the identifier and bail out.
+        // SetRunPos calls NextToken internally, which sets FToken.
+        SetRunPos(SavePos);
+        Break;
+      end;
+    end
+    else begin
+      // Unexpected token, bail out of type section
+      Break;
+    end;
+  end;
+end; { SkipNestedTypeSection }
 
 procedure TmPasParser.NextClassLine;
 var

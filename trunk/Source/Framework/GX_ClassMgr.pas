@@ -1125,6 +1125,10 @@ begin
       tkPublished,
       tkPublic:        MethodVisibility := Parser.Token.ID;
 
+      tkType:          begin
+                         Parser.SkipNestedTypeSection;
+                         Continue; // SkipNestedTypeSection already advanced past the section
+                       end;
       tkIdentifier:    LoadVariable;
       tkProperty:      LoadProperty;
       tkStrict:        // Ignore for now
