@@ -442,10 +442,10 @@ var
       begin
         if FViewUnitNames then
         begin
-          NodeText := AClassItem.SourceName + '.' + AClassItem.Name;
+          NodeText := AClassItem.SourceName + '.' + AClassItem.FullName;
         end
         else
-          NodeText := AClassItem.Name;
+          NodeText := AClassItem.FullName;
 
         ANode := tvBrowse.Items.AddChildObject(INode, NodeText, AClassItem);
         if AClassItem.ObjectType = cieClass then begin
@@ -489,10 +489,10 @@ begin
         // This is a root item - ObjectDerivedFrom = nil --> no ancestor.
         if FViewUnitNames then
         begin
-          NodeText := ClassInfoCollItem.SourceName + '.' + ClassInfoCollItem.Name;
+          NodeText := ClassInfoCollItem.SourceName + '.' + ClassInfoCollItem.FullName;
         end
         else
-          NodeText := ClassInfoCollItem.Name;
+          NodeText := ClassInfoCollItem.FullName;
 
         Node := tvBrowse.Items.AddChildObject(ONode, NodeText, ClassInfoCollItem);
         if ClassInfoCollItem.ObjectType = cieClass then begin
@@ -535,11 +535,11 @@ begin
   for i := 0 to Item.ClassCount-1 do
   begin
     ClassInfo := Item.ClassItem[i];
-    if (FTreeFilter='') or StrContains(FTreeFilter, ClassInfo.Name, False) then begin
+    if (FTreeFilter='') or StrContains(FTreeFilter, ClassInfo.FullName, False) then begin
       if FViewUnitNames then
-        NodeText := ClassInfo.SourceName + '.' + ClassInfo.Name
+        NodeText := ClassInfo.SourceName + '.' + ClassInfo.FullName
       else
-        NodeText := ClassInfo.Name;
+        NodeText := ClassInfo.FullName;
       INode := tvBrowse.Items.AddChildObject(ONode, NodeText, ClassInfo);
       if ClassInfo.ObjectType = cieClass then begin
         INode.ImageIndex := ImageIndexGear;

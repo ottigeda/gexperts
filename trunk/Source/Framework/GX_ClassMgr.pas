@@ -2,7 +2,6 @@ unit GX_ClassMgr;
 
 {
   Missing Features:
-   - Support for nested class declarations
    - Full support for old-style object declarations
    - Jumping to overloaded procedures does not work (it goes to the first one)
 }
@@ -78,6 +77,8 @@ type
     FIsLoaded: Boolean;
     FName: string;
     FObjectType: TClassInterfaceEnum;
+    FContainingClassName: string;
+    FTokenIndex: Integer;
     procedure GetMethods(Parser: TmPasParser);
     function GetItem(Index: Integer): TBrowseMethodInfoItem;
     procedure SetText(const New: string);
@@ -98,6 +99,8 @@ type
     property LineNo: Integer read FLineNo;
     property IsLoaded: Boolean read FIsLoaded;
     property Name: string read FName;
+    property ContainingClassName: string read FContainingClassName;
+    function FullName: string;
     property ObjectType: TClassInterfaceEnum read FObjectType;
   end;
 
@@ -116,6 +119,7 @@ type
     procedure LoadClasses(const FileName: string);
     procedure AddClassesFromList(const FileName: string; Parser: TmEPTokenList; List: TLongintList);
     procedure AddInterfacesFromList(const FileName: string; Parser: TmEPTokenList; List: TLongintList);
+    procedure DetectNesting(Parser: TmEPTokenList; StartIdx: Integer);
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -472,6 +476,7 @@ var
   FileContent: string;
   Parser: TmEPTokenList;
   LocalEditReader: TEditReader;
+  PrevCount: Integer;
 begin
   if not IsPascalSourceFile(FileName) then
     Exit;
@@ -484,12 +489,14 @@ begin
   LocalEditReader.FreeFileData;
   if FileContent = '' then
     Exit;
+  PrevCount := FOList.Count;
   Parser := TmEPTokenList.Create;
   try
     Parser.SetOrigin(@FileContent[1], Length(FileContent));
     AddClassesFromList(FileName, Parser, Parser.Searcher.ClassList);
     Parser.Searcher.FillInterfaceList;
     AddInterfacesFromList(FileName, Parser, Parser.Searcher.InterfaceList);
+    DetectNesting(Parser, PrevCount);
   finally
     FreeAndNil(Parser);
   end;
@@ -512,6 +519,7 @@ begin
           ObjectInfo := TBrowseClassInfoCollection.Create(cieClass);
           FOList.Add(ObjectInfo);
           ObjectInfo.ClassList := TClassList(Collection);
+          ObjectInfo.FTokenIndex := List[j];
           p1 := 0;
           for i := 1 to Length(Parser.Info.Data) do
           begin
@@ -555,6 +563,7 @@ begin
           ObjectInfo := TBrowseClassInfoCollection.Create(cieInterface);
           FOList.Add(ObjectInfo);
           ObjectInfo.ClassList := TClassList(Collection);
+          ObjectInfo.FTokenIndex := List[j];
           p1 := 0;
           for i := 1 to Length(Parser.Info.Data) do
           begin
@@ -575,6 +584,140 @@ begin
             ObjectInfo.FSourceName := ExtractPureFileName(ObjectInfo.FileName);
         end;
     end; // case
+  end;
+end;
+
+function FindClassEndIndex(Parser: TmEPTokenList; IdentIndex: Integer): Integer;
+var
+  i, j: Integer;
+  Depth: Integer;
+  TokID: TTokenKind;
+begin
+  Result := -1;
+  Depth := 0;
+  i := IdentIndex;
+  while Parser.TokenID[i] <> tkNull do
+  begin
+    TokID := Parser.TokenID[i];
+    case TokID of
+      tkRecord:
+        Inc(Depth);
+      tkObject:
+        begin
+          // Exclude "of object" (procedural type modifier)
+          j := i - 1;
+          while (j >= 0) and (Parser.TokenID[j] in [tkSpace, tkCRLF,
+            tkBorComment, tkAnsiComment, tkSlashesComment, tkCompDirect]) do
+            Dec(j);
+          if (j < 0) or (Parser.TokenID[j] <> tkOf) then
+            Inc(Depth);
+        end;
+      tkClass:
+        begin
+          // Exclude class modifiers (class procedure, class function, etc.),
+          // forward declarations (class;), and class references (class of)
+          j := i + 1;
+          while Parser.TokenID[j] in [tkSpace, tkCRLF,
+            tkBorComment, tkAnsiComment, tkSlashesComment, tkCompDirect] do
+            Inc(j);
+          if not (Parser.TokenID[j] in [tkSemiColon, tkOf, tkProcedure, tkFunction,
+            tkOperator, tkVar, tkConstructor, tkDestructor, tkProperty]) then
+            Inc(Depth);
+        end;
+      tkInterface, tkDispInterface:
+        begin
+          // Only count as body when preceded by '='
+          j := i - 1;
+          while (j >= 0) and (Parser.TokenID[j] in [tkSpace, tkCRLF,
+            tkBorComment, tkAnsiComment, tkSlashesComment, tkCompDirect]) do
+            Dec(j);
+          if (j >= 0) and (Parser.TokenID[j] = tkEqual) then
+          begin
+            // Check not forward declaration (= interface;)
+            j := i + 1;
+            while Parser.TokenID[j] in [tkSpace, tkCRLF,
+              tkBorComment, tkAnsiComment, tkSlashesComment, tkCompDirect] do
+              Inc(j);
+            if Parser.TokenID[j] <> tkSemiColon then
+              Inc(Depth);
+          end;
+        end;
+      tkEnd:
+        begin
+          Dec(Depth);
+          if Depth = 0 then
+          begin
+            Result := i;
+            Exit;
+          end;
+        end;
+    end;
+    Inc(i);
+  end;
+end;
+
+procedure TClassItem.DetectNesting(Parser: TmEPTokenList; StartIdx: Integer);
+type
+  TNestInfo = record
+    FullName: string;
+    EndTokenIndex: Integer;
+  end;
+var
+  Entries: TList;
+  Stack: array of TNestInfo;
+  StackTop: Integer;
+  i, j: Integer;
+  Entry: TBrowseClassInfoCollection;
+  EndIdx: Integer;
+begin
+  if FOList.Count - StartIdx <= 1 then
+    Exit; // Nothing to nest with zero or one entry
+
+  // Collect entries from this file
+  Entries := TList.Create;
+  try
+    for i := StartIdx to FOList.Count - 1 do
+      Entries.Add(FOList[i]);
+
+    // Sort by token index (insertion sort - list is small)
+    for i := 1 to Entries.Count - 1 do
+    begin
+      j := i;
+      while (j > 0) and
+        (TBrowseClassInfoCollection(Entries[j]).FTokenIndex <
+         TBrowseClassInfoCollection(Entries[j - 1]).FTokenIndex) do
+      begin
+        Entries.Exchange(j, j - 1);
+        Dec(j);
+      end;
+    end;
+
+    SetLength(Stack, Entries.Count);
+    StackTop := -1;
+
+    for i := 0 to Entries.Count - 1 do
+    begin
+      Entry := TBrowseClassInfoCollection(Entries[i]);
+
+      // Pop stack entries whose end index has been passed
+      while (StackTop >= 0) and (Stack[StackTop].EndTokenIndex < Entry.FTokenIndex) do
+        Dec(StackTop);
+
+      // If stack is non-empty, this entry is nested inside the top entry
+      if StackTop >= 0 then
+        Entry.FContainingClassName := Stack[StackTop].FullName;
+
+      // Find the matching end for this class/interface
+      EndIdx := FindClassEndIndex(Parser, Entry.FTokenIndex);
+      if EndIdx > 0 then
+      begin
+        Inc(StackTop);
+        Stack[StackTop].FullName := Entry.FullName;
+        Stack[StackTop].EndTokenIndex := EndIdx;
+      end;
+    end;
+  finally
+    Entries.Free;
   end;
 end;
 
@@ -615,6 +758,8 @@ begin
      sl.Add(s + 'SourceName=' + ci.SourceName);
      sl.Add(s + 'LineNo=' + IntToStr(ci.LineNo));
      sl.Add(s + 'Filename=' + ci.Filename);
+     if ci.ContainingClassName <> '' then
+       sl.Add(s + 'ContainingClassName=' + ci.ContainingClassName);
     end;
     sl.SaveToFile(FileName);
   finally
@@ -662,6 +807,7 @@ begin
           OInfo.FSourceName := IniFile.ReadString('Classes', s + 'SourceName', ''); // do not localize
           OInfo.FLineNo := StrToIntDef(IniFile.ReadString('Classes', s + 'LineNo', ''), 0); // do not localize
           OInfo.FFilename:= IniFile.ReadString('Classes', s + 'Filename', ''); // do not localize
+          OInfo.FContainingClassName := IniFile.ReadString('Classes', s + 'ContainingClassName', ''); // do not localize
         end;
       end;
     end else begin
@@ -690,6 +836,15 @@ constructor TBrowseClassInfoCollection.Create(ObjectType: TClassInterfaceEnum);
 begin
   inherited Create(TBrowseMethodInfoItem);
   FObjectType := ObjectType;
+  FTokenIndex := -1;
+end;
+
+function TBrowseClassInfoCollection.FullName: string;
+begin
+  if FContainingClassName <> '' then
+    Result := FContainingClassName + '.' + FName
+  else
+    Result := FName;
 end;
 
 function TBrowseClassInfoCollection.Add: TBrowseMethodInfoItem;
