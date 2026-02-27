@@ -61,6 +61,8 @@ type
     procedure TestSkipEmptyTypeSection;
     // SkipNestedTypeSection: nested type with generic class
     procedure TestSkipNestedGenericClass;
+    // SkipNestedTypeSection: doubly nested class (3 levels deep)
+    procedure TestSkipDoublyNestedClass;
   end;
 
 implementation
@@ -677,6 +679,40 @@ begin
       Parser.NextNonJunk;
     Check(Parser.Token.ID = tkProcedure,
       'After skipping nested generic class, should find procedure');
+  finally
+    Parser.Free;
+  end;
+end;
+
+procedure TTestNestedTypes.TestSkipDoublyNestedClass;
+const
+  Source =
+    'TLevel1 = class' + #13#10 +
+    '  type' + #13#10 +
+    '    TLevel2 = class' + #13#10 +
+    '      type' + #13#10 +
+    '        TLevel3 = class' + #13#10 +
+    '          FDeep: string;' + #13#10 +
+    '        end;' + #13#10 +
+    '    end;' + #13#10 +
+    '  procedure TopLevelMethod;' + #13#10 +
+    'end;';
+var
+  Parser: TmPasParser;
+begin
+  Parser := TmPasParser.Create;
+  try
+    Parser.Origin := PChar(Source);
+    while (Parser.Token.ID <> tkType) and (Parser.Token.ID <> tkNull) do
+      Parser.NextNonJunk;
+    Check(Parser.Token.ID = tkType, 'Should find outer type keyword');
+    Parser.SkipNestedTypeSection;
+    // After skipping the entire nested type section (which contains 2 levels
+    // of nesting), should find 'procedure' of the outer class
+    while not (Parser.Token.ID in [tkProcedure, tkEnd, tkNull]) do
+      Parser.NextNonJunk;
+    Check(Parser.Token.ID = tkProcedure,
+      'After skipping doubly nested types, should find procedure. Got: ' + Parser.Token.Data);
   finally
     Parser.Free;
   end;
