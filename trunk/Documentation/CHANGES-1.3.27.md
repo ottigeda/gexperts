@@ -65,6 +65,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - Class Browser: Fixed line number always 0 for generic class/interface declarations like `TList<T>` or `TFoo<T: IBar>` (bug #36)
 - Class Browser: Fixed TClassBrowswerFilters typo (renamed to TClassBrowserFilters)
 - Class Browser: Fixed nested type declarations (class/record inside class) having their members attributed to the outer class instead of being skipped (bug #248)
+- Class Browser: Nested classes now show with fully qualified names (e.g. TOuterClass.TInnerClass) in tree and list views (bug #248)
 
 ## Contributors
 
