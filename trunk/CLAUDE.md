@@ -44,7 +44,7 @@ svn.exe log <file>      # Show commit history from repository
 ```cmd
 svn status          # Check modified files
 svn diff <file>     # View changes
-svn add <file>      # Add new file to version control
+svn add <file>      # Add new file to version control (NEVER use recursive add; use --depth=empty for dirs)
 svn info <file>     # Show local file info
 ```
 
@@ -72,6 +72,13 @@ bash _buildproject.sh
 ```
 
 Each project directory has a `_buildproject.sh` script that calls `__Build_Project.cmd --nowait`.
+
+**Quiet builds:** Use `--quiet` to suppress output on success and only show the last 30 lines on failure. The full log is written to `/tmp/build_<dirname>.txt`. This is the preferred way to run builds from Claude Code since it avoids output redirection in the shell command (which triggers manual approval).
+```bash
+bash _buildproject.sh --quiet
+```
+
+**IMPORTANT: Verifying build success.** Always check the exit code (`$?`) after running `_buildproject.sh`. The scripts return non-zero on failure. Do NOT rely on grepping output text alone — DCC32 (Delphi 6/7) does not print "Build succeeded" on success.
 
 **Build all versions:**
 ```cmd
