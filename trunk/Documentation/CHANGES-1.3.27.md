@@ -27,6 +27,7 @@ Changes since version 1.3.26 (released 2026-02-07)
 - GxInspect: Control name now supports [Index] syntax for accessing unnamed children (e.g. rg_FilterIdentifiers[0] for TGroupButton inside TRadioGroup)
 - Configuration: Added option to disable IDE theming for GExperts forms (Delphi 11+, requires IDE restart)
 - Class Browser: Added toolbar toggle to show/hide implementation-section classes, with greyed icons to distinguish them from interface-section classes (bug #24)
+- Rename Identifier: New scope-aware editor expert (Ctrl+Alt+R) that renames identifiers within a single unit, supporting local, class, and unit-level scopes with shadowing protection (feature #182)
 
 ## Bug Fixes
 
